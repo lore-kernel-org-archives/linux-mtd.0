@@ -1,16 +1,13 @@
-Received: from nm17-vm0.bullet.mail.ird.yahoo.com ([77.238.189.214])
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Sk3H8-00033M-5M
- for linux-mtd@lists.infradead.org; Thu, 28 Jun 2012 01:12:02 +0000
-Message-ID: <1340845910.61068.YahooMailNeo@web132103.mail.ird.yahoo.com>
-Date: Thu, 28 Jun 2012 02:11:50 +0100 (BST)
-From: Nedra Catchings <munroerrtgl@yahoo.com>
-Subject: I think we'll make a huge mistake if we do not get to know each other
-To: "atzin@earthlink.net" <atzin@earthlink.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Reply-To: Nedra Catchings <nedra.catchings@yahoo.com>
+From: Josh Wu <josh.wu@atmel.com>
+To: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ dedekind1@gmail.com
+Subject: [PATCH v12 0/2] MTD: at91: Add PMECC support for at91 nand flash
+ driver
+Date: Thu, 28 Jun 2012 16:21:35 +0800
+Message-Id: <1340871698-477-1-git-send-email-josh.wu@atmel.com>
+Cc: hongxu.cn@gmail.com, richard.genoud@gmail.com, nicolas.ferre@atmel.com,
+ Josh Wu <josh.wu@atmel.com>, ivan.djelic@parrot.com,
+ computersforpeace@gmail.com, plagnioj@jcrosoft.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,10 +17,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello handsome! (;=0AMy name is Nedra.=0AIf you r interested in spending gr=
-eat time in a company of smart, stunning girl then I am right before you! =
-=0AI felt in love with ur photos and so decided to create the mail! I'm thi=
-nking that u would not stay calm after staring at mine too. =0ASo, I am wai=
-ting for an answer from u this letter and maybe we will go cafe, drink some=
- beer, discuss different things and who knows I'll invite you to go to my f=
-lat! ;)
+Those patches is based on the l2-mtd.git three.
+
+Since there are two patches of v11 already pushed, so this version v12 only includes the left two patches.
+which includes the modification according to Richard Genoud's review suggestion.
+
+Changes since v11,
+	add documentation for atmel nand reg parameter and one example for PMECC support.
+	fix the bug: no error reported when fail to get resoures of PMECC ERRLOC or ROM.
+	fix the bug: no correction when ecc data has bit flipped.
+	add clearer debug information for data correction.
+
+Josh Wu (2):
+  MTD: at91: add dt parameters for Atmel PMECC
+  MTD: at91: atmel_nand: Update driver to support Programmable Multibit
+    ECC controller
+
+ .../devicetree/bindings/mtd/atmel-nand.txt         |   40 +-
+ drivers/mtd/nand/atmel_nand.c                      |  801 +++++++++++++++++++-
+ drivers/mtd/nand/atmel_nand_ecc.h                  |  114 ++-
+ 3 files changed, 951 insertions(+), 4 deletions(-)
+
+-- 
+1.7.9.5
