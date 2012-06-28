@@ -1,22 +1,25 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SkFoo-0005jX-RV
- for linux-mtd@lists.infradead.org; Thu, 28 Jun 2012 14:35:39 +0000
-Message-ID: <1340894351.3070.121.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] UBI: add minimal amount of reserved erase blocks in
- Kconfig
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Richard Genoud <richard.genoud@gmail.com>
-Date: Thu, 28 Jun 2012 17:39:11 +0300
-In-Reply-To: <1340636918-7505-1-git-send-email-richard.genoud@gmail.com>
-References: <1340636918-7505-1-git-send-email-richard.genoud@gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-Kh5GMS5+Pshs3Z7iwPmc"
+Received: from mail-wg0-f41.google.com ([74.125.82.41])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SkFyk-0008Oe-G9
+ for linux-mtd@lists.infradead.org; Thu, 28 Jun 2012 14:45:55 +0000
+Received: by wgbds1 with SMTP id ds1so185486wgb.0
+ for <linux-mtd@lists.infradead.org>; Thu, 28 Jun 2012 07:45:52 -0700 (PDT)
+Date: Thu, 28 Jun 2012 17:45:46 +0300
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Subject: [PATCH] ubi: fastmap: Do not free 'ai' in 'scan_all()'
+Message-ID: <20120628174546.491954e2@pixies.home.jungo.com>
+In-Reply-To: <20120628165239.52cffc64@pixies.home.jungo.com>
+References: <20120628165239.52cffc64@pixies.home.jungo.com>
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- linux-kernel@vger.kernel.org
-Reply-To: dedekind1@gmail.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: nyoushchenko@mvista.com,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-kernel@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+ Heinz.Egger@linutronix.de, thomas.wucher@linutronix.de,
+ linux-mtd@lists.infradead.org, tim.bird@am.sony.com, tglx@linutronix.de,
+ Marius.Mazarel@ugal.ro
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,98 +29,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 
---=-Kh5GMS5+Pshs3Z7iwPmc
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Do not call 'destroy_ai(ai)' at error handling of 'scan_all', since:
+- 'ai' is allocated in 'ubi_attach' (the caller of scan_all) and
+  provided as an argument. It's not scan_all's responsibility to free it
+- It is not consistent with scan_all's sister function
+  'ubi_attach_fastmap()' which does not free the given 'ai'
+- It will cause a double free as 'ubi_attach' (the caller of scan_all)
+  already destroys 'ai' in case of an error
 
-Hi, first of all, this 1% is does is not good enough for modern devices.
-It is just a default I picked out of the thin air.
+Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+---
+- compile tested
 
-What we really need is to make it possible to specify beb_rsvd_level at
-attach time. I believe it is not difficult to implement:
-
-1. Add a parameter to ubiattach
-2. Extend the attach ioctl and add beb_rsvd_level there. We have 12
-unused bytes in 'struct ubi_attach_req'.
-3. Extend the "mtd" module parameter and allow to specify beb_rsvd_level
-there as well.
-
-That's it - you can specify the needed numbers for your flash.
-
- to make this per-MTD device
-On Mon, 2012-06-25 at 17:08 +0200, Richard Genoud wrote:
-> The problem with this behaviour is that NAND flash manufacturers give a
-> minimum number of valid block (NVB) during the endurance life of the
-> device.
-> E.G.:
-> Parameter             Symbol    Min    Max    Unit      Notes
-> --------------------------------------------------------------
-> Valid block number     NVB     1004    1024   Blocks     1
-> Note:
-> 1. Invalid blocks are block that contain one or more bad bits beyond
-> ECC. The device may contain bad blocks upon shipment. Additional bad
-> blocks may develop over time; however, the total number of available
-> blocks will not drop below NVB during the endurance life of the device.
-
-OK, in this discussion is is easier to talk about maximum bad blocks
-(MBB) rather than minimum good blocks, though. So basically, the vendor
-guarantees that there will be at most MBB bad blocks.
-
-> From this number we can deduce the maximum number of bad PEB that a
-> device will contain during its endurance life :
-> A 128MiB NAND flash (1024 PEB) will not have less than 20 bad blocks
-> during the flash endurance life.
-
-OK.
-
-> BUT, the manufacturer doesn't tell where those bad block will appear. He
-> doesn't say either if they will be equally disposed on the whole device
-> (and I'm pretty sure they won't).
-
-Right, then if you implement what I suggested, you'll pass
-"beb_rsvd_level=3D20" when attaching both partitions.
-
-> So, according to the datasheets, we should reserve the maximum number of
-> bad PEB for each UBI volume.
-> (Worst case scenario: 20 bad blocks appears on the smallest UBI volume.)
-
-Err, not smallest UBI volume, but smallest MTD partition. We reserve
-PEBs per-MTD device.
-
-> =3D> The actual parameter MTD_UBI_BEB_RESERVE is not enough to cover this
-> scenario. We need to set a minimal number of reserved PEB for a UBI
-> volume.
-
-Frankly, I do not understand this logic :-) And your patch looks wrong -
-it touches the "auto-format" code which you may consider more like a
-"debugging" feature and should not rely on this in production.
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-Kh5GMS5+Pshs3Z7iwPmc
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJP7GyPAAoJECmIfjd9wqK06zAQAMQu3/jNciBTz8xUbwIGgpw6
-n34b4fK2BhZXwVHyf98Op1mcaqsraiEbCkSL7/b2u+CUYSvPc6H0Fk95z8n643TZ
-9MYVgOJ1P5cLp0awrm3on+yv98QyYyL1i4k7dvXlLber+Js36/qsDyNYWVWWhI3a
-yQolfZOS+fTKx/XNls7IYExNmLfcdPuCAJuvbfiaxeRgWd0VWDuagugEQGnMGvXO
-suttqZeaaHYcIWtiI8D3Wbhe6a4D42hJlGINtyP+BDWl9TjLwDa/2f+TBXNLYgRk
-RA19Fw5jl1hcCLQZhM0XNqtzCebCBn7mF/K3zQAigS2YPQCCiD64baRIXY9Jzusq
-PWqOtvhXkDroHBOGxCNTO9wIXMTqQfmS0wzJocseqXVz8dBHr82ziolfj0cnBd6r
-zER+mXcQXDY0hd+YLexFI7h4ISNyY5XVXRnPtHYjm8VHkmL0yUshO7N9VcZhxH/b
-HEB4eOXpfz4HWohLcKxm1quY73XRE8D6rWqg6eIAgzJJAt1nCr3yDyMav94O/n12
-aB2rNMyygoDD4Ed2khr4n+Tt3EkOUH9IaM5j4bKwP5Gs/CDvp/F1d4gTQ5yKc4u/
-NHyJC1YHyC2uEwJvNJEziBX/1fb6/vNS/Bl4QNidIvd5SLS9u2CROEfVJ3L9C61J
-wmPvXe2+R4crV6USge5k
-=qm9b
------END PGP SIGNATURE-----
-
---=-Kh5GMS5+Pshs3Z7iwPmc--
+diff --git a/drivers/mtd/ubi/attach.c b/drivers/mtd/ubi/attach.c
+index 019fbd3..8a339e4 100644
+--- a/drivers/mtd/ubi/attach.c
++++ b/drivers/mtd/ubi/attach.c
+@@ -1152,11 +1152,11 @@ static int scan_all(struct ubi_device *ubi, struct ubi_attach_info *ai)
+ 					       sizeof(struct ubi_ainf_peb),
+ 					       0, 0, NULL);
+ 	if (!ai->aeb_slab_cache)
+-		goto out_ai;
++		return -ENOMEM;
+ 
+ 	ech = kzalloc(ubi->ec_hdr_alsize, GFP_KERNEL);
+ 	if (!ech)
+-		goto out_ai;
++		return -ENOMEM;
+ 
+ 	vidh = ubi_zalloc_vid_hdr(ubi, GFP_KERNEL);
+ 	if (!vidh)
+@@ -1218,8 +1218,6 @@ out_vidh:
+ 	ubi_free_vid_hdr(ubi, vidh);
+ out_ech:
+ 	kfree(ech);
+-out_ai:
+-	destroy_ai(ai);
+ 	return err;
+ }
+ 
