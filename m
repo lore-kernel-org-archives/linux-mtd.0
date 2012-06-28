@@ -1,21 +1,16 @@
-Received: from mail.grid-net.com ([97.65.115.2])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Sk0P3-0002Kj-Oh
- for linux-mtd@lists.infradead.org; Wed, 27 Jun 2012 22:08:02 +0000
-Message-ID: <4FEB8433.2090001@grid-net.com>
-Date: Wed, 27 Jun 2012 15:07:47 -0700
-From: Subodh Nijsure <snijsure@grid-net.com>
+Received: from nm17-vm0.bullet.mail.ird.yahoo.com ([77.238.189.214])
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Sk3H8-00033M-5M
+ for linux-mtd@lists.infradead.org; Thu, 28 Jun 2012 01:12:02 +0000
+Message-ID: <1340845910.61068.YahooMailNeo@web132103.mail.ird.yahoo.com>
+Date: Thu, 28 Jun 2012 02:11:50 +0100 (BST)
+From: Nedra Catchings <munroerrtgl@yahoo.com>
+Subject: I think we'll make a huge mistake if we do not get to know each other
+To: "atzin@earthlink.net" <atzin@earthlink.net>
 MIME-Version: 1.0
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH] mtd gpmi-nand: Fix read page when reading to vmalloced
- area
-References: <1340724377-22279-1-git-send-email-s.hauer@pengutronix.de>
-In-Reply-To: <1340724377-22279-1-git-send-email-s.hauer@pengutronix.de>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, stable@vger.kernel.org,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- kernel@pengutronix.de, Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Reply-To: Nedra Catchings <nedra.catchings@yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,65 +20,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-Tested this modification on MX28 hardware that I have access to. With 
-this patch I can now create UBI file system on flash.
-
-Tested-by: snijsure@grid-net.com
-
-Thanks!
--Subodh
-
-On 06/26/2012 08:26 AM, Sascha Hauer wrote:
-> The gpmi-nand driver uses virt_addr_valid() to check whether a buffer
-> is suitable for dma. If it's not, a driver allocated buffer is used
-> instead. Then after a page read the driver allocated buffer must be
-> copied to the user supplied buffer. This does not happen since:
->
-> commit 7725cc85932bd02dd12c23108e0ef748c551ccba
-> Author: Brian Norris <computersforpeace@gmail.com>
-> Date:   Wed May 2 10:15:02 2012 -0700
->
->      mtd: gpmi-nand: utilize oob_requested parameter
->
->      Don't read OOB if the caller didn't request it.
->
->      Signed-off-by: Brian Norris <computersforpeace@gmail.com>
->      Acked-by: Huang Shijie <b32955@freescale.com>
->      Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
->      Signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
->
-> This patch fixes this. The bug is encountered with UBI which uses a vmalloced
-> buffer for the volume table.
->
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> Cc: stable@vger.kernel.org
-> Cc: Huang Shijie <b32955@freescale.com>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: Subodh Nijsure <snijsure@grid-net.com>
-> ---
->   drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   10 +++++-----
->   1 file changed, 5 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> index 6bb6f48..0179685 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -920,12 +920,12 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
->   		 */
->   		memset(chip->oob_poi, ~0, mtd->oobsize);
->   		chip->oob_poi[0] = ((uint8_t *) auxiliary_virt)[0];
-> -
-> -		read_page_swap_end(this, buf, mtd->writesize,
-> -				this->payload_virt, this->payload_phys,
-> -				nfc_geo->payload_size,
-> -				payload_virt, payload_phys);
->   	}
-> +
-> +	read_page_swap_end(this, buf, mtd->writesize,
-> +			this->payload_virt, this->payload_phys,
-> +			nfc_geo->payload_size,
-> +			payload_virt, payload_phys);
->   exit_nfc:
->   	return ret;
->   }
+Hello handsome! (;=0AMy name is Nedra.=0AIf you r interested in spending gr=
+eat time in a company of smart, stunning girl then I am right before you! =
+=0AI felt in love with ur photos and so decided to create the mail! I'm thi=
+nking that u would not stay calm after staring at mine too. =0ASo, I am wai=
+ting for an answer from u this letter and maybe we will go cafe, drink some=
+ beer, discuss different things and who knows I'll invite you to go to my f=
+lat! ;)
