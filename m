@@ -1,19 +1,20 @@
-Message-ID: <4FED6EAB.3000802@atmel.com>
-Date: Fri, 29 Jun 2012 17:00:27 +0800
-From: Josh Wu <josh.wu@atmel.com>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCH v12 0/2] MTD: at91: Add PMECC support for at91 nand flash
- driver
-References: <1340871698-477-1-git-send-email-josh.wu@atmel.com>
- <1340898021.3070.123.camel@sauron.fi.intel.com>
-In-Reply-To: <1340898021.3070.123.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Received: from relay.medianet-world.de ([213.157.0.172])
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SkX6q-0000k8-Ng
+ for linux-mtd@lists.infradead.org; Fri, 29 Jun 2012 09:03:25 +0000
 Content-Transfer-Encoding: 7bit
-Cc: hongxu.cn@gmail.com, richard.genoud@gmail.com, nicolas.ferre@atmel.com,
- linux-mtd@lists.infradead.org, ivan.djelic@parrot.com,
- computersforpeace@gmail.com, plagnioj@jcrosoft.com,
- linux-arm-kernel@lists.infradead.org
+Content-Class: urn:content-classes:message
+Date: Fri, 29 Jun 2012 11:03:10 +0200
+Message-ID: <87fw9e8p81.wl%andreas.friesen@hbm.com>
+From: "Andreas Friesen" <andreas.friesen@hbm.com>
+To: <dedekind1@gmail.com>
+Subject: Re: Loosed files after umount/mount
+In-Reply-To: <1340794858.29342.55.camel@sauron.fi.intel.com>
+References: <CAMU=cjyiX2KnntUFYYa-fwi0QAKX-Um1gE8tpNLwNiNsbj8O1Q@mail.gmail.com><1340794858.29342.55.camel@sauron.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Cc: Andreas Friesen <ndrs.frsn@googlemail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,81 +24,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Artem
+At Wed, 27 Jun 2012 14:00:58 +0300,
+Artem Bityutskiy wrote:
+> 
+> [1  <text/plain; UTF-8 (quoted-printable)>]
+> On Mon, 2012-06-18 at 22:29 +0200, Andreas Friesen wrote:
+> > Hello,
+> > 
+> > I'm experiencing a strange problem with JFFS2 using Linux
+> > 3.1.5, 3.4 from kernel.org.git on PowerPC. After unmounting and
+> > remounting the filesystem,
+> > directory is empty.
+> 
+> So is it 3.4 or 3.1.5?
 
-On 6/28/2012 11:40 PM, Artem Bityutskiy wrote:
-> On Thu, 2012-06-28 at 16:21 +0800, Josh Wu wrote:
->> Those patches is based on the l2-mtd.git three.
->>
->> Since there are two patches of v11 already pushed, so this version v12 only includes the left two patches.
->> which includes the modification according to Richard Genoud's review suggestion.
->>
->> Changes since v11,
->> 	add documentation for atmel nand reg parameter and one example for PMECC support.
->> 	fix the bug: no error reported when fail to get resoures of PMECC ERRLOC or ROM.
->> 	fix the bug: no correction when ecc data has bit flipped.
->> 	add clearer debug information for data correction.
->>
->> Josh Wu (2):
->>    MTD: at91: add dt parameters for Atmel PMECC
->>    MTD: at91: atmel_nand: Update driver to support Programmable Multibit
->>      ECC controller
->>
->>   .../devicetree/bindings/mtd/atmel-nand.txt         |   40 +-
->>   drivers/mtd/nand/atmel_nand.c                      |  801 +++++++++++++++++++-
->>   drivers/mtd/nand/atmel_nand_ecc.h                  |  114 ++-
->>   3 files changed, 951 insertions(+), 4 deletions(-)
-> Aiaiai is not 100% happy, could you take a look?
->
-> dedekind@blue:~/git/maintaining$ ../aiaiai/aiaiai-concat-mboxes ~/tmp/wu* | ./verify ../l2-mtd/ atmel_nand
-> Tested the patch(es) on top of the following commits:
-> 9328bb5 Quick fixes - applied by aiaiai
-> ea3b6ef mtd: fix bogus inequation
-> 0960e57 mtd: move mtd_read_oob() definition out of mtd.h
-> 0560176 mtd: nand_bbt: refactor check_pattern_no_oob()
->
-> --------------------------------------------------------------------------------
->
-> Successfully built configuration "arm-at91cap9_defconfig,arm,arm-unknown-linux-gnueabi-", results:
->
-> --- before_patching.log
-> +++ after_patching.log
-> @@ @@
-> +drivers/mtd/nand/atmel_nand.c: In function 'pmecc_correct_data':
-> +drivers/mtd/nand/atmel_nand.c:680:38: warning: variable 'ecc_size' set but not used [-Wunused-but-set-variable]
+The board is a MPC5200B board  with NOR Flash (like IceCube)
+I have seen the problem in 3.1.5 and 3.4.
 
-oops, I'll fix this warning in next version.
 
-> +drivers/mtd/nand/atmel_nand.c:480:32: error: bad constant expression [sparse]
-> +drivers/mtd/nand/atmel_nand.c:488:35: error: bad constant expression [sparse]
-> +drivers/mtd/nand/atmel_nand.c:633:32: error: bad constant expression [sparse]
-> +drivers/mtd/nand/atmel_nand.c:635:35: error: bad constant expression [sparse]
+> > $ flash_erase /dev/mtd2
+> > $ reboot
+> > $ mount mtd:storage /storage -t jffs2
+> > $ scp root@server:/tmp/settings/*.xml /storage
+> If you add "sleep 20" here - does it help?
 
-I use CodeSourcery 2010q1, and no any error reported. So it seems 
-related with the compiler.
+The tests with sleep() of 1s to 3min were unsuccessful.
 
- From the log, I think the error is caused by the dynamic 2d array: 
-smu[cap + 2][2 * cap + 1]. which is used to calculate the sigma table.
+> Is it NOR or NAND? My first guess is that the write-buffer is not
+> synced. Or there are issues with the driver, try to run mtd tests.
 
-Since the smu is allocated when driver is probed, and the length of the 
-smu depend on PMECC correction capablity. So when I declare the type of 
-smu by following line: (cap is declared as const type)
-          int16_t (*smu)[2 * cap + 1];
-That make Sparse compiler not happy, since the cap is a variable. so it 
-reports an error. But for this case, the CodeSourcery works fine.
+mtd tests work fine.
 
-For fixing this compile error, in next version,  I will use 1D array 
-instead of 2D array, for instance: all smu[i][j] changes to smu[i * num 
-+ j].  // in this line, num equal to 2 * cap + 1.
-I think in such way, all compiler should be happy. :)
+> -- 
+> Best Regards,
+> Artem Bityutskiy
+> [2 This is a digitally signed message part <application/pgp-signature (7bit)>]
+> 
 
-When I send out the next version of the patch, Could you please test it 
-about above fix? since I don't have Sparse compiler in my hand. Thanks.
+Hottinger Baldwin Messtechnik GmbH, Im Tiefen See 45, 64293 Darmstadt, Germany | www.hbm.com 
 
->
-> --------------------------------------------------------------------------------
->
->
+Registered as GmbH (German limited liability corporation) in the commercial register at the local court of Darmstadt, HRB 1147  
+Company domiciled in Darmstadt | CEO: Andreas Huellhorst | Chairman of the board: James Charles Webster
 
-Best Regards,
-Josh Wu
+Als Gesellschaft mit beschraenkter Haftung eingetragen im Handelsregister des Amtsgerichts Darmstadt unter HRB 1147 
+Sitz der Gesellschaft: Darmstadt | Geschaeftsfuehrung: Andreas Huellhorst | Aufsichtsratsvorsitzender: James Charles Webster
+
+The information in this email is confidential. It is intended solely for the addressee. If you are not the intended recipient, please let me know and delete this email.
+
+Die in dieser E-Mail enthaltene Information ist vertraulich und lediglich fur den Empfaenger bestimmt. Sollten Sie nicht der eigentliche Empfaenger sein, informieren Sie mich bitte kurz und loeschen diese E-Mail.
