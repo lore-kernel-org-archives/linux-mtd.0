@@ -1,22 +1,19 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SkZNa-0007b9-6e
- for linux-mtd@lists.infradead.org; Fri, 29 Jun 2012 11:28:50 +0000
-Date: Fri, 29 Jun 2012 13:28:47 +0200
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-To: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Message-ID: <1340969664.3070.162.camel@sauron.fi.intel.com>
 Subject: Re: [PATCH 1/2] mtd mxc_nand: use 32bit copy functions
-Message-ID: <20120629112847.GD12019@pengutronix.de>
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Date: Fri, 29 Jun 2012 14:34:24 +0300
+In-Reply-To: <20120525145901.GS30400@pengutronix.de>
 References: <1337955762-19157-1-git-send-email-s.hauer@pengutronix.de>
- <20120627175234.GF18096@pengutronix.de>
- <1340969124.3070.155.camel@sauron.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1340969124.3070.155.camel@sauron.fi.intel.com>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
+ <1337957902.30969.46.camel@sauron.fi.intel.com>
+ <20120525145901.GS30400@pengutronix.de>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-4vu2+GSIjvhrg+qEgOTA"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,39 +23,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
 
-On Fri, Jun 29, 2012 at 02:25:24PM +0300, Artem Bityutskiy wrote:
-> On Wed, 2012-06-27 at 19:52 +0200, Uwe Kleine-König wrote:
-> > I don't know about the sparse problems this introduces, but without this
-> > patch the mxc-nand driver is broken, so it should really go in before
-> > 3.5.
-> 
-> The problems, AFAIU, are that you cannot directly dereference __iomem
-> pointers, you always need to use helpers like 'readl()'. This patch
-> introduces the following warnings:
-> 
-> +drivers/mtd/nand/mxc_nand.c:281:33: warning: incorrect type in initializer (different address spaces) [sparse]
-> +drivers/mtd/nand/mxc_nand.c:281:33:    expected unsigned int const volatile [usertype] *s [sparse]
-> +drivers/mtd/nand/mxc_nand.c:281:33:    got void const volatile [noderef] <asn:2>*src [sparse]
-> +drivers/mtd/nand/mxc_nand.c:284 memcpy32_fromio() warn: side effect in macro '__raw_readl' doing 's++' [smatch]
-> +drivers/mtd/nand/mxc_nand.c:284:24: warning: incorrect type in argument 1 (different address spaces) [sparse]
-> +drivers/mtd/nand/mxc_nand.c:284:24:    expected void const volatile [noderef] <asn:2>*<noident> [sparse]
-> +drivers/mtd/nand/mxc_nand.c:284:24:    got unsigned int const volatile [usertype] * [sparse]
-> +drivers/mtd/nand/mxc_nand.c:290:27: warning: incorrect type in initializer (different address spaces) [sparse]
-> +drivers/mtd/nand/mxc_nand.c:290:27:    expected unsigned int volatile [usertype] *t [sparse]
-> +drivers/mtd/nand/mxc_nand.c:290:27:    got void volatile [noderef] <asn:2>*trg [sparse]
-> +drivers/mtd/nand/mxc_nand.c:294 memcpy32_toio() warn: side effect in macro '__raw_writel' doing 't++' [smatch]
-> +drivers/mtd/nand/mxc_nand.c:294:17: warning: incorrect type in argument 1 (different address spaces) [sparse]
-> +drivers/mtd/nand/mxc_nand.c:294:17:    expected void const volatile [noderef] <asn:2>*<noident> [sparse]
-> +drivers/mtd/nand/mxc_nand.c:294:17:    got unsigned int volatile [usertype] * [sparse]
-> 
-> The "volitile" should be also removed.
-Did you see that Sascha posted a v2?
+--=-4vu2+GSIjvhrg+qEgOTA
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Best regards
-Uwe
+On Fri, 2012-05-25 at 16:59 +0200, Sascha Hauer wrote:
+> > WARNING:LONG_LINE: line over 80 characters
+> > #103: FILE: drivers/mtd/nand/mxc_nand.c:276:
+> > +static void memcpy32_fromio(void *trg, const volatile void __iomem  *s=
+rc, size_t size)
+> >=20
+> > WARNING:VOLATILE: Use of volatile is usually wrong: see Documentation/v=
+olatile-considered-harmful.txt
+> > #103: FILE: drivers/mtd/nand/mxc_nand.c:276:
+> > +static void memcpy32_fromio(void *trg, const volatile void __iomem  *s=
+rc, size_t size)
+>=20
+> This makes me wonder a bit, I basically copied the prototype from
+> the _memcpy_*_io template from arch/arm/kernel/io.c. Should they
+> be wrong?
 
--- 
-Pengutronix e.K.                           | Uwe Kleine-König            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Well, this is arch-specific code. In there we may make various
+assumptions about CPU not doing re-ordering. You are changing generic
+code, you should not do assumptions like this.
+
+How about adding these functions to arch/arm/kernel/io.c instead?
+
+> otoh I also wondered why there were volatiles in arch/arm/kernel/io.c
+> in the first place ;)
+
+Not sure, probably in that file we assume that the memory is
+strongly-ordered.
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-4vu2+GSIjvhrg+qEgOTA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJP7ZLAAAoJECmIfjd9wqK01aAP/A4cjdg/NuPmI7JhnXzydPxH
+KHesnasTo/msjRnLCa3/ivTXOYQeer/phuTz2lEDQXJlHcfdaJsxobh46dyUUHfz
+OSqpCpJq8F7dBhF/IoNMyBE/Zb+DPrfXcXaPTo2ddgKh/KBVu5jNNc+UMqlKBsML
+5I9cf9I2hSWVsZ5RCopj+8RPd41XrNX6nVwqvUaanSoaE6+wk38OdWixh2xJeLZ8
+chlazqSVDp5lO92xuwnr2OAU9ZMB2agoW37SbueB8VM5QmWIz7c0KD4+Q7giPyNa
+typWnISj9oZGApZ6t83KFgS7NpR75lyEmqElBLD8Q93RCFmkVMOcRHhPC2ukB1s3
+SeqsL6QAKTse4dN89kn1HyWMzR3FFqB1b8AxU1qn4LryWLRmAENdgR9OD7VMeFj4
+bpg8GZXIiv7hSxKuvulayIZ9F7UgH0iDIJ53XqQ4L5lX/dfO5MDWj8rsXDqOcUtB
+UjzGLJYNL0gLC384wuoSiejZ75FC8Ks8eSJOa7pzuFLaB2kRFeRcPpf9Lg8CTacr
+x1cOXHpGySRhSENVGL6ggCyfdhZYFtoptWawMzH+RgMhuUcxl0j9v1gjTgd3umJO
+ZMpIZWEzOHTWtRdOWaMqB216TzYVEC5s9JwhQFRQ4fklhMh5QTOdOQGuXw5CKfke
+6I9C1AzCqKt9aZhfh4s+
+=r0k1
+-----END PGP SIGNATURE-----
+
+--=-4vu2+GSIjvhrg+qEgOTA--
