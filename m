@@ -1,12 +1,12 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SkcuE-0006Sb-82
- for linux-mtd@lists.infradead.org; Fri, 29 Jun 2012 15:14:47 +0000
+ id 1SkcuG-0006T8-AO
+ for linux-mtd@lists.infradead.org; Fri, 29 Jun 2012 15:14:49 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 09/11] ubi: fastmap: Do not free 'ai' in 'scan_all()'
-Date: Fri, 29 Jun 2012 17:14:27 +0200
-Message-Id: <1340982869-77042-10-git-send-email-richard@nod.at>
+Subject: [PATCH 10/11] UBI: Fastmap: Disable fastmap per default
+Date: Fri, 29 Jun 2012 17:14:28 +0200
+Message-Id: <1340982869-77042-11-git-send-email-richard@nod.at>
 In-Reply-To: <1340982869-77042-1-git-send-email-richard@nod.at>
 References: <1340982869-77042-1-git-send-email-richard@nod.at>
 Cc: nyoushchenko@mvista.com, artem.bityutskiy@linux.intel.com,
@@ -23,43 +23,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-
-Do not call 'destroy_ai(ai)' at error handling of 'scan_all', since:
-- 'ai' is allocated in 'ubi_attach' (the caller of scan_all) and
-  provided as an argument. It's not scan_all's responsibility to free it
-- It is not consistent with scan_all's sister function
-  'ubi_attach_fastmap()' which does not free the given 'ai'
-- It will cause a double free as 'ubi_attach' (the caller of scan_all)
-  already destroys 'ai' in case of an error
-
-Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/attach.c |    4 +---
- 1 files changed, 1 insertions(+), 3 deletions(-)
+ drivers/mtd/ubi/attach.c  |    2 +-
+ drivers/mtd/ubi/build.c   |    1 +
+ drivers/mtd/ubi/fastmap.c |    2 +-
+ drivers/mtd/ubi/ubi.h     |    2 ++
+ drivers/mtd/ubi/wl.c      |    5 +++--
+ 5 files changed, 8 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/mtd/ubi/attach.c b/drivers/mtd/ubi/attach.c
-index c30a0f6..a343a41 100644
+index a343a41..c55ad0f 100644
 --- a/drivers/mtd/ubi/attach.c
 +++ b/drivers/mtd/ubi/attach.c
-@@ -1237,7 +1237,7 @@ static int scan_all(struct ubi_device *ubi, struct ubi_attach_info *ai, int star
+@@ -1394,7 +1394,7 @@ int ubi_attach(struct ubi_device *ubi, int force_scan)
+ 	if (!ai)
+ 		return -ENOMEM;
  
- 	ech = kzalloc(ubi->ec_hdr_alsize, GFP_KERNEL);
- 	if (!ech)
--		goto out_ai;
-+		return err;
+-	if (force_scan)
++	if (force_scan || ubi->fm_disabled)
+ 		err = scan_all(ubi, ai, 0);
+ 	else {
+ 		err = scan_fast(ubi, ai);
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 7094550..7b5dc5d 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -899,6 +899,7 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset)
+ 		ubi->fm_pool.max_size = UBI_FM_MIN_POOL_SIZE;
  
- 	vidh = ubi_zalloc_vid_hdr(ubi, GFP_KERNEL);
- 	if (!vidh)
-@@ -1298,8 +1298,6 @@ out_vidh:
- 	ubi_free_vid_hdr(ubi, vidh);
- out_ech:
- 	kfree(ech);
--out_ai:
--	destroy_ai(ai);
- 	return err;
- }
+ 	ubi->fm_wl_pool.max_size = UBI_FM_WL_POOL_SIZE;
++	ubi->fm_disabled = 1;
  
+ 	ubi_msg("default fastmap pool size: %d", ubi->fm_pool.max_size);
+ 	ubi_msg("default fastmap WL pool size: %d", ubi->fm_wl_pool.max_size);
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+index 6276039..0c9466d 100644
+--- a/drivers/mtd/ubi/fastmap.c
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -1392,7 +1392,7 @@ int ubi_update_fastmap(struct ubi_device *ubi)
+ 
+ 	ubi_refill_pools(ubi);
+ 
+-	if (ubi->ro_mode) {
++	if (ubi->ro_mode || ubi->fm_disabled) {
+ 		mutex_unlock(&ubi->fm_mutex);
+ 		return 0;
+ 	}
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index fef9e92..9f766ff 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -386,6 +386,7 @@ struct ubi_wl_entry;
+  * @ltree: the lock tree
+  * @alc_mutex: serializes "atomic LEB change" operations
+  *
++ * @fm_disabled: non-zero if fastmap is disabled (default)
+  * @fm: in-memory data structure of the currently used fastmap
+  * @fm_pool: in-memory data structure of the fastmap pool
+  * @fm_wl_pool: in-memory data structure of the fastmap pool used by the WL
+@@ -486,6 +487,7 @@ struct ubi_device {
+ 	struct mutex alc_mutex;
+ 
+ 	/* Fastmap stuff */
++	int fm_disabled;
+ 	struct ubi_fastmap_layout *fm;
+ 	struct ubi_fm_pool fm_pool;
+ 	struct ubi_fm_pool fm_wl_pool;
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 28385d2..6c69017 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -376,7 +376,7 @@ static struct ubi_wl_entry *find_wl_entry(struct ubi_device *ubi,
+ 	/* If no fastmap has been written and this WL entry can be used
+ 	 * as anchor PEB, hold it back and return the second best WL entry
+ 	 * such that fastmap can use the anchor PEB later. */
+-	if (!ubi->fm && e->pnum < UBI_FM_MAX_START)
++	if (!ubi->fm_disabled && !ubi->fm && e->pnum < UBI_FM_MAX_START)
+ 		return prev_e;
+ 
+ 	return e;
+@@ -405,7 +405,8 @@ static struct ubi_wl_entry *find_mean_wl_entry(struct ubi_device *ubi,
+ 		/* If no fastmap has been written and this WL entry can be used
+ 		 * as anchor PEB, hold it back and return the second best
+ 		 * WL entry such that fastmap can use the anchor PEB later. */
+-		if (e && !ubi->fm && e->pnum < UBI_FM_MAX_START)
++		if (e && !ubi->fm_disabled && !ubi->fm &&
++		    e->pnum < UBI_FM_MAX_START)
+ 			e = rb_entry(rb_next(root->rb_node),
+ 				     struct ubi_wl_entry, u.rb);
+ 	} else
 -- 
 1.7.6.5
