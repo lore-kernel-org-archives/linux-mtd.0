@@ -1,28 +1,22 @@
-Date: Fri, 29 Jun 2012 19:22:48 +0800
-From: Shawn Guo <shawn.guo@linaro.org>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH 3/3] mtd: gpmi: change the code for clocks
-Message-ID: <20120629112246.GC29197@S2101-09.ap.freescale.net>
-References: <1340941925-14591-1-git-send-email-shijie8@gmail.com>
- <1340941925-14591-3-git-send-email-shijie8@gmail.com>
- <20120629020650.GB28932@S2101-09.ap.freescale.net>
- <20120629063329.GE5844@shlinux2.ap.freescale.net>
- <20461.30070.771087.830745@ipc1.ka-ro>
- <20120629093437.GK5844@shlinux2.ap.freescale.net>
- <20461.30991.63507.369439@ipc1.ka-ro>
- <4FED7D4A.5050603@freescale.com>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SkZNa-0007b9-6e
+ for linux-mtd@lists.infradead.org; Fri, 29 Jun 2012 11:28:50 +0000
+Date: Fri, 29 Jun 2012 13:28:47 +0200
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+To: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Subject: Re: [PATCH 1/2] mtd mxc_nand: use 32bit copy functions
+Message-ID: <20120629112847.GD12019@pengutronix.de>
+References: <1337955762-19157-1-git-send-email-s.hauer@pengutronix.de>
+ <20120627175234.GF18096@pengutronix.de>
+ <1340969124.3070.155.camel@sauron.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <4FED7D4A.5050603@freescale.com>
-Content-Transfer-Encoding: quoted-printable
-Cc: Dong Aisheng <aisheng.dong@freescale.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- Dong Aisheng-B29396 <B29396@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Huang Shijie <shijie8@gmail.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1340969124.3070.155.camel@sauron.fi.intel.com>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,16 +26,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jun 29, 2012 at 06:02:50PM +0800, Huang Shijie wrote:
-> =E4=BA=8E 2012=E5=B9=B406=E6=9C=8829=E6=97=A5 17:44, Lothar Wa=C3=9Fman=
-n =E5=86=99=E9=81=93:
-> >Even if it had fewer clocks you would have to change the driver!
-> If we do not want to change the driver, we could add the extra
-> clocks in the device tree node.
->=20
-We need to think about how this would cope with the properties defined
-by common clock DT bindings.
+Hi Artem,
 
---=20
-Regards,
-Shawn
+On Fri, Jun 29, 2012 at 02:25:24PM +0300, Artem Bityutskiy wrote:
+> On Wed, 2012-06-27 at 19:52 +0200, Uwe Kleine-König wrote:
+> > I don't know about the sparse problems this introduces, but without this
+> > patch the mxc-nand driver is broken, so it should really go in before
+> > 3.5.
+> 
+> The problems, AFAIU, are that you cannot directly dereference __iomem
+> pointers, you always need to use helpers like 'readl()'. This patch
+> introduces the following warnings:
+> 
+> +drivers/mtd/nand/mxc_nand.c:281:33: warning: incorrect type in initializer (different address spaces) [sparse]
+> +drivers/mtd/nand/mxc_nand.c:281:33:    expected unsigned int const volatile [usertype] *s [sparse]
+> +drivers/mtd/nand/mxc_nand.c:281:33:    got void const volatile [noderef] <asn:2>*src [sparse]
+> +drivers/mtd/nand/mxc_nand.c:284 memcpy32_fromio() warn: side effect in macro '__raw_readl' doing 's++' [smatch]
+> +drivers/mtd/nand/mxc_nand.c:284:24: warning: incorrect type in argument 1 (different address spaces) [sparse]
+> +drivers/mtd/nand/mxc_nand.c:284:24:    expected void const volatile [noderef] <asn:2>*<noident> [sparse]
+> +drivers/mtd/nand/mxc_nand.c:284:24:    got unsigned int const volatile [usertype] * [sparse]
+> +drivers/mtd/nand/mxc_nand.c:290:27: warning: incorrect type in initializer (different address spaces) [sparse]
+> +drivers/mtd/nand/mxc_nand.c:290:27:    expected unsigned int volatile [usertype] *t [sparse]
+> +drivers/mtd/nand/mxc_nand.c:290:27:    got void volatile [noderef] <asn:2>*trg [sparse]
+> +drivers/mtd/nand/mxc_nand.c:294 memcpy32_toio() warn: side effect in macro '__raw_writel' doing 't++' [smatch]
+> +drivers/mtd/nand/mxc_nand.c:294:17: warning: incorrect type in argument 1 (different address spaces) [sparse]
+> +drivers/mtd/nand/mxc_nand.c:294:17:    expected void const volatile [noderef] <asn:2>*<noident> [sparse]
+> +drivers/mtd/nand/mxc_nand.c:294:17:    got unsigned int volatile [usertype] * [sparse]
+> 
+> The "volitile" should be also removed.
+Did you see that Sascha posted a v2?
+
+Best regards
+Uwe
+
+-- 
+Pengutronix e.K.                           | Uwe Kleine-König            |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
