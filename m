@@ -1,19 +1,20 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SkWlZ-0006ja-80
- for linux-mtd@lists.infradead.org; Fri, 29 Jun 2012 08:41:26 +0000
-Message-ID: <4FED6A2E.9010603@parrot.com>
-Date: Fri, 29 Jun 2012 10:41:18 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
-MIME-Version: 1.0
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Subject: Re: [RFC] nand_btt : use nand chip->block_bad
-References: <1340898442-1585-1-git-send-email-matthieu.castet@parrot.com>
- <20120628213146.7d929204@halley>
-In-Reply-To: <20120628213146.7d929204@halley>
-Content-Type: multipart/mixed; boundary="------------010801030206020106080402"
-Cc: Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from mail-gh0-f177.google.com ([209.85.160.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SkWsD-0007A9-DT
+ for linux-mtd@lists.infradead.org; Fri, 29 Jun 2012 08:48:18 +0000
+Received: by ghbf11 with SMTP id f11so2665117ghb.36
+ for <linux-mtd@lists.infradead.org>; Fri, 29 Jun 2012 01:48:15 -0700 (PDT)
+Message-ID: <1340959739.2936.28.camel@lappy>
+Subject: mtd: kernel BUG at arch/x86/mm/pat.c:279!
+From: Sasha Levin <levinsasha928@gmail.com>
+To: Andrew Morton <akpm@linux-foundation.org>, dwmw2@infradead.org
+Date: Fri, 29 Jun 2012 10:48:59 +0200
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Cc: linux-mm <linux-mm@kvack.org>, linux-mtd@lists.infradead.org,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Dave Jones <davej@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,142 +24,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---------------010801030206020106080402
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8bit
+Hi all,
 
-Hi,
+I've stumbled on the following while fuzzing with trinity in a KVM tools guest using latest linux-next:
 
-Shmulik Ladkani a écrit :
-> Hi Matthieu,
-> 
-> On Thu, 28 Jun 2012 17:47:22 +0200 Matthieu CASTET <matthieu.castet@parrot.com> wrote:
->>  	for (i = startblock; i < numblocks;) {
->>  		int ret;
->>  
->>  		BUG_ON(bd->options & NAND_BBT_NO_OOB);
->>  
->> -		if (bd->options & NAND_BBT_SCANALLPAGES)
->> -			ret = scan_block_full(mtd, bd, from, buf, readlen,
->> -					      scanlen, len);
->> -		else
->> -			ret = scan_block_fast(mtd, bd, from, buf, len);
->> -
->> +		ret = this->block_bad(mtd, from, 1);
->>  		if (ret < 0)
->>  			return ret;
->>  
-> 
-> Hmm, seems elegant, nand_bbt is not supposed to be elegant, what are we
-> missing here? ;-))
-> 
-> - I think nand_chip ops are not supposed to be called directly from
->   outside nand driver (nand_base et al); instead the mtd interfaces
->   should be used.
->   OTOH, one might consider nand_bbt to be part of nand_base driver...
-Yes but the current driver already used privare nand_base stuff like
-"this->bbt_options". There is duplicate stuff like NAND_BBT_SCAN2NDPAGE that are
-in this->bbt_options and bd->options
-We can't call mtd interface, because it will calling nand_isbad_bbt and not
-chip->block_bad. [1]
-
-> 
-> - The new scheme lacks the potential error correction offered by the
->   mtd_read_oob call (invoked from the original scan functions).
->   OTOH, currently, AFAIK, it is only offered by an out-of-tree driver.
-Could you explain more here ?
-The current scheme doesn't handle bitflip in bad block. We don't care about
-error correction : bad block are not protected by ecc !
-
-With the new scheme, we can be robust to bad block corruption : all we need to
-do is "chip->badblockbits = 4;"
-
-> 
-> - The original scheme allows validating against an arbitrary
->   nand_bbt_descr, whereas 'block_bad' reads the 'badblockpos' byte.
->   Don't know if this is a real issue (need to look at the descriptors
->   used); and probably, 'block_bad' can be augmented to use a given
->   descriptor.
-I will be interrested to know why we need to support that.
-Are there flash where bad block are not in a fixed position ?
-
-> 
-> - To preserve all functionality, we need to augment 'block_bad'
->   implementors to support NAND_BBT_SCANALLPAGES (e.g. nand_block_bad
->   lacks this).
-We already support NAND_BBT_SCANLASTPAGE, NAND_BBT_SCAN2NDPAGE.
-NAND_BBT_SCANALLPAGES can be added. See the attached patch.
-
-
-Matthieu
-
-
-[1]
-static int nand_block_checkbad(struct mtd_info *mtd, loff_t ofs, int getchip,
-                   int allowbbt)
-{
-    struct nand_chip *chip = mtd->priv;
-
-    if (!chip->bbt)
-        return chip->block_bad(mtd, ofs, getchip);
-
-    /* Return info from the table */
-    return nand_isbad_bbt(mtd, ofs, allowbbt);
-}
-
---------------010801030206020106080402
-Content-Type: text/x-diff;
-	name="0001-add-NAND_BBT_SCANALLPAGES-support-to-block_bad.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
-	filename="0001-add-NAND_BBT_SCANALLPAGES-support-to-block_bad.patch"
-
->From 03acf40c6bcb5231795d2bd5cf6838cfeaaf1c56 Mon Sep 17 00:00:00 2001
-From: Matthieu CASTET <matthieu.castet@parrot.com>
-Date: Fri, 29 Jun 2012 10:36:32 +0200
-Subject: [PATCH] add NAND_BBT_SCANALLPAGES support to block_bad
-
----
- drivers/mtd/nand/nand_base.c |   10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index a11253a..5ed0a9b 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -335,6 +335,7 @@ static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
- 	int page, chipnr, res = 0, i = 0;
- 	struct nand_chip *chip = mtd->priv;
- 	u16 bad;
-+	int max;
- 
- 	if (chip->bbt_options & NAND_BBT_SCANLASTPAGE)
- 		ofs += mtd->erasesize - mtd->writesize;
-@@ -350,6 +351,13 @@ static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
- 		chip->select_chip(mtd, chipnr);
- 	}
- 
-+	if (chip->bbt_options & NAND_BBT_SCAN2NDPAGE)
-+		max = 2;
-+	else if (chip->bbt_options & NAND_BBT_SCANALLPAGES)
-+		max = 1 << (chip->bbt_erase_shift - chip->page_shift);
-+	else
-+		max = 1;
-+
- 	do {
- 		if (chip->options & NAND_BUSWIDTH_16) {
- 			chip->cmdfunc(mtd, NAND_CMD_READOOB,
-@@ -372,7 +380,7 @@ static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
- 		ofs += mtd->writesize;
- 		page = (int)(ofs >> chip->page_shift) & chip->pagemask;
- 		i++;
--	} while (!res && i < 2 && (chip->bbt_options & NAND_BBT_SCAN2NDPAGE));
-+	} while (!res && i < max);
- 
- 	if (getchip)
- 		nand_release_device(mtd);
--- 
-1.7.10.4
-
-
---------------010801030206020106080402--
+[ 3299.675163] ------------[ cut here ]------------
+[ 3299.676027] kernel BUG at arch/x86/mm/pat.c:279!
+[ 3299.676027] invalid opcode: 0000 [#1] PREEMPT SMP DEBUG_PAGEALLOC
+[ 3299.678596] CPU 2 
+[ 3299.678596] Pid: 21541, comm: trinity-child6 Tainted: G        W    3.5.0-rc4-next-20120628-sasha-00005-g9f23eb7 #479  
+[ 3299.678596] RIP: 0010:[<ffffffff810a8b62>]  [<ffffffff810a8b62>] reserve_memtype+0x22/0x3d0
+[ 3299.678596] RSP: 0018:ffff88000ad61bc8  EFLAGS: 00010286
+[ 3299.678596] RAX: 0000000000000000 RBX: fffffffffffff000 RCX: ffff88000ad61c50
+[ 3299.678596] RDX: 0000000000000010 RSI: 0000000000000000 RDI: fffffffffffff000
+[ 3299.696632] RBP: ffff88000ad61c08 R08: 0000000000000010 R09: ffff88002617d5a8
+[ 3299.696632] R10: ffff88003111edc8 R11: 0000000000000001 R12: ffff88000ad61c50
+[ 3299.696632] R13: fffffffffffff000 R14: 0000000000000000 R15: ffff88000ad61d18
+[ 3299.696632] FS:  00007f3ffc3aa700(0000) GS:ffff880029800000(0000) knlGS:0000000000000000
+[ 3299.696632] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 3299.696632] CR2: 0000000000f73ffc CR3: 000000000ad6e000 CR4: 00000000000406e0
+[ 3299.696632] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[ 3299.696632] DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+[ 3299.696632] Process trinity-child6 (pid: 21541, threadinfo ffff88000ad60000, task ffff88000a390000)
+[ 3299.696632] Stack:
+[ 3299.696632]  ffff88000ad61c18 ffffffff81161bc6 ffff88000ad61c18 fffffffffffff000
+[ 3299.696632]  0000000000000010 0000000000000000 0000000000001000 ffff88000ad61d18
+[ 3299.696632]  ffff88000ad61c88 ffffffff810a8fe2 ffff88000ad61c38 0000000000000086
+[ 3299.696632] Call Trace:
+[ 3299.696632]  [<ffffffff81161bc6>] ? mark_held_locks+0xf6/0x120
+[ 3299.696632]  [<ffffffff810a8fe2>] reserve_pfn_range+0xd2/0x1e0
+[ 3299.696632]  [<ffffffff810a912d>] track_pfn_vma_new+0x3d/0x80
+[ 3299.696632]  [<ffffffff8120c4bc>] remap_pfn_range+0xac/0x380
+[ 3299.696632]  [<ffffffff8220e016>] mtdchar_mmap+0xe6/0x100
+[ 3299.696632]  [<ffffffff812145ae>] mmap_region+0x35e/0x5f0
+[ 3299.696632]  [<ffffffff81214af9>] do_mmap_pgoff+0x2b9/0x350
+[ 3299.696632]  [<ffffffff811ff46c>] ? vm_mmap_pgoff+0x6c/0xb0
+[ 3299.696632]  [<ffffffff811ff484>] vm_mmap_pgoff+0x84/0xb0
+[ 3299.696632]  [<ffffffff8124fd80>] ? fget_raw+0x260/0x260
+[ 3299.696632]  [<ffffffff81211fde>] sys_mmap_pgoff+0x15e/0x190
+[ 3299.696632]  [<ffffffff81985ede>] ? trace_hardirqs_on_thunk+0x3a/0x3f
+[ 3299.696632]  [<ffffffff8106d4dd>] sys_mmap+0x1d/0x20
+[ 3299.696632]  [<ffffffff8372a539>] system_call_fastpath+0x16/0x1b
+[ 3299.696632] Code: 28 5b c9 c3 0f 1f 44 00 00 55 49 89 d0 48 89 e5 41 57 41 56 49 89 f6 41 55 49 89 fd 41 54 49 89 cc 53 48 83 ec 18 48 39 f7 72 0e <0f> 0b 0f 1f 40 00 eb fe 66 0f 1f 44 00 00 8b 3d 1a 5b e3 03 85 
+[ 3299.696632] RIP  [<ffffffff810a8b62>] reserve_memtype+0x22/0x3d0
+[ 3299.696632]  RSP <ffff88000ad61bc8>
