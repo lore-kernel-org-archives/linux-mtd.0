@@ -1,16 +1,23 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SkV9K-0005kh-S3
- for linux-mtd@lists.infradead.org; Fri, 29 Jun 2012 06:57:51 +0000
-Received: by eaaf11 with SMTP id f11so1258748eaa.36
- for <linux-mtd@lists.infradead.org>; Thu, 28 Jun 2012 23:57:48 -0700 (PDT)
-From: Richard Genoud <richard.genoud@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH] UBI: Change the default percentage of reserved PEB
-Date: Fri, 29 Jun 2012 08:57:41 +0200
-Message-Id: <1340953061-15728-1-git-send-email-richard.genoud@gmail.com>
-Cc: Richard Genoud <richard.genoud@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Received: from mga11.intel.com ([192.55.52.93])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SkVHc-0005yf-2A
+ for linux-mtd@lists.infradead.org; Fri, 29 Jun 2012 07:06:24 +0000
+Message-ID: <1340953826.3070.131.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd gpmi-nand: Fix read page when reading to vmalloced
+ area
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Date: Fri, 29 Jun 2012 10:10:26 +0300
+In-Reply-To: <1340724377-22279-1-git-send-email-s.hauer@pengutronix.de>
+References: <1340724377-22279-1-git-send-email-s.hauer@pengutronix.de>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-LHotaM4LnMfK2qja+TPU"
+Mime-Version: 1.0
+Cc: Huang Shijie <b32955@freescale.com>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Subodh Nijsure <snijsure@grid-net.com>, kernel@pengutronix.de
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,27 +27,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The actual value (1%) is too low for actual NAND devices, a huge
-majority of device has 2% maximum bad blocks (SLC or MLC).
-(Actually it's 20 blocks on a 1024 blocks device, 40/2048...)
 
-Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
----
- drivers/mtd/ubi/Kconfig |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+--=-LHotaM4LnMfK2qja+TPU
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/mtd/ubi/Kconfig b/drivers/mtd/ubi/Kconfig
-index 738ee8d..ea4b95b 100644
---- a/drivers/mtd/ubi/Kconfig
-+++ b/drivers/mtd/ubi/Kconfig
-@@ -29,7 +29,7 @@ config MTD_UBI_WL_THRESHOLD
- 
- config MTD_UBI_BEB_RESERVE
- 	int "Percentage of reserved eraseblocks for bad eraseblocks handling"
--	default 1
-+	default 2
- 	range 0 25
- 	help
- 	  If the MTD device admits of bad eraseblocks (e.g. NAND flash), UBI
--- 
-1.7.2.5
+On Tue, 2012-06-26 at 17:26 +0200, Sascha Hauer wrote:
+> The gpmi-nand driver uses virt_addr_valid() to check whether a buffer
+> is suitable for dma. If it's not, a driver allocated buffer is used
+> instead. Then after a page read the driver allocated buffer must be
+> copied to the user supplied buffer. This does not happen since:
+
+Pushed to l2-mtd.git, thanks.
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-LHotaM4LnMfK2qja+TPU
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJP7VTiAAoJECmIfjd9wqK0w1QP/ju5Rm2OGEsI+OL8G0VtQer/
+09g3GbQQh2MCiSK4/w5XfUC36/jycKybkX0ymoyt+OZy4iCC8VbrDLpPUVEESEWP
+qzvH2kHajZK5cGDBTkP6PckNrNbCgOxR7BpTh97oE1zOUxK++KlOjxrvrY3PUW3j
+QVMoTuJWH5nWZnwxNiN4lo3U71NRchcEuS/Kpzh2gXaBZxnbBra5YzN7ks1+5VC+
+fgO5H7KUMerdd7YrpOl39hywX2bsXo0UDcrKg6R23JhmzwnzEaDWki9wQGf+1Nlc
+7Nk2IQmi37rs56IK4k7vSqNLbkZHYxzFe8iE0JQB8DMmurN7AXsd+Sl/+JcKzQPq
+rQXrsW39TU9FCOB6UZ623yOydGFY5aXAxhiBORFk1ti57dodIwVHkGA9NLJnpxvE
+ySrDqfR6HgMYbUOdPx+CMXtzdpcJPISnIXt0jxR86WrUFUyY4FRe/NiIRTFwHPSL
+7hFzEw2uB3xEj6UzBvXYVSNJfBELtTiCr9rJjW4VjVBtbqT/m57O8Ti7FWcly77e
+036wpnQZJTHuQDB9zFHtgm/D56SRjhp+B4CBxlx7r8hmE22vuSQzWZVbOZe/q6PP
+OAeb4N6sh7q3/CbEY93I+c7USXPKi0+AXIpucUqvK3tcEAmOW1w2rQGWDwbm5Po3
+u/fSEofPGt6tXAooYboL
+=4BAc
+-----END PGP SIGNATURE-----
+
+--=-LHotaM4LnMfK2qja+TPU--
