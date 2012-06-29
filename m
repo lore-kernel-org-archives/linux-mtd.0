@@ -1,12 +1,12 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Skcu9-0006Qw-Ml
+ id 1SkcuB-0006Rp-VW
  for linux-mtd@lists.infradead.org; Fri, 29 Jun 2012 15:14:44 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 03/11] UBI: Fastmap: Remove forward declaration
-Date: Fri, 29 Jun 2012 17:14:21 +0200
-Message-Id: <1340982869-77042-4-git-send-email-richard@nod.at>
+Subject: [PATCH 06/11] UBI: Fastmap: Remove unused variable
+Date: Fri, 29 Jun 2012 17:14:24 +0200
+Message-Id: <1340982869-77042-7-git-send-email-richard@nod.at>
 In-Reply-To: <1340982869-77042-1-git-send-email-richard@nod.at>
 References: <1340982869-77042-1-git-send-email-richard@nod.at>
 Cc: nyoushchenko@mvista.com, artem.bityutskiy@linux.intel.com,
@@ -25,220 +25,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/attach.c |  186 ++++++++++++++++++++++------------------------
- 1 files changed, 89 insertions(+), 97 deletions(-)
+ drivers/mtd/ubi/ubi.h |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/ubi/attach.c b/drivers/mtd/ubi/attach.c
-index f1dfb63..e88521b 100644
---- a/drivers/mtd/ubi/attach.c
-+++ b/drivers/mtd/ubi/attach.c
-@@ -89,15 +89,7 @@
- #include <linux/random.h>
- #include "ubi.h"
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index 6bf5349..8e2592d 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -393,8 +393,6 @@ struct ubi_wl_entry;
+  * @fm_mutex: serializes ubi_update_fastmap()
+  * @fm_sem: allows ubi_update_fastmap() to block EBA table changes
+  * @fm_work: fastmap work queue
+- * @attached_by_scanning: this UBI device was attached by the old scanning
+- *			  methold. All fastmap volumes have to be deleted.
+  *
+  * @used: RB-tree of used physical eraseblocks
+  * @erroneous: RB-tree of erroneous used physical eraseblocks
+@@ -494,7 +492,6 @@ struct ubi_device {
+ 	struct rw_semaphore fm_sem;
+ 	struct mutex fm_mutex;
+ 	struct work_struct fm_work;
+-	int attached_by_scanning;
  
--/*
-- * TODO: please, no forward declarations. We do not use them in UBI code.
-- * Actually initially I did use them a lot, but when upstreaming, I was asked
-- * to remove. Please, follow this convention as well. Please, change globally.
-- * I mean, I am already used to that _all_ the code is upside-down, let's keep
-- * it that way, or re-structure all the code. :-)
-- */
- static int self_check_ai(struct ubi_device *ubi, struct ubi_attach_info *ai);
--static void destroy_ai(struct ubi_device *ubi, struct ubi_attach_info *ai);
- 
- /* Temporary variables used during scanning */
- static struct ubi_ec_hdr *ech;
-@@ -1132,6 +1124,95 @@ static int late_analysis(struct ubi_device *ubi, struct ubi_attach_info *ai)
- }
- 
- /**
-+ * destroy_av - free volume attaching information.
-+ * @av: volume attaching information
-+ * @ai: attaching information
-+ *
-+ * This function destroys the volume attaching information.
-+ */
-+static void destroy_av(struct ubi_attach_info *ai, struct ubi_ainf_volume *av)
-+{
-+	struct ubi_ainf_peb *aeb;
-+	struct rb_node *this = av->root.rb_node;
-+
-+	while (this) {
-+		if (this->rb_left)
-+			this = this->rb_left;
-+		else if (this->rb_right)
-+			this = this->rb_right;
-+		else {
-+			aeb = rb_entry(this, struct ubi_ainf_peb, u.rb);
-+			this = rb_parent(this);
-+			if (this) {
-+				if (this->rb_left == &aeb->u.rb)
-+					this->rb_left = NULL;
-+				else
-+					this->rb_right = NULL;
-+			}
-+
-+			kmem_cache_free(ai->aeb_slab_cache, aeb);
-+		}
-+	}
-+	kfree(av);
-+}
-+
-+/**
-+ * destroy_ai - destroy attaching information.
-+ * @ubi: UBI device object
-+ * @ai: attaching information
-+ */
-+static void destroy_ai(struct ubi_device *ubi, struct ubi_attach_info *ai)
-+{
-+	struct ubi_ainf_peb *aeb, *aeb_tmp;
-+	struct ubi_ainf_volume *av;
-+	struct rb_node *rb;
-+
-+	list_for_each_entry_safe(aeb, aeb_tmp, &ai->alien, u.list) {
-+		list_del(&aeb->u.list);
-+		kmem_cache_free(ai->aeb_slab_cache, aeb);
-+	}
-+	list_for_each_entry_safe(aeb, aeb_tmp, &ai->erase, u.list) {
-+		list_del(&aeb->u.list);
-+		kmem_cache_free(ai->aeb_slab_cache, aeb);
-+	}
-+	list_for_each_entry_safe(aeb, aeb_tmp, &ai->corr, u.list) {
-+		list_del(&aeb->u.list);
-+		kmem_cache_free(ai->aeb_slab_cache, aeb);
-+	}
-+	list_for_each_entry_safe(aeb, aeb_tmp, &ai->free, u.list) {
-+		list_del(&aeb->u.list);
-+		kmem_cache_free(ai->aeb_slab_cache, aeb);
-+	}
-+
-+	/* Destroy the volume RB-tree */
-+	rb = ai->volumes.rb_node;
-+	while (rb) {
-+		if (rb->rb_left)
-+			rb = rb->rb_left;
-+		else if (rb->rb_right)
-+			rb = rb->rb_right;
-+		else {
-+			av = rb_entry(rb, struct ubi_ainf_volume, rb);
-+
-+			rb = rb_parent(rb);
-+			if (rb) {
-+				if (rb->rb_left == &av->rb)
-+					rb->rb_left = NULL;
-+				else
-+					rb->rb_right = NULL;
-+			}
-+
-+			destroy_av(ai, av);
-+		}
-+	}
-+
-+	if (ai->aeb_slab_cache)
-+		kmem_cache_destroy(ai->aeb_slab_cache);
-+
-+	kfree(ai);
-+}
-+
-+/**
-  * scan_all - scan entire MTD device.
-  * @ubi: UBI device description object
-  * @ai: attach info object
-@@ -1354,95 +1435,6 @@ out_ai:
- }
- 
- /**
-- * destroy_av - free volume attaching information.
-- * @av: volume attaching information
-- * @ai: attaching information
-- *
-- * This function destroys the volume attaching information.
-- */
--static void destroy_av(struct ubi_attach_info *ai, struct ubi_ainf_volume *av)
--{
--	struct ubi_ainf_peb *aeb;
--	struct rb_node *this = av->root.rb_node;
--
--	while (this) {
--		if (this->rb_left)
--			this = this->rb_left;
--		else if (this->rb_right)
--			this = this->rb_right;
--		else {
--			aeb = rb_entry(this, struct ubi_ainf_peb, u.rb);
--			this = rb_parent(this);
--			if (this) {
--				if (this->rb_left == &aeb->u.rb)
--					this->rb_left = NULL;
--				else
--					this->rb_right = NULL;
--			}
--
--			kmem_cache_free(ai->aeb_slab_cache, aeb);
--		}
--	}
--	kfree(av);
--}
--
--/**
-- * destroy_ai - destroy attaching information.
-- * @ubi: UBI device object
-- * @ai: attaching information
-- */
--static void destroy_ai(struct ubi_device *ubi, struct ubi_attach_info *ai)
--{
--	struct ubi_ainf_peb *aeb, *aeb_tmp;
--	struct ubi_ainf_volume *av;
--	struct rb_node *rb;
--
--	list_for_each_entry_safe(aeb, aeb_tmp, &ai->alien, u.list) {
--		list_del(&aeb->u.list);
--		kmem_cache_free(ai->aeb_slab_cache, aeb);
--	}
--	list_for_each_entry_safe(aeb, aeb_tmp, &ai->erase, u.list) {
--		list_del(&aeb->u.list);
--		kmem_cache_free(ai->aeb_slab_cache, aeb);
--	}
--	list_for_each_entry_safe(aeb, aeb_tmp, &ai->corr, u.list) {
--		list_del(&aeb->u.list);
--		kmem_cache_free(ai->aeb_slab_cache, aeb);
--	}
--	list_for_each_entry_safe(aeb, aeb_tmp, &ai->free, u.list) {
--		list_del(&aeb->u.list);
--		kmem_cache_free(ai->aeb_slab_cache, aeb);
--	}
--
--	/* Destroy the volume RB-tree */
--	rb = ai->volumes.rb_node;
--	while (rb) {
--		if (rb->rb_left)
--			rb = rb->rb_left;
--		else if (rb->rb_right)
--			rb = rb->rb_right;
--		else {
--			av = rb_entry(rb, struct ubi_ainf_volume, rb);
--
--			rb = rb_parent(rb);
--			if (rb) {
--				if (rb->rb_left == &av->rb)
--					rb->rb_left = NULL;
--				else
--					rb->rb_right = NULL;
--			}
--
--			destroy_av(ai, av);
--		}
--	}
--
--	if (ai->aeb_slab_cache)
--		kmem_cache_destroy(ai->aeb_slab_cache);
--
--	kfree(ai);
--}
--
--/**
-  * self_check_ai - check the attaching information.
-  * @ubi: UBI device description object
-  * @ai: attaching information
+ 	/* Wear-leveling sub-system's stuff */
+ 	struct rb_root used;
 -- 
 1.7.6.5
