@@ -1,15 +1,13 @@
-Message-ID: <1340969664.3070.162.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/2] mtd mxc_nand: use 32bit copy functions
+Message-ID: <1340970369.3070.166.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v2] mtd mxc_nand: use 32bit copy functions
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 To: Sascha Hauer <s.hauer@pengutronix.de>
-Date: Fri, 29 Jun 2012 14:34:24 +0300
-In-Reply-To: <20120525145901.GS30400@pengutronix.de>
-References: <1337955762-19157-1-git-send-email-s.hauer@pengutronix.de>
- <1337957902.30969.46.camel@sauron.fi.intel.com>
- <20120525145901.GS30400@pengutronix.de>
+Date: Fri, 29 Jun 2012 14:46:09 +0300
+In-Reply-To: <1338279369-25915-1-git-send-email-s.hauer@pengutronix.de>
+References: <1338279369-25915-1-git-send-email-s.hauer@pengutronix.de>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-4vu2+GSIjvhrg+qEgOTA"
+ boundary="=-2OUxUQZDkoCWxzyRtyzz"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
@@ -24,43 +22,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-4vu2+GSIjvhrg+qEgOTA
+--=-2OUxUQZDkoCWxzyRtyzz
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2012-05-25 at 16:59 +0200, Sascha Hauer wrote:
-> > WARNING:LONG_LINE: line over 80 characters
-> > #103: FILE: drivers/mtd/nand/mxc_nand.c:276:
-> > +static void memcpy32_fromio(void *trg, const volatile void __iomem  *s=
-rc, size_t size)
-> >=20
-> > WARNING:VOLATILE: Use of volatile is usually wrong: see Documentation/v=
-olatile-considered-harmful.txt
-> > #103: FILE: drivers/mtd/nand/mxc_nand.c:276:
-> > +static void memcpy32_fromio(void *trg, const volatile void __iomem  *s=
-rc, size_t size)
->=20
-> This makes me wonder a bit, I basically copied the prototype from
-> the _memcpy_*_io template from arch/arm/kernel/io.c. Should they
-> be wrong?
+On Tue, 2012-05-29 at 10:16 +0200, Sascha Hauer wrote:
+> The following commit changes the function used to copy from/to
+> the hardware buffer to memcpy_[from|to]io. This does not work
+> since the hardware cannot handle the byte accesses used by these
+> functions. Instead of reverting this patch introduce 32bit
+> correspondents of these functions.
 
-Well, this is arch-specific code. In there we may make various
-assumptions about CPU not doing re-ordering. You are changing generic
-code, you should not do assumptions like this.
-
-How about adding these functions to arch/arm/kernel/io.c instead?
-
-> otoh I also wondered why there were volatiles in arch/arm/kernel/io.c
-> in the first place ;)
-
-Not sure, probably in that file we assume that the memory is
-strongly-ordered.
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-4vu2+GSIjvhrg+qEgOTA
+--=-2OUxUQZDkoCWxzyRtyzz
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -68,19 +47,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJP7ZLAAAoJECmIfjd9wqK01aAP/A4cjdg/NuPmI7JhnXzydPxH
-KHesnasTo/msjRnLCa3/ivTXOYQeer/phuTz2lEDQXJlHcfdaJsxobh46dyUUHfz
-OSqpCpJq8F7dBhF/IoNMyBE/Zb+DPrfXcXaPTo2ddgKh/KBVu5jNNc+UMqlKBsML
-5I9cf9I2hSWVsZ5RCopj+8RPd41XrNX6nVwqvUaanSoaE6+wk38OdWixh2xJeLZ8
-chlazqSVDp5lO92xuwnr2OAU9ZMB2agoW37SbueB8VM5QmWIz7c0KD4+Q7giPyNa
-typWnISj9oZGApZ6t83KFgS7NpR75lyEmqElBLD8Q93RCFmkVMOcRHhPC2ukB1s3
-SeqsL6QAKTse4dN89kn1HyWMzR3FFqB1b8AxU1qn4LryWLRmAENdgR9OD7VMeFj4
-bpg8GZXIiv7hSxKuvulayIZ9F7UgH0iDIJ53XqQ4L5lX/dfO5MDWj8rsXDqOcUtB
-UjzGLJYNL0gLC384wuoSiejZ75FC8Ks8eSJOa7pzuFLaB2kRFeRcPpf9Lg8CTacr
-x1cOXHpGySRhSENVGL6ggCyfdhZYFtoptWawMzH+RgMhuUcxl0j9v1gjTgd3umJO
-ZMpIZWEzOHTWtRdOWaMqB216TzYVEC5s9JwhQFRQ4fklhMh5QTOdOQGuXw5CKfke
-6I9C1AzCqKt9aZhfh4s+
-=r0k1
+iQIcBAABAgAGBQJP7ZWBAAoJECmIfjd9wqK0HdoP/0Mefaef+c9nZmnPwxeFv+vw
+rnsC3/QXm/VAFlbX4//5P9QHjL0yZG1NYuPQ3hy8//SnxFAUbk5UJJlvEAA1PtUx
+huEH9RTCZqlwS9aX1h3cFGyBtWvqvGGGnsvWkvTgxPC4rtccbrimoWw+auqVkkNk
+XuPl3lui7O+XqUCaHzOyEFn75KHNedzZ3JSrEoyd58ovalCl3wdF3GuVf0dTCFX3
+TQhZxvcLD0NNoW4TtXhxs0TRJH2q3dsPuNtFKXSfOQL0PoYie+Y8ivfmZGsut0bd
+52v4jsNmx5gjSAmLU0a8X3N6vfPuQfioUxO34ECun8dGJ868bncDdCT35C7PSYu1
+dWQrW65jsCY7BGc6boHza0iHYCwo4Pf5qckU5omo+3iUWZmNY3GoWdKcdHaPcM42
+FRwLrf0ypvgY+foXn+R8NzT7AoekZ9IL0i8fPXniHp86gGNFKYHhAczER4QR8OC6
+OV29MW1Uoq84L31IIlZRC4iPfy3UvJPtp5qhXRgfrYEvzXufkdBF44g6zd6meLu/
+E42mac/51GjKrAGumgydQVUEzf4AxjjLuUOr7ZzzGJVMSxIfbueJiMwa5QMnupKf
+/sGk6SlIES9sXEHlZ01E/356m1eQHrKPJh4oiSzrXAsYYweilczS2KYFMy64WiF5
+wB6RpMvcWpj6ooFlcVk6
+=lb9O
 -----END PGP SIGNATURE-----
 
---=-4vu2+GSIjvhrg+qEgOTA--
+--=-2OUxUQZDkoCWxzyRtyzz--
