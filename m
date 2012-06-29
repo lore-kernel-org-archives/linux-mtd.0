@@ -1,21 +1,20 @@
-Message-ID: <1340966275.3070.146.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 2/4] mtd: lpc32xx_slc: Make wp gpio optional
+Received: from mga01.intel.com ([192.55.52.88])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SkYzJ-0001Gf-CA
+ for linux-mtd@lists.infradead.org; Fri, 29 Jun 2012 11:03:45 +0000
+Message-ID: <1340968069.3070.148.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v2] ubifs: Fix build warning
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Roland Stigge <stigge@antcom.de>
-Date: Fri, 29 Jun 2012 13:37:55 +0300
-In-Reply-To: <1340812275-1197-2-git-send-email-stigge@antcom.de>
-References: <1340812275-1197-1-git-send-email-stigge@antcom.de>
- <1340812275-1197-2-git-send-email-stigge@antcom.de>
+To: Alexandre Pereira da Silva <aletes.xgr@gmail.com>
+Date: Fri, 29 Jun 2012 14:07:49 +0300
+In-Reply-To: <1340657269-8588-1-git-send-email-aletes.xgr@gmail.com>
+References: <1340657269-8588-1-git-send-email-aletes.xgr@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-hEM0gfg8rpPhWhZhR78n"
+ boundary="=-jxI3kNP2xoremLEeHj8C"
 Mime-Version: 1.0
-Cc: srinivas.bakki@nxp.com, lars@metafoo.de, linux@arm.linux.org.uk,
- linux-doc@vger.kernel.org, leiwen@marvell.com,
- devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org,
- kevin.wells@nxp.com, b32955@freescale.com, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, hechtb@googlemail.com,
- dwmw2@infradead.org, aletes.xgr@gmail.com
+Cc: linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@intel.com>,
+ linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,25 +26,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-hEM0gfg8rpPhWhZhR78n
+--=-jxI3kNP2xoremLEeHj8C
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-06-27 at 17:51 +0200, Roland Stigge wrote:
-> From: Alexandre Pereira da Silva <aletes.xgr@gmail.com>
->=20
-> This patch supports missing wp gpio.
->=20
-> Signed-off-by: Alexandre Pereira da Silva <aletes.xgr@gmail.com>
-> Signed-off-by: Roland Stigge <stigge@antcom.de>
+On Mon, 2012-06-25 at 17:47 -0300, Alexandre Pereira da Silva wrote:
+>  #include "ubifs.h"
+> +#include <linux/compiler.h>
 
-Pushed patches 2-4, thanks!
+This is not needed, I've removed this chunk and pushed to
+linux-ubifs.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-hEM0gfg8rpPhWhZhR78n
+--=-jxI3kNP2xoremLEeHj8C
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -53,19 +49,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJP7YWDAAoJECmIfjd9wqK0ZngP/RJB9GlpABgo2bUDiVMKDdvk
-6Rg6jw+5nLZ1l60TP5NypCBJAL8p000qtnbaMmWUZUW/Pmd0wOwFrlPAOTs0rGQZ
-g7HPQY5sYYHXLpDuZ1LnvaDReJTgbt7MXpor6ppU5+uTvjMLJcO9g7xZ6Tq0j4Q9
-MMXyjY6mggWMOE8ynOI9qjZzzMb8UEf6XX8Lznt2obwmASSV23clSqJMt8YVH/Ru
-4IBPDqfbYujQy27+Hk1l6RINHS2q/P95b8wd1x4SqFiUOzc6NM8Q/NOdfBIEusem
-kRw0BSWGDWuw3uD9uSCgmRhfrGb6A8iOVW9hlVQXrrlXzqHOmKtif0DjASus0fsQ
-xoslRhna4LN0rp15Cprqw/5aHlr03h+ujWbUVo7p2JiIRXGmcKO9RTUUlB9XfUkY
-tVHaicvjH0EgjqXZDOQIkyoyh+bxqpoEZdDeE8jPMfACRAB1aK9Ws6LdfJ1psQ4V
-5NDrD050X9FJ4TPy399pJlo8bzTPp/fVHGNIKOCfaNnLueR8nKdxO/QSaWec4Buj
-fkMQn3F8duMVdyO58rMC2NMtyFQD6DAXYV0uCRpNJezCZK24oPN/jKiFGgY0P90t
-TZ4bAca7OZfJaL1r/qoUtt8zo6pKox/p+ZiJ/JirCe1btwJ6AwjMpbLdDSAvBeCQ
-T5sBqTnSIX1m/+AtLQc+
-=emFQ
+iQIcBAABAgAGBQJP7YyFAAoJECmIfjd9wqK0mkMP/iE4463WSYETj0SxmddII1k+
+9j8z6iZdM0lRPIlzIjUnmjB6gsmos4pGIm4aLltd37k2l+jlw1WJ2Bdh1k0480IC
+uf1WVmTh/8m8nJh0bm/ctOygoxqcNQjUj6rGFHK6DBk6qPJ5yKnM6GeZ9z2kNqpF
+F+8cP5n2a05mWqkmGwijJaFcbqhOJEKJgaT9y3t+bKPaYRbBowCj25MHgL1HDX0T
+a9yQiOw2/WPDcj/0FOdEe0MSN96sM/H99m2YzegVH3tv2K4zu8DpQby+C0S5x44d
+kUmgpeUHAXbtAiS/Z22fd5cgRYBZlER9A7gW9M0RaHzhPxK8D6wll2LOn9RqFQEO
+nwH2iSc6IeHQKHcg0iIasMzD9HrRwu+fjuQgNTMVqKmDydtCt4WVoWbrKX9aIGN3
+UgiwJUeo4y/QXaf8fV+9G4UpPbQo3BvT04o128V8NxcoUm1DYFdZacNjwUwP1zNX
+mEW7WBy5qPadu8+SfGYA9Kv9PVsaMe1mb943RfTKxU9PsgMcQiPi7ieZRyGTkd5j
+jMJIithaSV0JK6EQ5jMHyMUZc0j6bHfV65hmZhmtW1jPpeYeOQHyweulkqwf5yvH
+EeTKB3JAutGu3PoNo21B65SyxpkWn+TxnSC9ryjb5No+vdmfanYwUUXi777auyj1
+VJDyubZXLDFPSxP611PM
+=ve2X
 -----END PGP SIGNATURE-----
 
---=-hEM0gfg8rpPhWhZhR78n--
+--=-jxI3kNP2xoremLEeHj8C--
