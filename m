@@ -1,16 +1,11 @@
-Received: from mail-ee0-f49.google.com ([74.125.83.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SkGwP-0000cI-19
- for linux-mtd@lists.infradead.org; Thu, 28 Jun 2012 15:47:33 +0000
-Received: by eekd17 with SMTP id d17so886005eek.36
- for <linux-mtd@lists.infradead.org>; Thu, 28 Jun 2012 08:47:30 -0700 (PDT)
-Sender: Castet Matthieu <matthieu.castet@gmail.com>
-From: Matthieu CASTET <matthieu.castet@parrot.com>
-To: linux-mtd@lists.infradead.org
-Subject: [RFC] nand_btt : use nand chip->block_bad
-Date: Thu, 28 Jun 2012 17:47:22 +0200
-Message-Id: <1340898442-1585-1-git-send-email-matthieu.castet@parrot.com>
-Cc: Matthieu CASTET <matthieu.castet@parrot.com>
+From: Huang Shijie <shijie8@gmail.com>
+To: shawn.guo@linaro.org
+Subject: [PATCH 1/3] ARM: imx6q: add clocks for gpmi-nand
+Date: Thu, 28 Jun 2012 23:52:03 -0400
+Message-Id: <1340941925-14591-1-git-send-email-shijie8@gmail.com>
+Cc: Huang Shijie <shijie8@gmail.com>, Huang Shijie <b32955@freescale.com>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,156 +15,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This allow to have only one code for detecting bad block.
-Also block_bad support badblockbits configuration, for case
-where there are bitflip in bad block marker.
----
- drivers/mtd/nand/nand_bbt.c |  102 +------------------------------------------
- 1 file changed, 2 insertions(+), 100 deletions(-)
+Add clocks for gpmi-nand.
 
-diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-index 30d1319..3d4f6ef 100644
---- a/drivers/mtd/nand/nand_bbt.c
-+++ b/drivers/mtd/nand/nand_bbt.c
-@@ -123,28 +123,6 @@ static int check_pattern(uint8_t *buf, int len, int paglen, struct nand_bbt_desc
- }
- 
- /**
-- * check_short_pattern - [GENERIC] check if a pattern is in the buffer
-- * @buf: the buffer to search
-- * @td:	search pattern descriptor
-- *
-- * Check for a pattern at the given place. Used to search bad block tables and
-- * good / bad block identifiers. Same as check_pattern, but no optional empty
-- * check.
-- */
--static int check_short_pattern(uint8_t *buf, struct nand_bbt_descr *td)
--{
--	int i;
--	uint8_t *p = buf;
--
--	/* Compare the pattern */
--	for (i = 0; i < td->len; i++) {
--		if (p[td->offs + i] != td->pattern[i])
--			return -1;
--	}
--	return 0;
--}
--
--/**
-  * add_marker_len - compute the length of the marker in data area
-  * @td: BBT descriptor used for computation
-  *
-@@ -398,56 +376,6 @@ static int read_abs_bbts(struct mtd_info *mtd, uint8_t *buf,
- 	return 1;
- }
- 
--/* Scan a given block full */
--static int scan_block_full(struct mtd_info *mtd, struct nand_bbt_descr *bd,
--			   loff_t offs, uint8_t *buf, size_t readlen,
--			   int scanlen, int len)
--{
--	int ret, j;
--
--	ret = scan_read_raw_oob(mtd, buf, offs, readlen);
--	/* Ignore ECC errors when checking for BBM */
--	if (ret && !mtd_is_bitflip_or_eccerr(ret))
--		return ret;
--
--	for (j = 0; j < len; j++, buf += scanlen) {
--		if (check_pattern(buf, scanlen, mtd->writesize, bd))
--			return 1;
--	}
--	return 0;
--}
--
--/* Scan a given block partially */
--static int scan_block_fast(struct mtd_info *mtd, struct nand_bbt_descr *bd,
--			   loff_t offs, uint8_t *buf, int len)
--{
--	struct mtd_oob_ops ops;
--	int j, ret;
--
--	ops.ooblen = mtd->oobsize;
--	ops.oobbuf = buf;
--	ops.ooboffs = 0;
--	ops.datbuf = NULL;
--	ops.mode = MTD_OPS_PLACE_OOB;
--
--	for (j = 0; j < len; j++) {
--		/*
--		 * Read the full oob until read_oob is fixed to handle single
--		 * byte reads for 16 bit buswidth.
--		 */
--		ret = mtd_read_oob(mtd, offs, &ops);
--		/* Ignore ECC errors when checking for BBM */
--		if (ret && !mtd_is_bitflip_or_eccerr(ret))
--			return ret;
--
--		if (check_short_pattern(buf, bd))
--			return 1;
--
--		offs += mtd->writesize;
--	}
--	return 0;
--}
--
- /**
-  * create_bbt - [GENERIC] Create a bad block table by scanning the device
-  * @mtd: MTD device structure
-@@ -463,30 +391,12 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
- 	struct nand_bbt_descr *bd, int chip)
- {
- 	struct nand_chip *this = mtd->priv;
--	int i, numblocks, len, scanlen;
-+	int i, numblocks;
- 	int startblock;
- 	loff_t from;
--	size_t readlen;
- 
- 	pr_info("Scanning device for bad blocks\n");
- 
--	if (bd->options & NAND_BBT_SCANALLPAGES)
--		len = 1 << (this->bbt_erase_shift - this->page_shift);
--	else if (bd->options & NAND_BBT_SCAN2NDPAGE)
--		len = 2;
--	else
--		len = 1;
--
--	if (!(bd->options & NAND_BBT_SCANEMPTY)) {
--		/* We need only read few bytes from the OOB area */
--		scanlen = 0;
--		readlen = bd->len;
--	} else {
--		/* Full page content should be read */
--		scanlen = mtd->writesize + mtd->oobsize;
--		readlen = len * mtd->writesize;
--	}
--
- 	if (chip == -1) {
- 		/*
- 		 * Note that numblocks is 2 * (real numblocks) here, see i+=2
-@@ -507,20 +417,12 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
- 		from = (loff_t)startblock << (this->bbt_erase_shift - 1);
- 	}
- 
--	if (this->bbt_options & NAND_BBT_SCANLASTPAGE)
--		from += mtd->erasesize - (mtd->writesize * len);
--
- 	for (i = startblock; i < numblocks;) {
- 		int ret;
- 
- 		BUG_ON(bd->options & NAND_BBT_NO_OOB);
- 
--		if (bd->options & NAND_BBT_SCANALLPAGES)
--			ret = scan_block_full(mtd, bd, from, buf, readlen,
--					      scanlen, len);
--		else
--			ret = scan_block_fast(mtd, bd, from, buf, len);
--
-+		ret = this->block_bad(mtd, from, 1);
- 		if (ret < 0)
- 			return ret;
- 
+Signed-off-by: Huang Shijie <shijie8@gmail.com>
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+ arch/arm/mach-imx/clk-imx6q.c |    8 +++++++-
+ 1 files changed, 7 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/mach-imx/clk-imx6q.c b/arch/arm/mach-imx/clk-imx6q.c
+index 12d9040..f293bcd 100644
+--- a/arch/arm/mach-imx/clk-imx6q.c
++++ b/arch/arm/mach-imx/clk-imx6q.c
+@@ -151,7 +151,7 @@ enum mx6q_clks {
+ 	esai, gpt_ipg, gpt_ipg_per, gpu2d_core, gpu3d_core, hdmi_iahb,
+ 	hdmi_isfr, i2c1, i2c2, i2c3, iim, enfc, ipu1, ipu1_di0, ipu1_di1, ipu2,
+ 	ipu2_di0, ldb_di0, ldb_di1, ipu2_di1, hsi_tx, mlb, mmdc_ch0_axi,
+-	mmdc_ch1_axi, ocram, openvg_axi, pcie_axi, pwm1, pwm2, pwm3, pwm4,
++	mmdc_ch1_axi, ocram, openvg_axi, pcie_axi, pwm1, pwm2, pwm3, pwm4, per1_bch,
+ 	gpmi_bch_apb, gpmi_bch, gpmi_io, gpmi_apb, sata, sdma, spba, ssi1,
+ 	ssi2, ssi3, uart_ipg, uart_serial, usboh3, usdhc1, usdhc2, usdhc3,
+ 	usdhc4, vdo_axi, vpu_axi, cko1, pll1_sys, pll2_bus, pll3_usb_otg,
+@@ -357,6 +357,7 @@ int __init mx6q_clocks_init(void)
+ 	clk[ocram]        = imx_clk_gate2("ocram",         "ahb",               base + 0x74, 28);
+ 	clk[openvg_axi]   = imx_clk_gate2("openvg_axi",    "axi",               base + 0x74, 30);
+ 	clk[pcie_axi]     = imx_clk_gate2("pcie_axi",      "pcie_axi_sel",      base + 0x78, 0);
++	clk[per1_bch]     = imx_clk_gate2("per1_bch",      "usdhc3",            base + 0x78, 12);
+ 	clk[pwm1]         = imx_clk_gate2("pwm1",          "ipg_per",           base + 0x78, 16);
+ 	clk[pwm2]         = imx_clk_gate2("pwm2",          "ipg_per",           base + 0x78, 18);
+ 	clk[pwm3]         = imx_clk_gate2("pwm3",          "ipg_per",           base + 0x78, 20);
+@@ -394,6 +395,11 @@ int __init mx6q_clocks_init(void)
+ 	clk_register_clkdev(clk[twd], NULL, "smp_twd");
+ 	clk_register_clkdev(clk[usboh3], NULL, "usboh3");
+ 	clk_register_clkdev(clk[apbh_dma], NULL, "110000.dma-apbh");
++	clk_register_clkdev(clk[per1_bch], "per1_bch", NULL);
++	clk_register_clkdev(clk[gpmi_bch_apb], "gpmi_bch_apb", NULL);
++	clk_register_clkdev(clk[gpmi_bch], "gpmi_bch", NULL);
++	clk_register_clkdev(clk[gpmi_apb], "gpmi_apb", NULL);
++	clk_register_clkdev(clk[gpmi_io], NULL, "112000.gpmi-nand");
+ 	clk_register_clkdev(clk[uart_serial], "per", "2020000.serial");
+ 	clk_register_clkdev(clk[uart_ipg], "ipg", "2020000.serial");
+ 	clk_register_clkdev(clk[uart_serial], "per", "21e8000.serial");
 -- 
-1.7.10.4
+1.7.4.4
