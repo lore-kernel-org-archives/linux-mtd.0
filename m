@@ -1,20 +1,18 @@
 Received: from mail-gh0-f177.google.com ([209.85.160.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SkWsD-0007A9-DT
- for linux-mtd@lists.infradead.org; Fri, 29 Jun 2012 08:48:18 +0000
-Received: by ghbf11 with SMTP id f11so2665117ghb.36
- for <linux-mtd@lists.infradead.org>; Fri, 29 Jun 2012 01:48:15 -0700 (PDT)
-Message-ID: <1340959739.2936.28.camel@lappy>
-Subject: mtd: kernel BUG at arch/x86/mm/pat.c:279!
-From: Sasha Levin <levinsasha928@gmail.com>
-To: Andrew Morton <akpm@linux-foundation.org>, dwmw2@infradead.org
-Date: Fri, 29 Jun 2012 10:48:59 +0200
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Mime-Version: 1.0
-Cc: linux-mm <linux-mm@kvack.org>, linux-mtd@lists.infradead.org,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Dave Jones <davej@redhat.com>
+ id 1SkWsJ-0007A9-GT
+ for linux-mtd@lists.infradead.org; Fri, 29 Jun 2012 08:48:24 +0000
+Received: by mail-gh0-f177.google.com with SMTP id f11so2665117ghb.36
+ for <linux-mtd@lists.infradead.org>; Fri, 29 Jun 2012 01:48:23 -0700 (PDT)
+MIME-Version: 1.0
+Date: Fri, 29 Jun 2012 10:48:22 +0200
+Message-ID: <CAHMSPgOUuq8HKR+Q3ay5jr4-cYQYcB5129p4XcHYi4z2ydoH6Q@mail.gmail.com>
+Subject: ubifs_iget: failed to read inode 1
+From: Koen Beel <koen.beel.barco@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
+Cc: Huang Shijie <b32955@freescale.com>, adrian.hunter@intel.com,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,45 +24,141 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi all,
 
-I've stumbled on the following while fuzzing with trinity in a KVM tools guest using latest linux-next:
+We are using UBIFS on nand flash and experienced the following issue.
+During attach of the ubi device we get the message 'recovery needed'
+and 'recovery complete'. Finally the ubi_attach fails with the error
+"UBIFS error (pid 229): ubifs_iget: failed to read inode 1, error -2".
 
-[ 3299.675163] ------------[ cut here ]------------
-[ 3299.676027] kernel BUG at arch/x86/mm/pat.c:279!
-[ 3299.676027] invalid opcode: 0000 [#1] PREEMPT SMP DEBUG_PAGEALLOC
-[ 3299.678596] CPU 2 
-[ 3299.678596] Pid: 21541, comm: trinity-child6 Tainted: G        W    3.5.0-rc4-next-20120628-sasha-00005-g9f23eb7 #479  
-[ 3299.678596] RIP: 0010:[<ffffffff810a8b62>]  [<ffffffff810a8b62>] reserve_memtype+0x22/0x3d0
-[ 3299.678596] RSP: 0018:ffff88000ad61bc8  EFLAGS: 00010286
-[ 3299.678596] RAX: 0000000000000000 RBX: fffffffffffff000 RCX: ffff88000ad61c50
-[ 3299.678596] RDX: 0000000000000010 RSI: 0000000000000000 RDI: fffffffffffff000
-[ 3299.696632] RBP: ffff88000ad61c08 R08: 0000000000000010 R09: ffff88002617d5a8
-[ 3299.696632] R10: ffff88003111edc8 R11: 0000000000000001 R12: ffff88000ad61c50
-[ 3299.696632] R13: fffffffffffff000 R14: 0000000000000000 R15: ffff88000ad61d18
-[ 3299.696632] FS:  00007f3ffc3aa700(0000) GS:ffff880029800000(0000) knlGS:0000000000000000
-[ 3299.696632] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 3299.696632] CR2: 0000000000f73ffc CR3: 000000000ad6e000 CR4: 00000000000406e0
-[ 3299.696632] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[ 3299.696632] DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
-[ 3299.696632] Process trinity-child6 (pid: 21541, threadinfo ffff88000ad60000, task ffff88000a390000)
-[ 3299.696632] Stack:
-[ 3299.696632]  ffff88000ad61c18 ffffffff81161bc6 ffff88000ad61c18 fffffffffffff000
-[ 3299.696632]  0000000000000010 0000000000000000 0000000000001000 ffff88000ad61d18
-[ 3299.696632]  ffff88000ad61c88 ffffffff810a8fe2 ffff88000ad61c38 0000000000000086
-[ 3299.696632] Call Trace:
-[ 3299.696632]  [<ffffffff81161bc6>] ? mark_held_locks+0xf6/0x120
-[ 3299.696632]  [<ffffffff810a8fe2>] reserve_pfn_range+0xd2/0x1e0
-[ 3299.696632]  [<ffffffff810a912d>] track_pfn_vma_new+0x3d/0x80
-[ 3299.696632]  [<ffffffff8120c4bc>] remap_pfn_range+0xac/0x380
-[ 3299.696632]  [<ffffffff8220e016>] mtdchar_mmap+0xe6/0x100
-[ 3299.696632]  [<ffffffff812145ae>] mmap_region+0x35e/0x5f0
-[ 3299.696632]  [<ffffffff81214af9>] do_mmap_pgoff+0x2b9/0x350
-[ 3299.696632]  [<ffffffff811ff46c>] ? vm_mmap_pgoff+0x6c/0xb0
-[ 3299.696632]  [<ffffffff811ff484>] vm_mmap_pgoff+0x84/0xb0
-[ 3299.696632]  [<ffffffff8124fd80>] ? fget_raw+0x260/0x260
-[ 3299.696632]  [<ffffffff81211fde>] sys_mmap_pgoff+0x15e/0x190
-[ 3299.696632]  [<ffffffff81985ede>] ? trace_hardirqs_on_thunk+0x3a/0x3f
-[ 3299.696632]  [<ffffffff8106d4dd>] sys_mmap+0x1d/0x20
-[ 3299.696632]  [<ffffffff8372a539>] system_call_fastpath+0x16/0x1b
-[ 3299.696632] Code: 28 5b c9 c3 0f 1f 44 00 00 55 49 89 d0 48 89 e5 41 57 41 56 49 89 f6 41 55 49 89 fd 41 54 49 89 cc 53 48 83 ec 18 48 39 f7 72 0e <0f> 0b 0f 1f 40 00 eb fe 66 0f 1f 44 00 00 8b 3d 1a 5b e3 03 85 
-[ 3299.696632] RIP  [<ffffffff810a8b62>] reserve_memtype+0x22/0x3d0
-[ 3299.696632]  RSP <ffff88000ad61bc8>
+We are using and Freescale i.MX28 soc and using Micron NAND (see below).
+We are using kernel version 3.1.0.
+We have tested with latest mainline kernel but have not been able to
+trigger this issue.
+However, once the issue in the the flash, it can be reproduced at every boot.
+
+Looking at the ubifs code, the error message traces back to:
+ubifs_iget: ubifs_tnc_lookup fails, goto out_ino, free mem and print error.
+ubifs_tnc_lookup
+ubifs_tnc_locate: returns -ENOENT (-2)
+ubifs_lookup_level0: the lookup fails
+
+Anybody an idea where to look for?
+
+Thanks,
+Koen
+
+
+Uncompressing Linux... done, booting the kernel.
+[    0.000000] Linux version 3.1.0 (jenkins@oxygen.barco.com) (gcc
+version 4.5.3 (Buildroot 2011.11-svn3549-dirty) ) #3 Wed Jun 27
+11:58:26 CEST 2012
+[    0.000000] Kernel command line: panic=3 oops=panic console=ttyAMA0,115200
+[    0.000000] PID hash table entries: 512 (order: -1, 2048 bytes)
+[    0.000000] Dentry cache hash table entries: 16384 (order: 4, 65536 bytes)
+[    0.000000] Inode-cache hash table entries: 8192 (order: 3, 32768 bytes)
+[    0.000000] Memory: 128MB = 128MB total
+[    0.000000] Memory: 120036k/120036k available, 11036k reserved, 0K highmem
+[    0.000000] Virtual kernel memory layout:
+[    0.000000]     vector  : 0xffff0000 - 0xffff1000   (   4 kB)
+[    0.000000]     fixmap  : 0xfff00000 - 0xfffe0000   ( 896 kB)
+[    0.000000]     DMA     : 0xffc00000 - 0xffe00000   (   2 MB)
+[    0.000000]     vmalloc : 0xc8800000 - 0xf4000000   ( 696 MB)
+[    0.000000]     lowmem  : 0xc0000000 - 0xc8000000   ( 128 MB)
+[    0.000000]     modules : 0xbf000000 - 0xc0000000   (  16 MB)
+[    0.000000]       .text : 0xc0008000 - 0xc02ee474   (2970 kB)
+[    0.000000]       .init : 0xc02ef000 - 0xc055e000   (2492 kB)
+[    0.000000]       .data : 0xc055e000 - 0xc0578ac0   ( 107 kB)
+[    0.000000]        .bss : 0xc0578ae4 - 0xc05a364c   ( 171 kB)
+[    0.000000] NR_IRQS:304
+[    0.000000] Calibrating delay loop... 226.09 BogoMIPS (lpj=1130496)
+[    0.080000] pid_max: default: 32768 minimum: 301
+[    0.080000] Mount-cache hash table entries: 512
+[    0.080000] CPU: Testing write buffer coherency: ok
+[    0.080000] devtmpfs: initialized
+[    0.090000] NET: Registered protocol family 16
+[    0.120000] Serial: AMBA PL011 UART driver
+[    0.120000] duart: ttyAMA0 at MMIO 0x80074000 (irq = 47) is a PL011 rev2
+[    0.130000] console [ttyAMA0] enabled
+[    0.160000] bio: create slab <bio-0> at 0
+[    0.180000] mxs-dma mxs-dma-apbh: initialized
+[    0.200000] mxs-dma mxs-dma-apbx: initialized
+[    0.220000] Switching to clocksource mxs_timer
+[    0.230000] Switched to NOHz mode on CPU #0
+[    0.230000] cfg80211: Calling CRDA to update world regulatory domain
+[    0.240000] NET: Registered protocol family 2
+[    0.250000] IP route cache hash table entries: 1024 (order: 0, 4096 bytes)
+[    0.250000] TCP established hash table entries: 4096 (order: 3, 32768 bytes)
+[    0.260000] TCP bind hash table entries: 4096 (order: 2, 16384 bytes)
+[    0.270000] TCP: Hash tables configured (established 4096 bind 4096)
+[    0.270000] TCP reno registered
+[    0.280000] UDP hash table entries: 256 (order: 0, 4096 bytes)
+[    0.280000] UDP-Lite hash table entries: 256 (order: 0, 4096 bytes)
+[    0.290000] NET: Registered protocol family 1
+[    1.020000] Unpacking initramfs...
+[    1.030000] Initramfs unpacking failed: junk in compressed archive
+[    1.050000] Freeing initrd memory: 4096K
+[    1.060000] NetWinder Floating Point Emulator V0.97 (double precision)
+[    1.110000] msgmni has been set to 242
+[    1.110000] Block layer SCSI generic (bsg) driver version 0.4
+loaded (major 254)
+[    1.120000] io scheduler noop registered (default)
+[    1.170000] uart-pl011 duart: no DMA platform data
+[    1.230000] ONFI flash detected
+[    1.230000] ONFI param page 0 valid
+[    1.230000] NAND device: Manufacturer ID: 0x2c, Chip ID: 0xf1
+(Micron MT29F1G08ABADAH4)
+[    1.250000] Scanning device for bad blocks
+[    1.450000] Creating 3 MTD partitions on "gpmi-nand":
+[    1.450000] 0x000000000000-0x000002000000 : "kernel"
+[    1.460000] 0x000002000000-0x000004000000 : "rootfs"
+[    1.490000] 0x000004000000-0x000008000000 : "store"
+[    1.520000] GPMI NAND driver registered. (IMX)
+[    1.570000] mxs-usbphy mxs-usbphy.0: initializing mxs USB Phy
+[    1.610000] mxs-mmc mxs-mmc.0: initialized
+[    1.660000] TCP cubic registered
+[    1.660000] NET: Registered protocol family 17
+[    1.670000] mmc0: new high speed SDIO card at address fffd
+[    1.710000] lib80211: common routines for IEEE802.11 drivers
+[    1.790000] registered taskstats version 1
+[    1.820000] Freeing init memory: 2492K
+Starting logging: OK
+Starting mdev...
+Creating button...
+3+0 records in
+3+0 records out
+Mounting store volume ...
+[    2.540000] UBI: attaching mtd2 to ubi2
+[    2.550000] UBI: physical eraseblock size:   131072 bytes (128 KiB)
+[    2.550000] UBI: logical eraseblock size:    126976 bytes
+[    2.560000] UBI: smallest flash I/O unit:    2048
+[    2.560000] UBI: VID header offset:          2048 (aligned 2048)
+[    2.570000] UBI: data offset:                4096
+[    3.260000] UBI: max. sequence number:       15388
+[    3.290000] UBI: attached mtd2 to ubi2
+[    3.290000] UBI: MTD device name:            "store"
+[    3.300000] UBI: MTD device size:            64 MiB
+[    3.300000] UBI: number of good PEBs:        512
+[    3.310000] UBI: number of bad PEBs:         0
+[    3.310000] UBI: number of corrupted PEBs:   0
+[    3.310000] UBI: max. allowed volumes:       128
+[    3.320000] UBI: wear-leveling threshold:    4096
+[    3.320000] UBI: number of internal volumes: 1
+[    3.330000] UBI: number of user volumes:     1
+[    3.330000] UBI: available PEBs:             0
+[    3.340000] UBI: total number of reserved PEBs: 512
+[    3.340000] UBI: number of PEBs reserved for bad PEB handling: 5
+[    3.350000] UBI: max/mean erase counter: 32/29
+[    3.350000] UBI: image sequence number:  1039166143
+[    3.370000] UBI: background thread "ubi_bgt2d" started, PID 227
+[    3.520000] UBIFS: recovery needed
+[    3.700000] UBIFS: recovery completed
+[    3.710000] UBIFS: mounted UBI device 2, volume 0, name "store"
+[    3.710000] UBIFS: file system size:   62726144 bytes (61256 KiB,
+59 MiB, 494 LEBs)
+[    3.720000] UBIFS: journal size:       3174400 bytes (3100 KiB, 3
+MiB, 25 LEBs)
+[    3.730000] UBIFS: media format:       w4/r0 (latest is w4/r0)
+[    3.730000] UBIFS: default compressor: lzo
+[    3.740000] UBIFS: reserved for root:  2962710 bytes (2893 KiB)
+[    3.750000] UBIFS error (pid 229): ubifs_iget: failed to read inode
+1, error -2
+mount: mounting ubi2:store on /store failed: No such file or directory
