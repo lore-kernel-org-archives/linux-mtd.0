@@ -1,17 +1,27 @@
-Message-ID: <1340970369.3070.166.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v2] mtd mxc_nand: use 32bit copy functions
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Date: Fri, 29 Jun 2012 14:46:09 +0300
-In-Reply-To: <1338279369-25915-1-git-send-email-s.hauer@pengutronix.de>
-References: <1338279369-25915-1-git-send-email-s.hauer@pengutronix.de>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-2OUxUQZDkoCWxzyRtyzz"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Reply-To: artem.bityutskiy@linux.intel.com
+Date: Fri, 29 Jun 2012 20:14:38 +0800
+From: Dong Aisheng <aisheng.dong@freescale.com>
+To: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH 3/3] mtd: gpmi: change the code for clocks
+Message-ID: <20120629121437.GQ5844@shlinux2.ap.freescale.net>
+References: <1340941925-14591-1-git-send-email-shijie8@gmail.com>
+ <1340941925-14591-3-git-send-email-shijie8@gmail.com>
+ <20120629020650.GB28932@S2101-09.ap.freescale.net>
+ <20120629063329.GE5844@shlinux2.ap.freescale.net>
+ <20461.30070.771087.830745@ipc1.ka-ro>
+ <20120629093437.GK5844@shlinux2.ap.freescale.net>
+ <20461.30991.63507.369439@ipc1.ka-ro>
+ <20120629095433.GO5844@shlinux2.ap.freescale.net>
+ <20120629111334.GB29197@S2101-09.ap.freescale.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20120629111334.GB29197@S2101-09.ap.freescale.net>
+Cc: "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ Huang Shijie <shijie8@gmail.com>, Huang Shijie-B32955 <B32955@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Dong Aisheng-B29396 <B29396@freescale.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,45 +31,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, Jun 29, 2012 at 07:13:36PM +0800, Shawn Guo wrote:
+> On Fri, Jun 29, 2012 at 05:54:33PM +0800, Dong Aisheng wrote:
+> > > > > No, that's silly. You would have to change the driver for each
+> > > > > new platform that the driver can support.
+> > > > > 
+> > > > If the new platform is fully compatible with exist platforms, then no.
+> > > > If need more clocks, then in either way, we have to add support in driver.
+> > > > 
+> > > Even if it had fewer clocks you would have to change the driver!
+> > > 
+> > Yes.
+> > For your case, you need create some dummy clock, right?
+> > If yes, i would intend to explictly to define it for a new type
+> > of IP.
+> > 
+> I'm with Lothar on this.  At least for imx28 case, we do not even need
+> dummy clock, because NULL con_id in clkdev lookup will have all those
+> clocks match the only one gpmi-nand clock on imx28, as I already said.
+> 
+I'm not quite understand. Can you clarify a bit more?
+For extra clocks need by mx6q like "gpmi_bch", they're indeed have con_id.
+Getting them will not fail on imx28 without dummy clock?
 
---=-2OUxUQZDkoCWxzyRtyzz
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, 2012-05-29 at 10:16 +0200, Sascha Hauer wrote:
-> The following commit changes the function used to copy from/to
-> the hardware buffer to memcpy_[from|to]io. This does not work
-> since the hardware cannot handle the byte accesses used by these
-> functions. Instead of reverting this patch introduce 32bit
-> correspondents of these functions.
-
-Pushed to l2-mtd.git, thanks!
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-2OUxUQZDkoCWxzyRtyzz
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJP7ZWBAAoJECmIfjd9wqK0HdoP/0Mefaef+c9nZmnPwxeFv+vw
-rnsC3/QXm/VAFlbX4//5P9QHjL0yZG1NYuPQ3hy8//SnxFAUbk5UJJlvEAA1PtUx
-huEH9RTCZqlwS9aX1h3cFGyBtWvqvGGGnsvWkvTgxPC4rtccbrimoWw+auqVkkNk
-XuPl3lui7O+XqUCaHzOyEFn75KHNedzZ3JSrEoyd58ovalCl3wdF3GuVf0dTCFX3
-TQhZxvcLD0NNoW4TtXhxs0TRJH2q3dsPuNtFKXSfOQL0PoYie+Y8ivfmZGsut0bd
-52v4jsNmx5gjSAmLU0a8X3N6vfPuQfioUxO34ECun8dGJ868bncDdCT35C7PSYu1
-dWQrW65jsCY7BGc6boHza0iHYCwo4Pf5qckU5omo+3iUWZmNY3GoWdKcdHaPcM42
-FRwLrf0ypvgY+foXn+R8NzT7AoekZ9IL0i8fPXniHp86gGNFKYHhAczER4QR8OC6
-OV29MW1Uoq84L31IIlZRC4iPfy3UvJPtp5qhXRgfrYEvzXufkdBF44g6zd6meLu/
-E42mac/51GjKrAGumgydQVUEzf4AxjjLuUOr7ZzzGJVMSxIfbueJiMwa5QMnupKf
-/sGk6SlIES9sXEHlZ01E/356m1eQHrKPJh4oiSzrXAsYYweilczS2KYFMy64WiF5
-wB6RpMvcWpj6ooFlcVk6
-=lb9O
------END PGP SIGNATURE-----
-
---=-2OUxUQZDkoCWxzyRtyzz--
+Regards
+Dong Aisheng
