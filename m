@@ -1,21 +1,20 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SkWW0-00028C-Qr
- for linux-mtd@lists.infradead.org; Fri, 29 Jun 2012 08:25:24 +0000
-Message-ID: <1340958563.3070.132.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 2/3] mtd: delete SBC82xx/SBC8560 MTD mapping support
+ id 1SkWYp-00044o-N5
+ for linux-mtd@lists.infradead.org; Fri, 29 Jun 2012 08:28:17 +0000
+Message-ID: <1340958741.3070.133.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd-utils: Check mtdoffset is not larger than mtd.size
+ in case of a bad block.
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Paul Gortmaker <paul.gortmaker@windriver.com>
-Date: Fri, 29 Jun 2012 11:29:23 +0300
-In-Reply-To: <1340740469-31445-3-git-send-email-paul.gortmaker@windriver.com>
-References: <1340740469-31445-1-git-send-email-paul.gortmaker@windriver.com>
- <1340740469-31445-3-git-send-email-paul.gortmaker@windriver.com>
+To: Tomer Barletz <barletz@gmail.com>
+Date: Fri, 29 Jun 2012 11:32:21 +0300
+In-Reply-To: <4FEA2DC1.9090003@gmail.com>
+References: <4FEA2DC1.9090003@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-9/21tXQP4WOSLufDLbyO"
+ boundary="=-N184S2a5MpleLTjD4eJU"
 Mime-Version: 1.0
-Cc: benh@kernel.crashing.org, linuxppc-dev@lists.ozlabs.org,
- David Woodhouse <David.Woodhouse@intel.com>, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,42 +26,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-9/21tXQP4WOSLufDLbyO
+--=-N184S2a5MpleLTjD4eJU
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-06-26 at 15:54 -0400, Paul Gortmaker wrote:
-> The SBC8260 support was dropped back when we moved from ppc to
-> powerpc.  We are now also dropping the support for the EOL SBC8560,
-> so we can also delete this mapping support, as they were the only
-> users of it.
+On Tue, 2012-06-26 at 14:46 -0700, Tomer Barletz wrote:
+> mtdoffset is being tested against mtd.size in the outer two loops, but=
+=20
+> the third nested one does not test against it.
+> In case of a bad block we'll try to access an out of bounds offset in=20
+> the next MEMGETBADBLOCK ioctl, which will fail with EINVAL.
+> In case mtdoffset is indeed larger than the partition size, we need to=
+=20
+> bail, since there are not enough "good" blocks to complete the write.
 >=20
-> Cc: David Woodhouse <David.Woodhouse@intel.com>
-> Cc: linux-mtd@lists.infradead.org
-> Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+> Signed-off-by: Tomer Barletz <barletz@gmail.com>
 
-You forgot this:
-
-diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-index 68a9a91..deb43e9 100644
---- a/drivers/mtd/maps/Makefile
-+++ b/drivers/mtd/maps/Makefile
-@@ -47,7 +47,6 @@ obj-$(CONFIG_MTD_SCB2_FLASH)  +=3D scb2_flash.o
- obj-$(CONFIG_MTD_H720X)                +=3D h720x-flash.o
- obj-$(CONFIG_MTD_IXP4XX)       +=3D ixp4xx.o
- obj-$(CONFIG_MTD_IXP2000)      +=3D ixp2000.o
--obj-$(CONFIG_MTD_WRSBC8260)    +=3D wr_sbc82xx_flash.o
- obj-$(CONFIG_MTD_DMV182)       +=3D dmv182.o
- obj-$(CONFIG_MTD_PLATRAM)      +=3D plat-ram.o
- obj-$(CONFIG_MTD_INTEL_VR_NOR) +=3D intel_vr_nor.o
-
-I've amended the patch and pushed to l2-mtd.git tree, thanks!
+Pushed to mtd-utils, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-9/21tXQP4WOSLufDLbyO
+--=-N184S2a5MpleLTjD4eJU
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -70,19 +56,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJP7WdkAAoJECmIfjd9wqK0DXgP/RoqujuPnNCIvySfVwtk8vcN
-5k5NAHplUjNsr+3ZfCA7kenCesPZcELtdIcRIoiuEg0FFEyWuZ7h4UUeCRy57MLZ
-HvaWfyLfWn+hVaBhDhVtZ7gqTRTKn0VLjuXeWjiaqn05zTAdOfMLAtmaREIpsVr+
-Zs7OisWrOcndbLmAOmMtz6weTti2j+E0uK2C5VHZvil3igkJHHLfbk4fjqRkuT/c
-ZJhpt03N323Y5BDnej4dqJ1OGTiLj0LuXoWNVtKbgoNXDRFpFhwSWTXRNzkx1o9s
-ocBPBFlsxYiBvEPoZ2E5bznn2s8pJgR53kEnA/ODFht7fV+qZvzRsdoIv2GWMhTU
-Leu3EQIkglok+PgBmH6qI6lTT0b1UT9jUItoZctFTjAC34ZRSIckMeUpKeGZw27u
-Tt8TMxEa3+tLKMJHUC3fod5hd3D+VUvLDdfA7o5ZzfJ8rFpCC+G4KtmggacwC5A5
-NiR9A5y2OuD3tbDRnlUdRJIp3xT3ujXXN01xjfuG9JK1F7IV68EePugylr8+DgZe
-xNjJ3ck46Qac6UrzOgVc7tQ1EQ/fhNOPQsYgEzREhXg+fge73iz/zSiO4yY4V6c2
-sPx0A3CAh43iSFtSXc2oFbkFONy8yRwKJyygv0UsYcESW/H0/eAwC9thJkWUU3so
-SwurOYou0y+83WN3EoKB
-=hFc/
+iQIcBAABAgAGBQJP7WgVAAoJECmIfjd9wqK0SfAQAIxAXgRXpdyWL0f71NNEMjcB
+Q8LF9LUV/5Gqv1a5NlUYuKE5zYZJBvWnLCNPveBBHK8Y9IqGRx0fubSgjbynn0TX
+hMmGL+R+zBKelBQU1VdALubvRJNggPoc76eSTItscr04INNFjMKJOhi8+WkYN/NC
+CJRoeA5f/tQueXUXVpfw5npqMMKn+JXWJ1G39z6aWhSFb4qeUeTm843ng8KERoPb
+lTD+vdKWCPIiX0cD9+DQ0CyAfk55BkGFsyGLHXqRH1TmUd2+NYTjcg9ShzlPjoiK
+YyKtDZz75LNibvJfJ+mLoTfikOh5f7KCAVue+raX46ime94QM3CFbUvlnz8Cnz3b
+2I9XaP3HYkr012ywRUi5l1WgFerYjdD+zPifWKsdNavcOw2YBwoSWhR85EKVGkaQ
+fip2vb21o4/oLaWY172hNywQhKlmypNIQOHz5U9IuF4LNqiWz9Q0BrFjdi0XUULB
+RnLXHaY/dG8592XkIFcnQxbSmSccBMUrGTV4Iw4D1y3We1XOaUl75sz9yBH7RcD2
+vug7w0nLdhQmXM/HcnTnWfafz6AM3eEwF2HPASisn7S21Jo4ZIVCSj+IFGhyjibl
+5RLWSqeg4QQTcoGO8InkENB+0ttWmK7dv93go59GjO4gDA2ngj8kugtTJIaednj4
+P9WdquzCTH4QEXxqcLUq
+=u8w8
 -----END PGP SIGNATURE-----
 
---=-9/21tXQP4WOSLufDLbyO--
+--=-N184S2a5MpleLTjD4eJU--
