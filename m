@@ -1,19 +1,21 @@
-Message-ID: <1340966196.3070.145.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v13 0/2] MTD: at91: Add PMECC support for at91 nand
- flash driver
+Message-ID: <1340966275.3070.146.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 2/4] mtd: lpc32xx_slc: Make wp gpio optional
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Josh Wu <josh.wu@atmel.com>
-Date: Fri, 29 Jun 2012 13:36:36 +0300
-In-Reply-To: <1340963275-32104-1-git-send-email-josh.wu@atmel.com>
-References: <1340963275-32104-1-git-send-email-josh.wu@atmel.com>
+To: Roland Stigge <stigge@antcom.de>
+Date: Fri, 29 Jun 2012 13:37:55 +0300
+In-Reply-To: <1340812275-1197-2-git-send-email-stigge@antcom.de>
+References: <1340812275-1197-1-git-send-email-stigge@antcom.de>
+ <1340812275-1197-2-git-send-email-stigge@antcom.de>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-InX+zTy5G+9s6IgPa2/m"
+ boundary="=-hEM0gfg8rpPhWhZhR78n"
 Mime-Version: 1.0
-Cc: hongxu.cn@gmail.com, richard.genoud@gmail.com, nicolas.ferre@atmel.com,
- linux-mtd@lists.infradead.org, ivan.djelic@parrot.com,
- computersforpeace@gmail.com, plagnioj@jcrosoft.com,
- linux-arm-kernel@lists.infradead.org
+Cc: srinivas.bakki@nxp.com, lars@metafoo.de, linux@arm.linux.org.uk,
+ linux-doc@vger.kernel.org, leiwen@marvell.com,
+ devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+ kevin.wells@nxp.com, b32955@freescale.com, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, hechtb@googlemail.com,
+ dwmw2@infradead.org, aletes.xgr@gmail.com
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,20 +27,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-InX+zTy5G+9s6IgPa2/m
+--=-hEM0gfg8rpPhWhZhR78n
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2012-06-29 at 17:47 +0800, Josh Wu wrote:
-> Those patches is based on the l2-mtd.git three.
+On Wed, 2012-06-27 at 17:51 +0200, Roland Stigge wrote:
+> From: Alexandre Pereira da Silva <aletes.xgr@gmail.com>
+>=20
+> This patch supports missing wp gpio.
+>=20
+> Signed-off-by: Alexandre Pereira da Silva <aletes.xgr@gmail.com>
+> Signed-off-by: Roland Stigge <stigge@antcom.de>
 
-Pushed to l2-mtd.git, thanks!
+Pushed patches 2-4, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-InX+zTy5G+9s6IgPa2/m
+--=-hEM0gfg8rpPhWhZhR78n
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -46,19 +53,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJP7YU0AAoJECmIfjd9wqK0B/UP/1zM/ouWvdJIEQZnUiWbZVTW
-b+wpW/gtgQFmCqNBJbLPnfdj4wydpK5L+l1e73UopnD3Vjdq3n4blnoMX/chapDa
-YASDUIDqwYXgiLdt0E07Z3vI+E2WN2XpaChu3A/fVaSgTrGF3Q5EB1uic5Q3eVMh
-Ms0CcouolUVuynnDckA+SD75n8Yhb8gfBkPn3JkPFzOAf1qZkIE8SBXrmzyqb0Lo
-z5jE6AI9uBtSf/WlX4/+D8JASS2B3HTIvcg6XkzZmKZQ77lC1EcGVstWsoecn1rp
-9LBLHpUZKBDOpP4aPfiF5CVbakXzB2IGVPnErZ7mSRzXIredTtNxmJbAUwEiiwNz
-3qT4yPxE5gv4Vm6E8QehbM9AE76s2dtjqOaG3TShrYLdK7ZTLGihY0COmZ5URrGs
-PVT9y72oS4IZJoZAgZy8+SsLJFk8wwUQtSgpqPQQzoquccD5qoX32sW83U9tvLTq
-ZJtjMyL3X9PDqN5e0stdslQVF0Wto1pl9KnYrNm0cCwsWHf2vwPFl3Ur19Z54OHA
-lcWDB5DrK83ugK3PfgyLaFvGl4XCmcA+i2DflILegrbBHDD7GP7xPIEa0UHmd1xI
-Sgu+Y94aSihCOpZbQ9mw6T6XeIiA6Cakj0JPwp0AKe7IHZkVIbgYIt0LqYGlEM1f
-rCSWo3wm1mS+hcliGAMe
-=XgSp
+iQIcBAABAgAGBQJP7YWDAAoJECmIfjd9wqK0ZngP/RJB9GlpABgo2bUDiVMKDdvk
+6Rg6jw+5nLZ1l60TP5NypCBJAL8p000qtnbaMmWUZUW/Pmd0wOwFrlPAOTs0rGQZ
+g7HPQY5sYYHXLpDuZ1LnvaDReJTgbt7MXpor6ppU5+uTvjMLJcO9g7xZ6Tq0j4Q9
+MMXyjY6mggWMOE8ynOI9qjZzzMb8UEf6XX8Lznt2obwmASSV23clSqJMt8YVH/Ru
+4IBPDqfbYujQy27+Hk1l6RINHS2q/P95b8wd1x4SqFiUOzc6NM8Q/NOdfBIEusem
+kRw0BSWGDWuw3uD9uSCgmRhfrGb6A8iOVW9hlVQXrrlXzqHOmKtif0DjASus0fsQ
+xoslRhna4LN0rp15Cprqw/5aHlr03h+ujWbUVo7p2JiIRXGmcKO9RTUUlB9XfUkY
+tVHaicvjH0EgjqXZDOQIkyoyh+bxqpoEZdDeE8jPMfACRAB1aK9Ws6LdfJ1psQ4V
+5NDrD050X9FJ4TPy399pJlo8bzTPp/fVHGNIKOCfaNnLueR8nKdxO/QSaWec4Buj
+fkMQn3F8duMVdyO58rMC2NMtyFQD6DAXYV0uCRpNJezCZK24oPN/jKiFGgY0P90t
+TZ4bAca7OZfJaL1r/qoUtt8zo6pKox/p+ZiJ/JirCe1btwJ6AwjMpbLdDSAvBeCQ
+T5sBqTnSIX1m/+AtLQc+
+=emFQ
 -----END PGP SIGNATURE-----
 
---=-InX+zTy5G+9s6IgPa2/m--
+--=-hEM0gfg8rpPhWhZhR78n--
