@@ -1,20 +1,15 @@
-Received: from mail-wg0-f49.google.com ([74.125.82.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SkJVR-0007i7-FO
- for linux-mtd@lists.infradead.org; Thu, 28 Jun 2012 18:31:54 +0000
-Received: by wgbds1 with SMTP id ds1so1725037wgb.18
- for <linux-mtd@lists.infradead.org>; Thu, 28 Jun 2012 11:31:51 -0700 (PDT)
-Date: Thu, 28 Jun 2012 21:31:46 +0300
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-Subject: Re: [RFC] nand_btt : use nand chip->block_bad
-Message-ID: <20120628213146.7d929204@halley>
-In-Reply-To: <1340898442-1585-1-git-send-email-matthieu.castet@parrot.com>
-References: <1340898442-1585-1-git-send-email-matthieu.castet@parrot.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Date: Fri, 29 Jun 2012 09:50:18 +0800
+From: Shawn Guo <shawn.guo@linaro.org>
+To: Huang Shijie <shijie8@gmail.com>
+Subject: Re: [PATCH 1/3] ARM: imx6q: add clocks for gpmi-nand
+Message-ID: <20120629015015.GA28932@S2101-09.ap.freescale.net>
+References: <1340941925-14591-1-git-send-email-shijie8@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1340941925-14591-1-git-send-email-shijie8@gmail.com>
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,48 +19,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Matthieu,
+On Thu, Jun 28, 2012 at 11:52:03PM -0400, Huang Shijie wrote:
+> Add clocks for gpmi-nand.
+> 
+> Signed-off-by: Huang Shijie <shijie8@gmail.com>
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
 
-On Thu, 28 Jun 2012 17:47:22 +0200 Matthieu CASTET <matthieu.castet@parrot.com> wrote:
->  	for (i = startblock; i < numblocks;) {
->  		int ret;
->  
->  		BUG_ON(bd->options & NAND_BBT_NO_OOB);
->  
-> -		if (bd->options & NAND_BBT_SCANALLPAGES)
-> -			ret = scan_block_full(mtd, bd, from, buf, readlen,
-> -					      scanlen, len);
-> -		else
-> -			ret = scan_block_fast(mtd, bd, from, buf, len);
-> -
-> +		ret = this->block_bad(mtd, from, 1);
->  		if (ret < 0)
->  			return ret;
->  
+Why double sign off?
 
-Hmm, seems elegant, nand_bbt is not supposed to be elegant, what are we
-missing here? ;-))
+> ---
+>  arch/arm/mach-imx/clk-imx6q.c |    8 +++++++-
+>  1 files changed, 7 insertions(+), 1 deletions(-)
+> 
+> diff --git a/arch/arm/mach-imx/clk-imx6q.c b/arch/arm/mach-imx/clk-imx6q.c
+> index 12d9040..f293bcd 100644
+> --- a/arch/arm/mach-imx/clk-imx6q.c
+> +++ b/arch/arm/mach-imx/clk-imx6q.c
+> @@ -151,7 +151,7 @@ enum mx6q_clks {
+>  	esai, gpt_ipg, gpt_ipg_per, gpu2d_core, gpu3d_core, hdmi_iahb,
+>  	hdmi_isfr, i2c1, i2c2, i2c3, iim, enfc, ipu1, ipu1_di0, ipu1_di1, ipu2,
+>  	ipu2_di0, ldb_di0, ldb_di1, ipu2_di1, hsi_tx, mlb, mmdc_ch0_axi,
+> -	mmdc_ch1_axi, ocram, openvg_axi, pcie_axi, pwm1, pwm2, pwm3, pwm4,
+> +	mmdc_ch1_axi, ocram, openvg_axi, pcie_axi, pwm1, pwm2, pwm3, pwm4, per1_bch,
+>  	gpmi_bch_apb, gpmi_bch, gpmi_io, gpmi_apb, sata, sdma, spba, ssi1,
+>  	ssi2, ssi3, uart_ipg, uart_serial, usboh3, usdhc1, usdhc2, usdhc3,
+>  	usdhc4, vdo_axi, vpu_axi, cko1, pll1_sys, pll2_bus, pll3_usb_otg,
+> @@ -357,6 +357,7 @@ int __init mx6q_clocks_init(void)
+>  	clk[ocram]        = imx_clk_gate2("ocram",         "ahb",               base + 0x74, 28);
+>  	clk[openvg_axi]   = imx_clk_gate2("openvg_axi",    "axi",               base + 0x74, 30);
+>  	clk[pcie_axi]     = imx_clk_gate2("pcie_axi",      "pcie_axi_sel",      base + 0x78, 0);
+> +	clk[per1_bch]     = imx_clk_gate2("per1_bch",      "usdhc3",            base + 0x78, 12);
+>  	clk[pwm1]         = imx_clk_gate2("pwm1",          "ipg_per",           base + 0x78, 16);
+>  	clk[pwm2]         = imx_clk_gate2("pwm2",          "ipg_per",           base + 0x78, 18);
+>  	clk[pwm3]         = imx_clk_gate2("pwm3",          "ipg_per",           base + 0x78, 20);
+> @@ -394,6 +395,11 @@ int __init mx6q_clocks_init(void)
+>  	clk_register_clkdev(clk[twd], NULL, "smp_twd");
+>  	clk_register_clkdev(clk[usboh3], NULL, "usboh3");
+>  	clk_register_clkdev(clk[apbh_dma], NULL, "110000.dma-apbh");
+> +	clk_register_clkdev(clk[per1_bch], "per1_bch", NULL);
+> +	clk_register_clkdev(clk[gpmi_bch_apb], "gpmi_bch_apb", NULL);
+> +	clk_register_clkdev(clk[gpmi_bch], "gpmi_bch", NULL);
+> +	clk_register_clkdev(clk[gpmi_apb], "gpmi_apb", NULL);
 
-- I think nand_chip ops are not supposed to be called directly from
-  outside nand driver (nand_base et al); instead the mtd interfaces
-  should be used.
-  OTOH, one might consider nand_bbt to be part of nand_base driver...
+These do not look like right.  The dev_id should not be NULL if they
+are for device driver to look up.
 
-- The new scheme lacks the potential error correction offered by the
-  mtd_read_oob call (invoked from the original scan functions).
-  OTOH, currently, AFAIK, it is only offered by an out-of-tree driver.
+> +	clk_register_clkdev(clk[gpmi_io], NULL, "112000.gpmi-nand");
+>  	clk_register_clkdev(clk[uart_serial], "per", "2020000.serial");
+>  	clk_register_clkdev(clk[uart_ipg], "ipg", "2020000.serial");
+>  	clk_register_clkdev(clk[uart_serial], "per", "21e8000.serial");
+> -- 
+> 1.7.4.4
+> 
 
-- The original scheme allows validating against an arbitrary
-  nand_bbt_descr, whereas 'block_bad' reads the 'badblockpos' byte.
-  Don't know if this is a real issue (need to look at the descriptors
-  used); and probably, 'block_bad' can be augmented to use a given
-  descriptor.
-
-- To preserve all functionality, we need to augment 'block_bad'
-  implementors to support NAND_BBT_SCANALLPAGES (e.g. nand_block_bad
-  lacks this).
-
-And maybe there are some more nand_bbt secrets...
-
+-- 
 Regards,
-Shmulik
+Shawn
