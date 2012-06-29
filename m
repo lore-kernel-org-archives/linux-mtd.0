@@ -1,18 +1,28 @@
-Message-ID: <1340969124.3070.155.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/2] mtd mxc_nand: use 32bit copy functions
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Date: Fri, 29 Jun 2012 14:25:24 +0300
-In-Reply-To: <20120627175234.GF18096@pengutronix.de>
-References: <1337955762-19157-1-git-send-email-s.hauer@pengutronix.de>
- <20120627175234.GF18096@pengutronix.de>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-T5j3DZAVHIvkmTGpiP44"
-Mime-Version: 1.0
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
-Reply-To: artem.bityutskiy@linux.intel.com
+Date: Fri, 29 Jun 2012 19:22:48 +0800
+From: Shawn Guo <shawn.guo@linaro.org>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH 3/3] mtd: gpmi: change the code for clocks
+Message-ID: <20120629112246.GC29197@S2101-09.ap.freescale.net>
+References: <1340941925-14591-1-git-send-email-shijie8@gmail.com>
+ <1340941925-14591-3-git-send-email-shijie8@gmail.com>
+ <20120629020650.GB28932@S2101-09.ap.freescale.net>
+ <20120629063329.GE5844@shlinux2.ap.freescale.net>
+ <20461.30070.771087.830745@ipc1.ka-ro>
+ <20120629093437.GK5844@shlinux2.ap.freescale.net>
+ <20461.30991.63507.369439@ipc1.ka-ro>
+ <4FED7D4A.5050603@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <4FED7D4A.5050603@freescale.com>
+Content-Transfer-Encoding: quoted-printable
+Cc: Dong Aisheng <aisheng.dong@freescale.com>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ Dong Aisheng-B29396 <B29396@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Huang Shijie <shijie8@gmail.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,76 +32,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
---=-T5j3DZAVHIvkmTGpiP44
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, 2012-06-27 at 19:52 +0200, Uwe Kleine-K=C3=B6nig wrote:
-> I don't know about the sparse problems this introduces, but without this
-> patch the mxc-nand driver is broken, so it should really go in before
-> 3.5.
-
-The problems, AFAIU, are that you cannot directly dereference __iomem
-pointers, you always need to use helpers like 'readl()'. This patch
-introduces the following warnings:
-
-+drivers/mtd/nand/mxc_nand.c:281:33: warning: incorrect type in initializer=
- (different address spaces) [sparse]
-+drivers/mtd/nand/mxc_nand.c:281:33:    expected unsigned int const volatil=
-e [usertype] *s [sparse]
-+drivers/mtd/nand/mxc_nand.c:281:33:    got void const volatile [noderef] <=
-asn:2>*src [sparse]
-+drivers/mtd/nand/mxc_nand.c:284 memcpy32_fromio() warn: side effect in mac=
-ro '__raw_readl' doing 's++' [smatch]
-+drivers/mtd/nand/mxc_nand.c:284:24: warning: incorrect type in argument 1 =
-(different address spaces) [sparse]
-+drivers/mtd/nand/mxc_nand.c:284:24:    expected void const volatile [noder=
-ef] <asn:2>*<noident> [sparse]
-+drivers/mtd/nand/mxc_nand.c:284:24:    got unsigned int const volatile [us=
-ertype] * [sparse]
-+drivers/mtd/nand/mxc_nand.c:290:27: warning: incorrect type in initializer=
- (different address spaces) [sparse]
-+drivers/mtd/nand/mxc_nand.c:290:27:    expected unsigned int volatile [use=
-rtype] *t [sparse]
-+drivers/mtd/nand/mxc_nand.c:290:27:    got void volatile [noderef] <asn:2>=
-*trg [sparse]
-+drivers/mtd/nand/mxc_nand.c:294 memcpy32_toio() warn: side effect in macro=
- '__raw_writel' doing 't++' [smatch]
-+drivers/mtd/nand/mxc_nand.c:294:17: warning: incorrect type in argument 1 =
-(different address spaces) [sparse]
-+drivers/mtd/nand/mxc_nand.c:294:17:    expected void const volatile [noder=
-ef] <asn:2>*<noident> [sparse]
-+drivers/mtd/nand/mxc_nand.c:294:17:    got unsigned int volatile [usertype=
-] * [sparse]
-
-The "volitile" should be also removed.
+On Fri, Jun 29, 2012 at 06:02:50PM +0800, Huang Shijie wrote:
+> =E4=BA=8E 2012=E5=B9=B406=E6=9C=8829=E6=97=A5 17:44, Lothar Wa=C3=9Fman=
+n =E5=86=99=E9=81=93:
+> >Even if it had fewer clocks you would have to change the driver!
+> If we do not want to change the driver, we could add the extra
+> clocks in the device tree node.
+>=20
+We need to think about how this would cope with the properties defined
+by common clock DT bindings.
 
 --=20
-Best Regards,
-Artem Bityutskiy
-
---=-T5j3DZAVHIvkmTGpiP44
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJP7ZCkAAoJECmIfjd9wqK0edkQAMdxkrks0KLnatYvfMCGoidB
-9tlVhuKqRvwYIZJp8DOv3Fd/nDXBeGoF1k2vtXinhW9jxvup73/xuFFGVGbdNiUL
-plpSqvtGxIPL4m68xiv0HK5aAY1w/C4jPwkKzvNYWjHx/vcJXPGWzAS92i/A09mY
-OHsBOdAUFrE1nWehMC8NS++cmmXkHbRLjoCPfJmwAjWO948rNk78Cv9jTpysu6Br
-pf+5GQa2kTEmhjXkDmgYylmyerUg5+l97BlpDsbFFI+Mdh5nxSwpHT4+s7Mp2Gm8
-1GGeE4EEPFzWkaOqaVpFk2au5SQKX+zTkXUY7CJRuXbK5iNupPqTEulPuRt9/XOC
-PdvvfGJmyPYs1ATaX0nZuy8NQawSANHx84mdTqtVxtcAxbfgtbORYSmWW0+sHpjg
-H5nrzgq2SGDc5bpQuGO2MAkIOCqDKZvPe74KB1g6wNATg/vxyhWExwfi4flWwHiE
-CjBj0RSM9wPWSchqIJ3sRrEPugXJOMvUIfg/O6MgfWJGN4Df/FJ5uaeQPqhmJ8vX
-9IPZYrJsvRCeSbJTSwq8+S8KV71ntG5+uJgX5Ukt4Elxuzklx5VqBc92a2o7fxxN
-YTLqMkreS8Tyyq90BCk6ddSjpGFr2oaaQLP+PsMACKrydEJPETyaeip2VZApe46j
-9fPn89mmoSiHUyjZ7S36
-=e50J
------END PGP SIGNATURE-----
-
---=-T5j3DZAVHIvkmTGpiP44--
+Regards,
+Shawn
