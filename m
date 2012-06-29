@@ -1,20 +1,22 @@
-Received: from relay.medianet-world.de ([213.157.0.172])
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SkX6q-0000k8-Ng
- for linux-mtd@lists.infradead.org; Fri, 29 Jun 2012 09:03:25 +0000
-Content-Transfer-Encoding: 7bit
-Content-Class: urn:content-classes:message
-Date: Fri, 29 Jun 2012 11:03:10 +0200
-Message-ID: <87fw9e8p81.wl%andreas.friesen@hbm.com>
-From: "Andreas Friesen" <andreas.friesen@hbm.com>
-To: <dedekind1@gmail.com>
-Subject: Re: Loosed files after umount/mount
-In-Reply-To: <1340794858.29342.55.camel@sauron.fi.intel.com>
-References: <CAMU=cjyiX2KnntUFYYa-fwi0QAKX-Um1gE8tpNLwNiNsbj8O1Q@mail.gmail.com><1340794858.29342.55.camel@sauron.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Cc: Andreas Friesen <ndrs.frsn@googlemail.com>, linux-mtd@lists.infradead.org
+Message-ID: <1340960973.3070.136.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v12 0/2] MTD: at91: Add PMECC support for at91 nand
+ flash driver
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Josh Wu <josh.wu@atmel.com>
+Date: Fri, 29 Jun 2012 12:09:33 +0300
+In-Reply-To: <4FED6EAB.3000802@atmel.com>
+References: <1340871698-477-1-git-send-email-josh.wu@atmel.com>
+ <1340898021.3070.123.camel@sauron.fi.intel.com>
+ <4FED6EAB.3000802@atmel.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-qFhV1aYbTOtMoSw/7UC7"
+Mime-Version: 1.0
+Cc: hongxu.cn@gmail.com, richard.genoud@gmail.com, nicolas.ferre@atmel.com,
+ linux-mtd@lists.infradead.org, ivan.djelic@parrot.com,
+ computersforpeace@gmail.com, plagnioj@jcrosoft.com,
+ linux-arm-kernel@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,51 +26,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-At Wed, 27 Jun 2012 14:00:58 +0300,
-Artem Bityutskiy wrote:
-> 
-> [1  <text/plain; UTF-8 (quoted-printable)>]
-> On Mon, 2012-06-18 at 22:29 +0200, Andreas Friesen wrote:
-> > Hello,
-> > 
-> > I'm experiencing a strange problem with JFFS2 using Linux
-> > 3.1.5, 3.4 from kernel.org.git on PowerPC. After unmounting and
-> > remounting the filesystem,
-> > directory is empty.
-> 
-> So is it 3.4 or 3.1.5?
 
-The board is a MPC5200B board  with NOR Flash (like IceCube)
-I have seen the problem in 3.1.5 and 3.4.
+--=-qFhV1aYbTOtMoSw/7UC7
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Fri, 2012-06-29 at 17:00 +0800, Josh Wu wrote:
+> > +drivers/mtd/nand/atmel_nand.c:480:32: error: bad constant expression [=
+sparse]
+> > +drivers/mtd/nand/atmel_nand.c:488:35: error: bad constant expression [=
+sparse]
+> > +drivers/mtd/nand/atmel_nand.c:633:32: error: bad constant expression [=
+sparse]
+> > +drivers/mtd/nand/atmel_nand.c:635:35: error: bad constant expression [=
+sparse]
+>=20
+> I use CodeSourcery 2010q1, and no any error reported. So it seems=20
+> related with the compiler.
 
-> > $ flash_erase /dev/mtd2
-> > $ reboot
-> > $ mount mtd:storage /storage -t jffs2
-> > $ scp root@server:/tmp/settings/*.xml /storage
-> If you add "sleep 20" here - does it help?
+They are from sparse, not gcc.
 
-The tests with sleep() of 1s to 3min were unsuccessful.
+> When I send out the next version of the patch, Could you please test it=
+=20
+> about above fix? since I don't have Sparse compiler in my hand. Thanks.
 
-> Is it NOR or NAND? My first guess is that the write-buffer is not
-> synced. Or there are issues with the driver, try to run mtd tests.
+I will feed it to aiaiai, but you can also do it easily if you want. You
+can download my maintaining scripts from here:
+http://git.infradead.org/users/dedekind/maintaining.git
+and there is the documentation. You can use aiaiai in general for
+checking your patching before submitting out. Catches some embarrassing
+errors sometimes :-)
 
-mtd tests work fine.
+--=20
+Best Regards,
+Artem Bityutskiy
 
-> -- 
-> Best Regards,
-> Artem Bityutskiy
-> [2 This is a digitally signed message part <application/pgp-signature (7bit)>]
-> 
+--=-qFhV1aYbTOtMoSw/7UC7
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-Hottinger Baldwin Messtechnik GmbH, Im Tiefen See 45, 64293 Darmstadt, Germany | www.hbm.com 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-Registered as GmbH (German limited liability corporation) in the commercial register at the local court of Darmstadt, HRB 1147  
-Company domiciled in Darmstadt | CEO: Andreas Huellhorst | Chairman of the board: James Charles Webster
+iQIcBAABAgAGBQJP7XDOAAoJECmIfjd9wqK0Wi8QALE142ftQxhXH6SofqsUwgId
+sVNVmhJCleN+5oWjnVPNSCCZdcK69nwJHq2FlpprBaYvkGvu8fCiCfSqQaAhzEZm
+NSU/2hg90vkPn3m8R8Kg+IvJ9KVgDS7vYYRGOTXyNLywQWxariDSAKEhrnHCXFjN
+7Nsi2GE/6Uriiw2Cb3R4jLEZKz6DbW0yclL2NB8TjmiTZcqH9tCeb1DpZ19VLbxD
+5mrQyhnqpNDtDcvLmMb6S6vWKqgrRkpVIcX3hGTZfuqhZUEm67FStq1t9x1Eecy4
+LCzBYF+lR2whooFsTNu+5RYnZGDd0ezYhpbvk5IEH2TGaWl61cVK3bv1EmHL39La
+pbm45UqmouXR8aTGls6ZMUthzqRh49S34BxwyvFBE05HdI142/w3qc9GdRybLsAg
+aypfprkqYmkrVoJwbbUrUQJsuEG98OdSvIqEskxzQmwCQwVh491m7syXZX+SpGBI
+tQAdX94JJLt467Ud5EDA60skeNyhmf1tYquZk1DIFzjuaq2GnhXTcitk06hjfVWg
+SVGphMWJUEKaymi/afTU3yI1EbHi/dOqdF0eD19OQXCox+2wmVKgIoWE5uBbdaqF
+DOGKZQ8fEX4/Lj9kF+qlAx/9vemMxSTp/qLNl5X+mOPhr1ShnjNcI1kwmS+s1wPb
+KFSV6Wnms7/QFK4aam4q
+=vX+c
+-----END PGP SIGNATURE-----
 
-Als Gesellschaft mit beschraenkter Haftung eingetragen im Handelsregister des Amtsgerichts Darmstadt unter HRB 1147 
-Sitz der Gesellschaft: Darmstadt | Geschaeftsfuehrung: Andreas Huellhorst | Aufsichtsratsvorsitzender: James Charles Webster
-
-The information in this email is confidential. It is intended solely for the addressee. If you are not the intended recipient, please let me know and delete this email.
-
-Die in dieser E-Mail enthaltene Information ist vertraulich und lediglich fur den Empfaenger bestimmt. Sollten Sie nicht der eigentliche Empfaenger sein, informieren Sie mich bitte kurz und loeschen diese E-Mail.
+--=-qFhV1aYbTOtMoSw/7UC7--
