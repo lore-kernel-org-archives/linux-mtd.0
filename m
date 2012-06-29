@@ -1,28 +1,19 @@
-Date: Fri, 29 Jun 2012 20:53:49 +0800
-From: Shawn Guo <shawn.guo@linaro.org>
-To: Dong Aisheng <aisheng.dong@freescale.com>
-Subject: Re: [PATCH 3/3] mtd: gpmi: change the code for clocks
-Message-ID: <20120629125346.GI29197@S2101-09.ap.freescale.net>
-References: <20120629020650.GB28932@S2101-09.ap.freescale.net>
- <20120629063329.GE5844@shlinux2.ap.freescale.net>
- <20461.30070.771087.830745@ipc1.ka-ro>
- <20120629093437.GK5844@shlinux2.ap.freescale.net>
- <20461.30991.63507.369439@ipc1.ka-ro>
- <20120629095433.GO5844@shlinux2.ap.freescale.net>
- <20120629111334.GB29197@S2101-09.ap.freescale.net>
- <20120629121437.GQ5844@shlinux2.ap.freescale.net>
- <20120629124154.GG29197@S2101-09.ap.freescale.net>
- <20120629124158.GA32473@shlinux2.ap.freescale.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20120629124158.GA32473@shlinux2.ap.freescale.net>
-Cc: "dedekind1@gmail.com" <dedekind1@gmail.com>,
- Huang Shijie <shijie8@gmail.com>, Huang Shijie-B32955 <B32955@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Dong Aisheng-B29396 <B29396@freescale.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+In-Reply-To: <1340973434.3070.168.camel@sauron.fi.intel.com>
+References: <1340834129-15545-1-git-send-email-stigge@antcom.de>
+ <1340973434.3070.168.camel@sauron.fi.intel.com>
+Date: Fri, 29 Jun 2012 09:56:39 -0300
+Message-ID: <CAAAP30HZ1Z5U44wLwSEfcaJSLmVp8AbXPTCagS31hnoCy_tf-g@mail.gmail.com>
+Subject: Re: [PATCH v10] MTD: LPC32xx MLC NAND driver
+From: Alexandre Pereira da Silva <aletes.xgr@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Roland Stigge <stigge@antcom.de>, srinivas.bakki@nxp.com, lars@metafoo.de,
+ linux@arm.linux.org.uk, linux-doc@vger.kernel.org, leiwen@marvell.com,
+ devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+ kevin.wells@nxp.com, b32955@freescale.com, linux-mtd@lists.infradead.org,
+ hechtb@googlemail.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,17 +23,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jun 29, 2012 at 08:41:59PM +0800, Dong Aisheng wrote:
-> I know this.
-> You may missed my point.
-> I mean extra clocks introduced for imx6q which is not exist on imx28.
-> For your proposal, the gpmi driver will acquire all clocks including
-> imx6q's.
-> So when get imx6q's gpmi clock like "gpmi-bch" like clk_get(dev, "gpmi-bch"),
-> it may fail for imx28.
-> 
-What I was saying is it will not fail.
+On Fri, Jun 29, 2012 at 9:37 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Wed, 2012-06-27 at 23:55 +0200, Roland Stigge wrote:
+>> This patch adds a driver for the MLC NAND controller of the LPC32xx SoC.
+>>
+>> Signed-off-by: Roland Stigge <stigge@antcom.de>
+>> Signed-off-by: Alexandre Pereira da Silva <aletes.xgr@gmail.com>
+>> ---
+>
+> Aiaiai complains like this about your patch, please, take a look:
+>
+> --------------------------------------------------------------------------------
+>
+> Successfully built configuration "arm-lpc32xx_defconfig,arm,arm-unknown-linux-gnueabi-", results:
+>
+> --- before_patching.log
+> +++ after_patching.log
+> @@ @@
+> +drivers/mtd/nand/lpc32xx_mlc.c: In function 'lpc32xx_nand_probe':
+> +drivers/mtd/nand/lpc32xx_mlc.c:679:10: warning: variable 'sr' set but not used [-Wunused-but-set-variable]
+> +drivers/mtd/nand/lpc32xx_mlc.c:561:24: error: bad constant expression [sparse]
 
--- 
-Regards,
-Shawn
+This build fine here, with gcc 4.5.3
+
+Which gcc version is he using?
+
+> --------------------------------------------------------------------------------
+>
+> checkpatch.pl has some complaints:
+>
+> --------------------------------------------------------------------------------
+>
+> checkpatch.pl results for patch "[PATCH] MTD: LPC32xx MLC NAND driver"
+>
+> ERROR:INITIALISED_STATIC: do not initialise statics to 0 or NULL
+> #339: FILE: drivers/mtd/nand/lpc32xx_mlc.c:224:
+> +static int use_dma = 0;
+>
+> total: 1 errors, 0 warnings, 1004 lines checked
+>
+> --------------------------------------------------------------------------------
+>
+> --
+> Best Regards,
+> Artem Bityutskiy
