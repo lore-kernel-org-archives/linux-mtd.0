@@ -1,28 +1,24 @@
-Date: Fri, 29 Jun 2012 20:41:57 +0800
-From: Shawn Guo <shawn.guo@linaro.org>
-To: Dong Aisheng <aisheng.dong@freescale.com>
-Subject: Re: [PATCH 3/3] mtd: gpmi: change the code for clocks
-Message-ID: <20120629124154.GG29197@S2101-09.ap.freescale.net>
-References: <1340941925-14591-1-git-send-email-shijie8@gmail.com>
- <1340941925-14591-3-git-send-email-shijie8@gmail.com>
- <20120629020650.GB28932@S2101-09.ap.freescale.net>
- <20120629063329.GE5844@shlinux2.ap.freescale.net>
- <20461.30070.771087.830745@ipc1.ka-ro>
- <20120629093437.GK5844@shlinux2.ap.freescale.net>
- <20461.30991.63507.369439@ipc1.ka-ro>
- <20120629095433.GO5844@shlinux2.ap.freescale.net>
- <20120629111334.GB29197@S2101-09.ap.freescale.net>
- <20120629121437.GQ5844@shlinux2.ap.freescale.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20120629121437.GQ5844@shlinux2.ap.freescale.net>
-Cc: "dedekind1@gmail.com" <dedekind1@gmail.com>,
- Huang Shijie <shijie8@gmail.com>, Huang Shijie-B32955 <B32955@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Dong Aisheng-B29396 <B29396@freescale.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+Received: from mga03.intel.com ([143.182.124.21])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SkaXy-0001zb-Ub
+ for linux-mtd@lists.infradead.org; Fri, 29 Jun 2012 12:43:39 +0000
+Message-ID: <1340974064.3070.177.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] UBI: add minimal amount of reserved erase blocks in
+ Kconfig
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Date: Fri, 29 Jun 2012 15:47:44 +0300
+In-Reply-To: <20120628205303.676fa2ea@halley>
+References: <1340636918-7505-1-git-send-email-richard.genoud@gmail.com>
+ <20120628205303.676fa2ea@halley>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-u/ICHJlh0DvgjjppS7SY"
+Mime-Version: 1.0
+Cc: Richard Genoud <richard.genoud@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,27 +28,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jun 29, 2012 at 08:14:38PM +0800, Dong Aisheng wrote:
-> > I'm with Lothar on this.  At least for imx28 case, we do not even need
-> > dummy clock, because NULL con_id in clkdev lookup will have all those
-> > clocks match the only one gpmi-nand clock on imx28, as I already said.
-> > 
-> I'm not quite understand. Can you clarify a bit more?
-> For extra clocks need by mx6q like "gpmi_bch", they're indeed have con_id.
-> Getting them will not fail on imx28 without dummy clock?
-> 
-You need to look at how imx28 registers clkdev for gpmi-nand.
 
-static struct clk_lookup gpmi_lookups[] __initdata = {
-        { .dev_id = "imx28-gpmi-nand", },
-        { .dev_id = "8000c000.gpmi", },
-};
+--=-u/ICHJlh0DvgjjppS7SY
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-clk_register_clkdevs(clks[gpmi], gpmi_lookups, ARRAY_SIZE(gpmi_lookups));
+On Thu, 2012-06-28 at 20:53 +0300, Shmulik Ladkani wrote:
+> On Mon, 25 Jun 2012 17:08:38 +0200 Richard Genoud <richard.genoud@gmail.c=
+om> wrote:
+> > diff --git a/drivers/mtd/ubi/misc.c b/drivers/mtd/ubi/misc.c
+> > index f6a7d7a..c2c6db0 100644
+> > --- a/drivers/mtd/ubi/misc.c
+> > +++ b/drivers/mtd/ubi/misc.c
+> > @@ -100,8 +100,9 @@ void ubi_calculate_reserved(struct ubi_device *ubi)
+> >  {
+> >  	ubi->beb_rsvd_level =3D ubi->good_peb_count/100;
+> >  	ubi->beb_rsvd_level *=3D CONFIG_MTD_UBI_BEB_RESERVE;
+>=20
+> BTW Artem, I've always had an unresolved issue with this original
+> calculation... maybe you can shed some light here.
+>=20
+> Why 'beb_rsvd_level' is set to RESERVE percent of the 'good_peb_count'?
 
-As you can see, con_id is NULL for imx28 case.  As NULL is actually
-a wildcard for looking up, all the gpmi-nand clocks match it.
+I thought it was a good idea I guess :-)
 
--- 
-Regards,
-Shawn
+> As the device gets worn, number of 'good_peb_count' will lessen over
+> time - and as such, the 'beb_rsvd_level' may vary (lessen) over time.
+
+Yeah, probably you are right.
+
+> I'd expect a fixed number of 'beb_rsvd_level' PEBs for a given mtd
+> partition, or more correctly, as Richard suggests, the *sum* of bad PEBs
+> plus the beb reserved PEBs should be constant for a partition - as I
+> do not expect more than a known constant of blocks to go bad during
+> device's (and thus, partition's) lifetime.
+
+Those days we did not have this "vendor-guaranteed max. bad blocks
+count" thing and I thought that UBI would try to always maintain a pool
+of reserved PEBs.
+
+Would you send a patch?
+
+Note, one thing: if I already marked max. possible amount of PEBs as
+bad, I just do not reserve any more. But if I have a plenty of available
+PEBs anyway (my volumes are smaller than they could be, or I shrink one
+of them), and another PEB goes bad, I should just mark it as bad. I may
+print a warning, but should not panic.
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-u/ICHJlh0DvgjjppS7SY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJP7aPwAAoJECmIfjd9wqK0i18QAMLQWchq9a+ZO4Dfmoq+M0dX
+ozO+L1Am3e68K5bjPWJmoS1RDknyRH0kTGjoiqhbrvg7xM7HYmslbsLATyMngj1F
+3y4WDKmLWp80ddkzu8pJydDBLDnn4P/lhINOLCpMVmxNdc3gZfMdPMhytyViWSRO
+OQSOybKpOMoTRnwzejv9cRNZZhsOh7y56ELqpQMpnCrBsh66KKvaU+g+bzOvCyjU
+wx1XY/mv4dGbvdcT0Z3d8eg4q5nqQf6oFK2StucJAJI7oobn3tvCxuxoRZwKLhkS
+0OLVc9oZUpPrSzNdFUzgTkT6CgJk+0aLQXXOA0uwuiwFnDZ2BAwRMck43MUBd+5N
+0ZV/b4J+uZ0ovWpUAMyB3iU8siQ1mejkrV8heM/4irkTmPBq60SIh5Q9gJ1yYyyS
+zDqELMl97vCZ7cDn44OgKmGLgcWuY3nFdpvzvKSbHv65FMIkbhmCpqcGHbDBwpL5
+GBV3xWs9PBAFilA3uoEpQJpBvXfmUMx501FH0eH1tqZ+DKRlCCEKuqJB4FYMLvZ4
+QZtI5+Ud0WWmaVPEeJaLcQxDjguwDuvT36nsnFS8hsD+5Vj9fkOlz1QfqIfDw3tV
+iPETJbg0iq3yPz98gS4v/jW79aeqef4ebhFkhayaAWFDtApthsgAKzidNGI0xoVh
+v+dswpLpHE0e/CUg7i/3
+=P/h9
+-----END PGP SIGNATURE-----
+
+--=-u/ICHJlh0DvgjjppS7SY--
