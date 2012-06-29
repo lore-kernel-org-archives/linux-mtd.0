@@ -1,25 +1,28 @@
-Date: Fri, 29 Jun 2012 17:54:33 +0800
-From: Dong Aisheng <aisheng.dong@freescale.com>
-To: Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
-Subject: Re: [PATCH 3/3] mtd: gpmi: change the code for clocks
-Message-ID: <20120629095433.GO5844@shlinux2.ap.freescale.net>
-References: <1340941925-14591-1-git-send-email-shijie8@gmail.com>
- <1340941925-14591-3-git-send-email-shijie8@gmail.com>
- <20120629020650.GB28932@S2101-09.ap.freescale.net>
- <20120629063329.GE5844@shlinux2.ap.freescale.net>
- <20461.30070.771087.830745@ipc1.ka-ro>
- <20120629093437.GK5844@shlinux2.ap.freescale.net>
- <20461.30991.63507.369439@ipc1.ka-ro>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-In-Reply-To: <20461.30991.63507.369439@ipc1.ka-ro>
-Content-Transfer-Encoding: quoted-printable
-Cc: "dedekind1@gmail.com" <dedekind1@gmail.com>,
- Huang Shijie <shijie8@gmail.com>, Huang Shijie-B32955 <B32955@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Shawn Guo <shawn.guo@linaro.org>, Dong Aisheng-B29396 <B29396@freescale.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Received: from mga03.intel.com ([143.182.124.21])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SkYQG-000791-Be
+ for linux-mtd@lists.infradead.org; Fri, 29 Jun 2012 10:27:33 +0000
+Message-ID: <1340965897.3070.144.camel@sauron.fi.intel.com>
+Subject: Re: mtd nand erase and bad block
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Angus CLARK <angus.clark@st.com>
+Date: Fri, 29 Jun 2012 13:31:37 +0300
+In-Reply-To: <4FEAFE73.2040303@st.com>
+References: <4FC76039.6020701@sirius-es.it> <4FC771EC.4090500@intel.com>
+ <4FC78012.5010704@sirius-es.it> <4FC8601C.5070708@intel.com>
+ <Pine.LNX.4.64.1206010837100.4247@lnxricardw.se.axis.com>
+ <4FC87D62.6020402@st.com> <1338540121.2536.150.camel@sauron.fi.intel.com>
+ <20120601140445.346e322e@halley> <4FC8CBA7.6000702@st.com>
+ <20120601175407.7c39a8fb@halley>
+ <1338898670.2507.48.camel@sauron.fi.intel.com> <4FDEF60A.7010607@st.com>
+ <1340790846.29342.19.camel@sauron.fi.intel.com> <4FEAFE73.2040303@st.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-64mtFazyfaXwE7Q5+fT7"
+Mime-Version: 1.0
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,96 +32,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jun 29, 2012 at 05:44:47PM +0800, Lothar Wa=DFmann wrote:
-> Hi,
->=20
-> Dong Aisheng writes:
-> > On Fri, Jun 29, 2012 at 05:29:26PM +0800, Lothar Wa=DFmann wrote:
-> > > Hi,
-> > >=20
-> > > Dong Aisheng writes:
-> > > > On Fri, Jun 29, 2012 at 10:06:52AM +0800, Shawn Guo wrote:
-> > > > > On Thu, Jun 28, 2012 at 11:52:05PM -0400, Huang Shijie wrote:
-> > > > > > From: Huang Shijie <b32955@freescale.com>
-> > > > > >=20
-> > > > > > The gpmi nand driver may needs several clocks(MX6Q needs five=
- clocks).
-> > > > > >=20
-> > > > > > In the old clock framework, all these clocks are chained toge=
-ther,
-> > > > > > all you need is to manipulate the first clock.
-> > > > > >=20
-> > > > > > But the kernel uses the common clk framework now, which force=
-s us to
-> > > > > > get the clocks one by one. When we use them, we have to enabl=
-e them
-> > > > > > one by one too.
-> > > > > >=20
-> > > [...]
-> > > > > > +static char *extra_clks_for_mx6q[] =3D {
-> > > > > > +	"gpmi_apb", "gpmi_bch", "gpmi_bch_apb", "per1_bch",
-> > > > > > +};
-> > > > > > +
-> > > > > > +static int __devinit gpmi_get_clks(struct gpmi_nand_data *th=
-is)
-> > > > > > +{
-> > > > > > +	struct resources *r =3D &this->resources;
-> > > > > > +	char **extra_clks =3D NULL;
-> > > > > > +	struct clk *clk;
-> > > > > > +	int i;
-> > > > > > +
-> > > > > > +	r->clock[0] =3D clk_get(&this->pdev->dev, NULL);
-> > > > > > +	if (IS_ERR(r->clock[0]))
-> > > > > > +		goto err_clock;
-> > > > > > +
-> > > > > > +	/* Get extra clocks */
-> > > > > > +	if (GPMI_IS_MX6Q(this))
-> > > > > > +		extra_clks =3D extra_clks_for_mx6q;
-> > > > >=20
-> > > > > We probably do not need this tweaking.  We can have the driver =
-always
-> > > > > take all those 5 clocks, and I think the current imx28 clock dr=
-iver
-> > > > > can just work with it, because the gpmi-nand clkdev lookup has =
-NULL
-> > > > > con_id and all those 5 clocks can match the same one on imx28.
-> > > > >=20
-> > > > Will mx28 fail if doing like that?
-> > > > clk_get will fail if no clock found.
-> > > > struct clk *clk_get_sys(const char *dev_id, const char *con_id)
-> > > > {
-> > > >         struct clk_lookup *cl;
-> > > >=20
-> > > >         mutex_lock(&clocks_mutex);
-> > > >         cl =3D clk_find(dev_id, con_id);
-> > > >         if (cl && !__clk_get(cl->clk))
-> > > >                 cl =3D NULL;
-> > > >         mutex_unlock(&clocks_mutex);
-> > > >=20
-> > > >         return cl ? cl->clk : ERR_PTR(-ENOENT);
-> > > > }
-> > > > EXPORT_SYMBOL(clk_get_sys);
-> > > >=20
-> > > > Furthermore, find unnecessary clock for mx28 seems not a good cho=
-ice.
-> > > > Probably a better way is to define each SoC required clocks and g=
-et them
-> > > > respectively. It's explicit and clear.
-> > > >=20
-> > > No, that's silly. You would have to change the driver for each
-> > > new platform that the driver can support.
-> > >=20
-> > If the new platform is fully compatible with exist platforms, then no=
-.
-> > If need more clocks, then in either way, we have to add support in dr=
-iver.
-> >=20
-> Even if it had fewer clocks you would have to change the driver!
->=20
-Yes.
-For your case, you need create some dummy clock, right?
-If yes, i would intend to explictly to define it for a new type
-of IP.
 
-Regards
-Dong Aisheng
+--=-64mtFazyfaXwE7Q5+fT7
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, 2012-06-27 at 13:37 +0100, Angus CLARK wrote:
+> However, for case 2, I just want to force the erase operation so I can wi=
+pe the
+> BBTs and return the device as close as possible to its original state.  W=
+e could
+> put some logic in the kernel, "if 'MEMBBSCRUB" on BBT blocks, do not
+> update/rewrite BBTs", but I think this "policy" decision would be better =
+handled
+> in userspace.
+
+Sounds like you need 2 separate ioctls:
+1. MEMBBSCRUB
+2. MEMBBTWIPE
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-64mtFazyfaXwE7Q5+fT7
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJP7YQJAAoJECmIfjd9wqK0FyYP/2Hi1NIbNasq2TMyB4da0hXI
+SmzHHdgP8cU4tQiXinFs3Cl5HcyUjnbCFnqtJeRCXp6mAgAtqgeV/CVSZiPBZ3Ef
+kXvtH4Mvvvc4LdZaa+kxVyPEHplDo9+AWbannknQRj9fstwsMGtdrqyUBAZ7gXrS
+ES2YFK9wDr6y+JAv06E6FyMJ9Nbm3mdV61RO6KNbgpNeFJbLma8fmpsF6AuLdejk
+lSvorNgzGBkjDK5o0exbRyttlqHCSZjpqpbhe6ajLWGJLFaKwMrHi4u6a1Jlcofu
+FXH2TXkNs3M1Kviygj3zzxH/oZYmpGUeyD3HisH+HFzMDsMBC4GAxgi5HlbPJLXP
+8BM1kquZQB5aKURQhIPIT6UyM7c14XmydkvfZwUvCG7wmSSLoIcgF9Tag1Ekk/lN
+GCI9AQNXt1Go+eDeEKq2zxLGwk6Oy/08LOqNN0TIuNV1LnK16PLxQQMmtW3wbfFC
+zjKoagXPcxEkwMDDieB2HRXr9idpMoKHgpuhcIkuVkEVwZg8nf22sfA6AF7eI5+F
+alEPrtfMtoUxhBVLgyr2I0fY/S1q18nc2xBrKZHOGXO9Uw0/24+M4vsV8n3jjywH
+qLyhgLTYRGsWf/5TWN4ELUFDDp59z6LGoVok4cKgrDoppJx4aAplKsLddndOgeMg
+AuNKxs0W3uYE/i7ymMMV
+=m5Wl
+-----END PGP SIGNATURE-----
+
+--=-64mtFazyfaXwE7Q5+fT7--
