@@ -1,23 +1,24 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SkVHc-0005yf-2A
- for linux-mtd@lists.infradead.org; Fri, 29 Jun 2012 07:06:24 +0000
-Message-ID: <1340953826.3070.131.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd gpmi-nand: Fix read page when reading to vmalloced
- area
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Date: Fri, 29 Jun 2012 10:10:26 +0300
-In-Reply-To: <1340724377-22279-1-git-send-email-s.hauer@pengutronix.de>
-References: <1340724377-22279-1-git-send-email-s.hauer@pengutronix.de>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-LHotaM4LnMfK2qja+TPU"
-Mime-Version: 1.0
-Cc: Huang Shijie <b32955@freescale.com>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Subodh Nijsure <snijsure@grid-net.com>, kernel@pengutronix.de
-Reply-To: dedekind1@gmail.com
+Received: from mail-bk0-f49.google.com ([209.85.214.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SkVSM-0006DS-Fh
+ for linux-mtd@lists.infradead.org; Fri, 29 Jun 2012 07:17:31 +0000
+Received: by bkwj4 with SMTP id j4so2925070bkw.36
+ for <linux-mtd@lists.infradead.org>; Fri, 29 Jun 2012 00:17:27 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1340900549.3070.130.camel@sauron.fi.intel.com>
+References: <1340636918-7505-1-git-send-email-richard.genoud@gmail.com>
+ <1340894351.3070.121.camel@sauron.fi.intel.com>
+ <CACQ1gAjLdR-ZRUS6gxMrJzVpRdvdMK2JRceyiFmeSq-FQkZbZg@mail.gmail.com>
+ <1340900549.3070.130.camel@sauron.fi.intel.com>
+From: Richard Genoud <richard.genoud@gmail.com>
+Date: Fri, 29 Jun 2012 09:17:11 +0200
+Message-ID: <CACQ1gAgGbYvTO=_vVW11Ru9OXpra7oiJinbpX=DBiOHmoUtA8g@mail.gmail.com>
+Subject: Re: [PATCH] UBI: add minimal amount of reserved erase blocks in
+ Kconfig
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,44 +28,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+2012/6/28 Artem Bityutskiy <dedekind1@gmail.com>:
+> On Thu, 2012-06-28 at 18:07 +0200, Richard Genoud wrote:
+>> Agreed, it seems that 2% of the whole flash (at least for SLC device)
+>> is more realistic.
+>
+> Agree, feel free to send a separate patch for this.
+Done !
+>
+>> > Frankly, I do not understand this logic :-) And your patch looks wrong -
+>> > it touches the "auto-format" code which you may consider more like a
+>> > "debugging" feature and should not rely on this in production.
+>> Sorry, but I don't understand what you mean by the "auto-format" code.
+>
+> Yeah, right, this comment was incorrect, sorry.
+>
 
---=-LHotaM4LnMfK2qja+TPU
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+I was thinking that instead of giving to ubiattach the MBB, we could
+give it the MBB percentage (maximum bad blocks percentage of the whole
+flash device).
+>From this % and the whole flash size, we get the MBB number, and set
+beb_rsvd_level for each MTD part.
+It will be easier for userspace, as we won't have to set a different
+value for different flash size. The default 2% value will (almost)
+always be correct.
+We can even get rid of the CONFIG_MTD_UBI_BEB_RESERVE option.
 
-On Tue, 2012-06-26 at 17:26 +0200, Sascha Hauer wrote:
-> The gpmi-nand driver uses virt_addr_valid() to check whether a buffer
-> is suitable for dma. If it's not, a driver allocated buffer is used
-> instead. Then after a page read the driver allocated buffer must be
-> copied to the user supplied buffer. This does not happen since:
-
-Pushed to l2-mtd.git, thanks.
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-LHotaM4LnMfK2qja+TPU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJP7VTiAAoJECmIfjd9wqK0w1QP/ju5Rm2OGEsI+OL8G0VtQer/
-09g3GbQQh2MCiSK4/w5XfUC36/jycKybkX0ymoyt+OZy4iCC8VbrDLpPUVEESEWP
-qzvH2kHajZK5cGDBTkP6PckNrNbCgOxR7BpTh97oE1zOUxK++KlOjxrvrY3PUW3j
-QVMoTuJWH5nWZnwxNiN4lo3U71NRchcEuS/Kpzh2gXaBZxnbBra5YzN7ks1+5VC+
-fgO5H7KUMerdd7YrpOl39hywX2bsXo0UDcrKg6R23JhmzwnzEaDWki9wQGf+1Nlc
-7Nk2IQmi37rs56IK4k7vSqNLbkZHYxzFe8iE0JQB8DMmurN7AXsd+Sl/+JcKzQPq
-rQXrsW39TU9FCOB6UZ623yOydGFY5aXAxhiBORFk1ti57dodIwVHkGA9NLJnpxvE
-ySrDqfR6HgMYbUOdPx+CMXtzdpcJPISnIXt0jxR86WrUFUyY4FRe/NiIRTFwHPSL
-7hFzEw2uB3xEj6UzBvXYVSNJfBELtTiCr9rJjW4VjVBtbqT/m57O8Ti7FWcly77e
-036wpnQZJTHuQDB9zFHtgm/D56SRjhp+B4CBxlx7r8hmE22vuSQzWZVbOZe/q6PP
-OAeb4N6sh7q3/CbEY93I+c7USXPKi0+AXIpucUqvK3tcEAmOW1w2rQGWDwbm5Po3
-u/fSEofPGt6tXAooYboL
-=4BAc
------END PGP SIGNATURE-----
-
---=-LHotaM4LnMfK2qja+TPU--
+BTW, the real killer feature would be that the flash gives its NVB or
+MBB value in response to the READ_ID command, but unfortunately that's
+not the case...
