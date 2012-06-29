@@ -1,17 +1,16 @@
-Message-ID: <4FED2000.2040606@freescale.com>
-Date: Fri, 29 Jun 2012 11:24:48 +0800
-From: Huang Shijie <b32955@freescale.com>
+Message-ID: <4FED2285.2030307@grid-net.com>
+Date: Thu, 28 Jun 2012 20:35:33 -0700
+From: Subodh Nijsure <snijsure@grid-net.com>
 MIME-Version: 1.0
-To: Dong Aisheng <aisheng.dong@freescale.com>
-Subject: Re: [PATCH 2/3] ARM: imx6q: add DT node for gpmi nand
+To: Huang Shijie <shijie8@gmail.com>
+Subject: Re: [PATCH 3/3] mtd: gpmi: change the code for clocks
 References: <1340941925-14591-1-git-send-email-shijie8@gmail.com>
- <1340941925-14591-2-git-send-email-shijie8@gmail.com>
- <20120629031018.GC5844@shlinux2.ap.freescale.net>
-In-Reply-To: <20120629031018.GC5844@shlinux2.ap.freescale.net>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, shawn.guo@linaro.org,
- Huang Shijie <shijie8@gmail.com>, linux-arm-kernel@lists.infradead.org,
+ <1340941925-14591-3-git-send-email-shijie8@gmail.com>
+In-Reply-To: <1340941925-14591-3-git-send-email-shijie8@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Huang Shijie <b32955@freescale.com>, shawn.guo@linaro.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -22,11 +21,241 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2012=E5=B9=B406=E6=9C=8829=E6=97=A5 11:10, Dong Aisheng =E5=86=99=
-=E9=81=93:
-> It would be better if we add some comment for gpmi pin conflict here.
-> Easy for understand.
-ok, I will add it in the next version.
+On 06/28/2012 08:52 PM, Huang Shijie wrote:
+> From: Huang Shijie <b32955@freescale.com>
+>
+> The gpmi nand driver may needs several clocks(MX6Q needs five clocks).
+>
+> In the old clock framework, all these clocks are chained together,
+> all you need is to manipulate the first clock.
+>
+> But the kernel uses the common clk framework now, which forces us to
+> get the clocks one by one. When we use them, we have to enable them
+> one by one too.
+>
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
+> Signed-off-by: Huang Shijie <shijie8@gmail.com>
+I will test this on MX28 platform, given that some of these things may 
+span multiple platform should we include platforms the patch was tested 
+on or request that someone with access to specific platform test this?
 
-thanks
-Huang Shijie
+-Subodh
+> ---
+>   drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |   43 ++++++++++++++++++----
+>   drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   63 +++++++++++++++++++++++++++-----
+>   drivers/mtd/nand/gpmi-nand/gpmi-nand.h |    3 +-
+>   3 files changed, 91 insertions(+), 18 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+> index a1f4332..c3778c0 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+> @@ -124,12 +124,40 @@ error:
+>   	return -ETIMEDOUT;
+>   }
+>   
+> +static int __gpmi_enable_clk(struct gpmi_nand_data *this, bool v)
+> +{
+> +	struct clk *clk;
+> +	int ret;
+> +	int i;
+> +
+> +	for (i = 0; i < GPMI_CLK_MAX; i++) {
+> +		clk = this->resources.clock[i];
+> +		if (!clk)
+> +			break;
+> +
+> +		if (v) {
+> +			ret = clk_prepare_enable(clk);
+> +			if (ret)
+> +				goto err_clk;
+> +		} else {
+> +			clk_disable_unprepare(clk);
+> +		}
+> +	}
+> +	return 0;
+> +
+> +err_clk:
+> +	return ret;
+> +}
+> +
+> +#define gpmi_enable_clk(x) __gpmi_enable_clk(x, true)
+> +#define gpmi_disable_clk(x) __gpmi_enable_clk(x, false)
+> +
+>   int gpmi_init(struct gpmi_nand_data *this)
+>   {
+>   	struct resources *r = &this->resources;
+>   	int ret;
+>   
+> -	ret = clk_prepare_enable(r->clock);
+> +	ret = gpmi_enable_clk(this);
+>   	if (ret)
+>   		goto err_out;
+>   	ret = gpmi_reset_block(r->gpmi_regs, false);
+> @@ -149,7 +177,7 @@ int gpmi_init(struct gpmi_nand_data *this)
+>   	/* Select BCH ECC. */
+>   	writel(BM_GPMI_CTRL1_BCH_MODE, r->gpmi_regs + HW_GPMI_CTRL1_SET);
+>   
+> -	clk_disable_unprepare(r->clock);
+> +	gpmi_disable_clk(this);
+>   	return 0;
+>   err_out:
+>   	return ret;
+> @@ -205,7 +233,7 @@ int bch_set_geometry(struct gpmi_nand_data *this)
+>   	ecc_strength  = bch_geo->ecc_strength >> 1;
+>   	page_size     = bch_geo->page_size;
+>   
+> -	ret = clk_prepare_enable(r->clock);
+> +	ret = gpmi_enable_clk(this);
+>   	if (ret)
+>   		goto err_out;
+>   
+> @@ -240,7 +268,7 @@ int bch_set_geometry(struct gpmi_nand_data *this)
+>   	writel(BM_BCH_CTRL_COMPLETE_IRQ_EN,
+>   				r->bch_regs + HW_BCH_CTRL_SET);
+>   
+> -	clk_disable_unprepare(r->clock);
+> +	gpmi_disable_clk(this);
+>   	return 0;
+>   err_out:
+>   	return ret;
+> @@ -716,7 +744,7 @@ void gpmi_begin(struct gpmi_nand_data *this)
+>   	int ret;
+>   
+>   	/* Enable the clock. */
+> -	ret = clk_prepare_enable(r->clock);
+> +	ret = gpmi_enable_clk(this);
+>   	if (ret) {
+>   		pr_err("We failed in enable the clk\n");
+>   		goto err_out;
+> @@ -727,7 +755,7 @@ void gpmi_begin(struct gpmi_nand_data *this)
+>   		gpmi_regs + HW_GPMI_TIMING1);
+>   
+>   	/* Get the timing information we need. */
+> -	nfc->clock_frequency_in_hz = clk_get_rate(r->clock);
+> +	nfc->clock_frequency_in_hz = clk_get_rate(r->clock[0]);
+>   	clock_period_in_ns = 1000000000 / nfc->clock_frequency_in_hz;
+>   
+>   	gpmi_nfc_compute_hardware_timing(this, &hw);
+> @@ -784,8 +812,7 @@ err_out:
+>   
+>   void gpmi_end(struct gpmi_nand_data *this)
+>   {
+> -	struct resources *r = &this->resources;
+> -	clk_disable_unprepare(r->clock);
+> +	gpmi_disable_clk(this);
+>   }
+>   
+>   /* Clears a BCH interrupt. */
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> index 941cfb7..edda3b1 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -464,9 +464,59 @@ acquire_err:
+>   	return -EINVAL;
+>   }
+>   
+> +static void gpmi_put_clks(struct gpmi_nand_data *this)
+> +{
+> +	struct resources *r = &this->resources;
+> +	struct clk *clk;
+> +	int i;
+> +
+> +	for (i = 0; i < GPMI_CLK_MAX; i++) {
+> +		clk = r->clock[i];
+> +		if (clk) {
+> +			clk_put(clk);
+> +			r->clock[i] = NULL;
+> +		}
+> +	}
+> +}
+> +
+> +static char *extra_clks_for_mx6q[] = {
+> +	"gpmi_apb", "gpmi_bch", "gpmi_bch_apb", "per1_bch",
+> +};
+> +
+> +static int __devinit gpmi_get_clks(struct gpmi_nand_data *this)
+> +{
+> +	struct resources *r = &this->resources;
+> +	char **extra_clks = NULL;
+> +	struct clk *clk;
+> +	int i;
+> +
+> +	r->clock[0] = clk_get(&this->pdev->dev, NULL);
+> +	if (IS_ERR(r->clock[0]))
+> +		goto err_clock;
+> +
+> +	/* Get extra clocks */
+> +	if (GPMI_IS_MX6Q(this))
+> +		extra_clks = extra_clks_for_mx6q;
+> +	if (!extra_clks)
+> +		return 0;
+> +
+> +	for (i = 1; i < GPMI_CLK_MAX; i++) {
+> +		clk = clk_get(NULL, extra_clks[i - 1]);
+> +		if (IS_ERR(clk))
+> +			goto err_clock;
+> +
+> +		r->clock[i] = clk;
+> +	}
+> +	return 0;
+> +
+> +err_clock:
+> +	pr_err("failed in finding the clocks.\n");
+> +	gpmi_put_clks(this);
+> +	return -ENOMEM;
+> +}
+> +
+>   static int __devinit acquire_resources(struct gpmi_nand_data *this)
+>   {
+> -	struct resources *res = &this->resources;
+>   	struct pinctrl *pinctrl;
+>   	int ret;
+>   
+> @@ -492,12 +542,9 @@ static int __devinit acquire_resources(struct gpmi_nand_data *this)
+>   		goto exit_pin;
+>   	}
+>   
+> -	res->clock = clk_get(&this->pdev->dev, NULL);
+> -	if (IS_ERR(res->clock)) {
+> -		pr_err("can not get the clock\n");
+> -		ret = -ENOENT;
+> +	ret = gpmi_get_clks(this);
+> +	if (ret)
+>   		goto exit_clock;
+> -	}
+>   	return 0;
+>   
+>   exit_clock:
+> @@ -512,9 +559,7 @@ exit_regs:
+>   
+>   static void release_resources(struct gpmi_nand_data *this)
+>   {
+> -	struct resources *r = &this->resources;
+> -
+> -	clk_put(r->clock);
+> +	gpmi_put_clks(this);
+>   	release_register_block(this);
+>   	release_bch_irq(this);
+>   	release_dma_channels(this);
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+> index ce5daa1..1547a60 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+> @@ -22,6 +22,7 @@
+>   #include <linux/dma-mapping.h>
+>   #include <linux/fsl/mxs-dma.h>
+>   
+> +#define GPMI_CLK_MAX 5 /* MX6Q needs five clocks */
+>   struct resources {
+>   	void          *gpmi_regs;
+>   	void          *bch_regs;
+> @@ -29,7 +30,7 @@ struct resources {
+>   	unsigned int  bch_high_interrupt;
+>   	unsigned int  dma_low_channel;
+>   	unsigned int  dma_high_channel;
+> -	struct clk    *clock;
+> +	struct clk    *clock[GPMI_CLK_MAX];
+>   };
+>   
+>   /**
