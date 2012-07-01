@@ -1,19 +1,23 @@
-Received: from mo6-p00-ob.rzone.de ([2a01:238:20a:202:5300::1])
+Received: from ozlabs.org ([2402:b800:7003:1:1::1])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SlDwC-0000Fl-9q
- for linux-mtd@lists.infradead.org; Sun, 01 Jul 2012 06:47:18 +0000
-Message-ID: <4FEFF265.3010102@gatzka.org>
-Date: Sun, 01 Jul 2012 08:47:01 +0200
-From: Stephan Gatzka <stephan@gatzka.org>
+ id 1SlE3I-0000Sn-Vu
+ for linux-mtd@lists.infradead.org; Sun, 01 Jul 2012 06:54:42 +0000
+From: Rusty Russell <rusty@ozlabs.org>
+To: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 11/11] UBI: Fastmap: Add a module parameter to enable
+ fastmap
+In-Reply-To: <1340982869-77042-12-git-send-email-richard@nod.at>
+References: <1340982869-77042-1-git-send-email-richard@nod.at>
+ <1340982869-77042-12-git-send-email-richard@nod.at>
+Date: Sun, 01 Jul 2012 15:58:12 +0930
+Message-ID: <87vci8xaf7.fsf@rustcorp.com.au>
 MIME-Version: 1.0
-To: =?ISO-8859-1?Q?Albrecht_Dre=DF?= <albrecht.dress@arcor.de>
-Subject: Re: MPC5200b jffs2 memcpy alignment problem
-References: <1341086991.2252.0@antares>
-In-Reply-To: <1341086991.2252.0@antares>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature";
- micalg=sha1; boundary="------------ms090800020901090108030007"
-Cc: linuxppc-dev@lists.ozlabs.org, linux-mtd@lists.infradead.org
-Reply-To: stephan@gatzka.org
+Content-Type: text/plain; charset=us-ascii
+Cc: nyoushchenko@mvista.com, artem.bityutskiy@linux.intel.com,
+ linux-kernel@vger.kernel.org, adrian.hunter@intel.com,
+ Heinz.Egger@linutronix.de, thomas.wucher@linutronix.de,
+ shmulik.ladkani@gmail.com, Richard Weinberger <richard@nod.at>,
+ tglx@linutronix.de, Marius.Mazarel@ugal.ro, tim.bird@am.sony.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,125 +27,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a cryptographically signed message in MIME format.
+On Fri, 29 Jun 2012 17:14:29 +0200, Richard Weinberger <richard@nod.at> wrote:
+> The new parameter, ubi.fm_auto is per default 0.
 
---------------ms090800020901090108030007
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+...
+> +module_param(fm_auto, bool, 000);
 
-Hi Albrecht,
+Hmm, do you really not want to see this in sysfs?  Or set it?
 
- > I don't recall who proposed this patch, but exactly this solution is
- > around for a longer time (mayby you search archives...).  On my board,=
- I
- > have a flash chip attached to the LocalBus in 16-bit mode.  Based on
- > 3.2.16, the patch is:
-
-Thanks for your answer and yes, this patch will definitely work. But I=20
-want to have a solution in the mainline kernel, that's why I'm asking=20
-how to deal best with this problem.
-
-Regards,
-
-Stephan
-
-
---------------ms090800020901090108030007
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIO6TCC
-BJ0wggOFoAMCAQICEDQ96SusJzT/j8s0lPvMcFQwDQYJKoZIhvcNAQEFBQAwbzELMAkGA1UE
-BhMCU0UxFDASBgNVBAoTC0FkZFRydXN0IEFCMSYwJAYDVQQLEx1BZGRUcnVzdCBFeHRlcm5h
-bCBUVFAgTmV0d29yazEiMCAGA1UEAxMZQWRkVHJ1c3QgRXh0ZXJuYWwgQ0EgUm9vdDAeFw0w
-NTA2MDcwODA5MTBaFw0yMDA1MzAxMDQ4MzhaMIGuMQswCQYDVQQGEwJVUzELMAkGA1UECBMC
-VVQxFzAVBgNVBAcTDlNhbHQgTGFrZSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNUIE5l
-dHdvcmsxITAfBgNVBAsTGGh0dHA6Ly93d3cudXNlcnRydXN0LmNvbTE2MDQGA1UEAxMtVVRO
-LVVTRVJGaXJzdC1DbGllbnQgQXV0aGVudGljYXRpb24gYW5kIEVtYWlsMIIBIjANBgkqhkiG
-9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsjmFpPJ9q0E7YkY3rs3BYHW8OWX5ShpHornMSMxqmNVN
-NRm5pELlzkniii8efNIxB8dOtINknS4p1aJkxIW9hVE1eaROaJB7HHqkkqgX8pgV8pPMyaQy
-lbsMTzC9mKALi+VuG6JG+ni8om+rWV6lL8/K2m2qL+usobNqqrcuZzWLeeEeaYji5kbNoKXq
-vgvOdjp6Dpvq/NonWz1zHyLmSGHGTPNpsaguG7bUMSAsvIKKjqQOpdeJQ/wWWq8dcdcRWdq6
-hw2v+vPhwvCkxWeM1tZUOt4KpLoDd7NlyP0e03RiqhjKaJMeoYV+9Udly/hNVyh00jT/MLbu
-9mIwFIws6wIDAQABo4H0MIHxMB8GA1UdIwQYMBaAFK29mHo0tCb3+sQmVO8DveAky1QaMB0G
-A1UdDgQWBBSJgmd9xJ0mcABLtFBIfN49rgRufTAOBgNVHQ8BAf8EBAMCAQYwDwYDVR0TAQH/
-BAUwAwEB/zARBgNVHSAECjAIMAYGBFUdIAAwRAYDVR0fBD0wOzA5oDegNYYzaHR0cDovL2Ny
-bC51c2VydHJ1c3QuY29tL0FkZFRydXN0RXh0ZXJuYWxDQVJvb3QuY3JsMDUGCCsGAQUFBwEB
-BCkwJzAlBggrBgEFBQcwAYYZaHR0cDovL29jc3AudXNlcnRydXN0LmNvbTANBgkqhkiG9w0B
-AQUFAAOCAQEAAbyc42MosPMxAcLfe91ioAGdIzEPnJJzU1HqH0z61p/Eyi9nfngzD3QWuZGH
-kfWKJvpkcADYHvkLBGJQh5OB1Nr1I9s0u4VWtHA0bniDNx6FHMURFZJfhxe9rGr98cLRzIlf
-sXzwPlHyNfN87GCYazor4O/fs32G67Ub9VvsonyYE9cAULnRLXPeA3h04QWFMV7LmrmdlMa5
-lDd1ctxE+2fo8PolHlKn2iXpR+CgxzygTrEKNvt3SJ/vl4r7tP7jlBSog7xcLT/SYHFg7sJx
-ggzpiDbj2iC0o6BsqpZLuICOdcpJB/Y7FLrf3AXZn9vgsuZNoHgm5+ctbn9fxh6IFTCCBRow
-ggQCoAMCAQICEG0Z6qcZT2ozIuYiMnqqcd4wDQYJKoZIhvcNAQEFBQAwga4xCzAJBgNVBAYT
-AlVTMQswCQYDVQQIEwJVVDEXMBUGA1UEBxMOU2FsdCBMYWtlIENpdHkxHjAcBgNVBAoTFVRo
-ZSBVU0VSVFJVU1QgTmV0d29yazEhMB8GA1UECxMYaHR0cDovL3d3dy51c2VydHJ1c3QuY29t
-MTYwNAYDVQQDEy1VVE4tVVNFUkZpcnN0LUNsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgRW1h
-aWwwHhcNMTEwNDI4MDAwMDAwWhcNMjAwNTMwMTA0ODM4WjCBkzELMAkGA1UEBhMCR0IxGzAZ
-BgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMR
-Q09NT0RPIENBIExpbWl0ZWQxOTA3BgNVBAMTMENPTU9ETyBDbGllbnQgQXV0aGVudGljYXRp
-b24gYW5kIFNlY3VyZSBFbWFpbCBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEB
-AJKEhFtLV5jUXi+LpOFAyKNTWF9mZfEyTvefMn1V0HhMVbdClOD5J3EHxcZppLkyxPFAGpDM
-J1Zifxe1cWmu5SAb5MtjXmDKokH2auGj/7jfH0htZUOMKi4rYzh337EXrMLaggLW1DJq1Gdv
-IBOPXDX65VSAr9hxCh03CgJQU2yVHakQFLSZlVkSMf8JotJM3FLb3uJAAVtIaN3FSrTg7SQf
-Oq9xXwfjrL8UO7AlcWg99A/WF1hGFYE8aIuLgw9teiFX5jSw2zJ+40rhpVJyZCaRTqWSD//g
-sWD9Gm9oUZljjRqLpcxCm5t9ImPTqaD8zp6Q30QZ9FxbNboW86eb/8ECAwEAAaOCAUswggFH
-MB8GA1UdIwQYMBaAFImCZ33EnSZwAEu0UEh83j2uBG59MB0GA1UdDgQWBBR6E04AdFvGeGNk
-J8Ev4qBbvHnFezAOBgNVHQ8BAf8EBAMCAQYwEgYDVR0TAQH/BAgwBgEB/wIBADARBgNVHSAE
-CjAIMAYGBFUdIAAwWAYDVR0fBFEwTzBNoEugSYZHaHR0cDovL2NybC51c2VydHJ1c3QuY29t
-L1VUTi1VU0VSRmlyc3QtQ2xpZW50QXV0aGVudGljYXRpb25hbmRFbWFpbC5jcmwwdAYIKwYB
-BQUHAQEEaDBmMD0GCCsGAQUFBzAChjFodHRwOi8vY3J0LnVzZXJ0cnVzdC5jb20vVVROQWRk
-VHJ1c3RDbGllbnRfQ0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3Qu
-Y29tMA0GCSqGSIb3DQEBBQUAA4IBAQCF1r54V1VtM39EUv5C1QaoAQOAivsNsv1Kv/avQUn1
-G1rF0q0bc24+6SZ85kyYwTAo38v7QjyhJT4KddbQPTmGZtGhm7VNm2+vKGwdr+XqdFqo2rHA
-8XV6L566k3nK/uKRHlZ0sviN0+BDchvtj/1gOSBH+4uvOmVIPJg9pSW/ve9g4EnlFsjrP0OD
-8ODuDcHTzTNfm9C9YGqzO/761Mk6PB/tm/+bSTO+Qik5g+4zaS6CnUVNqGnagBsePdIaXXxH
-maWbCG0SmYbWXVcHG6cwvktJRLiQfsrReTjrtDP6oDpdJlieYVUYtCHVmdXgQ0BCML7qpeeU
-0rD+83X5f27nMIIFJjCCBA6gAwIBAgIRAOOJ/wM6hj9EB38z0B4mcIEwDQYJKoZIhvcNAQEF
-BQAwgZMxCzAJBgNVBAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNV
-BAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMTkwNwYDVQQDEzBDT01P
-RE8gQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTExMjI3
-MDAwMDAwWhcNMTIxMjI2MjM1OTU5WjAjMSEwHwYJKoZIhvcNAQkBFhJzdGVwaGFuQGdhdHpr
-YS5vcmcwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC9SmO4JMMpgho+o+AFAMC7
-qUkKx1u+eGa3CtZo8dC68qTXT0CbSMRHi6m6/MuB7vrRtqfwhT2jxUHBHhyW9DcWQGkXKMoD
-cseTjLaHJuQkqnouWxJ7qMmkm+Uk1JpZw5fNkDs/frJdsah7/dKm6Ot4q1B0tMeqF5fi61w4
-xy/K2YQrL5h6EMiybWe5l3c0UJcBpjPLMSRWhMOnK+hZAIuR+ayLJ4Cka+3cXEa0coSpKGYV
-eO/7DYdGO3JOz8fREYWDcTdduKswhTdtJJs1Y/LhaB0okNn4iR4XGVDR191Bccj7BPpTTtwb
-73l/bF+G3W7RV6zfgIGgfJtrnkHMfI6XAgMBAAGjggHiMIIB3jAfBgNVHSMEGDAWgBR6E04A
-dFvGeGNkJ8Ev4qBbvHnFezAdBgNVHQ4EFgQUVy6XE8cMII7deU9U5PFJuHMTZ5gwDgYDVR0P
-AQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwIAYDVR0lBBkwFwYIKwYBBQUHAwQGCysGAQQBsjEB
-AwUCMBEGCWCGSAGG+EIBAQQEAwIFIDBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEBATArMCkG
-CCsGAQUFBwIBFh1odHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBXBgNVHR8EUDBOMEyg
-SqBIhkZodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9DbGllbnRBdXRoZW50aWNhdGlv
-bmFuZFNlY3VyZUVtYWlsQ0EuY3JsMIGIBggrBgEFBQcBAQR8MHowUgYIKwYBBQUHMAKGRmh0
-dHA6Ly9jcnQuY29tb2RvY2EuY29tL0NPTU9ET0NsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2Vj
-dXJlRW1haWxDQS5jcnQwJAYIKwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAd
-BgNVHREEFjAUgRJzdGVwaGFuQGdhdHprYS5vcmcwDQYJKoZIhvcNAQEFBQADggEBAIp2Qi/h
-0sEoZ3OgYr+064wEHb1FdVa4DCJbqdJVJ8TCIF0nOcgi4GW+R5rlDa0voJ/CDRsHwsfBDgrO
-IjBVgff9SXqgkvxeFtHNi4nHZwgLgpsYkYlXtYtt+vQgxFqi3Oi0ke5bA563IaLgLGE9EU10
-uctMF7eYge0f2uFOgvz2W1cIPc+PJmbxMkvjoDONRo4xVsm+Qa0wXQnDlAbiW+2pE7UkANhX
-egKhdAfiC9YGXlOJHCFHjkiMnkdpGNUaWE2yFs+qfUzseQr1GfXWvlD6SVjmyuZfqeDMAfoF
-V2hq7QMgaZ3waxrrYH5BLQIB4yYs895vPSPMnJUvL6zgHhExggQcMIIEGAIBATCBqTCBkzEL
-MAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2Fs
-Zm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQxOTA3BgNVBAMTMENPTU9ETyBDbGll
-bnQgQXV0aGVudGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAOOJ/wM6hj9EB38z0B4m
-cIEwCQYFKw4DAhoFAKCCAkcwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0B
-CQUxDxcNMTIwNzAxMDY0NzAxWjAjBgkqhkiG9w0BCQQxFgQUSo0AOSgqsvIzoNL6zkbNlW6R
-qS8wbAYJKoZIhvcNAQkPMV8wXTALBglghkgBZQMEASowCwYJYIZIAWUDBAECMAoGCCqGSIb3
-DQMHMA4GCCqGSIb3DQMCAgIAgDANBggqhkiG9w0DAgIBQDAHBgUrDgMCBzANBggqhkiG9w0D
-AgIBKDCBugYJKwYBBAGCNxAEMYGsMIGpMIGTMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
-YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRowGAYDVQQKExFDT01PRE8gQ0Eg
-TGltaXRlZDE5MDcGA1UEAxMwQ09NT0RPIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2Vj
-dXJlIEVtYWlsIENBAhEA44n/AzqGP0QHfzPQHiZwgTCBvAYLKoZIhvcNAQkQAgsxgayggakw
-gZMxCzAJBgNVBAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcT
-B1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMTkwNwYDVQQDEzBDT01PRE8g
-Q2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDjif8DOoY/RAd/
-M9AeJnCBMA0GCSqGSIb3DQEBAQUABIIBAEpmy4VyDgy54SkgZdUTmLP+Y4m2NoHkQu7qva7S
-N7NcT5pj7zkcSbFHBnSEdVWL42vvsF2+iKq23f/e6kqhEP+ulqE+//MnFz3DfztbwwU55Ba/
-MNNzyWy5Age5yhgaiAcfbsuKOwgCWB9jNqYkoCS91RIdC0mNJmgxEORKAwy5zlUKS3U6Bl2D
-z02KkQp3QIrLk2EGM1J+hmMKuremM0RO9Jdm9KhutNEB097cEBL+lNmVWsMAHvJAWBHEEyf3
-9OriVkebTagVnz3ACUHCHXImjnQgE7x3CkJYlbQm9SH6oADUTLQLUooWXganfkLjRHqVNwD8
-uBkF02ShRkLd8JMAAAAAAAA=
---------------ms090800020901090108030007--
+Cheers,
+Rusty.
