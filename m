@@ -1,13 +1,21 @@
-From: Huang Shijie <shijie8@gmail.com>
-To: shawn.guo@linaro.org
-Subject: [PATCH v4 2/2] mtd: gpmi: change the code for clocks
-Date: Mon,  2 Jul 2012 21:39:32 -0400
-Message-Id: <1341279572-6098-3-git-send-email-shijie8@gmail.com>
-In-Reply-To: <1341279572-6098-1-git-send-email-shijie8@gmail.com>
-References: <1341279572-6098-1-git-send-email-shijie8@gmail.com>
-Cc: Huang Shijie <shijie8@gmail.com>, dong.aisheng@linaro.org,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- dedekind1@gmail.com
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SljFu-0002Dc-1m
+ for linux-mtd@lists.infradead.org; Mon, 02 Jul 2012 16:13:46 +0000
+Received: by yenr9 with SMTP id r9so4568212yen.36
+ for <linux-mtd@lists.infradead.org>; Mon, 02 Jul 2012 09:13:28 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1340796875.29342.60.camel@sauron.fi.intel.com>
+References: <1340062283-11421-1-git-send-email-computersforpeace@gmail.com>
+ <1340796875.29342.60.camel@sauron.fi.intel.com>
+Date: Mon, 2 Jul 2012 09:13:28 -0700
+Message-ID: <CAN8TOE_zv1n_Ugx9YD2XYH2trnPhHuYdWOzg5g4v2jys5Eg=fw@mail.gmail.com>
+Subject: Re: [PATCH 0/2] UBI(FS): fixing IS_ENABLED() usage + backport trees
+From: Brian Norris <computersforpeace@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,255 +25,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The gpmi nand driver may needs several clocks(MX6Q needs five clocks).
+On Wed, Jun 27, 2012 at 4:34 AM, Artem Bityutskiy <dedekind1@gmail.com> wro=
+te:
+> On Mon, 2012-06-18 at 16:31 -0700, Brian Norris wrote:
+>> =A02) IS_ENABLED() has changed some between v3.3 and when this commit wa=
+s
+>> =A0originally integrated in mainline, so it masks a compile error in the
+>> =A0mainline version
+>
+> Not sure what you mean. It was introduced in 3.1
+> (2a11c8ea20bf850b3a2c60db8c2e7497d28aba99), so I have to back-port it
+> older ubifs backport trees.
 
-In the old clock framework, all these clocks are chained together,
-all you need is to manipulate the first clock.
+I was referring to
+kconfig: fix IS_ENABLED to not require all options to be defined
+69349c2dc01c489eccaa4c472542c08e370c6d7e
+which was introduced in 3.4. I think this masks some errors in your
+mainline patch, but when you backport between 3.1..3.4-rc2, you get
+compilation errors.
 
-But the kernel uses the common clk framework now, which forces us to
-get the clocks one by one. When we use them, we have to enable them
-one by one too.
+>> This patch series addresses issue 1. I suggest that this be backported t=
+o
+>> the appropriate UBIFS tree to solve some build failures. But I think iss=
+ue
+>> 2 may still be a problem, so perhaps the mainline IS_ENABLED() fix shoul=
+d
+>> be backported as well?
+>
+> I guess you are talking about commit
+> 69349c2dc01c489eccaa4c472542c08e370c6d7e ? I'll port it too, thanks.
 
-Signed-off-by: Huang Shijie <shijie8@gmail.com>
----
- drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |   45 ++++++++++++++---
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   82 ++++++++++++++++++++++++++++----
- drivers/mtd/nand/gpmi-nand/gpmi-nand.h |    3 +-
- 3 files changed, 112 insertions(+), 18 deletions(-)
+Right, I was talking about this fix (above); but on second thought,
+you may not need to port it. It is only needed to mask your error, but
+now that it's fixed, you don't need the port. But I didn't look very
+closely :)
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-index a1f4332..6bb0998 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-@@ -124,12 +124,42 @@ error:
- 	return -ETIMEDOUT;
- }
- 
-+static int __gpmi_enable_clk(struct gpmi_nand_data *this, bool v)
-+{
-+	struct clk *clk;
-+	int ret;
-+	int i;
-+
-+	for (i = 0; i < GPMI_CLK_MAX; i++) {
-+		clk = this->resources.clock[i];
-+		if (!clk)
-+			break;
-+
-+		if (v) {
-+			ret = clk_prepare_enable(clk);
-+			if (ret)
-+				goto err_clk;
-+		} else {
-+			clk_disable_unprepare(clk);
-+		}
-+	}
-+	return 0;
-+
-+err_clk:
-+	for (; i > 0; i--)
-+		clk_disable_unprepare(this->resources.clock[i - 1]);
-+	return ret;
-+}
-+
-+#define gpmi_enable_clk(x) __gpmi_enable_clk(x, true)
-+#define gpmi_disable_clk(x) __gpmi_enable_clk(x, false)
-+
- int gpmi_init(struct gpmi_nand_data *this)
- {
- 	struct resources *r = &this->resources;
- 	int ret;
- 
--	ret = clk_prepare_enable(r->clock);
-+	ret = gpmi_enable_clk(this);
- 	if (ret)
- 		goto err_out;
- 	ret = gpmi_reset_block(r->gpmi_regs, false);
-@@ -149,7 +179,7 @@ int gpmi_init(struct gpmi_nand_data *this)
- 	/* Select BCH ECC. */
- 	writel(BM_GPMI_CTRL1_BCH_MODE, r->gpmi_regs + HW_GPMI_CTRL1_SET);
- 
--	clk_disable_unprepare(r->clock);
-+	gpmi_disable_clk(this);
- 	return 0;
- err_out:
- 	return ret;
-@@ -205,7 +235,7 @@ int bch_set_geometry(struct gpmi_nand_data *this)
- 	ecc_strength  = bch_geo->ecc_strength >> 1;
- 	page_size     = bch_geo->page_size;
- 
--	ret = clk_prepare_enable(r->clock);
-+	ret = gpmi_enable_clk(this);
- 	if (ret)
- 		goto err_out;
- 
-@@ -240,7 +270,7 @@ int bch_set_geometry(struct gpmi_nand_data *this)
- 	writel(BM_BCH_CTRL_COMPLETE_IRQ_EN,
- 				r->bch_regs + HW_BCH_CTRL_SET);
- 
--	clk_disable_unprepare(r->clock);
-+	gpmi_disable_clk(this);
- 	return 0;
- err_out:
- 	return ret;
-@@ -716,7 +746,7 @@ void gpmi_begin(struct gpmi_nand_data *this)
- 	int ret;
- 
- 	/* Enable the clock. */
--	ret = clk_prepare_enable(r->clock);
-+	ret = gpmi_enable_clk(this);
- 	if (ret) {
- 		pr_err("We failed in enable the clk\n");
- 		goto err_out;
-@@ -727,7 +757,7 @@ void gpmi_begin(struct gpmi_nand_data *this)
- 		gpmi_regs + HW_GPMI_TIMING1);
- 
- 	/* Get the timing information we need. */
--	nfc->clock_frequency_in_hz = clk_get_rate(r->clock);
-+	nfc->clock_frequency_in_hz = clk_get_rate(r->clock[0]);
- 	clock_period_in_ns = 1000000000 / nfc->clock_frequency_in_hz;
- 
- 	gpmi_nfc_compute_hardware_timing(this, &hw);
-@@ -784,8 +814,7 @@ err_out:
- 
- void gpmi_end(struct gpmi_nand_data *this)
- {
--	struct resources *r = &this->resources;
--	clk_disable_unprepare(r->clock);
-+	gpmi_disable_clk(this);
- }
- 
- /* Clears a BCH interrupt. */
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index a6cad5c..b821517 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -464,9 +464,78 @@ acquire_err:
- 	return -EINVAL;
- }
- 
-+static void gpmi_put_clks(struct gpmi_nand_data *this)
-+{
-+	struct resources *r = &this->resources;
-+	struct clk *clk;
-+	int i;
-+
-+	for (i = 0; i < GPMI_CLK_MAX; i++) {
-+		clk = r->clock[i];
-+		if (clk) {
-+			clk_put(clk);
-+			r->clock[i] = NULL;
-+		}
-+	}
-+}
-+
-+static char *extra_clks_for_mx6q[GPMI_CLK_MAX] = {
-+	"gpmi_apb", "gpmi_bch", "gpmi_bch_apb", "per1_bch",
-+};
-+
-+static int __devinit gpmi_get_clks(struct gpmi_nand_data *this)
-+{
-+	struct resources *r = &this->resources;
-+	char **extra_clks = NULL;
-+	struct clk *clk;
-+	int i;
-+
-+	/* The main clock is stored in the first. */
-+	r->clock[0] = clk_get(this->dev, "gpmi_io");
-+	if (IS_ERR(r->clock[0]))
-+		goto err_clock;
-+
-+	/* Get extra clocks */
-+	if (GPMI_IS_MX6Q(this))
-+		extra_clks = extra_clks_for_mx6q;
-+	if (!extra_clks)
-+		return 0;
-+
-+	for (i = 1; i < GPMI_CLK_MAX; i++) {
-+		if (extra_clks[i - 1] == NULL)
-+			break;
-+
-+		clk = clk_get(this->dev, extra_clks[i - 1]);
-+		if (IS_ERR(clk))
-+			goto err_clock;
-+
-+		r->clock[i] = clk;
-+	}
-+
-+	if (GPMI_IS_MX6Q(this)) {
-+		/*
-+		 * Set the default values for the clocks in mx6q:
-+		 *    The main clock(enfc) : 22MHz
-+		 *    The others           : 44.5MHz
-+		 *
-+		 * These are just the default values. If you want to use
-+		 * the ONFI nand which is in the Synchronous Mode, you should
-+		 * change the clocks's frequencies as you need.
-+		 */
-+		clk_set_rate(r->clock[0], 22000000);
-+		for (i = 1; i < GPMI_CLK_MAX && r->clock[i]; i++)
-+			clk_set_rate(r->clock[i], 44500000);
-+	}
-+	return 0;
-+
-+err_clock:
-+	dev_dbg(this->dev, "failed in finding the clocks.\n");
-+	gpmi_put_clks(this);
-+	return -ENOMEM;
-+}
-+
- static int __devinit acquire_resources(struct gpmi_nand_data *this)
- {
--	struct resources *res = &this->resources;
- 	struct pinctrl *pinctrl;
- 	int ret;
- 
-@@ -492,12 +561,9 @@ static int __devinit acquire_resources(struct gpmi_nand_data *this)
- 		goto exit_pin;
- 	}
- 
--	res->clock = clk_get(&this->pdev->dev, NULL);
--	if (IS_ERR(res->clock)) {
--		pr_err("can not get the clock\n");
--		ret = -ENOENT;
-+	ret = gpmi_get_clks(this);
-+	if (ret)
- 		goto exit_clock;
--	}
- 	return 0;
- 
- exit_clock:
-@@ -512,9 +578,7 @@ exit_regs:
- 
- static void release_resources(struct gpmi_nand_data *this)
- {
--	struct resources *r = &this->resources;
--
--	clk_put(r->clock);
-+	gpmi_put_clks(this);
- 	release_register_block(this);
- 	release_bch_irq(this);
- 	release_dma_channels(this);
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-index ce5daa1..1547a60 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-@@ -22,6 +22,7 @@
- #include <linux/dma-mapping.h>
- #include <linux/fsl/mxs-dma.h>
- 
-+#define GPMI_CLK_MAX 5 /* MX6Q needs five clocks */
- struct resources {
- 	void          *gpmi_regs;
- 	void          *bch_regs;
-@@ -29,7 +30,7 @@ struct resources {
- 	unsigned int  bch_high_interrupt;
- 	unsigned int  dma_low_channel;
- 	unsigned int  dma_high_channel;
--	struct clk    *clock;
-+	struct clk    *clock[GPMI_CLK_MAX];
- };
- 
- /**
--- 
-1.7.4.4
+Regards,
+Brian
