@@ -1,26 +1,13 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SlGfH-0007tV-SP
- for linux-mtd@lists.infradead.org; Sun, 01 Jul 2012 09:42:01 +0000
-Message-ID: <4FF01B47.4060604@nod.at>
-Date: Sun, 01 Jul 2012 11:41:27 +0200
-From: Richard Weinberger <richard@nod.at>
-MIME-Version: 1.0
-To: Rusty Russell <rusty@ozlabs.org>
-Subject: Re: [PATCH 11/11] UBI: Fastmap: Add a module parameter to enable
- fastmap
-References: <1340982869-77042-1-git-send-email-richard@nod.at>
- <1340982869-77042-12-git-send-email-richard@nod.at>
- <87vci8xaf7.fsf@rustcorp.com.au>
-In-Reply-To: <87vci8xaf7.fsf@rustcorp.com.au>
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigE2A6B4FFFCB11DE28BBB6A92"
-Cc: nyoushchenko@mvista.com, artem.bityutskiy@linux.intel.com,
- linux-kernel@vger.kernel.org, adrian.hunter@intel.com,
- Heinz.Egger@linutronix.de, thomas.wucher@linutronix.de,
- linux-mtd@lists.infradead.org, shmulik.ladkani@gmail.com, tglx@linutronix.de,
- Marius.Mazarel@ugal.ro, tim.bird@am.sony.com
+From: Huang Shijie <shijie8@gmail.com>
+To: shawn.guo@linaro.org
+Subject: [PATCH v2 1/3] ARM: imx6q: add clocks for gpmi-nand
+Date: Sun,  1 Jul 2012 23:24:34 -0400
+Message-Id: <1341199476-7446-2-git-send-email-shijie8@gmail.com>
+In-Reply-To: <1341199476-7446-1-git-send-email-shijie8@gmail.com>
+References: <1341199476-7446-1-git-send-email-shijie8@gmail.com>
+Cc: Huang Shijie <shijie8@gmail.com>, dong.aisheng@linaro.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,43 +17,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigE2A6B4FFFCB11DE28BBB6A92
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Add clocks for gpmi-nand.
 
-Am 01.07.2012 08:28, schrieb Rusty Russell:
-> On Fri, 29 Jun 2012 17:14:29 +0200, Richard Weinberger <richard@nod.at>=
- wrote:
->> The new parameter, ubi.fm_auto is per default 0.
->=20
-> ...
->> +module_param(fm_auto, bool, 000);
->=20
-> Hmm, do you really not want to see this in sysfs?  Or set it?
+Signed-off-by: Huang Shijie <shijie8@gmail.com>
+---
+ arch/arm/mach-imx/clk-imx6q.c |    8 +++++++-
+ 1 files changed, 7 insertions(+), 1 deletions(-)
 
-Okay, exposing this parameter to sysfs does not hurt and may be useful.
-I'll change the permission to 0600.
-
-Thanks,
-//richard
-
-
---------------enigE2A6B4FFFCB11DE28BBB6A92
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.18 (GNU/Linux)
-
-iQEcBAEBAgAGBQJP8BtNAAoJEN9758yqZn9eOwoIAKuuk2aR9rXPCoxlan38jlhN
-pfMxF8eDcrA9mVYkbbeKUrBs8MoAcrWkSpMfCfJ597l/isaz0CTrNeGHaXdlbznp
-KPsBOk4nE0MXBCEXYcAQo1H9Xj2ArgSenspOMjzvmw3jMSPy8mOHbLuL7nMK0vOD
-up6TqjEV9cW6GCSvuLBM2a7JvV5CrNyvRnsnKVfkfZNWjvhWsOuEJiuAE7hQBk3t
-pM3knfDvP/tttW+wlTmC6VjnxdZo3KJAZNnHYPbvAvWWurTOWaeN3afb9gECK8vK
-wartzzEKRsuw1ScVJtoKAiYCOlJ3p4QFcKIWwVykN/AyouRKUs3EHE5MVQcJX+E=
-=/dR4
------END PGP SIGNATURE-----
-
---------------enigE2A6B4FFFCB11DE28BBB6A92--
+diff --git a/arch/arm/mach-imx/clk-imx6q.c b/arch/arm/mach-imx/clk-imx6q.c
+index 12d9040..a837528 100644
+--- a/arch/arm/mach-imx/clk-imx6q.c
++++ b/arch/arm/mach-imx/clk-imx6q.c
+@@ -151,7 +151,7 @@ enum mx6q_clks {
+ 	esai, gpt_ipg, gpt_ipg_per, gpu2d_core, gpu3d_core, hdmi_iahb,
+ 	hdmi_isfr, i2c1, i2c2, i2c3, iim, enfc, ipu1, ipu1_di0, ipu1_di1, ipu2,
+ 	ipu2_di0, ldb_di0, ldb_di1, ipu2_di1, hsi_tx, mlb, mmdc_ch0_axi,
+-	mmdc_ch1_axi, ocram, openvg_axi, pcie_axi, pwm1, pwm2, pwm3, pwm4,
++	mmdc_ch1_axi, ocram, openvg_axi, pcie_axi, pwm1, pwm2, pwm3, pwm4, per1_bch,
+ 	gpmi_bch_apb, gpmi_bch, gpmi_io, gpmi_apb, sata, sdma, spba, ssi1,
+ 	ssi2, ssi3, uart_ipg, uart_serial, usboh3, usdhc1, usdhc2, usdhc3,
+ 	usdhc4, vdo_axi, vpu_axi, cko1, pll1_sys, pll2_bus, pll3_usb_otg,
+@@ -357,6 +357,7 @@ int __init mx6q_clocks_init(void)
+ 	clk[ocram]        = imx_clk_gate2("ocram",         "ahb",               base + 0x74, 28);
+ 	clk[openvg_axi]   = imx_clk_gate2("openvg_axi",    "axi",               base + 0x74, 30);
+ 	clk[pcie_axi]     = imx_clk_gate2("pcie_axi",      "pcie_axi_sel",      base + 0x78, 0);
++	clk[per1_bch]     = imx_clk_gate2("per1_bch",      "usdhc3",            base + 0x78, 12);
+ 	clk[pwm1]         = imx_clk_gate2("pwm1",          "ipg_per",           base + 0x78, 16);
+ 	clk[pwm2]         = imx_clk_gate2("pwm2",          "ipg_per",           base + 0x78, 18);
+ 	clk[pwm3]         = imx_clk_gate2("pwm3",          "ipg_per",           base + 0x78, 20);
+@@ -394,6 +395,11 @@ int __init mx6q_clocks_init(void)
+ 	clk_register_clkdev(clk[twd], NULL, "smp_twd");
+ 	clk_register_clkdev(clk[usboh3], NULL, "usboh3");
+ 	clk_register_clkdev(clk[apbh_dma], NULL, "110000.dma-apbh");
++	clk_register_clkdev(clk[per1_bch], "per1_bch", "112000.gpmi-nand");
++	clk_register_clkdev(clk[gpmi_bch_apb], "gpmi_bch_apb", "112000.gpmi-nand");
++	clk_register_clkdev(clk[gpmi_bch], "gpmi_bch", "112000.gpmi-nand");
++	clk_register_clkdev(clk[gpmi_apb], "gpmi_apb", "112000.gpmi-nand");
++	clk_register_clkdev(clk[gpmi_io], NULL, "112000.gpmi-nand");
+ 	clk_register_clkdev(clk[uart_serial], "per", "2020000.serial");
+ 	clk_register_clkdev(clk[uart_ipg], "ipg", "2020000.serial");
+ 	clk_register_clkdev(clk[uart_serial], "per", "21e8000.serial");
+-- 
+1.7.4.4
