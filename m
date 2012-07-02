@@ -1,18 +1,18 @@
-Message-ID: <4FF138F2.6070503@freescale.com>
-Date: Mon, 2 Jul 2012 14:00:18 +0800
-From: Huang Shijie <b32955@freescale.com>
+Received: from eu1sys200aog117.obsmtp.com ([207.126.144.143])
+ by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SlZfj-00067S-3c
+ for linux-mtd@lists.infradead.org; Mon, 02 Jul 2012 05:59:43 +0000
+From: Shiraz Hashim <shiraz.hashim@st.com>
+To: <dwmw2@infradead.org>, <viresh.linux@gmail.com>
+Subject: [PATCH 1/3] mtd/spear_smi: Move suspend/resume to follow dev_pm_ops
+Date: Mon, 2 Jul 2012 11:28:45 +0530
+Message-ID: <1341208727-22476-1-git-send-email-shiraz.hashim@st.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-To: Hui Wang <jason77.wang@gmail.com>
-Subject: Re: [PATCH v3 3/3] mtd: gpmi: change the code for clocks
-References: <1341200327-8144-1-git-send-email-shijie8@gmail.com>
- <1341200327-8144-4-git-send-email-shijie8@gmail.com>
- <4FF133F9.50704@gmail.com>
-In-Reply-To: <4FF133F9.50704@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: shawn.guo@linaro.org, dedekind1@gmail.com, linux-mtd@lists.infradead.org,
- dong.aisheng@linaro.org, Huang Shijie <shijie8@gmail.com>,
- linux-arm-kernel@lists.infradead.org
+Cc: spear--sw-devel@lists.codex.cro.st.com, sr@denx.de,
+ linux-mtd@lists.infradead.org, Viresh Kumar <viresh.kumar@st.com>,
+ spear-devel@list.st.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,95 +22,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2012=E5=B9=B407=E6=9C=8802=E6=97=A5 13:39, Hui Wang =E5=86=99=E9=
-=81=93:
-> Huang Shijie wrote:
->> The gpmi nand driver may needs several clocks(MX6Q needs five clocks).
->>
->> In the old clock framework, all these clocks are chained together,
->> all you need is to manipulate the first clock.
->>
->> But the kernel uses the common clk framework now, which forces us to
->> get the clocks one by one. When we use them, we have to enable them
->> one by one too.
->>
->> Signed-off-by: Huang Shijie <shijie8@gmail.com>
->> ---
->> arch/arm/boot/dts/imx6q-arm2.dts | 2 +-
->> drivers/mtd/nand/gpmi-nand/gpmi-lib.c | 43 ++++++++++++++---
->> drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 82=20
->> ++++++++++++++++++++++++++++----
->> drivers/mtd/nand/gpmi-nand/gpmi-nand.h | 3 +-
->> 4 files changed, 111 insertions(+), 19 deletions(-)
->>
->> diff --git a/arch/arm/boot/dts/imx6q-arm2.dts=20
->> b/arch/arm/boot/dts/imx6q-arm2.dts
->> index 14e72e2..027a2f8 100644
->> --- a/arch/arm/boot/dts/imx6q-arm2.dts
->> +++ b/arch/arm/boot/dts/imx6q-arm2.dts
->> @@ -25,7 +25,7 @@
->> gpmi-nand@00112000 {
->> pinctrl-names =3D "default";
->> pinctrl-0 =3D <&pinctrl_gpmi_nand_1>;
->> - status =3D "disabled"; /* gpmi nand conflicts with SD */
->> + status =3D "okay"; /* gpmi nand conflicts with SD */
->> };
->>
->> aips-bus@02100000 { /* AIPS2 */
->> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c=20
->> b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
->> index a1f4332..c3778c0 100644
->> --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
->> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
->> @@ -124,12 +124,40 @@ error:
->> return -ETIMEDOUT;
->> }
->>
->> +static int __gpmi_enable_clk(struct gpmi_nand_data *this, bool v)
->> +{
->> + struct clk *clk;
->> + int ret;
->> + int i;
->> +
->> + for (i =3D 0; i < GPMI_CLK_MAX; i++) {
->> + clk =3D this->resources.clock[i];
->> + if (!clk)
->> + break;
->> +
->> + if (v) {
->> + ret =3D clk_prepare_enable(clk);
->> + if (ret)
->> + goto err_clk;
->> + } else {
->> + clk_disable_unprepare(clk);
->> + }
->> + }
->> + return 0;
->> +
->> +err_clk:
-> Doesn't this design introduce clk_enalbe/disable un-balance problems?
->
-> Suppose you successfully enabled 1st and 2nd clocks, and failed at the=20
-> third clock, this function will return, then the caller function will=20
-> check the return value and call
->
-> __gpmi_enable_clk(this, 0), in this function, it will unconditionally=20
-> disable all five clocks.
-thanks, fix it in next version.
+From: Viresh Kumar <viresh.kumar@st.com>
 
-Huang Shijie
->
->
-> Regards,
-> Hui.
->
->> + return ret;
->> +}
->> +
->
->
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
->
+Use dev_pm_ops to support PM specific callbacks.
+
+Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
+---
+ drivers/mtd/devices/spear_smi.c |   28 +++++++++++++++++-----------
+ 1 file changed, 17 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/mtd/devices/spear_smi.c b/drivers/mtd/devices/spear_smi.c
+index 6796036..cffd36a 100644
+--- a/drivers/mtd/devices/spear_smi.c
++++ b/drivers/mtd/devices/spear_smi.c
+@@ -26,6 +26,7 @@
+ #include <linux/module.h>
+ #include <linux/param.h>
+ #include <linux/platform_device.h>
++#include <linux/pm.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/mtd/spear_smi.h>
+@@ -1086,29 +1087,33 @@ static int __devexit spear_smi_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-int spear_smi_suspend(struct platform_device *pdev, pm_message_t state)
++#ifdef CONFIG_PM
++static int spear_smi_suspend(struct device *dev)
+ {
+-	struct spear_smi *dev = platform_get_drvdata(pdev);
++	struct spear_smi *sdev = dev_get_drvdata(dev);
+ 
+-	if (dev && dev->clk)
+-		clk_disable_unprepare(dev->clk);
++	if (sdev && sdev->clk)
++		clk_disable_unprepare(sdev->clk);
+ 
+ 	return 0;
+ }
+ 
+-int spear_smi_resume(struct platform_device *pdev)
++static int spear_smi_resume(struct device *dev)
+ {
+-	struct spear_smi *dev = platform_get_drvdata(pdev);
++	struct spear_smi *sdev = dev_get_drvdata(dev);
+ 	int ret = -EPERM;
+ 
+-	if (dev && dev->clk)
+-		ret = clk_prepare_enable(dev->clk);
++	if (sdev && sdev->clk)
++		ret = clk_prepare_enable(sdev->clk);
+ 
+ 	if (!ret)
+-		spear_smi_hw_init(dev);
++		spear_smi_hw_init(sdev);
+ 	return ret;
+ }
+ 
++static SIMPLE_DEV_PM_OPS(spear_smi_pm_ops, spear_smi_suspend, spear_smi_resume);
++#endif
++
+ #ifdef CONFIG_OF
+ static const struct of_device_id spear_smi_id_table[] = {
+ 	{ .compatible = "st,spear600-smi" },
+@@ -1123,11 +1128,12 @@ static struct platform_driver spear_smi_driver = {
+ 		.bus = &platform_bus_type,
+ 		.owner = THIS_MODULE,
+ 		.of_match_table = of_match_ptr(spear_smi_id_table),
++#ifdef CONFIG_PM
++		.pm = &spear_smi_pm_ops,
++#endif
+ 	},
+ 	.probe = spear_smi_probe,
+ 	.remove = __devexit_p(spear_smi_remove),
+-	.suspend = spear_smi_suspend,
+-	.resume = spear_smi_resume,
+ };
+ 
+ static int spear_smi_init(void)
+-- 
+1.7.10
