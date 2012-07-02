@@ -1,21 +1,20 @@
-Received: from [213.157.0.172] (helo=relay.medianet-world.de)
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SldWa-0007QU-2B
- for linux-mtd@lists.infradead.org; Mon, 02 Jul 2012 10:06:33 +0000
+Received: from mail-out.m-online.net ([212.18.0.9])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SldmL-0002Ff-O5
+ for linux-mtd@lists.infradead.org; Mon, 02 Jul 2012 10:22:57 +0000
+Date: Mon, 2 Jul 2012 12:21:34 +0200
+From: Anatolij Gustschin <agust@denx.de>
+To: stephan@gatzka.org
+Subject: Re: MPC5200b jffs2 memcpy alignment problem
+Message-ID: <20120702122134.50340f5f@wker>
+In-Reply-To: <4FEFF265.3010102@gatzka.org>
+References: <1341086991.2252.0@antares>
+	<4FEFF265.3010102@gatzka.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Class: urn:content-classes:message
-Date: Mon, 02 Jul 2012 12:05:25 +0200
-Message-ID: <87r4suv5p6.wl%andreas.friesen@hbm.com>
-From: "Andreas Friesen" <andreas.friesen@hbm.com>
-To: <dedekind1@gmail.com>
-Subject: Re: Loosed files after umount/mount
-In-Reply-To: <1340979626.3070.220.camel@sauron.fi.intel.com>
-References: <CAMU=cjyiX2KnntUFYYa-fwi0QAKX-Um1gE8tpNLwNiNsbj8O1Q@mail.gmail.com><1340794858.29342.55.camel@sauron.fi.intel.com><87fw9e8p81.wl%andreas.friesen@hbm.com><1340979626.3070.220.camel@sauron.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Cc: Andreas Friesen <ndrs.frsn@googlemail.com>,
- Andreas Friesen <andreas.friesen@hbm.com>, linux-mtd@lists.infradead.org
+Cc: Albrecht =?ISO-8859-1?B?RHJl3w==?= <albrecht.dress@arcor.de>,
+ linuxppc-dev@lists.ozlabs.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,28 +24,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Artem,
+Hi Stephan,
 
-> Can you try running UBI tests and see what happens? They are in
-> mtd-utils/tests/ubi AFAIR.
+On Sun, 01 Jul 2012 08:47:01 +0200
+Stephan Gatzka <stephan@gatzka.org> wrote:
+
+> Hi Albrecht,
 > 
+>  > I don't recall who proposed this patch, but exactly this solution is
+>  > around for a longer time (mayby you search archives...).  On my board, I
+>  > have a flash chip attached to the LocalBus in 16-bit mode.  Based on
+>  > 3.2.16, the patch is:
+> 
+> Thanks for your answer and yes, this patch will definitely work. But I 
+> want to have a solution in the mainline kernel, that's why I'm asking 
+> how to deal best with this problem.
 
-Thanks for the reply. The problem is far localized.
-The solution must be found yet. Here is the link:
+This problem has been discussed several times [1], [2], but wasn't
+resolved yet. The clean solution suggested was to implement a custom
+mapping driver [3].
 
-http://lists.infradead.org/pipermail/linux-mtd/2012-June/042665.html
+Thanks,
+Anatolij
 
-Regards,
-Andreas
-
-Hottinger Baldwin Messtechnik GmbH, Im Tiefen See 45, 64293 Darmstadt, Germany | www.hbm.com 
-
-Registered as GmbH (German limited liability corporation) in the commercial register at the local court of Darmstadt, HRB 1147  
-Company domiciled in Darmstadt | CEO: Andreas Huellhorst | Chairman of the board: James Charles Webster
-
-Als Gesellschaft mit beschraenkter Haftung eingetragen im Handelsregister des Amtsgerichts Darmstadt unter HRB 1147 
-Sitz der Gesellschaft: Darmstadt | Geschaeftsfuehrung: Andreas Huellhorst | Aufsichtsratsvorsitzender: James Charles Webster
-
-The information in this email is confidential. It is intended solely for the addressee. If you are not the intended recipient, please let me know and delete this email.
-
-Die in dieser E-Mail enthaltene Information ist vertraulich und lediglich fur den Empfaenger bestimmt. Sollten Sie nicht der eigentliche Empfaenger sein, informieren Sie mich bitte kurz und loeschen diese E-Mail.
+[1] http://thread.gmane.org/gmane.linux.drivers.mtd/21521
+[2] http://thread.gmane.org/gmane.linux.ports.ppc.embedded/36324
+[3] http://thread.gmane.org/gmane.linux.ports.ppc.embedded/36324/focus=36608
