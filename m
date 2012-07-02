@@ -1,14 +1,14 @@
-Received: from mail-gh0-f177.google.com ([209.85.160.177])
+Received: from mail-yw0-f43.google.com ([209.85.213.43])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SloeT-0003Y8-J8
- for linux-mtd@lists.infradead.org; Mon, 02 Jul 2012 21:59:26 +0000
-Received: by ghbf11 with SMTP id f11so4992883ghb.36
- for <linux-mtd@lists.infradead.org>; Mon, 02 Jul 2012 14:59:21 -0700 (PDT)
+ id 1Slofa-0003fr-7j
+ for linux-mtd@lists.infradead.org; Mon, 02 Jul 2012 22:00:35 +0000
+Received: by yhl10 with SMTP id 10so627328yhl.16
+ for <linux-mtd@lists.infradead.org>; Mon, 02 Jul 2012 15:00:30 -0700 (PDT)
 From: Fabio Estevam <festevam@gmail.com>
 To: dwmw2@infradead.org
-Subject: 
-Date: Mon,  2 Jul 2012 18:59:11 -0300
-Message-Id: <1341266351-21210-1-git-send-email-festevam@gmail.com>
+Subject: [PATCH] mtd: mxc_nand: Select the driver via ARCH_MXC
+Date: Mon,  2 Jul 2012 19:00:19 -0300
+Message-Id: <1341266419-21321-1-git-send-email-festevam@gmail.com>
 Cc: Fabio Estevam <fabio.estevam@freescale.com>,
  artem.bityutskiy@linux.intel.com, shawn.guo@linaro.org,
  linux-mtd@lists.infradead.org, kernel@pengutronix.de
@@ -22,8 +22,6 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 From: Fabio Estevam <fabio.estevam@freescale.com>
-
-Subject: [PATCH] mtd: mxc_nand: Select the driver via ARCH_MXC
 
 With device tree support in place, we should not use IMX_HAVE_PLATFORM_MXC_NAND
 as a dependency for selecting the mxc_nand driver.
