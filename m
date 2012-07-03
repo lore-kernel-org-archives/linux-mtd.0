@@ -1,29 +1,21 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Sm246-00056Q-JL
- for linux-mtd@lists.infradead.org; Tue, 03 Jul 2012 12:18:51 +0000
-Message-ID: <1341318170.2979.61.camel@sauron.fi.intel.com>
-Subject: Re: mtd nand erase and bad block
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Angus CLARK <angus.clark@st.com>
-Date: Tue, 03 Jul 2012 15:22:50 +0300
-In-Reply-To: <4FF14A5E.2060301@st.com>
-References: <4FC76039.6020701@sirius-es.it> <4FC771EC.4090500@intel.com>
- <4FC78012.5010704@sirius-es.it> <4FC8601C.5070708@intel.com>
- <Pine.LNX.4.64.1206010837100.4247@lnxricardw.se.axis.com>
- <4FC87D62.6020402@st.com> <1338540121.2536.150.camel@sauron.fi.intel.com>
- <20120601140445.346e322e@halley> <4FC8CBA7.6000702@st.com>
- <20120601175407.7c39a8fb@halley>
- <1338898670.2507.48.camel@sauron.fi.intel.com> <4FDEF60A.7010607@st.com>
- <1340790846.29342.19.camel@sauron.fi.intel.com> <4FEAFE73.2040303@st.com>
- <1340965897.3070.144.camel@sauron.fi.intel.com> <4FF14A5E.2060301@st.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-Uy1Em/DMyoDJKzIfzvfv"
+Received: from mail-bk0-f49.google.com ([209.85.214.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Sm2IF-0005St-BU
+ for linux-mtd@lists.infradead.org; Tue, 03 Jul 2012 12:33:23 +0000
+Received: by mail-bk0-f49.google.com with SMTP id ji2so1012388bkc.36
+ for <linux-mtd@lists.infradead.org>; Tue, 03 Jul 2012 05:33:22 -0700 (PDT)
+Date: Tue, 3 Jul 2012 15:33:14 +0300
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: dedekind1@gmail.com
+Subject: Re: [Q] ubi->beb_rsvd_pebs calculations
+Message-ID: <20120703153314.15948c90@pixies.home.jungo.com>
+In-Reply-To: <1341312827.2979.53.camel@sauron.fi.intel.com>
+References: <20120701195230.0f141288@pixies.home.jungo.com>
+ <1341312827.2979.53.camel@sauron.fi.intel.com>
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Reply-To: dedekind1@gmail.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,60 +25,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Artem,
 
---=-Uy1Em/DMyoDJKzIfzvfv
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Tue, 03 Jul 2012 13:53:47 +0300 Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Sun, 2012-07-01 at 19:52 +0300, Shmulik Ladkani wrote:
+> > What do you say?
+> > Would you consider removing this "beb_rsvd_pebs reclaim" block?
+> 
+> Yes, sounds like you are right.
 
-On Mon, 2012-07-02 at 08:14 +0100, Angus CLARK wrote:
-> On 06/29/2012 11:31 AM, Artem Bityutskiy wrote:
-> > On Wed, 2012-06-27 at 13:37 +0100, Angus CLARK wrote:
-> >> However, for case 2, I just want to force the erase operation so I can=
- wipe the
-> >> BBTs and return the device as close as possible to its original state.=
-  We could
-> >> put some logic in the kernel, "if 'MEMBBSCRUB" on BBT blocks, do not
-> >> update/rewrite BBTs", but I think this "policy" decision would be bett=
-er handled
-> >> in userspace.
-> >=20
-> > Sounds like you need 2 separate ioctls:
-> > 1. MEMBBSCRUB
->=20
-> There are occasions when it is useful to unmark a bad block, but without =
-erasing
-> first.  Therefore, I guess my preference would be to split this further:
-> 'erase-bad-block' and 'mark-block-as-good'.
+Good. This mysterious "reclaim" in 'erase_worker' actually interferes
+with my new scheme.
 
-I can smell over-engineering - any good example? Note, you will leave
-unused bytes in the ioctl data structure an make it extandable in the
-future.
+BTW removing it from 'erase_worker' means that every place in the code
+(present and future) that produces available PEBs must always attempt
+refilling 'beb_rsvd_pebs'.
+Currently this is already done in volume remove and volume shrink.
 
---=20
-Best Regards,
-Artem Bityutskiy
+> Also, with your new proposals all the
+> "reclaim" blocks should go away at the end, right?
 
---=-Uy1Em/DMyoDJKzIfzvfv
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Well, yes, my intention is to remove the "beb_rsvd_pebs reclaim" done in
+'erase_worker'.
+However, the attempt refilling the 'beb_rsvd_pebs' after volume
+remove/shrink will still exist.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+I guess the picture is a bit vague ;)
+Better the code talk.
+I hope to submit the patch series in few days.
 
-iQIcBAABAgAGBQJP8uQaAAoJECmIfjd9wqK0sioP/3sWNKAh7IMco+0Q2XbTwCYg
-N4k8s4eDtqsZlU0aDYEt0Nd5YKfRoSP87oApSLgsGLjDMGenx76KpPpsXrshPhr4
-Y5MB1mIKU1OhFTnYNHZBGRu+4p3Q7uW/eejcvV3dPoRR4TCG0mp6GefX/sptMdds
-NOs0j9HizBC4Z1xnOxxabyu8D9NH/wwItNaa3jxkHj7sF0i6+nUOS3T4zrAdA39i
-mKjahr+b78qFiGTqBeKBFKWQFwvKlzrxPKQsNoimB8oQW02Xg/Due+xjN0UIdQxb
-UGdMgwLps82iPRZKrfAu7V+8CiiD4zYOAmDqXdUCULtqjs2hBHEDUG1330Hcevgw
-bEXGi4A9k7VsyDxrM1BoJFoRr83WyquVuH0MHlLpIPmI1BVEVpZs1mcV2rxxYY/l
-WbXipzsmdl5nkzhojGL4lT61iCZTwCbFTuqSpPl31J/xXYHYhQFYb2ke0H30qFke
-cNifIErK2ljAxUVVnGQTUA7KpKIYWsqFIRnTjBq46TchI5nNRqTfQs4/SSQ4qY5K
-5yKeysUGTQHWsRZH66gY7CQez0Aj++cmWGHn+7PD0kokEVGuRrqLvZKNa9NvIcEm
-Ts9Y8XkCBVunr4bANRnsujQ5oogfQWVux0bW59dBZUy8Yx00/kfptJealCwYQDQC
-BeVe34OkBOpkCRyaGiAf
-=T3j0
------END PGP SIGNATURE-----
+BTW dealing with all possible cases and corner cases is remarkebly
+delicate. Prepare yourself for a "fun" review ;)
 
---=-Uy1Em/DMyoDJKzIfzvfv--
+Regards,
+Shmulik
