@@ -1,17 +1,21 @@
-Received: from ch1ehsobe004.messaging.microsoft.com ([216.32.181.184]
- helo=ch1outboundpool.messaging.microsoft.com)
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SlvpP-00042D-Qm
- for linux-mtd@lists.infradead.org; Tue, 03 Jul 2012 05:39:12 +0000
-From: Huang Shijie <b32955@freescale.com>
-To: <dedekind1@gmail.com>
-Subject: [PATCH] mtd: add a new macro about the subpage write
-Date: Tue, 3 Jul 2012 13:32:13 +0800
-Message-ID: <1341293533-2214-1-git-send-email-b32955@freescale.com>
+ id 1Slx8t-0005qM-71
+ for linux-mtd@lists.infradead.org; Tue, 03 Jul 2012 07:03:24 +0000
+Date: Tue, 3 Jul 2012 09:03:00 +0200
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+To: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH] mtd: mxc_nand: Select the driver via ARCH_MXC
+Message-ID: <20120703070300.GE22016@pengutronix.de>
+References: <1341266419-21321-1-git-send-email-festevam@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: marex@denx.de, Huang Shijie <shijie8@gmail.com>,
- linux-mtd@lists.infradead.org, Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1341266419-21321-1-git-send-email-festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ artem.bityutskiy@linux.intel.com, linux-mtd@lists.infradead.org,
+ kernel@pengutronix.de, shawn.guo@linaro.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,92 +25,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Huang Shijie <shijie8@gmail.com>
+Hello Fabio,
 
-The nand chip may does not support the subpage writes, while the nand
-controller may also does not support the subpage writes too.
+On Mon, Jul 02, 2012 at 07:00:19PM -0300, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+> 
+> With device tree support in place, we should not use IMX_HAVE_PLATFORM_MXC_NAND
+> as a dependency for selecting the mxc_nand driver.
+> 
+> Use ARCH_MXC symbol instead, so that the driver can be even selected when a single device-tree
+> machine is selected.
+the obvious alternative is to select IMX_HAVE_PLATFORM_MXC_NAND for the
+dt-based machines, too.
 
-Now, the nand controller drivers use the NAND_NO_SUBPAGE_WRITE(0x00000200)
-to tell the MTD layer that they do not support the subpage writes. But
-this flag could be masked off in nand_get_flash_type():
-	....................................................
-	/* Get chip options, preserve non chip based options */
-	chip->options &= ~NAND_CHIPOPTIONS_MSK;
-	....................................................
+Or make it:
 
-So in nand_scan_tail(), there is a risk that the subpage write could be
-enabled by mistake:
-	....................................................
-	if (!(chip->options & NAND_NO_SUBPAGE_WRITE) &&
-	    !(chip->cellinfo & NAND_CI_CELLTYPE_MSK)) {
-	....................................................
+	depends on IMX_HAVE_PLATFORM_MXC_NAND || DT || COMPILE_COVERAGE
 
-Absolutely, this is what we do not want.
+(COMPILE_COVERAGE doesn't exist AFAIK, but IMHO it's sensible to
+introduce it.)
 
-So add a new macro NAND_CONTROLLER_NO_SUBPAGE_WRITE, which is only used
-by the nand controller, and it could not be masked off.
+Best regards
+Uwe
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
- drivers/mtd/nand/docg4.c               |    2 +-
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    2 +-
- drivers/mtd/nand/nand_base.c           |    3 ++-
- include/linux/mtd/nand.h               |    3 +++
- 4 files changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/docg4.c
-index a225e49..85e74b4 100644
---- a/drivers/mtd/nand/docg4.c
-+++ b/drivers/mtd/nand/docg4.c
-@@ -1193,7 +1193,7 @@ static void __init init_mtd_structs(struct mtd_info *mtd)
- 	nand->ecc.prepad = 8;
- 	nand->ecc.bytes	= 8;
- 	nand->ecc.strength = DOCG4_T;
--	nand->options = NAND_BUSWIDTH_16 | NAND_NO_SUBPAGE_WRITE;
-+	nand->options = NAND_BUSWIDTH_16 | NAND_CONTROLLER_NO_SUBPAGE_WRITE;
- 	nand->IO_ADDR_R = nand->IO_ADDR_W = doc->virtadr + DOC_IOSPACE_DATA;
- 	nand->controller = &nand->hwcontrol;
- 	spin_lock_init(&nand->controller->lock);
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index b821517..5a90df1 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -1556,7 +1556,7 @@ static int __devinit gpmi_nfc_init(struct gpmi_nand_data *this)
- 	chip->scan_bbt		= gpmi_scan_bbt;
- 	chip->badblock_pattern	= &gpmi_bbt_descr;
- 	chip->block_markbad	= gpmi_block_markbad;
--	chip->options		|= NAND_NO_SUBPAGE_WRITE;
-+	chip->options		|= NAND_CONTROLLER_NO_SUBPAGE_WRITE;
- 	chip->ecc.mode		= NAND_ECC_HW;
- 	chip->ecc.size		= 1;
- 	chip->ecc.strength	= 8;
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index d47586c..c58df65 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -3453,7 +3453,8 @@ int nand_scan_tail(struct mtd_info *mtd)
- 	chip->ecc.total = chip->ecc.steps * chip->ecc.bytes;
- 
- 	/* Allow subpage writes up to ecc.steps. Not possible for MLC flash */
--	if (!(chip->options & NAND_NO_SUBPAGE_WRITE) &&
-+	if (!(chip->options &
-+		(NAND_NO_SUBPAGE_WRITE | NAND_CONTROLLER_NO_SUBPAGE_WRITE)) &&
- 	    !(chip->cellinfo & NAND_CI_CELLTYPE_MSK)) {
- 		switch (chip->ecc.steps) {
- 		case 2:
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 57977c6..cd62dd8 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -226,6 +226,9 @@ typedef enum {
- /* Chip may not exist, so silence any errors in scan */
- #define NAND_SCAN_SILENT_NODEV	0x00040000
- 
-+/* The nand controller does not support the subpage write. */
-+#define NAND_CONTROLLER_NO_SUBPAGE_WRITE	0x00080000
-+
- /* Options set by nand scan */
- /* Nand scan has allocated controller struct */
- #define NAND_CONTROLLER_ALLOC	0x80000000
 -- 
-1.7.0.4
+Pengutronix e.K.                           | Uwe Kleine-König            |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
