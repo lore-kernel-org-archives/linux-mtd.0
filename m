@@ -1,21 +1,22 @@
-Received: from mail-bk0-f49.google.com ([209.85.214.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Sm2IF-0005St-BU
- for linux-mtd@lists.infradead.org; Tue, 03 Jul 2012 12:33:23 +0000
-Received: by mail-bk0-f49.google.com with SMTP id ji2so1012388bkc.36
- for <linux-mtd@lists.infradead.org>; Tue, 03 Jul 2012 05:33:22 -0700 (PDT)
-Date: Tue, 3 Jul 2012 15:33:14 +0300
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: dedekind1@gmail.com
+Received: from mga02.intel.com ([134.134.136.20])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Sm2N9-0005yU-Ag
+ for linux-mtd@lists.infradead.org; Tue, 03 Jul 2012 12:38:27 +0000
+Message-ID: <1341319344.2979.62.camel@sauron.fi.intel.com>
 Subject: Re: [Q] ubi->beb_rsvd_pebs calculations
-Message-ID: <20120703153314.15948c90@pixies.home.jungo.com>
-In-Reply-To: <1341312827.2979.53.camel@sauron.fi.intel.com>
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Date: Tue, 03 Jul 2012 15:42:24 +0300
+In-Reply-To: <20120703153314.15948c90@pixies.home.jungo.com>
 References: <20120701195230.0f141288@pixies.home.jungo.com>
  <1341312827.2979.53.camel@sauron.fi.intel.com>
+ <20120703153314.15948c90@pixies.home.jungo.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-n1AxzTIXljcz0wGQ8tAl"
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,37 +26,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
 
-On Tue, 03 Jul 2012 13:53:47 +0300 Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Sun, 2012-07-01 at 19:52 +0300, Shmulik Ladkani wrote:
-> > What do you say?
-> > Would you consider removing this "beb_rsvd_pebs reclaim" block?
-> 
-> Yes, sounds like you are right.
+--=-n1AxzTIXljcz0wGQ8tAl
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Good. This mysterious "reclaim" in 'erase_worker' actually interferes
-with my new scheme.
+On Tue, 2012-07-03 at 15:33 +0300, Shmulik Ladkani wrote:
+> However, the attempt refilling the 'beb_rsvd_pebs' after volume
+> remove/shrink will still exist.
 
-BTW removing it from 'erase_worker' means that every place in the code
-(present and future) that produces available PEBs must always attempt
-refilling 'beb_rsvd_pebs'.
-Currently this is already done in volume remove and volume shrink.
+Ah, right, it is needed in case you had smaller %, but then changed the
+config/attch option and increased it.
 
-> Also, with your new proposals all the
-> "reclaim" blocks should go away at the end, right?
+--=20
+Best Regards,
+Artem Bityutskiy
 
-Well, yes, my intention is to remove the "beb_rsvd_pebs reclaim" done in
-'erase_worker'.
-However, the attempt refilling the 'beb_rsvd_pebs' after volume
-remove/shrink will still exist.
+--=-n1AxzTIXljcz0wGQ8tAl
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-I guess the picture is a bit vague ;)
-Better the code talk.
-I hope to submit the patch series in few days.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-BTW dealing with all possible cases and corner cases is remarkebly
-delicate. Prepare yourself for a "fun" review ;)
+iQIcBAABAgAGBQJP8uiwAAoJECmIfjd9wqK067UP/102bBWglaE+yE2Ewht/ertv
+osoVWNCr5tAvwN0qh69QIGZ1qeLOoCZPHpf8E9C5DSux57kv5H56Co5QwqZ04ZMU
+8GFBvOqBFS23pKAisc+00FBbqhSHIl9QwWlWMg8zBVuIUZPNoxRzKiwNr0NKi18K
+55DW0mvPAPziLNPnBh5FRy2MDH/6J2rwVpce6s1IoV0dUdNFDHuRptwIgnCfVLKu
+e9X0LAy9qRyLS7ic8pPk5JR/Z2suJ4eA828ZICod4zQJ2+eWuw/Inz5l8Kxle9kI
+YvURNSIhd/RWqDrYJaJv3VqkkwdxMQOFoVUq2fvezp8RH5vBywPI5iBcnA1DFTWw
+eM9kMx/BAn0ThQydj5vaBwSJIrN1pABYspCcC6QheamSWr+A+TmR3AIx0KqJfawc
+JQq3K/OBamOERGbOdQu6oGNxz2W0QwT9ukWrWs2tygWU6Qb3/K+UgLqaXazsVzXS
+cHHZkyHsxP6a+51KWCUcAdYHXjMbLzTJjv/4/FVYSUCEZ4qTnxzEIrVLHVLQEFTh
+O33DaseKlKPa3EN089NxiAVRaQROhaDMoQ3q/jb3VeIX2nh+8Z8ItFH2rr2pSrn0
+aun/a3mcX6zydzE8xZEmptjle1LUlMWc8EXr5tUuT449p2URqsFjJVz2BqNMkUjg
+uF0AS7a0KDcHe5zS8mCR
+=P7ze
+-----END PGP SIGNATURE-----
 
-Regards,
-Shmulik
+--=-n1AxzTIXljcz0wGQ8tAl--
