@@ -1,21 +1,18 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Slx8t-0005qM-71
- for linux-mtd@lists.infradead.org; Tue, 03 Jul 2012 07:03:24 +0000
-Date: Tue, 3 Jul 2012 09:03:00 +0200
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-To: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH] mtd: mxc_nand: Select the driver via ARCH_MXC
-Message-ID: <20120703070300.GE22016@pengutronix.de>
-References: <1341266419-21321-1-git-send-email-festevam@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1341266419-21321-1-git-send-email-festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- artem.bityutskiy@linux.intel.com, linux-mtd@lists.infradead.org,
- kernel@pengutronix.de, shawn.guo@linaro.org, dwmw2@infradead.org
+Received: from mail-de.keymile.com ([195.8.104.1])
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SlxFW-0006T9-69
+ for linux-mtd@lists.infradead.org; Tue, 03 Jul 2012 07:10:22 +0000
+From: Gerlando Falauto <gerlando.falauto@keymile.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: cfi_cmdset_0002: Micron M29EW bugfixes as per TN-13-07
+Date: Tue,  3 Jul 2012 09:09:47 +0200
+Message-Id: <1341299387-6303-1-git-send-email-gerlando.falauto@keymile.com>
+In-Reply-To: <1340792855.29342.39.camel@sauron.fi.intel.com>
+References: <1340792855.29342.39.camel@sauron.fi.intel.com>
+Cc: Holger Brunck <holger.brunck@keymile.com>,
+ Stefan Bigler <stefan.bigler@keymile.com>,
+ Gerlando Falauto <gerlando.falauto@keymile.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,30 +22,113 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Fabio,
+Fix the following issues with Micron's (formerly Numonyx)
+M29EW NOR flash chips, as documented on TN-13-07:
+- Correcting Erase Suspend Hang Ups (page 20)
+- Resolving the Delay After Resume Issue (page 22)
 
-On Mon, Jul 02, 2012 at 07:00:19PM -0300, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
-> 
-> With device tree support in place, we should not use IMX_HAVE_PLATFORM_MXC_NAND
-> as a dependency for selecting the mxc_nand driver.
-> 
-> Use ARCH_MXC symbol instead, so that the driver can be even selected when a single device-tree
-> machine is selected.
-the obvious alternative is to select IMX_HAVE_PLATFORM_MXC_NAND for the
-dt-based machines, too.
+Signed-off-by: Gerlando Falauto <gerlando.falauto@keymile.com>
+Cc: Stefan Bigler <stefan.bigler@keymile.com>
+Cc: Holger Brunck <holger.brunck@keymile.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c |   69 +++++++++++++++++++++++++++++++++++
+ 1 files changed, 69 insertions(+), 0 deletions(-)
 
-Or make it:
-
-	depends on IMX_HAVE_PLATFORM_MXC_NAND || DT || COMPILE_COVERAGE
-
-(COMPILE_COVERAGE doesn't exist AFAIK, but IMHO it's sensible to
-introduce it.)
-
-Best regards
-Uwe
-
-
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index 23175ed..7f23248 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -417,6 +417,70 @@ static void cfi_fixup_major_minor(struct cfi_private *cfi,
+ 	}
+ }
+ 
++static int is_m29ew(struct cfi_private *cfi)
++{
++	if (cfi->mfr == CFI_MFR_INTEL)
++		if ((cfi->device_type == CFI_DEVICETYPE_X8  &&
++			(cfi->id & 0xff)	== 0x7e) ||
++		    (cfi->device_type == CFI_DEVICETYPE_X16 &&
++			cfi->id			== 0x227e))
++			return 1;
++	return 0;
++}
++
++/*
++ * From TN-13-07: Patching the Linux Kernel and U-Boot for M29 Flash, page 20:
++ * Some revisions of the M29EW suffer from erase suspend hang ups. In
++ * particular, it can occur when the sequence
++ * Erase Confirm -> Suspend -> Program -> Resume
++ * causes a lockup due to internal timing issues. The consequence is that the
++ * erase cannot be resumed without inserting a dummy command after programming
++ * and prior to resuming. [...] The work-around is to issue a dummy write cycle
++ * that writes an F0 command code before the RESUME command.
++ */
++static void cfi_fixup_m29ew_erase_suspend(struct map_info *map,
++					  unsigned long adr)
++{
++	struct cfi_private *cfi = map->fldrv_priv;
++	/* before resume, insert a dummy 0xF0 cycle for Micron M29EW devices */
++	if (is_m29ew(cfi))
++		map_write(map, CMD(0xF0), adr);
++}
++
++/*
++ * From TN-13-07: Patching the Linux Kernel and U-Boot for M29 Flash, page 22:
++ *
++ * Some revisions of the M29EW (for example, A1 and A2 step revisions)
++ * are affected by a problem that could cause a hang up when an ERASE SUSPEND
++ * command is issued after an ERASE RESUME operation without waiting for a
++ * minimum delay.  The result is that once the ERASE seems to be completed
++ * (no bits are toggling), the contents of the Flash memory block on which
++ * the erase was ongoing could be inconsistent with the expected values
++ * (typically, the array value is stuck to the 0xC0, 0xC4, 0x80, or 0x84
++ * values), causing a consequent failure of the ERASE operation.
++ * The occurrence of this issue could be high, especially when file system
++ * operations on the Flash are intensive.  As a result, it is recommended
++ * that a patch be applied.  Intensive file system operations can cause many
++ * calls to the garbage routine to free Flash space (also by erasing physical
++ * Flash blocks) and as a result, many consecutive SUSPEND and RESUME
++ * commands can occur.  The problem disappears when a delay is inserted after
++ * the RESUME command by using the udelay() function available in Linux.
++ * The DELAY value must be tuned based on the customer's platform.
++ * The maximum value that fixes the problem in all cases is 500us.
++ * But, in our experience, a delay of 30 us to 50 us is sufficient
++ * in most cases.
++ * We have chosen 500us because this latency is acceptable.
++ */
++static void cfi_fixup_m29ew_delay_after_resume(struct cfi_private *cfi)
++{
++	/*
++	 * Resolving the Delay After Resume Issue see Micron TN-13-07
++	 * Worstcase delay must be 500us but 30-50us should be ok as well
++	 */
++	if (is_m29ew(cfi))
++		cfi_udelay(500);
++}
++
+ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
+ {
+ 	struct cfi_private *cfi = map->fldrv_priv;
+@@ -761,7 +825,10 @@ static void put_chip(struct map_info *map, struct flchip *chip, unsigned long ad
+ 
+ 	switch(chip->oldstate) {
+ 	case FL_ERASING:
++		cfi_fixup_m29ew_erase_suspend(map,
++			chip->in_progress_block_addr);
+ 		map_write(map, cfi->sector_erase_cmd, chip->in_progress_block_addr);
++		cfi_fixup_m29ew_delay_after_resume(cfi);
+ 		chip->oldstate = FL_READY;
+ 		chip->state = FL_ERASING;
+ 		break;
+@@ -903,6 +970,8 @@ static void __xipram xip_udelay(struct map_info *map, struct flchip *chip,
+ 			/* Disallow XIP again */
+ 			local_irq_disable();
+ 
++			/* Correct Erase Suspend Hangups for M29EW */
++			cfi_fixup_m29ew_erase_suspend(map, adr);
+ 			/* Resume the write or erase operation */
+ 			map_write(map, cfi->sector_erase_cmd, adr);
+ 			chip->state = oldstate;
 -- 
-Pengutronix e.K.                           | Uwe Kleine-König            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+1.7.1
