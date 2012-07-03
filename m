@@ -1,16 +1,21 @@
-Received: from va3ehsobe006.messaging.microsoft.com ([216.32.180.16]
- helo=va3outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SlypI-0006w8-Kr
- for linux-mtd@lists.infradead.org; Tue, 03 Jul 2012 08:51:17 +0000
-From: Huang Shijie <b32955@freescale.com>
-To: <dedekind1@gmail.com>
-Subject: [PATCH 1/2] mtd: replace the hard code with the proper macro
-Date: Tue, 3 Jul 2012 16:44:14 +0800
-Message-ID: <1341305055-29218-1-git-send-email-b32955@freescale.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org
+Message-ID: <1341310112.2979.50.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v11] MTD: LPC32xx MLC NAND driver
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Roland Stigge <stigge@antcom.de>
+Date: Tue, 03 Jul 2012 13:08:32 +0300
+In-Reply-To: <1341075038-29985-1-git-send-email-stigge@antcom.de>
+References: <1341075038-29985-1-git-send-email-stigge@antcom.de>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-TPJq/JDaxYAQAc0LoPoK"
+Mime-Version: 1.0
+Cc: srinivas.bakki@nxp.com, lars@metafoo.de, linux@arm.linux.org.uk,
+ linux-doc@vger.kernel.org, leiwen@marvell.com,
+ devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+ kevin.wells@nxp.com, b32955@freescale.com, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, hechtb@googlemail.com,
+ dwmw2@infradead.org, aletes.xgr@gmail.com
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,44 +25,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use the MTD_OPS_PLACE_OOB to replace the hard code "0".
-Make the code more readable.
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
- drivers/mtd/nand/nand_base.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+--=-TPJq/JDaxYAQAc0LoPoK
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index c58df65..5b8ab7f 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -1633,7 +1633,7 @@ static int nand_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	ops.len = len;
- 	ops.datbuf = buf;
- 	ops.oobbuf = NULL;
--	ops.mode = 0;
-+	ops.mode = MTD_OPS_PLACE_OOB;
- 	ret = nand_do_read_ops(mtd, from, &ops);
- 	*retlen = ops.retlen;
- 	nand_release_device(mtd);
-@@ -2336,7 +2336,7 @@ static int panic_nand_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	ops.len = len;
- 	ops.datbuf = (uint8_t *)buf;
- 	ops.oobbuf = NULL;
--	ops.mode = 0;
-+	ops.mode = MTD_OPS_PLACE_OOB;
- 
- 	ret = nand_do_write_ops(mtd, to, &ops);
- 
-@@ -2365,7 +2365,7 @@ static int nand_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	ops.len = len;
- 	ops.datbuf = (uint8_t *)buf;
- 	ops.oobbuf = NULL;
--	ops.mode = 0;
-+	ops.mode = MTD_OPS_PLACE_OOB;
- 	ret = nand_do_write_ops(mtd, to, &ops);
- 	*retlen = ops.retlen;
- 	nand_release_device(mtd);
--- 
-1.7.0.4
+On Sat, 2012-06-30 at 18:50 +0200, Roland Stigge wrote:
+> This patch adds a driver for the MLC NAND controller of the LPC32xx
+> SoC.
+>=20
+> Signed-off-by: Roland Stigge <stigge@antcom.de>
+>=20
+Pushed to l2-mtd.git, thanks!
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-TPJq/JDaxYAQAc0LoPoK
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJP8sSgAAoJECmIfjd9wqK0WzEP/2Y5UyjPQLw/aN6Ku2Wd0Nz9
+hXP/x8t6c0kLv58u6hG1pPovZ7zw9/qQOLLfzy8zshdwQayKDSaTHwc5x1yPBHik
+DoLbb3Ihn7qG2CD+S7kJfJvGqZZpZpKGWUKgCgcz2QdD1XbU9+zmqO8uVd0yRulr
+cgNMhqQziz9CvTnI7XEdps0Qw9gkDDHbAVeg8iyxmK/y1jA0ELi8mW5w7dJLGLvG
+hwTJFmppQccTHl+y34mBky0Z0PPnWqLh+TNLy40QSq0/pxtSc8dJKUzSOe8f98gx
+CseSda++40N7+VJH0X8QQPwWsq901UviUBZ/GSOXqXXtkRsJA5UyUuyXmPadndbW
+R04Mlwig8ysOVQ+Svj5kuhjZAHXMKt96TMtZ30iRhXbrZ2i99EHcE1zfP2Jy6E3g
+T3PnEIEwy33ALLvB2FBNka3rPVbB7maGgiFWqKa5dyis12WgDvb9fR3CgFJ2kHDT
+ASMCcIYarWG+8yNNZEMx60FgHD9+aMfMVpOjVWPJpxmiWDmXImJRQ0gw/tGoAWLZ
+sDWLRQ6OzC08jkzwWuJ1Hf38ffvta3pHV87+t97qmABz48ysT/Q5OQa2aBZX/T7O
+UEBzBQjt7WqfHYrTo8vEai61b7t5bDpNr9hmKev4MqnArNHip0/rHbDfI6o1fFUR
+QY/mJirU+q9GLWm4LFFl
+=9Oif
+-----END PGP SIGNATURE-----
+
+--=-TPJq/JDaxYAQAc0LoPoK--
