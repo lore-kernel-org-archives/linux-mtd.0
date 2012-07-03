@@ -1,23 +1,24 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Sm1YF-0002pl-Ia
- for linux-mtd@lists.infradead.org; Tue, 03 Jul 2012 11:45:52 +0000
-Message-ID: <1341316187.2979.55.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/3] mtd/spear_smi: Move suspend/resume to follow
- dev_pm_ops
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Shiraz Hashim <shiraz.hashim@st.com>
-Date: Tue, 03 Jul 2012 14:49:47 +0300
-In-Reply-To: <1341208727-22476-1-git-send-email-shiraz.hashim@st.com>
-References: <1341208727-22476-1-git-send-email-shiraz.hashim@st.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-1M0M9+O/7F5oy5AMyU3+"
-Mime-Version: 1.0
-Cc: Viresh Kumar <viresh.kumar@st.com>, spear--sw-devel@lists.codex.cro.st.com,
- spear-devel@list.st.com, viresh.linux@gmail.com, linux-mtd@lists.infradead.org,
- sr@denx.de, dwmw2@infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from bear.ext.ti.com ([192.94.94.41])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Sm1rc-0004IO-2c
+ for linux-mtd@lists.infradead.org; Tue, 03 Jul 2012 12:06:00 +0000
+From: "Mohammed, Afzal" <afzal@ti.com>
+To: Tony Lindgren <tony@atomide.com>, Artem Bityutskiy
+ <artem.bityutskiy@linux.intel.com>
+Subject: RE: [PATCH v2 00/10] Prepare for GPMC driver conversion (w.r.t MTD)
+Date: Tue, 3 Jul 2012 12:05:46 +0000
+Message-ID: <C8443D0743D26F4388EA172BF4E2A7A93E9A267A@DBDE01.ent.ti.com>
+References: <cover.1339586624.git.afzal@ti.com>
+ <1340789755.29342.12.camel@sauron.fi.intel.com>
+ <20120702073547.GA1122@atomide.com>
+In-Reply-To: <20120702073547.GA1122@atomide.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,45 +28,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Tony,
 
---=-1M0M9+O/7F5oy5AMyU3+
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Mon, Jul 02, 2012 at 13:05:47, Tony Lindgren wrote:
+> * Artem Bityutskiy <artem.bityutskiy@linux.intel.com> [120627 02:36]:
+> > On Wed, 2012-06-13 at 17:02 +0530, Afzal Mohammed wrote:
 
-On Mon, 2012-07-02 at 11:28 +0530, Shiraz Hashim wrote:
-> From: Viresh Kumar <viresh.kumar@st.com>
+> > > This series cleans up gpmc mtd interactions so that GPMC driver
+> > > conversion which is going to happen shortly would happen smoothly
+> > > by not creating much disturbance outside of arch/arm/*omap*/
+> >=20
+> > Dunno if Tony picked this, but the MTD changes look good an the quick
+> > glance. Feel free to add
+> >=20
+> > Acked-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 >=20
-> Use dev_pm_ops to support PM specific callbacks.
->=20
-> Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
+> Thanks will add to the drivers/mtd touching patches in this series.
 
-Pushed to l2-mtd.git, thanks!
+Can you please consider this series for inclusion in the coming merge
+window. This series can live by itself and is not dependent on any
+other patches.
 
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-1M0M9+O/7F5oy5AMyU3+
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIbBAABAgAGBQJP8txbAAoJECmIfjd9wqK0f8cP+KX+yJzSeULWimbsi9PffLxs
-0ayBog8kLkPOEQHB6OjklRmEShIh9L6HwrAJmIzD2iDl+860LC7wfSvkkIFdJjUE
-yUxVzd7RjCdosJ/AW5YP9atitRAjOzGaJ8973x+sSxeS3vKOoSoK/MYUHnOMurUA
-upyP3OA3iNW/nabf4y0O1gcH1srq3U9429Z3S1eabjGU0uNQFH0gsu3oMVNZlfTP
-hI5vbbsxAaJJf/PNKHdKemJwecReMFQOWDPVmWjo0VrlavBR6xpcoCgjCJWi0OlG
-dfRqkmA2EhKNswWWjQKIEH41saAQ2d+0eO1y+x3ImKpzrk+CTGtGUIOx9BC045ej
-ziZbddHOpJ5AH9FQdZPDRdIbLfEv6Ar8RIhR3kEWyqIZM2DawSvAJ0rLv5iK4nWS
-yu33Wt2+ggyO83J3eQw5H1vPMYak1juIyfxb7SFC16AatVmoh51hzFrwR4Ohhsu7
-cUFN4yGNHRfuF2cV2cGNgaB6VH+PGiEI95B7cw0GAub17KuRS/RDJzktPYEZU/7u
-2eXSd37YaGx26+/buMLmZZ91QmmDtwfXNfWRmmuxEUMOpicCjDyZAFFheW2KGB3H
-Aa3dc02axRUgDWj4Urw1TCFBRZikFQvgJwoEACHxdkE9Ueg/P+g7wnbn3IsEKIBT
-OcrRGRGDp6yqSk3lqvQ=
-=G7hW
------END PGP SIGNATURE-----
-
---=-1M0M9+O/7F5oy5AMyU3+--
+Regards
+Afzal
