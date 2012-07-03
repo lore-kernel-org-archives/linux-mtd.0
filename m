@@ -1,12 +1,18 @@
+Received: from va3ehsobe005.messaging.microsoft.com ([216.32.180.31]
+ helo=va3outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Slyp8-0006vy-2a
+ for linux-mtd@lists.infradead.org; Tue, 03 Jul 2012 08:51:09 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dedekind1@gmail.com>
-Subject: [PATCH 1/2] mtd: gpmi: add on-flash BBT support for gpmi nand
-Date: Tue, 3 Jul 2012 16:24:32 +0800
-Message-ID: <1341303873-23040-1-git-send-email-b32955@freescale.com>
+Subject: [PATCH 2/2] mtd: fix the comment
+Date: Tue, 3 Jul 2012 16:44:15 +0800
+Message-ID: <1341305055-29218-2-git-send-email-b32955@freescale.com>
+In-Reply-To: <1341305055-29218-1-git-send-email-b32955@freescale.com>
+References: <1341305055-29218-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,49 +22,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-add the on flash bbt support for gpmi nand driver.
+fix the comment for nand_bbt.c
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- .../devicetree/bindings/mtd/gpmi-nand.txt          |    4 ++++
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c             |    3 +++
- 2 files changed, 7 insertions(+), 0 deletions(-)
+ drivers/mtd/nand/nand_bbt.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
-index 1a5bbd3..3fb3f90 100644
---- a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
-@@ -12,6 +12,10 @@ Required properties:
-   - interrupt-names : The interrupt names "gpmi-dma", "bch";
-   - fsl,gpmi-dma-channel : Should contain the dma channel it uses.
- 
-+Optional properties:
-+  - nand-on-flash-bbt: boolean to enable on flash bbt option if not
-+                       present false
-+
- The device tree may optionally contain sub-nodes describing partitions of the
- address space. See partition.txt for more detail.
- 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 5a90df1..a1bf31f 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -27,6 +27,7 @@
- #include <linux/pinctrl/consumer.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
-+#include <linux/of_mtd.h>
- #include "gpmi-nand.h"
- 
- /* add our owner bbt descriptor */
-@@ -1561,6 +1562,8 @@ static int __devinit gpmi_nfc_init(struct gpmi_nand_data *this)
- 	chip->ecc.size		= 1;
- 	chip->ecc.strength	= 8;
- 	chip->ecc.layout	= &gpmi_hw_ecclayout;
-+	if (of_get_nand_on_flash_bbt(this->dev->of_node))
-+		chip->bbt_options |= NAND_BBT_USE_FLASH | NAND_BBT_NO_OOB;
- 
- 	/* Allocate a temporary DMA buffer for reading ID in the nand_scan() */
- 	this->bch_geometry.payload_size = 1024;
+diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+index 30d1319..3972fc4 100644
+--- a/drivers/mtd/nand/nand_bbt.c
++++ b/drivers/mtd/nand/nand_bbt.c
+@@ -22,7 +22,7 @@
+  * BBT on flash. If a BBT is found then the contents are read and the memory
+  * based BBT is created. If a mirrored BBT is selected then the mirror is
+  * searched too and the versions are compared. If the mirror has a greater
+- * version number than the mirror BBT is used to build the memory based BBT.
++ * version number, then the mirror BBT is used to build the memory based BBT.
+  * If the tables are not versioned, then we "or" the bad block information.
+  * If one of the BBTs is out of date or does not exist it is (re)created.
+  * If no BBT exists at all then the device is scanned for factory marked
 -- 
 1.7.0.4
