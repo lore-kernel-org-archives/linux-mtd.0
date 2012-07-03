@@ -1,24 +1,17 @@
-Received: from va3ehsobe004.messaging.microsoft.com ([216.32.180.14]
- helo=va3outboundpool.messaging.microsoft.com)
- by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SwF3Z-0003YX-La
- for linux-mtd@lists.infradead.org; Tue, 31 Jul 2012 16:12:26 +0000
-Message-ID: <501803C5.8080105@freescale.com>
-Date: Tue, 31 Jul 2012 11:11:49 -0500
-From: Scott Wood <scottwood@freescale.com>
+Received: from csmtp2.one.com ([91.198.169.22])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Sm9b0-0005jc-41
+ for linux-mtd@lists.infradead.org; Tue, 03 Jul 2012 20:21:24 +0000
+From: "Aaron Hobley" <aaron@yelboh.co.uk>
+To: <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH 2/2] Make redboot partition table location configurable
+Message-ID: <000601cd5959$5fcd1690$1f6743b0$@co.uk>
 MIME-Version: 1.0
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-Subject: Re: [PATCH RESEND] mtd: nand: allow NAND_NO_SUBPAGE_WRITE to be set
- from driver
-References: <1343696537-2564-1-git-send-email-computersforpeace@gmail.com>
- <50178A45.3000406@parrot.com>
-In-Reply-To: <50178A45.3000406@parrot.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: Marek Vasut <marex@denx.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
+Content-Language: en-gb
+Cc: 'Aaron Hobley' <aaron@yelboh.co.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,22 +20,26 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Date: Tue, 03 Jul 2012 20:21:24 -0000
 
-On 07/31/2012 02:33 AM, Matthieu CASTET wrote:
-> Hi,
-> 
-> for ONFI flash (like this micron one) the information should be extracted form
-> the ONFI table (programs_per_page IIRC)
-> 
-> This should be better than relying on the SOC driver for setting this flags.
+Hi.
+Thought you guys could help?
+When device boots it show :-
+Initial Program Loader
 
-This is for cases where the constraint is the controller, not the chip.
+Power Micro
+Partition Table
 
-> Does the gpmi driver set this flag because it do not support partial write ?
-> In this case why it doesn't set  chip->ecc.steps to 1 ?
+My question is? Can you send the partition table to us?
 
-Why is it better to lie about ECC geometry than to just say "subpage
-writes aren't supported"?  Does/will the ECC geometry get used by upper
-layers in evaluating the number of corrected bitflips?
+Thanks Aaron.
 
--Scott
+MC9060
+Monitor 2.05.4
+Power Micro 30.9.2
+ASIC 1.1
+Outhouse 1.3
+Opt CPLD ID=3 Rev=0.1
+CPU Rev id: 69052d06
+
+Platform Symbol Gemini Xscale PXA255
