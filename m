@@ -1,20 +1,11 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SldmL-0002Ff-O5
- for linux-mtd@lists.infradead.org; Mon, 02 Jul 2012 10:22:57 +0000
-Date: Mon, 2 Jul 2012 12:21:34 +0200
-From: Anatolij Gustschin <agust@denx.de>
-To: stephan@gatzka.org
-Subject: Re: MPC5200b jffs2 memcpy alignment problem
-Message-ID: <20120702122134.50340f5f@wker>
-In-Reply-To: <4FEFF265.3010102@gatzka.org>
-References: <1341086991.2252.0@antares>
-	<4FEFF265.3010102@gatzka.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Albrecht =?ISO-8859-1?B?RHJl3w==?= <albrecht.dress@arcor.de>,
- linuxppc-dev@lists.ozlabs.org, linux-mtd@lists.infradead.org
+From: Huang Shijie <shijie8@gmail.com>
+To: shawn.guo@linaro.org
+Subject: [PATCH v4 0/2] add gpmi support for imx6q
+Date: Mon,  2 Jul 2012 21:39:30 -0400
+Message-Id: <1341279572-6098-1-git-send-email-shijie8@gmail.com>
+Cc: Huang Shijie <shijie8@gmail.com>, dong.aisheng@linaro.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,29 +15,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Stephan,
+This patch set adds the gpmi-nand support for imx6q.
 
-On Sun, 01 Jul 2012 08:47:01 +0200
-Stephan Gatzka <stephan@gatzka.org> wrote:
+I prefer to add the clocks in the gpmi-nand driver.
+Yes, it will change the gpmi nand driver, but we have to do so.
+The reason is :
+  We will support the ONFI nand in mx6q in the future. If the ONFI nand is
+  set to Sync mode, we have to __change__ the clocks explicitly.
 
-> Hi Albrecht,
-> 
->  > I don't recall who proposed this patch, but exactly this solution is
->  > around for a longer time (mayby you search archives...).  On my board, I
->  > have a flash chip attached to the LocalBus in 16-bit mode.  Based on
->  > 3.2.16, the patch is:
-> 
-> Thanks for your answer and yes, this patch will definitely work. But I 
-> want to have a solution in the mainline kernel, that's why I'm asking 
-> how to deal best with this problem.
+Test this patch set on imx6q-arm2 board and imx28-evk board.
 
-This problem has been discussed several times [1], [2], but wasn't
-resolved yet. The clean solution suggested was to implement a custom
-mapping driver [3].
+v3 --> v4:
+	[1] add con_id for gpmi nand
+	[2] balance the clk_prepare_enable()/clk_disable_unprepare()
+	    in __gpmi_enable_clk();
+	[3] do not send the second patch which is applied to Shawn's tree.
 
-Thanks,
-Anatolij
+v2 --> v3:
+	[1] fix a bug the clocks.
 
-[1] http://thread.gmane.org/gmane.linux.drivers.mtd/21521
-[2] http://thread.gmane.org/gmane.linux.ports.ppc.embedded/36324
-[3] http://thread.gmane.org/gmane.linux.ports.ppc.embedded/36324/focus=36608
+v1 --> v2:
+	[1] add dev_id for the gpmi-nand's clocks.
+	[2] set the default values for these clocks.
+
+Huang Shijie (2):
+  ARM: imx6q: add clocks for gpmi-nand
+  mtd: gpmi: change the code for clocks
+
+ arch/arm/mach-imx/clk-imx6q.c          |    8 +++-
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |   45 ++++++++++++++---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   82 ++++++++++++++++++++++++++++----
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h |    3 +-
+ 4 files changed, 119 insertions(+), 19 deletions(-)
+
+-- 
+1.7.4.4
