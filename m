@@ -1,17 +1,15 @@
-Received: from mail-wg0-f49.google.com ([74.125.82.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SmKbj-0006i9-UE
- for linux-mtd@lists.infradead.org; Wed, 04 Jul 2012 08:06:44 +0000
-Received: by wgbds1 with SMTP id ds1so4897124wgb.18
- for <linux-mtd@lists.infradead.org>; Wed, 04 Jul 2012 01:06:36 -0700 (PDT)
 From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH 0/5] ubi: Fix bad PEBs reserve caclulation
-Date: Wed,  4 Jul 2012 11:05:59 +0300
-Message-Id: <1341389164-24409-1-git-send-email-shmulik.ladkani@gmail.com>
-Cc: Richard Genoud <richard.genoud@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>, linux-kernel@vger.kernel.org
+To: Artem Bityutskiy <dedekind1@gmail.com>, Andrew Victor <linux@maxim.org.za>
+Subject: [PATCH 1/5] ubi: introduce ubi->bad_peb_limit
+Date: Wed,  4 Jul 2012 11:06:00 +0300
+Message-Id: <1341389164-24409-2-git-send-email-shmulik.ladkani@gmail.com>
+In-Reply-To: <1341389164-24409-1-git-send-email-shmulik.ladkani@gmail.com>
+References: <1341389164-24409-1-git-send-email-shmulik.ladkani@gmail.com>
+Cc: Russell King <linux@arm.linux.org.uk>,
+ Richard Genoud <richard.genoud@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,54 +19,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The existing mechanism of reserving PEBs for bad PEB handling has two
-flaws:
-- It is calculated as a percentage of good PEBs instead of total PEBs.
-- There's no limit on the amount of PEBs UBI reserves for future bad
-  eraseblock handling.
+Introduce 'ubi->bad_peb_limit', which specifies an upper limit of PEBs
+ubi expects to go bad.
+Currently, it is initialized to a fixed percentage of total PEBs in the
+ubi device (configurable via CONFIG_MTD_UBI_BEB_LIMIT).
 
-This patchset changes the mechanism to overcome these flaws.
+The 'bad_peb_limit' is intended to be used for calculating the amount of
+PEBs ubi needs to reserve for bad eraseblock handling.
 
-The caculation of PEBs reserved for bad PEB handling will be based on a
-new property, ubi->bad_peb_limit, which specifies an upper limit of PEBs
-ubi expects to go bad (currently initialized to a fixed percentage of
-total PEBs in the ubi device, configurable via CONFIG_MTD_UBI_BEB_LIMIT,
-but can be easily augmented to support a per ubi-attach limit).
+Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+---
+ arch/arm/configs/sam9_l9260_defconfig |    1 +
+ drivers/mtd/ubi/Kconfig               |   11 +++++++++++
+ drivers/mtd/ubi/build.c               |   13 ++++++++++++-
+ drivers/mtd/ubi/ubi.h                 |    2 ++
+ 4 files changed, 26 insertions(+), 1 deletions(-)
 
-The desired level of PEBs reserved for bad PEB handling (beb_rsvd_level)
-is set to the maximum expected bad eraseblocks (bad_peb_limit) minus the
-existing number of bad eraseblocks (bad_peb_count).
-
-The actual amount of PEBs reserved for bad PEB handling is usually set
-to the desired level (but in some circumstances may be lower than the
-desired level, e.g. when attaching to a device that has too few
-available PEBs to satisfy the desired level).
-
-In the case where the device has too many bad PEBs (above the expected
-limit), then the desired level, and the actual amount of PEBs reserved
-are set to zero. No PEBs will be set aside for future bad eraseblock
-handling - even if some PEBs are made available (e.g. by shrinking a
-volume).
-If another PEB goes bad, and there are available PEBs, then the
-eraseblock will be marked bad (consuming one available PEB). But if
-there are no available PEBs, ubi will go into readonly mode.
-
-
-Shmulik Ladkani (5):
-  ubi: introduce ubi->bad_peb_limit
-  ubi: Limit amount of reserved eraseblocks for bad PEB handling
-  ubi: kill CONFIG_MTD_UBI_BEB_RESERVE
-  ubi: trivial: fix comment of ubi_calculate_reserved()
-  ubi: harmonize the update of ubi->beb_rsvd_pebs
-
- arch/arm/configs/sam9_l9260_defconfig |    2 +-
- drivers/mtd/ubi/Kconfig               |   24 ++++++++++-------
- drivers/mtd/ubi/build.c               |   13 +++++++++-
- drivers/mtd/ubi/misc.c                |   44 +++++++++++++++++++++++++++++---
- drivers/mtd/ubi/ubi.h                 |    6 ++--
- drivers/mtd/ubi/vmt.c                 |   20 +-------------
- drivers/mtd/ubi/wl.c                  |   44 +++++++++++++++++++++------------
- 7 files changed, 99 insertions(+), 54 deletions(-)
-
+diff --git a/arch/arm/configs/sam9_l9260_defconfig b/arch/arm/configs/sam9_l9260_defconfig
+index ecf2531..f6917c9 100644
+--- a/arch/arm/configs/sam9_l9260_defconfig
++++ b/arch/arm/configs/sam9_l9260_defconfig
+@@ -40,6 +40,7 @@ CONFIG_MTD_NAND_ATMEL=y
+ CONFIG_MTD_NAND_PLATFORM=y
+ CONFIG_MTD_UBI=y
+ CONFIG_MTD_UBI_BEB_RESERVE=3
++CONFIG_MTD_UBI_BEB_LIMIT=3
+ CONFIG_MTD_UBI_GLUEBI=y
+ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_BLK_DEV_RAM=y
+diff --git a/drivers/mtd/ubi/Kconfig b/drivers/mtd/ubi/Kconfig
+index 738ee8d..8df256f 100644
+--- a/drivers/mtd/ubi/Kconfig
++++ b/drivers/mtd/ubi/Kconfig
+@@ -42,6 +42,17 @@ config MTD_UBI_BEB_RESERVE
+ 	  eraseblocks (e.g. NOR flash), this value is ignored and nothing is
+ 	  reserved. Leave the default value if unsure.
+ 
++config MTD_UBI_BEB_LIMIT
++	int "Percentage of maximum expected bad eraseblocks"
++	default 2
++	range 0 25
++	help
++	  This option specifies the maximum bad eraseblocks UBI expects on the
++	  ubi device (percents of total number of flash eraseblocks).
++	  If the underlying flash does not admit of bad eraseblocks (e.g. NOR
++	  flash), this value is ignored.
++	  Leave the default value if unsure.
++
+ config MTD_UBI_GLUEBI
+ 	tristate "MTD devices emulation driver (gluebi)"
+ 	help
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 2c5ed5c..62cc6ce 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -607,8 +607,19 @@ static int io_init(struct ubi_device *ubi)
+ 	ubi->peb_count  = mtd_div_by_eb(ubi->mtd->size, ubi->mtd);
+ 	ubi->flash_size = ubi->mtd->size;
+ 
+-	if (mtd_can_have_bb(ubi->mtd))
++	if (mtd_can_have_bb(ubi->mtd)) {
+ 		ubi->bad_allowed = 1;
++		if (CONFIG_MTD_UBI_BEB_LIMIT > 0) {
++			int percent = CONFIG_MTD_UBI_BEB_LIMIT;
++			int beb_limit;
++
++			beb_limit = mult_frac(ubi->peb_count, percent, 100);
++			/* round it up */
++			if (mult_frac(beb_limit, 100, percent) < ubi->peb_count)
++				beb_limit++;
++			ubi->bad_peb_limit = beb_limit;
++		}
++	}
+ 
+ 	if (ubi->mtd->type == MTD_NORFLASH) {
+ 		ubi_assert(ubi->mtd->writesize == 1);
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index a1a81c9..b5217ef 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -363,6 +363,7 @@ struct ubi_wl_entry;
+  * @flash_size: underlying MTD device size (in bytes)
+  * @peb_count: count of physical eraseblocks on the MTD device
+  * @peb_size: physical eraseblock size
++ * @bad_peb_limit: top limit of expected bad physical eraseblocks
+  * @bad_peb_count: count of bad physical eraseblocks
+  * @good_peb_count: count of good physical eraseblocks
+  * @corr_peb_count: count of corrupted physical eraseblocks (preserved and not
+@@ -410,6 +411,7 @@ struct ubi_device {
+ 	int avail_pebs;
+ 	int beb_rsvd_pebs;
+ 	int beb_rsvd_level;
++	int bad_peb_limit;
+ 
+ 	int autoresize_vol_id;
+ 	int vtbl_slots;
 -- 
 1.7.9
