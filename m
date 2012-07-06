@@ -1,18 +1,17 @@
-Message-ID: <1341589908.26921.14.camel@shinybook.infradead.org>
-Subject: Re: [PATCH v4 2/8] mtd: sh_flctl: Add support for error IRQ
+Message-ID: <1341590150.26921.16.camel@shinybook.infradead.org>
+Subject: Re: [PATCH 1/2] mtd: fix wrong usage of ioremap_nocache() in
+ uclinux.c map driver
 From: David Woodhouse <dwmw2@infradead.org>
-To: Bastian Hecht <hechtb@googlemail.com>
-Date: Fri, 06 Jul 2012 16:51:48 +0100
-In-Reply-To: <1336997687-6868-3-git-send-email-hechtb@gmail.com>
-References: <1336997687-6868-1-git-send-email-hechtb@gmail.com>
- <1336997687-6868-3-git-send-email-hechtb@gmail.com>
+To: gerg@snapgear.com
+Date: Fri, 06 Jul 2012 16:55:50 +0100
+In-Reply-To: <1336632929-26100-1-git-send-email-gerg@snapgear.com>
+References: <1336632929-26100-1-git-send-email-gerg@snapgear.com>
 Content-Type: multipart/signed; micalg="sha1";
  protocol="application/x-pkcs7-signature";
- boundary="=-FEwnRwNOPRIEzDzlYvsV"
+ boundary="=-vEaVmZm1V0bL/iMLAtYw"
 Mime-Version: 1.0
-Cc: Bastian Hecht <hechtb@gmail.com>, magnus.damm@gmail.com,
- linux-mtd@lists.infradead.org, laurent.pinchart@ideasonboard.com,
- linux-sh@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org, uclinux-dev@uclinux.org,
+ Greg Ungerer <gerg@uclinux.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +22,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-FEwnRwNOPRIEzDzlYvsV
+--=-vEaVmZm1V0bL/iMLAtYw
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2012-05-14 at 14:14 +0200, Bastian Hecht wrote:
-> +       irq =3D platform_get_irq(pdev, 0);
-> +       if (irq < 0) {
+On Thu, 2012-05-10 at 16:55 +1000, gerg@snapgear.com wrote:
+> But if we want to use the uclinux.c mapping driver on real MMU enabled
+> systems we should be using phys_to_virt() for the translation, since
+> that is really what we are doing. So change it to do that.=20
 
-Is that correct? I know we have sometimes suffered from the insanity of
-assuming that irq 0 is *invalid*, and you're treating it as valid here.
-Did we recover from our insanity?
+That seems wrong. On a highmem page, phys_to_virt() isn't valid. So at
+the very least, any usage of phys_to_virt() needs a stonking great
+comment explaining why it's always safe because it can never be used ona
+a highmem page.
 
 --=20
-dwmw2
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
 
---=-FEwnRwNOPRIEzDzlYvsV
+
+
+--=-vEaVmZm1V0bL/iMLAtYw
 Content-Type: application/x-pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -139,19 +143,19 @@ kSIc5N4d9Lk3ypCnrYMvvqLspXcWeymdD7qC0KwcuOuRKEC6LBExggNvMIIDawIBATCBlDCBjDEL
 MAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdp
 dGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFy
 eSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMEJnowCQYFKw4DAhoFAKCCAa8wGAYJKoZIhvcNAQkD
-MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTIwNzA2MTU1MTQ4WjAjBgkqhkiG9w0BCQQx
-FgQUGvR0KcPlCsT36N/50VtzuZBgTIwwgaUGCSsGAQQBgjcQBDGBlzCBlDCBjDELMAkGA1UEBhMC
+MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTIwNzA2MTU1NTUwWjAjBgkqhkiG9w0BCQQx
+FgQUVgoBTQZ3EED1Dz9DKStR4LNs75cwgaUGCSsGAQQBgjcQBDGBlzCBlDCBjDELMAkGA1UEBhMC
 SUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRp
 ZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1l
 ZGlhdGUgQ2xpZW50IENBAgMEJnowgacGCyqGSIb3DQEJEAILMYGXoIGUMIGMMQswCQYDVQQGEwJJ
 TDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlm
 aWNhdGUgU2lnbmluZzE4MDYGA1UEAxMvU3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVk
-aWF0ZSBDbGllbnQgQ0ECAwQmejANBgkqhkiG9w0BAQEFAASCAQAuvBLNqVpP85kF0H0u2xtBYwGc
-KiPxNAba4go63CmyPzsiK2CpcIcR/TfmvIQ2hagRg3vTIPnjzC7WmExpZXHbVahJ6Jk3Eq3QPpqR
-e87cP4HMqpznJkE2ekT1xF7qMA2Jj705sHp9/zn60EopxIlKWNR7Qh4MmIRA05UpxYJPctTKMVVC
-0rBl2gaoVbk+e4pH8/NfPFPk6nybfHdNZPa7l1Pfs8gilec96+MDzGtZId7lSdXx72aQgAYi/BMp
-HVG7nssgZKGuTo/tzbkd5+PzHPscd2tZ+K5RnoyDg8XXCC4/twI+K+wrYhKdFAiUFwdNZVnEEJ2R
-iW9EMupXMmFLAAAAAAAA
+aWF0ZSBDbGllbnQgQ0ECAwQmejANBgkqhkiG9w0BAQEFAASCAQC9d6JF/CbG8JJJH+ELl+u3jXhq
+dbgLOmmToarUINuTwdGzNWmNDkfeByW6pBDZsVdbqmQ0401uzdtRRFXtsjHA2L5WODW4j+0f4ndV
+XDPTfIKGbKP8H91lcQVjCd9RqVBr6FT5tZmXZR+WkKTSEwQ4tMaXPInWLFi+PPOkMH1a8jNMCSIE
+ZIgJVMFmf5EFVQXa4gGMas/Aywt1IPkITa3iC27Lz2hwMqfkU8fhInWHpyXvdep2y8C/fKtE3l8c
+IxrRuwUCjjSXKKtU0bcYOoHbCjGWoPSfeC6CudY+ExiE2aBH1utkRrvqjQg/MDe/1wQu6RldyIQV
+zsAhmiA2k5IeAAAAAAAA
 
 
---=-FEwnRwNOPRIEzDzlYvsV--
+--=-vEaVmZm1V0bL/iMLAtYw--
