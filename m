@@ -1,22 +1,24 @@
-Received: from [2a01:238:20a:202:5305::1] (helo=mo6-p05-ob.rzone.de)
+Received: from mho-01-ewr.mailhop.org ([204.13.248.71])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Sn2IV-0000Va-Vt
- for linux-mtd@lists.infradead.org; Fri, 06 Jul 2012 06:46:30 +0000
-From: Stefan Roese <sr@denx.de>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 3/3] [RFC] mtd: m25p80: Make fast read configurable via DT
-Date: Fri, 6 Jul 2012 08:43:44 +0200
-References: <1341555027-17462-1-git-send-email-marex@denx.de>
- <1341555027-17462-3-git-send-email-marex@denx.de>
-In-Reply-To: <1341555027-17462-3-git-send-email-marex@denx.de>
+ id 1Sn2je-0005XZ-An
+ for linux-mtd@lists.infradead.org; Fri, 06 Jul 2012 07:13:51 +0000
+Date: Fri, 6 Jul 2012 00:13:35 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: "Mohammed, Afzal" <afzal@ti.com>
+Subject: Re: [PATCH v2 00/10] Prepare for GPMC driver conversion (w.r.t MTD)
+Message-ID: <20120706071335.GJ1122@atomide.com>
+References: <cover.1339586624.git.afzal@ti.com>
+ <1340789755.29342.12.camel@sauron.fi.intel.com>
+ <20120702073547.GA1122@atomide.com>
+ <C8443D0743D26F4388EA172BF4E2A7A93E9A267A@DBDE01.ent.ti.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201207060843.45073.sr@denx.de>
-Cc: Marek Vasut <marex@denx.de>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- David Woodhouse <david.woodhouse@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <C8443D0743D26F4388EA172BF4E2A7A93E9A267A@DBDE01.ent.ti.com>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,23 +28,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Marek,
-
-On Friday 06 July 2012 08:10:27 Marek Vasut wrote:
-> @@ -914,6 +912,14 @@ static int __devinit m25p_probe(struct spi_device
-> *spi) flash->page_size = info->page_size;
->  	flash->mtd.writebufsize = flash->page_size;
+* Mohammed, Afzal <afzal@ti.com> [120703 05:10]:
+> Hi Tony,
 > 
-> +	flash->fast_read = false;
-> +	if (np && of_find_property(np, "m25p,fast-read", NULL))
-> +		flash->fast_read = true;
-> +
-> +#ifdef CONFIG_M25PXX_USE_FAST_READ
-> +	flash->fast_read = true;
-> +#endif
-> +
+> On Mon, Jul 02, 2012 at 13:05:47, Tony Lindgren wrote:
+> > * Artem Bityutskiy <artem.bityutskiy@linux.intel.com> [120627 02:36]:
+> > > On Wed, 2012-06-13 at 17:02 +0530, Afzal Mohammed wrote:
+> 
+> > > > This series cleans up gpmc mtd interactions so that GPMC driver
+> > > > conversion which is going to happen shortly would happen smoothly
+> > > > by not creating much disturbance outside of arch/arm/*omap*/
+> > > 
+> > > Dunno if Tony picked this, but the MTD changes look good an the quick
+> > > glance. Feel free to add
+> > > 
+> > > Acked-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+> > 
+> > Thanks will add to the drivers/mtd touching patches in this series.
+> 
+> Can you please consider this series for inclusion in the coming merge
+> window. This series can live by itself and is not dependent on any
+> other patches.
 
-Better use of_property_read_bool() instead of of_find_property() here.
+Yes I have some of the gpmc patches applied locally on top of the
+dmaengine changes from Russell. Will update and push out once we have
+an immutable commit for the dmaengine changes available.
 
-Thanks,
-Stefan
+Regards,
+
+Tony
