@@ -1,16 +1,19 @@
-Message-ID: <4FFA7576.7050204@snapgear.com>
-Date: Mon, 9 Jul 2012 16:08:54 +1000
-From: Greg Ungerer <gerg@snapgear.com>
+Received: from mga01.intel.com ([192.55.52.88])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1So7jn-00054R-Fg
+ for linux-mtd@lists.infradead.org; Mon, 09 Jul 2012 06:46:30 +0000
+Message-ID: <4FFA7E60.8060404@intel.com>
+Date: Mon, 09 Jul 2012 09:46:56 +0300
+From: Adrian Hunter <adrian.hunter@intel.com>
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 1/2] mtd: fix wrong usage of ioremap_nocache() in uclinux.c
- map driver
-References: <1336632929-26100-1-git-send-email-gerg@snapgear.com>
- <1341590150.26921.16.camel@shinybook.infradead.org>
-In-Reply-To: <1341590150.26921.16.camel@shinybook.infradead.org>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+To: Julia Lawall <julia.lawall@lip6.fr>
+Subject: Re: question about fs/ubifs/orphan.c
+References: <alpine.DEB.2.02.1207081119490.2436@localhost6.localdomain6>
+ <alpine.DEB.2.02.1207081122250.2436@localhost6.localdomain6>
+In-Reply-To: <alpine.DEB.2.02.1207081122250.2436@localhost6.localdomain6>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, uclinux-dev@uclinux.org
+Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,33 +23,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi David,
+On 08/07/12 12:22, Julia Lawall wrote:
+> There is another occurrence of the same pattern in the function consolidate
+> in the same file.
 
-On 07/07/12 01:55, David Woodhouse wrote:
-> On Thu, 2012-05-10 at 16:55 +1000, gerg@snapgear.com wrote:
->> But if we want to use the uclinux.c mapping driver on real MMU enabled
->> systems we should be using phys_to_virt() for the translation, since
->> that is really what we are doing. So change it to do that.
->
-> That seems wrong. On a highmem page, phys_to_virt() isn't valid. So at
-> the very least, any usage of phys_to_virt() needs a stonking great
-> comment explaining why it's always safe because it can never be used ona
-> a highmem page.
+Yes. It needs the same fix.  Will you send a patch?
 
-The only VM based arch this driver can be configured for currently
-is m68k (actually it is even more specific, only CONFIG_COLDFIRE).
-And that doesn't support HIGHMEM.
-
-Can the kernels data region (and the area immediately after it) be in
-high memory?
-
-Regards
-Greg
-
-
-  
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+> 
+> julia
+> 
+> On Sun, 8 Jul 2012, Julia Lawall wrote:
+> 
+>> The function ubifs_orphan_start_commit contains the code:
+>>
+>>        list_for_each_entry(orphan, &c->orph_new, new_list) {
+>>                ubifs_assert(orphan->new);
+>>                orphan->new = 0;
+>>                *last = orphan;
+>>                last = &orphan->cnext;
+>>        }
+>>        *last = orphan->cnext;
+>>
+>> After list_for_each_entry, orphan is just an address at an offset from the
+>> list head, not a pointer to a real structure.  So it does not seem correct
+>> to access its cnext field.
+>>
+>> julia
+>>
+> 
+> 
