@@ -1,19 +1,19 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1So7jn-00054R-Fg
- for linux-mtd@lists.infradead.org; Mon, 09 Jul 2012 06:46:30 +0000
-Message-ID: <4FFA7E60.8060404@intel.com>
-Date: Mon, 09 Jul 2012 09:46:56 +0300
+ id 1So7k4-0005A2-RO
+ for linux-mtd@lists.infradead.org; Mon, 09 Jul 2012 06:46:46 +0000
+Message-ID: <4FFA7E7A.7030708@intel.com>
+Date: Mon, 09 Jul 2012 09:47:22 +0300
 From: Adrian Hunter <adrian.hunter@intel.com>
 MIME-Version: 1.0
-To: Julia Lawall <julia.lawall@lip6.fr>
+To: Artem Bityutskiy <dedekind1@gmail.com>
 Subject: Re: question about fs/ubifs/orphan.c
 References: <alpine.DEB.2.02.1207081119490.2436@localhost6.localdomain6>
- <alpine.DEB.2.02.1207081122250.2436@localhost6.localdomain6>
-In-Reply-To: <alpine.DEB.2.02.1207081122250.2436@localhost6.localdomain6>
-Content-Type: text/plain; charset=ISO-8859-1
+ <1341751213.2104.7.camel@koala>
+In-Reply-To: <1341751213.2104.7.camel@koala>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
+Cc: Julia Lawall <julia.lawall@lip6.fr>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,32 +23,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/07/12 12:22, Julia Lawall wrote:
-> There is another occurrence of the same pattern in the function consolidate
-> in the same file.
-
-Yes. It needs the same fix.  Will you send a patch?
-
-> 
-> julia
-> 
-> On Sun, 8 Jul 2012, Julia Lawall wrote:
-> 
+On 08/07/12 15:40, Artem Bityutskiy wrote:
+> On Sun, 2012-07-08 at 11:21 +0200, Julia Lawall wrote:
 >> The function ubifs_orphan_start_commit contains the code:
 >>
->>        list_for_each_entry(orphan, &c->orph_new, new_list) {
->>                ubifs_assert(orphan->new);
->>                orphan->new = 0;
->>                *last = orphan;
->>                last = &orphan->cnext;
->>        }
->>        *last = orphan->cnext;
+>>          list_for_each_entry(orphan, &c->orph_new, new_list) {
+>>                  ubifs_assert(orphan->new);
+>>                  orphan->new = 0;
+>>                  *last = orphan;
+>>                  last = &orphan->cnext;
+>>          }
+>>          *last = orphan->cnext;
 >>
->> After list_for_each_entry, orphan is just an address at an offset from the
->> list head, not a pointer to a real structure.  So it does not seem correct
+>> After list_for_each_entry, orphan is just an address at an offset from the 
+>> list head, not a pointer to a real structure.  So it does not seem correct 
 >> to access its cnext field.
->>
->> julia
->>
 > 
+> Looks like you've spotted a but - we write some irrelevant address to an
+> area within the 'struct ubifs_info'.
+> 
+> I think what the code meant to do is to write NULL there:
+> 
+> - *last = orphan->cnext;
+> + *last = NULL;
+> 
+> I wonder if this could be a reason for some of strange bugs we have seen
+> reports for.
+
+Perhaps not because in that case c->cmt_orphans is zero so the cnext list
+is never dereferenced.
+
+> 
+> Well-spotted Julia, thanks! How did you do this - writing another cocci
+> script for the kernel?
 > 
