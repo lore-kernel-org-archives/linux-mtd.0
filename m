@@ -1,15 +1,26 @@
-Received: from mail1-relais-roc.national.inria.fr ([192.134.164.82])
+Received: from mail-wg0-f41.google.com ([74.125.82.41])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1So8NS-0005Hr-7A
- for linux-mtd@lists.infradead.org; Mon, 09 Jul 2012 07:27:32 +0000
-From: Julia Lawall <Julia.Lawall@lip6.fr>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH] fs/ubifs/orphan.c: remove invalid reference to list iterator
- variable
-Date: Mon,  9 Jul 2012 09:27:14 +0200
-Message-Id: <1341818834-2101-1-git-send-email-Julia.Lawall@lip6.fr>
-Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
- Adrian Hunter <adrian.hunter@intel.com>, linux-kernel@vger.kernel.org
+ id 1So8YF-00075r-S2
+ for linux-mtd@lists.infradead.org; Mon, 09 Jul 2012 07:38:57 +0000
+Received: by wgbds1 with SMTP id ds1so2116168wgb.0
+ for <linux-mtd@lists.infradead.org>; Mon, 09 Jul 2012 00:37:59 -0700 (PDT)
+Date: Mon, 9 Jul 2012 10:37:47 +0300
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Subject: Re: UBI fastmap updates
+Message-ID: <20120709103747.5270084d@pixies.home.jungo.com>
+In-Reply-To: <4FF9780D.4010709@nod.at>
+References: <1340982869-77042-1-git-send-email-richard@nod.at>
+ <20120708144745.36109029@pixies.home.jungo.com>
+ <4FF9780D.4010709@nod.at>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: nyoushchenko@mvista.com, artem.bityutskiy@linux.intel.com,
+ linux-kernel@vger.kernel.org, adrian.hunter@intel.com,
+ Heinz.Egger@linutronix.de, thomas.wucher@linutronix.de,
+ linux-mtd@lists.infradead.org, tim.bird@am.sony.com, tglx@linutronix.de,
+ Marius.Mazarel@ugal.ro
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,62 +30,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Julia Lawall <Julia.Lawall@lip6.fr>
+Hi Richard,
 
-If list_for_each_entry, etc complete a traversal of the list, the iterator
-variable ends up pointing to an address at an offset from the list head,
-and not a meaningful structure.  Thus this value should not be used after
-the end of the iterator.  Replace a field access from orphan by NULL in two
-places.
+On Sun, 08 Jul 2012 14:07:41 +0200 Richard Weinberger <richard@nod.at> wrote:
+> > +			/* TODO: in the new locking scheme, produce_free_peb is
+> > +			 * called under wl_lock taken.
+> > +			 * so when returning, should reacquire the lock
+> > +			 */
+> 
+> Which new locking scheme?
 
-A simplified version of the semantic match that finds this problem is as
-follows: (http://coccinelle.lip6.fr/)
+I am diffing linux-ubi fastmap HEAD against its fork point (vanilla
+ubi), that's 6b16351..d41a140 on linux-ubi.
 
-// <smpl>
-@@
-identifier c;
-expression E;
-iterator name list_for_each_entry;
-statement S;
-@@
+Which gives the following diff in produce_free_pebs:
 
-list_for_each_entry(c,...) { ... when != break;
-                                 when forall
-                                 when strict
-}
-...
-(
-c = E
-|
-*c
-)
-// </smpl>
-
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
-
----
- fs/ubifs/orphan.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/fs/ubifs/orphan.c b/fs/ubifs/orphan.c
-index b02734d..cebf17e 100644
---- a/fs/ubifs/orphan.c
-+++ b/fs/ubifs/orphan.c
-@@ -176,7 +176,7 @@ int ubifs_orphan_start_commit(struct ubifs_info *c)
- 		*last = orphan;
- 		last = &orphan->cnext;
+@@ -261,7 +266,6 @@ static int produce_free_peb(struct ubi_device *ubi)
+ {
+ 	int err;
+ 
+-	spin_lock(&ubi->wl_lock);
+ 	while (!ubi->free.rb_node) {
+ 		spin_unlock(&ubi->wl_lock);
+ 
+@@ -272,7 +276,6 @@ static int produce_free_peb(struct ubi_device *ubi)
+ 
+ 		spin_lock(&ubi->wl_lock);
  	}
--	*last = orphan->cnext;
-+	*last = NULL;
- 	c->cmt_orphans = c->new_orphans;
- 	c->new_orphans = 0;
- 	dbg_cmt("%d orphans to commit", c->cmt_orphans);
-@@ -382,7 +382,7 @@ static int consolidate(struct ubifs_info *c)
- 			last = &orphan->cnext;
- 			cnt += 1;
- 		}
--		*last = orphan->cnext;
-+		*last = NULL;
- 		ubifs_assert(cnt == c->tot_orphans - c->new_orphans);
- 		c->cmt_orphans = cnt;
- 		c->ohead_lnum = c->orph_first;
+-	spin_unlock(&ubi->wl_lock);
+ 
+ 	return 0;
+ }
+
+Which is probably okay, since you obtain the lock in the new
+'ubi_refill_pools', which calls produce_free_peb:
+
++void ubi_refill_pools(struct ubi_device *ubi)
++{
++	spin_lock(&ubi->wl_lock);
++	refill_wl_pool(ubi);
++	refill_wl_user_pool(ubi);
++	spin_unlock(&ubi->wl_lock);
++}
+
+However if 'do_work' fails within 'produce_free_peb', you return the
+error but leave wl_lock unlocked - where it is expected to be locked
+(otherwise, ubi_refill_pools will unlock it again):
+
+static int produce_free_peb(struct ubi_device *ubi)
+{
+	int err;
+
+	while (!ubi->free.rb_node) {
+		spin_unlock(&ubi->wl_lock);
+
+		dbg_wl("do one work synchronously");
+		err = do_work(ubi);
+		if (err)
+			return err;
+
+		spin_lock(&ubi->wl_lock);
+	}
+
+	return 0;
+}
+
+Regards,
+Shmulik
