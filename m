@@ -1,21 +1,16 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SnxYf-0003sO-Q1
- for linux-mtd@lists.infradead.org; Sun, 08 Jul 2012 19:54:18 +0000
-Date: Sun, 8 Jul 2012 21:53:59 +0200
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-To: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH] mtd: mxc_nand: Select the driver via ARCH_MXC
-Message-ID: <20120708195359.GG4687@pengutronix.de>
-References: <1341266419-21321-1-git-send-email-festevam@gmail.com>
+Message-ID: <4FFA7576.7050204@snapgear.com>
+Date: Mon, 9 Jul 2012 16:08:54 +1000
+From: Greg Ungerer <gerg@snapgear.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1341266419-21321-1-git-send-email-festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- artem.bityutskiy@linux.intel.com, linux-mtd@lists.infradead.org,
- kernel@pengutronix.de, shawn.guo@linaro.org, dwmw2@infradead.org
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 1/2] mtd: fix wrong usage of ioremap_nocache() in uclinux.c
+ map driver
+References: <1336632929-26100-1-git-send-email-gerg@snapgear.com>
+ <1341590150.26921.16.camel@shinybook.infradead.org>
+In-Reply-To: <1341590150.26921.16.camel@shinybook.infradead.org>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, uclinux-dev@uclinux.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,21 +20,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jul 02, 2012 at 07:00:19PM -0300, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
-> 
-> With device tree support in place, we should not use IMX_HAVE_PLATFORM_MXC_NAND
-> as a dependency for selecting the mxc_nand driver.
-> 
-> Use ARCH_MXC symbol instead, so that the driver can be even selected when a single device-tree
-> machine is selected.
-> 
-> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
-Acked-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Hi David,
 
-Thanks
-Uwe
+On 07/07/12 01:55, David Woodhouse wrote:
+> On Thu, 2012-05-10 at 16:55 +1000, gerg@snapgear.com wrote:
+>> But if we want to use the uclinux.c mapping driver on real MMU enabled
+>> systems we should be using phys_to_virt() for the translation, since
+>> that is really what we are doing. So change it to do that.
+>
+> That seems wrong. On a highmem page, phys_to_virt() isn't valid. So at
+> the very least, any usage of phys_to_virt() needs a stonking great
+> comment explaining why it's always safe because it can never be used ona
+> a highmem page.
 
--- 
-Pengutronix e.K.                           | Uwe Kleine-König            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+The only VM based arch this driver can be configured for currently
+is m68k (actually it is even more specific, only CONFIG_COLDFIRE).
+And that doesn't support HIGHMEM.
+
+Can the kernels data region (and the area immediately after it) be in
+high memory?
+
+Regards
+Greg
+
+
+  
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close                             FAX:         +61 7 3217 5323
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
