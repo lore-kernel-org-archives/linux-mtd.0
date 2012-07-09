@@ -1,19 +1,15 @@
-Received: from mail4-relais-sop.national.inria.fr ([192.134.164.105])
+Received: from mail1-relais-roc.national.inria.fr ([192.134.164.82])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1So8Hn-0004FH-RU
- for linux-mtd@lists.infradead.org; Mon, 09 Jul 2012 07:21:38 +0000
-Date: Mon, 9 Jul 2012 09:21:17 +0200 (CEST)
-From: Julia Lawall <julia.lawall@lip6.fr>
-To: Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: question about fs/ubifs/orphan.c
-In-Reply-To: <4FFA7E60.8060404@intel.com>
-Message-ID: <alpine.DEB.2.02.1207090920460.2068@localhost6.localdomain6>
-References: <alpine.DEB.2.02.1207081119490.2436@localhost6.localdomain6>
- <alpine.DEB.2.02.1207081122250.2436@localhost6.localdomain6>
- <4FFA7E60.8060404@intel.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
+ id 1So8NS-0005Hr-7A
+ for linux-mtd@lists.infradead.org; Mon, 09 Jul 2012 07:27:32 +0000
+From: Julia Lawall <Julia.Lawall@lip6.fr>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH] fs/ubifs/orphan.c: remove invalid reference to list iterator
+ variable
+Date: Mon,  9 Jul 2012 09:27:14 +0200
+Message-Id: <1341818834-2101-1-git-send-email-Julia.Lawall@lip6.fr>
+Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,42 +19,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 9 Jul 2012, Adrian Hunter wrote:
+From: Julia Lawall <Julia.Lawall@lip6.fr>
 
-> On 08/07/12 12:22, Julia Lawall wrote:
->> There is another occurrence of the same pattern in the function consolidate
->> in the same file.
->
-> Yes. It needs the same fix.  Will you send a patch?
+If list_for_each_entry, etc complete a traversal of the list, the iterator
+variable ends up pointing to an address at an offset from the list head,
+and not a meaningful structure.  Thus this value should not be used after
+the end of the iterator.  Replace a field access from orphan by NULL in two
+places.
 
-Oops, I seem to have overlooked it again.  I will send a patch that fixes 
-both.
+A simplified version of the semantic match that finds this problem is as
+follows: (http://coccinelle.lip6.fr/)
 
-julia
+// <smpl>
+@@
+identifier c;
+expression E;
+iterator name list_for_each_entry;
+statement S;
+@@
 
->>
->> julia
->>
->> On Sun, 8 Jul 2012, Julia Lawall wrote:
->>
->>> The function ubifs_orphan_start_commit contains the code:
->>>
->>>        list_for_each_entry(orphan, &c->orph_new, new_list) {
->>>                ubifs_assert(orphan->new);
->>>                orphan->new = 0;
->>>                *last = orphan;
->>>                last = &orphan->cnext;
->>>        }
->>>        *last = orphan->cnext;
->>>
->>> After list_for_each_entry, orphan is just an address at an offset from the
->>> list head, not a pointer to a real structure.  So it does not seem correct
->>> to access its cnext field.
->>>
->>> julia
->>>
->>
->>
->
->
->
+list_for_each_entry(c,...) { ... when != break;
+                                 when forall
+                                 when strict
+}
+...
+(
+c = E
+|
+*c
+)
+// </smpl>
+
+Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+
+---
+ fs/ubifs/orphan.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/ubifs/orphan.c b/fs/ubifs/orphan.c
+index b02734d..cebf17e 100644
+--- a/fs/ubifs/orphan.c
++++ b/fs/ubifs/orphan.c
+@@ -176,7 +176,7 @@ int ubifs_orphan_start_commit(struct ubifs_info *c)
+ 		*last = orphan;
+ 		last = &orphan->cnext;
+ 	}
+-	*last = orphan->cnext;
++	*last = NULL;
+ 	c->cmt_orphans = c->new_orphans;
+ 	c->new_orphans = 0;
+ 	dbg_cmt("%d orphans to commit", c->cmt_orphans);
+@@ -382,7 +382,7 @@ static int consolidate(struct ubifs_info *c)
+ 			last = &orphan->cnext;
+ 			cnt += 1;
+ 		}
+-		*last = orphan->cnext;
++		*last = NULL;
+ 		ubifs_assert(cnt == c->tot_orphans - c->new_orphans);
+ 		c->cmt_orphans = cnt;
+ 		c->ohead_lnum = c->orph_first;
