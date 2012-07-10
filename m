@@ -1,25 +1,23 @@
-Received: from mail-yw0-f49.google.com ([209.85.213.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SoQM7-0002DK-MR
- for linux-mtd@lists.infradead.org; Tue, 10 Jul 2012 02:39:17 +0000
-Received: by yhjj52 with SMTP id j52so13268436yhj.36
- for <linux-mtd@lists.infradead.org>; Mon, 09 Jul 2012 19:39:12 -0700 (PDT)
+Received: from co202.xi-lite.net ([149.6.83.202])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SoV8w-0006Su-M9
+ for linux-mtd@lists.infradead.org; Tue, 10 Jul 2012 07:46:00 +0000
+Message-ID: <4FFBDDB0.6010605@parrot.com>
+Date: Tue, 10 Jul 2012 09:45:52 +0200
+From: Matthieu CASTET <matthieu.castet@parrot.com>
 MIME-Version: 1.0
-In-Reply-To: <20120626170902.7aba4a2b@pixies.home.jungo.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 8/8] mtd: nand: use ECC, if present, when scanning OOB
 References: <1340408145-24531-1-git-send-email-computersforpeace@gmail.com>
  <1340408145-24531-9-git-send-email-computersforpeace@gmail.com>
- <20120626170902.7aba4a2b@pixies.home.jungo.com>
-Date: Mon, 9 Jul 2012 19:39:12 -0700
-Message-ID: <CAN8TOE-nZh_jJR1VfDa38WOV79t3ODRpXuuueWmEx4749cDTsg@mail.gmail.com>
-Subject: Re: [PATCH 8/8] mtd: nand: use ECC, if present, when scanning OOB
-From: Brian Norris <computersforpeace@gmail.com>
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: David Woodhouse <dwmw2@infradead.org>,
+In-Reply-To: <1340408145-24531-9-git-send-email-computersforpeace@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8bit
+Cc: Mike Dunn <mikedunn@newsguy.com>, Artem Bityutskiy <dedekind1@gmail.com>,
  Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Mike Dunn <mikedunn@newsguy.com>, linux-mtd@lists.infradead.org,
- Artem Bityutskiy <dedekind1@gmail.com>
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,51 +27,115 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jun 26, 2012 at 7:09 AM, Shmulik Ladkani
-<shmulik.ladkani@gmail.com> wrote:
-> On Fri, 22 Jun 2012 16:35:45 -0700 Brian Norris <computersforpeace@gmail.=
-com> wrote:
->> scan_read_raw_oob() is used in only in places where the MTD_OPS_PLACE_OO=
-B
->> mode is preferable MTD_OPS_RAW mode, so use MTD_OPS_PLACE_OOB instead.
->
-> Please consider rephrasing, text is bit confusing.
+Hi Brian,
 
-I realized I was missing the word "to". So the edit would read:
+Brian Norris a écrit :
+> scan_read_raw_oob() is used in only in places where the MTD_OPS_PLACE_OOB
+> mode is preferable MTD_OPS_RAW mode, so use MTD_OPS_PLACE_OOB instead.
+> MTD_OPS_PLACE_OOB provides the same functionality with the potential[1]
+> added bonus of error correction.
+> 
+> This brings scan_block_full() in line with scan_block_fast() so that they
+> both read bad block markers with MTD_OPS_PLACE_OOB. This can help in
+> preventing 0xff markers (in good blocks) from being interpreted as bad
+> block indicators in the presence of a single bitflip.
+As far I understand the code, this work when "chip->ecc.read_oob" (used in
+nand_do_read_oob) correct bit flip.
 
-scan_read_raw_oob() is used in only in places where the
-MTD_OPS_PLACE_OOB mode is preferable to MTD_OPS_RAW mode, so use
-MTD_OPS_PLACE_OOB instead.
+But I see no "chip->ecc.read_oob" implementation that can return bit flip. Is
+that expected ?
 
-I can rephrase more, regarding what each mode does, but I'm wondering
-if this clears up your understanding.
+This can also work when nand_do_read_ops is used (ops->datbuf != NULL). But it
+is hard to see case where it can correct bit flip in bad block marker. Do you
+have any exemple ?
 
->> + * Scan read data from data+OOB. May traverse multiple pages, interleav=
-ing
->> + * page,OOB,page,OOB,... in buf.
->
-> In the case 'len' is less than 'mtd->writesize' (possible from a
-> 'scan_block_full' call), the read oob will be placed immediately after
-> the partially read page, quoting scan_read_raw_oob:
->
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ops.len =3D min(len, (size_t)mtd->writesi=
-ze);
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ops.oobbuf =3D buf + ops.len;
->
-> Any idea if this is intentional or a bug?
+For example the default chip->ecc.read_page (nand_read_page_hwecc) doesn't read
+oob with ecc [1].
 
-Not really. I honestly don't fully understand many of the options in
-NAND_BBT, but I'm trying to work through some of it. I think there's a
-lot of half-baked stuff in here with not-very-good code structure.
-Some of the code is written as if it were generic, but it's only meant
-for some very specific circumstances.
 
-With that said, here's a thought: it looks like your hypothetical "len
-< mtd->writesize" would only occur with NAND_BBT_SCANEMPTY disabled
-and NAND_BBT_SCANALLPAGES enabled. But I only see them used together:
-NAND_BBT_SCANEMPTY | NAND_BBT_SCANALLPAGES (omap2.c and with
-agand_flashbased in nand_bbt.c). So maybe it's a kind of "bug" for a
-case that was never really thought out. And if they must be used
-together, maybe we should document that.
 
-Brian
+
+Matthieu
+
+PS : Did you have any comment on
+http://thread.gmane.org/gmane.linux.drivers.mtd/42243 ?
+
+[1]
+   for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += eccsize) {
+        chip->ecc.hwctl(mtd, NAND_ECC_READ);
+        chip->read_buf(mtd, p, eccsize);
+        chip->ecc.calculate(mtd, p, &ecc_calc[i]);
+    }
+    chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
+
+> 
+> Note that ECC error codes (EUCLEAN or EBADMSG) are already silently
+> ignored in all users of scan_read_raw_oob().
+> 
+> [1] Few  drivers perform proper error correction on OOB data. In those
+>     cases, the use of MTD_OPS_RAW vs. MTD_OPS_PLACE_OOB is not
+>     significant.
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Cc: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+> Cc: Mike Dunn <mikedunn@newsguy.com>
+> Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> ---
+>  drivers/mtd/nand/nand_bbt.c |   27 ++++++++++++++++++++-------
+>  1 file changed, 20 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+> index 45cdb97..7b9a0a7 100644
+> --- a/drivers/mtd/nand/nand_bbt.c
+> +++ b/drivers/mtd/nand/nand_bbt.c
+> @@ -289,14 +289,24 @@ static int scan_read_data(struct mtd_info *mtd, uint8_t *buf, loff_t offs,
+>  	return mtd_read(mtd, offs, len, &retlen, buf);
+>  }
+>  
+> -/* Scan read data from flash */
+> +/**
+> + * scan_read_oob - [GENERIC] Scan data+OOB region to buffer
+> + * @mtd: MTD device structure
+> + * @buf: temporary buffer
+> + * @offs: offset at which to scan
+> + * @len: length of data region to read
+> + *
+> + * Scan read data from data+OOB. May traverse multiple pages, interleaving
+> + * page,OOB,page,OOB,... in buf. Completes transfer and returns the "strongest"
+> + * ECC condition (error or bitflip). May quit on the first (non-ECC) error.
+> + */
+>  static int scan_read_oob(struct mtd_info *mtd, uint8_t *buf, loff_t offs,
+>  			 size_t len)
+>  {
+>  	struct mtd_oob_ops ops;
+> -	int res;
+> +	int res, ret = 0;
+>  
+> -	ops.mode = MTD_OPS_RAW;
+> +	ops.mode = MTD_OPS_PLACE_OOB;
+>  	ops.ooboffs = 0;
+>  	ops.ooblen = mtd->oobsize;
+>  
+> @@ -306,15 +316,18 @@ static int scan_read_oob(struct mtd_info *mtd, uint8_t *buf, loff_t offs,
+>  		ops.oobbuf = buf + ops.len;
+>  
+>  		res = mtd_read_oob(mtd, offs, &ops);
+> -
+> -		if (res)
+> -			return res;
+> +		if (res) {
+> +			if (!mtd_is_bitflip_or_eccerr(res))
+> +				return res;
+> +			else if (mtd_is_eccerr(res) || !ret)
+> +				ret = res;
+> +		}
+>  
+>  		buf += mtd->oobsize + mtd->writesize;
+>  		len -= mtd->writesize;
+>  		offs += mtd->writesize;
+>  	}
+> -	return 0;
+> +	return ret;
+>  }
+>  
+>  static int scan_read(struct mtd_info *mtd, uint8_t *buf, loff_t offs,
