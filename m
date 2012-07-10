@@ -1,14 +1,14 @@
 Received: from mail-wg0-f49.google.com ([74.125.82.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SodES-00083w-NL
- for linux-mtd@lists.infradead.org; Tue, 10 Jul 2012 16:24:18 +0000
-Received: by mail-wg0-f49.google.com with SMTP id ds1so109915wgb.18
- for <linux-mtd@lists.infradead.org>; Tue, 10 Jul 2012 09:24:12 -0700 (PDT)
+ id 1SodEU-00086E-Pg
+ for linux-mtd@lists.infradead.org; Tue, 10 Jul 2012 16:24:19 +0000
+Received: by wgbds1 with SMTP id ds1so110179wgb.18
+ for <linux-mtd@lists.infradead.org>; Tue, 10 Jul 2012 09:24:13 -0700 (PDT)
 From: Richard Genoud <richard.genoud@gmail.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH 4/4] UBI: replace MTD_UBI_BEB_LIMIT with user-space parameter
-Date: Tue, 10 Jul 2012 18:23:42 +0200
-Message-Id: <1341937423-16516-5-git-send-email-richard.genoud@gmail.com>
+Subject: [PATCH] ubiattach: introduce max_beb_per1024 in UBI_IOCATT
+Date: Tue, 10 Jul 2012 18:23:43 +0200
+Message-Id: <1341937423-16516-6-git-send-email-richard.genoud@gmail.com>
 In-Reply-To: <1341937423-16516-1-git-send-email-richard.genoud@gmail.com>
 References: <1341937423-16516-1-git-send-email-richard.genoud@gmail.com>
 Cc: Richard Genoud <richard.genoud@gmail.com>, linux-mtd@lists.infradead.org,
@@ -22,309 +22,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch provides the possibility to adjust the "maximum expected number of
-bad blocks per 1024 blocks" (max_beb_per1024) for each mtd device.
+The ioctl UBI_IOCATT has been extended with max_beb_per1024 parameter.
 
-The majority of NAND devices have their max_beb_per1024 equal to 20, but
-sometimes it's more.
-Now, we can adjust that via a kernel parameter:
-ubi.mtd=<name|num|path>[,<vid_hdr_offs>[,max_beb_per1024]]
-and via UBI_IOCATT ioctl which is now:
-struct ubi_attach_req {
-	__s32 ubi_num;
-	__s32 mtd_num;
-	__s32 vid_hdr_offset;
-	__u8 max_beb_per1024;
-	__s8 padding[11];
-};
+This parameter is used for adjusting the "maximum expected number of
+bad blocks per 1024 blocks" for each mtd device.
+The number of physical erase blocks (PEB) that UBI will reserve for bad
+block handling is now:
+whole_flash_chipset__PEB_number * max_beb_per1024 / 1024
+
+This means that for a 4096 PEB NAND device with 3 MTD partitions:
+mtd0: 512 PEB
+mtd1: 1536 PEB
+mtd2: 2048 PEB
+
+the commands:
+ubiattach -m 0 -d 0 -b 20 /dev/ubi_ctrl
+ubiattach -m 1 -d 1 -b 20 /dev/ubi_ctrl
+ubiattach -m 2 -d 2 -b 20 /dev/ubi_ctrl
+will attach mtdx to UBIx and reserve:
+80 PEB for bad block handling on UBI0
+80 PEB for bad block handling on UBI1
+80 PEB for bad block handling on UBI2
+
+=> for the whole device, 240 PEB will be reserved for bad block
+handling.
+
+This may seems a waste of space, but as far as the bad blocks can appear
+every where on a flash device, in the worst case scenario they can
+all appear in one MTD partition.
+So the maximum number of expected erase blocks given by the NAND
+manufacturer should be reserve on each MTD partition.
 
 Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
 ---
- drivers/mtd/ubi/Kconfig |   25 --------------
- drivers/mtd/ubi/build.c |   82 +++++++++++++++++++++++++++++++---------------
- drivers/mtd/ubi/cdev.c  |    9 ++++-
- drivers/mtd/ubi/ubi.h   |    6 +++-
- include/mtd/ubi-user.h  |   19 ++++++++++-
- 5 files changed, 86 insertions(+), 55 deletions(-)
+ include/mtd/ubi-user.h             |   20 ++++++++++++++++-
+ tests/fs-tests/integrity/integck.c |    1 +
+ ubi-utils/include/libubi.h         |    2 +
+ ubi-utils/libubi.c                 |    2 +
+ ubi-utils/ubiattach.c              |   41 +++++++++++++++++++++++++++++-------
+ 5 files changed, 57 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/mtd/ubi/Kconfig b/drivers/mtd/ubi/Kconfig
-index b77ffe1..7a57cc0 100644
---- a/drivers/mtd/ubi/Kconfig
-+++ b/drivers/mtd/ubi/Kconfig
-@@ -27,31 +27,6 @@ config MTD_UBI_WL_THRESHOLD
- 	  life-cycle less than 10000, the threshold should be lessened (e.g.,
- 	  to 128 or 256, although it does not have to be power of 2).
- 
--config MTD_UBI_BEB_LIMIT
--	int "Maximum expected bad eraseblocks per 1024 eraseblocks"
--	default 20
--	range 2 256
--	help
--	  If the MTD device admits of bad eraseblocks (e.g. NAND flash), UBI
--	  reserves some amount of physical eraseblocks to handle new bad
--	  eraseblocks.
--	  This option specifies the maximum bad eraseblocks UBI expects on the
--	  ubi device per 1024 eraseblocks.
--	  This value is often given in an other form in the NAND datasheet
--	  (min NVB i.e. minimal number of valid blocks). The maximum expected
--	  bad eraseblocks per 1024 is then:
--	    1024 * (1 - MinNVB / MaxNVB)
--	  Which gives 20 for most NAND devices.
--
--	  This limit is used in order to derive amount of eraseblock UBI
--	  reserves for handling new bad blocks.
--	  If the device has more bad eraseblocks than this limit, UBI does not
--	  reserve any physical eraseblocks for new bad eraseblocks, but
--	  attempts to use available eraseblocks (if any).
--	  If the underlying flash does not admit of bad eraseblocks (e.g. NOR
--	  flash), this value is ignored.
--	  Leave the default value if unsure.
--
- config MTD_UBI_GLUEBI
- 	tristate "MTD devices emulation driver (gluebi)"
- 	help
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index 87b39c2..76358e9 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -46,6 +46,8 @@
- /* Maximum length of the 'mtd=' parameter */
- #define MTD_PARAM_LEN_MAX 64
- 
-+#define MTD_PARAM_NB_MAX 3
-+
- #ifdef CONFIG_MTD_UBI_MODULE
- #define ubi_is_module() 1
- #else
-@@ -57,10 +59,12 @@
-  * @name: MTD character device node path, MTD device name, or MTD device number
-  *        string
-  * @vid_hdr_offs: VID header offset
-+ * @max_beb_per1024: maximum expected number of bad blocks per 1024 erase blocks
-  */
- struct mtd_dev_param {
- 	char name[MTD_PARAM_LEN_MAX];
- 	int vid_hdr_offs;
-+	int max_beb_per1024;
- };
- 
- /* Numbers of elements set in the @mtd_dev_param array */
-@@ -565,9 +569,37 @@ void ubi_free_internal_volumes(struct ubi_device *ubi)
- 	}
- }
- 
-+static int get_bad_peb_limit(const struct ubi_device *ubi, int max_beb_per1024)
-+{
-+	int device_peb_count;
-+	uint64_t device_size;
-+	int beb_limit = 0;
-+
-+	/* this has already been checked in ioctl */
-+	if (max_beb_per1024 <= 0)
-+		goto out;
-+
-+	/* we are using here the whole MTD device size and not
-+	 * the MTD partition size because the maximum number of
-+	 * bad blocks is a percentage of the whole device and
-+	 * the bad blocks are not fairly disposed on a flash
-+	 * device
-+	 */
-+	device_size = mtd_get_device_size(ubi->mtd);
-+	device_peb_count = mtd_div_by_eb(device_size, ubi->mtd);
-+	beb_limit = mult_frac(device_peb_count, max_beb_per1024, 1024);
-+	/* round it up */
-+	if (mult_frac(beb_limit, 1024, max_beb_per1024) < ubi->peb_count)
-+		beb_limit++;
-+
-+out:
-+	return beb_limit;
-+}
-+
- /**
-  * io_init - initialize I/O sub-system for a given UBI device.
-  * @ubi: UBI device description object
-+ * @max_beb_per1024: maximum expected number of bad PEB per 1024 PEB
-  *
-  * If @ubi->vid_hdr_offset or @ubi->leb_start is zero, default offsets are
-  * assumed:
-@@ -580,7 +612,7 @@ void ubi_free_internal_volumes(struct ubi_device *ubi)
-  * This function returns zero in case of success and a negative error code in
-  * case of failure.
-  */
--static int io_init(struct ubi_device *ubi)
-+static int io_init(struct ubi_device *ubi, int max_beb_per1024)
- {
- 	if (ubi->mtd->numeraseregions != 0) {
- 		/*
-@@ -610,26 +642,7 @@ static int io_init(struct ubi_device *ubi)
- 
- 	if (mtd_can_have_bb(ubi->mtd)) {
- 		ubi->bad_allowed = 1;
--		if (CONFIG_MTD_UBI_BEB_LIMIT > 0) {
--			int per1024 = CONFIG_MTD_UBI_BEB_LIMIT;
--			int device_peb_count;
--			uint64_t device_size;
--			int beb_limit;
--
--			/* we are using here the whole MTD device size and not
--			 * the MTD partition size because the maximum number of
--			 * bad blocks is a percentage of the whole device and
--			 * the bad blocks are not fairly disposed on a flash
--			 * device
--			 */
--			device_size = mtd_get_device_size(ubi->mtd);
--			device_peb_count = mtd_div_by_eb(device_size, ubi->mtd);
--			beb_limit = mult_frac(device_peb_count, per1024, 1024);
--			/* round it up */
--			if (mult_frac(beb_limit, 1024, per1024) < ubi->peb_count)
--				beb_limit++;
--			ubi->bad_peb_limit = beb_limit;
--		}
-+		ubi->bad_peb_limit = get_bad_peb_limit(ubi, max_beb_per1024);
- 	}
- 
- 	if (ubi->mtd->type == MTD_NORFLASH) {
-@@ -822,6 +835,7 @@ static int autoresize(struct ubi_device *ubi, int vol_id)
-  * @mtd: MTD device description object
-  * @ubi_num: number to assign to the new UBI device
-  * @vid_hdr_offset: VID header offset
-+ * @max_beb_per1024: maximum number of expected bad blocks per 1024 eraseblocks
-  *
-  * This function attaches MTD device @mtd_dev to UBI and assign @ubi_num number
-  * to the newly created UBI device, unless @ubi_num is %UBI_DEV_NUM_AUTO, in
-@@ -832,7 +846,8 @@ static int autoresize(struct ubi_device *ubi, int vol_id)
-  * Note, the invocations of this function has to be serialized by the
-  * @ubi_devices_mutex.
-  */
--int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset)
-+int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
-+		       int vid_hdr_offset, int max_beb_per1024)
- {
- 	struct ubi_device *ubi;
- 	int i, err, ref = 0;
-@@ -905,7 +920,7 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset)
- 	dbg_msg("sizeof(struct ubi_ainf_peb) %zu", sizeof(struct ubi_ainf_peb));
- 	dbg_msg("sizeof(struct ubi_wl_entry) %zu", sizeof(struct ubi_wl_entry));
- 
--	err = io_init(ubi);
-+	err = io_init(ubi, max_beb_per1024);
- 	if (err)
- 		goto out_free;
- 
-@@ -1194,7 +1209,7 @@ static int __init ubi_init(void)
- 
- 		mutex_lock(&ubi_devices_mutex);
- 		err = ubi_attach_mtd_dev(mtd, UBI_DEV_NUM_AUTO,
--					 p->vid_hdr_offs);
-+					 p->vid_hdr_offs, p->max_beb_per1024);
- 		mutex_unlock(&ubi_devices_mutex);
- 		if (err < 0) {
- 			ubi_err("cannot attach mtd%d", mtd->index);
-@@ -1313,7 +1328,7 @@ static int __init ubi_mtd_param_parse(const char *val, struct kernel_param *kp)
- 	struct mtd_dev_param *p;
- 	char buf[MTD_PARAM_LEN_MAX];
- 	char *pbuf = &buf[0];
--	char *tokens[2] = {NULL, NULL};
-+	char *tokens[MTD_PARAM_NB_MAX];
- 
- 	if (!val)
- 		return -EINVAL;
-@@ -1343,7 +1358,7 @@ static int __init ubi_mtd_param_parse(const char *val, struct kernel_param *kp)
- 	if (buf[len - 1] == '\n')
- 		buf[len - 1] = '\0';
- 
--	for (i = 0; i < 2; i++)
-+	for (i = 0; i < MTD_PARAM_NB_MAX; i++)
- 		tokens[i] = strsep(&pbuf, ",");
- 
- 	if (pbuf) {
-@@ -1361,18 +1376,31 @@ static int __init ubi_mtd_param_parse(const char *val, struct kernel_param *kp)
- 	if (p->vid_hdr_offs < 0)
- 		return p->vid_hdr_offs;
- 
-+	if (tokens[2])
-+		p->max_beb_per1024 = bytes_str_to_int(tokens[2]);
-+	/* a value of 0 is force to the default value to keep the same
-+	 * behavior between ubiattach command and module parameter
-+	 */
-+	if (!p->max_beb_per1024)
-+		p->max_beb_per1024 = MTD_UBI_DEFAULT_BEB_LIMIT;
-+
- 	mtd_devs += 1;
- 	return 0;
- }
- 
- module_param_call(mtd, ubi_mtd_param_parse, NULL, NULL, 000);
- MODULE_PARM_DESC(mtd, "MTD devices to attach. Parameter format: "
--		      "mtd=<name|num|path>[,<vid_hdr_offs>].\n"
-+		      "mtd=<name|num|path>[,<vid_hdr_offs>[,"
-+		      "max_beb_per1024]].\n"
- 		      "Multiple \"mtd\" parameters may be specified.\n"
- 		      "MTD devices may be specified by their number, name, or "
- 		      "path to the MTD character device node.\n"
- 		      "Optional \"vid_hdr_offs\" parameter specifies UBI VID "
- 		      "header position to be used by UBI.\n"
-+		      "Optional \"max_beb_per1024\" parameter specifies the "
-+		      "maximum expected bad eraseblock per 1024 eraseblocks."
-+		      "(default " __stringify(MTD_UBI_DEFAULT_BEB_LIMIT)
-+		      " if 0 or not set)\n"
- 		      "Example 1: mtd=/dev/mtd0 - attach MTD device "
- 		      "/dev/mtd0.\n"
- 		      "Example 2: mtd=content,1984 mtd=4 - attach MTD device "
-diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-index acec85d..ed5dd75 100644
---- a/drivers/mtd/ubi/cdev.c
-+++ b/drivers/mtd/ubi/cdev.c
-@@ -1005,12 +1005,19 @@ static long ctrl_cdev_ioctl(struct file *file, unsigned int cmd,
- 			break;
- 		}
- 
-+		/* for compatibility with older user-space tools,
-+		 * a zero value should be treated like a default value
-+		 */
-+		if (!req.max_beb_per1024)
-+			req.max_beb_per1024 = MTD_UBI_DEFAULT_BEB_LIMIT;
-+
- 		/*
- 		 * Note, further request verification is done by
- 		 * 'ubi_attach_mtd_dev()'.
- 		 */
- 		mutex_lock(&ubi_devices_mutex);
--		err = ubi_attach_mtd_dev(mtd, req.ubi_num, req.vid_hdr_offset);
-+		err = ubi_attach_mtd_dev(mtd, req.ubi_num, req.vid_hdr_offset,
-+					 req.max_beb_per1024);
- 		mutex_unlock(&ubi_devices_mutex);
- 		if (err < 0)
- 			put_mtd_device(mtd);
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index c94612e..2148f35 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -50,6 +50,9 @@
- /* UBI name used for character devices, sysfs, etc */
- #define UBI_NAME_STR "ubi"
- 
-+/* Default number of maximum expected bad blocks per 1024 eraseblocks */
-+#define MTD_UBI_DEFAULT_BEB_LIMIT 20
-+
- /* Normal UBI messages */
- #define ubi_msg(fmt, ...) printk(KERN_NOTICE "UBI: " fmt "\n", ##__VA_ARGS__)
- /* UBI warning messages */
-@@ -693,7 +696,8 @@ int ubi_io_write_vid_hdr(struct ubi_device *ubi, int pnum,
- 			 struct ubi_vid_hdr *vid_hdr);
- 
- /* build.c */
--int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset);
-+int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
-+		       int vid_hdr_offset, int max_beb_per1024);
- int ubi_detach_mtd_dev(int ubi_num, int anyway);
- struct ubi_device *ubi_get_device(int ubi_num);
- void ubi_put_device(struct ubi_device *ubi);
 diff --git a/include/mtd/ubi-user.h b/include/mtd/ubi-user.h
-index 8787349..77cd0d1 100644
+index 296efae..5f77906 100644
 --- a/include/mtd/ubi-user.h
 +++ b/include/mtd/ubi-user.h
-@@ -222,6 +222,7 @@ enum {
+@@ -235,6 +235,7 @@ enum {
   * @ubi_num: UBI device number to create
   * @mtd_num: MTD device number to attach
   * @vid_hdr_offset: VID header offset (use defaults if %0)
@@ -332,7 +74,7 @@ index 8787349..77cd0d1 100644
   * @padding: reserved for future, not used, has to be zeroed
   *
   * This data structure is used to specify MTD device UBI has to attach and the
-@@ -245,12 +246,28 @@ enum {
+@@ -258,12 +259,29 @@ enum {
   * be 2KiB-64 bytes = 1984. Note, that this position is not even 512-bytes
   * aligned, which is OK, as UBI is clever enough to realize this is 4th
   * sub-page of the first page and add needed padding.
@@ -349,18 +91,171 @@ index 8787349..77cd0d1 100644
 + * If the device has more bad eraseblocks than this limit, UBI does not reserve
 + * any physical eraseblocks for new bad eraseblocks, but attempts to use
 + * available eraseblocks (if any).
-+ * The accepted range is 0-255. If 0 is given, the default value
-+ * MTD_UBI_DEFAULT_BEB_LIMIT will be used for compatibility.
++ * The accepted range is 0-255. If 0 is given, the default kernel value
++ * MTD_UBI_DEFAULT_BEB_LIMIT will be used for compatibility with previous
++ * versions.
   */
  struct ubi_attach_req {
- 	__s32 ubi_num;
- 	__s32 mtd_num;
- 	__s32 vid_hdr_offset;
--	__s8 padding[12];
-+	__u8 max_beb_per1024;
-+	__s8 padding[11];
+ 	int32_t ubi_num;
+ 	int32_t mtd_num;
+ 	int32_t vid_hdr_offset;
+-	int8_t padding[12];
++	int8_t max_beb_per1024;
++	int8_t padding[11];
  };
  
  /**
+diff --git a/tests/fs-tests/integrity/integck.c b/tests/fs-tests/integrity/integck.c
+index 30322cd..f12dfac 100644
+--- a/tests/fs-tests/integrity/integck.c
++++ b/tests/fs-tests/integrity/integck.c
+@@ -3152,6 +3152,7 @@ static int reattach(void)
+ 	req.mtd_num = args.mtdn;
+ 	req.vid_hdr_offset = 0;
+ 	req.mtd_dev_node = NULL;
++	req.max_beb_per1024 = 0;
+ 
+ 	err = ubi_attach(libubi, "/dev/ubi_ctrl", &req);
+ 	if (err)
+diff --git a/ubi-utils/include/libubi.h b/ubi-utils/include/libubi.h
+index dc03d02..1eadff8 100644
+--- a/ubi-utils/include/libubi.h
++++ b/ubi-utils/include/libubi.h
+@@ -50,6 +50,7 @@ typedef void * libubi_t;
+  * @mtd_dev_node: path to MTD device node to attach
+  * @vid_hdr_offset: VID header offset (%0 means default offset and this is what
+  *                  most of the users want)
++ * @max_beb_per1024: Maximum expected bad eraseblocks per 1024 eraseblocks
+  */
+ struct ubi_attach_request
+ {
+@@ -57,6 +58,7 @@ struct ubi_attach_request
+ 	int mtd_num;
+ 	const char *mtd_dev_node;
+ 	int vid_hdr_offset;
++	unsigned char max_beb_per1024;
+ };
+ 
+ /**
+diff --git a/ubi-utils/libubi.c b/ubi-utils/libubi.c
+index c898e36..d3c333d 100644
+--- a/ubi-utils/libubi.c
++++ b/ubi-utils/libubi.c
+@@ -719,6 +719,7 @@ int ubi_attach_mtd(libubi_t desc, const char *node,
+ 	r.ubi_num = req->dev_num;
+ 	r.mtd_num = req->mtd_num;
+ 	r.vid_hdr_offset = req->vid_hdr_offset;
++	r.max_beb_per1024 = req->max_beb_per1024;
+ 
+ 	ret = do_attach(node, &r);
+ 	if (ret == 0)
+@@ -780,6 +781,7 @@ int ubi_attach(libubi_t desc, const char *node, struct ubi_attach_request *req)
+ 	memset(&r, 0, sizeof(struct ubi_attach_req));
+ 	r.ubi_num = req->dev_num;
+ 	r.vid_hdr_offset = req->vid_hdr_offset;
++	r.max_beb_per1024 = req->max_beb_per1024;
+ 
+ 	/*
+ 	 * User has passed path to device node. Lets find out MTD device number
+diff --git a/ubi-utils/ubiattach.c b/ubi-utils/ubiattach.c
+index 27e7c09..2026c2e 100644
+--- a/ubi-utils/ubiattach.c
++++ b/ubi-utils/ubiattach.c
+@@ -42,6 +42,7 @@ struct args {
+ 	int vidoffs;
+ 	const char *node;
+ 	const char *dev;
++	int max_beb_per1024;
+ };
+ 
+ static struct args args = {
+@@ -50,6 +51,7 @@ static struct args args = {
+ 	.vidoffs = 0,
+ 	.node = NULL,
+ 	.dev = NULL,
++	.max_beb_per1024 = 0,
+ };
+ 
+ static const char doc[] = PROGRAM_NAME " version " VERSION
+@@ -63,6 +65,9 @@ static const char optionsstr[] =
+ "                      if the character device node does not exist)\n"
+ "-O, --vid-hdr-offset  VID header offset (do not specify this unless you really\n"
+ "                      know what you are doing, the default should be optimal)\n"
++"-b, --max-beb-per1024 Maximum expected bad block number per 1024 eraseblock.\n"
++"                      The default value is correct for most NAND devices.\n"
++"                      (Range 1-255, 0 for default kernel value).\n"
+ "-h, --help            print help message\n"
+ "-V, --version         print program version";
+ 
+@@ -71,19 +76,25 @@ static const char usage[] =
+ "\t[-m <MTD device number>] [-d <UBI device number>] [-p <path to device>]\n"
+ "\t[--mtdn=<MTD device number>] [--devn=<UBI device number>]\n"
+ "\t[--dev-path=<path to device>]\n"
++"\t[--max-beb-per1024=<maximum bad block number per 1024 blocks>]\n"
+ "UBI control device defaults to " DEFAULT_CTRL_DEV " if not supplied.\n"
+ "Example 1: " PROGRAM_NAME " -p /dev/mtd0 - attach /dev/mtd0 to UBI\n"
+ "Example 2: " PROGRAM_NAME " -m 0 - attach MTD device 0 (mtd0) to UBI\n"
+ "Example 3: " PROGRAM_NAME " -m 0 -d 3 - attach MTD device 0 (mtd0) to UBI\n"
+-"           and create UBI device number 3 (ubi3)";
++"           and create UBI device number 3 (ubi3)\n"
++"Example 4: " PROGRAM_NAME " -m 1 -b 25 - attach /dev/mtd1 to UBI and reserve \n"
++"           25*nand_size_in_blocks/1024 erase blocks for bad block handling.\n"
++"           (e.g. if the NAND *chipset* has 4096 PEB, 100 will be reserved \n"
++"           for this UBI device).";
+ 
+ static const struct option long_options[] = {
+-	{ .name = "devn",           .has_arg = 1, .flag = NULL, .val = 'd' },
+-	{ .name = "dev-path",       .has_arg = 1, .flag = NULL, .val = 'p' },
+-	{ .name = "mtdn",           .has_arg = 1, .flag = NULL, .val = 'm' },
+-	{ .name = "vid-hdr-offset", .has_arg = 1, .flag = NULL, .val = 'O' },
+-	{ .name = "help",           .has_arg = 0, .flag = NULL, .val = 'h' },
+-	{ .name = "version",        .has_arg = 0, .flag = NULL, .val = 'V' },
++	{ .name = "devn",            .has_arg = 1, .flag = NULL, .val = 'd' },
++	{ .name = "dev-path",        .has_arg = 1, .flag = NULL, .val = 'p' },
++	{ .name = "mtdn",            .has_arg = 1, .flag = NULL, .val = 'm' },
++	{ .name = "vid-hdr-offset",  .has_arg = 1, .flag = NULL, .val = 'O' },
++	{ .name = "help",            .has_arg = 0, .flag = NULL, .val = 'h' },
++	{ .name = "version",         .has_arg = 0, .flag = NULL, .val = 'V' },
++	{ .name = "max-beb-per1024", .has_arg = 1, .flag = NULL, .val = 'b' },
+ 	{ NULL, 0, NULL, 0},
+ };
+ 
+@@ -92,7 +103,7 @@ static int parse_opt(int argc, char * const argv[])
+ 	while (1) {
+ 		int key, error = 0;
+ 
+-		key = getopt_long(argc, argv, "p:m:d:O:hV", long_options, NULL);
++		key = getopt_long(argc, argv, "p:m:d:O:hVb:", long_options, NULL);
+ 		if (key == -1)
+ 			break;
+ 
+@@ -134,6 +145,19 @@ static int parse_opt(int argc, char * const argv[])
+ 		case ':':
+ 			return errmsg("parameter is missing");
+ 
++		case 'b':
++			args.max_beb_per1024 = simple_strtoul(optarg, &error);
++			if (error || args.max_beb_per1024 < 0
++			    || args.max_beb_per1024 > 255)
++				return errmsg("bad maximum of expected bad "
++					      "blocks (0-255): \"%s\"",
++					      optarg);
++			if (args.max_beb_per1024 == 0)
++				warnmsg("default kernel value will be used for"
++					" maximum expected bad blocks\n");
++
++			break;
++
+ 		default:
+ 			fprintf(stderr, "Use -h for help\n");
+ 			return -1;
+@@ -190,6 +214,7 @@ int main(int argc, char * const argv[])
+ 	req.mtd_num = args.mtdn;
+ 	req.vid_hdr_offset = args.vidoffs;
+ 	req.mtd_dev_node = args.dev;
++	req.max_beb_per1024 = args.max_beb_per1024;
+ 
+ 	err = ubi_attach(libubi, args.node, &req);
+ 	if (err) {
 -- 
 1.7.2.5
