@@ -1,24 +1,13 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Sp0wU-0001Vi-0z
- for linux-mtd@lists.infradead.org; Wed, 11 Jul 2012 17:43:16 +0000
-Date: Wed, 11 Jul 2012 19:43:09 +0200
-From: Ivan Djelic <ivan.djelic@parrot.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: MLC NAND: all 0xff after erase?
-Message-ID: <20120711174309.GA25743@parrot.com>
-References: <CAN8TOE9RyUuRtEfyqBfxt0W3Cfg2_SD6Hp4rMS0S+MgKsPY9UQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAN8TOE9RyUuRtEfyqBfxt0W3Cfg2_SD6Hp4rMS0S+MgKsPY9UQ@mail.gmail.com>
-Cc: Mike Dunn <mikedunn@newsguy.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>, Kevin Cernekee <cernekee@gmail.com>,
- Jim Quinlan <jim2101024@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Al Viro <viro@zeniv.linux.org.uk>, Joel Reardon <reardonj@inf.ethz.ch>,
- David Woodhouse <dwmw2@infradead.org>,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Received: from smtp.newsguy.com ([74.209.136.69])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Sp1Ky-0003gK-Py
+ for linux-mtd@lists.infradead.org; Wed, 11 Jul 2012 18:08:39 +0000
+From: Mike Dunn <mikedunn@newsguy.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: nand/docg4: fix oob reads
+Date: Wed, 11 Jul 2012 11:08:19 -0700
+Message-Id: <1342030099-3326-1-git-send-email-mikedunn@newsguy.com>
+Cc: Mike Dunn <mikedunn@newsguy.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,100 +17,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jul 11, 2012 at 01:36:51AM +0100, Brian Norris wrote:
-> Hello all,
-> 
-> I've seen some issues with MLC NAND and where I might erase a block,
-> read it back, and receive a few bitflips such that the data is not
-> entirely 0xff (i.e., a few bytes may be 0xfe, 0x7f, 0xf7, etc.).
-> However, I also notice that UBI, UBIFS, and YAFFS2 all make the
-> assumption that an erased page/block will be totally pristine: all
-> 0xff. This brings me to my main question:
-> 
-> Can someone find an example MLC NAND datasheet that guarantees reading
-> an erased page will yield all 0xff data?
+This patch does two closely related things:
 
-Hello Brian,
+(1) Currently the ecc.read_page() method does not fill the nand->oob_poi buffer
+with the oob data, but instead reads oob into a local buffer.  Fix this by
+filling the oob_poi buffer instead of a local buffer.  The 'oob_required'
+argument is quietly ignored; the device must always read oob after the page
+data, and it is presumed that there's no harm in filling oob_poi, even when not
+explicitly requested.
 
-Due to the nature of NAND bitflips, I cannot see how a NAND datasheet
-could guarantee such a thing (what would be the duration of a "0xff
-guarantee" anyway ?). In practice, bitflips do appear already on 34nm SLC
-devices, on blocks that have just been erased; hence I am not surprised
-by your own findings on MLC devices.
+(2) Always read oob from the device in ecc.read_oob(), instead of copying it
+from a local buffer under some circumstances.
 
-See below for additional comments,
+Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
+---
+ drivers/mtd/nand/docg4.c |   33 ++++++---------------------------
+ 1 files changed, 6 insertions(+), 27 deletions(-)
 
-(...)
-> Now, if we truly cannot rely on fully-0xff after erase, then this
-> suggests a need for change in several different layers. A few comments
-> and proposals:
-> 
-> * A few bitflips on an otherwise-0xff page should not be treated as
-> unhandled corruption, as long as the erase operation did not return an
-> error status. Such a page should be still usable, provided the driver
-> has sufficient ECC capability.
-
-Agreed.
+diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/docg4.c
+index 0f2ffd7..793921e 100644
+--- a/drivers/mtd/nand/docg4.c
++++ b/drivers/mtd/nand/docg4.c
+@@ -378,9 +378,9 @@ static int correct_data(struct mtd_info *mtd, uint8_t *buf, int page)
+ 		 * bit flips(s) are not reported in stats.
+ 		 */
  
-> * My NAND controller's HW ECC flags these erased-page bitflips as
-> uncorrectable errors, as there was no ECC written to the page and the
-> read data does not match the 0xff special "erased" case. I assume most
-> other ECC mechanisms would treat this similarly [2]. In such cases, I
-> suspect that the best the driver can do is to return the raw data
-> (0xff with flips) and an ECC error message.
-
-So I guess you need to compare the _entire_ page with 0xff in your special
-"erased" case ?
-
-In my experience, the most efficient way of telling if a page has been
-programmed or not is to explicitly write some kind of "programming marker"
-(typically a zero byte) along with ECC in the OOB area.
-This method is used by some manufacturers to implement internal ECC, when
-the HW ECC bytes are such that an erased page does not have a valid ECC.
-It also allows to distinguish your (b) and (c) cases.
-
-In some cases, this marker is impossible to implement because HW controller
-does not allow writing a custom byte in the OOB area; or because it would
-break backward compatibility with existing devices.
-
-Alternatively, if your controller allows it, you can xor HW-generated bytes
-with a well-chosen polynomial before writing them and after reading them,
-such that an erased page now has a valid ECC.
-
-> * UBI and other FS layers need to distinguish between: (a) 0xff
-> cleanly-erased, (b) 0xff with bitflips, and (c) true ECC errors. In
-> the end, we may treat (a) and (b) the same (as erased pages), but the
-> problem is distinguishing between (b) and (c). This may require
-> modifications to:
-> 
->   - the MTD API, to provide explicit notification of erased blocks.
-> For instance, we might introduce a new return code for mtd_read() that
-> represents (b); when MTD detects an ECC error, we check for all 0xff
-> with a threshold of bitflips, then return either -EBADMSG or a special
-> ERASED code.
-
-If some MTD generic code is in charge of analyzing bitflips in empty pages,
-and deciding if the number of bitflips is "acceptable" (i.e. will be correctable
-by HW ecc), then it will need to know not only the ecc strength, but also
-the layout of ecc blocks inside pages: having all bitflips located in the same
-ecc block is not the same as having scattered bitflips. As of now this ecc block
-layout is not exposed by drivers.
-
-Maybe this "erased-page bitflip concealment" would be better managed inside
-drivers that are not able to correct erased pages ? (this is what we do on
-one of our platforms -- the rest are able to correct bitflips on erased pages).
-
-Or, conversely, we could decide that erased pages are simply not ecc-protected
-(which is the actual truth with many drivers), can contain anything (including
-bitflips), and should be signalled as erased and dealt with in upper layers...
-
-This is not as crazy as it may seem, because recent devices require that you
-keep track of each write/erase operation and use out-of-place updates, to
-guarantee power-failure robustness. In such a context, you don't rely much on
-the contents of erased blocks, but track their state in a different way...
-
-Just my 2c,
-
-Best regards,
---
-Ivan
+-		if (doc->oob_buf[15]) {
++		if (nand->oob_poi[15]) {
+ 			int bit, numsetbits = 0;
+-			unsigned long written_flag = doc->oob_buf[15];
++			unsigned long written_flag = nand->oob_poi[15];
+ 			for_each_set_bit(bit, &written_flag, 8)
+ 				numsetbits++;
+ 			if (numsetbits > 4) { /* assume blank */
+@@ -428,7 +428,7 @@ static int correct_data(struct mtd_info *mtd, uint8_t *buf, int page)
+ 		/* if error within oob area preceeding ecc bytes... */
+ 		if (errpos[i] > DOCG4_PAGE_SIZE * 8)
+ 			change_bit(errpos[i] - DOCG4_PAGE_SIZE * 8,
+-				   (unsigned long *)doc->oob_buf);
++				   (unsigned long *)nand->oob_poi);
+ 
+ 		else    /* error in page data */
+ 			change_bit(errpos[i], (unsigned long *)buf);
+@@ -748,18 +748,12 @@ static int read_page(struct mtd_info *mtd, struct nand_chip *nand,
+ 
+ 	docg4_read_buf(mtd, buf, DOCG4_PAGE_SIZE); /* read the page data */
+ 
+-	/*
+-	 * Diskonchips read oob immediately after a page read.  Mtd
+-	 * infrastructure issues a separate command for reading oob after the
+-	 * page is read.  So we save the oob bytes in a local buffer and just
+-	 * copy it if the next command reads oob from the same page.
+-	 */
+-
++	/* this device always reads oob after page data */
+ 	/* first 14 oob bytes read from I/O reg */
+-	docg4_read_buf(mtd, doc->oob_buf, 14);
++	docg4_read_buf(mtd, nand->oob_poi, 14);
+ 
+ 	/* last 2 read from another reg */
+-	buf16 = (uint16_t *)(doc->oob_buf + 14);
++	buf16 = (uint16_t *)(nand->oob_poi + 14);
+ 	*buf16 = readw(docptr + DOCG4_MYSTERY_REG);
+ 
+ 	write_nop(docptr);
+@@ -807,21 +801,6 @@ static int docg4_read_oob(struct mtd_info *mtd, struct nand_chip *nand,
+ 
+ 	dev_dbg(doc->dev, "%s: page %x\n", __func__, page);
+ 
+-	/*
+-	 * Oob bytes are read as part of a normal page read.  If the previous
+-	 * nand command was a read of the page whose oob is now being read, just
+-	 * copy the oob bytes that we saved in a local buffer and avoid a
+-	 * separate oob read.
+-	 */
+-	if (doc->last_command.command == NAND_CMD_READ0 &&
+-	    doc->last_command.page == page) {
+-		memcpy(nand->oob_poi, doc->oob_buf, 16);
+-		return 0;
+-	}
+-
+-	/*
+-	 * Separate read of oob data only.
+-	 */
+ 	docg4_command(mtd, NAND_CMD_READ0, nand->ecc.size, page);
+ 
+ 	writew(DOC_ECCCONF0_READ_MODE | DOCG4_OOB_SIZE, docptr + DOC_ECCCONF0);
+-- 
+1.7.3.4
