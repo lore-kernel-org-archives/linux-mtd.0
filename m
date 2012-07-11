@@ -1,22 +1,24 @@
-Received: from mail-gh0-f177.google.com ([209.85.160.177])
+Received: from mail-we0-f177.google.com ([74.125.82.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Soq5C-0006ii-Tw
- for linux-mtd@lists.infradead.org; Wed, 11 Jul 2012 06:07:32 +0000
-Received: by ghbf11 with SMTP id f11so907909ghb.36
- for <linux-mtd@lists.infradead.org>; Tue, 10 Jul 2012 23:07:20 -0700 (PDT)
+ id 1Soqcp-0001t9-J3
+ for linux-mtd@lists.infradead.org; Wed, 11 Jul 2012 06:42:16 +0000
+Received: by weyr3 with SMTP id r3so597026wey.36
+ for <linux-mtd@lists.infradead.org>; Tue, 10 Jul 2012 23:42:07 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1341293533-2214-1-git-send-email-b32955@freescale.com>
-References: <1341293533-2214-1-git-send-email-b32955@freescale.com>
-Date: Tue, 10 Jul 2012 23:07:19 -0700
-Message-ID: <CAN8TOE-59M6UCW91QS0_ZKzBO-HUyXrUXcmW3avOd8=4CmE4Fg@mail.gmail.com>
-Subject: Re: [PATCH] mtd: add a new macro about the subpage write
-From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: marex@denx.de, dedekind1@gmail.com, Jan Weitzel <j.weitzel@phytec.de>,
- =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, Scott Wood <scottwood@freescale.com>,
- Huang Shijie <shijie8@gmail.com>
+In-Reply-To: <CAN8TOE9RyUuRtEfyqBfxt0W3Cfg2_SD6Hp4rMS0S+MgKsPY9UQ@mail.gmail.com>
+References: <CAN8TOE9RyUuRtEfyqBfxt0W3Cfg2_SD6Hp4rMS0S+MgKsPY9UQ@mail.gmail.com>
+From: Richard Genoud <richard.genoud@gmail.com>
+Date: Wed, 11 Jul 2012 08:41:52 +0200
+Message-ID: <CACQ1gAjJbyymV=qfACE3Zh0nucO8R=W4vKVjC=_O-kj0P2HB=g@mail.gmail.com>
+Subject: Re: MLC NAND: all 0xff after erase?
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: Mike Dunn <mikedunn@newsguy.com>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Kevin Cernekee <cernekee@gmail.com>,
+ Jim Quinlan <jim2101024@gmail.com>, linux-mtd@lists.infradead.org,
+ Al Viro <viro@zeniv.linux.org.uk>, Joel Reardon <reardonj@inf.ethz.ch>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,32 +28,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Huang,
-
-On Mon, Jul 2, 2012 at 10:32 PM, Huang Shijie <b32955@freescale.com> wrote:
-> The nand chip may does not support the subpage writes, while the nand
-> controller may also does not support the subpage writes too.
+2012/7/11 Brian Norris <computersforpeace@gmail.com>:
+> Hello all,
 >
-> Now, the nand controller drivers use the NAND_NO_SUBPAGE_WRITE(0x00000200)
-> to tell the MTD layer that they do not support the subpage writes. But
-> this flag could be masked off in nand_get_flash_type():
->         ....................................................
->         /* Get chip options, preserve non chip based options */
->         chip->options &= ~NAND_CHIPOPTIONS_MSK;
->         ....................................................
-...
+> I've seen some issues with MLC NAND and where I might erase a block,
+> read it back, and receive a few bitflips such that the data is not
+> entirely 0xff (i.e., a few bytes may be 0xfe, 0x7f, 0xf7, etc.).
+If you read the same block a few ms later, is the data the same or is
+it all 0xff or.. ?
 
-It looks like you're finally getting around to solving your
-NO_SUBPAGE_WRITE problem. I believe the discussion was left hanging a
-few months ago. In that discussion, I'm beginning to agree with Scott
-Wood [1]; I don't see a good reason not to just kill the
-NAND_CHIPOPTIONS_MSK instead of adding more flags. As long as we
-perform a few sanity tests, I think it'd be safe.
+> [2] Counterexample: it seems NAND_ECC_SOFT actually corrects a single
+> bitflip in 0xff data. Tested with nandsim and `nandwrite -n -o`.
+If I recall correctly, is because the soft ECC of an FF page is
+FFFFF.. and most (maybe all) hard ECC of FF page are not.
 
-If somebody has a good reason not to remove NAND_CHIPOPTIONS_MSK,
-though, I'd Ack this patch.
 
-Regards,
-Brian
+Richard.
 
-[1] http://lists.infradead.org/pipermail/linux-mtd/2012-January/039144.html
+-- 
+for me, ck means con kolivas and not calvin klein... does it mean I'm a geek ?
