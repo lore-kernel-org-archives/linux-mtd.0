@@ -1,23 +1,22 @@
-Received: from service87.mimecast.com ([91.220.42.44])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SosoH-0001rY-5b
- for linux-mtd@lists.infradead.org; Wed, 11 Jul 2012 09:02:14 +0000
-Message-ID: <4FFD4105.4050504@arm.com>
-Date: Wed, 11 Jul 2012 10:01:57 +0100
-From: viresh kumar <viresh.kumar2@arm.com>
+Received: from mail-bk0-f49.google.com ([209.85.214.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Soy40-0003J3-7k
+ for linux-mtd@lists.infradead.org; Wed, 11 Jul 2012 14:38:50 +0000
+Received: by bkcji2 with SMTP id ji2so1077532bkc.36
+ for <linux-mtd@lists.infradead.org>; Wed, 11 Jul 2012 07:38:42 -0700 (PDT)
 MIME-Version: 1.0
-To: Julia Lawall <Julia.Lawall@lip6.fr>, Shiraz Hashim <shiraz.hashim@st.com>
-Subject: Re: [PATCH] drivers/mtd/devices/spear_smi.c: failure test for null
- rather than negative integer
-References: <1341997118-25042-1-git-send-email-Julia.Lawall@lip6.fr>
-In-Reply-To: <1341997118-25042-1-git-send-email-Julia.Lawall@lip6.fr>
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: quoted-printable
-Cc: spear-devel <spear-devel@list.st.com>,
- "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Stefan Roese <sr@denx.de>, David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <201207091013.29597.marex@denx.de>
+References: <1341555027-17462-1-git-send-email-marex@denx.de>
+ <1341555027-17462-3-git-send-email-marex@denx.de>
+ <201207091013.29597.marex@denx.de>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Wed, 11 Jul 2012 16:38:21 +0200
+Message-ID: <CAMjpGUc-vcmJx5+uwTndUHReGSxnxvg6y4Jtax1cBPdy8VEeEw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] [RFC] mtd: m25p80: Make fast read configurable via DT
+To: Marek Vasut <marex@denx.de>
+Content-Type: text/plain; charset=UTF-8
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-mtd@lists.infradead.org, David Woodhouse <david.woodhouse@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,61 +26,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Adding spear-devel mailing list in cc.
+On Mon, Jul 9, 2012 at 10:13 AM, Marek Vasut <marex@denx.de> wrote:
+> > Add DT property "m25p,fast-read" that signalises the particular
+> > chip supports "fast read" opcode.
+> >
+> > Signed-off-by: Marek Vasut <marex@denx.de>
+> > Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+> > Cc: David Woodhouse <david.woodhouse@intel.com>
+> > ---
+> >  drivers/mtd/devices/m25p80.c |   32 +++++++++++++++++++-------------
+> >  1 file changed, 19 insertions(+), 13 deletions(-)
+> >
+> > NOTE: I'm not sure where to document this property, as m25p80 is
+> >       a simple DT device. Any hints please?
+> >
+>    ^--- bump?
 
-@Shiraz: Can you update ST's mailing list address in entire MAINTAINERS fil=
-e, so
-that people can include ST's list easily?
-
-On 11/07/12 09:58, Julia Lawall wrote:
-> From: Julia Lawall <Julia.Lawall@lip6.fr>
->
-> dev_get_platdata returns a pointer, so the failure value would be NULL
-> rather than a negative integer.
->
-> The semantic match that finds this problem is: (http://coccinelle.lip6.fr=
-/)
->
-> // <smpl>
-> @@
-> expression x,e;
-> statement S1,S2;
-> @@
->
-> *x =3D dev_get_platdata(...)
-> ... when !=3D x =3D e
-> *if (x < 0) S1 else S2
-> // </smpl>
->
-> Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
->
-> ---
->  drivers/mtd/devices/spear_smi.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/mtd/devices/spear_smi.c b/drivers/mtd/devices/spear_=
-smi.c
-> index b85f183..7c10466 100644
-> --- a/drivers/mtd/devices/spear_smi.c
-> +++ b/drivers/mtd/devices/spear_smi.c
-> @@ -935,7 +935,7 @@ static int __devinit spear_smi_probe(struct platform_=
-device *pdev)
->               }
->       } else {
->               pdata =3D dev_get_platdata(&pdev->dev);
-> -             if (pdata < 0) {
-> +             if (!pdata) {
->                       ret =3D -ENODEV;
->                       dev_err(&pdev->dev, "no platform data\n");
->                       goto err;
-
-Reviewed-by: Viresh Kumar <viresh.kumar@linaro.org>
-
---
-Viresh
-
--- IMPORTANT NOTICE: The contents of this email and any attachments are con=
-fidential and may also be privileged. If you are not the intended recipient=
-, please notify the sender immediately and do not disclose the contents to =
-any other person, use it for any purpose, or store or copy the information =
-in any medium.  Thank you.
+did you see Stefan's suggestion ?
+-mike
