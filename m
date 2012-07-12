@@ -1,16 +1,18 @@
-Received: from nm3-vm0.bullet.mail.ird.yahoo.com ([77.238.189.213])
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SpBfN-0007LP-Tp
- for linux-mtd@lists.infradead.org; Thu, 12 Jul 2012 05:10:18 +0000
-Message-ID: <1342069815.10400.YahooMailNeo@web132504.mail.ird.yahoo.com>
-Date: Thu, 12 Jul 2012 06:10:15 +0100 (BST)
-From: Afton Craner <chlarneyooq@yahoo.com>
-Subject: Good day!:) My name is Afton:)
-To: "jp.lemoine@wanadoo.fr" <jp.lemoine@wanadoo.fr>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Reply-To: Afton Craner <afton.craner@yahoo.com>
+Received: from 8.mo3.mail-out.ovh.net ([87.98.172.249]
+ helo=mo3.mail-out.ovh.net)
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SpByb-0007ef-0R
+ for linux-mtd@lists.infradead.org; Thu, 12 Jul 2012 05:30:16 +0000
+Received: from mail241.ha.ovh.net (b7.ovh.net [213.186.33.57])
+ by mo3.mail-out.ovh.net (Postfix) with SMTP id D5BD0FF8763
+ for <linux-mtd@lists.infradead.org>; Thu, 12 Jul 2012 07:35:13 +0200 (CEST)
+From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+To: linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 1/1] MTD: atmel nand: fix gpio missing request
+Date: Thu, 12 Jul 2012 07:30:36 +0200
+Message-Id: <1342071036-15905-1-git-send-email-plagnioj@jcrosoft.com>
+Cc: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
+ linux-mtd@lists.infradead.org, Nicolas Ferre <nicolas.ferre@atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,16 +22,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hey=0AMy name is Afton. You may think that it's rather wired or something l=
-ike that but sometimes I search on the internet looking for interesting peo=
-ple so that is how I found you. I don't lose anything but I can acquire som=
-ething doing this, right?)=0AI hope you are not afraid of such experiments.=
- So I found you, and I I don't know why but I think that u are an interesti=
-ng person and also I'm sure that it will be an exciting experience for both=
- of us.=0AAs you could already notice I am an open-minded, very sociable an=
-d kind person. I really enjoy travelling and meeting new people. It is just=
- a really short introduction and I will tell you more about myself when you=
- will answer. Now, please tell me a little bit about yourself! What r u int=
-eresting in? What marks you out? What is special about you?=0AI hope you wi=
-ll answer the letter. =0AUnfortunately I gotta go now but I'm waiting for u=
-r answer!=0AWaiting for your answer!=0AAfton
+without this the gpio will not be muxed as a gpio by the current custom pinmux
+or later by the pinctrl
+
+Signed-off-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
+---
+ drivers/mtd/nand/atmel_nand.c |   25 ++++++++++++++++++++++++-
+ 1 file changed, 24 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index 97ac671..fce649a 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -583,8 +583,24 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
+ 	nand_chip->IO_ADDR_W = host->io_base;
+ 	nand_chip->cmd_ctrl = atmel_nand_cmd_ctrl;
+ 
+-	if (gpio_is_valid(host->board.rdy_pin))
++	if (gpio_is_valid(host->board.rdy_pin)) {
++		res = gpio_request(host->board.rdy_pin, "nand_rdy");
++		if (res) {
++			dev_err(&pdev->dev,
++				"can't request rdy gpio %d\n", host->board.rdy_pin);
++			goto err_ecc_ioremap;
++		}
+ 		nand_chip->dev_ready = atmel_nand_device_ready;
++	}
++
++	if (gpio_is_valid(host->board.enable_pin)) {
++		res = gpio_request(host->board.enable_pin, "nand_enable");
++		if (res) {
++			dev_err(&pdev->dev,
++				"can't request enable gpio %d\n", host->board.enable_pin);
++			goto err_ecc_ioremap;
++		}
++	}
+ 
+ 	nand_chip->ecc.mode = host->board.ecc_mode;
+ 
+@@ -622,6 +638,13 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
+ 	atmel_nand_enable(host);
+ 
+ 	if (gpio_is_valid(host->board.det_pin)) {
++		res = gpio_request(host->board.det_pin, "nand_det");
++		if (res) {
++			dev_err(&pdev->dev,
++				"can't request det gpio %d\n", host->board.det_pin);
++			goto err_no_card;
++		}
++
+ 		if (gpio_get_value(host->board.det_pin)) {
+ 			printk(KERN_INFO "No SmartMedia card inserted.\n");
+ 			res = -ENXIO;
+-- 
+1.7.10
