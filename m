@@ -1,18 +1,23 @@
-Received: from 8.mo3.mail-out.ovh.net ([87.98.172.249]
- helo=mo3.mail-out.ovh.net)
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SpByb-0007ef-0R
- for linux-mtd@lists.infradead.org; Thu, 12 Jul 2012 05:30:16 +0000
-Received: from mail241.ha.ovh.net (b7.ovh.net [213.186.33.57])
- by mo3.mail-out.ovh.net (Postfix) with SMTP id D5BD0FF8763
- for <linux-mtd@lists.infradead.org>; Thu, 12 Jul 2012 07:35:13 +0200 (CEST)
-From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-To: linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 1/1] MTD: atmel nand: fix gpio missing request
-Date: Thu, 12 Jul 2012 07:30:36 +0200
-Message-Id: <1342071036-15905-1-git-send-email-plagnioj@jcrosoft.com>
-Cc: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
- linux-mtd@lists.infradead.org, Nicolas Ferre <nicolas.ferre@atmel.com>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SpDLC-00018h-AO
+ for linux-mtd@lists.infradead.org; Thu, 12 Jul 2012 06:57:35 +0000
+Date: Thu, 12 Jul 2012 08:57:22 +0200
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+To: David Woodhouse <David.Woodhouse@intel.com>
+Subject: mxc-nand fix for 3.5 (Was: Re: [PATCH v2] mtd mxc_nand: use 32bit
+ copy functions)
+Message-ID: <20120712065722.GA592@pengutronix.de>
+References: <1338279369-25915-1-git-send-email-s.hauer@pengutronix.de>
+ <1340970369.3070.166.camel@sauron.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1340970369.3070.166.camel@sauron.fi.intel.com>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org,
+ kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,58 +27,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-without this the gpio will not be muxed as a gpio by the current custom pinmux
-or later by the pinctrl
+On Fri, Jun 29, 2012 at 02:46:09PM +0300, Artem Bityutskiy wrote:
+> On Tue, 2012-05-29 at 10:16 +0200, Sascha Hauer wrote:
+> > The following commit changes the function used to copy from/to
+> > the hardware buffer to memcpy_[from|to]io. This does not work
+> > since the hardware cannot handle the byte accesses used by these
+> > functions. Instead of reverting this patch introduce 32bit
+> > correspondents of these functions.
+> 
+> Pushed to l2-mtd.git, thanks!
+The mxc_nand driver is completely useless with
 
-Signed-off-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
----
- drivers/mtd/nand/atmel_nand.c |   25 ++++++++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
+	5775ba3 (mtd: mxc_nand: fix several sparse warnings about incorrect address space)
 
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index 97ac671..fce649a 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -583,8 +583,24 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
- 	nand_chip->IO_ADDR_W = host->io_base;
- 	nand_chip->cmd_ctrl = atmel_nand_cmd_ctrl;
- 
--	if (gpio_is_valid(host->board.rdy_pin))
-+	if (gpio_is_valid(host->board.rdy_pin)) {
-+		res = gpio_request(host->board.rdy_pin, "nand_rdy");
-+		if (res) {
-+			dev_err(&pdev->dev,
-+				"can't request rdy gpio %d\n", host->board.rdy_pin);
-+			goto err_ecc_ioremap;
-+		}
- 		nand_chip->dev_ready = atmel_nand_device_ready;
-+	}
-+
-+	if (gpio_is_valid(host->board.enable_pin)) {
-+		res = gpio_request(host->board.enable_pin, "nand_enable");
-+		if (res) {
-+			dev_err(&pdev->dev,
-+				"can't request enable gpio %d\n", host->board.enable_pin);
-+			goto err_ecc_ioremap;
-+		}
-+	}
- 
- 	nand_chip->ecc.mode = host->board.ecc_mode;
- 
-@@ -622,6 +638,13 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
- 	atmel_nand_enable(host);
- 
- 	if (gpio_is_valid(host->board.det_pin)) {
-+		res = gpio_request(host->board.det_pin, "nand_det");
-+		if (res) {
-+			dev_err(&pdev->dev,
-+				"can't request det gpio %d\n", host->board.det_pin);
-+			goto err_no_card;
-+		}
-+
- 		if (gpio_get_value(host->board.det_pin)) {
- 			printk(KERN_INFO "No SmartMedia card inserted.\n");
- 			res = -ENXIO;
+but without this patch. So it would be great if we could have it in 3.5.
+Or alternatively revert 5775ba3. This fix currently it sits as
+
+	096bcc2 (mtd: mxc_nand: use 32bit copy functions)
+
+in next/master.
+
+Best regards
+Uwe
+
 -- 
-1.7.10
+Pengutronix e.K.                           | Uwe Kleine-König            |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
