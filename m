@@ -1,18 +1,20 @@
-Message-ID: <4FFFBF4C.9070407@snapgear.com>
-Date: Fri, 13 Jul 2012 16:25:16 +1000
-From: Greg Ungerer <gerg@snapgear.com>
-MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 1/2] mtd: fix wrong usage of ioremap_nocache() in uclinux.c
- map driver
-References: <1336632929-26100-1-git-send-email-gerg@snapgear.com>
- <1341590150.26921.16.camel@shinybook.infradead.org>
- <4FFA7576.7050204@snapgear.com>
- <1342079353.30654.18.camel@shinybook.infradead.org>
-In-Reply-To: <1342079353.30654.18.camel@shinybook.infradead.org>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Received: from mail-wg0-f45.google.com ([74.125.82.45])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SpZYd-0006Ov-8N
+ for linux-mtd@lists.infradead.org; Fri, 13 Jul 2012 06:40:57 +0000
+Received: by wgbdt14 with SMTP id dt14so2541849wgb.26
+ for <linux-mtd@lists.infradead.org>; Thu, 12 Jul 2012 23:40:45 -0700 (PDT)
+Date: Fri, 13 Jul 2012 09:40:36 +0300
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: Noah Romer <Noah.Romer@watchguard.com>
+Subject: Re: skip erase blocks when creating fs image from jffs2 partition?
+Message-ID: <20120713094036.5ec6f572@rndtravel53.home.jungo.com>
+In-Reply-To: <01A8FA6BB5F06344A6DE41FAA912A96404AFF5BB@MBX1.wgti.net>
+References: <01A8FA6BB5F06344A6DE41FAA912A96404AFF5BB@MBX1.wgti.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, uclinux-dev@uclinux.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,38 +24,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/07/12 17:49, David Woodhouse wrote:
-> On Mon, 2012-07-09 at 16:08 +1000, Greg Ungerer wrote:
->>
->> The only VM based arch this driver can be configured for currently
->> is m68k (actually it is even more specific, only CONFIG_COLDFIRE).
->> And that doesn't support HIGHMEM.
->
-> OK, can we at least have a comment to that effect in the code, alongside
-> that phys_to_virt() call so that nobody is tempted to copy it into new
-> code? And preferably also an '#ifdef CONFIG_HIGHMEM / #error' in the
-> code or a (redundant) !HIGHMEM dependency in Kconfig just to make sure,
-> in case it's ever enabled on other architectures or in case HIGHMEM ever
-> comes to m68k.
+Hi,
 
-I'll come up with something and send a patch.
+On Thu, 12 Jul 2012 20:02:01 +0000 Noah Romer <Noah.Romer@watchguard.com> wrote:
+> Based on my reading of the docs, and some initial experimentation, it
+> seems as though it's possible to create a usable raw image of a jffs2
+> partition in which you skip both bad blocks and empty/erase blocks.
 
+I guess you meant "extract" instead of "create".
 
->> Can the kernels data region (and the area immediately after it) be in
->> high memory?
->
-> No, that'll be in the directly mapped region.
+> Is that understanding correct? Particularly with regards to whether or
+> not the resulting image would be usable.
 
-Then does it matter whether HIGHMEM is enabled or not?
-The phys address here is _ebss, the end of the kernels bss section.
+Yes, it is generally correct.
 
-Regards
-Greg
+Pay attention to:
+- The destination MTD should have same eraseblock size and page size.
+- The destination partition has enough usable blocks to contain your
+  extracted jffs2 image.
+- The destination partition has to be erased, with the jffs2
+  cleanmarkers written to the OOB (-j option of flash_erase).
+  Meaning, you'll program only the inband data extracted from the source
+  partition.
+- When programming the extracted image to the destination mtd,
+  do NOT program empty pages (entire page is 0xFF).
+  See
+   http://www.linux-mtd.infradead.org/faq/ubifs.html#L_why_ubiformat
+   http://www.linux-mtd.infradead.org/doc/ubi.html#L_flasher_algo
 
-
-
-------------------------------------------------------------------------
-Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
-SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
-8 Gardner Close                             FAX:         +61 7 3217 5323
-Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
+Regards,
+Shmulik
