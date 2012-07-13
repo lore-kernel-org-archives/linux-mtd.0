@@ -1,23 +1,18 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SpdSm-0002EG-7U
- for linux-mtd@lists.infradead.org; Fri, 13 Jul 2012 10:51:16 +0000
-From: Marek Vasut <marex@denx.de>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 3/3] [RFC] mtd: m25p80: Make fast read configurable via DT
-Date: Fri, 13 Jul 2012 12:44:59 +0200
-References: <1341555027-17462-1-git-send-email-marex@denx.de>
- <201207091013.29597.marex@denx.de>
- <CAMjpGUc-vcmJx5+uwTndUHReGSxnxvg6y4Jtax1cBPdy8VEeEw@mail.gmail.com>
-In-Reply-To: <CAMjpGUc-vcmJx5+uwTndUHReGSxnxvg6y4Jtax1cBPdy8VEeEw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201207131244.59996.marex@denx.de>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- David Woodhouse <david.woodhouse@intel.com>,
- Mike Frysinger <vapier.adi@gmail.com>
+In-Reply-To: <1342095778-13403-3-git-send-email-stigge@antcom.de>
+References: <1342095778-13403-1-git-send-email-stigge@antcom.de>
+ <1342095778-13403-3-git-send-email-stigge@antcom.de>
+Date: Fri, 13 Jul 2012 09:51:29 -0300
+Message-ID: <CAAAP30GxeXHfeZZchYzSjBQXfkS+o+sabAU5iy8uBxiSoO87hQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mtd: lpc32xx_mlc: Adjust to pl08x DMA interface
+ changes
+From: Alexandre Pereira da Silva <aletes.xgr@gmail.com>
+To: Roland Stigge <stigge@antcom.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: srinivas.bakki@nxp.com, linux@arm.linux.org.uk, arnd@arndb.de,
+ artem.bityutskiy@linux.intel.com, linux-kernel@vger.kernel.org,
+ kevin.wells@nxp.com, linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,31 +22,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Mike Frysinger,
+On Thu, Jul 12, 2012 at 9:22 AM, Roland Stigge <stigge@antcom.de> wrote:
+> This patch adjusts the LPC32xx MLC NAND driver to the new pl08x DMA interface,
+> fixing the compile error resulting from changed pl08x structures.
+>
+> Signed-off-by: Roland Stigge <stigge@antcom.de>
 
-> On Mon, Jul 9, 2012 at 10:13 AM, Marek Vasut <marex@denx.de> wrote:
-> > > Add DT property "m25p,fast-read" that signalises the particular
-> > > chip supports "fast read" opcode.
-> > > 
-> > > Signed-off-by: Marek Vasut <marex@denx.de>
-> > > Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> > > Cc: David Woodhouse <david.woodhouse@intel.com>
-> > > ---
-> > > 
-> > >  drivers/mtd/devices/m25p80.c |   32 +++++++++++++++++++-------------
-> > >  1 file changed, 19 insertions(+), 13 deletions(-)
-> > > 
-> > > NOTE: I'm not sure where to document this property, as m25p80 is
-> > > 
-> > >       a simple DT device. Any hints please?
-> >    
-> >    ^--- bump?
-> 
-> did you see Stefan's suggestion ?
-> -mike
+Acked-By: Alexandre Pereira da Silva <aletes.xgr@gmail.com>
 
-The one which wasn't about documentation but usage of different OF function? 
-Yes.
-
-Best regards,
-Marek Vasut
+> ---
+>
+> Applies to today's linux-next (integrated lpc32xx-next and dma branches which collide)
+>
+>  drivers/mtd/nand/lpc32xx_mlc.c |   13 +------------
+>  1 file changed, 1 insertion(+), 12 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/lpc32xx_mlc.c b/drivers/mtd/nand/lpc32xx_mlc.c
+> index 260b2c2..1cf3593 100644
+> --- a/drivers/mtd/nand/lpc32xx_mlc.c
+> +++ b/drivers/mtd/nand/lpc32xx_mlc.c
+> @@ -576,17 +576,6 @@ static void lpc32xx_ecc_enable(struct mtd_info *mtd, int mode)
+>         /* Always enabled! */
+>  }
+>
+> -static bool lpc32xx_dma_filter(struct dma_chan *chan, void *param)
+> -{
+> -       struct pl08x_dma_chan *ch =
+> -               container_of(chan, struct pl08x_dma_chan, chan);
+> -
+> -       /* In LPC32xx's PL080 DMA wiring, the MLC NAND DMA signal is #12 */
+> -       if (ch->cd->min_signal == 12)
+> -               return true;
+> -       return false;
+> -}
+> -
+>  static int lpc32xx_dma_setup(struct lpc32xx_nand_host *host)
+>  {
+>         struct mtd_info *mtd = &host->mtd;
+> @@ -594,7 +583,7 @@ static int lpc32xx_dma_setup(struct lpc32xx_nand_host *host)
+>
+>         dma_cap_zero(mask);
+>         dma_cap_set(DMA_SLAVE, mask);
+> -       host->dma_chan = dma_request_channel(mask, lpc32xx_dma_filter, NULL);
+> +       host->dma_chan = dma_request_channel(mask, pl08x_filter_id, "nand-mlc");
+>         if (!host->dma_chan) {
+>                 dev_err(mtd->dev.parent, "Failed to request DMA channel\n");
+>                 return -EBUSY;
+> --
+> 1.7.10.4
+>
