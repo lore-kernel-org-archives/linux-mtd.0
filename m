@@ -1,18 +1,24 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
+Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SpiiB-00084Q-6x
- for linux-mtd@lists.infradead.org; Fri, 13 Jul 2012 16:27:24 +0000
-Received: by pbbrq13 with SMTP id rq13so6457994pbb.36
- for <linux-mtd@lists.infradead.org>; Fri, 13 Jul 2012 09:27:05 -0700 (PDT)
-From: Brian Norris <computersforpeace@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH] mtd: nand: allow NAND_NO_SUBPAGE_WRITE to be set from driver
-Date: Fri, 13 Jul 2012 09:28:24 -0700
-Message-Id: <1342196904-13850-1-git-send-email-computersforpeace@gmail.com>
-Cc: Marek Vasut <marex@denx.de>, Huang Shijie <shijie8@gmail.com>,
- linux-mtd@lists.infradead.org, Scott Wood <scottwood@freescale.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+ id 1Spija-0008A4-Nw
+ for linux-mtd@lists.infradead.org; Fri, 13 Jul 2012 16:28:52 +0000
+From: Marek Vasut <marex@denx.de>
+To: Huang Shijie <shijie8@gmail.com>
+Subject: Re: [PATCH] mtd: add a new macro about the subpage write
+Date: Fri, 13 Jul 2012 18:28:31 +0200
+References: <1341293533-2214-1-git-send-email-b32955@freescale.com>
+ <201207131740.10668.marex@denx.de>
+ <CAMiH66FNn3YrqiCdYj7aAP8qR3VtH5r7q4Gza=0=vQtOoj_5bw@mail.gmail.com>
+In-Reply-To: <CAMiH66FNn3YrqiCdYj7aAP8qR3VtH5r7q4Gza=0=vQtOoj_5bw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201207131828.31880.marex@denx.de>
+Cc: dedekind1@gmail.com, Jan Weitzel <j.weitzel@phytec.de>,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ Scott Wood <scottwood@freescale.com>,
+ Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,70 +28,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The NAND_CHIPOPTIONS_MSK has limited utility and is causing real bugs. It
-silently masks off at least one flag that might be set by the driver
-(NAND_NO_SUBPAGE_WRITE). This breaks the GPMI NAND driver and possibly
-others.
+Dear Huang Shijie,
 
-Really, as long as driver writers exercise a small amount of care with
-NAND_* options, this mask is not necessary at all; it was only here to
-prevent certain options from accidentally being set by the driver. But the
-original thought turns out to be a bad idea occasionally. Thus, kill it.
+> On Fri, Jul 13, 2012 at 11:40 AM, Marek Vasut <marex@denx.de> wrote:
+> > Dear Huang Shijie,
+> > 
+> >> On Fri, Jul 13, 2012 at 6:35 AM, Marek Vasut <marex@denx.de> wrote:
+> >> > Dear Huang Shijie,
+> >> > 
+> >> >> Hi Brian:
+> >> >> > Wood [1]; I don't see a good reason not to just kill the
+> >> >> > NAND_CHIPOPTIONS_MSK instead of adding more flags. As long as we
+> >> >> > perform a few sanity tests, I think it'd be safe.
+> >> >> 
+> >> >> I think it's more clear in logic to add this new macro:
+> >> >>     The NAND_NO_SUBPAGE_WRITE can be used only by the MLC nands which
+> >> >>     do
+> >> >> 
+> >> >> no support the subpage write;
+> >> >> 
+> >> >>     The NAND_CONTROLLER_NO_SUBPAGE_WRITE only used by the nand
+> >> >> 
+> >> >> controller such as gpmi nand.
+> >> > 
+> >> > It's not clearer at all. It's just more error-prone.
+> >> 
+> >> ok, thanks. But I do not how to fix it now. I hope some one could give a
+> >> patch.
+> > 
+> > Why not remove the mask?
+> 
+> I do not understand why this line was added here,  was it added on purpose?
+> so I am not sure whether we can just remove this line.
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Cc: Huang Shijie <shijie8@gmail.com>
-Cc: Marek Vasut <marex@denx.de>
----
-Huang, please test this with your driver.
+Investigate, you're the author and you have an unresolved bug sitting there for 
+a while ;-)
 
-Artem,
+Check where the masked values are used and if they has to be masked at all, if 
+it can't be done in some easier way.
 
-If this is acceptable, should it go to -stable, since it fixes some major
-gpmi-nand breakage? It probably won't apply directly, since I've touched some
-code around it recently.
+> Best Regards
+> Huang Shijie
 
- drivers/mtd/nand/nand_base.c | 7 ++-----
- include/linux/mtd/nand.h     | 3 ---
- 2 files changed, 2 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 98ba46e..6652d1f 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2909,8 +2909,6 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
- 	if (le16_to_cpu(p->features) & 1)
- 		*busw = NAND_BUSWIDTH_16;
- 
--	chip->options &= ~NAND_CHIPOPTIONS_MSK;
--
- 	pr_info("ONFI flash detected\n");
- 	return 1;
- }
-@@ -3074,9 +3072,8 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
- 			mtd->erasesize <<= ((id_data[3] & 0x03) << 1);
- 		}
- 	}
--	/* Get chip options, preserve non chip based options */
--	chip->options &= ~NAND_CHIPOPTIONS_MSK;
--	chip->options |= type->options & NAND_CHIPOPTIONS_MSK;
-+	/* Get chip options */
-+	chip->options |= type->options;
- 
- 	/*
- 	 * Check if chip is not a Samsung device. Do not clear the
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 6dce5a7..eeb7015 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -206,9 +206,6 @@ typedef enum {
- #define NAND_SUBPAGE_READ(chip) ((chip->ecc.mode == NAND_ECC_SOFT) \
- 					&& (chip->page_shift > 9))
- 
--/* Mask to zero out the chip options, which come from the id table */
--#define NAND_CHIPOPTIONS_MSK	0x0000ffff
--
- /* Non chip related options */
- /* This option skips the bbt scan during initialization. */
- #define NAND_SKIP_BBTSCAN	0x00010000
--- 
-1.7.11.1
+Best regards,
+Marek Vasut
