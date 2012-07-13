@@ -1,26 +1,26 @@
 Received: from mail-gh0-f177.google.com ([209.85.160.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SpjnS-0006Tm-Sg
- for linux-mtd@lists.infradead.org; Fri, 13 Jul 2012 17:36:55 +0000
-Received: by mail-gh0-f177.google.com with SMTP id f11so4177666ghb.36
- for <linux-mtd@lists.infradead.org>; Fri, 13 Jul 2012 10:36:54 -0700 (PDT)
-Message-ID: <50005C5B.2010004@gmail.com>
-Date: Fri, 13 Jul 2012 14:35:23 -0300
-From: "William F." <william76.sh@gmail.com>
+ id 1Spjpo-000733-HX
+ for linux-mtd@lists.infradead.org; Fri, 13 Jul 2012 17:39:29 +0000
+Received: by ghbf11 with SMTP id f11so4180949ghb.36
+ for <linux-mtd@lists.infradead.org>; Fri, 13 Jul 2012 10:39:15 -0700 (PDT)
 MIME-Version: 1.0
-To: Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH] mtd: add a new macro about the subpage write (REPORT SPAM)
-References: <1341293533-2214-1-git-send-email-b32955@freescale.com>
- <201207131853.46136.marex@denx.de>
- <CAN8TOE_XF=ou5Nb9ErNhVM4TRHkAitAjGbien5xZTGz_sZZFUA@mail.gmail.com>
- <201207131910.35337.marex@denx.de>
-In-Reply-To: <201207131910.35337.marex@denx.de>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: dedekind1@gmail.com, Jan Weitzel <j.weitzel@phytec.de>,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- Scott Wood <scottwood@freescale.com>,
- Brian Norris <computersforpeace@gmail.com>, Huang Shijie <shijie8@gmail.com>
+In-Reply-To: <4FFBDDB0.6010605@parrot.com>
+References: <1340408145-24531-1-git-send-email-computersforpeace@gmail.com>
+ <1340408145-24531-9-git-send-email-computersforpeace@gmail.com>
+ <4FFBDDB0.6010605@parrot.com>
+Date: Fri, 13 Jul 2012 10:39:14 -0700
+Message-ID: <CAN8TOE8g9FjgJuj+1RuQx3afaY_Huo29PZBNvXVt2-p17OF_tQ@mail.gmail.com>
+Subject: Re: [PATCH 8/8] mtd: nand: use ECC, if present, when scanning OOB
+From: Brian Norris <computersforpeace@gmail.com>
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Mike Dunn <mikedunn@newsguy.com>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,33 +30,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Em 13-07-2012 14:10, Marek Vasut escreveu:
-> Dear Brian Norris,
+On Tue, Jul 10, 2012 at 12:45 AM, Matthieu CASTET
+<matthieu.castet@parrot.com> wrote:
+> Brian Norris a =E9crit :
+>> scan_read_raw_oob() is used in only in places where the MTD_OPS_PLACE_OO=
+B
+>> mode is preferable MTD_OPS_RAW mode, so use MTD_OPS_PLACE_OOB instead.
+>> MTD_OPS_PLACE_OOB provides the same functionality with the potential[1]
+>> added bonus of error correction.
+>>
+>> This brings scan_block_full() in line with scan_block_fast() so that the=
+y
+>> both read bad block markers with MTD_OPS_PLACE_OOB. This can help in
+>> preventing 0xff markers (in good blocks) from being interpreted as bad
+>> block indicators in the presence of a single bitflip.
 >
->> On Fri, Jul 13, 2012 at 9:53 AM, Marek Vasut<marex@denx.de>  wrote:
->>>> On 07/13/2012 11:08 AM, Huang Shijie wrote:
->>>>> On Fri, Jul 13, 2012 at 11:40 AM, Marek Vasut<marex@denx.de>  wrote:
->>>>>> Why not remove the mask?
->>>>> I do not understand why this line was added here,  was it added on
->>>>> purpose? so I am not sure whether we can just remove this line.
->>>> If whoever wanted that line to be there cared enough, they could have
->>>> justified it with a comment (in the code, in the changelog, or in one of
->>>> these threads).  We can't just let cruft sit there (or worse, produce
->>>> more cruft to work around existing cruft) just because we don't know
->>>> exactly what the original author was thinking.  It appears to just have
->>>> been a misguided attempt at enforcing any given option to come from only
->>>> one place.
->>> I think it was there to allow having two different chips on the same NAND
->>> bus ... or something. But this is just a guess. Anyway, it proved
->>> irrelevant, so let's drop it.
->> I agree. Then review/test/ack my patch that I just sent :)
-> It's in the queue, as I'm really interested to see this finally fixed.
+> As far I understand the code, this work when "chip->ecc.read_oob" (used i=
+n
+> nand_do_read_oob) correct bit flip.
 >
->> Brian
-> Best regards,
-> Marek Vasut
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+> But I see no "chip->ecc.read_oob" implementation that can return bit flip=
+. Is
+> that expected ?
+
+I have an out-of-tree driver that corrects OOB bitflips. Is there
+really no other HW out there that corrects OOB errors?
+
+Anyway, I understand that my driver is an outlier here, but I don't
+see a real disadvantage in these changes. But on the positive side, I
+expect that in the future, more drivers/HW will either want to stop
+using OOB for anything at all or will want ECC protection for OOB.
+
+> This can also work when nand_do_read_ops is used (ops->datbuf !=3D NULL).=
+ But it
+> is hard to see case where it can correct bit flip in bad block marker. Do=
+ you
+> have any exemple ?
+
+First of all, this has no effect if the driver does not protect OOB
+with ECC (i.e., for OOB-only reads, MTD_OPS_PLACE_OOB =3D=3D MTD_OPS_RAW).
+So the following argument only applies when OOB is ECC-protected.
+
+Consider a *good* block that is written with filesystem data. On
+bootup, Linux may scan this block's BBM to check if it is bad. If a
+bitflip occurs in the bad block marker, then it may be erroneously
+considered bad.
+
+Similarly, if a block was marked bad from wear (not factory-marked),
+then its BBM may be written along with ECC protection. Then, when we
+scan for bad blocks, it will be protected from bitflips that could
+possibly cause 0x00 to appear non-zero. (This is not a big issue,
+since 'non-zero' is still bad, as long as 0x00 didn't flip to 0xff -
+quite unlikely...)
+
+> PS : Did you have any comment on
+> http://thread.gmane.org/gmane.linux.drivers.mtd/42243 ?
+
+I read it, and it seems promising. I agree with much of the premise
+(that nand_bbt.c is ugly and repetitive at times) but haven't had
+enough time to review properly. Sorry. I'm a bit backlogged and will
+be for a few weeks, I think. But I'll see what I can do.
+
+Thanks,
+Brian
