@@ -1,20 +1,23 @@
-Received: from mail-wg0-f45.google.com ([74.125.82.45])
+Received: from mail-out.m-online.net ([212.18.0.9])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SpZYd-0006Ov-8N
- for linux-mtd@lists.infradead.org; Fri, 13 Jul 2012 06:40:57 +0000
-Received: by wgbdt14 with SMTP id dt14so2541849wgb.26
- for <linux-mtd@lists.infradead.org>; Thu, 12 Jul 2012 23:40:45 -0700 (PDT)
-Date: Fri, 13 Jul 2012 09:40:36 +0300
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: Noah Romer <Noah.Romer@watchguard.com>
-Subject: Re: skip erase blocks when creating fs image from jffs2 partition?
-Message-ID: <20120713094036.5ec6f572@rndtravel53.home.jungo.com>
-In-Reply-To: <01A8FA6BB5F06344A6DE41FAA912A96404AFF5BB@MBX1.wgti.net>
-References: <01A8FA6BB5F06344A6DE41FAA912A96404AFF5BB@MBX1.wgti.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+ id 1SpdSe-0002A6-Dn
+ for linux-mtd@lists.infradead.org; Fri, 13 Jul 2012 10:51:04 +0000
+From: Marek Vasut <marex@denx.de>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH] mtd: add a new macro about the subpage write
+Date: Fri, 13 Jul 2012 12:35:43 +0200
+References: <1341293533-2214-1-git-send-email-b32955@freescale.com>
+ <CAN8TOE-59M6UCW91QS0_ZKzBO-HUyXrUXcmW3avOd8=4CmE4Fg@mail.gmail.com>
+ <4FFD27A1.9000008@freescale.com>
+In-Reply-To: <4FFD27A1.9000008@freescale.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Message-Id: <201207131235.43633.marex@denx.de>
+Cc: dedekind1@gmail.com, Jan Weitzel <j.weitzel@phytec.de>,
+ linux-mtd@lists.infradead.org, Scott Wood <scottwood@freescale.com>,
+ Brian Norris <computersforpeace@gmail.com>, Huang Shijie <shijie8@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,33 +27,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Dear Huang Shijie,
 
-On Thu, 12 Jul 2012 20:02:01 +0000 Noah Romer <Noah.Romer@watchguard.com> wrote:
-> Based on my reading of the docs, and some initial experimentation, it
-> seems as though it's possible to create a usable raw image of a jffs2
-> partition in which you skip both bad blocks and empty/erase blocks.
+> Hi Brian:
+> > Wood [1]; I don't see a good reason not to just kill the
+> > NAND_CHIPOPTIONS_MSK instead of adding more flags. As long as we
+> > perform a few sanity tests, I think it'd be safe.
+> 
+> I think it's more clear in logic to add this new macro:
+>     The NAND_NO_SUBPAGE_WRITE can be used only by the MLC nands which do
+> no support the subpage write;
+>     The NAND_CONTROLLER_NO_SUBPAGE_WRITE only used by the nand
+> controller such as gpmi nand.
 
-I guess you meant "extract" instead of "create".
+It's not clearer at all. It's just more error-prone.
 
-> Is that understanding correct? Particularly with regards to whether or
-> not the resulting image would be usable.
+> But I will be happy if you submit a patch to fix this issue by removing
+> the NAND_CHIPOPTIONS_MSK.
 
-Yes, it is generally correct.
+I'd be happy if the GPMI NAND driver was properly fixed, 6 months after 
+reporting this bug, which is quite critical as UBI doesn't work because of that 
+and it's being silently ignored.
 
-Pay attention to:
-- The destination MTD should have same eraseblock size and page size.
-- The destination partition has enough usable blocks to contain your
-  extracted jffs2 image.
-- The destination partition has to be erased, with the jffs2
-  cleanmarkers written to the OOB (-j option of flash_erase).
-  Meaning, you'll program only the inband data extracted from the source
-  partition.
-- When programming the extracted image to the destination mtd,
-  do NOT program empty pages (entire page is 0xFF).
-  See
-   http://www.linux-mtd.infradead.org/faq/ubifs.html#L_why_ubiformat
-   http://www.linux-mtd.infradead.org/doc/ubi.html#L_flasher_algo
+> thanks
+> Huang Shijie
 
-Regards,
-Shmulik
+Best regards,
+Marek Vasut
