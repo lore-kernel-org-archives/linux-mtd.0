@@ -1,21 +1,20 @@
-Received: from mail-yw0-f49.google.com ([209.85.213.49])
+Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SpjFx-0002wd-0n
- for linux-mtd@lists.infradead.org; Fri, 13 Jul 2012 17:02:20 +0000
-Received: by yhjj52 with SMTP id j52so701099yhj.36
- for <linux-mtd@lists.infradead.org>; Fri, 13 Jul 2012 10:02:10 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <201207131853.46136.marex@denx.de>
-References: <1341293533-2214-1-git-send-email-b32955@freescale.com>
- <CAMiH66FNn3YrqiCdYj7aAP8qR3VtH5r7q4Gza=0=vQtOoj_5bw@mail.gmail.com>
- <50004D06.10303@freescale.com> <201207131853.46136.marex@denx.de>
-Date: Fri, 13 Jul 2012 10:02:10 -0700
-Message-ID: <CAN8TOE_XF=ou5Nb9ErNhVM4TRHkAitAjGbien5xZTGz_sZZFUA@mail.gmail.com>
+ id 1SpjO5-0003gz-MS
+ for linux-mtd@lists.infradead.org; Fri, 13 Jul 2012 17:10:44 +0000
+From: Marek Vasut <marex@denx.de>
+To: Brian Norris <computersforpeace@gmail.com>
 Subject: Re: [PATCH] mtd: add a new macro about the subpage write
-From: Brian Norris <computersforpeace@gmail.com>
-To: Marek Vasut <marex@denx.de>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Date: Fri, 13 Jul 2012 19:10:35 +0200
+References: <1341293533-2214-1-git-send-email-b32955@freescale.com>
+ <201207131853.46136.marex@denx.de>
+ <CAN8TOE_XF=ou5Nb9ErNhVM4TRHkAitAjGbien5xZTGz_sZZFUA@mail.gmail.com>
+In-Reply-To: <CAN8TOE_XF=ou5Nb9ErNhVM4TRHkAitAjGbien5xZTGz_sZZFUA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201207131910.35337.marex@denx.de>
 Cc: dedekind1@gmail.com, Jan Weitzel <j.weitzel@phytec.de>,
  Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
  Scott Wood <scottwood@freescale.com>, Huang Shijie <shijie8@gmail.com>
@@ -28,29 +27,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jul 13, 2012 at 9:53 AM, Marek Vasut <marex@denx.de> wrote:
->> On 07/13/2012 11:08 AM, Huang Shijie wrote:
->> > On Fri, Jul 13, 2012 at 11:40 AM, Marek Vasut <marex@denx.de> wrote:
->> >> Why not remove the mask?
->> >
->> > I do not understand why this line was added here, =A0was it added on
->> > purpose? so I am not sure whether we can just remove this line.
->>
->> If whoever wanted that line to be there cared enough, they could have
->> justified it with a comment (in the code, in the changelog, or in one of
->> these threads). =A0We can't just let cruft sit there (or worse, produce
->> more cruft to work around existing cruft) just because we don't know
->> exactly what the original author was thinking. =A0It appears to just hav=
-e
->> been a misguided attempt at enforcing any given option to come from only
->> one place.
->
-> I think it was there to allow having two different chips on the same NAND=
- bus
-> ... or something. But this is just a guess. Anyway, it proved irrelevant,=
- so
-> let's drop it.
+Dear Brian Norris,
 
-I agree. Then review/test/ack my patch that I just sent :)
+> On Fri, Jul 13, 2012 at 9:53 AM, Marek Vasut <marex@denx.de> wrote:
+> >> On 07/13/2012 11:08 AM, Huang Shijie wrote:
+> >> > On Fri, Jul 13, 2012 at 11:40 AM, Marek Vasut <marex@denx.de> wrote:
+> >> >> Why not remove the mask?
+> >> > 
+> >> > I do not understand why this line was added here,  was it added on
+> >> > purpose? so I am not sure whether we can just remove this line.
+> >> 
+> >> If whoever wanted that line to be there cared enough, they could have
+> >> justified it with a comment (in the code, in the changelog, or in one of
+> >> these threads).  We can't just let cruft sit there (or worse, produce
+> >> more cruft to work around existing cruft) just because we don't know
+> >> exactly what the original author was thinking.  It appears to just have
+> >> been a misguided attempt at enforcing any given option to come from only
+> >> one place.
+> > 
+> > I think it was there to allow having two different chips on the same NAND
+> > bus ... or something. But this is just a guess. Anyway, it proved
+> > irrelevant, so let's drop it.
+> 
+> I agree. Then review/test/ack my patch that I just sent :)
 
-Brian
+It's in the queue, as I'm really interested to see this finally fixed.
+
+> Brian
+
+Best regards,
+Marek Vasut
