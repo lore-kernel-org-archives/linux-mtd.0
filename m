@@ -1,20 +1,21 @@
-Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
+Received: from mail-qc0-f177.google.com ([209.85.216.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SphyZ-0001bu-54
- for linux-mtd@lists.infradead.org; Fri, 13 Jul 2012 15:40:17 +0000
-From: Marek Vasut <marex@denx.de>
-To: Huang Shijie <shijie8@gmail.com>
-Subject: Re: [PATCH] mtd: add a new macro about the subpage write
-Date: Fri, 13 Jul 2012 17:40:10 +0200
+ id 1SpiQ5-0007f0-GC
+ for linux-mtd@lists.infradead.org; Fri, 13 Jul 2012 16:08:42 +0000
+Received: by qcsu28 with SMTP id u28so2371614qcs.36
+ for <linux-mtd@lists.infradead.org>; Fri, 13 Jul 2012 09:08:38 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <201207131740.10668.marex@denx.de>
 References: <1341293533-2214-1-git-send-email-b32955@freescale.com>
  <201207131235.43633.marex@denx.de>
  <CAMiH66GzmAJV+GfeuaigakiAFPB2gvzQaLd47yLcrz9dht3pLA@mail.gmail.com>
-In-Reply-To: <CAMiH66GzmAJV+GfeuaigakiAFPB2gvzQaLd47yLcrz9dht3pLA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201207131740.10668.marex@denx.de>
+ <201207131740.10668.marex@denx.de>
+Date: Fri, 13 Jul 2012 12:08:38 -0400
+Message-ID: <CAMiH66FNn3YrqiCdYj7aAP8qR3VtH5r7q4Gza=0=vQtOoj_5bw@mail.gmail.com>
+Subject: Re: [PATCH] mtd: add a new macro about the subpage write
+From: Huang Shijie <shijie8@gmail.com>
+To: Marek Vasut <marex@denx.de>
+Content-Type: text/plain; charset=UTF-8
 Cc: dedekind1@gmail.com, Jan Weitzel <j.weitzel@phytec.de>,
  Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
  Scott Wood <scottwood@freescale.com>,
@@ -28,47 +29,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Huang Shijie,
+On Fri, Jul 13, 2012 at 11:40 AM, Marek Vasut <marex@denx.de> wrote:
+> Dear Huang Shijie,
+>
+>> On Fri, Jul 13, 2012 at 6:35 AM, Marek Vasut <marex@denx.de> wrote:
+>> > Dear Huang Shijie,
+>> >
+>> >> Hi Brian:
+>> >> > Wood [1]; I don't see a good reason not to just kill the
+>> >> > NAND_CHIPOPTIONS_MSK instead of adding more flags. As long as we
+>> >> > perform a few sanity tests, I think it'd be safe.
+>> >>
+>> >> I think it's more clear in logic to add this new macro:
+>> >>     The NAND_NO_SUBPAGE_WRITE can be used only by the MLC nands which do
+>> >>
+>> >> no support the subpage write;
+>> >>
+>> >>     The NAND_CONTROLLER_NO_SUBPAGE_WRITE only used by the nand
+>> >>
+>> >> controller such as gpmi nand.
+>> >
+>> > It's not clearer at all. It's just more error-prone.
+>>
+>> ok, thanks. But I do not how to fix it now. I hope some one could give a
+>> patch.
+>
+> Why not remove the mask?
+>
 
-> On Fri, Jul 13, 2012 at 6:35 AM, Marek Vasut <marex@denx.de> wrote:
-> > Dear Huang Shijie,
-> > 
-> >> Hi Brian:
-> >> > Wood [1]; I don't see a good reason not to just kill the
-> >> > NAND_CHIPOPTIONS_MSK instead of adding more flags. As long as we
-> >> > perform a few sanity tests, I think it'd be safe.
-> >> 
-> >> I think it's more clear in logic to add this new macro:
-> >>     The NAND_NO_SUBPAGE_WRITE can be used only by the MLC nands which do
-> >> 
-> >> no support the subpage write;
-> >> 
-> >>     The NAND_CONTROLLER_NO_SUBPAGE_WRITE only used by the nand
-> >> 
-> >> controller such as gpmi nand.
-> > 
-> > It's not clearer at all. It's just more error-prone.
-> 
-> ok, thanks. But I do not how to fix it now. I hope some one could give a
-> patch.
+I do not understand why this line was added here,  was it added on purpose?
+so I am not sure whether we can just remove this line.
 
-Why not remove the mask?
 
-> Best Regards
-> Huang Shijie
-> 
-> >> But I will be happy if you submit a patch to fix this issue by removing
-> >> the NAND_CHIPOPTIONS_MSK.
-> > 
-> > I'd be happy if the GPMI NAND driver was properly fixed, 6 months after
-> > reporting this bug, which is quite critical as UBI doesn't work because
-> > of that and it's being silently ignored.
-> > 
-> >> thanks
-> >> Huang Shijie
-> > 
-> > Best regards,
-> > Marek Vasut
-
-Best regards,
-Marek Vasut
+Best Regards
+Huang Shijie
