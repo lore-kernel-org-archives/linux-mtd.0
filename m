@@ -1,23 +1,22 @@
-Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
+Received: from mail-out.m-online.net ([212.18.0.10])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SpjO5-0003gz-MS
- for linux-mtd@lists.infradead.org; Fri, 13 Jul 2012 17:10:44 +0000
+ id 1SpjQ4-0003xT-QU
+ for linux-mtd@lists.infradead.org; Fri, 13 Jul 2012 17:12:45 +0000
 From: Marek Vasut <marex@denx.de>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: add a new macro about the subpage write
-Date: Fri, 13 Jul 2012 19:10:35 +0200
-References: <1341293533-2214-1-git-send-email-b32955@freescale.com>
- <201207131853.46136.marex@denx.de>
- <CAN8TOE_XF=ou5Nb9ErNhVM4TRHkAitAjGbien5xZTGz_sZZFUA@mail.gmail.com>
-In-Reply-To: <CAN8TOE_XF=ou5Nb9ErNhVM4TRHkAitAjGbien5xZTGz_sZZFUA@mail.gmail.com>
+Subject: Re: [PATCH] mtd: nand: allow NAND_NO_SUBPAGE_WRITE to be set from
+ driver
+Date: Fri, 13 Jul 2012 19:12:42 +0200
+References: <1342196904-13850-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1342196904-13850-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
 Content-Type: Text/Plain;
   charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Message-Id: <201207131910.35337.marex@denx.de>
-Cc: dedekind1@gmail.com, Jan Weitzel <j.weitzel@phytec.de>,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- Scott Wood <scottwood@freescale.com>, Huang Shijie <shijie8@gmail.com>
+Message-Id: <201207131912.42495.marex@denx.de>
+Cc: Scott Wood <scottwood@freescale.com>, David Woodhouse <dwmw2@infradead.org>,
+ linux-mtd@lists.infradead.org, Huang Shijie <shijie8@gmail.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,31 +28,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Dear Brian Norris,
 
-> On Fri, Jul 13, 2012 at 9:53 AM, Marek Vasut <marex@denx.de> wrote:
-> >> On 07/13/2012 11:08 AM, Huang Shijie wrote:
-> >> > On Fri, Jul 13, 2012 at 11:40 AM, Marek Vasut <marex@denx.de> wrote:
-> >> >> Why not remove the mask?
-> >> > 
-> >> > I do not understand why this line was added here,  was it added on
-> >> > purpose? so I am not sure whether we can just remove this line.
-> >> 
-> >> If whoever wanted that line to be there cared enough, they could have
-> >> justified it with a comment (in the code, in the changelog, or in one of
-> >> these threads).  We can't just let cruft sit there (or worse, produce
-> >> more cruft to work around existing cruft) just because we don't know
-> >> exactly what the original author was thinking.  It appears to just have
-> >> been a misguided attempt at enforcing any given option to come from only
-> >> one place.
-> > 
-> > I think it was there to allow having two different chips on the same NAND
-> > bus ... or something. But this is just a guess. Anyway, it proved
-> > irrelevant, so let's drop it.
+> The NAND_CHIPOPTIONS_MSK has limited utility and is causing real bugs. It
+> silently masks off at least one flag that might be set by the driver
+> (NAND_NO_SUBPAGE_WRITE). This breaks the GPMI NAND driver and possibly
+> others.
 > 
-> I agree. Then review/test/ack my patch that I just sent :)
+> Really, as long as driver writers exercise a small amount of care with
+> NAND_* options, this mask is not necessary at all; it was only here to
+> prevent certain options from accidentally being set by the driver. But the
+> original thought turns out to be a bad idea occasionally. Thus, kill it.
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Cc: Huang Shijie <shijie8@gmail.com>
+> Cc: Marek Vasut <marex@denx.de>
+[...]
 
-It's in the queue, as I'm really interested to see this finally fixed.
-
-> Brian
+Maybe we should simply split it into two sets of flags to make it clear -- chip 
+ones and controller ones ?
 
 Best regards,
 Marek Vasut
