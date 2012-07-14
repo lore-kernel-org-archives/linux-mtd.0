@@ -1,25 +1,22 @@
-Received: from mail-yx0-f177.google.com ([209.85.213.177])
+Received: from mail-qa0-f49.google.com ([209.85.216.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SpnJc-0008Vb-BB
- for linux-mtd@lists.infradead.org; Fri, 13 Jul 2012 21:22:21 +0000
-Received: by yenr9 with SMTP id r9so4401988yen.36
- for <linux-mtd@lists.infradead.org>; Fri, 13 Jul 2012 14:22:17 -0700 (PDT)
+ id 1SprgL-0006CB-GY
+ for linux-mtd@lists.infradead.org; Sat, 14 Jul 2012 02:02:10 +0000
+Received: by qabj40 with SMTP id j40so656531qab.15
+ for <linux-mtd@lists.infradead.org>; Fri, 13 Jul 2012 19:02:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CACQ1gAjJbyymV=qfACE3Zh0nucO8R=W4vKVjC=_O-kj0P2HB=g@mail.gmail.com>
-References: <CAN8TOE9RyUuRtEfyqBfxt0W3Cfg2_SD6Hp4rMS0S+MgKsPY9UQ@mail.gmail.com>
- <CACQ1gAjJbyymV=qfACE3Zh0nucO8R=W4vKVjC=_O-kj0P2HB=g@mail.gmail.com>
-Date: Fri, 13 Jul 2012 14:22:17 -0700
-Message-ID: <CAN8TOE-KCjTjCNmrCiHuvmaE4M3uAMVDwZ-3-_Z6H4n4Lz2ijQ@mail.gmail.com>
-Subject: Re: MLC NAND: all 0xff after erase?
-From: Brian Norris <computersforpeace@gmail.com>
-To: Richard Genoud <richard.genoud@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Mike Dunn <mikedunn@newsguy.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>, Kevin Cernekee <cernekee@gmail.com>,
- Jim Quinlan <jim2101024@gmail.com>, linux-mtd@lists.infradead.org,
- Al Viro <viro@zeniv.linux.org.uk>, Joel Reardon <reardonj@inf.ethz.ch>,
- David Woodhouse <dwmw2@infradead.org>,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>
+In-Reply-To: <1342196904-13850-1-git-send-email-computersforpeace@gmail.com>
+References: <1342196904-13850-1-git-send-email-computersforpeace@gmail.com>
+Date: Fri, 13 Jul 2012 22:02:00 -0400
+Message-ID: <CAMiH66HEw2SrTOp4zCxLapFMj7AH5dh4sZGMdtb6SSMc0e1FcA@mail.gmail.com>
+Subject: Re: [PATCH] mtd: nand: allow NAND_NO_SUBPAGE_WRITE to be set from
+ driver
+From: Huang Shijie <shijie8@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: Scott Wood <scottwood@freescale.com>, David Woodhouse <dwmw2@infradead.org>,
+ Marek Vasut <marex@denx.de>, linux-mtd@lists.infradead.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,18 +26,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jul 10, 2012 at 11:41 PM, Richard Genoud
-<richard.genoud@gmail.com> wrote:
-> 2012/7/11 Brian Norris <computersforpeace@gmail.com>:
->> Hello all,
->>
->> I've seen some issues with MLC NAND and where I might erase a block,
->> read it back, and receive a few bitflips such that the data is not
->> entirely 0xff (i.e., a few bytes may be 0xfe, 0x7f, 0xf7, etc.).
+On Fri, Jul 13, 2012 at 12:28 PM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> The NAND_CHIPOPTIONS_MSK has limited utility and is causing real bugs. It
+> silently masks off at least one flag that might be set by the driver
+> (NAND_NO_SUBPAGE_WRITE). This breaks the GPMI NAND driver and possibly
+> others.
 >
-> If you read the same block a few ms later, is the data the same or is
-> it all 0xff or.. ?
+> Really, as long as driver writers exercise a small amount of care with
+> NAND_* options, this mask is not necessary at all; it was only here to
+> prevent certain options from accidentally being set by the driver. But the
+> original thought turns out to be a bad idea occasionally. Thus, kill it.
+>
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Cc: Huang Shijie <shijie8@gmail.com>
+> Cc: Marek Vasut <marex@denx.de>
+> ---
+> Huang, please test this with your driver.
+>
+I tested this patch on imx6q-arm2 board with Micron MT29F32G08QAA.
+it works fine, thanks.
 
-Generally, the data is the same.
+Tested-by: Huang Shijie <shijie8@gmail.com>
 
-Brian
+
+> Artem,
+>
+> If this is acceptable, should it go to -stable, since it fixes some major
+> gpmi-nand breakage? It probably won't apply directly, since I've touched some
+> code around it recently.
+>
+>  drivers/mtd/nand/nand_base.c | 7 ++-----
+>  include/linux/mtd/nand.h     | 3 ---
+>  2 files changed, 2 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 98ba46e..6652d1f 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -2909,8 +2909,6 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+>         if (le16_to_cpu(p->features) & 1)
+>                 *busw = NAND_BUSWIDTH_16;
+>
+> -       chip->options &= ~NAND_CHIPOPTIONS_MSK;
+> -
+>         pr_info("ONFI flash detected\n");
+>         return 1;
+>  }
+> @@ -3074,9 +3072,8 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+>                         mtd->erasesize <<= ((id_data[3] & 0x03) << 1);
+>                 }
+>         }
+> -       /* Get chip options, preserve non chip based options */
+> -       chip->options &= ~NAND_CHIPOPTIONS_MSK;
+> -       chip->options |= type->options & NAND_CHIPOPTIONS_MSK;
+> +       /* Get chip options */
+> +       chip->options |= type->options;
+>
+>         /*
+>          * Check if chip is not a Samsung device. Do not clear the
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index 6dce5a7..eeb7015 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -206,9 +206,6 @@ typedef enum {
+>  #define NAND_SUBPAGE_READ(chip) ((chip->ecc.mode == NAND_ECC_SOFT) \
+>                                         && (chip->page_shift > 9))
+>
+> -/* Mask to zero out the chip options, which come from the id table */
+> -#define NAND_CHIPOPTIONS_MSK   0x0000ffff
+> -
+>  /* Non chip related options */
+>  /* This option skips the bbt scan during initialization. */
+>  #define NAND_SKIP_BBTSCAN      0x00010000
+> --
+> 1.7.11.1
+>
