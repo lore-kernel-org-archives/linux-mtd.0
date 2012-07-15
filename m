@@ -1,16 +1,26 @@
 Received: from mail-lb0-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SqK7P-0002VL-Lc
- for linux-mtd@lists.infradead.org; Sun, 15 Jul 2012 08:24:03 +0000
-Received: by lbbgg6 with SMTP id gg6so6571786lbb.36
- for <linux-mtd@lists.infradead.org>; Sun, 15 Jul 2012 01:22:47 -0700 (PDT)
+ id 1SqKET-0002hB-3e
+ for linux-mtd@lists.infradead.org; Sun, 15 Jul 2012 08:31:15 +0000
+Received: by lbbgg6 with SMTP id gg6so6575316lbb.36
+ for <linux-mtd@lists.infradead.org>; Sun, 15 Jul 2012 01:31:04 -0700 (PDT)
+Message-ID: <1342340730.25457.3.camel@brekeke>
+Subject: RE: UBIFS fails to mount on second boot
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: James Nute <newten82@gmail.com>,
- Iwo Mergler <Iwo.Mergler@netcommwireless.com>
-Subject: [PATCH] UBIFS: fix a bug in empty space fix-up
-Date: Sun, 15 Jul 2012 11:17:17 +0300
-Message-Id: <1342340237-29656-1-git-send-email-dedekind1@gmail.com>
-Cc: Ben Gardiner <bengardiner@nanometrics.ca>, linux-mtd@lists.infradead.org
+To: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
+Date: Sun, 15 Jul 2012 11:25:30 +0300
+In-Reply-To: <6871BC8982B258468985EE735D2C575243C0F088B6@ntcex01.corp.netcomm.com.au>
+References: <CAEZtdFU1cET8=kViUsR0Oq3q0ckcFLuKsd_Hc5WHo_uhFiKVBw@mail.gmail.com>
+ ,<1340806219.3070.23.camel@sauron.fi.intel.com>
+ <6871BC8982B258468985EE735D2C575243C0F0889A@ntcex01.corp.netcomm.com.au>
+ ,<1340977577.3070.207.camel@sauron.fi.intel.com>
+ <6871BC8982B258468985EE735D2C575243C0F088B6@ntcex01.corp.netcomm.com.au>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-nF9qqomStIQ/I4tuoUJN"
+Mime-Version: 1.0
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,60 +30,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>
 
-UBIFS has a feature called "empty space fix-up" which is a quirk to work-around
-limitations of dumb flasher programs. Namely, of those flashers that are unable
-to skip NAND pages full of 0xFFs while flashing, resulting in empty space at
-the end of half-filled eraseblocks to be unusable for UBIFS. This feature is
-relatively new (introduced in v3.0).
+--=-nF9qqomStIQ/I4tuoUJN
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The fix-up routine (fixup_free_space()) is executed only once at the very first
-mount if the superblock has the 'space_fixup' flag set (can be done with -F
-option of mkfs.ubifs). It basically reads all the UBIFS data and metadata and
-writes it back to the same LEB. The routine assumes the image is pristine and
-does not have anything in the journal.
+On Mon, 2012-07-02 at 17:49 +1000, Iwo Mergler wrote:
+> It's similar to a BeagleBone, but with NAND FLASH, I'm using the
+> omap2 ECC driver.
+>=20
+> So, if I set NAND_NO_SUBPAGE_WRITE in chip.options, UBI will
+> leave the subpages alone?
 
-There was a bug in 'fixup_free_space()' where it fixed up the log incorrectly.
-All but one LEB of the log of a pristine file-system are empty. And one
-contains just a commit start node. And 'fixup_free_space()' just unmapped this
-LEB, which resulted in wiping the commit start node. As a result, some users
-were unable to mount the file-system next time with the following symptom:
+I think so, but it is better to dig and find out why sub-pages to not
+work - this sounds like a bug. With sub-pages support you'll waste less
+flash space because UBI overhead will be smaller.
 
-UBIFS error (pid 1): replay_log_leb: first log node at LEB 3:0 is not CS node
-UBIFS error (pid 1): replay_log_leb: log error detected while replaying the log at LEB 3:0
+> So I had to make two debug runs, one each for ubi and ubifs debugging
+> enabled.
 
-The root-cause of this bug was that 'fixup_free_space()' wrongly assumed
-that the beginning of empty space in the log head (c->lhead_offs) was known
-on mount. However, it is not the case - it was always 0. UBIFS does not store
-in it the master node and finds out by scanning the log on every mount.
+I've reproduced this bug using nandsim and fixed it. I've sent you the
+fix few minutes ago. Could you please test it? After I've got a
+"Tested-by:", I'll send it to Linus and it will also go to -stable.
+Thanks!
 
-The fix is simple - just pass commit start node size instead of 0 to
-'fixup_leb()'.
+--=20
+Best Regards,
+Artem Bityutskiy
 
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>
-Cc: stable@vger.kernel.org [v3.0+]
-Reported-by: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
-Reported-by: James Nute <newten82@gmail.com>
----
- fs/ubifs/sb.c |    5 +++--
- 1 files changed, 3 insertions(+), 2 deletions(-)
+--=-nF9qqomStIQ/I4tuoUJN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
-index ef3d1ba..49382e7 100644
---- a/fs/ubifs/sb.c
-+++ b/fs/ubifs/sb.c
-@@ -718,8 +718,9 @@ static int fixup_free_space(struct ubifs_info *c)
- 		lnum = ubifs_next_log_lnum(c, lnum);
- 	}
- 
--	/* Fixup the current log head */
--	err = fixup_leb(c, c->lhead_lnum, c->lhead_offs);
-+	/* Fixup the log head contains the only a CS node at the beginning */
-+	err = fixup_leb(c, c->lhead_lnum,
-+			ALIGN(UBIFS_CS_NODE_SZ, c->min_io_size));
- 	if (err)
- 		goto out;
- 
--- 
-1.7.7.6
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQAn56AAoJECmIfjd9wqK0EWEQAMjnarRiJ1heIfseH9SZFRJ5
+qzOHyoAIVehzKSkCKVhnZxp3dB5Hb95i+ln83COb8KSYu+RSNmdgDyOBneS9GGPw
+2BJoOk52Rg35UnRGmF2u2CQDJ3XPspoCkNCLmvwuuud4NXAAPKZHHF4NS0XRHPDu
+S65VihgAQ5RbcHhy2fU6xr2AIfKjdO7X8WfXQtowjlcUEQIgx204a2qLkDCsG+tY
+hhjUMhrzuoMLUQizbMFYLwnhepH+/ad5R7LeDUtfh8dVkmKyQG5khxnHK++8Rj/s
+FMw+2Dhx0acpLEWRHYSLapOpR3Tvh5/6GpRA1vfkR1JvkqtkO5FDfgIws6vSWFuq
+aDEvjJENmL1+82pLneUvP3OJeESpqZ1uDBJPV6WavM3uDFHWyoL23irvTYM5qilH
+86UHvWRAFPkqnv6pxS1V7NbkWd6apynLn3vwf+t/eCLcP+1ZKSajKxicvuXSOF4D
+jry+i5UMX8FoDJR62Gbh2z7YEXwsMAbXPIIeO7iS8N8GLGoLXKOghlvNLNoDHViG
+vveIYoQ1Ahi+SurLosKMoWTZZjMPvjxYp2MkgFtnstDhlcIUkzJmVG2vvbh7HWNZ
+CBZ6z5z65x6UvnN+ovU2VvEaDIzP7Z/kVIeSOs0kO7tZ6/2GQelSYHHRMLk8cMhB
+xVz+mKACAvtr4/GhfEl9
+=0ukw
+-----END PGP SIGNATURE-----
+
+--=-nF9qqomStIQ/I4tuoUJN--
