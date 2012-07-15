@@ -1,14 +1,14 @@
-Received: from nm26-vm1.bullet.mail.sg3.yahoo.com ([106.10.151.112])
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SqHRD-0006v9-5s
- for linux-mtd@lists.infradead.org; Sun, 15 Jul 2012 05:32:21 +0000
-From: =?GB2312?B?08W73bf+zvGjoQ==?= <canpsrdr@yahoo.com>
-To: "368546986" <368546986@qq.com>
-Subject: wbgzsnrmgbwqlfaupjeytoidxsmhbwqlgavpkez@4277(AD).com
-Message-ID: <201207151330201569721@yahoo.com>
-Date: Sun, 15 Jul 2012 13:30:20 +0800
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="----=yvlpl329_3340_137292579.529179"
+Received: from smtp1.mail.ru ([94.100.176.129])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SqILa-0007db-C7
+ for linux-mtd@lists.infradead.org; Sun, 15 Jul 2012 06:30:38 +0000
+From: Alexander Shiyan <shc_work@mail.ru>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 1/2] MTD: autcpu12-nvram: Fix compile breakage
+Date: Sun, 15 Jul 2012 10:29:37 +0400
+Message-Id: <1342333778-674-1-git-send-email-shc_work@mail.ru>
+Cc: David Woodhouse <dwmw2@infradead.org>, Alexander Shiyan <shc_work@mail.ru>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,146 +18,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
+Update driver autcpu12-nvram.c so it compiles. map_read32/map_write32 no
+longer exist in the kernel so the driver is totally broken.
+Additionally, map_info name passed to simple_map_init is incorrect.
 
-------=yvlpl329_3340_137292579.529179
-Content-Type: text/plain;
-	charset="GB2312"
-Content-Transfer-Encoding: base64
+CC drivers/mtd/maps/autcpu12-nvram.o
+drivers/mtd/maps/autcpu12-nvram.c: In function 'init_autcpu12_sram':
+drivers/mtd/maps/autcpu12-nvram.c:54: error: 'autcpu_sram_map' undeclared (first use in this function)
+drivers/mtd/maps/autcpu12-nvram.c:54: error: (Each undeclared identifier is reported only once
+drivers/mtd/maps/autcpu12-nvram.c:54: error: for each function it appears in.)
+drivers/mtd/maps/autcpu12-nvram.c:64: error: implicit declaration of function 'map_read32'
+drivers/mtd/maps/autcpu12-nvram.c:66: error: implicit declaration of function 'map_write32'
+make[3]: *** [drivers/mtd/maps/autcpu12-nvram.o] Error 1
 
-MzY4NTQ2OTg2QHFxLmNvbQ0KxOO6w6Ohx+uy6dTE08q8/qOhDQoyMDcuMjQzLjIyOC45Ng==
+Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+---
+ drivers/mtd/maps/autcpu12-nvram.c |   19 +++++++++++--------
+ 1 files changed, 11 insertions(+), 8 deletions(-)
 
-------=yvlpl329_3340_137292579.529179
-Content-Type: image/gif;
-	name="Ybmkg_508.gif"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="Ybmkg_508.gif"
-
-R0lGODdh6AFZAXcAACwAAAAA6AFZAYcAAAAAADMAAGYAAJkAAMwAAP8AMwAAMzMAM2YAM5kAM8wA
-M/8AZgAAZjMAZmYAZpkAZswAZv8AmQAAmTMAmWYAmZkAmcwAmf8AzAAAzDMAzGYAzJkAzMwAzP8A
-/wAA/zMA/2YA/5kA/8wA//8zAAAzADMzAGYzAJkzAMwzAP8zMwAzMzMzM2YzM5kzM8wzM/8zZgAz
-ZjMzZmYzZpkzZswzZv8zmQAzmTMzmWYzmZkzmcwzmf8zzAAzzDMzzGYzzJkzzMwzzP8z/wAz/zMz
-/2Yz/5kz/8wz//9mAABmADNmAGZmAJlmAMxmAP9mMwBmMzNmM2ZmM5lmM8xmM/9mZgBmZjNmZmZm
-ZplmZsxmZv9mmQBmmTNmmWZmmZlmmcxmmf9mzABmzDNmzGZmzJlmzMxmzP9m/wBm/zNm/2Zm/5lm
-/8xm//+ZAACZADOZAGaZAJmZAMyZAP+ZMwCZMzOZM2aZM5mZM8yZM/+ZZgCZZjOZZmaZZpmZZsyZ
-Zv+ZmQCZmTOZmWaZmZmZmcyZmf+ZzACZzDOZzGaZzJmZzMyZzP+Z/wCZ/zOZ/2aZ/5mZ/8yZ///M
-AADMADPMAGbMAJnMAMzMAP/MMwDMMzPMM2bMM5nMM8zMM//MZgDMZjPMZmbMZpnMZszMZv/MmQDM
-mTPMmWbMmZnMmczMmf/MzADMzDPMzGbMzJnMzMzMzP/M/wDM/zPM/2bM/5nM/8zM////AAD/ADP/
-AGb/AJn/AMz/AP//MwD/MzP/M2b/M5n/M8z/M///ZgD/ZjP/Zmb/Zpn/Zsz/Zv//mQD/mTP/mWb/
-mZn/mcz/mf//zAD/zDP/zGb/zJn/zMz/zP///wD//zP//2b//5n//8z///8AAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAB6TXp6WTJ6azV6dzh6OC96QWdqWgptWnpwWnpzWnp2WnpRbXpUbXpX
-bXpabXpjbXpmbXpBenpEenpHenpKenpNenpQenp3L3p6L3oKDXp6WTJ6azV6dzhtOS8I/wA9CRxI
-sKDBgwgTKlzIsKHDhxAjSpxIsaLFixgzatzIsaPHjyBDihxJsqTJkyhTqlzJsqXLlzBjypxJs6bN
-mzhz6tzJs6fPgXIACAWAwOCloUKtRAw6tGjBTiSaSmQq1KlAqEiHQoFINenPr2DDin2JBMBWT2UD
-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
-e/f9d+CDF3544os3/njkk1d++dwDAgA7
-
-------=yvlpl329_3340_137292579.529179--
+diff --git a/drivers/mtd/maps/autcpu12-nvram.c b/drivers/mtd/maps/autcpu12-nvram.c
+index e5bfd0e..0598d52 100644
+--- a/drivers/mtd/maps/autcpu12-nvram.c
++++ b/drivers/mtd/maps/autcpu12-nvram.c
+@@ -43,7 +43,8 @@ struct map_info autcpu12_sram_map = {
+ 
+ static int __init init_autcpu12_sram (void)
+ {
+-	int err, save0, save1;
++	map_word tmp, save0, save1;
++	int err;
+ 
+ 	autcpu12_sram_map.virt = ioremap(0x12000000, SZ_128K);
+ 	if (!autcpu12_sram_map.virt) {
+@@ -51,7 +52,7 @@ static int __init init_autcpu12_sram (void)
+ 		err = -EIO;
+ 		goto out;
+ 	}
+-	simple_map_init(&autcpu_sram_map);
++	simple_map_init(&autcpu12_sram_map);
+ 
+ 	/*
+ 	 * Check for 32K/128K
+@@ -61,20 +62,22 @@ static int __init init_autcpu12_sram (void)
+ 	 * Read	and check result on ofs 0x0
+ 	 * Restore contents
+ 	 */
+-	save0 = map_read32(&autcpu12_sram_map,0);
+-	save1 = map_read32(&autcpu12_sram_map,0x10000);
+-	map_write32(&autcpu12_sram_map,~save0,0x10000);
++	save0 = map_read(&autcpu12_sram_map, 0);
++	save1 = map_read(&autcpu12_sram_map, 0x10000);
++	tmp.x[0] = ~save0.x[0];
++	map_write(&autcpu12_sram_map, tmp, 0x10000);
+ 	/* if we find this pattern on 0x0, we have 32K size
+ 	 * restore contents and exit
+ 	 */
+-	if ( map_read32(&autcpu12_sram_map,0) != save0) {
+-		map_write32(&autcpu12_sram_map,save0,0x0);
++	tmp = map_read(&autcpu12_sram_map, 0);
++	if (!map_word_equal(&autcpu12_sram_map, tmp, save0)) {
++		map_write(&autcpu12_sram_map, save0, 0x0);
+ 		goto map;
+ 	}
+ 	/* We have a 128K found, restore 0x10000 and set size
+ 	 * to 128K
+ 	 */
+-	map_write32(&autcpu12_sram_map,save1,0x10000);
++	map_write(&autcpu12_sram_map, save1, 0x10000);
+ 	autcpu12_sram_map.size = SZ_128K;
+ 
+ map:
+-- 
+1.7.3.4
