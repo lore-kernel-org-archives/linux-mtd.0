@@ -1,23 +1,21 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
+Received: from mail-ee0-f49.google.com ([74.125.83.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SqmvL-0005hH-MW
- for linux-mtd@lists.infradead.org; Mon, 16 Jul 2012 15:09:24 +0000
-Received: by lbbgg6 with SMTP id gg6so7906948lbb.36
- for <linux-mtd@lists.infradead.org>; Mon, 16 Jul 2012 08:09:17 -0700 (PDT)
-Message-ID: <1342451031.7270.6.camel@brekeke>
-Subject: Re: [PATCH] mtd: physmap_of: Add "map-indirect" DT property
+ id 1SqmxU-0005mp-MC
+ for linux-mtd@lists.infradead.org; Mon, 16 Jul 2012 15:11:37 +0000
+Received: by eeil10 with SMTP id l10so799901eei.36
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Jul 2012 08:11:28 -0700 (PDT)
+Message-ID: <1342451162.7270.7.camel@brekeke>
+Subject: Re: [PATCH 1/2] mtd: replace the hard code with the proper macro
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Stefan Roese <sr@denx.de>
-Date: Mon, 16 Jul 2012 18:03:51 +0300
-In-Reply-To: <1341303991-6219-1-git-send-email-sr@denx.de>
-References: <1341303991-6219-1-git-send-email-sr@denx.de>
+To: Huang Shijie <b32955@freescale.com>
+Date: Mon, 16 Jul 2012 18:06:02 +0300
+In-Reply-To: <1341305055-29218-1-git-send-email-b32955@freescale.com>
+References: <1341305055-29218-1-git-send-email-b32955@freescale.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-xx/i4+I23gJpLdyk2SA7"
+ boundary="=-xw7Y9c2GQ/1GVeh9wysJ"
 Mime-Version: 1.0
-Cc: Albrecht Dress <albrecht.dress@arcor.de>,
- Anatolij Gustschin <agust@denx.de>, linux-mtd@lists.infradead.org,
- Stephan Gatzka <Stephan.Gatzka@hbm.com>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,24 +27,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-xx/i4+I23gJpLdyk2SA7
+--=-xw7Y9c2GQ/1GVeh9wysJ
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-07-03 at 10:26 +0200, Stefan Roese wrote:
-> On some platforms (e.g. MPC5200) a direct 1:1 mapping may cause
-> problems with JFFS2 usage, as the local bus (LPB) doesn't support
-> unaligned accesses as implemented in the JFFS2 code via memcpy().
-> By defining "map-indirect", the flash will not be exposed directly
-> to the MTD users (e.g. JFFS2) any more.
+On Tue, 2012-07-03 at 16:44 +0800, Huang Shijie wrote:
+> Use the MTD_OPS_PLACE_OOB to replace the hard code "0".
+> Make the code more readable.
+>=20
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
 
-Pushed to l2-mtd.git, thanks!
+Pushed both to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-xx/i4+I23gJpLdyk2SA7
+--=-xw7Y9c2GQ/1GVeh9wysJ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -54,19 +51,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQBC1XAAoJECmIfjd9wqK0P6kQAIdPNX64cDR+jIeMRkjqY9f+
-Ae0Wk22I0mSVhiT0kPEfttbM9ruW2dDSKhG69rIpBTK766mxuCiRl7dcn4bDeuxM
-72a8PeT1o+N9pgOCwZb02BiOCM57Kmn98UsfGGFiB9yDyQfviCfd9zosoyVztGl7
-EWwmPHjYYmwLx4cqSH3viSEYSr/TVk/rCXMlZnP7fq7DisR9E3uETfqFcHg6N7fg
-/ssvPHashTDdo1qM4WoYKB/4C02tQ4h++8A65Cv5yTrGe2f0rONV9ZAxnYMFVIdY
-jZiyqccZfBYLlQjl3nnkdu0xevWcWq6HNi8veroZS7WFZlBhkXaAvJ51EqvwrjU0
-oCLfa/bSmsgjoU0i+hCl8pbaV/6OFXuMecueMkAtqktRi3fZAieB31dk9G2Hb7S6
-Qa/Z6/w2HvNny7Yy9GTf0ODiZV+wtvmvdWD4nXDgU/XQTnGj1UC3mMW/6/npcZOV
-0UfP5CtshNI5qFyGIFVeEF1GJQsLhDQfvxqwQSr/VK/FnWmX9vSQZ5u4kPhBGf47
-KSM+Skea0du1gA6ytD3ALQB48PGh2Mcap0fdt/HcI6n2CFnSw06uzXOpdqxQ7Gkt
-qKWdM9BngDtuMbvb89MR+HOuJ/hWpiLosEIPCMhYV5HaXidUe7e6yp+rvlB2rc4U
-7r7b0pUT1Aztbhk4EWw+
-=KfmY
+iQIcBAABAgAGBQJQBC3aAAoJECmIfjd9wqK0UFwP+wTZCFFAeD09tTZ0B3HFXMdt
+c3WUYrl1XqvwkJuVtrv7tYn3N3oRcWRkU/q2l7I6KjCGN/Is8El9zQIY6ZYPY3jP
+nxzFng8Cb0Z6AvkEAuAbtfZYNi/cO3WWxpftC3udbLbUOi20oLetRJeoorptub5X
+/bq70fOAcwF9xQlAt6GykYEkvvoisupPYqIl8c1ShjCfkrIEQb9RPU3OMHbNxXJZ
+2s+Sq0AxTAblc3UU0/541f4Z0OAFPn94pqcFc/9GT9Fo47krTtPLnqE2BA4jtj84
+7IHQeXl12Zyte2QnM81y9M8ImZ1qf0Zgjlqb3Sn+ypCgMlDSR53yS9EQUhYmufeR
+GdHBcsdxSTqDMFI+7z2fH7QFUmWDqoHPhzMTsOLkS98iBTlBxY0O85FRqvm1mtPJ
+FiXAJEuNwSkHdGFaUFGSwdH0f/BGO6fBSkwKhMQvoGuvOIDy+sVQYzRn6+aGDyDu
+SgJRTsx2qpjZ7SD1QKc7sRBpCt4UFU+elJXlYEp/sVsW/lbMcP7mJwbXmgGZs119
+pzFq8liLiZwbCbGuU51GrONF1TWCqH1PG7rPxgo0qhaoer0h0ib/0oGGZ9f3clSc
+3FAL1PiAPcmWdw+SaKlnnmvVtJhhkqvEaoCzbpkTaWovZGdvDlgT0bHQ6d+uFf9e
+zlDtDStRs/7iW/YrUrG/
+=wkvZ
 -----END PGP SIGNATURE-----
 
---=-xx/i4+I23gJpLdyk2SA7--
+--=-xw7Y9c2GQ/1GVeh9wysJ--
