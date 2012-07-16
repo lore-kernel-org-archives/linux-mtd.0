@@ -1,23 +1,23 @@
-Received: from mail-gg0-f177.google.com ([209.85.161.177])
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SqeT2-0007lJ-SU
- for linux-mtd@lists.infradead.org; Mon, 16 Jul 2012 06:07:42 +0000
-Received: by ggcs5 with SMTP id s5so5089202ggc.36
- for <linux-mtd@lists.infradead.org>; Sun, 15 Jul 2012 23:06:31 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20120626163738.14201df3@pixies.home.jungo.com>
-References: <1340408145-24531-1-git-send-email-computersforpeace@gmail.com>
- <1340408145-24531-8-git-send-email-computersforpeace@gmail.com>
- <20120626163738.14201df3@pixies.home.jungo.com>
-Date: Sun, 15 Jul 2012 23:06:31 -0700
-Message-ID: <CAN8TOE9GmFmsdOhJTVsBhaiU1VELcTA3UbgfyPkbSigbbM9FHQ@mail.gmail.com>
-Subject: Re: [PATCH 7/8] mtd: nand_bbt: use string library
-From: Brian Norris <computersforpeace@gmail.com>
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: David Woodhouse <dwmw2@infradead.org>, Ivan Djelic <ivan.djelic@parrot.com>,
- linux-mtd@lists.infradead.org, Akinobu Mita <akinobu.mita@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+ id 1SqevO-0008Ru-TL
+ for linux-mtd@lists.infradead.org; Mon, 16 Jul 2012 06:36:58 +0000
+Received: by lbbgg6 with SMTP id gg6so7334349lbb.36
+ for <linux-mtd@lists.infradead.org>; Sun, 15 Jul 2012 23:36:42 -0700 (PDT)
+Message-ID: <1342420278.3213.2.camel@brekeke>
+Subject: Re: [PATCH] UBI: Change the default percentage of reserved PEB
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Richard Genoud <richard.genoud@gmail.com>
+Date: Mon, 16 Jul 2012 09:31:18 +0300
+In-Reply-To: <1340977901.3070.210.camel@sauron.fi.intel.com>
+References: <1340953061-15728-1-git-send-email-richard.genoud@gmail.com>
+ <1340977901.3070.210.camel@sauron.fi.intel.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-Q4UVS4v96Tippv7fQVN/"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,65 +27,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add Ivan, as omap2.c is one of the only NAND_BBT_SCANEMPTY users.
 
-On Tue, Jun 26, 2012 at 6:37 AM, Shmulik Ladkani
-<shmulik.ladkani@gmail.com> wrote:
-> On Fri, 22 Jun 2012 16:35:44 -0700 Brian Norris <computersforpeace@gmail.com> wrote:
->>  static int check_pattern(uint8_t *buf, int len, int paglen, struct nand_bbt_descr *td)
->>  {
->> -     int i, end = 0;
->> +     int end = 0;
->>       uint8_t *p = buf;
->>
->>       if (td->options & NAND_BBT_NO_OOB)
->>               return check_pattern_no_oob(buf, td);
->>
->>       end = paglen + td->offs;
->> -     if (td->options & NAND_BBT_SCANEMPTY) {
->> -             for (i = 0; i < end; i++) {
->> -                     if (p[i] != 0xff)
->> -                             return -1;
->> -             }
->> -     }
->> +     if (td->options & NAND_BBT_SCANEMPTY)
->> +             if (memchr_inv(p, 0xff, end))
->> +                     return -1;
->>       p += end;
->>
->
-> A question regarding the original code:
+--=-Q4UVS4v96Tippv7fQVN/
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This is another instance of a NAND_BBT_* option that I don't really
-understand, but I'll provide my thoughts...
+On Fri, 2012-06-29 at 16:51 +0300, Artem Bityutskiy wrote:
+> On Fri, 2012-06-29 at 08:57 +0200, Richard Genoud wrote:
+> > The actual value (1%) is too low for actual NAND devices, a huge
+> > majority of device has 2% maximum bad blocks (SLC or MLC).
+> > (Actually it's 20 blocks on a 1024 blocks device, 40/2048...)
+> >=20
+> > Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
+>=20
+> Thanks. But I'd like to wait a bit - Shmulik's point is fair and the
+> current way UBI reserves PEBs is probably not the right thing to do. If
+> we are going to change it, I'd like to have this patch to go together
+> with that change. Just because it is better to change the default
+> behavior once, than 2 times, to possibly upset/surprise users less
+> times :-)
 
-> Why the region validated for 0xff is [0 , paglen+td->of) ?
-> I assume this buffer region contains the inband data. Why verify inband
-> data is all 0xff?
+Pushed to linux-ubi.git, thanks!
 
-If used on a flash-based BBT page, then it checks for an empty table
-(why would you need this?), and if used for factory-marked bad blocks,
-then it checks that all the non-marker locations are 0xff. I guess the
-latter is at least more reasonable, but that still doesn't really
-answer "why?" So I'm guessing this another ill-conceived option.
+--=20
+Best Regards,
+Artem Bityutskiy
 
-> Shouldn't the region validated be [paglen , paglen+td->of) ?
+--=-Q4UVS4v96Tippv7fQVN/
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-Dunno.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-Anyway, it's only used in a single driver (omap2.c) in
-"bb_descrip_flashbased" which, despite its name, does not use a
-flash-based BBT - also used in "agand_flashbased". So the option is
-*only* used for OOB bad block markers, ensuring that the non-marker
-positions are 0xff. But I don't see how it's valid to assume that the
-data will be 0xff, nor do I know why someone would want to check that.
+iQIcBAABAgAGBQJQA7U2AAoJECmIfjd9wqK0qaYQAJrRGteavUhVw3wnXrbIBgRA
+hMndsGnuyGTVKH568o2VLa/2wjf5k6xMMb7Uke70DPdJvKwBlXoiLMoeS9uZMReW
+UNMwCz3v9O478t0+wEFNUf+LgIGu8o9deNqfdNwRlaalnKvcKkBcGr01HlbVVO3P
+cRKuQCyjhurOi7u/XGn9BPwKCgTpw5PAs73BkhxmKw/PnJbfmSQjTT1tPxy0QdzQ
+z2qMfpJh3Efm3nFqaL8mGWPmFZ2+BT/qtK9Xswo1DXfnpTvjzzX36ETqfznU/XRH
+ANFNIS63l6wUrd02VLjZno1/SvPM+1ZcsWpdotYKAb17Gi3XsB7Yxw4rv/YBQreM
+n9B/AUkWAfELbFPlvQO2X0oXLlH+8Wv5MpycP0A177qGGG+UpRHkKqJek/3NpB/b
+0oXk3VQlms4Qv/ax9J8MmiuQ/C+1A9xo+BQGVaBlgcaPYRpGIyk2+iLIJVdLHddT
+2wyfXwvVeMMyeM03J9vuhsePYes6D/Mkn6Eb0aUEQn6O6XeuZ5NNJSRevJkdMGvS
+4WT5OWODLeLfxOHcrLXQMRzDc41ALvuLPj+6GagcK1Hvn5kYOE2ngUhIiYeCQ43J
+/Wx1bbP2rEfthVrAxCg1nflVdKDnbgtqLQ8UwrWArWvjMyfSEZvnBnc6KeTCeXRU
+C1M8G2IF7sCGVowmGpeL
+=dczD
+-----END PGP SIGNATURE-----
 
-Finally, I think that some of the "use" of NAND_BBT_SCANEMPTY is
-obscured by the fact that omap2.c's main codepath involves
-(permanently) clearing NAND_BBT_SCANEMPTY in nand_memory_bbt(). See:
-bd->options &= ~NAND_BBT_SCANEMPTY;
-
-So, is this another candidate for removal, as it is practically unused
-and unmaintained? Or any comments on its purpose, Ivan?
-
-Brian
+--=-Q4UVS4v96Tippv7fQVN/--
