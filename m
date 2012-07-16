@@ -1,21 +1,16 @@
-Received: from mo6-p05-ob.rzone.de ([2a01:238:20a:202:5305::1])
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SqhmI-00067O-RU
- for linux-mtd@lists.infradead.org; Mon, 16 Jul 2012 09:39:45 +0000
-From: Stefan Roese <sr@denx.de>
-To: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: Re: [PATCH] drivers/mtd/devices/spear_smi.c: failure test for null
- rather than negative integer
-Date: Mon, 16 Jul 2012 11:38:19 +0200
-References: <1341997118-25042-1-git-send-email-Julia.Lawall@lip6.fr>
-In-Reply-To: <1341997118-25042-1-git-send-email-Julia.Lawall@lip6.fr>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201207161138.19985.sr@denx.de>
-Cc: kernel-janitors@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+ id 1Sqibq-0000vM-Sg
+ for linux-mtd@lists.infradead.org; Mon, 16 Jul 2012 10:33:00 +0000
+Received: by pbbrq13 with SMTP id rq13so11152222pbb.36
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Jul 2012 03:32:54 -0700 (PDT)
+From: Sachin Kamat <sachin.kamat@linaro.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 1/6] mtd: s3c2410: Use module_platform_driver()
+Date: Mon, 16 Jul 2012 16:02:22 +0530
+Message-Id: <1342434747-27622-1-git-send-email-sachin.kamat@linaro.org>
+Cc: sachin.kamat@linaro.org, dwmw2@infradead.org, David.Woodhouse@intel.com,
+ ben-linux@fluff.org, patches@linaro.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,28 +20,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 11 July 2012 10:58:38 Julia Lawall wrote:
-> From: Julia Lawall <Julia.Lawall@lip6.fr>
-> 
-> dev_get_platdata returns a pointer, so the failure value would be NULL
-> rather than a negative integer.
-> 
-> The semantic match that finds this problem is: (http://coccinelle.lip6.fr/)
-> 
-> // <smpl>
-> @@
-> expression x,e;
-> statement S1,S2;
-> @@
-> 
-> *x = dev_get_platdata(...)
-> ... when != x = e
-> *if (x < 0) S1 else S2
-> // </smpl>
-> 
-> Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+This makes the code simpler by eliminating module_init() and
+module_exit().
 
-Acked-by: Stefan Roese <sr@denx.de>
+Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+---
+ drivers/mtd/nand/s3c2410.c |   15 +--------------
+ 1 files changed, 1 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+index 91121f3..8f9267f 100644
+--- a/drivers/mtd/nand/s3c2410.c
++++ b/drivers/mtd/nand/s3c2410.c
+@@ -1134,20 +1134,7 @@ static struct platform_driver s3c24xx_nand_driver = {
+ 	},
+ };
  
-Thanks,
-Stefan
+-static int __init s3c2410_nand_init(void)
+-{
+-	printk("S3C24XX NAND Driver, (c) 2004 Simtec Electronics\n");
+-
+-	return platform_driver_register(&s3c24xx_nand_driver);
+-}
+-
+-static void __exit s3c2410_nand_exit(void)
+-{
+-	platform_driver_unregister(&s3c24xx_nand_driver);
+-}
+-
+-module_init(s3c2410_nand_init);
+-module_exit(s3c2410_nand_exit);
++module_platform_driver(s3c24xx_nand_driver);
+ 
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Ben Dooks <ben@simtec.co.uk>");
+-- 
+1.7.4.1
