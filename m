@@ -1,18 +1,18 @@
-Message-ID: <1342471312.25411.30.camel@shinybook.infradead.org>
-Subject: Re: [PATCH] mtd: physmap_of: Add "map-indirect" DT property
+Message-ID: <1342471797.25411.31.camel@shinybook.infradead.org>
+Subject: Re: [PATCH 2/2] mtd: gpmi: update the bitflip_threshold
 From: David Woodhouse <dwmw2@infradead.org>
-To: stephan@gatzka.org
-Date: Mon, 16 Jul 2012 21:41:52 +0100
-In-Reply-To: <4FF7E253.4080604@gatzka.org>
-References: <1341303991-6219-1-git-send-email-sr@denx.de>
- <4FF7E253.4080604@gatzka.org>
+To: Huang Shijie <b32955@freescale.com>, Brian Norris
+ <computersforpeace@gmail.com>
+Date: Mon, 16 Jul 2012 21:49:57 +0100
+In-Reply-To: <1341303873-23040-2-git-send-email-b32955@freescale.com>
+References: <1341303873-23040-1-git-send-email-b32955@freescale.com>
+ <1341303873-23040-2-git-send-email-b32955@freescale.com>
 Content-Type: multipart/signed; micalg="sha1";
  protocol="application/x-pkcs7-signature";
- boundary="=-RLLQ7I6Jy1E//XmE5dno"
+ boundary="=-8m4UueAWq3INlG9uaWcH"
 Mime-Version: 1.0
-Cc: Albrecht Dress <albrecht.dress@arcor.de>, Stefan Roese <sr@denx.de>,
- linux-mtd@lists.infradead.org, Anatolij Gustschin <agust@denx.de>,
- Stephan Gatzka <Stephan.Gatzka@hbm.com>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +23,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-RLLQ7I6Jy1E//XmE5dno
+--=-8m4UueAWq3INlG9uaWcH
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, 2012-07-07 at 09:16 +0200, Stephan Gatzka wrote:
-> this patch works very well for us (of course, because Stefan made it for=
-=20
-> us). Are there any concerns against it? Probably against introducing a=
-=20
-> new DT property? Of course we can make this fix much more MPC5200=20
-> specific but this will result in largely copying physmap_of.c and some=
-=20
-> additional code for access routines and Kconfig.=20
+On Tue, 2012-07-03 at 16:24 +0800, Huang Shijie wrote:
+> The origin code misses to update the bitflip_threshold when
+> we have already get the right ecc_strength.
+>=20
+> The patch fixes it.
+>=20
+> Signed-off-by: Huang Shijie <b32955@freescale.com>=20
 
-I don't much like the "map-indirect" name. If it's actually unaligned
-access, or non-word-sized access, that's forbidden, then that's what the
-DT property should be.
-
-The term "map-indirect" is more a description of how the software
-currently behaves... which is exactly that DT bindings *shouldn't* be.
+Should we be pushing this for 3.5?
 
 --=20
 dwmw2
 
---=-RLLQ7I6Jy1E//XmE5dno
+--=-8m4UueAWq3INlG9uaWcH
 Content-Type: application/x-pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -148,19 +141,19 @@ kSIc5N4d9Lk3ypCnrYMvvqLspXcWeymdD7qC0KwcuOuRKEC6LBExggNvMIIDawIBATCBlDCBjDEL
 MAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdp
 dGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFy
 eSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMEJnowCQYFKw4DAhoFAKCCAa8wGAYJKoZIhvcNAQkD
-MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTIwNzE2MjA0MTUzWjAjBgkqhkiG9w0BCQQx
-FgQUoCtqO5VQuBCDHo1uHRaUVOts36AwgaUGCSsGAQQBgjcQBDGBlzCBlDCBjDELMAkGA1UEBhMC
+MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTIwNzE2MjA0OTU3WjAjBgkqhkiG9w0BCQQx
+FgQUM3FoxMW1rjDXDZu3CTB6aWwT88MwgaUGCSsGAQQBgjcQBDGBlzCBlDCBjDELMAkGA1UEBhMC
 SUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRp
 ZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1l
 ZGlhdGUgQ2xpZW50IENBAgMEJnowgacGCyqGSIb3DQEJEAILMYGXoIGUMIGMMQswCQYDVQQGEwJJ
 TDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlm
 aWNhdGUgU2lnbmluZzE4MDYGA1UEAxMvU3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVk
-aWF0ZSBDbGllbnQgQ0ECAwQmejANBgkqhkiG9w0BAQEFAASCAQBF6MCh9hnLNNu0EvOfQN1SXzI6
-WaZ2vn8cvH5VaA4OEddRLmP4HwknFT2ck4jUqwI4ngrW2ZI6QPkMtvsiZR4zoMMV2iwt/xiek0KM
-zx4z/oCkqXZ3SIcjSjCFjiVMylfmeUz+zALQPupbpXxdgYPmi1duX4/jfZ0mN5Sknf8iKBtcpXxw
-X2FT9uRKny+sOUWjmsaafHhICZqVzXYd08VH6fkkQlh9vnT4u6OYIwoGTCAQbFe3SA5BY0FuYix5
-UTdJARcsTdzUgd3Q3/+VK4loYascsdOjsOn3PSOwhmcmaxrDrnxRANsTwfUxcI3sP6mYebw2+gmb
-pwYAmRe7F1t8AAAAAAAA
+aWF0ZSBDbGllbnQgQ0ECAwQmejANBgkqhkiG9w0BAQEFAASCAQAjAsxzktTZ+iEyeX4XpTpYfzZf
+ae2Fkaz131/SMlfSuvELoySlv4bbmYPhBzS8/WnbbX0am2aGbYyqCZMFCfNNghJgTts3isvoL0iF
+8NRJa8EbcYj77/uNHjd9lXd5GAQoJrp942rGHCAC41sP6OGzJx+8Ww/9Gi8WHWMVldJT7OUKata9
+9jPx/tmIQ0etgdaKVklbYppvE+LRoPWTx6PdpXZobPn3lLbG6vS0LILgQMPMEzMkhmJzno+Gs9KR
+FvtMU+MiY1YeYz4gBO9WIRP0KshRBTOSXiRi97hOx5tjxV0cXXwqoi8cexBnNlEVmrXeDV0Ij592
+V+X2SGqzVNBpAAAAAAAA
 
 
---=-RLLQ7I6Jy1E//XmE5dno--
+--=-8m4UueAWq3INlG9uaWcH--
