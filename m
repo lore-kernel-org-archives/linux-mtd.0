@@ -1,16 +1,15 @@
-Received: from mail-yw0-f49.google.com ([209.85.213.49])
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Sqic7-00011d-J9
- for linux-mtd@lists.infradead.org; Mon, 16 Jul 2012 10:33:19 +0000
-Received: by yhjj52 with SMTP id j52so1793037yhj.36
- for <linux-mtd@lists.infradead.org>; Mon, 16 Jul 2012 03:33:12 -0700 (PDT)
+ id 1Sqj4G-0004j7-Hh
+ for linux-mtd@lists.infradead.org; Mon, 16 Jul 2012 11:02:21 +0000
+Received: by yenr9 with SMTP id r9so5237298yen.36
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Jul 2012 04:02:19 -0700 (PDT)
 From: Sachin Kamat <sachin.kamat@linaro.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 6/6] mtd: s3c2410: Fix line over 80 characters warning
-Date: Mon, 16 Jul 2012 16:02:27 +0530
-Message-Id: <1342434747-27622-6-git-send-email-sachin.kamat@linaro.org>
-In-Reply-To: <1342434747-27622-1-git-send-email-sachin.kamat@linaro.org>
-References: <1342434747-27622-1-git-send-email-sachin.kamat@linaro.org>
+Subject: [PATCH 4/6][Resend] mtd: s3c2410: Do not initialise statics to 0 or
+ NULL
+Date: Mon, 16 Jul 2012 16:31:44 +0530
+Message-Id: <1342436504-15163-1-git-send-email-sachin.kamat@linaro.org>
 Cc: sachin.kamat@linaro.org, dwmw2@infradead.org, David.Woodhouse@intel.com,
  ben-linux@fluff.org, patches@linaro.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,112 +21,128 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fixes the following checkpatch warnings:
-WARNING: line over 80 characters
+Fixes the following checkpatch errors:
+ERROR: do not initialise statics to 0 or NULL
++static int hardware_ecc = 0;
+
+ERROR: do not initialise statics to 0 or NULL
++static const int clock_stop = 0;
 
 Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 ---
- drivers/mtd/nand/s3c2410.c |   30 ++++++++++++++++++++----------
- 1 files changed, 20 insertions(+), 10 deletions(-)
+Please ignore the previous patch (v1).
+This patch takes care of some compilation warnings introduced earlier.
+---
+ drivers/mtd/nand/s3c2410.c |   66 +++++++++++++++++++------------------------
+ 1 files changed, 29 insertions(+), 37 deletions(-)
 
 diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
-index 3e891e8..6ee85c8 100644
+index 5907d1c..05fb4f7 100644
 --- a/drivers/mtd/nand/s3c2410.c
 +++ b/drivers/mtd/nand/s3c2410.c
-@@ -540,7 +540,8 @@ static void s3c2412_nand_enable_hwecc(struct mtd_info *mtd, int mode)
- 	unsigned long ctrl;
+@@ -49,19 +49,6 @@
+ #include <plat/regs-nand.h>
+ #include <plat/nand.h>
  
- 	ctrl = readl(info->regs + S3C2440_NFCONT);
--	writel(ctrl | S3C2412_NFCONT_INIT_MAIN_ECC, info->regs + S3C2440_NFCONT);
-+	writel(ctrl | S3C2412_NFCONT_INIT_MAIN_ECC,
-+					info->regs + S3C2440_NFCONT);
- }
+-#ifdef CONFIG_MTD_NAND_S3C2410_HWECC
+-static int hardware_ecc = 1;
+-#else
+-static int hardware_ecc = 0;
+-#endif
+-
+-#ifdef CONFIG_MTD_NAND_S3C2410_CLKSTOP
+-static const int clock_stop = 1;
+-#else
+-static const int clock_stop = 0;
+-#endif
+-
+-
+ /* new oob placement block for use with hardware ecc generation
+  */
  
- static void s3c2440_nand_enable_hwecc(struct mtd_info *mtd, int mode)
-@@ -552,7 +553,8 @@ static void s3c2440_nand_enable_hwecc(struct mtd_info *mtd, int mode)
- 	writel(ctrl | S3C2440_NFCONT_INITECC, info->regs + S3C2440_NFCONT);
- }
+@@ -170,7 +157,11 @@ static struct s3c2410_platform_nand *to_nand_plat(struct platform_device *dev)
  
--static int s3c2410_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat, u_char *ecc_code)
-+static int s3c2410_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
-+					u_char *ecc_code)
+ static inline int allow_clk_suspend(struct s3c2410_nand_info *info)
  {
- 	struct s3c2410_nand_info *info = s3c2410_nand_mtd_toinfo(mtd);
+-	return clock_stop;
++#ifdef CONFIG_MTD_NAND_S3C2410_CLKSTOP
++	return 1;
++#else
++	return 0;
++#endif
+ }
  
-@@ -566,7 +568,8 @@ static int s3c2410_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat, u
+ /**
+@@ -452,6 +443,7 @@ static int s3c2412_nand_devready(struct mtd_info *mtd)
+ 
+ /* ECC handling functions */
+ 
++#ifdef CONFIG_MTD_NAND_S3C2410_HWECC
+ static int s3c2410_nand_correct_data(struct mtd_info *mtd, u_char *dat,
+ 				     u_char *read_ecc, u_char *calc_ecc)
+ {
+@@ -601,6 +593,7 @@ static int s3c2440_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat, u
+ 
  	return 0;
  }
++#endif
  
--static int s3c2412_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat, u_char *ecc_code)
-+static int s3c2412_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
-+					u_char *ecc_code)
- {
- 	struct s3c2410_nand_info *info = s3c2410_nand_mtd_toinfo(mtd);
- 	unsigned long ecc = readl(info->regs + S3C2412_NFMECC0);
-@@ -575,12 +578,14 @@ static int s3c2412_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat, u
- 	ecc_code[1] = ecc >> 8;
- 	ecc_code[2] = ecc >> 16;
+ /* over-ride the standard functions for a little more speed. We can
+  * use read/write block to move the data buffers to/from the controller
+@@ -821,32 +814,31 @@ static void s3c2410_nand_init_chip(struct s3c2410_nand_info *info,
+ 	nmtd->mtd.owner    = THIS_MODULE;
+ 	nmtd->set	   = set;
  
--	pr_debug("calculate_ecc: returning ecc %02x,%02x,%02x\n", ecc_code[0], ecc_code[1], ecc_code[2]);
-+	pr_debug("calculate_ecc: returning ecc %02x,%02x,%02x\n",
-+				ecc_code[0], ecc_code[1], ecc_code[2]);
+-	if (hardware_ecc) {
++#ifdef CONFIG_MTD_NAND_S3C2410_HWECC
++	chip->ecc.calculate = s3c2410_nand_calculate_ecc;
++	chip->ecc.correct   = s3c2410_nand_correct_data;
++	chip->ecc.mode	    = NAND_ECC_HW;
++	chip->ecc.strength  = 1;
++
++	switch (info->cpu_type) {
++	case TYPE_S3C2410:
++		chip->ecc.hwctl	    = s3c2410_nand_enable_hwecc;
+ 		chip->ecc.calculate = s3c2410_nand_calculate_ecc;
+-		chip->ecc.correct   = s3c2410_nand_correct_data;
+-		chip->ecc.mode	    = NAND_ECC_HW;
+-		chip->ecc.strength  = 1;
+-
+-		switch (info->cpu_type) {
+-		case TYPE_S3C2410:
+-			chip->ecc.hwctl	    = s3c2410_nand_enable_hwecc;
+-			chip->ecc.calculate = s3c2410_nand_calculate_ecc;
+-			break;
+-
+-		case TYPE_S3C2412:
+-  			chip->ecc.hwctl     = s3c2412_nand_enable_hwecc;
+-  			chip->ecc.calculate = s3c2412_nand_calculate_ecc;
+-			break;
+-
+-		case TYPE_S3C2440:
+-  			chip->ecc.hwctl     = s3c2440_nand_enable_hwecc;
+-  			chip->ecc.calculate = s3c2440_nand_calculate_ecc;
+-			break;
++		break;
  
- 	return 0;
- }
- 
--static int s3c2440_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat, u_char *ecc_code)
-+static int s3c2440_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
-+					u_char *ecc_code)
- {
- 	struct s3c2410_nand_info *info = s3c2410_nand_mtd_toinfo(mtd);
- 	unsigned long ecc = readl(info->regs + S3C2440_NFMECC0);
-@@ -619,13 +624,15 @@ static void s3c2440_nand_read_buf(struct mtd_info *mtd, u_char *buf, int len)
+-		}
+-	} else {
+-		chip->ecc.mode	    = NAND_ECC_SOFT;
++	case TYPE_S3C2412:
++		chip->ecc.hwctl     = s3c2412_nand_enable_hwecc;
++		chip->ecc.calculate = s3c2412_nand_calculate_ecc;
++		break;
++
++	case TYPE_S3C2440:
++		chip->ecc.hwctl     = s3c2440_nand_enable_hwecc;
++		chip->ecc.calculate = s3c2440_nand_calculate_ecc;
++		break;
  	}
- }
++#else
++	chip->ecc.mode	    = NAND_ECC_SOFT;
++#endif
  
--static void s3c2410_nand_write_buf(struct mtd_info *mtd, const u_char *buf, int len)
-+static void s3c2410_nand_write_buf(struct mtd_info *mtd, const u_char *buf,
-+					int len)
- {
- 	struct nand_chip *this = mtd->priv;
- 	writesb(this->IO_ADDR_W, buf, len);
- }
- 
--static void s3c2440_nand_write_buf(struct mtd_info *mtd, const u_char *buf, int len)
-+static void s3c2440_nand_write_buf(struct mtd_info *mtd, const u_char *buf,
-+					int len)
- {
- 	struct s3c2410_nand_info *info = s3c2410_nand_mtd_toinfo(mtd);
- 
-@@ -669,7 +676,8 @@ static inline int s3c2410_nand_cpufreq_register(struct s3c2410_nand_info *info)
- 					 CPUFREQ_TRANSITION_NOTIFIER);
- }
- 
--static inline void s3c2410_nand_cpufreq_deregister(struct s3c2410_nand_info *info)
-+static inline void s3c2410_nand_cpufreq_deregister(
-+						struct s3c2410_nand_info *info)
- {
- 	cpufreq_unregister_notifier(&info->freq_transition,
- 				    CPUFREQ_TRANSITION_NOTIFIER);
-@@ -681,7 +689,8 @@ static inline int s3c2410_nand_cpufreq_register(struct s3c2410_nand_info *info)
- 	return 0;
- }
- 
--static inline void s3c2410_nand_cpufreq_deregister(struct s3c2410_nand_info *info)
-+static inline void s3c2410_nand_cpufreq_deregister(
-+						struct s3c2410_nand_info *info)
- {
- }
- #endif
-@@ -1004,7 +1013,8 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
- 	nmtd = info->mtds;
- 
- 	for (setno = 0; setno < nr_sets; setno++, nmtd++) {
--		pr_debug("initialising set %d (%p, info %p)\n", setno, nmtd, info);
-+		pr_debug("initialising set %d (%p, info %p)\n",
-+						setno, nmtd, info);
- 
- 		s3c2410_nand_init_chip(info, nmtd, sets);
- 
+ 	if (set->ecc_layout != NULL)
+ 		chip->ecc.layout = set->ecc_layout;
 -- 
 1.7.4.1
