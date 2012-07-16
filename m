@@ -1,23 +1,15 @@
-Received: from mail-bk0-f49.google.com ([209.85.214.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SqnOS-0007Pt-9B
- for linux-mtd@lists.infradead.org; Mon, 16 Jul 2012 15:39:30 +0000
-Received: by bkcji2 with SMTP id ji2so4626095bkc.36
- for <linux-mtd@lists.infradead.org>; Mon, 16 Jul 2012 08:39:24 -0700 (PDT)
-Message-ID: <1342452837.7270.15.camel@brekeke>
-Subject: Re: [PATCH 0/5] ubi: Fix bad PEBs reserve caclulation
+Message-ID: <1342452922.7270.16.camel@brekeke>
+Subject: Re: [PATCH 1/2] mtd: gpmi: add on-flash BBT support for gpmi nand
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Date: Mon, 16 Jul 2012 18:33:57 +0300
-In-Reply-To: <1341389164-24409-1-git-send-email-shmulik.ladkani@gmail.com>
-References: <1341389164-24409-1-git-send-email-shmulik.ladkani@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Date: Mon, 16 Jul 2012 18:35:22 +0300
+In-Reply-To: <1341303873-23040-1-git-send-email-b32955@freescale.com>
+References: <1341303873-23040-1-git-send-email-b32955@freescale.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-Dhl9Pvi76eINPu6LcG+i"
+ boundary="=-S50JkRePTMU/raAAnyvA"
 Mime-Version: 1.0
-Cc: Richard Genoud <richard.genoud@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,40 +21,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-Dhl9Pvi76eINPu6LcG+i
+--=-S50JkRePTMU/raAAnyvA
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-07-04 at 11:05 +0300, Shmulik Ladkani wrote:
-> The existing mechanism of reserving PEBs for bad PEB handling has two
-> flaws:
-> - It is calculated as a percentage of good PEBs instead of total PEBs.
-> - There's no limit on the amount of PEBs UBI reserves for future bad
->   eraseblock handling.
+On Tue, 2012-07-03 at 16:24 +0800, Huang Shijie wrote:
+> add the on flash bbt support for gpmi nand driver.
+>=20
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
 
-Thanks Shmulik - I did not have time to look at the patches, but the
-overall description looks good. I will review the patches as soon as I
-can. Thanks for making sense of this mess.
-
-But one more think is the mtd web-site. I've grepped for '1%' and there
-are plenty of them. I've changed them all to 2% more or less
-mechanically - only cleaned up one section by removing out-of-date
-information. Would you please grep for '2%' and review if the
-information there is reasonable? Also, would you please add some more
-info to this FAQ entry:
-
-http://linux-mtd.infradead.org/faq/ubi.html#L_bad_blocks_exceeded
-
-Or even better if you could write a separate section for this stuff in
-the documentation, then you could remove that FAQ entry completely.
-
-Thanks a lot!
+Pushed both to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-Dhl9Pvi76eINPu6LcG+i
+--=-S50JkRePTMU/raAAnyvA
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -70,19 +44,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQBDRlAAoJECmIfjd9wqK0JSMP/R+BDZ/b8wnvd0LbSZEG7UZv
-iMjCowxtL9l2dhKaKjl+beqa9rfrHcPY/osZPvOdx528o1RN3MnE/Zl2dwzvtxOB
-jaZs4fkpDSRYJipfz6vweYUR7TjwuTHk2hjtONtS6iLb0WuO0+3VaaVho+6oowSz
-QUKR+icU9tP5h69jxqW+BJf3fWdFZcqx/MgEoeQhFN7TGNBTV5aiYsAmQHWZGxYG
-sb6l9cdweDPDSbWBihUhphSDVej+kEm8G+mtLpxWgkld0HhnOerYdAZb/Lmobrn9
-urqCg+cJ0vy5oLA6/g0TeK6AZjogoDhSMRPMeicmKOi/R4qnp4pr+Imqp+JiyA4a
-X5Km9PZau3lzFrYDCnBbIPlZwFT2a3G1PvalxDcU9EecxRIM4Gw2cUs+RRII54Rd
-DDOOKVSELMls+oOxXs/y7btEd+lZGBsae4PgfaIh2HfFgjrH4itCf+PZWPIe8lH/
-P5UccLZltIqTkd/jEPKXTvgn73IYj9IzFhEWTjUvgsp/ACIm3+4fF0+haQ7uQgW/
-inVzMGcfOr+w/UY5ltH1bhQMAAOR6iiG4EAcMAIoWehx5xooDpz2K2Yc+KZ9X6oS
-wMgDqz+r4PQYwRw1O7IZvbbAbKryNoKASrezh6QHTJK0F92DkSf4JlntdA70amZa
-x9CG2iRpekIwA0MZpe6Q
-=O+3d
+iQIcBAABAgAGBQJQBDS6AAoJECmIfjd9wqK00sUP/iAJmhfQuO7nqaeGECMoDglT
+DTralD2GXOI0UUCw7RbB8iRD3xT+W+Vi91dWKeVeTIJRVjyfpLpJA2G/GypOY9ao
+Lqpw0C87G5nyPKNlEjXrowr6SiJ7z4hdv36tv8Ha7Of4+0sj8qG1A3TYMQdM1ALe
+S/ROvKBArJvIum18h0yp69wb6xkHxA6xKCMjLTFYadHdgVa/eqFLoFj2SNFWFndL
+D5uGag616wgqUlw75Tt/eGuhZBXa3ck+bR9JH3QOGEvnlBTAvdmtY1B8iegZuuKZ
+2MdZMvZVbh0pfaBNHI0fL8BB3b0ipSFcLe6ehp84XN3V67tPJYi6Yl5se13upaT9
+DfUzhqGrwVq4c4BTVaS39cmLgM+jFCRpRio/YI8j55SuBN1w1mlABPA2rwEvgs8P
+xgjx5f0Ml6dNfX+uImk9gvzhkduusH3mi7CUq+KZfcUAUfix0e5YjzZplx18gOFS
+oxKhXrRWSmTE+GHlANhg2kgF+QvoioAG5KAT1+WwqwFitiSw8A7OScTFJCUWe1R6
+p5isJemcfOsNM2thq4ycFprxL63/WLFV25ys3RJYfHYE9z+OXOiwc9RYpF/0mTSz
+r2JrrZCytD72tijkiwhNnRpXJ/Zy/e0h7w8qisO40oHe20h6j+na1hqqfp/cbtJU
+uIeFbPq4SPZesZ2ZROBY
+=ljV+
 -----END PGP SIGNATURE-----
 
---=-Dhl9Pvi76eINPu6LcG+i--
+--=-S50JkRePTMU/raAAnyvA--
