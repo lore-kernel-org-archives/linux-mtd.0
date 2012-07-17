@@ -1,25 +1,14 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SqvAh-0007RE-M7
- for linux-mtd@lists.infradead.org; Mon, 16 Jul 2012 23:57:48 +0000
-Date: Tue, 17 Jul 2012 01:57:42 +0200
-From: Ivan Djelic <ivan.djelic@parrot.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 7/8] mtd: nand_bbt: use string library
-Message-ID: <20120716235742.GC10244@parrot.com>
-References: <1340408145-24531-1-git-send-email-computersforpeace@gmail.com>
- <1340408145-24531-8-git-send-email-computersforpeace@gmail.com>
- <20120626163738.14201df3@pixies.home.jungo.com>
- <CAN8TOE9GmFmsdOhJTVsBhaiU1VELcTA3UbgfyPkbSigbbM9FHQ@mail.gmail.com>
+From: Huang Shijie <b32955@freescale.com>
+To: <dedekind1@gmail.com>
+Subject: [PATCH] mtd: gpmi: fix the compiler warnings
+Date: Tue, 17 Jul 2012 11:07:33 +0800
+Message-ID: <1342494453-31065-1-git-send-email-b32955@freescale.com>
+In-Reply-To: <1342451569.7270.11.camel@brekeke>
+References: <1342451569.7270.11.camel@brekeke>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAN8TOE9GmFmsdOhJTVsBhaiU1VELcTA3UbgfyPkbSigbbM9FHQ@mail.gmail.com>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
- Akinobu Mita <akinobu.mita@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>, Sukumar Ghorai <s-ghorai@ti.com>,
- David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain
+Cc: Huang Shijie <b32955@freescale.com>, shawn.guo@linaro.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,97 +18,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jul 16, 2012 at 08:06:31AM +0200, Brian Norris wrote:
-> Add Ivan, as omap2.c is one of the only NAND_BBT_SCANEMPTY users.
-> 
-> On Tue, Jun 26, 2012 at 6:37 AM, Shmulik Ladkani
-> <shmulik.ladkani@gmail.com> wrote:
-> > On Fri, 22 Jun 2012 16:35:44 -0700 Brian Norris <computersforpeace@gmail.com> wrote:
-> >>  static int check_pattern(uint8_t *buf, int len, int paglen, struct nand_bbt_descr *td)
-> >>  {
-> >> -     int i, end = 0;
-> >> +     int end = 0;
-> >>       uint8_t *p = buf;
-> >>
-> >>       if (td->options & NAND_BBT_NO_OOB)
-> >>               return check_pattern_no_oob(buf, td);
-> >>
-> >>       end = paglen + td->offs;
-> >> -     if (td->options & NAND_BBT_SCANEMPTY) {
-> >> -             for (i = 0; i < end; i++) {
-> >> -                     if (p[i] != 0xff)
-> >> -                             return -1;
-> >> -             }
-> >> -     }
-> >> +     if (td->options & NAND_BBT_SCANEMPTY)
-> >> +             if (memchr_inv(p, 0xff, end))
-> >> +                     return -1;
-> >>       p += end;
-> >>
-> >
-> > A question regarding the original code:
-> 
-> This is another instance of a NAND_BBT_* option that I don't really
-> understand, but I'll provide my thoughts...
-> 
-> > Why the region validated for 0xff is [0 , paglen+td->of) ?
-> > I assume this buffer region contains the inband data. Why verify inband
-> > data is all 0xff?
-> 
-> If used on a flash-based BBT page, then it checks for an empty table
-> (why would you need this?), and if used for factory-marked bad blocks,
-> then it checks that all the non-marker locations are 0xff. I guess the
-> latter is at least more reasonable, but that still doesn't really
-> answer "why?" So I'm guessing this another ill-conceived option.
-> 
-> > Shouldn't the region validated be [paglen , paglen+td->of) ?
-> 
-> Dunno.
-> 
-> Anyway, it's only used in a single driver (omap2.c) in
-> "bb_descrip_flashbased" which, despite its name, does not use a
-> flash-based BBT - also used in "agand_flashbased". So the option is
-> *only* used for OOB bad block markers, ensuring that the non-marker
-> positions are 0xff. But I don't see how it's valid to assume that the
-> data will be 0xff, nor do I know why someone would want to check that.
-> 
-> Finally, I think that some of the "use" of NAND_BBT_SCANEMPTY is
-> obscured by the fact that omap2.c's main codepath involves
-> (permanently) clearing NAND_BBT_SCANEMPTY in nand_memory_bbt(). See:
-> bd->options &= ~NAND_BBT_SCANEMPTY;
-> 
-> So, is this another candidate for removal, as it is practically unused
-> and unmaintained? Or any comments on its purpose, Ivan?
+fix the compiler warnings.
 
-Hi Brian,
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |    4 ++--
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    8 ++++----
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h |    4 ++--
+ 3 files changed, 8 insertions(+), 8 deletions(-)
 
-I haven't really had a detailed look at this bbt structure while writing my ECC patches.
-I think it is indeed a candidate for removal.
-
-My guess is that a specific OOB layout compatible with the OMAP ROM ECC was added at some point,
-and this legacy bbt structure found its way into the same commit... ?
-
-Since omap2.c also disables bbt scan in omap_nand_probe():
-      info->nand.options    |= NAND_SKIP_BBTSCAN;
-I guess it does not really make a difference ?
-
-Adding Sukumar Ghorai in CC, as he introduced this in f040d33253b2daf6f305fc35fca2399047ced028:
-
-    omap3: nand: making ecc layout as compatible with romcode ecc
-    
-    This patch overrides nand ecc layout and bad block descriptor (for 8-bit
-    device) to support hw ecc in romcode layout. So as to have in sync with ecc
-    layout throughout; i.e. x-loader, u-boot and kernel.
-    
-    This enables to flash x-loader, u-boot, kernel, FS images from kernel itself
-    and compatiable with other tools.
-    
-    This patch does not enables this feature by default and need to pass from
-    board file to enable for any board.
-
-Ghorai, do you remember why option NAND_BBT_SCANEMPTY is used ?
-Thanks,
-
-BR,
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+index 6bb0998..2289cf8 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+@@ -26,7 +26,7 @@
+ #include "gpmi-regs.h"
+ #include "bch-regs.h"
+ 
+-struct timing_threshod timing_default_threshold = {
++static struct timing_threshod timing_default_threshold = {
+ 	.max_data_setup_cycles       = (BM_GPMI_TIMING0_DATA_SETUP >>
+ 						BP_GPMI_TIMING0_DATA_SETUP),
+ 	.internal_data_setup_in_ns   = 0,
+@@ -738,7 +738,7 @@ void gpmi_begin(struct gpmi_nand_data *this)
+ {
+ 	struct resources *r = &this->resources;
+ 	struct timing_threshod *nfc = &timing_default_threshold;
+-	unsigned char  *gpmi_regs = r->gpmi_regs;
++	void __iomem *gpmi_regs = r->gpmi_regs;
+ 	unsigned int   clock_period_in_ns;
+ 	uint32_t       reg;
+ 	unsigned int   dll_wait_time_in_us;
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 8c0d2f0..c47ec6c 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -317,7 +317,7 @@ acquire_register_block(struct gpmi_nand_data *this, const char *res_name)
+ 	struct platform_device *pdev = this->pdev;
+ 	struct resources *res = &this->resources;
+ 	struct resource *r;
+-	void *p;
++	void __iomem *p;
+ 
+ 	r = platform_get_resource_byname(pdev, IORESOURCE_MEM, res_name);
+ 	if (!r) {
+@@ -424,8 +424,8 @@ static int __devinit acquire_dma_channels(struct gpmi_nand_data *this)
+ 	struct platform_device *pdev = this->pdev;
+ 	struct resource *r_dma;
+ 	struct device_node *dn;
+-	int dma_channel;
+-	unsigned int ret;
++	u32 dma_channel;
++	int ret;
+ 	struct dma_chan *dma_chan;
+ 	dma_cap_mask_t mask;
+ 
+@@ -1527,7 +1527,7 @@ static int gpmi_scan_bbt(struct mtd_info *mtd)
+ 	return nand_default_bbt(mtd);
+ }
+ 
+-void gpmi_nfc_exit(struct gpmi_nand_data *this)
++static void gpmi_nfc_exit(struct gpmi_nand_data *this)
+ {
+ 	nand_release(&this->mtd);
+ 	gpmi_free_dma_buffer(this);
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+index 1547a60..1f61217 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+@@ -24,8 +24,8 @@
+ 
+ #define GPMI_CLK_MAX 5 /* MX6Q needs five clocks */
+ struct resources {
+-	void          *gpmi_regs;
+-	void          *bch_regs;
++	void __iomem  *gpmi_regs;
++	void __iomem  *bch_regs;
+ 	unsigned int  bch_low_interrupt;
+ 	unsigned int  bch_high_interrupt;
+ 	unsigned int  dma_low_channel;
 -- 
-Ivan
+1.7.0.4
