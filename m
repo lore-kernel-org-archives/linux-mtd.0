@@ -1,8 +1,8 @@
 From: Huang Shijie <b32955@freescale.com>
 To: <dedekind1@gmail.com>
-Subject: [PATCH v2] mtd: gpmi: fix the compiler warnings
-Date: Tue, 17 Jul 2012 13:57:46 +0800
-Message-ID: <1342504666-27340-1-git-send-email-b32955@freescale.com>
+Subject: [PATCH v3] mtd: gpmi: fix the compiler warnings
+Date: Tue, 17 Jul 2012 14:14:02 +0800
+Message-ID: <1342505642-31109-1-git-send-email-b32955@freescale.com>
 In-Reply-To: <1342451569.7270.11.camel@brekeke>
 References: <1342451569.7270.11.camel@brekeke>
 MIME-Version: 1.0
@@ -22,13 +22,17 @@ fix the compiler warnings.
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
+v2 --> v3:
+         sorry, I missed the "set but not used" warnings.
+	 This patch is based on the patch:
+	  "[PATCH v4 2/2] mtd: gpmi: change the code for clocks".
 v1 --> v2:
          fix the "no modifiers for allocation" warnings by the smatch
 ---
  drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |    4 ++--
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   12 ++++++------
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   20 ++++++++------------
  drivers/mtd/nand/gpmi-nand/gpmi-nand.h |    4 ++--
- 3 files changed, 10 insertions(+), 10 deletions(-)
+ 3 files changed, 12 insertions(+), 16 deletions(-)
 
 diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
 index 6bb0998..2289cf8 100644
@@ -53,7 +57,7 @@ index 6bb0998..2289cf8 100644
  	uint32_t       reg;
  	unsigned int   dll_wait_time_in_us;
 diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 8c0d2f0..7d31321 100644
+index 8c0d2f0..c46be6c 100644
 --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
 +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
 @@ -317,7 +317,7 @@ acquire_register_block(struct gpmi_nand_data *this, const char *res_name)
@@ -91,7 +95,45 @@ index 8c0d2f0..7d31321 100644
  	if (this->data_buffer_dma == NULL)
  		goto error_alloc;
  
-@@ -1527,7 +1527,7 @@ static int gpmi_scan_bbt(struct mtd_info *mtd)
+@@ -1260,7 +1260,6 @@ static int mx23_check_transcription_stamp(struct gpmi_nand_data *this)
+ 	unsigned int search_area_size_in_strides;
+ 	unsigned int stride;
+ 	unsigned int page;
+-	loff_t byte;
+ 	uint8_t *buffer = chip->buffers->databuf;
+ 	int saved_chip_number;
+ 	int found_an_ncb_fingerprint = false;
+@@ -1277,9 +1276,8 @@ static int mx23_check_transcription_stamp(struct gpmi_nand_data *this)
+ 	dev_dbg(dev, "Scanning for an NCB fingerprint...\n");
+ 
+ 	for (stride = 0; stride < search_area_size_in_strides; stride++) {
+-		/* Compute the page and byte addresses. */
++		/* Compute the page addresses. */
+ 		page = stride * rom_geo->stride_size_in_pages;
+-		byte = page   * mtd->writesize;
+ 
+ 		dev_dbg(dev, "Looking for a fingerprint in page 0x%x\n", page);
+ 
+@@ -1321,7 +1319,6 @@ static int mx23_write_transcription_stamp(struct gpmi_nand_data *this)
+ 	unsigned int block;
+ 	unsigned int stride;
+ 	unsigned int page;
+-	loff_t       byte;
+ 	uint8_t      *buffer = chip->buffers->databuf;
+ 	int saved_chip_number;
+ 	int status;
+@@ -1370,9 +1367,8 @@ static int mx23_write_transcription_stamp(struct gpmi_nand_data *this)
+ 	/* Loop through the first search area, writing NCB fingerprints. */
+ 	dev_dbg(dev, "Writing NCB fingerprints...\n");
+ 	for (stride = 0; stride < search_area_size_in_strides; stride++) {
+-		/* Compute the page and byte addresses. */
++		/* Compute the page addresses. */
+ 		page = stride * rom_geo->stride_size_in_pages;
+-		byte = page   * mtd->writesize;
+ 
+ 		/* Write the first page of the current stride. */
+ 		dev_dbg(dev, "Writing an NCB fingerprint in page 0x%x\n", page);
+@@ -1527,7 +1523,7 @@ static int gpmi_scan_bbt(struct mtd_info *mtd)
  	return nand_default_bbt(mtd);
  }
  
