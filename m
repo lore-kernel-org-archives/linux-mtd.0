@@ -1,23 +1,23 @@
-Received: from mail-we0-f177.google.com ([74.125.82.177])
+Received: from mo6-p05-ob.rzone.de ([2a01:238:20a:202:5305::1])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Sr28L-0002LM-V2
- for linux-mtd@lists.infradead.org; Tue, 17 Jul 2012 07:23:52 +0000
-Received: by weyr3 with SMTP id r3so68249wey.36
- for <linux-mtd@lists.infradead.org>; Tue, 17 Jul 2012 00:23:44 -0700 (PDT)
-Date: Tue, 17 Jul 2012 10:23:33 +0300
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: dedekind1@gmail.com
-Subject: Re: [PATCH 0/5] ubi: Fix bad PEBs reserve caclulation
-Message-ID: <20120717102333.26cb10fb@pixies.home.jungo.com>
-In-Reply-To: <1342452837.7270.15.camel@brekeke>
-References: <1341389164-24409-1-git-send-email-shmulik.ladkani@gmail.com>
- <1342452837.7270.15.camel@brekeke>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+ id 1Sr4Xh-0001Hm-Ow
+ for linux-mtd@lists.infradead.org; Tue, 17 Jul 2012 09:58:11 +0000
+From: Stefan Roese <sr@denx.de>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] mtd: physmap_of: Add "map-indirect" DT property
+Date: Tue, 17 Jul 2012 11:56:45 +0200
+References: <1341303991-6219-1-git-send-email-sr@denx.de>
+ <4FF7E253.4080604@gatzka.org>
+ <1342471312.25411.30.camel@shinybook.infradead.org>
+In-Reply-To: <1342471312.25411.30.camel@shinybook.infradead.org>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="iso-8859-15"
 Content-Transfer-Encoding: 7bit
-Cc: Richard Genoud <richard.genoud@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Message-Id: <201207171156.45375.sr@denx.de>
+Cc: Albrecht Dress <albrecht.dress@arcor.de>,
+ Anatolij Gustschin <agust@denx.de>, linux-mtd@lists.infradead.org,
+ stephan@gatzka.org, Stephan Gatzka <Stephan.Gatzka@hbm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,29 +27,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
-
-On Mon, 16 Jul 2012 18:33:57 +0300 Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> But one more think is the mtd web-site. I've grepped for '1%' and there
-> are plenty of them. I've changed them all to 2% more or less
-> mechanically - only cleaned up one section by removing out-of-date
-> information. Would you please grep for '2%' and review if the
-> information there is reasonable? Also, would you please add some more
-> info to this FAQ entry:
+On Monday 16 July 2012 22:41:52 David Woodhouse wrote:
+> On Sat, 2012-07-07 at 09:16 +0200, Stephan Gatzka wrote:
+> > this patch works very well for us (of course, because Stefan made it for
+> > us). Are there any concerns against it? Probably against introducing a
+> > new DT property? Of course we can make this fix much more MPC5200
+> > specific but this will result in largely copying physmap_of.c and some
+> > additional code for access routines and Kconfig.
 > 
-> http://linux-mtd.infradead.org/faq/ubi.html#L_bad_blocks_exceeded
-> 
-> Or even better if you could write a separate section for this stuff in
-> the documentation, then you could remove that FAQ entry completely.
+> I don't much like the "map-indirect" name. If it's actually unaligned
+> access, or non-word-sized access, that's forbidden, then that's what the
+> DT property should be.
+>
+> The term "map-indirect" is more a description of how the software
+> currently behaves... which is exactly that DT bindings *shouldn't* be.
 
-Sure, I'll try to do it as well.
+Okay. I've chosen "map-indirect" because it might be used by other platforms 
+as well, perhaps because of different reasons (so not restricting this to the 
+unaligned access problem of the MPC5200). But I have no strong feelings here, 
+so I can prepare a new patch version with a different name.
 
-But it would only make sense after accepting Richard's patchset as well,
-which suggests configuring per-ubi-device beb limit via the attach ioctl.
+How about "no-unaligned-direct-access"? Pretty long though. Any other 
+suggestions here?
 
-I didn't had the time to properly review it yet, but IMO it looks more
-controversial.
-http://lists.infradead.org/pipermail/linux-mtd/2012-July/042803.html
-
-Regards,
-Shmulik
+Thanks,
+Stefan
