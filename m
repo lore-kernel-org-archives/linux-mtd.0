@@ -1,19 +1,23 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
+Received: from mail-we0-f177.google.com ([74.125.82.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Sr1Oc-0007Fm-J8
- for linux-mtd@lists.infradead.org; Tue, 17 Jul 2012 06:36:35 +0000
-Received: by pbbrq13 with SMTP id rq13so320370pbb.36
- for <linux-mtd@lists.infradead.org>; Mon, 16 Jul 2012 23:36:30 -0700 (PDT)
-From: Brian Norris <computersforpeace@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH v2 2/2] mtd: nand: remove unused 'int' return codes
-Date: Mon, 16 Jul 2012 23:38:15 -0700
-Message-Id: <1342507095-18574-3-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1342507095-18574-1-git-send-email-computersforpeace@gmail.com>
-References: <1342507095-18574-1-git-send-email-computersforpeace@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>
+ id 1Sr28L-0002LM-V2
+ for linux-mtd@lists.infradead.org; Tue, 17 Jul 2012 07:23:52 +0000
+Received: by weyr3 with SMTP id r3so68249wey.36
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Jul 2012 00:23:44 -0700 (PDT)
+Date: Tue, 17 Jul 2012 10:23:33 +0300
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: dedekind1@gmail.com
+Subject: Re: [PATCH 0/5] ubi: Fix bad PEBs reserve caclulation
+Message-ID: <20120717102333.26cb10fb@pixies.home.jungo.com>
+In-Reply-To: <1342452837.7270.15.camel@brekeke>
+References: <1341389164-24409-1-git-send-email-shmulik.ladkani@gmail.com>
+ <1342452837.7270.15.camel@brekeke>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Richard Genoud <richard.genoud@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,78 +27,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The return codes for read_abs_bbts() and search_read_bbts() are always
-non-zero, and so don't have much meaning. Just remove them.
+Hi Artem,
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Reviewed-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
----
-v2: only add Reviewed-by tag
+On Mon, 16 Jul 2012 18:33:57 +0300 Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> But one more think is the mtd web-site. I've grepped for '1%' and there
+> are plenty of them. I've changed them all to 2% more or less
+> mechanically - only cleaned up one section by removing out-of-date
+> information. Would you please grep for '2%' and review if the
+> information there is reasonable? Also, would you please add some more
+> info to this FAQ entry:
+> 
+> http://linux-mtd.infradead.org/faq/ubi.html#L_bad_blocks_exceeded
+> 
+> Or even better if you could write a separate section for this stuff in
+> the documentation, then you could remove that FAQ entry completely.
 
- drivers/mtd/nand/nand_bbt.c | 19 ++++++++-----------
- 1 file changed, 8 insertions(+), 11 deletions(-)
+Sure, I'll try to do it as well.
 
-diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-index 2d1d2fa..9a5dd43 100644
---- a/drivers/mtd/nand/nand_bbt.c
-+++ b/drivers/mtd/nand/nand_bbt.c
-@@ -370,8 +370,8 @@ static u32 bbt_get_ver_offs(struct mtd_info *mtd, struct nand_bbt_descr *td)
-  * Read the bad block table(s) for all chips starting at a given page. We
-  * assume that the bbt bits are in consecutive order.
-  */
--static int read_abs_bbts(struct mtd_info *mtd, uint8_t *buf,
--			 struct nand_bbt_descr *td, struct nand_bbt_descr *md)
-+static void read_abs_bbts(struct mtd_info *mtd, uint8_t *buf,
-+			  struct nand_bbt_descr *td, struct nand_bbt_descr *md)
- {
- 	struct nand_chip *this = mtd->priv;
- 
-@@ -392,7 +392,6 @@ static int read_abs_bbts(struct mtd_info *mtd, uint8_t *buf,
- 		pr_info("Bad block table at page %d, version 0x%02X\n",
- 			 md->pages[0], md->version[0]);
- 	}
--	return 1;
- }
- 
- /* Scan a given block full */
-@@ -623,7 +622,9 @@ static int search_bbt(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_descr
-  *
-  * Search and read the bad block table(s).
-  */
--static int search_read_bbts(struct mtd_info *mtd, uint8_t * buf, struct nand_bbt_descr *td, struct nand_bbt_descr *md)
-+static void search_read_bbts(struct mtd_info *mtd, uint8_t * buf,
-+			     struct nand_bbt_descr *td,
-+			     struct nand_bbt_descr *md)
- {
- 	/* Search the primary table */
- 	search_bbt(mtd, buf, td);
-@@ -631,9 +632,6 @@ static int search_read_bbts(struct mtd_info *mtd, uint8_t * buf, struct nand_bbt
- 	/* Search the mirror table */
- 	if (md)
- 		search_bbt(mtd, buf, md);
--
--	/* Force result check */
--	return 1;
- }
- 
- /**
-@@ -1159,14 +1157,13 @@ int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd)
- 
- 	/* Is the bbt at a given page? */
- 	if (td->options & NAND_BBT_ABSPAGE) {
--		res = read_abs_bbts(mtd, buf, td, md);
-+		read_abs_bbts(mtd, buf, td, md);
- 	} else {
- 		/* Search the bad block table using a pattern in oob */
--		res = search_read_bbts(mtd, buf, td, md);
-+		search_read_bbts(mtd, buf, td, md);
- 	}
- 
--	if (res)
--		res = check_create(mtd, buf, bd);
-+	res = check_create(mtd, buf, bd);
- 
- 	/* Prevent the bbt regions from erasing / writing */
- 	mark_bbt_region(mtd, td);
--- 
-1.7.11.1
+But it would only make sense after accepting Richard's patchset as well,
+which suggests configuring per-ubi-device beb limit via the attach ioctl.
+
+I didn't had the time to properly review it yet, but IMO it looks more
+controversial.
+http://lists.infradead.org/pipermail/linux-mtd/2012-July/042803.html
+
+Regards,
+Shmulik
