@@ -1,23 +1,22 @@
-Received: from mo6-p05-ob.rzone.de ([2a01:238:20a:202:5305::1])
+Received: from smtp2-v.fe.bosch.de ([139.15.237.6])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Sr4Xh-0001Hm-Ow
- for linux-mtd@lists.infradead.org; Tue, 17 Jul 2012 09:58:11 +0000
-From: Stefan Roese <sr@denx.de>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] mtd: physmap_of: Add "map-indirect" DT property
-Date: Tue, 17 Jul 2012 11:56:45 +0200
-References: <1341303991-6219-1-git-send-email-sr@denx.de>
- <4FF7E253.4080604@gatzka.org>
- <1342471312.25411.30.camel@shinybook.infradead.org>
-In-Reply-To: <1342471312.25411.30.camel@shinybook.infradead.org>
+ id 1Sr86b-00055P-PL
+ for linux-mtd@lists.infradead.org; Tue, 17 Jul 2012 13:46:26 +0000
+Received: from vsmta14.fe.internet.bosch.com (unknown [10.4.98.30])
+ by imta23.fe.bosch.de (Postfix) with ESMTP id E2FB428C0200
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Jul 2012 15:46:14 +0200 (CEST)
+Received: from localhost (vsgw3.fe.internet.bosch.com [10.4.98.16])
+ by vsmta14.fe.internet.bosch.com (Postfix) with SMTP id CAED91B40218
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Jul 2012 15:46:14 +0200 (CEST)
+From: Dirk Behme <dirk.behme@de.bosch.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] MTD: devices: Add support for serial flash STM/Micron N25Q032
+Date: Tue, 17 Jul 2012 15:45:53 +0200
+Message-ID: <1342532753-26915-1-git-send-email-dirk.behme@de.bosch.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201207171156.45375.sr@denx.de>
-Cc: Albrecht Dress <albrecht.dress@arcor.de>,
- Anatolij Gustschin <agust@denx.de>, linux-mtd@lists.infradead.org,
- stephan@gatzka.org, Stephan Gatzka <Stephan.Gatzka@hbm.com>
+Content-Type: text/plain
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Knut Wohlrab <knut.wohlrab@de.bosch.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,28 +26,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 16 July 2012 22:41:52 David Woodhouse wrote:
-> On Sat, 2012-07-07 at 09:16 +0200, Stephan Gatzka wrote:
-> > this patch works very well for us (of course, because Stefan made it for
-> > us). Are there any concerns against it? Probably against introducing a
-> > new DT property? Of course we can make this fix much more MPC5200
-> > specific but this will result in largely copying physmap_of.c and some
-> > additional code for access routines and Kconfig.
-> 
-> I don't much like the "map-indirect" name. If it's actually unaligned
-> access, or non-word-sized access, that's forbidden, then that's what the
-> DT property should be.
->
-> The term "map-indirect" is more a description of how the software
-> currently behaves... which is exactly that DT bindings *shouldn't* be.
+From: Knut Wohlrab <knut.wohlrab@de.bosch.com>
 
-Okay. I've chosen "map-indirect" because it might be used by other platforms 
-as well, perhaps because of different reasons (so not restricting this to the 
-unaligned access problem of the MPC5200). But I have no strong feelings here, 
-so I can prepare a new patch version with a different name.
+Signed-off-by: Knut Wohlrab <knut.wohlrab@de.bosch.com>
+CC: David Woodhouse <dwmw2@infradead.org>
+---
+ drivers/mtd/devices/m25p80.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-How about "no-unaligned-direct-access"? Pretty long though. Any other 
-suggestions here?
-
-Thanks,
-Stefan
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 1924d24..ea0c97a 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -695,6 +695,7 @@ static const struct spi_device_id m25p_ids[] = {
+ 	{ "m25p32",  INFO(0x202016,  0,  64 * 1024,  64, 0) },
+ 	{ "m25p64",  INFO(0x202017,  0,  64 * 1024, 128, 0) },
+ 	{ "m25p128", INFO(0x202018,  0, 256 * 1024,  64, 0) },
++	{ "n25q032", INFO(0x20ba16,  0,  64 * 1024,  64, 0) },
+ 
+ 	{ "m25p05-nonjedec",  INFO(0, 0,  32 * 1024,   2, 0) },
+ 	{ "m25p10-nonjedec",  INFO(0, 0,  32 * 1024,   4, 0) },
+-- 
+1.7.0.4
