@@ -1,14 +1,23 @@
-From: Huang Shijie <b32955@freescale.com>
-To: <dedekind1@gmail.com>
-Subject: [PATCH v3] mtd: gpmi: fix the compiler warnings
-Date: Tue, 17 Jul 2012 14:14:02 +0800
-Message-ID: <1342505642-31109-1-git-send-email-b32955@freescale.com>
-In-Reply-To: <1342451569.7270.11.camel@brekeke>
-References: <1342451569.7270.11.camel@brekeke>
+Received: from mail-gh0-f177.google.com ([209.85.160.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Sr1FW-0006JF-LK
+ for linux-mtd@lists.infradead.org; Tue, 17 Jul 2012 06:27:17 +0000
+Received: by ghbf11 with SMTP id f11so45040ghb.36
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Jul 2012 23:26:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Huang Shijie <b32955@freescale.com>, shawn.guo@linaro.org,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <CAMiH66HEw2SrTOp4zCxLapFMj7AH5dh4sZGMdtb6SSMc0e1FcA@mail.gmail.com>
+References: <1342196904-13850-1-git-send-email-computersforpeace@gmail.com>
+ <CAMiH66HEw2SrTOp4zCxLapFMj7AH5dh4sZGMdtb6SSMc0e1FcA@mail.gmail.com>
+Date: Mon, 16 Jul 2012 23:20:54 -0700
+Message-ID: <CAN8TOE_fh=4EkntjL3o0913s-qR6uPgLXbMLV6vjFa0wfU8oNw@mail.gmail.com>
+Subject: Re: [PATCH] mtd: nand: allow NAND_NO_SUBPAGE_WRITE to be set from
+ driver
+From: Brian Norris <computersforpeace@gmail.com>
+To: Huang Shijie <shijie8@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Scott Wood <scottwood@freescale.com>, David Woodhouse <dwmw2@infradead.org>,
+ Marek Vasut <marex@denx.de>, linux-mtd@lists.infradead.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,144 +27,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-fix the compiler warnings.
+Bump.
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
-v2 --> v3:
-         sorry, I missed the "set but not used" warnings.
-	 This patch is based on the patch:
-	  "[PATCH v4 2/2] mtd: gpmi: change the code for clocks".
-v1 --> v2:
-         fix the "no modifiers for allocation" warnings by the smatch
----
- drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |    4 ++--
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   20 ++++++++------------
- drivers/mtd/nand/gpmi-nand/gpmi-nand.h |    4 ++--
- 3 files changed, 12 insertions(+), 16 deletions(-)
+On Fri, Jul 13, 2012 at 7:02 PM, Huang Shijie <shijie8@gmail.com> wrote:
+> On Fri, Jul 13, 2012 at 12:28 PM, Brian Norris
+> <computersforpeace@gmail.com> wrote:
+>> The NAND_CHIPOPTIONS_MSK has limited utility and is causing real bugs. It
+>> silently masks off at least one flag that might be set by the driver
+>> (NAND_NO_SUBPAGE_WRITE). This breaks the GPMI NAND driver and possibly
+>> others.
+>>
+>> Really, as long as driver writers exercise a small amount of care with
+>> NAND_* options, this mask is not necessary at all; it was only here to
+>> prevent certain options from accidentally being set by the driver. But the
+>> original thought turns out to be a bad idea occasionally. Thus, kill it.
+>>
+>> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+>> Cc: Huang Shijie <shijie8@gmail.com>
+>> Cc: Marek Vasut <marex@denx.de>
+>> ---
+>> Huang, please test this with your driver.
+>>
+> I tested this patch on imx6q-arm2 board with Micron MT29F32G08QAA.
+> it works fine, thanks.
+>
+> Tested-by: Huang Shijie <shijie8@gmail.com>
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-index 6bb0998..2289cf8 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-@@ -26,7 +26,7 @@
- #include "gpmi-regs.h"
- #include "bch-regs.h"
- 
--struct timing_threshod timing_default_threshold = {
-+static struct timing_threshod timing_default_threshold = {
- 	.max_data_setup_cycles       = (BM_GPMI_TIMING0_DATA_SETUP >>
- 						BP_GPMI_TIMING0_DATA_SETUP),
- 	.internal_data_setup_in_ns   = 0,
-@@ -738,7 +738,7 @@ void gpmi_begin(struct gpmi_nand_data *this)
- {
- 	struct resources *r = &this->resources;
- 	struct timing_threshod *nfc = &timing_default_threshold;
--	unsigned char  *gpmi_regs = r->gpmi_regs;
-+	void __iomem *gpmi_regs = r->gpmi_regs;
- 	unsigned int   clock_period_in_ns;
- 	uint32_t       reg;
- 	unsigned int   dll_wait_time_in_us;
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 8c0d2f0..c46be6c 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -317,7 +317,7 @@ acquire_register_block(struct gpmi_nand_data *this, const char *res_name)
- 	struct platform_device *pdev = this->pdev;
- 	struct resources *res = &this->resources;
- 	struct resource *r;
--	void *p;
-+	void __iomem *p;
- 
- 	r = platform_get_resource_byname(pdev, IORESOURCE_MEM, res_name);
- 	if (!r) {
-@@ -424,8 +424,8 @@ static int __devinit acquire_dma_channels(struct gpmi_nand_data *this)
- 	struct platform_device *pdev = this->pdev;
- 	struct resource *r_dma;
- 	struct device_node *dn;
--	int dma_channel;
--	unsigned int ret;
-+	u32 dma_channel;
-+	int ret;
- 	struct dma_chan *dma_chan;
- 	dma_cap_mask_t mask;
- 
-@@ -732,12 +732,12 @@ static int gpmi_alloc_dma_buffer(struct gpmi_nand_data *this)
- 	struct device *dev = this->dev;
- 
- 	/* [1] Allocate a command buffer. PAGE_SIZE is enough. */
--	this->cmd_buffer = kzalloc(PAGE_SIZE, GFP_DMA);
-+	this->cmd_buffer = kzalloc(PAGE_SIZE, GFP_DMA | GFP_KERNEL);
- 	if (this->cmd_buffer == NULL)
- 		goto error_alloc;
- 
- 	/* [2] Allocate a read/write data buffer. PAGE_SIZE is enough. */
--	this->data_buffer_dma = kzalloc(PAGE_SIZE, GFP_DMA);
-+	this->data_buffer_dma = kzalloc(PAGE_SIZE, GFP_DMA | GFP_KERNEL);
- 	if (this->data_buffer_dma == NULL)
- 		goto error_alloc;
- 
-@@ -1260,7 +1260,6 @@ static int mx23_check_transcription_stamp(struct gpmi_nand_data *this)
- 	unsigned int search_area_size_in_strides;
- 	unsigned int stride;
- 	unsigned int page;
--	loff_t byte;
- 	uint8_t *buffer = chip->buffers->databuf;
- 	int saved_chip_number;
- 	int found_an_ncb_fingerprint = false;
-@@ -1277,9 +1276,8 @@ static int mx23_check_transcription_stamp(struct gpmi_nand_data *this)
- 	dev_dbg(dev, "Scanning for an NCB fingerprint...\n");
- 
- 	for (stride = 0; stride < search_area_size_in_strides; stride++) {
--		/* Compute the page and byte addresses. */
-+		/* Compute the page addresses. */
- 		page = stride * rom_geo->stride_size_in_pages;
--		byte = page   * mtd->writesize;
- 
- 		dev_dbg(dev, "Looking for a fingerprint in page 0x%x\n", page);
- 
-@@ -1321,7 +1319,6 @@ static int mx23_write_transcription_stamp(struct gpmi_nand_data *this)
- 	unsigned int block;
- 	unsigned int stride;
- 	unsigned int page;
--	loff_t       byte;
- 	uint8_t      *buffer = chip->buffers->databuf;
- 	int saved_chip_number;
- 	int status;
-@@ -1370,9 +1367,8 @@ static int mx23_write_transcription_stamp(struct gpmi_nand_data *this)
- 	/* Loop through the first search area, writing NCB fingerprints. */
- 	dev_dbg(dev, "Writing NCB fingerprints...\n");
- 	for (stride = 0; stride < search_area_size_in_strides; stride++) {
--		/* Compute the page and byte addresses. */
-+		/* Compute the page addresses. */
- 		page = stride * rom_geo->stride_size_in_pages;
--		byte = page   * mtd->writesize;
- 
- 		/* Write the first page of the current stride. */
- 		dev_dbg(dev, "Writing an NCB fingerprint in page 0x%x\n", page);
-@@ -1527,7 +1523,7 @@ static int gpmi_scan_bbt(struct mtd_info *mtd)
- 	return nand_default_bbt(mtd);
- }
- 
--void gpmi_nfc_exit(struct gpmi_nand_data *this)
-+static void gpmi_nfc_exit(struct gpmi_nand_data *this)
- {
- 	nand_release(&this->mtd);
- 	gpmi_free_dma_buffer(this);
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-index 1547a60..1f61217 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-@@ -24,8 +24,8 @@
- 
- #define GPMI_CLK_MAX 5 /* MX6Q needs five clocks */
- struct resources {
--	void          *gpmi_regs;
--	void          *bch_regs;
-+	void __iomem  *gpmi_regs;
-+	void __iomem  *bch_regs;
- 	unsigned int  bch_low_interrupt;
- 	unsigned int  bch_high_interrupt;
- 	unsigned int  dma_low_channel;
--- 
-1.7.0.4
+Any other Acks? Or acceptance from Artem/David?
+
+Brian
