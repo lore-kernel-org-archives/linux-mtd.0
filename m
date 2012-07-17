@@ -1,17 +1,14 @@
-Date: Tue, 17 Jul 2012 13:41:34 +0800
-From: Shawn Guo <shawn.guo@freescale.com>
-To: Huang Shijie <shijie8@gmail.com>
-Subject: Re: [PATCH v4 1/2] ARM: imx6q: add clocks for gpmi-nand
-Message-ID: <20120717054133.GA3109@S2100-06.ap.freescale.net>
-References: <1341279572-6098-1-git-send-email-shijie8@gmail.com>
- <1341279572-6098-2-git-send-email-shijie8@gmail.com>
+From: Huang Shijie <b32955@freescale.com>
+To: <dedekind1@gmail.com>
+Subject: [PATCH v2] mtd: gpmi: fix the compiler warnings
+Date: Tue, 17 Jul 2012 13:57:46 +0800
+Message-ID: <1342504666-27340-1-git-send-email-b32955@freescale.com>
+In-Reply-To: <1342451569.7270.11.camel@brekeke>
+References: <1342451569.7270.11.camel@brekeke>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1341279572-6098-2-git-send-email-shijie8@gmail.com>
-Cc: shawn.guo@linaro.org, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, dong.aisheng@linaro.org,
- dedekind1@gmail.com
+Content-Type: text/plain
+Cc: Huang Shijie <b32955@freescale.com>, shawn.guo@linaro.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,9 +18,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jul 02, 2012 at 09:39:31PM -0400, Huang Shijie wrote:
-> Add clocks for gpmi-nand.
-> 
-> Signed-off-by: Huang Shijie <shijie8@gmail.com>
+fix the compiler warnings.
 
-Acked-by: Shawn Guo <shawn.guo@linaro.org>
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+v1 --> v2:
+         fix the "no modifiers for allocation" warnings by the smatch
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |    4 ++--
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   12 ++++++------
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h |    4 ++--
+ 3 files changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+index 6bb0998..2289cf8 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+@@ -26,7 +26,7 @@
+ #include "gpmi-regs.h"
+ #include "bch-regs.h"
+ 
+-struct timing_threshod timing_default_threshold = {
++static struct timing_threshod timing_default_threshold = {
+ 	.max_data_setup_cycles       = (BM_GPMI_TIMING0_DATA_SETUP >>
+ 						BP_GPMI_TIMING0_DATA_SETUP),
+ 	.internal_data_setup_in_ns   = 0,
+@@ -738,7 +738,7 @@ void gpmi_begin(struct gpmi_nand_data *this)
+ {
+ 	struct resources *r = &this->resources;
+ 	struct timing_threshod *nfc = &timing_default_threshold;
+-	unsigned char  *gpmi_regs = r->gpmi_regs;
++	void __iomem *gpmi_regs = r->gpmi_regs;
+ 	unsigned int   clock_period_in_ns;
+ 	uint32_t       reg;
+ 	unsigned int   dll_wait_time_in_us;
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 8c0d2f0..7d31321 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -317,7 +317,7 @@ acquire_register_block(struct gpmi_nand_data *this, const char *res_name)
+ 	struct platform_device *pdev = this->pdev;
+ 	struct resources *res = &this->resources;
+ 	struct resource *r;
+-	void *p;
++	void __iomem *p;
+ 
+ 	r = platform_get_resource_byname(pdev, IORESOURCE_MEM, res_name);
+ 	if (!r) {
+@@ -424,8 +424,8 @@ static int __devinit acquire_dma_channels(struct gpmi_nand_data *this)
+ 	struct platform_device *pdev = this->pdev;
+ 	struct resource *r_dma;
+ 	struct device_node *dn;
+-	int dma_channel;
+-	unsigned int ret;
++	u32 dma_channel;
++	int ret;
+ 	struct dma_chan *dma_chan;
+ 	dma_cap_mask_t mask;
+ 
+@@ -732,12 +732,12 @@ static int gpmi_alloc_dma_buffer(struct gpmi_nand_data *this)
+ 	struct device *dev = this->dev;
+ 
+ 	/* [1] Allocate a command buffer. PAGE_SIZE is enough. */
+-	this->cmd_buffer = kzalloc(PAGE_SIZE, GFP_DMA);
++	this->cmd_buffer = kzalloc(PAGE_SIZE, GFP_DMA | GFP_KERNEL);
+ 	if (this->cmd_buffer == NULL)
+ 		goto error_alloc;
+ 
+ 	/* [2] Allocate a read/write data buffer. PAGE_SIZE is enough. */
+-	this->data_buffer_dma = kzalloc(PAGE_SIZE, GFP_DMA);
++	this->data_buffer_dma = kzalloc(PAGE_SIZE, GFP_DMA | GFP_KERNEL);
+ 	if (this->data_buffer_dma == NULL)
+ 		goto error_alloc;
+ 
+@@ -1527,7 +1527,7 @@ static int gpmi_scan_bbt(struct mtd_info *mtd)
+ 	return nand_default_bbt(mtd);
+ }
+ 
+-void gpmi_nfc_exit(struct gpmi_nand_data *this)
++static void gpmi_nfc_exit(struct gpmi_nand_data *this)
+ {
+ 	nand_release(&this->mtd);
+ 	gpmi_free_dma_buffer(this);
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+index 1547a60..1f61217 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+@@ -24,8 +24,8 @@
+ 
+ #define GPMI_CLK_MAX 5 /* MX6Q needs five clocks */
+ struct resources {
+-	void          *gpmi_regs;
+-	void          *bch_regs;
++	void __iomem  *gpmi_regs;
++	void __iomem  *bch_regs;
+ 	unsigned int  bch_low_interrupt;
+ 	unsigned int  bch_high_interrupt;
+ 	unsigned int  dma_low_channel;
+-- 
+1.7.0.4
