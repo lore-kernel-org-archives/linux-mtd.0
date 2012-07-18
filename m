@@ -1,19 +1,28 @@
-Message-ID: <1342595359.31927.11.camel@brekeke>
-Subject: Re: [PATCH 1/5] ubi: introduce ubi->bad_peb_limit
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SrOes-0006jO-KE
+ for linux-mtd@lists.infradead.org; Wed, 18 Jul 2012 07:26:55 +0000
+Received: by lbbgg6 with SMTP id gg6so1786102lbb.36
+ for <linux-mtd@lists.infradead.org>; Wed, 18 Jul 2012 00:26:40 -0700 (PDT)
+Message-ID: <1342596070.31927.14.camel@brekeke>
+Subject: RE: UBIFS fails to mount on second boot
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Date: Wed, 18 Jul 2012 10:09:19 +0300
-In-Reply-To: <1341389164-24409-2-git-send-email-shmulik.ladkani@gmail.com>
-References: <1341389164-24409-1-git-send-email-shmulik.ladkani@gmail.com>
- <1341389164-24409-2-git-send-email-shmulik.ladkani@gmail.com>
+To: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
+Date: Wed, 18 Jul 2012 10:21:10 +0300
+In-Reply-To: <6871BC8982B258468985EE735D2C57524B09D0EECD@ntcex01.corp.netcomm.com.au>
+References: <CAEZtdFU1cET8=kViUsR0Oq3q0ckcFLuKsd_Hc5WHo_uhFiKVBw@mail.gmail.com>
+ ,<1340806219.3070.23.camel@sauron.fi.intel.com>
+ <6871BC8982B258468985EE735D2C575243C0F0889A@ntcex01.corp.netcomm.com.au>
+ ,<1340977577.3070.207.camel@sauron.fi.intel.com>
+ ,<6871BC8982B258468985EE735D2C575243C0F088B6@ntcex01.corp.netcomm.com.au>
+ <6871BC8982B258468985EE735D2C575243C0F088B7@ntcex01.corp.netcomm.com.au>
+ ,<1342240778.3209.12.camel@brekeke>
+ <6871BC8982B258468985EE735D2C57524B09D0EECD@ntcex01.corp.netcomm.com.au>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-WpSzEhbJN1ZrP15UtFd3"
+ boundary="=-Z+bpd89HnX7iYan0SU8S"
 Mime-Version: 1.0
-Cc: Russell King <linux@arm.linux.org.uk>,
- Richard Genoud <richard.genoud@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Andrew Victor <linux@maxim.org.za>, linux-arm-kernel@lists.infradead.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,57 +34,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-WpSzEhbJN1ZrP15UtFd3
+--=-Z+bpd89HnX7iYan0SU8S
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-07-04 at 11:06 +0300, Shmulik Ladkani wrote:
-> Introduce 'ubi->bad_peb_limit', which specifies an upper limit of PEBs
-> ubi expects to go bad.
-> Currently, it is initialized to a fixed percentage of total PEBs in the
-> ubi device (configurable via CONFIG_MTD_UBI_BEB_LIMIT).
+On Wed, 2012-07-18 at 17:05 +1000, Iwo Mergler wrote:
+> In other words, I quite like the fixup feature and would prefer if it doe=
+sn't
+> go away permanently. Otherwise:
 >=20
-> The 'bad_peb_limit' is intended to be used for calculating the amount of
-> PEBs ubi needs to reserve for bad eraseblock handling.
->=20
-> Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+> Tested-by: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
 
-Created branch "beb" and pushed this patch there with minor amendments
-(see diff below). Let's use this branch in UBI tree for this work and
-merge it as soon as it is ready.
+You should have the fix in your mailbox, and for that fix I'd be
+greatful to have your "Tested-by:". BTW, I've updated the UBI/UBIFS
+documentation WRT debugging - if you could review it - would also be
+great!
 
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index c33e25b..dee90b7 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -668,13 +668,12 @@ static int io_init(struct ubi_device *ubi)
-                ubi->bad_allowed =3D 1;
-                if (CONFIG_MTD_UBI_BEB_LIMIT > 0) {
-                        int percent =3D CONFIG_MTD_UBI_BEB_LIMIT;
--                       int beb_limit;
-+                       int limit =3D mult_frac(ubi->peb_count, percent, 10=
-0);
-=20
--                       beb_limit =3D mult_frac(ubi->peb_count, percent, 10=
-0);
--                       /* round it up */
--                       if (mult_frac(beb_limit, 100, percent) < ubi->peb_c=
-ount)
--                               beb_limit++;
--                       ubi->bad_peb_limit =3D beb_limit;
-+                       /* Round it up */
-+                       if (mult_frac(limit, 100, percent) < ubi->peb_count=
-)
-+                               limit +=3D 1;
-+                       ubi->bad_peb_limit =3D limit;
-                }
-        }
+http://linux-mtd.infradead.org/faq/ubifs.html#L_how_debug
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-WpSzEhbJN1ZrP15UtFd3
+--=-Z+bpd89HnX7iYan0SU8S
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -83,19 +64,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQBmEfAAoJECmIfjd9wqK0L8oP/2ZFc7DJ6B0tNy1WK+SCIqb6
-OfiBMepSM1g2hxohgovjIQPw+xWJF7vno+zwFbDobha0NBf8r/8/glQS3LCluONa
-nz8I3zPakamDE9zYQrlPsI+hZv8DWxiRFbfeNy0c304S9sinfhnAyACGfEQwmJia
-yqdNp4XZgcDch5Cswu57f6Gtzk8s2PjIpWzpwO6Iquq6fKQ1hNrZ06qcFbnNbuGP
-M9/iM7N6j3QxTJYGy8fOvCKIOA0LzfBP0erj1YbVlKcuvMiFU8Xdk3x1yfGZ9iPN
-ErAdFhcmZHk6AvzxucMfvp+cE5VieFox1Qx3rPvlUl8S9RO5AYUUfpLNLR/JKOeB
-YgybHkqqRQIMcOOi4V63mlXuDvJOey76BEfmW//oIVaLnYawsBEKnaI4TFZ+WGl6
-/VnoS7YjYFC0kS8BqS9FqtWen0RJDW6cRNxX+b0OPQYoXfmozPD7Ys2hqix9Wj7S
-Qm3LhixiJeJC4yGIs8Vv3QG3vRNpw/mkiW6H5BtIgXm+mo5yWhGZhZFLjm7HzX0R
-YRBJEfflX0UraSL9I04WGVX3v7DphQl1JhgniUsiR5cSjGWb8qDjDkRB9TjlCmGY
-Lo0yzR4kHmS8kf4Q72BGSb8rIXM0IZcCQ9yK/YAwf+mgxE7WzfY8vmZ+AgPDvg4u
-9pmbK0sAWqbaz0wHKCWQ
-=yXbr
+iQIcBAABAgAGBQJQBmPmAAoJECmIfjd9wqK0qdgQALgGzj133AvV6u7/H4Gshv8B
+GiYA2pveUJBf7MsgjhXhuFkIkUKrECXXnrVX20jL1fgEz/vXXYw9uQ+1oKtR8nSi
+LixNKY2/4CITyLOH6F60+IcOOnztuKYBAi55qGyovO90dsiRXfz9/5ajEwJT4xSa
+PtEM8q3+z57y7etkWO8a1tLLQMNn3FYFf36xG+i3fEzfzNaZsRBCGYNetGdzW+K+
+EGo5LL3sTJzlMTQ/A0dHnWKDO+c0R99KTj5ip7LV1vWV5hzcYEfmyzh5++YOSCNm
+sQ4lUYRBdPu9Ge62MHVD5KcRwVdD0hdYQIWz6XZTbJ8GL05rUkZ3o6TidLcDNkQx
+z61GvRz+8JNYfgRrzRqEa4Ut2rxMam7gd57QcA1ZlmwisKKzisiyksDg4++J4Hwa
+9nk+63M3A1ny5VWLehg9Mxl1ZPhU1bvDJk6Ctx6zb6M0ScLrau83RQVSLetI/M2Z
+Ra9P1zUJmZfn7XWGlWlq/IHNqcNWEkRzzYJq+hZFfHnsbMZHYwPokBhDLSdl9KXo
+o89oSLpBTnzRp6OpH2vO+Fn6tw/W8f/YP8tRE9vFee78/UtAshwFFYhDGWsKn27d
+7xIITtzxaYzDPptLX5pncH2HQ3rBwYqqs+R2iBwpETkPPxWOt4841kyFCHLQj1wP
+2iQIzXmQakcsNTHaGlC7
+=T0kq
 -----END PGP SIGNATURE-----
 
---=-WpSzEhbJN1ZrP15UtFd3--
+--=-Z+bpd89HnX7iYan0SU8S--
