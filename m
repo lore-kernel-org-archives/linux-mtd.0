@@ -1,26 +1,24 @@
 Received: from mail-lb0-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SrNoO-0001zf-L4
- for linux-mtd@lists.infradead.org; Wed, 18 Jul 2012 06:32:42 +0000
-Received: by lbbgg6 with SMTP id gg6so1732047lbb.36
- for <linux-mtd@lists.infradead.org>; Tue, 17 Jul 2012 23:32:33 -0700 (PDT)
-Message-ID: <1342592816.31927.2.camel@brekeke>
-Subject: Re: [PATCH] mtd: physmap_of: Add "map-indirect" DT property
+ id 1SrOAd-000795-Fe
+ for linux-mtd@lists.infradead.org; Wed, 18 Jul 2012 06:55:41 +0000
+Received: by lbbgg6 with SMTP id gg6so1753085lbb.36
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Jul 2012 23:55:36 -0700 (PDT)
+Message-ID: <1342594206.31927.7.camel@brekeke>
+Subject: Re: [PATCH 3/4] UBI: use the whole MTD device size to get
+ bad_peb_limit
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Stefan Roese <sr@denx.de>
-Date: Wed, 18 Jul 2012 09:26:56 +0300
-In-Reply-To: <201207171156.45375.sr@denx.de>
-References: <1341303991-6219-1-git-send-email-sr@denx.de>
- <4FF7E253.4080604@gatzka.org>
- <1342471312.25411.30.camel@shinybook.infradead.org>
- <201207171156.45375.sr@denx.de>
+To: Richard Genoud <richard.genoud@gmail.com>
+Date: Wed, 18 Jul 2012 09:50:06 +0300
+In-Reply-To: <1341937423-16516-4-git-send-email-richard.genoud@gmail.com>
+References: <1341937423-16516-1-git-send-email-richard.genoud@gmail.com>
+ <1341937423-16516-4-git-send-email-richard.genoud@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-XPK39lMTzej+1B4aD1XT"
+ boundary="=-EPpaMrZmTaruFoRElDs/"
 Mime-Version: 1.0
-Cc: stephan@gatzka.org, Albrecht Dress <albrecht.dress@arcor.de>,
- linux-mtd@lists.infradead.org, Anatolij Gustschin <agust@denx.de>,
- David Woodhouse <dwmw2@infradead.org>, Stephan Gatzka <Stephan.Gatzka@hbm.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,21 +30,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-XPK39lMTzej+1B4aD1XT
+--=-EPpaMrZmTaruFoRElDs/
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-07-17 at 11:56 +0200, Stefan Roese wrote:
-> How about "no-unaligned-direct-access"? Pretty long though. Any other=20
-> suggestions here?
+On Tue, 2012-07-10 at 18:23 +0200, Richard Genoud wrote:
+>=20
+> The Kconfig option is in per1024 blocks, thus it can have a default
+> value of 20 which is *very* common for NAND devices.=20
 
-FYI, I am dropping this patch from l2-mtd.git.
+Why do you prefer per1024? I'd make it centi-percent instead, wouldn't
+that be more human-friendly. It is just %*100. If I am a user, it is
+easy for me to calculate % and multiply that by 100. This per1024 thing
+would make me scratch my head...
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-XPK39lMTzej+1B4aD1XT
+--=-EPpaMrZmTaruFoRElDs/
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -54,19 +56,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQBlcwAAoJECmIfjd9wqK0O20P/RYhjl91zkrDQDHEWClxhGhn
-x2l2S3Z4lVPSYC9DF0QbfW3yJb7GFyj/UegQOC0O5gvCMxfWGFVnsyIDOhAGzDs8
-Wfm+8cGmIgwzUfTs/ZtjTRtPJsZ9hobtwkG2TvhpW+2J6HkMqJNuRvv4oDQEZQF2
-b+OltfaDS4Um7Z2bzoRXknOfqk4Fmy/oXxsAZjCFHf062px7jZLEw2aUFH5Sv0wo
-oqYUdO33DofwYEJzZw56WWiRV8Im7PulndVNrWCSPOEucAmRq8rJc6bUr0ZT9B5W
-PT9vKHDniwaGqulwJrucdmIFiK1w/7oKT+98m8LfMzfxMLsuFLPLxaxWrro7aZE8
-/nxfoMtPEIUeFxNpSnh4/TIHFKFYmTS06h9+pKdW02N4f1lzgm5SHzHiXHduKUPa
-tMlhwIeYoQadNgNHMobwjy6fTGKoj5Zniw7+iTubGKI2kjuPsTVOZxQ1qMU1q1gI
-qEkjf29I0f7RhrCCfGgF1j2NOmEWPGVcIA2MOgRS57QOiLPktuyoqgy9+aBthyff
-DaCfJ9CsWRWoetYctIybw50rvraLmVDm2wUt7ABVDGVY4aRbf6QAPnwH6jilUSnu
-YL1SxKfdhYzgzKYG0UsfASldhykhQgKwhhOTb/bIabkSHLHgiRXkanB01oIaWbBh
-1vdxqc588KJmwVv3MlOG
-=WgKH
+iQIcBAABAgAGBQJQBlyeAAoJECmIfjd9wqK0SvoP/3NpxZvF6XRyRrYHiBRDj6pJ
+eIHIPvXdXvLKPYVcAUq0lmMJWe9oXTpjbhUxBB1D5ZGVpCsn4ZuGpDWhFlWyZ/21
+RalW3AVP0sQUZngxcmQvFJQs+j5CWErlY67NUzsLmsJVfAisN9ZQ/kLUyTNpqzT0
+iG8iLTZiprcONvRkd4vA4VNJtE47fT5rp4HaqjYFrJLijFCGldeLUvrABuUHcqSL
+F1FGmVizADOd9XBeoybwe52F20J4h8qxp0M2bUu1+rpCsIgtFde00zT8e0XbWodJ
+ClzRBgN9sDJkMxmuasJYrmRSiK3WBJyD1BhzH4inmhoKyZYf2Oefw+56m8UMpDir
+EX+FLkJZrfL4NbooY+55BkX3AOQMTRA3rwH3ormsrxVfVZmHZivJZdNAiSWx9SVX
+sKK8eBSlyeal+0ntO6JNzxhgOpU1skr8PH26a9bHLp3UBKfqPQlKQw2whasgkhNX
+SB/40Z2UDqNZPySku8L3KBvQqVuG/znw9Io/nRD4wpOLbIwxFFaTLeN6PyAB0b75
+fvHqPhOdXjPmJ8MEdXVel6Ep4wqzS+OrA52URpnP0KZMWt5nW/2OYP3kWvLNxr53
+RI4A5TowBQI5CdhyqR/tcVA7bvOt8qT2AjF0ihv126EMwjZrBOKq4Q8yFl/w5hid
+ko9TNlEetKuI4qLYLDBb
+=4RZe
 -----END PGP SIGNATURE-----
 
---=-XPK39lMTzej+1B4aD1XT--
+--=-EPpaMrZmTaruFoRElDs/--
