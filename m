@@ -1,20 +1,20 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SrWri-0005d7-5h
- for linux-mtd@lists.infradead.org; Wed, 18 Jul 2012 16:12:53 +0000
-Received: by eaaf11 with SMTP id f11so627659eaa.36
- for <linux-mtd@lists.infradead.org>; Wed, 18 Jul 2012 09:12:39 -0700 (PDT)
-Message-ID: <1342627628.9105.3.camel@brekeke>
+ id 1SrWyH-0006Yo-SS
+ for linux-mtd@lists.infradead.org; Wed, 18 Jul 2012 16:19:32 +0000
+Received: by lbbgg6 with SMTP id gg6so2397623lbb.36
+ for <linux-mtd@lists.infradead.org>; Wed, 18 Jul 2012 09:19:24 -0700 (PDT)
+Message-ID: <1342628031.9105.6.camel@brekeke>
 Subject: Re: [PATCH 1/3] mtd: m25p80: add support for Spansion s25sl064p chip
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Marek Vasut <marex@denx.de>
-Date: Wed, 18 Jul 2012 19:07:08 +0300
+To: Marek Vasut <marex@denx.de>, Rob Herring <rob.herring@calxeda.com>
+Date: Wed, 18 Jul 2012 19:13:51 +0300
 In-Reply-To: <201207181808.15833.marex@denx.de>
 References: <1341555027-17462-1-git-send-email-marex@denx.de>
  <1342627074.9105.0.camel@brekeke> <201207181808.15833.marex@denx.de>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-PVVLNBk8w1Zhw5pGV35x"
+ boundary="=-+oLFRuQbZlBDmCk3PFJS"
 Mime-Version: 1.0
 Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
  linux-mtd@lists.infradead.org, David Woodhouse <david.woodhouse@intel.com>
@@ -29,7 +29,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-PVVLNBk8w1Zhw5pGV35x
+--=-+oLFRuQbZlBDmCk3PFJS
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
@@ -47,14 +47,19 @@ On Wed, 2012-07-18 at 18:08 +0200, Marek Vasut wrote:
 ded in=20
 > 3/3 please?
 
-I do not know. Surely there is a DT mailing list and DT experts - I'd
-ask there/them.
+Rob Herring responded to me last time, let's try to ask him. Rob, the
+question is here:
+
+http://lists.infradead.org/pipermail/linux-mtd/2012-July/042752.html
+
+"NOTE: I'm not sure where to document this property, as m25p80 is
+      a simple DT device. Any hints please?"
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-PVVLNBk8w1Zhw5pGV35x
+--=-+oLFRuQbZlBDmCk3PFJS
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -62,19 +67,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQBt8sAAoJECmIfjd9wqK0PtcP/0kOrmwSC9LdSz/FO/jjcs7c
-wSmSgCZrH50tBUV63V1jBfJP++akyfZXBFeFrI1IViWmkJ9POf2+5X+T6tJ/SHlE
-xR+V3iWc3Dvf6fIhfweyrXb0H9gLQFenM2471ECA5BLJLaiFkBXO+P3UXiAziTxn
-BEOLXk0p/8EuKH1Lg7Plh9I8qpqt+LUEIh6iNDVZtwQzQwASetuSDseWdBfLeGaJ
-Ak47+Sk3NaZ9PTKO1Z5gTKrI+Qk2q/eaZZ+nkYrg9o0OgLkDUB569/eLOxskS6vh
-g8sDfgpCpZVBWb2/Is+jGuBWgvNG6EFNuljBI6RY8kQPWeRAkdguVcXLhmYzP3mg
-OkRV/2/VYA6xTlbPDNabKSQzZZIXOtEyJ9OiyS8DR2mI9Dk9daouNm69yOm/FjIk
-5KWAEinC6dudIbbmOQguBmG7ay2Ugox6MbiCfZ09/NDu/HaoyA9BVsYcnHkv/Vop
-x4L1GaAb3eS63tcMZuT4IOyE9oljQFnBIgZ0b5v3f2C/YaAzxD9PQztkga+tZEye
-UEMOJkxu88bHf1W8dtPC5SV36LMSwvRSYsVCtscxqa6FyUiqHsJ5LsOmiMyjlCot
-8HjJzA0zn/JYY8/qJIoUW/MklrZXCypOokICPN1+FXKKMRKI+r3W5Yr1duobzESB
-3ccqgBvpwUGDkulI4Dol
-=3FYA
+iQIcBAABAgAGBQJQBuC/AAoJECmIfjd9wqK0peoQALKZfnb/j1N7O9exukLQhsaB
+EqD1ix+D7Ribk+5Q3rYfa1eDP4gfKz1PZYy8Di5rvpHUo1XAO2gihoB7jDToCQF7
+tXJj//pXYUrkG9FS12dCLJQ9gqO0ob30ADsjqhwlHUbnP99G+TTlEVaVO/EbWnaV
+kkja5jKRxTQ6HqafvFnvoiD+tOPmyeKSzpV8Y7NL7i8A1OZMigGWlF0qOUz1YVtQ
+kbdN0T0FOrixxmnvGbuMYb1Od87Jx2cg6qEe9VKdAlqek2a+SotN5wbYXwC5SD88
+cvS9ZkM8I9KzP0Eyan6qRyztk7vRL+fne2pznrswBD3iZ672SMXXrMcrwZn2v4fs
+X7dEddYk4xQ1HDJXlrrAU2KEubTad0RSRQEsA8cF2uf3z8W4SWdbMM84tf2z7bdj
+vKt3TJjYYOmD8E6loVufi2dh4liyUF1zHaakX+Oe/tPjVV/zasFW/ErwjmoJ2K5T
+oflNphoHzIxWef0lH7UX+bflcGw9slB6bWKidvNut49hNhp/cEHbAt3pBAbrHey6
+W0KZkANAZP7ocEqW6N+XKCmsOt/021Hd8jjrtcvnVQT6a2DU51fqqfoV+oqzRNPG
+2UMgDGKVVngS1AeeqzEEE3LAbyd6cQCdDtbRA2XbFOdNrp5CmDWJnscKfSh21t3k
+qjdnpg7fPcfTM4svu8oH
+=c8+S
 -----END PGP SIGNATURE-----
 
---=-PVVLNBk8w1Zhw5pGV35x--
+--=-+oLFRuQbZlBDmCk3PFJS--
