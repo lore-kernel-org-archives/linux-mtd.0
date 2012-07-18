@@ -1,24 +1,19 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SrWyH-0006Yo-SS
- for linux-mtd@lists.infradead.org; Wed, 18 Jul 2012 16:19:32 +0000
-Received: by lbbgg6 with SMTP id gg6so2397623lbb.36
- for <linux-mtd@lists.infradead.org>; Wed, 18 Jul 2012 09:19:24 -0700 (PDT)
-Message-ID: <1342628031.9105.6.camel@brekeke>
-Subject: Re: [PATCH 1/3] mtd: m25p80: add support for Spansion s25sl064p chip
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Marek Vasut <marex@denx.de>, Rob Herring <rob.herring@calxeda.com>
-Date: Wed, 18 Jul 2012 19:13:51 +0300
-In-Reply-To: <201207181808.15833.marex@denx.de>
-References: <1341555027-17462-1-git-send-email-marex@denx.de>
- <1342627074.9105.0.camel@brekeke> <201207181808.15833.marex@denx.de>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-+oLFRuQbZlBDmCk3PFJS"
-Mime-Version: 1.0
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-mtd@lists.infradead.org, David Woodhouse <david.woodhouse@intel.com>
-Reply-To: dedekind1@gmail.com
+Message-ID: <5006F638.2000301@ti.com>
+Date: Wed, 18 Jul 2012 23:15:28 +0530
+From: Sekhar Nori <nsekhar@ti.com>
+MIME-Version: 1.0
+To: Heiko Schocher <hs@denx.de>
+Subject: Re: [PATCH v5 6/7] ARM: mtd: nand: davinci: add OF support for davinci
+ nand controller
+References: <1338373143-7467-1-git-send-email-hs@denx.de>
+ <1338373143-7467-7-git-send-email-hs@denx.de>
+In-Reply-To: <1338373143-7467-7-git-send-email-hs@denx.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Cc: davinci-linux-open-source@linux.davincidsp.com,
+ devicetree-discuss@lists.ozlabs.org, Grant Likely <grant.likely@secretlab.ca>,
+ linux-mtd@lists.infradead.org, Scott Wood <scottwood@freescale.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,58 +23,222 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Heiko,
 
---=-+oLFRuQbZlBDmCk3PFJS
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On 5/30/2012 3:49 PM, Heiko Schocher wrote:
+> add OF support for the davinci nand controller.
+> 
+> Signed-off-by: Heiko Schocher <hs@denx.de>
+> Cc: davinci-linux-open-source@linux.davincidsp.com
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: devicetree-discuss@lists.ozlabs.org
+> Cc: linux-mtd@lists.infradead.org
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Grant Likely <grant.likely@secretlab.ca>
+> Cc: Sekhar Nori <nsekhar@ti.com>
+> Cc: Wolfgang Denk <wd@denx.de>
+> Cc: Scott Wood <scottwood@freescale.com>
+> 
+> ---
+> - changes for v2:
+>   - add comments from Scott Wood:
+>     - add "ti,davinci-" prefix
+>     - Dashes are preferred to underscores
+>     - rename "nandflash" to "nand"
+>     - introduce new "ti,davinci" specific properties for setting
+>       up ecc_mode, ecc_bits, options and bbt options, instead
+>       using linux defines
+>     - readme fixes
+> - no changes for v3
+> - changes for v4
+>   remove "pinmux-handle" property as discussed here:
+>   http://www.spinics.net/lists/arm-kernel/msg175701.html
+>   with Nori Sekhar
+> - no changes for v5
+> 
+>  .../devicetree/bindings/arm/davinci/nand.txt       |   72 ++++++++++++++++++
+>  drivers/mtd/nand/davinci_nand.c                    |   80 +++++++++++++++++++-
+>  2 files changed, 151 insertions(+), 1 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/arm/davinci/nand.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/davinci/nand.txt b/Documentation/devicetree/bindings/arm/davinci/nand.txt
+> new file mode 100644
+> index 0000000..5afe4a6
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/davinci/nand.txt
+> @@ -0,0 +1,72 @@
+> +* Texas Instruments Davinci NAND
+> +
+> +This file provides information, what the device node for the
+> +davinci nand interface contain.
+> +
+> +Required properties:
+> +- compatible: "ti,davinci-nand";
+> +- reg : contain 2 offset/length values:
+> +        - offset and length for the access window
+> +        - offset and length for accessing the aemif control registers
+> +- ti,davinci-chipselect: Indicates on the davinci_nand driver which
+> +                         chipselect is used for accessing the nand.
+> +
+> +Recommended properties :
+> +- ti,davinci-mask-ale: mask for ale
+> +- ti,davinci-mask-cle: mask for cle
+> +- ti,davinci-mask-chipsel: mask for chipselect
+> +- ti,davinci-ecc-mode: ECC mode valid values for davinci driver:
+> +		- "none"
+> +		- "soft"
+> +		- "hw"
+> +- ti,davinci-ecc-bits: used ECC bits, currently supported 1 or 4.
+> +- ti,davinci-nand-buswidth: buswidth 8 or 16
+> +- ti,davinci-nand-use-bbt: use flash based bad block table support.
+> +
+> +Optional properties:
+> +- timing-handle: contains a handle to setup aemif timing.
+> +
+> +Example (enbw_cmc board):
+> +aemif@60000000 {
+> +	compatible = "ti,davinci-aemif";
+> +	#address-cells = <2>;
+> +	#size-cells = <1>;
+> +	reg = <0x68000000 0x80000>;
+> +	ranges = <2 0 0x60000000 0x02000000
+> +		  3 0 0x62000000 0x02000000
+> +		  4 0 0x64000000 0x02000000
+> +		  5 0 0x66000000 0x02000000
+> +		  6 0 0x68000000 0x02000000>;
+> +	nand_cs: cs3@68000000 {
+> +		compatible = "ti,davinci-cs";
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		/* all timings in nanoseconds */
+> +		cs = <3>;
+> +		asize = <0>;
+> +		ta = <0>;
+> +		rhold = <7>;
+> +		rstrobe = <42>;
+> +		rsetup = <7>;
+> +		whold = <7>;
+> +		wstrobe = <14>;
+> +		wsetup = <7>;
+> +		ew = <0>;
+> +		ss = <0>;
+> +	};
+> +	nand@3,0 {
+> +		compatible = "ti,davinci-nand";
+> +		reg = <3 0x0 0x807ff
+> +			6 0x0 0x8000>;
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		ti,davinci-chipselect = <1>;
+> +		ti,davinci-mask-ale = <0>;
+> +		ti,davinci-mask-cle = <0>;
+> +		ti,davinci-mask-chipsel = <0>;
+> +		ti,davinci-ecc-mode = "hw";
+> +		ti,davinci-ecc-bits = <4>;
+> +		ti,davinci-nand-use-bbt;
+> +		timing-handle = <&nand_cs>;
+> +	};
+> +};
+> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+> index d94b03c..67bdd29 100644
+> --- a/drivers/mtd/nand/davinci_nand.c
+> +++ b/drivers/mtd/nand/davinci_nand.c
+> @@ -33,9 +33,12 @@
+>  #include <linux/mtd/nand.h>
+>  #include <linux/mtd/partitions.h>
+>  #include <linux/slab.h>
+> +#include <linux/of_i2c.h>
 
-On Wed, 2012-07-18 at 18:08 +0200, Marek Vasut wrote:
-> Dear Artem Bityutskiy,
->=20
-> > On Fri, 2012-07-06 at 08:10 +0200, Marek Vasut wrote:
-> > > Signed-off-by: Marek Vasut <marex@denx.de>
-> > > Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> > > Cc: David Woodhouse <david.woodhouse@intel.com>
-> >=20
-> > Pushed 1/3 and 2/3 to l2-mtd.git, thanks!
->=20
-> Thanks, Artem. Could you please suggest where to document the property ad=
-ded in=20
-> 3/3 please?
+This include is not required.
 
-Rob Herring responded to me last time, let's try to ask him. Rob, the
-question is here:
+> +#include <linux/of_device.h>
+>  
+>  #include <mach/nand.h>
+>  #include <mach/aemif.h>
+> +#include <mach/mux.h>
 
-http://lists.infradead.org/pipermail/linux-mtd/2012-July/042752.html
+This too.
 
-"NOTE: I'm not sure where to document this property, as m25p80 is
-      a simple DT device. Any hints please?"
+>  
+>  /*
+>   * This is a device driver for the NAND flash controller found on the
+> @@ -518,9 +521,81 @@ static struct nand_ecclayout hwecc4_2048 __initconst = {
+>  	},
+>  };
+>  
+> +#if defined(CONFIG_OF)
+> +static const struct of_device_id davinci_nand_of_match[] = {
+> +	{.compatible = "ti,davinci-nand", },
+> +	{},
+> +}
+> +MODULE_DEVICE_TABLE(of, davinci_nand_of_match);
+> +
+> +static struct davinci_nand_pdata
+> +	*nand_davinci_get_pdata(struct platform_device *pdev)
+> +{
+> +	if ((pdev->dev.platform_data == NULL) &&
+> +		(pdev->dev.of_node)) {
 
---=20
-Best Regards,
-Artem Bityutskiy
+You can simplify this and also avoid breaking the statement.
 
---=-+oLFRuQbZlBDmCk3PFJS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+	if (!pdev->dev.platform_data && pdev->dev.of_node) {
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQBuC/AAoJECmIfjd9wqK0peoQALKZfnb/j1N7O9exukLQhsaB
-EqD1ix+D7Ribk+5Q3rYfa1eDP4gfKz1PZYy8Di5rvpHUo1XAO2gihoB7jDToCQF7
-tXJj//pXYUrkG9FS12dCLJQ9gqO0ob30ADsjqhwlHUbnP99G+TTlEVaVO/EbWnaV
-kkja5jKRxTQ6HqafvFnvoiD+tOPmyeKSzpV8Y7NL7i8A1OZMigGWlF0qOUz1YVtQ
-kbdN0T0FOrixxmnvGbuMYb1Od87Jx2cg6qEe9VKdAlqek2a+SotN5wbYXwC5SD88
-cvS9ZkM8I9KzP0Eyan6qRyztk7vRL+fne2pznrswBD3iZ672SMXXrMcrwZn2v4fs
-X7dEddYk4xQ1HDJXlrrAU2KEubTad0RSRQEsA8cF2uf3z8W4SWdbMM84tf2z7bdj
-vKt3TJjYYOmD8E6loVufi2dh4liyUF1zHaakX+Oe/tPjVV/zasFW/ErwjmoJ2K5T
-oflNphoHzIxWef0lH7UX+bflcGw9slB6bWKidvNut49hNhp/cEHbAt3pBAbrHey6
-W0KZkANAZP7ocEqW6N+XKCmsOt/021Hd8jjrtcvnVQT6a2DU51fqqfoV+oqzRNPG
-2UMgDGKVVngS1AeeqzEEE3LAbyd6cQCdDtbRA2XbFOdNrp5CmDWJnscKfSh21t3k
-qjdnpg7fPcfTM4svu8oH
-=c8+S
------END PGP SIGNATURE-----
+> +		struct device_node *tmp_np;
+> +		struct davinci_nand_pdata *pdata;
+> +		const char *mode;
+> +		u32 prop;
+> +		int len;
+> +
+> +		pdata =  kzalloc(sizeof(struct davinci_nand_pdata),
+> +				GFP_KERNEL);
 
---=-+oLFRuQbZlBDmCk3PFJS--
+I don't see this getting freed anywhere. You wanted to use devm_kzalloc()?
+
+> +		pdev->dev.platform_data = pdata;
+> +		if (!pdata)
+> +			return NULL;
+> +		if (!of_property_read_u32(pdev->dev.of_node,
+> +			"ti,davinci-chipselect", &prop))
+> +			pdev->id = prop;
+> +		if (!of_property_read_u32(pdev->dev.of_node,
+> +			"ti,davinci-mask-ale", &prop))
+> +			pdata->mask_ale = prop;
+> +		if (!of_property_read_u32(pdev->dev.of_node,
+> +			"ti,davinci-mask-cle", &prop))
+> +			pdata->mask_cle = prop;
+> +		if (!of_property_read_u32(pdev->dev.of_node,
+> +			"ti,davinci-mask-chipsel", &prop))
+> +			pdata->mask_chipsel = prop;
+> +		if (!of_property_read_string(pdev->dev.of_node,
+> +			"ti,davinci-ecc-mode", &mode)) {
+> +			if (!strncmp("none", mode, 4))
+> +				pdata->ecc_mode = NAND_ECC_NONE;
+> +			if (!strncmp("soft", mode, 4))
+> +				pdata->ecc_mode = NAND_ECC_SOFT;
+> +			if (!strncmp("hw", mode, 2))
+> +				pdata->ecc_mode = NAND_ECC_HW;
+> +		}
+> +		if (!of_property_read_u32(pdev->dev.of_node,
+> +			"ti,davinci-ecc-bits", &prop))
+> +			pdata->ecc_bits = prop;
+> +		if (!of_property_read_u32(pdev->dev.of_node,
+> +			"ti,davinci-nand-buswidth", &prop))
+> +			if (prop == 16)
+> +				pdata->options |= NAND_BUSWIDTH_16;
+> +		if (of_find_property(pdev->dev.of_node,
+> +			"ti,davinci-nand-use-bbt", &len))
+> +			pdata->bbt_options = NAND_BBT_USE_FLASH;
+> +
+
+> +		tmp_np = of_parse_phandle(pdev->dev.of_node,
+> +				"timing-handle", 0);
+> +		if (tmp_np)
+> +			davinci_aemif_setup_timing_of(tmp_np);
+
+Since the aemif driver conversion to DT needs to be looked at along with
+its movement to drivers/ folder, is it possible to drop the AEMIF timing
+specific bindings from the patch and only keep the NAND specific ones?
+
+Thanks,
+Sekhar
