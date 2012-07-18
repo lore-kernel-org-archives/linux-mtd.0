@@ -1,19 +1,25 @@
-Message-ID: <5006F638.2000301@ti.com>
-Date: Wed, 18 Jul 2012 23:15:28 +0530
-From: Sekhar Nori <nsekhar@ti.com>
-MIME-Version: 1.0
-To: Heiko Schocher <hs@denx.de>
-Subject: Re: [PATCH v5 6/7] ARM: mtd: nand: davinci: add OF support for davinci
- nand controller
-References: <1338373143-7467-1-git-send-email-hs@denx.de>
- <1338373143-7467-7-git-send-email-hs@denx.de>
-In-Reply-To: <1338373143-7467-7-git-send-email-hs@denx.de>
-Content-Type: text/plain; charset="UTF-8"
+Received: from mail-wg0-f49.google.com ([74.125.82.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SraLk-0007wU-Dn
+ for linux-mtd@lists.infradead.org; Wed, 18 Jul 2012 19:55:57 +0000
+Received: by wgbez12 with SMTP id ez12so1217684wgb.18
+ for <linux-mtd@lists.infradead.org>; Wed, 18 Jul 2012 12:55:46 -0700 (PDT)
+Date: Wed, 18 Jul 2012 22:55:37 +0300
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: dedekind1@gmail.com
+Subject: Re: [PATCH 2/5] ubi: Limit amount of reserved eraseblocks for bad
+ PEB handling
+Message-ID: <20120718225537.38ddbb60@halley>
+In-Reply-To: <1342607317.7530.9.camel@brekeke>
+References: <1341389164-24409-1-git-send-email-shmulik.ladkani@gmail.com>
+ <1341389164-24409-3-git-send-email-shmulik.ladkani@gmail.com>
+ <1342607317.7530.9.camel@brekeke>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: davinci-linux-open-source@linux.davincidsp.com,
- devicetree-discuss@lists.ozlabs.org, Grant Likely <grant.likely@secretlab.ca>,
- linux-mtd@lists.infradead.org, Scott Wood <scottwood@freescale.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Cc: Richard Genoud <richard.genoud@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,222 +29,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Heiko,
+Hi Artem,
 
-On 5/30/2012 3:49 PM, Heiko Schocher wrote:
-> add OF support for the davinci nand controller.
-> 
-> Signed-off-by: Heiko Schocher <hs@denx.de>
-> Cc: davinci-linux-open-source@linux.davincidsp.com
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: devicetree-discuss@lists.ozlabs.org
-> Cc: linux-mtd@lists.infradead.org
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Grant Likely <grant.likely@secretlab.ca>
-> Cc: Sekhar Nori <nsekhar@ti.com>
-> Cc: Wolfgang Denk <wd@denx.de>
-> Cc: Scott Wood <scottwood@freescale.com>
-> 
-> ---
-> - changes for v2:
->   - add comments from Scott Wood:
->     - add "ti,davinci-" prefix
->     - Dashes are preferred to underscores
->     - rename "nandflash" to "nand"
->     - introduce new "ti,davinci" specific properties for setting
->       up ecc_mode, ecc_bits, options and bbt options, instead
->       using linux defines
->     - readme fixes
-> - no changes for v3
-> - changes for v4
->   remove "pinmux-handle" property as discussed here:
->   http://www.spinics.net/lists/arm-kernel/msg175701.html
->   with Nori Sekhar
-> - no changes for v5
-> 
->  .../devicetree/bindings/arm/davinci/nand.txt       |   72 ++++++++++++++++++
->  drivers/mtd/nand/davinci_nand.c                    |   80 +++++++++++++++++++-
->  2 files changed, 151 insertions(+), 1 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/arm/davinci/nand.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/davinci/nand.txt b/Documentation/devicetree/bindings/arm/davinci/nand.txt
-> new file mode 100644
-> index 0000000..5afe4a6
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/arm/davinci/nand.txt
-> @@ -0,0 +1,72 @@
-> +* Texas Instruments Davinci NAND
-> +
-> +This file provides information, what the device node for the
-> +davinci nand interface contain.
-> +
-> +Required properties:
-> +- compatible: "ti,davinci-nand";
-> +- reg : contain 2 offset/length values:
-> +        - offset and length for the access window
-> +        - offset and length for accessing the aemif control registers
-> +- ti,davinci-chipselect: Indicates on the davinci_nand driver which
-> +                         chipselect is used for accessing the nand.
-> +
-> +Recommended properties :
-> +- ti,davinci-mask-ale: mask for ale
-> +- ti,davinci-mask-cle: mask for cle
-> +- ti,davinci-mask-chipsel: mask for chipselect
-> +- ti,davinci-ecc-mode: ECC mode valid values for davinci driver:
-> +		- "none"
-> +		- "soft"
-> +		- "hw"
-> +- ti,davinci-ecc-bits: used ECC bits, currently supported 1 or 4.
-> +- ti,davinci-nand-buswidth: buswidth 8 or 16
-> +- ti,davinci-nand-use-bbt: use flash based bad block table support.
-> +
-> +Optional properties:
-> +- timing-handle: contains a handle to setup aemif timing.
-> +
-> +Example (enbw_cmc board):
-> +aemif@60000000 {
-> +	compatible = "ti,davinci-aemif";
-> +	#address-cells = <2>;
-> +	#size-cells = <1>;
-> +	reg = <0x68000000 0x80000>;
-> +	ranges = <2 0 0x60000000 0x02000000
-> +		  3 0 0x62000000 0x02000000
-> +		  4 0 0x64000000 0x02000000
-> +		  5 0 0x66000000 0x02000000
-> +		  6 0 0x68000000 0x02000000>;
-> +	nand_cs: cs3@68000000 {
-> +		compatible = "ti,davinci-cs";
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		/* all timings in nanoseconds */
-> +		cs = <3>;
-> +		asize = <0>;
-> +		ta = <0>;
-> +		rhold = <7>;
-> +		rstrobe = <42>;
-> +		rsetup = <7>;
-> +		whold = <7>;
-> +		wstrobe = <14>;
-> +		wsetup = <7>;
-> +		ew = <0>;
-> +		ss = <0>;
-> +	};
-> +	nand@3,0 {
-> +		compatible = "ti,davinci-nand";
-> +		reg = <3 0x0 0x807ff
-> +			6 0x0 0x8000>;
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		ti,davinci-chipselect = <1>;
-> +		ti,davinci-mask-ale = <0>;
-> +		ti,davinci-mask-cle = <0>;
-> +		ti,davinci-mask-chipsel = <0>;
-> +		ti,davinci-ecc-mode = "hw";
-> +		ti,davinci-ecc-bits = <4>;
-> +		ti,davinci-nand-use-bbt;
-> +		timing-handle = <&nand_cs>;
-> +	};
-> +};
-> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-> index d94b03c..67bdd29 100644
-> --- a/drivers/mtd/nand/davinci_nand.c
-> +++ b/drivers/mtd/nand/davinci_nand.c
-> @@ -33,9 +33,12 @@
->  #include <linux/mtd/nand.h>
->  #include <linux/mtd/partitions.h>
->  #include <linux/slab.h>
-> +#include <linux/of_i2c.h>
+On Wed, 18 Jul 2012 13:28:37 +0300 Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> The whole thing will become simpler if we first mark the PEB as bad
+> unconditionally (because it _is_ bad), then grab the lock and do all the
+> re-calculations.
 
-This include is not required.
+On first glance that would sound the right thing to do.
 
-> +#include <linux/of_device.h>
->  
->  #include <mach/nand.h>
->  #include <mach/aemif.h>
-> +#include <mach/mux.h>
+Actually, when looked at the original code, which does NOT mark the
+block bad when 'beb_rsvd_pebs == 0' (instead, does a 'goto out_ro'),
+I initially thought "this is SO wrong, the block IS bad, we MUST mark it
+bad, what IS the deal here?".
+But then I spent more and more time trying to backtrack the reason for
+it - and I think I found a reason, quite an improtant one.
 
-This too.
+Suppose 'beb_rsvd_pebs == 0'.
 
->  
->  /*
->   * This is a device driver for the NAND flash controller found on the
-> @@ -518,9 +521,81 @@ static struct nand_ecclayout hwecc4_2048 __initconst = {
->  	},
->  };
->  
-> +#if defined(CONFIG_OF)
-> +static const struct of_device_id davinci_nand_of_match[] = {
-> +	{.compatible = "ti,davinci-nand", },
-> +	{},
-> +}
-> +MODULE_DEVICE_TABLE(of, davinci_nand_of_match);
-> +
-> +static struct davinci_nand_pdata
-> +	*nand_davinci_get_pdata(struct platform_device *pdev)
-> +{
-> +	if ((pdev->dev.platform_data == NULL) &&
-> +		(pdev->dev.of_node)) {
+In the original scheme, it means that there are NO available PEBs at
+all. All good PEBs are "assigned" (to user volumes, layout volume, WL
+and EBA).
 
-You can simplify this and also avoid breaking the statement.
+Now, if one of these PEBs goes bad, and you DO mark it bad, and
+decrement the good_peb_count, you'll have a shortage of good PEBs - it
+will not match the amount of PEBs assigned to the consumers (user
+volumes, layout, WL, EBA).
+Meaning, next attach would simply fail with a "no enough physical
+eraseblocks" message (grep for these in ubi_wl_init and ubi_eba_init).
+You won't even be able to attach anymore. Not good.
 
-	if (!pdev->dev.platform_data && pdev->dev.of_node) {
+However, if you DO NOT mark it bad, but instead go into RO mode, you
+should be able to later re-attach because the good_peb_count would fit
+(no shortage of PEBs).
 
+So going into RO seems a "less worse" solution than marking bad, for
+that particular case.
 
-> +		struct device_node *tmp_np;
-> +		struct davinci_nand_pdata *pdata;
-> +		const char *mode;
-> +		u32 prop;
-> +		int len;
-> +
-> +		pdata =  kzalloc(sizeof(struct davinci_nand_pdata),
-> +				GFP_KERNEL);
+Anyways, I've really invested some thought into this patch, trying to
+cover all sorts of esoteric cases.
+I think the logic itself is pretty robust, although I would really
+appreciate some reassurances on that...
 
-I don't see this getting freed anywhere. You wanted to use devm_kzalloc()?
+I agree the code does not "read simple" enough, I tried to make the best
+simplifying and adding some comments. Let me know if you'd like some
+more polish on it.
 
-> +		pdev->dev.platform_data = pdata;
-> +		if (!pdata)
-> +			return NULL;
-> +		if (!of_property_read_u32(pdev->dev.of_node,
-> +			"ti,davinci-chipselect", &prop))
-> +			pdev->id = prop;
-> +		if (!of_property_read_u32(pdev->dev.of_node,
-> +			"ti,davinci-mask-ale", &prop))
-> +			pdata->mask_ale = prop;
-> +		if (!of_property_read_u32(pdev->dev.of_node,
-> +			"ti,davinci-mask-cle", &prop))
-> +			pdata->mask_cle = prop;
-> +		if (!of_property_read_u32(pdev->dev.of_node,
-> +			"ti,davinci-mask-chipsel", &prop))
-> +			pdata->mask_chipsel = prop;
-> +		if (!of_property_read_string(pdev->dev.of_node,
-> +			"ti,davinci-ecc-mode", &mode)) {
-> +			if (!strncmp("none", mode, 4))
-> +				pdata->ecc_mode = NAND_ECC_NONE;
-> +			if (!strncmp("soft", mode, 4))
-> +				pdata->ecc_mode = NAND_ECC_SOFT;
-> +			if (!strncmp("hw", mode, 2))
-> +				pdata->ecc_mode = NAND_ECC_HW;
-> +		}
-> +		if (!of_property_read_u32(pdev->dev.of_node,
-> +			"ti,davinci-ecc-bits", &prop))
-> +			pdata->ecc_bits = prop;
-> +		if (!of_property_read_u32(pdev->dev.of_node,
-> +			"ti,davinci-nand-buswidth", &prop))
-> +			if (prop == 16)
-> +				pdata->options |= NAND_BUSWIDTH_16;
-> +		if (of_find_property(pdev->dev.of_node,
-> +			"ti,davinci-nand-use-bbt", &len))
-> +			pdata->bbt_options = NAND_BBT_USE_FLASH;
-> +
+I saw you submitted a simplified version, I can surely take a look, but
+I'm afraid it lacks the proper treatment discussed above (NOT marking
+the bad block as bad when beb_rsvd_pebs is zero).
 
-> +		tmp_np = of_parse_phandle(pdev->dev.of_node,
-> +				"timing-handle", 0);
-> +		if (tmp_np)
-> +			davinci_aemif_setup_timing_of(tmp_np);
+Let me know.
 
-Since the aemif driver conversion to DT needs to be looked at along with
-its movement to drivers/ folder, is it possible to drop the AEMIF timing
-specific bindings from the patch and only keep the NAND specific ones?
-
-Thanks,
-Sekhar
+Many thanks,
+Shmulik
