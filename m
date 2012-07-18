@@ -1,23 +1,24 @@
 Received: from mail-lb0-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SrOAd-000795-Fe
- for linux-mtd@lists.infradead.org; Wed, 18 Jul 2012 06:55:41 +0000
-Received: by lbbgg6 with SMTP id gg6so1753085lbb.36
- for <linux-mtd@lists.infradead.org>; Tue, 17 Jul 2012 23:55:36 -0700 (PDT)
-Message-ID: <1342594206.31927.7.camel@brekeke>
-Subject: Re: [PATCH 3/4] UBI: use the whole MTD device size to get
- bad_peb_limit
+ id 1SrOEk-0008RM-Qg
+ for linux-mtd@lists.infradead.org; Wed, 18 Jul 2012 06:59:56 +0000
+Received: by lbbgg6 with SMTP id gg6so1756945lbb.36
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Jul 2012 23:59:51 -0700 (PDT)
+Message-ID: <1342594461.31927.9.camel@brekeke>
+Subject: Re: [PATCH 0/5] ubi: Fix bad PEBs reserve caclulation
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Richard Genoud <richard.genoud@gmail.com>
-Date: Wed, 18 Jul 2012 09:50:06 +0300
-In-Reply-To: <1341937423-16516-4-git-send-email-richard.genoud@gmail.com>
-References: <1341937423-16516-1-git-send-email-richard.genoud@gmail.com>
- <1341937423-16516-4-git-send-email-richard.genoud@gmail.com>
+To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Date: Wed, 18 Jul 2012 09:54:21 +0300
+In-Reply-To: <20120717102333.26cb10fb@pixies.home.jungo.com>
+References: <1341389164-24409-1-git-send-email-shmulik.ladkani@gmail.com>
+ <1342452837.7270.15.camel@brekeke>
+ <20120717102333.26cb10fb@pixies.home.jungo.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-EPpaMrZmTaruFoRElDs/"
+ boundary="=-gCT1bM7wyGyKRD97ohmA"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+Cc: Richard Genoud <richard.genoud@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,25 +31,21 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-EPpaMrZmTaruFoRElDs/
+--=-gCT1bM7wyGyKRD97ohmA
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-07-10 at 18:23 +0200, Richard Genoud wrote:
->=20
-> The Kconfig option is in per1024 blocks, thus it can have a default
-> value of 20 which is *very* common for NAND devices.=20
+On Tue, 2012-07-17 at 10:23 +0300, Shmulik Ladkani wrote:
+> But it would only make sense after accepting Richard's patchset as well,
+> which suggests configuring per-ubi-device beb limit via the attach ioctl.
 
-Why do you prefer per1024? I'd make it centi-percent instead, wouldn't
-that be more human-friendly. It is just %*100. If I am a user, it is
-easy for me to calculate % and multiply that by 100. This per1024 thing
-would make me scratch my head...
+Yes, sure, you are right.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-EPpaMrZmTaruFoRElDs/
+--=-gCT1bM7wyGyKRD97ohmA
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -56,19 +53,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQBlyeAAoJECmIfjd9wqK0SvoP/3NpxZvF6XRyRrYHiBRDj6pJ
-eIHIPvXdXvLKPYVcAUq0lmMJWe9oXTpjbhUxBB1D5ZGVpCsn4ZuGpDWhFlWyZ/21
-RalW3AVP0sQUZngxcmQvFJQs+j5CWErlY67NUzsLmsJVfAisN9ZQ/kLUyTNpqzT0
-iG8iLTZiprcONvRkd4vA4VNJtE47fT5rp4HaqjYFrJLijFCGldeLUvrABuUHcqSL
-F1FGmVizADOd9XBeoybwe52F20J4h8qxp0M2bUu1+rpCsIgtFde00zT8e0XbWodJ
-ClzRBgN9sDJkMxmuasJYrmRSiK3WBJyD1BhzH4inmhoKyZYf2Oefw+56m8UMpDir
-EX+FLkJZrfL4NbooY+55BkX3AOQMTRA3rwH3ormsrxVfVZmHZivJZdNAiSWx9SVX
-sKK8eBSlyeal+0ntO6JNzxhgOpU1skr8PH26a9bHLp3UBKfqPQlKQw2whasgkhNX
-SB/40Z2UDqNZPySku8L3KBvQqVuG/znw9Io/nRD4wpOLbIwxFFaTLeN6PyAB0b75
-fvHqPhOdXjPmJ8MEdXVel6Ep4wqzS+OrA52URpnP0KZMWt5nW/2OYP3kWvLNxr53
-RI4A5TowBQI5CdhyqR/tcVA7bvOt8qT2AjF0ihv126EMwjZrBOKq4Q8yFl/w5hid
-ko9TNlEetKuI4qLYLDBb
-=4RZe
+iQIcBAABAgAGBQJQBl2dAAoJECmIfjd9wqK00lMP/00D5rELb3GzXlhij1zpWkFV
+WjbPs/JjdiBl+ilM8ZzkLWc8wyJy6ebtXrvGhRNErkHjecW3+9o3l/3xu7wlPX+k
+0w3sP0Vq5/MQprI53besEkb4QI0lQLIdfbZzz9T1sOhu7tozM39nm6s6kwVkH0Q/
+B6Uyg1s/J2SxFj4f2tP0ZVli4mX+lSb0+pcyDihIZLJU2EGuc+9XjM/tssvBjLZh
+qTLfEhOIExZl2nqn8M5nI70MFKyJvfn0d7wR+4PxnmjDHhguG65Ozhyqs37ie3vx
+OeV1wJndxry6fyOGv6PFtMrpgcNJSsfh3VstlhSD1jEpf5E4ISi5krxSauh6p/1P
+nNxUOVAg/l43O6aSzV/4DZxiZnzH1D8ECIzHfww34RvPUZtd2ppM1xOTbh4+0WtO
+aAm5CTe4Ge+HaVxjYq4AKCXy574XDDrjX5kF2mNa76jy1egarovmHXikbXjQayVq
+P3YSDFpFD7XBVH+rvQHmfqsJmOPC/PEti3P8wyK89zBXvYBZfPAiv7v5KB4YqDsJ
+rvFj0Tr6Bu2ym00WpoxLIkskp+/rPJc6gWNw9lwqdIM9IywTIC6FkLkt449htQ2P
+Er/oNH7bgyUvS9jCZCu5ffOzW/GCbGMd9/FPL1ZIDvTtUSkg/R0EUqAjtJDXlAh9
+2OzIjvZ9cw4C20dXx0M/
+=R+25
 -----END PGP SIGNATURE-----
 
---=-EPpaMrZmTaruFoRElDs/--
+--=-gCT1bM7wyGyKRD97ohmA--
