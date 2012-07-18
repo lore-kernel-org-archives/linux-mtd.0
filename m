@@ -1,29 +1,27 @@
-Received: from smtp.newsguy.com ([74.209.136.69])
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SrCEP-00036w-H3
- for linux-mtd@lists.infradead.org; Tue, 17 Jul 2012 18:10:46 +0000
-Message-ID: <5005AA80.4010200@newsguy.com>
-Date: Tue, 17 Jul 2012 11:10:08 -0700
-From: Mike Dunn <mikedunn@newsguy.com>
-MIME-Version: 1.0
-To: Ivan Djelic <ivan.djelic@parrot.com>
-Subject: Re: [PATCH 8/8] mtd: nand: use ECC, if present, when scanning OOB
-References: <1340408145-24531-1-git-send-email-computersforpeace@gmail.com>
- <1340408145-24531-9-git-send-email-computersforpeace@gmail.com>
- <4FFBDDB0.6010605@parrot.com>
- <CAN8TOE8g9FjgJuj+1RuQx3afaY_Huo29PZBNvXVt2-p17OF_tQ@mail.gmail.com>
- <50032194.9040703@newsguy.com> <20120716140121.GB9278@parrot.com>
- <50045F48.6050702@newsguy.com> <20120716213402.GB10244@parrot.com>
-In-Reply-To: <20120716213402.GB10244@parrot.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Matthieu Castet <matthieu.castet@parrot.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+ id 1SrNoO-0001zf-L4
+ for linux-mtd@lists.infradead.org; Wed, 18 Jul 2012 06:32:42 +0000
+Received: by lbbgg6 with SMTP id gg6so1732047lbb.36
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Jul 2012 23:32:33 -0700 (PDT)
+Message-ID: <1342592816.31927.2.camel@brekeke>
+Subject: Re: [PATCH] mtd: physmap_of: Add "map-indirect" DT property
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Stefan Roese <sr@denx.de>
+Date: Wed, 18 Jul 2012 09:26:56 +0300
+In-Reply-To: <201207171156.45375.sr@denx.de>
+References: <1341303991-6219-1-git-send-email-sr@denx.de>
+ <4FF7E253.4080604@gatzka.org>
+ <1342471312.25411.30.camel@shinybook.infradead.org>
+ <201207171156.45375.sr@denx.de>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-XPK39lMTzej+1B4aD1XT"
+Mime-Version: 1.0
+Cc: stephan@gatzka.org, Albrecht Dress <albrecht.dress@arcor.de>,
+ linux-mtd@lists.infradead.org, Anatolij Gustschin <agust@denx.de>,
+ David Woodhouse <dwmw2@infradead.org>, Stephan Gatzka <Stephan.Gatzka@hbm.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,53 +31,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07/16/2012 02:34 PM, Ivan Djelic wrote:
-> On Mon, Jul 16, 2012 at 08:36:56PM +0200, Mike Dunn wrote:
->>
->> This is a certainty, no?  Erased, by definition, includes any ecc bytes.
-> 
-> If you add the right polynomial[1] to your Hamming or BCH code, then you can make
-> sure the ECC of an erased page (possibly with OOB bytes) is actually a sequence of 0xff bytes.
-> This trick enables bitflip correction on data that has never been programmed.
-> Take a look at nand_ecc.c:63 (or nand_bch.c:62) for an example.
-> This trick is not possible on all hardware ECC engines.
 
+--=-XPK39lMTzej+1B4aD1XT
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Ah, yes, I forgot.  You explained this when you were helping me with ecc on the
-diskonchip.
+On Tue, 2012-07-17 at 11:56 +0200, Stefan Roese wrote:
+> How about "no-unaligned-direct-access"? Pretty long though. Any other=20
+> suggestions here?
 
+FYI, I am dropping this patch from l2-mtd.git.
 
->  
->>
->>> Moreover, reading just the OOB region with ECC may require a full page read on some drivers
->>> (when OOB and data are parts of the same codeword).
->>>
->>> To me, the only strong reason for wanting OOB ECC is the implementation of YAFFS2 or similar filesystems
->>> which require OOB metadata protection. But maybe I'm missing some other use cases ?
->>>
->>> What do you think ?
->>
->>
->> If we assume the oob bytes on the first page of a good block can contain
->> anything, won't simply counting the bits make the risk of falsly identifying a
->> bb marker unacceptably high?
-> 
-> Counting bits on a BBM marker byte basically gives a 4-bitflip protection on a _single_ byte, which is
-> *extremely* unlikely. If you assume an erased good block can contain garbage in its OOB region, then
-> it can indeed be wrongly identified as a bad block; but this is also true if you use OOB ECC
-> (e.g. exceeding correction capacity).
-> In practice, since the bad block marker byte is normally never programmed to anything other than 0xff,
-> there is no reason why we should find garbage in it (even if a power failure occurs during an
-> erase/program operation).
+--=20
+Best Regards,
+Artem Bityutskiy
 
+--=-XPK39lMTzej+1B4aD1XT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-This is what I was missing.  I was assuming that the bb marker byte could be
-programmed to an arbitrary value by the user.  I see now that e.g., davinci
-defines the bb marker position in its ecc.layout definition, so it will never be
-written as long as MTD_OPS_AUTO_OOB mode is used.  I need to fix that in the docg4.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-Are you trying to gently nudge me on this? :)  I am loathe to touch that bbm
-code.  OTOH, the docg4 would benefit, since it uses an oob bb marker.
+iQIcBAABAgAGBQJQBlcwAAoJECmIfjd9wqK0O20P/RYhjl91zkrDQDHEWClxhGhn
+x2l2S3Z4lVPSYC9DF0QbfW3yJb7GFyj/UegQOC0O5gvCMxfWGFVnsyIDOhAGzDs8
+Wfm+8cGmIgwzUfTs/ZtjTRtPJsZ9hobtwkG2TvhpW+2J6HkMqJNuRvv4oDQEZQF2
+b+OltfaDS4Um7Z2bzoRXknOfqk4Fmy/oXxsAZjCFHf062px7jZLEw2aUFH5Sv0wo
+oqYUdO33DofwYEJzZw56WWiRV8Im7PulndVNrWCSPOEucAmRq8rJc6bUr0ZT9B5W
+PT9vKHDniwaGqulwJrucdmIFiK1w/7oKT+98m8LfMzfxMLsuFLPLxaxWrro7aZE8
+/nxfoMtPEIUeFxNpSnh4/TIHFKFYmTS06h9+pKdW02N4f1lzgm5SHzHiXHduKUPa
+tMlhwIeYoQadNgNHMobwjy6fTGKoj5Zniw7+iTubGKI2kjuPsTVOZxQ1qMU1q1gI
+qEkjf29I0f7RhrCCfGgF1j2NOmEWPGVcIA2MOgRS57QOiLPktuyoqgy9+aBthyff
+DaCfJ9CsWRWoetYctIybw50rvraLmVDm2wUt7ABVDGVY4aRbf6QAPnwH6jilUSnu
+YL1SxKfdhYzgzKYG0UsfASldhykhQgKwhhOTb/bIabkSHLHgiRXkanB01oIaWbBh
+1vdxqc588KJmwVv3MlOG
+=WgKH
+-----END PGP SIGNATURE-----
 
-Thanks again Ivan,
-Mike
+--=-XPK39lMTzej+1B4aD1XT--
