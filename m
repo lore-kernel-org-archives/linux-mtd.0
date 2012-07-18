@@ -1,25 +1,23 @@
 Received: from mail-lb0-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SrShV-0005KG-Bb
- for linux-mtd@lists.infradead.org; Wed, 18 Jul 2012 11:45:54 +0000
-Received: by lbbgg6 with SMTP id gg6so2078429lbb.36
- for <linux-mtd@lists.infradead.org>; Wed, 18 Jul 2012 04:45:51 -0700 (PDT)
-Message-ID: <1342611620.7530.18.camel@brekeke>
-Subject: Re: [PATCH 2/5] ubi: Limit amount of reserved eraseblocks for bad
- PEB handling
+ id 1SrT3f-0006RT-3L
+ for linux-mtd@lists.infradead.org; Wed, 18 Jul 2012 12:09:09 +0000
+Received: by lbbgg6 with SMTP id gg6so2104376lbb.36
+ for <linux-mtd@lists.infradead.org>; Wed, 18 Jul 2012 05:08:23 -0700 (PDT)
+Message-ID: <1342612972.7530.19.camel@brekeke>
+Subject: Re: [PATCH] mtd: sh_flctl: Switch from tick-based to time-based
+ timeout
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Date: Wed, 18 Jul 2012 14:40:20 +0300
-In-Reply-To: <1341389164-24409-3-git-send-email-shmulik.ladkani@gmail.com>
-References: <1341389164-24409-1-git-send-email-shmulik.ladkani@gmail.com>
- <1341389164-24409-3-git-send-email-shmulik.ladkani@gmail.com>
+To: Bastian Hecht <hechtb@googlemail.com>
+Date: Wed, 18 Jul 2012 15:02:52 +0300
+In-Reply-To: <1341410726-10562-1-git-send-email-hechtb@gmail.com>
+References: <1341410726-10562-1-git-send-email-hechtb@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-Ef4bKrX3RLb+LvNvgDBK"
+ boundary="=-AgJ6QFlEPV/EGajUF8wP"
 Mime-Version: 1.0
-Cc: Richard Genoud <richard.genoud@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Cc: Bastian Hecht <hechtb@gmail.com>, linux-mtd@lists.infradead.org,
+ Linux-SH <linux-sh@vger.kernel.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,25 +29,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-Ef4bKrX3RLb+LvNvgDBK
+--=-AgJ6QFlEPV/EGajUF8wP
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-07-04 at 11:06 +0300, Shmulik Ladkani wrote:
-> The existing mechanism of reserving PEBs for bad PEB handling has two
-> flaws:
-> - It is calculated as a percentage of good PEBs instead of total PEBs.
-> - There's no limit on the amount of PEBs UBI reserves for future bad
->   eraseblock handling.
+On Wed, 2012-07-04 at 16:05 +0200, Bastian Hecht wrote:
+> Instead of counting down a compile-time value, we use a value based on
+> jiffies.
+>=20
+> Signed-off-by: Bastian Hecht <hechtb@gmail.com>
 
-OK, I've modified this patch a lot, did not test, and sent what I have
-in the beb branch to you - please, take a look.
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-Ef4bKrX3RLb+LvNvgDBK
+--=-AgJ6QFlEPV/EGajUF8wP
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -57,19 +53,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQBqCkAAoJECmIfjd9wqK01JMQAL4PchrlyOyNvCjPCSQuSLbf
-6dr2XpFQ97yqdhmGlIkddOonYs7fvva17saJIvCh/ihkYaS/y7L29JODXTWikELr
-Uv2nxKe2mLWWzcsj1MD+WHUkfn0MJ7qzoJOwES2Nrr4HtNWwp3gxClHiSB8g8PbY
-Q9mRjBudQzNTCo+M6K+OhI09U8UoyNJKhRZjw7zIU8HUyOqWqzEL/E2Vz+17ufgj
-2nZXsATMid5F4B27pOye9U8hnA5iYDMzOVtutIG3lT8FRchfngcCiNGQBogK6PiX
-1HRKDLluLKOh7nvGakvGK+UQrteY2s+6eIo/tvJZUZpyDWRS3M7PefRjdibUHIKQ
-qNa+O5u87Yn1Z5roKYaDoj+h8wWfYRRr0lfLbxB6lZCeJ4aM0lGrd8t1WleiV8TS
-AU9X7OALEZK1UmSkWqTLYiEC7ooopBXSJD69JVup5R9tKx+c7HbgzbChaKeDacXR
-m6IrEOBpCcY3k4k4D8EC5u2eRCbOzMHyGHfsu5s+Hcc9F8uh7TiOMXEWm2oZ7ubc
-nPtep+rUCjPoNMqIm/1byvApiIHI4a+Z2b25x2BTh/6bZVLro3ISqoeX2DR2YPcn
-BQCQX/r3kOkoKs0ETudMwUwnGImQEE7l4CzNC6JsFzvSLlihEx82QCx2spZ9Jk7X
-G4CoFeUTWEMKSl+wN17t
-=Gxsj
+iQIcBAABAgAGBQJQBqXsAAoJECmIfjd9wqK0u94QAMU39xcd1UJTnb8LbX5biFSZ
+S4wZT3cQAbonwcB4AZ4t2yljOG6Qln6u4eK2HKyQMLjicc2djINRTpwzmeKFmZrf
++0s47Xxy9a5p3pgL1hfbUi7s7UQEUvHUwrgYDSBJRmxXKhXeI4M8jpkQrnp14KYH
+8oZZoknGB9Ljs0hZsZGnnRv01eQjlvy/AqKYVlSVmpkhXruwepSQcfcB5QvS71XW
+zED0z4ktEmFbJPBcX8k7qoEFzLl3OGUoKy/Oa7NFTCvW5wBhTyrW0VcCFo1i8VzN
+Em3pqW/1gLE4cqkkjpSQLkJegEwq7vkgmH6Cr4PrSGFIWJpBjSuymCg/+9zlBdeZ
++VwMrcta2OSg/wBRVo7R4yJ1DDfNSU2nRzVafWuYUjYLKpi8NUR8zpShxVP25ht7
+2gYrZLpjT+2zqzLPH2s4xsiLf13F/hH8Ixt6b3a2+esZDXoctlxa90aPE0H2mDq1
+aDyuNqPHr62CGDD+2/gjZ7Mx24E+FoF2ntkz9BASBfTzkxNdJ2qrqF5rCSDreSiD
+mnAj/Ts/4L6Kp+naCj0Ns8/n8olqS0Lpvnto5L8CTrW4K6UW/1JEZDTVaxap4fCD
+LelcRSLsgEUtYFLWNRsZc+G2fGIDVD5pdMgcs2cbE8iyqKWia7AvUMZqsB4vOIvW
+WG0y1sFXb0clvsqemACp
+=XToN
 -----END PGP SIGNATURE-----
 
---=-Ef4bKrX3RLb+LvNvgDBK--
+--=-AgJ6QFlEPV/EGajUF8wP--
