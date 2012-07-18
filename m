@@ -1,25 +1,20 @@
-Received: from mail86.messagelabs.com ([216.82.242.179])
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SrOKW-0001XP-1P
- for linux-mtd@lists.infradead.org; Wed, 18 Jul 2012 07:05:54 +0000
-From: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Date: Wed, 18 Jul 2012 17:05:24 +1000
-Subject: RE: UBIFS fails to mount on second boot
-Message-ID: <6871BC8982B258468985EE735D2C57524B09D0EECD@ntcex01.corp.netcomm.com.au>
-References: <CAEZtdFU1cET8=kViUsR0Oq3q0ckcFLuKsd_Hc5WHo_uhFiKVBw@mail.gmail.com>
- ,<1340806219.3070.23.camel@sauron.fi.intel.com>
- <6871BC8982B258468985EE735D2C575243C0F0889A@ntcex01.corp.netcomm.com.au>
- ,<1340977577.3070.207.camel@sauron.fi.intel.com>
- ,<6871BC8982B258468985EE735D2C575243C0F088B6@ntcex01.corp.netcomm.com.au>
- <6871BC8982B258468985EE735D2C575243C0F088B7@ntcex01.corp.netcomm.com.au>,
- <1342240778.3209.12.camel@brekeke>
-In-Reply-To: <1342240778.3209.12.camel@brekeke>
-Content-Language: en-AU
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Message-ID: <1342595359.31927.11.camel@brekeke>
+Subject: Re: [PATCH 1/5] ubi: introduce ubi->bad_peb_limit
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Date: Wed, 18 Jul 2012 10:09:19 +0300
+In-Reply-To: <1341389164-24409-2-git-send-email-shmulik.ladkani@gmail.com>
+References: <1341389164-24409-1-git-send-email-shmulik.ladkani@gmail.com>
+ <1341389164-24409-2-git-send-email-shmulik.ladkani@gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-WpSzEhbJN1ZrP15UtFd3"
+Mime-Version: 1.0
+Cc: Russell King <linux@arm.linux.org.uk>,
+ Richard Genoud <richard.genoud@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Andrew Victor <linux@maxim.org.za>, linux-arm-kernel@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,53 +25,77 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> I suspect this is a bug in the free space fixup code - my level of
-> confidence on this is 80%. Could you please verify this by removing
-> the -F mkfs.ubifs parameter or using the patch below. Thanks!
+--=-WpSzEhbJN1ZrP15UtFd3
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-You're right, the problem doesn't happen without fixup.
-
-I thought I was not flashing empty pages in U-Boot, but that turned
-out not to be quite true. Without fixup, the boot died in a hailstorm
-of asserts. I fixed that, but now the flashing takes noticeably longer.
-
-In other words, I quite like the fixup feature and would prefer if it does=
-n't
-go away permanently. Otherwise:
-
-Tested-by: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
-
+On Wed, 2012-07-04 at 11:06 +0300, Shmulik Ladkani wrote:
+> Introduce 'ubi->bad_peb_limit', which specifies an upper limit of PEBs
+> ubi expects to go bad.
+> Currently, it is initialized to a fixed percentage of total PEBs in the
+> ubi device (configurable via CONFIG_MTD_UBI_BEB_LIMIT).
 >=20
-> diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-> index 5862dd9..3398114 100644
-> --- a/fs/ubifs/super.c
-> +++ b/fs/ubifs/super.c
-> @@ -1295,11 +1295,13 @@ static int mount_ubifs(struct ubifs_info *c)
->  =09if (err)
->  =09=09goto out_master;
-> =20
-> +#if 0
->  =09if (!c->ro_mount && c->space_fixup) {
->  =09=09err =3D ubifs_fixup_free_space(c);
->  =09=09if (err)
->  =09=09=09goto out_lpt;
->  =09}
-> +#endif
-> =20
->  =09if (!c->ro_mount) {
->  =09=09/*
+> The 'bad_peb_limit' is intended to be used for calculating the amount of
+> PEBs ubi needs to reserve for bad eraseblock handling.
 >=20
+> Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 
-Best regards,
+Created branch "beb" and pushed this patch there with minor amendments
+(see diff below). Let's use this branch in UBI tree for this work and
+merge it as soon as it is ready.
 
-Iwo
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index c33e25b..dee90b7 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -668,13 +668,12 @@ static int io_init(struct ubi_device *ubi)
+                ubi->bad_allowed =3D 1;
+                if (CONFIG_MTD_UBI_BEB_LIMIT > 0) {
+                        int percent =3D CONFIG_MTD_UBI_BEB_LIMIT;
+-                       int beb_limit;
++                       int limit =3D mult_frac(ubi->peb_count, percent, 10=
+0);
+=20
+-                       beb_limit =3D mult_frac(ubi->peb_count, percent, 10=
+0);
+-                       /* round it up */
+-                       if (mult_frac(beb_limit, 100, percent) < ubi->peb_c=
+ount)
+-                               beb_limit++;
+-                       ubi->bad_peb_limit =3D beb_limit;
++                       /* Round it up */
++                       if (mult_frac(limit, 100, percent) < ubi->peb_count=
+)
++                               limit +=3D 1;
++                       ubi->bad_peb_limit =3D limit;
+                }
+        }
 
-______________________________________________________________________
-This communication contains information which may be confidential or privi=
-leged. The information is intended solely for the use of the individual or=
- entity named above.  If you are not the intended recipient, be aware that=
- any disclosure, copying, distribution or use of the contents of this info=
-rmation is prohibited.  If you have received this communication in error, =
-please notify me by telephone immediately.
-______________________________________________________________________
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-WpSzEhbJN1ZrP15UtFd3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQBmEfAAoJECmIfjd9wqK0L8oP/2ZFc7DJ6B0tNy1WK+SCIqb6
+OfiBMepSM1g2hxohgovjIQPw+xWJF7vno+zwFbDobha0NBf8r/8/glQS3LCluONa
+nz8I3zPakamDE9zYQrlPsI+hZv8DWxiRFbfeNy0c304S9sinfhnAyACGfEQwmJia
+yqdNp4XZgcDch5Cswu57f6Gtzk8s2PjIpWzpwO6Iquq6fKQ1hNrZ06qcFbnNbuGP
+M9/iM7N6j3QxTJYGy8fOvCKIOA0LzfBP0erj1YbVlKcuvMiFU8Xdk3x1yfGZ9iPN
+ErAdFhcmZHk6AvzxucMfvp+cE5VieFox1Qx3rPvlUl8S9RO5AYUUfpLNLR/JKOeB
+YgybHkqqRQIMcOOi4V63mlXuDvJOey76BEfmW//oIVaLnYawsBEKnaI4TFZ+WGl6
+/VnoS7YjYFC0kS8BqS9FqtWen0RJDW6cRNxX+b0OPQYoXfmozPD7Ys2hqix9Wj7S
+Qm3LhixiJeJC4yGIs8Vv3QG3vRNpw/mkiW6H5BtIgXm+mo5yWhGZhZFLjm7HzX0R
+YRBJEfflX0UraSL9I04WGVX3v7DphQl1JhgniUsiR5cSjGWb8qDjDkRB9TjlCmGY
+Lo0yzR4kHmS8kf4Q72BGSb8rIXM0IZcCQ9yK/YAwf+mgxE7WzfY8vmZ+AgPDvg4u
+9pmbK0sAWqbaz0wHKCWQ
+=yXbr
+-----END PGP SIGNATURE-----
+
+--=-WpSzEhbJN1ZrP15UtFd3--
