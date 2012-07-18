@@ -1,29 +1,23 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
+Received: from mail-we0-f177.google.com ([74.125.82.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SrOes-0006jO-KE
- for linux-mtd@lists.infradead.org; Wed, 18 Jul 2012 07:26:55 +0000
-Received: by lbbgg6 with SMTP id gg6so1786102lbb.36
- for <linux-mtd@lists.infradead.org>; Wed, 18 Jul 2012 00:26:40 -0700 (PDT)
-Message-ID: <1342596070.31927.14.camel@brekeke>
-Subject: RE: UBIFS fails to mount on second boot
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
-Date: Wed, 18 Jul 2012 10:21:10 +0300
-In-Reply-To: <6871BC8982B258468985EE735D2C57524B09D0EECD@ntcex01.corp.netcomm.com.au>
-References: <CAEZtdFU1cET8=kViUsR0Oq3q0ckcFLuKsd_Hc5WHo_uhFiKVBw@mail.gmail.com>
- ,<1340806219.3070.23.camel@sauron.fi.intel.com>
- <6871BC8982B258468985EE735D2C575243C0F0889A@ntcex01.corp.netcomm.com.au>
- ,<1340977577.3070.207.camel@sauron.fi.intel.com>
- ,<6871BC8982B258468985EE735D2C575243C0F088B6@ntcex01.corp.netcomm.com.au>
- <6871BC8982B258468985EE735D2C575243C0F088B7@ntcex01.corp.netcomm.com.au>
- ,<1342240778.3209.12.camel@brekeke>
- <6871BC8982B258468985EE735D2C57524B09D0EECD@ntcex01.corp.netcomm.com.au>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-Z+bpd89HnX7iYan0SU8S"
-Mime-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+ id 1SrPeU-0002wS-8X
+ for linux-mtd@lists.infradead.org; Wed, 18 Jul 2012 08:30:36 +0000
+Received: by weyr3 with SMTP id r3so869769wey.36
+ for <linux-mtd@lists.infradead.org>; Wed, 18 Jul 2012 01:30:23 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1342594206.31927.7.camel@brekeke>
+References: <1341937423-16516-1-git-send-email-richard.genoud@gmail.com>
+ <1341937423-16516-4-git-send-email-richard.genoud@gmail.com>
+ <1342594206.31927.7.camel@brekeke>
+From: Richard Genoud <richard.genoud@gmail.com>
+Date: Wed, 18 Jul 2012 10:30:08 +0200
+Message-ID: <CACQ1gAhMDQPOLhgi24Y8L_OFk35C1e5_1HchrRY3HFuA99+PMA@mail.gmail.com>
+Subject: Re: [PATCH 3/4] UBI: use the whole MTD device size to get
+ bad_peb_limit
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,50 +27,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+2012/7/18 Artem Bityutskiy <dedekind1@gmail.com>:
+> On Tue, 2012-07-10 at 18:23 +0200, Richard Genoud wrote:
+>>
+>> The Kconfig option is in per1024 blocks, thus it can have a default
+>> value of 20 which is *very* common for NAND devices.
+>
+> Why do you prefer per1024? I'd make it centi-percent instead, wouldn't
+> that be more human-friendly. It is just %*100. If I am a user, it is
+> easy for me to calculate % and multiply that by 100. This per1024 thing
+> would make me scratch my head...
+All the NAND devices I've seen are a multiple of 1024 erase blocks, so
+I thought it'll be easier for the humans to use per1024...
+here are 2 random datasheets :
+page 14: http://www.micron.com/~/media/Documents/Products/Data%20Sheet/NAND%20Flash/6691NANDXXX%20A%20128Mb_256Mb_528%20byte_or_264%20word_page_3V_SLC_90nm.pdf
+2048 blocks 40BEB max => 20per1024
+1024 blocks 20BEB max => 20per1024
 
---=-Z+bpd89HnX7iYan0SU8S
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+page 24: http://www.hynix.com/datasheet/pdf/flash/HY27(U_S)S(08_16)121M(Rev0.6).pdf
+4096 blocks 80BEB max => 20per1024
 
-On Wed, 2012-07-18 at 17:05 +1000, Iwo Mergler wrote:
-> In other words, I quite like the fixup feature and would prefer if it doe=
-sn't
-> go away permanently. Otherwise:
->=20
-> Tested-by: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
+If we express the default exact value of 20 per1024 blocks in percent,
+that would be 1.953125% (event in per-thousand, we'll have 19.53125).
+=> the value have to be rounded to floor or ceiling and that will make
+the user unsure about the effective number of bad blocks used for bad
+block handling.
+(even if we say that the default value 20 per-thousand block will be
+used, as the NAND devices have a number of blocks multiple of 1024,
+for a 4096 blocks device, we'll have 81.92 reserved blocks, rounded to
+82 => we loose 2 blocks for each mtd partition.)
+So the per1024 thing was really to stick to the device layout and to
+be easier for users (IMHO)
 
-You should have the fix in your mailbox, and for that fix I'd be
-greatful to have your "Tested-by:". BTW, I've updated the UBI/UBIFS
-documentation WRT debugging - if you could review it - would also be
-great!
-
-http://linux-mtd.infradead.org/faq/ubifs.html#L_how_debug
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-Z+bpd89HnX7iYan0SU8S
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQBmPmAAoJECmIfjd9wqK0qdgQALgGzj133AvV6u7/H4Gshv8B
-GiYA2pveUJBf7MsgjhXhuFkIkUKrECXXnrVX20jL1fgEz/vXXYw9uQ+1oKtR8nSi
-LixNKY2/4CITyLOH6F60+IcOOnztuKYBAi55qGyovO90dsiRXfz9/5ajEwJT4xSa
-PtEM8q3+z57y7etkWO8a1tLLQMNn3FYFf36xG+i3fEzfzNaZsRBCGYNetGdzW+K+
-EGo5LL3sTJzlMTQ/A0dHnWKDO+c0R99KTj5ip7LV1vWV5hzcYEfmyzh5++YOSCNm
-sQ4lUYRBdPu9Ge62MHVD5KcRwVdD0hdYQIWz6XZTbJ8GL05rUkZ3o6TidLcDNkQx
-z61GvRz+8JNYfgRrzRqEa4Ut2rxMam7gd57QcA1ZlmwisKKzisiyksDg4++J4Hwa
-9nk+63M3A1ny5VWLehg9Mxl1ZPhU1bvDJk6Ctx6zb6M0ScLrau83RQVSLetI/M2Z
-Ra9P1zUJmZfn7XWGlWlq/IHNqcNWEkRzzYJq+hZFfHnsbMZHYwPokBhDLSdl9KXo
-o89oSLpBTnzRp6OpH2vO+Fn6tw/W8f/YP8tRE9vFee78/UtAshwFFYhDGWsKn27d
-7xIITtzxaYzDPptLX5pncH2HQ3rBwYqqs+R2iBwpETkPPxWOt4841kyFCHLQj1wP
-2iQIzXmQakcsNTHaGlC7
-=T0kq
------END PGP SIGNATURE-----
-
---=-Z+bpd89HnX7iYan0SU8S--
+Richard.
