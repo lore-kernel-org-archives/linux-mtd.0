@@ -1,14 +1,16 @@
 Received: from mail-lb0-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SrSgI-00058I-Lm
- for linux-mtd@lists.infradead.org; Wed, 18 Jul 2012 11:44:41 +0000
-Received: by lbbgg6 with SMTP id gg6so2076905lbb.36
- for <linux-mtd@lists.infradead.org>; Wed, 18 Jul 2012 04:44:35 -0700 (PDT)
+ id 1SrSgL-00058a-EC
+ for linux-mtd@lists.infradead.org; Wed, 18 Jul 2012 11:44:42 +0000
+Received: by lbbgg6 with SMTP id gg6so2076950lbb.36
+ for <linux-mtd@lists.infradead.org>; Wed, 18 Jul 2012 04:44:37 -0700 (PDT)
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Subject: [PATCH 1/3] UBI: introduce new bad PEB limit
-Date: Wed, 18 Jul 2012 14:38:43 +0300
-Message-Id: <1342611525-25539-1-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 3/3] UBI: kill CONFIG_MTD_UBI_BEB_RESERVE
+Date: Wed, 18 Jul 2012 14:38:45 +0300
+Message-Id: <1342611525-25539-3-git-send-email-dedekind1@gmail.com>
+In-Reply-To: <1342611525-25539-1-git-send-email-dedekind1@gmail.com>
+References: <1342611525-25539-1-git-send-email-dedekind1@gmail.com>
 Cc: Richard Genoud <richard.genoud@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -21,103 +23,58 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 
-Introduce 'ubi->bad_peb_limit', which specifies an upper limit of PEBs
-UBI expects to go bad.  Currently, it is initialized to a fixed percentage
-of total PEBs in the UBI device (configurable via CONFIG_MTD_UBI_BEB_LIMIT).
-
-The 'bad_peb_limit' is intended to be used for calculating the amount of PEBs
-UBI needs to reserve for bad eraseblock handling.
-
-Artem: minor amendments.
+CONFIG_MTD_UBI_BEB_RESERVE and MIN_RESEVED_PEBS are no longer used,
+since the amount of reserved eraseblocks for bad PEB handling is now
+derived from 'ubi->bad_peb_limit' (ubi's maximum expected bad
+eraseblocks).
 
 Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>
 ---
- drivers/mtd/ubi/Kconfig |   26 +++++++++++++++++++-------
- drivers/mtd/ubi/build.c |   12 +++++++++++-
- drivers/mtd/ubi/ubi.h   |    2 ++
- 3 files changed, 32 insertions(+), 8 deletions(-)
+ drivers/mtd/ubi/Kconfig |   16 ----------------
+ drivers/mtd/ubi/ubi.h   |    3 ---
+ 2 files changed, 0 insertions(+), 19 deletions(-)
 
 diff --git a/drivers/mtd/ubi/Kconfig b/drivers/mtd/ubi/Kconfig
-index ea4b95b..76195ac 100644
+index d747b0f..219ea2e 100644
 --- a/drivers/mtd/ubi/Kconfig
 +++ b/drivers/mtd/ubi/Kconfig
-@@ -34,13 +34,25 @@ config MTD_UBI_BEB_RESERVE
- 	help
- 	  If the MTD device admits of bad eraseblocks (e.g. NAND flash), UBI
- 	  reserves some amount of physical eraseblocks to handle new bad
--	  eraseblocks. For example, if a flash physical eraseblock becomes bad,
--	  UBI uses these reserved physical eraseblocks to relocate the bad one.
--	  This option specifies how many physical eraseblocks will be reserved
--	  for bad eraseblock handling (percents of total number of good flash
--	  eraseblocks). If the underlying flash does not admit of bad
--	  eraseblocks (e.g. NOR flash), this value is ignored and nothing is
--	  reserved. Leave the default value if unsure.
-+	  eraseblocks. When a physical eraseblock becomes bad, UBI uses these
-+	  reserved physical eraseblocks to relocate the bad one. This
-+	  configuration option specifies how many physical eraseblocks will be
-+	  reserved for bad eraseblock handling (percents of total number of
-+	  good physical eraseblocks on this MTD partition). If the underlying
-+	  flash does not admit of bad eraseblocks (e.g. NOR flash), this value
-+	  is ignored and nothing is reserved. Leave the default value if
-+	  unsure.
-+
-+config MTD_UBI_BEB_LIMIT
-+	int "Percentage of maximum expected bad eraseblocks"
-+	default 2
-+	range 0 25
-+	help
-+	  This option specifies the maximum bad physical eraseblocks UBI
-+	  expects on the UBI device (percents of total number of physical
-+	  eraseblocks on this MTD partition). If the underlying flash does not
-+	  admit of bad eraseblocks (e.g. NOR flash), this value is ignored.
-+	  Leave the default value if unsure.
+@@ -27,22 +27,6 @@ config MTD_UBI_WL_THRESHOLD
+ 	  life-cycle less than 10000, the threshold should be lessened (e.g.,
+ 	  to 128 or 256, although it does not have to be power of 2).
  
- config MTD_UBI_GLUEBI
- 	tristate "MTD devices emulation driver (gluebi)"
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index 2c5ed5c..7b6b5f9 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -607,8 +607,18 @@ static int io_init(struct ubi_device *ubi)
- 	ubi->peb_count  = mtd_div_by_eb(ubi->mtd->size, ubi->mtd);
- 	ubi->flash_size = ubi->mtd->size;
- 
--	if (mtd_can_have_bb(ubi->mtd))
-+	if (mtd_can_have_bb(ubi->mtd)) {
- 		ubi->bad_allowed = 1;
-+		if (CONFIG_MTD_UBI_BEB_LIMIT > 0) {
-+			int percent = CONFIG_MTD_UBI_BEB_LIMIT;
-+			int limit = mult_frac(ubi->peb_count, percent, 100);
-+
-+			/* Round it up */
-+			if (mult_frac(limit, 100, percent) < ubi->peb_count)
-+				limit += 1;
-+			ubi->bad_peb_limit = limit;
-+		}
-+	}
- 
- 	if (ubi->mtd->type == MTD_NORFLASH) {
- 		ubi_assert(ubi->mtd->writesize == 1);
+-config MTD_UBI_BEB_RESERVE
+-	int "Percentage of reserved eraseblocks for bad eraseblocks handling"
+-	default 2
+-	range 0 25
+-	help
+-	  If the MTD device admits of bad eraseblocks (e.g. NAND flash), UBI
+-	  reserves some amount of physical eraseblocks to handle new bad
+-	  eraseblocks. When a physical eraseblock becomes bad, UBI uses these
+-	  reserved physical eraseblocks to relocate the bad one. This
+-	  configuration option specifies how many physical eraseblocks will be
+-	  reserved for bad eraseblock handling (percents of total number of
+-	  good physical eraseblocks on this MTD partition). If the underlying
+-	  flash does not admit of bad eraseblocks (e.g. NOR flash), this value
+-	  is ignored and nothing is reserved. Leave the default value if
+-	  unsure.
+-
+ config MTD_UBI_BEB_LIMIT
+ 	int "Percentage of maximum expected bad eraseblocks"
+ 	default 2
 diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index 84f66e3..aeb459e 100644
+index aeb459e..c94612e 100644
 --- a/drivers/mtd/ubi/ubi.h
 +++ b/drivers/mtd/ubi/ubi.h
-@@ -363,6 +363,7 @@ struct ubi_wl_entry;
-  * @flash_size: underlying MTD device size (in bytes)
-  * @peb_count: count of physical eraseblocks on the MTD device
-  * @peb_size: physical eraseblock size
-+ * @bad_peb_limit: top limit of expected bad physical eraseblocks
-  * @bad_peb_count: count of bad physical eraseblocks
-  * @good_peb_count: count of good physical eraseblocks
-  * @corr_peb_count: count of corrupted physical eraseblocks (preserved and not
-@@ -410,6 +411,7 @@ struct ubi_device {
- 	int avail_pebs;
- 	int beb_rsvd_pebs;
- 	int beb_rsvd_level;
-+	int bad_peb_limit;
+@@ -59,9 +59,6 @@
+ #define ubi_err(fmt, ...) printk(KERN_ERR "UBI error: %s: " fmt "\n", \
+ 				 __func__, ##__VA_ARGS__)
  
- 	int autoresize_vol_id;
- 	int vtbl_slots;
+-/* Lowest number PEBs reserved for bad PEB handling */
+-#define MIN_RESEVED_PEBS 2
+-
+ /* Background thread name pattern */
+ #define UBI_BGT_NAME_PATTERN "ubi_bgt%dd"
+ 
 -- 
 1.7.7.6
