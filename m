@@ -1,26 +1,25 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SrOEk-0008RM-Qg
- for linux-mtd@lists.infradead.org; Wed, 18 Jul 2012 06:59:56 +0000
-Received: by lbbgg6 with SMTP id gg6so1756945lbb.36
- for <linux-mtd@lists.infradead.org>; Tue, 17 Jul 2012 23:59:51 -0700 (PDT)
-Message-ID: <1342594461.31927.9.camel@brekeke>
-Subject: Re: [PATCH 0/5] ubi: Fix bad PEBs reserve caclulation
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Date: Wed, 18 Jul 2012 09:54:21 +0300
-In-Reply-To: <20120717102333.26cb10fb@pixies.home.jungo.com>
-References: <1341389164-24409-1-git-send-email-shmulik.ladkani@gmail.com>
- <1342452837.7270.15.camel@brekeke>
- <20120717102333.26cb10fb@pixies.home.jungo.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-gCT1bM7wyGyKRD97ohmA"
-Mime-Version: 1.0
-Cc: Richard Genoud <richard.genoud@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Reply-To: dedekind1@gmail.com
+Received: from mail86.messagelabs.com ([216.82.242.179])
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SrOKW-0001XP-1P
+ for linux-mtd@lists.infradead.org; Wed, 18 Jul 2012 07:05:54 +0000
+From: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>
+Date: Wed, 18 Jul 2012 17:05:24 +1000
+Subject: RE: UBIFS fails to mount on second boot
+Message-ID: <6871BC8982B258468985EE735D2C57524B09D0EECD@ntcex01.corp.netcomm.com.au>
+References: <CAEZtdFU1cET8=kViUsR0Oq3q0ckcFLuKsd_Hc5WHo_uhFiKVBw@mail.gmail.com>
+ ,<1340806219.3070.23.camel@sauron.fi.intel.com>
+ <6871BC8982B258468985EE735D2C575243C0F0889A@ntcex01.corp.netcomm.com.au>
+ ,<1340977577.3070.207.camel@sauron.fi.intel.com>
+ ,<6871BC8982B258468985EE735D2C575243C0F088B6@ntcex01.corp.netcomm.com.au>
+ <6871BC8982B258468985EE735D2C575243C0F088B7@ntcex01.corp.netcomm.com.au>,
+ <1342240778.3209.12.camel@brekeke>
+In-Reply-To: <1342240778.3209.12.camel@brekeke>
+Content-Language: en-AU
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,41 +30,53 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-gCT1bM7wyGyKRD97ohmA
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> I suspect this is a bug in the free space fixup code - my level of
+> confidence on this is 80%. Could you please verify this by removing
+> the -F mkfs.ubifs parameter or using the patch below. Thanks!
 
-On Tue, 2012-07-17 at 10:23 +0300, Shmulik Ladkani wrote:
-> But it would only make sense after accepting Richard's patchset as well,
-> which suggests configuring per-ubi-device beb limit via the attach ioctl.
+You're right, the problem doesn't happen without fixup.
 
-Yes, sure, you are right.
+I thought I was not flashing empty pages in U-Boot, but that turned
+out not to be quite true. Without fixup, the boot died in a hailstorm
+of asserts. I fixed that, but now the flashing takes noticeably longer.
 
---=20
-Best Regards,
-Artem Bityutskiy
+In other words, I quite like the fixup feature and would prefer if it does=
+n't
+go away permanently. Otherwise:
 
---=-gCT1bM7wyGyKRD97ohmA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Tested-by: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+>=20
+> diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+> index 5862dd9..3398114 100644
+> --- a/fs/ubifs/super.c
+> +++ b/fs/ubifs/super.c
+> @@ -1295,11 +1295,13 @@ static int mount_ubifs(struct ubifs_info *c)
+>  =09if (err)
+>  =09=09goto out_master;
+> =20
+> +#if 0
+>  =09if (!c->ro_mount && c->space_fixup) {
+>  =09=09err =3D ubifs_fixup_free_space(c);
+>  =09=09if (err)
+>  =09=09=09goto out_lpt;
+>  =09}
+> +#endif
+> =20
+>  =09if (!c->ro_mount) {
+>  =09=09/*
+>=20
 
-iQIcBAABAgAGBQJQBl2dAAoJECmIfjd9wqK00lMP/00D5rELb3GzXlhij1zpWkFV
-WjbPs/JjdiBl+ilM8ZzkLWc8wyJy6ebtXrvGhRNErkHjecW3+9o3l/3xu7wlPX+k
-0w3sP0Vq5/MQprI53besEkb4QI0lQLIdfbZzz9T1sOhu7tozM39nm6s6kwVkH0Q/
-B6Uyg1s/J2SxFj4f2tP0ZVli4mX+lSb0+pcyDihIZLJU2EGuc+9XjM/tssvBjLZh
-qTLfEhOIExZl2nqn8M5nI70MFKyJvfn0d7wR+4PxnmjDHhguG65Ozhyqs37ie3vx
-OeV1wJndxry6fyOGv6PFtMrpgcNJSsfh3VstlhSD1jEpf5E4ISi5krxSauh6p/1P
-nNxUOVAg/l43O6aSzV/4DZxiZnzH1D8ECIzHfww34RvPUZtd2ppM1xOTbh4+0WtO
-aAm5CTe4Ge+HaVxjYq4AKCXy574XDDrjX5kF2mNa76jy1egarovmHXikbXjQayVq
-P3YSDFpFD7XBVH+rvQHmfqsJmOPC/PEti3P8wyK89zBXvYBZfPAiv7v5KB4YqDsJ
-rvFj0Tr6Bu2ym00WpoxLIkskp+/rPJc6gWNw9lwqdIM9IywTIC6FkLkt449htQ2P
-Er/oNH7bgyUvS9jCZCu5ffOzW/GCbGMd9/FPL1ZIDvTtUSkg/R0EUqAjtJDXlAh9
-2OzIjvZ9cw4C20dXx0M/
-=R+25
------END PGP SIGNATURE-----
+Best regards,
 
---=-gCT1bM7wyGyKRD97ohmA--
+Iwo
+
+______________________________________________________________________
+This communication contains information which may be confidential or privi=
+leged. The information is intended solely for the use of the individual or=
+ entity named above.  If you are not the intended recipient, be aware that=
+ any disclosure, copying, distribution or use of the contents of this info=
+rmation is prohibited.  If you have received this communication in error, =
+please notify me by telephone immediately.
+______________________________________________________________________
