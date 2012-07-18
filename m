@@ -1,22 +1,17 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SrTye-0005R6-LS
- for linux-mtd@lists.infradead.org; Wed, 18 Jul 2012 13:07:43 +0000
-Received: by lbbgg6 with SMTP id gg6so2173658lbb.36
- for <linux-mtd@lists.infradead.org>; Wed, 18 Jul 2012 06:07:37 -0700 (PDT)
-Message-ID: <1342616525.7530.22.camel@brekeke>
-Subject: Re: [PATCH] remove invalid reference to list iterator variable
+Message-ID: <1342617177.7530.24.camel@brekeke>
+Subject: Re: [PATCH v4 1/2] ARM: imx6q: add clocks for gpmi-nand
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Julia Lawall <Julia.Lawall@lip6.fr>
-Date: Wed, 18 Jul 2012 16:02:05 +0300
-In-Reply-To: <1341753582-3943-1-git-send-email-Julia.Lawall@lip6.fr>
-References: <1341753582-3943-1-git-send-email-Julia.Lawall@lip6.fr>
+To: Huang Shijie <shijie8@gmail.com>
+Date: Wed, 18 Jul 2012 16:12:57 +0300
+In-Reply-To: <1341279572-6098-2-git-send-email-shijie8@gmail.com>
+References: <1341279572-6098-1-git-send-email-shijie8@gmail.com>
+ <1341279572-6098-2-git-send-email-shijie8@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-W1ZXQZNbbYwATuKYkB/h"
+ boundary="=-0Y/fL4fYddmd5+02DWnc"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
- Adrian Hunter <adrian.hunter@intel.com>, linux-kernel@vger.kernel.org
+Cc: dong.aisheng@linaro.org, shawn.guo@linaro.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,24 +23,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-W1ZXQZNbbYwATuKYkB/h
+--=-0Y/fL4fYddmd5+02DWnc
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, 2012-07-08 at 15:19 +0200, Julia Lawall wrote:
-> If list_for_each_entry, etc complete a traversal of the list, the iterato=
-r
-> variable ends up pointing to an address at an offset from the list head,
-> and not a meaningful structure.  Thus this value should not be used after
-> the end of the iterator.
+On Mon, 2012-07-02 at 21:39 -0400, Huang Shijie wrote:
+> Add clocks for gpmi-nand.
+>=20
+> Signed-off-by: Huang Shijie <shijie8@gmail.com>
 
-Thanks Julia - this one is very useful!
+Pushed both to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-W1ZXQZNbbYwATuKYkB/h
+--=-0Y/fL4fYddmd5+02DWnc
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -53,19 +46,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQBrPNAAoJECmIfjd9wqK0vSQP/1sK+Khr5PKw7rAu0dY8QdGz
-QwLgLJ/+9ghWSi2KB1hqjxyUpMgKF1t4mIuh8VjKyCPVQqe2btm5+L4ke2+6pNvE
-wMDpZopVMk+IlrGVydKUBL/PX/MguHtPPgqSPXfC/neAjorptia1SphytNY8mLnW
-k/q7GxLPwUkeym9aCTY/JNUfiR8I2Z4kL+riYfkgIL90jTbNvJXu4TLBqdiLxwiL
-TorlnBbNc5d3rAC5CNmGgjZWrPvtEqhv90Nkgb/gb3DozGsYN5nFMpsLph4vgcG8
-sSoUJN0zd9k0+wXmVg8NnUuBGWOorp49MO694uL1BmT2wqoeQq3KTZA2WoZzeDZU
-/L0dcCz7wxBRfCdfCwjeQjvk5E/74eRlwcnbtPMz1YvhSiIU5AxqgJEFbkwmK1pI
-mL4xQV2/9YLvAQnxQuMaPGJxQQupFDU9kVbn7uoF6sb2RY/X3gQSVukiJ5bgT21E
-gX+FsHAOseZ8XfVKxrmC7XhPbVhTtkENJ7W6NMXakreK+ALCXzAKmhbLIl8kj9JC
-j6wpr2DoCThR6Qhtsi8ebPrAAZmjt8WN8ni/PxXwjA3lSFqIs+k4ERJJdtjFZPCv
-NQ714ftunLxmsHZoPUMXmDwSqFlSLOdnFsHrqNCG1dDYx+35rf3r6PDg2ywOgI+l
-rQ/i8+hfnknDX0hK6QDL
-=vjnG
+iQIcBAABAgAGBQJQBrZZAAoJECmIfjd9wqK0WBEP/jSUWqck8wrqW6EY3dp/udj2
+eiO4BAuJ06FFr2zllFn7sGTfmIhyAxdbIGHqzjS79kjHYKYy2ThO7epUVYfnQYoD
+Z4jXQdwMtrRp8/uPD1kpWvnLjmUjpfKuqJEiz1SxJmi7d7mdswpNY/Q5tPrHePzz
+lFzSxErbL9RFyKS8D6yfeOrAWt/e+WVH/or9Xi9MdyQhMD+emy90yRfKtsDuNZIL
+KZ3PAbFBPAArBLUkftw/1qhkOfLewNqnhs/KWryHA0kFeFgZJLHolyOu2vV7FU87
+Ef3V7NuQ2N7y5okOWA26L5GPQM9riakn6sg8Kdu8EHU8t+N44m0uVR/x4qi23NIn
+iO7tTbjz8Dci02UuxBe3tE7guB7dqo6guPwN8B/OO1+eZuGzAyMUIx6DMxewzqGB
+Dh8KnFqfyJlHkJMhEJ7nSGS2FhjFC5L7jyzRGInD+9FqFMbqmli96aQeT9ToeCe6
+/7lnLHPrFAm3BoR0rFI6HrLgmHRNv4IO6dI5Q4FHCGruuWF/ifhMTNOPPRoy7mTw
+FhF/YfcnBSnwxBAIiHUxcOhSP9jtU4KO7/2WfLFuSTX3H+cWBtebv7LCz8VOrXY+
+8URc4T1iJd7BrrCsXYuZM0ZWVSFIUxQg0xeS5h1O9EnXCbeiR0fy2OV9nLTvRobC
+Sv29IojyZt/3dSk6pXKX
+=s6By
 -----END PGP SIGNATURE-----
 
---=-W1ZXQZNbbYwATuKYkB/h--
+--=-0Y/fL4fYddmd5+02DWnc--
