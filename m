@@ -1,18 +1,19 @@
-Received: from dnvwsmailout1.mcafee.com ([161.69.31.173])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SrjZb-00068o-Im
- for linux-mtd@lists.infradead.org; Thu, 19 Jul 2012 05:46:52 +0000
-From: <gerg@snapgear.com>
-To: <linux-mtd@lists.infradead.org>, <uclinux-dev@uclinux.org>
-Subject: [PATCH v2 2/2] mtd: allow uclinux map driver to be used on any
- ColdFire CPU platform
-Date: Thu, 19 Jul 2012 15:42:46 +1000
-Message-ID: <1342676566-25651-2-git-send-email-gerg@snapgear.com>
-In-Reply-To: <1342676566-25651-1-git-send-email-gerg@snapgear.com>
-References: <1342676566-25651-1-git-send-email-gerg@snapgear.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Greg Ungerer <gerg@uclinux.org>
+Date: Thu, 19 Jul 2012 09:16:00 +0300
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: dedekind1@gmail.com
+Subject: Re: [PATCH 1/5] ubi: introduce ubi->bad_peb_limit
+Message-ID: <20120719091600.7d55dadb@pixies.home.jungo.com>
+In-Reply-To: <1342608053.7530.11.camel@brekeke>
+References: <1341389164-24409-1-git-send-email-shmulik.ladkani@gmail.com>
+ <1341389164-24409-2-git-send-email-shmulik.ladkani@gmail.com>
+ <1342608053.7530.11.camel@brekeke>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Russell King <linux@arm.linux.org.uk>,
+ Richard Genoud <richard.genoud@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Andrew Victor <linux@maxim.org.za>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,36 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Greg Ungerer <gerg@uclinux.org>
+On Wed, 18 Jul 2012 13:40:53 +0300 Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> I've also amended the Kconfig text a tiny bit and dropped the defconfig
+> changes - let's have them separately as a single patch at the end of the
+> series.
 
-The uclinux.c map driver has traditionally been used only on non-MMU based
-systems. But there is no fundamental reason it can't be used on systems
-running with virtual memory.
+Wouldn't having the defconfig change as the last patch break things for
+those defconfigs that had explicitly set CONFIG_MTD_UBI_BEB_RESERVE
+other than the default?
 
-Some ColdFire CPU based systems now have full paged MMU hardware and can use
-the uclinux.c mapping driver, so making the uclinux.c driver configuration
-depend on !CONFIG_MMU doesn't make sense now. Allow the CONFIG_MTD_UCLINUX
-option to be enabled if CONFIG_COLDFIRE is enabled. (I have chosen not to
-just more generally allow uclinux.c for any MMU type to keep this option
-hidden for most systems that are not interested in setting it).
+Meaning, if the one-before-last would be "kill CONFIG_MTD_UBI_BEB_RESERVE",
+then those defconfigs that had _explicitly_ set a BEB_RESERVE value,
+which do not YET set a BEB_LIMIT value, will have their BEB_LIMIT as
+the default - but they actually meant a specific value other than the
+default.
 
-Signed-off-by: Greg Ungerer <gerg@uclinux.org>
----
- drivers/mtd/maps/Kconfig |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+This is why I tried to:
+- set the CONFIG_MTD_UBI_BEB_LIMIT in defconfigs as part of the commit
+  which introduces this config (copy same value as their RESERVE config)
+- kill all CONFIG_MTD_UBI_BEB_RESERVE references from defconfigs as part
+  of the commit which kills it
 
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index 5ba2458..185454a 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -443,7 +443,7 @@ config MTD_GPIO_ADDR
- 
- config MTD_UCLINUX
- 	bool "Generic uClinux RAM/ROM filesystem support"
--	depends on MTD_RAM=y && !MMU
-+	depends on MTD_RAM=y && (!MMU || COLDFIRE)
- 	help
- 	  Map driver to support image based filesystems for uClinux.
- 
--- 
-1.7.0.4
+Regards,
+Shmulik
