@@ -1,27 +1,27 @@
-Received: from mail87.messagelabs.com ([216.82.250.19])
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SrfCF-0007Xd-8P
- for linux-mtd@lists.infradead.org; Thu, 19 Jul 2012 01:06:28 +0000
-From: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Date: Thu, 19 Jul 2012 11:06:20 +1000
-Subject: RE: UBIFS fails to mount on second boot
-Message-ID: <6871BC8982B258468985EE735D2C57524B09D0EECF@ntcex01.corp.netcomm.com.au>
-References: <CAEZtdFU1cET8=kViUsR0Oq3q0ckcFLuKsd_Hc5WHo_uhFiKVBw@mail.gmail.com>
- ,<1340806219.3070.23.camel@sauron.fi.intel.com>
- <6871BC8982B258468985EE735D2C575243C0F0889A@ntcex01.corp.netcomm.com.au>
- ,<1340977577.3070.207.camel@sauron.fi.intel.com>
- ,<6871BC8982B258468985EE735D2C575243C0F088B6@ntcex01.corp.netcomm.com.au>
- <6871BC8982B258468985EE735D2C575243C0F088B7@ntcex01.corp.netcomm.com.au>
- ,<1342240778.3209.12.camel@brekeke>
- <6871BC8982B258468985EE735D2C57524B09D0EECD@ntcex01.corp.netcomm.com.au>,
- <1342596070.31927.14.camel@brekeke>
-In-Reply-To: <1342596070.31927.14.camel@brekeke>
-Content-Language: en-AU
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SrhcT-00027J-Oe
+ for linux-mtd@lists.infradead.org; Thu, 19 Jul 2012 03:41:43 +0000
+Received: by lbbgg6 with SMTP id gg6so3126817lbb.36
+ for <linux-mtd@lists.infradead.org>; Wed, 18 Jul 2012 20:41:38 -0700 (PDT)
+Message-ID: <1342668949.16745.0.camel@brekeke>
+Subject: Re: [PATCH 2/5] ubi: Limit amount of reserved eraseblocks for bad
+ PEB handling
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Date: Thu, 19 Jul 2012 06:35:49 +0300
+In-Reply-To: <20120718225537.38ddbb60@halley>
+References: <1341389164-24409-1-git-send-email-shmulik.ladkani@gmail.com>
+ <1341389164-24409-3-git-send-email-shmulik.ladkani@gmail.com>
+ <1342607317.7530.9.camel@brekeke> <20120718225537.38ddbb60@halley>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-CUBNkJ6ZnSDhiF3VUZgm"
+Mime-Version: 1.0
+Cc: Richard Genoud <richard.genoud@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,41 +31,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 18 Jul 2012 17:21:10 +1000
-Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> You should have the fix in your mailbox, and for that fix I'd be
-> greatful to have your "Tested-by:".=20
 
-Thanks, got it. Applied and tested - the bug seems to be
-gone.
+--=-CUBNkJ6ZnSDhiF3VUZgm
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> From 5978233c1e065c3d01bd88f4bf3598cc293ea611 Mon Sep 17 00:00:00 2001
-> From: Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>
-> Date: Sat, 14 Jul 2012 14:33:09 +0300
-> Subject: [PATCH] UBIFS: fix a bug in empty space fix-up
-...
->=20
-> -=09/* Fixup the current log head */
-> -=09err =3D fixup_leb(c, c->lhead_lnum, c->lhead_offs);
-> +=09/* Fixup the log head contains the only a CS node at the beginning *=
-/
-> +=09err =3D fixup_leb(c, c->lhead_lnum,
-> +=09=09=09ALIGN(UBIFS_CS_NODE_SZ, c->min_io_size));
->  =09if (err)
+On Wed, 2012-07-18 at 22:55 +0300, Shmulik Ladkani wrote:
+> However, if you DO NOT mark it bad, but instead go into RO mode, you
+> should be able to later re-attach because the good_peb_count would fit
+> (no shortage of PEBs).=20
 
-Tested-by: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
+Yeah, you are right, I'll return to the original patch.
 
-Thanks again for your efforts.
+--=20
+Best Regards,
+Artem Bityutskiy
 
-Best regards,
+--=-CUBNkJ6ZnSDhiF3VUZgm
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-Iwo
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-______________________________________________________________________
-This communication contains information which may be confidential or privi=
-leged. The information is intended solely for the use of the individual or=
- entity named above.  If you are not the intended recipient, be aware that=
- any disclosure, copying, distribution or use of the contents of this info=
-rmation is prohibited.  If you have received this communication in error, =
-please notify me by telephone immediately.
-______________________________________________________________________
+iQIcBAABAgAGBQJQB4CVAAoJECmIfjd9wqK0+8sQAM4yQMGpLP0Zbj7tRy1wwZKq
+W5fk5zGDYDdCVJiWtDy80C4RPoKW4WfPIzrJAYTszeDK3BAkkAI+8cW7go0wgJFF
+f+uy7nPLFYTSP07LzPSufk7ODGGMdiFWjcLT6BKDRLbv9uUd0cyLWu/z9dw+mgdl
+f1Xu/APekLn/5Ydy+9yHQIEmCRVkrEbEKi/NF22K+A3xE/6U0HTSkZcsoR8Osnlc
+4gKdib1gL38AJldasd9UMTUJt+C9YgNZzJHmgfL3W2bhdAnRvez7xhAVGE+9xarT
+watcSgsvmXdbKk45rWhGYZH4hQVtXUC3dD05O4P5AhSZzJgq276gu7HeZSw7uir2
+z6hgbJvIx5jx/HhkmQeisGM26QpvgvVl68IPAN26puTda5FU+fK8HFS54J3QrSxz
+vRtuZW9Kx/uhG7KU+sJhJ800xNatl7vaRMQfhzXadbruXxAtxEJPV0xE6yBPON3N
+44+dG9QAcFaTuQqFoOzI6kwv8vHDl0qnkfvggbZ4cOME8Y5u9YdkMoLx5IMKhY2P
+gQImafXtYkdRltg/0JYJcbCurm0+eSdQeH1Ohl3dPAV5fxZyCkQWdbEDbnyVRD26
+UqGRbTA1Ly8q2NncLZh0nMVwzlgMXM9ohF9HK8zhGYvECUOpbFtDx2nJTNB1uGSS
+Yfav6Rmv3tdGpXByCECq
+=qFMP
+-----END PGP SIGNATURE-----
+
+--=-CUBNkJ6ZnSDhiF3VUZgm--
