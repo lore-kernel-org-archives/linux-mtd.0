@@ -1,24 +1,15 @@
-Received: from mail-qc0-f177.google.com ([209.85.216.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1StWC6-0005w8-Ls
- for linux-mtd@lists.infradead.org; Tue, 24 Jul 2012 03:54:01 +0000
-Received: by qcsu28 with SMTP id u28so3637468qcs.36
- for <linux-mtd@lists.infradead.org>; Mon, 23 Jul 2012 20:53:56 -0700 (PDT)
+Received: from cdptpa-bc-oedgelb.mail.rr.com ([75.180.133.32])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SthbB-0000m4-SZ
+ for linux-mtd@lists.infradead.org; Tue, 24 Jul 2012 16:04:56 +0000
+Message-ID: <500EC7D9.8020509@cincinnatitechnologies.com>
+Date: Tue, 24 Jul 2012 12:05:45 -0400
+From: Russell Zuck <rzuck@cincinnatitechnologies.com>
 MIME-Version: 1.0
-In-Reply-To: <4FF15BD1.9010109@parrot.com>
-References: <1340898442-1585-1-git-send-email-matthieu.castet@parrot.com>
- <20120628213146.7d929204@halley> <4FED6A2E.9010603@parrot.com>
- <20120630230252.58ca6bb4@halley> <4FF15BD1.9010109@parrot.com>
-Date: Mon, 23 Jul 2012 20:53:56 -0700
-Message-ID: <CAN8TOE8GMMn+sPu4trUH_iT3=5uh_Of=bsYzXX50E3dyPfKitg@mail.gmail.com>
-Subject: Re: [RFC] nand_btt : use nand chip->block_bad
-From: Brian Norris <computersforpeace@gmail.com>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: Ivan Djelic <ivan.djelic@parrot.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: Is my erase block size correct?
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,113 +19,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Matthieu,
+I am attempting to troubleshoot an issue where my UBIFS becomes 
+corrupted after repeated upgrade attempts.  Before I submit a bug report 
+to the list, I'm attempting to rule out as many possibilities as I can.
 
-Sorry for taking an extraordinarily long amount of time to respond.
-This isn't a very easy issue to address, and I'm kind of behind on
-email anyway. I'll respond directly to a few of your comments, and
-then just include my general comments about this RFC.
+While rechecking the datasheet for our NAND flash (Micron MT29F4G08BABWP 
+4Gb), I noticed a discrepancy between the erase block size presented in 
+the datasheet (128KiB + 4KiB) and that returned from mtdinfo (see 
+below).  The extra 4KiB overhead is due to a 64Byte overhead for each of 
+the 64 pages/block.
 
-On Mon, Jul 2, 2012 at 1:29 AM, Matthieu CASTET
-<matthieu.castet@parrot.com> wrote:
-> Shmulik Ladkani a =E9crit :
->> On Fri, 29 Jun 2012 10:41:18 +0200 Matthieu CASTET <matthieu.castet@parr=
-ot.com> wrote:
->>>> - The new scheme lacks the potential error correction offered by the
->>>>   mtd_read_oob call (invoked from the original scan functions).
->>>>   OTOH, currently, AFAIK, it is only offered by an out-of-tree driver.
->>> Could you explain more here ?
->>> The current scheme doesn't handle bitflip in bad block. We don't care a=
-bout
->>> error correction : bad block are not protected by ecc !
->>
->> I was refering to utilizing the ECC when reading the OOB, so we won't
->> get a false "bad" indication when reading the BBM from the OOB.
->>
->> See this post (and subsequent ones):
->> http://lists.infradead.org/pipermail/linux-mtd/2012-June/042203.html
->>
-> But oob is not protected by ecc in normal configuration. I believe more t=
-han 95%
-> of current configuration don't protect bad block with ecc.
-> Manufacturer bad block are also not protected by ecc.
->
-> How could this work ?
-> Do you have example of linux driver that protect bad block with ecc ?
+root@ctc-imx51 ~$ mtdinfo -a
+Count of MTD devices:           4
+Present MTD devices:            mtd0, mtd1, mtd2, mtd3
+Sysfs interface supported:      yes
 
-I think we've been over this a few times...my out-of-tree driver
-protects OOB ECC. This is partly a driver implementation choice and
-partly a property of the ASIC. I won't re-explain here unless you're
-really curious.
+mtd0
+Name:                           nor_flash
+Type:                           dataflash
+Eraseblock size:                512 bytes
+Amount of eraseblocks:          8192 (4194304 bytes, 4.0 MiB)
+Minimum input/output unit size: 512 bytes
+Sub-page size:                  512 bytes
+Character device major/minor:   90:0
+Bad blocks are allowed:         false
+Device is writable:             true
 
-> Finally if there is a config with bad block protected by ecc, we can prov=
-ide
-> another chip->block_bad callback which use ecc.
+mtd1
+Name:                           nand.bootloader
+Type:                           nand
+Eraseblock size:                131072 bytes, 128.0 KiB
+Amount of eraseblocks:          8 (1048576 bytes, 1024.0 KiB)
+Minimum input/output unit size: 2048 bytes
+Sub-page size:                  512 bytes
+OOB size:                       64 bytes
+Character device major/minor:   90:2
+Bad blocks are allowed:         true
+Device is writable:             true
 
-It seems pointless to re-implement the entire chip->block_bad just to
-enable/disable ECC: the rest of the function should be standard and
-irreplaceable, I believe. So I would expect that overriding
-chip->block_bad should be reserved for systems that need an entirely
-new BBM position or pattern that is not standard in nand_base.
+mtd2
+Name:                           nand.kernel
+Type:                           nand
+Eraseblock size:                131072 bytes, 128.0 KiB
+Amount of eraseblocks:          24 (3145728 bytes, 3.0 MiB)
+Minimum input/output unit size: 2048 bytes
+Sub-page size:                  512 bytes
+OOB size:                       64 bytes
+Character device major/minor:   90:4
+Bad blocks are allowed:         true
+Device is writable:             true
 
-> Also note that the post speak of "nand_chip.badblockbits" [1] which can b=
-e used
-> with this patch.
+mtd3
+Name:                           nand.rootfs
+Type:                           nand
+Eraseblock size:                131072 bytes, 128.0 KiB
+Amount of eraseblocks:          4064 (532676608 bytes, 508.0 MiB)
+Minimum input/output unit size: 2048 bytes
+Sub-page size:                  512 bytes
+OOB size:                       64 bytes
+Character device major/minor:   90:6
+Bad blocks are allowed:         true
+Device is writable:             true
 
-Right, that is one positive side. But there are a few failings of the
-current chip->block_bad implementation, I think. With a little more
-work, though, it could be a sensible replacement for some portions of
-nand_bbt.c.
+I've dug into the kernel source a bit and have come to the conclusion 
+that the erase block size reported by mtdinfo comes from an 
+interrogation of the MTD device by its driver.  I take this to mean that 
+either I'm using the wrong driver, the driver is configured incorrectly, 
+or the driver is correct and is not reporting the 4KiB overhead of each 
+erase block.
 
-General comments:
+Any help in confirming or refuting any of my 3 possible conclusions 
+would be greatly appreciated.  Alternate theories are, of course, welcome.
 
-I think that the duplication of code between nand_bbt.c and
-nand_base.c (nand_block_bad) is kind of absurd. And the nand_bbt.c
-code is very much spaghetti code, IMO, with a sprinkling of strange
-and/or little-understood features. So I agree with Matthieu that we
-could unify to using chip->block_bad. I feel like this gives several
-benefits. Some of this may be a little redundant:
-* get rid of the difficult-to-understand spaghetti code seen in nand_bbt.c
-* prevent code duplication in nand_base/nand_bbt
-* fix the nand_block_bad implementation, which seems to be
-inconsistent with nand_bbt (I'm not sure; see the second disadvantage
-below...)
-* make consistent use of the chip->badblockbits feature (this
-addresses some bitflip issues from other thread(s))
-* allow consistent overriding of chip->block_bad and
-chip->block_markbad together [a]
-* we can properly separate some BBM and BBT code (note the Marker vs.
-Table) to nand_base and nand_bbt respectively
+Best regards,
 
-Disadvantages:
-* need to improve nand_block_bad code [b]
-* need to understand some NAND_BBT_* options better (e.g.,
-NAND_BBT_SCANALLPAGES and NAND_BBT_SCANEMPTY). This may not really be
-a disadvantage, as they should be understood/documented better or else
-removed. See some problems we're having with SCANEMPTY:
-http://lists.infradead.org/pipermail/linux-mtd/2012-July/042902.html
-
-Now, I have a separate question:
-Suppose we replace some nand_bbt code with the nand_block_bad code in
-nand_base.c, and we make use of badblockbits to solve the bitflip
-problems I brought up. I still don't see a reason we can't read/write
-with MTD_OPS_PLACE_OOB instead of MTD_OPS_RAW. There is *no*
-difference between these options for most current implementations,
-regarding ECC protecting OOB as remarked previously. But it provides
-only *benefit* for my driver and allows other systems (e.g., docg3,
-docg4) to do the same if desired. So why can't the default
-implementation use both badblockbits and MTD_OPS_PLACE_OOB
-simultaneously?
-
-Thanks,
-Brian
-
-[a] Does it really make sense to override both in the current code
-base? It looks like chip->block_bad won't take effect if you have
-*any* BBT (on-flash OR in-memory!). So you can't properly redefine new
-BBM marking/checking for a non-standard scheme, as nand_bbt gives you
-no choice...
-
-[b] e.g., why does nand_block_bad manually run NAND_CMD_READOOB,
-whereas nand_default_markbad uses the nand_do_write_oob() wrapper? I
-feel like we could use nand_do_read_oob()...
+Russell Zuck
