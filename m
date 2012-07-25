@@ -1,14 +1,20 @@
-From: Fabio Estevam <festevam@gmail.com>
-To: b32955@freescale.com
-Subject: [PATCH v2 2/3] mtd: nand: Let MTD_NAND_GPMI_NAND depend on MXS_DMA
-Date: Wed, 25 Jul 2012 08:18:19 -0300
-Message-Id: <1343215100-24005-2-git-send-email-festevam@gmail.com>
-In-Reply-To: <1343215100-24005-1-git-send-email-festevam@gmail.com>
-References: <1343215100-24005-1-git-send-email-festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- Artem.Bityutskiy@linux.intel.com, linux-mtd@lists.infradead.org,
- kernel@pengutronix.de, shawn.guo@linaro.org, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+Received: from mail-bk0-f49.google.com ([209.85.214.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1StzjH-0005jI-Bs
+ for linux-mtd@lists.infradead.org; Wed, 25 Jul 2012 11:26:13 +0000
+Received: by bkcji2 with SMTP id ji2so432731bkc.36
+ for <linux-mtd@lists.infradead.org>; Wed, 25 Jul 2012 04:26:07 -0700 (PDT)
+Date: Wed, 25 Jul 2012 14:26:02 +0300
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: Diego COSTE <diego.coste@st.com>
+Subject: Re: gluebi and flash file systems using the OOB
+Message-ID: <20120725142602.3d7d7dd0@pixies.home.jungo.com>
+In-Reply-To: <500FCB91.30009@st.com>
+References: <500FCB91.30009@st.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,33 +24,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
+Hi Diego,
 
-MTD_NAND_GPMI_NAND driver depends on MXS_DMA to be selected, otherwise the following error happens
-for imx_v6_v7_defconfig:
+On Wed, 25 Jul 2012 12:33:53 +0200 Diego COSTE <diego.coste@st.com> wrote:
+> But we also have to use alternate flash file systems (JFFS2, YAFFS2).
+> Unfortunately these file systems use the OOB and therefore can't
+> directly work with the HW we use.
 
-drivers/built-in.o: In function `gpmi_dma_filter':
-clk-fixed-factor.c:(.text+0xb124c): undefined reference to `mxs_dma_is_apbh'
-make: *** [vmlinux] Error 1
+You should consider using UBIFS if possible.
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
-Changes since v1:
-- Use 'depends' rather than 'select'
- drivers/mtd/nand/Kconfig |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+> Then I saw that there is gluebi that re-exports a MTD, and that it is
+> possible to use JFFS2 on top of it.
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index a5d8a1b..da52c7d 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -463,6 +463,7 @@ config MTD_NAND_NANDSIM
- config MTD_NAND_GPMI_NAND
-         bool "GPMI NAND Flash Controller driver"
-         depends on MTD_NAND && (SOC_IMX23 || SOC_IMX28 || SOC_IMX6Q)
-+	depends on MXS_DMA
-         help
- 	 Enables NAND Flash support for IMX23, IMX28 or IMX6.
- 	 The GPMI controller is very powerful, with the help of BCH
--- 
-1.7.1
+Gluebi exports a virtual MTD for each UBI volume.
+This MTD's type is MTD_UBIVOLUME.
+It is not a NAND MTD (MTD_NANDFLASH) - it does not have bad blocks,
+pages, and oob part. It "resembles" NOR flash.
+
+> Does gluebi provide an OOB emulation so that we can use *any* flash file
+> system that uses the OOB ?
+
+No.
+
+Note JFFS2 works on top of NOR MTDs (and as such, doesn't use OOB).
+So it *should* work on an MTD_UBIVOLUME as well.
+
+However if jffs2 is mounted on MTD_NANDFLASH, it utilizes the OOB.
+
+I remember reading something about inband tags for yaffs2.
+Don't know the exact status of this; I think you should take a look.
+
+Regards
+Shmulik
