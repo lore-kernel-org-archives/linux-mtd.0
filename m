@@ -1,20 +1,18 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Su3PV-0006VL-FY
- for linux-mtd@lists.infradead.org; Wed, 25 Jul 2012 15:22:04 +0000
-Received: by laap9 with SMTP id p9so621574laa.36
- for <linux-mtd@lists.infradead.org>; Wed, 25 Jul 2012 08:21:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1341410726-10562-1-git-send-email-hechtb@gmail.com>
-References: <1341410726-10562-1-git-send-email-hechtb@gmail.com>
-Date: Wed, 25 Jul 2012 17:21:10 +0200
-Message-ID: <CABYn4syMFh4smteHS-zCAy3ygKsyxoD2+FfaBeQxKvK_FA+5mA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: sh_flctl: Switch from tick-based to time-based
- timeout
-From: Bastian Hecht <hechtb@googlemail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>, linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Bastian Hecht <hechtb@gmail.com>, Linux-SH <linux-sh@vger.kernel.org>
+In-Reply-To: <CAMiH66EA4O0s8hfXkr_SJ56+q7eZ8w0=3C1r_C+m2Os1RxprmA@mail.gmail.com>
+References: <1343215100-24005-1-git-send-email-festevam@gmail.com>
+ <1343215100-24005-3-git-send-email-festevam@gmail.com>
+ <CAMiH66EA4O0s8hfXkr_SJ56+q7eZ8w0=3C1r_C+m2Os1RxprmA@mail.gmail.com>
+Date: Wed, 25 Jul 2012 12:23:59 -0300
+Message-ID: <CAOMZO5BfT+_7x4F96Kvqtq5STXxw2Y9CxbCCAc_UnZ-3wy0qxg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] ARM: imx_v6_v7_defconfig: Select MXS_DMA
+From: Fabio Estevam <festevam@gmail.com>
+To: Huang Shijie <shijie8@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ Artem.Bityutskiy@linux.intel.com, b32955@freescale.com,
+ linux-mtd@lists.infradead.org, kernel@pengutronix.de, shawn.guo@linaro.org,
+ dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,110 +22,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Artem!
+On Wed, Jul 25, 2012 at 12:05 PM, Huang Shijie <shijie8@gmail.com> wrote:
 
-Could you please pull out this patch of your tree? While reworking the
-driver for IRQ-driven use, I've realized that this conversion makes no
-sense as all loops use a udelay(1) in them. So the timeout is already
-time based.
+> Is this patch needed? The mxs-dma only has one user, the gpmi-nand in mx6q.
+> this patch makes the kernel built-in the mxs-dma, even the gpmi-nand
+> is not enabled.
 
-Sorry for the inconvenience,
+Well, as the driver currently stands: yes, it is needed.
 
-Bastian Hecht
+Without CONFIG_MXS_DMA, the GPMI driver cannot even be built.
 
+This is why I thought that 'select MXS_DMA' was the way to go, but
+according to the thread you pointed me at, it was Nacked by Shawn.
 
-2012/7/4 Bastian Hecht <hechtb@googlemail.com>:
-> Instead of counting down a compile-time value, we use a value based on
-> jiffies.
->
-> Signed-off-by: Bastian Hecht <hechtb@gmail.com>
-> ---
-> Artem mentioned the idea a while ago - here is the simple implementation now.
->
->  drivers/mtd/nand/sh_flctl.c  |   14 +++++++++-----
->  include/linux/mtd/sh_flctl.h |    2 +-
->  2 files changed, 10 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-> index ed03ed2..0d9cce7 100644
-> --- a/drivers/mtd/nand/sh_flctl.c
-> +++ b/drivers/mtd/nand/sh_flctl.c
-> @@ -73,6 +73,8 @@ static struct nand_bbt_descr flctl_4secc_largepage = {
->         .pattern = scan_ff_pattern,
->  };
->
-> +static int loop_timeout_max;
-> +
->  static void empty_fifo(struct sh_flctl *flctl)
->  {
->         writel(flctl->flintdmacr_base | AC1CLR | AC0CLR, FLINTDMACR(flctl));
-> @@ -91,7 +93,7 @@ static void timeout_error(struct sh_flctl *flctl, const char *str)
->
->  static void wait_completion(struct sh_flctl *flctl)
->  {
-> -       uint32_t timeout = LOOP_TIMEOUT_MAX;
-> +       uint32_t timeout = loop_timeout_max;
->
->         while (timeout--) {
->                 if (readb(FLTRCR(flctl)) & TREND) {
-> @@ -138,7 +140,7 @@ static void set_addr(struct mtd_info *mtd, int column, int page_addr)
->
->  static void wait_rfifo_ready(struct sh_flctl *flctl)
->  {
-> -       uint32_t timeout = LOOP_TIMEOUT_MAX;
-> +       uint32_t timeout = loop_timeout_max;
->
->         while (timeout--) {
->                 uint32_t val;
-> @@ -153,7 +155,7 @@ static void wait_rfifo_ready(struct sh_flctl *flctl)
->
->  static void wait_wfifo_ready(struct sh_flctl *flctl)
->  {
-> -       uint32_t len, timeout = LOOP_TIMEOUT_MAX;
-> +       uint32_t len, timeout = loop_timeout_max;
->
->         while (timeout--) {
->                 /* check FIFO */
-> @@ -168,7 +170,7 @@ static void wait_wfifo_ready(struct sh_flctl *flctl)
->  static enum flctl_ecc_res_t wait_recfifo_ready
->                 (struct sh_flctl *flctl, int sector_number)
->  {
-> -       uint32_t timeout = LOOP_TIMEOUT_MAX;
-> +       uint32_t timeout = loop_timeout_max;
->         void __iomem *ecc_reg[4];
->         int i;
->         int state = FL_SUCCESS;
-> @@ -247,7 +249,7 @@ static enum flctl_ecc_res_t wait_recfifo_ready
->
->  static void wait_wecfifo_ready(struct sh_flctl *flctl)
->  {
-> -       uint32_t timeout = LOOP_TIMEOUT_MAX;
-> +       uint32_t timeout = loop_timeout_max;
->         uint32_t len;
->
->         while (timeout--) {
-> @@ -939,6 +941,8 @@ static int __devinit flctl_probe(struct platform_device *pdev)
->         pm_runtime_enable(&pdev->dev);
->         pm_runtime_resume(&pdev->dev);
->
-> +       loop_timeout_max = loops_per_jiffy * msecs_to_jiffies(LOOP_TIMEOUT_MS);
-> +
->         ret = nand_scan_ident(flctl_mtd, 1, NULL);
->         if (ret)
->                 goto err_chip;
-> diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
-> index 01e4b15..ade44c1 100644
-> --- a/include/linux/mtd/sh_flctl.h
-> +++ b/include/linux/mtd/sh_flctl.h
-> @@ -129,7 +129,7 @@
->  #define        _4ECCEND        (0x1 << 1)      /* 4 symbols end */
->  #define        _4ECCEXST       (0x1 << 0)      /* 4 symbols exist */
->
-> -#define LOOP_TIMEOUT_MAX       0x00010000
-> +#define LOOP_TIMEOUT_MS        100
->
->  enum flctl_ecc_res_t {
->         FL_SUCCESS,
-> --
-> 1.7.9.5
->
+Regards,
+
+Fabio Estevam
