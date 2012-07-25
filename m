@@ -1,20 +1,17 @@
-Received: from mail-bk0-f49.google.com ([209.85.214.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1StzjH-0005jI-Bs
- for linux-mtd@lists.infradead.org; Wed, 25 Jul 2012 11:26:13 +0000
-Received: by bkcji2 with SMTP id ji2so432731bkc.36
- for <linux-mtd@lists.infradead.org>; Wed, 25 Jul 2012 04:26:07 -0700 (PDT)
-Date: Wed, 25 Jul 2012 14:26:02 +0300
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: Diego COSTE <diego.coste@st.com>
-Subject: Re: gluebi and flash file systems using the OOB
-Message-ID: <20120725142602.3d7d7dd0@pixies.home.jungo.com>
-In-Reply-To: <500FCB91.30009@st.com>
-References: <500FCB91.30009@st.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+MIME-Version: 1.0
+In-Reply-To: <1343215100-24005-3-git-send-email-festevam@gmail.com>
+References: <1343215100-24005-1-git-send-email-festevam@gmail.com>
+ <1343215100-24005-3-git-send-email-festevam@gmail.com>
+Date: Wed, 25 Jul 2012 11:05:58 -0400
+Message-ID: <CAMiH66EA4O0s8hfXkr_SJ56+q7eZ8w0=3C1r_C+m2Os1RxprmA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] ARM: imx_v6_v7_defconfig: Select MXS_DMA
+From: Huang Shijie <shijie8@gmail.com>
+To: Fabio Estevam <festevam@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ Artem.Bityutskiy@linux.intel.com, b32955@freescale.com,
+ linux-mtd@lists.infradead.org, kernel@pengutronix.de, shawn.guo@linaro.org,
+ dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,35 +21,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Diego,
+Hi Fabio:
 
-On Wed, 25 Jul 2012 12:33:53 +0200 Diego COSTE <diego.coste@st.com> wrote:
-> But we also have to use alternate flash file systems (JFFS2, YAFFS2).
-> Unfortunately these file systems use the OOB and therefore can't
-> directly work with the HW we use.
+On Wed, Jul 25, 2012 at 7:18 AM, Fabio Estevam <festevam@gmail.com> wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+>
+> Let MXS_DMA be selected by default.
+>
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+> ---
+> Changes since v1:
+> - No changes. Newly introduced in this series
+>  arch/arm/configs/imx_v6_v7_defconfig |    1 +
+>  1 files changed, 1 insertions(+), 0 deletions(-)
+>
+> diff --git a/arch/arm/configs/imx_v6_v7_defconfig b/arch/arm/configs/imx_v6_v7_defconfig
+> index f725b96..3c9f32f 100644
+> --- a/arch/arm/configs/imx_v6_v7_defconfig
+> +++ b/arch/arm/configs/imx_v6_v7_defconfig
+> @@ -192,6 +192,7 @@ CONFIG_RTC_DRV_MC13XXX=y
+>  CONFIG_RTC_DRV_MXC=y
+>  CONFIG_DMADEVICES=y
+>  CONFIG_IMX_SDMA=y
+> +CONFIG_MXS_DMA=y
+Is this patch needed? The mxs-dma only has one user, the gpmi-nand in mx6q.
+this patch makes the kernel built-in the mxs-dma, even the gpmi-nand
+is not enabled.
 
-You should consider using UBIFS if possible.
+Huang Shijie
 
-> Then I saw that there is gluebi that re-exports a MTD, and that it is
-> possible to use JFFS2 on top of it.
-
-Gluebi exports a virtual MTD for each UBI volume.
-This MTD's type is MTD_UBIVOLUME.
-It is not a NAND MTD (MTD_NANDFLASH) - it does not have bad blocks,
-pages, and oob part. It "resembles" NOR flash.
-
-> Does gluebi provide an OOB emulation so that we can use *any* flash file
-> system that uses the OOB ?
-
-No.
-
-Note JFFS2 works on top of NOR MTDs (and as such, doesn't use OOB).
-So it *should* work on an MTD_UBIVOLUME as well.
-
-However if jffs2 is mounted on MTD_NANDFLASH, it utilizes the OOB.
-
-I remember reading something about inband tags for yaffs2.
-Don't know the exact status of this; I think you should take a look.
-
-Regards
-Shmulik
+>  CONFIG_COMMON_CLK_DEBUG=y
+>  # CONFIG_IOMMU_SUPPORT is not set
+>  CONFIG_EXT2_FS=y
+> --
+> 1.7.1
+>
+>
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
