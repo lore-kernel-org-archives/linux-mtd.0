@@ -1,8 +1,10 @@
 From: Fabio Estevam <festevam@gmail.com>
 To: b32955@freescale.com
-Subject: [PATCH v2 1/3] mtd: nand: Include IMX6 in the list of supported SoCs
-Date: Wed, 25 Jul 2012 08:18:18 -0300
-Message-Id: <1343215100-24005-1-git-send-email-festevam@gmail.com>
+Subject: [PATCH v2 2/3] mtd: nand: Let MTD_NAND_GPMI_NAND depend on MXS_DMA
+Date: Wed, 25 Jul 2012 08:18:19 -0300
+Message-Id: <1343215100-24005-2-git-send-email-festevam@gmail.com>
+In-Reply-To: <1343215100-24005-1-git-send-email-festevam@gmail.com>
+References: <1343215100-24005-1-git-send-email-festevam@gmail.com>
 Cc: Fabio Estevam <fabio.estevam@freescale.com>,
  Artem.Bityutskiy@linux.intel.com, linux-mtd@lists.infradead.org,
  kernel@pengutronix.de, shawn.guo@linaro.org, dwmw2@infradead.org,
@@ -18,27 +20,31 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Fabio Estevam <fabio.estevam@freescale.com>
 
-Include IMX6 in the list of supported SoCs.
+MTD_NAND_GPMI_NAND driver depends on MXS_DMA to be selected, otherwise the following error happens
+for imx_v6_v7_defconfig:
+
+drivers/built-in.o: In function `gpmi_dma_filter':
+clk-fixed-factor.c:(.text+0xb124c): undefined reference to `mxs_dma_is_apbh'
+make: *** [vmlinux] Error 1
 
 Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
 Changes since v1:
-- No changes
- drivers/mtd/nand/Kconfig |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+- Use 'depends' rather than 'select'
+ drivers/mtd/nand/Kconfig |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
 diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index f4e81a7..b40e172 100644
+index a5d8a1b..da52c7d 100644
 --- a/drivers/mtd/nand/Kconfig
 +++ b/drivers/mtd/nand/Kconfig
-@@ -464,7 +464,7 @@ config MTD_NAND_GPMI_NAND
+@@ -463,6 +463,7 @@ config MTD_NAND_NANDSIM
+ config MTD_NAND_GPMI_NAND
          bool "GPMI NAND Flash Controller driver"
          depends on MTD_NAND && (SOC_IMX23 || SOC_IMX28 || SOC_IMX6Q)
++	depends on MXS_DMA
          help
--	 Enables NAND Flash support for IMX23 or IMX28.
-+	 Enables NAND Flash support for IMX23, IMX28 or IMX6.
+ 	 Enables NAND Flash support for IMX23, IMX28 or IMX6.
  	 The GPMI controller is very powerful, with the help of BCH
- 	 module, it can do the hardware ECC. The GPMI supports several
- 	 NAND flashs at the same time. The GPMI may conflicts with other
 -- 
 1.7.1
