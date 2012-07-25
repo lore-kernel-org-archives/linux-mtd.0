@@ -1,10 +1,8 @@
 From: Fabio Estevam <festevam@gmail.com>
 To: b32955@freescale.com
-Subject: [PATCH v2 3/3] ARM: imx_v6_v7_defconfig: Select MXS_DMA
-Date: Wed, 25 Jul 2012 08:18:20 -0300
-Message-Id: <1343215100-24005-3-git-send-email-festevam@gmail.com>
-In-Reply-To: <1343215100-24005-1-git-send-email-festevam@gmail.com>
-References: <1343215100-24005-1-git-send-email-festevam@gmail.com>
+Subject: [PATCH v2 1/3] mtd: nand: Include IMX6 in the list of supported SoCs
+Date: Wed, 25 Jul 2012 08:18:18 -0300
+Message-Id: <1343215100-24005-1-git-send-email-festevam@gmail.com>
 Cc: Fabio Estevam <fabio.estevam@freescale.com>,
  Artem.Bityutskiy@linux.intel.com, linux-mtd@lists.infradead.org,
  kernel@pengutronix.de, shawn.guo@linaro.org, dwmw2@infradead.org,
@@ -20,26 +18,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Fabio Estevam <fabio.estevam@freescale.com>
 
-Let MXS_DMA be selected by default.
+Include IMX6 in the list of supported SoCs.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
 Changes since v1:
-- No changes. Newly introduced in this series
- arch/arm/configs/imx_v6_v7_defconfig |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+- No changes
+ drivers/mtd/nand/Kconfig |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/arch/arm/configs/imx_v6_v7_defconfig b/arch/arm/configs/imx_v6_v7_defconfig
-index f725b96..3c9f32f 100644
---- a/arch/arm/configs/imx_v6_v7_defconfig
-+++ b/arch/arm/configs/imx_v6_v7_defconfig
-@@ -192,6 +192,7 @@ CONFIG_RTC_DRV_MC13XXX=y
- CONFIG_RTC_DRV_MXC=y
- CONFIG_DMADEVICES=y
- CONFIG_IMX_SDMA=y
-+CONFIG_MXS_DMA=y
- CONFIG_COMMON_CLK_DEBUG=y
- # CONFIG_IOMMU_SUPPORT is not set
- CONFIG_EXT2_FS=y
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index f4e81a7..b40e172 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -464,7 +464,7 @@ config MTD_NAND_GPMI_NAND
+         bool "GPMI NAND Flash Controller driver"
+         depends on MTD_NAND && (SOC_IMX23 || SOC_IMX28 || SOC_IMX6Q)
+         help
+-	 Enables NAND Flash support for IMX23 or IMX28.
++	 Enables NAND Flash support for IMX23, IMX28 or IMX6.
+ 	 The GPMI controller is very powerful, with the help of BCH
+ 	 module, it can do the hardware ECC. The GPMI supports several
+ 	 NAND flashs at the same time. The GPMI may conflicts with other
 -- 
 1.7.1
