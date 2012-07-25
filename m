@@ -1,22 +1,22 @@
-Received: from mail-ob0-f177.google.com ([209.85.214.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1StytL-0007QX-H5
- for linux-mtd@lists.infradead.org; Wed, 25 Jul 2012 10:32:32 +0000
-Received: by obbta17 with SMTP id ta17so937586obb.36
- for <linux-mtd@lists.infradead.org>; Wed, 25 Jul 2012 03:32:26 -0700 (PDT)
+Received: from eu1sys200aog114.obsmtp.com ([207.126.144.137])
+ by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Styv4-0007Ug-4F
+ for linux-mtd@lists.infradead.org; Wed, 25 Jul 2012 10:34:26 +0000
+Received: from zeta.dmz-eu.st.com (zeta.dmz-eu.st.com [164.129.230.9])
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id CD833FD
+ for <linux-mtd@lists.infradead.org>; Wed, 25 Jul 2012 10:33:54 +0000 (GMT)
+Received: from Webmail-eu.st.com (safex1hubcas2.st.com [10.75.90.16])
+ by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 683E62A7A
+ for <linux-mtd@lists.infradead.org>; Wed, 25 Jul 2012 10:33:54 +0000 (GMT)
+From: Diego COSTE <diego.coste@st.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Wed, 25 Jul 2012 12:33:53 +0200
+Subject: gluebi and flash file systems using the OOB
+Message-ID: <500FCB91.30009@st.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <500F8B1A.6070605@freescale.com>
-References: <1343146515-18578-1-git-send-email-festevam@gmail.com>
- <500F8B1A.6070605@freescale.com>
-Date: Wed, 25 Jul 2012 07:32:26 -0300
-Message-ID: <CAOMZO5BLFp-FOa4n5HpuA2ug6tbxX9kKq8fUeg5a=ytCFFq3UA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mtd: nand: Select MXS_DMA for MTD_NAND_GPMI_NAND
-From: Fabio Estevam <festevam@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- Artem.Bityutskiy@linux.intel.com, linux-mtd@lists.infradead.org,
- kernel@pengutronix.de, shawn.guo@linaro.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,11 +26,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jul 25, 2012 at 2:58 AM, Huang Shijie <b32955@freescale.com> wrote:
+Hello,
 
-> thanks, but please see this thread.
->
-> http://comments.gmane.org/gmane.linux.ports.arm.kernel/146232
+I hope I don't ask a question already answered, but I didn't find an
+easy way to search the mailing list.
 
-Ok, but what is the conclusion on this then? It has been 8 months
-since that thread started and the problem is still present.
+The HW NAND controller we use automatically handles the ECC and uses
+all of the OOB for that.
+
+I saw that UBI and UBIFS do not use OOB, and therefore are compatible
+with that HW and its SW driver.
+
+But we also have to use alternate flash file systems (JFFS2, YAFFS2).
+Unfortunately these file systems use the OOB and therefore can't
+directly work with the HW we use.
+
+Then I saw that there is gluebi that re-exports a MTD, and that it is
+possible to use JFFS2 on top of it.
+
+So here are the questions:
+Does gluebi provide an OOB emulation so that we can use *any* flash file
+system that uses the OOB ?
+Or do we have to force the FS not to use the OOB ?
+
+Thanks for your kind help,
+
+Diego
