@@ -1,18 +1,14 @@
-Received: from [208.43.159.202] (helo=softlayer.softlayer.marvquin.com)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Su6Wi-0002am-AH
- for linux-mtd@lists.infradead.org; Wed, 25 Jul 2012 18:41:42 +0000
-Received: from nobody by softlayer.softlayer.marvquin.com with local (Exim
- 4.77) (envelope-from <ophelia@dbdseo.com>) id 1Su6WG-0001vU-Tv
- for linux-mtd@lists.infradead.org; Wed, 25 Jul 2012 13:41:12 -0500
-To: linux-mtd@lists.infradead.org
-Subject: I have a question about your website
+From: Richard Zhao <richard.zhao@freescale.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: gpmi-nand: fix build error when MXS_DMA is not configured
+Date: Thu, 26 Jul 2012 10:01:12 +0800
+Message-ID: <1343268072-20732-1-git-send-email-richard.zhao@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed; delsp=yes
-Content-Transfer-Encoding: 8Bit
-From: Ophelia Parker <ophelia@dbdwebsite.com>
-Message-Id: <E1Su6WG-0001vU-Tv@softlayer.softlayer.marvquin.com>
-Date: Wed, 25 Jul 2012 13:41:12 -0500
+Content-Type: text/plain
+Cc: artem.bityutskiy@linux.intel.com, b32955@freescale.com,
+ Richard Zhao <richard.zhao@freescale.com>, kernel@pengutronix.de,
+ shawn.guo@linaro.org, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,32 +18,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello my name is Ophelia Parker and I am an Internet and Website Specialist.
-I was looking up websites in Google under the keyword search flash devices
-and came upon your website www.linux-mtd.infradead.org.  I see that you are
-not ranked on the first page for your primary keyword searches.
+Fix below build error:
 
-There is no reason that you can’t have top three rankings for your keywords
-based on your website’s structure and content.  You need significantly more
-one way anchor text backlinks and I can help you with this.  Additionally, we
-are running a special that will provide you with a fully upgraded website,
-complete with mobile website, user panel conversion optimizer as well as
-handle all of your social media needs including Facebook and Twitter.  Social
-media is essential to connecting with new customers and generating repeat
-business.
+drivers/built-in.o: In function `gpmi_dma_filter':
+clk-fixed-factor.c:(.text+0xab170): undefined reference to `mxs_dma_is_apbh'
+make: *** [vmlinux] Error 1
 
-I have a very simple way to prove that what I do works and it’s risk free
-for you to try.
+Signed-off-by: Richard Zhao <richard.zhao@freescale.com>
+---
+ drivers/mtd/nand/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
-Nothing beats performance and after you see what we are able to do for your
-business you will feel confident in the results we can achieve.
-
-Would it be okay if I were to give you a call or you can certainly call me
-anytime. I would love to continue this discussion over the phone with you.
-
-Sincerely,
-
-Ophelia Parker
-DBD WEBSITE
-Internet and Website Specialist
-(888) 8723540
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 31bb7e5..d097386 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -481,6 +481,7 @@ config MTD_NAND_NANDSIM
+ config MTD_NAND_GPMI_NAND
+         bool "GPMI NAND Flash Controller driver"
+         depends on MTD_NAND && (SOC_IMX23 || SOC_IMX28 || SOC_IMX6Q)
++	depends on MXS_DMA
+         help
+ 	 Enables NAND Flash support for IMX23 or IMX28.
+ 	 The GPMI controller is very powerful, with the help of BCH
+-- 
+1.7.9.5
