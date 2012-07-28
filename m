@@ -1,11 +1,10 @@
-Date: Sat, 28 Jul 2012 01:12:53 +0000
-From: Emelda <exam@jccief.org.cn>
-Subject: I need your assistance
-Message-ID: <65688d5b088714ee0cd56c7e33380cd4@jccief.org.cn>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: 7bit
-Reply-To: emeldapeterson1@yahoo.com
+From: Dirk Behme <dirk.behme@googlemail.com>
+To: shijie8@gmail.com, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, shawn.guo@linaro.org
+Subject: [PATCH] mtd: mxc_nand: Fix compiler warnings
+Date: Sat, 28 Jul 2012 11:05:10 +0200
+Message-Id: <1343466310-14584-1-git-send-email-dirk.behme@gmail.com>
+Cc: Dirk Behme <dirk.behme@googlemail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,17 +14,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+From: Dirk Behme <dirk.behme@googlemail.com>
 
-I need your assistance.
+Fix the compiler warnings
 
-I know my message will come to you as a surprise because we have not met each other before but nevertheless, I am praying for this message to meet you in good condition of health. I am writing with the greatest delight and personal respect, believing you will not betray the trust and confident which i want to sit on you.
+drivers/mtd/nand/mxc_nand.c:1267: warning: initialization discards qualifiers from pointer target type
+drivers/mtd/nand/mxc_nand.c:1270: warning: initialization discards qualifiers from pointer target type
+drivers/mtd/nand/mxc_nand.c:1273: warning: initialization discards qualifiers from pointer target type
+drivers/mtd/nand/mxc_nand.c:1276: warning: initialization discards qualifiers from pointer target type
 
-My name is Emelda Peterson. I'm 26years old woman. I'm origin/nationality of Liberia. My father was army officer and was Lt. Colonel in rank during his army service before he was killed including my mother by rebels during Liberia civil war. Attempt was made to kill me too,but i was very lucky to escape and make my way to Dakar Senegal through the help of united nation where I am now..
+Signed-off-by: Dirk Behme <dirk.behme@googlemail.com>
+---
+ drivers/mtd/nand/mxc_nand.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
-My late father lodged some money in one of the bank in europe which i've tried to withdraw the fund but i was denied the access because of my refugee status,rather i was adviced to bring a partner to file for the fund as my trustee requesting on my behalf. The total fund is 4.200.000 pounds (Four Million Two hundred thousand Dollars) .
-
-I'm soliciting for your noble hand to help me transfer this fund into your account in your country,i want to invest this money in your country where there is more economic and political stability.I decided to write you with all my whole heart and i will like to give you 20% from the total sum.
-I will give you more details as soon as I hear from you.
-
-Best Regard.
-Emelda.
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index 6acc790..31b125a 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -1264,16 +1264,16 @@ static const struct mxc_nand_devtype_data imx51_nand_devtype_data = {
+ static const struct of_device_id mxcnd_dt_ids[] = {
+ 	{
+ 		.compatible = "fsl,imx21-nand",
+-		.data = &imx21_nand_devtype_data,
++		.data = (void *)&imx21_nand_devtype_data,
+ 	}, {
+ 		.compatible = "fsl,imx27-nand",
+-		.data = &imx27_nand_devtype_data,
++		.data = (void *)&imx27_nand_devtype_data,
+ 	}, {
+ 		.compatible = "fsl,imx25-nand",
+-		.data = &imx25_nand_devtype_data,
++		.data = (void *)&imx25_nand_devtype_data,
+ 	}, {
+ 		.compatible = "fsl,imx51-nand",
+-		.data = &imx51_nand_devtype_data,
++		.data = (void *)&imx51_nand_devtype_data,
+ 	},
+ 	{ /* sentinel */ }
+ };
+-- 
+1.7.7.4
