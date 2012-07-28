@@ -1,30 +1,11 @@
-Message-ID: <50126BC4.2010709@freescale.com>
-Date: Fri, 27 Jul 2012 18:21:56 +0800
-From: Huang Shijie <b32955@freescale.com>
+Date: Sat, 28 Jul 2012 01:12:53 +0000
+From: Emelda <exam@jccief.org.cn>
+Subject: I need your assistance
+Message-ID: <65688d5b088714ee0cd56c7e33380cd4@jccief.org.cn>
 MIME-Version: 1.0
-To: Dirk Behme <dirk.behme@de.bosch.com>
-Subject: Re: [PATCH v2 3/3] ARM: imx_v6_v7_defconfig: Select MXS_DMA
-References: <1343215100-24005-1-git-send-email-festevam@gmail.com>
- <1343215100-24005-3-git-send-email-festevam@gmail.com>
- <CAMiH66EA4O0s8hfXkr_SJ56+q7eZ8w0=3C1r_C+m2Os1RxprmA@mail.gmail.com>
- <CAOMZO5BfT+_7x4F96Kvqtq5STXxw2Y9CxbCCAc_UnZ-3wy0qxg@mail.gmail.com>
- <CAMiH66FUxiw0B8iD5rYi=nUX0VYZBzOKifXKfTqd1RmSHhC80g@mail.gmail.com>
- <CAOMZO5DUN5d_aN=j8bfj6n3of=r2A-mu+jqNXCR-4HVTA7kS6Q@mail.gmail.com>
- <CAMiH66HCih0=zWqhwAGj+rVTW7-9vNO8y-6tC+p8R7yg=+sojw@mail.gmail.com>
- <CAOMZO5BziYJVUzniUoZmdFejso+6dBOc6QtTuzbbMyVOXuOFDQ@mail.gmail.com>
- <CAMiH66E9gJJ7f=wKJ8Ondegj=+WUYYuDA0iB8mhNoWBRNWXKsQ@mail.gmail.com>
- <50125FC3.4040603@de.bosch.com>
-In-Reply-To: <50125FC3.4040603@de.bosch.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- Fabio Estevam <festevam@gmail.com>, Richard Zhao <richard.zhao@freescale.com>,
- "kernel@pengutronix.de" <kernel@pengutronix.de>,
- "Artem.Bityutskiy@linux.intel.com" <Artem.Bityutskiy@linux.intel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "shawn.guo@linaro.org" <shawn.guo@linaro.org>,
- Huang Shijie <shijie8@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: 7bit
+Reply-To: emeldapeterson1@yahoo.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,66 +15,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2012=E5=B9=B407=E6=9C=8827=E6=97=A5 17:30, Dirk Behme =E5=86=99=
-=E9=81=93:
-> On 26.07.2012 13:32, Huang Shijie wrote:
->> On Thu, Jul 26, 2012 at 7:08 AM, Fabio Estevam <festevam@gmail.com>=20
->> wrote:
->>> On Thu, Jul 26, 2012 at 7:56 AM, Huang Shijie <shijie8@gmail.com>=20
->>> wrote:
->>>> On Thu, Jul 26, 2012 at 6:53 AM, Fabio Estevam <festevam@gmail.com>=20
->>>> wrote:
->>>>> On Wed, Jul 25, 2012 at 11:24 PM, Huang Shijie <shijie8@gmail.com>=20
->>>>> wrote:
->>>>>
->>>>>> But you have added "depend on MXS_DMA". So If you do not select th=
-e
->>>>>> mxs-dma, you can not see the
->>>>>> gpmi-nand.
->>>>>> that's why i think this patch is not needed.
->>>>> So how CONFIG_MXS_DMA would be selected if not via defconfig?
->>>> Use the make menuconfig ARCH=3Darm:
->>>>
->>>> "device drivers"-->"DMA engine support" -->"mxs dma support"
->>> I prefer to have selected in the defconfig by default instead.
->>>
->>> It is not obvious for the end user that they need to manually select
->>> this option.
->>>
->>> mxs_defconfig also selects CONFIG_MXS_DMA.
->> In mx23/mx28, the mxs-dma has many users, so it's proper to make it=20
->> default.
->>
->>> Can't we do the same here and let imx_v6_v7_defconfig be built again?
->> Shawn, do you have any opinion about this?
->
-> First, I think Shawn is on holiday at the moment.
->
-> Second, recent kernel mainline from today building imx_v6_v7_defconfig=20
-> is broken due to this.
-Sascha did not CC to me when he submitted the patch 3def84ed9 "ARM:=20
-imx_v6_v7_defconfig: ..".
 
-I would check this patch if he CCed to me.
+I need your assistance.
 
-BR
-Huang Shijie
+I know my message will come to you as a surprise because we have not met each other before but nevertheless, I am praying for this message to meet you in good condition of health. I am writing with the greatest delight and personal respect, believing you will not betray the trust and confident which i want to sit on you.
 
+My name is Emelda Peterson. I'm 26years old woman. I'm origin/nationality of Liberia. My father was army officer and was Lt. Colonel in rank during his army service before he was killed including my mother by rebels during Liberia civil war. Attempt was made to kill me too,but i was very lucky to escape and make my way to Dakar Senegal through the help of united nation where I am now..
 
->
-> So to make it build again, we have to enable CONFIG_MXS_DMA anyhow. As=20
-> it seems that GPMI_NAND needs it to build, I would vote for the
->
-> depends on MXS_DMA
->
-> fix proposed by Richard
->
-> http://www.spinics.net/lists/arm-kernel/msg186111.html
->
-> Anyhow, any chance to get the kernel mainline fixed asap?
->
-> Many thanks and best regards
->
-> Dirk
->
->
+My late father lodged some money in one of the bank in europe which i've tried to withdraw the fund but i was denied the access because of my refugee status,rather i was adviced to bring a partner to file for the fund as my trustee requesting on my behalf. The total fund is 4.200.000 pounds (Four Million Two hundred thousand Dollars) .
+
+I'm soliciting for your noble hand to help me transfer this fund into your account in your country,i want to invest this money in your country where there is more economic and political stability.I decided to write you with all my whole heart and i will like to give you 20% from the total sum.
+I will give you more details as soon as I hear from you.
+
+Best Regard.
+Emelda.
