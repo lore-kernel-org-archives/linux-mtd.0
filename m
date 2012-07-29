@@ -1,19 +1,12 @@
-Received: from mail-yw0-f49.google.com ([209.85.213.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SvFX5-0001AB-8f
- for linux-mtd@lists.infradead.org; Sat, 28 Jul 2012 22:30:50 +0000
-Received: by yhjj52 with SMTP id j52so4206844yhj.36
- for <linux-mtd@lists.infradead.org>; Sat, 28 Jul 2012 15:30:27 -0700 (PDT)
-From: Fabio Estevam <festevam@gmail.com>
-To: Artem.Bityutskiy@linux.intel.com
-Subject: [PATCH 1/2] nand: nand_bbt: Export nand_update_bbt
-Date: Sat, 28 Jul 2012 19:30:16 -0300
-Message-Id: <1343514616-9019-2-git-send-email-festevam@gmail.com>
-In-Reply-To: <1343514616-9019-1-git-send-email-festevam@gmail.com>
-References: <1343514616-9019-1-git-send-email-festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, b32955@freescale.com,
- linux-mtd@lists.infradead.org, marex.vasut@denx.de, kernel@pengutronix.de,
- shawn.guo@linaro.org, dwmw2@infradead.org
+Message-ID: <1343553558.50150015b5391@webmail.ipam.pt>
+Date: Sun, 29 Jul 2012 10:19:18 +0100
+From: GOOGLE INCORPORATION =?iso-8859-1?b?rjIwMTI=?= <ebarros@ipam.pt>
+Subject: GOOGLE 2012 ANNIVERSARY PROMOTION.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+To: undisclosed-recipients:;
+Reply-To: customercare.google@live.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,27 +16,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
 
-When building MTD_NAND_GPMI_NAND as module, the following error shows up:
 
-ERROR: "nand_update_bbt" [drivers/mtd/nand/gpmi-nand/gpmi_nand.ko] undefined!
+Google UK Ltd
+Belgrave House
+76 Buckingham Palace Road
+London SW1W 9TQ
+United Kingdom.
 
-Export nand_update_bbt to fix it.
+REF No: CLP/ 24-FB-426253
+Batch No: 42/450002/CLP
+Serial No: 64483-72
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- drivers/mtd/nand/nand_bbt.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+GOOGLE 2012 ANNIVERSARY PROMOTION.
 
-diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-index 2d1d2fa..f4b6417 100644
---- a/drivers/mtd/nand/nand_bbt.c
-+++ b/drivers/mtd/nand/nand_bbt.c
-@@ -1403,3 +1403,4 @@ int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt)
- 
- EXPORT_SYMBOL(nand_scan_bbt);
- EXPORT_SYMBOL(nand_default_bbt);
-+EXPORT_SYMBOL(nand_update_bbt);
--- 
-1.7.1
+We wish to congratulate you once again on this note, for being part of our
+winners selected this year. This promotion was set-up to encourage the active
+users of the Google search engine and the Google ancillary services.
+
+Hence we do believe with your winning prize, you will continue to be active and
+patronage to the Google search engine. Google is now the biggest search engine
+worldwide and in an effort to make sure that it remains the most widely used
+search engine, we ran an online e-mail beta test which your email address won
+£750,000.00 {Seven Hundred and Fifty Thousand Great British Pounds Sterling}
+
+We wish to formally announce to you that you have successfully passed the
+requirements, statutory obligations, verifications, validations and satisfactory
+report test conducted for all online winners.
+
+A winning cheque will be issued in your name by Google Promotion Award Team, you
+have therefore won the entire sum of £750,000.00 {Seven  Hundred And Fifty
+Thousand Great British Pounds Sterling} and also a certificate of prize claims
+will be sent alongside your winning cheque.
+
+Mr. Patrick Pichette
+Senior Vice President and
+Chief Financial Officer 
+Email: enquiriesgooglemanagement.team@live.com
+
+You are advised to contact our Chief Financial Officer with the following
+details to avoid unnecessary delay and complications:
+
+FILL IN THE VERIFICATION AND FUNDS RELEASE FORM.
+(1) Your Contact Address:
+(2) Your Tel/Fax numbers:
+(3) Your Nationality/Country:
+(4)Your Full Names:
+(5) Occupation:
+(6) Age/Sex:
+(7) Alternate email:
+(8) Ever won an online lottery?
+
+
+The Google Promotion Award Team has discovered a huge number of double claims
+due to winners informing close friends relatives and third parties about their
+winning and also sharing their pin numbers. As a result of this, these friends
+try to claim the lottery on behalf of the real winners. The Google Promotion
+Award Team has reached a decision from headquarters that any double claim
+discovered by the Lottery Board will result to the canceling of that particular
+winning, making a loss for both the double claimer and the real winner, as it is
+taken that the real winner was the informer to the double claimer about the
+lottery. So you are hereby strongly advised once more to keep your winnings
+strictly confidential until you claim your prize.
+
+Congratulations from the Staffs & Members of the Google interactive Lotteries
+Board Commission.
+
+
+Dr. Eric Schmidt.                                                Larry Page
+Executive Chairman                                       Chief Executive Officer
+
+                                    ©2012 Google Incorporation
