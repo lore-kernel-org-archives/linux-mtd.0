@@ -1,21 +1,23 @@
-Message-ID: <1343653256.1513.6.camel@kyv>
-Subject: Re: [PATCH 1/5] ubi: introduce ubi->bad_peb_limit
+Received: from mail-bk0-f49.google.com ([209.85.214.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SvqT5-0002xK-21
+ for linux-mtd@lists.infradead.org; Mon, 30 Jul 2012 13:57:07 +0000
+Received: by bkcji2 with SMTP id ji2so2949072bkc.36
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Jul 2012 06:56:53 -0700 (PDT)
+Message-ID: <1343656610.1513.14.camel@kyv>
+Subject: Re: [PATCH 0/5] ubi: Fix bad PEBs reserve caclulation
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Date: Mon, 30 Jul 2012 16:00:56 +0300
-In-Reply-To: <20120719091600.7d55dadb@pixies.home.jungo.com>
+Date: Mon, 30 Jul 2012 16:56:50 +0300
+In-Reply-To: <1341389164-24409-1-git-send-email-shmulik.ladkani@gmail.com>
 References: <1341389164-24409-1-git-send-email-shmulik.ladkani@gmail.com>
- <1341389164-24409-2-git-send-email-shmulik.ladkani@gmail.com>
- <1342608053.7530.11.camel@brekeke>
- <20120719091600.7d55dadb@pixies.home.jungo.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-ZTeVIu4ngE3UmaAZqYzc"
+ boundary="=-uG6B4i+BHL3NFqZ5ld7a"
 Mime-Version: 1.0
-Cc: Russell King <linux@arm.linux.org.uk>,
- Richard Genoud <richard.genoud@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Andrew Victor <linux@maxim.org.za>, linux-arm-kernel@lists.infradead.org
+Cc: Richard Genoud <richard.genoud@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,31 +29,32 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-ZTeVIu4ngE3UmaAZqYzc
+--=-uG6B4i+BHL3NFqZ5ld7a
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-07-19 at 09:16 +0300, Shmulik Ladkani wrote:
-> On Wed, 18 Jul 2012 13:40:53 +0300 Artem Bityutskiy <dedekind1@gmail.com>=
- wrote:
-> > I've also amended the Kconfig text a tiny bit and dropped the defconfig
-> > changes - let's have them separately as a single patch at the end of th=
-e
-> > series.
+On Wed, 2012-07-04 at 11:05 +0300, Shmulik Ladkani wrote:
+> The existing mechanism of reserving PEBs for bad PEB handling has two
+> flaws:
+> - It is calculated as a percentage of good PEBs instead of total PEBs.
+> - There's no limit on the amount of PEBs UBI reserves for future bad
+>   eraseblock handling.
 >=20
-> Wouldn't having the defconfig change as the last patch break things for
-> those defconfigs that had explicitly set CONFIG_MTD_UBI_BEB_RESERVE
-> other than the default?
+> This patchset changes the mechanism to overcome these flaws.
 
-OK, fair enough, but let's have it as a 2 separate patches anyway. It is
-not a big deal to first change the defconfig, and then actually add the
-new option.
+Hi Shmulik, I've separated out the defconfig changes and pushed patches
+1,2, and 3 to the UBI tree (the master branch). Patches 4 and 5 are
+already merged upstream. I did a couple of minor modifications in
+commentaries and messages and I think in variables declaration section,
+nothing else. I'll send you the patches separately.
+
+Thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-ZTeVIu4ngE3UmaAZqYzc
+--=-uG6B4i+BHL3NFqZ5ld7a
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -59,19 +62,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQFoWJAAoJECmIfjd9wqK0pkEP/3qiMgSgY5BQRyidbhIK/P6w
-r+9rBzFUl6qbMXcafATGjqaB+DyjpLMJdmwf9Slm5paNSlEfJRcu1YlgbR94xB2K
-pql1CZ7z+U8Pwh7/y6tumV3dGb3+wUsOaVz9XYk5Mi+HMTSM4aDFG/vQ8cT8HM57
-GzK/V8KL4gzi/H/WVGMeL9t06mdfKUYdHvnOZ44rL64srl0yLBpdDcmsVVAAE0Wd
-2AY4m9bduoHZ6+puGa/nPJHxhYoLJJu8GLsz1KIg4fs1ueI287X5TBWfnftOEOV4
-WW0i3YtGIzH5C+2+JHdPJAKf32Ixrj1Vclyw4AKv5I8vOjuFDb2c88y53mdEw5rV
-wVEc4aMC5Ps4hsClY4MrhoNiqD5FFUmVCcRRi+PcAPAcm7KA3Y4FEWBndjlQod2z
-o4mbw2mjADAv1Mhk2BzDRTXYjv6OJW/iRdw4DK4wnm8b1ItekbZ4Y/cToNfagNTG
-F6yWyit2NkWy/MyG8zsduhqYIbJEsQnV340IoEpYWT+TAf1X5+VAcg6soAg7+2TF
-AVrExUV/rfpgZhcrbbV+fwYa3xMNE8RqrX320dA2y1Ri3DB9ImcGtkGx9oH+K7ms
-UterNzGc3r261HVVAlswsVg7uiFSZ2k1KH42ezaQJCJnsKSzpHCPHZwoqxU0JGzU
-WEhWJVAve4r7AAtR1Uci
-=Mj/x
+iQIcBAABAgAGBQJQFpKiAAoJECmIfjd9wqK0370QAJ47jjlq84OeWohUwRWazx7O
+h43ZJ7ArGPYZuUQj69G1W8wxv3y5O1hMQemmxkfcYVCBwtCly/e3gxY50rDKLNPm
+ZzpqxkVX49YxQKRpP7P0URRNEqtNPWDBs2ivplTbjwzkLTNYgl7dbkX3v4fctEuc
+m0CPkhODAsKttb0U1NnyjrU9pVIgi4ycXGG18C+eQAYpmoz2RFeT4mXrn8cKcd+B
+YUSwa6XJuEMlBYzRjdOA0EdnrgM4Rn58+1eqgfNgnn00XKR9PP8hLXF1Ge8rkN88
+bp7dJusDfzkIaQTCYlrJDPsfIIEwrpXp9f7s2kMVQ7nCLc2Oxswzj0ixGrwbnW98
+JXC1/L5jA5Nsu/9yopU1vkNiutxI6vnVVBho6LP3unmwhx6kQgKuoTtv3fO9jYpd
+ZFIyjQNpsE0TSF7aKbf+6sIFLUMF1QfuS+ZbxAox7W8HOaX3EGqBjVQR9k2FfE9D
+m+cfUaEx7DAmV5hE6RlojxNYu5W5diF16xlcWLTtdQCv/kcqyTQg54RnP/aEDlmr
+dhOtsUDPAIwLreN9L71r4SrsNL167bKaykWnfAnjI68zqJDhFJ6hZVGTcLmsaMC/
+8kiuNs5RjrXcq36TUSmEvoxousRSaxmwsFr4BwUQ9JEPG3stBWQJhefoclKz+mS5
+06SBpF8Zp3WGHMw3LlME
+=JMn1
 -----END PGP SIGNATURE-----
 
---=-ZTeVIu4ngE3UmaAZqYzc--
+--=-uG6B4i+BHL3NFqZ5ld7a--
