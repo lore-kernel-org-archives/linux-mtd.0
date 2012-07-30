@@ -1,20 +1,16 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SvkVJ-0005NQ-I2
- for linux-mtd@lists.infradead.org; Mon, 30 Jul 2012 07:35:01 +0000
-Date: Mon, 30 Jul 2012 09:34:54 +0200
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-To: Dirk Behme <dirk.behme@googlemail.com>
-Subject: Re: [PATCH] mtd: mxc_nand: Fix compiler warnings
-Message-ID: <20120730073454.GI1528@pengutronix.de>
-References: <1343466310-14584-1-git-send-email-dirk.behme@gmail.com>
+Received: from nm7.bullet.mail.ird.yahoo.com ([77.238.189.21])
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Svl9r-0003HA-Cj
+ for linux-mtd@lists.infradead.org; Mon, 30 Jul 2012 08:16:55 +0000
+Message-ID: <1343636208.97988.YahooMailNeo@web132501.mail.ird.yahoo.com>
+Date: Mon, 30 Jul 2012 09:16:48 +0100 (BST)
+From: Marquerite Sands <luanayekelbb@yahoo.com>
+Subject: U gotta look at this.
+To: "divot@dixienet.com" <divot@dixienet.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1343466310-14584-1-git-send-email-dirk.behme@gmail.com>
-Cc: linux-mtd@lists.infradead.org, shawn.guo@linaro.org, shijie8@gmail.com,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Reply-To: Marquerite Sands <marquerite.sands@yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,22 +20,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
-
-On Sat, Jul 28, 2012 at 11:05:10AM +0200, Dirk Behme wrote:
-> From: Dirk Behme <dirk.behme@googlemail.com>
-> 
-> Fix the compiler warnings
-> 
-> drivers/mtd/nand/mxc_nand.c:1267: warning: initialization discards qualifiers from pointer target type
-> drivers/mtd/nand/mxc_nand.c:1270: warning: initialization discards qualifiers from pointer target type
-> drivers/mtd/nand/mxc_nand.c:1273: warning: initialization discards qualifiers from pointer target type
-> drivers/mtd/nand/mxc_nand.c:1276: warning: initialization discards qualifiers from pointer target type
-These should be gone in next already.
-
-Best regards,
-Uwe
-
--- 
-Pengutronix e.K.                           | Uwe Kleine-König            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Howdy,=0AI am Marquerite. In three words about myself =E2=80=93 playful, wi=
+ld and free.=0AI am writing because I find u an interesting and attractive =
+man and I want to meet u|think that u are hot and I want to know u better. =
+Probably it will turn into an interesting conversation and that's all, mayb=
+e we'll like each other so much that we'd like to make our relationships in=
+to horizontal, you know what I mean, right?) Don't miss ur chance!=0AI woul=
+d be really happy if u'll send me ur answer, now it's more interesting, rig=
+ht?)=0AMarquerite
