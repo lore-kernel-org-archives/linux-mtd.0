@@ -1,18 +1,18 @@
 Received: from mail-bk0-f49.google.com ([209.85.214.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SvqUE-00030W-6t
- for linux-mtd@lists.infradead.org; Mon, 30 Jul 2012 13:58:18 +0000
-Received: by mail-bk0-f49.google.com with SMTP id ji2so2949582bkc.36
- for <linux-mtd@lists.infradead.org>; Mon, 30 Jul 2012 06:58:12 -0700 (PDT)
+ id 1SvqUE-00030y-Sg
+ for linux-mtd@lists.infradead.org; Mon, 30 Jul 2012 13:58:22 +0000
+Received: by bkcji2 with SMTP id ji2so2949632bkc.36
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Jul 2012 06:58:10 -0700 (PDT)
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Subject: [PATCH 4/5] UBI: kill CONFIG_MTD_UBI_BEB_RESERVE
-Date: Mon, 30 Jul 2012 16:57:40 +0300
-Message-Id: <1343656661-8096-4-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 3/5] UBI: limit amount of reserved eraseblocks for bad PEB
+ handling
+Date: Mon, 30 Jul 2012 16:57:39 +0300
+Message-Id: <1343656661-8096-3-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1343656661-8096-1-git-send-email-dedekind1@gmail.com>
 References: <1343656661-8096-1-git-send-email-dedekind1@gmail.com>
-Cc: Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>,
- linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,58 +24,148 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 
-CONFIG_MTD_UBI_BEB_RESERVE and MIN_RESEVED_PEBS are no longer used,
-since the amount of reserved eraseblocks for bad PEB handling is now
-derived from 'ubi->bad_peb_limit' (ubi's maximum expected bad
-eraseblocks).
+The existing mechanism of reserving PEBs for bad PEB handling has two
+flaws:
+- It is calculated as a percentage of good PEBs instead of total PEBs.
+- There's no limit on the amount of PEBs UBI reserves for future bad
+  eraseblock handling.
+
+This patch changes the mechanism to overcome these flaws.
+
+The desired level of PEBs reserved for bad PEB handling (beb_rsvd_level)
+is set to the maximum expected bad eraseblocks (bad_peb_limit) minus the
+existing number of bad eraseblocks (bad_peb_count).
+
+The actual amount of PEBs reserved for bad PEB handling is usually set
+to the desired level (but in some circumstances may be lower than the
+desired level, e.g. when attaching to a device that has too few
+available PEBs to satisfy the desired level).
+
+In the case where the device has too many bad PEBs (above the expected
+limit), then the desired level, and the actual amount of PEBs reserved
+are set to zero. No PEBs will be set aside for future bad eraseblock
+handling - even if some PEBs are made available (e.g. by shrinking a
+volume).
+If another PEB goes bad, and there are available PEBs, then the
+eraseblock will be marked bad (consuming one available PEB). But if
+there are no available PEBs, ubi will go into readonly mode.
 
 Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>
 ---
- drivers/mtd/ubi/Kconfig | 16 ----------------
- drivers/mtd/ubi/ubi.h   |  3 ---
- 2 files changed, 19 deletions(-)
+ drivers/mtd/ubi/misc.c | 16 ++++++++++++----
+ drivers/mtd/ubi/wl.c   | 46 +++++++++++++++++++++++++++++-----------------
+ 2 files changed, 41 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/mtd/ubi/Kconfig b/drivers/mtd/ubi/Kconfig
-index 76195ac..b2f4f0f 100644
---- a/drivers/mtd/ubi/Kconfig
-+++ b/drivers/mtd/ubi/Kconfig
-@@ -27,22 +27,6 @@ config MTD_UBI_WL_THRESHOLD
- 	  life-cycle less than 10000, the threshold should be lessened (e.g.,
- 	  to 128 or 256, although it does not have to be power of 2).
+diff --git a/drivers/mtd/ubi/misc.c b/drivers/mtd/ubi/misc.c
+index 8bbfb44..d089df0 100644
+--- a/drivers/mtd/ubi/misc.c
++++ b/drivers/mtd/ubi/misc.c
+@@ -121,10 +121,18 @@ void ubi_update_reserved(struct ubi_device *ubi)
+  */
+ void ubi_calculate_reserved(struct ubi_device *ubi)
+ {
+-	ubi->beb_rsvd_level = ubi->good_peb_count/100;
+-	ubi->beb_rsvd_level *= CONFIG_MTD_UBI_BEB_RESERVE;
+-	if (ubi->beb_rsvd_level < MIN_RESEVED_PEBS)
+-		ubi->beb_rsvd_level = MIN_RESEVED_PEBS;
++	/*
++	 * Calculate the actual number of PEBs currently needed to be reserved
++	 * for future bad eraseblock handling.
++	 */
++	ubi->beb_rsvd_level = ubi->bad_peb_limit - ubi->bad_peb_count;
++	if (ubi->beb_rsvd_level < 0) {
++		ubi->beb_rsvd_level = 0;
++		ubi_warn("number of bad PEBs (%d) is above the expected limit "
++			 "(%d), not reserving any PEBs for bad PEB handling, "
++			 "will use available PEBs (if any)",
++			 ubi->bad_peb_count, ubi->bad_peb_limit);
++	}
+ }
  
--config MTD_UBI_BEB_RESERVE
--	int "Percentage of reserved eraseblocks for bad eraseblocks handling"
--	default 2
--	range 0 25
--	help
--	  If the MTD device admits of bad eraseblocks (e.g. NAND flash), UBI
--	  reserves some amount of physical eraseblocks to handle new bad
--	  eraseblocks. When a physical eraseblock becomes bad, UBI uses these
--	  reserved physical eraseblocks to relocate the bad one. This
--	  configuration option specifies how many physical eraseblocks will be
--	  reserved for bad eraseblock handling (percents of total number of
--	  good physical eraseblocks on this MTD partition). If the underlying
--	  flash does not admit of bad eraseblocks (e.g. NOR flash), this value
--	  is ignored and nothing is reserved. Leave the default value if
--	  unsure.
+ /**
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index b6be644..bd05276 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -978,9 +978,10 @@ static int erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk,
+ 			int cancel)
+ {
+ 	struct ubi_wl_entry *e = wl_wrk->e;
+-	int pnum = e->pnum, err, need;
++	int pnum = e->pnum;
+ 	int vol_id = wl_wrk->vol_id;
+ 	int lnum = wl_wrk->lnum;
++	int err, available_consumed = 0;
+ 
+ 	if (cancel) {
+ 		dbg_wl("cancel erasure of PEB %d EC %d", pnum, e->ec);
+@@ -1045,20 +1046,14 @@ static int erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk,
+ 	}
+ 
+ 	spin_lock(&ubi->volumes_lock);
+-	need = ubi->beb_rsvd_level - ubi->beb_rsvd_pebs + 1;
+-	if (need > 0) {
+-		need = ubi->avail_pebs >= need ? need : ubi->avail_pebs;
+-		ubi->avail_pebs -= need;
+-		ubi->rsvd_pebs += need;
+-		ubi->beb_rsvd_pebs += need;
+-		if (need > 0)
+-			ubi_msg("reserve more %d PEBs", need);
+-	}
 -
- config MTD_UBI_BEB_LIMIT
- 	int "Percentage of maximum expected bad eraseblocks"
- 	default 2
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index aeb459e..c94612e 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -59,9 +59,6 @@
- #define ubi_err(fmt, ...) printk(KERN_ERR "UBI error: %s: " fmt "\n", \
- 				 __func__, ##__VA_ARGS__)
+ 	if (ubi->beb_rsvd_pebs == 0) {
+-		spin_unlock(&ubi->volumes_lock);
+-		ubi_err("no reserved physical eraseblocks");
+-		goto out_ro;
++		if (ubi->avail_pebs == 0) {
++			spin_unlock(&ubi->volumes_lock);
++			ubi_err("no reserved/available physical eraseblocks");
++			goto out_ro;
++		}
++		ubi->avail_pebs -= 1;
++		available_consumed = 1;
+ 	}
+ 	spin_unlock(&ubi->volumes_lock);
  
--/* Lowest number PEBs reserved for bad PEB handling */
--#define MIN_RESEVED_PEBS 2
--
- /* Background thread name pattern */
- #define UBI_BGT_NAME_PATTERN "ubi_bgt%dd"
+@@ -1068,19 +1063,36 @@ static int erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk,
+ 		goto out_ro;
  
+ 	spin_lock(&ubi->volumes_lock);
+-	ubi->beb_rsvd_pebs -= 1;
++	if (ubi->beb_rsvd_pebs > 0) {
++		if (available_consumed) {
++			/*
++			 * The amount of reserved PEBs increased since we last
++			 * checked.
++			 */
++			ubi->avail_pebs += 1;
++			available_consumed = 0;
++		}
++		ubi->beb_rsvd_pebs -= 1;
++	}
+ 	ubi->bad_peb_count += 1;
+ 	ubi->good_peb_count -= 1;
+ 	ubi_calculate_reserved(ubi);
+-	if (ubi->beb_rsvd_pebs)
++	if (available_consumed)
++		ubi_warn("no PEBs in the reserved pool, used an available PEB");
++	else if (ubi->beb_rsvd_pebs)
+ 		ubi_msg("%d PEBs left in the reserve", ubi->beb_rsvd_pebs);
+ 	else
+-		ubi_warn("last PEB from the reserved pool was used");
++		ubi_warn("last PEB from the reserve was used");
+ 	spin_unlock(&ubi->volumes_lock);
+ 
+ 	return err;
+ 
+ out_ro:
++	if (available_consumed) {
++		spin_lock(&ubi->volumes_lock);
++		ubi->avail_pebs += 1;
++		spin_unlock(&ubi->volumes_lock);
++	}
+ 	ubi_ro_mode(ubi);
+ 	return err;
+ }
 -- 
 1.7.11.2
