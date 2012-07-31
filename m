@@ -1,23 +1,22 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-qa0-f42.google.com ([209.85.216.42])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SvqWo-0003A2-L8
- for linux-mtd@lists.infradead.org; Mon, 30 Jul 2012 14:00:58 +0000
-From: Marek Vasut <marex@denx.de>
-To: Rob Herring <robherring2@gmail.com>
-Subject: Re: [PATCH V2] mtd: m25p80: Make fast read configurable via DT
-Date: Mon, 30 Jul 2012 15:59:45 +0200
-References: <1343006437-11669-1-git-send-email-marex@denx.de>
- <500CB097.4000507@gmail.com> <201207230407.18747.marex@denx.de>
-In-Reply-To: <201207230407.18747.marex@denx.de>
+ id 1Sw0gK-0002Nr-BY
+ for linux-mtd@lists.infradead.org; Tue, 31 Jul 2012 00:51:28 +0000
+Received: by qafi31 with SMTP id i31so1259643qaf.15
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Jul 2012 17:51:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201207301559.45540.marex@denx.de>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- "devicetree-discuss@lists.ozlabs.org"
- <devicetree-discuss@lists.ozlabs.org>, linux-mtd@lists.infradead.org,
- David Woodhouse <david.woodhouse@intel.com>, dedekind1@gmail.com
+In-Reply-To: <CAHeY5Qe2U8sGqMrvd5_uYOiBYu09Y818GUfFhJh3-TnMPnijbA@mail.gmail.com>
+References: <CAHeY5Qe2U8sGqMrvd5_uYOiBYu09Y818GUfFhJh3-TnMPnijbA@mail.gmail.com>
+Date: Mon, 30 Jul 2012 17:51:26 -0700
+Message-ID: <CAN8TOE_PJC8d6VSskn9LhqfiaB=z3+2v1nK6NOw7_7unwN69cw@mail.gmail.com>
+Subject: Re: Cortex A9 Ubifs Issues with SMP enable kernel <ubifs recovery
+ needed>
+From: Brian Norris <computersforpeace@gmail.com>
+To: Darshan Nandanwar <dk.manit@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: David Woodhouse <dwmw2@infradead.org>, Mike Dunn <mikedunn@newsguy.com>,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>, linux-mtd@lists.infradead.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,70 +26,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Rob Herring,
+Hi Darshan,
 
-> > +devicetree-discuss
-> > 
-> > On 07/22/2012 08:20 PM, Marek Vasut wrote:
-> > > Add DT property "m25p,fast-read" that signalises the particular
-> > > chip supports "fast read" opcode.
-> > > 
-> > > NOTE: I'm not sure where to document this property, as m25p80 is
-> > > 
-> > >       a simple DT device. Any hints please?
-> > > 
-> > > Signed-off-by: Marek Vasut <marex@denx.de>
-> > > Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> > > Cc: David Woodhouse <david.woodhouse@intel.com>
-> > > ---
-> > > 
-> > >  Documentation/devicetree/bindings/mtd/m25p80.txt |   27
-> > >  ++++++++++++++++++ drivers/mtd/devices/m25p80.c                     |
-> > >  32 +++++++++++++--------- 2 files changed, 46 insertions(+), 13
-> > >  deletions(-)
-> > >  create mode 100644 Documentation/devicetree/bindings/mtd/m25p80.txt
-> > > 
-> > > V2: Add documentation for the DT property. (Thanks Rob Herring for
-> > > helping!)
-> > > 
-> > >     Supersedes [PATCH 3/3] [RFC] mtd: m25p80: Make fast read
-> > >     configurable via DT
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/mtd/m25p80.txt
-> > > b/Documentation/devicetree/bindings/mtd/m25p80.txt new file mode 100644
-> > > index 0000000..e05d9b8
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/mtd/m25p80.txt
-> > > @@ -0,0 +1,27 @@
-> > > +* MTD SPI driver for ST M25Pxx (and similar) serial flash chips
-> > > +
-> > > +Required properties:
-> > > +- #address-cells, #size-cells : Must be present if the device has
-> > > sub-nodes +  representing partitions.
-> > > +- compatible : Should be the name of the chip, see the "m25p_ids"
-> > > table in +               drivers/mtd/devices/m25p80.c
-> > 
-> > Two things wrong with this:
-> Damn, I just sent a V3 a minute ago. Please ignore that V3 then, since V4
-> will come of course, sorry about the noise. Let's discuss this properly.
-> 
-> > - Bindings are not Linux specific, so the docs should not be based on
-> > Linux.
-> 
-> Correct. Can you please advise how to formulate the "compatible" property
-> then?
-> 
-> > - This doesn't follow the existing user which is "spansion,m25p80"
-> 
-> It doesn't, but the driver does support many other chips as well. I wasn't
-> quite sure how to go about that either. Any help would be appreciated, I
-> gotta admit I'm still a bit lost in all the devicetree stuff.
-> 
-> > Rob
-> 
-> [...]
+On Thu, Jul 26, 2012 at 11:07 AM, Darshan Nandanwar <dk.manit@gmail.com> wrote:
+> Artem/Brian,,
+>  I am facing  the issue when try to mount rootfs which inside one of the ubi
+> partition .Linux kernel 3.x is being used .All goes perfect when i use it
+> uni-processor mode but  when i enable SMP , then  it cribs for *ubifs
+> recovery needed*. Does it imply that partition got corrupted?  if it is ,
+> then why its not in the case of  non-smp kernel image?  did you guys happen
+> to face such kind of issue?
+>
+> if any recovery is required ubifs has to do by itself..  isn't it? cpu goes
+> dead  after popping up s *ubifs recovery needed* message .. but when i used
+> nfs ,same  kernel image works fine..
+>
+> Will appreciate if i get some input from MTD folks...
 
-Bump?
+I'm not very experienced in UBIFS issues, but since nobody has
+responded, I can provide some suggestions based on my knowledge of
+MTD.
 
-Best regards,
-Marek Vasut
+These messages look like UBIFS corruption, and I believe UBIFS should
+attempt to self-recover (when it says "recovery needed") or else fail
+and print other error messages. Generally, there's no known reason
+that UBI/UBIFS should simply "die" in SMP mode vs. uniprocessor.
+
+Now, it makes sense to validate the lower layers of your system to
+ensure that the driver + MTD layer are functioning (in both
+uniprocessor and SMP mode). For instance, what driver are you using?
+Is this NAND or NOR flash? Also, please try the MTD tests[1], noting
+that these tests can be destructive to your flash data. Also note
+their descriptions; only run the tests that make sense (e.g., you
+don't need mtd_speedtest).
+
+If the MTD tests pass, then send a more useful bug report, as described in [2].
+
+Brian
+
+P.S. Please do not send multiple copies of the same email. I received
+two with the MTD mailing list on the CC list plus a private message.
+It's fine if this was accidental, but in the future, please try to
+send only one copy of the message, with the mailing list in the CC so
+that anyone can read and respond.
+
+[1] http://www.linux-mtd.infradead.org/doc/general.html#L_mtd_tests
+[2] http://www.linux-mtd.infradead.org/faq/general.html#L_bug_report
