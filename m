@@ -1,20 +1,17 @@
-Received: from mail86.messagelabs.com ([216.82.242.179])
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SwRMT-0001tI-PP
- for linux-mtd@lists.infradead.org; Wed, 01 Aug 2012 05:20:46 +0000
-From: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
-To: =?gb2312?B?stzI2cjZ?= <caorr1980@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Wed, 1 Aug 2012 15:20:35 +1000
-Subject: RE: question about write/read sub-page with BCH algorithm or
- disable sub-page operation when using ubifs
-Message-ID: <6871BC8982B258468985EE735D2C57524B09D0EF36@ntcex01.corp.netcomm.com.au>
-References: <CAGHPBZooQbfpB3ASw51g7CD44Bq5bgXqceXd7q+NOrqgM0EoYw@mail.gmail.com>
-In-Reply-To: <CAGHPBZooQbfpB3ASw51g7CD44Bq5bgXqceXd7q+NOrqgM0EoYw@mail.gmail.com>
-Content-Language: en-AU
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+Received: from cdptpa-bc-oedgelb.mail.rr.com ([75.180.133.32])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SwYBu-0008QE-PJ
+ for linux-mtd@lists.infradead.org; Wed, 01 Aug 2012 12:38:19 +0000
+Message-ID: <501923A9.7030002@cincinnatitechnologies.com>
+Date: Wed, 01 Aug 2012 08:40:09 -0400
+From: Russell Zuck <rzuck@cincinnatitechnologies.com>
 MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: Re: UBIFS corruption after software upgrade
+References: <500F0D81.8050902@cincinnatitechnologies.com>
+In-Reply-To: <500F0D81.8050902@cincinnatitechnologies.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,68 +21,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gVHVlLCAzMSBKdWwgMjAxMiAxNzoyMzoyNSArMTAwMAqy3MjZyNkgPGNhb3JyMTk4MEBnbWFp
-bC5jb20+IHdyb3RlOgoKPiBIZWxsbywKPiBJIGhhdmUgYSBxdWVzdGlvbiBhYm91dCBzdWItcGFn
-ZSB3aGVuIHVzaW5nIHViaWZzLCBzbyBhc2sgaGVscCBmcm9tCj4gaGVyZS4KPiAKPiBMZXQgbWUg
-dGFrZSBhIDIwNDgtc2l6ZSBwYWdlIHdpdGggNCBzdWItcGFnZSBOYW5kIGFzIGV4YW1wbGUuCj4g
-Cj4gVGhlIGRvY3VtZW50YXRpb24gc2FpZCwgIlRvIHdyaXRlIGEgc3ViLXBhZ2UsIHRoZSBkcml2
-ZXIgbWF5IGFjdHVhbGx5Cj4gd3JpdGUgd2hvbGUgTkFORCBwYWdlLCBidXQgcHV0IDB4RkYgYnl0
-ZXMgdG8gdGhlIHN1Yi1wYWdlcyB3aGljaCBhcmUKPiBub3QgcmVsZXZhbnQgdG8gdGhpcyBvcGVy
-YXRpb24uIgo+IEl0J3MgT0sgZm9yIHNvbWUgRUNDIGFsZ29yaXRobXMgc3VjaCBhcyBIYW1taW5n
-IGFsZ29yaXRobSwgYmVjYXVzZSB0aGUKPiBFQ0MgY29kZXMgZ2VuZXJhdGVkIGJ5IEhhbW1pbmcg
-YWxnb3JpdGhtIGZvciB0aGUgMHhGRiBkYXRhIGFyZSBzdGlsbAo+IDB4RkYnZWQuIEhvd2V2ZXIs
-IGlmIHdlIHVzZSBCQ0ggYWxnb3JpdGhtLCB0aGUgZ2VuZXJhdGVkIEVDQyBjb2RlcyBmb3IKPiAw
-eEZGIGRhdGEgd2lsbCBiZSBub3QgMHhGRidlZCwgYW5kIHRoZXkgd2lsbCBvdmVyd3JpdGUgdGhl
-IHByZXZpb3VzCj4gT09CIGRhdGEsIHNvIGVycm9yIHdpbGwgYmUgaGFwcGVuZWQgd2hlbiByZWFk
-aW5nIG5leHQgdGltZS4KPiAKPiBJIHRyeSB0byByZXNvbHZlIHRoaXMgaXNzdWUgYnkgZGlzYWJs
-aW5nIHN1Yi1wYWdlIG9wZXJhdGlvbiwgc28gSSBhZGQKPiBOQU5EX05PX1NVQlBBR0VfV1JJVEUg
-aW50byBjaGlwLT5vcHRpb25zLCBidXQgY2hpcC0+b3B0aW9ucyB3aWxsIGJlCj4gZmx1c2hlZCBp
-biBuYW5kX2dldF9mbGFzaF90eXBlKCkgZnVudGlvbiAoY2hpcC0+b3B0aW9ucyAmPQo+IH5OQU5E
-X0NISVBPUFRJT05TX01TSykuCj4gCj4gU28sIG15IHF1ZXN0aW9uIGlzLCBIb3cgY2FuIEkgZG8g
-dG8gd3JpdGUvcmVhZCBzdWItcGFnZSB3aXRoIEJDSAo+IGFsZ29yaXRobSwgb3IgdG8gZGlzYWJs
-ZSBzdWItcGFnZSBvcGVyYXRpb24/Cj4gCgpXaXRob3V0IHN1Yi1wYWdlIHN1cHBvcnQsIFVCSSBv
-dmVyaGVhZCBkb3VibGVzIGZyb20gYWJvdXQgMS41JSB0bwpvdmVyIDMlLCBzbyBzdWItcGFnZSBz
-dXBwb3J0IGlzIHdvcnRoIGNvbnNpZGVyaW5nLgoKRGlzY2xhaW1lcjogU29tZSBvZiB0aGUgYmVs
-b3cgaXMgZnJvbSBtZW1vcnkgb25seSAtIHJlYWQgdGhlIHNvdXJjZSwKZXNwZWNpYWxseSBuYW5k
-X2Jhc2UuYy4gU29tZSBkZXRhaWxzIHdpbGwgZGVwZW5kIG9uIGtlcm5lbCB2ZXJzaW9uLgoKSSds
-bCBhc3N1bWUgZm9yIHRoZSBtb21lbnQgdGhhdCB5b3UgaGF2ZSBhIGhhcmR3YXJlIEVDQyBjb250
-cm9sbGVyCndpdGggQkNIIHN1cHBvcnQuIFRoZXJlIHNob3VsZG4ndCBiZSBhIHByb2JsZW0gd2l0
-aCBzb2Z0d2FyZSBCQ0guCgpNb3N0IGhhcmR3YXJlIEVDQyBjb250cm9sbGVycyBpZ25vcmUgRkxB
-U0ggY29tbWFuZCBhbmQgYWRkcmVzcyBjeWNsZXMsCmFsdGhvdWdoIHNvbWUgd2lsbCByZXNldCB0
-aGUgRUNDIGNhbGN1bGF0aW9uIGR1cmluZyBSRUFEIFBBR0UgKDB4MDApCmFuZCBQUk9HUkFNIFBB
-R0UgKDB4ODApIGNvbW1hbmRzLgoKVGhpcyBtZWFucyB0aGF0IGlmIHlvdSBjYW4gcmVzZXQgdGhl
-IEVDQyBjb250cm9sbGVyIGluIHNvZnR3YXJlLAp5b3UgY2FuIHN1cHBvcnQgc3ViLXBhZ2UgcmVh
-ZHMgJiB3cml0ZXMuIFlvdSBtYXkgaGF2ZSB0byBjaGFuZ2UKdGhlIE9PQiBsYXlvdXQgYW5kIGJy
-ZWFrIGNvbXBhdGliaWxpdHkgd2l0aCB5b3VyIHByZXZpb3VzIHZlcnNpb25zLgpUaGlzIHdpbGwg
-dXN1YWxseSBhbHNvIGFmZmVjdCB0aGUgYm9vdCBsb2FkZXIuCgpXcml0aW5nIGEgc3ViLXBhZ2Ug
-aXMgYSBtYXR0ZXIgb2YgbWFraW5nIHN1cmUgdGhhdCBhbGwgdGhlIGFyZWFzCm9mIHRoZSBwYWdl
-ICgrT09CKSB5b3UgZG9uJ3QgaW50ZW5kIHRvIHdyaXRlIGFyZSBmaWxsZWQgd2l0aCAweEZGCmJ5
-dGVzLiBUaGUgT09CIG11c3QgY29udGFpbiBzZXBhcmF0ZSBFQ0MgYnl0ZSBmaWVsZHMgZm9yIGVh
-Y2gKc3ViLXBhZ2UuCgpJJ20gbm90IHN1cmUsIGJ1dCBJIHRoaW5rIHN1Yi1wYWdlIGNhcGFibGUg
-TkFORCB3aWxsIGRlZmF1bHQKdGhlIHBhZ2UgYnVmZmVyIHRvIDB4RkYgaW50ZXJuYWxseS4gU28g
-eW91IGNhbiBqdW1wIHRvIHRoZQpzdWItcGFnZSBvZmZzZXQgKFJhbmRvbSBEYXRhIElucHV0LCAw
-eDg1KSwgcmVzZXQgdGhlIEVDQywKd3JpdGUgdGhlIGRhdGEgd2hpbGUgdGhlIEVDQyBjb250cm9s
-bGVyIGlzIGxpc3RlbmluZywgdGhlbgppc3N1ZSBhbm90aGVyIFJhbmRvbSBEYXRhIElucHV0IGNv
-bW1hbmQgdG8ganVtcCB0byB0aGUKY29ycmVjdCBPT0Igb2Zmc2V0IGFuZCB3cml0ZSBvdXQgdGhl
-IEVDQyBieXRlcy4KCkZvciBzdWItcGFnZSByZWFkLCB5b3UgbWFrZSBzdXJlIHRoYXQgdGhlIEVD
-QyBpcyByZXNldCwgcmVhZAp0aGUgc3VicGFnZSBmcm9tIHRoZSByaWdodCBvZmZzZXQsIGp1bXAg
-dG8gdGhlIEVDQyB2YWx1ZSBpbgpPT0IgYW5kIHByb2Nlc3MuIERlcGVuZGluZyBvbiB5b3VyIGNv
-bnRyb2xsZXIsIGF0IHRoaXMgcG9pbnQKeW91IGVpdGhlciByZWFkIHRoZSBFQ0MgYnl0ZXMgYW5k
-IGdldCBhIHN5bmRyb21lIG9yIHlvdSByZWFkCnRoZSBFQ0MgcmVnaXN0ZXIgYW5kIHRoZSBPT0Ig
-Ynl0ZXMgKGluIHRoYXQgb3JkZXIpIGFuZCBjb21wYXJlLgoKWW91IG5lZWQgdG8gbWFrZSBzdXJl
-IHRoYXQgcGFnZXMgd3JpdHRlbiBhcyB3aG9sZSBwYWdlcyBjYW4gYmUKcmVhZCBhcyBzdWItcGFn
-ZXMgYW5kIHZpY2UtdmVyc2EuIFNvIHlvdSBoYXZlIHRvIHByb3ZpZGUKZWNjLndyaXRlX3BhZ2Ug
-YW5kIGVjYy5yZWFkX3BhZ2UgZnVuY3Rpb25zIGFzIHdlbGwsIHVzaW5nIHRoZQpzYW1lIE9PQiBs
-YXlvdXQuCgpUaGlzIG1lYW5zIHNhdmluZyAmIHJlc2V0dGluZyBFQ0MgYnl0ZXMgYXQgc3ViLXBh
-Z2UgYm91bmRhcmllcwphbmQgcG9zc2libHkganVtcGluZyBiZXR3ZWVuIHN1Yi1wYWdlcyBhbmQg
-Y29ycmVzcG9uZGluZyBFQ0MKYnl0ZXMgZHVyaW5nIHN5bmRyb21lIHJlYWRzLgoKCkJlc3QgcmVn
-YXJkcywKCkl3bwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpUaGlzIGNvbW11bmljYXRpb24gY29udGFpbnMgaW5m
-b3JtYXRpb24gd2hpY2ggbWF5IGJlIGNvbmZpZGVudGlhbCBvciBwcml2aWxlZ2VkLiBUaGUgaW5m
-b3JtYXRpb24gaXMgaW50ZW5kZWQgc29sZWx5IGZvciB0aGUgdXNlIG9mIHRoZSBpbmRpdmlkdWFs
-IG9yIGVudGl0eSBuYW1lZCBhYm92ZS4gIElmIHlvdSBhcmUgbm90IHRoZSBpbnRlbmRlZCByZWNp
-cGllbnQsIGJlIGF3YXJlIHRoYXQgYW55IGRpc2Nsb3N1cmUsIGNvcHlpbmcsIGRpc3RyaWJ1dGlv
-biBvciB1c2Ugb2YgdGhlIGNvbnRlbnRzIG9mIHRoaXMgaW5mb3JtYXRpb24gaXMgcHJvaGliaXRl
-ZC4gIElmIHlvdSBoYXZlIHJlY2VpdmVkIHRoaXMgY29tbXVuaWNhdGlvbiBpbiBlcnJvciwgcGxl
-YXNlIG5vdGlmeSBtZSBieSB0ZWxlcGhvbmUgaW1tZWRpYXRlbHkuCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+On 7/24/2012 5:02 PM, Russell Zuck wrote:
+> I have not yet attempted to reproduce this issue using nandsim nor do I
+> have a simple reproducer for the problem yet.  Please provide some ideas
+> about how to simulate the reboot using nandsim as I think the reboot
+> portion of this scenario will be critical to reproducing the issue.
+
+Can anyone direct me to some information that might help me simulate a 
+reboot using nandsim to attempt to reproduce my UBIFS corruption issue?
+
+Additionally, I would really appreciate any suggestions, tips, tricks, 
+criticisms of the upgrade process I outlined previously, or "Have you 
+considered this" type questions.  I've read everything I could find that 
+even remotely pertains to my scenario but nothing is clicking for me 
+yet.  I'm desperately trying to resolve my issue.  Any guidance would be 
+welcome.
+
+Best regards,
+
+Russ
