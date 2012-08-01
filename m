@@ -1,15 +1,20 @@
+Received: from mail86.messagelabs.com ([216.82.242.179])
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SwRMT-0001tI-PP
+ for linux-mtd@lists.infradead.org; Wed, 01 Aug 2012 05:20:46 +0000
+From: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
+To: =?gb2312?B?stzI2cjZ?= <caorr1980@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Wed, 1 Aug 2012 15:20:35 +1000
+Subject: RE: question about write/read sub-page with BCH algorithm or
+ disable sub-page operation when using ubifs
+Message-ID: <6871BC8982B258468985EE735D2C57524B09D0EF36@ntcex01.corp.netcomm.com.au>
+References: <CAGHPBZooQbfpB3ASw51g7CD44Bq5bgXqceXd7q+NOrqgM0EoYw@mail.gmail.com>
+In-Reply-To: <CAGHPBZooQbfpB3ASw51g7CD44Bq5bgXqceXd7q+NOrqgM0EoYw@mail.gmail.com>
+Content-Language: en-AU
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <1342505642-31109-1-git-send-email-b32955@freescale.com>
-References: <1342451569.7270.11.camel@brekeke>
- <1342505642-31109-1-git-send-email-b32955@freescale.com>
-Date: Wed, 1 Aug 2012 10:27:30 +0800
-Message-ID: <CAMiH66G+srHsfUn6eCByHMgjZXE6k7zM6qLagqBuQCzx954aOA@mail.gmail.com>
-Subject: Re: [PATCH v3] mtd: gpmi: fix the compiler warnings
-From: Huang Shijie <shijie8@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: shawn.guo@linaro.org, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,160 +24,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem;
-Just a ping.
-
-Please do not miss this patch.
-
-thanks
-Huang Shijie
-
-On Tue, Jul 17, 2012 at 2:14 PM, Huang Shijie <b32955@freescale.com> wrote:
-> fix the compiler warnings.
->
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
-> ---
-> v2 --> v3:
->          sorry, I missed the "set but not used" warnings.
->          This patch is based on the patch:
->           "[PATCH v4 2/2] mtd: gpmi: change the code for clocks".
-> v1 --> v2:
->          fix the "no modifiers for allocation" warnings by the smatch
-> ---
->  drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |    4 ++--
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   20 ++++++++------------
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.h |    4 ++--
->  3 files changed, 12 insertions(+), 16 deletions(-)
->
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> index 6bb0998..2289cf8 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> @@ -26,7 +26,7 @@
->  #include "gpmi-regs.h"
->  #include "bch-regs.h"
->
-> -struct timing_threshod timing_default_threshold = {
-> +static struct timing_threshod timing_default_threshold = {
->         .max_data_setup_cycles       = (BM_GPMI_TIMING0_DATA_SETUP >>
->                                                 BP_GPMI_TIMING0_DATA_SETUP),
->         .internal_data_setup_in_ns   = 0,
-> @@ -738,7 +738,7 @@ void gpmi_begin(struct gpmi_nand_data *this)
->  {
->         struct resources *r = &this->resources;
->         struct timing_threshod *nfc = &timing_default_threshold;
-> -       unsigned char  *gpmi_regs = r->gpmi_regs;
-> +       void __iomem *gpmi_regs = r->gpmi_regs;
->         unsigned int   clock_period_in_ns;
->         uint32_t       reg;
->         unsigned int   dll_wait_time_in_us;
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> index 8c0d2f0..c46be6c 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -317,7 +317,7 @@ acquire_register_block(struct gpmi_nand_data *this, const char *res_name)
->         struct platform_device *pdev = this->pdev;
->         struct resources *res = &this->resources;
->         struct resource *r;
-> -       void *p;
-> +       void __iomem *p;
->
->         r = platform_get_resource_byname(pdev, IORESOURCE_MEM, res_name);
->         if (!r) {
-> @@ -424,8 +424,8 @@ static int __devinit acquire_dma_channels(struct gpmi_nand_data *this)
->         struct platform_device *pdev = this->pdev;
->         struct resource *r_dma;
->         struct device_node *dn;
-> -       int dma_channel;
-> -       unsigned int ret;
-> +       u32 dma_channel;
-> +       int ret;
->         struct dma_chan *dma_chan;
->         dma_cap_mask_t mask;
->
-> @@ -732,12 +732,12 @@ static int gpmi_alloc_dma_buffer(struct gpmi_nand_data *this)
->         struct device *dev = this->dev;
->
->         /* [1] Allocate a command buffer. PAGE_SIZE is enough. */
-> -       this->cmd_buffer = kzalloc(PAGE_SIZE, GFP_DMA);
-> +       this->cmd_buffer = kzalloc(PAGE_SIZE, GFP_DMA | GFP_KERNEL);
->         if (this->cmd_buffer == NULL)
->                 goto error_alloc;
->
->         /* [2] Allocate a read/write data buffer. PAGE_SIZE is enough. */
-> -       this->data_buffer_dma = kzalloc(PAGE_SIZE, GFP_DMA);
-> +       this->data_buffer_dma = kzalloc(PAGE_SIZE, GFP_DMA | GFP_KERNEL);
->         if (this->data_buffer_dma == NULL)
->                 goto error_alloc;
->
-> @@ -1260,7 +1260,6 @@ static int mx23_check_transcription_stamp(struct gpmi_nand_data *this)
->         unsigned int search_area_size_in_strides;
->         unsigned int stride;
->         unsigned int page;
-> -       loff_t byte;
->         uint8_t *buffer = chip->buffers->databuf;
->         int saved_chip_number;
->         int found_an_ncb_fingerprint = false;
-> @@ -1277,9 +1276,8 @@ static int mx23_check_transcription_stamp(struct gpmi_nand_data *this)
->         dev_dbg(dev, "Scanning for an NCB fingerprint...\n");
->
->         for (stride = 0; stride < search_area_size_in_strides; stride++) {
-> -               /* Compute the page and byte addresses. */
-> +               /* Compute the page addresses. */
->                 page = stride * rom_geo->stride_size_in_pages;
-> -               byte = page   * mtd->writesize;
->
->                 dev_dbg(dev, "Looking for a fingerprint in page 0x%x\n", page);
->
-> @@ -1321,7 +1319,6 @@ static int mx23_write_transcription_stamp(struct gpmi_nand_data *this)
->         unsigned int block;
->         unsigned int stride;
->         unsigned int page;
-> -       loff_t       byte;
->         uint8_t      *buffer = chip->buffers->databuf;
->         int saved_chip_number;
->         int status;
-> @@ -1370,9 +1367,8 @@ static int mx23_write_transcription_stamp(struct gpmi_nand_data *this)
->         /* Loop through the first search area, writing NCB fingerprints. */
->         dev_dbg(dev, "Writing NCB fingerprints...\n");
->         for (stride = 0; stride < search_area_size_in_strides; stride++) {
-> -               /* Compute the page and byte addresses. */
-> +               /* Compute the page addresses. */
->                 page = stride * rom_geo->stride_size_in_pages;
-> -               byte = page   * mtd->writesize;
->
->                 /* Write the first page of the current stride. */
->                 dev_dbg(dev, "Writing an NCB fingerprint in page 0x%x\n", page);
-> @@ -1527,7 +1523,7 @@ static int gpmi_scan_bbt(struct mtd_info *mtd)
->         return nand_default_bbt(mtd);
->  }
->
-> -void gpmi_nfc_exit(struct gpmi_nand_data *this)
-> +static void gpmi_nfc_exit(struct gpmi_nand_data *this)
->  {
->         nand_release(&this->mtd);
->         gpmi_free_dma_buffer(this);
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-> index 1547a60..1f61217 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-> @@ -24,8 +24,8 @@
->
->  #define GPMI_CLK_MAX 5 /* MX6Q needs five clocks */
->  struct resources {
-> -       void          *gpmi_regs;
-> -       void          *bch_regs;
-> +       void __iomem  *gpmi_regs;
-> +       void __iomem  *bch_regs;
->         unsigned int  bch_low_interrupt;
->         unsigned int  bch_high_interrupt;
->         unsigned int  dma_low_channel;
-> --
-> 1.7.0.4
->
->
->
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+T24gVHVlLCAzMSBKdWwgMjAxMiAxNzoyMzoyNSArMTAwMAqy3MjZyNkgPGNhb3JyMTk4MEBnbWFp
+bC5jb20+IHdyb3RlOgoKPiBIZWxsbywKPiBJIGhhdmUgYSBxdWVzdGlvbiBhYm91dCBzdWItcGFn
+ZSB3aGVuIHVzaW5nIHViaWZzLCBzbyBhc2sgaGVscCBmcm9tCj4gaGVyZS4KPiAKPiBMZXQgbWUg
+dGFrZSBhIDIwNDgtc2l6ZSBwYWdlIHdpdGggNCBzdWItcGFnZSBOYW5kIGFzIGV4YW1wbGUuCj4g
+Cj4gVGhlIGRvY3VtZW50YXRpb24gc2FpZCwgIlRvIHdyaXRlIGEgc3ViLXBhZ2UsIHRoZSBkcml2
+ZXIgbWF5IGFjdHVhbGx5Cj4gd3JpdGUgd2hvbGUgTkFORCBwYWdlLCBidXQgcHV0IDB4RkYgYnl0
+ZXMgdG8gdGhlIHN1Yi1wYWdlcyB3aGljaCBhcmUKPiBub3QgcmVsZXZhbnQgdG8gdGhpcyBvcGVy
+YXRpb24uIgo+IEl0J3MgT0sgZm9yIHNvbWUgRUNDIGFsZ29yaXRobXMgc3VjaCBhcyBIYW1taW5n
+IGFsZ29yaXRobSwgYmVjYXVzZSB0aGUKPiBFQ0MgY29kZXMgZ2VuZXJhdGVkIGJ5IEhhbW1pbmcg
+YWxnb3JpdGhtIGZvciB0aGUgMHhGRiBkYXRhIGFyZSBzdGlsbAo+IDB4RkYnZWQuIEhvd2V2ZXIs
+IGlmIHdlIHVzZSBCQ0ggYWxnb3JpdGhtLCB0aGUgZ2VuZXJhdGVkIEVDQyBjb2RlcyBmb3IKPiAw
+eEZGIGRhdGEgd2lsbCBiZSBub3QgMHhGRidlZCwgYW5kIHRoZXkgd2lsbCBvdmVyd3JpdGUgdGhl
+IHByZXZpb3VzCj4gT09CIGRhdGEsIHNvIGVycm9yIHdpbGwgYmUgaGFwcGVuZWQgd2hlbiByZWFk
+aW5nIG5leHQgdGltZS4KPiAKPiBJIHRyeSB0byByZXNvbHZlIHRoaXMgaXNzdWUgYnkgZGlzYWJs
+aW5nIHN1Yi1wYWdlIG9wZXJhdGlvbiwgc28gSSBhZGQKPiBOQU5EX05PX1NVQlBBR0VfV1JJVEUg
+aW50byBjaGlwLT5vcHRpb25zLCBidXQgY2hpcC0+b3B0aW9ucyB3aWxsIGJlCj4gZmx1c2hlZCBp
+biBuYW5kX2dldF9mbGFzaF90eXBlKCkgZnVudGlvbiAoY2hpcC0+b3B0aW9ucyAmPQo+IH5OQU5E
+X0NISVBPUFRJT05TX01TSykuCj4gCj4gU28sIG15IHF1ZXN0aW9uIGlzLCBIb3cgY2FuIEkgZG8g
+dG8gd3JpdGUvcmVhZCBzdWItcGFnZSB3aXRoIEJDSAo+IGFsZ29yaXRobSwgb3IgdG8gZGlzYWJs
+ZSBzdWItcGFnZSBvcGVyYXRpb24/Cj4gCgpXaXRob3V0IHN1Yi1wYWdlIHN1cHBvcnQsIFVCSSBv
+dmVyaGVhZCBkb3VibGVzIGZyb20gYWJvdXQgMS41JSB0bwpvdmVyIDMlLCBzbyBzdWItcGFnZSBz
+dXBwb3J0IGlzIHdvcnRoIGNvbnNpZGVyaW5nLgoKRGlzY2xhaW1lcjogU29tZSBvZiB0aGUgYmVs
+b3cgaXMgZnJvbSBtZW1vcnkgb25seSAtIHJlYWQgdGhlIHNvdXJjZSwKZXNwZWNpYWxseSBuYW5k
+X2Jhc2UuYy4gU29tZSBkZXRhaWxzIHdpbGwgZGVwZW5kIG9uIGtlcm5lbCB2ZXJzaW9uLgoKSSds
+bCBhc3N1bWUgZm9yIHRoZSBtb21lbnQgdGhhdCB5b3UgaGF2ZSBhIGhhcmR3YXJlIEVDQyBjb250
+cm9sbGVyCndpdGggQkNIIHN1cHBvcnQuIFRoZXJlIHNob3VsZG4ndCBiZSBhIHByb2JsZW0gd2l0
+aCBzb2Z0d2FyZSBCQ0guCgpNb3N0IGhhcmR3YXJlIEVDQyBjb250cm9sbGVycyBpZ25vcmUgRkxB
+U0ggY29tbWFuZCBhbmQgYWRkcmVzcyBjeWNsZXMsCmFsdGhvdWdoIHNvbWUgd2lsbCByZXNldCB0
+aGUgRUNDIGNhbGN1bGF0aW9uIGR1cmluZyBSRUFEIFBBR0UgKDB4MDApCmFuZCBQUk9HUkFNIFBB
+R0UgKDB4ODApIGNvbW1hbmRzLgoKVGhpcyBtZWFucyB0aGF0IGlmIHlvdSBjYW4gcmVzZXQgdGhl
+IEVDQyBjb250cm9sbGVyIGluIHNvZnR3YXJlLAp5b3UgY2FuIHN1cHBvcnQgc3ViLXBhZ2UgcmVh
+ZHMgJiB3cml0ZXMuIFlvdSBtYXkgaGF2ZSB0byBjaGFuZ2UKdGhlIE9PQiBsYXlvdXQgYW5kIGJy
+ZWFrIGNvbXBhdGliaWxpdHkgd2l0aCB5b3VyIHByZXZpb3VzIHZlcnNpb25zLgpUaGlzIHdpbGwg
+dXN1YWxseSBhbHNvIGFmZmVjdCB0aGUgYm9vdCBsb2FkZXIuCgpXcml0aW5nIGEgc3ViLXBhZ2Ug
+aXMgYSBtYXR0ZXIgb2YgbWFraW5nIHN1cmUgdGhhdCBhbGwgdGhlIGFyZWFzCm9mIHRoZSBwYWdl
+ICgrT09CKSB5b3UgZG9uJ3QgaW50ZW5kIHRvIHdyaXRlIGFyZSBmaWxsZWQgd2l0aCAweEZGCmJ5
+dGVzLiBUaGUgT09CIG11c3QgY29udGFpbiBzZXBhcmF0ZSBFQ0MgYnl0ZSBmaWVsZHMgZm9yIGVh
+Y2gKc3ViLXBhZ2UuCgpJJ20gbm90IHN1cmUsIGJ1dCBJIHRoaW5rIHN1Yi1wYWdlIGNhcGFibGUg
+TkFORCB3aWxsIGRlZmF1bHQKdGhlIHBhZ2UgYnVmZmVyIHRvIDB4RkYgaW50ZXJuYWxseS4gU28g
+eW91IGNhbiBqdW1wIHRvIHRoZQpzdWItcGFnZSBvZmZzZXQgKFJhbmRvbSBEYXRhIElucHV0LCAw
+eDg1KSwgcmVzZXQgdGhlIEVDQywKd3JpdGUgdGhlIGRhdGEgd2hpbGUgdGhlIEVDQyBjb250cm9s
+bGVyIGlzIGxpc3RlbmluZywgdGhlbgppc3N1ZSBhbm90aGVyIFJhbmRvbSBEYXRhIElucHV0IGNv
+bW1hbmQgdG8ganVtcCB0byB0aGUKY29ycmVjdCBPT0Igb2Zmc2V0IGFuZCB3cml0ZSBvdXQgdGhl
+IEVDQyBieXRlcy4KCkZvciBzdWItcGFnZSByZWFkLCB5b3UgbWFrZSBzdXJlIHRoYXQgdGhlIEVD
+QyBpcyByZXNldCwgcmVhZAp0aGUgc3VicGFnZSBmcm9tIHRoZSByaWdodCBvZmZzZXQsIGp1bXAg
+dG8gdGhlIEVDQyB2YWx1ZSBpbgpPT0IgYW5kIHByb2Nlc3MuIERlcGVuZGluZyBvbiB5b3VyIGNv
+bnRyb2xsZXIsIGF0IHRoaXMgcG9pbnQKeW91IGVpdGhlciByZWFkIHRoZSBFQ0MgYnl0ZXMgYW5k
+IGdldCBhIHN5bmRyb21lIG9yIHlvdSByZWFkCnRoZSBFQ0MgcmVnaXN0ZXIgYW5kIHRoZSBPT0Ig
+Ynl0ZXMgKGluIHRoYXQgb3JkZXIpIGFuZCBjb21wYXJlLgoKWW91IG5lZWQgdG8gbWFrZSBzdXJl
+IHRoYXQgcGFnZXMgd3JpdHRlbiBhcyB3aG9sZSBwYWdlcyBjYW4gYmUKcmVhZCBhcyBzdWItcGFn
+ZXMgYW5kIHZpY2UtdmVyc2EuIFNvIHlvdSBoYXZlIHRvIHByb3ZpZGUKZWNjLndyaXRlX3BhZ2Ug
+YW5kIGVjYy5yZWFkX3BhZ2UgZnVuY3Rpb25zIGFzIHdlbGwsIHVzaW5nIHRoZQpzYW1lIE9PQiBs
+YXlvdXQuCgpUaGlzIG1lYW5zIHNhdmluZyAmIHJlc2V0dGluZyBFQ0MgYnl0ZXMgYXQgc3ViLXBh
+Z2UgYm91bmRhcmllcwphbmQgcG9zc2libHkganVtcGluZyBiZXR3ZWVuIHN1Yi1wYWdlcyBhbmQg
+Y29ycmVzcG9uZGluZyBFQ0MKYnl0ZXMgZHVyaW5nIHN5bmRyb21lIHJlYWRzLgoKCkJlc3QgcmVn
+YXJkcywKCkl3bwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpUaGlzIGNvbW11bmljYXRpb24gY29udGFpbnMgaW5m
+b3JtYXRpb24gd2hpY2ggbWF5IGJlIGNvbmZpZGVudGlhbCBvciBwcml2aWxlZ2VkLiBUaGUgaW5m
+b3JtYXRpb24gaXMgaW50ZW5kZWQgc29sZWx5IGZvciB0aGUgdXNlIG9mIHRoZSBpbmRpdmlkdWFs
+IG9yIGVudGl0eSBuYW1lZCBhYm92ZS4gIElmIHlvdSBhcmUgbm90IHRoZSBpbnRlbmRlZCByZWNp
+cGllbnQsIGJlIGF3YXJlIHRoYXQgYW55IGRpc2Nsb3N1cmUsIGNvcHlpbmcsIGRpc3RyaWJ1dGlv
+biBvciB1c2Ugb2YgdGhlIGNvbnRlbnRzIG9mIHRoaXMgaW5mb3JtYXRpb24gaXMgcHJvaGliaXRl
+ZC4gIElmIHlvdSBoYXZlIHJlY2VpdmVkIHRoaXMgY29tbXVuaWNhdGlvbiBpbiBlcnJvciwgcGxl
+YXNlIG5vdGlmeSBtZSBieSB0ZWxlcGhvbmUgaW1tZWRpYXRlbHkuCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
