@@ -1,22 +1,27 @@
-Received: from mga03.intel.com ([143.182.124.21])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Swou9-0002Fo-QI
- for linux-mtd@lists.infradead.org; Thu, 02 Aug 2012 06:29:06 +0000
-Message-ID: <1343889215.25013.14.camel@sauron.fi.intel.com>
-Subject: Re: [patch v2] UBIFS: add key state map data structure and accessors
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Joel Reardon <joel@clambassador.com>
-Date: Thu, 02 Aug 2012 09:33:35 +0300
-In-Reply-To: <alpine.DEB.2.00.1207081928190.12575@eristoteles.iwoars.net>
-References: <alpine.DEB.2.00.1206090016010.14953@eristoteles.iwoars.net>
- <1340016236.2420.23.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1207081928190.12575@eristoteles.iwoars.net>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-lIo4UTj4bt1zr5QRQ9g5"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Reply-To: dedekind1@gmail.com
+Received: from smtp-out04.msg.oleane.net ([62.161.7.2])
+ by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SwudE-0003T5-0g
+ for linux-mtd@lists.infradead.org; Thu, 02 Aug 2012 12:36:01 +0000
+Received: from smtp04.msg.oleane.net (smtp04.mail.priv [172.17.20.113])
+ by smtp-out04.msg.oleane.net with ESMTP id q72CZE16032203
+ for <linux-mtd@lists.infradead.org>; Thu, 2 Aug 2012 14:35:14 +0200
+Received: from smtp04.msg.oleane.net (localhost [127.0.0.1])
+ by smtp04.msg.oleane.net (MTA-AV) with ESMTP id q72CZEV6032382
+ for <linux-mtd@lists.infradead.org>; Thu, 2 Aug 2012 14:35:14 +0200
+Received: from EG13SEVEN64 (117.49.72.86.rev.sfr.net [86.72.49.117])
+ (authenticated)
+ by smtp04.msg.oleane.net (MSA) with ESMTP id q72CZD7A032280
+ for <linux-mtd@lists.infradead.org>; Thu, 2 Aug 2012 14:35:13 +0200
+From: "Fabien Comte" <fabien.comte@ercogener.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Potential issue on UBIFS for Kernel 3.4.7
+Date: Thu, 2 Aug 2012 14:35:12 +0200
+Message-ID: <005901cd70ab$4356c150$ca0443f0$@ercogener.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Language: fr
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,56 +31,187 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello,
 
---=-lIo4UTj4bt1zr5QRQ9g5
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+I migrated some products (embedded devices with 256 Mbytes NAND flash, about
+5 products broken by the transition) from a kernel 3.4.4 (they had previous
+versions before 3.4.4) to a 3.4.7. And after a clean shutdown (no power
+cut), I got these messages and some files corrupted (random, not always the
+same).
 
-On Sun, 2012-07-08 at 19:30 +0200, Joel Reardon wrote:
-> This patch adds the key state map to keymap, a structure that holds the s=
-tate
-> of all keys in the KSA. The states are defined in an enum, and a get/set
-> accessor is added. These accessors are static only: the external interfac=
-e
-> will simply be "mark used" or "mark deleted" and range checking, along wi=
-th
-> locking the mutex for the state object, will be done there.
->=20
-> The memory is allocated in keymap_init() and keymap_free()
-> is added to deallocate the memory. Init is called when mounting is perfor=
-med,
-> and free is called mounting failed or when unmounting. This was tested us=
-ing
-> integck along with unit tests for get/set sanity.
+[    5.800000] UBIFS error (pid 884): ubifs_read_node: bad node type (255
+but expected 2)
+[    5.800000] UBIFS error (pid 884): ubifs_read_node: bad node type (255
+but expected 2)
+[    5.810000] UBIFS error (pid 884): ubifs_read_node: bad node at LEB
+694:34816, LEB mapping status 0
+[    5.810000] UBIFS error (pid 884): ubifs_read_node: bad node at LEB
+694:34816, LEB mapping status 0
+[    5.820000] UBIFS error (pid 885): ubifs_read_node: bad node type (255
+but expected 2)
+[    5.820000] UBIFS error (pid 885): ubifs_read_node: bad node type (255
+but expected 2)
+[    5.830000] UBIFS error (pid 885): ubifs_read_node: bad node at LEB
+694:34816, LEB mapping status 0
+[    5.830000] UBIFS error (pid 885): ubifs_read_node: bad node at LEB
+694:34816, LEB mapping status 0
+[   10.390000] UBIFS error (pid 968): ubifs_read_node: bad node type (255
+but expected 2)
+[   10.390000] UBIFS error (pid 968): ubifs_read_node: bad node type (255
+but expected 2)
+[   10.390000] UBIFS error (pid 968): ubifs_read_node: bad node at LEB
+694:120832, LEB mapping status 0
+[   10.390000] UBIFS error (pid 968): ubifs_read_node: bad node at LEB
+694:120832, LEB mapping status 0
 
-Pushed to the joel branch, thanks. I did some amendments on top and
-pushed as a separate commit.
+I noticed that the problem appends on products that worked few weeks with
+previous versions of kernel (potentially a lot of writes on the NAND due to
+logging applications running on the device). Problem is not on new products
+if I flash them with a kernel 3.0.4 and jump directly to a 3.4.7 after few
+minutes.
 
---=20
-Best Regards,
-Artem Bityutskiy
+My boot arguments are :
+ubi.mtd=7 root=ubi0:at91sam9260ek-rootfs rootfstype=ubifs
+rootflags=sync,bulk_read,chk_data_crc,compr=lzo rw
 
---=-lIo4UTj4bt1zr5QRQ9g5
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+MTD tests looks good.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+On next commant, mtd7 is my rootfs and is formatted with UBIFS.
 
-iQIcBAABAgAGBQJQGh8/AAoJECmIfjd9wqK0uHoP/ifTH6gA3KygFNZPxWR5GfO7
-VPLcaF/JSlzV7MApZWN1V61dqtqVrf1OOxvQObJuclIM7s/5T7tHKA/7WOXpT1VT
-vzgnn+It5SibSIipg+dRxHXRQRxzNbuI8aE54G9EH+YCNH0kdJUvsf4/1/e/WJr2
-YVLYZgqJQ2w1Cxp97QvECOfGEL8dVuKncb+3T016+FqrWce5rlGEv1nu2ZJ8VBR5
-hmy0+KiflUC+Za3B/5Apk2+DVaE/upokawaQxqOMAly7ZI2ntGBPkFjuzeFpvlWv
-azd/y+wps3BCi249Kg7eO/1FvTOfESxFZAiclzIvDgU1AkNmux68fbtk87tuaONp
-g4GcQV8sGyBapSevyjF+MaKnC4ripDUyIexm7jLuEOEwGFi74cu4vKnR1xkPxDTH
-eEN/yCd6o93YNj1qpCkrWqrIVxmksrEcYpMBzypiXrFfrxAy3EAKlSr7zev4SXLP
-j0aX+mjW2PC+F80WBPaYng0VK5Vp+SXCFyTJHGH722FN2XObMU2HPIv9MHCb/Ip+
-GDZIAcuOSncbDbb/5G/sF8lK91TjnJAJPbcZbVkmvBTY8rbYVy6E9kr3KGchcfau
-jfVI3dGfxnDBUXKhqSGWlAM+f2p7QpJgzwb676xTImgda3S/ny6CZ0Pr131lPcok
-x2u73oCoMhRY6Sqjr+/w
-=Ng+L
------END PGP SIGNATURE-----
+mtdinfo -a
+Count of MTD devices:           8
+Present MTD devices:            mtd0, mtd1, mtd2, mtd3, mtd4, mtd5, mtd6,
+mtd7
+Sysfs interface supported:      yes
 
---=-lIo4UTj4bt1zr5QRQ9g5--
+mtd0
+Name:                           bootstrap
+Type:                           nand
+Eraseblock size:                131072 bytes, 128.0 KiB
+Amount of eraseblocks:          1 (131072 bytes, 128.0 KiB)
+Minimum input/output unit size: 2048 bytes
+Sub-page size:                  512 bytes
+OOB size:                       64 bytes
+Character device major/minor:   90:0
+Bad blocks are allowed:         true
+Device is writable:             true
+
+mtd1
+Name:                           uboot
+Type:                           nand
+Eraseblock size:                131072 bytes, 128.0 KiB
+Amount of eraseblocks:          4 (524288 bytes, 512.0 KiB)
+Minimum input/output unit size: 2048 bytes
+Sub-page size:                  512 bytes
+OOB size:                       64 bytes
+Character device major/minor:   90:2
+Bad blocks are allowed:         true
+Device is writable:             true
+
+mtd2
+Name:                           env1
+Type:                           nand
+Eraseblock size:                131072 bytes, 128.0 KiB
+Amount of eraseblocks:          1 (131072 bytes, 128.0 KiB)
+Minimum input/output unit size: 2048 bytes
+Sub-page size:                  512 bytes
+OOB size:                       64 bytes
+Character device major/minor:   90:4
+Bad blocks are allowed:         true
+Device is writable:             true
+
+mtd3
+Name:                           env2
+Type:                           nand
+Eraseblock size:                131072 bytes, 128.0 KiB
+Amount of eraseblocks:          1 (131072 bytes, 128.0 KiB)
+Minimum input/output unit size: 2048 bytes
+Sub-page size:                  512 bytes
+OOB size:                       64 bytes
+Character device major/minor:   90:6
+Bad blocks are allowed:         true
+Device is writable:             true
+
+mtd4
+Name:                           spare
+Type:                           nand
+Eraseblock size:                131072 bytes, 128.0 KiB
+Amount of eraseblocks:          1 (131072 bytes, 128.0 KiB)
+Minimum input/output unit size: 2048 bytes
+Sub-page size:                  512 bytes
+OOB size:                       64 bytes
+Character device major/minor:   90:8
+Bad blocks are allowed:         true
+Device is writable:             true
+
+mtd5
+Name:                           kernel1
+Type:                           nand
+Eraseblock size:                131072 bytes, 128.0 KiB
+Amount of eraseblocks:          28 (3670016 bytes, 3.5 MiB)
+Minimum input/output unit size: 2048 bytes
+Sub-page size:                  512 bytes
+OOB size:                       64 bytes
+Character device major/minor:   90:10
+Bad blocks are allowed:         true
+Device is writable:             true
+
+mtd6
+Name:                           kernel2
+Type:                           nand
+Eraseblock size:                131072 bytes, 128.0 KiB
+Amount of eraseblocks:          28 (3670016 bytes, 3.5 MiB)
+Minimum input/output unit size: 2048 bytes
+Sub-page size:                  512 bytes
+OOB size:                       64 bytes
+Character device major/minor:   90:12
+Bad blocks are allowed:         true
+Device is writable:             true
+
+mtd7
+Name:                           rootfs
+Type:                           nand
+Eraseblock size:                131072 bytes, 128.0 KiB
+Amount of eraseblocks:          1984 (260046848 bytes, 248.0 MiB)
+Minimum input/output unit size: 2048 bytes
+Sub-page size:                  512 bytes
+OOB size:                       64 bytes
+Character device major/minor:   90:14
+Bad blocks are allowed:         true
+Device is writable:             true
+
+
+
+ubinfo -a
+
+UBI version:                    1
+Count of UBI devices:           1
+UBI control device major/minor: 10:63
+Present UBI devices:            ubi0
+
+ubi0
+Volumes count:                           1
+Logical eraseblock size:                 129024 bytes, 126.0 KiB
+Total amount of logical eraseblocks:     1980 (255467520 bytes, 243.6 MiB)
+Amount of available logical eraseblocks: 0 (0 bytes)
+Maximum count of volumes                 128
+Count of bad physical eraseblocks:       4
+Count of reserved physical eraseblocks:  34
+Current maximum erase counter value:     3
+Minimum input/output unit size:          2048 bytes
+Character device major/minor:            253:0
+Present volumes:                         0
+
+Volume ID:   0 (on ubi0)
+Type:        dynamic
+Alignment:   1
+Size:        1942 LEBs (250564608 bytes, 239.0 MiB)
+State:       OK
+Name:        at91sam9260ek-rootfs
+Character device major/minor: 253:1
+
+Do someone get any idea ?
+
+Thank you.
+
+Fabien
