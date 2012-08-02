@@ -1,16 +1,24 @@
-Received: from nm14-vm0.bullet.mail.ird.yahoo.com ([77.238.189.193])
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SwvvL-0001gF-IN
- for linux-mtd@lists.infradead.org; Thu, 02 Aug 2012 13:58:48 +0000
-Message-ID: <1343915926.42235.YahooMailNeo@web132406.mail.ird.yahoo.com>
-Date: Thu, 2 Aug 2012 14:58:46 +0100 (BST)
-From: Randee Keegan <genpopat6899@yahoo.com>
-Subject: hi!! I'm Randee...
-To: "wayne.hunter@autoparkhonda.com" <wayne.hunter@autoparkhonda.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Reply-To: Randee Keegan <randee.keegan@yahoo.com>
+Received: from mga01.intel.com ([192.55.52.88])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Sww4J-00028Z-VO
+ for linux-mtd@lists.infradead.org; Thu, 02 Aug 2012 14:08:04 +0000
+Message-ID: <1343916747.25013.112.camel@sauron.fi.intel.com>
+Subject: Re: UBI fastmap updates
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Richard Weinberger <richard@nod.at>
+Date: Thu, 02 Aug 2012 17:12:27 +0300
+In-Reply-To: <1341836323-43916-1-git-send-email-richard@nod.at>
+References: <1341836323-43916-1-git-send-email-richard@nod.at>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-BdUaR9c9eJlI6Q8EUu6K"
+Mime-Version: 1.0
+Cc: nyoushchenko@mvista.com, linux-kernel@vger.kernel.org,
+ adrian.hunter@intel.com, Heinz.Egger@linutronix.de,
+ thomas.wucher@linutronix.de, linux-mtd@lists.infradead.org,
+ shmulik.ladkani@gmail.com, tglx@linutronix.de, Marius.Mazarel@ugal.ro,
+ tim.bird@am.sony.com
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,17 +28,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-How are you sweetie?)=0AI=E2=80=99m not gonna waste ur time for no reason a=
-nd I will pass on to the main question =E2=80=93 I=E2=80=99m looking for a =
- man who can satisfy me entirely, you know what I mean, right?;) I=E2=80=99=
-m tired of sissies and men who can=E2=80=99t even take care of themselves n=
-ot to mention their girlfriends . I want to be loved and feel protected=0AA=
-bout myself in three words =E2=80=93 young, wild and free. You may switch t=
-he word =E2=80=98young=E2=80=99 on =E2=80=98beautiful=E2=80=99 if you=E2=80=
-=99d like). I got no hang-ups and BDSM is the only bad habit I got.=0AAnywa=
-y if u aren=E2=80=99t afraid of girls like me then I made the right choice.=
-=0APlease reply and I=E2=80=99ll write you more about myself. Also we can s=
-hare some (even erotic) pics.) I am pretty sure that it will turn into an i=
-nteresting experience talking to each other.=0ABut Don=E2=80=99t make a lad=
-y wait for too long!) so excited about your answer!=0ACan't wait to talk to=
- you!
+
+--=-BdUaR9c9eJlI6Q8EUu6K
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, 2012-07-09 at 14:18 +0200, Richard Weinberger wrote:
+> This is the next round of UBI fastmap updates.
+> It fixes all issues pointed out by Shmulik. :-)
+
+I see the following errors when rung UBI tests on nandsim:
+
+[ 3698.041511] UBI error: __wl_get_peb: no free eraseblocks
+[ 3698.041781] UBI error: ubi_wl_get_fm_peb: no free eraseblocks
+[ 3714.773064] UBI error: __wl_get_peb: no free eraseblocks
+[ 3714.773336] UBI error: ubi_wl_get_fm_peb: no free eraseblocks
+
+How can this happen? I do not have any bad blocks.
+
+If I understand correctly, it can be only because of a bug. If I am
+correct, could you please add a 'dump_stack()' to improve the error
+report?
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-BdUaR9c9eJlI6Q8EUu6K
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQGorLAAoJECmIfjd9wqK0OGYQAIi3uQ/7A7BKAXb6ZpWVfdDu
+V728o5vakOWhu5sC69QmawokMTQ1j1EnhEhNoSFliB3RsCOU4DnAUNkQ2vACdxCo
+j6DAwc1v4uh4YqOW5f0Y25db9V78u7Hv4mauKieuQbSt2vFJwLYn8q4kzmvnyak4
+pUR0CCt9gKFuMeW2sfe3pDFIEWl+C3Adfyu8IX9YMlShh1BbgKNKXRJO3LqlVaiW
+evf+YXbFHkP5A5V4+m4yn1oaB6QIEkXWCxdHlhiy1G02OncVdjv97Yw84X8SgEJV
+Hgto4DxtTzkNKuOal9x6NBC4Qe7hbyDD7RAkcBkD6NWV/tzY+uxe7K/cxvDglxzZ
+zhvdBcXASqSlqXt3Flrga1oPu/jhQBVNYXGRIDu8K37yXryl2gi12RlsXVeG1HO0
+BUNV5r5LS6j4Sr7nObTDMA+CIp+bvFXnGtv1w2oyaprOuIS9AeHWKNDqtwZUOx8B
+yP7zQ+pq3EyNsLHXKyR71ktZo29cKM7tAoJkUL2Hav3NkokTelnD1sDOzyWE6hZY
+wCDhdpVa/ajo11kUdd8ddF2sJ1kP7QMfWKHnG/Nb3ABoZqxViS3CyPAtiOrWUUlz
+1jhHJeCOkhOice+Izocxn8BSdx9Hg1IiZXv7hvjzt2/mlPm31UWzlE+Kvqk3foiA
+TtbPevzzPzSPbACArA7T
+=Yupu
+-----END PGP SIGNATURE-----
+
+--=-BdUaR9c9eJlI6Q8EUu6K--
