@@ -1,13 +1,13 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1SwzTN-0001S7-GH
- for linux-mtd@lists.infradead.org; Thu, 02 Aug 2012 17:46:10 +0000
-Message-ID: <1343929829.25013.207.camel@sauron.fi.intel.com>
+ id 1SwzcA-0003Po-5n
+ for linux-mtd@lists.infradead.org; Thu, 02 Aug 2012 17:55:14 +0000
+Message-ID: <1343930368.25013.215.camel@sauron.fi.intel.com>
 Subject: Re: UBI fastmap updates
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Tim Bird <tim.bird@am.sony.com>
-Date: Thu, 02 Aug 2012 20:50:29 +0300
-In-Reply-To: <501AB2C8.9010805@am.sony.com>
+To: Richard Weinberger <richard@nod.at>
+Date: Thu, 02 Aug 2012 20:59:28 +0300
+In-Reply-To: <20120802194538.26e2ec98@spider.haslach.nod.at>
 References: <1341836323-43916-1-git-send-email-richard@nod.at>
  <1343916747.25013.112.camel@sauron.fi.intel.com>
  <20120802161512.5ac7a303@spider.haslach.nod.at>
@@ -17,20 +17,21 @@ References: <1341836323-43916-1-git-send-email-richard@nod.at>
  <20120802183210.7076aa48@spider.haslach.nod.at>
  <1343925930.25013.163.camel@sauron.fi.intel.com>
  <501AB2C8.9010805@am.sony.com>
+ <1343929200.25013.197.camel@sauron.fi.intel.com>
+ <20120802194538.26e2ec98@spider.haslach.nod.at>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-B4d5JcB7BaIO4wQ3BTkE"
+ boundary="=-ULu0SFlEEDIFxZpPcglP"
 Mime-Version: 1.0
 Cc: "nyoushchenko@mvista.com" <nyoushchenko@mvista.com>,
- Richard Weinberger <richard@nod.at>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  "Heinz.Egger@linutronix.de" <Heinz.Egger@linutronix.de>,
  "thomas.wucher@linutronix.de" <thomas.wucher@linutronix.de>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "shmulik.ladkani@gmail.com" <shmulik.ladkani@gmail.com>,
- "tglx@linutronix.de" <tglx@linutronix.de>,
- "Marius.Mazarel@ugal.ro" <Marius.Mazarel@ugal.ro>
+ Tim Bird <tim.bird@am.sony.com>, "tglx@linutronix.de" <tglx@linutronix.de>,
+ "Marius.Mazarel@ugal.ro" <Marius.Mazarel@ugal.ro>,
+ "shmulik.ladkani@gmail.com" <shmulik.ladkani@gmail.com>
 Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -42,51 +43,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-B4d5JcB7BaIO4wQ3BTkE
+--=-ULu0SFlEEDIFxZpPcglP
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-08-02 at 10:03 -0700, Tim Bird wrote:
-> > So can I interpret this the following way. Not only fastmap give no
-> > guarantees that it exists after an unclean reboot, it does not even giv=
-e
-> > guarantees that it exists after a clean reboot.
-> >=20
-> > Unless I am confused, the fastmap design is over-simplified.
->=20
-> Fastmap is an optimization.  Maybe I'm missing something, but
-> I'm not sure why, if the optimization stopped working, you
-> would want to reduce the functionality of the file system.
+On Thu, 2012-08-02 at 19:45 +0200, Richard Weinberger wrote:
+> This should be very easy task.
 
-Fastmap gives huge improvement in attach time. So big that it becomes
-not just optimization, but a selling feature. Or very important
-optimization.
+Right. But unfortunately, I had to spend a lot of time writing lengthy
+e-mails. You could hold your horses for a minute, ask specific questions
+and find out what was my concern.
 
-If you design a system which requires 1s startup time, you probably want
-to always guarantee 1s startup time. E.g., if we are talking about a car
-system.
+> How much PEB should be reserved? 2 x sizeof(fastmap)?=20
 
-You probably may get away with the fact that in case of power cut your
-system starts up 10 seconds at the first boot (no fastmap).
+Is there any reason why it cannot be the _exact_ maximum number? Not
+more and not less.
 
-But you probably would be disappointed if I say that even if you do
-_not_ have power cuts, your system may still startup 10 seconds,
-although most of the times it will take 1s.
-
-Does this description help to accept my POW that while we cannot
-simplify fastmap and give no improvement for the power cut cases, it is
-quite important to guarantee that in normal cases fastmap is always
-there, and UBI will always be fast.
-
-If I buy a car which runs 200Km/h on the asphalt, I am OK if it cannot
-do this on the cross-country trails, but I am not OK if it sometimes
-cannot do 200Km/h even on the asphalt, when the moon is blue.
+If I understand correctly, fastmap size is a function of total PEBs
+count. You should be able to calculate the maximum size precisely.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-B4d5JcB7BaIO4wQ3BTkE
+--=-ULu0SFlEEDIFxZpPcglP
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -94,19 +74,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQGr3lAAoJECmIfjd9wqK0LWYP/RESE+0GIliWW89cAuCzr5Sa
-yEXs26ORMu0wOTFzA7cEIRu8+IpS9OLTkuLl+TmLfYtzEenDc+qSp87SxBYJ+Zh9
-cuQ7yvAdczXOxLUSaYdjVYUXWbr8DTrTlpOYZBx32rjENYF928ZzUm/qfYLLO/i1
-lMmjUNX3hGhfRaJocNT+2HHHsVsczOn0+GRNLrZyKAWDjbNJD/gdcSVVsbPbx50q
-mRzp4fVxmV4TXFyxgZavPoMIE5hXhyrxrz7FbgC7BlBSAWeAFV18+R7U8egnibaC
-0xfBADU05B3W8EPrHT3wAtWxsKrJN9/Ao/sGwiTHttgW57TmCh/Nojr9ZnhSPRzs
-F7w7J24ac6KX+wRoelD8y0fqo5BwtyunFzUnjtZn6jj65zAjql2kqG0A2fPJRj4m
-hCi2Dw8+116An/M/BcJlQSExAcdzNd/ySdYmaJrwJe3ogha5QStJDp4WGCfM4Wtr
-IGtr2VdaqI/iPpwJNHxp9pHt/sraJTEoTTgSiybDZMPcxh5Lx270OZsPX2nwb+0e
-x9OlObCnR4bJgsmTc+V7MH/FIWB25Tbe1dkga+/kwgfuNNszE+87BSwVKhiZiDGX
-QK/9zfAzNVyXD9jrbXVqILawgWVuuHtv1+52FVDed8EwoaBubmq71lJ0ooRLDmsd
-E6obqsP4DNKsfseYeL2t
-=N+jG
+iQIcBAABAgAGBQJQGsAAAAoJECmIfjd9wqK0+swP/3I8WrWJu+FxYmrcZU7j/4S5
+f8TyWYtQUyUgnKvE0cIPiknjnfH9/rMN4r2FzntEzr8u+hqDWeIAvGB7CoOQET80
+kiQ21uzw5Mzsd9LGrp21+9I+oEdES2wSd1hNVW8THLt5hCPnip61qJjUBYittEjY
+x6/FsruOFQW2uQ2g6TXygXF7sUoNPi14kq/4iWfSbUZkl8Toqevb3+RVO/Y/Ow6z
+8MC7vmlmxDLbKyU6xD8jXlDuGOHKYuIdr4hWLlF4vZkr0mHdBYyRod4+WlSnYyDV
+1qaHGFb0zR6Y5Gf+b1fEKB2pfufBkDermWLafdTgD/dya/wBHp5/ztQEpCazZDpP
+/eF0vWI5I9wJPySU+OoajuajbTU4gvByBVSA9b8tHD/F/7yLZ5yLDT6U8t3iYG9I
+QM6vpQzWmtaOJtFRAR34S8agjL+kw34crLWiZvtRGR3tV9XHq59lzBmbBOixvWk7
+adjIhBGYK4UsSh9/jIRyJaCKjLDdTdq79KcGwjz8XXEt6ti6E6AV/s+2PW5l3kUq
+w0RuV+p1kCtMU7mvo9QQzYa0cwFdHiUTy8Cz+tQAqA7XjBeYQK7gmuzah/9F0sGI
+W1yi1AmUCcAGSDg6zaGnGYgn7XsF9BE1v9BXuI/cOq+ixwsZehKjSFeXnEl8aCr4
+PlLPHJ/Hl+oTx6zlWK0v
+=nTos
 -----END PGP SIGNATURE-----
 
---=-B4d5JcB7BaIO4wQ3BTkE--
+--=-ULu0SFlEEDIFxZpPcglP--
