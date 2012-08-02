@@ -1,24 +1,23 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Swwn7-0003uo-1N
- for linux-mtd@lists.infradead.org; Thu, 02 Aug 2012 14:54:22 +0000
-Message-ID: <1343919530.25013.116.camel@sauron.fi.intel.com>
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Swws1-0004EM-Iy
+ for linux-mtd@lists.infradead.org; Thu, 02 Aug 2012 14:59:26 +0000
+Date: Thu, 2 Aug 2012 16:59:21 +0200
+From: Richard Weinberger <richard@nod.at>
+To: artem.bityutskiy@linux.intel.com
 Subject: Re: UBI fastmap updates
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Richard Weinberger <richard@nod.at>
-Date: Thu, 02 Aug 2012 17:58:50 +0300
-In-Reply-To: <1341836323-43916-1-git-send-email-richard@nod.at>
+Message-ID: <20120802165921.17d83b8c@spider.haslach.nod.at>
+In-Reply-To: <1343919530.25013.116.camel@sauron.fi.intel.com>
 References: <1341836323-43916-1-git-send-email-richard@nod.at>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-yvvsWJrKnXNbtDfPAbaE"
+ <1343919530.25013.116.camel@sauron.fi.intel.com>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Cc: nyoushchenko@mvista.com, linux-kernel@vger.kernel.org,
  adrian.hunter@intel.com, Heinz.Egger@linutronix.de,
  thomas.wucher@linutronix.de, linux-mtd@lists.infradead.org,
  shmulik.ladkani@gmail.com, tglx@linutronix.de, Marius.Mazarel@ugal.ro,
  tim.bird@am.sony.com
-Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,64 +27,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Am Thu, 02 Aug 2012 17:58:50 +0300
+schrieb Artem Bityutskiy <artem.bityutskiy@linux.intel.com>:
 
---=-yvvsWJrKnXNbtDfPAbaE
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> On Mon, 2012-07-09 at 14:18 +0200, Richard Weinberger wrote:
+> > This is the next round of UBI fastmap updates.
+> > It fixes all issues pointed out by Shmulik. :-)
+> 
+> Hi Richard,
+> 
+> when I try to attach mtdram (NOR flash), UBI fails:
+>
+ 
+Hmm, and without fastmap it works fine?
+I don't see much fastmap related here.
+Anyway, I'll try to reproduce.
 
-On Mon, 2012-07-09 at 14:18 +0200, Richard Weinberger wrote:
-> This is the next round of UBI fastmap updates.
-> It fixes all issues pointed out by Shmulik. :-)
-
-Hi Richard,
-
-when I try to attach mtdram (NOR flash), UBI fails:
-
-[ 7106.353791] UBI assert failed in ubi_io_is_bad at 623 (pid 5411)
-[ 7106.354253] Pid: 5411, comm: modprobe Not tainted 3.5.0+ #2
-[ 7106.354255] Call Trace:
-[ 7106.354264]  [<ffffffffa003c4c1>] ubi_io_is_bad+0xd1/0x100 [ubi]
-[ 7106.354271]  [<ffffffffa0042bd9>] scan_peb+0x49/0x740 [ubi]
-[ 7106.354287]  [<ffffffff8117e6e4>] ? __kmalloc+0x194/0x1e0
-[ 7106.354293]  [<ffffffffa0047b7c>] ? ubi_debugging_init_dev+0x2c/0x60 [ub=
-i]
-[ 7106.354300]  [<ffffffffa0044276>] ? ubi_attach+0x66/0x380 [ubi]
-[ 7106.354304]  [<ffffffffa00442f5>] ubi_attach+0xe5/0x380 [ubi]
-[ 7106.354310]  [<ffffffffa0035f91>] ubi_attach_mtd_dev+0xa81/0x10e0 [ubi]
-[ 7106.354316]  [<ffffffffa005c3e8>] ubi_init+0x22d/0xe45 [ubi]
-[ 7106.354321]  [<ffffffffa005c1bb>] ? ubi_mtd_param_parse+0x1bb/0x1bb [ubi=
-]
-[ 7106.354328]  [<ffffffff8100203f>] do_one_initcall+0x3f/0x170
-[ 7106.354335]  [<ffffffff810c69c6>] sys_init_module+0xa16/0x1d40
-[ 7106.354345]  [<ffffffff8132c5a0>] ? ddebug_add_module+0x100/0x100
-[ 7106.354351]  [<ffffffff815ffca9>] system_call_fastpath+0x16/0x1b
-[ 7106.354353] UBI assert failed in ubi_io_read_ec_hdr at 749 (pid 5411)
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-yvvsWJrKnXNbtDfPAbaE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQGpWqAAoJECmIfjd9wqK061MQAMyntUlCpzHDG27xEnl4Kfxq
-YMrHFlGJx+YMCyauc4oYCYE5RyATT52AjALY+/RblSKvrObJA5UUY4vd0v2bXES6
-q17uLNDhD+snXbU10L5c8LI9l5eUgMs+ProwmdigRHjP86EMnkoFEkRFDmx16Lfz
-W3jDazUWs18SfxqwU+fJH1Q1wKlVN3FRvOqlGLT5+emt4n5n/1cXkCYCrPpXQZhr
-c94s7b8XUz/nVpCyYpGf2+0qfBuMd2vrhUFfLQ8xVHrTSoZG2IPoPO4IJo/PiSBt
-QGsr0qW9z2rQgzlaW44gd7pEknjkOblLgJLuZanxGCszr5NTyqS4F5rRBITIsfWx
-G0EmBKSB7JggxG1ywuyFfv8o7IBFUeF1XpK+oIB1eHT6pUH5sEdCNqKpnWOe4AG9
-kxE1bbA3HEZtR/p/dHtHibJ8dUk60dkvUScjEbhTqpzDGp3EFj+fOoryzha3vuHD
-zgRRT611aV+WYBupltwmXRRb3kl7gGkLdV+CFyjjUDb75fdcEyDke2XgbRJhpKxO
-QxYuhkztU1OgH7JAB2anHIdTbgawuF8/ijTmz6mBXBoxe2z2tEk6cp7hHqMHBJWM
-b/HT5XBYD7lwUA77ATbrJ9W8uy4j5ikBedxC4jOHmJwrPEUXS8SxK1PyF2oOHPks
-tba+lFImwYAzHJ6DXxzc
-=2j5c
------END PGP SIGNATURE-----
-
---=-yvvsWJrKnXNbtDfPAbaE--
+Thanks,
+//richard
