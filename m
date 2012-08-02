@@ -1,25 +1,16 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-gh0-f177.google.com ([209.85.160.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SwxC1-0007ou-Ji
- for linux-mtd@lists.infradead.org; Thu, 02 Aug 2012 15:20:06 +0000
-Date: Thu, 2 Aug 2012 17:19:59 +0200
-From: Richard Weinberger <richard@nod.at>
-To: artem.bityutskiy@linux.intel.com
-Subject: Re: UBI fastmap updates
-Message-ID: <20120802171959.76b3e192@spider.haslach.nod.at>
-In-Reply-To: <1343920728.25013.131.camel@sauron.fi.intel.com>
-References: <1341836323-43916-1-git-send-email-richard@nod.at>
- <1343919530.25013.116.camel@sauron.fi.intel.com>
- <20120802165921.17d83b8c@spider.haslach.nod.at>
- <1343920728.25013.131.camel@sauron.fi.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: nyoushchenko@mvista.com, linux-kernel@vger.kernel.org,
- adrian.hunter@intel.com, Heinz.Egger@linutronix.de,
- thomas.wucher@linutronix.de, linux-mtd@lists.infradead.org,
- shmulik.ladkani@gmail.com, tglx@linutronix.de, Marius.Mazarel@ugal.ro,
- tim.bird@am.sony.com
+ id 1SwxGc-000852-5W
+ for linux-mtd@lists.infradead.org; Thu, 02 Aug 2012 15:24:50 +0000
+Received: by ghbf11 with SMTP id f11so9134418ghb.36
+ for <linux-mtd@lists.infradead.org>; Thu, 02 Aug 2012 08:24:47 -0700 (PDT)
+MIME-Version: 1.0
+From: peterlingoal <peterlingoal@gmail.com>
+Date: Thu, 2 Aug 2012 23:24:26 +0800
+Message-ID: <CAFV5biAp8__BZQmBHd8EpHD2amrycy59CR2kweEtsu2xtQ4ucA@mail.gmail.com>
+Subject: expect bit flip within endurance if ECC is required?
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,17 +20,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Thu, 02 Aug 2012 18:18:48 +0300
-schrieb Artem Bityutskiy <artem.bityutskiy@linux.intel.com>:
-> > Hmm, and without fastmap it works fine?
-> 
-> Yes.
-> 
-> > I don't see much fastmap related here.
-> 
-> It is related to your changes in attach.c.
+Hi all,
 
-Okay, I'll dig into the issue.
+I have some questions about minimum ECC and NAND endurance, please help me here:
 
-Thanks,
-//richard
+My understanding of endurance is that a NAND and survive the number of
+cycles of erase/write/read before any error occurs. But I am not clear
+about the definition of error, is it correctable error (bit flip less
+than minimum ECC) or uncorrectable error (more than minimum ECC)? For
+e.g. if a NAND with endurance of 100,000 cycles and requires minimum
+4bit ECC, shall I expect bit flipping (but less than 4 bits) within
+the 100,000 cycles?
+
+If my understand is correct, does it mean that the chip with same
+endurance but higher minimum ECC requirement is more likely to have
+bit flipping faster than the chip with same endurance but less minimum
+ECC?
+
+thanks,
+Peter
