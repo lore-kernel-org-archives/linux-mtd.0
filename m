@@ -1,26 +1,26 @@
-Received: from e23smtp04.au.ibm.com ([202.81.31.146])
+Received: from e28smtp03.in.ibm.com ([122.248.162.3])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Swlub-00081g-Go
- for linux-mtd@lists.infradead.org; Thu, 02 Aug 2012 03:17:22 +0000
+ id 1SwoRi-0000hU-7F
+ for linux-mtd@lists.infradead.org; Thu, 02 Aug 2012 05:59:43 +0000
 Received: from /spool/local
- by e23smtp04.au.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+ by e28smtp03.in.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
  Violators will be prosecuted
  for <linux-mtd@lists.infradead.org> from <hejianet@linux.vnet.ibm.com>;
- Thu, 2 Aug 2012 13:16:37 +1000
-Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
- by d23relay04.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
- q7238qUJ7536714
- for <linux-mtd@lists.infradead.org>; Thu, 2 Aug 2012 13:08:52 +1000
-Received: from d23av03.au.ibm.com (loopback [127.0.0.1])
- by d23av03.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
- q723H9uR018721
- for <linux-mtd@lists.infradead.org>; Thu, 2 Aug 2012 13:17:09 +1000
+ Thu, 2 Aug 2012 11:29:37 +0530
+Received: from d28av05.in.ibm.com (d28av05.in.ibm.com [9.184.220.67])
+ by d28relay03.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+ q725xYuD28246252
+ for <linux-mtd@lists.infradead.org>; Thu, 2 Aug 2012 11:29:34 +0530
+Received: from d28av05.in.ibm.com (loopback [127.0.0.1])
+ by d28av05.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+ q725xY0Y001100
+ for <linux-mtd@lists.infradead.org>; Thu, 2 Aug 2012 15:59:34 +1000
 Received: from [127.0.0.1] ([9.123.236.172])
- by d23av03.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
- q723GgZw017980
- for <linux-mtd@lists.infradead.org>; Thu, 2 Aug 2012 13:17:09 +1000
-Message-ID: <5019F11A.9060801@linux.vnet.ibm.com>
-Date: Thu, 02 Aug 2012 11:16:42 +0800
+ by d28av05.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
+ q725wwdq031968
+ for <linux-mtd@lists.infradead.org>; Thu, 2 Aug 2012 15:59:33 +1000
+Message-ID: <501A1720.6000604@linux.vnet.ibm.com>
+Date: Thu, 02 Aug 2012 13:58:56 +0800
 From: hejianet <hejianet@linux.vnet.ibm.com>
 MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
@@ -57,7 +57,10 @@ On 2012-08-02 11:04, hejianet wrote:
 > Linux MTD discussion mailing list
 > http://lists.infradead.org/mailman/listinfo/linux-mtd/
 >
-besides, how to search all the archives of linux-mtd?
-http://lists.infradead.org/pipermail/linux-mtd/ is a link, but it
-couldn't be searched totally by date. I have review all pages
-month by month :(
+>
+>
+Is there anyway to show the summary result of jffs2's fragmentation?
+Is there anyway to manually make defragmentation?
+Thanks
+
+Jia
