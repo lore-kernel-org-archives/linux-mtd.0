@@ -1,19 +1,28 @@
-Received: from mail-yw0-f49.google.com ([209.85.213.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Swxjg-0001wf-An
- for linux-mtd@lists.infradead.org; Thu, 02 Aug 2012 15:54:52 +0000
-Received: by yhjj52 with SMTP id j52so9239623yhj.36
- for <linux-mtd@lists.infradead.org>; Thu, 02 Aug 2012 08:54:50 -0700 (PDT)
-Message-ID: <501AA31D.9000402@gmail.com>
-Date: Thu, 02 Aug 2012 11:56:13 -0400
-From: Peter Barada <peter.barada@gmail.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: expect bit flip within endurance if ECC is required?
-References: <CAFV5biAp8__BZQmBHd8EpHD2amrycy59CR2kweEtsu2xtQ4ucA@mail.gmail.com>
-In-Reply-To: <CAFV5biAp8__BZQmBHd8EpHD2amrycy59CR2kweEtsu2xtQ4ucA@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Received: from mga01.intel.com ([192.55.52.88])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Swy1V-0004Zf-OE
+ for linux-mtd@lists.infradead.org; Thu, 02 Aug 2012 16:13:18 +0000
+Message-ID: <1343924267.25013.156.camel@sauron.fi.intel.com>
+Subject: Re: UBI fastmap updates
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Richard Weinberger <richard@nod.at>
+Date: Thu, 02 Aug 2012 19:17:47 +0300
+In-Reply-To: <20120802165132.1bf1e5d7@spider.haslach.nod.at>
+References: <1341836323-43916-1-git-send-email-richard@nod.at>
+ <1343916747.25013.112.camel@sauron.fi.intel.com>
+ <20120802161512.5ac7a303@spider.haslach.nod.at>
+ <1343917741.25013.114.camel@sauron.fi.intel.com>
+ <20120802165132.1bf1e5d7@spider.haslach.nod.at>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-r3APHlI1W52wjr76ZZHo"
+Mime-Version: 1.0
+Cc: nyoushchenko@mvista.com, linux-kernel@vger.kernel.org,
+ adrian.hunter@intel.com, Heinz.Egger@linutronix.de,
+ thomas.wucher@linutronix.de, linux-mtd@lists.infradead.org,
+ shmulik.ladkani@gmail.com, tglx@linutronix.de, Marius.Mazarel@ugal.ro,
+ tim.bird@am.sony.com
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,38 +32,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/02/2012 11:24 AM, peterlingoal wrote:
-> Hi all,
->
-> I have some questions about minimum ECC and NAND endurance, please help me here:
->
-> My understanding of endurance is that a NAND and survive the number of
-> cycles of erase/write/read before any error occurs. But I am not clear
-> about the definition of error, is it correctable error (bit flip less
-> than minimum ECC) or uncorrectable error (more than minimum ECC)? For
-> e.g. if a NAND with endurance of 100,000 cycles and requires minimum
-> 4bit ECC, shall I expect bit flipping (but less than 4 bits) within
-> the 100,000 cycles?
->
-> If my understand is correct, does it mean that the chip with same
-> endurance but higher minimum ECC requirement is more likely to have
-> bit flipping faster than the chip with same endurance but less minimum
-> ECC?
-Yes.  the number of bits of ECC implies the rate of correctable errors -
-more bits of ECC imply more bits per read that can flip (and are
-corrected by the ECC).  Older large-geometry SCL nand parts wouldn't
-show a single bit flip until that block is near its end of life whereas
-newer small-geometry SLC/MLC show bit flips much more often - the CBER
-(correctable bit error rate) is much higher with newer NAND devices.
 
-The strength of the ECC is such that the UBER (uncorrectable bit error)
-can be held low - 10E-15 or so over the life of the device.  Note that
-to maintain retention and usable UBER, chip manufacturers define
-temperature ranges, and not only retiring blocks after a maximum number
-of erasures, but also require "refreshing" blocks (garbage collect valid
-data from the block into another) after a set number of reads from a
-block - across power cycles.
+--=-r3APHlI1W52wjr76ZZHo
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Peter Barada
-peter.barada@gmail.com
+On Thu, 2012-08-02 at 16:51 +0200, Richard Weinberger wrote:
+> Every time fastmap writes a new fastmap to the flash it tries to get a
+> new PEB and returns the old one (used for the old fastmap) back to the
+> WL sub-system.
+
+OK.
+
+> If no free PEBs are available (E.g Volume is full or the erase worker
+> is too slow) ubi_wl_get_fm_peb() returns NULL and fastmap reuses the
+> currently used PEB.
+
+This should not happen. Fastmap should _reserve_ enough of PEBs for it
+to operate. It should always find the PEB to write.
+
+Just like if you create a volume maximum possible size, we guarantee
+that you can fill it with data, and UBI will find enough PEBs for that.
+
+Just like we always have enough PEBs for the volume table.
+
+The above things are UBI's liabilities.
+
+In the situation when a lot of PEBs became bad, UBI will switch to R/O
+mode with a scary message if it notices that it does not have enough
+PEBs to satisfy all the liabilities.
+
+And this is why we reserve 2% of PEBs for bad PEBs handling.
+
+> In this situation ubi_wl_get_fm_peb() may trigger such an error message.
+> If think we should get rid of the message as this is not an error
+> condition. It's a well known execution path.
+
+Unless I am confused, this should lead to switching to R/O mode instead,
+just like we do when we write to an LEB and do not find a PEB to map to.
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-r3APHlI1W52wjr76ZZHo
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQGqgrAAoJECmIfjd9wqK07h4P+wcZxuQO1HnPNOwX3S9ncuGl
+s7YniZNcjifHfnQcvnB7gBqUU2dD2tkOp57dshAOH58rTq1cm4tLxgUv9Y3SsE8r
+FZqAjx3By4Ut4vHVW23O9QMhRoi2gzDdjHfHpCBE4XG3hxmUNDRN7Ave/ynT/+HH
+Q7/F3rJdFavH5EHbzoDDayouR0Q4bfedoBhKzdEa4wqya7tUlhaprlPQRisPHeji
+6goXL4XvZobEYHwZRSgTkbQSJgQp6Gx3a35BFv6QsOxwFhWTIFZCNa/ak+NVhJSW
+LgqpPJ8YYLnqSYaho7LRyUwv1GX2u474otMus88xChT/7YwKIUQ3dZpWWXjSCtAt
+6regcFX6JltcL9pLR6KoEUAlomdnKH0kvHNkkH8REyf9LbiJStzqQdsxaitMcmra
+4x2jQIqwJ7FzDcQNqbfnWmyy3PCxohu7qMxQSJJnfoZZj8acFuVFhQbFNovQOEye
+a7SiZm4v2yUYmh3jTRtmeOcry6PAyF2a/RmS/jGRt4y4tzNe/3FPPeq3VBl8k5Ld
+Q4WIO/9RqqOfX9p1Br9F9lc8aEbzOkgJcCZolawP8AsCjoSR07x0Xb4NtE4rH+J7
+fmhfI3p6TkA6hwvr4hAtA1yjHym6vxqbzpG50MPEUCwl4S5OgvXOKdQrUYJ/Zz/P
+t+2M7g+KWAqjEniMeVys
+=axHX
+-----END PGP SIGNATURE-----
+
+--=-r3APHlI1W52wjr76ZZHo--
