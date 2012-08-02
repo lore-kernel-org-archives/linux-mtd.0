@@ -1,13 +1,13 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SwzSy-0001K3-V6
- for linux-mtd@lists.infradead.org; Thu, 02 Aug 2012 17:45:46 +0000
-Date: Thu, 2 Aug 2012 19:45:38 +0200
-From: Richard Weinberger <richard@nod.at>
-To: artem.bityutskiy@linux.intel.com
+Received: from mga02.intel.com ([134.134.136.20])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SwzTN-0001S7-GH
+ for linux-mtd@lists.infradead.org; Thu, 02 Aug 2012 17:46:10 +0000
+Message-ID: <1343929829.25013.207.camel@sauron.fi.intel.com>
 Subject: Re: UBI fastmap updates
-Message-ID: <20120802194538.26e2ec98@spider.haslach.nod.at>
-In-Reply-To: <1343929200.25013.197.camel@sauron.fi.intel.com>
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Tim Bird <tim.bird@am.sony.com>
+Date: Thu, 02 Aug 2012 20:50:29 +0300
+In-Reply-To: <501AB2C8.9010805@am.sony.com>
 References: <1341836323-43916-1-git-send-email-richard@nod.at>
  <1343916747.25013.112.camel@sauron.fi.intel.com>
  <20120802161512.5ac7a303@spider.haslach.nod.at>
@@ -17,19 +17,21 @@ References: <1341836323-43916-1-git-send-email-richard@nod.at>
  <20120802183210.7076aa48@spider.haslach.nod.at>
  <1343925930.25013.163.camel@sauron.fi.intel.com>
  <501AB2C8.9010805@am.sony.com>
- <1343929200.25013.197.camel@sauron.fi.intel.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-B4d5JcB7BaIO4wQ3BTkE"
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 Cc: "nyoushchenko@mvista.com" <nyoushchenko@mvista.com>,
- "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+ Richard Weinberger <richard@nod.at>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
  "Heinz.Egger@linutronix.de" <Heinz.Egger@linutronix.de>,
  "thomas.wucher@linutronix.de" <thomas.wucher@linutronix.de>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Tim Bird <tim.bird@am.sony.com>, "tglx@linutronix.de" <tglx@linutronix.de>,
- "Marius.Mazarel@ugal.ro" <Marius.Mazarel@ugal.ro>,
- "shmulik.ladkani@gmail.com" <shmulik.ladkani@gmail.com>
+ "shmulik.ladkani@gmail.com" <shmulik.ladkani@gmail.com>,
+ "tglx@linutronix.de" <tglx@linutronix.de>,
+ "Marius.Mazarel@ugal.ro" <Marius.Mazarel@ugal.ro>
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,95 +41,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Thu, 02 Aug 2012 20:40:00 +0300
-schrieb Artem Bityutskiy <artem.bityutskiy@linux.intel.com>:
 
-> Hi Tim,
-> 
-> On Thu, 2012-08-02 at 10:03 -0700, Tim Bird wrote:
-> > I'm don't understand what "UBI liability" is.  Can you please
-> > clarify? What breaks if the PEBs get consumed?
-> 
-> let me try. Let's forget about bad blocks and assume we are talking
-> about NOR flash. For simplicity.
-> 
-> Let's also first forget about fastmap so far and talk about the
-> current design.
-> 
-> Suppose you have 100 PEBs on your flash. Suppose UBI reserves 10 for
-> its internal needs (volume table, etc). 90 PEBs are available to the
-> user.
-> 
-> User now can create one or many volumes, but the overall size of the
-> volumes cannot be larger than 90 LEBs.
-> 
-> This means that UBI guarantees that you can always fill all volumes
-> with data there will always be enough PEBs to map to. This is UBI
-> liability.
-> 
-> UBI will not allow you to create a volume of 100 LEBs because in this
-> case it will not be able to guarantee that all LEBs will be writable.
-> 
-> I have invented this "liability" term on the spot actually. It
-> basically means what UBI already "promised", what it reserved an put
-> aside.
-> 
-> Now let's add fastmap support to the picture.
-> 
-> Suppose fastmap took another 10 PEBs and now we have 80 PEBs for the
-> user.
-> 
-> The user can create a volume of 80 LEBs in size. And UBI has to
-> guarantee that the user can at any point of time fill all of them with
-> data.
-> 
-> This means that fastmap in no circumstances can grab any more than 10
-> PEBs, because they are all reserved, UBI liability is 80 PEBs.
-> 
-> On other words, fastmap has to know how much PEBs it needs at the UBI
-> initialization time, and reserve them. The _maximum_ value.
-> 
-> The same way other UBI sub-systems do. E.g., the volume table code
-> reserves 2 PEBs, because this is the maximum it needs at any point of
-> time. The WL subsystem reserves 1 PEB.
-> 
-> Of course this is not about reserving any specific PEB, this is just
-> accounting - we have a couple of variable for reserved PEBs count.
-> 
-> So let's return to the error messages I spotted. They say that fastmap
-> needs a PEB but cannot find one. The flash is nandsim and has no
-> badblocks. Why fastmap did not find one? Because it did not reserve
-> enough. And UBI tests create volumes of maximum possible size and fill
-> it with data, so all available PEBs are mapped and thus, used.
-> 
-> What this means that the following situation is possible: the UBI
-> volume is not fully filled yet and not all LEBs are mapped, so there
-> are available PEBs, and fastmap successfully grows and reduces the
-> amount of available PEBs. And when the user writes more data, he gets
-> -ENOSPC.
-> 
-> And this is basically the problem I indicated.
-> 
-> To make my description complete, let's add NAND to the picture. We
-> simply reserve 2% (by default, it is configurable) of PEBs for bad
-> blocks handling. This is because vendors typically say that this is
-> the maximum amount for the flash life-time.
-> 
-> If NAND wears-out a lot, and we run out of reserved PEBs, we switch to
-> R/O mode, because we cannot anymore keep our "promise", the liability.
-> 
-> You can look at it this way. If you create an UBI volume, and mount it
-> with UBIFS, you usually expect that all the free file-system space is
-> available to you.
-> 
-> You probably will be disappointed if you write your file and get
-> -ENOSPC because fastmap does grew and consumed a PEB which which was
-> promised to your volume.
-> 
+--=-B4d5JcB7BaIO4wQ3BTkE
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Okay, then let's explicitly reserve a few PEBs for fastmap.
-This should be very easy task.
-How much PEB should be reserved? 2 x sizeof(fastmap)?
+On Thu, 2012-08-02 at 10:03 -0700, Tim Bird wrote:
+> > So can I interpret this the following way. Not only fastmap give no
+> > guarantees that it exists after an unclean reboot, it does not even giv=
+e
+> > guarantees that it exists after a clean reboot.
+> >=20
+> > Unless I am confused, the fastmap design is over-simplified.
+>=20
+> Fastmap is an optimization.  Maybe I'm missing something, but
+> I'm not sure why, if the optimization stopped working, you
+> would want to reduce the functionality of the file system.
 
-Thanks,
-//richard
+Fastmap gives huge improvement in attach time. So big that it becomes
+not just optimization, but a selling feature. Or very important
+optimization.
+
+If you design a system which requires 1s startup time, you probably want
+to always guarantee 1s startup time. E.g., if we are talking about a car
+system.
+
+You probably may get away with the fact that in case of power cut your
+system starts up 10 seconds at the first boot (no fastmap).
+
+But you probably would be disappointed if I say that even if you do
+_not_ have power cuts, your system may still startup 10 seconds,
+although most of the times it will take 1s.
+
+Does this description help to accept my POW that while we cannot
+simplify fastmap and give no improvement for the power cut cases, it is
+quite important to guarantee that in normal cases fastmap is always
+there, and UBI will always be fast.
+
+If I buy a car which runs 200Km/h on the asphalt, I am OK if it cannot
+do this on the cross-country trails, but I am not OK if it sometimes
+cannot do 200Km/h even on the asphalt, when the moon is blue.
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-B4d5JcB7BaIO4wQ3BTkE
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQGr3lAAoJECmIfjd9wqK0LWYP/RESE+0GIliWW89cAuCzr5Sa
+yEXs26ORMu0wOTFzA7cEIRu8+IpS9OLTkuLl+TmLfYtzEenDc+qSp87SxBYJ+Zh9
+cuQ7yvAdczXOxLUSaYdjVYUXWbr8DTrTlpOYZBx32rjENYF928ZzUm/qfYLLO/i1
+lMmjUNX3hGhfRaJocNT+2HHHsVsczOn0+GRNLrZyKAWDjbNJD/gdcSVVsbPbx50q
+mRzp4fVxmV4TXFyxgZavPoMIE5hXhyrxrz7FbgC7BlBSAWeAFV18+R7U8egnibaC
+0xfBADU05B3W8EPrHT3wAtWxsKrJN9/Ao/sGwiTHttgW57TmCh/Nojr9ZnhSPRzs
+F7w7J24ac6KX+wRoelD8y0fqo5BwtyunFzUnjtZn6jj65zAjql2kqG0A2fPJRj4m
+hCi2Dw8+116An/M/BcJlQSExAcdzNd/ySdYmaJrwJe3ogha5QStJDp4WGCfM4Wtr
+IGtr2VdaqI/iPpwJNHxp9pHt/sraJTEoTTgSiybDZMPcxh5Lx270OZsPX2nwb+0e
+x9OlObCnR4bJgsmTc+V7MH/FIWB25Tbe1dkga+/kwgfuNNszE+87BSwVKhiZiDGX
+QK/9zfAzNVyXD9jrbXVqILawgWVuuHtv1+52FVDed8EwoaBubmq71lJ0ooRLDmsd
+E6obqsP4DNKsfseYeL2t
+=N+jG
+-----END PGP SIGNATURE-----
+
+--=-B4d5JcB7BaIO4wQ3BTkE--
