@@ -1,34 +1,22 @@
-Received: from e28smtp03.in.ibm.com ([122.248.162.3])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SwoRi-0000hU-7F
- for linux-mtd@lists.infradead.org; Thu, 02 Aug 2012 05:59:43 +0000
-Received: from /spool/local
- by e28smtp03.in.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
- Violators will be prosecuted
- for <linux-mtd@lists.infradead.org> from <hejianet@linux.vnet.ibm.com>;
- Thu, 2 Aug 2012 11:29:37 +0530
-Received: from d28av05.in.ibm.com (d28av05.in.ibm.com [9.184.220.67])
- by d28relay03.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
- q725xYuD28246252
- for <linux-mtd@lists.infradead.org>; Thu, 2 Aug 2012 11:29:34 +0530
-Received: from d28av05.in.ibm.com (loopback [127.0.0.1])
- by d28av05.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
- q725xY0Y001100
- for <linux-mtd@lists.infradead.org>; Thu, 2 Aug 2012 15:59:34 +1000
-Received: from [127.0.0.1] ([9.123.236.172])
- by d28av05.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
- q725wwdq031968
- for <linux-mtd@lists.infradead.org>; Thu, 2 Aug 2012 15:59:33 +1000
-Message-ID: <501A1720.6000604@linux.vnet.ibm.com>
-Date: Thu, 02 Aug 2012 13:58:56 +0800
-From: hejianet <hejianet@linux.vnet.ibm.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: jffs2 copy too long after mounting
-References: <5019EE49.7000208@linux.vnet.ibm.com>
-In-Reply-To: <5019EE49.7000208@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Received: from mga03.intel.com ([143.182.124.21])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Swou9-0002Fo-QI
+ for linux-mtd@lists.infradead.org; Thu, 02 Aug 2012 06:29:06 +0000
+Message-ID: <1343889215.25013.14.camel@sauron.fi.intel.com>
+Subject: Re: [patch v2] UBIFS: add key state map data structure and accessors
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Joel Reardon <joel@clambassador.com>
+Date: Thu, 02 Aug 2012 09:33:35 +0300
+In-Reply-To: <alpine.DEB.2.00.1207081928190.12575@eristoteles.iwoars.net>
+References: <alpine.DEB.2.00.1206090016010.14953@eristoteles.iwoars.net>
+ <1340016236.2420.23.camel@sauron.fi.intel.com>
+ <alpine.DEB.2.00.1207081928190.12575@eristoteles.iwoars.net>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-lIo4UTj4bt1zr5QRQ9g5"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,29 +26,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2012-08-02 11:04, hejianet wrote:
-> hi All
-> my kernel is 2.6.16
-> after mounting the nand flash with jffs2 partition, the first copy operation
-> for a 15M file(from jffs2 partition to jffs2 partition) take 9
-> minutes,but the
-> second copy operation takes 1 minutes.
-> the disk usage(df result) is over 85%.
-> I wonder is there any patch ported to such old kernel?
-> Thanks
->
-> B.R.
-> Jia
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
->
->
-Is there anyway to show the summary result of jffs2's fragmentation?
-Is there anyway to manually make defragmentation?
-Thanks
 
-Jia
+--=-lIo4UTj4bt1zr5QRQ9g5
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Sun, 2012-07-08 at 19:30 +0200, Joel Reardon wrote:
+> This patch adds the key state map to keymap, a structure that holds the s=
+tate
+> of all keys in the KSA. The states are defined in an enum, and a get/set
+> accessor is added. These accessors are static only: the external interfac=
+e
+> will simply be "mark used" or "mark deleted" and range checking, along wi=
+th
+> locking the mutex for the state object, will be done there.
+>=20
+> The memory is allocated in keymap_init() and keymap_free()
+> is added to deallocate the memory. Init is called when mounting is perfor=
+med,
+> and free is called mounting failed or when unmounting. This was tested us=
+ing
+> integck along with unit tests for get/set sanity.
+
+Pushed to the joel branch, thanks. I did some amendments on top and
+pushed as a separate commit.
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-lIo4UTj4bt1zr5QRQ9g5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQGh8/AAoJECmIfjd9wqK0uHoP/ifTH6gA3KygFNZPxWR5GfO7
+VPLcaF/JSlzV7MApZWN1V61dqtqVrf1OOxvQObJuclIM7s/5T7tHKA/7WOXpT1VT
+vzgnn+It5SibSIipg+dRxHXRQRxzNbuI8aE54G9EH+YCNH0kdJUvsf4/1/e/WJr2
+YVLYZgqJQ2w1Cxp97QvECOfGEL8dVuKncb+3T016+FqrWce5rlGEv1nu2ZJ8VBR5
+hmy0+KiflUC+Za3B/5Apk2+DVaE/upokawaQxqOMAly7ZI2ntGBPkFjuzeFpvlWv
+azd/y+wps3BCi249Kg7eO/1FvTOfESxFZAiclzIvDgU1AkNmux68fbtk87tuaONp
+g4GcQV8sGyBapSevyjF+MaKnC4ripDUyIexm7jLuEOEwGFi74cu4vKnR1xkPxDTH
+eEN/yCd6o93YNj1qpCkrWqrIVxmksrEcYpMBzypiXrFfrxAy3EAKlSr7zev4SXLP
+j0aX+mjW2PC+F80WBPaYng0VK5Vp+SXCFyTJHGH722FN2XObMU2HPIv9MHCb/Ip+
+GDZIAcuOSncbDbb/5G/sF8lK91TjnJAJPbcZbVkmvBTY8rbYVy6E9kr3KGchcfau
+jfVI3dGfxnDBUXKhqSGWlAM+f2p7QpJgzwb676xTImgda3S/ny6CZ0Pr131lPcok
+x2u73oCoMhRY6Sqjr+/w
+=Ng+L
+-----END PGP SIGNATURE-----
+
+--=-lIo4UTj4bt1zr5QRQ9g5--
