@@ -1,39 +1,23 @@
 Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Swzrp-0004ni-VK
- for linux-mtd@lists.infradead.org; Thu, 02 Aug 2012 18:11:26 +0000
-Message-ID: <1343931352.25013.222.camel@sauron.fi.intel.com>
+ id 1Sx0Pg-00060h-JN
+ for linux-mtd@lists.infradead.org; Thu, 02 Aug 2012 18:46:24 +0000
+Message-ID: <1343933454.25013.224.camel@sauron.fi.intel.com>
 Subject: Re: UBI fastmap updates
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 To: Richard Weinberger <richard@nod.at>
-Date: Thu, 02 Aug 2012 21:15:52 +0300
-In-Reply-To: <20120802200326.37a2d827@spider.haslach.nod.at>
+Date: Thu, 02 Aug 2012 21:50:54 +0300
+In-Reply-To: <1341836323-43916-1-git-send-email-richard@nod.at>
 References: <1341836323-43916-1-git-send-email-richard@nod.at>
- <1343916747.25013.112.camel@sauron.fi.intel.com>
- <20120802161512.5ac7a303@spider.haslach.nod.at>
- <1343917741.25013.114.camel@sauron.fi.intel.com>
- <20120802165132.1bf1e5d7@spider.haslach.nod.at>
- <1343924267.25013.156.camel@sauron.fi.intel.com>
- <20120802183210.7076aa48@spider.haslach.nod.at>
- <1343925930.25013.163.camel@sauron.fi.intel.com>
- <501AB2C8.9010805@am.sony.com>
- <1343929200.25013.197.camel@sauron.fi.intel.com>
- <20120802194538.26e2ec98@spider.haslach.nod.at>
- <1343930368.25013.215.camel@sauron.fi.intel.com>
- <20120802200326.37a2d827@spider.haslach.nod.at>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-TC0JOgDE6Z0o/7OZKPhm"
+ boundary="=-4sGk72btFe6WMSXsMC7q"
 Mime-Version: 1.0
-Cc: "nyoushchenko@mvista.com" <nyoushchenko@mvista.com>,
- "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "Heinz.Egger@linutronix.de" <Heinz.Egger@linutronix.de>,
- "thomas.wucher@linutronix.de" <thomas.wucher@linutronix.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Tim Bird <tim.bird@am.sony.com>, "tglx@linutronix.de" <tglx@linutronix.de>,
- "Marius.Mazarel@ugal.ro" <Marius.Mazarel@ugal.ro>,
- "shmulik.ladkani@gmail.com" <shmulik.ladkani@gmail.com>
+Cc: nyoushchenko@mvista.com, linux-kernel@vger.kernel.org,
+ adrian.hunter@intel.com, Heinz.Egger@linutronix.de,
+ thomas.wucher@linutronix.de, linux-mtd@lists.infradead.org,
+ shmulik.ladkani@gmail.com, tglx@linutronix.de, Marius.Mazarel@ugal.ro,
+ tim.bird@am.sony.com
 Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -45,27 +29,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-TC0JOgDE6Z0o/7OZKPhm
+--=-4sGk72btFe6WMSXsMC7q
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-08-02 at 20:03 +0200, Richard Weinberger wrote:
-> > If I understand correctly, fastmap size is a function of total PEBs
-> > count. You should be able to calculate the maximum size precisely.
+On Mon, 2012-07-09 at 14:18 +0200, Richard Weinberger wrote:
+> This is the next round of UBI fastmap updates.
+> It fixes all issues pointed out by Shmulik. :-)
 >=20
-> It does.
-> I was thinking of 2 x sizeof(fastmap) to have reserved PEBs for the
-> currently used fastmap and PEBs for the new to be installed fastmap.
+> If you want to test fastmap you can use my git repo:
+> git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubi2.git ubi2/v17
 
-Up to you. If you are fine with the overhead, you can go for 2x, I do
-not have objections. But would be nice to include the overhead numbers
-when you submit the patches. Also print on initialization.
+Richard, would you please rename the 'fm_auto' kernel parameter to
+"fastmap_auto", which is a bit more user-friendly.
+
+Thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-TC0JOgDE6Z0o/7OZKPhm
+--=-4sGk72btFe6WMSXsMC7q
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -73,19 +57,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQGsPYAAoJECmIfjd9wqK0HNUP/1wRCUK3e7KFh4RLmVDPrekD
-GlsNwBXOYr2UwLGBv9ZDClv9sfJiiNC5aJTLl4dfIC7t9h7YCHvHQKWXydPw49aK
-FuOMVrPvLpSVToZOM7kVLAxzOtHAUle6K1ekl+ZljOYWgO9Y1U5Pf5Dcn2qGYyec
-VuGaiVrrGMyUvwJfZP6Onf5bzE0oJ2d0FvW5Zfkn8gmkkuVjUk22DV53W5ED1TyP
-JFJtMrAgKbZzlCSLOD4xxS1Sl18wJQ0A1nbnatX6B2ERx0GzTZ62ogIv+aV6Bacb
-Ba/hWnf4NJuZjnFMxLkrzeeDHc9AUGxTED9XqNHZ4OR0KfVgFlYhv06pJEU2BeEo
-oO8JA84qyOLO8hwPg/4HjP5AQxQDq1Tk0r9HpvC/K2fXlgAhxp73GV0JENQjfFRt
-bIpWkIT0resmsaAin7hEi6kN4VLaIvEOuh4AHwi/Y8s4oDtNTHVgK4f3DfIgMgka
-a4vOXCABC3eUOAoPyxnI6IYw5NeiWnnyvyHmOyjlwqBH5WCxjFyCD0M1pL8ykqfM
-FZ05C52pmnbH9Gf68OISRi7nFUkgxxk3/+1G9xIBgcOcnTiMq7S5k3JKADH/UZ1+
-7tm4ggxH6Louva4O8BooMr5t1dJquVufB7Htmd1LVM82qTRWkvgY+mu5XDZDM3iS
-AL+U6rHFWtGrgN66vD6l
-=OPGd
+iQIcBAABAgAGBQJQGswOAAoJECmIfjd9wqK0insQAI8mpnKxO8/ObwMpKUfTnyEk
+zrHgHZb+J0Fu7NNbVXqaSjK1I98MStmQQmRSx7/VmWNwqzZT/PbHsUo9ELNvtjmP
+ODE/4JLZgSQqysZ/NvUe1myO+qjUp0vTJmAgwOsHx25LCHwxJcJJIcxgLFkXJJNh
+Bk12NeAWaXJa28GJOJbYKN5tcHOfwAavDgJh11xEDtxNMUI3LfCYKoXGoatHpDMD
++PgZ9Pdu4/xYA82KhHOgSX5uiqpKBoCD81pj4X2YW/AszVfiEABmrdS50oGWVPMB
+u3j8MnNBTAzGtbm2vhWVsDitWySGWho9uWHJeHfByXRo+XzrPz+REEntG/imqs7n
+r8/hxjZyryY13F2PHirtqNBZ4ixgO3NTI17FzkBWIC0QkBa2JgmSyUdDrlRLS+28
+i4r3ojW+umldBenYPK+GrsmdxsJBbuD1XOdYtyoZgjz3UnfeM5y/Lh7llbnWSwUo
+n4UlINTLizzGkgv/K6VB4iMF/AJLLCDehNLnCNzwyr8eCdzi761KypOdysrZU9JU
+7pZiWivZARcQwi9W2LXEVEzG216tvXt8GRInPsZWQkFUn7gqWTV3oDqHmDatQjB3
+esTuOkvX6tf0K4e2fLgsJS+wqlJqO+J7/JBCavN8hmK88jm3RUBMDDiHWCTmTW2O
+dpD3LSsJjYEtNsh6WNaH
+=OUeG
 -----END PGP SIGNATURE-----
 
---=-TC0JOgDE6Z0o/7OZKPhm--
+--=-4sGk72btFe6WMSXsMC7q--
