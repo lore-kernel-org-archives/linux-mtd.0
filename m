@@ -1,22 +1,16 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SxEn8-0004OJ-Cs
- for linux-mtd@lists.infradead.org; Fri, 03 Aug 2012 10:07:35 +0000
-Date: Fri, 3 Aug 2012 12:07:11 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH v2 2/3] mtd: nand: Let MTD_NAND_GPMI_NAND depend on MXS_DMA
-Message-ID: <20120803100711.GC24458@pengutronix.de>
-References: <1343215100-24005-1-git-send-email-festevam@gmail.com>
- <1343215100-24005-2-git-send-email-festevam@gmail.com>
+Message-ID: <501D4405.6030900@googlemail.com>
+Date: Sat, 04 Aug 2012 17:47:17 +0200
+From: Dirk Behme <dirk.behme@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1343215100-24005-2-git-send-email-festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- Artem.Bityutskiy@linux.intel.com, b32955@freescale.com,
- linux-mtd@lists.infradead.org, kernel@pengutronix.de, shawn.guo@linaro.org,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+To: =?ISO-8859-1?Q?Uwe_Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH] mtd: mxc_nand: Fix compiler warnings
+References: <1343466310-14584-1-git-send-email-dirk.behme@gmail.com>
+ <20120730073454.GI1528@pengutronix.de>
+In-Reply-To: <20120730073454.GI1528@pengutronix.de>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, shawn.guo@linaro.org, shijie8@gmail.com,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,55 +20,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jul 25, 2012 at 08:18:19AM -0300, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
-> 
-> MTD_NAND_GPMI_NAND driver depends on MXS_DMA to be selected, otherwise the following error happens
-> for imx_v6_v7_defconfig:
-> 
-> drivers/built-in.o: In function `gpmi_dma_filter':
-> clk-fixed-factor.c:(.text+0xb124c): undefined reference to `mxs_dma_is_apbh'
-> make: *** [vmlinux] Error 1
-> 
-> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+On 30.07.2012 09:34, Uwe Kleine-König wrote:
+> Hello,
+>
+> On Sat, Jul 28, 2012 at 11:05:10AM +0200, Dirk Behme wrote:
+>> From: Dirk Behme<dirk.behme@googlemail.com>
+>>
+>> Fix the compiler warnings
+>>
+>> drivers/mtd/nand/mxc_nand.c:1267: warning: initialization discards qualifiers from pointer target type
+>> drivers/mtd/nand/mxc_nand.c:1270: warning: initialization discards qualifiers from pointer target type
+>> drivers/mtd/nand/mxc_nand.c:1273: warning: initialization discards qualifiers from pointer target type
+>> drivers/mtd/nand/mxc_nand.c:1276: warning: initialization discards qualifiers from pointer target type
+> These should be gone in next already.
 
-Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
+Hmm, which next?
 
-As mentioned elsewhere in this thread: We should not select user visible
-options, so this patch is the only thing we can do atm (apart from
-'fixing the tools' as David mentioned, but this is out of scope for an
--rc kernel)
+I tried linux-next [1] from today (next-20120803, 55fa9961f) and still get
 
-Additionally the imx_v6_v7_defconfig should be adjusted so that the gpmi
-nand driver actually gets built.
+ > make drivers/mtd/nand/
+...
+  CC      drivers/mtd/nand/mxc_nand.o 
 
-Sascha
+drivers/mtd/nand/mxc_nand.c:1298: warning: initialization discards 
+qualifiers from pointer target type
+drivers/mtd/nand/mxc_nand.c:1301: warning: initialization discards 
+qualifiers from pointer target type
+drivers/mtd/nand/mxc_nand.c:1304: warning: initialization discards 
+qualifiers from pointer target type
+drivers/mtd/nand/mxc_nand.c:1307: warning: initialization discards 
+qualifiers from pointer target type
+drivers/mtd/nand/mxc_nand.c:1310: warning: initialization discards 
+qualifiers from pointer target type
+   CC      drivers/mtd/nand/gpmi-nand/gpmi-nand.o
+...
 
-> ---
-> Changes since v1:
-> - Use 'depends' rather than 'select'
->  drivers/mtd/nand/Kconfig |    1 +
->  1 files changed, 1 insertions(+), 0 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> index a5d8a1b..da52c7d 100644
-> --- a/drivers/mtd/nand/Kconfig
-> +++ b/drivers/mtd/nand/Kconfig
-> @@ -463,6 +463,7 @@ config MTD_NAND_NANDSIM
->  config MTD_NAND_GPMI_NAND
->          bool "GPMI NAND Flash Controller driver"
->          depends on MTD_NAND && (SOC_IMX23 || SOC_IMX28 || SOC_IMX6Q)
-> +	depends on MXS_DMA
->          help
->  	 Enables NAND Flash support for IMX23, IMX28 or IMX6.
->  	 The GPMI controller is very powerful, with the help of BCH
-> -- 
-> 1.7.1
-> 
-> 
+Sorry if I missed something ;)
 
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Best regards
+
+Dirk
+
+[1] 
+http://git.kernel.org/?p=linux/kernel/git/next/linux-next.git;a=shortlog;h=refs/heads/master
