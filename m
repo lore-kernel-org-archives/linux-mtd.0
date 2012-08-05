@@ -1,15 +1,20 @@
-Received: from mail1-relais-roc.national.inria.fr ([192.134.164.82])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Sxl5Z-0001Tz-NL
- for linux-mtd@lists.infradead.org; Sat, 04 Aug 2012 20:36:47 +0000
-From: Julia Lawall <Julia.Lawall@lip6.fr>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] drivers/mtd/devices/spear_smi.c: use devm_ functions
- consistently
-Date: Sat,  4 Aug 2012 22:36:38 +0200
-Message-Id: <1344112598-1051-1-git-send-email-Julia.Lawall@lip6.fr>
-Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org
+Message-ID: <501E147D.5050707@gmail.com>
+Date: Sun, 05 Aug 2012 08:36:45 +0200
+From: Dirk Behme <dirk.behme@gmail.com>
+MIME-Version: 1.0
+To: Artem.Bityutskiy@linux.intel.com, linux-mtd@lists.infradead.org,
+ dwmw2@infradead.org, David Woodhouse <David.Woodhouse@intel.com>
+Subject: Re: [PATCH v2 2/3] mtd: nand: Let MTD_NAND_GPMI_NAND depend on MXS_DMA
+References: <1343215100-24005-1-git-send-email-festevam@gmail.com>
+ <1343215100-24005-2-git-send-email-festevam@gmail.com>
+ <20120803100711.GC24458@pengutronix.de>
+In-Reply-To: <20120803100711.GC24458@pengutronix.de>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, b32955@freescale.com,
+ kernel@pengutronix.de, shawn.guo@linaro.org,
+ Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,193 +24,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Julia Lawall <Julia.Lawall@lip6.fr>
+On 03.08.2012 12:07, Sascha Hauer wrote:
+> On Wed, Jul 25, 2012 at 08:18:19AM -0300, Fabio Estevam wrote:
+>> From: Fabio Estevam<fabio.estevam@freescale.com>
+>>
+>> MTD_NAND_GPMI_NAND driver depends on MXS_DMA to be selected, otherwise the following error happens
+>> for imx_v6_v7_defconfig:
+>>
+>> drivers/built-in.o: In function `gpmi_dma_filter':
+>> clk-fixed-factor.c:(.text+0xb124c): undefined reference to `mxs_dma_is_apbh'
+>> make: *** [vmlinux] Error 1
+>>
+>> Signed-off-by: Fabio Estevam<fabio.estevam@freescale.com>
+>
+> Acked-by: Sascha Hauer<s.hauer@pengutronix.de>
+>
+> As mentioned elsewhere in this thread: We should not select user visible
+> options, so this patch is the only thing we can do atm (apart from
+> 'fixing the tools' as David mentioned, but this is out of scope for an
+> -rc kernel)
 
-Use devm_kzalloc for all calls to kzalloc and not just the first.  Use devm
-functions for other allocations as well.
+I asked Shawn about this and it seems that this patch is the way to go 
+for the moment. So:
 
-Move the call to platform_get_resource(pdev, IORESOURCE_MEM, 0) closer to
-where its result is passed to devm_request_and_ioremap to make the lack of
-need for a NULL test more evident.
+Acked-by: Dirk Behme <dirk.behme@gmail.com>
 
-The semantic match that finds the inconsistency is as follows:
-(http://coccinelle.lip6.fr/)
+David: Artem: Building recent 3.6-rc1mainline with imx_v6_v7_defconfig 
+is broken. We need this patch to get it working, again.
 
-// <smpl>
-@@
-@@
+It would be nice if this patch could go as a fix into 3.6-rcX mainline 
+asap. Could you help with this?
 
-*devm_kzalloc(...)
-...
-*kzalloc(...)
-// </smpl>
+Many thanks and best regards
 
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+Dirk
 
----
- drivers/mtd/devices/spear_smi.c |   72 +++++++++-------------------------------
- 1 file changed, 17 insertions(+), 55 deletions(-)
-
-diff --git a/drivers/mtd/devices/spear_smi.c b/drivers/mtd/devices/spear_smi.c
-index b85f183..f889fad 100644
---- a/drivers/mtd/devices/spear_smi.c
-+++ b/drivers/mtd/devices/spear_smi.c
-@@ -827,7 +827,7 @@ static int spear_smi_setup_banks(struct platform_device *pdev,
- 	if (!flash_info)
- 		return -ENODEV;
- 
--	flash = kzalloc(sizeof(*flash), GFP_ATOMIC);
-+	flash = devm_kzalloc(&pdev->dev, sizeof(*flash), GFP_ATOMIC);
- 	if (!flash)
- 		return -ENOMEM;
- 	flash->bank = bank;
-@@ -838,15 +838,13 @@ static int spear_smi_setup_banks(struct platform_device *pdev,
- 	flash_index = spear_smi_probe_flash(dev, bank);
- 	if (flash_index < 0) {
- 		dev_info(&dev->pdev->dev, "smi-nor%d not found\n", bank);
--		ret = flash_index;
--		goto err_probe;
-+		return flash_index;
- 	}
- 	/* map the memory for nor flash chip */
--	flash->base_addr = ioremap(flash_info->mem_base, flash_info->size);
--	if (!flash->base_addr) {
--		ret = -EIO;
--		goto err_probe;
--	}
-+	flash->base_addr = devm_ioremap(&pdev->dev, flash_info->mem_base,
-+					flash_info->size);
-+	if (!flash->base_addr)
-+		return -EIO;
- 
- 	dev->flash[bank] = flash;
- 	flash->mtd.priv = dev;
-@@ -888,17 +886,10 @@ static int spear_smi_setup_banks(struct platform_device *pdev,
- 					count);
- 	if (ret) {
- 		dev_err(&dev->pdev->dev, "Err MTD partition=%d\n", ret);
--		goto err_map;
-+		return ret;
- 	}
- 
- 	return 0;
--
--err_map:
--	iounmap(flash->base_addr);
--
--err_probe:
--	kfree(flash);
--	return ret;
- }
- 
- /**
-@@ -942,13 +933,6 @@ static int __devinit spear_smi_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	smi_base = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!smi_base) {
--		ret = -ENODEV;
--		dev_err(&pdev->dev, "invalid smi base address\n");
--		goto err;
--	}
--
- 	irq = platform_get_irq(pdev, 0);
- 	if (irq < 0) {
- 		ret = -ENODEV;
-@@ -956,26 +940,20 @@ static int __devinit spear_smi_probe(struct platform_device *pdev)
- 		goto err;
- 	}
- 
--	dev = kzalloc(sizeof(*dev), GFP_ATOMIC);
-+	dev = devm_kzalloc(&pdev->dev, sizeof(*dev), GFP_ATOMIC);
- 	if (!dev) {
- 		ret = -ENOMEM;
- 		dev_err(&pdev->dev, "mem alloc fail\n");
- 		goto err;
- 	}
- 
--	smi_base = request_mem_region(smi_base->start, resource_size(smi_base),
--			pdev->name);
--	if (!smi_base) {
--		ret = -EBUSY;
--		dev_err(&pdev->dev, "request mem region fail\n");
--		goto err_mem;
--	}
-+	smi_base = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 
--	dev->io_base = ioremap(smi_base->start, resource_size(smi_base));
-+	dev->io_base = devm_request_and_ioremap(&pdev->dev, smi_base);
- 	if (!dev->io_base) {
- 		ret = -EIO;
--		dev_err(&pdev->dev, "ioremap fail\n");
--		goto err_ioremap;
-+		dev_err(&pdev->dev, "devm_request_and_ioremap fail\n");
-+		goto err;
- 	}
- 
- 	dev->pdev = pdev;
-@@ -991,17 +969,18 @@ static int __devinit spear_smi_probe(struct platform_device *pdev)
- 		dev->num_flashes = MAX_NUM_FLASH_CHIP;
- 	}
- 
--	dev->clk = clk_get(&pdev->dev, NULL);
-+	dev->clk = devm_clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(dev->clk)) {
- 		ret = PTR_ERR(dev->clk);
--		goto err_clk;
-+		goto err;
- 	}
- 
- 	ret = clk_prepare_enable(dev->clk);
- 	if (ret)
--		goto err_clk_prepare_enable;
-+		goto err;
- 
--	ret = request_irq(irq, spear_smi_int_handler, 0, pdev->name, dev);
-+	ret = devm_request_irq(&pdev->dev, irq, spear_smi_int_handler, 0,
-+			       pdev->name, dev);
- 	if (ret) {
- 		dev_err(&dev->pdev->dev, "SMI IRQ allocation failed\n");
- 		goto err_irq;
-@@ -1024,18 +1003,9 @@ static int __devinit spear_smi_probe(struct platform_device *pdev)
- 	return 0;
- 
- err_bank_setup:
--	free_irq(irq, dev);
- 	platform_set_drvdata(pdev, NULL);
- err_irq:
- 	clk_disable_unprepare(dev->clk);
--err_clk_prepare_enable:
--	clk_put(dev->clk);
--err_clk:
--	iounmap(dev->io_base);
--err_ioremap:
--	release_mem_region(smi_base->start, resource_size(smi_base));
--err_mem:
--	kfree(dev);
- err:
- 	return ret;
- }
-@@ -1073,21 +1043,13 @@ static int __devexit spear_smi_remove(struct platform_device *pdev)
- 		ret = mtd_device_unregister(&flash->mtd);
- 		if (ret)
- 			dev_err(&pdev->dev, "error removing mtd\n");
--
--		iounmap(flash->base_addr);
--		kfree(flash);
- 	}
- 
- 	irq = platform_get_irq(pdev, 0);
--	free_irq(irq, dev);
- 
- 	clk_disable_unprepare(dev->clk);
--	clk_put(dev->clk);
--	iounmap(dev->io_base);
--	kfree(dev);
- 
- 	smi_base = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	release_mem_region(smi_base->start, resource_size(smi_base));
- 	platform_set_drvdata(pdev, NULL);
- 
- 	return 0;
+> Additionally the imx_v6_v7_defconfig should be adjusted so that the gpmi
+> nand driver actually gets built.
+>
+> Sascha
+>
+>> ---
+>> Changes since v1:
+>> - Use 'depends' rather than 'select'
+>>   drivers/mtd/nand/Kconfig |    1 +
+>>   1 files changed, 1 insertions(+), 0 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+>> index a5d8a1b..da52c7d 100644
+>> --- a/drivers/mtd/nand/Kconfig
+>> +++ b/drivers/mtd/nand/Kconfig
+>> @@ -463,6 +463,7 @@ config MTD_NAND_NANDSIM
+>>   config MTD_NAND_GPMI_NAND
+>>           bool "GPMI NAND Flash Controller driver"
+>>           depends on MTD_NAND&&  (SOC_IMX23 || SOC_IMX28 || SOC_IMX6Q)
+>> +	depends on MXS_DMA
+>>           help
+>>   	 Enables NAND Flash support for IMX23, IMX28 or IMX6.
+>>   	 The GPMI controller is very powerful, with the help of BCH
+>> --
+>> 1.7.1
+>>
+>>
+>
