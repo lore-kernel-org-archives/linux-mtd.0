@@ -1,20 +1,38 @@
-Message-ID: <501E147D.5050707@gmail.com>
-Date: Sun, 05 Aug 2012 08:36:45 +0200
-From: Dirk Behme <dirk.behme@gmail.com>
-MIME-Version: 1.0
-To: Artem.Bityutskiy@linux.intel.com, linux-mtd@lists.infradead.org,
- dwmw2@infradead.org, David Woodhouse <David.Woodhouse@intel.com>
-Subject: Re: [PATCH v2 2/3] mtd: nand: Let MTD_NAND_GPMI_NAND depend on MXS_DMA
-References: <1343215100-24005-1-git-send-email-festevam@gmail.com>
- <1343215100-24005-2-git-send-email-festevam@gmail.com>
- <20120803100711.GC24458@pengutronix.de>
-In-Reply-To: <20120803100711.GC24458@pengutronix.de>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Received: from mail-bk0-f49.google.com ([209.85.214.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Sxw7r-0006G8-8B
+ for linux-mtd@lists.infradead.org; Sun, 05 Aug 2012 08:23:52 +0000
+Received: by bkcji2 with SMTP id ji2so814861bkc.36
+ for <linux-mtd@lists.infradead.org>; Sun, 05 Aug 2012 01:23:48 -0700 (PDT)
+Date: Sun, 5 Aug 2012 11:23:37 +0300
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Subject: Re: UBI fastmap updates
+Message-ID: <20120805112337.2a315c75@pixies.home.jungo.com>
+In-Reply-To: <20120802194538.26e2ec98@spider.haslach.nod.at>
+References: <1341836323-43916-1-git-send-email-richard@nod.at>
+ <1343916747.25013.112.camel@sauron.fi.intel.com>
+ <20120802161512.5ac7a303@spider.haslach.nod.at>
+ <1343917741.25013.114.camel@sauron.fi.intel.com>
+ <20120802165132.1bf1e5d7@spider.haslach.nod.at>
+ <1343924267.25013.156.camel@sauron.fi.intel.com>
+ <20120802183210.7076aa48@spider.haslach.nod.at>
+ <1343925930.25013.163.camel@sauron.fi.intel.com>
+ <501AB2C8.9010805@am.sony.com>
+ <1343929200.25013.197.camel@sauron.fi.intel.com>
+ <20120802194538.26e2ec98@spider.haslach.nod.at>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- Sascha Hauer <s.hauer@pengutronix.de>, b32955@freescale.com,
- kernel@pengutronix.de, shawn.guo@linaro.org,
- Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
+Cc: "nyoushchenko@mvista.com" <nyoushchenko@mvista.com>,
+ artem.bityutskiy@linux.intel.com,
+ "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "Heinz.Egger@linutronix.de" <Heinz.Egger@linutronix.de>,
+ "thomas.wucher@linutronix.de" <thomas.wucher@linutronix.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Tim Bird <tim.bird@am.sony.com>, "tglx@linutronix.de" <tglx@linutronix.de>,
+ "Marius.Mazarel@ugal.ro" <Marius.Mazarel@ugal.ro>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,66 +42,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03.08.2012 12:07, Sascha Hauer wrote:
-> On Wed, Jul 25, 2012 at 08:18:19AM -0300, Fabio Estevam wrote:
->> From: Fabio Estevam<fabio.estevam@freescale.com>
->>
->> MTD_NAND_GPMI_NAND driver depends on MXS_DMA to be selected, otherwise the following error happens
->> for imx_v6_v7_defconfig:
->>
->> drivers/built-in.o: In function `gpmi_dma_filter':
->> clk-fixed-factor.c:(.text+0xb124c): undefined reference to `mxs_dma_is_apbh'
->> make: *** [vmlinux] Error 1
->>
->> Signed-off-by: Fabio Estevam<fabio.estevam@freescale.com>
->
-> Acked-by: Sascha Hauer<s.hauer@pengutronix.de>
->
-> As mentioned elsewhere in this thread: We should not select user visible
-> options, so this patch is the only thing we can do atm (apart from
-> 'fixing the tools' as David mentioned, but this is out of scope for an
-> -rc kernel)
+Hi,
 
-I asked Shawn about this and it seems that this patch is the way to go 
-for the moment. So:
+On Thu, 2 Aug 2012 19:45:38 +0200 Richard Weinberger <richard@nod.at> wrote:
+> Okay, then let's explicitly reserve a few PEBs for fastmap.
+> This should be very easy task.
 
-Acked-by: Dirk Behme <dirk.behme@gmail.com>
+Need to consider what's expected when migrating from a former non-FM
+UBI system to an FM enabled system, in the case where all PEBs where
+consumed (reserved) in the former system.
 
-David: Artem: Building recent 3.6-rc1mainline with imx_v6_v7_defconfig 
-is broken. We need this patch to get it working, again.
+> How much PEB should be reserved? 2 x sizeof(fastmap)?
 
-It would be nice if this patch could go as a fix into 3.6-rcX mainline 
-asap. Could you help with this?
+Since FM does not use EBA's atomic LEB change when writing the new
+fastmap, but instead implements its own FM "leb change" internally -
+then reserving 2x is needed if we'd like to avoid reusing the same
+fastmap PEB.
 
-Many thanks and best regards
-
-Dirk
-
-> Additionally the imx_v6_v7_defconfig should be adjusted so that the gpmi
-> nand driver actually gets built.
->
-> Sascha
->
->> ---
->> Changes since v1:
->> - Use 'depends' rather than 'select'
->>   drivers/mtd/nand/Kconfig |    1 +
->>   1 files changed, 1 insertions(+), 0 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
->> index a5d8a1b..da52c7d 100644
->> --- a/drivers/mtd/nand/Kconfig
->> +++ b/drivers/mtd/nand/Kconfig
->> @@ -463,6 +463,7 @@ config MTD_NAND_NANDSIM
->>   config MTD_NAND_GPMI_NAND
->>           bool "GPMI NAND Flash Controller driver"
->>           depends on MTD_NAND&&  (SOC_IMX23 || SOC_IMX28 || SOC_IMX6Q)
->> +	depends on MXS_DMA
->>           help
->>   	 Enables NAND Flash support for IMX23, IMX28 or IMX6.
->>   	 The GPMI controller is very powerful, with the help of BCH
->> --
->> 1.7.1
->>
->>
->
+Regards,
+Shmulik
