@@ -1,15 +1,15 @@
-Received: from mail-yw0-f49.google.com ([209.85.213.49])
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SyWCJ-0006g9-TN
- for linux-mtd@lists.infradead.org; Mon, 06 Aug 2012 22:54:53 +0000
-Received: by yhjj52 with SMTP id j52so3368521yhj.36
- for <linux-mtd@lists.infradead.org>; Mon, 06 Aug 2012 15:54:50 -0700 (PDT)
+ id 1SyWK1-0006u5-4Q
+ for linux-mtd@lists.infradead.org; Mon, 06 Aug 2012 23:02:49 +0000
+Received: by yenr9 with SMTP id r9so3375177yen.36
+ for <linux-mtd@lists.infradead.org>; Mon, 06 Aug 2012 16:02:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <5019F11A.9060801@linux.vnet.ibm.com>
+In-Reply-To: <501A1720.6000604@linux.vnet.ibm.com>
 References: <5019EE49.7000208@linux.vnet.ibm.com>
- <5019F11A.9060801@linux.vnet.ibm.com>
-Date: Mon, 6 Aug 2012 15:54:50 -0700
-Message-ID: <CAN8TOE9DSREguNw73njbaRb5F9NLaa0LkDsDWUzYmX5-J3kXZw@mail.gmail.com>
+ <501A1720.6000604@linux.vnet.ibm.com>
+Date: Mon, 6 Aug 2012 16:02:47 -0700
+Message-ID: <CAN8TOE8+A+kG8A9sB_qiD9huCWR-bwSiEkgjEqSXohFGdsEGkg@mail.gmail.com>
 Subject: Re: jffs2 copy too long after mounting
 From: Brian Norris <computersforpeace@gmail.com>
 To: hejianet <hejianet@linux.vnet.ibm.com>
@@ -24,24 +24,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Aug 1, 2012 at 8:16 PM, hejianet <hejianet@linux.vnet.ibm.com> wrote:
-> besides, how to search all the archives of linux-mtd?
-> http://lists.infradead.org/pipermail/linux-mtd/ is a link, but it
-> couldn't be searched totally by date. I have review all pages
-> month by month :(
+On Wed, Aug 1, 2012 at 10:58 PM, hejianet <hejianet@linux.vnet.ibm.com> wrote:
+> Is there anyway to show the summary result of jffs2's fragmentation?
+> Is there anyway to manually make defragmentation?
 
-You can do a search of this particular archive using a third-party
-search engine, although you may not get results sorted by date. For
-example, with Google, just include the following in your search term:
-site:lists.infradead.org/pipermail/linux-mtd
+I'm not a JFFS2 expert, but I don't believe fragmentation really is an
+issue in quite the same way as in spinning-disk, block storage
+filesystems like FAT. Access time to all blocks on an MTD is uniform.
 
-Also, there are other archives that track the same mailing list. For
-example, gmane has a pretty good interface for search or threaded
-browsing:
-http://dir.gmane.org/gmane.linux.drivers.mtd
-(Try "search the list" or browse with the various options, like "On
-the web, using frames and threads")
+Also, I quite doubt there is a tool that displays the low-level
+details of file/block mapping.
 
-Hope that helps.
-
+Regards,
 Brian
