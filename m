@@ -1,27 +1,27 @@
-Received: from mail-we0-f177.google.com ([74.125.82.177])
+Received: from mail-wi0-f177.google.com ([209.85.212.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SybIL-0005fr-0Q
- for linux-mtd@lists.infradead.org; Tue, 07 Aug 2012 04:21:25 +0000
-Received: by weyr3 with SMTP id r3so2750124wey.36
- for <linux-mtd@lists.infradead.org>; Mon, 06 Aug 2012 21:21:22 -0700 (PDT)
-Message-ID: <1344313269.1865.2.camel@kyv>
-Subject: Re: UBI fastmap updates
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Date: Tue, 07 Aug 2012 07:21:09 +0300
-In-Reply-To: <50200096.1070002@nod.at>
-References: <1341836323-43916-1-git-send-email-richard@nod.at>
- <1343919530.25013.116.camel@sauron.fi.intel.com> <50200096.1070002@nod.at>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-Nn58eDGVPtk4M2H+25t4"
+ id 1Sydum-0002f8-Oy
+ for linux-mtd@lists.infradead.org; Tue, 07 Aug 2012 07:09:17 +0000
+Received: by wibhm11 with SMTP id hm11so1943074wib.0
+ for <linux-mtd@lists.infradead.org>; Tue, 07 Aug 2012 00:09:14 -0700 (PDT)
+Date: Tue, 7 Aug 2012 10:09:07 +0300
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [RFC] nand_btt : use nand chip->block_bad
+Message-ID: <20120807100907.647005af@pixies.home.jungo.com>
+In-Reply-To: <CAN8TOE9fxLbYCc2MeLaqV2WA2ch9Dm9xnyPvY7LBOZ0guB-d0Q@mail.gmail.com>
+References: <1340898442-1585-1-git-send-email-matthieu.castet@parrot.com>
+ <20120628213146.7d929204@halley> <4FED6A2E.9010603@parrot.com>
+ <20120630230252.58ca6bb4@halley> <4FF15BD1.9010109@parrot.com>
+ <CAN8TOE8GMMn+sPu4trUH_iT3=5uh_Of=bsYzXX50E3dyPfKitg@mail.gmail.com>
+ <20120725140233.7dc4ca8a@pixies.home.jungo.com>
+ <CAN8TOE9fxLbYCc2MeLaqV2WA2ch9Dm9xnyPvY7LBOZ0guB-d0Q@mail.gmail.com>
 Mime-Version: 1.0
-Cc: nyoushchenko@mvista.com, artem.bityutskiy@linux.intel.com,
- linux-kernel@vger.kernel.org, adrian.hunter@intel.com,
- Heinz.Egger@linutronix.de, thomas.wucher@linutronix.de,
- linux-mtd@lists.infradead.org, shmulik.ladkani@gmail.com, tglx@linutronix.de,
- Marius.Mazarel@ugal.ro, tim.bird@am.sony.com
-Reply-To: dedekind1@gmail.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Ivan Djelic <ivan.djelic@parrot.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Matthieu CASTET <matthieu.castet@parrot.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,44 +31,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Brian,
 
---=-Nn58eDGVPtk4M2H+25t4
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Mon, 6 Aug 2012 15:21:19 -0700 Brian Norris <computersforpeace@gmail.com> wrote:
+> Hi Shmulik,
+> 
+> On Wed, Jul 25, 2012 at 4:02 AM, Shmulik Ladkani
+> <shmulik.ladkani@gmail.com> wrote:
+> > But as I'm rethinking this, I'm getting more convinced MTD_OPS_RAW
+> > should be used.
+> > (took me a while to understand Matthieu's arguments...)
+> >
+> > 1. Factory marked bad blocks
+> ...
+> > So applying ECC on the read makes no sense.
+> 
+> Yes, that is understood. But in that case, shouldn't any ECC algorithm
+> simply return the raw data, with a -EBADMSG? So we're no worse off
+> than with MTD_OPS_RAW mode.
 
-On Mon, 2012-08-06 at 19:36 +0200, Richard Weinberger wrote:
-> I think we enable fastmap only if a MTD device has more than
-> UBI_FM_MAX_START*2 PEBs.
-> Any comments?
+It should, probably.
+But I found out that for particular inputs, there's an algorithm that
+might incorrectly report EUCLEAN (correctable error) for multibit
+errors.
 
-With double space one can make it power-cut tolerant, because you should
-be able to have either old or new fastmap at any point of time.
+> > 2. Blocks that go bad during use
+> >
+> > Suppose you had a one system software, with an OOB BBM setup, running
+> > and using the nand chip, and then you boot using a new system software
+> > that uses BBT (hence scans and builds the BBT on first boot).
+> >
+> > Usually, the manufacturers state "if erase has failed, software must
+> > mark the block bad".
+> > Suppose software adhere to that recommendation.
+> 
+> Just a side, pedantic note: the datasheet specification given doesn't
+> specify *how* you mark the block bad. Specifically, it really isn't
+> required to be in the OOB area of the bad block. That area was only
+> specified for factory-marked bad blocks, and it seems to been extended
+> as an established convention in MTD/NAND. It could just as well be
+> *only* a flash-based bad block table: hence, the NAND_BBT_NO_OOB_BBM
+> option (see include/linux/mtd/bbm.h).
 
---=20
-Best Regards,
-Artem Bityutskiy
+Agreed, well known.
+I'm specifically referring to the case SW uses OOB BBM, just to
+emphasize the argument regarding no guarantees of the page/oob/ecc
+content (where the BBM needs to be placed).
 
---=-Nn58eDGVPtk4M2H+25t4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+> > (BTW, in a recent patch of yours, nand_default_block_markbad attempts to
+> > erase the block PRIOR writing the BBM to the OOB; but this is not a
+> > must on SLC, older linux systems lacked this patch, and obviously even
+> > if we attempt the "last erase prior mark" we have no guarantees that the
+> > last erase will indeed succeed this time)
+> 
+> I think I understand your point here, but to confirm: you're not
+> suggesting that it is *bad* to try to erase before writing BBM, are
+> you? I was attempting this as a best-effort to cleanly write BBM, and
+> we don't care if the erase actually fails.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+No, I have no problem with the attempt to erase.
 
-iQIcBAABAgAGBQJQIJe1AAoJECmIfjd9wqK08GIP/iejXLF9PCHFiNCFKTdc6hvO
-Z1ltsQLsSC1cdY0GjL7724hHWdzY++TW+tEB52NjklWWGJ2mYMIRa0mZEJJqO9sM
-hAwI2i8RaAMPfCUl6NBNR3VggR0uo7D47WCkaNCrCnMshhKzF4mkUz6We3otYxoG
-8t2GgrAGfy47168UuGUGawpnszLwG7HUF9KsqOcfE0Kv07uxc3D6xxLCZ6r5VwOM
-8AQ5GEpWQD8NHg59p64zCxrPy51H+Z4kzAkbzVODPVvZYxXu8UBU+UGNGZa7rEYO
-eUIhWqp+8Vn5ji5ZklrXWr97P1My9jrkchtPHZvT46RZqpmXzK/5o06q2+zQuVBm
-lYkzczRcq0ZHLz6v9Ss5Fq/oSIW3eoZt8ou2Jp3jhgrPPNb/cZofH5JCDopTyJ+/
-+2cuqLkqrC8A7Ux3SsjWmCheqEclx0rLJB6+rJuYF7WvHa0aVlZP4PEWqzr8YUlb
-78Xqwj//OupvF/9Z9UK/UHkJeK+sTgPkum3dgekWGdxdKdD//zdSACa/ssk7xZpm
-h8Z1SKIEku1LP+0Bt4dChxSdh3N4Ts74VdCZjT1CpmkMBIOVck1Fbsi5M1oUUhes
-RU3ZS3nfy7Ryr1Gkx8XJQSlC82rQ5aMwn4YZ+5WeOKnOiEulEoEj7zy8vAHCgdPE
-T5st5wJS5vbD/FI/epVr
-=ctYu
------END PGP SIGNATURE-----
+Again, just arguing that the page/oob/ecc content is unexpected and
+as such, applying ECC is meaningless.
 
---=-Nn58eDGVPtk4M2H+25t4--
+I think my 1st argument, regarding the content of factory marked blocks,
+is the strongest and most relevant one; I simply tried to think of cases
+where BBM is set by SW, and argue that these cases also does not provide
+any guarantees that future ECC read on this page will give any
+meaningful results.
+
+Regards,
+Shmulik
