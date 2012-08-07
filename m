@@ -1,28 +1,20 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SyglV-0006ZD-1X
- for linux-mtd@lists.infradead.org; Tue, 07 Aug 2012 10:11:53 +0000
-Received: by pbbrq13 with SMTP id rq13so7549454pbb.36
- for <linux-mtd@lists.infradead.org>; Tue, 07 Aug 2012 03:11:51 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20120711174309.GA25743@parrot.com>
-References: <CAN8TOE9RyUuRtEfyqBfxt0W3Cfg2_SD6Hp4rMS0S+MgKsPY9UQ@mail.gmail.com>
- <20120711174309.GA25743@parrot.com>
-Date: Tue, 7 Aug 2012 15:41:50 +0530
-Message-ID: <CAEhpT-XpdqD-CzZ2z8VuoQSSA2OTmNqEAVMWYaJaQiF19dqGfg@mail.gmail.com>
-Subject: Re: MLC NAND: all 0xff after erase?
-From: Calvin Johnson <linux.cj@gmail.com>
-To: Ivan Djelic <ivan.djelic@parrot.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Mike Dunn <mikedunn@newsguy.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>, Kevin Cernekee <cernekee@gmail.com>,
- Jim Quinlan <jim2101024@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Al Viro <viro@zeniv.linux.org.uk>, Joel Reardon <reardonj@inf.ethz.ch>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Date: Tue, 07 Aug 2012 16:34:40 +0200
+From: Heiko Schocher <hs@denx.de>
+Subject: Re: [PATCH v6] ARM: mtd: nand: davinci: add OF support for davinci
+ nand controller
+In-reply-to: <1343632944-25971-1-git-send-email-hs@denx.de>
+To: Heiko Schocher <hs@denx.de>
+Message-id: <50212780.5000809@denx.de>
+MIME-version: 1.0
+Content-type: text/plain; charset=ISO-8859-15; format=flowed
+Content-transfer-encoding: 7BIT
+References: <1343632944-25971-1-git-send-email-hs@denx.de>
+Cc: davinci-linux-open-source@linux.davincidsp.com,
+ devicetree-discuss@lists.ozlabs.org, Sekhar Nori <nsekhar@ti.com>,
+ Grant Likely <grant.likely@secretlab.ca>, linux-mtd@lists.infradead.org,
+ Scott Wood <scottwood@freescale.com>, David Woodhouse <dwmw2@infradead.org>,
+ linux-arm-kernel@lists.infradead.org
+Reply-To: hs@denx.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,54 +24,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Ivan,
+Hello,
 
+On 30.07.2012 09:22, Heiko Schocher wrote:
+> add OF support for the davinci nand controller.
 >
-> >>Due to the nature of NAND bitflips, I cannot see how a NAND datasheet
-> >> could guarantee such a thing (what would be the duration of a "0xff
-> >> guarantee" anyway ?). In practice, bitflips do appear already on 34nm =
-SLC
-> >> devices, on blocks that have just been erased; hence I am not surprise=
-d
-> >> by your own findings on MLC devices.
+> Signed-off-by: Heiko Schocher<hs@denx.de>
+> Cc: davinci-linux-open-source@linux.davincidsp.com
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: devicetree-discuss@lists.ozlabs.org
+> Cc: linux-mtd@lists.infradead.org
+> Cc: David Woodhouse<dwmw2@infradead.org>
+> Cc: Grant Likely<grant.likely@secretlab.ca>
+> Cc: Sekhar Nori<nsekhar@ti.com>
+> Cc: Wolfgang Denk<wd@denx.de>
+> Cc: Scott Wood<scottwood@freescale.com>
 >
+> ---
+> - changes for v2:
+>    - add comments from Scott Wood:
+>      - add "ti,davinci-" prefix
+>      - Dashes are preferred to underscores
+>      - rename "nandflash" to "nand"
+>      - introduce new "ti,davinci" specific properties for setting
+>        up ecc_mode, ecc_bits, options and bbt options, instead
+>        using linux defines
+>      - readme fixes
+> - no changes for v3
+> - changes for v4
+>    remove "pinmux-handle" property as discussed here:
+>    http://www.spinics.net/lists/arm-kernel/msg175701.html
+>    with Nori Sekhar
+> - no changes for v5
+>
+> - changes for v6:
+>    add comments from Sekhar Nori:
+>    - remove unnecessary includes
+>    - use devm_kzalloc instead of kzalloc
+>    - remove AEMIF timing specific bindings, as
+>      this has to be done later.
+>
+>   .../devicetree/bindings/arm/davinci/nand.txt       |   51 ++++++++++++++
+>   drivers/mtd/nand/davinci_nand.c                    |   72 +++++++++++++++++++-
+>   2 files changed, 122 insertions(+), 1 deletions(-)
+>   create mode 100644 Documentation/devicetree/bindings/arm/davinci/nand.txt
 
-Are these bit flips occurring due to power fluctuations while
-performing program/erase as mentioned in
-http://www.linux-mtd.infradead.org/doc/ubifs.html#L_unstable_bits ?
+ping ... any comments?
 
-If that is the case, I am observing a different problem with a MLC NAND fla=
-sh.
-
-I wrote 4K bytes of data and read back the same 4K several times. The
-page size is 4K. I am NOT performing multiple erase/programs. Please
-note that I am reading back the same data which sometimes matches
-exactly what was written and sometimes does not, showing bit flips at
-random locations.  I am not using any ECC to correct the bit errors,
-which of course will be done later as I'm trying to understand this
-problem.
-
-Is this behavior expected in MLC NANDs? Is there any reference
-document/links which discuss more about this?
-
-I have read about  read disturb errors but as I understand it is a
-permanent error.(http://www.klabs.org/richcontent/MemoryContent/nvmt_symp/n=
-vmts_2002/docs/12/12_dan_p.pdf
-)
----------------------------------------------------------------------------=
--------------------
-Read Disturb Errors
-The read disturb effect causes a page read operation to induce a
-permanent, bit value change in one of the read bits. In BLC flash
-technology based on a 0.16=CE=BC manufacturing
-3 process, the typical read disturb error rate is on the order of 1
-bit error per 106 repetitive reads of the page containing the bit.
-Although MLC cells are more prone to such errors, the effect in actual
-measurements is less severe than in program disturb errors. The
-measured rate is on the order of 1 bit error per approximately 105
-repetitive reads of the page.
----------------------------------------------------------------------------=
--------------------
-
-Thanks,
-Calvin
+bye,
+Heiko
+-- 
+DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
