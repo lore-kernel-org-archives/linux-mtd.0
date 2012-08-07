@@ -1,25 +1,28 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SyeFD-0000si-ST
- for linux-mtd@lists.infradead.org; Tue, 07 Aug 2012 07:30:25 +0000
-Message-ID: <5020C3EA.7010009@nod.at>
-Date: Tue, 07 Aug 2012 09:29:46 +0200
-From: Richard Weinberger <richard@nod.at>
+ id 1SyglV-0006ZD-1X
+ for linux-mtd@lists.infradead.org; Tue, 07 Aug 2012 10:11:53 +0000
+Received: by pbbrq13 with SMTP id rq13so7549454pbb.36
+ for <linux-mtd@lists.infradead.org>; Tue, 07 Aug 2012 03:11:51 -0700 (PDT)
 MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: UBI fastmap updates
-References: <1341836323-43916-1-git-send-email-richard@nod.at>
- <1343919530.25013.116.camel@sauron.fi.intel.com> <50200096.1070002@nod.at>
- <1344313269.1865.2.camel@kyv>
-In-Reply-To: <1344313269.1865.2.camel@kyv>
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigE4384714B8005F2D6DD32325"
-Cc: nyoushchenko@mvista.com, artem.bityutskiy@linux.intel.com,
- linux-kernel@vger.kernel.org, adrian.hunter@intel.com,
- Heinz.Egger@linutronix.de, thomas.wucher@linutronix.de,
- linux-mtd@lists.infradead.org, shmulik.ladkani@gmail.com, tglx@linutronix.de,
- Marius.Mazarel@ugal.ro, tim.bird@am.sony.com
+In-Reply-To: <20120711174309.GA25743@parrot.com>
+References: <CAN8TOE9RyUuRtEfyqBfxt0W3Cfg2_SD6Hp4rMS0S+MgKsPY9UQ@mail.gmail.com>
+ <20120711174309.GA25743@parrot.com>
+Date: Tue, 7 Aug 2012 15:41:50 +0530
+Message-ID: <CAEhpT-XpdqD-CzZ2z8VuoQSSA2OTmNqEAVMWYaJaQiF19dqGfg@mail.gmail.com>
+Subject: Re: MLC NAND: all 0xff after erase?
+From: Calvin Johnson <linux.cj@gmail.com>
+To: Ivan Djelic <ivan.djelic@parrot.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Mike Dunn <mikedunn@newsguy.com>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Kevin Cernekee <cernekee@gmail.com>,
+ Jim Quinlan <jim2101024@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Al Viro <viro@zeniv.linux.org.uk>, Joel Reardon <reardonj@inf.ethz.ch>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,49 +32,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigE4384714B8005F2D6DD32325
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hello Ivan,
 
-Am 07.08.2012 06:21, schrieb Artem Bityutskiy:
-> On Mon, 2012-08-06 at 19:36 +0200, Richard Weinberger wrote:
->> I think we enable fastmap only if a MTD device has more than
->> UBI_FM_MAX_START*2 PEBs.
->> Any comments?
->=20
-> With double space one can make it power-cut tolerant, because you shoul=
+>
+> >>Due to the nature of NAND bitflips, I cannot see how a NAND datasheet
+> >> could guarantee such a thing (what would be the duration of a "0xff
+> >> guarantee" anyway ?). In practice, bitflips do appear already on 34nm =
+SLC
+> >> devices, on blocks that have just been erased; hence I am not surprise=
 d
-> be able to have either old or new fastmap at any point of time.
+> >> by your own findings on MLC devices.
+>
 
-UBI_FM_MAX_START*2 has nothing do to with the Fastmap size.
-IMHO we need a threshold where Fastmap makes sense.
-Technically Fastmap can only be used if a MTD device has >=3D UBI_FM_MAX_=
-START
-PEBs.
-But does this makes sense? Fastmap was invented to speedup attaching on *=
-large* MTDs,
-The benefit in small MTDs is very little.
+Are these bit flips occurring due to power fluctuations while
+performing program/erase as mentioned in
+http://www.linux-mtd.infradead.org/doc/ubifs.html#L_unstable_bits ?
+
+If that is the case, I am observing a different problem with a MLC NAND fla=
+sh.
+
+I wrote 4K bytes of data and read back the same 4K several times. The
+page size is 4K. I am NOT performing multiple erase/programs. Please
+note that I am reading back the same data which sometimes matches
+exactly what was written and sometimes does not, showing bit flips at
+random locations.  I am not using any ECC to correct the bit errors,
+which of course will be done later as I'm trying to understand this
+problem.
+
+Is this behavior expected in MLC NANDs? Is there any reference
+document/links which discuss more about this?
+
+I have read about  read disturb errors but as I understand it is a
+permanent error.(http://www.klabs.org/richcontent/MemoryContent/nvmt_symp/n=
+vmts_2002/docs/12/12_dan_p.pdf
+)
+---------------------------------------------------------------------------=
+-------------------
+Read Disturb Errors
+The read disturb effect causes a page read operation to induce a
+permanent, bit value change in one of the read bits. In BLC flash
+technology based on a 0.16=CE=BC manufacturing
+3 process, the typical read disturb error rate is on the order of 1
+bit error per 106 repetitive reads of the page containing the bit.
+Although MLC cells are more prone to such errors, the effect in actual
+measurements is less severe than in program disturb errors. The
+measured rate is on the order of 1 bit error per approximately 105
+repetitive reads of the page.
+---------------------------------------------------------------------------=
+-------------------
 
 Thanks,
-//richard
-
-
---------------enigE4384714B8005F2D6DD32325
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.18 (GNU/Linux)
-
-iQEcBAEBAgAGBQJQIMPuAAoJEN9758yqZn9ewckH/jFyGnE0rgDut+Hx67jiHZSX
-x19cMhHa8TOdlUmk9d+IYDRNlox8zmLe8wZRz+l60rkySPlbcc3atdtBUHOHxHm9
-fI/LwoneJvnDxJuTVQw1KR9/Oc9ASFsz62Tha/FYMMqkvFDiGp+bL08r2dTOCs6g
-697HICrVn0o3vxBuSRTyl7SGEe1JYRKGX9tTdZ0gjyb/6ZvhoIEWkBLeyU9+u7I2
-xSFrFdo7Z51ZoXIIrn/u9GGhTOAXzOX2OsINgyCwy8AagH7TZ9zblcyr9AQtRykZ
-2cT1Dott+OvJAaD3DwmRZzuE3uJiGzde3r7UukGW6j4vV+kdoB44DqkFlmTRZUk=
-=e2tG
------END PGP SIGNATURE-----
-
---------------enigE4384714B8005F2D6DD32325--
+Calvin
