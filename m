@@ -1,18 +1,22 @@
-Message-ID: <50215205.5010909@ti.com>
-Date: Tue, 7 Aug 2012 23:06:05 +0530
-From: Sekhar Nori <nsekhar@ti.com>
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1SynnE-0000pq-Lo
+ for linux-mtd@lists.infradead.org; Tue, 07 Aug 2012 17:42:09 +0000
+Received: by yenr9 with SMTP id r9so4289680yen.36
+ for <linux-mtd@lists.infradead.org>; Tue, 07 Aug 2012 10:42:05 -0700 (PDT)
 MIME-Version: 1.0
-To: Heiko Schocher <hs@denx.de>
-Subject: Re: [PATCH v6] ARM: mtd: nand: davinci: add OF support for davinci
- nand controller
-References: <1343632944-25971-1-git-send-email-hs@denx.de>
-In-Reply-To: <1343632944-25971-1-git-send-email-hs@denx.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Cc: davinci-linux-open-source@linux.davincidsp.com,
- devicetree-discuss@lists.ozlabs.org, Grant Likely <grant.likely@secretlab.ca>,
- linux-mtd@lists.infradead.org, Scott Wood <scottwood@freescale.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <1342507095-18574-1-git-send-email-computersforpeace@gmail.com>
+References: <1342507095-18574-1-git-send-email-computersforpeace@gmail.com>
+Date: Tue, 7 Aug 2012 10:42:05 -0700
+Message-ID: <CAN8TOE-so3kRVbuo6eab7k5YZvn8ifrHfak7-2f4BPGB+zhgHw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] NAND and NAND-BBT improvements
+From: Brian Norris <computersforpeace@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Mike Dunn <mikedunn@newsguy.com>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,12 +26,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 7/30/2012 12:52 PM, Heiko Schocher wrote:
-> add OF support for the davinci nand controller.
-> 
-> Signed-off-by: Heiko Schocher <hs@denx.de>
+Hello maintainers,
 
-Acked-by: Sekhar Nori <nsekhar@ti.com>
+On Mon, Jul 16, 2012 at 11:38 PM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> This is a v2 resubmit of part of a previous series. Some of the previous
+> patches have already been accepted (and so are omitted here, of course) and
+> others are still under discussion. I only include the reviewed,
+> ready-for-submission ones here.
+>
+> Only v2 changes: comment wording + "Reviewed-by" tags
+
+Can I get a response for these patches? They've been reviewed and
+waiting for several weeks now.
+
+> Of note: the first patch addresses a problem with mtd_read_oob() and the recent
+> max_bitflips changes by Mike Dunn. If it is satisfactory, it may be worth
+> merging it in the 3.5-rc cycle (along with its previously-accepted dependent
+> patch), as it would help avoid an API inconsistency that recently emerged.
+
+The 3.5-rc cycle has long passed now, and the important mtd_read_oob()
+fix will probably even miss 3.6 now. Is anybody listening?
 
 Thanks,
-Sekhar
+Brian
