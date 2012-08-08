@@ -1,19 +1,21 @@
-Received: from host-82-135-62-35.customer.m-online.net ([82.135.62.35]
- helo=mail.embedded-brains.de)
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Sz2NG-00033Q-IO
- for linux-mtd@lists.infradead.org; Wed, 08 Aug 2012 09:16:20 +0000
-Received: from [192.168.96.64] (eb0024.eb.z [192.168.96.64])
- by mail.embedded-brains.de (Postfix) with ESMTP id D7878652A97
- for <linux-mtd@lists.infradead.org>; Wed,  8 Aug 2012 11:16:05 +0200 (CEST)
-Message-ID: <50222E55.5070204@embedded-brains.de>
-Date: Wed, 08 Aug 2012 11:16:05 +0200
-From: Sebastian Huber <sebastian.huber@embedded-brains.de>
+Received: from mail-vc0-f177.google.com ([209.85.220.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Sz2bQ-000732-6A
+ for linux-mtd@lists.infradead.org; Wed, 08 Aug 2012 09:30:56 +0000
+Received: by vcbfl13 with SMTP id fl13so521322vcb.36
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Aug 2012 02:30:54 -0700 (PDT)
 MIME-Version: 1.0
-To: Linux MTD <linux-mtd@lists.infradead.org>
-Subject: ARM: LPC32XX SLC ECC Handling
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK9yfHxbE+nB6TTecb8oDxGgXHTo+3o+KPuzpWKayqNmnWfT0w@mail.gmail.com>
+References: <1342434747-27622-1-git-send-email-sachin.kamat@linaro.org>
+ <CAK9yfHxbE+nB6TTecb8oDxGgXHTo+3o+KPuzpWKayqNmnWfT0w@mail.gmail.com>
+Date: Wed, 8 Aug 2012 15:00:54 +0530
+Message-ID: <CAK9yfHyDKpr5GYec9XE2Vw7aDVWhZfzXcu05k68zuabqbCwqRw@mail.gmail.com>
+Subject: Re: [PATCH 1/6] mtd: s3c2410: Use module_platform_driver()
+From: Sachin Kamat <sachin.kamat@linaro.org>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: sachin.kamat@linaro.org, dwmw2@infradead.org, David.Woodhouse@intel.com,
+ ben-linux@fluff.org, patches@linaro.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,21 +25,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+ping...
 
-the LPC32XX SLC controller has a ECC feature that covers only the main data 
-area, but not the OOB data.  Is it the responsibility of the user to protect 
-its OOB data via an ECC?  The LPC32XX MLC controller on the other hand covers 
-the complete OOB data with its ECC.  How can a user determine if it has to 
-protect its OOB data?
+On 3 August 2012 10:17, Sachin Kamat <sachin.kamat@linaro.org> wrote:
+> Hi,
+>
+> Any comments on this series?
+>
+> On 16 July 2012 16:02, Sachin Kamat <sachin.kamat@linaro.org> wrote:
+>> This makes the code simpler by eliminating module_init() and
+>> module_exit().
+>>
+>> Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+>> ---
+>>  drivers/mtd/nand/s3c2410.c |   15 +--------------
+>>  1 files changed, 1 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+>> index 91121f3..8f9267f 100644
+>> --- a/drivers/mtd/nand/s3c2410.c
+>> +++ b/drivers/mtd/nand/s3c2410.c
+>> @@ -1134,20 +1134,7 @@ static struct platform_driver s3c24xx_nand_driver = {
+>>         },
+>>  };
+>>
+>> -static int __init s3c2410_nand_init(void)
+>> -{
+>> -       printk("S3C24XX NAND Driver, (c) 2004 Simtec Electronics\n");
+>> -
+>> -       return platform_driver_register(&s3c24xx_nand_driver);
+>> -}
+>> -
+>> -static void __exit s3c2410_nand_exit(void)
+>> -{
+>> -       platform_driver_unregister(&s3c24xx_nand_driver);
+>> -}
+>> -
+>> -module_init(s3c2410_nand_init);
+>> -module_exit(s3c2410_nand_exit);
+>> +module_platform_driver(s3c24xx_nand_driver);
+>>
+>>  MODULE_LICENSE("GPL");
+>>  MODULE_AUTHOR("Ben Dooks <ben@simtec.co.uk>");
+>> --
+>> 1.7.4.1
+>>
+>
+>
+>
+> --
+> With warm regards,
+> Sachin
+
+
 
 -- 
-Sebastian Huber, embedded brains GmbH
-
-Address : Obere Lagerstr. 30, D-82178 Puchheim, Germany
-Phone   : +49 89 18 90 80 79-6
-Fax     : +49 89 18 90 80 79-9
-E-Mail  : sebastian.huber@embedded-brains.de
-PGP     : Public key available on request.
-
-Diese Nachricht ist keine geschäftliche Mitteilung im Sinne des EHUG.
+With warm regards,
+Sachin
