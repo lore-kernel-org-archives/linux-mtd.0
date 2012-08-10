@@ -1,20 +1,17 @@
-From: Marek Vasut <marex@denx.de>
-To: Huang Shijie <shijie8@gmail.com>
-Subject: Re: [PATCH] mtd: gpmi: add NAND write verify support
-Date: Fri, 10 Aug 2012 17:04:44 +0200
-References: <1344568737-902-1-git-send-email-b32955@freescale.com>
- <201208101325.23075.marex@denx.de>
- <CAMiH66FAVVPLZ9hCyRcNCm1Le2JrCc+55CUw7UCtPjw+31w5gw@mail.gmail.com>
-In-Reply-To: <CAMiH66FAVVPLZ9hCyRcNCm1Le2JrCc+55CUw7UCtPjw+31w5gw@mail.gmail.com>
+Received: from nm15.bullet.mail.ird.yahoo.com ([77.238.189.68])
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1SzsGF-0003IY-Sl
+ for linux-mtd@lists.infradead.org; Fri, 10 Aug 2012 16:40:32 +0000
+Message-ID: <1344616829.15084.YahooMailNeo@web132203.mail.ird.yahoo.com>
+Date: Fri, 10 Aug 2012 17:40:29 +0100 (BST)
+From: Georgie Nicastro <rdahnkelm@yahoo.com>
+Subject: There're always some places where u wanna go as well as people who
+ you want to know...
+To: "solarwind003@yahoo.com" <solarwind003@yahoo.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201208101704.44984.marex@denx.de>
-Cc: fabio.estevam@freescale.com, dedekind1@gmail.com,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- shawn.guo@linaro.org, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Reply-To: Georgie Nicastro <georgie.nicastro@yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,68 +21,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Huang Shijie,
-
-> On Fri, Aug 10, 2012 at 7:25 AM, Marek Vasut <marex@denx.de> wrote:
-> > Dear Huang Shijie,
-> > 
-> >> Add NAND write verify support in gpmi-nand driver.
-> >> 
-> >> Signed-off-by: Huang Shijie <b32955@freescale.com>
-> >> ---
-> >> 
-> >>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   17 +++++++++++++++++
-> >>  1 files changed, 17 insertions(+), 0 deletions(-)
-> >> 
-> >> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> >> b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c index 8c0d2f0..6394483 100644
-> >> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> >> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> >> @@ -1488,6 +1488,22 @@ static int gpmi_set_geometry(struct
-> >> gpmi_nand_data *this) return gpmi_alloc_dma_buffer(this);
-> >> 
-> >>  }
-> >> 
-> >> +#define MAX_PAGESIZE 8192
-> > 
-> > Use NAND_MAX_PAGESIZE, see include/linux/mtd/nand.h .
-> > 
-> >> +static uint8_t verify_buf[MAX_PAGESIZE];
-> 
-> ok, thanks.
-> 
-> > What will happen when you have two NANDs attached to GPMI controller and
-> > they hit this place both at once? Race condition, causing this function
-> > to fail for both?
-> 
-> Even there are two nand chips, there is only one gpmi controller.
-
-For now ... yes.
-
-> And the current gpmi-nand does not support two nands now.
-> does the race occur with only one nand chip?
-
-With one chip and one GPMI controller, no ... but that's no reason to introduce 
-crappy and error prone code!
-
-> > Possibly devm_kmalloc() such buffer per-controller?
-> > 
-> >> +static int gpmi_verify_buf(struct mtd_info *mtd, const uint8_t *buf,
-> >> int len) +{
-> >> +     struct nand_chip *nand = mtd->priv;
-> >> +     int ret;
-> >> +
-> >> +     ret = gpmi_ecc_read_page(mtd, nand, verify_buf, 0, 0);
-> > 
-> > mtd->chip.ecc.read_page() ?
-> 
-> In actually, they are the same.
-
-They are, but if you rename the function, this is one less place to care for.
-
-> 
-> Best Regards
-> Huang Shijie
-
-Best regards,
-Marek Vasut
+Hey! I am Georgie.
+To start with, I gotta say that you definitely look amazing on photos, I wo=
+uld regret forever if I didn't write and send this letter to you.=20
+So, you attracted me and it will be interesting to know you a little bit be=
+tter. So, you already know my name, what else to add, I'm brown haired, my =
+eyes r big and they r blue, I stay in shape. I actually think that you r ve=
+ry attractive man and to ensure that I'm not kidding, I am ready to attach =
+some exclusive photos to my next letter, do u like the idea?)
+So exciting! Can't wait)
