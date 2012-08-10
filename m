@@ -1,26 +1,13 @@
-Received: from mail-ob0-f177.google.com ([209.85.214.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1SzeyU-0001Zp-0q
- for linux-mtd@lists.infradead.org; Fri, 10 Aug 2012 02:29:18 +0000
-Received: by obbta17 with SMTP id ta17so1544075obb.36
- for <linux-mtd@lists.infradead.org>; Thu, 09 Aug 2012 19:29:16 -0700 (PDT)
+From: Huang Shijie <b32955@freescale.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH] mtd: gpmi: add NAND write verify support
+Date: Fri, 10 Aug 2012 11:18:57 +0800
+Message-ID: <1344568737-902-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <50246D36.1050405@freescale.com>
-References: <CAOMZO5DuG9m-SCPPxza=VFMmcWrGnp3Brry6nS8XHrCSzQqM7g@mail.gmail.com>
- <201208100153.51140.marex@denx.de>
- <CAOMZO5BCjV6iLUiQ74GskkOdgGpdqbo2ZB=7eu6VeY=mNwWf0Q@mail.gmail.com>
- <201208100341.23167.marex@denx.de>
- <CAOMZO5DeXp65H2vgtp5qGhV+tXVMuR8sXESc1CzJcJZ2WcmW-A@mail.gmail.com>
- <50246D36.1050405@freescale.com>
-Date: Thu, 9 Aug 2012 23:29:16 -0300
-Message-ID: <CAOMZO5DVj+Hx6yXZ74ipD6DT9dDsrZwJe-MFfO0-PqSrCyOQNA@mail.gmail.com>
-Subject: Re: Kernel crashes when CONFIG_MTD_NAND_VERIFY_WRITE=y
-From: Fabio Estevam <festevam@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: Marek Vasut <marex@denx.de>, Shawn Guo <shawn.guo@linaro.org>,
- Subodh Nijsure <snijsure@grid-net.com>, linux-mtd@lists.infradead.org,
- Sascha Hauer <kernel@pengutronix.de>, computersforpeace@gmail.com
+Content-Type: text/plain
+Cc: fabio.estevam@freescale.com, marex@denx.de, dedekind1@gmail.com,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ shawn.guo@linaro.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,16 +17,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Aug 9, 2012 at 11:08 PM, Huang Shijie <b32955@freescale.com> wrote:
+Add NAND write verify support in gpmi-nand driver.
 
-> I does have a real gpmi_verify_buf function in our BSP code.
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   17 +++++++++++++++++
+ 1 files changed, 17 insertions(+), 0 deletions(-)
 
-Well, the same crash happens in FSL BSP.
-
-> I will send it out as soon as possible.
-
-Ok, great.
-
-Thanks,
-
-Fabio Estevam
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 8c0d2f0..6394483 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -1488,6 +1488,22 @@ static int gpmi_set_geometry(struct gpmi_nand_data *this)
+ 	return gpmi_alloc_dma_buffer(this);
+ }
+ 
++#define MAX_PAGESIZE 8192
++static uint8_t verify_buf[MAX_PAGESIZE];
++
++static int gpmi_verify_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
++{
++	struct nand_chip *nand = mtd->priv;
++	int ret;
++
++	ret = gpmi_ecc_read_page(mtd, nand, verify_buf, 0, 0);
++	if (ret)
++		return -EFAULT;
++	if (memcmp(buf, verify_buf, len))
++		return -EFAULT;
++	return 0;
++}
++
+ static int gpmi_pre_bbt_scan(struct gpmi_nand_data  *this)
+ {
+ 	int ret;
+@@ -1556,6 +1572,7 @@ static int __devinit gpmi_nfc_init(struct gpmi_nand_data *this)
+ 	chip->read_byte		= gpmi_read_byte;
+ 	chip->read_buf		= gpmi_read_buf;
+ 	chip->write_buf		= gpmi_write_buf;
++	chip->verify_buf	= gpmi_verify_buf;
+ 	chip->ecc.read_page	= gpmi_ecc_read_page;
+ 	chip->ecc.write_page	= gpmi_ecc_write_page;
+ 	chip->ecc.read_oob	= gpmi_ecc_read_oob;
+-- 
+1.7.0.4
