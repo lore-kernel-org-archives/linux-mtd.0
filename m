@@ -1,5 +1,5 @@
-Message-ID: <5028649B.10109@freescale.com>
-Date: Mon, 13 Aug 2012 10:21:15 +0800
+Message-ID: <502867E2.8020405@freescale.com>
+Date: Mon, 13 Aug 2012 10:35:14 +0800
 From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
 To: Marek Vasut <marex@denx.de>
@@ -28,11 +28,10 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 > Don't forget the malloc header and padding around malloc()'d space. So =
 you're
 > behind the 2 * PAGESIZE anyway.
-If we use the kzalloc(). There is no malloc header and padding. We get=20
-the memory by
-the __get_free_pages(). So we do _NOT_ behind the 2*PAGE. We use exactly=20
-the 2*PAGE.
-
+>
+sorry, I misunderstood your meaning. My meaning is even the SLUB maybe=20
+costs some extra memory, it still save much memory
+then we use the devm_kzalloc().
 
 thanks
 Huang Shijie
