@@ -1,19 +1,16 @@
-Message-ID: <502867E2.8020405@freescale.com>
-Date: Mon, 13 Aug 2012 10:35:14 +0800
-From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-To: Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH v4] mtd: gpmi: add NAND write verify support
-References: <1344737275-18342-1-git-send-email-shijie8@gmail.com>
- <201208111610.45107.marex@denx.de>
- <CAMiH66GopNVeKPRQn+KfwRHUoM-Lv8WitX0zAS=Vi=8QAvS-Pw@mail.gmail.com>
- <201208122114.46901.marex@denx.de>
-In-Reply-To: <201208122114.46901.marex@denx.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+In-Reply-To: <1344698728-8709-1-git-send-email-shijie8@gmail.com>
+References: <1344698728-8709-1-git-send-email-shijie8@gmail.com>
+Date: Mon, 13 Aug 2012 07:44:43 +0300
+Message-ID: <CAF4G-tKN683_EQCGcG4G8jMU5K6TamaHUv__3ugGUoEg_LPrcQ@mail.gmail.com>
+Subject: Re: [PATCH v2] mtd: gpmi: add NAND write verify support
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Huang Shijie <shijie8@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Cc: fabio.estevam@freescale.com, dedekind1@gmail.com, dwmw2@infradead.org,
- stable@vger.kernel.org, linux-mtd@lists.infradead.org, shawn.guo@linaro.org,
- Huang Shijie <shijie8@gmail.com>, linux-arm-kernel@lists.infradead.org
+Cc: marex@denx.de, fabio.estevam@freescale.com, linux-mtd@lists.infradead.org,
+ shawn.guo@linaro.org, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,15 +20,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2012=E5=B9=B408=E6=9C=8813=E6=97=A5 03:14, Marek Vasut =E5=86=99=
-=E9=81=93:
-> Don't forget the malloc header and padding around malloc()'d space. So =
-you're
-> behind the 2 * PAGESIZE anyway.
+On Sat, Aug 11, 2012 at 6:25 PM, Huang Shijie <shijie8@gmail.com> wrote:
+> Add NAND write verify support in gpmi-nand driver.
 >
-sorry, I misunderstood your meaning. My meaning is even the SLUB maybe=20
-costs some extra memory, it still save much memory
-then we use the devm_kzalloc().
+> This patch fixes a kernel crash when we select
+> CONFIG_MTD_NAND_VERIFY_WRITE=3Dy, and do some write tests:
 
-thanks
-Huang Shijie
+I would just kill ONFIG_MTD_NAND_VERIFY_WRITE entirely. Some drivers
+do not support it and it does not work for sub-pages for long time.
+Both UBI and JFFS2 are able to read verify what they wrote already.
+There are also MTD tests which do this verification. So I think there
+is no reason to keep this in the NAND layer, let alone wasting RAM in
+the driver to support this feature.
+
+I am also removing the -stable mailing list - ne need to spam it.
+
+--=20
+Best Regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
