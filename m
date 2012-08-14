@@ -1,14 +1,22 @@
-Received: from mail.savoirfairelinux.com ([209.172.62.77])
- by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T1Miu-0004x5-J7
- for linux-mtd@lists.infradead.org; Tue, 14 Aug 2012 19:24:18 +0000
-From: Vivien Didelot <vivien.didelot@savoirfairelinux.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: m25p80: add support for Micron N25Q256A
-Date: Tue, 14 Aug 2012 15:24:07 -0400
-Message-Id: <1344972247-23583-1-git-send-email-vivien.didelot@savoirfairelinux.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
- Vivien Didelot <vivien.didelot@savoirfairelinux.com>
+Received: from mail-ob0-f177.google.com ([209.85.214.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1T1Pwj-0000Te-Kf
+ for linux-mtd@lists.infradead.org; Tue, 14 Aug 2012 22:50:46 +0000
+Received: by obbta17 with SMTP id ta17so1215986obb.36
+ for <linux-mtd@lists.infradead.org>; Tue, 14 Aug 2012 15:50:39 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1343514616-9019-2-git-send-email-festevam@gmail.com>
+References: <1343514616-9019-1-git-send-email-festevam@gmail.com>
+ <1343514616-9019-2-git-send-email-festevam@gmail.com>
+Date: Tue, 14 Aug 2012 19:50:39 -0300
+Message-ID: <CAOMZO5ApXx6WB8XkrsMAgM+haJko=6WgiNby3yEj-N7tnktu+w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] nand: nand_bbt: Export nand_update_bbt
+From: Fabio Estevam <festevam@gmail.com>
+To: Artem.Bityutskiy@linux.intel.com
+Content-Type: text/plain; charset=UTF-8
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, b32955@freescale.com,
+ linux-mtd@lists.infradead.org, marex.vasut@denx.de, kernel@pengutronix.de,
+ shawn.guo@linaro.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,29 +26,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The manufacturer datasheet can be found on the Micron website,
-under the name n25q_256mb_3v_65nm.pdf:
+Artem,
 
-http://www.micron.com/search?source=ps&q=n25q_256mb_3v_65nm
+On Sat, Jul 28, 2012 at 7:30 PM, Fabio Estevam <festevam@gmail.com> wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+>
+> When building MTD_NAND_GPMI_NAND as module, the following error shows up:
+>
+> ERROR: "nand_update_bbt" [drivers/mtd/nand/gpmi-nand/gpmi_nand.ko] undefined!
+>
+> Export nand_update_bbt to fix it.
+>
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 
-Signed-off-by: Vivien Didelot <vivien.didelot@savoirfairelinux.com>
----
- drivers/mtd/devices/m25p80.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 9f9982f..0a23f23 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -686,6 +686,9 @@ static const struct spi_device_id m25p_ids[] = {
- 	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
- 	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
- 
-+	/* Micron */
-+	{ "n25q256a", INFO(0x20ba19, 0, 64 * 1024, 512, SECT_4K) },
-+
- 	/* Spansion -- single (large) sector size only, at least
- 	 * for the chips listed here (without boot sectors).
- 	 */
--- 
-1.7.11.2
+Any comments on this series, please?
