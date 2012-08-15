@@ -1,23 +1,21 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T1cPW-00080A-GU
- for linux-mtd@lists.infradead.org; Wed, 15 Aug 2012 12:09:19 +0000
-From: Marek Vasut <marex@denx.de>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: kill MTD_NAND_VERIFY_WRITE
-Date: Wed, 15 Aug 2012 14:09:12 +0200
-References: <1344998325-3279-1-git-send-email-shijie8@gmail.com>
- <20120815100655.479e2c39@pixies.home.jungo.com>
- <502B63AD.4000604@freescale.com>
-In-Reply-To: <502B63AD.4000604@freescale.com>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <201208151409.12390.marex@denx.de>
-Cc: dedekind1@gmail.com, Huang Shijie <shijie8@gmail.com>,
- linux-kernel@vger.kernel.org, Huang Shijie <b32955@freescale.com>,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>, dwmw2@infradead.org
+Received: from mga11.intel.com ([192.55.52.93])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1T1ckL-0001AJ-M4
+ for linux-mtd@lists.infradead.org; Wed, 15 Aug 2012 12:30:50 +0000
+Message-ID: <1345034131.3393.136.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 5/8] mtd: nand: rename '_raw' BBT scan functions
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Wed, 15 Aug 2012 15:35:31 +0300
+In-Reply-To: <1340408145-24531-6-git-send-email-computersforpeace@gmail.com>
+References: <1340408145-24531-1-git-send-email-computersforpeace@gmail.com>
+ <1340408145-24531-6-git-send-email-computersforpeace@gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-MCLkp6NQRsHBfRoUI5UE"
+Mime-Version: 1.0
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,46 +25,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Huang Shijie,
 
-> =E4=BA=8E 2012=E5=B9=B408=E6=9C=8815=E6=97=A5 15:06, Shmulik Ladkani =E5=
-=86=99=E9=81=93:
-> > Hi Huang,
-> >=20
-> > On Tue, 14 Aug 2012 22:38:45 -0400 Huang Shijie<shijie8@gmail.com>  wro=
-te:
-> >> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> >> index 588e989..0ca7257 100644
-> >> --- a/drivers/mtd/nand/Kconfig
-> >> +++ b/drivers/mtd/nand/Kconfig
-> >> @@ -22,15 +22,6 @@ menuconfig MTD_NAND
-> >>=20
-> >>   if MTD_NAND
-> >>=20
-> >> -config MTD_NAND_VERIFY_WRITE
-> >> -	bool "Verify NAND page writes"
-> >> -	help
-> >> -	  This adds an extra check when data is written to the flash. The
-> >> -	  NAND flash device internally checks only bits transitioning
-> >> -	  from 1 to 0. There is a rare possibility that even though the
-> >> -	  device thinks the write was successful, a bit could have been
-> >> -	  flipped accidentally due to device wear or something else.
-> >> -
-> >=20
-> > There are some defconfig files which set CONFIG_MTD_NAND_VERIFY_WRITE.
-> >=20
-> > I guess you should submit an accompanying patch that removes
-> > CONFIG_MTD_NAND_VERIFY_WRITE from all defconfig files.
+--=-MCLkp6NQRsHBfRoUI5UE
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, 2012-06-22 at 16:35 -0700, Brian Norris wrote:
+> None of these scanning functions use MTD_OPS_RAW mode any more, so there'=
+s
+> really nothing 'raw' about them. Rename them to (hopefully) make the code
+> a little clearer.
 >=20
-> thanks a lot.
->=20
-> I will send out a separate patch to fix it.
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 
-I'd still prefer for this to be rather fixed. It seems to be able to find s=
-ome=20
-obvious mistakes etc.
+Pushed this one as the last patch. I think now the entire patch-set is
+in the l2 tree.
 
-[...]
+--=20
+Best Regards,
+Artem Bityutskiy
 
-Best regards,
-Marek Vasut
+--=-MCLkp6NQRsHBfRoUI5UE
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQK5eTAAoJECmIfjd9wqK0EbgP/2CfuVvLJR+lIkoPRynLHsWl
+i/b+TIPxQ96DRH62dXLrOnjkiOqZMJjHJ2WXaNKiiq5aDbvsAh+3w5LI71SO1SgE
+Q0ZZ98TnqRQxkZZtFWw7+i3xk8zqTDX4bfUKkRJmWb2Kx70n1CNQ9J+KCtjGEI5z
+wK759F+FSXCBMHDD12Mw9X6OUBW8HAdo+lRfUFBFDh6i3fh0BNjVIkyPEnL4Sqyc
+3i5H8uAkxmg9B5GDw+YUUq2oyEeZdEQxlTT85MEgmbmrlcLA/TbS4c190Tgbq00Z
+MuRcKRxbXeKPOd1F0F4pc+h0l2OI6xWA+fhasxNvJQHQg6As4OM6YnG/KHS7Iu+K
+Ao3vAmF94JTIlnPwRr3ZPmTdllvtfDnekBvEPRqjdcD8Nai7a+vWvQdQR7Or+QHB
+8ZVT24KuSBlhPKhPkBCIp4eUYoiQMomvrffn8QOiQdi851d9LFIsAApgKKS8mRXR
+m+7BJWARvKMyEox159svm9EWAF7Dxitrkm8MWuASdnuqd9Y+AUUnj+zQMRN9vuBe
+2CQbeOfQTC4P8Ik495ebnGRrIuNjmuQinpMSHjypxSbWHO3NuMLDbJDTNDwLi3Zq
+ilsfLki/hqualM+xYO4TaCv49qdX9lNsBN3/0W9kU/HZ4Y07gh5mG3VD2gVXYS1x
+gzFG4M914K4ZE4W60Xuq
+=ZfUG
+-----END PGP SIGNATURE-----
+
+--=-MCLkp6NQRsHBfRoUI5UE--
