@@ -1,22 +1,22 @@
-Received: from ch1ehsobe005.messaging.microsoft.com ([216.32.181.185]
- helo=ch1outboundpool.messaging.microsoft.com)
+Received: from mail-vb0-f49.google.com ([209.85.212.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T1ZL8-00014Q-Cs
- for linux-mtd@lists.infradead.org; Wed, 15 Aug 2012 08:52:35 +0000
-Message-ID: <502B63AD.4000604@freescale.com>
-Date: Wed, 15 Aug 2012 16:54:05 +0800
-From: Huang Shijie <b32955@freescale.com>
+ id 1T1ZZ7-0005zJ-AJ
+ for linux-mtd@lists.infradead.org; Wed, 15 Aug 2012 09:07:01 +0000
+Received: by vbbfo1 with SMTP id fo1so1321114vbb.36
+ for <linux-mtd@lists.infradead.org>; Wed, 15 Aug 2012 02:07:00 -0700 (PDT)
 MIME-Version: 1.0
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Subject: Re: [PATCH] mtd: kill MTD_NAND_VERIFY_WRITE
-References: <1344998325-3279-1-git-send-email-shijie8@gmail.com>
- <20120815100655.479e2c39@pixies.home.jungo.com>
-In-Reply-To: <20120815100655.479e2c39@pixies.home.jungo.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com,
- Huang Shijie <shijie8@gmail.com>, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org
+In-Reply-To: <1344603731-32667-14-git-send-email-plagnioj@jcrosoft.com>
+References: <20120810124820.GA20557@game.jcrosoft.org>
+ <1344603731-32667-1-git-send-email-plagnioj@jcrosoft.com>
+ <1344603731-32667-14-git-send-email-plagnioj@jcrosoft.com>
+Date: Wed, 15 Aug 2012 11:07:00 +0200
+Message-ID: <CACRpkdaH8xTMfY45zdZAymahMZcm-0UDPqmfvLzpg5uaicv3yQ@mail.gmail.com>
+Subject: Re: [PATCH 14/14] MTD: atmel_nand: add pinctrl consumer support
+From: Linus Walleij <linus.walleij@linaro.org>
+To: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org, Nicolas Ferre <nicolas.ferre@atmel.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,47 +26,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2012=E5=B9=B408=E6=9C=8815=E6=97=A5 15:06, Shmulik Ladkani =E5=86=
-=99=E9=81=93:
-> Hi Huang,
->
-> On Tue, 14 Aug 2012 22:38:45 -0400 Huang Shijie<shijie8@gmail.com>  wro=
-te:
->> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
->> index 588e989..0ca7257 100644
->> --- a/drivers/mtd/nand/Kconfig
->> +++ b/drivers/mtd/nand/Kconfig
->> @@ -22,15 +22,6 @@ menuconfig MTD_NAND
->>
->>   if MTD_NAND
->>
->> -config MTD_NAND_VERIFY_WRITE
->> -	bool "Verify NAND page writes"
->> -	help
->> -	  This adds an extra check when data is written to the flash. The
->> -	  NAND flash device internally checks only bits transitioning
->> -	  from 1 to 0. There is a rare possibility that even though the
->> -	  device thinks the write was successful, a bit could have been
->> -	  flipped accidentally due to device wear or something else.
->> -
-> There are some defconfig files which set CONFIG_MTD_NAND_VERIFY_WRITE.
->
-> I guess you should submit an accompanying patch that removes
-> CONFIG_MTD_NAND_VERIFY_WRITE from all defconfig files.
->
-thanks a lot.
+On Fri, Aug 10, 2012 at 3:02 PM, Jean-Christophe PLAGNIOL-VILLARD
+<plagnioj@jcrosoft.com> wrote:
 
-I will send out a separate patch to fix it.
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
+> Signed-off-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+> Cc: linux-mtd@lists.infradead.org
 
-Huang Shijie
-> (also, trimmed the CC list for this specific discussion, seems unrelate=
-d
-> to all of the parties)
->
-> Regards,
-> Shmulik
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
+
+Yours,
+Linus Walleij
