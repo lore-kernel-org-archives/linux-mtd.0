@@ -1,22 +1,22 @@
-Received: from moutng.kundenserver.de ([212.227.126.171])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T1j20-0006Il-Mb
- for linux-mtd@lists.infradead.org; Wed, 15 Aug 2012 19:13:29 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: Alexander Shiyan <shc_work@mail.ru>
-Subject: Re: [PATCH RESEND 2/2] MTD: autcpu12-nvram: Convert driver to
- platform_device
-Date: Wed, 15 Aug 2012 19:13:23 +0000
-References: <1345048086-15709-1-git-send-email-shc_work@mail.ru>
- <1345048086-15709-2-git-send-email-shc_work@mail.ru>
-In-Reply-To: <1345048086-15709-2-git-send-email-shc_work@mail.ru>
+Received: from mail-yw0-f49.google.com ([209.85.213.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1T1j3d-0006MZ-G7
+ for linux-mtd@lists.infradead.org; Wed, 15 Aug 2012 19:15:10 +0000
+Received: by yhjj52 with SMTP id j52so2294555yhj.36
+ for <linux-mtd@lists.infradead.org>; Wed, 15 Aug 2012 12:15:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201208151913.24057.arnd@arndb.de>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+In-Reply-To: <1345029870.3393.128.camel@sauron.fi.intel.com>
+References: <1340408145-24531-1-git-send-email-computersforpeace@gmail.com>
+ <1340408145-24531-3-git-send-email-computersforpeace@gmail.com>
+ <1345029870.3393.128.camel@sauron.fi.intel.com>
+Date: Wed, 15 Aug 2012 12:15:07 -0700
+Message-ID: <CAN8TOE9wC6_NQ=DMX70ovWzP4JuFZKsORgn53Jq9ZNSGcFiCig@mail.gmail.com>
+Subject: Re: [PATCH 2/8] mtd: check for max_bitflips in mtd_read_oob()
+From: Brian Norris <computersforpeace@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: David Woodhouse <dwmw2@infradead.org>, Mike Dunn <mikedunn@newsguy.com>,
+ linux-mtd@lists.infradead.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,15 +26,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 15 August 2012, Alexander Shiyan wrote:
-> 
-> Because we can have a single kernel to support multiple machines, we
-> need to make loading specific drivers for the target platform only.
-> For this, driver is converted to the platform driver.
-> 
-> Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+On Wed, Aug 15, 2012 at 4:24 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> Pushed this patch to l2-mtd.git, thanks. I've amended the commentary as
+> Smulik requested, and also removed "(see above)", because "above" is (a)
+> unclear, and (b) if it means 'mtd_read()', we'd need to make sure
+> 'mtd_read()' is always above 'mtd_read_oob()'.
 
-Looks good. I can take both patches into arm-soc if necessary, 
-otherwise I'm fine with them going through the mtd tree as well.
+Good idea, removing "(see above)". Readers should be smart enough to
+locate mtd_read() and its accompanying comments themselves anyway.
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+Note that there was a v2 of this patch, although the difference was
+very minor (the comments and the Reviewed-by's). The end result is
+almost the same as your amendments.
+
+Thanks,
+Brian
