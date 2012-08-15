@@ -1,22 +1,20 @@
-Received: from mail-yw0-f49.google.com ([209.85.213.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T1j3d-0006MZ-G7
- for linux-mtd@lists.infradead.org; Wed, 15 Aug 2012 19:15:10 +0000
-Received: by yhjj52 with SMTP id j52so2294555yhj.36
- for <linux-mtd@lists.infradead.org>; Wed, 15 Aug 2012 12:15:07 -0700 (PDT)
+Received: from [2a01:4f8:131:30e2::2] (helo=nbd.name)
+ by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1T1kJL-0004Xs-4r
+ for linux-mtd@lists.infradead.org; Wed, 15 Aug 2012 20:35:27 +0000
+Message-ID: <502C07BC.5010302@openwrt.org>
+Date: Wed, 15 Aug 2012 22:34:04 +0200
+From: John Crispin <blogic@openwrt.org>
 MIME-Version: 1.0
-In-Reply-To: <1345029870.3393.128.camel@sauron.fi.intel.com>
-References: <1340408145-24531-1-git-send-email-computersforpeace@gmail.com>
- <1340408145-24531-3-git-send-email-computersforpeace@gmail.com>
- <1345029870.3393.128.camel@sauron.fi.intel.com>
-Date: Wed, 15 Aug 2012 12:15:07 -0700
-Message-ID: <CAN8TOE9wC6_NQ=DMX70ovWzP4JuFZKsORgn53Jq9ZNSGcFiCig@mail.gmail.com>
-Subject: Re: [PATCH 2/8] mtd: check for max_bitflips in mtd_read_oob()
-From: Brian Norris <computersforpeace@gmail.com>
-To: dedekind1@gmail.com
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 2/2] MTD: MIPS: lantiq: Add NAND support on Lantiq XWAY
+ SoC.
+References: <1342940398-2162-1-git-send-email-blogic@openwrt.org>
+ <1342940398-2162-2-git-send-email-blogic@openwrt.org>
+In-Reply-To: <1342940398-2162-2-git-send-email-blogic@openwrt.org>
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: David Woodhouse <dwmw2@infradead.org>, Mike Dunn <mikedunn@newsguy.com>,
- linux-mtd@lists.infradead.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, Ralf Baechle <ralf@linux-mips.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,18 +24,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Aug 15, 2012 at 4:24 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> Pushed this patch to l2-mtd.git, thanks. I've amended the commentary as
-> Smulik requested, and also removed "(see above)", because "above" is (a)
-> unclear, and (b) if it means 'mtd_read()', we'd need to make sure
-> 'mtd_read()' is always above 'mtd_read_oob()'.
+The driver uses plat_nand. As the platform_device is loaded from DT, we need
+> to lookup the node and attach our xway specific "struct platform_nand_data"
+> to it.
+>
+> Signed-off-by: John Crispin <blogic@openwrt.org>
+> Acked-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+> Cc: linux-mtd@lists.infradead.org
+> ---
+Hi David,
 
-Good idea, removing "(see above)". Readers should be smart enough to
-locate mtd_read() and its accompanying comments themselves anyway.
+is it ok if we have this patch go upstream via lmo for 3.7 ?
 
-Note that there was a v2 of this patch, although the difference was
-very minor (the comments and the Reviewed-by's). The end result is
-almost the same as your amendments.
-
-Thanks,
-Brian
+John
