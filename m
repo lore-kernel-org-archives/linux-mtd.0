@@ -1,22 +1,26 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T1e68-0004pf-NU
- for linux-mtd@lists.infradead.org; Wed, 15 Aug 2012 13:57:25 +0000
-Message-ID: <1345039326.3393.143.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/4] mtd_is_partition: struct mtd_info should be const
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Richard Genoud <richard.genoud@gmail.com>
-Date: Wed, 15 Aug 2012 17:02:06 +0300
-In-Reply-To: <1341937423-16516-2-git-send-email-richard.genoud@gmail.com>
-References: <1341937423-16516-1-git-send-email-richard.genoud@gmail.com>
- <1341937423-16516-2-git-send-email-richard.genoud@gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-GOkORIRCXrHMmQ7piVjG"
+Received: from mail-wi0-f169.google.com ([209.85.212.169])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1T1ed0-0000s9-LB
+ for linux-mtd@lists.infradead.org; Wed, 15 Aug 2012 14:31:23 +0000
+Received: by wibhm2 with SMTP id hm2so4669781wib.0
+ for <linux-mtd@lists.infradead.org>; Wed, 15 Aug 2012 07:31:20 -0700 (PDT)
+Date: Wed, 15 Aug 2012 17:31:16 +0300
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: dedekind1@gmail.com
+Subject: Re: [PATCH 8/8] mtd: nand: use ECC, if present, when scanning OOB
+Message-ID: <20120815173116.51de197a@pixies.home.jungo.com>
+In-Reply-To: <1345032317.3393.135.camel@sauron.fi.intel.com>
+References: <1340408145-24531-1-git-send-email-computersforpeace@gmail.com>
+ <1340408145-24531-9-git-send-email-computersforpeace@gmail.com>
+ <1345032317.3393.135.camel@sauron.fi.intel.com>
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- linux-kernel@vger.kernel.org
-Reply-To: dedekind1@gmail.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Mike Dunn <mikedunn@newsguy.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Matthieu CASTET <matthieu.castet@parrot.com>, linux-mtd@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,47 +30,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Artem,
 
---=-GOkORIRCXrHMmQ7piVjG
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Wed, 15 Aug 2012 15:05:17 +0300 Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Fri, 2012-06-22 at 16:35 -0700, Brian Norris wrote:
+> > scan_read_raw_oob() is used in only in places where the MTD_OPS_PLACE_OOB
+> > mode is preferable MTD_OPS_RAW mode, so use MTD_OPS_PLACE_OOB instead.
+> > MTD_OPS_PLACE_OOB provides the same functionality with the potential[1]
+> > added bonus of error correction.
+> 
+> Amended the commit message to satisfy Smulik's request, and pushed to
+> l2-mtd.git, thanks Brian!
 
-On Tue, 2012-07-10 at 18:23 +0200, Richard Genoud wrote:
-> struct mtd_info is not modified by mtd_is_partition so it should be a
-> const.
->=20
-> Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
+I had some second thoughts WRT the move from MTD_OPS_RAW to
+MTD_OPS_PLACE_OOB.
 
-I've pushed this and the next MTD patches to linux-ubi, thank you! I
-hope David does not mind if it goes in via the MTD, or if he could take
-them to the mtd tree, then I cold merge the mtd tree to the UBI tree.
-But this is not your pain.
+When reading BBT content, MTD_OPS_PLACE_OOB is preferred.
 
---=20
-Best Regards,
-Artem Bityutskiy
+But when scanning the OOBs for BBMs (when creating the table), I guess
+MTD_OPS_RAW should be used - since manufacturer bad blocks are not
+protected by ECC (as Matthieu noted in [1], and I elaborated in [2]).
 
---=-GOkORIRCXrHMmQ7piVjG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Can you please review and comment regarding the ideas discussed there?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+Thanks,
+Shmulik
 
-iQIcBAABAgAGBQJQK6veAAoJECmIfjd9wqK07IwP/iA85DptxDjl5q/uBrY6offe
-G76aRipyw5Yrgb3WIoi9EFk4pPoJIJf490UcFrIWDCxP3eT/QUIOyKhbEmJD3q6W
-0yQEFaK74/gtTSG5skyCtGEXBpvx+nPfeS95qPJ40ji+qUmqxJgZKqANcwLJQ7Rf
-2rEOgUK17c0miI5YrtAnPq42CHmKkB0eguzuF2K5gjbU3lrAn+UwDbLKLrw9GHoQ
-HfKND2kodLV2YQXLU2HsIgYVFpboX30QYu5pIVQDLy7hKYcE4e4OOK06VNcbjRUy
-Hlysjtm8oMECorTO8vLqS19Rzb8eHs5n0EAc8zsPH3j59H0yaRuu43dN0XMAeSwt
-2pEOz5jfjGxx8eTuQD8rZwY3a96cwcMrxO/oQxLe/wKrPmv2ZkIdxCBrTOBwwHKA
-6C637hW75D/jUKUITHZYqlzPaIaTwAT5D/dvPCp17ge0h6sQol2sCjM5yXVIM1IU
-RXvDmfT/VxYn3fW55+Cp0YM4HlnyfADbs+J4daqBaXoeSlW0IheRTRtQpuxSQQRF
-Lcb2w4ic6SLXOSuAI17oUI8UAfAJlg/xUF3NXrE8j9BHPWEmKamk9XtLQ/uCEGlB
-3u65dJMq068PTs9iXY6I9zJrle3hFFVloaW8ajUUWWnK3VonDOqq8TSVjlzts2GR
-+NKhyEOnVFJA0RpYToUr
-=O+yV
------END PGP SIGNATURE-----
-
---=-GOkORIRCXrHMmQ7piVjG--
+[1]
+http://thread.gmane.org/gmane.linux.drivers.mtd/42243/focus=42365
+[2]
+http://thread.gmane.org/gmane.linux.drivers.mtd/42243/focus=42669
