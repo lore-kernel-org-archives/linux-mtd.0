@@ -1,20 +1,21 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T1btF-0006i1-Vg
- for linux-mtd@lists.infradead.org; Wed, 15 Aug 2012 11:35:58 +0000
-Message-ID: <1345030833.3393.129.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 4/8] mtd: nand: remove unused 'int' return codes
+ id 1T1c6D-00072s-2j
+ for linux-mtd@lists.infradead.org; Wed, 15 Aug 2012 11:49:21 +0000
+Message-ID: <1345031619.3393.131.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 7/8] mtd: nand_bbt: use string library
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Date: Wed, 15 Aug 2012 14:40:33 +0300
-In-Reply-To: <1340408145-24531-5-git-send-email-computersforpeace@gmail.com>
+Date: Wed, 15 Aug 2012 14:53:39 +0300
+In-Reply-To: <1340408145-24531-8-git-send-email-computersforpeace@gmail.com>
 References: <1340408145-24531-1-git-send-email-computersforpeace@gmail.com>
- <1340408145-24531-5-git-send-email-computersforpeace@gmail.com>
+ <1340408145-24531-8-git-send-email-computersforpeace@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-yWb89Gb6DJUYiPLy0KPW"
+ boundary="=-Vsaflw5eaFCcfNGSwDlc"
 Mime-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Akinobu Mita <akinobu.mita@gmail.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,15 +27,18 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-yWb89Gb6DJUYiPLy0KPW
+--=-Vsaflw5eaFCcfNGSwDlc
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 On Fri, 2012-06-22 at 16:35 -0700, Brian Norris wrote:
-> The return codes for read_abs_bbts() and search_read_bbts() are always
-> non-zero, and so don't have much meaning. Just remove them.
+> Some nand_bbt code can be shortened by using memcmp() and memchr_inv().
+> As an added bonus, there is a possbile performance benefit.
+>=20
+> Borrowed some code from Akinobu Mita.
 >=20
 > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Cc: Akinobu Mita <akinobu.mita@gmail.com>
 
 Pushed to l2-mtd.git, thanks!
 
@@ -42,7 +46,7 @@ Pushed to l2-mtd.git, thanks!
 Best Regards,
 Artem Bityutskiy
 
---=-yWb89Gb6DJUYiPLy0KPW
+--=-Vsaflw5eaFCcfNGSwDlc
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -50,19 +54,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQK4qxAAoJECmIfjd9wqK0WfsP/3nnd9WMFc3bTc+6SqHeETP3
-upzZy39/L0llZ20GHfgOTUS3HiWSGXFeL+sXQ2ZMlNakaTASfLjvfGs125gwvc4o
-omgXMOEtbM6jmbcESWY9tMEZYtThIODnJEYkGwPdNCRs4iWayL9WjYx8e7LcNF/Z
-vb005P3nEaM8psIL0Dn4//ZNzlE1v8rhOG98neKJ4PiTI1y/0pek4TqmBixuiUhR
-+kP2pI6ahNyo/X0zR4vBq8nkZepFKwsHkHxuOBHLaEa1c54HcxPEgZAt65PgCJQw
-BbvFe1/snm5bK6UdjQJ7T/aiEHZuC7ELdAJ1FWpfK4CaP0gyWbh4MD44ITUjHi/G
-z8Irhd3EPy+Jdafu/xLlYhKyyqUAgAt7axYJxWHmESQ8Kar9MkDkcP+GBWyYsYzH
-Pq4vGjHs/dZ9Mk0+oZwI/GFwzXkmkMilNzpqdaftPKkkZDGimRiSyXil8cFVTZAX
-Y4v4mJ5PgYA/qcxxOzZdyINZiMgZeeUZBcuQdAe6BXeMWswCva4xzWi36jnhCvyn
-HUJTnH0QIt3MSMyv9VaX+WBkyqBhNUk/xYPn3iRZqqTXU/jSPr0Jn/3zhxW5LCye
-YrD3Ks9rUWXHGTzFVuAqaS03v6M/OlapyIIoLaleBDuPHHDGl+lszGYp08PfTkqn
-GMTKDjg+fdP0N2HY/cSX
-=yJYq
+iQIcBAABAgAGBQJQK43DAAoJECmIfjd9wqK015EP/R1kljXylNyzHhe88mYoT7VI
+QHTgj0vI8gf2fldVxcwDdIfYkgGahJSj1oZof5YNd8DIoA0MAYjy622qdcl/k/7b
+m3MDteDK/EIGBBv6h7KI3UZV+WvrgDgFZxLzDgifogNpuc7qf8oDslo1riAzDfhn
+gIKSKLeo1c99iDQfmo+APZZpG8/tMWdukIe1F/HRfqCv0WfEDy7o3TTnFhMG5fBv
+eX0d50IyYLrfJ4qRF47QFcecpffbcU3ug8N3COCEQJLylWVMDYguC6uAaw4OPGl2
+tg7nDp6ocm9z00W4u8N9mjK9NZ8+WJomRsOy3lR4uQfKQMmpQWLUinX7u8V8sMYB
+vsEoZ/fgZyr4S6WoIuQFjBhrFiDEULWLGFAoBxcZNun6/Tl9LidC/y4Cdz0cvQWQ
+Bb7SsCIfP3bv2uTRNrqlQwK/7bfFHHvI+CG4vxJb4vcEvPgsQ2GKMvjYeF7R/BcM
+ixMpGrIckdpDhfaT8KVToPHuPzmwqjt2lj+wuQp7d8kjdxrHpZeFMh0F1BUxViQP
+goSANSmGnVDWysnjCeeMuHiHYJCiD1V1tIpb+V4L3xHFbRVEAIQEqH3TziO0K+xb
+DksRo0t3OGm9LCemIN8UfsjAFqYgCa8oc4pk4U0h4NEiMZKAavZsfqXycq6T1XBr
+16GYI6gJSE+q6QQwKAz0
+=zKTa
 -----END PGP SIGNATURE-----
 
---=-yWb89Gb6DJUYiPLy0KPW--
+--=-Vsaflw5eaFCcfNGSwDlc--
