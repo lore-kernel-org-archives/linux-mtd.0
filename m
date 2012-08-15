@@ -1,14 +1,34 @@
-From: Roland Stigge <stigge@antcom.de>
-To: linux@arm.linux.org.uk, artem.bityutskiy@linux.intel.com,
- linux-arm-kernel@lists.infradead.org, arnd@arndb.de,
- linux-kernel@vger.kernel.org, kevin.wells@nxp.com,
- srinivas.bakki@nxp.com, aletes.xgr@gmail.com, dwmw2@infradead.org,
- linux-mtd@lists.infradead.org
-Subject: [PATCH RESEND] mtd: lpc32xx_mlc: Make driver independent of AMBA DMA
- engine driver
-Date: Thu, 23 Aug 2012 00:25:10 +0200
-Message-Id: <1345674311-16874-1-git-send-email-stigge@antcom.de>
-Cc: Roland Stigge <stigge@antcom.de>
+Received: from e28smtp05.in.ibm.com ([122.248.162.5])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1T1TpP-0001tS-Q3
+ for linux-mtd@lists.infradead.org; Wed, 15 Aug 2012 02:59:28 +0000
+Received: from /spool/local
+ by e28smtp05.in.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+ Violators will be prosecuted
+ for <linux-mtd@lists.infradead.org> from <hejianet@linux.vnet.ibm.com>;
+ Wed, 15 Aug 2012 08:29:18 +0530
+Received: from d28av01.in.ibm.com (d28av01.in.ibm.com [9.184.220.63])
+ by d28relay01.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+ q7F2xG5h27197538
+ for <linux-mtd@lists.infradead.org>; Wed, 15 Aug 2012 08:29:16 +0530
+Received: from d28av01.in.ibm.com (loopback [127.0.0.1])
+ by d28av01.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+ q7F8Sp7m015553
+ for <linux-mtd@lists.infradead.org>; Wed, 15 Aug 2012 13:58:51 +0530
+Received: from [127.0.0.1] ([9.123.236.112])
+ by d28av01.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
+ q7F8SKFi014728
+ for <linux-mtd@lists.infradead.org>; Wed, 15 Aug 2012 13:58:50 +0530
+Message-ID: <502B1063.6050401@linux.vnet.ibm.com>
+Date: Wed, 15 Aug 2012 10:58:43 +0800
+From: hejianet <hejianet@linux.vnet.ibm.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: jffs2 project is stopped to maintain now?
+References: <502A26BB.8050705@atmel.com>
+In-Reply-To: <502A26BB.8050705@atmel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,86 +38,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch makes the MLC NAND driver independent of the single AMBA DMA engine
-driver by using the platform data provided dma_filter callback.
+Hi all
+I wonder jffs2 project is stopped to maintain now?
+I see no patches about jffs2 in this maillist .
 
-(This also fixes the build error of the MLC NAND driver in case of module
-linking because the (not exported) reference to pl08x_filter_id is gone now.)
 
-Signed-off-by: Roland Stigge <stigge@antcom.de>
-
----
-Applies to: v3.6-rc2
-
- drivers/mtd/nand/lpc32xx_mlc.c  |   13 +++++++++++--
- include/linux/mtd/lpc32xx_mlc.h |   20 ++++++++++++++++++++
- 2 files changed, 31 insertions(+), 2 deletions(-)
-
---- linux-2.6.orig/drivers/mtd/nand/lpc32xx_mlc.c
-+++ linux-2.6/drivers/mtd/nand/lpc32xx_mlc.c
-@@ -37,7 +37,7 @@
- #include <linux/of.h>
- #include <linux/of_mtd.h>
- #include <linux/of_gpio.h>
--#include <linux/amba/pl08x.h>
-+#include <linux/mtd/lpc32xx_mlc.h>
- #include <linux/io.h>
- #include <linux/mm.h>
- #include <linux/dma-mapping.h>
-@@ -171,6 +171,7 @@ static struct nand_bbt_descr lpc32xx_nan
- 
- struct lpc32xx_nand_host {
- 	struct nand_chip	nand_chip;
-+	struct lpc32xx_mlc_platform_data *pdata;
- 	struct clk		*clk;
- 	struct mtd_info		mtd;
- 	void __iomem		*io_base;
-@@ -581,9 +582,15 @@ static int lpc32xx_dma_setup(struct lpc3
- 	struct mtd_info *mtd = &host->mtd;
- 	dma_cap_mask_t mask;
- 
-+	if (!host->pdata || !host->pdata->dma_filter) {
-+		dev_err(mtd->dev.parent, "no DMA platform data\n");
-+		return -ENOENT;
-+	}
-+
- 	dma_cap_zero(mask);
- 	dma_cap_set(DMA_SLAVE, mask);
--	host->dma_chan = dma_request_channel(mask, pl08x_filter_id, "nand-mlc");
-+	host->dma_chan = dma_request_channel(mask, host->pdata->dma_filter,
-+					     "nand-mlc");
- 	if (!host->dma_chan) {
- 		dev_err(mtd->dev.parent, "Failed to request DMA channel\n");
- 		return -EBUSY;
-@@ -703,6 +710,8 @@ static int __devinit lpc32xx_nand_probe(
- 	}
- 	lpc32xx_wp_disable(host);
- 
-+	host->pdata = pdev->dev.platform_data;
-+
- 	nand_chip->priv = host;		/* link the private data structures */
- 	mtd->priv = nand_chip;
- 	mtd->owner = THIS_MODULE;
---- /dev/null
-+++ linux-2.6/include/linux/mtd/lpc32xx_mlc.h
-@@ -0,0 +1,20 @@
-+/*
-+ * Platform data for LPC32xx SoC MLC NAND controller
-+ *
-+ * Copyright (C) 2012 Roland Stigge
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef __LINUX_MTD_LPC32XX_MLC_H
-+#define __LINUX_MTD_LPC32XX_MLC_H
-+
-+#include <linux/dmaengine.h>
-+
-+struct lpc32xx_mlc_platform_data {
-+	bool (*dma_filter)(struct dma_chan *chan, void *filter_param);
-+};
-+
-+#endif  /* __LINUX_MTD_LPC32XX_MLC_H */
+Jia.
