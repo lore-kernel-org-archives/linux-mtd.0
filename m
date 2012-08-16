@@ -1,18 +1,16 @@
-Message-ID: <502CF20C.20801@antcom.de>
-Date: Thu, 16 Aug 2012 15:13:48 +0200
 From: Roland Stigge <stigge@antcom.de>
-MIME-Version: 1.0
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH] dma: amba-pl08x: Export pl08x_filter_id
-References: <1345107396-27079-1-git-send-email-stigge@antcom.de>
- <20120816090041.GK18957@n2100.arm.linux.org.uk>
-In-Reply-To: <20120816090041.GK18957@n2100.arm.linux.org.uk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: srinivas.bakki@nxp.com, arnd@arndb.de, artem.bityutskiy@linux.intel.com,
+To: linux@arm.linux.org.uk, artem.bityutskiy@linux.intel.com,
+ linux-arm-kernel@lists.infradead.org, arnd@arndb.de,
  linux-kernel@vger.kernel.org, kevin.wells@nxp.com,
- linux-mtd@lists.infradead.org, aletes.xgr@gmail.com, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+ srinivas.bakki@nxp.com, aletes.xgr@gmail.com, dwmw2@infradead.org,
+ linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: lpc32xx_mlc: Make driver independent of AMBA DMA engine
+ driver
+Date: Thu, 16 Aug 2012 15:15:35 +0200
+Message-Id: <1345122935-22115-3-git-send-email-stigge@antcom.de>
+In-Reply-To: <1345122935-22115-1-git-send-email-stigge@antcom.de>
+References: <1345122935-22115-1-git-send-email-stigge@antcom.de>
+Cc: Roland Stigge <stigge@antcom.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +20,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/16/2012 11:00 AM, Russell King - ARM Linux wrote:
-> On Thu, Aug 16, 2012 at 10:56:36AM +0200, Roland Stigge wrote:
->> This patch fixes the following when compiling a driver module that uses
->> amba-pl08x:
->>
->> ERROR: "pl08x_filter_id" [drivers/mtd/nand/lpc32xx_slc.ko] undefined!
->> ERROR: "pl08x_filter_id" [drivers/mtd/nand/lpc32xx_mlc.ko] undefined!
->>
->> (drivers/mtd/nand/lpc32xx_* are still in l2-mtd.git)
-> 
-> It is currently intended that this be passed from platform code into
-> drivers via platform data, so that drivers can decide which DMA engine
-> they wish to make use of.
-> 
-> See how all the AMBA drivers work in this regard (because they need to
-> support more than just a single DMA engine implementation.)
+This patch makes the MLC NAND driver independent of the single AMBA DMA engine
+driver by using the platform data provided dma_filter callback.
 
-Thanks for the note!
+Signed-off-by: Roland Stigge <stigge@antcom.de>
 
-I'll post respective changes to the MTD SLC and MLC drivers of LPC32xx
-(for the MTD subsystem) and the adjustment I'll do in mach-lpc32xx (my
-lpc32xx tree for arm-soc).
+---
+ drivers/mtd/nand/lpc32xx_mlc.c  |   13 +++++++++++--
+ include/linux/mtd/lpc32xx_mlc.h |   20 ++++++++++++++++++++
+ 2 files changed, 31 insertions(+), 2 deletions(-)
+
+--- linux-2.6.orig/drivers/mtd/nand/lpc32xx_mlc.c
++++ linux-2.6/drivers/mtd/nand/lpc32xx_mlc.c
+@@ -37,7 +37,7 @@
+ #include <linux/of.h>
+ #include <linux/of_mtd.h>
+ #include <linux/of_gpio.h>
+-#include <linux/amba/pl08x.h>
++#include <linux/mtd/lpc32xx_mlc.h>
+ #include <linux/io.h>
+ #include <linux/mm.h>
+ #include <linux/dma-mapping.h>
+@@ -171,6 +171,7 @@ static struct nand_bbt_descr lpc32xx_nan
+ 
+ struct lpc32xx_nand_host {
+ 	struct nand_chip	nand_chip;
++	struct lpc32xx_mlc_platform_data *pdata;
+ 	struct clk		*clk;
+ 	struct mtd_info		mtd;
+ 	void __iomem		*io_base;
+@@ -581,9 +582,15 @@ static int lpc32xx_dma_setup(struct lpc3
+ 	struct mtd_info *mtd = &host->mtd;
+ 	dma_cap_mask_t mask;
+ 
++	if (!host->pdata || !host->pdata->dma_filter) {
++		dev_err(mtd->dev.parent, "no DMA platform data\n");
++		return -ENOENT;
++	}
++
+ 	dma_cap_zero(mask);
+ 	dma_cap_set(DMA_SLAVE, mask);
+-	host->dma_chan = dma_request_channel(mask, pl08x_filter_id, "nand-mlc");
++	host->dma_chan = dma_request_channel(mask, host->pdata->dma_filter,
++					     "nand-mlc");
+ 	if (!host->dma_chan) {
+ 		dev_err(mtd->dev.parent, "Failed to request DMA channel\n");
+ 		return -EBUSY;
+@@ -703,6 +710,8 @@ static int __devinit lpc32xx_nand_probe(
+ 	}
+ 	lpc32xx_wp_disable(host);
+ 
++	host->pdata = pdev->dev.platform_data;
++
+ 	nand_chip->priv = host;		/* link the private data structures */
+ 	mtd->priv = nand_chip;
+ 	mtd->owner = THIS_MODULE;
+--- /dev/null
++++ linux-2.6/include/linux/mtd/lpc32xx_mlc.h
+@@ -0,0 +1,20 @@
++/*
++ * Platform data for LPC32xx SoC MLC NAND controller
++ *
++ * Copyright (C) 2012 Roland Stigge
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef __LINUX_MTD_LPC32XX_MLC_H
++#define __LINUX_MTD_LPC32XX_MLC_H
++
++#include <linux/dmaengine.h>
++
++struct lpc32xx_mlc_platform_data {
++	bool (*dma_filter)(struct dma_chan *chan, void *filter_param);
++};
++
++#endif  /* __LINUX_MTD_LPC32XX_MLC_H */
