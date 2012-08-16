@@ -1,19 +1,18 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T1zqB-0008Gl-FP
- for linux-mtd@lists.infradead.org; Thu, 16 Aug 2012 13:10:24 +0000
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Richard Genoud <richard.genoud@gmail.com>,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Subject: [PATCH 2/2] arm: sam9_l9260_defconfig: adjust UBI bad eraseblocks
- limit
-Date: Thu, 16 Aug 2012 16:10:27 +0300
-Message-Id: <1345122627-27151-2-git-send-email-dedekind1@gmail.com>
-In-Reply-To: <1345122627-27151-1-git-send-email-dedekind1@gmail.com>
-References: <1341937423-16516-1-git-send-email-richard.genoud@gmail.com>
- <1345122627-27151-1-git-send-email-dedekind1@gmail.com>
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
- Linux Kernel Maling List <linux-kernel@vger.kernel.org>
+Message-ID: <502CF20C.20801@antcom.de>
+Date: Thu, 16 Aug 2012 15:13:48 +0200
+From: Roland Stigge <stigge@antcom.de>
+MIME-Version: 1.0
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH] dma: amba-pl08x: Export pl08x_filter_id
+References: <1345107396-27079-1-git-send-email-stigge@antcom.de>
+ <20120816090041.GK18957@n2100.arm.linux.org.uk>
+In-Reply-To: <20120816090041.GK18957@n2100.arm.linux.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: srinivas.bakki@nxp.com, arnd@arndb.de, artem.bityutskiy@linux.intel.com,
+ linux-kernel@vger.kernel.org, kevin.wells@nxp.com,
+ linux-mtd@lists.infradead.org, aletes.xgr@gmail.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +22,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+On 08/16/2012 11:00 AM, Russell King - ARM Linux wrote:
+> On Thu, Aug 16, 2012 at 10:56:36AM +0200, Roland Stigge wrote:
+>> This patch fixes the following when compiling a driver module that uses
+>> amba-pl08x:
+>>
+>> ERROR: "pl08x_filter_id" [drivers/mtd/nand/lpc32xx_slc.ko] undefined!
+>> ERROR: "pl08x_filter_id" [drivers/mtd/nand/lpc32xx_mlc.ko] undefined!
+>>
+>> (drivers/mtd/nand/lpc32xx_* are still in l2-mtd.git)
+> 
+> It is currently intended that this be passed from platform code into
+> drivers via platform data, so that drivers can decide which DMA engine
+> they wish to make use of.
+> 
+> See how all the AMBA drivers work in this regard (because they need to
+> support more than just a single DMA engine implementation.)
 
-UBI has changed the MTD_UBI_BEB_LIMIT semantics. It used to be a percent of
-total amount of eraseblock in the partition, and now it is the maximum
-amount of bad eraseblocks on the entire devise per 1024 eraseblocks. So not
-only the units changed, but also the meaning. But anyway, old 3% roughly
-correspond to new 30, so change the defconfig correspondingly.
+Thanks for the note!
 
-Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
----
- arch/arm/configs/sam9_l9260_defconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm/configs/sam9_l9260_defconfig b/arch/arm/configs/sam9_l9260_defconfig
-index da276f9..d11fea5 100644
---- a/arch/arm/configs/sam9_l9260_defconfig
-+++ b/arch/arm/configs/sam9_l9260_defconfig
-@@ -39,7 +39,7 @@ CONFIG_MTD_NAND=y
- CONFIG_MTD_NAND_ATMEL=y
- CONFIG_MTD_NAND_PLATFORM=y
- CONFIG_MTD_UBI=y
--CONFIG_MTD_UBI_BEB_LIMIT=3
-+CONFIG_MTD_UBI_BEB_LIMIT=30
- CONFIG_MTD_UBI_GLUEBI=y
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_RAM=y
--- 
-1.7.10.4
+I'll post respective changes to the MTD SLC and MLC drivers of LPC32xx
+(for the MTD subsystem) and the adjustment I'll do in mach-lpc32xx (my
+lpc32xx tree for arm-soc).
