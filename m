@@ -1,13 +1,25 @@
-From: Roland Stigge <stigge@antcom.de>
-To: linux@arm.linux.org.uk, artem.bityutskiy@linux.intel.com,
- linux-arm-kernel@lists.infradead.org, arnd@arndb.de,
- linux-kernel@vger.kernel.org, kevin.wells@nxp.com,
- srinivas.bakki@nxp.com, aletes.xgr@gmail.com, dwmw2@infradead.org,
- linux-mtd@lists.infradead.org
-Subject: [PATCH] ARM: LPC32xx: Provide DMA filter callbacks via platform data
-Date: Thu, 16 Aug 2012 15:15:33 +0200
-Message-Id: <1345122935-22115-1-git-send-email-stigge@antcom.de>
-Cc: Roland Stigge <stigge@antcom.de>
+Received: from mga11.intel.com ([192.55.52.93])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1T203H-00030e-7g
+ for linux-mtd@lists.infradead.org; Thu, 16 Aug 2012 13:23:55 +0000
+Message-ID: <1345123718.3393.235.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 4/4] UBI: replace MTD_UBI_BEB_LIMIT with user-space
+ parameter
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Date: Thu, 16 Aug 2012 16:28:38 +0300
+In-Reply-To: <20120816115713.726da8f2@pixies.home.jungo.com>
+References: <1341937423-16516-1-git-send-email-richard.genoud@gmail.com>
+ <1341937423-16516-5-git-send-email-richard.genoud@gmail.com>
+ <20120816115713.726da8f2@pixies.home.jungo.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-C+Dqd7NvvuNIwTsmb3Zc"
+Mime-Version: 1.0
+Cc: Richard Genoud <richard.genoud@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,56 +29,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The SLC and MLC NAND drivers now need their dma_filter callbacks via platform
-data to make them independent of single DMA engine drivers.
 
-(This also helps fixing build errors of the SLC and MLC drivers when building
-as modules because direct access to AMBA dma filter functions isn't available
-via export.)
+--=-C+Dqd7NvvuNIwTsmb3Zc
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Roland Stigge <stigge@antcom.de>
+On Thu, 2012-08-16 at 11:57 +0300, Shmulik Ladkani wrote:
+>=20
+> For the simplest systems (those having one ubi device) that need a
+> limit
+> *other* than the default (20 per 1024), they can simply set the config
+> to their chosen value, as they were used to.
+>=20
+> With you approach, these system MUST pass the limit parameter via the
+> ioctl / module-parameter.=20
 
----
+Yeah, when you change the default, you usually need to do an extra step.
+It does not feel too bad, and I would not keep additional configuration
+option for a hypothetical user. If someone suffers, we can add an option
+to change the default. But I'd start without it. So, I think it is OK to
+remove this.
 
-Applies to v3.6-rc1
 
- arch/arm/mach-lpc32xx/phy3250.c |   14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+--=20
+Best Regards,
+Artem Bityutskiy
 
---- linux-2.6.orig/arch/arm/mach-lpc32xx/phy3250.c
-+++ linux-2.6/arch/arm/mach-lpc32xx/phy3250.c
-@@ -37,6 +37,8 @@
- #include <linux/of_irq.h>
- #include <linux/of_platform.h>
- #include <linux/clk.h>
-+#include <linux/mtd/lpc32xx_slc.h>
-+#include <linux/mtd/lpc32xx_mlc.h>
- 
- #include <asm/setup.h>
- #include <asm/mach-types.h>
-@@ -223,6 +225,14 @@ static struct mmci_platform_data lpc32xx
- 	 * gather, and the MMCI driver doesn't do it this way */
- };
- 
-+static struct lpc32xx_slc_platform_data lpc32xx_slc_data = {
-+	.dma_filter = pl08x_filter_id,
-+};
-+
-+static struct lpc32xx_mlc_platform_data lpc32xx_mlc_data = {
-+	.dma_filter = pl08x_filter_id,
-+};
-+
- static const struct of_dev_auxdata lpc32xx_auxdata_lookup[] __initconst = {
- 	OF_DEV_AUXDATA("arm,pl022", 0x20084000, "dev:ssp0", &lpc32xx_ssp0_data),
- 	OF_DEV_AUXDATA("arm,pl022", 0x2008C000, "dev:ssp1", &lpc32xx_ssp1_data),
-@@ -230,6 +240,10 @@ static const struct of_dev_auxdata lpc32
- 	OF_DEV_AUXDATA("arm,pl080", 0x31000000, "pl08xdmac", &pl08x_pd),
- 	OF_DEV_AUXDATA("arm,pl18x", 0x20098000, "20098000.sd",
- 		       &lpc32xx_mmci_data),
-+	OF_DEV_AUXDATA("nxp,lpc3220-slc", 0x20020000, "20020000.flash",
-+		       &lpc32xx_slc_data),
-+	OF_DEV_AUXDATA("nxp,lpc3220-mlc", 0x200a8000, "200a8000.flash",
-+		       &lpc32xx_mlc_data),
- 	{ }
- };
- 
+--=-C+Dqd7NvvuNIwTsmb3Zc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQLPWGAAoJECmIfjd9wqK0GBAP/1dV3BhnwXtipZwe5IvGJMwT
+DqduvAUExu635i2zhTauvftDwa4z+Bhefmy60XpY3SzVUknio6Rt4oakjAU8ywKL
+08493jO90eJ7Z0hMf7HV9/TrHJh1g2ypJ2MW7LBPjaFmoch7PqB7KmYV4RS7INoA
+67x/xXaifJHcU/lFvopxYa7GgVOCa+DUsC+PcBGL+1ZE9PzmslGP952bJ/quH9ps
+d2oHlcasuoiuE2Fhx1V1AtJhUjSGnzzaCoHhh5BsJakcODboFOzukl6gWX3iB/LV
+N7+m3TIqIP88gCqXIwyFQdUz8PmeD3N7xuIZi9mzmU6y4gSOxTJSVfzYph0yNNti
+LWfnBoEev/LfbvEvNEdkMUaSy9hfA/3OvAc9d1LDgazch/xL9jnnatJJLklXov/7
+LhHgrAkB0bWs3+CNY1bl+CzQkfJcR4q6kNQosk8fFHmfoahTyqkduuUZoXAvaajz
+BMNtBoVc3zaZuESHv5yj2yEwQkw/dZyy1YrCAGg7t75/+/5IuaTwpVcpFAnHhTmH
+z79t4YBlqoZfBdkYoyiZFtHFSqu/3la8AEa6Truvps93b26ljid7YW/SuvOuf4sT
+jP/5g3pPUprIT/MZwQy4H518yvGCk4F//PplnyfUp2/TFW57LKbO9isZE81bnmmk
+AdigokURDqjbT4xrwnUv
+=q1D9
+-----END PGP SIGNATURE-----
+
+--=-C+Dqd7NvvuNIwTsmb3Zc--
