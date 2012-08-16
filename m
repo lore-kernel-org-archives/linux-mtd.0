@@ -1,26 +1,24 @@
-Received: from mail-wg0-f41.google.com ([74.125.82.41])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T1xXE-0005ks-8a
- for linux-mtd@lists.infradead.org; Thu, 16 Aug 2012 10:42:41 +0000
-Received: by wgbds1 with SMTP id ds1so437233wgb.0
- for <linux-mtd@lists.infradead.org>; Thu, 16 Aug 2012 03:42:38 -0700 (PDT)
-Date: Thu, 16 Aug 2012 13:42:34 +0300
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: Richard Genoud <richard.genoud@gmail.com>, Artem Bityutskiy
- <dedekind1@gmail.com>
-Subject: Re: [PATCH 4/4] UBI: replace MTD_UBI_BEB_LIMIT with user-space
- parameter
-Message-ID: <20120816134234.32b468f6@pixies.home.jungo.com>
-In-Reply-To: <CACQ1gAhFJ6AKYJpc1ZiHm+3Y=APnwUmVL3f0KW=OFMDMWzCVJg@mail.gmail.com>
-References: <1341937423-16516-1-git-send-email-richard.genoud@gmail.com>
- <1341937423-16516-5-git-send-email-richard.genoud@gmail.com>
- <20120816115713.726da8f2@pixies.home.jungo.com>
- <CACQ1gAhFJ6AKYJpc1ZiHm+3Y=APnwUmVL3f0KW=OFMDMWzCVJg@mail.gmail.com>
+Received: from mga14.intel.com ([143.182.124.37])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1T1xYS-0005xV-PA
+ for linux-mtd@lists.infradead.org; Thu, 16 Aug 2012 10:43:58 +0000
+Message-ID: <1345114118.3393.199.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 2/8] mtd: check for max_bitflips in mtd_read_oob()
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Thu, 16 Aug 2012 13:48:38 +0300
+In-Reply-To: <CAN8TOE9wC6_NQ=DMX70ovWzP4JuFZKsORgn53Jq9ZNSGcFiCig@mail.gmail.com>
+References: <1340408145-24531-1-git-send-email-computersforpeace@gmail.com>
+ <1340408145-24531-3-git-send-email-computersforpeace@gmail.com>
+ <1345029870.3393.128.camel@sauron.fi.intel.com>
+ <CAN8TOE9wC6_NQ=DMX70ovWzP4JuFZKsORgn53Jq9ZNSGcFiCig@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-KtVEdrbboh3ZHO3Kx37i"
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Cc: David Woodhouse <dwmw2@infradead.org>, Mike Dunn <mikedunn@newsguy.com>,
+ linux-mtd@lists.infradead.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,43 +28,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard, Artem,
 
-On Thu, 16 Aug 2012 12:07:01 +0200 Richard Genoud <richard.genoud@gmail.com> wrote:
-> > With you approach, these system MUST pass the limit parameter via the
-> > ioctl / module-parameter.
-> That's right.
-> We can add a kernel config option to change the max_beb_per1024
-> default value (actually, this is almost the patch I send first).
-> But I see something disturbing with that:
-> It means that an ubi_attach call from userspace, without specifying
-> max_beb_per1024, won't have the same result, depending of the default
-> config value the kernel has been compiled with.
-> (Or maybe this behavior is acceptable).
+--=-KtVEdrbboh3ZHO3Kx37i
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Well, that was the previous behavior of MTD_UBI_BEB_RESERVE, long before
-our patchsets.
-I think it is acceptable, given the fact it simplifies the configuration
-for most simple systems.
+On Wed, 2012-08-15 at 12:15 -0700, Brian Norris wrote:
+> Note that there was a v2 of this patch, although the difference was
+> very minor (the comments and the Reviewed-by's). The end result is
+> almost the same as your amendments.
 
-Anyway I'm just pointing out the consequences of your change and try to
-suggest other alternatives.
-Artem should decide as he's the maintainer.
+Reviewed-by tags are important for me, because people spent time and
+they should be credited in some form in git log. I actually collected
+all the tags from the thread and added them when applying your patches.=20
 
-> > Also, since max_beb_per1024 is always set, how one may specify a zero
-> > limit?
-> You can't.
-> Do you think we need that ?
+Thanks!
 
-Well again, originally, prior our patchsets, one *could* set a zero
-MTD_UBI_BEB_RESERVE for his system. So we're introducing a change that
-affects the possible ways an ubi system can be configured, banning
-a configuration that was valid in the past.
+--=20
+Best Regards,
+Artem Bityutskiy
 
-Does it make sense to set a zero limit? dunno.
-For testing purposes, maybe.
+--=-KtVEdrbboh3ZHO3Kx37i
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-Artem, what do you think? prohibit a zero beb limit?
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-Regards,
-Shmulik
+iQIcBAABAgAGBQJQLNAGAAoJECmIfjd9wqK0bwYP/RrgLS/CfERGxwKX63xEpTFf
+mKMxTekYMgcOxkVSk7Pu3m/g0Yuxhy1PDFBQiKXDwAd2OP1knSXIzM1D9WjQcUF2
+TVE8PzkKs9/OLf/5RFfY6YW8ddaXn+7gN7uaaEqAhOqUedkxlQqRSo5RRhvRQs6/
+jA9ZcNCeaoTx4NfQGUpwqVR9yjR/IoouALbtmXwPg/+/JHYrfAiDVto/HBeSvje4
+kQ1tMWTV+HeTQ4M9wGL0QPf91Y7/0yfYIWKTDwrVB+rjpPERnCU503s1wka7+ZbQ
+cnu5MMwcArh1OPduGaonwekpoO80BmleBDdoS2qpzL/C4rMQ1b3MVpyriH+Et0Bp
+OsRxTDTeWzGGqRpgUHOwJk0n+Nb6NfGk8ueje6j4kwMV3q9mzzBH2hvTNpBeyd0b
+gDtoDL6Y78aW1yhDQ5HVFH9gzV/x+Hsr06pjJiUy79K5ESAFM4chlWh4qac4KfqA
+AdBtIMLlOL9omcrVP9BCxVL04+JrfVkIqpeaYeqsOBJnqIl5C8dxPQdjVxhF4GB2
+tZ/HhgLfL415IbIc3OQoBz6LqB/+x+pZ/TCSO9/IyhMO+w9UOqKkvuxILhxtYGMo
+89g6RE3zEWNIL03vcXUBJoEsUMzeNENzQ9XKKMnmr15OuEkn4MtLuS6YQSieIWpW
+LZO8ACvcqEOx/X5x8oYV
+=P+0z
+-----END PGP SIGNATURE-----
+
+--=-KtVEdrbboh3ZHO3Kx37i--
