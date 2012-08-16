@@ -1,19 +1,22 @@
-Received: from mail-wi0-f177.google.com ([209.85.212.177])
+Received: from mail-out.m-online.net ([212.18.0.9])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T21T5-0003qj-Rs
- for linux-mtd@lists.infradead.org; Thu, 16 Aug 2012 14:54:40 +0000
-Received: by wibhn17 with SMTP id hn17so569021wib.0
- for <linux-mtd@lists.infradead.org>; Thu, 16 Aug 2012 07:54:38 -0700 (PDT)
-From: Richard Genoud <richard.genoud@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH] UBI: use a config value for default BEB limit
-Date: Thu, 16 Aug 2012 16:54:31 +0200
-Message-Id: <1345128871-14939-1-git-send-email-richard.genoud@gmail.com>
-In-Reply-To: <CACQ1gAhRYSYehym1qA_Oj71KU4fB2+1MEUGi5Wfnb+E=t3jcxA@mail.gmail.com>
-References: <CACQ1gAhRYSYehym1qA_Oj71KU4fB2+1MEUGi5Wfnb+E=t3jcxA@mail.gmail.com>
-Cc: Richard Genoud <richard.genoud@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>, linux-kernel@vger.kernel.org
+ id 1T21Vs-0004F4-AY
+ for linux-mtd@lists.infradead.org; Thu, 16 Aug 2012 14:57:33 +0000
+From: Marek Vasut <marex@denx.de>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: kill MTD_NAND_VERIFY_WRITE
+Date: Thu, 16 Aug 2012 16:57:28 +0200
+References: <1344998325-3279-1-git-send-email-shijie8@gmail.com>
+ <201208151409.12390.marex@denx.de> <502CBAA5.4070302@freescale.com>
+In-Reply-To: <502CBAA5.4070302@freescale.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <201208161657.28728.marex@denx.de>
+Cc: dedekind1@gmail.com, Huang Shijie <shijie8@gmail.com>,
+ linux-kernel@vger.kernel.org, Huang Shijie <b32955@freescale.com>,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,84 +26,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch provides the possibility to adjust the default value for
-"maximum expected number of bad blocks per 1024 blocks" from kernel
-configuration.
+Dear Huang Shijie,
 
-sam9_l9260_defconfig has been adjusted as well. The nand device used by
-this card has a NVB of 3996/4096 ie a MAX_BEB_LIMIT of 25/1024
+> =E4=BA=8E 2012=E5=B9=B408=E6=9C=8815=E6=97=A5 20:09, Marek Vasut =E5=86=
+=99=E9=81=93:
+> > I'd still prefer for this to be rather fixed. It seems to be able to fi=
+nd
+> > some obvious mistakes etc.
+>=20
+> could you please point out the mistakes?
 
-Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
----
- arch/arm/configs/sam9_l9260_defconfig |    1 +
- drivers/mtd/ubi/Kconfig               |   29 +++++++++++++++++++++++++++++
- drivers/mtd/ubi/ubi.h                 |    2 +-
- 3 files changed, 31 insertions(+), 1 deletions(-)
+Usual stuff -- flaws in drivers, misbehavior of the chip etc
 
-diff --git a/arch/arm/configs/sam9_l9260_defconfig b/arch/arm/configs/sam9_l9260_defconfig
-index 47dd71a..2c20c9e 100644
---- a/arch/arm/configs/sam9_l9260_defconfig
-+++ b/arch/arm/configs/sam9_l9260_defconfig
-@@ -39,6 +39,7 @@ CONFIG_MTD_NAND=y
- CONFIG_MTD_NAND_ATMEL=y
- CONFIG_MTD_NAND_PLATFORM=y
- CONFIG_MTD_UBI=y
-+CONFIG_MTD_UBI_DEFAULT_BEB_LIMIT=25
- CONFIG_MTD_UBI_GLUEBI=y
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_RAM=y
-diff --git a/drivers/mtd/ubi/Kconfig b/drivers/mtd/ubi/Kconfig
-index 7a57cc0..30e8370 100644
---- a/drivers/mtd/ubi/Kconfig
-+++ b/drivers/mtd/ubi/Kconfig
-@@ -27,6 +27,35 @@ config MTD_UBI_WL_THRESHOLD
- 	  life-cycle less than 10000, the threshold should be lessened (e.g.,
- 	  to 128 or 256, although it does not have to be power of 2).
- 
-+config MTD_UBI_DEFAULT_BEB_LIMIT
-+	int "Maximum expected bad eraseblock count per 1024 eraseblocks"
-+	default 20
-+	range 0 256
-+	help
-+	  This option specifies the default value for maximum bad physical
-+	  eraseblocks UBI expects on the MTD device (per 1024 eraseblocks).
-+	  It will be used when the maximum bad PEB value is null in the
-+	  UBI_IOCATT ioctl (e.g. when calling ubiattach) or in the kernel
-+	  parameter ubi.mtd.
-+	  If the underlying flash does not admit of bad eraseblocks
-+	  (e.g. NOR flash), this value is ignored.
-+
-+	  NAND datasheets often specify the minimum and maximum NVM (Number of
-+	  Valid Blocks) for the flashes' endurance lifetime. The maximum
-+	  expected bad eraseblocks per 1024 eraseblocks then can be calculated
-+	  as "1024 * (1 - MinNVB / MaxNVB)", which gives 20 for most NANDs
-+	  (MaxNVB is basically the total count of eraseblocks on the chip).
-+
-+	  To put it differently, if this value is 20, UBI will try to reserve
-+	  about 1.9% of physical eraseblocks for bad blocks handling. And that
-+	  will be 1.9% of eraseblocks on the entire NAND chip, not just the MTD
-+	  partition UBI attaches. This means that if you have, say,  a NAND
-+	  flash chip that admits a maximum 40 bad eraseblocks, and it is split
-+	  on two MTD partitions of the same size, UBI will reserve 40
-+	  eraseblocks when attaching a partition.
-+
-+	  Leave the default value if unsure.
-+
- config MTD_UBI_GLUEBI
- 	tristate "MTD devices emulation driver (gluebi)"
- 	help
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index f926343..39a1e7e 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -51,7 +51,7 @@
- #define UBI_NAME_STR "ubi"
- 
- /* Default number of maximum expected bad blocks per 1024 eraseblocks */
--#define MTD_UBI_DEFAULT_BEB_LIMIT 20
-+#define MTD_UBI_DEFAULT_BEB_LIMIT CONFIG_MTD_UBI_DEFAULT_BEB_LIMIT
- 
- /* Normal UBI messages */
- #define ubi_msg(fmt, ...) printk(KERN_NOTICE "UBI: " fmt "\n", ##__VA_ARGS__)
--- 
-1.7.2.5
+Best regards,
+Marek Vasut
