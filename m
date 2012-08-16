@@ -1,24 +1,20 @@
-Received: from mail-wg0-f49.google.com ([74.125.82.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T1vVi-0006og-5W
- for linux-mtd@lists.infradead.org; Thu, 16 Aug 2012 08:32:58 +0000
-Received: by wgbez12 with SMTP id ez12so1573314wgb.18
- for <linux-mtd@lists.infradead.org>; Thu, 16 Aug 2012 01:32:56 -0700 (PDT)
-Date: Thu, 16 Aug 2012 11:32:54 +0300
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: dedekind1@gmail.com
-Subject: Re: [PATCH 3/4] UBI: use the whole MTD device size to get
- bad_peb_limit
-Message-ID: <20120816113254.2950cf36@pixies.home.jungo.com>
-In-Reply-To: <1345043331.3393.151.camel@sauron.fi.intel.com>
-References: <1341937423-16516-1-git-send-email-richard.genoud@gmail.com>
- <1341937423-16516-4-git-send-email-richard.genoud@gmail.com>
- <1345043331.3393.151.camel@sauron.fi.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Message-ID: <502CB378.1020708@antcom.de>
+Date: Thu, 16 Aug 2012 10:46:48 +0200
+From: Roland Stigge <stigge@antcom.de>
+MIME-Version: 1.0
+To: artem.bityutskiy@linux.intel.com
+Subject: Re: [PATCH 1/2] mtd: lpc32xx_slc: Adjust to pl08x DMA interface
+ changes
+References: <1342095778-13403-1-git-send-email-stigge@antcom.de>
+ <1342095778-13403-2-git-send-email-stigge@antcom.de>
+ <1345027069.3393.124.camel@sauron.fi.intel.com>
+In-Reply-To: <1345027069.3393.124.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Cc: Richard Genoud <richard.genoud@gmail.com>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
+Cc: srinivas.bakki@nxp.com, linux@arm.linux.org.uk, arnd@arndb.de,
+ linux-kernel@vger.kernel.org, kevin.wells@nxp.com,
+ linux-mtd@lists.infradead.org, aletes.xgr@gmail.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,19 +26,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-One more thing...
+On 08/15/2012 12:37 PM, Artem Bityutskiy wrote:
+> On Thu, 2012-07-12 at 14:22 +0200, Roland Stigge wrote:
+>> This patch adjusts the LPC32xx SLC NAND driver to the new pl08x
+>> DMA interface, fixing the compile error resulting from changed
+>> pl08x structures.
+>> 
+>> Signed-off-by: Roland Stigge <stigge@antcom.de>
+> 
+> This patch breaks compilation:
+> 
+> ERROR: "pl08x_filter_id" [drivers/mtd/nand/lpc32xx_slc.ko]
+> undefined!
+> 
+> Please, send a fix. The defconfig I used is attached.
 
-On Wed, 15 Aug 2012 18:08:51 +0300 Artem Bityutskiy <dedekind1@gmail.com> wrote:
->  config MTD_UBI_BEB_LIMIT
-> -	int "Percentage of maximum expected bad eraseblocks"
-> -	default 2
-> -	range 0 25
-> +	int "Maximum expected bad eraseblock count per 1024 eraseblocks"
-> +	default 20
-> +	range 2 256
+Thanks for the note. The issue happens on compiling lpc32xx_slc and
+lpc32xx_mlc as a module. Caused by pl08x_filter_id not being exported.
+Looking at other dma drivers, they have an EXPORT_SYMBOL() for this,
+see also
 
-Those defconfigs that explicilty set an original LIMIT should be
-adjusted as well, as the units have changed, no?
+drivers/dma/coh901318.c
+drivers/dma/sirf-dma.c
 
-Regards,
-Shmulik
+Will post a respective adjustment for drivers/dma/amba-pl08x.c separately.
+
+Roland
