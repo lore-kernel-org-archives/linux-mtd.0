@@ -1,19 +1,20 @@
-From: Arnd Bergmann <arnd@arndb.de>
-To: Roland Stigge <stigge@antcom.de>
-Subject: Re: [PATCH] ARM: LPC32xx: Provide DMA filter callbacks via platform
- data
-Date: Thu, 16 Aug 2012 13:59:21 +0000
-References: <1345122935-22115-1-git-send-email-stigge@antcom.de>
-In-Reply-To: <1345122935-22115-1-git-send-email-stigge@antcom.de>
+Message-ID: <502D032D.1000301@antcom.de>
+Date: Thu, 16 Aug 2012 16:26:53 +0200
+From: Roland Stigge <stigge@antcom.de>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-15"
+To: artem.bityutskiy@linux.intel.com
+Subject: Re: [PATCH 1/2] mtd: lpc32xx_slc: Adjust to pl08x DMA interface
+ changes
+References: <1342095778-13403-1-git-send-email-stigge@antcom.de>
+ <1342095778-13403-2-git-send-email-stigge@antcom.de>
+ <1345027069.3393.124.camel@sauron.fi.intel.com>
+In-Reply-To: <1345027069.3393.124.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <201208161359.21276.arnd@arndb.de>
-Cc: srinivas.bakki@nxp.com, linux@arm.linux.org.uk,
- artem.bityutskiy@linux.intel.com, linux-kernel@vger.kernel.org,
- kevin.wells@nxp.com, linux-mtd@lists.infradead.org, aletes.xgr@gmail.com,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+Cc: srinivas.bakki@nxp.com, linux@arm.linux.org.uk, arnd@arndb.de,
+ linux-kernel@vger.kernel.org, kevin.wells@nxp.com,
+ linux-mtd@lists.infradead.org, aletes.xgr@gmail.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,21 +24,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 16 August 2012, Roland Stigge wrote:
-> The SLC and MLC NAND drivers now need their dma_filter callbacks via platform
-> data to make them independent of single DMA engine drivers.
+Hi,
+
+On 08/15/2012 12:37 PM, Artem Bityutskiy wrote:
+> On Thu, 2012-07-12 at 14:22 +0200, Roland Stigge wrote:
+>> This patch adjusts the LPC32xx SLC NAND driver to the new pl08x
+>> DMA interface, fixing the compile error resulting from changed
+>> pl08x structures.
+>> 
+>> Signed-off-by: Roland Stigge <stigge@antcom.de>
 > 
-> (This also helps fixing build errors of the SLC and MLC drivers when building
-> as modules because direct access to AMBA dma filter functions isn't available
-> via export.)
+> This patch breaks compilation:
 > 
-> Signed-off-by: Roland Stigge <stigge@antcom.de>
+> ERROR: "pl08x_filter_id" [drivers/mtd/nand/lpc32xx_slc.ko]
+> undefined!
+> 
+> Please, send a fix. The defconfig I used is attached.
 
-Yes, this looks right.
+Please see my just posted patches:
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+mtd: lpc32xx_slc: Make driver independent of AMBA DMA engine driver
+mtd: lpc32xx_mlc: Make driver independent of AMBA DMA engine driver
 
-Once we have proper DT bindings for the DMA channels, we can hopefully
-get rid of the auxdata again.
+This also fixes the above problem by getting rid of the reference to
+pl08x_filter_id.
 
-	Arnd
+Thanks,
+
+Roland
