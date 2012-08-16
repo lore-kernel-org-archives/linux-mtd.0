@@ -1,23 +1,27 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T1wz5-0001PW-JE
- for linux-mtd@lists.infradead.org; Thu, 16 Aug 2012 10:07:24 +0000
-Received: by lbbgf7 with SMTP id gf7so1290652lbb.36
- for <linux-mtd@lists.infradead.org>; Thu, 16 Aug 2012 03:07:21 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20120816115713.726da8f2@pixies.home.jungo.com>
-References: <1341937423-16516-1-git-send-email-richard.genoud@gmail.com>
- <1341937423-16516-5-git-send-email-richard.genoud@gmail.com>
- <20120816115713.726da8f2@pixies.home.jungo.com>
-From: Richard Genoud <richard.genoud@gmail.com>
-Date: Thu, 16 Aug 2012 12:07:01 +0200
-Message-ID: <CACQ1gAhFJ6AKYJpc1ZiHm+3Y=APnwUmVL3f0KW=OFMDMWzCVJg@mail.gmail.com>
-Subject: Re: [PATCH 4/4] UBI: replace MTD_UBI_BEB_LIMIT with user-space
- parameter
+Received: from mga01.intel.com ([192.55.52.88])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1T1xQb-0004Rb-Td
+ for linux-mtd@lists.infradead.org; Thu, 16 Aug 2012 10:35:55 +0000
+Message-ID: <1345113602.3393.196.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 8/8] mtd: nand: use ECC, if present, when scanning OOB
+From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Artem Bityutskiy <dedekind1@gmail.com>
+Date: Thu, 16 Aug 2012 13:40:02 +0300
+In-Reply-To: <20120815173116.51de197a@pixies.home.jungo.com>
+References: <1340408145-24531-1-git-send-email-computersforpeace@gmail.com>
+ <1340408145-24531-9-git-send-email-computersforpeace@gmail.com>
+ <1345032317.3393.135.camel@sauron.fi.intel.com>
+ <20120815173116.51de197a@pixies.home.jungo.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-71cbcmvdBZ/tEwrewKBJ"
+Mime-Version: 1.0
+Cc: Mike Dunn <mikedunn@newsguy.com>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Matthieu CASTET <matthieu.castet@parrot.com>, linux-mtd@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,71 +31,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2012/8/16 Shmulik Ladkani <shmulik.ladkani@gmail.com>:
-> Hi Richard,
->
-> Sorry for reviewing this late...
->
-> On Tue, 10 Jul 2012 18:23:42 +0200 Richard Genoud <richard.genoud@gmail.com> wrote:
->> -config MTD_UBI_BEB_LIMIT
->> -     int "Maximum expected bad eraseblocks per 1024 eraseblocks"
->> -     default 20
->> -     range 2 256
->
-> I see some benefit keeping the config.
->
-> For the simplest systems (those having one ubi device) that need a limit
-> *other* than the default (20 per 1024), they can simply set the config
-> to their chosen value, as they were used to.
->
-> With you approach, these system MUST pass the limit parameter via the
-> ioctl / module-parameter.
-That's right.
-We can add a kernel config option to change the max_beb_per1024
-default value (actually, this is almost the patch I send first).
-But I see something disturbing with that:
-It means that an ubi_attach call from userspace, without specifying
-max_beb_per1024, won't have the same result, depending of the default
-config value the kernel has been compiled with.
-(Or maybe this behavior is acceptable).
 
->> +static int get_bad_peb_limit(const struct ubi_device *ubi, int max_beb_per1024)
->> +{
->> +     int device_peb_count;
->> +     uint64_t device_size;
->> +     int beb_limit = 0;
->> +
->> +     /* this has already been checked in ioctl */
->> +     if (max_beb_per1024 <= 0)
->> +             goto out;
->
-> Can you explain how 'max_beb_per1024 <= 0' may happen?
->
-> It seems that all of your calls to 'ubi_attach_mtd_dev' pass a positive
-> max_beb_per1024 value (the default is always set). See your
-> 'ubi_mtd_param_parse' and 'ctrl_cdev_ioctl'. Am I missing something?
-Actually it can. But it's because I made a mistake:
-p->max_beb_per1024 = bytes_str_to_int(tokens[2]);
-=> I didn't check the return value of this. It can fail, and if it
-does the return value is >0.
-I'm going to change that.
+--=-71cbcmvdBZ/tEwrewKBJ
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
->
-> Also, since max_beb_per1024 is always set, how one may specify a zero
-> limit?
-You can't.
-Do you think we need that ?
-0 should be kept for "default value", not to break user-space.
-But we can use another value for 0, like 1024 or 2048.
-(but honestly, I think this will add complexity for an unlikely configuration.)
+Hi Shmulik,
 
->
-> Regards,
+On Wed, 2012-08-15 at 17:31 +0300, Shmulik Ladkani wrote:
+> > Amended the commit message to satisfy Smulik's request, and pushed to
+> > l2-mtd.git, thanks Brian!
+>=20
+> I had some second thoughts WRT the move from MTD_OPS_RAW to
+> MTD_OPS_PLACE_OOB.
+>=20
+> When reading BBT content, MTD_OPS_PLACE_OOB is preferred.
+>=20
+> But when scanning the OOBs for BBMs (when creating the table), I guess
+> MTD_OPS_RAW should be used - since manufacturer bad blocks are not
+> protected by ECC (as Matthieu noted in [1], and I elaborated in [2]).
+>=20
+> Can you please review and comment regarding the ideas discussed there?
+>=20
+> Thanks,
 > Shmulik
+>=20
+> [1]
+> http://thread.gmane.org/gmane.linux.drivers.mtd/42243/focus=3D42365
+> [2]
+> http://thread.gmane.org/gmane.linux.drivers.mtd/42243/focus=3D42669
 
-Regards,
-Richard.
+I cannot spend much time reading the threads carefully, so I went
+through the discussion only very briefly. Apologies. But I took the
+patches because:
 
+1. They do not break existing (in-tree) systems which do not have OOB
+protected with ECC. This means the patches are harmless and while useful
+because they clean up the code.
 
--- 
-for me, ck means con kolivas and not calvin klein... does it mean I'm a geek ?
+2. For systems like Brian has where OOB is protected with ECC, the BBM
+should just not be covered by the OOB ECC. And the OOB scanning code
+should not read non-BBM bytes, and we are done. This seems to be the
+only logical setup for me.
+
+If it is not the case, I just consider it is Brian's problem, he'll deal
+with it and send us another set of patches.
+
+Or to put it differently: he sent a good clean-up, which does not seem t
+break anything, why would we not take it?
+
+If you object merging these patches, I'd appreciate if you could
+elaborate why they would be _harmful_ to have.
+
+Thanks!
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-71cbcmvdBZ/tEwrewKBJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQLM4CAAoJECmIfjd9wqK0makP/io2y8lCqz/q5L8xibusNNra
+kmVrDkScDRnSaEhKta/F7wehTcipyh4JtEovrfsTroU6yCNeAk3msSE3aOxMSNfM
+9cQ0VfHgD+D0ZmOBTuJUbNwmIQ7T8eV88Kk+B8FWPyP5yerY9eqCnwEh3cql3e38
+bWF9ESForDgTq3YwP3UHEwiRlT8pwoblGSBMHpKFApGqMHtCX9vnWoIhDmejto9k
+t/z/OjsaADyJrYfJoUdrh7FMICY8kdZsTV85YLjW+RCJiZBw/kAln/nTsZE1PTBc
+cqszAvHfaFfbx+gn+msRJwKWkwAjueJv6F83WtNXyslQ50Dwn6lu4dui/xAwgoGd
+S5VD1DLOTClVmonqjSFhWIrLmf1HM130JyE1AMWN1Sg2QcU0/EwbXuU8IMvu+4bD
+KHb77z3GMH33gogKlUOzLJdBl9nkmMgP1mm1B+32m14ZRyd2c18uMLKUoINGg5oI
+TNKSeqEbcVxrRo/J6l6Mq3HKeu8Pw7sMiZtAC9SwrV0bni02SdV7UtC1S3dDo/w3
+VTentA2samDY2jnjaFrL+IB0bUHVw8z/LBKdtq8XMi0K9dvBZRRyMb9228qdq5vM
+6+XmFh59CZnHNWfHGYOGgOws2qB3WwOGc7wv/Xdxnrsv6kzeOfANdSNpcTgaaEv3
+En+5mhNyaQgTz/32JtSn
+=9TtT
+-----END PGP SIGNATURE-----
+
+--=-71cbcmvdBZ/tEwrewKBJ--
