@@ -1,16 +1,16 @@
-Received: from mail-wg0-f49.google.com ([74.125.82.49])
+Received: from mail-wi0-f177.google.com ([209.85.212.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T21RC-0003W3-1a
- for linux-mtd@lists.infradead.org; Thu, 16 Aug 2012 14:52:43 +0000
-Received: by wgbez12 with SMTP id ez12so1796264wgb.18
- for <linux-mtd@lists.infradead.org>; Thu, 16 Aug 2012 07:52:40 -0700 (PDT)
+ id 1T21T5-0003qj-Rs
+ for linux-mtd@lists.infradead.org; Thu, 16 Aug 2012 14:54:40 +0000
+Received: by wibhn17 with SMTP id hn17so569021wib.0
+ for <linux-mtd@lists.infradead.org>; Thu, 16 Aug 2012 07:54:38 -0700 (PDT)
 From: Richard Genoud <richard.genoud@gmail.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH 2/2] UBI: add ioctl for max_beb_per1024
-Date: Thu, 16 Aug 2012 16:52:03 +0200
-Message-Id: <1345128723-13582-3-git-send-email-richard.genoud@gmail.com>
-In-Reply-To: <1345042639.3393.150.camel@sauron.fi.intel.com>
-References: <1345042639.3393.150.camel@sauron.fi.intel.com>
+Subject: [PATCH] UBI: use a config value for default BEB limit
+Date: Thu, 16 Aug 2012 16:54:31 +0200
+Message-Id: <1345128871-14939-1-git-send-email-richard.genoud@gmail.com>
+In-Reply-To: <CACQ1gAhRYSYehym1qA_Oj71KU4fB2+1MEUGi5Wfnb+E=t3jcxA@mail.gmail.com>
+References: <CACQ1gAhRYSYehym1qA_Oj71KU4fB2+1MEUGi5Wfnb+E=t3jcxA@mail.gmail.com>
 Cc: Richard Genoud <richard.genoud@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
  Shmulik Ladkani <shmulik.ladkani@gmail.com>, linux-kernel@vger.kernel.org
@@ -23,94 +23,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch provides the possibility to adjust the "maximum expected number of
-bad blocks per 1024 blocks" (max_beb_per1024) for each mtd device from
-UBI_IOCATT ioctl.
+This patch provides the possibility to adjust the default value for
+"maximum expected number of bad blocks per 1024 blocks" from kernel
+configuration.
 
-The majority of NAND devices have their max_beb_per1024 equal to 20, but
-sometimes it's more.
-We already could adjust that via a kernel parameter, now we can also use
-UBI_IOCATT ioctl:
-struct ubi_attach_req {
-	__s32 ubi_num;
-	__s32 mtd_num;
-	__s32 vid_hdr_offset;
-	__u8 max_beb_per1024;
-	__s8 padding[11];
-};
+sam9_l9260_defconfig has been adjusted as well. The nand device used by
+this card has a NVB of 3996/4096 ie a MAX_BEB_LIMIT of 25/1024
 
 Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
 ---
- drivers/mtd/ubi/cdev.c |    9 ++++++++-
- include/mtd/ubi-user.h |   19 ++++++++++++++++++-
- 2 files changed, 26 insertions(+), 2 deletions(-)
+ arch/arm/configs/sam9_l9260_defconfig |    1 +
+ drivers/mtd/ubi/Kconfig               |   29 +++++++++++++++++++++++++++++
+ drivers/mtd/ubi/ubi.h                 |    2 +-
+ 3 files changed, 31 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-index e0027e7..d268b42 100644
---- a/drivers/mtd/ubi/cdev.c
-+++ b/drivers/mtd/ubi/cdev.c
-@@ -1006,12 +1006,19 @@ static long ctrl_cdev_ioctl(struct file *file, unsigned int cmd,
- 		}
+diff --git a/arch/arm/configs/sam9_l9260_defconfig b/arch/arm/configs/sam9_l9260_defconfig
+index 47dd71a..2c20c9e 100644
+--- a/arch/arm/configs/sam9_l9260_defconfig
++++ b/arch/arm/configs/sam9_l9260_defconfig
+@@ -39,6 +39,7 @@ CONFIG_MTD_NAND=y
+ CONFIG_MTD_NAND_ATMEL=y
+ CONFIG_MTD_NAND_PLATFORM=y
+ CONFIG_MTD_UBI=y
++CONFIG_MTD_UBI_DEFAULT_BEB_LIMIT=25
+ CONFIG_MTD_UBI_GLUEBI=y
+ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_BLK_DEV_RAM=y
+diff --git a/drivers/mtd/ubi/Kconfig b/drivers/mtd/ubi/Kconfig
+index 7a57cc0..30e8370 100644
+--- a/drivers/mtd/ubi/Kconfig
++++ b/drivers/mtd/ubi/Kconfig
+@@ -27,6 +27,35 @@ config MTD_UBI_WL_THRESHOLD
+ 	  life-cycle less than 10000, the threshold should be lessened (e.g.,
+ 	  to 128 or 256, although it does not have to be power of 2).
  
- 		/*
-+		 * For compatibility with older user-space tools,
-+		 * a zero value should be treated like a default value
-+		 */
-+		if (!req.max_beb_per1024)
-+			req.max_beb_per1024 = MTD_UBI_DEFAULT_BEB_LIMIT;
++config MTD_UBI_DEFAULT_BEB_LIMIT
++	int "Maximum expected bad eraseblock count per 1024 eraseblocks"
++	default 20
++	range 0 256
++	help
++	  This option specifies the default value for maximum bad physical
++	  eraseblocks UBI expects on the MTD device (per 1024 eraseblocks).
++	  It will be used when the maximum bad PEB value is null in the
++	  UBI_IOCATT ioctl (e.g. when calling ubiattach) or in the kernel
++	  parameter ubi.mtd.
++	  If the underlying flash does not admit of bad eraseblocks
++	  (e.g. NOR flash), this value is ignored.
 +
-+		/*
- 		 * Note, further request verification is done by
- 		 * 'ubi_attach_mtd_dev()'.
- 		 */
- 		mutex_lock(&ubi_devices_mutex);
- 		err = ubi_attach_mtd_dev(mtd, req.ubi_num, req.vid_hdr_offset,
--					 MTD_UBI_DEFAULT_BEB_LIMIT);
-+					 req.max_beb_per1024);
- 		mutex_unlock(&ubi_devices_mutex);
- 		if (err < 0)
- 			put_mtd_device(mtd);
-diff --git a/include/mtd/ubi-user.h b/include/mtd/ubi-user.h
-index 8787349..77cd0d1 100644
---- a/include/mtd/ubi-user.h
-+++ b/include/mtd/ubi-user.h
-@@ -222,6 +222,7 @@ enum {
-  * @ubi_num: UBI device number to create
-  * @mtd_num: MTD device number to attach
-  * @vid_hdr_offset: VID header offset (use defaults if %0)
-+ * @max_beb_per1024: Maximum expected bad eraseblocks per 1024 eraseblocks
-  * @padding: reserved for future, not used, has to be zeroed
-  *
-  * This data structure is used to specify MTD device UBI has to attach and the
-@@ -245,12 +246,28 @@ enum {
-  * be 2KiB-64 bytes = 1984. Note, that this position is not even 512-bytes
-  * aligned, which is OK, as UBI is clever enough to realize this is 4th
-  * sub-page of the first page and add needed padding.
-+ *
-+ * The @max_beb_per1024 is the maximum bad eraseblocks UBI expects on the ubi
-+ * device per 1024 eraseblocks.
-+ * This value is often given in an other form in the NAND datasheet (min NVB
-+ * i.e. minimal number of valid blocks). The maximum expected bad eraseblocks
-+ * per 1024 is then:
-+ *   1024 * (1 - MinNVB / MaxNVB)
-+ * Which gives 20 for most NAND devices.
-+ * This limit is used in order to derive amount of eraseblock UBI reserves for
-+ * handling new bad blocks.
-+ * If the device has more bad eraseblocks than this limit, UBI does not reserve
-+ * any physical eraseblocks for new bad eraseblocks, but attempts to use
-+ * available eraseblocks (if any).
-+ * The accepted range is 0-255. If 0 is given, the default value
-+ * MTD_UBI_DEFAULT_BEB_LIMIT will be used for compatibility.
-  */
- struct ubi_attach_req {
- 	__s32 ubi_num;
- 	__s32 mtd_num;
- 	__s32 vid_hdr_offset;
--	__s8 padding[12];
-+	__u8 max_beb_per1024;
-+	__s8 padding[11];
- };
++	  NAND datasheets often specify the minimum and maximum NVM (Number of
++	  Valid Blocks) for the flashes' endurance lifetime. The maximum
++	  expected bad eraseblocks per 1024 eraseblocks then can be calculated
++	  as "1024 * (1 - MinNVB / MaxNVB)", which gives 20 for most NANDs
++	  (MaxNVB is basically the total count of eraseblocks on the chip).
++
++	  To put it differently, if this value is 20, UBI will try to reserve
++	  about 1.9% of physical eraseblocks for bad blocks handling. And that
++	  will be 1.9% of eraseblocks on the entire NAND chip, not just the MTD
++	  partition UBI attaches. This means that if you have, say,  a NAND
++	  flash chip that admits a maximum 40 bad eraseblocks, and it is split
++	  on two MTD partitions of the same size, UBI will reserve 40
++	  eraseblocks when attaching a partition.
++
++	  Leave the default value if unsure.
++
+ config MTD_UBI_GLUEBI
+ 	tristate "MTD devices emulation driver (gluebi)"
+ 	help
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index f926343..39a1e7e 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -51,7 +51,7 @@
+ #define UBI_NAME_STR "ubi"
  
- /**
+ /* Default number of maximum expected bad blocks per 1024 eraseblocks */
+-#define MTD_UBI_DEFAULT_BEB_LIMIT 20
++#define MTD_UBI_DEFAULT_BEB_LIMIT CONFIG_MTD_UBI_DEFAULT_BEB_LIMIT
+ 
+ /* Normal UBI messages */
+ #define ubi_msg(fmt, ...) printk(KERN_NOTICE "UBI: " fmt "\n", ##__VA_ARGS__)
 -- 
 1.7.2.5
