@@ -1,22 +1,19 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T2Jmq-00014t-7j
- for linux-mtd@lists.infradead.org; Fri, 17 Aug 2012 10:28:17 +0000
-Received: by lagu2 with SMTP id u2so1884115lag.36
- for <linux-mtd@lists.infradead.org>; Fri, 17 Aug 2012 03:28:13 -0700 (PDT)
+Message-ID: <502E2279.1030604@antcom.de>
+Date: Fri, 17 Aug 2012 12:52:41 +0200
+From: Roland Stigge <stigge@antcom.de>
 MIME-Version: 1.0
-In-Reply-To: <1345191768.27859.26.camel@sauron.fi.intel.com>
-References: <1345042639.3393.150.camel@sauron.fi.intel.com>
- <1345128723-13582-2-git-send-email-richard.genoud@gmail.com>
- <1345191768.27859.26.camel@sauron.fi.intel.com>
-From: Richard Genoud <richard.genoud@gmail.com>
-Date: Fri, 17 Aug 2012 12:27:53 +0200
-Message-ID: <CACQ1gAj-+-NL4EnF1AAFy7BBrY97c_UFW3+5iyTVdxN9XETS=w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] UBI: replace MTD_UBI_BEB_LIMIT with module parameter
-To: dedekind1@gmail.com
+To: artem.bityutskiy@linux.intel.com
+Subject: Re: [PATCH] ARM: LPC32xx: Provide DMA filter callbacks via platform
+ data
+References: <1345122935-22115-1-git-send-email-stigge@antcom.de>
+ <1345198171.27859.39.camel@sauron.fi.intel.com>
+In-Reply-To: <1345198171.27859.39.camel@sauron.fi.intel.com>
 Content-Type: text/plain; charset=UTF-8
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Cc: srinivas.bakki@nxp.com, linux@arm.linux.org.uk, arnd@arndb.de,
+ linux-kernel@vger.kernel.org, kevin.wells@nxp.com,
+ linux-mtd@lists.infradead.org, aletes.xgr@gmail.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,92 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2012/8/17 Artem Bityutskiy <dedekind1@gmail.com>:
-> Richard, would you please split this series differently:
->
-> 1. Separate out the calculations to the get_bad_peb_limit() func.
-> 2. Invent
-> 2. Add the module parameter
-> 3. Extends the ioctl
-> 4. Removes the Kconfig option
->
-> This will be much easier to review.
-ok, will do that.
+On 08/17/2012 12:09 PM, Artem Bityutskiy wrote:
+> On Thu, 2012-08-16 at 15:15 +0200, Roland Stigge wrote:
+>> The SLC and MLC NAND drivers now need their dma_filter callbacks
+>> via platform data to make them independent of single DMA engine
+>> drivers.
+>> 
+>> (This also helps fixing build errors of the SLC and MLC drivers
+>> when building as modules because direct access to AMBA dma filter
+>> functions isn't available via export.)
+>> 
+>> Signed-off-by: Roland Stigge <stigge@antcom.de>
+> 
+> Pushed the 3 patches to l2-mtd.git, thanks!
 
->
-> See also some comments below.
->
->> --- a/drivers/mtd/ubi/build.c
->> +++ b/drivers/mtd/ubi/build.c
->> @@ -46,6 +46,8 @@
->>  /* Maximum length of the 'mtd=' parameter */
->>  #define MTD_PARAM_LEN_MAX 64
->>
->> +#define MTD_PARAM_NB_MAX 3
->
-> Please, make it to be
->
-> /* Maximum number of comma-separated items in ht 'mtd=' parameter */
-> #define MTD_PARAM_MAX_COUNT 3
->
-> instead.
-done.
->
->> @@ -57,10 +59,12 @@
->>   * @name: MTD character device node path, MTD device name, or MTD device number
->>   *        string
->>   * @vid_hdr_offs: VID header offset
->> + * @max_beb_per1024: maximum expected number of bad blocks per 1024 erase blocks
->>   */
->>  struct mtd_dev_param {
->>       char name[MTD_PARAM_LEN_MAX];
->>       int vid_hdr_offs;
->> +     unsigned int max_beb_per1024;
->>  };
->
-> Please, make it to be just 'int' here and everywhere, just for
-> consistency with other parameters, which are 'int' (no other stronger
-> reason).
-ok, I put it back to an int.
+To later avoid collisions on subsystem merge, can you please leave the
+patch with arch/arm/mach-lpc32xx/phy3250.c for arm-soc.git? (I will
+provide a pull request for Arnd and Olof, as usual.)
 
->>  MODULE_PARM_DESC(mtd, "MTD devices to attach. Parameter format: "
->> -                   "mtd=<name|num|path>[,<vid_hdr_offs>].\n"
->> +                   "mtd=<name|num|path>[,<vid_hdr_offs>[,max_beb_per1024]].\n"
->>                     "Multiple \"mtd\" parameters may be specified.\n"
->>                     "MTD devices may be specified by their number, name, or "
->>                     "path to the MTD character device node.\n"
->>                     "Optional \"vid_hdr_offs\" parameter specifies UBI VID "
->>                     "header position to be used by UBI.\n"
->
-> This comment needs improvement. Consider a situation when I do not want
-> to specify vid_hdr_offs (want to use the default), but want to specify
-> max_beb_per1024. I think I can put 0 here which means "default". Would
-> you please verify this and add a comment about this in this help output.
-you're right, if vid_hdr_offs is 0, the default value is taken.
-I'll improve the comments accordingly.
-> Also, please, verify that the output looks OK using 'modinfo ubi'.
-ok.
->> +                   "Optional \"max_beb_per1024\" parameter specifies the "
->> +                   "maximum expected bad eraseblock per 1024 eraseblocks."
->> +                   "(default " __stringify(MTD_UBI_DEFAULT_BEB_LIMIT)
->> +                   " if 0 or not set)\n"
->
-> Yeah, something like "if 0 or not set" is needed for 'vid_hdr_offs' as
-> well.
->
->>                     "Example 1: mtd=/dev/mtd0 - attach MTD device "
->>                     "/dev/mtd0.\n"
->>                     "Example 2: mtd=content,1984 mtd=4 - attach MTD device "
->
-> Could you also modify one of the examples and add "max_beb_per1024"
-> there?
-yes, of course.
+Thanks,
 
-> --
-> Best Regards,
-> Artem Bityutskiy
-
-
-
--- 
-for me, ck means con kolivas and not calvin klein... does it mean I'm a geek ?
+Roland
