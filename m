@@ -1,14 +1,22 @@
-Received: from mga03.intel.com ([143.182.124.21])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T2JTJ-0004b3-28
- for linux-mtd@lists.infradead.org; Fri, 17 Aug 2012 10:08:06 +0000
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Stefan Roese <sr@denx.de>
-Subject: [PATCH] mtd: spear_smi: fix compilation warning
-Date: Fri, 17 Aug 2012 13:08:10 +0300
-Message-Id: <1345198090-12619-1-git-send-email-dedekind1@gmail.com>
-Cc: spear-devel <spear-devel@list.st.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>
+Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1T2Jmq-00014t-7j
+ for linux-mtd@lists.infradead.org; Fri, 17 Aug 2012 10:28:17 +0000
+Received: by lagu2 with SMTP id u2so1884115lag.36
+ for <linux-mtd@lists.infradead.org>; Fri, 17 Aug 2012 03:28:13 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1345191768.27859.26.camel@sauron.fi.intel.com>
+References: <1345042639.3393.150.camel@sauron.fi.intel.com>
+ <1345128723-13582-2-git-send-email-richard.genoud@gmail.com>
+ <1345191768.27859.26.camel@sauron.fi.intel.com>
+From: Richard Genoud <richard.genoud@gmail.com>
+Date: Fri, 17 Aug 2012 12:27:53 +0200
+Message-ID: <CACQ1gAj-+-NL4EnF1AAFy7BBrY97c_UFW3+5iyTVdxN9XETS=w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] UBI: replace MTD_UBI_BEB_LIMIT with module parameter
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,31 +26,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+2012/8/17 Artem Bityutskiy <dedekind1@gmail.com>:
+> Richard, would you please split this series differently:
+>
+> 1. Separate out the calculations to the get_bad_peb_limit() func.
+> 2. Invent
+> 2. Add the module parameter
+> 3. Extends the ioctl
+> 4. Removes the Kconfig option
+>
+> This will be much easier to review.
+ok, will do that.
 
-drivers/mtd/devices/spear_smi.c: In function 'spear_smi_probe':
-drivers/mtd/devices/spear_smi.c:984:2: warning: comparison of unsigned expression < 0 is always false [-Wtype-limits]
+>
+> See also some comments below.
+>
+>> --- a/drivers/mtd/ubi/build.c
+>> +++ b/drivers/mtd/ubi/build.c
+>> @@ -46,6 +46,8 @@
+>>  /* Maximum length of the 'mtd=' parameter */
+>>  #define MTD_PARAM_LEN_MAX 64
+>>
+>> +#define MTD_PARAM_NB_MAX 3
+>
+> Please, make it to be
+>
+> /* Maximum number of comma-separated items in ht 'mtd=' parameter */
+> #define MTD_PARAM_MAX_COUNT 3
+>
+> instead.
+done.
+>
+>> @@ -57,10 +59,12 @@
+>>   * @name: MTD character device node path, MTD device name, or MTD device number
+>>   *        string
+>>   * @vid_hdr_offs: VID header offset
+>> + * @max_beb_per1024: maximum expected number of bad blocks per 1024 erase blocks
+>>   */
+>>  struct mtd_dev_param {
+>>       char name[MTD_PARAM_LEN_MAX];
+>>       int vid_hdr_offs;
+>> +     unsigned int max_beb_per1024;
+>>  };
+>
+> Please, make it to be just 'int' here and everywhere, just for
+> consistency with other parameters, which are 'int' (no other stronger
+> reason).
+ok, I put it back to an int.
 
-Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
----
+>>  MODULE_PARM_DESC(mtd, "MTD devices to attach. Parameter format: "
+>> -                   "mtd=<name|num|path>[,<vid_hdr_offs>].\n"
+>> +                   "mtd=<name|num|path>[,<vid_hdr_offs>[,max_beb_per1024]].\n"
+>>                     "Multiple \"mtd\" parameters may be specified.\n"
+>>                     "MTD devices may be specified by their number, name, or "
+>>                     "path to the MTD character device node.\n"
+>>                     "Optional \"vid_hdr_offs\" parameter specifies UBI VID "
+>>                     "header position to be used by UBI.\n"
+>
+> This comment needs improvement. Consider a situation when I do not want
+> to specify vid_hdr_offs (want to use the default), but want to specify
+> max_beb_per1024. I think I can put 0 here which means "default". Would
+> you please verify this and add a comment about this in this help output.
+you're right, if vid_hdr_offs is 0, the default value is taken.
+I'll improve the comments accordingly.
+> Also, please, verify that the output looks OK using 'modinfo ubi'.
+ok.
+>> +                   "Optional \"max_beb_per1024\" parameter specifies the "
+>> +                   "maximum expected bad eraseblock per 1024 eraseblocks."
+>> +                   "(default " __stringify(MTD_UBI_DEFAULT_BEB_LIMIT)
+>> +                   " if 0 or not set)\n"
+>
+> Yeah, something like "if 0 or not set" is needed for 'vid_hdr_offs' as
+> well.
+>
+>>                     "Example 1: mtd=/dev/mtd0 - attach MTD device "
+>>                     "/dev/mtd0.\n"
+>>                     "Example 2: mtd=content,1984 mtd=4 - attach MTD device "
+>
+> Could you also modify one of the examples and add "max_beb_per1024"
+> there?
+yes, of course.
 
-Hi, I've just pushed this one to the l2-mtd.git tree.
+> --
+> Best Regards,
+> Artem Bityutskiy
 
- drivers/mtd/devices/spear_smi.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/devices/spear_smi.c b/drivers/mtd/devices/spear_smi.c
-index 7c10466..421bc65 100644
---- a/drivers/mtd/devices/spear_smi.c
-+++ b/drivers/mtd/devices/spear_smi.c
-@@ -981,7 +981,7 @@ static int __devinit spear_smi_probe(struct platform_device *pdev)
- 	dev->pdev = pdev;
- 	dev->clk_rate = pdata->clk_rate;
- 
--	if (dev->clk_rate < 0 || dev->clk_rate > SMI_MAX_CLOCK_FREQ)
-+	if (dev->clk_rate > SMI_MAX_CLOCK_FREQ)
- 		dev->clk_rate = SMI_MAX_CLOCK_FREQ;
- 
- 	dev->num_flashes = pdata->num_flashes;
+
 -- 
-1.7.10.4
+for me, ck means con kolivas and not calvin klein... does it mean I'm a geek ?
