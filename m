@@ -1,20 +1,24 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T2M9u-0006X2-Mq
- for linux-mtd@lists.infradead.org; Fri, 17 Aug 2012 13:00:15 +0000
-Message-ID: <1345208698.27859.77.camel@sauron.fi.intel.com>
-Subject: Re: NAND Flash Programming for Production
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Joel Futterman <joel.futterman@iphotonix.com>
-Date: Fri, 17 Aug 2012 16:04:58 +0300
-In-Reply-To: <076270803FD11A42A33057E83F7C81390220DFC08FA5@AUSP01VMBX07.collaborationhost.net>
-References: <076270803FD11A42A33057E83F7C81390220DFC08FA5@AUSP01VMBX07.collaborationhost.net>
+ id 1T2MGe-0006pi-AP
+ for linux-mtd@lists.infradead.org; Fri, 17 Aug 2012 13:07:12 +0000
+Message-ID: <1345209115.27859.84.camel@sauron.fi.intel.com>
+Subject: Re: UBI fastmap updates
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Richard Weinberger <richard@nod.at>
+Date: Fri, 17 Aug 2012 16:11:55 +0300
+In-Reply-To: <1341836323-43916-1-git-send-email-richard@nod.at>
+References: <1341836323-43916-1-git-send-email-richard@nod.at>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-uAH/ZyLHKVKdZBkkIKdU"
+ boundary="=-+RQFhelgzX44+h1ZQMRM"
 Mime-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+Cc: nyoushchenko@mvista.com, linux-kernel@vger.kernel.org,
+ adrian.hunter@intel.com, Heinz.Egger@linutronix.de,
+ thomas.wucher@linutronix.de, linux-mtd@lists.infradead.org,
+ shmulik.ladkani@gmail.com, tglx@linutronix.de, Marius.Mazarel@ugal.ro,
+ tim.bird@am.sony.com
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,31 +29,46 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-uAH/ZyLHKVKdZBkkIKdU
+--=-+RQFhelgzX44+h1ZQMRM
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-07-18 at 16:54 -0500, Joel Futterman wrote:
-> We have implemented a UBIFS in our embedded MIPS system. We need to deliv=
-er our code to a vendor that performs the gang programming prior to product=
-ion. They use a BP Microsystems model 2800 Flash programmer. What format ar=
-e the files that we deliver in order for the programmer to create the UBI l=
-ayer. They are unable to produce a part with our UBI system properly in pla=
-ce. Is there a function within the BP Microsystems programmer that they are=
- missing?
+On Mon, 2012-07-09 at 14:18 +0200, Richard Weinberger wrote:
+> This is the next round of UBI fastmap updates.
+> It fixes all issues pointed out by Shmulik. :-)
+>=20
+> If you want to test fastmap you can use my git repo:
+> git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubi2.git ubi2/v17
 
-Here is some information on how UBI flasher should work:
+One thing which just came to my mind why looking at other MTD e-mails. I
+do not know if it is relevant for fastmap or not, just want you to
+check.
+
+In UBIFS we have we have the "fixup" feature which is used to
+work-around dumb flashers which are present in many factories:
+http://www.linux-mtd.infradead.org/faq/ubifs.html#L_free_space_fixup
+
+This is because the "correct" UBI flasher should be able to skip empty
+space when flashing, see here:
 http://www.linux-mtd.infradead.org/doc/ubi.html#L_flasher_algo
 
-If you do not have a possibility to implement a smart flasher, you can
-use a dumb flasher as well, just set the 'fixup' UBIFS flag, see here:
-http://www.linux-mtd.infradead.org/faq/ubifs.html#L_free_space_fixup
+So with this fixup flag UBIFS will basically read all its eraseblocks
+which have empty spece which it will use, and write them back. Just to
+make the empty space writable again. This is done only once on the very
+first boot.
+
+We do not do anything like this in UBI because UBI does not need this,
+it does not have any complex data structures on the media.
+
+With fastmap - I am unsure. I think it is not a problem, because
+probably you never append more data, you just re-write everything,
+right?
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-uAH/ZyLHKVKdZBkkIKdU
+--=-+RQFhelgzX44+h1ZQMRM
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -57,19 +76,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQLkF7AAoJECmIfjd9wqK0gPAQANCmQLGhS5Sp/Ak3xWhYw+4h
-5Y/f064jqgoQkMyPTh3s2vRsA2Jx994gZ0yCaDai+svMrkk5mKtbVyH8FECFQrIN
-BZzn3Musiy2liWd4IPI26StgeGuiW8Glzc+AcB/S/YwAd2hhvgZ4w9QWxySPXq3M
-odHh8jLbZsJHcwW/dJZcT+M/y8wbOJzHl54WA8mmp175KBpkT8QfE1/Lhcoy7OSf
-yRrq7fVLFeB8ufy4fK3YDTFmGEuCmCpEN3vj8079S6Ao6iyualXUw57eT848YsaR
-dlxdpQTSUwaNKJAyxjSeepjg6e1VfQSj1QjZuqREikMixW0JRLiZyOLOjcK58ut9
-ak5tzsgKONBVuWX2+A8Pq4JHDkphbMKq39TA4poXQ2z5jAkN0G1qZXYeluAMMDC6
-zYXY0i3z4pFIMRKezEmlj2JCGn2TFigCl8N6C2oFLEujaRAzRayp+keZ/UIyFoai
-40uJ/1GFnT5kYmJZHdWD3APF3r0jv9fsveaFnymVFW3y5ULagOJUiDheJf2jtZ17
-gOtMaGG4AfTuaC6HCd7xMMhaRpkRo363B+3dCr1ZeHVELPgJi46UDiZBc22mwXoP
-dSQ4ep5e1tVp/se2D16hVidFOaVWFOELerexZPe2FqIiH+rqowlksZjdTWp6MLwk
-Bs3+WDf1Ai/50qmuSI0q
-=og0e
+iQIcBAABAgAGBQJQLkMbAAoJECmIfjd9wqK0ZYgP/RzVGvW82uGMQb2BnfBEcsb9
+uUBq3Ne14+I1ARZCHyiw7hOi0XTxNktOfu2jzKQlhRz4tbumAQY0Ex1ujXwO1lL9
+9zEQN8EWNbyuzK64R+Uoy420Q9bgI22hS+zZ+rDkYqlw2OhR9AAaIqtSvxJPq+lT
+xhO6Fji5o6RIErXewBkBhNUd9CvOskDZ+njPxufvjbJiJzT8CTaCf/wcyq86D0Tc
+LiujdEQM+M+VHJ6NUDNuTkwgkTTxSSs0iEu6TXNSVAuA8yuJAukqwuyN6capdIpR
+r9d4otRtcQH/x4RVq6mUYkZOoanPHR4WA3G8vjhl8QfZR/o5bvL0LO0saXgXyBkY
+XIbzgaLjwzvl+WvGe/CRZmGsiA/dB0qL+tGKfEfYe2l2AOOXe1EVy1Cp/WyeajFF
+nSKFJB7zOLHwTlE0Yfs0nZ0xPV6DaaCR0gzwUKTtJJFSvzSHNN81qN4h00R1dxEA
+Io2mdmzk2tN+GM/b3rzW4991cMWoAvMRENIScO7AO3L9bcNE6e8e3lNClD/5LGi3
+EPLZ5e6WyVyKsRvIIs/GZT/VM/Hxn3u0wSxdK+gqiX9aQbMggKDGmQKMXdSKGuwG
+TvFRie/3Y/0huIyHt+jPpaNjXkaEZt51VUYbix1a19JxQ33b4iPemWBKjkizdX30
+WNFiD9JpAVuEZsMHB9gj
+=03PU
 -----END PGP SIGNATURE-----
 
---=-uAH/ZyLHKVKdZBkkIKdU--
+--=-+RQFhelgzX44+h1ZQMRM--
