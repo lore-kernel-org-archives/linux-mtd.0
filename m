@@ -1,27 +1,20 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T2N0g-0006oh-7C
- for linux-mtd@lists.infradead.org; Fri, 17 Aug 2012 13:54:47 +0000
-Message-ID: <502E4D20.3090408@parrot.com>
-Date: Fri, 17 Aug 2012 15:54:40 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
-MIME-Version: 1.0
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Subject: Re: MLC NAND: all 0xff after erase?
-References: <CAN8TOE9RyUuRtEfyqBfxt0W3Cfg2_SD6Hp4rMS0S+MgKsPY9UQ@mail.gmail.com>
- <20120711174309.GA25743@parrot.com>
- <1345197081.27859.37.camel@sauron.fi.intel.com>
-In-Reply-To: <1345197081.27859.37.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Cc: Mike Dunn <mikedunn@newsguy.com>, Richard Weinberger <richard@nod.at>,
- Kevin Cernekee <cernekee@gmail.com>, Jim Quinlan <jim2101024@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Al Viro <viro@zeniv.linux.org.uk>, Joel Reardon <reardonj@inf.ethz.ch>,
- Ivan Djelic <ivan.djelic@parrot.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>
+ id 1T2N4c-0006zE-71
+ for linux-mtd@lists.infradead.org; Fri, 17 Aug 2012 13:58:51 +0000
+Message-ID: <1345212215.27859.91.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/2] MTD: check for valid pdata inside plat_nand
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: John Crispin <blogic@openwrt.org>
+Date: Fri, 17 Aug 2012 17:03:35 +0300
+In-Reply-To: <1342940398-2162-1-git-send-email-blogic@openwrt.org>
+References: <1342940398-2162-1-git-send-email-blogic@openwrt.org>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-gg6Ny4DGiOMVd87eyLK4"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,28 +24,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem Bityutskiy a écrit :
-> On Wed, 2012-07-11 at 19:43 +0200, Ivan Djelic wrote:
->> Or, conversely, we could decide that erased pages are simply not
->> ecc-protected
->> (which is the actual truth with many drivers), can contain anything
->> (including
->> bitflips), and should be signalled as erased and dealt with in upper
->> layers... 
-> 
-> I did not not investigate this in details, but I believe UBI and UBIFS
-> can be changed and they can allow for a number of bit-flips. There are
-> only few places (may be even 2 - one in UBI and one in UBIFS) which
-> check if the area contains all 0xFFs. I do not see any obstacles
-> improving this and implement a smarter functions which would take a
-> buffer, it's length, ecc step size, and max allowable bit-flips as a
-> parameter, and check if the page is empty. This could even be an MTD
-> helper, something like 'mtd_area_is_empty()'.
-> 
-> I think in UBI we only verify if an area is empty in the debugging code,
-> to make sure we never write over older data. Should be easily fixable.
-AFAIK, we also check it when we do bit scrubbing on dynamic volume. We need to
-guess the written data size to do crc on it and not on the whole LEB (become it
-can be written later and will make the crc false).
 
-Matthieu
+--=-gg6Ny4DGiOMVd87eyLK4
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Sun, 2012-07-22 at 08:59 +0200, John Crispin wrote:
+> If plat_nand loads and the platform_data is not properly set it will segf=
+ault.
+>=20
+> Signed-off-by: John Crispin <blogic@openwrt.org>
+> Acked-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+> Cc: linux-mtd@lists.infradead.org
+> ---
+> I am seeing this when plat_nand is referenced inside my DT file but
+> CONFIG_MTD_NAND_XWAY is not selected, resulting in platform_data not bein=
+g
+> populated with valid data.
+
+Aiaiai complains like this for this patch-set:
+
+---------------------------------------------------------------------------=
+-----
+
+Successfully built configuration "mips-lantiq_defconfig,mips,mips-linux-", =
+results:
+
+--- before_patching.log
++++ after_patching.log
+@@ @@
++drivers/mtd/nand/xway_nand.c:145:9: warning: cast removes address space of=
+ expression [sparse]
++drivers/mtd/nand/xway_nand.c:163:25: warning: duplicate const  [sparse]
++drivers/mtd/nand/xway_nand.c:184:12: warning: symbol 'xway_register_nand' =
+was not declared. Should it be static? [sparse]
++drivers/mtd/nand/xway_nand.c:184:12: warning: no previous prototype for 'x=
+way_register_nand' [-Wmissing-prototypes]
+
+---------------------------------------------------------------------------=
+-----
+
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-gg6Ny4DGiOMVd87eyLK4
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQLk83AAoJECmIfjd9wqK0iLwP/3sip/OPggjOgWRHt2UZMpMq
+07lMGno+pZzde7iaxExaAY8xde1dPIY5zWm/qKzPtItBtFgxSYjpmMjATNR8gOPc
+kYKZkiAJYN6q2hY0jy7SibjnxahRA7DJT3pAkimaNXhBjetoXo4Mb60bc9hSNW9s
++/xvvCp9fapbp96+Q/2DSL0VJfv134iWhgQEGcKqmcPryhrEoC9UK+KnUv+efvDJ
+3+Uzy+EUT48Xm5DwSKtDF7QktKCLk4F/+Xu3LGlDmKdMrpo6CLLIZnCX5SzkakiT
+3pbebN8cdGPkr9A8p/UJY4pJHQSqgKgHn2+c+VP1l1fVG/UJY3stsIixAZbVfXx1
+xyKknipFhCO27dANLVf5qvKyh83Rf1hFVRVe5iK4yQX00O0vf0+cgx4SS5M3vPeA
+QRAGzGu/s92NB8WRgELS5cBkOLKZ+Q+v03iWiuwtOOFTcoob5raWVpdKWW757pv7
+lhO/jP1TpDidUGy5I0bl2AImNCTSSBAS80IYcC0UlRqDxhBiadHz67CiZ7VOeozz
+CGrfEUhCuqmhsYLsHTKayIKbd8Yi9vJdDb3c+WffyInXkkXq7weOqvO2YkwgzXjW
+6XhPMUD8iTnL5N1m0lDSaXVO3DMtcXsEsJgCy56ggM9APoGdFtKlon0ZmEcFXgV7
+mvKIP6AmMoMe724yRHqx
+=9qfF
+-----END PGP SIGNATURE-----
+
+--=-gg6Ny4DGiOMVd87eyLK4--
