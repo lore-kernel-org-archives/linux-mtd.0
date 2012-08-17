@@ -1,19 +1,26 @@
-Received: from [2a01:4f8:131:30e2::2] (helo=nbd.name)
- by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T2TYO-00052m-Oq
- for linux-mtd@lists.infradead.org; Fri, 17 Aug 2012 20:54:01 +0000
-Message-ID: <502EAF11.3050207@openwrt.org>
-Date: Fri, 17 Aug 2012 22:52:33 +0200
-From: John Crispin <blogic@openwrt.org>
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1T2UL8-0008Py-1A
+ for linux-mtd@lists.infradead.org; Fri, 17 Aug 2012 21:44:22 +0000
+Received: by pbbrq8 with SMTP id rq8so4179007pbb.36
+ for <linux-mtd@lists.infradead.org>; Fri, 17 Aug 2012 14:44:19 -0700 (PDT)
 MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCH 1/2] MTD: check for valid pdata inside plat_nand
-References: <1342940398-2162-1-git-send-email-blogic@openwrt.org>
- <1345212215.27859.91.camel@sauron.fi.intel.com>
-In-Reply-To: <1345212215.27859.91.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Ralf Baechle <ralf@linux-mips.org>
+Sender: dsdrake@gmail.com
+In-Reply-To: <1340018702.2420.32.camel@sauron.fi.intel.com>
+References: <20120609160825.GC6488@elgon.mountain>
+ <1340018702.2420.32.camel@sauron.fi.intel.com>
+Date: Fri, 17 Aug 2012 15:44:19 -0600
+Message-ID: <CAMLZHHSDCC1MWBLUCrpXHU_EtRPw3bf1kOTFWS-NE8q3Ane41w@mail.gmail.com>
+Subject: Re: [patch] mtd: cafe_nand: fix an & vs | mistake
+From: Daniel Drake <dsd@laptop.org>
+To: artem.bityutskiy@linux.intel.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Mike Dunn <mikedunn@newsguy.com>,
+ Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ kernel-janitors@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Dan Carpenter <dan.carpenter@oracle.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,37 +30,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 17/08/12 16:03, Artem Bityutskiy wrote:
-> On Sun, 2012-07-22 at 08:59 +0200, John Crispin wrote:
->> If plat_nand loads and the platform_data is not properly set it will segfault.
->>
->> Signed-off-by: John Crispin <blogic@openwrt.org>
->> Acked-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
->> Cc: linux-mtd@lists.infradead.org
->> ---
->> I am seeing this when plat_nand is referenced inside my DT file but
->> CONFIG_MTD_NAND_XWAY is not selected, resulting in platform_data not being
->> populated with valid data.
-> Aiaiai complains like this for this patch-set:
->
-> --------------------------------------------------------------------------------
->
-> Successfully built configuration "mips-lantiq_defconfig,mips,mips-linux-", results:
->
-> --- before_patching.log
-> +++ after_patching.log
-> @@ @@
-> +drivers/mtd/nand/xway_nand.c:145:9: warning: cast removes address space of expression [sparse]
-> +drivers/mtd/nand/xway_nand.c:163:25: warning: duplicate const  [sparse]
-> +drivers/mtd/nand/xway_nand.c:184:12: warning: symbol 'xway_register_nand' was not declared. Should it be static? [sparse]
-> +drivers/mtd/nand/xway_nand.c:184:12: warning: no previous prototype for 'xway_register_nand' [-Wmissing-prototypes]
->
-> -------------------------------------------------------------------------------
-Hi,
+On Mon, Jun 18, 2012 at 5:25 AM, Artem Bityutskiy
+<artem.bityutskiy@linux.intel.com> wrote:
+> Pushed this patch to l2-mtd.git and added CC to -stable. The patch seems
+> to be a real bug-fix. Daniel, could you please check it - it will be
+> shame if it hits -stable and breaks something.
 
-shame on me ... we are currently setting up a build bot to run *all*
-mips patches through aiaiai so this wont happen in future  ...
+Thanks for catching this, sorry for the delay in looking closely at
+it. I double-checked the device specifications and indeed, Dan's
+interpretation is correct.
 
-i will fix the patch and resend it ...
+I also tested the patch. System still remains functional and basic
+nand performance seems to be the same.
 
-John
+Thanks!
+Daniel
