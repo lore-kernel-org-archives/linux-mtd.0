@@ -1,19 +1,17 @@
-Received: from mga14.intel.com ([143.182.124.37])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T2KQO-0004qG-7T
- for linux-mtd@lists.infradead.org; Fri, 17 Aug 2012 11:09:09 +0000
-Message-ID: <1345202032.27859.53.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: nand/docg4: fix oob reads
+Message-ID: <1345202984.27859.54.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/1 v2] MTD: atmel nand: fix gpio missing request
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Dunn <mikedunn@newsguy.com>
-Date: Fri, 17 Aug 2012 14:13:52 +0300
-In-Reply-To: <1342030099-3326-1-git-send-email-mikedunn@newsguy.com>
-References: <1342030099-3326-1-git-send-email-mikedunn@newsguy.com>
+To: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+Date: Fri, 17 Aug 2012 14:29:44 +0300
+In-Reply-To: <1342081868-5995-1-git-send-email-plagnioj@jcrosoft.com>
+References: <1342071036-15905-1-git-send-email-plagnioj@jcrosoft.com>
+ <1342081868-5995-1-git-send-email-plagnioj@jcrosoft.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-H9UZI8/EoU98PTXFLkvZ"
+ boundary="=-kxblVJkNsyviuL3FH01l"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,30 +23,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-H9UZI8/EoU98PTXFLkvZ
+--=-kxblVJkNsyviuL3FH01l
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-07-11 at 11:08 -0700, Mike Dunn wrote:
-> This patch does two closely related things:
+On Thu, 2012-07-12 at 10:31 +0200, Jean-Christophe PLAGNIOL-VILLARD
+wrote:
+> without this the gpio will not be muxed as a gpio by the current custom p=
+inmux
+> or later by the pinctrl
 >=20
-> (1) Currently the ecc.read_page() method does not fill the nand->oob_poi =
-buffer
-> with the oob data, but instead reads oob into a local buffer.  Fix this b=
-y
-> filling the oob_poi buffer instead of a local buffer.  The 'oob_required'
-> argument is quietly ignored; the device must always read oob after the pa=
-ge
-> data, and it is presumed that there's no harm in filling oob_poi, even wh=
-en not
-> explicitly requested.
+> Signed-off-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+> Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
 
 Pushed to l2-mtd.git, thanks!
+
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-H9UZI8/EoU98PTXFLkvZ
+--=-kxblVJkNsyviuL3FH01l
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -56,19 +50,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQLidwAAoJECmIfjd9wqK0iIEP/AheD63vG8xbY2zbYkT7qXTQ
-pQco8NT3bNIvASTjEQb/het51xf28RuigKeJ4GYQVUjJSeW/NbflFaH9FUsxVIiw
-ynDn564L9MNvlxjdJ0x2ZwgBUrMNmZn2CPzJfJekAay67U9VenaU3h2F67xu4ZfF
-EZeRDCMQeQecIn7sfsA0BguiaAO4CVZyntNXpQpE6oMRHSpWKvXuoF0wak4LknSN
-mNpPRnu/pS86AfaTMM2H3zg5bHu+iSDDUBQh+l8oyV4aSYELHmSLO2SbGxRBfWGE
-Yz7oMl5uTe+QDHxpDvVOCHYof0wwUhGjvRFIC+WXTjj3KJWYP+OJE842y2LG8HJ/
-i7TVeIFiscT0Y1GAROSk9eL4FyubXpDloP2KhZVIIoiDzbtpgrCjFqIF+Mf4KR50
-XUGIFISiRHny0opXFinYaEOdUUopcx/kP2+ib68zWeouBCcE5em9nhbkNaBa4DO9
-jahVncuTYrmCOJebge2Dz48S7uA2ryOrJ6ff3XLCGOs6D4HD3VBtXjizP9A7Ehpr
-Hpp9ZOUKCOO5+6Wn2s4+GDCygrSo620d8hPFE+pRW/oetTcoBDQ5pA5SAY2kyLFB
-07Ffi46QU5hUXP00As7BYBOfHYyp4SFDmQDRYoMUkMNNQj13DbZfH+CBnopcmOrT
-6f5ZyYEz2F/YPQHddd9y
-=KdZR
+iQIcBAABAgAGBQJQLisoAAoJECmIfjd9wqK0OG8P/3j8ejGjIhr179IcriGPCrw8
+w8fFt4sIO+FA2MTi8YIli/oQn6hJ2TY/xAkfshWVzkW7XSM0K4x3b3aEn145fX3L
+dhoc/9kdxZipH3xzUjVdubZv5SunybYKTB208DHTd9v2uNFveCXW51fWU1QE3LdV
+2l4PnBdyspNQZPJQdxCk0h336iPv1fuDFBcAGYyykCWdSYAlR82kr5enTJIDVw1J
+ff4aFvyo5bkur0n8k9mCxxDKOZdUEDQEuNlnnf50OfTenOdgdd/3NAyJLzwzF5ov
+aHGLBDZaX1u0ZIZwuiMuToh4ZOMl0OWP6zh7vptpT5lNat5IuWpEdZkjiWqST1qu
+QEFDgCHfRMSRzbgyFdgJQpsMdNRYZbuRBODqk5ztnmcpo4GSo6qIntGNiWzTCcLb
+x2X/iLnA7Eg7OBlJbHXgdueg1/uteQSASfPM11NtvFXDa0rwtP6jVk0ozbakPZoL
+c++LGWKj3MyZM2LnGIDPEXUfUsRoJxdMFLmzxMqkqgDz/KPtvEcabH5bXTqW+7Wx
+c1L7yUQCuLo7zO2fvNI20MnRei2ruVMABwGBBya8ui55uPoorzMlfIJO6R4B6+0M
+j2ExnjhjWvMYkXIDYZlyKFAwiLD4v/L2Tv9mtEI+mPegZwcUBKUFMbtj30sP2zJQ
+HuVDGW8wyYfGkS2/Dhi5
+=ZskA
 -----END PGP SIGNATURE-----
 
---=-H9UZI8/EoU98PTXFLkvZ--
+--=-kxblVJkNsyviuL3FH01l--
