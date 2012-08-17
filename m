@@ -1,17 +1,19 @@
-Message-ID: <1345202984.27859.54.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/1 v2] MTD: atmel nand: fix gpio missing request
+Received: from mga02.intel.com ([134.134.136.20])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1T2Kn7-0007MO-1E
+ for linux-mtd@lists.infradead.org; Fri, 17 Aug 2012 11:32:38 +0000
+Message-ID: <1345203441.27859.56.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 0/2] GPIO control of physmap-ed chip's VPP
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-Date: Fri, 17 Aug 2012 14:29:44 +0300
-In-Reply-To: <1342081868-5995-1-git-send-email-plagnioj@jcrosoft.com>
-References: <1342071036-15905-1-git-send-email-plagnioj@jcrosoft.com>
- <1342081868-5995-1-git-send-email-plagnioj@jcrosoft.com>
+To: Pawel Moll <pawel.moll@arm.com>
+Date: Fri, 17 Aug 2012 14:37:21 +0300
+In-Reply-To: <1342111121-23161-1-git-send-email-pawel.moll@arm.com>
+References: <1342111121-23161-1-git-send-email-pawel.moll@arm.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-kxblVJkNsyviuL3FH01l"
+ boundary="=-lZGBtJ+5Wf7dQbTgNkhO"
 Mime-Version: 1.0
-Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,26 +25,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-kxblVJkNsyviuL3FH01l
+--=-lZGBtJ+5Wf7dQbTgNkhO
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-07-12 at 10:31 +0200, Jean-Christophe PLAGNIOL-VILLARD
-wrote:
-> without this the gpio will not be muxed as a gpio by the current custom p=
-inmux
-> or later by the pinctrl
+On Thu, 2012-07-12 at 17:38 +0100, Pawel Moll wrote:
+> Hi All,
 >=20
-> Signed-off-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-> Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
+> Some time ago physmap driver gained "set_vpp" platform function. That's
+> good but it can't be used on a Device Tree platform. This micro-series
+> adds the necessary bindings in the physmap_of driver, and - to keep
+> harmony in nature ;-) - makes similar change in the "normal" physmap
+> driver.
 
-Pushed to l2-mtd.git, thanks!
+Hi, would you please re-send it with the following mailing lists in CC
+as well:
+
+devicetree-discuss@lists.ozlabs.org
+linux-arm-kernel@lists.infradead.org
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-kxblVJkNsyviuL3FH01l
+--=-lZGBtJ+5Wf7dQbTgNkhO
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -50,19 +56,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQLisoAAoJECmIfjd9wqK0OG8P/3j8ejGjIhr179IcriGPCrw8
-w8fFt4sIO+FA2MTi8YIli/oQn6hJ2TY/xAkfshWVzkW7XSM0K4x3b3aEn145fX3L
-dhoc/9kdxZipH3xzUjVdubZv5SunybYKTB208DHTd9v2uNFveCXW51fWU1QE3LdV
-2l4PnBdyspNQZPJQdxCk0h336iPv1fuDFBcAGYyykCWdSYAlR82kr5enTJIDVw1J
-ff4aFvyo5bkur0n8k9mCxxDKOZdUEDQEuNlnnf50OfTenOdgdd/3NAyJLzwzF5ov
-aHGLBDZaX1u0ZIZwuiMuToh4ZOMl0OWP6zh7vptpT5lNat5IuWpEdZkjiWqST1qu
-QEFDgCHfRMSRzbgyFdgJQpsMdNRYZbuRBODqk5ztnmcpo4GSo6qIntGNiWzTCcLb
-x2X/iLnA7Eg7OBlJbHXgdueg1/uteQSASfPM11NtvFXDa0rwtP6jVk0ozbakPZoL
-c++LGWKj3MyZM2LnGIDPEXUfUsRoJxdMFLmzxMqkqgDz/KPtvEcabH5bXTqW+7Wx
-c1L7yUQCuLo7zO2fvNI20MnRei2ruVMABwGBBya8ui55uPoorzMlfIJO6R4B6+0M
-j2ExnjhjWvMYkXIDYZlyKFAwiLD4v/L2Tv9mtEI+mPegZwcUBKUFMbtj30sP2zJQ
-HuVDGW8wyYfGkS2/Dhi5
-=ZskA
+iQIcBAABAgAGBQJQLizyAAoJECmIfjd9wqK0yLEP/3doKp+/UfxGi9GPAgBEXxmk
+nRo/3v/j1nokBq/pWmaxiT4qILs8MoKOLiLtSbGlnaLfnBrTCXdpDkyHIsjqLrZw
+DhAvCMOMJtyRwdX6+lr+WKF6f4qQAhorl/hb4ivZ8sl6glrE9XRHr+ECGrK0BkpV
+Jr8W1PJnRCP68hi82GKPqLlK9Z7FChT1tPjZEqb9e3PZxL0DtNVxM3Dj8gSwspf7
+NbdfSj1I97sl/X5nJt7dSRH29WT/wyj53IEstaoTTtH05As168ocgjHu1vVjgeLR
+ZexuMMsTRlP2h2CCxH9G/JvuZUJBfotC+SBkqdQNg8IR/n29Nj71TBJgFte8Zxkk
+t7uX9SaMSmBMwKXErzktGELVCkXtlC3+bZlU1pbOwG7b4qwXM4aGllp2a4Xa4LE/
+RSlk/d9UEIDqtAQevAcF3bls1Weddn2F8Q9zIBEoxjNp6zefWkqh3pWUr2Iy4zHL
+Ve/ySJWLl32m3F4No9Nwfl5UbLf4+IV0G8kLiHGv9IPP82urnHY2YO3m0HmXEI6A
+DnkLEAznfUcR/xNvi9SlvDP6P//43iEop6J2Sy6TfpPx+djDhva0/MPIbmSCQGir
+iy0ZljTkczkTIfeO/Z/aiWHBzpFvAtpJbBjtWxNUNe7VaoV+LqWjNp2xtKfwAym0
+Lg+1Z48/NG4LqpdAM4Ng
+=4CQb
 -----END PGP SIGNATURE-----
 
---=-kxblVJkNsyviuL3FH01l--
+--=-lZGBtJ+5Wf7dQbTgNkhO--
