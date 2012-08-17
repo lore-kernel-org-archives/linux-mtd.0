@@ -1,22 +1,20 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T2MMx-0001Nr-Fw
- for linux-mtd@lists.infradead.org; Fri, 17 Aug 2012 13:13:44 +0000
-Message-ID: <1345209495.27859.87.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v2] mtd: physmap_of: Add "no-unaligned-direct-access" DT
- property
+ id 1T2MQK-0002X3-0S
+ for linux-mtd@lists.infradead.org; Fri, 17 Aug 2012 13:17:13 +0000
+Message-ID: <1345209717.27859.88.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] nand omap2: fix some typos in comments
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Stefan Roese <sr@denx.de>
-Date: Fri, 17 Aug 2012 16:18:15 +0300
-In-Reply-To: <1342683840-31665-1-git-send-email-sr@denx.de>
-References: <1342683840-31665-1-git-send-email-sr@denx.de>
+To: Peter Meerwald <pmeerw@pmeerw.net>
+Date: Fri, 17 Aug 2012 16:21:57 +0300
+In-Reply-To: <1342696864-26236-1-git-send-email-pmeerw@pmeerw.net>
+References: <1342696864-26236-1-git-send-email-pmeerw@pmeerw.net>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-mynk2Gk0HP/w04gA9OUL"
+ boundary="=-x/NXcsiRMsGx6RwkzQZS"
 Mime-Version: 1.0
-Cc: Albrecht Dress <albrecht.dress@arcor.de>,
- David Woodhouse <dwmw2@infradead.org>, Anatolij Gustschin <agust@denx.de>,
- linux-mtd@lists.infradead.org, Stephan Gatzka <Stephan.Gatzka@hbm.com>
+Cc: jzhang@ti.com, linux-mtd@lists.infradead.org, David.Woodhouse@intel.com,
+ Peter Meerwald <p.meerwald@bct-electronic.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,35 +26,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-mynk2Gk0HP/w04gA9OUL
+--=-x/NXcsiRMsGx6RwkzQZS
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-07-19 at 09:44 +0200, Stefan Roese wrote:
-> On some platforms (e.g. MPC5200) a direct 1:1 mapping may cause
-> problems with JFFS2 usage, as the local bus (LPB) doesn't support
-> unaligned accesses as implemented in the JFFS2 code via memcpy().
-> By defining "no-unaligned-direct-access", the flash will not be
-> exposed directly to the MTD users (e.g. JFFS2) any more.
+On Thu, 2012-07-19 at 13:21 +0200, Peter Meerwald wrote:
+> From: Peter Meerwald <p.meerwald@bct-electronic.com>
 >=20
-> Signed-off-by: Stefan Roese <sr@denx.de>
-> Cc: Stephan Gatzka <Stephan.Gatzka@hbm.com>
-> Cc: Anatolij Gustschin <agust@denx.de>
-> Cc: Albrecht Dress <albrecht.dress@arcor.de>
-> Cc: Artem Bityutskiy <dedekind1@gmail.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
+> Signed-off-by: Peter Meerwald <p.meerwald@bct-electronic.com>
 
-Hi, would you please re-send it with the following mailing lists in CC
-as well:
-
-devicetree-discuss@lists.ozlabs.org
-linux-arm-kernel@lists.infradead.org
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-mynk2Gk0HP/w04gA9OUL
+--=-x/NXcsiRMsGx6RwkzQZS
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -64,19 +49,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQLkSXAAoJECmIfjd9wqK0VT0P/ju61V3KUwZB2tQSlrmwniQE
-tC/+UYR66+zWczbpGdWtZOyFNpGDT5e3F/8NcCyhrRL/byjZZfEww6N6Hz4UsWng
-SVtiohBEHABdpvZw0OXn3S9fYXwEu1BYXw27bJK6496tTBY+6yBkVWlQ8rV1OMZQ
-dYJ2OFKZSjkEfHV+t9cAKA/ou86RSbwbDnEok5XMSPGpfFUyxjFhMzGTj67HU9mY
-SmulTJGIC8USG7DZiTZqW6KIbocwtJyh225tqdq/7G8eXKzVQYAXAQWypYFE+CWW
-Q8SeCWNyO8dmU2qffna+wiLxC65874/SjGlFHGkdzTfDW+xH1Qu56BF5iqxnoWKb
-HP8+3vsSCAyNxNB3ES11L2nGAVaost753EpxccLSM9gk24KroR/0Oq/PJSrTc11I
-u8ZEtyW5NEeRJ6rSH6wKdqwsYheQVRMR5A4qGAORr+6KXiNgU9fpdGkVKH4FHPER
-3O7ZPWdB+9Ir824a0i4FklFtgofAddvtELoRAajd05MTj0sdKgXPUd4v7cxpJyJH
-VLlHIfYdArQxhZUlYPMb0Bm6aVnd8kRD08gFamUaFJescQsS7/KVpH/UJFUdS/p2
-ZCS3w4mobpHUamV5gXq2SY/tb1WHn+srQpDB/gC4yXC9I3h87P6R9om7ZnQ8kmge
-2far7W7FBVFcrFD+20vS
-=GFaO
+iQIcBAABAgAGBQJQLkV1AAoJECmIfjd9wqK0KFoP/iJAGuk4vj3LWlyQ9OKTBCqy
+5Rc8jOL0wtHb4eSUnUHr8LsEqsImOD/QjOjJpnOKEg1fk+DPbGNyketggj7McSfQ
+t0IE3Zt8sCraYvUOxxKFWr5voOiE0GyW1/Q/Ifar1XxvQtlZz9V5TminWDcR3oKn
+8NKLsM9Wq2BPOJ683zQh+QI+zb7I9cyTgekbCWcEw45C6coZUNO5THBr50h/t176
+RgUrFCzr+JRKSOOtBL+SlnFwln4bAcKAk8jrTW20d+Pq8pK5KaKooMaTThv8nF3e
+/CXUcSroZL49HmAApEklXYz4K6sZ+60/kPxgDDBTzX9WBiOeexPaPlm53rfYE6lu
+hewsXrqYNI370ec+0yYjF+Nru+Qr2qOPwQC6nE0PvXeispWb0X+V3bCxiXHagT9g
+Uo3Rb9mc6byB06sdafwZfW/V5J9o3R/w0gHY1aeXLuxGYl5/frISQKVajaabUqNs
+R/H1ykUVqTAtnJ/Wdguz7BNlTU+vZLNBu9L+LGCK7g9xOzzrHBiupaeJMLHvV+cT
+teDUHylgIWWZy5oU0CPoCHO90owPF8gG/dCOUBOWjU7RkWGeVxG1ICQIUyXDNl0b
+SI9QLwSwh8tDtZTDmgqGfe7m9Wyoxc+fpaMfILKxeVe1Nj2uB6/n/muQj+FB2uO7
+LehLZuUdVGE/nx26wGvg
+=3QPl
 -----END PGP SIGNATURE-----
 
---=-mynk2Gk0HP/w04gA9OUL--
+--=-x/NXcsiRMsGx6RwkzQZS--
