@@ -1,23 +1,21 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T2LeO-0004EE-3F
- for linux-mtd@lists.infradead.org; Fri, 17 Aug 2012 12:27:40 +0000
-Message-ID: <1345206743.27859.68.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: nand: allow NAND_NO_SUBPAGE_WRITE to be set from
- driver
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Fri, 17 Aug 2012 15:32:23 +0300
-In-Reply-To: <1342196904-13850-1-git-send-email-computersforpeace@gmail.com>
-References: <1342196904-13850-1-git-send-email-computersforpeace@gmail.com>
+ id 1T2Ln4-0004aq-DX
+ for linux-mtd@lists.infradead.org; Fri, 17 Aug 2012 12:36:39 +0000
+Message-ID: <1345207255.27859.70.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH RESEND 1/2] MTD: autcpu12-nvram: Fix compile breakage
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Alexander Shiyan <shc_work@mail.ru>
+Date: Fri, 17 Aug 2012 15:40:55 +0300
+In-Reply-To: <1345048086-15709-1-git-send-email-shc_work@mail.ru>
+References: <1345048086-15709-1-git-send-email-shc_work@mail.ru>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-uaHlZN+piYX6cyH3TS86"
+ boundary="=-3ik6FXvoaS/r04JXf7aw"
 Mime-Version: 1.0
-Cc: Scott Wood <scottwood@freescale.com>, David Woodhouse <dwmw2@infradead.org>,
- Marek Vasut <marex@denx.de>, linux-mtd@lists.infradead.org,
- Huang Shijie <shijie8@gmail.com>
-Reply-To: dedekind1@gmail.com
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Arnd Bergmann <arnd@arndb.de>
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,38 +26,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-uaHlZN+piYX6cyH3TS86
+--=-3ik6FXvoaS/r04JXf7aw
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2012-07-13 at 09:28 -0700, Brian Norris wrote:
-> The NAND_CHIPOPTIONS_MSK has limited utility and is causing real bugs. It
-> silently masks off at least one flag that might be set by the driver
-> (NAND_NO_SUBPAGE_WRITE). This breaks the GPMI NAND driver and possibly
-> others.
+On Wed, 2012-08-15 at 20:28 +0400, Alexander Shiyan wrote:
+> Update driver autcpu12-nvram.c so it compiles. map_read32/map_write32
+> are no longer exist in the kernel so the driver is totally broken.
+> Additionally, map_info name passed to simple_map_init is incorrect.
 >=20
-> Really, as long as driver writers exercise a small amount of care with
-> NAND_* options, this mask is not necessary at all; it was only here to
-> prevent certain options from accidentally being set by the driver. But th=
-e
-> original thought turns out to be a bad idea occasionally. Thus, kill it.
->=20
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
 
-Pushed to l2-mtd.git, thanks.
+Would you please send me a defconfig that I could use to compile-test
+this driver?
 
-> If this is acceptable, should it go to -stable, since it fixes some major
-> gpmi-nand breakage? It probably won't apply directly, since I've touched =
-some
-> code around it recently.
+Also, does this need Cc: stable@vger.kernel.org ?
 
-Done.
+Thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-uaHlZN+piYX6cyH3TS86
+--=-3ik6FXvoaS/r04JXf7aw
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -67,19 +56,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQLjnXAAoJECmIfjd9wqK04MsP/A5H5srD00CpYeDmF13oX4rG
-+4572BVU3lAsEw89ve/Q7j9IL58cs1uo5Jv1ypI+n8lRb111YPmp81v7llA467kR
-wIUF2NBjR64LMJmtkioVAPndf5sNbgTJ2j8CaYXVR/9a4ntB+Q2juda8wRgIqnwN
-siprkZ9ny+ycwVYEmlef3FnrrE4VwLrySD2rQ9P+NbHXiQfHRPESW0rSBxk+z5rm
-9X8V9jtWi46hO1swl6rZFV3Eu6+i7ei3d1205pyx+z1rKQ17SGyqnAvuNVEChy33
-2nn8TOSVI8nFjtzgoXMwcfUct7T+QfHFTITa6Vv814n9RVlY+/AduZc9FqVB7Igh
-RwGCgxaH0BA7Ul19r96jQ/j52alZ9rHebtCjuW5suK/d/TpVYuiT54lXBVc30OId
-9Ep0fCWqdYld8C0eVwmAMBHFhdqVUPcNkYzcZF1ubYHCPJEY/Fxy9EpkWTZ30F8B
-dQ4ykCxtjgad3llooCqSIFNOD6TBRCGfLEaqDQ51dshgWA0YyJtrnq2Ftiu1qnmt
-P3oqyL3bikDL/Tnp9VDOY+f0aMhhfoh6LTHf/Q0lCxbeClTS5nIpAkJANSkrbya4
-RVf0fj4CpPYdUJkWcbDIZsMAkPOIVG4CXmEfrPQsqQHuWM68jJk+jZQPWZISM9cX
-u4Gl+cVxMiLEThgrVbNx
-=jyB8
+iQIcBAABAgAGBQJQLjvXAAoJECmIfjd9wqK0G6YQALCUv2onpfiHV+krN3pNjiew
+OYitd53yn9R4ZcuO+UEK74O8nIbg2cxG7ts/7NiDyAZwWzouFLfkIWcq0CVfhvE+
+8p4zbs5iqVZ2longU8ot/WTpb5s9EhObPjp+H49jy+bBTvL1tN498FcSB5VQD1DH
+Uj3ivIu8Id4+WnEd8LUHifsLxytZdsRlgn2VYTepiqdwzlanKXdkp/33b6rP3EQH
+g0PyVdVdRDK9ic3R5Ww4XMxDqFhsJTyJTSlpCQ8rnUfmhs4bS780G+KH9cyYBWyw
+8ToznkQVxw8fXxsidTRly/Yc8x4XPG9byu6+3uHlejYlex5MIsmoFHjk7RrUE7JQ
+9eLLUX6dPhCd6cg0l2ogYIsXmdx8L9mf4N3wZuR3ikem7XnhvRHTlxGehM8zHtXE
+AuYy6dmfakwn0rRmRGjRNMugUmewtBlfxgT+PPvdSlE7dC8lnAsjRvXUvIiqfLc0
+njAGWoL5UPPKQXrBy4b2Ohj3ek0IGaFUzC5MjxqIlNIlk1WwHCyoOrY4dOFgEqqM
+962vEe7sa/6eN/wEl1t0hZEfAmmyQ5YLwr4gyYuzDRToKC13cnfm7QGrzcLCUP11
+J/CWfIBtabL/YkM00z1G1Ir7GuFkACEZNQZkRHoUU2KHHwdmL191fwFDccZMFv1Z
+p9nWC3Oy1xOw2+8FNCQN
+=OWzX
 -----END PGP SIGNATURE-----
 
---=-uaHlZN+piYX6cyH3TS86--
+--=-3ik6FXvoaS/r04JXf7aw--
