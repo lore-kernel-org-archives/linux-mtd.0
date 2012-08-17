@@ -1,20 +1,17 @@
-Received: from smtp13.mail.ru ([94.100.176.90])
+Received: from mail-wi0-f171.google.com ([209.85.212.171])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T2Ntt-0007tW-FO
- for linux-mtd@lists.infradead.org; Fri, 17 Aug 2012 14:51:50 +0000
-Date: Fri, 17 Aug 2012 18:51:16 +0400
-From: Alexander Shiyan <shc_work@mail.ru>
-To: artem.bityutskiy@linux.intel.com
-Subject: Re: [PATCH RESEND 1/2] MTD: autcpu12-nvram: Fix compile breakage
-Message-Id: <20120817185116.a2e565b2.shc_work@mail.ru>
-In-Reply-To: <1345207255.27859.70.camel@sauron.fi.intel.com>
-References: <1345048086-15709-1-git-send-email-shc_work@mail.ru>
- <1345207255.27859.70.camel@sauron.fi.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Arnd Bergmann <arnd@arndb.de>
+ id 1T2NzU-00087p-F3
+ for linux-mtd@lists.infradead.org; Fri, 17 Aug 2012 14:57:37 +0000
+Received: by wibhq4 with SMTP id hq4so1325900wib.0
+ for <linux-mtd@lists.infradead.org>; Fri, 17 Aug 2012 07:57:34 -0700 (PDT)
+From: Richard Genoud <richard.genoud@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH 0/4] mtd-utils/ubiattach: introduce max_beb_per1024 in
+ UBI_IOCATT
+Date: Fri, 17 Aug 2012 16:57:18 +0200
+Message-Id: <1345215442-19082-1-git-send-email-richard.genoud@gmail.com>
+Cc: Richard Genoud <richard.genoud@gmail.com>, linux-mtd@lists.infradead.org,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,15 +21,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 17 Aug 2012 15:40:55 +0300
-Artem Bityutskiy <artem.bityutskiy@linux.intel.com> wrote:
+Artem,
+Here are the patches splitted for the UBI_IOCATT ioctl.
+I separated the ubi-user.h in 3 patches:
+one sync before my kernel change, another before dropping
+CONFIG_MTD_UBI_BEB_LIMIT, and another after.
+(If you decide not to drop CONFIG_MTD_UBI_BEB_LIMIT in the kernel, it will be
+easier, and you can always squash the first 2 or 3 patches into 1).
 
-> > Update driver autcpu12-nvram.c so it compiles. map_read32/map_write32
-> > are no longer exist in the kernel so the driver is totally broken.
-> > Additionally, map_info name passed to simple_map_init is incorrect.
-> Would you please send me a defconfig that I could use to compile-test
-> this driver?
-Have been sent.
+Best Regards,
+Richard.
+
+Richard Genoud (4):
+  sync include/mtd/ubi-user.h with kernel v3.6-rc1
+  sync include/mtd/ubi-user.h: add max_beb_per1024 parameter
+  sync include/mtd/ubi-user.h: DROP CONFIG_MTD_UBI_BEB_LIMIT
+  ubiattach: introduce max_beb_per1024 in UBI_IOCATT
+
+ include/mtd/ubi-user.h             |  155 +++++++++++++++++++----------------
+ tests/fs-tests/integrity/integck.c |    1 +
+ ubi-utils/include/libubi.h         |    2 +
+ ubi-utils/libubi.c                 |    2 +
+ ubi-utils/ubiattach.c              |   41 ++++++++--
+ 5 files changed, 122 insertions(+), 79 deletions(-)
 
 -- 
-Alexander Shiyan <shc_work@mail.ru>
+1.7.2.5
