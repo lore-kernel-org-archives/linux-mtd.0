@@ -1,26 +1,24 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T2UL8-0008Py-1A
- for linux-mtd@lists.infradead.org; Fri, 17 Aug 2012 21:44:22 +0000
-Received: by pbbrq8 with SMTP id rq8so4179007pbb.36
- for <linux-mtd@lists.infradead.org>; Fri, 17 Aug 2012 14:44:19 -0700 (PDT)
+ id 1T2VUh-00041L-4u
+ for linux-mtd@lists.infradead.org; Fri, 17 Aug 2012 22:58:19 +0000
+Received: by yenq9 with SMTP id q9so4759418yen.36
+ for <linux-mtd@lists.infradead.org>; Fri, 17 Aug 2012 15:58:18 -0700 (PDT)
 MIME-Version: 1.0
-Sender: dsdrake@gmail.com
-In-Reply-To: <1340018702.2420.32.camel@sauron.fi.intel.com>
-References: <20120609160825.GC6488@elgon.mountain>
- <1340018702.2420.32.camel@sauron.fi.intel.com>
-Date: Fri, 17 Aug 2012 15:44:19 -0600
-Message-ID: <CAMLZHHSDCC1MWBLUCrpXHU_EtRPw3bf1kOTFWS-NE8q3Ane41w@mail.gmail.com>
-Subject: Re: [patch] mtd: cafe_nand: fix an & vs | mistake
-From: Daniel Drake <dsd@laptop.org>
-To: artem.bityutskiy@linux.intel.com
+In-Reply-To: <1345114118.3393.199.camel@sauron.fi.intel.com>
+References: <1340408145-24531-1-git-send-email-computersforpeace@gmail.com>
+ <1340408145-24531-3-git-send-email-computersforpeace@gmail.com>
+ <1345029870.3393.128.camel@sauron.fi.intel.com>
+ <CAN8TOE9wC6_NQ=DMX70ovWzP4JuFZKsORgn53Jq9ZNSGcFiCig@mail.gmail.com>
+ <1345114118.3393.199.camel@sauron.fi.intel.com>
+Date: Fri, 17 Aug 2012 15:58:18 -0700
+Message-ID: <CAN8TOE825Hoo=MGBFOb344D+G54pt6OZP5F4pcGc+_+2EXMKew@mail.gmail.com>
+Subject: Re: [PATCH 2/8] mtd: check for max_bitflips in mtd_read_oob()
+From: Brian Norris <computersforpeace@gmail.com>
+To: dedekind1@gmail.com
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: Mike Dunn <mikedunn@newsguy.com>,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- kernel-janitors@vger.kernel.org, linux-mtd@lists.infradead.org,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Dan Carpenter <dan.carpenter@oracle.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Mike Dunn <mikedunn@newsguy.com>,
+ linux-mtd@lists.infradead.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,18 +28,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jun 18, 2012 at 5:25 AM, Artem Bityutskiy
-<artem.bityutskiy@linux.intel.com> wrote:
-> Pushed this patch to l2-mtd.git and added CC to -stable. The patch seems
-> to be a real bug-fix. Daniel, could you please check it - it will be
-> shame if it hits -stable and breaks something.
+On Thu, Aug 16, 2012 at 3:48 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Wed, 2012-08-15 at 12:15 -0700, Brian Norris wrote:
+>> Note that there was a v2 of this patch, although the difference was
+>> very minor (the comments and the Reviewed-by's). The end result is
+>> almost the same as your amendments.
+>
+> Reviewed-by tags are important for me, because people spent time and
+> they should be credited in some form in git log.
 
-Thanks for catching this, sorry for the delay in looking closely at
-it. I double-checked the device specifications and indeed, Dan's
-interpretation is correct.
+Right, I understood this, and those tags were reflected in my v2.
 
-I also tested the patch. System still remains functional and basic
-nand performance seems to be the same.
+> I actually collected
+> all the tags from the thread and added them when applying your patches.
+
+Yes, I was only commenting that while you took and amended my v1, it
+ended up being nearly identical to my v2 - including the Reviewed-by
+tags. They only differed by some punctuation or something else
+trivial.
 
 Thanks!
-Daniel
+
+Brian
