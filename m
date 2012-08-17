@@ -1,21 +1,21 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T2Ln4-0004aq-DX
- for linux-mtd@lists.infradead.org; Fri, 17 Aug 2012 12:36:39 +0000
-Message-ID: <1345207255.27859.70.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH RESEND 1/2] MTD: autcpu12-nvram: Fix compile breakage
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Alexander Shiyan <shc_work@mail.ru>
-Date: Fri, 17 Aug 2012 15:40:55 +0300
-In-Reply-To: <1345048086-15709-1-git-send-email-shc_work@mail.ru>
-References: <1345048086-15709-1-git-send-email-shc_work@mail.ru>
+ id 1T2Lsf-0004ua-6B
+ for linux-mtd@lists.infradead.org; Fri, 17 Aug 2012 12:42:25 +0000
+Message-ID: <1345207610.27859.71.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/6] mtd: s3c2410: Use module_platform_driver()
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Sachin Kamat <sachin.kamat@linaro.org>
+Date: Fri, 17 Aug 2012 15:46:50 +0300
+In-Reply-To: <1342434747-27622-1-git-send-email-sachin.kamat@linaro.org>
+References: <1342434747-27622-1-git-send-email-sachin.kamat@linaro.org>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-3ik6FXvoaS/r04JXf7aw"
+ boundary="=-ho59VK9/2kMxLRPZHDQk"
 Mime-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Arnd Bergmann <arnd@arndb.de>
-Reply-To: artem.bityutskiy@linux.intel.com
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+ David.Woodhouse@intel.com, ben-linux@fluff.org, patches@linaro.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,29 +26,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-3ik6FXvoaS/r04JXf7aw
+--=-ho59VK9/2kMxLRPZHDQk
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-08-15 at 20:28 +0400, Alexander Shiyan wrote:
-> Update driver autcpu12-nvram.c so it compiles. map_read32/map_write32
-> are no longer exist in the kernel so the driver is totally broken.
-> Additionally, map_info name passed to simple_map_init is incorrect.
+On Mon, 2012-07-16 at 16:02 +0530, Sachin Kamat wrote:
+> This makes the code simpler by eliminating module_init() and
+> module_exit().
 >=20
-> Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+> Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 
-Would you please send me a defconfig that I could use to compile-test
-this driver?
-
-Also, does this need Cc: stable@vger.kernel.org ?
-
-Thanks!
+Could you please send me a defconfig which I can use to compile-test
+this?
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-3ik6FXvoaS/r04JXf7aw
+--=-ho59VK9/2kMxLRPZHDQk
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -56,19 +51,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQLjvXAAoJECmIfjd9wqK0G6YQALCUv2onpfiHV+krN3pNjiew
-OYitd53yn9R4ZcuO+UEK74O8nIbg2cxG7ts/7NiDyAZwWzouFLfkIWcq0CVfhvE+
-8p4zbs5iqVZ2longU8ot/WTpb5s9EhObPjp+H49jy+bBTvL1tN498FcSB5VQD1DH
-Uj3ivIu8Id4+WnEd8LUHifsLxytZdsRlgn2VYTepiqdwzlanKXdkp/33b6rP3EQH
-g0PyVdVdRDK9ic3R5Ww4XMxDqFhsJTyJTSlpCQ8rnUfmhs4bS780G+KH9cyYBWyw
-8ToznkQVxw8fXxsidTRly/Yc8x4XPG9byu6+3uHlejYlex5MIsmoFHjk7RrUE7JQ
-9eLLUX6dPhCd6cg0l2ogYIsXmdx8L9mf4N3wZuR3ikem7XnhvRHTlxGehM8zHtXE
-AuYy6dmfakwn0rRmRGjRNMugUmewtBlfxgT+PPvdSlE7dC8lnAsjRvXUvIiqfLc0
-njAGWoL5UPPKQXrBy4b2Ohj3ek0IGaFUzC5MjxqIlNIlk1WwHCyoOrY4dOFgEqqM
-962vEe7sa/6eN/wEl1t0hZEfAmmyQ5YLwr4gyYuzDRToKC13cnfm7QGrzcLCUP11
-J/CWfIBtabL/YkM00z1G1Ir7GuFkACEZNQZkRHoUU2KHHwdmL191fwFDccZMFv1Z
-p9nWC3Oy1xOw2+8FNCQN
-=OWzX
+iQIcBAABAgAGBQJQLj06AAoJECmIfjd9wqK0AEMP/jqakWWIxDQVnTxeOZDSaMxn
+zc2rjTIBC7DRxzZujlrtHptDQ8DtjMOG8YFsIL7T7msUfXajqz10zGxGdvdpBujm
+LLACj8vpFfb5R12/RzmSz/kIaLupxiG5oDdNhuRbZdpxYmLjzG9FRN8capuxTM+N
+X/tIOnhP0bAbUWNP1yQZVT0bBhbGKsEMz8KTf5kGxHPcGCUKQXJw66RVhORuiTbB
+ljaH6Ns5u0N1pRbig0AyFlVY6qJWAcbFTvDc7/MnJAlwXtYoVrwtMebkKnYmyq+t
+seIdLS+Bz9R/196u9qSbAmTEfMrAcyfo+vp0awYiSQYHSBToNdEK2dwENZeNbqLj
+KooNugHglgZ89E1b3u56ZvAHgOoY15+PlSDmGbp2aEU9d03AQF8LhGZsf5ZtbeIa
+NnywIU+ZLjVhwjpogSWtWiqnYrPGESbPj7bEnj5f5fEswPA7cyS+neGOji7zewb6
+/6SRRmfVKiGtSCEZdSfbQKeXZX6ngpXnLli+NKBuYgUAAVg1D4OUYURRDsCTTyg6
++SVZN5tUnzrvsZcKmv2ooxzLqGj5qplH9/JyyJOckm+1uRpw/448YRGLd6VxQ9RY
+GJwpIFk1acp7LIPuQrZmQSjLzQ21NzHRcZxGiEWsEpv1Kcv65TFuPBTI5xYl5Uga
+AO6O+/NRJsZaxK/MRMSw
+=xI0t
 -----END PGP SIGNATURE-----
 
---=-3ik6FXvoaS/r04JXf7aw--
+--=-ho59VK9/2kMxLRPZHDQk--
