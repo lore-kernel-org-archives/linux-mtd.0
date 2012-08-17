@@ -1,20 +1,28 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T2N4c-0006zE-71
- for linux-mtd@lists.infradead.org; Fri, 17 Aug 2012 13:58:51 +0000
-Message-ID: <1345212215.27859.91.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/2] MTD: check for valid pdata inside plat_nand
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: John Crispin <blogic@openwrt.org>
-Date: Fri, 17 Aug 2012 17:03:35 +0300
-In-Reply-To: <1342940398-2162-1-git-send-email-blogic@openwrt.org>
-References: <1342940398-2162-1-git-send-email-blogic@openwrt.org>
+ id 1T2N7s-0007Dc-Fz
+ for linux-mtd@lists.infradead.org; Fri, 17 Aug 2012 14:02:12 +0000
+Message-ID: <1345212408.27859.92.camel@sauron.fi.intel.com>
+Subject: Re: UBI fastmap updates
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Richard Weinberger <richard@nod.at>
+Date: Fri, 17 Aug 2012 17:06:48 +0300
+In-Reply-To: <20120817154332.3496d709@spider.haslach.nod.at>
+References: <1341836323-43916-1-git-send-email-richard@nod.at>
+ <1345209115.27859.84.camel@sauron.fi.intel.com>
+ <20120817153348.7a0a50a0@spider.haslach.nod.at>
+ <1345210884.27859.90.camel@sauron.fi.intel.com>
+ <20120817154332.3496d709@spider.haslach.nod.at>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-gg6Ny4DGiOMVd87eyLK4"
+ boundary="=-tZO8qLVUDU/WegQF8DQM"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Cc: nyoushchenko@mvista.com, linux-kernel@vger.kernel.org,
+ adrian.hunter@intel.com, Heinz.Egger@linutronix.de,
+ thomas.wucher@linutronix.de, linux-mtd@lists.infradead.org,
+ shmulik.ladkani@gmail.com, tglx@linutronix.de, Marius.Mazarel@ugal.ro,
+ tim.bird@am.sony.com
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,51 +33,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-gg6Ny4DGiOMVd87eyLK4
+--=-tZO8qLVUDU/WegQF8DQM
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, 2012-07-22 at 08:59 +0200, John Crispin wrote:
-> If plat_nand loads and the platform_data is not properly set it will segf=
-ault.
->=20
-> Signed-off-by: John Crispin <blogic@openwrt.org>
-> Acked-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> Cc: linux-mtd@lists.infradead.org
-> ---
-> I am seeing this when plat_nand is referenced inside my DT file but
-> CONFIG_MTD_NAND_XWAY is not selected, resulting in platform_data not bein=
-g
-> populated with valid data.
+On Fri, 2012-08-17 at 15:43 +0200, Richard Weinberger wrote:
 
-Aiaiai complains like this for this patch-set:
+> No, data is never added to a half-filled PEB.
 
----------------------------------------------------------------------------=
------
+OK.
 
-Successfully built configuration "mips-lantiq_defconfig,mips,mips-linux-", =
-results:
+> Fastmap does not share PEBs with other sub-systems by design.
 
---- before_patching.log
-+++ after_patching.log
-@@ @@
-+drivers/mtd/nand/xway_nand.c:145:9: warning: cast removes address space of=
- expression [sparse]
-+drivers/mtd/nand/xway_nand.c:163:25: warning: duplicate const  [sparse]
-+drivers/mtd/nand/xway_nand.c:184:12: warning: symbol 'xway_register_nand' =
-was not declared. Should it be static? [sparse]
-+drivers/mtd/nand/xway_nand.c:184:12: warning: no previous prototype for 'x=
-way_register_nand' [-Wmissing-prototypes]
-
----------------------------------------------------------------------------=
------
-
-
+It could in theory add own data to own PEBs.
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-gg6Ny4DGiOMVd87eyLK4
+--=-tZO8qLVUDU/WegQF8DQM
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -77,19 +58,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQLk83AAoJECmIfjd9wqK0iLwP/3sip/OPggjOgWRHt2UZMpMq
-07lMGno+pZzde7iaxExaAY8xde1dPIY5zWm/qKzPtItBtFgxSYjpmMjATNR8gOPc
-kYKZkiAJYN6q2hY0jy7SibjnxahRA7DJT3pAkimaNXhBjetoXo4Mb60bc9hSNW9s
-+/xvvCp9fapbp96+Q/2DSL0VJfv134iWhgQEGcKqmcPryhrEoC9UK+KnUv+efvDJ
-3+Uzy+EUT48Xm5DwSKtDF7QktKCLk4F/+Xu3LGlDmKdMrpo6CLLIZnCX5SzkakiT
-3pbebN8cdGPkr9A8p/UJY4pJHQSqgKgHn2+c+VP1l1fVG/UJY3stsIixAZbVfXx1
-xyKknipFhCO27dANLVf5qvKyh83Rf1hFVRVe5iK4yQX00O0vf0+cgx4SS5M3vPeA
-QRAGzGu/s92NB8WRgELS5cBkOLKZ+Q+v03iWiuwtOOFTcoob5raWVpdKWW757pv7
-lhO/jP1TpDidUGy5I0bl2AImNCTSSBAS80IYcC0UlRqDxhBiadHz67CiZ7VOeozz
-CGrfEUhCuqmhsYLsHTKayIKbd8Yi9vJdDb3c+WffyInXkkXq7weOqvO2YkwgzXjW
-6XhPMUD8iTnL5N1m0lDSaXVO3DMtcXsEsJgCy56ggM9APoGdFtKlon0ZmEcFXgV7
-mvKIP6AmMoMe724yRHqx
-=9qfF
+iQIcBAABAgAGBQJQLk/4AAoJECmIfjd9wqK0f/gQAMnegYVH0h1VRexdsi1lWIpX
+/o9eZ4Hd1NddSToj5uUZewN0Gay3xx6tSbXHsgE98BTU/5GxG5RvRqQNcl9Aciso
++Mu+qgGXuS8VIG2RzNpCeV58vplQoCS55q5zByLWDAbYQWSEl07PeH1oIHzW7pFF
+47hYENfhgOnmhJCXzUnEt2WBeSkwUFxk30/2VRIchHEP6pGKhOJsAjrv6Hirqv0V
+yszS04PZRAvVMcIA224I/4WXeG2ePOSsAeflcTGE62nSGc9tQxCXJLxUSQlnw6fK
+wcUIwH0JiL9X8J+WREkjLzgzQf2an+kbn1ga25/b0vJ0zADjwrxTKIR8XDkHdkjm
+yXhV8Gu+8OGRE9pxWrOvY1rMfZrD0Kki0QTFo6oPG87m7h0Ci7Osy/DKht0fyYzI
+3O+Zr+dIZGvScCXFV3dwEpNow8gQBu/XrwI35xPNGutLd2ThGlc4r0YaH0rLcYfU
+WenkqyFDbdaPZXdftEJ/yOxBSrg2vPldVB9AvHfZyvCnwSa2ASjjQJEua7+Unou7
+YcK4SiahQ9mskAcQx94AHikz2WQIFFrPEmd+xopMjOZQyLCQutEjDSdK+A8HajVD
+m7T5SMScNdlJ5+P8afRbhQayWXTnhShcH7ScErYgAq9QN56SHmTNGelrCwzF82qd
+oOR90EHiVHeKR2jzHf+E
+=N3N+
 -----END PGP SIGNATURE-----
 
---=-gg6Ny4DGiOMVd87eyLK4--
+--=-tZO8qLVUDU/WegQF8DQM--
