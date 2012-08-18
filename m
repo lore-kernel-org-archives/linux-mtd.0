@@ -1,21 +1,16 @@
-Received: from mail-yw0-f49.google.com ([209.85.213.49])
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T2Z8m-0006bG-LW
- for linux-mtd@lists.infradead.org; Sat, 18 Aug 2012 02:51:57 +0000
-Received: by yhjj52 with SMTP id j52so4821878yhj.36
- for <linux-mtd@lists.infradead.org>; Fri, 17 Aug 2012 19:51:54 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <502E0417.3040708@freescale.com>
-References: <1334026606-18327-1-git-send-email-b32955@freescale.com>
- <CAN8TOE8xz+t1X-JVC1sOy70k64_gRDU-6DkrnqtDkvdbELHQLQ@mail.gmail.com>
- <502E0417.3040708@freescale.com>
-Date: Fri, 17 Aug 2012 19:51:54 -0700
-Message-ID: <CAN8TOE99ncoBgzpDjKXAWuMQ9O25JZhzLixbXtJA+c2T=mro-A@mail.gmail.com>
-Subject: Re: [PATCH] mtd : add parsing code for one kind of Hynix's nand chip
-From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org, Huang Shijie <shijie8@gmail.com>,
+ id 1T2az4-00074q-2l
+ for linux-mtd@lists.infradead.org; Sat, 18 Aug 2012 04:50:02 +0000
+Received: by pbbrq8 with SMTP id rq8so4600906pbb.36
+ for <linux-mtd@lists.infradead.org>; Fri, 17 Aug 2012 21:49:56 -0700 (PDT)
+From: Huang Shijie <shijie8@gmail.com>
+To: dwmw2@infradead.org
+Subject: [PATCH] mtd: cmdlinepart: fix the wrong partitions number when
+ truncating occurs
+Date: Sat, 18 Aug 2012 12:51:02 -0400
+Message-Id: <1345308662-24023-1-git-send-email-shijie8@gmail.com>
+Cc: Huang Shijie <shijie8@gmail.com>, linux-mtd@lists.infradead.org,
  dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,24 +21,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Aug 17, 2012 at 1:43 AM, Huang Shijie <b32955@freescale.com> wrote:
->> BTW, I actually have some patches queued up that I need to complete
->> properly, where I'm trying to clean up and update NAND detection a
->> little. So I basically have this same patch, but rebased on top of
->
-> Did you finish your nand detection patches?
-> I really hope this Hynix's nand chip could be supported by the mtd code.
-> If your plan is blocked,  could i send out a new version of this patch?
+When the partition truncating occurs, the old code misses the truncated
+partition. So the partitions number is not right.
 
-Well, I have some working patches, but they aren't entirely ready for
-submission. Other things have taken priority. Sorry about the delay,
-since you were probably waiting...
+This patch fixes it. Alao add a `break` to shortcut the code in this
+case.
 
-Yes, please go ahead if you have a good submission; but I thought we
-agreed there was no good way to detect these chips without practically
-hard-coding the ID + parameter configuration. If that's the case, then
-maybe I should speed up my patches (sitting around here as well...)
-regarding a full 8-byte ID detection table. I think this kind of table
-will be necessary to support some chips anyway.
+Signed-off-by: Huang Shijie <shijie8@gmail.com>
+---
+ drivers/mtd/cmdlinepart.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
-Brian
+diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
+index 4558e0f..fc960a3 100644
+--- a/drivers/mtd/cmdlinepart.c
++++ b/drivers/mtd/cmdlinepart.c
+@@ -344,7 +344,8 @@ static int parse_cmdline_partitions(struct mtd_info *master,
+ 					       "%s: partitioning exceeds flash size, truncating\n",
+ 					       part->mtd_id);
+ 					part->parts[i].size = master->size - offset;
+-					part->num_parts = i;
++					part->num_parts = i + 1;
++					break;
+ 				}
+ 				offset += part->parts[i].size;
+ 			}
+-- 
+1.7.4.4
