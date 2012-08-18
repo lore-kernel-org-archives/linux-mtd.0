@@ -1,23 +1,19 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+Received: from mail-wg0-f49.google.com ([74.125.82.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T2hQs-0006uk-HF
- for linux-mtd@lists.infradead.org; Sat, 18 Aug 2012 11:43:11 +0000
-Date: Sat, 18 Aug 2012 13:43:02 +0200
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-To: Dirk Behme <dirk.behme@gmail.com>
-Subject: Re: [PATCH] mtd: mxc_nand: Fix compiler warnings
-Message-ID: <20120818114302.GH2232@pengutronix.de>
-References: <1343466310-14584-1-git-send-email-dirk.behme@gmail.com>
- <20120730073454.GI1528@pengutronix.de>
- <501D4405.6030900@googlemail.com>
- <20120805083926.GL2626@pengutronix.de> <502F6749.4020705@gmail.com>
+ id 1T2hsc-0008PW-E5
+ for linux-mtd@lists.infradead.org; Sat, 18 Aug 2012 12:11:51 +0000
+Received: by wgbez12 with SMTP id ez12so2986144wgb.18
+ for <linux-mtd@lists.infradead.org>; Sat, 18 Aug 2012 05:11:46 -0700 (PDT)
+From: Pali =?ISO-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH] UBI: Do not try to autoresize in readonly mode
+Date: Sat, 18 Aug 2012 14:11:42 +0200
+Message-ID: <8381186.XTLIOQGYR2@pali>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <502F6749.4020705@gmail.com>
-Cc: linux-mtd@lists.infradead.org, shawn.guo@linaro.org, shijie8@gmail.com,
- linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/signed; boundary="nextPart1865680.IAdRWtXqUK";
+ micalg="pgp-sha1"; protocol="application/pgp-signature"
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,42 +23,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Dirk,
 
-On Sat, Aug 18, 2012 at 11:58:33AM +0200, Dirk Behme wrote:
-> On 05.08.2012 10:39, Uwe Kleine-König wrote:
-> >On Sat, Aug 04, 2012 at 05:47:17PM +0200, Dirk Behme wrote:
-> >>On 30.07.2012 09:34, Uwe Kleine-König wrote:
-> >>>Hello,
-> >>>
-> >>>On Sat, Jul 28, 2012 at 11:05:10AM +0200, Dirk Behme wrote:
-> >>>>From: Dirk Behme<dirk.behme@googlemail.com>
-> >>>>
-> >>>>Fix the compiler warnings
-> >>>>
-> >>>>drivers/mtd/nand/mxc_nand.c:1267: warning: initialization discards qualifiers from pointer target type
-> >>>>drivers/mtd/nand/mxc_nand.c:1270: warning: initialization discards qualifiers from pointer target type
-> >>>>drivers/mtd/nand/mxc_nand.c:1273: warning: initialization discards qualifiers from pointer target type
-> >>>>drivers/mtd/nand/mxc_nand.c:1276: warning: initialization discards qualifiers from pointer target type
-> >>>These should be gone in next already.
-> >>
-> >>Hmm, which next?
-> >>
-> >>I tried linux-next [1] from today (next-20120803, 55fa9961f) and still get
-> >next-20120725 contained 98d7bbb9929bcc14e11ac8a55245a4f2dc174e17, don't
-> >konw why it isn't included in the newer next snapshorts.
-> 
-> It seems to be in -next again:
-> 
-> http://git.kernel.org/?p=linux/kernel/git/next/linux-next.git;a=commit;h=98d7bbb9929bcc14e11ac8a55245a4f2dc174e17
-> 
-> I'm not so familiar with -next: Do we have any chance to get that
-> commit into 3.6-rcX to get this warning fixed for the final 3.6?
-Arnd sent a pull request that Linus T. seems to have ignored so far.
+--nextPart1865680.IAdRWtXqUK
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
 
-Best regards
-Uwe
+Hello,
 
--- 
-Pengutronix e.K.                           | Uwe Kleine-König            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+when I'm tried to mount ubifs image from readonly mtd device (e.g=20
+virtual, only for unpacking data) it failed because image has=20
+autoresize flag on ubi block. ubi build.c code trying to=20
+autoresize ubi image if has autoresize flag and if autoresize=20
+failed, attaching ubi failed. So it is not possible to mount=20
+ubifs image if ubi has autoresize flag in read only mode (because=20
+resizing is not possible on read only device).
+
+I'm sending small patch which skip autoresizing ubi in readonly=20
+mode. I think it is really not good idea to try resize in ro=20
+mode.
+
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 738772c..ad911ab 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -927,7 +927,7 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd,=20
+int ubi_num, int vid_hdr_offset)
+ =09=09goto out_debugging;
+ =09}
+=20
+-=09if (ubi->autoresize_vol_id !=3D -1) {
++=09if (!ubi->ro_mode && ubi->autoresize_vol_id !=3D -1) {
+ =09=09err =3D autoresize(ubi, ubi->autoresize_vol_id);
+ =09=09if (err)
+ =09=09=09goto out_detach;
+
+With this patch I'm able to mount & unpack data from ubifs image=20
+on read only (virtual/simulated) nand device with autoresize=20
+flag. Consider including this patch to ubi-2.6 git tree.
+
+BTW, is there userspace tool for unpacking data from ubifs image=20
+without need to simulate nand device in kernel?
+
+--=20
+Pali Roh=C3=A1r
+pali.rohar@gmail.com
+--nextPart1865680.IAdRWtXqUK
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iEYEABECAAYFAlAvhn4ACgkQi/DJPQPkQ1IWUgCcCkrqbskDqe9HU6pzFz27iEDw
+0JgAn3Sl/m6Nv+KB3hK6fHwhuwUy6cFh
+=iQA2
+-----END PGP SIGNATURE-----
+
+--nextPart1865680.IAdRWtXqUK--
