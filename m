@@ -1,14 +1,15 @@
 Received: from mail-pb0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T2b8C-0007Io-7Z
- for linux-mtd@lists.infradead.org; Sat, 18 Aug 2012 04:59:28 +0000
-Received: by pbbrq8 with SMTP id rq8so4609977pbb.36
- for <linux-mtd@lists.infradead.org>; Fri, 17 Aug 2012 21:59:26 -0700 (PDT)
+ id 1T2bF4-0007aN-UJ
+ for linux-mtd@lists.infradead.org; Sat, 18 Aug 2012 05:06:35 +0000
+Received: by pbbrq8 with SMTP id rq8so4617306pbb.36
+ for <linux-mtd@lists.infradead.org>; Fri, 17 Aug 2012 22:06:33 -0700 (PDT)
 From: Huang Shijie <shijie8@gmail.com>
 To: dwmw2@infradead.org
-Subject: [PATCH] mtd: mtdpart: break it as soon as we parse out the partitions
-Date: Sat, 18 Aug 2012 13:00:36 -0400
-Message-Id: <1345309236-25806-1-git-send-email-shijie8@gmail.com>
+Subject: [PATCH v2] mtd: mtdpart: break it as soon as we parse out the
+ partitions
+Date: Sat, 18 Aug 2012 13:07:41 -0400
+Message-Id: <1345309661-26165-1-git-send-email-shijie8@gmail.com>
 Cc: Huang Shijie <shijie8@gmail.com>, linux-mtd@lists.infradead.org,
  dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -43,18 +44,21 @@ it's no need to use another parser anymore.
 
 Signed-off-by: Huang Shijie <shijie8@gmail.com>
 ---
+v1 --> v2:
+	fix the wrong comment.
+---
  drivers/mtd/mtdpart.c |    5 ++++-
  1 files changed, 4 insertions(+), 1 deletions(-)
 
 diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index d518e4d..5999856 100644
+index d518e4d..f8c08ec 100644
 --- a/drivers/mtd/mtdpart.c
 +++ b/drivers/mtd/mtdpart.c
 @@ -711,6 +711,8 @@ static const char *default_mtd_part_types[] = {
   * partition parsers, specified in @types. However, if @types is %NULL, then
   * the default list of parsers is used. The default list contains only the
   * "cmdlinepart" and "ofpart" parsers ATM.
-+ * Note: If there are more one parsers in @types, the kernel only takes the
++ * Note: If there are more then one parser in @types, the kernel only takes the
 + * partitions parsed out by the first parser.
   *
   * This function may return:
