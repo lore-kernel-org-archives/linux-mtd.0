@@ -1,17 +1,21 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
+Received: from mail-vc0-f177.google.com ([209.85.220.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T2bF4-0007aN-UJ
- for linux-mtd@lists.infradead.org; Sat, 18 Aug 2012 05:06:35 +0000
-Received: by pbbrq8 with SMTP id rq8so4617306pbb.36
- for <linux-mtd@lists.infradead.org>; Fri, 17 Aug 2012 22:06:33 -0700 (PDT)
-From: Huang Shijie <shijie8@gmail.com>
-To: dwmw2@infradead.org
-Subject: [PATCH v2] mtd: mtdpart: break it as soon as we parse out the
- partitions
-Date: Sat, 18 Aug 2012 13:07:41 -0400
-Message-Id: <1345309661-26165-1-git-send-email-shijie8@gmail.com>
-Cc: Huang Shijie <shijie8@gmail.com>, linux-mtd@lists.infradead.org,
- dedekind1@gmail.com
+ id 1T2cPK-0008PB-77
+ for linux-mtd@lists.infradead.org; Sat, 18 Aug 2012 06:21:14 +0000
+Received: by vcbfl13 with SMTP id fl13so3799835vcb.36
+ for <linux-mtd@lists.infradead.org>; Fri, 17 Aug 2012 23:21:12 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1345207610.27859.71.camel@sauron.fi.intel.com>
+References: <1342434747-27622-1-git-send-email-sachin.kamat@linaro.org>
+ <1345207610.27859.71.camel@sauron.fi.intel.com>
+Date: Sat, 18 Aug 2012 11:51:12 +0530
+Message-ID: <CAK9yfHx_m0yNQmNWuFjtzhfwzstGf4Qb_+eUsx558JzaGa-SFw@mail.gmail.com>
+Subject: Re: [PATCH 1/6] mtd: s3c2410: Use module_platform_driver()
+From: Sachin Kamat <sachin.kamat@linaro.org>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+ David.Woodhouse@intel.com, ben-linux@fluff.org, patches@linaro.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,61 +25,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We may cause a memory leak when the @types has more then one parser.
+Hi Artem,
 
-Take the `default_mtd_part_types` for example. The default_mtd_part_types has
-two parsers now: `cmdlinepart` and `ofpart`.
+Thank you for your interest in testing these patches.
 
-Assume the following case:
-The kernel command line sets the partitions like:
-	#gpmi-nand:20m(boot),20m(kernel),1g(rootfs),-(user)
-But the devicetree file(such as arch/arm/boot/dts/imx28-evk.dts) also sets
-the same partitions as the kernel command line does.
+On 17 August 2012 18:16, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Mon, 2012-07-16 at 16:02 +0530, Sachin Kamat wrote:
+>> This makes the code simpler by eliminating module_init() and
+>> module_exit().
+>>
+>> Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+>
+> Could you please send me a defconfig which I can use to compile-test
+> this?
 
-In the current code, the partitions parsed out by the `ofpart` will
-overwrite the @pparts which has already set by the `cmdlinepart` parser,
-and the the partitions parsed out by the `cmdlinepart` is missed.
-A memory leak occurs.
+This patch along with other 5 patches in this series can be tested
+using the s3c6400_defconfig (it is available in the mainline).
+Please let me know how it works for you.
 
-So we should break the code as soon as we parse out the partitions,
-In actually, this patch makes a priority order between the parsers.
-If one parser has already parsed out the partitions successfully,
-it's no need to use another parser anymore.
+>
+> --
+> Best Regards,
+> Artem Bityutskiy
 
-Signed-off-by: Huang Shijie <shijie8@gmail.com>
----
-v1 --> v2:
-	fix the wrong comment.
----
- drivers/mtd/mtdpart.c |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index d518e4d..f8c08ec 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -711,6 +711,8 @@ static const char *default_mtd_part_types[] = {
-  * partition parsers, specified in @types. However, if @types is %NULL, then
-  * the default list of parsers is used. The default list contains only the
-  * "cmdlinepart" and "ofpart" parsers ATM.
-+ * Note: If there are more then one parser in @types, the kernel only takes the
-+ * partitions parsed out by the first parser.
-  *
-  * This function may return:
-  * o a negative error code in case of failure
-@@ -735,11 +737,12 @@ int parse_mtd_partitions(struct mtd_info *master, const char **types,
- 		if (!parser)
- 			continue;
- 		ret = (*parser->parse_fn)(master, pparts, data);
-+		put_partition_parser(parser);
- 		if (ret > 0) {
- 			printk(KERN_NOTICE "%d %s partitions found on MTD device %s\n",
- 			       ret, parser->name, master->name);
-+			break;
- 		}
--		put_partition_parser(parser);
- 	}
- 	return ret;
- }
+
 -- 
-1.7.4.4
+With warm regards,
+Sachin
