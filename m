@@ -1,24 +1,22 @@
-Received: from mail-yx0-f177.google.com ([209.85.213.177])
+Received: from mail-yw0-f49.google.com ([209.85.213.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T2VUh-00041L-4u
- for linux-mtd@lists.infradead.org; Fri, 17 Aug 2012 22:58:19 +0000
-Received: by yenq9 with SMTP id q9so4759418yen.36
- for <linux-mtd@lists.infradead.org>; Fri, 17 Aug 2012 15:58:18 -0700 (PDT)
+ id 1T2Z8m-0006bG-LW
+ for linux-mtd@lists.infradead.org; Sat, 18 Aug 2012 02:51:57 +0000
+Received: by yhjj52 with SMTP id j52so4821878yhj.36
+ for <linux-mtd@lists.infradead.org>; Fri, 17 Aug 2012 19:51:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1345114118.3393.199.camel@sauron.fi.intel.com>
-References: <1340408145-24531-1-git-send-email-computersforpeace@gmail.com>
- <1340408145-24531-3-git-send-email-computersforpeace@gmail.com>
- <1345029870.3393.128.camel@sauron.fi.intel.com>
- <CAN8TOE9wC6_NQ=DMX70ovWzP4JuFZKsORgn53Jq9ZNSGcFiCig@mail.gmail.com>
- <1345114118.3393.199.camel@sauron.fi.intel.com>
-Date: Fri, 17 Aug 2012 15:58:18 -0700
-Message-ID: <CAN8TOE825Hoo=MGBFOb344D+G54pt6OZP5F4pcGc+_+2EXMKew@mail.gmail.com>
-Subject: Re: [PATCH 2/8] mtd: check for max_bitflips in mtd_read_oob()
+In-Reply-To: <502E0417.3040708@freescale.com>
+References: <1334026606-18327-1-git-send-email-b32955@freescale.com>
+ <CAN8TOE8xz+t1X-JVC1sOy70k64_gRDU-6DkrnqtDkvdbELHQLQ@mail.gmail.com>
+ <502E0417.3040708@freescale.com>
+Date: Fri, 17 Aug 2012 19:51:54 -0700
+Message-ID: <CAN8TOE99ncoBgzpDjKXAWuMQ9O25JZhzLixbXtJA+c2T=mro-A@mail.gmail.com>
+Subject: Re: [PATCH] mtd : add parsing code for one kind of Hynix's nand chip
 From: Brian Norris <computersforpeace@gmail.com>
-To: dedekind1@gmail.com
+To: Huang Shijie <b32955@freescale.com>
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: David Woodhouse <dwmw2@infradead.org>, Mike Dunn <mikedunn@newsguy.com>,
- linux-mtd@lists.infradead.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Huang Shijie <shijie8@gmail.com>,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,25 +26,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Aug 16, 2012 at 3:48 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Wed, 2012-08-15 at 12:15 -0700, Brian Norris wrote:
->> Note that there was a v2 of this patch, although the difference was
->> very minor (the comments and the Reviewed-by's). The end result is
->> almost the same as your amendments.
+On Fri, Aug 17, 2012 at 1:43 AM, Huang Shijie <b32955@freescale.com> wrote:
+>> BTW, I actually have some patches queued up that I need to complete
+>> properly, where I'm trying to clean up and update NAND detection a
+>> little. So I basically have this same patch, but rebased on top of
 >
-> Reviewed-by tags are important for me, because people spent time and
-> they should be credited in some form in git log.
+> Did you finish your nand detection patches?
+> I really hope this Hynix's nand chip could be supported by the mtd code.
+> If your plan is blocked,  could i send out a new version of this patch?
 
-Right, I understood this, and those tags were reflected in my v2.
+Well, I have some working patches, but they aren't entirely ready for
+submission. Other things have taken priority. Sorry about the delay,
+since you were probably waiting...
 
-> I actually collected
-> all the tags from the thread and added them when applying your patches.
-
-Yes, I was only commenting that while you took and amended my v1, it
-ended up being nearly identical to my v2 - including the Reviewed-by
-tags. They only differed by some punctuation or something else
-trivial.
-
-Thanks!
+Yes, please go ahead if you have a good submission; but I thought we
+agreed there was no good way to detect these chips without practically
+hard-coding the ID + parameter configuration. If that's the case, then
+maybe I should speed up my patches (sitting around here as well...)
+regarding a full 8-byte ID detection table. I think this kind of table
+will be necessary to support some chips anyway.
 
 Brian
