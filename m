@@ -1,16 +1,18 @@
-Message-ID: <1345403958.1930.5.camel@kyv>
-Subject: Re: [PATCH 2/8] UBI: separate bad_peb_limit in a function
+Message-ID: <1345404079.1930.7.camel@kyv>
+Subject: Re: [PATCH 1/8] arm: sam9_l9260_defconfig: adjust UBI bad
+ eraseblocks limit
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Richard Genoud <richard.genoud@gmail.com>
-Date: Sun, 19 Aug 2012 22:19:18 +0300
-In-Reply-To: <1345214124-5478-3-git-send-email-richard.genoud@gmail.com>
+Date: Sun, 19 Aug 2012 22:21:19 +0300
+In-Reply-To: <1345214124-5478-2-git-send-email-richard.genoud@gmail.com>
 References: <1345214124-5478-1-git-send-email-richard.genoud@gmail.com>
- <1345214124-5478-3-git-send-email-richard.genoud@gmail.com>
+ <1345214124-5478-2-git-send-email-richard.genoud@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-1KiTqwlGY/VNnikVb3SP"
+ boundary="=-VL0NCch6ImXOAysAHznM"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>,
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-mtd@lists.infradead.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>,
  linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,22 +25,32 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-1KiTqwlGY/VNnikVb3SP
+--=-VL0NCch6ImXOAysAHznM
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 On Fri, 2012-08-17 at 16:35 +0200, Richard Genoud wrote:
-> No functional changes here, just to prepare for next patch.
->=20
-> Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
+> diff --git a/arch/arm/configs/sam9_l9260_defconfig b/arch/arm/configs/sam=
+9_l9260_defconfig
+> index da276f9..d11fea5 100644
+> --- a/arch/arm/configs/sam9_l9260_defconfig
+> +++ b/arch/arm/configs/sam9_l9260_defconfig
+> @@ -39,7 +39,7 @@ CONFIG_MTD_NAND=3Dy
+>  CONFIG_MTD_NAND_ATMEL=3Dy
+>  CONFIG_MTD_NAND_PLATFORM=3Dy
+>  CONFIG_MTD_UBI=3Dy
+> -CONFIG_MTD_UBI_BEB_LIMIT=3D3
+> +CONFIG_MTD_UBI_BEB_LIMIT=3D30
 
-Pushed this one to linux-ubi, thanks!
+I'll just remove this from from the defconfig and make it use the
+default, which is more sensible for this device, as your research
+showed.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-1KiTqwlGY/VNnikVb3SP
+--=-VL0NCch6ImXOAysAHznM
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -46,19 +58,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQMTw2AAoJECmIfjd9wqK0KCoP/3uQfCfkdj/hHlLpk6X3bMUh
-TwsmActeaT0Ixs9tKPzmXFKMTLbnI8hz2qafNKfQFMpQcMCk8UYVN/dq1hbBtaeX
-LrhXNS3ccR6FXHdg/FWiVmxXM6We+nT1uQzfWCRkLJDJgBbuDr0Q5UNl/TQXbUeu
-xgm8I9hOIsjzB9+2CC5ZeEEb7A27JlFTFaTJJ2KkZSUXtU/G9iMxi4M622oAl4BK
-1RUUM0OBbSIFC+ddHoOaCOiAfmkmvtO5cvLvQn4yxqmaDpZYDBgFlYUjo0+I9kl5
-RCb/rRp/B4ltRY2UW/VkZFYX2N3FEi/4Kz1+8S0nJuWUINHBkzCWSIleNB/RVbQx
-u4Ha5hhY1RT7wInQC2mwq/7OMIwfGuXj684EEVjXMw98S4lxAZvZCvF4kaJtq9zu
-hpB1nuWyK/BYicl/fdg3KLBi0kRu0ixQVSjVVojjfLVzjVZ+40K5WFSDz+9uW2jA
-q4QMiJzJRCpYrrSo6UieCbRoFDRyrz+g+SUcDsWRl1LhaCK687Amk1OpjpXHgy/5
-IXulOHQ9R9m7PNR7U+QaQta0/79PqIhGR1SCqymI3RP0n1SKy+BHJqDyq9t2ZgpW
-pojbi8uesdXpwEQLNGKynfbIN8YbQhmaMmnepudOSsXFv4F+4zuuswxLdqJnAf2I
-e/aDRX4olPf9sXTI+9wN
-=wt0k
+iQIcBAABAgAGBQJQMTyvAAoJECmIfjd9wqK0BEkQANGc6+lvSGLa31wTC1KVAxlM
+sjHi1FbLS8Lq9CV3yem191phT4OwlsxguW02xSzClcaxa8wkwg+4qgxQ6vGOCiBR
+AJqFJMN8v5HAhdinZYV6HdLO8LwPR/bS18NiFE2pLxgtQ7rG4IIF9h+TxpNStaHw
+veNy/K8gMfL5xSqGzbio5C0d5c8xiuS4au/vEpNU/mqm+Mns34tfRS968t+NDXB3
+08Q25CT/DQgR44G/6IULqHe5vFc+q28KgRTN6JMcO7xBLH6f7f/7o9wQQSRVHPEL
+TUFQI/iQpFRsiNK+Fzk8CK9RL25yYx9t/6yMPvKMNFm96CJu+q4MY6hR3QbC1F5W
+IJnwLiiuTyoEbOE0c2EI9T+CgjM10MuZ8lCXz/pZ7MkeNAZ/VOePuRFaH0QC77S9
+vFkLL8d7IxNPafhRPqL1feC2dPOnCIm6ESqF7rsiTcowzL/mnh/+zQQA5wiKM6Aj
+yiqJfbGv8/V6YJl4db9YM5yc08AQES1x9j151mmRSUxQ1x54+5rwBW67A5OvoxL1
+R5ycah6zo78NziaLzxAoX4nAUyUsJumBq/m3Q2/EgHCr9E7Yw14a4Fd1Gn+C11J1
+bv351AagOsV6NymvoKNkqNp05F8tWi5ASbeT4/dTWDWGj5zrQ+8A7BRq2U9JDpU7
+wSyismwQDG+Lvr3n+e89
+=z3X5
 -----END PGP SIGNATURE-----
 
---=-1KiTqwlGY/VNnikVb3SP--
+--=-VL0NCch6ImXOAysAHznM--
