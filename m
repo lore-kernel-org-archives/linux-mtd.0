@@ -1,23 +1,30 @@
 Received: from mail-bk0-f49.google.com ([209.85.214.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T33Pj-0007d0-00
- for linux-mtd@lists.infradead.org; Sun, 19 Aug 2012 11:11:27 +0000
-Received: by bkcji2 with SMTP id ji2so1928176bkc.36
- for <linux-mtd@lists.infradead.org>; Sun, 19 Aug 2012 04:11:23 -0700 (PDT)
-Message-ID: <1345374680.1832.5.camel@kyv>
-Subject: Re: [PATCH 6/6] mtd: s3c2410: Fix line over 80 characters warning
+ id 1T3Ao6-0005q7-VK
+ for linux-mtd@lists.infradead.org; Sun, 19 Aug 2012 19:05:07 +0000
+Received: by bkcji2 with SMTP id ji2so1991656bkc.36
+ for <linux-mtd@lists.infradead.org>; Sun, 19 Aug 2012 12:05:03 -0700 (PDT)
+Message-ID: <1345403092.1930.4.camel@kyv>
+Subject: Re: [PATCH 4/4] UBI: replace MTD_UBI_BEB_LIMIT with user-space
+ parameter
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Sachin Kamat <sachin.kamat@linaro.org>
-Date: Sun, 19 Aug 2012 14:11:20 +0300
-In-Reply-To: <1342434747-27622-6-git-send-email-sachin.kamat@linaro.org>
-References: <1342434747-27622-1-git-send-email-sachin.kamat@linaro.org>
- <1342434747-27622-6-git-send-email-sachin.kamat@linaro.org>
+To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Date: Sun, 19 Aug 2012 22:04:52 +0300
+In-Reply-To: <20120819100946.646cbb8a@pixies.home.jungo.com>
+References: <1341937423-16516-1-git-send-email-richard.genoud@gmail.com>
+ <1341937423-16516-5-git-send-email-richard.genoud@gmail.com>
+ <20120816115713.726da8f2@pixies.home.jungo.com>
+ <CACQ1gAhFJ6AKYJpc1ZiHm+3Y=APnwUmVL3f0KW=OFMDMWzCVJg@mail.gmail.com>
+ <20120816134234.32b468f6@pixies.home.jungo.com>
+ <1345124012.3393.239.camel@sauron.fi.intel.com>
+ <20120819100946.646cbb8a@pixies.home.jungo.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-OQexK4VN7O7Gi4aw1TwV"
+ boundary="=-ik5G9eFZxGIKm10HIwG/"
 Mime-Version: 1.0
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
- David.Woodhouse@intel.com, ben-linux@fluff.org, patches@linaro.org
+Cc: Richard Genoud <richard.genoud@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,32 +36,35 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-OQexK4VN7O7Gi4aw1TwV
+--=-ik5G9eFZxGIKm10HIwG/
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2012-07-16 at 16:02 +0530, Sachin Kamat wrote:
-> @@ -540,7 +540,8 @@ static void s3c2412_nand_enable_hwecc(struct mtd_info=
- *mtd, int mode)
->  	unsigned long ctrl;
-> =20
->  	ctrl =3D readl(info->regs + S3C2440_NFCONT);
-> -	writel(ctrl | S3C2412_NFCONT_INIT_MAIN_ECC, info->regs + S3C2440_NFCONT=
-);
-> +	writel(ctrl | S3C2412_NFCONT_INIT_MAIN_ECC,
-> +					info->regs + S3C2440_NFCONT);
+On Sun, 2012-08-19 at 10:09 +0300, Shmulik Ladkani wrote:
+> On Thu, 16 Aug 2012 16:33:32 +0300 Artem Bityutskiy <dedekind1@gmail.com>=
+ wrote:
+> > We do not have that big user-base. No one uses 0 in the tree, most use
+> > the default. I never heard anyone using 0. I did not use it also. I
+> > think it is OK to have the lower range start from non-zero. But why it
+> > is 2 and not 1 - I am not sure :-)
+>=20
+> Artem,
+>=20
+> Note that originally range was 0..25 (percentage).
+>=20
+> It was changed to be 2..256 (per 1024) by 07ad322 in linux-ubi.
+>=20
+> Seems arbitrary change.
+> So if you'd like, we can fix to 1..256 (or 0..256) - as you prefer.
 
-This patch makes the code look uglier and less readable. Please, align
-the part which you move to thenext line with the opening bracket ("(").
-The current code uses this style as well.
-
-I did not take this patch.
+Yeah, I wanted to make it 1..256 but forgot, will do now. 0..256 would
+need some more work to avoid division by 0.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-OQexK4VN7O7Gi4aw1TwV
+--=-ik5G9eFZxGIKm10HIwG/
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -62,19 +72,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQMMnYAAoJECmIfjd9wqK05Z8QAJbyaC2FE7PiEmhIjJgh57aP
-tv5GJI6FI6pa1w+ROveJkOcIBWBgcxEfJ2XATUiN/5d1Pu+DA3w5t49kFUC5lYeK
-78+O/SIfr6e+IrQGIeJUt4h7cwLiQuIaRhs6P5ygIPxoHlkTnYOBJIa9tKObQdiA
-rKwbu/ts/WBzgE1UOwKvet0OL+1bdYTUTS69hmHQZD9wvbyyszoAj+ybPzTiMPjz
-DTtRVhtjHjKQLUHOGixXo19zErHhplIZWsg91au4Hxmb82878+3uwbMFK74N6EPZ
-dbm5hoVfN2gr5WupyTe00axAOvcjKVLc9i3fB+U61V/UvUytLqKFz5hcsWaw1DUl
-poze8H6oyOXl/bO96x9DNY/m3CniLwVteOzbRd3OIkbhG+JYbz+NGkrJbGpxDDIP
-I/RFr2AdMhjYz3GodXFiLLRgIS+w+Cf/33SM88fB76++/DJuLzWgMnotHWHZ4Lkb
-vv11umPC8769s9LtfkVjxd0goglRG8eWzqCuWQFNDV7cnfNpYyzWp7bjWqa2JTtk
-3C8Q6J/rT4tVSsCBwcmU0nkXsoe9pG/hUu+WKrZiKsvxD8yJ7MbPGtpGFUiIfs5S
-RGYgPPXCWMFFzhjoLz0qUPQOgsmSTcK0dG5mCUXo7x/9ppmi9wCNR/ya+6AEL5Lu
-WR8C9WWVaQPmDsfv47pV
-=ZYji
+iQIcBAABAgAGBQJQMTjUAAoJECmIfjd9wqK0V+sQAI2TWKSc60QnB2+eLnRgCfN5
+2WG9EEp5KGF5ytcjKVMH0GK6ceXIE/IYIhANUqm7Fv0itK1iLONpM8fqd49X2uhz
+ZSX6/QZ6XV4M7CzOnSzGecQb10gNB40XY/1JgkLuU4IzLy+fOh0nT5PFxpYTBUEI
+1y6riIyQ4VY8DQ0opwyeifbzsxwdJypJqWioWIiXc6zx0hizTvuxcycmqUeJthxJ
+jIVQMtJY6nTAfPJd4fpjXJD4mtWopPCuoOmcbNQnrNJfXAz3j22DhTWhiOR5y4DE
+VASu+1u36OLc6h/q9iHrENJSx5VbOx29uXeJFt82MIqJyTknK5Qoi8H8CzuBNZKp
++GY36e7qjKdhTQgVEk5TNUI9qZ6RaQDmlQM39satSmERGvphEN2UrEw4CaSznvRD
+0x4I85tlHnToLRaFzUT3HvttvcIG4Q8Dpld/xd+eFVJY0O/1gKkiG/rIoYrS+Av4
+C8+5/X9Pq+MoAuJkCSbAmbNWVlJuYhJSnl28ORVUaEhHYP+tk8omypgzicvvswT4
+35b16yLJw7GwKdcl/wh3pourchoXYjD2CMVkdn5f5UibAV31+nzoiiqPTAbX+pTZ
+g5NJTi+uzW2PkefkmHqvFIPJD42Nwn2g+DY+q2XBh8Zj0KQJDOeyWiGjfxR3Sb+6
+CB4grFeiOdD+fK2v0v9f
+=LZHI
 -----END PGP SIGNATURE-----
 
---=-OQexK4VN7O7Gi4aw1TwV--
+--=-ik5G9eFZxGIKm10HIwG/--
