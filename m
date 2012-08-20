@@ -1,15 +1,14 @@
 Received: from mail-we0-f177.google.com ([74.125.82.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T3UP0-0006xH-N9
- for linux-mtd@lists.infradead.org; Mon, 20 Aug 2012 16:00:31 +0000
+ id 1T3UP3-0006xH-Na
+ for linux-mtd@lists.infradead.org; Mon, 20 Aug 2012 16:00:34 +0000
 Received: by mail-we0-f177.google.com with SMTP id r3so4351481wey.36
- for <linux-mtd@lists.infradead.org>; Mon, 20 Aug 2012 09:00:30 -0700 (PDT)
+ for <linux-mtd@lists.infradead.org>; Mon, 20 Aug 2012 09:00:33 -0700 (PDT)
 From: Richard Genoud <richard.genoud@gmail.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH v3 1/6] UBI: prepare for max_beb_per1024 module parameter
- addition
-Date: Mon, 20 Aug 2012 18:00:11 +0200
-Message-Id: <1345478416-23900-2-git-send-email-richard.genoud@gmail.com>
+Subject: [PATCH v3 3/6] UBI: check max_beb_per1024 value in ubi_attach_mtd_dev
+Date: Mon, 20 Aug 2012 18:00:13 +0200
+Message-Id: <1345478416-23900-4-git-send-email-richard.genoud@gmail.com>
 In-Reply-To: <1345478416-23900-1-git-send-email-richard.genoud@gmail.com>
 References: <1345478416-23900-1-git-send-email-richard.genoud@gmail.com>
 Cc: Richard Genoud <richard.genoud@gmail.com>, linux-mtd@lists.infradead.org,
@@ -23,106 +22,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch prepare the way for the addition of max_beb_per1024 module
-parameter.
-There's no functional change.
+max_beb_per1024 shouldn't be negative, and a 0 value will be treated as
+the default value.
+For the upper bound, 768/1024 should be enough.
 
 Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
-Reviewed-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 ---
- drivers/mtd/ubi/build.c |   14 ++++++++------
- drivers/mtd/ubi/cdev.c  |    3 ++-
- drivers/mtd/ubi/ubi.h   |    3 ++-
- 3 files changed, 12 insertions(+), 8 deletions(-)
+ drivers/mtd/ubi/build.c |   12 ++++++++++++
+ 1 files changed, 12 insertions(+), 0 deletions(-)
 
 diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index 4385aaa..3c0b91f 100644
+index 3c0b91f..6a749d6 100644
 --- a/drivers/mtd/ubi/build.c
 +++ b/drivers/mtd/ubi/build.c
-@@ -602,6 +602,7 @@ static int get_bad_peb_limit(const struct ubi_device *ubi, int max_beb_per1024)
- /**
-  * io_init - initialize I/O sub-system for a given UBI device.
-  * @ubi: UBI device description object
-+ * @max_beb_per1024: maximum expected number of bad PEB per 1024 PEB
-  *
-  * If @ubi->vid_hdr_offset or @ubi->leb_start is zero, default offsets are
-  * assumed:
-@@ -614,10 +615,8 @@ static int get_bad_peb_limit(const struct ubi_device *ubi, int max_beb_per1024)
-  * This function returns zero in case of success and a negative error code in
-  * case of failure.
-  */
--static int io_init(struct ubi_device *ubi)
-+static int io_init(struct ubi_device *ubi, int max_beb_per1024)
- {
--	const int max_beb_per1024 = CONFIG_MTD_UBI_BEB_LIMIT;
--
- 	if (ubi->mtd->numeraseregions != 0) {
- 		/*
- 		 * Some flashes have several erase regions. Different regions
-@@ -839,6 +838,7 @@ static int autoresize(struct ubi_device *ubi, int vol_id)
-  * @mtd: MTD device description object
-  * @ubi_num: number to assign to the new UBI device
-  * @vid_hdr_offset: VID header offset
-+ * @max_beb_per1024: maximum number of expected bad blocks per 1024 eraseblocks
-  *
-  * This function attaches MTD device @mtd_dev to UBI and assign @ubi_num number
-  * to the newly created UBI device, unless @ubi_num is %UBI_DEV_NUM_AUTO, in
-@@ -849,7 +849,8 @@ static int autoresize(struct ubi_device *ubi, int vol_id)
-  * Note, the invocations of this function has to be serialized by the
-  * @ubi_devices_mutex.
-  */
--int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset)
-+int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
-+		       int vid_hdr_offset, int max_beb_per1024)
- {
+@@ -49,6 +49,9 @@
+ /* Maximum number of comma-separated items in the 'mtd=' parameter */
+ #define MTD_PARAM_MAX_COUNT 2
+ 
++/* Maximum value for the number of bad eraseblocks per 1024 limit */
++#define MAX_MTD_UBI_BEB_LIMIT 768
++
+ #ifdef CONFIG_MTD_UBI_MODULE
+ #define ubi_is_module() 1
+ #else
+@@ -855,6 +858,15 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
  	struct ubi_device *ubi;
  	int i, err, ref = 0;
-@@ -922,7 +923,7 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset)
- 	dbg_msg("sizeof(struct ubi_ainf_peb) %zu", sizeof(struct ubi_ainf_peb));
- 	dbg_msg("sizeof(struct ubi_wl_entry) %zu", sizeof(struct ubi_wl_entry));
  
--	err = io_init(ubi);
-+	err = io_init(ubi, max_beb_per1024);
- 	if (err)
- 		goto out_free;
- 
-@@ -1211,7 +1212,8 @@ static int __init ubi_init(void)
- 
- 		mutex_lock(&ubi_devices_mutex);
- 		err = ubi_attach_mtd_dev(mtd, UBI_DEV_NUM_AUTO,
--					 p->vid_hdr_offs);
-+					 p->vid_hdr_offs,
-+					 CONFIG_MTD_UBI_BEB_LIMIT);
- 		mutex_unlock(&ubi_devices_mutex);
- 		if (err < 0) {
- 			ubi_err("cannot attach mtd%d", mtd->index);
-diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-index fb55678..619f914 100644
---- a/drivers/mtd/ubi/cdev.c
-+++ b/drivers/mtd/ubi/cdev.c
-@@ -1010,7 +1010,8 @@ static long ctrl_cdev_ioctl(struct file *file, unsigned int cmd,
- 		 * 'ubi_attach_mtd_dev()'.
- 		 */
- 		mutex_lock(&ubi_devices_mutex);
--		err = ubi_attach_mtd_dev(mtd, req.ubi_num, req.vid_hdr_offset);
-+		err = ubi_attach_mtd_dev(mtd, req.ubi_num, req.vid_hdr_offset,
-+					 CONFIG_MTD_UBI_BEB_LIMIT);
- 		mutex_unlock(&ubi_devices_mutex);
- 		if (err < 0)
- 			put_mtd_device(mtd);
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index c94612e..2a2475b 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -693,7 +693,8 @@ int ubi_io_write_vid_hdr(struct ubi_device *ubi, int pnum,
- 			 struct ubi_vid_hdr *vid_hdr);
- 
- /* build.c */
--int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset);
-+int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
-+		       int vid_hdr_offset, int max_beb_per1024);
- int ubi_detach_mtd_dev(int ubi_num, int anyway);
- struct ubi_device *ubi_get_device(int ubi_num);
- void ubi_put_device(struct ubi_device *ubi);
++	if ((max_beb_per1024 < 0) || (max_beb_per1024 > MAX_MTD_UBI_BEB_LIMIT))
++		return -EINVAL;
++
++	/*
++	 * Use the default value if max_beb_per1024 isn't provided.
++	 */
++	if (!max_beb_per1024)
++		max_beb_per1024 = CONFIG_MTD_UBI_BEB_LIMIT;
++
+ 	/*
+ 	 * Check if we already have the same MTD device attached.
+ 	 *
 -- 
 1.7.2.5
