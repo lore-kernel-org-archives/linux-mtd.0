@@ -1,17 +1,20 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T3NQW-0005j5-6C
- for linux-mtd@lists.infradead.org; Mon, 20 Aug 2012 08:33:36 +0000
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>
-Subject: [PATCH] ubifs: make debug messages more silent
-Date: Mon, 20 Aug 2012 10:33:22 +0200
-Message-Id: <1345451602-22494-1-git-send-email-u.kleine-koenig@pengutronix.de>
+ id 1T3Nvd-0001Mb-Pl
+ for linux-mtd@lists.infradead.org; Mon, 20 Aug 2012 09:05:46 +0000
+Received: by lagu2 with SMTP id u2so3001292lag.36
+ for <linux-mtd@lists.infradead.org>; Mon, 20 Aug 2012 02:05:25 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <1345214124-5478-8-git-send-email-richard.genoud@gmail.com>
+References: <1345214124-5478-1-git-send-email-richard.genoud@gmail.com>
+ <1345214124-5478-8-git-send-email-richard.genoud@gmail.com>
+From: Richard Genoud <richard.genoud@gmail.com>
+Date: Mon, 20 Aug 2012 11:05:05 +0200
+Message-ID: <CACQ1gAjm4xUdVYP3jgFnHnDWmaDFC6fGFu7YqnuF9wbRYTMZ2g@mail.gmail.com>
+Subject: Re: [PATCH 7/8] UBI: add ioctl for max_beb_per1024
+To: Artem Bityutskiy <dedekind1@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de
+Cc: linux-mtd@lists.infradead.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,28 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-With pr_debug being used instead of printk(KERN_DEBUG ...) the messages
-don't make it into the bootlog without further actions. This saves 32
-lines of ubifs messages for me that are not needed most of the time on a
-system with / on ubifs.
+2012/8/17 Richard Genoud <richard.genoud@gmail.com>:
+> + * The accepted range is 0-255. If 0 is given, the default kernel config value
+> + * CONFIG_MTD_UBI_BEB_LIMIT will be used for compatibility.
+>   */
+>  struct ubi_attach_req {
+>         __s32 ubi_num;
+>         __s32 mtd_num;
+>         __s32 vid_hdr_offset;
+> -       __s8 padding[12];
+> +       __u8 max_beb_per1024;
+> +       __s8 padding[11];
+>  };
+>
+So if I use __u16 instead of __u8, what should be the upper limit ?
+1024 ? (1024 is nonsense, but why not...)
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- fs/ubifs/debug.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Regards,
+Richard
 
-diff --git a/fs/ubifs/debug.h b/fs/ubifs/debug.h
-index 8b8cc4e..39828f2 100644
---- a/fs/ubifs/debug.h
-+++ b/fs/ubifs/debug.h
-@@ -176,7 +176,7 @@ struct ubifs_global_debug_info {
- 
- /* Just a debugging messages not related to any specific UBIFS subsystem */
- #define dbg_msg(fmt, ...)                                                      \
--	printk(KERN_DEBUG "UBIFS DBG (pid %d): %s: " fmt "\n", current->pid,   \
-+	pr_debug("UBIFS DBG (pid %d): %s: " fmt "\n", current->pid,   \
- 	       __func__, ##__VA_ARGS__)
- 
- /* General messages */
+
 -- 
-1.7.10.4
+for me, ck means con kolivas and not calvin klein... does it mean I'm a geek ?
