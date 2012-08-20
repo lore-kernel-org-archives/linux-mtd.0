@@ -1,29 +1,19 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T3N5w-0000Gl-4l
- for linux-mtd@lists.infradead.org; Mon, 20 Aug 2012 08:12:21 +0000
-Message-ID: <1345450620.2848.12.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 4/4] UBI: replace MTD_UBI_BEB_LIMIT with user-space
- parameter
+Message-ID: <1345451128.2848.14.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 5/8] UBI: check max_beb_per1024 value in ubi_attach_mtd_dev
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Richard Genoud <richard.genoud@gmail.com>
-Date: Mon, 20 Aug 2012 11:17:00 +0300
-In-Reply-To: <CACQ1gAh7db9Dnqouzv5S=uAfTfavw45dwWSRAozGU4s7y8FA9w@mail.gmail.com>
-References: <1341937423-16516-1-git-send-email-richard.genoud@gmail.com>
- <1341937423-16516-5-git-send-email-richard.genoud@gmail.com>
- <20120816115713.726da8f2@pixies.home.jungo.com>
- <CACQ1gAhFJ6AKYJpc1ZiHm+3Y=APnwUmVL3f0KW=OFMDMWzCVJg@mail.gmail.com>
- <20120816134234.32b468f6@pixies.home.jungo.com>
- <1345124012.3393.239.camel@sauron.fi.intel.com>
- <20120819100946.646cbb8a@pixies.home.jungo.com>
- <1345403092.1930.4.camel@kyv>
- <CACQ1gAh7db9Dnqouzv5S=uAfTfavw45dwWSRAozGU4s7y8FA9w@mail.gmail.com>
+Date: Mon, 20 Aug 2012 11:25:28 +0300
+In-Reply-To: <CACQ1gAgLirwiwiUOoL7ig7R_RpB8xDr2-g2gVOEUZNvAHB60pQ@mail.gmail.com>
+References: <1345214124-5478-1-git-send-email-richard.genoud@gmail.com>
+ <1345214124-5478-6-git-send-email-richard.genoud@gmail.com>
+ <20120819120804.15c33931@pixies.home.jungo.com>
+ <CACQ1gAgLirwiwiUOoL7ig7R_RpB8xDr2-g2gVOEUZNvAHB60pQ@mail.gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-IUx3Saz9a/lyA5X1WIiy"
+ boundary="=-S+THycFNlnRdkA1nVaUr"
 Mime-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>, linux-kernel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -35,33 +25,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-IUx3Saz9a/lyA5X1WIiy
+--=-S+THycFNlnRdkA1nVaUr
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2012-08-20 at 08:55 +0200, Richard Genoud wrote:
-> Hi Artem,
-> 2012/8/19 Artem Bityutskiy <dedekind1@gmail.com>:
-> > Yeah, I wanted to make it 1..256 but forgot, will do now. 0..256 would
-> > need some more work to avoid division by 0.
-> Division by 0 is handled in the get_bad_peb_limit() function, I don't
-> see another dangerous place.
+On Mon, 2012-08-20 at 08:31 +0200, Richard Genoud wrote:
+> That's right, I'll correct that in next version.
+> Thanks !
 
-        if (mult_frac(limit, 1024, max_beb_per1024) < device_pebs)
-
-will divide by 0 if max_beb_per1024 is 0.
-
-> (and if we want to be coherent with user-space, it should be 0..255,
-> as the range is coded with an u8)
-
-I think it should be uint16_t instead, because we are defining ABI here
-and we should not assume no one will ever nee values higher than 255.
+I've amended this patch, added Shmulik's reviewed-by and pushed to
+linux-ubi.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-IUx3Saz9a/lyA5X1WIiy
+--=-S+THycFNlnRdkA1nVaUr
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -69,19 +48,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQMfJ8AAoJECmIfjd9wqK0avkP/0kybOWI/RMspTGm3CaHoBE4
-BkAxoPJnH3lYH+Ug+GE2YAnvcLb32jierhZ/WbDLLvQC7fAF3kuhl0lVdYIBGXp/
-XG/VSD6qx/Y00bzVYSaHPOdAANdKyl/CyGbqlidXCcSQtn3BYLoAtbQj5nkynYf9
-D2APlqud1hs/zgRJKud8m3/735cadJS0Po578CiSq+L8ut042IITvNMcJVlYLp84
-uYaxbajBR0yUZBmmM+LiM6irf4+XnX9FqTbKsZn4oSVKW3k76OSYTAxLp9t/BTXk
-N3IH9EcnteIcJAE70oRzBSTstG5qgkEz7BmAxPMid78kanvThftxaRNKbtC39/CF
-A5ceNr5UOxUxq8R0NzQgHKc8TdXtLkh9TxXp+6zYwHyDZkk8GtEy0viYpIZncuan
-MbRv6gv5bpNpqjcBjpjazTEgx9zyLvxuhW+lW68M/3os5ScWoJ+Hq1mh13CPlYAP
-AAe3M9J/waxdfwTrweDDmWkYkwShq8gp1pOqmm0fAvyhw7kTfPuhbMHBe/ij40B2
-u7mGoetKtVznKyU4cvDBgf/dcv6Fy5zUaclj/wGWV1XocFBqJ7Y+GFFcSy2NBw3l
-+zqF/uJAD4/vHFEDUi3M1v40yqXivdgL+rmkBwrG9vD/kFEv5IbGJ2Pj82e+L9BA
-GLRYA+HXFgxBGs/24HV6
-=yztP
+iQIcBAABAgAGBQJQMfR4AAoJECmIfjd9wqK0Ax4QAMkh31Tjvg/t8bnxBcCfag1r
+oEZxItVyO7+tS2Ve7QG38rVVE8dwr/gcz2kkELCJSnLFNXDwJSwROJ0QH1JOVfYU
+Rtl19BmWm2g083WsTjw+b4R+qCuPa/gReB1H8V4au12Bh/Ew6JWvTUQOzoAW45+i
+AgS6i6r8zoTnyslx8yUg0nQoSD+iwCLYG2Jsql5T5zFHpjKWK8pwrg3cQoLAtGEh
+LzkbT8wY2+6ZWOSIhCw8a1jYYJdRgdBkm1chjeFkV4TNKRe4D95868/Z0RHYUG6q
+c+ySVNhdfplMWu+pVAKGRjAR7vVm+a4Oxx1pRVxb1lk1ZCsk2d3Gyx0MwczDGPP1
+3kFmDpc8aSmsBKsHOMjg/qFULRK1lpnVzMCusNfaTj26pQSSzIzciQ5Er87u9A4j
+QS39f7t32TmX7IQbuShHVDK02/KknqcONGAq+7Oc8q7Hm00+yZU6HnG5DSPmqm3U
+nYUW5PTJIHbQNYrUycQjTW8b+xNgH64I+djpBo1u1QNAO3M5MyK2cKp1jjB0HSZ6
+B3gYOBVU9GGx8289qAQ/8vUw9rZWkkwK0IvGpwaa+DzV25WpXubJWSsxvHkd6qJE
+qmytxNtM7wlKv7QIikW4BumwMB2CynorvEvB7HrbpjAzDn2WEoGJVr8NIt/tD7fU
+TdQsDEygK9KWoN5bQcLZ
+=o5Ws
 -----END PGP SIGNATURE-----
 
---=-IUx3Saz9a/lyA5X1WIiy--
+--=-S+THycFNlnRdkA1nVaUr--
