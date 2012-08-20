@@ -1,21 +1,23 @@
 Received: from mail-bk0-f49.google.com ([209.85.214.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T3XRy-0005d9-R4
- for linux-mtd@lists.infradead.org; Mon, 20 Aug 2012 19:15:47 +0000
-Received: by bkcji2 with SMTP id ji2so2309141bkc.36
- for <linux-mtd@lists.infradead.org>; Mon, 20 Aug 2012 12:15:45 -0700 (PDT)
-Message-ID: <1345490142.1789.6.camel@kyv>
-Subject: Re: new 3.5.2 ubifs debug assert
+ id 1T3XVc-00063h-Hj
+ for linux-mtd@lists.infradead.org; Mon, 20 Aug 2012 19:19:33 +0000
+Received: by bkcji2 with SMTP id ji2so2310310bkc.36
+ for <linux-mtd@lists.infradead.org>; Mon, 20 Aug 2012 12:19:30 -0700 (PDT)
+Message-ID: <1345490367.1789.8.camel@kyv>
+Subject: Re: [PATCH v3 3/6] UBI: check max_beb_per1024 value in
+ ubi_attach_mtd_dev
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: MichaelHench@gmail.com
-Date: Mon, 20 Aug 2012 22:15:42 +0300
-In-Reply-To: <CAHyXW63+bY-Dq_miAWMQc=RYqaBwGrZHn95wgJXuK3NHWsnzbg@mail.gmail.com>
-References: <CAHyXW63+bY-Dq_miAWMQc=RYqaBwGrZHn95wgJXuK3NHWsnzbg@mail.gmail.com>
+To: Richard Genoud <richard.genoud@gmail.com>
+Date: Mon, 20 Aug 2012 22:19:27 +0300
+In-Reply-To: <1345478416-23900-4-git-send-email-richard.genoud@gmail.com>
+References: <1345478416-23900-1-git-send-email-richard.genoud@gmail.com>
+ <1345478416-23900-4-git-send-email-richard.genoud@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-nTUXnH2SAJIwkqNtJQQX"
+ boundary="=-oQFmM9n4LS6y3sR0V5Nb"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,29 +29,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-nTUXnH2SAJIwkqNtJQQX
+--=-oQFmM9n4LS6y3sR0V5Nb
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2012-08-20 at 13:09 -0500, Michael Hench wrote:
-> apparently UBIFS debugging is always on in 3.5.2
-> can anyone tell me what this means ?
->=20
-> UBIFS assert failed in dbg_snprintf_key at 136 (pid 28692)
->=20
->=20
-> everything seems to work, just lots of debug messages.
-> this partition hasn't changed in quite some time over several kernel vers=
-ions.
+On Mon, 2012-08-20 at 18:00 +0200, Richard Genoud wrote:
+> @@ -855,6 +858,15 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi=
+_num,
+>  	struct ubi_device *ubi;
+>  	int i, err, ref =3D 0;
+> =20
+> +	if ((max_beb_per1024 < 0) || (max_beb_per1024 > MAX_MTD_UBI_BEB_LIMIT))
+> +		return -EINVAL;
 
-Could you please send a couple of warnings fully, with the stack dumps.
-I'll try to prepare a fix.
+Removed excessive brackets and pushed to linux-ubi, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-nTUXnH2SAJIwkqNtJQQX
+--=-oQFmM9n4LS6y3sR0V5Nb
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -57,19 +56,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQMozeAAoJECmIfjd9wqK0mz8P/jqzs75B/b8PAaM0oa+vXb6E
-JNRuTD72m3tiMeXhIKLrsiN8t7Xby46FqeIU0RAiIumyZNbOk6WqK9SS6wEoQzRr
-bACHhlEXrgi2P3OxwEY3CZdDrfszK0fwXo5coDAxcoxQD6XjTNLwzQKClxv9k17F
-m1C0LnSfUhZ4ZkOq48ZYbNhzyP3RX3w/huqIIjSwtqXYrcdbPaJlCGkm3jk+DaOR
-ql2JWdCbMNw2qZmDMpyrJwXiVJYvRAHT+DYi9fqoU1T5uC31+FuNo4jnj11O1f+h
-I6Mm0c6UQX/5KNBCBB1ZJn7I4ydjN1AOKVN45Lj2+6YScOSg5ohV3nM55Asipivx
-bk9HnmTl95D4g9o5cw46U/AAAm1uiBTR445S+c/6oQmxhY85VrIJaeNW4+a1JVet
-z2b0mfzq78pXeFBY88DVToCwnDCp5GE7Dufuo/KzNGRanYxhouypmLwZEcw5kcwk
-MvpHSPQ8D66bzrhnHAZRSg5kAE6JbgpxfIe3aJ2FO9M11d5j2rDC+Xr1a0W68Rc/
-WrXVNMNFOVOYw6kKggbv6VKwsiJfAkm2x98wuuTWGMnVpGYb00GTI2IBau59d6CP
-8A6Utb7qHbiD3zzDW4zOKQM84I2RSXoyKmQxBfgXvC0TaJlzwkIP4pZhGofd1Raw
-+gsLGwJF15Vg+a/xRUDJ
-=mgOf
+iQIcBAABAgAGBQJQMo2/AAoJECmIfjd9wqK0NsAP/ijiRbX64JKgdldUrDtSXzBN
+TBqBsGNK+H3BAa8muyFY2lkdspoI4WE86f/YH/26mUbRRMj3uEHxKcjLEgNPK0gE
+ln92NuL5GHlB+2I+IXB4bk1Znsz32lvA7UbQG9U6RQN5VRDVMkMV8ZPkW+3DWzka
+if3IsxRyN3HybBgLPKiWV05qPP4lgqnIguUY9GiG32GqzWXD5LzONPwnTOuP3QwN
+wzb2CchOWGk7Y+DUC5t6BCNYjdFRtv37+1o0TNaOwg31/3jzknp7WsLp3ZhhlpBR
+2cf9UBSvjmo/utdlwxWDUWlorg73nWoCnVdaWmaSFozWDakXoSxt3aiZMF90Fj8W
+SbclOPQUzKR9Q4PMQcslTASTNFD/k1k7r6pktLwm+3snAYmF/Uzoh4yWxK4RLlWf
+qfXEC1Ral378BSk7++CWkUR5WkYVGXDXN5idb+olHmVeMuACwHJIfHVYTZLCMoOO
+ogoxX6h2yesulAh2dsqineEqmxywY2t59xRha7RkMLSevkNBVLr9B3n/BtfcuEjE
+9U0oi9ASgrYSGLvjmtXwbkEtV3kzS9MPrHqYgZWvPl7FALJJ/7NI/OdYoVwVKHek
+IVUGycZJ/k/MjyRxzEb/MFsvIOxkEGP6UFG88cHlUYq4atFzezLy3a7qg1ve/R1c
+CintHucTdDJXXasDntyz
+=ooo1
 -----END PGP SIGNATURE-----
 
---=-nTUXnH2SAJIwkqNtJQQX--
+--=-oQFmM9n4LS6y3sR0V5Nb--
