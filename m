@@ -1,27 +1,16 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T3LuF-0002wC-7j
- for linux-mtd@lists.infradead.org; Mon, 20 Aug 2012 06:56:11 +0000
-Received: by lbbgf7 with SMTP id gf7so2983653lbb.36
- for <linux-mtd@lists.infradead.org>; Sun, 19 Aug 2012 23:56:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1345403092.1930.4.camel@kyv>
-References: <1341937423-16516-1-git-send-email-richard.genoud@gmail.com>
- <1341937423-16516-5-git-send-email-richard.genoud@gmail.com>
- <20120816115713.726da8f2@pixies.home.jungo.com>
- <CACQ1gAhFJ6AKYJpc1ZiHm+3Y=APnwUmVL3f0KW=OFMDMWzCVJg@mail.gmail.com>
- <20120816134234.32b468f6@pixies.home.jungo.com>
- <1345124012.3393.239.camel@sauron.fi.intel.com>
- <20120819100946.646cbb8a@pixies.home.jungo.com> <1345403092.1930.4.camel@kyv>
+In-Reply-To: <20120819122634.252f1ea5@pixies.home.jungo.com>
+References: <1345214124-5478-1-git-send-email-richard.genoud@gmail.com>
+ <1345214124-5478-7-git-send-email-richard.genoud@gmail.com>
+ <20120819122634.252f1ea5@pixies.home.jungo.com>
 From: Richard Genoud <richard.genoud@gmail.com>
-Date: Mon, 20 Aug 2012 08:55:48 +0200
-Message-ID: <CACQ1gAh7db9Dnqouzv5S=uAfTfavw45dwWSRAozGU4s7y8FA9w@mail.gmail.com>
-Subject: Re: [PATCH 4/4] UBI: replace MTD_UBI_BEB_LIMIT with user-space
- parameter
-To: dedekind1@gmail.com
+Date: Mon, 20 Aug 2012 09:38:31 +0200
+Message-ID: <CACQ1gAgUdXj9KKtgjf=Lx0Kz2v18Xgz4RjiRQnKHMsf3m3THJw@mail.gmail.com>
+Subject: Re: [PATCH 6/8] UBI: replace MTD_UBI_BEB_LIMIT with module parameter
+To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>, linux-kernel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,17 +20,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
-2012/8/19 Artem Bityutskiy <dedekind1@gmail.com>:
-> Yeah, I wanted to make it 1..256 but forgot, will do now. 0..256 would
-> need some more work to avoid division by 0.
-Division by 0 is handled in the get_bad_peb_limit() function, I don't
-see another dangerous place.
-So, I think that we can change back the range to 0..256.
-(and if we want to be coherent with user-space, it should be 0..255,
-as the range is coded with an u8)
+2012/8/19 Shmulik Ladkani <shmulik.ladkani@gmail.com>:
+> Hi Richard,
+>
+> On Fri, 17 Aug 2012 16:35:22 +0200 Richard Genoud <richard.genoud@gmail.com> wrote:
+>> +                   "MTD devices may be specified by their number, name, or path to the MTD character device node.\n"
+>> +                   "Optional \"vid_hdr_offs\" parameter specifies UBI VID header position to be used by UBI. (default value if 0 or not set)\n"
+>> +                   "Optional \"max_beb_per1024\" parameter specifies the maximum expected bad eraseblock per 1024 eraseblocks. (default value ("
+>> +                   __stringify(CONFIG_MTD_UBI_BEB_LIMIT) ") if 0 or not set)\n"
+>
+> Looks like "mtd=/dev/mtd1,,25" is invalid, although we state "default
+> value if 0 or not set".
+I'm going to check that.
+>
+> Also, lines are exceeding 80 chars, not sure this is more readable than
+> if they were broken.
+Actually, I didn't split those lines to make checkpatch happy.
+Checkpatch.pl doesn't like split strings because they are hard to grep.
+So there's an exception on the 80 column rule for strings.
 
-Richard.
+>
+> Regards,
+> Shmulik
+
+
 
 -- 
 for me, ck means con kolivas and not calvin klein... does it mean I'm a geek ?
