@@ -1,18 +1,23 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T3l0W-0002AT-GL
- for linux-mtd@lists.infradead.org; Tue, 21 Aug 2012 09:44:21 +0000
-From: Afzal Mohammed <afzal@ti.com>
-To: <tony@atomide.com>, <artem.bityutskiy@linux.intel.com>,
- <linux-omap@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH v3 10/10] mtd: nand: omap2: use gpmc provided irqs
-Date: Tue, 21 Aug 2012 15:14:16 +0530
-Message-ID: <c5a608a70a875191e1323958c74fb2ac8dfa34b3.1344609341.git.afzal@ti.com>
-In-Reply-To: <cover.1344609341.git.afzal@ti.com>
-References: <cover.1344609341.git.afzal@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: ivan.djelic@parrot.com, Afzal Mohammed <afzal@ti.com>
+Received: from mga02.intel.com ([134.134.136.20])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1T3lPq-0006jI-P2
+ for linux-mtd@lists.infradead.org; Tue, 21 Aug 2012 10:10:31 +0000
+Message-ID: <1345544113.2848.87.camel@sauron.fi.intel.com>
+Subject: Re: another issue with ubifs on v3.6-rc2: attaching an formatted
+ device
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+ Huang Shijie <shijie8@gmail.com>
+Date: Tue, 21 Aug 2012 13:15:13 +0300
+In-Reply-To: <20120821093518.GD12220@pengutronix.de>
+References: <20120820160750.GS2232@pengutronix.de>
+ <1345489867.1789.3.camel@kyv> <20120821093518.GD12220@pengutronix.de>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-7ArOEBa7/jxL5PwfzX1X"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,183 +27,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-GPMC platform initialization provides it's clients
-with interrupts that can be used through struct
-resource. Make use of it for irq mode functionality.
 
-Also now write protect disable is done by GPMC,
-hence remove it.
+--=-7ArOEBa7/jxL5PwfzX1X
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Afzal Mohammed <afzal@ti.com>
----
+On Tue, 2012-08-21 at 11:35 +0200, Uwe Kleine-K=C3=B6nig wrote:
+> On Mon, Aug 20, 2012 at 10:11:07PM +0300, Artem Bityutskiy wrote:
+> > On Mon, 2012-08-20 at 18:07 +0200, Uwe Kleine-K=C3=B6nig wrote:
+> > > [  163.714143] uncorrectable error :=20
+> > > [  163.727597] UBI warning: ubi_io_read: error -74 (ECC error) while
+> > > reading 64 bytes from PEB 0:0, read only 64 bytes, retry
+> > > [  163.740737] uncorrectable error :=20
+> > > [  163.744032] UBI warning: ubi_io_read: error -74 (ECC error) while
+> > > reading 64 bytes from PEB 0:0, read only 64 bytes, retry
+> > > [  163.757119] uncorrectable error :=20
+> > > [  163.760487] UBI warning: ubi_io_read: error -74 (ECC error) while
+> > > reading 64 bytes from PEB 0:0, read only 64 bytes, retry
+> > > [  163.774427] uncorrectable error :=20
+> > > [  163.777808] UBI error: ubi_io_read: error -74 (ECC error) while
+> > > reading 64 bytes from PEB 0:0, read 64 bytes=20
+> >=20
+> > This looks like your flash does not really support sub-pages while
+> > declares that it does. Check it with MTD subpage test.
+> the subpages test fails with:
+>=20
+> [   82.435792] mtd_subpagetest: written up to eraseblock 7424
+> [   82.905775] mtd_subpagetest: written up to eraseblock 7680
+> [   83.375201] mtd_subpagetest: written up to eraseblock 7936
+> [   83.840447] mtd_subpagetest: written 8192 eraseblocks
+> [   83.845522] mtd_subpagetest: verifying all eraseblocks
+> [   83.852740] uncorrectable error :=20
+> [   83.856086] mtd_subpagetest: error: read failed at 0x0
+> [   83.861469] mtd_subpagetest: error -74 occurred
+> [   83.866093] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+> Error: could not insert module ./drivers/mtd/tests/mtd_subpagetest.ko: Ba=
+d message
+>=20
+> I don't have a clue yet how to debug that further. Will start with
+> checking older kernel releases. Any hints welcome.
 
-v3: Handle error path properly
+AFAIR, the driver did not support subpages and just needed to report
+about this. And there is a bug in MTD which makes it impossible for
+drivers to tell that sub-pages are not supported. So AFAIU, we need the
+patch I pointed you, and we also need the driver to use "no subpage
+writes" option.
 
- drivers/mtd/nand/omap2.c |   76 +++++++++++++++++++++++++++++-----------------
- 1 files changed, 48 insertions(+), 28 deletions(-)
+I think the maintainer is the best person to comment on this. I assume
+this is the gpmi driver, so that would be Huang Shijie
+<shijie8@gmail.com>.
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index f65f7f8..0e9d7b3 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -137,7 +137,8 @@ struct omap_nand_info {
- 	unsigned long			mem_size;
- 	struct completion		comp;
- 	struct dma_chan			*dma;
--	int				gpmc_irq;
-+	int				gpmc_irq_fifo;
-+	int				gpmc_irq_count;
- 	enum {
- 		OMAP_NAND_IO_READ = 0,	/* read */
- 		OMAP_NAND_IO_WRITE,	/* write */
-@@ -553,14 +554,12 @@ static irqreturn_t omap_nand_irq(int this_irq, void *dev)
- {
- 	struct omap_nand_info *info = (struct omap_nand_info *) dev;
- 	u32 bytes;
--	u32 irq_stat;
- 
--	irq_stat = gpmc_read_status(GPMC_GET_IRQ_STATUS);
- 	bytes = readl(info->reg.gpmc_prefetch_status);
- 	bytes = GPMC_PREFETCH_STATUS_FIFO_CNT(bytes);
- 	bytes = bytes  & 0xFFFC; /* io in multiple of 4 bytes */
- 	if (info->iomode == OMAP_NAND_IO_WRITE) { /* checks for write io */
--		if (irq_stat & 0x2)
-+		if (this_irq == info->gpmc_irq_count)
- 			goto done;
- 
- 		if (info->buf_len && (info->buf_len < bytes))
-@@ -577,20 +576,17 @@ static irqreturn_t omap_nand_irq(int this_irq, void *dev)
- 						(u32 *)info->buf, bytes >> 2);
- 		info->buf = info->buf + bytes;
- 
--		if (irq_stat & 0x2)
-+		if (this_irq == info->gpmc_irq_count)
- 			goto done;
- 	}
--	gpmc_cs_configure(info->gpmc_cs, GPMC_SET_IRQ_STATUS, irq_stat);
- 
- 	return IRQ_HANDLED;
- 
- done:
- 	complete(&info->comp);
--	/* disable irq */
--	gpmc_cs_configure(info->gpmc_cs, GPMC_ENABLE_IRQ, 0);
- 
--	/* clear status */
--	gpmc_cs_configure(info->gpmc_cs, GPMC_SET_IRQ_STATUS, irq_stat);
-+	disable_irq_nosync(info->gpmc_irq_fifo);
-+	disable_irq_nosync(info->gpmc_irq_count);
- 
- 	return IRQ_HANDLED;
- }
-@@ -624,9 +620,9 @@ static void omap_read_buf_irq_pref(struct mtd_info *mtd, u_char *buf, int len)
- 		goto out_copy;
- 
- 	info->buf_len = len;
--	/* enable irq */
--	gpmc_cs_configure(info->gpmc_cs, GPMC_ENABLE_IRQ,
--		(GPMC_IRQ_FIFOEVENTENABLE | GPMC_IRQ_COUNT_EVENT));
-+
-+	enable_irq(info->gpmc_irq_count);
-+	enable_irq(info->gpmc_irq_fifo);
- 
- 	/* waiting for read to complete */
- 	wait_for_completion(&info->comp);
-@@ -674,12 +670,13 @@ static void omap_write_buf_irq_pref(struct mtd_info *mtd,
- 		goto out_copy;
- 
- 	info->buf_len = len;
--	/* enable irq */
--	gpmc_cs_configure(info->gpmc_cs, GPMC_ENABLE_IRQ,
--			(GPMC_IRQ_FIFOEVENTENABLE | GPMC_IRQ_COUNT_EVENT));
-+
-+	enable_irq(info->gpmc_irq_count);
-+	enable_irq(info->gpmc_irq_fifo);
- 
- 	/* waiting for write to complete */
- 	wait_for_completion(&info->comp);
-+
- 	/* wait for data to flushed-out before reset the prefetch */
- 	tim = 0;
- 	limit = (loops_per_jiffy *  msecs_to_jiffies(OMAP_NAND_TIMEOUT_MS));
-@@ -1300,9 +1297,6 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
- 	info->nand.options	= pdata->devsize;
- 	info->nand.options	|= NAND_SKIP_BBTSCAN;
- 
--	/* NAND write protect off */
--	gpmc_cs_configure(info->gpmc_cs, GPMC_CONFIG_WP, 0);
--
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	if (res == NULL) {
- 		err = -EINVAL;
-@@ -1393,17 +1387,37 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
- 		break;
- 
- 	case NAND_OMAP_PREFETCH_IRQ:
--		err = request_irq(pdata->gpmc_irq,
--				omap_nand_irq, IRQF_SHARED, "gpmc-nand", info);
-+		info->gpmc_irq_fifo = platform_get_irq(pdev, 0);
-+		if (info->gpmc_irq_fifo <= 0) {
-+			dev_err(&pdev->dev, "error getting fifo irq\n");
-+			goto out_release_mem_region;
-+		}
-+		err = request_irq(info->gpmc_irq_fifo,	omap_nand_irq,
-+					IRQF_SHARED, "gpmc-nand-fifo", info);
- 		if (err) {
- 			dev_err(&pdev->dev, "requesting irq(%d) error:%d",
--							pdata->gpmc_irq, err);
-+						info->gpmc_irq_fifo, err);
-+			info->gpmc_irq_fifo = 0;
-+			goto out_release_mem_region;
-+		}
-+
-+		info->gpmc_irq_count = platform_get_irq(pdev, 1);
-+		if (info->gpmc_irq_count <= 0) {
-+			dev_err(&pdev->dev, "error getting count irq\n");
-+			goto out_release_mem_region;
-+		}
-+		err = request_irq(info->gpmc_irq_count,	omap_nand_irq,
-+					IRQF_SHARED, "gpmc-nand-count", info);
-+		if (err) {
-+			dev_err(&pdev->dev, "requesting irq(%d) error:%d",
-+						info->gpmc_irq_count, err);
-+			info->gpmc_irq_count = 0;
- 			goto out_release_mem_region;
--		} else {
--			info->gpmc_irq	     = pdata->gpmc_irq;
--			info->nand.read_buf  = omap_read_buf_irq_pref;
--			info->nand.write_buf = omap_write_buf_irq_pref;
- 		}
-+
-+		info->nand.read_buf  = omap_read_buf_irq_pref;
-+		info->nand.write_buf = omap_write_buf_irq_pref;
-+
- 		break;
- 
- 	default:
-@@ -1491,6 +1505,10 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
- out_release_mem_region:
- 	if (info->dma)
- 		dma_release_channel(info->dma);
-+	if (info->gpmc_irq_count > 0)
-+		free_irq(info->gpmc_irq_count, info);
-+	if (info->gpmc_irq_fifo > 0)
-+		free_irq(info->gpmc_irq_fifo, info);
- 	release_mem_region(info->phys_base, info->mem_size);
- out_free_info:
- 	kfree(info);
-@@ -1509,8 +1527,10 @@ static int omap_nand_remove(struct platform_device *pdev)
- 	if (info->dma)
- 		dma_release_channel(info->dma);
- 
--	if (info->gpmc_irq)
--		free_irq(info->gpmc_irq, info);
-+	if (info->gpmc_irq_count > 0)
-+		free_irq(info->gpmc_irq_count, info);
-+	if (info->gpmc_irq_fifo > 0)
-+		free_irq(info->gpmc_irq_fifo, info);
- 
- 	/* Release NAND device, its internal structures and partitions */
- 	nand_release(&info->mtd);
--- 
-1.7.1
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-7ArOEBa7/jxL5PwfzX1X
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQM1+xAAoJECmIfjd9wqK0DEcQAMUXPyeiVDamXVR6EYcPKxvC
+0vSfEfQS9QggZ1TRO51WWbGo4XdyuQviuDBZN04UiDMu1HnXqp5AvMstTXxFaLx1
+/Is67MTBe5FigNs6RoC4oNr9i06V2twvG9XvGG1Ic+yTUX11hYFiToRMxPqGm2TF
+hrzuHV8Yz1VGc8Fr68L3FyBvf+f9XP/AzqBTiFqqas/LGNDraOZKDEZAuK/EmKtu
+w/lwaMJ/a8Z6BwRcKPHqYGJx/ivj6jikV6priJvEa6T+EwfTcGq9NCouhIcAdlb7
+fTbvJGxsYyLiyoS/j96nAl8VjilT0rWfuFYT/sBA+iQgGH+E9LswlCEq4iuvKlwV
+SGjahV9fdNfdnfXZAGs41VA8xRIVnSMP+fUQkTWSKo6JvQm1+BrJ/PPm9xlpMmEd
+nYWjgxwEVhpfKhkRLbU5hLMnRWM9+1eiCPj7zLt3wMc8NiuVgW7+rNHyLe/1P+2M
+ze8nEY3tDuKoEUNB1fEU/96QfRhlr/DTbzBJ/ZCcOKSryBv8AMC8YK7AHfCD96Gz
+dOZc+ndQ9SojxvmiU2Ba2zUlFAEYtJYwsdWtTN3Z5HyXwDvBWxPH2cwWnqg31vaK
+ntO2oMMKDtbnhn5zusFV818Xl2x0mXMHkP+U1cEqib2sBS9elka67XNVAMzuR5Oj
+7AoqhtaMdHLoOwogVUhK
+=9Wdr
+-----END PGP SIGNATURE-----
+
+--=-7ArOEBa7/jxL5PwfzX1X--
