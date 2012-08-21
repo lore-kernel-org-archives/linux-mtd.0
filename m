@@ -1,19 +1,17 @@
-Received: from cdptpa-bc-oedgelb.mail.rr.com ([75.180.133.32])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T3nUy-0006Ck-CF
- for linux-mtd@lists.infradead.org; Tue, 21 Aug 2012 12:23:57 +0000
-Message-ID: <50337E4C.5040904@cincinnatitechnologies.com>
-Date: Tue, 21 Aug 2012 08:25:48 -0400
-From: Russell Zuck <rzuck@cincinnatitechnologies.com>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: Is my erase block size correct?
-References: <500EC7D9.8020509@cincinnatitechnologies.com>
- <1345213158.27859.93.camel@sauron.fi.intel.com>
-In-Reply-To: <1345213158.27859.93.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Received: from mail-we0-f177.google.com ([74.125.82.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1T3neM-00048l-Pa
+ for linux-mtd@lists.infradead.org; Tue, 21 Aug 2012 12:33:39 +0000
+Received: by weyr3 with SMTP id r3so4952589wey.36
+ for <linux-mtd@lists.infradead.org>; Tue, 21 Aug 2012 05:33:37 -0700 (PDT)
+From: Richard Genoud <richard.genoud@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH resend] UBI: introduce MTD_PARAM_MAX_COUNT
+Date: Tue, 21 Aug 2012 14:33:22 +0200
+Message-Id: <1345552402-25190-1-git-send-email-richard.genoud@gmail.com>
+Cc: Richard Genoud <richard.genoud@gmail.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-mtd@lists.infradead.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,30 +21,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 8/17/2012 10:19 AM, Artem Bityutskiy wrote:
->> mtd0
->> >Name:                           nor_flash
->> >Type:                           dataflash
->> >Eraseblock size:                512 bytes
-> What does /proc/mtd contain?
-My apologies for the delayed reply.  I've been on vacation and unplugged 
-by design.
+Here is the patch accidentally dropped.
+I rebased it on linux-ubi/master (9baf0a2) and made sure the other ones:
+* UBI: replace MTD_UBI_BEB_LIMIT with module parameter
+* UBI: add ioctl for max_beb_per1024
+* UBI: drop CONFIG_MTD_UBI_BEB_LIMIT
 
-Currently, we are booting out of the nor_flash partition and also 
-loading the kernel from there.  Due to other technical challenges, we 
-are not using either the mtd1 or mtd2 partitions at the moment.
-
-dev:    size   erasesize  name
-mtd0: 00400000 00000200 "nor_flash"
-mtd1: 00100000 00020000 "nand.bootloader"
-mtd2: 00300000 00020000 "nand.kernel"
-mtd3: 1fc00000 00020000 "nand.rootfs"
-
-Please see my thread "UBIFS corruption after software upgrade" 
-originally posted on 7/24/2012 for more details about the problem that 
-prompted this question about erase block size.  Any assistance you can 
-provide with this issue would be greatly appreciated.
+still apply correctly (and they still do, so I don't resend them).
 
 Best regards,
+Richard.
 
-Russell Zuck
+Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
+Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+---
+ drivers/mtd/ubi/build.c |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 8bbab23..0fe6356 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -46,6 +46,9 @@
+ /* Maximum length of the 'mtd=' parameter */
+ #define MTD_PARAM_LEN_MAX 64
+ 
++/* Maximum number of comma-separated items in the 'mtd=' parameter */
++#define MTD_PARAM_MAX_COUNT 2
++
+ /* Maximum value for the number of bad PEBs per 1024 PEBs */
+ #define MAX_MTD_UBI_BEB_LIMIT 768
+ 
+@@ -1338,7 +1341,7 @@ static int __init ubi_mtd_param_parse(const char *val, struct kernel_param *kp)
+ 	struct mtd_dev_param *p;
+ 	char buf[MTD_PARAM_LEN_MAX];
+ 	char *pbuf = &buf[0];
+-	char *tokens[2] = {NULL, NULL};
++	char *tokens[MTD_PARAM_MAX_COUNT];
+ 
+ 	if (!val)
+ 		return -EINVAL;
+@@ -1368,7 +1371,7 @@ static int __init ubi_mtd_param_parse(const char *val, struct kernel_param *kp)
+ 	if (buf[len - 1] == '\n')
+ 		buf[len - 1] = '\0';
+ 
+-	for (i = 0; i < 2; i++)
++	for (i = 0; i < MTD_PARAM_MAX_COUNT; i++)
+ 		tokens[i] = strsep(&pbuf, ",");
+ 
+ 	if (pbuf) {
+-- 
+1.7.2.5
