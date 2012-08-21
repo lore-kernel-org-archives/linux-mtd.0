@@ -1,20 +1,19 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from cdptpa-bc-oedgelb.mail.rr.com ([75.180.133.32])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T3nRU-0004Mq-Gl
- for linux-mtd@lists.infradead.org; Tue, 21 Aug 2012 12:20:21 +0000
-Message-ID: <1345551904.2848.95.camel@sauron.fi.intel.com>
-Subject: Re: new 3.5.2 ubifs debug assert
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: MichaelHench@gmail.com
-Date: Tue, 21 Aug 2012 15:25:04 +0300
-In-Reply-To: <CAHyXW63+bY-Dq_miAWMQc=RYqaBwGrZHn95wgJXuK3NHWsnzbg@mail.gmail.com>
-References: <CAHyXW63+bY-Dq_miAWMQc=RYqaBwGrZHn95wgJXuK3NHWsnzbg@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-4TAx+IFN5y/+1fbabOuD"
-Mime-Version: 1.0
+ id 1T3nUy-0006Ck-CF
+ for linux-mtd@lists.infradead.org; Tue, 21 Aug 2012 12:23:57 +0000
+Message-ID: <50337E4C.5040904@cincinnatitechnologies.com>
+Date: Tue, 21 Aug 2012 08:25:48 -0400
+From: Russell Zuck <rzuck@cincinnatitechnologies.com>
+MIME-Version: 1.0
+To: dedekind1@gmail.com
+Subject: Re: Is my erase block size correct?
+References: <500EC7D9.8020509@cincinnatitechnologies.com>
+ <1345213158.27859.93.camel@sauron.fi.intel.com>
+In-Reply-To: <1345213158.27859.93.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,74 +23,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 8/17/2012 10:19 AM, Artem Bityutskiy wrote:
+>> mtd0
+>> >Name:                           nor_flash
+>> >Type:                           dataflash
+>> >Eraseblock size:                512 bytes
+> What does /proc/mtd contain?
+My apologies for the delayed reply.  I've been on vacation and unplugged 
+by design.
 
---=-4TAx+IFN5y/+1fbabOuD
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Currently, we are booting out of the nor_flash partition and also 
+loading the kernel from there.  Due to other technical challenges, we 
+are not using either the mtd1 or mtd2 partitions at the moment.
 
-On Mon, 2012-08-20 at 13:09 -0500, Michael Hench wrote:
-> apparently UBIFS debugging is always on in 3.5.2
-> can anyone tell me what this means ?
+dev:    size   erasesize  name
+mtd0: 00400000 00000200 "nor_flash"
+mtd1: 00100000 00020000 "nand.bootloader"
+mtd2: 00300000 00020000 "nand.kernel"
+mtd3: 1fc00000 00020000 "nand.rootfs"
 
-It should not. We use 'pr_debug()' for debugging messages, which are
-off by default. To enable them, you need to do something like described
-here:
+Please see my thread "UBIFS corruption after software upgrade" 
+originally posted on 7/24/2012 for more details about the problem that 
+prompted this question about erase block size.  Any assistance you can 
+provide with this issue would be greatly appreciated.
 
-http://www.linux-mtd.infradead.org/faq/ubifs.html#L_how_debug
+Best regards,
 
-E.g.,
-echo 'format "UBIFS DBG" +pf' > /sys/kernel/debug/dynamic_debug/control
-
-would enable all UBIFS debugging messages.
-
-I do not know why they are switched on in your system.
-
-> UBIFS assert failed in dbg_snprintf_key at 136 (pid 28692)
-
-Hmm, strange, would be interesting to see the length in your setup.
-Would you try this patch:
-
-diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
-index bb31672..52b0290 100644
---- a/fs/ubifs/debug.c
-+++ b/fs/ubifs/debug.c
-@@ -133,6 +133,7 @@ const char *dbg_snprintf_key(const struct ubifs_info *c=
-,
-                }
-        } else
-                len -=3D snprintf(p, len, "bad key format %d", c->key_fmt);
-+       printk(KERN_ERR "len %d, p %s\n", len, p);
-        ubifs_assert(len > 0);
-        return p;
- }
-
-and send what that printk says?
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-4TAx+IFN5y/+1fbabOuD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQM34gAAoJECmIfjd9wqK06twQAJWuWPszHbtizn1pRhyoGvJx
-AikNyYc32MpH+BYOULOQCaTrAbcOSpVGfIoJb4WNQAJs4cXi0UIGTIYwMcguHLYt
-GpS6OpkZVMt6T7Rfnq3UauvQS41VKo4jm1q+k8ET1LfPIf1kVmIpOx46+tRRoIhN
-SZJk/RszcBI4xKMj3EC3fNNRG1DTeEH0wHCxQATdMHIAc6mIYURbtzZpoGGG5oIt
-n6tQHuRvq1XsTmnkUMcEHZGbRwm9HI7WNWmo46p99PXPIlRJTZo2tJq2NLGROkoT
-+Eu/CxuEIEl/jPSAdNyOyqsfk2V+i2Ps0aEtiTROHUMhbkhIAIMxrnCQXno8i77l
-0+LeEZ3Lm+hYJauCEa5ge9qWBYocOUIWEvnEupgQl2oUjBHQXeDHs8Eu1KZ/0BvZ
-YAe+XDMaOuoxMqO1Y7L7LDXGwGid7z4eiGOmjvfRTjMN5WZ3cTRqd3mXgoE/RSa9
-INMs5O3IetEoATyDppi1tYLK8FO3qOUlFA6jK3E1klMX49yEZeU8H8/1b+4CeUUh
-p8mUYkN3PBhcrLR9gRYV9Dz/1tiymxxDKa5u2Ad/NAsnIyy308/UV48Af6ON/L+U
-Z4//UOg+inKqmMbOH99kEQksOzqbDUaBV1ZMCzZTSs3elDOCABFiZMmGSGP+j0Vn
-NHjTVMo2f6KXGf53BSMZ
-=Ft3+
------END PGP SIGNATURE-----
-
---=-4TAx+IFN5y/+1fbabOuD--
+Russell Zuck
