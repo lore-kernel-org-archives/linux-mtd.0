@@ -1,18 +1,23 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T3mHl-0006js-L4
- for linux-mtd@lists.infradead.org; Tue, 21 Aug 2012 11:06:14 +0000
+ id 1T3mZb-0003s9-DE
+ for linux-mtd@lists.infradead.org; Tue, 21 Aug 2012 11:24:40 +0000
+Message-ID: <1345548560.2848.91.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 3/8] UBI: introduce MTD_PARAM_MAX_COUNT
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: MTD Maling List <linux-mtd@lists.infradead.org>,
- =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Subject: [PATCH 3/3] UBIFS: fix replay regression
-Date: Tue, 21 Aug 2012 14:06:00 +0300
-Message-Id: <1345547160-31958-4-git-send-email-dedekind1@gmail.com>
-In-Reply-To: <1345547160-31958-1-git-send-email-dedekind1@gmail.com>
-References: <1345547160-31958-1-git-send-email-dedekind1@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+To: Richard Genoud <richard.genoud@gmail.com>
+Date: Tue, 21 Aug 2012 14:29:20 +0300
+In-Reply-To: <CACQ1gAgcvxX7Dh8JRdj1S_agnh0F-08cK3EBWdb9Rzo-+ox+fw@mail.gmail.com>
+References: <1345214124-5478-1-git-send-email-richard.genoud@gmail.com>
+ <1345214124-5478-4-git-send-email-richard.genoud@gmail.com>
+ <1345404739.1930.11.camel@kyv>
+ <CACQ1gAgcvxX7Dh8JRdj1S_agnh0F-08cK3EBWdb9Rzo-+ox+fw@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-SFEJgfhc84lYv067nQk6"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,42 +27,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-Commit "d51f17e UBIFS: simplify reply code a bit" introduces a bug with the
-following symptoms:
+--=-SFEJgfhc84lYv067nQk6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-UBIFS error (pid 1): replay_log_leb: first CS node at LEB 3:0 has wrong commit number 0 expected 1
+On Tue, 2012-08-21 at 10:08 +0200, Richard Genoud wrote:
+> Hi Artem,
+>=20
+> It seems that this patch has been dropped on linux-ubi/master. Is it a
+> git-reset accident or my patches didn't apply cleanly on it ?
+> Anyway, if you want me to re-send it rebased on top of
+> linux-ubi/master, just ask (I guess there will be a little conflit on
+> the #define)
 
-The issue is that we start replaying the log from UBIFS_LOG_LNUM instead
-of c->lhead_lnum. This patch fixes that.
+My mistake, dropped it accidentally - worked late. Sorry, just put it
+back.
 
-Reported-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
----
- fs/ubifs/replay.c |    3 +--
- 1 files changed, 1 insertions(+), 2 deletions(-)
+--=20
+Best Regards,
+Artem Bityutskiy
 
-diff --git a/fs/ubifs/replay.c b/fs/ubifs/replay.c
-index eba46d4..94d78fc 100644
---- a/fs/ubifs/replay.c
-+++ b/fs/ubifs/replay.c
-@@ -1026,7 +1026,6 @@ int ubifs_replay_journal(struct ubifs_info *c)
- 	c->replaying = 1;
- 	lnum = c->ltail_lnum = c->lhead_lnum;
- 
--	lnum = UBIFS_LOG_LNUM;
- 	do {
- 		err = replay_log_leb(c, lnum, 0, c->sbuf);
- 		if (err == 1)
-@@ -1035,7 +1034,7 @@ int ubifs_replay_journal(struct ubifs_info *c)
- 		if (err)
- 			goto out;
- 		lnum = ubifs_next_log_lnum(c, lnum);
--	} while (lnum != UBIFS_LOG_LNUM);
-+	} while (lnum != c->ltail_lnum);
- 
- 	err = replay_buds(c);
- 	if (err)
--- 
-1.7.7.6
+--=-SFEJgfhc84lYv067nQk6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQM3EQAAoJECmIfjd9wqK0isUP/2ENLFoLcW/QFMqHuMfEUvL3
+OJaaj9wZvsVXoEEujJugSyh20Cz8IP6cnObY8ClN0qRuK/6cpq/OqfwPIKLc9TXr
+CvXFQooNHyv1/5EvCF1J+aVI2xVLutUr6XtfI10rx0ZjdAbr/xM5bP2IfAt+OLbD
+aUKD85icPWC4euQwaK6vFZyAGhNBIsfuyT1jHtRgXCfMjLA9Xw9TPConCMMOw5XK
+dXdyrkikAxq9IeqGSh451reoIdLqP9oEb1vX97zvY2Vpvnw0NJbbc969z670YFiL
+ZoguYmSgVFdMNrO79eFuvA/b7KY2VGmT5Hwbkpe3knp3XUdfpcu01i5Q6GjqUtFB
+z26qYUy8cGu7rQ2/asVQIc3FdUcDHB93S6FPIRbxDs1T4Lo7bzQl3MRXPxlF8cgQ
+kST5S2IjZ+gliqDabzZ5d9exMY+cFId8rfegIjtKlXf4dbuCMvVfugDvL1bPSKrN
+tzjuwNIKkr+WtkAjMN/u2HagjtRlj6WW9CFqErtKoYk13wq1LZd4jFJwEeo1U5C6
+yvkn225J74M/GWLxJL1NtttNdIMl31dcmno7hNpd5CNY8I+WZWtTw5o7WKqLc2LR
+I4yBwoQ/OR61Gn0ixEzIo+JjmCLHJWsiWF56tSJ5b/P/u3pnsWhBaWv1CtXuv6IE
+xqW6xKl8e5gBXt0XSDhP
+=p6Sd
+-----END PGP SIGNATURE-----
+
+--=-SFEJgfhc84lYv067nQk6--
