@@ -1,21 +1,16 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
+Received: from comal.ext.ti.com ([198.47.26.152])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T3kG2-0008LJ-J4
- for linux-mtd@lists.infradead.org; Tue, 21 Aug 2012 08:56:19 +0000
-Received: by pbbrq8 with SMTP id rq8so8744651pbb.36
- for <linux-mtd@lists.infradead.org>; Tue, 21 Aug 2012 01:56:17 -0700 (PDT)
-From: Sachin Kamat <sachin.kamat@linaro.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/2] mtd: s3c2410: Fix compiler warnings
-Date: Tue, 21 Aug 2012 14:24:10 +0530
-Message-Id: <1345539250-4509-2-git-send-email-sachin.kamat@linaro.org>
-In-Reply-To: <1345539250-4509-1-git-send-email-sachin.kamat@linaro.org>
-References: <1345539250-4509-1-git-send-email-sachin.kamat@linaro.org>
+ id 1T3kux-0001HK-JU
+ for linux-mtd@lists.infradead.org; Tue, 21 Aug 2012 09:38:36 +0000
+From: Afzal Mohammed <afzal@ti.com>
+To: <tony@atomide.com>, <artem.bityutskiy@linux.intel.com>,
+ <linux-omap@vger.kernel.org>, <linux-mtd@lists.infradead.org>
+Subject: [PATCH v3 00/10] Prepare for GPMC driver conversion (w.r.t MTD)
+Date: Tue, 21 Aug 2012 15:08:24 +0530
+Message-ID: <cover.1344609341.git.afzal@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: sachin.kamat@linaro.org, patches@linaro.org, dwmw2@infradead.org,
- dedekind1@gmail.com
+Content-Type: text/plain
+Cc: ivan.djelic@parrot.com, Afzal Mohammed <afzal@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,42 +20,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fixes the following warnings:
-‘s3c2410_nand_correct_data’ defined but not used [-Wunused-function]
-‘s3c2410_nand_enable_hwecc’ defined but not used [-Wunused-function]
-‘s3c2412_nand_enable_hwecc’ defined but not used [-Wunused-function]
-‘s3c2440_nand_enable_hwecc’ defined but not used [-Wunused-function]
-‘s3c2410_nand_calculate_ecc’ defined but not used [-Wunused-function]
-‘s3c2412_nand_calculate_ecc’ defined but not used [-Wunused-function]
-‘s3c2440_nand_calculate_ecc’ defined but not used [-Wunused-function]
+Hi,
 
-The above functions are called only when CONFIG_MTD_NAND_S3C2410_HWECC
-is defined. Thus making them conditional.
+This is a RESEND of the series that was sent on 10-August-2012,
+which unfortunately did not make it to mailing lists.
 
-Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
----
- drivers/mtd/nand/s3c2410.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+This series cleans up gpmc mtd interactions so that GPMC driver
+conversion which is going to happen shortly would happen smoothly
+by not creating much disturbance outside of arch/arm/*omap*/
 
-diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
-index b8a556e..18e8046 100644
---- a/drivers/mtd/nand/s3c2410.c
-+++ b/drivers/mtd/nand/s3c2410.c
-@@ -442,6 +442,7 @@ static int s3c2412_nand_devready(struct mtd_info *mtd)
- 
- /* ECC handling functions */
- 
-+#ifdef CONFIG_MTD_NAND_S3C2410_HWECC
- static int s3c2410_nand_correct_data(struct mtd_info *mtd, u_char *dat,
- 				     u_char *read_ecc, u_char *calc_ecc)
- {
-@@ -596,6 +597,7 @@ static int s3c2440_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
- 
- 	return 0;
- }
-+#endif
- 
- /* over-ride the standard functions for a little more speed. We can
-  * use read/write block to move the data buffers to/from the controller
--- 
-1.7.4.1
+This series,
+1. provides the ability for OMAP NAND driver to configure GPMC-NAND
+   registers by NAND driver itself instead of using exported GPMC
+   symbols
+2. modifies GPMC to provide OMAP ONENAND & NAND drivers with GPMC
+   allocated address space as resource
+3. creates a fictitious GPMC interrupt chip and provide the clients
+   with interrupts that could be handled using standard APIs (helps
+   in removing the requirement for driver of peripheral connected to
+   GPMC having the knowledge about GPMC interrupt handling). The
+   only user is OMAP NAND driver, it has also been modified to take
+   advantage of this
+
+This series has been made over linux-omap master & can be applied
+over 3.6-rc1 too. This has been tested on omap3evm. Artem's Acked-by
+has been added to mtd patches except for 10/10 where a change has
+been made to handle error path properly.
+
+Regards
+Afzal
+
+v3: Handle error path properly
+v2: simplify omap_prefetch_enable()
+
+
+Afzal Mohammed (10):
+  ARM: OMAP2+: gpmc: update nand register helper
+  ARM: OMAP2+: gpmc-nand: update gpmc-nand regs
+  mtd: nand: omap2: handle nand on gpmc
+  ARM: OMAP2+: gpmc-nand: update resource with memory
+  ARM: OMAP2+: gpmc-onenand: provide memory as resource
+  mtd: nand: omap2: obtain memory from resource
+  mtd: onenand: omap2: obtain memory from resource
+  ARM: OMAP2+: gpmc: Modify interrupt handling
+  ARM: OMAP2+: gpmc-nand: Modify Interrupt handling
+  mtd: nand: omap2: use gpmc provided irqs
+
+ arch/arm/mach-omap2/gpmc-nand.c        |   28 +++-
+ arch/arm/mach-omap2/gpmc-onenand.c     |   23 +++-
+ arch/arm/mach-omap2/gpmc.c             |  156 +++++++++++++++--
+ arch/arm/plat-omap/include/plat/gpmc.h |   19 ++
+ arch/arm/plat-omap/include/plat/nand.h |    2 +-
+ drivers/mtd/nand/omap2.c               |  299 ++++++++++++++++++++++++--------
+ drivers/mtd/onenand/omap2.c            |   29 ++--
+ 7 files changed, 443 insertions(+), 113 deletions(-)
