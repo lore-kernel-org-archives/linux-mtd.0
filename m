@@ -1,20 +1,20 @@
 Received: from mail-bk0-f49.google.com ([209.85.214.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T3uE3-00019u-Kl
- for linux-mtd@lists.infradead.org; Tue, 21 Aug 2012 19:34:56 +0000
-Received: by bkcji2 with SMTP id ji2so56457bkc.36
- for <linux-mtd@lists.infradead.org>; Tue, 21 Aug 2012 12:34:53 -0700 (PDT)
-Message-ID: <1345577690.1886.10.camel@kyv>
-Subject: Re: [PATCH v3 6/6] UBI: drop CONFIG_MTD_UBI_BEB_LIMIT
+ id 1T3uE5-00019u-8y
+ for linux-mtd@lists.infradead.org; Tue, 21 Aug 2012 19:34:57 +0000
+Received: by mail-bk0-f49.google.com with SMTP id ji2so56457bkc.36
+ for <linux-mtd@lists.infradead.org>; Tue, 21 Aug 2012 12:34:56 -0700 (PDT)
+Message-ID: <1345577694.1886.11.camel@kyv>
+Subject: Re: [PATCH v3 5/6] UBI: add ioctl for max_beb_per1024
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Richard Genoud <richard.genoud@gmail.com>
-Date: Tue, 21 Aug 2012 22:34:50 +0300
-In-Reply-To: <1345478416-23900-7-git-send-email-richard.genoud@gmail.com>
+Date: Tue, 21 Aug 2012 22:34:54 +0300
+In-Reply-To: <1345478416-23900-6-git-send-email-richard.genoud@gmail.com>
 References: <1345478416-23900-1-git-send-email-richard.genoud@gmail.com>
- <1345478416-23900-7-git-send-email-richard.genoud@gmail.com>
+ <1345478416-23900-6-git-send-email-richard.genoud@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-bW+VNFMvp5bEDogtE10g"
+ boundary="=-sCHHU0qUjbQSQCx+CTzh"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>
 Reply-To: dedekind1@gmail.com
@@ -28,28 +28,47 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-bW+VNFMvp5bEDogtE10g
+--=-sCHHU0qUjbQSQCx+CTzh
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 On Mon, 2012-08-20 at 18:00 +0200, Richard Genoud wrote:
-> This option can be set by a kernel parameter and an ioctl, so we may not
-> need the kernel config option any more.
->=20
-> Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
+> This patch provides the possibility to adjust the "maximum expected numbe=
+r of
+> bad blocks per 1024 blocks" (max_beb_per1024) for each mtd device from
+> UBI_IOCATT ioctl.
 
-Thanks for separating this. Actually, I've given some more thoughts, and
-changed my mind :-) Shmulik is right, it is nicer to preserve the
-Kconfig option. So let's drop this patch.
+Thanks, pushed to linux-ubi.git with minor amendments.
 
-AFAICS, all the kernel stuff is in my tree now.
+>  struct ubi_attach_req {
+>  	__s32 ubi_num;
+>  	__s32 mtd_num;
+>  	__s32 vid_hdr_offset;
+> -	__s8 padding[12];
+> +	__u16 max_beb_per1024;
+> +	__s8 padding[10];
+>  };
 
+I've made that to be _s16, for consistency. AFAIR, the reasons I used
+signed types all over the place (unless the really needed an unsigned
+type) are:
+
+1. Easy to write functions with return a positive resulting value of
+something (e.g., pnum) in case of success and a negative error code in
+case of failure.
+2. Easy to check for sane value by just comparing to 0.
+
+But these are not very strong arguments, and I read somewhere that some
+CPUs handle unsigned integers a bit faster, not sure what architectures
+was that about.
+
+Thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-bW+VNFMvp5bEDogtE10g
+--=-sCHHU0qUjbQSQCx+CTzh
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -57,19 +76,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQM+LaAAoJECmIfjd9wqK0R6IQAK3RL58E291QZRl9r4AMdV7K
-bdTCiBxEKRSz/V8deueerxcPFlvIvj7DQqhbSQ0nc2BD8ZQ/pQ6cd6VAuOLkkoTo
-4CcG40xYS38QXgAeUn89JyKaxyGG2U4r/vopQmEyXpm27iSvsm8MdnyEm8GicIe4
-CX5pi1I1nIfjr6NJAteOpeMKSf3ZFuNcEUd6fRR8lmYze9bPKZdkSaAqniY27t95
-QK336NovbYGrNIBg8BDgJbP0x6Nx2IAHRPglAzUoPlvmnJXdoexKI7TaEklGAYCz
-0z6unUVLveviuGGUM2JO4mrVtRU2+Jgqmk+3sDg+NNvtBu10zOIGypxmZtuWq6ij
-Hzjfo/FtZmYx2lksWtJ1YqzYCFioJzZOfqdtoqTWah3xiteC9XiOjqt6pd626OLK
-xl/Yu5M/zICKvLQFUETIEQTpWPCXB+1D2r+xBRVs8H6XP5Rdv1ohh+dfJe44JtCn
-HbsMxhhBeoMnQ+EUOkzbaRdSkI2X48dO4O1agwRlMK2//yRt7EHKc6Hv/6gfLHs8
-kHEXEoYxCxMBxkdy5uM3aTnmbovTMXph1aFFc9ddNiMMxwMqHGkQ9PXMx7unHyWM
-9j8H4VWhBg/YvuxAseZlD3hEiRryq3vKxgU4SS6CcDWtHk+8/fmLIM9DjtVIwmIG
-falDYucTNd99+bER7LnO
-=p7dg
+iQIcBAABAgAGBQJQM+LeAAoJECmIfjd9wqK0vUcP/A7EVYBQiLsqErbmLCN5prMA
+Rq698gckWSGD1FuMGTs4K3gsbl5iYGcrBLaFQnnJ9GnwggyqDMe+noCzak71VCZB
+7uLEtbHQaoz7ZwlyoF1zplNewZ/RSZhyV6ty22ZANxQ+u4uDYBRHzYqFh204wNzK
+MkRfjdTztw/A72wRxM2pnby0NdDez5PrB6zv1wMK9BskMWNQ54Zqoz5OVsfaIlal
+6yjcgsn0z+ff0H2RMfvSadIfS8aJQ7Mz32Z4lmGkZ3vE+xbMMmn4+TTA94Stnn7E
+eaSFIw8zVQBMMlQHynmeImbE85VTwosxghE7m8nMVCgS6lrxD/2ovFAqpswZIn40
+4Z4HMrSeh22tix/FHqL621a2GV7CUI5wmTV1k/nMq3RkTk4tvONdZsfs2zuH1TwM
+MKjzF//8MBx3enBbLVjc99j0hhM1BbTg2I8bJH3BVZE8YpQjtVxkw/dua+5Vq7kR
+8uWyQo8CmxXCT+DEBHt0palGwgYIZcDf+y2Dm8nMywehklTGueNbch0X22flYAt/
+gdD74WUEMcgafb/NtxGcAsLZWZplVeezM0DQWRSXe2uRf6j8Ttpm+9lEaJ2N9g+J
+LUy3FDJA2WC/CTm6ymSEMYNk/14k3j7v4rqS60i7Bo2YLQvz6m8zNZvJ+VPqvCcv
+eWdjtQBMYdbWkb925iyg
+=prM8
 -----END PGP SIGNATURE-----
 
---=-bW+VNFMvp5bEDogtE10g--
+--=-sCHHU0qUjbQSQCx+CTzh--
