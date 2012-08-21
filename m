@@ -1,16 +1,21 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T3kux-0001HK-JU
- for linux-mtd@lists.infradead.org; Tue, 21 Aug 2012 09:38:36 +0000
-From: Afzal Mohammed <afzal@ti.com>
-To: <tony@atomide.com>, <artem.bityutskiy@linux.intel.com>,
- <linux-omap@vger.kernel.org>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH v3 00/10] Prepare for GPMC driver conversion (w.r.t MTD)
-Date: Tue, 21 Aug 2012 15:08:24 +0530
-Message-ID: <cover.1344609341.git.afzal@ti.com>
+Received: from metis.ext.pengutronix.de ([92.198.50.35])
+ by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1T3kv2-0000yJ-QC
+ for linux-mtd@lists.infradead.org; Tue, 21 Aug 2012 09:38:42 +0000
+Date: Tue, 21 Aug 2012 11:35:18 +0200
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: another issue with ubifs on v3.6-rc2: attaching an formatted
+ device
+Message-ID: <20120821093518.GD12220@pengutronix.de>
+References: <20120820160750.GS2232@pengutronix.de>
+ <1345489867.1789.3.camel@kyv>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: ivan.djelic@parrot.com, Afzal Mohammed <afzal@ti.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1345489867.1789.3.camel@kyv>
+Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,57 +25,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Mon, Aug 20, 2012 at 10:11:07PM +0300, Artem Bityutskiy wrote:
+> On Mon, 2012-08-20 at 18:07 +0200, Uwe Kleine-König wrote:
+> > [  163.714143] uncorrectable error : 
+> > [  163.727597] UBI warning: ubi_io_read: error -74 (ECC error) while
+> > reading 64 bytes from PEB 0:0, read only 64 bytes, retry
+> > [  163.740737] uncorrectable error : 
+> > [  163.744032] UBI warning: ubi_io_read: error -74 (ECC error) while
+> > reading 64 bytes from PEB 0:0, read only 64 bytes, retry
+> > [  163.757119] uncorrectable error : 
+> > [  163.760487] UBI warning: ubi_io_read: error -74 (ECC error) while
+> > reading 64 bytes from PEB 0:0, read only 64 bytes, retry
+> > [  163.774427] uncorrectable error : 
+> > [  163.777808] UBI error: ubi_io_read: error -74 (ECC error) while
+> > reading 64 bytes from PEB 0:0, read 64 bytes 
+> 
+> This looks like your flash does not really support sub-pages while
+> declares that it does. Check it with MTD subpage test.
+the subpages test fails with:
 
-This is a RESEND of the series that was sent on 10-August-2012,
-which unfortunately did not make it to mailing lists.
+[   82.435792] mtd_subpagetest: written up to eraseblock 7424
+[   82.905775] mtd_subpagetest: written up to eraseblock 7680
+[   83.375201] mtd_subpagetest: written up to eraseblock 7936
+[   83.840447] mtd_subpagetest: written 8192 eraseblocks
+[   83.845522] mtd_subpagetest: verifying all eraseblocks
+[   83.852740] uncorrectable error : 
+[   83.856086] mtd_subpagetest: error: read failed at 0x0
+[   83.861469] mtd_subpagetest: error -74 occurred
+[   83.866093] =================================================
+Error: could not insert module ./drivers/mtd/tests/mtd_subpagetest.ko: Bad message
 
-This series cleans up gpmc mtd interactions so that GPMC driver
-conversion which is going to happen shortly would happen smoothly
-by not creating much disturbance outside of arch/arm/*omap*/
+I don't have a clue yet how to debug that further. Will start with
+checking older kernel releases. Any hints welcome.
 
-This series,
-1. provides the ability for OMAP NAND driver to configure GPMC-NAND
-   registers by NAND driver itself instead of using exported GPMC
-   symbols
-2. modifies GPMC to provide OMAP ONENAND & NAND drivers with GPMC
-   allocated address space as resource
-3. creates a fictitious GPMC interrupt chip and provide the clients
-   with interrupts that could be handled using standard APIs (helps
-   in removing the requirement for driver of peripheral connected to
-   GPMC having the knowledge about GPMC interrupt handling). The
-   only user is OMAP NAND driver, it has also been modified to take
-   advantage of this
+Best regards
+Uwe
 
-This series has been made over linux-omap master & can be applied
-over 3.6-rc1 too. This has been tested on omap3evm. Artem's Acked-by
-has been added to mtd patches except for 10/10 where a change has
-been made to handle error path properly.
-
-Regards
-Afzal
-
-v3: Handle error path properly
-v2: simplify omap_prefetch_enable()
-
-
-Afzal Mohammed (10):
-  ARM: OMAP2+: gpmc: update nand register helper
-  ARM: OMAP2+: gpmc-nand: update gpmc-nand regs
-  mtd: nand: omap2: handle nand on gpmc
-  ARM: OMAP2+: gpmc-nand: update resource with memory
-  ARM: OMAP2+: gpmc-onenand: provide memory as resource
-  mtd: nand: omap2: obtain memory from resource
-  mtd: onenand: omap2: obtain memory from resource
-  ARM: OMAP2+: gpmc: Modify interrupt handling
-  ARM: OMAP2+: gpmc-nand: Modify Interrupt handling
-  mtd: nand: omap2: use gpmc provided irqs
-
- arch/arm/mach-omap2/gpmc-nand.c        |   28 +++-
- arch/arm/mach-omap2/gpmc-onenand.c     |   23 +++-
- arch/arm/mach-omap2/gpmc.c             |  156 +++++++++++++++--
- arch/arm/plat-omap/include/plat/gpmc.h |   19 ++
- arch/arm/plat-omap/include/plat/nand.h |    2 +-
- drivers/mtd/nand/omap2.c               |  299 ++++++++++++++++++++++++--------
- drivers/mtd/onenand/omap2.c            |   29 ++--
- 7 files changed, 443 insertions(+), 113 deletions(-)
+-- 
+Pengutronix e.K.                           | Uwe Kleine-König            |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
