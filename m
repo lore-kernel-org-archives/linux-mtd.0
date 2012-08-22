@@ -1,23 +1,21 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T46aI-0007DN-9P
- for linux-mtd@lists.infradead.org; Wed, 22 Aug 2012 08:46:43 +0000
-Message-ID: <1345625473.2848.131.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v2 3/7] UBI: accept empty string for vid_hdr_offs parameter
+ id 1T46ao-0007bn-UJ
+ for linux-mtd@lists.infradead.org; Wed, 22 Aug 2012 08:47:16 +0000
+Message-ID: <1345625519.2848.132.camel@sauron.fi.intel.com>
+Subject: Re: new 3.5.2 ubifs debug assert
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Date: Wed, 22 Aug 2012 11:51:13 +0300
-In-Reply-To: <20120821231933.722f5be4@halley>
-References: <1345464561-24464-1-git-send-email-richard.genoud@gmail.com>
- <1345464561-24464-4-git-send-email-richard.genoud@gmail.com>
- <20120820155210.64d64803@pixies.home.jungo.com>
- <1345467898.2848.29.camel@sauron.fi.intel.com>
- <20120821231933.722f5be4@halley>
+To: MichaelHench@gmail.com
+Date: Wed, 22 Aug 2012 11:51:59 +0300
+In-Reply-To: <CAHyXW61bzWmjn2ioW9bHKbVHkCBf4xQ7mDEzjDrF24J43NBSgg@mail.gmail.com>
+References: <CAHyXW63+bY-Dq_miAWMQc=RYqaBwGrZHn95wgJXuK3NHWsnzbg@mail.gmail.com>
+ <1345575791.1886.1.camel@kyv>
+ <CAHyXW61bzWmjn2ioW9bHKbVHkCBf4xQ7mDEzjDrF24J43NBSgg@mail.gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-zTIuv9vE5XWDSv7/rhNy"
+ boundary="=-+UpvAWmEGf3zQfdYOS05"
 Mime-Version: 1.0
-Cc: Richard Genoud <richard.genoud@gmail.com>, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,24 +27,31 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-zTIuv9vE5XWDSv7/rhNy
+--=-+UpvAWmEGf3zQfdYOS05
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-08-21 at 23:19 +0300, Shmulik Ladkani wrote:
-> But either case, I guess the user will probably still need to take a
-> look at the description to understand how to "avoid specifying" the
-> vid_hdr_offs ;-)
-> So no real benefit supporting ",,"
+On Tue, 2012-08-21 at 14:44 -0500, Michael Hench wrote:
+> On Tue, Aug 21, 2012 at 2:03 PM, Artem Bityutskiy <dedekind1@gmail.com> w=
+rote:
+> > Hi, the below (and attached) patch should fix the issue. Thanks for rep=
+orting.
+> > Could you please give it a try?
+> >
+>=20
+> seems to work...
 
-We have 0 as the default value already, no need to have the second way
-to specify the same.
+OK, I'll add
+
+	Tested-by: Mike Hench <MichaelHench@gmail.com>
+
+and send the fix to Linus. Thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-zTIuv9vE5XWDSv7/rhNy
+--=-+UpvAWmEGf3zQfdYOS05
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -54,19 +59,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQNJ2CAAoJECmIfjd9wqK0iPsQANLEefxo6905BuZDuOjR4yr7
-VvYp5zbRnTL8oiMjsoBvBzF082xPiYEC8bee46Fuh9wVM7MbSxACImAR5tayddbh
-JC5uKiB/H6PomKW+rzW5YCUuwF/SkkHs2LH2uSrlTQWuK21zthxeuw5DABbTuH2c
-IcWsU2Sprc4xU6pPnfBbaWY1WBxTb4+LZwqlK4IqEwwjdJJF6q7xXqiQmaIxUugU
-jpUyERBaPCpgFvmDJcJwGFIdMbe0RJYG92gUbX7Y0zEHKDbxcQbcpO9vjs2bMu20
-Y08o2k0AezdKhrxaM5/v1jhQMkJuGLPgoqo94JjWsDcjh8T3MFY+J6f0/Qq24/G8
-XiPUNXwvlX5ZKpE3bAvKa0bHqGFqx0wSfl0RnSdLJPhfADdP0aOtGnY9E2Nvk+Ea
-TyOmMqtAzWPFSv2EnFKPiERRoXa480t1/OxLbccuGbmTuzCtwKcQQWW+e5qS6fL0
-dU2Snj81J8ObMiTs/XdhUxLxSuSHNfkvjmnKBOdbl5MXe8MVAuzkeU8gKl9nZc0X
-k/70gnYuQPYUYYyB8Sqdb/tcAX/AuYewOibnVuca0sLt3zxA75ShjVdaiVnGFAMF
-Amm3oZzpFJLoRVoxvvr0Yd2epcoKv4bxWjgHEtDDdwM9wo0rCt6i9VWZtlEIS3Yd
-jBSKl7DvSgvrvhlbV85X
-=pu7e
+iQIcBAABAgAGBQJQNJ2vAAoJECmIfjd9wqK0f3sQAM/bsUZnPwnhtgHyc2n5pgKb
+rk8RlZ5emQtJDRGWhZg2MIPbE67ZNRoBFg/tsQh6lq1kfNw1b0iy4HAEqhnK9sLy
+jhhzAcG5yNU9JHflVL/o2BUD+sFC7ji4OweSGMl+LTRDfNFteS5/6mq4K235bNHw
+V24/bEYXsKJQg3FafZrvVojLyb6tt06OFzDpKU0YpllgNlIHRY8M4+Qvqva4gnrJ
+sMu82BZYR117xGoLfHJeZLHJhPQOpWi4cuMh7u1w463WBa7NLYsrupxRU3v4rYa6
+r0kCUuPq7gdSBFw+AQ2y/XXSvqamz7T+qUzqZMPdWtPxbKCfaYiGDnXbzacuoyuc
+HXDj+KuK5Y7FRAqSy/HZJG/GmvUGYHgKkcukhrymStQktx4AIcctDg2EefhYhqDd
+bRNaOEYJiJuB12+goymfG4M0RBP09q9hs94FWPih7l39ji4JqbooICOvNHFyXgIe
+tiRZtuXb09HBkB1u0brusVu4jZq8YPqnAfzRbp3Stt/mN4cDcheQxaOryn44PEUp
+Dpgx+VqXxzFSCkyGJ+OiMr335G+TUF7qjwO61l4XglFTUoxpZ8Rd/setEXEmIKQQ
+cRjJ5jWnTIaudbxymgnV02cA5Qf8CF21H0CFlQkcfNeDBcKY5PtVs9qQpS64Zmhz
+5D5F5MbVSNUpu1zq38Ly
+=cpDL
 -----END PGP SIGNATURE-----
 
---=-zTIuv9vE5XWDSv7/rhNy--
+--=-+UpvAWmEGf3zQfdYOS05--
