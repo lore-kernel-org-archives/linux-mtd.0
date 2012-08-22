@@ -1,19 +1,21 @@
-Received: from mail-wg0-f49.google.com ([74.125.82.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T47Ef-0004WT-RM
- for linux-mtd@lists.infradead.org; Wed, 22 Aug 2012 09:28:28 +0000
-Received: by mail-wg0-f49.google.com with SMTP id ez12so444651wgb.18
- for <linux-mtd@lists.infradead.org>; Wed, 22 Aug 2012 02:28:25 -0700 (PDT)
-From: Richard Genoud <richard.genoud@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH MTD-UTILS 5/5] ubiattach: introduce max_beb_per1024 in
- UBI_IOCATT
-Date: Wed, 22 Aug 2012 11:28:00 +0200
-Message-Id: <1345627680-8166-6-git-send-email-richard.genoud@gmail.com>
-In-Reply-To: <1345627680-8166-1-git-send-email-richard.genoud@gmail.com>
+Received: from mga09.intel.com ([134.134.136.24])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1T482Z-0000kX-VR
+ for linux-mtd@lists.infradead.org; Wed, 22 Aug 2012 10:20:00 +0000
+Message-ID: <1345631059.2848.136.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH MTD-UTILS 2/5] dtype parameter is obsolete
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Richard Genoud <richard.genoud@gmail.com>
+Date: Wed, 22 Aug 2012 13:24:19 +0300
+In-Reply-To: <1345627680-8166-3-git-send-email-richard.genoud@gmail.com>
 References: <1345627680-8166-1-git-send-email-richard.genoud@gmail.com>
-Cc: Richard Genoud <richard.genoud@gmail.com>, linux-mtd@lists.infradead.org,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>
+ <1345627680-8166-3-git-send-email-richard.genoud@gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-qMWNMarJu29u1BkBHSkl"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,193 +25,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The ioctl UBI_IOCATT has been extended with max_beb_per1024 parameter.
 
-This parameter is used for adjusting the "maximum expected number of
-bad blocks per 1024 blocks" for each mtd device.
-The number of physical erase blocks (PEB) that UBI will reserve for bad
-block handling is now:
-whole_flash_chipset__PEB_number * max_beb_per1024 / 1024
+--=-qMWNMarJu29u1BkBHSkl
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This means that for a 4096 PEB NAND device with 3 MTD partitions:
-mtd0: 512 PEB
-mtd1: 1536 PEB
-mtd2: 2048 PEB
+On Wed, 2012-08-22 at 11:27 +0200, Richard Genoud wrote:
+> @@ -1114,7 +1114,6 @@ int ubi_leb_change_start(libubi_t desc, int fd,
+> int lnum, int bytes, int dtype)
+>         memset(&req, 0, sizeof(struct ubi_leb_change_req));
+>         req.lnum =3D lnum;
+>         req.bytes =3D bytes;
+> -       req.dtype =3D dtype;=20
+I've also changed this:
 
-the commands:
-ubiattach -m 0 -d 0 -b 20 /dev/ubi_ctrl
-ubiattach -m 1 -d 1 -b 20 /dev/ubi_ctrl
-ubiattach -m 2 -d 2 -b 20 /dev/ubi_ctrl
-will attach mtdx to UBIx and reserve:
-80 PEB for bad block handling on UBI0
-80 PEB for bad block handling on UBI1
-80 PEB for bad block handling on UBI2
++         req.dtype =3D 3
 
-=> for the whole device, 240 PEB will be reserved for bad block
-handling.
+just like comment on top of 'struct ubi_leb_change_req' in ubi-user.h
+recommends.
 
-This may seems a waste of space, but as far as the bad blocks can appear
-every where on a flash device, in the worst case scenario they can
-all appear in one MTD partition.
-So the maximum number of expected erase blocks given by the NAND
-manufacturer should be reserve on each MTD partition.
+--=20
+Best Regards,
+Artem Bityutskiy
 
-Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
----
- tests/fs-tests/integrity/integck.c |    1 +
- ubi-utils/include/libubi.h         |    2 +
- ubi-utils/libubi.c                 |    2 +
- ubi-utils/ubiattach.c              |   38 ++++++++++++++++++++++++++++-------
- 4 files changed, 35 insertions(+), 8 deletions(-)
 
-diff --git a/tests/fs-tests/integrity/integck.c b/tests/fs-tests/integrity/integck.c
-index 30322cd..f12dfac 100644
---- a/tests/fs-tests/integrity/integck.c
-+++ b/tests/fs-tests/integrity/integck.c
-@@ -3152,6 +3152,7 @@ static int reattach(void)
- 	req.mtd_num = args.mtdn;
- 	req.vid_hdr_offset = 0;
- 	req.mtd_dev_node = NULL;
-+	req.max_beb_per1024 = 0;
- 
- 	err = ubi_attach(libubi, "/dev/ubi_ctrl", &req);
- 	if (err)
-diff --git a/ubi-utils/include/libubi.h b/ubi-utils/include/libubi.h
-index 11a186b..4e9f3c4 100644
---- a/ubi-utils/include/libubi.h
-+++ b/ubi-utils/include/libubi.h
-@@ -50,6 +50,7 @@ typedef void * libubi_t;
-  * @mtd_dev_node: path to MTD device node to attach
-  * @vid_hdr_offset: VID header offset (%0 means default offset and this is what
-  *                  most of the users want)
-+ * @max_beb_per1024: Maximum expected bad eraseblocks per 1024 eraseblocks
-  */
- struct ubi_attach_request
- {
-@@ -57,6 +58,7 @@ struct ubi_attach_request
- 	int mtd_num;
- 	const char *mtd_dev_node;
- 	int vid_hdr_offset;
-+	int max_beb_per1024;
- };
- 
- /**
-diff --git a/ubi-utils/libubi.c b/ubi-utils/libubi.c
-index ae805c8..1db4a19 100644
---- a/ubi-utils/libubi.c
-+++ b/ubi-utils/libubi.c
-@@ -719,6 +719,7 @@ int ubi_attach_mtd(libubi_t desc, const char *node,
- 	r.ubi_num = req->dev_num;
- 	r.mtd_num = req->mtd_num;
- 	r.vid_hdr_offset = req->vid_hdr_offset;
-+	r.max_beb_per1024 = req->max_beb_per1024;
- 
- 	ret = do_attach(node, &r);
- 	if (ret == 0)
-@@ -780,6 +781,7 @@ int ubi_attach(libubi_t desc, const char *node, struct ubi_attach_request *req)
- 	memset(&r, 0, sizeof(struct ubi_attach_req));
- 	r.ubi_num = req->dev_num;
- 	r.vid_hdr_offset = req->vid_hdr_offset;
-+	r.max_beb_per1024 = req->max_beb_per1024;
- 
- 	/*
- 	 * User has passed path to device node. Lets find out MTD device number
-diff --git a/ubi-utils/ubiattach.c b/ubi-utils/ubiattach.c
-index 27e7c09..4521788 100644
---- a/ubi-utils/ubiattach.c
-+++ b/ubi-utils/ubiattach.c
-@@ -42,6 +42,7 @@ struct args {
- 	int vidoffs;
- 	const char *node;
- 	const char *dev;
-+	int max_beb_per1024;
- };
- 
- static struct args args = {
-@@ -50,6 +51,7 @@ static struct args args = {
- 	.vidoffs = 0,
- 	.node = NULL,
- 	.dev = NULL,
-+	.max_beb_per1024 = 0,
- };
- 
- static const char doc[] = PROGRAM_NAME " version " VERSION
-@@ -63,6 +65,9 @@ static const char optionsstr[] =
- "                      if the character device node does not exist)\n"
- "-O, --vid-hdr-offset  VID header offset (do not specify this unless you really\n"
- "                      know what you are doing, the default should be optimal)\n"
-+"-b, --max-beb-per1024 Maximum expected bad block number per 1024 eraseblock.\n"
-+"                      The default value is correct for most NAND devices.\n"
-+"                      (Range 1-768, 0 for default kernel value).\n"
- "-h, --help            print help message\n"
- "-V, --version         print program version";
- 
-@@ -71,19 +76,25 @@ static const char usage[] =
- "\t[-m <MTD device number>] [-d <UBI device number>] [-p <path to device>]\n"
- "\t[--mtdn=<MTD device number>] [--devn=<UBI device number>]\n"
- "\t[--dev-path=<path to device>]\n"
-+"\t[--max-beb-per1024=<maximum bad block number per 1024 blocks>]\n"
- "UBI control device defaults to " DEFAULT_CTRL_DEV " if not supplied.\n"
- "Example 1: " PROGRAM_NAME " -p /dev/mtd0 - attach /dev/mtd0 to UBI\n"
- "Example 2: " PROGRAM_NAME " -m 0 - attach MTD device 0 (mtd0) to UBI\n"
- "Example 3: " PROGRAM_NAME " -m 0 -d 3 - attach MTD device 0 (mtd0) to UBI\n"
--"           and create UBI device number 3 (ubi3)";
-+"           and create UBI device number 3 (ubi3)\n"
-+"Example 4: " PROGRAM_NAME " -m 1 -b 25 - attach /dev/mtd1 to UBI and reserve \n"
-+"           25*nand_size_in_blocks/1024 erase blocks for bad block handling.\n"
-+"           (e.g. if the NAND *chipset* has 4096 PEB, 100 will be reserved \n"
-+"           for this UBI device).";
- 
- static const struct option long_options[] = {
--	{ .name = "devn",           .has_arg = 1, .flag = NULL, .val = 'd' },
--	{ .name = "dev-path",       .has_arg = 1, .flag = NULL, .val = 'p' },
--	{ .name = "mtdn",           .has_arg = 1, .flag = NULL, .val = 'm' },
--	{ .name = "vid-hdr-offset", .has_arg = 1, .flag = NULL, .val = 'O' },
--	{ .name = "help",           .has_arg = 0, .flag = NULL, .val = 'h' },
--	{ .name = "version",        .has_arg = 0, .flag = NULL, .val = 'V' },
-+	{ .name = "devn",            .has_arg = 1, .flag = NULL, .val = 'd' },
-+	{ .name = "dev-path",        .has_arg = 1, .flag = NULL, .val = 'p' },
-+	{ .name = "mtdn",            .has_arg = 1, .flag = NULL, .val = 'm' },
-+	{ .name = "vid-hdr-offset",  .has_arg = 1, .flag = NULL, .val = 'O' },
-+	{ .name = "help",            .has_arg = 0, .flag = NULL, .val = 'h' },
-+	{ .name = "version",         .has_arg = 0, .flag = NULL, .val = 'V' },
-+	{ .name = "max-beb-per1024", .has_arg = 1, .flag = NULL, .val = 'b' },
- 	{ NULL, 0, NULL, 0},
- };
- 
-@@ -92,7 +103,7 @@ static int parse_opt(int argc, char * const argv[])
- 	while (1) {
- 		int key, error = 0;
- 
--		key = getopt_long(argc, argv, "p:m:d:O:hV", long_options, NULL);
-+		key = getopt_long(argc, argv, "p:m:d:O:hVb:", long_options, NULL);
- 		if (key == -1)
- 			break;
- 
-@@ -134,6 +145,16 @@ static int parse_opt(int argc, char * const argv[])
- 		case ':':
- 			return errmsg("parameter is missing");
- 
-+		case 'b':
-+			args.max_beb_per1024 = simple_strtoul(optarg, &error);
-+			if (error || args.max_beb_per1024 < 0 || args.max_beb_per1024 > 768)
-+				return errmsg("bad maximum of expected bad blocks (0-768): \"%s\"", optarg);
-+
-+			if (args.max_beb_per1024 == 0)
-+				warnmsg("default kernel value will be used for maximum expected bad blocks\n");
-+
-+			break;
-+
- 		default:
- 			fprintf(stderr, "Use -h for help\n");
- 			return -1;
-@@ -190,6 +211,7 @@ int main(int argc, char * const argv[])
- 	req.mtd_num = args.mtdn;
- 	req.vid_hdr_offset = args.vidoffs;
- 	req.mtd_dev_node = args.dev;
-+	req.max_beb_per1024 = args.max_beb_per1024;
- 
- 	err = ubi_attach(libubi, args.node, &req);
- 	if (err) {
--- 
-1.7.2.5
+--=-qMWNMarJu29u1BkBHSkl
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQNLNTAAoJECmIfjd9wqK0EecQAJIwWXQrE0UTPOLwF6DNVt7i
+gCQA2Nfa5XUUs1UaTz7oJVf1x+xmSgeCGMagfVOCWlsDfQj2LV0PJpMmtS2umDnV
+/Yjn5pLzlmu1trCed19JoigSeuFhreF+a/RupXubVDgoPYJj8Dkl182NG08GZVhb
+fUn19ojfGJHUvPuCqFkDNd5gtC6K8bC7SDhqubMu78pMzF4N8kbrlljT9xEvdjrt
+UOEyivC9mW0PMJs0NjybppLBOHGYpEXYAXHxjOtmeIm1bMUDzjVRZd+J/56xrIkx
+9m3fu7ifgpLlGwkgPJcA6LM1r71W8CMdtez+H8V65ChKhwTvPkaAVdOmH3EUqKvo
+ae3VVGRtKtTI9xhzPQLahSrHsP0TWfNblhRtwazl7DZNYXjAmJZpqCwfhjjXSFH7
+I6+h7/ByKxVXd/Ep9oTstxmjS5Y+vWFitijz7RtqHn0kPfvL6Nji5tOEgstfsn+g
+HpmNx9AgXoFjo0abPOYACkbFFUUU8TEA8ufOfedAObykLmb/wd2DZxd4Wzfzx6Ha
+iOff+2FPSoe2fotKp4AZ4AwiwrGCdDx/U31DqyHuXAK7UMaYkRQnsZgAg5WdmZYd
+SAHpAvLQMicnzDQ/Sy3KN80iYkZdriXm9DyXO2P5k4Jhh1kwjXgvr3MVmVJl9bQO
+VuI/95WToHAeXWmxyZ4F
+=tQJA
+-----END PGP SIGNATURE-----
+
+--=-qMWNMarJu29u1BkBHSkl--
