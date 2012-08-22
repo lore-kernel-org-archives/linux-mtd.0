@@ -1,17 +1,18 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T4AVJ-0001Rf-8u
- for linux-mtd@lists.infradead.org; Wed, 22 Aug 2012 12:57:53 +0000
-Message-ID: <1345640538.2848.175.camel@sauron.fi.intel.com>
+ id 1T4Al2-0005Jw-EL
+ for linux-mtd@lists.infradead.org; Wed, 22 Aug 2012 13:14:05 +0000
+Message-ID: <1345641529.2848.185.camel@sauron.fi.intel.com>
 Subject: Re: UBIFS corruption after software upgrade
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Russell Zuck <rzuck@cincinnatitechnologies.com>
-Date: Wed, 22 Aug 2012 16:02:18 +0300
-In-Reply-To: <500F0D81.8050902@cincinnatitechnologies.com>
+Date: Wed, 22 Aug 2012 16:18:49 +0300
+In-Reply-To: <501923A9.7030002@cincinnatitechnologies.com>
 References: <500F0D81.8050902@cincinnatitechnologies.com>
+ <501923A9.7030002@cincinnatitechnologies.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-HPHg/O8G+Htic/Dm0EKh"
+ boundary="=-qpTxTand0miB33+Sq7T7"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
@@ -25,51 +26,64 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-HPHg/O8G+Htic/Dm0EKh
+--=-qpTxTand0miB33+Sq7T7
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-07-24 at 17:02 -0400, Russell Zuck wrote:
-> I am attempting to troubleshoot an issue where the root partition=20
-> (ubi0_0) of my embedded platform becomes corrupted after a few upgrades=
-=20
-> of our system software.
+On Wed, 2012-08-01 at 08:40 -0400, Russell Zuck wrote:
+> On 7/24/2012 5:02 PM, Russell Zuck wrote:
+> > I have not yet attempted to reproduce this issue using nandsim nor do I
+> > have a simple reproducer for the problem yet.  Please provide some idea=
+s
+> > about how to simulate the reboot using nandsim as I think the reboot
+> > portion of this scenario will be critical to reproducing the issue.
 >=20
-> Upgrade Process:
-> 1. upgrade daemon checks for upgrades, from a file server, periodically.
-> 2. If available, the upgrade daemon retrieves the upgrade package (just=
+> Can anyone direct me to some information that might help me simulate a=
 =20
-> a tarball) and unpacks it.  The tarball contains several install=20
-> scripts, a version file, and another tarball that contains all of our=20
-> system software, required config files, and lib dependencies.
-> 3. The upgrade daemon is triggered to deploy the upgrade package.
-> 4. Deploy
-> 	a. run pre-install script
-> 	b. run install script. This just unpacks the system software tarball=20
-> onto the existing root filesystem.
-> 	c. run the post-install script
-> 	d. cleanup the upgrade staging directory
-> 	e. reboot
+> reboot using nandsim to attempt to reproduce my UBIFS corruption issue?
 >=20
-> Upgrade Process Variations:
-> 1. Terminate all system software before deploying the upgrade package
-> 2. sync after unpacking the system software package
-> 3. sync again before rebooting
+> Additionally, I would really appreciate any suggestions, tips, tricks,=
+=20
+> criticisms of the upgrade process I outlined previously, or "Have you=20
+> considered this" type questions.  I've read everything I could find that=
+=20
+> even remotely pertains to my scenario but nothing is clicking for me=20
+> yet.  I'm desperately trying to resolve my issue.  Any guidance would be=
+=20
+> welcome.
 
-Well, I do not see anything which could corrupt the file-system from the
-description.
+Do you have a kernel which worked for you? One strategy would be to
+bisect or look at the differences.
 
-> UBIFS extra self-checks: I mounted the debugfs but don't know how to=20
-> make use of of the self-checks.
+WRT power-cut testing. Could you try your kernel + nandsim. Just do the
+following:
 
-You just need to enable them by writing 1 to the corresponding files.
-See http://www.linux-mtd.infradead.org/faq/ubifs.html#L_how_debug
+$ modprobe nandsim first_id_byte=3D0x20 second_id_byte=3D0xac third_id_byte=
+=3D0x00 fourth_id_byte=3D0x15
+$ modprobe ubi mtd=3D0
+$ ubimkvol /dev/ubi0 --lebs 4064 -N test_fs
+$ mount -t ubifs /dev/ubi0_0 /mnt/ubifs
+
+You should end up with something close to your system.
+
+Please, then try to do:
+
+$ echo 1 > /sys/kernel/debug/ubifs/tst_recovery
+$ cd $HOME/git/mtd-utils/tests/fs-tests/integrity
+$ ./integck -p /mnt/ubifs
+
+This should start recovery testing. Does it work?
+
+The "integck" test is part of the mtd-utils repository.
+
+But from your description it looks like something related to your
+system, not UBIFS.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-HPHg/O8G+Htic/Dm0EKh
+--=-qpTxTand0miB33+Sq7T7
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -77,19 +91,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQNNhaAAoJECmIfjd9wqK03wUQAKL0lGMnr7acfNcsoMl9EUM4
-2skhQUGWEwrrnYdW8HfEIVcQt9bjZ/WcQcGNJQUnP7tlQb9Zp3EAhGfaZmTRhgV8
-qDYHiCwzrSJ3XI/p3GjiVgxX2/ggXdZ4INjCefW4DUdIvIZAW4tUgsmdjfvpKCnE
-J8AgovBv/5dtA37efNoa5CWYqxwhVurhvAmzzP8NJhoQhkUoP3D4G2nly0NrZmUR
-X79KkrviZPfeKvX2Wk8/4puLe3Qx+RXnva3OwQSACO8BlxIVwm9uB0nfoA278ELP
-TevKvG+wsrkGFrpRCZpeP5Q0pTi8Jtjx7yuUzciNMHdBLwXWYogVVN9AnYtXuXPX
-X4IUEh5Uj9b0tS3Pb7ahpzS0TJ83SnW+rmwSho28ljZ8jGaG7OA7v0A7YsmEtdVY
-HBBoqf/f0Vwgc/39hEj6fVul7KSO6Woy24+c4UIlb9qMmrLa5UqrhKg1G5ZHxMOo
-JrRthqKHXUduHJUXphpE1fnKAq2/lheKbcXynkyxp/zn+7fh0jhqxEQIethkWCgE
-u/SEwn5JhiIGcpo6UIEPBpNP8V6ILd6Ks8h4L0SL4CH9oRmaw5mzqp1J8yw6czbj
-+yVZtiyiWV578kb2Q6LDs3xkftPqUAuQO+K8Xmg7tNb18/uirf9q5Nm2XxFf1eh9
-0MOpWWuqf97xBOI57VQ4
-=zxXP
+iQIcBAABAgAGBQJQNNw5AAoJECmIfjd9wqK0RowP/jTNc6oeX+/2sotxA+4kSJzL
+hdL6Frh8R9xJKebmfSI5NMy2ux2ly6SUEBXwyNLXQsnC4swNGevh1te9UCPiZHUD
+8rOOTBcqbdCxHcr2/WZiOFLzs0gcduW+foEMSEfGF7KG9P/GC6zRKOM2TmzUw0VE
+shBWmxu3lOB5DPpZp0pepT5X91hK3lFVm730rFUkSltZgqjMPBEPFjYknWeThjGi
+K+OFC/kfThc2Vxc6S9xNtN/r95spFEoZIkQp3ommEA9GUBFFLFIT9D/9gj7AiFc4
+0Fd9z0W8NovGIbJnuqbYqDDIz4S/e1xBaLl9BMfCeCBMjUA0mpLCN2UKVvMAJlK2
+wUt6oxru/HdbDIcaM0n+nvBJh/ESjkFgTq+nyZ7hWM3yGFhN461H5NV/4xGidgbq
+4nXORJkIrAj/WjISOw+7zfHFCLfEZ3vfa9KIi2tpMkFm7mQl+aIziPIAD8DcY9Tc
+ZhGSrt9GK3buFMmZ1PJfwKRMGJHwU7fkB2VJNff4DJnrsJ2e1Pbw63sDtJe7pKZu
+/LKiuR/3vjn7TZpBhtRpSAeBzGN8Pdyhgq9fv3JvYM0Kc9oy+dfgn8ihPZU5RLYC
+9rN5mcSZC5TUmJW71VX+PHG/Bo/W3EBtI5Pds+5bA4duLXwwfJsn1gSuOKN0slIy
+U5qdKRihFLvVgXWRgrHj
+=xCRD
 -----END PGP SIGNATURE-----
 
---=-HPHg/O8G+Htic/Dm0EKh--
+--=-qpTxTand0miB33+Sq7T7--
