@@ -1,15 +1,20 @@
-Received: from mail-wi0-f171.google.com ([209.85.212.171])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T4ASF-00013f-Eh
- for linux-mtd@lists.infradead.org; Wed, 22 Aug 2012 12:54:40 +0000
-Received: by wibhq4 with SMTP id hq4so4249432wib.0
- for <linux-mtd@lists.infradead.org>; Wed, 22 Aug 2012 05:54:37 -0700 (PDT)
-From: Richard Genoud <richard.genoud@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH] UBI: replace printk calls by ubi_* calls in build.c
-Date: Wed, 22 Aug 2012 14:54:23 +0200
-Message-Id: <1345640063-29055-1-git-send-email-richard.genoud@gmail.com>
-Cc: Richard Genoud <richard.genoud@gmail.com>, linux-mtd@lists.infradead.org
+Received: from mga11.intel.com ([192.55.52.93])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1T4AVJ-0001Rf-8u
+ for linux-mtd@lists.infradead.org; Wed, 22 Aug 2012 12:57:53 +0000
+Message-ID: <1345640538.2848.175.camel@sauron.fi.intel.com>
+Subject: Re: UBIFS corruption after software upgrade
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Russell Zuck <rzuck@cincinnatitechnologies.com>
+Date: Wed, 22 Aug 2012 16:02:18 +0300
+In-Reply-To: <500F0D81.8050902@cincinnatitechnologies.com>
+References: <500F0D81.8050902@cincinnatitechnologies.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-HPHg/O8G+Htic/Dm0EKh"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,130 +24,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There was some printk still used in ubi_mtd_param_parse() function
-because it's called at early boot stage and at the time of UBI
-inclusion, ubi_* wrappers caused some issues.
 
-Now, it seems to be ok to use them.
+--=-HPHg/O8G+Htic/Dm0EKh
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Also, some ubi_* lines are unwrapped to be grep friendly.
-Finally, an extraneous "UBI error: " suffix is removed.
+On Tue, 2012-07-24 at 17:02 -0400, Russell Zuck wrote:
+> I am attempting to troubleshoot an issue where the root partition=20
+> (ubi0_0) of my embedded platform becomes corrupted after a few upgrades=
+=20
+> of our system software.
+>=20
+> Upgrade Process:
+> 1. upgrade daemon checks for upgrades, from a file server, periodically.
+> 2. If available, the upgrade daemon retrieves the upgrade package (just=
+=20
+> a tarball) and unpacks it.  The tarball contains several install=20
+> scripts, a version file, and another tarball that contains all of our=20
+> system software, required config files, and lib dependencies.
+> 3. The upgrade daemon is triggered to deploy the upgrade package.
+> 4. Deploy
+> 	a. run pre-install script
+> 	b. run install script. This just unpacks the system software tarball=20
+> onto the existing root filesystem.
+> 	c. run the post-install script
+> 	d. cleanup the upgrade staging directory
+> 	e. reboot
+>=20
+> Upgrade Process Variations:
+> 1. Terminate all system software before deploying the upgrade package
+> 2. sync after unpacking the system software package
+> 3. sync again before rebooting
 
-Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
----
- drivers/mtd/ubi/build.c |   36 +++++++++++++++---------------------
- 1 files changed, 15 insertions(+), 21 deletions(-)
+Well, I do not see anything which could corrupt the file-system from the
+description.
 
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index aa60b30..cd7f578 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -748,16 +748,15 @@ static int io_init(struct ubi_device *ubi, int max_beb_per1024)
- 	 * read-only mode.
- 	 */
- 	if (ubi->vid_hdr_offset + UBI_VID_HDR_SIZE <= ubi->hdrs_min_io_size) {
--		ubi_warn("EC and VID headers are in the same minimal I/O unit, "
--			 "switch to read-only mode");
-+		ubi_warn("EC and VID headers are in the same minimal I/O unit, switch to read-only mode");
- 		ubi->ro_mode = 1;
- 	}
- 
- 	ubi->leb_size = ubi->peb_size - ubi->leb_start;
- 
- 	if (!(ubi->mtd->flags & MTD_WRITEABLE)) {
--		ubi_msg("MTD device %d is write-protected, attach in "
--			"read-only mode", ubi->mtd->index);
-+		ubi_msg("MTD device %d is write-protected, attach in read-only mode",
-+			ubi->mtd->index);
- 		ubi->ro_mode = 1;
- 	}
- 
-@@ -887,8 +886,8 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
- 	 * no sense to attach emulated MTD devices, so we prohibit this.
- 	 */
- 	if (mtd->type == MTD_UBIVOLUME) {
--		ubi_err("refuse attaching mtd%d - it is already emulated on "
--			"top of UBI", mtd->index);
-+		ubi_err("refuse attaching mtd%d - it is already emulated on top of UBI",
-+			mtd->index);
- 		return -EINVAL;
- 	}
- 
-@@ -1263,7 +1262,7 @@ out_version:
- out_class:
- 	class_destroy(ubi_class);
- out:
--	ubi_err("UBI error: cannot initialize UBI, error %d", err);
-+	ubi_err("cannot initialize UBI, error %d", err);
- 	return err;
- }
- module_init(ubi_init);
-@@ -1300,8 +1299,7 @@ static int __init bytes_str_to_int(const char *str)
- 
- 	result = simple_strtoul(str, &endp, 0);
- 	if (str == endp || result >= INT_MAX) {
--		printk(KERN_ERR "UBI error: incorrect bytes count: \"%s\"\n",
--		       str);
-+		ubi_err("incorrect bytes count: \"%s\"", str);
- 		return -EINVAL;
- 	}
- 
-@@ -1317,8 +1315,7 @@ static int __init bytes_str_to_int(const char *str)
- 	case '\0':
- 		break;
- 	default:
--		printk(KERN_ERR "UBI error: incorrect bytes count: \"%s\"\n",
--		       str);
-+		ubi_err("incorrect bytes count: \"%s\"", str);
- 		return -EINVAL;
- 	}
- 
-@@ -1345,21 +1342,19 @@ static int __init ubi_mtd_param_parse(const char *val, struct kernel_param *kp)
- 		return -EINVAL;
- 
- 	if (mtd_devs == UBI_MAX_DEVICES) {
--		printk(KERN_ERR "UBI error: too many parameters, max. is %d\n",
--		       UBI_MAX_DEVICES);
-+		ubi_err("too many parameters, max. is %d", UBI_MAX_DEVICES);
- 		return -EINVAL;
- 	}
- 
- 	len = strnlen(val, MTD_PARAM_LEN_MAX);
- 	if (len == MTD_PARAM_LEN_MAX) {
--		printk(KERN_ERR "UBI error: parameter \"%s\" is too long, "
--		       "max. is %d\n", val, MTD_PARAM_LEN_MAX);
-+		ubi_err("parameter \"%s\" is too long, max. is %d",
-+			val, MTD_PARAM_LEN_MAX);
- 		return -EINVAL;
- 	}
- 
- 	if (len == 0) {
--		printk(KERN_WARNING "UBI warning: empty 'mtd=' parameter - "
--		       "ignored\n");
-+		ubi_warn("empty 'mtd=' parameter - ignored");
- 		return 0;
- 	}
- 
-@@ -1373,8 +1368,7 @@ static int __init ubi_mtd_param_parse(const char *val, struct kernel_param *kp)
- 		tokens[i] = strsep(&pbuf, ",");
- 
- 	if (pbuf) {
--		printk(KERN_ERR "UBI error: too many arguments at \"%s\"\n",
--		       val);
-+		ubi_err("too many arguments at \"%s\"", val);
- 		return -EINVAL;
- 	}
- 
-@@ -1391,8 +1385,8 @@ static int __init ubi_mtd_param_parse(const char *val, struct kernel_param *kp)
- 		int err = kstrtoint(tokens[2], 10, &p->max_beb_per1024);
- 
- 		if (err) {
--			printk(KERN_ERR "UBI error: bad value for "
--			       "max_beb_per1024 parameter: %s", tokens[2]);
-+			ubi_err("bad value for max_beb_per1024 parameter: %s",
-+				tokens[2]);
- 			return -EINVAL;
- 		}
- 	}
--- 
-1.7.2.5
+> UBIFS extra self-checks: I mounted the debugfs but don't know how to=20
+> make use of of the self-checks.
+
+You just need to enable them by writing 1 to the corresponding files.
+See http://www.linux-mtd.infradead.org/faq/ubifs.html#L_how_debug
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-HPHg/O8G+Htic/Dm0EKh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQNNhaAAoJECmIfjd9wqK03wUQAKL0lGMnr7acfNcsoMl9EUM4
+2skhQUGWEwrrnYdW8HfEIVcQt9bjZ/WcQcGNJQUnP7tlQb9Zp3EAhGfaZmTRhgV8
+qDYHiCwzrSJ3XI/p3GjiVgxX2/ggXdZ4INjCefW4DUdIvIZAW4tUgsmdjfvpKCnE
+J8AgovBv/5dtA37efNoa5CWYqxwhVurhvAmzzP8NJhoQhkUoP3D4G2nly0NrZmUR
+X79KkrviZPfeKvX2Wk8/4puLe3Qx+RXnva3OwQSACO8BlxIVwm9uB0nfoA278ELP
+TevKvG+wsrkGFrpRCZpeP5Q0pTi8Jtjx7yuUzciNMHdBLwXWYogVVN9AnYtXuXPX
+X4IUEh5Uj9b0tS3Pb7ahpzS0TJ83SnW+rmwSho28ljZ8jGaG7OA7v0A7YsmEtdVY
+HBBoqf/f0Vwgc/39hEj6fVul7KSO6Woy24+c4UIlb9qMmrLa5UqrhKg1G5ZHxMOo
+JrRthqKHXUduHJUXphpE1fnKAq2/lheKbcXynkyxp/zn+7fh0jhqxEQIethkWCgE
+u/SEwn5JhiIGcpo6UIEPBpNP8V6ILd6Ks8h4L0SL4CH9oRmaw5mzqp1J8yw6czbj
++yVZtiyiWV578kb2Q6LDs3xkftPqUAuQO+K8Xmg7tNb18/uirf9q5Nm2XxFf1eh9
+0MOpWWuqf97xBOI57VQ4
+=zxXP
+-----END PGP SIGNATURE-----
+
+--=-HPHg/O8G+Htic/Dm0EKh--
