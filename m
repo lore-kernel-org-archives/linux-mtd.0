@@ -1,27 +1,26 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T49OH-0000YY-Bq
- for linux-mtd@lists.infradead.org; Wed, 22 Aug 2012 11:46:30 +0000
-Message-ID: <1345636258.2848.156.camel@sauron.fi.intel.com>
+Received: from mail-bk0-f49.google.com ([209.85.214.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1T49Pk-0000la-W6
+ for linux-mtd@lists.infradead.org; Wed, 22 Aug 2012 11:48:01 +0000
+Received: by bkcji2 with SMTP id ji2so270890bkc.36
+ for <linux-mtd@lists.infradead.org>; Wed, 22 Aug 2012 04:47:59 -0700 (PDT)
+Date: Wed, 22 Aug 2012 14:47:51 +0300
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: dedekind1@gmail.com
 Subject: Re: [PATCH MTD-UTILS 5/5] ubiattach: introduce max_beb_per1024 in
  UBI_IOCATT
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Richard Genoud <richard.genoud@gmail.com>
-Date: Wed, 22 Aug 2012 14:50:58 +0300
-In-Reply-To: <CACQ1gAithQd0RMk16atkaaSWZs1CoLnXDe801BP6SvAdVCSKwg@mail.gmail.com>
+Message-ID: <20120822144751.5aa7f932@pixies.home.jungo.com>
+In-Reply-To: <1345635197.2848.152.camel@sauron.fi.intel.com>
 References: <1345627680-8166-1-git-send-email-richard.genoud@gmail.com>
  <1345627680-8166-6-git-send-email-richard.genoud@gmail.com>
  <1345632176.2848.144.camel@sauron.fi.intel.com>
  <CACQ1gAieJw9uAovWs0Cr-D71_GKAjSHyEQBjDF8krXJ2x4Yc7g@mail.gmail.com>
  <1345635015.2848.150.camel@sauron.fi.intel.com>
  <1345635197.2848.152.camel@sauron.fi.intel.com>
- <CACQ1gAithQd0RMk16atkaaSWZs1CoLnXDe801BP6SvAdVCSKwg@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-aITgbu9eOUarBAb/rFIx"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Reply-To: dedekind1@gmail.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Richard Genoud <richard.genoud@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,48 +30,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Artem,
 
---=-aITgbu9eOUarBAb/rFIx
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Wed, 22 Aug 2012 14:33:17 +0300 Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> > 2. Just call the 'attach' ioctl with an insane max_beb_per1024 value
+> > (say, -1) first. If it succeeded, than the driver does not support
+> > max_beb_per1024 at all, and you may exit with a warning that you have
+> > attached it, but the max_beb_per1024 was ignored because the kernel is
+> > old.
+> > 
+> > If it fails with -EINVAL, this means the kernel checked the value and
+> > the feature is supported, so you can call it for the second time with
+> > the right max_beb_per1024.
 
-On Wed, 2012-08-22 at 13:38 +0200, Richard Genoud wrote:
-> > I guess I prefer the second option, though. What do you think?
-> Well, for this one, we can go with the 2nd option, and if one day
-> there's another parameter, then we could implement the 'get device
-> property ioctl' for max_beb_per1024 and the new parameter.
-> How's that sound ?
+But the ioctl might return -EINVAL due to any of the *other*
+ubi_attach_req fields being invalid.
+So you can't really determine whether max_beb_per1024 is supported.
 
-Good. But please, implement this double 'attach' invocation inside
-'ubi_attach_mtd()'. Please, introduce a special return code to indicate
-the 'attached but max_beb_per1024 was ignored' case (say, 1). Add
-comments explaining the trick.
+> > The first approach is more complex but probably cleaner. The second is
+> > easier to implement.
+> 
+> I guess I prefer the second option, though. What do you think?
 
---=20
-Best Regards,
-Artem Bityutskiy
+I would go with first, due to my slight tendency to over-design
+things ;-)
+It is cleaner, however bloatier too...
 
---=-aITgbu9eOUarBAb/rFIx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+I'll try to think if there's an easy alternative.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQNMeiAAoJECmIfjd9wqK0Z5QP/0fJRFPZtuu20fCUQOtLep7m
-RHWBpzoog8ZSGSG7AVWm1VUl78SYVyQ4Q9V15Whlj2f8Y+92P8VQBbpPE9deNvod
-CZT+2cORXeN2fUqa56C9o6/qThMpfvfhGTSHh55kiu5bNBgj1UAHfTU4VfBO/MLb
-F3KTtSW3oIJSLgUfBcA0rcsuq6FTFRdXKqUXlxJVdwcSgZdv+brPjU5B3DJ7dN8n
-npx8M3r0DV4V6JKb2KMIeL632AWlCdMVNdqBv1sB1XOuz6wm3oiO6oSej0vNhYNh
-FudQwp1QwqPhAJuBjap0RUvFIB59ZC/SjP6NdV6xzzM0VPVr/bKbwYsuAinoyAyh
-516coThIE8A9MgIHNasG1sHzfBTN3qw7hXFw5I0Gukq2vmn9+RvDdcJL9KUDqqWf
-1zkBIUlt8mO8erk6+RYSVm+LX6ju4xRatYiqZE8T6dp9I1elPnWP6ypoWJGP2bOl
-RqqJXFG5rNmvB+D6pxTntfzGpUQnobuWuMR/nfMYOxsjFIVQXG6a1fC4HO+sKXgk
-YdR7DKEwr5BOcYzGQThv9T8KnHNHLgeCaOBnzKIkD4vNcvxSpL2u3e0z7WKs3zB+
-huPvDxQIEiittMWD9F7t8b+NOZ+AW7YdhKfdTSX0lnGnkSR1jpMtzJmjy/CXM1jf
-RqzCIUxJkLCNVuGpASt4
-=4uDj
------END PGP SIGNATURE-----
-
---=-aITgbu9eOUarBAb/rFIx--
+Regards,
+Shmulik
