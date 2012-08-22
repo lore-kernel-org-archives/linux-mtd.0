@@ -1,18 +1,18 @@
 Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T4Al2-0005Jw-EL
- for linux-mtd@lists.infradead.org; Wed, 22 Aug 2012 13:14:05 +0000
-Message-ID: <1345641529.2848.185.camel@sauron.fi.intel.com>
+ id 1T4AoW-0005h2-KT
+ for linux-mtd@lists.infradead.org; Wed, 22 Aug 2012 13:17:41 +0000
+Message-ID: <1345641716.2848.188.camel@sauron.fi.intel.com>
 Subject: Re: UBIFS corruption after software upgrade
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Russell Zuck <rzuck@cincinnatitechnologies.com>
-Date: Wed, 22 Aug 2012 16:18:49 +0300
+Date: Wed, 22 Aug 2012 16:21:56 +0300
 In-Reply-To: <501923A9.7030002@cincinnatitechnologies.com>
 References: <500F0D81.8050902@cincinnatitechnologies.com>
  <501923A9.7030002@cincinnatitechnologies.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-qpTxTand0miB33+Sq7T7"
+ boundary="=-DnMHwimi34FYk000B8ru"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
@@ -26,7 +26,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-qpTxTand0miB33+Sq7T7
+--=-DnMHwimi34FYk000B8ru
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
@@ -52,38 +52,18 @@ s
 =20
 > welcome.
 
-Do you have a kernel which worked for you? One strategy would be to
-bisect or look at the differences.
-
-WRT power-cut testing. Could you try your kernel + nandsim. Just do the
-following:
-
-$ modprobe nandsim first_id_byte=3D0x20 second_id_byte=3D0xac third_id_byte=
-=3D0x00 fourth_id_byte=3D0x15
-$ modprobe ubi mtd=3D0
-$ ubimkvol /dev/ubi0 --lebs 4064 -N test_fs
-$ mount -t ubifs /dev/ubi0_0 /mnt/ubifs
-
-You should end up with something close to your system.
-
-Please, then try to do:
-
-$ echo 1 > /sys/kernel/debug/ubifs/tst_recovery
-$ cd $HOME/git/mtd-utils/tests/fs-tests/integrity
-$ ./integck -p /mnt/ubifs
-
-This should start recovery testing. Does it work?
-
-The "integck" test is part of the mtd-utils repository.
-
-But from your description it looks like something related to your
-system, not UBIFS.
+I'd first forget about your update scheme and just stress-tested UBIFS.
+Mount it, try testing it using the integck test - does it work? E.g.,
+run 'integck -n0' and let it run for hours or overnight. If that is ok,
+try to power-cut the device while integck is working. Does it mount
+after reboot? Can you remove the integck working files and re-run it?
+Does it work? Try to repeat power cut several times.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-qpTxTand0miB33+Sq7T7
+--=-DnMHwimi34FYk000B8ru
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -91,19 +71,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQNNw5AAoJECmIfjd9wqK0RowP/jTNc6oeX+/2sotxA+4kSJzL
-hdL6Frh8R9xJKebmfSI5NMy2ux2ly6SUEBXwyNLXQsnC4swNGevh1te9UCPiZHUD
-8rOOTBcqbdCxHcr2/WZiOFLzs0gcduW+foEMSEfGF7KG9P/GC6zRKOM2TmzUw0VE
-shBWmxu3lOB5DPpZp0pepT5X91hK3lFVm730rFUkSltZgqjMPBEPFjYknWeThjGi
-K+OFC/kfThc2Vxc6S9xNtN/r95spFEoZIkQp3ommEA9GUBFFLFIT9D/9gj7AiFc4
-0Fd9z0W8NovGIbJnuqbYqDDIz4S/e1xBaLl9BMfCeCBMjUA0mpLCN2UKVvMAJlK2
-wUt6oxru/HdbDIcaM0n+nvBJh/ESjkFgTq+nyZ7hWM3yGFhN461H5NV/4xGidgbq
-4nXORJkIrAj/WjISOw+7zfHFCLfEZ3vfa9KIi2tpMkFm7mQl+aIziPIAD8DcY9Tc
-ZhGSrt9GK3buFMmZ1PJfwKRMGJHwU7fkB2VJNff4DJnrsJ2e1Pbw63sDtJe7pKZu
-/LKiuR/3vjn7TZpBhtRpSAeBzGN8Pdyhgq9fv3JvYM0Kc9oy+dfgn8ihPZU5RLYC
-9rN5mcSZC5TUmJW71VX+PHG/Bo/W3EBtI5Pds+5bA4duLXwwfJsn1gSuOKN0slIy
-U5qdKRihFLvVgXWRgrHj
-=xCRD
+iQIcBAABAgAGBQJQNNz0AAoJECmIfjd9wqK0rdAP/0bSYrHrifEQoomeac8XATBj
+tNGme3ZhpJkaNtks0oaK+zLy3noVpMjf3XpeWKa1hVW/sqOt6cDV0qOV/xrt63PK
+2XfOuYZNXYm7gUETrmWiFTdNy0xDcDOLgdVyARGaJtNxxtErzTYrfc58uNIJyaDM
+M04T/pbCt0R1mgGy2UcOGPj3ljIU088Ki6z8EiAifcXzc4SqSyhSRtsQ2asHrwUy
+PLdVwqZ76uDDGeRsYPKZaRsfI9pGXoFIpxC0knete/HhextZQMTrTq8OG66Jdkvs
+AnRhyIAuVv0Q8fqc651nlpBzgBq16wYNzQclyr2LtXvFonuzqoXmkx2sU39tiz6L
+DLWTAVFPpV/cECcjxv5y3HXuGKCuZs4mP3Td4Bb0f5q0huCsfS46NW3cdpiReijt
+bRbpC10XMXU09HSL26j9HqGdKGJw4WTf72rO82By6iCRJSnKbdvZbjwYVcE9g0Uo
+3Qr12dcSgAodzNRN5tya7IzT+9de5tJPotFjFlaiLUQ0Tnmf8A18dtUcQMcV5IJ6
+HVZiYK8K3SJ4ngARCbD3FR2M+S3uldPhRkhqgRYCmzdfUxMlIpJGt68pFDJ0Ylef
+1MSZhpP0kt2vQYHeT0e40fSTUwG9cFab4RmA/Uvx+tSO77s/m12r3WrBtt+zig9K
+8GlBFoXhrsMO8jHGQZ80
+=aUgQ
 -----END PGP SIGNATURE-----
 
---=-qpTxTand0miB33+Sq7T7--
+--=-DnMHwimi34FYk000B8ru--
