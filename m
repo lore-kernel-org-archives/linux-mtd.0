@@ -1,21 +1,27 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T4AoW-0005h2-KT
- for linux-mtd@lists.infradead.org; Wed, 22 Aug 2012 13:17:41 +0000
-Message-ID: <1345641716.2848.188.camel@sauron.fi.intel.com>
-Subject: Re: UBIFS corruption after software upgrade
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Russell Zuck <rzuck@cincinnatitechnologies.com>
-Date: Wed, 22 Aug 2012 16:21:56 +0300
-In-Reply-To: <501923A9.7030002@cincinnatitechnologies.com>
-References: <500F0D81.8050902@cincinnatitechnologies.com>
- <501923A9.7030002@cincinnatitechnologies.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-DnMHwimi34FYk000B8ru"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1T4B2Y-0006Xo-SY
+ for linux-mtd@lists.infradead.org; Wed, 22 Aug 2012 13:32:11 +0000
+Received: by lagu2 with SMTP id u2so521788lag.36
+ for <linux-mtd@lists.infradead.org>; Wed, 22 Aug 2012 06:32:07 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1345636258.2848.156.camel@sauron.fi.intel.com>
+References: <1345627680-8166-1-git-send-email-richard.genoud@gmail.com>
+ <1345627680-8166-6-git-send-email-richard.genoud@gmail.com>
+ <1345632176.2848.144.camel@sauron.fi.intel.com>
+ <CACQ1gAieJw9uAovWs0Cr-D71_GKAjSHyEQBjDF8krXJ2x4Yc7g@mail.gmail.com>
+ <1345635015.2848.150.camel@sauron.fi.intel.com>
+ <1345635197.2848.152.camel@sauron.fi.intel.com>
+ <CACQ1gAithQd0RMk16atkaaSWZs1CoLnXDe801BP6SvAdVCSKwg@mail.gmail.com>
+ <1345636258.2848.156.camel@sauron.fi.intel.com>
+From: Richard Genoud <richard.genoud@gmail.com>
+Date: Wed, 22 Aug 2012 15:31:46 +0200
+Message-ID: <CACQ1gAipH5gfTwOmrhGeESuSju01my_pfA8=sfP5QVCWmbvL9g@mail.gmail.com>
+Subject: Re: [PATCH MTD-UTILS 5/5] ubiattach: introduce max_beb_per1024 in
+ UBI_IOCATT
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-mtd@lists.infradead.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,65 +31,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+2012/8/22 Artem Bityutskiy <dedekind1@gmail.com>:
+> Good. But please, implement this double 'attach' invocation inside
+> 'ubi_attach_mtd()'. Please, introduce a special return code to indicate
+> the 'attached but max_beb_per1024 was ignored' case (say, 1). Add
+> comments explaining the trick.
 
---=-DnMHwimi34FYk000B8ru
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+one question:
+- does the call:
+ubiattach -m 2 -b 0
+should fail on an old kernel ?
+In this case, I'll have to introduce a flag or something to let
+ubi_attach_mtd() know that the -b option was given.
+Honestly, I don't think it's necessary, as far as -b0 means "the
+default kernel value", so on an old kernel the default that's what
+will happened.
 
-On Wed, 2012-08-01 at 08:40 -0400, Russell Zuck wrote:
-> On 7/24/2012 5:02 PM, Russell Zuck wrote:
-> > I have not yet attempted to reproduce this issue using nandsim nor do I
-> > have a simple reproducer for the problem yet.  Please provide some idea=
-s
-> > about how to simulate the reboot using nandsim as I think the reboot
-> > portion of this scenario will be critical to reproducing the issue.
->=20
-> Can anyone direct me to some information that might help me simulate a=
-=20
-> reboot using nandsim to attempt to reproduce my UBIFS corruption issue?
->=20
-> Additionally, I would really appreciate any suggestions, tips, tricks,=
-=20
-> criticisms of the upgrade process I outlined previously, or "Have you=20
-> considered this" type questions.  I've read everything I could find that=
-=20
-> even remotely pertains to my scenario but nothing is clicking for me=20
-> yet.  I'm desperately trying to resolve my issue.  Any guidance would be=
-=20
-> welcome.
+I'll have also to change the ubi_attach() call.
+My though is to factorize code between ubi_attach_mtd() and
+ubi_attach(), and then make the change.
 
-I'd first forget about your update scheme and just stress-tested UBIFS.
-Mount it, try testing it using the integck test - does it work? E.g.,
-run 'integck -n0' and let it run for hours or overnight. If that is ok,
-try to power-cut the device while integck is working. Does it mount
-after reboot? Can you remove the integck working files and re-run it?
-Does it work? Try to repeat power cut several times.
 
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-DnMHwimi34FYk000B8ru
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQNNz0AAoJECmIfjd9wqK0rdAP/0bSYrHrifEQoomeac8XATBj
-tNGme3ZhpJkaNtks0oaK+zLy3noVpMjf3XpeWKa1hVW/sqOt6cDV0qOV/xrt63PK
-2XfOuYZNXYm7gUETrmWiFTdNy0xDcDOLgdVyARGaJtNxxtErzTYrfc58uNIJyaDM
-M04T/pbCt0R1mgGy2UcOGPj3ljIU088Ki6z8EiAifcXzc4SqSyhSRtsQ2asHrwUy
-PLdVwqZ76uDDGeRsYPKZaRsfI9pGXoFIpxC0knete/HhextZQMTrTq8OG66Jdkvs
-AnRhyIAuVv0Q8fqc651nlpBzgBq16wYNzQclyr2LtXvFonuzqoXmkx2sU39tiz6L
-DLWTAVFPpV/cECcjxv5y3HXuGKCuZs4mP3Td4Bb0f5q0huCsfS46NW3cdpiReijt
-bRbpC10XMXU09HSL26j9HqGdKGJw4WTf72rO82By6iCRJSnKbdvZbjwYVcE9g0Uo
-3Qr12dcSgAodzNRN5tya7IzT+9de5tJPotFjFlaiLUQ0Tnmf8A18dtUcQMcV5IJ6
-HVZiYK8K3SJ4ngARCbD3FR2M+S3uldPhRkhqgRYCmzdfUxMlIpJGt68pFDJ0Ylef
-1MSZhpP0kt2vQYHeT0e40fSTUwG9cFab4RmA/Uvx+tSO77s/m12r3WrBtt+zig9K
-8GlBFoXhrsMO8jHGQZ80
-=aUgQ
------END PGP SIGNATURE-----
-
---=-DnMHwimi34FYk000B8ru--
+Best regards,
+Richard.
