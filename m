@@ -1,22 +1,17 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T46ao-0007bn-UJ
- for linux-mtd@lists.infradead.org; Wed, 22 Aug 2012 08:47:16 +0000
-Message-ID: <1345625519.2848.132.camel@sauron.fi.intel.com>
-Subject: Re: new 3.5.2 ubifs debug assert
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: MichaelHench@gmail.com
-Date: Wed, 22 Aug 2012 11:51:59 +0300
-In-Reply-To: <CAHyXW61bzWmjn2ioW9bHKbVHkCBf4xQ7mDEzjDrF24J43NBSgg@mail.gmail.com>
-References: <CAHyXW63+bY-Dq_miAWMQc=RYqaBwGrZHn95wgJXuK3NHWsnzbg@mail.gmail.com>
- <1345575791.1886.1.camel@kyv>
- <CAHyXW61bzWmjn2ioW9bHKbVHkCBf4xQ7mDEzjDrF24J43NBSgg@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-+UpvAWmEGf3zQfdYOS05"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mail-we0-f177.google.com ([74.125.82.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1T47Ea-0004Vz-BA
+ for linux-mtd@lists.infradead.org; Wed, 22 Aug 2012 09:28:21 +0000
+Received: by weyr3 with SMTP id r3so481244wey.36
+ for <linux-mtd@lists.infradead.org>; Wed, 22 Aug 2012 02:28:17 -0700 (PDT)
+From: Richard Genoud <richard.genoud@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH MTD-UTILS 0/5] sync with 3.6-rc1 and introduce max_beb_per1024
+ in UBI_IOCATT
+Date: Wed, 22 Aug 2012 11:27:55 +0200
+Message-Id: <1345627680-8166-1-git-send-email-richard.genoud@gmail.com>
+Cc: Richard Genoud <richard.genoud@gmail.com>, linux-mtd@lists.infradead.org,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,52 +21,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Artem,
+Here are the patches for the introduction of max_beb_per1024 in ubiattach.
+The first patch is just a sync of ubi-user.h with the vanilla 3.6-rc1
+(So after this patch, the mtd-utils won't build any more)
+The second one supresses dtype parameter, as it is obsolete now.
+The third syncs with somes defines and struct renames in the ubi-user.h
+(Now it compiles again)
+The fourth syncs ubi-user.h with the one in linux-ubi/master
+And finally the last one instroduce max_beb_per1024.
 
---=-+UpvAWmEGf3zQfdYOS05
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, 2012-08-21 at 14:44 -0500, Michael Hench wrote:
-> On Tue, Aug 21, 2012 at 2:03 PM, Artem Bityutskiy <dedekind1@gmail.com> w=
-rote:
-> > Hi, the below (and attached) patch should fix the issue. Thanks for rep=
-orting.
-> > Could you please give it a try?
-> >
->=20
-> seems to work...
-
-OK, I'll add
-
-	Tested-by: Mike Hench <MichaelHench@gmail.com>
-
-and send the fix to Linus. Thanks!
-
---=20
 Best Regards,
-Artem Bityutskiy
+Richard.
 
---=-+UpvAWmEGf3zQfdYOS05
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Richard Genoud (5):
+  sync include/mtd/ubi-user.h with kernel v3.6-rc1
+  dtype parameter is obsolete
+  re-name set volume properties ioctl
+  sync include/mtd/ubi-user.h: add max_beb_per1024 parameter
+  ubiattach: introduce max_beb_per1024 in UBI_IOCATT
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+ include/mtd/ubi-user.h             |  152 +++++++++++++++++++-----------------
+ mkfs.ubifs/lpt.c                   |   10 +-
+ mkfs.ubifs/mkfs.ubifs.c            |   37 ++++-----
+ mkfs.ubifs/mkfs.ubifs.h            |    2 +-
+ tests/fs-tests/integrity/integck.c |    1 +
+ tests/ubi-tests/io_paral.c         |    2 +-
+ ubi-utils/include/libubi.h         |    7 +-
+ ubi-utils/libubi.c                 |   11 ++-
+ ubi-utils/ubiattach.c              |   38 +++++++--
+ 9 files changed, 145 insertions(+), 115 deletions(-)
 
-iQIcBAABAgAGBQJQNJ2vAAoJECmIfjd9wqK0f3sQAM/bsUZnPwnhtgHyc2n5pgKb
-rk8RlZ5emQtJDRGWhZg2MIPbE67ZNRoBFg/tsQh6lq1kfNw1b0iy4HAEqhnK9sLy
-jhhzAcG5yNU9JHflVL/o2BUD+sFC7ji4OweSGMl+LTRDfNFteS5/6mq4K235bNHw
-V24/bEYXsKJQg3FafZrvVojLyb6tt06OFzDpKU0YpllgNlIHRY8M4+Qvqva4gnrJ
-sMu82BZYR117xGoLfHJeZLHJhPQOpWi4cuMh7u1w463WBa7NLYsrupxRU3v4rYa6
-r0kCUuPq7gdSBFw+AQ2y/XXSvqamz7T+qUzqZMPdWtPxbKCfaYiGDnXbzacuoyuc
-HXDj+KuK5Y7FRAqSy/HZJG/GmvUGYHgKkcukhrymStQktx4AIcctDg2EefhYhqDd
-bRNaOEYJiJuB12+goymfG4M0RBP09q9hs94FWPih7l39ji4JqbooICOvNHFyXgIe
-tiRZtuXb09HBkB1u0brusVu4jZq8YPqnAfzRbp3Stt/mN4cDcheQxaOryn44PEUp
-Dpgx+VqXxzFSCkyGJ+OiMr335G+TUF7qjwO61l4XglFTUoxpZ8Rd/setEXEmIKQQ
-cRjJ5jWnTIaudbxymgnV02cA5Qf8CF21H0CFlQkcfNeDBcKY5PtVs9qQpS64Zmhz
-5D5F5MbVSNUpu1zq38Ly
-=cpDL
------END PGP SIGNATURE-----
-
---=-+UpvAWmEGf3zQfdYOS05--
+-- 
+1.7.2.5
