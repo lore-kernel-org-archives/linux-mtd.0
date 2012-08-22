@@ -1,19 +1,16 @@
-Received: from mail-wg0-f49.google.com ([74.125.82.49])
+Received: from mail-we0-f177.google.com ([74.125.82.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T47Eb-0004WT-54
- for linux-mtd@lists.infradead.org; Wed, 22 Aug 2012 09:28:22 +0000
-Received: by wgbez12 with SMTP id ez12so444651wgb.18
- for <linux-mtd@lists.infradead.org>; Wed, 22 Aug 2012 02:28:19 -0700 (PDT)
+ id 1T47Ec-0004X1-2B
+ for linux-mtd@lists.infradead.org; Wed, 22 Aug 2012 09:28:23 +0000
+Received: by weyr3 with SMTP id r3so481279wey.36
+ for <linux-mtd@lists.infradead.org>; Wed, 22 Aug 2012 02:28:21 -0700 (PDT)
 From: Richard Genoud <richard.genoud@gmail.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: =?UTF-8?q?=5BPATCH=20MTD-UTILS=201/5=5D=20sync=20include/mtd/ubi-user=2Eh=20with=20kernel=20v3=2E6-rc1?=
-Date: Wed, 22 Aug 2012 11:27:56 +0200
-Message-Id: <1345627680-8166-2-git-send-email-richard.genoud@gmail.com>
+Subject: [PATCH MTD-UTILS 2/5] dtype parameter is obsolete
+Date: Wed, 22 Aug 2012 11:27:57 +0200
+Message-Id: <1345627680-8166-3-git-send-email-richard.genoud@gmail.com>
 In-Reply-To: <1345627680-8166-1-git-send-email-richard.genoud@gmail.com>
 References: <1345627680-8166-1-git-send-email-richard.genoud@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 Cc: Richard Genoud <richard.genoud@gmail.com>, linux-mtd@lists.infradead.org,
  Shmulik Ladkani <shmulik.ladkani@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,268 +22,254 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+kernel commit a65a0eb6d198e058687a9214683bd1c418f20d39 set the dtype
+parameter as obsolete.
+
 Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
 ---
- include/mtd/ubi-user.h |  138 +++++++++++++++++++++++-------------------------
- 1 files changed, 67 insertions(+), 71 deletions(-)
+ mkfs.ubifs/lpt.c           |   10 +++++-----
+ mkfs.ubifs/mkfs.ubifs.c    |   35 +++++++++++++++--------------------
+ mkfs.ubifs/mkfs.ubifs.h    |    2 +-
+ ubi-utils/include/libubi.h |    3 +--
+ ubi-utils/libubi.c         |    3 +--
+ 5 files changed, 23 insertions(+), 30 deletions(-)
 
-diff --git a/include/mtd/ubi-user.h b/include/mtd/ubi-user.h
-index 296efae..123951f 100644
---- a/include/mtd/ubi-user.h
-+++ b/include/mtd/ubi-user.h
-@@ -1,5 +1,5 @@
- /*
-- * Copyright (c) International Business Machines Corp., 2006
-+ * Copyright © International Business Machines Corp., 2006
-  *
-  * This program is free software; you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-@@ -21,6 +21,8 @@
- #ifndef __UBI_USER_H__
- #define __UBI_USER_H__
+diff --git a/mkfs.ubifs/lpt.c b/mkfs.ubifs/lpt.c
+index 60002ff..f6d4352 100644
+--- a/mkfs.ubifs/lpt.c
++++ b/mkfs.ubifs/lpt.c
+@@ -410,7 +410,7 @@ int create_lpt(struct ubifs_info *c)
+ 			alen = ALIGN(len, c->min_io_size);
+ 			set_ltab(c, lnum, c->leb_size - alen, alen - len);
+ 			memset(p, 0xff, alen - len);
+-			err = write_leb(lnum++, alen, buf, UBI_SHORTTERM);
++			err = write_leb(lnum++, alen, buf);
+ 			if (err)
+ 				goto out;
+ 			p = buf;
+@@ -452,7 +452,7 @@ int create_lpt(struct ubifs_info *c)
+ 				set_ltab(c, lnum, c->leb_size - alen,
+ 					    alen - len);
+ 				memset(p, 0xff, alen - len);
+-				err = write_leb(lnum++, alen, buf, UBI_SHORTTERM);
++				err = write_leb(lnum++, alen, buf);
+ 				if (err)
+ 					goto out;
+ 				p = buf;
+@@ -499,7 +499,7 @@ int create_lpt(struct ubifs_info *c)
+ 			alen = ALIGN(len, c->min_io_size);
+ 			set_ltab(c, lnum, c->leb_size - alen, alen - len);
+ 			memset(p, 0xff, alen - len);
+-			err = write_leb(lnum++, alen, buf, UBI_SHORTTERM);
++			err = write_leb(lnum++, alen, buf);
+ 			if (err)
+ 				goto out;
+ 			p = buf;
+@@ -522,7 +522,7 @@ int create_lpt(struct ubifs_info *c)
+ 		alen = ALIGN(len, c->min_io_size);
+ 		set_ltab(c, lnum, c->leb_size - alen, alen - len);
+ 		memset(p, 0xff, alen - len);
+-		err = write_leb(lnum++, alen, buf, UBI_SHORTTERM);
++		err = write_leb(lnum++, alen, buf);
+ 		if (err)
+ 			goto out;
+ 		p = buf;
+@@ -542,7 +542,7 @@ int create_lpt(struct ubifs_info *c)
  
-+#include <linux/types.h>
-+
- /*
-  * UBI device creation (the same as MTD device attachment)
-  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-@@ -129,7 +131,7 @@
-  * ~~~~~~~~~~~~~~~~~~~~~~~~~
-  *
-  * To set an UBI volume property the %UBI_IOCSETPROP ioctl command should be
-- * used. A pointer to a &struct ubi_set_prop_req object is expected to be
-+ * used. A pointer to a &struct ubi_set_vol_prop_req object is expected to be
-  * passed. The object describes which property should be set, and to which value
-  * it should be set.
+ 	/* Write remaining buffer */
+ 	memset(p, 0xff, alen - len);
+-	err = write_leb(lnum, alen, buf, UBI_SHORTTERM);
++	err = write_leb(lnum, alen, buf);
+ 	if (err)
+ 		goto out;
+ 
+diff --git a/mkfs.ubifs/mkfs.ubifs.c b/mkfs.ubifs/mkfs.ubifs.c
+index bb25dc3..751e348 100644
+--- a/mkfs.ubifs/mkfs.ubifs.c
++++ b/mkfs.ubifs/mkfs.ubifs.c
+@@ -774,16 +774,15 @@ static void prepare_node(void *node, int len)
+  * @lnum: LEB number
+  * @len: length of data in the buffer
+  * @buf: buffer (must be at least c->leb_size bytes)
+- * @dtype: expected data type
   */
-@@ -152,7 +154,7 @@
- /* Create an UBI volume */
- #define UBI_IOCMKVOL _IOW(UBI_IOC_MAGIC, 0, struct ubi_mkvol_req)
- /* Remove an UBI volume */
--#define UBI_IOCRMVOL _IOW(UBI_IOC_MAGIC, 1, int32_t)
-+#define UBI_IOCRMVOL _IOW(UBI_IOC_MAGIC, 1, __s32)
- /* Re-size an UBI volume */
- #define UBI_IOCRSVOL _IOW(UBI_IOC_MAGIC, 2, struct ubi_rsvol_req)
- /* Re-name volumes */
-@@ -165,26 +167,27 @@
- /* Attach an MTD device */
- #define UBI_IOCATT _IOW(UBI_CTRL_IOC_MAGIC, 64, struct ubi_attach_req)
- /* Detach an MTD device */
--#define UBI_IOCDET _IOW(UBI_CTRL_IOC_MAGIC, 65, int32_t)
-+#define UBI_IOCDET _IOW(UBI_CTRL_IOC_MAGIC, 65, __s32)
+-int write_leb(int lnum, int len, void *buf, int dtype)
++int write_leb(int lnum, int len, void *buf)
+ {
+ 	off64_t pos = (off64_t)lnum * c->leb_size;
  
- /* ioctl commands of UBI volume character devices */
+ 	dbg_msg(3, "LEB %d len %d", lnum, len);
+ 	memset(buf + len, 0xff, c->leb_size - len);
+ 	if (out_ubi)
+-		if (ubi_leb_change_start(ubi, out_fd, lnum, c->leb_size, dtype))
++		if (ubi_leb_change_start(ubi, out_fd, lnum, c->leb_size))
+ 			return sys_err_msg("ubi_leb_change_start failed");
  
- #define UBI_VOL_IOC_MAGIC 'O'
- 
- /* Start UBI volume update */
--#define UBI_IOCVOLUP _IOW(UBI_VOL_IOC_MAGIC, 0, int64_t)
-+#define UBI_IOCVOLUP _IOW(UBI_VOL_IOC_MAGIC, 0, __s64)
- /* LEB erasure command, used for debugging, disabled by default */
--#define UBI_IOCEBER _IOW(UBI_VOL_IOC_MAGIC, 1, int32_t)
-+#define UBI_IOCEBER _IOW(UBI_VOL_IOC_MAGIC, 1, __s32)
- /* Atomic LEB change command */
--#define UBI_IOCEBCH _IOW(UBI_VOL_IOC_MAGIC, 2, int32_t)
-+#define UBI_IOCEBCH _IOW(UBI_VOL_IOC_MAGIC, 2, __s32)
- /* Map LEB command */
- #define UBI_IOCEBMAP _IOW(UBI_VOL_IOC_MAGIC, 3, struct ubi_map_req)
- /* Unmap LEB command */
--#define UBI_IOCEBUNMAP _IOW(UBI_VOL_IOC_MAGIC, 4, int32_t)
-+#define UBI_IOCEBUNMAP _IOW(UBI_VOL_IOC_MAGIC, 4, __s32)
- /* Check if LEB is mapped command */
--#define UBI_IOCEBISMAP _IOR(UBI_VOL_IOC_MAGIC, 5, int32_t)
-+#define UBI_IOCEBISMAP _IOR(UBI_VOL_IOC_MAGIC, 5, __s32)
- /* Set an UBI volume property */
--#define UBI_IOCSETPROP _IOW(UBI_VOL_IOC_MAGIC, 6, struct ubi_set_prop_req)
-+#define UBI_IOCSETVOLPROP _IOW(UBI_VOL_IOC_MAGIC, 6, \
-+			       struct ubi_set_vol_prop_req)
- 
- /* Maximum MTD device name length supported by UBI */
- #define MAX_UBI_MTD_NAME_LEN 127
-@@ -193,23 +196,6 @@
- #define UBI_MAX_RNVOL 32
- 
- /*
-- * UBI data type hint constants.
-- *
-- * UBI_LONGTERM: long-term data
-- * UBI_SHORTTERM: short-term data
-- * UBI_UNKNOWN: data persistence is unknown
-- *
-- * These constants are used when data is written to UBI volumes in order to
-- * help the UBI wear-leveling unit to find more appropriate physical
-- * eraseblocks.
-- */
--enum {
--	UBI_LONGTERM  = 1,
--	UBI_SHORTTERM = 2,
--	UBI_UNKNOWN   = 3,
--};
--
--/*
-  * UBI volume type constants.
-  *
-  * @UBI_DYNAMIC_VOLUME: dynamic volume
-@@ -221,13 +207,14 @@ enum {
- };
- 
- /*
-- * UBI set property ioctl constants
-+ * UBI set volume property ioctl constants.
-  *
-- * @UBI_PROP_DIRECT_WRITE: allow / disallow user to directly write and
-- *                         erase individual eraseblocks on dynamic volumes
-+ * @UBI_VOL_PROP_DIRECT_WRITE: allow (any non-zero value) or disallow (value 0)
-+ *                             user to directly write and erase individual
-+ *                             eraseblocks on dynamic volumes
+ 	if (lseek64(out_fd, pos, SEEK_SET) != pos)
+@@ -800,11 +799,10 @@ int write_leb(int lnum, int len, void *buf, int dtype)
+ /**
+  * write_empty_leb - copy the image of an empty LEB to the output target.
+  * @lnum: LEB number
+- * @dtype: expected data type
   */
- enum {
--       UBI_PROP_DIRECT_WRITE = 1,
-+	UBI_VOL_PROP_DIRECT_WRITE = 1,
- };
+-static int write_empty_leb(int lnum, int dtype)
++static int write_empty_leb(int lnum)
+ {
+-	return write_leb(lnum, 0, leb_buf, dtype);
++	return write_leb(lnum, 0, leb_buf);
+ }
  
  /**
-@@ -260,10 +247,10 @@ enum {
-  * sub-page of the first page and add needed padding.
+@@ -851,9 +849,8 @@ static int do_pad(void *buf, int len)
+  * @node: node
+  * @len: node length
+  * @lnum: LEB number
+- * @dtype: expected data type
   */
- struct ubi_attach_req {
--	int32_t ubi_num;
--	int32_t mtd_num;
--	int32_t vid_hdr_offset;
--	int8_t padding[12];
-+	__s32 ubi_num;
-+	__s32 mtd_num;
-+	__s32 vid_hdr_offset;
-+	__s8 padding[12];
- };
+-static int write_node(void *node, int len, int lnum, int dtype)
++static int write_node(void *node, int len, int lnum)
+ {
+ 	prepare_node(node, len);
+ 
+@@ -861,7 +858,7 @@ static int write_node(void *node, int len, int lnum, int dtype)
+ 
+ 	len = do_pad(leb_buf, len);
+ 
+-	return write_leb(lnum, len, leb_buf, dtype);
++	return write_leb(lnum, len, leb_buf);
+ }
  
  /**
-@@ -298,15 +285,15 @@ struct ubi_attach_req {
-  * BLOBs, without caring about how to properly align them.
-  */
- struct ubi_mkvol_req {
--	int32_t vol_id;
--	int32_t alignment;
--	int64_t bytes;
--	int8_t vol_type;
--	int8_t padding1;
--	int16_t name_len;
--	int8_t padding2[4];
-+	__s32 vol_id;
-+	__s32 alignment;
-+	__s64 bytes;
-+	__s8 vol_type;
-+	__s8 padding1;
-+	__s16 name_len;
-+	__s8 padding2[4];
- 	char name[UBI_MAX_VOLUME_NAME + 1];
--} __attribute__ ((packed));
-+} __attribute__((packed));
+@@ -973,7 +970,7 @@ static int flush_nodes(void)
+ 	if (!head_offs)
+ 		return 0;
+ 	len = do_pad(leb_buf, head_offs);
+-	err = write_leb(head_lnum, len, leb_buf, UBI_UNKNOWN);
++	err = write_leb(head_lnum, len, leb_buf);
+ 	if (err)
+ 		return err;
+ 	set_lprops(head_lnum, head_offs, head_flags);
+@@ -1901,7 +1898,7 @@ static int set_gc_lnum(void)
+ 	int err;
+ 
+ 	c->gc_lnum = head_lnum++;
+-	err = write_empty_leb(c->gc_lnum, UBI_LONGTERM);
++	err = write_empty_leb(c->gc_lnum);
+ 	if (err)
+ 		return err;
+ 	set_lprops(c->gc_lnum, 0, 0);
+@@ -1977,7 +1974,7 @@ static int write_super(void)
+ 	if (c->space_fixup)
+ 		sup.flags |= cpu_to_le32(UBIFS_FLG_SPACE_FIXUP);
+ 
+-	return write_node(&sup, UBIFS_SB_NODE_SZ, UBIFS_SB_LNUM, UBI_LONGTERM);
++	return write_node(&sup, UBIFS_SB_NODE_SZ, UBIFS_SB_LNUM);
+ }
  
  /**
-  * struct ubi_rsvol_req - a data structure used in volume re-size requests.
-@@ -320,9 +307,9 @@ struct ubi_mkvol_req {
-  * zero number of bytes).
-  */
- struct ubi_rsvol_req {
--	int64_t bytes;
--	int32_t vol_id;
--} __attribute__ ((packed));
-+	__s64 bytes;
-+	__s32 vol_id;
-+} __attribute__((packed));
+@@ -2020,13 +2017,11 @@ static int write_master(void)
+ 	mst.total_dark   = cpu_to_le64(c->lst.total_dark);
+ 	mst.leb_cnt      = cpu_to_le32(c->leb_cnt);
  
- /**
-  * struct ubi_rnvol_req - volumes re-name request.
-@@ -356,55 +343,64 @@ struct ubi_rsvol_req {
-  * re-name request.
-  */
- struct ubi_rnvol_req {
--	int32_t count;
--	int8_t padding1[12];
-+	__s32 count;
-+	__s8 padding1[12];
- 	struct {
--		int32_t vol_id;
--		int16_t name_len;
--		int8_t  padding2[2];
-+		__s32 vol_id;
-+		__s16 name_len;
-+		__s8  padding2[2];
- 		char    name[UBI_MAX_VOLUME_NAME + 1];
- 	} ents[UBI_MAX_RNVOL];
--} __attribute__ ((packed));
-+} __attribute__((packed));
+-	err = write_node(&mst, UBIFS_MST_NODE_SZ, UBIFS_MST_LNUM,
+-			 UBI_SHORTTERM);
++	err = write_node(&mst, UBIFS_MST_NODE_SZ, UBIFS_MST_LNUM);
+ 	if (err)
+ 		return err;
  
- /**
-  * struct ubi_leb_change_req - a data structure used in atomic LEB change
-  *                             requests.
-  * @lnum: logical eraseblock number to change
-  * @bytes: how many bytes will be written to the logical eraseblock
+-	err = write_node(&mst, UBIFS_MST_NODE_SZ, UBIFS_MST_LNUM + 1,
+-			 UBI_SHORTTERM);
++	err = write_node(&mst, UBIFS_MST_NODE_SZ, UBIFS_MST_LNUM + 1);
+ 	if (err)
+ 		return err;
+ 
+@@ -2046,14 +2041,14 @@ static int write_log(void)
+ 	cs.ch.node_type = UBIFS_CS_NODE;
+ 	cs.cmt_no = cpu_to_le64(0);
+ 
+-	err = write_node(&cs, UBIFS_CS_NODE_SZ, lnum, UBI_UNKNOWN);
++	err = write_node(&cs, UBIFS_CS_NODE_SZ, lnum);
+ 	if (err)
+ 		return err;
+ 
+ 	lnum += 1;
+ 
+ 	for (i = 1; i < c->log_lebs; i++, lnum++) {
+-		err = write_empty_leb(lnum, UBI_UNKNOWN);
++		err = write_empty_leb(lnum);
+ 		if (err)
+ 			return err;
+ 	}
+@@ -2074,7 +2069,7 @@ static int write_lpt(void)
+ 
+ 	lnum = c->nhead_lnum + 1;
+ 	while (lnum <= c->lpt_last) {
+-		err = write_empty_leb(lnum++, UBI_SHORTTERM);
++		err = write_empty_leb(lnum++);
+ 		if (err)
+ 			return err;
+ 	}
+@@ -2091,7 +2086,7 @@ static int write_orphan_area(void)
+ 
+ 	lnum = UBIFS_LOG_LNUM + c->log_lebs + c->lpt_lebs;
+ 	for (i = 0; i < c->orph_lebs; i++, lnum++) {
+-		err = write_empty_leb(lnum, UBI_SHORTTERM);
++		err = write_empty_leb(lnum);
+ 		if (err)
+ 			return err;
+ 	}
+diff --git a/mkfs.ubifs/mkfs.ubifs.h b/mkfs.ubifs/mkfs.ubifs.h
+index c00dce0..01161ef 100644
+--- a/mkfs.ubifs/mkfs.ubifs.h
++++ b/mkfs.ubifs/mkfs.ubifs.h
+@@ -129,7 +129,7 @@ extern struct ubifs_info info_;
+ 
+ struct hashtable_itr;
+ 
+-int write_leb(int lnum, int len, void *buf, int dtype);
++int write_leb(int lnum, int len, void *buf);
+ int parse_devtable(const char *tbl_file);
+ struct path_htbl_element *devtbl_find_path(const char *path);
+ struct name_htbl_element *devtbl_find_name(struct path_htbl_element *ph_elt,
+diff --git a/ubi-utils/include/libubi.h b/ubi-utils/include/libubi.h
+index dc03d02..45afe87 100644
+--- a/ubi-utils/include/libubi.h
++++ b/ubi-utils/include/libubi.h
+@@ -426,13 +426,12 @@ int ubi_update_start(libubi_t desc, int fd, long long bytes);
+  * @fd: volume character device file descriptor
+  * @lnum: LEB number to change
+  * @bytes: how many bytes of new data will be written to the LEB
 - * @dtype: data type (%UBI_LONGTERM, %UBI_SHORTTERM, %UBI_UNKNOWN)
-+ * @dtype: pass "3" for better compatibility with old kernels
-  * @padding: reserved for future, not used, has to be zeroed
-+ *
-+ * The @dtype field used to inform UBI about what kind of data will be written
-+ * to the LEB: long term (value 1), short term (value 2), unknown (value 3).
-+ * UBI tried to pick a PEB with lower erase counter for short term data and a
-+ * PEB with higher erase counter for long term data. But this was not really
-+ * used because users usually do not know this and could easily mislead UBI. We
-+ * removed this feature in May 2012. UBI currently just ignores the @dtype
-+ * field. But for better compatibility with older kernels it is recommended to
-+ * set @dtype to 3 (unknown).
+  *
+  * This function initiates atomic LEB change operation and returns %0 in case
+  * of success and %-1 in case of error. he caller is assumed to write @bytes
+  * data to the volume @fd afterward.
   */
- struct ubi_leb_change_req {
--	int32_t lnum;
--	int32_t bytes;
--	int8_t  dtype;
--	int8_t  padding[7];
--} __attribute__ ((packed));
-+	__s32 lnum;
-+	__s32 bytes;
-+	__s8  dtype; /* obsolete, do not use! */
-+	__s8  padding[7];
-+} __attribute__((packed));
+-int ubi_leb_change_start(libubi_t desc, int fd, int lnum, int bytes, int dtype);
++int ubi_leb_change_start(libubi_t desc, int fd, int lnum, int bytes);
  
  /**
-  * struct ubi_map_req - a data structure used in map LEB requests.
-+ * @dtype: pass "3" for better compatibility with old kernels
-  * @lnum: logical eraseblock number to unmap
-- * @dtype: data type (%UBI_LONGTERM, %UBI_SHORTTERM, %UBI_UNKNOWN)
-  * @padding: reserved for future, not used, has to be zeroed
-  */
- struct ubi_map_req {
--	int32_t lnum;
--	int8_t  dtype;
--	int8_t  padding[3];
--} __attribute__ ((packed));
-+	__s32 lnum;
-+	__s8  dtype; /* obsolete, do not use! */
-+	__s8  padding[3];
-+} __attribute__((packed));
+  * ubi_set_property - set volume propety.
+diff --git a/ubi-utils/libubi.c b/ubi-utils/libubi.c
+index c898e36..9b0eab3 100644
+--- a/ubi-utils/libubi.c
++++ b/ubi-utils/libubi.c
+@@ -1106,7 +1106,7 @@ int ubi_update_start(libubi_t desc, int fd, long long bytes)
+ 	return 0;
+ }
  
+-int ubi_leb_change_start(libubi_t desc, int fd, int lnum, int bytes, int dtype)
++int ubi_leb_change_start(libubi_t desc, int fd, int lnum, int bytes)
+ {
+ 	struct ubi_leb_change_req req;
  
- /**
-- * struct ubi_set_prop_req - a data structure used to set an ubi volume
-- *                           property.
-- * @property: property to set (%UBI_PROP_DIRECT_WRITE)
-+ * struct ubi_set_vol_prop_req - a data structure used to set an UBI volume
-+ *                               property.
-+ * @property: property to set (%UBI_VOL_PROP_DIRECT_WRITE)
-  * @padding: reserved for future, not used, has to be zeroed
-  * @value: value to set
-  */
--struct ubi_set_prop_req {
--       uint8_t  property;
--       uint8_t  padding[7];
--       uint64_t value;
--}  __attribute__ ((packed));
-+struct ubi_set_vol_prop_req {
-+	__u8  property;
-+	__u8  padding[7];
-+	__u64 value;
-+}  __attribute__((packed));
+@@ -1114,7 +1114,6 @@ int ubi_leb_change_start(libubi_t desc, int fd, int lnum, int bytes, int dtype)
+ 	memset(&req, 0, sizeof(struct ubi_leb_change_req));
+ 	req.lnum = lnum;
+ 	req.bytes = bytes;
+-	req.dtype = dtype;
  
- #endif /* __UBI_USER_H__ */
+ 	if (ioctl(fd, UBI_IOCEBCH, &req))
+ 		return -1;
 -- 
 1.7.2.5
