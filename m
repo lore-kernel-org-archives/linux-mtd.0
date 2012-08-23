@@ -1,23 +1,22 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T4WUE-0000Wd-HR
- for linux-mtd@lists.infradead.org; Thu, 23 Aug 2012 12:26:11 +0000
-Message-ID: <1345725030.2848.236.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v3 0/6] UBI: add max_beb_per1024 parameter / ioctl
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>, Richard Genoud
- <richard.genoud@gmail.com>
-Date: Thu, 23 Aug 2012 15:30:30 +0300
-In-Reply-To: <20120823133655.72157b18@pixies.home.jungo.com>
-References: <1345478416-23900-1-git-send-email-richard.genoud@gmail.com>
- <1345716615.2848.229.camel@sauron.fi.intel.com>
- <20120823133655.72157b18@pixies.home.jungo.com>
+Message-ID: <1345725459.2848.238.camel@sauron.fi.intel.com>
+Subject: Re: JFFS2 issue with v3.5.x and later on Atmel chips at least
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: "ludovic.desroches" <ludovic.desroches@atmel.com>
+Date: Thu, 23 Aug 2012 15:37:39 +0300
+In-Reply-To: <5035F266.2040909@atmel.com>
+References: <5034B45A.5060107@atmel.com> <5034F3F8.9080802@atmel.com>
+ <1345707689.2848.203.camel@sauron.fi.intel.com>
+ <5035F266.2040909@atmel.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-aqX0yE5aqPHYsbXSsHkm"
+ boundary="=-NKqctdvarn3rrrpHr4wR"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Cc: linux-mtd@lists.infradead.org,
+ Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Linux Kernel list <linux-kernel@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,70 +27,70 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-aqX0yE5aqPHYsbXSsHkm
+--=-NKqctdvarn3rrrpHr4wR
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-=46rom fa7595564e95672ab87d4a910c6bc02123b75e88 Mon Sep 17 00:00:00 2001
+On Thu, 2012-08-23 at 11:05 +0200, ludovic.desroches wrote:
+>=20
+> Tested-by: Ludovic Desroches <ludovic.desroches@atmel.com>=20
+
+Thanks, pushed to l2-mtd.git tree a bit modified patch. Will ping dwmw2
+about merging it to Linus.
+
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Date: Thu, 23 Aug 2012 13:01:11 +0300
-Subject: [PATCH] UBI: disallow max_beb_per1024 on NOR flash
+Date: Thu, 23 Aug 2012 10:10:07 +0300
+Subject: [PATCH] JFFS2: fix unmount regression
 
-If the flash does not admit of bad blocks (e.g., NOR) - disallow using
-'max_beb_per1024'.
+This patch fixes regression introduced by
+"8bdc81c jffs2: get rid of jffs2_sync_super". We submit a delayed work in o=
+rder
+to make sure the write-buffer is synchronized at some point. But we do not
+flush it when we unmount, which causes an oops when we unmount the file-sys=
+tem
+and then the delayed work is executed.
 
+This patch fixes the issue by adding a "cancel_delayed_work_sync()" infocat=
+ion
+in the '->sync_fs()' handler. This will make sure the delayed work is cance=
+led
+on sync, unmount and re-mount. And because VFS always callse 'sync_fs()' be=
+fore
+unmounting or remounting, this fixes the issue.
+
+Reported-by: Ludovic Desroches <ludovic.desroches@atmel.com>
+Cc: stable@vger.kernel.org [3.5+]
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Tested-by: Ludovic Desroches <ludovic.desroches@atmel.com>
 ---
+ fs/jffs2/super.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-Second attempt, did not test :-)
-
- drivers/mtd/ubi/build.c |   18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index 355756b..aaf7df3 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -646,8 +646,18 @@ static int io_init(struct ubi_device *ubi, int max_beb=
-_per1024)
- 	ubi->flash_size =3D ubi->mtd->size;
+diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
+index 61ea413..1224d6b 100644
+--- a/fs/jffs2/super.c
++++ b/fs/jffs2/super.c
+@@ -100,6 +100,10 @@ static int jffs2_sync_fs(struct super_block *sb, int w=
+ait)
+ {
+ 	struct jffs2_sb_info *c =3D JFFS2_SB_INFO(sb);
 =20
- 	if (mtd_can_have_bb(ubi->mtd)) {
--		ubi->bad_allowed =3D 1;
-+		if (max_beb_per1024 < 0 ||
-+		    max_beb_per1024 > MAX_MTD_UBI_BEB_LIMIT)
-+			return -EINVAL;
-+		if (!max_beb_per1024)
-+			max_beb_per1024 =3D CONFIG_MTD_UBI_BEB_LIMIT;
++#ifdef CONFIG_JFFS2_FS_WRITEBUFFER
++	cancel_delayed_work_sync(&c->wbuf_dwork);
++#endif
 +
- 		ubi->bad_peb_limit =3D get_bad_peb_limit(ubi, max_beb_per1024);
-+		ubi->bad_allowed =3D 1;
-+	} else if (max_beb_per1024) {
-+		ubi_err("mtd%d does not admit of bad blocks, max_beb_per1024 "
-+			"cannot be used", mtd->index);
-+		return -EINVAL;
- 	}
-=20
- 	if (ubi->mtd->type =3D=3D MTD_NORFLASH) {
-@@ -857,12 +867,6 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_n=
-um,
- 	struct ubi_device *ubi;
- 	int i, err, ref =3D 0;
-=20
--	if (max_beb_per1024 < 0 || max_beb_per1024 > MAX_MTD_UBI_BEB_LIMIT)
--		return -EINVAL;
--
--	if (!max_beb_per1024)
--		max_beb_per1024 =3D CONFIG_MTD_UBI_BEB_LIMIT;
--
- 	/*
- 	 * Check if we already have the same MTD device attached.
- 	 *
+ 	mutex_lock(&c->alloc_sem);
+ 	jffs2_flush_wbuf_pad(c);
+ 	mutex_unlock(&c->alloc_sem);
 --=20
 1.7.10.4
 
 
---=-aqX0yE5aqPHYsbXSsHkm
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-NKqctdvarn3rrrpHr4wR
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -99,19 +98,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQNiJmAAoJECmIfjd9wqK0BOIP/A6oVq2YoH5TWJWylpYCyH9n
-ngtT3xxoZUpFcmjjyMbVX/cmm9/LQ81wnKCpnHhvKWYnspAO8/kEoVW9hK+4Ivlg
-2WRIx6Lhrvutf4kFmsnSpp3mKS5EICkloK90i0pVhyJ+wOsuZYR6cUG+P2U4mzgA
-3p3LVMHEy7YfzsGMBTiQRA1tKbpAVVtEsa/8Yv37T4eKoGKRhyg4g434a2Fd3Gr0
-esMQE8BO2+6AUsnEeQ0s3X11h0hIGLaGEXq47J+e13FVkU5aHmUMl13eRlXRBLxM
-ZkzBcg/LdOfeeJbS2SLcKh2Q3Fsbxjqw+4kRwz+e6isljU6Ki9+/PEuncOe+jWtg
-vLvasUAIYQAniFNWm/FtWC3FXmnTXOH8252d4c4QlPeu5SNaI+3G4LJFBbYmy8hS
-BrsetfrEdIOG4XIgE0G7RD47eybSnX5mr2KYuhIKsb5IsXBaU/sdu3DTzWaIEvk+
-J9gYzHrxpBQzf+udn4ftDgGydrVEbv2ouA/wGKNwFGaAhUxzZbWDzJLehy/tAR9i
-bzSt21V0q2MKXcFvBLqmAQM6cXpe+myIBKCcU30uIKbcFuaURRHUO/2C2QlqXmXY
-pLNF/GJYlpWWG6+UeElDPMAqGLP+SWD3jombpQsftbo0+uB/bB3aMBdzKigelO/Q
-a5Tgq4mR/lcoN4dX+6tn
-=DCRn
+iQIcBAABAgAGBQJQNiQTAAoJECmIfjd9wqK0IYYP/jj2A+YDjzZ2LeyXuyglDLsO
+N06W9VF2F5QLiSQiVWW9fgTKl3j7kJ2qKIXBwNc2SHscYOWcxzjhXEH/OAspzW2i
+8O9X4ygkLj6lMqUs8btOYnA58rSm0PT3DoUq0TIcwqcx8oTR8zuuV4pcA04G3lUr
+fxEo237poeI1DxsCV/x6ezOvM8pmy9jjlXwpOT0yHn5EqPOsyQBdmeHUy+NfJuSv
+U68A50Ha4nvCY4gi1dxqGgljXma5pgrEGbG6O+Z4oec3QmbFbBsUUzMFqQOO1Hpr
+a3FRh+9P8aFdl7ufefH9D0g9thY6Voqc5v1k4Jeu4W9YteyhGqUdMjC8mcClPZtR
+tv3pID00zMlM6vd13Tt+jfBily6rOJQUR5JuNOixZ8aFHW5vnkZzP7FShun1l6ix
+A2IqAGEwGdSuampROTCWPUsPge2xMcJPWHOOqwdbVbATqcbcI6rBdBdqSCE8VcYe
+U54N5bRYvrTcP6kPPZnORM+rMOV8l8PrcyOydtlJA2gcIerb1a3SlR8eNcUNX4LV
+bJv31Ey1nrUFnYxm4H6PugqpIwbvj81Umpv9/b9wvk7gaddVq09pZqJnM136ruxw
+h2tOYDBalePs5WcvtwWUbxeZsGfVpuJO0X1laH9vuKWZtxwKpJ1Qxp7dLTA9ZfCw
+rsdwdWtRQ2SMFhy/KCTm
+=s9s3
 -----END PGP SIGNATURE-----
 
---=-aqX0yE5aqPHYsbXSsHkm--
+--=-NKqctdvarn3rrrpHr4wR--
