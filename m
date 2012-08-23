@@ -1,15 +1,26 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T4Xfj-0002Ye-As
- for linux-mtd@lists.infradead.org; Thu, 23 Aug 2012 13:42:09 +0000
-From: Marek Vasut <marex@denx.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH V4] mtd: m25p80: Make fast read configurable via DT
-Date: Thu, 23 Aug 2012 15:41:53 +0200
-Message-Id: <1345729313-10831-1-git-send-email-marex@denx.de>
-Cc: Marek Vasut <marex@denx.de>, David Woodhouse <david.woodhouse@intel.com>,
- dedekind1@gmail.com, Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- devicetree-discuss@lists.ozlabs.org, robherring2@gmail.com
+Received: from mga01.intel.com ([192.55.52.88])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1T4Ycv-00011S-2r
+ for linux-mtd@lists.infradead.org; Thu, 23 Aug 2012 14:43:19 +0000
+Message-ID: <1345733153.2848.244.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v3 0/6] UBI: add max_beb_per1024 parameter / ioctl
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Richard Genoud <richard.genoud@gmail.com>
+Date: Thu, 23 Aug 2012 17:45:53 +0300
+In-Reply-To: <CACQ1gAhs6E5jHGnTy1RhbnuzKq7uAJk0DeHfi0k73jC_8noiAg@mail.gmail.com>
+References: <1345478416-23900-1-git-send-email-richard.genoud@gmail.com>
+ <1345716615.2848.229.camel@sauron.fi.intel.com>
+ <20120823133655.72157b18@pixies.home.jungo.com>
+ <1345725030.2848.236.camel@sauron.fi.intel.com>
+ <20120823154404.51e31873@pixies.home.jungo.com>
+ <1345726686.2848.241.camel@sauron.fi.intel.com>
+ <CACQ1gAhs6E5jHGnTy1RhbnuzKq7uAJk0DeHfi0k73jC_8noiAg@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-NM1PnOr3WIxtYsSRGvFW"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,157 +30,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add DT property "m25p,fast-read" that signalises the particular
-chip supports "fast read" opcode.
 
-Signed-off-by: Marek Vasut <marex@denx.de>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Cc: David Woodhouse <david.woodhouse@intel.com>
----
- Documentation/devicetree/bindings/mtd/m25p80.txt |   29 ++++++++++++++++++++
- drivers/mtd/devices/m25p80.c                     |   32 +++++++++++++---------
- 2 files changed, 48 insertions(+), 13 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mtd/m25p80.txt
+--=-NM1PnOr3WIxtYsSRGvFW
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-V2: Add documentation for the DT property.
-V3: Use of_property_get_bool() instead of of_find_property().
-V4: Adjust the documentation's "compatible:" section, make it not
-    Linux-specific, but keep the reference to Linux's list of
-    supported devices. Also, use the default name, spansion,m25p80
-    in the example.
+On Thu, 2012-08-23 at 15:13 +0200, Richard Genoud wrote:
+> I could do some more tests with the final version.
 
-diff --git a/Documentation/devicetree/bindings/mtd/m25p80.txt b/Documentation/devicetree/bindings/mtd/m25p80.txt
-new file mode 100644
-index 0000000..701bb58
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/m25p80.txt
-@@ -0,0 +1,29 @@
-+* MTD SPI driver for ST M25Pxx (and similar) serial flash chips
-+
-+Required properties:
-+- #address-cells, #size-cells : Must be present if the device has sub-nodes
-+  representing partitions.
-+- compatible : Should be the manufacturer and the name of the chip. Bear in mind
-+               the DT binding is not Linux-only, but in case of Linux, see the
-+               "m25p_ids" table in drivers/mtd/devices/m25p80.c for the list of
-+               supported chips.
-+- reg : Chip-Select number
-+- spi-max-frequency : Maximum frequency of the SPI bus the chip can operate at
-+
-+Optional properties:
-+- m25p,fast-read : Use the "fast read" opcode to read data from the chip instead
-+                   of the usual "read" opcode. This opcode isn not supported by
-+                   all chips and support for it can not be detected at runtime.
-+                   Refer to your chips' datasheet to check if this is supported
-+                   by your chip.
-+
-+Example:
-+
-+	flash: m25p80@0 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "spansion,m25p80";
-+		reg = <0>;
-+		spi-max-frequency = <40000000>;
-+		m25p,fast-read;
-+	};
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index d16f75c..a08d4ec 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -73,14 +73,6 @@
- #define	MAX_READY_WAIT_JIFFIES	(40 * HZ)	/* M25P16 specs 40s max chip erase */
- #define	MAX_CMD_SIZE		5
- 
--#ifdef CONFIG_M25PXX_USE_FAST_READ
--#define OPCODE_READ 	OPCODE_FAST_READ
--#define FAST_READ_DUMMY_BYTE 1
--#else
--#define OPCODE_READ 	OPCODE_NORM_READ
--#define FAST_READ_DUMMY_BYTE 0
--#endif
--
- #define JEDEC_MFR(_jedec_id)	((_jedec_id) >> 16)
- 
- /****************************************************************************/
-@@ -93,6 +85,7 @@ struct m25p {
- 	u16			addr_width;
- 	u8			erase_opcode;
- 	u8			*command;
-+	bool			fast_read;
- };
- 
- static inline struct m25p *mtd_to_m25p(struct mtd_info *mtd)
-@@ -342,6 +335,7 @@ static int m25p80_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	struct m25p *flash = mtd_to_m25p(mtd);
- 	struct spi_transfer t[2];
- 	struct spi_message m;
-+	uint8_t opcode;
- 
- 	pr_debug("%s: %s from 0x%08x, len %zd\n", dev_name(&flash->spi->dev),
- 			__func__, (u32)from, len);
-@@ -354,7 +348,7 @@ static int m25p80_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	 * Should add 1 byte DUMMY_BYTE.
- 	 */
- 	t[0].tx_buf = flash->command;
--	t[0].len = m25p_cmdsz(flash) + FAST_READ_DUMMY_BYTE;
-+	t[0].len = m25p_cmdsz(flash) + (flash->fast_read ? 1 : 0);
- 	spi_message_add_tail(&t[0], &m);
- 
- 	t[1].rx_buf = buf;
-@@ -376,12 +370,14 @@ static int m25p80_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	 */
- 
- 	/* Set up the write data buffer. */
--	flash->command[0] = OPCODE_READ;
-+	opcode = flash->fast_read ? OPCODE_FAST_READ : OPCODE_NORM_READ;
-+	flash->command[0] = opcode;
- 	m25p_addr2cmd(flash, from, flash->command);
- 
- 	spi_sync(flash->spi, &m);
- 
--	*retlen = m.actual_length - m25p_cmdsz(flash) - FAST_READ_DUMMY_BYTE;
-+	*retlen = m.actual_length - m25p_cmdsz(flash) -
-+			(flash->fast_read ? 1 : 0);
- 
- 	mutex_unlock(&flash->lock);
- 
-@@ -804,9 +800,10 @@ static int __devinit m25p_probe(struct spi_device *spi)
- 	struct flash_info		*info;
- 	unsigned			i;
- 	struct mtd_part_parser_data	ppdata;
-+	struct device_node		*np = spi->dev.of_node;
- 
- #ifdef CONFIG_MTD_OF_PARTS
--	if (!of_device_is_available(spi->dev.of_node))
-+	if (!of_device_is_available(np))
- 		return -ENODEV;
- #endif
- 
-@@ -858,7 +855,8 @@ static int __devinit m25p_probe(struct spi_device *spi)
- 	flash = kzalloc(sizeof *flash, GFP_KERNEL);
- 	if (!flash)
- 		return -ENOMEM;
--	flash->command = kmalloc(MAX_CMD_SIZE + FAST_READ_DUMMY_BYTE, GFP_KERNEL);
-+	flash->command = kmalloc(MAX_CMD_SIZE + (flash->fast_read ? 1 : 0),
-+					GFP_KERNEL);
- 	if (!flash->command) {
- 		kfree(flash);
- 		return -ENOMEM;
-@@ -915,6 +913,14 @@ static int __devinit m25p_probe(struct spi_device *spi)
- 	flash->page_size = info->page_size;
- 	flash->mtd.writebufsize = flash->page_size;
- 
-+	flash->fast_read = false;
-+	if (np && of_property_read_bool(np, "m25p,fast-read"))
-+		flash->fast_read = true;
-+
-+#ifdef CONFIG_M25PXX_USE_FAST_READ
-+	flash->fast_read = true;
-+#endif
-+
- 	if (info->addr_width)
- 		flash->addr_width = info->addr_width;
- 	else {
--- 
-1.7.10.4
+Thanks!
+
+> I guess that the documentation to update is there:
+> http://www.linux-mtd.infradead.org/doc/ubi.html
+
+Yes, a separate section about how UBI reserves eraseblocks for bad PEBs
+handling is needed.
+
+> The message commit of dccaefbd68ce0c4d83f1d57667726868bdc03cce (UBI:
+> use the whole MTD device size to get bad_peb_limit)
+> could be a start for the "Why?"
+
+Sure.
+
+Additionally, all places where we mention 2% should be amended
+correspondingly. I guess this commit can be used to locate the places:
+http://git.infradead.org/mtd-www.git/commit/2b91234cf1dd9968d18679b19d7dbe2=
+2b6508cff
+
+Also, this section should be amended:
+http://www.linux-mtd.infradead.org/doc/ubi.html#L_overhead
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-NM1PnOr3WIxtYsSRGvFW
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQNkIhAAoJECmIfjd9wqK0fIkP/js8Pqw71YGWY5TGHXZVRH8y
+S8AirPis1bKyq6z4xXq1qcMXJ4p5O+XR0L6kxsal9Xvo6SEf2sc04bLuokHbv0Y+
+XSaL28NIGzY9bVLorobHShreW6n7PAs5cYqeYRVhV7cJpmFGTQES7qPPhXbSCMPg
+0kkXYYlFObpvywMeFPiseu+jFkAuLMn7Jx5/IqbI48HIv/pBrhow//Lyo/4zAoEc
+T5PRMeoroYkITdyhcPc2jTsn4OYwbe4y9FMUk/i4LvvN9FQQb9lkC5MtmddNwT89
+S0/1VjVK4BDB1qVeZM/iBxFsjMSdvw0TYOhUj5AkY2muo5hFFfgI43eSKgcnxUG0
+c04GMFuzHfjK3JCYtGgnkh2StbUxKZ4oaCeapyXh+A+e7ATp7Bd4UtXcT7VJFYBE
+SBLm0nlk9gZwsA1rrfz70neIXrWBXyjzqumoxvoN3LsDdNfmHNlgbNYh2BM0SOqa
+Dp6/fA+vGiDUeCyXuHkVLqwaRdBQUHFLQHt0zxbP+54jjzIR1apSDZv2hZJvZ2o0
+z4STqYbkcTcLhEzOKlGDHGQ+MufeaNqGuYlKsHt7zfvJMmcr5ADvqnwuSOpodbjt
+Ba02E3lAMyWocfNM1/gdK56avzvzrpOzduKT/bQgwa0l6Pkj7nzeFBEiqUj/kTur
+Tsq1rHzahN0n3eR/crtj
+=eoZA
+-----END PGP SIGNATURE-----
+
+--=-NM1PnOr3WIxtYsSRGvFW--
