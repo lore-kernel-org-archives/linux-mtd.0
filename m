@@ -1,20 +1,18 @@
-Message-ID: <1345703718.2848.200.camel@sauron.fi.intel.com>
-Subject: Re: JFFS2 issue with v3.5.x and later on Atmel chips at least (was:
- Kernel oops since v3.5.x on Atmel chips)
+Received: from mga02.intel.com ([134.134.136.20])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1T4RFi-0006Ov-Cg
+ for linux-mtd@lists.infradead.org; Thu, 23 Aug 2012 06:50:51 +0000
+Message-ID: <1345704908.2848.202.camel@sauron.fi.intel.com>
+Subject: [GIT PULL] UBIFS fixes for 3.6-rc3
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: "ludovic.desroches" <ludovic.desroches@atmel.com>
-Date: Thu, 23 Aug 2012 09:35:18 +0300
-In-Reply-To: <5034F3F8.9080802@atmel.com>
-References: <5034B45A.5060107@atmel.com> <5034F3F8.9080802@atmel.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 23 Aug 2012 09:55:08 +0300
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-6F49xiX55AXqI+kSBikD"
+ boundary="=-5MC7wlDKSaZt2X01cAPj"
 Mime-Version: 1.0
-Cc: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
- linux-mtd@lists.infradead.org,
- Linux Kernel list <linux-kernel@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- Nicolas Ferre <nicolas.ferre@atmel.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ Linux Kernel Maling List <linux-kernel@vger.kernel.org>
 Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,26 +24,52 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-6F49xiX55AXqI+kSBikD
+--=-5MC7wlDKSaZt2X01cAPj
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-08-22 at 17:00 +0200, ludovic.desroches wrote:
-> After bisection the commit causing this issue is:
->=20
-> commit 8bdc81c5069e43755d6e59e5e990e21ca200e8e2
-> Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> Date:   Mon May 7 19:56:53 2012 +0300
->=20
->      jffs2: get rid of jffs2_sync_super
+Hi Linus,
 
-Thanks Ludovic for bisecting the issue, I'll take a look at this.
+The following changes since commit d9875690d9b89a866022ff49e3fcea892345ad92=
+:
+
+  Linux 3.6-rc2 (2012-08-16 14:51:24 -0700)
+
+are available in the git repository at:
+
+  git://git.infradead.org/linux-ubifs.git tags/upstream-3.6-rc3
+
+for you to fetch changes up to 69f9025894c391fec2f7c7ea9150203418454915:
+
+  UBIFS: fix error messages spelling (2012-08-22 17:41:09 +0300)
+
+----------------------------------------------------------------
+UBIFS fixes for 3.6:
+1. Fix crash on error which prevents emulated power-cut testing.
+2. Fix log reply regression introduced in 3.6-rc1.
+3. Fix UBIFS complaints about too small debug buffer size which.
+4. Fix error message spelling, and remove incorrect commentary.
+
+----------------------------------------------------------------
+Artem Bityutskiy (5):
+      UBIFS: remove stale commentary
+      UBIFS: fix crash on error path
+      UBIFS: fix replay regression
+      UBIFS: fix complaints about too small debug buffer size
+      UBIFS: fix error messages spelling
+
+ fs/ubifs/debug.h    |    2 +-
+ fs/ubifs/lpt.c      |    5 ++++-
+ fs/ubifs/recovery.c |    2 +-
+ fs/ubifs/replay.c   |    3 +--
+ fs/ubifs/super.c    |    3 ---
+ 5 files changed, 7 insertions(+), 8 deletions(-)
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-6F49xiX55AXqI+kSBikD
+--=-5MC7wlDKSaZt2X01cAPj
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -53,19 +77,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQNc8nAAoJECmIfjd9wqK01M0P/jLom6PjOvuHsOnObNXXIaS0
-xNJn4O+AiIiy3VtoS1nN5WPrzTFI7Wqssf7G3JbukgpapcFn8GXfzUilTCxY6oY0
-2lfi5vrL7vuxG0vqZXOlbG18G1jHGkA7KJlrzeffF9Mz+fvY0tTB9ifwdEQSeIqM
-uS+e2KMFz4EkJmO+eNXgbAw3oaHlj60EtfFy5ID/z1kPZlBkxwz/9CgQDVbWJHnG
-aOVHq7JK5aDeqBmD0d6u1mSYxMfo980hA+6SvTwtF97r0yItWA9tnwLLIrYnnaLX
-CiVbcJ1L34xD9oXY5lQ0EMZKOS8nmf31rmxtjZfAI0ZY4lBmrsY1LddHi7K54siZ
-6TWNXLfuvV/PPZUzP1STY4wylkdPXkPP0ONlcdw5b8RtmjfKqt7Zx6PsFCws6C4y
-Xs7/A61KsHWRvmF5aIiFVtseVCVHbT74y38JhHiShT5MnZA2yOYPpb/eWIu3xcE1
-/ZwWlTe1rqYRMqJnHE+p7DesTqIBqESgVaTEgOBFz0zisTYSq3N+7Npz6QiM5xxr
-ujqmpY/xg+SB2vOjorQY+7ISwPaMG4rGqKCVR2txTYTQwB0uMqMmYV0BBKCeFaj4
-qKlcFDbmtPXO6+mBWdKPerM7gxP9yAOJjsRCdQuqJKbrBjHg0WlTCM4B5u3heQnw
-0z0h/RRTcwWrabNKfsRA
-=UG4E
+iQIcBAABAgAGBQJQNdPMAAoJECmIfjd9wqK0f2MP/jYbC6kGArBSrt7siASvHZJ+
+5hsa/1f4fCCFZOYgARonTkDkO8iWpH/Sf5Qs22pubVMaRiemjuD7O0MhSCTgbBcr
+w8Lc2lmGKcmvirjpJzv5h9+WMRlEjm4s8zz1IZs6LIy4k75A9JUyar3F3+PaRcB8
+3fy7tBtlX+e2fwMJSEUuwPeXmXf3AUll/8Gef3t5UtjdIa9K3/yUTedCl9ugZqBV
+DBzpMfQyGfUDQfD1RhAKRSOHiNzyl+Yer6+7vTgiSbggcICKRk7b8B2zmPZG7Ak0
+FulszZJgiytRI1VEHiL+y7PRuuu8q4/BcJChVtOIgJhWC+COta1eR7XNB47UlC7K
+Cr3HytSzMqKWqIdUvouZB2Vwgyjb3Anx8z3Ts6UutHVaFAEiGZKZW49txs/h2Jrb
+GkFkFV0tKBwF3dzW/ft8fLVzruIZnMOGeqEwP8dYX3k9Fi4yXm5cfXVWFQiQ1JLN
+pAFgDnHDhPRwIqy6DOC5IVyJAk/CqRUFop1SBzXJvmbhIwraznZKXlZ+Ac09zdq1
+5CuFuGttQiAvOqGRFTgM3puVOJqJDyDs9Kf3Oaxh+Jaym5j4pMqR9O0ez3kZlEBB
+EDqtHFmzY6a+JckWVYlxf2DtZjIsYHPnw9OXbI1Fs6sfeOcvaMCD39bbBTwDuAod
+ac7d41hodKVlNGjG9uln
+=am7i
 -----END PGP SIGNATURE-----
 
---=-6F49xiX55AXqI+kSBikD--
+--=-5MC7wlDKSaZt2X01cAPj--
