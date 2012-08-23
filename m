@@ -1,19 +1,23 @@
 Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T4UIO-0007eh-Al
- for linux-mtd@lists.infradead.org; Thu, 23 Aug 2012 10:05:52 +0000
-Message-ID: <1345716615.2848.229.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v3 0/6] UBI: add max_beb_per1024 parameter / ioctl
+ id 1T4UQA-0007vr-7W
+ for linux-mtd@lists.infradead.org; Thu, 23 Aug 2012 10:13:51 +0000
+Message-ID: <1345717117.2848.232.camel@sauron.fi.intel.com>
+Subject: Re: Current mainline (3.6-rc3) UBIFS errors
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Richard Genoud <richard.genoud@gmail.com>
-Date: Thu, 23 Aug 2012 13:10:15 +0300
-In-Reply-To: <1345478416-23900-1-git-send-email-richard.genoud@gmail.com>
-References: <1345478416-23900-1-git-send-email-richard.genoud@gmail.com>
+To: David Jander <david.jander@protonic.nl>
+Date: Thu, 23 Aug 2012 13:18:37 +0300
+In-Reply-To: <20120823112732.32ed62d5@archvile>
+References: <20120823095048.6c6ee35a@archvile>
+ <1345709408.2848.207.camel@sauron.fi.intel.com>
+ <20120823103934.1028f491@archvile>
+ <1345711673.2848.214.camel@sauron.fi.intel.com>
+ <20120823112732.32ed62d5@archvile>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-1oUSBdLV1uvPPGgTaafu"
+ boundary="=-wA8d0wwoYLiFNlgrwPGP"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,77 +29,70 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-1oUSBdLV1uvPPGgTaafu
+--=-wA8d0wwoYLiFNlgrwPGP
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2012-08-20 at 18:00 +0200, Richard Genoud wrote:
-> This patch serie introduce, step by step the kernel module parameter
-> max_beb_per1024, then the ioctl and finally drop the kernel config option
-> CONFIG_MTD_UBI_BEB_LIMIT.
+On Thu, 2012-08-23 at 11:27 +0200, David Jander wrote:
+> On Thu, 23 Aug 2012 11:47:53 +0300
+> Artem Bityutskiy <dedekind1@gmail.com> wrote:
 >=20
-> It's based on top of linux-ubi/master (4ebb4b5)
+> > On Thu, 2012-08-23 at 10:39 +0200, David Jander wrote:
+> > > On Thu, 23 Aug 2012 11:10:08 +0300
+> > > Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> > >=20
+> > > > On Thu, 2012-08-23 at 09:50 +0200, David Jander wrote:
+> > > > > [    4.069409] UBI warning: ubi_io_read: error -74 (ECC error) wh=
+ile
+> > > > > reading 160 bytes from PEB 5616:87112, read only 160 bytes
+> > > >=20
+> > > > Hi, looks like a problem with your driver. For some reasons it retu=
+rns
+> > > > ECC errors when reading small amount of data (160 bytes). Did you r=
+un
+> > > > mtd tests - to they pass?
+> > >=20
+> > > I thought so at first, but this error appeared on two different hardw=
+are
+> > > platforms at the same time, when upgrading to latest mainline. I am c=
+oming
+> > > from kernel 3.1, which worked fine on the MPC5121e. The ARM platform =
+also
+> > > worked without problems on a previous version (I think it was 3.4-som=
+ething,
+> > > not so sure right now). The only common piece of hardware/driver is t=
+he actual
+> > > NAND flash chip on both boards (Samsung K9K8G08... SLC 8Gbit NAND), s=
+o I
+> > > thought this had to be a (temporary) issue in current mainline code.
+> >=20
+> > A change in the mtd layer probably caused this.
+> >=20
+> > > > So UBI just tells that it cannot read, the root-cause is in the dri=
+ver.
+> > >=20
+> > > Two different drivers... same issue!?
+> >=20
+> > Quite possible if there is a bug in mtd layer. First try to find out th=
+e
+> > latest working kernel release.
+>=20
+> Ok, sounds reasonable.
+> I found kernel 3.5 works fine. Now bisecting...
 
-I've also pushed this patch:
+If you want to check whether it is UBI/UBIFS to blame, please, pull the
+ubifs-v3.5.git back-port tree and test. The back-port tree contains all
+UBI/UBIFS changes which we have done after 3.5.
 
-=46rom 5fe236c703063f9bc87b66c593408a0d48bbe0e7 Mon Sep 17 00:00:00 2001
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Date: Thu, 23 Aug 2012 13:01:11 +0300
-Subject: [PATCH] UBI: disallow max_beb_per1024 on NOR flash
+git://git.infradead.org/users/dedekind/ubifs-v3.5.git
 
-If the flash does not admit of bad blocks (e.g., NOR) - disallow using
-'max_beb_per1024'.
-
-Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
----
- drivers/mtd/ubi/build.c |   12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index aa60b30..865e4fa 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -860,9 +860,6 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_nu=
-m,
- 	if (max_beb_per1024 < 0 || max_beb_per1024 > MAX_MTD_UBI_BEB_LIMIT)
- 		return -EINVAL;
-=20
--	if (!max_beb_per1024)
--		max_beb_per1024 =3D CONFIG_MTD_UBI_BEB_LIMIT;
--
- 	/*
- 	 * Check if we already have the same MTD device attached.
- 	 *
-@@ -935,6 +932,15 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_n=
-um,
- 	if (err)
- 		goto out_free;
-=20
-+	if (!max_beb_per1024) {
-+		if (!ubi->bad_allowed) {
-+			ubi_err("mtd%d does not admit of bad blocks, "
-+				"max_beb_per1024 cannot be used", mtd->index);
-+			goto out_free;
-+		}
-+		max_beb_per1024 =3D CONFIG_MTD_UBI_BEB_LIMIT;
-+	}
-+
- 	err =3D -ENOMEM;
- 	ubi->peb_buf =3D vmalloc(ubi->peb_size);
- 	if (!ubi->peb_buf)
---=20
-1.7.10.4
-
-Are you OK with this?
-
-Now that we seem to have everything in, would you please give this all a
-final test. Could you please check both on nandsim and mtdram?
+http://git.infradead.org/users/dedekind/ubifs-v3.5.git
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-1oUSBdLV1uvPPGgTaafu
+--=-wA8d0wwoYLiFNlgrwPGP
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -103,19 +100,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQNgGHAAoJECmIfjd9wqK0G4oQAIfSMhvqXLhF3wyXt/Lp3jG8
-jDYSBWoSLBQc8yKr9wxBZF0zr0xq42PEH0gUq/YKEUQ0qzUTUr7yJ95I5hv7Ep2z
-cnGeylq27F7NFGKAPrhp0YtHHRcb2Wsyakhr5lQxkgtFIH8Um12By2HWHbbU6jZh
-XrXdo8Fi9Xe/amkMXdEl5eQ3ChXYmsGHP7PWtnDZLvhyfO+nCAFtu6PwJF72pUl+
-wqMaEBsUyPPB14dyoSL+QpESyvmMLu5wt98ghef8USpCPu+IN/r3Cf+pHMCvj4Ub
-MH7SrZdBomgR6VVYx+aAxOCLD3djZMeN8Z5C7KvBYPRsMMrfgUYoR7Fe1nOeE3fG
-iPvkQ31YUU0vOfaAFuwWOndrxEnD5XCblxqmz8Ps96CGAlEx9W3g0ZNBJOcnGymd
-e97GgaBK9s7AziX2KIpr7s8NJ3G8XexIzwgajGVPPxoRHzxvpJQAoOkKurmsn5E6
-BsZAVFh5bQSUXnnigO1ZIYc5uShqfjkOrQ380kaDdpePxNFktn06OlN3XI0QdxZl
-cfzY+FmGrcBLav1Wv584XPmx6p/adFggIn7oRZouz8GM+0eQaLp+8p514ypu6Das
-MG+EkOYauRwPpHVrRdgXN1RvTieD40gpTGqQOtC0nL+4VLgg7HKItBGK7AJh9r9U
-3f2vPr9j9mKtPFvRFMgx
-=3aCI
+iQIcBAABAgAGBQJQNgN9AAoJECmIfjd9wqK0DlIP/i3AVqvDbUEdWB+on0g+5roh
+WjwoCRdezQ7ay20gwweUxxG1c47+7q6jrOmzrFezFWFzP6JJjpxlgHoUfPJxLsfB
+yFSP6FZoD0XJl3rgF/gMHb61Z95CJrfKv14AwjkFiPbIFf5Gz6s+mEg727Z72W0+
+pq5L2GCh9p5IltDUaIUWLuvQHuDsJ09snNqNGqPhOchhMGPHRi+NwVLwzXB5G5U+
+vgFTb25oiSisvJEusBksGUj+3BBOOzpWOonJcaVoh7Jtq4xTAZPYp4tm/bxrQezN
+BTQqKrCy8kElsFcXfXk3t1HHcoHOI+e5oF0lvj+RnKfFUXUHqhw7CKzYyzYsN+2A
+HckcVOQ1b1ZZiKD88QpZNo6su9isWMshLIMNSupFjq0ZVhpkhsw1cgbq4dYIGJbl
+frJF9SNxM8B39bmokksUli10aeeY2wVEV5MpXnbSKbHF622XXUlsIngXdd/xde2q
+clDMex3BkcuFU8OhpB8wQIGHwFryXaaX2s5rnWcEkA0xgquZ76ye0sWiz6BIISxW
+JMJprQGEf13DOtYzK4iByVjlTCW7M2NrU4Ht4wwTgjKPvs0xZFYgQhmMCEveJt+3
+mvcl5JSBe10GPCfVdR/YO2bgoXZp29EN/STi2XQ6qBgEv6zRYIya5grRb1ZW+dMO
+w3yc4mV3ZSf9aDtElFHr
+=/hmV
 -----END PGP SIGNATURE-----
 
---=-1oUSBdLV1uvPPGgTaafu--
+--=-wA8d0wwoYLiFNlgrwPGP--
