@@ -1,23 +1,23 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from protonic.xs4all.nl ([213.84.116.84])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T4Ywc-0003rP-Hx
- for linux-mtd@lists.infradead.org; Thu, 23 Aug 2012 15:03:39 +0000
-Message-ID: <1345734503.2848.247.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/2] nand: nand_bbt: Export nand_update_bbt
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Fabio Estevam <festevam@gmail.com>
-Date: Thu, 23 Aug 2012 18:08:23 +0300
-In-Reply-To: <1343514565-8983-2-git-send-email-festevam@gmail.com>
-References: <1343514565-8983-1-git-send-email-festevam@gmail.com>
- <1343514565-8983-2-git-send-email-festevam@gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-6K1volBigKBkderYR9Dc"
+ id 1T4Z6e-0006WS-CP
+ for linux-mtd@lists.infradead.org; Thu, 23 Aug 2012 15:14:01 +0000
+Date: Thu, 23 Aug 2012 17:15:17 +0200
+From: David Jander <david.jander@protonic.nl>
+To: dedekind1@gmail.com
+Subject: Re: Current mainline (3.6-rc3) UBIFS errors
+Message-ID: <20120823171517.7485cef3@archvile>
+In-Reply-To: <1345717117.2848.232.camel@sauron.fi.intel.com>
+References: <20120823095048.6c6ee35a@archvile>
+ <1345709408.2848.207.camel@sauron.fi.intel.com>
+ <20120823103934.1028f491@archvile>
+ <1345711673.2848.214.camel@sauron.fi.intel.com>
+ <20120823112732.32ed62d5@archvile>
+ <1345717117.2848.232.camel@sauron.fi.intel.com>
 Mime-Version: 1.0
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, b32955@freescale.com,
- linux-mtd@lists.infradead.org, marex.vasut@denx.de, kernel@pengutronix.de,
- shawn.guo@linaro.org, dwmw2@infradead.org
-Reply-To: dedekind1@gmail.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,51 +27,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, 23 Aug 2012 13:18:37 +0300
+Artem Bityutskiy <dedekind1@gmail.com> wrote:
 
---=-6K1volBigKBkderYR9Dc
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> On Thu, 2012-08-23 at 11:27 +0200, David Jander wrote:
+> > On Thu, 23 Aug 2012 11:47:53 +0300
+> > Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> > 
+> > > On Thu, 2012-08-23 at 10:39 +0200, David Jander wrote:
+> > > > On Thu, 23 Aug 2012 11:10:08 +0300
+> > > > Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> > > > 
+> > > > > On Thu, 2012-08-23 at 09:50 +0200, David Jander wrote:
+> > > > > > [    4.069409] UBI warning: ubi_io_read: error -74 (ECC error) while
+> > > > > > reading 160 bytes from PEB 5616:87112, read only 160 bytes
+> > > > > 
+> > > > > Hi, looks like a problem with your driver. For some reasons it returns
+> > > > > ECC errors when reading small amount of data (160 bytes). Did you run
+> > > > > mtd tests - to they pass?
+> > > > 
+> > > > I thought so at first, but this error appeared on two different hardware
+> > > > platforms at the same time, when upgrading to latest mainline. I am coming
+> > > > from kernel 3.1, which worked fine on the MPC5121e. The ARM platform also
+> > > > worked without problems on a previous version (I think it was 3.4-something,
+> > > > not so sure right now). The only common piece of hardware/driver is the actual
+> > > > NAND flash chip on both boards (Samsung K9K8G08... SLC 8Gbit NAND), so I
+> > > > thought this had to be a (temporary) issue in current mainline code.
+> > > 
+> > > A change in the mtd layer probably caused this.
+> > > 
+> > > > > So UBI just tells that it cannot read, the root-cause is in the driver.
+> > > > 
+> > > > Two different drivers... same issue!?
+> > > 
+> > > Quite possible if there is a bug in mtd layer. First try to find out the
+> > > latest working kernel release.
+> > 
+> > Ok, sounds reasonable.
+> > I found kernel 3.5 works fine. Now bisecting...
+> 
+> If you want to check whether it is UBI/UBIFS to blame, please, pull the
+> ubifs-v3.5.git back-port tree and test. The back-port tree contains all
+> UBI/UBIFS changes which we have done after 3.5.
 
-On Sat, 2012-07-28 at 19:29 -0300, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
->=20
-> When building MTD_NAND_GPMI_NAND as module, the following error shows up:
->=20
-> ERROR: "nand_update_bbt" [drivers/mtd/nand/gpmi-nand/gpmi_nand.ko] undefi=
-ned!
->=20
-> Export nand_update_bbt to fix it.
->=20
-> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+All of a sudden I am finding myself unable to reproduce the problem. Baffled
+and confused, my only two explanations for this is that either somehow while
+switching kernel versions the .config file got altered in such a way that
+CONFIG_MTD_NAND_ECC_SMC magically changed value or that some cosmic
+radiation corrupted _both_ NAND chips at the same time :-(
+My apologies for wasting your time.
+I'll report back if I ever happen to reproduce this issue.... it might still
+be there but just hard to trigger... who knows.
 
-Why this driver redefined ->block_markbad() at all, it is not supposed
-to do this. We should fix the driver instead.
+Best regards,
 
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-6K1volBigKBkderYR9Dc
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQNkdnAAoJECmIfjd9wqK0yO4QAIw0bHqoIl/R3PI1lT7Ggxa7
-9d2zIFNvKNG+h4NYwJrW2TfoQvdXQeBcREcCTqTzxlvbK/4L8JbT0o1pNhDzM1pW
-TQoGH10TFXrBy9UNeFqz/edo0cuCY5Sv6vD0LIYAtbDiFJM99kJRVKfGBCJ7eQWg
-PDU8opfjEsuFue2sGVKC2bjNcxyMhWxrJcr9YvI5IulnaT5O1tqSMR2i0+iSr4JD
-zLmh9Pozk7OtsSQ2LSRMyp1VvndqEGSiOtIOSW9qjugF5qRMwvEz4tsSJ18CSozk
-FiqM0cEuDFCm8UXS3f89qV1SMZqVLrMWYvVUt9OM3qZ3VfE7ythTMpzDUIQQyZs/
-PdVTAdyu4SS/5UvGZ81Q99qCzzocAMwxYM0/kGeD7T49yu+xoRNBFQy3wDapY/tt
-ut69/NlZEcm1ccnc8jcYYwDSGnBpolXOCpiLhCyKSmsrPdHVs4yIDHlfjSO6ZQz4
-iqapf4rCbwzlopQYk9KcqFakdZYneM1VOfYApVGO3YvxsfC7xikNhvLhD/O6fN+w
-S5AAeNcYC4/URuGryXK2+RWWR8c230ssAjcczRldeIukPMPjh747g1uXodmUYarQ
-MRaVU57ie4ahgF91YJixz5P6TlqJdselU0wrTmNJgU6k3SnxTd8jnGBol5lb/E5S
-McjNqAvweGrh0OtNePFi
-=Atz1
------END PGP SIGNATURE-----
-
---=-6K1volBigKBkderYR9Dc--
+-- 
+David Jander
