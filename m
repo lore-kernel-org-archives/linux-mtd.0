@@ -1,18 +1,20 @@
-Message-ID: <1345795792.2848.265.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v3] mtd: gpmi: fix the compiler warnings
+Received: from mga03.intel.com ([143.182.124.21])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1T4otq-0002Tx-3G
+ for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 08:05:50 +0000
+Message-ID: <1345795830.2848.266.camel@sauron.fi.intel.com>
+Subject: Re: jffs2 unmount with delayed work queued
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Huang Shijie <shijie8@gmail.com>
-Date: Fri, 24 Aug 2012 11:09:52 +0300
-In-Reply-To: <CAMiH66G+srHsfUn6eCByHMgjZXE6k7zM6qLagqBuQCzx954aOA@mail.gmail.com>
-References: <1342451569.7270.11.camel@brekeke>
- <1342505642-31109-1-git-send-email-b32955@freescale.com>
- <CAMiH66G+srHsfUn6eCByHMgjZXE6k7zM6qLagqBuQCzx954aOA@mail.gmail.com>
+To: Scott Wood <scottwood@freescale.com>
+Date: Fri, 24 Aug 2012 11:10:30 +0300
+In-Reply-To: <5019DC14.2030209@freescale.com>
+References: <5019DC14.2030209@freescale.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-s8ri38eX5hjRGsXuRrpQ"
+ boundary="=-1jFZJPPb80A/Fch+SiJm"
 Mime-Version: 1.0
-Cc: Huang Shijie <b32955@freescale.com>, shawn.guo@linaro.org,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,23 +26,35 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-s8ri38eX5hjRGsXuRrpQ
+--=-1jFZJPPb80A/Fch+SiJm
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-08-01 at 10:27 +0800, Huang Shijie wrote:
-> Hi Artem;
-> Just a ping.
+On Wed, 2012-08-01 at 20:47 -0500, Scott Wood wrote:
+> With slub debugging on, I was seeing a crash in timer code after
+> unmounting a jffs2 filesystem, with a reference to poisoned memory.  I
+> traced this back to jffs2_kill_sb() freeing the superblock with
+> c->wbuf_dwork.timer still active, and c->wbuf_queued =3D 1.  I've seen
+> this in Linus's current tree as well as 3.5.
 >=20
-> Please do not miss this patch.
+> I would have just sent a patch, but I wasn't sure exactly how to
+> gracefully shut things down -- cancel or flush, and at what point?
+> Don't want to do it too late for the work to happen safely, but don't
+> want to do it too early so that it could get queued again.
 
-I actually missed it, pushed now to l2-mtd.git, thanks!
+Hi Scott,
+
+sorry for slow reply. I have a fix in the l2-mtd tree for this, I think
+dwmw2 will merge it upstream at some point:
+
+http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commit/28b65f8a2eece=
+7e14bd4b9359509c667a5cb07d1
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-s8ri38eX5hjRGsXuRrpQ
+--=-1jFZJPPb80A/Fch+SiJm
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -48,19 +62,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQNzbQAAoJECmIfjd9wqK0mXsP/25d/Npz0wcyL46eODycmLsl
-cYQC6m1RD/rEdokI9j9/kKW9jZHOKUMy+kYz1WqtMnJ8x78WLTUwIg9QzhVQQZ4U
-PeNgsLVkmjfB95wuUFpvNSMIaocCXDg7ImiTUua250J0nfZGQPSK6ux+j1pZv1r3
-oQeE+Q3FWE+n4RX0jWxGwEhuJxFbSGaiQoGx9jfF1NbiGYXLfO3gH0eccFg/dpaA
-dxnxQ3UxKF2fsrobQjYhdG9PUddgZ88MORrb3BAYSrgRkAbj+uu04sgS8qIs3NFf
-doZW+zPV3KP4I6lPSjtDcaXpSDJsCB6dLpd+J3w2awrtjRFthl+XrJhH+8ifow1e
-lQp4051t+o/PkP1hhV41rdUEGawjOxchXunqtTq8sJSWWlWAdufvZBim2vdJNOaI
-wiwPcgr3/r/luA7eHU13w+uD8tWXwRIEbIcQTiMFvbCgXgwp9fFlEf/gRXSE26eC
-coSs/l1vE1myb/GvTPGUOLIE0dbGDxfYcWGJqWNnVYWarQMZTnKlWF3clfj9QgJ8
-DcVOngw2Fp/NhMYGaC5KBIHXANqkbt77AEh2b8xZD1IekPycx3FjzgKq7D2iO+SG
-sRKEIYs8H/BVO+MwpWh9KXnBf0e1+OmKUbxH+pCnIEjKItX5n4LKwXTlUT+6fJyG
-5edRI/sALmm6I9gAB5te
-=Pl3t
+iQIcBAABAgAGBQJQNzb2AAoJECmIfjd9wqK0aBgP/iFy98ORZ7oqF+GvuJMK7RZH
+ZxkPQSvn6oe+yZefdQlLGBTYDY04RTZ3TnHRKUD2/lLYataWHl7msCNQHRgeXAeD
+hUEnSjN5dm3PTFzokIaz6zD3RZc6/THOJdDGctT7iA0XVxAfGXwM6kzstFRi3w1G
+17UHKbyEBoHN/0s3Bi1Z5fGjDzC5Pac+W2PSGste1qRaIAhviFla1ENAlUZpTPtS
+kVPG3VCjH7Ph42t1W+0H0IdVRZlgryZwrl92L5sBtkBYAsW0TS7WfDWClbD2t+YI
+xh1iyoH6rVNcYyUl1D5hikYKWV0IGIKjavQXJtLOuKCu1HReWPR3uTdPrNmr2fMm
+PytoE0iMKUTKrQJzuSca+LLAXFyz2FfGNHfgd+X9rfvTXFg/+TCfkjFa0JmfHbaK
+0NmEgtGAzJzu+kQBkXzA2rPxfbbgoh3ZcP4zlWMHWz76bZnwBNFlwOybLYs+dWu6
+wdC4OsnwZFVAQS5Didd6N5ifLoKPIB1jl8XW50GrVJMS9f0A56GP41tJywsfG4Qj
+HC57QP7UtzIOyt/MdNEqRdxrfzsN2wzV7Hl9ZzKXW1zgzvLvtcFvpsHgGT2iYJCt
+w2r9NH4iwtJ2I9gpB81OzS3nfgHY+lteiZkXOoyf6ursWnULgATwFVVaVluKqVbD
+rv8I6q6ZqcPq3Z1b6V+R
+=r9P7
 -----END PGP SIGNATURE-----
 
---=-s8ri38eX5hjRGsXuRrpQ--
+--=-1jFZJPPb80A/Fch+SiJm--
