@@ -1,20 +1,28 @@
-Received: from mail-wi0-f171.google.com ([209.85.212.171])
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T52V3-0007Yy-9W
- for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 22:37:09 +0000
-Received: by wibhq4 with SMTP id hq4so1103278wib.0
- for <linux-mtd@lists.infradead.org>; Fri, 24 Aug 2012 15:37:07 -0700 (PDT)
+ id 1T52on-0007vI-V3
+ for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 22:57:35 +0000
+Received: by lbbgf7 with SMTP id gf7so1375090lbb.36
+ for <linux-mtd@lists.infradead.org>; Fri, 24 Aug 2012 15:57:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1345847412-24509-1-git-send-email-zajec5@gmail.com>
-References: <1345847412-24509-1-git-send-email-zajec5@gmail.com>
-Date: Sat, 25 Aug 2012 00:37:07 +0200
-Message-ID: <CACna6rxpTBVkSd7ZeKJafjgQ9U5NAgFYhNfHabsWEjm_6J=dRA@mail.gmail.com>
-Subject: Re: [RFC][PATCH] mtd: bcm47part driver for BCM47XX chipsets
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <503758E0.7000408@freescale.com>
+References: <1343514565-8983-1-git-send-email-festevam@gmail.com>
+ <1343514565-8983-2-git-send-email-festevam@gmail.com>
+ <1345734503.2848.247.camel@sauron.fi.intel.com>
+ <CAMiH66GeHEet7NUNn+NPJKY9LgWf1whPgOXdQOFAZZUraWMnOw@mail.gmail.com>
+ <1345790488.2848.252.camel@sauron.fi.intel.com>
+ <503758E0.7000408@freescale.com>
+Date: Fri, 24 Aug 2012 15:57:31 -0700
+Message-ID: <CAN8TOE9S-S70hbOdKQHgHbH4JfxwgvHXGF=Cv5O3Eh6-nG-udg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] nand: nand_bbt: Export nand_update_bbt
+From: Brian Norris <computersforpeace@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=GB2312
 Content-Transfer-Encoding: quoted-printable
-Cc: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, dedekind1@gmail.com,
+ Fabio Estevam <festevam@gmail.com>, linux-mtd@lists.infradead.org,
+ marex.vasut@denx.de, kernel@pengutronix.de, shawn.guo@linaro.org,
+ Huang Shijie <shijie8@gmail.com>, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,42 +32,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2012/8/25 Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>:
-> This driver provides parser detecting partitions on BCM47XX flash
-> memories. It has many differences in comparision to older BCM63XX, like:
-> 1) Different CFE with no more trivial MAGICs
-> 2) More partitions types (board_data, ML, POT)
-> 3) Supporting more than 1 flash on a device
-> which resulted in decision of writing new parser.
->
-> It uses generic mtd interface and was successfully tested with Netgear
-> WNDR4500 router which has 2 flash memories: serial one and NAND one.
-> ---
-> Example of scanning (from my WNDR4500):
->
-> [    3.144000] Creating 3 MTD partitions on "bcm47sflash":
-> [    3.148000] 0x000000000000-0x0000001e0000 : "boot"
-> [    3.156000] 0x0000001e0000-0x0000001f0000 : "board_data"
-> [    3.164000] 0x0000001f0000-0x000000200000 : "nvram"
->
-> [    4.632000] Creating 2 MTD partitions on "NAND 128MiB 3,3V 8-bit":
-> [    4.636000] 0x00000000001c-0x0000001416a4 : "linux"
-> [    4.644000] 0x0000001416a4-0x0000007ba000 : "rootfs"
->
-> Right now there aren't any mainline MTD devices driver using this
-> parser. It was tested with out-of-tree drivers floating around (for
-> example on linux-wireless mailing list).
->
-> As this driver uses generic mtd interface, it should be safe to include
-> it in kernel without breaking anything in the future.
->
-> TODO:
-> 1) Add support for more partitinos (ML and POT)
-> 2) Optimize: don't scan whole flash (like up to 128 MiB)
-> 3) Optimize: don't scan TRX partitions after detecting header
+Hi,
 
-For development I've masked out MTD_WRITEABLE everywhere. It should be
-done only for "boot" probably.
+>From Artem: "Why this driver redefined ->block_markbad() at all, it is
+not supposed
+to do this. We should fix the driver instead."
 
---=20
-Rafa=C5=82
+Why is ->block_markbad() a function pointer, then, if the driver is
+not allowed to redefine it? Admittedly, it often doesn't make sense to
+override it; plus, if you override ->block_markbad(), you probably
+want to also override ->block_bad(). But nand_base.c doesn't really
+have good infrastructure for that.
+
+So, by the current, somewhat messy and incomplete state of the
+nand_base + nand_bbt code, it seems to be "supported" to override
+->block_markbad() if you really need to. But some more work could be
+done to improve this.
+
+On Fri, Aug 24, 2012 at 3:35 AM, Huang Shijie <b32955@freescale.com> wrote:
+> =D3=DA 2012=C4=EA08=D4=C224=C8=D5 14:41, Artem Bityutskiy =D0=B4=B5=C0:
+>
+>> The default function seem to do the same as your function does. You
+>> select where you keep your OOB using chip options, and the default
+>> function does the right thing, no?
+>
+> I don't think the default function do the same thing. You see:
+>   nand_default_block_markbad() --> nand_do_write_oob() -->
+> chip->ecc.write_oob() -->gpmi_ecc_write_oob()
+>
+> The gpmi_ecc_write_oob() does nothing,but return -EPERM.
+
+Yeah, that's kind of strange. So you never have room in OOB even for
+bad block markers? How do you identify factory-marked bad blocks?
+Wouldn't they be indistinguishable from your ECC area? Or do you have
+free OOB space in which you could actually implement write_oob()
+properly?
+
+None of my comments are really a disagreement with your patch. Your
+driver has a strange way of dealing with ECC + bad block markers, and
+assuming you figured out your swap_block_mark code safely (I didn't
+really study this) then I think it's OK ("supported") to provide your
+own ->block_markbad() function.
+
+Brian
