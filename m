@@ -1,20 +1,19 @@
-Received: from mga14.intel.com ([143.182.124.37])
+Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T4sR9-0000P2-2I
- for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 11:52:27 +0000
-Message-ID: <1345809435.2848.297.camel@sauron.fi.intel.com>
-Subject: Re: Mainline status about MTD drivers (Atmel at91 PMECC)
+ id 1T4sRb-0000WO-Fh
+ for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 11:52:56 +0000
+Message-ID: <1345809464.2848.298.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: maps: pci: remove dead code
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Josh Wu <josh.wu@atmel.com>
-Date: Fri, 24 Aug 2012 14:57:15 +0300
-In-Reply-To: <502A26BB.8050705@atmel.com>
-References: <502A26BB.8050705@atmel.com>
+To: Wolfram Sang <w.sang@pengutronix.de>
+Date: Fri, 24 Aug 2012 14:57:44 +0300
+In-Reply-To: <1344675523-27452-1-git-send-email-w.sang@pengutronix.de>
+References: <1344675523-27452-1-git-send-email-w.sang@pengutronix.de>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-EAnh/3RmpBYIRNwpMTd+"
+ boundary="=-UPRrd6tRmKxHwYsD9WtS"
 Mime-Version: 1.0
-Cc: stigge@antcom.de, dwmw2@infradead.org,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: Russell King <linux@arm.linux.org.uk>, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,31 +25,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-EAnh/3RmpBYIRNwpMTd+
+--=-UPRrd6tRmKxHwYsD9WtS
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-08-14 at 18:21 +0800, Josh Wu wrote:
-> Hi, David
+On Sat, 2012-08-11 at 10:58 +0200, Wolfram Sang wrote:
+> Removes disabled printk (which should be dev_dbg these days) as well
+> as #if 0 blocks (which are trivial to reimplement if ever needed) to
+> meet basic CodingStyle guidelines.
 >=20
-> I just notice the thread about the mainline of MTD drivers:=20
-> http://article.gmane.org/gmane.linux.drivers.mtd/42792
->=20
-> I am in the same situation as Roland. (the Atmel PMECC patches are=20
-> pushed in l2-mtd during v3.5 phase). So I am wondering whether there is=
-=20
-> any chance those patches can go into v3.6-rcx mainline. I will be very=
-=20
-> appreciated if it can go into v3.6. Thanks.
+> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
 
-The MTD subsystem missed the 3.6 merge window, so the stuff that was
-scheduled for 3.6 will only get merge to 3.7.
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-EAnh/3RmpBYIRNwpMTd+
+--=-UPRrd6tRmKxHwYsD9WtS
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -58,19 +50,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQN2wbAAoJECmIfjd9wqK0CTYQAKRzDv1Ig15oZKTLUWkIjLNX
-c4yA2RJW1zeNPEAD5IXzi7pSCgy1U8ocwplVpZAr4LwXdu0KrADiNZZcrZ0n4XVx
-fWwPQy92qxhxF5+tOyIbKi1co/AfhPQhPpSAiXVeB8aYE8ynNDUTf/+QkWgy0GlM
-Kiy6CrnXyaBB7nOyJkgvRFwBpXKTteLDOx3VUNy3DVomL+kCwhE4Sa4IMjknCvV1
-sTkwHHRf3TfiuXx0u7cEbQXDdqizvjlzbQt0RFdYT71hsyfYDDiGodHD0sQcauLF
-gHAz4XMcMmmHrfoknYJ+KJKebaQj3PfPwbmomMrZwBJLYG8VJJLRLWFMWHTyXnMW
-Rq+DlfQCq0Vnjn+60sDCGNPcaCTk9VYvFEw0z4CeUV0bJuHzvIWPt35QmO+VtE3z
-9W/i8jgxUD8HoC0DXimsVe76W9g2oSFm2dCi77u4YibdzWr84sbmvD0MZSUwxVj9
-mQyWMNk3ALW5gyb2YKuuzIgzfgnRE5pWZ4LWHOMhJA8qCgN6OIayyoQlUPyJDu0j
-OM5XBl6l440NxftMuIjjXVS1ntRMfMH1CxoZGnhbfdcGmjUt1Im1IFoe627zBIIX
-t769lDqfUf6r4njjYJyxjeyZbZ7zwYPwjnJrxLWV/lY21wFdVQKfsOyX6j1EDDL5
-25wuBQ4ToFAM5Rt3Fp9b
-=ERsS
+iQIcBAABAgAGBQJQN2w4AAoJECmIfjd9wqK0w5YQAMJLAVrqbYJjMAPPUHo7oCKX
+UH7qU8IVJfaipyHnjFUnLbxejpIiT+BDytqSvwvDKdxbHOGyiA4L63HdPC+Y2owj
+5AuAuEpwgaRpaQ7ZAFou7Edg7KFQRZs2A3t+fWJTFTZTu+76DzYcIYN1olN1uvPj
+jlw9E77h/tYI9A+y6w5mYHwcdvSTHvAsS9p+mrO3fnaRIztVVPw5k4PQcmcIx1e+
++3kTntaq7A7GN6ZEgB+dUGxTI58EZfC+LzFEe7HLMV1B+b3D3sU4zoaEdcjQ8EBB
+QRzpoGLJXQimQsOawuC8lsOkX+6HIVLnR0tgHErpIsd7eADp4nqa6imVWZ4KmHR5
+MMCHdZ3LZREwbHVQh5ztrWDwOtomXFzzaou8ZyePdyqSM++yushtVYjR09bqy31F
+ThZscMYtp89KtOmJ2BhoCWmJE0WDAg8oh1EpeV50GTbVyzUJ08fR88rRsjCHD2aJ
+SVhl13fKNOmrWpR9TBx2OkHwPXZHGvmWkSCBKmxkVWyBZAsITaCle9Pc4MqRSWMi
+++N31jVLBuwKmAhqFWOZW/h67+ksjrjfiTKeX4A+oPKJpKX1W4p4emon2IMqcmYz
+hxEU8B+2vc2d/At1R7KKzP/1BDjEUt5jnrOV16D/TTH/8tyHsGTTIkoMsDn2Y+EH
+bvccRrGv373VgpCf+OqI
+=KzlE
 -----END PGP SIGNATURE-----
 
---=-EAnh/3RmpBYIRNwpMTd+--
+--=-UPRrd6tRmKxHwYsD9WtS--
