@@ -1,20 +1,17 @@
-Received: from mga03.intel.com ([143.182.124.21])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T4rvM-0002yC-CE
- for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 11:19:37 +0000
-Message-ID: <1345807465.2848.279.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] UBI:Force ubi driver load after mtd device drivers
+Message-ID: <1345807537.2848.280.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: use %*ph[CN] to dump small buffers
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jiang Lu <lu.jiang@windriver.com>
-Date: Fri, 24 Aug 2012 14:24:25 +0300
-In-Reply-To: <1345801261.2848.276.camel@sauron.fi.intel.com>
-References: <1344393061-21037-1-git-send-email-lu.jiang@windriver.com>
- <1345801261.2848.276.camel@sauron.fi.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Date: Fri, 24 Aug 2012 14:25:37 +0300
+In-Reply-To: <1343912807-29355-1-git-send-email-andriy.shevchenko@linux.intel.com>
+References: <1343912807-29355-1-git-send-email-andriy.shevchenko@linux.intel.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-HG/kuBJoYb8qlguulOp6"
+ boundary="=-zJYI8ltl+wBg7WW8Ue5k"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-samsung-soc@vger.kernel.org, Jiandong Zheng <jdzheng@broadcom.com>,
+ linux-mtd@lists.infradead.org, Ben Dooks <ben-linux@fluff.org>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,35 +23,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-HG/kuBJoYb8qlguulOp6
+--=-zJYI8ltl+wBg7WW8Ue5k
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2012-08-24 at 12:41 +0300, Artem Bityutskiy wrote:
-> On Wed, 2012-08-08 at 10:31 +0800, Jiang Lu wrote:
-> > diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-> > index 0fde9fc..efbcaef 100644
-> > --- a/drivers/mtd/ubi/build.c
-> > +++ b/drivers/mtd/ubi/build.c
-> > @@ -1275,7 +1275,7 @@ out:
-> >  	ubi_err("UBI error: cannot initialize UBI, error %d", err);
-> >  	return err;
-> >  }
-> > -module_init(ubi_init);
-> > +late_initcall(ubi_init);
+On Thu, 2012-08-02 at 16:06 +0300, Andy Shevchenko wrote:
+> There is new format specified that helps to dump small buffers. It makes =
+the
+> code simplier and nicer.
 >=20
-> The problem is that UBIFS, which is usually used on top of UBI, also
-> uses 'late_initcall()'. If we do this change, how do we guarantee that
-> UBIFS is initialized after UBI?
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Although, I think it is not really a problem and UBIFS can be
-initialized at any point - it does not depend on UBI being initialized.
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-HG/kuBJoYb8qlguulOp6
+--=-zJYI8ltl+wBg7WW8Ue5k
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -62,19 +48,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQN2RpAAoJECmIfjd9wqK0e8MQANHEiFsEmSFWFm2UoPQSJ9bA
-5UzCOlJntczioSIQrvcmAwvbyyIXuDO0akLxI2xeJoU2W5inFITPhZ/eagkBxkoL
-pxu9gSN8KFEVfgAPCPsWUDh8LwgcDspth4aP4iTeQapbcX3/yfnhtpmDRM589Ts3
-1rFkNDPjV9zoNTCIANil3xQArp3ETYfx0cpcx+hiKN7sUD+84YuIs6BPhZ+OtLLQ
-2qPxGNaJQxyDJukoaiK2McuPT+tnPnV6b/MAetZVYQBhkfwGpmZt9QGHn9pTxbnF
-3HhiCESNApnHc/qx6cvqMiWVjsMGNgYssE1ZkJe/xVEDYKA4lofnoB/W1Gd3NNb0
-O/+YX5AF4JH4BNoccNOX+oVjRgOn9KUldcgEw/1fHylWIdRtfxxjVu7S43kJVKok
-LnZHmuquQvRfV2lOwMYeeYyv1aNBvm3/aH6n8c7OM4tt08bORtC5lTl7Svwg0exm
-mn3wb8OCm0boLiXT/Mj5eN8l40dLdelIdjlAU0xDUcnc4jBLZMk6CfMazUy59RuK
-mw7yOnKTfZ0recp7jnFHieB+i1GrbITmg+Cap0tst8vIW0Ds6ZhQRCpVcjHVs7x0
-icwdrJiXitqbYN/a+jsXRiUJaY2TpX5eO19aVX9YSo8YgpdCmIN1cHBRzt0swpV0
-K3cv8WAmTvJUF9vaPqmw
-=1nsQ
+iQIcBAABAgAGBQJQN2SxAAoJECmIfjd9wqK0GtQQAKJ9DOU+TleuZGZtBTBRFWVc
+XtfG1NEeKoJySxmS1e3xUQBwkTITbbBZJ2DqmMWP3cFfk6GwASP4IXh87gOF0qh/
+Re1sV7pDkaBhfdoOIlmpPFJE5H0/9BbYNEojdvIyErLO0kbFpE3mr0uyLDRZinmM
+X2xNclBbwcdRHyBBWMXsXuIVlqYY7iXVE8fQ0oMxsYgOQj7mKfTThERR7EER8+jI
+aaFdR2VJE/o7T8tQHM8DrDOenxxsnektDJ5UVxrutinGrGIGSVIkzENn02cXsVV1
+AEsMSQEMU6ktr8NnWmCxJ731RQiL5gRv5VXr5CETFFXQwYZ+TouRJZilKv11lLTQ
+VZbHFhRtMOX8qrWtTfJffg1XZHPmhbl9vcJYR0yQe/bLflVF69WudmB/dsq9E1yW
+uhvtzhhh9W3f+x1F07PUKHQ2j9c7/BCXum0w8Sll2mr3iW5HYQdZVSzBo5y4/erv
+12g6BPKVbEtJUWnQYs4NHbAQ4XyXjhROHcTX8hbr587eco9GckY/cunW64BlWVZ3
+Vq67tI5zCKbefIrC8s2KZgMpb5IVylQubCUvasE7bQ7EYoOtF4ZxTqwMnOvFO02+
+948QYTTiil81wKlUUD4q/5meaxlSA1gFHEzu6N54MWC185GN1lrLJr5ToABx1RmL
+rsDic7+lwWdcv77Imi50
+=83hJ
 -----END PGP SIGNATURE-----
 
---=-HG/kuBJoYb8qlguulOp6--
+--=-zJYI8ltl+wBg7WW8Ue5k--
