@@ -1,18 +1,21 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T4wN1-00060j-OH
- for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 16:04:28 +0000
-Message-ID: <1345824556.2848.339.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] UBI: Do not try to autoresize in readonly mode
+ id 1T4wQc-0006QE-MN
+ for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 16:08:11 +0000
+Message-ID: <1345824780.2848.342.camel@sauron.fi.intel.com>
+Subject: Re: UBIFS Recovery Issue: 'grab_empty_leb: could not find an empty
+ LEB'
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Pali =?ISO-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>
-Date: Fri, 24 Aug 2012 19:09:16 +0300
-In-Reply-To: <2142677.yEm4yDLVdN@pali>
-References: <8381186.XTLIOQGYR2@pali> <6233716.oXLBM8tzrg@pali>
- <1345823821.2848.331.camel@sauron.fi.intel.com> <2142677.yEm4yDLVdN@pali>
+To: Brent Taylor <motobud@gmail.com>
+Date: Fri, 24 Aug 2012 19:13:00 +0300
+In-Reply-To: <CAP+RiCASzaH-TFHSYK0ioyXackRcMrZD4eoev2qVUVLhGft7Bg@mail.gmail.com>
+References: <CAP+RiCC1afVbKAZESMcZGd1G3+7aKuLTQGggOEFGZxQM6o+QQA@mail.gmail.com>
+ <loom.20120813T153641-586@post.gmane.org>
+ <1345208270.27859.75.camel@sauron.fi.intel.com>
+ <CAP+RiCASzaH-TFHSYK0ioyXackRcMrZD4eoev2qVUVLhGft7Bg@mail.gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-746yN/ba3I5247+MIyc7"
+ boundary="=-vJhdteZldQ4VVJ3RG3xe"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
@@ -26,31 +29,51 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-746yN/ba3I5247+MIyc7
+--=-vJhdteZldQ4VVJ3RG3xe
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2012-08-24 at 17:59 +0200, Pali Roh=C3=A1r wrote:
-> > Why do you need to use block2mtd? If you have an image for NOR
-> > flash, use mtdram, if it is for NAND - use nandsim. What
-> > prevents you from using mtdram or nandsim?
+On Fri, 2012-08-24 at 10:59 -0500, Brent Taylor wrote:
+> On Fri, Aug 17, 2012 at 7:57 AM, Artem Bityutskiy <dedekind1@gmail.com> w=
+rote:
+> >
+> > On Mon, 2012-08-13 at 13:41 +0000, Brent Taylor wrote:
+> > > I've been running with the patched kernel for about a month now and I=
+'ve seen
+> > > this issue once since then.  Does anyone have any other ideas on how =
+I can
+> > > better track this down.  I've taken precautions to test if the extern=
+al data
+> > > partitions mounted properly, if not, then they are reformatted and in=
+itialized.
+> > >  I will have a problem if the issue occurs in the root filesystem.
+> >
+> > What kind of test do you run?
+> >
+> > --
+> > Best Regards,
+> > Artem Bityutskiy
 >=20
-> I do not know why, but copying 256 MB image to nandsim takes more=20
-> time than losetup & block2mtd & mount...
+>=20
+> Artem,
+> Thanks for taking the time to look at this.
+>=20
+> I'm not sure if I can share the image just yet.  What all would you
+> need?  vmlinuz, uImage, the config file?.
 
-May be, how much more? Is that a show-stopper for you? If you copy with
-'dd', try 'bs=3D2048' if you are simulating a device with a 2048 bytes
-NAND page size.
+No. dd if=3D/dev/mtd4 of=3Dimage
 
-But I guess you can patch block2mtd, I do not have objections (although
-it'll report about itself as NOR flash?), but I never used it and I am
-not sure how many bugs there are.
+and share the image. I could try to put it to mtdram and mount the
+volume, and take a closer look at the error.
+
+But I think I saw these errors before when testing, they were so rare,
+and I did not have time to dig.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-746yN/ba3I5247+MIyc7
+--=-vJhdteZldQ4VVJ3RG3xe
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -58,19 +81,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQN6ctAAoJECmIfjd9wqK0wcUP/2awAGJdNnWFhMsp9hnwM+Ob
-aepHXc/UqqZyD2V5bwVMcQhA2XZa7wDP/bPY9v+kCNfaVZ8muw/D3yHTaBF/nAHA
-yQg12oAPLp1XXqGxH/xqfJf+GPXdPvQfqRUn6d8o7hEj9V5YKwMaRLSnlr1R0W9g
-Y8BMuW8rlIWefpnHdgy25JQqO7D+dcNz2jLuLFoAsufAsc36HDnw8af35E0FjIvW
-ipXMpQQ0gh7uOqc+mBySTpbJbLsGDkpTzk9QKBRu98/6hsuqeOOgtznlAzaNbCJb
-vnaGbQC7aWQ3bxPD/3TKarfCWGQeGZRF9CW0+p8H8MX79/xV85IjPQhEYLF8D/AL
-xUXOwnFvXVghqi2JxRL3uGpMoRhqBrgh54LZCKlM+8keEY1RP3v3CGtgYpmklO8j
-QcIMvgQHrStBr9fv2c2QtPOoi+jscxih2DpL5IzFxJOCPp+UrjttCO3ww9ouQn0g
-3IEFtvxd7ElfLm1LIwyHYS9qIOiuy9G2zptW48bHVrcvuwoxj1jUTSA4pp99x3Ny
-WlpXaGWVTrVCyA+HhxG6lgTSd8eUq/Hmt6GGXL5Laj1F2lkmB7Gr5GOl6FanJNPG
-zMYnBbIZavgTAnerTvDPhopaTMsR/DojH9fr1BuTaQp0pRb+kp9qXv6eTr9sG7Re
-mAbmTRcJee/oACC5WBal
-=uk1q
+iQIcBAABAgAGBQJQN6gMAAoJECmIfjd9wqK0wJsP/jHdAE1jdcSiN2rrBs/im/Cq
+zgHko66O8zRCYktbpzMEyNbtcpk4cMhYzd3fMZfdAAnJAnOHfqsSr0XraV5sHPgm
+hnZWXc6Y6JnBNdN+3udW5pK/z+1dSwBlnxW5dBpGqA8NJydLHmHasw/nI1/vhHHN
+7Vjxi41e7eJfHTB7wJJllKajsa9w9ivJEzOh+DU3CMTINAbmlZ/SivaSV4ApVffC
++N6C0lnislzNgWie0tkuQi78l/fQPeZK94/zKgqTv9akJL59YLDleHHjzEnAxRbo
+y0sUBnya/rWHIyfgMobyiH9LHr2FmHTFbC7PW1uN8sQ0kV9wKh+MRrRlSun5KXmF
+yJ//pOHsxSrt5xER7HdytLdD52nsiwiNSWF8VBKNrKm93xnl32qqNf9heJXHTDQV
+1cle6ZjFjSmLPmIHl3EqCN2EiM5R+DnPKQzkI2IJ9Cwcm2YyBQPAsUl0ld6aTPch
+rktXYSJdUs+rlYZNVB7zkNa0T5p0OGPN8qGrSb9UP2tXn6+OJm4uskr8oLDN5AWP
+WLivm9sYiZ1A6bh6V5TWjijyIU8SlPR0j5MB/n0/CsQrgAGS0R05o6wZFfbM13Qb
+TBuGJiW7qL0OHC7PRqZMcKw6prh7NojImxVTPpLkiakFHBpRVHoEyMizPjGLnN0q
+dMWNmybU5zxOoopVK98P
+=hXDm
 -----END PGP SIGNATURE-----
 
---=-746yN/ba3I5247+MIyc7--
+--=-vJhdteZldQ4VVJ3RG3xe--
