@@ -1,21 +1,21 @@
 Received: from mail-wi0-f177.google.com ([209.85.212.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T4wIS-0004R3-LF
- for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 15:59:45 +0000
-Received: by wibhn17 with SMTP id hn17so779649wib.0
- for <linux-mtd@lists.infradead.org>; Fri, 24 Aug 2012 08:59:42 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1345208270.27859.75.camel@sauron.fi.intel.com>
-References: <CAP+RiCC1afVbKAZESMcZGd1G3+7aKuLTQGggOEFGZxQM6o+QQA@mail.gmail.com>
- <loom.20120813T153641-586@post.gmane.org>
- <1345208270.27859.75.camel@sauron.fi.intel.com>
-Date: Fri, 24 Aug 2012 10:59:42 -0500
-Message-ID: <CAP+RiCASzaH-TFHSYK0ioyXackRcMrZD4eoev2qVUVLhGft7Bg@mail.gmail.com>
-Subject: Re: UBIFS Recovery Issue: 'grab_empty_leb: could not find an empty
- LEB'
-From: Brent Taylor <motobud@gmail.com>
+ id 1T4wIi-0004R3-N3
+ for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 16:00:02 +0000
+Received: by mail-wi0-f177.google.com with SMTP id hn17so779649wib.0
+ for <linux-mtd@lists.infradead.org>; Fri, 24 Aug 2012 09:00:00 -0700 (PDT)
+From: Pali =?ISO-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>
 To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
+Subject: Re: [PATCH] UBI: Do not try to autoresize in readonly mode
+Date: Fri, 24 Aug 2012 17:59:56 +0200
+Message-ID: <2142677.yEm4yDLVdN@pali>
+In-Reply-To: <1345823821.2848.331.camel@sauron.fi.intel.com>
+References: <8381186.XTLIOQGYR2@pali> <6233716.oXLBM8tzrg@pali>
+ <1345823821.2848.331.camel@sauron.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart2139281.FbzKWQLksD";
+ micalg="pgp-sha1"; protocol="application/pgp-signature"
+Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,38 +26,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Aug 17, 2012 at 7:57 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
->
-> On Mon, 2012-08-13 at 13:41 +0000, Brent Taylor wrote:
-> > I've been running with the patched kernel for about a month now and I've seen
-> > this issue once since then.  Does anyone have any other ideas on how I can
-> > better track this down.  I've taken precautions to test if the external data
-> > partitions mounted properly, if not, then they are reformatted and initialized.
-> >  I will have a problem if the issue occurs in the root filesystem.
->
-> What kind of test do you run?
->
-> --
-> Best Regards,
-> Artem Bityutskiy
 
+--nextPart2139281.FbzKWQLksD
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
 
-Artem,
-Thanks for taking the time to look at this.
+On Friday 24 August 2012 18:57:01 Artem Bityutskiy wrote:
+> On Fri, 2012-08-24 at 17:48 +0200, Pali Roh=C3=A1r wrote:
+> > > > BTW, is there userspace tool for unpacking data from
+> > > > ubifs
+> > > > image without need to simulate nand device in kernel?
+> > >=20
+> > > Unfortunately no.
+> >=20
+> > Ok. I have patch for block2mtd.ko which allows me to mount
+> > ubifs image in way: losetup --> block2mtd --> ubiattach -->
+> > mount without nandsim. I needed to patch block2mtd, because
+> > ubi code needs correct erase size, write size nand subpage
+> > shift and full image size. So I added params for these
+> > properties in block2mtd code - and it working. But I do not
+> > know if this is correct way, but I can send my patch.
+>=20
+> Why do you need to use block2mtd? If you have an image for NOR
+> flash, use mtdram, if it is for NAND - use nandsim. What
+> prevents you from using mtdram or nandsim?
 
-I'm not sure if I can share the image just yet.  What all would you
-need?  vmlinuz, uImage, the config file?.
+I do not know why, but copying 256 MB image to nandsim takes more=20
+time than losetup & block2mtd & mount...
 
-I've changed my test setup slightly since my initial post.  My test
-setup now includes a Linux PC that is connected to an ethernet
-controlled power switch
-(http://www.controlanything.com/Relay/Relay/ethernet_relay_controllers)
-that is powering my hardware.  I have a script that runs that sends a
-command to the power switch to cut power, sleep for 2 seconds, then
-re-apply power.  It then waits anywhere between 0 and 45 seconds
-before cutting power again.
+--=20
+Pali Roh=C3=A1r
+pali.rohar@gmail.com
+--nextPart2139281.FbzKWQLksD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
 
-I've upgraded to linux-3.5.1 and I haven't started to run the test
-again, but will pretty soon.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
 
--- Bud
+iEYEABECAAYFAlA3pPwACgkQi/DJPQPkQ1K9MgCfbs6f/Y2gECQw3H3kNLgAbv3G
+jFoAn2sZVMc33w5SV3jVSD7Yi3uUYswL
+=mILT
+-----END PGP SIGNATURE-----
+
+--nextPart2139281.FbzKWQLksD--
