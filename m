@@ -1,20 +1,20 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from [2a01:4f8:101:2a4:0:bc28:b2d8:8] (helo=chuck.antcom.de)
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T4syA-0005YN-P4
- for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 12:26:35 +0000
-Message-ID: <1345811483.2848.310.camel@sauron.fi.intel.com>
-Subject: Re: UBI on SPI NOR flash
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jan =?ISO-8859-1?Q?L=FCbbe?= <jlu@pengutronix.de>
-Date: Fri, 24 Aug 2012 15:31:23 +0300
-In-Reply-To: <1345050600.3514.11.camel@coredoba.hi.pengutronix.de>
-References: <1345050600.3514.11.camel@coredoba.hi.pengutronix.de>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-FCVc8U1H0ZP/uxu5qAvB"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+ id 1T4tPO-00082A-D9
+ for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 12:54:43 +0000
+Message-ID: <50377989.1050401@antcom.de>
+Date: Fri, 24 Aug 2012 14:54:33 +0200
+From: Roland Stigge <stigge@antcom.de>
+MIME-Version: 1.0
+To: dedekind1@gmail.com
+Subject: Re: ARM: LPC32XX SLC ECC Handling
+References: <50222E55.5070204@embedded-brains.de>
+ <1345808311.2848.286.camel@sauron.fi.intel.com>
+In-Reply-To: <1345808311.2848.286.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: Sebastian Huber <sebastian.huber@embedded-brains.de>,
+ Linux MTD <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,50 +24,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi!
 
---=-FCVc8U1H0ZP/uxu5qAvB
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On 24/08/12 13:38, Artem Bityutskiy wrote:
+>> the LPC32XX SLC controller has a ECC feature that covers only the
+>> main data area, but not the OOB data.  Is it the responsibility
+>> of the user to protect its OOB data via an ECC?  The LPC32XX MLC
+>> controller on the other hand covers the complete OOB data with
+>> its ECC.  How can a user determine if it has to protect its OOB
+>> data?
+> 
+> I guess it is good idea to CC the author of the drivers.
 
-On Wed, 2012-08-15 at 19:10 +0200, Jan L=C3=BCbbe wrote:
-> Hi all!
->=20
-> I'm trying to use UBIFS on SPI NOR flash, but have been unable to get it
-> to work on kernel version 3.5. It is a Numonyx N25Q128 connected to an
-> TI AM3505.
+Thanks for CC'ing, would have missed it.
 
-First of all, run the mtd tests and see if the flash works well.
+Yes, it's exactly as Sebastian described - only the MLC controller
+covers OOB in ECC.
 
-Another problem I know with SPI flashes is that UBIFS uses vmalloc'd
-memory for I/O, which is not suitable for DMA-ing on ARM platforms and
-may cause subtle bugs and curruptions. Can you try to disable DMA and
-see if the issues go away?
+At this point, I need to give back the question to the MTD
+maintainers: Is there an API how we can help users at this point? I
+would be happy to implement it.
 
---=20
-Best Regards,
-Artem Bityutskiy
+Thanks,
 
---=-FCVc8U1H0ZP/uxu5qAvB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQN3QbAAoJECmIfjd9wqK0F9sP/R+tKNNMCzcjSVCdiw0VJyPo
-py+3gUTQuczydKpy5asnMDs6Mgxhehd6dx3Er3jfYywFWNevLTWjYil+uNdei0bG
-kvgKT7GWWTp8Z+dkKeVmGWkedSJCWKpAhcYMKX1jt5fmzh/4yJ3MXjFmiYlBfi9+
-qjCmm6jm9luLkraB/LVSq2PF7AdkCFG1vL9UXQHxIQtmmFY4dcDEAmB3QtWidHbQ
-FobSU40OgrW0qWNgYc0NkReyCvGtWY9tqlvMKh4nrjF3Mp+CUlF+mTF86F67REAU
-jBbuzmQxoUrq9ALIfwHjdCPlrl/S1/XEUg36m+zkL4bQ4OOSJ2XYL91URdhqXhrs
-G8PTXP5zLACfQklTSQ5NC5Xm723XSwgJY1sm8/XvIFeTr6dZdvzQExAq4XfYCird
-mW7rTNWjPJSv/BaBSAXdpRoCgRm92/LAhaOSEiOIgNAYC6ADiq8/DJwXOuE8m2a5
-w4O2J7y0asYgv8Esh042i2/Cun6EKCvnl4gG07ktTz0Sc6OakHWIUytdB8Z/FuIr
-0In6PkU8LJ8OmGLaOybf/vXxgZRZnXHyHovIrTcl3W9gO4oppAaeyIrbXD2XLqjj
-6nDMQy1yscH2UOB+hL9F9PjpbfrbGPatVqp0CmmjB/c4Rfu6BmI8PpVqneDXQA0m
-fMvzCchY9Zb4zYAemwUf
-=8bEa
------END PGP SIGNATURE-----
-
---=-FCVc8U1H0ZP/uxu5qAvB--
+Roland
