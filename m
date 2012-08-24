@@ -1,21 +1,13 @@
-Received: from mail-vc0-f177.google.com ([209.85.220.177])
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T4wep-0007Xe-WC
- for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 16:22:52 +0000
-Received: by vcbfl15 with SMTP id fl15so884059vcb.36
- for <linux-mtd@lists.infradead.org>; Fri, 24 Aug 2012 09:22:51 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1345822982.2848.328.camel@sauron.fi.intel.com>
-References: <1345308662-24023-1-git-send-email-shijie8@gmail.com>
- <1345822982.2848.328.camel@sauron.fi.intel.com>
-Date: Fri, 24 Aug 2012 12:22:51 -0400
-Message-ID: <CAMiH66Fk1-DayDuYaY5bHm0p9=ekFwLkv9FDnXT3NeOuxO_xDA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: cmdlinepart: fix the wrong partitions number when
- truncating occurs
-From: Huang Shijie <shijie8@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
+ id 1T4wg4-0007rj-LE
+ for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 16:24:09 +0000
+From: Jan Luebbe <jlu@pengutronix.de>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH] mtd: m25p80: add support for Micron N25Q128
+Date: Fri, 24 Aug 2012 18:23:50 +0200
+Message-Id: <1345825430-15758-1-git-send-email-jlu@pengutronix.de>
+Cc: linux-mtd@lists.infradead.org, Jan Luebbe <jlu@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,33 +17,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Aug 24, 2012 at 11:43 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Sat, 2012-08-18 at 12:51 -0400, Huang Shijie wrote:
->> diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
->> index 4558e0f..fc960a3 100644
->> --- a/drivers/mtd/cmdlinepart.c
->> +++ b/drivers/mtd/cmdlinepart.c
->> @@ -344,7 +344,8 @@ static int parse_cmdline_partitions(struct mtd_info *master,
->>                                              "%s: partitioning exceeds flash size, truncating\n",
->>                                              part->mtd_id);
->>                                       part->parts[i].size = master->size - offset;
->> -                                     part->num_parts = i;
->> +                                     part->num_parts = i + 1;
->> +                                     break;
->>                               }
->>                               offset += part->parts[i].size;
->>                       }
->
-> I do not understand this change. Could you explain some more which
-> problem you solve and how?
-ok.
+Signed-off-by: Jan Luebbe <jlu@pengutronix.de>
+---
+ drivers/mtd/devices/m25p80.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-I will explain more in the next version as well as another patch.
-
-thanks
-Huang Shijie
-
->
-> --
-> Best Regards,
-> Artem Bityutskiy
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 980cd6d..33ab2b7 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -663,6 +663,7 @@ static const struct spi_device_id m25p_ids[] = {
+ 	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
+ 
+ 	/* Micron */
++	{ "n25q128",  INFO(0x20ba18, 0, 64 * 1024, 256, 0) },
+ 	{ "n25q256a", INFO(0x20ba19, 0, 64 * 1024, 512, SECT_4K) },
+ 
+ 	/* Spansion -- single (large) sector size only, at least
+-- 
+1.7.10.4
