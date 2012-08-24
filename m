@@ -1,20 +1,15 @@
-Received: from [2a01:4f8:101:2a4:0:bc28:b2d8:8] (helo=chuck.antcom.de)
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T4tPO-00082A-D9
- for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 12:54:43 +0000
-Message-ID: <50377989.1050401@antcom.de>
-Date: Fri, 24 Aug 2012 14:54:33 +0200
 From: Roland Stigge <stigge@antcom.de>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: ARM: LPC32XX SLC ECC Handling
-References: <50222E55.5070204@embedded-brains.de>
- <1345808311.2848.286.camel@sauron.fi.intel.com>
-In-Reply-To: <1345808311.2848.286.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: Sebastian Huber <sebastian.huber@embedded-brains.de>,
- Linux MTD <linux-mtd@lists.infradead.org>
+To: linux@arm.linux.org.uk, artem.bityutskiy@linux.intel.com,
+ linux-arm-kernel@lists.infradead.org, arnd@arndb.de,
+ linux-kernel@vger.kernel.org, kevin.wells@nxp.com,
+ srinivas.bakki@nxp.com, aletes.xgr@gmail.com, dwmw2@infradead.org,
+ linux-mtd@lists.infradead.org
+Subject: [PATCH 2/2] mtd: lpc32xx_mlc: Cleanup after DT-only conversion
+Date: Fri, 24 Aug 2012 15:06:52 +0200
+Message-Id: <1345813612-4234-2-git-send-email-stigge@antcom.de>
+In-Reply-To: <1345813612-4234-1-git-send-email-stigge@antcom.de>
+References: <1345813612-4234-1-git-send-email-stigge@antcom.de>
+Cc: Roland Stigge <stigge@antcom.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,27 +19,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+The LPC32xx's DT-only conversion of the MLC NAND driver makes NAND config via
+platform_data obsolete. Dropped by this patch.
 
-On 24/08/12 13:38, Artem Bityutskiy wrote:
->> the LPC32XX SLC controller has a ECC feature that covers only the
->> main data area, but not the OOB data.  Is it the responsibility
->> of the user to protect its OOB data via an ECC?  The LPC32XX MLC
->> controller on the other hand covers the complete OOB data with
->> its ECC.  How can a user determine if it has to protect its OOB
->> data?
-> 
-> I guess it is good idea to CC the author of the drivers.
+Further, the driver really needs CONFIG_OF, which is already reflected by the
+dependency on ARCH_LPC32XX which depends on CONFIG_OF. So also dropping
+CONFIG_OF ifdefs.
 
-Thanks for CC'ing, would have missed it.
+There is still platform_data necessary to supply the dma_filter callback for
+the dma engine. This is a completely different data structure than the old
+platform_data for NAND config, so renaming some old "pdata" variable to "ncfg"
+to prevent confusion with the new platform data.
 
-Yes, it's exactly as Sebastian described - only the MLC controller
-covers OOB in ECC.
+Signed-off-by: Roland Stigge <stigge@antcom.de>
+---
+ drivers/mtd/nand/lpc32xx_mlc.c |   46 ++++++++++++++++-------------------------
+ 1 file changed, 18 insertions(+), 28 deletions(-)
 
-At this point, I need to give back the question to the MTD
-maintainers: Is there an API how we can help users at this point? I
-would be happy to implement it.
-
-Thanks,
-
-Roland
+--- linux-2.6.orig/drivers/mtd/nand/lpc32xx_mlc.c
++++ linux-2.6/drivers/mtd/nand/lpc32xx_mlc.c
+@@ -621,43 +621,36 @@ out1:
+ 	return -ENXIO;
+ }
+ 
+-#ifdef CONFIG_OF
+ static struct lpc32xx_nand_cfg_mlc *lpc32xx_parse_dt(struct device *dev)
+ {
+-	struct lpc32xx_nand_cfg_mlc *pdata;
++	struct lpc32xx_nand_cfg_mlc *ncfg;
+ 	struct device_node *np = dev->of_node;
+ 
+-	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
+-	if (!pdata) {
++	ncfg = devm_kzalloc(dev, sizeof(*ncfg), GFP_KERNEL);
++	if (!ncfg) {
+ 		dev_err(dev, "could not allocate memory for platform data\n");
+ 		return NULL;
+ 	}
+ 
+-	of_property_read_u32(np, "nxp,tcea-delay", &pdata->tcea_delay);
+-	of_property_read_u32(np, "nxp,busy-delay", &pdata->busy_delay);
+-	of_property_read_u32(np, "nxp,nand-ta", &pdata->nand_ta);
+-	of_property_read_u32(np, "nxp,rd-high", &pdata->rd_high);
+-	of_property_read_u32(np, "nxp,rd-low", &pdata->rd_low);
+-	of_property_read_u32(np, "nxp,wr-high", &pdata->wr_high);
+-	of_property_read_u32(np, "nxp,wr-low", &pdata->wr_low);
+-
+-	if (!pdata->tcea_delay || !pdata->busy_delay || !pdata->nand_ta ||
+-	    !pdata->rd_high || !pdata->rd_low || !pdata->wr_high ||
+-	    !pdata->wr_low) {
++	of_property_read_u32(np, "nxp,tcea-delay", &ncfg->tcea_delay);
++	of_property_read_u32(np, "nxp,busy-delay", &ncfg->busy_delay);
++	of_property_read_u32(np, "nxp,nand-ta", &ncfg->nand_ta);
++	of_property_read_u32(np, "nxp,rd-high", &ncfg->rd_high);
++	of_property_read_u32(np, "nxp,rd-low", &ncfg->rd_low);
++	of_property_read_u32(np, "nxp,wr-high", &ncfg->wr_high);
++	of_property_read_u32(np, "nxp,wr-low", &ncfg->wr_low);
++
++	if (!ncfg->tcea_delay || !ncfg->busy_delay || !ncfg->nand_ta ||
++	    !ncfg->rd_high || !ncfg->rd_low || !ncfg->wr_high ||
++	    !ncfg->wr_low) {
+ 		dev_err(dev, "chip parameters not specified correctly\n");
+ 		return NULL;
+ 	}
+ 
+-	pdata->wp_gpio = of_get_named_gpio(np, "gpios", 0);
++	ncfg->wp_gpio = of_get_named_gpio(np, "gpios", 0);
+ 
+-	return pdata;
++	return ncfg;
+ }
+-#else
+-static struct lpc32xx_nand_cfg_mlc *lpc32xx_parse_dt(struct device *dev)
+-{
+-	return NULL;
+-}
+-#endif
+ 
+ /*
+  * Probe for NAND controller
+@@ -695,10 +688,9 @@ static int __devinit lpc32xx_nand_probe(
+ 	nand_chip = &host->nand_chip;
+ 	if (pdev->dev.of_node)
+ 		host->ncfg = lpc32xx_parse_dt(&pdev->dev);
+-	else
+-		host->ncfg = pdev->dev.platform_data;
+ 	if (!host->ncfg) {
+-		dev_err(&pdev->dev, "Missing platform data\n");
++		dev_err(&pdev->dev,
++			"Missing or bad NAND config from device tree\n");
+ 		return -ENOENT;
+ 	}
+ 	if (host->ncfg->wp_gpio == -EPROBE_DEFER)
+@@ -907,13 +899,11 @@ static int lpc32xx_nand_suspend(struct p
+ #define lpc32xx_nand_suspend NULL
+ #endif
+ 
+-#if defined(CONFIG_OF)
+ static const struct of_device_id lpc32xx_nand_match[] = {
+ 	{ .compatible = "nxp,lpc3220-mlc" },
+ 	{ /* sentinel */ },
+ };
+ MODULE_DEVICE_TABLE(of, lpc32xx_nand_match);
+-#endif
+ 
+ static struct platform_driver lpc32xx_nand_driver = {
+ 	.probe		= lpc32xx_nand_probe,
