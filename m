@@ -1,19 +1,19 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T4sRb-0000WO-Fh
- for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 11:52:56 +0000
-Message-ID: <1345809464.2848.298.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: maps: pci: remove dead code
+ id 1T4sWt-00025E-Cm
+ for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 11:58:23 +0000
+Message-ID: <1345809792.2848.300.camel@sauron.fi.intel.com>
+Subject: Re: Problems after 2nd bootup with NAND and ubifs/ubi
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Wolfram Sang <w.sang@pengutronix.de>
-Date: Fri, 24 Aug 2012 14:57:44 +0300
-In-Reply-To: <1344675523-27452-1-git-send-email-w.sang@pengutronix.de>
-References: <1344675523-27452-1-git-send-email-w.sang@pengutronix.de>
+To: Jaya Kumar <jayakumar.lkml@gmail.com>
+Date: Fri, 24 Aug 2012 15:03:12 +0300
+In-Reply-To: <CADqH6Vx_doWcOFP6N8qSV-h+KdZi8cqdxyHCROf-SKFvUiYNhg@mail.gmail.com>
+References: <CADqH6Vx_doWcOFP6N8qSV-h+KdZi8cqdxyHCROf-SKFvUiYNhg@mail.gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-UPRrd6tRmKxHwYsD9WtS"
+ boundary="=-hQmwzM0uLxnPE/DjJGMC"
 Mime-Version: 1.0
-Cc: Russell King <linux@arm.linux.org.uk>, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,24 +25,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-UPRrd6tRmKxHwYsD9WtS
+--=-hQmwzM0uLxnPE/DjJGMC
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, 2012-08-11 at 10:58 +0200, Wolfram Sang wrote:
-> Removes disabled printk (which should be dev_dbg these days) as well
-> as #if 0 blocks (which are trivial to reimplement if ever needed) to
-> meet basic CodingStyle guidelines.
+On Wed, 2012-08-15 at 15:19 +0800, Jaya Kumar wrote:
+> Hi mtd/ubifs friends,
 >=20
-> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
+> First off, thanks for your work, especially providing the backport to
+> 2.6.37. I found that to be very useful.
 
-Pushed to l2-mtd.git, thanks!
+Hi, sorry for long delay, I think we recently fixed this and the fixes
+are added to the ubifs-v2.6.37.git backport tree as well.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-UPRrd6tRmKxHwYsD9WtS
+--=-hQmwzM0uLxnPE/DjJGMC
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -50,19 +50,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQN2w4AAoJECmIfjd9wqK0w5YQAMJLAVrqbYJjMAPPUHo7oCKX
-UH7qU8IVJfaipyHnjFUnLbxejpIiT+BDytqSvwvDKdxbHOGyiA4L63HdPC+Y2owj
-5AuAuEpwgaRpaQ7ZAFou7Edg7KFQRZs2A3t+fWJTFTZTu+76DzYcIYN1olN1uvPj
-jlw9E77h/tYI9A+y6w5mYHwcdvSTHvAsS9p+mrO3fnaRIztVVPw5k4PQcmcIx1e+
-+3kTntaq7A7GN6ZEgB+dUGxTI58EZfC+LzFEe7HLMV1B+b3D3sU4zoaEdcjQ8EBB
-QRzpoGLJXQimQsOawuC8lsOkX+6HIVLnR0tgHErpIsd7eADp4nqa6imVWZ4KmHR5
-MMCHdZ3LZREwbHVQh5ztrWDwOtomXFzzaou8ZyePdyqSM++yushtVYjR09bqy31F
-ThZscMYtp89KtOmJ2BhoCWmJE0WDAg8oh1EpeV50GTbVyzUJ08fR88rRsjCHD2aJ
-SVhl13fKNOmrWpR9TBx2OkHwPXZHGvmWkSCBKmxkVWyBZAsITaCle9Pc4MqRSWMi
-++N31jVLBuwKmAhqFWOZW/h67+ksjrjfiTKeX4A+oPKJpKX1W4p4emon2IMqcmYz
-hxEU8B+2vc2d/At1R7KKzP/1BDjEUt5jnrOV16D/TTH/8tyHsGTTIkoMsDn2Y+EH
-bvccRrGv373VgpCf+OqI
-=KzlE
+iQIcBAABAgAGBQJQN22AAAoJECmIfjd9wqK0ebsQAIZ7533GoFa8YQiZxae9Ap21
+8iYGPwkN+O7UF44Ulux3vtfgppm0GucGaR8dw1nxEj2iS8vV4H3LaCKgS9NQSwHp
+kPT6MYHAn635LvqbKSb1jSc1643iFBwdY569P1X74Mb7RK6QgGP55S3NfyTidH99
+cQFVaOOTVlApnhH9Id1NK5Ff5KEdwmQL/kBoNfhtu52dBoVC89TiE6NfVnSxVCN3
+vf8bl2LJnNrR4zScb8Q2ZmfPWIbqL7SBs6RW2VlvkfYAeSxm6ImjvQXagjzo/o3h
+epuVUFWvLOzWo2PKBAH/e1U2ycLlXOZ0xBE5t0ccgOS0/mLJuhSlXHVZZ8JIIRkS
+sAvWwk9zXck5YDwHltjSZbzSuLtNMV5uWFBem35aUfB+bDd3LxB0oRUw/ldCI0Bf
+s0f9HNvp09mVEEm17VSfzp1ryIlTIKiCP4XaByPr/PZB3Nqawtye2EeboZfS/5yf
+vMaCwmusCvUJh724MML3IIXDuAlhWjtDA9HTXMl6HZQ5+SgpeJfpQadfdb5G9WV/
+i3NXehh5aBIPpfykB1YWvdBB/Whhmg/hE808Pu54KYMtuO+vBoglwjbh5KFSpTP0
+vuw+SkzeYS6ZEBPxQ//feK9PmCPdbf+QPgC4qguNwp88l0YAwdiGfYAc9a94R9fL
+SoacR+wWS7hWUyAtx6QC
+=Xd6A
 -----END PGP SIGNATURE-----
 
---=-UPRrd6tRmKxHwYsD9WtS--
+--=-hQmwzM0uLxnPE/DjJGMC--
