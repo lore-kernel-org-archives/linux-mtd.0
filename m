@@ -1,23 +1,19 @@
-Message-ID: <1345818230.2848.315.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] kconfig: remove CONFIG_MTD_NAND_VERIFY_WRITE
+Received: from mga03.intel.com ([143.182.124.21])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1T4uqg-000053-39
+ for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 14:26:58 +0000
+Message-ID: <1345818706.2848.316.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/2] MTD: check for valid pdata inside plat_nand
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Date: Fri, 24 Aug 2012 17:23:50 +0300
-In-Reply-To: <1345021930-5033-1-git-send-email-b32955@freescale.com>
-References: <1345021930-5033-1-git-send-email-b32955@freescale.com>
+To: John Crispin <blogic@openwrt.org>
+Date: Fri, 24 Aug 2012 17:31:46 +0300
+In-Reply-To: <1342940398-2162-1-git-send-email-blogic@openwrt.org>
+References: <1342940398-2162-1-git-send-email-blogic@openwrt.org>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-1PDzJ60gc12o99kZMjzr"
+ boundary="=-Oj5x8aNLBFmcZc+SufyS"
 Mime-Version: 1.0
-Cc: linux-mips@linux-mips.org, benh@kernel.crashing.org,
- linus.walleij@linaro.org, wim@iguana.be, paulus@samba.org, balbi@ti.com,
- mingo@kernel.org, kgene.kim@samsung.com, linux@arm.linux.org.uk,
- FlorianSchandinat@gmx.de, robert.richter@amd.com, lliubbo@gmail.com,
- vapier@gentoo.org, a.p.zijlstra@chello.nl, arnd@arndb.de,
- uclinux-dist-devel@blackfin.uclinux.org, linux-arm-kernel@lists.infradead.org,
- scott.jiang.linux@gmail.com, linux-kernel@vger.kernel.org, ralf@linux-mips.org,
- linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
- linuxppc-dev@lists.ozlabs.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,25 +25,18 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-1PDzJ60gc12o99kZMjzr
+--=-Oj5x8aNLBFmcZc+SufyS
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-08-15 at 17:12 +0800, Huang Shijie wrote:
-> Just as Artem suggested:
+On Sun, 2012-07-22 at 08:59 +0200, John Crispin wrote:
+> If plat_nand loads and the platform_data is not properly set it will segf=
+ault.
 >=20
-> "Both UBI and JFFS2 are able to read verify what they wrote already.
-> There are also MTD tests which do this verification. So I think there
-> is no reason to keep this in the NAND layer, let alone wasting RAM in
-> the driver to support this feature."
->=20
-> So kill MTD_NAND_VERIFY_WRITE entirely. Please see the patch:
-> http://lists.infradead.org/pipermail/linux-mtd/2012-August/043189.html
->  =20
-> This patch removes the CONFIG_MTD_NAND_VERIFY_WRITE in the defconfigs.
->=20
->=20
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
+> Signed-off-by: John Crispin <blogic@openwrt.org>
+> Acked-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+> Cc: linux-mtd@lists.infradead.org
+> ---
 
 Pushed to l2-mtd.git, thanks!
 
@@ -55,7 +44,7 @@ Pushed to l2-mtd.git, thanks!
 Best Regards,
 Artem Bityutskiy
 
---=-1PDzJ60gc12o99kZMjzr
+--=-Oj5x8aNLBFmcZc+SufyS
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -63,19 +52,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQN453AAoJECmIfjd9wqK0fygP/jeOkZF9bCO9UvLxdQWwpJ/X
-H7aSPLawengL92Miwb+4/IrlXWzQ8ecyyK6I5l95AflQBT033Z/AZXMZwf7bcqu+
-Y0hI1vgEnLBgqWi11NLe34N+i9W6nGch/fso4TJIteJvyk30ZsDUi/EBldo12OJc
-yVW6N/kGVSY3vwqNWQEQS4rdYKHx3n0rbgG2akKg5wGRupFcsO0ZwGpf8jg8f68C
-IWshWtDvz0VU4im4c3gOwwWd6Aa1J8FLnbx9nmpgGzqvvqJMpSVOvMSBHvZLOW3g
-QftCwlor/KePTFApilhUG0YljPt7I/J61QeO0ALvQQZ0C+mLb1eZcVD4lZOGiY16
-4zTBdQLYwJ3wSVBA1svcAmd8wLYIPX/A7lvYk+HBDvzcCWKbp5qi1BFao+WcFXmu
-CaooHYF3UZxJrjlUsRvv6ouA0WuEap4Ro8axqwXuwndDTeUxukZ8x5rLc/bi0WnL
-+qSFmSFcBdw8Y7AtrBKK4uDxHSI2BY9Su7fQXR1ndOAPZbOu6sl4egvBXURlQEcf
-5ycYikXFJR7xe76lPxMKKmUQOIF2VRT2ZOyf+Z7EICSrLhC7nka/p11/sVFHJVYp
-dlYwFuhPPyNBbrqL5f0WHXHD69QUeMK8i+qx1sE5VeeWXrn3FU13d8KuSJEJ6SPq
-SBKDCFB2OQMnuymBLXHs
-=YQei
+iQIcBAABAgAGBQJQN5BSAAoJECmIfjd9wqK0locP/1fNg7qAcyhe5vBvCmSNq0Y4
+v/bqV64U9jw6sk0x23J1tKgT1+jijrV+iMO1oX2OKfT/VM7+2I/pMoTryCQm6s9I
+JRNfvVHIaSVeaTmNk2N9/gpZmOPT7uJs/jp8BPWLjHUKujoX6bAYucvpHyUbmviE
+1wT92PJnt/TPK8rExRzVgnz0Gtu6L1S9ytS3XSqsMJY1dSWp6Qmn4hzzApIp86mt
+KgJLJfGWdP/3eknlg0biGxasgZiz2KQXKeW6NpjCcCiih8hWx6pV5jT4F/YUFO7i
+9sptc5tvsHCt1baVdQo8GA3Rp+UTUpz8CuesnmMCAQAmqia/6EpFaHgbduYoIJjV
+QxP2N9M0sWkACFxEk+SRGxbqKIbgYaUZIGbfCCVCYvNsuOBrFvYMsYPJvpAzeaE/
+81BpnfId8jC0C83Rz6kTqwmcyL3MTMQKsIwSaHBX/SeKwp8h30XJEPFYO7gkK4b1
+joG1Pd+qmj5TYv2yWyC/EA3V5e6A5+OxEDLC47/ziM4GzvUEUBtWsBzbRe8BS2iJ
+utwbLC5yJ7lZ7Yf7O15ewz6j01ZX2Ugv+vM9+ZkJjdWdDru0Bzx0j5bbsVE4EmFZ
+NOtCOEB/E0U9lgfF7SkH8Pc3UwY/rVeMxUCtJ2TW+85LdzJtMULRhP4KVGB1C6LK
+h1LKoSJX5WIiAyzpPWVD
+=RzJD
 -----END PGP SIGNATURE-----
 
---=-1PDzJ60gc12o99kZMjzr--
+--=-Oj5x8aNLBFmcZc+SufyS--
