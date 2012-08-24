@@ -1,19 +1,20 @@
-Received: from mga14.intel.com ([143.182.124.37])
+Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T4wKI-00059q-30
- for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 16:01:38 +0000
-Message-ID: <1345824387.2848.336.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: cmdlinepart: fix the wrong check condition
+ id 1T4wN1-00060j-OH
+ for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 16:04:28 +0000
+Message-ID: <1345824556.2848.339.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] UBI: Do not try to autoresize in readonly mode
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Huang Shijie <shijie8@gmail.com>
-Date: Fri, 24 Aug 2012 19:06:27 +0300
-In-Reply-To: <1345355849-8992-1-git-send-email-shijie8@gmail.com>
-References: <1345355849-8992-1-git-send-email-shijie8@gmail.com>
+To: Pali =?ISO-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>
+Date: Fri, 24 Aug 2012 19:09:16 +0300
+In-Reply-To: <2142677.yEm4yDLVdN@pali>
+References: <8381186.XTLIOQGYR2@pali> <6233716.oXLBM8tzrg@pali>
+ <1345823821.2848.331.camel@sauron.fi.intel.com> <2142677.yEm4yDLVdN@pali>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-eo3GkTmbg94/tQzSucT9"
+ boundary="=-746yN/ba3I5247+MIyc7"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,50 +26,31 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-eo3GkTmbg94/tQzSucT9
+--=-746yN/ba3I5247+MIyc7
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, 2012-08-19 at 01:57 -0400, Huang Shijie wrote:
-> If the mtd_id is NULL, the check condition will be true.
-> So the cmdlinepart may parses out several mtd partitions.
-> This is obviously wrong.
+On Fri, 2012-08-24 at 17:59 +0200, Pali Roh=C3=A1r wrote:
+> > Why do you need to use block2mtd? If you have an image for NOR
+> > flash, use mtdram, if it is for NAND - use nandsim. What
+> > prevents you from using mtdram or nandsim?
 >=20
-> Just fix it.
->=20
-> Signed-off-by: Huang Shijie <shijie8@gmail.com>
+> I do not know why, but copying 256 MB image to nandsim takes more=20
+> time than losetup & block2mtd & mount...
 
-I do not understand from the description what is exactly the problem
-with the current code, and how exactly you solve it. Please, elaborate
-some more by re-sending the patch with better commit message.
+May be, how much more? Is that a show-stopper for you? If you copy with
+'dd', try 'bs=3D2048' if you are simulating a device with a 2048 bytes
+NAND page size.
 
-> @@ -328,7 +328,7 @@ static int parse_cmdline_partitions(struct mtd_info *=
-master,
-> =20
->  	for(part =3D partitions; part; part =3D part->next)
->  	{
-> -		if ((!mtd_id) || (!strcmp(part->mtd_id, mtd_id)))
-> +		if (mtd_id && (!strcmp(part->mtd_id, mtd_id)))
->  		{
->  			for(i =3D 0, offset =3D 0; i < part->num_parts; i++)
->  			{
-
-So you may also just add
-
-if (!mtd_id)
-	return 0
-
-at the beginning?
-
-I guess you should first try to explain what that check is trying to do,
-what is mtd_id and when it can be NULL. Then tell what is the problem
-and how you solve it.
+But I guess you can patch block2mtd, I do not have objections (although
+it'll report about itself as NOR flash?), but I never used it and I am
+not sure how many bugs there are.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-eo3GkTmbg94/tQzSucT9
+--=-746yN/ba3I5247+MIyc7
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -76,19 +58,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQN6aDAAoJECmIfjd9wqK0JqcQAMjyFQOejzQJHZm8OsEsKsIG
-0JvKLCds8qv7LqHI07cZV5MnHroIb+Vxqr3XzzTm5I0H/hdbQwDelqfJNUWqhy2C
-mjeibO4FEIFTcaaucp+wpvtSlOAE8kfdkgSyfdmoD5YgkFo+SoNYZmJ6FDlYq18B
-k3vB1OixuLtf5kmRrO94I6nzSCMQeuE0YtZTixwEHNCFu+A+7FpWXX8fshKsnaWQ
-R1T1wNOJjwKfQRS/w98ThU24B3Ukl+S2j8e0k1sa5C7DD5qgfXJsHK3pqhWWVVgN
-bMVMQj5jlDfy2ASzMqDsIVbIIHO/Ky50luoEUT91FI292nYgaBmeOV9xAbOxS20h
-3LmJpDjwlnKGwUyG+hHNmfkcXMO0Id+FjReUgVfc4erPzeuZtUg+DQfwVocuqzi7
-5FcYg2rid3VwJr29qwNLnWLvdYGhwuY6Bh18YD4yyQ/f4Tvwju74Z69hW9eId3qS
-OaaQm62UapmUhG4AWOYOqErfIqa3BJytFFuYT1r1d4W2ovZkaka7fDXeNNC/BJjm
-YNPTjPRT5M9NoxyNNjG6uu0lLos14b6o9335iqYbd5BX/PvC5Nv8FxWsga4quLSR
-CmjOB9wusuy+w34hrnzOb8NvxkqnOyXBvficzvrvv37RWu/Y0S7gTzLet5m7F1PX
-5tRJsysckiW4BBx4HV2a
-=x7+Y
+iQIcBAABAgAGBQJQN6ctAAoJECmIfjd9wqK0wcUP/2awAGJdNnWFhMsp9hnwM+Ob
+aepHXc/UqqZyD2V5bwVMcQhA2XZa7wDP/bPY9v+kCNfaVZ8muw/D3yHTaBF/nAHA
+yQg12oAPLp1XXqGxH/xqfJf+GPXdPvQfqRUn6d8o7hEj9V5YKwMaRLSnlr1R0W9g
+Y8BMuW8rlIWefpnHdgy25JQqO7D+dcNz2jLuLFoAsufAsc36HDnw8af35E0FjIvW
+ipXMpQQ0gh7uOqc+mBySTpbJbLsGDkpTzk9QKBRu98/6hsuqeOOgtznlAzaNbCJb
+vnaGbQC7aWQ3bxPD/3TKarfCWGQeGZRF9CW0+p8H8MX79/xV85IjPQhEYLF8D/AL
+xUXOwnFvXVghqi2JxRL3uGpMoRhqBrgh54LZCKlM+8keEY1RP3v3CGtgYpmklO8j
+QcIMvgQHrStBr9fv2c2QtPOoi+jscxih2DpL5IzFxJOCPp+UrjttCO3ww9ouQn0g
+3IEFtvxd7ElfLm1LIwyHYS9qIOiuy9G2zptW48bHVrcvuwoxj1jUTSA4pp99x3Ny
+WlpXaGWVTrVCyA+HhxG6lgTSd8eUq/Hmt6GGXL5Laj1F2lkmB7Gr5GOl6FanJNPG
+zMYnBbIZavgTAnerTvDPhopaTMsR/DojH9fr1BuTaQp0pRb+kp9qXv6eTr9sG7Re
+mAbmTRcJee/oACC5WBal
+=uk1q
 -----END PGP SIGNATURE-----
 
---=-eo3GkTmbg94/tQzSucT9--
+--=-746yN/ba3I5247+MIyc7--
