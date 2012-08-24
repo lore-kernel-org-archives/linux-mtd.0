@@ -1,22 +1,27 @@
-Received: from mo6-p05-ob.rzone.de ([2a01:238:20a:202:5305::1])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T4tij-0003gz-Lw
- for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 13:14:43 +0000
-Message-ID: <50377E38.1040701@denx.de>
-Date: Fri, 24 Aug 2012 15:14:32 +0200
-From: Stefan Roese <sr@denx.de>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCH] drivers/mtd/devices/spear_smi.c: use devm_ functions
- consistently
-References: <1344112598-1051-1-git-send-email-Julia.Lawall@lip6.fr>
- <1345808104.2848.285.camel@sauron.fi.intel.com>
-In-Reply-To: <1345808104.2848.285.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Shiraz Hashim <shiraz.hashim@st.com>, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org, Julia Lawall <Julia.Lawall@lip6.fr>,
- linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Message-ID: <1345818199.2848.314.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: kill MTD_NAND_VERIFY_WRITE
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Huang Shijie <shijie8@gmail.com>
+Date: Fri, 24 Aug 2012 17:23:19 +0300
+In-Reply-To: <1344998325-3279-1-git-send-email-shijie8@gmail.com>
+References: <1344998325-3279-1-git-send-email-shijie8@gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-hT6WUK0bwfZaL2w8UGUo"
+Mime-Version: 1.0
+Cc: tony@atomide.com, paul.gortmaker@windriver.com, julia@diku.dk,
+ laurent.pinchart@ideasonboard.com, jamie@jamieiles.com, ivan.djelic@parrot.com,
+ stigge@antcom.de, mikedunn@newsguy.com, mcuos.com@gmail.com,
+ jkrzyszt@tis.icnet.pl, dbaryshkov@gmail.com, hechtb@gmail.com,
+ manuel.lauss@googlemail.com, u.kleine-koenig@pengutronix.de,
+ rmk+kernel@arm.linux.org.uk, axel.lin@gmail.com, marex@denx.de, arnd@arndb.de,
+ leiwen@marvell.com, s.hauer@pengutronix.de, b35362@freescale.com,
+ scottwood@freescale.com, linux-arm-kernel@lists.infradead.org,
+ maximlevitsky@gmail.com, fabio.estevam@freescale.com, sbranden@broadcom.com,
+ nico@linaro.org, linux-kernel@vger.kernel.org, ralf@linux-mips.org,
+ shmulik.ladkani@gmail.com, jdzheng@broadcom.com, linux-mtd@lists.infradead.org,
+ computersforpeace@gmail.com, dwmw2@infradead.org, aletes.xgr@gmail.com
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,40 +31,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/24/2012 01:35 PM, Artem Bityutskiy wrote:
->> @@ -1073,21 +1043,13 @@ static int __devexit spear_smi_remove(struct platform_device *pdev)
->>  		ret = mtd_device_unregister(&flash->mtd);
->>  		if (ret)
->>  			dev_err(&pdev->dev, "error removing mtd\n");
->> -
->> -		iounmap(flash->base_addr);
->> -		kfree(flash);
->>  	}
->>  
->>  	irq = platform_get_irq(pdev, 0);
->> -	free_irq(irq, dev);
-> 
-> I guess 'platform_get_irq()' should be killed as well? Stefan, this is
-> strange code - we get irq, without checking for error, and then free it?
-> What is the rationale?
 
-Yes, this seems bogus. platform_get_irq() definitely should be removed
-from spear_smi_remove().
+--=-hT6WUK0bwfZaL2w8UGUo
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
->>  	clk_disable_unprepare(dev->clk);
->> -	clk_put(dev->clk);
->> -	iounmap(dev->io_base);
->> -	kfree(dev);
->>  
->>  	smi_base = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> -	release_mem_region(smi_base->start, resource_size(smi_base));
->>  	platform_set_drvdata(pdev, NULL);
-> 
-> Why do we set platform data to NULL, is this needed?
+On Tue, 2012-08-14 at 22:38 -0400, Huang Shijie wrote:
+> Just as Artem suggested:
+>=20
+> "Both UBI and JFFS2 are able to read verify what they wrote already.
+> There are also MTD tests which do this verification. So I think there
+> is no reason to keep this in the NAND layer, let alone wasting RAM in
+> the driver to support this feature."
+>=20
+> So kill MTD_NAND_VERIFY_WRITE entirely.
+>=20
+> Signed-off-by: Huang Shijie <shijie8@gmail.com>
 
-It seems to be common practice to use this call to clear the drvdata in
-the driver remove function. I have to admit, that I'm not sure if its
-really needed though.
+Pushed to l2-mtd.git, thanks!
 
-Thanks,
-Stefan
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-hT6WUK0bwfZaL2w8UGUo
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQN45XAAoJECmIfjd9wqK0tMcQAKMgHB5HxZLb2D0P6W1t/Kfq
+72pu2CGopTqDIAGDfXGZk6eWnDbQ+NMJbf3y4pCeZEGlS2t01Xy5TgOmnIazYzvK
+fHKSIkbwYE+y6f29jI5TBoRs/VfdKmIdzyjfYAgbO/jfUkG2iAXUX1YaULX2e6yI
+gTZRaH4pFbw7SQKP4G9rWEMl0kapQhEf3QceQywneFf45yf0coV34KkB1GzXsepC
+6BSEPRnKxjOOyOHWK/BCOvFrkeb3GRnS4De+AdohDvTcignbcoeTm0SVgGOCFRgu
+FB4AV9njDiN+H3gX9IVFJ/uVYMQA0FEEGIgXReKfa3aya3MnYNdc7qtljUGLmLWT
+dbScnd03Cx3V+Of+6d6wOKDsI+uiGMq/q1A/bLJ5smeh4hvf5ki+ITEZxhCPncJf
+SF5fv8QjcxzzpkdXSwpRtbEfRL7CCcZ9e0jDAzsPqGXsAsiXDDo5PO7FJnC+OlOv
+LvR+0WdC7K4ufqX94ozG92pp+A2ZPtd3azmcfYr0iIVNUnw7JDfG1pejPPPrTP/J
+gVaig7aQ+4ZBFbVPMNLNhkpaCKCr/aRkG7oR+4xCYuS7P2P8mrEeFskYrfYzkQlG
+66WW34kinYYH5NS83z4KJ+xdg5TsH8jpEPJHywZfJLSB5t+KCAi1CYm9HYNBjB/s
+NwSLbeXF6trRDtW8Hwja
+=reLj
+-----END PGP SIGNATURE-----
+
+--=-hT6WUK0bwfZaL2w8UGUo--
