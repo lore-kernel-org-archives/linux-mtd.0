@@ -1,19 +1,19 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T4o9j-00050i-26
- for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 07:18:11 +0000
-Message-ID: <1345792970.2848.256.camel@sauron.fi.intel.com>
-Subject: Re: UBIFS is not remounted read-only from within do_emergency_remount
+ id 1T4od3-0008Od-GW
+ for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 07:48:30 +0000
+Message-ID: <1345794797.2848.264.camel@sauron.fi.intel.com>
+Subject: Re: jffs2 copy too long after mounting
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Alexander Stein <alexander.stein@systec-electronic.com>
-Date: Fri, 24 Aug 2012 10:22:50 +0300
-In-Reply-To: <16202485.ui8ZXcNIqe@ws-stein>
-References: <16202485.ui8ZXcNIqe@ws-stein>
+To: hejianet <hejianet@linux.vnet.ibm.com>
+Date: Fri, 24 Aug 2012 10:53:17 +0300
+In-Reply-To: <5019EE49.7000208@linux.vnet.ibm.com>
+References: <5019EE49.7000208@linux.vnet.ibm.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-uXXugSNE14SefcFPOdmc"
+ boundary="=-ZVHDnPCURSgHdIpLUPjY"
 Mime-Version: 1.0
-Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,46 +25,47 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-uXXugSNE14SefcFPOdmc
+--=-ZVHDnPCURSgHdIpLUPjY
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-07-31 at 13:24 +0200, Alexander Stein wrote:
-> upon testing do_emergency_remount from a power fail interrupt (using the=
-=20
-> workqueue of course), we noticed UBIFS is not remounted read-only afterwa=
-rds.
-> The current code in do_emergency_remount checks if the kernel actually ne=
-eds=20
-> to remount a filesystem using the following code:
-> > if (sb->s_root && sb->s_bdev && (sb->s_flags & MS_BORN) &&
-> >     !(sb->s_flags & MS_RDONLY)) {
-> >         /*
-> >          * What lock protects sb->s_flags??
-> >          */
-> >         do_remount_sb(sb, MS_RDONLY, NULL, 1);
-> > }
->=20
-> I'm not in the details of this part of the kernel, but I suspect that sb-
-> >s_bdev is NULL for UBIFS as it has no block device, but the character de=
-vice=20
-> /dev/ubiX_Y instead. I have the information from a collegue that removing=
- the=20
-> check for testing purposes for sb->s_bdev mounts UBIFS read-only.
-> Any comments/ideas how to remount UBIFS as read-only from=20
-> do_emergency_remount?
+On Thu, 2012-08-02 at 11:04 +0800, hejianet wrote:
+> hi All
+> my kernel is 2.6.16
+> after mounting the nand flash with jffs2 partition, the first copy operat=
+ion
+> for a 15M file(from jffs2 partition to jffs2 partition) take 9
+> minutes,but the
+> second copy operation takes 1 minutes.
+> the disk usage(df result) is over 85%.
+> I wonder is there any patch ported to such old kernel?
 
-I think this check is there to prevent file-systems like sysfs, tmpfs,
-procfs, cgroup and debugfs from re-mounting R/O. If we just remove the
-'sb->s_bdev' check - they all become R/O as well. For me it sounds OK,
-but I've never used this functionality, so not sure.
+His is because how JFFS2 is designed. When the mount operation is
+finished, JFFS2 does not really finish mounting. There is the background
+process which keeps working - it basically reads all files in the system
+and checks the CRC, which is needed to find out which nodes are new and
+which are obsolete.
 
+So what happens is that you mount JFFS2, the background thread keeps
+working (see 'top' for example).
+
+While the background thread works, you can read files. But you cannot
+write - writes will be blocked. Well, it is a bit more complex - you can
+write a little, but from some point your writes will be blocked until
+the background thread finishes. Then the write will continue and finish.
+
+In you case, you mount, start writing your 15MiB file, write gets
+blocked, waits for the background thread, then continues write. The
+background thread takes ages to finish on big partitions.
+
+The second write is fast because you do not wait for the background
+thread any longer.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-uXXugSNE14SefcFPOdmc
+--=-ZVHDnPCURSgHdIpLUPjY
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -72,19 +73,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQNyvKAAoJECmIfjd9wqK05pwQALnh3wmYHgADUFCtdvND0C5L
-IRdTaFThZfB8BGwnXlglMoW+BFwwZGxPg490GfPPyph9SFnvX+MNW2VMWFtwg7M5
-5SWvN/Z7jHzn3yp9z16uC/UJVdS9N0AAZrI/CKRUfdme32QiHHJ/4bmj1Dpx9BSi
-Q0RTp3zQEDtASv8wGPuPjOmFrca2Ahbse96brUzyTxJWvuw7NLiourWMoDTFShM2
-CpDR95+iprykEKx1G2RWR3zKl164PWV6wEmba56vUelemGYex/n/XVchZvLc/kTf
-BcYTCLgT/GPbZvSaXjlvtAv7Jix8qlh7phSbJ5nl3U5JBeohQCG79eGT6gYbPk/n
-HKYO/Cbp6ntG4Qo/g1ROUnzh0JmSGekvb9l33qM3XFgsdYIzEqKvFiQuQ/2wfUIt
-Pdp8UB7ct0pDpTXLwoGzeyaOR8ZPlogq3+YQaj88tsxfaVe+j0R4jjILarFe7dBQ
-GRv+q944plvl2sjPHgj3Ifzqzo/2038avEgxy3R/j4TH+9LMVPPUmCyX0wB2d+YC
-/NaJqh/4uCYhCmk3zXW/4xA8GgwcpLUNqXA+ytHFCk46BsBPc0FHMJp7M9dSEKpK
-BS3EEBY8JkG3IF7nW/u70IrvMgFLjoL/6L32rIrRi0WBPcenOirhtPUy7rpAzn34
-M59xyFgXwxWWADH4xRG2
-=LJsD
+iQIcBAABAgAGBQJQNzLtAAoJECmIfjd9wqK0TrcP/3LgqlyanWEPZpNebJJA/Rru
+VOuJPxDoI37ctU1DWN6KiUbD84HqY+Ar5cXTUxdzFnFB3hrMo++lbx+T5b4H1iVy
+fq55P8+0d+9emeKJgau4gHXaY3XWk2FUuokYbqyVO8iuyUyNsJn8MfbXQWJh7myV
+bCl7bAn0VWcm7NILMOYOQx/uw9DI0uSTa1v0Atnyl94EfiFHcGEcR9YL+k2Ot+GQ
+xa2zVCJXFv2I7Tl5DvQpbfGzKYUr5to5XIrj+Py8ciruUqHsPGsfz78X2cNs6jAx
+zQp8l7U0idXOldMMIjBGtxWPlNuscZP6g4wTIYuX7hO+vONhkw3WUTnxGts2X367
+QlBfpUZOm4rTFtm6lPoQWXh9oLq40/8Ei2DoTTzKlJJVDVyVTCF8l16JTRyOuUhv
+wlMq7Yj0Wu3GrXw/lsiSJB++NK8PpWsKWdGM068K8rMAT5kEBp6LQYtvWXp7cQYm
+ZRxQPyU+78r2IpI/SMTxglZqqCHv+nWiR6IxrQni1ZthZ6izP58g2ghXNAPoAJAp
+8YneiKDjAWJ+HI1QNt+BDj+u/U3W+dWVmSMUipMQ0FZWzEynoZ4rOvHaOC8PumDl
+3ufBcYwXgewKJpRN2WBDwNIggSwpvfyFeSpAkak+JbI4Doj9KQWfas91gn/EH7dN
+NxG3xMf+K/8twvPZXBa3
+=nVM8
 -----END PGP SIGNATURE-----
 
---=-uXXugSNE14SefcFPOdmc--
+--=-ZVHDnPCURSgHdIpLUPjY--
