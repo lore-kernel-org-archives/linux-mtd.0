@@ -1,19 +1,18 @@
-Received: from mga14.intel.com ([143.182.124.37])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T4sgQ-0003CA-Ba
- for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 12:08:14 +0000
-Message-ID: <1345810383.2848.304.camel@sauron.fi.intel.com>
-Subject: Re: Problems after 2nd bootup with NAND and ubifs/ubi
+Message-ID: <1345811288.2848.308.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v2] mxc_nand : allow swapping the Bad block Indicator
+ for NFC v1.
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jaya Kumar <jayakumar.lkml@gmail.com>
-Date: Fri, 24 Aug 2012 15:13:03 +0300
-In-Reply-To: <CADqH6Vx_doWcOFP6N8qSV-h+KdZi8cqdxyHCROf-SKFvUiYNhg@mail.gmail.com>
-References: <CADqH6Vx_doWcOFP6N8qSV-h+KdZi8cqdxyHCROf-SKFvUiYNhg@mail.gmail.com>
+To: =?ISO-8859-1?Q?Ga=EBtan?= Carlier <gcembed@gmail.com>
+Date: Fri, 24 Aug 2012 15:28:08 +0300
+In-Reply-To: <1345035872-11314-1-git-send-email-gcembed@gmail.com>
+References: <1345035872-11314-1-git-send-email-gcembed@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-19eQlb6GwJ5cZdVw1p6Q"
+ boundary="=-NrrI3bEbKTE3WmdQgWZw"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: Russell King <linux@arm.linux.org.uk>, J.Lambrecht@TELEVIC.com,
+ linux-mtd@lists.infradead.org, Sascha Hauer <kernel@pengutronix.de>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,28 +24,55 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-19eQlb6GwJ5cZdVw1p6Q
+--=-NrrI3bEbKTE3WmdQgWZw
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-08-15 at 15:19 +0800, Jaya Kumar wrote:
-> b) flash_then_boot_then_replaylogfail.txt
-> UBIFS: recovery needed
-> UBIFS error (pid 1): replay_log_leb: first log node at LEB 3:0 is not
-> CS node
-> UBIFS error (pid 1): replay_log_leb: log error detected while
-> replaying the log at LEB 3:0
+Hi,
 
-I meant that we fixed 2 bugs with this symptom recently (first log node
-at LEB 3:0). But probably you also have some issues in the driver. Those
-ECC errors you see and the failing mtd tests mean you need to dig what's
-going on on the driver leve.
+On Wed, 2012-08-15 at 15:04 +0200, Ga=C3=ABtan Carlier wrote:
+> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+> index 3f94e1f..7f5847a 100644
+> --- a/drivers/mtd/nand/mxc_nand.c
+> +++ b/drivers/mtd/nand/mxc_nand.c
+> @@ -682,6 +682,26 @@ static int mxc_nand_calculate_ecc(struct mtd_info *m=
+td, const u_char *dat,
+>  	return 0;
+>  }
+> =20
+> +/*
+> + * Swap the BI-byte on position 0x7D0 with a data byte at 0x835.
+> + * To fix a bug in NFC v1 SoC's for 2K page NAND flashes: imx27 and imx3=
+1.
+> + * Warning: The same solution needs to be applied to the boot loader and=
+ the
+> + * flash programmer.
+> + */
+> +static void imx_bi_swap(struct mtd_info *mtd)
+
+Could you please name the function 'nfcv1_bi_swap_quirk()' or something
+like this, to make it clear that this is a work-around.
+
+> +{
+> +	struct nand_chip *nand_chip =3D mtd->priv;
+> +	struct mxc_nand_host *host =3D nand_chip->priv;
+> +	unsigned short temp1, temp2, new_temp1;
+> +
+> +	temp1 =3D *((volatile unsigned short*)(host->main_area0 + 0x7D0));
+> +	temp2 =3D *((volatile unsigned short*)(host->main_area0 + 0x834));
+> +	new_temp1 =3D (temp1 & 0xFF00) | (temp2 >> 8);
+> +	temp2 =3D (temp2 & 0x00FF) | (temp1 << 8);
+> +	*((volatile unsigned short*)(host->main_area0 + 0x7D0)) =3D new_temp1;
+> +	*((volatile unsigned short*)(host->main_area0 + 0x834)) =3D temp2;
+
+Within the linux kernel all the I/O memory accesses should be done using
+accessor functions, not directly.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-19eQlb6GwJ5cZdVw1p6Q
+--=-NrrI3bEbKTE3WmdQgWZw
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -54,19 +80,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQN2/PAAoJECmIfjd9wqK0Q1wP/RTrRlHiZ+I8+nNt+r1yXnFB
-1KnbgUzyUE8yYFTx+5Yx7zvApRA3V9Jg3Y0VHQSjM1+qTaHVlEtkO7G1T0V5m5mh
-8iCiS/Mwy/IOHxa2IUoOSaR/La9utewlICz3OtUhWHmFkPhQu0nvAaSyztS7qxRU
-gdo4FPlxpGX3/o5gnUUsQFG7ZYHineZAVTlLhppFQxEbfQ+AXzRxq4e8nYLYL/db
-pvkZo6aC6GbuKhaloRL717o0Uadj8TrzA31C7nGU9I7m9vTZgHuquDZjEk7rzjuJ
-LSWEri3aFKygTKC3qgFnu8HofVD3kVEaNSFwvLOnKkAYNeuq7odtCNsIUj7zE+gv
-lqwgzDSnQK6cwoM4+TarJJH9CgxISwF+dShQ4OucGi+WBYkt8Wv85nIUQDlEWTf6
-l6buSB7LSdSz/I7cTMPj6WT6lWxBrCVw8fw+4OGSUMbIHo9hURHK0A1z0iw4RTd7
-NNIHeStRrU26/dttFlsYAvI5qdlZiHEddVnWHvbCgqFgLgiNI+Zpqm9FnHqr396R
-r9BrZTd3bFsSxoDiTkQG56Z9uuVSNO1d2ZQM6V3ajQTzjSNPi5GbV8ieySZ24Vgk
-Al1LytXJDKJyv/G2hLQyncfm0mB18W3BCXNbqpgERkfGfG2m3EYs9TnbcJCWr+2B
-TEzth4eI0eWsIxG8dzVY
-=9LCZ
+iQIcBAABAgAGBQJQN3NYAAoJECmIfjd9wqK035UP/RnTKHYpD0IMlWYHic/iomgC
+xvHDv++CGEERbIS7z6XfIQ/cpw0xvHk3Ekfb6YHzGDSMGJ5T5wDctCSRqcVf3YWK
+Mbn1LZidkPxZfABO5KchJx22J+eN4qtpzVrbMyDwtuonU7J6j+wz19ywv8Mbwkkg
+a7WHAMmcaPzV1+mTcIHJgTLoUBq3JYEMp1ErX8zHGXdEhtiJMAr7ixlmjVcvZH8p
+rIQ/zO+9uqauEzwUwT7Bb5+fl9CkxEOUqXxaJLHhqK8pZ0EYKzedMt+KDDalTgzp
+D0hAKHS58UK8+iX/hdsgvo1yKopJdqjO12trZ8vzAH1ZYt5Tswk47BQOIAtldrbc
+Dyr8SEyVjalPYXix97CxYbT4OnieEhBkC6uKQq0FTd6uMugmYY7+Us7CtIZzmpB9
+VOxHfxDhicWioA649H420/gJ2DZLh3DNFelYueflmehOnDuukdnXkUPr9HJ6j6++
+Kk+Apy3ef6dIOS92fvnvQfF1omqdnS7Bz/VUNqALCYzhKUpcHIkZ+h2w/MJjW1He
+NQpus0y8BGCiF5YbFMvNcVf/bZmaLEArvFk5nc/kD/xFz5Ii3mPUR4Hhfp3ZP7Eo
+Gac5+3eamabCanMLkqyBrbHwfD08p9l6WQLDwqWqFTWAYWXP84I2mki/xeL2Dtxa
+67Bd/mUtr+4odNA1qwUH
+=JnHS
 -----END PGP SIGNATURE-----
 
---=-19eQlb6GwJ5cZdVw1p6Q--
+--=-NrrI3bEbKTE3WmdQgWZw--
