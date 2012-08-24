@@ -1,18 +1,21 @@
-From: =?UTF-8?q?Ga=C3=ABtan=20Carlier?= <gcembed@gmail.com>
-To: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH 1/1] mxc_nand : allow swapping the Bad block Indicator for NFC
- v1.
-Date: Fri, 24 Aug 2012 18:17:44 +0200
-Message-Id: <1345825064-9147-1-git-send-email-gcembed@gmail.com>
-In-Reply-To: <1345811288.2848.308.camel@sauron.fi.intel.com>
-References: <1345811288.2848.308.camel@sauron.fi.intel.com>
+Received: from mail-vc0-f177.google.com ([209.85.220.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1T4wd3-00070q-0l
+ for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 16:21:01 +0000
+Received: by vcbfl15 with SMTP id fl15so881627vcb.36
+ for <linux-mtd@lists.infradead.org>; Fri, 24 Aug 2012 09:20:59 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <1345823689.2848.329.camel@sauron.fi.intel.com>
+References: <1345309236-25806-1-git-send-email-shijie8@gmail.com>
+ <1345823689.2848.329.camel@sauron.fi.intel.com>
+Date: Fri, 24 Aug 2012 12:20:58 -0400
+Message-ID: <CAMiH66E5LXC8dZrnxJ13amgcimtAj3XG9neKy-gwPGv_1YvkxQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: mtdpart: break it as soon as we parse out the
+ partitions
+From: Huang Shijie <shijie8@gmail.com>
+To: dedekind1@gmail.com
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Russell King <linux@arm.linux.org.uk>, J.Lambrecht@TELEVIC.com,
- David Woodhouse <dwmw2@infradead.org>, Sascha Hauer <kernel@pengutronix.de>,
- =?UTF-8?q?Ga=C3=ABtan=20Carlier?= <gcembed@gmail.com>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,93 +25,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Swap the BI-byte on position 0x7D0 with a data byte at 0x835.  To fix a bug
-in Freescale imx NFC v1 SoC's for 2K page NAND flashes: imx27 and imx31.
-Warning: The same solution needs to be applied to the boot loader and the
-flash programmer.
+On Fri, Aug 24, 2012 at 11:54 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Sat, 2012-08-18 at 13:00 -0400, Huang Shijie wrote:
+>> We may cause a memory leak when the @types has more then one parser.
+>>
+>> Take the `default_mtd_part_types` for example. The default_mtd_part_types has
+>> two parsers now: `cmdlinepart` and `ofpart`.
+>>
+>> Assume the following case:
+>> The kernel command line sets the partitions like:
+>>       #gpmi-nand:20m(boot),20m(kernel),1g(rootfs),-(user)
+>> But the devicetree file(such as arch/arm/boot/dts/imx28-evk.dts) also sets
+>> the same partitions as the kernel command line does.
+>>
+>> In the current code, the partitions parsed out by the `ofpart` will
+>> overwrite the @pparts which has already set by the `cmdlinepart` parser,
+>> and the the partitions parsed out by the `cmdlinepart` is missed.
+>> A memory leak occurs.
+>>
+>> So we should break the code as soon as we parse out the partitions,
+>> In actually, this patch makes a priority order between the parsers.
+>> If one parser has already parsed out the partitions successfully,
+>> it's no need to use another parser anymore.
+>>
+>> Signed-off-by: Huang Shijie <shijie8@gmail.com>
+>
+> Pushed to l2-mtd.git with "Cc: stable@vger.kernel.org" - do you agree
+> with that?
+>
+thanks a lot. I do agree to cc to stable.
 
-This is a modified version of patch sent by Jürgen Lambrecht :
-[PATCH] Add 'config IMX_NFC_V1_BISWAP' to swap the Bad block Indicator,
-and use for imx27pdk nand support.
-
- v3: - use accessor function for I/O memory accesses as suggested by Artem
-       Bityutskiy
-     - rename function name as suggested by Artem Bityutskiy
-
- v2: - Use a flag in a mxc_nand_platform structure instead of adding option
-       in Kconfig
-
- v1: - Original patch "Add 'config IMX_NFC_V1_BISWAP'" by Jürgen Lambrecht
-
-Signed-off-by: Gaëtan Carlier <gcembed@gmail.com>
----
- arch/arm/plat-mxc/include/mach/mxc_nand.h |    2 ++
- drivers/mtd/nand/mxc_nand.c               |   26 ++++++++++++++++++++++++++
- 2 files changed, 28 insertions(+), 0 deletions(-)
-
-diff --git a/arch/arm/plat-mxc/include/mach/mxc_nand.h b/arch/arm/plat-mxc/include/mach/mxc_nand.h
-index 6bb96ef..7c04437 100644
---- a/arch/arm/plat-mxc/include/mach/mxc_nand.h
-+++ b/arch/arm/plat-mxc/include/mach/mxc_nand.h
-@@ -26,6 +26,8 @@ struct mxc_nand_platform_data {
- 	unsigned int width;	/* data bus width in bytes */
- 	unsigned int hw_ecc:1;	/* 0 if suppress hardware ECC */
- 	unsigned int flash_bbt:1; /* set to 1 to use a flash based bbt */
-+	unsigned int biswap:1;	/* set to 1 to swap the Bad Block Indicator
-+				   NFC v1 workaround */
- 	struct mtd_partition *parts;	/* partition table */
- 	int nr_parts;			/* size of parts */
- };
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index 3f94e1f..24fc9e1 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -682,6 +682,26 @@ static int mxc_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
- 	return 0;
- }
- 
-+/*
-+ * Swap the BI-byte on position 0x7D0 with a data byte at 0x835.
-+ * To fix a bug in NFC v1 SoC's for 2K page NAND flashes: imx27 and imx31.
-+ * Warning: The same solution needs to be applied to the boot loader and the
-+ * flash programmer.
-+ */
-+static void nfcv1_bi_swap_quirk(struct mtd_info *mtd)
-+{
-+	struct nand_chip *nand_chip = mtd->priv;
-+	struct mxc_nand_host *host = nand_chip->priv;
-+	unsigned short temp1, temp2, new_temp1;
-+
-+	temp1 = ioread16(host->main_area0 + 0x7D0);
-+	temp2 = ioread16(host->main_area0 + 0x834);
-+	new_temp1 = (temp1 & 0xFF00) | (temp2 >> 8);
-+	temp2 = (temp2 & 0x00FF) | (temp1 << 8);
-+	iowrite16(new_temp1, host->main_area0 + 0x7D0);
-+	iowrite16(temp2, host->main_area0 + 0x834);
-+}
-+
- static u_char mxc_nand_read_byte(struct mtd_info *mtd)
- {
- 	struct nand_chip *nand_chip = mtd->priv;
-@@ -1093,6 +1113,9 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
- 
- 		host->devtype_data->send_page(mtd, NFC_OUTPUT);
- 
-+		if ((mtd->writesize > 512) && nfc_is_v1() && host->pdata.biswap)
-+			nfcv1_bi_swap_quirk(mtd);
-+
- 		memcpy32_fromio(host->data_buf, host->main_area0,
- 				mtd->writesize);
- 		copy_spare(mtd, true);
-@@ -1112,6 +1135,9 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
- 	case NAND_CMD_PAGEPROG:
- 		memcpy32_toio(host->main_area0, host->data_buf, mtd->writesize);
- 		copy_spare(mtd, false);
-+		if ((mtd->writesize > 512) && nfc_is_v1() && host->pdata.biswap)
-+			nfcv1_bi_swap_quirk(mtd);
-+
- 		host->devtype_data->send_page(mtd, NFC_INPUT);
- 		host->devtype_data->send_cmd(host, command, true);
- 		mxc_do_addr_cycle(mtd, column, page_addr);
--- 
-1.7.7.4
+Huang Shijie
