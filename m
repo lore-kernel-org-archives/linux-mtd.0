@@ -1,21 +1,22 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T4vxi-00010z-BZ
- for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 15:38:20 +0000
-Message-ID: <1345822982.2848.328.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: cmdlinepart: fix the wrong partitions number when
- truncating occurs
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Huang Shijie <shijie8@gmail.com>
-Date: Fri, 24 Aug 2012 18:43:02 +0300
-In-Reply-To: <1345308662-24023-1-git-send-email-shijie8@gmail.com>
-References: <1345308662-24023-1-git-send-email-shijie8@gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-5fUMPCt6RmJKBADMeKmA"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mail-wi0-f177.google.com ([209.85.212.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1T4w7Y-0002eU-4w
+ for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 15:48:28 +0000
+Received: by wibhn17 with SMTP id hn17so770324wib.0
+ for <linux-mtd@lists.infradead.org>; Fri, 24 Aug 2012 08:48:25 -0700 (PDT)
+From: Pali =?ISO-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>
+To: dedekind1@gmail.com
+Subject: Re: [PATCH] UBI: Do not try to autoresize in readonly mode
+Date: Fri, 24 Aug 2012 17:48:18 +0200
+Message-ID: <6233716.oXLBM8tzrg@pali>
+In-Reply-To: <1345822171.2848.325.camel@sauron.fi.intel.com>
+References: <8381186.XTLIOQGYR2@pali>
+ <1345822171.2848.325.camel@sauron.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart7317310.tDS1sqTQz6";
+ micalg="pgp-sha1"; protocol="application/pgp-signature"
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,55 +27,48 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-5fUMPCt6RmJKBADMeKmA
-Content-Type: text/plain; charset="UTF-8"
+--nextPart7317310.tDS1sqTQz6
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
 
-On Sat, 2012-08-18 at 12:51 -0400, Huang Shijie wrote:
-> diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
-> index 4558e0f..fc960a3 100644
-> --- a/drivers/mtd/cmdlinepart.c
-> +++ b/drivers/mtd/cmdlinepart.c
-> @@ -344,7 +344,8 @@ static int parse_cmdline_partitions(struct mtd_info *=
-master,
->  					       "%s: partitioning exceeds flash size, truncating\n",
->  					       part->mtd_id);
->  					part->parts[i].size =3D master->size - offset;
-> -					part->num_parts =3D i;
-> +					part->num_parts =3D i + 1;
-> +					break;
->  				}
->  				offset +=3D part->parts[i].size;
->  			}
+On Friday 24 August 2012 18:29:31 Artem Bityutskiy wrote:
+> On Sat, 2012-08-18 at 14:11 +0200, Pali Roh=C3=A1r wrote:
+> > I'm sending small patch which skip autoresizing ubi in
+> > readonly mode. I think it is really not good idea to try
+> > resize in ro mode.
+>=20
+> Hi, I've just pushed a similar patch to linux-ubi.git, is this
+> fine with you? I've also CCed -stable.
+>=20
 
-I do not understand this change. Could you explain some more which
-problem you solve and how?
+Hi, patch is OK. I tested it and working for me fine.
+
+> > BTW, is there userspace tool for unpacking data from ubifs
+> > image without need to simulate nand device in kernel?
+>=20
+> Unfortunately no.
+
+Ok. I have patch for block2mtd.ko which allows me to mount ubifs=20
+image in way: losetup --> block2mtd --> ubiattach --> mount=20
+without nandsim. I needed to patch block2mtd, because ubi code=20
+needs correct erase size, write size nand subpage shift and full=20
+image size. So I added params for these properties in block2mtd=20
+code - and it working. But I do not know if this is correct way,=20
+but I can send my patch.
 
 --=20
-Best Regards,
-Artem Bityutskiy
-
---=-5fUMPCt6RmJKBADMeKmA
+Pali Roh=C3=A1r
+pali.rohar@gmail.com
+--nextPart7317310.tDS1sqTQz6
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Content-Description: This is a digitally signed message part.
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+Version: GnuPG v1.4.11 (GNU/Linux)
 
-iQIcBAABAgAGBQJQN6EGAAoJECmIfjd9wqK0owQP/jAMRDas6vjQXishCrzbTKBa
-iOXmnm6OmJqcwsti4IASts33vVYCU/+g/m+hZLZYYjJvw8OiWPjy+0zWiYDzyP1N
-E74bu3Jz3eX76FqwWIMyR7ET7s95eoY3RyzYnPE/HbALF3K/yRkvJZdR2HzDeCGv
-49N/CbaYv2lREMSAD+zaS+msONDfvj0Fra78AfYbUraGU4HiYNjeyDJFrE+2kIjz
-NW47VjuXUqmNCTYBwPyt3Cu/WAqysD4D3mWbwwRFSXEzU+gty/zxIFy13Cbs9dHf
-jOQDnS6m09lXIc9DQBnLP5gjnFZsClsfbEiDtrdRRE1gvR1fjpYCUeKROMjLHcwK
-o61loAhrF45GwrtWRpOdsCTA7aJCNEznlwlY5N+lIt1fVuOkv7QK1K777Uvp18h9
-9EHaABLaVVve8vhuDh45Rc+qY2rEsTR/CjXB4q1FbriAc5yth/QzyWsGLT9UjXrK
-FKzupPcvFDjopVdWnv9zZAv8nGS/h8Y1n68dIgBn2me2dc5Ztkcm6Tb/q9pvZxir
-ct/Xj3L8MAtMusXlUEfZajzuY8K9UOJ24HNItz5GQdvZkD+cyYed9M+TGpLXaj8j
-7lGWMd4WUGx4FUp3bSJJ7P8KSBan1kAxClaEH98UxXnITaHeOS5fMaiklz5IbjoO
-L3Ifz47CLEvqRLmPR3kh
-=ILDn
+iEYEABECAAYFAlA3okIACgkQi/DJPQPkQ1LB0QCfYi6Bft6DMqPBwpWEoRkbtk4m
+QHwAoMXUZPs2oXzYKGVt2eaCsKBS/OIM
+=Q6Op
 -----END PGP SIGNATURE-----
 
---=-5fUMPCt6RmJKBADMeKmA--
+--nextPart7317310.tDS1sqTQz6--
