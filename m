@@ -1,17 +1,17 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T4pH7-0004QD-UX
- for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 08:29:54 +0000
-Message-ID: <1345797282.2848.274.camel@sauron.fi.intel.com>
-Subject: Re: Potential issue on UBIFS for Kernel 3.4.7
+ id 1T4qJK-0004i3-JP
+ for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 09:36:15 +0000
+Message-ID: <1345801261.2848.276.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] UBI:Force ubi driver load after mtd device drivers
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Fabien Comte <fabien.comte@ercogener.com>
-Date: Fri, 24 Aug 2012 11:34:42 +0300
-In-Reply-To: <005901cd70ab$4356c150$ca0443f0$@ercogener.com>
-References: <005901cd70ab$4356c150$ca0443f0$@ercogener.com>
+To: Jiang Lu <lu.jiang@windriver.com>
+Date: Fri, 24 Aug 2012 12:41:01 +0300
+In-Reply-To: <1344393061-21037-1-git-send-email-lu.jiang@windriver.com>
+References: <1344393061-21037-1-git-send-email-lu.jiang@windriver.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-kcxhWHLW3HfZLWynn8qn"
+ boundary="=-mHkeb2jpv1QmNXz1SHj1"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
@@ -25,52 +25,31 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-kcxhWHLW3HfZLWynn8qn
+--=-mHkeb2jpv1QmNXz1SHj1
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-08-02 at 14:35 +0200, Fabien Comte wrote:
-> Hello,
->=20
-> I migrated some products (embedded devices with 256 Mbytes NAND flash, ab=
-out
-> 5 products broken by the transition) from a kernel 3.4.4 (they had previo=
-us
-> versions before 3.4.4) to a 3.4.7. And after a clean shutdown (no power
-> cut), I got these messages and some files corrupted (random, not always t=
-he
-> same).
+On Wed, 2012-08-08 at 10:31 +0800, Jiang Lu wrote:
+> diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+> index 0fde9fc..efbcaef 100644
+> --- a/drivers/mtd/ubi/build.c
+> +++ b/drivers/mtd/ubi/build.c
+> @@ -1275,7 +1275,7 @@ out:
+>  	ubi_err("UBI error: cannot initialize UBI, error %d", err);
+>  	return err;
+>  }
+> -module_init(ubi_init);
+> +late_initcall(ubi_init);
 
-The only UBIFS change between 3.4.4 and 3.4.7 is:
-
-commit 863c806617059e412ade0b1bbb6d215106be14c1
-Author: Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>
-Date:   Sat Jul 14 14:33:09 2012 +0300
-
-    UBIFS: fix a bug in empty space fix-up
-   =20
-    commit c6727932cfdb13501108b16c38463c09d5ec7a74 upstream.
-
-I very much doubt it is guilty, but you can check.
-
-But first you need to make sure you have a reliable setup prove that the
-upgrade cause the issue.
-
-I'd got this way.
-
-1. Save flash dump of a working device before the upgrade. Make sure you
-can always flash this flash image back and the system works fine.
-2. Make sure you really have no problems with 3.4.4.
-3. Upgrade to 3.4.7, reproduce the issue.
-4. Put the saved image back.
-5. Try to upgrade to 3.4.5, and see if it is reproducible.
-6. Continue bisecting and find the guilty commit.=20
+The problem is that UBIFS, which is usually used on top of UBI, also
+uses 'late_initcall()'. If we do this change, how do we guarantee that
+UBIFS is initialized after UBI?
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-kcxhWHLW3HfZLWynn8qn
+--=-mHkeb2jpv1QmNXz1SHj1
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -78,19 +57,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQNzyiAAoJECmIfjd9wqK0iHEP/RgN2JzMFeSXdexlbJ9/nfVs
-Ltm56MFfInWx7rDA9NvEU4z0aysyrwW8Jda2+o/TJfGRMCcjWpck9QCGvRTpj13T
-0ws81r01d0lXYPIrWKMdXPrLjhSYPOXr2OCvblxmP4HjJ1hF/Toz+xDJHKwDvbTD
-DKWWmJ2WNoYZMsdxGZP4Xhzkrk1xXTNAMwRGwVN7FPSZXafS+IrZVBZ5fh6+xlWR
-/2RansJocdT4jyljx7G1qCiRXg/C9LNTlj4vXZd+I2DRNV906uTv1+1+8hgzraFr
-M8cHSXx7fZHVxATQmeaPtQvkQP/R0RRiv0UNS+DICYfU4qCvHQKldZ2DiJtqT08/
-iv8OBw0FmdDPCvEBtSEFs4P2MmQEraYCLKfKi/bnvhhV/4nUw4pU9bresWISXncL
-NqfqL+d9qBU5FE1VL39CtbXWTsXnqJC6HGnC13DzxaW4SNhd9RLqW2Wx/4ur/lJn
-EYcSxNB80z5cdMA0QRaHKMr7u7aMZf7a1h44QUOxqaNhSDCAOqM7yomhf+YLhjF0
-BIXh97AK/FGWjpZ2DAKPF2Y2H6yWuQkJRG5XIpZI3Jy3W6G2+/sTDLTaULtVGBV2
-iIo3V79456E9c6Pd9YnKT0yx5AmcetaCGWZUGZwZC8cPARR3jBQyF6Hv3UZu/SQ4
-pmyMPMkUuhU3WeXPF/MF
-=Foml
+iQIcBAABAgAGBQJQN0wtAAoJECmIfjd9wqK0oJoP/R4nkym4P82B0Io40l47iWE7
+jfyf0U4eJ82EMldWV8z2Vj7OIfL2o1VGMF7DwcTW5yoUtST3TSv4c+EKVB5auSPl
+5OVvtjVYHp00E0SiDGFk4Rjp2PmRZBiXBBqtDg67yKkLTc6EW5PFNtFFVrgwyCvy
+VPalthy5VxDJ9kpIAE/nzjNGDdU2bqGM60AaoUfFrrAsDywtG8mJgPaC9PHPtZRp
+4WixhTjiFr0Sye8BeIJxZEe4D8VoYt7vDPFs79Um3aU44YsVtC0DpjMnOzb1CF/X
+kG8hHN71usC1BJ5QK3tjKs+Ax5rX/yl0pbuia9oFnzJNGZ6KMAJf+P+XJ1N11rdG
+PtgZj6LDVUoK/1u+2U6ugO5DQpkiB08X8Itb4xKvARE4nJbm7xbXDHxOR3HS9eWw
+cAiacWvQIsdjV42rf3+mdj1cbh3bk4B5MDQxMYslIlbqpW1DoEgkcU88ET7AS0Yx
+qL6iE+jtxvYuyuShgmswZPNUMrOS35dQ7g9REYAuWv8o6w3MH0OmMn3xThdmiERE
+AKzRWolQDNiivW9NvV21QJmEp8wt9JnqnPfJjvAkKiaQxEHseRi+OTKp+9KiGDoT
+4PQnwjmdFDfBWvhmmWRttBP0SE2K15lKJYwEjvKFBwzKqkXXyvuijzAQInQiv+KX
+dATld4Etnt+GN3qxZLrv
+=X8nj
 -----END PGP SIGNATURE-----
 
---=-kcxhWHLW3HfZLWynn8qn--
+--=-mHkeb2jpv1QmNXz1SHj1--
