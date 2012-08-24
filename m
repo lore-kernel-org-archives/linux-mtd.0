@@ -1,19 +1,18 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T4od3-0008Od-GW
- for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 07:48:30 +0000
-Message-ID: <1345794797.2848.264.camel@sauron.fi.intel.com>
-Subject: Re: jffs2 copy too long after mounting
+Message-ID: <1345795792.2848.265.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v3] mtd: gpmi: fix the compiler warnings
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: hejianet <hejianet@linux.vnet.ibm.com>
-Date: Fri, 24 Aug 2012 10:53:17 +0300
-In-Reply-To: <5019EE49.7000208@linux.vnet.ibm.com>
-References: <5019EE49.7000208@linux.vnet.ibm.com>
+To: Huang Shijie <shijie8@gmail.com>
+Date: Fri, 24 Aug 2012 11:09:52 +0300
+In-Reply-To: <CAMiH66G+srHsfUn6eCByHMgjZXE6k7zM6qLagqBuQCzx954aOA@mail.gmail.com>
+References: <1342451569.7270.11.camel@brekeke>
+ <1342505642-31109-1-git-send-email-b32955@freescale.com>
+ <CAMiH66G+srHsfUn6eCByHMgjZXE6k7zM6qLagqBuQCzx954aOA@mail.gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-ZVHDnPCURSgHdIpLUPjY"
+ boundary="=-s8ri38eX5hjRGsXuRrpQ"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: Huang Shijie <b32955@freescale.com>, shawn.guo@linaro.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,47 +24,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-ZVHDnPCURSgHdIpLUPjY
+--=-s8ri38eX5hjRGsXuRrpQ
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-08-02 at 11:04 +0800, hejianet wrote:
-> hi All
-> my kernel is 2.6.16
-> after mounting the nand flash with jffs2 partition, the first copy operat=
-ion
-> for a 15M file(from jffs2 partition to jffs2 partition) take 9
-> minutes,but the
-> second copy operation takes 1 minutes.
-> the disk usage(df result) is over 85%.
-> I wonder is there any patch ported to such old kernel?
+On Wed, 2012-08-01 at 10:27 +0800, Huang Shijie wrote:
+> Hi Artem;
+> Just a ping.
+>=20
+> Please do not miss this patch.
 
-His is because how JFFS2 is designed. When the mount operation is
-finished, JFFS2 does not really finish mounting. There is the background
-process which keeps working - it basically reads all files in the system
-and checks the CRC, which is needed to find out which nodes are new and
-which are obsolete.
-
-So what happens is that you mount JFFS2, the background thread keeps
-working (see 'top' for example).
-
-While the background thread works, you can read files. But you cannot
-write - writes will be blocked. Well, it is a bit more complex - you can
-write a little, but from some point your writes will be blocked until
-the background thread finishes. Then the write will continue and finish.
-
-In you case, you mount, start writing your 15MiB file, write gets
-blocked, waits for the background thread, then continues write. The
-background thread takes ages to finish on big partitions.
-
-The second write is fast because you do not wait for the background
-thread any longer.
+I actually missed it, pushed now to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-ZVHDnPCURSgHdIpLUPjY
+--=-s8ri38eX5hjRGsXuRrpQ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -73,19 +48,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQNzLtAAoJECmIfjd9wqK0TrcP/3LgqlyanWEPZpNebJJA/Rru
-VOuJPxDoI37ctU1DWN6KiUbD84HqY+Ar5cXTUxdzFnFB3hrMo++lbx+T5b4H1iVy
-fq55P8+0d+9emeKJgau4gHXaY3XWk2FUuokYbqyVO8iuyUyNsJn8MfbXQWJh7myV
-bCl7bAn0VWcm7NILMOYOQx/uw9DI0uSTa1v0Atnyl94EfiFHcGEcR9YL+k2Ot+GQ
-xa2zVCJXFv2I7Tl5DvQpbfGzKYUr5to5XIrj+Py8ciruUqHsPGsfz78X2cNs6jAx
-zQp8l7U0idXOldMMIjBGtxWPlNuscZP6g4wTIYuX7hO+vONhkw3WUTnxGts2X367
-QlBfpUZOm4rTFtm6lPoQWXh9oLq40/8Ei2DoTTzKlJJVDVyVTCF8l16JTRyOuUhv
-wlMq7Yj0Wu3GrXw/lsiSJB++NK8PpWsKWdGM068K8rMAT5kEBp6LQYtvWXp7cQYm
-ZRxQPyU+78r2IpI/SMTxglZqqCHv+nWiR6IxrQni1ZthZ6izP58g2ghXNAPoAJAp
-8YneiKDjAWJ+HI1QNt+BDj+u/U3W+dWVmSMUipMQ0FZWzEynoZ4rOvHaOC8PumDl
-3ufBcYwXgewKJpRN2WBDwNIggSwpvfyFeSpAkak+JbI4Doj9KQWfas91gn/EH7dN
-NxG3xMf+K/8twvPZXBa3
-=nVM8
+iQIcBAABAgAGBQJQNzbQAAoJECmIfjd9wqK0mXsP/25d/Npz0wcyL46eODycmLsl
+cYQC6m1RD/rEdokI9j9/kKW9jZHOKUMy+kYz1WqtMnJ8x78WLTUwIg9QzhVQQZ4U
+PeNgsLVkmjfB95wuUFpvNSMIaocCXDg7ImiTUua250J0nfZGQPSK6ux+j1pZv1r3
+oQeE+Q3FWE+n4RX0jWxGwEhuJxFbSGaiQoGx9jfF1NbiGYXLfO3gH0eccFg/dpaA
+dxnxQ3UxKF2fsrobQjYhdG9PUddgZ88MORrb3BAYSrgRkAbj+uu04sgS8qIs3NFf
+doZW+zPV3KP4I6lPSjtDcaXpSDJsCB6dLpd+J3w2awrtjRFthl+XrJhH+8ifow1e
+lQp4051t+o/PkP1hhV41rdUEGawjOxchXunqtTq8sJSWWlWAdufvZBim2vdJNOaI
+wiwPcgr3/r/luA7eHU13w+uD8tWXwRIEbIcQTiMFvbCgXgwp9fFlEf/gRXSE26eC
+coSs/l1vE1myb/GvTPGUOLIE0dbGDxfYcWGJqWNnVYWarQMZTnKlWF3clfj9QgJ8
+DcVOngw2Fp/NhMYGaC5KBIHXANqkbt77AEh2b8xZD1IekPycx3FjzgKq7D2iO+SG
+sRKEIYs8H/BVO+MwpWh9KXnBf0e1+OmKUbxH+pCnIEjKItX5n4LKwXTlUT+6fJyG
+5edRI/sALmm6I9gAB5te
+=Pl3t
 -----END PGP SIGNATURE-----
 
---=-ZVHDnPCURSgHdIpLUPjY--
+--=-s8ri38eX5hjRGsXuRrpQ--
