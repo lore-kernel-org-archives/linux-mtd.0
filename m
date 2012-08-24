@@ -1,20 +1,21 @@
-Received: from cdptpa-bc-oedgelb.mail.rr.com ([75.180.133.32])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T4y4I-0003LK-Kf
- for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 17:53:15 +0000
-Message-ID: <5037BFFA.1020208@cincinnatitechnologies.com>
-Date: Fri, 24 Aug 2012 13:55:06 -0400
-From: Russell Zuck <rzuck@cincinnatitechnologies.com>
+Received: from mho-04-ewr.mailhop.org ([204.13.248.74]
+ helo=mho-02-ewr.mailhop.org)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1T4zZq-0007Sp-GC
+ for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 19:29:55 +0000
+Date: Fri, 24 Aug 2012 12:29:47 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: Afzal Mohammed <afzal@ti.com>
+Subject: Re: [PATCH v3 10/10] mtd: nand: omap2: use gpmc provided irqs
+Message-ID: <20120824192947.GT11011@atomide.com>
+References: <cover.1344609341.git.afzal@ti.com>
+ <c5a608a70a875191e1323958c74fb2ac8dfa34b3.1344609341.git.afzal@ti.com>
 MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: UBIFS corruption after software upgrade
-References: <500F0D81.8050902@cincinnatitechnologies.com>
- <501923A9.7030002@cincinnatitechnologies.com>
- <1345641529.2848.185.camel@sauron.fi.intel.com>
-In-Reply-To: <1345641529.2848.185.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c5a608a70a875191e1323958c74fb2ac8dfa34b3.1344609341.git.afzal@ti.com>
+Cc: artem.bityutskiy@linux.intel.com, ivan.djelic@parrot.com,
+ linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,208 +25,193 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 8/22/2012 9:18 AM, Artem Bityutskiy wrote:
-> Do you have a kernel which worked for you? One strategy would be to
-> bisect or look at the differences.
-I don't have a kernel configuration for which my upgrade scenario has 
-not eventually produced files system errors.
+Artem,
 
-> WRT power-cut testing. Could you try your kernel + nandsim. Just do the
-> following:
->
-> $ modprobe nandsim first_id_byte=0x20 second_id_byte=0xac third_id_byte=0x00 fourth_id_byte=0x15
-> $ modprobe ubi mtd=0
-> $ ubimkvol /dev/ubi0 --lebs 4064 -N test_fs
-> $ mount -t ubifs /dev/ubi0_0 /mnt/ubifs
->
-> You should end up with something close to your system.
->
-> Please, then try to do:
->
-> $ echo 1 > /sys/kernel/debug/ubifs/tst_recovery
-> $ cd $HOME/git/mtd-utils/tests/fs-tests/integrity
-> $ ./integck -p /mnt/ubifs
->
-> This should start recovery testing. Does it work?
-I've made sure to apply the latest patches from the 2.6.35 backport repo 
-and am using the latest from the mtd-utils repo.
+* Afzal Mohammed <afzal@ti.com> [120821 02:44]:
+> GPMC platform initialization provides it's clients
+> with interrupts that can be used through struct
+> resource. Make use of it for irq mode functionality.
+> 
+> Also now write protect disable is done by GPMC,
+> hence remove it.
+> 
+> Signed-off-by: Afzal Mohammed <afzal@ti.com>
+> ---
+> 
+> v3: Handle error path properly
 
-$ ./integck -p /mnt/ubifs
+Care to (re)ack this one as the error path handling changed?
 
-..fails soon after I run the test.  There is a ton of logged data.  I've 
-attempted to snip out the first error.
+Regards,
 
-=============== snip =====================
-[  375.323163] UBIFS warning (pid 2103): power_cut_emulated: failing 
-after 2877 calls
-[  375.331523] UBIFS: un-mount UBI device 1, volume 0
-[  375.336416] UBIFS DBG (pid 2070): ubifs_bg_thread: background thread 
-"ubifs_bgt1_0" stops
-[  375.352677] UBIFS: mounted UBI device 1, volume 0, name "test_fs"
-[  375.358919] UBIFS: mounted read-only
-[  375.362523] UBIFS: file system size:   520740864 bytes (508536 KiB, 
-496 MiB, 4036 LEBs)
-[  375.370590] UBIFS: journal size:       26062848 bytes (25452 KiB, 24 
-MiB, 202 LEBs)
-[  375.378299] UBIFS: media format:       w4/r0 (latest is w4/r0)
-[  375.384174] UBIFS: default compressor: lzo
-[  375.388293] UBIFS: reserved for root:  4952683 bytes (4836 KiB)
-[  375.394257] UBIFS DBG (pid 2103): mount_ubifs: compiled on: 
-Aug 23 2012 at 11:30:24
-[  375.402652] UBIFS DBG (pid 2103): mount_ubifs: min. I/O unit size: 
-2048 bytes
-[  375.409925] UBIFS DBG (pid 2103): mount_ubifs: max. write size: 
-2048 bytes
-[  375.417202] UBIFS DBG (pid 2103): mount_ubifs: LEB size: 
-129024 bytes (126 KiB)
-[  375.425521] UBIFS DBG (pid 2103): mount_ubifs: data journal heads:  1
-[  375.431999] UBIFS DBG (pid 2103): mount_ubifs: UUID: 
-83D4BFF8-5B39-40B1-9A86-430C0E45852A
-[  375.441539] UBIFS DBG (pid 2103): mount_ubifs: big_lpt              0
-[  375.448027] UBIFS DBG (pid 2103): mount_ubifs: log LEBs:            9 
-(3 - 11)
-[  375.455303] UBIFS DBG (pid 2103): mount_ubifs: LPT area LEBs:       2 
-(12 - 13)
-[  375.462652] UBIFS DBG (pid 2103): mount_ubifs: orphan area LEBs:    2 
-(14 - 15)
-[  375.470014] UBIFS DBG (pid 2103): mount_ubifs: main area LEBs: 
-4036 (16 - 4051)
-[  375.477811] UBIFS DBG (pid 2103): mount_ubifs: index LEBs:          1
-[  375.484299] UBIFS DBG (pid 2103): mount_ubifs: total index bytes: 
-48 (0 KiB, 0 MiB)
-[  375.492169] UBIFS DBG (pid 2103): mount_ubifs: key hash type:       0
-[  375.498655] UBIFS DBG (pid 2103): mount_ubifs: tree fanout:         8
-[  375.505141] UBIFS DBG (pid 2103): mount_ubifs: reserved GC LEB:     18
-[  375.511701] UBIFS DBG (pid 2103): mount_ubifs: first main LEB:      16
-[  375.518273] UBIFS DBG (pid 2103): mount_ubifs: max. znode size      240
-[  375.524938] UBIFS DBG (pid 2103): mount_ubifs: max. index node size 192
-[  375.531587] UBIFS DBG (pid 2103): mount_ubifs: node sizes: 
-data 48, inode 160, dentry 56
-[  375.540518] UBIFS DBG (pid 2103): mount_ubifs: node sizes: 
-trun 56, sb 4096, master 512
-[  375.549363] UBIFS DBG (pid 2103): mount_ubifs: node sizes: 
-ref 64, cmt. start 32, orph 32
-[  375.558382] UBIFS DBG (pid 2103): mount_ubifs: max. node sizes: 
-data 4144, inode 4256 dentry 312, idx 188
-[  375.568358] UBIFS DBG (pid 2103): mount_ubifs: dead watermark:      2048
-[  375.575106] UBIFS DBG (pid 2103): mount_ubifs: dark watermark:      6144
-[  375.581840] UBIFS DBG (pid 2103): mount_ubifs: LEB overhead:        560
-[  375.588502] UBIFS DBG (pid 2103): mount_ubifs: max. dark space: 
-24797184 (24216 KiB, 23 MiB)
-[  375.597347] UBIFS DBG (pid 2103): mount_ubifs: maximum bud bytes: 
-24901632 (24318 KiB, 23 MiB)
-[  375.606193] UBIFS DBG (pid 2103): mount_ubifs: BG commit bud bytes: 
-20232576 (19758 KiB, 19 MiB)
-[  375.615036] UBIFS DBG (pid 2103): mount_ubifs: current bud bytes    0 
-(0 KiB, 0 MiB)
-[  375.622820] UBIFS DBG (pid 2103): mount_ubifs: max. seq. number:    11
-[  375.629394] UBIFS DBG (pid 2103): mount_ubifs: commit number:       1
-[  375.644554] UBIFS DBG (pid 2107): ubifs_bg_thread: background thread 
-"ubifs_bgt1_0" started, PID 2107
-[  375.663774] UBIFS DBG (pid 2107): ubifs_bg_thread: background thread 
-"ubifs_bgt1_0" stops
-[  375.672118] UBIFS warning (pid 2103): power_cut_emulated: failing in 
-master LEB 2
-[  375.679752] UBIFS warning (pid 2103): power_cut_emulated: ========== 
-Power cut emulated ==========
-[  375.688780] Backtrace:
-[  375.691294] [<8002b4ec>] (dump_backtrace+0x0/0x10c) from [<8034a738>] 
-(dump_stack+0x18/0x1c)
-[  375.699811]  r7:00000001 r6:8972a000 r5:896d6000 r4:00000001
-[  375.705600] [<8034a720>] (dump_stack+0x0/0x1c) from [<8017dae0>] 
-(power_cut_emulated+0x488/0x508)
-[  375.714548] [<8017d658>] (power_cut_emulated+0x0/0x508) from 
-[<8017dce8>] (dbg_leb_write+0x3c/0x158)
-[  375.723822] [<8017dcac>] (dbg_leb_write+0x0/0x158) from [<8015970c>] 
-(ubifs_leb_write+0xa0/0x120)
-[  375.732769] [<8015966c>] (ubifs_leb_write+0x0/0x120) from 
-[<80159928>] (ubifs_write_node+0x19c/0x1f8)
-[  375.742071]  r8:00000200 r7:00003000 r6:896c0800 r5:00000002 r4:8972a000
-[  375.748929] [<8015978c>] (ubifs_write_node+0x0/0x1f8) from 
-[<80160580>] (ubifs_write_master+0x11c/0x12c)
-[  375.758477] [<80160464>] (ubifs_write_master+0x0/0x12c) from 
-[<80153b5c>] (ubifs_remount_fs+0x68c/0x81c)
-[  375.768015]  r7:00000003 r6:000001b0 r5:8972a7ac r4:8972a000
-[  375.773782] [<801534d0>] (ubifs_remount_fs+0x0/0x81c) from 
-[<800b7d44>] (do_remount_sb+0xc4/0x120)
-[  375.782799] [<800b7c80>] (do_remount_sb+0x0/0x120) from [<800cff18>] 
-(do_mount+0x224/0x7dc)
-[  375.791217]  r6:00200021 r5:00000000 r4:00000060
-[  375.795925] [<800cfcf4>] (do_mount+0x0/0x7dc) from [<800d055c>] 
-(sys_mount+0x8c/0xcc)
-[  375.803816] [<800d04d0>] (sys_mount+0x0/0xcc) from [<80027fc0>] 
-(ret_fast_syscall+0x0/0x30)
-[  375.812208]  r7:00000015 r6:00000001 r5:00022140 r4:00023048
-[  375.817971] UBIFS warning (pid 2103): cut_data: filled bytes 52-1290 
-with 0xFFs
-[  375.825422] UBIFS error (pid 2103): ubifs_leb_write: writing 2048 
-bytes to LEB 2:12288 failed, error -30
-[  375.834969] UBIFS warning (pid 2103): ubifs_ro_mode: switched to 
-read-only mode, error -30
-[  375.843285] Backtrace:
-[  375.845773] [<8002b4ec>] (dump_backtrace+0x0/0x10c) from [<8034a738>] 
-(dump_stack+0x18/0x1c)
-[  375.854267]  r7:00003000 r6:00000002 r5:8972a000 r4:00000004
-[  375.860020] [<8034a720>] (dump_stack+0x0/0x1c) from [<801587e4>] 
-(ubifs_ro_mode+0x6c/0x78)
-[  375.868349] [<80158778>] (ubifs_ro_mode+0x0/0x78) from [<80159750>] 
-(ubifs_leb_write+0xe4/0x120)
-[  375.877190]  r5:8972a000 r4:ffffffe2
-[  375.880822] [<8015966c>] (ubifs_leb_write+0x0/0x120) from 
-[<80159928>] (ubifs_write_node+0x19c/0x1f8)
-[  375.890098]  r8:00000200 r7:00003000 r6:896c0800 r5:00000002 r4:8972a000
-[  375.896925] [<8015978c>] (ubifs_write_node+0x0/0x1f8) from 
-[<80160580>] (ubifs_write_master+0x11c/0x12c)
-[  375.906470] [<80160464>] (ubifs_write_master+0x0/0x12c) from 
-[<80153b5c>] (ubifs_remount_fs+0x68c/0x81c)
-[  375.916007]  r7:00000003 r6:000001b0 r5:8972a7ac r4:8972a000
-[  375.921759] [<801534d0>] (ubifs_remount_fs+0x0/0x81c) from 
-[<800b7d44>] (do_remount_sb+0xc4/0x120)
-[  375.930782] [<800b7c80>] (do_remount_sb+0x0/0x120) from [<800cff18>] 
-(do_mount+0x224/0x7dc)
-[  375.939186]  r6:00200021 r5:00000000 r4:00000060
-[  375.943891] [<800cfcf4>] (do_mount+0x0/0x7dc) from [<800d055c>] 
-(sys_mount+0x8c/0xcc)
-[  375.951767] [<800d04d0>] (sys_mount+0x0/0xcc) from [<80027fc0>] 
-(ret_fast_syscall+0x0/0x30)
-[  375.960170]  r7:00000015 r6:00000001 r5:00022140 r4:00023048
-[  375.965924] Backtrace:
-[  375.968409] [<8002b4ec>] (dump_backtrace+0x0/0x10c) from [<8034a738>] 
-(dump_stack+0x18/0x1c)
-[  375.976900]  r7:00003000 r6:00000002 r5:8972a000 r4:ffffffe2
-[  375.982654] [<8034a720>] (dump_stack+0x0/0x1c) from [<80159754>] 
-(ubifs_leb_write+0xe8/0x120)
-[  375.991242] [<8015966c>] (ubifs_leb_write+0x0/0x120) from 
-[<80159928>] (ubifs_write_node+0x19c/0x1f8)
-[  376.000518]  r8:00000200 r7:00003000 r6:896c0800 r5:00000002 r4:8972a000
-[  376.007343] [<8015978c>] (ubifs_write_node+0x0/0x1f8) from 
-[<80160580>] (ubifs_write_master+0x11c/0x12c)
-[  376.016888] [<80160464>] (ubifs_write_master+0x0/0x12c) from 
-[<80153b5c>] (ubifs_remount_fs+0x68c/0x81c)
-[  376.026425]  r7:00000003 r6:000001b0 r5:8972a7ac r4:8972a000
-[  376.032175] [<801534d0>] (ubifs_remount_fs+0x0/0x81c) from 
-[<800b7d44>] (do_remount_sb+0xc4/0x120)
-[  376.041196] [<800b7c80>] (do_remount_sb+0x0/0x120) from [<800cff18>] 
-(do_mount+0x224/0x7dc)
-[  376.049600]  r6:00200021 r5:00000000 r4:00000060
-[  376.054305] [<800cfcf4>] (do_mount+0x0/0x7dc) from [<800d055c>] 
-(sys_mount+0x8c/0xcc)
-[  376.062180] [<800d04d0>] (sys_mount+0x0/0xcc) from [<80027fc0>] 
-(ret_fast_syscall+0x0/0x30)
-[  376.070584]  r7:00000015 r6:00000001 r5:00022140 r4:00023048
-[  376.076585] UBIFS: cannot re-mount R/W due to prior errors
-[  376.082748] UBIFS: un-mount UBI device 1, volume 0
-[  376.095799] UBIFS error (pid 2103): ubifs_scan: bad node
-[  376.105554] UBIFS: recovered master node from LEB 1
-============= end snip ========================
-
-Does anything in this output suggest a direction to start digging?  I 
-would really appreciate any direction you could provide.
-
-> But from your description it looks like something related to your
-> system, not UBIFS.
-In spite of this, I appreciate your efforts to assist me.
-
-Best regards,
-
-Russell Zuck
+Tony
+ 
+>  drivers/mtd/nand/omap2.c |   76 +++++++++++++++++++++++++++++-----------------
+>  1 files changed, 48 insertions(+), 28 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+> index f65f7f8..0e9d7b3 100644
+> --- a/drivers/mtd/nand/omap2.c
+> +++ b/drivers/mtd/nand/omap2.c
+> @@ -137,7 +137,8 @@ struct omap_nand_info {
+>  	unsigned long			mem_size;
+>  	struct completion		comp;
+>  	struct dma_chan			*dma;
+> -	int				gpmc_irq;
+> +	int				gpmc_irq_fifo;
+> +	int				gpmc_irq_count;
+>  	enum {
+>  		OMAP_NAND_IO_READ = 0,	/* read */
+>  		OMAP_NAND_IO_WRITE,	/* write */
+> @@ -553,14 +554,12 @@ static irqreturn_t omap_nand_irq(int this_irq, void *dev)
+>  {
+>  	struct omap_nand_info *info = (struct omap_nand_info *) dev;
+>  	u32 bytes;
+> -	u32 irq_stat;
+>  
+> -	irq_stat = gpmc_read_status(GPMC_GET_IRQ_STATUS);
+>  	bytes = readl(info->reg.gpmc_prefetch_status);
+>  	bytes = GPMC_PREFETCH_STATUS_FIFO_CNT(bytes);
+>  	bytes = bytes  & 0xFFFC; /* io in multiple of 4 bytes */
+>  	if (info->iomode == OMAP_NAND_IO_WRITE) { /* checks for write io */
+> -		if (irq_stat & 0x2)
+> +		if (this_irq == info->gpmc_irq_count)
+>  			goto done;
+>  
+>  		if (info->buf_len && (info->buf_len < bytes))
+> @@ -577,20 +576,17 @@ static irqreturn_t omap_nand_irq(int this_irq, void *dev)
+>  						(u32 *)info->buf, bytes >> 2);
+>  		info->buf = info->buf + bytes;
+>  
+> -		if (irq_stat & 0x2)
+> +		if (this_irq == info->gpmc_irq_count)
+>  			goto done;
+>  	}
+> -	gpmc_cs_configure(info->gpmc_cs, GPMC_SET_IRQ_STATUS, irq_stat);
+>  
+>  	return IRQ_HANDLED;
+>  
+>  done:
+>  	complete(&info->comp);
+> -	/* disable irq */
+> -	gpmc_cs_configure(info->gpmc_cs, GPMC_ENABLE_IRQ, 0);
+>  
+> -	/* clear status */
+> -	gpmc_cs_configure(info->gpmc_cs, GPMC_SET_IRQ_STATUS, irq_stat);
+> +	disable_irq_nosync(info->gpmc_irq_fifo);
+> +	disable_irq_nosync(info->gpmc_irq_count);
+>  
+>  	return IRQ_HANDLED;
+>  }
+> @@ -624,9 +620,9 @@ static void omap_read_buf_irq_pref(struct mtd_info *mtd, u_char *buf, int len)
+>  		goto out_copy;
+>  
+>  	info->buf_len = len;
+> -	/* enable irq */
+> -	gpmc_cs_configure(info->gpmc_cs, GPMC_ENABLE_IRQ,
+> -		(GPMC_IRQ_FIFOEVENTENABLE | GPMC_IRQ_COUNT_EVENT));
+> +
+> +	enable_irq(info->gpmc_irq_count);
+> +	enable_irq(info->gpmc_irq_fifo);
+>  
+>  	/* waiting for read to complete */
+>  	wait_for_completion(&info->comp);
+> @@ -674,12 +670,13 @@ static void omap_write_buf_irq_pref(struct mtd_info *mtd,
+>  		goto out_copy;
+>  
+>  	info->buf_len = len;
+> -	/* enable irq */
+> -	gpmc_cs_configure(info->gpmc_cs, GPMC_ENABLE_IRQ,
+> -			(GPMC_IRQ_FIFOEVENTENABLE | GPMC_IRQ_COUNT_EVENT));
+> +
+> +	enable_irq(info->gpmc_irq_count);
+> +	enable_irq(info->gpmc_irq_fifo);
+>  
+>  	/* waiting for write to complete */
+>  	wait_for_completion(&info->comp);
+> +
+>  	/* wait for data to flushed-out before reset the prefetch */
+>  	tim = 0;
+>  	limit = (loops_per_jiffy *  msecs_to_jiffies(OMAP_NAND_TIMEOUT_MS));
+> @@ -1300,9 +1297,6 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
+>  	info->nand.options	= pdata->devsize;
+>  	info->nand.options	|= NAND_SKIP_BBTSCAN;
+>  
+> -	/* NAND write protect off */
+> -	gpmc_cs_configure(info->gpmc_cs, GPMC_CONFIG_WP, 0);
+> -
+>  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>  	if (res == NULL) {
+>  		err = -EINVAL;
+> @@ -1393,17 +1387,37 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
+>  		break;
+>  
+>  	case NAND_OMAP_PREFETCH_IRQ:
+> -		err = request_irq(pdata->gpmc_irq,
+> -				omap_nand_irq, IRQF_SHARED, "gpmc-nand", info);
+> +		info->gpmc_irq_fifo = platform_get_irq(pdev, 0);
+> +		if (info->gpmc_irq_fifo <= 0) {
+> +			dev_err(&pdev->dev, "error getting fifo irq\n");
+> +			goto out_release_mem_region;
+> +		}
+> +		err = request_irq(info->gpmc_irq_fifo,	omap_nand_irq,
+> +					IRQF_SHARED, "gpmc-nand-fifo", info);
+>  		if (err) {
+>  			dev_err(&pdev->dev, "requesting irq(%d) error:%d",
+> -							pdata->gpmc_irq, err);
+> +						info->gpmc_irq_fifo, err);
+> +			info->gpmc_irq_fifo = 0;
+> +			goto out_release_mem_region;
+> +		}
+> +
+> +		info->gpmc_irq_count = platform_get_irq(pdev, 1);
+> +		if (info->gpmc_irq_count <= 0) {
+> +			dev_err(&pdev->dev, "error getting count irq\n");
+> +			goto out_release_mem_region;
+> +		}
+> +		err = request_irq(info->gpmc_irq_count,	omap_nand_irq,
+> +					IRQF_SHARED, "gpmc-nand-count", info);
+> +		if (err) {
+> +			dev_err(&pdev->dev, "requesting irq(%d) error:%d",
+> +						info->gpmc_irq_count, err);
+> +			info->gpmc_irq_count = 0;
+>  			goto out_release_mem_region;
+> -		} else {
+> -			info->gpmc_irq	     = pdata->gpmc_irq;
+> -			info->nand.read_buf  = omap_read_buf_irq_pref;
+> -			info->nand.write_buf = omap_write_buf_irq_pref;
+>  		}
+> +
+> +		info->nand.read_buf  = omap_read_buf_irq_pref;
+> +		info->nand.write_buf = omap_write_buf_irq_pref;
+> +
+>  		break;
+>  
+>  	default:
+> @@ -1491,6 +1505,10 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
+>  out_release_mem_region:
+>  	if (info->dma)
+>  		dma_release_channel(info->dma);
+> +	if (info->gpmc_irq_count > 0)
+> +		free_irq(info->gpmc_irq_count, info);
+> +	if (info->gpmc_irq_fifo > 0)
+> +		free_irq(info->gpmc_irq_fifo, info);
+>  	release_mem_region(info->phys_base, info->mem_size);
+>  out_free_info:
+>  	kfree(info);
+> @@ -1509,8 +1527,10 @@ static int omap_nand_remove(struct platform_device *pdev)
+>  	if (info->dma)
+>  		dma_release_channel(info->dma);
+>  
+> -	if (info->gpmc_irq)
+> -		free_irq(info->gpmc_irq, info);
+> +	if (info->gpmc_irq_count > 0)
+> +		free_irq(info->gpmc_irq_count, info);
+> +	if (info->gpmc_irq_fifo > 0)
+> +		free_irq(info->gpmc_irq_fifo, info);
+>  
+>  	/* Release NAND device, its internal structures and partitions */
+>  	nand_release(&info->mtd);
+> -- 
+> 1.7.1
+> 
