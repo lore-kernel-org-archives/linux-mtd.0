@@ -1,20 +1,20 @@
-Received: from mga14.intel.com ([143.182.124.37])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T4s91-0006ji-0Q
- for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 11:33:44 +0000
-Message-ID: <1345808311.2848.286.camel@sauron.fi.intel.com>
-Subject: Re: ARM: LPC32XX SLC ECC Handling
+ id 1T4sEw-00072w-0y
+ for linux-mtd@lists.infradead.org; Fri, 24 Aug 2012 11:39:50 +0000
+Message-ID: <1345808678.2848.290.camel@sauron.fi.intel.com>
+Subject: Re: [YAFFS] bad block management policy
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Sebastian Huber <sebastian.huber@embedded-brains.de>, Roland Stigge
- <stigge@antcom.de>
-Date: Fri, 24 Aug 2012 14:38:31 +0300
-In-Reply-To: <50222E55.5070204@embedded-brains.de>
-References: <50222E55.5070204@embedded-brains.de>
+To: Peter Barada <peter.barada@gmail.com>
+Date: Fri, 24 Aug 2012 14:44:38 +0300
+In-Reply-To: <5023C82B.3000007@gmail.com>
+References: <CAFV5biDrgbhJ=_FyPd8YrNsnOUpSrCu-vhsq2GfNsbZ9M2F6Rg@mail.gmail.com>
+ <5023C82B.3000007@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-3Ixv5M8yKq69Q/YGSxMc"
+ boundary="=-FLqxXtFJRa0YVxpYbYDL"
 Mime-Version: 1.0
-Cc: Linux MTD <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,30 +26,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-3Ixv5M8yKq69Q/YGSxMc
+--=-FLqxXtFJRa0YVxpYbYDL
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-08-08 at 11:16 +0200, Sebastian Huber wrote:
-> Hi,
->=20
-> the LPC32XX SLC controller has a ECC feature that covers only the main da=
-ta=20
-> area, but not the OOB data.  Is it the responsibility of the user to prot=
-ect=20
-> its OOB data via an ECC?  The LPC32XX MLC controller on the other hand co=
-vers=20
-> the complete OOB data with its ECC.  How can a user determine if it has t=
-o=20
-> protect its OOB data?
+On Thu, 2012-08-09 at 10:24 -0400, Peter Barada wrote:
+> You could modify YAFFS to ignore -EUCLEAN returns from MTD which will
+> prevent YAFFS from marking blocks bad prematurely, but then there is no
+> way to predict when a block is about to wear out and return
+> uncorrectable errors (-EBADMSG).
 
-I guess it is good idea to CC the author of the drivers.
+We recently improved this area and now you also can set the bitflip
+threshold in the MTD so that MTD won't return -EUCLEAN unless the amount
+of bits flipped is larger than the threshold. The idea is that UBI
+scrubs eraseblocks (moves data to different ones) in case of bitflips.
+But 1-bit flips happen so often on some devices, that it is wiser to
+ignore those. So now the driver can set the level on which MTD will
+start returning -EUCLEAN. Below that flip level, it will return 0.
+
+So this also means that if you set the threshold =3D ECC strength, you
+should never even get -EUCLEAN. Not sure it is good idea, but a
+possibility as well.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-3Ixv5M8yKq69Q/YGSxMc
+--=-FLqxXtFJRa0YVxpYbYDL
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -57,19 +60,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQN2e3AAoJECmIfjd9wqK0ivUQALnDBRwEUOgSjsEML2aWuWTI
-/OOuOtPSXZZ2hXmMwvZDcWgYoo0/Ei+g6/Lm+TJPunRBwp5aSGOyr/eKsAyM5VgC
-x/pUJWPpeJlB44jGrBgwQXXaXvagEOcui1HsNDHPFWbbS7uoE3XDmc4aJjqlKdHP
-8quBnGWFMrglKihS6ByfG1D/Asea7T0EX4hJjGeAJLhpg06L9I/WPhtx9m623SFW
-1TYIfCcJiP5UzfGRYvoBfmvgYynIGy1PFfdmkl2C1CXj0imvrrGZexAkGdieDLo0
-sxkGD1KknTDtmP0jqCw753LHQJeFwW1HGENqSR7owYn2sDr1NnFxTvZ2TzrH/xC5
-vDeiS7E9j4XPJJS+eST1pcOPYHru/oBw7GWo6CGFp6xgxjv46VucrY+XnSHKzuIF
-IVHgi0N1m+R4TijD/Iv+Rx4MdcqY1tn4XNj5cDR5oe/BvdYDrpxacf+hW7hTKkH3
-hik3qP3dAC2X+SsGFZA/6hpIcxI9BHuRc/C93thK8BVXsohD9R8uhAC9YUrLkQYY
-7jTQUCd9zkv9e4Fsk3umEpgoB5FQSIVnvbvG3yhwLpJb4TYiqmdXp+5SNfH5riuZ
-9wsVC10U/HwlKGvUOs5OrMY+bLBK8I+ndWbGZ8D4zd9urHOwpWv94b3wmqo47FAq
-4+ZohIBxo46sjpYFpNGt
-=jVm0
+iQIcBAABAgAGBQJQN2kmAAoJECmIfjd9wqK0CDUQAJpEfSO1JTh9ESCGsZ97w0Fl
+YxvJjY3LUfMGGOUNsJiXXAAlsZi1KiJvJNiGgQ5LcwsMX/BEzFM/VIBjkw7V80cn
+deIY7d5V15TW933/fl3+fMKjassOxPglBFJy3XdOCjnvXjiDsbWuUFegus2Fu6eN
+AiuVgosr0cdc3Heahh9d5ZcP5nX+S02T9g3reMtOMD+oE+wAbpA1ahlfo7dVwo1+
+qdwp5IQry2mktbfFn/ZxeVo1tEPEJ30q6P4r3+S2HThjm6pdFsI4u+lgUWw6I3Df
+s7ArI6QCoCfgNV6ODTJuIziqc73lCBowfY/bsEbBEKLAUrA7WbJwqVotHafNlX4e
+PGaOKU0aqujmolp9DycP/JpKplsYrAcSnzpbsx8uCwHmtkuIm0KaJ8iOfzwG5uaU
+ykUIuP7HLV/g7K9AlE04XoU+h/stKQhBY/gJHqtSe6Cs2F9PLEF3Q4CRDl4CtRFD
+CEEqc6h6VjaXq5GRqslv+EmsrlJWG6Fywayig8FOo0lzDZEDQ9QanjolwDzrmyko
+0f3rQVeIVmjj594BtFoVgLEPNAuQD55is6DFgxGpsxtIiHmVxEioPZ8URlQ6fOdv
+B2hUr5Ep1SmbXQBENQG20ADUWo/mP7/Dns+CgpNdgt2ae2WutqsaK4kQnMfxL3Fj
+AKk5wt4YMeS84xdCL84R
+=z0kf
 -----END PGP SIGNATURE-----
 
---=-3Ixv5M8yKq69Q/YGSxMc--
+--=-FLqxXtFJRa0YVxpYbYDL--
