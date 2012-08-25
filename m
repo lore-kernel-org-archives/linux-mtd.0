@@ -1,24 +1,13 @@
-Received: from mail-wi0-f169.google.com ([209.85.212.169])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T5H70-00054x-VF
- for linux-mtd@lists.infradead.org; Sat, 25 Aug 2012 14:13:19 +0000
-Received: by wibhm2 with SMTP id hm2so2332594wib.0
- for <linux-mtd@lists.infradead.org>; Sat, 25 Aug 2012 07:13:16 -0700 (PDT)
-From: Marek Vasut <marek.vasut@gmail.com>
-To: dedekind1@gmail.com
-Subject: Re: [PATCH V4] mtd: m25p80: Make fast read configurable via DT
-Date: Sat, 25 Aug 2012 16:06:48 +0200
-References: <1345729313-10831-1-git-send-email-marex@denx.de>
- <1345899551.1815.10.camel@kyv>
-In-Reply-To: <1345899551.1815.10.camel@kyv>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201208251606.48789.marex@denx.de>
-Cc: robherring2@gmail.com, devicetree-discuss@lists.ozlabs.org,
- linux-mtd@lists.infradead.org, David Woodhouse <david.woodhouse@intel.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Received: from [2a01:4f8:131:30e2::2] (helo=nbd.name)
+ by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1T5IJg-0006oh-2X
+ for linux-mtd@lists.infradead.org; Sat, 25 Aug 2012 15:30:28 +0000
+From: John Crispin <blogic@openwrt.org>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH] MTD: add en25q64 device id
+Date: Sat, 25 Aug 2012 17:28:20 +0200
+Message-Id: <1345908500-21921-1-git-send-email-blogic@openwrt.org>
+Cc: linux-mtd@lists.infradead.org, John Crispin <blogic@openwrt.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,28 +17,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Artem Bityutskiy,
+Trivial patch to add device id and sector/size info for en25q64 spi flash.
 
-> On Thu, 2012-08-23 at 15:41 +0200, Marek Vasut wrote:
-> > Add DT property "m25p,fast-read" that signalises the particular
-> > chip supports "fast read" opcode.
-> > 
-> > Signed-off-by: Marek Vasut <marex@denx.de>
-> > Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> > Cc: David Woodhouse <david.woodhouse@intel.com>
-> 
-> Does not compile if (I think) OF is not enabled.
-> 
-> drivers/mtd/devices/m25p80.c: In function 'm25p_probe':
-> drivers/mtd/devices/m25p80.c:920:2: error: implicit declaration of function
-> 'of_property_read_bool' [-Werror=implicit-function-declaration] cc1: some
-> warnings being treated as errors
-> make[4]: *** [drivers/mtd/devices/m25p80.o] Error 1
+Signed-off-by: John Crispin <blogic@openwrt.org>
+---
+ drivers/mtd/devices/m25p80.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-Argh, of course. Wrapping that part in ifdef CONFIG_OF should do the trick. So 
-much for having CONFIG_OF on all the time.
-
-Thanks!
-
-Best regards,
-Marek Vasut
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 5d0d68c..8260bb6 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -638,6 +638,7 @@ static const struct spi_device_id m25p_ids[] = {
+ 	{ "en25p32", INFO(0x1c2016, 0, 64 * 1024,  64, 0) },
+ 	{ "en25q32b", INFO(0x1c3016, 0, 64 * 1024,  64, 0) },
+ 	{ "en25p64", INFO(0x1c2017, 0, 64 * 1024, 128, 0) },
++	{ "en25q64", INFO(0x1c3017, 0, 64 * 1024, 128, 0) },
+ 
+ 	/* Everspin */
+ 	{ "mr25h256", CAT25_INFO(  32 * 1024, 1, 256, 2) },
+-- 
+1.7.9.1
