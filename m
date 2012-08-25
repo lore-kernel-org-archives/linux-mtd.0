@@ -1,22 +1,23 @@
 Received: from mail-bk0-f49.google.com ([209.85.214.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T5EdE-0007El-El
- for linux-mtd@lists.infradead.org; Sat, 25 Aug 2012 11:34:25 +0000
-Received: by bkcji2 with SMTP id ji2so853440bkc.36
- for <linux-mtd@lists.infradead.org>; Sat, 25 Aug 2012 04:34:22 -0700 (PDT)
-Message-ID: <1345894458.1815.3.camel@kyv>
-Subject: Re: [PATCH 6/6 - Resend] mtd: s3c2410: Fix line over 80 characters
- warning
+ id 1T5ErD-0007cS-GK
+ for linux-mtd@lists.infradead.org; Sat, 25 Aug 2012 11:48:53 +0000
+Received: by bkcji2 with SMTP id ji2so855670bkc.36
+ for <linux-mtd@lists.infradead.org>; Sat, 25 Aug 2012 04:48:49 -0700 (PDT)
+Message-ID: <1345895326.1815.4.camel@kyv>
+Subject: Re: [PATCH v3 10/10] mtd: nand: omap2: use gpmc provided irqs
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Sachin Kamat <sachin.kamat@linaro.org>
-Date: Sat, 25 Aug 2012 14:34:18 +0300
-In-Reply-To: <1345524675-12940-1-git-send-email-sachin.kamat@linaro.org>
-References: <1345524675-12940-1-git-send-email-sachin.kamat@linaro.org>
+To: Afzal Mohammed <afzal@ti.com>
+Date: Sat, 25 Aug 2012 14:48:46 +0300
+In-Reply-To: <c5a608a70a875191e1323958c74fb2ac8dfa34b3.1344609341.git.afzal@ti.com>
+References: <cover.1344609341.git.afzal@ti.com>
+ <c5a608a70a875191e1323958c74fb2ac8dfa34b3.1344609341.git.afzal@ti.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-l4yEYiYT1aPWxs56c00Y"
+ boundary="=-/uxSJ0+p92TXOJM09xU6"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, patches@linaro.org
+Cc: tony@atomide.com, artem.bityutskiy@linux.intel.com, ivan.djelic@parrot.com,
+ linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,23 +29,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-l4yEYiYT1aPWxs56c00Y
+--=-/uxSJ0+p92TXOJM09xU6
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-08-21 at 10:21 +0530, Sachin Kamat wrote:
-> Fixes the following checkpatch warnings:
-> WARNING: line over 80 characters
+On Tue, 2012-08-21 at 15:14 +0530, Afzal Mohammed wrote:
+> GPMC platform initialization provides it's clients
+> with interrupts that can be used through struct
+> resource. Make use of it for irq mode functionality.
 >=20
-> Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+> Also now write protect disable is done by GPMC,
+> hence remove it.
+>=20
+> Signed-off-by: Afzal Mohammed <afzal@ti.com>
 
-Pushed to l2-mtd.git, thanks!
+Acked-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-l4yEYiYT1aPWxs56c00Y
+--=-/uxSJ0+p92TXOJM09xU6
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -52,19 +57,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQOLg6AAoJECmIfjd9wqK0z5wP/iHCFu5Cg3oBdMbNVojb2wMz
-KckKkQGzzQis3VutWYptM9bTcE77rqa+n7jbjVSrE/6sD3opjnv2VZHcS/nQJvUA
-IPWl6/msp9n86HF0QH08NXen8IOMLoWtq7b3etVNtmzX+H4V7pXSR4PhYzeJ0bFt
-lB3h5sY2hDLBpnhPSQQNv+uXz2oPKxLRX+zLZcMsUvbrKbXVpV6ZqDDFxNCXpW4Z
-Z93IKhZLi8k5q926wxvsRe1GmRf8BKgGaiwwoRcPlZNt/Akl7QNe0PvsDIp0s1c6
-9dVSF6oW1cG2ZxHcelHQDj4aDkT9Px0CVXarjudLo1o44fp0/2P+1+zfy70JyK70
-HDVk92lHo0QWhFeF7qx0fKW87zKOwHBG532hWs/IfPPNSPFp1bThH1lpd7oPCa/p
-gP8oZqGzTppUpLQLP8XnA+2e8pe0ddFcBMIXP0YqgiZNjBT178zpGQ9Xgtal6FVq
-l1V37JvRdHJlOPGbb9eN2YPB01iJPU+R5QxWwN/Nmm11jXCKXEEpROT6VwVfe3iw
-X+ReOKCc3krW1JTyHi0eSjMzFS4NuXn9P7kHVaHrl1JU3wJ7q+bXd1lhcoO1ypmH
-G715Ijqa1UAxCklsw9PfCPYrAcJgJKJMhl3N47GOuRMDS+26gidaigZpwERqypMV
-8Oa4cTm2F4H6s/VijwEi
-=q8Ps
+iQIcBAABAgAGBQJQOLueAAoJECmIfjd9wqK0YwQP/232SMimRqDgehn69+IwaLsI
+AI1Yaqe2SGUNe69iMdcFBLckCB7nHpstSNWYka6QRtpmsfBD3rcvXEXq04cneSz2
+t8PZXHnq0aeuVakVt/t0GIiSfKgngIagfBBCRhKYtyh1P59RLKB+UfQfCA7YeVE5
+57MDx1RAK9bz228uaIHEukvtaidvxgA3ZeMMrmm4u8BkgElCAkIvgPuIWoFfu9Qe
+8T3iuF2jJff6QEisSpFNjLmKX6UdjQYY0njiHhPimSa8moWZrsCTuZDKPqCC7ZMx
+2XFor6SGn7d716/dZYnhC4KDI9FHVpD5PihWoh3hkaXRLAM0SLUCiI6jE6r3JlfE
+CwnZ0tYwCc9aXOE8GG04fYnaySt9JbfykT/yMSag2q3gIxzkJiiEM239CpqH+wpF
+2/A9iTjm1Vwlxpr3wyw045XoQ8J19PeXPew/jLmQzJp0zBn4O9N0X5yMyscmw64m
+AhfutzvXjE3wntYIxNQZs0PYK97XyGZsCGfKimkjlo79fX+rWgvlM1fN/yrgdvG9
+zqmZeHLM0Q4fOl4dzwprPRXqXAEFJEKqbbjLHowzLyXJwlkyhNyu/dPLvEF0fdu6
+eyrgmT5RDlixJHV0sD7c68bpjp6VrxPrAYBdSYEuMvQhScfx6YzHqpQqITw9IZ15
+H8cts8G4zLW9YqrGd0r1
+=/nwL
 -----END PGP SIGNATURE-----
 
---=-l4yEYiYT1aPWxs56c00Y--
+--=-/uxSJ0+p92TXOJM09xU6--
