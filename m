@@ -1,21 +1,24 @@
 Received: from mail-bk0-f49.google.com ([209.85.214.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T5E7y-0006Kl-Hp
- for linux-mtd@lists.infradead.org; Sat, 25 Aug 2012 11:02:07 +0000
-Received: by bkcji2 with SMTP id ji2so848634bkc.36
- for <linux-mtd@lists.infradead.org>; Sat, 25 Aug 2012 04:02:03 -0700 (PDT)
-Message-ID: <1345892510.1815.0.camel@kyv>
-Subject: Re: [PATCH] MTD: fix kernel-doc warning in include/linux/mtd/nand.h
+ id 1T5EAj-0006S1-HW
+ for linux-mtd@lists.infradead.org; Sat, 25 Aug 2012 11:04:58 +0000
+Received: by bkcji2 with SMTP id ji2so849073bkc.36
+ for <linux-mtd@lists.infradead.org>; Sat, 25 Aug 2012 04:04:56 -0700 (PDT)
+Message-ID: <1345892692.1815.1.camel@kyv>
+Subject: Re: [PATCH 7/14] drivers/mtd/maps/rbtx4939-flash.c: delete unneeded
+ test
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Randy Dunlap <rdunlap@xenotime.net>
-Date: Sat, 25 Aug 2012 14:01:50 +0300
-In-Reply-To: <5030363F.3010505@xenotime.net>
-References: <5030363F.3010505@xenotime.net>
+To: Julia Lawall <Julia.Lawall@lip6.fr>
+Date: Sat, 25 Aug 2012 14:04:52 +0300
+In-Reply-To: <1345365870-29831-8-git-send-email-Julia.Lawall@lip6.fr>
+References: <1345365870-29831-1-git-send-email-Julia.Lawall@lip6.fr>
+ <1345365870-29831-8-git-send-email-Julia.Lawall@lip6.fr>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-z6vH2Oi4UIEW4PAzAXq4"
+ boundary="=-rstieTBhcE4zXoZVHmDP"
 Mime-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Cc: kernel-janitors@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,27 +30,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-z6vH2Oi4UIEW4PAzAXq4
+--=-rstieTBhcE4zXoZVHmDP
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, 2012-08-18 at 17:41 -0700, Randy Dunlap wrote:
-> From: Randy Dunlap <rdunlap@xenotime.net>
+On Sun, 2012-08-19 at 10:44 +0200, Julia Lawall wrote:
+> From: Julia Lawall <Julia.Lawall@lip6.fr>
 >=20
-> Fix kernel-doc warning in <linux/mtd/nand.h>:
+> Err has only been initialized to 0 at this, so it is not possible that th=
+is
+> test can be true.
 >=20
-> Warning(include/linux/mtd/nand.h:659): No description found for parameter=
- 'read_byte'
->=20
-> Signed-off-by: Randy Dunlap <rdunlap@xenotime.net>
+> A simplified version of the semantic match that finds this problem is as
+> follows: (http://coccinelle.lip6.fr/)
 
-Pushed to l2-mtd.git, thanks!
+Pushed to l2-mt.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-z6vH2Oi4UIEW4PAzAXq4
+--=-rstieTBhcE4zXoZVHmDP
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -55,19 +58,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQOLCeAAoJECmIfjd9wqK0ZgkQAJEU6SQH+2aSu3MekXjfHWUc
-cv0X4D6wrKvULB1UlpqsSSTf/pAX90Xy30TNqrZFUQGq+epqm/wlgdDCUWekUTc5
-/FDxVxg9WGtiInU+5whdcbPeu7lO0ksyugZqt3xBMwEOicZaY6WTb8ADcRWVxYPm
-QJDmDTbCEqpdj4eG39cSwCIFd9X6G55hjDWgNTjFSEOqd9+tY6v/MuitoihUqKdZ
-fHi/Lsl1DmVaLVBynFtHmOGe19mSBPaljCZag+G6UCrIa2I2v4kjNuPwngG3Xvvv
-90+2Uuzzmow5uZFXPGtI8iQzefX148VzewUWUXVBlsmRDfVfkQ6tAlLBFwwxxDxi
-RBcYwlT342aBGX+iC9e6NJ/3hQAdb32jexVZg3FEggDjXnMYRzmoYZDb3o7UOdib
-0oe7NiRNGoGYoH+lbsRUaUdMvN1CFP4Ft4cgNBoaxsfEgio74OCAsxFCFu/yTKGF
-OJYt+YsMmWEtj79/sVM+EP03nFtyIRK3ngy9aom0xqDl4V4X2sHqmgMLo7OyGAiU
-F9R7eNzNLGjMri400Q/9hg20hYHkZWyKHqQQ7/1frBP+Sw5HVwVc13L7iIU3jDcy
-b1OIUq6u3BkXJu617mnPL/UQm1wiqwz+WXDygdnjTyn0dC/9zZIC3ecDMtPvFUpv
-zb22EzHdGKLQiBnPYYHa
-=Bwao
+iQIcBAABAgAGBQJQOLFUAAoJECmIfjd9wqK024IP/Ra7ygyqMPeCbTaRUUVTP7G2
+mNMuCqahzZJaB1oGHt0aqHM53T715nyR7Tip4k0C/k4uOTQ3y5ClTrLyIhNTVoFJ
+zanj7osxapaxO97GNwcb5NhJZOAxoCepEFG42h0U3MPDkQzQlNRVzN6Aj4b8v/I6
+6nAlgAslwQZRyU2Zp95o4O4VvxmCTeRckSN+XyXvT/8+UnbTohvQkuAl9DIMSWGm
+kU39EFGDSbMH7Yh3sUkRYLgbjHyHbCt70GL6cjKsrS5Py+NH0vOg3q0nBWitLD9t
+PR+80D9NpRlcuEu9aBvHeuvV8sjgNz6qwiyqa+b4FuVFaUAm07ikaP/LyGmyki0u
+p2/ORzwa2bMerbPfREu10Q+FpIV7sMCP0zn6HBgHeSHOgOZ2I2Xl0FYH4pQ1qnHK
+9IUeeXqm18izmktnZC7xzigcXUsQ8f+UKxsqp9AmzPvuFNs+fp5i8PCycLMc4JE9
+H6MO7UGbctDvh5Lu7AHVkV9cCegaHKdRRGsjMDYO8OeQ9PZrOOy8O4+yhrTy/nBn
+MYJGkRIhgG7pInKfRHvLAYfTiIk1pYrulyNshIWRf1TD0v0clJHQIMq58xo/TZX5
+AeV0Sff2nWDx+SFftgq/2AgTRx6loljGdCE6XwAVQiPB7FwcHEpslOXJ4z6cDNNF
+XuJnMU9bMAw7oRPMmo2g
+=xMxu
 -----END PGP SIGNATURE-----
 
---=-z6vH2Oi4UIEW4PAzAXq4--
+--=-rstieTBhcE4zXoZVHmDP--
