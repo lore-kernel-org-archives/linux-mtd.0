@@ -1,19 +1,20 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-ee0-f49.google.com ([74.125.83.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T5NAC-0001F1-TD
- for linux-mtd@lists.infradead.org; Sat, 25 Aug 2012 20:41:02 +0000
-From: Marek Vasut <marex@denx.de>
-To: Kevin Cernekee <cernekee@gmail.com>
-Subject: Re: [PATCH V5] mtd: m25p80: Make fast read configurable via DT
-Date: Sat, 25 Aug 2012 22:40:54 +0200
+ id 1T5OVE-00023a-Ve
+ for linux-mtd@lists.infradead.org; Sat, 25 Aug 2012 22:06:49 +0000
+Received: by eekc13 with SMTP id c13so963854eek.36
+ for <linux-mtd@lists.infradead.org>; Sat, 25 Aug 2012 15:06:46 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <201208252240.54932.marex@denx.de>
 References: <1345923416-9293-1-git-send-email-marex@denx.de>
  <CAJiQ=7BAH_87jrDCG=Jbw7ezsezFWrBv+eUkoH5jGmeV9tQiYQ@mail.gmail.com>
-In-Reply-To: <CAJiQ=7BAH_87jrDCG=Jbw7ezsezFWrBv+eUkoH5jGmeV9tQiYQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201208252240.54932.marex@denx.de>
+ <201208252240.54932.marex@denx.de>
+Date: Sat, 25 Aug 2012 15:06:46 -0700
+Message-ID: <CAJiQ=7BCaV7jx9yjJiEQ8RUuqHdUV0x7_gxZM97KKytVVS3ZUA@mail.gmail.com>
+Subject: Re: [PATCH V5] mtd: m25p80: Make fast read configurable via DT
+From: Kevin Cernekee <cernekee@gmail.com>
+To: Marek Vasut <marex@denx.de>
+Content-Type: text/plain; charset=UTF-8
 Cc: David Woodhouse <david.woodhouse@intel.com>, dedekind1@gmail.com,
  Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
  devicetree-discuss@lists.ozlabs.org, robherring2@gmail.com,
@@ -27,57 +28,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Kevin Cernekee,
+On Sat, Aug 25, 2012 at 1:40 PM, Marek Vasut <marex@denx.de> wrote:
+>> Are there any modern SPI flash parts that can't handle FAST_READ, or
+>> is this mostly for compatibility with legacy systems?
+>
+> We have to support all possibilities, not only "modern systems" .
 
-> On Sat, Aug 25, 2012 at 12:36 PM, Marek Vasut <marex@denx.de> wrote:
-> > Add DT property "m25p,fast-read" that signalises the particular
-> > chip supports "fast read" opcode.
-> 
-> This might be slightly clearer if it is rephrased as:
-> 
-> Add DT property "m25p,fast-read" that signifies whether the "fast
-> read" opcode is supported.
+If the !FAST_READ option only exists to support a tiny number of rare,
+ancient flash chips, then it's probably worth pointing that out to the
+user in the help text.  Similar to "most users will say 'N' here" in
+Kconfig.  Or the help text for CONFIG_MTD_NAND_MUSEUM_IDS.
 
-What's the difference?
+> Good, but I don't see it supported in the driver, how is this different from
+> MX25L256E?
 
-> > +Optional properties:
-> > +- m25p,fast-read : Use the "fast read" opcode to read data from the chip
-> > instead +                   of the usual "read" opcode. This opcode isn
-> > not supported by +                   all chips and support for it can
-> > not be detected at runtime.
-> 
-> "is not supported"
+> They can be added as additional DT props, that should be easy.
 
-Thanks
+It's easy to add new features to m25p80, but it's hard to change DT
+properties once they are widely used.  They will be baked into
+bootloader images and could be utilized by non-Linux operating
+systems.
 
-> Are there any modern SPI flash parts that can't handle FAST_READ, or
-> is this mostly for compatibility with legacy systems?
-
-We have to support all possibilities, not only "modern systems" .
-
-> > +       bool                    fast_read;
-> > 
-> > -       t[0].len = m25p_cmdsz(flash) + FAST_READ_DUMMY_BYTE;
-> > +       t[0].len = m25p_cmdsz(flash) + (flash->fast_read ? 1 : 0);
-> 
-> Newer devices support a variable number of dummy cycles; increasing
-> the number of dummy cycles can allow for higher interface speeds.  One
-> example is the Macronix MX25L25635F:
-> 
-> http://bit.ly/P9s7UM
-
-Good, but I don't see it supported in the driver, how is this different from 
-MX25L256E?
-
-Besides, I noticed the fast-read isn't even properly excersized, as it always 
-reads blocks of 512 bytes, even if it can read any basically length. Why is 
-that, MTD layer stuff or something?
-
-> It might be worth thinking about how to capture this sort of
-> information in the DT properties, even if current versions of m25p80
-> only use a small subset of the device capabilities.
-
-They can be added as additional DT props, that should be easy.
-
-Best regards,
-Marek Vasut
+If we already know today that a boolean property is insufficient for
+current generations of SPI flash chips, it would not be a good thing
+to write it in stone now and be forced to hack around it later.
