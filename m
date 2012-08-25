@@ -1,20 +1,21 @@
 Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T53sx-0002T3-AE
- for linux-mtd@lists.infradead.org; Sat, 25 Aug 2012 00:05:56 +0000
-Received: by lagu2 with SMTP id u2so1403800lag.36
- for <linux-mtd@lists.infradead.org>; Fri, 24 Aug 2012 17:05:46 -0700 (PDT)
+ id 1T5452-0002kk-Ai
+ for linux-mtd@lists.infradead.org; Sat, 25 Aug 2012 00:18:24 +0000
+Received: by lagu2 with SMTP id u2so1407338lag.36
+ for <linux-mtd@lists.infradead.org>; Fri, 24 Aug 2012 17:18:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1345809360.2848.296.camel@sauron.fi.intel.com>
-References: <1344893730-11345-1-git-send-email-jeff.westfahl@ni.com>
- <1345809360.2848.296.camel@sauron.fi.intel.com>
-Date: Fri, 24 Aug 2012 17:05:45 -0700
-Message-ID: <CAN8TOE-aU=Z2CXiV0RO_zudbivCwnyQhghr5S7FdgHCe4cMZug@mail.gmail.com>
-Subject: Re: [PATCH] mtd: nand: Added a device flag for subpage read support
+In-Reply-To: <20120820162915.7f93e6c4@pixies.home.jungo.com>
+References: <20120820162915.7f93e6c4@pixies.home.jungo.com>
+Date: Fri, 24 Aug 2012 17:18:22 -0700
+Message-ID: <CAN8TOE8ato4XkhHerKBHL_FHr+36yH5F0sVqReZQtDDZTY6jig@mail.gmail.com>
+Subject: Re: [PATCH] mtd: nand: Rename create_bbt()'s 'len' variable to
+ 'numpages'
 From: Brian Norris <computersforpeace@gmail.com>
-To: dedekind1@gmail.com
+To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org, Jeff Westfahl <jeff.westfahl@ni.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,26 +25,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Aug 24, 2012 at 4:56 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Mon, 2012-08-13 at 16:35 -0500, Jeff Westfahl wrote:
->> Added a NAND device flag for subpage read support. Previously this was
->> hard coded based on large page and soft ECC.
->> Updated base NAND driver to use the new subpage read flag if the NAND is
->> large page and soft ECC.
->>
->> Signed-off-by: Jeff Westfahl <jeff.westfahl@ni.com>
+On Mon, Aug 20, 2012 at 6:29 AM, Shmulik Ladkani
+<shmulik.ladkani@gmail.com> wrote:
+> Rename 'len' variable of create_bbt/scan_block_fast/scan_block_full to
+> 'numpages', since it really means number of pages to scan when
+> searching for the BBM (and not the byte length of the scan).
 >
-> Brian, would you have a chance to review this patch?
+> Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 
-Yes, I can try. I'll give it a little more thought on Monday.
+Thanks, this kind of fix is actually very helpful! It's kinda annoying
+that I always have to translate in my head the fact that 'len' means
+'number of pages.' And now that you mention it, I should have just
+changed this myself a long time ago :)
 
-But I have an initial question: why do you need this patch?
-Specifically, is there a driver you have that supports/needs this
-change? Right now, your new flag won't be used for anything new.
+BTW, some (all?) of this might die if I (or Matthieu) ever end up
+polishing Matthieu's patches to utilize nand_chip->block_bad instead
+of much of this code. But that's no issue.
 
-Side note: I have always thought that it was strange to have
-subpage-read support only baked into SOFT_ECC mode. There are
-presumably many potential applications in which a non-SOFT_ECC system
-could read partial pages safely.
+I'm not sure what goes here. Acked-by? Reviewed-by? Gladly-welcomed-by?
 
-Brian
+Reviewed-by: Brian Norris <computersforpeace@gmail.com>
