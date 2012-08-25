@@ -1,16 +1,23 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
+Received: from mail-we0-f177.google.com ([74.125.82.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T5BN3-0002Nh-5J
- for linux-mtd@lists.infradead.org; Sat, 25 Aug 2012 08:05:30 +0000
-Received: by pbbrq8 with SMTP id rq8so4901617pbb.36
- for <linux-mtd@lists.infradead.org>; Sat, 25 Aug 2012 01:05:28 -0700 (PDT)
-From: Huang Shijie <shijie8@gmail.com>
-To: dwmw2@infradead.org
-Subject: [PATCH v2] mtd: cmdlinepart: fix the wrong check condition
-Date: Sat, 25 Aug 2012 16:06:50 -0400
-Message-Id: <1345925210-7500-1-git-send-email-shijie8@gmail.com>
-Cc: Huang Shijie <shijie8@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, dedekind1@gmail.com
+ id 1T5BkU-0003QZ-4E
+ for linux-mtd@lists.infradead.org; Sat, 25 Aug 2012 08:29:42 +0000
+Received: by weyr3 with SMTP id r3so1517347wey.36
+ for <linux-mtd@lists.infradead.org>; Sat, 25 Aug 2012 01:29:38 -0700 (PDT)
+Date: Sat, 25 Aug 2012 11:32:29 +0300
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd: nand: Rename create_bbt()'s 'len' variable to
+ 'numpages'
+Message-ID: <20120825113229.0c28f460@halley>
+In-Reply-To: <CAN8TOE8ato4XkhHerKBHL_FHr+36yH5F0sVqReZQtDDZTY6jig@mail.gmail.com>
+References: <20120820162915.7f93e6c4@pixies.home.jungo.com>
+ <CAN8TOE8ato4XkhHerKBHL_FHr+36yH5F0sVqReZQtDDZTY6jig@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,53 +27,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The `mtd_id` is set by the name of a mtd device driver.
+On Fri, 24 Aug 2012 17:18:22 -0700 Brian Norris <computersforpeace@gmail.com> wrote:
+> On Mon, Aug 20, 2012 at 6:29 AM, Shmulik Ladkani
+> Thanks, this kind of fix is actually very helpful! It's kinda annoying
+> that I always have to translate in my head the fact that 'len' means
+> 'number of pages.'
 
-As a nand controller driver, even we do not set the @name of
-the mtd_info{}, the nand_get_flash_type() will set it with
-the nand type's name. So the `mtd_id` can never be NULL in this
-case.
+Exactly.
 
-But as a nor controller driver which may does not call the
-nand_get_flash_type(), there is a risk that the `mtd_id` becames NULL.
+It was triggered from reviewing some of the latest bbt patches; I was
+summarizing on a _paper_: "len is numpages, scanlen is ... readlen is ..."
+and I thought to myself, isn't this crazy?
 
-If the `mtd_id` is NULL, the check condition will be true.
-If we accidentally set some partitions in the kernel command line,
-just like:
-          #gpmi-nand:20m(boot),20m(kernel),1g(rootfs),-(user)
+So yes, naming is important ;-)
 
-The cmdlinepart may parses out several mtd partitions right now.
-This is obviously wrong. We even do not enable the gpmi-nand in
-this case.
+(BTW scanlen and readlen are annoying, too... but they don't have a
+concise meaning)
 
-The patch comes from Artem's suggestion code which is better then mine.
-
-Signed-off-by: Huang Shijie <shijie8@gmail.com>
----
- drivers/mtd/cmdlinepart.c |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
-
-diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
-index fc960a3..216d751 100644
---- a/drivers/mtd/cmdlinepart.c
-+++ b/drivers/mtd/cmdlinepart.c
-@@ -322,13 +322,16 @@ static int parse_cmdline_partitions(struct mtd_info *master,
- 	struct cmdline_mtd_partition *part;
- 	const char *mtd_id = master->name;
- 
-+	if (!mtd_id)
-+		return 0;
-+
- 	/* parse command line */
- 	if (!cmdline_parsed)
- 		mtdpart_setup_real(cmdline);
- 
- 	for(part = partitions; part; part = part->next)
- 	{
--		if ((!mtd_id) || (!strcmp(part->mtd_id, mtd_id)))
-+		if (!strcmp(part->mtd_id, mtd_id))
- 		{
- 			for(i = 0, offset = 0; i < part->num_parts; i++)
- 			{
--- 
-1.7.4.4
+Regards,
+Shmulik
