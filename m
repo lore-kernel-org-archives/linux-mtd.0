@@ -1,21 +1,17 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T5452-0002kk-Ai
- for linux-mtd@lists.infradead.org; Sat, 25 Aug 2012 00:18:24 +0000
-Received: by lagu2 with SMTP id u2so1407338lag.36
- for <linux-mtd@lists.infradead.org>; Fri, 24 Aug 2012 17:18:22 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20120820162915.7f93e6c4@pixies.home.jungo.com>
-References: <20120820162915.7f93e6c4@pixies.home.jungo.com>
-Date: Fri, 24 Aug 2012 17:18:22 -0700
-Message-ID: <CAN8TOE8ato4XkhHerKBHL_FHr+36yH5F0sVqReZQtDDZTY6jig@mail.gmail.com>
-Subject: Re: [PATCH] mtd: nand: Rename create_bbt()'s 'len' variable to
- 'numpages'
-From: Brian Norris <computersforpeace@gmail.com>
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+ id 1T563N-0003pU-J5
+ for linux-mtd@lists.infradead.org; Sat, 25 Aug 2012 02:24:50 +0000
+Received: by pbbrq8 with SMTP id rq8so4582190pbb.36
+ for <linux-mtd@lists.infradead.org>; Fri, 24 Aug 2012 19:24:47 -0700 (PDT)
+From: Huang Shijie <shijie8@gmail.com>
+To: dwmw2@infradead.org
+Subject: [PATCH v2] mtd: cmdlinepart: fix the wrong partitions number when
+ truncating occurs
+Date: Sat, 25 Aug 2012 10:26:07 -0400
+Message-Id: <1345904767-23011-1-git-send-email-shijie8@gmail.com>
+Cc: Huang Shijie <shijie8@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,23 +21,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 20, 2012 at 6:29 AM, Shmulik Ladkani
-<shmulik.ladkani@gmail.com> wrote:
-> Rename 'len' variable of create_bbt/scan_block_fast/scan_block_full to
-> 'numpages', since it really means number of pages to scan when
-> searching for the BBM (and not the byte length of the scan).
->
-> Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Assume we have a 1GB(8Gb) nand chip, and we set the partitions
+in the command line like this:
+    #gpmi-nand:100m(boot),100m(kernel),1g(rootfs)
 
-Thanks, this kind of fix is actually very helpful! It's kinda annoying
-that I always have to translate in my head the fact that 'len' means
-'number of pages.' And now that you mention it, I should have just
-changed this myself a long time ago :)
+In this case, the partition truncating occurs. The current code will
+get the following result:
 
-BTW, some (all?) of this might die if I (or Matthieu) ever end up
-polishing Matthieu's patches to utilize nand_chip->block_bad instead
-of much of this code. But that's no issue.
+     ----------------------------------
+	root@freescale ~$ cat /proc/mtd
+	dev:    size   erasesize  name
+	mtd0: 06400000 00040000 "boot"
+	mtd1: 06400000 00040000 "kernel"
+     ----------------------------------
 
-I'm not sure what goes here. Acked-by? Reviewed-by? Gladly-welcomed-by?
+It is obvious that we lost the truncated partition `rootfs` which should
+be 824M in this case.
 
-Reviewed-by: Brian Norris <computersforpeace@gmail.com>
+Why? The old code sets the wrong partitions number when the truncating
+occurs. This patch fixes it. Alao add a `break` to shortcut the code in this
+case.
+
+After apply this patch, the result becomes:
+     ----------------------------------
+	root@freescale ~$ cat /proc/mtd
+	dev:    size   erasesize  name
+	mtd0: 06400000 00040000 "boot"
+	mtd1: 06400000 00040000 "kernel"
+	mtd2: 33800000 00040000 "rootfs"
+     ----------------------------------
+
+We get the right result.
+
+Signed-off-by: Huang Shijie <shijie8@gmail.com>
+---
+v1 --> v2:
+	[1] add more commit info.
+---
+ drivers/mtd/cmdlinepart.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
+index 4558e0f..fc960a3 100644
+--- a/drivers/mtd/cmdlinepart.c
++++ b/drivers/mtd/cmdlinepart.c
+@@ -344,7 +344,8 @@ static int parse_cmdline_partitions(struct mtd_info *master,
+ 					       "%s: partitioning exceeds flash size, truncating\n",
+ 					       part->mtd_id);
+ 					part->parts[i].size = master->size - offset;
+-					part->num_parts = i;
++					part->num_parts = i + 1;
++					break;
+ 				}
+ 				offset += part->parts[i].size;
+ 			}
+-- 
+1.7.4.4
