@@ -1,19 +1,23 @@
-Message-ID: <1345898007.1815.7.camel@kyv>
-Subject: Re: [PATCH RESEND] mtd: lpc32xx_mlc: Make driver independent of
- AMBA DMA engine driver
+Received: from mail-bk0-f49.google.com ([209.85.214.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1T5FxM-0003Oa-Oc
+ for linux-mtd@lists.infradead.org; Sat, 25 Aug 2012 12:59:18 +0000
+Received: by bkcji2 with SMTP id ji2so865940bkc.36
+ for <linux-mtd@lists.infradead.org>; Sat, 25 Aug 2012 05:59:14 -0700 (PDT)
+Message-ID: <1345899551.1815.10.camel@kyv>
+Subject: Re: [PATCH V4] mtd: m25p80: Make fast read configurable via DT
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Roland Stigge <stigge@antcom.de>
-Date: Sat, 25 Aug 2012 15:33:27 +0300
-In-Reply-To: <1345674311-16874-1-git-send-email-stigge@antcom.de>
-References: <1345674311-16874-1-git-send-email-stigge@antcom.de>
+To: Marek Vasut <marex@denx.de>
+Date: Sat, 25 Aug 2012 15:59:11 +0300
+In-Reply-To: <1345729313-10831-1-git-send-email-marex@denx.de>
+References: <1345729313-10831-1-git-send-email-marex@denx.de>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-YtalSsIduH1DYI8aqfD+"
+ boundary="=-NIFaTN8RsQYwqnzWZC6I"
 Mime-Version: 1.0
-Cc: srinivas.bakki@nxp.com, linux@arm.linux.org.uk, arnd@arndb.de,
- artem.bityutskiy@linux.intel.com, linux-kernel@vger.kernel.org,
- kevin.wells@nxp.com, linux-mtd@lists.infradead.org, aletes.xgr@gmail.com,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+Cc: robherring2@gmail.com, devicetree-discuss@lists.ozlabs.org,
+ linux-mtd@lists.infradead.org, David Woodhouse <david.woodhouse@intel.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,29 +29,31 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-YtalSsIduH1DYI8aqfD+
+--=-NIFaTN8RsQYwqnzWZC6I
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-08-23 at 00:25 +0200, Roland Stigge wrote:
-> This patch makes the MLC NAND driver independent of the single AMBA DMA e=
-ngine
-> driver by using the platform data provided dma_filter callback.
+On Thu, 2012-08-23 at 15:41 +0200, Marek Vasut wrote:
+> Add DT property "m25p,fast-read" that signalises the particular
+> chip supports "fast read" opcode.
 >=20
-> (This also fixes the build error of the MLC NAND driver in case of module
-> linking because the (not exported) reference to pl08x_filter_id is gone n=
-ow.)
->=20
-> Signed-off-by: Roland Stigge <stigge@antcom.de>
+> Signed-off-by: Marek Vasut <marex@denx.de>
+> Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+> Cc: David Woodhouse <david.woodhouse@intel.com>
 
-I already have both patches in l2-mtd.git. Please, use it as the
-baseline for sending patches.
+Does not compile if (I think) OF is not enabled.
+
+drivers/mtd/devices/m25p80.c: In function 'm25p_probe':
+drivers/mtd/devices/m25p80.c:920:2: error: implicit declaration of function=
+ 'of_property_read_bool' [-Werror=3Dimplicit-function-declaration]
+cc1: some warnings being treated as errors
+make[4]: *** [drivers/mtd/devices/m25p80.o] Error 1
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-YtalSsIduH1DYI8aqfD+
+--=-NIFaTN8RsQYwqnzWZC6I
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -55,19 +61,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQOMYXAAoJECmIfjd9wqK0tJ4QAJzM2TfKrH/UpkUl68kBJhHX
-ik82K60COESYZGlVKWGd9Bs9NK7kvU3sjGS87JDhqOtvvM6+wWYOAtHOgQlLkhjh
-85ynlApubyCn+NrvDt1CwDin94elv62yvVW0uTMTmDwN6VMlo81uaXGsrvnTof5F
-XiUe4M6MYr5GFQNDe2f4+VVat9Bz+Ox21hKKZPGfFXc/bqdi3M7t6wnDe1vovAsK
-i/vBzl608kikXMMJyNAlMS0GH7zxaGrjnqeFCLbFxkgDGr8lRu28qX+8QIExzHvD
-BpbesYtH2Sf6Z/ppzpjX2eM0dconzQSsDBJkDgPu3TJQW1Jft9uoDXOzBhe2Um92
-pUEuubWspZ3cbJw6sMnsJuOBp06nrW4S9rNs1IqoQw03o8vKjGX3CusCcDFI5N6s
-AAc9YXKP9Kt3lJIuWgF6/7O4Ag3+7yPF7owyvS4B2s2e2WpRbKYNiFaNOMDHMbDr
-TbzWXDTHKNUlQ8EYPI2v09NJEIn80YoJ5yF4OWIEGYNrs+Xn0Cn8JOEy8QrjPieP
-rCJ20SRAuly32kQt3KdhJf0EfiWDdgc6DLX11z8aswhQCYzS6dl/lzhGtDsT573i
-7WX9M9Zgt74YGmIcqOY8IvfM/9PhWYJKRMJnA1vpeVs6b+OVAA+GzzoCu0ZU+58x
-SpmkL7yBaiwiiB74kQlA
-=4ueD
+iQIcBAABAgAGBQJQOMwgAAoJECmIfjd9wqK0DpQP/RKNBx5i/Flns+aZhkZg5qK4
+2iis9i6cIxu9HFlIczNIK/QgdvEGyOAHNpv9rwvY1qwQLkZ22NCHvsfBh/KqhXsg
+sNyURLXDDRvm0UxMY13v6BpXCTIdMkQPE60TTd6OzeVo1CP2PoNHVllRjyVNm9ku
+w9cUkyHXzP8CqRjIXwHK1B4bcmNOLeuSWWyeQsr8UH4CMLaVqULedZw+DjwgN8Ge
+LloIyPC1ivfRKHKEzF8G4cCoIgVjstAibAXhFGyKoR53YVkjg0YUOdnzKm3iQ1fg
+Ghtd8esv/fGCscYc+k375N7xJ3PYn0ry95bu0Ak2OrazLIrlKlZJxt6yA+U/0jCt
+NivxsmIWzvo+ldT1kfqq/QPo26joarwpJasudw1s5n1FsVSaAOBqYiUaJY6eouqb
+EcxhH1LJXCoty+OMwDlJH/7yeppGQU1uNxnqBlARx9/0iE/rtRcwEMq8THssESGf
+svQeczUBM2HURXghN2HE55cmO578iAm0uvFbsNuovMS2Fzq+KwjTCEGN6r2dYBzk
+gaLWZaMMP946iSE8RuEeLuG/F/a7WwQ5zrmtfA5d8XUTomPoQWzz+vxN09DveIq+
+/VqgMyOTn3KjQO7LGxd+jeAOUVZcnm4Ggn9wWOzAiGzLbNgpa7YJtT0pwkpdNTzE
+QfzSKuuNuQH4Q3AWMmX3
+=HKud
 -----END PGP SIGNATURE-----
 
---=-YtalSsIduH1DYI8aqfD+--
+--=-NIFaTN8RsQYwqnzWZC6I--
