@@ -1,18 +1,15 @@
-Received: from mail-wi0-f177.google.com ([209.85.212.177])
+Received: from mail-out.m-online.net ([212.18.0.9])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T5LRL-0007lc-HQ
- for linux-mtd@lists.infradead.org; Sat, 25 Aug 2012 18:50:36 +0000
-Received: by wibhn17 with SMTP id hn17so1472635wib.0
- for <linux-mtd@lists.infradead.org>; Sat, 25 Aug 2012 11:50:33 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+ id 1T5MBO-0008W1-7T
+ for linux-mtd@lists.infradead.org; Sat, 25 Aug 2012 19:38:12 +0000
+From: Marek Vasut <marex@denx.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH V2] mtd: bcm47part driver for BCM47XX chipsets
-Date: Sat, 25 Aug 2012 20:50:52 +0200
-Message-Id: <1345920652-11728-1-git-send-email-zajec5@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+Subject: [PATCH V5] mtd: m25p80: Make fast read configurable via DT
+Date: Sat, 25 Aug 2012 21:36:56 +0200
+Message-Id: <1345923416-9293-1-git-send-email-marex@denx.de>
+Cc: Marek Vasut <marex@denx.de>, David Woodhouse <david.woodhouse@intel.com>,
+ dedekind1@gmail.com, Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ devicetree-discuss@lists.ozlabs.org, robherring2@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,253 +19,161 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This driver provides parser detecting partitions on BCM47XX flash
-memories. It has many differences in comparision to older BCM63XX, like:
-1) Different CFE with no more trivial MAGICs
-2) More partitions types (board_data, ML, POT)
-3) Supporting more than 1 flash on a device
-which resulted in decision of writing new parser.
+Add DT property "m25p,fast-read" that signalises the particular
+chip supports "fast read" opcode.
 
-It uses generic mtd interface and was successfully tested with Netgear
-WNDR4500 router which has 2 flash memories: serial one and NAND one.
-
-Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Cc: David Woodhouse <david.woodhouse@intel.com>
 ---
-V2: 1) Add support for more partitinos (ML and POT)
-    2) Optimize: don't scan whole flash (like up to 128 MiB)
-    3) Optimize: don't scan TRX partitions after detecting header
----
- drivers/mtd/Kconfig     |    4 +
- drivers/mtd/Makefile    |    1 +
- drivers/mtd/bcm47part.c |  193 +++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 198 insertions(+), 0 deletions(-)
- create mode 100644 drivers/mtd/bcm47part.c
+ Documentation/devicetree/bindings/mtd/m25p80.txt |   29 ++++++++++++++++++
+ drivers/mtd/devices/m25p80.c                     |   34 +++++++++++++---------
+ 2 files changed, 50 insertions(+), 13 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/m25p80.txt
 
-diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index 27143e0..0cd4096 100644
---- a/drivers/mtd/Kconfig
-+++ b/drivers/mtd/Kconfig
-@@ -148,6 +148,10 @@ config MTD_BCM63XX_PARTS
- 	  This provides partions parsing for BCM63xx devices with CFE
- 	  bootloaders.
- 
-+config MTD_BCM47_PARTS
-+	tristate "BCM47XX partitioning support"
-+	depends on BCM47XX
-+
- comment "User Modules And Translation Layers"
- 
- config MTD_CHAR
-diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
-index f901354..dac90e6 100644
---- a/drivers/mtd/Makefile
-+++ b/drivers/mtd/Makefile
-@@ -12,6 +12,7 @@ obj-$(CONFIG_MTD_CMDLINE_PARTS) += cmdlinepart.o
- obj-$(CONFIG_MTD_AFS_PARTS)	+= afs.o
- obj-$(CONFIG_MTD_AR7_PARTS)	+= ar7part.o
- obj-$(CONFIG_MTD_BCM63XX_PARTS)	+= bcm63xxpart.o
-+obj-$(CONFIG_MTD_BCM47_PARTS)	+= bcm47part.o
- 
- # 'Users' - code which presents functionality to userspace.
- obj-$(CONFIG_MTD_CHAR)		+= mtdchar.o
-diff --git a/drivers/mtd/bcm47part.c b/drivers/mtd/bcm47part.c
+V2: Add documentation for the DT property.
+V3: Use of_property_get_bool() instead of of_find_property().
+V4: Adjust the documentation's "compatible:" section, make it not
+    Linux-specific, but keep the reference to Linux's list of
+    supported devices. Also, use the default name, spansion,m25p80
+    in the example.
+V5: Enclose of_property_read_bool() into CONFIG_OF for systems that do not
+    use OF / Device Tree .
+
+diff --git a/Documentation/devicetree/bindings/mtd/m25p80.txt b/Documentation/devicetree/bindings/mtd/m25p80.txt
 new file mode 100644
-index 0000000..29c6828
+index 0000000..701bb58
 --- /dev/null
-+++ b/drivers/mtd/bcm47part.c
-@@ -0,0 +1,193 @@
-+/*
-+ * BCM47XX MTD partitioning
-+ *
-+ * Copyright (C) 2012 Rafał Miłecki <zajec5@gmail.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ */
++++ b/Documentation/devicetree/bindings/mtd/m25p80.txt
+@@ -0,0 +1,29 @@
++* MTD SPI driver for ST M25Pxx (and similar) serial flash chips
 +
-+#include <linux/module.h>
-+#include <linux/kernel.h>
-+#include <linux/slab.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/partitions.h>
-+#include <asm/mach-bcm47xx/nvram.h>
++Required properties:
++- #address-cells, #size-cells : Must be present if the device has sub-nodes
++  representing partitions.
++- compatible : Should be the manufacturer and the name of the chip. Bear in mind
++               the DT binding is not Linux-only, but in case of Linux, see the
++               "m25p_ids" table in drivers/mtd/devices/m25p80.c for the list of
++               supported chips.
++- reg : Chip-Select number
++- spi-max-frequency : Maximum frequency of the SPI bus the chip can operate at
 +
-+/* 10 parts were found on sflash on Netgear WNDR4500 */
-+#define BCM47PART_MAX_PARTS		12
++Optional properties:
++- m25p,fast-read : Use the "fast read" opcode to read data from the chip instead
++                   of the usual "read" opcode. This opcode isn not supported by
++                   all chips and support for it can not be detected at runtime.
++                   Refer to your chips' datasheet to check if this is supported
++                   by your chip.
 +
-+/* Amount of bytes we read when analyzing each block of flash memory.
-+ * Set it big enough to allow detecting partition and reading important data. */
-+#define BCM47PART_BYTES_TO_READ		0x401
++Example:
 +
-+#define TRX_MAGIC			0x30524448
++	flash: m25p80@0 {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		compatible = "spansion,m25p80";
++		reg = <0>;
++		spi-max-frequency = <40000000>;
++		m25p,fast-read;
++	};
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index d16f75c..c433051 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -73,14 +73,6 @@
+ #define	MAX_READY_WAIT_JIFFIES	(40 * HZ)	/* M25P16 specs 40s max chip erase */
+ #define	MAX_CMD_SIZE		5
+ 
+-#ifdef CONFIG_M25PXX_USE_FAST_READ
+-#define OPCODE_READ 	OPCODE_FAST_READ
+-#define FAST_READ_DUMMY_BYTE 1
+-#else
+-#define OPCODE_READ 	OPCODE_NORM_READ
+-#define FAST_READ_DUMMY_BYTE 0
+-#endif
+-
+ #define JEDEC_MFR(_jedec_id)	((_jedec_id) >> 16)
+ 
+ /****************************************************************************/
+@@ -93,6 +85,7 @@ struct m25p {
+ 	u16			addr_width;
+ 	u8			erase_opcode;
+ 	u8			*command;
++	bool			fast_read;
+ };
+ 
+ static inline struct m25p *mtd_to_m25p(struct mtd_info *mtd)
+@@ -342,6 +335,7 @@ static int m25p80_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	struct m25p *flash = mtd_to_m25p(mtd);
+ 	struct spi_transfer t[2];
+ 	struct spi_message m;
++	uint8_t opcode;
+ 
+ 	pr_debug("%s: %s from 0x%08x, len %zd\n", dev_name(&flash->spi->dev),
+ 			__func__, (u32)from, len);
+@@ -354,7 +348,7 @@ static int m25p80_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	 * Should add 1 byte DUMMY_BYTE.
+ 	 */
+ 	t[0].tx_buf = flash->command;
+-	t[0].len = m25p_cmdsz(flash) + FAST_READ_DUMMY_BYTE;
++	t[0].len = m25p_cmdsz(flash) + (flash->fast_read ? 1 : 0);
+ 	spi_message_add_tail(&t[0], &m);
+ 
+ 	t[1].rx_buf = buf;
+@@ -376,12 +370,14 @@ static int m25p80_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	 */
+ 
+ 	/* Set up the write data buffer. */
+-	flash->command[0] = OPCODE_READ;
++	opcode = flash->fast_read ? OPCODE_FAST_READ : OPCODE_NORM_READ;
++	flash->command[0] = opcode;
+ 	m25p_addr2cmd(flash, from, flash->command);
+ 
+ 	spi_sync(flash->spi, &m);
+ 
+-	*retlen = m.actual_length - m25p_cmdsz(flash) - FAST_READ_DUMMY_BYTE;
++	*retlen = m.actual_length - m25p_cmdsz(flash) -
++			(flash->fast_read ? 1 : 0);
+ 
+ 	mutex_unlock(&flash->lock);
+ 
+@@ -804,9 +800,10 @@ static int __devinit m25p_probe(struct spi_device *spi)
+ 	struct flash_info		*info;
+ 	unsigned			i;
+ 	struct mtd_part_parser_data	ppdata;
++	struct device_node		*np = spi->dev.of_node;
+ 
+ #ifdef CONFIG_MTD_OF_PARTS
+-	if (!of_device_is_available(spi->dev.of_node))
++	if (!of_device_is_available(np))
+ 		return -ENODEV;
+ #endif
+ 
+@@ -858,7 +855,8 @@ static int __devinit m25p_probe(struct spi_device *spi)
+ 	flash = kzalloc(sizeof *flash, GFP_KERNEL);
+ 	if (!flash)
+ 		return -ENOMEM;
+-	flash->command = kmalloc(MAX_CMD_SIZE + FAST_READ_DUMMY_BYTE, GFP_KERNEL);
++	flash->command = kmalloc(MAX_CMD_SIZE + (flash->fast_read ? 1 : 0),
++					GFP_KERNEL);
+ 	if (!flash->command) {
+ 		kfree(flash);
+ 		return -ENOMEM;
+@@ -915,6 +913,16 @@ static int __devinit m25p_probe(struct spi_device *spi)
+ 	flash->page_size = info->page_size;
+ 	flash->mtd.writebufsize = flash->page_size;
+ 
++	flash->fast_read = false;
++#ifdef CONFIG_OF
++	if (np && of_property_read_bool(np, "m25p,fast-read"))
++		flash->fast_read = true;
++#endif
 +
-+struct trx_header {
-+	u32 magic;
-+	u32 length;
-+	u32 crc32;
-+	u16 flags;
-+	u16 version;
-+	u32 offset[3];
-+} __packed;
++#ifdef CONFIG_M25PXX_USE_FAST_READ
++	flash->fast_read = true;
++#endif
 +
-+static int bcm47part_parse(struct mtd_info *master,
-+			   struct mtd_partition **pparts,
-+			   struct mtd_part_parser_data *data)
-+{
-+	struct mtd_partition *parts;
-+	u8 i, curr_part = 0;
-+	u8 *buf;
-+	u32 *fourcc, *fourcc2;
-+	size_t bytes_read;
-+	u32 offset;
-+	u32 blocksize = 0x10000;
-+	struct trx_header *trx;
-+
-+	/* Alloc */
-+	parts = kzalloc(sizeof(struct mtd_partition) * BCM47PART_MAX_PARTS,
-+			GFP_KERNEL);
-+	buf = kzalloc(sizeof(*buf) * BCM47PART_BYTES_TO_READ, GFP_KERNEL);
-+
-+	/* Parse block by block looking for magics */
-+	for (offset = 0; offset <= master->size - blocksize;
-+	     offset += blocksize) {
-+		/* Nothing more in higher memory */
-+		if (offset >= 0x2000000)
-+			break;
-+
-+		/* Read beginning of the block */
-+		if (mtd_read(master, offset, BCM47PART_BYTES_TO_READ,
-+		    &bytes_read, buf) < 0) {
-+			pr_err("mtd_read error while parsing (offset: 0x%X)!\n",
-+			       offset);
-+			continue;
-+		}
-+
-+		/* CFE has small NVRAM at 0x400 */
-+		fourcc = (u32 *)&buf[0x400];
-+		if (*fourcc == NVRAM_HEADER) {
-+			parts[curr_part].name = "boot";
-+			parts[curr_part].mask_flags = MTD_WRITEABLE;
-+			parts[curr_part].offset = offset;
-+			curr_part++;
-+		}
-+
-+		/* Standard NVRAM */
-+		fourcc = (u32 *)&buf[0x000];
-+		if (*fourcc == NVRAM_HEADER) {
-+			parts[curr_part].name = "nvram";
-+			parts[curr_part].mask_flags = MTD_WRITEABLE;
-+			parts[curr_part].offset = offset;
-+			curr_part++;
-+		}
-+
-+		/* board_data starts with board_id which differs across boards,
-+		 * but we can use 'MPFR' (hopefully) magic at 0x100 */
-+		fourcc = (u32 *)&buf[0x100];
-+		if (*fourcc == 0x5246504D) { /* MPFR */
-+			parts[curr_part].name = "board_data";
-+			parts[curr_part].mask_flags = MTD_WRITEABLE;
-+			parts[curr_part].offset = offset;
-+			curr_part++;
-+		}
-+
-+		/* POT(TOP) */
-+		fourcc = (u32 *)&buf[0x000];
-+		fourcc2 = (u32 *)&buf[0x004];
-+		if (*fourcc == 0x54544f50 &&		 /* POTT */
-+		    (*fourcc2 & 0xFFFF) == 0x504f) {	 /* OP */
-+			parts[curr_part].name = "POT";
-+			parts[curr_part].mask_flags = MTD_WRITEABLE;
-+			parts[curr_part].offset = offset;
-+			curr_part++;
-+		}
-+
-+		/* ML */
-+		fourcc = (u32 *)&buf[0x010];
-+		fourcc2 = (u32 *)&buf[0x014];
-+		if (*fourcc == 0x39685a42 && *fourcc2 == 0x26594131) {
-+			parts[curr_part].name = "ML";
-+			parts[curr_part].mask_flags = MTD_WRITEABLE;
-+			parts[curr_part].offset = offset;
-+			curr_part++;
-+		}
-+
-+		/* TRX */
-+		fourcc = (u32 *)&buf[0x000];
-+		if (*fourcc == TRX_MAGIC) {
-+			trx = (struct trx_header *)buf;
-+
-+			i = 0;
-+			/* We have LZMA loader if offset[2] points to sth */
-+			if (trx->offset[2]) {
-+				/* TODO: should we add LZMA loader partition? */
-+				i++;
-+			}
-+
-+			parts[curr_part].name = "linux";
-+			parts[curr_part].mask_flags = MTD_WRITEABLE;
-+			parts[curr_part].offset = offset + trx->offset[i];
-+			curr_part++;
-+			i++;
-+
-+			parts[curr_part].name = "rootfs";
-+			parts[curr_part].mask_flags = MTD_WRITEABLE;
-+			parts[curr_part].offset = offset + trx->offset[i];
-+			/* Pure rootfs size is known and can be calculated as:
-+			 * trx->length - trx->offset[i]. We don't fill it as
-+			 * we want to have jffs2 (overlay) in the same mtd. */
-+			curr_part++;
-+			i++;
-+
-+			/* We have whole TRX scanned, skip to the next part. Use
-+			 * roundown (not roundup), as the loop will increase
-+			 * offset in next step. */
-+			offset = rounddown(offset + trx->length, blocksize);
-+		}
-+
-+		if (curr_part == BCM47PART_MAX_PARTS) {
-+			pr_warn("Reached maximum number of partitions, scanning stopped!\n");
-+			break;
-+		}
-+	}
-+
-+	/* We can't read sizes of some (most of) partitions. Assume that
-+	 * these partitions end at the beginning of the one they are
-+	 * followed by. */
-+	for (i = 0; i < curr_part - 1; i++) {
-+		if (parts[i].size == 0)
-+			parts[i].size = parts[i + 1].offset - parts[i].offset;
-+	}
-+	if (curr_part > 0 && parts[curr_part - 1].size == 0)
-+		parts[curr_part - 1].size =
-+				master->size - parts[curr_part - 1].offset;
-+
-+	*pparts = parts;
-+	return curr_part;
-+};
-+
-+static struct mtd_part_parser bcm47part_mtd_parser = {
-+	.owner = THIS_MODULE,
-+	.parse_fn = bcm47part_parse,
-+	.name = "bcm47part",
-+};
-+
-+static int __init bcm47part_init(void)
-+{
-+	return register_mtd_parser(&bcm47part_mtd_parser);
-+}
-+
-+static void __exit bcm47part_exit(void)
-+{
-+	deregister_mtd_parser(&bcm47part_mtd_parser);
-+}
-+
-+module_init(bcm47part_init);
-+module_exit(bcm47part_exit);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("MTD partitioning for BCM47XX flash memories");
+ 	if (info->addr_width)
+ 		flash->addr_width = info->addr_width;
+ 	else {
 -- 
-1.7.7
+1.7.10.4
