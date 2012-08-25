@@ -1,24 +1,22 @@
-Received: from mail-wg0-f49.google.com ([74.125.82.49])
+Received: from mail-bk0-f49.google.com ([209.85.214.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T5CqT-0005P3-MF
- for linux-mtd@lists.infradead.org; Sat, 25 Aug 2012 09:39:58 +0000
-Received: by wgbdt14 with SMTP id dt14so742654wgb.18
- for <linux-mtd@lists.infradead.org>; Sat, 25 Aug 2012 02:39:54 -0700 (PDT)
-Date: Sat, 25 Aug 2012 12:42:49 +0300
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: Huang Shijie <shijie8@gmail.com>
-Subject: Re: [PATCH v2] mtd: cmdlinepart: fix the wrong partitions number
- when truncating occurs
-Message-ID: <20120825124249.6aab8f9e@halley>
-In-Reply-To: <CAMiH66HyfNEzEHGyZUcLJ_01PNVHqA44fjAqXsyM2c-HHms8hQ@mail.gmail.com>
-References: <1345904767-23011-1-git-send-email-shijie8@gmail.com>
- <20120825120231.73577d6a@halley>
- <CAMiH66HyfNEzEHGyZUcLJ_01PNVHqA44fjAqXsyM2c-HHms8hQ@mail.gmail.com>
+ id 1T5E7y-0006Kl-Hp
+ for linux-mtd@lists.infradead.org; Sat, 25 Aug 2012 11:02:07 +0000
+Received: by bkcji2 with SMTP id ji2so848634bkc.36
+ for <linux-mtd@lists.infradead.org>; Sat, 25 Aug 2012 04:02:03 -0700 (PDT)
+Message-ID: <1345892510.1815.0.camel@kyv>
+Subject: Re: [PATCH] MTD: fix kernel-doc warning in include/linux/mtd/nand.h
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Randy Dunlap <rdunlap@xenotime.net>
+Date: Sat, 25 Aug 2012 14:01:50 +0300
+In-Reply-To: <5030363F.3010505@xenotime.net>
+References: <5030363F.3010505@xenotime.net>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-z6vH2Oi4UIEW4PAzAXq4"
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org, dedekind1@gmail.com
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,28 +26,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 25 Aug 2012 05:26:51 -0400 Huang Shijie <shijie8@gmail.com> wrote:
-> > The specified cmdline partitions might not be ordered (according to
-> > start offset), so next partition specified after the truncated one might
-> > define a partition at the beginning of the device, which is okay
-> > (regardless the truncation of current partition).
-> could you please give me an example of this specified cmdline?
 
-Assume we have a 1GB(8Gb) nand chip:
-  #gpmi-nand:1g@200m(rootfs),100m@0(boot),100m@100m(kernel)
+--=-z6vH2Oi4UIEW4PAzAXq4
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-I am used to explicitly specify size@offset for all my parts.
+On Sat, 2012-08-18 at 17:41 -0700, Randy Dunlap wrote:
+> From: Randy Dunlap <rdunlap@xenotime.net>
+>=20
+> Fix kernel-doc warning in <linux/mtd/nand.h>:
+>=20
+> Warning(include/linux/mtd/nand.h:659): No description found for parameter=
+ 'read_byte'
+>=20
+> Signed-off-by: Randy Dunlap <rdunlap@xenotime.net>
 
-Obviously I won't define a partition above the device size... somewhat
-hypothetical discussion here...
+Pushed to l2-mtd.git, thanks!
 
-But your code will stop after creating 'rootfs' (and original code will
-not create a single partition).
+--=20
+Best Regards,
+Artem Bityutskiy
 
-Is that what we want?
+--=-z6vH2Oi4UIEW4PAzAXq4
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-Or do we want to truncate 'rootfs', but still have the valid 'boot' and
-'kerner' partitions?
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-Regards,
-Shmulik
+iQIcBAABAgAGBQJQOLCeAAoJECmIfjd9wqK0ZgkQAJEU6SQH+2aSu3MekXjfHWUc
+cv0X4D6wrKvULB1UlpqsSSTf/pAX90Xy30TNqrZFUQGq+epqm/wlgdDCUWekUTc5
+/FDxVxg9WGtiInU+5whdcbPeu7lO0ksyugZqt3xBMwEOicZaY6WTb8ADcRWVxYPm
+QJDmDTbCEqpdj4eG39cSwCIFd9X6G55hjDWgNTjFSEOqd9+tY6v/MuitoihUqKdZ
+fHi/Lsl1DmVaLVBynFtHmOGe19mSBPaljCZag+G6UCrIa2I2v4kjNuPwngG3Xvvv
+90+2Uuzzmow5uZFXPGtI8iQzefX148VzewUWUXVBlsmRDfVfkQ6tAlLBFwwxxDxi
+RBcYwlT342aBGX+iC9e6NJ/3hQAdb32jexVZg3FEggDjXnMYRzmoYZDb3o7UOdib
+0oe7NiRNGoGYoH+lbsRUaUdMvN1CFP4Ft4cgNBoaxsfEgio74OCAsxFCFu/yTKGF
+OJYt+YsMmWEtj79/sVM+EP03nFtyIRK3ngy9aom0xqDl4V4X2sHqmgMLo7OyGAiU
+F9R7eNzNLGjMri400Q/9hg20hYHkZWyKHqQQ7/1frBP+Sw5HVwVc13L7iIU3jDcy
+b1OIUq6u3BkXJu617mnPL/UQm1wiqwz+WXDygdnjTyn0dC/9zZIC3ecDMtPvFUpv
+zb22EzHdGKLQiBnPYYHa
+=Bwao
+-----END PGP SIGNATURE-----
+
+--=-z6vH2Oi4UIEW4PAzAXq4--
