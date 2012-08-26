@@ -1,14 +1,17 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
+Received: from mail-pz0-f49.google.com ([209.85.210.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T5bcm-0007yA-II
+ id 1T5bcm-0007yB-LM
  for linux-mtd@lists.infradead.org; Sun, 26 Aug 2012 12:07:29 +0000
-Received: by pbbrq8 with SMTP id rq8so6170319pbb.36
- for <linux-mtd@lists.infradead.org>; Sun, 26 Aug 2012 05:07:25 -0700 (PDT)
+Received: by dajq27 with SMTP id q27so1923561daj.36
+ for <linux-mtd@lists.infradead.org>; Sun, 26 Aug 2012 05:07:26 -0700 (PDT)
 From: Akinobu Mita <akinobu.mita@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH v2 0/6] mtd: mtd_nandecctest: add more tests
-Date: Sun, 26 Aug 2012 21:06:42 +0900
-Message-Id: <1345982808-11440-1-git-send-email-akinobu.mita@gmail.com>
+Subject: [PATCH v2 1/6] mtd: mtd_nandecctest: remove unnecessary srandom32()
+ call
+Date: Sun, 26 Aug 2012 21:06:43 +0900
+Message-Id: <1345982808-11440-2-git-send-email-akinobu.mita@gmail.com>
+In-Reply-To: <1345982808-11440-1-git-send-email-akinobu.mita@gmail.com>
+References: <1345982808-11440-1-git-send-email-akinobu.mita@gmail.com>
 Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
  David Woodhouse <dwmw2@infradead.org>, Akinobu Mita <akinobu.mita@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,27 +23,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch series adds several tests cases to mtd_nandecctest module
-and includes two minor changes.
+It is unnecessary for this driver to call srandom32() in module_init.
 
-Changelog
-* v2
-- split one patch into smaller patches
-
-Akinobu Mita (6):
-  mtd: mtd_nandecctest: remove unnecessary srandom32() call
-  mtd: mtd_nandecctest: make module_init() return an error code if test
-    fails
-  mtd: mtd_nandecctest: rewrite the test routine
-  mtd: mtd_nandecctest: add no corruption test
-  mtd: mtd_nandecctest: add single bit error correction test
-  mtd: mtd_nandecctest: add double bit error detection tests
-
- drivers/mtd/tests/mtd_nandecctest.c | 280 +++++++++++++++++++++++++++++++-----
- 1 file changed, 248 insertions(+), 32 deletions(-)
-
+Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: linux-mtd@lists.infradead.org
 Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+---
+ drivers/mtd/tests/mtd_nandecctest.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/drivers/mtd/tests/mtd_nandecctest.c b/drivers/mtd/tests/mtd_nandecctest.c
+index 70d6d7d..4d7b171 100644
+--- a/drivers/mtd/tests/mtd_nandecctest.c
++++ b/drivers/mtd/tests/mtd_nandecctest.c
+@@ -66,8 +66,6 @@ static int nand_ecc_test(const size_t size)
+ 
+ static int __init ecc_test_init(void)
+ {
+-	srandom32(jiffies);
+-
+ 	nand_ecc_test(256);
+ 	nand_ecc_test(512);
+ 
 -- 
 1.7.11.4
