@@ -1,16 +1,19 @@
-Received: from nm16-vm0.bullet.mail.ird.yahoo.com ([77.238.189.192])
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T5bPT-0007fG-T0
- for linux-mtd@lists.infradead.org; Sun, 26 Aug 2012 11:53:44 +0000
-Message-ID: <1345982021.10135.YahooMailNeo@web29304.mail.ird.yahoo.com>
-Date: Sun, 26 Aug 2012 12:53:41 +0100 (BST)
-From: Tu Beaufort <pagerstbr@yahoo.com>
-Subject: Hello, My name is Tu!
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Reply-To: Tu Beaufort <tu.beaufort@yahoo.com>
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1T5bcm-0007yC-IK
+ for linux-mtd@lists.infradead.org; Sun, 26 Aug 2012 12:07:29 +0000
+Received: by pbbrq8 with SMTP id rq8so6170345pbb.36
+ for <linux-mtd@lists.infradead.org>; Sun, 26 Aug 2012 05:07:27 -0700 (PDT)
+From: Akinobu Mita <akinobu.mita@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH v2 2/6] mtd: mtd_nandecctest: make module_init() return an
+ error code if test fails
+Date: Sun, 26 Aug 2012 21:06:44 +0900
+Message-Id: <1345982808-11440-3-git-send-email-akinobu.mita@gmail.com>
+In-Reply-To: <1345982808-11440-1-git-send-email-akinobu.mita@gmail.com>
+References: <1345982808-11440-1-git-send-email-akinobu.mita@gmail.com>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ David Woodhouse <dwmw2@infradead.org>, Akinobu Mita <akinobu.mita@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,10 +23,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello, I'm Tu. I know nothing about u=0AI accidently came across your accou=
-nt at a dating site and to tell the truth I was impressed by your pictures.=
- So I thought that I should write to you.)=0AMe and my BF decided to take a=
- break in our relationships. We're not going to be together probably. So, I=
- thought that it is not bad to find someone special this time who can satis=
-fy me in all the meanings.=0AYou're not against meeting new people, are you=
-?) So, It would be great to see ur answer soon)
+Return an error code if test fails in order to detect a test case failure
+by invoking tests repeatedly like this:
+
+while sudo modprobe mtd_nandecctest; do
+	sudo modprobe -r mtd_nandecctest
+done
+
+Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+---
+ drivers/mtd/tests/mtd_nandecctest.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/tests/mtd_nandecctest.c b/drivers/mtd/tests/mtd_nandecctest.c
+index 4d7b171..f71ed92 100644
+--- a/drivers/mtd/tests/mtd_nandecctest.c
++++ b/drivers/mtd/tests/mtd_nandecctest.c
+@@ -66,10 +66,13 @@ static int nand_ecc_test(const size_t size)
+ 
+ static int __init ecc_test_init(void)
+ {
+-	nand_ecc_test(256);
+-	nand_ecc_test(512);
++	int err;
+ 
+-	return 0;
++	err = nand_ecc_test(256);
++	if (err)
++		return err;
++
++	return nand_ecc_test(512);
+ }
+ 
+ static void __exit ecc_test_exit(void)
+-- 
+1.7.11.4
