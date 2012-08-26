@@ -1,14 +1,16 @@
 Received: from mail-pb0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T5VGx-0008HS-3H
- for linux-mtd@lists.infradead.org; Sun, 26 Aug 2012 05:20:31 +0000
-Received: by pbbrq8 with SMTP id rq8so5882968pbb.36
- for <linux-mtd@lists.infradead.org>; Sat, 25 Aug 2012 22:20:27 -0700 (PDT)
+ id 1T5VGy-0008Hc-4O
+ for linux-mtd@lists.infradead.org; Sun, 26 Aug 2012 05:20:32 +0000
+Received: by pbbrq8 with SMTP id rq8so5883036pbb.36
+ for <linux-mtd@lists.infradead.org>; Sat, 25 Aug 2012 22:20:31 -0700 (PDT)
 From: Huang Shijie <shijie8@gmail.com>
 To: dwmw2@infradead.org
-Subject: [PATCH 1/3] mtd: cmdlinepart: make the partitions rule more strict
-Date: Sun, 26 Aug 2012 13:21:38 -0400
-Message-Id: <1346001700-26895-1-git-send-email-shijie8@gmail.com>
+Subject: [PATCH 2/3] mtd: cmdlinepart: sort the unsorted partitions
+Date: Sun, 26 Aug 2012 13:21:39 -0400
+Message-Id: <1346001700-26895-2-git-send-email-shijie8@gmail.com>
+In-Reply-To: <1346001700-26895-1-git-send-email-shijie8@gmail.com>
+References: <1346001700-26895-1-git-send-email-shijie8@gmail.com>
 Cc: Huang Shijie <shijie8@gmail.com>, shmulik.ladkani@gmail.com,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  dedekind1@gmail.com
@@ -21,46 +23,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There are typically two types to set the mtd partitions:
-
-<1> set with the `size`, such as
-    gpmi-nand:100m(boot),100m(kernel),1g(rootfs)
-
-<2> set with the `offset`, such as
-    gpmi-nand:100m@0(boot),100m@100m(kernel),1g@200m(rootfs)
+Assume we have a 1GB(8Gb) nand chip.
+It is legit if we set the partitions as the following:
     gpmi-nand:1g@200m(rootfs),100m@0(boot),100m@100m(kernel)
 
-If we mix these two types, such as:
-     gpmi-nand:100m@0(boot),100m(kernel),1g@200m(rootfs)
-     gpmi-nand:1g@200m(rootfs),100m@0(boot),100m(kernel)
+But the current code can not parse out any partition with this
+cmdline.
 
-It's hard to understand the cmdline. And also it is hard to sort the
-partitions in this mixed type. So we explicitly forbid the mixed type.
+This patch sorts the unsorted partitions by the @offset.
+For there are maybe only several partitions, i use the simple
+Bubble sort algorithm.
 
 Signed-off-by: Huang Shijie <shijie8@gmail.com>
 ---
- drivers/mtd/cmdlinepart.c |    9 +++++++++
- 1 files changed, 9 insertions(+), 0 deletions(-)
+ drivers/mtd/cmdlinepart.c |   29 +++++++++++++++++++++++++++++
+ 1 files changed, 29 insertions(+), 0 deletions(-)
 
 diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
-index fe7e3a5..0b7b2ad 100644
+index 0b7b2ad..f40d390 100644
 --- a/drivers/mtd/cmdlinepart.c
 +++ b/drivers/mtd/cmdlinepart.c
-@@ -35,6 +35,15 @@
-  *
-  * 1 NOR Flash with 2 partitions, 1 NAND with one
-  * edb7312-nor:256k(ARMboot)ro,-(root);edb7312-nand:-(home)
-+ *
-+ * Note:
-+ * If you choose to set the @offset for the <partdef>, please set all
-+ * the partitions with the same syntax, such as:
-+ *     gpmi-nand:100m@0(boot),100m@100m(kernel),1g@200m(rootfs)
-+ *
-+ * Please do _NOT_ set the partitions like this:
-+ *     gpmi-nand:100m@0(boot),100m(kernel),1g@200m(rootfs)
-+ * The `kernel` partition does not set with the @offset, this is not permitted.
-  */
+@@ -234,6 +234,32 @@ static struct mtd_partition * newpart(char *s,
+ 	return parts;
+ }
  
- #include <linux/kernel.h>
++/* There are only several partitions, so the Bubble sort is enough. */
++static inline void sort_partitons(struct mtd_partition *parts, int num_parts)
++{
++	int i, j;
++
++	if (num_parts < 2)
++		return;
++
++	if (parts[0].offset == OFFSET_CONTINUOUS)
++		return;
++
++	/* sort by the offset */
++	for (i = 0; i < num_parts - 1; i++) {
++		for (j = 1; j < num_parts - i; j++) {
++			if (parts[j - 1].offset > parts[j].offset) {
++				struct mtd_partition tmp;
++
++				tmp = parts[j - 1];
++				parts[j - 1] = parts[j];
++				parts[j] = tmp;
++			}
++		}
++	}
++	return;
++}
++
+ /*
+  * Parse the command line.
+  */
+@@ -292,6 +318,9 @@ static int mtdpart_setup_real(char *s)
+ 		this_mtd->mtd_id = (char*)(this_mtd + 1);
+ 		strlcpy(this_mtd->mtd_id, mtd_id, mtd_id_len + 1);
+ 
++		/* sort the partitions */
++		sort_partitons(parts, num_parts);
++
+ 		/* link into chain */
+ 		this_mtd->next = partitions;
+ 		partitions = this_mtd;
 -- 
 1.7.4.4
