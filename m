@@ -1,24 +1,26 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T5wQg-0002XN-VH
- for linux-mtd@lists.infradead.org; Mon, 27 Aug 2012 10:20:23 +0000
-Received: by lagu2 with SMTP id u2so2293507lag.36
- for <linux-mtd@lists.infradead.org>; Mon, 27 Aug 2012 03:20:19 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1346060377.2848.345.camel@sauron.fi.intel.com>
+Received: from mga03.intel.com ([143.182.124.21])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1T5wjU-00074g-Co
+ for linux-mtd@lists.infradead.org; Mon, 27 Aug 2012 10:39:49 +0000
+Message-ID: <1346064282.2848.356.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH MTD-UTILS v2 3/4] ubiattach: introduce max_beb_per1024
+ in UBI_IOCATT
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Richard Genoud <richard.genoud@gmail.com>
+Date: Mon, 27 Aug 2012 13:44:42 +0300
+In-Reply-To: <CACQ1gAhUFSK-a2cL-Bp-nf2RFNC_hH7u3dSmTq5u+61jUt35mw@mail.gmail.com>
 References: <1345651477-5301-1-git-send-email-richard.genoud@gmail.com>
  <1345651477-5301-4-git-send-email-richard.genoud@gmail.com>
  <1345714184.2848.220.camel@sauron.fi.intel.com>
  <CACQ1gAi4uJkiYyfUsnv-k9M8Me1ROzCbe6msoLV=4qn=gL0tTA@mail.gmail.com>
  <1346060377.2848.345.camel@sauron.fi.intel.com>
-From: Richard Genoud <richard.genoud@gmail.com>
-Date: Mon, 27 Aug 2012 12:19:58 +0200
-Message-ID: <CACQ1gAhUFSK-a2cL-Bp-nf2RFNC_hH7u3dSmTq5u+61jUt35mw@mail.gmail.com>
-Subject: Re: [PATCH MTD-UTILS v2 3/4] ubiattach: introduce max_beb_per1024 in
- UBI_IOCATT
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
+ <CACQ1gAhUFSK-a2cL-Bp-nf2RFNC_hH7u3dSmTq5u+61jUt35mw@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-DG6K5DWNccIIfNpvOqQ5"
+Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,30 +30,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2012/8/27 Artem Bityutskiy <dedekind1@gmail.com>:
-> On Mon, 2012-08-27 at 09:23 +0200, Richard Genoud wrote:
->> Could you push your git to mtd-utils so that I can test the final
->> version, please ?
->
-> It is pushed, the latest commit is:
->
-> commit 9d8751b3f5c6358b6167c38899f1e41498d24a45
-> Author: Richard Genoud <richard.genoud@gmail.com>
-> Date:   Wed Aug 22 18:04:37 2012 +0200
->
->     ubiattach: fail if kernel ignores max_beb_per1024
->
->     If the kernel doesn't know the max_beb_per1024 parameter in the attach
->     ioctl, but the call still succeeded ubi_attach and ubi_attach_mtd will
->     return 1 instead of 0.
->
->     In this case, the ubiattach command will detach the device and fail with
->     an error message.
->
->     Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
->     Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-hum.... I must be looking at the wrong git tree.
-I had this one : http://git.infradead.org/mtd-utils.git
-with the last commit "UBI: sync ubi-user.h with kernel v3.6-rc1"
-312e784fb06eaafff4cfebe29c74b8d0ecc09167
+--=-DG6K5DWNccIIfNpvOqQ5
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, 2012-08-27 at 12:19 +0200, Richard Genoud wrote:
+> hum.... I must be looking at the wrong git tree.
+> I had this one : http://git.infradead.org/mtd-utils.git
+> with the last commit "UBI: sync ubi-user.h with kernel v3.6-rc1"
+> 312e784fb06eaafff4cfebe29c74b8d0ecc09167
+
+Oh, sorry, now it is pushed for real.
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-DG6K5DWNccIIfNpvOqQ5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQO0+aAAoJECmIfjd9wqK0elkP+gILuVYS/6+heKNYxvpmCvJ/
+yCgvaraLvmMGafaQgAqXwViZsMH301NRCtsZcgKL7vbo5Rl0hzCR20HQRsAX/LZW
+8erZ6VttSSKgQcSuUVVg9XbT8YxN0CdNZPMzOgYZWDMX7g24I0XNR2e12OP8xp66
+McqxdCNrbCgPvBujQo+JzeqsB5rA52trSEggBIb4tXXNACdTlx4Ph8KqfyDocxQ/
+N2Lk4JoPCn8gj7TLys3gymtb3iORlZAP41Y530OgMmR/Jlk8DnMLnkywvA5uFlSO
+mFoNIWHAzO+rXIAS66Fox+qL0EXJFdevjY3fNLn8xluZTdEp5LF4rRn4qCQ61B0S
+EKg+0jTQVVTGMO5mI7gxTm4RFLwH5zNbS0AC8NIv0ASidp5hvpHKOhAXU1YaxHxJ
+0J1Bs24RKG9Z3QJrmivrdXX4dHNFxo3IRkfbV0KVxOaPAZtFINgEle8QxhQ5Pu/8
+1ZQv4/a3gWWp3TSj8PPh3CY9xy73EY1cZApxI2VRurqOdN2HMy43WMwLsgvroCr0
+M44yu0WEzzjUdxSVHJs2N643FYYtdhGFf0csE9sAeigKWdiIYfIdnnBK2/cJdBt9
+j1JYkJ/b9x4CSYZ7GYkQ+sTiYvWeirLSqvhS1NznSH8e3PCKz6ARy4jxV59+fPlZ
+peATIaH1hFa7OYeaPvee
+=bPK+
+-----END PGP SIGNATURE-----
+
+--=-DG6K5DWNccIIfNpvOqQ5--
