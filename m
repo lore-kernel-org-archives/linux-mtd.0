@@ -1,19 +1,22 @@
-Received: from webbox1416.server-home.net ([77.236.96.61])
- by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T5tZU-0006Qx-0C
- for linux-mtd@lists.infradead.org; Mon, 27 Aug 2012 07:17:17 +0000
-From: Alexander Stein <alexander.stein@systec-electronic.com>
-To: dedekind1@gmail.com
-Subject: Re: UBIFS is not remounted read-only from within do_emergency_remount
-Date: Mon, 27 Aug 2012 09:16:59 +0200
-Message-ID: <2393671.lU8BGBJXHq@ws-stein>
-In-Reply-To: <1345792970.2848.256.camel@sauron.fi.intel.com>
-References: <16202485.ui8ZXcNIqe@ws-stein>
- <1345792970.2848.256.camel@sauron.fi.intel.com>
+Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1T5tfT-00051O-Fk
+ for linux-mtd@lists.infradead.org; Mon, 27 Aug 2012 07:23:28 +0000
+Received: by lagu2 with SMTP id u2so2214402lag.36
+ for <linux-mtd@lists.infradead.org>; Mon, 27 Aug 2012 00:23:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org
+In-Reply-To: <1345714184.2848.220.camel@sauron.fi.intel.com>
+References: <1345651477-5301-1-git-send-email-richard.genoud@gmail.com>
+ <1345651477-5301-4-git-send-email-richard.genoud@gmail.com>
+ <1345714184.2848.220.camel@sauron.fi.intel.com>
+From: Richard Genoud <richard.genoud@gmail.com>
+Date: Mon, 27 Aug 2012 09:23:04 +0200
+Message-ID: <CACQ1gAi4uJkiYyfUsnv-k9M8Me1ROzCbe6msoLV=4qn=gL0tTA@mail.gmail.com>
+Subject: Re: [PATCH MTD-UTILS v2 3/4] ubiattach: introduce max_beb_per1024 in
+ UBI_IOCATT
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,36 +26,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+2012/8/23 Artem Bityutskiy <dedekind1@gmail.com>:
+> On Wed, 2012-08-22 at 18:04 +0200, Richard Genoud wrote:
+>> The ioctl UBI_IOCATT has been extended with max_beb_per1024 parameter.
+>>
+>> This parameter is used for adjusting the "maximum expected number of
+>> bad blocks per 1024 blocks" for each mtd device.
+>> The number of physical erase blocks (PEB) that UBI will reserve for bad
+>> block handling is now:
+>> whole_flash_chipset__PEB_number * max_beb_per1024 / 1024
+>
+> Pushed this one with some amendments.
 
-On Friday 24 August 2012 10:22:50, Artem Bityutskiy wrote:
-> On Tue, 2012-07-31 at 13:24 +0200, Alexander Stein wrote:
-> > upon testing do_emergency_remount from a power fail interrupt (using the 
-> > workqueue of course), we noticed UBIFS is not remounted read-only afterwards.
-> > The current code in do_emergency_remount checks if the kernel actually needs 
-> > to remount a filesystem using the following code:
-> > > if (sb->s_root && sb->s_bdev && (sb->s_flags & MS_BORN) &&
-> > >     !(sb->s_flags & MS_RDONLY)) {
-> > >         /*
-> > >          * What lock protects sb->s_flags??
-> > >          */
-> > >         do_remount_sb(sb, MS_RDONLY, NULL, 1);
-> > > }
-> > 
-> > I'm not in the details of this part of the kernel, but I suspect that sb-
-> > >s_bdev is NULL for UBIFS as it has no block device, but the character device 
-> > /dev/ubiX_Y instead. I have the information from a collegue that removing the 
-> > check for testing purposes for sb->s_bdev mounts UBIFS read-only.
-> > Any comments/ideas how to remount UBIFS as read-only from 
-> > do_emergency_remount?
-> 
-> I think this check is there to prevent file-systems like sysfs, tmpfs,
-> procfs, cgroup and debugfs from re-mounting R/O. If we just remove the
-> 'sb->s_bdev' check - they all become R/O as well. For me it sounds OK,
-> but I've never used this functionality, so not sure.
+Hi Artem,
 
-I agree this check filters out file system without a backing storage (block device), which is fine. It just doesn't make a difference if those are remounted R/O.
-I'm just wondering how to make the emergeny_remount usable with ubifs which has a backing storage, obviously, but no block device.
+Could you push your git to mtd-utils so that I can test the final
+version, please ?
 
-Regards,
-Alexander
+Best regards,
+Richard.
