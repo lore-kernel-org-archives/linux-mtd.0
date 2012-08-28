@@ -1,31 +1,14 @@
-MIME-Version: 1.0
-In-Reply-To: <20120828091139.GC31704@lunn.ch>
-References: <20120816183708.GT22226@titan.lakedaemon.net>
- <1346110528-30858-1-git-send-email-thomas.petazzoni@free-electrons.com>
- <1346110528-30858-2-git-send-email-thomas.petazzoni@free-electrons.com>
- <20120828091139.GC31704@lunn.ch>
-Date: Tue, 28 Aug 2012 11:31:37 +0200
-Message-ID: <CABJ1b_QgJU_xLL2Z=-r_hs51O+d4W+oLZPPf9-6UmeO5B+chPg@mail.gmail.com>
-Subject: Re: [PATCH] mtd: orion_nand: remove <mach/hardware.h> include
-From: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-To: Andrew Lunn <andrew@lunn.ch>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Lior Amsalem <alior@marvell.com>, Ike Pan <ike.pan@canonical.com>,
- Albert Stone <albert.stone@canonical.com>, Nadav Haklai <nadavh@marvell.com>,
- linux-mtd@lists.infradead.org, Ian Molton <ian.molton@codethink.co.uk>,
- Yehuda Yitschak <yehuday@marvell.com>,
- Jani Monoses <jani.monoses@canonical.com>, Tawfik Bayouk <tawfik@marvell.com>,
- Dan Frazier <dann.frazier@canonical.com>, Eran Ben-Avi <benavi@marvell.com>,
- Li Li <li.li@canonical.com>, Leif Lindholm <leif.lindholm@arm.com>,
- Jason Cooper <jason@lakedaemon.net>, Arnd Bergmann <arnd@arndb.de>,
- Jon Masters <jcm@redhat.com>, Ben Dooks <ben-linux@fluff.org>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- linux-arm-kernel@lists.infradead.org,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Chris Van Hoof <vanhoof@canonical.com>, Nicolas Pitre <nico@fluxnic.net>,
- Artem Bityutskiy <dedekind1@gmail.com>, Maen Suleiman <maen@marvell.com>,
- Shadi Ammouri <shadi@marvell.com>, Olof Johansson <olof@lixom.net>,
- Eric Miao <eric.miao@canonical.com>, David Woodhouse <dwmw2@infradead.org>
+Received: from mo6-p05-ob.rzone.de ([2a01:238:20a:202:5305::1])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1T6ICo-0005Ks-QS
+ for linux-mtd@lists.infradead.org; Tue, 28 Aug 2012 09:35:33 +0000
+From: Stefan Roese <sr@denx.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: cfi_cmdset_0001: Fix problem with unlocking timeout
+Date: Tue, 28 Aug 2012 11:34:13 +0200
+Message-Id: <1346146453-30196-1-git-send-email-sr@denx.de>
+Cc: dedekind@infradead.org, Andreas Friesen <andreas.friesen@hbm.com>,
+ Stephan Gatzka <stephan.gatzka@hbm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,17 +18,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 8/28/12, Andrew Lunn <andrew@lunn.ch> wrote:
-> One other driver you might want to look at is:
->
-> drivers/watchdog/orion_wdt.c
-> It uses <mach/bridge-regs.h>
+Unlocking may take up to 1.4 seconds on some Intel flashes. So
+lets use a max. of 1.5 seconds (1500ms) as timeout.
 
-Andrew, Thomas,
+See "Clear Block Lock-Bits Time" on page 40 in
+"3 Volt Intel StrataFlash Memory" 28F128J3,28F640J3,28F320J3 manual
+from February 2003
 
-both current watchdog and timer are using the bridge-regs to clear the
-interrupt cause. On orion the cause register is located in bridge-regs.
->From the work on timer together with Gregory, I expect Armada 370/XP
-to have the watchdog cause bit also within timer registers.
+This patch also fixes some other problems with this timeout:
 
-Sebastian
+- Don't use HZ in timeout "calculation"!
+  While testing we noticed that an unlocking timeout occured with
+  HZ=1000 and didn't occur with HZ=300. This was because the
+  timeout parameter was calculated differently depending on the
+  HZ value. Now a fixed value of 1500ms is used.
+
+- The last parameter of WAIT_TIMEOUT (defined to
+  inval_cache_and_wait_for_operation) has to be passed in
+  micro-seconds. So multiply the ms value with 1000 and not 100
+  to calculate this value.
+
+- Use variable name "mdelay" instead of misleading "udelay".
+
+Signed-off-by: Stefan Roese <sr@denx.de>
+Cc: Stephan Gatzka <stephan.gatzka@hbm.com>
+Cc: Andreas Friesen <andreas.friesen@hbm.com>
+---
+ drivers/mtd/chips/cfi_cmdset_0001.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+index dbbd2ed..7751443 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -2043,7 +2043,7 @@ static int __xipram do_xxlock_oneblock(struct map_info *map, struct flchip *chip
+ {
+ 	struct cfi_private *cfi = map->fldrv_priv;
+ 	struct cfi_pri_intelext *extp = cfi->cmdset_priv;
+-	int udelay;
++	int mdelay;
+ 	int ret;
+ 
+ 	adr += chip->start;
+@@ -2072,9 +2072,17 @@ static int __xipram do_xxlock_oneblock(struct map_info *map, struct flchip *chip
+ 	 * If Instant Individual Block Locking supported then no need
+ 	 * to delay.
+ 	 */
+-	udelay = (!extp || !(extp->FeatureSupport & (1 << 5))) ? 1000000/HZ : 0;
++	/*
++	 * Unlocking may take up to 1.4 seconds on some Intel flashes. So
++	 * lets use a max of 1.5 seconds (1500ms) as timeout.
++	 *
++	 * See "Clear Block Lock-Bits Time" on page 40 in
++	 * "3 Volt Intel StrataFlash Memory" 28F128J3,28F640J3,28F320J3 manual
++	 * from February 2003
++	 */
++	mdelay = (!extp || !(extp->FeatureSupport & (1 << 5))) ? 1500 : 0;
+ 
+-	ret = WAIT_TIMEOUT(map, chip, adr, udelay, udelay * 100);
++	ret = WAIT_TIMEOUT(map, chip, adr, mdelay, mdelay * 1000);
+ 	if (ret) {
+ 		map_write(map, CMD(0x70), adr);
+ 		chip->state = FL_STATUS;
+-- 
+1.7.12
