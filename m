@@ -1,27 +1,26 @@
-From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-To: Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
- Gregory Clement <gregory.clement@free-electrons.com>
-Subject: [PATCH] mtd: orion_nand: remove <mach/hardware.h> include
-Date: Tue, 28 Aug 2012 01:35:28 +0200
-Message-Id: <1346110528-30858-2-git-send-email-thomas.petazzoni@free-electrons.com>
-In-Reply-To: <1346110528-30858-1-git-send-email-thomas.petazzoni@free-electrons.com>
-References: <20120816183708.GT22226@titan.lakedaemon.net>
- <1346110528-30858-1-git-send-email-thomas.petazzoni@free-electrons.com>
-Cc: Lior Amsalem <alior@marvell.com>, Ike Pan <ike.pan@canonical.com>,
- Albert Stone <albert.stone@canonical.com>, Nadav Haklai <nadavh@marvell.com>,
- linux-mtd@lists.infradead.org, Ian Molton <ian.molton@codethink.co.uk>,
- Yehuda Yitschak <yehuday@marvell.com>,
- Jani Monoses <jani.monoses@canonical.com>, Tawfik Bayouk <tawfik@marvell.com>,
- Dan Frazier <dann.frazier@canonical.com>, Eran Ben-Avi <benavi@marvell.com>,
- Li Li <li.li@canonical.com>, Leif Lindholm <leif.lindholm@arm.com>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Arnd Bergmann <arnd@arndb.de>, Jon Masters <jcm@redhat.com>,
- Ben Dooks <ben-linux@fluff.org>, linux-arm-kernel@lists.infradead.org,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Chris Van Hoof <vanhoof@canonical.com>, Nicolas Pitre <nico@fluxnic.net>,
- Artem Bityutskiy <dedekind1@gmail.com>, Maen Suleiman <maen@marvell.com>,
- Shadi Ammouri <shadi@marvell.com>, Olof Johansson <olof@lixom.net>,
- Eric Miao <eric.miao@canonical.com>, David Woodhouse <dwmw2@infradead.org>
+Received: from co1ehsobe004.messaging.microsoft.com ([216.32.180.187]
+ helo=co1outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1T6BNK-0007VI-MR
+ for linux-mtd@lists.infradead.org; Tue, 28 Aug 2012 02:17:55 +0000
+Message-ID: <503C2AB5.30108@freescale.com>
+Date: Tue, 28 Aug 2012 10:19:33 +0800
+From: Huang Shijie <b32955@freescale.com>
+MIME-Version: 1.0
+To: <dedekind1@gmail.com>
+Subject: Re: [PATCH 1/2] nand: nand_bbt: Export nand_update_bbt
+References: <1343514565-8983-1-git-send-email-festevam@gmail.com>	
+ <1343514565-8983-2-git-send-email-festevam@gmail.com>	
+ <1345734503.2848.247.camel@sauron.fi.intel.com>	
+ <CAMiH66GeHEet7NUNn+NPJKY9LgWf1whPgOXdQOFAZZUraWMnOw@mail.gmail.com>
+ <1346081158.2848.363.camel@sauron.fi.intel.com>
+In-Reply-To: <1346081158.2848.363.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ Huang Shijie <shijie8@gmail.com>, linux-mtd@lists.infradead.org,
+ marex.vasut@denx.de, kernel@pengutronix.de, shawn.guo@linaro.org,
+ Fabio Estevam <festevam@gmail.com>, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,36 +30,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Commit c085d965fb63ac3b4cc7379d45588c0b39e2bdb0 made the ARCH_MVEBU
-platform select PLAT_ORION, which means that now all Orion drivers can
-be enabled on ARCH_MVEBU. This works fine for most drivers, except for
-orion_nand, because it includes <mach/hardware.h>, but mach-mvebu does
-not have a mach/hardware.h header (it is considered as a deprecated
-practice).
+=E4=BA=8E 2012=E5=B9=B408=E6=9C=8827=E6=97=A5 23:25, Artem Bityutskiy =E5=
+=86=99=E9=81=93:
+> On Thu, 2012-08-23 at 11:36 -0400, Huang Shijie wrote:
+>>> Why this driver redefined ->block_markbad() at all, it is not suppose=
+d
+>> For hardware reason, in mx23, the bad block mark is stored in the
+>> first byte of the nand page;
+>> in mx28/mx50/mx6q, the bad block mark is stored in the first byte of t=
+he OOB.
+>>
+>> That's why the driver redefined the ->block_markbad().
+> OK. Would you please tell about the driver some more, I am particularly
+> interested how th mx23 case works.
+>
+> * So the bad block marker is the first byte of the eraseblock set to 0?
+yes.
 
-It turns out that the <mach/hardware.h> include in orion_nand is not
-necessary: the driver builds perfectly fine without it, so we simply
-get rid of it.
+> * What if the user data stars with zero? Or you hide the first NAND pag=
+e
+>    from the user?
 
-Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
-Cc: Artem Bityutskiy <dedekind1@gmail.com>
----
- drivers/mtd/nand/orion_nand.c |    1 -
- 1 file changed, 1 deletion(-)
+Please see the picture in the common_nfc_set_geometry().
+It's a real nand page layout.
+The `M` is metadata, it's about 10 byte len.
+The bad block marker is stored in the metadata, not the the
+  `data` section which save the user's data.
 
-diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
-index fc5a868..9ee436d 100644
---- a/drivers/mtd/nand/orion_nand.c
-+++ b/drivers/mtd/nand/orion_nand.c
-@@ -21,7 +21,6 @@
- #include <linux/err.h>
- #include <asm/io.h>
- #include <asm/sizes.h>
--#include <mach/hardware.h>
- #include <plat/orion_nand.h>
- 
- static void orion_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
--- 
-1.7.9.5
+We do not hide the first NAND page.
+
+> * Can you point me to the code where you check if the eraseblock is bad
+>    or not at the initialization time (sorry, I could find myself,
+>    by trying to save time).
+>
+Please see the mx23_boot_init().
+
+When mx23 reads a new nand chip in the first time, it will scan all
+the nand chip. If it finds a bad block, it will call the=20
+nand->block_markbad() which
+is just the gpmi_block_markbad(). the gpmi_block_markbad() will mark the=20
+first byte
+of the nand page to 0 (the mx23 does not support the `swap` feature). So=20
+NAND boot mode,
+the ROM of mx23 will check the first byte of the NAND page, if it finds=20
+a 0, it knows that
+this is a bad block.
+
+thanks
+Huang Shijie
