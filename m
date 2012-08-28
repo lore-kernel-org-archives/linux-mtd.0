@@ -1,17 +1,17 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T6M8h-0005n0-QF
- for linux-mtd@lists.infradead.org; Tue, 28 Aug 2012 13:47:32 +0000
-Message-ID: <1346161948.2848.403.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] UBI:Force ubi driver load after mtd device drivers
+ id 1T6NKV-0001qp-JH
+ for linux-mtd@lists.infradead.org; Tue, 28 Aug 2012 15:03:48 +0000
+Message-ID: <1346166478.2848.411.camel@sauron.fi.intel.com>
+Subject: Re: [RFC][PATCH] mtd: bcm47part driver for BCM47XX chipsets
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jiang Lu <lu.jiang@windriver.com>
-Date: Tue, 28 Aug 2012 16:52:28 +0300
-In-Reply-To: <1344393061-21037-1-git-send-email-lu.jiang@windriver.com>
-References: <1344393061-21037-1-git-send-email-lu.jiang@windriver.com>
+To: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
+Date: Tue, 28 Aug 2012 18:07:58 +0300
+In-Reply-To: <1345847412-24509-1-git-send-email-zajec5@gmail.com>
+References: <1345847412-24509-1-git-send-email-zajec5@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-GFtYv5YoOug8bIsrFbTY"
+ boundary="=-+A/OPtaJzYH30OtAGc3V"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
@@ -25,21 +25,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-GFtYv5YoOug8bIsrFbTY
+--=-+A/OPtaJzYH30OtAGc3V
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-08-08 at 10:31 +0800, Jiang Lu wrote:
-> To implement rootfs on mtd device with UBIFS, kernel need create a
-> UBIFS device when booting:
+On Sat, 2012-08-25 at 00:30 +0200, Rafa=C5=82 Mi=C5=82ecki wrote:
+> This driver provides parser detecting partitions on BCM47XX flash
+> memories. It has many differences in comparision to older BCM63XX, like:
+> 1) Different CFE with no more trivial MAGICs
+> 2) More partitions types (board_data, ML, POT)
+> 3) Supporting more than 1 flash on a device
+> which resulted in decision of writing new parser.
+>=20
+> It uses generic mtd interface and was successfully tested with Netgear
+> WNDR4500 router which has 2 flash memories: serial one and NAND one.
 
-Pushed to linux-ubi.git, thanks!
+Would you please send a defconfig which I could use to compile-test
+this?
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-GFtYv5YoOug8bIsrFbTY
+--=-+A/OPtaJzYH30OtAGc3V
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -47,19 +55,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQPM0cAAoJECmIfjd9wqK0nd4QANCJNPzMWR9wjQVpHieafdkJ
-Tn+Ia64oE8Ve485FLarM95r7FKyjJAtQMCckvVzUATscZLqAxU8PriWt6eIQ6xh8
-4a3v8adAgtZlxj811YMyM153/I70IVJnopSayBRF5KRyWFwMsfm10GRdlLI27i4o
-t9mhtOMfTQGp18D7oElgGVkpIlFKzoILSmLWgPjd2Em7lStqTIzou9QTE14mToNG
-GKbQwalsXYlJIhik2MSaHoAW2hAcbcMdQ9ZlWdBo8fZYHn5vy8vipTtfpaxk9cqV
-IhI2TJnPiITPon462s5W9r7pprceObL2qWU6XwxuB946+PjBVawG0G91UCKIPrwl
-hnj8nsVeCIcCIqF3e8A3MSpY3z3t9jvmpmfFn/U7YmdVMX/S+bKC9BC3eCzeykfS
-y2iHUvs+/o4lLtdeQSJNtVba2iKTTqzViFfNmlYI58nLmBoV092Om3ADudY0X9Tv
-sxngsCLK4c6EiykLHx/H6E9ic6ewKPXhK2GzzuC5jP8joc7c0+7YmA0+tUI/bwlP
-pyDlZtcwooojj58HtiruBRnHFVmAGo5Cy/5LVE2EsW7reqdE6gbUuKIhBrju2DLE
-LvtVXSvTAA0kA2S7xvZQPz8EVSDhU2nqFcP15Cz5g93jI6aQ6p5KgKKJ/rwSiZPc
-K1IXoCf8ioXWu00BOJKo
-=XeID
+iQIcBAABAgAGBQJQPN7PAAoJECmIfjd9wqK06wEP/iDCPXyb+Htob1rQX8f0qdPA
+oVOVZ6K4qQQn2cX3eJYu9JMQddJ/YYRZ3Xg88B4ILp7/zSFLr7l3PO2gb1PxHJUw
+1WvfnQzlNKZ1VJzBwOsMY2wf+OTX7DI/9wIZesWR5OEkO8i+KFRhK6jGolViIcHI
+QsCXhagyS5K3FvUsyAQLosVGfRmPx94sXm+7b2wzuzyCnqClxur9zcNbMm/SaRot
+1X1MZ6Cv5vxiy4Y36XAkLR9bMqPsQN5+nNhAp4z0B3NOV5iZWT74w0AQ3lQHq+yQ
+stjfBezN69ow26q41rlfw5dpICuojxFPivqY1HjxjK2jIY3zlNzp7DByzBWAGnlS
+xxwUyP0oQY2ddJD0Z09/SaHJ+d0sSqj9kJwE+J4Kw9PAJehrzddBrYAwHuQvOndo
+y3qLwnIXyVe/lX85Rs8bFm01X0TF3qNPiUo16RKMC3RqsMpiHKO0E1N7NGdjGODs
+rXRnXTi3SFoH5SS3pBavWxVWBgCsEuZZDbtgEearqunjsGE20TR2gC0MsBpza0zi
+fGKQ4CcFI2IwSWP3DCTm6OlFQgJAyLgXIeLSeywsqGOB//sbmCZC5jIfynEyNMYy
+VRHohy9kLQ/awB/N3BhafWcThAhisbMq9ExVLlVSESoFnB7QckBc+WnhCGhAotSI
+4w6gdQc99q6SYQei6u1t
+=4pxX
 -----END PGP SIGNATURE-----
 
---=-GFtYv5YoOug8bIsrFbTY--
+--=-+A/OPtaJzYH30OtAGc3V--
