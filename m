@@ -1,21 +1,20 @@
-Received: from mail-we0-f177.google.com ([74.125.82.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T6dOG-0003B9-Pd
- for linux-mtd@lists.infradead.org; Wed, 29 Aug 2012 08:12:45 +0000
-Received: by weyr3 with SMTP id r3so167253wey.36
- for <linux-mtd@lists.infradead.org>; Wed, 29 Aug 2012 01:12:42 -0700 (PDT)
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1T6cu1-0005xh-N8
+ for linux-mtd@lists.infradead.org; Wed, 29 Aug 2012 07:41:30 +0000
+Date: Wed, 29 Aug 2012 09:41:22 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Roland Stigge <stigge@antcom.de>
+Subject: Re: mxc_nand.c on mach-imx/imx53
+Message-ID: <20120829074122.GV26594@pengutronix.de>
+References: <5035F84E.3000901@antcom.de>
 MIME-Version: 1.0
-In-Reply-To: <CAOiHx=mdnprqvxzm+127o+dqEo28LM78yZ8GQ1FLfaPiOVPhrg@mail.gmail.com>
-References: <1346048155-28829-1-git-send-email-zajec5@gmail.com>
- <CAOiHx=mdnprqvxzm+127o+dqEo28LM78yZ8GQ1FLfaPiOVPhrg@mail.gmail.com>
-Date: Wed, 29 Aug 2012 10:12:42 +0200
-Message-ID: <CACna6rzUn85zGB1HoB+=st3qWV=w2oy7e2EEx0tqqzkY9ppu9g@mail.gmail.com>
-Subject: Re: [PATCH V3] mtd: bcm47part driver for BCM47XX chipsets
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Jonas Gorski <jonas.gorski@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5035F84E.3000901@antcom.de>
+Cc: linux-mtd@lists.infradead.org,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,15 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2012/8/28 Jonas Gorski <jonas.gorski@gmail.com>:
->> +               /* CFE has small NVRAM at 0x400 */
->> +               fourcc =3D (u32 *)&buf[0x400];
->
-> buf is only 0x401 bytes big, but here pointing to bytes 0x400-0x403 -
-> does this even work?
+Hi Roland,
 
-Well, it does... but it means nothing more than another bug. This time
-in my sflash driver.
+On Thu, Aug 23, 2012 at 11:30:54AM +0200, Roland Stigge wrote:
+> Hi,
+> 
+> I'd like to know about the current state of mxc_nand.c on imx53, because
+> I got an error on probe() because the clock that mxc_nand is requesting
+> is "nfc" but imx53 only defines the clock "mxc_nand".
 
---=20
-Rafa=C5=82
+The driver generally works on i.MX53, only some pieces are missing. I
+just resent the corresponding series and put you on Cc.
+
+Sascha
+
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
