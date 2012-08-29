@@ -1,21 +1,20 @@
-Received: from mail-wi0-f177.google.com ([209.85.212.177])
+Received: from mail-wi0-f171.google.com ([209.85.212.171])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T6kgQ-0007dX-Vl
- for linux-mtd@lists.infradead.org; Wed, 29 Aug 2012 15:59:59 +0000
-Received: by wibhn17 with SMTP id hn17so634618wib.0
- for <linux-mtd@lists.infradead.org>; Wed, 29 Aug 2012 08:59:56 -0700 (PDT)
+ id 1T6l2J-0008Vl-Kb
+ for linux-mtd@lists.infradead.org; Wed, 29 Aug 2012 16:22:36 +0000
+Received: by wibhq4 with SMTP id hq4so4664162wib.0
+ for <linux-mtd@lists.infradead.org>; Wed, 29 Aug 2012 09:22:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1346251980.2848.488.camel@sauron.fi.intel.com>
-References: <1346242803-18748-1-git-send-email-zajec5@gmail.com>
- <1346251980.2848.488.camel@sauron.fi.intel.com>
-Date: Wed, 29 Aug 2012 17:59:55 +0200
-Message-ID: <CACna6ryFy2+XM4ZHV6KoDPVXD76-dR9fVwRGFODYeDuWQQcrvg@mail.gmail.com>
-Subject: Re: [PATCH V4] mtd: bcm47part driver for BCM47XX chipsets
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+In-Reply-To: <1346249180.2848.485.camel@sauron.fi.intel.com>
+References: <1344893730-11345-1-git-send-email-jeff.westfahl@ni.com>
+ <1346249180.2848.485.camel@sauron.fi.intel.com>
+Date: Wed, 29 Aug 2012 09:22:33 -0700
+Message-ID: <CAN8TOE80Lu0i_L_ppFHY4C2eSnigrA1DN-SsXkhTYYqJpn-E8A@mail.gmail.com>
+Subject: Re: [PATCH] mtd: nand: Added a device flag for subpage read support
+From: Brian Norris <computersforpeace@gmail.com>
 To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org, Jeff Westfahl <jeff.westfahl@ni.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,29 +24,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2012/8/29 Artem Bityutskiy <dedekind1@gmail.com>:
-> --- before_patching.log
-> +++ after_patching.log
-> @@ @@
-> +drivers/mtd/bcm47xxpart.c:178 bcm47xxpart_parse() warn: possible memory =
-leak of 'buf' [smatch]
-
-Ouch, my bad...
-
-
-> checkpatch.pl results for patch "[PATCH] mtd: bcm47part driver for BCM47X=
-X chipsets"
+On Wed, Aug 29, 2012 at 7:06 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Mon, 2012-08-13 at 16:35 -0500, Jeff Westfahl wrote:
+>> Added a NAND device flag for subpage read support. Previously this was
+>> hard coded based on large page and soft ECC.
+>> Updated base NAND driver to use the new subpage read flag if the NAND is
+>> large page and soft ECC.
+>>
+>> Signed-off-by: Jeff Westfahl <jeff.westfahl@ni.com>
 >
-> WARNING:CONFIG_DESCRIPTION: please write a paragraph that describes the c=
-onfig symbol fully
-> #35: FILE: drivers/mtd/Kconfig:151:
-> +config MTD_BCM47XX_PARTS
+> Pushed to l2-mtd.git, thanks!
 
-Do you think something like:
-> This provides partitions parser for devices based on BCM47xx boards.
-will be enough? checkpatch still generates error (it believes
-description is too short), but I'm not sure what else I could put
-here.
+I don't have a good system that supports subpage reads, but this patch
+looks fine. I forgot to ack:
 
---=20
-Rafa=C5=82
+Reviewed-by: Brian Norris <computersforpeace@gmail.com>
