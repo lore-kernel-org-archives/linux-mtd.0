@@ -1,15 +1,23 @@
-Message-ID: <503E3331.8050203@antcom.de>
-Date: Wed, 29 Aug 2012 17:20:17 +0200
-From: Roland Stigge <stigge@antcom.de>
-MIME-Version: 1.0
-To: Sascha Hauer <s.hauer@pengutronix.de>
+Received: from mo4.mail-out.ovh.net ([178.32.228.4])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1T6kBt-0006At-Dj
+ for linux-mtd@lists.infradead.org; Wed, 29 Aug 2012 15:28:26 +0000
+Received: from mail403.ha.ovh.net (b7.ovh.net [213.186.33.57])
+ by mo4.mail-out.ovh.net (Postfix) with SMTP id E0F561054C96
+ for <linux-mtd@lists.infradead.org>; Wed, 29 Aug 2012 17:33:30 +0200 (CEST)
+Date: Wed, 29 Aug 2012 17:28:20 +0200
+From: Eric =?ISO-8859-1?B?QuluYXJk?= <eric@eukrea.com>
+To: Roland Stigge <stigge@antcom.de>
 Subject: Re: mxc_nand.c on mach-imx/imx53
+Message-ID: <20120829172820.43bbe68e@eb-e6520>
+In-Reply-To: <503E3331.8050203@antcom.de>
 References: <5035F84E.3000901@antcom.de>
  <20120829074122.GV26594@pengutronix.de>
-In-Reply-To: <20120829074122.GV26594@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org,
+ <503E3331.8050203@antcom.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,121 +29,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Sascha,
+Hi Roland,
 
-On 08/29/2012 09:41 AM, Sascha Hauer wrote:
-> On Thu, Aug 23, 2012 at 11:30:54AM +0200, Roland Stigge wrote:
->> Hi,
->>
->> I'd like to know about the current state of mxc_nand.c on imx53, because
->> I got an error on probe() because the clock that mxc_nand is requesting
->> is "nfc" but imx53 only defines the clock "mxc_nand".
-> 
-> The driver generally works on i.MX53, only some pieces are missing. I
-> just resent the corresponding series and put you on Cc.
+Le Wed, 29 Aug 2012 17:20:17 +0200,
+Roland Stigge <stigge@antcom.de> a =E9crit :
+> Using  ".ecclayout_4k =3D &nandv2_hw_eccoob_4k" also doesn't work. So is
+> there any hint how I can proceed from here? Any plans or hint regarding
+> the "XXX"?
+>=20
+you may need something like this patch from barebox :
+http://git.pengutronix.de/?p=3Dbarebox.git;a=3Dcommit;h=3D632c45795065e6a74=
+71ab82be38e808eb6204341
 
-Good - thank you for the patches, didn't know about them.
+I may have time to adapt this next week but if you have time before feel
+free to do it ;-)
 
-Now, my flash is detected:
-
-NAND device: Manufacturer ID: 0x2c, Chip ID: 0xdc (Micron NAND 512MiB
-3,3V 8-bit), page size: 4096, OOB size: 128
-
-However, when I read a partition, kernel (mxc_nand_correct_data_v2_v3())
-says:
-
-...
-UnCorrectable RS-ECC Error
-UnCorrectable RS-ECC Error
-UnCorrectable RS-ECC Error
-UnCorrectable RS-ECC Error
-UnCorrectable RS-ECC Error
-UnCorrectable RS-ECC Error
-UnCorrectable RS-ECC Error
-...
-
-I'm using the following dt (on an Emtrion DIMM-MX53 board):
-
-                        nand@63fdb000 {
-                                status = "okay";
-                                #address-cells = <1>;
-                                #size-cells = <1>;
-                                nand-bus-width = <8>;
-                                nand-ecc-mode = "hw";
-
-                                mtd0@00000000 {
-                                        label = "bootstrap";
-                                        reg = <0x00000000 0x80000>;
-                                        read-only;
-                                };
-                                mtd1@00080000 {
-                                        label = "uboot";
-                                        reg = <0x00080000 0x80000>;
-                                        read-only;
-                                };
-                                mtd2@00100000 {
-                                        label = "NVRAM";
-                                        reg = <0x00100000 0x100000>;
-                                };
-                                mtd3@00200000 {
-                                        label = "bootlogo";
-                                        reg = <0x00200000 0x80000>;
-                                };
-                                mtd4@00280000 {
-                                        label = "linux";
-                                        reg = <0x00280000 0x400000>;
-                                };
-                                mtd5@00680000 {
-                                        label = "rootfs";
-                                        reg = <0x00680000 0x8000000>;
-                                };
-                                mtd6@08680000 {
-                                        label = "appfs";
-                                        reg = <0x08680000 0x17980000>;
-                                };
-                        };
-
-NAND info from u-boot:
-
-NAND:  512 MiB
-Manufacturer      : Micron (0x2c)
-Device Code       : 0xdc
-Cell Technology   : SLC
-Chip Size         : 512 MiB
-Pages per Block   : 64
-Page Geometry     : 4096+218
-ECC Strength      : 8 bits
-ECC Size          : 512 B
-Data Setup Time   : 20 ns
-Data Hold Time    : 10 ns
-Address Setup Time: 10 ns
-GPMI Sample Delay : 6 ns
-tREA              : Unknown
-tRLOH             : Unknown
-tRHOH             : Unknown
-Description       : MT29F4G08ABAEA
-
-I guess I hit a documented open issue:
-
-/* v3.2b: i.MX53 */
-static const struct mxc_nand_devtype_data imx53_nand_devtype_data = {
-        .preset = preset_v3,
-        .send_cmd = send_cmd_v3,
-        .send_addr = send_addr_v3,
-        .send_page = send_page_v3,
-        .send_read_id = send_read_id_v3,
-        .get_dev_status = get_dev_status_v3,
-        .check_int = check_int_v3,
-        .irq_control = irq_control_v3,
-        .get_ecc_status = get_ecc_status_v3,
-        .ecclayout_512 = &nandv2_hw_eccoob_smallpage,
-        .ecclayout_2k = &nandv2_hw_eccoob_largepage,
-        .ecclayout_4k = &nandv2_hw_eccoob_smallpage, /* XXX: needs fix */
-
-Using  ".ecclayout_4k = &nandv2_hw_eccoob_4k" also doesn't work. So is
-there any hint how I can proceed from here? Any plans or hint regarding
-the "XXX"?
-
-Thanks in advance,
-
-Roland
+Eric
