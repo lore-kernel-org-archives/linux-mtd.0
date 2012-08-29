@@ -1,25 +1,32 @@
-Received: from mo4.mail-out.ovh.net ([178.32.228.4])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T6kBt-0006At-Dj
- for linux-mtd@lists.infradead.org; Wed, 29 Aug 2012 15:28:26 +0000
-Received: from mail403.ha.ovh.net (b7.ovh.net [213.186.33.57])
- by mo4.mail-out.ovh.net (Postfix) with SMTP id E0F561054C96
- for <linux-mtd@lists.infradead.org>; Wed, 29 Aug 2012 17:33:30 +0200 (CEST)
-Date: Wed, 29 Aug 2012 17:28:20 +0200
-From: Eric =?ISO-8859-1?B?QuluYXJk?= <eric@eukrea.com>
-To: Roland Stigge <stigge@antcom.de>
-Subject: Re: mxc_nand.c on mach-imx/imx53
-Message-ID: <20120829172820.43bbe68e@eb-e6520>
-In-Reply-To: <503E3331.8050203@antcom.de>
-References: <5035F84E.3000901@antcom.de>
- <20120829074122.GV26594@pengutronix.de>
- <503E3331.8050203@antcom.de>
+Message-ID: <1346255161.2848.515.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: orion_nand: remove <mach/hardware.h> include
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Date: Wed, 29 Aug 2012 18:46:01 +0300
+In-Reply-To: <1346110528-30858-2-git-send-email-thomas.petazzoni@free-electrons.com>
+References: <20120816183708.GT22226@titan.lakedaemon.net>
+ <1346110528-30858-1-git-send-email-thomas.petazzoni@free-electrons.com>
+ <1346110528-30858-2-git-send-email-thomas.petazzoni@free-electrons.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-N7naJ0VbBAglgXD4WKoi"
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Cc: Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>,
+ Ike Pan <ike.pan@canonical.com>, Albert Stone <albert.stone@canonical.com>,
+ Nadav Haklai <nadavh@marvell.com>, linux-mtd@lists.infradead.org,
+ Ian Molton <ian.molton@codethink.co.uk>, Yehuda Yitschak <yehuday@marvell.com>,
+ Jani Monoses <jani.monoses@canonical.com>, Tawfik Bayouk <tawfik@marvell.com>,
+ Dan Frazier <dann.frazier@canonical.com>, Eran Ben-Avi <benavi@marvell.com>,
+ Li Li <li.li@canonical.com>, Leif Lindholm <leif.lindholm@arm.com>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Jason Cooper <jason@lakedaemon.net>, Arnd Bergmann <arnd@arndb.de>,
+ Jon Masters <jcm@redhat.com>, Ben Dooks <ben-linux@fluff.org>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ linux-arm-kernel@lists.infradead.org, Chris Van Hoof <vanhoof@canonical.com>,
+ Nicolas Pitre <nico@fluxnic.net>, Maen Suleiman <maen@marvell.com>,
+ Shadi Ammouri <shadi@marvell.com>, Olof Johansson <olof@lixom.net>,
+ Eric Miao <eric.miao@canonical.com>, David Woodhouse <dwmw2@infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,19 +36,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Roland,
 
-Le Wed, 29 Aug 2012 17:20:17 +0200,
-Roland Stigge <stigge@antcom.de> a =E9crit :
-> Using  ".ecclayout_4k =3D &nandv2_hw_eccoob_4k" also doesn't work. So is
-> there any hint how I can proceed from here? Any plans or hint regarding
-> the "XXX"?
+--=-N7naJ0VbBAglgXD4WKoi
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, 2012-08-28 at 01:35 +0200, Thomas Petazzoni wrote:
+> Commit c085d965fb63ac3b4cc7379d45588c0b39e2bdb0 made the ARCH_MVEBU
+> platform select PLAT_ORION, which means that now all Orion drivers can
+> be enabled on ARCH_MVEBU. This works fine for most drivers, except for
+> orion_nand, because it includes <mach/hardware.h>, but mach-mvebu does
+> not have a mach/hardware.h header (it is considered as a deprecated
+> practice).
 >=20
-you may need something like this patch from barebox :
-http://git.pengutronix.de/?p=3Dbarebox.git;a=3Dcommit;h=3D632c45795065e6a74=
-71ab82be38e808eb6204341
+> It turns out that the <mach/hardware.h> include in orion_nand is not
+> necessary: the driver builds perfectly fine without it, so we simply
+> get rid of it.
+>=20
+> Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
 
-I may have time to adapt this next week but if you have time before feel
-free to do it ;-)
+Pushed to l2-mtd.git, thanks!
 
-Eric
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-N7naJ0VbBAglgXD4WKoi
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQPjk5AAoJECmIfjd9wqK0qnUQAM1gVNKyCAmgqE703/OddP67
+/prFK9WwUMWEcLyZli+YqpESr/11coFtPNiiQ9cE+FvRCgnx5u/yxrYI9XGzp6J1
+inP7QhaN0u9Rdd9DRhSO1JDUl4QE7fdKQYDDju/Uhj41ipAMoVBgCdFxR1oZHQQQ
+pfqTjaphvEj0zzP6GttDJBH4Z2B9LBWzz8HBoiG+qhiYZHCrmmEEHy9IRmryl+dw
+5HP8ZZ4QwE6Lb4abBf0VJeEsgSYiWsbGMRKxHzpibK4P9a8kuUvgFS+mAzmp3qVr
+R8yeKzB5PXQVpbvxxL4+k0XfyTrZASkcjkXQ41WxgTePTBzNt4HLY7Oi++YjL/RR
+XR0JCfPfTbvrYDYmv1iLdNBPHmR5aHw04Sxag3KmfzXFjhkyFnnEkKqvkW7sQe98
+6CDnBbyTRpHHwacZ0wWtWMzt06bvP+yblSU4tPROJQflzCmYRCj0iHzb1n0SrNVn
+TdBOJ/OXYq32uOVJmE90VNJLtLCJcQfsAy3bHt/W30TdWeRW7uCJQxT5MVLzcsvV
+3U4pK9528snvyfnr4vW7gzdnzjLekeNyVib6jA/vt/ui3XvK2kQKn6PdE9ZwjDK6
+Nu5rArsGtPeqCRXHyjWNjgx8EmgrVizm8vPHCQohdF4uI/mVdaM5AR7nEHv+PXDR
+HPchVtfXTRP2Shbg9cS4
+=VF4+
+-----END PGP SIGNATURE-----
+
+--=-N7naJ0VbBAglgXD4WKoi--
