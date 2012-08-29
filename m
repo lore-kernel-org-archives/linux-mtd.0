@@ -1,12 +1,12 @@
 Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T6ct6-00063o-Ip
- for linux-mtd@lists.infradead.org; Wed, 29 Aug 2012 07:40:33 +0000
+ id 1T6ctE-00064c-Lm
+ for linux-mtd@lists.infradead.org; Wed, 29 Aug 2012 07:40:41 +0000
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/4] mtd nand mxc_nand: swap iomem resource order
-Date: Wed, 29 Aug 2012 09:40:17 +0200
-Message-Id: <1346226019-23560-3-git-send-email-s.hauer@pengutronix.de>
+Subject: [PATCH 4/4] ARM i.MX5: Add nand oftree support
+Date: Wed, 29 Aug 2012 09:40:19 +0200
+Message-Id: <1346226019-23560-5-git-send-email-s.hauer@pengutronix.de>
 In-Reply-To: <1346226019-23560-1-git-send-email-s.hauer@pengutronix.de>
 References: <1346226019-23560-1-git-send-email-s.hauer@pengutronix.de>
 Cc: Roland Stigge <stigge@antcom.de>, Sascha Hauer <s.hauer@pengutronix.de>,
@@ -20,108 +20,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The i.MX v3 nand controller (i.MX5) needs two memory resources.
-Traditionally we have the AXI resource first. For sorting in this
-driver into the devicetree it feels much more natural to have the
-IP resource first. This patch swaps the ordering of these two
-resources.
+This adds snippets to the i.MX51/53 devicetrees for the nand
+flash controller.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+Acked-by: Shawn Guo <shawn.guo@linaro.org>
 ---
- arch/arm/plat-mxc/devices/platform-mxc_nand.c |   11 ++++----
- drivers/mtd/nand/mxc_nand.c                   |   35 ++++++++++++++-----------
- 2 files changed, 24 insertions(+), 22 deletions(-)
+ arch/arm/boot/dts/imx51.dtsi        |    7 +++++++
+ arch/arm/boot/dts/imx53.dtsi        |    7 +++++++
+ arch/arm/mach-imx/clk-imx51-imx53.c |    2 ++
+ 3 files changed, 16 insertions(+)
 
-diff --git a/arch/arm/plat-mxc/devices/platform-mxc_nand.c b/arch/arm/plat-mxc/devices/platform-mxc_nand.c
-index 1568f39..95b75cc 100644
---- a/arch/arm/plat-mxc/devices/platform-mxc_nand.c
-+++ b/arch/arm/plat-mxc/devices/platform-mxc_nand.c
-@@ -63,10 +63,6 @@ struct platform_device *__init imx_add_mxc_nand(
- 	/* AXI has to come first, that's how the mxc_nand driver expect it */
- 	struct resource res[] = {
- 		{
--			.start = data->axibase,
--			.end = data->axibase + SZ_16K - 1,
--			.flags = IORESOURCE_MEM,
--		}, {
- 			.start = data->iobase,
- 			.end = data->iobase + data->iosize - 1,
- 			.flags = IORESOURCE_MEM,
-@@ -74,10 +70,13 @@ struct platform_device *__init imx_add_mxc_nand(
- 			.start = data->irq,
- 			.end = data->irq,
- 			.flags = IORESOURCE_IRQ,
-+		}, {
-+			.start = data->axibase,
-+			.end = data->axibase + SZ_16K - 1,
-+			.flags = IORESOURCE_MEM,
- 		},
- 	};
- 	return imx_add_platform_device("mxc_nand", data->id,
--			res + !data->axibase,
--			ARRAY_SIZE(res) - !data->axibase,
-+			res, ARRAY_SIZE(res) - !data->axibase,
- 			pdata, sizeof(*pdata));
- }
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index 268c0dc..efbc72c 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -1376,7 +1376,25 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 	if (IS_ERR(host->clk))
- 		return PTR_ERR(host->clk);
+diff --git a/arch/arm/boot/dts/imx51.dtsi b/arch/arm/boot/dts/imx51.dtsi
+index aba28dc..aaa0c0a 100644
+--- a/arch/arm/boot/dts/imx51.dtsi
++++ b/arch/arm/boot/dts/imx51.dtsi
+@@ -263,6 +263,13 @@
+ 				status = "disabled";
+ 			};
  
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	err = mxcnd_probe_dt(host);
-+	if (err > 0)
-+		err = mxcnd_probe_pdata(host);
-+	if (err < 0)
-+		return err;
++			nand@83fdb000 {
++				compatible = "fsl,imx51-nand";
++				reg = <0x83fdb000 0x1000 0xcfff0000 0x10000>;
++				interrupts = <8>;
++				status = "disabled";
++			};
 +
-+	if (host->devtype_data->needs_ip) {
-+		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+		if (!res)
-+			return -ENODEV;
-+		host->regs_ip = devm_request_and_ioremap(&pdev->dev, res);
-+		if (!host->regs_ip)
-+			return -ENOMEM;
+ 			ssi3: ssi@83fe8000 {
+ 				compatible = "fsl,imx51-ssi", "fsl,imx21-ssi";
+ 				reg = <0x83fe8000 0x4000>;
+diff --git a/arch/arm/boot/dts/imx53.dtsi b/arch/arm/boot/dts/imx53.dtsi
+index cd37165..dc00c62 100644
+--- a/arch/arm/boot/dts/imx53.dtsi
++++ b/arch/arm/boot/dts/imx53.dtsi
+@@ -321,6 +321,13 @@
+ 				status = "disabled";
+ 			};
+ 
++			nand@63fdb000 {
++				compatible = "fsl,imx53-nand";
++				reg = <0x63fdb000 0x1000 0xf7ff0000 0x10000>;
++				interrupts = <8>;
++				status = "disabled";
++			};
 +
-+		res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-+	} else {
-+		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	}
-+
- 	if (!res)
- 		return -ENODEV;
+ 			ssi3: ssi@63fe8000 {
+ 				compatible = "fsl,imx53-ssi", "fsl,imx21-ssi";
+ 				reg = <0x63fe8000 0x4000>;
+diff --git a/arch/arm/mach-imx/clk-imx51-imx53.c b/arch/arm/mach-imx/clk-imx51-imx53.c
+index 4bdcaa9..e81f17a 100644
+--- a/arch/arm/mach-imx/clk-imx51-imx53.c
++++ b/arch/arm/mach-imx/clk-imx51-imx53.c
+@@ -367,6 +367,7 @@ int __init mx51_clocks_init(unsigned long rate_ckil, unsigned long rate_osc,
+ 	clk_register_clkdev(clk[ssi1_ipg_gate], NULL, "83fcc000.ssi");
+ 	clk_register_clkdev(clk[ssi2_ipg_gate], NULL, "70014000.ssi");
+ 	clk_register_clkdev(clk[ssi3_ipg_gate], NULL, "83fe8000.ssi");
++	clk_register_clkdev(clk[nfc_gate], NULL, "83fdb000.nand");
  
-@@ -1386,12 +1404,6 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 	/* set the usboh3 parent to pll2_sw */
+ 	clk_set_parent(clk[usboh3_sel], clk[pll2_sw]);
+@@ -455,6 +456,7 @@ int __init mx53_clocks_init(unsigned long rate_ckil, unsigned long rate_osc,
+ 	clk_register_clkdev(clk[ssi1_ipg_gate], NULL, "63fcc000.ssi");
+ 	clk_register_clkdev(clk[ssi2_ipg_gate], NULL, "50014000.ssi");
+ 	clk_register_clkdev(clk[ssi3_ipg_gate], NULL, "63fd0000.ssi");
++	clk_register_clkdev(clk[nfc_gate], NULL, "63fdb000.nand");
  
- 	host->main_area0 = host->base;
- 
--	err = mxcnd_probe_dt(host);
--	if (err > 0)
--		err = mxcnd_probe_pdata(host);
--	if (err < 0)
--		return err;
--
- 	if (host->devtype_data->regs_offset)
- 		host->regs = host->base + host->devtype_data->regs_offset;
- 	host->spare0 = host->base + host->devtype_data->spare0_offset;
-@@ -1405,15 +1417,6 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 	this->ecc.size = 512;
- 	this->ecc.layout = host->devtype_data->ecclayout_512;
- 
--	if (host->devtype_data->needs_ip) {
--		res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
--		if (!res)
--			return -ENODEV;
--		host->regs_ip = devm_request_and_ioremap(&pdev->dev, res);
--		if (!host->regs_ip)
--			return -ENOMEM;
--	}
--
- 	if (host->pdata.hw_ecc) {
- 		this->ecc.calculate = mxc_nand_calculate_ecc;
- 		this->ecc.hwctl = mxc_nand_enable_hwecc;
+ 	/* set SDHC root clock to 200MHZ*/
+ 	clk_set_rate(clk[esdhc_a_podf], 200000000);
 -- 
 1.7.10.4
