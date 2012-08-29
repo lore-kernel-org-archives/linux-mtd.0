@@ -1,19 +1,22 @@
-Message-ID: <1346226961.2848.424.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/1] mxc_nand : allow swapping the Bad block Indicator
- for NFC v1.
+Received: from mga14.intel.com ([143.182.124.37])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1T6ddX-00085u-RB
+ for linux-mtd@lists.infradead.org; Wed, 29 Aug 2012 08:28:32 +0000
+Message-ID: <1346229208.2848.441.camel@sauron.fi.intel.com>
+Subject: Re: ARM: LPC32XX SLC ECC Handling
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: =?ISO-8859-1?Q?Ga=EBtan?= Carlier <gcembed@gmail.com>
-Date: Wed, 29 Aug 2012 10:56:01 +0300
-In-Reply-To: <1345825064-9147-1-git-send-email-gcembed@gmail.com>
-References: <1345811288.2848.308.camel@sauron.fi.intel.com>
- <1345825064-9147-1-git-send-email-gcembed@gmail.com>
+To: Roland Stigge <stigge@antcom.de>
+Date: Wed, 29 Aug 2012 11:33:28 +0300
+In-Reply-To: <50377989.1050401@antcom.de>
+References: <50222E55.5070204@embedded-brains.de>
+ <1345808311.2848.286.camel@sauron.fi.intel.com>
+ <50377989.1050401@antcom.de>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-7JIA5bRuea6c1BmBH3FT"
+ boundary="=-Q7y2B26LQnMxDTm+UcOt"
 Mime-Version: 1.0
-Cc: Russell King <linux@arm.linux.org.uk>, J.Lambrecht@TELEVIC.com,
- linux-mtd@lists.infradead.org, Sascha Hauer <kernel@pengutronix.de>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Cc: Sebastian Huber <sebastian.huber@embedded-brains.de>,
+ Linux MTD <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,28 +28,45 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-7JIA5bRuea6c1BmBH3FT
+--=-Q7y2B26LQnMxDTm+UcOt
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2012-08-24 at 18:17 +0200, Ga=C3=ABtan Carlier wrote:
-> Swap the BI-byte on position 0x7D0 with a data byte at 0x835.  To fix a b=
-ug
-> in Freescale imx NFC v1 SoC's for 2K page NAND flashes: imx27 and imx31.
-> Warning: The same solution needs to be applied to the boot loader and the
-> flash programmer.
+On Fri, 2012-08-24 at 14:54 +0200, Roland Stigge wrote:
+> Hi!
 >=20
-> This is a modified version of patch sent by J=C3=BCrgen Lambrecht :
-> [PATCH] Add 'config IMX_NFC_V1_BISWAP' to swap the Bad block Indicator,
-> and use for imx27pdk nand support.
+> On 24/08/12 13:38, Artem Bityutskiy wrote:
+> >> the LPC32XX SLC controller has a ECC feature that covers only the
+> >> main data area, but not the OOB data.  Is it the responsibility
+> >> of the user to protect its OOB data via an ECC?  The LPC32XX MLC
+> >> controller on the other hand covers the complete OOB data with
+> >> its ECC.  How can a user determine if it has to protect its OOB
+> >> data?
+> >=20
+> > I guess it is good idea to CC the author of the drivers.
+>=20
+> Thanks for CC'ing, would have missed it.
+>=20
+> Yes, it's exactly as Sebastian described - only the MLC controller
+> covers OOB in ECC.
+>=20
+> At this point, I need to give back the question to the MTD
+> maintainers: Is there an API how we can help users at this point? I
+> would be happy to implement it.
 
-Pushed to l2-mtd.git, thanks!
+Well, I guess from the user's POW the driver either protects OOB data
+with ECC or not. There is no interface for detecting this in MTD, but I
+do not see why someone could not create it.
+
+Am I right that we are talking about the situation when OOB and data
+areas are covered by different ECCs, or this is about user writing data
++oob at one go, and everything is covered by the same ECC?
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-7JIA5bRuea6c1BmBH3FT
+--=-Q7y2B26LQnMxDTm+UcOt
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -54,19 +74,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQPcsRAAoJECmIfjd9wqK0KLIQAJ2XPBcCfhm1QJoLVvRNytPi
-dJ5+/f2d8rhERvWco+m1ZqJuyYBq+MWxYglfgbC255pcKrkRZtigM/wSUPjhjve0
-qXWe+DOjxUEeAvNQJm4QVK4BhgCXNEvNpcX0UEFvOhvB0Ewmc8D2gIbpukuIGtik
-CTjSTYFAF2YvXgjRWVfkV54hn+BJWa7xE5v7X0E10S0G5ItJsUx73+nIkBXurExv
-X+TjLx22F6jELfKrZoJKZOvvPNC2AHsaoGgDvTo3+9IVDGjm50T2/03dBXlu5AY4
-5lmZ3uBM9TQNQQHMgBrc0hmz/ZLbQWUp53ErQfljV3G9N/Rr5LNCPIxWP5aExuXu
-bRUh4QuPh3OAMKbATDsD8ztAQj3xXkqPg0jNhROJGzvjp6qpimyaz3NT3olpuyCv
-0UwT8Qc9uub8YWJI7PmuhpJHQ25HxNQBAqDcI+ZYLpzJagwMQRsU/DMnkTDPXozS
-5BttppoBZSpBPnvernePo5xXkAh7w3hto0n1Lp3TcxbZt0uVmAE+d/9vEs60P9fx
-GFXlflzhkfuCTMn6Twz91MyJXfSKYZB8SS1stdtI3A5gx6OE9TQnaz/abiTzsn2o
-rQJigOqg47Bk8aD5uUDx6Eyp31T5GaSrsWnTXkaKTMCACMJuu24js0mkp1wZFH/H
-ZiRNyNFXa+QonBTZ+3jm
-=G41L
+iQIcBAABAgAGBQJQPdPZAAoJECmIfjd9wqK0o20QAI/cuFyxocMJbkkz8aCJkN0r
+iJLbI/Ol4LaGf1H043kqXuMhuQEGhOvfPIO0W9OqkHFyQ2hIXEuZogBXhvpwMTYD
+s/4T94G1ZjwnGjoEmSkQA9V+kp6bZAgGyg6uAnrqdew/VITa+8VCJ3NZw2xJl6Wu
+brh0j4ncivEz4MQjEFfxWhLa51bIBgLo2/XNzEFrbxMNXuB/pIKPg1HH3dwmMOV7
+SGzvLn9Bx7NWYeHT7Y+moWkK62jnqxZq7Rk2dmigCGoVc2vVVTGZhMSTt4ilKjpK
+Z83Vult//rbwK4/1uWWXez43V6pu+TfXANIcj/UasBWGCsjj/naTMYY60lLpiN1r
+P4dIIdD9wSzjqml6PJiX6kwa7/mL9WRUAMGam/mTUILrQ3Yakh+ruTKfqvRyTPkj
+aoLgSxVKNyAvMm0pKG/pkm20cH23jHeQe2otoKATTQIs3q3BSD89TJsEVB3T6Sef
+/HWFyUu1JuVY8cUm/s5S6pvZTQvUR0zU1DvyblXHh72RPMYE9z/jKJgPU7HbxsK+
+23onNEoVRV2DsRI0hDBJhYTVt/+TR54VZpFTYP09dJKR9m3yp9hgCijKKufSOPaJ
+xpos819FV0/CPfY+m4K+l5uSDlH0nyPee18xBSdRFDDo96wQf5FNFZuaO32oVOkA
+LlEifZCsOI2UiU9eeQ6M
+=ubJD
 -----END PGP SIGNATURE-----
 
---=-7JIA5bRuea6c1BmBH3FT--
+--=-Q7y2B26LQnMxDTm+UcOt--
