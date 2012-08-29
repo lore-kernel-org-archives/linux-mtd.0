@@ -1,16 +1,20 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T6ctM-00065o-4c
- for linux-mtd@lists.infradead.org; Wed, 29 Aug 2012 07:40:49 +0000
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 3/4] mtd nand mxc_nand: add i.MX53 support
-Date: Wed, 29 Aug 2012 09:40:18 +0200
-Message-Id: <1346226019-23560-4-git-send-email-s.hauer@pengutronix.de>
-In-Reply-To: <1346226019-23560-1-git-send-email-s.hauer@pengutronix.de>
-References: <1346226019-23560-1-git-send-email-s.hauer@pengutronix.de>
-Cc: Roland Stigge <stigge@antcom.de>, Sascha Hauer <s.hauer@pengutronix.de>,
- linux-arm-kernel@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+Received: from mga09.intel.com ([134.134.136.24])
+ by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1T6d1Y-0000dU-GE
+ for linux-mtd@lists.infradead.org; Wed, 29 Aug 2012 07:49:17 +0000
+Message-ID: <1346226847.2848.423.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: m25p80: add support for Micron N25Q128
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Jan Luebbe <jlu@pengutronix.de>
+Date: Wed, 29 Aug 2012 10:54:07 +0300
+In-Reply-To: <1345825430-15758-1-git-send-email-jlu@pengutronix.de>
+References: <1345825430-15758-1-git-send-email-jlu@pengutronix.de>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-O+Oqx5Tfq8HOJow8Aapd"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,122 +24,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The only relevant change between i.MX51 and i.MX53 is that
-a bitfield is shifted one bit to the left.
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
- drivers/mtd/nand/mxc_nand.c |   48 +++++++++++++++++++++++++++++++++++++------
- 1 file changed, 42 insertions(+), 6 deletions(-)
+--=-O+Oqx5Tfq8HOJow8Aapd
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index efbc72c..49557c8 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -43,8 +43,8 @@
- 
- #define nfc_is_v21()		(cpu_is_mx25() || cpu_is_mx35())
- #define nfc_is_v1()		(cpu_is_mx31() || cpu_is_mx27() || cpu_is_mx21())
--#define nfc_is_v3_2()		(cpu_is_mx51() || cpu_is_mx53())
--#define nfc_is_v3()		nfc_is_v3_2()
-+#define nfc_is_v3_2a()		cpu_is_mx51()
-+#define nfc_is_v3_2b()		cpu_is_mx53()
- 
- /* Addresses for NFC registers */
- #define NFC_V1_V2_BUF_SIZE		(host->regs + 0x00)
-@@ -122,7 +122,7 @@
- #define NFC_V3_CONFIG2_2CMD_PHASES		(1 << 4)
- #define NFC_V3_CONFIG2_NUM_ADDR_PHASE0		(1 << 5)
- #define NFC_V3_CONFIG2_ECC_MODE_8		(1 << 6)
--#define NFC_V3_CONFIG2_PPB(x)			(((x) & 0x3) << 7)
-+#define NFC_V3_CONFIG2_PPB(x, shift)		(((x) & 0x3) << shift)
- #define NFC_V3_CONFIG2_NUM_ADDR_PHASE1(x)	(((x) & 0x3) << 12)
- #define NFC_V3_CONFIG2_INT_MSK			(1 << 15)
- #define NFC_V3_CONFIG2_ST_CMD(x)		(((x) & 0xff) << 24)
-@@ -174,6 +174,7 @@ struct mxc_nand_devtype_data {
- 	int spare_len;
- 	int eccbytes;
- 	int eccsize;
-+	int ppb_shift;
- };
- 
- struct mxc_nand_host {
-@@ -1021,7 +1022,9 @@ static void preset_v3(struct mtd_info *mtd)
- 	}
- 
- 	if (mtd->writesize) {
--		config2 |= NFC_V3_CONFIG2_PPB(ffs(mtd->erasesize / mtd->writesize) - 6);
-+		config2 |= NFC_V3_CONFIG2_PPB(
-+				ffs(mtd->erasesize / mtd->writesize) - 6,
-+				host->devtype_data->ppb_shift);
- 		host->eccsize = get_eccsize(mtd);
- 		if (host->eccsize == 8)
- 			config2 |= NFC_V3_CONFIG2_ECC_MODE_8;
-@@ -1234,7 +1237,7 @@ static const struct mxc_nand_devtype_data imx25_nand_devtype_data = {
- 	.eccsize = 0,
- };
- 
--/* v3: i.MX51, i.MX53 */
-+/* v3.2a: i.MX51 */
- static const struct mxc_nand_devtype_data imx51_nand_devtype_data = {
- 	.preset = preset_v3,
- 	.send_cmd = send_cmd_v3,
-@@ -1258,6 +1261,34 @@ static const struct mxc_nand_devtype_data imx51_nand_devtype_data = {
- 	.spare_len = 64,
- 	.eccbytes = 0,
- 	.eccsize = 0,
-+	.ppb_shift = 7,
-+};
-+
-+/* v3.2b: i.MX53 */
-+static const struct mxc_nand_devtype_data imx53_nand_devtype_data = {
-+	.preset = preset_v3,
-+	.send_cmd = send_cmd_v3,
-+	.send_addr = send_addr_v3,
-+	.send_page = send_page_v3,
-+	.send_read_id = send_read_id_v3,
-+	.get_dev_status = get_dev_status_v3,
-+	.check_int = check_int_v3,
-+	.irq_control = irq_control_v3,
-+	.get_ecc_status = get_ecc_status_v3,
-+	.ecclayout_512 = &nandv2_hw_eccoob_smallpage,
-+	.ecclayout_2k = &nandv2_hw_eccoob_largepage,
-+	.ecclayout_4k = &nandv2_hw_eccoob_smallpage, /* XXX: needs fix */
-+	.select_chip = mxc_nand_select_chip_v1_v3,
-+	.correct_data = mxc_nand_correct_data_v2_v3,
-+	.irqpending_quirk = 0,
-+	.needs_ip = 1,
-+	.regs_offset = 0,
-+	.spare0_offset = 0x1000,
-+	.axi_offset = 0x1e00,
-+	.spare_len = 64,
-+	.eccbytes = 0,
-+	.eccsize = 0,
-+	.ppb_shift = 8,
- };
- 
- #ifdef CONFIG_OF_MTD
-@@ -1274,6 +1305,9 @@ static const struct of_device_id mxcnd_dt_ids[] = {
- 	}, {
- 		.compatible = "fsl,imx51-nand",
- 		.data = &imx51_nand_devtype_data,
-+	}, {
-+		.compatible = "fsl,imx53-nand",
-+		.data = &imx53_nand_devtype_data,
- 	},
- 	{ /* sentinel */ }
- };
-@@ -1327,8 +1361,10 @@ static int __init mxcnd_probe_pdata(struct mxc_nand_host *host)
- 			host->devtype_data = &imx27_nand_devtype_data;
- 	} else if (nfc_is_v21()) {
- 		host->devtype_data = &imx25_nand_devtype_data;
--	} else if (nfc_is_v3_2()) {
-+	} else if (nfc_is_v3_2a()) {
- 		host->devtype_data = &imx51_nand_devtype_data;
-+	} else if (nfc_is_v3_2b()) {
-+		host->devtype_data = &imx53_nand_devtype_data;
- 	} else
- 		BUG();
- 
--- 
-1.7.10.4
+On Fri, 2012-08-24 at 18:23 +0200, Jan Luebbe wrote:
+> Signed-off-by: Jan Luebbe <jlu@pengutronix.de>
+
+Pushed to l2-mtd.git, thanks!
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-O+Oqx5Tfq8HOJow8Aapd
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQPcqgAAoJECmIfjd9wqK0P3QP/jOuij8k39eXWFRaDImDUR6A
+0ZgD0w4uMQ/sL8/SFDSBqvV6gP6zU0QDIDsect0X2sO5HvcCYEGQVDjbzQOos+AJ
+peuAo+Rxv6R/iT4U7VwgUU9o6g2zxi79RYh34tQTPHP7OCF/PvQChQaGo+3rZf4Y
+k2smRH4tTWLk3t7KtwL+F43s1CR8hIwawWeVlVOorikTSbjGyzfOdEilzZtVDorS
+JKVFujX3k7HF9ZzQz6VctBBqAgCQ5tJqlAAjWT5GoURGrXqKQYh+xcnDsk61pXqf
+Pgii3+v5tw80wxqMy11pVp9q3BFjNVtJKd4/UTuPldXaF4HQfmSiZI39wEvJzhOJ
+w9hSCPLU8UNBLZWj7OLoZDpzmQF+YoF1jMV0e4UURv8xX3L2Vha0b/6xNjALVhiI
+XsF3FUvdCPqNCfbleoc+JSQ8GKpYROjGhkXkc1A35wpvy/8POToG/D5c66rN9Cf6
+9gsUIT1wTSN12Kf25k9K5LKeM90iuXDE13lRk32Hm638YS1u/fxEVCgx3y2QEIC+
+GqcfAfvEfYiRtpRwsdlTvsMqLhnXVRvMXetvKEB4tjS0VmESJdFEgVM+T6FM4G3e
+LV74OVZFUMq6YhxUOegfwSDcgG5x67C33rF/ryz4meGKX1YL/1i3rXar6F6w4IBt
+qpP5qUwsUTzPdijmj8SA
+=HkQ3
+-----END PGP SIGNATURE-----
+
+--=-O+Oqx5Tfq8HOJow8Aapd--
