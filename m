@@ -1,20 +1,20 @@
-Received: from mga14.intel.com ([143.182.124.37])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T6hyo-00055v-Md
- for linux-mtd@lists.infradead.org; Wed, 29 Aug 2012 13:06:47 +0000
-Message-ID: <1346245884.2848.481.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v2 0/6] mtd: mtd_nandecctest: add more tests
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Akinobu Mita <akinobu.mita@gmail.com>
-Date: Wed, 29 Aug 2012 16:11:24 +0300
-In-Reply-To: <1345982808-11440-1-git-send-email-akinobu.mita@gmail.com>
-References: <1345982808-11440-1-git-send-email-akinobu.mita@gmail.com>
+ id 1T6ipe-00022R-Et
+ for linux-mtd@lists.infradead.org; Wed, 29 Aug 2012 14:01:23 +0000
+Message-ID: <1346249180.2848.485.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: nand: Added a device flag for subpage read support
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Jeff Westfahl <jeff.westfahl@ni.com>
+Date: Wed, 29 Aug 2012 17:06:20 +0300
+In-Reply-To: <1344893730-11345-1-git-send-email-jeff.westfahl@ni.com>
+References: <1344893730-11345-1-git-send-email-jeff.westfahl@ni.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-si8Yk8I7UpGVK2aXGN2u"
+ boundary="=-wPZwAJezKpFxDiHv9OQm"
 Mime-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Reply-To: artem.bityutskiy@linux.intel.com
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,20 +25,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-si8Yk8I7UpGVK2aXGN2u
+--=-wPZwAJezKpFxDiHv9OQm
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, 2012-08-26 at 21:06 +0900, Akinobu Mita wrote:
-> This patch series adds several tests cases to mtd_nandecctest module
-> and includes two minor changes.
+On Mon, 2012-08-13 at 16:35 -0500, Jeff Westfahl wrote:
+> Added a NAND device flag for subpage read support. Previously this was
+> hard coded based on large page and soft ECC.
+> Updated base NAND driver to use the new subpage read flag if the NAND is
+> large page and soft ECC.
+>=20
+> Signed-off-by: Jeff Westfahl <jeff.westfahl@ni.com>
 
-Pushed patches 1 and 2 to l2-mtd.git, thanks!
+Pushed to l2-mtd.git, thanks!
+
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-si8Yk8I7UpGVK2aXGN2u
+--=-wPZwAJezKpFxDiHv9OQm
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -46,19 +51,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQPhT8AAoJECmIfjd9wqK0UFUQAK07lt+VJd+NCpbcbK73P5U4
-GZrI+P6GYWV2gS03Qmg/SjbjhYLHJD18uBMBKw4+oxxPmzpL9dY3gl2XT6nixzU3
-J5iRSA6lNMKhnl43iPmbEtLtup5egPVrf2La25kCxEvsDGhiRrG5QG5ANaauGchV
-1ovmNNkhPSkUHpBEh0uloY0D7L5aNuFaUw0tUsa7iRMxahMLMyC7GQg9Csr3PDoe
-dipXCkuMZARoJQ0HgMBrls7MQIPooL7KxqgAF1IwrKeeYDgwQydKy3Y9+tz0GiOE
-FRS0v39KddpdJ1qfkSeeeYjUCiq7fwEMEKfc7N0LE0qWR3avISZ9+jfsQg2k6oKW
-qWxuMkEXEKiw2DjvMFcjHQCcBFi4cg6twi8HHY7GmnCYffwlh5s1PbvBOjiIsSR8
-h18omwFTY4ekGsC/idwePvyOCVeqXnlVw63NMgw7y5+y37ELbaOVbnRjTc/8lzi2
-RGVE0Hs3aTkNyfu0c36k9283cJfB+gK3iDHEmY0dUPa4DBHEmPORUTVqsbFd8rc5
-pEKq3SzkVO7XyMSmLRP3syDQgrSNv/rglT8uGUsJKqQfgjcxPGKKm9pOIe8qRzie
-Du5RbS/IyWAwufQRsvGMfXlcMfrvTQrkN9yXUfKJ6eLDhx0UUf9vfY6pzSqZAWyi
-ic1lINdS37MjMfMmzH3Q
-=l34T
+iQIcBAABAgAGBQJQPiHcAAoJECmIfjd9wqK0cDkP/RM6d/XqcHXEhRT3SM9FoCJX
+Mc0a4FsLvVSeVyl3wEgH14wtLyOYNC2l78rh5vBMqLYSSPrA/Wi76wB4FqWLSMnc
+J+qW5uYFrOW442am61NFl+Q54Wqeb+j27XcOf/MD8YhN/Rbswx448dwxgoERWAlz
+w+6f+ez8cc7YbHs+lXa35+9MYY3Q4kd7c0RMgErkIie5S2beVpDHM9aLxlVALAmd
+WQ87ChnCa6ciRgr2WT9YOioJn5pE3MMSh+7ppGV/vdfC357cyPIJdgnn2ZjTi0S6
+pbbe5eHlcsoCwCezmEowfgB64KlhRs1+p8PV/aLPqXA54VgSyIuaAa/PCz4N/P9f
+H+ffFbFuDDsuKnC4Wa4jJn8QFKkp4tdeh3uoM1gM+CKzjyrV9/vMzOfV7lhPgfWv
+Cg9Os+kxWVVB+Lv9rwAQGxWz/uVRZ5ZCLkoc7uu/U8c4TYVKAb0KqdjnmzLJ5bGH
+B2GQ9YFbXJfrjN7iomTySclcIKro0myEtvgk5tqQad9LMq4xEvymOqqwUrgI6RWx
+tZ1GkXfF/bs1CKdNme6z4a9t2LKQXVTSL1Uxhzos/qc4/qYSVcoZUVXqkjdQP7cX
+06qRMWvfrixj4PuETu/1IRqXDidOsiFj3x2x/sxZnvxk9s7qcGBJ4sKOXw2drSLh
+5Sw/2/YCSn9KQEBQ3y4j
+=mqE7
 -----END PGP SIGNATURE-----
 
---=-si8Yk8I7UpGVK2aXGN2u--
+--=-wPZwAJezKpFxDiHv9OQm--
