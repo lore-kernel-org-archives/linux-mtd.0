@@ -1,22 +1,15 @@
-Received: from mga14.intel.com ([143.182.124.37])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T6zyS-0002he-G5
- for linux-mtd@lists.infradead.org; Thu, 30 Aug 2012 08:19:37 +0000
-Message-ID: <1346315075.2848.538.camel@sauron.fi.intel.com>
-Subject: RE: [PATCH] Test for multi-bit error correction
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
-Date: Thu, 30 Aug 2012 11:24:35 +0300
-In-Reply-To: <6871BC8982B258468985EE735D2C57524E269AFB54@ntcex01.corp.netcomm.com.au>
-References: <6871BC8982B258468985EE735D2C57524E269AFB52@ntcex01.corp.netcomm.com.au>
- ,<1346310033.2848.536.camel@sauron.fi.intel.com>
- <6871BC8982B258468985EE735D2C57524E269AFB54@ntcex01.corp.netcomm.com.au>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-bR2kY5KaitavkSoRl+Qo"
-Mime-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+Received: from mail-bk0-f49.google.com ([209.85.214.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1T70zU-0007EV-Aa
+ for linux-mtd@lists.infradead.org; Thu, 30 Aug 2012 09:24:45 +0000
+Received: by bkcji2 with SMTP id ji2so720339bkc.36
+ for <linux-mtd@lists.infradead.org>; Thu, 30 Aug 2012 02:24:40 -0700 (PDT)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [RFC][PATCH] mtd: basic (read only) driver for BCMA serial flash
+Date: Thu, 30 Aug 2012 11:24:35 +0200
+Message-Id: <1346318675-5689-1-git-send-email-zajec5@gmail.com>
+Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,46 +19,201 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This registers MTD driver for serial flash platform device. Right now it
+supports reading only, writing still has to be implemented.
+At this point it's marked as BROKEN, because it requires code present in
+net tree that wasn't mainlined yet.
+---
+As you can see, this driver can't be enabled yet, because it requires
+some code that is present in net tree only right now.
+Is this OK to take this anyway, and enable it later?
 
---=-bR2kY5KaitavkSoRl+Qo
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+With this code I was able to succesfully scan my serial flash for parts:
+[    0.956000] 10 bcm47xxpart partitions found on MTD device bcm47xxsflash
+[    0.964000] Creating 10 MTD partitions on "bcm47xxsflash":
+[    0.968000] 0x000000000000-0x000000150000 : "boot"
+[    0.976000] 0x000000150000-0x000000160000 : "ML"
+[    0.984000] 0x000000160000-0x000000170000 : "ML"
+[    0.988000] 0x000000170000-0x000000180000 : "ML"
+[    0.996000] 0x000000180000-0x000000190000 : "ML"
+[    1.004000] 0x000000190000-0x0000001a0000 : "ML"
+[    1.012000] 0x0000001a0000-0x0000001d0000 : "ML"
+[    1.016000] 0x0000001d0000-0x0000001e0000 : "POT"
+[    1.024000] 0x0000001e0000-0x0000001f0000 : "board_data"
+[    1.032000] 0x0000001f0000-0x000000200000 : "nvram"
 
-On Thu, 2012-08-30 at 18:05 +1000, Iwo Mergler wrote:
->=20
-> I'm not sure what to do about this. Checkpatch.pl also complains if I
-> split the strings.
-> I could declare the format strings as const char * somewhere else, but
-> I consider the
-> resulting code being less readable. Any suggestions?=20
+I have two questions, could you help me with them?
 
-I think you can ignore these ones.
+1) Is the following warning a valid one? How I can fix that?
+WARNING: static const char * array should probably be static const char * const
+#64: FILE: drivers/mtd/devices/bcm47xxsflash.c:11:
++static const char *probes[] = { "bcm47xxpart", NULL };
 
---=20
-Best Regards,
-Artem Bityutskiy
+2) I alloc memory for mtd: sflash->mtd but don't free it. This is because it's
+platform device that live "always", doesn't support unloading. Is that alright?
+---
+ drivers/mtd/devices/Kconfig         |    8 +++
+ drivers/mtd/devices/Makefile        |    1 +
+ drivers/mtd/devices/bcm47xxsflash.c |  120 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 129 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/mtd/devices/bcm47xxsflash.c
 
---=-bR2kY5KaitavkSoRl+Qo
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQPyNDAAoJECmIfjd9wqK0lZoP/275/Gq+6pR9JL3QL5UfWua5
-7cP8k8Gj9h8KbPLhF4HFhcy+IW+GsG/EbLnAz9Fxvy9uTMqKiO23fP3KqJZmI1/q
-aobqjO4AW3hsYynuu+D/wBx9+h9moLdr3R300bvF2XimkGfO/1i6aM5L9kzKMI/V
-IL5XA0a+nUKQ6d+nDnkn/SSmDnjiFglT7O+KxQoRgouVx8H0pKnxfm3tMO2+Lfeu
-FrvS3+pUkUfnisFQZZSgvMCENKqyDt3z4yTNQ61AqP8MOKsL/j04mPYxBkwwrpRd
-gV4hudUfNQTPoYHwMD/9tqKwEZUjbicmY0aC/A5ZIr0y6wQBbGFTvg2RFIuyf8tY
-E8wCMLLF/NS+WQ3u+ynEbADqV1UNpmeUcAwOW1JbX++ijip65FmdS0jWLjR0U5NN
-3BGDrxlJHIqxSBWFMi4wOHTNvAYZuSMSU8C5uIR+kLaZdW6b8/64hORH+t0QX19e
-Ltc5Dil/VK7PBGA36Vol9j/2T3FxUL0ovlDTN7o2oUx/SGeEiRDNKwRtzfo6wxF5
-LYas3r4uajnFPKBjxb3d4LyKrgsr3Hoh38NPy1h1bTfFaVHcBTWEZvzpB2rF1roq
-ywyk1b7UQSa8B3yAccHjXkabfLHKjIFOt4zcyE38OswXHiNq+ZySZVd7z975SK4f
-ZDXGoQgjmWVf1AwgWYXx
-=e9Bi
------END PGP SIGNATURE-----
-
---=-bR2kY5KaitavkSoRl+Qo--
+diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
+index 4cdb2af..4b4f7d2 100644
+--- a/drivers/mtd/devices/Kconfig
++++ b/drivers/mtd/devices/Kconfig
+@@ -120,6 +120,14 @@ config MTD_SST25L
+ 	  Set up your spi devices with the right board-specific platform data,
+ 	  if you want to specify device partitioning.
+ 
++config MTD_BCM47XXSFLASH
++	tristate "Support for serial flash on BCMA bus"
++	depends on BCMA_SFLASH && BROKEN
++	help
++	  BCMA bus can have various flash memories attached, they are
++	  registered by bcma as platform devices. This enables driver for
++	  serial flash memories.
++
+ config MTD_SLRAM
+ 	tristate "Uncached system RAM"
+ 	help
+diff --git a/drivers/mtd/devices/Makefile b/drivers/mtd/devices/Makefile
+index a4dd1d8..395733a 100644
+--- a/drivers/mtd/devices/Makefile
++++ b/drivers/mtd/devices/Makefile
+@@ -19,5 +19,6 @@ obj-$(CONFIG_MTD_DATAFLASH)	+= mtd_dataflash.o
+ obj-$(CONFIG_MTD_M25P80)	+= m25p80.o
+ obj-$(CONFIG_MTD_SPEAR_SMI)	+= spear_smi.o
+ obj-$(CONFIG_MTD_SST25L)	+= sst25l.o
++obj-$(CONFIG_MTD_BCM47XXSFLASH)	+= bcm47xxsflash.o
+ 
+ CFLAGS_docg3.o			+= -I$(src)
+\ No newline at end of file
+diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
+new file mode 100644
+index 0000000..a9a8b75
+--- /dev/null
++++ b/drivers/mtd/devices/bcm47xxsflash.c
+@@ -0,0 +1,120 @@
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/slab.h>
++#include <linux/mtd/mtd.h>
++#include <linux/platform_device.h>
++#include <linux/bcma/bcma.h>
++
++MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("Serial flash driver for BCMA bus");
++
++static const char *probes[] = { "bcm47xxpart", NULL };
++
++static int bcm47xxsflash_read(struct mtd_info *mtd, loff_t from, size_t len,
++			      size_t *retlen, u_char *buf)
++{
++	struct bcma_sflash *sflash = mtd->priv;
++	size_t bytes_read = 0;
++	u8 *src = (u8 *)KSEG0ADDR(sflash->window + from);
++	int i;
++	size_t unaligned_before, unaligned_after;
++
++	/* Check address range */
++	if ((from + len) > mtd->size)
++		return -EINVAL;
++
++	unaligned_before = from & 0x3;
++	unaligned_after = (from + len) & 0x3;
++
++	for (i = 0; i < unaligned_before; i++) {
++		*buf = readb(src);
++		buf++;
++		src++;
++		bytes_read++;
++	}
++	for (i = from - unaligned_before; i < from + len - unaligned_after;
++	     i += 4) {
++		*(u32 *)buf = readl((u32 *)src);
++		buf += 4;
++		src += 4;
++		bytes_read += 4;
++	}
++	for (i = 0; i < unaligned_after; i++) {
++		*buf = readb(src);
++		buf++;
++		src++;
++		bytes_read++;
++	}
++
++	*retlen = bytes_read;
++
++	return 0;
++}
++
++static void bcm47xxsflash_fill_mtd(struct bcma_sflash *sflash,
++				   struct mtd_info *mtd)
++{
++	mtd->priv = sflash;
++	mtd->name = "bcm47xxsflash";
++	mtd->owner = THIS_MODULE;
++	mtd->type = MTD_ROM;
++	mtd->size = sflash->size;
++	mtd->_read = bcm47xxsflash_read;
++	mtd->writesize = 1; /* FIXME */
++}
++
++static int bcm47xxsflash_probe(struct platform_device *pdev)
++{
++	struct bcma_sflash *sflash = dev_get_platdata(&pdev->dev);
++	int err;
++
++	sflash->mtd = kzalloc(sizeof(struct mtd_info), GFP_KERNEL);
++	if (!sflash->mtd)
++		return -ENOMEM;
++	bcm47xxsflash_fill_mtd(sflash, sflash->mtd);
++
++	err = mtd_device_parse_register(sflash->mtd, probes, NULL, NULL, 0);
++	if (err) {
++		pr_err("Failed to register MTD device: %d\n", err);
++		return err;
++	}
++
++	return 0;
++}
++
++static int __devexit bcm47xxsflash_remove(struct platform_device *pdev)
++{
++	struct bcma_sflash *sflash = dev_get_platdata(&pdev->dev);
++
++	if (sflash->mtd)
++		mtd_device_unregister(sflash->mtd);
++
++	return 0;
++}
++
++static struct platform_driver bcma_sflash_driver = {
++	.remove = __devexit_p(bcm47xxsflash_remove),
++	.driver = {
++		.name = "bcma_sflash",
++		.owner = THIS_MODULE,
++	},
++};
++
++static int __init bcm47xxsflash_init(void)
++{
++	int err;
++
++	err = platform_driver_probe(&bcma_sflash_driver, bcm47xxsflash_probe);
++	if (err)
++		pr_err("Failed to register BCMA serial flash driver: %d\n", err);
++
++	return err;
++}
++
++static void __exit bcm47xxsflash_exit(void)
++{
++	platform_driver_unregister(&bcma_sflash_driver);
++}
++
++module_init(bcm47xxsflash_init);
++module_exit(bcm47xxsflash_exit);
+-- 
+1.7.7
