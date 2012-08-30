@@ -1,19 +1,19 @@
 Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T6y3i-0001h4-Pr
- for linux-mtd@lists.infradead.org; Thu, 30 Aug 2012 06:16:55 +0000
-Message-ID: <1346307696.2848.524.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] MTD: missing comment in nand.h
+ id 1T6y6u-0001r6-9K
+ for linux-mtd@lists.infradead.org; Thu, 30 Aug 2012 06:20:12 +0000
+Message-ID: <1346307912.2848.526.camel@sauron.fi.intel.com>
+Subject: Re: ubifs crash with two cases( switched to readonly, recover fail )
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: John Crispin <blogic@openwrt.org>
-Date: Thu, 30 Aug 2012 09:21:36 +0300
-In-Reply-To: <1346137063-20903-1-git-send-email-blogic@openwrt.org>
-References: <1346137063-20903-1-git-send-email-blogic@openwrt.org>
+To: yw100.lee@samsung.com
+Date: Thu, 30 Aug 2012 09:25:12 +0300
+In-Reply-To: <0M9H00J7TVR5KUC0@mailout3.samsung.com>
+References: <0M9H00J7TVR5KUC0@mailout3.samsung.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-mTbSWylb9ypzada5bECf"
+ boundary="=-0s6wwf/ptCN6COKpXSZk"
 Mime-Version: 1.0
-Cc: "Robert P. J. Day" <rpjday@crashcourse.ca>, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,40 +25,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-mTbSWylb9ypzada5bECf
+--=-0s6wwf/ptCN6COKpXSZk
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-08-28 at 08:57 +0200, John Crispin wrote:
-> Robert reported the following error when generating kernel doc.
-> > Warning(/home/rpjday/k/git//include/linux/mtd/nand.h:659): No  descript=
-ion found for parameter 'read_byte'
->=20
-> Signed-off-by: John Crispin <blogic@openwrt.org>
-> Cc: Robert P. J. Day <rpjday@crashcourse.ca>
+On Wed, 2012-08-29 at 02:18 +0000, =EC=9D=B4=EC=96=91=EC=9A=B0 wrote:
+> ....
+> [    5.965000] UBI error: ubi_io_read: error -74 while reading 68
+> bytes from PEB 385:2776, read 68 bytes
 
-Already have a fix for this in my l2-mtd.git tree:
-
-commit 94476fdcef8902ad168b8618c3055e181a4740f6
-Author: Randy Dunlap <rdunlap@xenotime.net>
-Date:   Sat Aug 18 17:41:35 2012 -0700
-
-    mtd: fix kernel-doc warning in include/linux/mtd/nand.h
-   =20
-    Fix kernel-doc warning in <linux/mtd/nand.h>:
-   =20
-    Warning(include/linux/mtd/nand.h:659): No description found for paramet=
-er 'read_byte'
-   =20
-    Signed-off-by: Randy Dunlap <rdunlap@xenotime.net>
-    Acked-by: Brian Norris <computersforpeace@gmail.com>
-    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Looks like your flash cannot read non-512-bytes-aligned data chunks.
+Check your NAND driver. Try to run mtd tests:
+http://www.linux-mtd.infradead.org/doc/general.html#L_mtd_tests
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-mTbSWylb9ypzada5bECf
+--=-0s6wwf/ptCN6COKpXSZk
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -66,19 +50,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQPwZwAAoJECmIfjd9wqK0I40P/01AGiw3llMnlUs2KyU/lQEL
-MNF+pvGbwhOZn7EhhzvVwNX2tBYyFbwsNSEQP7ONYdOXxsAFqJLYDOZlhbPk/t20
-4MfI9gZamsDUeUdHaXbV+hz1Hiq8NbphpT0hjaW+pXMQh63J+nVFz2a9VuIrY4UW
-chJ6NkDea4WGLdBpl/63OrL3r3YODdUKrdof4K2qPyPK00olBl2czZi1J1ReVubA
-zmZAocRtL27OsJWCijhEeXihZlwrxlsl3hD1oxVf9ynsOdfw5blcNoDiomiV156F
-F1P9psMQjdDvvtzUE2BcvRfhS7vnALNp1CTWC32yaadDtOst/6ufT4phj3ZwK6Eq
-KVaQWIx6H5RFVDN67mp/zoIlFCAqsHX19LLHkLifV4BBevs9Kj6X1Gcw6VY0/Tor
-XmsEMdvqFIbA122nDfGAmxcGm4i/Kiev7djv64cuhU47Jt/vDq1Xbx1upxVOYqRx
-lhx+ZKYsxhObvboq83J+yopQRJpNihyz7w2OR7VgFR1X/grbkz7xr/WlTCT5W1ru
-feguev/jc2N/lUmdP7YxzSOn6Ldli6Lgf+jHfEVXT3u0cKeG0EnOUUS5aAOgiRaY
-5UAitRtGh9mXDqel4EW9eBhlso3plgZziPoEtQGtUVhTFkrgAJnbRlGLxMBAvJ6/
-jQYb0DE0BZw03vvCV4Jn
-=YQ3e
+iQIcBAABAgAGBQJQPwdIAAoJECmIfjd9wqK0/w8P/iXpgiMH3gadtxzueDU2QyWD
+xURSMaOr/gPT6BwA40p4X7ji4DKrykDsWwz4DplpXmd+ksnj0uv3TxEn0Doc6wHl
+XqQ+SYBLdFeEfR3PrwBCql8p8RvmN11rNiHfxRfKdR/mxBc+/MWE29i3koX5rjyW
+H0TUI8mHf319/XR6zYw+1uerrIlQPWfKasjIjZOVbuMFsOfD9QOCuhOSHaSwY9qJ
++EyH6bNWHB93cQ70RFKxsGshySZ2kzAKMJmCSgCRjJzbAfOXcv0TW4pypg7Y+i+G
+aA9Q4m2VGLbRNvDipyDAXkRzFOsyvlAytvZ+Jna3TjwyXEjCEv6PEjOrCUkMxPs9
+8DY1XlAdlIdZF0hKfI5un931tIX2TILRs9yDRXwa+cwH3OSHY5ypRxXSGvJw6oIX
+kp3o1BmNCIe9vLsikSGI/zeVgLD1MshyKwBATAsQxOVDFkglVmwQ4j22HcWxMvUl
+4LcDGw1Tl8g3Mqxl8rK3vvtF/wuR3NXbCmeogcd8PkwO1obaOLYyvaflpU223yR7
+n38nJ6gOE+rOT6hHzn1QwdvKIrYsp5vdQpI3Yl7sPf6ZwfOSSArn0qcesYWSs9Rr
+sLDUr9gvy3z0qZM/+/eWEDh8s0fQ/2okEXvgMFeB2Hbr4c0WSZO/FGsmxEJSAA9r
+gFTnZ/9CoxK1hOQZYBIU
+=DiUU
 -----END PGP SIGNATURE-----
 
---=-mTbSWylb9ypzada5bECf--
+--=-0s6wwf/ptCN6COKpXSZk--
