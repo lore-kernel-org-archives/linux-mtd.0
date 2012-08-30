@@ -1,21 +1,20 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T6yim-00054A-71
- for linux-mtd@lists.infradead.org; Thu, 30 Aug 2012 06:59:20 +0000
-Message-ID: <1346310134.2848.537.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: cfi_cmdset_0001: Fix problem with unlocking timeout
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Stefan Roese <sr@denx.de>
-Date: Thu, 30 Aug 2012 10:02:14 +0300
-In-Reply-To: <1346146453-30196-1-git-send-email-sr@denx.de>
-References: <1346146453-30196-1-git-send-email-sr@denx.de>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-c8z2kuQ5L4Zr+klspCMx"
-Mime-Version: 1.0
-Cc: Andreas Friesen <andreas.friesen@hbm.com>, linux-mtd@lists.infradead.org,
- Stephan Gatzka <stephan.gatzka@hbm.com>
-Reply-To: dedekind@infradead.org
+Received: from mail85.messagelabs.com ([216.82.241.211])
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1T6zkt-0002Bu-61
+ for linux-mtd@lists.infradead.org; Thu, 30 Aug 2012 08:05:35 +0000
+From: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>
+Date: Thu, 30 Aug 2012 18:05:29 +1000
+Subject: RE: [PATCH] Test for multi-bit error correction
+Message-ID: <6871BC8982B258468985EE735D2C57524E269AFB54@ntcex01.corp.netcomm.com.au>
+References: <6871BC8982B258468985EE735D2C57524E269AFB52@ntcex01.corp.netcomm.com.au>,
+ <1346310033.2848.536.camel@sauron.fi.intel.com>
+In-Reply-To: <1346310033.2848.536.camel@sauron.fi.intel.com>
+Content-Language: en-AU
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,45 +24,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, 30 Aug 2012 17:00:33 +1000
+Artem Bityutskiy <dedekind1@gmail.com> wrote:
 
---=-c8z2kuQ5L4Zr+klspCMx
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, 2012-08-28 at 11:34 +0200, Stefan Roese wrote:
-> Unlocking may take up to 1.4 seconds on some Intel flashes. So
-> lets use a max. of 1.5 seconds (1500ms) as timeout.
+> On Wed, 2012-08-29 at 17:26 +1000, Iwo Mergler wrote:
+> > This tests ECC biterror recovery on a single NAND page. Mostly intende=
+d
+> > to test ECC hardware and low-level NAND driver.
+> >=20
+> > There are two test modes:
+> >=20
+> >     0 - artificially inserting bit errors until the ECC fails
+> >         This is the default method and fairly quick. It should
+> >         be independent of the quality of the FLASH.
+> >=20
+> >     1 - re-writing the same pattern repeatedly until the ECC fails.
+> >         This method relies on the physics of NAND FLASH to eventually
+> >         generate '0' bits if '1' has been written sufficient times. De=
+pending
+> >         on the NAND, the first bit errors will appear after 1000 or
+> >         more writes and then will usually snowball, reaching the limit=
+s
+> >         of the ECC quickly.
 >=20
-> See "Clear Block Lock-Bits Time" on page 40 in
-> "3 Volt Intel StrataFlash Memory" 28F128J3,28F640J3,28F320J3 manual
-> from February 2003
+> Aiaiai! [1] [2]
+>=20
+> drivers/mtd/tests/mtd_nandbiterrs.c: In function 'rewrite_page':
+> drivers/mtd/tests/mtd_nandbiterrs.c:152:18: error: 'MTD_OOB_RAW' undecla=
+red (first use in this function)
+> drivers/mtd/tests/mtd_nandbiterrs.c:152:18: note: each undeclared identi=
+fier is reported only once for each function it
+> appears in make[4]: *** [drivers/mtd/tests/mtd_nandbiterrs.o] Error 1
 
-Pushed to l2-mtd.git, thanks!
+Sorry about that. It should be MTD_OPS_RAW instead.
 
-Artem.
+> ------------------------------------------------------------------------=
+--------
+>=20
+> checkpatch.pl has some complaints:
+>=20
+> ------------------------------------------------------------------------=
+--------
+>=20
+> checkpatch.pl results for patch "[PATCH] Test for multi-bit error correc=
+tion"
+>=20
+> WARNING:LONG_LINE: line over 80 characters
+> #320: FILE: drivers/mtd/tests/mtd_nandbiterrs.c:270:
+> +                       msg("After %d biterrors per subpage, read report=
+ed error %d\n",
+>=20
+> WARNING:LONG_LINE: line over 80 characters
+> #328: FILE: drivers/mtd/tests/mtd_nandbiterrs.c:278:
+> +                       msg("ECC failure, read data is incorrect despite=
+ read success\n");
+>=20
+> WARNING:LONG_LINE: line over 80 characters
+> #382: FILE: drivers/mtd/tests/mtd_nandbiterrs.c:332:
+> +                               msg("Implausible number of bit errors co=
+rrected\n");
+>=20
+> WARNING:LONG_LINE: line over 80 characters
+> #401: FILE: drivers/mtd/tests/mtd_nandbiterrs.c:351:
+> +                       msg("ECC failure, read data is incorrect despite=
+ read success\n");
+>=20
+> total: 0 errors, 4 warnings, 464 lines checked
+>=20
+
+I'm not sure what to do about this. Checkpatch.pl also complains if I spli=
+t the strings.
+I could declare the format strings as const char * somewhere else, but I c=
+onsider the
+resulting code being less readable. Any suggestions?
+
+I'll re-submit the fixed patch as soon as I know what to do.
 
 
---=-c8z2kuQ5L4Zr+klspCMx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Best regards,
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+Iwo
 
-iQIcBAABAgAGBQJQPw/2AAoJECmIfjd9wqK0x7oQALYUi4H5QCZtNXF5/wIc1yp7
-kgkzvnI5Nrrzw6ZYjmNUo0Pgmp+Hwb7WcpGjMurZs0Jlpe+dlrUFft7M/gJBJHtR
-smkIRVy11NDGhNWWWdBrT9/MwWsyq6B3Nf2R06nofnWcf/3WKvCK5nxhf7nFyi8W
-J540Hyo+a+9kwyUbtpkqsQcO8/Ca6kjoAa4x5j6XF+E2xj3b213nzycqy+fY6xAN
-s/dI3uheagUc6lcnt5oco1YLtobf5VuCneCUI2sLwVDdfwLr1A+mw6Aiu6UcMD8W
-03oAN+MGED7bY9luW0LmHzkpLkq79MUJcw4auoAJnf2Qcorfqw5klbbjJpV+LDG2
-jxsZA0KrSX9YanCC7Xg2AvXeWP+CUSKzjTx36lKuzPtxQaoOt/34VJqQxrG4MjLG
-x7funaSe2RMoRL4tKFKQWp9DMfp9lI5jfU1WCqAqAj0PGYjkIN+igbvSqAbwXbQk
-gA9UZwjPze8/wy2wc9Wo0M4Ay8hVnji96Wse5iXPVtILUN99DfZkH5QjJQDSNFfO
-8wPTLwQpgbRjSqLsqyN2wmYT9ms44KbIr1jO0V8MGMEIdXFysg4n/97m58eflGzC
-CLbl37wg/5JI+voP1JPyXaP3WW1hSGQ1w2GJn5mNHLc4DRb4RQf+6CFONR+UeD9Q
-vqc3lYyXYMZ+xLIkapLa
-=9URx
------END PGP SIGNATURE-----
-
---=-c8z2kuQ5L4Zr+klspCMx--
+______________________________________________________________________
+This communication contains information which may be confidential or privi=
+leged. The information is intended solely for the use of the individual or=
+ entity named above.  If you are not the intended recipient,=20be aware th=
+at any disclosure, copying, distribution or use of the contents of this in=
+formation is prohibited.  If you have received this communication in error=
+, please notify me by telephone immediately.
+______________________________________________________________________
