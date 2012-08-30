@@ -1,23 +1,22 @@
-Received: from mho-04-ewr.mailhop.org ([204.13.248.74]
- helo=mho-02-ewr.mailhop.org)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T7AoQ-0003Hg-3p
- for linux-mtd@lists.infradead.org; Thu, 30 Aug 2012 19:53:58 +0000
-Date: Thu, 30 Aug 2012 12:53:49 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH v3 10/10] mtd: nand: omap2: use gpmc provided irqs
-Message-ID: <20120830195349.GW1303@atomide.com>
-References: <cover.1344609341.git.afzal@ti.com>
- <c5a608a70a875191e1323958c74fb2ac8dfa34b3.1344609341.git.afzal@ti.com>
- <1345895326.1815.4.camel@kyv>
+Received: from mail85.messagelabs.com ([216.82.241.211])
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1T7DYZ-0003bV-Vd
+ for linux-mtd@lists.infradead.org; Thu, 30 Aug 2012 22:49:48 +0000
+From: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>
+Date: Fri, 31 Aug 2012 08:49:28 +1000
+Subject: RE: [PATCH] Test for multi-bit error correction
+Message-ID: <6871BC8982B258468985EE735D2C57524E269AFB5F@ntcex01.corp.netcomm.com.au>
+References: <6871BC8982B258468985EE735D2C57524E269AFB52@ntcex01.corp.netcomm.com.au>
+ ,<1346310033.2848.536.camel@sauron.fi.intel.com>
+ <6871BC8982B258468985EE735D2C57524E269AFB54@ntcex01.corp.netcomm.com.au>,
+ <1346315075.2848.538.camel@sauron.fi.intel.com>
+In-Reply-To: <1346315075.2848.538.camel@sauron.fi.intel.com>
+Content-Language: en-AU
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1345895326.1815.4.camel@kyv>
-Cc: artem.bityutskiy@linux.intel.com, Afzal Mohammed <afzal@ti.com>,
- linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
- ivan.djelic@parrot.com
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,21 +26,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Artem Bityutskiy <dedekind1@gmail.com> [120825 04:49]:
-> On Tue, 2012-08-21 at 15:14 +0530, Afzal Mohammed wrote:
-> > GPMC platform initialization provides it's clients
-> > with interrupts that can be used through struct
-> > resource. Make use of it for irq mode functionality.
-> > 
-> > Also now write protect disable is done by GPMC,
-> > hence remove it.
-> > 
-> > Signed-off-by: Afzal Mohammed <afzal@ti.com>
-> 
-> Acked-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+On Thu, 30 Aug 2012 18:24:35 +1000
+Artem Bityutskiy <dedekind1@gmail.com> wrote:
 
-Thanks I'll apply these into omap devel-gpmc branch.
+> On Thu, 2012-08-30 at 18:05 +1000, Iwo Mergler wrote:
+> >=20
+> > I'm not sure what to do about this. Checkpatch.pl also complains if I
+> > split the strings.
+> > I could declare the format strings as const char * somewhere else, but=
 
-Regards,
+> > I consider the
+> > resulting code being less readable. Any suggestions?=20
+>=20
+> I think you can ignore these ones.
+>=20
 
-Tony
+OK, thanks. Revised patch follows.
+
+
+Best regards,
+
+Iwo
+
+______________________________________________________________________
+This communication contains information which may be confidential or privi=
+leged. The information is intended solely for the use of the individual or=
+ entity named above.  If you are not the intended recipient, be aware that=
+ any disclosure, copying, distribution or use of the contents of this info=
+rmation is prohibited.  If you have received this communication in error, =
+please notify me by telephone immediately.
+______________________________________________________________________
