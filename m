@@ -1,17 +1,21 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T7ZHR-0001Fc-MX
- for linux-mtd@lists.infradead.org; Fri, 31 Aug 2012 22:01:34 +0000
-Received: by pbbrq8 with SMTP id rq8so5788399pbb.36
- for <linux-mtd@lists.infradead.org>; Fri, 31 Aug 2012 15:01:31 -0700 (PDT)
+ id 1T7ZXb-0001UV-Mt
+ for linux-mtd@lists.infradead.org; Fri, 31 Aug 2012 22:18:16 +0000
+Received: by lbbgf7 with SMTP id gf7so1466162lbb.36
+ for <linux-mtd@lists.infradead.org>; Fri, 31 Aug 2012 15:18:12 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1346416026.9709.47.camel@sauron.fi.intel.com>
+References: <886EEBE3AFFFB144AA8169C199AB4E6AA7BC4D5FB8@BBMBX.backbone.local>
+ <1346416026.9709.47.camel@sauron.fi.intel.com>
+Date: Fri, 31 Aug 2012 15:18:12 -0700
+Message-ID: <CAN8TOE8j9gxpXAmL51gqaW8=TFLQLPhp03inryx_-uZv4901Ng@mail.gmail.com>
+Subject: Re: FW: UBIFS tools and latest 2.6.33 kernel from
+ http://git.infradead.org/users/dedekind/ubifs-v2.6.33.git
 From: Brian Norris <computersforpeace@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH] jffs2: don't fail on bitflips in OOB
-Date: Fri, 31 Aug 2012 15:01:19 -0700
-Message-Id: <1346450479-22400-1-git-send-email-computersforpeace@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- stable@vger.kernel.org
+To: dedekind1@gmail.com, David Clark <dclark@tantalus.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,48 +25,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-JFFS2 was designed without thought for OOB bitflips, it seems, but they
-can occur and will be reported to JFFS2 via mtd_read_oob()[1]. We don't
-want to fail on these transactions, since the data was corrected.
+On Fri, Aug 31, 2012 at 5:27 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> Hi,
+>
+> On Fri, 2012-08-24 at 12:39 -0700, David Clark wrote:
+>> UBI error: io_init: bad write buffer size 0 for 1 min. I/O unit
+>
+> This means your NOR driver should be fixed and it should return
+> _correct_ write buffer size, not 0.
 
-[1] Few drivers report bitflips for OOB-only transactions. With such
-    drivers, this patch should have no effect.
+I'm guessing that you're using m25p80, which is missing this mainline
+patch in the backport tree:
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Cc: stable@vger.kernel.org
----
- fs/jffs2/wbuf.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+commit b54f47c8bcfc5f766bf13ec31bd7dd1d4726d33b
+Author: Brian Norris <computersforpeace@gmail.com>
+Date:   Tue Jan 31 00:06:03 2012 -0800
 
-diff --git a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
-index 6f4529d..a6597d6 100644
---- a/fs/jffs2/wbuf.c
-+++ b/fs/jffs2/wbuf.c
-@@ -1044,10 +1044,10 @@ int jffs2_check_oob_empty(struct jffs2_sb_info *c,
- 	ops.datbuf = NULL;
- 
- 	ret = mtd_read_oob(c->mtd, jeb->offset, &ops);
--	if (ret || ops.oobretlen != ops.ooblen) {
-+	if ((ret && !mtd_is_bitflip(ret)) || ops.oobretlen != ops.ooblen) {
- 		pr_err("cannot read OOB for EB at %08x, requested %zd bytes, read %zd bytes, error %d\n",
- 		       jeb->offset, ops.ooblen, ops.oobretlen, ret);
--		if (!ret)
-+		if (!ret || mtd_is_bitflip(ret))
- 			ret = -EIO;
- 		return ret;
- 	}
-@@ -1086,10 +1086,10 @@ int jffs2_check_nand_cleanmarker(struct jffs2_sb_info *c,
- 	ops.datbuf = NULL;
- 
- 	ret = mtd_read_oob(c->mtd, jeb->offset, &ops);
--	if (ret || ops.oobretlen != ops.ooblen) {
-+	if ((ret && !mtd_is_bitflip(ret)) || ops.oobretlen != ops.ooblen) {
- 		pr_err("cannot read OOB for EB at %08x, requested %zd bytes, read %zd bytes, error %d\n",
- 		       jeb->offset, ops.ooblen, ops.oobretlen, ret);
--		if (!ret)
-+		if (!ret || mtd_is_bitflip(ret))
- 			ret = -EIO;
- 		return ret;
- 	}
--- 
-1.7.11.3
+    mtd: m25p80: set writebufsize
+
+Artem,
+
+There was a series of 'writebufsize' fixes that may be missing from
+multiple backport trees. I can help you track them down, if you'd like
+the help.
+
+Brian
