@@ -1,22 +1,16 @@
-Received: from mail170.messagelabs.com ([216.82.253.227])
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T7Djm-0003pa-Cz
- for linux-mtd@lists.infradead.org; Thu, 30 Aug 2012 23:01:23 +0000
-From: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Date: Fri, 31 Aug 2012 08:59:48 +1000
-Subject: RE: [PATCH] Test for multi-bit error correction
-Message-ID: <6871BC8982B258468985EE735D2C57524E269AFB60@ntcex01.corp.netcomm.com.au>
-References: <6871BC8982B258468985EE735D2C57524E269AFB52@ntcex01.corp.netcomm.com.au>
- ,<1346310033.2848.536.camel@sauron.fi.intel.com>
- <6871BC8982B258468985EE735D2C57524E269AFB54@ntcex01.corp.netcomm.com.au>,
- <1346315075.2848.538.camel@sauron.fi.intel.com>
-In-Reply-To: <1346315075.2848.538.camel@sauron.fi.intel.com>
-Content-Language: en-AU
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Subject: [PATCH 6/9] ARM: OMAP: Move gpio.h to include/linux/platform_data
+To: linux-arm-kernel@lists.infradead.org
+From: Tony Lindgren <tony@atomide.com>
+Date: Thu, 30 Aug 2012 17:52:34 -0700
+Message-ID: <20120831005234.28732.10624.stgit@muffinssi.local>
+In-Reply-To: <20120831004828.28732.902.stgit@muffinssi.local>
+References: <20120831004828.28732.902.stgit@muffinssi.local>
 MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Cc: Grant Likely <grant.likely@secretlab.ca>,
+ Linus Walleij <linus.walleij@linaro.org>, linux-omap@vger.kernel.org,
+ linux-mtd@lists.infradead.org, alsa-devel@alsa-project.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,544 +20,548 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This way we can remove includes of plat/gpio.h which won't work
+with the single zImage support.
 
-This tests ECC biterror recovery on a single NAND page. Mostly intended
-to test ECC hardware and low-level NAND driver.
+Note that we also remove the cpu_class_is_omap2() check
+in gpio-omap.c as the drivers should not call it as we need to
+make it local to arch/arm/mach-omap2 for single zImage support.
 
-There are two test modes:
+While at it, arrange the related includes in the standard way.
 
-    0 - artificially inserting bit errors until the ECC fails
-        This is the default method and fairly quick. It should
-        be independent of the quality of the FLASH.
-
-    1 - re-writing the same pattern repeatedly until the ECC fails.
-        This method relies on the physics of NAND FLASH to eventually
-        generate '0' bits if '1' has been written sufficient times. Depend=
-ing
-        on the NAND, the first bit errors will appear after 1000 or
-        more writes and then will usually snowball, reaching the limits
-        of the ECC quickly.
-
-The test stops after 10000 cycles, should your FLASH be exceptionally
-good and not generate bit errors before that. Try a different page
-offset in that case.
-
-Please note that neither of these tests will significantly 'use up' any FL=
-ASH
-endurance. Only a maximum of two erase operations will be performed.
-
-Signed-off-by: Iwo Mergler <Iwo.Mergler@netcommwireless.com.au>
+Cc: Grant Likely <grant.likely@secretlab.ca>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-mtd@lists.infradead.org
+Cc: alsa-devel@alsa-project.org
+Acked-by: Tony Lindgren <tony@atomide.com>
 ---
- drivers/mtd/tests/Makefile          |    1 +
- drivers/mtd/tests/mtd_nandbiterrs.c |  460 ++++++++++++++++++++++++++++++=
-+++++
- 2 files changed, 461 insertions(+), 0 deletions(-)
- create mode 100644 drivers/mtd/tests/mtd_nandbiterrs.c
+ arch/arm/mach-omap1/board-ams-delta.c              |    3 ++-
+ arch/arm/mach-omap1/board-osk.c                    |    1 +
+ arch/arm/mach-omap1/gpio15xx.c                     |    1 +
+ arch/arm/mach-omap1/gpio16xx.c                     |    1 +
+ arch/arm/mach-omap1/gpio7xx.c                      |    1 +
+ arch/arm/mach-omap1/include/mach/gpio.h            |    2 --
+ arch/arm/mach-omap1/leds-h2p2-debug.c              |    4 +++-
+ arch/arm/mach-omap1/leds.c                         |    1 +
+ arch/arm/mach-omap2/board-am3517evm.c              |    9 ++++++---
+ arch/arm/mach-omap2/board-cm-t35.c                 |   12 +++++++-----
+ arch/arm/mach-omap2/board-zoom-display.c           |    6 +++++-
+ arch/arm/mach-omap2/board-zoom-peripherals.c       |    1 +
+ arch/arm/mach-omap2/gpio.c                         |    1 +
+ arch/arm/mach-omap2/hsmmc.c                        |    5 ++++-
+ arch/arm/mach-omap2/include/mach/gpio.h            |    2 --
+ arch/arm/mach-omap2/msdi.c                         |    1 +
+ arch/arm/mach-omap2/omap_hwmod_2420_data.c         |    1 -
+ arch/arm/mach-omap2/omap_hwmod_2430_data.c         |    6 +++---
+ arch/arm/mach-omap2/omap_hwmod_2xxx_ipblock_data.c |    2 +-
+ arch/arm/mach-omap2/omap_hwmod_3xxx_data.c         |    6 +++---
+ arch/arm/mach-omap2/omap_hwmod_44xx_data.c         |    6 +++---
+ arch/arm/mach-omap2/pm24xx.c                       |    1 +
+ arch/arm/mach-omap2/pm34xx.c                       |    2 ++
+ drivers/gpio/gpio-omap.c                           |   15 ++++++++-------
+ drivers/mtd/nand/ams-delta.c                       |    8 ++++++--
+ include/linux/platform_data/gpio-omap.h            |   15 ++-------------
+ sound/soc/omap/sdp3430.c                           |    1 +
+ 27 files changed, 65 insertions(+), 49 deletions(-)
+ rename arch/arm/plat-omap/include/plat/gpio.h => include/linux/platform_data/gpio-omap.h (94%)
 
-diff --git a/drivers/mtd/tests/Makefile b/drivers/mtd/tests/Makefile
-index b44dcab..bd0065c 100644
---- a/drivers/mtd/tests/Makefile
-+++ b/drivers/mtd/tests/Makefile
-@@ -6,3 +6,4 @@ obj-$(CONFIG_MTD_TESTS) +=3D mtd_stresstest.o
- obj-$(CONFIG_MTD_TESTS) +=3D mtd_subpagetest.o
- obj-$(CONFIG_MTD_TESTS) +=3D mtd_torturetest.o
- obj-$(CONFIG_MTD_TESTS) +=3D mtd_nandecctest.o
-+obj-$(CONFIG_MTD_TESTS) +=3D mtd_nandbiterrs.o
-diff --git a/drivers/mtd/tests/mtd_nandbiterrs.c b/drivers/mtd/tests/mtd_n=
-andbiterrs.c
-new file mode 100644
-index 0000000..94e908e
---- /dev/null
-+++ b/drivers/mtd/tests/mtd_nandbiterrs.c
-@@ -0,0 +1,460 @@
-+/*
-+ * (C)2012 NetCommWireless
-+ * Iwo Mergler <Iwo.Mergler@netcommwireless.com.au>
-+ *
-+ * Test for multi-bit error recovery on a NAND page This mostly tests the=
-
-+ * ECC controller / driver.
-+ *
-+ * There are two test modes:
-+ *
-+ *=090 - artificially inserting bit errors until the ECC fails
-+ *=09    This is the default method and fairly quick. It should
-+ *=09    be independent of the quality of the FLASH.
-+ *
-+ *=091 - re-writing the same pattern repeatedly until the ECC fails.
-+ *=09    This method relies on the physics of NAND FLASH to eventually
-+ *=09    generate '0' bits if '1' has been written sufficient times.
-+ *=09    Depending on the NAND, the first bit errors will appear after
-+ *=09    1000 or more writes and then will usually snowball, reaching the=
-
-+ *=09    limits of the ECC quickly.
-+ *
-+ *=09    The test stops after 10000 cycles, should your FLASH be
-+ *=09    exceptionally good and not generate bit errors before that. Try
-+ *=09    a different page in that case.
-+ *
-+ * Please note that neither of these tests will significantly 'use up' an=
-y
-+ * FLASH endurance. Only a maximum of two erase operations will be perfor=
-med.
-+ *
-+ *
-+ * This program is free software; you can redistribute it and/or modify i=
-t
-+ * under the terms of the GNU General Public License version 2 as publish=
-ed by
-+ * the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but WI=
-THOUT
-+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License f=
-or
-+ * more details.
-+ *
-+ * You should have received a copy of the GNU General Public License alon=
-g with
-+ * this program; see the file COPYING. If not, write to the Free Software=
-
-+ * Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-+ */
-+#include <linux/init.h>
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/err.h>
-+#include <linux/mtd/nand.h>
-+#include <linux/slab.h>
-+
-+#define msg(FMT, VA...) pr_info("mtd_nandbiterrs: "FMT, ##VA)
-+
-+static int dev;
-+module_param(dev, int, S_IRUGO);
-+MODULE_PARM_DESC(dev, "MTD device number to use");
-+
-+static unsigned page_offset;
-+module_param(page_offset, uint, S_IRUGO);
-+MODULE_PARM_DESC(page_offset, "Page number relative to dev start");
-+
-+static unsigned seed;
-+module_param(seed, uint, S_IRUGO);
-+MODULE_PARM_DESC(seed, "Random seed");
-+
-+static int mode;
-+module_param(mode, int, S_IRUGO);
-+MODULE_PARM_DESC(mode, "0=3Dincremental errors, 1=3Doverwrite test");
-+
-+static unsigned max_overwrite =3D 10000;
-+
-+static loff_t   offset;     /* Offset of the page we're using. */
-+static unsigned eraseblock; /* Eraseblock number for our page. */
-+
-+/* We assume that the ECC can correct up to a certain number
-+ * of biterrors per subpage. */
-+static unsigned subsize;  /* Size of subpages */
-+static unsigned subcount; /* Number of subpages per page */
-+
-+static struct mtd_info *mtd;   /* MTD device */
-+
-+static uint8_t *wbuffer; /* One page write / compare buffer */
-+static uint8_t *rbuffer; /* One page read buffer */
-+
-+/* 'random' bytes from known offsets */
-+static uint8_t hash(unsigned=20offset)
-+{
-+=09unsigned v =3D offset;
-+=09unsigned char c;
-+=09v ^=3D 0x7f7edfd3;
-+=09v =3D v ^ (v >> 3);
-+=09v =3D v ^ (v >> 5);
-+=09v =3D v ^ (v >> 13);
-+=09c =3D v & 0xFF;
-+=09/* Reverse bits of result. */
-+=09c =3D (c & 0x0F) << 4 | (c & 0xF0) >> 4;
-+=09c =3D (c & 0x33) << 2 | (c & 0xCC) >> 2;
-+=09c =3D (c & 0x55) << 1 | (c & 0xAA) >> 1;
-+=09return c;
-+}
-+
-+static int erase_block(void)
-+{
-+=09int err;
-+=09struct erase_info ei;
-+=09loff_t addr =3D eraseblock * mtd->erasesize;
-+
-+=09msg("erase_block\n");
-+
-+=09memset(&ei, 0, sizeof(struct erase_info));
-+=09ei.mtd  =3D mtd;
-+=09ei.addr =3D addr;
-+=09ei.len  =3D mtd->erasesize;
-+
-+=09err =3D mtd_erase(mtd, &ei);
-+=09if (err || ei.state =3D=3D MTD_ERASE_FAILED) {
-+=09=09msg("error %d while erasing\n", err);
-+=09=09if (!err)
-+=09=09=09err =3D -EIO;
-+=09=09return err;
-+=09}
-+
-+=09return 0;
-+}
-+
-+/* Writes wbuffer to page */
-+static int write_page(int log)
-+{
-+=09int err =3D 0;
-+=09size_t written;
-+
-+=09if (log)
-+=09=09msg("write_page\n");
-+
-+=09err =3D mtd_write(mtd, offset, mtd->writesize, &written, wbuffer);
-+=09if (err || written !=3D mtd->writesize) {
-+=09=09msg("error: write failed at %#llx\n", (long long)offset);
-+=09=09if (!err)
-+=09=09=09err =3D -EIO;
-+=09}
-+
-+=09return err;
-+}
-+
-+/* Re-writes the data area while leaving the OOB alone. */
-+static int rewrite_page(int log)
-+{
-+=09int err =3D 0;
-+=09struct mtd_oob_ops ops;
-+
-+=09if (log)
-+=09=09msg("rewrite page\n");
-+
-+=09ops.mode      =3D MTD_OPS_RAW; /* No ECC */
-+=09ops.len       =3D mtd->writesize;
-+=09ops.retlen    =3D 0;
-+=09ops.ooblen    =3D 0;
-+=09ops.oobretlen =3D 0;
-+=09ops.ooboffs   =3D 0;
-+=09ops.datbuf    =3D wbuffer;
-+=09ops.oobbuf    =3D NULL;
-+
-+=09err =3D mtd_write_oob(mtd, offset, &ops);
-+=09if (err || ops.retlen !=3D mtd->writesize) {
-+=09=09msg("error: write_oob failed (%d)\n", err);
-+=09=09if (!err)
-+=09=09=09err =3D -EIO;
-+=09}
-+
-+=09return err;
-+}
-+
-+/* Reads page into rbuffer. Returns number of corrected bit errors (>=3D0=
-)
-+ * or error (<0) */
-+static int read_page(int log)
-+{
-+=09int err =3D 0;
-+=09size_t read;
-+=09struct mtd_ecc_stats oldstats;
-+
-+=09if (log)
-+=09=09msg("read_page\n");
-+
-+=09/* Saving last mtd stats */
-+=09memcpy(&oldstats, &mtd->ecc_stats, sizeof(oldstats));
-+
-+=09err =3D mtd_read(mtd, offset, mtd->writesize, &read, rbuffer);
-+=09if (err =3D=3D -EUCLEAN)
-+=09=09err =3D mtd->ecc_stats.corrected - oldstats.corrected;
-+
-+=09if (err < 0 || read !=3D mtd->writesize) {
-+=09=09msg("error: read failed at %#llx\n", (long long)offset);
-+=09=09if (err >=3D 0)
-+=09=09=09err =3D -EIO;
-+=09}
-+
-+=09return err;
-+}
-+
-+/* Verifies rbuffer against random sequence */
-+static int verify_page(int log)
-+{
-+=09unsigned i, errs =3D 0;
-+
-+=09if (log)
-+=09=09msg("verify_page\n");
-+
-+=09for (i =3D 0; i < mtd->writesize; i++) {
-+=09=09if (rbuffer[i] !=3D hash(i+seed)) {
-+=09=09=09msg("Error: page offset %u, expected %02x, got %02x\n",
-+=09=09=09=09i, hash(i+seed), rbuffer[i]);
-+=09=09=09errs++;
-+=09=09}
-+=09}
-+
-+=09if (errs)
-+=09=09return -EIO;
-+=09else
-+=09=09return 0;
-+}
-+
-+#define CBIT(v, n) ((v) & (1 << (n)))
-+#define BCLR(v, n) ((v) =3D (v) & ~(1 << (n)))
-+
-+/* Finds the first '1' bit in wbuffer starting at offset 'byte'
-+ * and sets it to '0'. */
-+static int insert_biterror(unsigned byte)
-+{
-+=09int bit;
-+
-+=09while (byte < mtd->writesize) {
-+=09=09for (bit =3D 7; bit >=3D 0; bit--) {
-+=09=09=09if (CBIT(wbuffer[byte], bit)) {
-+=09=09=09=09BCLR(wbuffer[byte], bit);
-+=09=09=09=09msg("Inserted biterror @ %u/%u\n", byte, bit);
-+=09=09=09=09return 0;
-+=09=09=09}
-+=09=09}
-+=09=09byte++;
-+=09}
-+=09msg("biterror: Failed to find a '1' bit\n");
-+=09return -EIO;
-+}
-+
-+/* Writes 'random' data to page and then introduces deliberate bit
-+ * errors into the page, while verifying each step. */
-+static int incremental_errors_test(void)
-+{
-+=09int err =3D 0;
-+=09unsigned i;
-+=09unsigned errs_per_subpage =3D 0;
-+
-+=09msg("incremental biterrors test\n");
-+
-+=09for (i =3D 0; i < mtd->writesize; i++)
-+=09=09wbuffer[i] =3D hash(i+seed);
-+
-+=09err =3D write_page(1);
-+=09if (err)
-+=09=09goto exit;
-+
-+=09while (1) {
-+
-+=09=09err =3D rewrite_page(1);
-+=09=09if (err)
-+=09=09=09goto exit;
-+
-+=09=09err =3D read_page(1);
-+=09=09if (err > 0)
-+=09=09=09msg("Read reported %d corrected bit errors\n", err);
-+=09=09if (err < 0) {
-+=09=09=09msg("After %d biterrors per subpage, read reported error %d\n",
-+=09=09=09=09errs_per_subpage, err);
-+=09=09=09err =3D 0;
-+=09=09=09goto exit;
-+=09=09}
-+
-+=09=09err =3D verify_page(1);
-+=09=09if (err) {
-+=09=09=09msg("ECC failure, read data is incorrect despite read success\n"=
-);
-+=09=09=09goto exit;
-+=09=09}
-+
-+=09=09msg("Successfully corrected %d bit errors per subpage\n",
-+=09=09=09errs_per_subpage);
-+
-+=09=09for (i =3D 0; i < subcount; i++) {
-+=09=09=09err =3D insert_biterror(i * subsize);
-+=09=09=09if (err < 0)
-+=09=09=09=09goto exit;
-+=09=09}
-+=09=09errs_per_subpage++;
-+=09}
-+
-+exit:
-+=09return err;
-+}
-+
-+
-+/* Writes 'random' data to page and then re-writes that same data repeate=
-dly.
-+   This eventually develops bit errors (bits written as '1' will slowly b=
-ecome
-+   '0'), which are corrected as far as the ECC is capable of. */
-+static int overwrite_test(void)
-+{
-+=09int err =3D 0;
-+=09unsigned i;
-+=09unsigned max_corrected =3D 0;
-+=09unsigned opno =3D 0;
-+=09/* We don't expect more than this many correctable bit errors per
-+=09 * page. */
-+=09#define MAXBITS 512
-+=09static unsigned bitstats[MAXBITS]; /* bit error histogram. */
-+
-+=09memset(bitstats, 0, sizeof(bitstats));
-+
-+=09msg("overwrite biterrors test\n");
-+
-+=09for (i =3D 0; i < mtd->writesize; i++)
-+=09=09wbuffer[i] =3D hash(i+seed);
-+
-+=09err =3D write_page(1);
-+=09if (err)
-+=09=09goto exit;
-+
-+=09while (opno < max_overwrite) {
-+
-+=09=09err =3D rewrite_page(0);
-+=09=09if (err)
-+=09=09=09break;
-+
-+=09=09err =3D read_page(0);
-+=09=09if (err >=3D 0) {
-+=09=09=09if (err >=3D MAXBITS) {
-+=09=09=09=09msg("Implausible number of bit errors corrected\n");
-+=09=09=09=09err =3D -EIO;
-+=09=09=09=09break;
-+=09=09=09}
-+=09=09=09bitstats[err]++;
-+=09=09=09if (err > max_corrected) {
-+=09=09=09=09max_corrected =3D err;
-+=09=09=09=09msg("Read reported %d corrected bit errors\n",
-+=09=09=09=09=09err);
-+=09=09=09}
-+=09=09} else { /* err < 0 */
-+=09=09=09msg("Read reported error %d\n", err);
-+=09=09=09err =3D 0;
-+=09=09=09break;
-+=09=09}
-+
-+=09=09err =3D verify_page(0);
-+=09=09if (err) {
-+=09=09=09bitstats[max_corrected] =3D opno;
-+=09=09=09msg("ECC failure, read data is incorrect despite read success\n"=
-);
-+=09=09=09break;
-+=09=09}
-+
-+=09=09opno++;
-+=09}
-+
-+=09/* At this point bitstats[0] contains the number of ops with no bit
-+=09 * errors, bitstats[1] the number of ops with 1 bit error, etc. */
-+=09msg("Bit error histogram (%d operations total):\n", opno);
-+=09for (i =3D 0; i < max_corrected; i++)
-+=09=09msg("Page reads with %3d corrected bit errors: %d\n",
-+=09=09=09i, bitstats[i]);
-+
-+exit:
-+=09return err;
-+}
-+
-+static int __init mtd_nandbiterrs_init(void)
-+{
-+=09int err =3D 0;
-+
-+=09msg("\n");
-+=09msg("=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D\n");
-+=09msg("MTD device: %d\n", dev);
-+
-+=09mtd =3D get_mtd_device(NULL, dev);
-+=09if (IS_ERR(mtd)) {
-+=09=09err =3D PTR_ERR(mtd);
-+=09=09msg("error: cannot get MTD device\n");
-+=09=09goto exit_mtddev;
-+=09}
-+
-+=09if (mtd->type !=3D MTD_NANDFLASH) {
-+=09=09msg("this test requires NAND flash\n");
-+=09=09err =3D -ENODEV;
-+=09=09goto exit_nand;
-+=09}
-+
-+=09msg("MTD device size %llu, eraseblock=3D%u, page=3D%u, oob=3D%u\n",
-+=09=09(unsigned long long)mtd->size, mtd->erasesize,
-+=09=09mtd->writesize, mtd->oobsize);
-+
-+=09subsize  =3D mtd->writesize >> mtd->subpage_sft;
-+=09subcount =3D mtd->writesize / subsize;
-+
-+=09msg("Device uses %d subpages of %d bytes\n", subcount, subsize);
-+
-+=09offset     =3D page_offset * mtd->writesize;
-+=09eraseblock =3D mtd_div_by_eb(offset, mtd);
-+
-+=09msg("Using page=3D%u, offset=3D%llu, eraseblock=3D%u\n",
-+=09=09page_offset, offset, eraseblock);
-+
-+=09wbuffer =3D kmalloc(mtd->writesize, GFP_KERNEL);
-+=09if (!wbuffer) {
-+=09=09err =3D -ENOMEM;
-+=09=09goto exit_wbuffer;
-+=09}
-+
-+=09rbuffer =3D kmalloc(mtd->writesize, GFP_KERNEL);
-+=09if (!rbuffer) {
-+=09=09err =3D -ENOMEM;
-+=09=09goto exit_rbuffer;
-+=09}
-+
-+=09err =3D erase_block();
-+=09if (err)
-+=09=09goto exit_error;
-+
-+=09if (mode =3D=3D 0)
-+=09=09err =3D incremental_errors_test();
-+=09else
-+=09=09err =3D overwrite_test();
-+
-+=09if (err)
-+=09=09goto exit_error;
-+
-+=09/* We leave the block un-erased in case of test failure. */
-+=09err =3D erase_block();
-+=09if (err)
-+=09=09goto exit_error;
-+
-+=09err =3D -EIO;
-+=09msg("finished successfully.\n");
-+=09msg("=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D\n");
-+
-+exit_error:
-+=09kfree(rbuffer);
-+exit_rbuffer:
-+=09kfree(wbuffer);
-+exit_wbuffer:
-+=09/* Nothing */
-+exit_nand:
-+=09put_mtd_device(mtd);
-+exit_mtddev:
-+=09return err;
-+}
-+
-+static void __exit mtd_nandbiterrs_exit(void)
-+{
-+=09return;
-+}
-+
-+module_init(mtd_nandbiterrs_init);
-+module_exit(mtd_nandbiterrs_exit);
-+
-+MODULE_DESCRIPTION("NAND bit error recovery test");
-+MODULE_AUTHOR("Iwo Mergler");
-+MODULE_LICENSE("GPL");
---=20
-1.7.4.4
-
-
-______________________________________________________________________
-This communication contains information which may be confidential or privi=
-leged. The information is intended solely for the use of the individual or=
- entity named above.  If you are not the intended recipient, be aware that=
- any disclosure, copying, distribution or use of the contents of this info=
-rmation is prohibited.  If you have received this communication in error, =
-please notify me by telephone immediately.
-______________________________________________________________________
+diff --git a/arch/arm/mach-omap1/board-ams-delta.c b/arch/arm/mach-omap1/board-ams-delta.c
+index 147d665..4b5578b 100644
+--- a/arch/arm/mach-omap1/board-ams-delta.c
++++ b/arch/arm/mach-omap1/board-ams-delta.c
+@@ -26,6 +26,8 @@
+ #include <linux/export.h>
+ #include <linux/omapfb.h>
+ #include <linux/io.h>
++#include <linux/platform_data/gpio-omap.h>
++#include <linux/platform_data/keypad-omap.h>
+ 
+ #include <media/soc_camera.h>
+ 
+@@ -35,7 +37,6 @@
+ #include <asm/mach/map.h>
+ 
+ #include <plat/board-ams-delta.h>
+-#include <linux/platform_data/keypad-omap.h>
+ #include <plat/mux.h>
+ 
+ #include <mach/hardware.h>
+diff --git a/arch/arm/mach-omap1/board-osk.c b/arch/arm/mach-omap1/board-osk.c
+index 9413fd3..c780a1b 100644
+--- a/arch/arm/mach-omap1/board-osk.c
++++ b/arch/arm/mach-omap1/board-osk.c
+@@ -39,6 +39,7 @@
+ #include <linux/mtd/partitions.h>
+ #include <linux/mtd/physmap.h>
+ #include <linux/i2c/tps65010.h>
++#include <linux/platform_data/gpio-omap.h>
+ #include <linux/platform_data/omap1_bl.h>
+ 
+ #include <asm/mach-types.h>
+diff --git a/arch/arm/mach-omap1/gpio15xx.c b/arch/arm/mach-omap1/gpio15xx.c
+index ebef15e..98e6f39 100644
+--- a/arch/arm/mach-omap1/gpio15xx.c
++++ b/arch/arm/mach-omap1/gpio15xx.c
+@@ -17,6 +17,7 @@
+  */
+ 
+ #include <linux/gpio.h>
++#include <linux/platform_data/gpio-omap.h>
+ 
+ #define OMAP1_MPUIO_VBASE		OMAP1_MPUIO_BASE
+ #define OMAP1510_GPIO_BASE		0xFFFCE000
+diff --git a/arch/arm/mach-omap1/gpio16xx.c b/arch/arm/mach-omap1/gpio16xx.c
+index 2a48cd2..33f4192 100644
+--- a/arch/arm/mach-omap1/gpio16xx.c
++++ b/arch/arm/mach-omap1/gpio16xx.c
+@@ -17,6 +17,7 @@
+  */
+ 
+ #include <linux/gpio.h>
++#include <linux/platform_data/gpio-omap.h>
+ 
+ #define OMAP1610_GPIO1_BASE		0xfffbe400
+ #define OMAP1610_GPIO2_BASE		0xfffbec00
+diff --git a/arch/arm/mach-omap1/gpio7xx.c b/arch/arm/mach-omap1/gpio7xx.c
+index acf12b7..958ce9a 100644
+--- a/arch/arm/mach-omap1/gpio7xx.c
++++ b/arch/arm/mach-omap1/gpio7xx.c
+@@ -17,6 +17,7 @@
+  */
+ 
+ #include <linux/gpio.h>
++#include <linux/platform_data/gpio-omap.h>
+ 
+ #define OMAP7XX_GPIO1_BASE		0xfffbc000
+ #define OMAP7XX_GPIO2_BASE		0xfffbc800
+diff --git a/arch/arm/mach-omap1/include/mach/gpio.h b/arch/arm/mach-omap1/include/mach/gpio.h
+index e737706..ebf86c0 100644
+--- a/arch/arm/mach-omap1/include/mach/gpio.h
++++ b/arch/arm/mach-omap1/include/mach/gpio.h
+@@ -1,5 +1,3 @@
+ /*
+  * arch/arm/mach-omap1/include/mach/gpio.h
+  */
+-
+-#include <plat/gpio.h>
+diff --git a/arch/arm/mach-omap1/leds-h2p2-debug.c b/arch/arm/mach-omap1/leds-h2p2-debug.c
+index f6b14a1..3ea12c7 100644
+--- a/arch/arm/mach-omap1/leds-h2p2-debug.c
++++ b/arch/arm/mach-omap1/leds-h2p2-debug.c
+@@ -14,13 +14,15 @@
+ #include <linux/kernel_stat.h>
+ #include <linux/sched.h>
+ #include <linux/io.h>
++#include <linux/platform_data/gpio-omap.h>
+ 
+-#include <mach/hardware.h>
+ #include <asm/leds.h>
+ #include <asm/mach-types.h>
+ 
+ #include <plat/fpga.h>
+ 
++#include <mach/hardware.h>
++
+ #include "leds.h"
+ 
+ 
+diff --git a/arch/arm/mach-omap1/leds.c b/arch/arm/mach-omap1/leds.c
+index ae6dd93..7b1a383 100644
+--- a/arch/arm/mach-omap1/leds.c
++++ b/arch/arm/mach-omap1/leds.c
+@@ -6,6 +6,7 @@
+ #include <linux/gpio.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
++#include <linux/platform_data/gpio-omap.h>
+ 
+ #include <asm/leds.h>
+ #include <asm/mach-types.h>
+diff --git a/arch/arm/mach-omap2/board-am3517evm.c b/arch/arm/mach-omap2/board-am3517evm.c
+index 00abda1..c6d63d7 100644
+--- a/arch/arm/mach-omap2/board-am3517evm.c
++++ b/arch/arm/mach-omap2/board-am3517evm.c
+@@ -25,19 +25,22 @@
+ #include <linux/can/platform/ti_hecc.h>
+ #include <linux/davinci_emac.h>
+ #include <linux/mmc/host.h>
++#include <linux/platform_data/gpio-omap.h>
+ 
+-#include <mach/hardware.h>
+-#include <mach/am35xx.h>
+ #include <asm/mach-types.h>
+ #include <asm/mach/arch.h>
+ #include <asm/mach/map.h>
+ 
+-#include "common.h"
+ #include <plat/usb.h>
++
++#include <mach/hardware.h>
++#include <mach/am35xx.h>
++
+ #include <video/omapdss.h>
+ #include <video/omap-panel-generic-dpi.h>
+ #include <video/omap-panel-tfp410.h>
+ 
++#include "common.h"
+ #include "am35xx-emac.h"
+ #include "mux.h"
+ #include "control.h"
+diff --git a/arch/arm/mach-omap2/board-cm-t35.c b/arch/arm/mach-omap2/board-cm-t35.c
+index ad83654..c2b2371 100644
+--- a/arch/arm/mach-omap2/board-cm-t35.c
++++ b/arch/arm/mach-omap2/board-cm-t35.c
+@@ -23,6 +23,9 @@
+ #include <linux/input/matrix_keypad.h>
+ #include <linux/delay.h>
+ #include <linux/gpio.h>
++#include <linux/platform_data/gpio-omap.h>
++#include <linux/platform_data/mtd-nand-omap2.h>
++#include <linux/platform_data/spi-omap2-mcspi.h>
+ 
+ #include <linux/i2c/at24.h>
+ #include <linux/i2c/twl.h>
+@@ -37,17 +40,16 @@
+ #include <asm/mach/arch.h>
+ #include <asm/mach/map.h>
+ 
+-#include "common.h"
+-#include <linux/platform_data/mtd-nand-omap2.h>
+ #include <plat/gpmc.h>
+ #include <plat/usb.h>
++
++#include <mach/hardware.h>
++
+ #include <video/omapdss.h>
+ #include <video/omap-panel-generic-dpi.h>
+ #include <video/omap-panel-tfp410.h>
+-#include <linux/platform_data/spi-omap2-mcspi.h>
+-
+-#include <mach/hardware.h>
+ 
++#include "common.h"
+ #include "mux.h"
+ #include "sdram-micron-mt46h32m32lf-6.h"
+ #include "hsmmc.h"
+diff --git a/arch/arm/mach-omap2/board-zoom-display.c b/arch/arm/mach-omap2/board-zoom-display.c
+index 660a2932..0e48a51 100644
+--- a/arch/arm/mach-omap2/board-zoom-display.c
++++ b/arch/arm/mach-omap2/board-zoom-display.c
+@@ -15,9 +15,13 @@
+ #include <linux/i2c/twl.h>
+ #include <linux/spi/spi.h>
+ #include <linux/platform_data/spi-omap2-mcspi.h>
+-#include <video/omapdss.h>
++
++#include <plat/cpu.h>
++
+ #include <mach/board-zoom.h>
+ 
++#include <video/omapdss.h>
++
+ #define LCD_PANEL_RESET_GPIO_PROD	96
+ #define LCD_PANEL_RESET_GPIO_PILOT	55
+ #define LCD_PANEL_QVGA_GPIO		56
+diff --git a/arch/arm/mach-omap2/board-zoom-peripherals.c b/arch/arm/mach-omap2/board-zoom-peripherals.c
+index 00f73b7..ae5d36b 100644
+--- a/arch/arm/mach-omap2/board-zoom-peripherals.c
++++ b/arch/arm/mach-omap2/board-zoom-peripherals.c
+@@ -19,6 +19,7 @@
+ #include <linux/regulator/fixed.h>
+ #include <linux/wl12xx.h>
+ #include <linux/mmc/host.h>
++#include <linux/platform_data/gpio-omap.h>
+ 
+ #include <asm/mach-types.h>
+ #include <asm/mach/arch.h>
+diff --git a/arch/arm/mach-omap2/gpio.c b/arch/arm/mach-omap2/gpio.c
+index 9ad7d48..7b52bdf 100644
+--- a/arch/arm/mach-omap2/gpio.c
++++ b/arch/arm/mach-omap2/gpio.c
+@@ -21,6 +21,7 @@
+ #include <linux/slab.h>
+ #include <linux/interrupt.h>
+ #include <linux/of.h>
++#include <linux/platform_data/gpio-omap.h>
+ 
+ #include <plat/omap_hwmod.h>
+ #include <plat/omap_device.h>
+diff --git a/arch/arm/mach-omap2/hsmmc.c b/arch/arm/mach-omap2/hsmmc.c
+index a9675d8..4b0e166 100644
+--- a/arch/arm/mach-omap2/hsmmc.c
++++ b/arch/arm/mach-omap2/hsmmc.c
+@@ -14,12 +14,15 @@
+ #include <linux/string.h>
+ #include <linux/delay.h>
+ #include <linux/gpio.h>
+-#include <mach/hardware.h>
++#include <linux/platform_data/gpio-omap.h>
++
+ #include <plat/mmc.h>
+ #include <plat/omap-pm.h>
+ #include <plat/mux.h>
+ #include <plat/omap_device.h>
+ 
++#include <mach/hardware.h>
++
+ #include "mux.h"
+ #include "hsmmc.h"
+ #include "control.h"
+diff --git a/arch/arm/mach-omap2/include/mach/gpio.h b/arch/arm/mach-omap2/include/mach/gpio.h
+index be4d290..5621cc5 100644
+--- a/arch/arm/mach-omap2/include/mach/gpio.h
++++ b/arch/arm/mach-omap2/include/mach/gpio.h
+@@ -1,5 +1,3 @@
+ /*
+  * arch/arm/mach-omap2/include/mach/gpio.h
+  */
+-
+-#include <plat/gpio.h>
+diff --git a/arch/arm/mach-omap2/msdi.c b/arch/arm/mach-omap2/msdi.c
+index fb5bc6c..9e57b4a 100644
+--- a/arch/arm/mach-omap2/msdi.c
++++ b/arch/arm/mach-omap2/msdi.c
+@@ -23,6 +23,7 @@
+ 
+ #include <linux/kernel.h>
+ #include <linux/err.h>
++#include <linux/platform_data/gpio-omap.h>
+ 
+ #include <plat/omap_hwmod.h>
+ #include <plat/omap_device.h>
+diff --git a/arch/arm/mach-omap2/omap_hwmod_2420_data.c b/arch/arm/mach-omap2/omap_hwmod_2420_data.c
+index 558c300..b305d7f 100644
+--- a/arch/arm/mach-omap2/omap_hwmod_2420_data.c
++++ b/arch/arm/mach-omap2/omap_hwmod_2420_data.c
+@@ -18,7 +18,6 @@
+ #include <plat/dma.h>
+ #include <plat/serial.h>
+ #include <plat/i2c.h>
+-#include <plat/gpio.h>
+ #include <linux/platform_data/spi-omap2-mcspi.h>
+ #include <plat/dmtimer.h>
+ #include <plat/l3_2xxx.h>
+diff --git a/arch/arm/mach-omap2/omap_hwmod_2430_data.c b/arch/arm/mach-omap2/omap_hwmod_2430_data.c
+index d662766..79ac236 100644
+--- a/arch/arm/mach-omap2/omap_hwmod_2430_data.c
++++ b/arch/arm/mach-omap2/omap_hwmod_2430_data.c
+@@ -12,15 +12,15 @@
+  * XXX handle crossbar/shared link difference for L3?
+  * XXX these should be marked initdata for multi-OMAP kernels
+  */
++#include <linux/platform_data/dsp-mcbsp.h>
++#include <linux/platform_data/spi-omap2-mcspi.h>
++
+ #include <plat/omap_hwmod.h>
+ #include <mach/irqs.h>
+ #include <plat/cpu.h>
+ #include <plat/dma.h>
+ #include <plat/serial.h>
+ #include <plat/i2c.h>
+-#include <plat/gpio.h>
+-#include <linux/platform_data/dsp-mcbsp.h>
+-#include <linux/platform_data/spi-omap2-mcspi.h>
+ #include <plat/dmtimer.h>
+ #include <plat/mmc.h>
+ #include <plat/l3_2xxx.h>
+diff --git a/arch/arm/mach-omap2/omap_hwmod_2xxx_ipblock_data.c b/arch/arm/mach-omap2/omap_hwmod_2xxx_ipblock_data.c
+index 161ae0a..44e4764 100644
+--- a/arch/arm/mach-omap2/omap_hwmod_2xxx_ipblock_data.c
++++ b/arch/arm/mach-omap2/omap_hwmod_2xxx_ipblock_data.c
+@@ -10,9 +10,9 @@
+  */
+ #include <plat/omap_hwmod.h>
+ #include <plat/serial.h>
+-#include <plat/gpio.h>
+ #include <plat/dma.h>
+ #include <plat/dmtimer.h>
++#include <linux/platform_data/gpio-omap.h>
+ #include <linux/platform_data/spi-omap2-mcspi.h>
+ 
+ #include <mach/irqs.h>
+diff --git a/arch/arm/mach-omap2/omap_hwmod_3xxx_data.c b/arch/arm/mach-omap2/omap_hwmod_3xxx_data.c
+index 656bb7f..15f617e 100644
+--- a/arch/arm/mach-omap2/omap_hwmod_3xxx_data.c
++++ b/arch/arm/mach-omap2/omap_hwmod_3xxx_data.c
+@@ -15,6 +15,9 @@
+  * XXX these should be marked initdata for multi-OMAP kernels
+  */
+ #include <linux/power/smartreflex.h>
++#include <linux/platform_data/gpio-omap.h>
++#include <linux/platform_data/dsp-mcbsp.h>
++#include <linux/platform_data/spi-omap2-mcspi.h>
+ 
+ #include <plat/omap_hwmod.h>
+ #include <mach/irqs.h>
+@@ -24,10 +27,7 @@
+ #include <plat/l3_3xxx.h>
+ #include <plat/l4_3xxx.h>
+ #include <plat/i2c.h>
+-#include <plat/gpio.h>
+ #include <plat/mmc.h>
+-#include <linux/platform_data/dsp-mcbsp.h>
+-#include <linux/platform_data/spi-omap2-mcspi.h>
+ #include <plat/dmtimer.h>
+ 
+ #include "omap_hwmod_common_data.h"
+diff --git a/arch/arm/mach-omap2/omap_hwmod_44xx_data.c b/arch/arm/mach-omap2/omap_hwmod_44xx_data.c
+index 3a06e7d..c9edaf2 100644
+--- a/arch/arm/mach-omap2/omap_hwmod_44xx_data.c
++++ b/arch/arm/mach-omap2/omap_hwmod_44xx_data.c
+@@ -19,15 +19,15 @@
+  */
+ 
+ #include <linux/io.h>
++#include <linux/platform_data/gpio-omap.h>
++#include <linux/platform_data/spi-omap2-mcspi.h>
++#include <linux/platform_data/dsp-mcbsp.h>
+ #include <linux/power/smartreflex.h>
+ 
+ #include <plat/omap_hwmod.h>
+ #include <plat/cpu.h>
+ #include <plat/i2c.h>
+-#include <plat/gpio.h>
+ #include <plat/dma.h>
+-#include <linux/platform_data/spi-omap2-mcspi.h>
+-#include <linux/platform_data/dsp-mcbsp.h>
+ #include <plat/mmc.h>
+ #include <plat/dmtimer.h>
+ #include <plat/common.h>
+diff --git a/arch/arm/mach-omap2/pm24xx.c b/arch/arm/mach-omap2/pm24xx.c
+index de1caf1..2708a8b 100644
+--- a/arch/arm/mach-omap2/pm24xx.c
++++ b/arch/arm/mach-omap2/pm24xx.c
+@@ -29,6 +29,7 @@
+ #include <linux/irq.h>
+ #include <linux/time.h>
+ #include <linux/gpio.h>
++#include <linux/platform_data/gpio-omap.h>
+ 
+ #include <asm/mach/time.h>
+ #include <asm/mach/irq.h>
+diff --git a/arch/arm/mach-omap2/pm34xx.c b/arch/arm/mach-omap2/pm34xx.c
+index e4fc88c..2a08978 100644
+--- a/arch/arm/mach-omap2/pm34xx.c
++++ b/arch/arm/mach-omap2/pm34xx.c
+@@ -28,6 +28,8 @@
+ #include <linux/clk.h>
+ #include <linux/delay.h>
+ #include <linux/slab.h>
++#include <linux/platform_data/gpio-omap.h>
++
+ #include <trace/events/power.h>
+ 
+ #include <asm/suspend.h>
+diff --git a/drivers/gpio/gpio-omap.c b/drivers/gpio/gpio-omap.c
+index e6efd77..64fbce3 100644
+--- a/drivers/gpio/gpio-omap.c
++++ b/drivers/gpio/gpio-omap.c
+@@ -25,11 +25,9 @@
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+ #include <linux/irqdomain.h>
++#include <linux/gpio.h>
++#include <linux/platform_data/gpio-omap.h>
+ 
+-#include <mach/hardware.h>
+-#include <asm/irq.h>
+-#include <mach/irqs.h>
+-#include <asm/gpio.h>
+ #include <asm/mach/irq.h>
+ 
+ #define OFF_MODE	1
+@@ -385,13 +383,16 @@ static int _set_gpio_triggering(struct gpio_bank *bank, int gpio,
+ static int gpio_irq_type(struct irq_data *d, unsigned type)
+ {
+ 	struct gpio_bank *bank = irq_data_get_irq_chip_data(d);
+-	unsigned gpio;
++	unsigned gpio = 0;
+ 	int retval;
+ 	unsigned long flags;
+ 
+-	if (!cpu_class_is_omap2() && d->irq > IH_MPUIO_BASE)
++#ifdef CONFIG_ARCH_OMAP1
++	if (d->irq > IH_MPUIO_BASE)
+ 		gpio = OMAP_MPUIO(d->irq - IH_MPUIO_BASE);
+-	else
++#endif
++
++	if (!gpio)
+ 		gpio = irq_to_gpio(bank, d->irq);
+ 
+ 	if (type & ~IRQ_TYPE_SENSE_MASK)
+diff --git a/drivers/mtd/nand/ams-delta.c b/drivers/mtd/nand/ams-delta.c
+index 861ca8f..78a524b 100644
+--- a/drivers/mtd/nand/ams-delta.c
++++ b/drivers/mtd/nand/ams-delta.c
+@@ -23,12 +23,16 @@
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/nand.h>
+ #include <linux/mtd/partitions.h>
++#include <linux/gpio.h>
++#include <linux/platform_data/gpio-omap.h>
++
+ #include <asm/io.h>
+-#include <mach/hardware.h>
+ #include <asm/sizes.h>
+-#include <linux/gpio.h>
++
+ #include <plat/board-ams-delta.h>
+ 
++#include <mach/hardware.h>
++
+ /*
+  * MTD structure for E3 (Delta)
+  */
+diff --git a/arch/arm/plat-omap/include/plat/gpio.h b/include/linux/platform_data/gpio-omap.h
+similarity index 94%
+rename from arch/arm/plat-omap/include/plat/gpio.h
+rename to include/linux/platform_data/gpio-omap.h
+index 50fb7cc..e8741c2 100644
+--- a/arch/arm/plat-omap/include/plat/gpio.h
++++ b/include/linux/platform_data/gpio-omap.h
+@@ -1,6 +1,4 @@
+ /*
+- * arch/arm/plat-omap/include/mach/gpio.h
+- *
+  * OMAP GPIO handling defines and functions
+  *
+  * Copyright (C) 2003-2005 Nokia Corporation
+@@ -155,6 +153,8 @@
+ #define OMAP4_GPIO_CLEARDATAOUT		0x0190
+ #define OMAP4_GPIO_SETDATAOUT		0x0194
+ 
++#define OMAP_MAX_GPIO_LINES		192
++
+ #define OMAP_MPUIO(nr)		(OMAP_MAX_GPIO_LINES + (nr))
+ #define OMAP_GPIO_IS_MPUIO(nr)	((nr) >= OMAP_MAX_GPIO_LINES)
+ 
+@@ -213,16 +213,5 @@ extern void omap2_gpio_prepare_for_idle(int off_mode);
+ extern void omap2_gpio_resume_after_idle(void);
+ extern void omap_set_gpio_debounce(int gpio, int enable);
+ extern void omap_set_gpio_debounce_time(int gpio, int enable);
+-/*-------------------------------------------------------------------------*/
+-
+-/*
+- * Wrappers for "new style" GPIO calls, using the new infrastructure
+- * which lets us plug in FPGA, I2C, and other implementations.
+- *
+- * The original OMAP-specific calls should eventually be removed.
+- */
+-
+-#include <linux/errno.h>
+-#include <asm-generic/gpio.h>
+ 
+ #endif
+diff --git a/sound/soc/omap/sdp3430.c b/sound/soc/omap/sdp3430.c
+index 33f4ac2..da45b51 100644
+--- a/sound/soc/omap/sdp3430.c
++++ b/sound/soc/omap/sdp3430.c
+@@ -33,6 +33,7 @@
+ #include <asm/mach-types.h>
+ #include <mach/hardware.h>
+ #include <mach/gpio.h>
++#include <linux/platform_data/gpio-omap.h>
+ #include <linux/platform_data/dsp-mcbsp.h>
+ 
+ /* Register descriptions for twl4030 codec part */
