@@ -1,20 +1,20 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T7PLn-0006l8-Ri
- for linux-mtd@lists.infradead.org; Fri, 31 Aug 2012 11:25:24 +0000
-Message-ID: <1346412626.9709.41.camel@sauron.fi.intel.com>
-Subject: Re: UBIFS corruption after software upgrade
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Russell Zuck <rzuck@cincinnatitechnologies.com>
-Date: Fri, 31 Aug 2012 14:30:26 +0300
-In-Reply-To: <500F0D81.8050902@cincinnatitechnologies.com>
-References: <500F0D81.8050902@cincinnatitechnologies.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-rwSM3g0MyJYoLPokDfti"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from hulk.biessmann.org ([62.75.166.25])
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1T7PXV-0000jU-6T
+ for linux-mtd@lists.infradead.org; Fri, 31 Aug 2012 11:37:30 +0000
+From: =?UTF-8?q?Andreas=20Bie=C3=9Fmann?= <andreas@biessmann.de>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] mtd/nand/omap2: fix omap_nand_remove segfault
+Date: Fri, 31 Aug 2012 13:35:41 +0200
+Message-Id: <1346412942-4015-2-git-send-email-andreas@biessmann.de>
+In-Reply-To: <1346412942-4015-1-git-send-email-andreas@biessmann.de>
+References: <1346412942-4015-1-git-send-email-andreas@biessmann.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
+ =?UTF-8?q?Andreas=20Bie=C3=9Fmann?= <andreas@biessmann.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,54 +24,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Do not kfree() the mtd_info, it is handled in the mtd subsystem and already
+freed by nand_release(). Instead kfree() the struct omap_nand_info allocated in
+omap_nand_probe which was not kfree()ed before.
 
---=-rwSM3g0MyJYoLPokDfti
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+This patch fixes following error when unloading the omap2 module:
 
-On Tue, 2012-07-24 at 17:02 -0400, Russell Zuck wrote:
-> I am attempting to troubleshoot an issue where the root partition=20
-> (ubi0_0) of my embedded platform becomes corrupted after a few upgrades=
-=20
-> of our system software.
+---8<---
+~ $ rmmod omap2
+------------[ cut here ]------------
+kernel BUG at mm/slab.c:3126!
+Internal error: Oops - BUG: 0 [#1] PREEMPT ARM
+Modules linked in: omap2(-)
+CPU: 0    Not tainted  (3.6.0-rc3-00230-g155e36d-dirty #3)
+PC is at cache_free_debugcheck+0x2d4/0x36c
+LR is at kfree+0xc8/0x2ac
+pc : [<c01125a0>]    lr : [<c0112efc>]    psr: 200d0193
+sp : c521fe08  ip : c0e8ef90  fp : c521fe5c
+r10: bf0001fc  r9 : c521e000  r8 : c0d99c8c
+r7 : c661ebc0  r6 : c065d5a4  r5 : c65c4060  r4 : c78005c0
+r3 : 00000000  r2 : 00001000  r1 : c65c4000  r0 : 00000001
+Flags: nzCv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment user
+Control: 10c5387d  Table: 86694019  DAC: 00000015
+Process rmmod (pid: 549, stack limit = 0xc521e2f0)
+Stack: (0xc521fe08 to 0xc5220000)
+fe00:                   c008a874 c00bf44c c515c6d0 200d0193 c65c4860 c515c240
+fe20: c521fe3c c521fe30 c008a9c0 c008a854 c521fe5c c65c4860 c78005c0 bf0001fc
+fe40: c780ff40 a00d0113 c521e000 00000000 c521fe84 c521fe60 c0112efc c01122d8
+fe60: c65c4860 c0673778 c06737ac 00000000 00070013 00000000 c521fe9c c521fe88
+fe80: bf0001fc c0112e40 c0673778 bf001ca8 c521feac c521fea0 c02ca11c bf0001ac
+fea0: c521fec4 c521feb0 c02c82c4 c02ca100 c0673778 bf001ca8 c521fee4 c521fec8
+fec0: c02c8dd8 c02c8250 00000000 bf001ca8 bf001ca8 c0804ee0 c521ff04 c521fee8
+fee0: c02c804c c02c8d20 bf001924 00000000 bf001ca8 c521e000 c521ff1c c521ff08
+ff00: c02c950c c02c7fbc bf001d48 00000000 c521ff2c c521ff20 c02ca3a4 c02c94b8
+ff20: c521ff3c c521ff30 bf001938 c02ca394 c521ffa4 c521ff40 c009beb4 bf001930
+ff40: c521ff6c 70616d6f b6fe0032 c0014f84 70616d6f b6fe0032 00000081 60070010
+ff60: c521ff84 c521ff70 c008e1f4 c00bf328 0001a004 70616d6f c521ff94 0021ff88
+ff80: c008e368 0001a004 70616d6f b6fe0032 00000081 c0015028 00000000 c521ffa8
+ffa0: c0014dc0 c009bcd0 0001a004 70616d6f bec2ab38 00000880 bec2ab38 00000880
+ffc0: 0001a004 70616d6f b6fe0032 00000081 00000319 00000000 b6fe1000 00000000
+ffe0: bec2ab30 bec2ab20 00019f00 b6f539c0 60070010 bec2ab38 aaaaaaaa aaaaaaaa
+Backtrace:
+[<c01122cc>] (cache_free_debugcheck+0x0/0x36c) from [<c0112efc>] (kfree+0xc8/0x2ac)
+[<c0112e34>] (kfree+0x0/0x2ac) from [<bf0001fc>] (omap_nand_remove+0x5c/0x64 [omap2])
+[<bf0001a0>] (omap_nand_remove+0x0/0x64 [omap2]) from [<c02ca11c>] (platform_drv_remove+0x28/0x2c)
+ r5:bf001ca8 r4:c0673778
+[<c02ca0f4>] (platform_drv_remove+0x0/0x2c) from [<c02c82c4>] (__device_release_driver+0x80/0xdc)
+[<c02c8244>] (__device_release_driver+0x0/0xdc) from [<c02c8dd8>] (driver_detach+0xc4/0xc8)
+ r5:bf001ca8 r4:c0673778
+[<c02c8d14>] (driver_detach+0x0/0xc8) from [<c02c804c>] (bus_remove_driver+0x9c/0x104)
+ r6:c0804ee0 r5:bf001ca8 r4:bf001ca8 r3:00000000
+[<c02c7fb0>] (bus_remove_driver+0x0/0x104) from [<c02c950c>] (driver_unregister+0x60/0x80)
+ r6:c521e000 r5:bf001ca8 r4:00000000 r3:bf001924
+[<c02c94ac>] (driver_unregister+0x0/0x80) from [<c02ca3a4>] (platform_driver_unregister+0x1c/0x20)
+ r5:00000000 r4:bf001d48
+[<c02ca388>] (platform_driver_unregister+0x0/0x20) from [<bf001938>] (omap_nand_driver_exit+0x14/0x1c [omap2])
+[<bf001924>] (omap_nand_driver_exit+0x0/0x1c [omap2]) from [<c009beb4>] (sys_delete_module+0x1f0/0x2ec)
+[<c009bcc4>] (sys_delete_module+0x0/0x2ec) from [<c0014dc0>] (ret_fast_syscall+0x0/0x48)
+ r8:c0015028 r7:00000081 r6:b6fe0032 r5:70616d6f r4:0001a004
+Code: e1a00005 eb0d9172 e7f001f2 e7f001f2 (e7f001f2)
+---[ end trace 6a30b24d8c0cc2ee ]---
+Segmentation fault
+--->8---
 
-Just took a look at your dmesg log again, it really does not look like
-UBIFS issue. Something has changed so that UBIFS reads all 0xFFs instead
-of nodes - may be driver returns bogus data.
+This error was introduced in 67ce04bf2746f8a1f8c2a104b313d20c63f68378 which
+was the first commit of this driver.
 
-If you have a working kernel then you can bisect and find the commit
-which broke your system.
+Signed-off-by: Andreas Bießmann <andreas@biessmann.de>
+cc: linux-mtd@lists.infradead.org
+---
+ drivers/mtd/nand/omap2.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-E.g., if you know 2.6.32 worked, but 2.6.35 does not, you can check if
-2.6.33 works or not. If yes, check 2.6.34. When you find the first
-non-working release, you may start using 'git bisect' to find the quilty
-commit.
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-rwSM3g0MyJYoLPokDfti
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQQKBSAAoJECmIfjd9wqK0K54QALpZu/pxSqQmP6mlns04QWqo
-e9D7WfXvrkaP+wXUyZphY9FLB4wAVrlLvKMbO4Lc7rRYKIo0WPaQ7KhnkFS4zG/y
-NSwcEEkV2lMRwyl6XXLgHEQqoSi+tRl9iedA0TOBY9qKcJ175IKbaFNb16rZWhv0
-BSbB6t5uv99Lb7f5CeXFa1+V7Fc9uANwpbzpPqwdo6s2qHBidimMeIVfkcNqOirn
-SJqhZzkve7sXzUADKUwHOXh3+Hgk4dZkSmVH8HbgRtN3plj30UiuE7gwjRQDhTVX
-d54p305VfCUCU+bUepjhfY/FqMedIA7x8xme/PSO46GniUs1v0h71YCeI2EbwVrL
-GepmiJLZy9ZDfourTjN7PdnHYYYgladOm3gdo/UhjwrEM6ies19g5eK0IKpAUFXi
-lhWm67wUKLrpAP3emQLegxXJOjx7fGs/9tW1bKUKPcQk9V/PASAhV2MLlpTwh8ag
-5r9YnMD2ExTsDdZGMUfFMdtIR9Jzwzy6xW3a47mmOI4Z3TKpsZLCDt2o7VZuRXTS
-fp5oml59IZ9whAPdz8ZFjlK4FpWBx+WjGrHMknY0bqnPJHNpPdGUe6n28tpWb3Jp
-017jzTpv9N9BMxZ6vFZiIbbm8Lwm4rk7F6dJEI24HGNADlzpiKHrN3Fd66g2domP
-PADtz3yaAdFTN15Sx5tD
-=6+S4
------END PGP SIGNATURE-----
-
---=-rwSM3g0MyJYoLPokDfti--
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index ac4fd75..4cd7ac0 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -1387,7 +1387,7 @@ static int omap_nand_remove(struct platform_device *pdev)
+ 	/* Release NAND device, its internal structures and partitions */
+ 	nand_release(&info->mtd);
+ 	iounmap(info->nand.IO_ADDR_R);
+-	kfree(&info->mtd);
++	kfree(info);
+ 	return 0;
+ }
+ 
+-- 
+1.7.10.4
