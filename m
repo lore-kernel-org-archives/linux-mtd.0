@@ -1,20 +1,17 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T7PCi-0006E0-S5
- for linux-mtd@lists.infradead.org; Fri, 31 Aug 2012 11:16:01 +0000
-Message-ID: <1346412061.9709.37.camel@sauron.fi.intel.com>
+ id 1T7PLn-0006l8-Ri
+ for linux-mtd@lists.infradead.org; Fri, 31 Aug 2012 11:25:24 +0000
+Message-ID: <1346412626.9709.41.camel@sauron.fi.intel.com>
 Subject: Re: UBIFS corruption after software upgrade
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Russell Zuck <rzuck@cincinnatitechnologies.com>
-Date: Fri, 31 Aug 2012 14:21:01 +0300
-In-Reply-To: <5037BFFA.1020208@cincinnatitechnologies.com>
+Date: Fri, 31 Aug 2012 14:30:26 +0300
+In-Reply-To: <500F0D81.8050902@cincinnatitechnologies.com>
 References: <500F0D81.8050902@cincinnatitechnologies.com>
- <501923A9.7030002@cincinnatitechnologies.com>
- <1345641529.2848.185.camel@sauron.fi.intel.com>
- <5037BFFA.1020208@cincinnatitechnologies.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-BCEElmBALC7R1GPW30I7"
+ boundary="=-rwSM3g0MyJYoLPokDfti"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
@@ -28,76 +25,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-BCEElmBALC7R1GPW30I7
+--=-rwSM3g0MyJYoLPokDfti
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-> $ ./integck -p /mnt/ubifs
->=20
-> ..fails soon after I run the test.  There is a ton of logged data.  I've=
+On Tue, 2012-07-24 at 17:02 -0400, Russell Zuck wrote:
+> I am attempting to troubleshoot an issue where the root partition=20
+> (ubi0_0) of my embedded platform becomes corrupted after a few upgrades=
 =20
-> attempted to snip out the first error.
+> of our system software.
 
-How exactly?
+Just took a look at your dmesg log again, it really does not look like
+UBIFS issue. Something has changed so that UBIFS reads all 0xFFs instead
+of nodes - may be driver returns bogus data.
 
-Sure there will be a lot of nise in dmesg because we emulate power cuts
-and switch to R/O mode at random moments, so a lot of UBIFS operastions
-fail and print a lot of error messages and dumps. But that's fine as
-long as the system works.
+If you have a working kernel then you can bisect and find the commit
+which broke your system.
 
-The idea is that UBIFS switches to R/O mode randomly and integck will
-fail with EROFS at some point. Then it will unmount the FS and mount it
-back, and verify some files, then remove everything and continue, and so
-on forever. This way we emulate huge amount of power cuts very quickly.
-
-If integck fails, then the last messages of dmesg are interesting.
-
-Last time I tested UBIFS this way, the only issues which I did not
-resolve were that it was unable to mount because there was no space.
-That was very rare and I had to run it for the night. I just did not
-have time to dig this - must be some accounting issues.
-
-> [  376.076585] UBIFS: cannot re-mount R/W due to prior errors
-> [  376.082748] UBIFS: un-mount UBI device 1, volume 0
-> [  376.095799] UBIFS error (pid 2103): ubifs_scan: bad node
-> [  376.105554] UBIFS: recovered master node from LEB 1
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D end snip =3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->=20
-> Does anything in this output suggest a direction to start digging?  I=20
-> would really appreciate any direction you could provide.
-
-Hmm. I've just set up ubifs-v2.6.35 on a kvm virtual machine and started
-testing like this:
-
-$ cat ~/tmp/nandsim.sh=20
-#!/bin/sh
-
-umount /mnt/ubifs
-rmmod ubifs ubi mtdram nandsim
-
-dmesg -c > /dev/null
-modprobe nandsim first_id_byte=3D0xec second_id_byte=3D0xd3 third_id_byte=
-=3D0x51 fourth_id_byte=3D0x95
-modprobe ubi mtd=3D0
-modprobe mtdchar
-ubimkvol /dev/ubi0 --lebs 4064 -N xyZ
-mount -t ubifs /dev/ubi0_0 /mnt/ubifs
-echo 1 > /sys/kernel/debug/ubifs/tst_recovery
-#echo 'format "UBIFS DBG" +pf' > /sys/kernel/debug/dynamic_debug/control
-
-$ sudo ~/tmp/nandsim.sh
-# sudo ./integck /mnt/ubifs/
-
-Let's see. I will try to look at failures, but so far it works fine. But
-I do not promise anything - I have limited amount of time for this hobby
-stuff.
+E.g., if you know 2.6.32 worked, but 2.6.35 does not, you can check if
+2.6.33 works or not. If yes, check 2.6.34. When you find the first
+non-working release, you may start using 'git bisect' to find the quilty
+commit.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-BCEElmBALC7R1GPW30I7
+--=-rwSM3g0MyJYoLPokDfti
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -105,19 +59,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQQJ4eAAoJECmIfjd9wqK0uCsP/0zf9Fcl8s0QXnjIUgwluXDz
-/bRlHD0Mn/lFbDz8BWoqD4g+5x5F0jck67SwQofWFzchFXlyayjEpJecrnH27pfW
-o974hZh1Wq+IrL1Vamazi/q+3rxiJySY5zqXRT52SlPYSgcOvGpNeuIbrRZ8CuRO
-n0khzxPpgEO1OHWRQCOBs3ZjHEF/APRdLKCdcSHQEhEzExtpaKRlivzijty6NHmR
-HNxYMenWLhHLz+DtRE6Ohl+97KjuncLPb60tFJbPp/LoL1mNHaNHs6s6auWGOoct
-n0LeFQAAYdUQE/jB+3Y8CS9s6qFQ0mS8Ltq//zIRzP7JUZ0+OUXy2xDqTDDOQIDL
-PsLDpc0Bo9WgQZNKDz1CVGZIHt4tPZ6aXEhOO/AyVM+UIshA3BXQSKmblOg6rmqB
-fsMAc7ZcGw2lqVSop1TZjjrwwwrSSnlOWbAKU3oLUdB8ZBaalkCLPjlaepk0E/Xl
-v2+s6TLSBmU3xYbNUmbN+HkyX5AlCn97oT2kXxEtSuU4sQX3SLq1aH8hY03QftSL
-mhQjc1XdZEkStZRtpilh75XXJ6BpYVAlyO9AF2aIP/RIfIK+K6VxMLc3NRJ44jbU
-kf7h4gsowi/+TbEuc5vqEk5jOIzEGPZjOncM50Q/yrjvABeej8XAk4Lwqq9saqGF
-3lsij4gO4IgwD7NGCOna
-=HI2R
+iQIcBAABAgAGBQJQQKBSAAoJECmIfjd9wqK0K54QALpZu/pxSqQmP6mlns04QWqo
+e9D7WfXvrkaP+wXUyZphY9FLB4wAVrlLvKMbO4Lc7rRYKIo0WPaQ7KhnkFS4zG/y
+NSwcEEkV2lMRwyl6XXLgHEQqoSi+tRl9iedA0TOBY9qKcJ175IKbaFNb16rZWhv0
+BSbB6t5uv99Lb7f5CeXFa1+V7Fc9uANwpbzpPqwdo6s2qHBidimMeIVfkcNqOirn
+SJqhZzkve7sXzUADKUwHOXh3+Hgk4dZkSmVH8HbgRtN3plj30UiuE7gwjRQDhTVX
+d54p305VfCUCU+bUepjhfY/FqMedIA7x8xme/PSO46GniUs1v0h71YCeI2EbwVrL
+GepmiJLZy9ZDfourTjN7PdnHYYYgladOm3gdo/UhjwrEM6ies19g5eK0IKpAUFXi
+lhWm67wUKLrpAP3emQLegxXJOjx7fGs/9tW1bKUKPcQk9V/PASAhV2MLlpTwh8ag
+5r9YnMD2ExTsDdZGMUfFMdtIR9Jzwzy6xW3a47mmOI4Z3TKpsZLCDt2o7VZuRXTS
+fp5oml59IZ9whAPdz8ZFjlK4FpWBx+WjGrHMknY0bqnPJHNpPdGUe6n28tpWb3Jp
+017jzTpv9N9BMxZ6vFZiIbbm8Lwm4rk7F6dJEI24HGNADlzpiKHrN3Fd66g2domP
+PADtz3yaAdFTN15Sx5tD
+=6+S4
 -----END PGP SIGNATURE-----
 
---=-BCEElmBALC7R1GPW30I7--
+--=-rwSM3g0MyJYoLPokDfti--
