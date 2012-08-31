@@ -1,16 +1,17 @@
-Subject: [PATCH 6/9] ARM: OMAP: Move gpio.h to include/linux/platform_data
-To: linux-arm-kernel@lists.infradead.org
-From: Tony Lindgren <tony@atomide.com>
-Date: Thu, 30 Aug 2012 17:52:34 -0700
-Message-ID: <20120831005234.28732.10624.stgit@muffinssi.local>
-In-Reply-To: <20120831004828.28732.902.stgit@muffinssi.local>
-References: <20120831004828.28732.902.stgit@muffinssi.local>
+Received: from mail-pb0-f73.google.com ([209.85.160.73])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1T7GF3-00014v-4c
+ for linux-mtd@lists.infradead.org; Fri, 31 Aug 2012 01:41:51 +0000
+Received: by pbbrr4 with SMTP id rr4so222777pbb.0
+ for <linux-mtd@lists.infradead.org>; Thu, 30 Aug 2012 18:41:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Cc: Grant Likely <grant.likely@secretlab.ca>,
- Linus Walleij <linus.walleij@linaro.org>, linux-omap@vger.kernel.org,
- linux-mtd@lists.infradead.org, alsa-devel@alsa-project.org
+Message-ID: <f46d042f943c1ac43004c885e5e0@google.com>
+Date: Fri, 31 Aug 2012 01:41:46 +0000
+Subject: =?GB2312?B?dG9ueSBzY29vdGVydHVuaW5n0+vE+rmyz+3By9XVxqw=?=
+From: tony scootertuning <scooterracingparts@tomaxracing.tw>
+To: linux-mtd@lists.infradead.org
+Content-Type: multipart/mixed; boundary=f46d042f943c1b074e04c885e5fb
+Reply-To: tony scootertuning <scooterracingparts@tomaxracing.tw>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,548 +21,325 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This way we can remove includes of plat/gpio.h which won't work
-with the single zImage support.
+--f46d042f943c1b074e04c885e5fb
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed; delsp=yes
 
-Note that we also remove the cpu_class_is_omap2() check
-in gpio-omap.c as the drivers should not call it as we need to
-make it local to arch/arm/mach-omap2 for single zImage support.
+Hi,sir
 
-While at it, arrange the related includes in the standard way.
+thank you very much for your time
 
-Cc: Grant Likely <grant.likely@secretlab.ca>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: linux-mtd@lists.infradead.org
-Cc: alsa-devel@alsa-project.org
-Acked-by: Tony Lindgren <tony@atomide.com>
----
- arch/arm/mach-omap1/board-ams-delta.c              |    3 ++-
- arch/arm/mach-omap1/board-osk.c                    |    1 +
- arch/arm/mach-omap1/gpio15xx.c                     |    1 +
- arch/arm/mach-omap1/gpio16xx.c                     |    1 +
- arch/arm/mach-omap1/gpio7xx.c                      |    1 +
- arch/arm/mach-omap1/include/mach/gpio.h            |    2 --
- arch/arm/mach-omap1/leds-h2p2-debug.c              |    4 +++-
- arch/arm/mach-omap1/leds.c                         |    1 +
- arch/arm/mach-omap2/board-am3517evm.c              |    9 ++++++---
- arch/arm/mach-omap2/board-cm-t35.c                 |   12 +++++++-----
- arch/arm/mach-omap2/board-zoom-display.c           |    6 +++++-
- arch/arm/mach-omap2/board-zoom-peripherals.c       |    1 +
- arch/arm/mach-omap2/gpio.c                         |    1 +
- arch/arm/mach-omap2/hsmmc.c                        |    5 ++++-
- arch/arm/mach-omap2/include/mach/gpio.h            |    2 --
- arch/arm/mach-omap2/msdi.c                         |    1 +
- arch/arm/mach-omap2/omap_hwmod_2420_data.c         |    1 -
- arch/arm/mach-omap2/omap_hwmod_2430_data.c         |    6 +++---
- arch/arm/mach-omap2/omap_hwmod_2xxx_ipblock_data.c |    2 +-
- arch/arm/mach-omap2/omap_hwmod_3xxx_data.c         |    6 +++---
- arch/arm/mach-omap2/omap_hwmod_44xx_data.c         |    6 +++---
- arch/arm/mach-omap2/pm24xx.c                       |    1 +
- arch/arm/mach-omap2/pm34xx.c                       |    2 ++
- drivers/gpio/gpio-omap.c                           |   15 ++++++++-------
- drivers/mtd/nand/ams-delta.c                       |    8 ++++++--
- include/linux/platform_data/gpio-omap.h            |   15 ++-------------
- sound/soc/omap/sdp3430.c                           |    1 +
- 27 files changed, 65 insertions(+), 49 deletions(-)
- rename arch/arm/plat-omap/include/plat/gpio.h => include/linux/platform_data/gpio-omap.h (94%)
+attached is scooter racing tuning parts list, if you are interest,please  
+contact us soonest
 
-diff --git a/arch/arm/mach-omap1/board-ams-delta.c b/arch/arm/mach-omap1/board-ams-delta.c
-index 147d665..4b5578b 100644
---- a/arch/arm/mach-omap1/board-ams-delta.c
-+++ b/arch/arm/mach-omap1/board-ams-delta.c
-@@ -26,6 +26,8 @@
- #include <linux/export.h>
- #include <linux/omapfb.h>
- #include <linux/io.h>
-+#include <linux/platform_data/gpio-omap.h>
-+#include <linux/platform_data/keypad-omap.h>
- 
- #include <media/soc_camera.h>
- 
-@@ -35,7 +37,6 @@
- #include <asm/mach/map.h>
- 
- #include <plat/board-ams-delta.h>
--#include <linux/platform_data/keypad-omap.h>
- #include <plat/mux.h>
- 
- #include <mach/hardware.h>
-diff --git a/arch/arm/mach-omap1/board-osk.c b/arch/arm/mach-omap1/board-osk.c
-index 9413fd3..c780a1b 100644
---- a/arch/arm/mach-omap1/board-osk.c
-+++ b/arch/arm/mach-omap1/board-osk.c
-@@ -39,6 +39,7 @@
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/physmap.h>
- #include <linux/i2c/tps65010.h>
-+#include <linux/platform_data/gpio-omap.h>
- #include <linux/platform_data/omap1_bl.h>
- 
- #include <asm/mach-types.h>
-diff --git a/arch/arm/mach-omap1/gpio15xx.c b/arch/arm/mach-omap1/gpio15xx.c
-index ebef15e..98e6f39 100644
---- a/arch/arm/mach-omap1/gpio15xx.c
-+++ b/arch/arm/mach-omap1/gpio15xx.c
-@@ -17,6 +17,7 @@
-  */
- 
- #include <linux/gpio.h>
-+#include <linux/platform_data/gpio-omap.h>
- 
- #define OMAP1_MPUIO_VBASE		OMAP1_MPUIO_BASE
- #define OMAP1510_GPIO_BASE		0xFFFCE000
-diff --git a/arch/arm/mach-omap1/gpio16xx.c b/arch/arm/mach-omap1/gpio16xx.c
-index 2a48cd2..33f4192 100644
---- a/arch/arm/mach-omap1/gpio16xx.c
-+++ b/arch/arm/mach-omap1/gpio16xx.c
-@@ -17,6 +17,7 @@
-  */
- 
- #include <linux/gpio.h>
-+#include <linux/platform_data/gpio-omap.h>
- 
- #define OMAP1610_GPIO1_BASE		0xfffbe400
- #define OMAP1610_GPIO2_BASE		0xfffbec00
-diff --git a/arch/arm/mach-omap1/gpio7xx.c b/arch/arm/mach-omap1/gpio7xx.c
-index acf12b7..958ce9a 100644
---- a/arch/arm/mach-omap1/gpio7xx.c
-+++ b/arch/arm/mach-omap1/gpio7xx.c
-@@ -17,6 +17,7 @@
-  */
- 
- #include <linux/gpio.h>
-+#include <linux/platform_data/gpio-omap.h>
- 
- #define OMAP7XX_GPIO1_BASE		0xfffbc000
- #define OMAP7XX_GPIO2_BASE		0xfffbc800
-diff --git a/arch/arm/mach-omap1/include/mach/gpio.h b/arch/arm/mach-omap1/include/mach/gpio.h
-index e737706..ebf86c0 100644
---- a/arch/arm/mach-omap1/include/mach/gpio.h
-+++ b/arch/arm/mach-omap1/include/mach/gpio.h
-@@ -1,5 +1,3 @@
- /*
-  * arch/arm/mach-omap1/include/mach/gpio.h
-  */
--
--#include <plat/gpio.h>
-diff --git a/arch/arm/mach-omap1/leds-h2p2-debug.c b/arch/arm/mach-omap1/leds-h2p2-debug.c
-index f6b14a1..3ea12c7 100644
---- a/arch/arm/mach-omap1/leds-h2p2-debug.c
-+++ b/arch/arm/mach-omap1/leds-h2p2-debug.c
-@@ -14,13 +14,15 @@
- #include <linux/kernel_stat.h>
- #include <linux/sched.h>
- #include <linux/io.h>
-+#include <linux/platform_data/gpio-omap.h>
- 
--#include <mach/hardware.h>
- #include <asm/leds.h>
- #include <asm/mach-types.h>
- 
- #include <plat/fpga.h>
- 
-+#include <mach/hardware.h>
-+
- #include "leds.h"
- 
- 
-diff --git a/arch/arm/mach-omap1/leds.c b/arch/arm/mach-omap1/leds.c
-index ae6dd93..7b1a383 100644
---- a/arch/arm/mach-omap1/leds.c
-+++ b/arch/arm/mach-omap1/leds.c
-@@ -6,6 +6,7 @@
- #include <linux/gpio.h>
- #include <linux/kernel.h>
- #include <linux/init.h>
-+#include <linux/platform_data/gpio-omap.h>
- 
- #include <asm/leds.h>
- #include <asm/mach-types.h>
-diff --git a/arch/arm/mach-omap2/board-am3517evm.c b/arch/arm/mach-omap2/board-am3517evm.c
-index 00abda1..c6d63d7 100644
---- a/arch/arm/mach-omap2/board-am3517evm.c
-+++ b/arch/arm/mach-omap2/board-am3517evm.c
-@@ -25,19 +25,22 @@
- #include <linux/can/platform/ti_hecc.h>
- #include <linux/davinci_emac.h>
- #include <linux/mmc/host.h>
-+#include <linux/platform_data/gpio-omap.h>
- 
--#include <mach/hardware.h>
--#include <mach/am35xx.h>
- #include <asm/mach-types.h>
- #include <asm/mach/arch.h>
- #include <asm/mach/map.h>
- 
--#include "common.h"
- #include <plat/usb.h>
-+
-+#include <mach/hardware.h>
-+#include <mach/am35xx.h>
-+
- #include <video/omapdss.h>
- #include <video/omap-panel-generic-dpi.h>
- #include <video/omap-panel-tfp410.h>
- 
-+#include "common.h"
- #include "am35xx-emac.h"
- #include "mux.h"
- #include "control.h"
-diff --git a/arch/arm/mach-omap2/board-cm-t35.c b/arch/arm/mach-omap2/board-cm-t35.c
-index ad83654..c2b2371 100644
---- a/arch/arm/mach-omap2/board-cm-t35.c
-+++ b/arch/arm/mach-omap2/board-cm-t35.c
-@@ -23,6 +23,9 @@
- #include <linux/input/matrix_keypad.h>
- #include <linux/delay.h>
- #include <linux/gpio.h>
-+#include <linux/platform_data/gpio-omap.h>
-+#include <linux/platform_data/mtd-nand-omap2.h>
-+#include <linux/platform_data/spi-omap2-mcspi.h>
- 
- #include <linux/i2c/at24.h>
- #include <linux/i2c/twl.h>
-@@ -37,17 +40,16 @@
- #include <asm/mach/arch.h>
- #include <asm/mach/map.h>
- 
--#include "common.h"
--#include <linux/platform_data/mtd-nand-omap2.h>
- #include <plat/gpmc.h>
- #include <plat/usb.h>
-+
-+#include <mach/hardware.h>
-+
- #include <video/omapdss.h>
- #include <video/omap-panel-generic-dpi.h>
- #include <video/omap-panel-tfp410.h>
--#include <linux/platform_data/spi-omap2-mcspi.h>
--
--#include <mach/hardware.h>
- 
-+#include "common.h"
- #include "mux.h"
- #include "sdram-micron-mt46h32m32lf-6.h"
- #include "hsmmc.h"
-diff --git a/arch/arm/mach-omap2/board-zoom-display.c b/arch/arm/mach-omap2/board-zoom-display.c
-index 660a2932..0e48a51 100644
---- a/arch/arm/mach-omap2/board-zoom-display.c
-+++ b/arch/arm/mach-omap2/board-zoom-display.c
-@@ -15,9 +15,13 @@
- #include <linux/i2c/twl.h>
- #include <linux/spi/spi.h>
- #include <linux/platform_data/spi-omap2-mcspi.h>
--#include <video/omapdss.h>
-+
-+#include <plat/cpu.h>
-+
- #include <mach/board-zoom.h>
- 
-+#include <video/omapdss.h>
-+
- #define LCD_PANEL_RESET_GPIO_PROD	96
- #define LCD_PANEL_RESET_GPIO_PILOT	55
- #define LCD_PANEL_QVGA_GPIO		56
-diff --git a/arch/arm/mach-omap2/board-zoom-peripherals.c b/arch/arm/mach-omap2/board-zoom-peripherals.c
-index 00f73b7..ae5d36b 100644
---- a/arch/arm/mach-omap2/board-zoom-peripherals.c
-+++ b/arch/arm/mach-omap2/board-zoom-peripherals.c
-@@ -19,6 +19,7 @@
- #include <linux/regulator/fixed.h>
- #include <linux/wl12xx.h>
- #include <linux/mmc/host.h>
-+#include <linux/platform_data/gpio-omap.h>
- 
- #include <asm/mach-types.h>
- #include <asm/mach/arch.h>
-diff --git a/arch/arm/mach-omap2/gpio.c b/arch/arm/mach-omap2/gpio.c
-index 9ad7d48..7b52bdf 100644
---- a/arch/arm/mach-omap2/gpio.c
-+++ b/arch/arm/mach-omap2/gpio.c
-@@ -21,6 +21,7 @@
- #include <linux/slab.h>
- #include <linux/interrupt.h>
- #include <linux/of.h>
-+#include <linux/platform_data/gpio-omap.h>
- 
- #include <plat/omap_hwmod.h>
- #include <plat/omap_device.h>
-diff --git a/arch/arm/mach-omap2/hsmmc.c b/arch/arm/mach-omap2/hsmmc.c
-index a9675d8..4b0e166 100644
---- a/arch/arm/mach-omap2/hsmmc.c
-+++ b/arch/arm/mach-omap2/hsmmc.c
-@@ -14,12 +14,15 @@
- #include <linux/string.h>
- #include <linux/delay.h>
- #include <linux/gpio.h>
--#include <mach/hardware.h>
-+#include <linux/platform_data/gpio-omap.h>
-+
- #include <plat/mmc.h>
- #include <plat/omap-pm.h>
- #include <plat/mux.h>
- #include <plat/omap_device.h>
- 
-+#include <mach/hardware.h>
-+
- #include "mux.h"
- #include "hsmmc.h"
- #include "control.h"
-diff --git a/arch/arm/mach-omap2/include/mach/gpio.h b/arch/arm/mach-omap2/include/mach/gpio.h
-index be4d290..5621cc5 100644
---- a/arch/arm/mach-omap2/include/mach/gpio.h
-+++ b/arch/arm/mach-omap2/include/mach/gpio.h
-@@ -1,5 +1,3 @@
- /*
-  * arch/arm/mach-omap2/include/mach/gpio.h
-  */
--
--#include <plat/gpio.h>
-diff --git a/arch/arm/mach-omap2/msdi.c b/arch/arm/mach-omap2/msdi.c
-index fb5bc6c..9e57b4a 100644
---- a/arch/arm/mach-omap2/msdi.c
-+++ b/arch/arm/mach-omap2/msdi.c
-@@ -23,6 +23,7 @@
- 
- #include <linux/kernel.h>
- #include <linux/err.h>
-+#include <linux/platform_data/gpio-omap.h>
- 
- #include <plat/omap_hwmod.h>
- #include <plat/omap_device.h>
-diff --git a/arch/arm/mach-omap2/omap_hwmod_2420_data.c b/arch/arm/mach-omap2/omap_hwmod_2420_data.c
-index 558c300..b305d7f 100644
---- a/arch/arm/mach-omap2/omap_hwmod_2420_data.c
-+++ b/arch/arm/mach-omap2/omap_hwmod_2420_data.c
-@@ -18,7 +18,6 @@
- #include <plat/dma.h>
- #include <plat/serial.h>
- #include <plat/i2c.h>
--#include <plat/gpio.h>
- #include <linux/platform_data/spi-omap2-mcspi.h>
- #include <plat/dmtimer.h>
- #include <plat/l3_2xxx.h>
-diff --git a/arch/arm/mach-omap2/omap_hwmod_2430_data.c b/arch/arm/mach-omap2/omap_hwmod_2430_data.c
-index d662766..79ac236 100644
---- a/arch/arm/mach-omap2/omap_hwmod_2430_data.c
-+++ b/arch/arm/mach-omap2/omap_hwmod_2430_data.c
-@@ -12,15 +12,15 @@
-  * XXX handle crossbar/shared link difference for L3?
-  * XXX these should be marked initdata for multi-OMAP kernels
-  */
-+#include <linux/platform_data/dsp-mcbsp.h>
-+#include <linux/platform_data/spi-omap2-mcspi.h>
-+
- #include <plat/omap_hwmod.h>
- #include <mach/irqs.h>
- #include <plat/cpu.h>
- #include <plat/dma.h>
- #include <plat/serial.h>
- #include <plat/i2c.h>
--#include <plat/gpio.h>
--#include <linux/platform_data/dsp-mcbsp.h>
--#include <linux/platform_data/spi-omap2-mcspi.h>
- #include <plat/dmtimer.h>
- #include <plat/mmc.h>
- #include <plat/l3_2xxx.h>
-diff --git a/arch/arm/mach-omap2/omap_hwmod_2xxx_ipblock_data.c b/arch/arm/mach-omap2/omap_hwmod_2xxx_ipblock_data.c
-index 161ae0a..44e4764 100644
---- a/arch/arm/mach-omap2/omap_hwmod_2xxx_ipblock_data.c
-+++ b/arch/arm/mach-omap2/omap_hwmod_2xxx_ipblock_data.c
-@@ -10,9 +10,9 @@
-  */
- #include <plat/omap_hwmod.h>
- #include <plat/serial.h>
--#include <plat/gpio.h>
- #include <plat/dma.h>
- #include <plat/dmtimer.h>
-+#include <linux/platform_data/gpio-omap.h>
- #include <linux/platform_data/spi-omap2-mcspi.h>
- 
- #include <mach/irqs.h>
-diff --git a/arch/arm/mach-omap2/omap_hwmod_3xxx_data.c b/arch/arm/mach-omap2/omap_hwmod_3xxx_data.c
-index 656bb7f..15f617e 100644
---- a/arch/arm/mach-omap2/omap_hwmod_3xxx_data.c
-+++ b/arch/arm/mach-omap2/omap_hwmod_3xxx_data.c
-@@ -15,6 +15,9 @@
-  * XXX these should be marked initdata for multi-OMAP kernels
-  */
- #include <linux/power/smartreflex.h>
-+#include <linux/platform_data/gpio-omap.h>
-+#include <linux/platform_data/dsp-mcbsp.h>
-+#include <linux/platform_data/spi-omap2-mcspi.h>
- 
- #include <plat/omap_hwmod.h>
- #include <mach/irqs.h>
-@@ -24,10 +27,7 @@
- #include <plat/l3_3xxx.h>
- #include <plat/l4_3xxx.h>
- #include <plat/i2c.h>
--#include <plat/gpio.h>
- #include <plat/mmc.h>
--#include <linux/platform_data/dsp-mcbsp.h>
--#include <linux/platform_data/spi-omap2-mcspi.h>
- #include <plat/dmtimer.h>
- 
- #include "omap_hwmod_common_data.h"
-diff --git a/arch/arm/mach-omap2/omap_hwmod_44xx_data.c b/arch/arm/mach-omap2/omap_hwmod_44xx_data.c
-index 3a06e7d..c9edaf2 100644
---- a/arch/arm/mach-omap2/omap_hwmod_44xx_data.c
-+++ b/arch/arm/mach-omap2/omap_hwmod_44xx_data.c
-@@ -19,15 +19,15 @@
-  */
- 
- #include <linux/io.h>
-+#include <linux/platform_data/gpio-omap.h>
-+#include <linux/platform_data/spi-omap2-mcspi.h>
-+#include <linux/platform_data/dsp-mcbsp.h>
- #include <linux/power/smartreflex.h>
- 
- #include <plat/omap_hwmod.h>
- #include <plat/cpu.h>
- #include <plat/i2c.h>
--#include <plat/gpio.h>
- #include <plat/dma.h>
--#include <linux/platform_data/spi-omap2-mcspi.h>
--#include <linux/platform_data/dsp-mcbsp.h>
- #include <plat/mmc.h>
- #include <plat/dmtimer.h>
- #include <plat/common.h>
-diff --git a/arch/arm/mach-omap2/pm24xx.c b/arch/arm/mach-omap2/pm24xx.c
-index de1caf1..2708a8b 100644
---- a/arch/arm/mach-omap2/pm24xx.c
-+++ b/arch/arm/mach-omap2/pm24xx.c
-@@ -29,6 +29,7 @@
- #include <linux/irq.h>
- #include <linux/time.h>
- #include <linux/gpio.h>
-+#include <linux/platform_data/gpio-omap.h>
- 
- #include <asm/mach/time.h>
- #include <asm/mach/irq.h>
-diff --git a/arch/arm/mach-omap2/pm34xx.c b/arch/arm/mach-omap2/pm34xx.c
-index e4fc88c..2a08978 100644
---- a/arch/arm/mach-omap2/pm34xx.c
-+++ b/arch/arm/mach-omap2/pm34xx.c
-@@ -28,6 +28,8 @@
- #include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/slab.h>
-+#include <linux/platform_data/gpio-omap.h>
-+
- #include <trace/events/power.h>
- 
- #include <asm/suspend.h>
-diff --git a/drivers/gpio/gpio-omap.c b/drivers/gpio/gpio-omap.c
-index e6efd77..64fbce3 100644
---- a/drivers/gpio/gpio-omap.c
-+++ b/drivers/gpio/gpio-omap.c
-@@ -25,11 +25,9 @@
- #include <linux/of.h>
- #include <linux/of_device.h>
- #include <linux/irqdomain.h>
-+#include <linux/gpio.h>
-+#include <linux/platform_data/gpio-omap.h>
- 
--#include <mach/hardware.h>
--#include <asm/irq.h>
--#include <mach/irqs.h>
--#include <asm/gpio.h>
- #include <asm/mach/irq.h>
- 
- #define OFF_MODE	1
-@@ -385,13 +383,16 @@ static int _set_gpio_triggering(struct gpio_bank *bank, int gpio,
- static int gpio_irq_type(struct irq_data *d, unsigned type)
- {
- 	struct gpio_bank *bank = irq_data_get_irq_chip_data(d);
--	unsigned gpio;
-+	unsigned gpio = 0;
- 	int retval;
- 	unsigned long flags;
- 
--	if (!cpu_class_is_omap2() && d->irq > IH_MPUIO_BASE)
-+#ifdef CONFIG_ARCH_OMAP1
-+	if (d->irq > IH_MPUIO_BASE)
- 		gpio = OMAP_MPUIO(d->irq - IH_MPUIO_BASE);
--	else
-+#endif
-+
-+	if (!gpio)
- 		gpio = irq_to_gpio(bank, d->irq);
- 
- 	if (type & ~IRQ_TYPE_SENSE_MASK)
-diff --git a/drivers/mtd/nand/ams-delta.c b/drivers/mtd/nand/ams-delta.c
-index 861ca8f..78a524b 100644
---- a/drivers/mtd/nand/ams-delta.c
-+++ b/drivers/mtd/nand/ams-delta.c
-@@ -23,12 +23,16 @@
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/nand.h>
- #include <linux/mtd/partitions.h>
-+#include <linux/gpio.h>
-+#include <linux/platform_data/gpio-omap.h>
-+
- #include <asm/io.h>
--#include <mach/hardware.h>
- #include <asm/sizes.h>
--#include <linux/gpio.h>
-+
- #include <plat/board-ams-delta.h>
- 
-+#include <mach/hardware.h>
-+
- /*
-  * MTD structure for E3 (Delta)
-  */
-diff --git a/arch/arm/plat-omap/include/plat/gpio.h b/include/linux/platform_data/gpio-omap.h
-similarity index 94%
-rename from arch/arm/plat-omap/include/plat/gpio.h
-rename to include/linux/platform_data/gpio-omap.h
-index 50fb7cc..e8741c2 100644
---- a/arch/arm/plat-omap/include/plat/gpio.h
-+++ b/include/linux/platform_data/gpio-omap.h
-@@ -1,6 +1,4 @@
- /*
-- * arch/arm/plat-omap/include/mach/gpio.h
-- *
-  * OMAP GPIO handling defines and functions
-  *
-  * Copyright (C) 2003-2005 Nokia Corporation
-@@ -155,6 +153,8 @@
- #define OMAP4_GPIO_CLEARDATAOUT		0x0190
- #define OMAP4_GPIO_SETDATAOUT		0x0194
- 
-+#define OMAP_MAX_GPIO_LINES		192
-+
- #define OMAP_MPUIO(nr)		(OMAP_MAX_GPIO_LINES + (nr))
- #define OMAP_GPIO_IS_MPUIO(nr)	((nr) >= OMAP_MAX_GPIO_LINES)
- 
-@@ -213,16 +213,5 @@ extern void omap2_gpio_prepare_for_idle(int off_mode);
- extern void omap2_gpio_resume_after_idle(void);
- extern void omap_set_gpio_debounce(int gpio, int enable);
- extern void omap_set_gpio_debounce_time(int gpio, int enable);
--/*-------------------------------------------------------------------------*/
--
--/*
-- * Wrappers for "new style" GPIO calls, using the new infrastructure
-- * which lets us plug in FPGA, I2C, and other implementations.
-- *
-- * The original OMAP-specific calls should eventually be removed.
-- */
--
--#include <linux/errno.h>
--#include <asm-generic/gpio.h>
- 
- #endif
-diff --git a/sound/soc/omap/sdp3430.c b/sound/soc/omap/sdp3430.c
-index 33f4ac2..da45b51 100644
---- a/sound/soc/omap/sdp3430.c
-+++ b/sound/soc/omap/sdp3430.c
-@@ -33,6 +33,7 @@
- #include <asm/mach-types.h>
- #include <mach/hardware.h>
- #include <mach/gpio.h>
-+#include <linux/platform_data/gpio-omap.h>
- #include <linux/platform_data/dsp-mcbsp.h>
- 
- /* Register descriptions for twl4030 codec part */
+visit our website: www.tomaxracing.com   we have many tuing parts for your  
+scooter
+
+
+thank you verymuch for your time
+
+Tony
+
+www.tomaxracing.com
+
+--f46d042f943c1b074e04c885e5fb
+Content-Type: image/jpeg; name="=?GB2312?B?xKbN0LO1LmpwZw==?="
+Content-Disposition: attachment; filename="=?GB2312?B?xKbN0LO1LmpwZw==?="
+Content-Transfer-Encoding: base64
+
+/9j/4AAQSkZJRgABAQAAAQABAAD/4QDWRXhpZgAASUkqAAgAAAADADEBAgAHAAAAMgAAADsBAgAH
+AAAAOQAAAGmHBAABAAAAQAAAAAAAAABQaWNhc2EAUGljYXNhAAUAAJAHAAQAAAAwMjIwAqAEAAEA
+AADgAQAAA6AEAAEAAADBAAAABaAEAAEAAACkAAAAIKQCACEAAACCAAAAAAAAAGRmMTMzODMzYzY5
+YWVlZGM4YmMxYzY4ZTUzOWMyMDIzAAADAAIABwAEAAAAMDEwMAEQBAABAAAAAAQAAAIQBAABAAAA
+mwEAAAAAAAD/4QKNaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLwA8P3hwYWNrZXQgYmVnaW49
+Iu+7vyIgaWQ9Ilc1TTBNcENlaGlIenJlU3pOVGN6a2M5ZCI/PiA8eDp4bXBtZXRhIHhtbG5zOng9
+ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJYTVAgQ29yZSA1LjEuMiI+IDxyZGY6UkRGIHhtbG5z
+OnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+IDxyZGY6
+RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxl
+bWVudHMvMS4xLyI+IDxkYzpkZXNjcmlwdGlvbj4gPHJkZjpBbHQ+IDxyZGY6bGkgeG1sOmxhbmc9
+IngtZGVmYXVsdCI+cXF2ZTUrNjU8L3JkZjpsaT4gPC9yZGY6QWx0PiA8L2RjOmRlc2NyaXB0aW9u
+PiA8ZGM6Y3JlYXRvcj4gPHJkZjpTZXE+IDxyZGY6bGk+UGljYXNhPC9yZGY6bGk+IDwvcmRmOlNl
+cT4gPC9kYzpjcmVhdG9yPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0
+YT4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICA8P3hwYWNrZXQgZW5kPSJ3Ij8+/+0AZlBob3Rvc2hvcCAzLjAAOEJJ
+TQQEAAAAAAAuHAEAAAIABBwBWgADGyVHHAIAAAIABBwCUAAGUGljYXNhHAJ4AAhxcXZlNSs2NThC
+SU0EJQAAAAAAENuS6ZmXNpsQoA6bazjG+aj/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkM
+EQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEU
+Hh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCADB
+AeADASIAAhEBAxEB/8QAHQABAAEFAQEBAAAAAAAAAAAAAAMCBAUGBwEICf/EAEQQAAEDAwMCAwUG
+AwYEBQUAAAEAAgMEBREGEiEHMRNBURQVImHRCDJVcYGTI0KRFjNSobHSF3LB8CRUYnPhNGN0krL/
+xAAcAQEAAgMBAQEAAAAAAAAAAAAAAwQBAgUGBwj/xAA1EQACAgEDAgMGBgEEAwEAAAAAAQIDEQQS
+IQUxE0FRBiIyYXGRFIGhsdHw4TNCwfEVI1Jy/9oADAMBAAIRAxEAPwD4995XH8Qq/wB531T3lcfx
+Cr/ed9VaIgLv3lcfxCr/AHnfVPeVx/EKv9531VoiAu/eVx/EKv8Aed9U95XH8Qq/3nfVWiIC795X
+H8Qq/wB531T3lcfxCr/ed9VaIgLv3lcfxCr/AHnfVPeVx/EKv9531VoiAu/eVy/EKv8Aed9U95XH
+8Qq/3nfVWiIC795XH8Qq/wB531T3lcfxCr/ed9VaIgLv3lcfxCr/AHnfVPeVx/EKv9531VovUBde
+8rj+IVf7zvqnvK4/iFX+876q0RAXfvK4/iFX+876p7yuP4hV/vO+qtEQF37yuP4hV/vO+qe8rj+I
+Vf7zvqrREBd+8rj+IVf7zvqnvK4/iFX+876q0RAXfvK4/iFX+876p7yuP4hV/vO+qtEQF37yuP4h
+V/vO+qe8rj+IVf7zvqrREBd+8rj+IVf7zvqnvK4/iFX+876q0RAdD6W1QqZquOqmllqGhr4y+Vxw
+3scc/kth1Vqeewui3Ucs0UnaTxcDPouVWW5VFquEdZSuAezgjycPMFdStd/seoaT2ebw972/xKeY
+efyJ4Ko3Qanuayj637I9Tp1PS30+qyNWoXwtpe95+fd+XrjDMxarhNWWuCtlDoPFj3lm8naPz/Ll
+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
+IgP/2Q==
+--f46d042f943c1b074e04c885e5fb--
