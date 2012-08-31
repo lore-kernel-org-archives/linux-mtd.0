@@ -1,21 +1,22 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
+Received: from mail-wg0-f49.google.com ([74.125.82.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T7ZXb-0001UV-Mt
- for linux-mtd@lists.infradead.org; Fri, 31 Aug 2012 22:18:16 +0000
-Received: by lbbgf7 with SMTP id gf7so1466162lbb.36
- for <linux-mtd@lists.infradead.org>; Fri, 31 Aug 2012 15:18:12 -0700 (PDT)
+ id 1T7aSo-00058K-35
+ for linux-mtd@lists.infradead.org; Fri, 31 Aug 2012 23:17:23 +0000
+Received: by wgbdt14 with SMTP id dt14so1905992wgb.18
+ for <linux-mtd@lists.infradead.org>; Fri, 31 Aug 2012 16:17:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1346416026.9709.47.camel@sauron.fi.intel.com>
-References: <886EEBE3AFFFB144AA8169C199AB4E6AA7BC4D5FB8@BBMBX.backbone.local>
- <1346416026.9709.47.camel@sauron.fi.intel.com>
-Date: Fri, 31 Aug 2012 15:18:12 -0700
-Message-ID: <CAN8TOE8j9gxpXAmL51gqaW8=TFLQLPhp03inryx_-uZv4901Ng@mail.gmail.com>
-Subject: Re: FW: UBIFS tools and latest 2.6.33 kernel from
- http://git.infradead.org/users/dedekind/ubifs-v2.6.33.git
-From: Brian Norris <computersforpeace@gmail.com>
-To: dedekind1@gmail.com, David Clark <dclark@tantalus.com>
+In-Reply-To: <20120831005234.28732.10624.stgit@muffinssi.local>
+References: <20120831004828.28732.902.stgit@muffinssi.local>
+ <20120831005234.28732.10624.stgit@muffinssi.local>
+Date: Sat, 1 Sep 2012 01:17:20 +0200
+Message-ID: <CACRpkdb7ozr8uxTDudVPMF5Lcr3FMtDLo9RUm-hvqbVUCHji6w@mail.gmail.com>
+Subject: Re: [PATCH 6/9] ARM: OMAP: Move gpio.h to include/linux/platform_data
+From: Linus Walleij <linus.walleij@linaro.org>
+To: Tony Lindgren <tony@atomide.com>
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org,
+ linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,28 +26,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Aug 31, 2012 at 5:27 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> Hi,
+On Fri, Aug 31, 2012 at 2:52 AM, Tony Lindgren <tony@atomide.com> wrote:
+
+> This way we can remove includes of plat/gpio.h which won't work
+> with the single zImage support.
 >
-> On Fri, 2012-08-24 at 12:39 -0700, David Clark wrote:
->> UBI error: io_init: bad write buffer size 0 for 1 min. I/O unit
+> Note that we also remove the cpu_class_is_omap2() check
+> in gpio-omap.c as the drivers should not call it as we need to
+> make it local to arch/arm/mach-omap2 for single zImage support.
 >
-> This means your NOR driver should be fixed and it should return
-> _correct_ write buffer size, not 0.
+> While at it, arrange the related includes in the standard way.
+>
+> Cc: Grant Likely <grant.likely@secretlab.ca>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: linux-mtd@lists.infradead.org
+> Cc: alsa-devel@alsa-project.org
+> Acked-by: Tony Lindgren <tony@atomide.com>
 
-I'm guessing that you're using m25p80, which is missing this mainline
-patch in the backport tree:
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-commit b54f47c8bcfc5f766bf13ec31bd7dd1d4726d33b
-Author: Brian Norris <computersforpeace@gmail.com>
-Date:   Tue Jan 31 00:06:03 2012 -0800
-
-    mtd: m25p80: set writebufsize
-
-Artem,
-
-There was a series of 'writebufsize' fixes that may be missing from
-multiple backport trees. I can help you track them down, if you'd like
-the help.
-
-Brian
+Yours,
+Linus Walleij
