@@ -1,12 +1,13 @@
 Received: from mail4-relais-sop.national.inria.fr ([192.134.164.105])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T7qdh-0002cm-Nr
- for linux-mtd@lists.infradead.org; Sat, 01 Sep 2012 16:33:42 +0000
+ id 1T7qdj-0002cm-8M
+ for linux-mtd@lists.infradead.org; Sat, 01 Sep 2012 16:33:43 +0000
 From: Julia Lawall <Julia.Lawall@lip6.fr>
 To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 4/4] drivers/mtd/nand/mpc5121_nfc.c: some devm_ cleanups
-Date: Sat,  1 Sep 2012 18:33:10 +0200
-Message-Id: <1346517191-8794-4-git-send-email-Julia.Lawall@lip6.fr>
+Subject: [PATCH 3/4] drivers/mtd/maps/autcpu12-nvram.c: drop frees of devm_
+ alloc'd data
+Date: Sat,  1 Sep 2012 18:33:11 +0200
+Message-Id: <1346517191-8794-5-git-send-email-Julia.Lawall@lip6.fr>
 In-Reply-To: <1346517191-8794-1-git-send-email-Julia.Lawall@lip6.fr>
 References: <1346517191-8794-1-git-send-email-Julia.Lawall@lip6.fr>
 Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
@@ -24,18 +25,7 @@ From: Julia Lawall <Julia.Lawall@lip6.fr>
 
 devm free functions should not have to be explicitly used.
 
-The only thing left that is useful in the function mpc5121_nfc_free is the
-call to clk_disable, which is moved to the call sites.
-
-This function also incorrectly called iounmap on devm_ioremap allocated
-data.
-
-Use devm_request_and_ioremap in place of devm_request_mem_region and
-devm_ioremap.
-
-Use devm_clk_get.
-
-A semantic match that finds the first problem is as follows:
+A semantic match that finds this problem is as follows:
 (http://coccinelle.lip6.fr/)
 
 // <smpl>
@@ -58,101 +48,70 @@ A semantic match that finds the first problem is as follows:
 Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 
 ---
- drivers/mtd/nand/mpc5121_nfc.c |   35 +++++------------------------------
- 1 file changed, 5 insertions(+), 30 deletions(-)
+ drivers/mtd/maps/autcpu12-nvram.c |   18 ++++--------------
+ 1 file changed, 4 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/mtd/nand/mpc5121_nfc.c b/drivers/mtd/nand/mpc5121_nfc.c
-index c259c24..45183ba 100644
---- a/drivers/mtd/nand/mpc5121_nfc.c
-+++ b/drivers/mtd/nand/mpc5121_nfc.c
-@@ -632,21 +632,6 @@ out:
- 	return ret;
+diff --git a/drivers/mtd/maps/autcpu12-nvram.c b/drivers/mtd/maps/autcpu12-nvram.c
+index ef420d9..76fb594 100644
+--- a/drivers/mtd/maps/autcpu12-nvram.c
++++ b/drivers/mtd/maps/autcpu12-nvram.c
+@@ -38,7 +38,6 @@ static int __devinit autcpu12_nvram_probe(struct platform_device *pdev)
+ 	map_word tmp, save0, save1;
+ 	struct resource *res;
+ 	struct autcpu12_nvram_priv *priv;
+-	int err;
+ 
+ 	priv = devm_kzalloc(&pdev->dev,
+ 			    sizeof(struct autcpu12_nvram_priv), GFP_KERNEL);
+@@ -50,8 +49,7 @@ static int __devinit autcpu12_nvram_probe(struct platform_device *pdev)
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	if (!res) {
+ 		dev_err(&pdev->dev, "failed to get memory resource\n");
+-		err = -ENOENT;
+-		goto out;
++		return -ENOENT;
+ 	}
+ 
+ 	priv->map.bankwidth	= 4;
+@@ -61,8 +59,7 @@ static int __devinit autcpu12_nvram_probe(struct platform_device *pdev)
+ 	strcpy((char *)priv->map.name, res->name);
+ 	if (!priv->map.virt) {
+ 		dev_err(&pdev->dev, "failed to remap mem resource\n");
+-		err = -EBUSY;
+-		goto out;
++		return -EBUSY;
+ 	}
+ 
+ 	simple_map_init(&priv->map);
+@@ -90,8 +87,7 @@ static int __devinit autcpu12_nvram_probe(struct platform_device *pdev)
+ 	priv->mtd = do_map_probe("map_ram", &priv->map);
+ 	if (!priv->mtd) {
+ 		dev_err(&pdev->dev, "probing failed\n");
+-		err = -ENXIO;
+-		goto out;
++		return -ENXIO;
+ 	}
+ 
+ 	priv->mtd->owner	= THIS_MODULE;
+@@ -106,12 +102,7 @@ static int __devinit autcpu12_nvram_probe(struct platform_device *pdev)
+ 
+ 	map_destroy(priv->mtd);
+ 	dev_err(&pdev->dev, "NV-RAM device addition failed\n");
+-	err = -ENOMEM;
+-
+-out:
+-	devm_kfree(&pdev->dev, priv);
+-
+-	return err;
++	return -ENOMEM;
  }
  
--/* Free driver resources */
--static void mpc5121_nfc_free(struct device *dev, struct mtd_info *mtd)
--{
--	struct nand_chip *chip = mtd->priv;
--	struct mpc5121_nfc_prv *prv = chip->priv;
--
--	if (prv->clk) {
--		clk_disable(prv->clk);
--		clk_put(prv->clk);
--	}
--
--	if (prv->csreg)
--		iounmap(prv->csreg);
--}
--
- static int __devinit mpc5121_nfc_probe(struct platform_device *op)
- {
- 	struct device_node *rootnode, *dn = op->dev.of_node;
-@@ -713,12 +698,7 @@ static int __devinit mpc5121_nfc_probe(struct platform_device *op)
- 	regs_paddr = res.start;
- 	regs_size = resource_size(&res);
+ static int __devexit autcpu12_nvram_remove(struct platform_device *pdev)
+@@ -120,7 +111,6 @@ static int __devexit autcpu12_nvram_remove(struct platform_device *pdev)
  
--	if (!devm_request_mem_region(dev, regs_paddr, regs_size, DRV_NAME)) {
--		dev_err(dev, "Error requesting memory region!\n");
--		return -EBUSY;
--	}
--
--	prv->regs = devm_ioremap(dev, regs_paddr, regs_size);
-+	prv->regs = devm_request_and_ioremap(dev, &res);
- 	if (!prv->regs) {
- 		dev_err(dev, "Error mapping memory region!\n");
- 		return -ENOMEM;
-@@ -752,11 +732,10 @@ static int __devinit mpc5121_nfc_probe(struct platform_device *op)
- 	of_node_put(rootnode);
- 
- 	/* Enable NFC clock */
--	prv->clk = clk_get(dev, "nfc_clk");
-+	prv->clk = devm_clk_get(dev, "nfc_clk");
- 	if (IS_ERR(prv->clk)) {
- 		dev_err(dev, "Unable to acquire NFC clock!\n");
--		retval = PTR_ERR(prv->clk);
--		goto error;
-+		return PTR_ERR(prv->clk);
- 	}
- 
- 	clk_enable(prv->clk);
-@@ -803,7 +782,6 @@ static int __devinit mpc5121_nfc_probe(struct platform_device *op)
- 	/* Detect NAND chips */
- 	if (nand_scan(mtd, be32_to_cpup(chips_no))) {
- 		dev_err(dev, "NAND Flash not found !\n");
--		devm_free_irq(dev, prv->irq, mtd);
- 		retval = -ENXIO;
- 		goto error;
- 	}
-@@ -828,7 +806,6 @@ static int __devinit mpc5121_nfc_probe(struct platform_device *op)
- 
- 	default:
- 		dev_err(dev, "Unsupported NAND flash!\n");
--		devm_free_irq(dev, prv->irq, mtd);
- 		retval = -ENXIO;
- 		goto error;
- 	}
-@@ -839,13 +816,12 @@ static int __devinit mpc5121_nfc_probe(struct platform_device *op)
- 	retval = mtd_device_parse_register(mtd, NULL, &ppdata, NULL, 0);
- 	if (retval) {
- 		dev_err(dev, "Error adding MTD device!\n");
--		devm_free_irq(dev, prv->irq, mtd);
- 		goto error;
- 	}
- 
- 	return 0;
- error:
--	mpc5121_nfc_free(dev, mtd);
-+	clk_disable(prv->clk);
- 	return retval;
- }
- 
-@@ -857,8 +833,7 @@ static int __devexit mpc5121_nfc_remove(struct platform_device *op)
- 	struct mpc5121_nfc_prv *prv = chip->priv;
- 
- 	nand_release(mtd);
--	devm_free_irq(dev, prv->irq, mtd);
--	mpc5121_nfc_free(dev, mtd);
-+	clk_disable(prv->clk);
+ 	mtd_device_unregister(priv->mtd);
+ 	map_destroy(priv->mtd);
+-	devm_kfree(&pdev->dev, priv);
  
  	return 0;
  }
