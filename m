@@ -1,15 +1,24 @@
-Received: from mail-wi0-f171.google.com ([209.85.212.171])
+Received: from mail-bk0-f49.google.com ([209.85.214.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T87pj-0001JA-0i
- for linux-mtd@lists.infradead.org; Sun, 02 Sep 2012 10:55:15 +0000
-Received: by wibhq4 with SMTP id hq4so2224992wib.0
- for <linux-mtd@lists.infradead.org>; Sun, 02 Sep 2012 03:55:08 -0700 (PDT)
+ id 1T87rK-0001MT-8Y
+ for linux-mtd@lists.infradead.org; Sun, 02 Sep 2012 10:56:54 +0000
+Received: by bkcji2 with SMTP id ji2so1901058bkc.36
+ for <linux-mtd@lists.infradead.org>; Sun, 02 Sep 2012 03:56:52 -0700 (PDT)
+Message-ID: <1346583402.2533.0.camel@kyv>
+Subject: Re: [PATCH v2] mtd: cmdlinepart: fix the wrong check condition
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: cmdlinepart: revise error handling
-Date: Sun,  2 Sep 2012 13:54:14 +0300
-Message-Id: <1346583254-9190-1-git-send-email-dedekind1@gmail.com>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Date: Sun, 02 Sep 2012 13:56:42 +0300
+In-Reply-To: <20120825123149.3fafa4f4@halley>
+References: <1345925210-7500-1-git-send-email-shijie8@gmail.com>
+ <20120825123149.3fafa4f4@halley>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-niE4XSr/wd3DpTfSm0GM"
+Mime-Version: 1.0
+Cc: dwmw2@infradead.org, Huang Shijie <shijie8@gmail.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,127 +28,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-This patch revises and fixes error handling in the command line mtd
-partitions parser. Namely:
-1. we ignored return code of 'mtdpart_setup_real()'.
-2. instead of returning 0 for failure and 1 for success, teach
-   'mtdpart_setup_real()' to return real error codes.
+--=-niE4XSr/wd3DpTfSm0GM
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
----
- drivers/mtd/cmdlinepart.c | 31 +++++++++++++++++--------------
- 1 file changed, 17 insertions(+), 14 deletions(-)
+On Sat, 2012-08-25 at 12:31 +0300, Shmulik Ladkani wrote:
+> Hi Huang, Artem,
+>=20
+> On Sat, 25 Aug 2012 16:06:50 -0400 Huang Shijie <shijie8@gmail.com> wrote=
+:
+> > diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
+> > index fc960a3..216d751 100644
+> > --- a/drivers/mtd/cmdlinepart.c
+> > +++ b/drivers/mtd/cmdlinepart.c
+> > @@ -322,13 +322,16 @@ static int parse_cmdline_partitions(struct mtd_in=
+fo *master,
+> >  	struct cmdline_mtd_partition *part;
+> >  	const char *mtd_id =3D master->name;
+> > =20
+> > +	if (!mtd_id)
+> > +		return 0;
+> > +
+> >  	/* parse command line */
+> >  	if (!cmdline_parsed)
+> >  		mtdpart_setup_real(cmdline);
+> > =20
+> >  	for(part =3D partitions; part; part =3D part->next)
+> >  	{
+> > -		if ((!mtd_id) || (!strcmp(part->mtd_id, mtd_id)))
+> > +		if (!strcmp(part->mtd_id, mtd_id))
+> >  		{
+> >  			for(i =3D 0, offset =3D 0; i < part->num_parts; i++)
+> >  			{
+>=20
+> This changes the behavior of cmdling parsing, which might affect users
+> expecting the old behavior.
 
-diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
-index b4faca2..5bddecf 100644
---- a/drivers/mtd/cmdlinepart.c
-+++ b/drivers/mtd/cmdlinepart.c
-@@ -110,7 +110,7 @@ static struct mtd_partition * newpart(char *s,
- 		if (size < PAGE_SIZE)
- 		{
- 			printk(KERN_ERR ERRP "partition size too small (%lx)\n", size);
--			return NULL;
-+			return ERR_PTR(-EINVAL);
- 		}
- 	}
- 
-@@ -138,7 +138,7 @@ static struct mtd_partition * newpart(char *s,
- 		if (!p)
- 		{
- 			printk(KERN_ERR ERRP "no closing %c found in partition name\n", delim);
--			return NULL;
-+			return ERR_PTR(-EINVAL);
- 		}
- 		name_len = p - name;
- 		s = p + 1;
-@@ -172,13 +172,13 @@ static struct mtd_partition * newpart(char *s,
- 		if (size == SIZE_REMAINING)
- 		{
- 			printk(KERN_ERR ERRP "no partitions allowed after a fill-up partition\n");
--			return NULL;
-+			return ERR_PTR(-EINVAL);
- 		}
- 		/* more partitions follow, parse them */
- 		parts = newpart(s + 1, &s, num_parts, this_part + 1,
- 				&extra_mem, extra_mem_size);
--		if (!parts)
--			return NULL;
-+		if (IS_ERR(parts))
-+			return parts;
- 	}
- 	else
- 	{	/* this is the last partition: allocate space for all */
-@@ -189,7 +189,7 @@ static struct mtd_partition * newpart(char *s,
- 			     extra_mem_size;
- 		parts = kzalloc(alloc_size, GFP_KERNEL);
- 		if (!parts)
--			return NULL;
-+			return PTR_ERR(-ENOMEM);
- 		extra_mem = (unsigned char *)(parts + *num_parts);
- 	}
- 	/* enter this partition (offset will be calculated later if it is zero at this point) */
-@@ -245,7 +245,7 @@ static int mtdpart_setup_real(char *s)
- 		if (!(p = strchr(s, ':')))
- 		{
- 			printk(KERN_ERR ERRP "no mtd-id\n");
--			return 0;
-+			return -EINVAL;
- 		}
- 		mtd_id_len = p - mtd_id;
- 
-@@ -262,7 +262,7 @@ static int mtdpart_setup_real(char *s)
- 				(unsigned char**)&this_mtd, /* out: extra mem */
- 				mtd_id_len + 1 + sizeof(*this_mtd) +
- 				sizeof(void*)-1 /*alignment*/);
--		if(!parts)
-+		if(IS_ERR(parts))
- 		{
- 			/*
- 			 * An error occurred. We're either:
-@@ -271,7 +271,7 @@ static int mtdpart_setup_real(char *s)
- 			 * Either way, this mtd is hosed and we're
- 			 * unlikely to succeed in parsing any more
- 			 */
--			 return 0;
-+			 return ERR_PTR(parts);
- 		 }
- 
- 		/* align this_mtd */
-@@ -299,11 +299,11 @@ static int mtdpart_setup_real(char *s)
- 		if (*s != ';')
- 		{
- 			printk(KERN_ERR ERRP "bad character after partition (%c)\n", *s);
--			return 0;
-+			return -EINVAL;
- 		}
- 		s++;
- 	}
--	return 1;
-+	return 0;
- }
- 
- /*
-@@ -318,13 +318,16 @@ static int parse_cmdline_partitions(struct mtd_info *master,
- 				    struct mtd_part_parser_data *data)
- {
- 	unsigned long offset;
--	int i;
-+	int i, err;
- 	struct cmdline_mtd_partition *part;
- 	const char *mtd_id = master->name;
- 
- 	/* parse command line */
--	if (!cmdline_parsed)
--		mtdpart_setup_real(cmdline);
-+	if (!cmdline_parsed) {
-+		err = mtdpart_setup_real(cmdline);
-+		if (err)
-+			return err;
-+	}
- 
- 	for(part = partitions; part; part = part->next)
- 	{
--- 
-1.7.11.4
+Yes, you are right, we should not change the mtd_id hack unless we have
+checked all the users.
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-niE4XSr/wd3DpTfSm0GM
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQQztqAAoJECmIfjd9wqK0cXAP/RPAlDfd0QC78pPLJU1dgdwW
+u0BTPkstvX81tH8i0ooTyCBAhJe3GroC/vHnPAnVX/tM1VFhr26AQf47BEqOhU5d
+g39Ie56ASQL0hua3tJZ5eA/FBbNDbnr1SfUH9LE8X4SuHCzEgIwyTe1G/QKsTP5t
+GuWM7H/XT23pJvrZPh2F3qBIxe/RjKPfcqCXUyKkS53S7DpHzwiVGiNYfcJNOars
+Mc2P3OlZ3B0C987l1EZnEDfuU/S5LcaEDzPqRp+qJ4vwq6Yy6P0TQm/bvFKJftnr
+5IdYnRiv7kg1i/rzDQCnRNXSQaw62rRq7ZJc9HjWXo18bGexJd1wOR5KEmVC/m3p
+YdjCVueL9oV9JXQ3WdxU448AmfGR5XmlqFTgSwV/0NfY8YZRqeW7I65a0cwrJU22
+g+/bsFxNuXmYK13y8t0nJ8sSncPSXSlko/DFlWOoSFFjCNOsAuJx+SxpXbzJ2m/o
++/x0h5vSU5UP5wZ90Y52pG5T5OCND493JH2egjcqR4GxxSUOpIxViCDRk9Xguorq
+MqZ6MLa4WSe1u/mY4QM27LwA4U/jK/3WNncu+d+f2ozJ1Quz8+TQjJfH/ruND6sP
+z4gPknEsZbLFlwJBaslMnoWtY4SBVsmDk4sic5fJGpKpC0k50hW/t3iysRdjfVK+
+BNLKLkbqPQDMXHrX6cnR
+=3DyH
+-----END PGP SIGNATURE-----
+
+--=-niE4XSr/wd3DpTfSm0GM--
