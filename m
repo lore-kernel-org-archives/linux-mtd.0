@@ -1,23 +1,13 @@
-Received: from smtp-out03.msg.oleane.net ([62.161.7.1])
+Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T8XQl-0001wY-EN
- for linux-mtd@lists.infradead.org; Mon, 03 Sep 2012 14:15:12 +0000
-From: "Fabien Comte" <fabien.comte@ercogener.com>
-To: <dedekind1@gmail.com>
-References: <20120831133153.764EC3495D9@dl.free.fr>	
- <003d01cd877e$39b71020$ad253060$@ercogener.com>	
- <1346671221.3061.42.camel@sauron.fi.intel.com>
- <1346673285.3061.46.camel@sauron.fi.intel.com>
-In-Reply-To: 
-Subject: RE: TR: Notification d'envoi de fichier via http://dl.free.fr
-Date: Mon, 3 Sep 2012 16:15:05 +0200
-Message-ID: <001d01cd89de$84659fd0$8d30df70$@ercogener.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Content-Language: fr
-Cc: 'linux-mtd' <linux-mtd@lists.infradead.org>
+ id 1T8Xau-0003Bb-Kv
+ for linux-mtd@lists.infradead.org; Mon, 03 Sep 2012 14:25:41 +0000
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Richard Genoud <richard.genoud@gmail.com>
+Subject: [PATCH] UBI: fix a horrible memory deallocation bug
+Date: Mon,  3 Sep 2012 17:25:56 +0300
+Message-Id: <1346682356-14997-1-git-send-email-dedekind1@gmail.com>
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,40 +17,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-3.0, are you sure ?
-http://git.infradead.org/users/dedekind/ubifs-v3.0.git
-http://git.infradead.org/users/dedekind/ubifs-v3.5.git -> for 3.5 =
-kernels, isn't it ?
+UBI was mistakingly using 'kfree()' instead of 'kmem_cache_free()' when
+freeing "attach eraseblock" structures in vtbl.c. Thankfully, this happened
+only when we were doing auto-format, so many systems were unaffected. However,
+there are still many users affected.
 
-Thank you.
+It is strange, but the system did not crash and nothing bad happened when
+the SLUB memory allocator was used. However, in case of SLOB we observed an
+crash right away.
 
-Fabien Comte
+This problem was introduced in 2.6.39 by commit
+"6c1e875 UBI: add slab cache for ubi_scan_leb objects"
 
------Message d'origine-----
-De : Artem Bityutskiy [mailto:dedekind1@gmail.com] Envoy=C3=A9 : lundi 3 =
-septembre 2012 13:55 =C3=80 : Fabien Comte Cc : linux-mtd Objet : Re: =
-TR: Notification d'envoi de fichier via http://dl.free.fr
+Reported-by: Richard Genoud <richard.genoud@gmail.com>
+Cc: stable@vger.kernel.org [v2.6.39+]
+Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+---
+ drivers/mtd/ubi/vtbl.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-On Mon, 2012-09-03 at 14:20 +0300, Artem Bityutskiy wrote:
-> Also, you never sent me the full log. Please, _before_ mounting,=20
-> enable debugging prints:
->=20
-> 1. modprobe ubifs
-> 2. echo 'format "UBIFS DBG" +pf' >
-> /sys/kernel/debug/dynamic_debug/control
-> 3. mount
->=20
-> then type "dmesg" and send full log please.
-
-Also note, I am using x86_64 PC.
-
-Can you try to take the ubifs-v3.0 tree and try to reproduce the issue?
-
-If it is reproducible, then we can find the guilty commit using git =
-bisect.
-
---
-Best Regards,
-Artem Bityutskiy
+diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
+index 64b9c56..926e3df 100644
+--- a/drivers/mtd/ubi/vtbl.c
++++ b/drivers/mtd/ubi/vtbl.c
+@@ -340,7 +340,7 @@ retry:
+ 	 * of this LEB as it will be deleted and freed in 'ubi_add_to_av()'.
+ 	 */
+ 	err = ubi_add_to_av(ubi, ai, new_aeb->pnum, new_aeb->ec, vid_hdr, 0);
+-	kfree(new_aeb);
++	kmem_cache_free(ai->aeb_slab_cache, new_aeb);
+ 	ubi_free_vid_hdr(ubi, vid_hdr);
+ 	return err;
+ 
+@@ -353,7 +353,7 @@ write_error:
+ 		list_add(&new_aeb->u.list, &ai->erase);
+ 		goto retry;
+ 	}
+-	kfree(new_aeb);
++	kmem_cache_free(ai->aeb_slab_cache, new_aeb);
+ out_free:
+ 	ubi_free_vid_hdr(ubi, vid_hdr);
+ 	return err;
+-- 
+1.7.7.6
