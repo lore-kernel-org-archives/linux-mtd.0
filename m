@@ -1,12 +1,12 @@
-Received: from mga14.intel.com ([143.182.124.37])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T8XcU-0003Pi-8f
- for linux-mtd@lists.infradead.org; Mon, 03 Sep 2012 14:27:18 +0000
-Message-ID: <1346682729.3061.55.camel@sauron.fi.intel.com>
+ id 1T8XdW-0003bb-Re
+ for linux-mtd@lists.infradead.org; Mon, 03 Sep 2012 14:28:23 +0000
+Message-ID: <1346682794.3061.56.camel@sauron.fi.intel.com>
 Subject: Re: [PATCH v3 0/6] UBI: add max_beb_per1024 parameter / ioctl
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Richard Genoud <richard.genoud@gmail.com>
-Date: Mon, 03 Sep 2012 17:32:09 +0300
+Date: Mon, 03 Sep 2012 17:33:14 +0300
 In-Reply-To: <CACQ1gAiFQfAbKVRfhjy-K31MJP9YchzxmmCo4FJECoKuudeBtw@mail.gmail.com>
 References: <1345478416-23900-1-git-send-email-richard.genoud@gmail.com>
  <1345716615.2848.229.camel@sauron.fi.intel.com>
@@ -18,7 +18,7 @@ References: <1345478416-23900-1-git-send-email-richard.genoud@gmail.com>
  <CACQ1gAiFQfAbKVRfhjy-K31MJP9YchzxmmCo4FJECoKuudeBtw@mail.gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-QbeEsz2D0+y5qa94SiQA"
+ boundary="=-0sRIAEnTIYAKijN2v8r7"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>
 Reply-To: dedekind1@gmail.com
@@ -32,30 +32,21 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-QbeEsz2D0+y5qa94SiQA
+--=-0sRIAEnTIYAKijN2v8r7
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 On Fri, 2012-08-31 at 16:46 +0200, Richard Genoud wrote:
-> diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
-> --- a/drivers/mtd/ubi/vtbl.c
-> +++ b/drivers/mtd/ubi/vtbl.c
-> @@ -346,8 +346,8 @@ retry:
->          */
->         err =3D ubi_scan_add_used(ubi, si, new_seb->pnum, new_seb->ec,
->                                 vid_hdr, 0);
-> +//     kfree(new_seb);
-> +//     ubi_free_vid_hdr(ubi, vid_hdr);
->         return err;
->=20
-Richard, I've sent you the fix. I've tested it and it fixes the issue.
-Switching to SLUB must be hiding it somehow. Thanks for reporting!
->=20
+> I tested also some values at limits, it seems all right.
+
+Thanks Richard for testing. Would you be also energetic enough to do the
+last step - some documentation for mtd-www?
+
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-QbeEsz2D0+y5qa94SiQA
+--=-0sRIAEnTIYAKijN2v8r7
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -63,19 +54,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQRL9pAAoJECmIfjd9wqK0snQP/2y6C/n4a9OYPNsdE0/mCvG3
-iE8xTwszwmUR1cYL76s90pruWUxeqzc9wnUHz/RXrRlm8LtXCE4HpNmyD8d1OWqe
-7acbK9Iv91zRAnGKLBW702QapaCuJwb32Pf8d6b5Zwwh825KOc87H29/tIAt+FL0
-KQWTvi4dGHAsRlVA42NnudO3I0IOJcHy3it4otz+jttlaBdz20q6yQHHbJ7FtV3F
-8WjU3D4iR1uC0WlZI7Gkx2uesEsVQ3vRcKXnajA7qA+wZ8QEWG5jDSahpwvZP84l
-38yKJWPaLYrS9lJO8jEApJSK6TJhzHcWqtGDy9vP+OmzA8+yHBC4RRQAVRuC14xa
-GD1SyfKXO1sVBYTcnIQB/E3RI4VuqUzp9TnwSk2zZi2e9JyfjvfC1mfYh21A8NXD
-hlV9yVb/MyR22y5UfQWtdmu5X3N97oXk3spkg4Q0sKm/H0fGmLiKOt0PIOJSlv2d
-aHdWNQmd98RHUoSMCmAXKv+hzuosJgWwf/pejY61T8eqbpTj/64KtzaL/ioxi7sw
-H+pktTrZ4Di3fw+5UEHeq+KGFzcyA2HUoMmzIm44pGjuTP6Aw8q02Bfv00hjJWWS
-t0YWvCOjVQmk2fjK5MYAl2QH5qmdc7o2S+48SICFm+Xd7kYfjzd1s3AqxEGaPVop
-pVtjmWH2Tt3ItwOqE7Re
-=JGSW
+iQIcBAABAgAGBQJQRL+qAAoJECmIfjd9wqK0dmwQANNTBeMUblRi5yA+Em/SDC/8
+3vTPnoFIQTAxpgint92K2T5CuGLhrB/xJsccoEIJrMCQP+HNCC7uwylHyR3DRI+i
+GNGVfqf/ELj/p+thAuS4BrN2OG86pSE32FzkDDDO1EA1XwKL1Gr7ZwggzlysRnjs
+uEnGAJse2rSB9JFWTByhLop5Dth+GgXrHHaeca5ewwgngRQI/WDEBGESuB1sL844
+GajJuOAw8LYFTvgZDe0cBniPJFFmqbnorh3YQ+MvEFHGOcRqVDNxHX9M7JaU4ejp
+c2uDoXsbIH3jlnwzWb90WCpT4XVzCt59wqIfk/U8+//pTyrg6o1TqHFqCB2X/FoI
+0dAm2A/dzDwnfQfvFFCrCEyLD557ePu4BwiQJXbVDkQthYaHpaQheCn8kMKMirvm
+Yz1K6uoVnZiNWWXenRnrSDQNzrV3hd335sxcpa+N0tJYrkyPqzsbhHalGbpMp2xM
+En62Ovoq2GvODab6LK85xsqyc1HCR9l9L5aJJtSE0/Sup9g9ZEn1S3YWS81VfbP8
+cMfNVJB9G28gnjJxzHNSjsfYMn4TMgxx4W9XAoy03L9ldxbPk5Kd96ybM6E6UT46
+Fkcb4AExaRF6jKQlw4MBkgE5SGbjuzi8r6I/Mmi3w8iiwmWrzhlEC2bhsNq5zvUr
+lv2LcGi4OnjWWzIc8jEJ
+=9NYT
 -----END PGP SIGNATURE-----
 
---=-QbeEsz2D0+y5qa94SiQA--
+--=-0sRIAEnTIYAKijN2v8r7--
