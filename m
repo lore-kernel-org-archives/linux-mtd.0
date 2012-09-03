@@ -1,25 +1,21 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T8Pn6-0001av-AH
- for linux-mtd@lists.infradead.org; Mon, 03 Sep 2012 06:05:45 +0000
-Received: by pbbrq8 with SMTP id rq8so8011430pbb.36
- for <linux-mtd@lists.infradead.org>; Sun, 02 Sep 2012 23:05:40 -0700 (PDT)
-Message-ID: <504448B1.4050205@gmail.com>
-Date: Sun, 02 Sep 2012 23:05:37 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: FW: UBIFS tools and latest 2.6.33 kernel from
- http://git.infradead.org/users/dedekind/ubifs-v2.6.33.git
-References: <886EEBE3AFFFB144AA8169C199AB4E6AA7BC4D5FB8@BBMBX.backbone.local>
- <1346416026.9709.47.camel@sauron.fi.intel.com>
- <CAN8TOE8j9gxpXAmL51gqaW8=TFLQLPhp03inryx_-uZv4901Ng@mail.gmail.com>
- <1346583467.2533.1.camel@kyv>
-In-Reply-To: <1346583467.2533.1.camel@kyv>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: David Clark <dclark@tantalus.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from mga01.intel.com ([192.55.52.88])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1T8Qqh-0004Kr-1S
+ for linux-mtd@lists.infradead.org; Mon, 03 Sep 2012 07:13:31 +0000
+Message-ID: <1346656701.3061.8.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/3] mtd: cmdlinepart: make the partitions rule more strict
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Huang Shijie <shijie8@gmail.com>
+Date: Mon, 03 Sep 2012 10:18:21 +0300
+In-Reply-To: <1346001700-26895-1-git-send-email-shijie8@gmail.com>
+References: <1346001700-26895-1-git-send-email-shijie8@gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-9fZP69khWFNkhHgyu8ei"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ linux-kernel@vger.kernel.org, shmulik.ladkani@gmail.com
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,90 +25,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/02/2012 03:57 AM, Artem Bityutskiy wrote:
-> On Fri, 2012-08-31 at 15:18 -0700, Brian Norris wrote:
->> There was a series of 'writebufsize' fixes that may be missing from
->> multiple backport trees. I can help you track them down, if you'd like
->> the help.
->
-> Sure, go ahead, I can them put them to the backport trees.
 
-OK, I just put up my own github backport tree, with branches for v2.6.32 
-through v3.3. I think your v3.4+ repos are fine. URL:
+--=-9fZP69khWFNkhHgyu8ei
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-   git://github.com/computersforpeace/UBIFS-backports.git
-   https://github.com/computersforpeace/UBIFS-backports.git
+On Sun, 2012-08-26 at 13:21 -0400, Huang Shijie wrote:
+> + *
+> + * Note:
+> + * If you choose to set the @offset for the <partdef>, please set all
+> + * the partitions with the same syntax, such as:
+> + *     gpmi-nand:100m@0(boot),100m@100m(kernel),1g@200m(rootfs)
+> + *
+> + * Please do _NOT_ set the partitions like this:
+> + *     gpmi-nand:100m@0(boot),100m(kernel),1g@200m(rootfs)
+> + * The `kernel` partition does not set with the @offset, this is not per=
+mitted.
+>   */
 
-Branches:
+I guess it is indeed OK to sort the partitions, just makes things a lot
+simpler. But we probably then should also do the following:
 
-   ubifs-v2.6.32
-   ubifs-v2.6.33
-   ubifs-v2.6.34
-   ubifs-v2.6.35
-   ubifs-v2.6.36
-   ubifs-v2.6.37
-   ubifs-v2.6.38
-   ubifs-v2.6.39
-   ubifs-v3.0
-   ubifs-v3.1
-   ubifs-v3.2
-   ubifs-v3.3
+1. Make sure there is only one partition without offset. If there are
+several - error out.
+2. Check that partitions do not intersect - I did not notice that we do
+this in the code.
 
-Each branch should have some version (amended when necessary) of the 
-following commits. Note that docg3 wasn't merged until v3.2. Also, 
-spear_smi wasn't merged until v3.4 and was already fixed in the 
-appropriate backports, so it is omitted from this list.
+So AFAICS, this patch is not needed and we better have the following
+patches:
 
-Brian
+1. Add sorting
+2. Add a check that partitions do not overlap and there is only one
+offset-less partition.
 
----
+How does this sound?
 
-[ In 'git log' order ]
+--=20
+Best Regards,
+Artem Bityutskiy
 
-commit c4cc625ea5958d065c21cc0fcea29e9ed8f3d2bc
-Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Date:   Fri Feb 3 10:16:50 2012 +0200
+--=-9fZP69khWFNkhHgyu8ei
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-     mtd: sst25l: initialize writebufsize
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-commit fcc44a07dae0af16e84e93425fc8afe642ddc603
-Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Date:   Fri Feb 3 09:53:28 2012 +0200
+iQIcBAABAgAGBQJQRFm9AAoJECmIfjd9wqK0alEP/2N4sLMc+BCZORu/hH7gEHQd
+99Rb8zTcZKASwJac0Mj1aRDwFO91Cf/vQGNbQ/kjKq+Sx3R/MjODDss5Ltq8cldb
+1QwUiBfnz70Dgp7sIjTBlM36d/udYI0Nv8VkyS1WTHZcXWxPXnmIW24o7JwXkktP
+VDZypdRUoW1pqif4CrevKBmPcDqmrChFRLgSpZDBJkV3zTSW08yylNhFYelbVc6H
+m/yR45uuOKytpNE0S/GTJZmSMKuJr0yR0CYZxNIvrDUihuZYvERQuP8a98R8NEa8
+RRgX0FctkRhxDreuco07U74g1pooI1q12QBsUzSotkpqrjf5jbKVSz1fElNYqIX1
+LIMz6VWIDNs8Ro0/N/ei31VaBFLBCumMkWsDmZ/+AUcGoUmQ/tCpNDIc7g5l4j1I
+nf8LTytu0vWNCPMc3rQI3vNFDoC1WhikrxevitXJg8CLcAESHKJeq32KJUsOeVLC
+UFO8TWM5Npk8Pj4N5QVuZ0QE/Ms15Z5hS4SYKzbInXcWAS8JDhZEKL1ULViiWvd0
+5x+fiOCzLblDnF5LNLFZI0fieU8Pywnh9z5OgX+6xkXH2kiSQgg1kuYSLjk9Qcdk
+gqYayBB+qDu/vQ5F/lX8CNt3z4Ycr8NXeBzKzDzediz2THDlqx5vic2vHk2V+DCf
+hzs5tWaRF+dm4KkXkZ1U
+=OYQ/
+-----END PGP SIGNATURE-----
 
-     mtd: lart: initialize writebufsize
-
-commit 82c4c58d6f1a78e8de875272a19ab9220b8066aa
-Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Date:   Fri Feb 3 09:44:32 2012 +0200
-
-     mtd: docg3: initialize writebufsize
-
-commit 71f60fbebf0f18dd4e855335a009efda251b1697
-Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Date:   Fri Feb 3 09:43:14 2012 +0200
-
-     mtd: doc2001plus: initialize writebufsize
-
-commit cca84b569ebe3372b28949e00b0a3a17f87e2970
-Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Date:   Fri Feb 3 09:42:39 2012 +0200
-
-     mtd: doc2001: initialize writebufsize
-
-commit cd1986a3c111f7ed597619705290fa52a975014f
-Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Date:   Fri Feb 3 09:38:43 2012 +0200
-
-     mtd: doc2000: initialize writebufsize
-
-commit b604387411ec6a072e95910099262616edd2bd2f
-Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Date:   Fri Feb 3 09:32:44 2012 +0200
-
-     mtd: block2mtd: initialize writebufsize
-
-commit b54f47c8bcfc5f766bf13ec31bd7dd1d4726d33b
-Author: Brian Norris <computersforpeace@gmail.com>
-Date:   Tue Jan 31 00:06:03 2012 -0800
-
-     mtd: m25p80: set writebufsize
+--=-9fZP69khWFNkhHgyu8ei--
