@@ -1,22 +1,23 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from smtp29.msg.oleane.net ([62.161.4.29])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T8Ybz-0003V1-SO
- for linux-mtd@lists.infradead.org; Mon, 03 Sep 2012 15:30:52 +0000
-Message-ID: <1346686544.3061.75.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/3] mtd: cmdlinepart: make the partitions rule more strict
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Huang Shijie <shijie8@gmail.com>
-Date: Mon, 03 Sep 2012 18:35:44 +0300
-In-Reply-To: <CAMiH66GX7h5tve9CLHzj8MMrUv90fL+4BWYPZ6KQkP5bbXY9ag@mail.gmail.com>
-References: <1346001700-26895-1-git-send-email-shijie8@gmail.com>
- <1346656701.3061.8.camel@sauron.fi.intel.com>
- <CAMiH66GX7h5tve9CLHzj8MMrUv90fL+4BWYPZ6KQkP5bbXY9ag@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-IePPWPTwI6QdcotZ7oDi"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, shmulik.ladkani@gmail.com
-Reply-To: dedekind1@gmail.com
+ id 1T8Z2c-00058J-Au
+ for linux-mtd@lists.infradead.org; Mon, 03 Sep 2012 15:58:23 +0000
+Received: from ic.fr (LDijon-156-65-26-47.w80-15.abo.wanadoo.fr
+ [80.15.105.47])
+ by smtp29.msg.oleane.net (MTA) with ESMTP id q83FwDx2009500
+ for <linux-mtd@lists.infradead.org>; Mon, 3 Sep 2012 17:58:13 +0200
+Received: from [192.168.4.56] (unknown [192.168.4.56])
+ by ic.fr (Postfix) with ESMTPA id D200A223F2
+ for <linux-mtd@lists.infradead.org>; Mon,  3 Sep 2012 18:18:41 +0200 (CEST)
+Message-ID: <5044D395.9050607@ic.fr>
+Date: Mon, 03 Sep 2012 17:58:13 +0200
+From: =?ISO-8859-1?Q?C=E9dric_Cano?= <ccano@interfaceconcept.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 1/2] drivers/mtd/devices/m25p80.c: Fix return code of
+ read/write mtd callbacks
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,104 +27,148 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+From: Cédric Cano <ccano@interfaceconcept.com>
 
---=-IePPWPTwI6QdcotZ7oDi
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+For SPI Flash devices, MTD read and write functions returns "1" if Flash 
+is busy (this status is returned by "wait_till_ready" fnuction). This 
+return code is not an error code: if device is busy, MTD read or write 
+are successful with 1 byte length.
 
-[Dropped extra CCs - let's spam less]
+This patch fixes code returned by "wait_till_ready", "m25p80_erase", 
+"m25p80_read", "m25p80_write" and "sst_write" functions: the error code 
+is -EBUSY now.
 
-On Mon, 2012-09-03 at 11:09 -0400, Huang Shijie wrote:
-> On Mon, Sep 3, 2012 at 3:18 AM, Artem Bityutskiy <dedekind1@gmail.com> wr=
-ote:
-> > On Sun, 2012-08-26 at 13:21 -0400, Huang Shijie wrote:
-> >> + *
-> >> + * Note:
-> >> + * If you choose to set the @offset for the <partdef>, please set all
-> >> + * the partitions with the same syntax, such as:
-> >> + *     gpmi-nand:100m@0(boot),100m@100m(kernel),1g@200m(rootfs)
-> >> + *
-> >> + * Please do _NOT_ set the partitions like this:
-> >> + *     gpmi-nand:100m@0(boot),100m(kernel),1g@200m(rootfs)
-> >> + * The `kernel` partition does not set with the @offset, this is not =
-permitted.
-> >>   */
-> >
-> > I guess it is indeed OK to sort the partitions, just makes things a lot
-> > simpler. But we probably then should also do the following:
-> >
-> > 1. Make sure there is only one partition without offset. If there are
-> > several - error out.
->=20
->  Why allow `only one partition without offset`?
+C. Cano
 
-E.g.,
+Signed-off-by: Cédric Cano <ccano@interfaceconcept.com>
 
-gpmi-nand:1g@200m(rootfs),100m(boot),100m@100m(kernel),200m(ququ)
+---
+--- linux-3.5.3/drivers/mtd/devices/m25p80.c    2012-08-26 
+04:32:13.000000000 +0200
++++ linux-3.5.3/drivers/mtd/devices/m25p80.c    2012-09-03 
+17:35:16.159741656 +0200
+@@ -199,7 +199,7 @@
 
-how would "boot" and "ququ" look like?
+      } while (!time_after_eq(jiffies, deadline));
 
-What I basically say is that we should refuse lines like this. Which
-means checking that there is only one "OFFSET_CONTINOUS" partition.
+-    return 1;
++    return -EBUSY;
+  }
 
-> Take the following unsorted partitions as an example:
->      #gpmi-nand:1g@200m(rootfs),100m(boot),100m@100m(kernel)
->=20
-> The current code will parses out the following partitions:
->       rootfs: < size =3D 1g, offset=3D200m>
->       boot:   < size =3D 100m, offset=3D OFFSET_CONTINOUS>
->       kernel: <size =3D 100m, offset =3D 100m>
->=20
-> If we sort the partitions by the offset, we get the following result:
->      "kernel" , "rootfs", "boot"
+  /*
+@@ -209,12 +209,15 @@
+   */
+  static int erase_chip(struct m25p *flash)
+  {
++    int    ret;
++
+      pr_debug("%s: %s %lldKiB\n", dev_name(&flash->spi->dev), __func__,
+              (long long)(flash->mtd.size >> 10));
 
-Yeah, for some reason I assumed that if you do not specify offset then
-you mean the partition must be the _last_ and span the rest of flash. I
-assume other usage is bogus. So from this POW the example is bogus and
-lines like this would be rejected.
+      /* Wait until finished previous write command. */
+-    if (wait_till_ready(flash))
+-        return 1;
++    ret = wait_till_ready(flash);
++    if (ret)
++        return ret;
 
-I guess the criteria is that this sting contains a "gap" (0-100m).
+      /* Send write enable, then erase commands. */
+      write_enable(flash);
+@@ -249,12 +252,15 @@
+   */
+  static int erase_sector(struct m25p *flash, u32 offset)
+  {
++    int    ret;
++
+      pr_debug("%s: %s %dKiB at 0x%08x\n", dev_name(&flash->spi->dev),
+              __func__, flash->mtd.erasesize / 1024, offset);
 
-With the logic I suggested, for this case what I said would basically:
+      /* Wait until finished previous write command. */
+-    if (wait_till_ready(flash))
+-        return 1;
++    ret = wait_till_ready(flash);
++    if (ret)
++        return ret;
 
-1. Sort. This leads to
+      /* Send write enable, then erase commands. */
+      write_enable(flash);
+@@ -283,6 +289,7 @@
+      struct m25p *flash = mtd_to_m25p(mtd);
+      u32 addr,len;
+      uint32_t rem;
++    int ret;
 
-100m@100m(kernel)
-1g@200m(rootfs)
-100m(boot)
+      pr_debug("%s: %s at 0x%llx, len %lld\n", dev_name(&flash->spi->dev),
+              __func__, (long long)instr->addr,
+@@ -299,10 +306,11 @@
 
-"OFFSET_CONTINOUS" is always the largest and will be at the end when
-sorting.
+      /* whole-chip erase? */
+      if (len == flash->mtd.size) {
+-        if (erase_chip(flash)) {
++        ret = erase_chip(flash);
++        if (ret) {
+              instr->state = MTD_ERASE_FAILED;
+              mutex_unlock(&flash->lock);
+-            return -EIO;
++            return ret;
+          }
 
-2. Verification.
+      /* REVISIT in some cases we could speed up erasing large regions
+@@ -313,10 +321,11 @@
+      /* "sector"-at-a-time erase */
+      } else {
+          while (len) {
+-            if (erase_sector(flash, addr)) {
++            ret = erase_sector(flash, addr);
++            if (ret) {
+                  instr->state = MTD_ERASE_FAILED;
+                  mutex_unlock(&flash->lock);
+-                return -EIO;
++                return ret;
+              }
 
-We verify for overlaps and gaps. And refuse this one.
+              addr += mtd->erasesize;
+@@ -339,6 +348,7 @@
+  static int m25p80_read(struct mtd_info *mtd, loff_t from, size_t len,
+      size_t *retlen, u_char *buf)
+  {
++    int ret;
+      struct m25p *flash = mtd_to_m25p(mtd);
+      struct spi_transfer t[2];
+      struct spi_message m;
+@@ -364,10 +374,11 @@
+      mutex_lock(&flash->lock);
 
---=20
-Best Regards,
-Artem Bityutskiy
+      /* Wait till previous write/erase is done. */
+-    if (wait_till_ready(flash)) {
++    ret = wait_till_ready(flash);
++    if (ret) {
+          /* REVISIT status return?? */
+          mutex_unlock(&flash->lock);
+-        return 1;
++        return ret;
+      }
 
---=-IePPWPTwI6QdcotZ7oDi
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+      /* FIXME switch to OPCODE_FAST_READ.  It's required for higher
+@@ -396,6 +407,7 @@
+  static int m25p80_write(struct mtd_info *mtd, loff_t to, size_t len,
+      size_t *retlen, const u_char *buf)
+  {
++    int ret;
+      struct m25p *flash = mtd_to_m25p(mtd);
+      u32 page_offset, page_size;
+      struct spi_transfer t[2];
+@@ -417,9 +429,10 @@
+      mutex_lock(&flash->lock);
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+      /* Wait until finished previous write command. */
+-    if (wait_till_ready(flash)) {
++    ret = wait_till_ready(flash);
++    if (ret) {
+          mutex_unlock(&flash->lock);
+-        return 1;
++        return ret;
+      }
 
-iQIcBAABAgAGBQJQRM5QAAoJECmIfjd9wqK0dsMP/RpotuUec1MFpOr8AaIVqW4y
-rfAfw3fVntHlk9AJu4q26t/R07Hr/OTcUwM78R7EKImcK+d10BlNGNJD0sEHjUC8
-8mlhYD/XqE3nQrLKiCo3KSWQ8YUMupN0pFdRjbyoLitF+Dcm6/GxhT/F5zXHf/vj
-PyxgFhvV8tSLAsxZ/7B/D1AJ2AY9tUllNGAlDFea1tJEoA3ogESe+UokGc1afldi
-6d5LuKSsq5nz7nH8fRRA6dLUv/RPU/Vq8/QQU40lD/EbwCtBrmbq4ufkWAmaM9rq
-2FH8P4vEicAReKYKbEucgbqRcEDaSnRUA2wjzqU9xczBD1I9xWs6rTa6/YOrXbYF
-Zy9NCc2cZpTgp2yMqG5BnoW5pb6fTBbJjG8kDeygvvxJ2ADX/E3HmmXky1bPG1x+
-24QRGwpkDFZGHChZfhockwLelH2oGxfwQM5ZT+9Ugb7VFQ+HjclhMQympDLYO9de
-LLX77iYIK19Ag2gUufHcyKz1YTHx41Qx0QKOkGO1ZhXNL80rGzWCkOL0aEAwBIcv
-A8pqVSIFQFgr4N//jVR2H+W8H2hY10B8UwAWxlujprk+G9w3gGnsau4x0Qy9Iv9H
-crktjsF3vvpkTyNnwPsJjE3seFynz18iDKoQwWjLCVhJ4zDFEVvm0DLhY0XfCcxP
-ZPvmIGAMZTaVG255OT30
-=t/7f
------END PGP SIGNATURE-----
-
---=-IePPWPTwI6QdcotZ7oDi--
+      write_enable(flash);
+---
