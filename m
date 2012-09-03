@@ -1,19 +1,19 @@
 Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T8Sny-0004O0-CI
- for linux-mtd@lists.infradead.org; Mon, 03 Sep 2012 09:18:50 +0000
-Message-ID: <1346664222.3061.21.camel@sauron.fi.intel.com>
-Subject: Re: UBI on SPI NOR flash
+ id 1T8SrU-0004Xn-Pj
+ for linux-mtd@lists.infradead.org; Mon, 03 Sep 2012 09:22:29 +0000
+Message-ID: <1346664440.3061.23.camel@sauron.fi.intel.com>
+Subject: Re: UBI error: nor_erase_prepare: cannot invalidate PEB 76, write
+ returned -5 read returned 2
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jan =?ISO-8859-1?Q?L=FCbbe?= <jlu@pengutronix.de>
-Date: Mon, 03 Sep 2012 12:23:42 +0300
-In-Reply-To: <1346084156.3722.9.camel@coredoba.hi.pengutronix.de>
-References: <1345050600.3514.11.camel@coredoba.hi.pengutronix.de>
- <1345811483.2848.310.camel@sauron.fi.intel.com>
- <1346084156.3722.9.camel@coredoba.hi.pengutronix.de>
+To: Alexander Stein <alexander.stein@systec-electronic.com>, Pieter Smith
+ <pieter.smith@eu.omron.com>
+Date: Mon, 03 Sep 2012 12:27:20 +0300
+In-Reply-To: <201012011437.16978.alexander.stein@systec-electronic.com>
+References: <201012011437.16978.alexander.stein@systec-electronic.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-Gg7vhBaJuJttK86+q9ds"
+ boundary="=-o5Wy5h8Vu3cZT6HNARWT"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
@@ -27,44 +27,34 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-Gg7vhBaJuJttK86+q9ds
+--=-o5Wy5h8Vu3cZT6HNARWT
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2012-08-27 at 18:15 +0200, Jan L=C3=BCbbe wrote:
-> > Another problem I know with SPI flashes is that UBIFS uses vmalloc'd
-> > memory for I/O, which is not suitable for DMA-ing on ARM platforms
-> and
-> > may cause subtle bugs and curruptions. Can you try to disable DMA
-> and
-> > see if the issues go away?
+On Wed, 2010-12-01 at 14:37 +0100, Alexander Stein wrote:
+> Hello,
 >=20
-> It works if I disable DMA in drivers/spi/spi-omap2-mcspi.c (simply
-> comment out the DMA branch in omap2_mcspi_work). I can use UBI&UBIFS
-> without problems for far. When rebooting to a kernel with DMA enabled
-> I
-> can no longer attach the previously working volume. Moving back to the
-> PIO-Kernel, it works again.
->=20
-> Where should this be fixed? Should UBI use kmalloc'ed memory?
+> I'm observing the given error after starting Linux. ubiattach is called f=
+rom=20
+> within the init-script. Currently I'm running v2.6.34. The filesystem is=
+=20
+> mounted read-only as expected.
+> It gets curious that afterwards in u-boot the corresponding sector is com=
+plety=20
+> empty, read 0xff. It seems the sector cannot be written, although it is e=
+mpty.
+> Has anybody an idea about such phenomenon? Oh, before it forget, I use a=
+=20
+> Numonyx Axcell M29EW NOR-Flash 128MiB.
 
-Yes, the best way to fix this is to teach UBI and UBIFS stop using
-vmalloc(). It is not straight-forward, but doable. As I said several
-times, I can assist by giving ideas and directions, but someone who
-needs this should probably allocate a couple of men-months for this
-project.
-
-> Why does this work for NAND controllers using DMA? :)=20
-
-I am not sure, you should investigate. I think some drivers just check
-if this is vmalloced memory, and avoid DMA for that. Some (e.g.,
-onenand) use various hacks which appear to work.
+Sorry guys, cannot help, but if you happen to find the root-cause and
+fix it - patches are welcome :)
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-Gg7vhBaJuJttK86+q9ds
+--=-o5Wy5h8Vu3cZT6HNARWT
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -72,19 +62,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQRHceAAoJECmIfjd9wqK0k/cP/iPbQZd/ccs9V7sds2KAxjh/
-FA/d26yaaV2GPeeZOZYqUpXGnTYzWnawynaGpTP9pZWa6hDBPiXhKr0i7eiCgFXF
-mylBQeJv2qbdhMKltKDlo74TSAo/sODRp8t+w+CxrvAjBYtl/4BTYGZl3vvS7U0b
-5RtLWQpHabvkrCvKwbamQ6a+HTwd4m48+MZOuMXJwUsyyCnzfM8nyaG+ufg6rN/4
-+/8FeQfsEr4AL+wwtBGhupj3nuLK8G2mCP37kn/2NDfJO7xR0+pX9udB6A005L1d
-9IH8hgcXyhl7/tfNyfFFFVm2VLoVfKhlxwWJVSr0N2JF3YWmvMDiEtq7eELX+Ase
-w/24hwCXylyRkAcRNmazmQ0oOrXnTS6Kl14ahp2jXc4t0jsAdVwaeHGdigdi6AEK
-U8wRhWl9882saWnwx2tuWjcvgOvONSmtJzxzVvD/4CUIc3IpqMdeLqUK3bBmtt6r
-FyPeD+vYSrmPOW5qGuDWILlHxl+T/fYEjy3xBLz/fHvVPb+NYMwhtOxwk94ezaGw
-a9KO+Zpaw4MEki5qbjijw3PZWUon695bSq9IggMQC0zQj8vzJsTL3wy/LpYByHEQ
-XyicBSckpXJ293+W59NeTFxYICmLOkT19JFUqEuWeNB/yIQhvVdTNW8h0+drv+qF
-9YC4qV88xPbRLKhBsxL3
-=kCdK
+iQIcBAABAgAGBQJQRHf4AAoJECmIfjd9wqK0stkP/0LB6VVxJ23jLL0NuRb+KFjB
++kzoJcwNIiO5+V2MsuE4x3mNTYBX5N+IvcjvYtOGZrl2AsjN44eSXHYwk4yFb3sH
+FWttEYXqUnFNb+tgin779hCmVH5now/4LyrhuvV9mNl9+OWpgsq4+WavYCSpTVxq
+2BvsBE+hO3IMpX5MG2Hj5bs9Zbd2k3PR+HFsvsmVabw24IET/YhsaJidr/qaavHX
+Dq9j+R5VKl6HSmJ6l4ATmtgAYbibA4ac97xPZuQKIyTAAva9ZlIuboDswjwuW4AF
+vceD8Y55jL42ZFhfkStWVg9dwTdaYaxGyj0Nyr+5umJOIKDBGwNVAKIFg3kireas
+XNvS4lIMNiOnvRXgQPh4Nx5sJWhFCB8T+xweA2ScNY3wWNvlpMTA2WOF1BmotAO8
+mjkIfiejy5uDCDw3E0KUI6VP0MJj0GPonEQN8/MFxi2+M6kDluppfG3s0vlpS2wf
+cNsgzrIH4MthnA0QHE+KGbs9a66FTyKpqPa13R5BceCzsTowJieU+WEGlqL5yAKO
+I8dVHRqLHxlSy2N5vfyFNRBAqTezS4ysmAJ8Uj4/53G/nL4uRd50ZhytGZArpntW
+bhKFRRPPzQz4Vjo2CSfQ4NCG4uFEW+U94dDP4hp9ggUbBMBbx7PWe+wk18UEr1IX
+RJAjw/wt6xsxYy5Lzxzk
+=XT2K
 -----END PGP SIGNATURE-----
 
---=-Gg7vhBaJuJttK86+q9ds--
+--=-o5Wy5h8Vu3cZT6HNARWT--
