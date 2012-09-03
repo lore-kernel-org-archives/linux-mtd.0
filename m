@@ -1,19 +1,22 @@
-Message-ID: <50447403.4010003@antcom.de>
-Date: Mon, 03 Sep 2012 11:10:27 +0200
-From: Roland Stigge <stigge@antcom.de>
-MIME-Version: 1.0
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: mxc_nand.c on mach-imx/imx53
-References: <5035F84E.3000901@antcom.de>
- <20120829074122.GV26594@pengutronix.de> <503E3331.8050203@antcom.de>
- <20120829172820.43bbe68e@eb-e6520> <50407E44.5080408@antcom.de>
- <504098A1.4050208@antcom.de> <20120903085517.GE26594@pengutronix.de>
-In-Reply-To: <20120903085517.GE26594@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, linux-mtd@lists.infradead.org,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Received: from mga01.intel.com ([192.55.52.88])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1T8Sny-0004O0-CI
+ for linux-mtd@lists.infradead.org; Mon, 03 Sep 2012 09:18:50 +0000
+Message-ID: <1346664222.3061.21.camel@sauron.fi.intel.com>
+Subject: Re: UBI on SPI NOR flash
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Jan =?ISO-8859-1?Q?L=FCbbe?= <jlu@pengutronix.de>
+Date: Mon, 03 Sep 2012 12:23:42 +0300
+In-Reply-To: <1346084156.3722.9.camel@coredoba.hi.pengutronix.de>
+References: <1345050600.3514.11.camel@coredoba.hi.pengutronix.de>
+ <1345811483.2848.310.camel@sauron.fi.intel.com>
+ <1346084156.3722.9.camel@coredoba.hi.pengutronix.de>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-Gg7vhBaJuJttK86+q9ds"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,51 +26,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/03/2012 10:55 AM, Sascha Hauer wrote:
-> On Fri, Aug 31, 2012 at 12:57:37PM +0200, Roland Stigge wrote:
->> On 08/31/2012 11:05 AM, Roland Stigge wrote:
->>> I tried to port this on top of Sascha's patches for imx53, only for mxc v3 for now, as below.
->>>
->>> Unfortunately, I still get:
->>>
->>> ...
->>> UnCorrectable RS-ECC Error
->>> UnCorrectable RS-ECC Error
->>> UnCorrectable RS-ECC Error
->>> UnCorrectable RS-ECC Error
->>> UnCorrectable RS-ECC Error
-> 
-> Have you written the data you are unable to read with this driver?
 
-No, maybe that's one of the reasons. The bootloader also seems to
-implement a different on-flash layout. But as written, the problem is
-gone with the below fix.
+--=-Gg7vhBaJuJttK86+q9ds
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
->> --- linux-2.6.orig/drivers/mtd/nand/mxc_nand.c
->> +++ linux-2.6/drivers/mtd/nand/mxc_nand.c
->> @@ -1141,14 +1141,14 @@ static void mxc_nand_command(struct mtd_
->>                 host->devtype_data->send_cmd(host, command, true);
->>                 mxc_do_addr_cycle(mtd, column, page_addr);
->>                 host->devtype_data->send_read_id(host);
->> -               host->buf_start = column;
->> +               host->buf_start = 0;
->>                 break;
->>  
->>         case NAND_CMD_PARAM:
->>                 host->devtype_data->send_cmd(host, command, true);
->>                 mxc_do_addr_cycle(mtd, column, page_addr);
->>                 host->devtype_data->send_read_param(host);
->> -               host->buf_start = column;
->> +               host->buf_start = 0;
-> 
-> On what tree are you working? I cannot find a handling of
-> NAND_CMD_PARAM in my tree.
+On Mon, 2012-08-27 at 18:15 +0200, Jan L=C3=BCbbe wrote:
+> > Another problem I know with SPI flashes is that UBIFS uses vmalloc'd
+> > memory for I/O, which is not suitable for DMA-ing on ARM platforms
+> and
+> > may cause subtle bugs and curruptions. Can you try to disable DMA
+> and
+> > see if the issues go away?
+>=20
+> It works if I disable DMA in drivers/spi/spi-omap2-mcspi.c (simply
+> comment out the DMA branch in omap2_mcspi_work). I can use UBI&UBIFS
+> without problems for far. When rebooting to a kernel with DMA enabled
+> I
+> can no longer attach the previously working volume. Moving back to the
+> PIO-Kernel, it works again.
+>=20
+> Where should this be fixed? Should UBI use kmalloc'ed memory?
 
-That's on top of the patch I ported from Eric's barebox driver (other
-mail, but only for imx53/v3 for now). Sorry for the confusion.
+Yes, the best way to fix this is to teach UBI and UBIFS stop using
+vmalloc(). It is not straight-forward, but doable. As I said several
+times, I can assist by giving ideas and directions, but someone who
+needs this should probably allocate a couple of men-months for this
+project.
 
-I can prepare a single patch, but maybe Eric's more knowledgeable on
-this driver (including v1/v2 that I can't test), he announced a patch
-for this week.
+> Why does this work for NAND controllers using DMA? :)=20
 
-Roland
+I am not sure, you should investigate. I think some drivers just check
+if this is vmalloced memory, and avoid DMA for that. Some (e.g.,
+onenand) use various hacks which appear to work.
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-Gg7vhBaJuJttK86+q9ds
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQRHceAAoJECmIfjd9wqK0k/cP/iPbQZd/ccs9V7sds2KAxjh/
+FA/d26yaaV2GPeeZOZYqUpXGnTYzWnawynaGpTP9pZWa6hDBPiXhKr0i7eiCgFXF
+mylBQeJv2qbdhMKltKDlo74TSAo/sODRp8t+w+CxrvAjBYtl/4BTYGZl3vvS7U0b
+5RtLWQpHabvkrCvKwbamQ6a+HTwd4m48+MZOuMXJwUsyyCnzfM8nyaG+ufg6rN/4
++/8FeQfsEr4AL+wwtBGhupj3nuLK8G2mCP37kn/2NDfJO7xR0+pX9udB6A005L1d
+9IH8hgcXyhl7/tfNyfFFFVm2VLoVfKhlxwWJVSr0N2JF3YWmvMDiEtq7eELX+Ase
+w/24hwCXylyRkAcRNmazmQ0oOrXnTS6Kl14ahp2jXc4t0jsAdVwaeHGdigdi6AEK
+U8wRhWl9882saWnwx2tuWjcvgOvONSmtJzxzVvD/4CUIc3IpqMdeLqUK3bBmtt6r
+FyPeD+vYSrmPOW5qGuDWILlHxl+T/fYEjy3xBLz/fHvVPb+NYMwhtOxwk94ezaGw
+a9KO+Zpaw4MEki5qbjijw3PZWUon695bSq9IggMQC0zQj8vzJsTL3wy/LpYByHEQ
+XyicBSckpXJ293+W59NeTFxYICmLOkT19JFUqEuWeNB/yIQhvVdTNW8h0+drv+qF
+9YC4qV88xPbRLKhBsxL3
+=kCdK
+-----END PGP SIGNATURE-----
+
+--=-Gg7vhBaJuJttK86+q9ds--
