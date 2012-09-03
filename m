@@ -1,21 +1,19 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T8VAG-0002OU-UQ
- for linux-mtd@lists.infradead.org; Mon, 03 Sep 2012 11:50:02 +0000
-Message-ID: <1346673285.3061.46.camel@sauron.fi.intel.com>
-Subject: Re: TR: Notification d'envoi de fichier via http://dl.free.fr
+ id 1T8VBn-0002r7-21
+ for linux-mtd@lists.infradead.org; Mon, 03 Sep 2012 11:51:36 +0000
+Message-ID: <1346673385.3061.48.camel@sauron.fi.intel.com>
+Subject: Re: UBIFS Informations
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Fabien Comte <fabien.comte@ercogener.com>
-Date: Mon, 03 Sep 2012 14:54:45 +0300
-In-Reply-To: <1346671221.3061.42.camel@sauron.fi.intel.com>
-References: <20120831133153.764EC3495D9@dl.free.fr>
- <003d01cd877e$39b71020$ad253060$@ercogener.com>
- <1346671221.3061.42.camel@sauron.fi.intel.com>
+To: simon widmer <simonxwidmer@gmail.com>
+Date: Mon, 03 Sep 2012 14:56:25 +0300
+In-Reply-To: <503F7685.8030707@gmail.com>
+References: <503F7685.8030707@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-M+miR2RCiDl8ydPK9sm5"
+ boundary="=-ws1IYAbFgld+6A0VYqgs"
 Mime-Version: 1.0
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,33 +25,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-M+miR2RCiDl8ydPK9sm5
+--=-ws1IYAbFgld+6A0VYqgs
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2012-09-03 at 14:20 +0300, Artem Bityutskiy wrote:
-> Also, you never sent me the full log. Please, _before_ mounting, enable
-> debugging prints:
+On Thu, 2012-08-30 at 16:19 +0200, simon widmer wrote:
+> Hej,
 >=20
-> 1. modprobe ubifs
-> 2. echo 'format "UBIFS DBG" +pf' > /sys/kernel/debug/dynamic_debug/contro=
-l
-> 3. mount
->=20
-> then type "dmesg" and send full log please.
+> is there any possibility to extract the compile options of a ubinized=20
+> UBIFS? My problem is that I have an embedded system where some UBIFS run=
+=20
+> on, I have an old UBIFS which I can easily put on a volume=20
+> (ubiupdatevol) and which runs perfectly. I had to make a new image,=20
+> taking the parameters i wrote down and its now working, i end with an err=
+or
+>      UBIFS error (pid 946): ubifs_read_node: bad node type (255 but=20
+> expected 6)
+>      UBIFS error (pid 946): ubifs_read_node: bad node at LEB 0:0
+> either the node is 255 either 0 instead of 6.
 
-Also note, I am using x86_64 PC.
-
-Can you try to take the ubifs-v3.0 tree and try to reproduce the issue?
-
-If it is reproducible, then we can find the guilty commit using git
-bisect.
+You are the second person complaining about this. What is the kernel
+version your image worked fine with?
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-M+miR2RCiDl8ydPK9sm5
+--=-ws1IYAbFgld+6A0VYqgs
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -61,19 +59,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQRJqFAAoJECmIfjd9wqK0at4P/AhwkjvrdMkyaa2wIlhPDcmm
-0llbvL7xF9dGdhfkeM+QiCyumkhNVRZkgarsXTLww3gTmiv2N0qfqmx4fekWSxb/
-WJwDcvHVg3Wc4fObG98D76foLGyjCPx892+Jzc/egVvuj49iWQaQlE0v86iAczDO
-vjD2qyraMY4Uw5vR3AbCtXjBqrDUNq5wLZ+LvAMcLYlwM9PwCj/V92a1KKiTo9Iv
-cfZX4WL4Prp3JM6aFnlaHZTbjGclrca9kfnGkwArO7nBRyZdoEQIJmtGzVrsX2eD
-p7EWWb/gdlj34Z2HjA9arKDPuXmhvG3YB+oslsOrn0HvYgERbQEyNSwt40flPpg7
-uec6fcN7MhQM/uaIwl+b2qCS19lM3pCVZYTFIRIMpykldgOUwoOOBQPF83yu2TUP
-0ysoZAuUkciQptUxmEnO+67CtmX99LAkWiUUswcvSE6tqKwgBvAsSa8H11ynkMIf
-AlCkzKVGivAKpmR1UnUF1C8VY7fcMjns2xfhcP6Z3Z0c5nxMzkmDvMQ9ICqMLz8y
-ttYF0aBlAXyuKG1e9JQd86S2NWzhclZsuFXvlm+anmc5tKZN0Qq/aLrnYjN/8nQX
-Cru/ygg7ZlGM16IcnoVSHpGg++etE5RLsAikH6M/WvXQ3OYmERdlD8hYMvHNSYVT
-cAv7vxSsAX8EGiEaaAxB
-=hkSO
+iQIcBAABAgAGBQJQRJrpAAoJECmIfjd9wqK09OQP+gNS2TpYyGIpfuCuOczaQyal
+fJALVm/McQjqJ5EKK1z4VHXuXwEvtOM5HwiWYtFvhcIaLx4EHMAzXfFxrhruSen/
+HsMwDMIiJ/SbZ/HN2adzb1KjDKQgzlx40XTSar9Nx19GSfRLakMkJ5qNsAuYhGti
+dYdxOK78grqzeXSyjbPeF+l0nDoy01bdrUyNh56Gmwa5utjo+K2SQr/aVcoSZUuk
+v6YpfpFK+Aa2VXa9Tl5k9isofPouhlIjX2A7SLp3/xO8y9MCdLX9UyV/d07dfSgJ
+jDkbH0VzMbFDfWhYpTcETZJn3nQ4vuc+hOsq9c7Cd/ic18X9qO3/cEWXYQ/RY7nS
+DK+ZLdESn94BAGRs2PeolcjkXibV8yY/qwokTxvwrE+4VsAkgAnj9ZVsf+cDUgOr
+dVJ0jty5AC9ur6dkDHUNACIEFOfMku6q98UqTKPNEM28My8c7jqB2impM8Wtbj6z
+YHPnnjq2YJicIRgMbTJ8AXjWdXmlqTp+FGCzfSGgjcr7eEtwb6H+Hbn0AfU2EEhg
+YFd3N2azBKmpgyjTB9uovCv7KtWm6RoxUJdMQ+oskNNNHQdVp+p9Am1Hi3agxmNS
+3yG31OOnQEuvFr44hZiUl0WiSeda1xnIo0sNeQG5Eou/XpWHlKROFJYd5+KjCnFR
+ys4IhciluwDw/wTQDFZ2
+=BCik
 -----END PGP SIGNATURE-----
 
---=-M+miR2RCiDl8ydPK9sm5--
+--=-ws1IYAbFgld+6A0VYqgs--
