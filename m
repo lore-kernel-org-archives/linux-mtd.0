@@ -1,22 +1,21 @@
-Received: from smtp07.msg.oleane.net ([62.161.4.7])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T8ZN3-0007oM-0d
- for linux-mtd@lists.infradead.org; Mon, 03 Sep 2012 16:19:29 +0000
-Received: from ic.fr (LDijon-156-65-26-47.w80-15.abo.wanadoo.fr
- [80.15.105.47])
- by smtp07.msg.oleane.net (MTA) with ESMTP id q83GJR0k014204
- for <linux-mtd@lists.infradead.org>; Mon, 3 Sep 2012 18:19:27 +0200
-Received: from [192.168.4.56] (unknown [192.168.4.56])
- by ic.fr (Postfix) with ESMTPA id 9E6B6223F2
- for <linux-mtd@lists.infradead.org>; Mon,  3 Sep 2012 18:39:55 +0200 (CEST)
-Message-ID: <5044D88F.2060003@ic.fr>
-Date: Mon, 03 Sep 2012 18:19:27 +0200
-From: =?ISO-8859-1?Q?C=E9dric_Cano?= <ccano@interfaceconcept.com>
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1T8bM0-0000MK-Ro
+ for linux-mtd@lists.infradead.org; Mon, 03 Sep 2012 18:26:33 +0000
+Received: by eaai12 with SMTP id i12so1590896eaa.36
+ for <linux-mtd@lists.infradead.org>; Mon, 03 Sep 2012 11:26:30 -0700 (PDT)
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/2] drivers/mtd/devices/m25p80.c: Fix whole device erase
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <5044D395.9050607@ic.fr>
+References: <5044D395.9050607@ic.fr>
+Date: Mon, 3 Sep 2012 11:26:29 -0700
+Message-ID: <CAJiQ=7AwRnbtDtTd9u-j5xqOCqYx89R8CfK7MpQCYG3OossY0A@mail.gmail.com>
+Subject: Re: [PATCH 1/2] drivers/mtd/devices/m25p80.c: Fix return code of
+ read/write mtd callbacks
+From: Kevin Cernekee <cernekee@gmail.com>
+To: =?UTF-8?B?Q8OpZHJpYyBDYW5v?= <ccano@interfaceconcept.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,97 +25,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Cédric Cano <ccano@interfaceconcept.com>
+On Mon, Sep 3, 2012 at 8:58 AM, C=C3=A9dric Cano <ccano@interfaceconcept.co=
+m> wrote:
+> For SPI Flash devices, MTD read and write functions returns "1" if Flash =
+is
+> busy (this status is returned by "wait_till_ready" fnuction). This return
 
-There are two ways to erase SPI Flash devices: sector per sector or the 
-entire Flash (used when MTD partition is the whole Flash).
+"function"
 
-When the whole Flash is erased, the SPI command is sent to the device 
-and the erase function ends. Then, when another access (read, write or 
-erase) is done, a  wait of busy is performed that fails because of Flash 
-erase time (can be more than 30s in case of whole erase).
+It is usually a good idea to wrap the commit text around 72-74
+characters so that it is readable in "git log" on an 80-column
+terminal.
 
-This patch removes chip erase and use only sector per sector erase to 
-erase the chip. When erase is performed, Flash accesses can be done.
+> code is not an error code: if device is busy, MTD read or write are
+> successful with 1 byte length.
 
-C. Cano
+Looking at mtd_read() - typically the transfer length is passed back
+through the "size_t *retlen" pointer, not the function's return value.
 
-Signed-off-by: Cédric Cano <ccano@interfaceconcept.com>
----
+In Linux 3.5, if m25p80_read() returns 1, mtd_read() will interpret it
+as a bitflip count not a byte count.  That isn't the correct behavior
+for a NOR device, but it probably wouldn't cause the symptom you are
+reporting.
 
---- linux-3.5.3/drivers/mtd/devices/m25p80.c    2012-09-03 
-18:03:35.787723207 +0200
-+++ linux-3.5.3/drivers/mtd/devices/m25p80.c    2012-09-03 
-18:01:17.455724709 +0200
-@@ -202,31 +202,6 @@
-      return -EBUSY;
-  }
+In Linux 3.4 and older, some functions like mtdchar_read() could
+interpret the '1' as an error code and pass it back as-is to the
+caller (who is expecting either a negative error code or a positive
+length).  Is this the case you are running into?
 
--/*
-- * Erase the whole flash memory
-- *
-- * Returns 0 if successful, non-zero otherwise.
-- */
--static int erase_chip(struct m25p *flash)
--{
--    pr_debug("%s: %s %lldKiB\n", dev_name(&flash->spi->dev), __func__,
--            (long long)(flash->mtd.size >> 10));
--
--    /* Wait until finished previous write command. */
--    if (wait_till_ready(flash))
--        return 1;
--
--    /* Send write enable, then erase commands. */
--    write_enable(flash);
--
--    /* Set up command buffer. */
--    flash->command[0] = OPCODE_CHIP_ERASE;
--
--    spi_write(flash->spi, flash->command, 1);
--
--    return 0;
--}
--
-  static void m25p_addr2cmd(struct m25p *flash, unsigned int addr, u8 *cmd)
-  {
-      /* opcode is in cmd[0] */
-@@ -301,33 +276,17 @@
+Side note - it would be helpful to add kerneldoc markup to
+include/linux/mtd/mtd.h for struct mtd_info and the new mtd_* wrapper
+functions, so we have a clear definition of what the parameters and
+return values should look like.
 
-      mutex_lock(&flash->lock);
+> --- linux-3.5.3/drivers/mtd/devices/m25p80.c    2012-08-26
+> 04:32:13.000000000 +0200
+> +++ linux-3.5.3/drivers/mtd/devices/m25p80.c    2012-09-03
+> 17:35:16.159741656 +0200
+> @@ -199,7 +199,7 @@
 
--    /* whole-chip erase? */
--    if (len == flash->mtd.size) {
--        ret = erase_chip(flash);
-+    /* "sector"-at-a-time erase */
-+    while (len) {
-+        ret = erase_sector(flash, addr);
-          if (ret) {
-              instr->state = MTD_ERASE_FAILED;
-              mutex_unlock(&flash->lock);
-              return ret;
-          }
+Could you please use "git format-patch" for your submissions, and base
+them on the current head of tree?
 
--    /* REVISIT in some cases we could speed up erasing large regions
--     * by using OPCODE_SE instead of OPCODE_BE_4K.  We may have set up
--     * to use "small sector erase", but that's not always optimal.
--     */
--
--    /* "sector"-at-a-time erase */
--    } else {
--        while (len) {
--            ret = erase_sector(flash, addr)
--            if (ret) {
--                instr->state = MTD_ERASE_FAILED;
--                mutex_unlock(&flash->lock);
--                return ret;
--            }
--
--            addr += mtd->erasesize;
--            len -= mtd->erasesize;
--        }
-+        addr += mtd->erasesize;
-+        len -= mtd->erasesize;
-      }
-
-      mutex_unlock(&flash->lock);
----
+Thanks.
