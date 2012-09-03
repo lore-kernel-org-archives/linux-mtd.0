@@ -1,17 +1,18 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T8Qqh-0004Kr-1S
- for linux-mtd@lists.infradead.org; Mon, 03 Sep 2012 07:13:31 +0000
-Message-ID: <1346656701.3061.8.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/3] mtd: cmdlinepart: make the partitions rule more strict
+ id 1T8Qtg-0004SV-TB
+ for linux-mtd@lists.infradead.org; Mon, 03 Sep 2012 07:16:37 +0000
+Message-ID: <1346656863.3061.11.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 2/3] mtd: cmdlinepart: sort the unsorted partitions
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Huang Shijie <shijie8@gmail.com>
-Date: Mon, 03 Sep 2012 10:18:21 +0300
-In-Reply-To: <1346001700-26895-1-git-send-email-shijie8@gmail.com>
+Date: Mon, 03 Sep 2012 10:21:03 +0300
+In-Reply-To: <1346001700-26895-2-git-send-email-shijie8@gmail.com>
 References: <1346001700-26895-1-git-send-email-shijie8@gmail.com>
+ <1346001700-26895-2-git-send-email-shijie8@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-9fZP69khWFNkhHgyu8ei"
+ boundary="=-zdNleoNaf9VFmibJimfH"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
  linux-kernel@vger.kernel.org, shmulik.ladkani@gmail.com
@@ -26,45 +27,53 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-9fZP69khWFNkhHgyu8ei
+--=-zdNleoNaf9VFmibJimfH
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 On Sun, 2012-08-26 at 13:21 -0400, Huang Shijie wrote:
-> + *
-> + * Note:
-> + * If you choose to set the @offset for the <partdef>, please set all
-> + * the partitions with the same syntax, such as:
-> + *     gpmi-nand:100m@0(boot),100m@100m(kernel),1g@200m(rootfs)
-> + *
-> + * Please do _NOT_ set the partitions like this:
-> + *     gpmi-nand:100m@0(boot),100m(kernel),1g@200m(rootfs)
-> + * The `kernel` partition does not set with the @offset, this is not per=
-mitted.
->   */
+> +/* There are only several partitions, so the Bubble sort is enough. */
+> +static inline void sort_partitons(struct mtd_partition *parts, int num_p=
+arts)
+> +{
+> +	int i, j;
+> +
+> +	if (num_parts < 2)
+> +		return;
 
-I guess it is indeed OK to sort the partitions, just makes things a lot
-simpler. But we probably then should also do the following:
+Not necessary, the for loop should work for this case.
+> +
+> +	if (parts[0].offset =3D=3D OFFSET_CONTINUOUS)
+> +		return;
 
-1. Make sure there is only one partition without offset. If there are
-several - error out.
-2. Check that partitions do not intersect - I did not notice that we do
-this in the code.
+Hmm, I guess the sorting function should not have this check. You
+probably can just sort normally these ones, they will be the last ones.
 
-So AFAICS, this patch is not needed and we better have the following
-patches:
+And then we can do a separate pass where we check for overlapping
+partitions and multiple OFFSET_CONTINUOUS.
 
-1. Add sorting
-2. Add a check that partitions do not overlap and there is only one
-offset-less partition.
+> +
+> +	/* sort by the offset */
+> +	for (i =3D 0; i < num_parts - 1; i++) {
+> +		for (j =3D 1; j < num_parts - i; j++) {
+> +			if (parts[j - 1].offset > parts[j].offset) {
+> +				struct mtd_partition tmp;
+> +
+> +				tmp =3D parts[j - 1];
+> +				parts[j - 1] =3D parts[j];
+> +				parts[j] =3D tmp;
+> +			}
+> +		}
+> +	}
+> +	return;
+> +}
 
-How does this sound?
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-9fZP69khWFNkhHgyu8ei
+--=-zdNleoNaf9VFmibJimfH
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -72,19 +81,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQRFm9AAoJECmIfjd9wqK0alEP/2N4sLMc+BCZORu/hH7gEHQd
-99Rb8zTcZKASwJac0Mj1aRDwFO91Cf/vQGNbQ/kjKq+Sx3R/MjODDss5Ltq8cldb
-1QwUiBfnz70Dgp7sIjTBlM36d/udYI0Nv8VkyS1WTHZcXWxPXnmIW24o7JwXkktP
-VDZypdRUoW1pqif4CrevKBmPcDqmrChFRLgSpZDBJkV3zTSW08yylNhFYelbVc6H
-m/yR45uuOKytpNE0S/GTJZmSMKuJr0yR0CYZxNIvrDUihuZYvERQuP8a98R8NEa8
-RRgX0FctkRhxDreuco07U74g1pooI1q12QBsUzSotkpqrjf5jbKVSz1fElNYqIX1
-LIMz6VWIDNs8Ro0/N/ei31VaBFLBCumMkWsDmZ/+AUcGoUmQ/tCpNDIc7g5l4j1I
-nf8LTytu0vWNCPMc3rQI3vNFDoC1WhikrxevitXJg8CLcAESHKJeq32KJUsOeVLC
-UFO8TWM5Npk8Pj4N5QVuZ0QE/Ms15Z5hS4SYKzbInXcWAS8JDhZEKL1ULViiWvd0
-5x+fiOCzLblDnF5LNLFZI0fieU8Pywnh9z5OgX+6xkXH2kiSQgg1kuYSLjk9Qcdk
-gqYayBB+qDu/vQ5F/lX8CNt3z4Ycr8NXeBzKzDzediz2THDlqx5vic2vHk2V+DCf
-hzs5tWaRF+dm4KkXkZ1U
-=OYQ/
+iQIcBAABAgAGBQJQRFpfAAoJECmIfjd9wqK0WxgQALleSpzV6QLNlqyrVU95eHvF
+bX2FsqqU7y4Y4y5q52YaCAZxhBwjFCx37pUSpzc9rum96P1vurVG25jgIScKcaNT
+MC36LPC8jxhZ9kDjraXRaWvBqXonTfj7OFj7zxAxYqE46FFeWrCWAAL94dMDGwx5
+EKosvadYStw2epqwMhOhcaNzOk2X+9AZj/rUWzfvi8jKs2vTO0WYszhiUuD/hQf7
++VZU72nYZ9/2It+hR2t1nhnrrK7XVlGnF2oYXE1LtOLloWiBo5Ty7aTF0bzmJLBt
+5EwRCTRCWx+KOaYkIr9eg957qRbAtBsQqXyF2hhGL35mRToJdUR1TTZWeqH5gH/A
+/BSHMbyuVV7RulCGWKY1HAerWR1q+9K+vu+Uw6XSlMvTMuhgBVu4gE9DxC3tCo9g
+jGbNxp4l3JjAxPLF1RjXSevGhnNHbTfEpGN/wIh31L6QlCEqGazcZcG85eGsE4yg
+B/OmUoWWXSVAkaxvnKWtNDsnlI7EfcLP1x3qa+CmeROBkg7HkY9QIYEF6bYOaEpN
+msaGSNKLQ89J/5N5beyEBAN0ZlrwoE0hwcwTA/84pOOmFmR/YJD7fnTeAgdKMmov
+b8HWkbIEuziH5TWviiyVzokhCkBTFrEaMiBvbji4ehmRJhXSawf2etbg3d31Y5Wt
+pV2WYxDCAd35x/pbcM8g
+=FkGW
 -----END PGP SIGNATURE-----
 
---=-9fZP69khWFNkhHgyu8ei--
+--=-zdNleoNaf9VFmibJimfH--
