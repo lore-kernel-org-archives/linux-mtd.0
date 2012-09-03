@@ -1,26 +1,25 @@
-Received: from mail-bk0-f49.google.com ([209.85.214.49])
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T87sO-0001TA-E8
- for linux-mtd@lists.infradead.org; Sun, 02 Sep 2012 10:58:00 +0000
-Received: by bkcji2 with SMTP id ji2so1901220bkc.36
- for <linux-mtd@lists.infradead.org>; Sun, 02 Sep 2012 03:57:59 -0700 (PDT)
-Message-ID: <1346583467.2533.1.camel@kyv>
+ id 1T8Pn6-0001av-AH
+ for linux-mtd@lists.infradead.org; Mon, 03 Sep 2012 06:05:45 +0000
+Received: by pbbrq8 with SMTP id rq8so8011430pbb.36
+ for <linux-mtd@lists.infradead.org>; Sun, 02 Sep 2012 23:05:40 -0700 (PDT)
+Message-ID: <504448B1.4050205@gmail.com>
+Date: Sun, 02 Sep 2012 23:05:37 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+MIME-Version: 1.0
+To: dedekind1@gmail.com
 Subject: Re: FW: UBIFS tools and latest 2.6.33 kernel from
  http://git.infradead.org/users/dedekind/ubifs-v2.6.33.git
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Sun, 02 Sep 2012 13:57:47 +0300
-In-Reply-To: <CAN8TOE8j9gxpXAmL51gqaW8=TFLQLPhp03inryx_-uZv4901Ng@mail.gmail.com>
 References: <886EEBE3AFFFB144AA8169C199AB4E6AA7BC4D5FB8@BBMBX.backbone.local>
  <1346416026.9709.47.camel@sauron.fi.intel.com>
  <CAN8TOE8j9gxpXAmL51gqaW8=TFLQLPhp03inryx_-uZv4901Ng@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-qWVK2Ul4anoi6hC5zWRo"
-Mime-Version: 1.0
+ <1346583467.2533.1.camel@kyv>
+In-Reply-To: <1346583467.2533.1.camel@kyv>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Cc: David Clark <dclark@tantalus.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,42 +29,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 09/02/2012 03:57 AM, Artem Bityutskiy wrote:
+> On Fri, 2012-08-31 at 15:18 -0700, Brian Norris wrote:
+>> There was a series of 'writebufsize' fixes that may be missing from
+>> multiple backport trees. I can help you track them down, if you'd like
+>> the help.
+>
+> Sure, go ahead, I can them put them to the backport trees.
 
---=-qWVK2Ul4anoi6hC5zWRo
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+OK, I just put up my own github backport tree, with branches for v2.6.32 
+through v3.3. I think your v3.4+ repos are fine. URL:
 
-On Fri, 2012-08-31 at 15:18 -0700, Brian Norris wrote:
-> There was a series of 'writebufsize' fixes that may be missing from
-> multiple backport trees. I can help you track them down, if you'd like
-> the help.
+   git://github.com/computersforpeace/UBIFS-backports.git
+   https://github.com/computersforpeace/UBIFS-backports.git
 
-Sure, go ahead, I can them put them to the backport trees.
---=20
-Best Regards,
-Artem Bityutskiy
+Branches:
 
---=-qWVK2Ul4anoi6hC5zWRo
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+   ubifs-v2.6.32
+   ubifs-v2.6.33
+   ubifs-v2.6.34
+   ubifs-v2.6.35
+   ubifs-v2.6.36
+   ubifs-v2.6.37
+   ubifs-v2.6.38
+   ubifs-v2.6.39
+   ubifs-v3.0
+   ubifs-v3.1
+   ubifs-v3.2
+   ubifs-v3.3
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+Each branch should have some version (amended when necessary) of the 
+following commits. Note that docg3 wasn't merged until v3.2. Also, 
+spear_smi wasn't merged until v3.4 and was already fixed in the 
+appropriate backports, so it is omitted from this list.
 
-iQIcBAABAgAGBQJQQzurAAoJECmIfjd9wqK0iZYP/R5Ij0Oh+qTwggn+8hVFXwm2
-mUPO+7Baw08EwiRDh0+XvlcTr1+m5w3cJP2ze2C2K4yaP9zBd9k+klbayUw9wVN8
-PoZGpYnmqjBSELDWrNwhClyLeMwla8mtFq8rxwYi3nYNk/CHMSctBOjTQo0aQaYA
-STotOuaO/TBTFu9fEDK7H5Me3EdR1sjKswgjrnC+ZxHKiWJ+D1tL1/Exq7eD/taA
-t2s3LjYA7zKwTFzQEWqThUuSnG4QM8yDwKBV4x8ojD8st/fCGOcB7Hww8RM8RN+N
-NwjlwmzFiho1qt/Z2nxoaj6cFz75npbc41EAuIH6j0CaAuFIZSDjUdxq5P19uzxT
-4ZulmKAcXJKujkcnyT1WRT6rBhlB1fz5RPEK+cTffUyZFn2jKg8UKpdRQFPaL7cm
-RG0uhwSTJraPft8TVHvUkQbDIQ/yd0ObE+Jb7s9tv7SKoy4kjd/IlPXkyAeTw/NQ
-kcug1wq0I1B4NOe0aiv6FOYxefRGhGC0fjjkq+biW5ko4l4Py/JxtB/YoJ2O6Msa
-73jcBctHWUe0nBI5Zjidq1n7igvlbTjztrYHHHlNMXHnVo2Pl1Lxn+yuN2eDpPa6
-IuFh9FWW7nUASrt48ZzrkURA3G+bAJ6Ex38FDFwQUBRbc/rMuykp47FlHAR1Z5RA
-JFw3Xlf7HabWjQklJfPB
-=nC7T
------END PGP SIGNATURE-----
+Brian
 
---=-qWVK2Ul4anoi6hC5zWRo--
+---
+
+[ In 'git log' order ]
+
+commit c4cc625ea5958d065c21cc0fcea29e9ed8f3d2bc
+Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date:   Fri Feb 3 10:16:50 2012 +0200
+
+     mtd: sst25l: initialize writebufsize
+
+commit fcc44a07dae0af16e84e93425fc8afe642ddc603
+Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date:   Fri Feb 3 09:53:28 2012 +0200
+
+     mtd: lart: initialize writebufsize
+
+commit 82c4c58d6f1a78e8de875272a19ab9220b8066aa
+Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date:   Fri Feb 3 09:44:32 2012 +0200
+
+     mtd: docg3: initialize writebufsize
+
+commit 71f60fbebf0f18dd4e855335a009efda251b1697
+Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date:   Fri Feb 3 09:43:14 2012 +0200
+
+     mtd: doc2001plus: initialize writebufsize
+
+commit cca84b569ebe3372b28949e00b0a3a17f87e2970
+Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date:   Fri Feb 3 09:42:39 2012 +0200
+
+     mtd: doc2001: initialize writebufsize
+
+commit cd1986a3c111f7ed597619705290fa52a975014f
+Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date:   Fri Feb 3 09:38:43 2012 +0200
+
+     mtd: doc2000: initialize writebufsize
+
+commit b604387411ec6a072e95910099262616edd2bd2f
+Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date:   Fri Feb 3 09:32:44 2012 +0200
+
+     mtd: block2mtd: initialize writebufsize
+
+commit b54f47c8bcfc5f766bf13ec31bd7dd1d4726d33b
+Author: Brian Norris <computersforpeace@gmail.com>
+Date:   Tue Jan 31 00:06:03 2012 -0800
+
+     mtd: m25p80: set writebufsize
