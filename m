@@ -1,15 +1,19 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T8jrb-00057p-B3
- for linux-mtd@lists.infradead.org; Tue, 04 Sep 2012 03:31:44 +0000
-From: Marek Vasut <marex@denx.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: m25p80: Disable 4K erase for s25sl032p, s25sl064p
-Date: Tue,  4 Sep 2012 05:31:36 +0200
-Message-Id: <1346729496-3303-1-git-send-email-marex@denx.de>
-Cc: Marek Vasut <marex@denx.de>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- David Woodhouse <david.woodhouse@intel.com>
+Received: from mga11.intel.com ([192.55.52.93])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1T8my2-00061L-Lv
+ for linux-mtd@lists.infradead.org; Tue, 04 Sep 2012 06:50:35 +0000
+Message-ID: <1346741717.12610.2.camel@sauron.fi.intel.com>
+Subject: [GIT PULL] UBI fix for v3.6-rc5
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 04 Sep 2012 09:55:17 +0300
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-YJrQSloZuBECx7+4bhOT"
+Mime-Version: 1.0
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ Linux Kernel Maling List <linux-kernel@vger.kernel.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,39 +23,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Quoting from the datasheet for S25FL064P, rev. 05, Nov 18 2011,
-section 9.17:
 
-A 64 kB sector erase (D8h) command issued on 4 kB or 8 kB erase
-sectors will erase all sectors in the specified 64 kB region.
-However, please note that a 4 kB sector erase (20h) or 8 kB
-sector erase (40h) command will not work on a 64 kB sector.
+--=-YJrQSloZuBECx7+4bhOT
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Refering further to Table 8.1 and Table 8.2, it is clearly seen
-that most of the sectors are 64kB, therefore disable this 4K
-erase support since it's valid only on first/last sectors.
+The following changes since commit 4cbe5a555fa58a79b6ecbb6c531b8bab0650778d=
+:
 
-Signed-off-by: Marek Vasut <marex@denx.de>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Cc: David Woodhouse <david.woodhouse@intel.com>
----
- drivers/mtd/devices/m25p80.c |    4 ++--
+  Linux 3.6-rc4 (2012-09-01 10:39:58 -0700)
+
+are available in the git repository at:
+
+  git://git.infradead.org/linux-ubi.git tags/upstream-3.6-rc5
+
+for you to fetch changes up to 78b495c39add820ab66ab897af9bd77a5f2e91f6:
+
+  UBI: fix a horrible memory deallocation bug (2012-09-04 09:40:26 +0300)
+
+----------------------------------------------------------------
+A single small fix for memory deallocation: we allocated memory using
+'kmem_cache_alloc()' but were freeing it using 'kfree()' in some cases.
+Now we fix this by using 'kmem_cache_free()' instead.
+
+----------------------------------------------------------------
+Artem Bityutskiy (1):
+      UBI: fix a horrible memory deallocation bug
+
+ drivers/mtd/ubi/vtbl.c |    4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index c433051..9930e23 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -661,8 +661,8 @@ static const struct spi_device_id m25p_ids[] = {
- 	/* Spansion -- single (large) sector size only, at least
- 	 * for the chips listed here (without boot sectors).
- 	 */
--	{ "s25sl032p",  INFO(0x010215, 0x4d00,  64 * 1024,  64, SECT_4K) },
--	{ "s25sl064p",  INFO(0x010216, 0x4d00,  64 * 1024, 128, SECT_4K) },
-+	{ "s25sl032p",  INFO(0x010215, 0x4d00,  64 * 1024,  64, 0) },
-+	{ "s25sl064p",  INFO(0x010216, 0x4d00,  64 * 1024, 128, 0) },
- 	{ "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, 128, 0) },
- 	{ "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024, 512, 0) },
- 	{ "s25fl512s",  INFO(0x010220, 0x4d00, 256 * 1024, 256, 0) },
--- 
-1.7.10.4
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-YJrQSloZuBECx7+4bhOT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQRaXVAAoJECmIfjd9wqK0tmgP/2PPgUGK+4Mk5SZ/rVkAJZ/2
+ZYMIdl3Z10CIkJFTfBk1gZPjNde3bureMlG0PyqUK7a3ZCNJAR63fljg+fNxWdVi
+vWiRynYhhETje+c3pOXO90ib5BiZ7MeWpOaq1JmyKXbhidzGtTjkCBAvuaKU2HeT
+Ca7buy6kpdEbW9sWmvAWNcgnH97jKihVCfqui4t+20B080TGA0NiHesEfz6Ldu2w
+GtmPbTLbl6flR2Lc40qi8JzSuuPHfwqkGb3Ry8M3SyhEq2M1RP9JRZDi/hx+z8j8
+WVAE8ekDoCstX+ZXyr/2e2obhUqo2znBtAvDwLROWUN/GObyft438xe3C3SQCipD
+2l7WXa1jrUfgF3WHqORKw3YXLjJsJMkht6L6bxYtAoZ84eyaHj+5b2V1PbM/N03a
+YKlKcM18JthUg+xBtcAtDmfazYSVeH12Bv/YTAcy30UG6pfMCIiMqQolmp77591w
+qevdvMUFYI76fFCDyaQfDFaI8r6K1WyMgZ0G0FDG85XtTtXQGmSexZOsap1yweCC
+dhzDuFILdjR+sKfU9YQ51QW8M2BpcPY8sdVu6FaEgXuHtIiKgYiEvSmqqazAnhQG
+knRXnVDBGsldPHziuir+DexQMT9iinVCLA0+XUjTAPaf9SpRGXkPGVHiyPHyymuR
+ZBRGDkUjX0Ikq5ZyC7TO
+=LIkx
+-----END PGP SIGNATURE-----
+
+--=-YJrQSloZuBECx7+4bhOT--
