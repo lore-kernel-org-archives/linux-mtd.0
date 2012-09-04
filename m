@@ -1,22 +1,23 @@
-Received: from mga03.intel.com ([143.182.124.21])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T8pdB-0002Pp-SZ
- for linux-mtd@lists.infradead.org; Tue, 04 Sep 2012 09:41:14 +0000
-Message-ID: <1346751966.12610.36.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v3 01/11] mtd: mtd_nandecctest: remove unnecessary
- srandom32() call
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Akinobu Mita <akinobu.mita@gmail.com>
-Date: Tue, 04 Sep 2012 12:46:06 +0300
-In-Reply-To: <1346677206-13621-2-git-send-email-akinobu.mita@gmail.com>
-References: <1346677206-13621-1-git-send-email-akinobu.mita@gmail.com>
- <1346677206-13621-2-git-send-email-akinobu.mita@gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-FfiDVCiSy55U/y74k1el"
-Mime-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Reply-To: artem.bityutskiy@linux.intel.com
+Received: from mail1-relais-roc.national.inria.fr ([192.134.164.82])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1T8pgm-0002hD-IL
+ for linux-mtd@lists.infradead.org; Tue, 04 Sep 2012 09:44:57 +0000
+Date: Tue, 4 Sep 2012 11:44:34 +0200 (CEST)
+From: Julia Lawall <julia.lawall@lip6.fr>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 4/4] drivers/mtd/nand/mpc5121_nfc.c: some devm_
+ cleanups
+In-Reply-To: <5045C19A.7000705@metafoo.de>
+Message-ID: <alpine.DEB.2.02.1209041142130.2759@hadrien>
+References: <1346517191-8794-1-git-send-email-Julia.Lawall@lip6.fr>
+ <1346517191-8794-4-git-send-email-Julia.Lawall@lip6.fr>
+ <1346748171.12610.22.camel@sauron.fi.intel.com> <5045C19A.7000705@metafoo.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: dedekind1@gmail.com, David Woodhouse <dwmw2@infradead.org>,
+ kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Julia Lawall <Julia.Lawall@lip6.fr>, linux-mtd@lists.infradead.org,
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,44 +27,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue, 4 Sep 2012, Lars-Peter Clausen wrote:
 
---=-FfiDVCiSy55U/y74k1el
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> On 09/04/2012 10:42 AM, Artem Bityutskiy wrote:
+> > Aiaiai! :-) [1] [2]
+> >
+> > I've build-tested this using aiaiai and it reports that this change breaks the build:
+> >
+> > dedekind@blue:~/git/maintaining$ ./verify ../l2-mtd/ mpc5121_nfc < ~/tmp/julia2.mbox
+> > Tested the patch(es) on top of the following commits:
+> > ba64756 Quick fixes - applied by aiaiai
+> > 651c6fa JFFS2: don't fail on bitflips in OOB
+> > e22ac84 mtd: autcpu12-nvram: drop frees of devm_ alloc'd data
+> > ea9d312 mtd: cmdlinepart: minor cleanups
+> >
+> > --------------------------------------------------------------------------------
+> > Failed to build the following commit for configuration "powerpc-mpc512x_defconfig" (architecture powerpc)":
+> >
+> > 0fe13ab drivers/mtd/nand/mpc5121_nfc.c: some devm_ cleanups
+> >
+> > ...
+> > drivers/mtd/nand/mpc5121_nfc.c: In function 'mpc5121_nfc_probe':
+> > drivers/mtd/nand/mpc5121_nfc.c:622:28: warning: variable 'regs_size' set but not used [-Wunused-but-set-variable]
+> > drivers/mtd/nand/mpc5121_nfc.c:622:16: warning: variable 'regs_paddr' set but not used [-Wunused-but-set-variable]
+> > drivers/built-in.o: In function `mpc5121_nfc_probe':
+> > mpc5121_nfc.c:(.devinit.text+0x2a14): undefined reference to `devm_clk_get'
+> > make[1]: *** [vmlinux] Error 1
+> >
+> > --------------------------------------------------------------------------------
+> >
+> > I do not really know why, but it seems that clock framework is not supported for powerpc. CCing the PPC mailing list. Preserved the context below for the PPC people.
+> >
+>
+> I've been bitten by the same issue recently, also cause by one of these
+> cocci devm patches. devm_clk_get is only available if the generic
+> clk_get/clk_put implementation is used. Not all architectures do this and
+> some implement their own clk_get/clk_put, etc functions. Since devm_clk_get
+> is merely a wrapper around clk_get/clk_put there is no reason why it should
+> depend CLKDEV_LOOKUP. I've prepared a patch which makes them generically
+> available if the clk_get/clk_put are implemented (i.e. if HAVE_CLK is set),
+> but it is on a different machine right now, will try to submit it later today.
 
-On Mon, 2012-09-03 at 21:59 +0900, Akinobu Mita wrote:
-> It is unnecessary for this driver to call srandom32() in module_init.
->=20
-> Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
+Sorry about this.  I wasn't aware that devm_clk_get wasn't supported by
+all architectures, and I have no way of compiling code for these
+architectures...  But I wonder why it is not, since devm-ness doesn't seem
+to have anything to do with architecture-specific details?  It would be
+really nice to have it for all architectures, because the clock functions
+are just as (or at least almost as) common as kzalloc, ioremap, etc.
 
-Just FYI, patches 1 and 2 are already in l2-mtd.git, no need to re-send
-patches which are in the l2 tree again.
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-FfiDVCiSy55U/y74k1el
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQRc3eAAoJECmIfjd9wqK0l1EQAIu8k19s6FGZhU8LXRI2mYft
-HWlvrlSZFiT8W9Y5IBASA+BDUOLIAbM45znidtcaP3szDYDSiY/cbyHgwlHofw7+
-hFI0M8jpi7905XYlD1JjkgpViULy4oc1vb5S4eUKdKtC4v+WzfuOb835QxNqdzWF
-zdN55uaO1yQ/VKsSHVbEeiOwenf6SeQDi+Suooy7kWCZK4/9z1kkA5rY+jl6Mvza
-2HfJAjJIzAB6PN5muZFlIf3aC+D75mYzz8SgxdV+zSx0SMQ6TJpuT4Bpn7xXqqp7
-AcqTjre9awrIvOM7cyX+t4qnnxPWYatVf97FqzOqKi0jqoYmFw41iNFLKzIGZJPH
-UhFSa4YEHj4ewI6obnxhPNmkF2fw74TPL2M8/F6lL2MS/eXgYuvUoCQ+1U735bVW
-uOQJbATjzfMpBUntDhvm45AJ6x1uuPX2z9KZTp+UJ4v27Tg2XGDSWCU0N/TUSpY6
-IiSBaZl2Yk84XTTkF8/QHn4JTuurQwYXMPJ5cA5lqHok28xrcfHzpk6PiOxqnoXW
-B0swPDILgqyEfz78yjrllcbGlAGUUYrtTZSKtsuSez//v+tZYnYJ3IRyE/rErf+1
-Fgk0Zp8YPi9SQHalnHIG+hP67C+hVnoLdfAsLE/l4sndqh87zZjAjwmnxbUwnJcv
-Tu99Jku20+RaZRZR1NYr
-=9mGX
------END PGP SIGNATURE-----
-
---=-FfiDVCiSy55U/y74k1el--
+thanks,
+julia
