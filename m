@@ -1,22 +1,22 @@
-Received: from smtp-out-217.synserver.de ([212.40.185.217])
- by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T8oog-0002ke-Df
- for linux-mtd@lists.infradead.org; Tue, 04 Sep 2012 08:49:03 +0000
-Message-ID: <5045C19A.7000705@metafoo.de>
-Date: Tue, 04 Sep 2012 10:53:46 +0200
-From: Lars-Peter Clausen <lars@metafoo.de>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCH 4/4] drivers/mtd/nand/mpc5121_nfc.c: some devm_ cleanups
-References: <1346517191-8794-1-git-send-email-Julia.Lawall@lip6.fr>
- <1346517191-8794-4-git-send-email-Julia.Lawall@lip6.fr>
- <1346748171.12610.22.camel@sauron.fi.intel.com>
-In-Reply-To: <1346748171.12610.22.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org, Julia Lawall <Julia.Lawall@lip6.fr>,
- linux-mtd@lists.infradead.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Received: from mga03.intel.com ([143.182.124.21])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1T8pPQ-0000sZ-9m
+ for linux-mtd@lists.infradead.org; Tue, 04 Sep 2012 09:27:00 +0000
+Message-ID: <1346751114.12610.29.camel@sauron.fi.intel.com>
+Subject: Re: Problems after 2nd bootup with NAND and ubifs/ubi
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Jaya Kumar <jayakumar.lkml@gmail.com>
+Date: Tue, 04 Sep 2012 12:31:54 +0300
+In-Reply-To: <CADqH6Vw4FtGjLF-oPVwg0YcwOoQxk90whB6YoYh4mt=1D2SGmw@mail.gmail.com>
+References: <CADqH6Vx_doWcOFP6N8qSV-h+KdZi8cqdxyHCROf-SKFvUiYNhg@mail.gmail.com>
+ <1345810383.2848.304.camel@sauron.fi.intel.com>
+ <CADqH6Vw4FtGjLF-oPVwg0YcwOoQxk90whB6YoYh4mt=1D2SGmw@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-5bOKIEnJWJZiq/lYNlRR"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,43 +26,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/04/2012 10:42 AM, Artem Bityutskiy wrote:
-> Aiaiai! :-) [1] [2]
-> 
-> I've build-tested this using aiaiai and it reports that this change breaks the build:
-> 
-> dedekind@blue:~/git/maintaining$ ./verify ../l2-mtd/ mpc5121_nfc < ~/tmp/julia2.mbox 
-> Tested the patch(es) on top of the following commits:
-> ba64756 Quick fixes - applied by aiaiai
-> 651c6fa JFFS2: don't fail on bitflips in OOB
-> e22ac84 mtd: autcpu12-nvram: drop frees of devm_ alloc'd data
-> ea9d312 mtd: cmdlinepart: minor cleanups
-> 
-> --------------------------------------------------------------------------------
-> Failed to build the following commit for configuration "powerpc-mpc512x_defconfig" (architecture powerpc)":
-> 
-> 0fe13ab drivers/mtd/nand/mpc5121_nfc.c: some devm_ cleanups
-> 
-> ...
-> drivers/mtd/nand/mpc5121_nfc.c: In function 'mpc5121_nfc_probe':
-> drivers/mtd/nand/mpc5121_nfc.c:622:28: warning: variable 'regs_size' set but not used [-Wunused-but-set-variable]
-> drivers/mtd/nand/mpc5121_nfc.c:622:16: warning: variable 'regs_paddr' set but not used [-Wunused-but-set-variable]
-> drivers/built-in.o: In function `mpc5121_nfc_probe':
-> mpc5121_nfc.c:(.devinit.text+0x2a14): undefined reference to `devm_clk_get'
-> make[1]: *** [vmlinux] Error 1
-> 
-> --------------------------------------------------------------------------------
-> 
-> I do not really know why, but it seems that clock framework is not supported for powerpc. CCing the PPC mailing list. Preserved the context below for the PPC people.
-> 
 
-I've been bitten by the same issue recently, also cause by one of these
-cocci devm patches. devm_clk_get is only available if the generic
-clk_get/clk_put implementation is used. Not all architectures do this and
-some implement their own clk_get/clk_put, etc functions. Since devm_clk_get
-is merely a wrapper around clk_get/clk_put there is no reason why it should
-depend CLKDEV_LOOKUP. I've prepared a patch which makes them generically
-available if the clk_get/clk_put are implemented (i.e. if HAVE_CLK is set),
-but it is on a different machine right now, will try to submit it later today.
+--=-5bOKIEnJWJZiq/lYNlRR
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-- Lars
+On Mon, 2012-09-03 at 18:31 +0800, Jaya Kumar wrote:
+> Would I be correct in assuming that the mtd_oobtest failure can be
+> ignored since ubi does not use OOB?=20
+
+If you only care about UBI/UBIFS, then yes, you can ignore this. But in
+general - it is asking for troubles.
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-5bOKIEnJWJZiq/lYNlRR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQRcqKAAoJECmIfjd9wqK006MP/1QVT9w2hWKf2V9TQ9Hvmb0V
+6zrP8KUzW7IEGp672z+uhWtcP8CDcDPRZVBSS8dHLqoO47PSxKhN2XVJkmmFRs7M
+IC+z8vz43pM3JShQdPSssvnM2qFInUKVOQ5iRwafppcQtzzWrxO+4YifI7BX2QuS
+QyRKJrYkVwhi68nR+uwgJAMLRp4pO3TzBQvzBFJT++CJjT/MrmLTTuyXNA88TtNM
+NU4vy7o32yxxBKjeXdf7QdZBpFR+73rsxVwQ3160CF1YXfjs13eNP8IEE4X8e/Y/
+oqpUUsfD36VFtCKn0kt42V/6kXYq28xZMS4BR56JLZ2YJ5l6hrForaPMKkX3MTRM
+/tIBaodE8wncK7gLJ8CFHOypwfQf58gmG6zCqah/UZVtazOLbTgi8+wvWYy+xwOY
+wkN4Zt9UAYRvkdIRAsUaZ7i1GC7K9UpzQZNTQX2DeGBUbKA24RK1ivMst7oMlQTi
+A/K5wLHz0rgECgs1bduK7yK4B/uZtHVxo7Ye3MuumtNAayMQ5OlO8KThglEF0hNI
+J8YoW8ZWUm23XlxWREVT/H30F2aNOBeUJPUt4FBIsZ2cUVRviJnWd3sN5dWEJ6dq
+KT81FdNV92nQAj5BH2kJk9D0Lk4oAEoL/qG0LZcEXarYBM7XFdn7WXxR2rSKDTXs
+hI4mqyf5Sg7sjKCJ9S0/
+=B8/M
+-----END PGP SIGNATURE-----
+
+--=-5bOKIEnJWJZiq/lYNlRR--
