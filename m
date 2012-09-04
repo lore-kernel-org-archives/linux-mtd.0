@@ -1,24 +1,22 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T8nmR-0004PW-0h
- for linux-mtd@lists.infradead.org; Tue, 04 Sep 2012 07:42:39 +0000
-Message-ID: <1346744853.12610.7.camel@sauron.fi.intel.com>
-Subject: Re: FW: UBIFS tools and latest 2.6.33 kernel from
- http://git.infradead.org/users/dedekind/ubifs-v2.6.33.git
+ id 1T8npE-00059v-3V
+ for linux-mtd@lists.infradead.org; Tue, 04 Sep 2012 07:45:33 +0000
+Message-ID: <1346745025.12610.8.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 3/4] drivers/mtd/maps/autcpu12-nvram.c: drop frees of
+ devm_ alloc'd data
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Tue, 04 Sep 2012 10:47:33 +0300
-In-Reply-To: <504448B1.4050205@gmail.com>
-References: <886EEBE3AFFFB144AA8169C199AB4E6AA7BC4D5FB8@BBMBX.backbone.local>
- <1346416026.9709.47.camel@sauron.fi.intel.com>
- <CAN8TOE8j9gxpXAmL51gqaW8=TFLQLPhp03inryx_-uZv4901Ng@mail.gmail.com>
- <1346583467.2533.1.camel@kyv> <504448B1.4050205@gmail.com>
+To: Julia Lawall <Julia.Lawall@lip6.fr>
+Date: Tue, 04 Sep 2012 10:50:25 +0300
+In-Reply-To: <1346517191-8794-5-git-send-email-Julia.Lawall@lip6.fr>
+References: <1346517191-8794-1-git-send-email-Julia.Lawall@lip6.fr>
+ <1346517191-8794-5-git-send-email-Julia.Lawall@lip6.fr>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-A0bcngxGpfAKGRu5TwrK"
+ boundary="=-bStECJ1vZZCxIlkGac+M"
 Mime-Version: 1.0
-Cc: David Clark <dclark@tantalus.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: kernel-janitors@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,33 +28,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-A0bcngxGpfAKGRu5TwrK
+--=-bStECJ1vZZCxIlkGac+M
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, 2012-09-02 at 23:05 -0700, Brian Norris wrote:
-> On 09/02/2012 03:57 AM, Artem Bityutskiy wrote:
-> > On Fri, 2012-08-31 at 15:18 -0700, Brian Norris wrote:
-> >> There was a series of 'writebufsize' fixes that may be missing from
-> >> multiple backport trees. I can help you track them down, if you'd like
-> >> the help.
-> >
-> > Sure, go ahead, I can them put them to the backport trees.
+On Sat, 2012-09-01 at 18:33 +0200, Julia Lawall wrote:
+> From: Julia Lawall <Julia.Lawall@lip6.fr>
 >=20
-> OK, I just put up my own github backport tree, with branches for v2.6.32=
-=20
-> through v3.3. I think your v3.4+ repos are fine. URL:
+> devm free functions should not have to be explicitly used.
 >=20
->    git://github.com/computersforpeace/UBIFS-backports.git
->    https://github.com/computersforpeace/UBIFS-backports.git
+> A semantic match that finds this problem is as follows:
+> (http://coccinelle.lip6.fr/)
 
-Thanks Brian, pulled all the branches.
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-A0bcngxGpfAKGRu5TwrK
+--=-bStECJ1vZZCxIlkGac+M
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -64,19 +54,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQRbIVAAoJECmIfjd9wqK0FPYP/R0hhTOzeOyzUejKvlVZni/o
-YM0LOAgv58r9cjg+BBWxtbDGLMTNfz9qVgVtH1unOMkig60aEQHazwzHsjVld7kR
-rCs40hQx1mQ3Nar7srMiJEsjY/HVZhLKgIJm/vbDwJQxqlPMi9ZQZjcDVayPjDDM
-KNfqlCwpEv1FQ2lNnUiruhES0oYGp7q7pHYEnoyO7Pzv1R+sP1wHOFZcDy04Heg5
-NPsdfWbPBDvtnv/Z8TNbyAb88y/c9zVGkpWrfzZpvb/6NcpXA+/+UP1SGvhRSkl/
-MkMxx5KJ2GxQoglPsXm8U5eosQ6erS4a4X5mUj3PTifPIv3pI9AnGnF+Rby4Igfw
-dm7YMYYyBos+6LfKuupQAHguOl6RkFC6SUXuUCosIiHP30yoFPXDjaDLFI6NgYU4
-ttLFn2RKBWFnXTmQ8KYT3LlQXmKqhFh5A2ruNOv021yo/qs6F2tC78cfTpH0ivUR
-laf1NsUUn2qMs/ssXzDMEu82vmMyPvTEQcotakUa8g0kHx4LXLrW5xtxzI3BWm1U
-3drQ1bXYI0+fU0s6579uZ1z7YWo8Y2KsMWqR/MgI/nmTRnl8bYREGe+EKqYC1uDi
-5tQmSD2dukQfNK9Vw9ZdmMolPX8fnyGWIpbGQhIRTbE91vE08mTBCjrwq9uVEeTm
-5n60jyMBAs3x+7HR9nzj
-=5i1q
+iQIcBAABAgAGBQJQRbLBAAoJECmIfjd9wqK0okkP/2E1NJ2Gmt9Iv+L9hiNdUesK
+3dcR+sYG1eEP/Ac7pwvpSsP8LEa4YtW5XCgsYQ+3lgKiP/q95/eKB+mhjb3mea3h
+Em3ykBMbT2a6C8MlsiIMtlz+tr6AfgYHK3HWu6/Ko9vEZCtfOE2xdISiBzD5mlDN
+32yY+UJrYRE4+OlbsliJkRNZ3BKKR2BQwgFiFYU+LOxbxJTFwyPClb+Z8Y8KPY4F
+VhO+IJd5eD/gvvWMz3us0oElHCRV3tmdSwNJkoNlZm2WehP+0cwUaa7s4QTHwhVg
+a2vG9L/GIa2Iz0ctppX0si6wmZHRkp9K/nIgn9Q+sdEXU6fattVVF8XFLkzeS6zv
+xmKXNykcB6QivLCGHTsTVBKce21FHMzBNpAobrksIBszsPXgJTK28Tv+Nw0aG6Of
+tRFJtuKH5GJIJo8ElJB0mNRA0mi4kVqsA492AvtZWea2RVVAtizboTapfwYg+clH
+CLHcwA0IxxHXSsVGfAIHKL1alrEJ0zU0QdtaOQ6fEf6aqie5ZoQy0achX5j0QI32
+sr8qFvftwphxSrozRsOwVHzDytslU65f6wk6uY6ARcN3oX1O11mxSBelxq1EGuk3
+dTUAjGwkpV7ARkgUMvlfJG/gjfeI0vyWCXQ0YiYb6ScGUr1iv4IfJCk4RfzbA3ae
+C2o0StKIbaIJlF7o5vO8
+=+ODl
 -----END PGP SIGNATURE-----
 
---=-A0bcngxGpfAKGRu5TwrK--
+--=-bStECJ1vZZCxIlkGac+M--
