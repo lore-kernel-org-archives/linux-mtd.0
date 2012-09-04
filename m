@@ -1,21 +1,17 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T8o1l-0005ty-SE
- for linux-mtd@lists.infradead.org; Tue, 04 Sep 2012 07:58:30 +0000
-Message-ID: <1346745803.12610.9.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] jffs2: don't fail on bitflips in OOB
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Tue, 04 Sep 2012 11:03:23 +0300
-In-Reply-To: <1346450479-22400-1-git-send-email-computersforpeace@gmail.com>
-References: <1346450479-22400-1-git-send-email-computersforpeace@gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-9k+1ZYrKeB9pCEqRxksP"
-Mime-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- stable@vger.kernel.org
-Reply-To: dedekind1@gmail.com
+Received: from ch1ehsobe001.messaging.microsoft.com ([216.32.181.181]
+ helo=ch1outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1T8o96-0006bl-PE
+ for linux-mtd@lists.infradead.org; Tue, 04 Sep 2012 08:06:05 +0000
+From: Huang Shijie <b32955@freescale.com>
+To: <dedekind1@gmail.com>
+Subject: [PATCH v2 1/3] mtd: cmdlinepart: sort the unsorted partitions
+Date: Tue, 4 Sep 2012 15:43:46 +0800
+Message-ID: <1346744628-13840-1-git-send-email-b32955@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ shmulik.ladkani@gmail.com, Huang Shijie <b32955@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,49 +21,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Assume we have a 1GB(8Gb) nand chip.
+It is legit if we set the partitions as the following:
+    gpmi-nand:1g@200m(rootfs),100m@0(boot),100m@100m(kernel)
 
---=-9k+1ZYrKeB9pCEqRxksP
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Unfortunately, the current code can not parse out any partition with this
+cmdline. The parse_cmdline_partitions() will meet the
+truncated partition `rootfs` firstly. But the parse_cmdline_partitions()
+will break its `for` loop with the following line when the truncating occurs.
 
-On Fri, 2012-08-31 at 15:01 -0700, Brian Norris wrote:
-> JFFS2 was designed without thought for OOB bitflips, it seems, but they
-> can occur and will be reported to JFFS2 via mtd_read_oob()[1]. We don't
-> want to fail on these transactions, since the data was corrected.
->=20
-> [1] Few drivers report bitflips for OOB-only transactions. With such
->     drivers, this patch should have no effect.
->=20
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: stable@vger.kernel.org
+       ...........................
+	part->num_parts = i;
+       ...........................
 
-Pushed to l2-mtd.git, thanks!
+What's worse is that this line has a bug in it. It accidently misses
+the truncated partitions. So we can not parse out any partition.
 
---=20
-Best Regards,
-Artem Bityutskiy
+In this case, we should parse out the `boot` and `kernel` partitions at least.
+So we need to sort the unsorted partitions. With the sorted partitions, the
+parse_cmdline_partitions() can parse out the `boot` and `kernel` successfully.
 
---=-9k+1ZYrKeB9pCEqRxksP
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+This patch sorts the unsorted partitions by the @offset.
+For there are maybe only several partitions, so the Bubble sort algorithm
+is enough.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+We also need another patch to fix the missed truncated partition issue.
 
-iQIcBAABAgAGBQJQRbXLAAoJECmIfjd9wqK0l+wQAIrZEeDgEhjJBoMPB+Y9Hasq
-5HG6X70aJ5pnJAsXsDN803vKPyX8WzQfhky/SR1/998n+Jaf6x+0XpPF25Y2+n1p
-okM3Rce3aIWgDEcBzvT3bJ4PPDZGbSibtAHMXX4OJmia1UJCyuPq1shQeG9F7roN
-zg2fSyMhKdieBGBJa4iHxmPfATyB8tC7es1LZlbgGmMmr8X5CN0qplSDn4n/N7FT
-SKS4WT8+3PLIzqNo5IPVTC2zFrHy2OEzXxaw+MN+xPMpQoi+F+/1ZhCvpINRS/Gs
-jg15bbmC/ri/REBPtIaAomPTmyKZIzn9Vcyw/F5H9b/XOTAhwB8kNuqO/rFZ7FKg
-gvfjef4xMdRPMcKGr0WQHx4GMS+cobSN9nmPSEwbX71a+Z54Hi1mhHaxMSUw2IDX
-KfQDbIBiga4hSWy9/7b+pqul3pzlFUs1X2yh9kOs2hTP4fYaCFaO+ERPWLW0ZlGF
-E2jQyC8Z1uDefF9Fr2Ul6Jf7vZGSt/kCOx6SjTNWXSi9wZRmFmA2ek9XxO/zrJNZ
-LGaXIacs0TkbLPrtndk1mdOfoh+euyrsHmMCT9gj0oxXPLJ5RaiiwPHuutzmu6UA
-vEsMfarlpfFqrYXmCleiyPLkmUj5f6m26kl0/neqQ/qX8KLMoqOnDg0ZmRA0JgKb
-H4wOy+OsWAAzO1J9Byj4
-=qzSG
------END PGP SIGNATURE-----
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+ drivers/mtd/cmdlinepart.c |   23 +++++++++++++++++++++++
+ 1 files changed, 23 insertions(+), 0 deletions(-)
 
---=-9k+1ZYrKeB9pCEqRxksP--
+diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
+index 17b0bd4..dde8e84 100644
+--- a/drivers/mtd/cmdlinepart.c
++++ b/drivers/mtd/cmdlinepart.c
+@@ -205,6 +205,26 @@ static struct mtd_partition * newpart(char *s,
+ 	return parts;
+ }
+ 
++/* There are only several partitions, so the Bubble sort is enough. */
++static inline void sort_partitons(struct mtd_partition *parts, int num_parts)
++{
++	int i, j;
++
++	/* sort by the offset */
++	for (i = 0; i < num_parts - 1; i++) {
++		for (j = 1; j < num_parts - i; j++) {
++			if (parts[j - 1].offset > parts[j].offset) {
++				struct mtd_partition tmp;
++
++				tmp = parts[j - 1];
++				parts[j - 1] = parts[j];
++				parts[j] = tmp;
++			}
++		}
++	}
++	return;
++}
++
+ /*
+  * Parse the command line.
+  */
+@@ -262,6 +282,9 @@ static int mtdpart_setup_real(char *s)
+ 		this_mtd->mtd_id = (char*)(this_mtd + 1);
+ 		strlcpy(this_mtd->mtd_id, mtd_id, mtd_id_len + 1);
+ 
++		/* sort the partitions */
++		sort_partitons(parts, num_parts);
++
+ 		/* link into chain */
+ 		this_mtd->next = partitions;
+ 		partitions = this_mtd;
+-- 
+1.7.0.4
