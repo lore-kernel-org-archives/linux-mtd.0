@@ -1,18 +1,19 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T8my2-00061L-Lv
- for linux-mtd@lists.infradead.org; Tue, 04 Sep 2012 06:50:35 +0000
-Message-ID: <1346741717.12610.2.camel@sauron.fi.intel.com>
-Subject: [GIT PULL] UBI fix for v3.6-rc5
+ id 1T8nLn-0007Et-Sc
+ for linux-mtd@lists.infradead.org; Tue, 04 Sep 2012 07:15:08 +0000
+Message-ID: <1346743200.12610.3.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] UBI: fix trivial typo 'it' => 'is'
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 04 Sep 2012 09:55:17 +0300
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Tue, 04 Sep 2012 10:20:00 +0300
+In-Reply-To: <1346449421-22067-1-git-send-email-computersforpeace@gmail.com>
+References: <1346449421-22067-1-git-send-email-computersforpeace@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-YJrQSloZuBECx7+4bhOT"
+ boundary="=-3NadqUV1w8cehKeias2R"
 Mime-Version: 1.0
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- Linux Kernel Maling List <linux-kernel@vger.kernel.org>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,40 +25,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-YJrQSloZuBECx7+4bhOT
+--=-3NadqUV1w8cehKeias2R
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-The following changes since commit 4cbe5a555fa58a79b6ecbb6c531b8bab0650778d=
-:
+On Fri, 2012-08-31 at 14:43 -0700, Brian Norris wrote:
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> ---
+>  drivers/mtd/ubi/attach.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-  Linux 3.6-rc4 (2012-09-01 10:39:58 -0700)
-
-are available in the git repository at:
-
-  git://git.infradead.org/linux-ubi.git tags/upstream-3.6-rc5
-
-for you to fetch changes up to 78b495c39add820ab66ab897af9bd77a5f2e91f6:
-
-  UBI: fix a horrible memory deallocation bug (2012-09-04 09:40:26 +0300)
-
-----------------------------------------------------------------
-A single small fix for memory deallocation: we allocated memory using
-'kmem_cache_alloc()' but were freeing it using 'kfree()' in some cases.
-Now we fix this by using 'kmem_cache_free()' instead.
-
-----------------------------------------------------------------
-Artem Bityutskiy (1):
-      UBI: fix a horrible memory deallocation bug
-
- drivers/mtd/ubi/vtbl.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Pushed to linux-ubi, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-YJrQSloZuBECx7+4bhOT
+--=-3NadqUV1w8cehKeias2R
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -65,19 +49,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQRaXVAAoJECmIfjd9wqK0tmgP/2PPgUGK+4Mk5SZ/rVkAJZ/2
-ZYMIdl3Z10CIkJFTfBk1gZPjNde3bureMlG0PyqUK7a3ZCNJAR63fljg+fNxWdVi
-vWiRynYhhETje+c3pOXO90ib5BiZ7MeWpOaq1JmyKXbhidzGtTjkCBAvuaKU2HeT
-Ca7buy6kpdEbW9sWmvAWNcgnH97jKihVCfqui4t+20B080TGA0NiHesEfz6Ldu2w
-GtmPbTLbl6flR2Lc40qi8JzSuuPHfwqkGb3Ry8M3SyhEq2M1RP9JRZDi/hx+z8j8
-WVAE8ekDoCstX+ZXyr/2e2obhUqo2znBtAvDwLROWUN/GObyft438xe3C3SQCipD
-2l7WXa1jrUfgF3WHqORKw3YXLjJsJMkht6L6bxYtAoZ84eyaHj+5b2V1PbM/N03a
-YKlKcM18JthUg+xBtcAtDmfazYSVeH12Bv/YTAcy30UG6pfMCIiMqQolmp77591w
-qevdvMUFYI76fFCDyaQfDFaI8r6K1WyMgZ0G0FDG85XtTtXQGmSexZOsap1yweCC
-dhzDuFILdjR+sKfU9YQ51QW8M2BpcPY8sdVu6FaEgXuHtIiKgYiEvSmqqazAnhQG
-knRXnVDBGsldPHziuir+DexQMT9iinVCLA0+XUjTAPaf9SpRGXkPGVHiyPHyymuR
-ZBRGDkUjX0Ikq5ZyC7TO
-=LIkx
+iQIcBAABAgAGBQJQRaugAAoJECmIfjd9wqK08JwQAI9cB36XbQLHIyesMw9FCTSJ
+P0isGpxUf8CvOQBLDiJoQ8K9qgFa5+IGACvILgRKqWEIVdXDNIHUlmqmT9cTMFNd
+lhYY8jzW3hozxFsF7UAab4euuJbIucCdLNC5LtfY9q2f4fxVVuQvrjwbN3VAJ9CF
+i4bB4kKmMizxkVaOBZ7nm7HE/h3WL+U2ncOEx/Yso6pmV4ouOKTnt0Yc9Ws49wXt
+iUHr6w1V0Xl435w9z+bkkSkdmHLOfqngNr9BQK7dtAPQlHzWV1xlkOsH7n4TGjhO
+KG2TtLyHgD+ZrYQuR02IMAqLs4AmDtqt9c2tONJ7pnZF5Fk+ujP81eFcPcxP/oRs
+oOQk1gg3jJWi86Coxb5fADHWO/4JNbZ3JgHHl8kHb48bdM8JqDCcSv5Fai8sXj5i
+5O8tNPtRHmlkugFTK6LEAgXo8dU6JjwcGmIqZ0phElJ4EZJ5hRJ2FIlFcX6xRGHa
+haBYp5UZsuEhJ1M4y2dGmHeKtsAoqOsEy0SFg9lhXd2hR4MqTEPS47AwJuLbqq2+
+iOJVkjGfuscsbqlC+JfnpZLv6huTJ0ssZMoyGKoxkEfcehnMUowTaQ4QKOb2u1Yt
+pXohBBZEZqjF2T7KKw//te+ZzqGGr+H227G5mOjExhT6A5SN/FBG0izcU+aJuDKC
+jNwuHpZupUYPUrD/LlzG
+=iUiV
 -----END PGP SIGNATURE-----
 
---=-YJrQSloZuBECx7+4bhOT--
+--=-3NadqUV1w8cehKeias2R--
