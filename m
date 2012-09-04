@@ -1,20 +1,21 @@
-Received: from smtp26.msg.oleane.net ([62.161.4.26])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T8nyA-0005kc-K7
- for linux-mtd@lists.infradead.org; Tue, 04 Sep 2012 07:54:47 +0000
-Message-ID: <5045B3C3.8020500@interfaceconcept.com>
-Date: Tue, 04 Sep 2012 09:54:43 +0200
-From: =?UTF-8?B?Q8OpZHJpYyBDYW5v?= <ccano@interfaceconcept.com>
-MIME-Version: 1.0
-To: Kevin Cernekee <cernekee@gmail.com>
-Subject: Re: [PATCH 1/2] drivers/mtd/devices/m25p80.c: Fix return code of
- read/write mtd callbacks
-References: <5044D395.9050607@ic.fr>
- <CAJiQ=7AwRnbtDtTd9u-j5xqOCqYx89R8CfK7MpQCYG3OossY0A@mail.gmail.com>
-In-Reply-To: <CAJiQ=7AwRnbtDtTd9u-j5xqOCqYx89R8CfK7MpQCYG3OossY0A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+ id 1T8o1l-0005ty-SE
+ for linux-mtd@lists.infradead.org; Tue, 04 Sep 2012 07:58:30 +0000
+Message-ID: <1346745803.12610.9.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] jffs2: don't fail on bitflips in OOB
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Tue, 04 Sep 2012 11:03:23 +0300
+In-Reply-To: <1346450479-22400-1-git-send-email-computersforpeace@gmail.com>
+References: <1346450479-22400-1-git-send-email-computersforpeace@gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-9k+1ZYrKeB9pCEqRxksP"
+Mime-Version: 1.0
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ stable@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,52 +25,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 03/09/2012 20:26, Kevin Cernekee a écrit :
-> On Mon, Sep 3, 2012 at 8:58 AM, Cédric Cano <ccano@interfaceconcept.com> wrote:
->> For SPI Flash devices, MTD read and write functions returns "1" if Flash is
->> busy (this status is returned by "wait_till_ready" fnuction). This return
-> "function"
->
-> It is usually a good idea to wrap the commit text around 72-74
-> characters so that it is readable in "git log" on an 80-column
-> terminal.
->
->> code is not an error code: if device is busy, MTD read or write are
->> successful with 1 byte length.
-> Looking at mtd_read() - typically the transfer length is passed back
-> through the "size_t *retlen" pointer, not the function's return value.
->
-> In Linux 3.5, if m25p80_read() returns 1, mtd_read() will interpret it
-> as a bitflip count not a byte count.  That isn't the correct behavior
-> for a NOR device, but it probably wouldn't cause the symptom you are
-> reporting.
->
-> In Linux 3.4 and older, some functions like mtdchar_read() could
-> interpret the '1' as an error code and pass it back as-is to the
-> caller (who is expecting either a negative error code or a positive
-> length).  Is this the case you are running into?
 
-You're alright: I'm doing my test on kernel 3.4. In this case, '1' is
-the return code of mtd_read() that is considered as a length, not an
-error.
-In kernel 3.5, it should work without this patch (I can't test it).
+--=-9k+1ZYrKeB9pCEqRxksP
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
->
-> Side note - it would be helpful to add kerneldoc markup to
-> include/linux/mtd/mtd.h for struct mtd_info and the new mtd_* wrapper
-> functions, so we have a clear definition of what the parameters and
-> return values should look like.
->
->> --- linux-3.5.3/drivers/mtd/devices/m25p80.c    2012-08-26
->> 04:32:13.000000000 +0200
->> +++ linux-3.5.3/drivers/mtd/devices/m25p80.c    2012-09-03
->> 17:35:16.159741656 +0200
->> @@ -199,7 +199,7 @@
-> Could you please use "git format-patch" for your submissions, and base
-> them on the current head of tree?
->
-> Thanks.
->
-OK, I will repost my second patch with this method.
+On Fri, 2012-08-31 at 15:01 -0700, Brian Norris wrote:
+> JFFS2 was designed without thought for OOB bitflips, it seems, but they
+> can occur and will be reported to JFFS2 via mtd_read_oob()[1]. We don't
+> want to fail on these transactions, since the data was corrected.
+>=20
+> [1] Few drivers report bitflips for OOB-only transactions. With such
+>     drivers, this patch should have no effect.
+>=20
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Cc: stable@vger.kernel.org
 
-Thanks.
+Pushed to l2-mtd.git, thanks!
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-9k+1ZYrKeB9pCEqRxksP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQRbXLAAoJECmIfjd9wqK0l+wQAIrZEeDgEhjJBoMPB+Y9Hasq
+5HG6X70aJ5pnJAsXsDN803vKPyX8WzQfhky/SR1/998n+Jaf6x+0XpPF25Y2+n1p
+okM3Rce3aIWgDEcBzvT3bJ4PPDZGbSibtAHMXX4OJmia1UJCyuPq1shQeG9F7roN
+zg2fSyMhKdieBGBJa4iHxmPfATyB8tC7es1LZlbgGmMmr8X5CN0qplSDn4n/N7FT
+SKS4WT8+3PLIzqNo5IPVTC2zFrHy2OEzXxaw+MN+xPMpQoi+F+/1ZhCvpINRS/Gs
+jg15bbmC/ri/REBPtIaAomPTmyKZIzn9Vcyw/F5H9b/XOTAhwB8kNuqO/rFZ7FKg
+gvfjef4xMdRPMcKGr0WQHx4GMS+cobSN9nmPSEwbX71a+Z54Hi1mhHaxMSUw2IDX
+KfQDbIBiga4hSWy9/7b+pqul3pzlFUs1X2yh9kOs2hTP4fYaCFaO+ERPWLW0ZlGF
+E2jQyC8Z1uDefF9Fr2Ul6Jf7vZGSt/kCOx6SjTNWXSi9wZRmFmA2ek9XxO/zrJNZ
+LGaXIacs0TkbLPrtndk1mdOfoh+euyrsHmMCT9gj0oxXPLJ5RaiiwPHuutzmu6UA
+vEsMfarlpfFqrYXmCleiyPLkmUj5f6m26kl0/neqQ/qX8KLMoqOnDg0ZmRA0JgKb
+H4wOy+OsWAAzO1J9Byj4
+=qzSG
+-----END PGP SIGNATURE-----
+
+--=-9k+1ZYrKeB9pCEqRxksP--
