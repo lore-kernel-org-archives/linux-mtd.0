@@ -1,21 +1,24 @@
 Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1T8nlX-0004BB-3O
- for linux-mtd@lists.infradead.org; Tue, 04 Sep 2012 07:41:44 +0000
-Message-ID: <1346744796.12610.6.camel@sauron.fi.intel.com>
-Subject: Re: RCU warning during UBI file system mount
+ id 1T8nmR-0004PW-0h
+ for linux-mtd@lists.infradead.org; Tue, 04 Sep 2012 07:42:39 +0000
+Message-ID: <1346744853.12610.7.camel@sauron.fi.intel.com>
+Subject: Re: FW: UBIFS tools and latest 2.6.33 kernel from
+ http://git.infradead.org/users/dedekind/ubifs-v2.6.33.git
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Subodh Nijsure <snijsure@grid-net.com>, "Paul E. McKenney"
- <paulmck@linux.vnet.ibm.com>
-Date: Tue, 04 Sep 2012 10:46:36 +0300
-In-Reply-To: <5042EC5D.1010207@grid-net.com>
-References: <5042EC5D.1010207@grid-net.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Tue, 04 Sep 2012 10:47:33 +0300
+In-Reply-To: <504448B1.4050205@gmail.com>
+References: <886EEBE3AFFFB144AA8169C199AB4E6AA7BC4D5FB8@BBMBX.backbone.local>
+ <1346416026.9709.47.camel@sauron.fi.intel.com>
+ <CAN8TOE8j9gxpXAmL51gqaW8=TFLQLPhp03inryx_-uZv4901Ng@mail.gmail.com>
+ <1346583467.2533.1.camel@kyv> <504448B1.4050205@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-0pWY+RwNMLwGVzlGhmot"
+ boundary="=-A0bcngxGpfAKGRu5TwrK"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org,
- Linux Kernel Maling List <linux-kernel@vger.kernel.org>
+Cc: David Clark <dclark@tantalus.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,125 +30,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-0pWY+RwNMLwGVzlGhmot
+--=-A0bcngxGpfAKGRu5TwrK
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Let's CC LKML and Paul.
+On Sun, 2012-09-02 at 23:05 -0700, Brian Norris wrote:
+> On 09/02/2012 03:57 AM, Artem Bityutskiy wrote:
+> > On Fri, 2012-08-31 at 15:18 -0700, Brian Norris wrote:
+> >> There was a series of 'writebufsize' fixes that may be missing from
+> >> multiple backport trees. I can help you track them down, if you'd like
+> >> the help.
+> >
+> > Sure, go ahead, I can them put them to the backport trees.
+>=20
+> OK, I just put up my own github backport tree, with branches for v2.6.32=
+=20
+> through v3.3. I think your v3.4+ repos are fine. URL:
+>=20
+>    git://github.com/computersforpeace/UBIFS-backports.git
+>    https://github.com/computersforpeace/UBIFS-backports.git
 
-=20
-On Sat, 2012-09-01 at 22:19 -0700, Subodh Nijsure wrote:
-> Hello,
->=20
-> I am running 3.6-rc4 kernel on my MX28 based board and every time I=20
-> mount UBI file system I see following warning.
-> Anybody else seen this errors, particularly those running it on MXS=20
-> platform?
->=20
-> I haven't debugged RCU warnings before any clues as to what is the=20
-> source of this warning is, should I be looking at=20
-> start_dma_without_bch_irq() code? Would appreciate any pointers in=20
-> fixing this...
->=20
-> [    4.280000] WARNING: at /opt/git/kernel-mainline/kernel/rcutiny.c:75=
-=20
-> rcu_idle_enter_common.clone.7+0x90/0xac()
-> [    4.280000] Current pid: 1 comm: swapper / Idle pid: 0 comm: swapper
-> [    4.280000] Modules linked in:
-> [    4.280000] [<c0014eec>] (unwind_backtrace+0x0/0x130) from=20
-> [<c001dd94>] (warn_slowpath_common+0x4c/0x64)
-> [    4.280000] [<c001dd94>] (warn_slowpath_common+0x4c/0x64) from=20
-> [<c001de40>] (warn_slowpath_fmt+0x30/0x40)
-> [    4.280000] [<c001de40>] (warn_slowpath_fmt+0x30/0x40) from=20
-> [<c0061618>] (rcu_idle_enter_common.clone.7+0x90/0xac)
-> [    4.280000] [<c0061618>] (rcu_idle_enter_common.clone.7+0x90/0xac)=20
-> from [<c0061670>] (rcu_irq_exit+0x3c/0x78)
-> [    4.280000] [<c0061670>] (rcu_irq_exit+0x3c/0x78) from [<c000fe90>]=
-=20
-> (handle_IRQ+0x34/0x84)
-> [    4.280000] [<c000fe90>] (handle_IRQ+0x34/0x84) from [<c000ec34>]=20
-> (__irq_svc+0x34/0x58)
-> [    4.280000] [<c000ec34>] (__irq_svc+0x34/0x58) from [<c0394c4c>]=20
-> (schedule_timeout+0xdc/0x16c)
-> [    4.280000] [<c0394c4c>] (schedule_timeout+0xdc/0x16c) from=20
-> [<c0395f34>] (wait_for_common+0xb4/0x160)
-> [    4.280000] [<c0395f34>] (wait_for_common+0xb4/0x160) from=20
-> [<c02579d0>] (start_dma_without_bch_irq+0x6c/0xa8)
-> [    4.280000] [<c02579d0>] (start_dma_without_bch_irq+0x6c/0xa8) from=
-=20
-> [<c0258660>] (gpmi_send_command+0x120/0x154)
-> [    4.280000] [<c0258660>] (gpmi_send_command+0x120/0x154) from=20
-> [<c0256fb4>] (gpmi_cmd_ctrl+0x44/0x6c)
-> [    4.280000] [<c0256fb4>] (gpmi_cmd_ctrl+0x44/0x6c) from [<c024f8e0>]=
-=20
-> (nand_command_lp+0xe8/0x270)
-> [    4.280000] [<c024f8e0>] (nand_command_lp+0xe8/0x270) from=20
-> [<c0251e00>] (nand_do_read_ops+0x124/0x444)
-> [    4.280000] [<c0251e00>] (nand_do_read_ops+0x124/0x444) from=20
-> [<c0252558>] (nand_read+0x54/0x78)
-> [    4.280000] [<c0252558>] (nand_read+0x54/0x78) from [<c02499a4>]=20
-> (part_read+0x48/0x80)
-> [    4.280000] [<c02499a4>] (part_read+0x48/0x80) from [<c0246910>]=20
-> (mtd_read+0x88/0xb4)
-> [    4.280000] [<c0246910>] (mtd_read+0x88/0xb4) from [<c026b188>]=20
-> (ubi_io_read+0xb0/0x3e8)
-> [    4.280000] [<c026b188>] (ubi_io_read+0xb0/0x3e8) from [<c026740c>]=
-=20
-> (ubi_eba_read_leb+0x198/0x4bc)
-> [    4.280000] [<c026740c>] (ubi_eba_read_leb+0x198/0x4bc) from=20
-> [<c0266800>] (ubi_leb_read+0xf4/0x16c)
-> [    4.280000] [<c0266800>] (ubi_leb_read+0xf4/0x16c) from [<c0155550>]=
-=20
-> (ubifs_leb_read+0x24/0x88)
-> [    4.280000] [<c0155550>] (ubifs_leb_read+0x24/0x88) from [<c01572f8>]=
-=20
-> (ubifs_read_node+0xa8/0x2e4)
-> [    4.280000] [<c01572f8>] (ubifs_read_node+0xa8/0x2e4) from=20
-> [<c0153c50>] (ubifs_read_sb_node+0x54/0x78)
-> [    4.280000] [<c0153c50>] (ubifs_read_sb_node+0x54/0x78) from=20
-> [<c0154940>] (ubifs_read_superblock+0xc8c/0x133c)
-> [    4.280000] [<c0154940>] (ubifs_read_superblock+0xc8c/0x133c) from=20
-> [<c01520ac>] (ubifs_mount+0x73c/0x1bc0)
-> [    4.280000] [<c01520ac>] (ubifs_mount+0x73c/0x1bc0) from [<c00a49ec>]=
-=20
-> (mount_fs+0x44/0x184)
-> [    4.280000] [<c00a49ec>] (mount_fs+0x44/0x184) from [<c00baf90>]=20
-> (vfs_kern_mount+0x4c/0xc0)
-> [    4.280000] [<c00baf90>] (vfs_kern_mount+0x4c/0xc0) from [<c00bb1a0>]=
-=20
-> (do_kern_mount+0x34/0xd0)
-> [    4.280000] [<c00bb1a0>] (do_kern_mount+0x34/0xd0) from [<c00bc93c>]=
-=20
-> (do_mount+0x15c/0x73c)
-> [    4.280000] [<c00bc93c>] (do_mount+0x15c/0x73c) from [<c00bcfa0>]=20
-> (sys_mount+0x84/0xc4)
-> [    4.280000] [<c00bcfa0>] (sys_mount+0x84/0xc4) from [<c04e4a04>]=20
-> (do_mount_root+0x24/0xb0)
-> [    4.280000] [<c04e4a04>] (do_mount_root+0x24/0xb0) from [<c04e4b78>]=
-=20
-> (mount_block_root+0xe8/0x214)
-> [    4.280000] [<c04e4b78>] (mount_block_root+0xe8/0x214) from=20
-> [<c04e4e28>] (prepare_namespace+0x8c/0x180)
-> [    4.280000] [<c04e4e28>] (prepare_namespace+0x8c/0x180) from=20
-> [<c04e4894>] (kernel_init+0x16c/0x1b4)
-> [    4.280000] [<c04e4894>] (kernel_init+0x16c/0x1b4) from [<c000ff70>]=
-=20
-> (kernel_thread_exit+0x0/0x8)
-> [    4.280000] ---[ end trace 4d36b722759fdc4f ]---
-> [    4.950000] UBIFS DBG (pid 58): ubifs_bg_thread: background thread=20
-> "ubifs_bgt0_0" started, PID 58
->=20
-> -Subodh
->=20
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Thanks Brian, pulled all the branches.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-0pWY+RwNMLwGVzlGhmot
+--=-A0bcngxGpfAKGRu5TwrK
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -153,19 +64,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQRbHcAAoJECmIfjd9wqK0dtYP/2wMKq0gjRDEvDBpe3m9rRq3
-+Ys/4FzdNFJE7Dvpiv/7FGihUAT1ubXw1fUQEu1HxyuJ+zEnSRZXpvBmGDcUhThN
-4JTawNDh4mMckXDh+YSyyqsSCq60lHEpYyViC+g6B+bln3rO4KZiDN65hHtRV7TM
-pckASQcOXKTN0WJJUuPoyK8hhj9RzZ2/d5rW1G63EEUyB2k4yYVBrv13pMR+ung0
-e77INbT0026ZiFs4DgiZaR99XoaMPZ5Mh5O0916q8NApZ4fTarM8yUoWW4yM3IYA
-FvxB4F8kF2Ki22tu7YUVu+Yr9IXT+zCY0m/cY63f7Cyxr43afRW7McCiEeFGUlcS
-949z9pCnel90VdejvH/QZV9M4A+1PGRoSsZjwXWoLo0uttpg0FgmuC67TiVto4Go
-Pb3SqLJ3fmu6CJlLNE9v0Gn0HRjyxdxe8UjSM1yLqNDs+YzMyKoO96M57nqsXehy
-W82YFcdO45VHnOtMuXdXekSCBx4aM7HoQbIo6HTnYZaId0n1i4KKzItc7ALIeFZY
-8As60FheE2+A9TSP3NY5WqSj+s0rWTIVCg6pTpyhAMa0ddi1kHH9gf9o7eRoZlpB
-1GI5cZFuTIzsmACjorndeFpX+TtXsoBB6NYlc7H+sebl7S1rQwFx352k4z0N7l6c
-Ubo6munO2bGldJhs3WfH
-=ClU6
+iQIcBAABAgAGBQJQRbIVAAoJECmIfjd9wqK0FPYP/R0hhTOzeOyzUejKvlVZni/o
+YM0LOAgv58r9cjg+BBWxtbDGLMTNfz9qVgVtH1unOMkig60aEQHazwzHsjVld7kR
+rCs40hQx1mQ3Nar7srMiJEsjY/HVZhLKgIJm/vbDwJQxqlPMi9ZQZjcDVayPjDDM
+KNfqlCwpEv1FQ2lNnUiruhES0oYGp7q7pHYEnoyO7Pzv1R+sP1wHOFZcDy04Heg5
+NPsdfWbPBDvtnv/Z8TNbyAb88y/c9zVGkpWrfzZpvb/6NcpXA+/+UP1SGvhRSkl/
+MkMxx5KJ2GxQoglPsXm8U5eosQ6erS4a4X5mUj3PTifPIv3pI9AnGnF+Rby4Igfw
+dm7YMYYyBos+6LfKuupQAHguOl6RkFC6SUXuUCosIiHP30yoFPXDjaDLFI6NgYU4
+ttLFn2RKBWFnXTmQ8KYT3LlQXmKqhFh5A2ruNOv021yo/qs6F2tC78cfTpH0ivUR
+laf1NsUUn2qMs/ssXzDMEu82vmMyPvTEQcotakUa8g0kHx4LXLrW5xtxzI3BWm1U
+3drQ1bXYI0+fU0s6579uZ1z7YWo8Y2KsMWqR/MgI/nmTRnl8bYREGe+EKqYC1uDi
+5tQmSD2dukQfNK9Vw9ZdmMolPX8fnyGWIpbGQhIRTbE91vE08mTBCjrwq9uVEeTm
+5n60jyMBAs3x+7HR9nzj
+=5i1q
 -----END PGP SIGNATURE-----
 
---=-0pWY+RwNMLwGVzlGhmot--
+--=-A0bcngxGpfAKGRu5TwrK--
