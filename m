@@ -1,25 +1,19 @@
-Received: from mail-we0-f177.google.com ([74.125.82.177])
+Received: from mail-wg0-f49.google.com ([74.125.82.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T98CC-0006Kt-95
- for linux-mtd@lists.infradead.org; Wed, 05 Sep 2012 05:30:36 +0000
-Received: by weyr3 with SMTP id r3so96808wey.36
- for <linux-mtd@lists.infradead.org>; Tue, 04 Sep 2012 22:30:34 -0700 (PDT)
-Date: Wed, 5 Sep 2012 08:30:20 +0300
+ id 1T98cv-0000Md-Kf
+ for linux-mtd@lists.infradead.org; Wed, 05 Sep 2012 05:58:15 +0000
+Received: by wgbdt14 with SMTP id dt14so109582wgb.18
+ for <linux-mtd@lists.infradead.org>; Tue, 04 Sep 2012 22:58:11 -0700 (PDT)
+Date: Wed, 5 Sep 2012 08:58:03 +0300
 From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH 1/3] mtd: cmdlinepart: make the partitions rule more strict
-Message-ID: <20120905083020.0bf6b0bd@halley>
-In-Reply-To: <5046B504.6000608@freescale.com>
-References: <1346001700-26895-1-git-send-email-shijie8@gmail.com>
- <1346656701.3061.8.camel@sauron.fi.intel.com>
- <CAMiH66GX7h5tve9CLHzj8MMrUv90fL+4BWYPZ6KQkP5bbXY9ag@mail.gmail.com>
- <1346686544.3061.75.camel@sauron.fi.intel.com>
- <20120904144826.7b9b7518@halley> <5046B504.6000608@freescale.com>
+To: <dedekind1@gmail.com>
+Subject: [PATCH] mtd: cmdlinepart: Simplify parse_cmdline_partitions
+Message-ID: <20120905085803.4ff5b155@halley>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Cc: Huang Shijie <shijie8@gmail.com>, linux-mtd@lists.infradead.org,
- dedekind1@gmail.com
+ shmulik.ladkani@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,55 +23,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 5 Sep 2012 10:12:20 +0800 Huang Shijie <b32955@freescale.com> wrote:
-> yes, it's really simple and flexible.
-> But I think it's not wise to export the 0-size partition to user.
-> The user may confused at this.
-> 
-> And the mtd-utils, such as mtd-info/mtd-debug, do they can work with a 
-> 0-size partition?
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 
-I think the 0 sized partition case is really seldom, don't worth the
-trouble, the user will probably observe something went wrong in his
-cmdline parts specification.
+Simply 'parse_cmdline_partitions': the outer loop iterating over
+'partitions' is actually a search loop, it does not execute the inner
+loop for each partition, only for the matched partition.
 
-But nevertheless, if we think it's a MUST to forbid the 0 sized
-partitions, then amend my patch as follows:
+Let's break when search is successful, and move all inner code (relevant
+only for the matched partition) outside of the outer loop.
 
-(sorry, didn't even compile tested this, please review and test, if the
-approach is acceptible)
+Resulting code is much more readable, and makes the indent level sane.
+
+Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+---
+- (should be) coding fix only, semantics aren't changed
+- sorry, didn't even compile tested, please verify this is sane, thanks
 
 diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
-index 17b0bd4..aed1b8a 100644
+index 17b0bd4..46951d7 100644
 --- a/drivers/mtd/cmdlinepart.c
 +++ b/drivers/mtd/cmdlinepart.c
-@@ -319,12 +319,22 @@ static int parse_cmdline_partitions(struct mtd_info *master,
- 				if (part->parts[i].size == SIZE_REMAINING)
- 					part->parts[i].size = master->size - offset;
+@@ -308,38 +308,44 @@ static int parse_cmdline_partitions(struct mtd_info *master,
+ 			return err;
+ 	}
  
-+				if (part->parts[i].size == 0) {
-+					printk(KERN_WARNING ERRP
-+					       "%s: skipping zero sized partition\n",
-+					       part->mtd_id);
-+					part->num_parts--;
-+					memmove(&part->parts[i],
-+						&part->parts[i + 1],
-+						sizeof(*part->parts) * (part->num_parts - i));
-+					continue;
-+				}
-+
- 				if (offset + part->parts[i].size > master->size) {
- 					printk(KERN_WARNING ERRP
- 					       "%s: partitioning exceeds flash size, truncating\n",
- 					       part->mtd_id);
- 					part->parts[i].size = master->size - offset;
++	/*
++	 * Search for the partition definition matching master->name.
++	 * If master->name is not set, stop at first partition definition.
++	 */
+ 	for (part = partitions; part; part = part->next) {
+-		if ((!mtd_id) || (!strcmp(part->mtd_id, mtd_id))) {
+-			for (i = 0, offset = 0; i < part->num_parts; i++) {
+-				if (part->parts[i].offset == OFFSET_CONTINUOUS)
+-					part->parts[i].offset = offset;
+-				else
+-					offset = part->parts[i].offset;
+-
+-				if (part->parts[i].size == SIZE_REMAINING)
+-					part->parts[i].size = master->size - offset;
+-
+-				if (offset + part->parts[i].size > master->size) {
+-					printk(KERN_WARNING ERRP
+-					       "%s: partitioning exceeds flash size, truncating\n",
+-					       part->mtd_id);
+-					part->parts[i].size = master->size - offset;
 -					part->num_parts = i;
- 				}
- 				offset += part->parts[i].size;
- 			}
-
-Also, I'll send a short coding cleanup patch, this loop's indent level
-is horrible...
-
-Regards,
-Shmulik
+-				}
+-				offset += part->parts[i].size;
+-			}
+-
+-			*pparts = kmemdup(part->parts,
+-					sizeof(*part->parts) * part->num_parts,
+-					GFP_KERNEL);
+-			if (!*pparts)
+-				return -ENOMEM;
+-
+-			return part->num_parts;
++		if ((!mtd_id) || (!strcmp(part->mtd_id, mtd_id)))
++			break;
++	}
++
++	if (!part)
++		return 0;
++
++	for (i = 0, offset = 0; i < part->num_parts; i++) {
++		if (part->parts[i].offset == OFFSET_CONTINUOUS)
++			part->parts[i].offset = offset;
++		else
++			offset = part->parts[i].offset;
++
++		if (part->parts[i].size == SIZE_REMAINING)
++			part->parts[i].size = master->size - offset;
++
++		if (offset + part->parts[i].size > master->size) {
++			printk(KERN_WARNING ERRP
++					"%s: partitioning exceeds flash size, truncating\n",
++					part->mtd_id);
++			part->parts[i].size = master->size - offset;
++			part->num_parts = i;
+ 		}
++		offset += part->parts[i].size;
+ 	}
+ 
+-	return 0;
++	*pparts = kmemdup(part->parts,
++			sizeof(*part->parts) * part->num_parts,
++			GFP_KERNEL);
++	if (!*pparts)
++		return -ENOMEM;
++
++	return part->num_parts;
+ }
+ 
