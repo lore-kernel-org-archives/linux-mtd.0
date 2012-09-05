@@ -1,21 +1,16 @@
-Received: from mail-bk0-f49.google.com ([209.85.214.49])
+Received: from mail-gh0-f177.google.com ([209.85.160.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T9F8L-0000Ew-As
- for linux-mtd@lists.infradead.org; Wed, 05 Sep 2012 12:55:07 +0000
-Received: by bkcji2 with SMTP id ji2so236932bkc.36
- for <linux-mtd@lists.infradead.org>; Wed, 05 Sep 2012 05:55:02 -0700 (PDT)
-Message-ID: <50474BA3.2070404@gmail.com>
-Date: Wed, 05 Sep 2012 14:54:59 +0200
-From: simon widmer <simonxwidmer@gmail.com>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: UBIFS Informations
-References: <503F7685.8030707@gmail.com>
- <1346673385.3061.48.camel@sauron.fi.intel.com>
-In-Reply-To: <1346673385.3061.48.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+ id 1T9Fdx-0003VN-Ae
+ for linux-mtd@lists.infradead.org; Wed, 05 Sep 2012 13:27:45 +0000
+Received: by ghbf20 with SMTP id f20so73097ghb.36
+ for <linux-mtd@lists.infradead.org>; Wed, 05 Sep 2012 06:27:43 -0700 (PDT)
+From: Fabio Estevam <festevam@gmail.com>
+To: artem.bityutskiy@linux.intel.com
+Subject: [PATCH] mtd: gpmi-nand: Improve logging style
+Date: Wed,  5 Sep 2012 10:27:33 -0300
+Message-Id: <1346851653-28117-1-git-send-email-festevam@gmail.com>
+Cc: marex@denx.de, b32955@freescale.com, linux-mtd@lists.infradead.org,
+ Fabio Estevam <fabio.estevam@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,66 +20,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Update: I tested on Kernel 2.6.24-24 without success. The same manner if 
-i want to mount the image. What I discovered is that i noted earlier 
-that i have to compile with:
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-$ mkfs.ubifs -q -r $PATH\/data_h -m 2048 -e 129024 -c 2047 -o temp_h.img
-$ ubinize -o data_h.img -m 2048 -p 128KiB -s 512 ubinize_h.cfg
+Improve logging style by prefixing the pr_ messages with "gpmi_nand".
 
-and i have no idea what option "-q" is (neither does mkfs.ubifs). so I 
-just kicked it and compiled with:
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-$ mkfs.ubifs -r $PATH\/data_h -m 2048 -e 129024 -c 2047 -o temp_h.img
-$ ubinize -o data_h.img -m 2048 -p 128KiB -s 512 ubinize_h.cfg
-
-ubinize.cfg looks this way:
-
-[data_h]
-mode=ubi
-image=temp_h.img
-vol_id=0
-vol_size=4MiB
-vol_type=static
-vol_name=data_h
-vol_flags=autoresize
-
-and the attaching procedure as follows:
-
-UBI: attaching mtd8 to ubi0
-UBI: physical eraseblock size:   131072 bytes (128 KiB)
-UBI: logical eraseblock size:    129024 bytes
-UBI: smallest flash I/O unit:    2048
-UBI: sub-page size:              512
-UBI: VID header offset:          512 (aligned 512)
-UBI: data offset:                2048
-UBI: attached mtd8 to ubi0
-UBI: MTD device name:            "data_h"
-UBI: MTD device size:            4 MiB
-UBI: number of good PEBs:        32
-UBI: number of bad PEBs:         0
-UBI: max. allowed volumes:       128
-UBI: wear-leveling threshold:    4096
-UBI: number of internal volumes: 1
-UBI: number of user volumes:     1
-UBI: available PEBs:             0
-UBI: total number of reserved PEBs: 32
-UBI: number of PEBs reserved for bad PEB handling: 2
-UBI: max/mean erase counter: 2/0
-UBI: image sequence number: 165352633
-UBI: background thread "ubi_bgt0d" started, PID 497
-
-and finally the mounting procedure:
-
-UBIFS error (pid 529): ubifs_read_node: bad node type (0 but expected 6)
-UBIFS error (pid 529): ubifs_read_node: bad node at LEB 0:0
-mount: wrong fs type, bad option, bad superblock on ubi0_0,
-        missing codepage or helper program, or other error
-        (UBIFS error (pid 529): ubifs_read_node: bad node type (0 but 
-expected 6)
-for several filesystems (e.g. nfUBIFS error (pid 529): ubifs_read_node: 
-bad node at LEB 0:0
-s, cifs) you might
-        need a /sbin/mount.<type> helper program)
-        In some cases useful info is found in syslog - try
-        dmesg | tail  or so
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index c46be6c..9493507 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -18,6 +18,9 @@
+  * with this program; if not, write to the Free Software Foundation, Inc.,
+  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+  */
++
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++
+ #include <linux/clk.h>
+ #include <linux/slab.h>
+ #include <linux/interrupt.h>
+@@ -114,7 +117,7 @@ int common_nfc_set_geometry(struct gpmi_nand_data *this)
+ 	/* We use the same ECC strength for all chunks. */
+ 	geo->ecc_strength = get_ecc_strength(this);
+ 	if (!geo->ecc_strength) {
+-		pr_err("We get a wrong ECC strength.\n");
++		pr_err("wrong ECC strength.\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -1685,9 +1688,9 @@ static int __init gpmi_nand_init(void)
+ 
+ 	err = platform_driver_register(&gpmi_nand_driver);
+ 	if (err == 0)
+-		printk(KERN_INFO "GPMI NAND driver registered. (IMX)\n");
++		pr_info("driver registered.\n");
+ 	else
+-		pr_err("i.MX GPMI NAND driver registration failed\n");
++		pr_err("driver registration failed.\n");
+ 	return err;
+ }
+ 
+-- 
+1.7.9.5
