@@ -1,25 +1,21 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+Received: from mail-out.m-online.net ([212.18.0.9])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T9KCn-0003PK-3D
- for linux-mtd@lists.infradead.org; Wed, 05 Sep 2012 18:20:02 +0000
-Received: by lagu2 with SMTP id u2so528625lag.36
- for <linux-mtd@lists.infradead.org>; Wed, 05 Sep 2012 11:19:58 -0700 (PDT)
+ id 1T9Kl2-0004xP-Ok
+ for linux-mtd@lists.infradead.org; Wed, 05 Sep 2012 18:55:26 +0000
+From: Marek Vasut <marex@denx.de>
+To: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH 1/2] mtd: gpmi-nand: Convert to platform driver
+Date: Wed, 5 Sep 2012 20:55:18 +0200
+References: <1346855725-31726-1-git-send-email-festevam@gmail.com>
+In-Reply-To: <1346855725-31726-1-git-send-email-festevam@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <6871BC8982B258468985EE735D2C57524E269AFB60@ntcex01.corp.netcomm.com.au>
-References: <6871BC8982B258468985EE735D2C57524E269AFB52@ntcex01.corp.netcomm.com.au>
- <1346310033.2848.536.camel@sauron.fi.intel.com>
- <6871BC8982B258468985EE735D2C57524E269AFB54@ntcex01.corp.netcomm.com.au>
- <1346315075.2848.538.camel@sauron.fi.intel.com>
- <6871BC8982B258468985EE735D2C57524E269AFB60@ntcex01.corp.netcomm.com.au>
-Date: Wed, 5 Sep 2012 11:19:57 -0700
-Message-ID: <CAN8TOE_ax=8inGyZxS+nTfcSkskyNvHEh9ipnOTVu-moB4FqjA@mail.gmail.com>
-Subject: Re: [PATCH] Test for multi-bit error correction
-From: Brian Norris <computersforpeace@gmail.com>
-To: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Akinobu Mita <akinobu.mita@gmail.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201209052055.19123.marex@denx.de>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ artem.bityutskiy@linux.intel.com, linux-mtd@lists.infradead.org,
+ kernel@pengutronix.de, b32955@freescale.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,77 +25,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Aug 30, 2012 at 3:59 PM, Iwo Mergler
-<Iwo.Mergler@netcommwireless.com> wrote:
-> This tests ECC biterror recovery on a single NAND page. Mostly intended
-> to test ECC hardware and low-level NAND driver.
->
-> There are two test modes:
+Dear Fabio Estevam,
 
-Why does this test even need to be in the kernel? Can't it be done
-easily in userspace? I think it could even be a simple script that
-utilizes flash_erase + nandwrite / nanddump with the -n (no ECC)
-option. And anything that's lacking in nandwrite for this
-functionality could easily be added there (for instance, support
-erasure in nandwrite, rather than having to use flash_erase).
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+> 
+> Using module_platform_driver() makes the code smaller and cleaner.
 
-I would also note that this test doesn't explicitly test for bad
-blocks, although it should fail when running the erase command.
+You did not document the dev_info() etc. addition, dunno if it's important or 
+not.
 
-> diff --git a/drivers/mtd/tests/mtd_nandbiterrs.c b/drivers/mtd/tests/mtd_nandbiterrs.c
-> new file mode 100644
-> index 0000000..94e908e
-> --- /dev/null
-> +++ b/drivers/mtd/tests/mtd_nandbiterrs.c
-> @@ -0,0 +1,460 @@
-...
-> +static unsigned page_offset;
-> +module_param(page_offset, uint, S_IRUGO);
-> +MODULE_PARM_DESC(page_offset, "Page number relative to dev start");
+Otherwise,
 
-Why use a page number? For erase, we'll be affecting many adjacent
-pages, so this might be an unclear parameter to the user. Is there a
-good reason not to use an entire eraseblock as the unit of test? Also,
-is there a reason to use page number vs. eraseblock number vs. offset
-as the input parameter?
+Reviewed-by: Marek Vasut <marex@denx.de>
 
-> +static loff_t   offset;     /* Offset of the page we're using. */
-> +static unsigned eraseblock; /* Eraseblock number for our page. */
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+> ---
+> This patch depends on: "mtd: gpmi-nand: Improve logging style"
+> 
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   29
+> +++++++---------------------- 1 file changed, 7 insertions(+), 22
+> deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c index 9493507..5999b15 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -1651,6 +1651,8 @@ static int __devinit gpmi_nand_probe(struct
+> platform_device *pdev) if (ret)
+>  		goto exit_nfc_init;
+> 
+> +	dev_info(this->dev, "driver registered.\n");
 > +
-> +/* We assume that the ECC can correct up to a certain number
-> + * of biterrors per subpage. */
-> +static unsigned subsize;  /* Size of subpages */
-> +static unsigned subcount; /* Number of subpages per page */
+>  	return 0;
+> 
+>  exit_nfc_init:
+> @@ -1658,10 +1660,12 @@ exit_nfc_init:
+>  exit_acquire_resources:
+>  	platform_set_drvdata(pdev, NULL);
+>  	kfree(this);
+> +	dev_err(this->dev, "driver registration failed: %d\n", ret);
 > +
-> +static struct mtd_info *mtd;   /* MTD device */
-> +
-> +static uint8_t *wbuffer; /* One page write / compare buffer */
-> +static uint8_t *rbuffer; /* One page read buffer */
+>  	return ret;
+>  }
+> 
+> -static int __exit gpmi_nand_remove(struct platform_device *pdev)
+> +static int __devexit gpmi_nand_remove(struct platform_device *pdev)
+>  {
+>  	struct gpmi_nand_data *this = platform_get_drvdata(pdev);
+> 
+> @@ -1678,29 +1682,10 @@ static struct platform_driver gpmi_nand_driver = {
+>  		.of_match_table = gpmi_nand_id_table,
+>  	},
+>  	.probe   = gpmi_nand_probe,
+> -	.remove  = __exit_p(gpmi_nand_remove),
+> +	.remove  = __devexit_p(gpmi_nand_remove),
+>  	.id_table = gpmi_ids,
+>  };
+> -
+> -static int __init gpmi_nand_init(void)
+> -{
+> -	int err;
+> -
+> -	err = platform_driver_register(&gpmi_nand_driver);
+> -	if (err == 0)
+> -		pr_info("driver registered.\n");
+> -	else
+> -		pr_err("driver registration failed.\n");
+> -	return err;
+> -}
+> -
+> -static void __exit gpmi_nand_exit(void)
+> -{
+> -	platform_driver_unregister(&gpmi_nand_driver);
+> -}
+> -
+> -module_init(gpmi_nand_init);
+> -module_exit(gpmi_nand_exit);
+> +module_platform_driver(gpmi_nand_driver);
+> 
+>  MODULE_AUTHOR("Freescale Semiconductor, Inc.");
+>  MODULE_DESCRIPTION("i.MX GPMI NAND Flash Controller Driver");
 
-Why are all of these globals? It seems like the read_page(),
-write_page(), and rewrite_page() functions would be more sensible (and
-safely extendible) if they had an extra parameter for the address. And
-do you really need to represent the same value (offset) in three
-different ways (offset, page offset, eraseblock)? In fact,
-
-> +static int erase_block(void)
-
-This isn't a very intuitive function prototype; I would normally
-expect an address or block number parameter. Ditto for the following.
-But this is just part of the argument of whether everything should be
-provided as global variables...
-
-> +/* Writes wbuffer to page */
-> +static int write_page(int log)
-...
-> +/* Re-writes the data area while leaving the OOB alone. */
-> +static int rewrite_page(int log)
-...
-> +/* Reads page into rbuffer. Returns number of corrected bit errors (>=0)
-> + * or error (<0) */
-> +static int read_page(int log)
-...
-> +/* Verifies rbuffer against random sequence */
-> +static int verify_page(int log)
-
-Brian
+Best regards,
+Marek Vasut
