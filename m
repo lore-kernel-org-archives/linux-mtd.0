@@ -1,14 +1,16 @@
-Received: from mail-gg0-f177.google.com ([209.85.161.177])
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T9Ghv-0001Zf-L9
- for linux-mtd@lists.infradead.org; Wed, 05 Sep 2012 14:35:56 +0000
-Received: by ggnm2 with SMTP id m2so91196ggn.36
- for <linux-mtd@lists.infradead.org>; Wed, 05 Sep 2012 07:35:54 -0700 (PDT)
+ id 1T9Ghx-0001a3-Tf
+ for linux-mtd@lists.infradead.org; Wed, 05 Sep 2012 14:35:58 +0000
+Received: by yenq9 with SMTP id q9so91286yen.36
+ for <linux-mtd@lists.infradead.org>; Wed, 05 Sep 2012 07:35:56 -0700 (PDT)
 From: Fabio Estevam <festevam@gmail.com>
 To: artem.bityutskiy@linux.intel.com
-Subject: [PATCH 1/2] mtd: gpmi-nand: Convert to platform driver
-Date: Wed,  5 Sep 2012 11:35:24 -0300
-Message-Id: <1346855725-31726-1-git-send-email-festevam@gmail.com>
+Subject: [PATCH 2/2] mtd: mxc_nand: Convert to platform driver
+Date: Wed,  5 Sep 2012 11:35:25 -0300
+Message-Id: <1346855725-31726-2-git-send-email-festevam@gmail.com>
+In-Reply-To: <1346855725-31726-1-git-send-email-festevam@gmail.com>
+References: <1346855725-31726-1-git-send-email-festevam@gmail.com>
 Cc: marex@denx.de, b32955@freescale.com, linux-mtd@lists.infradead.org,
  Fabio Estevam <fabio.estevam@freescale.com>, kernel@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,69 +28,46 @@ Using module_platform_driver() makes the code smaller and cleaner.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 ---
-This patch depends on: "mtd: gpmi-nand: Improve logging style"
+ drivers/mtd/nand/mxc_nand.c |   18 +++---------------
+ 1 file changed, 3 insertions(+), 15 deletions(-)
 
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   29 +++++++----------------------
- 1 file changed, 7 insertions(+), 22 deletions(-)
-
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 9493507..5999b15 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -1651,6 +1651,8 @@ static int __devinit gpmi_nand_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto exit_nfc_init;
- 
-+	dev_info(this->dev, "driver registered.\n");
-+
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index e59a45f..cc8b1e1 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -1389,7 +1389,7 @@ static int __init mxcnd_probe_pdata(struct mxc_nand_host *host)
  	return 0;
- 
- exit_nfc_init:
-@@ -1658,10 +1660,12 @@ exit_nfc_init:
- exit_acquire_resources:
- 	platform_set_drvdata(pdev, NULL);
- 	kfree(this);
-+	dev_err(this->dev, "driver registration failed: %d\n", ret);
-+
- 	return ret;
  }
  
--static int __exit gpmi_nand_remove(struct platform_device *pdev)
-+static int __devexit gpmi_nand_remove(struct platform_device *pdev)
+-static int __init mxcnd_probe(struct platform_device *pdev)
++static int __devinit mxcnd_probe(struct platform_device *pdev)
  {
- 	struct gpmi_nand_data *this = platform_get_drvdata(pdev);
- 
-@@ -1678,29 +1682,10 @@ static struct platform_driver gpmi_nand_driver = {
- 		.of_match_table = gpmi_nand_id_table,
+ 	struct nand_chip *this;
+ 	struct mtd_info *mtd;
+@@ -1581,22 +1581,10 @@ static struct platform_driver mxcnd_driver = {
+ 		   .owner = THIS_MODULE,
+ 		   .of_match_table = of_match_ptr(mxcnd_dt_ids),
  	},
- 	.probe   = gpmi_nand_probe,
--	.remove  = __exit_p(gpmi_nand_remove),
-+	.remove  = __devexit_p(gpmi_nand_remove),
- 	.id_table = gpmi_ids,
++	.probe = mxcnd_probe,
+ 	.remove = __devexit_p(mxcnd_remove),
  };
 -
--static int __init gpmi_nand_init(void)
+-static int __init mxc_nd_init(void)
 -{
--	int err;
--
--	err = platform_driver_register(&gpmi_nand_driver);
--	if (err == 0)
--		pr_info("driver registered.\n");
--	else
--		pr_err("driver registration failed.\n");
--	return err;
+-	return platform_driver_probe(&mxcnd_driver, mxcnd_probe);
 -}
 -
--static void __exit gpmi_nand_exit(void)
+-static void __exit mxc_nd_cleanup(void)
 -{
--	platform_driver_unregister(&gpmi_nand_driver);
+-	/* Unregister the device structure */
+-	platform_driver_unregister(&mxcnd_driver);
 -}
 -
--module_init(gpmi_nand_init);
--module_exit(gpmi_nand_exit);
-+module_platform_driver(gpmi_nand_driver);
+-module_init(mxc_nd_init);
+-module_exit(mxc_nd_cleanup);
++module_platform_driver(mxcnd_driver);
  
  MODULE_AUTHOR("Freescale Semiconductor, Inc.");
- MODULE_DESCRIPTION("i.MX GPMI NAND Flash Controller Driver");
+ MODULE_DESCRIPTION("MXC NAND MTD driver");
 -- 
 1.7.9.5
