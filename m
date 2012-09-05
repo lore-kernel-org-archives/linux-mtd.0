@@ -1,22 +1,21 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
+Received: from mail-bk0-f49.google.com ([209.85.214.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T9D4T-0008Az-Ij
- for linux-mtd@lists.infradead.org; Wed, 05 Sep 2012 10:42:58 +0000
-Received: by pbbrq8 with SMTP id rq8so727758pbb.36
- for <linux-mtd@lists.infradead.org>; Wed, 05 Sep 2012 03:42:55 -0700 (PDT)
+ id 1T9F8L-0000Ew-As
+ for linux-mtd@lists.infradead.org; Wed, 05 Sep 2012 12:55:07 +0000
+Received: by bkcji2 with SMTP id ji2so236932bkc.36
+ for <linux-mtd@lists.infradead.org>; Wed, 05 Sep 2012 05:55:02 -0700 (PDT)
+Message-ID: <50474BA3.2070404@gmail.com>
+Date: Wed, 05 Sep 2012 14:54:59 +0200
+From: simon widmer <simonxwidmer@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1346753195.12610.43.camel@sauron.fi.intel.com>
-References: <1346677206-13621-1-git-send-email-akinobu.mita@gmail.com>
- <1346677206-13621-8-git-send-email-akinobu.mita@gmail.com>
- <1346753195.12610.43.camel@sauron.fi.intel.com>
-Date: Wed, 5 Sep 2012 19:42:55 +0900
-Message-ID: <CAC5umyjdg6B8ps20L+HeTfai-Ea8xqR0hsYBMCRkcHp6G9-0Hg@mail.gmail.com>
-Subject: Re: [PATCH v3 07/11] mtd: mtd_nandecctest: generalize injecting bit
- errors function for ecc code
-From: Akinobu Mita <akinobu.mita@gmail.com>
-To: artem.bityutskiy@linux.intel.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+To: dedekind1@gmail.com
+Subject: Re: UBIFS Informations
+References: <503F7685.8030707@gmail.com>
+ <1346673385.3061.48.camel@sauron.fi.intel.com>
+In-Reply-To: <1346673385.3061.48.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,76 +25,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2012/9/4 Artem Bityutskiy <artem.bityutskiy@linux.intel.com>:
-> On Mon, 2012-09-03 at 22:00 +0900, Akinobu Mita wrote:
->> In order to inject deliberate bit errors into the ecc code which only
->> has 3 bytes, this adjusts the bitops usage in inject_single_bit_error()
->> which is currently only used for injecting into the 256 or 512 bytes
->> data block.
->>
->> Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
->> Cc: David Woodhouse <dwmw2@infradead.org>
->> Cc: linux-mtd@lists.infradead.org
->> Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
->
-> I do not understand the commit message and the patch.
->> ---
->>  drivers/mtd/tests/mtd_nandecctest.c | 13 +++++++++++--
->>  1 file changed, 11 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/mtd/tests/mtd_nandecctest.c b/drivers/mtd/tests/mtd_nandecctest.c
->> index d3e8873..0274f73 100644
->> --- a/drivers/mtd/tests/mtd_nandecctest.c
->> +++ b/drivers/mtd/tests/mtd_nandecctest.c
->> @@ -7,13 +7,22 @@
->>  #include <linux/slab.h>
->>  #include <linux/mtd/nand_ecc.h>
->>
->> +#include <asm/byteorder.h>
->
-> I think you do not need to include this.
+Update: I tested on Kernel 2.6.24-24 without success. The same manner if 
+i want to mount the image. What I discovered is that i noted earlier 
+that i have to compile with:
 
-OK, I'll remove this.
+$ mkfs.ubifs -q -r $PATH\/data_h -m 2048 -e 129024 -c 2047 -o temp_h.img
+$ ubinize -o data_h.img -m 2048 -p 128KiB -s 512 ubinize_h.cfg
 
->> +
->>  #if defined(CONFIG_MTD_NAND) || defined(CONFIG_MTD_NAND_MODULE)
->>
->> +#ifdef __LITTLE_ENDIAN
->> +#define __change_bit_le(nr, addr) __change_bit(nr, addr)
->> +#else
->> +#define __change_bit_le(nr, addr) \
->> +             __change_bit((nr) ^ ((BITS_PER_LONG - 1) & ~0x7), addr)
->> +#endif
->
-> Why is this "#ifdef" needed? Can you please add a comment explaining
-> this? Which problem do you solve by adding '__change_bit_le()' ?
+and i have no idea what option "-q" is (neither does mkfs.ubifs). so I 
+just kicked it and compiled with:
 
-Sorry for that imcomplete commit message.  I'll update with this:
+$ mkfs.ubifs -r $PATH\/data_h -m 2048 -e 129024 -c 2047 -o temp_h.img
+$ ubinize -o data_h.img -m 2048 -p 128KiB -s 512 ubinize_h.cfg
 
-mtd: mtd_nandecctest: support injecting bit error for ecc code
+ubinize.cfg looks this way:
 
-Currently inject_single_bit_error() is used to inject single bit error
-into randomly selected bit position of the 256 or 512 bytes data block.
+[data_h]
+mode=ubi
+image=temp_h.img
+vol_id=0
+vol_size=4MiB
+vol_type=static
+vol_name=data_h
+vol_flags=autoresize
 
-Later change will add tests which inject bit errors into the ecc code.
-Unfortunately, inject_single_bit_error() doesn't work for the ecc code
-which is not a multiple of sizeof(unsigned long).
+and the attaching procedure as follows:
 
-Because bit fliping at random position is done by __change_bit().
-For example, flipping bit position 0 by __change_bit(0, addr) modifies
-3rd byte (32bit) or 7th byte (64bit) on big-endian systems.
+UBI: attaching mtd8 to ubi0
+UBI: physical eraseblock size:   131072 bytes (128 KiB)
+UBI: logical eraseblock size:    129024 bytes
+UBI: smallest flash I/O unit:    2048
+UBI: sub-page size:              512
+UBI: VID header offset:          512 (aligned 512)
+UBI: data offset:                2048
+UBI: attached mtd8 to ubi0
+UBI: MTD device name:            "data_h"
+UBI: MTD device size:            4 MiB
+UBI: number of good PEBs:        32
+UBI: number of bad PEBs:         0
+UBI: max. allowed volumes:       128
+UBI: wear-leveling threshold:    4096
+UBI: number of internal volumes: 1
+UBI: number of user volumes:     1
+UBI: available PEBs:             0
+UBI: total number of reserved PEBs: 32
+UBI: number of PEBs reserved for bad PEB handling: 2
+UBI: max/mean erase counter: 2/0
+UBI: image sequence number: 165352633
+UBI: background thread "ubi_bgt0d" started, PID 497
 
-Using little-endian version of bitops can fix this issue.  But
-little-endian version of __change_bit is not yet available.
-So this defines __change_bit_le() locally in a similar fashion to
-asm-generic/bitops/le.h and use it.
+and finally the mounting procedure:
 
-...
-
-Also I'll add this comment:
-
-/*
- * The reason for this __change_bit_le() instead of __change_bit()
- * is to inject bit error properly within the region which is not a
- * multiple of sizeof(unsigned long) on big-endian systems
- */
+UBIFS error (pid 529): ubifs_read_node: bad node type (0 but expected 6)
+UBIFS error (pid 529): ubifs_read_node: bad node at LEB 0:0
+mount: wrong fs type, bad option, bad superblock on ubi0_0,
+        missing codepage or helper program, or other error
+        (UBIFS error (pid 529): ubifs_read_node: bad node type (0 but 
+expected 6)
+for several filesystems (e.g. nfUBIFS error (pid 529): ubifs_read_node: 
+bad node at LEB 0:0
+s, cifs) you might
+        need a /sbin/mount.<type> helper program)
+        In some cases useful info is found in syslog - try
+        dmesg | tail  or so
