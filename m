@@ -1,19 +1,17 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T9CT8-0007nm-CT
- for linux-mtd@lists.infradead.org; Wed, 05 Sep 2012 10:04:25 +0000
-Received: by dajq27 with SMTP id q27so253915daj.36
- for <linux-mtd@lists.infradead.org>; Wed, 05 Sep 2012 03:04:19 -0700 (PDT)
-From: Sachin Kamat <sachin.kamat@linaro.org>
-To: linux-mtd@lists.infradead.org
-Subject: =?UTF-8?q?=5BPATCH=5D=20mtd=3A=20nand/gpio=3A=20Use=20module=5Fplatform=5Fdriver=20macro?=
-Date: Wed,  5 Sep 2012 15:31:32 +0530
-Message-Id: <1346839292-31001-1-git-send-email-sachin.kamat@linaro.org>
+Message-ID: <5047286C.4060705@atmel.com>
+Date: Wed, 05 Sep 2012 18:24:44 +0800
+From: Josh Wu <josh.wu@atmel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: sachin.kamat@linaro.org, artem.bityutskiy@linux.intel.com,
- patches@linaro.org, dwmw2@infradead.org, dedekind1@gmail.com
+To: Josh Wu <josh.wu@atmel.com>
+Subject: Re: [PATCH] mtd: atmel_nand: fix the compile error which miss label
+ "err_ecc_ioremap".
+References: <1346824842-18875-1-git-send-email-josh.wu@atmel.com>
+In-Reply-To: <1346824842-18875-1-git-send-email-josh.wu@atmel.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: nicolas.ferre@atmel.com, plagnioj@jcrosoft.com,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,39 +21,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-module_platform_driver simplifies the code by eliminating
-module_init and module_exit calls.
+Hi, all
 
-Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
----
- drivers/mtd/nand/gpio.c |   15 +--------------
- 1 files changed, 1 insertions(+), 14 deletions(-)
+This patch is for latest l2-mtd.git tree. It fixes the compile error 
+after JC's commit: b654a9a4
 
-diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
-index ce6a284..bc73bc5 100644
---- a/drivers/mtd/nand/gpio.c
-+++ b/drivers/mtd/nand/gpio.c
-@@ -417,20 +417,7 @@ static struct platform_driver gpio_nand_driver = {
- 	},
- };
- 
--static int __init gpio_nand_init(void)
--{
--	printk(KERN_INFO "GPIO NAND driver, © 2004 Simtec Electronics\n");
--
--	return platform_driver_register(&gpio_nand_driver);
--}
--
--static void __exit gpio_nand_exit(void)
--{
--	platform_driver_unregister(&gpio_nand_driver);
--}
--
--module_init(gpio_nand_init);
--module_exit(gpio_nand_exit);
-+module_platform_driver(gpio_nand_driver);
- 
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Ben Dooks <ben@simtec.co.uk>");
--- 
-1.7.4.1
+On 9/5/2012 2:00 PM, Josh Wu wrote:
+> Signed-off-by: Josh Wu <josh.wu@atmel.com>
+> ---
+>   drivers/mtd/nand/atmel_nand.c |    3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+> index 6a5a35b..9144557 100644
+> --- a/drivers/mtd/nand/atmel_nand.c
+> +++ b/drivers/mtd/nand/atmel_nand.c
+> @@ -1399,7 +1399,7 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
+>   	if (pdev->dev.of_node) {
+>   		res = atmel_of_init_port(host, pdev->dev.of_node);
+>   		if (res)
+> -			goto err_nand_ioremap;
+> +			goto err_ecc_ioremap;
+>   	} else {
+>   		memcpy(&host->board, pdev->dev.platform_data,
+>   		       sizeof(struct atmel_nand_data));
+> @@ -1560,6 +1560,7 @@ err_no_card:
+>   	platform_set_drvdata(pdev, NULL);
+>   	if (host->dma_chan)
+>   		dma_release_channel(host->dma_chan);
+> +err_ecc_ioremap:
+>   	iounmap(host->io_base);
+>   err_nand_ioremap:
+>   	kfree(host);
+
+Best Regards,
+Josh Wu
