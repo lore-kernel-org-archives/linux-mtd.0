@@ -1,24 +1,20 @@
-Received: from mail-ob0-f177.google.com ([209.85.214.177])
+Received: from co1ehsobe002.messaging.microsoft.com ([216.32.180.185]
+ helo=co1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1T9Ldh-0001pb-As
- for linux-mtd@lists.infradead.org; Wed, 05 Sep 2012 19:51:54 +0000
-Received: by obbta17 with SMTP id ta17so1020372obb.36
- for <linux-mtd@lists.infradead.org>; Wed, 05 Sep 2012 12:51:52 -0700 (PDT)
+ id 1T9RYP-00047e-CH
+ for linux-mtd@lists.infradead.org; Thu, 06 Sep 2012 02:10:53 +0000
+Message-ID: <504806A0.6030804@freescale.com>
+Date: Thu, 6 Sep 2012 10:12:48 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <201209052123.54695.marex@denx.de>
-References: <1346855725-31726-1-git-send-email-festevam@gmail.com>
- <201209052055.19123.marex@denx.de>
- <CAOMZO5DD+6keJ6jkQL-AHzhdobG84=3H_r2HPOFR7apFgKYtYA@mail.gmail.com>
- <201209052123.54695.marex@denx.de>
-Date: Wed, 5 Sep 2012 16:51:52 -0300
-Message-ID: <CAOMZO5CjKaMOoc009rDC_RO58J5KO2uWmnQaAuH3SdFAtD0Esw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mtd: gpmi-nand: Convert to platform driver
-From: Fabio Estevam <festevam@gmail.com>
-To: Marek Vasut <marex@denx.de>
-Content-Type: text/plain; charset=UTF-8
-Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- artem.bityutskiy@linux.intel.com, linux-mtd@lists.infradead.org,
- kernel@pengutronix.de, b32955@freescale.com
+To: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH] mtd: gpmi-nand: Improve logging style
+References: <1346851653-28117-1-git-send-email-festevam@gmail.com>
+In-Reply-To: <1346851653-28117-1-git-send-email-festevam@gmail.com>
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: quoted-printable
+Cc: marex@denx.de, artem.bityutskiy@linux.intel.com,
+ linux-mtd@lists.infradead.org, Fabio Estevam <fabio.estevam@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,19 +24,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Sep 5, 2012 at 4:23 PM, Marek Vasut <marex@denx.de> wrote:
+=D3=DA 2012=C4=EA09=D4=C205=C8=D5 21:27, Fabio Estevam =D0=B4=B5=C0:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+>
+> Improve logging style by prefixing the pr_ messages with "gpmi_nand".
+>
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+> ---
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/=
+gpmi-nand/gpmi-nand.c
+> index c46be6c..9493507 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -18,6 +18,9 @@
+>   * with this program; if not, write to the Free Software Foundation, I=
+nc.,
+>   * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+>   */
+> +
+> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> +
+>  #include <linux/clk.h>
+>  #include <linux/slab.h>
+>  #include <linux/interrupt.h>
+> @@ -114,7 +117,7 @@ int common_nfc_set_geometry(struct gpmi_nand_data *=
+this)
+>  	/* We use the same ECC strength for all chunks. */
+>  	geo->ecc_strength =3D get_ecc_strength(this);
+>  	if (!geo->ecc_strength) {
+> -		pr_err("We get a wrong ECC strength.\n");
+> +		pr_err("wrong ECC strength.\n");
+>  		return -EINVAL;
+>  	}
+> =20
+> @@ -1685,9 +1688,9 @@ static int __init gpmi_nand_init(void)
+> =20
+>  	err =3D platform_driver_register(&gpmi_nand_driver);
+>  	if (err =3D=3D 0)
+> -		printk(KERN_INFO "GPMI NAND driver registered. (IMX)\n");
+> +		pr_info("driver registered.\n");
+>  	else
+> -		pr_err("i.MX GPMI NAND driver registration failed\n");
+> +		pr_err("driver registration failed.\n");
+>  	return err;
+>  }
+> =20
+thanks.
 
-> Ah, just noticed. I'd say drop it completely then, there's now value in this
-> print (or make it pr_debug() ). Besides, the init call was called only once if
+Acked-by: Huang Shijie <b32955@freescale.com>
 
-I think we can keep this info. It does not hurt and this is how the
-current driver does.
-
-> compiled in / every time if built as a module. The probe call is done per GPMI
-> nand driver instance.
-
-,which is fine too.
-
-Regards,
-
-Fabio Estevam
+Huang Shijie
