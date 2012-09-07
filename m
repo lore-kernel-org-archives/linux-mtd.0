@@ -1,24 +1,26 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TA7HO-0005nE-Ml
- for linux-mtd@lists.infradead.org; Fri, 07 Sep 2012 22:44:03 +0000
-Subject: Re: mtd: kernel BUG at arch/x86/mm/pat.c:279!
-From: Suresh Siddha <suresh.b.siddha@intel.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Fri, 07 Sep 2012 15:42:58 -0700
-In-Reply-To: <CA+55aFzJCLxVP+WYJM-gq=aXx5gmdgwC7=_Gr2Tooj8q+Dz4dw@mail.gmail.com>
+Received: from mail-wi0-f177.google.com ([209.85.212.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TA7gs-0006Un-Dp
+ for linux-mtd@lists.infradead.org; Fri, 07 Sep 2012 23:10:23 +0000
+Received: by wibhn17 with SMTP id hn17so23190wib.0
+ for <linux-mtd@lists.infradead.org>; Fri, 07 Sep 2012 16:10:20 -0700 (PDT)
+MIME-Version: 1.0
+Sender: linus971@gmail.com
+In-Reply-To: <1347057778.26695.68.camel@sbsiddha-desk.sc.intel.com>
 References: <1340959739.2936.28.camel@lappy>
  <CA+1xoqdgKV_sEWvUbuxagL9JEc39ZFa6X9-acP7j-M7wvW6qbQ@mail.gmail.com>
  <CA+55aFzJCLxVP+WYJM-gq=aXx5gmdgwC7=_Gr2Tooj8q+Dz4dw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <1347057778.26695.68.camel@sbsiddha-desk.sc.intel.com>
-Mime-Version: 1.0
+ <1347057778.26695.68.camel@sbsiddha-desk.sc.intel.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 7 Sep 2012 16:09:59 -0700
+Message-ID: <CA+55aFwW9Q+DM2gZy7r3JQJbrbMNR6sN+jewc2CY0i1wD_X=Tw@mail.gmail.com>
+Subject: Re: mtd: kernel BUG at arch/x86/mm/pat.c:279!
+To: Suresh Siddha <suresh.b.siddha@intel.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  linux-mm <linux-mm@kvack.org>, linux-mtd@lists.infradead.org,
  Sasha Levin <levinsasha928@gmail.com>, Dave Jones <davej@redhat.com>,
  Andrew Morton <akpm@linux-foundation.org>, dwmw2@infradead.org
-Reply-To: Suresh Siddha <suresh.b.siddha@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,79 +30,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2012-09-07 at 11:14 -0700, Linus Torvalds wrote:
-> Guys, this looks like a MTD and/or io_remap_pfn_range() bug, and it's
-> not getting any traction.
-> 
-> What the f*ck is mtd_mmap() doing, and why? The problem seems to be an
-> overflow condition, because reserve_pfn_range() does
-> 
->     reserve_memtype(paddr, paddr + size, want_flags, &flags);
-> 
-> and then the BUG_ON() in reserve_memtype is
-> 
->     BUG_ON(start >= end);
-> 
-> so it very much looks like a paddr+size overflow. However, that makes
-> little sense too, since we're working in "u64", so I suspect the
-> overflow has happened somewhere earlier.
-> 
-> I really don't see where, though. Could somebody please take a look?
-> The mtdchar_mmap() types seem insane (why "u32" for len, for example?
-> And that whole
-> 
->   off = vma->vm_pgoff << PAGE_SHIFT;
-> 
-> thing looks like it would overflow, since the whole point of pgoff is
-> that if you shift it up by PAGE_SHIFT you need to also extend to
-> 64-bit etc.
-> 
-> So I would *guess* that it's the mtdchar_mmap() stuff that overflows
-> due to bad types, but maybe it does deeper than that?
-> 
+On Fri, Sep 7, 2012 at 3:42 PM, Suresh Siddha <suresh.b.siddha@intel.com> wrote:
+> -       unsigned long start;
+> -       unsigned long off;
+> -       u32 len;
+> +       resource_size_t start, off;
+> +       unsigned long len;
 
-I started to look into this to see if this is a PAT issue but it does
-indeed appear to be a mtd mmap issue.
+So since the oops is on x86-64, I don't think it's the "unsigned long"
+-> "resource_size_t" part (which can be an issue on 32-bit
+architectures, though).
 
-Sasha, Does the appended fix the issue for you?
+The "u32 len" -> "unsigned long len" thing *might* make a difference, though.
 
---8<--
-From: Suresh Siddha <suresh.b.siddha@intel.com>
-Subject: mtd: check the starting offset to be mmap'd
+I also think your patch is incomplete even on 32-bit, because this:
 
-We need to check if both the starting offset aswell the total length
-being mmap'd are with in the limits. With a large starting offset,
-offset + (length-to-be-mapped) can wrap and appear smaller than the
-limit. Need to check both start and end.
+>         if (mtd->type == MTD_RAM || mtd->type == MTD_ROM) {
+>                 off = vma->vm_pgoff << PAGE_SHIFT;
 
-Also fix the types of the variables start, off, len.
+is still wrong. It probably should be
 
-Signed-off-by: Suresh Siddha <suresh.b.siddha@intel.com>
----
- drivers/mtd/mtdchar.c |    7 +++----
- 1 files changed, 3 insertions(+), 4 deletions(-)
+    off = vma->vm_pgoff;
+    off <<= PAGE_SHIFT;
 
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index f2f482b..f79c0fa 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -1132,16 +1132,15 @@ static int mtdchar_mmap(struct file *file, struct vm_area_struct *vma)
- 	struct mtd_file_info *mfi = file->private_data;
- 	struct mtd_info *mtd = mfi->mtd;
- 	struct map_info *map = mtd->priv;
--	unsigned long start;
--	unsigned long off;
--	u32 len;
-+	resource_size_t start, off;
-+	unsigned long len;
- 
- 	if (mtd->type == MTD_RAM || mtd->type == MTD_ROM) {
- 		off = vma->vm_pgoff << PAGE_SHIFT;
- 		start = map->phys;
- 		len = PAGE_ALIGN((start & ~PAGE_MASK) + map->size);
- 		start &= PAGE_MASK;
--		if ((vma->vm_end - vma->vm_start + off) > len)
-+		if (off >= len || (vma->vm_end - vma->vm_start + off) > len)
- 			return -EINVAL;
- 
- 		off += start;
+because vm_pgoff may be a 32-bit type, while "resource_size_t" may be
+64-bit. Shifting the 32-bit type without a cast (implicit or explicit)
+isn't going to help.
+
+That said, we have absolutely *tons* of bugs with this particular
+pattern. Just do
+
+    git grep 'vm_pgoff.*<<.*PAGE_SHIFT'
+
+and there are distressingly few casts in there (there's a few, mainly
+in fs/proc).
+
+Now, I suspect many of them are fine just because most users probably
+are size-limited anyway, but it's a bit distressing stuff. And I
+suspect it means we might want to introduce a helper function like
+
+    static inline u64 vm_offset(struct vm_area_struct *vma)
+    {
+        return (u64)vma->vm_pgoff << PAGE_SHIFT;
+    }
+
+or something. Maybe add the "vm_length()" helper while at it too,
+since the whole "vma->vm_end - vma->vm_start" thing is so common.
+
+Anyway, since Sasha's oops is clearly not 32-bit, the above issues
+don't matter, and it would be interesting to hear if it's the 32-bit
+'len' thing that triggers this problem. Still, I can't see how it
+would - as far as I can tell, a truncated 'len' would at most result
+in spurious early "return -EINVAL", not any real problem.
+
+What are we missing?
+
+Sasha, since you can apparently reproduce it, can you replace the
+"BUG_ON()" with just a
+
+ if (start >= end) {
+    printf("bogus range %llx - %llx\n", start, end);
+    return -EINVAL;
+  }
+
+or something.
+
+I'm starting to suspect that maybe it's actually that the length is
+*zero*, and start == end, and that we should just return zero for that
+case. But let's see what Sasha finds..
+
+              Linus
