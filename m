@@ -1,24 +1,27 @@
-Received: from mail-wi0-f171.google.com ([209.85.212.171])
+Received: from devils.ext.ti.com ([198.47.26.153])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TA34T-0002ON-AL
- for linux-mtd@lists.infradead.org; Fri, 07 Sep 2012 18:14:26 +0000
-Received: by wibhq4 with SMTP id hq4so49637wib.0
- for <linux-mtd@lists.infradead.org>; Fri, 07 Sep 2012 11:14:21 -0700 (PDT)
+ id 1TA3Sg-00043O-He
+ for linux-mtd@lists.infradead.org; Fri, 07 Sep 2012 18:39:27 +0000
+From: "Karicheri, Muralidharan" <m-karicheri2@ti.com>
+To: "Karicheri, Muralidharan" <m-karicheri2@ti.com>, "dwmw2@infradead.org"
+ <dwmw2@infradead.org>, "artem.bityutskiy@linux.intel.com"
+ <artem.bityutskiy@linux.intel.com>, "dbaryshkov@gmail.com"
+ <dbaryshkov@gmail.com>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "mturquette@linaro.org"
+ <mturquette@linaro.org>, "davinci-linux-open-source@linux.davincidsp.com"
+ <davinci-linux-open-source@linux.davincidsp.com>
+Subject: RE: [PATCH] mtd:nand:clk: preparation for switch to common clock
+ framework
+Date: Fri, 7 Sep 2012 18:39:16 +0000
+Message-ID: <3E54258959B69E4282D79E01AB1F32B7041B6EDA@DFLE12.ent.ti.com>
+References: <1346350624-27291-1-git-send-email-m-karicheri2@ti.com>
+In-Reply-To: <1346350624-27291-1-git-send-email-m-karicheri2@ti.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Sender: linus971@gmail.com
-In-Reply-To: <CA+1xoqdgKV_sEWvUbuxagL9JEc39ZFa6X9-acP7j-M7wvW6qbQ@mail.gmail.com>
-References: <1340959739.2936.28.camel@lappy>
- <CA+1xoqdgKV_sEWvUbuxagL9JEc39ZFa6X9-acP7j-M7wvW6qbQ@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Fri, 7 Sep 2012 11:14:00 -0700
-Message-ID: <CA+55aFzJCLxVP+WYJM-gq=aXx5gmdgwC7=_Gr2Tooj8q+Dz4dw@mail.gmail.com>
-Subject: Re: mtd: kernel BUG at arch/x86/mm/pat.c:279!
-To: Sasha Levin <levinsasha928@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- linux-mm <linux-mm@kvack.org>, linux-mtd@lists.infradead.org,
- Dave Jones <davej@redhat.com>, Andrew Morton <akpm@linux-foundation.org>,
- dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,83 +31,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Guys, this looks like a MTD and/or io_remap_pfn_range() bug, and it's
-not getting any traction.
+>> -----Original Message-----
+>> From: Karicheri, Muralidharan
+>> Sent: Thursday, August 30, 2012 2:17 PM
+>> To: dwmw2@infradead.org; artem.bityutskiy@linux.intel.com; dbaryshkov@gm=
+ail.com;
+>> computersforpeace@gmail.com; linux-mtd@lists.infradead.org; linux-
+>> kernel@vger.kernel.org; mturquette@linaro.org
+>> Cc: Karicheri, Muralidharan
+>> Subject: [PATCH] mtd:nand:clk: preparation for switch to common clock fr=
+amework
+>>=20
+>> As a first step towards migrating davinci platforms to use common clock
+>> framework, replace all instances of clk_enable() with clk_prepare_enable=
+()
+>> and clk_disable() with clk_disable_unprepare(). Until the platform is
+>> switched to use the CONFIG_HAVE_CLK_PREPARE Kconfig variable, this just
+>> adds a might_sleep() call and would work without any issues.
+>>=20
+>> This will make it easy later to switch to common clk based implementatio=
+n
+>> of clk driver from DaVinci specific driver.
+>>=20
+>> Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
+>> ---
+>>  drivers/mtd/nand/davinci_nand.c |    6 +++---
+>>  1 file changed, 3 insertions(+), 3 deletions(-)
+>>=20
+>> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_=
+nand.c
+>> index d94b03c..6b8cf27 100644
+>> --- a/drivers/mtd/nand/davinci_nand.c
+>> +++ b/drivers/mtd/nand/davinci_nand.c
+>> @@ -656,7 +656,7 @@ static int __init nand_davinci_probe(struct platform=
+_device
+>> *pdev)
+>>  		goto err_clk;
+>>  	}
+>>=20
+>> -	ret =3D clk_enable(info->clk);
+>> +	ret =3D clk_prepare_enable(info->clk);
+>>  	if (ret < 0) {
+>>  		dev_dbg(&pdev->dev, "unable to enable AEMIF clock, err %d\n",
+>>  			ret);
+>> @@ -767,7 +767,7 @@ syndrome_done:
+>>=20
+>>  err_scan:
+>>  err_timing:
+>> -	clk_disable(info->clk);
+>> +	clk_disable_unprepare(info->clk);
+>>=20
+>>  err_clk_enable:
+>>  	clk_put(info->clk);
+>> @@ -804,7 +804,7 @@ static int __exit nand_davinci_remove(struct platfor=
+m_device
+>> *pdev)
+>>=20
+>>  	nand_release(&info->mtd);
+>>=20
+>> -	clk_disable(info->clk);
+>> +	clk_disable_unprepare(info->clk);
+>>  	clk_put(info->clk);
+>>=20
+>>  	kfree(info);
+>> --
+>> 1.7.9.5
 
-What the f*ck is mtd_mmap() doing, and why? The problem seems to be an
-overflow condition, because reserve_pfn_range() does
+subsystem owner,
 
-    reserve_memtype(paddr, paddr + size, want_flags, &flags);
+Could you please review and apply this patch as needed? We need to get this=
+ upstream before submitting the patch for Common clock framework support fo=
+r mach-davinci. If I need to follow a specific procedure to get this merged=
+, please direct me to a process page.
 
-and then the BUG_ON() in reserve_memtype is
+Thanks.
 
-    BUG_ON(start >= end);
-
-so it very much looks like a paddr+size overflow. However, that makes
-little sense too, since we're working in "u64", so I suspect the
-overflow has happened somewhere earlier.
-
-I really don't see where, though. Could somebody please take a look?
-The mtdchar_mmap() types seem insane (why "u32" for len, for example?
-And that whole
-
-  off = vma->vm_pgoff << PAGE_SHIFT;
-
-thing looks like it would overflow, since the whole point of pgoff is
-that if you shift it up by PAGE_SHIFT you need to also extend to
-64-bit etc.
-
-So I would *guess* that it's the mtdchar_mmap() stuff that overflows
-due to bad types, but maybe it does deeper than that?
-
-                         Linus
-
-On Fri, Sep 7, 2012 at 9:55 AM, Sasha Levin <levinsasha928@gmail.com> wrote:
-> Ping? Still seeing this with latest master...
->
-> On Fri, Jun 29, 2012 at 10:48 AM, Sasha Levin <levinsasha928@gmail.com> wrote:
->> Hi all,
->>
->> I've stumbled on the following while fuzzing with trinity in a KVM tools guest using latest linux-next:
->>
->> [ 3299.675163] ------------[ cut here ]------------
->> [ 3299.676027] kernel BUG at arch/x86/mm/pat.c:279!
->> [ 3299.676027] invalid opcode: 0000 [#1] PREEMPT SMP DEBUG_PAGEALLOC
->> [ 3299.678596] CPU 2
->> [ 3299.678596] Pid: 21541, comm: trinity-child6 Tainted: G        W    3.5.0-rc4-next-20120628-sasha-00005-g9f23eb7 #479
->> [ 3299.678596] RIP: 0010:[<ffffffff810a8b62>]  [<ffffffff810a8b62>] reserve_memtype+0x22/0x3d0
->> [ 3299.678596] RSP: 0018:ffff88000ad61bc8  EFLAGS: 00010286
->> [ 3299.678596] RAX: 0000000000000000 RBX: fffffffffffff000 RCX: ffff88000ad61c50
->> [ 3299.678596] RDX: 0000000000000010 RSI: 0000000000000000 RDI: fffffffffffff000
->> [ 3299.696632] RBP: ffff88000ad61c08 R08: 0000000000000010 R09: ffff88002617d5a8
->> [ 3299.696632] R10: ffff88003111edc8 R11: 0000000000000001 R12: ffff88000ad61c50
->> [ 3299.696632] R13: fffffffffffff000 R14: 0000000000000000 R15: ffff88000ad61d18
->> [ 3299.696632] FS:  00007f3ffc3aa700(0000) GS:ffff880029800000(0000) knlGS:0000000000000000
->> [ 3299.696632] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> [ 3299.696632] CR2: 0000000000f73ffc CR3: 000000000ad6e000 CR4: 00000000000406e0
->> [ 3299.696632] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->> [ 3299.696632] DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
->> [ 3299.696632] Process trinity-child6 (pid: 21541, threadinfo ffff88000ad60000, task ffff88000a390000)
->> [ 3299.696632] Stack:
->> [ 3299.696632]  ffff88000ad61c18 ffffffff81161bc6 ffff88000ad61c18 fffffffffffff000
->> [ 3299.696632]  0000000000000010 0000000000000000 0000000000001000 ffff88000ad61d18
->> [ 3299.696632]  ffff88000ad61c88 ffffffff810a8fe2 ffff88000ad61c38 0000000000000086
->> [ 3299.696632] Call Trace:
->> [ 3299.696632]  [<ffffffff81161bc6>] ? mark_held_locks+0xf6/0x120
->> [ 3299.696632]  [<ffffffff810a8fe2>] reserve_pfn_range+0xd2/0x1e0
->> [ 3299.696632]  [<ffffffff810a912d>] track_pfn_vma_new+0x3d/0x80
->> [ 3299.696632]  [<ffffffff8120c4bc>] remap_pfn_range+0xac/0x380
->> [ 3299.696632]  [<ffffffff8220e016>] mtdchar_mmap+0xe6/0x100
->> [ 3299.696632]  [<ffffffff812145ae>] mmap_region+0x35e/0x5f0
->> [ 3299.696632]  [<ffffffff81214af9>] do_mmap_pgoff+0x2b9/0x350
->> [ 3299.696632]  [<ffffffff811ff46c>] ? vm_mmap_pgoff+0x6c/0xb0
->> [ 3299.696632]  [<ffffffff811ff484>] vm_mmap_pgoff+0x84/0xb0
->> [ 3299.696632]  [<ffffffff8124fd80>] ? fget_raw+0x260/0x260
->> [ 3299.696632]  [<ffffffff81211fde>] sys_mmap_pgoff+0x15e/0x190
->> [ 3299.696632]  [<ffffffff81985ede>] ? trace_hardirqs_on_thunk+0x3a/0x3f
->> [ 3299.696632]  [<ffffffff8106d4dd>] sys_mmap+0x1d/0x20
->> [ 3299.696632]  [<ffffffff8372a539>] system_call_fastpath+0x16/0x1b
->> [ 3299.696632] Code: 28 5b c9 c3 0f 1f 44 00 00 55 49 89 d0 48 89 e5 41 57 41 56 49 89 f6 41 55 49 89 fd 41 54 49 89 cc 53 48 83 ec 18 48 39 f7 72 0e <0f> 0b 0f 1f 40 00 eb fe 66 0f 1f 44 00 00 8b 3d 1a 5b e3 03 85
->> [ 3299.696632] RIP  [<ffffffff810a8b62>] reserve_memtype+0x22/0x3d0
->> [ 3299.696632]  RSP <ffff88000ad61bc8>
->>
+Murali Karicheri
+Software Design Engineer
