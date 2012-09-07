@@ -1,19 +1,22 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
+Received: from mail-ie0-f177.google.com ([209.85.223.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TA1jM-0007qm-AI
- for linux-mtd@lists.infradead.org; Fri, 07 Sep 2012 16:48:37 +0000
-Received: by pbbrq8 with SMTP id rq8so4385142pbb.36
- for <linux-mtd@lists.infradead.org>; Fri, 07 Sep 2012 09:48:31 -0700 (PDT)
-From: Akinobu Mita <akinobu.mita@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH -next v4 5/5] mtd: mtd_nandecctest: add double bit error
- detection tests
-Date: Sat,  8 Sep 2012 01:48:10 +0900
-Message-Id: <1347036490-18258-6-git-send-email-akinobu.mita@gmail.com>
-In-Reply-To: <1347036490-18258-1-git-send-email-akinobu.mita@gmail.com>
-References: <1347036490-18258-1-git-send-email-akinobu.mita@gmail.com>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- David Woodhouse <dwmw2@infradead.org>, Akinobu Mita <akinobu.mita@gmail.com>
+ id 1TA1qN-0004E2-Qn
+ for linux-mtd@lists.infradead.org; Fri, 07 Sep 2012 16:55:49 +0000
+Received: by ieje10 with SMTP id e10so5689260iej.36
+ for <linux-mtd@lists.infradead.org>; Fri, 07 Sep 2012 09:55:44 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1340959739.2936.28.camel@lappy>
+References: <1340959739.2936.28.camel@lappy>
+From: Sasha Levin <levinsasha928@gmail.com>
+Date: Fri, 7 Sep 2012 18:55:23 +0200
+Message-ID: <CA+1xoqdgKV_sEWvUbuxagL9JEc39ZFa6X9-acP7j-M7wvW6qbQ@mail.gmail.com>
+Subject: Re: mtd: kernel BUG at arch/x86/mm/pat.c:279!
+To: Andrew Morton <akpm@linux-foundation.org>, dwmw2@infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mm <linux-mm@kvack.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>, linux-mtd@lists.infradead.org,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Dave Jones <davej@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,140 +26,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This adds the double bit error detection test cases listed below:
+Ping? Still seeing this with latest master...
 
-* Prepare data block with double bit error and ECC data without
-corruption, and verify that the uncorrectable error is detected by
-__nand_correct_data().
-
-* Prepare data block with single bit error and ECC data with single bit
-error, and verify that the uncorrectable error is detected.
-
-* Prepare data block without corruption and ECC data with double bit
-error, and verify that the uncorrectable error is detected.
-
-Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
----
-* v4
-- fix swapped two ecc arguments for __nand_correct_data()
-- remove empty line
-
- drivers/mtd/tests/mtd_nandecctest.c | 79 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 79 insertions(+)
-
-diff --git a/drivers/mtd/tests/mtd_nandecctest.c b/drivers/mtd/tests/mtd_nandecctest.c
-index caaeb64..b437fa4 100644
---- a/drivers/mtd/tests/mtd_nandecctest.c
-+++ b/drivers/mtd/tests/mtd_nandecctest.c
-@@ -48,6 +48,22 @@ static void single_bit_error_data(void *error_data, void *correct_data,
- 	__change_bit_le(offset, error_data);
- }
- 
-+static void double_bit_error_data(void *error_data, void *correct_data,
-+				size_t size)
-+{
-+	unsigned int offset[2];
-+
-+	offset[0] = random32() % (size * BITS_PER_BYTE);
-+	do {
-+		offset[1] = random32() % (size * BITS_PER_BYTE);
-+	} while (offset[0] == offset[1]);
-+
-+	memcpy(error_data, correct_data, size);
-+
-+	__change_bit_le(offset[0], error_data);
-+	__change_bit_le(offset[1], error_data);
-+}
-+
- static unsigned int random_ecc_bit(size_t size)
- {
- 	unsigned int offset = random32() % (3 * BITS_PER_BYTE);
-@@ -73,6 +89,21 @@ static void single_bit_error_ecc(void *error_ecc, void *correct_ecc,
- 	__change_bit_le(offset, error_ecc);
- }
- 
-+static void double_bit_error_ecc(void *error_ecc, void *correct_ecc,
-+				size_t size)
-+{
-+	unsigned int offset[2];
-+
-+	offset[0] = random_ecc_bit(size);
-+	do {
-+		offset[1] = random_ecc_bit(size);
-+	} while (offset[0] == offset[1]);
-+
-+	memcpy(error_ecc, correct_ecc, 3);
-+	__change_bit_le(offset[0], error_ecc);
-+	__change_bit_le(offset[1], error_ecc);
-+}
-+
- static void no_bit_error(void *error_data, void *error_ecc,
- 		void *correct_data, void *correct_ecc, const size_t size)
- {
-@@ -122,6 +153,39 @@ static int single_bit_error_correct(void *error_data, void *error_ecc,
- 	return -EINVAL;
- }
- 
-+static void double_bit_error_in_data(void *error_data, void *error_ecc,
-+		void *correct_data, void *correct_ecc, const size_t size)
-+{
-+	double_bit_error_data(error_data, correct_data, size);
-+	memcpy(error_ecc, correct_ecc, 3);
-+}
-+
-+static void single_bit_error_in_data_and_ecc(void *error_data, void *error_ecc,
-+		void *correct_data, void *correct_ecc, const size_t size)
-+{
-+	single_bit_error_data(error_data, correct_data, size);
-+	single_bit_error_ecc(error_ecc, correct_ecc, size);
-+}
-+
-+static void double_bit_error_in_ecc(void *error_data, void *error_ecc,
-+		void *correct_data, void *correct_ecc, const size_t size)
-+{
-+	memcpy(error_data, correct_data, size);
-+	double_bit_error_ecc(error_ecc, correct_ecc, size);
-+}
-+
-+static int double_bit_error_detect(void *error_data, void *error_ecc,
-+				void *correct_data, const size_t size)
-+{
-+	unsigned char calc_ecc[3];
-+	int ret;
-+
-+	__nand_calculate_ecc(error_data, size, calc_ecc);
-+	ret = __nand_correct_data(error_data, error_ecc, calc_ecc, size);
-+
-+	return (ret == -1) ? 0 : -EINVAL;
-+}
-+
- static const struct nand_ecc_test nand_ecc_test[] = {
- 	{
- 		.name = "no-bit-error",
-@@ -138,6 +202,21 @@ static const struct nand_ecc_test nand_ecc_test[] = {
- 		.prepare = single_bit_error_in_ecc,
- 		.verify = single_bit_error_correct,
- 	},
-+	{
-+		.name = "double-bit-error-in-data-detect",
-+		.prepare = double_bit_error_in_data,
-+		.verify = double_bit_error_detect,
-+	},
-+	{
-+		.name = "single-bit-error-in-data-and-ecc-detect",
-+		.prepare = single_bit_error_in_data_and_ecc,
-+		.verify = double_bit_error_detect,
-+	},
-+	{
-+		.name = "double-bit-error-in-ecc-detect",
-+		.prepare = double_bit_error_in_ecc,
-+		.verify = double_bit_error_detect,
-+	},
- };
- 
- static void dump_data_ecc(void *error_data, void *error_ecc, void *correct_data,
--- 
-1.7.11.4
+On Fri, Jun 29, 2012 at 10:48 AM, Sasha Levin <levinsasha928@gmail.com> wrote:
+> Hi all,
+>
+> I've stumbled on the following while fuzzing with trinity in a KVM tools guest using latest linux-next:
+>
+> [ 3299.675163] ------------[ cut here ]------------
+> [ 3299.676027] kernel BUG at arch/x86/mm/pat.c:279!
+> [ 3299.676027] invalid opcode: 0000 [#1] PREEMPT SMP DEBUG_PAGEALLOC
+> [ 3299.678596] CPU 2
+> [ 3299.678596] Pid: 21541, comm: trinity-child6 Tainted: G        W    3.5.0-rc4-next-20120628-sasha-00005-g9f23eb7 #479
+> [ 3299.678596] RIP: 0010:[<ffffffff810a8b62>]  [<ffffffff810a8b62>] reserve_memtype+0x22/0x3d0
+> [ 3299.678596] RSP: 0018:ffff88000ad61bc8  EFLAGS: 00010286
+> [ 3299.678596] RAX: 0000000000000000 RBX: fffffffffffff000 RCX: ffff88000ad61c50
+> [ 3299.678596] RDX: 0000000000000010 RSI: 0000000000000000 RDI: fffffffffffff000
+> [ 3299.696632] RBP: ffff88000ad61c08 R08: 0000000000000010 R09: ffff88002617d5a8
+> [ 3299.696632] R10: ffff88003111edc8 R11: 0000000000000001 R12: ffff88000ad61c50
+> [ 3299.696632] R13: fffffffffffff000 R14: 0000000000000000 R15: ffff88000ad61d18
+> [ 3299.696632] FS:  00007f3ffc3aa700(0000) GS:ffff880029800000(0000) knlGS:0000000000000000
+> [ 3299.696632] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 3299.696632] CR2: 0000000000f73ffc CR3: 000000000ad6e000 CR4: 00000000000406e0
+> [ 3299.696632] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [ 3299.696632] DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+> [ 3299.696632] Process trinity-child6 (pid: 21541, threadinfo ffff88000ad60000, task ffff88000a390000)
+> [ 3299.696632] Stack:
+> [ 3299.696632]  ffff88000ad61c18 ffffffff81161bc6 ffff88000ad61c18 fffffffffffff000
+> [ 3299.696632]  0000000000000010 0000000000000000 0000000000001000 ffff88000ad61d18
+> [ 3299.696632]  ffff88000ad61c88 ffffffff810a8fe2 ffff88000ad61c38 0000000000000086
+> [ 3299.696632] Call Trace:
+> [ 3299.696632]  [<ffffffff81161bc6>] ? mark_held_locks+0xf6/0x120
+> [ 3299.696632]  [<ffffffff810a8fe2>] reserve_pfn_range+0xd2/0x1e0
+> [ 3299.696632]  [<ffffffff810a912d>] track_pfn_vma_new+0x3d/0x80
+> [ 3299.696632]  [<ffffffff8120c4bc>] remap_pfn_range+0xac/0x380
+> [ 3299.696632]  [<ffffffff8220e016>] mtdchar_mmap+0xe6/0x100
+> [ 3299.696632]  [<ffffffff812145ae>] mmap_region+0x35e/0x5f0
+> [ 3299.696632]  [<ffffffff81214af9>] do_mmap_pgoff+0x2b9/0x350
+> [ 3299.696632]  [<ffffffff811ff46c>] ? vm_mmap_pgoff+0x6c/0xb0
+> [ 3299.696632]  [<ffffffff811ff484>] vm_mmap_pgoff+0x84/0xb0
+> [ 3299.696632]  [<ffffffff8124fd80>] ? fget_raw+0x260/0x260
+> [ 3299.696632]  [<ffffffff81211fde>] sys_mmap_pgoff+0x15e/0x190
+> [ 3299.696632]  [<ffffffff81985ede>] ? trace_hardirqs_on_thunk+0x3a/0x3f
+> [ 3299.696632]  [<ffffffff8106d4dd>] sys_mmap+0x1d/0x20
+> [ 3299.696632]  [<ffffffff8372a539>] system_call_fastpath+0x16/0x1b
+> [ 3299.696632] Code: 28 5b c9 c3 0f 1f 44 00 00 55 49 89 d0 48 89 e5 41 57 41 56 49 89 f6 41 55 49 89 fd 41 54 49 89 cc 53 48 83 ec 18 48 39 f7 72 0e <0f> 0b 0f 1f 40 00 eb fe 66 0f 1f 44 00 00 8b 3d 1a 5b e3 03 85
+> [ 3299.696632] RIP  [<ffffffff810a8b62>] reserve_memtype+0x22/0x3d0
+> [ 3299.696632]  RSP <ffff88000ad61bc8>
+>
