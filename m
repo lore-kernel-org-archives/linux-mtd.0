@@ -1,24 +1,26 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49])
+Received: from devils.ext.ti.com ([198.47.26.153])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TA66w-0001T9-8a
- for linux-mtd@lists.infradead.org; Fri, 07 Sep 2012 21:29:11 +0000
-Received: by dajq27 with SMTP id q27so20949daj.36
- for <linux-mtd@lists.infradead.org>; Fri, 07 Sep 2012 14:29:06 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-To: Murali Karicheri <m-karicheri2@ti.com>, <dwmw2@infradead.org>,
- <artem.bityutskiy@linux.intel.com>, <dbaryshkov@gmail.com>,
- <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>,
+ id 1TA6XQ-0006KM-60
+ for linux-mtd@lists.infradead.org; Fri, 07 Sep 2012 21:56:33 +0000
+From: "Karicheri, Muralidharan" <m-karicheri2@ti.com>
+To: Mike Turquette <mturquette@linaro.org>, "dwmw2@infradead.org"
+ <dwmw2@infradead.org>, "artem.bityutskiy@linux.intel.com"
+ <artem.bityutskiy@linux.intel.com>, "dbaryshkov@gmail.com"
+ <dbaryshkov@gmail.com>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
  <linux-kernel@vger.kernel.org>
-From: Mike Turquette <mturquette@linaro.org>
-In-Reply-To: <1346350624-27291-1-git-send-email-m-karicheri2@ti.com>
-References: <1346350624-27291-1-git-send-email-m-karicheri2@ti.com>
-Message-ID: <20120907212853.20289.86031@nucleus>
-Subject: Re: [PATCH] mtd:nand:clk: preparation for switch to common clock
+Subject: RE: [PATCH] mtd:nand:clk: preparation for switch to common clock
  framework
-Date: Fri, 07 Sep 2012 14:28:53 -0700
-Cc: Murali Karicheri <m-karicheri2@ti.com>
+Date: Fri, 7 Sep 2012 21:56:22 +0000
+Message-ID: <3E54258959B69E4282D79E01AB1F32B7041B73E9@DFLE12.ent.ti.com>
+References: <1346350624-27291-1-git-send-email-m-karicheri2@ti.com>
+ <20120907212853.20289.86031@nucleus>
+In-Reply-To: <20120907212853.20289.86031@nucleus>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,68 +30,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Quoting Murali Karicheri (2012-08-30 11:17:04)
-> As a first step towards migrating davinci platforms to use common clock
-> framework, replace all instances of clk_enable() with clk_prepare_enable()
-> and clk_disable() with clk_disable_unprepare(). Until the platform is
-> switched to use the CONFIG_HAVE_CLK_PREPARE Kconfig variable, this just
-> adds a might_sleep() call and would work without any issues.
-> =
-
-> This will make it easy later to switch to common clk based implementation
-> of clk driver from DaVinci specific driver.
-> =
-
-> Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
-
-Acked-by: Mike Turquette <mturquette@linaro.org>
-
-> ---
->  drivers/mtd/nand/davinci_nand.c |    6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> =
-
-> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_n=
-and.c
-> index d94b03c..6b8cf27 100644
-> --- a/drivers/mtd/nand/davinci_nand.c
-> +++ b/drivers/mtd/nand/davinci_nand.c
-> @@ -656,7 +656,7 @@ static int __init nand_davinci_probe(struct platform_=
-device *pdev)
->                 goto err_clk;
->         }
->  =
-
-> -       ret =3D clk_enable(info->clk);
-> +       ret =3D clk_prepare_enable(info->clk);
->         if (ret < 0) {
->                 dev_dbg(&pdev->dev, "unable to enable AEMIF clock, err %d=
-\n",
->                         ret);
-> @@ -767,7 +767,7 @@ syndrome_done:
->  =
-
->  err_scan:
->  err_timing:
-> -       clk_disable(info->clk);
-> +       clk_disable_unprepare(info->clk);
->  =
-
->  err_clk_enable:
->         clk_put(info->clk);
-> @@ -804,7 +804,7 @@ static int __exit nand_davinci_remove(struct platform=
-_device *pdev)
->  =
-
->         nand_release(&info->mtd);
->  =
-
-> -       clk_disable(info->clk);
-> +       clk_disable_unprepare(info->clk);
->         clk_put(info->clk);
->  =
-
->         kfree(info);
-> -- =
-
-> 1.7.9.5
+TWlrZSwNCg0KSG93IGRvIHRoZXNlIHBhdGNoIGdldCB0byB1cHN0cmVhbT8gRG9lcyB0aGlzIGdl
+dCBtZXJnZWQgdGhyb3VnaCBkYXZpbmNpIG1haW50YWluZXIgb3IgdGhyb3VnaCBpbmRpdmlkdWFs
+IHN1YnN5c3RlbSBtYWludGFpbmVycz8gDQoNClRoYW5rcy4NCg0KTXVyYWxpIEthcmljaGVyaQ0K
+U29mdHdhcmUgRGVzaWduIEVuZ2luZWVyDQoNCg0KPj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0t
+LS0NCj4+IEZyb206IE1pa2UgVHVycXVldHRlIFttYWlsdG86bXR1cnF1ZXR0ZUBsaW5hcm8ub3Jn
+XQ0KPj4gU2VudDogRnJpZGF5LCBTZXB0ZW1iZXIgMDcsIDIwMTIgNToyOSBQTQ0KPj4gVG86IEth
+cmljaGVyaSwgTXVyYWxpZGhhcmFuOyBkd213MkBpbmZyYWRlYWQub3JnOyBhcnRlbS5iaXR5dXRz
+a2l5QGxpbnV4LmludGVsLmNvbTsNCj4+IGRiYXJ5c2hrb3ZAZ21haWwuY29tOyBjb21wdXRlcnNm
+b3JwZWFjZUBnbWFpbC5jb207IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOw0KPj4gbGlu
+dXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0KPj4gQ2M6IEthcmljaGVyaSwgTXVyYWxpZGhhcmFu
+DQo+PiBTdWJqZWN0OiBSZTogW1BBVENIXSBtdGQ6bmFuZDpjbGs6IHByZXBhcmF0aW9uIGZvciBz
+d2l0Y2ggdG8gY29tbW9uIGNsb2NrIGZyYW1ld29yaw0KPj4gDQo+PiBRdW90aW5nIE11cmFsaSBL
+YXJpY2hlcmkgKDIwMTItMDgtMzAgMTE6MTc6MDQpDQo+PiA+IEFzIGEgZmlyc3Qgc3RlcCB0b3dh
+cmRzIG1pZ3JhdGluZyBkYXZpbmNpIHBsYXRmb3JtcyB0byB1c2UgY29tbW9uIGNsb2NrDQo+PiA+
+IGZyYW1ld29yaywgcmVwbGFjZSBhbGwgaW5zdGFuY2VzIG9mIGNsa19lbmFibGUoKSB3aXRoIGNs
+a19wcmVwYXJlX2VuYWJsZSgpDQo+PiA+IGFuZCBjbGtfZGlzYWJsZSgpIHdpdGggY2xrX2Rpc2Fi
+bGVfdW5wcmVwYXJlKCkuIFVudGlsIHRoZSBwbGF0Zm9ybSBpcw0KPj4gPiBzd2l0Y2hlZCB0byB1
+c2UgdGhlIENPTkZJR19IQVZFX0NMS19QUkVQQVJFIEtjb25maWcgdmFyaWFibGUsIHRoaXMganVz
+dA0KPj4gPiBhZGRzIGEgbWlnaHRfc2xlZXAoKSBjYWxsIGFuZCB3b3VsZCB3b3JrIHdpdGhvdXQg
+YW55IGlzc3Vlcy4NCj4+ID4NCj4+ID4gVGhpcyB3aWxsIG1ha2UgaXQgZWFzeSBsYXRlciB0byBz
+d2l0Y2ggdG8gY29tbW9uIGNsayBiYXNlZCBpbXBsZW1lbnRhdGlvbg0KPj4gPiBvZiBjbGsgZHJp
+dmVyIGZyb20gRGFWaW5jaSBzcGVjaWZpYyBkcml2ZXIuDQo+PiA+DQo+PiA+IFNpZ25lZC1vZmYt
+Ynk6IE11cmFsaSBLYXJpY2hlcmkgPG0ta2FyaWNoZXJpMkB0aS5jb20+DQo+PiANCj4+IEFja2Vk
+LWJ5OiBNaWtlIFR1cnF1ZXR0ZSA8bXR1cnF1ZXR0ZUBsaW5hcm8ub3JnPg0KPj4gDQo+PiA+IC0t
+LQ0KPj4gPiAgZHJpdmVycy9tdGQvbmFuZC9kYXZpbmNpX25hbmQuYyB8ICAgIDYgKysrLS0tDQo+
+PiA+ICAxIGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQ0KPj4g
+Pg0KPj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9kYXZpbmNpX25hbmQuYyBiL2Ry
+aXZlcnMvbXRkL25hbmQvZGF2aW5jaV9uYW5kLmMNCj4+ID4gaW5kZXggZDk0YjAzYy4uNmI4Y2Yy
+NyAxMDA2NDQNCj4+ID4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9kYXZpbmNpX25hbmQuYw0KPj4g
+PiArKysgYi9kcml2ZXJzL210ZC9uYW5kL2RhdmluY2lfbmFuZC5jDQo+PiA+IEBAIC02NTYsNyAr
+NjU2LDcgQEAgc3RhdGljIGludCBfX2luaXQgbmFuZF9kYXZpbmNpX3Byb2JlKHN0cnVjdCBwbGF0
+Zm9ybV9kZXZpY2UNCj4+ICpwZGV2KQ0KPj4gPiAgICAgICAgICAgICAgICAgZ290byBlcnJfY2xr
+Ow0KPj4gPiAgICAgICAgIH0NCj4+ID4NCj4+ID4gLSAgICAgICByZXQgPSBjbGtfZW5hYmxlKGlu
+Zm8tPmNsayk7DQo+PiA+ICsgICAgICAgcmV0ID0gY2xrX3ByZXBhcmVfZW5hYmxlKGluZm8tPmNs
+ayk7DQo+PiA+ICAgICAgICAgaWYgKHJldCA8IDApIHsNCj4+ID4gICAgICAgICAgICAgICAgIGRl
+dl9kYmcoJnBkZXYtPmRldiwgInVuYWJsZSB0byBlbmFibGUgQUVNSUYgY2xvY2ssIGVyciAlZFxu
+IiwNCj4+ID4gICAgICAgICAgICAgICAgICAgICAgICAgcmV0KTsNCj4+ID4gQEAgLTc2Nyw3ICs3
+NjcsNyBAQCBzeW5kcm9tZV9kb25lOg0KPj4gPg0KPj4gPiAgZXJyX3NjYW46DQo+PiA+ICBlcnJf
+dGltaW5nOg0KPj4gPiAtICAgICAgIGNsa19kaXNhYmxlKGluZm8tPmNsayk7DQo+PiA+ICsgICAg
+ICAgY2xrX2Rpc2FibGVfdW5wcmVwYXJlKGluZm8tPmNsayk7DQo+PiA+DQo+PiA+ICBlcnJfY2xr
+X2VuYWJsZToNCj4+ID4gICAgICAgICBjbGtfcHV0KGluZm8tPmNsayk7DQo+PiA+IEBAIC04MDQs
+NyArODA0LDcgQEAgc3RhdGljIGludCBfX2V4aXQgbmFuZF9kYXZpbmNpX3JlbW92ZShzdHJ1Y3Qg
+cGxhdGZvcm1fZGV2aWNlDQo+PiAqcGRldikNCj4+ID4NCj4+ID4gICAgICAgICBuYW5kX3JlbGVh
+c2UoJmluZm8tPm10ZCk7DQo+PiA+DQo+PiA+IC0gICAgICAgY2xrX2Rpc2FibGUoaW5mby0+Y2xr
+KTsNCj4+ID4gKyAgICAgICBjbGtfZGlzYWJsZV91bnByZXBhcmUoaW5mby0+Y2xrKTsNCj4+ID4g
+ICAgICAgICBjbGtfcHV0KGluZm8tPmNsayk7DQo+PiA+DQo+PiA+ICAgICAgICAga2ZyZWUoaW5m
+byk7DQo+PiA+IC0tDQo+PiA+IDEuNy45LjUNCg==
