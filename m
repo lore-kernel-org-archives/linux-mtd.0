@@ -1,21 +1,16 @@
-Date: Thu, 6 Sep 2012 13:36:54 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: "Mohammed, Afzal" <afzal@ti.com>
-Subject: Re: [PATCH 6/9] ARM: OMAP: Move gpio.h to include/linux/platform_data
-Message-ID: <20120906203653.GI1303@atomide.com>
-References: <20120831004828.28732.902.stgit@muffinssi.local>
- <20120831005234.28732.10624.stgit@muffinssi.local>
- <C8443D0743D26F4388EA172BF4E2A7A93E9DC3AF@DBDE01.ent.ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <C8443D0743D26F4388EA172BF4E2A7A93E9DC3AF@DBDE01.ent.ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- Linus Walleij <linus.walleij@linaro.org>,
- Grant Likely <grant.likely@secretlab.ca>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Received: from mail-pz0-f49.google.com ([209.85.210.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TA1jI-0007mO-H1
+ for linux-mtd@lists.infradead.org; Fri, 07 Sep 2012 16:48:32 +0000
+Received: by dajq27 with SMTP id q27so1930929daj.36
+ for <linux-mtd@lists.infradead.org>; Fri, 07 Sep 2012 09:48:24 -0700 (PDT)
+From: Akinobu Mita <akinobu.mita@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH -next v4 0/5] mtd: mtd_nandecctest: add more tests
+Date: Sat,  8 Sep 2012 01:48:05 +0900
+Message-Id: <1347036490-18258-1-git-send-email-akinobu.mita@gmail.com>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ David Woodhouse <dwmw2@infradead.org>, Akinobu Mita <akinobu.mita@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +20,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Mohammed, Afzal <afzal@ti.com> [120903 03:15]:
-> Hi,
-> 
-> On Fri, Aug 31, 2012 at 06:22:34, Tony Lindgren wrote:
-> > This way we can remove includes of plat/gpio.h which won't work
-> > with the single zImage support.
-> > 
-> > Note that we also remove the cpu_class_is_omap2() check
-> > in gpio-omap.c as the drivers should not call it as we need to
-> > make it local to arch/arm/mach-omap2 for single zImage support.
-> > 
-> > While at it, arrange the related includes in the standard way.
-> > 
-> > Cc: Grant Likely <grant.likely@secretlab.ca>
-> > Cc: Linus Walleij <linus.walleij@linaro.org>
-> > Cc: linux-mtd@lists.infradead.org
-> > Cc: alsa-devel@alsa-project.org
-> > Acked-by: Tony Lindgren <tony@atomide.com>
-> 
-> I think there is only one Tony ;)
+This patch series adds several tests cases to mtd_nandecctest module
+and tries to cover possible patterns of corruption which can be reliably
+corrected or detected.
 
-Heh thanks I'll tell myself to replace it with Signed-off-by :)
+Changelog
+* v4
+- fix swapped two ecc arguments for __nand_correct_data()
+- remove asm/byteorder include
+- add comments
+- update commit messages
+- remove patches which are already in l2-mtd.git
 
-Tony
+* v3
+- remove unnecessary include
+- split into still smaller patches
+
+* v2
+- split one patch into smaller patches
+
+Akinobu Mita (5):
+  mtd: mtd_nandecctest: support injecting bit error for ecc code
+  mtd: mtd_nandecctest: rewrite the test routine
+  mtd: mtd_nandecctest: add no corruption test
+  mtd: mtd_nandecctest: add single bit error correction test
+  mtd: mtd_nandecctest: add double bit error detection tests
+
+ drivers/mtd/tests/mtd_nandecctest.c | 249 ++++++++++++++++++++++++++++++++----
+ 1 file changed, 226 insertions(+), 23 deletions(-)
+
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+-- 
+1.7.11.4
