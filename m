@@ -1,26 +1,28 @@
-Received: from mail-wi0-f177.google.com ([209.85.212.177])
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TA7gs-0006Un-Dp
- for linux-mtd@lists.infradead.org; Fri, 07 Sep 2012 23:10:23 +0000
-Received: by wibhn17 with SMTP id hn17so23190wib.0
- for <linux-mtd@lists.infradead.org>; Fri, 07 Sep 2012 16:10:20 -0700 (PDT)
+ id 1TA7sv-0006j1-UP
+ for linux-mtd@lists.infradead.org; Fri, 07 Sep 2012 23:22:50 +0000
+Received: by pbbrq8 with SMTP id rq8so321225pbb.36
+ for <linux-mtd@lists.infradead.org>; Fri, 07 Sep 2012 16:22:45 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Sender: linus971@gmail.com
-In-Reply-To: <1347057778.26695.68.camel@sbsiddha-desk.sc.intel.com>
-References: <1340959739.2936.28.camel@lappy>
- <CA+1xoqdgKV_sEWvUbuxagL9JEc39ZFa6X9-acP7j-M7wvW6qbQ@mail.gmail.com>
- <CA+55aFzJCLxVP+WYJM-gq=aXx5gmdgwC7=_Gr2Tooj8q+Dz4dw@mail.gmail.com>
- <1347057778.26695.68.camel@sbsiddha-desk.sc.intel.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Fri, 7 Sep 2012 16:09:59 -0700
-Message-ID: <CA+55aFwW9Q+DM2gZy7r3JQJbrbMNR6sN+jewc2CY0i1wD_X=Tw@mail.gmail.com>
-Subject: Re: mtd: kernel BUG at arch/x86/mm/pat.c:279!
-To: Suresh Siddha <suresh.b.siddha@intel.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- linux-mm <linux-mm@kvack.org>, linux-mtd@lists.infradead.org,
- Sasha Levin <levinsasha928@gmail.com>, Dave Jones <davej@redhat.com>,
- Andrew Morton <akpm@linux-foundation.org>, dwmw2@infradead.org
+Content-Transfer-Encoding: quoted-printable
+From: Mike Turquette <mturquette@linaro.org>
+To: "Karicheri, Muralidharan" <m-karicheri2@ti.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "dbaryshkov@gmail.com" <dbaryshkov@gmail.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <1346350624-27291-1-git-send-email-m-karicheri2@ti.com>
+ <20120907212853.20289.86031@nucleus>
+ <3E54258959B69E4282D79E01AB1F32B7041B73E9@DFLE12.ent.ti.com>
+In-Reply-To: <3E54258959B69E4282D79E01AB1F32B7041B73E9@DFLE12.ent.ti.com>
+Message-ID: <20120907232241.20289.38511@nucleus>
+Subject: Re: RE: [PATCH] mtd:nand:clk: preparation for switch to common clock
+ framework
+Date: Fri, 07 Sep 2012 16:22:41 -0700
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,73 +32,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Sep 7, 2012 at 3:42 PM, Suresh Siddha <suresh.b.siddha@intel.com> wrote:
-> -       unsigned long start;
-> -       unsigned long off;
-> -       u32 len;
-> +       resource_size_t start, off;
-> +       unsigned long len;
+Quoting Karicheri, Muralidharan (2012-09-07 14:56:22)
+> Mike,
+> =
 
-So since the oops is on x86-64, I don't think it's the "unsigned long"
--> "resource_size_t" part (which can be an issue on 32-bit
-architectures, though).
+> How do these patch get to upstream? Does this get merged through davinci =
+maintainer or through individual subsystem maintainers? =
 
-The "u32 len" -> "unsigned long len" thing *might* make a difference, though.
+> =
 
-I also think your patch is incomplete even on 32-bit, because this:
 
->         if (mtd->type == MTD_RAM || mtd->type == MTD_ROM) {
->                 off = vma->vm_pgoff << PAGE_SHIFT;
+What does scripts/get_maintainer.pl tell you?
 
-is still wrong. It probably should be
+Also feel free to make my Acked-by into a Reviewed-by.  I always ge
+those two confused.
 
-    off = vma->vm_pgoff;
-    off <<= PAGE_SHIFT;
+Regards,
+Mike
 
-because vm_pgoff may be a 32-bit type, while "resource_size_t" may be
-64-bit. Shifting the 32-bit type without a cast (implicit or explicit)
-isn't going to help.
+cant never remembr =
 
-That said, we have absolutely *tons* of bugs with this particular
-pattern. Just do
 
-    git grep 'vm_pgoff.*<<.*PAGE_SHIFT'
+> Thanks.
+> =
 
-and there are distressingly few casts in there (there's a few, mainly
-in fs/proc).
+> Murali Karicheri
+> Software Design Engineer
+> =
 
-Now, I suspect many of them are fine just because most users probably
-are size-limited anyway, but it's a bit distressing stuff. And I
-suspect it means we might want to introduce a helper function like
+> =
 
-    static inline u64 vm_offset(struct vm_area_struct *vma)
-    {
-        return (u64)vma->vm_pgoff << PAGE_SHIFT;
-    }
+> >> -----Original Message-----
+> >> From: Mike Turquette [mailto:mturquette@linaro.org]
+> >> Sent: Friday, September 07, 2012 5:29 PM
+> >> To: Karicheri, Muralidharan; dwmw2@infradead.org; artem.bityutskiy@lin=
+ux.intel.com;
+> >> dbaryshkov@gmail.com; computersforpeace@gmail.com; linux-mtd@lists.inf=
+radead.org;
+> >> linux-kernel@vger.kernel.org
+> >> Cc: Karicheri, Muralidharan
+> >> Subject: Re: [PATCH] mtd:nand:clk: preparation for switch to common cl=
+ock framework
+> >> =
 
-or something. Maybe add the "vm_length()" helper while at it too,
-since the whole "vma->vm_end - vma->vm_start" thing is so common.
+> >> Quoting Murali Karicheri (2012-08-30 11:17:04)
+> >> > As a first step towards migrating davinci platforms to use common cl=
+ock
+> >> > framework, replace all instances of clk_enable() with clk_prepare_en=
+able()
+> >> > and clk_disable() with clk_disable_unprepare(). Until the platform is
+> >> > switched to use the CONFIG_HAVE_CLK_PREPARE Kconfig variable, this j=
+ust
+> >> > adds a might_sleep() call and would work without any issues.
+> >> >
+> >> > This will make it easy later to switch to common clk based implement=
+ation
+> >> > of clk driver from DaVinci specific driver.
+> >> >
+> >> > Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
+> >> =
 
-Anyway, since Sasha's oops is clearly not 32-bit, the above issues
-don't matter, and it would be interesting to hear if it's the 32-bit
-'len' thing that triggers this problem. Still, I can't see how it
-would - as far as I can tell, a truncated 'len' would at most result
-in spurious early "return -EINVAL", not any real problem.
+> >> Acked-by: Mike Turquette <mturquette@linaro.org>
+> >> =
 
-What are we missing?
-
-Sasha, since you can apparently reproduce it, can you replace the
-"BUG_ON()" with just a
-
- if (start >= end) {
-    printf("bogus range %llx - %llx\n", start, end);
-    return -EINVAL;
-  }
-
-or something.
-
-I'm starting to suspect that maybe it's actually that the length is
-*zero*, and start == end, and that we should just return zero for that
-case. But let's see what Sasha finds..
-
-              Linus
+> >> > ---
+> >> >  drivers/mtd/nand/davinci_nand.c |    6 +++---
+> >> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> >> >
+> >> > diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davi=
+nci_nand.c
+> >> > index d94b03c..6b8cf27 100644
+> >> > --- a/drivers/mtd/nand/davinci_nand.c
+> >> > +++ b/drivers/mtd/nand/davinci_nand.c
+> >> > @@ -656,7 +656,7 @@ static int __init nand_davinci_probe(struct plat=
+form_device
+> >> *pdev)
+> >> >                 goto err_clk;
+> >> >         }
+> >> >
+> >> > -       ret =3D clk_enable(info->clk);
+> >> > +       ret =3D clk_prepare_enable(info->clk);
+> >> >         if (ret < 0) {
+> >> >                 dev_dbg(&pdev->dev, "unable to enable AEMIF clock, e=
+rr %d\n",
+> >> >                         ret);
+> >> > @@ -767,7 +767,7 @@ syndrome_done:
+> >> >
+> >> >  err_scan:
+> >> >  err_timing:
+> >> > -       clk_disable(info->clk);
+> >> > +       clk_disable_unprepare(info->clk);
+> >> >
+> >> >  err_clk_enable:
+> >> >         clk_put(info->clk);
+> >> > @@ -804,7 +804,7 @@ static int __exit nand_davinci_remove(struct pla=
+tform_device
+> >> *pdev)
+> >> >
+> >> >         nand_release(&info->mtd);
+> >> >
+> >> > -       clk_disable(info->clk);
+> >> > +       clk_disable_unprepare(info->clk);
+> >> >         clk_put(info->clk);
+> >> >
+> >> >         kfree(info);
+> >> > --
+> >> > 1.7.9.5
