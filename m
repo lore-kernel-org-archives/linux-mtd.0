@@ -1,26 +1,24 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TA6XQ-0006KM-60
- for linux-mtd@lists.infradead.org; Fri, 07 Sep 2012 21:56:33 +0000
-From: "Karicheri, Muralidharan" <m-karicheri2@ti.com>
-To: Mike Turquette <mturquette@linaro.org>, "dwmw2@infradead.org"
- <dwmw2@infradead.org>, "artem.bityutskiy@linux.intel.com"
- <artem.bityutskiy@linux.intel.com>, "dbaryshkov@gmail.com"
- <dbaryshkov@gmail.com>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] mtd:nand:clk: preparation for switch to common clock
- framework
-Date: Fri, 7 Sep 2012 21:56:22 +0000
-Message-ID: <3E54258959B69E4282D79E01AB1F32B7041B73E9@DFLE12.ent.ti.com>
-References: <1346350624-27291-1-git-send-email-m-karicheri2@ti.com>
- <20120907212853.20289.86031@nucleus>
-In-Reply-To: <20120907212853.20289.86031@nucleus>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+Received: from mga11.intel.com ([192.55.52.93])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TA7HO-0005nE-Ml
+ for linux-mtd@lists.infradead.org; Fri, 07 Sep 2012 22:44:03 +0000
+Subject: Re: mtd: kernel BUG at arch/x86/mm/pat.c:279!
+From: Suresh Siddha <suresh.b.siddha@intel.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 07 Sep 2012 15:42:58 -0700
+In-Reply-To: <CA+55aFzJCLxVP+WYJM-gq=aXx5gmdgwC7=_Gr2Tooj8q+Dz4dw@mail.gmail.com>
+References: <1340959739.2936.28.camel@lappy>
+ <CA+1xoqdgKV_sEWvUbuxagL9JEc39ZFa6X9-acP7j-M7wvW6qbQ@mail.gmail.com>
+ <CA+55aFzJCLxVP+WYJM-gq=aXx5gmdgwC7=_Gr2Tooj8q+Dz4dw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <1347057778.26695.68.camel@sbsiddha-desk.sc.intel.com>
+Mime-Version: 1.0
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ linux-mm <linux-mm@kvack.org>, linux-mtd@lists.infradead.org,
+ Sasha Levin <levinsasha928@gmail.com>, Dave Jones <davej@redhat.com>,
+ Andrew Morton <akpm@linux-foundation.org>, dwmw2@infradead.org
+Reply-To: Suresh Siddha <suresh.b.siddha@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,50 +28,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-TWlrZSwNCg0KSG93IGRvIHRoZXNlIHBhdGNoIGdldCB0byB1cHN0cmVhbT8gRG9lcyB0aGlzIGdl
-dCBtZXJnZWQgdGhyb3VnaCBkYXZpbmNpIG1haW50YWluZXIgb3IgdGhyb3VnaCBpbmRpdmlkdWFs
-IHN1YnN5c3RlbSBtYWludGFpbmVycz8gDQoNClRoYW5rcy4NCg0KTXVyYWxpIEthcmljaGVyaQ0K
-U29mdHdhcmUgRGVzaWduIEVuZ2luZWVyDQoNCg0KPj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0t
-LS0NCj4+IEZyb206IE1pa2UgVHVycXVldHRlIFttYWlsdG86bXR1cnF1ZXR0ZUBsaW5hcm8ub3Jn
-XQ0KPj4gU2VudDogRnJpZGF5LCBTZXB0ZW1iZXIgMDcsIDIwMTIgNToyOSBQTQ0KPj4gVG86IEth
-cmljaGVyaSwgTXVyYWxpZGhhcmFuOyBkd213MkBpbmZyYWRlYWQub3JnOyBhcnRlbS5iaXR5dXRz
-a2l5QGxpbnV4LmludGVsLmNvbTsNCj4+IGRiYXJ5c2hrb3ZAZ21haWwuY29tOyBjb21wdXRlcnNm
-b3JwZWFjZUBnbWFpbC5jb207IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOw0KPj4gbGlu
-dXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0KPj4gQ2M6IEthcmljaGVyaSwgTXVyYWxpZGhhcmFu
-DQo+PiBTdWJqZWN0OiBSZTogW1BBVENIXSBtdGQ6bmFuZDpjbGs6IHByZXBhcmF0aW9uIGZvciBz
-d2l0Y2ggdG8gY29tbW9uIGNsb2NrIGZyYW1ld29yaw0KPj4gDQo+PiBRdW90aW5nIE11cmFsaSBL
-YXJpY2hlcmkgKDIwMTItMDgtMzAgMTE6MTc6MDQpDQo+PiA+IEFzIGEgZmlyc3Qgc3RlcCB0b3dh
-cmRzIG1pZ3JhdGluZyBkYXZpbmNpIHBsYXRmb3JtcyB0byB1c2UgY29tbW9uIGNsb2NrDQo+PiA+
-IGZyYW1ld29yaywgcmVwbGFjZSBhbGwgaW5zdGFuY2VzIG9mIGNsa19lbmFibGUoKSB3aXRoIGNs
-a19wcmVwYXJlX2VuYWJsZSgpDQo+PiA+IGFuZCBjbGtfZGlzYWJsZSgpIHdpdGggY2xrX2Rpc2Fi
-bGVfdW5wcmVwYXJlKCkuIFVudGlsIHRoZSBwbGF0Zm9ybSBpcw0KPj4gPiBzd2l0Y2hlZCB0byB1
-c2UgdGhlIENPTkZJR19IQVZFX0NMS19QUkVQQVJFIEtjb25maWcgdmFyaWFibGUsIHRoaXMganVz
-dA0KPj4gPiBhZGRzIGEgbWlnaHRfc2xlZXAoKSBjYWxsIGFuZCB3b3VsZCB3b3JrIHdpdGhvdXQg
-YW55IGlzc3Vlcy4NCj4+ID4NCj4+ID4gVGhpcyB3aWxsIG1ha2UgaXQgZWFzeSBsYXRlciB0byBz
-d2l0Y2ggdG8gY29tbW9uIGNsayBiYXNlZCBpbXBsZW1lbnRhdGlvbg0KPj4gPiBvZiBjbGsgZHJp
-dmVyIGZyb20gRGFWaW5jaSBzcGVjaWZpYyBkcml2ZXIuDQo+PiA+DQo+PiA+IFNpZ25lZC1vZmYt
-Ynk6IE11cmFsaSBLYXJpY2hlcmkgPG0ta2FyaWNoZXJpMkB0aS5jb20+DQo+PiANCj4+IEFja2Vk
-LWJ5OiBNaWtlIFR1cnF1ZXR0ZSA8bXR1cnF1ZXR0ZUBsaW5hcm8ub3JnPg0KPj4gDQo+PiA+IC0t
-LQ0KPj4gPiAgZHJpdmVycy9tdGQvbmFuZC9kYXZpbmNpX25hbmQuYyB8ICAgIDYgKysrLS0tDQo+
-PiA+ICAxIGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQ0KPj4g
-Pg0KPj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9kYXZpbmNpX25hbmQuYyBiL2Ry
-aXZlcnMvbXRkL25hbmQvZGF2aW5jaV9uYW5kLmMNCj4+ID4gaW5kZXggZDk0YjAzYy4uNmI4Y2Yy
-NyAxMDA2NDQNCj4+ID4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9kYXZpbmNpX25hbmQuYw0KPj4g
-PiArKysgYi9kcml2ZXJzL210ZC9uYW5kL2RhdmluY2lfbmFuZC5jDQo+PiA+IEBAIC02NTYsNyAr
-NjU2LDcgQEAgc3RhdGljIGludCBfX2luaXQgbmFuZF9kYXZpbmNpX3Byb2JlKHN0cnVjdCBwbGF0
-Zm9ybV9kZXZpY2UNCj4+ICpwZGV2KQ0KPj4gPiAgICAgICAgICAgICAgICAgZ290byBlcnJfY2xr
-Ow0KPj4gPiAgICAgICAgIH0NCj4+ID4NCj4+ID4gLSAgICAgICByZXQgPSBjbGtfZW5hYmxlKGlu
-Zm8tPmNsayk7DQo+PiA+ICsgICAgICAgcmV0ID0gY2xrX3ByZXBhcmVfZW5hYmxlKGluZm8tPmNs
-ayk7DQo+PiA+ICAgICAgICAgaWYgKHJldCA8IDApIHsNCj4+ID4gICAgICAgICAgICAgICAgIGRl
-dl9kYmcoJnBkZXYtPmRldiwgInVuYWJsZSB0byBlbmFibGUgQUVNSUYgY2xvY2ssIGVyciAlZFxu
-IiwNCj4+ID4gICAgICAgICAgICAgICAgICAgICAgICAgcmV0KTsNCj4+ID4gQEAgLTc2Nyw3ICs3
-NjcsNyBAQCBzeW5kcm9tZV9kb25lOg0KPj4gPg0KPj4gPiAgZXJyX3NjYW46DQo+PiA+ICBlcnJf
-dGltaW5nOg0KPj4gPiAtICAgICAgIGNsa19kaXNhYmxlKGluZm8tPmNsayk7DQo+PiA+ICsgICAg
-ICAgY2xrX2Rpc2FibGVfdW5wcmVwYXJlKGluZm8tPmNsayk7DQo+PiA+DQo+PiA+ICBlcnJfY2xr
-X2VuYWJsZToNCj4+ID4gICAgICAgICBjbGtfcHV0KGluZm8tPmNsayk7DQo+PiA+IEBAIC04MDQs
-NyArODA0LDcgQEAgc3RhdGljIGludCBfX2V4aXQgbmFuZF9kYXZpbmNpX3JlbW92ZShzdHJ1Y3Qg
-cGxhdGZvcm1fZGV2aWNlDQo+PiAqcGRldikNCj4+ID4NCj4+ID4gICAgICAgICBuYW5kX3JlbGVh
-c2UoJmluZm8tPm10ZCk7DQo+PiA+DQo+PiA+IC0gICAgICAgY2xrX2Rpc2FibGUoaW5mby0+Y2xr
-KTsNCj4+ID4gKyAgICAgICBjbGtfZGlzYWJsZV91bnByZXBhcmUoaW5mby0+Y2xrKTsNCj4+ID4g
-ICAgICAgICBjbGtfcHV0KGluZm8tPmNsayk7DQo+PiA+DQo+PiA+ICAgICAgICAga2ZyZWUoaW5m
-byk7DQo+PiA+IC0tDQo+PiA+IDEuNy45LjUNCg==
+On Fri, 2012-09-07 at 11:14 -0700, Linus Torvalds wrote:
+> Guys, this looks like a MTD and/or io_remap_pfn_range() bug, and it's
+> not getting any traction.
+> 
+> What the f*ck is mtd_mmap() doing, and why? The problem seems to be an
+> overflow condition, because reserve_pfn_range() does
+> 
+>     reserve_memtype(paddr, paddr + size, want_flags, &flags);
+> 
+> and then the BUG_ON() in reserve_memtype is
+> 
+>     BUG_ON(start >= end);
+> 
+> so it very much looks like a paddr+size overflow. However, that makes
+> little sense too, since we're working in "u64", so I suspect the
+> overflow has happened somewhere earlier.
+> 
+> I really don't see where, though. Could somebody please take a look?
+> The mtdchar_mmap() types seem insane (why "u32" for len, for example?
+> And that whole
+> 
+>   off = vma->vm_pgoff << PAGE_SHIFT;
+> 
+> thing looks like it would overflow, since the whole point of pgoff is
+> that if you shift it up by PAGE_SHIFT you need to also extend to
+> 64-bit etc.
+> 
+> So I would *guess* that it's the mtdchar_mmap() stuff that overflows
+> due to bad types, but maybe it does deeper than that?
+> 
+
+I started to look into this to see if this is a PAT issue but it does
+indeed appear to be a mtd mmap issue.
+
+Sasha, Does the appended fix the issue for you?
+
+--8<--
+From: Suresh Siddha <suresh.b.siddha@intel.com>
+Subject: mtd: check the starting offset to be mmap'd
+
+We need to check if both the starting offset aswell the total length
+being mmap'd are with in the limits. With a large starting offset,
+offset + (length-to-be-mapped) can wrap and appear smaller than the
+limit. Need to check both start and end.
+
+Also fix the types of the variables start, off, len.
+
+Signed-off-by: Suresh Siddha <suresh.b.siddha@intel.com>
+---
+ drivers/mtd/mtdchar.c |    7 +++----
+ 1 files changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index f2f482b..f79c0fa 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -1132,16 +1132,15 @@ static int mtdchar_mmap(struct file *file, struct vm_area_struct *vma)
+ 	struct mtd_file_info *mfi = file->private_data;
+ 	struct mtd_info *mtd = mfi->mtd;
+ 	struct map_info *map = mtd->priv;
+-	unsigned long start;
+-	unsigned long off;
+-	u32 len;
++	resource_size_t start, off;
++	unsigned long len;
+ 
+ 	if (mtd->type == MTD_RAM || mtd->type == MTD_ROM) {
+ 		off = vma->vm_pgoff << PAGE_SHIFT;
+ 		start = map->phys;
+ 		len = PAGE_ALIGN((start & ~PAGE_MASK) + map->size);
+ 		start &= PAGE_MASK;
+-		if ((vma->vm_end - vma->vm_start + off) > len)
++		if (off >= len || (vma->vm_end - vma->vm_start + off) > len)
+ 			return -EINVAL;
+ 
+ 		off += start;
