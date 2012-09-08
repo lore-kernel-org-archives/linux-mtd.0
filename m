@@ -1,26 +1,27 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TA8OB-0008KB-W3
- for linux-mtd@lists.infradead.org; Fri, 07 Sep 2012 23:55:08 +0000
-Subject: Re: mtd: kernel BUG at arch/x86/mm/pat.c:279!
-From: Suresh Siddha <suresh.b.siddha@intel.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Fri, 07 Sep 2012 16:54:05 -0700
-In-Reply-To: <CA+55aFwW9Q+DM2gZy7r3JQJbrbMNR6sN+jewc2CY0i1wD_X=Tw@mail.gmail.com>
-References: <1340959739.2936.28.camel@lappy>
- <CA+1xoqdgKV_sEWvUbuxagL9JEc39ZFa6X9-acP7j-M7wvW6qbQ@mail.gmail.com>
- <CA+55aFzJCLxVP+WYJM-gq=aXx5gmdgwC7=_Gr2Tooj8q+Dz4dw@mail.gmail.com>
- <1347057778.26695.68.camel@sbsiddha-desk.sc.intel.com>
- <CA+55aFwW9Q+DM2gZy7r3JQJbrbMNR6sN+jewc2CY0i1wD_X=Tw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <1347062045.26695.82.camel@sbsiddha-desk.sc.intel.com>
-Mime-Version: 1.0
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- linux-mm <linux-mm@kvack.org>, linux-mtd@lists.infradead.org,
- Sasha Levin <levinsasha928@gmail.com>, Dave Jones <davej@redhat.com>,
- Andrew Morton <akpm@linux-foundation.org>, dwmw2@infradead.org
-Reply-To: Suresh Siddha <suresh.b.siddha@intel.com>
+Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TA99T-0002G3-Iv
+ for linux-mtd@lists.infradead.org; Sat, 08 Sep 2012 00:44:01 +0000
+Received: by lagu2 with SMTP id u2so83514lag.36
+ for <linux-mtd@lists.infradead.org>; Fri, 07 Sep 2012 17:43:55 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <3E54258959B69E4282D79E01AB1F32B7041B73E9@DFLE12.ent.ti.com>
+References: <1346350624-27291-1-git-send-email-m-karicheri2@ti.com>
+ <20120907212853.20289.86031@nucleus>
+ <3E54258959B69E4282D79E01AB1F32B7041B73E9@DFLE12.ent.ti.com>
+Date: Fri, 7 Sep 2012 17:43:55 -0700
+Message-ID: <CAN8TOE8tpyPK2V4=YQWP7bK7e5AqFDE27EBpKhn0hj-u6r3HAA@mail.gmail.com>
+Subject: Re: [PATCH] mtd:nand:clk: preparation for switch to common clock
+ framework
+From: Brian Norris <computersforpeace@gmail.com>
+To: "Karicheri, Muralidharan" <m-karicheri2@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Mike Turquette <mturquette@linaro.org>,
+ "dbaryshkov@gmail.com" <dbaryshkov@gmail.com>,
+ "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,77 +31,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2012-09-07 at 16:09 -0700, Linus Torvalds wrote:
-> The "u32 len" -> "unsigned long len" thing *might* make a difference, though.
+On Fri, Sep 7, 2012 at 2:56 PM, Karicheri, Muralidharan
+<m-karicheri2@ti.com> wrote:
+> How do these patch get to upstream? Does this get merged through davinci maintainer or through individual subsystem maintainers?
 
-This I believe doesn't fix the reported BUG. I was trying to address
-your previous comment about broken types.
+I think this driver would be taken by David Woodhouse in his linux-mtd
+repo. Usually Artem Bityutskiy gleans the mailing list of patches and
+puts them in his l2-mtd-2.6 git repo to help David out. Give it some
+time, and I'm sure they'll be taking it. We don't really have a
+full-time maintainer!
 
-> 
-> I also think your patch is incomplete even on 32-bit, because this:
-> 
-> >         if (mtd->type == MTD_RAM || mtd->type == MTD_ROM) {
-> >                 off = vma->vm_pgoff << PAGE_SHIFT;
-> 
-> is still wrong. It probably should be
-> 
->     off = vma->vm_pgoff;
->     off <<= PAGE_SHIFT;
-> 
-> because vm_pgoff may be a 32-bit type, while "resource_size_t" may be
-> 64-bit. Shifting the 32-bit type without a cast (implicit or explicit)
-> isn't going to help.
-
-Agree.
-
-> That said, we have absolutely *tons* of bugs with this particular
-> pattern. Just do
-> 
->     git grep 'vm_pgoff.*<<.*PAGE_SHIFT'
-> 
-> and there are distressingly few casts in there (there's a few, mainly
-> in fs/proc).
-> 
-> Now, I suspect many of them are fine just because most users probably
-> are size-limited anyway, but it's a bit distressing stuff. And I
-> suspect it means we might want to introduce a helper function like
-> 
->     static inline u64 vm_offset(struct vm_area_struct *vma)
->     {
->         return (u64)vma->vm_pgoff << PAGE_SHIFT;
->     }
-> 
-> or something. Maybe add the "vm_length()" helper while at it too,
-> since the whole "vma->vm_end - vma->vm_start" thing is so common.
-
-Agree.
-
-> Anyway, since Sasha's oops is clearly not 32-bit, the above issues
-> don't matter, and it would be interesting to hear if it's the 32-bit
-> 'len' thing that triggers this problem. Still, I can't see how it
-> would - as far as I can tell, a truncated 'len' would at most result
-> in spurious early "return -EINVAL", not any real problem.
-> 
-> What are we missing?
-> 
-
-On Fri, 2012-09-07 at 15:42 -0700, Suresh Siddha wrote:
-> -               if ((vma->vm_end - vma->vm_start + off) > len)
-> +               if (off >= len || (vma->vm_end - vma->vm_start + off) > len)
->                         return -EINVAL; 
-
-This is the relevant portion that I am thinking will address the BUG.
-
-Essentially the user is trying to mmap at a very large offset (from the
-oops it appears "vma->vm_pgoff << PAGE_SHIFT + start" ends up to
-"0xfffffffffffff000").
-
-So it appears that the condition "(vma->vm_end - vma->vm_start + off) >
-len" might be false because of the wraparound? and doesn't return
--EINVAL.
-
-Let's see what Sasha finds. Anyways the patch does indeed require your
-above mentioned vm_pgoff fix for the 32-bit case.
-
-thanks,
-suresh
+Brian
