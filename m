@@ -1,28 +1,18 @@
-Received: from mail-we0-f177.google.com ([74.125.82.177])
+Received: from mail-wi0-f177.google.com ([209.85.212.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TARAA-0003hM-W8
- for linux-mtd@lists.infradead.org; Sat, 08 Sep 2012 19:57:55 +0000
-Received: by weyr3 with SMTP id r3so433001wey.36
- for <linux-mtd@lists.infradead.org>; Sat, 08 Sep 2012 12:57:51 -0700 (PDT)
+ id 1TAiYU-0003yT-2Y
+ for linux-mtd@lists.infradead.org; Sun, 09 Sep 2012 14:32:11 +0000
+Received: by wibhn17 with SMTP id hn17so813537wib.0
+ for <linux-mtd@lists.infradead.org>; Sun, 09 Sep 2012 07:32:06 -0700 (PDT)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: prepare place for BCMA NAND flash driver(s)
+Date: Sun,  9 Sep 2012 16:32:01 +0200
+Message-Id: <1347201121-20590-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-Sender: linus971@gmail.com
-In-Reply-To: <1347062045.26695.82.camel@sbsiddha-desk.sc.intel.com>
-References: <1340959739.2936.28.camel@lappy>
- <CA+1xoqdgKV_sEWvUbuxagL9JEc39ZFa6X9-acP7j-M7wvW6qbQ@mail.gmail.com>
- <CA+55aFzJCLxVP+WYJM-gq=aXx5gmdgwC7=_Gr2Tooj8q+Dz4dw@mail.gmail.com>
- <1347057778.26695.68.camel@sbsiddha-desk.sc.intel.com>
- <CA+55aFwW9Q+DM2gZy7r3JQJbrbMNR6sN+jewc2CY0i1wD_X=Tw@mail.gmail.com>
- <1347062045.26695.82.camel@sbsiddha-desk.sc.intel.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sat, 8 Sep 2012 12:57:30 -0700
-Message-ID: <CA+55aFzeKcV5hROLJE31dNi3SEs+s6o0LL=96Kh8QGHPx=aZnA@mail.gmail.com>
-Subject: Re: mtd: kernel BUG at arch/x86/mm/pat.c:279!
-To: Suresh Siddha <suresh.b.siddha@intel.com>
-Content-Type: multipart/mixed; boundary=20cf301e2d93bde88f04c936239f
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- linux-mm <linux-mm@kvack.org>, linux-mtd@lists.infradead.org,
- Sasha Levin <levinsasha928@gmail.com>, Dave Jones <davej@redhat.com>,
- Andrew Morton <akpm@linux-foundation.org>, dwmw2@infradead.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,90 +22,199 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---20cf301e2d93bde88f04c936239f
-Content-Type: text/plain; charset=ISO-8859-1
+BCMA bus can contain NAND flash memory, it's registered in system as
+platform device. This adds required hooks and place for controler
+specific drivers.
+At this point it doesn't work yet, so it's marked as BROKEN.
 
-On Fri, Sep 7, 2012 at 4:54 PM, Suresh Siddha <suresh.b.siddha@intel.com> wrote:
->
-> Essentially the user is trying to mmap at a very large offset (from the
-> oops it appears "vma->vm_pgoff << PAGE_SHIFT + start" ends up to
-> "0xfffffffffffff000").
+Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+---
+ drivers/mtd/nand/Kconfig                       |    8 ++
+ drivers/mtd/nand/Makefile                      |    1 +
+ drivers/mtd/nand/bcm47xxnflash/Makefile        |    3 +
+ drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h |   20 +++++
+ drivers/mtd/nand/bcm47xxnflash/main.c          |  106 ++++++++++++++++++++++++
+ 5 files changed, 138 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/mtd/nand/bcm47xxnflash/Makefile
+ create mode 100644 drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h
+ create mode 100644 drivers/mtd/nand/bcm47xxnflash/main.c
 
-Ok, Sasha confirmed that.
-
-> So it appears that the condition "(vma->vm_end - vma->vm_start + off) >
-> len" might be false because of the wraparound? and doesn't return
-> -EINVAL.
-
-Ack.
-
-Anyway, that means that the BUG_ON() is likely bogus, but so is the
-whole calling convention.
-
-The 4kB range starting at 0xfffffffffffff000 sounds like a *valid*
-range, but that requires that we fix the calling convention to not
-have that "end" (exclusive) thing. It should either be "end"
-(inclusive), or just "len".
-
-So it should either be start=0xfffffffffffff000 end=0xffffffffffffffff
-or it should be start=0xfffffffffffff000 len=0x1000.
-
-Or we need to say that we must never accept things at the end of the
-64-bit range.
-
-Whatever. Something like this (TOTALLY UNTESTED) attached patch should
-get the mtdchar overflows to go away, but it does *not* fix the fact
-that the MTRR start/end model is broken. It really is technically
-valid to have a resource_size_t range of 0xfffffffffffff000+0x1000,
-and right now it causes a BUG_ON() in pat.c.
-
-Suresh?
-
-                    Linus
-
---20cf301e2d93bde88f04c936239f
-Content-Type: application/octet-stream; name="patch.diff"
-Content-Disposition: attachment; filename="patch.diff"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_h6v4xtrj0
-
-IGRyaXZlcnMvbXRkL210ZGNoYXIuYyB8IDQ4ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKy0tLS0tLQogMSBmaWxlIGNoYW5nZWQsIDQyIGluc2VydGlvbnMoKyksIDYg
-ZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbXRkY2hhci5jIGIvZHJpdmVy
-cy9tdGQvbXRkY2hhci5jCmluZGV4IGYyZjQ4MmJlYzU3My4uODNkZDY4YjgwZThlIDEwMDY0NAot
-LS0gYS9kcml2ZXJzL210ZC9tdGRjaGFyLmMKKysrIGIvZHJpdmVycy9tdGQvbXRkY2hhci5jCkBA
-IC0xMTIzLDYgKzExMjMsMzMgQEAgc3RhdGljIHVuc2lnbmVkIGxvbmcgbXRkY2hhcl9nZXRfdW5t
-YXBwZWRfYXJlYShzdHJ1Y3QgZmlsZSAqZmlsZSwKIH0KICNlbmRpZgogCitzdGF0aWMgaW5saW5l
-IHVuc2lnbmVkIGxvbmcgZ2V0X3ZtX3NpemUoc3RydWN0IHZtX2FyZWFfc3RydWN0ICp2bWEpCit7
-CisJcmV0dXJuIHZtYS0+dm1fZW5kIC0gdm1hLT52bV9zdGFydDsKK30KKworc3RhdGljIGlubGlu
-ZSByZXNvdXJjZV9zaXplX3QgZ2V0X3ZtX29mZnNldChzdHJ1Y3Qgdm1fYXJlYV9zdHJ1Y3QgKnZt
-YSkKK3sKKwlyZXR1cm4gKHJlc291cmNlX3NpemVfdCkgdm1hLT52bV9wZ29mZiA8PCBQQUdFX1NI
-SUZUOworfQorCisvKgorICogU2V0IGEgbmV3IHZtIG9mZnNldC4KKyAqCisgKiBWZXJpZnkgdGhh
-dCB0aGUgaW5jb21pbmcgb2Zmc2V0IHJlYWxseSB3b3JrcyBhcyBhIHBhZ2Ugb2Zmc2V0LAorICog
-YW5kIHRoYXQgdGhlIG9mZnNldCBhbmQgc2l6ZSBmaXQgaW4gYSByZXNvdXJjZV9zaXplX3QuCisg
-Ki8KK3N0YXRpYyBpbmxpbnQgaW50IHNldF92bV9vZmZzZXQoc3RydWN0IHZtX2FyZWFfc3RydWN0
-ICp2bWEsIHJlc291cmNlX3NpemVfdCBvZmYpCit7CisJcGdvZmZfdCBwZ29mZiA9IG9mZiA+PiBQ
-QUdFX1NISUZUOworCWlmIChvZmYgIT0gKHJlc291cmNlX3NpemVfdCkgcGdvZmYgPDwgUEFHRV9T
-SElGVCkKKwkJcmV0dXJuIC1FSU5WQUw7CisJaWYgKG9mZiArIGdldF92bV9zaXplKHZtYSkgLSAx
-IDwgb2ZmKQorCQlyZXR1cm4gLUVJTlZBTDsKKwl2bWEtPnZtX3Bnb2ZmID0gcGdvZmY7CisJcmV0
-dXJuIDA7Cit9CisKIC8qCiAgKiBzZXQgdXAgYSBtYXBwaW5nIGZvciBzaGFyZWQgbWVtb3J5IHNl
-Z21lbnRzCiAgKi8KQEAgLTExMzIsMjAgKzExNTksMjkgQEAgc3RhdGljIGludCBtdGRjaGFyX21t
-YXAoc3RydWN0IGZpbGUgKmZpbGUsIHN0cnVjdCB2bV9hcmVhX3N0cnVjdCAqdm1hKQogCXN0cnVj
-dCBtdGRfZmlsZV9pbmZvICptZmkgPSBmaWxlLT5wcml2YXRlX2RhdGE7CiAJc3RydWN0IG10ZF9p
-bmZvICptdGQgPSBtZmktPm10ZDsKIAlzdHJ1Y3QgbWFwX2luZm8gKm1hcCA9IG10ZC0+cHJpdjsK
-LQl1bnNpZ25lZCBsb25nIHN0YXJ0OwotCXVuc2lnbmVkIGxvbmcgb2ZmOwotCXUzMiBsZW47CisJ
-cmVzb3VyY2Vfc2l6ZV90IHN0YXJ0LCBvZmY7CisJdW5zaWduZWQgbG9uZyBsZW4sIHZtYV9sZW47
-CiAKIAlpZiAobXRkLT50eXBlID09IE1URF9SQU0gfHwgbXRkLT50eXBlID09IE1URF9ST00pIHsK
-LQkJb2ZmID0gdm1hLT52bV9wZ29mZiA8PCBQQUdFX1NISUZUOworCQlvZmYgPSBnZXRfdm1fb2Zm
-c2V0KHZtYSk7CiAJCXN0YXJ0ID0gbWFwLT5waHlzOwogCQlsZW4gPSBQQUdFX0FMSUdOKChzdGFy
-dCAmIH5QQUdFX01BU0spICsgbWFwLT5zaXplKTsKIAkJc3RhcnQgJj0gUEFHRV9NQVNLOwotCQlp
-ZiAoKHZtYS0+dm1fZW5kIC0gdm1hLT52bV9zdGFydCArIG9mZikgPiBsZW4pCisJCXZtYV9sZW4g
-PSBnZXRfdm1fc2l6ZSh2bWEpOworCisJCS8qIE92ZXJmbG93IGluIG9mZitsZW4/ICovCisJCWlm
-ICh2bWFfbGVuICsgb2ZmIDwgb2ZmKQorCQkJcmV0dXJuIC1FSU5WQUw7CisJCS8qIERvZXMgaXQg
-Zml0IGluIHRoZSBtYXBwaW5nPyAqLworCQlpZiAodm1hX2xlbiArIG9mZiA+IGxlbikKIAkJCXJl
-dHVybiAtRUlOVkFMOwogCiAJCW9mZiArPSBzdGFydDsKLQkJdm1hLT52bV9wZ29mZiA9IG9mZiA+
-PiBQQUdFX1NISUZUOworCQkvKiBEaWQgdGhhdCBvdmVyZmxvdz8gKi8KKwkJaWYgKG9mZiA8IHN0
-YXJ0KQorCQkJcmV0dXJuIC1FSU5WQUw7CisJCWlmIChzZXRfdm1fb2Zmc2V0KHZtYSwgb2ZmKSA8
-IDApCisJCQlyZXR1cm4gLUVJTlZBTDsKIAkJdm1hLT52bV9mbGFncyB8PSBWTV9JTyB8IFZNX1JF
-U0VSVkVEOwogCiAjaWZkZWYgcGdwcm90X25vbmNhY2hlZAo=
---20cf301e2d93bde88f04c936239f--
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 8ca4176..7460ac2 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -489,6 +489,14 @@ config MTD_NAND_GPMI_NAND
+ 	 block, such as SD card. So pay attention to it when you enable
+ 	 the GPMI.
+ 
++config MTD_NAND_BCM47XXNFLASH
++	tristate "Support for NAND flash on BCMA bus"
++	depends on BCMA_NFLASH && BROKEN
++	help
++	  BCMA bus can have various flash memories attached, they are
++	  registered by bcma as platform devices. This enables driver for
++	  NAND flash memories.
++
+ config MTD_NAND_PLATFORM
+ 	tristate "Support for generic platform NAND driver"
+ 	depends on HAS_IOMEM
+diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+index d4b4d87..8aa55d8 100644
+--- a/drivers/mtd/nand/Makefile
++++ b/drivers/mtd/nand/Makefile
+@@ -51,5 +51,6 @@ obj-$(CONFIG_MTD_NAND_MPC5121_NFC)	+= mpc5121_nfc.o
+ obj-$(CONFIG_MTD_NAND_RICOH)		+= r852.o
+ obj-$(CONFIG_MTD_NAND_JZ4740)		+= jz4740_nand.o
+ obj-$(CONFIG_MTD_NAND_GPMI_NAND)	+= gpmi-nand/
++obj-$(CONFIG_MTD_NAND_BCM47XXNFLASH)	+= bcm47xxnflash/
+ 
+ nand-objs := nand_base.o nand_bbt.o
+diff --git a/drivers/mtd/nand/bcm47xxnflash/Makefile b/drivers/mtd/nand/bcm47xxnflash/Makefile
+new file mode 100644
+index 0000000..1d0693a
+--- /dev/null
++++ b/drivers/mtd/nand/bcm47xxnflash/Makefile
+@@ -0,0 +1,3 @@
++bcm47xxnflash-y				+= main.o
++
++obj-$(CONFIG_MTD_NAND_BCM47XXNFLASH)	+= bcm47xxnflash.o
+diff --git a/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h b/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h
+new file mode 100644
+index 0000000..692ea5f
+--- /dev/null
++++ b/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h
+@@ -0,0 +1,20 @@
++#ifndef __BCM47XXNFLASH_H
++#define __BCM47XXNFLASH_H
++
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/nand.h>
++
++struct bcm47xxnflash {
++	struct bcma_drv_cc *cc;
++
++	struct nand_chip nand_chip;
++	struct mtd_info mtd;
++
++	unsigned curr_command;
++	int curr_page_addr;
++	int curr_column;
++};
++
++int bcm47xxnflash_nand_bcm4706_init(struct bcm47xxnflash *bcm47xxnflash);
++
++#endif /* BCM47XXNFLASH */
+diff --git a/drivers/mtd/nand/bcm47xxnflash/main.c b/drivers/mtd/nand/bcm47xxnflash/main.c
+new file mode 100644
+index 0000000..a28feb3
+--- /dev/null
++++ b/drivers/mtd/nand/bcm47xxnflash/main.c
+@@ -0,0 +1,106 @@
++/*
++ * BCM47XX NAND flash driver
++ *
++ * Copyright (C) 2012 Rafał Miłecki <zajec5@gmail.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/slab.h>
++#include <linux/platform_device.h>
++#include <linux/bcma/bcma.h>
++
++#include "bcm47xxnflash.h"
++
++MODULE_DESCRIPTION("NAND flash driver for BCMA bus");
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Rafał Miłecki");
++
++static const char *probes[] = { "bcm47xxpart", NULL };
++
++static int bcm47xxnflash_probe(struct platform_device *pdev)
++{
++	struct bcma_nflash *nflash = dev_get_platdata(&pdev->dev);
++	struct bcm47xxnflash *b47n;
++	int err = 0;
++
++	b47n = kzalloc(sizeof(*b47n), GFP_KERNEL);
++	if (!b47n) {
++		err = -ENOMEM;
++		goto out;
++	}
++
++	b47n->nand_chip.priv = b47n;
++	b47n->mtd.owner = THIS_MODULE;
++	b47n->mtd.priv = &b47n->nand_chip; /* Required */
++	b47n->cc = container_of(nflash, struct bcma_drv_cc, nflash);
++
++	if (0) {
++		/* TODO: init device */
++	} else {
++		pr_err("Device not supported\n");
++		err = -ENOTSUPP;
++	}
++	if (err) {
++		pr_err("Initialization failed: %d\n", err);
++		goto err_init;
++	}
++
++	err = mtd_device_parse_register(&b47n->mtd, probes, NULL, NULL, 0);
++	if (err) {
++		pr_err("Failed to register MTD device: %d\n", err);
++		goto err_dev_reg;
++	}
++
++err_dev_reg:
++err_init:
++	kfree(b47n);
++out:
++	return err;
++}
++
++static int __devexit bcm47xxnflash_remove(struct platform_device *pdev)
++{
++	struct bcma_nflash *nflash = dev_get_platdata(&pdev->dev);
++
++	if (nflash->mtd)
++		mtd_device_unregister(nflash->mtd);
++
++	return 0;
++}
++
++static struct platform_driver bcm47xxnflash_driver = {
++	.remove = __devexit_p(bcm47xxnflash_remove),
++	.driver = {
++		.name = "bcma_nflash",
++		.owner = THIS_MODULE,
++	},
++};
++
++static int __init bcm47xxnflash_init(void)
++{
++	int err;
++
++	/*
++	 * Platform device "bcma_nflash" exists on SoCs and is registered very
++	 * early, it won't be added during runtime (use platform_driver_probe).
++	 */
++	err = platform_driver_probe(&bcm47xxnflash_driver, bcm47xxnflash_probe);
++	if (err)
++		pr_err("Failed to register serial flash driver: %d\n", err);
++
++	return err;
++}
++
++static void __exit bcm47xxnflash_exit(void)
++{
++	platform_driver_unregister(&bcm47xxnflash_driver);
++}
++
++module_init(bcm47xxnflash_init);
++module_exit(bcm47xxnflash_exit);
+-- 
+1.7.7
