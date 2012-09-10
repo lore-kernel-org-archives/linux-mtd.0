@@ -1,19 +1,20 @@
-Message-ID: <504DF9BB.8050509@gmail.com>
-Date: Mon, 10 Sep 2012 16:31:23 +0200
-From: =?UTF-8?B?R2HDq3RhbiBDYXJsaWVy?= <gcembed@gmail.com>
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TB6aC-0002Gu-RK
+ for linux-mtd@lists.infradead.org; Mon, 10 Sep 2012 16:11:34 +0000
+Received: by pbbrq8 with SMTP id rq8so2872872pbb.36
+ for <linux-mtd@lists.infradead.org>; Mon, 10 Sep 2012 09:11:30 -0700 (PDT)
+Message-ID: <504E112A.8010405@gmail.com>
+Date: Mon, 10 Sep 2012 21:41:22 +0530
+From: Vikram Narayanan <vikram186@gmail.com>
 MIME-Version: 1.0
-To: Juergen Beisert <jbe@pengutronix.de>
-Subject: Re: [PATCH 1/1] mxc_nand : allow swapping the Bad block Indicator
- for NFC v1.
-References: <1345811288.2848.308.camel@sauron.fi.intel.com>
- <1345825064-9147-1-git-send-email-gcembed@gmail.com>
- <201209061056.12386.jbe@pengutronix.de>
-In-Reply-To: <201209061056.12386.jbe@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, J.Lambrecht@televic.com,
- linux-mtd@lists.infradead.org, Sascha Hauer <kernel@pengutronix.de>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH 1/2] mtd: add helpers to set/get features for ONFI nand
+References: <1347256871-18339-1-git-send-email-b32955@freescale.com>
+In-Reply-To: <1347256871-18339-1-git-send-email-b32955@freescale.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,70 +24,150 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Juergen,
-On 09/06/2012 10:56 AM, Juergen Beisert wrote:
-> Hi Gaëtan,
->
-> Gaëtan Carlier wrote:
->> Any comments for this patch ?
->
-> Sorry, a little bit late.
->
->> Swap the BI-byte on position 0x7D0 with a data byte at 0x835.  To fix a bug
->> in Freescale imx NFC v1 SoC's for 2K page NAND flashes: imx27 and imx31.
->> Warning: The same solution needs to be applied to the boot loader and the
->> flash programmer.
->
-> What sense does it make to swap the bytes at offset 0x7D0 and 0x835?
->
-> Background: the NFC in the i.MX27/i.MX31 (NFCv1) and i.MX25/i.MX35 (NFCv2) can
-> only handle 512 byte pages with 16 bit OOB at once. To get them work with 2 k
-> page NANDs they only do the 512 + 16 step four times. The result is, a 2 k
-> page NAND is not handled as 2 k data and 64 bytes OOB, its handled instead as
-> a stream of 2112 bytes:
->
->                 |<-------- 2112 bytes --------->|
->                 512+16 | 512+16 | 512+16 | 512+16
->
-> Which means the NFC mixes data and OOB/checksums into its internal SRAM. But
-> all upper routines still use this SRAM content with a 2048 (data) + 64 (OOB)
-> bytes layout (to be more precise also the NFC hardware uses this layout).
-> Result is, the factory bad block markers are lost, because the NFC stores the
-> first 48 bytes from each OOB into the SRAM's data area (beginning with offset
-> 2000 (= 0x7D0) in the data area).
->
-> So, the main goal of this swap patch should be to keep the factory bad block
-> markers _and_ to make use of them.
->
-> But the i.MX driver does not register its own bad block pattern description,
-> so the default one is used with the BBM at position NAND_LARGE_BADBLOCK_POS
-> (which means offset 0 in the OOB area).
->
-> So, I think, all upper layers still search for the BBM at offset 0 of the OOB
-> area, which results to SRAM's offset 0x800 (for NFCv1) and not 0x835. This
-> means this patch keeps the factory bad block markers, but they won't still be
-> used as expected.
->
-> IMHO the bytes at SRAM's offset 0x7D0 and 0x800 for the NFCv1 must be swapped
-> (and 0x7D0 and 0x1000 for the NFCv2) to keep the factory bad block markers
-> _and_ to make use of them. Or am I wrong?
->
-> Regards,
-> Juergen
->
-The point is not the necessity of swapping bytes if factory bad block 
-markers are not used.
-In my case, the bytes must be swapped because all previous operations on 
-flash swapped these bytes :
-* Flashes redboot (bootloader) via JTAG using OpenOCD which swaps bytes;
-* Writes kernel and rootfs via TFTP using redboot which swaps bytes;
-So to be able to read rootfs partition, mxc-nand driver have to swap 
-bytes otherwise, JFFS2 detects error on partition and is unable to mount it.
+Hello Huang Shijie,
 
-I have not chosen to swap these bytes. In a training, I received redboot 
-and kernel 2.6.22 with set of patches to support i.MX27 and these 
-patches included swap of bytes in nand driver. So I start my development 
-with this workaround and it is now impossible to get back because boards 
-are already in production.
+<Dropped cc's>
+
+Just a few nitpicks.
+
+On 9/10/2012 11:31 AM, Huang Shijie wrote:
+> Add the set-features(0xef)/get-features(0xee) helpers for ONFI nand.
+> Also add the necessary macros.
+>
+> Signed-off-by: Huang Shijie<b32955@freescale.com>
+> ---
+>   drivers/mtd/nand/nand_base.c |   50 ++++++++++++++++++++++++++++++++++++++++++
+>   include/linux/mtd/nand.h     |   14 +++++++++++
+>   2 files changed, 64 insertions(+), 0 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 88f671c..fbc49cc 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -2700,6 +2700,50 @@ static int nand_block_markbad(struct mtd_info *mtd, loff_t ofs)
+>   }
+>
+>   /**
+> + * nand_onfi_set_features- [REPLACEABLE] set features for ONFI nand
+> + * @mtd: MTD device structure
+> + * @chip: nand chip info structure
+> + * @feature_addr: feature address.
+
+As the function conveys that you're setting/getting the features, may be 
+you can drop the prefix from the above addr. Just a thought.
+
+> + * @subfeature_para: the subfeature parameters, a four bytes array.
+
+subfeature_param should be more appropriate.
+
+> + */
+> +static int nand_onfi_set_features(struct mtd_info *mtd, struct nand_chip *chip,
+> +			int feature_addr, uint8_t *subfeature_para)
+> +{
+> +	int status;
+> +
+> +	if (!chip->onfi_version)
+> +		return -EINVAL;
+> +
+> +	chip->cmdfunc(mtd, NAND_CMD_SET_FEATURES, feature_addr, -1);
+> +	chip->write_buf(mtd, subfeature_para, ONFI_SUBFEATURE_PARA_LEN);
+
+							^ PARAM_LEN here
+
+> +	status = chip->waitfunc(mtd, chip);
+> +	if (status&  NAND_STATUS_FAIL)
+> +		return -EIO;
+> +	return 0;
+> +}
+> +
+> +/**
+> + * nand_onfi_get_features- [REPLACEABLE] get features for ONFI nand
+> + * @mtd: MTD device structure
+> + * @chip: nand chip info structure
+> + * @feature_addr: feature address.
+> + * @subfeature_para: the subfeature parameters, a four bytes array.
+> + */
+> +static int nand_onfi_get_features(struct mtd_info *mtd, struct nand_chip *chip,
+> +			int feature_addr, uint8_t *subfeature_para)
+> +{
+> +	if (!chip->onfi_version)
+> +		return -EINVAL;
+> +
+> +	/* clear the sub feature parameters */
+> +	memset(subfeature_para, 0, ONFI_SUBFEATURE_PARA_LEN);
+> +
+> +	chip->cmdfunc(mtd, NAND_CMD_GET_FEATURES, feature_addr, -1);
+> +	chip->read_buf(mtd, subfeature_para, ONFI_SUBFEATURE_PARA_LEN);
+> +	return 0;
+> +}
+> +
+> +/**
+>    * nand_suspend - [MTD Interface] Suspend the NAND flash
+>    * @mtd: MTD device structure
+>    */
+> @@ -3223,6 +3267,12 @@ int nand_scan_tail(struct mtd_info *mtd)
+>   	if (!chip->write_page)
+>   		chip->write_page = nand_write_page;
+>
+> +	/* set for ONFI nand */
+> +	if (!chip->onfi_set_features)
+> +		chip->onfi_set_features = nand_onfi_set_features;
+> +	if (!chip->onfi_get_features)
+> +		chip->onfi_get_features = nand_onfi_get_features;
+> +
+>   	/*
+>   	 * Check ECC mode, default to software if 3byte/512byte hardware ECC is
+>   	 * selected and we have 256 byte pagesize fallback to software ECC
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index 8f99d36..641794c 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -92,6 +92,8 @@ extern int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
+>   #define NAND_CMD_READID		0x90
+>   #define NAND_CMD_ERASE2		0xd0
+>   #define NAND_CMD_PARAM		0xec
+> +#define NAND_CMD_GET_FEATURES	0xee
+> +#define NAND_CMD_SET_FEATURES	0xef
+>   #define NAND_CMD_RESET		0xff
+>
+>   #define NAND_CMD_LOCK		0x2a
+> @@ -229,6 +231,12 @@ typedef enum {
+>   /* Keep gcc happy */
+>   struct nand_chip;
+>
+> +/* ONFI feature address */
+> +#define ONFI_FEATURE_ADDR_TIMING_MODE	0x1
+> +
+> +/* ONFI subfeature parameters length */
+> +#define ONFI_SUBFEATURE_PARA_LEN	4
+
+PARAM_LEN
+
+> +
+>   struct nand_onfi_params {
+>   	/* rev info and features block */
+>   	/* 'O' 'N' 'F' 'I'  */
+> @@ -452,6 +460,8 @@ struct nand_buffers {
+>    *			non 0 if ONFI supported.
+>    * @onfi_params:	[INTERN] holds the ONFI page parameter when ONFI is
+>    *			supported, 0 otherwise.
+> + * @onfi_set_features	[REPLACEABLE] set the features for ONFI nand
+> + * @onfi_get_features	[REPLACEABLE] get the features for ONFI nand
+>    * @ecclayout:		[REPLACEABLE] the default ECC placement scheme
+>    * @bbt:		[INTERN] bad block table pointer
+>    * @bbt_td:		[REPLACEABLE] bad block table descriptor for flash
+> @@ -494,6 +504,10 @@ struct nand_chip {
+>   	int (*write_page)(struct mtd_info *mtd, struct nand_chip *chip,
+>   			const uint8_t *buf, int oob_required, int page,
+>   			int cached, int raw);
+> +	int (*onfi_set_features)(struct mtd_info *mtd, struct nand_chip *chip,
+> +			int feature_addr, uint8_t *subfeature_para);
+> +	int (*onfi_get_features)(struct mtd_info *mtd, struct nand_chip *chip,
+> +			int feature_addr, uint8_t *subfeature_para);
+>
+>   	int chip_delay;
+>   	unsigned int options;
+
+
 Regards,
-Gaëtan Carlier.
+Vikram
