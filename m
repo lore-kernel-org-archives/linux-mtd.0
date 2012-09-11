@@ -1,23 +1,29 @@
-Received: from mho-04-ewr.mailhop.org ([204.13.248.74]
- helo=mho-02-ewr.mailhop.org)
+Received: from mho-03-ewr.mailhop.org ([204.13.248.66]
+ helo=mho-01-ewr.mailhop.org)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TBV4G-0002Vb-7m
- for linux-mtd@lists.infradead.org; Tue, 11 Sep 2012 18:20:12 +0000
-Date: Tue, 11 Sep 2012 11:20:06 -0700
+ id 1TBV5F-0002lI-VX
+ for linux-mtd@lists.infradead.org; Tue, 11 Sep 2012 18:21:14 +0000
+Date: Tue, 11 Sep 2012 11:21:07 -0700
 From: Tony Lindgren <tony@atomide.com>
 To: "Mohammed, Afzal" <afzal@ti.com>
-Subject: Re: [PATCH] mtd: nand: omap2: fix error path
-Message-ID: <20120911182006.GJ23092@atomide.com>
-References: <1347344934-28103-1-git-send-email-afzal@ti.com>
- <C8443D0743D26F4388EA172BF4E2A7A93E9E19C0@DBDE01.ent.ti.com>
+Subject: Re: [PATCH v3 10/10] mtd: nand: omap2: use gpmc provided irqs
+Message-ID: <20120911182106.GK23092@atomide.com>
+References: <cover.1344609341.git.afzal@ti.com>
+ <c5a608a70a875191e1323958c74fb2ac8dfa34b3.1344609341.git.afzal@ti.com>
+ <1345895326.1815.4.camel@kyv> <20120830195349.GW1303@atomide.com>
+ <20120911001710.GD1303@atomide.com>
+ <C8443D0743D26F4388EA172BF4E2A7A93E9E1905@DBDE01.ent.ti.com>
+ <20120911054227.GF1303@atomide.com>
+ <C8443D0743D26F4388EA172BF4E2A7A93E9E1A11@DBDE01.ent.ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <C8443D0743D26F4388EA172BF4E2A7A93E9E19C0@DBDE01.ent.ti.com>
+In-Reply-To: <C8443D0743D26F4388EA172BF4E2A7A93E9E1A11@DBDE01.ent.ti.com>
 Cc: "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>,
  "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,16 +33,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Mohammed, Afzal <afzal@ti.com> [120910 23:31]:
-> +Tony
+* Mohammed, Afzal <afzal@ti.com> [120910 23:40]:
+> Hi Tony,
 > 
-> On Tue, Sep 11, 2012 at 11:58:54, Mohammed, Afzal wrote:
-> > Let probe return error value if gpmc terminal
-> > count interrupt could not be obtained
+> On Tue, Sep 11, 2012 at 11:12:27, Tony Lindgren wrote:
+> > * Mohammed, Afzal <afzal@ti.com> [120910 22:36]:
+> 
+> > > I was not careful enough, sorry. Thanks for fixing it.
+> > > 
+> > > Another hunk as follows would also be required for error
+> > > path even though compiler didn't complain.
+> > > 
+> > > Not sure whether you can fixup or I should post as a
+> > > separate patch.
+> > 
+> > Oh OK, please just post a separate patch as I've
+> > already pushed it out.
+> 
+> I have posted a separate patch, please consider for
+> inclusion in your tree.
+> 
+> BTW, you original commit that fixes the compiler
+> warning has some strange characters.
 
-Thanks I'll just fold my fix and this fix into your original
-patch and push them to new devel-gpmc-fixed branch because
-of the copy paste UTF-8 issues in my fix.
+Ah thanks, that's a copy paste UTF-8 issue. I'll just fold
+in the fixes and push them out to a new devel-gpmc-fixed
+branch.
 
 Regards,
 
