@@ -1,17 +1,23 @@
-Message-ID: <504F7E10.8030406@gmail.com>
-Date: Tue, 11 Sep 2012 23:38:16 +0530
-From: Vikram Narayanan <vikram186@gmail.com>
+Received: from mho-04-ewr.mailhop.org ([204.13.248.74]
+ helo=mho-02-ewr.mailhop.org)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TBV4G-0002Vb-7m
+ for linux-mtd@lists.infradead.org; Tue, 11 Sep 2012 18:20:12 +0000
+Date: Tue, 11 Sep 2012 11:20:06 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: "Mohammed, Afzal" <afzal@ti.com>
+Subject: Re: [PATCH] mtd: nand: omap2: fix error path
+Message-ID: <20120911182006.GJ23092@atomide.com>
+References: <1347344934-28103-1-git-send-email-afzal@ti.com>
+ <C8443D0743D26F4388EA172BF4E2A7A93E9E19C0@DBDE01.ent.ti.com>
 MIME-Version: 1.0
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH 6/9] mtd: gpmi: simplify the setting DLL code
-References: <1347344231-10295-1-git-send-email-b32955@freescale.com>
- <1347344231-10295-7-git-send-email-b32955@freescale.com>
-In-Reply-To: <1347344231-10295-7-git-send-email-b32955@freescale.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: dirk.behme@de.bosch.com, dedekind1@gmail.com, linux-mtd@lists.infradead.org,
- ffainelli@freebox.fr, shawn.guo@linaro.org, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <C8443D0743D26F4388EA172BF4E2A7A93E9E19C0@DBDE01.ent.ti.com>
+Cc: "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,68 +27,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Huang Shijie,
+* Mohammed, Afzal <afzal@ti.com> [120910 23:31]:
+> +Tony
+> 
+> On Tue, Sep 11, 2012 at 11:58:54, Mohammed, Afzal wrote:
+> > Let probe return error value if gpmc terminal
+> > count interrupt could not be obtained
 
-On 9/11/2012 11:47 AM, Huang Shijie wrote:
-> The setting DLL code is a little mess.
-> Just simplify the code and the comments.
->
-> Signed-off-by: Huang Shijie<b32955@freescale.com>
-> ---
->   drivers/mtd/nand/gpmi-nand/gpmi-lib.c |   22 +++++++++-------------
->   1 files changed, 9 insertions(+), 13 deletions(-)
->
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> index 037438a..83c5573 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> @@ -779,30 +779,26 @@ void gpmi_begin(struct gpmi_nand_data *this)
->   	writel(BM_GPMI_CTRL1_DLL_ENABLE, gpmi_regs + HW_GPMI_CTRL1_CLR);
->
->   	/* Clear out the DLL control fields. */
-> -	writel(BM_GPMI_CTRL1_RDN_DELAY,   gpmi_regs + HW_GPMI_CTRL1_CLR);
-> -	writel(BM_GPMI_CTRL1_HALF_PERIOD, gpmi_regs + HW_GPMI_CTRL1_CLR);
-> +	reg = BM_GPMI_CTRL1_RDN_DELAY | BM_GPMI_CTRL1_HALF_PERIOD;
-> +	writel(reg, gpmi_regs + HW_GPMI_CTRL1_CLR);
->
->   	/* If no sample delay is called for, return immediately. */
->   	if (!hw.sample_delay_factor)
->   		return;
->
-> -	/* Configure the HALF_PERIOD flag. */
-> -	if (hw.use_half_periods)
-> -		writel(BM_GPMI_CTRL1_HALF_PERIOD,
-> -						gpmi_regs + HW_GPMI_CTRL1_SET);
-> +	/* Set RDN_DELAY or HALF_PERIOD. */
-> +	reg = ((hw.use_half_periods) ? BM_GPMI_CTRL1_HALF_PERIOD : 0)
-> +		| BF_GPMI_CTRL1_RDN_DELAY(hw.sample_delay_factor);
->
-> -	/* Set the delay factor. */
-> -	writel(BF_GPMI_CTRL1_RDN_DELAY(hw.sample_delay_factor),
-> -						gpmi_regs + HW_GPMI_CTRL1_SET);
-> +	writel(reg, gpmi_regs + HW_GPMI_CTRL1_SET);
->
-> -	/* Enable the DLL. */
-> +	/* At last, we enable the DLL. */
->   	writel(BM_GPMI_CTRL1_DLL_ENABLE, gpmi_regs + HW_GPMI_CTRL1_SET);
->
->   	/*
->   	 * After we enable the GPMI DLL, we have to wait 64 clock cycles before
-> -	 * we can use the GPMI.
-> -	 *
-> -	 * Calculate the amount of time we need to wait, in microseconds.
-> +	 * we can use the GPMI. Calculate the amount of time we need to wait,
-> +	 * in microseconds.
->   	 */
->   	clock_period_in_ns = 1000000000 / clk_get_rate(r->clock[0]);
-
-NSEC_PER_SEC macro in the above statement?
-
-Don't curse me for commenting about the code that you've not written. As 
-this patch does some cleanups, I'm suggesting this.
-
-
->   	dll_wait_time_in_us = (clock_period_in_ns * 64) / 1000;
+Thanks I'll just fold my fix and this fix into your original
+patch and push them to new devel-gpmc-fixed branch because
+of the copy paste UTF-8 issues in my fix.
 
 Regards,
-Vikram
+
+Tony
