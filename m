@@ -1,22 +1,24 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
+Received: from mho-04-ewr.mailhop.org ([204.13.248.74]
+ helo=mho-02-ewr.mailhop.org)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TB6dg-0002vp-Oj
- for linux-mtd@lists.infradead.org; Mon, 10 Sep 2012 16:15:09 +0000
-Received: by pbbrq8 with SMTP id rq8so2877971pbb.36
- for <linux-mtd@lists.infradead.org>; Mon, 10 Sep 2012 09:15:07 -0700 (PDT)
-Message-ID: <504E1203.6090509@gmail.com>
-Date: Mon, 10 Sep 2012 21:44:59 +0530
-From: Vikram Narayanan <vikram186@gmail.com>
+ id 1TBEAG-0001xa-Ii
+ for linux-mtd@lists.infradead.org; Tue, 11 Sep 2012 00:17:17 +0000
+Date: Mon, 10 Sep 2012 17:17:10 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH v3 10/10] mtd: nand: omap2: use gpmc provided irqs
+Message-ID: <20120911001710.GD1303@atomide.com>
+References: <cover.1344609341.git.afzal@ti.com>
+ <c5a608a70a875191e1323958c74fb2ac8dfa34b3.1344609341.git.afzal@ti.com>
+ <1345895326.1815.4.camel@kyv> <20120830195349.GW1303@atomide.com>
 MIME-Version: 1.0
-To: Josh Wu <josh.wu@atmel.com>
-Subject: Re: [PATCH] mtd: atmel_nand: fix the compile error which miss label
- "err_ecc_ioremap".
-References: <1346824842-18875-1-git-send-email-josh.wu@atmel.com>
- <5047286C.4060705@atmel.com>
-In-Reply-To: <5047286C.4060705@atmel.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20120830195349.GW1303@atomide.com>
+Cc: artem.bityutskiy@linux.intel.com, Afzal Mohammed <afzal@ti.com>,
+ linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
+ ivan.djelic@parrot.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,22 +28,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+* Tony Lindgren <tony@atomide.com> [120830 12:54]:
+> * Artem Bityutskiy <dedekind1@gmail.com> [120825 04:49]:
+> > On Tue, 2012-08-21 at 15:14 +0530, Afzal Mohammed wrote:
+> > > GPMC platform initialization provides it's clients
+> > > with interrupts that can be used through struct
+> > > resource. Make use of it for irq mode functionality.
+> > > 
+> > > Also now write protect disable is done by GPMC,
+> > > hence remove it.
+> > > 
+> > > Signed-off-by: Afzal Mohammed <afzal@ti.com>
+> > 
+> > Acked-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+> 
+> Thanks I'll apply these into omap devel-gpmc branch.
 
-On 9/5/2012 3:54 PM, Josh Wu wrote:
-> Hi, all
->
-> This patch is for latest l2-mtd.git tree. It fixes the compile error
-> after JC's commit: b654a9a4
-
-Please mention the above in the commit's description than keeping it empty.
-
-> On 9/5/2012 2:00 PM, Josh Wu wrote:
->> Signed-off-by: Josh Wu <josh.wu@atmel.com>
->> ---
->> drivers/mtd/nand/atmel_nand.c | 3 ++-
->> 1 file changed, 2 insertions(+), 1 deletion(-)
-<snip>
+FYI, looks like a new warning got introduced, so I've
+committed the following trivial patch on top of this series.
 
 Regards,
-Vikram
+
+Tony
+
+From: Tony Lindgren <tony@atomide.com>
+Date: Mon, 10 Sep 2012 17:14:13 -0700
+Subject: [PATCH] mtd: nand omap2: Fix uninitialized err warning
+
+Commit bd4156fd (mtd: nand: omap2: use gpmc provided irqs)
+introduced a new warning:
+
+drivers/mtd/nand/omap2.c: In function ‘omap_nand_probe’:
+drivers/mtd/nand/omap2.c:1267: warning: ‘err’ may be used uninitialized in this function
+
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -1389,6 +1389,7 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
+ 		info->gpmc_irq_fifo = platform_get_irq(pdev, 0);
+ 		if (info->gpmc_irq_fifo <= 0) {
+ 			dev_err(&pdev->dev, "error getting fifo irq\n");
++			err = -ENODEV;
+ 			goto out_release_mem_region;
+ 		}
+ 		err = request_irq(info->gpmc_irq_fifo,	omap_nand_irq,
