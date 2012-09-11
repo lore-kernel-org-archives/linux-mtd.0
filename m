@@ -1,14 +1,17 @@
-Received: from smtp.newsguy.com ([74.209.136.69])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TBSrh-0006cG-CH
- for linux-mtd@lists.infradead.org; Tue, 11 Sep 2012 15:59:05 +0000
-From: Mike Dunn <mikedunn@newsguy.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: nand: expand description of read_page method in comment
- header
-Date: Tue, 11 Sep 2012 08:59:03 -0700
-Message-Id: <1347379143-3607-1-git-send-email-mikedunn@newsguy.com>
-Cc: Mike Dunn <mikedunn@newsguy.com>
+Message-ID: <504F7C22.1050605@gmail.com>
+Date: Tue, 11 Sep 2012 23:30:02 +0530
+From: Vikram Narayanan <vikram186@gmail.com>
+MIME-Version: 1.0
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH 3/9] mtd: gpmi: add a new field for HW_GPMI_TIMING1
+References: <1347344231-10295-1-git-send-email-b32955@freescale.com>
+ <1347344231-10295-4-git-send-email-b32955@freescale.com>
+In-Reply-To: <1347344231-10295-4-git-send-email-b32955@freescale.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: dirk.behme@de.bosch.com, dedekind1@gmail.com, linux-mtd@lists.infradead.org,
+ ffainelli@freebox.fr, shawn.guo@linaro.org, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,29 +21,123 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In the absence of any formal documentation of the nand interface, I thought this
-patch to the header file might be helpful.
+Hello Huang Shijie,
 
-Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
----
- include/linux/mtd/nand.h |    4 +++-
- 1 files changed, 3 insertions(+), 1 deletions(-)
+On 9/11/2012 11:47 AM, Huang Shijie wrote:
+> The gpmi_nfc_compute_hardware_timing{} should contains all the
+> fields setting for gpmi timing registers. It already contains the fields
+> for HW_GPMI_TIMING0 and HW_GPMI_CTRL1.
+>
+> So it is better to add a new field setting for HW_GPMI_TIMING1 in
+> this data structure. This makes the code more clear in logic.
+>
+> This patch also changes some comments to make the code more readable.
+>
+> Signed-off-by: Huang Shijie<b32955@freescale.com>
+> ---
+>   drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |   17 +++++++++--------
+>   drivers/mtd/nand/gpmi-nand/gpmi-nand.h |    9 +++++++++
+>   drivers/mtd/nand/gpmi-nand/gpmi-regs.h |    3 +++
+>   3 files changed, 21 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+> index 2289cf8..fb9b3c1 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+> @@ -728,6 +728,7 @@ return_results:
+>   	hw->address_setup_in_cycles = address_setup_in_cycles;
+>   	hw->use_half_periods        = dll_use_half_periods;
+>   	hw->sample_delay_factor     = sample_delay_factor;
+> +	hw->device_busy_timeout     = 0x500; /* default busy timeout value. */
 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 8f99d36..8d18313 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -326,9 +326,10 @@ struct nand_hw_control {
-  * @read_page_raw:	function to read a raw page without ECC
-  * @write_page_raw:	function to write a raw page without ECC
-  * @read_page:	function to read a page according to the ECC generator
-- *		requirements.
-+ *		requirements.  Returns maximum number of bitflips corrected in
-+ *		any single ecc step, 0 if bitflips uncorrectible, -EIO hw error.
-  * @read_subpage:	function to read parts of the page covered by ECC.
-+ *			Returns same as read_page().
-  * @write_page:	function to write a page according to the ECC generator
-  *		requirements.
-  * @write_oob_raw:	function to write chip OOB data without ECC
--- 
-1.7.3.4
+Can we make this value a macro and put the comment there?
+
+>   	/* Return success. */
+>   	return 0;
+> @@ -752,26 +753,26 @@ void gpmi_begin(struct gpmi_nand_data *this)
+>   		goto err_out;
+>   	}
+>
+> -	/* set ready/busy timeout */
+> -	writel(0x500<<  BP_GPMI_TIMING1_BUSY_TIMEOUT,
+> -		gpmi_regs + HW_GPMI_TIMING1);
+> -
+>   	/* Get the timing information we need. */
+>   	nfc->clock_frequency_in_hz = clk_get_rate(r->clock[0]);
+>   	clock_period_in_ns = 1000000000 / nfc->clock_frequency_in_hz;
+>
+>   	gpmi_nfc_compute_hardware_timing(this,&hw);
+>
+> -	/* Set up all the simple timing parameters. */
+> +	/* [1] Set HW_GPMI_TIMING0 */
+>   	reg = BF_GPMI_TIMING0_ADDRESS_SETUP(hw.address_setup_in_cycles) |
+>   		BF_GPMI_TIMING0_DATA_HOLD(hw.data_hold_in_cycles)         |
+>   		BF_GPMI_TIMING0_DATA_SETUP(hw.data_setup_in_cycles)       ;
+>
+>   	writel(reg, gpmi_regs + HW_GPMI_TIMING0);
+>
+> -	/*
+> -	 * DLL_ENABLE must be set to 0 when setting RDN_DELAY or HALF_PERIOD.
+> -	 */
+> +	/* [2] Set HW_GPMI_TIMING1 */
+> +	writel(BF_GPMI_TIMING1_BUSY_TIMEOUT(hw.device_busy_timeout),
+> +		gpmi_regs + HW_GPMI_TIMING1);
+> +
+> +	/* [3] The following code is to set the HW_GPMI_CTRL1. */
+> +
+> +	/* DLL_ENABLE must be set to 0 when setting RDN_DELAY or HALF_PERIOD. */
+>   	writel(BM_GPMI_CTRL1_DLL_ENABLE, gpmi_regs + HW_GPMI_CTRL1_CLR);
+
+
+Are these [1], [2], [3] notation references to some other comments?
+
+>   	/* Clear out the DLL control fields. */
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+> index 1f61217..e68bbac 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+> @@ -189,14 +189,23 @@ struct gpmi_nand_data {
+>    * @data_setup_in_cycles:      The data setup time, in cycles.
+>    * @data_hold_in_cycles:       The data hold time, in cycles.
+>    * @address_setup_in_cycles:   The address setup time, in cycles.
+> + * @device_busy_timeout:       The timeout waiting for NAND Ready/Busy,
+> + *                             this value is the number of cycles multiplied
+> + *                             by 4096.
+>    * @use_half_periods:          Indicates the clock is running slowly, so the
+>    *                             NFC DLL should use half-periods.
+>    * @sample_delay_factor:       The sample delay factor.
+>    */
+>   struct gpmi_nfc_hardware_timing {
+> +	/* for HW_GPMI_TIMING0 */
+>   	uint8_t  data_setup_in_cycles;
+>   	uint8_t  data_hold_in_cycles;
+>   	uint8_t  address_setup_in_cycles;
+> +
+> +	/* for HW_GPMI_TIMING1 */
+> +	uint16_t device_busy_timeout;
+> +
+> +	/* for HW_GPMI_CTRL1 */
+>   	bool     use_half_periods;
+>   	uint8_t  sample_delay_factor;
+>   };
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-regs.h b/drivers/mtd/nand/gpmi-nand/gpmi-regs.h
+> index 8343124..7961c14 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-regs.h
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-regs.h
+> @@ -154,6 +154,9 @@
+>
+>   #define HW_GPMI_TIMING1					0x00000080
+>   #define BP_GPMI_TIMING1_BUSY_TIMEOUT			16
+> +#define BM_GPMI_TIMING1_BUSY_TIMEOUT	(0xff<<  BP_GPMI_TIMING1_BUSY_TIMEOUT)
+
+Isn't this 0xffff?
+My Rev C manual states so. I might be wrong if I'm referring to a older one!
+
+> +#define BF_GPMI_TIMING1_BUSY_TIMEOUT(v)		\
+> +	(((v)<<  BP_GPMI_TIMING1_BUSY_TIMEOUT)&  BM_GPMI_TIMING1_BUSY_TIMEOUT)
+>
+>   #define HW_GPMI_TIMING2					0x00000090
+>   #define HW_GPMI_DATA					0x000000a0
+
+Regards,
+Vikram
