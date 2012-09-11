@@ -1,15 +1,14 @@
-Received: from mail-wi0-f171.google.com ([209.85.212.171])
+Received: from smtp.newsguy.com ([74.209.136.69])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TBQrr-0000e2-26
- for linux-mtd@lists.infradead.org; Tue, 11 Sep 2012 13:51:07 +0000
-Received: by wibhq4 with SMTP id hq4so2683037wib.0
- for <linux-mtd@lists.infradead.org>; Tue, 11 Sep 2012 06:51:04 -0700 (PDT)
-From: Richard Genoud <richard.genoud@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] NAND BBT: use NAND_BBT_SCAN_MAXBLOCKS
-Date: Tue, 11 Sep 2012 15:50:54 +0200
-Message-Id: <1347371454-17107-1-git-send-email-richard.genoud@gmail.com>
-Cc: Richard Genoud <richard.genoud@gmail.com>, linux-mtd@lists.infradead.org
+ id 1TBSjl-0005vO-2i
+ for linux-mtd@lists.infradead.org; Tue, 11 Sep 2012 15:50:53 +0000
+From: Mike Dunn <mikedunn@newsguy.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: nand: docg4: ecc.read_page() returns 0 on uncorrectible
+ errors
+Date: Tue, 11 Sep 2012 08:50:50 -0700
+Message-Id: <1347378650-3522-1-git-send-email-mikedunn@newsguy.com>
+Cc: Mike Dunn <mikedunn@newsguy.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,63 +18,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In nand_bbt.c, a hardcoded value was used instead of the define meant
-for that, so we use the define.
+Currently the docg4's ecc.read_page() method returns -EBADMSG when uncorrectible
+bitflips occur.  This is wrong; 0 should be returned in this case.  An error
+code should only be returned by this method in the case of a hardware error
+(probably -EIO).
 
-There's no functionnal change.
-
-Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
+Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
 ---
- drivers/mtd/nand/nand_bbt.c |    9 +++++----
- 1 files changed, 5 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/docg4.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-index 30d1319..741ecf7 100644
---- a/drivers/mtd/nand/nand_bbt.c
-+++ b/drivers/mtd/nand/nand_bbt.c
-@@ -62,6 +62,7 @@
- #include <linux/slab.h>
- #include <linux/types.h>
- #include <linux/mtd/mtd.h>
-+#include <linux/mtd/bbm.h>
- #include <linux/mtd/nand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/bitops.h>
-@@ -1260,7 +1261,7 @@ static struct nand_bbt_descr bbt_main_descr = {
- 	.offs =	8,
- 	.len = 4,
- 	.veroffs = 12,
--	.maxblocks = 4,
-+	.maxblocks = NAND_BBT_SCAN_MAXBLOCKS,
- 	.pattern = bbt_pattern
- };
+diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/docg4.c
+index 793921e..deb718c 100644
+--- a/drivers/mtd/nand/docg4.c
++++ b/drivers/mtd/nand/docg4.c
+@@ -776,6 +776,8 @@ static int read_page(struct mtd_info *mtd, struct nand_chip *nand,
+ 	}
  
-@@ -1270,7 +1271,7 @@ static struct nand_bbt_descr bbt_mirror_descr = {
- 	.offs =	8,
- 	.len = 4,
- 	.veroffs = 12,
--	.maxblocks = 4,
-+	.maxblocks = NAND_BBT_SCAN_MAXBLOCKS,
- 	.pattern = mirror_pattern
- };
- 
-@@ -1280,7 +1281,7 @@ static struct nand_bbt_descr bbt_main_no_bbt_descr = {
- 		| NAND_BBT_NO_OOB,
- 	.len = 4,
- 	.veroffs = 4,
--	.maxblocks = 4,
-+	.maxblocks = NAND_BBT_SCAN_MAXBLOCKS,
- 	.pattern = bbt_pattern
- };
- 
-@@ -1290,7 +1291,7 @@ static struct nand_bbt_descr bbt_mirror_no_bbt_descr = {
- 		| NAND_BBT_NO_OOB,
- 	.len = 4,
- 	.veroffs = 4,
--	.maxblocks = 4,
-+	.maxblocks = NAND_BBT_SCAN_MAXBLOCKS,
- 	.pattern = mirror_pattern
- };
+ 	writew(0, docptr + DOC_DATAEND);
++	if (bits_corrected == -EBADMSG)	  /* uncorrectible errors */
++		return 0;
+ 	return bits_corrected;
+ }
  
 -- 
-1.7.2.5
+1.7.3.4
