@@ -1,28 +1,16 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TBK8n-0007cj-CH
- for linux-mtd@lists.infradead.org; Tue, 11 Sep 2012 06:40:11 +0000
-From: "Mohammed, Afzal" <afzal@ti.com>
-To: Tony Lindgren <tony@atomide.com>
-Subject: RE: [PATCH v3 10/10] mtd: nand: omap2: use gpmc provided irqs
-Date: Tue, 11 Sep 2012 06:40:03 +0000
-Message-ID: <C8443D0743D26F4388EA172BF4E2A7A93E9E1A11@DBDE01.ent.ti.com>
-References: <cover.1344609341.git.afzal@ti.com>
- <c5a608a70a875191e1323958c74fb2ac8dfa34b3.1344609341.git.afzal@ti.com>
- <1345895326.1815.4.camel@kyv> <20120830195349.GW1303@atomide.com>
- <20120911001710.GD1303@atomide.com>
- <C8443D0743D26F4388EA172BF4E2A7A93E9E1905@DBDE01.ent.ti.com>
- <20120911054227.GF1303@atomide.com>
-In-Reply-To: <20120911054227.GF1303@atomide.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Huang Shijie <b32955@freescale.com>
+To: <dedekind1@gmail.com>
+Subject: [PATCH 1/9] mtd: add helpers to set/get features for ONFI nand
+Date: Tue, 11 Sep 2012 14:17:03 +0800
+Message-ID: <1347344231-10295-2-git-send-email-b32955@freescale.com>
+In-Reply-To: <1347344231-10295-1-git-send-email-b32955@freescale.com>
+References: <1347344231-10295-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-Cc: "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
- "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain
+Cc: dirk.behme@de.bosch.com, vikram186@gmail.com,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ ffainelli@freebox.fr, shawn.guo@linaro.org, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,15 +20,128 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgVG9ueSwNCg0KT24gVHVlLCBTZXAgMTEsIDIwMTIgYXQgMTE6MTI6MjcsIFRvbnkgTGluZGdy
-ZW4gd3JvdGU6DQo+ICogTW9oYW1tZWQsIEFmemFsIDxhZnphbEB0aS5jb20+IFsxMjA5MTAgMjI6
-MzZdOg0KDQo+ID4gSSB3YXMgbm90IGNhcmVmdWwgZW5vdWdoLCBzb3JyeS4gVGhhbmtzIGZvciBm
-aXhpbmcgaXQuDQo+ID4gDQo+ID4gQW5vdGhlciBodW5rIGFzIGZvbGxvd3Mgd291bGQgYWxzbyBi
-ZSByZXF1aXJlZCBmb3IgZXJyb3INCj4gPiBwYXRoIGV2ZW4gdGhvdWdoIGNvbXBpbGVyIGRpZG4n
-dCBjb21wbGFpbi4NCj4gPiANCj4gPiBOb3Qgc3VyZSB3aGV0aGVyIHlvdSBjYW4gZml4dXAgb3Ig
-SSBzaG91bGQgcG9zdCBhcyBhDQo+ID4gc2VwYXJhdGUgcGF0Y2guDQo+IA0KPiBPaCBPSywgcGxl
-YXNlIGp1c3QgcG9zdCBhIHNlcGFyYXRlIHBhdGNoIGFzIEkndmUNCj4gYWxyZWFkeSBwdXNoZWQg
-aXQgb3V0Lg0KDQpJIGhhdmUgcG9zdGVkIGEgc2VwYXJhdGUgcGF0Y2gsIHBsZWFzZSBjb25zaWRl
-ciBmb3INCmluY2x1c2lvbiBpbiB5b3VyIHRyZWUuDQoNCkJUVywgeW91IG9yaWdpbmFsIGNvbW1p
-dCB0aGF0IGZpeGVzIHRoZSBjb21waWxlcg0Kd2FybmluZyBoYXMgc29tZSBzdHJhbmdlIGNoYXJh
-Y3RlcnMuDQoNClJlZ2FyZHMNCkFmemFsDQo=
+Add the set-features(0xef)/get-features(0xee) helpers for ONFI nand.
+Also add the necessary macros.
+
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+ drivers/mtd/nand/nand_base.c |   50 ++++++++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/nand.h     |   14 +++++++++++
+ 2 files changed, 64 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 88f671c..d06a80d 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2700,6 +2700,50 @@ static int nand_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ }
+ 
+ /**
++ * nand_onfi_set_features- [REPLACEABLE] set features for ONFI nand
++ * @mtd: MTD device structure
++ * @chip: nand chip info structure
++ * @addr: feature address.
++ * @subfeature_param: the subfeature parameters, a four bytes array.
++ */
++static int nand_onfi_set_features(struct mtd_info *mtd, struct nand_chip *chip,
++			int addr, uint8_t *subfeature_param)
++{
++	int status;
++
++	if (!chip->onfi_version)
++		return -EINVAL;
++
++	chip->cmdfunc(mtd, NAND_CMD_SET_FEATURES, addr, -1);
++	chip->write_buf(mtd, subfeature_param, ONFI_SUBFEATURE_PARAM_LEN);
++	status = chip->waitfunc(mtd, chip);
++	if (status & NAND_STATUS_FAIL)
++		return -EIO;
++	return 0;
++}
++
++/**
++ * nand_onfi_get_features- [REPLACEABLE] get features for ONFI nand
++ * @mtd: MTD device structure
++ * @chip: nand chip info structure
++ * @addr: feature address.
++ * @subfeature_param: the subfeature parameters, a four bytes array.
++ */
++static int nand_onfi_get_features(struct mtd_info *mtd, struct nand_chip *chip,
++			int addr, uint8_t *subfeature_param)
++{
++	if (!chip->onfi_version)
++		return -EINVAL;
++
++	/* clear the sub feature parameters */
++	memset(subfeature_param, 0, ONFI_SUBFEATURE_PARAM_LEN);
++
++	chip->cmdfunc(mtd, NAND_CMD_GET_FEATURES, addr, -1);
++	chip->read_buf(mtd, subfeature_param, ONFI_SUBFEATURE_PARAM_LEN);
++	return 0;
++}
++
++/**
+  * nand_suspend - [MTD Interface] Suspend the NAND flash
+  * @mtd: MTD device structure
+  */
+@@ -3223,6 +3267,12 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	if (!chip->write_page)
+ 		chip->write_page = nand_write_page;
+ 
++	/* set for ONFI nand */
++	if (!chip->onfi_set_features)
++		chip->onfi_set_features = nand_onfi_set_features;
++	if (!chip->onfi_get_features)
++		chip->onfi_get_features = nand_onfi_get_features;
++
+ 	/*
+ 	 * Check ECC mode, default to software if 3byte/512byte hardware ECC is
+ 	 * selected and we have 256 byte pagesize fallback to software ECC
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 8f99d36..537f59c 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -92,6 +92,8 @@ extern int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
+ #define NAND_CMD_READID		0x90
+ #define NAND_CMD_ERASE2		0xd0
+ #define NAND_CMD_PARAM		0xec
++#define NAND_CMD_GET_FEATURES	0xee
++#define NAND_CMD_SET_FEATURES	0xef
+ #define NAND_CMD_RESET		0xff
+ 
+ #define NAND_CMD_LOCK		0x2a
+@@ -229,6 +231,12 @@ typedef enum {
+ /* Keep gcc happy */
+ struct nand_chip;
+ 
++/* ONFI feature address */
++#define ONFI_FEATURE_ADDR_TIMING_MODE	0x1
++
++/* ONFI subfeature parameters length */
++#define ONFI_SUBFEATURE_PARAM_LEN	4
++
+ struct nand_onfi_params {
+ 	/* rev info and features block */
+ 	/* 'O' 'N' 'F' 'I'  */
+@@ -452,6 +460,8 @@ struct nand_buffers {
+  *			non 0 if ONFI supported.
+  * @onfi_params:	[INTERN] holds the ONFI page parameter when ONFI is
+  *			supported, 0 otherwise.
++ * @onfi_set_features	[REPLACEABLE] set the features for ONFI nand
++ * @onfi_get_features	[REPLACEABLE] get the features for ONFI nand
+  * @ecclayout:		[REPLACEABLE] the default ECC placement scheme
+  * @bbt:		[INTERN] bad block table pointer
+  * @bbt_td:		[REPLACEABLE] bad block table descriptor for flash
+@@ -494,6 +504,10 @@ struct nand_chip {
+ 	int (*write_page)(struct mtd_info *mtd, struct nand_chip *chip,
+ 			const uint8_t *buf, int oob_required, int page,
+ 			int cached, int raw);
++	int (*onfi_set_features)(struct mtd_info *mtd, struct nand_chip *chip,
++			int feature_addr, uint8_t *subfeature_para);
++	int (*onfi_get_features)(struct mtd_info *mtd, struct nand_chip *chip,
++			int feature_addr, uint8_t *subfeature_para);
+ 
+ 	int chip_delay;
+ 	unsigned int options;
+-- 
+1.7.0.4
