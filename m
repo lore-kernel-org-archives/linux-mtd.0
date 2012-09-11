@@ -1,24 +1,12 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TBKcu-0004IW-VV
- for linux-mtd@lists.infradead.org; Tue, 11 Sep 2012 07:11:17 +0000
-Received: by lbbgf7 with SMTP id gf7so161575lbb.36
- for <linux-mtd@lists.infradead.org>; Tue, 11 Sep 2012 00:11:15 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CAN0F+aWT+sdk2MpnpQVNXa8MrZVZWJ=bkti4bsFZPdJ_SZqdNg@mail.gmail.com>
-References: <CAN0F+aWY_3GC4Arj+Zj97RJhy-7C7TT0dP2gERw=-WD3vhd6Sg@mail.gmail.com>
- <CACQ1gAgqBS-v5hSD5Lt7wWVzSC9BEiAfUU83uviBta63yWoAVQ@mail.gmail.com>
- <CAN0F+aUuBUWN0_VMZ3rzPc5VNNDSLKivnFkW=32Cbi8eCf2QHA@mail.gmail.com>
- <CACQ1gAg_s8S8V5AWN4pR9XKqctyeYZpW_mtD3XczDde5Y+9Y4A@mail.gmail.com>
- <CAN0F+aWT+sdk2MpnpQVNXa8MrZVZWJ=bkti4bsFZPdJ_SZqdNg@mail.gmail.com>
-From: Richard Genoud <richard.genoud@gmail.com>
-Date: Tue, 11 Sep 2012 09:10:53 +0200
-Message-ID: <CACQ1gAjab=A7dr61Qrs2x66B3G6UjRizB2U9UTh+BQOcMj2mOA@mail.gmail.com>
-Subject: Re: lseek32 and lseek64
-To: Cheney Chen <cheneychencl2012@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+From: Josh Wu <josh.wu@atmel.com>
+To: dedekind1@gmail.com
+Subject: [PATCH v2] mtd: atmel_nand: fix the compile error which miss label
+ "err_ecc_ioremap".
+Date: Tue, 11 Sep 2012 15:10:12 +0800
+Message-Id: <1347347412-24214-1-git-send-email-josh.wu@atmel.com>
+Cc: vikram186@gmail.com, nicolas.ferre@atmel.com, Josh Wu <josh.wu@atmel.com>,
+ linux-mtd@lists.infradead.org, plagnioj@jcrosoft.com,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,35 +16,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2012/9/11 Cheney Chen <cheneychencl2012@gmail.com>:
-> I add the case _FILE_OFFSET_BITS=3D64 into the file Android.mk, compile t=
-hem
-> and try it again. it dose not work.
->
-> + LOCAL_CFLAGS =3D -O2 -Wall -D_FILE_OFFSET_BITS=3D64
->
-> Why not use uint64_t?
-It seems that there's a problem somewhere in the android makefiles,
-because you don't need to define _FILE_OFFSET_BITS yourself, it should
-be enabled by common.mk (in mtd-utils), unless WITHOUT_LARGEFILE=3D1 is
-set.
-maybe try to grep WITHOUT_LARGEFILE in your project, and make the
-mtd_utils with V=3D1.
-you should see -D_FILE_OFFSET_BITS=3D64 in the compilation log. If not,
-something in your project had disabled it.
-(maybe you're using =C2=B5Clibc without large file support, or buildroot
-which disables it for mtd-utils or...)
+Add err_ecc_ioremap label to fix following errors:
+---8<--- 
+  CC      drivers/mtd/nand/atmel_nand.o
+drivers/mtd/nand/atmel_nand.c: In function 'atmel_nand_probe':
+drivers/mtd/nand/atmel_nand.c:1423: error: label 'err_ecc_ioremap' used but not defined
+make[3]: *** [drivers/mtd/nand/atmel_nand.o] Error 1
+make[2]: *** [drivers/mtd/nand] Error 2
+make[1]: *** [drivers/mtd] Error 2
+make: *** [drivers] Error 2
+--->8---
 
-It's better to use off_t because the prototype of lseek is:
-off_t lseek(int fd, off_t offset, int whence);
-cf man lseek64:
-lseek(2) uses the type off_t.  This is a 32-bit signed type on 32-bit
-architectures, unless one compiles with
-           #define _FILE_OFFSET_BITS 64
-       in which case it is a 64-bit signed type.
-(and off_t is signed, not unsigned)
+This error was introduced in b654a9a46fc2100b318050483f8c5b5d0f187303 (mtd: atmel nand: fix gpio missing request)
 
+Signed-off-by: Josh Wu <josh.wu@atmel.com>
+---
+change logs:
+  Add detail information for the commit message.
 
---=20
-for me, ck means con kolivas and not calvin klein... does it mean I'm a gee=
-k ?
+ drivers/mtd/nand/atmel_nand.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index 6a5a35b..9144557 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -1399,7 +1399,7 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
+ 	if (pdev->dev.of_node) {
+ 		res = atmel_of_init_port(host, pdev->dev.of_node);
+ 		if (res)
+-			goto err_nand_ioremap;
++			goto err_ecc_ioremap;
+ 	} else {
+ 		memcpy(&host->board, pdev->dev.platform_data,
+ 		       sizeof(struct atmel_nand_data));
+@@ -1560,6 +1560,7 @@ err_no_card:
+ 	platform_set_drvdata(pdev, NULL);
+ 	if (host->dma_chan)
+ 		dma_release_channel(host->dma_chan);
++err_ecc_ioremap:
+ 	iounmap(host->io_base);
+ err_nand_ioremap:
+ 	kfree(host);
+-- 
+1.7.9.5
