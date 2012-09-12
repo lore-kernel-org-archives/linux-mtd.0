@@ -1,29 +1,16 @@
-Received: from mho-03-ewr.mailhop.org ([204.13.248.66]
- helo=mho-01-ewr.mailhop.org)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TBV5F-0002lI-VX
- for linux-mtd@lists.infradead.org; Tue, 11 Sep 2012 18:21:14 +0000
-Date: Tue, 11 Sep 2012 11:21:07 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: "Mohammed, Afzal" <afzal@ti.com>
-Subject: Re: [PATCH v3 10/10] mtd: nand: omap2: use gpmc provided irqs
-Message-ID: <20120911182106.GK23092@atomide.com>
-References: <cover.1344609341.git.afzal@ti.com>
- <c5a608a70a875191e1323958c74fb2ac8dfa34b3.1344609341.git.afzal@ti.com>
- <1345895326.1815.4.camel@kyv> <20120830195349.GW1303@atomide.com>
- <20120911001710.GD1303@atomide.com>
- <C8443D0743D26F4388EA172BF4E2A7A93E9E1905@DBDE01.ent.ti.com>
- <20120911054227.GF1303@atomide.com>
- <C8443D0743D26F4388EA172BF4E2A7A93E9E1A11@DBDE01.ent.ti.com>
+Received: from shands.ufl.edu ([159.178.60.249] helo=IMSVA11.shands.ufl.edu)
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TBbHr-0001OC-4j
+ for linux-mtd@lists.infradead.org; Wed, 12 Sep 2012 00:58:39 +0000
+From: "Thomas, Tiffany T." <thotif@shands.ufl.edu>
+Subject: MAIL WARNING
+Date: Wed, 12 Sep 2012 00:58:30 +0000
+Message-ID: <55B5D3F39F7AAB42BC59C2ADA74B669A06BBAA8B@MSXMB03.Shands.local>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <C8443D0743D26F4388EA172BF4E2A7A93E9E1A11@DBDE01.ent.ti.com>
-Cc: "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
- "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+To: undisclosed-recipients:;
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,33 +20,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Mohammed, Afzal <afzal@ti.com> [120910 23:40]:
-> Hi Tony,
-> 
-> On Tue, Sep 11, 2012 at 11:12:27, Tony Lindgren wrote:
-> > * Mohammed, Afzal <afzal@ti.com> [120910 22:36]:
-> 
-> > > I was not careful enough, sorry. Thanks for fixing it.
-> > > 
-> > > Another hunk as follows would also be required for error
-> > > path even though compiler didn't complain.
-> > > 
-> > > Not sure whether you can fixup or I should post as a
-> > > separate patch.
-> > 
-> > Oh OK, please just post a separate patch as I've
-> > already pushed it out.
-> 
-> I have posted a separate patch, please consider for
-> inclusion in your tree.
-> 
-> BTW, you original commit that fixes the compiler
-> warning has some strange characters.
+cnMvdXNlL2ZpbHRlci9mb3JtMS5odG1s?=
+X-TM-AS-URLRatingAct: 50-BCC
 
-Ah thanks, that's a copy paste UTF-8 issue. I'll just fold
-in the fixes and push them out to a new devel-gpmc-fixed
-branch.
+Dear Webmail Customer,
 
-Regards,
+Your access to Webmail Access has been suspended due to a mix-match of acce=
+ss code between your Security details. To enable you continue accessing you=
+r Webmail account, it will only take you few minutes to re-activate your ac=
+count. Click on the guide-link below and follow the directions to instant a=
+ctivation of your account and Security information
 
-Tony
+
+CLICK HERE: http://www.internationaldesignresource.com/SDSpaCoverOrders/use=
+/filter/form1.html
+
+*Important*
+
+NOTE: FAILURE CAN RESULT TO PERMANENT ACCOUNT SUSPENSION.=
