@@ -1,16 +1,23 @@
-Received: from mail-wi0-f171.google.com ([209.85.212.171])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TBo5W-0003pn-Fm
- for linux-mtd@lists.infradead.org; Wed, 12 Sep 2012 14:38:48 +0000
-Received: by wibhq4 with SMTP id hq4so3826921wib.0
- for <linux-mtd@lists.infradead.org>; Wed, 12 Sep 2012 07:38:44 -0700 (PDT)
-From: Richard Genoud <richard.genoud@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [MTD-UTILS 0/3] fix off_t use in lseek
-Date: Wed, 12 Sep 2012 16:38:32 +0200
-Message-Id: <1347460715-3951-1-git-send-email-richard.genoud@gmail.com>
-Cc: Richard Genoud <richard.genoud@gmail.com>, linux-mtd@lists.infradead.org
+Message-ID: <5050A78C.4000700@broadcom.com>
+Date: Wed, 12 Sep 2012 08:17:32 -0700
+From: "Christian Daudt" <csd@broadcom.com>
+MIME-Version: 1.0
+To: "Russell King - ARM Linux" <linux@arm.linux.org.uk>
+Subject: Re: [PATCH 1/3] ARM: Remove bcmring NAND driver
+References: <505044E3.3040601@broadcom.com>
+ <20120912095130.GN32234@mudshark.cambridge.arm.com>
+ <20120912095741.GY13739@n2100.arm.linux.org.uk>
+In-Reply-To: <20120912095741.GY13739@n2100.arm.linux.org.uk>
+Content-Type: text/plain;
+ charset=iso-8859-1;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Arnd Bergmann <arnd@arndb.de>, Will Deacon <will.deacon@arm.com>,
+ "arm@kernel.org" <arm@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "JD \(Jiandong\) Zheng" <jdzheng@broadcom.com>,
+ Olof Johansson <olof@lixom.net>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,28 +27,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In lseek call, sometimes off_t is used, sometime u_int32_t or
-off64_t (with lseek64).
-This patchset corrects those inconsistencies in respect with the
-WITHOUT_LARGEFILE compilation option.
+On 12-09-12 02:57 AM, Russell King - ARM Linux wrote:
+> On Wed, Sep 12, 2012 at 10:51:31AM +0100, Will Deacon wrote:
+>> Hi Christian,
+>>
+>> On Wed, Sep 12, 2012 at 09:16:35AM +0100, Christian Daudt wrote:
+>>> This driver is being removed as part of the cleanup of the bcmring
+>>> SoC from mainline as it is no longer maintained.
+>>>
+>>> Signed-off-by: Christian Daudt<csd@broadcom.com>
+>>> Reviewed-by: Jiandong Zheng<jdzheng@broadcom.com>
+>> This is really good to see, thanks. I guess the other two patches in your
+>> series were too large and are being held for moderation by the list?
+> They have typos in the list address.
+>
+patch 2/3 is awaiting moderator approval. The linux-mtd cc is here: 
+http://lists.infradead.org/pipermail/linux-mtd/2012-September/043945.html
+patch 3/3 had a email address typo but Russell said it should not be 
+applied, so I won't bother resending. The linux-mtd cc is here: 
+http://lists.infradead.org/pipermail/linux-mtd/2012-September/043946.html
 
-Richard Genoud (3):
-  introduce PRIxoff_t and PRIdoff_t printf helpers
-  consistency between u_int32_t / off_t / off64_t
-  mkfs.jffs2: correct some warnings using PRIdoff_t
-
- flash_erase.c                      |   16 +++++++-------
- flash_otp_write.c                  |    5 ++-
- ftl_check.c                        |    6 +++-
- ftl_format.c                       |    2 +-
- include/common.h                   |   11 ++++++++++
- lib/libmtd.c                       |   12 +++++-----
- mkfs.jffs2.c                       |   10 ++++----
- mkfs.ubifs/mkfs.ubifs.c            |   11 ++++-----
- mtd_debug.c                        |   14 ++++++------
- tests/fs-tests/integrity/integck.c |    4 +-
- tests/ubi-tests/integ.c            |   38 ++++++++++++++++++------------------
- 11 files changed, 71 insertions(+), 58 deletions(-)
-
--- 
-1.7.2.5
+   thanks,
+    Christian.
