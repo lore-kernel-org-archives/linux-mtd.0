@@ -1,14 +1,21 @@
-Date: Wed, 12 Sep 2012 10:51:31 +0100
-From: Will Deacon <will.deacon@arm.com>
-To: Christian Daudt <csd@broadcom.com>
+Received: from caramon.arm.linux.org.uk ([78.32.30.218])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TBjix-0007ec-D7
+ for linux-mtd@lists.infradead.org; Wed, 12 Sep 2012 09:59:12 +0000
+Date: Wed, 12 Sep 2012 10:57:41 +0100
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+To: Will Deacon <will.deacon@arm.com>
 Subject: Re: [PATCH 1/3] ARM: Remove bcmring NAND driver
-Message-ID: <20120912095130.GN32234@mudshark.cambridge.arm.com>
+Message-ID: <20120912095741.GY13739@n2100.arm.linux.org.uk>
 References: <505044E3.3040601@broadcom.com>
+ <20120912095130.GN32234@mudshark.cambridge.arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <505044E3.3040601@broadcom.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, "arm@kernel.org" <arm@kernel.org>,
+In-Reply-To: <20120912095130.GN32234@mudshark.cambridge.arm.com>
+Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Arnd Bergmann <arnd@arndb.de>, Christian Daudt <csd@broadcom.com>,
+ "arm@kernel.org" <arm@kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "JD \(Jiandong\) Zheng" <jdzheng@broadcom.com>,
  Olof Johansson <olof@lixom.net>,
@@ -22,22 +29,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Christian,
-
-On Wed, Sep 12, 2012 at 09:16:35AM +0100, Christian Daudt wrote:
-> This driver is being removed as part of the cleanup of the bcmring
-> SoC from mainline as it is no longer maintained.
+On Wed, Sep 12, 2012 at 10:51:31AM +0100, Will Deacon wrote:
+> Hi Christian,
 > 
-> Signed-off-by: Christian Daudt <csd@broadcom.com>
-> Reviewed-by: Jiandong Zheng <jdzheng@broadcom.com>
+> On Wed, Sep 12, 2012 at 09:16:35AM +0100, Christian Daudt wrote:
+> > This driver is being removed as part of the cleanup of the bcmring
+> > SoC from mainline as it is no longer maintained.
+> > 
+> > Signed-off-by: Christian Daudt <csd@broadcom.com>
+> > Reviewed-by: Jiandong Zheng <jdzheng@broadcom.com>
+> 
+> This is really good to see, thanks. I guess the other two patches in your
+> series were too large and are being held for moderation by the list?
 
-This is really good to see, thanks. I guess the other two patches in your
-series were too large and are being held for moderation by the list?
-
-Anyway, for this one:
-
-Acked-by: Will Deacon <will.deacon@arm.com>
-
-Cheers,
-
-Will
+They have typos in the list address.
