@@ -1,25 +1,31 @@
-Received: from caramon.arm.linux.org.uk ([78.32.30.218])
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TBjix-0007ec-D7
- for linux-mtd@lists.infradead.org; Wed, 12 Sep 2012 09:59:12 +0000
-Date: Wed, 12 Sep 2012 10:57:41 +0100
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-To: Will Deacon <will.deacon@arm.com>
-Subject: Re: [PATCH 1/3] ARM: Remove bcmring NAND driver
-Message-ID: <20120912095741.GY13739@n2100.arm.linux.org.uk>
-References: <505044E3.3040601@broadcom.com>
- <20120912095130.GN32234@mudshark.cambridge.arm.com>
+ id 1TBkWD-0004g8-SY
+ for linux-mtd@lists.infradead.org; Wed, 12 Sep 2012 10:50:07 +0000
+Received: by eaai12 with SMTP id i12so744462eaa.36
+ for <linux-mtd@lists.infradead.org>; Wed, 12 Sep 2012 03:50:02 -0700 (PDT)
+Message-ID: <505068F4.4080309@gmail.com>
+Date: Wed, 12 Sep 2012 12:50:28 +0200
+From: Sasha Levin <levinsasha928@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20120912095130.GN32234@mudshark.cambridge.arm.com>
-Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Arnd Bergmann <arnd@arndb.de>, Christian Daudt <csd@broadcom.com>,
- "arm@kernel.org" <arm@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "JD \(Jiandong\) Zheng" <jdzheng@broadcom.com>,
- Olof Johansson <olof@lixom.net>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: suresh.b.siddha@intel.com
+Subject: Re: mtd: kernel BUG at arch/x86/mm/pat.c:279!
+References: <1340959739.2936.28.camel@lappy>
+ <CA+1xoqdgKV_sEWvUbuxagL9JEc39ZFa6X9-acP7j-M7wvW6qbQ@mail.gmail.com>
+ <CA+55aFzJCLxVP+WYJM-gq=aXx5gmdgwC7=_Gr2Tooj8q+Dz4dw@mail.gmail.com>
+ <1347057778.26695.68.camel@sbsiddha-desk.sc.intel.com>
+ <CA+55aFwW9Q+DM2gZy7r3JQJbrbMNR6sN+jewc2CY0i1wD_X=Tw@mail.gmail.com>
+ <1347062045.26695.82.camel@sbsiddha-desk.sc.intel.com>
+ <CA+55aFzeKcV5hROLJE31dNi3SEs+s6o0LL=96Kh8QGHPx=aZnA@mail.gmail.com>
+ <1347202600.5876.7.camel@sbsiddha-ivb>
+In-Reply-To: <1347202600.5876.7.camel@sbsiddha-ivb>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ linux-mm <linux-mm@kvack.org>, linux-mtd@lists.infradead.org,
+ Dave Jones <davej@redhat.com>, Andrew Morton <akpm@linux-foundation.org>,
+ dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,17 +35,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Sep 12, 2012 at 10:51:31AM +0100, Will Deacon wrote:
-> Hi Christian,
+On 09/09/2012 04:56 PM, Suresh Siddha wrote:
+> On Sat, 2012-09-08 at 12:57 -0700, Linus Torvalds wrote:
+>> > Whatever. Something like this (TOTALLY UNTESTED) attached patch should
+>> > get the mtdchar overflows to go away, 
+> It looks good to me. Acked-by: Suresh Siddha <suresh.b.siddha@intel.com>
 > 
-> On Wed, Sep 12, 2012 at 09:16:35AM +0100, Christian Daudt wrote:
-> > This driver is being removed as part of the cleanup of the bcmring
-> > SoC from mainline as it is no longer maintained.
-> > 
-> > Signed-off-by: Christian Daudt <csd@broadcom.com>
-> > Reviewed-by: Jiandong Zheng <jdzheng@broadcom.com>
-> 
-> This is really good to see, thanks. I guess the other two patches in your
-> series were too large and are being held for moderation by the list?
+> Sasha, can you please give this a try?
 
-They have typos in the list address.
+Sorry for the delay. It looks good here.
+
+
+Thanks,
+Sasha
