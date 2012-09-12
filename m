@@ -1,31 +1,17 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from mail-wi0-f171.google.com ([209.85.212.171])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TBkcG-00077g-42
- for linux-mtd@lists.infradead.org; Wed, 12 Sep 2012 10:56:21 +0000
-Received: by eaai12 with SMTP id i12so747714eaa.36
- for <linux-mtd@lists.infradead.org>; Wed, 12 Sep 2012 03:56:18 -0700 (PDT)
-Message-ID: <50506A6C.30109@gmail.com>
-Date: Wed, 12 Sep 2012 12:56:44 +0200
-From: Sasha Levin <levinsasha928@gmail.com>
-MIME-Version: 1.0
-To: suresh.b.siddha@intel.com
-Subject: Re: mtd: kernel BUG at arch/x86/mm/pat.c:279!
-References: <1340959739.2936.28.camel@lappy>
- <CA+1xoqdgKV_sEWvUbuxagL9JEc39ZFa6X9-acP7j-M7wvW6qbQ@mail.gmail.com>
- <CA+55aFzJCLxVP+WYJM-gq=aXx5gmdgwC7=_Gr2Tooj8q+Dz4dw@mail.gmail.com>
- <1347057778.26695.68.camel@sbsiddha-desk.sc.intel.com>
- <CA+55aFwW9Q+DM2gZy7r3JQJbrbMNR6sN+jewc2CY0i1wD_X=Tw@mail.gmail.com>
- <1347062045.26695.82.camel@sbsiddha-desk.sc.intel.com>
- <CA+55aFzeKcV5hROLJE31dNi3SEs+s6o0LL=96Kh8QGHPx=aZnA@mail.gmail.com>
- <1347202600.5876.7.camel@sbsiddha-ivb> <505068F4.4080309@gmail.com>
-In-Reply-To: <505068F4.4080309@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- linux-mm <linux-mm@kvack.org>, linux-mtd@lists.infradead.org,
- Dave Jones <davej@redhat.com>, Andrew Morton <akpm@linux-foundation.org>,
- dwmw2@infradead.org
+ id 1TBm1i-0007Ln-1K
+ for linux-mtd@lists.infradead.org; Wed, 12 Sep 2012 12:26:42 +0000
+Received: by wibhq4 with SMTP id hq4so3685923wib.0
+ for <linux-mtd@lists.infradead.org>; Wed, 12 Sep 2012 05:26:39 -0700 (PDT)
+From: Richard Genoud <richard.genoud@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Subject: [PATCH] MTD: nandsim: BUG: Fail if overridesize is too big
+Date: Wed, 12 Sep 2012 14:26:26 +0200
+Message-Id: <1347452786-10208-1-git-send-email-richard.genoud@gmail.com>
+Cc: Richard Genoud <richard.genoud@gmail.com>, linux-mtd@lists.infradead.org,
+ Adrian Hunter <adrian.hunter@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,21 +21,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/12/2012 12:50 PM, Sasha Levin wrote:
-> On 09/09/2012 04:56 PM, Suresh Siddha wrote:
->> On Sat, 2012-09-08 at 12:57 -0700, Linus Torvalds wrote:
->>>> Whatever. Something like this (TOTALLY UNTESTED) attached patch should
->>>> get the mtdchar overflows to go away, 
->> It looks good to me. Acked-by: Suresh Siddha <suresh.b.siddha@intel.com>
->>
->> Sasha, can you please give this a try?
-> 
-> Sorry for the delay. It looks good here.
-> 
-> 
-> Thanks,
-> Sasha
-> 
+If override size is too big, the module was actually loaded instead of
+failing, because retval was not set.
 
-Uh... sorry again, I obviously tested the second patch sent by Linus but
-mistakingly replied to the wrong mail in the thread.
+This lead to memory corruption with the use of the freed structs nandsim
+and nand_chip.
+
+Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
+---
+ drivers/mtd/nand/nandsim.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+index cf0cd31..5d881180 100644
+--- a/drivers/mtd/nand/nandsim.c
++++ b/drivers/mtd/nand/nandsim.c
+@@ -2333,6 +2333,7 @@ static int __init ns_init_module(void)
+ 		uint64_t new_size = (uint64_t)nsmtd->erasesize << overridesize;
+ 		if (new_size >> overridesize != nsmtd->erasesize) {
+ 			NS_ERR("overridesize is too big\n");
++			retval = -EINVAL;
+ 			goto err_exit;
+ 		}
+ 		/* N.B. This relies on nand_scan not doing anything with the size before we change it */
+-- 
+1.7.2.5
