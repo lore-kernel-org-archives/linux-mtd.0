@@ -1,21 +1,22 @@
-Received: from mms3.broadcom.com ([216.31.210.19])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TBiFL-0006bN-5z
- for linux-mtd@lists.infradead.org; Wed, 12 Sep 2012 08:24:31 +0000
-Message-ID: <5050453F.4080504@broadcom.com>
-Date: Wed, 12 Sep 2012 01:18:07 -0700
-From: "Christian Daudt" <csd@broadcom.com>
+Received: from caramon.arm.linux.org.uk ([78.32.30.218])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TBikX-0008FU-Fi
+ for linux-mtd@lists.infradead.org; Wed, 12 Sep 2012 08:56:46 +0000
+Date: Wed, 12 Sep 2012 09:52:23 +0100
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+To: Christian Daudt <csd@broadcom.com>
+Subject: Re: [PATCH 3/3] ARM: Remove BCMRING from arm/tools/mach-types
+Message-ID: <20120912085223.GV13739@n2100.arm.linux.org.uk>
+References: <5050453F.4080504@broadcom.com>
 MIME-Version: 1.0
-To: "Arnd Bergmann" <arnd@arndb.de>,
-	"Olof Johansson" <olof@lixom.net>
-Subject: [PATCH 3/3] ARM: Remove BCMRING from arm/tools/mach-types
-Content-Type: text/plain;
- charset=iso-8859-1;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Christian Daudt <csd@broadcom.com>, arm@kernel.org,
- linux-mtd@lists.infradead.org, llinux-arm-kernel@lists.infradead.org,
- "JD \(Jiandong\) Zheng" <jdzheng@broadcom.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5050453F.4080504@broadcom.com>
+Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Arnd Bergmann <arnd@arndb.de>, llinux-arm-kernel@lists.infradead.org,
+ arm@kernel.org, linux-mtd@lists.infradead.org,
+ "JD \(Jiandong\) Zheng" <jdzheng@broadcom.com>,
+ Olof Johansson <olof@lixom.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +26,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Remove BCMRING from mach-types as that machine type is no
-longer maintaned or used.
+On Wed, Sep 12, 2012 at 01:18:07AM -0700, Christian Daudt wrote:
+> Remove BCMRING from mach-types as that machine type is no
+> longer maintaned or used.
 
-Signed-off-by: Christian Daudt <csd@broadcom.com>
-Reviewed-by: Jiandong Zheng <jdzheng@broadcom.com>
-
----
-  arch/arm/tools/mach-types |    1 -
-  1 files changed, 0 insertions(+), 1 deletions(-)
-
-diff --git a/arch/arm/tools/mach-types b/arch/arm/tools/mach-types
-index 2997e56..529f7e3 100644
---- a/arch/arm/tools/mach-types
-+++ b/arch/arm/tools/mach-types
-@@ -404,7 +404,6 @@ vexpress		MACH_VEXPRESS		VEXPRESS		2272
-  d2net			MACH_D2NET		D2NET			2282
-  bigdisk			MACH_BIGDISK		BIGDISK			2283
-  at91sam9g20ek_2mmc	MACH_AT91SAM9G20EK_2MMC	AT91SAM9G20EK_2MMC	2288
--bcmring			MACH_BCMRING		BCMRING			2289
-  mahimahi		MACH_MAHIMAHI		MAHIMAHI		2304
-  smdk6442		MACH_SMDK6442		SMDK6442		2324
-  openrd_base		MACH_OPENRD_BASE	OPENRD_BASE		2325
--- 
-1.7.1
+Please don't.  Once it's been in mainline once, it will always be in
+this file whenever the file is regenerated.
