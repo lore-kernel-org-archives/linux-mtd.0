@@ -1,23 +1,30 @@
-Received: from mail-wi0-f169.google.com ([209.85.212.169])
+Received: from arroyo.ext.ti.com ([192.94.94.40])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TBj6K-0002RT-B0
- for linux-mtd@lists.infradead.org; Wed, 12 Sep 2012 09:19:18 +0000
-Received: by wibhm2 with SMTP id hm2so3712513wib.0
- for <linux-mtd@lists.infradead.org>; Wed, 12 Sep 2012 02:19:14 -0700 (PDT)
+ id 1TBj8n-0002oV-2L
+ for linux-mtd@lists.infradead.org; Wed, 12 Sep 2012 09:21:49 +0000
+From: "Mohammed, Afzal" <afzal@ti.com>
+To: Tony Lindgren <tony@atomide.com>
+Subject: RE: [PATCH v3 10/10] mtd: nand: omap2: use gpmc provided irqs
+Date: Wed, 12 Sep 2012 09:21:28 +0000
+Message-ID: <C8443D0743D26F4388EA172BF4E2A7A93E9E2502@DBDE01.ent.ti.com>
+References: <cover.1344609341.git.afzal@ti.com>
+ <c5a608a70a875191e1323958c74fb2ac8dfa34b3.1344609341.git.afzal@ti.com>
+ <1345895326.1815.4.camel@kyv> <20120830195349.GW1303@atomide.com>
+ <20120911001710.GD1303@atomide.com>
+ <C8443D0743D26F4388EA172BF4E2A7A93E9E1905@DBDE01.ent.ti.com>
+ <20120911054227.GF1303@atomide.com>
+ <C8443D0743D26F4388EA172BF4E2A7A93E9E1A11@DBDE01.ent.ti.com>
+ <20120911182106.GK23092@atomide.com>
+In-Reply-To: <20120911182106.GK23092@atomide.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <1347361186.26206.5.camel@sauron.fi.intel.com>
-References: <1346699237-414-1-git-send-email-zajec5@gmail.com>
- <1347358840.21359.67.camel@sauron.fi.intel.com>
- <CACna6ryroY=Xbv7+VsRfBYdhRd9P6uz935b9scQqCmTjneM7sQ@mail.gmail.com>
- <1347361186.26206.5.camel@sauron.fi.intel.com>
-Date: Wed, 12 Sep 2012 11:19:14 +0200
-Message-ID: <CACna6rwP-DAV=H3FC+WXevekMB65dM42hsWnwVrxutUGhY=FFg@mail.gmail.com>
-Subject: Re: [PATCH V2] mtd: basic (read only) driver for BCMA serial flash
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, "John W. Linville" <linville@tuxdriver.com>
+Cc: "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,39 +34,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2012/9/11 Artem Bityutskiy <dedekind1@gmail.com>:
-> On Tue, 2012-09-11 at 12:35 +0200, Rafa=C5=82 Mi=C5=82ecki wrote:
->> 2012/9/11 Artem Bityutskiy <dedekind1@gmail.com>:
->> > On Mon, 2012-09-03 at 21:07 +0200, Rafa=C5=82 Mi=C5=82ecki wrote:
->> >> This registers MTD driver for serial flash platform device. Right now=
- it
->> >> supports reading only, writing still has to be implemented.
->> >> At this point it's marked as BROKEN, because it requires code present=
- in
->> >> net tree that wasn't mainlined yet.
->> >>
->> >> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
->> >
->> > What are exactly the changes it depends on? URL? Are they staged for
->> > 3.7?
->>
->> http://git.kernel.org/?p=3Dlinux/kernel/git/linville/wireless-testing.gi=
-t;a=3Dcommitdiff;h=3D23cb3b2121323443834296a8ecb582b8aeb78d75
->> http://git.kernel.org/?p=3Dlinux/kernel/git/linville/wireless-testing.gi=
-t;a=3Dcommitdiff;h=3Dd57ef3a6a2eeb88df47e892c66692e3f59722ffe
->>
->> (Yes, there are queued to be pulled during 3.7 merge window)
->
-> CCing John. I am not 100% sure how the net drivers are handled, but if
-> John does not rebase and just sends a pull request to David Miller, who
-> also does not rebase, then we could pull John's tree into the MTD tree.
-
-Not sure if my plans were clear since beginning so just for sure,
-order I imagined:
-1) Me adding mtd drivers
-2) Linus releasing 3.7-rc1 with disabled mtd driver and changes from
-wireless tree
-3) Me sending trivial patch enabling mtd driver for -fixes tree
-
---=20
-Rafa=C5=82
+T24gVHVlLCBTZXAgMTEsIDIwMTIgYXQgMjM6NTE6MDcsIFRvbnkgTGluZGdyZW4gd3JvdGU6DQoN
+Cj4gQWggdGhhbmtzLCB0aGF0J3MgYSBjb3B5IHBhc3RlIFVURi04IGlzc3VlLiBJJ2xsIGp1c3Qg
+Zm9sZA0KPiBpbiB0aGUgZml4ZXMgYW5kIHB1c2ggdGhlbSBvdXQgdG8gYSBuZXcgZGV2ZWwtZ3Bt
+Yy1maXhlZA0KPiBicmFuY2guDQoNClRoYW5rcyBUb255DQoNClJlZ2FyZHMNCkFmemFsDQo=
