@@ -1,30 +1,18 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TBj8n-0002oV-2L
- for linux-mtd@lists.infradead.org; Wed, 12 Sep 2012 09:21:49 +0000
-From: "Mohammed, Afzal" <afzal@ti.com>
-To: Tony Lindgren <tony@atomide.com>
-Subject: RE: [PATCH v3 10/10] mtd: nand: omap2: use gpmc provided irqs
-Date: Wed, 12 Sep 2012 09:21:28 +0000
-Message-ID: <C8443D0743D26F4388EA172BF4E2A7A93E9E2502@DBDE01.ent.ti.com>
-References: <cover.1344609341.git.afzal@ti.com>
- <c5a608a70a875191e1323958c74fb2ac8dfa34b3.1344609341.git.afzal@ti.com>
- <1345895326.1815.4.camel@kyv> <20120830195349.GW1303@atomide.com>
- <20120911001710.GD1303@atomide.com>
- <C8443D0743D26F4388EA172BF4E2A7A93E9E1905@DBDE01.ent.ti.com>
- <20120911054227.GF1303@atomide.com>
- <C8443D0743D26F4388EA172BF4E2A7A93E9E1A11@DBDE01.ent.ti.com>
- <20120911182106.GK23092@atomide.com>
-In-Reply-To: <20120911182106.GK23092@atomide.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Date: Wed, 12 Sep 2012 10:51:31 +0100
+From: Will Deacon <will.deacon@arm.com>
+To: Christian Daudt <csd@broadcom.com>
+Subject: Re: [PATCH 1/3] ARM: Remove bcmring NAND driver
+Message-ID: <20120912095130.GN32234@mudshark.cambridge.arm.com>
+References: <505044E3.3040601@broadcom.com>
 MIME-Version: 1.0
-Cc: "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
- "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <505044E3.3040601@broadcom.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, "arm@kernel.org" <arm@kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+ "JD \(Jiandong\) Zheng" <jdzheng@broadcom.com>,
+ Olof Johansson <olof@lixom.net>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,7 +22,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gVHVlLCBTZXAgMTEsIDIwMTIgYXQgMjM6NTE6MDcsIFRvbnkgTGluZGdyZW4gd3JvdGU6DQoN
-Cj4gQWggdGhhbmtzLCB0aGF0J3MgYSBjb3B5IHBhc3RlIFVURi04IGlzc3VlLiBJJ2xsIGp1c3Qg
-Zm9sZA0KPiBpbiB0aGUgZml4ZXMgYW5kIHB1c2ggdGhlbSBvdXQgdG8gYSBuZXcgZGV2ZWwtZ3Bt
-Yy1maXhlZA0KPiBicmFuY2guDQoNClRoYW5rcyBUb255DQoNClJlZ2FyZHMNCkFmemFsDQo=
+Hi Christian,
+
+On Wed, Sep 12, 2012 at 09:16:35AM +0100, Christian Daudt wrote:
+> This driver is being removed as part of the cleanup of the bcmring
+> SoC from mainline as it is no longer maintained.
+> 
+> Signed-off-by: Christian Daudt <csd@broadcom.com>
+> Reviewed-by: Jiandong Zheng <jdzheng@broadcom.com>
+
+This is really good to see, thanks. I guess the other two patches in your
+series were too large and are being held for moderation by the list?
+
+Anyway, for this one:
+
+Acked-by: Will Deacon <will.deacon@arm.com>
+
+Cheers,
+
+Will
