@@ -1,13 +1,13 @@
-Message-ID: <504FF0FF.2030707@freescale.com>
-Date: Wed, 12 Sep 2012 10:18:39 +0800
+Message-ID: <504FF362.4070609@freescale.com>
+Date: Wed, 12 Sep 2012 10:28:50 +0800
 From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
 To: Vikram Narayanan <vikram186@gmail.com>
-Subject: Re: [PATCH 5/9] mtd: gpmi: add a new field for HW_GPMI_CTRL1
+Subject: Re: [PATCH 6/9] mtd: gpmi: simplify the setting DLL code
 References: <1347344231-10295-1-git-send-email-b32955@freescale.com>
- <1347344231-10295-6-git-send-email-b32955@freescale.com>
- <504F7D2C.5090707@gmail.com>
-In-Reply-To: <504F7D2C.5090707@gmail.com>
+ <1347344231-10295-7-git-send-email-b32955@freescale.com>
+ <504F7E10.8030406@gmail.com>
+In-Reply-To: <504F7E10.8030406@gmail.com>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: quoted-printable
 Cc: dirk.behme@de.bosch.com, dedekind1@gmail.com, linux-mtd@lists.infradead.org,
@@ -22,90 +22,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2012=E5=B9=B409=E6=9C=8812=E6=97=A5 02:04, Vikram Narayanan =E5=
+=E4=BA=8E 2012=E5=B9=B409=E6=9C=8812=E6=97=A5 02:08, Vikram Narayanan =E5=
 =86=99=E9=81=93:
 > Hello Huang Shijie,
 >
 > On 9/11/2012 11:47 AM, Huang Shijie wrote:
->> add the WRN_DLY_SEL field for HW_GPMI_CTRL1.
->> This field is used as delay for gpmi write strobe.
+>> The setting DLL code is a little mess.
+>> Just simplify the code and the comments.
 >>
 >> Signed-off-by: Huang Shijie<b32955@freescale.com>
 >> ---
->> drivers/mtd/nand/gpmi-nand/gpmi-lib.c | 6 ++++++
->> drivers/mtd/nand/gpmi-nand/gpmi-nand.h | 2 ++
->> drivers/mtd/nand/gpmi-nand/gpmi-regs.h | 5 +++++
->> 3 files changed, 13 insertions(+), 0 deletions(-)
+>> drivers/mtd/nand/gpmi-nand/gpmi-lib.c | 22 +++++++++-------------
+>> 1 files changed, 9 insertions(+), 13 deletions(-)
 >>
 >> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c=20
 >> b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
->> index eee0159..037438a 100644
+>> index 037438a..83c5573 100644
 >> --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
 >> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
->> @@ -731,6 +731,7 @@ return_results:
->> hw->use_half_periods =3D dll_use_half_periods;
->> hw->sample_delay_factor =3D sample_delay_factor;
->> hw->device_busy_timeout =3D 0x500; /* default busy timeout value. */
->> + hw->wrn_dly_sel =3D 0;
->>
->> /* Return success. */
->> return 0;
->> @@ -769,6 +770,11 @@ void gpmi_begin(struct gpmi_nand_data *this)
->>
->> /* [3] The following code is to set the HW_GPMI_CTRL1. */
->>
->> + /* Set the WRN_DLY_SEL */
->> + writel(BM_GPMI_CTRL1_WRN_DLY_SEL, gpmi_regs + HW_GPMI_CTRL1_CLR);
->> + writel(BF_GPMI_CTRL1_WRN_DLY_SEL(hw.wrn_dly_sel),
->> + gpmi_regs + HW_GPMI_CTRL1_SET);
->> +
->> /* DLL_ENABLE must be set to 0 when setting RDN_DELAY or HALF_PERIOD. =
-*/
+>> @@ -779,30 +779,26 @@ void gpmi_begin(struct gpmi_nand_data *this)
 >> writel(BM_GPMI_CTRL1_DLL_ENABLE, gpmi_regs + HW_GPMI_CTRL1_CLR);
 >>
->> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h=20
->> b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
->> index e68bbac..39f1f76 100644
->> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
->> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
->> @@ -195,6 +195,7 @@ struct gpmi_nand_data {
->> * @use_half_periods: Indicates the clock is running slowly, so the
->> * NFC DLL should use half-periods.
->> * @sample_delay_factor: The sample delay factor.
->> + * @wrn_dly_sel: The delay on the GPMI write strobe.
+>> /* Clear out the DLL control fields. */
+>> - writel(BM_GPMI_CTRL1_RDN_DELAY, gpmi_regs + HW_GPMI_CTRL1_CLR);
+>> - writel(BM_GPMI_CTRL1_HALF_PERIOD, gpmi_regs + HW_GPMI_CTRL1_CLR);
+>> + reg =3D BM_GPMI_CTRL1_RDN_DELAY | BM_GPMI_CTRL1_HALF_PERIOD;
+>> + writel(reg, gpmi_regs + HW_GPMI_CTRL1_CLR);
+>>
+>> /* If no sample delay is called for, return immediately. */
+>> if (!hw.sample_delay_factor)
+>> return;
+>>
+>> - /* Configure the HALF_PERIOD flag. */
+>> - if (hw.use_half_periods)
+>> - writel(BM_GPMI_CTRL1_HALF_PERIOD,
+>> - gpmi_regs + HW_GPMI_CTRL1_SET);
+>> + /* Set RDN_DELAY or HALF_PERIOD. */
+>> + reg =3D ((hw.use_half_periods) ? BM_GPMI_CTRL1_HALF_PERIOD : 0)
+>> + | BF_GPMI_CTRL1_RDN_DELAY(hw.sample_delay_factor);
+>>
+>> - /* Set the delay factor. */
+>> - writel(BF_GPMI_CTRL1_RDN_DELAY(hw.sample_delay_factor),
+>> - gpmi_regs + HW_GPMI_CTRL1_SET);
+>> + writel(reg, gpmi_regs + HW_GPMI_CTRL1_SET);
+>>
+>> - /* Enable the DLL. */
+>> + /* At last, we enable the DLL. */
+>> writel(BM_GPMI_CTRL1_DLL_ENABLE, gpmi_regs + HW_GPMI_CTRL1_SET);
+>>
+>> /*
+>> * After we enable the GPMI DLL, we have to wait 64 clock cycles before
+>> - * we can use the GPMI.
+>> - *
+>> - * Calculate the amount of time we need to wait, in microseconds.
+>> + * we can use the GPMI. Calculate the amount of time we need to wait,
+>> + * in microseconds.
 >> */
->> struct gpmi_nfc_hardware_timing {
->> /* for HW_GPMI_TIMING0 */
->> @@ -208,6 +209,7 @@ struct gpmi_nfc_hardware_timing {
->> /* for HW_GPMI_CTRL1 */
->> bool use_half_periods;
->> uint8_t sample_delay_factor;
->> + uint8_t wrn_dly_sel;
->> };
->>
->> /**
->> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-regs.h=20
->> b/drivers/mtd/nand/gpmi-nand/gpmi-regs.h
->> index 7961c14..ab428d6 100644
->> --- a/drivers/mtd/nand/gpmi-nand/gpmi-regs.h
->> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-regs.h
->> @@ -108,6 +108,11 @@
->> #define HW_GPMI_CTRL1_CLR 0x00000068
->> #define HW_GPMI_CTRL1_TOG 0x0000006c
->>
->> +#define BP_GPMI_CTRL1_WRN_DLY_SEL 22
->> +#define BM_GPMI_CTRL1_WRN_DLY_SEL 0x00C00000
+>> clock_period_in_ns =3D 1000000000 / clk_get_rate(r->clock[0]);
 >
-> In [PATCH 3/9] mtd: gpmi: add a new field for HW_GPMI_TIMING1,
-> the above is done in a different way.
->
-> #define BM_GPMI_TIMING1_BUSY_TIMEOUT
-> (0xff << BP_GPMI_TIMING1_BUSY_TIMEOUT)
->
-> I think it would be good if we follow the same conventions in all the=20
-> places.
->
-yes. we should.
+> NSEC_PER_SEC macro in the above statement?
+thanks. I like this macro.
 
-thanks
+>
+> Don't curse me for commenting about the code that you've not written.=20
+> As this patch does some cleanups, I'm suggesting this.
+>
+sorry, I do not understand it very well.
+could you tell me in detail what's the "commenting about the code that=20
+you've not written" meaning?
+
+Which comments do you think is not proper?
+
+Best Regards
 Huang Shijie
+
+
+
+>
+>> dll_wait_time_in_us =3D (clock_period_in_ns * 64) / 1000;
+>
+> Regards,
+> Vikram
+>
