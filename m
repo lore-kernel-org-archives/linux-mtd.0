@@ -1,17 +1,16 @@
-Received: from mail-wi0-f171.google.com ([209.85.212.171])
+Received: from mail-wi0-f177.google.com ([209.85.212.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TBm1i-0007Ln-1K
- for linux-mtd@lists.infradead.org; Wed, 12 Sep 2012 12:26:42 +0000
-Received: by wibhq4 with SMTP id hq4so3685923wib.0
- for <linux-mtd@lists.infradead.org>; Wed, 12 Sep 2012 05:26:39 -0700 (PDT)
+ id 1TBo4I-0003Zf-VY
+ for linux-mtd@lists.infradead.org; Wed, 12 Sep 2012 14:37:31 +0000
+Received: by wibhn17 with SMTP id hn17so1544583wib.0
+ for <linux-mtd@lists.infradead.org>; Wed, 12 Sep 2012 07:37:28 -0700 (PDT)
 From: Richard Genoud <richard.genoud@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Subject: [PATCH] MTD: nandsim: BUG: Fail if overridesize is too big
-Date: Wed, 12 Sep 2012 14:26:26 +0200
-Message-Id: <1347452786-10208-1-git-send-email-richard.genoud@gmail.com>
-Cc: Richard Genoud <richard.genoud@gmail.com>, linux-mtd@lists.infradead.org,
- Adrian Hunter <adrian.hunter@intel.com>
+ Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [MTD-UTILS] BUG: ubiformat fails on big partitions (>4Gio)
+Date: Wed, 12 Sep 2012 16:37:19 +0200
+Message-Id: <1347460639-3241-1-git-send-email-richard.genoud@gmail.com>
+Cc: Richard Genoud <richard.genoud@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,28 +20,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If override size is too big, the module was actually loaded instead of
-failing, because retval was not set.
+The offset (which is 64bits when mtd-utils are not compile with
+WITHOUT_LARGEFILE) is calculated like that:
+offset = nb * size;
+But nb and size are int, so on 32bits platforms, there's a possible
+overflow.
 
-This lead to memory corruption with the use of the freed structs nandsim
-and nand_chip.
+So, it should be replace with:
+offset = (off_t)nb * size;
+If WITHOUT_LARGEFILE is defined, there still be an overflow, but it's
+what we want, right ?
 
+Cheney Chen tested an ubiformat on a NAND (5.9 GiB mtd part).
+
+Reported-by: Cheney Chen <cheneychencl2012@gmail.com>
+Tested-by: Cheney Chen <cheneychencl2012@gmail.com>
 Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
 ---
- drivers/mtd/nand/nandsim.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+ ubi-utils/libubigen.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index cf0cd31..5d881180 100644
---- a/drivers/mtd/nand/nandsim.c
-+++ b/drivers/mtd/nand/nandsim.c
-@@ -2333,6 +2333,7 @@ static int __init ns_init_module(void)
- 		uint64_t new_size = (uint64_t)nsmtd->erasesize << overridesize;
- 		if (new_size >> overridesize != nsmtd->erasesize) {
- 			NS_ERR("overridesize is too big\n");
-+			retval = -EINVAL;
- 			goto err_exit;
- 		}
- 		/* N.B. This relies on nand_scan not doing anything with the size before we change it */
+diff --git a/ubi-utils/libubigen.c b/ubi-utils/libubigen.c
+index 9eaa7f5..d2a949b 100644
+--- a/ubi-utils/libubigen.c
++++ b/ubi-utils/libubigen.c
+@@ -279,7 +279,7 @@ int ubigen_write_layout_vol(const struct ubigen_info *ui, int peb1, int peb2,
+ 	memset(outbuf + ui->data_offs + ui->vtbl_size, 0xFF,
+ 	       ui->peb_size - ui->data_offs - ui->vtbl_size);
+ 
+-	seek = peb1 * ui->peb_size;
++	seek = (off_t) peb1 * ui->peb_size;
+ 	if (lseek(fd, seek, SEEK_SET) != seek) {
+ 		sys_errmsg("cannot seek output file");
+ 		goto out_free;
+@@ -293,7 +293,7 @@ int ubigen_write_layout_vol(const struct ubigen_info *ui, int peb1, int peb2,
+ 		goto out_free;
+ 	}
+ 
+-	seek = peb2 * ui->peb_size;
++	seek = (off_t) peb2 * ui->peb_size;
+ 	if (lseek(fd, seek, SEEK_SET) != seek) {
+ 		sys_errmsg("cannot seek output file");
+ 		goto out_free;
 -- 
 1.7.2.5
