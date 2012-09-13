@@ -1,16 +1,17 @@
-From: Huang Shijie <b32955@freescale.com>
-To: <dedekind1@gmail.com>
-Subject: [PATCH v2 9/9] mtd: gpmi: initialize the timing registers only one
- time
-Date: Thu, 13 Sep 2012 14:58:00 +0800
-Message-ID: <1347519480-31106-10-git-send-email-b32955@freescale.com>
-In-Reply-To: <1347519480-31106-1-git-send-email-b32955@freescale.com>
-References: <1347519480-31106-1-git-send-email-b32955@freescale.com>
+Received: from va3ehsobe004.messaging.microsoft.com ([216.32.180.14]
+ helo=va3outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TC5Ck-0003Lw-Tw
+ for linux-mtd@lists.infradead.org; Thu, 13 Sep 2012 08:55:23 +0000
+From: Prabhakar Kushwaha <prabhakar@freescale.com>
+To: <linux-mtd@lists.infradead.org>, <linuxppc-dev@lists.ozlabs.org>
+Subject: [PATCH] driver/mtd:IFC NAND:Initialise internal SRAM before any write
+Date: Thu, 13 Sep 2012 14:24:49 +0530
+Message-ID: <1347526489-20186-1-git-send-email-prabhakar@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Cc: vikram186@gmail.com, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org, shawn.guo@linaro.org, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+Cc: scottwood@freescale.com, Prabhakar Kushwaha <prabhakar@freescale.com>,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,55 +21,114 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The current code initializes the timing registers at very time
-we call the gpmi_begin(). This really wastes the cpu cycles.
+IFC-1.1.0 uses 28nm techenology for SRAM. This tech has known limitaion for
+SRAM i.e. "byte select" is not supported. Hence Read Modify Write is
+implemented in IFC for any "system side write" into sram buffer. Reading an
+uninitialized memory results in ECC Error from sram wrapper.
 
-Add a new flag to let the gpmi driver initializes the timing registers
-only one time.
+Hence we must initialize/prefill SRAM buffer by any data before writing
+anything in SRAM from system side. To initialize SRAM user can use "READID"
+NAND command with read bytes equal to SRAM size. It will be a one time
+activity post boot.
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
+Signed-off-by: Prabhakar Kushwaha <prabhakar@freescale.com>
 ---
- drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |    8 ++++++++
- drivers/mtd/nand/gpmi-nand/gpmi-nand.h |    1 +
- 2 files changed, 9 insertions(+), 0 deletions(-)
+ Based upon git://git.infradead.org/linux-mtd.git branch master
+ The compilation of this patch depends upon following patch.
+ http://patchwork.ozlabs.org/patch/177893/
+ This patch is currently applied on git://git.kernel.org/pub/scm/linux/kernel/git/galak/powerpc.git 
+ branch next and status is "Awaiting Upstream"
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-index c036e51..3502acc 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-@@ -914,6 +914,9 @@ static int enable_edo_mode(struct gpmi_nand_data *this, int mode)
- 	rate = (mode == 5) ? 100000000 : 80000000;
- 	clk_set_rate(r->clock[0], rate);
+
+ drivers/mtd/nand/fsl_ifc_nand.c |   56 ++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 55 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
+index 1f71b54..3d15b92 100644
+--- a/drivers/mtd/nand/fsl_ifc_nand.c
++++ b/drivers/mtd/nand/fsl_ifc_nand.c
+@@ -31,6 +31,7 @@
+ #include <linux/mtd/nand_ecc.h>
+ #include <asm/fsl_ifc.h>
  
-+	/* Let the gpmi_begin() re-compute the timing again. */
-+	this->flags &= ~GPMI_TIMING_INIT_OK;
++#define FSL_IFC_V1_1_0	0x01010000
+ #define ERR_BYTE		0xFF /* Value returned for read
+ 					bytes when read failed	*/
+ #define IFC_TIMEOUT_MSECS	500  /* Maximum number of mSecs to wait
+@@ -775,13 +776,62 @@ static int fsl_ifc_chip_init_tail(struct mtd_info *mtd)
+ 	return 0;
+ }
+ 
++static void fsl_ifc_sram_init(struct fsl_ifc_mtd *priv)
++{
++	struct fsl_ifc_ctrl *ctrl = priv->ctrl;
++	struct fsl_ifc_regs __iomem *ifc = ctrl->regs;
++	uint32_t csor = 0, csor_8k = 0, csor_ext = 0;
++	uint32_t cs = priv->bank;
 +
- 	this->flags |= GPMI_ASYNC_EDO_ENABLED;
- 	this->timing_mode = mode;
- 	dev_info(this->dev, "enable the asynchronous EDO mode %d\n", mode);
-@@ -964,6 +967,11 @@ void gpmi_begin(struct gpmi_nand_data *this)
- 		goto err_out;
++	/* Save CSOR and CSOR_ext */
++	csor = in_be32(&ifc->csor_cs[cs].csor);
++	csor_ext = in_be32(&ifc->csor_cs[cs].csor_ext);
++
++	/* chage PageSize 8K and SpareSize 1K*/
++	csor_8k = (csor & ~(CSOR_NAND_PGS_MASK)) | 0x0018C000;
++	out_be32(&ifc->csor_cs[cs].csor, csor_8k);
++	out_be32(&ifc->csor_cs[cs].csor_ext, 0x0000400);
++
++	/* READID */
++	out_be32(&ifc->ifc_nand.nand_fir0,
++			(IFC_FIR_OP_CMD0 << IFC_NAND_FIR0_OP0_SHIFT) |
++			(IFC_FIR_OP_UA  << IFC_NAND_FIR0_OP1_SHIFT) |
++			(IFC_FIR_OP_RB << IFC_NAND_FIR0_OP2_SHIFT));
++	out_be32(&ifc->ifc_nand.nand_fcr0,
++			NAND_CMD_READID << IFC_NAND_FCR0_CMD0_SHIFT);
++	out_be32(&ifc->ifc_nand.row3, 0x0);
++
++	out_be32(&ifc->ifc_nand.nand_fbcr, 0x0);
++
++	/* Program ROW0/COL0 */
++	out_be32(&ifc->ifc_nand.row0, 0x0);
++	out_be32(&ifc->ifc_nand.col0, 0x0);
++
++	/* set the chip select for NAND Transaction */
++	out_be32(&ifc->ifc_nand.nand_csel, cs << IFC_NAND_CSEL_SHIFT);
++
++	/* start read seq */
++	out_be32(&ifc->ifc_nand.nandseq_strt, IFC_NAND_SEQ_STRT_FIR_STRT);
++
++	/* wait for command complete flag or timeout */
++	wait_event_timeout(ctrl->nand_wait, ctrl->nand_stat,
++			   IFC_TIMEOUT_MSECS * HZ/1000);
++
++	if (ctrl->nand_stat != IFC_NAND_EVTER_STAT_OPC)
++		printk(KERN_ERR "fsl-ifc: Failed to Initialise SRAM\n");
++
++	/* Restore CSOR and CSOR_ext */
++	out_be32(&ifc->csor_cs[cs].csor, csor);
++	out_be32(&ifc->csor_cs[cs].csor_ext, csor_ext);
++}
++
+ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
+ {
+ 	struct fsl_ifc_ctrl *ctrl = priv->ctrl;
+ 	struct fsl_ifc_regs __iomem *ifc = ctrl->regs;
+ 	struct nand_chip *chip = &priv->chip;
+ 	struct nand_ecclayout *layout;
+-	u32 csor;
++	u32 csor, ver;
+ 
+ 	/* Fill in fsl_ifc_mtd structure */
+ 	priv->mtd.priv = chip;
+@@ -875,6 +925,10 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
+ 		chip->ecc.mode = NAND_ECC_SOFT;
  	}
  
-+	/* Only initialize the timing once */
-+	if (this->flags & GPMI_TIMING_INIT_OK)
-+		return;
-+	this->flags |= GPMI_TIMING_INIT_OK;
++	ver = in_be32(&ifc->ifc_rev);
++	if (ver == FSL_IFC_V1_1_0)
++		fsl_ifc_sram_init(priv);
 +
- 	if (this->flags & GPMI_ASYNC_EDO_ENABLED)
- 		gpmi_compute_edo_timing(this, &hw);
- 	else
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-index 5b6d546..7ac25c1 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-@@ -124,6 +124,7 @@ struct nand_timing {
- struct gpmi_nand_data {
- 	/* flags */
- #define GPMI_ASYNC_EDO_ENABLED	(1 << 0)
-+#define GPMI_TIMING_INIT_OK	(1 << 1)
- 	int			flags;
+ 	return 0;
+ }
  
- 	/* System Interface */
 -- 
-1.7.0.4
+1.7.9.5
