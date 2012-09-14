@@ -1,16 +1,21 @@
-Message-ID: <5052FE40.2030305@antcom.de>
-Date: Fri, 14 Sep 2012 11:52:00 +0200
-From: Roland Stigge <stigge@antcom.de>
+Received: from mail-vc0-f177.google.com ([209.85.220.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TCXsJ-0001U6-TV
+ for linux-mtd@lists.infradead.org; Fri, 14 Sep 2012 15:32:13 +0000
+Received: by vcbgb22 with SMTP id gb22so5267789vcb.36
+ for <linux-mtd@lists.infradead.org>; Fri, 14 Sep 2012 08:32:08 -0700 (PDT)
 MIME-Version: 1.0
-To: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [GIT PULL] ARM: LPC32xx: core update
-References: <50488FD6.4080402@antcom.de> <201209131155.16756.arnd@arndb.de>
-In-Reply-To: <201209131155.16756.arnd@arndb.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: artem.bityutskiy@linux.intel.com, arm@kernel.org,
- Linux MTD <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <1346839292-31001-1-git-send-email-sachin.kamat@linaro.org>
+References: <1346839292-31001-1-git-send-email-sachin.kamat@linaro.org>
+Date: Fri, 14 Sep 2012 21:02:08 +0530
+Message-ID: <CAK9yfHwP-XOUfPjyi7xUzcWPg_EKLKhhG5z_JktHwf7sDVa--g@mail.gmail.com>
+Subject: Re: [PATCH] mtd: nand/gpio: Use module_platform_driver macro
+From: Sachin Kamat <sachin.kamat@linaro.org>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: sachin.kamat@linaro.org, artem.bityutskiy@linux.intel.com,
+ patches@linaro.org, dwmw2@infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,46 +25,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Arnd,
+ping..
 
-On 13/09/12 13:55, Arnd Bergmann wrote:
-> On Thursday 06 September 2012, Roland Stigge wrote:
->>       ARM: LPC32xx: Provide DMA filter callbacks via platform data
-> 
-> This patch results in build errors in the for-next branch with lpc32xx_defconfig:
-> 
-> arch/arm/mach-lpc32xx/phy3250.c:40:35: fatal error: linux/mtd/lpc32xx_slc.h: No such file or directory
-> arch/arm/mach-lpc32xx/phy3250.c:41:35: fatal error: linux/mtd/lpc32xx_mlc.h: No such file or directory
-> arch/arm/mach-lpc32xx/phy3250.c:226:15: error: variable 'lpc32xx_slc_data' has initializer but incomplete type
-> arch/arm/mach-lpc32xx/phy3250.c:227:2: error: unknown field 'dma_filter' specified in initializer
-> arch/arm/mach-lpc32xx/phy3250.c:227:2: error: excess elements in struct initializer [-Werror]
-> arch/arm/mach-lpc32xx/phy3250.c:227:2: error: (near initialization for 'lpc32xx_slc_data') [-Werror]
-> arch/arm/mach-lpc32xx/phy3250.c:230:15: error: variable 'lpc32xx_mlc_data' has initializer but incomplete type
-> arch/arm/mach-lpc32xx/phy3250.c:231:2: error: unknown field 'dma_filter' specified in initializer
-> arch/arm/mach-lpc32xx/phy3250.c:231:2: error: excess elements in struct initializer [-Werror]
-> arch/arm/mach-lpc32xx/phy3250.c:231:2: error: (near initialization for 'lpc32xx_mlc_data') [-Werror]
-> 
-> It seems that we're missing a dependency. Which tree did the patch to add
-> these go through? Can we add that to the same branch in arm-soc?
+On 5 September 2012 15:31, Sachin Kamat <sachin.kamat@linaro.org> wrote:
+> module_platform_driver simplifies the code by eliminating
+> module_init and module_exit calls.
+>
+> Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+> ---
+>  drivers/mtd/nand/gpio.c |   15 +--------------
+>  1 files changed, 1 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
+> index ce6a284..bc73bc5 100644
+> --- a/drivers/mtd/nand/gpio.c
+> +++ b/drivers/mtd/nand/gpio.c
+> @@ -417,20 +417,7 @@ static struct platform_driver gpio_nand_driver =3D {
+>         },
+>  };
+>
+> -static int __init gpio_nand_init(void)
+> -{
+> -       printk(KERN_INFO "GPIO NAND driver, =A9 2004 Simtec Electronics\n=
+");
+> -
+> -       return platform_driver_register(&gpio_nand_driver);
+> -}
+> -
+> -static void __exit gpio_nand_exit(void)
+> -{
+> -       platform_driver_unregister(&gpio_nand_driver);
+> -}
+> -
+> -module_init(gpio_nand_init);
+> -module_exit(gpio_nand_exit);
+> +module_platform_driver(gpio_nand_driver);
+>
+>  MODULE_LICENSE("GPL");
+>  MODULE_AUTHOR("Ben Dooks <ben@simtec.co.uk>");
+> --
+> 1.7.4.1
+>
 
-Right - there is a dependency on l2-mtd.git here.
 
-Since they didn't request pull for 3.6, there is quite some stuff
-pending in their tree (but I wonder why it isn't already part of
-linux-next, so the above error at least shouldn't occur in linux-next).
 
-So we have several alternative options here:
-
-* If it is possible, include l2-mtd.git as a dependency in arm-soc.git
-* Merge the following 2 patches as minimal dependency:
-http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commitdiff/c47bc5c84a65c31f41a555706363f9e350ca6338
-http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commitdiff/f5e87dd7350c98a34aa7041264c337f0f33c02ff
-You actually only need the two .h files, ignore the patches for yet
-non-existing .c mtd driver files in arm-soc.git.
-* Defer the above (single) patch in arm-soc until l2-mtd is merged
-linux-next or mainline. Maybe l2-mtd.git will appear in linux-next soon,
-otherwise we will need to defer the above patch for lpc32xx/core for 3.8?
-
-Sorry for the confusion,
-
-Roland
+--=20
+With warm regards,
+Sachin
