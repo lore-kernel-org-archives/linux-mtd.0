@@ -1,18 +1,16 @@
-Received: from tx2ehsobe005.messaging.microsoft.com ([65.55.88.15]
- helo=tx2outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TCJIe-000856-Rt
- for linux-mtd@lists.infradead.org; Thu, 13 Sep 2012 23:58:25 +0000
-Date: Thu, 13 Sep 2012 18:56:07 -0500
-From: Kim Phillips <kim.phillips@freescale.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: fsl_ifc_nand: fix cast removes address space of
- expression warnings
-Message-ID: <20120913185607.af76965cb973dfb1059c842f@freescale.com>
+Message-ID: <5052FE40.2030305@antcom.de>
+Date: Fri, 14 Sep 2012 11:52:00 +0200
+From: Roland Stigge <stigge@antcom.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+To: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [GIT PULL] ARM: LPC32xx: core update
+References: <50488FD6.4080402@antcom.de> <201209131155.16756.arnd@arndb.de>
+In-Reply-To: <201209131155.16756.arnd@arndb.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Cc: Scott Wood <scottwood@freescale.com>, David Woodhouse <dwmw2@infradead.org>
+Cc: artem.bityutskiy@linux.intel.com, arm@kernel.org,
+ Linux MTD <linux-mtd@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,36 +20,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-found by sparse.
+Hi Arnd,
 
-Signed-off-by: Kim Phillips <kim.phillips@freescale.com>
----
- drivers/mtd/nand/fsl_ifc_nand.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+On 13/09/12 13:55, Arnd Bergmann wrote:
+> On Thursday 06 September 2012, Roland Stigge wrote:
+>>       ARM: LPC32xx: Provide DMA filter callbacks via platform data
+> 
+> This patch results in build errors in the for-next branch with lpc32xx_defconfig:
+> 
+> arch/arm/mach-lpc32xx/phy3250.c:40:35: fatal error: linux/mtd/lpc32xx_slc.h: No such file or directory
+> arch/arm/mach-lpc32xx/phy3250.c:41:35: fatal error: linux/mtd/lpc32xx_mlc.h: No such file or directory
+> arch/arm/mach-lpc32xx/phy3250.c:226:15: error: variable 'lpc32xx_slc_data' has initializer but incomplete type
+> arch/arm/mach-lpc32xx/phy3250.c:227:2: error: unknown field 'dma_filter' specified in initializer
+> arch/arm/mach-lpc32xx/phy3250.c:227:2: error: excess elements in struct initializer [-Werror]
+> arch/arm/mach-lpc32xx/phy3250.c:227:2: error: (near initialization for 'lpc32xx_slc_data') [-Werror]
+> arch/arm/mach-lpc32xx/phy3250.c:230:15: error: variable 'lpc32xx_mlc_data' has initializer but incomplete type
+> arch/arm/mach-lpc32xx/phy3250.c:231:2: error: unknown field 'dma_filter' specified in initializer
+> arch/arm/mach-lpc32xx/phy3250.c:231:2: error: excess elements in struct initializer [-Werror]
+> arch/arm/mach-lpc32xx/phy3250.c:231:2: error: (near initialization for 'lpc32xx_mlc_data') [-Werror]
+> 
+> It seems that we're missing a dependency. Which tree did the patch to add
+> these go through? Can we add that to the same branch in arm-soc?
 
-diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
-index e92d223..1be83dc 100644
---- a/drivers/mtd/nand/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/fsl_ifc_nand.c
-@@ -193,7 +193,7 @@ static int is_blank(struct mtd_info *mtd, unsigned int bufnum)
- 	struct nand_chip *chip = mtd->priv;
- 	struct fsl_ifc_mtd *priv = chip->priv;
- 	u8 __iomem *addr = priv->vbase + bufnum * (mtd->writesize * 2);
--	u32 __iomem *mainarea = (u32 *)addr;
-+	u32 __iomem *mainarea = (u32 __iomem *)addr;
- 	u8 __iomem *oob = addr + mtd->writesize;
- 	int i;
- 
-@@ -591,8 +591,8 @@ static uint8_t fsl_ifc_read_byte16(struct mtd_info *mtd)
- 	 * next byte.
- 	 */
- 	if (ifc_nand_ctrl->index < ifc_nand_ctrl->read_bytes) {
--		data = in_be16((uint16_t *)&ifc_nand_ctrl->
--					addr[ifc_nand_ctrl->index]);
-+		data = in_be16((uint16_t __iomem *)&ifc_nand_ctrl->
-+			       addr[ifc_nand_ctrl->index]);
- 		ifc_nand_ctrl->index += 2;
- 		return (uint8_t) data;
- 	}
--- 
-1.7.12
+Right - there is a dependency on l2-mtd.git here.
+
+Since they didn't request pull for 3.6, there is quite some stuff
+pending in their tree (but I wonder why it isn't already part of
+linux-next, so the above error at least shouldn't occur in linux-next).
+
+So we have several alternative options here:
+
+* If it is possible, include l2-mtd.git as a dependency in arm-soc.git
+* Merge the following 2 patches as minimal dependency:
+http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commitdiff/c47bc5c84a65c31f41a555706363f9e350ca6338
+http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commitdiff/f5e87dd7350c98a34aa7041264c337f0f33c02ff
+You actually only need the two .h files, ignore the patches for yet
+non-existing .c mtd driver files in arm-soc.git.
+* Defer the above (single) patch in arm-soc until l2-mtd is merged
+linux-next or mainline. Maybe l2-mtd.git will appear in linux-next soon,
+otherwise we will need to defer the above patch for lpc32xx/core for 3.8?
+
+Sorry for the confusion,
+
+Roland
