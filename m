@@ -1,18 +1,18 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
+Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TCkAU-0000X7-Rm
- for linux-mtd@lists.infradead.org; Sat, 15 Sep 2012 04:39:47 +0000
-Received: by lbbgf7 with SMTP id gf7so3148857lbb.36
- for <linux-mtd@lists.infradead.org>; Fri, 14 Sep 2012 21:39:43 -0700 (PDT)
+ id 1TCkux-0001aa-Fv
+ for linux-mtd@lists.infradead.org; Sat, 15 Sep 2012 05:27:48 +0000
+Received: by lagu2 with SMTP id u2so3104893lag.36
+ for <linux-mtd@lists.infradead.org>; Fri, 14 Sep 2012 22:27:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <5031D2D5.7050801@freescale.com>
+In-Reply-To: <4F8E72B3.1090205@freescale.com>
 References: <1334026606-18327-1-git-send-email-b32955@freescale.com>
  <CAN8TOE8xz+t1X-JVC1sOy70k64_gRDU-6DkrnqtDkvdbELHQLQ@mail.gmail.com>
- <502E0417.3040708@freescale.com>
- <CAN8TOE99ncoBgzpDjKXAWuMQ9O25JZhzLixbXtJA+c2T=mro-A@mail.gmail.com>
- <5031D2D5.7050801@freescale.com>
-Date: Fri, 14 Sep 2012 21:39:43 -0700
-Message-ID: <CAN8TOE-gEvc2Gej=OY=107kq-6h1XTj8WYTb3DzcJ1Lr=pVSuw@mail.gmail.com>
+ <4F86416B.4090501@freescale.com>
+ <CAN8TOE_yhvB+xnyS_UZn0ko+QySFZJsYBk5w0PB_O37eZaQj9g@mail.gmail.com>
+ <4F8E72B3.1090205@freescale.com>
+Date: Fri, 14 Sep 2012 22:27:42 -0700
+Message-ID: <CAN8TOE9a7vF0D8hGFubLdg+wQAzA2H+mF_QKawnLEj=rj7GumQ@mail.gmail.com>
 Subject: Re: [PATCH] mtd : add parsing code for one kind of Hynix's nand chip
 From: Brian Norris <computersforpeace@gmail.com>
 To: Huang Shijie <b32955@freescale.com>
@@ -29,24 +29,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Aug 19, 2012 at 11:01 PM, Huang Shijie <b32955@freescale.com> wrote=
+Hi Huang,
+
+Sorry (again) that this is sitting for a while. I did some more work
+this evening on it, and I think I could have a solution. But I still
+don't have any real samples, so I'd like you help.
+
+On Wed, Apr 18, 2012 at 12:52 AM, Huang Shijie <b32955@freescale.com> wrote=
 :
-> =D3=DA 2012=C4=EA08=D4=C218=C8=D5 10:51, Brian Norris =D0=B4=B5=C0:
->
->> agreed there was no good way to detect these chips without practically
->> hard-coding the ID + parameter configuration. If that's the case, then
->
-> Yes, we have to hard-coding the ID for Hynix. But there is already a
-> hard-coding for SAMSUNG.
+> =D3=DA 2012=C4=EA04=D4=C218=C8=D5 13:00, Brian Norris =D0=B4=B5=C0:
+> I only have the H27UBG8T2A nand chip in my hand, and test it in the imx28
+> board.
+> I do not have other nand chips which may also follow the same parsing cod=
+e
+> as the H27UBG8T2A.
 
-It's not exactly hard-coding, as there is a recognizable pattern that
-covers a class of different chips: all Samsung MLC with 6-byte ID
-strings.
+Can you capture a full ID string for any Hynix parts you have?
+Especially of interest are this H27UBG8T2A and other MLC.
 
-> so I think the hard-coding is accecpted, aren't we?
+I want to check the ID length and wraparound behavior, since I think
+that we can write a rule such that we use this data table for all
+Hynix MLC with 6-byte ID strings. I have info for 3 type of Hynix MLC
+that follow the 6-byte pattern, and a few 5-byte Hynix MLC that follow
+existing patterns.
 
-We try to do as little hard-coding as possible, as it can blow up as a
-larger maintainability problem. But as we see, we may need real
-hard-coding.
+I appreciate the help and the patience.
 
+Thanks,
 Brian
