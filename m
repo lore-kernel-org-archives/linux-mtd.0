@@ -1,22 +1,14 @@
 Received: from smtp.newsguy.com ([74.209.136.69])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TCx37-0008SJ-Ny
- for linux-mtd@lists.infradead.org; Sat, 15 Sep 2012 18:25:02 +0000
-Message-ID: <5054C7A5.5010308@newsguy.com>
-Date: Sat, 15 Sep 2012 11:23:33 -0700
+ id 1TCy1N-0002Dl-1z
+ for linux-mtd@lists.infradead.org; Sat, 15 Sep 2012 19:27:17 +0000
 From: Mike Dunn <mikedunn@newsguy.com>
-MIME-Version: 1.0
-To: Peter Huewe <peterhuewe@gmx.de>
-Subject: Re: [PATCH] mtd/nand/docg4: Add missing HAS_IOMEM dependency
-References: <1347662469-1604-1-git-send-email-peterhuewe@gmx.de>
-In-Reply-To: <1347662469-1604-1-git-send-email-peterhuewe@gmx.de>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Arnd Bergmann <arnd@arndb.de>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-kernel@vger.kernel.org, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Shubhrajyoti D <shubhrajyoti@ti.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH v2] mtd: nand: docg4: ecc.read_page() returns 0 on
+ uncorrectable errors
+Date: Sat, 15 Sep 2012 12:26:45 -0700
+Message-Id: <1347737205-17019-1-git-send-email-mikedunn@newsguy.com>
+Cc: computersforpeace@gmail.com, Mike Dunn <mikedunn@newsguy.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,43 +18,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Acked-by: Mike Dunn <mikedunn@newsguy.com>
+v2 fixes spelling error
 
-Sorry for the oversight.
+Currently the docg4's ecc.read_page() method returns -EBADMSG when uncorrectible
+bitflips occur.  This is wrong; 0 should be returned in this case.  An error
+code should only be returned by this method in the case of a hardware error
+(probably -EIO).
 
-Mike
+Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
+Acked-by: Brian Norris <computersforpeace@gmail.com>
+---
+ drivers/mtd/nand/docg4.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-
-On 09/14/2012 03:41 PM, Peter Huewe wrote:
-> While building an allyesconfig for UML I received this error message(s):
->  drivers/mtd/nand/docg4.c: In function 'probe_docg4':
->  drivers/mtd/nand/docg4.c:1272:2: error: implicit declaration of function
->  'ioremap' [-Werror=implicit-function-declaration]
->  drivers/mtd/nand/docg4.c:1272:10: warning: assignment makes pointer from
->  integer without a cast [enabled by default]
->  drivers/mtd/nand/docg4.c:1327:2: error: implicit declaration of function
->  'iounmap' [-Werror=implicit-function-declaration]
-> 
-> which is caused by the missing implementations on UML.
-> 
-> This patch adds this missing HAS_IOMEM dependency and prevents the driver from
-> being build on platforms with no HAS_IOMEM
-> 
-> Signed-off-by: Peter Huewe <peterhuewe@gmx.de>
-> ---
->  drivers/mtd/nand/Kconfig |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> index 8ca4176..3e2f75d 100644
-> --- a/drivers/mtd/nand/Kconfig
-> +++ b/drivers/mtd/nand/Kconfig
-> @@ -356,7 +356,7 @@ config MTD_NAND_DISKONCHIP_BBTWRITE
->  
->  config MTD_NAND_DOCG4
->  	tristate "Support for DiskOnChip G4 (EXPERIMENTAL)"
-> -	depends on EXPERIMENTAL
-> +	depends on EXPERIMENTAL && HAS_IOMEM
->  	select BCH
->  	select BITREVERSE
->  	help
+diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/docg4.c
+index 793921e..deb718c 100644
+--- a/drivers/mtd/nand/docg4.c
++++ b/drivers/mtd/nand/docg4.c
+@@ -776,6 +776,8 @@ static int read_page(struct mtd_info *mtd, struct nand_chip *nand,
+ 	}
+ 
+ 	writew(0, docptr + DOC_DATAEND);
++	if (bits_corrected == -EBADMSG)	  /* uncorrectable errors */
++		return 0;
+ 	return bits_corrected;
+ }
+ 
+-- 
+1.7.3.4
