@@ -1,19 +1,20 @@
-Received: from mail-lpp01m010-f49.google.com ([209.85.215.49])
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TCinM-0006vg-EW
- for linux-mtd@lists.infradead.org; Sat, 15 Sep 2012 03:11:50 +0000
-Received: by lagu2 with SMTP id u2so3071826lag.36
- for <linux-mtd@lists.infradead.org>; Fri, 14 Sep 2012 20:11:41 -0700 (PDT)
+ id 1TCiwD-0007Tw-B8
+ for linux-mtd@lists.infradead.org; Sat, 15 Sep 2012 03:20:58 +0000
+Received: by lbbgf7 with SMTP id gf7so3129703lbb.36
+ for <linux-mtd@lists.infradead.org>; Fri, 14 Sep 2012 20:20:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1347371454-17107-1-git-send-email-richard.genoud@gmail.com>
-References: <1347371454-17107-1-git-send-email-richard.genoud@gmail.com>
-Date: Fri, 14 Sep 2012 20:11:41 -0700
-Message-ID: <CAN8TOE_adrO32vo5c8P6fadhRqchFday302fo9F=kr4njfsaoA@mail.gmail.com>
-Subject: Re: [PATCH] NAND BBT: use NAND_BBT_SCAN_MAXBLOCKS
+In-Reply-To: <1347378650-3522-1-git-send-email-mikedunn@newsguy.com>
+References: <1347378650-3522-1-git-send-email-mikedunn@newsguy.com>
+Date: Fri, 14 Sep 2012 20:20:55 -0700
+Message-ID: <CAN8TOE9--TGMshgGuWvz=5=TuBDe=Qw-bDn0OfAs_OOujzsDjQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: nand: docg4: ecc.read_page() returns 0 on
+ uncorrectible errors
 From: Brian Norris <computersforpeace@gmail.com>
-To: Richard Genoud <richard.genoud@gmail.com>
+To: Mike Dunn <mikedunn@newsguy.com>
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,36 +24,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On Tue, Sep 11, 2012 at 6:50 AM, Richard Genoud
-<richard.genoud@gmail.com> wrote:
-> In nand_bbt.c, a hardcoded value was used instead of the define meant
-> for that, so we use the define.
+On Tue, Sep 11, 2012 at 8:50 AM, Mike Dunn <mikedunn@newsguy.com> wrote:
+> diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/docg4.c
+> index 793921e..deb718c 100644
+> --- a/drivers/mtd/nand/docg4.c
+> +++ b/drivers/mtd/nand/docg4.c
+> @@ -776,6 +776,8 @@ static int read_page(struct mtd_info *mtd, struct nand_chip *nand,
+>         }
 >
-> There's no functionnal change.
+>         writew(0, docptr + DOC_DATAEND);
+> +       if (bits_corrected == -EBADMSG)   /* uncorrectible errors */
 
-s/functionnal/functional
+s/uncorrectible/uncorrectable/
 
-> Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
+> +               return 0;
+>         return bits_corrected;
+>  }
+>
 
-> -       .maxblocks = 4,
-> +       .maxblocks = NAND_BBT_SCAN_MAXBLOCKS,
-
-On a more important note: why was this define ever included in the
-first place? It seems to have been included without a real user in
-this commit:
-
-Author: Kyungmin Park <kyungmin.park@samsung.com>
-Date:   Tue Sep 27 11:26:39 2005 +0100
-
-    [MTD] OneNAND: Add missing files
-
-In the end, the real question is: does the macro have real value? I
-suppose it makes it slightly easier to change the parameter across all
-the version of the BBT (main/mirror and oob/no_oob). So I'll ack:
+With that change:
 
 Acked-by: Brian Norris <computersforpeace@gmail.com>
 
-Thanks,
+Also, not a blocker for this patch, but this made me look elsewhere in docg4.c:
+
+static int __init read_factory_bbt(struct mtd_info *mtd)
+{
+...
+        status = docg4_read_page(mtd, nand, buf, 0, DOCG4_FACTORY_BBT_PAGE);
+        if (status)
+                goto exit;
+
+This could cause problems if there are ever bitflips on the BBT page.
+Can the factory BBT contain bitflips?
+
 Brian
