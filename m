@@ -1,26 +1,23 @@
 Received: from mail-bk0-f49.google.com ([209.85.214.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TDDGf-0002AN-Bx
- for linux-mtd@lists.infradead.org; Sun, 16 Sep 2012 11:44:06 +0000
-Received: by bkcji2 with SMTP id ji2so2067646bkc.36
- for <linux-mtd@lists.infradead.org>; Sun, 16 Sep 2012 04:44:02 -0700 (PDT)
-Message-ID: <1347795829.2032.1.camel@kyv>
+ id 1TDDMH-0002M3-RU
+ for linux-mtd@lists.infradead.org; Sun, 16 Sep 2012 11:49:54 +0000
+Received: by bkcji2 with SMTP id ji2so2069021bkc.36
+ for <linux-mtd@lists.infradead.org>; Sun, 16 Sep 2012 04:49:52 -0700 (PDT)
+Message-ID: <1347796189.2032.7.camel@kyv>
 Subject: Re: [PATCH V2] mtd: basic (read only) driver for BCMA serial flash
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "John W. Linville" <linville@tuxdriver.com>
-Date: Sun, 16 Sep 2012 14:43:49 +0300
-In-Reply-To: <20120911132117.GA7015@tuxdriver.com>
+To: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
+Date: Sun, 16 Sep 2012 14:49:49 +0300
+In-Reply-To: <CACna6ryroY=Xbv7+VsRfBYdhRd9P6uz935b9scQqCmTjneM7sQ@mail.gmail.com>
 References: <1346699237-414-1-git-send-email-zajec5@gmail.com>
  <1347358840.21359.67.camel@sauron.fi.intel.com>
  <CACna6ryroY=Xbv7+VsRfBYdhRd9P6uz935b9scQqCmTjneM7sQ@mail.gmail.com>
- <1347361186.26206.5.camel@sauron.fi.intel.com>
- <20120911132117.GA7015@tuxdriver.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-jC+TuOHHgIqhUXkyIy2r"
+ boundary="=-SL3wL/+uFsgbmCNbJjxT"
 Mime-Version: 1.0
-Cc: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>,
- linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,45 +29,55 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-jC+TuOHHgIqhUXkyIy2r
+--=-SL3wL/+uFsgbmCNbJjxT
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-09-11 at 09:21 -0400, John W. Linville wrote:
-> OTOH, those exact commits are already in wireless-next (and in
-> net-next).  That tree will not be rebased, so you can pull from it
-> if you so choose.  But, it would generally be better if you only pull
-> from head commits that are already in net-next "just in case". :-)
+On Tue, 2012-09-11 at 12:35 +0200, Rafa=C5=82 Mi=C5=82ecki wrote:
+> 2012/9/11 Artem Bityutskiy <dedekind1@gmail.com>:
+> > On Mon, 2012-09-03 at 21:07 +0200, Rafa=C5=82 Mi=C5=82ecki wrote:
+> >> This registers MTD driver for serial flash platform device. Right now =
+it
+> >> supports reading only, writing still has to be implemented.
+> >> At this point it's marked as BROKEN, because it requires code present =
+in
+> >> net tree that wasn't mainlined yet.
+> >>
+> >> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
+> >
+> > What are exactly the changes it depends on? URL? Are they staged for
+> > 3.7?
+>=20
+> http://git.kernel.org/?p=3Dlinux/kernel/git/linville/wireless-testing.git=
+;a=3Dcommitdiff;h=3D23cb3b2121323443834296a8ecb582b8aeb78d75
+> http://git.kernel.org/?p=3Dlinux/kernel/git/linville/wireless-testing.git=
+;a=3Dcommitdiff;h=3Dd57ef3a6a2eeb88df47e892c66692e3f59722ffe
 
-Thanks, I've pulled 'net-next' to my 'l2-mtd' tree instead, up to the
-commit Rafa=C5=82 needs:
+Please, remove "BROKEN" and re-send the compilable patch against the
+l2-mtd.git tree. I've pulled Dave Miller's tree with your patches into
+l2-mtd.git. Thanks!
 
-commit 70f389f0fbbde0d00a5ec4ba4817c09e80a3ae47
-Merge: 44e42b9 371a004
-Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Date:   Sun Sep 16 14:42:38 2012 +0300
+> Well, I just didn't implement writing yet (it's more complicated than
+> that trivial reads) and I didn't know the correct values for the above
+> ones. I just set writesize to 1 to avoid some WARN/BUG (not remember
+> right now).
 
-    Merge commit '371a00448f95adaa612cf1a0b31a11e7093bc706' of 'git://git.k=
-ernel.org/pub/scm/linux/kernel/git/davem/net-next.git'
-   =20
-    We need the following 2 patches from the 'net-next' tree for the BCMA f=
-lash
-    driver:
-   =20
-    371a004 bcma: detect and register NAND flash device
-    d57ef3a bcma: detect and register serial flash device
-   =20
-    and this is why we are merging the net-next tree (presumably persistent=
-)
-    up to commit '371a004'.
-   =20
-    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+OK. Just add 'mtd->writebufsize =3D mtd->writesize =3D 1; for now.
+
+> In case some other driver handling platform device was loaded earlier.
+> Is that wrong?
+
+I do not really understand why you need this - can the general code
+really call the removal method and the platform data be NULL? If not,
+kill this check - if this happens, this is a bug and we'll end up with
+an oops. If it can, please, explain in more details how this can
+happen.=20
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-jC+TuOHHgIqhUXkyIy2r
+--=-SL3wL/+uFsgbmCNbJjxT
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -78,19 +85,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQVbt1AAoJECmIfjd9wqK0vlEP/3gkGNV6ghrMEsCXiCaDPDrD
-rwsHA/JTKEAvM8cjLf9abe1zzcSK7c6DXIJW3v3yxOxrrVBDXJcxNPJrLSu8Gya0
-ugb6twnhXxi47VC16AS+pngQKYsLaXEGdqesNPnrZv0tuGz9WoJzWcV8W3GWdjjX
-5xEfZslIoDR83kpZOmUPh9I2xJAYj/OMLytz/OnzKewBCTqH+RvMWMPeTx9RKbsi
-1Ab5VBajJ8AiRXXw1+C1E0XfZXsPUe14HnDIhRkjogVSS7KSXw8QY2xMqrYmtx2G
-GtrqEli4bGzG7t5GxdHvM2mW1zsX6uc5OGx3+cffwq1XA7d/xWdexv7e45X1F1JN
-25ITAjznZGG8O0DBR5jZ4Z119Nwx84or/Z3qQGpByhJXHUrWl7pCM2JW2gcwQcaP
-68ukF6Ct1O1Rjj7vAxzbJVF5pWHsSmZ6JZ59vz5WIBORfTDwg4ZkdkeZT6pJR+6S
-kSGaw4AFll+d6fDYXZu4cF5fhQZPKf+Bi5jk0wuKAqCVpZQbrRySvobHZrKBh3Fc
-UabTSqb9boTHG/jARf3DC+4KEOjN7AaXeuiqZh5+8da0WZZ0ZQpUPU3jPhzG6ZOq
-TNDRSHvhxoe/pcchmn8IDLa8Fg28CfN3r52ryt3eS8ITsX1CvGFy4o+jjnype0ju
-wADSqeTLzsiYMfYZXTR6
-=s2Vh
+iQIcBAABAgAGBQJQVbzdAAoJECmIfjd9wqK0Hz4QAM+wl3dKWfUxfe349C5KgU0U
+MSDR1jADmr7h381eWOl9gGfE56t9l3m4RT0nkH1sMcBPdM+LJieVJPxoNw1T/u9s
+JQR1pPilr2XDRL7SWn4+joRPE0LAHAjfJc5Jg5bPv0ObIfMdXvAMhTCsC51bI1ig
+/D3slnt0YCb507CjueaXczlCHVTMiPCGHGKEiV0uzr1HGqkxv95R4183+z9hFWe8
+RhpmX4vjExmmpMd4MmZTS6FOBoxfgJmEcYEmKGn8YnizOQmnBhyIrPbZoZ6GB8L3
+fCqUvdQi29+QN4Omv+Mk08NPl587nd5tJlZ2Huo7TZ5zkWTQ0a6pz9KVDQYbyMtx
+ybOm7nD3rTp9L2v9hEA26oyN9lAqN2NQFHoDmJRc25r92w41sgYKVQDBLsFB+uOd
+wPLiXKn5OH/gvRK5wuaU9Rk1dcClJfN705c3PEDXm5ghHQs2SmHJjCp/sxIQDVmE
+mGVKlAHTbxWkZEsyBxErleZqnfITAD5wmjI+iFSz3T+2Q1jXtfsf1kGPeogxflWW
+TH//nfIoUnqq7nFqHKyXj4r5OcckQKXpf133cWOjqzq0cMmpDybSsncLT63wUwMk
+MEwvQzsZGS6SnaVMbj5oqkTnjdJS3t27keSZyH72P654ijecK7O3gblXRknL9bQR
+gylZMaNoj1J7mvuEP4zB
+=tKgt
 -----END PGP SIGNATURE-----
 
---=-jC+TuOHHgIqhUXkyIy2r--
+--=-SL3wL/+uFsgbmCNbJjxT--
