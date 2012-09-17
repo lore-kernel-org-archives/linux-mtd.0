@@ -1,20 +1,32 @@
-Received: from mail-ie0-f177.google.com ([209.85.223.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TDYw2-0003Sr-UM
- for linux-mtd@lists.infradead.org; Mon, 17 Sep 2012 10:52:16 +0000
-Received: by ieje10 with SMTP id e10so10172812iej.36
- for <linux-mtd@lists.infradead.org>; Mon, 17 Sep 2012 03:52:12 -0700 (PDT)
+From: Arnd Bergmann <arnd@arndb.de>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH 00/34] i.MX multi-platform support
+Date: Mon, 17 Sep 2012 11:38:13 +0000
+References: <1347860103-4141-1-git-send-email-shawn.guo@linaro.org>
+ <20120917075138.GN6180@pengutronix.de>
+In-Reply-To: <20120917075138.GN6180@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20120913150614.GC22993@renkinjitsu.usine.8d.com>
-References: <20120913150614.GC22993@renkinjitsu.usine.8d.com>
-Date: Mon, 17 Sep 2012 13:52:12 +0300
-Message-ID: <CANOLnOOfwe1EvG1VHAZbtaC2xAD7_Rc6PqCWrs2cwEqauun8KA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: nand: omap2: Fix the nand-disk led trigger
-From: Grazvydas Ignotas <notasas@gmail.com>
-To: Raphael Assenat <raph@8d.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201209171138.13327.arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-fbdev@vger.kernel.org, Wim Van Sebroeck <wim@iguana.be>,
+ linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
+ Florian Tobias Schandinat <FlorianSchandinat@gmx.de>,
+ Paulius Zaleckas <paulius.zaleckas@teltonika.lt>, Chris Ball <cjb@laptop.org>,
+ linux-media@vger.kernel.org, linux-watchdog@vger.kernel.org,
+ rtc-linux@googlegroups.com, Rob Herring <rob.herring@calxeda.com>,
+ linux-arm-kernel@lists.infradead.org,
+ Fabio Estevam <fabio.estevam@freescale.com>,
+ Vinod Koul <vinod.koul@linux.intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-mmc@vger.kernel.org,
+ Wolfram Sang <w.sang@pengutronix.de>,
+ Javier Martin <javier.martin@vista-silicon.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Shawn Guo <shawn.guo@linaro.org>,
+ Guennadi Liakhovetski <g.liakhovetski@gmx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,185 +36,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 13, 2012 at 6:06 PM, Raphael Assenat <raph@8d.com> wrote:
-> When the omap2 nand flash driver is used, the nand-disk led trigger does =
-not
-> work due to nand_wait_ready not being called.
+On Monday 17 September 2012, Sascha Hauer wrote:
+> On Mon, Sep 17, 2012 at 01:34:29PM +0800, Shawn Guo wrote:
+> > The series enables multi-platform support for imx.  Since the required
+> > frameworks (clk, pwm) and spare_irq have already been adopted on imx,
+> > the series is all about cleaning up mach/* headers.  Along with the
+> > changes, arch/arm/plat-mxc gets merged into arch/arm/mach-imx.
+> > 
+> > It's based on a bunch of branches (works from others), Rob's initial
+> > multi-platform series, Arnd's platform-data and smp_ops (Marc's) and
+> > imx 3.7 material (Sascha and myself).
+> > 
+> > It's available on branch below.
+> > 
+> >   git://git.linaro.org/people/shawnguo/linux-2.6.git imx/multi-platform
+> > 
+> > It's been tested on imx5 and imx6, and only compile-tested on imx2 and
+> > imx3, so testing on imx2/3 are appreciated.
+> 
+> Great work! This really pushes the i.MX architecture one step closer to
+> a clean code base.
 
-I think better solution is just to delete omap_wait() function, which
-is just a copy of nand_wait() without LED and oops handling. If
-waitfunc is not set by the driver, default nand_wait is used by the
-core.
+I agree, this series is wonderful, I thought it would take much longer
+to get this far.
 
+Two small comments on the last two patches from me, but overall I really
+love it.
 
-> This patch exports the trigger from nand_base.c, letting specific drivers
-> such omap2 control the led as appropriate.
->
-> Signed-off-by: Raphael Assenat <raph@8d.com>
->
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index a11253a..b967c45 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -103,7 +103,7 @@ static int nand_do_write_oob(struct mtd_info *mtd, lo=
-ff_t to,
->   * For devices which display every fart in the system on a separate LED.=
- Is
->   * compiled away when LED support is disabled.
->   */
-> -DEFINE_LED_TRIGGER(nand_led_trigger);
-> +DEFINE_LED_TRIGGER_GLOBAL(nand_led_trigger);
->
->  static int check_offs_len(struct mtd_info *mtd,
->                                         loff_t ofs, uint64_t len)
-> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index ac4fd75..6aa683f 100644
-> --- a/drivers/mtd/nand/omap2.c
-> +++ b/drivers/mtd/nand/omap2.c
-> @@ -19,6 +19,7 @@
->  #include <linux/mtd/mtd.h>
->  #include <linux/mtd/nand.h>
->  #include <linux/mtd/partitions.h>
-> +#include <linux/leds.h>
->  #include <linux/omap-dma.h>
->  #include <linux/io.h>
->  #include <linux/slab.h>
-> @@ -254,6 +255,8 @@ static void omap_read_buf_pref(struct mtd_info *mtd, =
-u_char *buf, int len)
->         int ret =3D 0;
->         u32 *p =3D (u32 *)buf;
->
-> +       led_trigger_event(nand_led_trigger, LED_FULL);
-> +
->         /* take care of subpage reads */
->         if (len % 4) {
->                 if (info->nand.options & NAND_BUSWIDTH_16)
-> @@ -284,6 +287,8 @@ static void omap_read_buf_pref(struct mtd_info *mtd, =
-u_char *buf, int len)
->                 /* disable and stop the PFPW engine */
->                 gpmc_prefetch_reset(info->gpmc_cs);
->         }
-> +
-> +       led_trigger_event(nand_led_trigger, LED_OFF);
->  }
->
->  /**
-> @@ -302,6 +307,8 @@ static void omap_write_buf_pref(struct mtd_info *mtd,
->         u16 *p =3D (u16 *)buf;
->         unsigned long tim, limit;
->
-> +       led_trigger_event(nand_led_trigger, LED_FULL);
-> +
->         /* take care of subpage writes */
->         if (len % 2 !=3D 0) {
->                 writeb(*buf, info->nand.IO_ADDR_W);
-> @@ -335,6 +342,8 @@ static void omap_write_buf_pref(struct mtd_info *mtd,
->                 /* disable and stop the PFPW engine */
->                 gpmc_prefetch_reset(info->gpmc_cs);
->         }
-> +
-> +       led_trigger_event(nand_led_trigger, LED_OFF);
->  }
->
->  /*
-> @@ -366,6 +375,8 @@ static inline int omap_nand_dma_transfer(struct mtd_i=
-nfo *mtd, void *addr,
->         unsigned n;
->         int ret;
->
-> +       led_trigger_event(nand_led_trigger, LED_FULL);
-> +
->         if (addr >=3D high_memory) {
->                 struct page *p1;
->
-> @@ -417,6 +428,8 @@ static inline int omap_nand_dma_transfer(struct mtd_i=
-nfo *mtd, void *addr,
->         gpmc_prefetch_reset(info->gpmc_cs);
->
->         dma_unmap_sg(info->dma->device->dev, &sg, 1, dir);
-> +
-> +       led_trigger_event(nand_led_trigger, LED_OFF);
->         return 0;
->
->  out_copy_unmap:
-> @@ -428,6 +441,9 @@ out_copy:
->         else
->                 is_write =3D=3D 0 ? omap_read_buf8(mtd, (u_char *) addr, =
-len)
->                         : omap_write_buf8(mtd, (u_char *) addr, len);
-> +
-> +       led_trigger_event(nand_led_trigger, LED_OFF);
-> +
->         return 0;
->  }
->
-> @@ -886,6 +902,8 @@ static int omap_wait(struct mtd_info *mtd, struct nan=
-d_chip *chip)
->         else
->                 timeo +=3D (HZ * 20) / 1000;
->
-> +       led_trigger_event(nand_led_trigger, LED_FULL);
-> +
->         gpmc_nand_write(info->gpmc_cs,
->                         GPMC_NAND_COMMAND, (NAND_CMD_STATUS & 0xFF));
->         while (time_before(jiffies, timeo)) {
-> @@ -894,6 +912,7 @@ static int omap_wait(struct mtd_info *mtd, struct nan=
-d_chip *chip)
->                         break;
->                 cond_resched();
->         }
-> +       led_trigger_event(nand_led_trigger, LED_OFF);
->
->         status =3D gpmc_nand_read(info->gpmc_cs, GPMC_NAND_DATA);
->         return status;
-> @@ -909,6 +928,8 @@ static int omap_dev_ready(struct mtd_info *mtd)
->         struct omap_nand_info *info =3D container_of(mtd, struct omap_nan=
-d_info,
->                                                         mtd);
->
-> +       led_trigger_event(nand_led_trigger, LED_FULL);
-> +
->         val =3D gpmc_read_status(GPMC_GET_IRQ_STATUS);
->         if ((val & 0x100) =3D=3D 0x100) {
->                 /* Clear IRQ Interrupt */
-> @@ -923,6 +944,8 @@ static int omap_dev_ready(struct mtd_info *mtd)
->                         val =3D gpmc_read_status(GPMC_GET_IRQ_STATUS);
->                 }
->         }
-> +
-> +       led_trigger_event(nand_led_trigger, LED_OFF);
->
->         return 1;
->  }
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index 57977c6..321b7ef 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -23,6 +23,7 @@
->  #include <linux/mtd/mtd.h>
->  #include <linux/mtd/flashchip.h>
->  #include <linux/mtd/bbm.h>
-> +#include <linux/leds.h>
->
->  struct mtd_info;
->  struct nand_flash_dev;
-> @@ -48,6 +49,9 @@ extern int nand_lock(struct mtd_info *mtd, loff_t ofs, =
-uint64_t len);
->  /* unlocks specified locked blocks */
->  extern int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
->
-> +/* LED trigger for NAND drivers not using nand_wait_ready. */
-> +extern DEFINE_LED_TRIGGER_GLOBAL(nand_led_trigger);
-> +
->  /* The maximum number of NAND chips in an array */
->  #define NAND_MAX_CHIPS         8
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
-
-
---=20
-Gra=C5=BEvydas
+Acked-by: Arnd Bergmann <arnd@arndb.de>
