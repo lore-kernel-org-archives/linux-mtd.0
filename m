@@ -1,21 +1,27 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TDc23-0004rY-8X
- for linux-mtd@lists.infradead.org; Mon, 17 Sep 2012 14:10:40 +0000
-From: Marek Vasut <marex@denx.de>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH V5] mtd: m25p80: Make fast read configurable via DT
-Date: Mon, 17 Sep 2012 16:10:28 +0200
-References: <1345923416-9293-1-git-send-email-marex@denx.de>
-In-Reply-To: <1345923416-9293-1-git-send-email-marex@denx.de>
+ id 1TDgH0-0000p1-IA
+ for linux-mtd@lists.infradead.org; Mon, 17 Sep 2012 18:42:24 +0000
+Received: by lbbgf7 with SMTP id gf7so4388797lbb.36
+ for <linux-mtd@lists.infradead.org>; Mon, 17 Sep 2012 11:42:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201209171610.28410.marex@denx.de>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- devicetree-discuss@lists.ozlabs.org, robherring2@gmail.com,
- David Woodhouse <david.woodhouse@intel.com>, dedekind1@gmail.com
+In-Reply-To: <6871BC8982B258468985EE735D2C57524E269AFB89@ntcex01.corp.netcomm.com.au>
+References: <6871BC8982B258468985EE735D2C57524E269AFB52@ntcex01.corp.netcomm.com.au>
+ <1346310033.2848.536.camel@sauron.fi.intel.com>
+ <6871BC8982B258468985EE735D2C57524E269AFB54@ntcex01.corp.netcomm.com.au>
+ <1346315075.2848.538.camel@sauron.fi.intel.com>
+ <6871BC8982B258468985EE735D2C57524E269AFB60@ntcex01.corp.netcomm.com.au>
+ <CAN8TOE_ax=8inGyZxS+nTfcSkskyNvHEh9ipnOTVu-moB4FqjA@mail.gmail.com>
+ <6871BC8982B258468985EE735D2C57524E269AFB89@ntcex01.corp.netcomm.com.au>
+Date: Mon, 17 Sep 2012 11:42:18 -0700
+Message-ID: <CAN8TOE_fihvz0F3C9cRhXkKvePYfyRD0Qmiu1a6aDH8o4ntsOg@mail.gmail.com>
+Subject: Re: [PATCH] Test for multi-bit error correction
+From: Brian Norris <computersforpeace@gmail.com>
+To: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Akinobu Mita <akinobu.mita@gmail.com>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,164 +31,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Bump, do you think we can get this into 3.7 please?
+Hi Iwo,
 
-> Add DT property "m25p,fast-read" that signalises the particular
-> chip supports "fast read" opcode.
-> 
-> Signed-off-by: Marek Vasut <marex@denx.de>
-> Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> Cc: David Woodhouse <david.woodhouse@intel.com>
-> ---
->  Documentation/devicetree/bindings/mtd/m25p80.txt |   29 ++++++++++++++++++
->  drivers/mtd/devices/m25p80.c                     |   34
-> +++++++++++++--------- 2 files changed, 50 insertions(+), 13 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/mtd/m25p80.txt
-> 
-> V2: Add documentation for the DT property.
-> V3: Use of_property_get_bool() instead of of_find_property().
-> V4: Adjust the documentation's "compatible:" section, make it not
->     Linux-specific, but keep the reference to Linux's list of
->     supported devices. Also, use the default name, spansion,m25p80
->     in the example.
-> V5: Enclose of_property_read_bool() into CONFIG_OF for systems that do not
->     use OF / Device Tree .
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/m25p80.txt
-> b/Documentation/devicetree/bindings/mtd/m25p80.txt new file mode 100644
-> index 0000000..701bb58
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/m25p80.txt
-> @@ -0,0 +1,29 @@
-> +* MTD SPI driver for ST M25Pxx (and similar) serial flash chips
-> +
-> +Required properties:
-> +- #address-cells, #size-cells : Must be present if the device has
-> sub-nodes +  representing partitions.
-> +- compatible : Should be the manufacturer and the name of the chip. Bear
-> in mind +               the DT binding is not Linux-only, but in case of
-> Linux, see the +               "m25p_ids" table in
-> drivers/mtd/devices/m25p80.c for the list of +               supported
-> chips.
-> +- reg : Chip-Select number
-> +- spi-max-frequency : Maximum frequency of the SPI bus the chip can
-> operate at +
-> +Optional properties:
-> +- m25p,fast-read : Use the "fast read" opcode to read data from the chip
-> instead +                   of the usual "read" opcode. This opcode isn
-> not supported by +                   all chips and support for it can not
-> be detected at runtime. +                   Refer to your chips' datasheet
-> to check if this is supported +                   by your chip.
-> +
-> +Example:
-> +
-> +	flash: m25p80@0 {
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		compatible = "spansion,m25p80";
-> +		reg = <0>;
-> +		spi-max-frequency = <40000000>;
-> +		m25p,fast-read;
-> +	};
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index d16f75c..c433051 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -73,14 +73,6 @@
->  #define	MAX_READY_WAIT_JIFFIES	(40 * HZ)	/* M25P16 specs 40s max 
-chip
-> erase */ #define	MAX_CMD_SIZE		5
-> 
-> -#ifdef CONFIG_M25PXX_USE_FAST_READ
-> -#define OPCODE_READ 	OPCODE_FAST_READ
-> -#define FAST_READ_DUMMY_BYTE 1
-> -#else
-> -#define OPCODE_READ 	OPCODE_NORM_READ
-> -#define FAST_READ_DUMMY_BYTE 0
-> -#endif
-> -
->  #define JEDEC_MFR(_jedec_id)	((_jedec_id) >> 16)
-> 
->  /*************************************************************************
-> ***/ @@ -93,6 +85,7 @@ struct m25p {
->  	u16			addr_width;
->  	u8			erase_opcode;
->  	u8			*command;
-> +	bool			fast_read;
->  };
-> 
->  static inline struct m25p *mtd_to_m25p(struct mtd_info *mtd)
-> @@ -342,6 +335,7 @@ static int m25p80_read(struct mtd_info *mtd, loff_t
-> from, size_t len, struct m25p *flash = mtd_to_m25p(mtd);
->  	struct spi_transfer t[2];
->  	struct spi_message m;
-> +	uint8_t opcode;
-> 
->  	pr_debug("%s: %s from 0x%08x, len %zd\n", dev_name(&flash->spi->dev),
->  			__func__, (u32)from, len);
-> @@ -354,7 +348,7 @@ static int m25p80_read(struct mtd_info *mtd, loff_t
-> from, size_t len, * Should add 1 byte DUMMY_BYTE.
->  	 */
->  	t[0].tx_buf = flash->command;
-> -	t[0].len = m25p_cmdsz(flash) + FAST_READ_DUMMY_BYTE;
-> +	t[0].len = m25p_cmdsz(flash) + (flash->fast_read ? 1 : 0);
->  	spi_message_add_tail(&t[0], &m);
-> 
->  	t[1].rx_buf = buf;
-> @@ -376,12 +370,14 @@ static int m25p80_read(struct mtd_info *mtd, loff_t
-> from, size_t len, */
-> 
->  	/* Set up the write data buffer. */
-> -	flash->command[0] = OPCODE_READ;
-> +	opcode = flash->fast_read ? OPCODE_FAST_READ : OPCODE_NORM_READ;
-> +	flash->command[0] = opcode;
->  	m25p_addr2cmd(flash, from, flash->command);
-> 
->  	spi_sync(flash->spi, &m);
-> 
-> -	*retlen = m.actual_length - m25p_cmdsz(flash) - FAST_READ_DUMMY_BYTE;
-> +	*retlen = m.actual_length - m25p_cmdsz(flash) -
-> +			(flash->fast_read ? 1 : 0);
-> 
->  	mutex_unlock(&flash->lock);
-> 
-> @@ -804,9 +800,10 @@ static int __devinit m25p_probe(struct spi_device
-> *spi) struct flash_info		*info;
->  	unsigned			i;
->  	struct mtd_part_parser_data	ppdata;
-> +	struct device_node		*np = spi->dev.of_node;
-> 
->  #ifdef CONFIG_MTD_OF_PARTS
-> -	if (!of_device_is_available(spi->dev.of_node))
-> +	if (!of_device_is_available(np))
->  		return -ENODEV;
->  #endif
-> 
-> @@ -858,7 +855,8 @@ static int __devinit m25p_probe(struct spi_device *spi)
->  	flash = kzalloc(sizeof *flash, GFP_KERNEL);
->  	if (!flash)
->  		return -ENOMEM;
-> -	flash->command = kmalloc(MAX_CMD_SIZE + FAST_READ_DUMMY_BYTE,
-> GFP_KERNEL); +	flash->command = kmalloc(MAX_CMD_SIZE + (flash-
->fast_read ?
-> 1 : 0), +					GFP_KERNEL);
->  	if (!flash->command) {
->  		kfree(flash);
->  		return -ENOMEM;
-> @@ -915,6 +913,16 @@ static int __devinit m25p_probe(struct spi_device
-> *spi) flash->page_size = info->page_size;
->  	flash->mtd.writebufsize = flash->page_size;
-> 
-> +	flash->fast_read = false;
-> +#ifdef CONFIG_OF
-> +	if (np && of_property_read_bool(np, "m25p,fast-read"))
-> +		flash->fast_read = true;
-> +#endif
-> +
-> +#ifdef CONFIG_M25PXX_USE_FAST_READ
-> +	flash->fast_read = true;
-> +#endif
-> +
->  	if (info->addr_width)
->  		flash->addr_width = info->addr_width;
->  	else {
+On Wed, Sep 5, 2012 at 8:37 PM, Iwo Mergler
+<Iwo.Mergler@netcommwireless.com> wrote:
+> Please be aware that this test aims at MTD driver developers,
+> so I expect the 'users' to know all about their flash geometries
+> and not be surprised by whole block erases and such. :-)
+
+Duly noted. I agree, but I also think we can do our best to make
+things as easy to understand as possible.
+
+> On Thu, 6 Sep 2012 04:19:57 +1000
+> Brian Norris <computersforpeace@gmail.com> wrote:
+>> On Thu, Aug 30, 2012 at 3:59 PM, Iwo Mergler
+>> <Iwo.Mergler@netcommwireless.com> wrote:
+>> > This tests ECC biterror recovery on a single NAND page. Mostly intended
+>> > to test ECC hardware and low-level NAND driver.
+>> >
+>> > There are two test modes:
+>>
+>> Why does this test even need to be in the kernel? Can't it be done
+>> easily in userspace? I think it could even be a simple script that
+>> utilizes flash_erase + nandwrite / nanddump with the -n (no ECC)
+>> option. And anything that's lacking in nandwrite for this
+>> functionality could easily be added there (for instance, support
+>> erasure in nandwrite, rather than having to use flash_erase).
+>
+> You are right. The same can be said about most of the other
+> tests too.
+
+Yeah, I suppose so. I don't know about all the tests, but one
+exception I was thinking of: the oobtest doesn't just use user-visible
+interfaces to test sanity, it tries to use the MTD interfaces
+(mtd_read_oob / mtd_write_oob) to stress the driver in ways that might
+not be exposed to the user normally.
+
+> Personally, I appreciate these tests being where they are
+> because they are most useful to driver developers and as
+> such are more accessible in the kernel than in userspace.
+>
+> On new embedded systems, we often have to develop MTD drivers
+> before we have a rootfs, since the rootfs is supposed to live in the MTD.
+> MTD is often the first hardware driver to get ported / written for a new
+> system.
+>
+> With the current test arrangement I can, with minimal edits,
+> run any test from within the MTD driver under development.
+
+Fair enough.
+
+>> > +static unsigned page_offset;
+>> > +module_param(page_offset, uint, S_IRUGO);
+>> > +MODULE_PARM_DESC(page_offset, "Page number relative to dev start");
+>>
+>> Why use a page number? For erase, we'll be affecting many adjacent
+>> pages, so this might be an unclear parameter to the user. Is there a
+>> good reason not to use an entire eraseblock as the unit of test? Also,
+>> is there a reason to use page number vs. eraseblock number vs. offset
+>> as the input parameter?
+>
+> Mostly because loff_t isn't supported as a parameter type, so I can't
+> specify offsets beyond 4G.
+>
+> Erase block number would work as well. There isn't much to be learned
+> from applying the test to all pages of a block, but in rare circumstances
+> I'd like to be able to control which page of the block to test anyway.
+>
+> It would of course be possible to specify the offset  as separate
+> erase block numbers and page numbers. I don't have a strong
+> preference either way.
+
+I don't have a strong preference either. In the absence of a portable
+module-parameter for "loff_t" address, then a page_offset or eb_offset
+param is fine with me.
+
+>> > +static loff_t   offset;     /* Offset of the page we're using. */
+>> > +static unsigned eraseblock; /* Eraseblock number for our page. */
+>> > +
+>> > +/* We assume that the ECC can correct up to a certain number
+>> > + * of biterrors per subpage. */
+>> > +static unsigned subsize;  /* Size of subpages */
+>> > +static unsigned subcount; /* Number of subpages per page */
+>> > +
+>> > +static struct mtd_info *mtd;   /* MTD device */
+>> > +
+>> > +static uint8_t *wbuffer; /* One page write / compare buffer */
+>> > +static uint8_t *rbuffer; /* One page read buffer */
+>>
+>> Why are all of these globals? It seems like the read_page(),
+>> write_page(), and rewrite_page() functions would be more sensible (and
+>> safely extendible) if they had an extra parameter for the address. And
+>> do you really need to represent the same value (offset) in three
+>> different ways (offset, page offset, eraseblock)? In fact,
+>
+> I had to force myself ;-). My excuse is that I copied the style of
+> the other tests, because of a probably misguided sense of consistency.
+
+Yeah, I don't know if I can speak for anyone else, but I would
+recommend focusing on writing clean, maintainable code and leave
+consistency with other tests' style as a secondary objective. I think
+it's useful for read_page(), etc., to have at least one parameter (not
+global variable) for the offset (or similar; e.g., page number). The
+other globals are up to you, I suppose. When a value really is a
+global that won't change, it's fine to be global (e.g., the mtd_info
+struct, subpage info).
+
+Thanks for your efforts and for addressing my comments. For a v2, I
+think there are some things to address in code (bad block checking,
+function parameters vs. global decisions) while other issues just need
+a little bit better explanation (e.g., usefulness of mtd_nandbiterrs
+vs mtd_nandecctest, explaining how this can be used to generically
+test real bit error correction on real MTDs).
+
+Regards,
+Brian
