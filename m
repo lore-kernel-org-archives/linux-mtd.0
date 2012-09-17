@@ -1,19 +1,20 @@
-Received: from mail-bk0-f49.google.com ([209.85.214.49])
+Received: from mail-ie0-f177.google.com ([209.85.223.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TDXyZ-0004Kn-62
- for linux-mtd@lists.infradead.org; Mon, 17 Sep 2012 09:50:48 +0000
-Received: by bkcji2 with SMTP id ji2so2440955bkc.36
- for <linux-mtd@lists.infradead.org>; Mon, 17 Sep 2012 02:50:44 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: linux-mtd@lists.infradead.org,
-	Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH V3] mtd: basic (read only) driver for BCMA serial flash
-Date: Mon, 17 Sep 2012 11:50:49 +0200
-Message-Id: <1347875449-19318-1-git-send-email-zajec5@gmail.com>
+ id 1TDYw2-0003Sr-UM
+ for linux-mtd@lists.infradead.org; Mon, 17 Sep 2012 10:52:16 +0000
+Received: by ieje10 with SMTP id e10so10172812iej.36
+ for <linux-mtd@lists.infradead.org>; Mon, 17 Sep 2012 03:52:12 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <20120913150614.GC22993@renkinjitsu.usine.8d.com>
+References: <20120913150614.GC22993@renkinjitsu.usine.8d.com>
+Date: Mon, 17 Sep 2012 13:52:12 +0300
+Message-ID: <CANOLnOOfwe1EvG1VHAZbtaC2xAD7_Rc6PqCWrs2cwEqauun8KA@mail.gmail.com>
+Subject: Re: [PATCH] mtd: nand: omap2: Fix the nand-disk led trigger
+From: Grazvydas Ignotas <notasas@gmail.com>
+To: Raphael Assenat <raph@8d.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,204 +24,185 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This registers MTD driver for serial flash platform device. Right now it
-supports reading only, writing still has to be implemented.
+On Thu, Sep 13, 2012 at 6:06 PM, Raphael Assenat <raph@8d.com> wrote:
+> When the omap2 nand flash driver is used, the nand-disk led trigger does =
+not
+> work due to nand_wait_ready not being called.
 
-Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
----
-V2: fix mem leak (add failure path in init)
-    signed-off-by
-V3: drop BROKEN
-    drop useless check in bcm47xxsflash_remove
-    marm flash memory as ROM (until we implement writing)
----
- drivers/mtd/devices/Kconfig                 |    8 ++
- drivers/mtd/devices/Makefile                |    1 +
- drivers/mtd/devices/bcm47xxsflash.c         |  131 +++++++++++++++++++++++++++
- include/linux/bcma/bcma_driver_chipcommon.h |    2 +
- 4 files changed, 142 insertions(+), 0 deletions(-)
- create mode 100644 drivers/mtd/devices/bcm47xxsflash.c
+I think better solution is just to delete omap_wait() function, which
+is just a copy of nand_wait() without LED and oops handling. If
+waitfunc is not set by the driver, default nand_wait is used by the
+core.
 
-diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
-index 6cc5a1a..ce6e3d4 100644
---- a/drivers/mtd/devices/Kconfig
-+++ b/drivers/mtd/devices/Kconfig
-@@ -120,6 +120,14 @@ config MTD_SST25L
- 	  Set up your spi devices with the right board-specific platform data,
- 	  if you want to specify device partitioning.
- 
-+config MTD_BCM47XXSFLASH
-+	tristate "Support for serial flash on BCMA bus"
-+	depends on BCMA_SFLASH
-+	help
-+	  BCMA bus can have various flash memories attached, they are
-+	  registered by bcma as platform devices. This enables driver for
-+	  serial flash memories.
-+
- config MTD_SLRAM
- 	tristate "Uncached system RAM"
- 	help
-diff --git a/drivers/mtd/devices/Makefile b/drivers/mtd/devices/Makefile
-index a4dd1d8..395733a 100644
---- a/drivers/mtd/devices/Makefile
-+++ b/drivers/mtd/devices/Makefile
-@@ -19,5 +19,6 @@ obj-$(CONFIG_MTD_DATAFLASH)	+= mtd_dataflash.o
- obj-$(CONFIG_MTD_M25P80)	+= m25p80.o
- obj-$(CONFIG_MTD_SPEAR_SMI)	+= spear_smi.o
- obj-$(CONFIG_MTD_SST25L)	+= sst25l.o
-+obj-$(CONFIG_MTD_BCM47XXSFLASH)	+= bcm47xxsflash.o
- 
- CFLAGS_docg3.o			+= -I$(src)
-\ No newline at end of file
-diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
-new file mode 100644
-index 0000000..f711a51
---- /dev/null
-+++ b/drivers/mtd/devices/bcm47xxsflash.c
-@@ -0,0 +1,131 @@
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/slab.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/platform_device.h>
-+#include <linux/bcma/bcma.h>
-+
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("Serial flash driver for BCMA bus");
-+
-+static const char *probes[] = { "bcm47xxpart", NULL };
-+
-+static int bcm47xxsflash_read(struct mtd_info *mtd, loff_t from, size_t len,
-+			      size_t *retlen, u_char *buf)
-+{
-+	struct bcma_sflash *sflash = mtd->priv;
-+	size_t bytes_read = 0;
-+	u8 *src = (u8 *)KSEG0ADDR(sflash->window + from);
-+	int i;
-+	size_t unaligned_before, unaligned_after;
-+
-+	/* Check address range */
-+	if ((from + len) > mtd->size)
-+		return -EINVAL;
-+
-+	unaligned_before = from & 0x3;
-+	unaligned_after = (from + len) & 0x3;
-+
-+	for (i = 0; i < unaligned_before; i++) {
-+		*buf = readb(src);
-+		buf++;
-+		src++;
-+		bytes_read++;
-+	}
-+	for (i = from - unaligned_before; i < from + len - unaligned_after;
-+	     i += 4) {
-+		*(u32 *)buf = readl((u32 *)src);
-+		buf += 4;
-+		src += 4;
-+		bytes_read += 4;
-+	}
-+	for (i = 0; i < unaligned_after; i++) {
-+		*buf = readb(src);
-+		buf++;
-+		src++;
-+		bytes_read++;
-+	}
-+
-+	*retlen = bytes_read;
-+
-+	return 0;
-+}
-+
-+static void bcm47xxsflash_fill_mtd(struct bcma_sflash *sflash,
-+				   struct mtd_info *mtd)
-+{
-+	mtd->priv = sflash;
-+	mtd->name = "bcm47xxsflash";
-+	mtd->owner = THIS_MODULE;
-+	mtd->type = MTD_ROM;
-+	mtd->size = sflash->size;
-+	mtd->_read = bcm47xxsflash_read;
-+
-+	/* TODO: implement writing support and verify/change following code */
-+	mtd->flags = MTD_CAP_ROM;
-+	mtd->writebufsize = mtd->writesize = 1;
-+}
-+
-+static int bcm47xxsflash_probe(struct platform_device *pdev)
-+{
-+	struct bcma_sflash *sflash = dev_get_platdata(&pdev->dev);
-+	int err;
-+
-+	sflash->mtd = kzalloc(sizeof(struct mtd_info), GFP_KERNEL);
-+	if (!sflash->mtd) {
-+		err = -ENOMEM;
-+		goto out;
-+	}
-+	bcm47xxsflash_fill_mtd(sflash, sflash->mtd);
-+
-+	err = mtd_device_parse_register(sflash->mtd, probes, NULL, NULL, 0);
-+	if (err) {
-+		pr_err("Failed to register MTD device: %d\n", err);
-+		goto err_dev_reg;
-+	}
-+
-+	return 0;
-+
-+err_dev_reg:
-+	kfree(sflash->mtd);
-+out:
-+	return err;
-+}
-+
-+static int __devexit bcm47xxsflash_remove(struct platform_device *pdev)
-+{
-+	struct bcma_sflash *sflash = dev_get_platdata(&pdev->dev);
-+
-+	mtd_device_unregister(sflash->mtd);
-+	kfree(sflash->mtd);
-+
-+	return 0;
-+}
-+
-+static struct platform_driver bcma_sflash_driver = {
-+	.remove = __devexit_p(bcm47xxsflash_remove),
-+	.driver = {
-+		.name = "bcma_sflash",
-+		.owner = THIS_MODULE,
-+	},
-+};
-+
-+static int __init bcm47xxsflash_init(void)
-+{
-+	int err;
-+
-+	err = platform_driver_probe(&bcma_sflash_driver, bcm47xxsflash_probe);
-+	if (err)
-+		pr_err("Failed to register BCMA serial flash driver: %d\n",
-+		       err);
-+
-+	return err;
-+}
-+
-+static void __exit bcm47xxsflash_exit(void)
-+{
-+	platform_driver_unregister(&bcma_sflash_driver);
-+}
-+
-+module_init(bcm47xxsflash_init);
-+module_exit(bcm47xxsflash_exit);
-diff --git a/include/linux/bcma/bcma_driver_chipcommon.h b/include/linux/bcma/bcma_driver_chipcommon.h
-index 6ba45d2..1cf1749 100644
---- a/include/linux/bcma/bcma_driver_chipcommon.h
-+++ b/include/linux/bcma/bcma_driver_chipcommon.h
-@@ -522,6 +522,8 @@ struct bcma_sflash {
- 	u32 blocksize;
- 	u16 numblocks;
- 	u32 size;
-+
-+	struct mtd_info *mtd;
- };
- #endif
- 
--- 
-1.7.7
+
+> This patch exports the trigger from nand_base.c, letting specific drivers
+> such omap2 control the led as appropriate.
+>
+> Signed-off-by: Raphael Assenat <raph@8d.com>
+>
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index a11253a..b967c45 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -103,7 +103,7 @@ static int nand_do_write_oob(struct mtd_info *mtd, lo=
+ff_t to,
+>   * For devices which display every fart in the system on a separate LED.=
+ Is
+>   * compiled away when LED support is disabled.
+>   */
+> -DEFINE_LED_TRIGGER(nand_led_trigger);
+> +DEFINE_LED_TRIGGER_GLOBAL(nand_led_trigger);
+>
+>  static int check_offs_len(struct mtd_info *mtd,
+>                                         loff_t ofs, uint64_t len)
+> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+> index ac4fd75..6aa683f 100644
+> --- a/drivers/mtd/nand/omap2.c
+> +++ b/drivers/mtd/nand/omap2.c
+> @@ -19,6 +19,7 @@
+>  #include <linux/mtd/mtd.h>
+>  #include <linux/mtd/nand.h>
+>  #include <linux/mtd/partitions.h>
+> +#include <linux/leds.h>
+>  #include <linux/omap-dma.h>
+>  #include <linux/io.h>
+>  #include <linux/slab.h>
+> @@ -254,6 +255,8 @@ static void omap_read_buf_pref(struct mtd_info *mtd, =
+u_char *buf, int len)
+>         int ret =3D 0;
+>         u32 *p =3D (u32 *)buf;
+>
+> +       led_trigger_event(nand_led_trigger, LED_FULL);
+> +
+>         /* take care of subpage reads */
+>         if (len % 4) {
+>                 if (info->nand.options & NAND_BUSWIDTH_16)
+> @@ -284,6 +287,8 @@ static void omap_read_buf_pref(struct mtd_info *mtd, =
+u_char *buf, int len)
+>                 /* disable and stop the PFPW engine */
+>                 gpmc_prefetch_reset(info->gpmc_cs);
+>         }
+> +
+> +       led_trigger_event(nand_led_trigger, LED_OFF);
+>  }
+>
+>  /**
+> @@ -302,6 +307,8 @@ static void omap_write_buf_pref(struct mtd_info *mtd,
+>         u16 *p =3D (u16 *)buf;
+>         unsigned long tim, limit;
+>
+> +       led_trigger_event(nand_led_trigger, LED_FULL);
+> +
+>         /* take care of subpage writes */
+>         if (len % 2 !=3D 0) {
+>                 writeb(*buf, info->nand.IO_ADDR_W);
+> @@ -335,6 +342,8 @@ static void omap_write_buf_pref(struct mtd_info *mtd,
+>                 /* disable and stop the PFPW engine */
+>                 gpmc_prefetch_reset(info->gpmc_cs);
+>         }
+> +
+> +       led_trigger_event(nand_led_trigger, LED_OFF);
+>  }
+>
+>  /*
+> @@ -366,6 +375,8 @@ static inline int omap_nand_dma_transfer(struct mtd_i=
+nfo *mtd, void *addr,
+>         unsigned n;
+>         int ret;
+>
+> +       led_trigger_event(nand_led_trigger, LED_FULL);
+> +
+>         if (addr >=3D high_memory) {
+>                 struct page *p1;
+>
+> @@ -417,6 +428,8 @@ static inline int omap_nand_dma_transfer(struct mtd_i=
+nfo *mtd, void *addr,
+>         gpmc_prefetch_reset(info->gpmc_cs);
+>
+>         dma_unmap_sg(info->dma->device->dev, &sg, 1, dir);
+> +
+> +       led_trigger_event(nand_led_trigger, LED_OFF);
+>         return 0;
+>
+>  out_copy_unmap:
+> @@ -428,6 +441,9 @@ out_copy:
+>         else
+>                 is_write =3D=3D 0 ? omap_read_buf8(mtd, (u_char *) addr, =
+len)
+>                         : omap_write_buf8(mtd, (u_char *) addr, len);
+> +
+> +       led_trigger_event(nand_led_trigger, LED_OFF);
+> +
+>         return 0;
+>  }
+>
+> @@ -886,6 +902,8 @@ static int omap_wait(struct mtd_info *mtd, struct nan=
+d_chip *chip)
+>         else
+>                 timeo +=3D (HZ * 20) / 1000;
+>
+> +       led_trigger_event(nand_led_trigger, LED_FULL);
+> +
+>         gpmc_nand_write(info->gpmc_cs,
+>                         GPMC_NAND_COMMAND, (NAND_CMD_STATUS & 0xFF));
+>         while (time_before(jiffies, timeo)) {
+> @@ -894,6 +912,7 @@ static int omap_wait(struct mtd_info *mtd, struct nan=
+d_chip *chip)
+>                         break;
+>                 cond_resched();
+>         }
+> +       led_trigger_event(nand_led_trigger, LED_OFF);
+>
+>         status =3D gpmc_nand_read(info->gpmc_cs, GPMC_NAND_DATA);
+>         return status;
+> @@ -909,6 +928,8 @@ static int omap_dev_ready(struct mtd_info *mtd)
+>         struct omap_nand_info *info =3D container_of(mtd, struct omap_nan=
+d_info,
+>                                                         mtd);
+>
+> +       led_trigger_event(nand_led_trigger, LED_FULL);
+> +
+>         val =3D gpmc_read_status(GPMC_GET_IRQ_STATUS);
+>         if ((val & 0x100) =3D=3D 0x100) {
+>                 /* Clear IRQ Interrupt */
+> @@ -923,6 +944,8 @@ static int omap_dev_ready(struct mtd_info *mtd)
+>                         val =3D gpmc_read_status(GPMC_GET_IRQ_STATUS);
+>                 }
+>         }
+> +
+> +       led_trigger_event(nand_led_trigger, LED_OFF);
+>
+>         return 1;
+>  }
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index 57977c6..321b7ef 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -23,6 +23,7 @@
+>  #include <linux/mtd/mtd.h>
+>  #include <linux/mtd/flashchip.h>
+>  #include <linux/mtd/bbm.h>
+> +#include <linux/leds.h>
+>
+>  struct mtd_info;
+>  struct nand_flash_dev;
+> @@ -48,6 +49,9 @@ extern int nand_lock(struct mtd_info *mtd, loff_t ofs, =
+uint64_t len);
+>  /* unlocks specified locked blocks */
+>  extern int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
+>
+> +/* LED trigger for NAND drivers not using nand_wait_ready. */
+> +extern DEFINE_LED_TRIGGER_GLOBAL(nand_led_trigger);
+> +
+>  /* The maximum number of NAND chips in an array */
+>  #define NAND_MAX_CHIPS         8
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+
+
+--=20
+Gra=C5=BEvydas
