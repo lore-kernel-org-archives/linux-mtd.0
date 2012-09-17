@@ -1,32 +1,23 @@
-From: Arnd Bergmann <arnd@arndb.de>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH 00/34] i.MX multi-platform support
-Date: Mon, 17 Sep 2012 11:38:13 +0000
-References: <1347860103-4141-1-git-send-email-shawn.guo@linaro.org>
- <20120917075138.GN6180@pengutronix.de>
-In-Reply-To: <20120917075138.GN6180@pengutronix.de>
+Received: from mail-wg0-f49.google.com ([74.125.82.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TDbSf-0006GQ-Dj
+ for linux-mtd@lists.infradead.org; Mon, 17 Sep 2012 13:34:08 +0000
+Received: by wgbdt14 with SMTP id dt14so1064282wgb.18
+ for <linux-mtd@lists.infradead.org>; Mon, 17 Sep 2012 06:34:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201209171138.13327.arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-fbdev@vger.kernel.org, Wim Van Sebroeck <wim@iguana.be>,
- linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
- Florian Tobias Schandinat <FlorianSchandinat@gmx.de>,
- Paulius Zaleckas <paulius.zaleckas@teltonika.lt>, Chris Ball <cjb@laptop.org>,
- linux-media@vger.kernel.org, linux-watchdog@vger.kernel.org,
- rtc-linux@googlegroups.com, Rob Herring <rob.herring@calxeda.com>,
- linux-arm-kernel@lists.infradead.org,
- Fabio Estevam <fabio.estevam@freescale.com>,
- Vinod Koul <vinod.koul@linux.intel.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-mmc@vger.kernel.org,
- Wolfram Sang <w.sang@pengutronix.de>,
- Javier Martin <javier.martin@vista-silicon.com>,
- Andrew Morton <akpm@linux-foundation.org>, Shawn Guo <shawn.guo@linaro.org>,
- Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+In-Reply-To: <CAP+RiCBRopbShAGf_fWCvK2R=uPPR1j4Pz12JfJxdEMUjwofNw@mail.gmail.com>
+References: <CAP+RiCC1afVbKAZESMcZGd1G3+7aKuLTQGggOEFGZxQM6o+QQA@mail.gmail.com>
+ <1346413469.9709.44.camel@sauron.fi.intel.com>
+ <CAP+RiCBRopbShAGf_fWCvK2R=uPPR1j4Pz12JfJxdEMUjwofNw@mail.gmail.com>
+Date: Mon, 17 Sep 2012 08:34:02 -0500
+Message-ID: <CAP+RiCAzOKvV00F8zppPxrL1CHKqR6eU2g08F+s_wm2R6jJ7Cg@mail.gmail.com>
+Subject: Re: UBIFS Recovery Issue: 'grab_empty_leb: could not find an empty
+ LEB'
+From: Brent Taylor <motobud@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,31 +27,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 17 September 2012, Sascha Hauer wrote:
-> On Mon, Sep 17, 2012 at 01:34:29PM +0800, Shawn Guo wrote:
-> > The series enables multi-platform support for imx.  Since the required
-> > frameworks (clk, pwm) and spare_irq have already been adopted on imx,
-> > the series is all about cleaning up mach/* headers.  Along with the
-> > changes, arch/arm/plat-mxc gets merged into arch/arm/mach-imx.
-> > 
-> > It's based on a bunch of branches (works from others), Rob's initial
-> > multi-platform series, Arnd's platform-data and smp_ops (Marc's) and
-> > imx 3.7 material (Sascha and myself).
-> > 
-> > It's available on branch below.
-> > 
-> >   git://git.linaro.org/people/shawnguo/linux-2.6.git imx/multi-platform
-> > 
-> > It's been tested on imx5 and imx6, and only compile-tested on imx2 and
-> > imx3, so testing on imx2/3 are appreciated.
-> 
-> Great work! This really pushes the i.MX architecture one step closer to
-> a clean code base.
+On Fri, Aug 31, 2012 at 8:23 AM, Brent Taylor <motobud@gmail.com> wrote:
+>
+> I'm currently running the test again, and will know the results on wed, s=
+ept 5.  If I do see a failure, I can send you an image, the problem is that=
+ the image will be either 256MB, 1GB, or 15GB depending on which partition =
+fails.  Will either of the larger sizes be an issue for you?  What would be=
+ the best way to get the image to you?
+>
+> Thanks for your time.
+> Bud
+>
+> On Aug 31, 2012 7:39 AM, "Artem Bityutskiy" <dedekind1@gmail.com> wrote:
+>>
+>> On Mon, 2012-07-16 at 13:22 -0500, Brent Taylor wrote:
+>> > I'm developing on custom hardware using an at91sam9g45 processor with
+>> > 64 MB of RAM and 64 MB of NOR flash running Linux 3.0.13.
+>> >
+>> > I'm doing some power-cycle testing and after several hours, UBIFS
+>> > failed to mount the root partition and printed the message
+>> > "grab_empty_leb: could not find an empty LEB".  The system boots and
+>> > starts a script that will power cycle the board anytime between 10 and
+>> > 20 seconds after the script has started.  Just before a power cycle
+>> > occurs, syslog and our main process are the only processes that could
+>> > be writing to disk.
+>> >
+>> I was trying to do power cut emulation testing with mtdram, and I see
+>> there are some issues which do not seem to exist on NAND. But they are
+>> different to yours. I remember I saw these -ENOSPC issues in the past,
+>> but they were very difficult to reproduce.
+>>
+>> I will try to investigate why power-cut emulation testing fails on
+>> mtdram, but I have limited amount of time and I do not know when I'll be
+>> able to do this.
+>>
+>> --
+>> Best Regards,
+>> Artem Bityutskiy
 
-I agree, this series is wonderful, I thought it would take much longer
-to get this far.
 
-Two small comments on the last two patches from me, but overall I really
-love it.
+Artem,
+   I was finally able to capture the issue again with linux version
+3.5.1, and I now have a 64MB mtd image for you to look at.  The issue
+occurred in the root filesystem this time.  Let me know what's the
+best way to get this image to you.  The image was retrieved from a NOR
+flash chip instead of a NAND flash chip, but I've seen the error on
+both which leads me to believe it's not a flash driver issue and it's
+something in the UBIFS subsystem.  If there is more data you need from
+me to help track this down, just let me know.
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+Thanks for your time,
+Bud
