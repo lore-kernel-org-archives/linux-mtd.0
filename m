@@ -1,20 +1,20 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TDxpq-0002T9-4F
- for linux-mtd@lists.infradead.org; Tue, 18 Sep 2012 13:27:30 +0000
-Message-ID: <1347975164.7112.63.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH V3] mtd: basic (read only) driver for BCMA serial flash
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
-Date: Tue, 18 Sep 2012 16:32:44 +0300
+Received: from mail-ob0-f177.google.com ([209.85.214.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TDyyu-0003UO-Qr
+ for linux-mtd@lists.infradead.org; Tue, 18 Sep 2012 14:40:57 +0000
+Received: by obbta17 with SMTP id ta17so11005101obb.36
+ for <linux-mtd@lists.infradead.org>; Tue, 18 Sep 2012 07:40:54 -0700 (PDT)
+MIME-Version: 1.0
 In-Reply-To: <1347875449-19318-1-git-send-email-zajec5@gmail.com>
 References: <1347875449-19318-1-git-send-email-zajec5@gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-doQYOEFh9sIJ9c90nv9d"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+From: Jonas Gorski <jonas.gorski@gmail.com>
+Date: Tue, 18 Sep 2012 16:40:32 +0200
+Message-ID: <CAOiHx==SFr7EUAm0vdrAbs8Ze7his8Bgx+g-Ri6j6Q-iqGDkXg@mail.gmail.com>
+Subject: Re: [PATCH V3] mtd: basic (read only) driver for BCMA serial flash
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,101 +24,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+I know I'm a bit late, but ...
 
---=-doQYOEFh9sIJ9c90nv9d
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On 17 September 2012 11:50, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrot=
+e:
+> (...)
+> diff --git a/drivers/mtd/devices/Makefile b/drivers/mtd/devices/Makefile
+> index a4dd1d8..395733a 100644
+> --- a/drivers/mtd/devices/Makefile
+> +++ b/drivers/mtd/devices/Makefile
+> @@ -19,5 +19,6 @@ obj-$(CONFIG_MTD_DATAFLASH)   +=3D mtd_dataflash.o
+>  obj-$(CONFIG_MTD_M25P80)       +=3D m25p80.o
+>  obj-$(CONFIG_MTD_SPEAR_SMI)    +=3D spear_smi.o
+>  obj-$(CONFIG_MTD_SST25L)       +=3D sst25l.o
+> +obj-$(CONFIG_MTD_BCM47XXSFLASH)        +=3D bcm47xxsflash.o
+>
+>  CFLAGS_docg3.o                 +=3D -I$(src)
+> \ No newline at end of file
+> diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bc=
+m47xxsflash.c
+> new file mode 100644
+> index 0000000..f711a51
+> --- /dev/null
+> +++ b/drivers/mtd/devices/bcm47xxsflash.c
+> @@ -0,0 +1,131 @@
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/slab.h>
+> +#include <linux/mtd/mtd.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/bcma/bcma.h>
+> +
+> +MODULE_LICENSE("GPL");
+> +MODULE_DESCRIPTION("Serial flash driver for BCMA bus");
+> +
+> +static const char *probes[] =3D { "bcm47xxpart", NULL };
+> +
+> +static int bcm47xxsflash_read(struct mtd_info *mtd, loff_t from, size_t =
+len,
+> +                             size_t *retlen, u_char *buf)
+> +{
+> +       struct bcma_sflash *sflash =3D mtd->priv;
+> +       size_t bytes_read =3D 0;
+> +       u8 *src =3D (u8 *)KSEG0ADDR(sflash->window + from);
+> +       int i;
+> +       size_t unaligned_before, unaligned_after;
+> +
+> +       /* Check address range */
+> +       if ((from + len) > mtd->size)
+> +               return -EINVAL;
+> +
+> +       unaligned_before =3D from & 0x3;
 
-On Mon, 2012-09-17 at 11:50 +0200, Rafa=C5=82 Mi=C5=82ecki wrote:
-> This registers MTD driver for serial flash platform device. Right now it
-> supports reading only, writing still has to be implemented.
->=20
-> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
-> ---
-> V2: fix mem leak (add failure path in init)
->     signed-off-by
-> V3: drop BROKEN
->     drop useless check in bcm47xxsflash_remove
->     marm flash memory as ROM (until we implement writing)
+I think this should be 4 - (from & 0x3), else you will read too much
+in the unaligned_before loop, also being at an unaligned address then.
 
-Aiaiai complained:
+E.g. assuming I want to read four bytes from offset 3, you will read
+three bytes from from, and will actually then read three bytes from 3,
+landing at offset 6, and then reading another three in the
+unaligned_after loop; overwriting memory with the last two.
 
---- before_patching.log
-+++ after_patching.log
-@@ @@
-+drivers/mtd/devices/bcm47xxsflash.c:30:30: warning: incorrect type in argu=
-ment 1 (different address spaces) [sparse]
-+drivers/mtd/devices/bcm47xxsflash.c:30:30:    expected void const volatile=
- [noderef] <asn:2>*mem [sparse]
-+drivers/mtd/devices/bcm47xxsflash.c:30:30:    got unsigned char [usertype]=
- *src [sparse]
-+drivers/mtd/devices/bcm47xxsflash.c:37:38: warning: incorrect type in argu=
-ment 1 (different address spaces) [sparse]
-+drivers/mtd/devices/bcm47xxsflash.c:37:38:    expected void const volatile=
- [noderef] <asn:2>*mem [sparse]
-+drivers/mtd/devices/bcm47xxsflash.c:37:38:    got unsigned int [usertype] =
-*<noident> [sparse]
-+drivers/mtd/devices/bcm47xxsflash.c:43:30: warning: incorrect type in argu=
-ment 1 (different address spaces) [sparse]
-+drivers/mtd/devices/bcm47xxsflash.c:43:30:    expected void const volatile=
- [noderef] <asn:2>*mem [sparse]
-+drivers/mtd/devices/bcm47xxsflash.c:43:30:    got unsigned char [usertype]=
- *[assigned] src [sparse]
+> +       unaligned_after =3D (from + len) & 0x3;
+> +
+> +       for (i =3D 0; i < unaligned_before; i++) {
+> +               *buf =3D readb(src);
+> +               buf++;
+> +               src++;
+> +               bytes_read++;
+> +       }
+> +       for (i =3D from - unaligned_before; i < from + len - unaligned_af=
+ter;
 
-I pushed your patch to l2-mtd.git with these changes:
+This one looks suspicious, aren't you assuming you have read
+unaligned_before bytes, so shouldn't i be from /+/ unaligned_before?
+Currently this will result in the example above that it will loop once
+(since i =3D 3 - 3 =3D 0, and 0 < 3 + 4 - 3), resulting in additional 4
+bytes read.
 
-diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm4=
-7xxsflash.c
-index f711a51..a328872 100644
---- a/drivers/mtd/devices/bcm47xxsflash.c
-+++ b/drivers/mtd/devices/bcm47xxsflash.c
-@@ -15,7 +15,7 @@ static int bcm47xxsflash_read(struct mtd_info *mtd, loff_=
-t from, size_t len,
- {
-        struct bcma_sflash *sflash =3D mtd->priv;
-        size_t bytes_read =3D 0;
--       u8 *src =3D (u8 *)KSEG0ADDR(sflash->window + from);
-+       __iomem u8 *src =3D (__iomem u8 *)KSEG0ADDR(sflash->window + from);
-        int i;
-        size_t unaligned_before, unaligned_after;
-=20
-@@ -34,7 +34,7 @@ static int bcm47xxsflash_read(struct mtd_info *mtd, loff_=
-t from, size_t len,
-        }
-        for (i =3D from - unaligned_before; i < from + len - unaligned_afte=
-r;
-             i +=3D 4) {
--               *(u32 *)buf =3D readl((u32 *)src);
-+               *(u32 *)buf =3D readl(src);
-                buf +=3D 4;
-                src +=3D 4;
-                bytes_read +=3D 4;
+> +            i +=3D 4) {
+> +               *(u32 *)buf =3D readl((u32 *)src);
+> +               buf +=3D 4;
+> +               src +=3D 4;
+> +               bytes_read +=3D 4;
+> +       }
+> +       for (i =3D 0; i < unaligned_after; i++) {
+> +               *buf =3D readb(src);
+> +               buf++;
+> +               src++;
+> +               bytes_read++;
+> +       }
 
---=20
-Best Regards,
-Artem Bityutskiy
+It will also fail for unaligned reads within the same 4 byte block -
+they will be read twice, once in _before, once in _after.
 
---=-doQYOEFh9sIJ9c90nv9d
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Also in the before and after loops, you are reading with native
+endianess (since you don't swab the addresses), but in the aligned
+case you are assuming little endianess. If you intend to do native
+endianess reads (we only support little endian bcm47xx), you should be
+fine by just replacing this whole logic with a memcpy(_fromio?), if
+not you should probably swab the addresses when reading the unaligned
+parts when big endian. Unfortunately I don't have any big endian
+bcm47xx devices at hand to test ;-) (but I do know they exist - AFAICT
+from netgear's gpl sources the bcm53xxx switch chips are big endian
+bcm47xx).
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQWHf8AAoJECmIfjd9wqK0IEMQAListCi/dfaqbjM5vQfMLhRX
-j73QAzISmyoFgYcb54XAOA7aMRTA7mRgmSty5ONw3t282YxMf4iDAdSkTkTzMuxz
-N/4K7sRk/mNe5v6AdEksR2vrr9HyOUvhb9UhVk9UxoRbAKSDbvZFgGm+CRmu0qEa
-ZBQkOvsmdxEFNuDek5QMyWBAAfbuDcoT3fYAVnyb6HuUyb7G3bNclv4aZfTXRQKs
-EDqOyNtgP0jhNrUuvO1wbW1ilwm6khc9/KMbqwwhn+cr+CNNrwYNkolIflfblkhU
-mnjal005JsAzvCwI7gy69c/OTEO3VL+5lC9epXzXhp8ex599dsJe6WkunGDvbq54
-sr8ftTNRYG+R9NzERmLQ6Byd5gfceYhwzZ94X82aquM5tESHdpgCqyxm75gSIxhi
-bUbQgCZGnFOV/xZ+O4I8waWmVTExr0rlTPahJ/K2Y4k2o/jgdpnXn41KKUq8Jpdm
-QLwM0DQdsJliJecC1tAjs0JRgooKEoyhBJrAleQDbAcZlXEBui/0VR5GtAcyTYZX
-M3szYJApCfsrsZ3j/EgFFAtkaDwk4iLaj7v7wgQfOVV43iatseChGfaxH/50U+ep
-xvv+e4FXiuB8P5U1fc9JEbzDLQb+QrJo2/tM9PXLOQRsH/oCAY8lze0oZ/7ek42f
-L3ggS6VQ96nTeZJ/7UEA
-=UcZJ
------END PGP SIGNATURE-----
-
---=-doQYOEFh9sIJ9c90nv9d--
+Regards
+Jonas
