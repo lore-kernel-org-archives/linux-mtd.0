@@ -1,27 +1,27 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
+Received: from mail-wg0-f49.google.com ([74.125.82.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TDgH0-0000p1-IA
- for linux-mtd@lists.infradead.org; Mon, 17 Sep 2012 18:42:24 +0000
-Received: by lbbgf7 with SMTP id gf7so4388797lbb.36
- for <linux-mtd@lists.infradead.org>; Mon, 17 Sep 2012 11:42:18 -0700 (PDT)
+ id 1TDmHF-0002U8-6J
+ for linux-mtd@lists.infradead.org; Tue, 18 Sep 2012 01:07:01 +0000
+Received: by wgbdt14 with SMTP id dt14so1415378wgb.18
+ for <linux-mtd@lists.infradead.org>; Mon, 17 Sep 2012 18:06:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <6871BC8982B258468985EE735D2C57524E269AFB89@ntcex01.corp.netcomm.com.au>
-References: <6871BC8982B258468985EE735D2C57524E269AFB52@ntcex01.corp.netcomm.com.au>
- <1346310033.2848.536.camel@sauron.fi.intel.com>
- <6871BC8982B258468985EE735D2C57524E269AFB54@ntcex01.corp.netcomm.com.au>
- <1346315075.2848.538.camel@sauron.fi.intel.com>
- <6871BC8982B258468985EE735D2C57524E269AFB60@ntcex01.corp.netcomm.com.au>
- <CAN8TOE_ax=8inGyZxS+nTfcSkskyNvHEh9ipnOTVu-moB4FqjA@mail.gmail.com>
- <6871BC8982B258468985EE735D2C57524E269AFB89@ntcex01.corp.netcomm.com.au>
-Date: Mon, 17 Sep 2012 11:42:18 -0700
-Message-ID: <CAN8TOE_fihvz0F3C9cRhXkKvePYfyRD0Qmiu1a6aDH8o4ntsOg@mail.gmail.com>
-Subject: Re: [PATCH] Test for multi-bit error correction
+In-Reply-To: <CAN8TOE9fxLbYCc2MeLaqV2WA2ch9Dm9xnyPvY7LBOZ0guB-d0Q@mail.gmail.com>
+References: <1340898442-1585-1-git-send-email-matthieu.castet@parrot.com>
+ <20120628213146.7d929204@halley> <4FED6A2E.9010603@parrot.com>
+ <20120630230252.58ca6bb4@halley> <4FF15BD1.9010109@parrot.com>
+ <CAN8TOE8GMMn+sPu4trUH_iT3=5uh_Of=bsYzXX50E3dyPfKitg@mail.gmail.com>
+ <20120725140233.7dc4ca8a@pixies.home.jungo.com>
+ <CAN8TOE9fxLbYCc2MeLaqV2WA2ch9Dm9xnyPvY7LBOZ0guB-d0Q@mail.gmail.com>
+Date: Mon, 17 Sep 2012 18:06:54 -0700
+Message-ID: <CAN8TOE9QCnq7AKT9t8VKc2iQE9VXT7USDQjJ7vR640FMweqJDQ@mail.gmail.com>
+Subject: Re: [RFC] nand_btt : use nand chip->block_bad
 From: Brian Norris <computersforpeace@gmail.com>
-To: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
+To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Akinobu Mita <akinobu.mita@gmail.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Ivan Djelic <ivan.djelic@parrot.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Matthieu CASTET <matthieu.castet@parrot.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,118 +31,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Iwo,
+Hi Shmulik, Matthieu, and others,
 
-On Wed, Sep 5, 2012 at 8:37 PM, Iwo Mergler
-<Iwo.Mergler@netcommwireless.com> wrote:
-> Please be aware that this test aims at MTD driver developers,
-> so I expect the 'users' to know all about their flash geometries
-> and not be surprised by whole block erases and such. :-)
-
-Duly noted. I agree, but I also think we can do our best to make
-things as easy to understand as possible.
-
-> On Thu, 6 Sep 2012 04:19:57 +1000
-> Brian Norris <computersforpeace@gmail.com> wrote:
->> On Thu, Aug 30, 2012 at 3:59 PM, Iwo Mergler
->> <Iwo.Mergler@netcommwireless.com> wrote:
->> > This tests ECC biterror recovery on a single NAND page. Mostly intended
->> > to test ECC hardware and low-level NAND driver.
->> >
->> > There are two test modes:
->>
->> Why does this test even need to be in the kernel? Can't it be done
->> easily in userspace? I think it could even be a simple script that
->> utilizes flash_erase + nandwrite / nanddump with the -n (no ECC)
->> option. And anything that's lacking in nandwrite for this
->> functionality could easily be added there (for instance, support
->> erasure in nandwrite, rather than having to use flash_erase).
+On Mon, Aug 6, 2012 at 3:21 PM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> On Wed, Jul 25, 2012 at 4:02 AM, Shmulik Ladkani
+>> I guess utilizing badblockbits may provide good coverage to that
+>> condition.
 >
-> You are right. The same can be said about most of the other
-> tests too.
+> Yes, I agree that badblockbits is a good solution. I'm still not sure
+> that any of the above arguments really suggest that we *can't* apply
+> ECC, but for any important case, badblockbits would be more robust. I
+> think I will look into fleshing out Matthieu's RFC at some point,
+> unless he's already working on it.
 
-Yeah, I suppose so. I don't know about all the tests, but one
-exception I was thinking of: the oobtest doesn't just use user-visible
-interfaces to test sanity, it tries to use the MTD interfaces
-(mtd_read_oob / mtd_write_oob) to stress the driver in ways that might
-not be exposed to the user normally.
+I've done a little work at trying to flesh out this RFC, as I'm
+thinking that we should more cleanly separate NAND BBT code and NAND
+BBM code - i.e., bad block *table* vs. bad block *marker*. Markers
+should be handled in a standard way in nand_base.c
+(nand_default_block_markbad and nand_block_bad) and then nand_bbt.c
+can be left the generic, focused job of handling the table. Now, that
+all sounds nice, but I've run across at least one difficulty... This
+approach should lead to the removal of nand_chip.badblock_pattern
+entirely, as we would only be supporting the nand_base.c badblock
+marker pattern, using nand_chip.badblockpos and a few
+nand_chip.bbt_options flags. This leads me to analyzing all the
+strange forms of badblock_pattern seen in various drivers. I'm not
+sure all of them are even well thought out...
 
-> Personally, I appreciate these tests being where they are
-> because they are most useful to driver developers and as
-> such are more accessible in the kernel than in userspace.
->
-> On new embedded systems, we often have to develop MTD drivers
-> before we have a rootfs, since the rootfs is supposed to live in the MTD.
-> MTD is often the first hardware driver to get ported / written for a new
-> system.
->
-> With the current test arrangement I can, with minimal edits,
-> run any test from within the MTD driver under development.
+The following files use badblock_pattern to varying degrees. Some are
+just duplicating some nand_base stuff, where we can replace the
+badblock_pattern with something simple like "chip->badblockpos = 0" or
+setting a few "chip->bbt_options |= NAND_BBT_SCAN*" options. But it's
+not all so simple:
 
-Fair enough.
+arch/arm/mach-pxa/corgi.c
+arch/arm/mach-pxa/eseries.c
+arch/arm/mach-pxa/poodle.c
+arch/arm/mach-pxa/spitz.c
+arch/arm/mach-pxa/tosa.c
+drivers/mtd/nand/bcm_umi_nand.c
+drivers/mtd/nand/docg4.c
+drivers/mtd/nand/fsl_elbc_nand.c
+drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+drivers/mtd/nand/nand_base.c
+drivers/mtd/nand/omap2.c
+drivers/mtd/nand/sh_flctl.c
+drivers/mtd/nand/sharpsl.c
+drivers/mtd/nand/tmio_nand.c
+drivers/mtd/onenand/onenand_bbt.c
+include/linux/mfd/tmio.h
+include/linux/mtd/sharpsl.h
 
->> > +static unsigned page_offset;
->> > +module_param(page_offset, uint, S_IRUGO);
->> > +MODULE_PARM_DESC(page_offset, "Page number relative to dev start");
->>
->> Why use a page number? For erase, we'll be affecting many adjacent
->> pages, so this might be an unclear parameter to the user. Is there a
->> good reason not to use an entire eraseblock as the unit of test? Also,
->> is there a reason to use page number vs. eraseblock number vs. offset
->> as the input parameter?
->
-> Mostly because loff_t isn't supported as a parameter type, so I can't
-> specify offsets beyond 4G.
->
-> Erase block number would work as well. There isn't much to be learned
-> from applying the test to all pages of a block, but in rare circumstances
-> I'd like to be able to control which page of the block to test anyway.
->
-> It would of course be possible to specify the offset  as separate
-> erase block numbers and page numbers. I don't have a strong
-> preference either way.
+Any thoughts on how to tackle this? Or is it even worth doing
+properly? Is there a policy for dealing with old/unmaintained drivers
+here, if I can't get a response from driver authors?
 
-I don't have a strong preference either. In the absence of a portable
-module-parameter for "loff_t" address, then a page_offset or eb_offset
-param is fine with me.
-
->> > +static loff_t   offset;     /* Offset of the page we're using. */
->> > +static unsigned eraseblock; /* Eraseblock number for our page. */
->> > +
->> > +/* We assume that the ECC can correct up to a certain number
->> > + * of biterrors per subpage. */
->> > +static unsigned subsize;  /* Size of subpages */
->> > +static unsigned subcount; /* Number of subpages per page */
->> > +
->> > +static struct mtd_info *mtd;   /* MTD device */
->> > +
->> > +static uint8_t *wbuffer; /* One page write / compare buffer */
->> > +static uint8_t *rbuffer; /* One page read buffer */
->>
->> Why are all of these globals? It seems like the read_page(),
->> write_page(), and rewrite_page() functions would be more sensible (and
->> safely extendible) if they had an extra parameter for the address. And
->> do you really need to represent the same value (offset) in three
->> different ways (offset, page offset, eraseblock)? In fact,
->
-> I had to force myself ;-). My excuse is that I copied the style of
-> the other tests, because of a probably misguided sense of consistency.
-
-Yeah, I don't know if I can speak for anyone else, but I would
-recommend focusing on writing clean, maintainable code and leave
-consistency with other tests' style as a secondary objective. I think
-it's useful for read_page(), etc., to have at least one parameter (not
-global variable) for the offset (or similar; e.g., page number). The
-other globals are up to you, I suppose. When a value really is a
-global that won't change, it's fine to be global (e.g., the mtd_info
-struct, subpage info).
-
-Thanks for your efforts and for addressing my comments. For a v2, I
-think there are some things to address in code (bad block checking,
-function parameters vs. global decisions) while other issues just need
-a little bit better explanation (e.g., usefulness of mtd_nandbiterrs
-vs mtd_nandecctest, explaining how this can be used to generically
-test real bit error correction on real MTDs).
-
-Regards,
+Thanks,
 Brian
