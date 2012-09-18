@@ -1,38 +1,21 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
+Received: from mail-we0-f177.google.com ([74.125.82.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TDt2y-0004Br-EA
- for linux-mtd@lists.infradead.org; Tue, 18 Sep 2012 08:20:45 +0000
-Received: by pbbrq8 with SMTP id rq8so11512750pbb.36
- for <linux-mtd@lists.infradead.org>; Tue, 18 Sep 2012 01:20:42 -0700 (PDT)
-Date: Tue, 18 Sep 2012 16:20:58 +0800
-From: Shawn Guo <shawn.guo@linaro.org>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH 00/34] i.MX multi-platform support
-Message-ID: <20120918082055.GD6377@S2101-09.ap.freescale.net>
-References: <1347860103-4141-1-git-send-email-shawn.guo@linaro.org>
- <20120917075138.GN6180@pengutronix.de>
+ id 1TDtA7-00065d-G9
+ for linux-mtd@lists.infradead.org; Tue, 18 Sep 2012 08:28:08 +0000
+Received: by weyr3 with SMTP id r3so4586511wey.36
+ for <linux-mtd@lists.infradead.org>; Tue, 18 Sep 2012 01:28:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20120917075138.GN6180@pengutronix.de>
-Cc: alsa-devel@alsa-project.org,
- Mark Brown <broonie@opensource.wolfsonmicro.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-fbdev@vger.kernel.org, Wim Van Sebroeck <wim@iguana.be>,
- linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
- Arnd Bergmann <arnd@arndb.de>,
- Florian Tobias Schandinat <FlorianSchandinat@gmx.de>,
- Paulius Zaleckas <paulius.zaleckas@teltonika.lt>, Chris Ball <cjb@laptop.org>,
- linux-media@vger.kernel.org, linux-watchdog@vger.kernel.org,
- rtc-linux@googlegroups.com, Rob Herring <rob.herring@calxeda.com>,
- linux-arm-kernel@lists.infradead.org,
- Fabio Estevam <fabio.estevam@freescale.com>,
- Vinod Koul <vinod.koul@linux.intel.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
- linux-mmc@vger.kernel.org, Wolfram Sang <w.sang@pengutronix.de>,
- Javier Martin <javier.martin@vista-silicon.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+In-Reply-To: <1347452786-10208-1-git-send-email-richard.genoud@gmail.com>
+References: <1347452786-10208-1-git-send-email-richard.genoud@gmail.com>
+From: Richard Genoud <richard.genoud@gmail.com>
+Date: Tue, 18 Sep 2012 10:27:44 +0200
+Message-ID: <CACQ1gAg7Kb7v1HZVdF1N2CtmUSGEYJwB+Un2GUJFDX+==6yO8g@mail.gmail.com>
+Subject: Re: [PATCH] MTD: nandsim: BUG: Fail if overridesize is too big
+To: David Woodhouse <dwmw2@infradead.org>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ Adrian Hunter <adrian.hunter@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,26 +25,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Sep 17, 2012 at 09:51:38AM +0200, Sascha Hauer wrote:
-> I gave it a test on i.MX1, i.MX27, i.MX31 and i.MX35. All run fine, but
-> the last patch breaks the imx_v4_v5_defconfig: Somehow it now defaults
-> to ARMv7 based machines. I haven't looked into it, just reenabled
-> ARMv4/ARMv5 and the boards again -> works. The config should be updated
-> with the last patch.
-> 
-Yes, I will rework the patch with all these and Arnd's comment on the
-last patch taken into account.
+2012/9/12 Richard Genoud <richard.genoud@gmail.com>:
+> If override size is too big, the module was actually loaded instead of
+> failing, because retval was not set.
+>
+> This lead to memory corruption with the use of the freed structs nandsim
+> and nand_chip.
+>
+> Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
+> ---
+>  drivers/mtd/nand/nandsim.c |    1 +
+>  1 files changed, 1 insertions(+), 0 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+> index cf0cd31..5d881180 100644
+> --- a/drivers/mtd/nand/nandsim.c
+> +++ b/drivers/mtd/nand/nandsim.c
+> @@ -2333,6 +2333,7 @@ static int __init ns_init_module(void)
+>                 uint64_t new_size = (uint64_t)nsmtd->erasesize << overridesize;
+>                 if (new_size >> overridesize != nsmtd->erasesize) {
+>                         NS_ERR("overridesize is too big\n");
+> +                       retval = -EINVAL;
+>                         goto err_exit;
+>                 }
+>                 /* N.B. This relies on nand_scan not doing anything with the size before we change it */
+> --
+> 1.7.2.5
+>
+Hi Artem, David.
 
-> I'm fine with the changes to mx2-camera, but Javier should give his ok
-> to it, he has worked on it quite a lot recently.
-> 
-> One other issue related to imx-dma, see comment to that patch.
-> 
-> Otherwise:
-> 
-> Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
-> Tested-by: Sascha Hauer <s.hauer@pengutronix.de>
-> 
-Thanks a lot.
+As this is a bug fix, it should be pushed to 3.6-rc7, shouldn't it ?
 
-Shawn
+Regards,
+Richard.
