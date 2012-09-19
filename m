@@ -1,13 +1,21 @@
-Received: from mo6-p05-ob.rzone.de ([2a01:238:20a:202:5305::1])
+Received: from mail-we0-f177.google.com ([74.125.82.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TEFgF-0000zy-Jz
- for linux-mtd@lists.infradead.org; Wed, 19 Sep 2012 08:30:49 +0000
-From: Stefan Roese <sr@denx.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: cmdlineparts.c: Codingstyle cleanup
-Date: Wed, 19 Sep 2012 10:30:27 +0200
-Message-Id: <1348043427-5165-1-git-send-email-sr@denx.de>
-Cc: dedekind@infradead.org
+ id 1TEHnL-0004CJ-C1
+ for linux-mtd@lists.infradead.org; Wed, 19 Sep 2012 10:46:16 +0000
+Received: by weyr3 with SMTP id r3so505714wey.36
+ for <linux-mtd@lists.infradead.org>; Wed, 19 Sep 2012 03:46:12 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <CAOiHx==SFr7EUAm0vdrAbs8Ze7his8Bgx+g-Ri6j6Q-iqGDkXg@mail.gmail.com>
+References: <1347875449-19318-1-git-send-email-zajec5@gmail.com>
+ <CAOiHx==SFr7EUAm0vdrAbs8Ze7his8Bgx+g-Ri6j6Q-iqGDkXg@mail.gmail.com>
+Date: Wed, 19 Sep 2012 12:46:09 +0200
+Message-ID: <CACna6rxM9FRQTRmL9QRjciL3ZDkT_nQNwgifh__cK_HwSLf-GA@mail.gmail.com>
+Subject: Re: [PATCH V3] mtd: basic (read only) driver for BCMA serial flash
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: Jonas Gorski <jonas.gorski@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,364 +25,120 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The codingstyle of cmdlineparts.c was really ugly. I've run this
-file through Lindent and made some manual tweaks.
+2012/9/18 Jonas Gorski <jonas.gorski@gmail.com>:
+> I know I'm a bit late, but ...
+>
+> On 17 September 2012 11:50, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wr=
+ote:
+>> (...)
+>> diff --git a/drivers/mtd/devices/Makefile b/drivers/mtd/devices/Makefile
+>> index a4dd1d8..395733a 100644
+>> --- a/drivers/mtd/devices/Makefile
+>> +++ b/drivers/mtd/devices/Makefile
+>> @@ -19,5 +19,6 @@ obj-$(CONFIG_MTD_DATAFLASH)   +=3D mtd_dataflash.o
+>>  obj-$(CONFIG_MTD_M25P80)       +=3D m25p80.o
+>>  obj-$(CONFIG_MTD_SPEAR_SMI)    +=3D spear_smi.o
+>>  obj-$(CONFIG_MTD_SST25L)       +=3D sst25l.o
+>> +obj-$(CONFIG_MTD_BCM47XXSFLASH)        +=3D bcm47xxsflash.o
+>>
+>>  CFLAGS_docg3.o                 +=3D -I$(src)
+>> \ No newline at end of file
+>> diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/b=
+cm47xxsflash.c
+>> new file mode 100644
+>> index 0000000..f711a51
+>> --- /dev/null
+>> +++ b/drivers/mtd/devices/bcm47xxsflash.c
+>> @@ -0,0 +1,131 @@
+>> +#include <linux/kernel.h>
+>> +#include <linux/module.h>
+>> +#include <linux/slab.h>
+>> +#include <linux/mtd/mtd.h>
+>> +#include <linux/platform_device.h>
+>> +#include <linux/bcma/bcma.h>
+>> +
+>> +MODULE_LICENSE("GPL");
+>> +MODULE_DESCRIPTION("Serial flash driver for BCMA bus");
+>> +
+>> +static const char *probes[] =3D { "bcm47xxpart", NULL };
+>> +
+>> +static int bcm47xxsflash_read(struct mtd_info *mtd, loff_t from, size_t=
+ len,
+>> +                             size_t *retlen, u_char *buf)
+>> +{
+>> +       struct bcma_sflash *sflash =3D mtd->priv;
+>> +       size_t bytes_read =3D 0;
+>> +       u8 *src =3D (u8 *)KSEG0ADDR(sflash->window + from);
+>> +       int i;
+>> +       size_t unaligned_before, unaligned_after;
+>> +
+>> +       /* Check address range */
+>> +       if ((from + len) > mtd->size)
+>> +               return -EINVAL;
+>> +
+>> +       unaligned_before =3D from & 0x3;
+>
+> I think this should be 4 - (from & 0x3), else you will read too much
+> in the unaligned_before loop, also being at an unaligned address then.
 
-Signed-off-by: Stefan Roese <sr@denx.de>
----
- drivers/mtd/cmdlinepart.c | 178 +++++++++++++++++++++-------------------------
- 1 file changed, 81 insertions(+), 97 deletions(-)
+Right, that's wrong.
 
-diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
-index 4558e0f..0239c18 100644
---- a/drivers/mtd/cmdlinepart.c
-+++ b/drivers/mtd/cmdlinepart.c
-@@ -55,7 +55,6 @@
- #define dbg(x)
- #endif
- 
--
- /* special size referring to all the remaining space in a partition */
- #define SIZE_REMAINING UINT_MAX
- #define OFFSET_CONTINUOUS UINT_MAX
-@@ -82,12 +81,12 @@ static int cmdline_parsed = 0;
-  * is allocated upon the last definition being found. At that point the
-  * syntax has been verified ok.
-  */
--static struct mtd_partition * newpart(char *s,
--                                      char **retptr,
--                                      int *num_parts,
--                                      int this_part,
--                                      unsigned char **extra_mem_ptr,
--                                      int extra_mem_size)
-+static struct mtd_partition *newpart(char *s,
-+				     char **retptr,
-+				     int *num_parts,
-+				     int this_part,
-+				     unsigned char **extra_mem_ptr,
-+				     int extra_mem_size)
- {
- 	struct mtd_partition *parts;
- 	unsigned long size;
-@@ -99,79 +98,70 @@ static struct mtd_partition * newpart(char *s,
- 	unsigned int mask_flags;
- 
- 	/* fetch the partition size */
--	if (*s == '-')
--	{	/* assign all remaining space to this partition */
-+	if (*s == '-') {	/* assign all remaining space to this partition */
- 		size = SIZE_REMAINING;
- 		s++;
--	}
--	else
--	{
-+	} else {
- 		size = memparse(s, &s);
--		if (size < PAGE_SIZE)
--		{
--			printk(KERN_ERR ERRP "partition size too small (%lx)\n", size);
-+		if (size < PAGE_SIZE) {
-+			printk(KERN_ERR ERRP "partition size too small (%lx)\n",
-+			       size);
- 			return NULL;
- 		}
- 	}
- 
- 	/* fetch partition name and flags */
--	mask_flags = 0; /* this is going to be a regular partition */
-+	mask_flags = 0;		/* this is going to be a regular partition */
- 	delim = 0;
--        /* check for offset */
--        if (*s == '@')
--	{
--                s++;
--                offset = memparse(s, &s);
--        }
--        /* now look for name */
-+
-+	/* check for offset */
-+	if (*s == '@') {
-+		s++;
-+		offset = memparse(s, &s);
-+	}
-+
-+	/* now look for name */
- 	if (*s == '(')
--	{
- 		delim = ')';
--	}
- 
--	if (delim)
--	{
-+	if (delim) {
- 		char *p;
- 
--	    	name = ++s;
-+		name = ++s;
- 		p = strchr(name, delim);
--		if (!p)
--		{
--			printk(KERN_ERR ERRP "no closing %c found in partition name\n", delim);
-+		if (!p) {
-+			printk(KERN_ERR ERRP
-+			       "no closing %c found in partition name\n",
-+			       delim);
- 			return NULL;
- 		}
- 		name_len = p - name;
- 		s = p + 1;
--	}
--	else
--	{
--	    	name = NULL;
--		name_len = 13; /* Partition_000 */
-+	} else {
-+		name = NULL;
-+		name_len = 13;	/* Partition_000 */
- 	}
- 
- 	/* record name length for memory allocation later */
- 	extra_mem_size += name_len + 1;
- 
--        /* test for options */
--        if (strncmp(s, "ro", 2) == 0)
--	{
-+	/* test for options */
-+	if (strncmp(s, "ro", 2) == 0) {
- 		mask_flags |= MTD_WRITEABLE;
- 		s += 2;
--        }
-+	}
- 
--        /* if lk is found do NOT unlock the MTD partition*/
--        if (strncmp(s, "lk", 2) == 0)
--	{
-+	/* if lk is found do NOT unlock the MTD partition */
-+	if (strncmp(s, "lk", 2) == 0) {
- 		mask_flags |= MTD_POWERUP_LOCK;
- 		s += 2;
--        }
-+	}
- 
- 	/* test if more partitions are following */
--	if (*s == ',')
--	{
--		if (size == SIZE_REMAINING)
--		{
--			printk(KERN_ERR ERRP "no partitions allowed after a fill-up partition\n");
-+	if (*s == ',') {
-+		if (size == SIZE_REMAINING) {
-+			printk(KERN_ERR ERRP
-+			       "no partitions allowed after a fill-up partition\n");
- 			return NULL;
- 		}
- 		/* more partitions follow, parse them */
-@@ -179,14 +169,12 @@ static struct mtd_partition * newpart(char *s,
- 				&extra_mem, extra_mem_size);
- 		if (!parts)
- 			return NULL;
--	}
--	else
--	{	/* this is the last partition: allocate space for all */
-+	} else {		/* this is the last partition: allocate space for all */
- 		int alloc_size;
- 
- 		*num_parts = this_part + 1;
- 		alloc_size = *num_parts * sizeof(struct mtd_partition) +
--			     extra_mem_size;
-+		    extra_mem_size;
- 		parts = kzalloc(alloc_size, GFP_KERNEL);
- 		if (!parts)
- 			return NULL;
-@@ -196,27 +184,22 @@ static struct mtd_partition * newpart(char *s,
- 	parts[this_part].size = size;
- 	parts[this_part].offset = offset;
- 	parts[this_part].mask_flags = mask_flags;
-+
- 	if (name)
--	{
- 		strlcpy(extra_mem, name, name_len + 1);
--	}
- 	else
--	{
- 		sprintf(extra_mem, "Partition_%03d", this_part);
--	}
-+
- 	parts[this_part].name = extra_mem;
- 	extra_mem += name_len + 1;
- 
- 	dbg(("partition %d: name <%s>, offset %llx, size %llx, mask flags %x\n",
--	     this_part,
--	     parts[this_part].name,
--	     parts[this_part].offset,
--	     parts[this_part].size,
--	     parts[this_part].mask_flags));
-+	     this_part, parts[this_part].name, parts[this_part].offset,
-+	     parts[this_part].size, parts[this_part].mask_flags));
- 
- 	/* return (updated) pointer to extra_mem memory */
- 	if (extra_mem_ptr)
--	  *extra_mem_ptr = extra_mem;
-+		*extra_mem_ptr = extra_mem;
- 
- 	/* return (updated) pointer command line string */
- 	*retptr = s;
-@@ -232,24 +215,22 @@ static int mtdpart_setup_real(char *s)
- {
- 	cmdline_parsed = 1;
- 
--	for( ; s != NULL; )
--	{
-+	for (; s != NULL;) {
- 		struct cmdline_mtd_partition *this_mtd;
- 		struct mtd_partition *parts;
--	    	int mtd_id_len;
-+		int mtd_id_len;
- 		int num_parts;
- 		char *p, *mtd_id;
- 
--	    	mtd_id = s;
-+		mtd_id = s;
- 		/* fetch <mtd-id> */
--		if (!(p = strchr(s, ':')))
--		{
-+		if (!(p = strchr(s, ':'))) {
- 			printk(KERN_ERR ERRP "no mtd-id\n");
- 			return 0;
- 		}
- 		mtd_id_len = p - mtd_id;
- 
--		dbg(("parsing <%s>\n", p+1));
-+		dbg(("parsing <%s>\n", p + 1));
- 
- 		/*
- 		 * parse one mtd. have it reserve memory for the
-@@ -259,11 +240,10 @@ static int mtdpart_setup_real(char *s)
- 				&s,		/* out: updated cmdline ptr */
- 				&num_parts,	/* out: number of parts */
- 				0,		/* first partition */
--				(unsigned char**)&this_mtd, /* out: extra mem */
-+				(unsigned char **)&this_mtd,	/* out: extra mem */
- 				mtd_id_len + 1 + sizeof(*this_mtd) +
--				sizeof(void*)-1 /*alignment*/);
--		if(!parts)
--		{
-+				sizeof(void *) - 1 /*alignment */ );
-+		if (!parts) {
- 			/*
- 			 * An error occurred. We're either:
- 			 * a) out of memory, or
-@@ -271,16 +251,17 @@ static int mtdpart_setup_real(char *s)
- 			 * Either way, this mtd is hosed and we're
- 			 * unlikely to succeed in parsing any more
- 			 */
--			 return 0;
--		 }
-+			return 0;
-+		}
- 
- 		/* align this_mtd */
- 		this_mtd = (struct cmdline_mtd_partition *)
--			ALIGN((unsigned long)this_mtd, sizeof(void*));
-+			ALIGN((unsigned long)this_mtd, sizeof(void *));
-+
- 		/* enter results */
- 		this_mtd->parts = parts;
- 		this_mtd->num_parts = num_parts;
--		this_mtd->mtd_id = (char*)(this_mtd + 1);
-+		this_mtd->mtd_id = (char *)(this_mtd + 1);
- 		strlcpy(this_mtd->mtd_id, mtd_id, mtd_id_len + 1);
- 
- 		/* link into chain */
-@@ -290,19 +271,19 @@ static int mtdpart_setup_real(char *s)
- 		dbg(("mtdid=<%s> num_parts=<%d>\n",
- 		     this_mtd->mtd_id, this_mtd->num_parts));
- 
--
- 		/* EOS - we're done */
- 		if (*s == 0)
- 			break;
- 
- 		/* does another spec follow? */
--		if (*s != ';')
--		{
--			printk(KERN_ERR ERRP "bad character after partition (%c)\n", *s);
-+		if (*s != ';') {
-+			printk(KERN_ERR ERRP
-+			       "bad character after partition (%c)\n", *s);
- 			return 0;
- 		}
- 		s++;
- 	}
-+
- 	return 1;
- }
- 
-@@ -326,40 +307,42 @@ static int parse_cmdline_partitions(struct mtd_info *master,
- 	if (!cmdline_parsed)
- 		mtdpart_setup_real(cmdline);
- 
--	for(part = partitions; part; part = part->next)
--	{
--		if ((!mtd_id) || (!strcmp(part->mtd_id, mtd_id)))
--		{
--			for(i = 0, offset = 0; i < part->num_parts; i++)
--			{
-+	for (part = partitions; part; part = part->next) {
-+		if ((!mtd_id) || (!strcmp(part->mtd_id, mtd_id))) {
-+			for (i = 0, offset = 0; i < part->num_parts; i++) {
- 				if (part->parts[i].offset == OFFSET_CONTINUOUS)
--				  part->parts[i].offset = offset;
-+					part->parts[i].offset = offset;
- 				else
--				  offset = part->parts[i].offset;
-+					offset = part->parts[i].offset;
-+
- 				if (part->parts[i].size == SIZE_REMAINING)
--				  part->parts[i].size = master->size - offset;
--				if (offset + part->parts[i].size > master->size)
--				{
-+					part->parts[i].size =
-+						master->size - offset;
-+
-+				if (offset + part->parts[i].size > master->size) {
- 					printk(KERN_WARNING ERRP
- 					       "%s: partitioning exceeds flash size, truncating\n",
- 					       part->mtd_id);
--					part->parts[i].size = master->size - offset;
-+					part->parts[i].size =
-+					    master->size - offset;
- 					part->num_parts = i;
- 				}
- 				offset += part->parts[i].size;
- 			}
-+
- 			*pparts = kmemdup(part->parts,
--					sizeof(*part->parts) * part->num_parts,
--					GFP_KERNEL);
-+					  sizeof(*part->parts) *
-+					  part->num_parts, GFP_KERNEL);
- 			if (!*pparts)
- 				return -ENOMEM;
-+
- 			return part->num_parts;
- 		}
- 	}
-+
- 	return 0;
- }
- 
--
- /*
-  * This is the handler for our kernel parameter, called from
-  * main.c::checksetup(). Note that we can not yet kmalloc() anything,
-@@ -370,6 +353,7 @@ static int parse_cmdline_partitions(struct mtd_info *master,
- static int mtdpart_setup(char *s)
- {
- 	cmdline = s;
-+
- 	return 1;
- }
- 
--- 
-1.7.12.1
+
+>> +       unaligned_after =3D (from + len) & 0x3;
+>> +
+>> +       for (i =3D 0; i < unaligned_before; i++) {
+>> +               *buf =3D readb(src);
+>> +               buf++;
+>> +               src++;
+>> +               bytes_read++;
+>> +       }
+>> +       for (i =3D from - unaligned_before; i < from + len - unaligned_a=
+fter;
+>
+> This one looks suspicious, aren't you assuming you have read
+> unaligned_before bytes, so shouldn't i be from /+/ unaligned_before?
+
+Right again. I could probably drom "from" too.
+
+
+>> +            i +=3D 4) {
+>> +               *(u32 *)buf =3D readl((u32 *)src);
+>> +               buf +=3D 4;
+>> +               src +=3D 4;
+>> +               bytes_read +=3D 4;
+>> +       }
+>> +       for (i =3D 0; i < unaligned_after; i++) {
+>> +               *buf =3D readb(src);
+>> +               buf++;
+>> +               src++;
+>> +               bytes_read++;
+>> +       }
+>
+> It will also fail for unaligned reads within the same 4 byte block -
+> they will be read twice, once in _before, once in _after.
+
+Hm, I don't understand that yet. It looks fine for me :| But I'll do
+some test and it should become obvious to me then :)
+
+
+> Also in the before and after loops, you are reading with native
+> endianess (since you don't swab the addresses), but in the aligned
+> case you are assuming little endianess. If you intend to do native
+> endianess reads (we only support little endian bcm47xx), you should be
+> fine by just replacing this whole logic with a memcpy(_fromio?), if
+> not you should probably swab the addresses when reading the unaligned
+> parts when big endian. Unfortunately I don't have any big endian
+> bcm47xx devices at hand to test ;-) (but I do know they exist - AFAICT
+> from netgear's gpl sources the bcm53xxx switch chips are big endian
+> bcm47xx).
+
+Whoops, I didn't know readl is LE access :| I though readb/readw/readl
+are native endianess. Sorry for that.
+
+
+I'm not sure about that endianess, what exactly we should implement. I
+wanted to get some tip from simple map (see map_funcs.c and map.h) and
+it seems it is using "inline_map_copy_from" indeed.
+
+--=20
+Rafa=C5=82
