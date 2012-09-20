@@ -1,32 +1,22 @@
-From: Arnd Bergmann <arnd@arndb.de>
-To: Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH v2 00/34] i.MX multi-platform support
-Date: Thu, 20 Sep 2012 15:56:56 +0000
-References: <1348123547-31082-1-git-send-email-shawn.guo@linaro.org>
- <201209200739.34899.arnd@arndb.de>
- <20120920145342.GI2450@S2101-09.ap.freescale.net>
-In-Reply-To: <20120920145342.GI2450@S2101-09.ap.freescale.net>
+Date: Thu, 20 Sep 2012 10:10:54 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: Re: [PATCH 04/29] ARM: OMAP1: Move board-ams-delta.h from plat to mach
+Message-ID: <20120920171054.GA28835@atomide.com>
+References: <20120919205732.28074.43697.stgit@muffinssi>
+ <20120919210543.28074.10214.stgit@muffinssi>
+ <6194989.y5R5mbkCAc@acer>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201209201556.57171.arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org,
- Mark Brown <broonie@opensource.wolfsonmicro.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-fbdev@vger.kernel.org, Wim Van Sebroeck <wim@iguana.be>,
- linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
- Florian Tobias Schandinat <FlorianSchandinat@gmx.de>,
- Paulius Zaleckas <paulius.zaleckas@teltonika.lt>, Chris Ball <cjb@laptop.org>,
- linux-media@vger.kernel.org, linux-watchdog@vger.kernel.org,
- rtc-linux@googlegroups.com, Sascha Hauer <s.hauer@pengutronix.de>,
- Rob Herring <rob.herring@calxeda.com>, linux-arm-kernel@lists.infradead.org,
- Vinod Koul <vinod.koul@linux.intel.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
- linux-mmc@vger.kernel.org, Wolfram Sang <w.sang@pengutronix.de>,
- Javier Martin <javier.martin@vista-silicon.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6194989.y5R5mbkCAc@acer>
+Cc: linux-fbdev@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>,
+ Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org,
+ Peter Ujfalusi <peter.ujfalusi@ti.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>,
+ linux-mtd@lists.infradead.org, linux-input@vger.kernel.org,
+ linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,27 +26,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 20 September 2012, Shawn Guo wrote:
-> 
-> On Thu, Sep 20, 2012 at 07:39:34AM +0000, Arnd Bergmann wrote:
-> > The first five branches are scheduled to go through the arm-soc tree, so
-> > I'm fine with that. For the sound/for-3.7 branch, I'd like to know when
-> > to expect that hitting mainline. If it always gets in very early during the
-> > merge window, it's probably ok to put the imx/multi-platform patches into
-> > the same branch as the other ones in arm-soc and wait for the sound stuff
-> > to hit mainline first, otherwise I'd suggest we start a second
-> > next/multiplatform-2 branch for imx and send the first part early on
-> > but then wait with the second batch before sound gets in.
+* Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> [120920 06:48]:
+> On Wed, 19 Sep 2012 14:05:43 Tony Lindgren wrote:
+> > This is only used by omap1.
 > > 
-> It seems that we will have to go with next/multiplatform-2.  I just
-> tried to merge the series with linux-next together, and got some
-> non-trivial conflicts with media and mtd tree.  I might have to rebase
-> my series on top of these trees to sort out those conflicts.  That said,
-> I will have several dependencies outside arm-soc tree, and have to pend
-> my series until all those trees get merged into mainline.
+> > And to fix things properly, this should not be included
+> > from the drivers at all.
+> 
+> Akced-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+> 
+> I'll take care of updating the drivers when I have some spare time.
 
-Ok, fair enough. I think we can put it in arm-soc/for-next as a staging
-branch anyway to give it some exposure to linux-next, and then we can
-decide whether a rebase is necessary before sending it to Linus.
+Thanks those can be fixed by passing them in the platform data.
 
-	Arnd
+Regards,
+
+Tony
