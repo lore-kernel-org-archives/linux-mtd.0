@@ -1,17 +1,17 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TEfhB-0005d7-Il
- for linux-mtd@lists.infradead.org; Thu, 20 Sep 2012 12:17:31 +0000
-Message-ID: <1348143751.2388.16.camel@sauron.fi.intel.com>
+ id 1TEg32-0005Ko-FU
+ for linux-mtd@lists.infradead.org; Thu, 20 Sep 2012 12:40:05 +0000
+Message-ID: <1348145107.2388.17.camel@sauron.fi.intel.com>
 Subject: Re: [PATCH] mtd: bcm47xxsflash: just use memcpy_fromio for reading
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
-Date: Thu, 20 Sep 2012 15:22:31 +0300
+Date: Thu, 20 Sep 2012 15:45:07 +0300
 In-Reply-To: <1348131625-24349-1-git-send-email-zajec5@gmail.com>
 References: <1348131625-24349-1-git-send-email-zajec5@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-zFpmyXX9k9RTe7/Cajb8"
+ boundary="=-d+fdqqDWuRWY8XDOFT1g"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
@@ -25,63 +25,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-zFpmyXX9k9RTe7/Cajb8
+--=-d+fdqqDWuRWY8XDOFT1g
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 On Thu, 2012-09-20 at 11:00 +0200, Rafa=C5=82 Mi=C5=82ecki wrote:
 > Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
-> ---
-> It doesn't generate any errors on normal compilation, but I wasn't able
-> to test it with "verify". This tool defeated me ;/
->=20
-> First I cloned dedekind/maintaining.git but it didn't run because or
-> lacking aiaiai.
->=20
-> So I've cloned dedekind/aiaiai.git.
->=20
-> Then I had to move aiaiai to ~/git/aiaiai to let "verify" find it.
->=20
-> So I was able to use verify:
-> time ./verify ../l2-mtd/ mips-bcm47xx_defconfig < ../l2-mtd/0001-mtd-bcm4=
-7xxsflash-just-use-memcpy-for-reading.patch
-> but it didn't work because patch was already applied. My bad, but... it
-> took 2m17.277s to verify to realize that. And that magic commit/message
-> wasn't helpful:
 
-Well, before doing anything with your tree, we clone it to a temporary
-location (in the workdir, which can specify), that probably took 2
-minutes in your machine.
+Squashed this one to the previous one. Fixed up the following aiaiai
+complaint:
 
-> Failed to apply patch(es) with git am on top of:
-> 0f1afc8 Quick fixes - applied by aiaiai
+Successfully built configuration "mips-bcm47xx_defconfig,mips,mips-linux-",=
+ results:
 
-After this there should have been the right commit. But I agree this is
-confusing, I'll look how I can improve this.
-
-> So I've removed patch from my tree, and tried again. This time it took
-> 3m14.398s just to display:
-> [2012-09-20 10:39:10] aiaiai-make-kernel: Program "aiaiai-locker" is requ=
-ired but not found in PATH
->=20
-> I just wanted to add ~/git/aiaiai to my $PATH, but noticed it doesn't con=
-tain
-> aiaiai-locker anyway... I gave up :|
-
-Because you need to type "make". This is written in the docs. Dunno, how
-would I make sure users do not forget to type make before running? I can
-improve the error message though, and put a hint there.
-
-> I appreciate your work on additional quality tools, but apart from good
-> code it also need to be easy-usable to make ppl use it :|
-
-Thanks for feed-back, appreciated!
+--- before_patching.log
++++ after_patching.log
+@@ @@
++drivers/mtd/devices/bcm47xxsflash.c:22:29: warning: incorrect type in argu=
+ment 2 (different address spaces) [sparse]
++drivers/mtd/devices/bcm47xxsflash.c:22:29:    expected void const volatile=
+ [noderef] <asn:2>*src [sparse]
++drivers/mtd/devices/bcm47xxsflash.c:22:29:    got void *<noident> [sparse]
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-zFpmyXX9k9RTe7/Cajb8
+--=-d+fdqqDWuRWY8XDOFT1g
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -89,19 +59,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQWwqHAAoJECmIfjd9wqK0W/YQAKVckSVx9Y+QpFI9QbZf0Ag3
-M210rSCy6gEoCkDVvVNRIn4z8hkY2otGU4r3uR5BsE7Z8Hu9Bj//x23m5RkbXqth
-HV9X+3a4R/CnFWjD1lI+eXzNfMClKbpujqBa4IjEqbpjzEjGqqSKNYQSm8rVTXvJ
-PdnE5b/pVX5eNd/pKkz3M+xJF9QzjMae7a12+oxT0LpTvqapbZjkXOs3HW3YDxWF
-ceddf/94GeBSdHQXBppFBvxmPLKZ22zKDaBdrXEoXVu1pQVxWTbH6ECoiSY4otI5
-g83Ry1dMvEN+1FSvZ+xKzks/eqNt7fVhaDJuiwDluDZSAeLLsUHXpDjg/oxgfuez
-L9AVNR8Y9OIHYfyRujQRDIUkaCQwVbVDMtREV3vxHKacChX6xYAiwJ/30HQQtCd8
-zfzGKv0gRi6qk3uS2i1tkHuVEGAWWsDBWVl+MSBBWuMXKD5K6ZD2LU5jR0F2NZQQ
-ta6UlS8XRGFLqaXChW9AXxtVdMXSI+AJqAgRmkaCEu+sUaAzdYpFQyhEu81qSMIu
-Bys/mCrc4G/xK80LvrP0nGHfZZcluSm94iSbfwawwA5fLh1ki9Z6hQxH3pSMzvyD
-oV/NMw6gvfPEW7YnOB4Z61iux4nD6T5YkG6izoiQfBEh2c2+KVx+ADjnwZGfET7C
-bz7iCjjQ0A7GAGM+2eyf
-=54Zs
+iQIcBAABAgAGBQJQWw/TAAoJECmIfjd9wqK0QYgP/0nBq8ykboijK3JsicHJPV5M
+z4kOhxOMZjBfUua4To+AFk8C4J2/IiCeMZVdKSLK+SkGhnZekIZSTygqQrJnek9k
+YE7Kg6N3y2MGFFQg0vnurUx8Njz4w8VC3Mq8UzxZqja4NcBJgjl7OFNYst7MSAYO
+fh5PyQ5jOFnbHm6fPewFbJmtl/o4RHEdW+gX7fNHgz0sIo7lR48Y+1tmBVn9OMxc
+EGNjB636G3pEFmHu33qGgWjLSTYDkuCsl9MngBrjgLLhvUg8NnoWN0aUlm5UD1ev
+tFcV8zslui4vCHypt+IxnGI9U2t1QsfXYDHS1qlFSMOazV9v/2MIiDIWxnBcank/
+sZrL47MkaoBi1o+M0Ij+G3s7BR3hWneiBxdZVgkEgDDMi6cPEkx8meo1474QOENA
+fZ+hfIa57YyFtWP+X+g60nJWp0Amac1JOdVDR9xgungCz0kbg582J9PHXZeH6vzQ
+aL3ROKT5i5gJA8PKToPZ31T+Bm3/7+jNxvGW3D0R1qLdbCb4rQynhMzsbIewJcxi
+svgZGh4gILUtO5d78v7cQZWDKX6LISnp+7CSGKWMgU9CoorGg+2otGF617H6MLId
+PPI3+Xs6d33rK7CO24VWJX0u8oz2uqxyFphX+OQR7lBA4XhSRnNuOnEV8n4WvmRc
+7KUjvoHK6ic8dr7P5s8o
+=tKvl
 -----END PGP SIGNATURE-----
 
---=-zFpmyXX9k9RTe7/Cajb8--
+--=-d+fdqqDWuRWY8XDOFT1g--
