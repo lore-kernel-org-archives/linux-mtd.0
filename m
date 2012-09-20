@@ -1,20 +1,21 @@
-Received: from switchvoice.com ([77.70.97.103] helo=mail.bioidentic.com)
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TEmcO-0007fD-TK
- for linux-mtd@lists.infradead.org; Thu, 20 Sep 2012 19:41:01 +0000
-Message-ID: <018301cd9767$dc466900$2901a8c0@dpn>
-From: "Dimitar Penev" <dpn@switchfin.org>
-To: "Vikram Narayanan" <vikram186@gmail.com>
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TEnUx-0005NU-38
+ for linux-mtd@lists.infradead.org; Thu, 20 Sep 2012 20:37:23 +0000
+Received: by pbbrq8 with SMTP id rq8so6147364pbb.36
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Sep 2012 13:37:20 -0700 (PDT)
+Message-ID: <505B7E7A.6070200@gmail.com>
+Date: Fri, 21 Sep 2012 02:07:14 +0530
+From: Vikram Narayanan <vikram186@gmail.com>
+MIME-Version: 1.0
+To: Dimitar Penev <dpn@switchfin.org>
+Subject: Re: ubiattach  issue
 References: <006c01cd970c$1b9cb930$2901a8c0@dpn> <505B5F83.6070408@gmail.com>
  <016601cd9765$38f20a90$2901a8c0@dpn>
-Subject: Re: ubiattach  issue
-Date: Thu, 20 Sep 2012 22:40:59 +0300
-MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="iso-8859-1";
- reply-type=response
+In-Reply-To: <016601cd9765$38f20a90$2901a8c0@dpn>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: Dimitar Penev <dpn@switchfin.org>
+Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,37 +25,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Hello Dimitar,
 
-My  nanddump reports
-nanddump 1.4.6
+Cc-ing Artem
 
-Best Regards
-Dimitar
-
------ Original Message ----- 
-From: "Dimitar Penev" <dpn@switchfin.org>
-To: "Vikram Narayanan" <vikram186@gmail.com>
-Cc: <linux-mtd@lists.infradead.org>
-Sent: Thursday, September 20, 2012 10:22 PM
-Subject: Re: ubiattach issue
-
-
+On 9/21/2012 12:52 AM, Dimitar Penev wrote:
 > Hi Vikram,
 >
 > Thank you for your response.
 >
 > It is a check out from http://git.infradead.org/?p=mtd-utils.git
 > Git signature 36d8de81049c9c908740b690c664b5bd3703ccd6
+
+I tested with this checkout in my nandsim under x86. But couldn't 
+reproduce the issue. (But I was on 2.6.38.8 kernel).
+
+Could you also post the corresponding kernel logs when you issued the 
+ubiattach command? That should give more hints.
+
+~Vikram
+
 >
-> If you expect version in a different format please let me know what to 
-> check.
->
-> Best Regards
-> Dimitar
->
-> ----- Original Message ----- 
-> From: "Vikram Narayanan" <vikram186@gmail.com>
+> ----- Original Message ----- From: "Vikram Narayanan" <vikram186@gmail.com>
 > To: "Dimitar Penev" <dpn@switchfin.org>
 > Cc: <linux-mtd@lists.infradead.org>
 > Sent: Thursday, September 20, 2012 9:25 PM
@@ -98,8 +90,3 @@ Subject: Re: ubiattach issue
 >> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 >>
 >
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
