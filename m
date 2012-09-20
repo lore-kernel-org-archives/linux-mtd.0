@@ -1,18 +1,22 @@
-Message-ID: <505AD1E0.2040607@atmel.com>
-Date: Thu, 20 Sep 2012 10:20:48 +0200
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
+Received: from switchvoice.com ([77.70.97.103] helo=mail.bioidentic.com)
+ by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TEcMo-0001IU-QI
+ for linux-mtd@lists.infradead.org; Thu, 20 Sep 2012 08:44:15 +0000
+Received: from dpn (unknown [192.168.1.41])
+ (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail.bioidentic.com (Postfix) with ESMTP id 23C8E3C52A3
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Sep 2012 11:44:12 +0300 (EEST)
+Message-ID: <006c01cd970c$1b9cb930$2901a8c0@dpn>
+From: "Dimitar Penev" <dpn@switchfin.org>
+To: <linux-mtd@lists.infradead.org>
+Subject: ubiattach  issue
+Date: Thu, 20 Sep 2012 11:44:11 +0300
 MIME-Version: 1.0
-To: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-Subject: Re: [PATCH v2] mtd: atmel_nand: fix the compile error which miss
- label "err_ecc_ioremap".
-References: <1347347412-24214-1-git-send-email-josh.wu@atmel.com>
- <20120920052333.GC17667@game.jcrosoft.org>
-In-Reply-To: <20120920052333.GC17667@game.jcrosoft.org>
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; format=flowed; charset="iso-8859-1";
+ reply-type=original
 Content-Transfer-Encoding: 7bit
-Cc: vikram186@gmail.com, Josh Wu <josh.wu@atmel.com>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- dedekind1@gmail.com
+Reply-To: Dimitar Penev <dpn@switchfin.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +26,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/20/2012 07:23 AM, Jean-Christophe PLAGNIOL-VILLARD :
-> On 15:10 Tue 11 Sep     , Josh Wu wrote:
->> Add err_ecc_ioremap label to fix following errors:
->> ---8<--- 
->>   CC      drivers/mtd/nand/atmel_nand.o
->> drivers/mtd/nand/atmel_nand.c: In function 'atmel_nand_probe':
->> drivers/mtd/nand/atmel_nand.c:1423: error: label 'err_ecc_ioremap' used but not defined
->> make[3]: *** [drivers/mtd/nand/atmel_nand.o] Error 1
->> make[2]: *** [drivers/mtd/nand] Error 2
->> make[1]: *** [drivers/mtd] Error 2
->> make: *** [drivers] Error 2
->> --->8---
-> switch to devm_xxx instead this will simplify the error patch and remove patch
+Hi Gents,
 
-As far as I understand, it is a correction patch: so my advice would be
-to take this patch for fixing the current code (for 3.7 if I recall well).
-If we want to move to the new devm_xxx API, we can do it once the
-current code is fixed.
+I am facing an issue with ubiattach on Linux kernel 3.0.8
+On our target we have nand flash with mtd layer on top.
+The logs attached below.
 
-Bye,
--- 
-Nicolas Ferre
+Can you please give me a pointer?
+
+
+/bin # ubinfo -a
+UBI version:                    1
+Count of UBI devices:           0
+UBI control device major/minor: 10:62
+
+/bin # ubiformat /dev/mtd5 -y --vid-hdr-offset="2048"
+ubiformat: mtd5 (nand), size 511705088 bytes (488.0 MiB), 3904 eraseblocks 
+of 131072 bytes (128.0 KiB), min. I/O size 2048 bytes
+libscan: scanning eraseblock 3903 -- 100 % complete
+ubiformat: 3904 eraseblocks have valid erase counter, mean value is 3
+ubiformat: formatting eraseblock 3903 -- 100 % complete
+
+/bin # ubiattach /dev/ubi_ctrl --mtdn=5 --devn=0 --vid-hdr-offset="2048"
+ubiattach: error!: cannot attach mtd5
+           error 25 (Inappropriate ioctl for device)
+
+
+Best Regards
+Dimitar 
