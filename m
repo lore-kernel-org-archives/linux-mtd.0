@@ -1,17 +1,32 @@
-Received: from 132.79-246-81.adsl-static.isp.belgacom.be ([81.246.79.132]
- helo=viper.mind.be)
- by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TEivw-00037O-ET
- for linux-mtd@lists.infradead.org; Thu, 20 Sep 2012 15:44:56 +0000
-From: "Arnout Vandecappelle (Essensium/Mind)" <arnout@mind.be>
-To: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- David Woodhouse <dwmw2@infradead.org>, Tony Lindgren <tony@atomide.com>
-Subject: [PATCH] mtd: omap2-nand: avoid unaligned DMA accesses,
- fall back on prefetch method
-Date: Thu, 20 Sep 2012 17:44:10 +0200
-Message-Id: <1348155850-26174-1-git-send-email-arnout@mind.be>
-Cc: "Arnout Vandecappelle \(Essensium/Mind\)" <arnout@mind.be>,
- Sven Krauss <sven.krauss@web.de>
+From: Arnd Bergmann <arnd@arndb.de>
+To: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH v2 00/34] i.MX multi-platform support
+Date: Thu, 20 Sep 2012 15:56:56 +0000
+References: <1348123547-31082-1-git-send-email-shawn.guo@linaro.org>
+ <201209200739.34899.arnd@arndb.de>
+ <20120920145342.GI2450@S2101-09.ap.freescale.net>
+In-Reply-To: <20120920145342.GI2450@S2101-09.ap.freescale.net>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201209201556.57171.arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org,
+ Mark Brown <broonie@opensource.wolfsonmicro.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-fbdev@vger.kernel.org, Wim Van Sebroeck <wim@iguana.be>,
+ linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
+ Florian Tobias Schandinat <FlorianSchandinat@gmx.de>,
+ Paulius Zaleckas <paulius.zaleckas@teltonika.lt>, Chris Ball <cjb@laptop.org>,
+ linux-media@vger.kernel.org, linux-watchdog@vger.kernel.org,
+ rtc-linux@googlegroups.com, Sascha Hauer <s.hauer@pengutronix.de>,
+ Rob Herring <rob.herring@calxeda.com>, linux-arm-kernel@lists.infradead.org,
+ Vinod Koul <vinod.koul@linux.intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
+ linux-mmc@vger.kernel.org, Wolfram Sang <w.sang@pengutronix.de>,
+ Javier Martin <javier.martin@vista-silicon.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Guennadi Liakhovetski <g.liakhovetski@gmx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,59 +36,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: "Arnout Vandecappelle (Essensium/Mind)" <arnout@mind.be>
+On Thursday 20 September 2012, Shawn Guo wrote:
+> 
+> On Thu, Sep 20, 2012 at 07:39:34AM +0000, Arnd Bergmann wrote:
+> > The first five branches are scheduled to go through the arm-soc tree, so
+> > I'm fine with that. For the sound/for-3.7 branch, I'd like to know when
+> > to expect that hitting mainline. If it always gets in very early during the
+> > merge window, it's probably ok to put the imx/multi-platform patches into
+> > the same branch as the other ones in arm-soc and wait for the sound stuff
+> > to hit mainline first, otherwise I'd suggest we start a second
+> > next/multiplatform-2 branch for imx and send the first part early on
+> > but then wait with the second batch before sound gets in.
+> > 
+> It seems that we will have to go with next/multiplatform-2.  I just
+> tried to merge the series with linux-next together, and got some
+> non-trivial conflicts with media and mtd tree.  I might have to rebase
+> my series on top of these trees to sort out those conflicts.  That said,
+> I will have several dependencies outside arm-soc tree, and have to pend
+> my series until all those trees get merged into mainline.
 
-The buffers given to the read_buf and write_buf methods are not
-necessarily u32-aligned, while the DMA engine is configured with
-32-bit accesses.  As a consequence, the DMA engine gives an error
-which appears in the log as follows:
+Ok, fair enough. I think we can put it in arm-soc/for-next as a staging
+branch anyway to give it some exposure to linux-next, and then we can
+decide whether a rebase is necessary before sending it to Linus.
 
-DMA misaligned error with device 4
-
-After this, no accesses to the NAND are possible anymore because the
-access never completes.  This usually means the system hangs if the
-rootfs is in NAND.
-
-To avoid this, use the prefetch method if the buffer is not aligned.
-
-It's difficult to reproduce the error, because the buffers are
-aligned most of the time.
-
-This bug and a patch was originally reported by Sven Krauss in
-http://article.gmane.org/gmane.linux.drivers.mtd/34548
-
-Signed-off-by: Arnout Vandecappelle (Essensium/Mind) <arnout@mind.be>
-Cc: Sven Krauss <sven.krauss@web.de>
----
-Perhaps a better method is to fetch the first few unaligned bytes
-with the prefetch method, and then continue with DMA.  However,
-since it's hard to force an unaligned buffer, it's also hard to
-test that this method works.
----
- drivers/mtd/nand/omap2.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index c719b86..a313e83 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -441,7 +441,7 @@ out_copy:
-  */
- static void omap_read_buf_dma_pref(struct mtd_info *mtd, u_char *buf, int len)
- {
--	if (len <= mtd->oobsize)
-+	if (len <= mtd->oobsize || !IS_ALIGNED((unsigned long)buf, 4))
- 		omap_read_buf_pref(mtd, buf, len);
- 	else
- 		/* start transfer in DMA mode */
-@@ -457,7 +457,7 @@ static void omap_read_buf_dma_pref(struct mtd_info *mtd, u_char *buf, int len)
- static void omap_write_buf_dma_pref(struct mtd_info *mtd,
- 					const u_char *buf, int len)
- {
--	if (len <= mtd->oobsize)
-+	if (len <= mtd->oobsize || !IS_ALIGNED((unsigned long)buf, 4))
- 		omap_write_buf_pref(mtd, buf, len);
- 	else
- 		/* start transfer in DMA mode */
--- 
-1.7.10.4
+	Arnd
