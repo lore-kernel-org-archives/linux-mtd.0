@@ -1,20 +1,32 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TEg32-0005Ko-FU
- for linux-mtd@lists.infradead.org; Thu, 20 Sep 2012 12:40:05 +0000
-Message-ID: <1348145107.2388.17.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: bcm47xxsflash: just use memcpy_fromio for reading
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
-Date: Thu, 20 Sep 2012 15:45:07 +0300
-In-Reply-To: <1348131625-24349-1-git-send-email-zajec5@gmail.com>
-References: <1348131625-24349-1-git-send-email-zajec5@gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-d+fdqqDWuRWY8XDOFT1g"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Date: Thu, 20 Sep 2012 08:47:10 -0400
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH v2 00/34] i.MX multi-platform support
+Message-ID: <20120920124709.GN17666@opensource.wolfsonmicro.com>
+References: <1348123547-31082-1-git-send-email-shawn.guo@linaro.org>
+ <201209200739.34899.arnd@arndb.de>
+ <20120920114148.GH17666@opensource.wolfsonmicro.com>
+ <20120920115213.GF2450@S2101-09.ap.freescale.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20120920115213.GF2450@S2101-09.ap.freescale.net>
+Cc: alsa-devel@alsa-project.org,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-fbdev@vger.kernel.org, Wim Van Sebroeck <wim@iguana.be>,
+ linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
+ Arnd Bergmann <arnd@arndb.de>,
+ Florian Tobias Schandinat <FlorianSchandinat@gmx.de>,
+ Paulius Zaleckas <paulius.zaleckas@teltonika.lt>, Chris Ball <cjb@laptop.org>,
+ linux-media@vger.kernel.org, linux-watchdog@vger.kernel.org,
+ rtc-linux@googlegroups.com, Sascha Hauer <s.hauer@pengutronix.de>,
+ Rob Herring <rob.herring@calxeda.com>, linux-arm-kernel@lists.infradead.org,
+ Vinod Koul <vinod.koul@linux.intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
+ linux-mmc@vger.kernel.org, Wolfram Sang <w.sang@pengutronix.de>,
+ Javier Martin <javier.martin@vista-silicon.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Guennadi Liakhovetski <g.liakhovetski@gmx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,54 +36,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, Sep 20, 2012 at 07:52:15PM +0800, Shawn Guo wrote:
+> On Thu, Sep 20, 2012 at 07:41:50AM -0400, Mark Brown wrote:
 
---=-d+fdqqDWuRWY8XDOFT1g
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> > It's usually pretty early but Takashi will be on holiday this time so
+> > I'm not sure if things might be different (he was going to send the pull
+> > request from holiday).  I also didn't guarantee that it'll be stable
+> > yet, can someone please tell me what the depenency is here?
 
-On Thu, 2012-09-20 at 11:00 +0200, Rafa=C5=82 Mi=C5=82ecki wrote:
-> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
+> We need the patch to have all imx drivers mach/* inclusion free,
+> so that we can enable multi-platform support for imx, which is the
+> whole point of the series.
 
-Squashed this one to the previous one. Fixed up the following aiaiai
-complaint:
+That doesn't answer the question.  What is the dependency - what is it
+about this patch that something else depends on?  Your cover letters
+just say you'd like to do this but don't mention dependencies at all and
+when I asked the question last night you said the same thing.  I've not
+seen the rest of the series...
 
-Successfully built configuration "mips-bcm47xx_defconfig,mips,mips-linux-",=
- results:
+> If your for-3.7 is not stable anyway, I guess the easiest the way
 
---- before_patching.log
-+++ after_patching.log
-@@ @@
-+drivers/mtd/devices/bcm47xxsflash.c:22:29: warning: incorrect type in argu=
-ment 2 (different address spaces) [sparse]
-+drivers/mtd/devices/bcm47xxsflash.c:22:29:    expected void const volatile=
- [noderef] <asn:2>*src [sparse]
-+drivers/mtd/devices/bcm47xxsflash.c:22:29:    got void *<noident> [sparse]
+It probably *is* stable but I'm not enthused about people pulling
+unsigned tags.  I might rebase, though - I'm going to finalise the tree
+in the next few days.
 
---=20
-Best Regards,
-Artem Bityutskiy
+> to do it might be you drop the patch "ASoC: mx27vis: retrieve gpio
+> numbers from platform_data" from your tree and I have it be part of
+> the series to go via arm-soc tree as a whole.  (This is the original
+> plan that I mentioned in v1 cover letter)
 
---=-d+fdqqDWuRWY8XDOFT1g
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+You just mentioned it as a preference (you said it's something you'd
+like to do), please if you're doing this sort of cross tree thing be
+explicit about what the inter-tree relationships are.  If things need to
+go in via the same tree say so explicitly (and ideally say way this is).
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQWw/TAAoJECmIfjd9wqK0QYgP/0nBq8ykboijK3JsicHJPV5M
-z4kOhxOMZjBfUua4To+AFk8C4J2/IiCeMZVdKSLK+SkGhnZekIZSTygqQrJnek9k
-YE7Kg6N3y2MGFFQg0vnurUx8Njz4w8VC3Mq8UzxZqja4NcBJgjl7OFNYst7MSAYO
-fh5PyQ5jOFnbHm6fPewFbJmtl/o4RHEdW+gX7fNHgz0sIo7lR48Y+1tmBVn9OMxc
-EGNjB636G3pEFmHu33qGgWjLSTYDkuCsl9MngBrjgLLhvUg8NnoWN0aUlm5UD1ev
-tFcV8zslui4vCHypt+IxnGI9U2t1QsfXYDHS1qlFSMOazV9v/2MIiDIWxnBcank/
-sZrL47MkaoBi1o+M0Ij+G3s7BR3hWneiBxdZVgkEgDDMi6cPEkx8meo1474QOENA
-fZ+hfIa57YyFtWP+X+g60nJWp0Amac1JOdVDR9xgungCz0kbg582J9PHXZeH6vzQ
-aL3ROKT5i5gJA8PKToPZ31T+Bm3/7+jNxvGW3D0R1qLdbCb4rQynhMzsbIewJcxi
-svgZGh4gILUtO5d78v7cQZWDKX6LISnp+7CSGKWMgU9CoorGg+2otGF617H6MLId
-PPI3+Xs6d33rK7CO24VWJX0u8oz2uqxyFphX+OQR7lBA4XhSRnNuOnEV8n4WvmRc
-7KUjvoHK6ic8dr7P5s8o
-=tKvl
------END PGP SIGNATURE-----
-
---=-d+fdqqDWuRWY8XDOFT1g--
+The main reason I applied it straight away was that Javier mentioned
+that it was a bug fix and it's near the merge window and these random
+ARM cleanup serieses never seem to go in quickly.
