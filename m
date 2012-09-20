@@ -1,16 +1,20 @@
-Message-ID: <505A7974.9060108@atmel.com>
-Date: Thu, 20 Sep 2012 10:03:32 +0800
-From: Josh Wu <josh.wu@atmel.com>
+Date: Wed, 19 Sep 2012 21:16:31 -0400
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH 04/29] ARM: OMAP1: Move board-ams-delta.h from plat to mach
+Message-ID: <20120920011630.GB17666@opensource.wolfsonmicro.com>
+References: <20120919205732.28074.43697.stgit@muffinssi>
+ <20120919210543.28074.10214.stgit@muffinssi>
 MIME-Version: 1.0
-To: Josh Wu <josh.wu@atmel.com>
-Subject: Re: [PATCH v2] mtd: atmel_nand: fix the compile error which miss
- label "err_ecc_ioremap".
-References: <1347347412-24214-1-git-send-email-josh.wu@atmel.com>
-In-Reply-To: <1347347412-24214-1-git-send-email-josh.wu@atmel.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: dedekind1@gmail.com, vikram186@gmail.com, nicolas.ferre@atmel.com,
- linux-mtd@lists.infradead.org, plagnioj@jcrosoft.com,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20120919210543.28074.10214.stgit@muffinssi>
+Cc: linux-fbdev@vger.kernel.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>,
+ Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, alsa-devel@alsa-project.org,
+ Peter Ujfalusi <peter.ujfalusi@ti.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>,
+ linux-mtd@lists.infradead.org, linux-input@vger.kernel.org,
+ linux-omap@vger.kernel.org, Liam Girdwood <lrg@ti.com>,
  linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -21,53 +25,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Artem
+On Wed, Sep 19, 2012 at 02:05:43PM -0700, Tony Lindgren wrote:
+> This is only used by omap1.
+> 
+> And to fix things properly, this should not be included
+> from the drivers at all.
 
-Do you have any feedback since there is a long time about this patch?
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-Best Regards,
-Josh Wu
-
-On 9/11/2012 3:10 PM, Josh Wu wrote:
-> Add err_ecc_ioremap label to fix following errors:
-> ---8<---
->    CC      drivers/mtd/nand/atmel_nand.o
-> drivers/mtd/nand/atmel_nand.c: In function 'atmel_nand_probe':
-> drivers/mtd/nand/atmel_nand.c:1423: error: label 'err_ecc_ioremap' used but not defined
-> make[3]: *** [drivers/mtd/nand/atmel_nand.o] Error 1
-> make[2]: *** [drivers/mtd/nand] Error 2
-> make[1]: *** [drivers/mtd] Error 2
-> make: *** [drivers] Error 2
-> --->8---
->
-> This error was introduced in b654a9a46fc2100b318050483f8c5b5d0f187303 (mtd: atmel nand: fix gpio missing request)
->
-> Signed-off-by: Josh Wu <josh.wu@atmel.com>
-> ---
-> change logs:
->    Add detail information for the commit message.
->
->   drivers/mtd/nand/atmel_nand.c |    3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-> index 6a5a35b..9144557 100644
-> --- a/drivers/mtd/nand/atmel_nand.c
-> +++ b/drivers/mtd/nand/atmel_nand.c
-> @@ -1399,7 +1399,7 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
->   	if (pdev->dev.of_node) {
->   		res = atmel_of_init_port(host, pdev->dev.of_node);
->   		if (res)
-> -			goto err_nand_ioremap;
-> +			goto err_ecc_ioremap;
->   	} else {
->   		memcpy(&host->board, pdev->dev.platform_data,
->   		       sizeof(struct atmel_nand_data));
-> @@ -1560,6 +1560,7 @@ err_no_card:
->   	platform_set_drvdata(pdev, NULL);
->   	if (host->dma_chan)
->   		dma_release_channel(host->dma_chan);
-> +err_ecc_ioremap:
->   	iounmap(host->io_base);
->   err_nand_ioremap:
->   	kfree(host);
+or I can apply it if that's easier.
