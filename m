@@ -1,19 +1,29 @@
-Received: from switchvoice.com ([77.70.97.103] helo=mail.bioidentic.com)
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TEeAf-00084O-Qj
- for linux-mtd@lists.infradead.org; Thu, 20 Sep 2012 10:39:51 +0000
-Message-ID: <00d401cd9719$41e314b0$2901a8c0@dpn>
-From: "Dimitar Penev" <dpn@switchfin.org>
-To: "Dimitar Penev" <dpn@switchfin.org>,
-	<linux-mtd@lists.infradead.org>
-References: <006c01cd970c$1b9cb930$2901a8c0@dpn>
-Subject: Re: ubiattach  issue
-Date: Thu, 20 Sep 2012 13:18:19 +0300
+Date: Thu, 20 Sep 2012 07:41:50 -0400
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2 00/34] i.MX multi-platform support
+Message-ID: <20120920114148.GH17666@opensource.wolfsonmicro.com>
+References: <1348123547-31082-1-git-send-email-shawn.guo@linaro.org>
+ <201209200739.34899.arnd@arndb.de>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="iso-8859-1";
- reply-type=response
-Content-Transfer-Encoding: 7bit
-Reply-To: Dimitar Penev <dpn@switchfin.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <201209200739.34899.arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-fbdev@vger.kernel.org, Wim Van Sebroeck <wim@iguana.be>,
+ linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
+ Florian Tobias Schandinat <FlorianSchandinat@gmx.de>,
+ Paulius Zaleckas <paulius.zaleckas@teltonika.lt>, Chris Ball <cjb@laptop.org>,
+ linux-media@vger.kernel.org, linux-watchdog@vger.kernel.org,
+ rtc-linux@googlegroups.com, Sascha Hauer <s.hauer@pengutronix.de>,
+ Rob Herring <rob.herring@calxeda.com>, linux-arm-kernel@lists.infradead.org,
+ Vinod Koul <vinod.koul@linux.intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
+ linux-mmc@vger.kernel.org, Wolfram Sang <w.sang@pengutronix.de>,
+ Javier Martin <javier.martin@vista-silicon.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Shawn Guo <shawn.guo@linaro.org>,
+ Guennadi Liakhovetski <g.liakhovetski@gmx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,137 +33,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi again,
+On Thu, Sep 20, 2012 at 07:39:34AM +0000, Arnd Bergmann wrote:
 
-Bellow the results of few mtd test tools I've tried.
+> The first five branches are scheduled to go through the arm-soc tree, so
+> I'm fine with that. For the sound/for-3.7 branch, I'd like to know when
+> to expect that hitting mainline. If it always gets in very early during the
+> merge window, it's probably ok to put the imx/multi-platform patches into
+> the same branch as the other ones in arm-soc and wait for the sound stuff
+> to hit mainline first, otherwise I'd suggest we start a second
+> next/multiplatform-2 branch for imx and send the first part early on
+> but then wait with the second batch before sound gets in.
 
-==========================================================
-mtd_speedtest: MTD device: 5
-mtd_speedtest: MTD device size 511705088, eraseblock size 131072, page size 
-2048, count of eraseblocks 3904, pages per eraseblock 64, OOB size 64
-mtd_speedtest: scanning for bad eraseblocks
-mtd_speedtest: scanned 3904 eraseblocks, 0 are bad
-mtd_speedtest: testing eraseblock write speed
-mtd_speedtest: eraseblock write speed is 4552 KiB/s
-mtd_speedtest: testing eraseblock read speed
-mtd_speedtest: eraseblock read speed is 2722 KiB/s
-mtd_speedtest: testing page write speed
-mtd_speedtest: page write speed is 4517 KiB/s
-mtd_speedtest: testing page read speed
-mtd_speedtest: page read speed is 2712 KiB/s
-mtd_speedtest: testing 2 page write speed
-mtd_speedtest: 2 page write speed is 4533 KiB/s
-mtd_speedtest: testing 2 page read speed
-mtd_speedtest: 2 page read speed is 2715 KiB/s
-mtd_speedtest: Testing erase speed
-mtd_speedtest: erase speed is 153662 KiB/s
-mtd_speedtest: Testing 2x multi-block erase speed
-mtd_speedtest: 2x multi-block erase speed is 292571 KiB/s
-mtd_speedtest: Testing 4x multi-block erase speed
-mtd_speedtest: 4x multi-block erase speed is 293258 KiB/s
-mtd_speedtest: Testing 8x multi-block erase speed
-mtd_speedtest: 8x multi-block erase speed is 293258 KiB/s
-mtd_speedtest: Testing 16x multi-block erase speed
-mtd_speedtest: 16x multi-block erase speed is 294641 KiB/s
-mtd_speedtest: Testing 32x multi-block erase speed
-mtd_speedtest: 32x multi-block erase speed is 292571 KiB/s
-mtd_speedtest: Testing 64x multi-block erase speed
-mtd_speedtest: 64x multi-block erase speed is 294641 KiB/s
-mtd_speedtest: finished
-=================================================
-
-=================================================
-mtd_pagetest: MTD device: 5
-mtd_pagetest: MTD device size 511705088, eraseblock size 131072, page size 
-2048, count of eraseblocks 3904, pages per eraseblock 64, OOB size 64
-mtd_pagetest: scanning for bad eraseblocks
-mtd_pagetest: scanned 3904 eraseblocks, 0 are bad
-mtd_pagetest: erasing whole device
-mtd_pagetest: erased 3904 eraseblocks
-mtd_pagetest: writing whole device
-mtd_pagetest: written up to eraseblock 0
-mtd_pagetest: written up to eraseblock 256
-mtd_pagetest: written up to eraseblock 512
-mtd_pagetest: written up to eraseblock 768
-mtd_pagetest: written up to eraseblock 1024
-mtd_pagetest: written up to eraseblock 1280
-mtd_pagetest: written up to eraseblock 1536
-mtd_pagetest: written up to eraseblock 1792
-mtd_pagetest: written up to eraseblock 2048
-mtd_pagetest: written up to eraseblock 2304
-mtd_pagetest: written up to eraseblock 2560
-mtd_pagetest: written up to eraseblock 2816
-mtd_pagetest: written up to eraseblock 3072
-mtd_pagetest: written up to eraseblock 3328
-mtd_pagetest: written up to eraseblock 3584
-mtd_pagetest: written up to eraseblock 3840
-mtd_pagetest: written 3904 eraseblocks
-mtd_pagetest: verifying all eraseblocks
-mtd_pagetest: verified up to eraseblock 0
-mtd_pagetest: verified up to eraseblock 256
-mtd_pagetest: verified up to eraseblock 512
-mtd_pagetest: verified up to eraseblock 768
-mtd_pagetest: verified up to eraseblock 1024
-mtd_pagetest: verified up to eraseblock 1280
-mtd_pagetest: verified up to eraseblock 1536
-mtd_pagetest: verified up to eraseblock 1792
-mtd_pagetest: verified up to eraseblock 2048
-mtd_pagetest: verified up to eraseblock 2304
-mtd_pagetest: verified up to eraseblock 2560
-mtd_pagetest: verified up to eraseblock 2816
-mtd_pagetest: verified up to eraseblock 3072
-mtd_pagetest: verified up to eraseblock 3328
-mtd_pagetest: verified up to eraseblock 3584
-mtd_pagetest: verified up to eraseblock 3840
-uncorrectable error :
-mtd_pagetest: error: read failed at 0x1e7fd800
-uncorrectable error :
-mtd_pagetest: error: read failed at 0x1e7fd800
-mtd_pagetest: error -74 occurred
-=================================================
-modprobe: can't load module mtd_pagetest 
-(kernel/drivers/mtd/tests/mtd_pagetest.ko): Bad message
-
-Thanks
-Dimitar
-
------ Original Message ----- 
-From: "Dimitar Penev" <dpn@switchfin.org>
-To: <linux-mtd@lists.infradead.org>
-Sent: Thursday, September 20, 2012 11:44 AM
-Subject: ubiattach issue
-
-
-> Hi Gents,
->
-> I am facing an issue with ubiattach on Linux kernel 3.0.8
-> On our target we have nand flash with mtd layer on top.
-> The logs attached below.
->
-> Can you please give me a pointer?
->
->
-> /bin # ubinfo -a
-> UBI version:                    1
-> Count of UBI devices:           0
-> UBI control device major/minor: 10:62
->
-> /bin # ubiformat /dev/mtd5 -y --vid-hdr-offset="2048"
-> ubiformat: mtd5 (nand), size 511705088 bytes (488.0 MiB), 3904 eraseblocks 
-> of 131072 bytes (128.0 KiB), min. I/O size 2048 bytes
-> libscan: scanning eraseblock 3903 -- 100 % complete
-> ubiformat: 3904 eraseblocks have valid erase counter, mean value is 3
-> ubiformat: formatting eraseblock 3903 -- 100 % complete
->
-> /bin # ubiattach /dev/ubi_ctrl --mtdn=5 --devn=0 --vid-hdr-offset="2048"
-> ubiattach: error!: cannot attach mtd5
->           error 25 (Inappropriate ioctl for device)
->
->
-> Best Regards
-> Dimitar
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+It's usually pretty early but Takashi will be on holiday this time so
+I'm not sure if things might be different (he was going to send the pull
+request from holiday).  I also didn't guarantee that it'll be stable
+yet, can someone please tell me what the depenency is here?
