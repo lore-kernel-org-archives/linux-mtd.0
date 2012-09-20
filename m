@@ -1,18 +1,26 @@
-Date: Thu, 20 Sep 2012 07:41:50 -0400
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-To: Arnd Bergmann <arnd@arndb.de>
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TEfIt-0005mO-I5
+ for linux-mtd@lists.infradead.org; Thu, 20 Sep 2012 11:52:24 +0000
+Received: by pbbrq8 with SMTP id rq8so5113642pbb.36
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Sep 2012 04:52:21 -0700 (PDT)
+Date: Thu, 20 Sep 2012 19:52:15 +0800
+From: Shawn Guo <shawn.guo@linaro.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH v2 00/34] i.MX multi-platform support
-Message-ID: <20120920114148.GH17666@opensource.wolfsonmicro.com>
+Message-ID: <20120920115213.GF2450@S2101-09.ap.freescale.net>
 References: <1348123547-31082-1-git-send-email-shawn.guo@linaro.org>
  <201209200739.34899.arnd@arndb.de>
+ <20120920114148.GH17666@opensource.wolfsonmicro.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <201209200739.34899.arnd@arndb.de>
+In-Reply-To: <20120920114148.GH17666@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org,
  Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
  linux-fbdev@vger.kernel.org, Wim Van Sebroeck <wim@iguana.be>,
  linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
+ Arnd Bergmann <arnd@arndb.de>,
  Florian Tobias Schandinat <FlorianSchandinat@gmx.de>,
  Paulius Zaleckas <paulius.zaleckas@teltonika.lt>, Chris Ball <cjb@laptop.org>,
  linux-media@vger.kernel.org, linux-watchdog@vger.kernel.org,
@@ -22,7 +30,7 @@ Cc: alsa-devel@alsa-project.org,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
  linux-mmc@vger.kernel.org, Wolfram Sang <w.sang@pengutronix.de>,
  Javier Martin <javier.martin@vista-silicon.com>,
- Andrew Morton <akpm@linux-foundation.org>, Shawn Guo <shawn.guo@linaro.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
  Guennadi Liakhovetski <g.liakhovetski@gmx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -33,18 +41,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 20, 2012 at 07:39:34AM +0000, Arnd Bergmann wrote:
+On Thu, Sep 20, 2012 at 07:41:50AM -0400, Mark Brown wrote:
+> It's usually pretty early but Takashi will be on holiday this time so
+> I'm not sure if things might be different (he was going to send the pull
+> request from holiday).  I also didn't guarantee that it'll be stable
+> yet, can someone please tell me what the depenency is here?
 
-> The first five branches are scheduled to go through the arm-soc tree, so
-> I'm fine with that. For the sound/for-3.7 branch, I'd like to know when
-> to expect that hitting mainline. If it always gets in very early during the
-> merge window, it's probably ok to put the imx/multi-platform patches into
-> the same branch as the other ones in arm-soc and wait for the sound stuff
-> to hit mainline first, otherwise I'd suggest we start a second
-> next/multiplatform-2 branch for imx and send the first part early on
-> but then wait with the second batch before sound gets in.
+We need the patch to have all imx drivers mach/* inclusion free,
+so that we can enable multi-platform support for imx, which is the
+whole point of the series.
 
-It's usually pretty early but Takashi will be on holiday this time so
-I'm not sure if things might be different (he was going to send the pull
-request from holiday).  I also didn't guarantee that it'll be stable
-yet, can someone please tell me what the depenency is here?
+If your for-3.7 is not stable anyway, I guess the easiest the way
+to do it might be you drop the patch "ASoC: mx27vis: retrieve gpio
+numbers from platform_data" from your tree and I have it be part of
+the series to go via arm-soc tree as a whole.  (This is the original
+plan that I mentioned in v1 cover letter)
+
+Shawn
