@@ -1,37 +1,20 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TEfIt-0005mO-I5
- for linux-mtd@lists.infradead.org; Thu, 20 Sep 2012 11:52:24 +0000
-Received: by pbbrq8 with SMTP id rq8so5113642pbb.36
- for <linux-mtd@lists.infradead.org>; Thu, 20 Sep 2012 04:52:21 -0700 (PDT)
-Date: Thu, 20 Sep 2012 19:52:15 +0800
-From: Shawn Guo <shawn.guo@linaro.org>
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 00/34] i.MX multi-platform support
-Message-ID: <20120920115213.GF2450@S2101-09.ap.freescale.net>
-References: <1348123547-31082-1-git-send-email-shawn.guo@linaro.org>
- <201209200739.34899.arnd@arndb.de>
- <20120920114148.GH17666@opensource.wolfsonmicro.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20120920114148.GH17666@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-fbdev@vger.kernel.org, Wim Van Sebroeck <wim@iguana.be>,
- linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
- Arnd Bergmann <arnd@arndb.de>,
- Florian Tobias Schandinat <FlorianSchandinat@gmx.de>,
- Paulius Zaleckas <paulius.zaleckas@teltonika.lt>, Chris Ball <cjb@laptop.org>,
- linux-media@vger.kernel.org, linux-watchdog@vger.kernel.org,
- rtc-linux@googlegroups.com, Sascha Hauer <s.hauer@pengutronix.de>,
- Rob Herring <rob.herring@calxeda.com>, linux-arm-kernel@lists.infradead.org,
- Vinod Koul <vinod.koul@linux.intel.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
- linux-mmc@vger.kernel.org, Wolfram Sang <w.sang@pengutronix.de>,
- Javier Martin <javier.martin@vista-silicon.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Received: from mga02.intel.com ([134.134.136.20])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TEfhB-0005d7-Il
+ for linux-mtd@lists.infradead.org; Thu, 20 Sep 2012 12:17:31 +0000
+Message-ID: <1348143751.2388.16.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: bcm47xxsflash: just use memcpy_fromio for reading
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
+Date: Thu, 20 Sep 2012 15:22:31 +0300
+In-Reply-To: <1348131625-24349-1-git-send-email-zajec5@gmail.com>
+References: <1348131625-24349-1-git-send-email-zajec5@gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-zFpmyXX9k9RTe7/Cajb8"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,20 +24,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 20, 2012 at 07:41:50AM -0400, Mark Brown wrote:
-> It's usually pretty early but Takashi will be on holiday this time so
-> I'm not sure if things might be different (he was going to send the pull
-> request from holiday).  I also didn't guarantee that it'll be stable
-> yet, can someone please tell me what the depenency is here?
 
-We need the patch to have all imx drivers mach/* inclusion free,
-so that we can enable multi-platform support for imx, which is the
-whole point of the series.
+--=-zFpmyXX9k9RTe7/Cajb8
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-If your for-3.7 is not stable anyway, I guess the easiest the way
-to do it might be you drop the patch "ASoC: mx27vis: retrieve gpio
-numbers from platform_data" from your tree and I have it be part of
-the series to go via arm-soc tree as a whole.  (This is the original
-plan that I mentioned in v1 cover letter)
+On Thu, 2012-09-20 at 11:00 +0200, Rafa=C5=82 Mi=C5=82ecki wrote:
+> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
+> ---
+> It doesn't generate any errors on normal compilation, but I wasn't able
+> to test it with "verify". This tool defeated me ;/
+>=20
+> First I cloned dedekind/maintaining.git but it didn't run because or
+> lacking aiaiai.
+>=20
+> So I've cloned dedekind/aiaiai.git.
+>=20
+> Then I had to move aiaiai to ~/git/aiaiai to let "verify" find it.
+>=20
+> So I was able to use verify:
+> time ./verify ../l2-mtd/ mips-bcm47xx_defconfig < ../l2-mtd/0001-mtd-bcm4=
+7xxsflash-just-use-memcpy-for-reading.patch
+> but it didn't work because patch was already applied. My bad, but... it
+> took 2m17.277s to verify to realize that. And that magic commit/message
+> wasn't helpful:
 
-Shawn
+Well, before doing anything with your tree, we clone it to a temporary
+location (in the workdir, which can specify), that probably took 2
+minutes in your machine.
+
+> Failed to apply patch(es) with git am on top of:
+> 0f1afc8 Quick fixes - applied by aiaiai
+
+After this there should have been the right commit. But I agree this is
+confusing, I'll look how I can improve this.
+
+> So I've removed patch from my tree, and tried again. This time it took
+> 3m14.398s just to display:
+> [2012-09-20 10:39:10] aiaiai-make-kernel: Program "aiaiai-locker" is requ=
+ired but not found in PATH
+>=20
+> I just wanted to add ~/git/aiaiai to my $PATH, but noticed it doesn't con=
+tain
+> aiaiai-locker anyway... I gave up :|
+
+Because you need to type "make". This is written in the docs. Dunno, how
+would I make sure users do not forget to type make before running? I can
+improve the error message though, and put a hint there.
+
+> I appreciate your work on additional quality tools, but apart from good
+> code it also need to be easy-usable to make ppl use it :|
+
+Thanks for feed-back, appreciated!
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-zFpmyXX9k9RTe7/Cajb8
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQWwqHAAoJECmIfjd9wqK0W/YQAKVckSVx9Y+QpFI9QbZf0Ag3
+M210rSCy6gEoCkDVvVNRIn4z8hkY2otGU4r3uR5BsE7Z8Hu9Bj//x23m5RkbXqth
+HV9X+3a4R/CnFWjD1lI+eXzNfMClKbpujqBa4IjEqbpjzEjGqqSKNYQSm8rVTXvJ
+PdnE5b/pVX5eNd/pKkz3M+xJF9QzjMae7a12+oxT0LpTvqapbZjkXOs3HW3YDxWF
+ceddf/94GeBSdHQXBppFBvxmPLKZ22zKDaBdrXEoXVu1pQVxWTbH6ECoiSY4otI5
+g83Ry1dMvEN+1FSvZ+xKzks/eqNt7fVhaDJuiwDluDZSAeLLsUHXpDjg/oxgfuez
+L9AVNR8Y9OIHYfyRujQRDIUkaCQwVbVDMtREV3vxHKacChX6xYAiwJ/30HQQtCd8
+zfzGKv0gRi6qk3uS2i1tkHuVEGAWWsDBWVl+MSBBWuMXKD5K6ZD2LU5jR0F2NZQQ
+ta6UlS8XRGFLqaXChW9AXxtVdMXSI+AJqAgRmkaCEu+sUaAzdYpFQyhEu81qSMIu
+Bys/mCrc4G/xK80LvrP0nGHfZZcluSm94iSbfwawwA5fLh1ki9Z6hQxH3pSMzvyD
+oV/NMw6gvfPEW7YnOB4Z61iux4nD6T5YkG6izoiQfBEh2c2+KVx+ADjnwZGfET7C
+bz7iCjjQ0A7GAGM+2eyf
+=54Zs
+-----END PGP SIGNATURE-----
+
+--=-zFpmyXX9k9RTe7/Cajb8--
