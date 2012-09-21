@@ -1,30 +1,41 @@
-Received: from ra.se.axis.com ([195.60.68.13])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TF5Mf-000459-3g
- for linux-mtd@lists.infradead.org; Fri, 21 Sep 2012 15:42:01 +0000
-Received: from localhost (localhost [127.0.0.1])
- by ra.se.axis.com (Postfix) with ESMTP id 816E713B01
- for <linux-mtd@lists.infradead.org>; Fri, 21 Sep 2012 17:41:59 +0200 (CEST)
-Received: from ra.se.axis.com ([127.0.0.1])
- by localhost (ra.se.axis.com [127.0.0.1]) (amavisd-new, port 10024)
- with LMTP id Z35Nj6U8tAI8 for <linux-mtd@lists.infradead.org>;
- Fri, 21 Sep 2012 17:41:58 +0200 (CEST)
-Received: from thoth.se.axis.com (thoth.se.axis.com [10.0.2.173])
- by ra.se.axis.com (Postfix) with ESMTP id 983A313AF1
- for <linux-mtd@lists.infradead.org>; Fri, 21 Sep 2012 17:41:58 +0200 (CEST)
-Received: from xmail2.se.axis.com (xmail2.se.axis.com [10.0.5.74])
- by thoth.se.axis.com (Postfix) with ESMTP id 967D9341A2
- for <linux-mtd@lists.infradead.org>; Fri, 21 Sep 2012 17:41:58 +0200 (CEST)
-Subject: mkfs.ubifs problem when output file really isn't in the UBIFS root
- directory
-From: Marcus Prebble <marcus.prebble@axis.com>
-To: <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 21 Sep 2012 17:41:58 +0200
-Message-ID: <1348242118.2552.1460.camel@lnxprebble2.se.axis.com>
+Received: from mail-pa0-f49.google.com ([209.85.220.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TF6NF-0001Eq-3G
+ for linux-mtd@lists.infradead.org; Fri, 21 Sep 2012 16:46:42 +0000
+Received: by padbi5 with SMTP id bi5so425231pad.36
+ for <linux-mtd@lists.infradead.org>; Fri, 21 Sep 2012 09:46:37 -0700 (PDT)
+Date: Sat, 22 Sep 2012 00:46:26 +0800
+From: Shawn Guo <shawn.guo@linaro.org>
+To: Olof Johansson <olof@lixom.net>
+Subject: Re: [alsa-devel] [PATCH v2 00/34] i.MX multi-platform support
+Message-ID: <20120921164622.GA5394@S2101-09.ap.freescale.net>
+References: <1348123547-31082-1-git-send-email-shawn.guo@linaro.org>
+ <201209200739.34899.arnd@arndb.de>
+ <20120920145342.GI2450@S2101-09.ap.freescale.net>
+ <201209201556.57171.arnd@arndb.de>
+ <20120921080123.GM2450@S2101-09.ap.freescale.net>
+ <CAOesGMi6CbvFikycJVdE8W-DxLD3W7+CyScz+YT103dxR31U9g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Ricard Wanderlof <ricardw@axis.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOesGMi6CbvFikycJVdE8W-DxLD3W7+CyScz+YT103dxR31U9g@mail.gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-fbdev@vger.kernel.org, Wim Van Sebroeck <wim@iguana.be>,
+ linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
+ rtc-linux@googlegroups.com,
+ Florian Tobias Schandinat <FlorianSchandinat@gmx.de>,
+ Paulius Zaleckas <paulius.zaleckas@teltonika.lt>, Chris Ball <cjb@laptop.org>,
+ linux-media@vger.kernel.org, linux-watchdog@vger.kernel.org,
+ Arnd Bergmann <arnd@arndb.de>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Rob Herring <rob.herring@calxeda.com>, linux-arm-kernel@lists.infradead.org,
+ Vinod Koul <vinod.koul@linux.intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-mmc@vger.kernel.org,
+ Wolfram Sang <w.sang@pengutronix.de>,
+ Javier Martin <javier.martin@vista-silicon.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Guennadi Liakhovetski <g.liakhovetski@gmx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,40 +45,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi Olof,
 
-We are working on a project using UBI/UBIFS and I have run into a
-problem with mkfs.ubifs which I am hoping someone can advise on.
-Apologies if I have already missed the answer to this in the archives
-somewhere.
+On Fri, Sep 21, 2012 at 01:26:43AM -0700, Olof Johansson wrote:
+> I'll take a look at merging it tomorrow after I've dealt with smp_ops;
+> if it looks reasonably conflict-free I'll pull it in. We need the
+> sound dependency sorted out (or agreed upon) first though.
+> 
+I just published the branch below with this series rebased on top of
+the necessary dependant branches.
 
-A requirement of the project is to take an image of the root filesystem
-(/) which is implemented as a static UBI read only volume. Obviously its
-not possible to unmount /, but it seems to be possible to re-mount the
-UBI volume, read only, onto another location e.g. /tmp/mnt/new_rootfs.
+  git://git.linaro.org/people/shawnguo/linux-2.6.git staging/imx-multiplatform
 
-The problem arises when running mkfs.ubifs is that it fails saying that
-the output file cannot be in the UBIFS root directory.
-This sounds like a reasonable constraint if the output file really was
-in the root, but this is not the case for us seeing root is mounted
-somewhere belowtmp. To give a concrete example of the command we are
-running:
+The dependant branches include:
 
-mkfs.ubifs --output=/tmp/rootfs.img  --leb-size=129024
---root=/tmp/rootfs_mnt --min-io-size=2048 --max-leb-cnt=147 
+* arm-soc/multiplatform/platform-data
 
-Where /dev/ubi0_11 is mounted read-only on both / and /tmp/rootfs_mnt/.
+* arm-soc/multiplatform/smp_ops
 
-Having a look at the source for mkfs.ubifs it seems that the function
-in_path(..) is the problem - it works up the directory tree using ../
-until it either reaches the top_dir (/) or the inode number/dev match in
-which case it fails. It doesn't seem that this section of code has
-changed in the latest version of mtd-utils (we are running 1.4.3-2) and
-I wonder if this is a bug in in_path(..) or a genuine safeguard against
-screwing something up? I suspect the former for when I disabled this
-check in mkfs.ubifs.c the resulting image was completely OK.
+* git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-3.7
 
-Kind regards,
+  It contains dependant patch "ASoC: mx27vis: retrieve gpio numbers
+  from platform_data"
 
-Marcus Prebble
-Axis Communications AB
+* git://git.infradead.org/mtd-2.6.git master
+
+  The series is based on this tree to solve some non-trivial conflicts
+  on mxc_nand driver.  Because mtd tree completely missed 3.6 merge
+  window, having the series base on 3.6-rc actually means 3.5 code base
+  in term of mtd support.  There are currently two cycles changes
+  accumulated on mtd, and we need to base the series on it to sort out
+  the conflicts.
+
+* git://linuxtv.org/mchehab/media-next.git master
+
+  The media tree renames mx2/mx3 camera drivers twice.  I'm not sure
+  if git merge can detect them, so I just rebased the series on media
+  tree to solve that.  The bonus point is that a number of trivial
+  conflicts with imx27-coda support on media tree gets solved as well.
+
+I'm not requesting you to pull the branch into arm-soc as a stable
+branch but staging one, because the external dependencies which might
+not be stable.  I attempt to use it for exposing the series on
+linux-next, so that we can send it to Linus for 3.7 if there is chance
+for us to (e.g. all the dependant branches hit mainline early during
+3.7 merge window).
+
+Shawn
