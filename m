@@ -1,20 +1,21 @@
-Received: from mail-ob0-f177.google.com ([209.85.214.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TF2Cl-0002sQ-QV
- for linux-mtd@lists.infradead.org; Fri, 21 Sep 2012 12:19:36 +0000
-Received: by obbta17 with SMTP id ta17so3346591obb.36
- for <linux-mtd@lists.infradead.org>; Fri, 21 Sep 2012 05:19:33 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1346855725-31726-1-git-send-email-festevam@gmail.com>
-References: <1346855725-31726-1-git-send-email-festevam@gmail.com>
-Date: Fri, 21 Sep 2012 09:19:33 -0300
-Message-ID: <CAOMZO5DC8xuQ_0949ivyRDubWMv3=buEO+tm2yzdBApB7uT=Xg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mtd: gpmi-nand: Convert to platform driver
-From: Fabio Estevam <festevam@gmail.com>
-To: artem.bityutskiy@linux.intel.com
-Content-Type: text/plain; charset=UTF-8
-Cc: marex@denx.de, b32955@freescale.com, linux-mtd@lists.infradead.org,
- Fabio Estevam <fabio.estevam@freescale.com>, kernel@pengutronix.de
+Received: from mga01.intel.com ([192.55.52.88])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TF2IK-0003ta-KW
+ for linux-mtd@lists.infradead.org; Fri, 21 Sep 2012 12:25:21 +0000
+Message-ID: <1348230313.1890.7.camel@sauron.fi.intel.com>
+Subject: Re: [MTD website] UBI: now we reserve 20/1024 PEB for bad block
+ handling
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Richard Genoud <richard.genoud@gmail.com>
+Date: Fri, 21 Sep 2012 15:25:13 +0300
+In-Reply-To: <1346766969-13490-1-git-send-email-richard.genoud@gmail.com>
+References: <1346766969-13490-1-git-send-email-richard.genoud@gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-itXOSkVKMqSZ0FFzUjuu"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,19 +25,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem.
 
-On Wed, Sep 5, 2012 at 11:35 AM, Fabio Estevam <festevam@gmail.com> wrote:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
->
-> Using module_platform_driver() makes the code smaller and cleaner.
->
-> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
-> ---
-> This patch depends on: "mtd: gpmi-nand: Improve logging style"
+--=-itXOSkVKMqSZ0FFzUjuu
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Any comments, please?
+On Tue, 2012-09-04 at 15:56 +0200, Richard Genoud wrote:
+> Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
 
-Regards,
+Pushed to mtd-www, thanks!
 
-Fabio Estevam
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-itXOSkVKMqSZ0FFzUjuu
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQXFypAAoJECmIfjd9wqK0KnQQAIkPw/vBpFOhw0+7lBvtHM2g
+Thk04vJs8GvBvbZRyRvqJu6wky/WimjlB18TPKyFRFRLovbq/FUC56P5AdfVM/KX
+AAJdrxojYaAB2eJ0aktJNdbGWvtsMo8F9hM6b6b4htBImpaqcBczovL1+QMgc9/F
+pJE+4cUMowRyFvsE6pQjJt2d2L5Hldl5oOM1lrrm2uNqks86PBWOcKTX/LiM437m
+yv4eI1F+GTBGibSuY+Ju5nYeA0MeyJ98urncmLtoQDLQqdhRroNx8eqnZxmVXufW
+4ThcZRzFyJbzZwcfuPiJhJnPSsjFEWqzFu8Qw8gNHUEzFxa/+Cg/VY26MRO3rjy6
+nrz38MPugNazXgsFhI5aspP3yXLhzornLikmcWE7n7MOpdS1ArC9DhWTTa4M2eXO
++Umr9VBgXUKnqeraCefGJJSqbXDg33P+x4EDQFBnEqdQihlSkubIyo1wJ0b8/4H6
+mbDDl0ckMMIRa6UZEHn64PQPKUWkOYWZB6+eYIlfiKOZoFR3PsVEDcJbGrz3GNLD
+ugXBJ7e0nL1/AKYCO61C1ng3+0jLFkvWljMURKdq+VKjIeYpFbSyakQyP3CpH14P
+cuBGiH5z+6uXJRvTYqCs4C/AxfiMDCLBpQC7wUTkCL51ftoKhqZZ3pzzmesIRwCa
+cb/ORy3zvfKzmSItOWgt
+=2N9L
+-----END PGP SIGNATURE-----
+
+--=-itXOSkVKMqSZ0FFzUjuu--
