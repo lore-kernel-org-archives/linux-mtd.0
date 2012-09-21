@@ -1,24 +1,25 @@
-Received: from mail-pa0-f49.google.com ([209.85.220.49])
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TF6NF-0001Eq-3G
- for linux-mtd@lists.infradead.org; Fri, 21 Sep 2012 16:46:42 +0000
-Received: by padbi5 with SMTP id bi5so425231pad.36
- for <linux-mtd@lists.infradead.org>; Fri, 21 Sep 2012 09:46:37 -0700 (PDT)
-Date: Sat, 22 Sep 2012 00:46:26 +0800
+ id 1TF6Tl-0001uh-Eb
+ for linux-mtd@lists.infradead.org; Fri, 21 Sep 2012 16:53:26 +0000
+Received: by pbbrq8 with SMTP id rq8so8308143pbb.36
+ for <linux-mtd@lists.infradead.org>; Fri, 21 Sep 2012 09:53:23 -0700 (PDT)
+Date: Sat, 22 Sep 2012 00:53:08 +0800
 From: Shawn Guo <shawn.guo@linaro.org>
 To: Olof Johansson <olof@lixom.net>
 Subject: Re: [alsa-devel] [PATCH v2 00/34] i.MX multi-platform support
-Message-ID: <20120921164622.GA5394@S2101-09.ap.freescale.net>
+Message-ID: <20120921165305.GB5394@S2101-09.ap.freescale.net>
 References: <1348123547-31082-1-git-send-email-shawn.guo@linaro.org>
  <201209200739.34899.arnd@arndb.de>
  <20120920145342.GI2450@S2101-09.ap.freescale.net>
  <201209201556.57171.arnd@arndb.de>
  <20120921080123.GM2450@S2101-09.ap.freescale.net>
  <CAOesGMi6CbvFikycJVdE8W-DxLD3W7+CyScz+YT103dxR31U9g@mail.gmail.com>
+ <20120921164622.GA5394@S2101-09.ap.freescale.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAOesGMi6CbvFikycJVdE8W-DxLD3W7+CyScz+YT103dxR31U9g@mail.gmail.com>
+In-Reply-To: <20120921164622.GA5394@S2101-09.ap.freescale.net>
 Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
  Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
  linux-fbdev@vger.kernel.org, Wim Van Sebroeck <wim@iguana.be>,
@@ -45,50 +46,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Olof,
-
-On Fri, Sep 21, 2012 at 01:26:43AM -0700, Olof Johansson wrote:
-> I'll take a look at merging it tomorrow after I've dealt with smp_ops;
-> if it looks reasonably conflict-free I'll pull it in. We need the
-> sound dependency sorted out (or agreed upon) first though.
+On Sat, Sep 22, 2012 at 12:46:26AM +0800, Shawn Guo wrote:
+> I just published the branch below with this series rebased on top of
+> the necessary dependant branches.
 > 
-I just published the branch below with this series rebased on top of
-the necessary dependant branches.
+>   git://git.linaro.org/people/shawnguo/linux-2.6.git staging/imx-multiplatform
+> 
+> The dependant branches include:
+> 
 
-  git://git.linaro.org/people/shawnguo/linux-2.6.git staging/imx-multiplatform
+Forgot the base:
 
-The dependant branches include:
-
-* arm-soc/multiplatform/platform-data
-
-* arm-soc/multiplatform/smp_ops
-
-* git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-3.7
-
-  It contains dependant patch "ASoC: mx27vis: retrieve gpio numbers
-  from platform_data"
-
-* git://git.infradead.org/mtd-2.6.git master
-
-  The series is based on this tree to solve some non-trivial conflicts
-  on mxc_nand driver.  Because mtd tree completely missed 3.6 merge
-  window, having the series base on 3.6-rc actually means 3.5 code base
-  in term of mtd support.  There are currently two cycles changes
-  accumulated on mtd, and we need to base the series on it to sort out
-  the conflicts.
-
-* git://linuxtv.org/mchehab/media-next.git master
-
-  The media tree renames mx2/mx3 camera drivers twice.  I'm not sure
-  if git merge can detect them, so I just rebased the series on media
-  tree to solve that.  The bonus point is that a number of trivial
-  conflicts with imx27-coda support on media tree gets solved as well.
-
-I'm not requesting you to pull the branch into arm-soc as a stable
-branch but staging one, because the external dependencies which might
-not be stable.  I attempt to use it for exposing the series on
-linux-next, so that we can send it to Linus for 3.7 if there is chance
-for us to (e.g. all the dependant branches hit mainline early during
-3.7 merge window).
+  * arm-soc/next/multiplatform
 
 Shawn
+
+> * arm-soc/multiplatform/platform-data
+> 
+> * arm-soc/multiplatform/smp_ops
+> 
+> * git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-3.7
+> 
+>   It contains dependant patch "ASoC: mx27vis: retrieve gpio numbers
+>   from platform_data"
+> 
+> * git://git.infradead.org/mtd-2.6.git master
+> 
+>   The series is based on this tree to solve some non-trivial conflicts
+>   on mxc_nand driver.  Because mtd tree completely missed 3.6 merge
+>   window, having the series base on 3.6-rc actually means 3.5 code base
+>   in term of mtd support.  There are currently two cycles changes
+>   accumulated on mtd, and we need to base the series on it to sort out
+>   the conflicts.
+> 
+> * git://linuxtv.org/mchehab/media-next.git master
+> 
+>   The media tree renames mx2/mx3 camera drivers twice.  I'm not sure
+>   if git merge can detect them, so I just rebased the series on media
+>   tree to solve that.  The bonus point is that a number of trivial
+>   conflicts with imx27-coda support on media tree gets solved as well.
+> 
+> I'm not requesting you to pull the branch into arm-soc as a stable
+> branch but staging one, because the external dependencies which might
+> not be stable.  I attempt to use it for exposing the series on
+> linux-next, so that we can send it to Linus for 3.7 if there is chance
+> for us to (e.g. all the dependant branches hit mainline early during
+> 3.7 merge window).
