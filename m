@@ -1,21 +1,30 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from ra.se.axis.com ([195.60.68.13])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TF3V1-0000AT-GJ
- for linux-mtd@lists.infradead.org; Fri, 21 Sep 2012 13:42:32 +0000
-Message-ID: <1348234938.7964.1.camel@sauron.fi.intel.com>
-Subject: Re: Fwd: [PATCH 1/1] drivers/mtd/devices/m25p80.c: Fix whole device
- erase
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: =?ISO-8859-1?Q?C=E9dric?= Cano <ccano@interfaceconcept.com>
-Date: Fri, 21 Sep 2012 16:42:18 +0300
-In-Reply-To: <505C6017.8060607@ic.fr>
-References: <5045BCA9.5040401@ic.fr> <505C6017.8060607@ic.fr>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-jubedpsoj64m7pX+4xEl"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+ id 1TF5Mf-000459-3g
+ for linux-mtd@lists.infradead.org; Fri, 21 Sep 2012 15:42:01 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by ra.se.axis.com (Postfix) with ESMTP id 816E713B01
+ for <linux-mtd@lists.infradead.org>; Fri, 21 Sep 2012 17:41:59 +0200 (CEST)
+Received: from ra.se.axis.com ([127.0.0.1])
+ by localhost (ra.se.axis.com [127.0.0.1]) (amavisd-new, port 10024)
+ with LMTP id Z35Nj6U8tAI8 for <linux-mtd@lists.infradead.org>;
+ Fri, 21 Sep 2012 17:41:58 +0200 (CEST)
+Received: from thoth.se.axis.com (thoth.se.axis.com [10.0.2.173])
+ by ra.se.axis.com (Postfix) with ESMTP id 983A313AF1
+ for <linux-mtd@lists.infradead.org>; Fri, 21 Sep 2012 17:41:58 +0200 (CEST)
+Received: from xmail2.se.axis.com (xmail2.se.axis.com [10.0.5.74])
+ by thoth.se.axis.com (Postfix) with ESMTP id 967D9341A2
+ for <linux-mtd@lists.infradead.org>; Fri, 21 Sep 2012 17:41:58 +0200 (CEST)
+Subject: mkfs.ubifs problem when output file really isn't in the UBIFS root
+ directory
+From: Marcus Prebble <marcus.prebble@axis.com>
+To: <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 21 Sep 2012 17:41:58 +0200
+Message-ID: <1348242118.2552.1460.camel@lnxprebble2.se.axis.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Ricard Wanderlof <ricardw@axis.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,51 +34,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
---=-jubedpsoj64m7pX+4xEl
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+We are working on a project using UBI/UBIFS and I have run into a
+problem with mkfs.ubifs which I am hoping someone can advise on.
+Apologies if I have already missed the answer to this in the archives
+somewhere.
 
-On Fri, 2012-09-21 at 14:39 +0200, C=C3=A9dric Cano wrote:
-> From: C=C3=A9dric Cano<ccano@interfaceconcept.com>
->=20
-> When the whole SPI Flash is erased, the chip erase command is sent to the
-> device without waiting for end of erase. So next read/write accesses are
-> in failure.
+A requirement of the project is to take an image of the root filesystem
+(/) which is implemented as a static UBI read only volume. Obviously its
+not possible to unmount /, but it seems to be possible to re-mount the
+UBI volume, read only, onto another location e.g. /tmp/mnt/new_rootfs.
 
-Can you wait while the chip erase to finish?
+The problem arises when running mkfs.ubifs is that it fails saying that
+the output file cannot be in the UBIFS root directory.
+This sounds like a reasonable constraint if the output file really was
+in the root, but this is not the case for us seeing root is mounted
+somewhere belowtmp. To give a concrete example of the command we are
+running:
 
-> This patch removes chip erase to use only sector per sector erase for
-> whole Flash too. When chip erase is done, Flash can be accessed without
-> error.
+mkfs.ubifs --output=/tmp/rootfs.img  --leb-size=129024
+--root=/tmp/rootfs_mnt --min-io-size=2048 --max-leb-cnt=147 
 
-How much slower is this method?
+Where /dev/ubi0_11 is mounted read-only on both / and /tmp/rootfs_mnt/.
 
---=20
-Best Regards,
-Artem Bityutskiy
+Having a look at the source for mkfs.ubifs it seems that the function
+in_path(..) is the problem - it works up the directory tree using ../
+until it either reaches the top_dir (/) or the inode number/dev match in
+which case it fails. It doesn't seem that this section of code has
+changed in the latest version of mtd-utils (we are running 1.4.3-2) and
+I wonder if this is a bug in in_path(..) or a genuine safeguard against
+screwing something up? I suspect the former for when I disabled this
+check in mkfs.ubifs.c the resulting image was completely OK.
 
---=-jubedpsoj64m7pX+4xEl
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Kind regards,
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQXG66AAoJECmIfjd9wqK0tWcP/370pmzfokVib0v81pz3ttdz
-GWrZu14HiY/uN7q1dGL1VK0UYRpaZQrFw/sFsTvQIzeydiec7MuPJoMtC0UGHxOX
-sZCdCq1uJuVbT3aJzVLqbEFHuH4pK22BrM3feHyP1xMnoDY0tKp1WXB5KjkLRKhw
-SPM3xB0xTEqHg6F1DGeXEiX/nwL0q6PuKUr1vGQfA3tLQJzIh35O6FP/l6RFn3cr
-qfO5Dogr+zBpAEOEtgp8iMivF9sF/X73uQ4iZQAQhdJ9UP+JD5capuAl0zHQL/99
-gMYjZpY/go1iofWlXuQ2AnRX3XnUrgBz2Ff62mxATej/XDAwO3Zd5isiC5kkBIGQ
-0yRco8kwaNj++ymK61IC9v3K8pLiyLLSynUJ7VW+w29K0HGuV1ViBqDLdD8bwKn9
-I0Xpbq33DVMs5ZnUR6koxs16pfRvVv1ptdJI7j1fE0UxFtcdZwxg4FHzSjvvFORw
-vp7cjhgCopBjBF/cH/D66VNAbLJ5I5yF7kdaq2n6lZSzTWBgXRUb1RH6U8Y+D38A
-55cEl+ywPMaue3aemhuVbBKeo12alrgRJsyFKs87lt76nRcnEQHmoVVvmdCIT9ap
-uKbwJyRVOHkM8Ya4jbaPlk1Uhhp7IejeaiuxogK0u4/DxEGwxGh/fctVL+y8zpmM
-J0e2P75QAEkTgnimxNxe
-=VfUx
------END PGP SIGNATURE-----
-
---=-jubedpsoj64m7pX+4xEl--
+Marcus Prebble
+Axis Communications AB
