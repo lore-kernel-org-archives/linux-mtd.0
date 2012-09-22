@@ -1,23 +1,23 @@
 Received: from mail-bk0-f49.google.com ([209.85.214.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TFRAk-0006EP-9P
- for linux-mtd@lists.infradead.org; Sat, 22 Sep 2012 14:59:14 +0000
-Received: by bkcji2 with SMTP id ji2so2132415bkc.36
- for <linux-mtd@lists.infradead.org>; Sat, 22 Sep 2012 07:59:03 -0700 (PDT)
-Message-ID: <1348325931.1894.0.camel@kyv>
-Subject: Re: [PATCH] mtd: gpmi-nand: Improve logging style
+ id 1TFRB3-0006EP-QX
+ for linux-mtd@lists.infradead.org; Sat, 22 Sep 2012 14:59:33 +0000
+Received: by mail-bk0-f49.google.com with SMTP id ji2so2132415bkc.36
+ for <linux-mtd@lists.infradead.org>; Sat, 22 Sep 2012 07:59:29 -0700 (PDT)
+Message-ID: <1348325966.1894.1.camel@kyv>
+Subject: Re: [PATCH 1/2] mtd: gpmi-nand: Convert to platform driver
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Fabio Estevam <festevam@gmail.com>
-Date: Sat, 22 Sep 2012 17:58:51 +0300
-In-Reply-To: <1346851653-28117-1-git-send-email-festevam@gmail.com>
-References: <1346851653-28117-1-git-send-email-festevam@gmail.com>
+Date: Sat, 22 Sep 2012 17:59:26 +0300
+In-Reply-To: <1346855725-31726-1-git-send-email-festevam@gmail.com>
+References: <1346855725-31726-1-git-send-email-festevam@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-RAIB59UOa3E8UCoBfOPf"
+ boundary="=-bl7cO22OTilkka65M0jh"
 Mime-Version: 1.0
-Cc: marex@denx.de, artem.bityutskiy@linux.intel.com,
- linux-mtd@lists.infradead.org, Fabio Estevam <fabio.estevam@freescale.com>,
- b32955@freescale.com
+Cc: marex@denx.de, Fabio Estevam <fabio.estevam@freescale.com>,
+ artem.bityutskiy@linux.intel.com, b32955@freescale.com,
+ linux-mtd@lists.infradead.org, kernel@pengutronix.de
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,24 +29,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-RAIB59UOa3E8UCoBfOPf
+--=-bl7cO22OTilkka65M0jh
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-09-05 at 10:27 -0300, Fabio Estevam wrote:
+On Wed, 2012-09-05 at 11:35 -0300, Fabio Estevam wrote:
 > From: Fabio Estevam <fabio.estevam@freescale.com>
 >=20
-> Improve logging style by prefixing the pr_ messages with "gpmi_nand".
+> Using module_platform_driver() makes the code smaller and cleaner.
 >=20
 > Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 
-Pushed to l2-mtd.git, thanks!
+Pushed both to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-RAIB59UOa3E8UCoBfOPf
+--=-bl7cO22OTilkka65M0jh
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -54,19 +54,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQXdIsAAoJECmIfjd9wqK0BIQP/2jkygwNNTwublhrwJxlTSHN
-Vjd7wK+4wr1UHvWliYZrITHIdFAJKaxkSG8+WDGy3qZKTuIFRRXPJXLz8AgE/fPc
-abrIX0q/I/fK6+gW/23icSARtqXNSm2GHizX8ET/yVQnQ/OtbB5v2z7zYxhxqvYz
-daH2bfl/9JNP/mnhFNnPV/7mfrBnBBytloEqTHl4IPnvV7SAD59WyPp/U0OdNl7n
-shc8YzJ8EoUULa8seyVi2rSW938fuH/9GAgbFZW8b6kgGR2aPPNqh0sW+xNaRRpb
-Wykhhn59Mqcq9gzN2FcRC+x1CnrQwzjLrsEoN09iLS7ADtGlso+1GSnJ0lFVOIFk
-KuCivqfOMPRlVZEBFmXDdQWnHF3vP1eXaSRK70Eb5q/utDTpIkbqwWHCI0DpoEOp
-joRUYCVZeYN8Dr34cFaZBu6V5wLUHOLUdt+G+le6Jkove5JEsQ2XM/AyCwM7Fs8u
-nA3/MuokugHGi3vKu0Fb6amVowkYhlWKckdoqYTMBPFefal/kMScxcaCQtEN0I/X
-HC1B08c521ivcuuJPp7u7w3a12kX3BqAtVcY7TCVRc0NpdiJZ5sf/z98rXz98ztN
-RKX5XHOu/WBQdxT9mAmo62PJgDf+M8nmfz2OYNdXqbkqgEam68IYQx/KoVBpco9H
-OCVyDXTxU23y0cbMPMnj
-=q5NN
+iQIcBAABAgAGBQJQXdJOAAoJECmIfjd9wqK0Pw0P/iBhbsrafjIDMgkE9xyndtjW
+WNRXCpubz+1wOGsCjZqok7IeN3VUvaXABxaVi1qq6k2HZyAAPLNFUfGCJT2iZQYh
+3VkfTJZAVN7E+AEtoIib6KD0C1CGZMkMT/aZIOGXkA2X/QZIi7bjLIJHnfPToWjN
+9hjsYWb53qCY2I/F+EgJdLktb6ZzUeYRK2zQS3lmnGVEUL8ciRjQAOy9MBuaBr1W
+DvAo1xtwl0E9GlwvUujQd1r4sxvd1qhM3yJWZKQH3z1/zsg72AMerGUlZP1jI0su
+/u+7aj7JT3mJEC4vu9M0toylv00CENAepdNhwCf5QbLql4kzmmbLb9vHc2aUfN2X
+bEtb+V2fOb65hwfvytNKcnlXm/H/PtotJDB1qR0qaqLMRHy6HjeFQxbna2Abnyx2
+us80D8bWzBvDx55pIKul2d+L55jVs0zN6LN3Y7YA7l/wuwS3+FCNYoE9fjiGaCXD
+kUKYmcro6YvN9nB73jfQuHBx1vwVeeL1HKRmigGk8GirOx4sBxJ6ETf8xlP2oEq/
+z1CQ6GSkpqKMVAZ0nGZH4R8qS7Qh+mGs1d6zE0ORPUgeBq+7HZH02D9MzXp+DXpg
+BLHShVEPv2EzbNxqRr7BN3/JOoSAI/9cgucjZwAjTAr1+a9A61MOdB1vreaqc51b
+83ByRJbAQeHC2sqFfNWw
+=iWnm
 -----END PGP SIGNATURE-----
 
---=-RAIB59UOa3E8UCoBfOPf--
+--=-bl7cO22OTilkka65M0jh--
