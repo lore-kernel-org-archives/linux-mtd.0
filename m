@@ -1,22 +1,16 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
+Received: from mail-we0-f177.google.com ([74.125.82.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TFjl0-0004vz-Sw
- for linux-mtd@lists.infradead.org; Sun, 23 Sep 2012 10:49:51 +0000
-Received: by lbbgf7 with SMTP id gf7so5511326lbb.36
- for <linux-mtd@lists.infradead.org>; Sun, 23 Sep 2012 03:49:44 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1345454375.2848.21.camel@sauron.fi.intel.com>
-References: <1341410726-10562-1-git-send-email-hechtb@gmail.com>
- <CABYn4syMFh4smteHS-zCAy3ygKsyxoD2+FfaBeQxKvK_FA+5mA@mail.gmail.com>
- <1345454375.2848.21.camel@sauron.fi.intel.com>
-Date: Sun, 23 Sep 2012 12:49:43 +0200
-Message-ID: <CABYn4syVz46ChwYkhP=5TMb4N+Q0sTnuMu+C_d4LPuxrQ=WM-g@mail.gmail.com>
-Subject: Re: [PATCH] mtd: sh_flctl: Switch from tick-based to time-based
- timeout
+ id 1TFksN-0005L2-Of
+ for linux-mtd@lists.infradead.org; Sun, 23 Sep 2012 12:01:32 +0000
+Received: by weyr3 with SMTP id r3so2934668wey.36
+ for <linux-mtd@lists.infradead.org>; Sun, 23 Sep 2012 05:01:28 -0700 (PDT)
 From: Bastian Hecht <hechtb@googlemail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 1/2] mtd: sh_flctl: Setup and release DMA channels
+Date: Sun, 23 Sep 2012 14:01:22 +0200
+Message-Id: <1348401683-15698-1-git-send-email-hechtb@gmail.com>
+Cc: Magnus Damm <magnus.damm@gmail.com>,
+ Guennadi Liakhovetski <g.liakhovetski@gmx.de>, linux-sh@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,28 +20,163 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
+The code probes if DMA channels can get allocated and tears them down at
+removal/failure if needed.
 
-commit 19f5f7364a1cc770b14692f609bb9b802fc334d5
-is still in l2-mtd. Please drop it, so it doesn't get merged and I can
-base my new patches on the clean code.
+Based on Guennadi Liakhovetski's code from the sh_mmcif driver.
 
-Thanks!
+Signed-off-by: Bastian Hecht <hechtb@gmail.com>
+---
+Based on l2-mtd with reverted commit e26c113b4130aefa1d8446602bb5b05cfd646bfe.
 
-Bastian
+ drivers/mtd/nand/sh_flctl.c  |   74 ++++++++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/sh_flctl.h |   10 ++++++
+ 2 files changed, 84 insertions(+), 0 deletions(-)
 
-
-2012/8/20 Artem Bityutskiy <dedekind1@gmail.com>:
-> On Wed, 2012-07-25 at 17:21 +0200, Bastian Hecht wrote:
->> Hello Artem!
->>
->> Could you please pull out this patch of your tree? While reworking the
->> driver for IRQ-driven use, I've realized that this conversion makes no
->> sense as all loops use a udelay(1) in them. So the timeout is already
->> time based.
->
-> Dropped, thanks!
->
-> --
-> Best Regards,
-> Artem Bityutskiy
+diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
+index 4fbfe96..2cf6871 100644
+--- a/drivers/mtd/nand/sh_flctl.c
++++ b/drivers/mtd/nand/sh_flctl.c
+@@ -856,6 +856,76 @@ static irqreturn_t flctl_handle_flste(int irq, void *dev_id)
+ 	return IRQ_HANDLED;
+ }
+ 
++void flctl_setup_dma(struct sh_flctl *flctl)
++{
++	dma_cap_mask_t mask;
++	struct dma_slave_config cfg;
++	struct platform_device *pdev = flctl->pdev;
++	struct sh_flctl_platform_data *pdata = pdev->dev.platform_data;
++	int ret;
++
++	if (!pdata)
++		return;
++
++	if (pdata->slave_id_fifo0_tx <= 0 || pdata->slave_id_fifo0_rx <= 0)
++		return;
++
++	/* We can only either use DMA for both Tx and Rx or not use it at all */
++	dma_cap_zero(mask);
++	dma_cap_set(DMA_SLAVE, mask);
++
++	flctl->chan_fifo0_tx = dma_request_channel(mask, shdma_chan_filter,
++					    (void *)pdata->slave_id_fifo0_tx);
++	dev_dbg(&pdev->dev, "%s: TX: got channel %p\n", __func__,
++		flctl->chan_fifo0_tx);
++
++	if (!flctl->chan_fifo0_tx)
++		return;
++
++	cfg.slave_id = pdata->slave_id_fifo0_tx;
++	cfg.direction = DMA_MEM_TO_DEV;
++	cfg.dst_addr = (dma_addr_t)FLDTFIFO(flctl);
++	cfg.src_addr = 0;
++	ret = dmaengine_slave_config(flctl->chan_fifo0_tx, &cfg);
++	if (ret < 0)
++		goto err;
++
++	flctl->chan_fifo0_rx = dma_request_channel(mask, shdma_chan_filter,
++					    (void *)pdata->slave_id_fifo0_rx);
++	dev_dbg(&pdev->dev, "%s: RX: got channel %p\n", __func__,
++		flctl->chan_fifo0_rx);
++
++	if (!flctl->chan_fifo0_rx)
++		goto err;
++
++	cfg.slave_id = pdata->slave_id_fifo0_rx;
++	cfg.direction = DMA_DEV_TO_MEM;
++	cfg.dst_addr = 0;
++	cfg.src_addr = (dma_addr_t)FLDTFIFO(flctl);
++	ret = dmaengine_slave_config(flctl->chan_fifo0_rx, &cfg);
++	if (ret < 0)
++		goto err;
++
++	init_completion(&flctl->dma_complete);
++
++	return;
++
++err:
++	flctl_release_dma(flctl);
++}
++
++static void flctl_release_dma(struct sh_flctl *flctl)
++{
++	if (flctl->chan_fifo0_rx) {
++		dma_release_channel(flctl->chan_fifo0_rx);
++		flctl->chan_fifo0_rx = NULL;
++	}
++	if (flctl->chan_fifo0_tx) {
++		dma_release_channel(flctl->chan_fifo0_tx);
++		flctl->chan_fifo0_tx = NULL;
++	}
++}
++
+ static int __devinit flctl_probe(struct platform_device *pdev)
+ {
+ 	struct resource *res;
+@@ -930,6 +1000,8 @@ static int __devinit flctl_probe(struct platform_device *pdev)
+ 	pm_runtime_enable(&pdev->dev);
+ 	pm_runtime_resume(&pdev->dev);
+ 
++	flctl_setup_dma(flctl);
++
+ 	ret = nand_scan_ident(flctl_mtd, 1, NULL);
+ 	if (ret)
+ 		goto err_chip;
+@@ -947,6 +1019,7 @@ static int __devinit flctl_probe(struct platform_device *pdev)
+ 	return 0;
+ 
+ err_chip:
++	flctl_release_dma(flctl);
+ 	pm_runtime_disable(&pdev->dev);
+ 	free_irq(irq, flctl);
+ err_flste:
+@@ -960,6 +1033,7 @@ static int __devexit flctl_remove(struct platform_device *pdev)
+ {
+ 	struct sh_flctl *flctl = platform_get_drvdata(pdev);
+ 
++	flctl_release_dma(flctl);
+ 	nand_release(&flctl->mtd);
+ 	pm_runtime_disable(&pdev->dev);
+ 	free_irq(platform_get_irq(pdev, 0), flctl);
+diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
+index 01e4b15..20d3f48 100644
+--- a/include/linux/mtd/sh_flctl.h
++++ b/include/linux/mtd/sh_flctl.h
+@@ -20,10 +20,12 @@
+ #ifndef __SH_FLCTL_H__
+ #define __SH_FLCTL_H__
+ 
++#include <linux/dmaengine.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/nand.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/pm_qos.h>
++#include <linux/sh_dma.h>
+ 
+ /* FLCTL registers */
+ #define FLCMNCR(f)		(f->reg + 0x0)
+@@ -161,6 +163,11 @@ struct sh_flctl {
+ 	unsigned hwecc:1;	/* Hardware ECC (0 = disabled, 1 = enabled) */
+ 	unsigned holden:1;	/* Hardware has FLHOLDCR and HOLDEN is set */
+ 	unsigned qos_request:1;	/* QoS request to prevent deep power shutdown */
++
++	/* DMA related objects */
++	struct dma_chan		*chan_fifo0_rx;
++	struct dma_chan		*chan_fifo0_tx;
++	struct completion	dma_complete;
+ };
+ 
+ struct sh_flctl_platform_data {
+@@ -170,6 +177,9 @@ struct sh_flctl_platform_data {
+ 
+ 	unsigned has_hwecc:1;
+ 	unsigned use_holden:1;
++
++	unsigned int            slave_id_fifo0_tx;
++	unsigned int            slave_id_fifo0_rx;
+ };
+ 
+ static inline struct sh_flctl *mtd_to_flctl(struct mtd_info *mtdinfo)
+-- 
+1.7.5.4
