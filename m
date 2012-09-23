@@ -1,22 +1,24 @@
-Received: from mail-bk0-f49.google.com ([209.85.214.49])
+Received: from mail-wi0-f177.google.com ([209.85.212.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TFo3r-0002ZT-SQ
- for linux-mtd@lists.infradead.org; Sun, 23 Sep 2012 15:25:36 +0000
-Received: by bkwj4 with SMTP id j4so180006bkw.36
- for <linux-mtd@lists.infradead.org>; Sun, 23 Sep 2012 08:25:32 -0700 (PDT)
-Message-ID: <1348413915.12104.0.camel@kyv>
-Subject: Re: [PATCH -next v4 0/5] mtd: mtd_nandecctest: add more tests
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Akinobu Mita <akinobu.mita@gmail.com>
-Date: Sun, 23 Sep 2012 18:25:15 +0300
-In-Reply-To: <1347036490-18258-1-git-send-email-akinobu.mita@gmail.com>
-References: <1347036490-18258-1-git-send-email-akinobu.mita@gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-6D0diZKgU4+kbhLWwYKi"
-Mime-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+ id 1TFoQ2-0002xt-Rw
+ for linux-mtd@lists.infradead.org; Sun, 23 Sep 2012 15:48:31 +0000
+Received: by wibhn17 with SMTP id hn17so2808631wib.0
+ for <linux-mtd@lists.infradead.org>; Sun, 23 Sep 2012 08:48:28 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <CAP+RiCAzOKvV00F8zppPxrL1CHKqR6eU2g08F+s_wm2R6jJ7Cg@mail.gmail.com>
+References: <CAP+RiCC1afVbKAZESMcZGd1G3+7aKuLTQGggOEFGZxQM6o+QQA@mail.gmail.com>
+ <1346413469.9709.44.camel@sauron.fi.intel.com>
+ <CAP+RiCBRopbShAGf_fWCvK2R=uPPR1j4Pz12JfJxdEMUjwofNw@mail.gmail.com>
+ <CAP+RiCAzOKvV00F8zppPxrL1CHKqR6eU2g08F+s_wm2R6jJ7Cg@mail.gmail.com>
+Date: Sun, 23 Sep 2012 10:48:28 -0500
+Message-ID: <CAP+RiCDHZYMZPFYmE6YfkLoA1gH=z8cTSRZ+9iQqQ=ei1xXFYg@mail.gmail.com>
+Subject: Re: UBIFS Recovery Issue: 'grab_empty_leb: could not find an empty
+ LEB'
+From: Brent Taylor <motobud@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,43 +28,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, Sep 17, 2012 at 8:34 AM, Brent Taylor <motobud@gmail.com> wrote:
+> On Fri, Aug 31, 2012 at 8:23 AM, Brent Taylor <motobud@gmail.com> wrote:
+>>
+>> I'm currently running the test again, and will know the results on wed, =
+sept 5.  If I do see a failure, I can send you an image, the problem is tha=
+t the image will be either 256MB, 1GB, or 15GB depending on which partition=
+ fails.  Will either of the larger sizes be an issue for you?  What would b=
+e the best way to get the image to you?
+>>
+>> Thanks for your time.
+>> Bud
+>>
+>> On Aug 31, 2012 7:39 AM, "Artem Bityutskiy" <dedekind1@gmail.com> wrote:
+>>>
+>>> On Mon, 2012-07-16 at 13:22 -0500, Brent Taylor wrote:
+>>> > I'm developing on custom hardware using an at91sam9g45 processor with
+>>> > 64 MB of RAM and 64 MB of NOR flash running Linux 3.0.13.
+>>> >
+>>> > I'm doing some power-cycle testing and after several hours, UBIFS
+>>> > failed to mount the root partition and printed the message
+>>> > "grab_empty_leb: could not find an empty LEB".  The system boots and
+>>> > starts a script that will power cycle the board anytime between 10 an=
+d
+>>> > 20 seconds after the script has started.  Just before a power cycle
+>>> > occurs, syslog and our main process are the only processes that could
+>>> > be writing to disk.
+>>> >
+>>> I was trying to do power cut emulation testing with mtdram, and I see
+>>> there are some issues which do not seem to exist on NAND. But they are
+>>> different to yours. I remember I saw these -ENOSPC issues in the past,
+>>> but they were very difficult to reproduce.
+>>>
+>>> I will try to investigate why power-cut emulation testing fails on
+>>> mtdram, but I have limited amount of time and I do not know when I'll b=
+e
+>>> able to do this.
+>>>
+>>> --
+>>> Best Regards,
+>>> Artem Bityutskiy
+>
+>
+> Artem,
+>    I was finally able to capture the issue again with linux version
+> 3.5.1, and I now have a 64MB mtd image for you to look at.  The issue
+> occurred in the root filesystem this time.  Let me know what's the
+> best way to get this image to you.  The image was retrieved from a NOR
+> flash chip instead of a NAND flash chip, but I've seen the error on
+> both which leads me to believe it's not a flash driver issue and it's
+> something in the UBIFS subsystem.  If there is more data you need from
+> me to help track this down, just let me know.
+>
+> Thanks for your time,
+> Bud
 
---=-6D0diZKgU4+kbhLWwYKi
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Sat, 2012-09-08 at 01:48 +0900, Akinobu Mita wrote:
-> This patch series adds several tests cases to mtd_nandecctest module
-> and tries to cover possible patterns of corruption which can be reliably
-> corrected or detected.
-
-Pushed all to l2-mtd.git, thanks!
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-6D0diZKgU4+kbhLWwYKi
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQXynbAAoJECmIfjd9wqK03ZIQAJ0DZVABvVQ2SjXvSEAg+R1B
-+dEJ/Mga37qIrCe2YP4Ckg1AenhPnh1lIzK4MoJ9IVCDM5dp6KzXQrJokom72WTQ
-g4W+oqgS7leE1yP9ZkeVdufaAKL+Us0QbMTmILps0w4Vdsqn+8aONmb5fELiIqP0
-gRObxz3ZK/kr2xE2ersvVeUwlKkmpJhp/S1WnBDF4duwrcSiYDQCXUmB3d9mBGzk
-O+XY8QXlcP6Wh/GTZ7P9Wy14QggzbV8gxNA2XVcMLBd3uMoCoTxpW/epDa/KVylW
-pEui7DNRdIHhFmIIU8v3DEWbtie76LOqIBcdtfMXvQNO693EI8Rz7bVFLySA6piR
-KBylA5UQY7fN3AMHLoHNFNoIWEzaURQnBvT7KFR4h3nI9hkAWad60tKgdmflxuKI
-AEI3LHb/mii63iJO5clUP0LJFG+gst+ChJB2ZTxEc8Suh8YNiOeKdifYH/kJt4BG
-nfzpgfkHCc/dQ+HFYvahh4gR5o5eUSrhtzGNOq3ku2xKstGCz2ma7r74hKE+wqEa
-uqs9w74hmAIKoMrmDJaqw/MO1CQlhyqWwgEwkrg8/MHVCSXELnk/+4G5sy0xCE2z
-iGmN8OIrFKb0Cl8y57fZ3G9ww+PDlVQPXBp7IKpFU1BC39hPotC2k2w9DOEn5ADK
-UKQERy/8yvaP0GgKnnnx
-=tpiP
------END PGP SIGNATURE-----
-
---=-6D0diZKgU4+kbhLWwYKi--
+Ping,  I just didn't want to get lost in the e-mail shuffle.
