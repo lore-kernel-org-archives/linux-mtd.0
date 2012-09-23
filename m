@@ -1,27 +1,16 @@
-Received: from mail-bk0-f49.google.com ([209.85.214.49])
+Received: from mail-gg0-f177.google.com ([209.85.161.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TFoeR-0003I9-1B
- for linux-mtd@lists.infradead.org; Sun, 23 Sep 2012 16:03:23 +0000
-Received: by bkwj4 with SMTP id j4so188872bkw.36
- for <linux-mtd@lists.infradead.org>; Sun, 23 Sep 2012 09:03:21 -0700 (PDT)
-Message-ID: <1348416187.12914.0.camel@kyv>
-Subject: Re: UBIFS Recovery Issue: 'grab_empty_leb: could not find an empty
- LEB'
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brent Taylor <motobud@gmail.com>
-Date: Sun, 23 Sep 2012 19:03:07 +0300
-In-Reply-To: <CAP+RiCDHZYMZPFYmE6YfkLoA1gH=z8cTSRZ+9iQqQ=ei1xXFYg@mail.gmail.com>
-References: <CAP+RiCC1afVbKAZESMcZGd1G3+7aKuLTQGggOEFGZxQM6o+QQA@mail.gmail.com>
- <1346413469.9709.44.camel@sauron.fi.intel.com>
- <CAP+RiCBRopbShAGf_fWCvK2R=uPPR1j4Pz12JfJxdEMUjwofNw@mail.gmail.com>
- <CAP+RiCAzOKvV00F8zppPxrL1CHKqR6eU2g08F+s_wm2R6jJ7Cg@mail.gmail.com>
- <CAP+RiCDHZYMZPFYmE6YfkLoA1gH=z8cTSRZ+9iQqQ=ei1xXFYg@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-TGeRbOKzrA81NzmdB4GF"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+ id 1TFqxT-0006rI-6T
+ for linux-mtd@lists.infradead.org; Sun, 23 Sep 2012 18:31:11 +0000
+Received: by ggnm2 with SMTP id m2so1432146ggn.36
+ for <linux-mtd@lists.infradead.org>; Sun, 23 Sep 2012 11:31:10 -0700 (PDT)
+From: Fabio Estevam <festevam@gmail.com>
+To: artem.bityutskiy@linux.intel.com
+Subject: [PATCH] nand: gpmi-nand: Fix clock registration
+Date: Sun, 23 Sep 2012 15:31:02 -0300
+Message-Id: <1348425062-17427-1-git-send-email-festevam@gmail.com>
+Cc: marex@denx.de, b32955@freescale.com, shawn.guo@linaro.org,
+ linux-mtd@lists.infradead.org, Fabio Estevam <fabio.estevam@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,43 +20,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
---=-TGeRbOKzrA81NzmdB4GF
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On a mx28 board the following error happens since commit 638064e56c 
+(mtd: gpmi: change the code for clocks):
 
-On Sun, 2012-09-23 at 10:48 -0500, Brent Taylor wrote:
->=20
-> Ping,  I just didn't want to get lost in the e-mail shuffle.
+gpmi-nand: probe of 8000c000.gpmi-nand failed with error -12
 
-I simply do not have enough time. But at some point I should come to
-this.
->=20
---=20
-Best Regards,
-Artem Bityutskiy
+Acquire the clock using "NULL" as it was done previously, so that the driver
+can register on mx23/mx28 as well.
 
---=-TGeRbOKzrA81NzmdB4GF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQXzK7AAoJECmIfjd9wqK0z/MQAMGExbocP/dljoyLzFoaNPF5
-KehCYmy/1zyy5/2rapvwKErpvv2+FM23GlviG5BXoADAMIvcV5z84zeriXRDCdTS
-J3j/+0LjNoRQjFzPeT3oxhbtcy50N29VnoaqXYCsxv0M7FQfbwYKmzLK/dLEB7rK
-bdK0X2BYdv0X197T44s8qELpXy7t2o2qd9r4QqE3IGe3TjL8YDR6BKHVH3xFWcor
-Fw+vabVThRluxfZ5XTnPIkXGosrLex8JgifAYlA5VgwRq7MFYF7Iqzw84gYYiZGy
-hOAoXbpj24w5dPoOe+5MPZ2GBoKnHKklamL9PtNIqFBLqBhAidKhlCgCkQgYTVEa
-NH0I60VYpeeC8hnaaSF7ndGaKoI9DOQeSefYE1SbDysBJJM2MNzg3jE7yhMoUnPH
-kry4AoqwXupZ+yBIZLJ0PMO0WDn9gtdZQ4SicHH5ONzYKTkW1qqgcmpjb0RRXQEM
-DZCih6YDlmMNoL5b7GS+g3D1fH/EJNwxI5beW5NMI1GL8hOSDVmpbiSK4KfcqUAH
-Hm3g75lteMogBDfFC0DawjCkDUCdk4upq7pkFB/0OfK5HBSZLQcHil9GWaRNfq39
-oy6VtBfdi2hlAvZZGDAxDlJgJZ5Ein4UWfTqO826JWw2vtvgxtJgYkTNcWBUCQ+O
-Zxk6Zt6AfPX+cab0FUl1
-=ynpX
------END PGP SIGNATURE-----
-
---=-TGeRbOKzrA81NzmdB4GF--
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index c46be6c..1f23cb4 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -492,7 +492,7 @@ static int __devinit gpmi_get_clks(struct gpmi_nand_data *this)
+ 	int i;
+ 
+ 	/* The main clock is stored in the first. */
+-	r->clock[0] = clk_get(this->dev, "gpmi_io");
++	r->clock[0] = clk_get(this->dev, NULL);
+ 	if (IS_ERR(r->clock[0]))
+ 		goto err_clock;
+ 
+-- 
+1.7.9.5
