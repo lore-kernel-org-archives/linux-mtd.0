@@ -1,23 +1,18 @@
-Received: from mail-wg0-f41.google.com ([74.125.82.41])
+Received: from mail-we0-f177.google.com ([74.125.82.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TFUr2-0001Kd-DK
- for linux-mtd@lists.infradead.org; Sat, 22 Sep 2012 18:55:05 +0000
-Received: by wgbds1 with SMTP id ds1so1736641wgb.0
- for <linux-mtd@lists.infradead.org>; Sat, 22 Sep 2012 11:55:00 -0700 (PDT)
-Date: Sat, 22 Sep 2012 21:54:47 +0300
+ id 1TFgzV-0003sK-7V
+ for linux-mtd@lists.infradead.org; Sun, 23 Sep 2012 07:52:38 +0000
+Received: by weyr3 with SMTP id r3so2857646wey.36
+ for <linux-mtd@lists.infradead.org>; Sun, 23 Sep 2012 00:52:33 -0700 (PDT)
+Date: Sun, 23 Sep 2012 09:52:29 +0200
 From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH] mtd: nand: Rename create_bbt()'s 'len' variable to
- 'numpages'
-Message-ID: <20120922215447.331f6480@halley>
-In-Reply-To: <20120820162915.7f93e6c4@pixies.home.jungo.com>
-References: <20120820162915.7f93e6c4@pixies.home.jungo.com>
+To: <dedekind1@gmail.com>, <linux-mtd@lists.infradead.org>
+Subject: [PATCH v2] mtd: cmdlinepart: Simplify parse_cmdline_partitions
+Message-ID: <20120923095229.5d0c6806@pixies.home.jungo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Cc: Huang Shijie <shijie8@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,106 +22,116 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ping.
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 
-On Mon, 20 Aug 2012 16:29:15 +0300 Shmulik Ladkani <shmulik.ladkani@gmail.com> wrote:
-> Rename 'len' variable of create_bbt/scan_block_fast/scan_block_full to
-> 'numpages', since it really means number of pages to scan when
-> searching for the BBM (and not the byte length of the scan).
-> 
-> Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-> ---
-> diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-> index 9a5402e..24b0a4c 100644
-> --- a/drivers/mtd/nand/nand_bbt.c
-> +++ b/drivers/mtd/nand/nand_bbt.c
-> @@ -401,7 +401,7 @@ static void read_abs_bbts(struct mtd_info *mtd, uint8_t *buf,
->  /* Scan a given block full */
->  static int scan_block_full(struct mtd_info *mtd, struct nand_bbt_descr *bd,
->  			   loff_t offs, uint8_t *buf, size_t readlen,
-> -			   int scanlen, int len)
-> +			   int scanlen, int numpages)
->  {
->  	int ret, j;
->  
-> @@ -410,7 +410,7 @@ static int scan_block_full(struct mtd_info *mtd, struct nand_bbt_descr *bd,
->  	if (ret && !mtd_is_bitflip_or_eccerr(ret))
->  		return ret;
->  
-> -	for (j = 0; j < len; j++, buf += scanlen) {
-> +	for (j = 0; j < numpages; j++, buf += scanlen) {
->  		if (check_pattern(buf, scanlen, mtd->writesize, bd))
->  			return 1;
->  	}
-> @@ -419,7 +419,7 @@ static int scan_block_full(struct mtd_info *mtd, struct nand_bbt_descr *bd,
->  
->  /* Scan a given block partially */
->  static int scan_block_fast(struct mtd_info *mtd, struct nand_bbt_descr *bd,
-> -			   loff_t offs, uint8_t *buf, int len)
-> +			   loff_t offs, uint8_t *buf, int numpages)
->  {
->  	struct mtd_oob_ops ops;
->  	int j, ret;
-> @@ -430,7 +430,7 @@ static int scan_block_fast(struct mtd_info *mtd, struct nand_bbt_descr *bd,
->  	ops.datbuf = NULL;
->  	ops.mode = MTD_OPS_PLACE_OOB;
->  
-> -	for (j = 0; j < len; j++) {
-> +	for (j = 0; j < numpages; j++) {
->  		/*
->  		 * Read the full oob until read_oob is fixed to handle single
->  		 * byte reads for 16 bit buswidth.
-> @@ -463,7 +463,7 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
->  	struct nand_bbt_descr *bd, int chip)
->  {
->  	struct nand_chip *this = mtd->priv;
-> -	int i, numblocks, len, scanlen;
-> +	int i, numblocks, numpages, scanlen;
->  	int startblock;
->  	loff_t from;
->  	size_t readlen;
-> @@ -471,11 +471,11 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
->  	pr_info("Scanning device for bad blocks\n");
->  
->  	if (bd->options & NAND_BBT_SCANALLPAGES)
-> -		len = 1 << (this->bbt_erase_shift - this->page_shift);
-> +		numpages = 1 << (this->bbt_erase_shift - this->page_shift);
->  	else if (bd->options & NAND_BBT_SCAN2NDPAGE)
-> -		len = 2;
-> +		numpages = 2;
->  	else
-> -		len = 1;
-> +		numpages = 1;
->  
->  	if (!(bd->options & NAND_BBT_SCANEMPTY)) {
->  		/* We need only read few bytes from the OOB area */
-> @@ -484,7 +484,7 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
->  	} else {
->  		/* Full page content should be read */
->  		scanlen = mtd->writesize + mtd->oobsize;
-> -		readlen = len * mtd->writesize;
-> +		readlen = numpages * mtd->writesize;
->  	}
->  
->  	if (chip == -1) {
-> @@ -508,7 +508,7 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
->  	}
->  
->  	if (this->bbt_options & NAND_BBT_SCANLASTPAGE)
-> -		from += mtd->erasesize - (mtd->writesize * len);
-> +		from += mtd->erasesize - (mtd->writesize * numpages);
->  
->  	for (i = startblock; i < numblocks;) {
->  		int ret;
-> @@ -517,9 +517,9 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
->  
->  		if (bd->options & NAND_BBT_SCANALLPAGES)
->  			ret = scan_block_full(mtd, bd, from, buf, readlen,
-> -					      scanlen, len);
-> +					      scanlen, numpages);
->  		else
-> -			ret = scan_block_fast(mtd, bd, from, buf, len);
-> +			ret = scan_block_fast(mtd, bd, from, buf, numpages);
->  
->  		if (ret < 0)
->  			return ret;
+Simply 'parse_cmdline_partitions': the outer loop iterating over
+'partitions' is actually a search loop, it does not execute the inner
+loop for each partition, only for the matched partition.
+
+Let's break when search is successful, and move all inner code (relevant
+only for the matched partition) outside of the outer loop.
+
+Resulting code is much more readable, and makes the indent level sane.
+
+Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+---
+- coding fix only, semantics shouldn't change
+- changes since v1:
+  - applies to l2-mtd head
+  - whitespace fixups
+
+diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
+index aed1b8a..4baab3b 100644
+--- a/drivers/mtd/cmdlinepart.c
++++ b/drivers/mtd/cmdlinepart.c
+@@ -308,48 +308,52 @@ static int parse_cmdline_partitions(struct mtd_info *master,
+ 			return err;
+ 	}
+ 
++	/*
++	 * Search for the partition definition matching master->name.
++	 * If master->name is not set, stop at first partition definition.
++	 */
+ 	for (part = partitions; part; part = part->next) {
+-		if ((!mtd_id) || (!strcmp(part->mtd_id, mtd_id))) {
+-			for (i = 0, offset = 0; i < part->num_parts; i++) {
+-				if (part->parts[i].offset == OFFSET_CONTINUOUS)
+-					part->parts[i].offset = offset;
+-				else
+-					offset = part->parts[i].offset;
+-
+-				if (part->parts[i].size == SIZE_REMAINING)
+-					part->parts[i].size = master->size - offset;
+-
+-				if (part->parts[i].size == 0) {
+-					printk(KERN_WARNING ERRP
+-					       "%s: skipping zero sized partition\n",
+-					       part->mtd_id);
+-					part->num_parts--;
+-					memmove(&part->parts[i],
+-						&part->parts[i + 1],
+-						sizeof(*part->parts) * (part->num_parts - i));
+-					continue;
+-				}
+-
+-				if (offset + part->parts[i].size > master->size) {
+-					printk(KERN_WARNING ERRP
+-					       "%s: partitioning exceeds flash size, truncating\n",
+-					       part->mtd_id);
+-					part->parts[i].size = master->size - offset;
+-				}
+-				offset += part->parts[i].size;
+-			}
+-
+-			*pparts = kmemdup(part->parts,
+-					sizeof(*part->parts) * part->num_parts,
+-					GFP_KERNEL);
+-			if (!*pparts)
+-				return -ENOMEM;
+-
+-			return part->num_parts;
++		if ((!mtd_id) || (!strcmp(part->mtd_id, mtd_id)))
++			break;
++	}
++
++	if (!part)
++		return 0;
++
++	for (i = 0, offset = 0; i < part->num_parts; i++) {
++		if (part->parts[i].offset == OFFSET_CONTINUOUS)
++			part->parts[i].offset = offset;
++		else
++			offset = part->parts[i].offset;
++
++		if (part->parts[i].size == SIZE_REMAINING)
++			part->parts[i].size = master->size - offset;
++
++		if (part->parts[i].size == 0) {
++			printk(KERN_WARNING ERRP
++			       "%s: skipping zero sized partition\n",
++			       part->mtd_id);
++			part->num_parts--;
++			memmove(&part->parts[i], &part->parts[i + 1],
++				sizeof(*part->parts) * (part->num_parts - i));
++			continue;
+ 		}
++
++		if (offset + part->parts[i].size > master->size) {
++			printk(KERN_WARNING ERRP
++			       "%s: partitioning exceeds flash size, truncating\n",
++			       part->mtd_id);
++			part->parts[i].size = master->size - offset;
++		}
++		offset += part->parts[i].size;
+ 	}
+ 
+-	return 0;
++	*pparts = kmemdup(part->parts, sizeof(*part->parts) * part->num_parts,
++			  GFP_KERNEL);
++	if (!*pparts)
++		return -ENOMEM;
++
++	return part->num_parts;
+ }
+ 
+ 
