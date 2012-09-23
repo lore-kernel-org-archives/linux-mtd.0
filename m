@@ -1,18 +1,22 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TFioG-0004f8-Ph
- for linux-mtd@lists.infradead.org; Sun, 23 Sep 2012 09:49:11 +0000
-Received: by pbbrq8 with SMTP id rq8so11136385pbb.36
- for <linux-mtd@lists.infradead.org>; Sun, 23 Sep 2012 02:49:01 -0700 (PDT)
-Message-ID: <505EDAF0.2040708@gmail.com>
-Date: Sun, 23 Sep 2012 15:18:32 +0530
-From: Vikram Narayanan <vikram186@gmail.com>
+ id 1TFjl0-0004vz-Sw
+ for linux-mtd@lists.infradead.org; Sun, 23 Sep 2012 10:49:51 +0000
+Received: by lbbgf7 with SMTP id gf7so5511326lbb.36
+ for <linux-mtd@lists.infradead.org>; Sun, 23 Sep 2012 03:49:44 -0700 (PDT)
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] imx/gpmi: Make debug prints more clear
+In-Reply-To: <1345454375.2848.21.camel@sauron.fi.intel.com>
+References: <1341410726-10562-1-git-send-email-hechtb@gmail.com>
+ <CABYn4syMFh4smteHS-zCAy3ygKsyxoD2+FfaBeQxKvK_FA+5mA@mail.gmail.com>
+ <1345454375.2848.21.camel@sauron.fi.intel.com>
+Date: Sun, 23 Sep 2012 12:49:43 +0200
+Message-ID: <CABYn4syVz46ChwYkhP=5TMb4N+Q0sTnuMu+C_d4LPuxrQ=WM-g@mail.gmail.com>
+Subject: Re: [PATCH] mtd: sh_flctl: Switch from tick-based to time-based
+ timeout
+From: Bastian Hecht <hechtb@googlemail.com>
+To: dedekind1@gmail.com
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Huang Shijie <b32955@freescale.com>, dedekind1@gmail.com
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,73 +26,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Make the error messages more debugging friendly
+Hi Artem,
 
-Signed-off-by: Vikram Narayanan <vikram186@gmail.com>
-Cc: Huang Shijie <b32955@freescale.com>
----
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   14 ++++++++------
- 1 files changed, 8 insertions(+), 6 deletions(-)
+commit 19f5f7364a1cc770b14692f609bb9b802fc334d5
+is still in l2-mtd. Please drop it, so it doesn't get merged and I can
+base my new patches on the clean code.
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 5999b15..24fbfb8 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -222,7 +222,7 @@ void prepare_data_dma(struct gpmi_nand_data *this, enum dma_data_direction dr)
- 
- 		ret = dma_map_sg(this->dev, sgl, 1, dr);
- 		if (ret == 0)
--			pr_err("map failed.\n");
-+			pr_err("DMA mapping failed.\n");
- 
- 		this->direct_dma_map_ok = false;
- 	}
-@@ -456,7 +456,7 @@ static int __devinit acquire_dma_channels(struct gpmi_nand_data *this)
- 
- 	dma_chan = dma_request_channel(mask, gpmi_dma_filter, this);
- 	if (!dma_chan) {
--		pr_err("dma_request_channel failed.\n");
-+		pr_err("Failed to request DMA channel.\n");
- 		goto acquire_err;
- 	}
- 
-@@ -630,7 +630,8 @@ static int read_page_prepare(struct gpmi_nand_data *this,
- 						length, DMA_FROM_DEVICE);
- 		if (dma_mapping_error(dev, dest_phys)) {
- 			if (alt_size < length) {
--				pr_err("Alternate buffer is too small\n");
-+				pr_err("%s, Alternate buffer is too small\n",
-+					__func__);
- 				return -ENOMEM;
- 			}
- 			goto map_failed;
-@@ -680,7 +681,8 @@ static int send_page_prepare(struct gpmi_nand_data *this,
- 						DMA_TO_DEVICE);
- 		if (dma_mapping_error(dev, source_phys)) {
- 			if (alt_size < length) {
--				pr_err("Alternate buffer is too small\n");
-+				pr_err("%s, Alternate buffer is too small\n",
-+					__func__);
- 				return -ENOMEM;
- 			}
- 			goto map_failed;
-@@ -768,7 +770,7 @@ static int gpmi_alloc_dma_buffer(struct gpmi_nand_data *this)
- 
- error_alloc:
- 	gpmi_free_dma_buffer(this);
--	pr_err("allocate DMA buffer ret!!\n");
-+	pr_err("Error allocating DMA buffers!\n");
- 	return -ENOMEM;
- }
- 
-@@ -1479,7 +1481,7 @@ static int gpmi_set_geometry(struct gpmi_nand_data *this)
- 	/* Set up the NFC geometry which is used by BCH. */
- 	ret = bch_set_geometry(this);
- 	if (ret) {
--		pr_err("set geometry ret : %d\n", ret);
-+		pr_err("Error setting BCH geometry : %d\n", ret);
- 		return ret;
- 	}
- 
--- 
-1.7.4.1
+Thanks!
+
+Bastian
+
+
+2012/8/20 Artem Bityutskiy <dedekind1@gmail.com>:
+> On Wed, 2012-07-25 at 17:21 +0200, Bastian Hecht wrote:
+>> Hello Artem!
+>>
+>> Could you please pull out this patch of your tree? While reworking the
+>> driver for IRQ-driven use, I've realized that this conversion makes no
+>> sense as all loops use a udelay(1) in them. So the timeout is already
+>> time based.
+>
+> Dropped, thanks!
+>
+> --
+> Best Regards,
+> Artem Bityutskiy
