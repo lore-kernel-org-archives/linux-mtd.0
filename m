@@ -1,18 +1,29 @@
-Message-ID: <1348405309.1889.3.camel@kyv>
-Subject: Re: [PATCH v2] mtd: atmel_nand: fix the compile error which miss
- label "err_ecc_ioremap".
+Received: from mail-bk0-f49.google.com ([209.85.214.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TFmRP-0000jd-Um
+ for linux-mtd@lists.infradead.org; Sun, 23 Sep 2012 13:41:48 +0000
+Received: by bkwj4 with SMTP id j4so155330bkw.36
+ for <linux-mtd@lists.infradead.org>; Sun, 23 Sep 2012 06:41:45 -0700 (PDT)
+Message-ID: <1348407700.1889.12.camel@kyv>
+Subject: Re: [PATCH] Test for multi-bit error correction
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Josh Wu <josh.wu@atmel.com>
-Date: Sun, 23 Sep 2012 16:01:49 +0300
-In-Reply-To: <1348404075.1889.1.camel@kyv>
-References: <1347347412-24214-1-git-send-email-josh.wu@atmel.com>
- <1348404075.1889.1.camel@kyv>
+To: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
+Date: Sun, 23 Sep 2012 16:41:40 +0300
+In-Reply-To: <6871BC8982B258468985EE735D2C57524E269AFB89@ntcex01.corp.netcomm.com.au>
+References: <6871BC8982B258468985EE735D2C57524E269AFB52@ntcex01.corp.netcomm.com.au>
+ <1346310033.2848.536.camel@sauron.fi.intel.com>
+ <6871BC8982B258468985EE735D2C57524E269AFB54@ntcex01.corp.netcomm.com.au>
+ <1346315075.2848.538.camel@sauron.fi.intel.com>
+ <6871BC8982B258468985EE735D2C57524E269AFB60@ntcex01.corp.netcomm.com.au>
+ ,<CAN8TOE_ax=8inGyZxS+nTfcSkskyNvHEh9ipnOTVu-moB4FqjA@mail.gmail.com>
+ <6871BC8982B258468985EE735D2C57524E269AFB89@ntcex01.corp.netcomm.com.au>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-SctL47tcBVjWnV3MyKN7"
+ boundary="=-jRxiCG5Q4bSZMhhxlTRi"
 Mime-Version: 1.0
-Cc: vikram186@gmail.com, plagnioj@jcrosoft.com, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, nicolas.ferre@atmel.com
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Akinobu Mita <akinobu.mita@gmail.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,33 +35,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-SctL47tcBVjWnV3MyKN7
+--=-jRxiCG5Q4bSZMhhxlTRi
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, 2012-09-23 at 15:41 +0300, Artem Bityutskiy wrote:
-> On Tue, 2012-09-11 at 15:10 +0800, Josh Wu wrote:
-> > Add err_ecc_ioremap label to fix following errors:
-> > ---8<---=20
-> >   CC      drivers/mtd/nand/atmel_nand.o
-> > drivers/mtd/nand/atmel_nand.c: In function 'atmel_nand_probe':
-> > drivers/mtd/nand/atmel_nand.c:1423: error: label 'err_ecc_ioremap' used=
- but not defined
-> > make[3]: *** [drivers/mtd/nand/atmel_nand.o] Error 1
-> > make[2]: *** [drivers/mtd/nand] Error 2
-> > make[1]: *** [drivers/mtd] Error 2
-> > make: *** [drivers] Error 2
-> > --->8---
+On Thu, 2012-09-06 at 13:37 +1000, Iwo Mergler wrote:
+> I had to force myself ;-). My excuse is that I copied the style of
+> the other tests, because of a probably misguided sense of consistency.
+
+Oh, please, next time feel free better do things properly, then fix
+other code for consistency.
 >=20
-> Pushed to l2-mtd.git, thanks!
-
-Actually squashed it into the bogus patch.
-
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-SctL47tcBVjWnV3MyKN7
+--=-jRxiCG5Q4bSZMhhxlTRi
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -58,19 +58,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQXwg9AAoJECmIfjd9wqK0E/0P/i8i4z1thhw3G6PJKSbgtjgn
-k9LJJk2IOCj7wqo6thsCsKzRrpkKb+kBdUK4I4sKmolJOreG3unFTtcPI2eaPpm/
-mTrCDQJDwePfnhom+W7JgDeet3o4N2RPisNlr/M5gS11VN3a7NVl7bM61YikNDqG
-y2ZovhdG+6VkzYV/eqCHXlYZIzr0EGbfCaIlqFD2yxymU0vhGvpXmJNevGukfkU7
-X12F5YYFOsANF5F19k/yGn+yM+9btfK0pfuSUhiyXto9JSBjGN6l44pSchPbGdaq
-ap+7JBI4bgAkSNy14+wEg+6zLn9ZK0WYOcPKCzqOdIy0WMfc/mRqHgNjkcsEYpH7
-MQRzUKpx17fviYyhvzi8SpVU6dkk1bIKCaDb/vaQf/bLtDJAykGnZWM+ZPJ0Yj8w
-o2IAd+ifXZF5NJqixZytqb+eZ3E615tzv2xdxXmRylJxW3lGxBijB0VDVdj9jkWq
-aSTBKWeIbQsGc8AYt9Dyk3PYSlKpE75GHov/3o2P6S+hkPjlAShvE+0qAJoygwaX
-UDuVHLA2d0/gm32tQXQMgxGpznnWA3KScpoIpCc2/vr1983Qyn5Ah4bCdMg5WAq4
-ApxCI0jm8RUyeJ9XEfH0AgyRVVrWmwYjeK7t2/HkYtNcOxQN4WrOIL9M4W6mwclS
-7IBINHqiaBJhvOGHs+Rz
-=x9Mi
+iQIcBAABAgAGBQJQXxGUAAoJECmIfjd9wqK0RzUP/0Ag6zDni/1T6eK3DlE0UQpL
+8gTXtYxiCUn5S6QAvh/ZzTdv1Q3DYF39jx/uf9L9nvF0+Us8Gn5zomtrhmIcF92g
+dCmzk10xSu1NR1qhZUcCy6ru6lXrnBu6iBucg61ssUoAPgBNnzlH0KIIcz4wZedA
+n3MriXbMznvtfLO24etqA0MlNXcAmVDhIECQIxNW58vYB3kTMpVlr4KgB0LlwRE6
+/kdEXWj76xIsZf8VycMZ+00JS1cIs1aaA64vy+iCCr8N7PIpQhoCe9o7WzwWNWyd
+ZVJNgVWNC9IFHCyMUxx95z+yS/UvWyxPjd88ds3N/fQdG+r4cTcIbP6tGB6Sk7Ky
+GUYa/Ml2buE88ZQm3eB8zJvAtugethvkdZuEAfSnYapEkeBhbm870cq50JQNarcn
+LmGyT8cilLnNzq0/nxJg4MTE4qUhcnctQVOE2d55/xFg6fnP5ecQ9f52kWsJ/Ev8
+3e0aAym0jaPrK38q00CtJpDB+QKrceO0r2XUq2UgRfw/9FaoSdHTllcqeB2VMb6j
+5jsNuqx6EiF9BnctpStsJtPS4/7ydbzdY9Zpeut2mOJIKq5FbfAi55VXXf65Bdxt
+iN8fKlez9G1JqU019BE9LdlT8PDt53nnAiHTfL0DECSD4DPezEQ+WcTJoDT7gZFW
++Dpz/mW8U8sfrjmDNdnL
+=/awX
 -----END PGP SIGNATURE-----
 
---=-SctL47tcBVjWnV3MyKN7--
+--=-jRxiCG5Q4bSZMhhxlTRi--
