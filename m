@@ -1,18 +1,18 @@
-Received: from mail-we0-f177.google.com ([74.125.82.177])
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TFgzV-0003sK-7V
- for linux-mtd@lists.infradead.org; Sun, 23 Sep 2012 07:52:38 +0000
-Received: by weyr3 with SMTP id r3so2857646wey.36
- for <linux-mtd@lists.infradead.org>; Sun, 23 Sep 2012 00:52:33 -0700 (PDT)
-Date: Sun, 23 Sep 2012 09:52:29 +0200
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: <dedekind1@gmail.com>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2] mtd: cmdlinepart: Simplify parse_cmdline_partitions
-Message-ID: <20120923095229.5d0c6806@pixies.home.jungo.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+ id 1TFioG-0004f8-Ph
+ for linux-mtd@lists.infradead.org; Sun, 23 Sep 2012 09:49:11 +0000
+Received: by pbbrq8 with SMTP id rq8so11136385pbb.36
+ for <linux-mtd@lists.infradead.org>; Sun, 23 Sep 2012 02:49:01 -0700 (PDT)
+Message-ID: <505EDAF0.2040708@gmail.com>
+Date: Sun, 23 Sep 2012 15:18:32 +0530
+From: Vikram Narayanan <vikram186@gmail.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] imx/gpmi: Make debug prints more clear
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: Huang Shijie <shijie8@gmail.com>
+Cc: Huang Shijie <b32955@freescale.com>, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,116 +22,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Make the error messages more debugging friendly
 
-Simply 'parse_cmdline_partitions': the outer loop iterating over
-'partitions' is actually a search loop, it does not execute the inner
-loop for each partition, only for the matched partition.
-
-Let's break when search is successful, and move all inner code (relevant
-only for the matched partition) outside of the outer loop.
-
-Resulting code is much more readable, and makes the indent level sane.
-
-Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Signed-off-by: Vikram Narayanan <vikram186@gmail.com>
+Cc: Huang Shijie <b32955@freescale.com>
 ---
-- coding fix only, semantics shouldn't change
-- changes since v1:
-  - applies to l2-mtd head
-  - whitespace fixups
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   14 ++++++++------
+ 1 files changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
-index aed1b8a..4baab3b 100644
---- a/drivers/mtd/cmdlinepart.c
-+++ b/drivers/mtd/cmdlinepart.c
-@@ -308,48 +308,52 @@ static int parse_cmdline_partitions(struct mtd_info *master,
- 			return err;
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 5999b15..24fbfb8 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -222,7 +222,7 @@ void prepare_data_dma(struct gpmi_nand_data *this, enum dma_data_direction dr)
+ 
+ 		ret = dma_map_sg(this->dev, sgl, 1, dr);
+ 		if (ret == 0)
+-			pr_err("map failed.\n");
++			pr_err("DMA mapping failed.\n");
+ 
+ 		this->direct_dma_map_ok = false;
+ 	}
+@@ -456,7 +456,7 @@ static int __devinit acquire_dma_channels(struct gpmi_nand_data *this)
+ 
+ 	dma_chan = dma_request_channel(mask, gpmi_dma_filter, this);
+ 	if (!dma_chan) {
+-		pr_err("dma_request_channel failed.\n");
++		pr_err("Failed to request DMA channel.\n");
+ 		goto acquire_err;
  	}
  
-+	/*
-+	 * Search for the partition definition matching master->name.
-+	 * If master->name is not set, stop at first partition definition.
-+	 */
- 	for (part = partitions; part; part = part->next) {
--		if ((!mtd_id) || (!strcmp(part->mtd_id, mtd_id))) {
--			for (i = 0, offset = 0; i < part->num_parts; i++) {
--				if (part->parts[i].offset == OFFSET_CONTINUOUS)
--					part->parts[i].offset = offset;
--				else
--					offset = part->parts[i].offset;
--
--				if (part->parts[i].size == SIZE_REMAINING)
--					part->parts[i].size = master->size - offset;
--
--				if (part->parts[i].size == 0) {
--					printk(KERN_WARNING ERRP
--					       "%s: skipping zero sized partition\n",
--					       part->mtd_id);
--					part->num_parts--;
--					memmove(&part->parts[i],
--						&part->parts[i + 1],
--						sizeof(*part->parts) * (part->num_parts - i));
--					continue;
--				}
--
--				if (offset + part->parts[i].size > master->size) {
--					printk(KERN_WARNING ERRP
--					       "%s: partitioning exceeds flash size, truncating\n",
--					       part->mtd_id);
--					part->parts[i].size = master->size - offset;
--				}
--				offset += part->parts[i].size;
--			}
--
--			*pparts = kmemdup(part->parts,
--					sizeof(*part->parts) * part->num_parts,
--					GFP_KERNEL);
--			if (!*pparts)
--				return -ENOMEM;
--
--			return part->num_parts;
-+		if ((!mtd_id) || (!strcmp(part->mtd_id, mtd_id)))
-+			break;
-+	}
-+
-+	if (!part)
-+		return 0;
-+
-+	for (i = 0, offset = 0; i < part->num_parts; i++) {
-+		if (part->parts[i].offset == OFFSET_CONTINUOUS)
-+			part->parts[i].offset = offset;
-+		else
-+			offset = part->parts[i].offset;
-+
-+		if (part->parts[i].size == SIZE_REMAINING)
-+			part->parts[i].size = master->size - offset;
-+
-+		if (part->parts[i].size == 0) {
-+			printk(KERN_WARNING ERRP
-+			       "%s: skipping zero sized partition\n",
-+			       part->mtd_id);
-+			part->num_parts--;
-+			memmove(&part->parts[i], &part->parts[i + 1],
-+				sizeof(*part->parts) * (part->num_parts - i));
-+			continue;
- 		}
-+
-+		if (offset + part->parts[i].size > master->size) {
-+			printk(KERN_WARNING ERRP
-+			       "%s: partitioning exceeds flash size, truncating\n",
-+			       part->mtd_id);
-+			part->parts[i].size = master->size - offset;
-+		}
-+		offset += part->parts[i].size;
- 	}
+@@ -630,7 +630,8 @@ static int read_page_prepare(struct gpmi_nand_data *this,
+ 						length, DMA_FROM_DEVICE);
+ 		if (dma_mapping_error(dev, dest_phys)) {
+ 			if (alt_size < length) {
+-				pr_err("Alternate buffer is too small\n");
++				pr_err("%s, Alternate buffer is too small\n",
++					__func__);
+ 				return -ENOMEM;
+ 			}
+ 			goto map_failed;
+@@ -680,7 +681,8 @@ static int send_page_prepare(struct gpmi_nand_data *this,
+ 						DMA_TO_DEVICE);
+ 		if (dma_mapping_error(dev, source_phys)) {
+ 			if (alt_size < length) {
+-				pr_err("Alternate buffer is too small\n");
++				pr_err("%s, Alternate buffer is too small\n",
++					__func__);
+ 				return -ENOMEM;
+ 			}
+ 			goto map_failed;
+@@ -768,7 +770,7 @@ static int gpmi_alloc_dma_buffer(struct gpmi_nand_data *this)
  
--	return 0;
-+	*pparts = kmemdup(part->parts, sizeof(*part->parts) * part->num_parts,
-+			  GFP_KERNEL);
-+	if (!*pparts)
-+		return -ENOMEM;
-+
-+	return part->num_parts;
+ error_alloc:
+ 	gpmi_free_dma_buffer(this);
+-	pr_err("allocate DMA buffer ret!!\n");
++	pr_err("Error allocating DMA buffers!\n");
+ 	return -ENOMEM;
  }
  
+@@ -1479,7 +1481,7 @@ static int gpmi_set_geometry(struct gpmi_nand_data *this)
+ 	/* Set up the NFC geometry which is used by BCH. */
+ 	ret = bch_set_geometry(this);
+ 	if (ret) {
+-		pr_err("set geometry ret : %d\n", ret);
++		pr_err("Error setting BCH geometry : %d\n", ret);
+ 		return ret;
+ 	}
  
+-- 
+1.7.4.1
