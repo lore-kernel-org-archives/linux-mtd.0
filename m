@@ -1,21 +1,25 @@
-Received: from mga03.intel.com ([143.182.124.21])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TGAQ7-00014g-Og
- for linux-mtd@lists.infradead.org; Mon, 24 Sep 2012 15:18:04 +0000
-Message-ID: <1348499871.4880.68.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: nand: docg4: ecc.read_page() returns 0 on
- uncorrectible errors
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Dunn <mikedunn@newsguy.com>
-Date: Mon, 24 Sep 2012 18:17:51 +0300
-In-Reply-To: <1347378650-3522-1-git-send-email-mikedunn@newsguy.com>
-References: <1347378650-3522-1-git-send-email-mikedunn@newsguy.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-G787EQTfEZdElTV2D1hI"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TGAT1-0001nC-NH
+ for linux-mtd@lists.infradead.org; Mon, 24 Sep 2012 15:21:04 +0000
+Received: by lbbgf7 with SMTP id gf7so171013lbb.36
+ for <linux-mtd@lists.infradead.org>; Mon, 24 Sep 2012 08:21:00 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1348499187.4880.66.camel@sauron.fi.intel.com>
+References: <1348263626-3087-1-git-send-email-csd@broadcom.com>
+ <1348263626-3087-2-git-send-email-csd@broadcom.com>
+ <1348499187.4880.66.camel@sauron.fi.intel.com>
+Date: Mon, 24 Sep 2012 08:21:00 -0700
+Message-ID: <CAOesGMgs6Vq4yhKP6_4qHkJjo5vij=ww9VN7Yfz7QYxT95Ntaw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] ARM: Remove bcmring NAND driver
+From: Olof Johansson <olof@lixom.net>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Arnd Bergmann <arnd@arndb.de>, Christian Daudt <csd@broadcom.com>,
+ Will Deacon <will.deacon@arm.com>, cdaudt@gmail.com,
+ "arm@kernel.org" <arm@kernel.org>, linux-mtd@lists.infradead.org,
+ "JD \(Jiandong\) Zheng" <jdzheng@broadcom.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,49 +29,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, Sep 24, 2012 at 8:06 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Fri, 2012-09-21 at 14:40 -0700, Christian Daudt wrote:
+>> This driver is being removed as part of the cleanup of the bcmring
+>> SoC from mainline as it is no longer maintained.
+>>
+>> Signed-off-by: Christian Daudt <csd@broadcom.com>
+>> Reviewed-by: Jiandong Zheng <jdzheng@broadcom.com>
+>> Acked-by: Will Deacon <will.deacon@arm.com>
+>
+> Pushed this patch to l2-mtd.git. But if you decide to merge it via
+> Arnd's tree (probably better idea) - let me know, I'll drop it.
 
---=-G787EQTfEZdElTV2D1hI
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Keeping it in mtd is fine.
 
-On Tue, 2012-09-11 at 08:50 -0700, Mike Dunn wrote:
-> Currently the docg4's ecc.read_page() method returns -EBADMSG when uncorr=
-ectible
-> bitflips occur.  This is wrong; 0 should be returned in this case.  An er=
-ror
-> code should only be returned by this method in the case of a hardware err=
-or
-> (probably -EIO).
->=20
-> Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
 
-Pushed to l2-mtd.git, thanks!
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-G787EQTfEZdElTV2D1hI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQYHmfAAoJECmIfjd9wqK0DDMQAK0RJJyi8/9b3qjQGWI2yTkQ
-2SYnxMKbZuOXQNfcS1CLVdoNsJ0b44PPXhq01BZtziN7uTdw0hs2pA21uIcs4vwp
-TRCsLn49ZCVjRPwQ+GAQu4XcSxMW8wnM52O8Db07pgnAUf5zrl8LuZgu9I76arpl
-mmtGDWigwvxCNFoJO1ip0GxAQaLVgobAAgljy3TiSv066vVgtOJE876dUhy6QXDz
-sWsTw2+CXMWRiHfs7A8i6vIrV7DcE3rvaE6OqGUHrE1/aHOFcSBP0F8yzhabpm7Q
-hkovXtybPE4Giq4pG/XnnQ9qbl+GaPEWBHKY8xi5XDaVrimOyS8S4UWyCEVpUTtF
-0bai35j1DalvSwGPRaSiHnVn60F9FNnVr72A8jOJJ77s5s7jDHJEVkg6vQzkUA5e
-YHloBjhJdigWi2uq8DXJRKt32J3W4w8howJP5nigGo/QBAsenQDcdAf4UCJmkCbd
-n0Nl7+0eg37BpvSUBG0gNEVDdskNcktDYNECXbGWWl4/sLCx8qHonA37kyVphzYj
-vzLm7zzq98LwDeuhT9f5DaiY3RiqJOwgGYxD1v3EFmHZtCposIGIJiGj7PlsNo4P
-KU6l1/MfcAOEIHHTS2Hp41seE1xbNBso/C4CDXBVq86uQ6rB9amL302yHbDcSo7d
-5G/lOW4VTItRRU81wNHc
-=Kdsk
------END PGP SIGNATURE-----
-
---=-G787EQTfEZdElTV2D1hI--
+-Olof
