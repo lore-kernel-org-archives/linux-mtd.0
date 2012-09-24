@@ -1,16 +1,22 @@
-Received: from mail-gg0-f177.google.com ([209.85.161.177])
+Received: from mail-out.m-online.net ([212.18.0.9])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TFqxT-0006rI-6T
- for linux-mtd@lists.infradead.org; Sun, 23 Sep 2012 18:31:11 +0000
-Received: by ggnm2 with SMTP id m2so1432146ggn.36
- for <linux-mtd@lists.infradead.org>; Sun, 23 Sep 2012 11:31:10 -0700 (PDT)
-From: Fabio Estevam <festevam@gmail.com>
-To: artem.bityutskiy@linux.intel.com
-Subject: [PATCH] nand: gpmi-nand: Fix clock registration
-Date: Sun, 23 Sep 2012 15:31:02 -0300
-Message-Id: <1348425062-17427-1-git-send-email-festevam@gmail.com>
-Cc: marex@denx.de, b32955@freescale.com, shawn.guo@linaro.org,
- linux-mtd@lists.infradead.org, Fabio Estevam <fabio.estevam@freescale.com>
+ id 1TFxVm-00060f-B4
+ for linux-mtd@lists.infradead.org; Mon, 24 Sep 2012 01:31:03 +0000
+From: Marek Vasut <marex@denx.de>
+To: dedekind1@gmail.com
+Subject: Re: [PATCH V5] mtd: m25p80: Make fast read configurable via DT
+Date: Mon, 24 Sep 2012 03:30:56 +0200
+References: <1345923416-9293-1-git-send-email-marex@denx.de>
+ <201209171610.28410.marex@denx.de>
+ <1348233550.7550.2.camel@sauron.fi.intel.com>
+In-Reply-To: <1348233550.7550.2.camel@sauron.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201209240330.56996.marex@denx.de>
+Cc: robherring2@gmail.com, devicetree-discuss@lists.ozlabs.org,
+ linux-mtd@lists.infradead.org, David Woodhouse <david.woodhouse@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,33 +26,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
+Dear Artem Bityutskiy,
 
-On a mx28 board the following error happens since commit 638064e56c 
-(mtd: gpmi: change the code for clocks):
+> On Mon, 2012-09-17 at 16:10 +0200, Marek Vasut wrote:
+> > Bump, do you think we can get this into 3.7 please?
+> 
+> Aiaiai!
 
-gpmi-nand: probe of 8000c000.gpmi-nand failed with error -12
+Damn I'm really lucky with this one ...
 
-Acquire the clock using "NULL" as it was done previously, so that the driver
-can register on mx23/mx28 as well.
-
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index c46be6c..1f23cb4 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -492,7 +492,7 @@ static int __devinit gpmi_get_clks(struct gpmi_nand_data *this)
- 	int i;
- 
- 	/* The main clock is stored in the first. */
--	r->clock[0] = clk_get(this->dev, "gpmi_io");
-+	r->clock[0] = clk_get(this->dev, NULL);
- 	if (IS_ERR(r->clock[0]))
- 		goto err_clock;
- 
--- 
-1.7.9.5
+Best regards,
+Marek Vasut
