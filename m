@@ -1,17 +1,14 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TGDRg-0001Q9-8j
- for linux-mtd@lists.infradead.org; Mon, 24 Sep 2012 18:31:53 +0000
+ id 1TGDRg-0001Ps-An
+ for linux-mtd@lists.infradead.org; Mon, 24 Sep 2012 18:31:55 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 03/10] UBI: Export next_sqnum()
-Date: Mon, 24 Sep 2012 20:31:25 +0200
-Message-Id: <1348511492-91606-4-git-send-email-richard@nod.at>
-In-Reply-To: <1348511492-91606-1-git-send-email-richard@nod.at>
-References: <1348511492-91606-1-git-send-email-richard@nod.at>
-Cc: artem.bityutskiy@linux.intel.com, linux-kernel@vger.kernel.org,
- Heinz.Egger@linutronix.de, tim.bird@am.sony.com,
- Richard Weinberger <richard@nod.at>, tglx@linutronix.de
+Subject: UBI: Fastmap request for inclusion (v18)
+Date: Mon, 24 Sep 2012 20:31:22 +0200
+Message-Id: <1348511492-91606-1-git-send-email-richard@nod.at>
+Cc: Heinz.Egger@linutronix.de, artem.bityutskiy@linux.intel.com,
+ tglx@linutronix.de, linux-kernel@vger.kernel.org, tim.bird@am.sony.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,98 +18,143 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fastmap needs next_sqnum(), rename it to ubi_next_sqnum()
-and make it non-static.
+UBI Fastmap is an optional feature which stores the physical to
+logical eraseblock relations in a checkpoint (called fastmap) to reduce
+the initialization time of UBI. The current init time of UBI is
+proportional to the number of physical erase blocks on the FLASH
+device. With fastmap enabled the scan time is limited to a fixed
+number of blocks.
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Fastmap does not affect any of the existing UBI robustness
+features and in fact the fastmap code falls back to scanning
+mode when the found fastmap is corrupted.
+
+A fastmap consists of two elements:
+
+1) A primary super block, which contains merrily a pointer to the
+   erase block(s) which hold the real fastmap data.
+
+   This super block is guaranteed to be held within the first 64
+   eraseblocks of a device.
+
+2) The secondary fastmap blocks, which contain the real
+   fastmap data (physical to logical eraseblock relations,
+   erase counts, sequence numbers ...)
+
+   Aside of that the fastmap data contains a list of blocks
+   which belong to the active working pool. The active working pool is
+   a fixed number of blocks to be used by the WL sub-system itself and the
+   layer on top of UBI, which can be modified before the next fastmap
+   is written to FLASH. These blocks need to be scanned in the
+   conventional UBI scan mode.
+
+   The reason for these pool blocks is to reduce the fastmap
+   updates to the necessary minimum to avoid accelerated device
+   wearout in scenarios where data changes rapidly. The fastmap
+   data is updated whenever a working pool runs out of blocks.
+
+So the fastmap scan consists of the following steps:
+
+   1) Find the fastmap super block block by scanning the start of the
+      device.
+
+   2) Read the real fastmap data and construct the UBI device info
+      structures.
+
+   3) Scan the pool blocks.
+
+The fastmap functionality is fully compatible with existing UBI
+deployments. If no fastmap blocks can be found then the device is
+scanned and the fastmap blocks are created from the scanned
+information.
+
+Changes since v17:
+
+   - UBI reserves now PEBs to hold two fastmaps. It is guaranteed that
+     each LEB has a corresponding PEB which can be used by an user.
+
+   - Fastmap is automatically disabled if the FLASH devices has less than 64 PEBs
+
+   - Fastmap is only available if CONFIG_MTD_UBI_FASTMAP is enabled.
+     It is per default N. If fastmap has proven stable over some time we can
+     remove CONFIG_MTD_UBI_FASTMAP and the corresponding #ifdefs.
+     Even with CONFIG_MTD_UBI_FASTMAP=Y UBI will not automatically
+     install a fastmap on existing images.
+     This behavior is controlled by the fm_autoconvert UBI module parameter.
+     Only if set to 1 UBI will install a fastmap automatically.
+     By default it will use the fastmap only if one is found.
+
+     So, if you want to test fastmap enable CONFIG_MTD_UBI_FASTMAP and
+     set  fm_autoconvert to 1.
+     If the device was attached by a fastmap you'll observe the following log
+     message while attaching: "UBI: attached by fastmap".
+
+State of fastmap:
+
+We (linutronix gmbh) did numerous tests and are not aware of any issue or 
+regression so far. The tests have been done on real hardware and simulators
+(nandsim and mtdram). Of course with and without bitflip emulation enabled
+and on NAND "bad" devices with bad blocks, bitflips, IO erros, ...
+The tests consisted of mtd-util's ubi-tests, my fastmap torture script[1]
+and real world use cases.
+
+Each test run was done with the following configurations:
+- CONFIG_MTD_UBI_FASTMAP=n
+To verify that traditional UBI works fine.
+
+- CONFIG_MTD_UBI_FASTMAP=y, fm_autoconvert=0
+In this configuration the fastmap pool mechanism is active but
+no fastmap is written to non-fastmap devices.
+
+- CONFIG_MTD_UBI_FASTMAP=y, fm_autoconvert=1
+Fastmap is enabled and non-fastmap devices get fastmap enabled.
+Either at detach time or while writing.
+
+I hope the MTD community do will also test fastmap in many different situations.
+Bug reports are welcome!
+
+Future work:
+
+- Currently fastmap's powercut policy is that it will fall back to scanning mode if
+  a power cut happened while writing the fastmap. If users really need fast attaching
+  also after a power cut we could use the adjacent blocks mechanism for writing fastmap.
+- Add fastmap support to ubinize
+- If fastmap has proven stable, we can remove CONFIG_MTD_UBI_FASTMAP
+  and enable it per default.
+
+This patch set is based on artems ubi repository:
+git://git.infradead.org/linux-ubi.git
+You can find fastmap v18 also in my git repo on kernel.org:
+git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubi2.git ubi2/v18
+
+Thanks to the folks at CELF who sponsored this work!
+
+Thanks,
+//richard
+
+[1]
+http://lists.infradead.org/pipermail/linux-mtd/2012-June/042347.html
+
+[PATCH 01/10] UBI: Add fastmap on-flash data structures
+[PATCH 02/10] UBI: Add fastmap stuff to ubi.h
+[PATCH 03/10] UBI: Export next_sqnum()
+[PATCH 04/10] UBI: Add self_check_eba()
+[PATCH 05/10] UBI: Add fastmap bits to build.c
+[PATCH 06/10] UBI: Wire-up ->fm_sem
+[PATCH 07/10] UBI: Add fastmap stuff to attach.c
+[PATCH 08/10] UBI: Add fastmap support to the WL sub-system
+[PATCH 09/10] UBI: Add fastmap core
+[PATCH 10/10] UBI: Wire-up fastmap
+
 ---
- drivers/mtd/ubi/eba.c |   18 +++++++++---------
- 1 files changed, 9 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-index a26d7d2..0910c2c 100644
---- a/drivers/mtd/ubi/eba.c
-+++ b/drivers/mtd/ubi/eba.c
-@@ -57,7 +57,7 @@
-  * global sequence counter value. It also increases the global sequence
-  * counter.
-  */
--static unsigned long long next_sqnum(struct ubi_device *ubi)
-+unsigned long long ubi_next_sqnum(struct ubi_device *ubi)
- {
- 	unsigned long long sqnum;
- 
-@@ -521,7 +521,7 @@ retry:
- 		goto out_put;
- 	}
- 
--	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
-+	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
- 	err = ubi_io_write_vid_hdr(ubi, new_pnum, vid_hdr);
- 	if (err)
- 		goto write_error;
-@@ -632,7 +632,7 @@ int ubi_eba_write_leb(struct ubi_device *ubi, struct ubi_volume *vol, int lnum,
- 	}
- 
- 	vid_hdr->vol_type = UBI_VID_DYNAMIC;
--	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
-+	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
- 	vid_hdr->vol_id = cpu_to_be32(vol_id);
- 	vid_hdr->lnum = cpu_to_be32(lnum);
- 	vid_hdr->compat = ubi_get_compat(ubi, vol_id);
-@@ -692,7 +692,7 @@ write_error:
- 		return err;
- 	}
- 
--	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
-+	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
- 	ubi_msg("try another PEB");
- 	goto retry;
- }
-@@ -745,7 +745,7 @@ int ubi_eba_write_leb_st(struct ubi_device *ubi, struct ubi_volume *vol,
- 		return err;
- 	}
- 
--	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
-+	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
- 	vid_hdr->vol_id = cpu_to_be32(vol_id);
- 	vid_hdr->lnum = cpu_to_be32(lnum);
- 	vid_hdr->compat = ubi_get_compat(ubi, vol_id);
-@@ -810,7 +810,7 @@ write_error:
- 		return err;
- 	}
- 
--	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
-+	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
- 	ubi_msg("try another PEB");
- 	goto retry;
- }
-@@ -862,7 +862,7 @@ int ubi_eba_atomic_leb_change(struct ubi_device *ubi, struct ubi_volume *vol,
- 	if (err)
- 		goto out_mutex;
- 
--	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
-+	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
- 	vid_hdr->vol_id = cpu_to_be32(vol_id);
- 	vid_hdr->lnum = cpu_to_be32(lnum);
- 	vid_hdr->compat = ubi_get_compat(ubi, vol_id);
-@@ -930,7 +930,7 @@ write_error:
- 		goto out_leb_unlock;
- 	}
- 
--	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
-+	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
- 	ubi_msg("try another PEB");
- 	goto retry;
- }
-@@ -1089,7 +1089,7 @@ int ubi_eba_copy_leb(struct ubi_device *ubi, int from, int to,
- 		vid_hdr->data_size = cpu_to_be32(data_size);
- 		vid_hdr->data_crc = cpu_to_be32(crc);
- 	}
--	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
-+	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
- 
- 	err = ubi_io_write_vid_hdr(ubi, to, vid_hdr);
- 	if (err) {
--- 
-1.7.6.5
+ MAINTAINERS                 |    6 +
+ drivers/mtd/ubi/Kconfig     |   20 +
+ drivers/mtd/ubi/Makefile    |    1 +
+ drivers/mtd/ubi/attach.c    |  387 +++++++----
+ drivers/mtd/ubi/build.c     |   71 ++-
+ drivers/mtd/ubi/eba.c       |  126 ++++-
+ drivers/mtd/ubi/fastmap.c   | 1560 +++++++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/ubi/ubi-media.h |  137 ++++
+ drivers/mtd/ubi/ubi.h       |  119 ++++-
+ drivers/mtd/ubi/wl.c        |  600 +++++++++++++++--
+ 10 files changed, 2814 insertions(+), 213 deletions(-)
