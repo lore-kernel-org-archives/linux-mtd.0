@@ -1,12 +1,12 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TGDRg-0001Q4-9m
- for linux-mtd@lists.infradead.org; Mon, 24 Sep 2012 18:31:58 +0000
+ id 1TGDRh-0001QH-Rp
+ for linux-mtd@lists.infradead.org; Mon, 24 Sep 2012 18:31:59 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 02/10] UBI: Add fastmap stuff to ubi.h
-Date: Mon, 24 Sep 2012 20:31:24 +0200
-Message-Id: <1348511492-91606-3-git-send-email-richard@nod.at>
+Subject: [PATCH 05/10] UBI: Add fastmap bits to build.c
+Date: Mon, 24 Sep 2012 20:31:27 +0200
+Message-Id: <1348511492-91606-6-git-send-email-richard@nod.at>
 In-Reply-To: <1348511492-91606-1-git-send-email-richard@nod.at>
 References: <1348511492-91606-1-git-send-email-richard@nod.at>
 Cc: artem.bityutskiy@linux.intel.com, linux-kernel@vger.kernel.org,
@@ -21,250 +21,155 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds fastmap specific data structures to ubi.h.
-It moves also struct ubi_work to ubi.h as it is now needed
-for more than one c file.
-
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/ubi.h |  119 +++++++++++++++++++++++++++++++++++++++++++++++-
- drivers/mtd/ubi/wl.c  |   24 ----------
- 2 files changed, 116 insertions(+), 27 deletions(-)
+ drivers/mtd/ubi/build.c |   71 ++++++++++++++++++++++++++++++++++++++++++++--
+ 1 files changed, 67 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index 383ee43..5f9ee1c 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -133,6 +133,17 @@ enum {
- 	MOVE_RETRY,
- };
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 3497703..cc7c03c 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -76,7 +76,10 @@ static int __initdata mtd_devs;
  
-+/*
-+ * Return codes of the fastmap sub-system
-+ *
-+ * UBI_NO_FASTMAP: No fastmap super block was found
-+ * UBI_BAD_FASTMAP: A fastmap was found but it's unusable
-+ */
-+enum {
-+	UBI_NO_FASTMAP = 1,
-+	UBI_BAD_FASTMAP,
-+};
-+
- /**
-  * struct ubi_wl_entry - wear-leveling entry.
-  * @u.rb: link in the corresponding (free/used) RB-tree
-@@ -199,6 +210,41 @@ struct ubi_rename_entry {
- struct ubi_volume_desc;
- 
- /**
-+ * struct ubi_fastmap_layout - in-memory fastmap data structure.
-+ * @e: PEBs used by the current fastmap
-+ * @to_be_tortured: if non-zero tortured this PEB
-+ * @used_blocks: number of used PEBs
-+ * @max_pool_size: maximal size of the user pool
-+ * @max_wl_pool_size: maximal size of the pool used by the WL sub-system
-+ */
-+struct ubi_fastmap_layout {
-+	struct ubi_wl_entry *e[UBI_FM_MAX_BLOCKS];
-+	int to_be_tortured[UBI_FM_MAX_BLOCKS];
-+	int used_blocks;
-+	int max_pool_size;
-+	int max_wl_pool_size;
-+};
-+
-+/**
-+ * struct ubi_fm_pool - in-memory fastmap pool
-+ * @pebs: PEBs in this pool
-+ * @used: number of used PEBs
-+ * @size: total number of PEBs in this pool
-+ * @max_size: maximal size of the pool
-+ *
-+ * A pool gets filled with up to max_size.
-+ * If all PEBs within the pool are used a new fastmap will be written
-+ * to the flash and the pool gets refilled with empty PEBs.
-+ *
-+ */
-+struct ubi_fm_pool {
-+	int pebs[UBI_FM_MAX_POOL_SIZE];
-+	int used;
-+	int size;
-+	int max_size;
-+};
-+
-+/**
-  * struct ubi_volume - UBI volume description data structure.
-  * @dev: device object to make use of the the Linux device model
-  * @cdev: character device object to create character device
-@@ -333,9 +379,21 @@ struct ubi_wl_entry;
-  * @ltree: the lock tree
-  * @alc_mutex: serializes "atomic LEB change" operations
-  *
-+ * @fm_disabled: non-zero if fastmap is disabled (default)
-+ * @fm: in-memory data structure of the currently used fastmap
-+ * @fm_pool: in-memory data structure of the fastmap pool
-+ * @fm_wl_pool: in-memory data structure of the fastmap pool used by the WL
-+ *		sub-system
-+ * @fm_mutex: serializes ubi_update_fastmap() and protects @fm_buf
-+ * @fm_buf: vmalloc()'d buffer which holds the raw fastmap
-+ * @fm_size: fastmap size in bytes
-+ * @fm_sem: allows ubi_update_fastmap() to block EBA table changes
-+ * @fm_work: fastmap work queue
-+ *
-  * @used: RB-tree of used physical eraseblocks
-  * @erroneous: RB-tree of erroneous used physical eraseblocks
-  * @free: RB-tree of free physical eraseblocks
-+ * @free_count: Contains the number of elements in @free
-  * @scrub: RB-tree of physical eraseblocks which need scrubbing
-  * @pq: protection queue (contain physical eraseblocks which are temporarily
-  *      protected from the wear-leveling worker)
-@@ -426,10 +484,22 @@ struct ubi_device {
- 	struct rb_root ltree;
- 	struct mutex alc_mutex;
- 
-+	/* Fastmap stuff */
-+	int fm_disabled;
-+	struct ubi_fastmap_layout *fm;
-+	struct ubi_fm_pool fm_pool;
-+	struct ubi_fm_pool fm_wl_pool;
-+	struct rw_semaphore fm_sem;
-+	struct mutex fm_mutex;
-+	void *fm_buf;
-+	size_t fm_size;
-+	struct work_struct fm_work;
-+
- 	/* Wear-leveling sub-system's stuff */
- 	struct rb_root used;
- 	struct rb_root erroneous;
- 	struct rb_root free;
-+	int free_count;
- 	struct rb_root scrub;
- 	struct list_head pq[UBI_PROT_QUEUE_LEN];
- 	int pq_head;
-@@ -596,6 +666,32 @@ struct ubi_attach_info {
- 	struct kmem_cache *aeb_slab_cache;
- };
- 
-+/**
-+ * struct ubi_work - UBI work description data structure.
-+ * @list: a link in the list of pending works
-+ * @func: worker function
-+ * @e: physical eraseblock to erase
-+ * @vol_id: the volume ID on which this erasure is being performed
-+ * @lnum: the logical eraseblock number
-+ * @torture: if the physical eraseblock has to be tortured
-+ * @anchor: produce a anchor PEB to by used by fastmap
-+ *
-+ * The @func pointer points to the worker function. If the @cancel argument is
-+ * not zero, the worker has to free the resources and exit immediately. The
-+ * worker has to return zero in case of success and a negative error code in
-+ * case of failure.
-+ */
-+struct ubi_work {
-+	struct list_head list;
-+	int (*func)(struct ubi_device *ubi, struct ubi_work *wrk, int cancel);
-+	/* The below fields are only relevant to erasure works */
-+	struct ubi_wl_entry *e;
-+	int vol_id;
-+	int lnum;
-+	int torture;
-+	int anchor;
-+};
-+
- #include "debug.h"
- 
- extern struct kmem_cache *ubi_wl_entry_slab;
-@@ -606,7 +702,7 @@ extern struct class *ubi_class;
- extern struct mutex ubi_devices_mutex;
- extern struct blocking_notifier_head ubi_notifiers;
- 
--/* scan.c */
-+/* attach.c */
- int ubi_add_to_av(struct ubi_device *ubi, struct ubi_attach_info *ai, int pnum,
- 		  int ec, const struct ubi_vid_hdr *vid_hdr, int bitflips);
- struct ubi_ainf_volume *ubi_find_av(const struct ubi_attach_info *ai,
-@@ -614,8 +710,7 @@ struct ubi_ainf_volume *ubi_find_av(const struct ubi_attach_info *ai,
- void ubi_remove_av(struct ubi_attach_info *ai, struct ubi_ainf_volume *av);
- struct ubi_ainf_peb *ubi_early_get_peb(struct ubi_device *ubi,
- 				       struct ubi_attach_info *ai);
--int ubi_attach(struct ubi_device *ubi);
--void ubi_destroy_ai(struct ubi_attach_info *ai);
-+int ubi_attach(struct ubi_device *ubi, int force_scan);
- 
- /* vtbl.c */
- int ubi_change_vtbl_record(struct ubi_device *ubi, int idx,
-@@ -664,6 +759,9 @@ int ubi_eba_atomic_leb_change(struct ubi_device *ubi, struct ubi_volume *vol,
- int ubi_eba_copy_leb(struct ubi_device *ubi, int from, int to,
- 		     struct ubi_vid_hdr *vid_hdr);
- int ubi_eba_init(struct ubi_device *ubi, struct ubi_attach_info *ai);
-+unsigned long long ubi_next_sqnum(struct ubi_device *ubi);
-+int self_check_eba(struct ubi_device *ubi, struct ubi_attach_info *ai_fastmap,
-+		   struct ubi_attach_info *ai_scan);
- 
- /* wl.c */
- int ubi_wl_get_peb(struct ubi_device *ubi);
-@@ -674,6 +772,12 @@ int ubi_wl_scrub_peb(struct ubi_device *ubi, int pnum);
- int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai);
- void ubi_wl_close(struct ubi_device *ubi);
- int ubi_thread(void *u);
-+struct ubi_wl_entry *ubi_wl_get_fm_peb(struct ubi_device *ubi, int anchor);
-+int ubi_wl_put_fm_peb(struct ubi_device *ubi, struct ubi_wl_entry *used_e,
-+		      int lnum, int torture);
-+int ubi_is_erase_work(struct ubi_work *wrk);
-+void ubi_refill_pools(struct ubi_device *ubi);
-+int ubi_ensure_anchor_pebs(struct ubi_device *ubi);
- 
- /* io.c */
- int ubi_io_read(const struct ubi_device *ubi, void *buf, int pnum, int offset,
-@@ -711,6 +815,15 @@ void ubi_free_internal_volumes(struct ubi_device *ubi);
- void ubi_do_get_device_info(struct ubi_device *ubi, struct ubi_device_info *di);
- void ubi_do_get_volume_info(struct ubi_device *ubi, struct ubi_volume *vol,
- 			    struct ubi_volume_info *vi);
-+/* scan.c */
-+int ubi_compare_lebs(struct ubi_device *ubi, const struct ubi_ainf_peb *aeb,
-+		      int pnum, const struct ubi_vid_hdr *vid_hdr);
-+
-+/* fastmap.c */
-+size_t ubi_calc_fm_size(struct ubi_device *ubi);
-+int ubi_update_fastmap(struct ubi_device *ubi);
-+int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
-+		     int fm_anchor);
- 
- /*
-  * ubi_rb_for_each_entry - walk an RB-tree.
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index 032fc57..f4d06db 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -135,30 +135,6 @@
-  */
- #define WL_MAX_FAILURES 32
- 
--/**
-- * struct ubi_work - UBI work description data structure.
-- * @list: a link in the list of pending works
-- * @func: worker function
-- * @e: physical eraseblock to erase
-- * @vol_id: the volume ID on which this erasure is being performed
-- * @lnum: the logical eraseblock number
-- * @torture: if the physical eraseblock has to be tortured
-- *
-- * The @func pointer points to the worker function. If the @cancel argument is
-- * not zero, the worker has to free the resources and exit immediately. The
-- * worker has to return zero in case of success and a negative error code in
-- * case of failure.
-- */
--struct ubi_work {
--	struct list_head list;
--	int (*func)(struct ubi_device *ubi, struct ubi_work *wrk, int cancel);
--	/* The below fields are only relevant to erasure works */
--	struct ubi_wl_entry *e;
--	int vol_id;
--	int lnum;
--	int torture;
--};
+ /* MTD devices specification parameters */
+ static struct mtd_dev_param __initdata mtd_dev_param[UBI_MAX_DEVICES];
 -
- static int self_check_ec(struct ubi_device *ubi, int pnum, int ec);
- static int self_check_in_wl_tree(const struct ubi_device *ubi,
- 				 struct ubi_wl_entry *e, struct rb_root *root);
++#ifdef CONFIG_MTD_UBI_FASTMAP
++/* UBI module parameter to enable fastmap automatically on non-fastmap images */
++static bool fm_autoconvert;
++#endif
+ /* Root UBI "class" object (corresponds to '/<sysfs>/class/ubi/') */
+ struct class *ubi_class;
+ 
+@@ -153,6 +156,19 @@ int ubi_volume_notify(struct ubi_device *ubi, struct ubi_volume *vol, int ntype)
+ 
+ 	ubi_do_get_device_info(ubi, &nt.di);
+ 	ubi_do_get_volume_info(ubi, vol, &nt.vi);
++
++#ifdef CONFIG_MTD_UBI_FASTMAP
++	switch (ntype) {
++	case UBI_VOLUME_ADDED:
++	case UBI_VOLUME_REMOVED:
++	case UBI_VOLUME_RESIZED:
++	case UBI_VOLUME_RENAMED:
++		if (ubi_update_fastmap(ubi)) {
++			ubi_err("Unable to update fastmap!");
++			ubi_ro_mode(ubi);
++		}
++	}
++#endif
+ 	return blocking_notifier_call_chain(&ubi_notifiers, ntype, &nt);
+ }
+ 
+@@ -918,10 +934,40 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
+ 	ubi->vid_hdr_offset = vid_hdr_offset;
+ 	ubi->autoresize_vol_id = -1;
+ 
++#ifdef CONFIG_MTD_UBI_FASTMAP
++	ubi->fm_pool.used = ubi->fm_pool.size = 0;
++	ubi->fm_wl_pool.used = ubi->fm_wl_pool.size = 0;
++
++	/*
++	 * fm_pool.max_size is 5% of the total number of PEBs but it's also
++	 * between UBI_FM_MAX_POOL_SIZE and UBI_FM_MIN_POOL_SIZE.
++	 */
++	ubi->fm_pool.max_size = min(((int)mtd_div_by_eb(ubi->mtd->size,
++		ubi->mtd) / 100) * 5, UBI_FM_MAX_POOL_SIZE);
++	if (ubi->fm_pool.max_size < UBI_FM_MIN_POOL_SIZE)
++		ubi->fm_pool.max_size = UBI_FM_MIN_POOL_SIZE;
++
++	ubi->fm_wl_pool.max_size = UBI_FM_WL_POOL_SIZE;
++	ubi->fm_disabled = !fm_autoconvert;
++
++	if (!ubi->fm_disabled && (int)mtd_div_by_eb(ubi->mtd->size, ubi->mtd)
++	    <= UBI_FM_MAX_START) {
++		ubi_err("More than %i PEBs are needed for fastmap, sorry.",
++			UBI_FM_MAX_START);
++		ubi->fm_disabled = 1;
++	}
++
++	ubi_msg("default fastmap pool size: %d", ubi->fm_pool.max_size);
++	ubi_msg("default fastmap WL pool size: %d", ubi->fm_wl_pool.max_size);
++#else
++	ubi->fm_disabled = 1;
++#endif
+ 	mutex_init(&ubi->buf_mutex);
+ 	mutex_init(&ubi->ckvol_mutex);
+ 	mutex_init(&ubi->device_mutex);
+ 	spin_lock_init(&ubi->volumes_lock);
++	mutex_init(&ubi->fm_mutex);
++	init_rwsem(&ubi->fm_sem);
+ 
+ 	ubi_msg("attaching mtd%d to ubi%d", mtd->index, ubi_num);
+ 
+@@ -934,11 +980,17 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
+ 	if (!ubi->peb_buf)
+ 		goto out_free;
+ 
++#ifdef CONFIG_MTD_UBI_FASTMAP
++	ubi->fm_size = ubi_calc_fm_size(ubi);
++	ubi->fm_buf = vzalloc(ubi->fm_size);
++	if (!ubi->fm_buf)
++		goto out_free;
++#endif
+ 	err = ubi_debugging_init_dev(ubi);
+ 	if (err)
+ 		goto out_free;
+ 
+-	err = ubi_attach(ubi);
++	err = ubi_attach(ubi, 0);
+ 	if (err) {
+ 		ubi_err("failed to attach mtd%d, error %d", mtd->index, err);
+ 		goto out_debugging;
+@@ -1012,6 +1064,7 @@ out_debugging:
+ 	ubi_debugging_exit_dev(ubi);
+ out_free:
+ 	vfree(ubi->peb_buf);
++	vfree(ubi->fm_buf);
+ 	if (ref)
+ 		put_device(&ubi->dev);
+ 	else
+@@ -1061,7 +1114,11 @@ int ubi_detach_mtd_dev(int ubi_num, int anyway)
+ 	ubi_assert(ubi_num == ubi->ubi_num);
+ 	ubi_notify_all(ubi, UBI_VOLUME_REMOVED, NULL);
+ 	ubi_msg("detaching mtd%d from ubi%d", ubi->mtd->index, ubi_num);
+-
++#ifdef CONFIG_MTD_UBI_FASTMAP
++	/* If we don't write a new fastmap at detach time we lose all
++	 * EC updates that have been made since the last written fastmap. */
++	ubi_update_fastmap(ubi);
++#endif
+ 	/*
+ 	 * Before freeing anything, we have to stop the background thread to
+ 	 * prevent it from doing anything on this device while we are freeing.
+@@ -1077,12 +1134,14 @@ int ubi_detach_mtd_dev(int ubi_num, int anyway)
+ 
+ 	ubi_debugfs_exit_dev(ubi);
+ 	uif_close(ubi);
++
+ 	ubi_wl_close(ubi);
+ 	ubi_free_internal_volumes(ubi);
+ 	vfree(ubi->vtbl);
+ 	put_mtd_device(ubi->mtd);
+ 	ubi_debugging_exit_dev(ubi);
+ 	vfree(ubi->peb_buf);
++	vfree(ubi->fm_buf);
+ 	ubi_msg("mtd%d is detached from ubi%d", ubi->mtd->index, ubi->ubi_num);
+ 	put_device(&ubi->dev);
+ 	return 0;
+@@ -1404,7 +1463,11 @@ MODULE_PARM_DESC(mtd, "MTD devices to attach. Parameter format: mtd=<name|num|pa
+ 		      "Example 2: mtd=content,1984 mtd=4 - attach MTD device with name \"content\" using VID header offset 1984, and MTD device number 4 with default VID header offset.\n"
+ 		      "Example 3: mtd=/dev/mtd1,0,25 - attach MTD device /dev/mtd1 using default VID header offset and reserve 25*nand_size_in_blocks/1024 erase blocks for bad block handling.\n"
+ 		      "\t(e.g. if the NAND *chipset* has 4096 PEB, 100 will be reserved for this UBI device).");
+-
++#ifdef CONFIG_MTD_UBI_FASTMAP
++module_param(fm_autoconvert, bool, 0644);
++MODULE_PARM_DESC(fm_autoconvert, "Set this parameter to enable fastmap "
++				 "automatically on images without a fastmap.");
++#endif
+ MODULE_VERSION(__stringify(UBI_VERSION));
+ MODULE_DESCRIPTION("UBI - Unsorted Block Images");
+ MODULE_AUTHOR("Artem Bityutskiy");
 -- 
 1.7.6.5
