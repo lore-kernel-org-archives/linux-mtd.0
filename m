@@ -1,20 +1,19 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TGADU-0007Hb-G2
- for linux-mtd@lists.infradead.org; Mon, 24 Sep 2012 15:05:01 +0000
-Message-ID: <1348499094.4880.65.camel@sauron.fi.intel.com>
-Subject: Re: Problem with verify-ing patch (error: arch/m68k/Kconfig.cpu:
- patch does not apply)
+Message-ID: <1348499187.4880.66.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v3 1/2] ARM: Remove bcmring NAND driver
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
-Date: Mon, 24 Sep 2012 18:04:54 +0300
-In-Reply-To: <CACna6rwju0g+sq+vBAfCqFJm=EBLg79G2XoGEKs5n1Y=PcmKBg@mail.gmail.com>
-References: <CACna6rwju0g+sq+vBAfCqFJm=EBLg79G2XoGEKs5n1Y=PcmKBg@mail.gmail.com>
+To: Christian Daudt <csd@broadcom.com>
+Date: Mon, 24 Sep 2012 18:06:27 +0300
+In-Reply-To: <1348263626-3087-2-git-send-email-csd@broadcom.com>
+References: <1348263626-3087-1-git-send-email-csd@broadcom.com>
+ <1348263626-3087-2-git-send-email-csd@broadcom.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-HN4QOWKe82E1Y1p4BuJU"
+ boundary="=-tPMpZpgzqSA6nJaNlAxR"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: Arnd Bergmann <arnd@arndb.de>, Will Deacon <will.deacon@arm.com>,
+ cdaudt@gmail.com, "arm@kernel.org" <arm@kernel.org>,
+ linux-mtd@lists.infradead.org, "JD \(Jiandong\) Zheng" <jdzheng@broadcom.com>,
+ Olof Johansson <olof@lixom.net>, linux-arm-kernel@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,44 +25,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-HN4QOWKe82E1Y1p4BuJU
+--=-tPMpZpgzqSA6nJaNlAxR
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2012-09-24 at 13:14 +0200, Rafa=C5=82 Mi=C5=82ecki wrote:
-> I wanted to verify my patch before sending it.
+On Fri, 2012-09-21 at 14:40 -0700, Christian Daudt wrote:
+> This driver is being removed as part of the cleanup of the bcmring
+> SoC from mainline as it is no longer maintained.
 >=20
-> TRY[0]:
-> > ./verify ../wireless-testing/ mips-bcm47xx_defconfig < ../nand4/0001-mt=
-d-prepare-place-for-BCMA-NAND-flash-driver-s.patch
-> error: patch failed: arch/m68k/Kconfig.cpu:28
-> error: arch/m68k/Kconfig.cpu: patch does not apply
->=20
-> Weird. My patch doesn't touch m68k and applies cleanly to the
-> ../wireless-testing tree:
->=20
-> > cd ../wireless-testing/
-> > git am ../nand4/0001-mtd-prepare-place-for-BCMA-NAND-flash-driver-s.pat=
-ch
-> Applying: mtd: prepare place for BCMA NAND flash driver(s)
->=20
-> Help? :|
+> Signed-off-by: Christian Daudt <csd@broadcom.com>
+> Reviewed-by: Jiandong Zheng <jdzheng@broadcom.com>
+> Acked-by: Will Deacon <will.deacon@arm.com>
 
-It tries to apply quick fixes - I carry them because the kernel gets
-broken in various places all the time. So you need to fix the quick
-fixes patch - probably a fix was applied in upstream already.
-
-Obviously, quick fixes are in maintaining.git, not in the generic aiaiai
-tools. They are in 'quick_fixes.mbox'.
-
-In this case it easy - the m68k patch get merged upstream and just can
-be dropped from quick_fixes.mbox. Just done that and pushed out.
+Pushed this patch to l2-mtd.git. But if you decide to merge it via
+Arnd's tree (probably better idea) - let me know, I'll drop it.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-HN4QOWKe82E1Y1p4BuJU
+--=-tPMpZpgzqSA6nJaNlAxR
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -71,19 +52,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQYHaWAAoJECmIfjd9wqK072IP/jZ6+4fc+NCoWiWCoUNc/Wkb
-+jYFT1u11J2133pPWoGDG2QPb2Ad+BrHOJOR34H2lbbU8l/Dv18ucg6PDVViPflw
-plq6XbABuvmw5bHP2q5vrHdahHSEbMCQdQ+OwZUfwgl9rJOMmsAaMtKJ+HT3KCih
-j3zP2C2rzI+InfOf0IFkupt00OysS/VRyTnWNN7wJSYjJyud841i7mtfgwTS73iI
-1Zz1IPodywMvWeJES/w1MgmuRxYx3+h5s9I7274inka+EDfZUvY2JIoLStbPYTqw
-pJ+1XvgNp/5V+GwJ/5vGO64nWuVi5g8v//HvixRfvGhTszWIndDMdA07/gsprHSd
-qFskp8LbDot+CrxwzyzpJuqrQucpWy0HtmO7+8NSPTEbNiF2V70YXEkMP5LJRgMd
-UwCZZ0NCyzJH5h3GP8Xh4QFSpFkllwTEK6zXUGrJCI98lnJWHXm6FRRvis1VMshD
-025bmKfwY2BqOt1qUcJn/PptOQOFNdIP17w0L1uFC6MXo7NmA/8IkXZF3lBbmyKj
-FNEAK8Yw0aGMUFPACST9ytq2lu6M0de2wzrW1uIcmjjBf5tkcuIzSScU7yqmsYSR
-PdCbbsgp8gfaPkS0s24X/E6jgaFPl3aLD6UTfirXVnbIHuL1D61lvmZfuJy5DYoi
-3HIW+DACq+/xih8h+NSy
-=xXB8
+iQIcBAABAgAGBQJQYHbzAAoJECmIfjd9wqK0vPwP/2zg4PFI/+G2KrQnpCYuO9EV
+4C/fecVtxDqZwrXOiohWGdrdHI2oBA9YjRfFUqzvZy1vVNb8zt7bP/+wRAQlikzH
+cVIS0HT1L0PLkVQB/GoVTQ3XtCpnEWs+/Y62m89PnsSTKSQzheAhQv7yHhzYt6zc
+NJfaml7OvkJHQnh2E0Yk8SId6vngSKRSdTJ4aZligQRkhy0d5xA8Uw1lZNpIs7mg
+XZAsf0kT3N3CmMETlEb0KeCPp2TdD+2KTpn2NrWA1wkfdRqJ180HzPX3eEMIU0/G
+89AODYh+Ch9mK4H+Gu6rugW73/L8+yKdTVgkYBxq/2c0FrlRHiw6C+kmXOBzACNI
+kIlnGa3/7Wia+Kqary78WK6JImaDuE88sfdJVR0UKvo+/fWbwroE2VoBbxSoHM66
+45/YK9lnKQZnfIM6+OmUPjhCcNwrUX7hXjG2oliH2gsUWaORjx+nT8LVoRuh3Wi+
+noMDQHf7lIHrUr1qSlorUq4oHgs9AJ3YEeZHstMjPgZBHZ2GVVQxpdXXW8lRbSol
+zE2W5VEisKv+JSpFnSnyZj73nsmeMhCBXFr6zHEZaYn+Ue1upqoH8sESRhVc7o+W
+oN490ufTdHc2bX2bFuHqFZzQ1L+UyZiU+hyVNlbuiUrJBHRAOc9kJlTidWhzi39r
+wAXIbJcqsj+ZHGRo5tWZ
+=TmAw
 -----END PGP SIGNATURE-----
 
---=-HN4QOWKe82E1Y1p4BuJU--
+--=-tPMpZpgzqSA6nJaNlAxR--
