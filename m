@@ -1,19 +1,20 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TGAJn-0008N2-7t
- for linux-mtd@lists.infradead.org; Mon, 24 Sep 2012 15:11:31 +0000
-Message-ID: <1348499489.4880.67.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] NAND BBT: use NAND_BBT_SCAN_MAXBLOCKS
+ id 1TGAQ7-00014g-Og
+ for linux-mtd@lists.infradead.org; Mon, 24 Sep 2012 15:18:04 +0000
+Message-ID: <1348499871.4880.68.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: nand: docg4: ecc.read_page() returns 0 on
+ uncorrectible errors
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Richard Genoud <richard.genoud@gmail.com>
-Date: Mon, 24 Sep 2012 18:11:29 +0300
-In-Reply-To: <1347371454-17107-1-git-send-email-richard.genoud@gmail.com>
-References: <1347371454-17107-1-git-send-email-richard.genoud@gmail.com>
+To: Mike Dunn <mikedunn@newsguy.com>
+Date: Mon, 24 Sep 2012 18:17:51 +0300
+In-Reply-To: <1347378650-3522-1-git-send-email-mikedunn@newsguy.com>
+References: <1347378650-3522-1-git-send-email-mikedunn@newsguy.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-yiY4RphSw24mCSZl1Dmp"
+ boundary="=-G787EQTfEZdElTV2D1hI"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,17 +26,20 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-yiY4RphSw24mCSZl1Dmp
+--=-G787EQTfEZdElTV2D1hI
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-09-11 at 15:50 +0200, Richard Genoud wrote:
-> In nand_bbt.c, a hardcoded value was used instead of the define meant
-> for that, so we use the define.
+On Tue, 2012-09-11 at 08:50 -0700, Mike Dunn wrote:
+> Currently the docg4's ecc.read_page() method returns -EBADMSG when uncorr=
+ectible
+> bitflips occur.  This is wrong; 0 should be returned in this case.  An er=
+ror
+> code should only be returned by this method in the case of a hardware err=
+or
+> (probably -EIO).
 >=20
-> There's no functionnal change.
->=20
-> Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
+> Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
 
 Pushed to l2-mtd.git, thanks!
 
@@ -43,7 +47,7 @@ Pushed to l2-mtd.git, thanks!
 Best Regards,
 Artem Bityutskiy
 
---=-yiY4RphSw24mCSZl1Dmp
+--=-G787EQTfEZdElTV2D1hI
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -51,19 +55,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQYHghAAoJECmIfjd9wqK0p98QAJ2cYy54F5K+eLhIG2d8P7iE
-1kErooicy70AqDdgdiSOS5WgoQG7GZgEXxoJYIfE8ewK2YJfz8lUNA4ukXZlfhqo
-fu08nU6qz5zUZN5d010mn/l94O2WsHiotEPfukdiCFf67T/G/YZ5ur9e5SKFDj51
-9Y62Jl6MVfxXE5uyq6Y/pEIHw8HIt5FJ5wljoMhmkdP0duYNX3amxKXP6/i0Nrn8
-DNdaAZ+ptfI/cUXCM85wSHVGpyBfhdiCZbAWiOBjNvJpy71SfxdgnhDUBCUt5tX0
-1wGq0ni1pvUuy4+XKLxGoLUxwvt45kRt94N+U5RgBXFnILbAhln6cEa5DKPguPeA
-bq7R7trSLWjYU0OVGsTGRJ8VlNPNV9uWMAduvRi6vC6yfxgEDr11TcTQIVxl+0I1
-64ut1jlGTmqT36EhYi+Bz7DZjQobVJqieXBdZAZxugfHcSCLxd5nK1AProNCYJ5c
-4cNi/i6uDr9jFaKSfd+2POsO8+DRakJiQkcdA2CfLt9t7XKL9PaYczeELKq6oCO4
-/gUDq6mRObZoDXqijlU3aNwxMiiB+xioaHYJSRz+mKjzIe9a7GHjJjhGGjSMw0eG
-7hMyRO0l5TOdsooNPM8uQdgj3fjkCTo6r/Z2nursGP8y5R5mdln36QIvPN9TyZNT
-6xgghWdHZVFhl/12e2TX
-=m2b4
+iQIcBAABAgAGBQJQYHmfAAoJECmIfjd9wqK0DDMQAK0RJJyi8/9b3qjQGWI2yTkQ
+2SYnxMKbZuOXQNfcS1CLVdoNsJ0b44PPXhq01BZtziN7uTdw0hs2pA21uIcs4vwp
+TRCsLn49ZCVjRPwQ+GAQu4XcSxMW8wnM52O8Db07pgnAUf5zrl8LuZgu9I76arpl
+mmtGDWigwvxCNFoJO1ip0GxAQaLVgobAAgljy3TiSv066vVgtOJE876dUhy6QXDz
+sWsTw2+CXMWRiHfs7A8i6vIrV7DcE3rvaE6OqGUHrE1/aHOFcSBP0F8yzhabpm7Q
+hkovXtybPE4Giq4pG/XnnQ9qbl+GaPEWBHKY8xi5XDaVrimOyS8S4UWyCEVpUTtF
+0bai35j1DalvSwGPRaSiHnVn60F9FNnVr72A8jOJJ77s5s7jDHJEVkg6vQzkUA5e
+YHloBjhJdigWi2uq8DXJRKt32J3W4w8howJP5nigGo/QBAsenQDcdAf4UCJmkCbd
+n0Nl7+0eg37BpvSUBG0gNEVDdskNcktDYNECXbGWWl4/sLCx8qHonA37kyVphzYj
+vzLm7zzq98LwDeuhT9f5DaiY3RiqJOwgGYxD1v3EFmHZtCposIGIJiGj7PlsNo4P
+KU6l1/MfcAOEIHHTS2Hp41seE1xbNBso/C4CDXBVq86uQ6rB9amL302yHbDcSo7d
+5G/lOW4VTItRRU81wNHc
+=Kdsk
 -----END PGP SIGNATURE-----
 
---=-yiY4RphSw24mCSZl1Dmp--
+--=-G787EQTfEZdElTV2D1hI--
