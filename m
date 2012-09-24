@@ -1,20 +1,20 @@
-Date: Mon, 24 Sep 2012 09:37:59 +0100
-From: Will Deacon <will.deacon@arm.com>
-To: Christian Daudt <csd@broadcom.com>
-Subject: Re: [PATCH v3 2/2] ARM: Remove mach-bcmring
-Message-ID: <20120924083758.GA16146@mudshark.cambridge.arm.com>
-References: <1348263626-3087-1-git-send-email-csd@broadcom.com>
- <1348263626-3087-3-git-send-email-csd@broadcom.com>
+Received: from mail-lb0-f177.google.com ([209.85.217.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TG4bX-0006kq-1Y
+ for linux-mtd@lists.infradead.org; Mon, 24 Sep 2012 09:05:27 +0000
+Received: by lbbgf7 with SMTP id gf7so6330830lbb.36
+ for <linux-mtd@lists.infradead.org>; Mon, 24 Sep 2012 02:05:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1348263626-3087-3-git-send-email-csd@broadcom.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, "cdaudt@gmail.com" <cdaudt@gmail.com>,
- "arm@kernel.org" <arm@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "JD \(Jiandong\) Zheng" <jdzheng@broadcom.com>,
- Olof Johansson <olof@lixom.net>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <505F1D34.3040407@gmail.com>
+References: <1348401683-15698-1-git-send-email-hechtb@gmail.com>
+ <505F1D34.3040407@gmail.com>
+Date: Mon, 24 Sep 2012 11:05:24 +0200
+Message-ID: <CABYn4syrqMwJr8Hu2qy3P6cmooc8jDi-Xh7n4Pf63pyYS1tgZA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mtd: sh_flctl: Setup and release DMA channels
+From: Bastian Hecht <hechtb@googlemail.com>
+To: Vikram Narayanan <vikram186@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,15 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Sep 21, 2012 at 10:40:26PM +0100, Christian Daudt wrote:
-> Remove mach-bcmring as this is no longer maintained or used.
-> 
-> Signed-off-by: Christian Daudt <csd@broadcom.com>
-> Reviewed-by: Jiandong Zheng <jdzheng@broadcom.com>
-> ---
+2012/9/23 Vikram Narayanan <vikram186@gmail.com>:
+> On 9/23/2012 5:31 PM, Bastian Hecht wrote:
+>>
+>> The code probes if DMA channels can get allocated and tears them down at
+>> removal/failure if needed.
+>>
+>> Based on Guennadi Liakhovetski's code from the sh_mmcif driver.
+>>
+>>
+>> +void flctl_setup_dma(struct sh_flctl *flctl)
+>
+>
+> static?
+>
+> ~Vikram
 
-Acked-by: Will Deacon <will.deacon@arm.com>
-
-Cheers,
-
-Will
+Oh yes, thanks!
