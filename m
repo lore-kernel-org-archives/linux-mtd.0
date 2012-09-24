@@ -1,29 +1,21 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TG9li-0000mE-K0
- for linux-mtd@lists.infradead.org; Mon, 24 Sep 2012 14:36:20 +0000
-Message-ID: <1348497378.4880.59.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd:nand:clk: preparation for switch to common clock
- framework
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: "Karicheri, Muralidharan" <m-karicheri2@ti.com>
-Date: Mon, 24 Sep 2012 17:36:18 +0300
-In-Reply-To: <3E54258959B69E4282D79E01AB1F32B7041B6EDA@DFLE12.ent.ti.com>
-References: <1346350624-27291-1-git-send-email-m-karicheri2@ti.com>
- <3E54258959B69E4282D79E01AB1F32B7041B6EDA@DFLE12.ent.ti.com>
+ id 1TGA3k-000628-US
+ for linux-mtd@lists.infradead.org; Mon, 24 Sep 2012 14:54:57 +0000
+Message-ID: <1348498489.4880.60.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: nand: expand description of read_page method in
+ comment header
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Mike Dunn <mikedunn@newsguy.com>
+Date: Mon, 24 Sep 2012 17:54:49 +0300
+In-Reply-To: <1347379143-3607-1-git-send-email-mikedunn@newsguy.com>
+References: <1347379143-3607-1-git-send-email-mikedunn@newsguy.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-nO7x8rB4kMA7BG3DUB/z"
+ boundary="=-ccnk/8CBJ3IgERjRmObm"
 Mime-Version: 1.0
-Cc: "davinci-linux-open-source@linux.davincidsp.com"
- <davinci-linux-open-source@linux.davincidsp.com>,
- "mturquette@linaro.org" <mturquette@linaro.org>,
- "dbaryshkov@gmail.com" <dbaryshkov@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
-Reply-To: artem.bityutskiy@linux.intel.com
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,23 +26,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-nO7x8rB4kMA7BG3DUB/z
+--=-ccnk/8CBJ3IgERjRmObm
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2012-09-07 at 18:39 +0000, Karicheri, Muralidharan wrote:
-> subsystem owner,
+On Tue, 2012-09-11 at 08:59 -0700, Mike Dunn wrote:
+> In the absence of any formal documentation of the nand interface, I thoug=
+ht this
+> patch to the header file might be helpful.
 >=20
-> Could you please review and apply this patch as needed? We need to get
-> this upstream before submitting the patch for Common clock framework
-> support for mach-davinci. If I need to follow a specific procedure to
-> get this merged, please direct me to a process page.
+> Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
 
 Pushed to l2-mtd.git, thanks!
 
-Artem.
+--=20
+Best Regards,
+Artem Bityutskiy
 
---=-nO7x8rB4kMA7BG3DUB/z
+--=-ccnk/8CBJ3IgERjRmObm
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -58,19 +51,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQYG/iAAoJECmIfjd9wqK0sYMP/3qOWC2uFuqrfcqLsZMIfE8I
-mgccDRnG87zUg2TRFrcYh0VUOxH3QSHGO2dg29kcThqmx6O3JpLrTPxq6/KQf+4f
-1l9dbXpbJ6x2z/OtpuXNFYVTQ9tqaoe1Y7e6X6PLoSoS62UZ6VNks4qMQUvf9fDa
-1rprzzvssPwwRggfqtAfhlqyWuFxqyARnC3cuLZhNPFDkqEB1TZ5lSEzn/p31cbd
-ZCzcJI18avGRhCn9rnRexUVXWVxXOZXuFfeyjBHD8IQDltarLspO2mDj29Pvjm1L
-J9HxVB+A5Tbv2s2QPbQ1wAma88XRJ4ii1cQNhUV3232owJ7bLiaLQqjzHBZ/Yqcq
-bIw5PkV86b/Z9CdPaE2A0gc+ED5/9Fi7oodhaPjO9K95uK9JrY7QLjpQqxed6oQ9
-o6GGyvzQZlgALyliJCOxvMwjhPV7x/iHOt+kCk1zu+xaJvHvXnc25jTILuF0pYyx
-Tj0gP0OeeYOF1sV+kF1s26yPntcKQRJQvR3Pz7sVabK10bC+lGY6Z+DBNGIVrbFD
-azq/k7ga9AjAwprHNWH+/Bz1uT0y8VOfthNyHxgFnMZuhiCMdaRMfg1Fa+Q1B69F
-Mpj882H0Jez5lZHyR16RRgdw2ncxHgxcO4m/MIgBWlC7tXfo8OP5zkw8L7hIkI7p
-Dt7AWqUQRExVCsZQ+Jq+
-=7Gfj
+iQIcBAABAgAGBQJQYHQ5AAoJECmIfjd9wqK0A18QAL4uBXFmxjeUBoU5FvwSl5pE
+CuGHx7/qfTzk8IYqKsBrj8pXCVHIPeTXbM92SQHVKLf18TuWtSMqPXxbhhW619SL
+ObrV6at/sfMcnb16ilo7XzX8bmSWiu1zsLsRs9hYlAzZeaQAhIgx1zu0iAZuMUJz
+v5AEPvP1tXSa9eNiRfRJ2Oasir8JCCDsxvwXCHGq0L8odL5hd+tLWl4tQo1GeZyX
+ANrioOYqTi6gcchpFLgef5Xj9tO+ari9eDHF8h+/mfmuF9eUaSj+Yl1dyzr1OTE4
+yn8gTn/tWr1GJka1foqEcl4QdfkwYr9DOlWDdEObUQfoeR3OU1dfDoVL0grgwfPW
+TCfZaNCvMrZQJZ7j1ARgvLPjDZRY7HbiFyhPUcX+UktarGI6KAkdFPfP3rkxd2Fo
+J+YbbMiM74lXMksedxoqdpEu0TyiZpv+MAkrISQDAFiI20CqhwTGf4ZtrDwkOc3p
+sRQIq1gIYTXk8yVcYO7WFo1bx4yvQpsqdAh1Oam/fKVFBEG5mSLiamxVjpbuheeU
+hinLd0MpIUyYiN23PbNwhwTeKVm35f7WGD2cfmh+jHwUUSjNRznCqjjvEI9Sekol
+fG6EGO6SJPG6r/OeYU53Eqj7+8E/wlJK+4LFRdy8HrjkYW4qnIuWdmO8rehGMWL3
+akyG/ftzmv8IUN88g+rl
+=XhB5
 -----END PGP SIGNATURE-----
 
---=-nO7x8rB4kMA7BG3DUB/z--
+--=-ccnk/8CBJ3IgERjRmObm--
