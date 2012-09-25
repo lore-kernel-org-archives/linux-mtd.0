@@ -1,17 +1,22 @@
-Received: from mail-ee0-f49.google.com ([74.125.83.49])
+Received: from mail-wi0-f177.google.com ([209.85.212.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TGR5G-0003dY-Eo
- for linux-mtd@lists.infradead.org; Tue, 25 Sep 2012 09:05:39 +0000
-Received: by eekd49 with SMTP id d49so1689126eek.36
- for <linux-mtd@lists.infradead.org>; Tue, 25 Sep 2012 02:05:36 -0700 (PDT)
-Sender: Castet Matthieu <matthieu.castet@gmail.com>
-From: Matthieu CASTET <matthieu.castet@parrot.com>
-To: linux-mtd@lists.infradead.org,
-	dedekind1@gmail.com
-Subject: [PATCH] mtd: m25p80: add support for the windbond w25q256 chip
-Date: Tue, 25 Sep 2012 11:05:27 +0200
-Message-Id: <1348563927-9131-1-git-send-email-matthieu.castet@parrot.com>
-Cc: Matthieu CASTET <matthieu.castet@parrot.com>
+ id 1TGRWK-0006ia-MR
+ for linux-mtd@lists.infradead.org; Tue, 25 Sep 2012 09:33:37 +0000
+Received: by wibhn17 with SMTP id hn17so4339673wib.0
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Sep 2012 02:33:35 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1348499094.4880.65.camel@sauron.fi.intel.com>
+References: <CACna6rwju0g+sq+vBAfCqFJm=EBLg79G2XoGEKs5n1Y=PcmKBg@mail.gmail.com>
+ <1348499094.4880.65.camel@sauron.fi.intel.com>
+Date: Tue, 25 Sep 2012 11:33:35 +0200
+Message-ID: <CACna6ryu06qsgX99kdkeDaB+XJv4XwC0-O+5ysNFa1iOMEgNow@mail.gmail.com>
+Subject: Re: Problem with verify-ing patch (error: arch/m68k/Kconfig.cpu:
+ patch does not apply)
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,30 +26,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Matthieu CASTET <matthieu.castet@parrot.com>
----
- drivers/mtd/devices/m25p80.c |    2 ++
- 1 file changed, 2 insertions(+)
+2012/9/24 Artem Bityutskiy <dedekind1@gmail.com>:
+> On Mon, 2012-09-24 at 13:14 +0200, Rafa=C5=82 Mi=C5=82ecki wrote:
+>> I wanted to verify my patch before sending it.
+>>
+>> TRY[0]:
+>> > ./verify ../wireless-testing/ mips-bcm47xx_defconfig < ../nand4/0001-m=
+td-prepare-place-for-BCMA-NAND-flash-driver-s.patch
+>> error: patch failed: arch/m68k/Kconfig.cpu:28
+>> error: arch/m68k/Kconfig.cpu: patch does not apply
+>>
+>> Weird. My patch doesn't touch m68k and applies cleanly to the
+>> ../wireless-testing tree:
+>>
+>> > cd ../wireless-testing/
+>> > git am ../nand4/0001-mtd-prepare-place-for-BCMA-NAND-flash-driver-s.pa=
+tch
+>> Applying: mtd: prepare place for BCMA NAND flash driver(s)
+>>
+>> Help? :|
+>
+> It tries to apply quick fixes - I carry them because the kernel gets
+> broken in various places all the time. So you need to fix the quick
+> fixes patch - probably a fix was applied in upstream already.
+>
+> Obviously, quick fixes are in maintaining.git, not in the generic aiaiai
+> tools. They are in 'quick_fixes.mbox'.
+>
+> In this case it easy - the m68k patch get merged upstream and just can
+> be dropped from quick_fixes.mbox. Just done that and pushed out.
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 5257345..4eb99c6 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -168,6 +168,7 @@ static inline int set_4byte(struct m25p *flash, u32 jedec_id, int enable)
- {
- 	switch (JEDEC_MFR(jedec_id)) {
- 	case CFI_MFR_MACRONIX:
-+	case 0xEF /* winbond */:
- 		flash->command[0] = enable ? OPCODE_EN4B : OPCODE_EX4B;
- 		return spi_write(flash->spi, flash->command, 1);
- 	default:
-@@ -739,6 +740,7 @@ static const struct spi_device_id m25p_ids[] = {
- 	{ "w25x64", INFO(0xef3017, 0, 64 * 1024, 128, SECT_4K) },
- 	{ "w25q64", INFO(0xef4017, 0, 64 * 1024, 128, SECT_4K) },
- 	{ "w25q80", INFO(0xef5014, 0, 64 * 1024,  16, SECT_4K) },
-+	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512, SECT_4K) },
- 
- 	/* Catalyst / On Semiconductor -- non-JEDEC */
- 	{ "cat25c11", CAT25_INFO(  16, 8, 16, 1) },
--- 
-1.7.10.4
+Thanks. Unfortunately I'm still having problems with verify/aiaiai :|
+
+After your change I started verify again and it took 3 minutes to let
+me know it needs mips-linux-gcc. I had to install it (OpenWRT is using
+it's own toolchain).
+
+Then I started again and after 3 minutes: lacking sparse
+
+3 minutes later: lacking smatch
+
+3 minutes later: lacking cppcheck
+
+3 minutes later: lacking spatch
+
+I'm not sure what's going to be next. I'm sure that things are obvious
+for you, but beginner can really get irritated before he manages to
+setup everything... ;/
+
+--=20
+Rafa=C5=82
