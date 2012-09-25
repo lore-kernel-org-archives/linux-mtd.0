@@ -1,14 +1,14 @@
 Received: from mail-pa0-f49.google.com ([209.85.220.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TGM1g-000690-1E
- for linux-mtd@lists.infradead.org; Tue, 25 Sep 2012 03:41:36 +0000
+ id 1TGM1i-000690-3s
+ for linux-mtd@lists.infradead.org; Tue, 25 Sep 2012 03:41:39 +0000
 Received: by mail-pa0-f49.google.com with SMTP id bi5so1915646pad.36
- for <linux-mtd@lists.infradead.org>; Mon, 24 Sep 2012 20:41:35 -0700 (PDT)
+ for <linux-mtd@lists.infradead.org>; Mon, 24 Sep 2012 20:41:37 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 8/9] mtd: nand: decode Hynix MLC, 6-byte ID length
-Date: Mon, 24 Sep 2012 20:40:54 -0700
-Message-Id: <1348544455-17656-9-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 9/9] mtd: nand: detect Samsung K9GBG08U0A, K9GAG08U0F ID
+Date: Mon, 24 Sep 2012 20:40:55 -0700
+Message-Id: <1348544455-17656-10-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1348544455-17656-1-git-send-email-computersforpeace@gmail.com>
 References: <1348544455-17656-1-git-send-email-computersforpeace@gmail.com>
 Cc: Angus Clark <angus.clark@st.com>, Mike Dunn <mikedunn@newsguy.com>,
@@ -25,82 +25,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hynix has introduced a new ID decoding scheme for their newer MLC, some of
-which don't support ONFI. The following devices all follow the pattern given in
-the datasheet for Hynix H27UBG8T2B, p.22:
+Datasheets for the following Samsung NAND parts (both MLC and SLC) describe
+extensions to the Samsung 6-byte extended ID decoding table:
 
-Hynix H27UAG8T2A
-Hynix H27UBG8T2A
-Hynix H27UBG8T2B
+K9GBG08U0A (MLC, 6-byte ID)
+K9GAG08U0F (MLC, 6-byte ID)
+K9FAG08U0M (SLC, 6-byte ID)
+
+The table found in K9GAG08U0F, p.44, contains a superset of the information
+found in other previous datasheets.
+
+This patch adds support for all of these chips, with 512B and 640B OOB sizes.
+It also changes the detection pattern such that this table applies to all
+Samsung 6-byte ID NAND, not just MLC. This is safe, according to the NAND
+parameter data I have collected:
+
+Note that nand_base.c does not yet support the bad block marker scheme defined
+for these chips (i.e., scan 1st and last page for BB markers).
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/nand/nand_base.c | 45 +++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 44 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/nand_base.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index fd5c307..7e93d0d 100644
+index 7e93d0d..bcb58ce 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -2940,8 +2940,10 @@ static void nand_decode_ext_id(struct mtd_info *mtd, struct nand_chip *chip,
+@@ -2939,19 +2939,18 @@ static void nand_decode_ext_id(struct mtd_info *mtd, struct nand_chip *chip,
+ 	/*
  	 * Field definitions are in the following datasheets:
  	 * Old style (4,5 byte ID): Samsung K9GAG08U0M (p.32)
- 	 * New style   (6 byte ID): Samsung K9GBG08U0M (p.40)
-+	 * Hynix MLC   (6 byte ID): Hynix H27UBG8T2B (p.22)
+-	 * New style   (6 byte ID): Samsung K9GBG08U0M (p.40)
++	 * New style   (6 byte ID): Samsung K9GAG08U0F (p.44)
+ 	 * Hynix MLC   (6 byte ID): Hynix H27UBG8T2B (p.22)
  	 *
--	 * Check for ID length + Samsung ID to decide what to do.
-+	 * Check for ID length, cell type, and Hynix/Samsung ID to decide what
-+	 * to do.
+ 	 * Check for ID length, cell type, and Hynix/Samsung ID to decide what
+ 	 * to do.
  	 */
- 	if (id_len == 6 && id_data[0] == NAND_MFR_SAMSUNG &&
- 			(chip->cellinfo & NAND_CI_CELLTYPE_MSK)) {
-@@ -2968,6 +2970,47 @@ static void nand_decode_ext_id(struct mtd_info *mtd, struct nand_chip *chip,
- 		mtd->erasesize = (128 * 1024) <<
- 			(((extid >> 1) & 0x04) | (extid & 0x03));
- 		*busw = 0;
-+	} else if (id_len == 6 && id_data[0] == NAND_MFR_HYNIX &&
-+			(chip->cellinfo & NAND_CI_CELLTYPE_MSK)) {
-+		unsigned int tmp;
-+
-+		/* Calc pagesize */
-+		mtd->writesize = 2048 << (extid & 0x03);
-+		extid >>= 2;
-+		/* Calc oobsize */
+-	if (id_len == 6 && id_data[0] == NAND_MFR_SAMSUNG &&
+-			(chip->cellinfo & NAND_CI_CELLTYPE_MSK)) {
++	if (id_len == 6 && id_data[0] == NAND_MFR_SAMSUNG) {
+ 		/* Calc pagesize */
+ 		mtd->writesize = 2048 << (extid & 0x03);
+ 		extid >>= 2;
+ 		/* Calc oobsize */
+-		switch (extid & 0x03) {
 +		switch (((extid >> 2) & 0x04) | (extid & 0x03)) {
-+		case 0:
-+			mtd->oobsize = 128;
-+			break;
-+		case 1:
-+			mtd->oobsize = 224;
-+			break;
-+		case 2:
-+			mtd->oobsize = 448;
-+			break;
-+		case 3:
-+			mtd->oobsize = 64;
-+			break;
+ 		case 1:
+ 			mtd->oobsize = 128;
+ 			break;
+@@ -2961,9 +2960,16 @@ static void nand_decode_ext_id(struct mtd_info *mtd, struct nand_chip *chip,
+ 		case 3:
+ 			mtd->oobsize = 400;
+ 			break;
+-		default:
 +		case 4:
-+			mtd->oobsize = 32;
-+			break;
+ 			mtd->oobsize = 436;
+ 			break;
 +		case 5:
-+			mtd->oobsize = 16;
++			mtd->oobsize = 512;
 +			break;
-+		default:
++		case 6:
++		default: /* Other cases are "reserved" (unknown) */
 +			mtd->oobsize = 640;
 +			break;
-+		}
-+		extid >>= 2;
-+		/* Calc blocksize */
-+		tmp = ((extid >> 1) & 0x04) | (extid & 0x03);
-+		if (tmp < 0x03)
-+			mtd->erasesize = (128 * 1024) << tmp;
-+		else if (tmp == 0x03)
-+			mtd->erasesize = 768 * 1024;
-+		else
-+			mtd->erasesize = (64 * 1024) << tmp;
-+		*busw = 0;
- 	} else {
- 		/* Calc pagesize */
- 		mtd->writesize = 1024 << (extid & 0x03);
+ 		}
+ 		extid >>= 2;
+ 		/* Calc blocksize */
 -- 
 1.7.11.3
