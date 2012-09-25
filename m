@@ -1,14 +1,14 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
+Received: from mail-pa0-f49.google.com ([209.85.220.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TGM1d-00069B-TF
- for linux-mtd@lists.infradead.org; Tue, 25 Sep 2012 03:41:34 +0000
-Received: by mail-pb0-f49.google.com with SMTP id rq8so14273168pbb.36
- for <linux-mtd@lists.infradead.org>; Mon, 24 Sep 2012 20:41:33 -0700 (PDT)
+ id 1TGM1g-000690-1E
+ for linux-mtd@lists.infradead.org; Tue, 25 Sep 2012 03:41:36 +0000
+Received: by mail-pa0-f49.google.com with SMTP id bi5so1915646pad.36
+ for <linux-mtd@lists.infradead.org>; Mon, 24 Sep 2012 20:41:35 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 7/9] mtd: nand: increase max OOB size to 640
-Date: Mon, 24 Sep 2012 20:40:53 -0700
-Message-Id: <1348544455-17656-8-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 8/9] mtd: nand: decode Hynix MLC, 6-byte ID length
+Date: Mon, 24 Sep 2012 20:40:54 -0700
+Message-Id: <1348544455-17656-9-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1348544455-17656-1-git-send-email-computersforpeace@gmail.com>
 References: <1348544455-17656-1-git-send-email-computersforpeace@gmail.com>
 Cc: Angus Clark <angus.clark@st.com>, Mike Dunn <mikedunn@newsguy.com>,
@@ -25,26 +25,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some Hynix and Samsung MLC NAND have 640B OOB size. Sooner or later, we should
-dynamically allocate the buffers that use these macros.
+Hynix has introduced a new ID decoding scheme for their newer MLC, some of
+which don't support ONFI. The following devices all follow the pattern given in
+the datasheet for Hynix H27UBG8T2B, p.22:
+
+Hynix H27UAG8T2A
+Hynix H27UBG8T2A
+Hynix H27UBG8T2B
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- include/linux/mtd/nand.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/nand_base.c | 45 +++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 44 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index ce22824..817ff5a 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -56,7 +56,7 @@ extern int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
-  * is supported now. If you add a chip with bigger oobsize/page
-  * adjust this accordingly.
-  */
--#define NAND_MAX_OOBSIZE	576
-+#define NAND_MAX_OOBSIZE	640
- #define NAND_MAX_PAGESIZE	8192
- 
- /*
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index fd5c307..7e93d0d 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2940,8 +2940,10 @@ static void nand_decode_ext_id(struct mtd_info *mtd, struct nand_chip *chip,
+ 	 * Field definitions are in the following datasheets:
+ 	 * Old style (4,5 byte ID): Samsung K9GAG08U0M (p.32)
+ 	 * New style   (6 byte ID): Samsung K9GBG08U0M (p.40)
++	 * Hynix MLC   (6 byte ID): Hynix H27UBG8T2B (p.22)
+ 	 *
+-	 * Check for ID length + Samsung ID to decide what to do.
++	 * Check for ID length, cell type, and Hynix/Samsung ID to decide what
++	 * to do.
+ 	 */
+ 	if (id_len == 6 && id_data[0] == NAND_MFR_SAMSUNG &&
+ 			(chip->cellinfo & NAND_CI_CELLTYPE_MSK)) {
+@@ -2968,6 +2970,47 @@ static void nand_decode_ext_id(struct mtd_info *mtd, struct nand_chip *chip,
+ 		mtd->erasesize = (128 * 1024) <<
+ 			(((extid >> 1) & 0x04) | (extid & 0x03));
+ 		*busw = 0;
++	} else if (id_len == 6 && id_data[0] == NAND_MFR_HYNIX &&
++			(chip->cellinfo & NAND_CI_CELLTYPE_MSK)) {
++		unsigned int tmp;
++
++		/* Calc pagesize */
++		mtd->writesize = 2048 << (extid & 0x03);
++		extid >>= 2;
++		/* Calc oobsize */
++		switch (((extid >> 2) & 0x04) | (extid & 0x03)) {
++		case 0:
++			mtd->oobsize = 128;
++			break;
++		case 1:
++			mtd->oobsize = 224;
++			break;
++		case 2:
++			mtd->oobsize = 448;
++			break;
++		case 3:
++			mtd->oobsize = 64;
++			break;
++		case 4:
++			mtd->oobsize = 32;
++			break;
++		case 5:
++			mtd->oobsize = 16;
++			break;
++		default:
++			mtd->oobsize = 640;
++			break;
++		}
++		extid >>= 2;
++		/* Calc blocksize */
++		tmp = ((extid >> 1) & 0x04) | (extid & 0x03);
++		if (tmp < 0x03)
++			mtd->erasesize = (128 * 1024) << tmp;
++		else if (tmp == 0x03)
++			mtd->erasesize = 768 * 1024;
++		else
++			mtd->erasesize = (64 * 1024) << tmp;
++		*busw = 0;
+ 	} else {
+ 		/* Calc pagesize */
+ 		mtd->writesize = 1024 << (extid & 0x03);
 -- 
 1.7.11.3
