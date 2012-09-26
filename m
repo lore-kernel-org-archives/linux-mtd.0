@@ -1,21 +1,22 @@
-Received: from mail-ob0-f177.google.com ([209.85.214.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TGmSh-0006CI-HD
- for linux-mtd@lists.infradead.org; Wed, 26 Sep 2012 07:55:16 +0000
-Received: by obbta17 with SMTP id ta17so320556obb.36
- for <linux-mtd@lists.infradead.org>; Wed, 26 Sep 2012 00:55:14 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1348645345.24309.24.camel@sauron.fi.intel.com>
-References: <1347875449-19318-1-git-send-email-zajec5@gmail.com>
- <1348645345.24309.24.camel@sauron.fi.intel.com>
-Date: Wed, 26 Sep 2012 09:55:14 +0200
-Message-ID: <CACna6rwPVzgQ1NA_yN5wdmW=TMw9ZpOLyf69ZSj2yYdK0gsZ1g@mail.gmail.com>
-Subject: Re: [PATCH V3] mtd: basic (read only) driver for BCMA serial flash
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Received: from mga03.intel.com ([143.182.124.21])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TGmf5-0006y1-AV
+ for linux-mtd@lists.infradead.org; Wed, 26 Sep 2012 08:08:03 +0000
+Message-ID: <1348646887.24309.32.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: fsl_ifc_nand: fix cast removes address space of
+ expression warnings
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Kim Phillips <kim.phillips@freescale.com>
+Date: Wed, 26 Sep 2012 11:08:07 +0300
+In-Reply-To: <20120913185607.af76965cb973dfb1059c842f@freescale.com>
+References: <20120913185607.af76965cb973dfb1059c842f@freescale.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-wBJWKsR9wgOYgl/7Rgst"
+Mime-Version: 1.0
+Cc: Scott Wood <scottwood@freescale.com>, David Woodhouse <dwmw2@infradead.org>,
+ linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,21 +26,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2012/9/26 Artem Bityutskiy <dedekind1@gmail.com>:
-> On Mon, 2012-09-17 at 11:50 +0200, Rafa=C5=82 Mi=C5=82ecki wrote:
->> This registers MTD driver for serial flash platform device. Right now it
->> supports reading only, writing still has to be implemented.
->>
->> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
->
-> Can you please confirm that you tested this and the driver works in R/O
-> mode just fine. If yes, I would also like to add a note that this is R/O
-> to the Kconfig text. If it does not even work, I am willing to drop it.
 
-OFC it works! :) It nicely cooperates with bcm47xxpart (partitions are
-detected) and I can read mtd content (bootloader, nvram, etc.).
+--=-wBJWKsR9wgOYgl/7Rgst
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-You're right, we miss info about R/O in Kconfig, I didn't think about this.
+On Thu, 2012-09-13 at 18:56 -0500, Kim Phillips wrote:
+> found by sparse.
+>=20
+> Signed-off-by: Kim Phillips <kim.phillips@freescale.com>
+
+Pushed to l2-mtd.git, thanks!
 
 --=20
-Rafa=C5=82
+Best Regards,
+Artem Bityutskiy
+
+--=-wBJWKsR9wgOYgl/7Rgst
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQYrfnAAoJECmIfjd9wqK0cdwP/jhDMd+B3ElBfU7IcTjyzIcP
+RGkPw+vRHAzWb7+6pKMSBRncW76563vkf8sa5yk14iBLkjI36tvy9ra8fsRVt0qL
+scPh0aAYONnRraYqZhWmsCG+jlcAhGNpTefTQcpcXZfSJE0F5xISAybk7MJhhYFa
+4yuM3aptMllN+dJl4ssQd+YnYbQ36Jt4KNJzBbkGXTDjYTcsbeui1AwGNvtMrUrn
+V6vXnDl5r1TMUf6BC7DxQ1H8Kyzbr6EL0uzPnFGGd6YJE+zH5TAQoJzQfWjqncWL
+OeCdZqF/34YbbQrOH/3AFLjEUc/FGJuAt9jH8wXK6YymC0Fva1rFgI8E83zsps0G
+zmE3OcPv84EMdM7QmKdjp8rU0SsoBRqxfYaCBFWUoP2Nkl7GVIDkUf0qoFCCorXr
+EDa0iWsZv97CJzo9fjb/6uuvOPOoYpg8IrsMz+/QO5Z5ZtSn8qpp5uDmREz+HXlv
+ZoLcQr699xJG6vqfNqnoczUAwt76IyGSy7tMnmq/5dW1j1m0Ux/YnMnP4dmBBCxz
+NtKuwv8DqIQg1Ru1/LuezScuyYA4i98Wa46oSLSwgypIDQnx7O7bO71ouk8zNXeK
+tr4S3RoGYopu6WNMCdcipUzXSt3W+/t4sd+koMTtNXAlfqD+aQ2P9DGA2RBTEhfw
+efKpuybRJVBbJyd9m4Jc
+=W+fj
+-----END PGP SIGNATURE-----
+
+--=-wBJWKsR9wgOYgl/7Rgst--
