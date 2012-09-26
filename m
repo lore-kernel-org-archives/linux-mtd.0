@@ -1,21 +1,21 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TGoF4-0005cA-M5
- for linux-mtd@lists.infradead.org; Wed, 26 Sep 2012 09:49:19 +0000
-Message-ID: <1348652962.24309.53.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd/nand/docg4: Add missing HAS_IOMEM dependency
+ id 1TGoID-000661-Ns
+ for linux-mtd@lists.infradead.org; Wed, 26 Sep 2012 09:52:34 +0000
+Message-ID: <1348653158.24309.54.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] MTD: nandsim: BUG: Fail if overridesize is too big
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Peter Huewe <peterhuewe@gmx.de>
-Date: Wed, 26 Sep 2012 12:49:22 +0300
-In-Reply-To: <1347662469-1604-1-git-send-email-peterhuewe@gmx.de>
-References: <1347662469-1604-1-git-send-email-peterhuewe@gmx.de>
+To: Richard Genoud <richard.genoud@gmail.com>
+Date: Wed, 26 Sep 2012 12:52:38 +0300
+In-Reply-To: <CACQ1gAg7Kb7v1HZVdF1N2CtmUSGEYJwB+Un2GUJFDX+==6yO8g@mail.gmail.com>
+References: <1347452786-10208-1-git-send-email-richard.genoud@gmail.com>
+ <CACQ1gAg7Kb7v1HZVdF1N2CtmUSGEYJwB+Un2GUJFDX+==6yO8g@mail.gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-OojqlFTNNvdfLLprShSg"
+ boundary="=-2fRQS657P+dAEeYjX3UO"
 Mime-Version: 1.0
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, Shubhrajyoti D <shubhrajyoti@ti.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>, Adrian Hunter <adrian.hunter@intel.com>
 Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,27 +27,21 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-OojqlFTNNvdfLLprShSg
+--=-2fRQS657P+dAEeYjX3UO
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, 2012-09-15 at 00:41 +0200, Peter Huewe wrote:
-> While building an allyesconfig for UML I received this error message(s):
->  drivers/mtd/nand/docg4.c: In function 'probe_docg4':
->  drivers/mtd/nand/docg4.c:1272:2: error: implicit declaration of function
->  'ioremap' [-Werror=3Dimplicit-function-declaration]
->  drivers/mtd/nand/docg4.c:1272:10: warning: assignment makes pointer from
->  integer without a cast [enabled by default]
->  drivers/mtd/nand/docg4.c:1327:2: error: implicit declaration of function
->  'iounmap' [-Werror=3Dimplicit-function-declaration]
+On Tue, 2012-09-18 at 10:27 +0200, Richard Genoud wrote:
+> As this is a bug fix, it should be pushed to 3.6-rc7, shouldn't it ?
 
-Pushed to l2-mtd.git, thanks!
+Well, it is a fix for an ancient bug, so it is enough to CC the stable
+tree and merge this patch normally, I think.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-OojqlFTNNvdfLLprShSg
+--=-2fRQS657P+dAEeYjX3UO
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -55,19 +49,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQYs+iAAoJECmIfjd9wqK0mMMP/RIBCiw915b0dXx77dkfE2vB
-Kvfzm5jSb4BwnBjFohaAqJVi/YrA+56loFkzAKBCTh/BIiA8GAhPo99nkbr63hb5
-ayJ/Cv3sw45CA3Ny6Wou8xhSailEhRc1z1zr8xWSXSxia7RryhR6ayic0wUl8jGI
-ksIebbWJ9nspw4/+Zr0AQmamLse21y7eaqAQJMRcrWcw6mxVAJA0eQ6HK5B8Ebw8
-38WkYWmi8UecnGBdBGzgphjEpXmhG1DoTE7hGYfepLJ6m8Hq50SbOqDRAiD8FhUg
-WEMIKTVxeXoj2g89wWAaf+Q9NprHdaPSwDN5q07CVMVYPD0mq0WHfZE+N2Qumaop
-vXRLUjF07EJBRgy4GIgput7k/owESOweq3GwFEcr1QXjb86T04XHwcisKwRbNNk2
-Xo/qmgX9nYj3kBree08rOy7Ua7/iX+UTHknSRbZ8ngjZsk/Wx/6lwmtUiDTQMJmJ
-CLktwYROVh5YLcLlK+Xc+U55W9zByFcf50nnqxSVMXuNEN3eeZhjlbSn0C18G+Vt
-WeawzkBpnvCSYTCPhQk87AuybYEAfGqaxF74/UPHsu9LGtpdkLscHWqFC6mAePyy
-ONjJlYdN25+RgYXkEN2uWOwRmf/BHfu+IffNr7KK7WyAmB3FldClPLk2PuOfniC9
-JqA9nbhFHRGPxeaM8qfD
-=4Gag
+iQIcBAABAgAGBQJQYtBmAAoJECmIfjd9wqK0S2UP/0tC4LMPyFLJDWRr8tl1xhsM
+4UGZwAaar62DoB2k8BxtA/Q3bpKjcKIIQ9ttoIe3oQE0gkPmkJ5tYupNkQVqUI5G
+Hc+jCv6Cex4KPnO0lWsAyRveKldK3xL5WfyDJ9l0osECCPzqqQNXwbyQY6ntdNGm
+Hyg/nABmXZuHX8ucAf9Pg4NzKOPRHSEm4NqsHCGv/JDzMcUhy7LHgRlzNhv7/U0P
++LI/4ByvyUHtpeMYMrlhkE4GXEN/x6yNP6sFw/8jsmPjz++53eMpAO2oRYoHPDPf
+yainbF3AgCszdp0JOpGidX5EJtN2viZUtWHYOFMpL1QXb+KJXWW2PwYZdVG/s4y8
+wpOnF9iW0LQRklYM+8dwqMY0NDiRylC9QMW1XTkwvS3CvQNNEZDgCGiC1e+JweeL
+5bqKG10S45KGawcwsVw1XKgd5vIkAGqjXeyxWvyJ/Kji4HQiOc2i8BMrACLwp/ms
+3Y2BSOVeFSUMzCTma1BFDYppqwCAyYRvkn/ydL4fA27i1ChQvmFYnQ6OlJduIRve
+aiMqaku6UKjFQzsHSybxuwtx6X0yfV+t18ArhNOCJysdQnWSBlXh2YRs+jTUR7F1
+RuUQNCgBLj5HSpWowFLRZfun4XUiyDAA1BaUp5rYj5UaY3xuxQKvmsZWR5SYYq4e
+I+BIr2i+YqNZxi/q/e+o
+=Eqnd
 -----END PGP SIGNATURE-----
 
---=-OojqlFTNNvdfLLprShSg--
+--=-2fRQS657P+dAEeYjX3UO--
