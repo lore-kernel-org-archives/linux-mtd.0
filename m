@@ -1,26 +1,17 @@
-Received: from mail-ie0-f177.google.com ([209.85.223.177])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TGqt3-00019x-Jn
- for linux-mtd@lists.infradead.org; Wed, 26 Sep 2012 12:38:46 +0000
-Received: by ieje14 with SMTP id e14so1292891iej.36
- for <linux-mtd@lists.infradead.org>; Wed, 26 Sep 2012 05:38:44 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1348658003.24309.70.camel@sauron.fi.intel.com>
-References: <CADqH6VzVhsGvCCbokjW8TAJSq5Sj33GiHt4gZxOFZaeHtJ4JeQ@mail.gmail.com>
- <1346751620.12610.35.camel@sauron.fi.intel.com>
- <CADqH6Vw0kY=U-jymgpj_JpzLkqLb0JjK7J1C1V6qF_uo-jDFng@mail.gmail.com>
- <1348651795.24309.49.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1209261251200.19047@lnxricardw.se.axis.com>
- <1348658003.24309.70.camel@sauron.fi.intel.com>
-Date: Wed, 26 Sep 2012 20:38:44 +0800
-Message-ID: <CADqH6VxNTns60J6tc5a6SwdoGcetSK5sYF=a5Sf2HxDR+igCLg@mail.gmail.com>
-Subject: Re: Offtopic: ubifs and best practice for supporting browser based
- firmware upgrades
-From: Jaya Kumar <jayakumar.lkml@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ricard Wanderlof <ricard.wanderlof@axis.com>
+ id 1TGtuC-0004XJ-Qu
+ for linux-mtd@lists.infradead.org; Wed, 26 Sep 2012 15:52:11 +0000
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 01/10] UBI: Add fastmap on-flash data structures
+Date: Wed, 26 Sep 2012 17:51:41 +0200
+Message-Id: <1348674710-102885-2-git-send-email-richard@nod.at>
+In-Reply-To: <1348674710-102885-1-git-send-email-richard@nod.at>
+References: <1348674710-102885-1-git-send-email-richard@nod.at>
+Cc: artem.bityutskiy@linux.intel.com, linux-kernel@vger.kernel.org,
+ Heinz.Egger@linutronix.de, tim.bird@am.sony.com,
+ Richard Weinberger <richard@nod.at>, tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,47 +21,159 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Sep 26, 2012 at 7:13 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> From df2a498002498e52025acf51e0b43064d766aa0a Mon Sep 17 00:00:00 2001
-> From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> Date: Wed, 26 Sep 2012 14:12:28 +0300
-> Subject: [PATCH] UBI: allow for delayed rename
->
-> Just an experimental patch.
+Add the on-flash data structures neeed by fastmap
+to ubi-media.h
 
-Thanks Artem. I gave it a quick try.
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ drivers/mtd/ubi/ubi-media.h |  137 +++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 137 insertions(+), 0 deletions(-)
 
-I applied the patch, flashed new kernel and then attempted to rename
-the rootfs-reserve volume to rootfs while running from the rootfs
-volume.
-
-root@localhost:/# ubirename /dev/ubi0 rootfs-reserve rootfs
-UBI error: ubi_open_volume: cannot open device 0, volume 1, error -16
-UBI error: rename_volumes: cannot open volume "rootfs", error -16
-ubirename: error!: cannot rename volumes
-           error 16 (Device or resource busy)
-
-UBI DBG (pid 1786): ubi_cdev_ioctl: re-name volumes
-UBI DBG (pid 1786): rename_volumes: will rename volume 0 from
-"rootfs-reserve" to "rootfs"
-UBI error: ubi_open_volume: cannot open device 0, volume 1, error -16
-UBI error: rename_volumes: cannot open volume "rootfs", error -16
-
-I also tried the reverse, renaming the running rootfs volume to something else.
-
-root@localhost:/# ubirename /dev/ubi0 rootfs rootfsold
-UBI error: ubi_open_volume: cannot open device 0, volume 1, error -16
-UBI error: rename_volumes: cannot open volume 1, error -16
-ubirename: error!: cannot rename volumes
-           error 16 (Device or resource busy)
-UBI DBG (pid 2600): ubi_cdev_ioctl: re-name volumes
-UBI error: ubi_open_volume: cannot open device 0, volume 1, error -16
-UBI error: rename_volumes: cannot open volume 1, error -16
-
-I'm guessing I also need to hack the following in rename_volumes:
-desc = ubi_open_volume_nm(ubi->ubi_num, re->new_name, UBI_EXCLUSIVE);
-
-I'll try looking at it further tomorrow.
-
-Thanks,
-jayakumar
+diff --git a/drivers/mtd/ubi/ubi-media.h b/drivers/mtd/ubi/ubi-media.h
+index 468ffbc..ac2b24d 100644
+--- a/drivers/mtd/ubi/ubi-media.h
++++ b/drivers/mtd/ubi/ubi-media.h
+@@ -375,4 +375,141 @@ struct ubi_vtbl_record {
+ 	__be32  crc;
+ } __packed;
+ 
++/* UBI fastmap on-flash data structures */
++
++#define UBI_FM_SB_VOLUME_ID	(UBI_LAYOUT_VOLUME_ID + 1)
++#define UBI_FM_DATA_VOLUME_ID	(UBI_LAYOUT_VOLUME_ID + 2)
++
++/* fastmap on-flash data structure format version */
++#define UBI_FM_FMT_VERSION	1
++
++#define UBI_FM_SB_MAGIC		0x7B11D69F
++#define UBI_FM_HDR_MAGIC	0xD4B82EF7
++#define UBI_FM_VHDR_MAGIC	0xFA370ED1
++#define UBI_FM_POOL_MAGIC	0x67AF4D08
++#define UBI_FM_EBA_MAGIC	0xf0c040a8
++
++/* A fastmap supber block can be located between PEB 0 and
++ * UBI_FM_MAX_START */
++#define UBI_FM_MAX_START	64
++
++/* A fastmap can use up to UBI_FM_MAX_BLOCKS PEBs */
++#define UBI_FM_MAX_BLOCKS	32
++
++/* 5% of the total number of PEBs have to be scanned while attaching
++ * from a fastmap.
++ * But the size of this pool is limited to be between UBI_FM_MIN_POOL_SIZE and
++ * UBI_FM_MAX_POOL_SIZE */
++#define UBI_FM_MIN_POOL_SIZE	8
++#define UBI_FM_MAX_POOL_SIZE	256
++
++#define UBI_FM_WL_POOL_SIZE	25
++
++/**
++ * struct ubi_fm_sb - UBI fastmap super block
++ * @magic: fastmap super block magic number (%UBI_FM_SB_MAGIC)
++ * @version: format version of this fastmap
++ * @data_crc: CRC over the fastmap data
++ * @used_blocks: number of PEBs used by this fastmap
++ * @block_loc: an array containing the location of all PEBs of the fastmap
++ * @block_ec: the erase counter of each used PEB
++ * @sqnum: highest sequence number value at the time while taking the fastmap
++ *
++ */
++struct ubi_fm_sb {
++	__be32 magic;
++	__u8 version;
++	__u8 padding1[3];
++	__be32 data_crc;
++	__be32 used_blocks;
++	__be32 block_loc[UBI_FM_MAX_BLOCKS];
++	__be32 block_ec[UBI_FM_MAX_BLOCKS];
++	__be64 sqnum;
++	__u8 padding2[32];
++} __packed;
++
++/**
++ * struct ubi_fm_hdr - header of the fastmap data set
++ * @magic: fastmap header magic number (%UBI_FM_HDR_MAGIC)
++ * @free_peb_count: number of free PEBs known by this fastmap
++ * @used_peb_count: number of used PEBs known by this fastmap
++ * @scrub_peb_count: number of to be scrubbed PEBs known by this fastmap
++ * @bad_peb_count: number of bad PEBs known by this fastmap
++ * @erase_peb_count: number of bad PEBs which have to be erased
++ * @vol_count: number of UBI volumes known by this fastmap
++ */
++struct ubi_fm_hdr {
++	__be32 magic;
++	__be32 free_peb_count;
++	__be32 used_peb_count;
++	__be32 scrub_peb_count;
++	__be32 bad_peb_count;
++	__be32 erase_peb_count;
++	__be32 vol_count;
++	__u8 padding[4];
++} __packed;
++
++/* struct ubi_fm_hdr is followed by two struct ubi_fm_scan_pool */
++
++/**
++ * struct ubi_fm_scan_pool - Fastmap pool PEBs to be scanned while attaching
++ * @magic: pool magic numer (%UBI_FM_POOL_MAGIC)
++ * @size: current pool size
++ * @max_size: maximal pool size
++ * @pebs: an array containing the location of all PEBs in this pool
++ */
++struct ubi_fm_scan_pool {
++	__be32 magic;
++	__be16 size;
++	__be16 max_size;
++	__be32 pebs[UBI_FM_MAX_POOL_SIZE];
++	__be32 padding[4];
++} __packed;
++
++/* ubi_fm_scan_pool is followed by nfree+nused struct ubi_fm_ec records */
++
++/**
++ * struct ubi_fm_ec - stores the erase counter of a PEB
++ * @pnum: PEB number
++ * @ec: ec of this PEB
++ */
++struct ubi_fm_ec {
++	__be32 pnum;
++	__be32 ec;
++} __packed;
++
++/**
++ * struct ubi_fm_volhdr - Fastmap volume header
++ * it identifies the start of an eba table
++ * @magic: Fastmap volume header magic number (%UBI_FM_VHDR_MAGIC)
++ * @vol_id: volume id of the fastmapped volume
++ * @vol_type: type of the fastmapped volume
++ * @data_pad: data_pad value of the fastmapped volume
++ * @used_ebs: number of used LEBs within this volume
++ * @last_eb_bytes: number of bytes used in the last LEB
++ */
++struct ubi_fm_volhdr {
++	__be32 magic;
++	__be32 vol_id;
++	__u8 vol_type;
++	__u8 padding1[3];
++	__be32 data_pad;
++	__be32 used_ebs;
++	__be32 last_eb_bytes;
++	__u8 padding2[8];
++} __packed;
++
++/* struct ubi_fm_volhdr is followed by one struct ubi_fm_eba records */
++
++/**
++ * struct ubi_fm_eba - denotes an association beween a PEB and LEB
++ * @magic: EBA table magic number
++ * @reserved_pebs: number of table entries
++ * @pnum: PEB number of LEB (LEB is the index)
++ */
++struct ubi_fm_eba {
++	__be32 magic;
++	__be32 reserved_pebs;
++	__be32 pnum[0];
++} __packed;
+ #endif /* !__UBI_MEDIA_H__ */
+-- 
+1.7.6.5
