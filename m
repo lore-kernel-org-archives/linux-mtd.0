@@ -1,12 +1,12 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TGtuG-0004Yt-Sl
- for linux-mtd@lists.infradead.org; Wed, 26 Sep 2012 15:52:33 +0000
+ id 1TGtuH-0004Z6-FH
+ for linux-mtd@lists.infradead.org; Wed, 26 Sep 2012 15:52:35 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 08/10] UBI: Add fastmap support to the WL sub-system
-Date: Wed, 26 Sep 2012 17:51:48 +0200
-Message-Id: <1348674710-102885-9-git-send-email-richard@nod.at>
+Subject: [PATCH 09/10] UBI: Add fastmap core
+Date: Wed, 26 Sep 2012 17:51:49 +0200
+Message-Id: <1348674710-102885-10-git-send-email-richard@nod.at>
 In-Reply-To: <1348674710-102885-1-git-send-email-richard@nod.at>
 References: <1348674710-102885-1-git-send-email-richard@nod.at>
 Cc: artem.bityutskiy@linux.intel.com, linux-kernel@vger.kernel.org,
@@ -21,903 +21,1577 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-To make fastmap possible the WL sub-system needs some
-changes.
-Mostly to support fastmaps pools.
-
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/wl.c |  575 ++++++++++++++++++++++++++++++++++++++++++++++----
- 1 files changed, 531 insertions(+), 44 deletions(-)
+ drivers/mtd/ubi/fastmap.c | 1560 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 1560 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/mtd/ubi/fastmap.c
 
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index f4d06db..da7b449 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -141,6 +141,42 @@ static int self_check_in_wl_tree(const struct ubi_device *ubi,
- static int self_check_in_pq(const struct ubi_device *ubi,
- 			    struct ubi_wl_entry *e);
- 
-+#ifdef CONFIG_MTD_UBI_FASTMAP
-+/**
-+ * update_fastmap_work_fn - calls ubi_update_fastmap from a work queue
-+ * @wrk: the work description object
-+ */
-+static void update_fastmap_work_fn(struct work_struct *wrk)
-+{
-+	struct ubi_device *ubi = container_of(wrk, struct ubi_device, fm_work);
-+	ubi_update_fastmap(ubi);
-+}
-+
-+/**
-+ *  ubi_ubi_is_fm_block - returns 1 if a PEB is currently used in a fastmap.
-+ *  @ubi: UBI device description object
-+ *  @pnum: the to be checked PEB
-+ */
-+static int ubi_is_fm_block(struct ubi_device *ubi, int pnum)
-+{
-+	int i;
-+
-+	if (!ubi->fm)
-+		return 0;
-+
-+	for (i = 0; i < ubi->fm->used_blocks; i++)
-+		if (ubi->fm->e[i]->pnum == pnum)
-+			return 1;
-+
-+	return 0;
-+}
-+#else
-+static int ubi_is_fm_block(struct ubi_device *ubi, int pnum)
-+{
-+	return 0;
-+}
-+#endif
-+
- /**
-  * wl_tree_add - add a wear-leveling entry to a WL RB-tree.
-  * @e: the wear-leveling entry to add
-@@ -237,18 +273,16 @@ static int produce_free_peb(struct ubi_device *ubi)
- {
- 	int err;
- 
--	spin_lock(&ubi->wl_lock);
- 	while (!ubi->free.rb_node) {
- 		spin_unlock(&ubi->wl_lock);
- 
- 		dbg_wl("do one work synchronously");
- 		err = do_work(ubi);
--		if (err)
--			return err;
- 
- 		spin_lock(&ubi->wl_lock);
-+		if (err)
-+			return err;
- 	}
--	spin_unlock(&ubi->wl_lock);
- 
- 	return 0;
- }
-@@ -315,16 +349,18 @@ static void prot_queue_add(struct ubi_device *ubi, struct ubi_wl_entry *e)
- 
- /**
-  * find_wl_entry - find wear-leveling entry closest to certain erase counter.
-+ * @ubi: UBI device description object
-  * @root: the RB-tree where to look for
-  * @diff: maximum possible difference from the smallest erase counter
-  *
-  * This function looks for a wear leveling entry with erase counter closest to
-  * min + @diff, where min is the smallest erase counter.
-  */
--static struct ubi_wl_entry *find_wl_entry(struct rb_root *root, int diff)
-+static struct ubi_wl_entry *find_wl_entry(struct ubi_device *ubi,
-+					  struct rb_root *root, int diff)
- {
- 	struct rb_node *p;
--	struct ubi_wl_entry *e;
-+	struct ubi_wl_entry *e, *prev_e = NULL;
- 	int max;
- 
- 	e = rb_entry(rb_first(root), struct ubi_wl_entry, u.rb);
-@@ -339,35 +375,143 @@ static struct ubi_wl_entry *find_wl_entry(struct rb_root *root, int diff)
- 			p = p->rb_left;
- 		else {
- 			p = p->rb_right;
-+			prev_e = e;
- 			e = e1;
- 		}
- 	}
- 
-+	/* If no fastmap has been written and this WL entry can be used
-+	 * as anchor PEB, hold it back and return the second best WL entry
-+	 * such that fastmap can use the anchor PEB later. */
-+	if (prev_e && !ubi->fm_disabled &&
-+	    !ubi->fm && e->pnum < UBI_FM_MAX_START)
-+		return prev_e;
-+
- 	return e;
- }
- 
- /**
-- * ubi_wl_get_peb - get a physical eraseblock.
-+ * find_mean_wl_entry - find wear-leveling entry with medium erase counter.
-+ * @ubi: UBI device description object
-+ * @root: the RB-tree where to look for
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+new file mode 100644
+index 0000000..be73a1d
+--- /dev/null
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -0,0 +1,1560 @@
++/*
++ * Copyright (c) 2012 Linutronix GmbH
++ * Author: Richard Weinberger <richard@nod.at>
 + *
-+ * This function looks for a wear leveling entry with medium erase counter,
-+ * but not greater or equivalent than the lowest erase counter plus
-+ * %WL_FREE_MAX_DIFF/2.
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; version 2.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
++ * the GNU General Public License for more details.
++ *
 + */
-+static struct ubi_wl_entry *find_mean_wl_entry(struct ubi_device *ubi,
-+					       struct rb_root *root)
++
++#include <linux/crc32.h>
++#include "ubi.h"
++
++/**
++ * ubi_calc_fm_size - calculates the fastmap size in bytes for an UBI device.
++ * @ubi: UBI device description object
++ */
++size_t ubi_calc_fm_size(struct ubi_device *ubi)
 +{
-+	struct ubi_wl_entry *e, *first, *last;
++	size_t size;
 +
-+	first = rb_entry(rb_first(root), struct ubi_wl_entry, u.rb);
-+	last = rb_entry(rb_last(root), struct ubi_wl_entry, u.rb);
-+
-+	if (last->ec - first->ec < WL_FREE_MAX_DIFF) {
-+		e = rb_entry(root->rb_node, struct ubi_wl_entry, u.rb);
-+
-+#ifdef CONFIG_MTD_UBI_FASTMAP
-+		/* If no fastmap has been written and this WL entry can be used
-+		 * as anchor PEB, hold it back and return the second best
-+		 * WL entry such that fastmap can use the anchor PEB later. */
-+		if (e && !ubi->fm_disabled && !ubi->fm &&
-+		    e->pnum < UBI_FM_MAX_START)
-+			e = rb_entry(rb_next(root->rb_node),
-+				     struct ubi_wl_entry, u.rb);
-+#endif
-+	} else
-+		e = find_wl_entry(ubi, root, WL_FREE_MAX_DIFF/2);
-+
-+	return e;
++	size = sizeof(struct ubi_fm_hdr) + \
++		sizeof(struct ubi_fm_scan_pool) + \
++		sizeof(struct ubi_fm_scan_pool) + \
++		(ubi->peb_count * sizeof(struct ubi_fm_ec)) + \
++		(sizeof(struct ubi_fm_eba) + \
++		(ubi->peb_count * sizeof(__be32))) + \
++		sizeof(struct ubi_fm_volhdr) * UBI_MAX_VOLUMES;
++	return roundup(size, ubi->leb_size);
 +}
 +
-+#ifdef CONFIG_MTD_UBI_FASTMAP
-+/**
-+ * find_anchor_wl_entry - find wear-leveling entry to used as anchor PEB.
-+ * @root: the RB-tree where to look for
-+ */
-+static struct ubi_wl_entry *find_anchor_wl_entry(struct rb_root *root)
-+{
-+	struct rb_node *p;
-+	struct ubi_wl_entry *e, *victim = NULL;
-+	int max_ec = UBI_MAX_ERASECOUNTER;
 +
-+	ubi_rb_for_each_entry(p, e, root, u.rb) {
-+		if (e->pnum < UBI_FM_MAX_START && e->ec < max_ec) {
-+			victim = e;
-+			max_ec = e->ec;
++/**
++ * new_fm_vhdr - allocate a new volume header for fastmap usage.
++ * @ubi: UBI device description object
++ * @vol_id: the VID of the new header
++ *
++ * Returns a new struct ubi_vid_hdr on success.
++ * NULL indicates out of memory.
++ */
++static struct ubi_vid_hdr *new_fm_vhdr(struct ubi_device *ubi, int vol_id)
++{
++	struct ubi_vid_hdr *new;
++
++	new = ubi_zalloc_vid_hdr(ubi, GFP_KERNEL);
++	if (!new)
++		goto out;
++
++	new->vol_type = UBI_VID_DYNAMIC;
++	new->vol_id = cpu_to_be32(vol_id);
++
++	/* UBI implementations without fastmap support have to delete the
++	 * fastmap.
++	 */
++	new->compat = UBI_COMPAT_DELETE;
++
++out:
++	return new;
++}
++
++/**
++ * add_aeb - create and add a attach erase block to a given list.
++ * @ai: UBI attach info object
++ * @list: the target list
++ * @pnum: PEB number of the new attach erase block
++ * @ec: erease counter of the new LEB
++ * @scrub: scrub this PEB after attaching
++ *
++ * Returns 0 on success, < 0 indicates an internal error.
++ */
++static int add_aeb(struct ubi_attach_info *ai, struct list_head *list,
++		   int pnum, int ec, int scrub)
++{
++	struct ubi_ainf_peb *aeb;
++
++	aeb = kmem_cache_alloc(ai->aeb_slab_cache, GFP_KERNEL);
++	if (!aeb)
++		return -ENOMEM;
++
++	aeb->pnum = pnum;
++	aeb->ec = ec;
++	aeb->lnum = -1;
++	aeb->scrub = scrub;
++	aeb->copy_flag = aeb->sqnum = 0;
++
++	ai->ec_sum += aeb->ec;
++	ai->ec_count++;
++
++	if (ai->max_ec < aeb->ec)
++		ai->max_ec = aeb->ec;
++
++	if (ai->min_ec > aeb->ec)
++		ai->min_ec = aeb->ec;
++
++	list_add_tail(&aeb->u.list, list);
++
++	return 0;
++}
++
++/**
++ * add_vol - create and add a new volume to ubi_attach_info.
++ * @ai: ubi_attach_info object
++ * @vol_id: VID of the new volume
++ * @used_ebs: number of used EBS
++ * @data_pad: data padding value of the new volume
++ * @vol_type: volume type
++ * @last_eb_bytes: number of bytes in the last LEB
++ *
++ * Returns the new struct ubi_ainf_volume on success.
++ * NULL indicates an error.
++ */
++static struct ubi_ainf_volume *add_vol(struct ubi_attach_info *ai, int vol_id,
++				       int used_ebs, int data_pad, u8 vol_type,
++				       int last_eb_bytes)
++{
++	struct ubi_ainf_volume *av;
++	struct rb_node **p = &ai->volumes.rb_node, *parent = NULL;
++
++	while (*p) {
++		parent = *p;
++		av = rb_entry(parent, struct ubi_ainf_volume, rb);
++
++		if (vol_id > av->vol_id)
++			p = &(*p)->rb_left;
++		else if (vol_id > av->vol_id)
++			p = &(*p)->rb_right;
++	}
++
++	av = kmalloc(sizeof(struct ubi_ainf_volume), GFP_KERNEL);
++	if (!av)
++		goto out;
++
++	av->highest_lnum = av->leb_count = 0;
++	av->vol_id = vol_id;
++	av->used_ebs = used_ebs;
++	av->data_pad = data_pad;
++	av->last_data_size = last_eb_bytes;
++	av->compat = 0;
++	av->vol_type = vol_type;
++	av->root = RB_ROOT;
++
++	dbg_bld("found volume (ID %i)", vol_id);
++
++	rb_link_node(&av->rb, parent, p);
++	rb_insert_color(&av->rb, &ai->volumes);
++
++out:
++	return av;
++}
++
++/**
++ * assign_aeb_to_av - assigns a SEB to a given ainf_volume and removes it
++ * from it's original list.
++ * @ai: ubi_attach_info object
++ * @aeb: the to be assigned SEB
++ * @av: target scan volume
++ */
++static void assign_aeb_to_av(struct ubi_attach_info *ai,
++			     struct ubi_ainf_peb *aeb,
++			     struct ubi_ainf_volume *av)
++{
++	struct ubi_ainf_peb *tmp_aeb;
++	struct rb_node **p = &ai->volumes.rb_node, *parent = NULL;
++
++	p = &av->root.rb_node;
++	while (*p) {
++		parent = *p;
++
++		tmp_aeb = rb_entry(parent, struct ubi_ainf_peb, u.rb);
++		if (aeb->lnum != tmp_aeb->lnum) {
++			if (aeb->lnum < tmp_aeb->lnum)
++				p = &(*p)->rb_left;
++			else
++				p = &(*p)->rb_right;
++
++			continue;
++		} else
++			break;
++	}
++
++	list_del(&aeb->u.list);
++	av->leb_count++;
++
++	rb_link_node(&aeb->u.rb, parent, p);
++	rb_insert_color(&aeb->u.rb, &av->root);
++}
++
++/**
++ * update_vol - inserts or updates a LEB which was found a pool.
++ * @ubi: the UBI device object
++ * @ai: attach info object
++ * @av: the volume this LEB belongs to
++ * @new_vh: the volume header derived from new_aeb
++ * @new_aeb: the AEB to be examined
++ *
++ * Returns 0 on success, < 0 indicates an internal error.
++ */
++static int update_vol(struct ubi_device *ubi, struct ubi_attach_info *ai,
++		      struct ubi_ainf_volume *av, struct ubi_vid_hdr *new_vh,
++		      struct ubi_ainf_peb *new_aeb)
++{
++	struct rb_node **p = &av->root.rb_node, *parent = NULL;
++	struct ubi_ainf_peb *aeb, *victim;
++	int cmp_res;
++
++	while (*p) {
++		parent = *p;
++		aeb = rb_entry(parent, struct ubi_ainf_peb, u.rb);
++
++		if (be32_to_cpu(new_vh->lnum) != aeb->lnum) {
++			if (be32_to_cpu(new_vh->lnum) < aeb->lnum)
++				p = &(*p)->rb_left;
++			else
++				p = &(*p)->rb_right;
++
++			continue;
++		}
++
++		/* This case can happen if the fastmap gets written
++		 * because of a volume change (creation, deletion, ..).
++		 * Then a PEB can be within the persistent EBA and the pool.
++		 */
++		if (aeb->pnum == new_aeb->pnum) {
++			ubi_assert(aeb->lnum == new_aeb->lnum);
++			kmem_cache_free(ai->aeb_slab_cache, new_aeb);
++
++			return 0;
++		}
++
++		cmp_res = ubi_compare_lebs(ubi, aeb, new_aeb->pnum, new_vh);
++		if (cmp_res < 0)
++			return cmp_res;
++
++		/* new_aeb is newer */
++		if (cmp_res & 1) {
++			victim = kmem_cache_alloc(ai->aeb_slab_cache,
++				GFP_KERNEL);
++			if (!victim)
++				return -ENOMEM;
++
++			victim->ec = aeb->ec;
++			victim->pnum = aeb->pnum;
++			list_add_tail(&victim->u.list, &ai->erase);
++
++			if (av->highest_lnum == be32_to_cpu(new_vh->lnum))
++				av->last_data_size = \
++					be32_to_cpu(new_vh->data_size);
++
++			dbg_bld("vol %i: AEB %i's PEB %i is the newer",
++				av->vol_id, aeb->lnum, new_aeb->pnum);
++
++			aeb->ec = new_aeb->ec;
++			aeb->pnum = new_aeb->pnum;
++			aeb->copy_flag = new_vh->copy_flag;
++			aeb->scrub = new_aeb->scrub;
++			kmem_cache_free(ai->aeb_slab_cache, new_aeb);
++
++		/* new_aeb is older */
++		} else {
++			dbg_bld("vol %i: AEB %i's PEB %i is old, dropping it",
++				av->vol_id, aeb->lnum, new_aeb->pnum);
++			list_add_tail(&new_aeb->u.list, &ai->erase);
++		}
++
++		return 0;
++	}
++	/* This LEB is new, let's add it to the volume */
++
++	if (av->highest_lnum <= be32_to_cpu(new_vh->lnum)) {
++		av->highest_lnum = be32_to_cpu(new_vh->lnum);
++		av->last_data_size = be32_to_cpu(new_vh->data_size);
++	}
++
++	if (av->vol_type == UBI_STATIC_VOLUME)
++		av->used_ebs = be32_to_cpu(new_vh->used_ebs);
++
++	av->leb_count++;
++
++	rb_link_node(&new_aeb->u.rb, parent, p);
++	rb_insert_color(&new_aeb->u.rb, &av->root);
++
++	return 0;
++}
++
++/**
++ * process_pool_aeb - we found a non-empty PEB in a pool.
++ * @ubi: UBI device object
++ * @ai: attach info object
++ * @new_vh: the volume header derived from new_aeb
++ * @new_aeb: the AEB to be examined
++ *
++ * Returns 0 on success, < 0 indicates an internal error.
++ */
++static int process_pool_aeb(struct ubi_device *ubi, struct ubi_attach_info *ai,
++			    struct ubi_vid_hdr *new_vh,
++			    struct ubi_ainf_peb *new_aeb)
++{
++	struct ubi_ainf_volume *av, *tmp_av = NULL;
++	struct rb_node **p = &ai->volumes.rb_node, *parent = NULL;
++	int found = 0;
++
++	if (be32_to_cpu(new_vh->vol_id) == UBI_FM_SB_VOLUME_ID ||
++		be32_to_cpu(new_vh->vol_id) == UBI_FM_DATA_VOLUME_ID) {
++		kmem_cache_free(ai->aeb_slab_cache, new_aeb);
++
++		return 0;
++	}
++
++	/* Find the volume this SEB belongs to */
++	while (*p) {
++		parent = *p;
++		tmp_av = rb_entry(parent, struct ubi_ainf_volume, rb);
++
++		if (be32_to_cpu(new_vh->vol_id) > tmp_av->vol_id)
++			p = &(*p)->rb_left;
++		else if (be32_to_cpu(new_vh->vol_id) < tmp_av->vol_id)
++			p = &(*p)->rb_right;
++		else {
++			found = 1;
++			break;
 +		}
 +	}
 +
-+	return victim;
++	if (found)
++		av = tmp_av;
++	else {
++		ubi_err("orphaned volume in fastmap pool!");
++		return UBI_BAD_FASTMAP;
++	}
++
++	ubi_assert(be32_to_cpu(new_vh->vol_id) == av->vol_id);
++
++	return update_vol(ubi, ai, av, new_vh, new_aeb);
 +}
 +
-+static int anchor_pebs_avalible(struct rb_root *root)
++/**
++ * unmap_peb - unmap a PEB.
++ * If fastmap detects a free PEB in the pool it has to check whether
++ * this PEB has been unmapped after writing the fastmap.
++ *
++ * @ai: UBI attach info object
++ * @pnum: The PEB to be unmapped
++ */
++static void unmap_peb(struct ubi_attach_info *ai, int pnum)
 +{
-+	struct rb_node *p;
-+	struct ubi_wl_entry *e;
++	struct ubi_ainf_volume *av;
++	struct rb_node *node, *node2;
++	struct ubi_ainf_peb *aeb;
 +
-+	ubi_rb_for_each_entry(p, e, root, u.rb)
-+		if (e->pnum < UBI_FM_MAX_START)
-+			return 1;
++	for (node = rb_first(&ai->volumes); node; node = rb_next(node)) {
++		av = rb_entry(node, struct ubi_ainf_volume, rb);
++
++		for (node2 = rb_first(&av->root); node2;
++		     node2 = rb_next(node2)) {
++			aeb = rb_entry(node2, struct ubi_ainf_peb, u.rb);
++			if (aeb->pnum == pnum) {
++				rb_erase(&aeb->u.rb, &av->root);
++				kmem_cache_free(ai->aeb_slab_cache, aeb);
++				return;
++			}
++		}
++	}
++}
++
++/**
++ * scan_pool - scans a pool for changed (no longer empty PEBs).
++ * @ubi: UBI device object
++ * @ai: attach info object
++ * @pebs: an array of all PEB numbers in the to be scanned pool
++ * @pool_size: size of the pool (number of entries in @pebs)
++ * @max_sqnum: pointer to the maximal sequence number
++ * @eba_orphans: list of PEBs which need to be scanned
++ * @free: list of PEBs which are most likely free (and go into @ai->free)
++ *
++ * Returns 0 on success, if the pool is unusable UBI_BAD_FASTMAP is returned.
++ * < 0 indicates an internal error.
++ */
++static int scan_pool(struct ubi_device *ubi, struct ubi_attach_info *ai,
++		     int *pebs, int pool_size, unsigned long long *max_sqnum,
++		     struct list_head *eba_orphans, struct list_head *free)
++{
++	struct ubi_vid_hdr *vh;
++	struct ubi_ec_hdr *ech;
++	struct ubi_ainf_peb *new_aeb, *tmp_aeb;
++	int i, pnum, err, found_orphan, ret = 0;
++
++	ech = kzalloc(ubi->ec_hdr_alsize, GFP_KERNEL);
++	if (!ech)
++		return -ENOMEM;
++
++	vh = ubi_zalloc_vid_hdr(ubi, GFP_KERNEL);
++	if (!vh) {
++		kfree(ech);
++		return -ENOMEM;
++	}
++
++	dbg_bld("scanning fastmap pool: size = %i", pool_size);
++
++	/*
++	 * Now scan all PEBs in the pool to find changes which have been made
++	 * after the creation of the fastmap
++	 */
++	for (i = 0; i < pool_size; i++) {
++		int scrub = 0;
++
++		pnum = be32_to_cpu(pebs[i]);
++
++		if (ubi_io_is_bad(ubi, pnum)) {
++			ubi_err("bad PEB in fastmap pool!");
++			ret = UBI_BAD_FASTMAP;
++			goto out;
++		}
++
++		err = ubi_io_read_ec_hdr(ubi, pnum, ech, 0);
++		if (err && err != UBI_IO_BITFLIPS) {
++			ubi_err("unable to read EC header! PEB:%i err:%i",
++				pnum, err);
++			ret = err > 0 ? UBI_BAD_FASTMAP : err;
++			goto out;
++		} else if (ret == UBI_IO_BITFLIPS)
++			scrub = 1;
++
++		if (be32_to_cpu(ech->image_seq) != ubi->image_seq) {
++			ubi_err("bad image seq: 0x%x, expected: 0x%x",
++				be32_to_cpu(ech->image_seq), ubi->image_seq);
++			err = UBI_BAD_FASTMAP;
++			goto out;
++		}
++
++		err = ubi_io_read_vid_hdr(ubi, pnum, vh, 0);
++		if (err == UBI_IO_FF || err == UBI_IO_FF_BITFLIPS) {
++			unsigned long long ec = be64_to_cpu(ech->ec);
++			unmap_peb(ai, pnum);
++			dbg_bld("Adding PEB to free: %i", pnum);
++			if (err == UBI_IO_FF_BITFLIPS)
++				add_aeb(ai, free, pnum, ec, 1);
++			else
++				add_aeb(ai, free, pnum, ec, 0);
++			continue;
++		} else if (err == 0 || err == UBI_IO_BITFLIPS) {
++			dbg_bld("Found non empty PEB:%i in pool", pnum);
++
++			if (err == UBI_IO_BITFLIPS)
++				scrub = 1;
++
++			found_orphan = 0;
++			list_for_each_entry(tmp_aeb, eba_orphans, u.list) {
++				if (tmp_aeb->pnum == pnum) {
++					found_orphan = 1;
++					break;
++				}
++			}
++			if (found_orphan) {
++				kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
++				list_del(&tmp_aeb->u.list);
++			}
++
++			new_aeb = kmem_cache_alloc(ai->aeb_slab_cache,
++						   GFP_KERNEL);
++			if (!new_aeb) {
++				ret = -ENOMEM;
++				goto out;
++			}
++
++			new_aeb->ec = be64_to_cpu(ech->ec);
++			new_aeb->pnum = pnum;
++			new_aeb->lnum = be32_to_cpu(vh->lnum);
++			new_aeb->sqnum = be64_to_cpu(vh->sqnum);
++			new_aeb->copy_flag = vh->copy_flag;
++			new_aeb->scrub = scrub;
++
++			if (*max_sqnum < new_aeb->sqnum)
++				*max_sqnum = new_aeb->sqnum;
++
++			err = process_pool_aeb(ubi, ai, vh, new_aeb);
++			if (err) {
++				ret = err > 0 ? UBI_BAD_FASTMAP : err;
++				goto out;
++			}
++		} else {
++			/* We are paranoid and fall back to scanning mode */
++			ubi_err("fastmap pool PEBs contains damaged PEBs!");
++			ret = err > 0 ? UBI_BAD_FASTMAP : err;
++			goto out;
++		}
++
++	}
++
++out:
++	ubi_free_vid_hdr(ubi, vh);
++	kfree(ech);
++	return ret;
++}
++
++/**
++ * count_fastmap_pebs - Counts the PEBs found by fastmap.
++ * @ai: The UBI attach info object
++ */
++static int count_fastmap_pebs(struct ubi_attach_info *ai)
++{
++	struct ubi_ainf_peb *aeb;
++	struct ubi_ainf_volume *av;
++	struct rb_node *rb1, *rb2;
++	int n = 0;
++
++	list_for_each_entry(aeb, &ai->erase, u.list)
++		n++;
++
++	list_for_each_entry(aeb, &ai->free, u.list)
++		n++;
++
++	 ubi_rb_for_each_entry(rb1, av, &ai->volumes, rb)
++		ubi_rb_for_each_entry(rb2, aeb, &av->root, u.rb)
++			n++;
++
++	return n;
++}
++
++/**
++ * ubi_attach_fastmap - creates ubi_attach_info from a fastmap.
++ * @ubi: UBI device object
++ * @ai: UBI attach info object
++ * @fm: the fastmap to be attached
++ *
++ * Returns 0 on success, UBI_BAD_FASTMAP if the found fastmap was unusable.
++ * < 0 indicates an internal error.
++ */
++static int ubi_attach_fastmap(struct ubi_device *ubi,
++			      struct ubi_attach_info *ai,
++			      struct ubi_fastmap_layout *fm)
++{
++	struct list_head used, eba_orphans, free;
++	struct ubi_ainf_volume *av;
++	struct ubi_ainf_peb *aeb, *tmp_aeb, *_tmp_aeb;
++	struct ubi_ec_hdr *ech;
++	struct ubi_fm_sb *fmsb;
++	struct ubi_fm_hdr *fmhdr;
++	struct ubi_fm_scan_pool *fmpl1, *fmpl2;
++	struct ubi_fm_ec *fmec;
++	struct ubi_fm_volhdr *fmvhdr;
++	struct ubi_fm_eba *fm_eba;
++	int ret, i, j, pool_size, wl_pool_size;
++	size_t fm_pos = 0, fm_size = ubi->fm_size;
++	unsigned long long max_sqnum = 0;
++	void *fm_raw = ubi->fm_buf;
++
++	INIT_LIST_HEAD(&used);
++	INIT_LIST_HEAD(&free);
++	INIT_LIST_HEAD(&eba_orphans);
++	INIT_LIST_HEAD(&ai->corr);
++	INIT_LIST_HEAD(&ai->free);
++	INIT_LIST_HEAD(&ai->erase);
++	INIT_LIST_HEAD(&ai->alien);
++	ai->volumes = RB_ROOT;
++	ai->min_ec = UBI_MAX_ERASECOUNTER;
++
++	ai->aeb_slab_cache = kmem_cache_create("ubi_ainf_peb_slab",
++					       sizeof(struct ubi_ainf_peb),
++					       0, 0, NULL);
++	if (!ai->aeb_slab_cache) {
++		ret = -ENOMEM;
++		goto fail;
++	}
++
++	fmsb = (struct ubi_fm_sb *)(fm_raw);
++	ai->max_sqnum = fmsb->sqnum;
++	fm_pos += sizeof(struct ubi_fm_sb);
++	if (fm_pos >= fm_size)
++		goto fail_bad;
++
++	fmhdr = (struct ubi_fm_hdr *)(fm_raw + fm_pos);
++	fm_pos += sizeof(*fmhdr);
++	if (fm_pos >= fm_size)
++		goto fail_bad;
++
++	if (be32_to_cpu(fmhdr->magic) != UBI_FM_HDR_MAGIC) {
++		ubi_err("bad fastmap header magic: 0x%x, expected: 0x%x",
++			be32_to_cpu(fmhdr->magic), UBI_FM_HDR_MAGIC);
++		goto fail_bad;
++	}
++
++	fmpl1 = (struct ubi_fm_scan_pool *)(fm_raw + fm_pos);
++	fm_pos += sizeof(*fmpl1);
++	if (fm_pos >= fm_size)
++		goto fail_bad;
++	if (be32_to_cpu(fmpl1->magic) != UBI_FM_POOL_MAGIC) {
++		ubi_err("bad fastmap pool magic: 0x%x, expected: 0x%x",
++			be32_to_cpu(fmpl1->magic), UBI_FM_POOL_MAGIC);
++		goto fail_bad;
++	}
++
++	fmpl2 = (struct ubi_fm_scan_pool *)(fm_raw + fm_pos);
++	fm_pos += sizeof(*fmpl2);
++	if (fm_pos >= fm_size)
++		goto fail_bad;
++	if (be32_to_cpu(fmpl2->magic) != UBI_FM_POOL_MAGIC) {
++		ubi_err("bad fastmap pool magic: 0x%x, expected: 0x%x",
++			be32_to_cpu(fmpl2->magic), UBI_FM_POOL_MAGIC);
++		goto fail_bad;
++	}
++
++	pool_size = be16_to_cpu(fmpl1->size);
++	wl_pool_size = be16_to_cpu(fmpl2->size);
++	fm->max_pool_size = be16_to_cpu(fmpl1->max_size);
++	fm->max_wl_pool_size = be16_to_cpu(fmpl2->max_size);
++
++	if (pool_size > UBI_FM_MAX_POOL_SIZE || pool_size < 0) {
++		ubi_err("bad pool size: %i", pool_size);
++		goto fail_bad;
++	}
++
++	if (wl_pool_size > UBI_FM_MAX_POOL_SIZE || wl_pool_size < 0) {
++		ubi_err("bad WL pool size: %i", wl_pool_size);
++		goto fail_bad;
++	}
++
++
++	if (fm->max_pool_size > UBI_FM_MAX_POOL_SIZE ||
++	    fm->max_pool_size < 0) {
++		ubi_err("bad maximal pool size: %i", fm->max_pool_size);
++		goto fail_bad;
++	}
++
++	if (fm->max_wl_pool_size > UBI_FM_MAX_POOL_SIZE ||
++	    fm->max_wl_pool_size < 0) {
++		ubi_err("bad maximal WL pool size: %i", fm->max_wl_pool_size);
++		goto fail_bad;
++	}
++
++	/* read EC values from free list */
++	for (i = 0; i < be32_to_cpu(fmhdr->free_peb_count); i++) {
++		fmec = (struct ubi_fm_ec *)(fm_raw + fm_pos);
++		fm_pos += sizeof(*fmec);
++		if (fm_pos >= fm_size)
++			goto fail_bad;
++
++		add_aeb(ai, &ai->free, be32_to_cpu(fmec->pnum),
++			be32_to_cpu(fmec->ec), 0);
++	}
++
++	/* read EC values from used list */
++	for (i = 0; i < be32_to_cpu(fmhdr->used_peb_count); i++) {
++		fmec = (struct ubi_fm_ec *)(fm_raw + fm_pos);
++		fm_pos += sizeof(*fmec);
++		if (fm_pos >= fm_size)
++			goto fail_bad;
++
++		add_aeb(ai, &used, be32_to_cpu(fmec->pnum),
++			be32_to_cpu(fmec->ec), 0);
++	}
++
++	/* read EC values from scrub list */
++	for (i = 0; i < be32_to_cpu(fmhdr->scrub_peb_count); i++) {
++		fmec = (struct ubi_fm_ec *)(fm_raw + fm_pos);
++		fm_pos += sizeof(*fmec);
++		if (fm_pos >= fm_size)
++			goto fail_bad;
++
++		add_aeb(ai, &used, be32_to_cpu(fmec->pnum),
++			be32_to_cpu(fmec->ec), 1);
++	}
++
++	/* read EC values from erase list */
++	for (i = 0; i < be32_to_cpu(fmhdr->erase_peb_count); i++) {
++		fmec = (struct ubi_fm_ec *)(fm_raw + fm_pos);
++		fm_pos += sizeof(*fmec);
++		if (fm_pos >= fm_size)
++			goto fail_bad;
++
++		add_aeb(ai, &ai->erase, be32_to_cpu(fmec->pnum),
++			be32_to_cpu(fmec->ec), 1);
++	}
++
++	ai->mean_ec = div_u64(ai->ec_sum, ai->ec_count);
++	ai->bad_peb_count = be32_to_cpu(fmhdr->bad_peb_count);
++
++	/* Iterate over all volumes and read their EBA table */
++	for (i = 0; i < be32_to_cpu(fmhdr->vol_count); i++) {
++		fmvhdr = (struct ubi_fm_volhdr *)(fm_raw + fm_pos);
++		fm_pos += sizeof(*fmvhdr);
++		if (fm_pos >= fm_size)
++			goto fail_bad;
++
++		if (be32_to_cpu(fmvhdr->magic) != UBI_FM_VHDR_MAGIC) {
++			ubi_err("bad fastmap vol header magic: 0x%x, " \
++				"expected: 0x%x",
++				be32_to_cpu(fmvhdr->magic), UBI_FM_VHDR_MAGIC);
++			goto fail_bad;
++		}
++
++		av = add_vol(ai, be32_to_cpu(fmvhdr->vol_id),
++			     be32_to_cpu(fmvhdr->used_ebs),
++			     be32_to_cpu(fmvhdr->data_pad),
++			     fmvhdr->vol_type,
++			     be32_to_cpu(fmvhdr->last_eb_bytes));
++
++		if (!av)
++			goto fail_bad;
++
++		ai->vols_found++;
++		if (ai->highest_vol_id < be32_to_cpu(fmvhdr->vol_id))
++			ai->highest_vol_id = be32_to_cpu(fmvhdr->vol_id);
++
++		fm_eba = (struct ubi_fm_eba *)(fm_raw + fm_pos);
++		fm_pos += sizeof(*fm_eba);
++		fm_pos += (sizeof(__be32) * be32_to_cpu(fm_eba->reserved_pebs));
++		if (fm_pos >= fm_size)
++			goto fail_bad;
++
++		if (be32_to_cpu(fm_eba->magic) != UBI_FM_EBA_MAGIC) {
++			ubi_err("bad fastmap EBA header magic: 0x%x, " \
++				"expected: 0x%x",
++				be32_to_cpu(fm_eba->magic), UBI_FM_EBA_MAGIC);
++			goto fail_bad;
++		}
++
++		for (j = 0; j < be32_to_cpu(fm_eba->reserved_pebs); j++) {
++			int pnum = be32_to_cpu(fm_eba->pnum[j]);
++
++			if ((int)be32_to_cpu(fm_eba->pnum[j]) < 0)
++				continue;
++
++			aeb = NULL;
++			list_for_each_entry(tmp_aeb, &used, u.list) {
++				if (tmp_aeb->pnum == pnum)
++					aeb = tmp_aeb;
++			}
++
++			/* This can happen if a PEB is already in an EBA known
++			 * by this fastmap but the PEB itself is not in the used
++			 * list.
++			 * In this case the PEB can be within the fastmap pool
++			 * or while writing the fastmap it was in the protection
++			 * queue.
++			 */
++			if (!aeb) {
++				aeb = kmem_cache_alloc(ai->aeb_slab_cache,
++						       GFP_KERNEL);
++				if (!aeb) {
++					ret = -ENOMEM;
++
++					goto fail;
++				}
++
++				aeb->lnum = j;
++				aeb->pnum = be32_to_cpu(fm_eba->pnum[j]);
++				aeb->ec = -1;
++				aeb->scrub = aeb->copy_flag = aeb->sqnum = 0;
++				list_add_tail(&aeb->u.list, &eba_orphans);
++				continue;
++			}
++
++			aeb->lnum = j;
++
++			if (av->highest_lnum <= aeb->lnum)
++				av->highest_lnum = aeb->lnum;
++
++			assign_aeb_to_av(ai, aeb, av);
++
++			dbg_bld("inserting PEB:%i (LEB %i) to vol %i",
++				aeb->pnum, aeb->lnum, av->vol_id);
++		}
++
++		ech = kzalloc(ubi->ec_hdr_alsize, GFP_KERNEL);
++		if (!ech) {
++			ret = -ENOMEM;
++			goto fail;
++		}
++
++		list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &eba_orphans,
++					 u.list) {
++			int err;
++
++			if (ubi_io_is_bad(ubi, tmp_aeb->pnum)) {
++				ubi_err("bad PEB in fastmap EBA orphan list");
++				ret = UBI_BAD_FASTMAP;
++				kfree(ech);
++				goto fail;
++			}
++
++			err = ubi_io_read_ec_hdr(ubi, tmp_aeb->pnum, ech, 0);
++			if (err && err != UBI_IO_BITFLIPS) {
++				ubi_err("unable to read EC header! PEB:%i " \
++					"err:%i", tmp_aeb->pnum, err);
++				ret = err > 0 ? UBI_BAD_FASTMAP : err;
++				kfree(ech);
++
++				goto fail;
++			} else if (err == UBI_IO_BITFLIPS)
++				tmp_aeb->scrub = 1;
++
++			tmp_aeb->ec = be64_to_cpu(ech->ec);
++			assign_aeb_to_av(ai, tmp_aeb, av);
++		}
++
++		kfree(ech);
++	}
++
++	ret = scan_pool(ubi, ai, fmpl1->pebs, pool_size, &max_sqnum,
++			&eba_orphans, &free);
++	if (ret)
++		goto fail;
++
++	ret = scan_pool(ubi, ai, fmpl2->pebs, wl_pool_size, &max_sqnum,
++			&eba_orphans, &free);
++	if (ret)
++		goto fail;
++
++	if (max_sqnum > ai->max_sqnum)
++		ai->max_sqnum = max_sqnum;
++
++	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &free, u.list) {
++		list_del(&tmp_aeb->u.list);
++		list_add_tail(&tmp_aeb->u.list, &ai->free);
++	}
++
++	/*
++	 * If fastmap is leaking PEBs (must not happen), raise a
++	 * fat warning and fall back to scanning mode.
++	 * We do this here because in ubi_wl_init() it's too late
++	 * and we cannot fall back to scanning.
++	 */
++	if (WARN_ON(count_fastmap_pebs(ai) != ubi->peb_count -
++		    ai->bad_peb_count - fm->used_blocks))
++		goto fail_bad;
 +
 +	return 0;
++
++fail_bad:
++	ret = UBI_BAD_FASTMAP;
++fail:
++	return ret;
 +}
 +
 +/**
-+ * ubi_wl_get_fm_peb - find a physical erase block with a given maximal number.
-+ * @ubi: UBI device description object
-+ * @anchor: This PEB will be used as anchor PEB by fastmap
++ * ubi_scan_fastmap - scan the fastmap.
++ * @ubi: UBI device object
++ * @ai: UBI attach info to be filled
++ * @fm_anchor: The fastmap starts at this PEB
 + *
-+ * The function returns a physical erase block with a given maximal number
-+ * and removes it from the wl subsystem.
-+ * Must be called with wl_lock held!
++ * Returns 0 on success, UBI_NO_FASTMAP if no fastmap was found,
++ * UBI_BAD_FASTMAP if one was found but is not usable.
++ * < 0 indicates an internal error.
 + */
-+struct ubi_wl_entry *ubi_wl_get_fm_peb(struct ubi_device *ubi, int anchor)
++int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
++		     int fm_anchor)
 +{
-+	struct ubi_wl_entry *e = NULL;
++	struct ubi_fm_sb *fmsb;
++	struct ubi_vid_hdr *vh;
++	struct ubi_ec_hdr *ech;
++	struct ubi_fastmap_layout *fm;
++	int i, used_blocks, pnum, ret = 0;
++	size_t fm_size;
++	__be32 crc, tmp_crc;
++	unsigned long long sqnum = 0;
 +
-+	if (!ubi->free.rb_node || (ubi->free_count - ubi->beb_rsvd_pebs < 1))
++	mutex_lock(&ubi->fm_mutex);
++	memset(ubi->fm_buf, 0, ubi->fm_size);
++
++	fmsb = kmalloc(sizeof(*fmsb), GFP_KERNEL);
++	if (!fmsb) {
++		ret = -ENOMEM;
 +		goto out;
++	}
 +
-+	if (anchor)
-+		e = find_anchor_wl_entry(&ubi->free);
-+	else
-+		e = find_mean_wl_entry(ubi, &ubi->free);
-+
-+	if (!e)
++	fm = kzalloc(sizeof(*fm), GFP_KERNEL);
++	if (!fm) {
++		ret = -ENOMEM;
++		kfree(fmsb);
 +		goto out;
++	}
 +
-+	self_check_in_wl_tree(ubi, e, &ubi->free);
++	ret = ubi_io_read(ubi, fmsb, fm_anchor, ubi->leb_start, sizeof(*fmsb));
++	if (ret && ret != UBI_IO_BITFLIPS) {
++		kfree(fmsb);
++		kfree(fm);
++		goto out;
++	} else if (ret == UBI_IO_BITFLIPS)
++		fm->to_be_tortured[0] = 1;
 +
-+	/* remove it from the free list,
-+	 * the wl subsystem does no longer know this erase block */
-+	rb_erase(&e->u.rb, &ubi->free);
-+	ubi->free_count--;
++	if (be32_to_cpu(fmsb->magic) != UBI_FM_SB_MAGIC) {
++		ubi_err("bad super block magic: 0x%x, expected: 0x%x",
++			be32_to_cpu(fmsb->magic), UBI_FM_SB_MAGIC);
++		ret = UBI_BAD_FASTMAP;
++		kfree(fmsb);
++		kfree(fm);
++		goto out;
++	}
++
++	if (fmsb->version != UBI_FM_FMT_VERSION) {
++		ubi_err("bad fastmap version: %i, expected: %i",
++			fmsb->version, UBI_FM_FMT_VERSION);
++		ret = UBI_BAD_FASTMAP;
++		kfree(fmsb);
++		kfree(fm);
++		goto out;
++	}
++
++	used_blocks = be32_to_cpu(fmsb->used_blocks);
++	if (used_blocks > UBI_FM_MAX_BLOCKS || used_blocks < 1) {
++		ubi_err("number of fastmap blocks is invalid: %i", used_blocks);
++		ret = UBI_BAD_FASTMAP;
++		kfree(fmsb);
++		kfree(fm);
++		goto out;
++	}
++
++	fm_size = ubi->leb_size * used_blocks;
++	if (fm_size != ubi->fm_size) {
++		ubi_err("bad fastmap size: %zi, expected: %zi", fm_size,
++			ubi->fm_size);
++		ret = UBI_BAD_FASTMAP;
++		kfree(fmsb);
++		kfree(fm);
++	}
++
++	ech = kzalloc(ubi->ec_hdr_alsize, GFP_KERNEL);
++	if (!ech) {
++		ret = -ENOMEM;
++		kfree(fmsb);
++		kfree(fm);
++		goto out;
++	}
++
++	vh = ubi_zalloc_vid_hdr(ubi, GFP_KERNEL);
++	if (!vh) {
++		ret = -ENOMEM;
++		kfree(fmsb);
++		kfree(fm);
++		kfree(ech);
++		goto out;
++	}
++
++	for (i = 0; i < used_blocks; i++) {
++		pnum = be32_to_cpu(fmsb->block_loc[i]);
++
++		if (ubi_io_is_bad(ubi, pnum)) {
++			ret = UBI_BAD_FASTMAP;
++			kfree(fm);
++			kfree(fmsb);
++			goto free_hdr;
++		}
++
++		ret = ubi_io_read_ec_hdr(ubi, pnum, ech, 0);
++		if (ret && ret != UBI_IO_BITFLIPS) {
++			ubi_err("unable to read fastmap block# %i EC (PEB: %i)",
++				i, pnum);
++			if (ret > 0)
++				ret = UBI_BAD_FASTMAP;
++			kfree(fmsb);
++			kfree(fm);
++			goto free_hdr;
++		} else if (ret == UBI_IO_BITFLIPS)
++			fm->to_be_tortured[i] = 1;
++
++		if (!ubi->image_seq)
++			ubi->image_seq = be32_to_cpu(ech->image_seq);
++
++		if (be32_to_cpu(ech->image_seq) != ubi->image_seq) {
++			ret = UBI_BAD_FASTMAP;
++			kfree(fmsb);
++			kfree(fm);
++			goto free_hdr;
++		}
++
++		ret = ubi_io_read_vid_hdr(ubi, pnum, vh, 0);
++		if (ret && ret != UBI_IO_BITFLIPS) {
++			ubi_err("unable to read fastmap block# %i (PEB: %i)",
++				i, pnum);
++			kfree(fmsb);
++			kfree(fm);
++			goto free_hdr;
++		}
++
++		if (i == 0) {
++			if (be32_to_cpu(vh->vol_id) != UBI_FM_SB_VOLUME_ID) {
++				ubi_err("bad fastmap anchor vol_id: 0x%x," \
++					" expected: 0x%x",
++					be32_to_cpu(vh->vol_id),
++					UBI_FM_SB_VOLUME_ID);
++				ret = UBI_BAD_FASTMAP;
++				kfree(fmsb);
++				kfree(fm);
++				goto free_hdr;
++			}
++		} else {
++			if (be32_to_cpu(vh->vol_id) != UBI_FM_DATA_VOLUME_ID) {
++				ubi_err("bad fastmap data vol_id: 0x%x," \
++					" expected: 0x%x",
++					be32_to_cpu(vh->vol_id),
++					UBI_FM_DATA_VOLUME_ID);
++				ret = UBI_BAD_FASTMAP;
++				kfree(fmsb);
++				goto free_hdr;
++			}
++		}
++
++		if (sqnum < be64_to_cpu(vh->sqnum))
++			sqnum = be64_to_cpu(vh->sqnum);
++
++		ret = ubi_io_read(ubi, ubi->fm_buf + (ubi->leb_size * i), pnum,
++				  ubi->leb_start, ubi->leb_size);
++		if (ret && ret != UBI_IO_BITFLIPS) {
++			ubi_err("unable to read fastmap block# %i (PEB: %i, " \
++				"err: %i)", i, pnum, ret);
++			kfree(fmsb);
++			kfree(fm);
++			goto free_hdr;
++		}
++	}
++
++	kfree(fmsb);
++
++	fmsb = (struct ubi_fm_sb *)(ubi->fm_buf);
++	tmp_crc = be32_to_cpu(fmsb->data_crc);
++	fmsb->data_crc = 0;
++	crc = crc32(UBI_CRC32_INIT, ubi->fm_buf, fm_size);
++	if (crc != tmp_crc) {
++		ubi_err("fastmap data CRC is invalid");
++		ubi_err("CRC should be: 0x%x, calc: 0x%x", tmp_crc, crc);
++		ret = UBI_BAD_FASTMAP;
++		kfree(fm);
++		goto free_hdr;
++	}
++
++	fmsb->sqnum = sqnum;
++
++	fm->used_blocks = used_blocks;
++
++	ret = ubi_attach_fastmap(ubi, ai, fm);
++	if (ret) {
++		if (ret > 0)
++			ret = UBI_BAD_FASTMAP;
++		kfree(fm);
++		goto free_hdr;
++	}
++
++	for (i = 0; i < used_blocks; i++) {
++		struct ubi_wl_entry *e;
++
++		e = kmem_cache_alloc(ubi_wl_entry_slab, GFP_KERNEL);
++		if (!e) {
++			while (i--)
++				kfree(fm->e[i]);
++
++			kfree(fm);
++			fm = NULL;
++			ret = -ENOMEM;
++			goto free_hdr;
++		}
++
++		e->pnum = be32_to_cpu(fmsb->block_loc[i]);
++		e->ec = be32_to_cpu(fmsb->block_ec[i]);
++		fm->e[i] = e;
++	}
++
++	ubi->fm = fm;
++	ubi->fm_pool.max_size = ubi->fm->max_pool_size;
++	ubi->fm_wl_pool.max_size = ubi->fm->max_wl_pool_size;
++	ubi_msg("attached by fastmap");
++	ubi_msg("fastmap pool size: %d", ubi->fm_pool.max_size);
++	ubi_msg("fastmap WL pool size: %d", ubi->fm_wl_pool.max_size);
++	ubi->fm_disabled = 0;
++
++free_hdr:
++	ubi_free_vid_hdr(ubi, vh);
++	kfree(ech);
 +out:
-+	return e;
-+}
-+#endif
-+
-+/**
-+ * __wl_get_peb - get a physical eraseblock.
-  * @ubi: UBI device description object
-  *
-  * This function returns a physical eraseblock in case of success and a
-  * negative error code in case of failure. Might sleep.
-  */
--int ubi_wl_get_peb(struct ubi_device *ubi)
-+static int __wl_get_peb(struct ubi_device *ubi)
- {
- 	int err;
--	struct ubi_wl_entry *e, *first, *last;
-+	struct ubi_wl_entry *e;
- 
- retry:
--	spin_lock(&ubi->wl_lock);
- 	if (!ubi->free.rb_node) {
- 		if (ubi->works_count == 0) {
--			ubi_assert(list_empty(&ubi->works));
- 			ubi_err("no free eraseblocks");
--			spin_unlock(&ubi->wl_lock);
-+			ubi_assert(list_empty(&ubi->works));
- 			return -ENOSPC;
- 		}
--		spin_unlock(&ubi->wl_lock);
- 
- 		err = produce_free_peb(ubi);
- 		if (err < 0)
-@@ -375,13 +519,11 @@ retry:
- 		goto retry;
- 	}
- 
--	first = rb_entry(rb_first(&ubi->free), struct ubi_wl_entry, u.rb);
--	last = rb_entry(rb_last(&ubi->free), struct ubi_wl_entry, u.rb);
--
--	if (last->ec - first->ec < WL_FREE_MAX_DIFF)
--		e = rb_entry(ubi->free.rb_node, struct ubi_wl_entry, u.rb);
--	else
--		e = find_wl_entry(&ubi->free, WL_FREE_MAX_DIFF/2);
-+	e = find_mean_wl_entry(ubi, &ubi->free);
-+	if (!e) {
-+		ubi_err("no free eraseblocks");
-+		return -ENOSPC;
-+	}
- 
- 	self_check_in_wl_tree(ubi, e, &ubi->free);
- 
-@@ -390,10 +532,14 @@ retry:
- 	 * be protected from being moved for some time.
- 	 */
- 	rb_erase(&e->u.rb, &ubi->free);
-+	ubi->free_count--;
- 	dbg_wl("PEB %d EC %d", e->pnum, e->ec);
-+#ifndef CONFIG_MTD_UBI_FASTMAP
-+	/* We have to enqueue e only if fastmap is disabled,
-+	 * is fastmap enabled prot_queue_add() will be called by
-+	 * ubi_wl_get_peb() after removing e from the pool. */
- 	prot_queue_add(ubi, e);
--	spin_unlock(&ubi->wl_lock);
--
-+#endif
- 	err = ubi_self_check_all_ff(ubi, e->pnum, ubi->vid_hdr_aloffset,
- 				    ubi->peb_size - ubi->vid_hdr_aloffset);
- 	if (err) {
-@@ -404,6 +550,150 @@ retry:
- 	return e->pnum;
- }
- 
-+#ifdef CONFIG_MTD_UBI_FASTMAP
-+/**
-+ * return_unused_pool_pebs - returns unused PEB to the free tree.
-+ * @ubi: UBI device description object
-+ * @pool: fastmap pool description object
-+ */
-+static void return_unused_pool_pebs(struct ubi_device *ubi,
-+				    struct ubi_fm_pool *pool)
-+{
-+	int i;
-+	struct ubi_wl_entry *e;
-+
-+	for (i = pool->used; i < pool->size; i++) {
-+		e = ubi->lookuptbl[pool->pebs[i]];
-+		wl_tree_add(e, &ubi->free);
-+		ubi->free_count++;
-+	}
++	mutex_unlock(&ubi->fm_mutex);
++	if (ret == UBI_BAD_FASTMAP)
++		ubi_err("Attach by fastmap failed, doing a full scan!");
++	return ret;
 +}
 +
 +/**
-+ * refill_wl_pool - refills all the fastmap pool used by the
-+ * WL sub-system.
-+ * @ubi: UBI device description object
++ * ubi_write_fastmap - writes a fastmap.
++ * @ubi: UBI device object
++ * @new_fm: the to be written fastmap
++ *
++ * Returns 0 on success, < 0 indicates an internal error.
 + */
-+static void refill_wl_pool(struct ubi_device *ubi)
++static int ubi_write_fastmap(struct ubi_device *ubi,
++			     struct ubi_fastmap_layout *new_fm)
 +{
-+	struct ubi_wl_entry *e;
-+	struct ubi_fm_pool *pool = &ubi->fm_wl_pool;
++	size_t fm_pos = 0;
++	void *fm_raw;
++	struct ubi_fm_sb *fmsb;
++	struct ubi_fm_hdr *fmh;
++	struct ubi_fm_scan_pool *fmpl1, *fmpl2;
++	struct ubi_fm_ec *fec;
++	struct ubi_fm_volhdr *fvh;
++	struct ubi_fm_eba *feba;
++	struct rb_node *node;
++	struct ubi_wl_entry *wl_e;
++	struct ubi_volume *vol;
++	struct ubi_vid_hdr *avhdr, *dvhdr;
++	struct ubi_work *ubi_wrk;
++	int ret, i, j, free_peb_count, used_peb_count, vol_count;
++	int scrub_peb_count, erase_peb_count;
 +
-+	return_unused_pool_pebs(ubi, pool);
++	fm_raw = ubi->fm_buf;
++	memset(ubi->fm_buf, 0, ubi->fm_size);
 +
-+	for (pool->size = 0; pool->size < pool->max_size; pool->size++) {
-+		if (!ubi->free.rb_node ||
-+		   (ubi->free_count - ubi->beb_rsvd_pebs < 5))
-+			break;
-+
-+		e = find_wl_entry(ubi, &ubi->free, WL_FREE_MAX_DIFF);
-+		self_check_in_wl_tree(ubi, e, &ubi->free);
-+		rb_erase(&e->u.rb, &ubi->free);
-+		ubi->free_count--;
-+
-+		pool->pebs[pool->size] = e->pnum;
++	avhdr = new_fm_vhdr(ubi, UBI_FM_SB_VOLUME_ID);
++	if (!avhdr) {
++		ret = -ENOMEM;
++		goto out;
 +	}
-+	pool->used = 0;
-+}
 +
-+/**
-+ * refill_wl_user_pool - refills all the fastmap pool used by ubi_wl_get_peb.
-+ * @ubi: UBI device description object
-+ */
-+static void refill_wl_user_pool(struct ubi_device *ubi)
-+{
-+	struct ubi_fm_pool *pool = &ubi->fm_pool;
-+
-+	return_unused_pool_pebs(ubi, pool);
-+
-+	for (pool->size = 0; pool->size < pool->max_size; pool->size++) {
-+		if (!ubi->free.rb_node ||
-+		   (ubi->free_count - ubi->beb_rsvd_pebs < 1))
-+			break;
-+
-+		pool->pebs[pool->size] = __wl_get_peb(ubi);
-+		if (pool->pebs[pool->size] < 0)
-+			break;
++	dvhdr = new_fm_vhdr(ubi, UBI_FM_DATA_VOLUME_ID);
++	if (!dvhdr) {
++		ret = -ENOMEM;
++		goto out_kfree;
 +	}
-+	pool->used = 0;
-+}
 +
-+/**
-+ * ubi_refill_pools - refills all fastmap PEB pools.
-+ * @ubi: UBI device description object
-+ */
-+void ubi_refill_pools(struct ubi_device *ubi)
-+{
++	spin_lock(&ubi->volumes_lock);
 +	spin_lock(&ubi->wl_lock);
-+	refill_wl_pool(ubi);
-+	refill_wl_user_pool(ubi);
++
++	fmsb = (struct ubi_fm_sb *)fm_raw;
++	fm_pos += sizeof(*fmsb);
++	ubi_assert(fm_pos <= ubi->fm_size);
++
++	fmh = (struct ubi_fm_hdr *)(fm_raw + fm_pos);
++	fm_pos += sizeof(*fmh);
++	ubi_assert(fm_pos <= ubi->fm_size);
++
++	fmsb->magic = cpu_to_be32(UBI_FM_SB_MAGIC);
++	fmsb->version = UBI_FM_FMT_VERSION;
++	fmsb->used_blocks = cpu_to_be32(new_fm->used_blocks);
++	/* the max sqnum will be filled in while *reading* the fastmap */
++	fmsb->sqnum = 0;
++
++	fmh->magic = cpu_to_be32(UBI_FM_HDR_MAGIC);
++	free_peb_count = 0;
++	used_peb_count = 0;
++	scrub_peb_count = 0;
++	erase_peb_count = 0;
++	vol_count = 0;
++
++	fmpl1 = (struct ubi_fm_scan_pool *)(fm_raw + fm_pos);
++	fm_pos += sizeof(*fmpl1);
++	fmpl1->magic = cpu_to_be32(UBI_FM_POOL_MAGIC);
++	fmpl1->size = cpu_to_be16(ubi->fm_pool.size);
++	fmpl1->max_size = cpu_to_be16(ubi->fm_pool.max_size);
++
++	for (i = 0; i < ubi->fm_pool.size; i++)
++		fmpl1->pebs[i] = cpu_to_be32(ubi->fm_pool.pebs[i]);
++
++	fmpl2 = (struct ubi_fm_scan_pool *)(fm_raw + fm_pos);
++	fm_pos += sizeof(*fmpl2);
++	fmpl2->magic = cpu_to_be32(UBI_FM_POOL_MAGIC);
++	fmpl2->size = cpu_to_be16(ubi->fm_wl_pool.size);
++	fmpl2->max_size = cpu_to_be16(ubi->fm_wl_pool.max_size);
++
++	for (i = 0; i < ubi->fm_wl_pool.size; i++)
++		fmpl2->pebs[i] = cpu_to_be32(ubi->fm_wl_pool.pebs[i]);
++
++	for (node = rb_first(&ubi->free); node; node = rb_next(node)) {
++		wl_e = rb_entry(node, struct ubi_wl_entry, u.rb);
++		fec = (struct ubi_fm_ec *)(fm_raw + fm_pos);
++
++		fec->pnum = cpu_to_be32(wl_e->pnum);
++		fec->ec = cpu_to_be32(wl_e->ec);
++
++		free_peb_count++;
++		fm_pos += sizeof(*fec);
++		ubi_assert(fm_pos <= ubi->fm_size);
++	}
++	fmh->free_peb_count = cpu_to_be32(free_peb_count);
++
++	for (node = rb_first(&ubi->used); node; node = rb_next(node)) {
++		wl_e = rb_entry(node, struct ubi_wl_entry, u.rb);
++		fec = (struct ubi_fm_ec *)(fm_raw + fm_pos);
++
++		fec->pnum = cpu_to_be32(wl_e->pnum);
++		fec->ec = cpu_to_be32(wl_e->ec);
++
++		used_peb_count++;
++		fm_pos += sizeof(*fec);
++		ubi_assert(fm_pos <= ubi->fm_size);
++	}
++	fmh->used_peb_count = cpu_to_be32(used_peb_count);
++
++	for (node = rb_first(&ubi->scrub); node; node = rb_next(node)) {
++		wl_e = rb_entry(node, struct ubi_wl_entry, u.rb);
++		fec = (struct ubi_fm_ec *)(fm_raw + fm_pos);
++
++		fec->pnum = cpu_to_be32(wl_e->pnum);
++		fec->ec = cpu_to_be32(wl_e->ec);
++
++		scrub_peb_count++;
++		fm_pos += sizeof(*fec);
++		ubi_assert(fm_pos <= ubi->fm_size);
++	}
++	fmh->scrub_peb_count = cpu_to_be32(scrub_peb_count);
++
++
++	list_for_each_entry(ubi_wrk, &ubi->works, list) {
++		if (ubi_is_erase_work(ubi_wrk)) {
++			wl_e = ubi_wrk->e;
++			ubi_assert(wl_e);
++
++			fec = (struct ubi_fm_ec *)(fm_raw + fm_pos);
++
++			fec->pnum = cpu_to_be32(wl_e->pnum);
++			fec->ec = cpu_to_be32(wl_e->ec);
++
++			erase_peb_count++;
++			fm_pos += sizeof(*fec);
++			ubi_assert(fm_pos <= ubi->fm_size);
++		}
++	}
++	fmh->erase_peb_count = cpu_to_be32(erase_peb_count);
++
++	for (i = 0; i < UBI_MAX_VOLUMES + UBI_INT_VOL_COUNT; i++) {
++		vol = ubi->volumes[i];
++
++		if (!vol)
++			continue;
++
++		vol_count++;
++
++		fvh = (struct ubi_fm_volhdr *)(fm_raw + fm_pos);
++		fm_pos += sizeof(*fvh);
++		ubi_assert(fm_pos <= ubi->fm_size);
++
++		fvh->magic = cpu_to_be32(UBI_FM_VHDR_MAGIC);
++		fvh->vol_id = cpu_to_be32(vol->vol_id);
++		fvh->vol_type = vol->vol_type;
++		fvh->used_ebs = cpu_to_be32(vol->used_ebs);
++		fvh->data_pad = cpu_to_be32(vol->data_pad);
++		fvh->last_eb_bytes = cpu_to_be32(vol->last_eb_bytes);
++
++		ubi_assert(vol->vol_type == UBI_DYNAMIC_VOLUME ||
++			vol->vol_type == UBI_STATIC_VOLUME);
++
++		feba = (struct ubi_fm_eba *)(fm_raw + fm_pos);
++		fm_pos += sizeof(*feba) + (sizeof(__be32) * vol->reserved_pebs);
++		ubi_assert(fm_pos <= ubi->fm_size);
++
++		for (j = 0; j < vol->reserved_pebs; j++)
++			feba->pnum[j] = cpu_to_be32(vol->eba_tbl[j]);
++
++		feba->reserved_pebs = cpu_to_be32(j);
++		feba->magic = cpu_to_be32(UBI_FM_EBA_MAGIC);
++	}
++	fmh->vol_count = cpu_to_be32(vol_count);
++	fmh->bad_peb_count = cpu_to_be32(ubi->bad_peb_count);
++
++	avhdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
++	avhdr->lnum = 0;
++
 +	spin_unlock(&ubi->wl_lock);
++	spin_unlock(&ubi->volumes_lock);
++
++	dbg_bld("writing fastmap SB to PEB %i", new_fm->e[0]->pnum);
++	ret = ubi_io_write_vid_hdr(ubi, new_fm->e[0]->pnum, avhdr);
++	if (ret) {
++		ubi_err("unable to write vid_hdr to fastmap SB!");
++		goto out_kfree;
++	}
++
++	for (i = 0; i < new_fm->used_blocks; i++) {
++		fmsb->block_loc[i] = cpu_to_be32(new_fm->e[i]->pnum);
++		fmsb->block_ec[i] = cpu_to_be32(new_fm->e[i]->ec);
++	}
++
++	fmsb->data_crc = 0;
++	fmsb->data_crc = cpu_to_be32(crc32(UBI_CRC32_INIT, fm_raw,
++					   ubi->fm_size));
++
++	for (i = 1; i < new_fm->used_blocks; i++) {
++		dvhdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
++		dvhdr->lnum = cpu_to_be32(i);
++		dbg_bld("writing fastmap data to PEB %i sqnum %llu",
++			new_fm->e[i]->pnum, be64_to_cpu(dvhdr->sqnum));
++		ret = ubi_io_write_vid_hdr(ubi, new_fm->e[i]->pnum, dvhdr);
++		if (ret) {
++			ubi_err("unable to write vid_hdr to PEB %i!",
++				new_fm->e[i]->pnum);
++			goto out_kfree;
++		}
++	}
++
++	for (i = 0; i < new_fm->used_blocks; i++) {
++		ret = ubi_io_write(ubi, fm_raw + (i * ubi->leb_size),
++			new_fm->e[i]->pnum, ubi->leb_start, ubi->leb_size);
++		if (ret) {
++			ubi_err("unable to write fastmap to PEB %i!",
++				new_fm->e[i]->pnum);
++			goto out_kfree;
++		}
++	}
++
++	ubi_assert(new_fm);
++	ubi->fm = new_fm;
++
++	dbg_bld("fastmap written!");
++
++out_kfree:
++	ubi_free_vid_hdr(ubi, avhdr);
++	ubi_free_vid_hdr(ubi, dvhdr);
++out:
++	return ret;
 +}
 +
-+/* ubi_wl_get_peb - works exaclty like __wl_get_peb but keeps track of
-+ * the fastmap pool.
++/**
++ * erase_block - Manually erase a PEB.
++ * @ubi: UBI device object
++ * @pnum: PEB to be erased
++ *
++ * Returns the new EC value on success, < 0 indicates an internal error.
 + */
-+int ubi_wl_get_peb(struct ubi_device *ubi)
++static int erase_block(struct ubi_device *ubi, int pnum)
 +{
 +	int ret;
-+	struct ubi_fm_pool *pool = &ubi->fm_pool;
-+	struct ubi_fm_pool *wl_pool = &ubi->fm_wl_pool;
++	struct ubi_ec_hdr *ec_hdr;
++	long long ec;
 +
-+	if (!pool->size || !wl_pool->size || pool->used == pool->size ||
-+	    wl_pool->used == wl_pool->size)
-+		ubi_update_fastmap(ubi);
++	ec_hdr = kzalloc(ubi->ec_hdr_alsize, GFP_KERNEL);
++	if (!ec_hdr)
++		return -ENOMEM;
 +
-+	/* we got not a single free PEB */
-+	if (!pool->size)
-+		ret = -ENOSPC;
-+	else {
-+		spin_lock(&ubi->wl_lock);
-+		ret = pool->pebs[pool->used++];
-+		prot_queue_add(ubi, ubi->lookuptbl[ret]);
-+		spin_unlock(&ubi->wl_lock);
++	ret = ubi_io_read_ec_hdr(ubi, pnum, ec_hdr, 0);
++	if (ret < 0)
++		goto out;
++	else if (ret && ret != UBI_IO_BITFLIPS) {
++		ret = -EINVAL;
++		goto out;
 +	}
++
++	ret = ubi_io_sync_erase(ubi, pnum, 0);
++	if (ret < 0)
++		goto out;
++
++	ec = be64_to_cpu(ec_hdr->ec);
++	ec += ret;
++	if (ec > UBI_MAX_ERASECOUNTER) {
++		ret = -EINVAL;
++		goto out;
++	}
++
++	ec_hdr->ec = cpu_to_be64(ec);
++	ret = ubi_io_write_ec_hdr(ubi, pnum, ec_hdr);
++	if (ret < 0)
++		goto out;
++
++	ret = ec;
++out:
++	kfree(ec_hdr);
++	return ret;
++}
++
++/**
++ * invalidate_fastmap - destroys a fastmap.
++ * @ubi: UBI device object
++ * @fm: the fastmap to be destroyed
++ *
++ * Returns 0 on success, < 0 indicates an internal error.
++ */
++static int invalidate_fastmap(struct ubi_device *ubi,
++			      struct ubi_fastmap_layout *fm)
++{
++	int ret, i;
++	struct ubi_vid_hdr *vh;
++
++	ret = erase_block(ubi, fm->e[0]->pnum);
++	if (ret < 0)
++		return ret;
++
++	vh = new_fm_vhdr(ubi, UBI_FM_SB_VOLUME_ID);
++	if (!vh)
++		return -ENOMEM;
++
++	/* deleting the current fastmap SB is not enough, an old SB may exist,
++	 * so create a (corrupted) SB such that fastmap will find it and fall
++	 * back to scanning mode in any case */
++	vh->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
++	ret = ubi_io_write_vid_hdr(ubi, fm->e[0]->pnum, vh);
++
++	for (i = 0; i < fm->used_blocks; i++)
++		ubi_wl_put_fm_peb(ubi, fm->e[i], i, fm->to_be_tortured[i]);
 +
 +	return ret;
 +}
 +
-+/* get_peb_for_wl - returns a PEB to be used internally by the WL sub-system.
++/**
++ * ubi_update_fastmap - will be called by UBI if a volume changes or
++ * a fastmap pool becomes full.
++ * @ubi: UBI device object
 + *
-+ * @ubi: UBI device description object
++ * Returns 0 on success, < 0 indicates an internal error.
 + */
-+static struct ubi_wl_entry *get_peb_for_wl(struct ubi_device *ubi)
++int ubi_update_fastmap(struct ubi_device *ubi)
 +{
-+	struct ubi_fm_pool *pool = &ubi->fm_wl_pool;
-+	int pnum;
++	int ret, i;
++	struct ubi_fastmap_layout *new_fm, *old_fm;
++	struct ubi_wl_entry *tmp_e;
 +
-+	if (pool->used == pool->size || !pool->size) {
-+		/* We cannot update the fastmap here because this
-+		 * function is called in atomic context.
-+		 * Let's fail here and refill/update it as soon as possible. */
-+		schedule_work(&ubi->fm_work);
-+		return NULL;
-+	} else {
-+		pnum = pool->pebs[pool->used++];
-+		return ubi->lookuptbl[pnum];
-+	}
-+}
-+#else
-+static struct ubi_wl_entry *get_peb_for_wl(struct ubi_device *ubi)
-+{
-+	return find_wl_entry(ubi, &ubi->free, WL_FREE_MAX_DIFF);
-+}
++	mutex_lock(&ubi->fm_mutex);
 +
-+int ubi_wl_get_peb(struct ubi_device *ubi)
-+{
-+	int peb;
++	ubi_refill_pools(ubi);
 +
-+	spin_lock(&ubi->wl_lock);
-+	peb = __wl_get_peb(ubi);
-+	spin_unlock(&ubi->wl_lock);
-+
-+	return peb;
-+}
-+#endif
-+
- /**
-  * prot_queue_del - remove a physical eraseblock from the protection queue.
-  * @ubi: UBI device description object
-@@ -534,14 +824,14 @@ repeat:
- }
- 
- /**
-- * schedule_ubi_work - schedule a work.
-+ * __schedule_ubi_work - schedule a work.
-  * @ubi: UBI device description object
-  * @wrk: the work to schedule
-  *
-  * This function adds a work defined by @wrk to the tail of the pending works
-- * list.
-+ * list. Can only be used of ubi->work_sem is already held in read mode!
-  */
--static void schedule_ubi_work(struct ubi_device *ubi, struct ubi_work *wrk)
-+static void __schedule_ubi_work(struct ubi_device *ubi, struct ubi_work *wrk)
- {
- 	spin_lock(&ubi->wl_lock);
- 	list_add_tail(&wrk->list, &ubi->works);
-@@ -552,9 +842,35 @@ static void schedule_ubi_work(struct ubi_device *ubi, struct ubi_work *wrk)
- 	spin_unlock(&ubi->wl_lock);
- }
- 
-+/**
-+ * schedule_ubi_work - schedule a work.
-+ * @ubi: UBI device description object
-+ * @wrk: the work to schedule
-+ *
-+ * This function adds a work defined by @wrk to the tail of the pending works
-+ * list.
-+ */
-+static void schedule_ubi_work(struct ubi_device *ubi, struct ubi_work *wrk)
-+{
-+	down_read(&ubi->work_sem);
-+	__schedule_ubi_work(ubi, wrk);
-+	up_read(&ubi->work_sem);
-+}
-+
- static int erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk,
- 			int cancel);
- 
-+#ifdef CONFIG_MTD_UBI_FASTMAP
-+/**
-+ * ubi_is_erase_work - checks whether a work is erase work.
-+ * @wrk: The work object to be checked
-+ */
-+int ubi_is_erase_work(struct ubi_work *wrk)
-+{
-+	return wrk->func == erase_worker;
-+}
-+#endif
-+
- /**
-  * schedule_erase - schedule an erase work.
-  * @ubi: UBI device description object
-@@ -571,6 +887,9 @@ static int schedule_erase(struct ubi_device *ubi, struct ubi_wl_entry *e,
- {
- 	struct ubi_work *wl_wrk;
- 
-+	ubi_assert(e);
-+	ubi_assert(!ubi_is_fm_block(ubi, e->pnum));
-+
- 	dbg_wl("schedule erasure of PEB %d, EC %d, torture %d",
- 	       e->pnum, e->ec, torture);
- 
-@@ -589,6 +908,79 @@ static int schedule_erase(struct ubi_device *ubi, struct ubi_wl_entry *e,
- }
- 
- /**
-+ * do_sync_erase - run the erase worker synchronously.
-+ * @ubi: UBI device description object
-+ * @e: the WL entry of the physical eraseblock to erase
-+ * @vol_id: the volume ID that last used this PEB
-+ * @lnum: the last used logical eraseblock number for the PEB
-+ * @torture: if the physical eraseblock has to be tortured
-+ *
-+ */
-+static int do_sync_erase(struct ubi_device *ubi, struct ubi_wl_entry *e,
-+			 int vol_id, int lnum, int torture)
-+{
-+	struct ubi_work *wl_wrk;
-+
-+	dbg_wl("sync erase of PEB %i", e->pnum);
-+
-+	wl_wrk = kmalloc(sizeof(struct ubi_work), GFP_NOFS);
-+	if (!wl_wrk)
-+		return -ENOMEM;
-+
-+	wl_wrk->e = e;
-+	wl_wrk->vol_id = vol_id;
-+	wl_wrk->lnum = lnum;
-+	wl_wrk->torture = torture;
-+
-+	return erase_worker(ubi, wl_wrk, 0);
-+}
-+
-+#ifdef CONFIG_MTD_UBI_FASTMAP
-+/**
-+ * ubi_wl_put_fm_peb - returns a PEB used in a fastmap to the wear-leveling
-+ * sub-system.
-+ * see: ubi_wl_put_peb()
-+ *
-+ * @ubi: UBI device description object
-+ * @fm_e: physical eraseblock to return
-+ * @lnum: the last used logical eraseblock number for the PEB
-+ * @torture: if this physical eraseblock has to be tortured
-+ */
-+int ubi_wl_put_fm_peb(struct ubi_device *ubi, struct ubi_wl_entry *fm_e,
-+		      int lnum, int torture)
-+{
-+	struct ubi_wl_entry *e;
-+	int vol_id, pnum = fm_e->pnum;
-+
-+	dbg_wl("PEB %d", pnum);
-+
-+	ubi_assert(pnum >= 0);
-+	ubi_assert(pnum < ubi->peb_count);
-+
-+	spin_lock(&ubi->wl_lock);
-+	e = ubi->lookuptbl[pnum];
-+
-+	/* This can happen if we recovered from a fastmap the very
-+	 * first time and writing now a new one. In this case the wl system
-+	 * has never seen any PEB used by the original fastmap.
-+	 */
-+	if (!e) {
-+		e = fm_e;
-+		ubi_assert(e->ec >= 0);
-+		ubi->lookuptbl[pnum] = e;
-+	} else {
-+		e->ec = fm_e->ec;
-+		kfree(fm_e);
-+	}
-+
-+	spin_unlock(&ubi->wl_lock);
-+
-+	vol_id = lnum ? UBI_FM_DATA_VOLUME_ID : UBI_FM_SB_VOLUME_ID;
-+	return schedule_erase(ubi, e, vol_id, lnum, torture);
-+}
-+#endif
-+
-+/**
-  * wear_leveling_worker - wear-leveling worker function.
-  * @ubi: UBI device description object
-  * @wrk: the work object
-@@ -603,6 +995,9 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
- {
- 	int err, scrubbing = 0, torture = 0, protect = 0, erroneous = 0;
- 	int vol_id = -1, uninitialized_var(lnum);
-+#ifdef CONFIG_MTD_UBI_FASTMAP
-+	int anchor = wrk->anchor;
-+#endif
- 	struct ubi_wl_entry *e1, *e2;
- 	struct ubi_vid_hdr *vid_hdr;
- 
-@@ -636,14 +1031,35 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
- 		goto out_cancel;
- 	}
- 
-+#ifdef CONFIG_MTD_UBI_FASTMAP
-+	/* Check whether we need to produce an anchor PEB */
-+	if (!anchor)
-+		anchor = !anchor_pebs_avalible(&ubi->free);
-+
-+	if (anchor) {
-+		e1 = find_anchor_wl_entry(&ubi->used);
-+		if (!e1)
-+			goto out_cancel;
-+		e2 = get_peb_for_wl(ubi);
-+		if (!e2)
-+			goto out_cancel;
-+
-+		self_check_in_wl_tree(ubi, e1, &ubi->used);
-+		rb_erase(&e1->u.rb, &ubi->used);
-+		dbg_wl("anchor-move PEB %d to PEB %d", e1->pnum, e2->pnum);
-+	} else if (!ubi->scrub.rb_node) {
-+#else
- 	if (!ubi->scrub.rb_node) {
-+#endif
- 		/*
- 		 * Now pick the least worn-out used physical eraseblock and a
- 		 * highly worn-out free physical eraseblock. If the erase
- 		 * counters differ much enough, start wear-leveling.
- 		 */
- 		e1 = rb_entry(rb_first(&ubi->used), struct ubi_wl_entry, u.rb);
--		e2 = find_wl_entry(&ubi->free, WL_FREE_MAX_DIFF);
-+		e2 = get_peb_for_wl(ubi);
-+		if (!e2)
-+			goto out_cancel;
- 
- 		if (!(e2->ec - e1->ec >= UBI_WL_THRESHOLD)) {
- 			dbg_wl("no WL needed: min used EC %d, max free EC %d",
-@@ -658,14 +1074,15 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
- 		/* Perform scrubbing */
- 		scrubbing = 1;
- 		e1 = rb_entry(rb_first(&ubi->scrub), struct ubi_wl_entry, u.rb);
--		e2 = find_wl_entry(&ubi->free, WL_FREE_MAX_DIFF);
-+		e2 = get_peb_for_wl(ubi);
-+		if (!e2)
-+			goto out_cancel;
-+
- 		self_check_in_wl_tree(ubi, e1, &ubi->scrub);
- 		rb_erase(&e1->u.rb, &ubi->scrub);
- 		dbg_wl("scrub PEB %d to PEB %d", e1->pnum, e2->pnum);
- 	}
- 
--	self_check_in_wl_tree(ubi, e2, &ubi->free);
--	rb_erase(&e2->u.rb, &ubi->free);
- 	ubi->move_from = e1;
- 	ubi->move_to = e2;
- 	spin_unlock(&ubi->wl_lock);
-@@ -782,7 +1199,7 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
- 	ubi->move_to_put = ubi->wl_scheduled = 0;
- 	spin_unlock(&ubi->wl_lock);
- 
--	err = schedule_erase(ubi, e1, vol_id, lnum, 0);
-+	err = do_sync_erase(ubi, e1, vol_id, lnum, 0);
- 	if (err) {
- 		kmem_cache_free(ubi_wl_entry_slab, e1);
- 		if (e2)
-@@ -797,7 +1214,7 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
- 		 */
- 		dbg_wl("PEB %d (LEB %d:%d) was put meanwhile, erase",
- 		       e2->pnum, vol_id, lnum);
--		err = schedule_erase(ubi, e2, vol_id, lnum, 0);
-+		err = do_sync_erase(ubi, e2, vol_id, lnum, 0);
- 		if (err) {
- 			kmem_cache_free(ubi_wl_entry_slab, e2);
- 			goto out_ro;
-@@ -836,7 +1253,7 @@ out_not_moved:
- 	spin_unlock(&ubi->wl_lock);
- 
- 	ubi_free_vid_hdr(ubi, vid_hdr);
--	err = schedule_erase(ubi, e2, vol_id, lnum, torture);
-+	err = do_sync_erase(ubi, e2, vol_id, lnum, torture);
- 	if (err) {
- 		kmem_cache_free(ubi_wl_entry_slab, e2);
- 		goto out_ro;
-@@ -877,12 +1294,13 @@ out_cancel:
- /**
-  * ensure_wear_leveling - schedule wear-leveling if it is needed.
-  * @ubi: UBI device description object
-+ * @nested: set to non-zero if this function is called from UBI worker
-  *
-  * This function checks if it is time to start wear-leveling and schedules it
-  * if yes. This function returns zero in case of success and a negative error
-  * code in case of failure.
-  */
--static int ensure_wear_leveling(struct ubi_device *ubi)
-+static int ensure_wear_leveling(struct ubi_device *ubi, int nested)
- {
- 	int err = 0;
- 	struct ubi_wl_entry *e1;
-@@ -910,7 +1328,7 @@ static int ensure_wear_leveling(struct ubi_device *ubi)
- 		 * %UBI_WL_THRESHOLD.
- 		 */
- 		e1 = rb_entry(rb_first(&ubi->used), struct ubi_wl_entry, u.rb);
--		e2 = find_wl_entry(&ubi->free, WL_FREE_MAX_DIFF);
-+		e2 = find_wl_entry(ubi, &ubi->free, WL_FREE_MAX_DIFF);
- 
- 		if (!(e2->ec - e1->ec >= UBI_WL_THRESHOLD))
- 			goto out_unlock;
-@@ -927,8 +1345,12 @@ static int ensure_wear_leveling(struct ubi_device *ubi)
- 		goto out_cancel;
- 	}
- 
-+	wrk->anchor = 0;
- 	wrk->func = &wear_leveling_worker;
--	schedule_ubi_work(ubi, wrk);
-+	if (nested)
-+		__schedule_ubi_work(ubi, wrk);
-+	else
-+		schedule_ubi_work(ubi, wrk);
- 	return err;
- 
- out_cancel:
-@@ -939,6 +1361,38 @@ out_unlock:
- 	return err;
- }
- 
-+#ifdef CONFIG_MTD_UBI_FASTMAP
-+/**
-+ * ubi_ensure_anchor_pebs - schedule wear-leveling to produce an anchor PEB.
-+ * @ubi: UBI device description object
-+ */
-+int ubi_ensure_anchor_pebs(struct ubi_device *ubi)
-+{
-+	struct ubi_work *wrk;
-+
-+	spin_lock(&ubi->wl_lock);
-+	if (ubi->wl_scheduled) {
-+		spin_unlock(&ubi->wl_lock);
++	if (ubi->ro_mode || ubi->fm_disabled) {
++		mutex_unlock(&ubi->fm_mutex);
 +		return 0;
 +	}
-+	ubi->wl_scheduled = 1;
-+	spin_unlock(&ubi->wl_lock);
 +
-+	wrk = kmalloc(sizeof(struct ubi_work), GFP_NOFS);
-+	if (!wrk) {
-+		spin_lock(&ubi->wl_lock);
-+		ubi->wl_scheduled = 0;
-+		spin_unlock(&ubi->wl_lock);
++	ret = ubi_ensure_anchor_pebs(ubi);
++	if (ret) {
++		mutex_unlock(&ubi->fm_mutex);
++		return ret;
++	}
++
++	new_fm = kzalloc(sizeof(*new_fm), GFP_KERNEL);
++	if (!new_fm) {
++		mutex_unlock(&ubi->fm_mutex);
 +		return -ENOMEM;
 +	}
 +
-+	wrk->anchor = 1;
-+	wrk->func = &wear_leveling_worker;
-+	schedule_ubi_work(ubi, wrk);
-+	return 0;
++	new_fm->used_blocks = ubi->fm_size / ubi->leb_size;
++
++	for (i = 0; i < new_fm->used_blocks; i++) {
++		new_fm->e[i] = kmem_cache_alloc(ubi_wl_entry_slab, GFP_KERNEL);
++		if (!new_fm->e[i]) {
++			while (i--)
++				kfree(new_fm->e[i]);
++
++			kfree(new_fm);
++			mutex_unlock(&ubi->fm_mutex);
++			return -ENOMEM;
++		}
++	}
++
++	old_fm = ubi->fm;
++	ubi->fm = NULL;
++
++	if (new_fm->used_blocks > UBI_FM_MAX_BLOCKS) {
++		ubi_err("fastmap too large");
++		ret = -ENOSPC;
++		goto err;
++	}
++
++	for (i = 1; i < new_fm->used_blocks; i++) {
++		spin_lock(&ubi->wl_lock);
++		tmp_e = ubi_wl_get_fm_peb(ubi, 0);
++		spin_unlock(&ubi->wl_lock);
++
++		if (!tmp_e && !old_fm) {
++			int j;
++			ubi_err("could not get any free erase block");
++
++			for (j = 1; j < i; j++)
++				ubi_wl_put_fm_peb(ubi, new_fm->e[j], j, 0);
++
++			ret = -ENOSPC;
++			goto err;
++		} else if (!tmp_e && old_fm) {
++			ret = erase_block(ubi, old_fm->e[i]->pnum);
++			if (ret < 0) {
++				int j;
++
++				for (j = 1; j < i; j++)
++					ubi_wl_put_fm_peb(ubi, new_fm->e[j],
++							  j, 0);
++
++				ubi_err("could not erase old fastmap PEB");
++				goto err;
++			}
++
++			new_fm->e[i]->pnum = old_fm->e[i]->pnum;
++			new_fm->e[i]->ec = old_fm->e[i]->ec;
++		} else {
++			new_fm->e[i]->pnum = tmp_e->pnum;
++			new_fm->e[i]->ec = tmp_e->ec;
++
++			if (old_fm)
++				ubi_wl_put_fm_peb(ubi, old_fm->e[i], i,
++						  old_fm->to_be_tortured[i]);
++		}
++	}
++
++	spin_lock(&ubi->wl_lock);
++	tmp_e = ubi_wl_get_fm_peb(ubi, 1);
++	spin_unlock(&ubi->wl_lock);
++
++	if (old_fm) {
++		/* no fresh anchor PEB was found, reuse the old one */
++		if (!tmp_e) {
++			ret = erase_block(ubi, old_fm->e[0]->pnum);
++			if (ret < 0) {
++				int i;
++				ubi_err("could not erase old anchor PEB");
++
++				for (i = 1; i < new_fm->used_blocks; i++)
++					ubi_wl_put_fm_peb(ubi, new_fm->e[i],
++							  i, 0);
++				goto err;
++			}
++
++			new_fm->e[0]->pnum = old_fm->e[0]->pnum;
++			new_fm->e[0]->ec = ret;
++		} else {
++			/* we've got a new anchor PEB, return the old one */
++			ubi_wl_put_fm_peb(ubi, old_fm->e[0], 0,
++					  old_fm->to_be_tortured[0]);
++
++			new_fm->e[0]->pnum = tmp_e->pnum;
++			new_fm->e[0]->ec = tmp_e->ec;
++		}
++	} else {
++		if (!tmp_e) {
++			int i;
++			ubi_err("could not find any anchor PEB");
++
++			for (i = 1; i < new_fm->used_blocks; i++)
++				ubi_wl_put_fm_peb(ubi, new_fm->e[i], i, 0);
++
++			ret = -ENOSPC;
++			goto err;
++		}
++
++		new_fm->e[0]->pnum = tmp_e->pnum;
++		new_fm->e[0]->ec = tmp_e->ec;
++	}
++
++	down_write(&ubi->work_sem);
++	down_write(&ubi->fm_sem);
++	ret = ubi_write_fastmap(ubi, new_fm);
++	up_write(&ubi->fm_sem);
++	up_write(&ubi->work_sem);
++
++	if (ret)
++		goto err;
++
++out_unlock:
++	mutex_unlock(&ubi->fm_mutex);
++	kfree(old_fm);
++	return ret;
++
++err:
++	kfree(new_fm);
++
++	ubi_warn("Unable to write new fastmap, err=%i", ret);
++
++	ret = 0;
++	if (old_fm) {
++		ret = invalidate_fastmap(ubi, old_fm);
++		if (ret < 0)
++			ubi_err("Unable to invalidiate current fastmap!");
++		else if (ret)
++			ret = 0;
++	}
++	goto out_unlock;
 +}
-+#endif
-+
- /**
-  * erase_worker - physical eraseblock erase worker function.
-  * @ubi: UBI device description object
-@@ -969,6 +1423,8 @@ static int erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk,
- 	dbg_wl("erase PEB %d EC %d LEB %d:%d",
- 	       pnum, e->ec, wl_wrk->vol_id, wl_wrk->lnum);
- 
-+	ubi_assert(!ubi_is_fm_block(ubi, e->pnum));
-+
- 	err = sync_erase(ubi, e, wl_wrk->torture);
- 	if (!err) {
- 		/* Fine, we've erased it successfully */
-@@ -976,6 +1432,7 @@ static int erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk,
- 
- 		spin_lock(&ubi->wl_lock);
- 		wl_tree_add(e, &ubi->free);
-+		ubi->free_count++;
- 		spin_unlock(&ubi->wl_lock);
- 
- 		/*
-@@ -985,7 +1442,7 @@ static int erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk,
- 		serve_prot_queue(ubi);
- 
- 		/* And take care about wear-leveling */
--		err = ensure_wear_leveling(ubi);
-+		err = ensure_wear_leveling(ubi, 1);
- 		return err;
- 	}
- 
-@@ -1223,7 +1680,7 @@ retry:
- 	 * Technically scrubbing is the same as wear-leveling, so it is done
- 	 * by the WL worker.
- 	 */
--	return ensure_wear_leveling(ubi);
-+	return ensure_wear_leveling(ubi, 0);
- }
- 
- /**
-@@ -1404,7 +1861,7 @@ static void cancel_pending(struct ubi_device *ubi)
-  */
- int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
- {
--	int err, i;
-+	int err, i, reserved_pebs, found_pebs = 0;
- 	struct rb_node *rb1, *rb2;
- 	struct ubi_ainf_volume *av;
- 	struct ubi_ainf_peb *aeb, *tmp;
-@@ -1416,6 +1873,9 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
- 	init_rwsem(&ubi->work_sem);
- 	ubi->max_ec = ai->max_ec;
- 	INIT_LIST_HEAD(&ubi->works);
-+#ifdef CONFIG_MTD_UBI_FASTMAP
-+	INIT_WORK(&ubi->fm_work, update_fastmap_work_fn);
-+#endif
- 
- 	sprintf(ubi->bgt_name, UBI_BGT_NAME_PATTERN, ubi->ubi_num);
- 
-@@ -1437,13 +1897,17 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
- 
- 		e->pnum = aeb->pnum;
- 		e->ec = aeb->ec;
-+		ubi_assert(!ubi_is_fm_block(ubi, e->pnum));
- 		ubi->lookuptbl[e->pnum] = e;
- 		if (schedule_erase(ubi, e, aeb->vol_id, aeb->lnum, 0)) {
- 			kmem_cache_free(ubi_wl_entry_slab, e);
- 			goto out_free;
- 		}
-+
-+		found_pebs++;
- 	}
- 
-+	ubi->free_count = 0;
- 	list_for_each_entry(aeb, &ai->free, u.list) {
- 		cond_resched();
- 
-@@ -1454,8 +1918,14 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
- 		e->pnum = aeb->pnum;
- 		e->ec = aeb->ec;
- 		ubi_assert(e->ec >= 0);
-+		ubi_assert(!ubi_is_fm_block(ubi, e->pnum));
-+
- 		wl_tree_add(e, &ubi->free);
-+		ubi->free_count++;
-+
- 		ubi->lookuptbl[e->pnum] = e;
-+
-+		found_pebs++;
- 	}
- 
- 	ubi_rb_for_each_entry(rb1, av, &ai->volumes, rb) {
-@@ -1469,6 +1939,7 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
- 			e->pnum = aeb->pnum;
- 			e->ec = aeb->ec;
- 			ubi->lookuptbl[e->pnum] = e;
-+
- 			if (!aeb->scrub) {
- 				dbg_wl("add PEB %d EC %d to the used tree",
- 				       e->pnum, e->ec);
-@@ -1478,22 +1949,38 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
- 				       e->pnum, e->ec);
- 				wl_tree_add(e, &ubi->scrub);
- 			}
-+
-+			found_pebs++;
- 		}
- 	}
- 
--	if (ubi->avail_pebs < WL_RESERVED_PEBS) {
-+	dbg_wl("found %i PEBs", found_pebs);
-+
-+	if (ubi->fm)
-+		ubi_assert(ubi->good_peb_count == \
-+			   found_pebs + ubi->fm->used_blocks);
-+	else
-+		ubi_assert(ubi->good_peb_count == found_pebs);
-+
-+	reserved_pebs = WL_RESERVED_PEBS;
-+#ifdef CONFIG_MTD_UBI_FASTMAP
-+	/* Reserve enough LEBs to store two fastmaps. */
-+	reserved_pebs += (ubi->fm_size / ubi->leb_size) * 2;
-+#endif
-+
-+	if (ubi->avail_pebs < reserved_pebs) {
- 		ubi_err("no enough physical eraseblocks (%d, need %d)",
--			ubi->avail_pebs, WL_RESERVED_PEBS);
-+			ubi->avail_pebs, reserved_pebs);
- 		if (ubi->corr_peb_count)
- 			ubi_err("%d PEBs are corrupted and not used",
- 				ubi->corr_peb_count);
- 		goto out_free;
- 	}
--	ubi->avail_pebs -= WL_RESERVED_PEBS;
--	ubi->rsvd_pebs += WL_RESERVED_PEBS;
-+	ubi->avail_pebs -= reserved_pebs;
-+	ubi->rsvd_pebs += reserved_pebs;
- 
- 	/* Schedule wear-leveling if needed */
--	err = ensure_wear_leveling(ubi);
-+	err = ensure_wear_leveling(ubi, 0);
- 	if (err)
- 		goto out_free;
- 
-@@ -1572,7 +2059,7 @@ static int self_check_ec(struct ubi_device *ubi, int pnum, int ec)
- 	}
- 
- 	read_ec = be64_to_cpu(ec_hdr->ec);
--	if (ec != read_ec) {
-+	if (ec != read_ec && read_ec - ec > 1) {
- 		ubi_err("self-check failed for PEB %d", pnum);
- 		ubi_err("read EC is %lld, should be %d", read_ec, ec);
- 		dump_stack();
 -- 
 1.7.6.5
