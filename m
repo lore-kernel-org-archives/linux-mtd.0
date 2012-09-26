@@ -1,23 +1,19 @@
-Received: from ra.se.axis.com ([195.60.68.13])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TGpF1-0000yX-3V
- for linux-mtd@lists.infradead.org; Wed, 26 Sep 2012 10:53:19 +0000
-Date: Wed, 26 Sep 2012 12:53:15 +0200
+Received: from anubis.se.axis.com ([195.60.68.12])
+ by bombadil.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TGpUm-0005ef-Ix
+ for linux-mtd@lists.infradead.org; Wed, 26 Sep 2012 11:09:37 +0000
+Date: Wed, 26 Sep 2012 13:09:29 +0200
 From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: Offtopic: ubifs and best practice for supporting browser based
- firmware upgrades
-In-Reply-To: <1348651795.24309.49.camel@sauron.fi.intel.com>
-Message-ID: <alpine.DEB.2.00.1209261251200.19047@lnxricardw.se.axis.com>
-References: <CADqH6VzVhsGvCCbokjW8TAJSq5Sj33GiHt4gZxOFZaeHtJ4JeQ@mail.gmail.com>
- <1346751620.12610.35.camel@sauron.fi.intel.com>
- <CADqH6Vw0kY=U-jymgpj_JpzLkqLb0JjK7J1C1V6qF_uo-jDFng@mail.gmail.com>
- <1348651795.24309.49.camel@sauron.fi.intel.com>
+To: MONDON Daniel <Daniel.MONDON@lpgsystems.com>
+Subject: Re: ubinize.cfg for NAND with multi ubi devices and multi volume
+ inside
+In-Reply-To: <D604D5FB4D200642AA2FAAE94E39258601AFFFCE@CARAMBAR.lpg.priv>
+Message-ID: <alpine.DEB.2.00.1209261307230.19047@lnxricardw.se.axis.com>
+References: <D604D5FB4D200642AA2FAAE94E39258601AFFFCE@CARAMBAR.lpg.priv>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset="ISO-8859-15"; format=flowed
 Content-Transfer-Encoding: 8BIT
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Jaya Kumar <jayakumar.lkml@gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,49 +24,37 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-On Wed, 26 Sep 2012, Artem Bityutskiy wrote:
+On Wed, 26 Sep 2012, MONDON Daniel wrote:
 
-> On Wed, 2012-09-26 at 13:42 +0800, Jaya Kumar wrote:
->> I think what this means is that after doing the rootfs upgrade using
->> ubiupdatevol, I must reboot into a 3rd partition running a minimal OS
->> to perform the ubirename of roofs_reserve and then reboot again. This
->> step seems expensive to have to boot into a 3rd partition to do the
->> rename operation.
->>
->> I see someone else also has encountered this,
->> http://comments.gmane.org/gmane.linux.drivers.mtd/39415 and solved by
->> having a initramfs. I guess I could do that. But still seems messy.
+> I don't find how to generate my .cfg for the ubinize command.
+> Perhaps impossible ?
 >
-> Yes, the way it is currently implemented is:
+> I'v got 1GB NAND with 4 UBI devices.
+> I want to ubinize some volumes in some UBI devices.
 >
-> 1. ubirename /dev/ubi0 rootfs rootfs_reserve
-> 2. UBI figures out that old 'rootfs' should be removed.
-> 3. UBI changes the volume table and wipes old rootfs from there,
->   and changes name 'rootfs_reserve' to 'rootfs'.
+> For example : (i've got ubi1_0 to ubi1_3 and ubi4_0 to ubi4_4)
+> Ubi1_0 (80MiB)
+> Ubi1_3 (300MiB)
+> Ubi4_0 (30MiB)
+> Ubi4_4 (30MiB)
 >
->   Now if you have a power cut, you will no longer see the old rootfs
->   vloume, only the new one.
-> 4. Then UBI actually deletes the old volume from all the in-memory
->   data structures. Obviously, you cannot use this volume at the same
->   time.
+> What have i to write in the .cfg file.
 >
-> But this can be improved, I did not think a lot about this, but I guess
-> if you just skip step 4, it should work. The rename will succeed, but
-> you will still see the old layout. And only when you reboot, you'll have
-> the old rootfs deleted and the new one being in place.
+> With the result, i will use ubiupdatevol to write fs images.
 
-But the problem is that the first step fails as the system is still 
-running, and you can't unmount / while it is up.
+Ubinize is not intended for use by ubiupdatevol, rather it is intended 
+when you need an image to write to raw flash, for instance during 
+production. With ubiupdatevol you simply supply the volume images that you 
+get from mkfs.ubifs (or the binary blobs if that's what you want to store 
+there).
 
-> Also, I guess the rename path should not open the volume in the
-> exclusive mode.
-
-Yes, that would be a workable solution, if there weren't any other 
-disadvantages (e.g. something getting confused by the volume name 
-changing, like df).
+Or do you mean that you already have data in your volumes, and you want to 
+create a file system image which you can then write to another device 
+using ubiupdatevol? In that case you would use mkfs.ubifs to create a file 
+system image from the file system.
 
 /Ricard
 -- 
-Ricard Wolf WanderlÃ¶f                           ricardw(at)axis.com
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
 Axis Communications AB, Lund, Sweden            www.axis.com
 Phone +46 46 272 2016                           Fax +46 46 13 61 30
