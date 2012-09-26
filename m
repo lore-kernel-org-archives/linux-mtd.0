@@ -1,22 +1,20 @@
 Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TGoID-000661-Ns
- for linux-mtd@lists.infradead.org; Wed, 26 Sep 2012 09:52:34 +0000
-Message-ID: <1348653158.24309.54.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] MTD: nandsim: BUG: Fail if overridesize is too big
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Richard Genoud <richard.genoud@gmail.com>
-Date: Wed, 26 Sep 2012 12:52:38 +0300
-In-Reply-To: <CACQ1gAg7Kb7v1HZVdF1N2CtmUSGEYJwB+Un2GUJFDX+==6yO8g@mail.gmail.com>
-References: <1347452786-10208-1-git-send-email-richard.genoud@gmail.com>
- <CACQ1gAg7Kb7v1HZVdF1N2CtmUSGEYJwB+Un2GUJFDX+==6yO8g@mail.gmail.com>
+ id 1TGoJf-0006IH-8K
+ for linux-mtd@lists.infradead.org; Wed, 26 Sep 2012 09:54:03 +0000
+Message-ID: <1348653248.24309.55.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: cmdlineparts.c: Codingstyle cleanup
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Stefan Roese <sr@denx.de>
+Date: Wed, 26 Sep 2012 12:54:08 +0300
+In-Reply-To: <1348043427-5165-1-git-send-email-sr@denx.de>
+References: <1348043427-5165-1-git-send-email-sr@denx.de>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-2fRQS657P+dAEeYjX3UO"
+ boundary="=-2hi5JXl+T74KO30b7vz2"
 Mime-Version: 1.0
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>, Adrian Hunter <adrian.hunter@intel.com>
-Reply-To: artem.bityutskiy@linux.intel.com
+Cc: dedekind@infradead.org, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,21 +25,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-2fRQS657P+dAEeYjX3UO
+--=-2hi5JXl+T74KO30b7vz2
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-09-18 at 10:27 +0200, Richard Genoud wrote:
-> As this is a bug fix, it should be pushed to 3.6-rc7, shouldn't it ?
+On Wed, 2012-09-19 at 10:30 +0200, Stefan Roese wrote:
+> The codingstyle of cmdlineparts.c was really ugly. I've run this
+> file through Lindent and made some manual tweaks.
+>=20
+> Signed-off-by: Stefan Roese <sr@denx.de>
 
-Well, it is a fix for an ancient bug, so it is enough to CC the stable
-tree and merge this patch normally, I think.
+But it is cleaned-up in the l2-mtd.git tree. Remember to base your
+patches on this tree :-)
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-2fRQS657P+dAEeYjX3UO
+--=-2hi5JXl+T74KO30b7vz2
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -49,19 +50,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQYtBmAAoJECmIfjd9wqK0S2UP/0tC4LMPyFLJDWRr8tl1xhsM
-4UGZwAaar62DoB2k8BxtA/Q3bpKjcKIIQ9ttoIe3oQE0gkPmkJ5tYupNkQVqUI5G
-Hc+jCv6Cex4KPnO0lWsAyRveKldK3xL5WfyDJ9l0osECCPzqqQNXwbyQY6ntdNGm
-Hyg/nABmXZuHX8ucAf9Pg4NzKOPRHSEm4NqsHCGv/JDzMcUhy7LHgRlzNhv7/U0P
-+LI/4ByvyUHtpeMYMrlhkE4GXEN/x6yNP6sFw/8jsmPjz++53eMpAO2oRYoHPDPf
-yainbF3AgCszdp0JOpGidX5EJtN2viZUtWHYOFMpL1QXb+KJXWW2PwYZdVG/s4y8
-wpOnF9iW0LQRklYM+8dwqMY0NDiRylC9QMW1XTkwvS3CvQNNEZDgCGiC1e+JweeL
-5bqKG10S45KGawcwsVw1XKgd5vIkAGqjXeyxWvyJ/Kji4HQiOc2i8BMrACLwp/ms
-3Y2BSOVeFSUMzCTma1BFDYppqwCAyYRvkn/ydL4fA27i1ChQvmFYnQ6OlJduIRve
-aiMqaku6UKjFQzsHSybxuwtx6X0yfV+t18ArhNOCJysdQnWSBlXh2YRs+jTUR7F1
-RuUQNCgBLj5HSpWowFLRZfun4XUiyDAA1BaUp5rYj5UaY3xuxQKvmsZWR5SYYq4e
-I+BIr2i+YqNZxi/q/e+o
-=Eqnd
+iQIcBAABAgAGBQJQYtDAAAoJECmIfjd9wqK0XbgP/07jdiCSZ+JeT9NotBx0jMsr
+uUv32oIr9xT+hnRYdksEF+8qDk+w0GWfSRTdexW8iphq17hd+ay1F/Lny3edn3Bb
+UujiOGVzdg1SgVNiSgKHfIOGfOsDs68By+niJU6Rv7naloCQBCZeJY0c8FF4nZNT
+FNzR62hCg7zvz90bSly1OJAGuNTJQqm6ROG03cSiKfckoLxsC29Ww6GGmLUKGtoH
+EfjeFRY4PcPMuKdfTwaBZG8Nw4jaFkaF/YMtfr3NiFG0jwVLMZKn6jyMUrSJZfOF
+zt6laSI09GwQGVzqkuY8JoYxV6PxqOQc0qDZAJ2WORxyTKgSb8rQldKl5S2FwsH/
+AKPw3e0wq0ZnWD31uEjxeH72veu50XDRJ6+p0io2GAvlwCPZBBmMIlqG6dkTnJPG
+svK+iNrOj633a+ormZDb6Xijc0BmDKJbskMJYafC/RwgVwHjswF1IKCyWKCETcv9
+HDzH9VBu82iwWii3Rc/EKHmpVkU4Rb1vi8SDQYxG2UiwRVOInUowrzXRJ/HoMcQW
+rhxSvypjG1WSypBLQtM7l5yDX67RZbhNQDvVUTVqC3YLIcGoKMTPPm8ys6JGA6lw
+NrfYw4iuSxeiKnvglqGObcZ0ILs8mL193koPB2ZZC9lqVAszEZP9/HrUWz6DapVv
+HFD9UECaeZNxlZiws5h2
+=qhYO
 -----END PGP SIGNATURE-----
 
---=-2fRQS657P+dAEeYjX3UO--
+--=-2hi5JXl+T74KO30b7vz2--
