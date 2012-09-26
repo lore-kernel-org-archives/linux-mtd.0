@@ -1,22 +1,23 @@
-Received: from mail-vb0-f49.google.com ([209.85.212.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TGp8r-0000Es-IJ
- for linux-mtd@lists.infradead.org; Wed, 26 Sep 2012 10:46:58 +0000
-Received: by vbbfo1 with SMTP id fo1so466896vbb.36
- for <linux-mtd@lists.infradead.org>; Wed, 26 Sep 2012 03:46:55 -0700 (PDT)
+Received: from ra.se.axis.com ([195.60.68.13])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TGpF1-0000yX-3V
+ for linux-mtd@lists.infradead.org; Wed, 26 Sep 2012 10:53:19 +0000
+Date: Wed, 26 Sep 2012 12:53:15 +0200
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: Offtopic: ubifs and best practice for supporting browser based
+ firmware upgrades
+In-Reply-To: <1348651795.24309.49.camel@sauron.fi.intel.com>
+Message-ID: <alpine.DEB.2.00.1209261251200.19047@lnxricardw.se.axis.com>
+References: <CADqH6VzVhsGvCCbokjW8TAJSq5Sj33GiHt4gZxOFZaeHtJ4JeQ@mail.gmail.com>
+ <1346751620.12610.35.camel@sauron.fi.intel.com>
+ <CADqH6Vw0kY=U-jymgpj_JpzLkqLb0JjK7J1C1V6qF_uo-jDFng@mail.gmail.com>
+ <1348651795.24309.49.camel@sauron.fi.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1348567033-5418-1-git-send-email-sachin.kamat@linaro.org>
-References: <1348567033-5418-1-git-send-email-sachin.kamat@linaro.org>
-Date: Wed, 26 Sep 2012 16:16:55 +0530
-Message-ID: <CAK9yfHwh466FeAefBUsXGck-wnVrYh9=RUT8bRGMZP0DWs8Ayg@mail.gmail.com>
-Subject: Re: [PATCH] mtd: ofpart: Fix incorrect NULL check in
- parse_ofoldpart_partitions()
-From: Sachin Kamat <sachin.kamat@linaro.org>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Artem Bityutskiy <artem.bityutskiy@intel.com>, dwmw2@infradead.org,
- dedekind1@gmail.com
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8BIT
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Jaya Kumar <jayakumar.lkml@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,44 +27,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
 
-I was hoping if we can have this fix for the 3.6 release.
+On Wed, 26 Sep 2012, Artem Bityutskiy wrote:
 
-On 25 September 2012 15:27, Sachin Kamat <sachin.kamat@linaro.org> wrote:
-> The pointer returned by kzalloc should be tested for NULL
-> to avoid potential NULL pointer dereference later. Incorrect
-> pointer was being tested for NULL. Bug introduced by commit fbcf62a3
-> (mtd: physmap_of: move parse_obsolete_partitions to become separate
-> parser).
-> This patch fixes this bug.
+> On Wed, 2012-09-26 at 13:42 +0800, Jaya Kumar wrote:
+>> I think what this means is that after doing the rootfs upgrade using
+>> ubiupdatevol, I must reboot into a 3rd partition running a minimal OS
+>> to perform the ubirename of roofs_reserve and then reboot again. This
+>> step seems expensive to have to boot into a 3rd partition to do the
+>> rename operation.
+>>
+>> I see someone else also has encountered this,
+>> http://comments.gmane.org/gmane.linux.drivers.mtd/39415 and solved by
+>> having a initramfs. I guess I could do that. But still seems messy.
 >
-> Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-> Cc: Artem Bityutskiy <artem.bityutskiy@intel.com>
-> Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
-> ---
->  drivers/mtd/ofpart.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
+> Yes, the way it is currently implemented is:
 >
-> diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
-> index 64be8f0..d9127e2 100644
-> --- a/drivers/mtd/ofpart.c
-> +++ b/drivers/mtd/ofpart.c
-> @@ -121,7 +121,7 @@ static int parse_ofoldpart_partitions(struct mtd_info *master,
->         nr_parts = plen / sizeof(part[0]);
+> 1. ubirename /dev/ubi0 rootfs rootfs_reserve
+> 2. UBI figures out that old 'rootfs' should be removed.
+> 3. UBI changes the volume table and wipes old rootfs from there,
+>   and changes name 'rootfs_reserve' to 'rootfs'.
 >
->         *pparts = kzalloc(nr_parts * sizeof(*(*pparts)), GFP_KERNEL);
-> -       if (!pparts)
-> +       if (!*pparts)
->                 return -ENOMEM;
+>   Now if you have a power cut, you will no longer see the old rootfs
+>   vloume, only the new one.
+> 4. Then UBI actually deletes the old volume from all the in-memory
+>   data structures. Obviously, you cannot use this volume at the same
+>   time.
 >
->         names = of_get_property(dp, "partition-names", &plen);
-> --
-> 1.7.4.1
->
+> But this can be improved, I did not think a lot about this, but I guess
+> if you just skip step 4, it should work. The rename will succeed, but
+> you will still see the old layout. And only when you reboot, you'll have
+> the old rootfs deleted and the new one being in place.
 
+But the problem is that the first step fails as the system is still 
+running, and you can't unmount / while it is up.
 
+> Also, I guess the rename path should not open the volume in the
+> exclusive mode.
 
+Yes, that would be a workable solution, if there weren't any other 
+disadvantages (e.g. something getting confused by the volume name 
+changing, like df).
+
+/Ricard
 -- 
-With warm regards,
-Sachin
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
