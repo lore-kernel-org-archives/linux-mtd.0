@@ -1,22 +1,19 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-wg0-f49.google.com ([74.125.82.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TGtwH-0005Y1-P1
- for linux-mtd@lists.infradead.org; Wed, 26 Sep 2012 15:54:18 +0000
-Date: Wed, 26 Sep 2012 17:54:13 +0200
-From: Richard Weinberger <richard@nod.at>
-To: artem.bityutskiy@linux.intel.com
-Subject: Re: [PATCH 01/10] UBI: Add fastmap on-flash data structures
-Message-ID: <20120926175413.58a5c455@spider.haslach.nod.at>
-In-Reply-To: <1348655591.24309.64.camel@sauron.fi.intel.com>
-References: <1348511492-91606-1-git-send-email-richard@nod.at>
- <1348511492-91606-2-git-send-email-richard@nod.at>
- <1348655591.24309.64.camel@sauron.fi.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Heinz.Egger@linutronix.de, tglx@linutronix.de,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- tim.bird@am.sony.com
+ id 1TGzxm-00060m-7v
+ for linux-mtd@lists.infradead.org; Wed, 26 Sep 2012 22:20:14 +0000
+Received: by wgbdt14 with SMTP id dt14so604115wgb.18
+ for <linux-mtd@lists.infradead.org>; Wed, 26 Sep 2012 15:20:12 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1348563927-9131-1-git-send-email-matthieu.castet@parrot.com>
+References: <1348563927-9131-1-git-send-email-matthieu.castet@parrot.com>
+Date: Wed, 26 Sep 2012 15:20:11 -0700
+Message-ID: <CAN8TOE-h1VrbNg6ZqwQdhLaQ18E4-=_Lw+biuhGONUS5HCx-4g@mail.gmail.com>
+Subject: Re: [PATCH] mtd: m25p80: add support for the windbond w25q256 chip
+From: Brian Norris <computersforpeace@gmail.com>
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,38 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem,
+On Tue, Sep 25, 2012 at 2:05 AM, Matthieu CASTET
+<matthieu.castet@parrot.com> wrote:
+> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> index 5257345..4eb99c6 100644
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -168,6 +168,7 @@ static inline int set_4byte(struct m25p *flash, u32 jedec_id, int enable)
+>  {
+>         switch (JEDEC_MFR(jedec_id)) {
+>         case CFI_MFR_MACRONIX:
+> +       case 0xEF /* winbond */:
+>                 flash->command[0] = enable ? OPCODE_EN4B : OPCODE_EX4B;
+>                 return spi_write(flash->spi, flash->command, 1);
+>         default:
 
-Am Wed, 26 Sep 2012 13:33:11 +0300
-schrieb Artem Bityutskiy <artem.bityutskiy@linux.intel.com>:
-> Richard, thanks, here is the deal I suggest
-> 
-> 1. I do not really have time to review this in details.
-> 2. I do not want to block this either
-> 3. I want to merge this to 3.7 with come pre-conditions (see below)
->    as "Experimental" with a claim that the on-flash format can
->    be changed. Something like Linus did for btrfs. Then let people
->    play with fastmap. I am sure it'll need changes when people
->    try to use it in production.
->    
->    a. Aiaiai is happy
+Just checking: Winbond didn't use their known manufacturer ID (0xDA)
+for this chip? Do they have other chips that support/need 4-byte
+addressing and use 0xDA?
 
-sent you v19 where I've addresses all warnings from Aiaiai you mailed
-me.
-
->    b. You provide a section for the mtd web site describing fastmap
->    c. It does not break anything when it is disabled
->    d. When it is enabled, it also passes the UBI tests
-> 
-> Actually, I want to expose it to linux-next already after step a.
-> Despite a lot of testing you have already done, I am willing to do
-> some testing myself as well, so I'll do c. and d. and let you know if
-> there are issues.
-> 
-> Could you please do b. ?
-
-Will do!
-I'm fine with your plan.
-
-Thanks,
-//richard
+Brian
