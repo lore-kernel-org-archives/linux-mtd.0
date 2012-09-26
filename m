@@ -1,17 +1,15 @@
-Message-ID: <5062C24F.4090603@antcom.de>
-Date: Wed, 26 Sep 2012 10:52:31 +0200
-From: Roland Stigge <stigge@antcom.de>
-MIME-Version: 1.0
-To: artem.bityutskiy@linux.intel.com
-Subject: Re: [GIT PULL] ARM: LPC32xx: core update
-References: <50488FD6.4080402@antcom.de> <201209131155.16756.arnd@arndb.de>
- <5052FE40.2030305@antcom.de> <1348647884.24309.35.camel@sauron.fi.intel.com>
-In-Reply-To: <1348647884.24309.35.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: arm@kernel.org, Linux MTD <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, Arnd Bergmann <arnd@arndb.de>
+Received: from mail-bk0-f49.google.com ([209.85.214.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TGnYY-0003MV-Lc
+ for linux-mtd@lists.infradead.org; Wed, 26 Sep 2012 09:05:23 +0000
+Received: by bkwj4 with SMTP id j4so154603bkw.36
+ for <linux-mtd@lists.infradead.org>; Wed, 26 Sep 2012 02:05:19 -0700 (PDT)
+From: Bastian Hecht <hechtb@googlemail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 1/3] mtd: sh_flctl: Probe SNAND_E flag from NAND chip
+Date: Wed, 26 Sep 2012 11:05:04 +0200
+Message-Id: <1348650306-15492-1-git-send-email-hechtb@gmail.com>
+Cc: Magnus Damm <magnus.damm@gmail.com>, linux-sh@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,67 +19,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/26/2012 10:24 AM, Artem Bityutskiy wrote:
->> On 13/09/12 13:55, Arnd Bergmann wrote:
->>> On Thursday 06 September 2012, Roland Stigge wrote:
->>>> ARM: LPC32xx: Provide DMA filter callbacks via platform data
->>> 
->>> This patch results in build errors in the for-next branch with
->>> lpc32xx_defconfig:
->>> 
->>> arch/arm/mach-lpc32xx/phy3250.c:40:35: fatal error:
->>> linux/mtd/lpc32xx_slc.h: No such file or directory 
->>> arch/arm/mach-lpc32xx/phy3250.c:41:35: fatal error:
->>> linux/mtd/lpc32xx_mlc.h: No such file or directory 
->>> arch/arm/mach-lpc32xx/phy3250.c:226:15: error: variable
->>> 'lpc32xx_slc_data' has initializer but incomplete type 
->>> arch/arm/mach-lpc32xx/phy3250.c:227:2: error: unknown field
->>> 'dma_filter' specified in initializer 
->>> arch/arm/mach-lpc32xx/phy3250.c:227:2: error: excess elements
->>> in struct initializer [-Werror] 
->>> arch/arm/mach-lpc32xx/phy3250.c:227:2: error: (near
->>> initialization for 'lpc32xx_slc_data') [-Werror] 
->>> arch/arm/mach-lpc32xx/phy3250.c:230:15: error: variable
->>> 'lpc32xx_mlc_data' has initializer but incomplete type 
->>> arch/arm/mach-lpc32xx/phy3250.c:231:2: error: unknown field
->>> 'dma_filter' specified in initializer 
->>> arch/arm/mach-lpc32xx/phy3250.c:231:2: error: excess elements
->>> in struct initializer [-Werror] 
->>> arch/arm/mach-lpc32xx/phy3250.c:231:2: error: (near
->>> initialization for 'lpc32xx_mlc_data') [-Werror]
->>> 
->>> It seems that we're missing a dependency. Which tree did the
->>> patch to add these go through? Can we add that to the same
->>> branch in arm-soc?
->> 
->> Right - there is a dependency on l2-mtd.git here.
->> 
->> Since they didn't request pull for 3.6, there is quite some
->> stuff pending in their tree (but I wonder why it isn't already
->> part of linux-next, so the above error at least shouldn't occur
->> in linux-next).
-> 
-> It is in linux-next:
-> 
-> [dedekind@sauron linux-next (master)]$ git log --format='%h %an %s'
-> drivers/mtd/ | grep Stigge 562dec8 Roland Stigge mtd: lpc32xx_mlc:
-> Cleanup after DT-only conversion ad978ee Roland Stigge mtd:
-> lpc32xx_slc: Cleanup after DT-only conversion 7359e4c Roland Stigge
-> mtd: lpc32xx_mlc: Make driver independent of AMBA DMA engine
-> driver fa5eae7 Roland Stigge mtd: lpc32xx_slc: Make driver
-> independent of AMBA DMA engine driver 79f9df7 Roland Stigge mtd:
-> lpc32xx_mlc: Adjust to pl08x DMA interface changes 314a156 Roland
-> Stigge mtd: lpc32xx_slc: Adjust to pl08x DMA interface changes 
-> 70f7cb7 Roland Stigge mtd: add LPC32xx MLC NAND driver d5842ab
-> Roland Stigge mtd: lpc32xx_slc: Make probe() return -EPROBE_DEFER
-> if necessary 21535ab Roland Stigge mtd: lpc32xx_slc: Use
-> of_get_named_gpio() 2944a44 Roland Stigge mtd: add LPC32xx SLC NAND
-> driver 9d7b4b5 Roland Stigge [MTD] [NAND] Fix refactoring of
-> EDB7312 hwcontrol function. 4a32cfa Roland Stigge [MTD] [NAND] Fix
-> refactoring of EDB7312 hwcontrol function.
+SNAND_E indicates whether we deal with 512kB or 2048kB page sizes. We
+can probe this from the NAND chip itself and don't need to specify it in
+the platform data anymore.
 
-Good, thanks! Then, the above issue should be gone now.
+Signed-off-by: Bastian Hecht <hechtb@gmail.com>
+---
+Based on l2-mtd with reverted commit e26c113b4130aefa1d8446602bb5b05cfd646bfe
+and the 2 patches posted 3 days ago (09/23)
+mtd: sh_flctl: Setup and release DMA channels
+and
+mtd: sh_flctl: Use DMA for data fifo FLTDFIFO when available
 
-Please note that there is still the dependency of mtd on mach-lpc32xx.
+ drivers/mtd/nand/sh_flctl.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-Roland
+diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
+index 0d90af8..8f0bed1 100644
+--- a/drivers/mtd/nand/sh_flctl.c
++++ b/drivers/mtd/nand/sh_flctl.c
+@@ -970,6 +970,7 @@ static int flctl_chip_init_tail(struct mtd_info *mtd)
+ 		}
+ 	} else {
+ 		flctl->page_size = 1;
++		flctl->flcmncr_base |= SNAND_E;
+ 		if (chip->chipsize > (128 << 20)) {
+ 			/* big than 128MB */
+ 			flctl->rw_ADRCNT = ADRCNT2_E;
+-- 
+1.7.5.4
