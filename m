@@ -1,17 +1,17 @@
-Received: from mga14.intel.com ([143.182.124.37])
+Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TGmDP-0004t6-83
- for linux-mtd@lists.infradead.org; Wed, 26 Sep 2012 07:39:28 +0000
-Message-ID: <1348645171.24309.21.camel@sauron.fi.intel.com>
+ id 1TGmF3-00050A-DG
+ for linux-mtd@lists.infradead.org; Wed, 26 Sep 2012 07:41:10 +0000
+Message-ID: <1348645270.24309.22.camel@sauron.fi.intel.com>
 Subject: Re: [PATCH 1/4] mtd: prepare place for BCMA NAND flash driver(s)
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
-Date: Wed, 26 Sep 2012 10:39:31 +0300
+Date: Wed, 26 Sep 2012 10:41:10 +0300
 In-Reply-To: <1347481275-995-1-git-send-email-zajec5@gmail.com>
 References: <1347481275-995-1-git-send-email-zajec5@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-IRnCXduuUgGLDRD4ERHM"
+ boundary="=-weRZAh5Q694mn8myYA60"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
@@ -25,32 +25,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-IRnCXduuUgGLDRD4ERHM
+--=-weRZAh5Q694mn8myYA60
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 On Wed, 2012-09-12 at 22:21 +0200, Rafa=C5=82 Mi=C5=82ecki wrote:
-> +config MTD_NAND_BCM47XXNFLASH
-> +	tristate "Support for NAND flash on BCMA bus"
-> +	depends on BCMA_NFLASH && BROKEN
-> +	help
-> +	  BCMA bus can have various flash memories attached, they are
-> +	  registered by bcma as platform devices. This enables driver for
-> +	  NAND flash memories.
+> BCMA bus can contain NAND flash memory, it's registered in system as
+> platform device. This adds required hooks and place for controler
+> specific drivers.
+> At this point it doesn't work yet, so it's marked as BROKEN.
+>=20
+> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
 
-Could we please merge only non-broken stuff upstream. I understand your
-intentions to merge something non-working first with a promise to make
-it working later, but I do not think this is an acceptable approach.
-
-Why exactly you mark this one as broken? If it is R/O so far, and
-reading works, and you tested it (how?), we can merge it I guess, just
-make it clear that it is R/O in Kconfig help text.
+If you send the next version of this, would you please base it on
+l2-mtd.git tree, to make my job simpler, because otherwise I have to
+solve small conflicts.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-IRnCXduuUgGLDRD4ERHM
+--=-weRZAh5Q694mn8myYA60
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -58,19 +53,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQYrEzAAoJECmIfjd9wqK0ytcP/AyFaxtP/JHa1m5av7nBBXJ7
-jGVIMRZFrnUfVIhvuP9ktzRU5ifUhsR/JtNgTIcYLqz5+juS8HzAnBMLwWyRFNbp
-JHr74iF1qhAaCtXtJQ9sn4+7aD9JoZfPFXA6/JtOVpsKehppRskhcRAGQEr8PDsQ
-fLFFksMj93F/tXFNiRsRSd9bPoZA3GjHHWLtK+t1XArxcalmdX7/3OGAfIsMZVvk
-romTgWoDv5Kp/z4p0ccMaE24K+ys3OxilUA/BHytCaHVT64r4AXOrrg31RKdO6k+
-pK4xU5gbTYmXmMYcJkSGexJh7OlR6f8j0X25dYPPMC+VZcpMluO4Q4ItuCNSyLiR
-hj55071hS7Ka6V6w1oCGhXmNhhJp3UzY5Bxx1vr0dxa5GSZkYVhJu3Lg2ylOZNA3
-IDgq7XiaoNSZHluhDl+BaD+mUHzDFlQyC4kKCszsrCBT5lPPgI2PQZOwvQtBrcIS
-6jSlNhHWFhIIv/laDS2jkabdV01TUacz2e9nQCG+WJGULZOmEtFVgcquAb2xgjCY
-EZpMxh5g+hLd9dy8FDmmTwzJS33iub+KJlHU65z5ufUm0xlZHRu+XOKqSWqTJp9+
-4g8MqE/Zyzeu2UepDx+8WGJUJ6ecn8cu8a/enMHAOGxv7xlIiYNYyeikuCXOq3LH
-SvJjfOQUNuRlpWhmld5v
-=qBK/
+iQIcBAABAgAGBQJQYrGWAAoJECmIfjd9wqK039MQAKu8zJED7bmLutRu/3YC2Vek
+M+ySjcCjn6C+do4vnvfK9BgaJ4ibCMuTf4bwlssEcq3uaFBFYwgJ2Y2UI3zhMhvV
+MuP3avrc3xmtAxBYZHnPbC684bfKNB1/QpAiv/sqrvxgFoW3CEHPUa7+55rAoIYL
+MJ3tc1a4txfhZe3F6ofxR83Qfi4ZO8qeYtkDbIiK6c9ueyPeds57dbbSBwUTuAPC
+PA/5JPdUaAs0x4q/kcE1eIXTCLGfIrhs/8VXqXMIm/FqH0VizQRqz66nw/6d79r0
+iC+Pp8KGD2Wsr3W0DuZUnI7bK3+3znsMSyOTq5dmZvWV/NPPAIW+JWYzrTWWkb4G
+9URLTem9vPgBa+7mYodx2IeT1N3gvpk5wBaQHMf7Ewe8NjOOwVIPLbOAZ6P/qiBL
+9E2PfjEx9NkmktttFmY0wBOBQ5haO/t54Ul75hb8PhQwer4/3tPGO9eYpmUy8PIy
+DxPyNUnUGDwkFjE63ro74NbluldmgdaLxuqEAjsWmV1bjomeOPWLGRFhUAn7T9Az
+Go4rjOqpAiSxk2u7hQn3bCsGi66QvP+g7yd5JpT+O+WfsDUu3TFpLuz3OFJYJ7Gn
+hGl1FdJ0moMwL3ikDPbYbb0JVawn44adPiSOHxGYx1x/BLpmqBalTK3ySVpxD+y5
+ytVgo8E1raeVnPHRcfPS
+=lszY
 -----END PGP SIGNATURE-----
 
---=-IRnCXduuUgGLDRD4ERHM--
+--=-weRZAh5Q694mn8myYA60--
