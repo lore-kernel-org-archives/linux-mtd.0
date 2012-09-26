@@ -1,12 +1,12 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TGtuF-0004YD-Jo
+ id 1TGtuD-0004XS-W3
  for linux-mtd@lists.infradead.org; Wed, 26 Sep 2012 15:52:17 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 06/10] UBI: Wire-up ->fm_sem
-Date: Wed, 26 Sep 2012 17:51:46 +0200
-Message-Id: <1348674710-102885-7-git-send-email-richard@nod.at>
+Subject: [PATCH 03/10] UBI: Export next_sqnum()
+Date: Wed, 26 Sep 2012 17:51:43 +0200
+Message-Id: <1348674710-102885-4-git-send-email-richard@nod.at>
 In-Reply-To: <1348674710-102885-1-git-send-email-richard@nod.at>
 References: <1348674710-102885-1-git-send-email-richard@nod.at>
 Cc: artem.bityutskiy@linux.intel.com, linux-kernel@vger.kernel.org,
@@ -21,77 +21,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fastmap uses ->fm_sem to stop EBA changes while writing
-a new fastmap.
+Fastmap needs next_sqnum(), rename it to ubi_next_sqnum()
+and make it non-static.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/eba.c |   12 ++++++++++++
- 1 files changed, 12 insertions(+), 0 deletions(-)
+ drivers/mtd/ubi/eba.c |   18 +++++++++---------
+ 1 files changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-index d56ae1c..0e11671 100644
+index a26d7d2..0910c2c 100644
 --- a/drivers/mtd/ubi/eba.c
 +++ b/drivers/mtd/ubi/eba.c
-@@ -340,7 +340,9 @@ int ubi_eba_unmap_leb(struct ubi_device *ubi, struct ubi_volume *vol,
+@@ -57,7 +57,7 @@
+  * global sequence counter value. It also increases the global sequence
+  * counter.
+  */
+-static unsigned long long next_sqnum(struct ubi_device *ubi)
++unsigned long long ubi_next_sqnum(struct ubi_device *ubi)
+ {
+ 	unsigned long long sqnum;
  
- 	dbg_eba("erase LEB %d:%d, PEB %d", vol_id, lnum, pnum);
- 
-+	down_read(&ubi->fm_sem);
- 	vol->eba_tbl[lnum] = UBI_LEB_UNMAPPED;
-+	up_read(&ubi->fm_sem);
- 	err = ubi_wl_put_peb(ubi, vol_id, lnum, pnum, 0);
- 
- out_unlock:
-@@ -548,7 +550,9 @@ retry:
- 	mutex_unlock(&ubi->buf_mutex);
- 	ubi_free_vid_hdr(ubi, vid_hdr);
- 
-+	down_read(&ubi->fm_sem);
- 	vol->eba_tbl[lnum] = new_pnum;
-+	up_read(&ubi->fm_sem);
- 	ubi_wl_put_peb(ubi, vol_id, lnum, pnum, 1);
- 
- 	ubi_msg("data was successfully recovered");
-@@ -665,7 +669,9 @@ retry:
- 		}
+@@ -521,7 +521,7 @@ retry:
+ 		goto out_put;
  	}
  
-+	down_read(&ubi->fm_sem);
- 	vol->eba_tbl[lnum] = pnum;
-+	up_read(&ubi->fm_sem);
- 
- 	leb_write_unlock(ubi, vol_id, lnum);
- 	ubi_free_vid_hdr(ubi, vid_hdr);
-@@ -783,7 +789,9 @@ retry:
+-	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
++	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
+ 	err = ubi_io_write_vid_hdr(ubi, new_pnum, vid_hdr);
+ 	if (err)
+ 		goto write_error;
+@@ -632,7 +632,7 @@ int ubi_eba_write_leb(struct ubi_device *ubi, struct ubi_volume *vol, int lnum,
  	}
  
- 	ubi_assert(vol->eba_tbl[lnum] < 0);
-+	down_read(&ubi->fm_sem);
- 	vol->eba_tbl[lnum] = pnum;
-+	up_read(&ubi->fm_sem);
- 
- 	leb_write_unlock(ubi, vol_id, lnum);
- 	ubi_free_vid_hdr(ubi, vid_hdr);
-@@ -904,7 +912,9 @@ retry:
- 			goto out_leb_unlock;
+ 	vid_hdr->vol_type = UBI_VID_DYNAMIC;
+-	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
++	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
+ 	vid_hdr->vol_id = cpu_to_be32(vol_id);
+ 	vid_hdr->lnum = cpu_to_be32(lnum);
+ 	vid_hdr->compat = ubi_get_compat(ubi, vol_id);
+@@ -692,7 +692,7 @@ write_error:
+ 		return err;
  	}
  
-+	down_read(&ubi->fm_sem);
- 	vol->eba_tbl[lnum] = pnum;
-+	up_read(&ubi->fm_sem);
- 
- out_leb_unlock:
- 	leb_write_unlock(ubi, vol_id, lnum);
-@@ -1151,7 +1161,9 @@ int ubi_eba_copy_leb(struct ubi_device *ubi, int from, int to,
+-	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
++	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
+ 	ubi_msg("try another PEB");
+ 	goto retry;
+ }
+@@ -745,7 +745,7 @@ int ubi_eba_write_leb_st(struct ubi_device *ubi, struct ubi_volume *vol,
+ 		return err;
  	}
  
- 	ubi_assert(vol->eba_tbl[lnum] == from);
-+	down_read(&ubi->fm_sem);
- 	vol->eba_tbl[lnum] = to;
-+	up_read(&ubi->fm_sem);
+-	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
++	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
+ 	vid_hdr->vol_id = cpu_to_be32(vol_id);
+ 	vid_hdr->lnum = cpu_to_be32(lnum);
+ 	vid_hdr->compat = ubi_get_compat(ubi, vol_id);
+@@ -810,7 +810,7 @@ write_error:
+ 		return err;
+ 	}
  
- out_unlock_buf:
- 	mutex_unlock(&ubi->buf_mutex);
+-	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
++	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
+ 	ubi_msg("try another PEB");
+ 	goto retry;
+ }
+@@ -862,7 +862,7 @@ int ubi_eba_atomic_leb_change(struct ubi_device *ubi, struct ubi_volume *vol,
+ 	if (err)
+ 		goto out_mutex;
+ 
+-	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
++	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
+ 	vid_hdr->vol_id = cpu_to_be32(vol_id);
+ 	vid_hdr->lnum = cpu_to_be32(lnum);
+ 	vid_hdr->compat = ubi_get_compat(ubi, vol_id);
+@@ -930,7 +930,7 @@ write_error:
+ 		goto out_leb_unlock;
+ 	}
+ 
+-	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
++	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
+ 	ubi_msg("try another PEB");
+ 	goto retry;
+ }
+@@ -1089,7 +1089,7 @@ int ubi_eba_copy_leb(struct ubi_device *ubi, int from, int to,
+ 		vid_hdr->data_size = cpu_to_be32(data_size);
+ 		vid_hdr->data_crc = cpu_to_be32(crc);
+ 	}
+-	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
++	vid_hdr->sqnum = cpu_to_be64(ubi_next_sqnum(ubi));
+ 
+ 	err = ubi_io_write_vid_hdr(ubi, to, vid_hdr);
+ 	if (err) {
 -- 
 1.7.6.5
