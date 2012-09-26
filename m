@@ -1,22 +1,21 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TGnwF-0004Rv-2g
- for linux-mtd@lists.infradead.org; Wed, 26 Sep 2012 09:29:51 +0000
-Message-ID: <1348651795.24309.49.camel@sauron.fi.intel.com>
-Subject: Re: Offtopic: ubifs and best practice for supporting browser based
- firmware upgrades
+ id 1TGoAL-0005IF-Id
+ for linux-mtd@lists.infradead.org; Wed, 26 Sep 2012 09:44:27 +0000
+Message-ID: <1348652670.24309.52.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: nand: omap2: Fix the nand-disk led trigger
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jaya Kumar <jayakumar.lkml@gmail.com>
-Date: Wed, 26 Sep 2012 12:29:55 +0300
-In-Reply-To: <CADqH6Vw0kY=U-jymgpj_JpzLkqLb0JjK7J1C1V6qF_uo-jDFng@mail.gmail.com>
-References: <CADqH6VzVhsGvCCbokjW8TAJSq5Sj33GiHt4gZxOFZaeHtJ4JeQ@mail.gmail.com>
- <1346751620.12610.35.camel@sauron.fi.intel.com>
- <CADqH6Vw0kY=U-jymgpj_JpzLkqLb0JjK7J1C1V6qF_uo-jDFng@mail.gmail.com>
+To: Grazvydas Ignotas <notasas@gmail.com>
+Date: Wed, 26 Sep 2012 12:44:30 +0300
+In-Reply-To: <CANOLnOOfwe1EvG1VHAZbtaC2xAD7_Rc6PqCWrs2cwEqauun8KA@mail.gmail.com>
+References: <20120913150614.GC22993@renkinjitsu.usine.8d.com>
+ <CANOLnOOfwe1EvG1VHAZbtaC2xAD7_Rc6PqCWrs2cwEqauun8KA@mail.gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-2B3yDvbwFM3zptXrMpFR"
+ boundary="=-UnR3GSraj77/MearMSNo"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Raphael Assenat <raph@8d.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,50 +27,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-2B3yDvbwFM3zptXrMpFR
+--=-UnR3GSraj77/MearMSNo
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-09-26 at 13:42 +0800, Jaya Kumar wrote:
-> I think what this means is that after doing the rootfs upgrade using
-> ubiupdatevol, I must reboot into a 3rd partition running a minimal OS
-> to perform the ubirename of roofs_reserve and then reboot again. This
-> step seems expensive to have to boot into a 3rd partition to do the
-> rename operation.
+On Mon, 2012-09-17 at 13:52 +0300, Grazvydas Ignotas wrote:
+> On Thu, Sep 13, 2012 at 6:06 PM, Raphael Assenat <raph@8d.com> wrote:
+> > When the omap2 nand flash driver is used, the nand-disk led trigger doe=
+s not
+> > work due to nand_wait_ready not being called.
 >=20
-> I see someone else also has encountered this,
-> http://comments.gmane.org/gmane.linux.drivers.mtd/39415 and solved by
-> having a initramfs. I guess I could do that. But still seems messy.
+> I think better solution is just to delete omap_wait() function, which
+> is just a copy of nand_wait() without LED and oops handling. If
+> waitfunc is not set by the driver, default nand_wait is used by the
+> core.
 
-Yes, the way it is currently implemented is:
-
-1. ubirename /dev/ubi0 rootfs rootfs_reserve
-2. UBI figures out that old 'rootfs' should be removed.
-3. UBI changes the volume table and wipes old rootfs from there,
-   and changes name 'rootfs_reserve' to 'rootfs'.
-
-   Now if you have a power cut, you will no longer see the old rootfs
-   vloume, only the new one.
-4. Then UBI actually deletes the old volume from all the in-memory
-   data structures. Obviously, you cannot use this volume at the same
-   time.
-
-But this can be improved, I did not think a lot about this, but I guess
-if you just skip step 4, it should work. The rename will succeed, but
-you will still see the old layout. And only when you reboot, you'll have
-the old rootfs deleted and the new one being in place.
-
-Or not even reboot - detach and attach back should be enough. I guess
-you can hack this.
-
-Also, I guess the rename path should not open the volume in the
-exclusive mode.
+Or if it does really need own wait function, we can re-work the internal
+api similarly to what we did to MTD api. Instead of calling
+'chip->waitfunc()' directly from everywhere, have a wrapper
+'nand_wati()' function, which can do things common to all drivers, and
+then actually call the underlying '->waitfunc()'. So in this case, it
+can do the LED stuff.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-2B3yDvbwFM3zptXrMpFR
+--=-UnR3GSraj77/MearMSNo
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -79,19 +61,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQYssTAAoJECmIfjd9wqK0QJgP/1ce20pCxLmnFSNwrdb9zXjT
-xWNmDlRGFY+Rvf0Tv//mnE9YuobHRFKJaaSHEoZSbQGgEUe1o99luLNpU0KuQI24
-FtTbpATfEuKYVVbSyLkrm/7jEIUqnOCQoYzHUDx5AKmNX9J0+87Cfm+r00tohXVx
-yFFAu/8lprXoBgP0TKbGjXe1XR57Zc5hh2ZvvhP4ikQE/oSD+6s0CqRkHGQPpKPZ
-v6hVl0im/6bPSHkqOO2ElIrEBkRWu7c/wsUkkxIL8w2WLw7v+yyKibsDfZrwz8QC
-UJ1ty4nxDwGZocz3JGYynFGH/kjBULiCGDJLF/SX8hgHiaqoCX480hp8D9ryswnL
-+es/560ZCeGvWHcjg18MLullT0COxwUMJJb8AUEQtAE5ovrheqc0JlD6kggdUeAe
-KMoYavtELsCIEKFZ3wlHG3QkWGKBrqGNIzYBFMmiIlU9W6/DG4UjuH9YlZ1XvroH
-btmQkjnxMt11VlLxLhuEjwRNB9fQ0x3ZxzLjonkKrkJ6p7oO5e0O9PHupnu9SzDt
-1WGuJ56JI+xIYgUB+dMEzECoy2Bd4Ut2EGd5Ga7iMrSbecQh8vP8pfkxgxin97nS
-Z13c+wrmNIOnbi6dnx1Gzqwaj4IRU1dIG6mmrc9cArXJi6IffydH4+EnbqN5QlKc
-KoC2zCsfB1KTrqBmKVLy
-=zjot
+iQIcBAABAgAGBQJQYs5+AAoJECmIfjd9wqK0P0AQALIemvybZnyRbJp+f7wBMe9E
+uwy4rgiKY83wqiKYzJ/mi04sWaxSpl2AhqL7LFDjfRAoAwe1u4viKIOMxyC17nOd
+DV69eyfpE202SjLofQlbUSpmnxOXndmZDfXYSXKXcj7fm3Q2HP6GOB18fc7gsvor
+4WhFaYP3gc2GgXemJT6r53093bBvp2gzZ4yvgUEfDPwbAKf0O+t1FzWwQFt1woo5
+/KwBcVKMVwQjNpBupnn0j28I8DL0es5KGjqcmEX4qSBrY5/7TSLNFTFejjRrKkeX
+CgaWJ6zlAo7qhc13UThSofT8Hlm7i8lNYCnDTT+Q8y/Ywy9fRA1qoLkE/IkHQTkM
+Akj/NINNcvAqcaI2xIsfoUuEyILZcFUepmu1RUk62umwV88RoVGsSvh9kIZfxZ9N
+Nv0Rz7SrtoojFlRdibIiRLjaX0riwREv2XW2xG+iwTPEZRFFcMfC5P4okJYuAyab
+Fd+HEmqHJ3tAtrLV64PnyZbReiq+gl+gU/VY0mZdorENDDJhXhEkpBWiEF4PP2z8
+g1V6BPQmxmBzFMQwgXzHSA5WtuNH8OMctC90eBVMVSvDjMW817dyxIDA9R+YgCCV
+3xi2CknL7ng5lEMBb6oWJ716/EJ/tdIplKchZ1bQTnMQ+b+jkvubYGI4VHmablR5
+sKTvx9rf9W9hC4i4xA7r
+=JrcH
 -----END PGP SIGNATURE-----
 
---=-2B3yDvbwFM3zptXrMpFR--
+--=-UnR3GSraj77/MearMSNo--
