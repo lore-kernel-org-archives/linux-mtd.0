@@ -1,20 +1,22 @@
-Received: from mga14.intel.com ([143.182.124.37])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TGWjX-0005Qv-4o
- for linux-mtd@lists.infradead.org; Tue, 25 Sep 2012 15:07:36 +0000
-Message-ID: <1348585657.24309.13.camel@sauron.fi.intel.com>
-Subject: Re: [MTD-UTILS 0/3] fix off_t use in lseek
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Richard Genoud <richard.genoud@gmail.com>
-Date: Tue, 25 Sep 2012 18:07:37 +0300
-In-Reply-To: <1347460715-3951-1-git-send-email-richard.genoud@gmail.com>
-References: <1347460715-3951-1-git-send-email-richard.genoud@gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-FDa1VjqZMfWVlDF0HZLS"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
-Reply-To: dedekind1@gmail.com
+Received: from ch1ehsobe002.messaging.microsoft.com ([216.32.181.182]
+ helo=ch1outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TGjVH-0004qo-4E
+ for linux-mtd@lists.infradead.org; Wed, 26 Sep 2012 04:45:43 +0000
+Message-ID: <50628861.7050206@freescale.com>
+Date: Wed, 26 Sep 2012 10:15:21 +0530
+From: Prabhakar Kushwaha <prabhakar@freescale.com>
+MIME-Version: 1.0
+To: <dedekind1@gmail.com>
+Subject: Re: [PATCH] driver/mtd:IFC NAND:Initialise internal SRAM before any
+ write
+References: <1347526489-20186-1-git-send-email-prabhakar@freescale.com>
+ <68738277-B1F2-4455-B8FD-67F2DD9E1310@kernel.crashing.org>
+In-Reply-To: <68738277-B1F2-4455-B8FD-67F2DD9E1310@kernel.crashing.org>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: scottwood@freescale.com, linuxppc-dev@lists.ozlabs.org,
+ linux-mtd@lists.infradead.org, Kumar Gala <galak@kernel.crashing.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,45 +26,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 09/13/2012 06:23 PM, Kumar Gala wrote:
+> On Sep 13, 2012, at 3:54 AM, Prabhakar Kushwaha wrote:
+>
+>> IFC-1.1.0 uses 28nm techenology for SRAM. This tech has known limitaion for
+>> SRAM i.e. "byte select" is not supported. Hence Read Modify Write is
+>> implemented in IFC for any "system side write" into sram buffer. Reading an
+>> uninitialized memory results in ECC Error from sram wrapper.
+>>
+>> Hence we must initialize/prefill SRAM buffer by any data before writing
+>> anything in SRAM from system side. To initialize SRAM user can use "READID"
+>> NAND command with read bytes equal to SRAM size. It will be a one time
+>> activity post boot.
+>>
+>> Signed-off-by: Prabhakar Kushwaha <prabhakar@freescale.com>
+>> ---
+>> Based upon git://git.infradead.org/linux-mtd.git branch master
+>> The compilation of this patch depends upon following patch.
+>> http://patchwork.ozlabs.org/patch/177893/
+>> This patch is currently applied on git://git.kernel.org/pub/scm/linux/kernel/git/galak/powerpc.git
+>> branch next and status is "Awaiting Upstream"
+>>
+>>
+>> drivers/mtd/nand/fsl_ifc_nand.c |   56 ++++++++++++++++++++++++++++++++++++++-
+>> 1 file changed, 55 insertions(+), 1 deletion(-)
+> If MTD maintainers ack, I'm happy to pull this in via PPC tree.
 
---=-FDa1VjqZMfWVlDF0HZLS
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Hi  Artem,
 
-On Wed, 2012-09-12 at 16:38 +0200, Richard Genoud wrote:
-> In lseek call, sometimes off_t is used, sometime u_int32_t or
-> off64_t (with lseek64).
-> This patchset corrects those inconsistencies in respect with the
-> WITHOUT_LARGEFILE compilation option.
+Can you please ACK this patch so that it can be pulled via PPC tree.
 
-Could be a bit nicer (commit messages are not perfect, the second patch
-is rather big), but not big deal, pushed to mtd-utils.git, thanks!
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-FDa1VjqZMfWVlDF0HZLS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQYci5AAoJECmIfjd9wqK0KHIQAIsjZXU0fdGhe7ENFhLJuI48
-pQPVDgdnnv5TqDqvczDYFNJorau3ONeglitfKC7ADaLYMNNBZU6mN4ZE656oGDWG
-aOuUEm+8YgNgTQRAWPkJugAGb/mnGkFmWVZWBRvMtLFTwv/re2jwd9ElhbYWlrvX
-54R/i9s2O2DEzJ0rrZYBeuba/66ySRBEsyzpTcvyvBnRv5/NYSW08UC2bYfKi5yG
-MoOctdF9qv5+Ho2aDevK2uyv3liBf603OySwj6v+aHJSl0MoKkjPO8HUPJ8Ad/kR
-pXNY7H6ykUvtQOJAdedZPhrWTCsVDt6nhWVu9IgijDZuIN0JdcOxgn5gtYBKOPCv
-wtLcYJHqt9noFBndI3c77qasbQNd7nWb+wMRoelgE3nmjV7VFKdG8FE0oUwRvkaz
-rpIeVlrZkX3tjY95HL1z3OoDpWtIc0/Dfn6RRmPtoQ+6buZ+RH1WTGXoV3csgtHk
-l+jlXpLiCyTUJqdqJnr7PfzPbhrQKpCZJ/I50AK76hNRwpmYhxU2U0PZiKG2+s1v
-tR5OKtRNR/nF23rA5/ubCie97J82XWRMBlDI10wSsAIJFK1ZzPwPTeTTyaxRCSS5
-hwMfuvbjhwJygVBzAmocdSrfWH/QnQgEDwKI+XmZb62FQN41Dk7U3pMLx4m95TJz
-Y0cj8dbyOKRomoWS5K+7
-=tP8j
------END PGP SIGNATURE-----
-
---=-FDa1VjqZMfWVlDF0HZLS--
+Regards,
+Prabhakar
