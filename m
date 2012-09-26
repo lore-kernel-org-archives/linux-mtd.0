@@ -1,22 +1,21 @@
-Received: from ch1ehsobe002.messaging.microsoft.com ([216.32.181.182]
- helo=ch1outboundpool.messaging.microsoft.com)
+Received: from mail-ie0-f177.google.com ([209.85.223.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TGjVH-0004qo-4E
- for linux-mtd@lists.infradead.org; Wed, 26 Sep 2012 04:45:43 +0000
-Message-ID: <50628861.7050206@freescale.com>
-Date: Wed, 26 Sep 2012 10:15:21 +0530
-From: Prabhakar Kushwaha <prabhakar@freescale.com>
+ id 1TGkO1-0005fA-Aj
+ for linux-mtd@lists.infradead.org; Wed, 26 Sep 2012 05:42:17 +0000
+Received: by ieje14 with SMTP id e14so546026iej.36
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Sep 2012 22:42:15 -0700 (PDT)
 MIME-Version: 1.0
-To: <dedekind1@gmail.com>
-Subject: Re: [PATCH] driver/mtd:IFC NAND:Initialise internal SRAM before any
- write
-References: <1347526489-20186-1-git-send-email-prabhakar@freescale.com>
- <68738277-B1F2-4455-B8FD-67F2DD9E1310@kernel.crashing.org>
-In-Reply-To: <68738277-B1F2-4455-B8FD-67F2DD9E1310@kernel.crashing.org>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: scottwood@freescale.com, linuxppc-dev@lists.ozlabs.org,
- linux-mtd@lists.infradead.org, Kumar Gala <galak@kernel.crashing.org>
+In-Reply-To: <1346751620.12610.35.camel@sauron.fi.intel.com>
+References: <CADqH6VzVhsGvCCbokjW8TAJSq5Sj33GiHt4gZxOFZaeHtJ4JeQ@mail.gmail.com>
+ <1346751620.12610.35.camel@sauron.fi.intel.com>
+Date: Wed, 26 Sep 2012 13:42:15 +0800
+Message-ID: <CADqH6Vw0kY=U-jymgpj_JpzLkqLb0JjK7J1C1V6qF_uo-jDFng@mail.gmail.com>
+Subject: Re: Offtopic: ubifs and best practice for supporting browser based
+ firmware upgrades
+From: Jaya Kumar <jayakumar.lkml@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,35 +25,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/13/2012 06:23 PM, Kumar Gala wrote:
-> On Sep 13, 2012, at 3:54 AM, Prabhakar Kushwaha wrote:
->
->> IFC-1.1.0 uses 28nm techenology for SRAM. This tech has known limitaion for
->> SRAM i.e. "byte select" is not supported. Hence Read Modify Write is
->> implemented in IFC for any "system side write" into sram buffer. Reading an
->> uninitialized memory results in ECC Error from sram wrapper.
->>
->> Hence we must initialize/prefill SRAM buffer by any data before writing
->> anything in SRAM from system side. To initialize SRAM user can use "READID"
->> NAND command with read bytes equal to SRAM size. It will be a one time
->> activity post boot.
->>
->> Signed-off-by: Prabhakar Kushwaha <prabhakar@freescale.com>
->> ---
->> Based upon git://git.infradead.org/linux-mtd.git branch master
->> The compilation of this patch depends upon following patch.
->> http://patchwork.ozlabs.org/patch/177893/
->> This patch is currently applied on git://git.kernel.org/pub/scm/linux/kernel/git/galak/powerpc.git
->> branch next and status is "Awaiting Upstream"
->>
->>
->> drivers/mtd/nand/fsl_ifc_nand.c |   56 ++++++++++++++++++++++++++++++++++++++-
->> 1 file changed, 55 insertions(+), 1 deletion(-)
-> If MTD maintainers ack, I'm happy to pull this in via PPC tree.
+On Tue, Sep 4, 2012 at 5:40 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> Another approach people use is that they have "mirror" UBI volume of the
+> same size, like "ubifs-reserve". Then the update image is put to
+> ubifs-reserve, and after this you use the UBI volume rename feature and
+> rename "ubifs-reserve into" "ubifs". This will kill the old "ubifs"
+> volume. After this you may resize "ubifs" to something larger, and
+> create a new "ubifs-reserve" volume.
 
-Hi  Artem,
+Thanks Artem. I like above method. But one thing which I did not expect is that
 
-Can you please ACK this patch so that it can be pulled via PPC tree.
+I setup my single mtd partition with 2 volumes, rootfs and
+rootfs_reserve. My system is running from volume 0 (rootfs), ie:
+firmware upgrade is from there.
 
-Regards,
-Prabhakar
+root@localhost:/# ubinfo -a
+UBI version:                    1
+Count of UBI devices:           1
+UBI control device major/minor: 10:61
+Present UBI devices:            ubi0
+
+ubi0
+Volumes count:                           2
+Logical eraseblock size:                 129024 bytes, 126.0 KiB
+Total amount of logical eraseblocks:     4036 (520740864 bytes, 496.6 MiB)
+Amount of available logical eraseblocks: 0 (0 bytes)
+Maximum count of volumes                 128
+Count of bad physical eraseblocks:       0
+Count of reserved physical eraseblocks:  80
+Current maximum erase counter value:     2
+Minimum input/output unit size:          2048 bytes
+Character device major/minor:            252:0
+Present volumes:                         0, 1
+
+Volume ID:   0 (on ubi0)
+Type:        dynamic
+Alignment:   1
+Size:        1829 LEBs (235984896 bytes, 225.1 MiB)
+State:       OK
+Name:        rootfs
+Character device major/minor: 252:1
+-----------------------------------
+Volume ID:   1 (on ubi0)
+Type:        dynamic
+Alignment:   1
+Size:        2123 LEBs (273917952 bytes, 261.2 MiB)
+State:       OK
+Name:        rootfs_reserve
+Character device major/minor: 252:2
+
+I'm then able to use ubiupdatevol to write the firmware (containing
+new rootfs) update to the rootfs_reserve volume.
+
+root@localhost:/# ubiupdatevol /dev/ubi0_1 /mnt/microsd/newfw/ubifs.img
+
+But then when I go to rename rootfs_reserve to rootfs and rootfs to
+rootfs_reserve, I get:
+
+root@localhost:/# ubirename /dev/ubi0 rootfs rootfs_reserve
+rootfs_reserve rootfs
+UBI error: ubi_open_volume: cannot open device 0, volume 0, error -16
+UBI error: rename_volumes: cannot open volume 0, error -16
+ubirename: error!: cannot rename volumes
+           error 16 (Device or resource busy)
+
+It looks like I cannot perform the rename of the running volume, rootfs.
+
+root@localhost:/# ubirename /dev/ubi0 rootfs oldrootfs
+UBI error: ubi_open_volume: cannot open device 0, volume 0, error -16
+UBI error: rename_volumes: cannot open volume 0, error -16
+ubirename: error!: cannot rename volumes
+           error 16 (Device or resource busy)
+
+I can rename the reserve fine.
+root@localhost:/# ubirename /dev/ubi0 rootfs_reserve somenewname
+
+But I can't kill the name of the running volume.
+root@localhost:/# ubirename /dev/ubi0 somenewname rootfs
+UBI error: ubi_open_volume: cannot open device 0, volume 0, error -16
+UBI error: rename_volumes: cannot open volume "rootfs", error -16
+ubirename: error!: cannot rename volumes
+           error 16 (Device or resource busy)
+
+I think what this means is that after doing the rootfs upgrade using
+ubiupdatevol, I must reboot into a 3rd partition running a minimal OS
+to perform the ubirename of roofs_reserve and then reboot again. This
+step seems expensive to have to boot into a 3rd partition to do the
+rename operation.
+
+I see someone else also has encountered this,
+http://comments.gmane.org/gmane.linux.drivers.mtd/39415 and solved by
+having a initramfs. I guess I could do that. But still seems messy.
+
+Thanks,
+jayakumar
