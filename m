@@ -1,22 +1,22 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TGoAL-0005IF-Id
- for linux-mtd@lists.infradead.org; Wed, 26 Sep 2012 09:44:27 +0000
-Message-ID: <1348652670.24309.52.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: nand: omap2: Fix the nand-disk led trigger
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Grazvydas Ignotas <notasas@gmail.com>
-Date: Wed, 26 Sep 2012 12:44:30 +0300
-In-Reply-To: <CANOLnOOfwe1EvG1VHAZbtaC2xAD7_Rc6PqCWrs2cwEqauun8KA@mail.gmail.com>
-References: <20120913150614.GC22993@renkinjitsu.usine.8d.com>
- <CANOLnOOfwe1EvG1VHAZbtaC2xAD7_Rc6PqCWrs2cwEqauun8KA@mail.gmail.com>
+ id 1TGoF4-0005cA-M5
+ for linux-mtd@lists.infradead.org; Wed, 26 Sep 2012 09:49:19 +0000
+Message-ID: <1348652962.24309.53.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd/nand/docg4: Add missing HAS_IOMEM dependency
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Peter Huewe <peterhuewe@gmx.de>
+Date: Wed, 26 Sep 2012 12:49:22 +0300
+In-Reply-To: <1347662469-1604-1-git-send-email-peterhuewe@gmx.de>
+References: <1347662469-1604-1-git-send-email-peterhuewe@gmx.de>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-UnR3GSraj77/MearMSNo"
+ boundary="=-OojqlFTNNvdfLLprShSg"
 Mime-Version: 1.0
-Cc: linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
- Raphael Assenat <raph@8d.com>
-Reply-To: dedekind1@gmail.com
+Cc: Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, Shubhrajyoti D <shubhrajyoti@ti.com>
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,33 +27,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-UnR3GSraj77/MearMSNo
+--=-OojqlFTNNvdfLLprShSg
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2012-09-17 at 13:52 +0300, Grazvydas Ignotas wrote:
-> On Thu, Sep 13, 2012 at 6:06 PM, Raphael Assenat <raph@8d.com> wrote:
-> > When the omap2 nand flash driver is used, the nand-disk led trigger doe=
-s not
-> > work due to nand_wait_ready not being called.
->=20
-> I think better solution is just to delete omap_wait() function, which
-> is just a copy of nand_wait() without LED and oops handling. If
-> waitfunc is not set by the driver, default nand_wait is used by the
-> core.
+On Sat, 2012-09-15 at 00:41 +0200, Peter Huewe wrote:
+> While building an allyesconfig for UML I received this error message(s):
+>  drivers/mtd/nand/docg4.c: In function 'probe_docg4':
+>  drivers/mtd/nand/docg4.c:1272:2: error: implicit declaration of function
+>  'ioremap' [-Werror=3Dimplicit-function-declaration]
+>  drivers/mtd/nand/docg4.c:1272:10: warning: assignment makes pointer from
+>  integer without a cast [enabled by default]
+>  drivers/mtd/nand/docg4.c:1327:2: error: implicit declaration of function
+>  'iounmap' [-Werror=3Dimplicit-function-declaration]
 
-Or if it does really need own wait function, we can re-work the internal
-api similarly to what we did to MTD api. Instead of calling
-'chip->waitfunc()' directly from everywhere, have a wrapper
-'nand_wati()' function, which can do things common to all drivers, and
-then actually call the underlying '->waitfunc()'. So in this case, it
-can do the LED stuff.
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-UnR3GSraj77/MearMSNo
+--=-OojqlFTNNvdfLLprShSg
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -61,19 +55,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQYs5+AAoJECmIfjd9wqK0P0AQALIemvybZnyRbJp+f7wBMe9E
-uwy4rgiKY83wqiKYzJ/mi04sWaxSpl2AhqL7LFDjfRAoAwe1u4viKIOMxyC17nOd
-DV69eyfpE202SjLofQlbUSpmnxOXndmZDfXYSXKXcj7fm3Q2HP6GOB18fc7gsvor
-4WhFaYP3gc2GgXemJT6r53093bBvp2gzZ4yvgUEfDPwbAKf0O+t1FzWwQFt1woo5
-/KwBcVKMVwQjNpBupnn0j28I8DL0es5KGjqcmEX4qSBrY5/7TSLNFTFejjRrKkeX
-CgaWJ6zlAo7qhc13UThSofT8Hlm7i8lNYCnDTT+Q8y/Ywy9fRA1qoLkE/IkHQTkM
-Akj/NINNcvAqcaI2xIsfoUuEyILZcFUepmu1RUk62umwV88RoVGsSvh9kIZfxZ9N
-Nv0Rz7SrtoojFlRdibIiRLjaX0riwREv2XW2xG+iwTPEZRFFcMfC5P4okJYuAyab
-Fd+HEmqHJ3tAtrLV64PnyZbReiq+gl+gU/VY0mZdorENDDJhXhEkpBWiEF4PP2z8
-g1V6BPQmxmBzFMQwgXzHSA5WtuNH8OMctC90eBVMVSvDjMW817dyxIDA9R+YgCCV
-3xi2CknL7ng5lEMBb6oWJ716/EJ/tdIplKchZ1bQTnMQ+b+jkvubYGI4VHmablR5
-sKTvx9rf9W9hC4i4xA7r
-=JrcH
+iQIcBAABAgAGBQJQYs+iAAoJECmIfjd9wqK0mMMP/RIBCiw915b0dXx77dkfE2vB
+Kvfzm5jSb4BwnBjFohaAqJVi/YrA+56loFkzAKBCTh/BIiA8GAhPo99nkbr63hb5
+ayJ/Cv3sw45CA3Ny6Wou8xhSailEhRc1z1zr8xWSXSxia7RryhR6ayic0wUl8jGI
+ksIebbWJ9nspw4/+Zr0AQmamLse21y7eaqAQJMRcrWcw6mxVAJA0eQ6HK5B8Ebw8
+38WkYWmi8UecnGBdBGzgphjEpXmhG1DoTE7hGYfepLJ6m8Hq50SbOqDRAiD8FhUg
+WEMIKTVxeXoj2g89wWAaf+Q9NprHdaPSwDN5q07CVMVYPD0mq0WHfZE+N2Qumaop
+vXRLUjF07EJBRgy4GIgput7k/owESOweq3GwFEcr1QXjb86T04XHwcisKwRbNNk2
+Xo/qmgX9nYj3kBree08rOy7Ua7/iX+UTHknSRbZ8ngjZsk/Wx/6lwmtUiDTQMJmJ
+CLktwYROVh5YLcLlK+Xc+U55W9zByFcf50nnqxSVMXuNEN3eeZhjlbSn0C18G+Vt
+WeawzkBpnvCSYTCPhQk87AuybYEAfGqaxF74/UPHsu9LGtpdkLscHWqFC6mAePyy
+ONjJlYdN25+RgYXkEN2uWOwRmf/BHfu+IffNr7KK7WyAmB3FldClPLk2PuOfniC9
+JqA9nbhFHRGPxeaM8qfD
+=4Gag
 -----END PGP SIGNATURE-----
 
---=-UnR3GSraj77/MearMSNo--
+--=-OojqlFTNNvdfLLprShSg--
