@@ -1,21 +1,20 @@
-Received: from mail-ie0-f177.google.com ([209.85.223.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TGkO1-0005fA-Aj
- for linux-mtd@lists.infradead.org; Wed, 26 Sep 2012 05:42:17 +0000
-Received: by ieje14 with SMTP id e14so546026iej.36
- for <linux-mtd@lists.infradead.org>; Tue, 25 Sep 2012 22:42:15 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1346751620.12610.35.camel@sauron.fi.intel.com>
-References: <CADqH6VzVhsGvCCbokjW8TAJSq5Sj33GiHt4gZxOFZaeHtJ4JeQ@mail.gmail.com>
- <1346751620.12610.35.camel@sauron.fi.intel.com>
-Date: Wed, 26 Sep 2012 13:42:15 +0800
-Message-ID: <CADqH6Vw0kY=U-jymgpj_JpzLkqLb0JjK7J1C1V6qF_uo-jDFng@mail.gmail.com>
-Subject: Re: Offtopic: ubifs and best practice for supporting browser based
- firmware upgrades
-From: Jaya Kumar <jayakumar.lkml@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
+Received: from mga14.intel.com ([143.182.124.37])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TGmDP-0004t6-83
+ for linux-mtd@lists.infradead.org; Wed, 26 Sep 2012 07:39:28 +0000
+Message-ID: <1348645171.24309.21.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/4] mtd: prepare place for BCMA NAND flash driver(s)
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
+Date: Wed, 26 Sep 2012 10:39:31 +0300
+In-Reply-To: <1347481275-995-1-git-send-email-zajec5@gmail.com>
+References: <1347481275-995-1-git-send-email-zajec5@gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-IRnCXduuUgGLDRD4ERHM"
+Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,97 +24,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Sep 4, 2012 at 5:40 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> Another approach people use is that they have "mirror" UBI volume of the
-> same size, like "ubifs-reserve". Then the update image is put to
-> ubifs-reserve, and after this you use the UBI volume rename feature and
-> rename "ubifs-reserve into" "ubifs". This will kill the old "ubifs"
-> volume. After this you may resize "ubifs" to something larger, and
-> create a new "ubifs-reserve" volume.
 
-Thanks Artem. I like above method. But one thing which I did not expect is that
+--=-IRnCXduuUgGLDRD4ERHM
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-I setup my single mtd partition with 2 volumes, rootfs and
-rootfs_reserve. My system is running from volume 0 (rootfs), ie:
-firmware upgrade is from there.
+On Wed, 2012-09-12 at 22:21 +0200, Rafa=C5=82 Mi=C5=82ecki wrote:
+> +config MTD_NAND_BCM47XXNFLASH
+> +	tristate "Support for NAND flash on BCMA bus"
+> +	depends on BCMA_NFLASH && BROKEN
+> +	help
+> +	  BCMA bus can have various flash memories attached, they are
+> +	  registered by bcma as platform devices. This enables driver for
+> +	  NAND flash memories.
 
-root@localhost:/# ubinfo -a
-UBI version:                    1
-Count of UBI devices:           1
-UBI control device major/minor: 10:61
-Present UBI devices:            ubi0
+Could we please merge only non-broken stuff upstream. I understand your
+intentions to merge something non-working first with a promise to make
+it working later, but I do not think this is an acceptable approach.
 
-ubi0
-Volumes count:                           2
-Logical eraseblock size:                 129024 bytes, 126.0 KiB
-Total amount of logical eraseblocks:     4036 (520740864 bytes, 496.6 MiB)
-Amount of available logical eraseblocks: 0 (0 bytes)
-Maximum count of volumes                 128
-Count of bad physical eraseblocks:       0
-Count of reserved physical eraseblocks:  80
-Current maximum erase counter value:     2
-Minimum input/output unit size:          2048 bytes
-Character device major/minor:            252:0
-Present volumes:                         0, 1
+Why exactly you mark this one as broken? If it is R/O so far, and
+reading works, and you tested it (how?), we can merge it I guess, just
+make it clear that it is R/O in Kconfig help text.
 
-Volume ID:   0 (on ubi0)
-Type:        dynamic
-Alignment:   1
-Size:        1829 LEBs (235984896 bytes, 225.1 MiB)
-State:       OK
-Name:        rootfs
-Character device major/minor: 252:1
------------------------------------
-Volume ID:   1 (on ubi0)
-Type:        dynamic
-Alignment:   1
-Size:        2123 LEBs (273917952 bytes, 261.2 MiB)
-State:       OK
-Name:        rootfs_reserve
-Character device major/minor: 252:2
+--=20
+Best Regards,
+Artem Bityutskiy
 
-I'm then able to use ubiupdatevol to write the firmware (containing
-new rootfs) update to the rootfs_reserve volume.
+--=-IRnCXduuUgGLDRD4ERHM
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-root@localhost:/# ubiupdatevol /dev/ubi0_1 /mnt/microsd/newfw/ubifs.img
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-But then when I go to rename rootfs_reserve to rootfs and rootfs to
-rootfs_reserve, I get:
+iQIcBAABAgAGBQJQYrEzAAoJECmIfjd9wqK0ytcP/AyFaxtP/JHa1m5av7nBBXJ7
+jGVIMRZFrnUfVIhvuP9ktzRU5ifUhsR/JtNgTIcYLqz5+juS8HzAnBMLwWyRFNbp
+JHr74iF1qhAaCtXtJQ9sn4+7aD9JoZfPFXA6/JtOVpsKehppRskhcRAGQEr8PDsQ
+fLFFksMj93F/tXFNiRsRSd9bPoZA3GjHHWLtK+t1XArxcalmdX7/3OGAfIsMZVvk
+romTgWoDv5Kp/z4p0ccMaE24K+ys3OxilUA/BHytCaHVT64r4AXOrrg31RKdO6k+
+pK4xU5gbTYmXmMYcJkSGexJh7OlR6f8j0X25dYPPMC+VZcpMluO4Q4ItuCNSyLiR
+hj55071hS7Ka6V6w1oCGhXmNhhJp3UzY5Bxx1vr0dxa5GSZkYVhJu3Lg2ylOZNA3
+IDgq7XiaoNSZHluhDl+BaD+mUHzDFlQyC4kKCszsrCBT5lPPgI2PQZOwvQtBrcIS
+6jSlNhHWFhIIv/laDS2jkabdV01TUacz2e9nQCG+WJGULZOmEtFVgcquAb2xgjCY
+EZpMxh5g+hLd9dy8FDmmTwzJS33iub+KJlHU65z5ufUm0xlZHRu+XOKqSWqTJp9+
+4g8MqE/Zyzeu2UepDx+8WGJUJ6ecn8cu8a/enMHAOGxv7xlIiYNYyeikuCXOq3LH
+SvJjfOQUNuRlpWhmld5v
+=qBK/
+-----END PGP SIGNATURE-----
 
-root@localhost:/# ubirename /dev/ubi0 rootfs rootfs_reserve
-rootfs_reserve rootfs
-UBI error: ubi_open_volume: cannot open device 0, volume 0, error -16
-UBI error: rename_volumes: cannot open volume 0, error -16
-ubirename: error!: cannot rename volumes
-           error 16 (Device or resource busy)
-
-It looks like I cannot perform the rename of the running volume, rootfs.
-
-root@localhost:/# ubirename /dev/ubi0 rootfs oldrootfs
-UBI error: ubi_open_volume: cannot open device 0, volume 0, error -16
-UBI error: rename_volumes: cannot open volume 0, error -16
-ubirename: error!: cannot rename volumes
-           error 16 (Device or resource busy)
-
-I can rename the reserve fine.
-root@localhost:/# ubirename /dev/ubi0 rootfs_reserve somenewname
-
-But I can't kill the name of the running volume.
-root@localhost:/# ubirename /dev/ubi0 somenewname rootfs
-UBI error: ubi_open_volume: cannot open device 0, volume 0, error -16
-UBI error: rename_volumes: cannot open volume "rootfs", error -16
-ubirename: error!: cannot rename volumes
-           error 16 (Device or resource busy)
-
-I think what this means is that after doing the rootfs upgrade using
-ubiupdatevol, I must reboot into a 3rd partition running a minimal OS
-to perform the ubirename of roofs_reserve and then reboot again. This
-step seems expensive to have to boot into a 3rd partition to do the
-rename operation.
-
-I see someone else also has encountered this,
-http://comments.gmane.org/gmane.linux.drivers.mtd/39415 and solved by
-having a initramfs. I guess I could do that. But still seems messy.
-
-Thanks,
-jayakumar
+--=-IRnCXduuUgGLDRD4ERHM--
