@@ -1,17 +1,20 @@
-Received: from moutng.kundenserver.de ([212.227.126.186])
+Received: from moutng.kundenserver.de ([212.227.17.10])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1THFf0-0000gk-Ca
- for linux-mtd@lists.infradead.org; Thu, 27 Sep 2012 15:05:55 +0000
-Date: Thu, 27 Sep 2012 17:05:49 +0200 (CEST)
+ id 1THG1M-0000zu-1f
+ for linux-mtd@lists.infradead.org; Thu, 27 Sep 2012 15:29:01 +0000
+Date: Thu, 27 Sep 2012 17:28:54 +0200 (CEST)
 From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
 To: Bastian Hecht <hechtb@googlemail.com>
-Subject: Re: [PATCH v2 1/2] mtd: sh_flctl: Setup and release DMA channels
-In-Reply-To: <1348478315-10789-1-git-send-email-hechtb@gmail.com>
-Message-ID: <Pine.LNX.4.64.1209271656020.7862@axis700.grange>
+Subject: Re: [PATCH v2 2/2] mtd: sh_flctl: Use DMA for data fifo FLTDFIFO
+ when available
+In-Reply-To: <1348478315-10789-2-git-send-email-hechtb@gmail.com>
+Message-ID: <Pine.LNX.4.64.1209271705570.7862@axis700.grange>
 References: <1348478315-10789-1-git-send-email-hechtb@gmail.com>
+ <1348478315-10789-2-git-send-email-hechtb@gmail.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: Magnus Damm <magnus.damm@gmail.com>, linux-mtd@lists.infradead.org,
+Cc: Magnus Damm <magnus.damm@gmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>, linux-mtd@lists.infradead.org,
  linux-sh@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -22,202 +25,185 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Bastian
-
 On Mon, 24 Sep 2012, Bastian Hecht wrote:
 
-> The code probes if DMA channels can get allocated and tears them down at
-> removal/failure if needed.
-
-I'm not sure it makes sense to break this code into two patches - the 
-first one makes no sense without the second one.
-
-> 
-> Based on Guennadi Liakhovetski's code from the sh_mmcif driver.
+> Map and unmap DMA buffers, trigger the DMA and wait for the completion.
+> On failure we fallback to PIO mode.
 > 
 > Signed-off-by: Bastian Hecht <hechtb@gmail.com>
 > ---
-> v2: incorporated Vikram Narayanan's thoughts
-> 	- added a missing "static".
-> 	- reordered things to get rid of a forward declaration
+> log v2: dropped a forward declaration
 > 
-> Based on l2-mtd with reverted commit e26c113b4130aefa1d8446602bb5b05cfd646bfe.
-> 
->  drivers/mtd/nand/sh_flctl.c  |   74 ++++++++++++++++++++++++++++++++++++++++++
->  include/linux/mtd/sh_flctl.h |   10 ++++++
->  2 files changed, 84 insertions(+), 0 deletions(-)
+>  drivers/mtd/nand/sh_flctl.c  |   97 +++++++++++++++++++++++++++++++++++++++++-
+>  include/linux/mtd/sh_flctl.h |    1 +
+>  2 files changed, 96 insertions(+), 2 deletions(-)
 > 
 > diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-> index 4fbfe96..9659483 100644
+> index 9659483..0d90af8 100644
 > --- a/drivers/mtd/nand/sh_flctl.c
 > +++ b/drivers/mtd/nand/sh_flctl.c
-> @@ -106,6 +106,76 @@ static void wait_completion(struct sh_flctl *flctl)
+> @@ -24,6 +24,8 @@
+>  #include <linux/module.h>
+>  #include <linux/kernel.h>
+>  #include <linux/delay.h>
+> +#include <linux/dmaengine.h>
+> +#include <linux/dma-mapping.h>
+
+As I suggested in my comments to patch 1/2, I would merge these patches. 
+In any case the headers are needed already in the first patch, including 
+sh_dma.h.
+
+Thanks
+Guennadi
+
+
+>  #include <linux/interrupt.h>
+>  #include <linux/io.h>
+>  #include <linux/platform_device.h>
+> @@ -106,6 +108,13 @@ static void wait_completion(struct sh_flctl *flctl)
 >  	writeb(0x0, FLTRCR(flctl));
 >  }
 >  
-> +static void flctl_release_dma(struct sh_flctl *flctl)
+> +static void flctl_dma_complete(void *param)
 > +{
-> +	if (flctl->chan_fifo0_rx) {
-> +		dma_release_channel(flctl->chan_fifo0_rx);
-
-You add dmaengine API calls to the file, so, you have to include 
-header(s). dma_release_channel() requires dmaengine.h.
-
-> +		flctl->chan_fifo0_rx = NULL;
-> +	}
-> +	if (flctl->chan_fifo0_tx) {
-> +		dma_release_channel(flctl->chan_fifo0_tx);
-> +		flctl->chan_fifo0_tx = NULL;
-> +	}
+> +	struct sh_flctl *flctl = param;
+> +
+> +	complete(&flctl->dma_complete);
 > +}
 > +
-> +static void flctl_setup_dma(struct sh_flctl *flctl)
+>  static void flctl_release_dma(struct sh_flctl *flctl)
+>  {
+>  	if (flctl->chan_fifo0_rx) {
+> @@ -331,6 +340,69 @@ static void wait_wecfifo_ready(struct sh_flctl *flctl)
+>  	timeout_error(flctl, __func__);
+>  }
+>  
+> +static void flctl_dma_fifo0_transfer(struct sh_flctl *flctl, unsigned long *buf,
+> +					int len, enum dma_data_direction dir)
 > +{
-> +	dma_cap_mask_t mask;
-> +	struct dma_slave_config cfg;
-> +	struct platform_device *pdev = flctl->pdev;
-> +	struct sh_flctl_platform_data *pdata = pdev->dev.platform_data;
+> +	struct dma_async_tx_descriptor *desc = NULL;
+> +	struct dma_chan *chan;
+> +	enum dma_transfer_direction tr_dir;
+> +	dma_addr_t dma_addr;
+> +	dma_cookie_t cookie = -EINVAL;
+> +	uint32_t reg;
 > +	int ret;
 > +
-> +	if (!pdata)
-> +		return;
+> +	if (dir == DMA_FROM_DEVICE) {
+> +		chan = flctl->chan_fifo0_rx;
+> +		tr_dir = DMA_DEV_TO_MEM;
+> +	} else {
+> +		chan = flctl->chan_fifo0_tx;
+> +		tr_dir = DMA_MEM_TO_DEV;
+> +	}
 > +
-> +	if (pdata->slave_id_fifo0_tx <= 0 || pdata->slave_id_fifo0_rx <= 0)
-> +		return;
+> +	dma_addr = dma_map_single(chan->device->dev, buf, len, dir);
 > +
-> +	/* We can only either use DMA for both Tx and Rx or not use it at all */
-> +	dma_cap_zero(mask);
-> +	dma_cap_set(DMA_SLAVE, mask);
+> +	if (dma_addr)
+> +		desc = dmaengine_prep_slave_single(chan, dma_addr, len,
+> +			tr_dir, DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
 > +
-> +	flctl->chan_fifo0_tx = dma_request_channel(mask, shdma_chan_filter,
-
-shdma_chan_filter() requires sh_dma.h. And no, including these headers in 
-your header is not quite correct.
-
-> +					    (void *)pdata->slave_id_fifo0_tx);
-> +	dev_dbg(&pdev->dev, "%s: TX: got channel %p\n", __func__,
-> +		flctl->chan_fifo0_tx);
+> +	if (desc) {
+> +		reg = readl(FLINTDMACR(flctl));
+> +		reg |= DREQ0EN;
+> +		writel(reg, FLINTDMACR(flctl));
 > +
-> +	if (!flctl->chan_fifo0_tx)
-> +		return;
+> +		desc->callback = flctl_dma_complete;
+> +		desc->callback_param = flctl;
+> +		cookie = dmaengine_submit(desc);
 > +
-> +	cfg.slave_id = pdata->slave_id_fifo0_tx;
-> +	cfg.direction = DMA_MEM_TO_DEV;
-> +	cfg.dst_addr = (dma_addr_t)FLDTFIFO(flctl);
-> +	cfg.src_addr = 0;
-> +	ret = dmaengine_slave_config(flctl->chan_fifo0_tx, &cfg);
-
-Ok, you copied my mistake here:-) "cfg" is allocated on stack and never 
-initialised. You set those its members, that are needed by the sh-dma 
-driver, but it can change at any time to begin using further fields from 
-struct dma_slave_config, so, it has to be zeroed first. E.g., you could do
-
-+	struct dma_slave_config cfg = {.device_fc = false,};
-
-> +	if (ret < 0)
-> +		goto err;
+> +		dma_async_issue_pending(chan);
+> +	}
 > +
-> +	flctl->chan_fifo0_rx = dma_request_channel(mask, shdma_chan_filter,
-> +					    (void *)pdata->slave_id_fifo0_rx);
-> +	dev_dbg(&pdev->dev, "%s: RX: got channel %p\n", __func__,
-> +		flctl->chan_fifo0_rx);
+> +	if (!desc) {
+> +		/* DMA failed, fall back to PIO */
+> +		flctl_release_dma(flctl);
+> +		dev_warn(&flctl->pdev->dev,
+> +			 "DMA failed, falling back to PIO\n");
+> +		goto out;
+> +	}
 > +
-> +	if (!flctl->chan_fifo0_rx)
-> +		goto err;
+> +	ret =
+> +	wait_for_completion_timeout(&flctl->dma_complete,
+> +				msecs_to_jiffies(3000));
 > +
-> +	cfg.slave_id = pdata->slave_id_fifo0_rx;
-> +	cfg.direction = DMA_DEV_TO_MEM;
-> +	cfg.dst_addr = 0;
-> +	cfg.src_addr = (dma_addr_t)FLDTFIFO(flctl);
-> +	ret = dmaengine_slave_config(flctl->chan_fifo0_rx, &cfg);
-> +	if (ret < 0)
-> +		goto err;
+> +	if (ret <= 0) {
+> +		chan->device->device_control(chan, DMA_TERMINATE_ALL, 0);
+> +		dev_err(&flctl->pdev->dev, "wait_for_completion_timeout\n");
+> +	}
 > +
+> +out:
+> +	reg = readl(FLINTDMACR(flctl));
+> +	reg &= ~DREQ0EN;
+> +	writel(reg, FLINTDMACR(flctl));
+> +
+> +	dma_unmap_single(chan->device->dev, dma_addr, len, dir);
 > +	init_completion(&flctl->dma_complete);
-> +
-> +	return;
-> +
-> +err:
-> +	flctl_release_dma(flctl);
 > +}
 > +
->  static void set_addr(struct mtd_info *mtd, int column, int page_addr)
+>  static void read_datareg(struct sh_flctl *flctl, int offset)
 >  {
->  	struct sh_flctl *flctl = mtd_to_flctl(mtd);
-> @@ -930,6 +1000,8 @@ static int __devinit flctl_probe(struct platform_device *pdev)
->  	pm_runtime_enable(&pdev->dev);
->  	pm_runtime_resume(&pdev->dev);
+>  	unsigned long data;
+> @@ -349,6 +421,16 @@ static void read_fiforeg(struct sh_flctl *flctl, int rlen, int offset)
 >  
-> +	flctl_setup_dma(flctl);
+>  	len_4align = (rlen + 3) / 4;
+>  
+> +	/* initiate DMA transfer */
+> +	if (flctl->chan_fifo0_rx && rlen >= 32) {
+> +		flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_DEV_TO_MEM);
+> +		for (i = 0; i < len_4align; i++)
+> +			buf[i] = be32_to_cpu(buf[i]);
 > +
->  	ret = nand_scan_ident(flctl_mtd, 1, NULL);
->  	if (ret)
->  		goto err_chip;
-> @@ -947,6 +1019,7 @@ static int __devinit flctl_probe(struct platform_device *pdev)
->  	return 0;
->  
->  err_chip:
-> +	flctl_release_dma(flctl);
->  	pm_runtime_disable(&pdev->dev);
->  	free_irq(irq, flctl);
->  err_flste:
-> @@ -960,6 +1033,7 @@ static int __devexit flctl_remove(struct platform_device *pdev)
+> +		return;
+> +	}
+> +
+> +	/* do polling transfer */
+>  	for (i = 0; i < len_4align; i++) {
+>  		wait_rfifo_ready(flctl);
+>  		buf[i] = readl(FLDTFIFO(flctl));
+> @@ -378,13 +460,24 @@ static enum flctl_ecc_res_t read_ecfiforeg
+>  static void write_fiforeg(struct sh_flctl *flctl, int rlen, int offset)
 >  {
->  	struct sh_flctl *flctl = platform_get_drvdata(pdev);
+>  	int i, len_4align;
+> -	unsigned long *data = (unsigned long *)&flctl->done_buff[offset];
+> +	unsigned long *buf = (unsigned long *)&flctl->done_buff[offset];
+>  	void *fifo_addr = (void *)FLDTFIFO(flctl);
 >  
-> +	flctl_release_dma(flctl);
->  	nand_release(&flctl->mtd);
->  	pm_runtime_disable(&pdev->dev);
->  	free_irq(platform_get_irq(pdev, 0), flctl);
+>  	len_4align = (rlen + 3) / 4;
+> +
+> +	/* initiate DMA transfer */
+> +	if (flctl->chan_fifo0_tx && rlen >= 32) {
+> +		for (i = 0; i < len_4align; i++)
+> +			buf[i] = cpu_to_be32(buf[i]);
+> +
+> +		flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_MEM_TO_DEV);
+> +		return;
+> +	}
+> +
+> +	/* do polling transfer */
+>  	for (i = 0; i < len_4align; i++) {
+>  		wait_wfifo_ready(flctl);
+> -		writel(cpu_to_be32(data[i]), fifo_addr);
+> +		writel(cpu_to_be32(buf[i]), fifo_addr);
+>  	}
+>  }
+>  
 > diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
-> index 01e4b15..20d3f48 100644
+> index 20d3f48..d55ec25 100644
 > --- a/include/linux/mtd/sh_flctl.h
 > +++ b/include/linux/mtd/sh_flctl.h
-> @@ -20,10 +20,12 @@
->  #ifndef __SH_FLCTL_H__
->  #define __SH_FLCTL_H__
->  
-> +#include <linux/dmaengine.h>
->  #include <linux/mtd/mtd.h>
->  #include <linux/mtd/nand.h>
->  #include <linux/mtd/partitions.h>
->  #include <linux/pm_qos.h>
-> +#include <linux/sh_dma.h>
-
-Here headers aren't actually needed - you can just forward-declare "struct 
-dma_chan." OTOH, what _is_ indeed needed is <linux/completion.h>.
-
->  
->  /* FLCTL registers */
->  #define FLCMNCR(f)		(f->reg + 0x0)
-> @@ -161,6 +163,11 @@ struct sh_flctl {
->  	unsigned hwecc:1;	/* Hardware ECC (0 = disabled, 1 = enabled) */
->  	unsigned holden:1;	/* Hardware has FLHOLDCR and HOLDEN is set */
->  	unsigned qos_request:1;	/* QoS request to prevent deep power shutdown */
-> +
-> +	/* DMA related objects */
-> +	struct dma_chan		*chan_fifo0_rx;
-> +	struct dma_chan		*chan_fifo0_tx;
-> +	struct completion	dma_complete;
->  };
->  
->  struct sh_flctl_platform_data {
-> @@ -170,6 +177,9 @@ struct sh_flctl_platform_data {
->  
->  	unsigned has_hwecc:1;
->  	unsigned use_holden:1;
-> +
-> +	unsigned int            slave_id_fifo0_tx;
-> +	unsigned int            slave_id_fifo0_rx;
->  };
->  
->  static inline struct sh_flctl *mtd_to_flctl(struct mtd_info *mtdinfo)
+> @@ -109,6 +109,7 @@
+>  #define ESTERINTE	(0x1 << 24)	/* ECC error interrupt enable */
+>  #define AC1CLR		(0x1 << 19)	/* ECC FIFO clear */
+>  #define AC0CLR		(0x1 << 18)	/* Data FIFO clear */
+> +#define DREQ0EN		(0x1 << 16)	/* FLDTFIFODMA Request Enable */
+>  #define ECERB		(0x1 << 9)	/* ECC error */
+>  #define STERB		(0x1 << 8)	/* Status error */
+>  #define STERINTE	(0x1 << 4)	/* Status error enable */
 > -- 
 > 1.7.5.4
 > 
 
-Thanks
-Guennadi
 ---
 Guennadi Liakhovetski, Ph.D.
 Freelance Open-Source Software Developer
