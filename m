@@ -1,20 +1,19 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TH9GE-0007DH-IY
- for linux-mtd@lists.infradead.org; Thu, 27 Sep 2012 08:15:55 +0000
-Message-ID: <50640B35.206@parrot.com>
-Date: Thu, 27 Sep 2012 10:15:49 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
+Received: from mail-wi0-f171.google.com ([209.85.212.171])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1THChD-0008AP-D9
+ for linux-mtd@lists.infradead.org; Thu, 27 Sep 2012 11:56:00 +0000
+Received: by wibhj13 with SMTP id hj13so2436863wib.0
+ for <linux-mtd@lists.infradead.org>; Thu, 27 Sep 2012 04:55:55 -0700 (PDT)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: linux-mtd@lists.infradead.org,
+	Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH 1/6] bcma: export PLL reading function
+Date: Thu, 27 Sep 2012 13:55:42 +0200
+Message-Id: <1348746947-2349-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: m25p80: add support for the windbond w25q256 chip
-References: <1348563927-9131-1-git-send-email-matthieu.castet@parrot.com>
- <CAN8TOE-h1VrbNg6ZqwQdhLaQ18E4-=_Lw+biuhGONUS5HCx-4g@mail.gmail.com>
-In-Reply-To: <CAN8TOE-h1VrbNg6ZqwQdhLaQ18E4-=_Lw+biuhGONUS5HCx-4g@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>
+Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,46 +23,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Brian Norris a �crit :
-> On Tue, Sep 25, 2012 at 2:05 AM, Matthieu CASTET
-> <matthieu.castet@parrot.com> wrote:
->> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
->> index 5257345..4eb99c6 100644
->> --- a/drivers/mtd/devices/m25p80.c
->> +++ b/drivers/mtd/devices/m25p80.c
->> @@ -168,6 +168,7 @@ static inline int set_4byte(struct m25p *flash, u32 jedec_id, int enable)
->>  {
->>         switch (JEDEC_MFR(jedec_id)) {
->>         case CFI_MFR_MACRONIX:
->> +       case 0xEF /* winbond */:
->>                 flash->command[0] = enable ? OPCODE_EN4B : OPCODE_EX4B;
->>                 return spi_write(flash->spi, flash->command, 1);
->>         default:
-> 
-> Just checking: Winbond didn't use their known manufacturer ID (0xDA)
-> for this chip? Do they have other chips that support/need 4-byte
-> addressing and use 0xDA?
-> 
-I don't know, but if you look in m25p80 device list, all windbond flash start
-(the jdec manuf code) with 0xEF [1].
-May be MFR code are different for NOR flash and spi NOR ?
+This is required by NAND flash driver for initializing wait counters.
 
-For info the datasheet is avaiable at :
-http://www.winbond.com.tw/NR/rdonlyres/658E0D71-9AC3-48D6-B043-3702625A2CF5/0/W25Q256FV.pdf
+Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+---
+0001-bcma-export-PLL-reading-function.patch                           
+Successfully built configuration "mips-bcm47xx_defconfig,mips,mips-linux-", no issues
+---
+ drivers/bcma/driver_chipcommon_pmu.c |    3 ++-
+ include/linux/bcma/bcma.h            |    1 +
+ 2 files changed, 3 insertions(+), 1 deletions(-)
 
-Matthieu
-
-[1]
-    /* Winbond -- w25x "blocks" are 64K, "sectors" are 4KiB */
-    { "w25x10", INFO(0xef3011, 0, 64 * 1024,  2,  SECT_4K) },
-    { "w25x20", INFO(0xef3012, 0, 64 * 1024,  4,  SECT_4K) },
-    { "w25x40", INFO(0xef3013, 0, 64 * 1024,  8,  SECT_4K) },
-    { "w25x80", INFO(0xef3014, 0, 64 * 1024,  16, SECT_4K) },
-    { "w25x16", INFO(0xef3015, 0, 64 * 1024,  32, SECT_4K) },
-    { "w25x32", INFO(0xef3016, 0, 64 * 1024,  64, SECT_4K) },
-    { "w25q32", INFO(0xef4016, 0, 64 * 1024,  64, SECT_4K) },
-    { "w25q32dw", INFO(0xef6016, 0, 64 * 1024,  64, SECT_4K) },
-    { "w25x64", INFO(0xef3017, 0, 64 * 1024, 128, SECT_4K) },
-    { "w25q64", INFO(0xef4017, 0, 64 * 1024, 128, SECT_4K) },
-    { "w25q80", INFO(0xef5014, 0, 64 * 1024,  16, SECT_4K) },
-    { "w25q256", INFO(0xef4019, 0, 64 * 1024, 512, SECT_4K) },
+diff --git a/drivers/bcma/driver_chipcommon_pmu.c b/drivers/bcma/driver_chipcommon_pmu.c
+index 8b8f2f3..c7d94b47 100644
+--- a/drivers/bcma/driver_chipcommon_pmu.c
++++ b/drivers/bcma/driver_chipcommon_pmu.c
+@@ -13,12 +13,13 @@
+ #include <linux/export.h>
+ #include <linux/bcma/bcma.h>
+ 
+-static u32 bcma_chipco_pll_read(struct bcma_drv_cc *cc, u32 offset)
++u32 bcma_chipco_pll_read(struct bcma_drv_cc *cc, u32 offset)
+ {
+ 	bcma_cc_write32(cc, BCMA_CC_PLLCTL_ADDR, offset);
+ 	bcma_cc_read32(cc, BCMA_CC_PLLCTL_ADDR);
+ 	return bcma_cc_read32(cc, BCMA_CC_PLLCTL_DATA);
+ }
++EXPORT_SYMBOL_GPL(bcma_chipco_pll_read);
+ 
+ void bcma_chipco_pll_write(struct bcma_drv_cc *cc, u32 offset, u32 value)
+ {
+diff --git a/include/linux/bcma/bcma.h b/include/linux/bcma/bcma.h
+index 1954a4e..b58fae0 100644
+--- a/include/linux/bcma/bcma.h
++++ b/include/linux/bcma/bcma.h
+@@ -345,6 +345,7 @@ extern void bcma_core_set_clockmode(struct bcma_device *core,
+ 				    enum bcma_clkmode clkmode);
+ extern void bcma_core_pll_ctl(struct bcma_device *core, u32 req, u32 status,
+ 			      bool on);
++extern u32 bcma_chipco_pll_read(struct bcma_drv_cc *cc, u32 offset);
+ #define BCMA_DMA_TRANSLATION_MASK	0xC0000000
+ #define  BCMA_DMA_TRANSLATION_NONE	0x00000000
+ #define  BCMA_DMA_TRANSLATION_DMA32_CMT	0x40000000 /* Client Mode Translation for 32-bit DMA */
+-- 
+1.7.7
