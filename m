@@ -1,23 +1,20 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1THD7d-0001hQ-3f
- for linux-mtd@lists.infradead.org; Thu, 27 Sep 2012 12:23:17 +0000
-Message-ID: <1348748593.21300.0.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 0/9] mtd: nand: improve NAND ID detection
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Thu, 27 Sep 2012 15:23:13 +0300
-In-Reply-To: <1348544455-17656-1-git-send-email-computersforpeace@gmail.com>
-References: <1348544455-17656-1-git-send-email-computersforpeace@gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-PFPRfmd3GYY3+LqlJSDM"
-Mime-Version: 1.0
-Cc: Angus Clark <angus.clark@st.com>, Mike Dunn <mikedunn@newsguy.com>,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Reply-To: dedekind1@gmail.com
+Received: from gate.crashing.org ([63.228.1.57])
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1THDHR-0005YJ-BN
+ for linux-mtd@lists.infradead.org; Thu, 27 Sep 2012 12:33:26 +0000
+Subject: Re: [PATCH] driver/mtd:IFC NAND:Initialise internal SRAM before any
+ write
+Mime-Version: 1.0 (Apple Message framework v1278)
+Content-Type: text/plain; charset=us-ascii
+From: Kumar Gala <galak@kernel.crashing.org>
+In-Reply-To: <1347526489-20186-1-git-send-email-prabhakar@freescale.com>
+Date: Thu, 27 Sep 2012 07:33:17 -0500
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <35D2D92E-D6B7-46CB-A3F2-6DAE2134EA30@kernel.crashing.org>
+References: <1347526489-20186-1-git-send-email-prabhakar@freescale.com>
+To: Prabhakar Kushwaha <prabhakar@freescale.com>
+Cc: scottwood@freescale.com, linuxppc-dev@lists.ozlabs.org,
+ linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,45 +25,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-PFPRfmd3GYY3+LqlJSDM
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Sep 13, 2012, at 3:54 AM, Prabhakar Kushwaha wrote:
 
-On Mon, 2012-09-24 at 20:40 -0700, Brian Norris wrote:
-> Hi all,
+> IFC-1.1.0 uses 28nm techenology for SRAM. This tech has known =
+limitaion for
+> SRAM i.e. "byte select" is not supported. Hence Read Modify Write is
+> implemented in IFC for any "system side write" into sram buffer. =
+Reading an
+> uninitialized memory results in ECC Error from sram wrapper.
 >=20
-> I've been working on some changes to nand_base.c's nand_get_flash_type()
-> routine for improving its structure and readability as well as to detect =
-some
-> new chips. Generally, this patch series does the following:
+> Hence we must initialize/prefill SRAM buffer by any data before =
+writing
+> anything in SRAM from system side. To initialize SRAM user can use =
+"READID"
+> NAND command with read bytes equal to SRAM size. It will be a one time
+> activity post boot.
+>=20
+> Signed-off-by: Prabhakar Kushwaha <prabhakar@freescale.com>
+> ---
+> Based upon git://git.infradead.org/linux-mtd.git branch master
+> The compilation of this patch depends upon following patch.
+> http://patchwork.ozlabs.org/patch/177893/
+> This patch is currently applied on =
+git://git.kernel.org/pub/scm/linux/kernel/git/galak/powerpc.git=20
+> branch next and status is "Awaiting Upstream"
+>=20
+>=20
+> drivers/mtd/nand/fsl_ifc_nand.c |   56 =
+++++++++++++++++++++++++++++++++++++++-
+> 1 file changed, 55 insertions(+), 1 deletion(-)
 
-Pushed the series to l2-mtd.git, thanks!
+applied to next
 
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-PFPRfmd3GYY3+LqlJSDM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQZEUxAAoJECmIfjd9wqK0bCMQAKaYbGj7zUI49s4DYJ+ClwNo
-RjCNW6y8FsqDYy4/tPnHbCm/JRpDm+Vmn9jJze5Pz/BhyHFLXLIPCoc/mdH8xSUV
-yEL6nMn3UWbwh2NBBEMGyP2d5uOAAH3YpH6V8M0kLgoWMpmS17iqjHKTO4jTxLys
-X5F4ZIlJV8CFtYZ3eoIPRY2M09o2o9w3cuT944m1gi0grgwBO3Pem3KFsMPgvP+c
-DlBXUoxNBRjxswqiBXPdmPIMKXONCj8f9faIkBrUkglYRYTmh3builUiF6oA74Di
-OggxrvCGiOpFzQBgYDVgfi8octRcqssZiP/xENx695tofdFb9IQfq7se/f3G7fdT
-i6Ds+DVKs+RneJYDtTp+3z9+t+yUQ5r7gzKpeSbCWk1gEzhYwD3DSg41w2Q0+iHE
-TznjbrfJLCeEfkYJ0+wXro+p4+218Bes/bDrEEJmL4wZvAQzVqU6SZztLN79W1tX
-bGZIID66t394wtovzUQuyMXspL8wH66zVBkaePzUY8jRRWCKyyw6aRxms+wkPmEd
-3HgCWufh0XCjz3WOlGcp6JEJi41QJPjZEjqO2u38kuWq7EURIkUslFQv+YJsAATJ
-VnhNhOPN7FvcYqNQrCLks1MvTR87wwmCaSbPiLENtfJ/O6X3nF0VBx0Fe/n8v2o8
-XCgSou4CYiMKhgRZj957
-=n8Ii
------END PGP SIGNATURE-----
-
---=-PFPRfmd3GYY3+LqlJSDM--
+- k=
