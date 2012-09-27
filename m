@@ -1,17 +1,16 @@
-Received: from mail-pa0-f49.google.com ([209.85.220.49])
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TH0ps-0007vl-5c
- for linux-mtd@lists.infradead.org; Wed, 26 Sep 2012 23:16:08 +0000
-Received: by padbi5 with SMTP id bi5so871998pad.36
- for <linux-mtd@lists.infradead.org>; Wed, 26 Sep 2012 16:16:06 -0700 (PDT)
+ id 1TH3yU-0006sR-Rz
+ for linux-mtd@lists.infradead.org; Thu, 27 Sep 2012 02:37:16 +0000
+Received: by pbcxa7 with SMTP id xa7so1652755pbc.36
+ for <linux-mtd@lists.infradead.org>; Wed, 26 Sep 2012 19:37:12 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: fsl_elbc_nand: remove unnecessary badblock_pattern
-Date: Wed, 26 Sep 2012 16:15:27 -0700
-Message-Id: <1348701327-12226-1-git-send-email-computersforpeace@gmail.com>
-Cc: Scott Wood <scottwood@freescale.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH] mtd: mtd_oobtest: printk -> pr_{info,err}
+Date: Wed, 26 Sep 2012 19:37:02 -0700
+Message-Id: <1348713422-16626-1-git-send-email-computersforpeace@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,63 +20,552 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Since the introduction of nand_create_default_bbt_descr() (now known as
-nand_create_badblock_pattern()) in
-
-  commit 58373ff0afff4cc8ac40608872995f4d87eb72ec
-
-nand_chip.badblock_pattern will be dynamically calculated to the same
-1-byte-length pattern that is required by fsl_elbc_nand. This custom
-badblock_pattern is no longer needed, then, and its removal may help
-facilitate further nand_bbt.c/nand_base.c cleanup in the future (one
-down, many to go?)
-
-Anyway, with nand_bbt.c fixed, this effectively reverts:
-
-  commit 452db2724351ff3d9416a183a7955e00ab4e6ab4
-  [MTD] [NAND] fsl_elbc_nand: fix OOB workability for large page NAND chips
+Use pr_info() and pr_err() while defining pr_fmt(). This saves a few
+characters, joins a few lines, and makes the code a little more readable
+(and grep-able).
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Cc: Scott Wood <scottwood@freescale.com>
 ---
+Compile-tested and run once.
 
-Not even compile-tested...
+ drivers/mtd/tests/mtd_oobtest.c | 169 ++++++++++++++++++++--------------------
+ 1 file changed, 83 insertions(+), 86 deletions(-)
 
- drivers/mtd/nand/fsl_elbc_nand.c | 15 ---------------
- 1 file changed, 15 deletions(-)
-
-diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
-index cc1480a..4c4d3e5 100644
---- a/drivers/mtd/nand/fsl_elbc_nand.c
-+++ b/drivers/mtd/nand/fsl_elbc_nand.c
-@@ -109,20 +109,6 @@ static struct nand_ecclayout fsl_elbc_oob_lp_eccm1 = {
- };
+diff --git a/drivers/mtd/tests/mtd_oobtest.c b/drivers/mtd/tests/mtd_oobtest.c
+index ed9b628..a1c059b 100644
+--- a/drivers/mtd/tests/mtd_oobtest.c
++++ b/drivers/mtd/tests/mtd_oobtest.c
+@@ -19,6 +19,8 @@
+  * Author: Adrian Hunter <ext-adrian.hunter@nokia.com>
+  */
  
- /*
-- * fsl_elbc_oob_lp_eccm* specify that LP NAND's OOB free area starts at offset
-- * 1, so we have to adjust bad block pattern. This pattern should be used for
-- * x8 chips only. So far hardware does not support x16 chips anyway.
-- */
--static u8 scan_ff_pattern[] = { 0xff, };
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++
+ #include <asm/div64.h>
+ #include <linux/init.h>
+ #include <linux/module.h>
+@@ -28,8 +30,6 @@
+ #include <linux/slab.h>
+ #include <linux/sched.h>
+ 
+-#define PRINT_PREF KERN_INFO "mtd_oobtest: "
 -
--static struct nand_bbt_descr largepage_memorybased = {
--	.options = 0,
--	.offs = 0,
--	.len = 1,
--	.pattern = scan_ff_pattern,
--};
--
--/*
-  * ELBC may use HW ECC, so that OOB offsets, that NAND core uses for bbt,
-  * interfere with ECC positions, that's why we implement our own descriptors.
-  * OOB {11, 5}, works for both SP and LP chips, with ECCM = 1 and ECCM = 0.
-@@ -699,7 +685,6 @@ static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
- 			chip->ecc.layout = (priv->fmr & FMR_ECCM) ?
- 			                   &fsl_elbc_oob_lp_eccm1 :
- 			                   &fsl_elbc_oob_lp_eccm0;
--			chip->badblock_pattern = &largepage_memorybased;
+ static int dev = -EINVAL;
+ module_param(dev, int, S_IRUGO);
+ MODULE_PARM_DESC(dev, "MTD device number to use");
+@@ -80,13 +80,12 @@ static int erase_eraseblock(int ebnum)
+ 
+ 	err = mtd_erase(mtd, &ei);
+ 	if (err) {
+-		printk(PRINT_PREF "error %d while erasing EB %d\n", err, ebnum);
++		pr_err("error %d while erasing EB %d\n", err, ebnum);
+ 		return err;
+ 	}
+ 
+ 	if (ei.state == MTD_ERASE_FAILED) {
+-		printk(PRINT_PREF "some erase error occurred at EB %d\n",
+-		       ebnum);
++		pr_err("some erase error occurred at EB %d\n", ebnum);
+ 		return -EIO;
+ 	}
+ 
+@@ -98,7 +97,7 @@ static int erase_whole_device(void)
+ 	int err;
+ 	unsigned int i;
+ 
+-	printk(PRINT_PREF "erasing whole device\n");
++	pr_info("erasing whole device\n");
+ 	for (i = 0; i < ebcnt; ++i) {
+ 		if (bbt[i])
+ 			continue;
+@@ -107,7 +106,7 @@ static int erase_whole_device(void)
+ 			return err;
+ 		cond_resched();
+ 	}
+-	printk(PRINT_PREF "erased %u eraseblocks\n", i);
++	pr_info("erased %u eraseblocks\n", i);
+ 	return 0;
+ }
+ 
+@@ -141,9 +140,9 @@ static int write_eraseblock(int ebnum)
+ 		ops.oobbuf    = writebuf;
+ 		err = mtd_write_oob(mtd, addr, &ops);
+ 		if (err || ops.oobretlen != use_len) {
+-			printk(PRINT_PREF "error: writeoob failed at %#llx\n",
++			pr_err("error: writeoob failed at %#llx\n",
+ 			       (long long)addr);
+-			printk(PRINT_PREF "error: use_len %d, use_offset %d\n",
++			pr_err("error: use_len %d, use_offset %d\n",
+ 			       use_len, use_offset);
+ 			errcnt += 1;
+ 			return err ? err : -1;
+@@ -160,7 +159,7 @@ static int write_whole_device(void)
+ 	int err;
+ 	unsigned int i;
+ 
+-	printk(PRINT_PREF "writing OOBs of whole device\n");
++	pr_info("writing OOBs of whole device\n");
+ 	for (i = 0; i < ebcnt; ++i) {
+ 		if (bbt[i])
+ 			continue;
+@@ -168,10 +167,10 @@ static int write_whole_device(void)
+ 		if (err)
+ 			return err;
+ 		if (i % 256 == 0)
+-			printk(PRINT_PREF "written up to eraseblock %u\n", i);
++			pr_info("written up to eraseblock %u\n", i);
+ 		cond_resched();
+ 	}
+-	printk(PRINT_PREF "written %u eraseblocks\n", i);
++	pr_info("written %u eraseblocks\n", i);
+ 	return 0;
+ }
+ 
+@@ -194,17 +193,17 @@ static int verify_eraseblock(int ebnum)
+ 		ops.oobbuf    = readbuf;
+ 		err = mtd_read_oob(mtd, addr, &ops);
+ 		if (err || ops.oobretlen != use_len) {
+-			printk(PRINT_PREF "error: readoob failed at %#llx\n",
++			pr_err("error: readoob failed at %#llx\n",
+ 			       (long long)addr);
+ 			errcnt += 1;
+ 			return err ? err : -1;
  		}
+ 		if (memcmp(readbuf, writebuf, use_len)) {
+-			printk(PRINT_PREF "error: verify failed at %#llx\n",
++			pr_err("error: verify failed at %#llx\n",
+ 			       (long long)addr);
+ 			errcnt += 1;
+ 			if (errcnt > 1000) {
+-				printk(PRINT_PREF "error: too many errors\n");
++				pr_err("error: too many errors\n");
+ 				return -1;
+ 			}
+ 		}
+@@ -221,29 +220,28 @@ static int verify_eraseblock(int ebnum)
+ 			ops.oobbuf    = readbuf;
+ 			err = mtd_read_oob(mtd, addr, &ops);
+ 			if (err || ops.oobretlen != mtd->ecclayout->oobavail) {
+-				printk(PRINT_PREF "error: readoob failed at "
+-				       "%#llx\n", (long long)addr);
++				pr_err("error: readoob failed at %#llx\n",
++						(long long)addr);
+ 				errcnt += 1;
+ 				return err ? err : -1;
+ 			}
+ 			if (memcmp(readbuf + use_offset, writebuf, use_len)) {
+-				printk(PRINT_PREF "error: verify failed at "
+-				       "%#llx\n", (long long)addr);
++				pr_err("error: verify failed at %#llx\n",
++						(long long)addr);
+ 				errcnt += 1;
+ 				if (errcnt > 1000) {
+-					printk(PRINT_PREF "error: too many "
+-					       "errors\n");
++					pr_err("error: too many errors\n");
+ 					return -1;
+ 				}
+ 			}
+ 			for (k = 0; k < use_offset; ++k)
+ 				if (readbuf[k] != 0xff) {
+-					printk(PRINT_PREF "error: verify 0xff "
++					pr_err("error: verify 0xff "
+ 					       "failed at %#llx\n",
+ 					       (long long)addr);
+ 					errcnt += 1;
+ 					if (errcnt > 1000) {
+-						printk(PRINT_PREF "error: too "
++						pr_err("error: too "
+ 						       "many errors\n");
+ 						return -1;
+ 					}
+@@ -251,12 +249,12 @@ static int verify_eraseblock(int ebnum)
+ 			for (k = use_offset + use_len;
+ 			     k < mtd->ecclayout->oobavail; ++k)
+ 				if (readbuf[k] != 0xff) {
+-					printk(PRINT_PREF "error: verify 0xff "
++					pr_err("error: verify 0xff "
+ 					       "failed at %#llx\n",
+ 					       (long long)addr);
+ 					errcnt += 1;
+ 					if (errcnt > 1000) {
+-						printk(PRINT_PREF "error: too "
++						pr_err("error: too "
+ 						       "many errors\n");
+ 						return -1;
+ 					}
+@@ -286,17 +284,17 @@ static int verify_eraseblock_in_one_go(int ebnum)
+ 	ops.oobbuf    = readbuf;
+ 	err = mtd_read_oob(mtd, addr, &ops);
+ 	if (err || ops.oobretlen != len) {
+-		printk(PRINT_PREF "error: readoob failed at %#llx\n",
++		pr_err("error: readoob failed at %#llx\n",
+ 		       (long long)addr);
+ 		errcnt += 1;
+ 		return err ? err : -1;
+ 	}
+ 	if (memcmp(readbuf, writebuf, len)) {
+-		printk(PRINT_PREF "error: verify failed at %#llx\n",
++		pr_err("error: verify failed at %#llx\n",
+ 		       (long long)addr);
+ 		errcnt += 1;
+ 		if (errcnt > 1000) {
+-			printk(PRINT_PREF "error: too many errors\n");
++			pr_err("error: too many errors\n");
+ 			return -1;
+ 		}
+ 	}
+@@ -309,7 +307,7 @@ static int verify_all_eraseblocks(void)
+ 	int err;
+ 	unsigned int i;
+ 
+-	printk(PRINT_PREF "verifying all eraseblocks\n");
++	pr_info("verifying all eraseblocks\n");
+ 	for (i = 0; i < ebcnt; ++i) {
+ 		if (bbt[i])
+ 			continue;
+@@ -317,10 +315,10 @@ static int verify_all_eraseblocks(void)
+ 		if (err)
+ 			return err;
+ 		if (i % 256 == 0)
+-			printk(PRINT_PREF "verified up to eraseblock %u\n", i);
++			pr_info("verified up to eraseblock %u\n", i);
+ 		cond_resched();
+ 	}
+-	printk(PRINT_PREF "verified %u eraseblocks\n", i);
++	pr_info("verified %u eraseblocks\n", i);
+ 	return 0;
+ }
+ 
+@@ -331,7 +329,7 @@ static int is_block_bad(int ebnum)
+ 
+ 	ret = mtd_block_isbad(mtd, addr);
+ 	if (ret)
+-		printk(PRINT_PREF "block %d is bad\n", ebnum);
++		pr_info("block %d is bad\n", ebnum);
+ 	return ret;
+ }
+ 
+@@ -341,18 +339,18 @@ static int scan_for_bad_eraseblocks(void)
+ 
+ 	bbt = kmalloc(ebcnt, GFP_KERNEL);
+ 	if (!bbt) {
+-		printk(PRINT_PREF "error: cannot allocate memory\n");
++		pr_err("error: cannot allocate memory\n");
+ 		return -ENOMEM;
+ 	}
+ 
+-	printk(PRINT_PREF "scanning for bad eraseblocks\n");
++	pr_info("scanning for bad eraseblocks\n");
+ 	for (i = 0; i < ebcnt; ++i) {
+ 		bbt[i] = is_block_bad(i) ? 1 : 0;
+ 		if (bbt[i])
+ 			bad += 1;
+ 		cond_resched();
+ 	}
+-	printk(PRINT_PREF "scanned %d eraseblocks, %d are bad\n", i, bad);
++	pr_info("scanned %d eraseblocks, %d are bad\n", i, bad);
+ 	return 0;
+ }
+ 
+@@ -368,22 +366,22 @@ static int __init mtd_oobtest_init(void)
+ 	printk(KERN_INFO "=================================================\n");
+ 
+ 	if (dev < 0) {
+-		printk(PRINT_PREF "Please specify a valid mtd-device via module paramter\n");
++		pr_info("Please specify a valid mtd-device via module paramter\n");
+ 		printk(KERN_CRIT "CAREFUL: This test wipes all data on the specified MTD device!\n");
+ 		return -EINVAL;
+ 	}
+ 
+-	printk(PRINT_PREF "MTD device: %d\n", dev);
++	pr_info("MTD device: %d\n", dev);
+ 
+ 	mtd = get_mtd_device(NULL, dev);
+ 	if (IS_ERR(mtd)) {
+ 		err = PTR_ERR(mtd);
+-		printk(PRINT_PREF "error: cannot get MTD device\n");
++		pr_err("error: cannot get MTD device\n");
+ 		return err;
+ 	}
+ 
+ 	if (mtd->type != MTD_NANDFLASH) {
+-		printk(PRINT_PREF "this test requires NAND flash\n");
++		pr_info("this test requires NAND flash\n");
+ 		goto out;
+ 	}
+ 
+@@ -392,7 +390,7 @@ static int __init mtd_oobtest_init(void)
+ 	ebcnt = tmp;
+ 	pgcnt = mtd->erasesize / mtd->writesize;
+ 
+-	printk(PRINT_PREF "MTD device size %llu, eraseblock size %u, "
++	pr_info("MTD device size %llu, eraseblock size %u, "
+ 	       "page size %u, count of eraseblocks %u, pages per "
+ 	       "eraseblock %u, OOB size %u\n",
+ 	       (unsigned long long)mtd->size, mtd->erasesize,
+@@ -401,12 +399,12 @@ static int __init mtd_oobtest_init(void)
+ 	err = -ENOMEM;
+ 	readbuf = kmalloc(mtd->erasesize, GFP_KERNEL);
+ 	if (!readbuf) {
+-		printk(PRINT_PREF "error: cannot allocate memory\n");
++		pr_err("error: cannot allocate memory\n");
+ 		goto out;
+ 	}
+ 	writebuf = kmalloc(mtd->erasesize, GFP_KERNEL);
+ 	if (!writebuf) {
+-		printk(PRINT_PREF "error: cannot allocate memory\n");
++		pr_err("error: cannot allocate memory\n");
+ 		goto out;
+ 	}
+ 
+@@ -420,7 +418,7 @@ static int __init mtd_oobtest_init(void)
+ 	vary_offset = 0;
+ 
+ 	/* First test: write all OOB, read it back and verify */
+-	printk(PRINT_PREF "test 1 of 5\n");
++	pr_info("test 1 of 5\n");
+ 
+ 	err = erase_whole_device();
+ 	if (err)
+@@ -440,7 +438,7 @@ static int __init mtd_oobtest_init(void)
+ 	 * Second test: write all OOB, a block at a time, read it back and
+ 	 * verify.
+ 	 */
+-	printk(PRINT_PREF "test 2 of 5\n");
++	pr_info("test 2 of 5\n");
+ 
+ 	err = erase_whole_device();
+ 	if (err)
+@@ -453,7 +451,7 @@ static int __init mtd_oobtest_init(void)
+ 
+ 	/* Check all eraseblocks */
+ 	simple_srand(3);
+-	printk(PRINT_PREF "verifying all eraseblocks\n");
++	pr_info("verifying all eraseblocks\n");
+ 	for (i = 0; i < ebcnt; ++i) {
+ 		if (bbt[i])
+ 			continue;
+@@ -461,16 +459,16 @@ static int __init mtd_oobtest_init(void)
+ 		if (err)
+ 			goto out;
+ 		if (i % 256 == 0)
+-			printk(PRINT_PREF "verified up to eraseblock %u\n", i);
++			pr_info("verified up to eraseblock %u\n", i);
+ 		cond_resched();
+ 	}
+-	printk(PRINT_PREF "verified %u eraseblocks\n", i);
++	pr_info("verified %u eraseblocks\n", i);
+ 
+ 	/*
+ 	 * Third test: write OOB at varying offsets and lengths, read it back
+ 	 * and verify.
+ 	 */
+-	printk(PRINT_PREF "test 3 of 5\n");
++	pr_info("test 3 of 5\n");
+ 
+ 	err = erase_whole_device();
+ 	if (err)
+@@ -503,7 +501,7 @@ static int __init mtd_oobtest_init(void)
+ 	vary_offset = 0;
+ 
+ 	/* Fourth test: try to write off end of device */
+-	printk(PRINT_PREF "test 4 of 5\n");
++	pr_info("test 4 of 5\n");
+ 
+ 	err = erase_whole_device();
+ 	if (err)
+@@ -522,14 +520,14 @@ static int __init mtd_oobtest_init(void)
+ 	ops.ooboffs   = mtd->ecclayout->oobavail;
+ 	ops.datbuf    = NULL;
+ 	ops.oobbuf    = writebuf;
+-	printk(PRINT_PREF "attempting to start write past end of OOB\n");
+-	printk(PRINT_PREF "an error is expected...\n");
++	pr_info("attempting to start write past end of OOB\n");
++	pr_info("an error is expected...\n");
+ 	err = mtd_write_oob(mtd, addr0, &ops);
+ 	if (err) {
+-		printk(PRINT_PREF "error occurred as expected\n");
++		pr_info("error occurred as expected\n");
+ 		err = 0;
  	} else {
- 		dev_err(priv->dev,
+-		printk(PRINT_PREF "error: can write past end of OOB\n");
++		pr_err("error: can write past end of OOB\n");
+ 		errcnt += 1;
+ 	}
+ 
+@@ -542,19 +540,19 @@ static int __init mtd_oobtest_init(void)
+ 	ops.ooboffs   = mtd->ecclayout->oobavail;
+ 	ops.datbuf    = NULL;
+ 	ops.oobbuf    = readbuf;
+-	printk(PRINT_PREF "attempting to start read past end of OOB\n");
+-	printk(PRINT_PREF "an error is expected...\n");
++	pr_info("attempting to start read past end of OOB\n");
++	pr_info("an error is expected...\n");
+ 	err = mtd_read_oob(mtd, addr0, &ops);
+ 	if (err) {
+-		printk(PRINT_PREF "error occurred as expected\n");
++		pr_info("error occurred as expected\n");
+ 		err = 0;
+ 	} else {
+-		printk(PRINT_PREF "error: can read past end of OOB\n");
++		pr_err("error: can read past end of OOB\n");
+ 		errcnt += 1;
+ 	}
+ 
+ 	if (bbt[ebcnt - 1])
+-		printk(PRINT_PREF "skipping end of device tests because last "
++		pr_info("skipping end of device tests because last "
+ 		       "block is bad\n");
+ 	else {
+ 		/* Attempt to write off end of device */
+@@ -566,14 +564,14 @@ static int __init mtd_oobtest_init(void)
+ 		ops.ooboffs   = 0;
+ 		ops.datbuf    = NULL;
+ 		ops.oobbuf    = writebuf;
+-		printk(PRINT_PREF "attempting to write past end of device\n");
+-		printk(PRINT_PREF "an error is expected...\n");
++		pr_info("attempting to write past end of device\n");
++		pr_info("an error is expected...\n");
+ 		err = mtd_write_oob(mtd, mtd->size - mtd->writesize, &ops);
+ 		if (err) {
+-			printk(PRINT_PREF "error occurred as expected\n");
++			pr_info("error occurred as expected\n");
+ 			err = 0;
+ 		} else {
+-			printk(PRINT_PREF "error: wrote past end of device\n");
++			pr_err("error: wrote past end of device\n");
+ 			errcnt += 1;
+ 		}
+ 
+@@ -586,14 +584,14 @@ static int __init mtd_oobtest_init(void)
+ 		ops.ooboffs   = 0;
+ 		ops.datbuf    = NULL;
+ 		ops.oobbuf    = readbuf;
+-		printk(PRINT_PREF "attempting to read past end of device\n");
+-		printk(PRINT_PREF "an error is expected...\n");
++		pr_info("attempting to read past end of device\n");
++		pr_info("an error is expected...\n");
+ 		err = mtd_read_oob(mtd, mtd->size - mtd->writesize, &ops);
+ 		if (err) {
+-			printk(PRINT_PREF "error occurred as expected\n");
++			pr_info("error occurred as expected\n");
+ 			err = 0;
+ 		} else {
+-			printk(PRINT_PREF "error: read past end of device\n");
++			pr_err("error: read past end of device\n");
+ 			errcnt += 1;
+ 		}
+ 
+@@ -610,14 +608,14 @@ static int __init mtd_oobtest_init(void)
+ 		ops.ooboffs   = 1;
+ 		ops.datbuf    = NULL;
+ 		ops.oobbuf    = writebuf;
+-		printk(PRINT_PREF "attempting to write past end of device\n");
+-		printk(PRINT_PREF "an error is expected...\n");
++		pr_info("attempting to write past end of device\n");
++		pr_info("an error is expected...\n");
+ 		err = mtd_write_oob(mtd, mtd->size - mtd->writesize, &ops);
+ 		if (err) {
+-			printk(PRINT_PREF "error occurred as expected\n");
++			pr_info("error occurred as expected\n");
+ 			err = 0;
+ 		} else {
+-			printk(PRINT_PREF "error: wrote past end of device\n");
++			pr_err("error: wrote past end of device\n");
+ 			errcnt += 1;
+ 		}
+ 
+@@ -630,20 +628,20 @@ static int __init mtd_oobtest_init(void)
+ 		ops.ooboffs   = 1;
+ 		ops.datbuf    = NULL;
+ 		ops.oobbuf    = readbuf;
+-		printk(PRINT_PREF "attempting to read past end of device\n");
+-		printk(PRINT_PREF "an error is expected...\n");
++		pr_info("attempting to read past end of device\n");
++		pr_info("an error is expected...\n");
+ 		err = mtd_read_oob(mtd, mtd->size - mtd->writesize, &ops);
+ 		if (err) {
+-			printk(PRINT_PREF "error occurred as expected\n");
++			pr_info("error occurred as expected\n");
+ 			err = 0;
+ 		} else {
+-			printk(PRINT_PREF "error: read past end of device\n");
++			pr_err("error: read past end of device\n");
+ 			errcnt += 1;
+ 		}
+ 	}
+ 
+ 	/* Fifth test: write / read across block boundaries */
+-	printk(PRINT_PREF "test 5 of 5\n");
++	pr_info("test 5 of 5\n");
+ 
+ 	/* Erase all eraseblocks */
+ 	err = erase_whole_device();
+@@ -652,7 +650,7 @@ static int __init mtd_oobtest_init(void)
+ 
+ 	/* Write all eraseblocks */
+ 	simple_srand(11);
+-	printk(PRINT_PREF "writing OOBs of whole device\n");
++	pr_info("writing OOBs of whole device\n");
+ 	for (i = 0; i < ebcnt - 1; ++i) {
+ 		int cnt = 2;
+ 		int pg;
+@@ -674,17 +672,16 @@ static int __init mtd_oobtest_init(void)
+ 			if (err)
+ 				goto out;
+ 			if (i % 256 == 0)
+-				printk(PRINT_PREF "written up to eraseblock "
+-				       "%u\n", i);
++				pr_info("written up to eraseblock %u\n", i);
+ 			cond_resched();
+ 			addr += mtd->writesize;
+ 		}
+ 	}
+-	printk(PRINT_PREF "written %u eraseblocks\n", i);
++	pr_info("written %u eraseblocks\n", i);
+ 
+ 	/* Check all eraseblocks */
+ 	simple_srand(11);
+-	printk(PRINT_PREF "verifying all eraseblocks\n");
++	pr_info("verifying all eraseblocks\n");
+ 	for (i = 0; i < ebcnt - 1; ++i) {
+ 		if (bbt[i] || bbt[i + 1])
+ 			continue;
+@@ -702,28 +699,28 @@ static int __init mtd_oobtest_init(void)
+ 		if (err)
+ 			goto out;
+ 		if (memcmp(readbuf, writebuf, mtd->ecclayout->oobavail * 2)) {
+-			printk(PRINT_PREF "error: verify failed at %#llx\n",
++			pr_err("error: verify failed at %#llx\n",
+ 			       (long long)addr);
+ 			errcnt += 1;
+ 			if (errcnt > 1000) {
+-				printk(PRINT_PREF "error: too many errors\n");
++				pr_err("error: too many errors\n");
+ 				goto out;
+ 			}
+ 		}
+ 		if (i % 256 == 0)
+-			printk(PRINT_PREF "verified up to eraseblock %u\n", i);
++			pr_info("verified up to eraseblock %u\n", i);
+ 		cond_resched();
+ 	}
+-	printk(PRINT_PREF "verified %u eraseblocks\n", i);
++	pr_info("verified %u eraseblocks\n", i);
+ 
+-	printk(PRINT_PREF "finished with %d errors\n", errcnt);
++	pr_info("finished with %d errors\n", errcnt);
+ out:
+ 	kfree(bbt);
+ 	kfree(writebuf);
+ 	kfree(readbuf);
+ 	put_mtd_device(mtd);
+ 	if (err)
+-		printk(PRINT_PREF "error %d occurred\n", err);
++		pr_info("error %d occurred\n", err);
+ 	printk(KERN_INFO "=================================================\n");
+ 	return err;
+ }
 -- 
 1.7.11.3
