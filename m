@@ -1,11 +1,15 @@
-Received: from mail-bk0-f49.google.com ([209.85.214.49])
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1THg4v-0000N2-W1
- for linux-mtd@lists.infradead.org; Fri, 28 Sep 2012 19:18:26 +0000
-Received: by bkwj4 with SMTP id j4so3645776bkw.36
- for <linux-mtd@lists.infradead.org>; Fri, 28 Sep 2012 12:18:24 -0700 (PDT)
+ id 1THgUA-0004Th-Mw
+ for linux-mtd@lists.infradead.org; Fri, 28 Sep 2012 19:44:31 +0000
+Received: by eaan13 with SMTP id n13so659411eaa.36
+ for <linux-mtd@lists.infradead.org>; Fri, 28 Sep 2012 12:44:27 -0700 (PDT)
+Message-ID: <5065FE29.5080302@gmail.com>
+Date: Fri, 28 Sep 2012 21:44:41 +0200
+From: Sasha Levin <levinsasha928@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAFLxGvxy2V9=4U1YePUm17Z=BF=SzLsO9Catmh-DcOkbMfuSNg@mail.gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: mtd: kernel BUG at arch/x86/mm/pat.c:279!
 References: <1340959739.2936.28.camel@lappy>
  <CA+1xoqdgKV_sEWvUbuxagL9JEc39ZFa6X9-acP7j-M7wvW6qbQ@mail.gmail.com>
  <CA+55aFzJCLxVP+WYJM-gq=aXx5gmdgwC7=_Gr2Tooj8q+Dz4dw@mail.gmail.com>
@@ -16,20 +20,16 @@ References: <1340959739.2936.28.camel@lappy>
  <1347202600.5876.7.camel@sbsiddha-ivb> <505068F4.4080309@gmail.com>
  <50506A6C.30109@gmail.com> <50656733.3040609@gmail.com>
  <CA+55aFyWdxD4Qb9PuPKKx_Ww_khYkWg1s-3QWVUwsTSXSUMG5w@mail.gmail.com>
- <1348859054.2036.122.camel@shinybook.infradead.org>
- <CAFLxGvxy2V9=4U1YePUm17Z=BF=SzLsO9Catmh-DcOkbMfuSNg@mail.gmail.com>
-Date: Fri, 28 Sep 2012 21:18:24 +0200
-Message-ID: <CAFLxGvz-4h1Qx0WL62PcyOiAQuXR-S-nb5gruDpQkZETwDf0-A@mail.gmail.com>
-Subject: Re: mtd: kernel BUG at arch/x86/mm/pat.c:279!
-From: richard -rw- weinberger <richard.weinberger@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
+ <1348855547.1556.3.camel@kyv>
+ <CA+55aFwDWcQv9DBCQhMrcK-zx75qBN11iQhq5dxt+orosmeXbg@mail.gmail.com>
+In-Reply-To: <CA+55aFwDWcQv9DBCQhMrcK-zx75qBN11iQhq5dxt+orosmeXbg@mail.gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: suresh.b.siddha@intel.com,
+Content-Transfer-Encoding: 7bit
+Cc: suresh.b.siddha@intel.com, Artem Bityutskiy <dedekind1@gmail.com>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  linux-mm <linux-mm@kvack.org>, linux-mtd@lists.infradead.org,
- Sasha Levin <levinsasha928@gmail.com>, Dave Jones <davej@redhat.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Linus Torvalds <torvalds@linux-foundation.org>
+ Dave Jones <davej@redhat.com>, Andrew Morton <akpm@linux-foundation.org>,
+ dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,27 +39,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Sep 28, 2012 at 9:15 PM, richard -rw- weinberger
-<richard.weinberger@gmail.com> wrote:
-> On Fri, Sep 28, 2012 at 9:04 PM, David Woodhouse <dwmw2@infradead.org> wrote:
->> On Fri, 2012-09-28 at 09:44 -0700, Linus Torvalds wrote:
->>> On Fri, Sep 28, 2012 at 2:00 AM, Sasha Levin <levinsasha928@gmail.com> wrote:
->>> >
->>> > Is anyone planning on picking up Linus' patch? This is still not in -next even.
->>>
->>> I was really hoping it would go through the regular channels and come
->>> back to me that way, since I can't really test it, and it's bigger
->>> than the trivial obvious one-liners that I'm happy to commit.
+On 09/28/2012 09:13 PM, Linus Torvalds wrote:
+> On Fri, Sep 28, 2012 at 11:05 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
 >>
->> I can't test it on real hardware here either, but I can pull it through
->> my tree.
->
-> If you can a easy test-case I can test it on real hardware.
+>> I am not the maintainer, but please, go ahead an push your fix. I do not
+>> have time to test it myself and it does not look like anyone else in the
+>> small mtd community does.
+> 
+> Grr. I told people that patch wasn't tested. I hadn't even *compiled*
+> it. It has a typo ("inlint" instead of "inline" - so close).
+> 
+> Sasha said he had tested it, but nobody even mentioned this thing. Now
+> I'm nervous. I had committed it in my tree and was just about to push
+> it out when I decided that I should at least compile it despite the
+> "tested-by".
+> 
+> Hmm? Now I really *really* want to know that it's been tested on
+> actual hardware too. Sasha, what patch did you actually test? Did you
+> just fix the "inlint" thing, or was there something else entirely?
 
-Bah.
-If you have an easy test case I can run it on real hardware. :)
+I've just fixed the inlint thing since it was pretty trivial, I didn't bother commenting on it since I figured it would turn into
+an actual patch from someone who could test it on actual hardware first.
+
+Note that I've tested it on a KVM guest, and not on real hardware - so I'm not sure how much of a test that is.
 
 
--- 
 Thanks,
-//richard
+Sasha
