@@ -1,16 +1,30 @@
-Message-ID: <1348927504.2036.136.camel@shinybook.infradead.org>
-Subject: Re: [PATCH V2 2/2] MTD: MIPS: lantiq: Add NAND support on Lantiq
- XWAY SoC.
+Message-ID: <1348935073.2036.147.camel@shinybook.infradead.org>
+Subject: Re: mtd: kernel BUG at arch/x86/mm/pat.c:279!
 From: David Woodhouse <dwmw2@infradead.org>
-To: John Crispin <blogic@openwrt.org>
-Date: Sat, 29 Sep 2012 15:05:04 +0100
-In-Reply-To: <1345746512-22823-1-git-send-email-blogic@openwrt.org>
-References: <1345746512-22823-1-git-send-email-blogic@openwrt.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>, Anatolij Gustschin
+ <agust@denx.de>, dhowells@redhat.com
+Date: Sat, 29 Sep 2012 17:11:13 +0100
+In-Reply-To: <1348859054.2036.122.camel@shinybook.infradead.org>
+References: <1340959739.2936.28.camel@lappy>
+ <CA+1xoqdgKV_sEWvUbuxagL9JEc39ZFa6X9-acP7j-M7wvW6qbQ@mail.gmail.com>
+ <CA+55aFzJCLxVP+WYJM-gq=aXx5gmdgwC7=_Gr2Tooj8q+Dz4dw@mail.gmail.com>
+ <1347057778.26695.68.camel@sbsiddha-desk.sc.intel.com>
+ <CA+55aFwW9Q+DM2gZy7r3JQJbrbMNR6sN+jewc2CY0i1wD_X=Tw@mail.gmail.com>
+ <1347062045.26695.82.camel@sbsiddha-desk.sc.intel.com>
+ <CA+55aFzeKcV5hROLJE31dNi3SEs+s6o0LL=96Kh8QGHPx=aZnA@mail.gmail.com>
+ <1347202600.5876.7.camel@sbsiddha-ivb> <505068F4.4080309@gmail.com>
+ <50506A6C.30109@gmail.com> <50656733.3040609@gmail.com>
+ <CA+55aFyWdxD4Qb9PuPKKx_Ww_khYkWg1s-3QWVUwsTSXSUMG5w@mail.gmail.com>
+ <1348859054.2036.122.camel@shinybook.infradead.org>
 Content-Type: multipart/signed; micalg="sha1";
  protocol="application/x-pkcs7-signature";
- boundary="=-rgXSXnrBnZQfMWM6W+ht"
+ boundary="=-ZUFMkltaGO7PLuvszoxk"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+Cc: suresh.b.siddha@intel.com,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ linux-mm <linux-mm@kvack.org>, linux-mtd@lists.infradead.org,
+ Sasha Levin <levinsasha928@gmail.com>, Dave Jones <davej@redhat.com>,
+ Andrew Morton <akpm@linux-foundation.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,36 +35,56 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-rgXSXnrBnZQfMWM6W+ht
+--=-ZUFMkltaGO7PLuvszoxk
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-08-23 at 20:28 +0200, John Crispin wrote:
+On Fri, 2012-09-28 at 20:04 +0100, David Woodhouse wrote:
+> > I was really hoping it would go through the regular channels and come
+> > back to me that way, since I can't really test it, and it's bigger
+> > than the trivial obvious one-liners that I'm happy to commit.
 >=20
-> +       /* finish with a reset */
-> +       spin_lock_irqsave(&ebu_lock, flags);
-> +       writeb(NAND_WRITE_CMD_RESET, (void __iomem *) nandaddr);
-> +       while ((ltq_ebu_r32(EBU_NAND_WAIT) & NAND_WAIT_WR_C) =3D=3D 0)
-> +               ;
-> +       spin_unlock_irqrestore(&ebu_lock, flags);=20
+> I can't test it on real hardware here either, but I can pull it through
+> my tree.=20
 
-Disable IRQs, spin forever waiting for hardware.
+Hmm... I don't have access to real hardware with mmapable flash right
+now (I haven't finished setting up the machine room since moving house
+last month). But you're seeing this in a case where you *don't* have
+mmapable flash either. If the value of map->phys is NO_XIP (-1UL), that
+should be taken to mean that you can't directly mmap it at all.
 
-However much you trust the hardware, you should *never* do this.
-Implement a timeout of some kind, please.
+That check seems to have been missing from David's commit 402d3265 in
+which he introduced the mtd_mmap() operation, and wasn't fixed in commit
+dd02b67d5 where Anatolij fixed things to actually *work* in the MMU code
+path. This should fix it:
 
-You do it again in xway_cmd_ctrl().
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index f2f482b..27c2f57 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -1137,8 +1137,10 @@ static int mtdchar_mmap(struct file *file, struct
+vm_area_struct *vma)
+ 	u32 len;
+=20
+ 	if (mtd->type =3D=3D MTD_RAM || mtd->type =3D=3D MTD_ROM) {
+-		off =3D vma->vm_pgoff << PAGE_SHIFT;
+ 		start =3D map->phys;
++		if (map->phys =3D=3D NO_XIP)
++			return -EINVAL;
++		off =3D vma->vm_pgoff << PAGE_SHIFT;
+ 		len =3D PAGE_ALIGN((start & ~PAGE_MASK) + map->size);
+ 		start &=3D PAGE_MASK;
+ 		if ((vma->vm_end - vma->vm_start + off) > len)
 
-I've merged the original patch from l2-mtd.git but please send me a
-fix...
+Now, we should ideally *also* handle the case where there genuinely *is*
+a mappable ROM device at the very top of physical memory, and not suffer
+from overflow. But that's a more esoteric case, and the patch above
+seems to be the one that we want to get merged into -stable.
 
 --=20
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+dwmw2
 
-
-
---=-rgXSXnrBnZQfMWM6W+ht
+--=-ZUFMkltaGO7PLuvszoxk
 Content-Type: application/x-pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -151,19 +185,19 @@ kSIc5N4d9Lk3ypCnrYMvvqLspXcWeymdD7qC0KwcuOuRKEC6LBExggNvMIIDawIBATCBlDCBjDEL
 MAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdp
 dGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFy
 eSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMEJnowCQYFKw4DAhoFAKCCAa8wGAYJKoZIhvcNAQkD
-MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTIwOTI5MTQwNTA0WjAjBgkqhkiG9w0BCQQx
-FgQUGL/yxb0EBBeOF2RVdScBeuZ8A1gwgaUGCSsGAQQBgjcQBDGBlzCBlDCBjDELMAkGA1UEBhMC
+MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTIwOTI5MTYxMTEzWjAjBgkqhkiG9w0BCQQx
+FgQUHm3+TQqYp34OiXb7nRA3vsVom/owgaUGCSsGAQQBgjcQBDGBlzCBlDCBjDELMAkGA1UEBhMC
 SUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRp
 ZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1l
 ZGlhdGUgQ2xpZW50IENBAgMEJnowgacGCyqGSIb3DQEJEAILMYGXoIGUMIGMMQswCQYDVQQGEwJJ
 TDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlm
 aWNhdGUgU2lnbmluZzE4MDYGA1UEAxMvU3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVk
-aWF0ZSBDbGllbnQgQ0ECAwQmejANBgkqhkiG9w0BAQEFAASCAQB0j84TFoyaE4mEycI3Kf4T1X2J
-UTjiAiyWXgJqvuFgakIIpgrx5Mygfecet0GM/YHMNUnyxeR3rQseuRQQvRkyr/9xwC2OlDkl/u6a
-DxSC/fPfUvIgphtUSQQqj5vGI3mbG1VVpfbwkRTgYZXuNPPEN0tgIGd/Xb+TZfHr+R2gcIiAvdTU
-sIJJ6aUndEj5Poizeo9MCkZVHoqiVMW6xvWlLHv5PcGyqosf8AteRA44MX0ucbSLuDwnCRAsZ81m
-c166rurpIJu0V9HYjFRP2OUdQS3SnR7+GoxlLNrqWhI5tvTtB1oGp7UWACv20U3k0LT4WUyK11hd
-1ipvma1ISdnZAAAAAAAA
+aWF0ZSBDbGllbnQgQ0ECAwQmejANBgkqhkiG9w0BAQEFAASCAQB2xDdt+n+Ag6wAw4kmIz1bkECW
+bB6QPnRlgGVQqWxE2mIkBVBw6A7WFlv/6hDvD21FqLXtFuBXRkZdtfOR9sRqf3c+Lt26aduNsite
+Fq2IIBHEtX8yJeKoQ6s1ouS7WVvm1JcXMAmEZwqGrGlkQ2Esf87FmTuG0eKrC8OWP60YlTycHFce
+mJlJuxadf/83V5GY0pUOcMoN2OXr1ggrZ13PER2CO9YkQTNRT+0o7MLqEuvpT0j4k8T8fbiNqYLX
+1FUN7f1YF/mszVpp71BMMuqqIlPEr5iVUHmBuaqvWux12BTRXfZVuhIzAiQe4uDv1znq/p5XaKs6
+G25u6RYqWbdaAAAAAAAA
 
 
---=-rgXSXnrBnZQfMWM6W+ht--
+--=-ZUFMkltaGO7PLuvszoxk--
