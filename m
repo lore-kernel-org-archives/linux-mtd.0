@@ -1,16 +1,16 @@
-Received: from mail-wg0-f49.google.com ([74.125.82.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1THvg4-0007ks-Qe
- for linux-mtd@lists.infradead.org; Sat, 29 Sep 2012 11:57:50 +0000
-Received: by wgbgg4 with SMTP id gg4so1148915wgb.18
- for <linux-mtd@lists.infradead.org>; Sat, 29 Sep 2012 04:57:46 -0700 (PDT)
-From: Bastian Hecht <hechtb@googlemail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: sh_flctl: Add DMA capabilty
-Date: Sat, 29 Sep 2012 13:57:40 +0200
-Message-Id: <1348919860-8761-1-git-send-email-hechtb@gmail.com>
-Cc: Vikram Narayanan <vikram186@gmail.com>, Magnus Damm <magnus.damm@gmail.com>,
- Guennadi Liakhovetski <g.liakhovetski@gmx.de>, linux-sh@vger.kernel.org
+Message-ID: <1348927504.2036.136.camel@shinybook.infradead.org>
+Subject: Re: [PATCH V2 2/2] MTD: MIPS: lantiq: Add NAND support on Lantiq
+ XWAY SoC.
+From: David Woodhouse <dwmw2@infradead.org>
+To: John Crispin <blogic@openwrt.org>
+Date: Sat, 29 Sep 2012 15:05:04 +0100
+In-Reply-To: <1345746512-22823-1-git-send-email-blogic@openwrt.org>
+References: <1345746512-22823-1-git-send-email-blogic@openwrt.org>
+Content-Type: multipart/signed; micalg="sha1";
+ protocol="application/x-pkcs7-signature";
+ boundary="=-rgXSXnrBnZQfMWM6W+ht"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,326 +20,150 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The code probes if DMA channels can get allocated and tears them down at
-removal/failure if needed.
-If available it uses them to transfer the data part (not ECC). On
-failure we fall back to PIO mode.
 
-Based on Guennadi Liakhovetski's code from the sh_mmcif driver.
+--=-rgXSXnrBnZQfMWM6W+ht
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Bastian Hecht <hechtb@gmail.com>
----
-This patch is a merged v3 version of
-[PATCH 1/2] mtd: sh_flctl: Setup and release DMA channels
-[PATCH 2/2] mtd: sh_flctl: Use DMA for data fifo FLTDFIFO when available
+On Thu, 2012-08-23 at 20:28 +0200, John Crispin wrote:
+>=20
+> +       /* finish with a reset */
+> +       spin_lock_irqsave(&ebu_lock, flags);
+> +       writeb(NAND_WRITE_CMD_RESET, (void __iomem *) nandaddr);
+> +       while ((ltq_ebu_r32(EBU_NAND_WAIT) & NAND_WAIT_WR_C) =3D=3D 0)
+> +               ;
+> +       spin_unlock_irqrestore(&ebu_lock, flags);=20
 
-changes from v2:
- patches merged
- headers adjusted to reviews
- fall back to PIO mode now actually falls back for current read
- removed init_completion after each DMA usage. It is initialized at probe time. 
+Disable IRQs, spin forever waiting for hardware.
 
- drivers/mtd/nand/sh_flctl.c  |  174 +++++++++++++++++++++++++++++++++++++++++-
- include/linux/mtd/sh_flctl.h |   12 +++
- 2 files changed, 183 insertions(+), 3 deletions(-)
+However much you trust the hardware, you should *never* do this.
+Implement a timeout of some kind, please.
 
-diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-index 4fbfe96..0fead2a 100644
---- a/drivers/mtd/nand/sh_flctl.c
-+++ b/drivers/mtd/nand/sh_flctl.c
-@@ -24,10 +24,13 @@
- #include <linux/module.h>
- #include <linux/kernel.h>
- #include <linux/delay.h>
-+#include <linux/dmaengine.h>
-+#include <linux/dma-mapping.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
-+#include <linux/sh_dma.h>
- #include <linux/slab.h>
- #include <linux/string.h>
- 
-@@ -106,6 +109,84 @@ static void wait_completion(struct sh_flctl *flctl)
- 	writeb(0x0, FLTRCR(flctl));
- }
- 
-+static void flctl_dma_complete(void *param)
-+{
-+	struct sh_flctl *flctl = param;
-+
-+	complete(&flctl->dma_complete);
-+}
-+
-+static void flctl_release_dma(struct sh_flctl *flctl)
-+{
-+	if (flctl->chan_fifo0_rx) {
-+		dma_release_channel(flctl->chan_fifo0_rx);
-+		flctl->chan_fifo0_rx = NULL;
-+	}
-+	if (flctl->chan_fifo0_tx) {
-+		dma_release_channel(flctl->chan_fifo0_tx);
-+		flctl->chan_fifo0_tx = NULL;
-+	}
-+}
-+
-+static void flctl_setup_dma(struct sh_flctl *flctl)
-+{
-+	dma_cap_mask_t mask;
-+	struct dma_slave_config cfg;
-+	struct platform_device *pdev = flctl->pdev;
-+	struct sh_flctl_platform_data *pdata = pdev->dev.platform_data;
-+	int ret;
-+
-+	if (!pdata)
-+		return;
-+
-+	if (pdata->slave_id_fifo0_tx <= 0 || pdata->slave_id_fifo0_rx <= 0)
-+		return;
-+
-+	/* We can only either use DMA for both Tx and Rx or not use it at all */
-+	dma_cap_zero(mask);
-+	dma_cap_set(DMA_SLAVE, mask);
-+
-+	flctl->chan_fifo0_tx = dma_request_channel(mask, shdma_chan_filter,
-+					    (void *)pdata->slave_id_fifo0_tx);
-+	dev_dbg(&pdev->dev, "%s: TX: got channel %p\n", __func__,
-+		flctl->chan_fifo0_tx);
-+
-+	if (!flctl->chan_fifo0_tx)
-+		return;
-+
-+	memset(&cfg, 0, sizeof(cfg));
-+	cfg.slave_id = pdata->slave_id_fifo0_tx;
-+	cfg.direction = DMA_MEM_TO_DEV;
-+	cfg.dst_addr = (dma_addr_t)FLDTFIFO(flctl);
-+	cfg.src_addr = 0;
-+	ret = dmaengine_slave_config(flctl->chan_fifo0_tx, &cfg);
-+	if (ret < 0)
-+		goto err;
-+
-+	flctl->chan_fifo0_rx = dma_request_channel(mask, shdma_chan_filter,
-+					    (void *)pdata->slave_id_fifo0_rx);
-+	dev_dbg(&pdev->dev, "%s: RX: got channel %p\n", __func__,
-+		flctl->chan_fifo0_rx);
-+
-+	if (!flctl->chan_fifo0_rx)
-+		goto err;
-+
-+	cfg.slave_id = pdata->slave_id_fifo0_rx;
-+	cfg.direction = DMA_DEV_TO_MEM;
-+	cfg.dst_addr = 0;
-+	cfg.src_addr = (dma_addr_t)FLDTFIFO(flctl);
-+	ret = dmaengine_slave_config(flctl->chan_fifo0_rx, &cfg);
-+	if (ret < 0)
-+		goto err;
-+
-+	init_completion(&flctl->dma_complete);
-+
-+	return;
-+
-+err:
-+	flctl_release_dma(flctl);
-+}
-+
- static void set_addr(struct mtd_info *mtd, int column, int page_addr)
- {
- 	struct sh_flctl *flctl = mtd_to_flctl(mtd);
-@@ -261,6 +342,70 @@ static void wait_wecfifo_ready(struct sh_flctl *flctl)
- 	timeout_error(flctl, __func__);
- }
- 
-+static int flctl_dma_fifo0_transfer(struct sh_flctl *flctl, unsigned long *buf,
-+					int len, enum dma_data_direction dir)
-+{
-+	struct dma_async_tx_descriptor *desc = NULL;
-+	struct dma_chan *chan;
-+	enum dma_transfer_direction tr_dir;
-+	dma_addr_t dma_addr;
-+	dma_cookie_t cookie = -EINVAL;
-+	uint32_t reg;
-+	int ret;
-+
-+	if (dir == DMA_FROM_DEVICE) {
-+		chan = flctl->chan_fifo0_rx;
-+		tr_dir = DMA_DEV_TO_MEM;
-+	} else {
-+		chan = flctl->chan_fifo0_tx;
-+		tr_dir = DMA_MEM_TO_DEV;
-+	}
-+
-+	dma_addr = dma_map_single(chan->device->dev, buf, len, dir);
-+
-+	if (dma_addr)
-+		desc = dmaengine_prep_slave_single(chan, dma_addr, len,
-+			tr_dir, DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
-+
-+	if (desc) {
-+		reg = readl(FLINTDMACR(flctl));
-+		reg |= DREQ0EN;
-+		writel(reg, FLINTDMACR(flctl));
-+
-+		desc->callback = flctl_dma_complete;
-+		desc->callback_param = flctl;
-+		cookie = dmaengine_submit(desc);
-+
-+		dma_async_issue_pending(chan);
-+	} else {
-+		/* DMA failed, fall back to PIO */
-+		flctl_release_dma(flctl);
-+		dev_warn(&flctl->pdev->dev,
-+			 "DMA failed, falling back to PIO\n");
-+		ret = -EIO;
-+		goto out;
-+	}
-+
-+	ret =
-+	wait_for_completion_timeout(&flctl->dma_complete,
-+				msecs_to_jiffies(3000));
-+
-+	if (ret <= 0) {
-+		chan->device->device_control(chan, DMA_TERMINATE_ALL, 0);
-+		dev_err(&flctl->pdev->dev, "wait_for_completion_timeout\n");
-+	}
-+
-+out:
-+	reg = readl(FLINTDMACR(flctl));
-+	reg &= ~DREQ0EN;
-+	writel(reg, FLINTDMACR(flctl));
-+
-+	dma_unmap_single(chan->device->dev, dma_addr, len, dir);
-+
-+	/* ret > 0 is success */
-+	return ret;
-+}
-+
- static void read_datareg(struct sh_flctl *flctl, int offset)
- {
- 	unsigned long data;
-@@ -279,11 +424,20 @@ static void read_fiforeg(struct sh_flctl *flctl, int rlen, int offset)
- 
- 	len_4align = (rlen + 3) / 4;
- 
-+	/* initiate DMA transfer */
-+	if (flctl->chan_fifo0_rx && rlen >= 32 &&
-+		flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_DEV_TO_MEM) > 0)
-+			goto convert;	/* DMA success */
-+
-+	/* do polling transfer */
- 	for (i = 0; i < len_4align; i++) {
- 		wait_rfifo_ready(flctl);
- 		buf[i] = readl(FLDTFIFO(flctl));
--		buf[i] = be32_to_cpu(buf[i]);
- 	}
-+
-+convert:
-+	for (i = 0; i < len_4align; i++)
-+		buf[i] = be32_to_cpu(buf[i]);
- }
- 
- static enum flctl_ecc_res_t read_ecfiforeg
-@@ -308,13 +462,23 @@ static enum flctl_ecc_res_t read_ecfiforeg
- static void write_fiforeg(struct sh_flctl *flctl, int rlen, int offset)
- {
- 	int i, len_4align;
--	unsigned long *data = (unsigned long *)&flctl->done_buff[offset];
-+	unsigned long *buf = (unsigned long *)&flctl->done_buff[offset];
- 	void *fifo_addr = (void *)FLDTFIFO(flctl);
- 
- 	len_4align = (rlen + 3) / 4;
-+
-+	for (i = 0; i < len_4align; i++)
-+			buf[i] = cpu_to_be32(buf[i]);
-+
-+	/* initiate DMA transfer */
-+	if (flctl->chan_fifo0_tx && rlen >= 32 &&
-+		flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_MEM_TO_DEV) > 0)
-+			return;	/* DMA success */
-+
-+	/* do polling transfer */
- 	for (i = 0; i < len_4align; i++) {
- 		wait_wfifo_ready(flctl);
--		writel(cpu_to_be32(data[i]), fifo_addr);
-+		writel(buf[i], fifo_addr);
- 	}
- }
- 
-@@ -930,6 +1094,8 @@ static int __devinit flctl_probe(struct platform_device *pdev)
- 	pm_runtime_enable(&pdev->dev);
- 	pm_runtime_resume(&pdev->dev);
- 
-+	flctl_setup_dma(flctl);
-+
- 	ret = nand_scan_ident(flctl_mtd, 1, NULL);
- 	if (ret)
- 		goto err_chip;
-@@ -947,6 +1113,7 @@ static int __devinit flctl_probe(struct platform_device *pdev)
- 	return 0;
- 
- err_chip:
-+	flctl_release_dma(flctl);
- 	pm_runtime_disable(&pdev->dev);
- 	free_irq(irq, flctl);
- err_flste:
-@@ -960,6 +1127,7 @@ static int __devexit flctl_remove(struct platform_device *pdev)
- {
- 	struct sh_flctl *flctl = platform_get_drvdata(pdev);
- 
-+	flctl_release_dma(flctl);
- 	nand_release(&flctl->mtd);
- 	pm_runtime_disable(&pdev->dev);
- 	free_irq(platform_get_irq(pdev, 0), flctl);
-diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
-index 01e4b15..e98fe7e 100644
---- a/include/linux/mtd/sh_flctl.h
-+++ b/include/linux/mtd/sh_flctl.h
-@@ -20,6 +20,7 @@
- #ifndef __SH_FLCTL_H__
- #define __SH_FLCTL_H__
- 
-+#include <linux/completion.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/nand.h>
- #include <linux/mtd/partitions.h>
-@@ -107,6 +108,7 @@
- #define ESTERINTE	(0x1 << 24)	/* ECC error interrupt enable */
- #define AC1CLR		(0x1 << 19)	/* ECC FIFO clear */
- #define AC0CLR		(0x1 << 18)	/* Data FIFO clear */
-+#define DREQ0EN		(0x1 << 16)	/* FLDTFIFODMA Request Enable */
- #define ECERB		(0x1 << 9)	/* ECC error */
- #define STERB		(0x1 << 8)	/* Status error */
- #define STERINTE	(0x1 << 4)	/* Status error enable */
-@@ -138,6 +140,8 @@ enum flctl_ecc_res_t {
- 	FL_TIMEOUT
- };
- 
-+struct dma_chan;
-+
- struct sh_flctl {
- 	struct mtd_info		mtd;
- 	struct nand_chip	chip;
-@@ -161,6 +165,11 @@ struct sh_flctl {
- 	unsigned hwecc:1;	/* Hardware ECC (0 = disabled, 1 = enabled) */
- 	unsigned holden:1;	/* Hardware has FLHOLDCR and HOLDEN is set */
- 	unsigned qos_request:1;	/* QoS request to prevent deep power shutdown */
-+
-+	/* DMA related objects */
-+	struct dma_chan		*chan_fifo0_rx;
-+	struct dma_chan		*chan_fifo0_tx;
-+	struct completion	dma_complete;
- };
- 
- struct sh_flctl_platform_data {
-@@ -170,6 +179,9 @@ struct sh_flctl_platform_data {
- 
- 	unsigned has_hwecc:1;
- 	unsigned use_holden:1;
-+
-+	unsigned int            slave_id_fifo0_tx;
-+	unsigned int            slave_id_fifo0_rx;
- };
- 
- static inline struct sh_flctl *mtd_to_flctl(struct mtd_info *mtdinfo)
--- 
-1.7.5.4
+You do it again in xway_cmd_ctrl().
+
+I've merged the original patch from l2-mtd.git but please send me a
+fix...
+
+--=20
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
+
+
+
+--=-rgXSXnrBnZQfMWM6W+ht
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIUbjCCBjQw
+ggQcoAMCAQICAR4wDQYJKoZIhvcNAQEFBQAwfTELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0
+Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxKTAn
+BgNVBAMTIFN0YXJ0Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MB4XDTA3MTAyNDIxMDE1NVoX
+DTE3MTAyNDIxMDE1NVowgYwxCzAJBgNVBAYTAklMMRYwFAYDVQQKEw1TdGFydENvbSBMdGQuMSsw
+KQYDVQQLEyJTZWN1cmUgRGlnaXRhbCBDZXJ0aWZpY2F0ZSBTaWduaW5nMTgwNgYDVQQDEy9TdGFy
+dENvbSBDbGFzcyAxIFByaW1hcnkgSW50ZXJtZWRpYXRlIENsaWVudCBDQTCCASIwDQYJKoZIhvcN
+AQEBBQADggEPADCCAQoCggEBAMcJg8zOLdgasSmkLhOrlr6KMoOMpohBllVHrdRvEg/q6r8jR+EK
+75xCGhR8ToREoqe7zM9/UnC6TS2y9UKTpT1v7RSMzR0t6ndl0TWBuUr/UXBhPk+Kmy7bI4yW4urC
++y7P3/1/X7U8ocb8VpH/Clt+4iq7nirMcNh6qJR+xjOhV+VHzQMALuGYn5KZmc1NbJQYclsGkDxD
+z2UbFqE2+6vIZoL+jb9x4Pa5gNf1TwSDkOkikZB1xtB4ZqtXThaABSONdfmv/Z1pua3FYxnCFmdr
+/+N2JLKutIxMYqQOJebr/f/h5t95m4JgrM3Y/w7YX9d7YAL9jvN4SydHsU6n65cCAwEAAaOCAa0w
+ggGpMA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0PAQH/BAQDAgEGMB0GA1UdDgQWBBRTcu2SnODaywFc
+fH6WNU7y1LhRgjAfBgNVHSMEGDAWgBROC+8apEBbpRdphzDKNGhD0EGu8jBmBggrBgEFBQcBAQRa
+MFgwJwYIKwYBBQUHMAGGG2h0dHA6Ly9vY3NwLnN0YXJ0c3NsLmNvbS9jYTAtBggrBgEFBQcwAoYh
+aHR0cDovL3d3dy5zdGFydHNzbC5jb20vc2ZzY2EuY3J0MFsGA1UdHwRUMFIwJ6AloCOGIWh0dHA6
+Ly93d3cuc3RhcnRzc2wuY29tL3Nmc2NhLmNybDAnoCWgI4YhaHR0cDovL2NybC5zdGFydHNzbC5j
+b20vc2ZzY2EuY3JsMIGABgNVHSAEeTB3MHUGCysGAQQBgbU3AQIBMGYwLgYIKwYBBQUHAgEWImh0
+dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwNAYIKwYBBQUHAgEWKGh0dHA6Ly93d3cu
+c3RhcnRzc2wuY29tL2ludGVybWVkaWF0ZS5wZGYwDQYJKoZIhvcNAQEFBQADggIBAAqDCH14qywG
+XLhjjF6uHLkjd02hcdh9hrw+VUsv+q1eeQWB21jWj3kJ96AUlPCoEGZ/ynJNScWy6QMVQjbbMXlt
+UfO4n4bGGdKo3awPWp61tjAFgraLJgDk+DsSvUD6EowjMTNx25GQgyYJ5RPIzKKR9tQW8gGK+2+R
+HxkUCTbYFnL6kl8Ch507rUdPPipJ9CgJFws3kDS3gOS5WFMxcjO5DwKfKSETEPrHh7p5shuuNktv
+sv6hxHTLhiMKX893gxdT3XLS9OKmCv87vkINQcNEcIIoFWbP9HORz9v3vQwR4e3ksLc2JZOAFK+s
+sS5XMEoznzpihEP0PLc4dCBYjbvSD7kxgDwZ+Aj8Q9PkbvE9sIPP7ON0fz095HdThKjiVJe6vofq
++n6b1NBc8XdrQvBmunwxD5nvtTW4vtN6VY7mUCmxsCieuoBJ9OlqmsVWQvifIYf40dJPZkk9YgGT
+zWLpXDSfLSplbY2LL9C9U0ptvjcDjefLTvqSFc7tw1sEhF0n/qpA2r0GpvkLRDmcSwVyPvmjFBGq
+Up/pNy8ZuPGQmHwFi2/14+xeSUDG2bwnsYJQG2EdJCB6luQ57GEnTA/yKZSTKI8dDQa8Sd3zfXb1
+9mOgSF0bBdXbuKhEpuP9wirslFe6fQ1t5j5R0xi72MZ8ikMu1RQZKCyDbMwazlHiMIIHFzCCBf+g
+AwIBAgIDBCZ6MA0GCSqGSIb3DQEBBQUAMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRD
+b20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYG
+A1UEAxMvU3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0EwHhcN
+MTIwNTAxMTI1ODI3WhcNMTMwNTAzMTEzNzIwWjBdMRkwFwYDVQQNExA4Y1VOSzUzMTc0ODRYRjk3
+MRwwGgYDVQQDDBNkd213MkBpbmZyYWRlYWQub3JnMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZy
+YWRlYWQub3JnMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyYe7wo6MrtrB4uIGGbrY
+4IifY/Xsq22pSv605yganL0+uyUdd8rCjrYlH6Q/ra5TVJCQFTgzaepkuqPQc79DC/Cxmzm6Qo+s
+wLZy868oFsccsVokL2bPAWIPaRXfNPJKkYR1FTWQfZpWJVQmT+sPf1XFUullVBAK+d9RztopyacI
+xWoZ/W/Cmv7mseQbttYTtGKJa0btX73nsQRWl6SgErWXo59zg9friCLTy1GXMXJYB8H+PtnuwX0w
+MrAvWDdX1ABgIlA17W3FraCn0eW15ZM46eyu0/amGzJZNtemCWF73P7BAijzeV1jNmiJFXdZ0DT0
+w+hmtMO9PxdDUyt78QIDAQABo4IDrjCCA6owCQYDVR0TBAIwADALBgNVHQ8EBAMCBLAwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMB0GA1UdDgQWBBTkfe5UOr3PcirsjApibyyUEfsyRzAf
+BgNVHSMEGDAWgBRTcu2SnODaywFcfH6WNU7y1LhRgjAeBgNVHREEFzAVgRNkd213MkBpbmZyYWRl
+YWQub3JnMIICIQYDVR0gBIICGDCCAhQwggIQBgsrBgEEAYG1NwECAjCCAf8wLgYIKwYBBQUHAgEW
+Imh0dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwNAYIKwYBBQUHAgEWKGh0dHA6Ly93
+d3cuc3RhcnRzc2wuY29tL2ludGVybWVkaWF0ZS5wZGYwgfcGCCsGAQUFBwICMIHqMCcWIFN0YXJ0
+Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MAMCAQEagb5UaGlzIGNlcnRpZmljYXRlIHdhcyBp
+c3N1ZWQgYWNjb3JkaW5nIHRvIHRoZSBDbGFzcyAxIFZhbGlkYXRpb24gcmVxdWlyZW1lbnRzIG9m
+IHRoZSBTdGFydENvbSBDQSBwb2xpY3ksIHJlbGlhbmNlIG9ubHkgZm9yIHRoZSBpbnRlbmRlZCBw
+dXJwb3NlIGluIGNvbXBsaWFuY2Ugb2YgdGhlIHJlbHlpbmcgcGFydHkgb2JsaWdhdGlvbnMuMIGc
+BggrBgEFBQcCAjCBjzAnFiBTdGFydENvbSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTADAgECGmRM
+aWFiaWxpdHkgYW5kIHdhcnJhbnRpZXMgYXJlIGxpbWl0ZWQhIFNlZSBzZWN0aW9uICJMZWdhbCBh
+bmQgTGltaXRhdGlvbnMiIG9mIHRoZSBTdGFydENvbSBDQSBwb2xpY3kuMDYGA1UdHwQvMC0wK6Ap
+oCeGJWh0dHA6Ly9jcmwuc3RhcnRzc2wuY29tL2NydHUxLWNybC5jcmwwgY4GCCsGAQUFBwEBBIGB
+MH8wOQYIKwYBBQUHMAGGLWh0dHA6Ly9vY3NwLnN0YXJ0c3NsLmNvbS9zdWIvY2xhc3MxL2NsaWVu
+dC9jYTBCBggrBgEFBQcwAoY2aHR0cDovL2FpYS5zdGFydHNzbC5jb20vY2VydHMvc3ViLmNsYXNz
+MS5jbGllbnQuY2EuY3J0MCMGA1UdEgQcMBqGGGh0dHA6Ly93d3cuc3RhcnRzc2wuY29tLzANBgkq
+hkiG9w0BAQUFAAOCAQEAqDU1FKifNtCFJbLnvOi1BLRfk7mut55PMtPSZLJ4/AnG7AjmJnbBI4U5
+DELwvVq3mIpwUpGqZUkqkZMEfBPIbfq517UZB3h4iANtqif+ULfTLhg5XgcK5eF8/T6EtX2c3epq
+ylARdleCbj/0FwiUDvPlTsA6PIN4SCekjRLgjKERrL3heFz+Hteq1rtMAvMkNuyL0/0ijyyg2y45
+NASAl2Afl9SLes/fnoh9nBwzfNQfb6qDYUFpnglfpGrq/0b1NtaOUb2z1SR+H1tKlb8bVJJIdvpu
+mEi27kSRIhzk3h30uTfKkKetgy++ouyldxZ7KZ0PuoLQrBy465EoQLosETCCBxcwggX/oAMCAQIC
+AwQmejANBgkqhkiG9w0BAQUFADCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0
+ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMT
+L1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBMB4XDTEyMDUw
+MTEyNTgyN1oXDTEzMDUwMzExMzcyMFowXTEZMBcGA1UEDRMQOGNVTks1MzE3NDg0WEY5NzEcMBoG
+A1UEAwwTZHdtdzJAaW5mcmFkZWFkLm9yZzEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFk
+Lm9yZzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMmHu8KOjK7aweLiBhm62OCIn2P1
+7KttqUr+tOcoGpy9PrslHXfKwo62JR+kP62uU1SQkBU4M2nqZLqj0HO/QwvwsZs5ukKPrMC2cvOv
+KBbHHLFaJC9mzwFiD2kV3zTySpGEdRU1kH2aViVUJk/rD39VxVLpZVQQCvnfUc7aKcmnCMVqGf1v
+wpr+5rHkG7bWE7RiiWtG7V+957EEVpekoBK1l6Ofc4PX64gi08tRlzFyWAfB/j7Z7sF9MDKwL1g3
+V9QAYCJQNe1txa2gp9HlteWTOOnsrtP2phsyWTbXpglhe9z+wQIo83ldYzZoiRV3WdA09MPoZrTD
+vT8XQ1Mre/ECAwEAAaOCA64wggOqMAkGA1UdEwQCMAAwCwYDVR0PBAQDAgSwMB0GA1UdJQQWMBQG
+CCsGAQUFBwMCBggrBgEFBQcDBDAdBgNVHQ4EFgQU5H3uVDq9z3Iq7IwKYm8slBH7MkcwHwYDVR0j
+BBgwFoAUU3Ltkpzg2ssBXHx+ljVO8tS4UYIwHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiEGA1UdIASCAhgwggIUMIICEAYLKwYBBAGBtTcBAgIwggH/MC4GCCsGAQUFBwIBFiJodHRw
+Oi8vd3d3LnN0YXJ0c3NsLmNvbS9wb2xpY3kucGRmMDQGCCsGAQUFBwIBFihodHRwOi8vd3d3LnN0
+YXJ0c3NsLmNvbS9pbnRlcm1lZGlhdGUucGRmMIH3BggrBgEFBQcCAjCB6jAnFiBTdGFydENvbSBD
+ZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTADAgEBGoG+VGhpcyBjZXJ0aWZpY2F0ZSB3YXMgaXNzdWVk
+IGFjY29yZGluZyB0byB0aGUgQ2xhc3MgMSBWYWxpZGF0aW9uIHJlcXVpcmVtZW50cyBvZiB0aGUg
+U3RhcnRDb20gQ0EgcG9saWN5LCByZWxpYW5jZSBvbmx5IGZvciB0aGUgaW50ZW5kZWQgcHVycG9z
+ZSBpbiBjb21wbGlhbmNlIG9mIHRoZSByZWx5aW5nIHBhcnR5IG9ibGlnYXRpb25zLjCBnAYIKwYB
+BQUHAgIwgY8wJxYgU3RhcnRDb20gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkwAwIBAhpkTGlhYmls
+aXR5IGFuZCB3YXJyYW50aWVzIGFyZSBsaW1pdGVkISBTZWUgc2VjdGlvbiAiTGVnYWwgYW5kIExp
+bWl0YXRpb25zIiBvZiB0aGUgU3RhcnRDb20gQ0EgcG9saWN5LjA2BgNVHR8ELzAtMCugKaAnhiVo
+dHRwOi8vY3JsLnN0YXJ0c3NsLmNvbS9jcnR1MS1jcmwuY3JsMIGOBggrBgEFBQcBAQSBgTB/MDkG
+CCsGAQUFBzABhi1odHRwOi8vb2NzcC5zdGFydHNzbC5jb20vc3ViL2NsYXNzMS9jbGllbnQvY2Ew
+QgYIKwYBBQUHMAKGNmh0dHA6Ly9haWEuc3RhcnRzc2wuY29tL2NlcnRzL3N1Yi5jbGFzczEuY2xp
+ZW50LmNhLmNydDAjBgNVHRIEHDAahhhodHRwOi8vd3d3LnN0YXJ0c3NsLmNvbS8wDQYJKoZIhvcN
+AQEFBQADggEBAKg1NRSonzbQhSWy57zotQS0X5O5rreeTzLT0mSyePwJxuwI5iZ2wSOFOQxC8L1a
+t5iKcFKRqmVJKpGTBHwTyG36ude1GQd4eIgDbaon/lC30y4YOV4HCuXhfP0+hLV9nN3qaspQEXZX
+gm4/9BcIlA7z5U7AOjyDeEgnpI0S4IyhEay94Xhc/h7Xqta7TALzJDbsi9P9Io8soNsuOTQEgJdg
+H5fUi3rP356IfZwcM3zUH2+qg2FBaZ4JX6Rq6v9G9TbWjlG9s9Ukfh9bSpW/G1SSSHb6bphItu5E
+kSIc5N4d9Lk3ypCnrYMvvqLspXcWeymdD7qC0KwcuOuRKEC6LBExggNvMIIDawIBATCBlDCBjDEL
+MAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdp
+dGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFy
+eSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMEJnowCQYFKw4DAhoFAKCCAa8wGAYJKoZIhvcNAQkD
+MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTIwOTI5MTQwNTA0WjAjBgkqhkiG9w0BCQQx
+FgQUGL/yxb0EBBeOF2RVdScBeuZ8A1gwgaUGCSsGAQQBgjcQBDGBlzCBlDCBjDELMAkGA1UEBhMC
+SUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRp
+ZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1l
+ZGlhdGUgQ2xpZW50IENBAgMEJnowgacGCyqGSIb3DQEJEAILMYGXoIGUMIGMMQswCQYDVQQGEwJJ
+TDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlm
+aWNhdGUgU2lnbmluZzE4MDYGA1UEAxMvU3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVk
+aWF0ZSBDbGllbnQgQ0ECAwQmejANBgkqhkiG9w0BAQEFAASCAQB0j84TFoyaE4mEycI3Kf4T1X2J
+UTjiAiyWXgJqvuFgakIIpgrx5Mygfecet0GM/YHMNUnyxeR3rQseuRQQvRkyr/9xwC2OlDkl/u6a
+DxSC/fPfUvIgphtUSQQqj5vGI3mbG1VVpfbwkRTgYZXuNPPEN0tgIGd/Xb+TZfHr+R2gcIiAvdTU
+sIJJ6aUndEj5Poizeo9MCkZVHoqiVMW6xvWlLHv5PcGyqosf8AteRA44MX0ucbSLuDwnCRAsZ81m
+c166rurpIJu0V9HYjFRP2OUdQS3SnR7+GoxlLNrqWhI5tvTtB1oGp7UWACv20U3k0LT4WUyK11hd
+1ipvma1ISdnZAAAAAAAA
+
+
+--=-rgXSXnrBnZQfMWM6W+ht--
