@@ -1,18 +1,20 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TIawA-0001EY-8q
- for linux-mtd@lists.infradead.org; Mon, 01 Oct 2012 08:01:11 +0000
-Received: from ONYX.xi-lite.lan (unknown [193.34.35.244])
- by co202.xi-lite.net (Postfix) with ESMTPS id E22642602AC
- for <linux-mtd@lists.infradead.org>; Mon,  1 Oct 2012 10:11:52 +0200 (CEST)
-Message-ID: <50694DCB.6010303@parrot.com>
-Date: Mon, 1 Oct 2012 10:01:15 +0200
-From: =?UTF-8?B?R3LDqWdvciBCb2lyaWU=?= <gregor.boirie@parrot.com>
+Received: from mail-vb0-f49.google.com ([209.85.212.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TIkSH-0003dB-RG
+ for linux-mtd@lists.infradead.org; Mon, 01 Oct 2012 18:10:58 +0000
+Received: by vbbfo1 with SMTP id fo1so5981564vbb.36
+ for <linux-mtd@lists.infradead.org>; Mon, 01 Oct 2012 11:10:55 -0700 (PDT)
 MIME-Version: 1.0
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: m25p80: missing MTD owner
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAH9JG2W4jVxrTQVwoLrnMmypcHhM5mfciyK=tvGmi+8i_L78vQ@mail.gmail.com>
+References: <1348294351-27182-1-git-send-email-sachin.kamat@linaro.org>
+ <CAH9JG2W4jVxrTQVwoLrnMmypcHhM5mfciyK=tvGmi+8i_L78vQ@mail.gmail.com>
+Date: Mon, 1 Oct 2012 23:40:55 +0530
+Message-ID: <CAK9yfHx=oYRmmceTWhvSBP+3yBQsdHTXE_WHebPKFYTwmXLjQg@mail.gmail.com>
+Subject: Re: [PATCH] mtd: onenand: Make flexonenand_set_boundary static
+From: Sachin Kamat <sachin.kamat@linaro.org>
+To: linux-mtd@lists.infradead.org, artem.bityutskiy@linux.intel.com,
+ dedekind1@gmail.com, dwmw2@infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,39 +24,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Hi David,
 
-It seems possible to unload m25p80 module while a JFFS2 partition is
-still mounted onto flash. This produces oops when MTD layer tries to
-access underlying device later on.
+Please line up this patch for 3.7.
 
-A quick look at m25p_probe shows that "owner" field of allocated mtd
-device structure is left uninitialized, preventing MTD layer from
-incrementing module usage count. This patch for v3.4.11 solves the issue
-for me :
+On 22 September 2012 12:10, Kyungmin Park <kyungmin.park@samsung.com> wrote:
+> On 9/22/12, Sachin Kamat <sachin.kamat@linaro.org> wrote:
+>> Fixes the following sparse warning:
+>> drivers/mtd/onenand/onenand_base.c:3697:5: warning:
+>> symbol 'flexonenand_set_boundary' was not declared. Should it be static?
+>>
+>> Cc: Kyungmin Park <kyungmin.park@samsung.com>
+> Acked-by: Kyungmin Park <kyungmin.park@samsung.com>
+>> Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+>> ---
+>>  drivers/mtd/onenand/onenand_base.c |    2 +-
+>>  1 files changed, 1 insertions(+), 1 deletions(-)
+>>
+>> diff --git a/drivers/mtd/onenand/onenand_base.c
+>> b/drivers/mtd/onenand/onenand_base.c
+>> index 7153e0d..b3f41f2 100644
+>> --- a/drivers/mtd/onenand/onenand_base.c
+>> +++ b/drivers/mtd/onenand/onenand_base.c
+>> @@ -3694,7 +3694,7 @@ static int flexonenand_check_blocks_erased(struct
+>> mtd_info *mtd, int start, int
+>>   * flexonenand_set_boundary  - Writes the SLC boundary
+>>   * @param mtd                        - mtd info structure
+>>   */
+>> -int flexonenand_set_boundary(struct mtd_info *mtd, int die,
+>> +static int flexonenand_set_boundary(struct mtd_info *mtd, int die,
+>>                                   int boundary, int lock)
+>>  {
+>>       struct onenand_chip *this = mtd->priv;
+>> --
+>> 1.7.4.1
+>>
+>>
+>> ______________________________________________________
+>> Linux MTD discussion mailing list
+>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>>
 
-@@ -873,6 +873,7 @@ static int __devinit m25p_probe(struct spi_device *spi)
-        else
-                flash->mtd.name = dev_name(&spi->dev);
 
-+       flash->mtd.owner = THIS_MODULE;
-        flash->mtd.type = MTD_NORFLASH;
-        flash->mtd.writesize = 1;
-        flash->mtd.flags = MTD_CAP_NORFLASH;
-
-
-Regards.
 
 -- 
-Grégor Boirie
-Software engineer
-R&D / OS platform
-tel +33 1 48 03 73 24
------------------------------------------
-Parrot
-174, quai de Jemmapes
-75010 Paris  France
-tel + 33 1 48 03 60 60
-fax + 33 1 48 03 06 66
------------------------------------------
-http://www.parrot.com
+With warm regards,
+Sachin
