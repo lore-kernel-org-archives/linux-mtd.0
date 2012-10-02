@@ -1,13 +1,19 @@
-From: Bastian Hecht <hechtb@googlemail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/2] mtd: sh_flctl: Add device tree support
-Date: Tue,  2 Oct 2012 15:12:02 +0200
-Message-Id: <1349183522-15321-3-git-send-email-hechtb@gmail.com>
-In-Reply-To: <1349183522-15321-1-git-send-email-hechtb@gmail.com>
-References: <1349183522-15321-1-git-send-email-hechtb@gmail.com>
-Cc: Vikram Narayanan <vikram186@gmail.com>, Magnus Damm <magnus.damm@gmail.com>,
- Guennadi Liakhovetski <g.liakhovetski@gmx.de>,
- linux-arm-kernel@lists.infradead.org, linux-sh@vger.kernel.org
+Received: from mga11.intel.com ([192.55.52.93])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TJ2dN-0004cX-6K
+ for linux-mtd@lists.infradead.org; Tue, 02 Oct 2012 13:35:38 +0000
+Message-ID: <1349184941.2017.70.camel@sauron.fi.intel.com>
+Subject: [GIT PULL] UBI changes for 3.7-rc1
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 02 Oct 2012 16:35:41 +0300
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-xcgBzp3fMynv+biOxgtB"
+Mime-Version: 1.0
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,202 +23,127 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The flctl can now be probed via device tree setup in addition to the
-existing platform data way.
 
-SoC specific setup data is set in the .data member of the OF match, so
-kept within the driver itself, while board/user specific setup - like
-partitioning - is taken from the device tree.
+--=-xcgBzp3fMynv+biOxgtB
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Actual configuration is added for the SoC sh7372.
+Hi Linus,
 
-Signed-off-by: Bastian Hecht <hechtb@gmail.com>
----
- .../devicetree/bindings/mtd/flctl-nand.txt         |   37 ++++++++
- drivers/mtd/nand/sh_flctl.c                        |   92 ++++++++++++++++++--
- 2 files changed, 122 insertions(+), 7 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mtd/flctl-nand.txt
+please, pull UBI changes.
 
-diff --git a/Documentation/devicetree/bindings/mtd/flctl-nand.txt b/Documentation/devicetree/bindings/mtd/flctl-nand.txt
-new file mode 100644
-index 0000000..f615031
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/flctl-nand.txt
-@@ -0,0 +1,37 @@
-+FLCTL NAND controller
-+
-+Required properties:
-+- compatible : "renesas,shmobile-flctl-sh7372"
-+- reg : Address range of the FLCTL
-+- interrupts : flste IRQ number
-+- nand-bus-width : bus width to NAND chip
-+
-+The device tree may optionally contain sub-nodes describing partitions of the
-+address space. See partition.txt for more detail.
-+
-+Example:
-+
-+	flctl@e6a30000 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "renesas,shmobile-flctl-sh7372";
-+		reg = <0xe6a30000 0x100>;
-+		interrupts = <0x0d80>;
-+
-+		nand-bus-width = <16>;
-+
-+		system@0 {
-+			label = "system";
-+			reg = <0x0 0x8000000>;
-+		};
-+
-+		userdata@8000000 {
-+			label = "userdata";
-+			reg = <0x8000000 0x10000000>;
-+		};
-+
-+		cache@18000000 {
-+			label = "cache";
-+			reg = <0x18000000 0x8000000>;
-+		};
-+	};
-diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-index 0fead2a..4c7e542 100644
---- a/drivers/mtd/nand/sh_flctl.c
-+++ b/drivers/mtd/nand/sh_flctl.c
-@@ -28,6 +28,9 @@
- #include <linux/dma-mapping.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
-+#include <linux/of.h>
-+#include <linux/of_device.h>
-+#include <linux/of_mtd.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/sh_dma.h>
-@@ -1020,6 +1023,73 @@ static irqreturn_t flctl_handle_flste(int irq, void *dev_id)
- 	return IRQ_HANDLED;
- }
- 
-+#ifdef CONFIG_OF
-+struct flctl_soc_config {
-+	unsigned long flcmncr_val;
-+	unsigned has_hwecc:1;
-+	unsigned use_holden:1;
-+};
-+
-+static struct flctl_soc_config flctl_sh7372_config = {
-+	.flcmncr_val = CLK_16B_12L_4H | TYPESEL_SET | SHBUSSEL,
-+	.has_hwecc = 1,
-+	.use_holden = 1,
-+};
-+
-+static const struct of_device_id of_flctl_match[] = {
-+	{ .compatible = "renesas,shmobile-flctl-sh7372",
-+				.data = &flctl_sh7372_config },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, of_flctl_match);
-+
-+static struct sh_flctl_platform_data *flctl_parse_dt(struct device *dev)
-+{
-+	const struct of_device_id *match;
-+	struct flctl_soc_config *config;
-+	struct sh_flctl_platform_data *pdata;
-+	struct device_node *dn = dev->of_node;
-+	int ret;
-+
-+	match = of_match_device(of_flctl_match, dev);
-+	if (match)
-+		config = (struct flctl_soc_config *)match->data;
-+	else {
-+		dev_err(dev, "%s: no OF configuration attached\n", __func__);
-+		return NULL;
-+	}
-+
-+	pdata = devm_kzalloc(dev, sizeof(struct sh_flctl_platform_data),
-+								GFP_KERNEL);
-+	if (!pdata) {
-+		dev_err(dev, "%s: failed to allocate config data\n", __func__);
-+		return NULL;
-+	}
-+
-+	/* set SoC specific options */
-+	pdata->flcmncr_val = config->flcmncr_val;
-+	pdata->has_hwecc = config->has_hwecc;
-+	pdata->use_holden = config->use_holden;
-+
-+	/* parse user defined options */
-+	ret = of_get_nand_bus_width(dn);
-+	if (ret == 16)
-+		pdata->flcmncr_val |= SEL_16BIT;
-+	else if (ret != 8) {
-+		dev_err(dev, "%s: invalid bus width\n", __func__);
-+		return NULL;
-+	}
-+
-+	return pdata;
-+}
-+#else /* CONFIG_OF */
-+#define of_flctl_match NULL
-+static struct sh_flctl_platform_data *flctl_parse_dt(struct device *dev)
-+{
-+	return NULL;
-+}
-+#endif /* CONFIG_OF */
-+
- static int __devinit flctl_probe(struct platform_device *pdev)
- {
- 	struct resource *res;
-@@ -1029,12 +1099,7 @@ static int __devinit flctl_probe(struct platform_device *pdev)
- 	struct sh_flctl_platform_data *pdata;
- 	int ret = -ENXIO;
- 	int irq;
--
--	pdata = pdev->dev.platform_data;
--	if (pdata == NULL) {
--		dev_err(&pdev->dev, "no platform data defined\n");
--		return -EINVAL;
--	}
-+	struct mtd_part_parser_data ppdata = {};
- 
- 	flctl = kzalloc(sizeof(struct sh_flctl), GFP_KERNEL);
- 	if (!flctl) {
-@@ -1066,6 +1131,16 @@ static int __devinit flctl_probe(struct platform_device *pdev)
- 		goto err_flste;
- 	}
- 
-+	if (pdev->dev.of_node)
-+		pdata = flctl_parse_dt(&pdev->dev);
-+	else
-+		pdata = pdev->dev.platform_data;
-+
-+	if (!pdata) {
-+		dev_err(&pdev->dev, "no setup data defined\n");
-+		return -EINVAL;
-+	}
-+
- 	platform_set_drvdata(pdev, flctl);
- 	flctl_mtd = &flctl->mtd;
- 	nand = &flctl->chip;
-@@ -1108,7 +1183,9 @@ static int __devinit flctl_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto err_chip;
- 
--	mtd_device_register(flctl_mtd, pdata->parts, pdata->nr_parts);
-+	ppdata.of_node = pdev->dev.of_node;
-+	ret = mtd_device_parse_register(flctl_mtd, NULL, &ppdata, pdata->parts,
-+			pdata->nr_parts);
- 
- 	return 0;
- 
-@@ -1142,6 +1219,7 @@ static struct platform_driver flctl_driver = {
- 	.driver = {
- 		.name	= "sh_flctl",
- 		.owner	= THIS_MODULE,
-+		.of_match_table = of_flctl_match,
- 	},
- };
- 
--- 
-1.7.5.4
+The following changes since commit 4cbe5a555fa58a79b6ecbb6c531b8bab0650778d=
+:
+
+  Linux 3.6-rc4 (2012-09-01 10:39:58 -0700)
+
+are available in the git repository at:
+
+  git://git.infradead.org/linux-ubi.git tags/upstream-3.7-rc1
+
+for you to fetch changes up to 55393ba1bdedc5ded79b34b4cc08898a7776cddb:
+
+  UBI: fix trivial typo 'it' =3D> 'is' (2012-09-26 13:22:50 +0300)
+
+----------------------------------------------------------------
+The main change is the way we reserve eraseblocks for bad blocks
+handling. We used to reserve 2% of the partition, but now we are
+more aggressive and we reserve 2% of the entire chip, which is
+what actually manufacturers specify in data sheets. We introduced
+an option to users to override the default, though.
+
+There are a couple of fixes as well, and a number of cleanups.
+
+----------------------------------------------------------------
+Artem Bityutskiy (7):
+      UBI: print image sequence number as unsigned integer
+      UBI: print PID in debug messages
+      arm: sam9_l9260_defconfig: correct CONFIG_MTD_UBI_BEB_LIMIT
+      UBI: fix autoresize handling in R/O mode
+      UBI: comply with coding style
+      UBI: use pr_ helper instead of printk
+      UBI: print less
+
+Brian Norris (1):
+      UBI: fix trivial typo 'it' =3D> 'is'
+
+Jiang Lu (1):
+      UBI: load after mtd device drivers
+
+Matthieu CASTET (1):
+      UBI: erase free PEB with bitflip in EC header
+
+Richard Genoud (9):
+      mtd: mark mtd_is_partition argument as constant
+      mtd: mtdparts: introduce mtd_get_device_size
+      UBI: use the whole MTD device size to get bad_peb_limit
+      UBI: separate bad_peb_limit in a function
+      UBI: introduce MTD_PARAM_MAX_COUNT
+      UBI: prepare for max_beb_per1024 module parameter addition
+      UBI: check max_beb_per1024 value in ubi_attach_mtd_dev
+      UBI: allow specifying bad PEBs limit using module parameter
+      UBI: add max_beb_per1024 to attach ioctl
+
+Shmulik Ladkani (5):
+      arm: sam9_l9260_defconfig: prepare to UBI config change
+      UBI: introduce new bad PEB limit
+      UBI: limit amount of reserved eraseblocks for bad PEB handling
+      UBI: kill CONFIG_MTD_UBI_BEB_RESERVE
+      arm: sam9_l9260_defconfig: remove non-existing config option
+
+ arch/arm/configs/sam9_l9260_defconfig |   2 +-
+ drivers/mtd/mtdpart.c                 |  12 ++++++++++-
+ drivers/mtd/ubi/Kconfig               |  40 ++++++++++++++++++++++++------=
+------
+ drivers/mtd/ubi/attach.c              |  46 ++++++++++++++++++++----------=
+-----------
+ drivers/mtd/ubi/build.c               | 204 ++++++++++++++++++++++++++++++=
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
++++++++--------------------------------------------------------------------=
+--
+ drivers/mtd/ubi/cdev.c                |  18 ++++++++--------
+ drivers/mtd/ubi/debug.c               | 153 ++++++++++++++++++++++++++++++=
++++++++++++++++++++++++++++++++++++----------------------------------------=
+-------------------------------
+ drivers/mtd/ubi/debug.h               |  12 ++++-------
+ drivers/mtd/ubi/eba.c                 |  33 ++++++++++++++----------------
+ drivers/mtd/ubi/gluebi.c              |  30 +++++++++++++--------------
+ drivers/mtd/ubi/io.c                  |  80 ++++++++++++++++++++++++++++++=
++++++------------------------------------
+ drivers/mtd/ubi/misc.c                |  14 +++++++++----
+ drivers/mtd/ubi/ubi.h                 |  16 +++++++--------
+ drivers/mtd/ubi/vtbl.c                |  10 ++++-----
+ drivers/mtd/ubi/wl.c                  |  48 +++++++++++++++++++++++++++---=
+-------------
+ include/linux/mtd/partitions.h        |   3 ++-
+ include/mtd/ubi-user.h                |  16 ++++++++++++++-
+ 17 files changed, 412 insertions(+), 325 deletions(-)
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-xcgBzp3fMynv+biOxgtB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQau2tAAoJECmIfjd9wqK0d4QP/3Gd2V5Sd5P16R0W+++lKP9a
+1EhCzHz9i5fMyOllM6Tmh7/M0adYZ0buB7c41C37WUPubsxpu+SUWc1SnXcH4u97
+b9D3rKfkP68Wy+Bf7qmWi6xJtqUyZClhXMVR/4Rjce8Kdsm0UHRsbz5fPZw4t2g2
+hcxRHZp3FYKFgNuD3dpXcBtGyVcekQgi+yhLRfufdN6RBDY4mtfzuAbI9xB+SMPn
+jdud0a2jyCQq9Pqg8fqpgv+gFnHejiwKHi2mLUNifxaTfaIle60QHC/iLg4MTk4X
+6HIguj5C9m4ROI/N9pxte2Ao7RRUTb8O9z70SbaNcSqOsCLnVB3uC2DeHEN8QcQa
+Iqunvt0BNTFGUuJFSDtJpYEl6xTaJtV4RAVRJGtzQMNNxTXrccwciyIb6mlQaTek
+tN0kEQfYrpUwT6Rn/9CpRFQXq4yzrXh5PaZj5d+22jxXunF1dsXQgx+vtSLlCSFe
+YI65rDVq87+vZpK7l2AR7/ds9qQEnelQZqrQOOpO0fw+Jdr0SrCTby28Ipguy0NL
+EhP5qJ5Mv1/LflewLT3heJlo49w+mCx4aAQ/ffGxWJAgXe1EqQK9x7YizS4oHjQt
+ma0i+D4zNKoct2yfFYU0AhHzvN4zbpCpG831o5Uw1e4fRUWXgW4zr0TrIfi7iBFt
+7HvwV5T5Rg+eJFGHfAlP
+=oQG9
+-----END PGP SIGNATURE-----
+
+--=-xcgBzp3fMynv+biOxgtB--
