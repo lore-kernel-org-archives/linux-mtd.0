@@ -1,19 +1,19 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TJ2dS-0004cw-Nj
- for linux-mtd@lists.infradead.org; Tue, 02 Oct 2012 13:35:43 +0000
-Message-ID: <1349184946.2017.71.camel@sauron.fi.intel.com>
-Subject: [GIT PULL] UBIFS changes for 3.7-rc1
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 02 Oct 2012 16:35:46 +0300
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-Eia6sPFkyci3KRll+Ido"
-Mime-Version: 1.0
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Reply-To: dedekind1@gmail.com
+From: Arnd Bergmann <arnd@arndb.de>
+To: linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 2/2] mtd: sh_flctl: Add device tree support
+Date: Tue, 2 Oct 2012 13:54:00 +0000
+References: <1349183522-15321-1-git-send-email-hechtb@gmail.com>
+ <1349183522-15321-3-git-send-email-hechtb@gmail.com>
+In-Reply-To: <1349183522-15321-3-git-send-email-hechtb@gmail.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201210021354.01247.arnd@arndb.de>
+Cc: linux-sh@vger.kernel.org, Vikram Narayanan <vikram186@gmail.com>,
+ Magnus Damm <magnus.damm@gmail.com>, linux-mtd@lists.infradead.org,
+ Guennadi Liakhovetski <g.liakhovetski@gmx.de>,
+ Bastian Hecht <hechtb@googlemail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,98 +23,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tuesday 02 October 2012, Bastian Hecht wrote:
+> +Required properties:
+> +- compatible : "renesas,shmobile-flctl-sh7372"
+> +- reg : Address range of the FLCTL
+> +- interrupts : flste IRQ number
+> +- nand-bus-width : bus width to NAND chip
+> +
+> +The device tree may optionally contain sub-nodes describing partitions of the
+> +address space. See partition.txt for more detail.
+> +
+> +Example:
+> +
+> +       flctl@e6a30000 {
+> +               #address-cells = <1>;
+> +               #size-cells = <1>;
+> +               compatible = "renesas,shmobile-flctl-sh7372";
+> +               reg = <0xe6a30000 0x100>;
+> +               interrupts = <0x0d80>;
+> +
+> +               nand-bus-width = <16>;
+> +
+> +               system@0 {
+> +                       label = "system";
+> +                       reg = <0x0 0x8000000>;
+> +               };
+> +
+> +               userdata@8000000 {
+> +                       label = "userdata";
+> +                       reg = <0x8000000 0x10000000>;
+> +               };
+> +
+> +               cache@18000000 {
+> +                       label = "cache";
+> +                       reg = <0x18000000 0x8000000>;
+> +               };
+> +       };
 
---=-Eia6sPFkyci3KRll+Ido
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Since you are also adding dma-engine support, I would suggest you specify
+a "dmas" and "dma-names" property as well, so the device can find the
+right dma channel. The code might not do that yet while you're still
+sorting out the dependencies (and the sh dmaengine code is not yet
+converted to DT), but I think it would be good to nail down the binding
+for this device.
 
-Hi Linus,
-
-please, pull UBIFS changes.
-
-The following changes since commit 69f9025894c391fec2f7c7ea9150203418454915=
-:
-
-  UBIFS: fix error messages spelling (2012-08-22 17:41:09 +0300)
-
-are available in the git repository at:
-
-  git://git.infradead.org/linux-ubifs.git tags/upstream-3.7-rc1
-
-for you to fetch changes up to 3668b70fcf1fdc6799abf15f70fe3f50f407ec82:
-
-  UBIFS: print less (2012-08-31 17:32:58 +0300)
-
-----------------------------------------------------------------
-No big changes for 3.7 in UBIFS:
-* Error reporting and debug printing improvements
-* Power cut emulation fixes
-* Minor cleanups
-
-----------------------------------------------------------------
-Artem Bityutskiy (8):
-      UBIFS: print PID in debug messages
-      UBIFS: always print full error reports
-      UBIFS: improve scanning debug output
-      UBIFS: fix power cut emulation for mtdram
-      UBIFS: use __aligned() attribute
-      UBIFS: comply with coding style
-      UBIFS: use pr_ helper instead of printk
-      UBIFS: print less
-
-Jiri Slaby (1):
-      UBIFS: remove __DATE__ and __TIME__
-
- fs/ubifs/budget.c     |   5 +-
- fs/ubifs/commit.c     |   8 +--
- fs/ubifs/compress.c   |   7 +--
- fs/ubifs/debug.c      | 633 ++++++++++++++++++++++++++++++++++++++++++++++=
-+++++++++++++++++++++++++++++++++++++++------------------------------------=
----------------------------------------------------------------------------=
---
- fs/ubifs/debug.h      |  15 ++---
- fs/ubifs/dir.c        |   4 +-
- fs/ubifs/file.c       |   4 +-
- fs/ubifs/gc.c         |   6 +-
- fs/ubifs/log.c        |  14 ++---
- fs/ubifs/lprops.c     |  66 ++++++++++-----------
- fs/ubifs/lpt.c        |   5 +-
- fs/ubifs/lpt_commit.c |  58 ++++++++-----------
- fs/ubifs/orphan.c     |   7 +--
- fs/ubifs/recovery.c   |  11 ++--
- fs/ubifs/replay.c     |  16 ++---
- fs/ubifs/sb.c         |  19 +++---
- fs/ubifs/scan.c       |  15 +++--
- fs/ubifs/super.c      | 119 ++++++++++++++++++--------------------
- fs/ubifs/tnc_misc.c   |   4 +-
- fs/ubifs/ubifs.h      |  13 ++---
- 20 files changed, 451 insertions(+), 578 deletions(-)
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-Eia6sPFkyci3KRll+Ido
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQau2yAAoJECmIfjd9wqK0Ur8QAIz5FY9BlzggN0dhNtJR3eeY
-BjnYsrheW6oKj6x+1woH3fizXGbaTdQ6joYq08ePmVnGfQnUk+qN4MCBVb5YCeIG
-ipZu109vxVH5hqmsQk5NcT6fCvN6TSeJ9xVaOdPaVS9KTR99RhFAwdXnYq1eTvo3
-F0CUPk+qJJ1ElvEeCqqLWoaGCex/WiW7WuuGgzQCSSLzwZXBR63udvUeAM7rlhcC
-F9UiUROjjZGd+xXcjtDXmlCZcVlSgJ67lhay75PW/KXQC9kgsf/5udtt0HPkpWu2
-Q8MSKKI6Yv7QpgynLuNSNSHK44UD7vAvicHObYjljTBcdazyMxJNl322NIAsfq6W
-H/sSOtXqnUl7jm9W6rIaZFgceKLvkjVdCiP8VW9KydJm5dPiSqCJwFRMKpd0bDdu
-3KcjgbLPQZVbRBa44AXdV9M3oV6UpPdkXEvmxhbvRwkoPjZ592vkKA0ubXS35gsI
-fPvB8zEmMmWSNE/XwK5pKXy2aXNyF3qxZKbTvrr32ZwlzAUosEq3TluwHbY3clT0
-uUCy3cdT/2YI//a+3n94pFBWLciCkqfGE61jWWCB4F6RhWNdPNL0dqGCTmLVD0YM
-fgGt6gaIF8RqaoQz9NvWRhnEMSE4v+mp8bKD8lnMA+qVRTkaAlLFikZ7EJW6FYio
-SBLWKnBNtMjSg/fjyRTW
-=RI3J
------END PGP SIGNATURE-----
-
---=-Eia6sPFkyci3KRll+Ido--
+	Arnd
