@@ -1,17 +1,21 @@
-Date: Tue, 2 Oct 2012 16:04:54 +0200 (CEST)
-From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-To: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 2/2] mtd: sh_flctl: Add device tree support
-In-Reply-To: <201210021354.01247.arnd@arndb.de>
-Message-ID: <Pine.LNX.4.64.1210021602250.15778@axis700.grange>
-References: <1349183522-15321-1-git-send-email-hechtb@gmail.com>
- <1349183522-15321-3-git-send-email-hechtb@gmail.com>
- <201210021354.01247.arnd@arndb.de>
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TJ3Qs-0000iq-6d
+ for linux-mtd@lists.infradead.org; Tue, 02 Oct 2012 14:26:46 +0000
+Received: by pbcxa7 with SMTP id xa7so8174720pbc.36
+ for <linux-mtd@lists.infradead.org>; Tue, 02 Oct 2012 07:26:43 -0700 (PDT)
+Message-ID: <506AF985.30104@gmail.com>
+Date: Tue, 02 Oct 2012 19:56:13 +0530
+From: Vikram Narayanan <vikram186@gmail.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-sh@vger.kernel.org, Vikram Narayanan <vikram186@gmail.com>,
- Magnus Damm <magnus.damm@gmail.com>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, Bastian Hecht <hechtb@googlemail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [RFC PATCH 0/8] mtd_tests: Remove duplicate code and cleanups
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: Iwo Mergler <Iwo.Mergler@netcommwireless.com.au>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Adrian Hunter <ext-adrian.hunter@nokia.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,61 +25,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Arnd
+Cc: Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: Adrian Hunter <ext-adrian.hunter@nokia.com>
+Cc: Iwo Mergler <Iwo.Mergler@netcommwireless.com.au>
 
-On Tue, 2 Oct 2012, Arnd Bergmann wrote:
+This RFC patchset moves some common code in all the tests to a common header
+file. Also, all the printk,PRINT_PREF are replaced with pr_info style prints.
+This way duplicates are eliminated and the code looks clean.
 
-> On Tuesday 02 October 2012, Bastian Hecht wrote:
-> > +Required properties:
-> > +- compatible : "renesas,shmobile-flctl-sh7372"
-> > +- reg : Address range of the FLCTL
-> > +- interrupts : flste IRQ number
-> > +- nand-bus-width : bus width to NAND chip
-> > +
-> > +The device tree may optionally contain sub-nodes describing partitions of the
-> > +address space. See partition.txt for more detail.
-> > +
-> > +Example:
-> > +
-> > +       flctl@e6a30000 {
-> > +               #address-cells = <1>;
-> > +               #size-cells = <1>;
-> > +               compatible = "renesas,shmobile-flctl-sh7372";
-> > +               reg = <0xe6a30000 0x100>;
-> > +               interrupts = <0x0d80>;
-> > +
-> > +               nand-bus-width = <16>;
-> > +
-> > +               system@0 {
-> > +                       label = "system";
-> > +                       reg = <0x0 0x8000000>;
-> > +               };
-> > +
-> > +               userdata@8000000 {
-> > +                       label = "userdata";
-> > +                       reg = <0x8000000 0x10000000>;
-> > +               };
-> > +
-> > +               cache@18000000 {
-> > +                       label = "cache";
-> > +                       reg = <0x18000000 0x8000000>;
-> > +               };
-> > +       };
-> 
-> Since you are also adding dma-engine support, I would suggest you specify
-> a "dmas" and "dma-names" property as well, so the device can find the
-> right dma channel. The code might not do that yet while you're still
-> sorting out the dependencies (and the sh dmaengine code is not yet
-> converted to DT), but I think it would be good to nail down the binding
-> for this device.
+I deliberately missed out the mtd_oobtest as Brian Norris has already sent a
+patch for that.
 
-Have DMA DT bindings been accepted yet, are they fixed? Wouldn't it be 
-better to wait until patches appear in a tree, at least with high 
-probability heading towards the mainline, or have they already?
+All the patches are compile tested and checkpatch clean(No checkpatch warnings
+are introduced by the code that is added in this patch).
 
-Thanks
-Guennadi
----
-Guennadi Liakhovetski, Ph.D.
-Freelance Open-Source Software Developer
-http://www.open-technology.de/
+Vikram Narayanan(8):
+  mtd_tests: Refactor duplicate code
+  mtd_pagetest: Replace printk with pr_{info,crit}
+  mtd_torturetest: Replace printk with pr_{info,crit}
+  mtd_subpagetest: Replace printk with pr_info
+  mtd_stresstest: Replace printk with pr_{info,crit}
+  mtd_speedtest: Replace printk with pr_{info,crit}
+  mtd_readtest: Replace printk with pr_info
+  mtd_nandbiterrs: Replace msg macro with pr_info
+
+ drivers/mtd/tests/mtd_nandbiterrs.c |   97 +++++++-----------
+ drivers/mtd/tests/mtd_oobtest.c     |   31 +-----
+ drivers/mtd/tests/mtd_pagetest.c    |  191 +++++++++++++++--------------------
+ drivers/mtd/tests/mtd_readtest.c    |   42 ++++----
+ drivers/mtd/tests/mtd_speedtest.c   |  140 ++++++++------------------
+ drivers/mtd/tests/mtd_stresstest.c  |   71 ++++---------
+ drivers/mtd/tests/mtd_subpagetest.c |  147 +++++++++++----------------
+ drivers/mtd/tests/mtd_tests.h       |   60 +++++++++++
+ drivers/mtd/tests/mtd_torturetest.c |  104 +++++++------------
+ 9 files changed, 370 insertions(+), 513 deletions(-)
