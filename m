@@ -1,22 +1,12 @@
-Received: from mail-vb0-f49.google.com ([209.85.212.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TIkSp-0003e7-He
- for linux-mtd@lists.infradead.org; Mon, 01 Oct 2012 18:11:31 +0000
-Received: by vbbfo1 with SMTP id fo1so5982282vbb.36
- for <linux-mtd@lists.infradead.org>; Mon, 01 Oct 2012 11:11:31 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1348567033-5418-1-git-send-email-sachin.kamat@linaro.org>
-References: <1348567033-5418-1-git-send-email-sachin.kamat@linaro.org>
-Date: Mon, 1 Oct 2012 23:41:30 +0530
-Message-ID: <CAK9yfHyFT8Cz8J1aGhQgAUE_A-_2qjd5U5JPs17rxgd9x3erjw@mail.gmail.com>
-Subject: Re: [PATCH] mtd: ofpart: Fix incorrect NULL check in
- parse_ofoldpart_partitions()
-From: Sachin Kamat <sachin.kamat@linaro.org>
+From: Bastian Hecht <hechtb@googlemail.com>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: patches@linaro.org, sachin.kamat@linaro.org, dedekind1@gmail.com,
- Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Artem Bityutskiy <artem.bityutskiy@intel.com>, dwmw2@infradead.org
+Subject: [PATCH 0/2] Add DMA and device tree support to the flash controller
+ FLCTL
+Date: Tue,  2 Oct 2012 15:12:00 +0200
+Message-Id: <1349183522-15321-1-git-send-email-hechtb@gmail.com>
+Cc: Vikram Narayanan <vikram186@gmail.com>, Magnus Damm <magnus.damm@gmail.com>,
+ Guennadi Liakhovetski <g.liakhovetski@gmx.de>,
+ linux-arm-kernel@lists.infradead.org, linux-sh@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,42 +16,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ping...
+This mini-series consists of 2 separately posted patch-sets that shrunk
+to one patch each. It adds DMA support for the data part (not ECC) as
+well as device tree support to the FLCTL flash controller.
+As the 2nd patch is based on the 1st, I've decided to
+collect them here to avoid any confusion.
 
-On 25 September 2012 15:27, Sachin Kamat <sachin.kamat@linaro.org> wrote:
-> The pointer returned by kzalloc should be tested for NULL
-> to avoid potential NULL pointer dereference later. Incorrect
-> pointer was being tested for NULL. Bug introduced by commit fbcf62a3
-> (mtd: physmap_of: move parse_obsolete_partitions to become separate
-> parser).
-> This patch fixes this bug.
->
-> Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-> Cc: Artem Bityutskiy <artem.bityutskiy@intel.com>
-> Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
-> ---
->  drivers/mtd/ofpart.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
->
-> diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
-> index 64be8f0..d9127e2 100644
-> --- a/drivers/mtd/ofpart.c
-> +++ b/drivers/mtd/ofpart.c
-> @@ -121,7 +121,7 @@ static int parse_ofoldpart_partitions(struct mtd_info *master,
->         nr_parts = plen / sizeof(part[0]);
->
->         *pparts = kzalloc(nr_parts * sizeof(*(*pparts)), GFP_KERNEL);
-> -       if (!pparts)
-> +       if (!*pparts)
->                 return -ENOMEM;
->
->         names = of_get_property(dp, "partition-names", &plen);
-> --
-> 1.7.4.1
->
+The first set contained
+[PATCH 1/2] mtd: sh_flctl: Setup and release DMA channels
+[PATCH 2/2] mtd: sh_flctl: Use DMA for data fifo FLTDFIFO when available
+and was merged after 2 reviews to
+[PATCH] mtd: sh_flctl: Add DMA capabilty (same patch as in here)
+
+The second set contained
+[PATCH 1/3] mtd: sh_flctl: Probe SNAND_E flag from NAND chip
+[PATCH 2/3] mtd: sh_flctl: Add device tree support
+[PATCH 3/3] mtd: sh_flctl: Add sh7372 device tree config
+and is merged here to
+mtd: sh_flctl: Add device tree support
+
+Patch 1 can be omitted as SNAND_E is handled in the FLCTL source anyway
+correctly in set_cmd_regs() and the flag can be removed from existing board
+codes without this patch.
+Patch 2 without patch 3 may be confusing so I merged them too. Documentation
+is added as well.
+
+I've added linux-arm-kernel@lists.infradead.org as recipient for the
+device tree part.
+
+The patchset is based on
+l2-mtd	git://git.infradead.org/users/dedekind/l2-mtd.git
+with reverted commit e26c113b4130aefa1d8446602bb5b05cfd646bfe.
 
 
+Bastian Hecht (2):
+  mtd: sh_flctl: Add DMA capabilty
+  mtd: sh_flctl: Add device tree support
+
+ .../devicetree/bindings/mtd/flctl-nand.txt         |   37 +++
+ drivers/mtd/nand/sh_flctl.c                        |  266 +++++++++++++++++++-
+ include/linux/mtd/sh_flctl.h                       |   12 +
+ 3 files changed, 305 insertions(+), 10 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/flctl-nand.txt
 
 -- 
-With warm regards,
-Sachin
+1.7.5.4
