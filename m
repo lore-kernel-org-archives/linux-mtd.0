@@ -1,14 +1,13 @@
-Received: from mail02.rohde-schwarz.com ([80.246.32.97])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TJ3YY-0002Aq-OO
- for linux-mtd@lists.infradead.org; Tue, 02 Oct 2012 14:34:43 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TJ4Pq-0004M8-6V
+ for linux-mtd@lists.infradead.org; Tue, 02 Oct 2012 15:29:48 +0000
+From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-Subject: JFFS2 deadlock, kernel 3.4.11
-From: Thomas.Betker@rohde-schwarz.com
-Message-ID: <OFB9AE3BAC.A5615989-ONC1257A8A.0032CA58-C1257A8B.004EAAA5@rohde-schwarz.com>
-Date: Tue, 2 Oct 2012 16:19:10 +0200
-Content-Type: text/plain; charset="US-ASCII"
+Subject: [PATCH] mtd-www: Add fastmap doc
+Date: Tue,  2 Oct 2012 17:29:09 +0200
+Message-Id: <1349191749-5247-1-git-send-email-richard@nod.at>
+Cc: Richard Weinberger <richard@nod.at>, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,93 +17,123 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello all, 
+Add documentation on fastmap to mtd-www.
 
-I have encountered multiple times a deadlock between two JFFS2 threads:
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ doc/ubi.xml | 86 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 83 insertions(+), 3 deletions(-)
 
-INFO: task jffs2_gcd_mtd5:54 blocked for more than 120 seconds.
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-jffs2_gcd_mtd5  D c023be78     0    54      2 0x00000000
-Backtrace:
-Function entered at [<c023babc>] from [<c023c0c0>]  __schedule
-Function entered at [<c023c03c>] from [<c023c140>]  schedule
-Function entered at [<c023c0c4>] from [<c005ee64>]  io_schedule
- r6:c7942380 r5:c0414a50 r4:c541bd34 r3:00000001
-Function entered at [<c005ee54>] from [<c023a328>]  sleep_on_page
-Function entered at [<c023a2cc>] from [<c005ee44>]  __wait_on_bit_lock
-Function entered at [<c005edd8>] from [<c005f3f0>]  __lock_page
- r6:c7411728 r5:00000083 r4:c034d720
-Function entered at [<c005f2fc>] from [<c005f4b8>]  do_read_cache_page
-Function entered at [<c005f498>] from [<c0108990>]  read_cache_page_async
-Function entered at [<c0108968>] from [<c0105834>]  jffs2_gc_fetch_page
- r4:c74115f8 r3:c541be60
-Function entered at [<c0104fa8>] from [<c01064e4>] 
-jffs2_garbage_collect_live
-Function entered at [<c0105e1c>] from [<c0107820>] 
-jffs2_garbage_collect_pass
-Function entered at [<c01076dc>] from [<c0033198>] 
-jffs2_garbage_collect_thread
-Function entered at [<c0033108>] from [<c001d5f0>]  kthread
- r7:00000013 r6:c001d5f0 r5:c0033108 r4:c79b9d84
-
-INFO: task scp:158 blocked for more than 120 seconds.
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-scp             D c023be78     0   158    157 0x00000000
-Backtrace:
-Function entered at [<c023babc>] from [<c023c0c0>]  __schedule
-Function entered at [<c023c03c>] from [<c023c314>]  schedule
-Function entered at [<c023c2ec>] from [<c023afac>] 
-schedule_preempt_disabled
- r4:c74115f8 r3:00000000
-Function entered at [<c023ae3c>] from [<c023b0d4>]  __mutex_lock_slowpath
-Function entered at [<c023b0c0>] from [<c00fd640>]  mutex_lock
- r4:c7411640 r3:00000001
-Function entered at [<c00fd3e8>] from [<c005e53c>]  jffs2_write_begin
-Function entered at [<c005e454>] from [<c0060110>] 
-generic_file_buffered_write
-Function entered at [<c005fce0>] from [<c00601ac>] 
-__generic_file_aio_write
-Function entered at [<c006015c>] from [<c0086a18>]  generic_file_aio_write
- r8:fffffdee r7:c54fbf10 r6:c54fbf70 r5:c54fbe90 r4:c54fd0c0
-Function entered at [<c008696c>] from [<c00873a0>]  do_sync_write
- r8:00001000 r7:c54fbf70 r6:017969f8 r5:c54fd0c0 r4:00001000
-Function entered at [<c00872e4>] from [<c0087624>]  vfs_write
- r8:00001000 r7:00000000 r6:00083000 r5:017969f8 r4:c54fd0c0
-Function entered at [<c00875e0>] from [<c000dec0>]  sys_write
- r8:c000e044 r7:00000004 r6:0000a114 r5:00001000 r4:00000000
-
-The target system is an SoC with a dual ARMv7 (Cortex-A9), and we are 
-running the long-term 3.4.11 kernel (whose fs/jffs2/ seems to be pretty 
-close to the latest mainline kernel). The deadlock occurred when using scp 
-to copy files from a host system to the target system.
-
-The GC thread hangs in lock_page(page), the write thread hangs in the 
-first mutex_lock(&f->sem). The cause seems to be an AB-BA deadlock:
-
-jffs2_garbage_collect_live
-    mutex_lock(&f->sem)                         (A)
-    jffs2_garbage_collect_dnode [inlined]
-        jffs2_gc_fetch_page
-            read_cache_page_async
-                do_read_cache_page
-                    lock_page(page) [inlined]
-                        __lock_page             (B) ***
-
-jffs2_write_begin
-    grab_cache_page_write_begin
-        find_lock_page
-            lock_page(page)                     (B)
-    mutex_lock(&f->sem)                         (A) ***
-
-I have manually analyzed the stacks and confirmed that both threads sit on 
-the theme 'struct page'.
-
-Is this a known problem? And more importantly, is there a solution for it?
-
-Best regards,
-Thomas Betker
-
+diff --git a/doc/ubi.xml b/doc/ubi.xml
+index 6bea323..7fe01d0 100644
+--- a/doc/ubi.xml
++++ b/doc/ubi.xml
+@@ -46,6 +46,7 @@
+ 		</li>
+ 		</ol>
+ 	</li>
++	<li><a href="ubi.html#L_fastmap">Fastmap</a></li>
+ 	<li><a href="ubi.html#L_ubidoc">More documentation</a></li>
+ </ol>
+ 
+@@ -758,8 +759,12 @@ for detailed information.</p>
+ <p>Unfortunately, UBI scales linearly in terms of flash size. UBI
+ initialization time linearly depends on the number of physical eraseblocks on
+ the flash. This means that the larger is the flash, the more time it takes for
+-UBI to initialize (i.e., to attach the MTD device). The initialization time
+-depends on the flash I/O speed and (slightly) on the CPU speed, because:</p>
++UBI to initialize (i.e., to attach the MTD device).
++Note: Starting with Linux v3.7 UBI offers an optional and experimental feature,
++called "fastmap", which allows attaching in nearly constant time,
++see <a href="ubi.html#L_fastmap">Fastmap</a>.
++The initialization time depends on the flash I/O speed and (slightly) on the
++CPU speed, because:</p>
+ 
+ <ul>
+ 	<li>UBI scans the MTD device when attaching - it reads the erase EC and
+@@ -1170,7 +1175,82 @@ means that all data has been written to the flash media), otherwise it selects
+ the PEB with lower sequence number(<i>P<sub>1</sub></i>). Of course, UBI has to
+ read the LEB contents in order to check the <code>CRC-32</code> checksum.</p>
+ 
+-
++<h2><a name="L_fastmap">Fastmap</a></h2>
++<p>
++Fastmap is an experimental and optional UBI feature, which can be enabled
++by setting CONFIG_MTD_UBI_FASTMAP to 'y'.
++Once enabled UBI evaluates the module parameter
++"fm_autoconvert". If it is set to 1 (default is 0) UBI automatically enables
++fastmap for any attached image. This means UBI creates a new internal
++volume with the fastmap data such that next time the fast attach mode can be
++used.
++In the default configuration UBI will use the information stored in this
++fastmap volume to accelerate the attach procedure.
++If you want to test fastmap, set fm_autoconvert to 1 and attach a volume.</p>
++
++<h4><a name="L_fastmap_compat">Backwards compatibility</a></h4>
++<p>The fastmap on-disk data structure makes use of delete compatible volumes,
++therefore fastmap enabled images are fully backwards compatible with UBI
++implementaions which do not support fastmap. The kernel will remove the fastmap
++volumes and continue with scanning.
++This includes not only v3.6- but also v3.7+ with this option disabled.
++</p>
++
++<h4><a name="L_fastmap_tech">Technical design</a></h4>
++
++<p>A on-disk fastmap contains all information needed to attach the whole image,
++namely all erase counter values, a list of all PEBs and their state, a list of
++all volumes and their current EBA, ...
++To avoid too much writes of the fastmap it contains also a list of PEBs which
++may have changed and need a full scan while attaching.
++This list is called "fastmap pool" and has a fixed sized, 5% of the total
++amount of PEBs. Using this technique UBI needs to write the fastmap only if the
++pool contains no free PEBs. Otherwise it would have to write the fastmap each
++time when the EBA of a volume has changed.</p>
++
++<p>A fastmap consists of a super block (also known as anchor PEB) and payload
++data which can life on any PEB.
++The anchor PEB has to be located within the first 64 PEBs on the MTD device.
++It contains pointers to the remaining PEBs which carry the actual fastmap
++data. On modern NAND chips the whole fastmap fits into a single PEB.
++Hence, the anchor PEB points to itself.
++After loading the fastmap data, UBI attach information structure is created
++from it
++
++The attach process works as follows:
++<ol>
++	<li>UBI tries to find the fastmap anchor PEB,
++	if no anchor PEB was found UBI performs  traditional full scan</li>
++	<li>It follows the pointers stored in the anchor PEB and reads
++	the fastmap payload data</li>
++	<li>Then it performs a traditional scan only on PEBs in the pool
++	instead of all PEBs</li>
++</ol>
++If UBI detects that the used fastmap is invalid or corrupted it automatically
++falls back to scanning mode and performsa full scan.
++Using a CRC32 checksum and consistency checks of the internal UBI structures
++UBI is able to detect whether a fastmap is invalid or not.
++</p>
++
++<p>
++A fastmap is written to the devices each time the fastmap pool becomes full
++(no free PEBs are available), the volume layout changes or the image is
++detached. One may wonder why writing at detach time is needed.
++if UBI would not write a new fastmap at detach time all erase counter
++modifications since the last fastmap are lost.
++</p>
++
++<h4><a name="L_fastmap_overhead">Overhead</a></h4>
++<p>Is fastmap enabled UBI will reserve enough PEBs to carry two complete
++fastmaps. In practice on modern NAND chips two PEBs are reserved for fastmap.
++</p>
++<p>
++There is also some runtime overhead, to guarantee that the new fastmap is valid
++and conistent UBI has to take care that all IO which would cause EBA changes
++are blocked while attaching. Depending on flash Chip this can take up to one
++second. Therefore, fastmap makes only sense on fast and large flash devices
++where a full scan takes too long. E.g. On 4GiB NAND chips a full scan takes
++several seconds whereas a fast attach needs less than one second.</p>
+ 
+ <h2><a name="L_ubidoc">More documentation</a></h2>
+ 
 -- 
-Thomas Betker, Dept. 1GP1 
-Rohde & Schwarz GmbH & Co. KG 
-Postbox 80 14 69, 81614 Muenchen, Germany 
+1.7.11.5
