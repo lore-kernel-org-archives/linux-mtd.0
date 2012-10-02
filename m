@@ -1,21 +1,17 @@
-Received: from mga03.intel.com ([143.182.124.21])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TJ53o-0007y9-PH
- for linux-mtd@lists.infradead.org; Tue, 02 Oct 2012 16:11:05 +0000
-Message-ID: <1349194269.2017.90.camel@sauron.fi.intel.com>
-Subject: Re: [GIT PULL] UBI changes for 3.7-rc1
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 02 Oct 2012 19:11:09 +0300
-In-Reply-To: <1349184941.2017.70.camel@sauron.fi.intel.com>
-References: <1349184941.2017.70.camel@sauron.fi.intel.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-klMgBizoN9l0yC9K/j5a"
-Mime-Version: 1.0
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Reply-To: dedekind1@gmail.com
+Received: from gw1.transmode.se ([195.58.98.146])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TJ5fR-0003Kh-EY
+ for linux-mtd@lists.infradead.org; Tue, 02 Oct 2012 16:49:58 +0000
+In-Reply-To: <OFB9AE3BAC.A5615989-ONC1257A8A.0032CA58-C1257A8B.004EAAA5@rohde-schwarz.com>
+References: <OFB9AE3BAC.A5615989-ONC1257A8A.0032CA58-C1257A8B.004EAAA5@rohde-schwarz.com>
+Subject: Re: JFFS2 deadlock, kernel 3.4.11
+To: Thomas.Betker@rohde-schwarz.com
+Message-ID: <OF52EBAA51.F623F8FB-ONC1257A8B.005B88EA-C1257A8B.005BD53C@transmode.se>
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Date: Tue, 2 Oct 2012 18:43:03 +0200
+MIME-Version: 1.0
+Content-type: text/plain; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,51 +21,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+linux-mtd-bounces@lists.infradead.org wrote on 2012/10/02 16:19:10:
+>
+> Hello all,
+>
+> I have encountered multiple times a deadlock between two JFFS2 threads:
 
---=-klMgBizoN9l0yC9K/j5a
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+[SNIP]
 
-On Tue, 2012-10-02 at 16:35 +0300, Artem Bityutskiy wrote:
-> Hi Linus,
->=20
-> please, pull UBI changes.
->=20
-> The following changes since commit 4cbe5a555fa58a79b6ecbb6c531b8bab065077=
-8d:
->=20
->   Linux 3.6-rc4 (2012-09-01 10:39:58 -0700)
->=20
-> are available in the git repository at:
+>
+> The target system is an SoC with a dual ARMv7 (Cortex-A9), and we are
+> running the long-term 3.4.11 kernel (whose fs/jffs2/ seems to be pretty
+> close to the latest mainline kernel). The deadlock occurred when using scp
+> to copy files from a host system to the target system.
+>
+> The GC thread hangs in lock_page(page), the write thread hangs in the
+> first mutex_lock(&f->sem). The cause seems to be an AB-BA deadlock:
+>
+> jffs2_garbage_collect_live
+>     mutex_lock(&f->sem)                         (A)
+>     jffs2_garbage_collect_dnode [inlined]
+>         jffs2_gc_fetch_page
+>             read_cache_page_async
+>                 do_read_cache_page
+>                     lock_page(page) [inlined]
+>                         __lock_page             (B) ***
+>
+> jffs2_write_begin
+>     grab_cache_page_write_begin
+>         find_lock_page
+>             lock_page(page)                     (B)
+>     mutex_lock(&f->sem)                         (A) ***
+>
+> I have manually analyzed the stacks and confirmed that both threads sit on
+> the theme 'struct page'.
+>
 
-FYI, there will be the second pull request with another major
-experimental UBI feature. I wanted to send it separately a bit later.
+hmm, not something I have seen but your analysis seems spot on. With any luck
+you only need to move the mutex_lock in the write begin before lock_page. I
+am only guessing now though.
 
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-klMgBizoN9l0yC9K/j5a
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQaxIdAAoJECmIfjd9wqK0ZwoP/icVCW4oGXBVPz80SOPlgNUB
-shZUfNsmJZApGuBltuCPiSXfeIpMFq39kxxC9ixcRbHN4oAiYKacwP6bZhBMIeZS
-JOfJgfb0GSFklL3bxwNtCZaXImC2O8hxo5inJPRj1fbQpHvpOqrrVl7j+o/q8lbG
-C3uj66pCJxFR5ptkaFo3n2CsBduwljQYbFCGgibS2zUwyITGrR9QMB4v5HOeqDRO
-WFX723qP59RRQTQnhikt1tpJAybboC72CZOCMQQfyV7av5v1UpM0Bdm7doSOJI4z
-mtSXthshmxSA6/HUajm4L3JZ8Xb11+99dIhpa0FlNbma33gjdm9SY82zSe1LYkwy
-3SO0hlvZ0BscVxj2M3n/3k974PqG74+v6wKEHUU1UCIKOJvPeB8ytj1+jLdKKa3r
-piqWHsOmb0sjrQf6w9IJzurmZt3QJphSCtha49dypjGbXgsz81ATrfDMY1nVbvFf
-0RC493J4ZVc0f84MJ/jhs2E2UCOjJYdfjzlqskLCC7IGcygJMWYTpA64W90x3Syn
-YgvL4eESyM//GiodYMFJOGrcs7j0naaNB3bBaBgS3Ighhw+Nrl5K+zUSE+BGh0qW
-BvQJUl8iWkQuyI08eYB5vMbhKg+1PhJ/70UjF/YvwJPqADhh70xVcMpWwN2PpJXd
-V0xvXrj6yj4mvCU3ZwGC
-=ilqX
------END PGP SIGNATURE-----
-
---=-klMgBizoN9l0yC9K/j5a--
+ Jocke
