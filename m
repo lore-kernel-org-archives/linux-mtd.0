@@ -1,20 +1,19 @@
-Received: from mail-wg0-f49.google.com ([74.125.82.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TJ8ng-0001zU-Tt
- for linux-mtd@lists.infradead.org; Tue, 02 Oct 2012 20:10:42 +0000
-Received: by wgbgg4 with SMTP id gg4so2922313wgb.18
- for <linux-mtd@lists.infradead.org>; Tue, 02 Oct 2012 13:10:38 -0700 (PDT)
+From: Arnd Bergmann <arnd.bergmann@linaro.org>
+To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Subject: Re: [PATCH 2/2] mtd: sh_flctl: Add device tree support
+Date: Tue, 2 Oct 2012 20:47:49 +0000
+References: <1349183522-15321-1-git-send-email-hechtb@gmail.com>
+ <201210021354.01247.arnd@arndb.de>
+ <Pine.LNX.4.64.1210021602250.15778@axis700.grange>
+In-Reply-To: <Pine.LNX.4.64.1210021602250.15778@axis700.grange>
 MIME-Version: 1.0
-In-Reply-To: <1348746947-2349-6-git-send-email-zajec5@gmail.com>
-References: <1348746947-2349-1-git-send-email-zajec5@gmail.com>
- <1348746947-2349-6-git-send-email-zajec5@gmail.com>
-Date: Tue, 2 Oct 2012 22:10:38 +0200
-Message-ID: <CACna6rynQ4tLDrhCtGGXeULgBYr900zf6mVPXRoqyCi+M6xfiQ@mail.gmail.com>
-Subject: Re: [PATCH 6/6] bcm47xxnflash: enable BCM4706 driver
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201210022047.50064.arnd.bergmann@linaro.org>
+Cc: linux-sh@vger.kernel.org, Vikram Narayanan <vikram186@gmail.com>,
+ Magnus Damm <magnus.damm@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, Bastian Hecht <hechtb@googlemail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,10 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2012/9/27 Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>:
-> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
+On Tuesday 02 October 2012, Guennadi Liakhovetski wrote:
+> > 
+> > Since you are also adding dma-engine support, I would suggest you specify
+> > a "dmas" and "dma-names" property as well, so the device can find the
+> > right dma channel. The code might not do that yet while you're still
+> > sorting out the dependencies (and the sh dmaengine code is not yet
+> > converted to DT), but I think it would be good to nail down the binding
+> > for this device.
+> 
+> Have DMA DT bindings been accepted yet, are they fixed? Wouldn't it be 
+> better to wait until patches appear in a tree, at least with high 
+> probability heading towards the mainline, or have they already?
+> 
 
-Any news on that? Chance for 3.7 merge window maybe?
+I think they ended up not getting scheduled for 3.7, which is a bit disappointing
+after we got an agreement on the binding.  However, I am rather confident that
+we won't change the binding again, at least I don't see how they would change
+in a way that would impact the binding document for a device using a DMA channel.
 
---=20
-Rafa=C5=82
+	Arnd
