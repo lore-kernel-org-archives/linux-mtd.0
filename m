@@ -1,23 +1,14 @@
-Received: from mail-da0-f49.google.com ([209.85.210.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TJ3Xy-0001zU-JH
- for linux-mtd@lists.infradead.org; Tue, 02 Oct 2012 14:34:07 +0000
-Received: by dajq27 with SMTP id q27so2095724daj.36
- for <linux-mtd@lists.infradead.org>; Tue, 02 Oct 2012 07:34:05 -0700 (PDT)
-Message-ID: <506AFB49.6010109@gmail.com>
-Date: Tue, 02 Oct 2012 20:03:45 +0530
-From: Vikram Narayanan <vikram186@gmail.com>
-MIME-Version: 1.0
+Received: from mail02.rohde-schwarz.com ([80.246.32.97])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TJ3YY-0002Aq-OO
+ for linux-mtd@lists.infradead.org; Tue, 02 Oct 2012 14:34:43 +0000
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 8/8] mtd_nandbiterrs: Replace msg macro with pr_info
-References: <506AF985.30104@gmail.com>
-In-Reply-To: <506AF985.30104@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Iwo Mergler <Iwo.Mergler@netcommwireless.com.au>,
- Brian Norris <computersforpeace@gmail.com>,
- Adrian Hunter <ext-adrian.hunter@nokia.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+MIME-Version: 1.0
+Subject: JFFS2 deadlock, kernel 3.4.11
+From: Thomas.Betker@rohde-schwarz.com
+Message-ID: <OFB9AE3BAC.A5615989-ONC1257A8A.0032CA58-C1257A8B.004EAAA5@rohde-schwarz.com>
+Date: Tue, 2 Oct 2012 16:19:10 +0200
+Content-Type: text/plain; charset="US-ASCII"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,257 +18,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Remove msg macro and use pr_fmt to add the prefix
+Hello all, 
 
-Signed-off-by: Vikram Narayanan <vikram186@gmail.com>
----
- drivers/mtd/tests/mtd_nandbiterrs.c |   68 +++++++++++++++++-----------------
- 1 files changed, 34 insertions(+), 34 deletions(-)
+I have encountered multiple times a deadlock between two JFFS2 threads:
 
-diff --git a/drivers/mtd/tests/mtd_nandbiterrs.c b/drivers/mtd/tests/mtd_nandbiterrs.c
-index 072fc43..b94c4ac 100644
---- a/drivers/mtd/tests/mtd_nandbiterrs.c
-+++ b/drivers/mtd/tests/mtd_nandbiterrs.c
-@@ -39,6 +39,9 @@
-  * this program; see the file COPYING. If not, write to the Free Software
-  * Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-  */
-+
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
- #include <linux/init.h>
- #include <linux/module.h>
- #include <linux/moduleparam.h>
-@@ -48,8 +51,6 @@
- #include <linux/slab.h>
- #include "mtd_tests.h"
- 
--#define msg(FMT, VA...) pr_info("mtd_nandbiterrs: "FMT, ##VA)
--
- static int dev;
- module_param(dev, int, S_IRUGO);
- MODULE_PARM_DESC(dev, "MTD device number to use");
-@@ -105,11 +106,11 @@ static int write_page(int log)
- 	size_t written;
- 
- 	if (log)
--		msg("write_page\n");
-+		pr_info("write_page\n");
- 
- 	err = mtd_write(mtd, offset, mtd->writesize, &written, wbuffer);
- 	if (err || written != mtd->writesize) {
--		msg("error: write failed at %#llx\n", (long long)offset);
-+		pr_info("error: write failed at %#llx\n", (long long)offset);
- 		if (!err)
- 			err = -EIO;
- 	}
-@@ -124,7 +125,7 @@ static int rewrite_page(int log)
- 	struct mtd_oob_ops ops;
- 
- 	if (log)
--		msg("rewrite page\n");
-+		pr_info("rewrite page\n");
- 
- 	ops.mode      = MTD_OPS_RAW; /* No ECC */
- 	ops.len       = mtd->writesize;
-@@ -137,7 +138,7 @@ static int rewrite_page(int log)
- 
- 	err = mtd_write_oob(mtd, offset, &ops);
- 	if (err || ops.retlen != mtd->writesize) {
--		msg("error: write_oob failed (%d)\n", err);
-+		pr_info("error: write_oob failed (%d)\n", err);
- 		if (!err)
- 			err = -EIO;
- 	}
-@@ -154,7 +155,7 @@ static int read_page(int log)
- 	struct mtd_ecc_stats oldstats;
- 
- 	if (log)
--		msg("read_page\n");
-+		pr_info("read_page\n");
- 
- 	/* Saving last mtd stats */
- 	memcpy(&oldstats, &mtd->ecc_stats, sizeof(oldstats));
-@@ -164,7 +165,7 @@ static int read_page(int log)
- 		err = mtd->ecc_stats.corrected - oldstats.corrected;
- 
- 	if (err < 0 || read != mtd->writesize) {
--		msg("error: read failed at %#llx\n", (long long)offset);
-+		pr_info("error: read failed at %#llx\n", (long long)offset);
- 		if (err >= 0)
- 			err = -EIO;
- 	}
-@@ -178,11 +179,11 @@ static int verify_page(int log)
- 	unsigned i, errs = 0;
- 
- 	if (log)
--		msg("verify_page\n");
-+		pr_info("verify_page\n");
- 
- 	for (i = 0; i < mtd->writesize; i++) {
- 		if (rbuffer[i] != hash(i+seed)) {
--			msg("Error: page offset %u, expected %02x, got %02x\n",
-+			pr_info("Error: page offset %u, expected %02x, got %02x\n",
- 				i, hash(i+seed), rbuffer[i]);
- 			errs++;
- 		}
-@@ -207,13 +208,13 @@ static int insert_biterror(unsigned byte)
- 		for (bit = 7; bit >= 0; bit--) {
- 			if (CBIT(wbuffer[byte], bit)) {
- 				BCLR(wbuffer[byte], bit);
--				msg("Inserted biterror @ %u/%u\n", byte, bit);
-+				pr_info("Inserted biterror @ %u/%u\n", byte, bit);
- 				return 0;
- 			}
- 		}
- 		byte++;
- 	}
--	msg("biterror: Failed to find a '1' bit\n");
-+	pr_info("biterror: Failed to find a '1' bit\n");
- 	return -EIO;
- }
- 
-@@ -225,7 +226,7 @@ static int incremental_errors_test(void)
- 	unsigned i;
- 	unsigned errs_per_subpage = 0;
- 
--	msg("incremental biterrors test\n");
-+	pr_info("incremental biterrors test\n");
- 
- 	for (i = 0; i < mtd->writesize; i++)
- 		wbuffer[i] = hash(i+seed);
-@@ -242,9 +243,9 @@ static int incremental_errors_test(void)
- 
- 		err = read_page(1);
- 		if (err > 0)
--			msg("Read reported %d corrected bit errors\n", err);
-+			pr_info("Read reported %d corrected bit errors\n", err);
- 		if (err < 0) {
--			msg("After %d biterrors per subpage, read reported error %d\n",
-+			pr_info("After %d biterrors per subpage, read reported error %d\n",
- 				errs_per_subpage, err);
- 			err = 0;
- 			goto exit;
-@@ -252,11 +253,11 @@ static int incremental_errors_test(void)
- 
- 		err = verify_page(1);
- 		if (err) {
--			msg("ECC failure, read data is incorrect despite read success\n");
-+			pr_info("ECC failure, read data is incorrect despite read success\n");
- 			goto exit;
- 		}
- 
--		msg("Successfully corrected %d bit errors per subpage\n",
-+		pr_info("Successfully corrected %d bit errors per subpage\n",
- 			errs_per_subpage);
- 
- 		for (i = 0; i < subcount; i++) {
-@@ -288,7 +289,7 @@ static int overwrite_test(void)
- 
- 	memset(bitstats, 0, sizeof(bitstats));
- 
--	msg("overwrite biterrors test\n");
-+	pr_info("overwrite biterrors test\n");
- 
- 	for (i = 0; i < mtd->writesize; i++)
- 		wbuffer[i] = hash(i+seed);
-@@ -306,18 +307,18 @@ static int overwrite_test(void)
- 		err = read_page(0);
- 		if (err >= 0) {
- 			if (err >= MAXBITS) {
--				msg("Implausible number of bit errors corrected\n");
-+				pr_info("Implausible number of bit errors corrected\n");
- 				err = -EIO;
- 				break;
- 			}
- 			bitstats[err]++;
- 			if (err > max_corrected) {
- 				max_corrected = err;
--				msg("Read reported %d corrected bit errors\n",
-+				pr_info("Read reported %d corrected bit errors\n",
- 					err);
- 			}
- 		} else { /* err < 0 */
--			msg("Read reported error %d\n", err);
-+			pr_info("Read reported error %d\n", err);
- 			err = 0;
- 			break;
- 		}
-@@ -325,7 +326,7 @@ static int overwrite_test(void)
- 		err = verify_page(0);
- 		if (err) {
- 			bitstats[max_corrected] = opno;
--			msg("ECC failure, read data is incorrect despite read success\n");
-+			pr_info("ECC failure, read data is incorrect despite read success\n");
- 			break;
- 		}
- 
-@@ -334,9 +335,9 @@ static int overwrite_test(void)
- 
- 	/* At this point bitstats[0] contains the number of ops with no bit
- 	 * errors, bitstats[1] the number of ops with 1 bit error, etc. */
--	msg("Bit error histogram (%d operations total):\n", opno);
-+	pr_info("Bit error histogram (%d operations total):\n", opno);
- 	for (i = 0; i < max_corrected; i++)
--		msg("Page reads with %3d corrected bit errors: %d\n",
-+		pr_info("Page reads with %3d corrected bit errors: %d\n",
- 			i, bitstats[i]);
- 
- exit:
-@@ -347,36 +348,35 @@ static int __init mtd_nandbiterrs_init(void)
- {
- 	int err = 0;
- 
--	msg("\n");
--	msg("==================================================\n");
--	msg("MTD device: %d\n", dev);
-+	printk(KERN_INFO "\n==================================================\n");
-+	pr_info("MTD device: %d\n", dev);
- 
- 	mtd = get_mtd_device(NULL, dev);
- 	if (IS_ERR(mtd)) {
- 		err = PTR_ERR(mtd);
--		msg("error: cannot get MTD device\n");
-+		pr_info("error: cannot get MTD device\n");
- 		goto exit_mtddev;
- 	}
- 
- 	if (mtd->type != MTD_NANDFLASH) {
--		msg("this test requires NAND flash\n");
-+		pr_info("this test requires NAND flash\n");
- 		err = -ENODEV;
- 		goto exit_nand;
- 	}
- 
--	msg("MTD device size %llu, eraseblock=%u, page=%u, oob=%u\n",
-+	pr_info("MTD device size %llu, eraseblock=%u, page=%u, oob=%u\n",
- 		(unsigned long long)mtd->size, mtd->erasesize,
- 		mtd->writesize, mtd->oobsize);
- 
- 	subsize  = mtd->writesize >> mtd->subpage_sft;
- 	subcount = mtd->writesize / subsize;
- 
--	msg("Device uses %d subpages of %d bytes\n", subcount, subsize);
-+	pr_info("Device uses %d subpages of %d bytes\n", subcount, subsize);
- 
- 	offset     = page_offset * mtd->writesize;
- 	eraseblock = mtd_div_by_eb(offset, mtd);
- 
--	msg("Using page=%u, offset=%llu, eraseblock=%u\n",
-+	pr_info("Using page=%u, offset=%llu, eraseblock=%u\n",
- 		page_offset, offset, eraseblock);
- 
- 	wbuffer = kmalloc(mtd->writesize, GFP_KERNEL);
-@@ -409,8 +409,8 @@ static int __init mtd_nandbiterrs_init(void)
- 		goto exit_error;
- 
- 	err = -EIO;
--	msg("finished successfully.\n");
--	msg("==================================================\n");
-+	pr_info("finished successfully.\n");
-+	printk(KERN_INFO "==================================================\n");
- 
- exit_error:
- 	kfree(rbuffer);
+INFO: task jffs2_gcd_mtd5:54 blocked for more than 120 seconds.
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+jffs2_gcd_mtd5  D c023be78     0    54      2 0x00000000
+Backtrace:
+Function entered at [<c023babc>] from [<c023c0c0>]  __schedule
+Function entered at [<c023c03c>] from [<c023c140>]  schedule
+Function entered at [<c023c0c4>] from [<c005ee64>]  io_schedule
+ r6:c7942380 r5:c0414a50 r4:c541bd34 r3:00000001
+Function entered at [<c005ee54>] from [<c023a328>]  sleep_on_page
+Function entered at [<c023a2cc>] from [<c005ee44>]  __wait_on_bit_lock
+Function entered at [<c005edd8>] from [<c005f3f0>]  __lock_page
+ r6:c7411728 r5:00000083 r4:c034d720
+Function entered at [<c005f2fc>] from [<c005f4b8>]  do_read_cache_page
+Function entered at [<c005f498>] from [<c0108990>]  read_cache_page_async
+Function entered at [<c0108968>] from [<c0105834>]  jffs2_gc_fetch_page
+ r4:c74115f8 r3:c541be60
+Function entered at [<c0104fa8>] from [<c01064e4>] 
+jffs2_garbage_collect_live
+Function entered at [<c0105e1c>] from [<c0107820>] 
+jffs2_garbage_collect_pass
+Function entered at [<c01076dc>] from [<c0033198>] 
+jffs2_garbage_collect_thread
+Function entered at [<c0033108>] from [<c001d5f0>]  kthread
+ r7:00000013 r6:c001d5f0 r5:c0033108 r4:c79b9d84
+
+INFO: task scp:158 blocked for more than 120 seconds.
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+scp             D c023be78     0   158    157 0x00000000
+Backtrace:
+Function entered at [<c023babc>] from [<c023c0c0>]  __schedule
+Function entered at [<c023c03c>] from [<c023c314>]  schedule
+Function entered at [<c023c2ec>] from [<c023afac>] 
+schedule_preempt_disabled
+ r4:c74115f8 r3:00000000
+Function entered at [<c023ae3c>] from [<c023b0d4>]  __mutex_lock_slowpath
+Function entered at [<c023b0c0>] from [<c00fd640>]  mutex_lock
+ r4:c7411640 r3:00000001
+Function entered at [<c00fd3e8>] from [<c005e53c>]  jffs2_write_begin
+Function entered at [<c005e454>] from [<c0060110>] 
+generic_file_buffered_write
+Function entered at [<c005fce0>] from [<c00601ac>] 
+__generic_file_aio_write
+Function entered at [<c006015c>] from [<c0086a18>]  generic_file_aio_write
+ r8:fffffdee r7:c54fbf10 r6:c54fbf70 r5:c54fbe90 r4:c54fd0c0
+Function entered at [<c008696c>] from [<c00873a0>]  do_sync_write
+ r8:00001000 r7:c54fbf70 r6:017969f8 r5:c54fd0c0 r4:00001000
+Function entered at [<c00872e4>] from [<c0087624>]  vfs_write
+ r8:00001000 r7:00000000 r6:00083000 r5:017969f8 r4:c54fd0c0
+Function entered at [<c00875e0>] from [<c000dec0>]  sys_write
+ r8:c000e044 r7:00000004 r6:0000a114 r5:00001000 r4:00000000
+
+The target system is an SoC with a dual ARMv7 (Cortex-A9), and we are 
+running the long-term 3.4.11 kernel (whose fs/jffs2/ seems to be pretty 
+close to the latest mainline kernel). The deadlock occurred when using scp 
+to copy files from a host system to the target system.
+
+The GC thread hangs in lock_page(page), the write thread hangs in the 
+first mutex_lock(&f->sem). The cause seems to be an AB-BA deadlock:
+
+jffs2_garbage_collect_live
+    mutex_lock(&f->sem)                         (A)
+    jffs2_garbage_collect_dnode [inlined]
+        jffs2_gc_fetch_page
+            read_cache_page_async
+                do_read_cache_page
+                    lock_page(page) [inlined]
+                        __lock_page             (B) ***
+
+jffs2_write_begin
+    grab_cache_page_write_begin
+        find_lock_page
+            lock_page(page)                     (B)
+    mutex_lock(&f->sem)                         (A) ***
+
+I have manually analyzed the stacks and confirmed that both threads sit on 
+the theme 'struct page'.
+
+Is this a known problem? And more importantly, is there a solution for it?
+
+Best regards,
+Thomas Betker
+
 -- 
-1.7.4.1
+Thomas Betker, Dept. 1GP1 
+Rohde & Schwarz GmbH & Co. KG 
+Postbox 80 14 69, 81614 Muenchen, Germany 
