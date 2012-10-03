@@ -1,18 +1,24 @@
-Received: from mail.free-electrons.com ([88.190.12.23])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TJTTK-0007SY-TG
- for linux-mtd@lists.infradead.org; Wed, 03 Oct 2012 18:15:04 +0000
-Date: Wed, 3 Oct 2012 20:14:47 +0200
-From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-To: Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH] mtd-www: Add fastmap doc
-Message-ID: <20121003201447.18ad7d2e@skate>
-In-Reply-To: <1349191749-5247-1-git-send-email-richard@nod.at>
-References: <1349191749-5247-1-git-send-email-richard@nod.at>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
+Date: Wed, 3 Oct 2012 20:54:58 +0200
+From: Ivan Djelic <ivan.djelic@parrot.com>
+To: "Philip, Avinash" <avinashphilip@ti.com>
+Subject: Re: [PATCH 3/4] ARM: OMAP2: gpmc: Add support for BCH ECC scheme
+Message-ID: <20121003185458.GA27502@parrot.com>
+References: <1349274589-11389-1-git-send-email-avinashphilip@ti.com>
+ <1349274589-11389-4-git-send-email-avinashphilip@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1349274589-11389-4-git-send-email-avinashphilip@ti.com>
+Cc: "afzal@ti.com" <afzal@ti.com>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "tony@atomide.com" <tony@atomide.com>,
+ "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,135 +28,129 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Richard,
+On Wed, Oct 03, 2012 at 03:29:48PM +0100, Philip, Avinash wrote:
+> Add support for BCH ECC scheme to gpmc driver and also enabling multi
+> sector read/write. This helps in doing single shot NAND page read and
+> write.
+> 
+> ECC engine configurations
+> BCH 4 bit support
+> 1. write => ECC engine configured in wrap mode 6 and with ecc_size0 as 32.
+> 2. read  => ECC engine configured in wrap mode 1 and with ecc_size0 as
+> 13 and ecc_size1 as 1.
+> 
+> BCH 8 bit support
+> 1. write => ECC engine configured in wrap mode 6 and with ecc_size0 as 32.
+> 2. read  => ECC engine configured in wrap mode 1 and with ecc_size0 as
+> 26 and ecc_size1 as 2.
+> 
+> Note: For BCH8 ECC bytes set to 14 to make compatible with RBL.
+> 
 
-Here is a quick review, with only minor comments.
+Hi Philip,
 
-On Tue,  2 Oct 2012 17:29:09 +0200, Richard Weinberger wrote:
+I have a few comments/questions below,
 
-> +<h2><a name="L_fastmap">Fastmap</a></h2>
-> +<p>
-> +Fastmap is an experimental and optional UBI feature, which can be enabled
-> +by setting CONFIG_MTD_UBI_FASTMAP to 'y'.
-> +Once enabled UBI evaluates the module parameter
-> +"fm_autoconvert". If it is set to 1 (default is 0) UBI automatically enables
-> +fastmap for any attached image. This means UBI creates a new internal
-> +volume with the fastmap data such that next time the fast attach mode can be
-> +used.
-> +In the default configuration UBI will use the information stored in this
-> +fastmap volume to accelerate the attach procedure.
-> +If you want to test fastmap, set fm_autoconvert to 1 and attach a volume.</p>
-
-It would probably be good to explain what happens when
-fm_autoconvert=0. I guess that images are then not automatically
-converted, but then how does one creates a new image that has the
-fastmap feature built-in? I haven't followed the whole discussion, are
-changes to mtd-utils tools like ubinize planned?
-
-> +<h4><a name="L_fastmap_compat">Backwards compatibility</a></h4>
-> +<p>The fastmap on-disk data structure makes use of delete compatible volumes,
-> +therefore fastmap enabled images are fully backwards compatible with UBI
-
-backwards -> backward (but I'm not 100%, I'm not a native speaker)
-
-> +implementaions which do not support fastmap. The kernel will remove the fastmap
-
-implementations
-
-> +volumes and continue with scanning.
-> +This includes not only v3.6- but also v3.7+ with this option disabled.
-> +</p>
-> +
-> +<h4><a name="L_fastmap_tech">Technical design</a></h4>
-> +
-> +<p>A on-disk fastmap contains all information needed to attach the whole image,
-> +namely all erase counter values, a list of all PEBs and their state, a list of
-> +all volumes and their current EBA, ...
-> +To avoid too much writes of the fastmap it contains also a list of PEBs which
-
-it also contains
-
-> +may have changed and need a full scan while attaching.
-> +This list is called "fastmap pool" and has a fixed sized, 5% of the total
-> +amount of PEBs. Using this technique UBI needs to write the fastmap only if the
-> +pool contains no free PEBs. Otherwise it would have to write the fastmap each
-> +time when the EBA of a volume has changed.</p>
-
-each time when the EBA -> each time the EBA
-
-> +<p>A fastmap consists of a super block (also known as anchor PEB) and payload
-> +data which can life on any PEB.
-
-life -> live.
-
-> +The anchor PEB has to be located within the first 64 PEBs on the MTD device.
-> +It contains pointers to the remaining PEBs which carry the actual fastmap
-> +data. On modern NAND chips the whole fastmap fits into a single PEB.
-> +Hence, the anchor PEB points to itself.
-> +After loading the fastmap data, UBI attach information structure is created
-> +from it
-
-Nitpick: missing dot at end of sentence.
-
-> +The attach process works as follows:
-> +<ol>
-> +	<li>UBI tries to find the fastmap anchor PEB,
-> +	if no anchor PEB was found UBI performs  traditional full scan</li>
-> +	<li>It follows the pointers stored in the anchor PEB and reads
-> +	the fastmap payload data</li>
-> +	<li>Then it performs a traditional scan only on PEBs in the pool
-> +	instead of all PEBs</li>
-> +</ol>
-> +If UBI detects that the used fastmap is invalid or corrupted it automatically
-> +falls back to scanning mode and performsa full scan.
-
-performsa -> performs a
-
-> +Using a CRC32 checksum and consistency checks of the internal UBI structures
-> +UBI is able to detect whether a fastmap is invalid or not.
-> +</p>
-> +
-> +<p>
-> +A fastmap is written to the devices each time the fastmap pool becomes full
-> +(no free PEBs are available), the volume layout changes or the image is
-> +detached. One may wonder why writing at detach time is needed.
-> +if UBI would not write a new fastmap at detach time all erase counter
-> +modifications since the last fastmap are lost.
-
-"since the last fastmap write" maybe?
-
-> +</p>
-> +
-> +<h4><a name="L_fastmap_overhead">Overhead</a></h4>
-> +<p>Is fastmap enabled UBI will reserve enough PEBs to carry two complete
-> +fastmaps.
-
-If fastmap is enabled UBI ...
-
-> In practice on modern NAND chips two PEBs are reserved for fastmap.
-> +</p>
-> +<p>
-> +There is also some runtime overhead, to guarantee that the new fastmap is valid
-> +and conistent UBI has to take care that all IO which would cause EBA changes
-
-consistent
-
-> +are blocked while attaching. Depending on flash Chip this can take up to one
-
-flash Chip -> flash chips
-
-> +second. Therefore, fastmap makes only sense on fast and large flash devices
-> +where a full scan takes too long. E.g. On 4GiB NAND chips a full scan takes
-> +several seconds whereas a fast attach needs less than one second.</p>
+(...)
+> diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
+> index 72428bd..c9bc3cf 100644
+> --- a/arch/arm/mach-omap2/gpmc.c
+> +++ b/arch/arm/mach-omap2/gpmc.c
+> @@ -24,6 +24,7 @@
+>  #include <linux/io.h>
+>  #include <linux/module.h>
+>  #include <linux/interrupt.h>
+> +#include <linux/mtd/nand.h>
 >  
->  <h2><a name="L_ubidoc">More documentation</a></h2>
+>  #include <asm/mach-types.h>
+>  #include <plat/gpmc.h>
+> @@ -83,6 +84,18 @@
+>  #define ENABLE_PREFETCH		(0x1 << 7)
+>  #define DMA_MPU_MODE		2
 >  
+> +/* GPMC ecc engine settings for read */
+> +#define BCH_WRAPMODE_1		1	/* BCH wrap mode 6 */
+
+Comment should say "mode 1".
+
+(...)
+>  /**
+> + * gpmc_calculate_ecc_bch	- Generate ecc bytes per block of 512 data bytes for entire page
+> + * @cs:  chip select number
+> + * @dat: The pointer to data on which ECC is computed
+> + * @ecc: The ECC output buffer
+> + */
+> +int gpmc_calculate_ecc_bch(int cs, const u_char *dat, u_char *ecc)
+> +{
+> +	int i, eccbchtsel;
+> +	u32 nsectors, reg, bch_val1, bch_val2, bch_val3, bch_val4;
+> +
+> +	if (gpmc_ecc_used != cs)
+> +		return -EINVAL;
+> +
+> +	/* read number of sectors for ecc to be calculated */
+> +	nsectors = ((gpmc_read_reg(GPMC_ECC_CONFIG) >> 4) & 0x7) + 1;
+> +	/*
+> +	 * find BCH scheme used
+> +	 * 0 -> BCH4
+> +	 * 1 -> BCH8
+> +	 */
+> +	eccbchtsel = ((gpmc_read_reg(GPMC_ECC_CONFIG) >> 12) & 0x3);
+> +
+> +	/* update ecc bytes for entire page */
+> +	for (i = 0; i < nsectors; i++) {
+> +
+> +		reg = GPMC_ECC_BCH_RESULT_0 + 16 * i;
+> +
+> +		/* Read hw-computed remainder */
+> +		bch_val1 = gpmc_read_reg(reg + 0);
+> +		bch_val2 = gpmc_read_reg(reg + 4);
+> +		if (eccbchtsel) {
+> +			bch_val3 = gpmc_read_reg(reg + 8);
+> +			bch_val4 = gpmc_read_reg(reg + 12);
+> +		}
+> +
+> +		if (eccbchtsel) {
+> +			/* BCH8 ecc scheme */
+> +			*ecc++ = (bch_val4 & 0xFF);
+> +			*ecc++ = ((bch_val3 >> 24) & 0xFF);
+> +			*ecc++ = ((bch_val3 >> 16) & 0xFF);
+> +			*ecc++ = ((bch_val3 >> 8) & 0xFF);
+> +			*ecc++ = (bch_val3 & 0xFF);
+> +			*ecc++ = ((bch_val2 >> 24) & 0xFF);
+> +			*ecc++ = ((bch_val2 >> 16) & 0xFF);
+> +			*ecc++ = ((bch_val2 >> 8) & 0xFF);
+> +			*ecc++ = (bch_val2 & 0xFF);
+> +			*ecc++ = ((bch_val1 >> 24) & 0xFF);
+> +			*ecc++ = ((bch_val1 >> 16) & 0xFF);
+> +			*ecc++ = ((bch_val1 >> 8) & 0xFF);
+> +			*ecc++ = (bch_val1 & 0xFF);
+> +			/* 14th byte of ecc not used */
+> +			*ecc++ = 0;
+> +		} else {
+> +			/* BCH4 ecc scheme */
+> +			*ecc++ = ((bch_val2 >> 12) & 0xFF);
+> +			*ecc++ = ((bch_val2 >> 4) & 0xFF);
+> +			*ecc++ = (((bch_val2 & 0xF) << 4) |
+> +					((bch_val1 >> 28) & 0xF));
+> +			*ecc++ = ((bch_val1 >> 20) & 0xFF);
+> +			*ecc++ = ((bch_val1 >> 12) & 0xFF);
+> +			*ecc++ = ((bch_val1 >> 4) & 0xFF);
+> +			*ecc++ = ((bch_val1 & 0xF) << 4);
+> +		}
+> +	}
+> +
+> +	gpmc_ecc_used = -EINVAL;
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(gpmc_calculate_ecc_bch);
+
+Here you introduce a function very similar to gpmc_calculate_ecc_bch4 and
+gpmc_calculate_ecc_bch8, but without the added benefit (IMHO) of the constant
+polynomial that allows to get an ecc sequence of 0xFFs for a buffer filled with
+0xFFs. Why ?
+If using the ELM prevents you from reusing gpmc_calculate_ecc_bch[48], could you explain in which way ?
 
 Best regards,
-
-Thomas
--- 
-Thomas Petazzoni, Free Electrons
-Kernel, drivers, real-time and embedded Linux
-development, consulting, training and support.
-http://free-electrons.com
+--
+Ivan
