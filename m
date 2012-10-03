@@ -1,25 +1,16 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TJNp7-00008P-67
- for linux-mtd@lists.infradead.org; Wed, 03 Oct 2012 12:13:09 +0000
-Message-ID: <1349266385.20373.0.camel@sauron.fi.intel.com>
-Subject: Re: UBI: Fastmap request for inclusion (v19)
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Date: Wed, 03 Oct 2012 15:13:05 +0300
-In-Reply-To: <1349262302.2017.141.camel@sauron.fi.intel.com>
-References: <1348674710-102885-1-git-send-email-richard@nod.at>
- <1349252745.2017.120.camel@sauron.fi.intel.com>
- <20121003103625.0bbff63c@spider.haslach.nod.at>
- <1349262302.2017.141.camel@sauron.fi.intel.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-15egdv+XWJ6LdN4cG6vm"
-Mime-Version: 1.0
-Cc: Heinz.Egger@linutronix.de, tglx@linutronix.de,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- tim.bird@am.sony.com
-Reply-To: dedekind1@gmail.com
+From: "Philip, Avinash" <avinashphilip@ti.com>
+To: <dwmw2@infradead.org>, <artem.bityutskiy@linux.intel.com>,
+ <tony@atomide.com>
+Subject: [PATCH 0/4] mtd: nand: OMAP: Add support to use ELM as error
+ correction module
+Date: Wed, 3 Oct 2012 19:59:45 +0530
+Message-ID: <1349274589-11389-1-git-send-email-avinashphilip@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: afzal@ti.com, linux-doc@vger.kernel.org,
+ devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, ivan.djelic@parrot.com,
+ linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,46 +20,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Adds support to use ELM as BCH 4 & 8 bit error correction module and
+adds support for single shot read_page and write_page functions
 
---=-15egdv+XWJ6LdN4cG6vm
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Platforms containing the ELM module can be used to correct errors
+reported by BCH 4, 8 & 16 bit ECC scheme. For now only 4 & 8 bit
+support is added.
 
-On Wed, 2012-10-03 at 14:05 +0300, Artem Bityutskiy wrote:
-> ERROR: "ubi_update_fastmap" [drivers/mtd/ubi/ubi.ko] undefined!
-> ERROR: "ubi_scan_fastmap" [drivers/mtd/ubi/ubi.ko] undefined!
-> ERROR: "ubi_calc_fm_size" [drivers/mtd/ubi/ubi.ko] undefined!
->=20
-> Please, see branch 'linux-next' in UBI to see what I actually tested.
+BCH 4 & 8 bit error detection support is already available in mainline
+kernel and works with software error correction.
 
-Sorry, I did not apply your patch correctly, now it builds without
-issues.
+This series is based on top of [1] &[2]
 
---=20
-Best Regards,
-Artem Bityutskiy
+1. linux-next/master
+2. linux-omap-dt/for_3.7/dts_part2
 
---=-15egdv+XWJ6LdN4cG6vm
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Nand driver tested for BCH 4 & 8 bit error correction per sector.
+This being tested by introducing bit errors at multiple sectors inside page.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+Philip, Avinash (4):
+  mtd: nand: omap2: Update nerrors using ecc.strength
+  mtd: devices: elm: Add support for ELM error correction
+  ARM: OMAP2: gpmc: Add support for BCH ECC scheme
+  mtd: nand: omap2: Add data correction support
 
-iQIcBAABAgAGBQJQbCvRAAoJECmIfjd9wqK0OWkP/2DgAOLfy9n0jnqcxRICl6kG
-hnMoO+bRhbAzzgZa9JF02WGNoczVuhl2EN/BZR9WsiXjWWWdle9GmsCpnGLMI4vZ
-HdpsscbH8/9TS1ZZ67JCV1WVzd/pS3zJq37Wlp8vCqGNrdNWnkJ0p0rGkeKQqYRD
-6Cuy01fSndOw0QpEmcO4TDAzyiE1nR96h8IW0bZivzh9NdCLoPW2J3QsxsuqtCxx
-XWGR++dr/Gihcnqy6GGi8pStjzElV0GpOuX4eBruUG+TNkSRya0PLT76Y9Z4OC+y
-kf7H/Sjkbhl9sWsMmkyvMgXl/O12fouQ5Emzjn0DAIRdg6lxblAoEFSoQN70JR/g
-2MiTFgBBLA3zUoLS9LTOyM/LmSmBOr1xSUepGslgcoOHxK6CoYyDd8ruiSLP3jcG
-Wu5QN/hsBYGMD99ypZ+ATjKuOaln+kUWafrvScTDbQTMAo0vrv1F9CQU4jseg2wy
-937iMVUzyYNI/ARvOAwiMZXl4PmmHBaVD05SdDeHMk5pvWHIRCTBfPsRk0BB/AD5
-ck2RFAQ/JldpnG28NZzGMsiIjyGj7BMkf6X/4Ovd4gWzMe9Q0wscw25i+Xc5nwEg
-e19lNW8F16i264jR/2DlTqrRpO1H7OhDKRcrTzRsKmWQ0U9ZAFg221AwAPEdzl0O
-x8Zkkny9JSjraNgjPV7t
-=X0sa
------END PGP SIGNATURE-----
-
---=-15egdv+XWJ6LdN4cG6vm--
+ arch/arm/mach-omap2/gpmc.c                   |  120 +++++++-
+ arch/arm/plat-omap/include/plat/gpmc.h       |    1 +
+ drivers/mtd/devices/Makefile                 |    4 +-
+ drivers/mtd/devices/elm.c                    |  446 ++++++++++++++++++++++++++
+ drivers/mtd/nand/omap2.c                     |  368 +++++++++++++++++++--
+ include/linux/platform_data/elm.h            |   64 ++++
+ include/linux/platform_data/mtd-nand-omap2.h |    1 +
+ 7 files changed, 958 insertions(+), 46 deletions(-)
+ create mode 100644 drivers/mtd/devices/elm.c
+ create mode 100644 include/linux/platform_data/elm.h
