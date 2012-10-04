@@ -1,20 +1,20 @@
-Received: from mail.bmail.ru ([194.67.1.203] helo=sovam.com)
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TJUjP-0003ol-18
- for linux-mtd@lists.infradead.org; Wed, 03 Oct 2012 19:35:43 +0000
-Received: from 95-27-144-207.broadband.corbina.ru (account bas@bmail.ru
- [95.27.144.207] verified)
- by mail-fe04.sovam.com (CommuniGate Pro SMTP 5.2.20)
- with ESMTPSA id 141939798 for linux-mtd@lists.infradead.org;
- Wed, 03 Oct 2012 23:30:31 +0400
-Date: Wed, 3 Oct 2012 23:30:29 +0400 (MSK)
-From: kyak <bas@bmail.ru>
+Received: from mail-out.m-online.net ([212.18.0.10])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TJZA7-0002jU-Q1
+ for linux-mtd@lists.infradead.org; Thu, 04 Oct 2012 00:19:36 +0000
+From: Marek Vasut <marex@denx.de>
 To: linux-mtd@lists.infradead.org
-Subject: output file cannot be in the UBIFS root directory check is not
- working quite well
-Message-ID: <alpine.LNX.2.02.1210032322590.1375@bas>
+Subject: Re: RFC : attach ubi in readonly mode
+Date: Thu, 4 Oct 2012 02:18:25 +0200
+References: <4F2BE3C1.8000104@parrot.com>
+In-Reply-To: <4F2BE3C1.8000104@parrot.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; format=flowed; charset=US-ASCII
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201210040218.25801.marex@denx.de>
+Cc: Matthieu CASTET <matthieu.castet@parrot.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,22 +24,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Dear Matthieu CASTET,
 
-Consider the following sequence of commands:
+> Hi,
+> 
+> it could be interesting to attach ubi in read-only mode (for example
+> getting ubi volume info without altering flash).
+> 
+> A solution to do that could be to add an argument to UBI_IOCATT ioctl.
+> 
+> Another solution should be to have a way to switch MTD_WRITEABLE flags.
+> 
+> What do you think a that ?
+> 
+> 
+> PS : attached a proof of concept for solution 1
 
-cd ~
-mkdir -p /tmp/wtf/wtf1
-chmod u-r /tmp/wtf
-mkfs.ubifs -m 4096 -e 516096 -c 4095 -d /tmp/wtf/wtf1 -o mytest.img
-Error: output file cannot be in the UBIFS root directory
+Did you get any further with this patches? Is it now possible to safely mount 
+UBIFS in read-only mode in some way please?
 
-mytest.img is not inside /tmp/wtf/wtf1, but mkfs.ubifs fails because 
-/tmp/wtf is not readable.
-It seems that implementation of in_path(..) in mkfs.ubifs.c is not quite 
-correct to handle this type of situations.
+Thanks!
 
-If you are wondering, my /home is not readable, and this prevents me from 
-building any ubifs image inside of /home/user.
-
-Thanks in advance.
+Best regards,
+Marek Vasut
