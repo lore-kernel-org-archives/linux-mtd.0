@@ -1,21 +1,21 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TJna1-0002a9-P4
- for linux-mtd@lists.infradead.org; Thu, 04 Oct 2012 15:43:18 +0000
-Message-ID: <1349365389.20373.72.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] [MTD] slram: Invalid checking of absolute end address
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jiri Engelthaler <engycz@gmail.com>
-Date: Thu, 04 Oct 2012 18:43:09 +0300
-In-Reply-To: <CAHODtZQEbc8d-U+MWY=dkZUfAJ-z0xOXMUXSWgg8Zotmicz0Ww@mail.gmail.com>
-References: <CAHODtZT6UP4BCHuugpSr6q2=KoTDiGuW_hG_fqjWG7cXcTE35A@mail.gmail.com>
- <CAHODtZQEbc8d-U+MWY=dkZUfAJ-z0xOXMUXSWgg8Zotmicz0Ww@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-jNUSBilWyPV0fXeiuXon"
-Mime-Version: 1.0
+Received: from gw1.transmode.se ([195.58.98.146])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TJo5a-0003Eb-Mq
+ for linux-mtd@lists.infradead.org; Thu, 04 Oct 2012 16:15:55 +0000
+In-Reply-To: <OFD47DAD5E.85DB9677-ONC1257A8D.003FBACE-C1257A8D.004EC32A@rohde-schwarz.com>
+References: <OFB9AE3BAC.A5615989-ONC1257A8A.0032CA58-C1257A8B.004EAAA5@rohde-schwarz.com>
+ <OF52EBAA51.F623F8FB-ONC1257A8B.005B88EA-C1257A8B.005BD53C@transmode.se>
+ <OFF2FAA55C.4813D4C0-ONC1257A8B.0060F9EA-C1257A8B.00634CA4@transmode.se>
+ <OF930A0EE5.DA214D86-ONC1257A8B.00673BC9-C1257A8B.0067E92C@transmode.se>
+ <OFD47DAD5E.85DB9677-ONC1257A8D.003FBACE-C1257A8D.004EC32A@rohde-schwarz.com>
+Subject: Re: JFFS2 deadlock, kernel 3.4.11
+To: Thomas.Betker@rohde-schwarz.com
+Message-ID: <OF422CEB2B.7CB3BECB-ONC1257A8D.0058F723-C1257A8D.00595592@transmode.se>
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Date: Thu, 4 Oct 2012 18:15:46 +0200
+MIME-Version: 1.0
+Content-type: text/plain; charset=US-ASCII
 Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,55 +25,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Thomas.Betker@rohde-schwarz.com wrote on 2012/10/04 16:20:16:
+>
+> Hello Joakim,
+>
+> (sorry if the indentation is wrong, I have not yet found out how to do
+> this in Lotus Notes):
 
---=-jNUSBilWyPV0fXeiuXon
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Try Reply With Internet-style History (We use Notes here too)
 
-On Thu, 2012-09-20 at 16:49 +0200, Jiri Engelthaler wrote:
-> Fixed parsing end absolute address
-> Signed-off-by: Jiri Engelthaler <engycz@gmail.com>
-> ---
-> --- linux-3.2.28/drivers/mtd/devices/slram.c	2012-08-19 19:15:38.00000000=
-0 +0200
-> +++ linux-3.2.28.mod/drivers/mtd/devices/slram.c	2012-09-19
-> 18:29:28.012740703 +0200
-> @@ -266,7 +266,7 @@ static int parse_cmdline(char *devname,
->=20
->  	if (*(szlength) !=3D '+') {
->  		devlength =3D simple_strtoul(szlength, &buffer, 0);
-> -		devlength =3D handle_unit(devlength, buffer) - devstart;
-> +		devlength =3D handle_unit(devlength, buffer);
->  		if (devlength < devstart)
->  			goto err_out;
+>
+> [Joakim Tjernlund]
+> So maybe this will help(not even compile tested), don't know if
+> jffs2_reserve_space()
+> can be called with f->sem held.
+> If this is bad, then perhaps move pg =
+> grab_cache_page_write_begin(mapping, index, flags)
+> to later in this function somehow?
+> [/Joakim Tjernlund]
+>
+> jffs2_reserve_space() must not be called with f->sem held because it
+> acquires c->alloc_sem.
 
-Pushed to l2-mtd.git, thanks!
+hmm, are you sure? Did it fail?
+As far as I can see jffs2_garbage_collect_live() does this.
 
---=20
-Best Regards,
-Artem Bityutskiy
+>
+> So I have moved mutex_lock(&f->sem) and grab_cache_page_write_begin()
+> after jffs2_reserve_space(). Attached is my 3.4.11 patch (which is based
+> on your patch) for review; I hope it is not mangled by Lotus Notes ...
 
---=-jNUSBilWyPV0fXeiuXon
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+don't have time to look ATM
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQba6NAAoJECmIfjd9wqK0ploQAJxeaE3uCrhImDoWogoXnZoq
-C3zMSxmpdjpTdZFA1881LWPAumB/hacqyftB1R9rkaPPBEG27QaQmxbb2wFtXRda
-v+Jx/RCzGmWW1w0fLC4oKIDqDUJ0GzLF0vuYGAIcKC49jpjPqxY3T5u18COnAXP4
-0mnzlBy0kJnZKbOJa5sqLZWuJxiRCVEFjIvi895F2zd9lDHR8QGrvRNf20NrObfs
-S5gX+TLF641HmpBtekspuiqeCB21n8A8tabYVt5xMsI1XmLeT46RywMfjdOTZLLJ
-NZsxnV/2J4mcZuxUk5oULhnuLO5N+hI7QyxRPYjwbJSM1MFySExvpPZ80yj9nI1V
-2wD5f//8W3lrXbYWqUiDBmCHn6SJ5aO9zGJzg6286eDOmqEMCpPJgPXO72BWFhnS
-WK8DMyjr9fCgzCtwX3yOjKXuYSGoKyvtDnja1KsdxfvURgva0W+rlIJNVwPSS3aV
-Mowma1DAZM1OH4hqLA6g+QWYp6f6FOFbv0f/Oq6lQLNaOujaykl9pISC0r0tlb6n
-WZLvW2sAgzCXcWmlua78n9wYUfGrifrRhpVcAleLW/H1QFDYKqZj3OlxdDLTl8cn
-8m3U1cHkOpub+T+TzNRlvbEmt09/3MbUmx/jhaC6pVxqwFjxKPDWRbnPtEJp1OrF
-1EGVzOSfx0sgs5sRM448
-=6vdS
------END PGP SIGNATURE-----
-
---=-jNUSBilWyPV0fXeiuXon--
+>
+> The first tests (with proof of locking correctness enabled) were fine. The
+> main tests will run until tomorrow evening, though; last time, it took me
+> all day to reproduce the deadlock, and I want to be reasonably sure that
+> it is gone -- and that no new deadlocks were introduced.
+>
+> Best regards,
+> Thomas
+>
+> [attachment "jffs2_write_begin.patch" deleted by Joakim Tjernlund/Transmode]
