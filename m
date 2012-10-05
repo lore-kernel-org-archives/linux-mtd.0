@@ -1,24 +1,25 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TK3Zv-00075m-4z
- for linux-mtd@lists.infradead.org; Fri, 05 Oct 2012 08:48:16 +0000
-Message-ID: <1349426906.20373.77.camel@sauron.fi.intel.com>
-Subject: Re: Problem with verify-ing patch (error: arch/m68k/Kconfig.cpu:
- patch does not apply)
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
-Date: Fri, 05 Oct 2012 11:48:26 +0300
-In-Reply-To: <1348574785.20474.15.camel@sauron.fi.intel.com>
-References: <CACna6rwju0g+sq+vBAfCqFJm=EBLg79G2XoGEKs5n1Y=PcmKBg@mail.gmail.com>
- <1348499094.4880.65.camel@sauron.fi.intel.com>
- <CACna6ryu06qsgX99kdkeDaB+XJv4XwC0-O+5ysNFa1iOMEgNow@mail.gmail.com>
- <1348574785.20474.15.camel@sauron.fi.intel.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-e7cyUpvIYh1lNTF1Cd6n"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+From: "Philip, Avinash" <avinashphilip@ti.com>
+To: Ivan Djelic <ivan.djelic@parrot.com>
+Subject: RE: [PATCH 4/4] mtd: nand: omap2: Add data correction support
+Date: Fri, 5 Oct 2012 08:51:50 +0000
+Message-ID: <518397C60809E147AF5323E0420B992E3E9B8A65@DBDE01.ent.ti.com>
+References: <1349274589-11389-1-git-send-email-avinashphilip@ti.com>
+ <1349274589-11389-5-git-send-email-avinashphilip@ti.com>
+ <20121003192044.GB27502@parrot.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: "Mohammed, Afzal" <afzal@ti.com>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "tony@atomide.com" <tony@atomide.com>,
+ "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,48 +29,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, Oct 04, 2012 at 15:51:03, Philip, Avinash wrote:
+> On Thu, Oct 04, 2012 at 00:50:45, Ivan Djelic wrote:
+> > On Wed, Oct 03, 2012 at 03:29:49PM +0100, Philip, Avinash wrote:
+> > > ELM module can be used for error correction of BCH 4 & 8 bit. Also
+> > > support read & write page in one shot by adding custom read_page &
+> > > write_page methods. This helps in optimizing code.
+> > >=20
+> > > New structure member "is_elm_used" is added to know the status of
+> > > whether the ELM module is used for error correction or not.
+> > >=20
+> > > Note:
+> > > ECC layout of BCH8 uses 14 bytes for 512 byte of data to make compati=
+ble
+> > > with RBL ECC layout, even though the requirement was only 13 byte. Th=
+is
+> > > results a common ecc layout across RBL, U-boot & Linux.
+> > >=20
+> >=20
+> > See a few comments below,
+> >=20
+> > (...)
+> > > +static int omap_elm_correct_data(struct mtd_info *mtd, u_char *dat,
+> > > +                               u_char *read_ecc, u_char *calc_ecc)
+> > > +{
+> > > +       struct omap_nand_info *info =3D container_of(mtd, struct omap=
+_nand_info,
+> > > +                       mtd);
+> > > +       int eccsteps =3D info->nand.ecc.steps;
+> > > +       int i , j, stat =3D 0;
+> > > +       int eccsize, eccflag, size;
+> > > +       struct elm_errorvec err_vec[ERROR_VECTOR_MAX];
+> > > +       u_char *ecc_vec =3D calc_ecc;
+> > > +       enum bch_ecc type;
+> > > +       bool is_error_reported =3D false;
+> > > +
+> > > +       /* initialize elm error vector to zero */
+> > > +       memset(err_vec, 0, sizeof(err_vec));
+> > > +       if (info->nand.ecc.strength =3D=3D BCH8_MAX_ERROR) {
+> > > +               size =3D BCH8_SIZE;
+> > > +               eccsize =3D BCH8_ECC_OOB_BYTES;
+> > > +               type =3D BCH8_ECC;
+> > > +       } else {
+> > > +               size =3D BCH4_SIZE;
+> > > +               eccsize =3D BCH4_SIZE;
+> > > +               type =3D BCH4_ECC;
+> > > +       }
+> > > +
+> > > +       for (i =3D 0; i < eccsteps ; i++) {
+> > > +               eccflag =3D 0;    /* initialize eccflag */
+> > > +
+> > > +               for (j =3D 0; (j < eccsize); j++) {
+> > > +                       if (read_ecc[j] !=3D 0xFF) {
+> > > +                               eccflag =3D 1;    /* data area is fla=
+shed */
+> >=20
+> > Just a reminder: this way of checking if a page has been programmed is =
+not robust to bitflips,
+> > so you may get into trouble with UBIFS on a fairly recent device.
 
---=-e7cyUpvIYh1lNTF1Cd6n
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Sorry I missed this point.
 
-On Tue, 2012-09-25 at 15:06 +0300, Artem Bityutskiy wrote:
-> I'll do the fixes as soon as I have some time, please, keep bugging me
-> and thanks for your feed-back!
+Here we were checking data in spare area (only in ecc layout 14*4 for BCH8)=
+ is 0xFF. If all data
+in spare area is 0xFF, conclude that the page is erased & no need of error =
+correction. In case
+of bit flip present in spare area, page will be reported as uncorrectable.
+But I am not understand understand " trouble with UBIFS on a fairly recent =
+device".
+Can you little elaborativ
 
-I've just pushed a change which should improve user-friendliness. Now I
-check for dependencies in many places and try to inform the user if a
-program is missing, plus give some suggestions where to take it from.
-E.g., for cross-tools I print the URL where one can download pre-built
-cross-tools.
-
-Thanks!
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-e7cyUpvIYh1lNTF1Cd6n
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQbp7aAAoJECmIfjd9wqK0gQAP/1QbvMw/r+oWPO00hoGZ2pNF
-/rtQVMxmp58L8KyK1uMvAgxlkpRStlho7//OzdtaZ81nyQpLi4UT4919tsy2Hc+Y
-YpJykGJCkRjpCBFphFl1aRDxUgW3JpX/J2gikB3xrnKL12GSPBEa5kglA65BOM09
-5GX7ZDXED4MZACMy+BWWOYQzbynCYS2lrk+/eg+vKA8Zyp/k7dlQPQIq8PFRs8He
-ZKjmlGNQE1DmiJiblicSPe2I8y/01zi7FAEv5ggBpH8mtnlmRjGQv5Ihkini44aN
-cWlrTPbjbvC19Hr2fzP//46KiphXxkr8nIFxoQDzHt6DKWEGaNq59OmRMQt6AEY2
-NAicr1R+OvTrHx4M3JcumGqF9fixMoc+W18als/04nbMU8klaccdTaDraTkguJIZ
-wkHSb8ZyHrleqDIk3KXXwXJiTbrt6i0wmQsEuNVC0BmTA4AmG2IHNYjeOKwPqpBU
-SQnGvp5QuAQnO0WS0s78Lb1LaHtauvE1NPhJl8RpcLVQfc57Qqdik658OlzJQkzu
-Q+2HDPzRbh0CQukSeecGW8hcAU8DQDLkFKNSvpAj4gzpBqnXbYEiPcAG83dTLdjI
-dS52zuMMpjad2wYz5I/4xwip1mh8kklLWfMEWRPSbKIpxhaKVKaquP8v0cWMCiQg
-uADjjf49GZUf7WEkNK8/
-=+GX9
------END PGP SIGNATURE-----
-
---=-e7cyUpvIYh1lNTF1Cd6n--
+Thanks
+Avinash=20
