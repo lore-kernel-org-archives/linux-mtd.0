@@ -1,16 +1,21 @@
-Received: from rcsinet15.oracle.com ([148.87.113.117])
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TK1qX-00071V-FE
- for linux-mtd@lists.infradead.org; Fri, 05 Oct 2012 06:57:18 +0000
-Date: Fri, 5 Oct 2012 09:57:04 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [bug reportish] UBI_MAX_ERASECOUNTER not used consistently
-Message-ID: <20121005065704.GA26466@elgon.mountain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org
+ id 1TK2g3-000281-Mp
+ for linux-mtd@lists.infradead.org; Fri, 05 Oct 2012 07:50:32 +0000
+Message-ID: <1349423405.3427.3.camel@coredoba.hi.pengutronix.de>
+Subject: Re: [PATCH] mtd: m25p80: Add support for Numonyx N25Q128
+From: Jan =?ISO-8859-1?Q?L=FCbbe?= <jlu@pengutronix.de>
+To: Michal Simek <monstr@monstr.eu>
+Date: Fri, 05 Oct 2012 09:50:05 +0200
+In-Reply-To: <1349372416-16925-1-git-send-email-monstr@monstr.eu>
+References: <1349372416-16925-1-git-send-email-monstr@monstr.eu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Cc: Mike Frysinger <vapier@gentoo.org>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-kernel@vger.kernel.org, Wendy Liang <wendy.liang@petalogix.com>,
+ linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,33 +25,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
+On Thu, 2012-10-04 at 19:40 +0200, Michal Simek wrote:
+> From: Wendy Liang <wendy.liang@petalogix.com>
+>=20
+> Add the id and sector mappings for SPI flash chips.
 
-I normally audit for underflows and I had a question about this code.
+An equivalent patch is already in David Woodhouse's l2-mtd tree:
+http://git.infradead.org/users/dedekind/l2-mtd.git/commitdiff/3105875f6b890=
+2628caee2fd7821af43707c6bde
 
-mtd/ubi/attach.c
-   665  static int early_erase_peb(struct ubi_device *ubi,
-   666                             const struct ubi_attach_info *ai, int pnum, int ec)
-   667  {
-   668          int err;
-   669          struct ubi_ec_hdr *ec_hdr;
-   670  
-   671          if ((long long)ec >= UBI_MAX_ERASECOUNTER) {
-
-Casting to long long doesn't serve any purpose.  We normally say that
-"> UBI_MAX_ERASECOUNTER" is invalid but "== UBI_MAX_ERASECOUNTER" is Ok.
-The "ec" variable is signed and negative values are missed on this
-check.
-
-   672                  /*
-   673                   * Erase counter overflow. Upgrade UBI and use 64-bit
-   674                   * erase counters internally.
-   675                   */
-   676                  ubi_err("erase counter overflow at PEB %d, EC %d", pnum, ec);
-   677                  return -EINVAL;
-   678          }
-   679  
-   680          ec_hdr = kzalloc(ubi->ec_hdr_alsize, GFP_KERNEL);
-
-regards,
-dan carpenter
+Regards,
+Jan
+--=20
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
