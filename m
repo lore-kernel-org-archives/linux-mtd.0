@@ -1,25 +1,26 @@
-Received: from 12.mo4.mail-out.ovh.net ([178.33.104.253]
- helo=mo4.mail-out.ovh.net)
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TK8nO-0001I7-DC
- for linux-mtd@lists.infradead.org; Fri, 05 Oct 2012 14:22:34 +0000
-Received: from mail413.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo4.mail-out.ovh.net (Postfix) with SMTP id 4C3FE10502F4
- for <linux-mtd@lists.infradead.org>; Fri,  5 Oct 2012 16:28:46 +0200 (CEST)
-Date: Fri, 5 Oct 2012 16:20:04 +0200
-From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH 1/1] mtd: st fsmc_nand: pass the ale and cmd resource
- via resource
-Message-ID: <20121005142004.GB12462@game.jcrosoft.org>
-References: <1349356456-13371-1-git-send-email-plagnioj@jcrosoft.com>
- <CACRpkdb10dfKR-sAvbUar+ZsC16uLofhBXuMxfL7QtXLhNg1+Q@mail.gmail.com>
+Date: Fri, 5 Oct 2012 16:23:38 +0200
+From: Ivan Djelic <ivan.djelic@parrot.com>
+To: "Philip, Avinash" <avinashphilip@ti.com>
+Subject: Re: [PATCH 4/4] mtd: nand: omap2: Add data correction support
+Message-ID: <20121005142338.GA7199@parrot.com>
+References: <1349274589-11389-1-git-send-email-avinashphilip@ti.com>
+ <1349274589-11389-5-git-send-email-avinashphilip@ti.com>
+ <20121003192044.GB27502@parrot.com>
+ <518397C60809E147AF5323E0420B992E3E9B8A65@DBDE01.ent.ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <CACRpkdb10dfKR-sAvbUar+ZsC16uLofhBXuMxfL7QtXLhNg1+Q@mail.gmail.com>
-Cc: Vipin Kumar <vipin.kumar@st.com>, devicetree-discuss@lists.ozlabs.org,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <518397C60809E147AF5323E0420B992E3E9B8A65@DBDE01.ent.ti.com>
+Cc: "Mohammed, Afzal" <afzal@ti.com>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "tony@atomide.com" <tony@atomide.com>,
+ "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,29 +30,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 14:49 Fri 05 Oct     , Linus Walleij wrote:
+On Fri, Oct 05, 2012 at 09:51:50AM +0100, Philip, Avinash wrote:
+> On Thu, Oct 04, 2012 at 15:51:03, Philip, Avinash wrote:
+> > On Thu, Oct 04, 2012 at 00:50:45, Ivan Djelic wrote:
+> > > On Wed, Oct 03, 2012 at 03:29:49PM +0100, Philip, Avinash wrote:
+> > > > ELM module can be used for error correction of BCH 4 & 8 bit. Also
+> > > > support read & write page in one shot by adding custom read_page &
+> > > > write_page methods. This helps in optimizing code.
+> > > > 
+> > > > New structure member "is_elm_used" is added to know the status of
+> > > > whether the ELM module is used for error correction or not.
+> > > > 
+> > > > Note:
+> > > > ECC layout of BCH8 uses 14 bytes for 512 byte of data to make compatible
+> > > > with RBL ECC layout, even though the requirement was only 13 byte. This
+> > > > results a common ecc layout across RBL, U-boot & Linux.
+> > > > 
+> > > 
+> > > See a few comments below,
+> > > 
+> > > (...)
+> > > > +static int omap_elm_correct_data(struct mtd_info *mtd, u_char *dat,
+> > > > +                               u_char *read_ecc, u_char *calc_ecc)
+> > > > +{
+> > > > +       struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
+> > > > +                       mtd);
+> > > > +       int eccsteps = info->nand.ecc.steps;
+> > > > +       int i , j, stat = 0;
+> > > > +       int eccsize, eccflag, size;
+> > > > +       struct elm_errorvec err_vec[ERROR_VECTOR_MAX];
+> > > > +       u_char *ecc_vec = calc_ecc;
+> > > > +       enum bch_ecc type;
+> > > > +       bool is_error_reported = false;
+> > > > +
+> > > > +       /* initialize elm error vector to zero */
+> > > > +       memset(err_vec, 0, sizeof(err_vec));
+> > > > +       if (info->nand.ecc.strength == BCH8_MAX_ERROR) {
+> > > > +               size = BCH8_SIZE;
+> > > > +               eccsize = BCH8_ECC_OOB_BYTES;
+> > > > +               type = BCH8_ECC;
+> > > > +       } else {
+> > > > +               size = BCH4_SIZE;
+> > > > +               eccsize = BCH4_SIZE;
+> > > > +               type = BCH4_ECC;
+> > > > +       }
+> > > > +
+> > > > +       for (i = 0; i < eccsteps ; i++) {
+> > > > +               eccflag = 0;    /* initialize eccflag */
+> > > > +
+> > > > +               for (j = 0; (j < eccsize); j++) {
+> > > > +                       if (read_ecc[j] != 0xFF) {
+> > > > +                               eccflag = 1;    /* data area is flashed */
+> > > 
+> > > Just a reminder: this way of checking if a page has been programmed is not robust to bitflips,
+> > > so you may get into trouble with UBIFS on a fairly recent device.
 > 
-> On Thu, Oct 4, 2012 at 3:14 PM, Jean-Christophe PLAGNIOL-VILLARD
-> <plagnioj@jcrosoft.com> wrote:
+> Sorry I missed this point.
 > 
-> > Do not use the platform_data to pass resource and be smart in the drivers.
-> > Just pass it via resource
-> >
-> > Switch to devm_request_and_ioremap at the sametime
-> >
-> > Signed-off-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-> > Cc: Linus Walleij <linus.walleij@linaro.org>
-> > Cc: Vipin Kumar <vipin.kumar@st.com>
-> > Cc: linux-mtd@lists.infradead.org
-> 
-> This is much better. Actually I was confused by these offsets recently...
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
-> 
-> My patch to convert the Nomadik to the FSMC driver will collide with this,
-> but I can sure fix it up as we run into it, no big deal.
-ha you did it too
+> Here we were checking data in spare area (only in ecc layout 14*4 for BCH8) is 0xFF. If all data
+> in spare area is 0xFF, conclude that the page is erased & no need of error correction. In case
+> of bit flip present in spare area, page will be reported as uncorrectable.
+> But I am not understand understand " trouble with UBIFS on a fairly recent device".
+> Can you little elaborativ
 
-I'll give it a try
+There are at least 2 potential problems when reading an erased page with bitflips:
 
-Best Regards,
-J.
+1. bitflip in data area and no bitflip in spare area (all 0xff)
+Your code will not perform any ECC correction.
+UBIFS does not like finding bitflips in empty pages, see for instance
+http://lists.infradead.org/pipermail/linux-mtd/2012-March/040328.html.
+
+2. bitflip in ECC bytes in spare area
+Your code will report an uncorrectable error upon reading; if this happens while reading a partially programmed UBI block,
+I guess you will lose data.
+
+BR,
+--
+Ivan
