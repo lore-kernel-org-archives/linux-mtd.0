@@ -1,20 +1,19 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TK4xi-0000m3-8f
- for linux-mtd@lists.infradead.org; Fri, 05 Oct 2012 10:16:55 +0000
-Message-ID: <1349432224.20373.80.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/8] mtd_tests: Refactor duplicate code
+ id 1TK6fp-0006gq-EG
+ for linux-mtd@lists.infradead.org; Fri, 05 Oct 2012 12:06:34 +0000
+Received: from [10.237.72.60] (sauron.fi.intel.com [10.237.72.60])
+ by linux.intel.com (Postfix) with ESMTP id 588F42C8001
+ for <linux-mtd@lists.infradead.org>; Fri,  5 Oct 2012 05:06:30 -0700 (PDT)
+Message-ID: <1349438803.20373.91.camel@sauron.fi.intel.com>
+Subject: UBIFS back-ports update
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Vikram Narayanan <vikram186@gmail.com>
-Date: Fri, 05 Oct 2012 13:17:04 +0300
-In-Reply-To: <506AF9F0.7010903@gmail.com>
-References: <506AF985.30104@gmail.com> <506AF9F0.7010903@gmail.com>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Date: Fri, 05 Oct 2012 15:06:43 +0300
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-LZ2WgzHrdkPx5P+k264S"
+ boundary="=-IjbBnH4qW1J1+szw7iJb"
 Mime-Version: 1.0
-Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Adrian Hunter <ext-adrian.hunter@nokia.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,28 +25,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-LZ2WgzHrdkPx5P+k264S
+--=-IjbBnH4qW1J1+szw7iJb
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-10-02 at 19:58 +0530, Vikram Narayanan wrote:
-> Move the duplicate code from all the tests to a common header.
->=20
-> Signed-off-by: Vikram Narayanan <vikram186@gmail.com>
+Hi UBI/UBIFS users,
 
-Could you please re-structure your patches so that you first do the
-'pr_' changes, and then this one. Because 'pr_' are trivial and I can
-apply them right away.
+FYI, I've stopped maintaining pre 3.0 UBI/UBIFS back-port trees. I won't
+remove them, but won't maintain either. If someone wants to do that,
+feel free to send patches/pull requests.
 
-This one - I think if you look at UBI and JFFS2 - you may find them also
-use the same pattern, and you can actually make this function go to
-mtdcore.c and be exported instead.
+The supported back-port trees now are 3.0-3.6.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-LZ2WgzHrdkPx5P+k264S
+--=-IjbBnH4qW1J1+szw7iJb
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -55,19 +49,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQbrOgAAoJECmIfjd9wqK0wzYQAKOjo2Rtt+sFNQb7eB5Hcda9
-lKwJEHEMDVd2k+gsq3MDcKp28UsKg2DculQX8hjjBKWV6B96msirwOONLPDpk5dt
-q3WSoRbMNCk7KkrOzFnW/pTxGIprwGJo7P5ohnUZNq8G3Z54KXIGe7a1tmja5Uga
-lIUB7pq6J69yCDF9KU0gRbpTjmwL8evfpCE8zuf6C6oHCaJ67DwZP0tQmNbWQqER
-hfMG2P/wtcbt5QPVO0r3C9VLyvWj7VND9s0FH3EyBCBna7FdUIQ2EpCmqT2nHOkJ
-Uf9Yh07kgMP1Ud70eGL6oTqrpnvj8Vr/l/val41OI4z9I99IZv4wJhLUC4tQZDI5
-l44ILMHJ6JscT4Q4ttSZomUECqxi1RHmRl63ko7+zjNWrqfINSHaJWKnSn7OEvhC
-bBxndxvOGdUFeFA/iMIlnlrVhKhDyPhSY8jAHScNRYZhlZEbL5JuwSpRKrCgC4d7
-ClCNXtCKozxkUADhwHG8v4WQN+PKf6044Rpt2aBytWJRCfphrC6f5otzPFRs5jZ3
-K34Wg7pDwZxKf1MT0Vm5g7ZoEL9wz80ooyIb8Lnt66eYFXlhYBUOe3tWEhsp2PTn
-md5Wy2hW8x9hdPMO0621bh/ib9BXyOtJ2awgyizSDgZDPB+SPrdP6sZPSi8S6b1A
-+YNqwtpva64JTFxsmNEb
-=1BpD
+iQIcBAABAgAGBQJQbs1TAAoJECmIfjd9wqK0GacP/R1dlA3XoAN3VNAIHlHYSllS
+3dblNHugIAcH3cx3ERrIqdFSL/bxNnuqj1L6N8b5s4vwuSSj0ScjjBofAK1eOYl+
+DqeWXDV4e9+SqhwqsT5N0cxRk+ldfgiZGC2qriinSm2R7rwgVqRHNQx7GJfx5Ex4
+MhuX91Lye3RsIymu2PZQS8TLZ1WgrTpDlva9ByScAj9+qhowfU1vCxt38ngylQLQ
+VEGGWmXsYqOJSdo6pRkfQaTLfEqpf7+rH8NYrtFTcz6l0iQKwlhskq6KV0SmEQJZ
+4KbRa2FQ77ZYarKfBGCnRgb02pWUOrUd/MJ2UowOhetK86UCCuduyf8JtWnUDk3y
+pbT2og3AvojAwoBXlin29s/CkhBxfALdQSUFJN7jXg5G/o5wlaAKZpSsvUfP2+av
+Abu7lus7QF/TEmu4YlhW6v/v0gJE81egJtS2HDizHBlbxgS5rm3/0dMLkolIs68O
+JWX1e7B9YJBf28F59SJM5z6a7s0mCZYDgEILBfvVYkbdDr0f5SsrSipNR5dc1ev7
+FFTgkuYC/LZs7ScG5QP34Qw7/1IBq68wpNP1wXombHHP8k2vo1jX5b8sLaVNVX9C
+Q46YyOV+gC0qezOMByzQARLpyZ7SzT/C4ALldMAxedCbAkGFyZt1dAWDUZyqSPqq
+f+q1F1cZNfGnDOeBUhCx
+=xzlw
 -----END PGP SIGNATURE-----
 
---=-LZ2WgzHrdkPx5P+k264S--
+--=-IjbBnH4qW1J1+szw7iJb--
