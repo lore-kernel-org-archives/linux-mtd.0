@@ -1,12 +1,16 @@
-From: Josh Wu <josh.wu@atmel.com>
-To: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- dedekind1@gmail.com
-Subject: [PATCH] MTD: atmel_nand: fix compile error when use
- avr32-atstk1006_defconfig
-Date: Mon,  8 Oct 2012 14:46:49 +0800
-Message-Id: <1349678809-12092-1-git-send-email-josh.wu@atmel.com>
-Cc: fengguang.wu@intel.com, egtvedt@samfundet.no, Josh Wu <josh.wu@atmel.com>,
- hskinnemoen@gmail.com
+Received: from co202.xi-lite.net ([149.6.83.202])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TL8PY-0000U0-QZ
+ for linux-mtd@lists.infradead.org; Mon, 08 Oct 2012 08:10:01 +0000
+Message-ID: <50728A5E.3020102@parrot.com>
+Date: Mon, 8 Oct 2012 10:10:06 +0200
+From: =?UTF-8?B?R3LDqWdvciBCb2lyaWU=?= <gregor.boirie@parrot.com>
+MIME-Version: 1.0
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: m25p80: fix missing MTD module owner
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Cc: marex@denx.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,34 +20,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-fixed the following compile error when use avr32 config:
-drivers/mtd/nand/atmel_nand.c: In function 'pmecc_err_location':
-drivers/mtd/nand/atmel_nand.c:639: error: implicit declaration of function 'writel_relaxed'
+Marek,
 
-Since in ARCH avr32, there is no macro "writel_relaxed" defined. In this patch we use macro "writel" instead.
+Sorry about that. I didn't really mean to submit an official patch at
+first...
+Nevermind, please find one just below.
 
-Signed-off-by: Josh Wu <josh.wu@atmel.com>
+Regards,
+gregor
+
 ---
- drivers/mtd/nand/atmel_nand_ecc.h |    5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/mtd/devices/m25p80.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/mtd/nand/atmel_nand_ecc.h b/drivers/mtd/nand/atmel_nand_ecc.h
-index 8a1e9a6..e87af84 100644
---- a/drivers/mtd/nand/atmel_nand_ecc.h
-+++ b/drivers/mtd/nand/atmel_nand_ecc.h
-@@ -129,8 +129,13 @@
- #define pmerrloc_writel(addr, reg, value) \
- 	writel((value), (addr) + ATMEL_PMERRLOC_##reg)
- 
-+#if defined(CONFIG_ARCH_AT91)
- #define pmerrloc_writel_sigma_relaxed(addr, n, value) \
- 	writel_relaxed((value), (addr) + ATMEL_PMERRLOC_SIGMAx + ((n) * 4))
-+#elif defined(CONFIG_AVR32)
-+#define pmerrloc_writel_sigma_relaxed(addr, n, value) \
-+	writel((value), (addr) + ATMEL_PMERRLOC_SIGMAx + ((n) * 4))
-+#endif
- 
- #define pmerrloc_readl_sigma_relaxed(addr, n) \
- 	readl_relaxed((addr) + ATMEL_PMERRLOC_SIGMAx + ((n) * 4))
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 1924d24..06beb3f 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -873,6 +873,7 @@ static int __devinit m25p_probe(struct spi_device *spi)
+ 	else
+ 		flash->mtd.name = dev_name(&spi->dev);
+ +	flash->mtd.owner = THIS_MODULE;
+ 	flash->mtd.type = MTD_NORFLASH;
+ 	flash->mtd.writesize = 1;
+ 	flash->mtd.flags = MTD_CAP_NORFLASH;
 -- 
-1.7.9.5
+1.7.4.1
