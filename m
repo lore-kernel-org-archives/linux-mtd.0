@@ -1,23 +1,16 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TL4OG-0000My-Bh
- for linux-mtd@lists.infradead.org; Mon, 08 Oct 2012 03:52:25 +0000
-From: Marek Vasut <marex@denx.de>
-To: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH] nand: gpmi-nand: Fix clock registration
-Date: Mon, 8 Oct 2012 05:52:20 +0200
-References: <1348425062-17427-1-git-send-email-festevam@gmail.com>
- <CAOMZO5B4c+qaKrz2skB_vGCRBW-9mUhhOaCUtiEqtv36V8i5eQ@mail.gmail.com>
- <CAOMZO5CYgDi3Rj7gKJAr-nMrUSec4YAxLCkPPf-amA6nXP7_EA@mail.gmail.com>
-In-Reply-To: <CAOMZO5CYgDi3Rj7gKJAr-nMrUSec4YAxLCkPPf-amA6nXP7_EA@mail.gmail.com>
+Received: from newsmtp5.atmel.com ([204.2.163.5] helo=sjogate2.atmel.com)
+ by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TL4QQ-0002IP-Ox
+ for linux-mtd@lists.infradead.org; Mon, 08 Oct 2012 03:54:39 +0000
+Message-ID: <50724E5C.1010809@atmel.com>
+Date: Mon, 08 Oct 2012 11:54:04 +0800
+From: Josh Wu <josh.wu@atmel.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>, dwmw2@infradead.org
+Subject: MTD in mainline status
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <201210080552.20661.marex@denx.de>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- Huang Shijie <b32955@freescale.com>, shawn.guo@linaro.org,
- linux-mtd@lists.infradead.org, artem.bityutskiy@linux.intel.com
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,37 +20,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Fabio Estevam,
+Hi,
 
-> On Mon, Oct 8, 2012 at 12:31 AM, Fabio Estevam <festevam@gmail.com> wrote:
-> > On Mon, Oct 8, 2012 at 12:32 AM, Huang Shijie <b32955@freescale.com> wrote:
-> >> This patch is really not needed.
-> >> 
-> >> The clk_get() can get the right clock in the mx23/mx28. I tested them.
-> > 
-> > Please test it on linux-next.
-> > 
-> > gpmi nand can not event be probed.
-> 
-> What about this?
+Just a little reminder: it would be good time to send out the pull 
+request to mainline for MTD in current merge window :-)
 
-I don't like this one ... such condition shouldn't be in the driver.
-
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -495,7 +495,11 @@ static int __devinit gpmi_get_clks(struct
-> gpmi_nand_data *this)
->         int i;
-> 
->         /* The main clock is stored in the first. */
-> -       r->clock[0] = clk_get(this->dev, "gpmi_io");
-> +       if (GPMI_IS_MX6Q(this))
-> +               r->clock[0] = clk_get(this->dev, "gpmi_io");
-> +       else
-> +               r->clock[0] = clk_get(this->dev, NULL);
-> +
->         if (IS_ERR(r->clock[0]))
->                 goto err_clock;
-
-Best regards,
-Marek Vasut
+Best Regards,
+Josh Wu
