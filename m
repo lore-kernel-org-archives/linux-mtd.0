@@ -1,16 +1,17 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
+Received: from mail02.rohde-schwarz.com ([80.246.32.97])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TL8PY-0000U0-QZ
- for linux-mtd@lists.infradead.org; Mon, 08 Oct 2012 08:10:01 +0000
-Message-ID: <50728A5E.3020102@parrot.com>
-Date: Mon, 8 Oct 2012 10:10:06 +0200
-From: =?UTF-8?B?R3LDqWdvciBCb2lyaWU=?= <gregor.boirie@parrot.com>
+ id 1TL8f6-000149-IR
+ for linux-mtd@lists.infradead.org; Mon, 08 Oct 2012 08:26:05 +0000
+In-Reply-To: <1349429064-10241-1-git-send-email-Joakim.Tjernlund@transmode.se>
+References: <1349429064-10241-1-git-send-email-Joakim.Tjernlund@transmode.se>
+To: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
 MIME-Version: 1.0
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: m25p80: fix missing MTD module owner
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Cc: marex@denx.de
+Subject: Re: [PATCH] jffs2: Fix lock acquisition order bug in jffs2_write_begin
+From: Thomas.Betker@rohde-schwarz.com
+Message-ID: <OF69AFCA95.D74167D3-ONC1257A8E.003A3DD7-C1257A91.002E54A0@rohde-schwarz.com>
+Date: Mon, 8 Oct 2012 10:25:59 +0200
+Content-Type: multipart/mixed; boundary="=_mixed 002E5469C1257A91_="
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,29 +21,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Marek,
+--=_mixed 002E5469C1257A91_=
+Content-Type: text/plain; charset="US-ASCII"
 
-Sorry about that. I didn't really mean to submit an official patch at
-first...
-Nevermind, please find one just below.
+Hello Joakim,
 
-Regards,
-gregor
+I am not sure if it is okay to call jffs2_complete_reservation() without a 
+previous jffs2_reserve_space(), so I have avoided that in my own patch.
 
----
- drivers/mtd/devices/m25p80.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+Also, I am not happy with using ret to check if 
+jffs2_complete_reservation() was done; I am using alloc_len for that.
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 1924d24..06beb3f 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -873,6 +873,7 @@ static int __devinit m25p_probe(struct spi_device *spi)
- 	else
- 		flash->mtd.name = dev_name(&spi->dev);
- +	flash->mtd.owner = THIS_MODULE;
- 	flash->mtd.type = MTD_NORFLASH;
- 	flash->mtd.writesize = 1;
- 	flash->mtd.flags = MTD_CAP_NORFLASH;
--- 
-1.7.4.1
+"jffs2_dbg(1, "%s()\n", __func__);" comes a bit late.
+
+And "be be" in the first comment should probably read "be done".
+
+I am attaching my own patch for comparison (sorry, I haven't found yet a 
+way to send the patch inline); the tests are running this morning.
+
+Best regards,
+Thomas
+
+
+--=_mixed 002E5469C1257A91_=
+Content-Type: application/octet-stream; name="jffs2_write_begin-v2.patch"
+Content-Disposition: attachment; filename="jffs2_write_begin-v2.patch"
+Content-Transfer-Encoding: base64
+
+ZGlmZiAtTmF1ciBsaW51eC0zLjQuMTEtb3JpZy9mcy9qZmZzMi9maWxlLmMgbGludXgtMy40LjEx
+L2ZzL2pmZnMyL2ZpbGUuYwotLS0gbGludXgtMy40LjExLW9yaWcvZnMvamZmczIvZmlsZS5jCTIw
+MTItMDktMTQgMjI6MTg6NTUuMDAwMDAwMDAwICswMDAwCisrKyBsaW51eC0zLjQuMTEvZnMvamZm
+czIvZmlsZS5jCTIwMTItMTAtMDUgMDk6MDE6MTAuMDAwMDAwMDAwICswMDAwCkBAIC0xMzgsMzMg
+KzEzOCwzOSBAQAogCXN0cnVjdCBwYWdlICpwZzsKIAlzdHJ1Y3QgaW5vZGUgKmlub2RlID0gbWFw
+cGluZy0+aG9zdDsKIAlzdHJ1Y3QgamZmczJfaW5vZGVfaW5mbyAqZiA9IEpGRlMyX0lOT0RFX0lO
+Rk8oaW5vZGUpOworCXN0cnVjdCBqZmZzMl9zYl9pbmZvICpjID0gSkZGUzJfU0JfSU5GTyhpbm9k
+ZS0+aV9zYik7CisJc3RydWN0IGpmZnMyX3Jhd19pbm9kZSByaTsKKwl1aW50MzJfdCBhbGxvY19s
+ZW4gPSAwOwogCXBnb2ZmX3QgaW5kZXggPSBwb3MgPj4gUEFHRV9DQUNIRV9TSElGVDsKIAl1aW50
+MzJfdCBwYWdlb2ZzID0gaW5kZXggPDwgUEFHRV9DQUNIRV9TSElGVDsKIAlpbnQgcmV0ID0gMDsK
+IAorCWpmZnMyX2RiZygxLCAiJXMoKVxuIiwgX19mdW5jX18pOworCisJaWYgKHBhZ2VvZnMgPiBp
+bm9kZS0+aV9zaXplKSB7CisJCXJldCA9IGpmZnMyX3Jlc2VydmVfc3BhY2UoYywgc2l6ZW9mKHJp
+KSwgJmFsbG9jX2xlbiwKKwkJCQkJICBBTExPQ19OT1JNQUwsIEpGRlMyX1NVTU1BUllfSU5PREVf
+U0laRSk7CisJCWlmIChyZXQpCisJCQlyZXR1cm4gcmV0OworCX0KKworCW11dGV4X2xvY2soJmYt
+PnNlbSk7CiAJcGcgPSBncmFiX2NhY2hlX3BhZ2Vfd3JpdGVfYmVnaW4obWFwcGluZywgaW5kZXgs
+IGZsYWdzKTsKLQlpZiAoIXBnKQorCWlmICghcGcpIHsKKwkJaWYgKGFsbG9jX2xlbikKKwkJCWpm
+ZnMyX2NvbXBsZXRlX3Jlc2VydmF0aW9uKGMpOworCQltdXRleF91bmxvY2soJmYtPnNlbSk7CiAJ
+CXJldHVybiAtRU5PTUVNOworCX0KIAkqcGFnZXAgPSBwZzsKIAotCWpmZnMyX2RiZygxLCAiJXMo
+KVxuIiwgX19mdW5jX18pOwotCi0JaWYgKHBhZ2VvZnMgPiBpbm9kZS0+aV9zaXplKSB7CisJaWYg
+KGFsbG9jX2xlbikgewogCQkvKiBNYWtlIG5ldyBob2xlIGZyYWcgZnJvbSBvbGQgRU9GIHRvIG5l
+dyBwYWdlICovCi0JCXN0cnVjdCBqZmZzMl9zYl9pbmZvICpjID0gSkZGUzJfU0JfSU5GTyhpbm9k
+ZS0+aV9zYik7Ci0JCXN0cnVjdCBqZmZzMl9yYXdfaW5vZGUgcmk7CiAJCXN0cnVjdCBqZmZzMl9m
+dWxsX2Rub2RlICpmbjsKLQkJdWludDMyX3QgYWxsb2NfbGVuOwogCiAJCWpmZnMyX2RiZygxLCAi
+V3JpdGluZyBuZXcgaG9sZSBmcmFnIDB4JXgtMHgleCBiZXR3ZWVuIGN1cnJlbnQgRU9GIGFuZCBu
+ZXcgcGFnZVxuIiwKIAkJCSAgKHVuc2lnbmVkIGludClpbm9kZS0+aV9zaXplLCBwYWdlb2ZzKTsK
+IAotCQlyZXQgPSBqZmZzMl9yZXNlcnZlX3NwYWNlKGMsIHNpemVvZihyaSksICZhbGxvY19sZW4s
+Ci0JCQkJCSAgQUxMT0NfTk9STUFMLCBKRkZTMl9TVU1NQVJZX0lOT0RFX1NJWkUpOwotCQlpZiAo
+cmV0KQotCQkJZ290byBvdXRfcGFnZTsKLQotCQltdXRleF9sb2NrKCZmLT5zZW0pOwogCQltZW1z
+ZXQoJnJpLCAwLCBzaXplb2YocmkpKTsKIAogCQlyaS5tYWdpYyA9IGNwdV90b19qZTE2KEpGRlMy
+X01BR0lDX0JJVE1BU0spOwpAQCAtMTkxLDcgKzE5Nyw2IEBACiAJCWlmIChJU19FUlIoZm4pKSB7
+CiAJCQlyZXQgPSBQVFJfRVJSKGZuKTsKIAkJCWpmZnMyX2NvbXBsZXRlX3Jlc2VydmF0aW9uKGMp
+OwotCQkJbXV0ZXhfdW5sb2NrKCZmLT5zZW0pOwogCQkJZ290byBvdXRfcGFnZTsKIAkJfQogCQly
+ZXQgPSBqZmZzMl9hZGRfZnVsbF9kbm9kZV90b19pbm9kZShjLCBmLCBmbik7CkBAIC0yMDYsMTIg
+KzIxMSwxMCBAQAogCQkJamZmczJfbWFya19ub2RlX29ic29sZXRlKGMsIGZuLT5yYXcpOwogCQkJ
+amZmczJfZnJlZV9mdWxsX2Rub2RlKGZuKTsKIAkJCWpmZnMyX2NvbXBsZXRlX3Jlc2VydmF0aW9u
+KGMpOwotCQkJbXV0ZXhfdW5sb2NrKCZmLT5zZW0pOwogCQkJZ290byBvdXRfcGFnZTsKIAkJfQog
+CQlqZmZzMl9jb21wbGV0ZV9yZXNlcnZhdGlvbihjKTsKIAkJaW5vZGUtPmlfc2l6ZSA9IHBhZ2Vv
+ZnM7Ci0JCW11dGV4X3VubG9jaygmZi0+c2VtKTsKIAl9CiAKIAkvKgpAQCAtMjIwLDE4ICsyMjMs
+MTggQEAKIAkgKiBjYXNlIG9mIGEgc2hvcnQtY29weS4KIAkgKi8KIAlpZiAoIVBhZ2VVcHRvZGF0
+ZShwZykpIHsKLQkJbXV0ZXhfbG9jaygmZi0+c2VtKTsKIAkJcmV0ID0gamZmczJfZG9fcmVhZHBh
+Z2Vfbm9sb2NrKGlub2RlLCBwZyk7Ci0JCW11dGV4X3VubG9jaygmZi0+c2VtKTsKIAkJaWYgKHJl
+dCkKIAkJCWdvdG8gb3V0X3BhZ2U7CiAJfQorCW11dGV4X3VubG9jaygmZi0+c2VtKTsKIAlqZmZz
+Ml9kYmcoMSwgImVuZCB3cml0ZV9iZWdpbigpLiBwZy0+ZmxhZ3MgJWx4XG4iLCBwZy0+ZmxhZ3Mp
+OwogCXJldHVybiByZXQ7CiAKIG91dF9wYWdlOgogCXVubG9ja19wYWdlKHBnKTsKIAlwYWdlX2Nh
+Y2hlX3JlbGVhc2UocGcpOworCW11dGV4X3VubG9jaygmZi0+c2VtKTsKIAlyZXR1cm4gcmV0Owog
+fQogCg==
+
+--=_mixed 002E5469C1257A91_=--
