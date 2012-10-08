@@ -1,20 +1,20 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TLD90-0000hK-3U
- for linux-mtd@lists.infradead.org; Mon, 08 Oct 2012 13:13:15 +0000
-From: Marek Vasut <marex@denx.de>
-To: =?iso-8859-1?q?Gr=E9gor_Boirie?= <gregor.boirie@parrot.com>
-Subject: Re: [PATCH] mtd: m25p80: fix missing MTD module owner
-Date: Mon, 8 Oct 2012 15:09:44 +0200
-References: <50728A5E.3020102@parrot.com>
-In-Reply-To: <50728A5E.3020102@parrot.com>
+Received: from ra.se.axis.com ([195.60.68.13])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TLDqO-0006cs-7u
+ for linux-mtd@lists.infradead.org; Mon, 08 Oct 2012 13:58:04 +0000
+Date: Mon, 8 Oct 2012 15:57:58 +0200
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: kyak <bas@bmail.ru>
+Subject: Re: output file cannot be in the UBIFS root directory check is not
+ working quite well
+In-Reply-To: <alpine.LNX.2.02.1210051949390.1375@bas>
+Message-ID: <alpine.DEB.2.00.1210081556130.19047@lnxricardw.se.axis.com>
+References: <alpine.LNX.2.02.1210032322590.1375@bas>
+ <alpine.LNX.2.02.1210051949390.1375@bas>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <201210081509.44802.marex@denx.de>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; format=flowed; charset="ISO-8859-15"
+Content-Transfer-Encoding: 8BIT
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,50 +24,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Gr=E9gor Boirie,
 
-> Marek,
->=20
-> Sorry about that. I didn't really mean to submit an official patch at
-> first...
+On Fri, 5 Oct 2012, kyak wrote:
 
-No no, nothing to be sorry about actually, we're really grateful you spotte=
-d the=20
-issue and reported it!
+> I observe the same problem with any other directory (namely, with my
+> /home, which is not reabable).
+>
+> When one of the directories in "-d" hierarchy is not readable, 
+> mkfs.ubifs will fail all the time, thinking that the output file is 
+> located in UBIFS root directory.
 
-> Nevermind, please find one just below.
+I can agree with you that the error message looks wrong for this case, but 
+what is the point of attempting to create a file system image from a 
+directory tree which is not readable?
 
-Actually, can you try one more time and after commiting the change to your =
-local=20
-git tree, do "git send-email --to=3D"linux-mtd@lists.infradead.org" HEAD~1"=
-=20
-please?
+/Ricard
 
-Also, it is a good idea to add "Cc: Name Surname <e@ma.il>" lines to the pa=
-tch=20
-description just before the Signed-off-by line so that the people who will =
-end=20
-up applying it are CCed. That's at least Artem.
+>
+> On Wed, 3 Oct 2012, kyak wrote:
+>
+>> Hi,
+>>
+>> Consider the following sequence of commands:
+>>
+>> cd ~
+>> mkdir -p /tmp/wtf/wtf1
+>> chmod u-r /tmp/wtf
+>> mkfs.ubifs -m 4096 -e 516096 -c 4095 -d /tmp/wtf/wtf1 -o mytest.img
+>> Error: output file cannot be in the UBIFS root directory
+>>
+>> mytest.img is not inside /tmp/wtf/wtf1, but mkfs.ubifs fails because /tmp/wtf
+>> is not readable.
+>> It seems that implementation of in_path(..) in mkfs.ubifs.c is not quite
+>> correct to handle this type of situations.
+>>
+>> If you are wondering, my /home is not readable, and this prevents me from
+>> building any ubifs image inside of /home/user.
+>>
+>> Thanks in advance.
+>>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
 
-> Regards,
-> gregor
->=20
-> ---
->  drivers/mtd/devices/m25p80.c |    1 +
->  1 files changed, 1 insertions(+), 0 deletions(-)
->=20
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 1924d24..06beb3f 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -873,6 +873,7 @@ static int __devinit m25p_probe(struct spi_device *sp=
-i)
->  	else
->  		flash->mtd.name =3D dev_name(&spi->dev);
->  +	flash->mtd.owner =3D THIS_MODULE;
->  	flash->mtd.type =3D MTD_NORFLASH;
->  	flash->mtd.writesize =3D 1;
->  	flash->mtd.flags =3D MTD_CAP_NORFLASH;
-
-Best regards,
-Marek Vasut
+-- 
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
