@@ -1,21 +1,14 @@
-Received: from co1ehsobe006.messaging.microsoft.com ([216.32.180.189]
- helo=co1outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TL5Ir-0001pX-3Z
- for linux-mtd@lists.infradead.org; Mon, 08 Oct 2012 04:50:54 +0000
-Message-ID: <50725C40.6060102@freescale.com>
-Date: Mon, 8 Oct 2012 12:53:20 +0800
-From: Huang Shijie <b32955@freescale.com>
+From: Afzal Mohammed <afzal@ti.com>
+To: Tony Lindgren <tony@atomide.com>, Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH v2 00/14] OMAP-GPMC related cleanup for common zImage
+Date: Mon, 8 Oct 2012 11:05:56 +0530
+Message-ID: <cover.1349672877.git.afzal@ti.com>
 MIME-Version: 1.0
-To: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH] nand: gpmi-nand: Fix clock registration
-References: <1348425062-17427-1-git-send-email-festevam@gmail.com>	<50723E5C.3020403@freescale.com>	<CAOMZO5AE22Kscv8JAxiazzR5NSvEH+qs4QxBC6aEQqi3ZCpCpg@mail.gmail.com>	<5072496A.3040205@freescale.com>
- <CAOMZO5B4c+qaKrz2skB_vGCRBW-9mUhhOaCUtiEqtv36V8i5eQ@mail.gmail.com>
-In-Reply-To: <CAOMZO5B4c+qaKrz2skB_vGCRBW-9mUhhOaCUtiEqtv36V8i5eQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: marex@denx.de, artem.bityutskiy@linux.intel.com, shawn.guo@linaro.org,
- linux-mtd@lists.infradead.org, Fabio Estevam <fabio.estevam@freescale.com>
+Content-Type: text/plain
+Cc: Paul Walmsley <paul@pwsan.com>, Afzal Mohammed <afzal@ti.com>,
+ linux-mtd@lists.infradead.org, Jon Hunter <jon-hunter@ti.com>,
+ Ivan Djelic <ivan.djelic@parrot.com>, linux-omap@vger.kernel.org,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,24 +18,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2012=E5=B9=B410=E6=9C=8808=E6=97=A5 11:31, Fabio Estevam =E5=86=
-=99=E9=81=93:
-> On Mon, Oct 8, 2012 at 12:32 AM, Huang Shijie<b32955@freescale.com>  wr=
-ote:
->> This patch is really not needed.
->>
->> The clk_get() can get the right clock in the mx23/mx28. I tested them.
-> Please test it on linux-next.
->
-> gpmi nand can not event be probed.
-ok.
+Hi,
 
-I will test the linux-next as soon as possible.
+This version(v2) of gpmc related cleanup for common zImage compared to
+initial version, resolves build error upon selecting BCH CONFIG option.
+Also a trivial patch on gpmc header removal from nand driver has been
+squashed with patch that removes nand driver dependency on gpmc header
+file.
+
+This series cleans up omap-gpmc related code so that omap can
+be a part of common zImage.
+
+This series moves gpmc.h from plat-omap/include/plat to mach-omap2
+so that header file is local.
+
+Patches 1-4 qualifies as -rc material.
+
+Patch 1 is an already posted one, has been pulled into this series.
+
+Patches 5-6 removes necessity of cpu.h from onenand driver based
+on Tony's suggestion.
+
+Patches 7 & 8 cleans up the already moved platform data header files
+to contain only platform data. Also gpmc-nand information is moved
+to nand platform data header.
+
+Patches 9-13 makes nand driver independent of gpmc header file
+
+And the final patch localizes gpmc header.
+
+This has been tested on omap3evm.
+
+This series is available
+        @ git://gitorious.org/x0148406-public/linux-kernel.git gpmc-czimage-v2
+and is based on
+        linux-next (next-20121005)
+and is dependent on
+	http://marc.info/?l=linux-omap&m=134945131602622&w=2
+
+Regards
+Afzal
 
 
-BR
-Huang Shijie
-> Regards,
->
-> Fabio Estevam
->
+Afzal Mohammed (14):
+  ARM: OMAP2+: gpmc: annotate exit sections properly
+  mtd: onenand: omap: cleanup gpmc dependency
+  mtd: nand: omap: free region as per resource size
+  mtd: nand: omap: read nand using register address
+  ARM: OMAP2+: onenand: connected soc info in pdata
+  mtd: onenand: omap: use pdata info instead of cpu_is
+  ARM: OMAP2+: onenand: header cleanup
+  ARM: OMAP2+: nand: header cleanup
+  mtd: nand: omap: bring in gpmc nand macros
+  ARM: OMAP2+: nand: bch capability check
+  ARM: OMAP2+: gpmc: nand register helper bch update
+  mtd: nand: omap: handle gpmc bch[48]
+  ARM: OMAP2+: gpmc: remove exported nand functions
+  ARM: OMAP2+: gpmc: localize gpmc header
+
+ arch/arm/mach-omap2/board-2430sdp.c             |   2 +-
+ arch/arm/mach-omap2/board-3430sdp.c             |   2 +-
+ arch/arm/mach-omap2/board-apollon.c             |   2 +-
+ arch/arm/mach-omap2/board-cm-t35.c              |   5 +-
+ arch/arm/mach-omap2/board-cm-t3517.c            |   5 +-
+ arch/arm/mach-omap2/board-devkit8000.c          |   2 +-
+ arch/arm/mach-omap2/board-flash.c               |   7 +-
+ arch/arm/mach-omap2/board-flash.h               |   2 +-
+ arch/arm/mach-omap2/board-h4.c                  |   2 +-
+ arch/arm/mach-omap2/board-igep0020.c            |   3 +-
+ arch/arm/mach-omap2/board-ldp.c                 |   2 +-
+ arch/arm/mach-omap2/board-n8x0.c                |   1 +
+ arch/arm/mach-omap2/board-omap3beagle.c         |   2 +-
+ arch/arm/mach-omap2/board-omap3logic.c          |   2 +-
+ arch/arm/mach-omap2/board-omap3pandora.c        |   3 +-
+ arch/arm/mach-omap2/board-omap3stalker.c        |   2 +-
+ arch/arm/mach-omap2/board-omap3touchbook.c      |   2 +-
+ arch/arm/mach-omap2/board-overo.c               |   2 +-
+ arch/arm/mach-omap2/board-rm680.c               |   3 +-
+ arch/arm/mach-omap2/board-rx51-peripherals.c    |   3 +-
+ arch/arm/mach-omap2/board-rx51.c                |   2 +-
+ arch/arm/mach-omap2/board-zoom-debugboard.c     |   2 +-
+ arch/arm/mach-omap2/common-board-devices.c      |   1 -
+ arch/arm/mach-omap2/gpmc-nand.c                 |  81 +++--
+ arch/arm/mach-omap2/gpmc-nand.h                 |  27 ++
+ arch/arm/mach-omap2/gpmc-onenand.c              |   9 +-
+ arch/arm/mach-omap2/gpmc-onenand.h              |  24 ++
+ arch/arm/mach-omap2/gpmc-smc91x.c               |   2 +-
+ arch/arm/mach-omap2/gpmc-smsc911x.c             |   2 +-
+ arch/arm/mach-omap2/gpmc.c                      | 459 ++----------------------
+ arch/arm/mach-omap2/gpmc.h                      | 154 ++++++++
+ arch/arm/mach-omap2/pm34xx.c                    |   2 +-
+ arch/arm/mach-omap2/usb-tusb6010.c              |   2 +-
+ arch/arm/plat-omap/include/plat/gpmc.h          | 209 -----------
+ drivers/mtd/nand/omap2.c                        | 125 +++++--
+ drivers/mtd/onenand/omap2.c                     |   9 +-
+ include/linux/platform_data/mtd-nand-omap2.h    |  46 ++-
+ include/linux/platform_data/mtd-onenand-omap2.h |  20 +-
+ 38 files changed, 472 insertions(+), 758 deletions(-)
+ create mode 100644 arch/arm/mach-omap2/gpmc-nand.h
+ create mode 100644 arch/arm/mach-omap2/gpmc-onenand.h
+ create mode 100644 arch/arm/mach-omap2/gpmc.h
+ delete mode 100644 arch/arm/plat-omap/include/plat/gpmc.h
+
+-- 
+1.7.12
