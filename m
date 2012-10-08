@@ -1,21 +1,12 @@
-From: "Mohammed, Afzal" <afzal@ti.com>
-To: Ivan Djelic <ivan.djelic@parrot.com>
-Subject: RE: [PATCH v2 00/14] OMAP-GPMC related cleanup for common zImage
-Date: Mon, 8 Oct 2012 06:08:08 +0000
-Message-ID: <C8443D0743D26F4388EA172BF4E2A7A93E9F7B0A@DBDE01.ent.ti.com>
-References: <cover.1349672877.git.afzal@ti.com>
-In-Reply-To: <cover.1349672877.git.afzal@ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: Paul Walmsley <paul@pwsan.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- Tony Lindgren <tony@atomide.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Hunter,
- Jon" <jon-hunter@ti.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+From: Josh Wu <josh.wu@atmel.com>
+To: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ dedekind1@gmail.com
+Subject: [PATCH] MTD: atmel_nand: fix compile error when use
+ avr32-atstk1006_defconfig
+Date: Mon,  8 Oct 2012 14:46:49 +0800
+Message-Id: <1349678809-12092-1-git-send-email-josh.wu@atmel.com>
+Cc: fengguang.wu@intel.com, egtvedt@samfundet.no, Josh Wu <josh.wu@atmel.com>,
+ hskinnemoen@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,25 +16,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgSXZhbiwNCg0KT24gTW9uLCBPY3QgMDgsIDIwMTIgYXQgMTE6MDU6NTYsIE1vaGFtbWVkLCBB
-ZnphbCB3cm90ZToNCg0KPiBUaGlzIHNlcmllcyBjbGVhbnMgdXAgb21hcC1ncG1jIHJlbGF0ZWQg
-Y29kZSBzbyB0aGF0IG9tYXAgY2FuDQo+IGJlIGEgcGFydCBvZiBjb21tb24gekltYWdlLg0KDQo+
-IFRoaXMgc2VyaWVzIG1vdmVzIGdwbWMuaCBmcm9tIHBsYXQtb21hcC9pbmNsdWRlL3BsYXQgdG8g
-bWFjaC1vbWFwMg0KPiBzbyB0aGF0IGhlYWRlciBmaWxlIGlzIGxvY2FsLg0KDQo+IFBhdGNoZXMg
-NyAmIDggY2xlYW5zIHVwIHRoZSBhbHJlYWR5IG1vdmVkIHBsYXRmb3JtIGRhdGEgaGVhZGVyIGZp
-bGVzDQo+IHRvIGNvbnRhaW4gb25seSBwbGF0Zm9ybSBkYXRhLiBBbHNvIGdwbWMtbmFuZCBpbmZv
-cm1hdGlvbiBpcyBtb3ZlZA0KPiB0byBuYW5kIHBsYXRmb3JtIGRhdGEgaGVhZGVyLg0KPiANCj4g
-UGF0Y2hlcyA5LTEzIG1ha2VzIG5hbmQgZHJpdmVyIGluZGVwZW5kZW50IG9mIGdwbWMgaGVhZGVy
-IGZpbGUNCj4gDQo+IEFuZCB0aGUgZmluYWwgcGF0Y2ggbG9jYWxpemVzIGdwbWMgaGVhZGVyLg0K
-DQpCQ0hbNDhdIHN1cHBvcnQgdGhhdCB5b3UgaGF2ZSBhZGRlZCBvbiBPTUFQIHVzaW5nIGdwbWMg
-ZXhwb3J0ZWQNCnN5bWJvbHMgaGFzIGJlZW4gY2hhbmdlZCBzdWNoIHRoYXQgbmFuZCBkcml2ZXIg
-bm93IHRha2VzIGNhcmUNCm9mIEJDSCBzdXBwb3J0IHdpdGhvdXQgcmVseWluZyBvbiBncG1jIGV4
-cG9ydGVkIHN5bWJvbHMuDQoNClRoaXMgaXMgbW9yZSBvciBsZXNzIGEgY3V0ICYgcGFzdGUgb2Yg
-eW91ciBpbXBsZW1lbnRhdGlvbiwgd2hpY2ggd2FzDQpuZWNlc3NpdGF0ZWQgbm93IGR1ZSB0byBj
-b21tb24gQVJNIHpJbWFnZSBjbGVhbnVwIHcuci50IGhlYWRlciBmaWxlcy4NCg0KUGxlYXNlIHZl
-cmlmeSB0aGF0IEJDSFs0OF0gd29ya3MgYXMgZWFybGllciB3aXRoIHRoaXMgc2VyaWVzLg0KDQpS
-ZWdhcmRzDQpBZnphbA0KDQo+IFRoaXMgc2VyaWVzIGlzIGF2YWlsYWJsZQ0KPiAgICAgICAgIEAg
-Z2l0Oi8vZ2l0b3Jpb3VzLm9yZy94MDE0ODQwNi1wdWJsaWMvbGludXgta2VybmVsLmdpdCBncG1j
-LWN6aW1hZ2UtdjINCj4gYW5kIGlzIGJhc2VkIG9uDQo+ICAgICAgICAgbGludXgtbmV4dCAobmV4
-dC0yMDEyMTAwNSkNCj4gYW5kIGlzIGRlcGVuZGVudCBvbg0KPiAJaHR0cDovL21hcmMuaW5mby8/
-bD1saW51eC1vbWFwJm09MTM0OTQ1MTMxNjAyNjIyJnc9Mg0K
+fixed the following compile error when use avr32 config:
+drivers/mtd/nand/atmel_nand.c: In function 'pmecc_err_location':
+drivers/mtd/nand/atmel_nand.c:639: error: implicit declaration of function 'writel_relaxed'
+
+Since in ARCH avr32, there is no macro "writel_relaxed" defined. In this patch we use macro "writel" instead.
+
+Signed-off-by: Josh Wu <josh.wu@atmel.com>
+---
+ drivers/mtd/nand/atmel_nand_ecc.h |    5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/mtd/nand/atmel_nand_ecc.h b/drivers/mtd/nand/atmel_nand_ecc.h
+index 8a1e9a6..e87af84 100644
+--- a/drivers/mtd/nand/atmel_nand_ecc.h
++++ b/drivers/mtd/nand/atmel_nand_ecc.h
+@@ -129,8 +129,13 @@
+ #define pmerrloc_writel(addr, reg, value) \
+ 	writel((value), (addr) + ATMEL_PMERRLOC_##reg)
+ 
++#if defined(CONFIG_ARCH_AT91)
+ #define pmerrloc_writel_sigma_relaxed(addr, n, value) \
+ 	writel_relaxed((value), (addr) + ATMEL_PMERRLOC_SIGMAx + ((n) * 4))
++#elif defined(CONFIG_AVR32)
++#define pmerrloc_writel_sigma_relaxed(addr, n, value) \
++	writel((value), (addr) + ATMEL_PMERRLOC_SIGMAx + ((n) * 4))
++#endif
+ 
+ #define pmerrloc_readl_sigma_relaxed(addr, n) \
+ 	readl_relaxed((addr) + ATMEL_PMERRLOC_SIGMAx + ((n) * 4))
+-- 
+1.7.9.5
