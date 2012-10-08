@@ -1,24 +1,20 @@
-Received: from 19.mo5.mail-out.ovh.net ([46.105.35.78]
- helo=mo5.mail-out.ovh.net)
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TKwtj-0005NV-OS
- for linux-mtd@lists.infradead.org; Sun, 07 Oct 2012 19:52:24 +0000
-Received: from mail98.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo5.mail-out.ovh.net (Postfix) with SMTP id BA467FF9A19
- for <linux-mtd@lists.infradead.org>; Sun,  7 Oct 2012 21:58:46 +0200 (CEST)
-Date: Sun, 7 Oct 2012 21:49:59 +0200
-From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH 2/2] mtd: delete nomadik_nand driver
-Message-ID: <20121007194959.GF12801@game.jcrosoft.org>
-References: <1349335729-13438-1-git-send-email-linus.walleij@linaro.org>
+Received: from tx2ehsobe002.messaging.microsoft.com ([65.55.88.12]
+ helo=tx2outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TL3Ix-0005v3-G4
+ for linux-mtd@lists.infradead.org; Mon, 08 Oct 2012 02:42:54 +0000
+Message-ID: <50723E5C.3020403@freescale.com>
+Date: Mon, 8 Oct 2012 10:45:48 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1349335729-13438-1-git-send-email-linus.walleij@linaro.org>
-Cc: Mike Turquette <mturquette@linaro.org>, linux-mtd@lists.infradead.org,
- Mike Turquette <mturquette@ti.com>, David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org, Alessandro Rubini <rubini@unipv.it>
+To: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH] nand: gpmi-nand: Fix clock registration
+References: <1348425062-17427-1-git-send-email-festevam@gmail.com>
+In-Reply-To: <1348425062-17427-1-git-send-email-festevam@gmail.com>
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: quoted-printable
+Cc: marex@denx.de, artem.bityutskiy@linux.intel.com, shawn.guo@linaro.org,
+ linux-mtd@lists.infradead.org, Fabio Estevam <fabio.estevam@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,20 +24,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09:28 Thu 04 Oct     , Linus Walleij wrote:
-> The nomadik_nand driver is really just a subset of the FSMC
-> NAND driver, and there are no users anymore so let's delete
-> it.
-> 
-> Cc: Alessandro Rubini <rubini@unipv.it>
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+=D3=DA 2012=C4=EA09=D4=C224=C8=D5 02:31, Fabio Estevam =D0=B4=B5=C0:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+>
+> On a mx28 board the following error happens since commit 638064e56c=20
+> (mtd: gpmi: change the code for clocks):
+>
+> gpmi-nand: probe of 8000c000.gpmi-nand failed with error -12
+>
+> Acquire the clock using "NULL" as it was done previously, so that the d=
+river
+> can register on mx23/mx28 as well.
+>
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 > ---
-> I'm seeking the MTD maintainer(s) ACK for this patch so I can
-> merge it through the ARM SoC tree just after switching the
-> platform to using the FSMC driver.
-I've test the fsmc driver on nomadik too
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/=
+gpmi-nand/gpmi-nand.c
+> index c46be6c..1f23cb4 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -492,7 +492,7 @@ static int __devinit gpmi_get_clks(struct gpmi_nand=
+_data *this)
+>  	int i;
+> =20
+>  	/* The main clock is stored in the first. */
+> -	r->clock[0] =3D clk_get(this->dev, "gpmi_io");
+> +	r->clock[0] =3D clk_get(this->dev, NULL);
+Please do not change this line.
 
-Acked-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+The gpmi_io is for mx6q.
+If you replace it with `NULL`. The mx6q can not find the proper clock.
 
-Best Regards,
-J.
+thanks
+Huang Shijie
+>  	if (IS_ERR(r->clock[0]))
+>  		goto err_clock;
+> =20
