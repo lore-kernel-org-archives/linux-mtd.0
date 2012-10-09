@@ -1,15 +1,19 @@
-Received: from blu0-omc1-s29.blu0.hotmail.com ([65.55.116.40])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TLZII-0000ql-24
- for linux-mtd@lists.infradead.org; Tue, 09 Oct 2012 12:52:18 +0000
-Message-ID: <BLU170-W1123245400E4A0187A42D83C08F0@phx.gbl>
-From: =?big5?B?rGanoSC4rQ==?= <balado0318@hotmail.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [help] JFFS2 CRC failed in kernel 2.6.35
-Date: Tue, 9 Oct 2012 12:52:16 +0000
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: 8bit
+Message-ID: <507420A4.8090905@ti.com>
+Date: Tue, 9 Oct 2012 18:33:32 +0530
+From: Sekhar Nori <nsekhar@ti.com>
 MIME-Version: 1.0
+To: <dwmw2@infradead.org>, <artem.bityutskiy@linux.intel.com>
+Subject: Re: [PATCH 1/1] mtd:nand:clk: preparation for switch to common clock
+ framework
+References: <1347899860-24358-1-git-send-email-m-karicheri2@ti.com>
+ <1347899860-24358-2-git-send-email-m-karicheri2@ti.com>
+In-Reply-To: <1347899860-24358-2-git-send-email-m-karicheri2@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Cc: davinci-linux-open-source@linux.davincidsp.com, mikedunn@newsguy.com,
+ linux-kernel@vger.kernel.org, Murali Karicheri <m-karicheri2@ti.com>,
+ linux-mtd@lists.infradead.org, hs@denx.de,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,63 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 9/17/2012 10:07 PM, Murali Karicheri wrote:
+> As a first step towards migrating davinci platforms to use common clock
+> framework, replace all instances of clk_enable() with clk_prepare_enable()
+> and clk_disable() with clk_disable_unprepare(). Until the platform is
+> switched to use the CONFIG_HAVE_CLK_PREPARE Kconfig variable, this just
+> adds a might_sleep() call and would work without any issues.
+> 
+> This will make it easy later to switch to common clk based implementation
+> of clk driver from DaVinci specific driver.
+> 
+> Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
+> Reviewed-by: Mike Turquette <mturquette@linaro.org>
 
-Hi all,
- 
-Sorry for my poor English first.
- 
-I develop the NAND controller driver on kernel 2.6.35 and use 
-it to format NAND flash(512B page, Hynix H27US08561A) as JFFS2.
+Tested this using NAND flash on DA850 EVM.
 
-Under overnight test by the storage test item of BurnInTest tool,
-it appeared the following info:
- 
-JFFS2 notice: (119) jffs2_get_inode_nodes: Node header CRC failed 
-              at 0x98aff0. {5e78,f3f2,0a0c080f,0b0d090e}
-JFFS2 notice: (119) read_dnode: node CRC failed on dnode 
-              at 0xfd35d0: read 0x11281639, calculated 0xc4fcdd58
-JFFS2 notice: (119) read_dnode: node CRC failed on dnode
-              at 0xfc0dd0: read 0x3631417d, calculated 0xe3e58a1c
-JFFS2 notice: (119) read_dnode: node CRC failed on dnode 
-              at 0xfbaff0: read 0x4252f682, calculated 0x7fe31a5e
-JFFS2 notice: (119) read_dnode: node CRC failed on dnode 
-              at 0xfb75d0: read 0x21b1d7a5, calculated 0x19b26d31
-JFFS2 notice: (119) read_dnode: node CRC failed on dnode 
-              at 0xfaf5d0: read 0x4375dd2d, calculated 0xd826e6f7
-...
-Data CRC failed on REF_PRISTINE data node 
-            at 0x00fd2330: Read 0xf43e5add, calculated 0x99772ea8
-Node CRC failed on REF_PRISTINE data node 
-            at 0x00df05b0: Read 0xfb1aa12a, calculated 0xfa63c826
-Data CRC failed on REF_PRISTINE data node 
-            at 0x00ea1770: Read 0xed8ec085, calculated 0x593d2074
-Data CRC failed on REF_PRISTINE data node 
-            at 0x00ce8410: Read 0xf43e5add, calculated 0xb4a5853f
-Data CRC failed on REF_PRISTINE data node 
-            at 0x00e26330: Read 0x9db49f5b, calculated 0xe41b6991
-Data CRC failed on REF_PRISTINE data node 
-            at 0x00d4dc10: Read 0x7ce2b87f, calculated 0x712748df
-Data CRC failed on REF_PRISTINE data node 
-            at 0x00c20c70: Read 0x4c64f44a, calculated 0x45cccbc8
-...
- 
-It's so weird~ 
-Although the crc failed appears from jffs2 layer, the written file 
-seems not to be corrupted.(The comparison is accuracy)
-Is it the issue of driver-level? 
- 
-However, this driver has passed the test-modules under 
-<linux source>/driver/mtd/tests and the storage 
-test item(Sequential data pattern, random seeking,...etc) of 
-BurnInTest tool for 69 hours when the flash is formatted as 
-the UBIFS filesystem.
- 
-Refer to the posts before, the CRC failed usually occurred in the case 
-of power off when the gc didn't complete. 
-But, I don't cut the power when I run the BurnInTest tool for 
-overnight test.
- 
-Any suggestion or question is welcome!!
-I will appreciate for your reply.
- 
- 		 	   		   		 	   		  
+Acked-by: Sekhar Nori <nsekhar@ti.com>
+
+Any chance this can make into the v3.7 kernel?
+
+Thanks,
+Sekhar
