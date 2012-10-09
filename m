@@ -1,17 +1,17 @@
+Message-ID: <50746D45.9080308@antcom.de>
+Date: Tue, 09 Oct 2012 20:30:29 +0200
+From: Roland Stigge <stigge@antcom.de>
 MIME-Version: 1.0
-Sender: viresh.linux@gmail.com
-In-Reply-To: <88484dbae96f7db42ce615552a4c758844a5e6cc.1349778821.git.vipin.kumar@st.com>
-References: <cover.1349778820.git.vipin.kumar@st.com>
- <88484dbae96f7db42ce615552a4c758844a5e6cc.1349778821.git.vipin.kumar@st.com>
-Date: Tue, 9 Oct 2012 23:12:45 +0530
-Message-ID: <CAOh2x=nbiYCvwpiuVikcKB6=M2m0Z031XromT3jcFWOurupZZw@mail.gmail.com>
-Subject: Re: [PATCH 08/11] fsmc/nand: Use relaxed variants of io accessors
-From: viresh kumar <viresh.kumar@linaro.org>
-To: Vipin Kumar <vipin.kumar@st.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: dedekind1@gmail.com, linus.walleij@linaro.org, spear-devel@list.st.com,
- linux-mtd@lists.infradead.org, plagnioj@jcrosoft.com,
- linux-arm-kernel@lists.infradead.org
+To: artem.bityutskiy@linux.intel.com,
+ David Woodhouse <dwmw2@infradead.org>
+Subject: Re: Pull request for mainline
+References: <506EA8B4.6050309@antcom.de>
+In-Reply-To: <506EA8B4.6050309@antcom.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: Linux MTD <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,14 +21,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 9, 2012 at 4:14 PM, Vipin Kumar <vipin.kumar@st.com> wrote:
-> Use relaxed variants of readl/writel accessors. readl/writel io accessors use
-> explicit dsb instruction which causes stalls in the processor core resulting
-> several cycles of delay for each access
->
-> Use relaxed variants where ever possible. This also results in an improved
-> read/write performance.
+Hi David and Artem!
 
-Good change.
+On 05/10/12 11:30, Roland Stigge wrote:
+> just small reminder, just in case: Now would be a good opportunity for a
+> pull request for mtd to mainline, if not already done. ;-)
 
-Reviewed-by: Viresh Kumar <viresh.kumar@linaro.org>
+I found two others asking on the mtd list for the same, but also without
+a reply.
+
+So I hope you are well and can prepare a pull request in time for this
+merge window (closing at the end of this week).
+
+Please tell me if I can do anything to help here. I would volunteer.
+
+Thanks in advance,
+
+Roland
