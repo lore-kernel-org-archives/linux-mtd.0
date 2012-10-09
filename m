@@ -1,29 +1,17 @@
-Received: from mail-la0-f49.google.com ([209.85.215.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TLdZ2-0001kz-MI
- for linux-mtd@lists.infradead.org; Tue, 09 Oct 2012 17:25:55 +0000
-Received: by mail-la0-f49.google.com with SMTP id z14so3111155lag.36
- for <linux-mtd@lists.infradead.org>; Tue, 09 Oct 2012 10:25:50 -0700 (PDT)
-Message-ID: <1349803535.1827.0.camel@kyv>
-Subject: Re: UBIFS Recovery Issue: 'grab_empty_leb: could not find an empty
- LEB'
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brent Taylor <motobud@gmail.com>
-Date: Tue, 09 Oct 2012 20:25:35 +0300
-In-Reply-To: <CAP+RiCBCe-KUu+dd5NTizMoJU4gd+r5o=VmBa4CauP704uSmbQ@mail.gmail.com>
-References: <CAP+RiCC1afVbKAZESMcZGd1G3+7aKuLTQGggOEFGZxQM6o+QQA@mail.gmail.com>
- <1346413469.9709.44.camel@sauron.fi.intel.com>
- <CAP+RiCBRopbShAGf_fWCvK2R=uPPR1j4Pz12JfJxdEMUjwofNw@mail.gmail.com>
- <CAP+RiCAzOKvV00F8zppPxrL1CHKqR6eU2g08F+s_wm2R6jJ7Cg@mail.gmail.com>
- <CAP+RiCDHZYMZPFYmE6YfkLoA1gH=z8cTSRZ+9iQqQ=ei1xXFYg@mail.gmail.com>
- <1349789437.1992.116.camel@sauron.fi.intel.com>
- <CAP+RiCBCe-KUu+dd5NTizMoJU4gd+r5o=VmBa4CauP704uSmbQ@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-fQTNSA46ynnJD4iMaYTR"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+MIME-Version: 1.0
+Sender: viresh.linux@gmail.com
+In-Reply-To: <e455d98df0fba37e8b7ecd7e72d510a05f23d2ba.1349778821.git.vipin.kumar@st.com>
+References: <cover.1349778820.git.vipin.kumar@st.com>
+ <e455d98df0fba37e8b7ecd7e72d510a05f23d2ba.1349778821.git.vipin.kumar@st.com>
+Date: Tue, 9 Oct 2012 23:04:48 +0530
+Message-ID: <CAOh2x=kAgD+0c4mgZsx+Gc+mxAEO9QPEj8_LdDxMaoqFi5g6_g@mail.gmail.com>
+Subject: Re: [PATCH 05/11] fsmc: Implement ready/busy through gpio pin
+From: viresh kumar <viresh.kumar@linaro.org>
+To: Vipin Kumar <vipin.kumar@st.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: dedekind1@gmail.com, linus.walleij@linaro.org, spear-devel@list.st.com,
+ linux-mtd@lists.infradead.org, plagnioj@jcrosoft.com,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,49 +21,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue, Oct 9, 2012 at 4:14 PM, Vipin Kumar <vipin.kumar@st.com> wrote:
+> diff --git a/Documentation/devicetree/bindings/mtd/fsmc-nand.txt b/Documentation/devicetree/bindings/mtd/fsmc-nand.txt
+> +- st,ready-busy: Should contain either of "rb-gpio" or "rb-wait". When
+> +  this property is not defined, the default is to use rb-wait.
+> +- st,rb-gpios: When the st,ready-busy is defined as "rb-gpio", a gpio
+> +  pin number is defined in this property
 
---=-fQTNSA46ynnJD4iMaYTR
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Why st,*** maybe fsmc,***?
 
-On Tue, 2012-10-09 at 12:11 -0500, Brent Taylor wrote:
-> Artem,
->    Thanks so much for your time to track down this bug.  I've tested
-> your patch and it does mount the filesystem that it would fail on
-> before.  I'm glad I could help.  I want to thank you for all your work
-> in the UBI and UBIFS subsystems and all your contributions to the
-> Linux kernel.
+Would be better if you update the example too in this file.
 
-Thanks!
+> diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
 
-I will send a better version of the patch later, and give it some more
-test. I will keep you in CC.
+> + * @rb_pin:            Ready/Busy data
 
---=20
-Best Regards,
-Artem Bityutskiy
+> +       struct fsmc_rbpin       *rbpin;
 
---=-fQTNSA46ynnJD4iMaYTR
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+comment variable mismatch :(
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+> -static void fsmc_nand_setup(void __iomem *regs, uint32_t bank,
+> -                          uint32_t busw, struct fsmc_nand_timings *timings)
+> +static void fsmc_nand_setup(void __iomem *regs, uint32_t bank, uint32_t busw,
+> +                          struct fsmc_nand_timings *timings,
+> +                          struct fsmc_rbpin *rbpin)
 
-iQIcBAABAgAGBQJQdF4PAAoJECmIfjd9wqK0+PIP/3/7ImRx3MAe/9h3zWBHkiJH
-r3Lgw7n2/xhqvn0KI+HxHiiubJmFgCbHVQvTB1uQiQugrc/ggBZkjO2OFQp3JyNj
-3PEE8Bm3AkTVPhpGKQ+5KyGsuR6Yf2muGKFM8I8zeLplMojgDDL/u400W20RR5J7
-XTvY+2L1n4r/2go7ovfOCc+zM1wnnaAQI7Vg9tfUo8p3BfB5r3GLbImWsrS7Z9OT
-vxyjBO6pKFmmoBgcs+5N+hlvPPSorPwOk3zR5OaG3Ct0nYRLGIZYelk6DgHYcDT6
-WGNHS7Z78SYbmtrDqDRI8bjpRvB9grMQ5q/jPVX1UY936ATVUyFczAWd3qSiJmnS
-qr3GYFI1n+9T/zRgjXdtkh9Tsi4aXwkJZ1jpW6wckE32Xtoj4Vdz/H/su44jqDeH
-nDJVycGv6efHwuJesEn+XxwLysTiSqXNWfFleKKIwHN5xwq4D7f2iJTLEP0hOX2v
-m4jtSkUHaW3j6HCBNQFelD3TtkFVBL3+72et5NVMPigpIL3WQCbvNF5of/vQwzNX
-BIisemGSnnguFAZEECvKinlF3sRg9a55akrnzofOgvyCunpYW6P0FcBa6wy6jwrw
-AzqiKSV5RFhMZduFxUyg5mzHPqV28+3RgVfh0Qe45o8xawI7HmOCOY0D+ssRB47r
-uFHtjv7iki0+o5SEbqkT
-=f1xo
------END PGP SIGNATURE-----
+Can function prototype come in two lines instead of three?
 
---=-fQTNSA46ynnJD4iMaYTR--
+> @@ -1049,6 +1075,8 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+
+> +       if (host->rbpin->use_pin == FSMC_RB_GPIO) {
+> +               ret = gpio_request(host->rbpin->gpio_pin, "fsmc-rb");
+> +               if (ret < 0) {
+> +                       dev_err(&pdev->dev, "gpio request fail: %d\n",
+> +                                       host->rbpin->gpio_pin);
+> +                       goto err_gpio_req;
+> +               }
+> +       }
+
+Don't you want to set its direction to input?
