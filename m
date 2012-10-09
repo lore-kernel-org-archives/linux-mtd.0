@@ -1,28 +1,15 @@
-From: "Philip, Avinash" <avinashphilip@ti.com>
-To: Ivan Djelic <ivan.djelic@parrot.com>
-Subject: RE: [PATCH 4/4] mtd: nand: omap2: Add data correction support
-Date: Tue, 9 Oct 2012 12:36:50 +0000
-Message-ID: <518397C60809E147AF5323E0420B992E3E9CA829@DBDE01.ent.ti.com>
-References: <1349274589-11389-1-git-send-email-avinashphilip@ti.com>
- <1349274589-11389-5-git-send-email-avinashphilip@ti.com>
- <20121003192044.GB27502@parrot.com>
- <518397C60809E147AF5323E0420B992E3E9B8A65@DBDE01.ent.ti.com>
- <20121005142338.GA7199@parrot.com>
-In-Reply-To: <20121005142338.GA7199@parrot.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from blu0-omc1-s29.blu0.hotmail.com ([65.55.116.40])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TLZII-0000ql-24
+ for linux-mtd@lists.infradead.org; Tue, 09 Oct 2012 12:52:18 +0000
+Message-ID: <BLU170-W1123245400E4A0187A42D83C08F0@phx.gbl>
+From: =?big5?B?rGanoSC4rQ==?= <balado0318@hotmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [help] JFFS2 CRC failed in kernel 2.6.35
+Date: Tue, 9 Oct 2012 12:52:16 +0000
+Content-Type: text/plain; charset="big5"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-Cc: "Mohammed, Afzal" <afzal@ti.com>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "tony@atomide.com" <tony@atomide.com>,
- "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
- "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,124 +19,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 05, 2012 at 19:53:38, Ivan Djelic wrote:
-> On Fri, Oct 05, 2012 at 09:51:50AM +0100, Philip, Avinash wrote:
-> > On Thu, Oct 04, 2012 at 15:51:03, Philip, Avinash wrote:
-> > > On Thu, Oct 04, 2012 at 00:50:45, Ivan Djelic wrote:
-> > > > On Wed, Oct 03, 2012 at 03:29:49PM +0100, Philip, Avinash wrote:
-> > > > > ELM module can be used for error correction of BCH 4 & 8 bit. Als=
-o
-> > > > > support read & write page in one shot by adding custom read_page =
-&
-> > > > > write_page methods. This helps in optimizing code.
-> > > > >=20
-> > > > > New structure member "is_elm_used" is added to know the status of
-> > > > > whether the ELM module is used for error correction or not.
-> > > > >=20
-> > > > > Note:
-> > > > > ECC layout of BCH8 uses 14 bytes for 512 byte of data to make com=
-patible
-> > > > > with RBL ECC layout, even though the requirement was only 13 byte=
-. This
-> > > > > results a common ecc layout across RBL, U-boot & Linux.
-> > > > >=20
-> > > >=20
-> > > > See a few comments below,
-> > > >=20
-> > > > (...)
-> > > > > +static int omap_elm_correct_data(struct mtd_info *mtd, u_char *d=
-at,
-> > > > > +                               u_char *read_ecc, u_char *calc_ec=
-c)
-> > > > > +{
-> > > > > +       struct omap_nand_info *info =3D container_of(mtd, struct =
-omap_nand_info,
-> > > > > +                       mtd);
-> > > > > +       int eccsteps =3D info->nand.ecc.steps;
-> > > > > +       int i , j, stat =3D 0;
-> > > > > +       int eccsize, eccflag, size;
-> > > > > +       struct elm_errorvec err_vec[ERROR_VECTOR_MAX];
-> > > > > +       u_char *ecc_vec =3D calc_ecc;
-> > > > > +       enum bch_ecc type;
-> > > > > +       bool is_error_reported =3D false;
-> > > > > +
-> > > > > +       /* initialize elm error vector to zero */
-> > > > > +       memset(err_vec, 0, sizeof(err_vec));
-> > > > > +       if (info->nand.ecc.strength =3D=3D BCH8_MAX_ERROR) {
-> > > > > +               size =3D BCH8_SIZE;
-> > > > > +               eccsize =3D BCH8_ECC_OOB_BYTES;
-> > > > > +               type =3D BCH8_ECC;
-> > > > > +       } else {
-> > > > > +               size =3D BCH4_SIZE;
-> > > > > +               eccsize =3D BCH4_SIZE;
-> > > > > +               type =3D BCH4_ECC;
-> > > > > +       }
-> > > > > +
-> > > > > +       for (i =3D 0; i < eccsteps ; i++) {
-> > > > > +               eccflag =3D 0;    /* initialize eccflag */
-> > > > > +
-> > > > > +               for (j =3D 0; (j < eccsize); j++) {
-> > > > > +                       if (read_ecc[j] !=3D 0xFF) {
-> > > > > +                               eccflag =3D 1;    /* data area is=
- flashed */
-> > > >=20
-> > > > Just a reminder: this way of checking if a page has been programmed=
- is not robust to bitflips,
-> > > > so you may get into trouble with UBIFS on a fairly recent device.
-> >=20
-> > Sorry I missed this point.
-> >=20
-> > Here we were checking data in spare area (only in ecc layout 14*4 for B=
-CH8) is 0xFF. If all data
-> > in spare area is 0xFF, conclude that the page is erased & no need of er=
-ror correction. In case
-> > of bit flip present in spare area, page will be reported as uncorrectab=
-le.
-> > But I am not understand understand " trouble with UBIFS on a fairly rec=
-ent device".
-> > Can you little elaborativ
->=20
-> There are at least 2 potential problems when reading an erased page with =
-bitflips:
->=20
-> 1. bitflip in data area and no bitflip in spare area (all 0xff)
-> Your code will not perform any ECC correction.
-> UBIFS does not like finding bitflips in empty pages, see for instance
-> http://lists.infradead.org/pipermail/linux-mtd/2012-March/040328.html.
 
-In case of error correction using ELM, syndrome vector calculated after rea=
-ding
-Data area & OOB area. So handling of erased page requires a software workar=
-ound.
-I am planning something as follows.
+Hi all,
+ 
+Sorry for my poor English first.
+ 
+I develop the NAND controller driver on kernel 2.6.35 and use 
+it to format NAND flash(512B page, Hynix H27US08561A) as JFFS2.
 
-I will first check calculated ecc, which would be zero for non error pages.
-Then I would check 0xFF in OOB area (for erased page) by checking number of
-bit zeros in OOB area.  If it is 0xFF (number of bit zero count is zero),
-set entire page as 0xFF if number of bit zeros is less than max bit flips
-(8 or 4) by counting the number of bit zero's in data area.
-
-This logic is implemented in fsmc_nand.c
-
-See commit
-mtd: fsmc: Newly erased page read algorithm implemented
-
->=20
-> 2. bitflip in ECC bytes in spare area
-> Your code will report an uncorrectable error upon reading; if this happen=
-s while reading a partially programmed UBI block,
-> I guess you will lose data.
-
-In case of uncorrectable errors due to bit flips in spare area,
-I can go on checking number of bit zero's in data area + OOB area
-are less than max bit flips (8 or 4), I can go on setting the entire
-page as 0xFF.
-
-Thanks
-Avinash
-
->=20
-> BR,
-> --
-> Ivan
->=20
+Under overnight test by the storage test item of BurnInTest tool,
+it appeared the following info:
+ 
+JFFS2 notice: (119) jffs2_get_inode_nodes: Node header CRC failed 
+              at 0x98aff0. {5e78,f3f2,0a0c080f,0b0d090e}
+JFFS2 notice: (119) read_dnode: node CRC failed on dnode 
+              at 0xfd35d0: read 0x11281639, calculated 0xc4fcdd58
+JFFS2 notice: (119) read_dnode: node CRC failed on dnode
+              at 0xfc0dd0: read 0x3631417d, calculated 0xe3e58a1c
+JFFS2 notice: (119) read_dnode: node CRC failed on dnode 
+              at 0xfbaff0: read 0x4252f682, calculated 0x7fe31a5e
+JFFS2 notice: (119) read_dnode: node CRC failed on dnode 
+              at 0xfb75d0: read 0x21b1d7a5, calculated 0x19b26d31
+JFFS2 notice: (119) read_dnode: node CRC failed on dnode 
+              at 0xfaf5d0: read 0x4375dd2d, calculated 0xd826e6f7
+...
+Data CRC failed on REF_PRISTINE data node 
+            at 0x00fd2330: Read 0xf43e5add, calculated 0x99772ea8
+Node CRC failed on REF_PRISTINE data node 
+            at 0x00df05b0: Read 0xfb1aa12a, calculated 0xfa63c826
+Data CRC failed on REF_PRISTINE data node 
+            at 0x00ea1770: Read 0xed8ec085, calculated 0x593d2074
+Data CRC failed on REF_PRISTINE data node 
+            at 0x00ce8410: Read 0xf43e5add, calculated 0xb4a5853f
+Data CRC failed on REF_PRISTINE data node 
+            at 0x00e26330: Read 0x9db49f5b, calculated 0xe41b6991
+Data CRC failed on REF_PRISTINE data node 
+            at 0x00d4dc10: Read 0x7ce2b87f, calculated 0x712748df
+Data CRC failed on REF_PRISTINE data node 
+            at 0x00c20c70: Read 0x4c64f44a, calculated 0x45cccbc8
+...
+ 
+It's so weird~ 
+Although the crc failed appears from jffs2 layer, the written file 
+seems not to be corrupted.(The comparison is accuracy)
+Is it the issue of driver-level? 
+ 
+However, this driver has passed the test-modules under 
+<linux source>/driver/mtd/tests and the storage 
+test item(Sequential data pattern, random seeking,...etc) of 
+BurnInTest tool for 69 hours when the flash is formatted as 
+the UBIFS filesystem.
+ 
+Refer to the posts before, the CRC failed usually occurred in the case 
+of power off when the gc didn't complete. 
+But, I don't cut the power when I run the BurnInTest tool for 
+overnight test.
+ 
+Any suggestion or question is welcome!!
+I will appreciate for your reply.
+ 
+ 		 	   		   		 	   		  
