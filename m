@@ -1,18 +1,23 @@
-Received: from mail-qa0-f42.google.com ([209.85.216.42])
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TLT5D-0007Hj-AU
- for linux-mtd@lists.infradead.org; Tue, 09 Oct 2012 06:14:25 +0000
-Received: by mail-qa0-f42.google.com with SMTP id t11so2870660qaa.15
- for <linux-mtd@lists.infradead.org>; Mon, 08 Oct 2012 23:14:21 -0700 (PDT)
+ id 1TLVQO-00052j-1r
+ for linux-mtd@lists.infradead.org; Tue, 09 Oct 2012 08:44:26 +0000
+Date: Tue, 9 Oct 2012 10:44:18 +0200
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+To: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH] [RFC] mtd/uclinux: support ROM and allow passing the
+ base address
+Message-ID: <20121009084418.GH18531@pengutronix.de>
+References: <1349709952-4332-1-git-send-email-u.kleine-koenig@pengutronix.de>
+ <50739A2A.9070405@snapgear.com>
 MIME-Version: 1.0
-Date: Tue, 9 Oct 2012 14:14:21 +0800
-Message-ID: <CAPgLHd_AHHe7=H18K54LvbiS0M7_w1vTMOxwwxgVdRaiXNN-OA@mail.gmail.com>
-Subject: [PATCH] ubi: use list_move_tail instead of list_del/list_add_tail
-From: Wei Yongjun <weiyj.lk@gmail.com>
-To: richard@nod.at, dedekind1@gmail.com, dwmw2@infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: yongjun_wei@trendmicro.com.cn, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <50739A2A.9070405@snapgear.com>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-mtd@lists.infradead.org, kernel@pengutronix.de,
+ Greg Ungerer <gerg@uclinux.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,29 +27,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+Hi Greg,
 
-Using list_move_tail() instead of list_del() + list_add_tail().
+On Tue, Oct 09, 2012 at 01:29:46PM +1000, Greg Ungerer wrote:
+> On 09/10/12 01:25, Uwe Kleine-König wrote:
+> >This allows to put the filesystem at a defined address in ROM allowing
+> >to save more precious RAM.
+> >
+> >I think it's save to default to ROM because the intention of using the
+> >uclinux map is to use a romfs and so mtd-ram doesn't give you anything
+> >that mtd-rom doesn't.
+> >
+> >Signed-off-by: Uwe Kleine-KÃ·nig <u.kleine-koenig@pengutronix.de>
+> 
+> Looks good to me, so:
+> 
+> Acked-by: Greg Ungerer <gerg@uclinux.org>
+> 
+> Couple of things to be aware of. Artem currently has a couple of
+> patches against this file (looks like at least 1 of them is currently
+> in linux-next). It will probably conflict with your changes, should
+> be easy enough to fix up.
+If you tell me a branch to test, I can do so.
 
-dpatch engine is used to auto generate this patch.
-(https://github.com/weiyj/dpatch)
+Thanks
+Uwe
 
-Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
----
- drivers/mtd/ubi/fastmap.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index 1a5f53c..5f540c5 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -815,8 +815,7 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
- 		ai->max_sqnum = max_sqnum;
- 
- 	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &free, u.list) {
--		list_del(&tmp_aeb->u.list);
--		list_add_tail(&tmp_aeb->u.list, &ai->free);
-+		list_move_tail(&tmp_aeb->u.list, &ai->free);
- 	}
- 
- 	/*
+-- 
+Pengutronix e.K.                           | Uwe Kleine-König            |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
