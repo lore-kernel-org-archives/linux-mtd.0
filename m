@@ -1,17 +1,29 @@
-MIME-Version: 1.0
-Sender: viresh.linux@gmail.com
-In-Reply-To: <54eda40e56e8ea02ed9c5332ca6d3fb90d617cc7.1349778821.git.vipin.kumar@st.com>
-References: <cover.1349778820.git.vipin.kumar@st.com>
- <54eda40e56e8ea02ed9c5332ca6d3fb90d617cc7.1349778821.git.vipin.kumar@st.com>
-Date: Tue, 9 Oct 2012 22:50:47 +0530
-Message-ID: <CAOh2x==1UA-9yDX=S6zGtJ-NwGkQuxStE5WTh6qpWAK7Dw68nw@mail.gmail.com>
-Subject: Re: [PATCH 04/11] fsmc/nand: Accept nand timing parameters via DT
-From: viresh kumar <viresh.kumar@linaro.org>
-To: Vipin Kumar <vipin.kumar@st.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: dedekind1@gmail.com, linus.walleij@linaro.org, spear-devel@list.st.com,
- linux-mtd@lists.infradead.org, plagnioj@jcrosoft.com,
- linux-arm-kernel@lists.infradead.org
+Received: from mail-la0-f49.google.com ([209.85.215.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TLdZ2-0001kz-MI
+ for linux-mtd@lists.infradead.org; Tue, 09 Oct 2012 17:25:55 +0000
+Received: by mail-la0-f49.google.com with SMTP id z14so3111155lag.36
+ for <linux-mtd@lists.infradead.org>; Tue, 09 Oct 2012 10:25:50 -0700 (PDT)
+Message-ID: <1349803535.1827.0.camel@kyv>
+Subject: Re: UBIFS Recovery Issue: 'grab_empty_leb: could not find an empty
+ LEB'
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Brent Taylor <motobud@gmail.com>
+Date: Tue, 09 Oct 2012 20:25:35 +0300
+In-Reply-To: <CAP+RiCBCe-KUu+dd5NTizMoJU4gd+r5o=VmBa4CauP704uSmbQ@mail.gmail.com>
+References: <CAP+RiCC1afVbKAZESMcZGd1G3+7aKuLTQGggOEFGZxQM6o+QQA@mail.gmail.com>
+ <1346413469.9709.44.camel@sauron.fi.intel.com>
+ <CAP+RiCBRopbShAGf_fWCvK2R=uPPR1j4Pz12JfJxdEMUjwofNw@mail.gmail.com>
+ <CAP+RiCAzOKvV00F8zppPxrL1CHKqR6eU2g08F+s_wm2R6jJ7Cg@mail.gmail.com>
+ <CAP+RiCDHZYMZPFYmE6YfkLoA1gH=z8cTSRZ+9iQqQ=ei1xXFYg@mail.gmail.com>
+ <1349789437.1992.116.camel@sauron.fi.intel.com>
+ <CAP+RiCBCe-KUu+dd5NTizMoJU4gd+r5o=VmBa4CauP704uSmbQ@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-fQTNSA46ynnJD4iMaYTR"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,28 +33,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 9, 2012 at 4:14 PM, Vipin Kumar <vipin.kumar@st.com> wrote:
-> diff --git a/Documentation/devicetree/bindings/mtd/fsmc-nand.txt b/Documentation/devicetree/bindings/mtd/fsmc-nand.txt
 
-> +- nand-timings-enabled: Indicates if the timing parameters are passed
-> +  via DT
-> +- nand-timings,tclr:
-> +- nand-timings,tar:
-> +- nand-timings,thiz:
-> +- nand-timings,thold:
-> +- nand-timings,twait:
-> +- nand-timings,tset: All these timing parameters come from the actual
-> +  nand device specification. Each of this represents a number of time
-> +  period of hclk ie a number 4 in thold with hclk = 166MHz means that
-> +  thold = (1000 / 166) * 4 ns = 24.09ns
+--=-fQTNSA46ynnJD4iMaYTR
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Are they specific to fsmc controller or nand memory type? If to fsmc then
-please add my
+On Tue, 2012-10-09 at 12:11 -0500, Brent Taylor wrote:
+> Artem,
+>    Thanks so much for your time to track down this bug.  I've tested
+> your patch and it does mount the filesystem that it would fail on
+> before.  I'm glad I could help.  I want to thank you for all your work
+> in the UBI and UBIFS subsystems and all your contributions to the
+> Linux kernel.
 
-Reviewed-by: Viresh Kumar <viresh.kumar@linaro.org>
+Thanks!
 
-else
-I would suggest to add these to mtd bindings instead, so that same fields
-can be used by multiple drivers....
+I will send a better version of the patch later, and give it some more
+test. I will keep you in CC.
 
-Similar approach is used for mmc controllers too.
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-fQTNSA46ynnJD4iMaYTR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQdF4PAAoJECmIfjd9wqK0+PIP/3/7ImRx3MAe/9h3zWBHkiJH
+r3Lgw7n2/xhqvn0KI+HxHiiubJmFgCbHVQvTB1uQiQugrc/ggBZkjO2OFQp3JyNj
+3PEE8Bm3AkTVPhpGKQ+5KyGsuR6Yf2muGKFM8I8zeLplMojgDDL/u400W20RR5J7
+XTvY+2L1n4r/2go7ovfOCc+zM1wnnaAQI7Vg9tfUo8p3BfB5r3GLbImWsrS7Z9OT
+vxyjBO6pKFmmoBgcs+5N+hlvPPSorPwOk3zR5OaG3Ct0nYRLGIZYelk6DgHYcDT6
+WGNHS7Z78SYbmtrDqDRI8bjpRvB9grMQ5q/jPVX1UY936ATVUyFczAWd3qSiJmnS
+qr3GYFI1n+9T/zRgjXdtkh9Tsi4aXwkJZ1jpW6wckE32Xtoj4Vdz/H/su44jqDeH
+nDJVycGv6efHwuJesEn+XxwLysTiSqXNWfFleKKIwHN5xwq4D7f2iJTLEP0hOX2v
+m4jtSkUHaW3j6HCBNQFelD3TtkFVBL3+72et5NVMPigpIL3WQCbvNF5of/vQwzNX
+BIisemGSnnguFAZEECvKinlF3sRg9a55akrnzofOgvyCunpYW6P0FcBa6wy6jwrw
+AzqiKSV5RFhMZduFxUyg5mzHPqV28+3RgVfh0Qe45o8xawI7HmOCOY0D+ssRB47r
+uFHtjv7iki0+o5SEbqkT
+=f1xo
+-----END PGP SIGNATURE-----
+
+--=-fQTNSA46ynnJD4iMaYTR--
