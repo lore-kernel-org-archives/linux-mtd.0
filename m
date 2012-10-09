@@ -1,24 +1,25 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from 9.mo4.mail-out.ovh.net ([46.105.40.176]
+ helo=mo4.mail-out.ovh.net)
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TLYTc-0007dO-66
- for linux-mtd@lists.infradead.org; Tue, 09 Oct 2012 11:59:57 +0000
-Message-ID: <1349784006.1992.114.camel@sauron.fi.intel.com>
-Subject: Re: UBIFS Recovery Issue: 'grab_empty_leb: could not find an empty
- LEB'
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brent Taylor <motobud@gmail.com>
-Date: Tue, 09 Oct 2012 15:00:06 +0300
-In-Reply-To: <CAP+RiCAzOKvV00F8zppPxrL1CHKqR6eU2g08F+s_wm2R6jJ7Cg@mail.gmail.com>
-References: <CAP+RiCC1afVbKAZESMcZGd1G3+7aKuLTQGggOEFGZxQM6o+QQA@mail.gmail.com>
- <1346413469.9709.44.camel@sauron.fi.intel.com>
- <CAP+RiCBRopbShAGf_fWCvK2R=uPPR1j4Pz12JfJxdEMUjwofNw@mail.gmail.com>
- <CAP+RiCAzOKvV00F8zppPxrL1CHKqR6eU2g08F+s_wm2R6jJ7Cg@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-uProBgMlFD1AW2b70h96"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+ id 1TLYVQ-000076-IZ
+ for linux-mtd@lists.infradead.org; Tue, 09 Oct 2012 12:01:49 +0000
+Received: from mail428.ha.ovh.net (b9.ovh.net [213.186.33.59])
+ by mo4.mail-out.ovh.net (Postfix) with SMTP id 7D3E2104F19F
+ for <linux-mtd@lists.infradead.org>; Tue,  9 Oct 2012 14:08:11 +0200 (CEST)
+Date: Tue, 9 Oct 2012 13:59:24 +0200
+From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+To: Vipin Kumar <vipin.kumar@st.com>
+Subject: Re: [PATCH 05/11] fsmc: Implement ready/busy through gpio pin
+Message-ID: <20121009115924.GO12801@game.jcrosoft.org>
+References: <cover.1349778820.git.vipin.kumar@st.com>
+ <e455d98df0fba37e8b7ecd7e72d510a05f23d2ba.1349778821.git.vipin.kumar@st.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e455d98df0fba37e8b7ecd7e72d510a05f23d2ba.1349778821.git.vipin.kumar@st.com>
+Cc: linus.walleij@linaro.org, spear-devel@list.st.com,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,61 +29,232 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 16:14 Tue 09 Oct     , Vipin Kumar wrote:
+> The NAND devices have a ready/busy (active low) output which is connected to the
+> FSMC controller FSMC_RnB pin
+> 
+> The CPU can work in following two ways
+> * CPU keeps waiting for a ready response and it halts until it receives a ready
+>   response from NAND device. This halts the ldr instruction in between and in
+>   effect holds the CPU down for a number of cycles. During this period, CPU
+>   can't even service interrupts. This behavior is enabled via WAIT_ON bit of
+>   FSMC controller
+> * CPU merely issues the command and does not wait for response. The NAND device
+>   is later probed for being ready by reading the NAND_RnB signal
+> 
+> Until now, WAIT_ON was enabled by default. This patch implements reading the
+> device ready state through a gpio. The gpio number is passed via DT and this
+> patch also adds a corresponding binding for fsmc
+> 
+> Signed-off-by: Vipin Kumar <vipin.kumar@st.com>
+> ---
+>  .../devicetree/bindings/mtd/fsmc-nand.txt          |  5 ++
+>  drivers/mtd/nand/fsmc_nand.c                       | 54 +++++++++++++++++++---
+>  include/linux/mtd/fsmc.h                           | 11 +++++
+>  3 files changed, 64 insertions(+), 6 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/fsmc-nand.txt b/Documentation/devicetree/bindings/mtd/fsmc-nand.txt
+> index 6a7fc43..598bca2 100644
+> --- a/Documentation/devicetree/bindings/mtd/fsmc-nand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/fsmc-nand.txt
+> @@ -25,6 +25,11 @@ Optional properties:
+>    period of hclk ie a number 4 in thold with hclk = 166MHz means that
+>    thold = (1000 / 166) * 4 ns = 24.09ns
+>  
+> +- st,ready-busy: Should contain either of "rb-gpio" or "rb-wait". When
+> +  this property is not defined, the default is to use rb-wait.
+> +- st,rb-gpios: When the st,ready-busy is defined as "rb-gpio", a gpio
+> +  pin number is defined in this property
+> +
+>  Example:
+>  
+>  	fsmc: flash@d1800000 {
+> diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
+> index f3d69b3..eaffd3b 100644
+> --- a/drivers/mtd/nand/fsmc_nand.c
+> +++ b/drivers/mtd/nand/fsmc_nand.c
+> @@ -22,6 +22,7 @@
+>  #include <linux/dma-direction.h>
+>  #include <linux/dma-mapping.h>
+>  #include <linux/err.h>
+> +#include <linux/gpio.h>
+>  #include <linux/init.h>
+>  #include <linux/module.h>
+>  #include <linux/resource.h>
+> @@ -32,6 +33,7 @@
+>  #include <linux/mtd/nand_ecc.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/of.h>
+> +#include <linux/of_gpio.h>
+>  #include <linux/mtd/partitions.h>
+>  #include <linux/io.h>
+>  #include <linux/slab.h>
+> @@ -289,6 +291,7 @@ static struct fsmc_eccplace fsmc_ecc4_sp_place = {
+>   * @write_dma_chan:	DMA channel for write access to NAND
+>   * @dma_access_complete: Completion structure
+>   *
+> + * @rb_pin:		Ready/Busy data
+>   * @dev_timings:	Timings to be programmed in controller
+>   * @partitions:		Partition info for a NAND Flash
+>   * @nr_partitions:	Total number of partition of a NAND flash
+> @@ -322,6 +325,7 @@ struct fsmc_nand_data {
+>  	struct completion	dma_access_complete;
+>  
+>  	/* Recieved from plat data */
+> +	struct fsmc_rbpin	*rbpin;
+>  	struct fsmc_nand_timings *dev_timings;
+>  	struct mtd_partition	*partitions;
+>  	unsigned int		nr_partitions;
+> @@ -410,12 +414,16 @@ static void fsmc_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+>   * This routine initializes timing parameters related to NAND memory access in
+>   * FSMC registers
+>   */
+> -static void fsmc_nand_setup(void __iomem *regs, uint32_t bank,
+> -			   uint32_t busw, struct fsmc_nand_timings *timings)
+> +static void fsmc_nand_setup(void __iomem *regs, uint32_t bank, uint32_t busw,
+> +			   struct fsmc_nand_timings *timings,
+> +			   struct fsmc_rbpin *rbpin)
+>  {
+> -	uint32_t value = FSMC_DEVTYPE_NAND | FSMC_ENABLE | FSMC_WAITON;
+> +	uint32_t value = FSMC_DEVTYPE_NAND | FSMC_ENABLE;
+>  	uint32_t tclr, tar, thiz, thold, twait, tset;
+>  
+> +	if (!rbpin || (rbpin->use_pin == FSMC_RB_WAIT))
+> +		value |= FSMC_WAITON;
+> +
+>  	tclr = (timings->tclr & FSMC_TCLR_MASK) << FSMC_TCLR_SHIFT;
+>  	tar = (timings->tar & FSMC_TAR_MASK) << FSMC_TAR_SHIFT;
+>  	thiz = (timings->thiz & FSMC_THIZ_MASK) << FSMC_THIZ_SHIFT;
+> @@ -857,6 +865,14 @@ static bool filter(struct dma_chan *chan, void *slave)
+>  	return true;
+>  }
+>  
+> +static int fsmc_dev_ready(struct mtd_info *mtd)
+> +{
+> +	struct fsmc_nand_data *host = container_of(mtd,
+> +					struct fsmc_nand_data, mtd);
+> +
+> +	return !!gpio_get_value(host->rbpin->gpio_pin);
+> +}
+> +
+>  #ifdef CONFIG_OF
+>  static int __devinit fsmc_nand_probe_config_dt(struct platform_device *pdev,
+>  					       struct device_node *np)
+> @@ -870,7 +886,9 @@ static int __devinit fsmc_nand_probe_config_dt(struct platform_device *pdev,
+>  		.twait	= FSMC_TWAIT_6,
+>  		.tset	= FSMC_TSET_0,
+>  	};
+> +	const char *rb;
+>  	u32 val;
+> +	enum of_gpio_flags flags;
+>  
+>  	/* Set default NAND width to 8 bits */
+>  	pdata->width = 8;
+> @@ -911,6 +929,14 @@ static int __devinit fsmc_nand_probe_config_dt(struct platform_device *pdev,
+>  				sizeof(default_timings));
+>  	}
+>  
+> +	if (!of_property_read_string(np, "st,ready-busy", &rb) &&
+> +			!strcmp(rb, "rb-gpio")) {
+> +		pdata->rbpin.use_pin = FSMC_RB_GPIO;
+> +		pdata->rbpin.gpio_pin =
+> +			of_get_named_gpio_flags(np, "st,rb-gpios", 0, &flags);
+> +	} else
+> +		pdata->rbpin.use_pin = FSMC_RB_WAIT;
+> +
+>  	return 0;
+>  }
+>  #else
+> @@ -1049,6 +1075,8 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+>  	host->nr_partitions = pdata->nr_partitions;
+>  	host->dev = &pdev->dev;
+>  	host->dev_timings = &pdata->nand_timings;
+> +	host->rbpin = &pdata->rbpin;
+> +
+>  	host->mode = pdata->mode;
+>  	host->max_banks = pdata->max_banks;
+>  
+> @@ -1074,6 +1102,18 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+>  	nand->select_chip = fsmc_select_chip;
+>  	nand->badblockbits = 7;
+>  
+> +	if (host->rbpin->use_pin != FSMC_RB_WAIT)
+> +		nand->dev_ready = fsmc_dev_ready;
+> +
+> +	if (host->rbpin->use_pin == FSMC_RB_GPIO) {
+> +		ret = gpio_request(host->rbpin->gpio_pin, "fsmc-rb");
+> +		if (ret < 0) {
+> +			dev_err(&pdev->dev, "gpio request fail: %d\n",
+> +					host->rbpin->gpio_pin);
+> +			goto err_gpio_req;
+> +		}
+> +	}
+> +
+>  	if (pdata->width == FSMC_NAND_BW16)
+>  		nand->options |= NAND_BUSWIDTH_16;
+>  
+> @@ -1107,7 +1147,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+>  	for (bank = 0; bank < host->max_banks; bank++)
+>  		fsmc_nand_setup(host->regs_va, bank,
+>  				nand->options & NAND_BUSWIDTH_16,
+> -				host->dev_timings);
+> +				host->dev_timings, host->rbpin);
+>  
+>  	if (AMBA_REV_BITS(host->pid) >= 8) {
+>  		nand->ecc.read_page = fsmc_read_page_hwecc;
+> @@ -1211,6 +1251,9 @@ err_req_write_chnl:
+>  	if (host->mode == USE_DMA_ACCESS)
+>  		dma_release_channel(host->read_dma_chan);
+>  err_req_read_chnl:
+> +	if (host->rbpin->use_pin == FSMC_RB_GPIO)
+> +		gpio_free(host->rbpin->gpio_pin);
+> +err_gpio_req:
+>  	clk_disable_unprepare(host->clk);
+>  err_clk_prepare_enable:
+>  	clk_put(host->clk);
+> @@ -1260,8 +1303,7 @@ static int fsmc_nand_resume(struct device *dev)
+>  		for (bank = 0; bank < host->max_banks; bank++)
+>  			fsmc_nand_setup(host->regs_va, bank,
+>  					host->nand.options & NAND_BUSWIDTH_16,
+> -					host->dev_timings);
+> -
+> +					host->dev_timings, host->rbpin);
+>  	}
+>  	return 0;
+>  }
+> diff --git a/include/linux/mtd/fsmc.h b/include/linux/mtd/fsmc.h
+> index 4fbdce4..eed22a1 100644
+> --- a/include/linux/mtd/fsmc.h
+> +++ b/include/linux/mtd/fsmc.h
+> @@ -130,6 +130,16 @@ struct fsmc_nand_timings {
+>  	uint8_t tset;
+>  };
+>  
+> +enum rbpin {
+> +	FSMC_RB_WAIT = 0,
+> +	FSMC_RB_GPIO,
+> +};
+> +
+> +struct fsmc_rbpin {
+> +	enum rbpin	use_pin;
+> +	uint32_t	gpio_pin;
+> +};
+> +
+>  enum access_mode {
+>  	USE_DMA_ACCESS = 1,
+>  	USE_WORD_ACCESS,
+> @@ -149,6 +159,7 @@ enum access_mode {
+>   */
+>  struct fsmc_nand_platform_data {
+>  	struct fsmc_nand_timings nand_timings;
+> +	struct fsmc_rbpin	rbpin;
+do more simple
+	int 			rbpin;
 
---=-uProBgMlFD1AW2b70h96
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	and set it as -EINVAL to use RB_WAIT
 
-On Mon, 2012-09-17 at 08:34 -0500, Brent Taylor wrote:
-> Artem,
->    I was finally able to capture the issue again with linux version
-> 3.5.1, and I now have a 64MB mtd image for you to look at.  The issue
-> occurred in the root filesystem this time.  Let me know what's the
-> best way to get this image to you.  The image was retrieved from a NOR
-> flash chip instead of a NAND flash chip, but I've seen the error on
-> both which leads me to believe it's not a flash driver issue and it's
-> something in the UBIFS subsystem.  If there is more data you need from
-> me to help track this down, just let me know.
+so in the binding if you do not specifcy a gpio or a valid one we switch to
+wait
 
-I've took a look. So far I do not understand what is going on. There
-seems to be some bug in UBIFS. I'll try to dig deeper.
-
-But what I've noticed that if you do this:
-
-echo 1 > /sys/kernel/debug/ubifs/chk_lprops
-
-before mounting UBIFS, then it mounts fine. If this issue is a blocker
-for you, you may use this as a workaround.
-
-Note, this enables lprops checks in UBIFS which slow it down. So you can
-use this trick only to mount, and then you can write 0 to that file to
-disable the checks.
-
---=20
 Best Regards,
-Artem Bityutskiy
-
---=-uProBgMlFD1AW2b70h96
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQdBHGAAoJECmIfjd9wqK0/9UP+QExGhv8Dywl6znXSe0PJD1j
-h3E0cl/ejjfCLviSlbIgeFKzat5UbldtpcBHYrYXnpTkxRSnLbe9T5wnMR+kskLS
-1ars+awsS8zOMX4PWrRikOHTbjxWRO+hTc9zlExThQjQ5qkPgl3o0nLqkJOuoBLs
-ks2lLyYmmWCSLpkIWtdEKuDK85VHXBGDNl41Ac1xrYTd3oXhM/4Z/3YhNb8KZkoc
-psHoL0W6b5I6bb9o+XQRfFFmjw5XQugiN7YblB52HQd2rOsg7XOzhVp4i0kyeXnf
-RX+yw1NPySMMN3QRvnh/KoNvuhIz6kAAL3S0xgG6JG3WCTNtLkTQQdwona8FtjsD
-m/v2OF2ifAJ8PvVLnYOnFPDQim7ZLI39hR0FfAL3z0+UjAAATPmnatjbRtpvYJcB
-NSLuR8z0yP6RhK/PdxkHAo3zPOBIkbFYT3Z6gFkxxkomqaVOk9fach90Cov5Pdgs
-uoJiAt+azisLb/tHwXTpXvRyGyrdOQUhOxH/RePK7ZqIhTtwiX8UrrqpZn/PGXxj
-ydPBd5XDlyMdSabDvp87oOh+vV01+4w237ZJjBUjqGI9JHYn2mWmS9qg/m/5mpY6
-3lTn4xh/HOId6A28UBHihiKuBWB9iv26on99wkX4HWKLaKQELRIAkOPF/UrQggtd
-HH5V+PV8B7ugbod5IhvN
-=ptl0
------END PGP SIGNATURE-----
-
---=-uProBgMlFD1AW2b70h96--
+J.
