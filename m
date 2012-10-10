@@ -1,16 +1,16 @@
-Received: from mail-wi0-f177.google.com ([209.85.212.177])
+Received: from mail-we0-f177.google.com ([74.125.82.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TLzmd-00087R-Uf
- for linux-mtd@lists.infradead.org; Wed, 10 Oct 2012 17:09:24 +0000
-Received: by mail-wi0-f177.google.com with SMTP id hj13so770245wib.0
- for <linux-mtd@lists.infradead.org>; Wed, 10 Oct 2012 10:09:22 -0700 (PDT)
+ id 1TLznn-00008y-GC
+ for linux-mtd@lists.infradead.org; Wed, 10 Oct 2012 17:10:36 +0000
+Received: by mail-we0-f177.google.com with SMTP id u50so472852wey.36
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Oct 2012 10:10:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <88484dbae96f7db42ce615552a4c758844a5e6cc.1349778821.git.vipin.kumar@st.com>
+In-Reply-To: <3dcb002d0ad03dde9a91e8128dbaa320b8a264a9.1349778821.git.vipin.kumar@st.com>
 References: <cover.1349778820.git.vipin.kumar@st.com>
- <88484dbae96f7db42ce615552a4c758844a5e6cc.1349778821.git.vipin.kumar@st.com>
-Date: Wed, 10 Oct 2012 19:09:22 +0200
-Message-ID: <CACRpkdZWdJ+uZhkvygXVsbr_3rWt60j4YMiLwed8FUwzvF5KoQ@mail.gmail.com>
-Subject: Re: [PATCH 08/11] fsmc/nand: Use relaxed variants of io accessors
+ <3dcb002d0ad03dde9a91e8128dbaa320b8a264a9.1349778821.git.vipin.kumar@st.com>
+Date: Wed, 10 Oct 2012 19:10:33 +0200
+Message-ID: <CACRpkdYj2o77fLWM8vwpCSSuQkJAwOx5gNhCQd+yZ8SJ4M328Q@mail.gmail.com>
+Subject: Re: [PATCH 06/11] fsmc/nand: Modify the wait to uninterruptible
 From: Linus Walleij <linus.walleij@linaro.org>
 To: Vipin Kumar <vipin.kumar@st.com>
 Content-Type: text/plain; charset=ISO-8859-1
@@ -28,16 +28,13 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 On Tue, Oct 9, 2012 at 12:44 PM, Vipin Kumar <vipin.kumar@st.com> wrote:
 
-> Use relaxed variants of readl/writel accessors. readl/writel io accessors use
-> explicit dsb instruction which causes stalls in the processor core resulting
-> several cycles of delay for each access
->
-> Use relaxed variants where ever possible. This also results in an improved
-> read/write performance.
+> Interruptible wait caused trouble in fsmc hardware state machine if the
+> application was killed abruptly. To make fsmc operation safe turn wait in to
+> un-interruptible.
 >
 > Signed-off-by: Vipin Kumar <vipin.kumar@st.com>
 
-Good idea for any performance-critical code! Thanks!
+Yes this is wise.
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
 Yours,
