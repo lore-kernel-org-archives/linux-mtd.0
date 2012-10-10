@@ -1,17 +1,14 @@
-From: Marek Vasut <marex@denx.de>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH] ARM: dts: mxs: add the `clock-names` for gpmi-nand
-Date: Wed, 10 Oct 2012 12:37:13 +0200
-References: <CAOMZO5A0UX6y3MtHdzZ8V2Z52qsH8Yy-BVtOYEN_OpBezEsvQw@mail.gmail.com>
- <1349849740-14090-1-git-send-email-b32955@freescale.com>
-In-Reply-To: <1349849740-14090-1-git-send-email-b32955@freescale.com>
+From: Huang Shijie <b32955@freescale.com>
+To: <shawn.guo@linaro.org>
+Subject: [PATCH] ARM: dts: mxs: add the "clock-names" for gpmi-nand
+Date: Wed, 10 Oct 2012 18:27:09 +0800
+Message-ID: <1349864829-19565-1-git-send-email-b32955@freescale.com>
+In-Reply-To: <201210101237.13640.marex@denx.de>
+References: <201210101237.13640.marex@denx.de>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201210101237.13640.marex@denx.de>
-Cc: linux-mtd@lists.infradead.org, shawn.guo@linaro.org, festevam@gmail.com,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain
+Cc: marex@denx.de, linux-mtd@lists.infradead.org, festevam@gmail.com,
+ linux-arm-kernel@lists.infradead.org, Huang Shijie <b32955@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,18 +18,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Huang Shijie,
+The current DT nodes for mx23/mx28 miss the `clocks-names` item for gpmi-nand.
+So the gpmi-nand driver could not find the proper clock.
 
-> The current DT nodes for mx23/mx28 miss the `clocks-names` item for
-> gpmi-nand. So the gpmi-nand driver could not find the proper clock.
-> 
-> This patch fixes this issue.
-> 
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
-[...]
+This patch fixes this issue.
 
-One more rant: Can you discard that weird backtick in the patch subject? Maybe 
-use '' ?
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+ arch/arm/boot/dts/imx23.dtsi |    1 +
+ arch/arm/boot/dts/imx28.dtsi |    1 +
+ 2 files changed, 2 insertions(+), 0 deletions(-)
 
-Best regards,
-Marek Vasut
+diff --git a/arch/arm/boot/dts/imx23.dtsi b/arch/arm/boot/dts/imx23.dtsi
+index 9ca4ca7..6d31aa3 100644
+--- a/arch/arm/boot/dts/imx23.dtsi
++++ b/arch/arm/boot/dts/imx23.dtsi
+@@ -69,6 +69,7 @@
+ 				interrupts = <13>, <56>;
+ 				interrupt-names = "gpmi-dma", "bch";
+ 				clocks = <&clks 34>;
++				clock-names = "gpmi_io";
+ 				fsl,gpmi-dma-channel = <4>;
+ 				status = "disabled";
+ 			};
+diff --git a/arch/arm/boot/dts/imx28.dtsi b/arch/arm/boot/dts/imx28.dtsi
+index e16d631..55c57ea 100644
+--- a/arch/arm/boot/dts/imx28.dtsi
++++ b/arch/arm/boot/dts/imx28.dtsi
+@@ -85,6 +85,7 @@
+ 				interrupts = <88>, <41>;
+ 				interrupt-names = "gpmi-dma", "bch";
+ 				clocks = <&clks 50>;
++				clock-names = "gpmi_io";
+ 				fsl,gpmi-dma-channel = <4>;
+ 				status = "disabled";
+ 			};
+-- 
+1.7.0.4
