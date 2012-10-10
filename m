@@ -1,20 +1,20 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TLvij-0007ej-At
- for linux-mtd@lists.infradead.org; Wed, 10 Oct 2012 12:49:06 +0000
-Message-ID: <1349873358.20594.27.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v2] mtd: cmdlinepart: Simplify parse_cmdline_partitions
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Date: Wed, 10 Oct 2012 15:49:18 +0300
-In-Reply-To: <20120923095229.5d0c6806@pixies.home.jungo.com>
-References: <20120923095229.5d0c6806@pixies.home.jungo.com>
+ id 1TLwYW-0006DR-CK
+ for linux-mtd@lists.infradead.org; Wed, 10 Oct 2012 13:42:37 +0000
+Message-ID: <1349876553.20594.29.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH V6] mtd: m25p80: Make fast read configurable via DT
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Marek Vasut <marex@denx.de>
+Date: Wed, 10 Oct 2012 16:42:33 +0300
+In-Reply-To: <1348450779-22495-1-git-send-email-marex@denx.de>
+References: <1348450779-22495-1-git-send-email-marex@denx.de>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-xtGdxSqKgJ08fmJxPA0Y"
+ boundary="=-gn/eqUjggLiIzoKfWqgH"
 Mime-Version: 1.0
-Cc: Huang Shijie <shijie8@gmail.com>, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <david.woodhouse@intel.com>
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,23 +25,15 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-xtGdxSqKgJ08fmJxPA0Y
+--=-gn/eqUjggLiIzoKfWqgH
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, 2012-09-23 at 09:52 +0200, Shmulik Ladkani wrote:
-> From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+On Mon, 2012-09-24 at 03:39 +0200, Marek Vasut wrote:
+> Add DT property "m25p,fast-read" that signalises the particular
+> chip supports "fast read" opcode.
 >=20
-> Simply 'parse_cmdline_partitions': the outer loop iterating over
-> 'partitions' is actually a search loop, it does not execute the inner
-> loop for each partition, only for the matched partition.
->=20
-> Let's break when search is successful, and move all inner code (relevant
-> only for the matched partition) outside of the outer loop.
->=20
-> Resulting code is much more readable, and makes the indent level sane.
->=20
-> Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+> Signed-off-by: Marek Vasut <marex@denx.de>
 
 Pushed to l2-mtd.git, thanks!
 
@@ -49,7 +41,7 @@ Pushed to l2-mtd.git, thanks!
 Best Regards,
 Artem Bityutskiy
 
---=-xtGdxSqKgJ08fmJxPA0Y
+--=-gn/eqUjggLiIzoKfWqgH
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -57,19 +49,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQdW7OAAoJECmIfjd9wqK0QqAQALKPmBx4HoZg6hgCMft5GXq0
-Sh4NiR62icO5xUbA9lCTfPlmgFC+7nUA5Pi+xZfQPcVvyyJiJcnIUNTbx1+2zhtD
-m8bq4gYS/ueFpb5ie6d7B7oEOaOSviOezmTKMURLOAzQ8NFyyzbkncAZUvZeaRnt
-6uchTIiCYfzu1AhafOtCfaSmOdg5oJos2mjyDeWmLWUrjSNIuS4wyWC9r00ao2f4
-MvPsHGEIP01Yck3ZGm+f1IqHLBpINFUGSj1cLBGarky3sAyHsNFVo+T04IKaKYPT
-YlQESbRgzq4hJohvHCFU8wBK42JSNShfO3pCOYKWUiI4z6xn4dbFRGfPzQpWFNkX
-IHqkez68Du+83uNFhEzx397v0zKhws+UG/cBPHUpWOWNQzzSDxwDFfpmbt8uJGuN
-SxgrtwdXmCA0fNitecKSK+U5QerdEJ8DWrqYLH+ZmTqpL3MSY77yKJT9Q5D1UmSw
-CxhwmH32wu/CqWOTC6sCm3Rau6Ddb9urRYcxFPmE8T6vENss1Iq+YQstCUSkLhqU
-H7plx3yRpi3DkxPlo3T1bhRE2uCl/DBfraYBgpncuuavZd6yHBcdq8TFrrM3oaoz
-H0ENSjK9TzxiPQE0AYAlGj7LM8s2EC+3ivVJHOgUKdLlf/+TYQ5M9EAjUJWOj3Kk
-oKQQUohb8gQQet70SEIN
-=jEVo
+iQIcBAABAgAGBQJQdXtKAAoJECmIfjd9wqK0IG8P/ReUKyNaa5BCDOduViB9D4V1
+zG89E7GRr7aZAbRt2pEE6QotMX/vUyjvdGxIqSwoVv4vijmosxikGRGpFFGrqUBq
+eWFHAT4IS1vIxo3l+DJd2+zG6wF90mvny7ecNh6Ob5rxVxMbJrIN8jLxMhTX1USC
+3+Wutt6T+zLt3Hl9d54QhEGBoiXvVxW1w3aWVaqylJYLNP8riG6a05iCsETkRDBp
+peCcG0GSaYbkjDiKfqQsFURMKpZ+mAscvBKYgRZvyHDSGJZ3kvPIdlfzFbMhqXOP
+tMxVlvsraLm1TWz0tEmdEQGiDsLLdq2RWr8BLNH38nmcN0YwDdOzKHDbylB7GTKG
+K9RTYTLeQP6l+oAKjgO4D6/4/fuanFEe29A0K/0N/V8BnGAxTLMqcjhRUpN2uGvb
+l0xPWI+MKjNEtCruClocOVk69YgioL0YoDdvY2BgxSpBQBduCVF6RksIiTgDdgB4
+j+svjZq8TrJmr52EqYSL2xqqmQm/F6GjD5CXOPVzkDnPpuIfADaEP56eV7Q6ZWdE
+HtVZu2rVO3cM/EfbUyJp5UQl+AKmgUZxJiNUR/Oe8kLniO6Kr6uOT1vbjjigV9Aq
+x5hPCtThZh9QeVhlEtNpaz89S6WMQr8z28H5855j/0FS/haacg1TsUodedR7Ov2N
+e0iMDKGf6qN5hqJQtLP5
+=YJaR
 -----END PGP SIGNATURE-----
 
---=-xtGdxSqKgJ08fmJxPA0Y--
+--=-gn/eqUjggLiIzoKfWqgH--
