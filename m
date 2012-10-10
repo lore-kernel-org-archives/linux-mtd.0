@@ -1,15 +1,18 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
+Received: from mail-pa0-f49.google.com ([209.85.220.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TM08o-0002aO-NN
- for linux-mtd@lists.infradead.org; Wed, 10 Oct 2012 17:32:19 +0000
-Received: by mail-pb0-f49.google.com with SMTP id xa7so988127pbc.36
- for <linux-mtd@lists.infradead.org>; Wed, 10 Oct 2012 10:32:15 -0700 (PDT)
-Message-ID: <5075B105.4080701@gmail.com>
-Date: Wed, 10 Oct 2012 23:01:49 +0530
+ id 1TM0CG-0003Lg-G2
+ for linux-mtd@lists.infradead.org; Wed, 10 Oct 2012 17:35:53 +0000
+Received: by mail-pa0-f49.google.com with SMTP id bi5so880042pad.36
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Oct 2012 10:35:50 -0700 (PDT)
+Message-ID: <5075B1B1.1000005@gmail.com>
+Date: Wed, 10 Oct 2012 23:04:41 +0530
 From: Vikram Narayanan <vikram186@gmail.com>
 MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Subject: [RESEND PATCH 0/9] mtd_tests cleanup
+Subject: [PATCH RESEND 1/9] mtd_tests/mtd_nandbiterrs: Replace msg macro with
+ pr_{info,err}
+References: <5075B105.4080701@gmail.com>
+In-Reply-To: <5075B105.4080701@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Cc: Brian Norris <computersforpeace@gmail.com>,
@@ -23,35 +26,276 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch series removes the usage of PRINT_PREF and printk's and
-replaces it with pr_{info,err,crit} whichever is applicable.
+Use pr_fmt instead of msg macro
 
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>
+Signed-off-by: Vikram Narayanan <vikram186@gmail.com>
+---
+ drivers/mtd/tests/mtd_nandbiterrs.c |   73 ++++++++++++++++++-----------------
+ 1 files changed, 37 insertions(+), 36 deletions(-)
 
-Brian Norris (1):
-  mtd: mtd_oobtest: printk -> pr_{info,err,crit}
-
-Vikram Narayanan (8):
-  mtd_tests/mtd_nandbiterrs: Replace msg macro with pr_{info,err}
-  mtd_tests/mtd_nandecctest: Use pr_fmt macro
-  mtd_tests/mtd_pagetest: Replace printk with pr_{info,crit,err}
-  mtd_tests/mtd_readtest: Replace printk with pr_{info,err}
-  mtd_tests/mtd_speedtest: Replace printk with pr_{info,crit,err}
-  mtd_tests/mtd_stresstest: Replace printk with pr_{info,crit,err}
-  mtd_tests/mtd_subpagetest: Replace printk with pr_{info,crit,err}
-  mtd_tests/mtd_torturetest: Replace printk with pr_{info,crit}
-
- drivers/mtd/tests/mtd_nandbiterrs.c |   73 ++++++++--------
- drivers/mtd/tests/mtd_nandecctest.c |    6 +-
- drivers/mtd/tests/mtd_oobtest.c     |  171 +++++++++++++++++------------------
- drivers/mtd/tests/mtd_pagetest.c    |  152 ++++++++++++++++----------------
- drivers/mtd/tests/mtd_readtest.c    |   42 +++++-----
- drivers/mtd/tests/mtd_speedtest.c   |   88 +++++++++---------
- drivers/mtd/tests/mtd_stresstest.c  |   44 +++++-----
- drivers/mtd/tests/mtd_subpagetest.c |  124 +++++++++++++-------------
- drivers/mtd/tests/mtd_torturetest.c |   73 ++++++++--------
- 9 files changed, 387 insertions(+), 386 deletions(-)
-
+diff --git a/drivers/mtd/tests/mtd_nandbiterrs.c b/drivers/mtd/tests/mtd_nandbiterrs.c
+index cc8d62c..207bf9a 100644
+--- a/drivers/mtd/tests/mtd_nandbiterrs.c
++++ b/drivers/mtd/tests/mtd_nandbiterrs.c
+@@ -39,6 +39,9 @@
+  * this program; see the file COPYING. If not, write to the Free Software
+  * Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+  */
++
++#define pr_fmt(fmt)	KBUILD_MODNAME ": " fmt
++
+ #include <linux/init.h>
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+@@ -47,8 +50,6 @@
+ #include <linux/mtd/nand.h>
+ #include <linux/slab.h>
+ 
+-#define msg(FMT, VA...) pr_info("mtd_nandbiterrs: "FMT, ##VA)
+-
+ static int dev;
+ module_param(dev, int, S_IRUGO);
+ MODULE_PARM_DESC(dev, "MTD device number to use");
+@@ -103,7 +104,7 @@ static int erase_block(void)
+ 	struct erase_info ei;
+ 	loff_t addr = eraseblock * mtd->erasesize;
+ 
+-	msg("erase_block\n");
++	pr_info("erase_block\n");
+ 
+ 	memset(&ei, 0, sizeof(struct erase_info));
+ 	ei.mtd  = mtd;
+@@ -112,7 +113,7 @@ static int erase_block(void)
+ 
+ 	err = mtd_erase(mtd, &ei);
+ 	if (err || ei.state == MTD_ERASE_FAILED) {
+-		msg("error %d while erasing\n", err);
++		pr_err("error %d while erasing\n", err);
+ 		if (!err)
+ 			err = -EIO;
+ 		return err;
+@@ -128,11 +129,11 @@ static int write_page(int log)
+ 	size_t written;
+ 
+ 	if (log)
+-		msg("write_page\n");
++		pr_info("write_page\n");
+ 
+ 	err = mtd_write(mtd, offset, mtd->writesize, &written, wbuffer);
+ 	if (err || written != mtd->writesize) {
+-		msg("error: write failed at %#llx\n", (long long)offset);
++		pr_err("error: write failed at %#llx\n", (long long)offset);
+ 		if (!err)
+ 			err = -EIO;
+ 	}
+@@ -147,7 +148,7 @@ static int rewrite_page(int log)
+ 	struct mtd_oob_ops ops;
+ 
+ 	if (log)
+-		msg("rewrite page\n");
++		pr_info("rewrite page\n");
+ 
+ 	ops.mode      = MTD_OPS_RAW; /* No ECC */
+ 	ops.len       = mtd->writesize;
+@@ -160,7 +161,7 @@ static int rewrite_page(int log)
+ 
+ 	err = mtd_write_oob(mtd, offset, &ops);
+ 	if (err || ops.retlen != mtd->writesize) {
+-		msg("error: write_oob failed (%d)\n", err);
++		pr_err("error: write_oob failed (%d)\n", err);
+ 		if (!err)
+ 			err = -EIO;
+ 	}
+@@ -177,7 +178,7 @@ static int read_page(int log)
+ 	struct mtd_ecc_stats oldstats;
+ 
+ 	if (log)
+-		msg("read_page\n");
++		pr_info("read_page\n");
+ 
+ 	/* Saving last mtd stats */
+ 	memcpy(&oldstats, &mtd->ecc_stats, sizeof(oldstats));
+@@ -187,7 +188,7 @@ static int read_page(int log)
+ 		err = mtd->ecc_stats.corrected - oldstats.corrected;
+ 
+ 	if (err < 0 || read != mtd->writesize) {
+-		msg("error: read failed at %#llx\n", (long long)offset);
++		pr_err("error: read failed at %#llx\n", (long long)offset);
+ 		if (err >= 0)
+ 			err = -EIO;
+ 	}
+@@ -201,11 +202,11 @@ static int verify_page(int log)
+ 	unsigned i, errs = 0;
+ 
+ 	if (log)
+-		msg("verify_page\n");
++		pr_info("verify_page\n");
+ 
+ 	for (i = 0; i < mtd->writesize; i++) {
+ 		if (rbuffer[i] != hash(i+seed)) {
+-			msg("Error: page offset %u, expected %02x, got %02x\n",
++			pr_err("Error: page offset %u, expected %02x, got %02x\n",
+ 				i, hash(i+seed), rbuffer[i]);
+ 			errs++;
+ 		}
+@@ -230,13 +231,13 @@ static int insert_biterror(unsigned byte)
+ 		for (bit = 7; bit >= 0; bit--) {
+ 			if (CBIT(wbuffer[byte], bit)) {
+ 				BCLR(wbuffer[byte], bit);
+-				msg("Inserted biterror @ %u/%u\n", byte, bit);
++				pr_info("Inserted biterror @ %u/%u\n", byte, bit);
+ 				return 0;
+ 			}
+ 		}
+ 		byte++;
+ 	}
+-	msg("biterror: Failed to find a '1' bit\n");
++	pr_err("biterror: Failed to find a '1' bit\n");
+ 	return -EIO;
+ }
+ 
+@@ -248,7 +249,7 @@ static int incremental_errors_test(void)
+ 	unsigned i;
+ 	unsigned errs_per_subpage = 0;
+ 
+-	msg("incremental biterrors test\n");
++	pr_info("incremental biterrors test\n");
+ 
+ 	for (i = 0; i < mtd->writesize; i++)
+ 		wbuffer[i] = hash(i+seed);
+@@ -265,9 +266,9 @@ static int incremental_errors_test(void)
+ 
+ 		err = read_page(1);
+ 		if (err > 0)
+-			msg("Read reported %d corrected bit errors\n", err);
++			pr_info("Read reported %d corrected bit errors\n", err);
+ 		if (err < 0) {
+-			msg("After %d biterrors per subpage, read reported error %d\n",
++			pr_err("After %d biterrors per subpage, read reported error %d\n",
+ 				errs_per_subpage, err);
+ 			err = 0;
+ 			goto exit;
+@@ -275,11 +276,11 @@ static int incremental_errors_test(void)
+ 
+ 		err = verify_page(1);
+ 		if (err) {
+-			msg("ECC failure, read data is incorrect despite read success\n");
++			pr_err("ECC failure, read data is incorrect despite read success\n");
+ 			goto exit;
+ 		}
+ 
+-		msg("Successfully corrected %d bit errors per subpage\n",
++		pr_info("Successfully corrected %d bit errors per subpage\n",
+ 			errs_per_subpage);
+ 
+ 		for (i = 0; i < subcount; i++) {
+@@ -311,7 +312,7 @@ static int overwrite_test(void)
+ 
+ 	memset(bitstats, 0, sizeof(bitstats));
+ 
+-	msg("overwrite biterrors test\n");
++	pr_info("overwrite biterrors test\n");
+ 
+ 	for (i = 0; i < mtd->writesize; i++)
+ 		wbuffer[i] = hash(i+seed);
+@@ -329,18 +330,18 @@ static int overwrite_test(void)
+ 		err = read_page(0);
+ 		if (err >= 0) {
+ 			if (err >= MAXBITS) {
+-				msg("Implausible number of bit errors corrected\n");
++				pr_info("Implausible number of bit errors corrected\n");
+ 				err = -EIO;
+ 				break;
+ 			}
+ 			bitstats[err]++;
+ 			if (err > max_corrected) {
+ 				max_corrected = err;
+-				msg("Read reported %d corrected bit errors\n",
++				pr_info("Read reported %d corrected bit errors\n",
+ 					err);
+ 			}
+ 		} else { /* err < 0 */
+-			msg("Read reported error %d\n", err);
++			pr_info("Read reported error %d\n", err);
+ 			err = 0;
+ 			break;
+ 		}
+@@ -348,7 +349,7 @@ static int overwrite_test(void)
+ 		err = verify_page(0);
+ 		if (err) {
+ 			bitstats[max_corrected] = opno;
+-			msg("ECC failure, read data is incorrect despite read success\n");
++			pr_info("ECC failure, read data is incorrect despite read success\n");
+ 			break;
+ 		}
+ 
+@@ -357,9 +358,9 @@ static int overwrite_test(void)
+ 
+ 	/* At this point bitstats[0] contains the number of ops with no bit
+ 	 * errors, bitstats[1] the number of ops with 1 bit error, etc. */
+-	msg("Bit error histogram (%d operations total):\n", opno);
++	pr_info("Bit error histogram (%d operations total):\n", opno);
+ 	for (i = 0; i < max_corrected; i++)
+-		msg("Page reads with %3d corrected bit errors: %d\n",
++		pr_info("Page reads with %3d corrected bit errors: %d\n",
+ 			i, bitstats[i]);
+ 
+ exit:
+@@ -370,36 +371,36 @@ static int __init mtd_nandbiterrs_init(void)
+ {
+ 	int err = 0;
+ 
+-	msg("\n");
+-	msg("==================================================\n");
+-	msg("MTD device: %d\n", dev);
++	printk("\n");
++	printk(KERN_INFO "==================================================\n");
++	pr_info("MTD device: %d\n", dev);
+ 
+ 	mtd = get_mtd_device(NULL, dev);
+ 	if (IS_ERR(mtd)) {
+ 		err = PTR_ERR(mtd);
+-		msg("error: cannot get MTD device\n");
++		pr_err("error: cannot get MTD device\n");
+ 		goto exit_mtddev;
+ 	}
+ 
+ 	if (mtd->type != MTD_NANDFLASH) {
+-		msg("this test requires NAND flash\n");
++		pr_info("this test requires NAND flash\n");
+ 		err = -ENODEV;
+ 		goto exit_nand;
+ 	}
+ 
+-	msg("MTD device size %llu, eraseblock=%u, page=%u, oob=%u\n",
++	pr_info("MTD device size %llu, eraseblock=%u, page=%u, oob=%u\n",
+ 		(unsigned long long)mtd->size, mtd->erasesize,
+ 		mtd->writesize, mtd->oobsize);
+ 
+ 	subsize  = mtd->writesize >> mtd->subpage_sft;
+ 	subcount = mtd->writesize / subsize;
+ 
+-	msg("Device uses %d subpages of %d bytes\n", subcount, subsize);
++	pr_info("Device uses %d subpages of %d bytes\n", subcount, subsize);
+ 
+ 	offset     = page_offset * mtd->writesize;
+ 	eraseblock = mtd_div_by_eb(offset, mtd);
+ 
+-	msg("Using page=%u, offset=%llu, eraseblock=%u\n",
++	pr_info("Using page=%u, offset=%llu, eraseblock=%u\n",
+ 		page_offset, offset, eraseblock);
+ 
+ 	wbuffer = kmalloc(mtd->writesize, GFP_KERNEL);
+@@ -432,8 +433,8 @@ static int __init mtd_nandbiterrs_init(void)
+ 		goto exit_error;
+ 
+ 	err = -EIO;
+-	msg("finished successfully.\n");
+-	msg("==================================================\n");
++	pr_info("finished successfully.\n");
++	printk(KERN_INFO "==================================================\n");
+ 
+ exit_error:
+ 	kfree(rbuffer);
 -- 
 1.7.4.1
