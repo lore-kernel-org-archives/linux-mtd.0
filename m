@@ -1,14 +1,24 @@
-Received: from eu1sys200aog118.obsmtp.com ([207.126.144.145])
- by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TM1DY-0004jj-Sj
- for linux-mtd@lists.infradead.org; Wed, 10 Oct 2012 18:41:17 +0000
-From: Srinivas KANDAGATLA <srinivas.kandagatla@st.com>
-To: shiraz.hashim@st.com
-Subject: [PATCH 3.6.0-] mtd/spear_smi: use module_platform_driver macro
-Date: Wed, 10 Oct 2012 19:39:59 +0100
-Message-Id: <1349894399-9715-1-git-send-email-srinivas.kandagatla@st.com>
-Cc: linux-mtd@lists.infradead.org, David.Woodhouse@intel.com,
- srinivas.kandagatla@st.com
+Received: from mail-qa0-f42.google.com ([209.85.216.42])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TM2mz-0000IT-Fz
+ for linux-mtd@lists.infradead.org; Wed, 10 Oct 2012 20:21:58 +0000
+Received: by mail-qa0-f42.google.com with SMTP id t11so4807212qaa.15
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Oct 2012 13:21:55 -0700 (PDT)
+Date: Wed, 10 Oct 2012 16:21:53 -0400 (EDT)
+From: Nicolas Pitre <nicolas.pitre@linaro.org>
+To: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH 09/11] fsmc/nand:FIX: replace change_bit routine
+In-Reply-To: <CACRpkdaot3DKCoJOBpUcJFVrJ89xRx2T58fDe4YKY_r4NFqEag@mail.gmail.com>
+Message-ID: <alpine.LFD.2.02.1210101559250.16518@xanadu.home>
+References: <cover.1349778820.git.vipin.kumar@st.com>
+ <ec169eb041e87e66c06108e85ea4a67e5797cecc.1349778821.git.vipin.kumar@st.com>
+ <CACRpkdaot3DKCoJOBpUcJFVrJ89xRx2T58fDe4YKY_r4NFqEag@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>, dedekind1@gmail.com,
+ spear-devel@list.st.com, Vipin Kumar <vipin.kumar@st.com>,
+ linux-mtd@lists.infradead.org, plagnioj@jcrosoft.com,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,39 +28,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Srinivas Kandagatla <srinivas.kandagatla@st.com>
+On Wed, 10 Oct 2012, Linus Walleij wrote:
 
-This patch removes some code duplication by using
-module_platform_driver.
+> On Tue, Oct 9, 2012 at 12:44 PM, Vipin Kumar <vipin.kumar@st.com> wrote:
+> 
+> > change_bit routine accepts only ulong pointers as buffer, so an unaligned char
+> > pointer passed to change_bit may lead to a crash.
+> >
+> > Fix this bug by accessing the buffer as char pointer.
+> 
+> Why not see if we can fix change_bit() instead?
+> Since I suspect this is on ARM I bet Russell and Nico
+> want to hear about this if there is a problem.
+> 
+> Can the ARM change_bit() not be fixed, so that
+> long arguments are the only option?
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@st.com>
----
- drivers/mtd/devices/spear_smi.c |   13 +------------
- 1 files changed, 1 insertions(+), 12 deletions(-)
+No.  It is this code which is totally broken.
 
-diff --git a/drivers/mtd/devices/spear_smi.c b/drivers/mtd/devices/spear_smi.c
-index 6796036..e5f0699 100644
---- a/drivers/mtd/devices/spear_smi.c
-+++ b/drivers/mtd/devices/spear_smi.c
-@@ -1129,18 +1129,7 @@ static struct platform_driver spear_smi_driver = {
- 	.suspend = spear_smi_suspend,
- 	.resume = spear_smi_resume,
- };
--
--static int spear_smi_init(void)
--{
--	return platform_driver_register(&spear_smi_driver);
--}
--module_init(spear_smi_init);
--
--static void spear_smi_exit(void)
--{
--	platform_driver_unregister(&spear_smi_driver);
--}
--module_exit(spear_smi_exit);
-+module_platform_driver(spear_smi_driver);
- 
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Ashish Priyadarshi, Shiraz Hashim <shiraz.hashim@st.com>");
--- 
-1.7.0.4
+The change_bit() is defined to operate on long values, in the _native_ 
+endian.  Now imagine what this is going to do to your data buffer if 
+instead you are running on a big endian device.
+
+And I doubt there is anything requiring atomic bit manipulation here 
+either.
+
+> >                 if (err_idx[i] < chip->ecc.size * 8) {
+> > -                       change_bit(err_idx[i], (unsigned long *)dat);
+> > +                       uint8_t *p = dat + err_idx[i] / 8;
+> > +                       *p = *p ^ (1 << (err_idx[i] % 8));
+> 
+> I'm one of these people who would write >>3 and
+> &7 rather than /8 or %8 but I guess we are all
+> different. Atleast consider it if you stick with this...
+
+Better yet:
+
+		dat[err_idx[i] / 8] ^= (1 << (err_idx[i] % 8));
+
+The /8 and %8 will be changed into >>3 and &7 by the compiler anyway, 
+while the /8 and %8 form is possibly a bit less obscure.
+
+Of course, this needs to be done over _all_ this driver, not only a few 
+cases.
+
+
+Nicolas
