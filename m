@@ -1,24 +1,19 @@
-Received: from mail-we0-f177.google.com ([74.125.82.177])
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TLzyx-0001vt-Hy
- for linux-mtd@lists.infradead.org; Wed, 10 Oct 2012 17:22:08 +0000
-Received: by mail-we0-f177.google.com with SMTP id u50so480428wey.36
- for <linux-mtd@lists.infradead.org>; Wed, 10 Oct 2012 10:22:05 -0700 (PDT)
+ id 1TM08o-0002aO-NN
+ for linux-mtd@lists.infradead.org; Wed, 10 Oct 2012 17:32:19 +0000
+Received: by mail-pb0-f49.google.com with SMTP id xa7so988127pbc.36
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Oct 2012 10:32:15 -0700 (PDT)
+Message-ID: <5075B105.4080701@gmail.com>
+Date: Wed, 10 Oct 2012 23:01:49 +0530
+From: Vikram Narayanan <vikram186@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <ec169eb041e87e66c06108e85ea4a67e5797cecc.1349778821.git.vipin.kumar@st.com>
-References: <cover.1349778820.git.vipin.kumar@st.com>
- <ec169eb041e87e66c06108e85ea4a67e5797cecc.1349778821.git.vipin.kumar@st.com>
-Date: Wed, 10 Oct 2012 19:22:04 +0200
-Message-ID: <CACRpkdaot3DKCoJOBpUcJFVrJ89xRx2T58fDe4YKY_r4NFqEag@mail.gmail.com>
-Subject: Re: [PATCH 09/11] fsmc/nand:FIX: replace change_bit routine
-From: Linus Walleij <linus.walleij@linaro.org>
-To: Vipin Kumar <vipin.kumar@st.com>,
- Russell King - ARM Linux <linux@arm.linux.org.uk>,
- Nicolas Pitre <nico@linaro.org>
+To: linux-mtd@lists.infradead.org
+Subject: [RESEND PATCH 0/9] mtd_tests cleanup
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: plagnioj@jcrosoft.com, spear-devel@list.st.com,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- dedekind1@gmail.com
+Content-Transfer-Encoding: 7bit
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,28 +23,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 9, 2012 at 12:44 PM, Vipin Kumar <vipin.kumar@st.com> wrote:
+This patch series removes the usage of PRINT_PREF and printk's and
+replaces it with pr_{info,err,crit} whichever is applicable.
 
-> change_bit routine accepts only ulong pointers as buffer, so an unaligned char
-> pointer passed to change_bit may lead to a crash.
->
-> Fix this bug by accessing the buffer as char pointer.
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>
 
-Why not see if we can fix change_bit() instead?
-Since I suspect this is on ARM I bet Russell and Nico
-want to hear about this if there is a problem.
+Brian Norris (1):
+  mtd: mtd_oobtest: printk -> pr_{info,err,crit}
 
-Can the ARM change_bit() not be fixed, so that
-long arguments are the only option?
+Vikram Narayanan (8):
+  mtd_tests/mtd_nandbiterrs: Replace msg macro with pr_{info,err}
+  mtd_tests/mtd_nandecctest: Use pr_fmt macro
+  mtd_tests/mtd_pagetest: Replace printk with pr_{info,crit,err}
+  mtd_tests/mtd_readtest: Replace printk with pr_{info,err}
+  mtd_tests/mtd_speedtest: Replace printk with pr_{info,crit,err}
+  mtd_tests/mtd_stresstest: Replace printk with pr_{info,crit,err}
+  mtd_tests/mtd_subpagetest: Replace printk with pr_{info,crit,err}
+  mtd_tests/mtd_torturetest: Replace printk with pr_{info,crit}
 
->                 if (err_idx[i] < chip->ecc.size * 8) {
-> -                       change_bit(err_idx[i], (unsigned long *)dat);
-> +                       uint8_t *p = dat + err_idx[i] / 8;
-> +                       *p = *p ^ (1 << (err_idx[i] % 8));
+ drivers/mtd/tests/mtd_nandbiterrs.c |   73 ++++++++--------
+ drivers/mtd/tests/mtd_nandecctest.c |    6 +-
+ drivers/mtd/tests/mtd_oobtest.c     |  171 +++++++++++++++++------------------
+ drivers/mtd/tests/mtd_pagetest.c    |  152 ++++++++++++++++----------------
+ drivers/mtd/tests/mtd_readtest.c    |   42 +++++-----
+ drivers/mtd/tests/mtd_speedtest.c   |   88 +++++++++---------
+ drivers/mtd/tests/mtd_stresstest.c  |   44 +++++-----
+ drivers/mtd/tests/mtd_subpagetest.c |  124 +++++++++++++-------------
+ drivers/mtd/tests/mtd_torturetest.c |   73 ++++++++--------
+ 9 files changed, 387 insertions(+), 386 deletions(-)
 
-I'm one of these people who would write >>3 and
-&7 rather than /8 or %8 but I guess we are all
-different. Atleast consider it if you stick with this...
-
-Yours,
-Linus Walleij
+-- 
+1.7.4.1
