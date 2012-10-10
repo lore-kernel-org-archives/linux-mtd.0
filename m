@@ -1,21 +1,20 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga14.intel.com ([143.182.124.37])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TLxOI-0002N9-NA
- for linux-mtd@lists.infradead.org; Wed, 10 Oct 2012 14:36:07 +0000
-Message-ID: <1349879778.20594.33.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: ofpart: Fix incorrect NULL check in
- parse_ofoldpart_partitions()
+ id 1TLxQD-0003Mt-Hx
+ for linux-mtd@lists.infradead.org; Wed, 10 Oct 2012 14:38:06 +0000
+Message-ID: <1349879897.20594.34.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: fsl_elbc_nand: remove unnecessary badblock_pattern
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Sachin Kamat <sachin.kamat@linaro.org>
-Date: Wed, 10 Oct 2012 17:36:18 +0300
-In-Reply-To: <1348567033-5418-1-git-send-email-sachin.kamat@linaro.org>
-References: <1348567033-5418-1-git-send-email-sachin.kamat@linaro.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Wed, 10 Oct 2012 17:38:17 +0300
+In-Reply-To: <1348701327-12226-1-git-send-email-computersforpeace@gmail.com>
+References: <1348701327-12226-1-git-send-email-computersforpeace@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-c7Rl3jxdihvmhSMtFvji"
+ boundary="=-pKyq1+MVE84vr+72UBJ4"
 Mime-Version: 1.0
-Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>, dwmw2@infradead.org,
- linux-mtd@lists.infradead.org, patches@linaro.org
+Cc: Scott Wood <scottwood@freescale.com>, David Woodhouse <dwmw2@infradead.org>,
+ linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,33 +26,41 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-c7Rl3jxdihvmhSMtFvji
+--=-pKyq1+MVE84vr+72UBJ4
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-09-25 at 15:27 +0530, Sachin Kamat wrote:
-> The pointer returned by kzalloc should be tested for NULL
-> to avoid potential NULL pointer dereference later. Incorrect
-> pointer was being tested for NULL. Bug introduced by commit fbcf62a3
-> (mtd: physmap_of: move parse_obsolete_partitions to become separate
-> parser).
-> This patch fixes this bug.
+On Wed, 2012-09-26 at 16:15 -0700, Brian Norris wrote:
+> Since the introduction of nand_create_default_bbt_descr() (now known as
+> nand_create_badblock_pattern()) in
 >=20
-> Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-> Cc: Artem Bityutskiy <artem.bityutskiy@intel.com>
-> Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+>   commit 58373ff0afff4cc8ac40608872995f4d87eb72ec
+>=20
+> nand_chip.badblock_pattern will be dynamically calculated to the same
+> 1-byte-length pattern that is required by fsl_elbc_nand. This custom
+> badblock_pattern is no longer needed, then, and its removal may help
+> facilitate further nand_bbt.c/nand_base.c cleanup in the future (one
+> down, many to go?)
+>=20
+> Anyway, with nand_bbt.c fixed, this effectively reverts:
+>=20
+>   commit 452db2724351ff3d9416a183a7955e00ab4e6ab4
+>   [MTD] [NAND] fsl_elbc_nand: fix OOB workability for large page NAND chi=
+ps
+>=20
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Cc: Scott Wood <scottwood@freescale.com>
+> ---
+>=20
+> Not even compile-tested...
 
-Added
-
-Cc: stable@vger.kernel.org [3.2+]
-
-and pushed to l2-mtd.git, thanks!
+Compile-tested and pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-c7Rl3jxdihvmhSMtFvji
+--=-pKyq1+MVE84vr+72UBJ4
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -61,19 +68,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQdYfiAAoJECmIfjd9wqK0accP/izKPcGCZjIXIMmBTV2rsc7l
-4MSzlXd9fs/Fo6ZPSV1OudLsxB4R5j4G67dP7aK0xlVXMH8Q7Zs14XvGt5WMKhtU
-iDcuqGgei1BV/EqJoMH2ktxNah3jZV0iuP6I0R/hhSZsQ1qp2cVpWBGlzDI7abu8
-btRg4I53S4u2MaSdqANXkdceHYQczV/WOrv8eZ8pttnPOtug5BsbWhmVbNj3sQpJ
-ofpHsXbwt4kIIS99DXpGb7/e56SXnStJ7gtHwUUBy3rUGbfXDRMy1go1PzTx4PEk
-K4zmSpewzoCeGDNEa5OIaoaaE8vddrpG/ZIdrcrGhJFSDwIEyJ/oKvHUp/g6ov3I
-ALFg6SPqxfsUSGxij8Ej0A3pwvlJR7XP3baCgO6ESKp2IWi/1RKGQtvkZoqc3cJx
-EQEcJMyRIdP86U2RAfHNrvLcZ1rkBal13OYoevmy0ePaBp/mIBJvHGTnGfkQLJfk
-9NR1X3yeIXb87Fb0R7VE144bZ0QTgqGfiDh12IBsmeqQvXHaI0ZB/VNbShVd3to1
-au+AKkl9u288EtqvK/MsJboG4U/xjsvu3DPCaedTLnVr7gYsVjvifaYoAeNKPo4y
-ezJE4reOV9dIgH7fCYl2VeMt7qUuAtqvM9VgSmFWgIHlJg9aW3zElGzxMMWYgyzZ
-mJv2c0vLmIruV8L9Lx4O
-=UjTK
+iQIcBAABAgAGBQJQdYhZAAoJECmIfjd9wqK00IIQAKGEabwZ8T4Yx7C/1raHmknm
+RjLaLUYfP9WEXuOWUXxZzimuG7siWwAIQYu68HZkE70inx/uETeSGF4T3g48669h
+y2s8njssZdAdSirD/kSWdmw1Hahibqj+PJ0njnxs4PdLT60BYICDSafdQXZIacvI
+jJpGn2umNkaU9QLryCUix5MxRxHBbtOohpMA1ktWtD7wLQeVp0RO2GtfRgswtKZ/
+cXYOdm8iP157uivLg3JhDWppVg/7nIKp75YlP2wh/5+Nrd/vXP0PMUpkDj2AT8TP
+et/iEcqRbpXvjzG8/fesylZDRnikmwx/SSdJzavk/mrZNZLtdl3L97CVrzwltGz7
+FTpXdH6+cb1tjJsH6awpYsgHqIT+RxWcuYz0ytYhINNmVBdjTEVIsGvFqaMAxlrm
+vLiwcnQ+wJlg1t3KsmeMLZevRUB+9Hnb5LNsryCvq54WHCphzZN7tKbdIux+xCWL
+r2/6SukfqpiX9Ero7dgQ33xaBj3hMyoaiE2jAu0w0jPyO4xDrmjwzWfTR1TKpgsZ
+9H5eZESbA53An4O0NX01qTc4/ACRkUQVs5JqAWq1luNARbQKT4RPS7ebfMyGg4+R
+C22yJjk6Y+bSa3Isc0JiUqp3UmNICgq3wwDKoq3FGCelnaVSL8HSV3amSvFVPZjE
+g0ffB4EVLWH6pt06FQuB
+=eEBc
 -----END PGP SIGNATURE-----
 
---=-c7Rl3jxdihvmhSMtFvji--
+--=-pKyq1+MVE84vr+72UBJ4--
