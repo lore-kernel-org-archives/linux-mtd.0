@@ -1,28 +1,22 @@
-Date: Wed, 10 Oct 2012 19:08:06 +0200
-From: Ivan Djelic <ivan.djelic@parrot.com>
-To: "Philip, Avinash" <avinashphilip@ti.com>
-Subject: Re: [PATCH 4/4] mtd: nand: omap2: Add data correction support
-Message-ID: <20121010170806.GB13585@parrot.com>
-References: <1349274589-11389-1-git-send-email-avinashphilip@ti.com>
- <1349274589-11389-5-git-send-email-avinashphilip@ti.com>
- <20121003192044.GB27502@parrot.com>
- <518397C60809E147AF5323E0420B992E3E9B8A65@DBDE01.ent.ti.com>
- <20121005142338.GA7199@parrot.com>
- <518397C60809E147AF5323E0420B992E3E9CA829@DBDE01.ent.ti.com>
+Received: from mail-wi0-f177.google.com ([209.85.212.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TLzmd-00087R-Uf
+ for linux-mtd@lists.infradead.org; Wed, 10 Oct 2012 17:09:24 +0000
+Received: by mail-wi0-f177.google.com with SMTP id hj13so770245wib.0
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Oct 2012 10:09:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <518397C60809E147AF5323E0420B992E3E9CA829@DBDE01.ent.ti.com>
-Cc: "Mohammed, Afzal" <afzal@ti.com>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "tony@atomide.com" <tony@atomide.com>,
- "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
- "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <88484dbae96f7db42ce615552a4c758844a5e6cc.1349778821.git.vipin.kumar@st.com>
+References: <cover.1349778820.git.vipin.kumar@st.com>
+ <88484dbae96f7db42ce615552a4c758844a5e6cc.1349778821.git.vipin.kumar@st.com>
+Date: Wed, 10 Oct 2012 19:09:22 +0200
+Message-ID: <CACRpkdZWdJ+uZhkvygXVsbr_3rWt60j4YMiLwed8FUwzvF5KoQ@mail.gmail.com>
+Subject: Re: [PATCH 08/11] fsmc/nand: Use relaxed variants of io accessors
+From: Linus Walleij <linus.walleij@linaro.org>
+To: Vipin Kumar <vipin.kumar@st.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: plagnioj@jcrosoft.com, spear-devel@list.st.com,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,57 +26,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 09, 2012 at 01:36:50PM +0100, Philip, Avinash wrote:
-(...)
-> > There are at least 2 potential problems when reading an erased page with bitflips:
-> > 
-> > 1. bitflip in data area and no bitflip in spare area (all 0xff)
-> > Your code will not perform any ECC correction.
-> > UBIFS does not like finding bitflips in empty pages, see for instance
-> > http://lists.infradead.org/pipermail/linux-mtd/2012-March/040328.html.
-> 
-> In case of error correction using ELM, syndrome vector calculated after reading
-> Data area & OOB area. So handling of erased page requires a software workaround.
-> I am planning something as follows.
-> 
-> I will first check calculated ecc, which would be zero for non error pages.
-> Then I would check 0xFF in OOB area (for erased page) by checking number of
-> bit zeros in OOB area.  If it is 0xFF (number of bit zero count is zero),
-> set entire page as 0xFF if number of bit zeros is less than max bit flips
-> (8 or 4) by counting the number of bit zero's in data area.
-> 
-> This logic is implemented in fsmc_nand.c
-> 
-> See commit
-> mtd: fsmc: Newly erased page read algorithm implemented
-> 
-> > 
-> > 2. bitflip in ECC bytes in spare area
-> > Your code will report an uncorrectable error upon reading; if this happens while reading a partially programmed UBI block,
-> > I guess you will lose data.
-> 
-> In case of uncorrectable errors due to bit flips in spare area,
-> I can go on checking number of bit zero's in data area + OOB area
-> are less than max bit flips (8 or 4), I can go on setting the entire
-> page as 0xFF.
-> 
+On Tue, Oct 9, 2012 at 12:44 PM, Vipin Kumar <vipin.kumar@st.com> wrote:
 
-OK, sounds reasonable.
-Another simple strategy could use the fact that you add a 14th zero byte to
-the 13 BCH bytes for RBL compatibility:
+> Use relaxed variants of readl/writel accessors. readl/writel io accessors use
+> explicit dsb instruction which causes stalls in the processor core resulting
+> several cycles of delay for each access
+>
+> Use relaxed variants where ever possible. This also results in an improved
+> read/write performance.
+>
+> Signed-off-by: Vipin Kumar <vipin.kumar@st.com>
 
-Upon reading:
- - if this 14th byte is zero (*) => page was programmed: perform ECC
-   correction as usual
- - else, page was not programmed: do not perform ECC, read entire data+spare
-   area, and set it to 0xff if less than 8 or 4 (max bitflips) zero bits
-   were found
+Good idea for any performance-critical code! Thanks!
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-(*) for robustness to bitflip in 14th byte, replace condition
-"14th byte is zero" by e.g. "14th byte has less than 4 bits set to 1".
-
-What do you think ?
-
-BR,
---
-Ivan
+Yours,
+Linus Walleij
