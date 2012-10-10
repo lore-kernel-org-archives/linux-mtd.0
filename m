@@ -1,23 +1,14 @@
-Received: from mail-lb0-f177.google.com ([209.85.217.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TLpxK-0006Hz-9Q
- for linux-mtd@lists.infradead.org; Wed, 10 Oct 2012 06:39:47 +0000
-Received: by mail-lb0-f177.google.com with SMTP id gi11so177651lbb.36
- for <linux-mtd@lists.infradead.org>; Tue, 09 Oct 2012 23:39:43 -0700 (PDT)
+From: Huang Shijie <b32955@freescale.com>
+To: <shawn.guo@linaro.org>
+Subject: [PATCH] ARM: dts: mxs: add the `clock-names` for gpmi-nand
+Date: Wed, 10 Oct 2012 14:15:40 +0800
+Message-ID: <1349849740-14090-1-git-send-email-b32955@freescale.com>
+In-Reply-To: <CAOMZO5A0UX6y3MtHdzZ8V2Z52qsH8Yy-BVtOYEN_OpBezEsvQw@mail.gmail.com>
+References: <CAOMZO5A0UX6y3MtHdzZ8V2Z52qsH8Yy-BVtOYEN_OpBezEsvQw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1349850682.6072.70.camel@shinybook.infradead.org>
-References: <1349850366-4731-1-git-send-email-computersforpeace@gmail.com>
- <1349850682.6072.70.camel@shinybook.infradead.org>
-Date: Tue, 9 Oct 2012 23:39:43 -0700
-Message-ID: <CAN8TOE-ZLyCanBx8pqsbzY6jMQq+ysiVvdLmWvO8QdnyZg1QRg@mail.gmail.com>
-Subject: Re: [PATCH for 3.7] mtd: nand: fix Samsung SLC NAND identification
- regression
-From: Brian Norris <computersforpeace@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Marek Vasut <marex@denx.de>, linux-mtd@lists.infradead.org,
- Linux Kernel <linux-kernel@vger.kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain
+Cc: marex@denx.de, linux-mtd@lists.infradead.org, festevam@gmail.com,
+ linux-arm-kernel@lists.infradead.org, Huang Shijie <b32955@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,15 +18,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 9, 2012 at 11:31 PM, David Woodhouse <dwmw2@infradead.org> wrote:
-> On Tue, 2012-10-09 at 23:26 -0700, Brian Norris wrote:
->> I have heuristically determined that all the chips that use
->> the new table have ID strings which wrap around after the 6th byte.
->
-> I'd be happier if we had confirmation of that from Samsung...
+The current DT nodes for mx23/mx28 miss the `clocks-names` item for gpmi-nand.
+So the gpmi-nand driver could not find the proper clock.
 
-I can see if that's possible, but I think it's unlikely. They don't
-even bother following standards (ONFI). Is this an obstacle to
-merging?
+This patch fixes this issue.
 
-Brian
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+ arch/arm/boot/dts/imx23.dtsi |    1 +
+ arch/arm/boot/dts/imx28.dtsi |    1 +
+ 2 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/boot/dts/imx23.dtsi b/arch/arm/boot/dts/imx23.dtsi
+index 9ca4ca7..6d31aa3 100644
+--- a/arch/arm/boot/dts/imx23.dtsi
++++ b/arch/arm/boot/dts/imx23.dtsi
+@@ -69,6 +69,7 @@
+ 				interrupts = <13>, <56>;
+ 				interrupt-names = "gpmi-dma", "bch";
+ 				clocks = <&clks 34>;
++				clock-names = "gpmi_io";
+ 				fsl,gpmi-dma-channel = <4>;
+ 				status = "disabled";
+ 			};
+diff --git a/arch/arm/boot/dts/imx28.dtsi b/arch/arm/boot/dts/imx28.dtsi
+index e16d631..55c57ea 100644
+--- a/arch/arm/boot/dts/imx28.dtsi
++++ b/arch/arm/boot/dts/imx28.dtsi
+@@ -85,6 +85,7 @@
+ 				interrupts = <88>, <41>;
+ 				interrupt-names = "gpmi-dma", "bch";
+ 				clocks = <&clks 50>;
++				clock-names = "gpmi_io";
+ 				fsl,gpmi-dma-channel = <4>;
+ 				status = "disabled";
+ 			};
+-- 
+1.7.0.4
