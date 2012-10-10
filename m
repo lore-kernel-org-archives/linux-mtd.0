@@ -1,21 +1,21 @@
-Received: from mail-la0-f49.google.com ([209.85.215.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TLzAQ-0004XV-HX
- for linux-mtd@lists.infradead.org; Wed, 10 Oct 2012 16:29:55 +0000
-Received: by mail-la0-f49.google.com with SMTP id z14so507736lag.36
- for <linux-mtd@lists.infradead.org>; Wed, 10 Oct 2012 09:29:52 -0700 (PDT)
+Date: Wed, 10 Oct 2012 18:38:41 +0200
+From: Ivan Djelic <ivan.djelic@parrot.com>
+To: "Mohammed, Afzal" <afzal@ti.com>
+Subject: Re: [PATCH v2 00/14] OMAP-GPMC related cleanup for common zImage
+Message-ID: <20121010163840.GA13585@parrot.com>
+References: <cover.1349672877.git.afzal@ti.com>
+ <C8443D0743D26F4388EA172BF4E2A7A93E9F7B0A@DBDE01.ent.ti.com>
 MIME-Version: 1.0
-In-Reply-To: <507598A4.8000704@gmail.com>
-References: <1348713422-16626-1-git-send-email-computersforpeace@gmail.com>
- <1349880023.20594.36.camel@sauron.fi.intel.com>
- <507598A4.8000704@gmail.com>
-Date: Wed, 10 Oct 2012 09:29:51 -0700
-Message-ID: <CAN8TOE8tjdP-qc_wgw1388xVTvQD2LQm8Ex+iUwfarE+NUVDYg@mail.gmail.com>
-Subject: Re: [PATCH] mtd: mtd_oobtest: printk -> pr_{info,err}
-From: Brian Norris <computersforpeace@gmail.com>
-To: Vikram Narayanan <vikram186@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <C8443D0743D26F4388EA172BF4E2A7A93E9F7B0A@DBDE01.ent.ti.com>
+Cc: Paul Walmsley <paul@pwsan.com>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Tony Lindgren <tony@atomide.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Hunter,
+ Jon" <jon-hunter@ti.com>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,35 +25,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Oct 10, 2012 at 8:47 AM, Vikram Narayanan <vikram186@gmail.com> wrote:
-> On 10/10/2012 8:10 PM, Artem Bityutskiy wrote:
->>
->> On Wed, 2012-09-26 at 19:37 -0700, Brian Norris wrote:
->>>
->>> Use pr_info() and pr_err() while defining pr_fmt(). This saves a few
->>> characters, joins a few lines, and makes the code a little more readable
->>> (and grep-able).
->>>
->>> Signed-off-by: Brian Norris<computersforpeace@gmail.com>
->>
->>
->> Not sure about this - there is a patch-set from Vikram Narayanan
->> <vikram186@gmail.com>  (Subject: [RFC PATCH 0/8] mtd_tests: Remove
->> duplicate code and cleanups) which does this for all tests. I hoped he
->> can re-send newer version.
+On Mon, Oct 08, 2012 at 07:08:08AM +0100, Mohammed, Afzal wrote:
+> Hi Ivan,
+> 
+> On Mon, Oct 08, 2012 at 11:05:56, Mohammed, Afzal wrote:
+> 
+> > This series cleans up omap-gpmc related code so that omap can
+> > be a part of common zImage.
+> 
+> > This series moves gpmc.h from plat-omap/include/plat to mach-omap2
+> > so that header file is local.
+> 
+> > Patches 7 & 8 cleans up the already moved platform data header files
+> > to contain only platform data. Also gpmc-nand information is moved
+> > to nand platform data header.
+> > 
+> > Patches 9-13 makes nand driver independent of gpmc header file
+> > 
+> > And the final patch localizes gpmc header.
+> 
+> BCH[48] support that you have added on OMAP using gpmc exported
+> symbols has been changed such that nand driver now takes care
+> of BCH support without relying on gpmc exported symbols.
+> 
+> This is more or less a cut & paste of your implementation, which was
+> necessitated now due to common ARM zImage cleanup w.r.t header files.
+> 
+> Please verify that BCH[48] works as earlier with this series.
 
-I made the patch a while ago when playing around with the test for the
-first time but never bothered to send it out until recently. It was
-independent of the fact that Vikram did a (later) patch series for
-this.
+Hi Afzal,
 
-> Yeah. I'll send a newer version which will change the printk to pr_* for all
-> the tests. I can take Brian's patch as well and send the whole series, if he
-> is ok with it.
+I ran several mtd regression tests on a Beagle Board on your gpmc-czimage-v2 tag.
+All BCH error correcting tests passed successfully.
 
-Sure, take it in your series and modify as you want (that's what the
-"Signed-off-by" and GPL thing is all about). Or just rewrite it, if
-your own search-and-replace is better :)
+I occasionally had weird read errors though, especially when reading blank pages:
+the omap driver returned 512-byte sectors containing something like:
 
-Regards,
-Brian
+30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff
+30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff
+30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff
+30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff
+30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff
+30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+
+instead of:
+
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+
+I was able to reproduce the problem also on l2-mtd tip, albeit less often.
+The problem seems to occur quite randomly, it may be a hardware issue on
+my board...
+
+Anyway, the ECC handling part looks OK to me.
+
+Best regards,
+--
+Ivan
