@@ -1,21 +1,24 @@
-Message-ID: <50754EE1.7080905@st.com>
-Date: Wed, 10 Oct 2012 16:03:05 +0530
-From: Vipin Kumar <vipin.kumar@st.com>
+Received: from ra.se.axis.com ([195.60.68.13])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TLtcB-0007wj-U2
+ for linux-mtd@lists.infradead.org; Wed, 10 Oct 2012 10:34:12 +0000
+Subject: Re: mkfs.ubifs problem when output file really isn't in the UBIFS
+ root directory
+From: Marcus Prebble <marcus.prebble@axis.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>
+In-Reply-To: <1349861452.20594.12.camel@sauron.fi.intel.com>
+References: <1348242118.2552.1460.camel@lnxprebble2.se.axis.com>
+ <1349367416.20373.75.camel@sauron.fi.intel.com>
+ <1349708696.2552.1821.camel@lnxprebble2.se.axis.com>
+ <1349851661.20594.6.camel@sauron.fi.intel.com>
+ <1349859856.2552.1962.camel@lnxprebble2.se.axis.com>
+ <1349861452.20594.12.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 10 Oct 2012 12:34:09 +0200
+Message-ID: <1349865249.2552.1965.camel@lnxprebble2.se.axis.com>
 MIME-Version: 1.0
-To: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-Subject: Re: [PATCH 10/11] fsmc/nand: Add sw bch support for ecc
- calculation/correction
-References: <cover.1349778820.git.vipin.kumar@st.com>
- <3968b65e9aa0a81eca16ce0f20e45504da7ad7fe.1349778821.git.vipin.kumar@st.com>
- <20121009115023.GK12801@game.jcrosoft.org>
-In-Reply-To: <20121009115023.GK12801@game.jcrosoft.org>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
- spear-devel <spear-devel@list.st.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,47 +28,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/9/2012 5:20 PM, Jean-Christophe PLAGNIOL-VILLARD wrote:
-> On 16:14 Tue 09 Oct     , Vipin Kumar wrote:
->> Signed-off-by: Vipin Kumar<vipin.kumar@st.com>
->> ---
->>   .../devicetree/bindings/mtd/fsmc-nand.txt          |   2 +
->>   drivers/mtd/nand/fsmc_nand.c                       | 156 +++++++++++++--------
->>   include/linux/mtd/fsmc.h                           |   3 +
->>   3 files changed, 106 insertions(+), 55 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/mtd/fsmc-nand.txt b/Documentation/devicetree/bindings/mtd/fsmc-nand.txt
->> index 598bca2..dcf513b 100644
->> --- a/Documentation/devicetree/bindings/mtd/fsmc-nand.txt
->> +++ b/Documentation/devicetree/bindings/mtd/fsmc-nand.txt
->> @@ -30,6 +30,8 @@ Optional properties:
->>   - st,rb-gpios: When the st,ready-busy is defined as "rb-gpio", a gpio
->>     pin number is defined in this property
->>
->> +- nand-sw-ecc: boolean indicating whether s/w ecc is supported
->> +
-> please use the generic binding
->   - nand-ecc-mode = xx
+On Wed, 2012-10-10 at 11:30 +0200, Artem Bityutskiy wrote:
+> On Wed, 2012-10-10 at 11:04 +0200, Marcus Prebble wrote:
+> > Apologies for the long-winded explanation - but the output file really
+> > isn't in the the root directory, even though apparently the inodes are
+> > the same. 
+> 
+> Well, ok, this is a bug. But I think the solution for this should _not_
+> be a separate "--band-aid" type of option.
 
-Thanks for pointing. I will do the needful
+Agree entirely. --band-aid was just used as a proof-of-concept.
 
->>   Example:
->>
->>   	fsmc: flash@d1800000 {
->> diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
->> index 762cf83..ff84468 100644
->> --- a/drivers/mtd/nand/fsmc_nand.c
->> +++ b/drivers/mtd/nand/fsmc_nand.c
->> @@ -946,6 +946,9 @@ static int __devinit fsmc_nand_probe_config_dt(struct platform_device *pdev,
->>   	} else
->>   		pdata->rbpin.use_pin = FSMC_RB_WAIT;
->>
->> +	if (of_property_read_bool(np, "nand-sw-ecc"))
->> +		pdata->sw_ecc = true;
->> +
-> of_get_nand_ecc_mode
->
+>  We should kill 'in_path()'
+> and implement a 'is_contained(file, dir)' function, which would return
+> true if 'dir' contains 'file' and false otherwise.
 
-Sure
+I will implement and come back with a patch when I have time.
 
--Vipin
+Thanks again for your input,
+
+/Marcus
+
+
+> 
