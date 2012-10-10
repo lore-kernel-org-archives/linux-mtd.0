@@ -1,25 +1,14 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TLrBo-0000WU-EC
- for linux-mtd@lists.infradead.org; Wed, 10 Oct 2012 07:58:50 +0000
-Date: Wed, 10 Oct 2012 09:58:41 +0200
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-To: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH] [RFC] mtd/uclinux: support ROM and allow passing the
- base address
-Message-ID: <20121010075841.GD10151@pengutronix.de>
-References: <1349709952-4332-1-git-send-email-u.kleine-koenig@pengutronix.de>
- <50739A2A.9070405@snapgear.com>
- <20121009084418.GH18531@pengutronix.de>
- <5073FE55.2000402@snapgear.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5073FE55.2000402@snapgear.com>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-mtd@lists.infradead.org, kernel@pengutronix.de,
- Greg Ungerer <gerg@uclinux.org>
+Received: from mga03.intel.com ([143.182.124.21])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TLrPv-0003TY-Te
+ for linux-mtd@lists.infradead.org; Wed, 10 Oct 2012 08:13:24 +0000
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: MTD Maling List <linux-mtd@lists.infradead.org>,
+ Brent Taylor <motobud@gmail.com>
+Subject: [PATCH 1/2] UBIFS: introduce categorized lprops counter
+Date: Wed, 10 Oct 2012 11:13:34 +0300
+Message-Id: <1349856815-22893-1-git-send-email-dedekind1@gmail.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,72 +18,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-On Tue, Oct 09, 2012 at 08:37:09PM +1000, Greg Ungerer wrote:
-> On 10/09/2012 06:44 PM, Uwe Kleine-König wrote:
-> >On Tue, Oct 09, 2012 at 01:29:46PM +1000, Greg Ungerer wrote:
-> >>On 09/10/12 01:25, Uwe Kleine-KÃ·nig wrote:
-> >>>This allows to put the filesystem at a defined address in ROM allowing
-> >>>to save more precious RAM.
-> >>>
-> >>>I think it's save to default to ROM because the intention of using the
-> >>>uclinux map is to use a romfs and so mtd-ram doesn't give you anything
-> >>>that mtd-rom doesn't.
-> >>>
-> >>>Signed-off-by: Uwe Kleine-Kâ”œÃ€nig <u.kleine-koenig@pengutronix.de>
-> >>
-> >>Looks good to me, so:
-> >>
-> >>Acked-by: Greg Ungerer <gerg@uclinux.org>
-> >>
-> >>Couple of things to be aware of. Artem currently has a couple of
-> >>patches against this file (looks like at least 1 of them is currently
-> >>in linux-next). It will probably conflict with your changes, should
-> >>be easy enough to fix up.
-> >If you tell me a branch to test, I can do so.
-> 
-> Sure. All three patches I sent to the linux-mtd list are here:
-> 
-> The following changes since commit 979570e02981d4a8fc20b3cc8fd651856c98ee9d:
->   Linus Torvalds (1):
->         Linux 3.6-rc7
-> 
-> are available in the git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git cfmmu
-> 
-> Greg Ungerer (3):
->       mtd: fix wrong usage of ioremap_nocache() in uclinux.c map driver
->       mtd: allow uclinux map driver to be used on any ColdFire CPU platform
->       mtd: clean up uclinux.c map driver
-> 
->  drivers/mtd/maps/Kconfig   |    2 +-
->  drivers/mtd/maps/uclinux.c |   42
-> +++++++++++++++++++-----------------------
->  2 files changed, 20 insertions(+), 24 deletions(-)
-> 
-> 
-> As far as I can see Artem has pushed the first 2 into for linux-next,
-> but not the third. I am hoping he hops in here and lets us know what
-> his intentions are with the third...
-This branch merged into my tree still works fine.
+This commit is a preparation for a subsequent bugfix. We introduce a
+counter for categorized lprops.
 
-Something I noticed is that the printk cleanups could look a bit nicer
-if you used
+Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Cc: stable@vger.kernel.org
+---
+ fs/ubifs/lprops.c |    6 ++++++
+ fs/ubifs/ubifs.h  |    3 +++
+ 2 files changed, 9 insertions(+), 0 deletions(-)
 
-	#define pr_fmt(fmt)	"uclinux[mtd]: " fmt
-
-and then pr_notice et al. But maybe this is only subjective.
-
-Also I'm not sure if all the comments are still correct with my change.
-
-(And btw, your mailer is broken regarding line breaking and non-ascii
-characters.)
-
-Best regards
-Uwe
-
+diff --git a/fs/ubifs/lprops.c b/fs/ubifs/lprops.c
+index 86eb8e5..b33ec7a 100644
+--- a/fs/ubifs/lprops.c
++++ b/fs/ubifs/lprops.c
+@@ -300,8 +300,11 @@ void ubifs_add_to_cat(struct ubifs_info *c, struct ubifs_lprops *lprops,
+ 	default:
+ 		ubifs_assert(0);
+ 	}
++
+ 	lprops->flags &= ~LPROPS_CAT_MASK;
+ 	lprops->flags |= cat;
++	c->in_a_category_cnt += 1;
++	ubifs_assert(c->in_a_category_cnt <= c->main_lebs);
+ }
+ 
+ /**
+@@ -334,6 +337,9 @@ static void ubifs_remove_from_cat(struct ubifs_info *c,
+ 	default:
+ 		ubifs_assert(0);
+ 	}
++
++	c->in_a_category_cnt -= 1;
++	ubifs_assert(c->in_a_category_cnt >= 0);
+ }
+ 
+ /**
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index 1e5a086..51ac3e6 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -1184,6 +1184,8 @@ struct ubifs_debug_info;
+  * @freeable_list: list of freeable non-index LEBs (free + dirty == @leb_size)
+  * @frdi_idx_list: list of freeable index LEBs (free + dirty == @leb_size)
+  * @freeable_cnt: number of freeable LEBs in @freeable_list
++ * @in_a_category_cnt: count of lprops which are in a certain category, which
++ *                     basically meants that they were loaded from the flash
+  *
+  * @ltab_lnum: LEB number of LPT's own lprops table
+  * @ltab_offs: offset of LPT's own lprops table
+@@ -1413,6 +1415,7 @@ struct ubifs_info {
+ 	struct list_head freeable_list;
+ 	struct list_head frdi_idx_list;
+ 	int freeable_cnt;
++	int in_a_category_cnt;
+ 
+ 	int ltab_lnum;
+ 	int ltab_offs;
 -- 
-Pengutronix e.K.                           | Uwe Kleine-König            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+1.7.7.6
