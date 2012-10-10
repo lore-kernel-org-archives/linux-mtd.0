@@ -1,19 +1,18 @@
-Received: from mail-wi0-f169.google.com ([209.85.212.169])
+Received: from mail-wi0-f171.google.com ([209.85.212.171])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TLzTW-0006Pf-Ji
- for linux-mtd@lists.infradead.org; Wed, 10 Oct 2012 16:49:39 +0000
-Received: by mail-wi0-f169.google.com with SMTP id hq4so5781356wib.0
- for <linux-mtd@lists.infradead.org>; Wed, 10 Oct 2012 09:49:34 -0700 (PDT)
+ id 1TLzkk-0007fX-SY
+ for linux-mtd@lists.infradead.org; Wed, 10 Oct 2012 17:07:27 +0000
+Received: by mail-wi0-f171.google.com with SMTP id hj13so5483912wib.0
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Oct 2012 10:07:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <c30a9228d4bff7dbedd5d011f84c79c324736452.1349778820.git.vipin.kumar@st.com>
+In-Reply-To: <2b88c853b3691338fae037f569917fc300cd6032.1349778821.git.vipin.kumar@st.com>
 References: <cover.1349778820.git.vipin.kumar@st.com>
- <c30a9228d4bff7dbedd5d011f84c79c324736452.1349778820.git.vipin.kumar@st.com>
-Date: Wed, 10 Oct 2012 18:49:34 +0200
-Message-ID: <CACRpkdaQuF05Cu_zTVH0PUQv5neG=5B8+8W+7g9tkG57ASn=nA@mail.gmail.com>
-Subject: Re: [PATCH 01/11] fsmc/nand:FIX: Change the type for regs to void
- __iomem *
+ <2b88c853b3691338fae037f569917fc300cd6032.1349778821.git.vipin.kumar@st.com>
+Date: Wed, 10 Oct 2012 19:07:23 +0200
+Message-ID: <CACRpkdb6ArMUQ6MAsue+Gh15UfOUrWNAc9wrxd6awc0BTwOGiw@mail.gmail.com>
+Subject: Re: [PATCH 07/11] fsmc/nand: Provide contiguous buffers to dma
 From: Linus Walleij <linus.walleij@linaro.org>
-To: Vipin Kumar <vipin.kumar@st.com>
+To: Vipin Kumar <vipin.kumar@st.com>, Vinod Koul <vinod.koul@intel.com>
 Content-Type: text/plain; charset=ISO-8859-1
 Cc: plagnioj@jcrosoft.com, spear-devel@list.st.com,
  linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
@@ -29,9 +28,41 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 On Tue, Oct 9, 2012 at 12:44 PM, Vipin Kumar <vipin.kumar@st.com> wrote:
 
+> read_buf/write_buf callbacks should be able to accept a user space memory
+> address (virtually contiguous memory) as buffer pointer.
+>
+> This patch allocates a logically contiguous memory area which is use for dma
+
+You mean PHYSICALLY contigous, don't you?
+
+> xfers during read and write accesses.
+>
 > Signed-off-by: Vipin Kumar <vipin.kumar@st.com>
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+If you really want a physically contigous buffer you need to use
+CMA, but I don't think that is the real problem here...
+
+We're already using userspace buffers in e.g. the MMCI driver
+(drivers/mmc/host/mmci.c).
+
+The real problem is likely the DMA driver. The stuf that get
+fed into dma.device_prep_dma_memcpy() needs to be
+converted to a scatterlist and then set up in the LLI list
+for the controller.
+
+IIRC SPEAr is using drivers/dma/dw_dmac.c so
+check this driver's dwc_prep_dma_memcpy().
+It does seem like it is checking whether src or
+dest is scattered in this for() loop:
+
+for (offset = 0; offset < len; offset += xfer_count << src_width) {}
+
+dma_sync_single_for_device() is translating the virtual
+address to physical for every chunk BTW.
+
+So instead of doing this copying, debug the problem, and
+see if there is a bug in that for()-loop or similar, if it needs
+to be rewritten or so.
 
 Yours,
 Linus Walleij
