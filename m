@@ -1,27 +1,19 @@
-Received: from mga14.intel.com ([143.182.124.37])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TLx71-0007zF-FD
- for linux-mtd@lists.infradead.org; Wed, 10 Oct 2012 14:18:16 +0000
-Message-ID: <1349878701.20594.30.camel@sauron.fi.intel.com>
-Subject: Re: Offtopic: ubifs and best practice for supporting browser based
- firmware upgrades
+ id 1TLxNx-0002F4-TM
+ for linux-mtd@lists.infradead.org; Wed, 10 Oct 2012 14:35:46 +0000
+Message-ID: <1349879757.20594.32.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: m25p80: add support for the windbond w25q256 chip
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jaya Kumar <jayakumar.lkml@gmail.com>
-Date: Wed, 10 Oct 2012 17:18:21 +0300
-In-Reply-To: <CADqH6VxNTns60J6tc5a6SwdoGcetSK5sYF=a5Sf2HxDR+igCLg@mail.gmail.com>
-References: <CADqH6VzVhsGvCCbokjW8TAJSq5Sj33GiHt4gZxOFZaeHtJ4JeQ@mail.gmail.com>
- <1346751620.12610.35.camel@sauron.fi.intel.com>
- <CADqH6Vw0kY=U-jymgpj_JpzLkqLb0JjK7J1C1V6qF_uo-jDFng@mail.gmail.com>
- <1348651795.24309.49.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1209261251200.19047@lnxricardw.se.axis.com>
- <1348658003.24309.70.camel@sauron.fi.intel.com>
- <CADqH6VxNTns60J6tc5a6SwdoGcetSK5sYF=a5Sf2HxDR+igCLg@mail.gmail.com>
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+Date: Wed, 10 Oct 2012 17:35:57 +0300
+In-Reply-To: <1348563927-9131-1-git-send-email-matthieu.castet@parrot.com>
+References: <1348563927-9131-1-git-send-email-matthieu.castet@parrot.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-EDnKOPLMxB9dZJpnR9XD"
+ boundary="=-GAH8y5e9a2/ysGDyggv6"
 Mime-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ricard Wanderlof <ricard.wanderlof@axis.com>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -33,22 +25,20 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-EDnKOPLMxB9dZJpnR9XD
+--=-GAH8y5e9a2/ysGDyggv6
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-09-26 at 20:38 +0800, Jaya Kumar wrote:
-> I'm guessing I also need to hack the following in rename_volumes:
-> desc =3D ubi_open_volume_nm(ubi->ubi_num, re->new_name, UBI_EXCLUSIVE);
+On Tue, 2012-09-25 at 11:05 +0200, Matthieu CASTET wrote:
+> Signed-off-by: Matthieu CASTET <matthieu.castet@parrot.com>
 
-Probably, you can use UBI_READONLY instead of UBI_EXCLUSIVE, I guess,
-just to try if the approach works.
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-EDnKOPLMxB9dZJpnR9XD
+--=-GAH8y5e9a2/ysGDyggv6
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -56,19 +46,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQdYOtAAoJECmIfjd9wqK0cxAQAMM5W2cIIpnR4xUErEPFezNx
-IxYsrYgsGggWRYtbZUnOiHOaAde1x8hta7C9JIWLIYyjiCMA5HzGrtmDnM4DeY9G
-7XF8t1f8fD2ptJvyk0GTKkaCT/jmAKhxUUsoTCscZ6MCm+vrLL8+Amroigf8cFX6
-Hj406KmEZuYPqWwnhJXyvYQ2kVNH93yDbe5Gq7PI14qbc3KxyCf0FRF7IIFo2Veb
-zaGHxM45iWkAoS02WOtjMqiZpu5L5cbpuOOszaL5bduGUOuch/ZVUT68iJsaEPAX
-p7pN5sWoxuyD4+WqUqFGXgQb9YzwXdxcHsHbqzV9CpOE6G+FLVWxrqTCWX46aKDL
-0CFyFRbqHrapoEtZ6gFNa6HW/JlXVqKyVHV8nsV2R0J35JfcHvRNoWoDR+eMPmby
-u751zsx90IC356Fikcy842GBxZt3AOPYLp/b0NVlQx9H4QJuSE8A3+RhmOvAEJDU
-XXkPeDH53cbTVU70Jsg5IU4dgv5g3f8c8Ot2exBa9sbM0G/2dkKesp6H84NV9fbv
-fD2QNVMeQmc2Grii6JbtJphJFsLJngGFjCPFufD8LLlI2cD5z9hMkDSd87XKlM+t
-BerO0KfIjQ6C6NPDRDpe+Nr+hqaz7LSM2NIm0TLLKfqYYTXRdP08fEQhvuo3jLle
-jKpgWp2QaJMNuEPLDV4t
-=WOqB
+iQIcBAABAgAGBQJQdYfNAAoJECmIfjd9wqK0U4QP+wfOeM81Qa+kg5yeiD8frmIU
+gvsFJ6PrIA6zBg0CTkb+Jbii3CuCgDjXxdmO3W4uTSYlG0ku+ehgWFGHzxqjYyDT
+NU2HAiaQNPG8gtCITuq1oaIUyxWzvlPR4bZL2BZKC4zFfu4ueOBNFqO8w7y4tVpB
+vllgVEQ/C+owM6rQkwPMMGThE09sa3Cjv+cGWRZyjPW4FYJSVhj3HWak6uFPyNji
+o/BGLKpu8wI1+HW2LRbY6nR4p75NLm9qDUoH+LrPIRzxYw+Nj0p9LKWT7L83mvGF
+CWMu/zyxwh/dpG8CE6KGHungk620QbHguSRUg29axdTEGvpRT5vf6KcIfEKD0n1x
+CYCbUKxArBON0DmuEnJ+Ngs4wl8uEOJu/6wL9l9lWJRz4Z7I+7gMnEY5YPQgqTo5
+m0N2HqrYagbyH0bXWZtI6xuHdOAiW2iM12xQe74qFgUYYZFuDU4qse0aFdb+g4WN
+WNB7bCSyR5a1ku7+WcX2mhh1r1I69vZWJWiyVysRXuBUpB0F2re93HF7q42++iAC
+JxCzTChMTlPrwfXXy5PaHCDnOFZojd3uHgosW5Ms8pYOojhFJwd+9E4eomNM2CnN
+0UHPhwPuBd3SRRGfzohJm2xcIQZ44qLcikqPQELqhPkyddS4h7smhgqr5VscNyti
+FCaL/gouxLy5qK2RuX9+
+=6mIH
 -----END PGP SIGNATURE-----
 
---=-EDnKOPLMxB9dZJpnR9XD--
+--=-GAH8y5e9a2/ysGDyggv6--
