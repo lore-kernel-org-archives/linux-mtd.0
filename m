@@ -1,19 +1,21 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TLxNx-0002F4-TM
- for linux-mtd@lists.infradead.org; Wed, 10 Oct 2012 14:35:46 +0000
-Message-ID: <1349879757.20594.32.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: m25p80: add support for the windbond w25q256 chip
+ id 1TLxOI-0002N9-NA
+ for linux-mtd@lists.infradead.org; Wed, 10 Oct 2012 14:36:07 +0000
+Message-ID: <1349879778.20594.33.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: ofpart: Fix incorrect NULL check in
+ parse_ofoldpart_partitions()
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-Date: Wed, 10 Oct 2012 17:35:57 +0300
-In-Reply-To: <1348563927-9131-1-git-send-email-matthieu.castet@parrot.com>
-References: <1348563927-9131-1-git-send-email-matthieu.castet@parrot.com>
+To: Sachin Kamat <sachin.kamat@linaro.org>
+Date: Wed, 10 Oct 2012 17:36:18 +0300
+In-Reply-To: <1348567033-5418-1-git-send-email-sachin.kamat@linaro.org>
+References: <1348567033-5418-1-git-send-email-sachin.kamat@linaro.org>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-GAH8y5e9a2/ysGDyggv6"
+ boundary="=-c7Rl3jxdihvmhSMtFvji"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>, dwmw2@infradead.org,
+ linux-mtd@lists.infradead.org, patches@linaro.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,20 +27,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-GAH8y5e9a2/ysGDyggv6
+--=-c7Rl3jxdihvmhSMtFvji
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-09-25 at 11:05 +0200, Matthieu CASTET wrote:
-> Signed-off-by: Matthieu CASTET <matthieu.castet@parrot.com>
+On Tue, 2012-09-25 at 15:27 +0530, Sachin Kamat wrote:
+> The pointer returned by kzalloc should be tested for NULL
+> to avoid potential NULL pointer dereference later. Incorrect
+> pointer was being tested for NULL. Bug introduced by commit fbcf62a3
+> (mtd: physmap_of: move parse_obsolete_partitions to become separate
+> parser).
+> This patch fixes this bug.
+>=20
+> Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+> Cc: Artem Bityutskiy <artem.bityutskiy@intel.com>
+> Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 
-Pushed to l2-mtd.git, thanks!
+Added
+
+Cc: stable@vger.kernel.org [3.2+]
+
+and pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-GAH8y5e9a2/ysGDyggv6
+--=-c7Rl3jxdihvmhSMtFvji
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -46,19 +61,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQdYfNAAoJECmIfjd9wqK0U4QP+wfOeM81Qa+kg5yeiD8frmIU
-gvsFJ6PrIA6zBg0CTkb+Jbii3CuCgDjXxdmO3W4uTSYlG0ku+ehgWFGHzxqjYyDT
-NU2HAiaQNPG8gtCITuq1oaIUyxWzvlPR4bZL2BZKC4zFfu4ueOBNFqO8w7y4tVpB
-vllgVEQ/C+owM6rQkwPMMGThE09sa3Cjv+cGWRZyjPW4FYJSVhj3HWak6uFPyNji
-o/BGLKpu8wI1+HW2LRbY6nR4p75NLm9qDUoH+LrPIRzxYw+Nj0p9LKWT7L83mvGF
-CWMu/zyxwh/dpG8CE6KGHungk620QbHguSRUg29axdTEGvpRT5vf6KcIfEKD0n1x
-CYCbUKxArBON0DmuEnJ+Ngs4wl8uEOJu/6wL9l9lWJRz4Z7I+7gMnEY5YPQgqTo5
-m0N2HqrYagbyH0bXWZtI6xuHdOAiW2iM12xQe74qFgUYYZFuDU4qse0aFdb+g4WN
-WNB7bCSyR5a1ku7+WcX2mhh1r1I69vZWJWiyVysRXuBUpB0F2re93HF7q42++iAC
-JxCzTChMTlPrwfXXy5PaHCDnOFZojd3uHgosW5Ms8pYOojhFJwd+9E4eomNM2CnN
-0UHPhwPuBd3SRRGfzohJm2xcIQZ44qLcikqPQELqhPkyddS4h7smhgqr5VscNyti
-FCaL/gouxLy5qK2RuX9+
-=6mIH
+iQIcBAABAgAGBQJQdYfiAAoJECmIfjd9wqK0accP/izKPcGCZjIXIMmBTV2rsc7l
+4MSzlXd9fs/Fo6ZPSV1OudLsxB4R5j4G67dP7aK0xlVXMH8Q7Zs14XvGt5WMKhtU
+iDcuqGgei1BV/EqJoMH2ktxNah3jZV0iuP6I0R/hhSZsQ1qp2cVpWBGlzDI7abu8
+btRg4I53S4u2MaSdqANXkdceHYQczV/WOrv8eZ8pttnPOtug5BsbWhmVbNj3sQpJ
+ofpHsXbwt4kIIS99DXpGb7/e56SXnStJ7gtHwUUBy3rUGbfXDRMy1go1PzTx4PEk
+K4zmSpewzoCeGDNEa5OIaoaaE8vddrpG/ZIdrcrGhJFSDwIEyJ/oKvHUp/g6ov3I
+ALFg6SPqxfsUSGxij8Ej0A3pwvlJR7XP3baCgO6ESKp2IWi/1RKGQtvkZoqc3cJx
+EQEcJMyRIdP86U2RAfHNrvLcZ1rkBal13OYoevmy0ePaBp/mIBJvHGTnGfkQLJfk
+9NR1X3yeIXb87Fb0R7VE144bZ0QTgqGfiDh12IBsmeqQvXHaI0ZB/VNbShVd3to1
+au+AKkl9u288EtqvK/MsJboG4U/xjsvu3DPCaedTLnVr7gYsVjvifaYoAeNKPo4y
+ezJE4reOV9dIgH7fCYl2VeMt7qUuAtqvM9VgSmFWgIHlJg9aW3zElGzxMMWYgyzZ
+mJv2c0vLmIruV8L9Lx4O
+=UjTK
 -----END PGP SIGNATURE-----
 
---=-GAH8y5e9a2/ysGDyggv6--
+--=-c7Rl3jxdihvmhSMtFvji--
