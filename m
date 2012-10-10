@@ -1,18 +1,20 @@
 Received: from mail-we0-f177.google.com ([74.125.82.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TLznn-00008y-GC
- for linux-mtd@lists.infradead.org; Wed, 10 Oct 2012 17:10:36 +0000
-Received: by mail-we0-f177.google.com with SMTP id u50so472852wey.36
- for <linux-mtd@lists.infradead.org>; Wed, 10 Oct 2012 10:10:33 -0700 (PDT)
+ id 1TLzyx-0001vt-Hy
+ for linux-mtd@lists.infradead.org; Wed, 10 Oct 2012 17:22:08 +0000
+Received: by mail-we0-f177.google.com with SMTP id u50so480428wey.36
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Oct 2012 10:22:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <3dcb002d0ad03dde9a91e8128dbaa320b8a264a9.1349778821.git.vipin.kumar@st.com>
+In-Reply-To: <ec169eb041e87e66c06108e85ea4a67e5797cecc.1349778821.git.vipin.kumar@st.com>
 References: <cover.1349778820.git.vipin.kumar@st.com>
- <3dcb002d0ad03dde9a91e8128dbaa320b8a264a9.1349778821.git.vipin.kumar@st.com>
-Date: Wed, 10 Oct 2012 19:10:33 +0200
-Message-ID: <CACRpkdYj2o77fLWM8vwpCSSuQkJAwOx5gNhCQd+yZ8SJ4M328Q@mail.gmail.com>
-Subject: Re: [PATCH 06/11] fsmc/nand: Modify the wait to uninterruptible
+ <ec169eb041e87e66c06108e85ea4a67e5797cecc.1349778821.git.vipin.kumar@st.com>
+Date: Wed, 10 Oct 2012 19:22:04 +0200
+Message-ID: <CACRpkdaot3DKCoJOBpUcJFVrJ89xRx2T58fDe4YKY_r4NFqEag@mail.gmail.com>
+Subject: Re: [PATCH 09/11] fsmc/nand:FIX: replace change_bit routine
 From: Linus Walleij <linus.walleij@linaro.org>
-To: Vipin Kumar <vipin.kumar@st.com>
+To: Vipin Kumar <vipin.kumar@st.com>,
+ Russell King - ARM Linux <linux@arm.linux.org.uk>,
+ Nicolas Pitre <nico@linaro.org>
 Content-Type: text/plain; charset=ISO-8859-1
 Cc: plagnioj@jcrosoft.com, spear-devel@list.st.com,
  linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
@@ -28,14 +30,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 On Tue, Oct 9, 2012 at 12:44 PM, Vipin Kumar <vipin.kumar@st.com> wrote:
 
-> Interruptible wait caused trouble in fsmc hardware state machine if the
-> application was killed abruptly. To make fsmc operation safe turn wait in to
-> un-interruptible.
+> change_bit routine accepts only ulong pointers as buffer, so an unaligned char
+> pointer passed to change_bit may lead to a crash.
 >
-> Signed-off-by: Vipin Kumar <vipin.kumar@st.com>
+> Fix this bug by accessing the buffer as char pointer.
 
-Yes this is wise.
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Why not see if we can fix change_bit() instead?
+Since I suspect this is on ARM I bet Russell and Nico
+want to hear about this if there is a problem.
+
+Can the ARM change_bit() not be fixed, so that
+long arguments are the only option?
+
+>                 if (err_idx[i] < chip->ecc.size * 8) {
+> -                       change_bit(err_idx[i], (unsigned long *)dat);
+> +                       uint8_t *p = dat + err_idx[i] / 8;
+> +                       *p = *p ^ (1 << (err_idx[i] % 8));
+
+I'm one of these people who would write >>3 and
+&7 rather than /8 or %8 but I guess we are all
+different. Atleast consider it if you stick with this...
 
 Yours,
 Linus Walleij
