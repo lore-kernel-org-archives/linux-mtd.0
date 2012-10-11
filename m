@@ -1,20 +1,23 @@
-Message-ID: <50764A3B.8070406@st.com>
-Date: Thu, 11 Oct 2012 09:55:31 +0530
-From: Vipin Kumar <vipin.kumar@st.com>
+From: "Mohammed, Afzal" <afzal@ti.com>
+To: Ivan Djelic <ivan.djelic@parrot.com>
+Subject: RE: [PATCH v2 00/14] OMAP-GPMC related cleanup for common zImage
+Date: Thu, 11 Oct 2012 05:24:58 +0000
+Message-ID: <C8443D0743D26F4388EA172BF4E2A7A93E9FB245@DBDE01.ent.ti.com>
+References: <cover.1349672877.git.afzal@ti.com>
+ <C8443D0743D26F4388EA172BF4E2A7A93E9F7B0A@DBDE01.ent.ti.com>
+ <20121010163840.GA13585@parrot.com>
+In-Reply-To: <20121010163840.GA13585@parrot.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-To: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-Subject: Re: [PATCH 04/11] fsmc/nand: Accept nand timing parameters via DT
-References: <cover.1349778820.git.vipin.kumar@st.com>
- <54eda40e56e8ea02ed9c5332ca6d3fb90d617cc7.1349778821.git.vipin.kumar@st.com>
- <20121009115705.GN12801@game.jcrosoft.org>
-In-Reply-To: <20121009115705.GN12801@game.jcrosoft.org>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
- spear-devel <spear-devel@list.st.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>
+Cc: Paul Walmsley <paul@pwsan.com>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Tony Lindgren <tony@atomide.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Hunter,
+ Jon" <jon-hunter@ti.com>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,166 +27,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/9/2012 5:27 PM, Jean-Christophe PLAGNIOL-VILLARD wrote:
-> On 16:14 Tue 09 Oct     , Vipin Kumar wrote:
->> Add support to accept nand timing parameters via device tree
->>
->> Signed-off-by: Vipin Kumar<vipin.kumar@st.com>
->> ---
->>   .../devicetree/bindings/mtd/fsmc-nand.txt          | 20 ++++++++
->>   drivers/mtd/nand/fsmc_nand.c                       | 59 ++++++++++++++--------
->>   include/linux/mtd/fsmc.h                           |  2 +-
->>   3 files changed, 59 insertions(+), 22 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/mtd/fsmc-nand.txt b/Documentation/devicetree/bindings/mtd/fsmc-nand.txt
->> index 29d1a2f..6a7fc43 100644
->> --- a/Documentation/devicetree/bindings/mtd/fsmc-nand.txt
->> +++ b/Documentation/devicetree/bindings/mtd/fsmc-nand.txt
->> @@ -13,6 +13,18 @@ Optional properties:
->>     defaults to 1 byte
->>   - nand-skip-bbtscan: Indicates the the BBT scanning should be skipped
->>
->> +- nand-timings-enabled: Indicates if the timing parameters are passed
->> +  via DT
->> +- nand-timings,tclr:
->> +- nand-timings,tar:
->> +- nand-timings,thiz:
->> +- nand-timings,thold:
->> +- nand-timings,twait:
->> +- nand-timings,tset: All these timing parameters come from the actual
->> +  nand device specification. Each of this represents a number of time
->> +  period of hclk ie a number 4 in thold with hclk = 166MHz means that
->> +  thold = (1000 / 166) * 4 ns = 24.09ns
->> +
->>   Example:
->>
->>   	fsmc: flash@d1800000 {
->> @@ -26,6 +38,14 @@ Example:
->>   		st,cle-off =<0x10000>;
->>   		maxbanks =<1>;
->>
->> +		nand-timings-enabled;
->> +		nand-timings,tclr =<1>;
->> +		nand-timings,tar =<1>;
->> +		nand-timings,thiz =<1>;
->> +		nand-timings,thold =<4>;
->> +		nand-timings,twait =<6>;
->> +		nand-timings,tset =<0>;
->> +
->>   		bank-width =<1>;
->>   		nand-skip-bbtscan;
->>
->> diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
->> index fc6a044..f3d69b3 100644
->> --- a/drivers/mtd/nand/fsmc_nand.c
->> +++ b/drivers/mtd/nand/fsmc_nand.c
->> @@ -415,27 +415,13 @@ static void fsmc_nand_setup(void __iomem *regs, uint32_t bank,
->>   {
->>   	uint32_t value = FSMC_DEVTYPE_NAND | FSMC_ENABLE | FSMC_WAITON;
->>   	uint32_t tclr, tar, thiz, thold, twait, tset;
->> -	struct fsmc_nand_timings *tims;
->> -	struct fsmc_nand_timings default_timings = {
->> -		.tclr	= FSMC_TCLR_1,
->> -		.tar	= FSMC_TAR_1,
->> -		.thiz	= FSMC_THIZ_1,
->> -		.thold	= FSMC_THOLD_4,
->> -		.twait	= FSMC_TWAIT_6,
->> -		.tset	= FSMC_TSET_0,
->> -	};
->> -
->> -	if (timings)
->> -		tims = timings;
->> -	else
->> -		tims =&default_timings;
->>
->> -	tclr = (tims->tclr&  FSMC_TCLR_MASK)<<  FSMC_TCLR_SHIFT;
->> -	tar = (tims->tar&  FSMC_TAR_MASK)<<  FSMC_TAR_SHIFT;
->> -	thiz = (tims->thiz&  FSMC_THIZ_MASK)<<  FSMC_THIZ_SHIFT;
->> -	thold = (tims->thold&  FSMC_THOLD_MASK)<<  FSMC_THOLD_SHIFT;
->> -	twait = (tims->twait&  FSMC_TWAIT_MASK)<<  FSMC_TWAIT_SHIFT;
->> -	tset = (tims->tset&  FSMC_TSET_MASK)<<  FSMC_TSET_SHIFT;
->> +	tclr = (timings->tclr&  FSMC_TCLR_MASK)<<  FSMC_TCLR_SHIFT;
->> +	tar = (timings->tar&  FSMC_TAR_MASK)<<  FSMC_TAR_SHIFT;
->> +	thiz = (timings->thiz&  FSMC_THIZ_MASK)<<  FSMC_THIZ_SHIFT;
->> +	thold = (timings->thold&  FSMC_THOLD_MASK)<<  FSMC_THOLD_SHIFT;
->> +	twait = (timings->twait&  FSMC_TWAIT_MASK)<<  FSMC_TWAIT_SHIFT;
->> +	tset = (timings->tset&  FSMC_TSET_MASK)<<  FSMC_TSET_SHIFT;
->>
->>   	if (busw)
->>   		writel(value | FSMC_DEVWID_16, FSMC_NAND_REG(regs, bank, PC));
->> @@ -876,6 +862,14 @@ static int __devinit fsmc_nand_probe_config_dt(struct platform_device *pdev,
->>   					       struct device_node *np)
->>   {
->>   	struct fsmc_nand_platform_data *pdata = dev_get_platdata(&pdev->dev);
->> +	struct fsmc_nand_timings default_timings = {
->> +		.tclr	= FSMC_TCLR_1,
->> +		.tar	= FSMC_TAR_1,
->> +		.thiz	= FSMC_THIZ_1,
->> +		.thold	= FSMC_THOLD_4,
->> +		.twait	= FSMC_TWAIT_6,
->> +		.tset	= FSMC_TSET_0,
->> +	};
->>   	u32 val;
->>
->>   	/* Set default NAND width to 8 bits */
->> @@ -894,6 +888,29 @@ static int __devinit fsmc_nand_probe_config_dt(struct platform_device *pdev,
->>   		pdata->options = NAND_SKIP_BBTSCAN;
->>   	of_property_read_u32(np, "maxbanks",&pdata->max_banks);
->>
->> +	if (of_property_read_bool(np, "nand-timings-enabled")) {
->> +		of_property_read_u32(np, "nand-timings,tclr",&val);
->> +		pdata->nand_timings.tclr = (uint8_t)val;
-> use a mask will be better
-
-OK, will add a mask in v2
-
->> +
->> +		of_property_read_u32(np, "nand-timings,tar",&val);
->> +		pdata->nand_timings.tar = (uint8_t)val;
->> +
->> +		of_property_read_u32(np, "nand-timings,thiz",&val);
->> +		pdata->nand_timings.thiz = (uint8_t)val;
->> +
->> +		of_property_read_u32(np, "nand-timings,thold",&val);
->> +		pdata->nand_timings.thold = (uint8_t)val;
->> +
->> +		of_property_read_u32(np, "nand-timings,twait",&val);
->> +		pdata->nand_timings.twait = (uint8_t)val;
->> +
->> +		of_property_read_u32(np, "nand-timings,tset",&val);
->> +		pdata->nand_timings.tset = (uint8_t)val;
->> +	} else {
->> +		memcpy(&pdata->nand_timings,&default_timings,
->> +				sizeof(default_timings));
->> +	}
->> +
->>   	return 0;
->>   }
->>   #else
->> @@ -1031,7 +1048,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
->>   	host->partitions = pdata->partitions;
->>   	host->nr_partitions = pdata->nr_partitions;
->>   	host->dev =&pdev->dev;
->> -	host->dev_timings = pdata->nand_timings;
->> +	host->dev_timings =&pdata->nand_timings;
->>   	host->mode = pdata->mode;
->>   	host->max_banks = pdata->max_banks;
->>
->> diff --git a/include/linux/mtd/fsmc.h b/include/linux/mtd/fsmc.h
->> index f0ab734..4fbdce4 100644
->> --- a/include/linux/mtd/fsmc.h
->> +++ b/include/linux/mtd/fsmc.h
->> @@ -148,7 +148,7 @@ enum access_mode {
->>    * this may be set to NULL
->>    */
->>   struct fsmc_nand_platform_data {
->> -	struct fsmc_nand_timings *nand_timings;
->> +	struct fsmc_nand_timings nand_timings;
->>   	struct mtd_partition	*partitions;
->>   	unsigned int		nr_partitions;
->>   	unsigned int		options;
->> --
->> 1.7.11.4
->>
-> .
->
+T24gV2VkLCBPY3QgMTAsIDIwMTIgYXQgMjI6MDg6NDEsIEl2YW4gRGplbGljIHdyb3RlOg0KPiBP
+biBNb24sIE9jdCAwOCwgMjAxMiBhdCAwNzowODowOEFNICswMTAwLCBNb2hhbW1lZCwgQWZ6YWwg
+d3JvdGU6DQoNCj4gPiBQbGVhc2UgdmVyaWZ5IHRoYXQgQkNIWzQ4XSB3b3JrcyBhcyBlYXJsaWVy
+IHdpdGggdGhpcyBzZXJpZXMuDQoNCj4gSSByYW4gc2V2ZXJhbCBtdGQgcmVncmVzc2lvbiB0ZXN0
+cyBvbiBhIEJlYWdsZSBCb2FyZCBvbiB5b3VyIGdwbWMtY3ppbWFnZS12MiB0YWcuDQo+IEFsbCBC
+Q0ggZXJyb3IgY29ycmVjdGluZyB0ZXN0cyBwYXNzZWQgc3VjY2Vzc2Z1bGx5Lg0KPiANCj4gSSBv
+Y2Nhc2lvbmFsbHkgaGFkIHdlaXJkIHJlYWQgZXJyb3JzIHRob3VnaCwgZXNwZWNpYWxseSB3aGVu
+IHJlYWRpbmcgYmxhbmsgcGFnZXM6DQo+IHRoZSBvbWFwIGRyaXZlciByZXR1cm5lZCA1MTItYnl0
+ZSBzZWN0b3JzIGNvbnRhaW5pbmcgc29tZXRoaW5nIGxpa2U6DQoNCj4gSSB3YXMgYWJsZSB0byBy
+ZXByb2R1Y2UgdGhlIHByb2JsZW0gYWxzbyBvbiBsMi1tdGQgdGlwLCBhbGJlaXQgbGVzcyBvZnRl
+bi4NCj4gVGhlIHByb2JsZW0gc2VlbXMgdG8gb2NjdXIgcXVpdGUgcmFuZG9tbHksIGl0IG1heSBi
+ZSBhIGhhcmR3YXJlIGlzc3VlIG9uDQo+IG15IGJvYXJkLi4uDQo+IA0KPiBBbnl3YXksIHRoZSBF
+Q0MgaGFuZGxpbmcgcGFydCBsb29rcyBPSyB0byBtZS4NCg0KVGhhbmtzIEl2YW4NCg0KUmVnYXJk
+cw0KQWZ6YWwNCg==
