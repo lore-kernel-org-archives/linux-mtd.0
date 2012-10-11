@@ -1,22 +1,29 @@
-From: "Mohammed, Afzal" <afzal@ti.com>
+From: "Philip, Avinash" <avinashphilip@ti.com>
 To: Ivan Djelic <ivan.djelic@parrot.com>
-Subject: RE: [PATCH v2 00/14] OMAP-GPMC related cleanup for common zImage
-Date: Thu, 11 Oct 2012 05:24:58 +0000
-Message-ID: <C8443D0743D26F4388EA172BF4E2A7A93E9FB245@DBDE01.ent.ti.com>
-References: <cover.1349672877.git.afzal@ti.com>
- <C8443D0743D26F4388EA172BF4E2A7A93E9F7B0A@DBDE01.ent.ti.com>
- <20121010163840.GA13585@parrot.com>
-In-Reply-To: <20121010163840.GA13585@parrot.com>
+Subject: RE: [PATCH 4/4] mtd: nand: omap2: Add data correction support
+Date: Thu, 11 Oct 2012 05:27:13 +0000
+Message-ID: <518397C60809E147AF5323E0420B992E3E9CB751@DBDE01.ent.ti.com>
+References: <1349274589-11389-1-git-send-email-avinashphilip@ti.com>
+ <1349274589-11389-5-git-send-email-avinashphilip@ti.com>
+ <20121003192044.GB27502@parrot.com>
+ <518397C60809E147AF5323E0420B992E3E9B8A65@DBDE01.ent.ti.com>
+ <20121005142338.GA7199@parrot.com>
+ <518397C60809E147AF5323E0420B992E3E9CA829@DBDE01.ent.ti.com>
+ <20121010170806.GB13585@parrot.com>
+In-Reply-To: <20121010170806.GB13585@parrot.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Cc: Paul Walmsley <paul@pwsan.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- Tony Lindgren <tony@atomide.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Hunter,
- Jon" <jon-hunter@ti.com>,
+Cc: "Mohammed, Afzal" <afzal@ti.com>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "tony@atomide.com" <tony@atomide.com>,
+ "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
  "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,17 +34,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gV2VkLCBPY3QgMTAsIDIwMTIgYXQgMjI6MDg6NDEsIEl2YW4gRGplbGljIHdyb3RlOg0KPiBP
-biBNb24sIE9jdCAwOCwgMjAxMiBhdCAwNzowODowOEFNICswMTAwLCBNb2hhbW1lZCwgQWZ6YWwg
-d3JvdGU6DQoNCj4gPiBQbGVhc2UgdmVyaWZ5IHRoYXQgQkNIWzQ4XSB3b3JrcyBhcyBlYXJsaWVy
-IHdpdGggdGhpcyBzZXJpZXMuDQoNCj4gSSByYW4gc2V2ZXJhbCBtdGQgcmVncmVzc2lvbiB0ZXN0
-cyBvbiBhIEJlYWdsZSBCb2FyZCBvbiB5b3VyIGdwbWMtY3ppbWFnZS12MiB0YWcuDQo+IEFsbCBC
-Q0ggZXJyb3IgY29ycmVjdGluZyB0ZXN0cyBwYXNzZWQgc3VjY2Vzc2Z1bGx5Lg0KPiANCj4gSSBv
-Y2Nhc2lvbmFsbHkgaGFkIHdlaXJkIHJlYWQgZXJyb3JzIHRob3VnaCwgZXNwZWNpYWxseSB3aGVu
-IHJlYWRpbmcgYmxhbmsgcGFnZXM6DQo+IHRoZSBvbWFwIGRyaXZlciByZXR1cm5lZCA1MTItYnl0
-ZSBzZWN0b3JzIGNvbnRhaW5pbmcgc29tZXRoaW5nIGxpa2U6DQoNCj4gSSB3YXMgYWJsZSB0byBy
-ZXByb2R1Y2UgdGhlIHByb2JsZW0gYWxzbyBvbiBsMi1tdGQgdGlwLCBhbGJlaXQgbGVzcyBvZnRl
-bi4NCj4gVGhlIHByb2JsZW0gc2VlbXMgdG8gb2NjdXIgcXVpdGUgcmFuZG9tbHksIGl0IG1heSBi
-ZSBhIGhhcmR3YXJlIGlzc3VlIG9uDQo+IG15IGJvYXJkLi4uDQo+IA0KPiBBbnl3YXksIHRoZSBF
-Q0MgaGFuZGxpbmcgcGFydCBsb29rcyBPSyB0byBtZS4NCg0KVGhhbmtzIEl2YW4NCg0KUmVnYXJk
-cw0KQWZ6YWwNCg==
+On Wed, Oct 10, 2012 at 22:38:06, Ivan Djelic wrote:
+> On Tue, Oct 09, 2012 at 01:36:50PM +0100, Philip, Avinash wrote:
+> (...)
+> > > There are at least 2 potential problems when reading an erased page w=
+ith bitflips:
+> > >=20
+> > > 1. bitflip in data area and no bitflip in spare area (all 0xff)
+> > > Your code will not perform any ECC correction.
+> > > UBIFS does not like finding bitflips in empty pages, see for instance
+> > > http://lists.infradead.org/pipermail/linux-mtd/2012-March/040328.html=
+.
+> >=20
+> > In case of error correction using ELM, syndrome vector calculated after=
+ reading
+> > Data area & OOB area. So handling of erased page requires a software wo=
+rkaround.
+> > I am planning something as follows.
+> >=20
+> > I will first check calculated ecc, which would be zero for non error pa=
+ges.
+> > Then I would check 0xFF in OOB area (for erased page) by checking numbe=
+r of
+> > bit zeros in OOB area.  If it is 0xFF (number of bit zero count is zero=
+),
+> > set entire page as 0xFF if number of bit zeros is less than max bit fli=
+ps
+> > (8 or 4) by counting the number of bit zero's in data area.
+> >=20
+> > This logic is implemented in fsmc_nand.c
+> >=20
+> > See commit
+> > mtd: fsmc: Newly erased page read algorithm implemented
+> >=20
+> > >=20
+> > > 2. bitflip in ECC bytes in spare area
+> > > Your code will report an uncorrectable error upon reading; if this ha=
+ppens while reading a partially programmed UBI block,
+> > > I guess you will lose data.
+> >=20
+> > In case of uncorrectable errors due to bit flips in spare area,
+> > I can go on checking number of bit zero's in data area + OOB area
+> > are less than max bit flips (8 or 4), I can go on setting the entire
+> > page as 0xFF.
+> >=20
+>=20
+> OK, sounds reasonable.
+> Another simple strategy could use the fact that you add a 14th zero byte =
+to
+> the 13 BCH bytes for RBL compatibility:
+
+RBL compatibility (14th byte) is applicable only for BCH8 ecc scheme.
+
+So I am planning adding an extra byte (0) for BCH4 ecc scheme. So with this
+we can go for same approaches in BCH4 & BCH8 ecc scheme.
+
+If I understood correctly, software BCH ecc scheme is modifying calculated
+ecc data to handle bit flips in erased pages.
+
+If that is the only reason, whether same logic can go for same ECC calculat=
+ion
+(remove modification of calculated ecc in case of software ecc correction)
+by adding an extra byte (0) in spare area to handle erased pages.
+
+So can you share if I am missing something?
+
+>=20
+> Upon reading:
+>  - if this 14th byte is zero (*) =3D> page was programmed: perform ECC
+>    correction as usual
+>  - else, page was not programmed: do not perform ECC, read entire data+sp=
+are
+>    area, and set it to 0xff if less than 8 or 4 (max bitflips) zero bits
+>    were found
+>=20
+> (*) for robustness to bitflip in 14th byte, replace condition
+> "14th byte is zero" by e.g. "14th byte has less than 4 bits set to 1".
+>=20
+> What do you think ?
+
+This seems logically good.
+
+Thanks
+Avinash
+
+>=20
+> BR,
+> --
+> Ivan
+>=20
