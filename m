@@ -1,20 +1,20 @@
-Received: from mga14.intel.com ([143.182.124.37])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TMGqi-0002w8-Fm
- for linux-mtd@lists.infradead.org; Thu, 11 Oct 2012 11:22:44 +0000
-Message-ID: <1349954577.12014.13.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] [MTD] MTD driver for LPDDR2-NVM PCM memories
+ id 1TMGsn-00038o-7J
+ for linux-mtd@lists.infradead.org; Thu, 11 Oct 2012 11:24:55 +0000
+Message-ID: <1349954707.12014.14.camel@sauron.fi.intel.com>
+Subject: Re: GPMI NAND crashes with UBIFS
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Vincenzo Aliberti <vincenzo.aliberti@gmail.com>
-Date: Thu, 11 Oct 2012 14:22:57 +0300
-In-Reply-To: <1349385434-3073-1-git-send-email-valibert@micron.com>
-References: <1349385434-3073-1-git-send-email-valibert@micron.com>
+To: Marek Vasut <marex@denx.de>
+Date: Thu, 11 Oct 2012 14:25:07 +0300
+In-Reply-To: <201210050345.49507.marex@denx.de>
+References: <201210050345.49507.marex@denx.de>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-iW21Di2uYVIGQNRIIf5K"
+ boundary="=-0eh68L8dpxlxu8GFoPv3"
 Mime-Version: 1.0
-Cc: arnd@arndb.de, lporzio@micron.com, linux-mtd@lists.infradead.org,
- valibert@micron.com, svenkatr@ti.com, dwmw2@infradead.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,39 +26,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-iW21Di2uYVIGQNRIIf5K
+--=-0eh68L8dpxlxu8GFoPv3
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-10-04 at 23:17 +0200, Vincenzo Aliberti wrote:
-> Dear All,
->     continuing Micron support activity on PCM memories you can find here-=
-below a=20
-> patch containing MTD driver for LPDDR2-NVM memories as demoed during Q2 L=
-inaro=20
-> Connect in Hong Kong.
+On Fri, 2012-10-05 at 03:45 +0200, Marek Vasut wrote:
+> Hello guys,
 >=20
-> Let me thank TI Panda open source team for support on platform enablement=
-=20
-> activity and Arnd for his first feedback on driver implementation
+> I tried integck from mtd-utils 1.5.0 on GPMI NAND driver since I suspect =
+it=20
+> still has issues with UBI. See the outcome for yourself, log attached. An=
+y=20
+> suggestions would be very appreciated.
+>=20
+> :~/mtd-utils-1.5.0/tests/fs-tests/integrity# ./integck /media
 
-include/mtd/mtd-abi.h file does not longer exist, please re-base your
-driver. Could you please also feed it to the checkpatch.pl tool and fix
-style issues?
+Wait, you have power-cut emulation enabled, did you deliberately enable
+it via UBIFS debugfs files?
 
-> +		pr_alert(
-> +		"lpddr2_nvm_probe: Failed to allocate memory for map\n");
+> (pid 492): power_cut_emulated: failing after 19403ms
 
-Just join this into 1 line. It is OK to have lines longer than 80
-sybmols if you print a string.
-
-Do this for all other similar places please.
+^^^^
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-iW21Di2uYVIGQNRIIf5K
+--=-0eh68L8dpxlxu8GFoPv3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -66,19 +60,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQdqwRAAoJECmIfjd9wqK0myUP/3mlk8nMrllyb9M0hfaB9ia2
-cFxhrfXAMm73muVd9m/ymULMyMX07/av0IisldJpuL382xQSmWkuy4unluZ9TmTk
-66vTLUtFqzuMWOVJXdqf+lsZkxXFsuGGlfCNskQ2eADnoZ76Ge6PUVZfo1Ws15lO
-PT1r664vyqUUFzxdUbWbxdy9/7PS9bUullJhw36r4m0FZXuKrE+OTYIJoxFeYMeN
-zof69URi+Uz60QFV4qr/aJ2oAY+smFwNUHSfHz4ALR1D8RBX935uYkz9MKl6/dhv
-Ywd3nK/XzJy+FIiW1oNoFyqo0L0I6ynV6DWdMIQMqaGsuHV3NQjxBOyQg4IScnO9
-6c9cGDq/7DBVR9q5zA/TLd8+bu7MKX8+WmU+eSru3J/lqbmEQ8keuRE+OVB2rqxu
-+LwrKaMOWOY8amadYxjm1SwgVUtTwQ5zZwGMOmbfQw+LGlVjNp26bf+nzzVZdK3Y
-GzCSNcakg1hCjNigf4ITTcN30YImHd+1afsbq8dSU8X9id77hhlHpGAsqpJ2aR2m
-jDE8rwIpUTRjimC4WmVLVIoPikgA6wFMGYqw6qggAx4Vhlo8KBYjyqMhxQTGCz/G
-lUTMyKBeCM7vhFSHZqxS2y6hSLej3F++d06sjY+MVq25H5TuZxnjkTFmJ+8MwBRu
-KpyVaG6+rgKIxhelxHK4
-=G6VZ
+iQIcBAABAgAGBQJQdqyTAAoJECmIfjd9wqK0IyUP/RNp7x0CccHggDrLjViO/D6f
+mqwytu8tcdnCBACPPJMKa402xbJsx+qajRm/MzE/vHgPcuqOaUeiR+NMP8/cNhhG
+3zixf2YkqornTtcA0YRBA7NAqAWOdBY74P2kmPWA/++5Ht//J5VtCC4rnhhDYCkU
+I3MeBM4V78qL/7yFYYNIg6Yj5JLhuYifREm54RxmFmAsWqf4XOL+0zMqnjo6rhbC
+n3YaJ/sLnj0fgAYwz6ELIscQ+a8R/QCsmnIqfkvyFdsICJFbtAlmW6+IGWUMQAJV
+XkFjItcc/5CK3LEh6+fBND+5191rB+JODv0Pf/bS09r/X9fY4h32tIxIFDTfQWKI
+VNklFSoNQYgCEasojlJYUHhOgA4+3W2h10PTyYWWJ5rizlpyZnfrbBnaRJSTAaf7
+8UiyQ8Fj3mlZzkDzC7F7uRgvj/HOoZDIT58Q/AxfmiVou37MHTmmNQgZmuFfqAVK
+m3m6Ggzfz+TCJIwh374YOaOoZx6fT2Z4vjZW0sPnF+YPTeCP8AcaxzleJPVu0DwD
+e/7LIIQlhDKouHsxv4W+Xexqakmbr+32Cj0H/zx6qVjlBSgWARf3grknDr3sKSKu
+NwozXqDIuNy4RDig88SHchFwP+Dl2KAIMa6EEiSz21xRAXn6C5V11Y28LIPP+Q/r
+su53xd70sPTl5GM8Ml8y
+=k3bh
 -----END PGP SIGNATURE-----
 
---=-iW21Di2uYVIGQNRIIf5K--
+--=-0eh68L8dpxlxu8GFoPv3--
