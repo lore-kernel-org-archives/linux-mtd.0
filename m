@@ -1,23 +1,23 @@
-Message-ID: <507648F5.1030404@st.com>
-Date: Thu, 11 Oct 2012 09:50:05 +0530
-From: Vipin Kumar <vipin.kumar@st.com>
+Received: from mail-vc0-f177.google.com ([209.85.220.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TMAIG-0005Lo-2S
+ for linux-mtd@lists.infradead.org; Thu, 11 Oct 2012 04:22:44 +0000
+Received: by mail-vc0-f177.google.com with SMTP id p16so1721778vcq.36
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Oct 2012 21:22:42 -0700 (PDT)
 MIME-Version: 1.0
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH 09/11] fsmc/nand:FIX: replace change_bit routine
-References: <cover.1349778820.git.vipin.kumar@st.com>
- <ec169eb041e87e66c06108e85ea4a67e5797cecc.1349778821.git.vipin.kumar@st.com>
- <CACRpkdaot3DKCoJOBpUcJFVrJ89xRx2T58fDe4YKY_r4NFqEag@mail.gmail.com>
- <20121010204546.GK4625@n2100.arm.linux.org.uk>
-In-Reply-To: <20121010204546.GK4625@n2100.arm.linux.org.uk>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "dedekind1@gmail.com" <dedekind1@gmail.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- spear-devel <spear-devel@list.st.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Nicolas Pitre <nico@linaro.org>,
- "plagnioj@jcrosoft.com" <plagnioj@jcrosoft.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <1349709952-4332-1-git-send-email-u.kleine-koenig@pengutronix.de>
+References: <1349709952-4332-1-git-send-email-u.kleine-koenig@pengutronix.de>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Thu, 11 Oct 2012 00:21:59 -0400
+Message-ID: <CAMjpGUcRni7ni-FtVAN-pqnuHDK-WeeO6U=480K=1sCDhb7qjQ@mail.gmail.com>
+Subject: Re: [PATCH] [RFC] mtd/uclinux: support ROM and allow passing the base
+ address
+To: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-mtd@lists.infradead.org, kernel@pengutronix.de,
+ Greg Ungerer <gerg@uclinux.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,53 +27,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/11/2012 2:15 AM, Russell King - ARM Linux wrote:
-> On Wed, Oct 10, 2012 at 07:22:04PM +0200, Linus Walleij wrote:
->> On Tue, Oct 9, 2012 at 12:44 PM, Vipin Kumar<vipin.kumar@st.com>  wrote:
->>
->>> change_bit routine accepts only ulong pointers as buffer, so an unaligned char
->>> pointer passed to change_bit may lead to a crash.
->>>
->>> Fix this bug by accessing the buffer as char pointer.
->>
->> Why not see if we can fix change_bit() instead?
->> Since I suspect this is on ARM I bet Russell and Nico
->> want to hear about this if there is a problem.
+On Mon, Oct 8, 2012 at 11:25 AM, Uwe Kleine-K=C3=B6nig wrote:
+> --- a/drivers/mtd/maps/uclinux.c
+> +++ b/drivers/mtd/maps/uclinux.c
+> @@ -23,12 +23,13 @@
 >
-> Not particularly.  There's a reason the argument to change_bit() is typed
-> 'unsigned long' and that's not because it can take a void, char, or a
-> short.  It's because it _expects_ the buffer to be aligned to an
-> "unsigned long" quantity.
+>  /***********************************************************************=
+*****/
 >
-> That's because on many architectures, misaligned loads and stores are
-> not atomic operations - and in this case, load/store exclusive will
-> fail when they're misalighed.
->
-> So...
->
-> -                       change_bit(err_idx[i], (unsigned long *)dat);
->
-> is highly invalid code.
->
+> -struct map_info uclinux_ram_map =3D {
+> -       .name =3D "RAM",
+> -       .phys =3D (unsigned long)__bss_stop,
+> +static struct map_info uclinux_ram_map =3D {
+>         .size =3D 0,
+>  };
 
-Thanks. Got your point
+this change will break Blackfin systems.  i mentioned last time
+someone tried to make this and we talked about adding a comment to
+prevent future breakage, but that seems to not have happened.
 
->> Can the ARM change_bit() not be fixed, so that
->> long arguments are the only option?
->
-> Spot the intentional cast:
->
->>> -                       change_bit(err_idx[i], (unsigned long *)dat);
->
-> which tries to work around this.  Remember my attitude towards casts:
-> if you're having to use a cast, you are _probably_ doing something
-> wrong.  In this case, it's hiding a warning which was saying that
-> the code is doing something wrong, and then the result blows up.
-> By adding that cast, the wrong wire was cut... you get to keep the
-> remains. ;)
-> .
-
-I agree with you. Although I was a bit relaxed this time, I would really 
-think before adding a cast explicitly just to avoid a warning
-
--Vipin
+i don't think's necessary either for the larger change here.  use the logic=
+:
+    if (physaddr !=3D -1)
+        mapp->phys =3D physaddr;
+and keep the default initialization.
+-mike
