@@ -1,21 +1,19 @@
-Received: from mail-bk0-f49.google.com ([209.85.214.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TM3dB-0002hl-2W
- for linux-mtd@lists.infradead.org; Wed, 10 Oct 2012 21:15:53 +0000
-Received: by mail-bk0-f49.google.com with SMTP id j4so559302bkw.36
- for <linux-mtd@lists.infradead.org>; Wed, 10 Oct 2012 14:15:49 -0700 (PDT)
-Message-ID: <5075E57B.1090702@gmail.com>
-Date: Wed, 10 Oct 2012 23:15:39 +0200
-From: Vincenzo Aliberti <vincenzo.aliberti@gmail.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org, dwmw2@infradead.org
-Subject: Re: [PATCH] [MTD] MTD driver for LPDDR2-NVM PCM memories
-References: <1349385434-3073-1-git-send-email-valibert@micron.com>
-In-Reply-To: <1349385434-3073-1-git-send-email-valibert@micron.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: lporzio@micron.com, svenkatr@ti.com, arnd@arndb.de,
- Vincenzo Aliberti <vincenzo.aliberti@gmail.com>, valibert@micron.com
+Sender: viresh.linux@gmail.com
+In-Reply-To: <CACRpkdb6ArMUQ6MAsue+Gh15UfOUrWNAc9wrxd6awc0BTwOGiw@mail.gmail.com>
+References: <cover.1349778820.git.vipin.kumar@st.com>
+ <2b88c853b3691338fae037f569917fc300cd6032.1349778821.git.vipin.kumar@st.com>
+ <CACRpkdb6ArMUQ6MAsue+Gh15UfOUrWNAc9wrxd6awc0BTwOGiw@mail.gmail.com>
+Date: Thu, 11 Oct 2012 08:46:04 +0530
+Message-ID: <CAOh2x==Up=mOc+YA6-yKD7xpoxFyzfb-XtoQ6DENTXayTa=vtA@mail.gmail.com>
+Subject: Re: [PATCH 07/11] fsmc/nand: Provide contiguous buffers to dma
+From: viresh kumar <viresh.kumar@linaro.org>
+To: Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: dedekind1@gmail.com, Vinod Koul <vinod.koul@intel.com>,
+ spear-devel@list.st.com, Vipin Kumar <vipin.kumar@st.com>,
+ linux-mtd@lists.infradead.org, plagnioj@jcrosoft.com,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,35 +23,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David,
-     can you pull this patch in the main line?
+On Wed, Oct 10, 2012 at 10:37 PM, Linus Walleij
+<linus.walleij@linaro.org> wrote:
+> The real problem is likely the DMA driver. The stuf that get
+> fed into dma.device_prep_dma_memcpy() needs to be
+> converted to a scatterlist and then set up in the LLI list
+> for the controller.
+>
+> IIRC SPEAr is using drivers/dma/dw_dmac.c so
 
-On 10/04/2012 11:17 PM, Vincenzo Aliberti wrote:
-> Dear All,
->      continuing Micron support activity on PCM memories you can find here-below a
-> patch containing MTD driver for LPDDR2-NVM memories as demoed during Q2 Linaro
-> Connect in Hong Kong.
->
-> Let me thank TI Panda open source team for support on platform enablement
-> activity and Arnd for his first feedback on driver implementation
->
-> Regards,
-> 	Vincenzo
->
->
-> Signed-off-by: Vincenzo Aliberti <vincenzo.aliberti@gmail.com>
-> ---
->   drivers/mtd/Kconfig                 |    2 +
->   drivers/mtd/Makefile                |    2 +-
->   drivers/mtd/lpddr2_nvm/Kconfig      |    9 +
->   drivers/mtd/lpddr2_nvm/Makefile     |    5 +
->   drivers/mtd/lpddr2_nvm/lpddr2_nvm.c |  547 +++++++++++++++++++++++++++++++++++
->   include/mtd/mtd-abi.h               |    1 +
->   6 files changed, 565 insertions(+), 1 deletion(-)
->   create mode 100644 drivers/mtd/lpddr2_nvm/Kconfig
->   create mode 100644 drivers/mtd/lpddr2_nvm/Makefile
->   create mode 100644 drivers/mtd/lpddr2_nvm/lpddr2_nvm.c
->
+Both dw_dmac and pl080 for different SPEAr SoC's.
 
-Thanks,
-     Vincenzo
+> check this driver's dwc_prep_dma_memcpy().
+> It does seem like it is checking whether src or
+> dest is scattered in this for() loop:
+>
+> for (offset = 0; offset < len; offset += xfer_count << src_width) {}
+>
+> dma_sync_single_for_device() is translating the virtual
+> address to physical for every chunk BTW.
+>
+> So instead of doing this copying, debug the problem, and
+> see if there is a bug in that for()-loop or similar, if it needs
+> to be rewritten or so.
+
+But what's the problem you saw vipin, for which you generated this patch?
