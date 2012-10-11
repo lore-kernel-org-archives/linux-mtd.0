@@ -1,21 +1,17 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TMGYy-0000L0-3J
- for linux-mtd@lists.infradead.org; Thu, 11 Oct 2012 11:04:24 +0000
-Message-ID: <1349953467.12014.7.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd-www: Add fastmap doc
+Message-ID: <1349953632.12014.8.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/2] ARM: nomadik: switch over to using the FSMC driver
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Date: Thu, 11 Oct 2012 14:04:27 +0300
-In-Reply-To: <1349799781-5132-1-git-send-email-richard@nod.at>
-References: <CAN8TOE_BC6JGbrMcTYf5oMWnaAAx=LSh3V08vMnaGQVhkT-Yrw@mail.gmail.com>
- <1349799781-5132-1-git-send-email-richard@nod.at>
+To: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 11 Oct 2012 14:07:12 +0300
+In-Reply-To: <1349335709-13399-1-git-send-email-linus.walleij@linaro.org>
+References: <1349335709-13399-1-git-send-email-linus.walleij@linaro.org>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-Y7JCObeM4GFppJIq+fe4"
+ boundary="=-4iyrLHNwMd7zf17pCMt7"
 Mime-Version: 1.0
-Cc: thomas.petazzoni@free-electrons.com, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org
+Cc: Mike Turquette <mturquette@linaro.org>, linux-mtd@lists.infradead.org,
+ Mike Turquette <mturquette@ti.com>, David Woodhouse <dwmw2@infradead.org>,
+ linux-arm-kernel@lists.infradead.org, Alessandro Rubini <rubini@unipv.it>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,21 +23,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-Y7JCObeM4GFppJIq+fe4
+--=-4iyrLHNwMd7zf17pCMt7
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-10-09 at 18:23 +0200, Richard Weinberger wrote:
-> Add documentation on fastmap to mtd-www.
+On Thu, 2012-10-04 at 09:28 +0200, Linus Walleij wrote:
+> The Nomadik NAND driver is really just a subset of the existing
+> FSMC driver, so let's switch over to using that driver instead,
+> since it handles more variants of this chip. The callbacks for
+> setting up the chip is doing stuff now handled by the FSMC
+> driver.
 >=20
-> Signed-off-by: Richard Weinberger <richard@nod.at>
+> Cc: Alessandro Rubini <rubini@unipv.it>
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 
-Pushed to mtd-www.git, thanks!
+Pushed both to l2-mtd.git, thanks!
+
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-Y7JCObeM4GFppJIq+fe4
+--=-4iyrLHNwMd7zf17pCMt7
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -49,19 +51,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQdqe7AAoJECmIfjd9wqK0Q2MP/1TJ7JF8sSOBg9R9bpNpLLtN
-UcF0XXaBFlucEjfjEIdz/5PwwGTh10niinL7CM5gPUXcXqpJ79wW34oT7xdAeHNF
-Pr1a5qdukX1IwdoDPRzwbzbPgxyeENj70gEeNvS6cvuf50cE15l0+ZGN7OfioVNi
-34bmIrt48EFgqGLg1hkO/nNnOhpmzwgNcIh63MCHxGSbZSukZU5q8hzEBa67Ou9J
-F0e+LXx4PUFLJm8z1po0aAV16DfWQn+7DVI27XYPH/YS91LLYtfYs2im0k0kRq2y
-pgRWq9Sfcf/SL5dMpVjfgO+1/cLr3+ZNAcNYZdytrkgThHhsvmTVpKfel5n/40qV
-XNhcwI6H8GnN3l77/xjSoMEAh6KTwvNxi3hyy3Q/Wg6VbnDie8qMGzoABpwAsUiD
-TCSWtqUsFfb0/PM/eTFvhIVbVVyoYcBQUsAWHMDF1xp7aEZquaYktc4yMlcll28V
-uBHuRCtXLGc20mwYF7XMNgumYn8WG0XsYPSWG6aJd2IHTQmGtIIuXZ1arb+5AhWg
-dm+PjCZSa3BI0Yy/6cIUWwwd0W1aYCB0CxwZzQBCgjVap27f91qhOBZn3e6DfEad
-AIUN7QLycGnq2RW5E9lPExih73IRmBOH2PzQPDjDIhwnbBlzk0xqPESAU61h9myp
-fda0Y7HNQfStiHX/h56P
-=Bjz9
+iQIcBAABAgAGBQJQdqhgAAoJECmIfjd9wqK05DIQAJkJcyjlYwyYNtKWNQab4gaG
+nG5hoistb5LGcPotbQcHVUJjudnus4xzarGIgaFAOhB7coujNbXtVQLzNhpuBDB8
+rLbZqO3kkq93tOspvg3nddTGEaUWXb7OKXg9nvFjDObuidKkvhFlev2ZkukALWOQ
+gBhyLvI+EQS9qlMSCM+8SsK1GIR7jrMfmisfx3hx8juJQdcFzW0MzFMA1lntJ1dN
+vucYe2GKRlh6XxCgiP67DtSmSje5nzKIfGxWSyEIJit3jiIU4sB8HyTNlz+gIpUv
+GbM0oWV3oBYnXRPDHmIMKGDiIub+8UnlZTba4HcDII82Ks6TOpZ3AVrmoy9IEl4Y
+IIFUiszDJ5MnFEgTu6vIkEhahWKG9eE7qnOZquEwFr5w4QTZmcABylQqsfIwqWWU
+qztVRG8RheTilnekaTPDZo6Wu9iwryMWVI9Q4Zk9UNUJK8lCjrwa6cA4JsCjiitB
+xF8fSJ0hhLPgkzG9YYBQrLbuuqwfbIWVasNZob8FqsAwsR25OnRPI89tpSQsuXJk
+05OtkC0wi5evst9MePAhjmsyCaj0gQTUjPSi22HZ6LBp5KIKwG9aCrXgOZS+biWd
+rDNCIV0CWC5UjKkcbRdsTPTi/wYJP1k6bG0Rhknm84yRstwcgFsLofo8aAFcQMtW
+V1wrDrIUxqxB9LyyWDYp
+=xtoz
 -----END PGP SIGNATURE-----
 
---=-Y7JCObeM4GFppJIq+fe4--
+--=-4iyrLHNwMd7zf17pCMt7--
