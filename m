@@ -1,17 +1,18 @@
-Message-ID: <1349953632.12014.8.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/2] ARM: nomadik: switch over to using the FSMC driver
+Message-ID: <1349954121.12014.9.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/1] mtd: st fsmc_nand: pass the ale and cmd resource
+ via resource
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 11 Oct 2012 14:07:12 +0300
-In-Reply-To: <1349335709-13399-1-git-send-email-linus.walleij@linaro.org>
-References: <1349335709-13399-1-git-send-email-linus.walleij@linaro.org>
+To: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+Date: Thu, 11 Oct 2012 14:15:21 +0300
+In-Reply-To: <1349356456-13371-1-git-send-email-plagnioj@jcrosoft.com>
+References: <1349356456-13371-1-git-send-email-plagnioj@jcrosoft.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-4iyrLHNwMd7zf17pCMt7"
+ boundary="=-mmD2qDIgIXUqRamvHdzi"
 Mime-Version: 1.0
-Cc: Mike Turquette <mturquette@linaro.org>, linux-mtd@lists.infradead.org,
- Mike Turquette <mturquette@ti.com>, David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org, Alessandro Rubini <rubini@unipv.it>
+Cc: Vipin Kumar <vipin.kumar@st.com>, devicetree-discuss@lists.ozlabs.org,
+ linux-mtd@lists.infradead.org, Linus Walleij <linus.walleij@linaro.org>,
+ linux-arm-kernel@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,27 +24,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-4iyrLHNwMd7zf17pCMt7
+--=-mmD2qDIgIXUqRamvHdzi
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-10-04 at 09:28 +0200, Linus Walleij wrote:
-> The Nomadik NAND driver is really just a subset of the existing
-> FSMC driver, so let's switch over to using that driver instead,
-> since it handles more variants of this chip. The callbacks for
-> setting up the chip is doing stuff now handled by the FSMC
-> driver.
+On Thu, 2012-10-04 at 15:14 +0200, Jean-Christophe PLAGNIOL-VILLARD
+wrote:
+> Do not use the platform_data to pass resource and be smart in the drivers=
+.
+> Just pass it via resource
 >=20
-> Cc: Alessandro Rubini <rubini@unipv.it>
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> Switch to devm_request_and_ioremap at the sametime
+>=20
+> Signed-off-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
 
-Pushed both to l2-mtd.git, thanks!
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-4iyrLHNwMd7zf17pCMt7
+--=-mmD2qDIgIXUqRamvHdzi
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -51,19 +52,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQdqhgAAoJECmIfjd9wqK05DIQAJkJcyjlYwyYNtKWNQab4gaG
-nG5hoistb5LGcPotbQcHVUJjudnus4xzarGIgaFAOhB7coujNbXtVQLzNhpuBDB8
-rLbZqO3kkq93tOspvg3nddTGEaUWXb7OKXg9nvFjDObuidKkvhFlev2ZkukALWOQ
-gBhyLvI+EQS9qlMSCM+8SsK1GIR7jrMfmisfx3hx8juJQdcFzW0MzFMA1lntJ1dN
-vucYe2GKRlh6XxCgiP67DtSmSje5nzKIfGxWSyEIJit3jiIU4sB8HyTNlz+gIpUv
-GbM0oWV3oBYnXRPDHmIMKGDiIub+8UnlZTba4HcDII82Ks6TOpZ3AVrmoy9IEl4Y
-IIFUiszDJ5MnFEgTu6vIkEhahWKG9eE7qnOZquEwFr5w4QTZmcABylQqsfIwqWWU
-qztVRG8RheTilnekaTPDZo6Wu9iwryMWVI9Q4Zk9UNUJK8lCjrwa6cA4JsCjiitB
-xF8fSJ0hhLPgkzG9YYBQrLbuuqwfbIWVasNZob8FqsAwsR25OnRPI89tpSQsuXJk
-05OtkC0wi5evst9MePAhjmsyCaj0gQTUjPSi22HZ6LBp5KIKwG9aCrXgOZS+biWd
-rDNCIV0CWC5UjKkcbRdsTPTi/wYJP1k6bG0Rhknm84yRstwcgFsLofo8aAFcQMtW
-V1wrDrIUxqxB9LyyWDYp
-=xtoz
+iQIcBAABAgAGBQJQdqpJAAoJECmIfjd9wqK0sAEP/0RmpdhuUygucA+ZlF9HufDS
+BYSmUJVMkuKZoZuAlHhFGxgGWNdCVbp0lnZ9DjkAQTVbszT9ECzOBlwJee/cAcPZ
+UZQMQ4CbwWQx0nR5tjWMNa2JnB04hn7ciE8VxtftX4CGur6/d2HwajLDfn2h1ylF
+bSHxu09YCZkvmfcmAenecQWCn3zFiqK9dMrP1N+ZQFMdnJDgeN20MPaVts5VVwxd
+lcAh3OV+I+wIca2z3RDNqVwo4+WQ7qYys+HKUWl8cc1gkw/H9lArgi07Dz4V2Bvc
+RIXWys6qb7uBJq6coVR62r3GJNHC+n/RoTsiWcdpago3Wspz3Rf4VVja4qfQCK55
+qqgTSDzhxQXTQIeVVQ5XIWt+9n0cLzhExJjpneIkyqh+9GRZRRbHbBrDzK9lBcMl
+TEJLH42eWWZicqdZOzbOpaF6j9WjLlHoUwpmbKcKdoHeubGD/R1x7hTm4YfAGZDL
+YwWYBinLA55g9a3Z7At6fEoWGa/Mmo2KtFfpLZ/xzXgYVw7hhFeRei3ujFLK/ts1
+2ItCNYlhKeDNJGuDawj3/odPE05IRC+etwdqzpYkv7elucWhruV92DrLLgGpEeK/
+naXNeFE6xxqeiRiXd4wo/fWVMnQtTsHSJWLaMafDtLKiEddXs7oZuZTZbY5B+V+a
+sagquHKHOVB39cRbC/mf
+=v4C9
 -----END PGP SIGNATURE-----
 
---=-4iyrLHNwMd7zf17pCMt7--
+--=-mmD2qDIgIXUqRamvHdzi--
