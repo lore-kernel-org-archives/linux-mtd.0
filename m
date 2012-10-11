@@ -1,28 +1,25 @@
-Date: Thu, 11 Oct 2012 07:41:37 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: Ivan Djelic <ivan.djelic@parrot.com>
-Subject: Re: [PATCH 4/4] mtd: nand: omap2: Add data correction support
-Message-ID: <20121011144137.GA12552@atomide.com>
-References: <1349274589-11389-1-git-send-email-avinashphilip@ti.com>
- <1349274589-11389-5-git-send-email-avinashphilip@ti.com>
- <20121003192044.GB27502@parrot.com>
- <518397C60809E147AF5323E0420B992E3E9B8A65@DBDE01.ent.ti.com>
- <20121005142338.GA7199@parrot.com>
- <518397C60809E147AF5323E0420B992E3E9CA829@DBDE01.ent.ti.com>
- <20121010170806.GB13585@parrot.com>
- <518397C60809E147AF5323E0420B992E3E9CB751@DBDE01.ent.ti.com>
- <20121011082149.GA15609@parrot.com>
+Received: from mail-wi0-f169.google.com ([209.85.212.169])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TMLHg-00069q-Ma
+ for linux-mtd@lists.infradead.org; Thu, 11 Oct 2012 16:06:53 +0000
+Received: by mail-wi0-f169.google.com with SMTP id hq4so6978153wib.0
+ for <linux-mtd@lists.infradead.org>; Thu, 11 Oct 2012 09:06:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20121011082149.GA15609@parrot.com>
-Cc: afzal@ti.com,
- "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <CAOh2x=ksMr7VRCnpF-rK+Mesg1p4Td++SQ-t=ShrguRRVWSSSQ@mail.gmail.com>
+References: <cover.1349778820.git.vipin.kumar@st.com>
+ <2b88c853b3691338fae037f569917fc300cd6032.1349778821.git.vipin.kumar@st.com>
+ <CACRpkdb6ArMUQ6MAsue+Gh15UfOUrWNAc9wrxd6awc0BTwOGiw@mail.gmail.com>
+ <CAOh2x=ksMr7VRCnpF-rK+Mesg1p4Td++SQ-t=ShrguRRVWSSSQ@mail.gmail.com>
+Date: Thu, 11 Oct 2012 18:06:49 +0200
+Message-ID: <CACRpkdYjA8QUh4HqvE1rsnXcGA4WafTkMq_wLNJ__gXEnEYrow@mail.gmail.com>
+Subject: Re: [PATCH 07/11] fsmc/nand: Provide contiguous buffers to dma
+From: Linus Walleij <linus.walleij@linaro.org>
+To: viresh kumar <viresh.kumar@linaro.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Vinod Koul <vinod.koul@intel.com>, spear-devel@list.st.com,
+ Vipin Kumar <vipin.kumar@st.com>, linux-mtd@lists.infradead.org,
+ plagnioj@jcrosoft.com, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,23 +29,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Ivan Djelic <ivan.djelic@parrot.com> [121011 01:23]:
-> 
-> I don't know which way is better for the OMAP community:
-> 1. Unifying ECC modes = loosing the constant polynomial benefits, but gaining RBL compat and simplifying code
-> 2. Keeping separate ECC modes = code bloat
-> 
-> Tony, do you have an opinion on this ?
+On Thu, Oct 11, 2012 at 6:15 AM, viresh kumar <viresh.kumar@linaro.org> wrote:
+> On Wed, Oct 10, 2012 at 10:37 PM, Linus Walleij
+> <linus.walleij@linaro.org> wrote:
 
-Well right now I'm mostly interested in making device
-drivers independent of the arch/arm/*omap*/* code.
-That's where Afzal's patches help quite a bit, so let's
-get those in first. So from that point of view, option #1
-above sounds better as the first step :)
+>> dma_sync_single_for_device() is translating the virtual
+>> address to physical for every chunk BTW.
+>
+> I pray that i am wrong here, otherwise i would be thrown out from
+> the maintainers list for this driver :)
+>
+> dma_sync_single_for_device() is not doing anything on the buffer, but
+> on the LLI item. Actually it is flushing LLI struct so that DMA h/w can get
+> the correct values.
 
-Ideally of course option #1 should not limit us from
-adding extra features in the long run.
+Sorry no, I'm the one who's wrong...
 
-Regards,
+So the DMA engine memcpy() is not mapping virt->phys
+but expects physical addresses to be provided.
 
-Tony 
+So dma_map_single() needs to be called on the stuff
+passed in to dev->device_prep_dma_memcpy().
+
+And currently there is indeed a dma_map_single() in
+dma_xfer() in fsmc_nand.c which should work just fine.
+
+dma_map_single() will only work if the buffer is
+physically contiguous.
+
+And the block layer of the subsystem should take care
+of only handing the driver buffers that are contiguous
+I think? Not that I'm an expert here ... more some
+guesswork :-/
+
+Artem will know I hope!
+
+Yours,
+Linus Walleij
