@@ -1,30 +1,27 @@
-From: "Philip, Avinash" <avinashphilip@ti.com>
-To: Ivan Djelic <ivan.djelic@parrot.com>
-Subject: RE: [PATCH 4/4] mtd: nand: omap2: Add data correction support
-Date: Thu, 11 Oct 2012 05:27:13 +0000
-Message-ID: <518397C60809E147AF5323E0420B992E3E9CB751@DBDE01.ent.ti.com>
-References: <1349274589-11389-1-git-send-email-avinashphilip@ti.com>
- <1349274589-11389-5-git-send-email-avinashphilip@ti.com>
- <20121003192044.GB27502@parrot.com>
- <518397C60809E147AF5323E0420B992E3E9B8A65@DBDE01.ent.ti.com>
- <20121005142338.GA7199@parrot.com>
- <518397C60809E147AF5323E0420B992E3E9CA829@DBDE01.ent.ti.com>
- <20121010170806.GB13585@parrot.com>
-In-Reply-To: <20121010170806.GB13585@parrot.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: "Mohammed, Afzal" <afzal@ti.com>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "tony@atomide.com" <tony@atomide.com>,
- "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
- "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Received: from mga11.intel.com ([192.55.52.93])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TMBq7-0002lH-1Y
+ for linux-mtd@lists.infradead.org; Thu, 11 Oct 2012 06:01:47 +0000
+Message-ID: <1349935314.20594.40.camel@sauron.fi.intel.com>
+Subject: Re: output file cannot be in the UBIFS root directory check is not
+ working quite well
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: kyak <bas@bmail.ru>
+Date: Thu, 11 Oct 2012 09:01:54 +0300
+In-Reply-To: <alpine.LNX.2.02.1210101855001.1211@bas>
+References: <alpine.LNX.2.02.1210032322590.1375@bas>
+ <alpine.LNX.2.02.1210051949390.1375@bas>
+ <alpine.DEB.2.00.1210081556130.19047@lnxricardw.se.axis.com>
+ <alpine.LNX.2.02.1210081833560.1375@bas>
+ <alpine.DEB.2.00.1210081650200.19047@lnxricardw.se.axis.com>
+ <alpine.LNX.2.02.1210081900410.1375@bas>
+ <alpine.LNX.2.02.1210101855001.1211@bas>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-SOLwC4CqjZGFu8OHDSHd"
+Mime-Version: 1.0
+Cc: Linux mtd <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,92 +31,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Oct 10, 2012 at 22:38:06, Ivan Djelic wrote:
-> On Tue, Oct 09, 2012 at 01:36:50PM +0100, Philip, Avinash wrote:
-> (...)
-> > > There are at least 2 potential problems when reading an erased page w=
-ith bitflips:
-> > >=20
-> > > 1. bitflip in data area and no bitflip in spare area (all 0xff)
-> > > Your code will not perform any ECC correction.
-> > > UBIFS does not like finding bitflips in empty pages, see for instance
-> > > http://lists.infradead.org/pipermail/linux-mtd/2012-March/040328.html=
-.
-> >=20
-> > In case of error correction using ELM, syndrome vector calculated after=
- reading
-> > Data area & OOB area. So handling of erased page requires a software wo=
-rkaround.
-> > I am planning something as follows.
-> >=20
-> > I will first check calculated ecc, which would be zero for non error pa=
-ges.
-> > Then I would check 0xFF in OOB area (for erased page) by checking numbe=
-r of
-> > bit zeros in OOB area.  If it is 0xFF (number of bit zero count is zero=
-),
-> > set entire page as 0xFF if number of bit zeros is less than max bit fli=
-ps
-> > (8 or 4) by counting the number of bit zero's in data area.
-> >=20
-> > This logic is implemented in fsmc_nand.c
-> >=20
-> > See commit
-> > mtd: fsmc: Newly erased page read algorithm implemented
-> >=20
-> > >=20
-> > > 2. bitflip in ECC bytes in spare area
-> > > Your code will report an uncorrectable error upon reading; if this ha=
-ppens while reading a partially programmed UBI block,
-> > > I guess you will lose data.
-> >=20
-> > In case of uncorrectable errors due to bit flips in spare area,
-> > I can go on checking number of bit zero's in data area + OOB area
-> > are less than max bit flips (8 or 4), I can go on setting the entire
-> > page as 0xFF.
-> >=20
->=20
-> OK, sounds reasonable.
-> Another simple strategy could use the fact that you add a 14th zero byte =
-to
-> the 13 BCH bytes for RBL compatibility:
 
-RBL compatibility (14th byte) is applicable only for BCH8 ecc scheme.
+--=-SOLwC4CqjZGFu8OHDSHd
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-So I am planning adding an extra byte (0) for BCH4 ecc scheme. So with this
-we can go for same approaches in BCH4 & BCH8 ecc scheme.
+On Wed, 2012-10-10 at 18:55 +0400, kyak wrote:
+> Thanks Artem, your patch=20
+> (http://lists.infradead.org/pipermail/linux-mtd/2012-October/044477.html)=
+=20
+> has fixed my problem as well.
 
-If I understood correctly, software BCH ecc scheme is modifying calculated
-ecc data to handle bit flips in erased pages.
+Good!
 
-If that is the only reason, whether same logic can go for same ECC calculat=
-ion
-(remove modification of calculated ecc in case of software ecc correction)
-by adding an extra byte (0) in spare area to handle erased pages.
+> > Yes, it only needs to check if the output file is above the top level
+> > of the input tree. But I guess it's not that easy - first things that c=
+ome=20
+> > into my mind are symbolic links and mount --bind.
 
-So can you share if I am missing something?
+This patch should take care of symbolic links - realpath should resolve
+them. WRT bind-mounts - well, I consider this an unlikely case and it is
+not a big deal if we do not detect this. mkfs.ubifs will fail somewhere
+else, I guess, then.
 
->=20
-> Upon reading:
->  - if this 14th byte is zero (*) =3D> page was programmed: perform ECC
->    correction as usual
->  - else, page was not programmed: do not perform ECC, read entire data+sp=
-are
->    area, and set it to 0xff if less than 8 or 4 (max bitflips) zero bits
->    were found
->=20
-> (*) for robustness to bitflip in 14th byte, replace condition
-> "14th byte is zero" by e.g. "14th byte has less than 4 bits set to 1".
->=20
-> What do you think ?
+But of course, I will not object if someone improves the check and
+submits a patch.
 
-This seems logically good.
+--=20
+Best Regards,
+Artem Bityutskiy
 
-Thanks
-Avinash
+--=-SOLwC4CqjZGFu8OHDSHd
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
->=20
-> BR,
-> --
-> Ivan
->=20
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQdmDSAAoJECmIfjd9wqK0cUoP/2UIo4RnfQLdeh/PiJwRLT7n
+anM/i+UE64G/EXWi9HfGUzdoXl6DsQs3m5B61VoGdaJwTT1SPaAY5NCcgwWNcmEv
+kMjt44uYnc8puqUgkA9SPiPs2ld0KoBOJG5I0v7JjMKX1qiqFsuSWZiDjGu/55Fv
+Y/34I92Vyt0Amm3u4xTfbYXYS2SBfLHvUmsApzOONdexWR92Zx2vcdUUMjoZC+6V
+JNd7SzDZXJo9NiKMVU/2O/8awSQof0is0H8AV/qNikDi4jMDXTwIeM1JvLDtd3rj
+vKlu8hJZOHWJMlasy7Ex2uOawciPMKohg/zVt2uFA1ivDlgK/EjKS4HTQoenpDLe
+X3Q9HUbk8BzktnQoJSNA0M+2gNT+ESpWt7ZDEZHDXMWpjfnC+9a7OdvttLWcefNe
+ORv/bHJAgydl+ywjA+jNsJSTOLPlE5vxx22r2eos9p4auYguMdLO2E3f2ZET9sgV
+KNisjQM+jPcoYFgQWPZf1arQ077fu1en3PbG1p7sYdrcdhbqk0mkNFFlqKNlejEt
+HZgsKtpQSQAKbqBO1Ivqe4t39TmedICgKM6XsP1kewDTkZdbm88aW15jRuyeMWQp
+9drF+yPLcJj7zGKnt6FmYoDcLWYH97Ppf3QSl8aGkiBRgoKIq+crlZJHxHWYOELI
+c5szi+7mNI/XPI4hz4d/
+=dyAV
+-----END PGP SIGNATURE-----
+
+--=-SOLwC4CqjZGFu8OHDSHd--
