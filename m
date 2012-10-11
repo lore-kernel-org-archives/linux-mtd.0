@@ -1,12 +1,23 @@
-From: Linus Walleij <linus.walleij@linaro.org>
-To: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH] ARM: nomadik: fixup some FSMC merge problems
-Date: Fri, 12 Oct 2012 00:23:02 +0200
-Message-Id: <1349994182-26116-1-git-send-email-linus.walleij@linaro.org>
+Received: from na3sys009aog136.obsmtp.com ([74.125.149.85])
+ by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TMSVo-0007aU-OZ
+ for linux-mtd@lists.infradead.org; Thu, 11 Oct 2012 23:49:58 +0000
+Received: by mail-pb0-f49.google.com with SMTP id xa7so2444335pbc.36
+ for <linux-mtd@lists.infradead.org>; Thu, 11 Oct 2012 16:49:54 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+To: Linus Walleij <linus.walleij@linaro.org>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+From: Mike Turquette <mturquette@ti.com>
+In-Reply-To: <CACRpkdYMz05DwtLtHkggvo8VFOtvPLpovwq6fLceeiFK0Wci0Q@mail.gmail.com>
+References: <1349335709-13399-1-git-send-email-linus.walleij@linaro.org>
+ <CACRpkdYMz05DwtLtHkggvo8VFOtvPLpovwq6fLceeiFK0Wci0Q@mail.gmail.com>
+Message-ID: <20121011234952.2941.18793@nucleus>
+Subject: Re: [PATCH 1/2] ARM: nomadik: switch over to using the FSMC driver
+Date: Thu, 11 Oct 2012 16:49:52 -0700
 Cc: Linus Walleij <linus.walleij@linaro.org>,
- Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
- linux-arm-kernel@lists.infradead.org
+ Alessandro Rubini <rubini@unipv.it>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,75 +27,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Due to a clash between refactoring and due to loss of a header
-file that remained in my working tree the Nomadik stopped
-compiling after switching to the FSMC driver. This patch fixes
-it up.
+Quoting Linus Walleij (2012-10-05 05:52:06)
+> On Thu, Oct 4, 2012 at 9:28 AM, Linus Walleij <linus.walleij@linaro.org> =
+wrote:
+> =
 
-Cc: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
- arch/arm/mach-nomadik/board-nhk8815.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+> > The Nomadik NAND driver is really just a subset of the existing
+> > FSMC driver, so let's switch over to using that driver instead,
+> > since it handles more variants of this chip. The callbacks for
+> > setting up the chip is doing stuff now handled by the FSMC
+> > driver.
+> >
+> > Cc: Alessandro Rubini <rubini@unipv.it>
+> > Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> > ---
+> > I'm requesting Mike Turquette's ACK on this patch so I can merge
+> > it through ARM SoC.
+> =
 
-diff --git a/arch/arm/mach-nomadik/board-nhk8815.c b/arch/arm/mach-nomadik/board-nhk8815.c
-index a105d1b..3f97ef4 100644
---- a/arch/arm/mach-nomadik/board-nhk8815.c
-+++ b/arch/arm/mach-nomadik/board-nhk8815.c
-@@ -37,14 +37,15 @@
- #include <plat/mtu.h>
- #include <plat/pincfg.h>
- 
--#include <mach/fsmc.h>
--
- #include "cpu-8815.h"
- 
- /* Initial value for SRC control register: all timers use MXTAL/8 source */
- #define SRC_CR_INIT_MASK	0x00007fff
- #define SRC_CR_INIT_VAL		0x2aaa8000
- 
-+#define ALE_OFF 0x1000000
-+#define CLE_OFF 0x800000
-+
- /* These addresses span 16MB, so use three individual pages */
- static struct resource nhk8815_nand_resources[] = {
- 	{
-@@ -53,6 +54,16 @@ static struct resource nhk8815_nand_resources[] = {
- 		.end = 0x40000000 + SZ_16K - 1,
- 		.flags = IORESOURCE_MEM,
- 	}, {
-+		.name = "nand_addr",
-+		.start = 0x40000000 + ALE_OFF,
-+		.end = 0x40000000 +ALE_OFF + SZ_16K - 1,
-+		.flags = IORESOURCE_MEM,
-+	}, {
-+		.name = "nand_cmd",
-+		.start = 0x40000000 + CLE_OFF,
-+		.end = 0x40000000 + CLE_OFF + SZ_16K - 1,
-+		.flags = IORESOURCE_MEM,
-+	}, {
- 		.name  = "fsmc_regs",
- 		.start = NOMADIK_FSMC_BASE,
- 		.end   = NOMADIK_FSMC_BASE + SZ_4K - 1,
-@@ -105,8 +116,6 @@ static struct fsmc_nand_platform_data nhk8815_nand_platform_data = {
- 	.partitions = nhk8815_partitions,
- 	.nr_partitions = ARRAY_SIZE(nhk8815_partitions),
- 	.width = FSMC_NAND_BW8,
--	.ale_off = 0x1000000,
--	.cle_off = 0x800000,
- };
- 
- static struct platform_device nhk8815_nand_device = {
-@@ -171,6 +180,10 @@ static struct platform_device nhk8815_onenand_device = {
- 	.num_resources	= ARRAY_SIZE(nhk8815_onenand_resource),
- };
- 
-+/* bus control reg. and bus timing reg. for CS0..CS3 */
-+#define FSMC_BCR(x)	(NOMADIK_FSMC_VA + (x << 3))
-+#define FSMC_BTR(x)	(NOMADIK_FSMC_VA + (x << 3) + 0x04)
-+
- static void __init nhk8815_onenand_init(void)
- {
- #ifdef CONFIG_MTD_ONENAND
--- 
-1.7.11.4
+> Still requesting Mike's ACK, but not for merging through ARM SoC
+> but through MTD.
+> =
+
+
+Sorry for the late response but I just returned from vacation.  Might be
+too late but:
+
+Acked-by: Mike Turquette <mturquette@linaro.org>
+
+Thanks,
+Mike
+
+> If you apply Jean-Christophe's patch first (please do that) I will
+> send a v2 of this patch set to be applied onto MTD as well
+> (should be OK).
+> =
+
+> Yours,
+> Linus Walleij
