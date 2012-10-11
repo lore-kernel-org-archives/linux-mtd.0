@@ -1,29 +1,27 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TMDcd-0005g5-Cj
- for linux-mtd@lists.infradead.org; Thu, 11 Oct 2012 07:56:00 +0000
-Message-ID: <1349942173.20594.57.camel@sauron.fi.intel.com>
-Subject: Re: mkfs.ubifs problem when output file really isn't in the UBIFS
- root directory
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Marcus Prebble <marcus.prebble@axis.com>
-Date: Thu, 11 Oct 2012 10:56:13 +0300
-In-Reply-To: <1349882785.2552.1987.camel@lnxprebble2.se.axis.com>
-References: <1348242118.2552.1460.camel@lnxprebble2.se.axis.com>
- <1349367416.20373.75.camel@sauron.fi.intel.com>
- <1349708696.2552.1821.camel@lnxprebble2.se.axis.com>
- <1349851661.20594.6.camel@sauron.fi.intel.com>
- <1349859856.2552.1962.camel@lnxprebble2.se.axis.com>
- <1349861452.20594.12.camel@sauron.fi.intel.com>
- <1349865249.2552.1965.camel@lnxprebble2.se.axis.com>
- <1349868630.20594.16.camel@sauron.fi.intel.com>
- <1349882785.2552.1987.camel@lnxprebble2.se.axis.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-YJpW5uNTNarAa85X2l86"
-Mime-Version: 1.0
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+Date: Thu, 11 Oct 2012 10:21:49 +0200
+From: Ivan Djelic <ivan.djelic@parrot.com>
+To: "Philip, Avinash" <avinashphilip@ti.com>, <tony@atomide.com>,
+ <afzal@ti.com>
+Subject: Re: [PATCH 4/4] mtd: nand: omap2: Add data correction support
+Message-ID: <20121011082149.GA15609@parrot.com>
+References: <1349274589-11389-1-git-send-email-avinashphilip@ti.com>
+ <1349274589-11389-5-git-send-email-avinashphilip@ti.com>
+ <20121003192044.GB27502@parrot.com>
+ <518397C60809E147AF5323E0420B992E3E9B8A65@DBDE01.ent.ti.com>
+ <20121005142338.GA7199@parrot.com>
+ <518397C60809E147AF5323E0420B992E3E9CA829@DBDE01.ent.ti.com>
+ <20121010170806.GB13585@parrot.com>
+ <518397C60809E147AF5323E0420B992E3E9CB751@DBDE01.ent.ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <518397C60809E147AF5323E0420B992E3E9CB751@DBDE01.ent.ti.com>
+Cc: "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,43 +31,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, Oct 11, 2012 at 06:27:13AM +0100, Philip, Avinash wrote:
+(...)
+> > Another simple strategy could use the fact that you add a 14th zero byte to
+> > the 13 BCH bytes for RBL compatibility:
+> 
+> RBL compatibility (14th byte) is applicable only for BCH8 ecc scheme.
+> 
+> So I am planning adding an extra byte (0) for BCH4 ecc scheme. So with this
+> we can go for same approaches in BCH4 & BCH8 ecc scheme.
+> 
+> If I understood correctly, software BCH ecc scheme is modifying calculated
+> ecc data to handle bit flips in erased pages.
+> 
+> If that is the only reason, whether same logic can go for same ECC calculation
+> (remove modification of calculated ecc in case of software ecc correction)
+> by adding an extra byte (0) in spare area to handle erased pages.
+> 
+> So can you share if I am missing something?
 
---=-YJpW5uNTNarAa85X2l86
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Yes, the only reason why a constant polynomial is added to hw-generated ECC bytes is to transparently handle bitflips in erased pages.
+Handling erased pages this way has several benefits over the zero byte hack:
+- cleaner code, no checking of the zero byte
+- no expensive scan of data+spare area when reading an erased block: this step can significantly slow down the initial UBI scan (lots of erased pages to read)
+- no need to worry about the (very unlikely) possibility of having more than 4 bitflips in the zero byte
 
-On Wed, 2012-10-10 at 17:26 +0200, Marcus Prebble wrote:
-> which was a tad confusing. Please find attached a new diff (based off
-> yours) with a few minor suggested changes.
+OTOH, having the same ECC codes for both ELM and non-ELM chips with RBL compatibility sounds nice and would also simplify things.
+Note: on platforms where we use SW BCH correction, we also use the MLC OMAP boot mode, which is more robust and not compatible with 8-bit/4-bit BCH layouts.
 
-Actually, I've just pushed my patch out to mtd-utils.git. Would you
-please, send your diff as a normal patch on top of that?
+I don't know which way is better for the OMAP community:
+1. Unifying ECC modes = loosing the constant polynomial benefits, but gaining RBL compat and simplifying code
+2. Keeping separate ECC modes = code bloat
 
---=20
-Best Regards,
-Artem Bityutskiy
+Tony, do you have an opinion on this ?
 
---=-YJpW5uNTNarAa85X2l86
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+BTW, Afzal is submitting a series of patches [1] which are not compatible with your series; is there any plan to merge your patches ?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+BR,
+--
+Ivan
 
-iQIcBAABAgAGBQJQdnudAAoJECmIfjd9wqK0i44QAIlRFczPsSi2OIDMTXxUjHX8
-iOU8Xjn0lG52QhAcnAymSxzpp2mGWKSc6B25KRcK7NTaL6sIj1usGPLHN722+53s
-RN+fqvB9te+7bGWB2R+fL2n6q5l/RU60VggNBRX/NBT1WFa1ODGu6sY33YnRONmL
-+WbDVF8YPaSio0GttZfiOhZ9gMe6AVpiKyhpl3OSzi+tk+iBo+THOH86n24TxLkh
-cJ+ZJvZEmmZrCplY2I2DtbbTWUmUuGVjOJAxVV7bTPJzfwOyqxs1cSWmH+zuk90m
-4bO88ophJpfPlHtllhNJxKtAjpMBPwVkdXKB84erlqpwPfHlqBrvOKXJCReqpJrY
-34DCOUfernPl8T9XTmMQYS1Qp6Gb7ztc+GXzai1wi0h//AVHVpq/384KOjJAicnN
-pFr4ZO8d6XBi7npAeRN8E4DWZuMXyBH8Cy8cAa1cSoc7lEATXGxDcHbVOEycdfpw
-AvTeOlWom/JoUY+dfS4ztElz3a8NSCE2xVA4hV6h9RMlmTey94cyUvidCFlMHqUL
-YH4wRouk7luE1ry+CpLWHxT3J3Mcj2p0vBmlWGtERzLTyYC8oKt6fAHmAfi2Dgf5
-js5hVmCDjA8HNVrIbBET6eETN59B2FoAYB98nCh3qHJwE/hC6xBQqJ15iSZx38w2
-CDGTmUOheUH888APC6H7
-=VAZ5
------END PGP SIGNATURE-----
-
---=-YJpW5uNTNarAa85X2l86--
+[1] http://lists.infradead.org/pipermail/linux-mtd/2012-October/044374.html
