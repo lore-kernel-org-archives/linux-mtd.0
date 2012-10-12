@@ -1,23 +1,18 @@
-Received: from na3sys009aog136.obsmtp.com ([74.125.149.85])
- by merlin.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TMSVo-0007aU-OZ
- for linux-mtd@lists.infradead.org; Thu, 11 Oct 2012 23:49:58 +0000
-Received: by mail-pb0-f49.google.com with SMTP id xa7so2444335pbc.36
- for <linux-mtd@lists.infradead.org>; Thu, 11 Oct 2012 16:49:54 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+Received: from ch1ehsobe004.messaging.microsoft.com ([216.32.181.184]
+ helo=ch1outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TMW3x-0007Bs-6f
+ for linux-mtd@lists.infradead.org; Fri, 12 Oct 2012 03:37:25 +0000
+From: <dinguyen@altera.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] denali: nand: Fix build break for driver when built as a
+ module
+Date: Thu, 11 Oct 2012 22:36:56 -0600
+Message-ID: <1350016616-22098-1-git-send-email-dinguyen@altera.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-To: Linus Walleij <linus.walleij@linaro.org>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
-From: Mike Turquette <mturquette@ti.com>
-In-Reply-To: <CACRpkdYMz05DwtLtHkggvo8VFOtvPLpovwq6fLceeiFK0Wci0Q@mail.gmail.com>
-References: <1349335709-13399-1-git-send-email-linus.walleij@linaro.org>
- <CACRpkdYMz05DwtLtHkggvo8VFOtvPLpovwq6fLceeiFK0Wci0Q@mail.gmail.com>
-Message-ID: <20121011234952.2941.18793@nucleus>
-Subject: Re: [PATCH 1/2] ARM: nomadik: switch over to using the FSMC driver
-Date: Thu, 11 Oct 2012 16:49:52 -0700
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- Alessandro Rubini <rubini@unipv.it>
+Content-Type: text/plain
+Cc: sfr@canb.auug.org.au, dinh.linux@gmail.com,
+ Dinh Nguyen <dinguyen@altera.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,41 +22,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Quoting Linus Walleij (2012-10-05 05:52:06)
-> On Thu, Oct 4, 2012 at 9:28 AM, Linus Walleij <linus.walleij@linaro.org> =
-wrote:
-> =
+From: Dinh Nguyen <dinguyen@altera.com>
 
-> > The Nomadik NAND driver is really just a subset of the existing
-> > FSMC driver, so let's switch over to using that driver instead,
-> > since it handles more variants of this chip. The callbacks for
-> > setting up the chip is doing stuff now handled by the FSMC
-> > driver.
-> >
-> > Cc: Alessandro Rubini <rubini@unipv.it>
-> > Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> > ---
-> > I'm requesting Mike Turquette's ACK on this patch so I can merge
-> > it through ARM SoC.
-> =
+Make denali_init and denali_remove accessible when the driver
+is built as a loadable module.
 
-> Still requesting Mike's ACK, but not for merging through ARM SoC
-> but through MTD.
-> =
+Signed-off-by: Dinh Nguyen <dinguyen@altera.com>
+---
+ drivers/mtd/nand/denali.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-
-Sorry for the late response but I just returned from vacation.  Might be
-too late but:
-
-Acked-by: Mike Turquette <mturquette@linaro.org>
-
-Thanks,
-Mike
-
-> If you apply Jean-Christophe's patch first (please do that) I will
-> send a v2 of this patch set to be applied onto MTD as well
-> (should be OK).
-> =
-
-> Yours,
-> Linus Walleij
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index 8f99e9b..0c8bb6b 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -1596,6 +1596,7 @@ failed_req_irq:
+ 
+ 	return ret;
+ }
++EXPORT_SYMBOL(denali_init);
+ 
+ /* driver exit point */
+ void denali_remove(struct denali_nand_info *denali)
+@@ -1604,3 +1605,4 @@ void denali_remove(struct denali_nand_info *denali)
+ 	dma_unmap_single(denali->dev, denali->buf.dma_buf, DENALI_BUF_SIZE,
+ 			DMA_BIDIRECTIONAL);
+ }
++EXPORT_SYMBOL(denali_remove);
+-- 
+1.7.9.5
