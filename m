@@ -1,22 +1,22 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TMZsM-00047j-BK
- for linux-mtd@lists.infradead.org; Fri, 12 Oct 2012 07:41:42 +0000
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/2] mtd/uclinux: add a comment about why uclinux_ram_map must
- not be static
-Date: Fri, 12 Oct 2012 09:41:33 +0200
-Message-Id: <1350027693-19528-2-git-send-email-u.kleine-koenig@pengutronix.de>
-In-Reply-To: <1350027693-19528-1-git-send-email-u.kleine-koenig@pengutronix.de>
-References: <1349709952-4332-1-git-send-email-u.kleine-koenig@pengutronix.de>
- <1350027693-19528-1-git-send-email-u.kleine-koenig@pengutronix.de>
+Received: from co202.xi-lite.net ([149.6.83.202])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TMa7t-0006Vp-CJ
+ for linux-mtd@lists.infradead.org; Fri, 12 Oct 2012 07:57:46 +0000
+Message-ID: <5077CD73.802@parrot.com>
+Date: Fri, 12 Oct 2012 09:57:39 +0200
+From: Matthieu CASTET <matthieu.castet@parrot.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+To: Charles Hardin <ckhardin@exablox.com>
+Subject: Re: [QUESTION] MLC NAND and ECC over OOB area
+References: <0A090286-986E-4B22-AEC3-EE1C48EC466E@gmail.com>
+ <20121010181307.GB14389@parrot.com>
+ <AD7F07FE-BAD4-48F6-BF24-520FA8BCFCB2@exablox.com>
+In-Reply-To: <AD7F07FE-BAD4-48F6-BF24-520FA8BCFCB2@exablox.com>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 8bit
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Mike Frysinger <vapier.adi@gmail.com>, kernel@pengutronix.de,
- Greg Ungerer <gerg@uclinux.org>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Ivan Djelic <ivan.djelic@parrot.com>, Mike Dunn <mikedunn@newsguy.com>,
+ Jeremy Fitzhardinge <jeremy@exablox.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,36 +26,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I was (at least) the second person trying to fix a warning by sparse, so
-document in the code why this is a bad idea.
-
-Signed-off-by: Uwe Kleine-KÃ¶nig <u.kleine-koenig@pengutronix.de>
----
-Hello,
-
-it's a bit exaggerated to claim that sparse is happy now, but at least
-we have one warning less :-)
-
-Uwe
- drivers/mtd/maps/uclinux.c |    6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/drivers/mtd/maps/uclinux.c b/drivers/mtd/maps/uclinux.c
-index f5e8e9a..18cf6d0 100644
---- a/drivers/mtd/maps/uclinux.c
-+++ b/drivers/mtd/maps/uclinux.c
-@@ -23,6 +23,12 @@
- 
- /****************************************************************************/
- 
-+/*
-+ * Blackfin uses uclinux_ram_map during startup, so it must not be static.
-+ * Provide a dummy declaration to make sparse happy.
-+ */
-+extern struct map_info uclinux_ram_map;
-+
- struct map_info uclinux_ram_map = {
- 	.size = 0,
- };
--- 
-1.7.10.4
+Charles Hardin a écrit :
+> On Oct 10, 2012, at 11:13 AM, Ivan Djelic wrote:
+> 
+>> Hi Charles,
+>>
+>> The OOB area is primarily used to store:
+>> - a bad block marker
+>> - ECC bytes
+>>
+>> The ECC is generally designed to protect the data area, and the ECC bytes themselves (data+ECC bytes form a long codeword).
+>> The bad block marker normally has two useful values only: 0xff or 0x00, therefore it can be successfully read even with
+>> several bitflips, by looking at its Hamming weight (the number of 1s in the byte).
+>>
+>> Now, if you want to store additional stuff (metadata) in the OOB area, _then_ you will need an ECC that covers data + metadata.
+>> This is possible with some drivers; this can also be done with the software BCH library (with a patch).
+>>
+>> But the general trend is to avoid using the OOB area for that, because you never know how much space the next NAND generation
+>> will require for ECC, and you'll be in trouble once your metadata does not fit anymore in the remaining space.
+>>
+>> BR,
+>> -- 
+>> Ivan
+> 
+> 
+> Ok, that seems reasonable - and, following this line of thought - then the expectation would be to change the nand_bbt.c code to check for the "weight of a bad block pattern" instead of looking for an exact match on the pattern.
+> 
+They were some work on this :
+http://thread.gmane.org/gmane.linux.drivers.mtd/42243follow d
