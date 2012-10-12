@@ -1,24 +1,26 @@
-Message-ID: <507794B6.2000107@st.com>
-Date: Fri, 12 Oct 2012 09:25:34 +0530
-From: Vipin Kumar <vipin.kumar@st.com>
+Received: from mail-vc0-f177.google.com ([209.85.220.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TMX8k-0000Ru-Pg
+ for linux-mtd@lists.infradead.org; Fri, 12 Oct 2012 04:46:28 +0000
+Received: by mail-vc0-f177.google.com with SMTP id p16so3170490vcq.36
+ for <linux-mtd@lists.infradead.org>; Thu, 11 Oct 2012 21:46:24 -0700 (PDT)
 MIME-Version: 1.0
-To: Linus Walleij <linus.walleij@linaro.org>,
- viresh kumar <viresh.kumar@linaro.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH 07/11] fsmc/nand: Provide contiguous buffers to dma
-References: <cover.1349778820.git.vipin.kumar@st.com>
- <2b88c853b3691338fae037f569917fc300cd6032.1349778821.git.vipin.kumar@st.com>
- <CACRpkdb6ArMUQ6MAsue+Gh15UfOUrWNAc9wrxd6awc0BTwOGiw@mail.gmail.com>
- <CAOh2x=ksMr7VRCnpF-rK+Mesg1p4Td++SQ-t=ShrguRRVWSSSQ@mail.gmail.com>
- <CACRpkdYjA8QUh4HqvE1rsnXcGA4WafTkMq_wLNJ__gXEnEYrow@mail.gmail.com>
-In-Reply-To: <CACRpkdYjA8QUh4HqvE1rsnXcGA4WafTkMq_wLNJ__gXEnEYrow@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Vinod Koul <vinod.koul@intel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- spear-devel <spear-devel@list.st.com>,
- "plagnioj@jcrosoft.com" <plagnioj@jcrosoft.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <5073FE55.2000402@snapgear.com>
+References: <1349709952-4332-1-git-send-email-u.kleine-koenig@pengutronix.de>
+ <50739A2A.9070405@snapgear.com> <20121009084418.GH18531@pengutronix.de>
+ <5073FE55.2000402@snapgear.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Fri, 12 Oct 2012 00:46:04 -0400
+Message-ID: <CAMjpGUe_aTEjGF9q1uraU_ikCif0J-+bSTLkr-X6jEYqjMHOtQ@mail.gmail.com>
+Subject: Re: [PATCH] [RFC] mtd/uclinux: support ROM and allow passing the base
+ address
+To: Greg Ungerer <gerg@snapgear.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Greg Ungerer <gerg@uclinux.org>, linux-mtd@lists.infradead.org,
+ kernel@pengutronix.de,
+ =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,49 +30,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/11/2012 9:36 PM, Linus Walleij wrote:
-> On Thu, Oct 11, 2012 at 6:15 AM, viresh kumar<viresh.kumar@linaro.org>  wrote:
->> On Wed, Oct 10, 2012 at 10:37 PM, Linus Walleij
->> <linus.walleij@linaro.org>  wrote:
->
->>> dma_sync_single_for_device() is translating the virtual
->>> address to physical for every chunk BTW.
+On Tue, Oct 9, 2012 at 6:37 AM, Greg Ungerer <gerg@snapgear.com> wrote:
+> On 10/09/2012 06:44 PM, Uwe Kleine-K=C3=B6nig wrote:
+>> On Tue, Oct 09, 2012 at 01:29:46PM +1000, Greg Ungerer wrote:
+>>> On 09/10/12 01:25, Uwe Kleine-K=C3=83=C2=B7nig wrote:
+>>>> This allows to put the filesystem at a defined address in ROM allowing
+>>>> to save more precious RAM.
+>>>>
+>>>> I think it's save to default to ROM because the intention of using the
+>>>> uclinux map is to use a romfs and so mtd-ram doesn't give you anything
+>>>> that mtd-rom doesn't.
+>>>>
+>>>> Signed-off-by: Uwe Kleine-K=C3=A2=E2=80=9D=C5=93=C3=83=E2=82=ACnig <u.=
+kleine-koenig@pengutronix.de>
+>>>
+>>> Looks good to me, so:
+>>>
+>>> Acked-by: Greg Ungerer <gerg@uclinux.org>
+>>>
+>>> Couple of things to be aware of. Artem currently has a couple of
+>>> patches against this file (looks like at least 1 of them is currently
+>>> in linux-next). It will probably conflict with your changes, should
+>>> be easy enough to fix up.
 >>
->> I pray that i am wrong here, otherwise i would be thrown out from
->> the maintainers list for this driver :)
->>
->> dma_sync_single_for_device() is not doing anything on the buffer, but
->> on the LLI item. Actually it is flushing LLI struct so that DMA h/w can get
->> the correct values.
+>> If you tell me a branch to test, I can do so.
 >
-> Sorry no, I'm the one who's wrong...
+> Sure. All three patches I sent to the linux-mtd list are here:
 >
-> So the DMA engine memcpy() is not mapping virt->phys
-> but expects physical addresses to be provided.
+> The following changes since commit 979570e02981d4a8fc20b3cc8fd651856c98ee=
+9d:
+>   Linus Torvalds (1):
+>         Linux 3.6-rc7
 >
-> So dma_map_single() needs to be called on the stuff
-> passed in to dev->device_prep_dma_memcpy().
+> are available in the git repository at:
 >
-> And currently there is indeed a dma_map_single() in
-> dma_xfer() in fsmc_nand.c which should work just fine.
+>   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git cfmmu
 >
-> dma_map_single() will only work if the buffer is
-> physically contiguous.
+> Greg Ungerer (3):
+>       mtd: fix wrong usage of ioremap_nocache() in uclinux.c map driver
+>       mtd: allow uclinux map driver to be used on any ColdFire CPU platfo=
+rm
+>       mtd: clean up uclinux.c map driver
 >
-> And the block layer of the subsystem should take care
-> of only handing the driver buffers that are contiguous
-> I think? Not that I'm an expert here ... more some
-> guesswork :-/
+>  drivers/mtd/maps/Kconfig   |    2 +-
+>  drivers/mtd/maps/uclinux.c |   42
+> +++++++++++++++++++-----------------------
+>  2 files changed, 20 insertions(+), 24 deletions(-)
+>
+>
+> As far as I can see Artem has pushed the first 2 into for linux-next,
+> but not the third. I am hoping he hops in here and lets us know what
+> his intentions are with the third...
 
-The buffers provided to the driver are actually user buffers. The reason 
-I say that is because the generic nand test modules eg 
-drivers/mtd/nand/mtd_stresstest.c calls mtd->_read with a user buffer as 
-an argument
-
-This same buffer directly trickles down to the driver
-
-Artem, should we clearly cast this buffer as a user pointer instead of 
-just a 'uint8_t *'.
-
-Regards
-Vipin
+so to be clear, Uwe's patch hasn't been picked up by anyone yet so we
+can get it fixed first ?
+-mike
