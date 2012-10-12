@@ -1,23 +1,27 @@
-Received: from 8.mo4.mail-out.ovh.net ([188.165.33.112]
- helo=mo4.mail-out.ovh.net)
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TMbih-0001Sk-T9
- for linux-mtd@lists.infradead.org; Fri, 12 Oct 2012 09:39:52 +0000
-Received: from mail413.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo4.mail-out.ovh.net (Postfix) with SMTP id ABBD6104FF2A
- for <linux-mtd@lists.infradead.org>; Fri, 12 Oct 2012 11:46:20 +0200 (CEST)
-Date: Fri, 12 Oct 2012 11:37:30 +0200
-From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH] ARM: nomadik: fixup some FSMC merge problems
-Message-ID: <20121012093730.GA12801@game.jcrosoft.org>
-References: <1349994182-26116-1-git-send-email-linus.walleij@linaro.org>
+Received: from mail-vb0-f49.google.com ([209.85.212.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TMho5-0005KQ-Ac
+ for linux-mtd@lists.infradead.org; Fri, 12 Oct 2012 16:09:49 +0000
+Received: by mail-vb0-f49.google.com with SMTP id fo1so3300167vbb.36
+ for <linux-mtd@lists.infradead.org>; Fri, 12 Oct 2012 09:09:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1349994182-26116-1-git-send-email-linus.walleij@linaro.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+In-Reply-To: <20121012072221.GB639@pengutronix.de>
+References: <1349709952-4332-1-git-send-email-u.kleine-koenig@pengutronix.de>
+ <50739A2A.9070405@snapgear.com> <20121009084418.GH18531@pengutronix.de>
+ <5073FE55.2000402@snapgear.com>
+ <CAMjpGUe_aTEjGF9q1uraU_ikCif0J-+bSTLkr-X6jEYqjMHOtQ@mail.gmail.com>
+ <5077B167.40009@snapgear.com> <20121012072221.GB639@pengutronix.de>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Fri, 12 Oct 2012 12:09:19 -0400
+Message-ID: <CAMjpGUf0Jq_fPCHsUwN+OFL-RJSA2a-Usqih39hc22jM8Q7KNg@mail.gmail.com>
+Subject: Re: [PATCH] [RFC] mtd/uclinux: support ROM and allow passing the base
+ address
+To: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Greg Ungerer <gerg@snapgear.com>, linux-mtd@lists.infradead.org,
+ kernel@pengutronix.de, Greg Ungerer <gerg@uclinux.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,82 +31,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 00:23 Fri 12 Oct     , Linus Walleij wrote:
-> 
-> Due to a clash between refactoring and due to loss of a header
-> file that remained in my working tree the Nomadik stopped
-> compiling after switching to the FSMC driver. This patch fixes
-> it up.
-> 
-> Cc: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Acked-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+On Fri, Oct 12, 2012 at 3:22 AM, Uwe Kleine-K=C3=B6nig wrote:
+> On Fri, Oct 12, 2012 at 03:57:59PM +1000, Greg Ungerer wrote:
+>> >so to be clear, Uwe's patch hasn't been picked up by anyone yet so we
+>> >can get it fixed first ?
+>
+> ok, so for blackfin uclinux_ram_map must not be static because it is
+> used in arch/blackfin/kernel/setup.c. If I tried to introduce such code
+> for an ARM platform people would run away scared maybe after telling me
+> I should fix my boot loader.
 
-Best Regards,
-J.
-> ---
->  arch/arm/mach-nomadik/board-nhk8815.c | 21 +++++++++++++++++----
->  1 file changed, 17 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/arm/mach-nomadik/board-nhk8815.c b/arch/arm/mach-nomadik/board-nhk8815.c
-> index a105d1b..3f97ef4 100644
-> --- a/arch/arm/mach-nomadik/board-nhk8815.c
-> +++ b/arch/arm/mach-nomadik/board-nhk8815.c
-> @@ -37,14 +37,15 @@
->  #include <plat/mtu.h>
->  #include <plat/pincfg.h>
->  
-> -#include <mach/fsmc.h>
-> -
->  #include "cpu-8815.h"
->  
->  /* Initial value for SRC control register: all timers use MXTAL/8 source */
->  #define SRC_CR_INIT_MASK	0x00007fff
->  #define SRC_CR_INIT_VAL		0x2aaa8000
->  
-> +#define ALE_OFF 0x1000000
-> +#define CLE_OFF 0x800000
-> +
->  /* These addresses span 16MB, so use three individual pages */
->  static struct resource nhk8815_nand_resources[] = {
->  	{
-> @@ -53,6 +54,16 @@ static struct resource nhk8815_nand_resources[] = {
->  		.end = 0x40000000 + SZ_16K - 1,
->  		.flags = IORESOURCE_MEM,
->  	}, {
-> +		.name = "nand_addr",
-> +		.start = 0x40000000 + ALE_OFF,
-> +		.end = 0x40000000 +ALE_OFF + SZ_16K - 1,
-> +		.flags = IORESOURCE_MEM,
-> +	}, {
-> +		.name = "nand_cmd",
-> +		.start = 0x40000000 + CLE_OFF,
-> +		.end = 0x40000000 + CLE_OFF + SZ_16K - 1,
-> +		.flags = IORESOURCE_MEM,
-> +	}, {
->  		.name  = "fsmc_regs",
->  		.start = NOMADIK_FSMC_BASE,
->  		.end   = NOMADIK_FSMC_BASE + SZ_4K - 1,
-> @@ -105,8 +116,6 @@ static struct fsmc_nand_platform_data nhk8815_nand_platform_data = {
->  	.partitions = nhk8815_partitions,
->  	.nr_partitions = ARRAY_SIZE(nhk8815_partitions),
->  	.width = FSMC_NAND_BW8,
-> -	.ale_off = 0x1000000,
-> -	.cle_off = 0x800000,
->  };
->  
->  static struct platform_device nhk8815_nand_device = {
-> @@ -171,6 +180,10 @@ static struct platform_device nhk8815_onenand_device = {
->  	.num_resources	= ARRAY_SIZE(nhk8815_onenand_resource),
->  };
->  
-> +/* bus control reg. and bus timing reg. for CS0..CS3 */
-> +#define FSMC_BCR(x)	(NOMADIK_FSMC_VA + (x << 3))
-> +#define FSMC_BTR(x)	(NOMADIK_FSMC_VA + (x << 3) + 0x04)
-> +
->  static void __init nhk8815_onenand_init(void)
->  {
->  #ifdef CONFIG_MTD_ONENAND
-> -- 
-> 1.7.11.4
-> 
+i would point out that code merged many many years ago had a much
+lower bar than today.  also, this isn't the boot loader passing the
+rootfs into the kernel.  when the kernel is created, the build system
+appends the rootfs to it.
+
+> I really don't know the situation on
+> blackfin, but this really has potential for generalisation.
+
+sure ... we're open to doing it differently as long as it's backwards compa=
+tible
+
+> But I don't even know if you have/need a boot loader at all there.
+
+we run u-boot like everyone else, but u-boot doesn't handle passing
+the rootfs in.
+
+> Here is what I found quickly:
+
+updated comments here look nice, thanks
+-mike
