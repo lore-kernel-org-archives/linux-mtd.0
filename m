@@ -1,18 +1,24 @@
-Received: from va3ehsobe006.messaging.microsoft.com ([216.32.180.16]
- helo=va3outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TMWCj-0007Q8-NZ
- for linux-mtd@lists.infradead.org; Fri, 12 Oct 2012 03:46:30 +0000
-From: <dinguyen@altera.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] denali: nand: Fix build break for driver when built as a
- module
-Date: Thu, 11 Oct 2012 22:46:09 -0600
-Message-ID: <1350017169-22166-1-git-send-email-dinguyen@altera.com>
+Message-ID: <507794B6.2000107@st.com>
+Date: Fri, 12 Oct 2012 09:25:34 +0530
+From: Vipin Kumar <vipin.kumar@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: sfr@canb.auug.org.au, dinh.linux@gmail.com,
- Dinh Nguyen <dinguyen@altera.com>, dedekind1@gmail.com
+To: Linus Walleij <linus.walleij@linaro.org>,
+ viresh kumar <viresh.kumar@linaro.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH 07/11] fsmc/nand: Provide contiguous buffers to dma
+References: <cover.1349778820.git.vipin.kumar@st.com>
+ <2b88c853b3691338fae037f569917fc300cd6032.1349778821.git.vipin.kumar@st.com>
+ <CACRpkdb6ArMUQ6MAsue+Gh15UfOUrWNAc9wrxd6awc0BTwOGiw@mail.gmail.com>
+ <CAOh2x=ksMr7VRCnpF-rK+Mesg1p4Td++SQ-t=ShrguRRVWSSSQ@mail.gmail.com>
+ <CACRpkdYjA8QUh4HqvE1rsnXcGA4WafTkMq_wLNJ__gXEnEYrow@mail.gmail.com>
+In-Reply-To: <CACRpkdYjA8QUh4HqvE1rsnXcGA4WafTkMq_wLNJ__gXEnEYrow@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Vinod Koul <vinod.koul@intel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ spear-devel <spear-devel@list.st.com>,
+ "plagnioj@jcrosoft.com" <plagnioj@jcrosoft.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,32 +28,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Dinh Nguyen <dinguyen@altera.com>
+On 10/11/2012 9:36 PM, Linus Walleij wrote:
+> On Thu, Oct 11, 2012 at 6:15 AM, viresh kumar<viresh.kumar@linaro.org>  wrote:
+>> On Wed, Oct 10, 2012 at 10:37 PM, Linus Walleij
+>> <linus.walleij@linaro.org>  wrote:
+>
+>>> dma_sync_single_for_device() is translating the virtual
+>>> address to physical for every chunk BTW.
+>>
+>> I pray that i am wrong here, otherwise i would be thrown out from
+>> the maintainers list for this driver :)
+>>
+>> dma_sync_single_for_device() is not doing anything on the buffer, but
+>> on the LLI item. Actually it is flushing LLI struct so that DMA h/w can get
+>> the correct values.
+>
+> Sorry no, I'm the one who's wrong...
+>
+> So the DMA engine memcpy() is not mapping virt->phys
+> but expects physical addresses to be provided.
+>
+> So dma_map_single() needs to be called on the stuff
+> passed in to dev->device_prep_dma_memcpy().
+>
+> And currently there is indeed a dma_map_single() in
+> dma_xfer() in fsmc_nand.c which should work just fine.
+>
+> dma_map_single() will only work if the buffer is
+> physically contiguous.
+>
+> And the block layer of the subsystem should take care
+> of only handing the driver buffers that are contiguous
+> I think? Not that I'm an expert here ... more some
+> guesswork :-/
 
-Make denali_init and denali_remove accessible when the driver
-is built as a loadable module.
+The buffers provided to the driver are actually user buffers. The reason 
+I say that is because the generic nand test modules eg 
+drivers/mtd/nand/mtd_stresstest.c calls mtd->_read with a user buffer as 
+an argument
 
-Signed-off-by: Dinh Nguyen <dinguyen@altera.com>
----
- drivers/mtd/nand/denali.c |    2 ++
- 1 file changed, 2 insertions(+)
+This same buffer directly trickles down to the driver
 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 8f99e9b..0c8bb6b 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -1596,6 +1596,7 @@ failed_req_irq:
- 
- 	return ret;
- }
-+EXPORT_SYMBOL(denali_init);
- 
- /* driver exit point */
- void denali_remove(struct denali_nand_info *denali)
-@@ -1604,3 +1605,4 @@ void denali_remove(struct denali_nand_info *denali)
- 	dma_unmap_single(denali->dev, denali->buf.dma_buf, DENALI_BUF_SIZE,
- 			DMA_BIDIRECTIONAL);
- }
-+EXPORT_SYMBOL(denali_remove);
--- 
-1.7.9.5
+Artem, should we clearly cast this buffer as a user pointer instead of 
+just a 'uint8_t *'.
+
+Regards
+Vipin
