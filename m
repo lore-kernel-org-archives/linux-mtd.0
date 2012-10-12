@@ -1,22 +1,20 @@
 Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TMZrq-00042M-RF
- for linux-mtd@lists.infradead.org; Fri, 12 Oct 2012 07:41:11 +0000
-Date: Fri, 12 Oct 2012 09:41:00 +0200
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-To: Mike Frysinger <vapier.adi@gmail.com>
-Subject: Re: [PATCH] [RFC] mtd/uclinux: support ROM and allow passing the
+ id 1TMZsK-00047C-CY
+ for linux-mtd@lists.infradead.org; Fri, 12 Oct 2012 07:41:41 +0000
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 1/2 RFC v2] mtd/uclinux: support ROM and allow passing the
  base address
-Message-ID: <20121012074100.GC639@pengutronix.de>
+Date: Fri, 12 Oct 2012 09:41:32 +0200
+Message-Id: <1350027693-19528-1-git-send-email-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <1349709952-4332-1-git-send-email-u.kleine-koenig@pengutronix.de>
 References: <1349709952-4332-1-git-send-email-u.kleine-koenig@pengutronix.de>
- <CAMjpGUcRni7ni-FtVAN-pqnuHDK-WeeO6U=480K=1sCDhb7qjQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMjpGUcRni7ni-FtVAN-pqnuHDK-WeeO6U=480K=1sCDhb7qjQ@mail.gmail.com>
 Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-mtd@lists.infradead.org, kernel@pengutronix.de,
+ Mike Frysinger <vapier.adi@gmail.com>, kernel@pengutronix.de,
  Greg Ungerer <gerg@uclinux.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,38 +25,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Oct 11, 2012 at 12:21:59AM -0400, Mike Frysinger wrote:
-> On Mon, Oct 8, 2012 at 11:25 AM, Uwe Kleine-König wrote:
-> > --- a/drivers/mtd/maps/uclinux.c
-> > +++ b/drivers/mtd/maps/uclinux.c
-> > @@ -23,12 +23,13 @@
-> >
-> >  /****************************************************************************/
-> >
-> > -struct map_info uclinux_ram_map = {
-> > -       .name = "RAM",
-> > -       .phys = (unsigned long)__bss_stop,
-> > +static struct map_info uclinux_ram_map = {
-> >         .size = 0,
-> >  };
-> 
-> this change will break Blackfin systems.  i mentioned last time
-> someone tried to make this and we talked about adding a comment to
-> prevent future breakage, but that seems to not have happened.
-Will send a patch in a moment.
+This allows to put the filesystem at a defined address in ROM allowing
+to save more precious RAM.
 
-> i don't think's necessary either for the larger change here.  use the logic:
->     if (physaddr != -1)
->         mapp->phys = physaddr;
-> and keep the default initialization.
-I keep my way as it seems to be more robust for possible future changes.
-(I don't know if that will ever happen, but consider platform device
-support or just a retry of instatiation after physaddr changed from
-something back to -1.)
+I think it's save to default to ROM because the intention of using the
+uclinux map is to use a romfs and so mtd-ram doesn't give you anything
+that mtd-rom doesn't.
 
-Best regards
-Uwe
+Signed-off-by: Uwe Kleine-KÃ¶nig <u.kleine-koenig@pengutronix.de>
+--
+Changed since (implicit) v1:
 
+ - don't make uclinux_ram_map static as pointed out by Mike and Greg.
+
+ drivers/mtd/maps/Kconfig   |    2 +-
+ drivers/mtd/maps/uclinux.c |   28 ++++++++++++++++++++++------
+ 2 files changed, 23 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index 5ba2458..d945950 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -443,7 +443,7 @@ config MTD_GPIO_ADDR
+ 
+ config MTD_UCLINUX
+ 	bool "Generic uClinux RAM/ROM filesystem support"
+-	depends on MTD_RAM=y && !MMU
++	depends on (MTD_RAM=y || MTD_ROM=y) && !MMU
+ 	help
+ 	  Map driver to support image based filesystems for uClinux.
+ 
+diff --git a/drivers/mtd/maps/uclinux.c b/drivers/mtd/maps/uclinux.c
+index c3bb304..f5e8e9a 100644
+--- a/drivers/mtd/maps/uclinux.c
++++ b/drivers/mtd/maps/uclinux.c
+@@ -24,11 +24,12 @@
+ /****************************************************************************/
+ 
+ struct map_info uclinux_ram_map = {
+-	.name = "RAM",
+-	.phys = (unsigned long)__bss_stop,
+ 	.size = 0,
+ };
+ 
++static unsigned long physaddr = -1;
++module_param(physaddr, ulong, S_IRUGO);
++
+ static struct mtd_info *uclinux_ram_mtdinfo;
+ 
+ /****************************************************************************/
+@@ -60,11 +61,17 @@ static int __init uclinux_mtd_init(void)
+ 	struct map_info *mapp;
+ 
+ 	mapp = &uclinux_ram_map;
++
++	if (physaddr == -1)
++		mapp->phys = (resource_size_t)__bss_stop;
++	else
++		mapp->phys = physaddr;
++
+ 	if (!mapp->size)
+ 		mapp->size = PAGE_ALIGN(ntohl(*((unsigned long *)(mapp->phys + 8))));
+ 	mapp->bankwidth = 4;
+ 
+-	printk("uclinux[mtd]: RAM probe address=0x%x size=0x%x\n",
++	printk("uclinux[mtd]: RAM/ROM probe address=0x%x size=0x%x\n",
+ 	       	(int) mapp->phys, (int) mapp->size);
+ 
+ 	mapp->virt = ioremap_nocache(mapp->phys, mapp->size);
+@@ -76,9 +83,18 @@ static int __init uclinux_mtd_init(void)
+ 
+ 	simple_map_init(mapp);
+ 
+-	mtd = do_map_probe("map_ram", mapp);
++	mapp->name = "ROM";
++	mtd = do_map_probe("map_rom", mapp);
++	if (!mtd) {
++		/* fall back to ram probing for compatibility reasons */
++		mapp->name = "RAM";
++		mtd = do_map_probe("map_ram", mapp);
++		if (mtd && IS_ENABLED(CONFIG_MTD_ROM))
++			pr_err("Failed to map rom, but ram succeeded. Please report this issue!\n");
++	}
++
+ 	if (!mtd) {
+-		printk("uclinux[mtd]: failed to find a mapping?\n");
++		printk("uclinux[mtd]: failed to find a rom/ram mapping?\n");
+ 		iounmap(mapp->virt);
+ 		return(-ENXIO);
+ 	}
+@@ -115,6 +131,6 @@ module_exit(uclinux_mtd_cleanup);
+ 
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Greg Ungerer <gerg@snapgear.com>");
+-MODULE_DESCRIPTION("Generic RAM based MTD for uClinux");
++MODULE_DESCRIPTION("Generic RAM/ROM based MTD for uClinux");
+ 
+ /****************************************************************************/
 -- 
-Pengutronix e.K.                           | Uwe Kleine-König            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+1.7.10.4
