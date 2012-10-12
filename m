@@ -1,18 +1,18 @@
-Received: from ch1ehsobe004.messaging.microsoft.com ([216.32.181.184]
- helo=ch1outboundpool.messaging.microsoft.com)
+Received: from va3ehsobe006.messaging.microsoft.com ([216.32.180.16]
+ helo=va3outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TMW3x-0007Bs-6f
- for linux-mtd@lists.infradead.org; Fri, 12 Oct 2012 03:37:25 +0000
+ id 1TMWCj-0007Q8-NZ
+ for linux-mtd@lists.infradead.org; Fri, 12 Oct 2012 03:46:30 +0000
 From: <dinguyen@altera.com>
 To: <linux-mtd@lists.infradead.org>
 Subject: [PATCH] denali: nand: Fix build break for driver when built as a
  module
-Date: Thu, 11 Oct 2012 22:36:56 -0600
-Message-ID: <1350016616-22098-1-git-send-email-dinguyen@altera.com>
+Date: Thu, 11 Oct 2012 22:46:09 -0600
+Message-ID: <1350017169-22166-1-git-send-email-dinguyen@altera.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: sfr@canb.auug.org.au, dinh.linux@gmail.com,
- Dinh Nguyen <dinguyen@altera.com>
+ Dinh Nguyen <dinguyen@altera.com>, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
