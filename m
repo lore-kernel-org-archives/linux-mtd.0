@@ -1,11 +1,11 @@
 Received: from ikel.inah.gob.mx ([201.148.81.60])
  by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TMxnR-0003w9-JT
- for linux-mtd@lists.infradead.org; Sat, 13 Oct 2012 09:14:14 +0000
-Date: Sat, 13 Oct 2012 04:03:50 -0500 (CDT)
+ id 1TMxqy-0004aX-GV
+ for linux-mtd@lists.infradead.org; Sat, 13 Oct 2012 09:17:54 +0000
+Date: Sat, 13 Oct 2012 04:08:18 -0500 (CDT)
 From: CHEVRON TEXACO DEVELOPMENT FUNDS <elba_estrada@inah.gob.mx>
-Message-ID: <1444302763.170800.1350119030764.JavaMail.root@tonali.inah.gob.mx>
-Subject: CONGRATULATIONS!
+Message-ID: <578553053.170803.1350119298603.JavaMail.root@tonali.inah.gob.mx>
+Subject: Attention
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
