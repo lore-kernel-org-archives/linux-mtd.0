@@ -1,25 +1,16 @@
-Received: from mail-vb0-f49.google.com ([209.85.212.49])
+Received: from mail-da0-f49.google.com ([209.85.210.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TMi1w-0006I2-Mo
- for linux-mtd@lists.infradead.org; Fri, 12 Oct 2012 16:24:09 +0000
-Received: by mail-vb0-f49.google.com with SMTP id fo1so3316782vbb.36
- for <linux-mtd@lists.infradead.org>; Fri, 12 Oct 2012 09:24:07 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1350027693-19528-2-git-send-email-u.kleine-koenig@pengutronix.de>
-References: <1349709952-4332-1-git-send-email-u.kleine-koenig@pengutronix.de>
- <1350027693-19528-1-git-send-email-u.kleine-koenig@pengutronix.de>
- <1350027693-19528-2-git-send-email-u.kleine-koenig@pengutronix.de>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Fri, 12 Oct 2012 12:23:47 -0400
-Message-ID: <CAMjpGUd4t4fVeK+OsKGij4LcQS=mL-pGb+vRpT=wjK7Kn+GRJQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mtd/uclinux: add a comment about why uclinux_ram_map
- must not be static
-To: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-mtd@lists.infradead.org, kernel@pengutronix.de,
- Greg Ungerer <gerg@uclinux.org>
+ id 1TMtqY-0005Mr-OA
+ for linux-mtd@lists.infradead.org; Sat, 13 Oct 2012 05:01:12 +0000
+Received: by mail-da0-f49.google.com with SMTP id q27so1710920daj.36
+ for <linux-mtd@lists.infradead.org>; Fri, 12 Oct 2012 22:01:08 -0700 (PDT)
+From: Huang Shijie <shijie8@gmail.com>
+To: dwmw2@infradead.org
+Subject: [PATCH] mtd: gpmi: remove unneccessary header
+Date: Sat, 13 Oct 2012 13:03:29 -0400
+Message-Id: <1350147809-19616-1-git-send-email-shijie8@gmail.com>
+Cc: Huang Shijie <shijie8@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,9 +20,141 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 12, 2012 at 3:41 AM, Uwe Kleine-K=C3=B6nig wrote:
-> I was (at least) the second person trying to fix a warning by sparse, so
-> document in the code why this is a bad idea.
+The whole gpmi-nand driver has turned to pure devicetree supported.
+So the linux/mtd/gpmi-nand.h is not neccessary now. Just remove it,
+and move some macros to the gpmi-nand driver itself.
 
-Acked-by: Mike Frysinger <vapier@gentoo.org>
--mike
+Signed-off-by: Huang Shijie <shijie8@gmail.com>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |    1 -
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    7 +++-
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h |    1 -
+ include/linux/mtd/gpmi-nand.h          |   68 --------------------------------
+ 4 files changed, 6 insertions(+), 71 deletions(-)
+ delete mode 100644 include/linux/mtd/gpmi-nand.h
+
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+index 3502acc..1585c5b 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+@@ -18,7 +18,6 @@
+  * with this program; if not, write to the Free Software Foundation, Inc.,
+  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+  */
+-#include <linux/mtd/gpmi-nand.h>
+ #include <linux/delay.h>
+ #include <linux/clk.h>
+ 
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index e2c56fc..d376198 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -25,7 +25,6 @@
+ #include <linux/slab.h>
+ #include <linux/interrupt.h>
+ #include <linux/module.h>
+-#include <linux/mtd/gpmi-nand.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/pinctrl/consumer.h>
+ #include <linux/of.h>
+@@ -33,6 +32,12 @@
+ #include <linux/of_mtd.h>
+ #include "gpmi-nand.h"
+ 
++/* Resource names for the GPMI NAND driver. */
++#define GPMI_NAND_GPMI_REGS_ADDR_RES_NAME  "gpmi-nand"
++#define GPMI_NAND_BCH_REGS_ADDR_RES_NAME   "bch"
++#define GPMI_NAND_BCH_INTERRUPT_RES_NAME   "bch"
++#define GPMI_NAND_DMA_INTERRUPT_RES_NAME   "gpmi-dma"
++
+ /* add our owner bbt descriptor */
+ static uint8_t scan_ff_pattern[] = { 0xff };
+ static struct nand_bbt_descr gpmi_bbt_descr = {
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+index 7ac25c1..3d93a5e 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+@@ -130,7 +130,6 @@ struct gpmi_nand_data {
+ 	/* System Interface */
+ 	struct device		*dev;
+ 	struct platform_device	*pdev;
+-	struct gpmi_nand_platform_data	*pdata;
+ 
+ 	/* Resources */
+ 	struct resources	resources;
+diff --git a/include/linux/mtd/gpmi-nand.h b/include/linux/mtd/gpmi-nand.h
+deleted file mode 100644
+index ed3c4e0..0000000
+--- a/include/linux/mtd/gpmi-nand.h
++++ /dev/null
+@@ -1,68 +0,0 @@
+-/*
+- * Copyright (C) 2011 Freescale Semiconductor, Inc. All Rights Reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write to the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- */
+-
+-#ifndef __MACH_MXS_GPMI_NAND_H__
+-#define __MACH_MXS_GPMI_NAND_H__
+-
+-/* The size of the resources is fixed. */
+-#define GPMI_NAND_RES_SIZE	6
+-
+-/* Resource names for the GPMI NAND driver. */
+-#define GPMI_NAND_GPMI_REGS_ADDR_RES_NAME  "gpmi-nand"
+-#define GPMI_NAND_GPMI_INTERRUPT_RES_NAME  "GPMI NAND GPMI Interrupt"
+-#define GPMI_NAND_BCH_REGS_ADDR_RES_NAME   "bch"
+-#define GPMI_NAND_BCH_INTERRUPT_RES_NAME   "bch"
+-#define GPMI_NAND_DMA_CHANNELS_RES_NAME    "GPMI NAND DMA Channels"
+-#define GPMI_NAND_DMA_INTERRUPT_RES_NAME   "gpmi-dma"
+-
+-/**
+- * struct gpmi_nand_platform_data - GPMI NAND driver platform data.
+- *
+- * This structure communicates platform-specific information to the GPMI NAND
+- * driver that can't be expressed as resources.
+- *
+- * @platform_init:           A pointer to a function the driver will call to
+- *                           initialize the platform (e.g., set up the pin mux).
+- * @min_prop_delay_in_ns:    Minimum propagation delay of GPMI signals to and
+- *                           from the NAND Flash device, in nanoseconds.
+- * @max_prop_delay_in_ns:    Maximum propagation delay of GPMI signals to and
+- *                           from the NAND Flash device, in nanoseconds.
+- * @max_chip_count:          The maximum number of chips for which the driver
+- *                           should configure the hardware. This value most
+- *                           likely reflects the number of pins that are
+- *                           connected to a NAND Flash device. If this is
+- *                           greater than the SoC hardware can support, the
+- *                           driver will print a message and fail to initialize.
+- * @partitions:              An optional pointer to an array of partition
+- *                           descriptions.
+- * @partition_count:         The number of elements in the partitions array.
+- */
+-struct gpmi_nand_platform_data {
+-	/* SoC hardware information. */
+-	int		(*platform_init)(void);
+-
+-	/* NAND Flash information. */
+-	unsigned int	min_prop_delay_in_ns;
+-	unsigned int	max_prop_delay_in_ns;
+-	unsigned int	max_chip_count;
+-
+-	/* Medium information. */
+-	struct		mtd_partition *partitions;
+-	unsigned	partition_count;
+-};
+-#endif
+-- 
+1.7.4.4
