@@ -1,16 +1,16 @@
-Received: from mail-da0-f49.google.com ([209.85.210.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TNQNA-0001AF-7U
- for linux-mtd@lists.infradead.org; Sun, 14 Oct 2012 15:45:02 +0000
-Received: by mail-da0-f49.google.com with SMTP id q27so2259057daj.36
- for <linux-mtd@lists.infradead.org>; Sun, 14 Oct 2012 08:44:57 -0700 (PDT)
-From: Huang Shijie <shijie8@gmail.com>
-To: dwmw2@infradead.org
-Subject: [PATCH] mtd: use the NAND_STATUS_FAIL to replace the hardcode
-Date: Sun, 14 Oct 2012 23:47:24 -0400
-Message-Id: <1350272844-21866-1-git-send-email-shijie8@gmail.com>
-Cc: Huang Shijie <shijie8@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, dedekind1@gmail.com
+Received: from email2.cablenet.cz ([81.200.48.21])
+ by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TNT4r-0002Md-H4
+ for linux-mtd@lists.infradead.org; Sun, 14 Oct 2012 18:38:21 +0000
+Message-ID: <507B04AA.1050502@vanka.net>
+Date: Sun, 14 Oct 2012 20:30:02 +0200
+From: Michal Vanka <mv@vanka.net>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] Devicetree support for enc28j60 SPI Ethernet chip
+Content-Type: text/plain; charset=ISO-8859-2; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: nios2-dev@sopc.et.ntust.edu.tw, lanconelli.claudio@eptar.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,35 +20,168 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use the NAND_STATUS_FAIL to replace the hardcode "0x01",
-which make the code more readable.
+Hi,
+the following patch adds generic openfirmware/devicetree support to 
+enc28j60 driver.
 
-Signed-off-by: Huang Shijie <shijie8@gmail.com>
----
- drivers/mtd/nand/nand_base.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+It also adds support for custom hardware based (FPGA) "interrupt line 
+deasserter" for processors with level triggered interrupts
+(for example Altera Nios2).
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index d5ece6e..4569174 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -899,7 +899,7 @@ static int __nand_unlock(struct mtd_info *mtd, loff_t ofs,
- 	/* Call wait ready function */
- 	status = chip->waitfunc(mtd, chip);
- 	/* See if device thinks it succeeded */
--	if (status & 0x01) {
-+	if (status & NAND_STATUS_FAIL) {
- 		pr_debug("%s: error status = 0x%08x\n",
- 					__func__, status);
- 		ret = -EIO;
-@@ -1004,7 +1004,7 @@ int nand_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- 	/* Call wait ready function */
- 	status = chip->waitfunc(mtd, chip);
- 	/* See if device thinks it succeeded */
--	if (status & 0x01) {
-+	if (status & NAND_STATUS_FAIL) {
- 		pr_debug("%s: error status = 0x%08x\n",
- 					__func__, status);
- 		ret = -EIO;
--- 
-1.7.4.4
+The interrupt line is deasserted by writing 1 to some output register
+in the address space (this address is configured also through
+devicetree).
+
+Note: The interrupt line in enc28j60 chip can be deasserted by software
+by clearing bit INTIE in the EIE register.
+However this can't be done in interrupt context as the write goes
+through SPI bus.
+
+The patch was tested on custom Altera Nios2 system.
+
+Signed-off-by: Michal Vanka <mv@vanka.net>
+
+diff -uprN 
+a/Documentation/devicetree/bindings/net/microchip-enc28j60.txt 
+b/Documentation/devicetree/bindings/net/microchip-enc28j60.txt
+--- a/Documentation/devicetree/bindings/net/microchip-enc28j60.txt 
+1969-12-31 19:00:00.000000000 -0500
++++ b/Documentation/devicetree/bindings/net/microchip-enc28j60.txt 
+2011-10-14 13:46:58.000000000 -0400
+@@ -0,0 +1,31 @@
++* Microchip enc28j60 Ethernet
++
++Required properties:
++- compatible : Should be "microchip,enc28j60"
++- interrupts : Should contain 1 interrupt.
++- reg : Should be 0
++
++Optional properties:
++- interrupt_deassert_reg : should contain address of additional (FPGA)
++  interrupt deassert hardware for processors with level triggered 
+interrupts
++
++
++Example (for enc28j60 under opencores tinyspi controller):
++
++tiny_spi_1: spi@0x2160 {
++	compatible = "opencores,tiny-spi-1.0", "opencores,tiny-spi-rtlsvn2";
++	reg = < 0x00002160 0x00000020 >;
++	interrupt-parent = < &cpu >;
++	interrupts = < 2 >;
++	clock-frequency = < 100000000 >;
++	baud-width = < 8 >;	/* BAUD_WIDTH type NUMBER */
++	gpios = < &spi1_cs 0 0 >;
++	ethernet: enc28j60@0 {
++		compatible = "microchip,enc28j60";
++		spi-max-frequency = < 20000000 >;
++		reg = < 0 >;
++		interrupts = < 4 >;
++		interrupt_deassert_reg = < 0x00003000 >;
++	};			
++}; //end spi@0x2160 (tiny_spi_1)
++
+diff -uprN a/drivers/net/ethernet/microchip/enc28j60.c 
+b/drivers/net/ethernet/microchip/enc28j60.c
+--- a/drivers/net/ethernet/microchip/enc28j60.c	2011-10-02 
+07:31:43.000000000 -0400
++++ b/drivers/net/ethernet/microchip/enc28j60.c	2011-10-14 
+13:54:15.000000000 -0400
+@@ -32,7 +32,7 @@
+  #include "enc28j60_hw.h"
+
+  #define DRV_NAME	"enc28j60"
+-#define DRV_VERSION	"1.01"
++#define DRV_VERSION	"1.02"
+
+  #define SPI_OPLEN	1
+
+@@ -73,6 +73,7 @@ struct enc28j60_net {
+  	int rxfilter;
+  	u32 msg_enable;
+  	u8 spi_transfer_buf[SPI_TRANSFER_BUF_LEN];
++	u8 *interrupt_deassert_reg;
+  };
+
+  /* use ethtool to change the level for any given device */
+@@ -1320,6 +1321,10 @@ static irqreturn_t enc28j60_irq(int irq,
+  	 * Remember that we access enc28j60 registers through SPI bus
+  	 * via spi_sync() call.
+  	 */
++
++	if(priv->interrupt_deassert_reg)
++		writeb(1,priv->interrupt_deassert_reg);
++
+  	schedule_work(&priv->irq_work);
+
+  	return IRQ_HANDLED;
+@@ -1541,6 +1546,36 @@ static const struct net_device_ops enc28
+  	.ndo_validate_addr	= eth_validate_addr,
+  };
+
++#ifdef CONFIG_OF
++#include <linux/of.h>
++#include <linux/ioport.h>
++#include <linux/io.h>
++
++static int __devinit enc28j60_of_probe(struct spi_device *spi,struct 
+enc28j60_net *priv)
++{
++
++	u8 *reg;
++	const __be32 *prop;
++	int len;
++	
++	if (!of_device_is_available(spi->dev.of_node))
++		return -ENODEV;	
++
++	prop = of_get_property(spi->dev.of_node, "interrupt_deassert_reg", &len);
++	
++	if(prop && len>=sizeof(__be32))
++		reg = be32_to_cpup(prop);
++	else
++		return -ENODEV;
++
++	if(!devm_request_mem_region(&spi->dev, reg, 4, DRV_NAME))
++		return -ENOMEM;
++
++	priv->interrupt_deassert_reg = devm_ioremap_nocache(&spi->dev, reg, 4);
++	return 0;	
++}
++#endif
++
+  static int __devinit enc28j60_probe(struct spi_device *spi)
+  {
+  	struct net_device *dev;
+@@ -1569,6 +1604,10 @@ static int __devinit enc28j60_probe(stru
+  	INIT_WORK(&priv->restart_work, enc28j60_restart_work_handler);
+  	dev_set_drvdata(&spi->dev, priv);	/* spi to priv reference */
+  	SET_NETDEV_DEV(dev, &spi->dev);
++	priv->interrupt_deassert_reg = 0;
++#ifdef CONFIG_OF
++	enc28j60_of_probe(spi,priv);
++#endif	
+
+  	if (!enc28j60_chipset_init(dev)) {
+  		if (netif_msg_probe(priv))
+@@ -1631,10 +1670,20 @@ static int __devexit enc28j60_remove(str
+  	return 0;
+  }
+
++#ifdef CONFIG_OF
++static const struct of_device_id enc28j60_dt_ids[] = {
++	{ .compatible = "microchip,enc28j60", },
++	{ /* sentinel */ }
++};
++#else
++#define enc28j60_dt_ids NULL
++#endif
++
+  static struct spi_driver enc28j60_driver = {
+  	.driver = {
+  		   .name = DRV_NAME,
+  		   .owner = THIS_MODULE,
++		   .of_match_table = enc28j60_dt_ids,
+  	 },
+  	.probe = enc28j60_probe,
+  	.remove = __devexit_p(enc28j60_remove),
