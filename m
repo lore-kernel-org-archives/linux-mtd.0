@@ -1,20 +1,22 @@
-Received: from 6.mo3.mail-out.ovh.net ([188.165.43.173]
- helo=mo3.mail-out.ovh.net)
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TN0WM-0002qr-My
- for linux-mtd@lists.infradead.org; Sat, 13 Oct 2012 12:08:49 +0000
-Received: from mail637.ha.ovh.net (b7.ovh.net [213.186.33.57])
- by mo3.mail-out.ovh.net (Postfix) with SMTP id 9D1CCFF8876
- for <linux-mtd@lists.infradead.org>; Sat, 13 Oct 2012 14:18:00 +0200 (CEST)
-From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-To: linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 1/1] MTD: atmel_nand: use devm_xxx gpio kzalloc,
- gpio and ioremap
-Date: Sat, 13 Oct 2012 14:06:22 +0200
-Message-Id: <1350129982-12106-1-git-send-email-plagnioj@jcrosoft.com>
-Cc: linux-mtd@lists.infradead.org,
- Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
- Nicolas Ferre <nicolas.ferre@atmel.com>
+Received: from mail-pa0-f49.google.com ([209.85.220.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TNKEA-0005RI-5C
+ for linux-mtd@lists.infradead.org; Sun, 14 Oct 2012 09:11:19 +0000
+Received: by mail-pa0-f49.google.com with SMTP id bi5so4186780pad.36
+ for <linux-mtd@lists.infradead.org>; Sun, 14 Oct 2012 02:11:15 -0700 (PDT)
+Message-ID: <507A8182.8070003@gmail.com>
+Date: Sun, 14 Oct 2012 14:40:26 +0530
+From: Vikram Narayanan <vikram186@gmail.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH RESEND 9/9] mtd: mtd_oobtest: printk -> pr_{info, err,
+ crit}
+References: <5075B105.4080701@gmail.com> <5075B36A.3050009@gmail.com>
+In-Reply-To: <5075B36A.3050009@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,338 +26,560 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-this will allow to simply the error and remove path
+>From a1969e36d924285da0200c8b932b79165ff7df87 Mon Sep 17 00:00:00 2001
+From: Brian Norris <computersforpeace@gmail.com>
+Date: Wed, 26 Sep 2012 16:37:02 +0000
+Subject: [PATCH RESEND 9/9] mtd: mtd_oobtest: printk -> pr_{info,err,crit}
 
-Cc: linux-mtd@lists.infradead.org
-Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
-Signed-off-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+Use pr_info() and pr_err() while defining pr_fmt(). This saves a few
+characters, joins a few lines, and makes the code a little more readable
+(and grep-able).
+
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Signed-off-by: Vikram Narayanan <vikram186@gmail.com>
 ---
- drivers/mtd/nand/atmel_nand.c |  163 ++++++++++++++---------------------------
- 1 file changed, 54 insertions(+), 109 deletions(-)
+Posting this patch with the headers, as Brian is the original author.
+Please take this one and discard the previously posted patch.
 
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index 92623ac..2b43656 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -364,43 +364,33 @@ static void __devinit __iomem *pmecc_get_alpha_to(struct atmel_nand_host *host)
- 			table_size * sizeof(int16_t);
- }
+ drivers/mtd/tests/mtd_oobtest.c |  171 +++++++++++++++++++--------------------
+ 1 files changed, 84 insertions(+), 87 deletions(-)
+
+diff --git a/drivers/mtd/tests/mtd_oobtest.c b/drivers/mtd/tests/mtd_oobtest.c
+index ed9b628..e86bb29 100644
+--- a/drivers/mtd/tests/mtd_oobtest.c
++++ b/drivers/mtd/tests/mtd_oobtest.c
+@@ -19,6 +19,8 @@
+  * Author: Adrian Hunter <ext-adrian.hunter@nokia.com>
+  */
  
--static void pmecc_data_free(struct atmel_nand_host *host)
--{
--	kfree(host->pmecc_partial_syn);
--	kfree(host->pmecc_si);
--	kfree(host->pmecc_lmu);
--	kfree(host->pmecc_smu);
--	kfree(host->pmecc_mu);
--	kfree(host->pmecc_dmu);
--	kfree(host->pmecc_delta);
--}
--
- static int __devinit pmecc_data_alloc(struct atmel_nand_host *host)
- {
- 	const int cap = host->pmecc_corr_cap;
-+	int size;
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 +
-+	size = (2 * cap + 1) * sizeof(int16_t);
-+	host->pmecc_partial_syn = devm_kzalloc(host->dev, size, GFP_KERNEL);
-+	host->pmecc_si = devm_kzalloc(host->dev, size, GFP_KERNEL);
-+	host->pmecc_lmu = devm_kzalloc(host->dev,
-+			(cap + 1) * sizeof(int16_t), GFP_KERNEL);
-+	host->pmecc_smu = devm_kzalloc(host->dev,
-+			(cap + 2) * (2 * cap + 1) * sizeof(int16_t), GFP_KERNEL);
-+	size = (cap + 1) * sizeof(int);
-+	host->pmecc_mu = devm_kzalloc(host->dev, size, GFP_KERNEL);
-+	host->pmecc_dmu = devm_kzalloc(host->dev, size, GFP_KERNEL);
-+	host->pmecc_delta = devm_kzalloc(host->dev, size, GFP_KERNEL);
-+
-+	if (!host->pmecc_partial_syn ||
-+		!host->pmecc_si ||
-+		!host->pmecc_lmu ||
-+		!host->pmecc_smu ||
-+		!host->pmecc_mu ||
-+		!host->pmecc_dmu ||
-+		!host->pmecc_delta)
-+		return -ENOMEM;
+ #include <asm/div64.h>
+ #include <linux/init.h>
+ #include <linux/module.h>
+@@ -28,8 +30,6 @@
+ #include <linux/slab.h>
+ #include <linux/sched.h>
  
--	host->pmecc_partial_syn = kzalloc((2 * cap + 1) * sizeof(int16_t),
--					GFP_KERNEL);
--	host->pmecc_si = kzalloc((2 * cap + 1) * sizeof(int16_t), GFP_KERNEL);
--	host->pmecc_lmu = kzalloc((cap + 1) * sizeof(int16_t), GFP_KERNEL);
--	host->pmecc_smu = kzalloc((cap + 2) * (2 * cap + 1) * sizeof(int16_t),
--					GFP_KERNEL);
--	host->pmecc_mu = kzalloc((cap + 1) * sizeof(int), GFP_KERNEL);
--	host->pmecc_dmu = kzalloc((cap + 1) * sizeof(int), GFP_KERNEL);
--	host->pmecc_delta = kzalloc((cap + 1) * sizeof(int), GFP_KERNEL);
+-#define PRINT_PREF KERN_INFO "mtd_oobtest: "
 -
--	if (host->pmecc_partial_syn &&
--			host->pmecc_si &&
--			host->pmecc_lmu &&
--			host->pmecc_smu &&
--			host->pmecc_mu &&
--			host->pmecc_dmu &&
--			host->pmecc_delta)
--		return 0;
--
--	/* error happened */
--	pmecc_data_free(host);
--	return -ENOMEM;
-+	return 0;
- }
+ static int dev = -EINVAL;
+ module_param(dev, int, S_IRUGO);
+ MODULE_PARM_DESC(dev, "MTD device number to use");
+@@ -80,13 +80,12 @@ static int erase_eraseblock(int ebnum)
  
- static void pmecc_gen_syndrome(struct mtd_info *mtd, int sector)
-@@ -923,27 +913,25 @@ static int __init atmel_pmecc_nand_init_params(struct platform_device *pdev,
- 		return 0;
+ 	err = mtd_erase(mtd, &ei);
+ 	if (err) {
+-		printk(PRINT_PREF "error %d while erasing EB %d\n", err, ebnum);
++		pr_err("error %d while erasing EB %d\n", err, ebnum);
+ 		return err;
  	}
  
--	host->ecc = ioremap(regs->start, resource_size(regs));
-+	host->ecc = devm_request_and_ioremap(&pdev->dev, regs);
- 	if (host->ecc == NULL) {
- 		dev_err(host->dev, "ioremap failed\n");
- 		err_no = -EIO;
--		goto err_pmecc_ioremap;
-+		goto err;
- 	}
- 
- 	regs_pmerr = platform_get_resource(pdev, IORESOURCE_MEM, 2);
- 	regs_rom = platform_get_resource(pdev, IORESOURCE_MEM, 3);
- 	if (regs_pmerr && regs_rom) {
--		host->pmerrloc_base = ioremap(regs_pmerr->start,
--			resource_size(regs_pmerr));
--		host->pmecc_rom_base = ioremap(regs_rom->start,
--			resource_size(regs_rom));
-+		host->pmerrloc_base = devm_request_and_ioremap(&pdev->dev, regs_pmerr);
-+		host->pmecc_rom_base = devm_request_and_ioremap(&pdev->dev, regs_rom);
- 	}
- 
- 	if (!host->pmerrloc_base || !host->pmecc_rom_base) {
- 		dev_err(host->dev,
- 			"Can not get I/O resource for PMECC ERRLOC controller or ROM!\n");
- 		err_no = -EIO;
--		goto err_pmloc_ioremap;
-+		goto err;
- 	}
- 
- 	/* ECC is calculated for the whole page (1 step) */
-@@ -968,7 +956,7 @@ static int __init atmel_pmecc_nand_init_params(struct platform_device *pdev,
- 		if (nand_chip->ecc.bytes > mtd->oobsize - 2) {
- 			dev_err(host->dev, "No room for ECC bytes\n");
- 			err_no = -EINVAL;
--			goto err_no_ecc_room;
-+			goto err;
- 		}
- 		pmecc_config_ecc_layout(&atmel_pmecc_oobinfo,
- 					mtd->oobsize,
-@@ -993,7 +981,7 @@ static int __init atmel_pmecc_nand_init_params(struct platform_device *pdev,
- 	if (err_no) {
- 		dev_err(host->dev,
- 				"Cannot allocate memory for PMECC computation!\n");
--		goto err_pmecc_data_alloc;
-+		goto err;
- 	}
- 
- 	nand_chip->ecc.read_page = atmel_nand_pmecc_read_page;
-@@ -1003,15 +991,7 @@ static int __init atmel_pmecc_nand_init_params(struct platform_device *pdev,
- 
- 	return 0;
- 
--err_pmecc_data_alloc:
--err_no_ecc_room:
--err_pmloc_ioremap:
--	iounmap(host->ecc);
--	if (host->pmerrloc_base)
--		iounmap(host->pmerrloc_base);
--	if (host->pmecc_rom_base)
--		iounmap(host->pmecc_rom_base);
--err_pmecc_ioremap:
-+err:
- 	return err_no;
- }
- 
-@@ -1315,7 +1295,7 @@ static int __init atmel_hw_nand_init_params(struct platform_device *pdev,
- 		return 0;
- 	}
- 
--	host->ecc = ioremap(regs->start, resource_size(regs));
-+	host->ecc = devm_request_and_ioremap(&pdev->dev, regs);
- 	if (host->ecc == NULL) {
- 		dev_err(host->dev, "ioremap failed\n");
+ 	if (ei.state == MTD_ERASE_FAILED) {
+-		printk(PRINT_PREF "some erase error occurred at EB %d\n",
+-		       ebnum);
++		pr_err("some erase error occurred at EB %d\n", ebnum);
  		return -EIO;
-@@ -1380,20 +1360,19 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
  	}
  
- 	/* Allocate memory for the device structure (and zero it) */
--	host = kzalloc(sizeof(struct atmel_nand_host), GFP_KERNEL);
-+	host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
- 	if (!host) {
- 		printk(KERN_ERR "atmel_nand: failed to allocate device structure.\n");
+@@ -98,7 +97,7 @@ static int erase_whole_device(void)
+ 	int err;
+ 	unsigned int i;
+ 
+-	printk(PRINT_PREF "erasing whole device\n");
++	pr_info("erasing whole device\n");
+ 	for (i = 0; i < ebcnt; ++i) {
+ 		if (bbt[i])
+ 			continue;
+@@ -107,7 +106,7 @@ static int erase_whole_device(void)
+ 			return err;
+ 		cond_resched();
+ 	}
+-	printk(PRINT_PREF "erased %u eraseblocks\n", i);
++	pr_info("erased %u eraseblocks\n", i);
+ 	return 0;
+ }
+ 
+@@ -141,9 +140,9 @@ static int write_eraseblock(int ebnum)
+ 		ops.oobbuf    = writebuf;
+ 		err = mtd_write_oob(mtd, addr, &ops);
+ 		if (err || ops.oobretlen != use_len) {
+-			printk(PRINT_PREF "error: writeoob failed at %#llx\n",
++			pr_err("error: writeoob failed at %#llx\n",
+ 			       (long long)addr);
+-			printk(PRINT_PREF "error: use_len %d, use_offset %d\n",
++			pr_err("error: use_len %d, use_offset %d\n",
+ 			       use_len, use_offset);
+ 			errcnt += 1;
+ 			return err ? err : -1;
+@@ -160,7 +159,7 @@ static int write_whole_device(void)
+ 	int err;
+ 	unsigned int i;
+ 
+-	printk(PRINT_PREF "writing OOBs of whole device\n");
++	pr_info("writing OOBs of whole device\n");
+ 	for (i = 0; i < ebcnt; ++i) {
+ 		if (bbt[i])
+ 			continue;
+@@ -168,10 +167,10 @@ static int write_whole_device(void)
+ 		if (err)
+ 			return err;
+ 		if (i % 256 == 0)
+-			printk(PRINT_PREF "written up to eraseblock %u\n", i);
++			pr_info("written up to eraseblock %u\n", i);
+ 		cond_resched();
+ 	}
+-	printk(PRINT_PREF "written %u eraseblocks\n", i);
++	pr_info("written %u eraseblocks\n", i);
+ 	return 0;
+ }
+ 
+@@ -194,17 +193,17 @@ static int verify_eraseblock(int ebnum)
+ 		ops.oobbuf    = readbuf;
+ 		err = mtd_read_oob(mtd, addr, &ops);
+ 		if (err || ops.oobretlen != use_len) {
+-			printk(PRINT_PREF "error: readoob failed at %#llx\n",
++			pr_err("error: readoob failed at %#llx\n",
+ 			       (long long)addr);
+ 			errcnt += 1;
+ 			return err ? err : -1;
+ 		}
+ 		if (memcmp(readbuf, writebuf, use_len)) {
+-			printk(PRINT_PREF "error: verify failed at %#llx\n",
++			pr_err("error: verify failed at %#llx\n",
+ 			       (long long)addr);
+ 			errcnt += 1;
+ 			if (errcnt > 1000) {
+-				printk(PRINT_PREF "error: too many errors\n");
++				pr_err("error: too many errors\n");
+ 				return -1;
+ 			}
+ 		}
+@@ -221,29 +220,28 @@ static int verify_eraseblock(int ebnum)
+ 			ops.oobbuf    = readbuf;
+ 			err = mtd_read_oob(mtd, addr, &ops);
+ 			if (err || ops.oobretlen != mtd->ecclayout->oobavail) {
+-				printk(PRINT_PREF "error: readoob failed at "
+-				       "%#llx\n", (long long)addr);
++				pr_err("error: readoob failed at %#llx\n",
++						(long long)addr);
+ 				errcnt += 1;
+ 				return err ? err : -1;
+ 			}
+ 			if (memcmp(readbuf + use_offset, writebuf, use_len)) {
+-				printk(PRINT_PREF "error: verify failed at "
+-				       "%#llx\n", (long long)addr);
++				pr_err("error: verify failed at %#llx\n",
++						(long long)addr);
+ 				errcnt += 1;
+ 				if (errcnt > 1000) {
+-					printk(PRINT_PREF "error: too many "
+-					       "errors\n");
++					pr_err("error: too many errors\n");
+ 					return -1;
+ 				}
+ 			}
+ 			for (k = 0; k < use_offset; ++k)
+ 				if (readbuf[k] != 0xff) {
+-					printk(PRINT_PREF "error: verify 0xff "
++					pr_err("error: verify 0xff "
+ 					       "failed at %#llx\n",
+ 					       (long long)addr);
+ 					errcnt += 1;
+ 					if (errcnt > 1000) {
+-						printk(PRINT_PREF "error: too "
++						pr_err("error: too "
+ 						       "many errors\n");
+ 						return -1;
+ 					}
+@@ -251,12 +249,12 @@ static int verify_eraseblock(int ebnum)
+ 			for (k = use_offset + use_len;
+ 			     k < mtd->ecclayout->oobavail; ++k)
+ 				if (readbuf[k] != 0xff) {
+-					printk(PRINT_PREF "error: verify 0xff "
++					pr_err("error: verify 0xff "
+ 					       "failed at %#llx\n",
+ 					       (long long)addr);
+ 					errcnt += 1;
+ 					if (errcnt > 1000) {
+-						printk(PRINT_PREF "error: too "
++						pr_err("error: too "
+ 						       "many errors\n");
+ 						return -1;
+ 					}
+@@ -286,17 +284,17 @@ static int verify_eraseblock_in_one_go(int ebnum)
+ 	ops.oobbuf    = readbuf;
+ 	err = mtd_read_oob(mtd, addr, &ops);
+ 	if (err || ops.oobretlen != len) {
+-		printk(PRINT_PREF "error: readoob failed at %#llx\n",
++		pr_err("error: readoob failed at %#llx\n",
+ 		       (long long)addr);
+ 		errcnt += 1;
+ 		return err ? err : -1;
+ 	}
+ 	if (memcmp(readbuf, writebuf, len)) {
+-		printk(PRINT_PREF "error: verify failed at %#llx\n",
++		pr_err("error: verify failed at %#llx\n",
+ 		       (long long)addr);
+ 		errcnt += 1;
+ 		if (errcnt > 1000) {
+-			printk(PRINT_PREF "error: too many errors\n");
++			pr_err("error: too many errors\n");
+ 			return -1;
+ 		}
+ 	}
+@@ -309,7 +307,7 @@ static int verify_all_eraseblocks(void)
+ 	int err;
+ 	unsigned int i;
+ 
+-	printk(PRINT_PREF "verifying all eraseblocks\n");
++	pr_info("verifying all eraseblocks\n");
+ 	for (i = 0; i < ebcnt; ++i) {
+ 		if (bbt[i])
+ 			continue;
+@@ -317,10 +315,10 @@ static int verify_all_eraseblocks(void)
+ 		if (err)
+ 			return err;
+ 		if (i % 256 == 0)
+-			printk(PRINT_PREF "verified up to eraseblock %u\n", i);
++			pr_info("verified up to eraseblock %u\n", i);
+ 		cond_resched();
+ 	}
+-	printk(PRINT_PREF "verified %u eraseblocks\n", i);
++	pr_info("verified %u eraseblocks\n", i);
+ 	return 0;
+ }
+ 
+@@ -331,7 +329,7 @@ static int is_block_bad(int ebnum)
+ 
+ 	ret = mtd_block_isbad(mtd, addr);
+ 	if (ret)
+-		printk(PRINT_PREF "block %d is bad\n", ebnum);
++		pr_info("block %d is bad\n", ebnum);
+ 	return ret;
+ }
+ 
+@@ -341,18 +339,18 @@ static int scan_for_bad_eraseblocks(void)
+ 
+ 	bbt = kmalloc(ebcnt, GFP_KERNEL);
+ 	if (!bbt) {
+-		printk(PRINT_PREF "error: cannot allocate memory\n");
++		pr_err("error: cannot allocate memory\n");
  		return -ENOMEM;
  	}
  
--	host->io_phys = (dma_addr_t)mem->start;
--
--	host->io_base = ioremap(mem->start, resource_size(mem));
-+	host->io_base = devm_request_and_ioremap(&pdev->dev, mem);
- 	if (host->io_base == NULL) {
- 		printk(KERN_ERR "atmel_nand: ioremap failed\n");
- 		res = -EIO;
- 		goto err_nand_ioremap;
+-	printk(PRINT_PREF "scanning for bad eraseblocks\n");
++	pr_info("scanning for bad eraseblocks\n");
+ 	for (i = 0; i < ebcnt; ++i) {
+ 		bbt[i] = is_block_bad(i) ? 1 : 0;
+ 		if (bbt[i])
+ 			bad += 1;
+ 		cond_resched();
  	}
-+	host->io_phys = (dma_addr_t)mem->start;
- 
- 	mtd = &host->mtd;
- 	nand_chip = &host->nand_chip;
-@@ -1401,7 +1380,7 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
- 	if (pdev->dev.of_node) {
- 		res = atmel_of_init_port(host, pdev->dev.of_node);
- 		if (res)
--			goto err_ecc_ioremap;
-+			goto err_nand_ioremap;
- 	} else {
- 		memcpy(&host->board, pdev->dev.platform_data,
- 		       sizeof(struct atmel_nand_data));
-@@ -1420,44 +1399,42 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
- 	if (IS_ERR(pinctrl)) {
- 		dev_err(host->dev, "Failed to request pinctrl\n");
- 		res = PTR_ERR(pinctrl);
--		goto err_ecc_ioremap;
-+		goto err_nand_ioremap;
- 	}
- 
- 	if (gpio_is_valid(host->board.rdy_pin)) {
--		res = gpio_request(host->board.rdy_pin, "nand_rdy");
-+		res = devm_gpio_request(&pdev->dev,
-+				host->board.rdy_pin, "nand_rdy");
- 		if (res < 0) {
- 			dev_err(&pdev->dev,
--				"can't request rdy gpio %d\n",
--				host->board.rdy_pin);
--			goto err_ecc_ioremap;
-+				"can't request rdy gpio %d\n", host->board.rdy_pin);
-+			goto err_nand_ioremap;
- 		}
- 
- 		res = gpio_direction_input(host->board.rdy_pin);
- 		if (res < 0) {
- 			dev_err(&pdev->dev,
--				"can't request input direction rdy gpio %d\n",
--				host->board.rdy_pin);
--			goto err_ecc_ioremap;
-+				"can't request input direction rdy gpio %d\n", host->board.rdy_pin);
-+			goto err_nand_ioremap;
- 		}
- 
- 		nand_chip->dev_ready = atmel_nand_device_ready;
- 	}
- 
- 	if (gpio_is_valid(host->board.enable_pin)) {
--		res = gpio_request(host->board.enable_pin, "nand_enable");
-+		res = devm_gpio_request(&pdev->dev,
-+				host->board.enable_pin, "nand_enable");
- 		if (res < 0) {
- 			dev_err(&pdev->dev,
--				"can't request enable gpio %d\n",
--				host->board.enable_pin);
--			goto err_ecc_ioremap;
-+				"can't request enable gpio %d\n", host->board.enable_pin);
-+			goto err_nand_ioremap;
- 		}
- 
- 		res = gpio_direction_output(host->board.enable_pin, 1);
- 		if (res < 0) {
- 			dev_err(&pdev->dev,
--				"can't request output direction enable gpio %d\n",
--				host->board.enable_pin);
--			goto err_ecc_ioremap;
-+				"can't request output direction enable gpio %d\n", host->board.enable_pin);
-+			goto err_nand_ioremap;
- 		}
- 	}
- 
-@@ -1474,19 +1451,18 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
- 	atmel_nand_enable(host);
- 
- 	if (gpio_is_valid(host->board.det_pin)) {
--		res = gpio_request(host->board.det_pin, "nand_det");
-+		res = devm_gpio_request(&pdev->dev,
-+				host->board.det_pin, "nand_det");
- 		if (res < 0) {
- 			dev_err(&pdev->dev,
--				"can't request det gpio %d\n",
--				host->board.det_pin);
-+				"can't request det gpio %d\n", host->board.det_pin);
- 			goto err_no_card;
- 		}
- 
- 		res = gpio_direction_input(host->board.det_pin);
- 		if (res < 0) {
- 			dev_err(&pdev->dev,
--				"can't request input direction det gpio %d\n",
--				host->board.det_pin);
-+				"can't request input direction det gpio %d\n", host->board.det_pin);
- 			goto err_no_card;
- 		}
- 
-@@ -1552,16 +1528,8 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
- 		return res;
- 
- err_scan_tail:
--	if (host->has_pmecc && host->nand_chip.ecc.mode == NAND_ECC_HW) {
-+	if (host->has_pmecc && host->nand_chip.ecc.mode == NAND_ECC_HW)
- 		pmecc_writel(host->ecc, CTRL, PMECC_CTRL_DISABLE);
--		pmecc_data_free(host);
--	}
--	if (host->ecc)
--		iounmap(host->ecc);
--	if (host->pmerrloc_base)
--		iounmap(host->pmerrloc_base);
--	if (host->pmecc_rom_base)
--		iounmap(host->pmecc_rom_base);
- err_hw_ecc:
- err_scan_ident:
- err_no_card:
-@@ -1569,10 +1537,7 @@ err_no_card:
- 	platform_set_drvdata(pdev, NULL);
- 	if (host->dma_chan)
- 		dma_release_channel(host->dma_chan);
--err_ecc_ioremap:
--	iounmap(host->io_base);
- err_nand_ioremap:
--	kfree(host);
- 	return res;
- }
- 
-@@ -1592,31 +1557,11 @@ static int __exit atmel_nand_remove(struct platform_device *pdev)
- 		pmecc_writel(host->ecc, CTRL, PMECC_CTRL_DISABLE);
- 		pmerrloc_writel(host->pmerrloc_base, ELDIS,
- 				PMERRLOC_DISABLE);
--		pmecc_data_free(host);
- 	}
- 
--	if (gpio_is_valid(host->board.det_pin))
--		gpio_free(host->board.det_pin);
--
--	if (gpio_is_valid(host->board.enable_pin))
--		gpio_free(host->board.enable_pin);
--
--	if (gpio_is_valid(host->board.rdy_pin))
--		gpio_free(host->board.rdy_pin);
--
--	if (host->ecc)
--		iounmap(host->ecc);
--	if (host->pmecc_rom_base)
--		iounmap(host->pmecc_rom_base);
--	if (host->pmerrloc_base)
--		iounmap(host->pmerrloc_base);
--
- 	if (host->dma_chan)
- 		dma_release_channel(host->dma_chan);
- 
--	iounmap(host->io_base);
--	kfree(host);
--
+-	printk(PRINT_PREF "scanned %d eraseblocks, %d are bad\n", i, bad);
++	pr_info("scanned %d eraseblocks, %d are bad\n", i, bad);
  	return 0;
  }
  
+@@ -368,22 +366,22 @@ static int __init mtd_oobtest_init(void)
+ 	printk(KERN_INFO "=================================================\n");
+ 
+ 	if (dev < 0) {
+-		printk(PRINT_PREF "Please specify a valid mtd-device via module paramter\n");
+-		printk(KERN_CRIT "CAREFUL: This test wipes all data on the specified MTD device!\n");
++		pr_info("Please specify a valid mtd-device via module paramter\n");
++		pr_crit(KERN_CRIT "CAREFUL: This test wipes all data on the specified MTD device!\n");
+ 		return -EINVAL;
+ 	}
+ 
+-	printk(PRINT_PREF "MTD device: %d\n", dev);
++	pr_info("MTD device: %d\n", dev);
+ 
+ 	mtd = get_mtd_device(NULL, dev);
+ 	if (IS_ERR(mtd)) {
+ 		err = PTR_ERR(mtd);
+-		printk(PRINT_PREF "error: cannot get MTD device\n");
++		pr_err("error: cannot get MTD device\n");
+ 		return err;
+ 	}
+ 
+ 	if (mtd->type != MTD_NANDFLASH) {
+-		printk(PRINT_PREF "this test requires NAND flash\n");
++		pr_info("this test requires NAND flash\n");
+ 		goto out;
+ 	}
+ 
+@@ -392,7 +390,7 @@ static int __init mtd_oobtest_init(void)
+ 	ebcnt = tmp;
+ 	pgcnt = mtd->erasesize / mtd->writesize;
+ 
+-	printk(PRINT_PREF "MTD device size %llu, eraseblock size %u, "
++	pr_info("MTD device size %llu, eraseblock size %u, "
+ 	       "page size %u, count of eraseblocks %u, pages per "
+ 	       "eraseblock %u, OOB size %u\n",
+ 	       (unsigned long long)mtd->size, mtd->erasesize,
+@@ -401,12 +399,12 @@ static int __init mtd_oobtest_init(void)
+ 	err = -ENOMEM;
+ 	readbuf = kmalloc(mtd->erasesize, GFP_KERNEL);
+ 	if (!readbuf) {
+-		printk(PRINT_PREF "error: cannot allocate memory\n");
++		pr_err("error: cannot allocate memory\n");
+ 		goto out;
+ 	}
+ 	writebuf = kmalloc(mtd->erasesize, GFP_KERNEL);
+ 	if (!writebuf) {
+-		printk(PRINT_PREF "error: cannot allocate memory\n");
++		pr_err("error: cannot allocate memory\n");
+ 		goto out;
+ 	}
+ 
+@@ -420,7 +418,7 @@ static int __init mtd_oobtest_init(void)
+ 	vary_offset = 0;
+ 
+ 	/* First test: write all OOB, read it back and verify */
+-	printk(PRINT_PREF "test 1 of 5\n");
++	pr_info("test 1 of 5\n");
+ 
+ 	err = erase_whole_device();
+ 	if (err)
+@@ -440,7 +438,7 @@ static int __init mtd_oobtest_init(void)
+ 	 * Second test: write all OOB, a block at a time, read it back and
+ 	 * verify.
+ 	 */
+-	printk(PRINT_PREF "test 2 of 5\n");
++	pr_info("test 2 of 5\n");
+ 
+ 	err = erase_whole_device();
+ 	if (err)
+@@ -453,7 +451,7 @@ static int __init mtd_oobtest_init(void)
+ 
+ 	/* Check all eraseblocks */
+ 	simple_srand(3);
+-	printk(PRINT_PREF "verifying all eraseblocks\n");
++	pr_info("verifying all eraseblocks\n");
+ 	for (i = 0; i < ebcnt; ++i) {
+ 		if (bbt[i])
+ 			continue;
+@@ -461,16 +459,16 @@ static int __init mtd_oobtest_init(void)
+ 		if (err)
+ 			goto out;
+ 		if (i % 256 == 0)
+-			printk(PRINT_PREF "verified up to eraseblock %u\n", i);
++			pr_info("verified up to eraseblock %u\n", i);
+ 		cond_resched();
+ 	}
+-	printk(PRINT_PREF "verified %u eraseblocks\n", i);
++	pr_info("verified %u eraseblocks\n", i);
+ 
+ 	/*
+ 	 * Third test: write OOB at varying offsets and lengths, read it back
+ 	 * and verify.
+ 	 */
+-	printk(PRINT_PREF "test 3 of 5\n");
++	pr_info("test 3 of 5\n");
+ 
+ 	err = erase_whole_device();
+ 	if (err)
+@@ -503,7 +501,7 @@ static int __init mtd_oobtest_init(void)
+ 	vary_offset = 0;
+ 
+ 	/* Fourth test: try to write off end of device */
+-	printk(PRINT_PREF "test 4 of 5\n");
++	pr_info("test 4 of 5\n");
+ 
+ 	err = erase_whole_device();
+ 	if (err)
+@@ -522,14 +520,14 @@ static int __init mtd_oobtest_init(void)
+ 	ops.ooboffs   = mtd->ecclayout->oobavail;
+ 	ops.datbuf    = NULL;
+ 	ops.oobbuf    = writebuf;
+-	printk(PRINT_PREF "attempting to start write past end of OOB\n");
+-	printk(PRINT_PREF "an error is expected...\n");
++	pr_info("attempting to start write past end of OOB\n");
++	pr_info("an error is expected...\n");
+ 	err = mtd_write_oob(mtd, addr0, &ops);
+ 	if (err) {
+-		printk(PRINT_PREF "error occurred as expected\n");
++		pr_info("error occurred as expected\n");
+ 		err = 0;
+ 	} else {
+-		printk(PRINT_PREF "error: can write past end of OOB\n");
++		pr_err("error: can write past end of OOB\n");
+ 		errcnt += 1;
+ 	}
+ 
+@@ -542,19 +540,19 @@ static int __init mtd_oobtest_init(void)
+ 	ops.ooboffs   = mtd->ecclayout->oobavail;
+ 	ops.datbuf    = NULL;
+ 	ops.oobbuf    = readbuf;
+-	printk(PRINT_PREF "attempting to start read past end of OOB\n");
+-	printk(PRINT_PREF "an error is expected...\n");
++	pr_info("attempting to start read past end of OOB\n");
++	pr_info("an error is expected...\n");
+ 	err = mtd_read_oob(mtd, addr0, &ops);
+ 	if (err) {
+-		printk(PRINT_PREF "error occurred as expected\n");
++		pr_info("error occurred as expected\n");
+ 		err = 0;
+ 	} else {
+-		printk(PRINT_PREF "error: can read past end of OOB\n");
++		pr_err("error: can read past end of OOB\n");
+ 		errcnt += 1;
+ 	}
+ 
+ 	if (bbt[ebcnt - 1])
+-		printk(PRINT_PREF "skipping end of device tests because last "
++		pr_info("skipping end of device tests because last "
+ 		       "block is bad\n");
+ 	else {
+ 		/* Attempt to write off end of device */
+@@ -566,14 +564,14 @@ static int __init mtd_oobtest_init(void)
+ 		ops.ooboffs   = 0;
+ 		ops.datbuf    = NULL;
+ 		ops.oobbuf    = writebuf;
+-		printk(PRINT_PREF "attempting to write past end of device\n");
+-		printk(PRINT_PREF "an error is expected...\n");
++		pr_info("attempting to write past end of device\n");
++		pr_info("an error is expected...\n");
+ 		err = mtd_write_oob(mtd, mtd->size - mtd->writesize, &ops);
+ 		if (err) {
+-			printk(PRINT_PREF "error occurred as expected\n");
++			pr_info("error occurred as expected\n");
+ 			err = 0;
+ 		} else {
+-			printk(PRINT_PREF "error: wrote past end of device\n");
++			pr_err("error: wrote past end of device\n");
+ 			errcnt += 1;
+ 		}
+ 
+@@ -586,14 +584,14 @@ static int __init mtd_oobtest_init(void)
+ 		ops.ooboffs   = 0;
+ 		ops.datbuf    = NULL;
+ 		ops.oobbuf    = readbuf;
+-		printk(PRINT_PREF "attempting to read past end of device\n");
+-		printk(PRINT_PREF "an error is expected...\n");
++		pr_info("attempting to read past end of device\n");
++		pr_info("an error is expected...\n");
+ 		err = mtd_read_oob(mtd, mtd->size - mtd->writesize, &ops);
+ 		if (err) {
+-			printk(PRINT_PREF "error occurred as expected\n");
++			pr_info("error occurred as expected\n");
+ 			err = 0;
+ 		} else {
+-			printk(PRINT_PREF "error: read past end of device\n");
++			pr_err("error: read past end of device\n");
+ 			errcnt += 1;
+ 		}
+ 
+@@ -610,14 +608,14 @@ static int __init mtd_oobtest_init(void)
+ 		ops.ooboffs   = 1;
+ 		ops.datbuf    = NULL;
+ 		ops.oobbuf    = writebuf;
+-		printk(PRINT_PREF "attempting to write past end of device\n");
+-		printk(PRINT_PREF "an error is expected...\n");
++		pr_info("attempting to write past end of device\n");
++		pr_info("an error is expected...\n");
+ 		err = mtd_write_oob(mtd, mtd->size - mtd->writesize, &ops);
+ 		if (err) {
+-			printk(PRINT_PREF "error occurred as expected\n");
++			pr_info("error occurred as expected\n");
+ 			err = 0;
+ 		} else {
+-			printk(PRINT_PREF "error: wrote past end of device\n");
++			pr_err("error: wrote past end of device\n");
+ 			errcnt += 1;
+ 		}
+ 
+@@ -630,20 +628,20 @@ static int __init mtd_oobtest_init(void)
+ 		ops.ooboffs   = 1;
+ 		ops.datbuf    = NULL;
+ 		ops.oobbuf    = readbuf;
+-		printk(PRINT_PREF "attempting to read past end of device\n");
+-		printk(PRINT_PREF "an error is expected...\n");
++		pr_info("attempting to read past end of device\n");
++		pr_info("an error is expected...\n");
+ 		err = mtd_read_oob(mtd, mtd->size - mtd->writesize, &ops);
+ 		if (err) {
+-			printk(PRINT_PREF "error occurred as expected\n");
++			pr_info("error occurred as expected\n");
+ 			err = 0;
+ 		} else {
+-			printk(PRINT_PREF "error: read past end of device\n");
++			pr_err("error: read past end of device\n");
+ 			errcnt += 1;
+ 		}
+ 	}
+ 
+ 	/* Fifth test: write / read across block boundaries */
+-	printk(PRINT_PREF "test 5 of 5\n");
++	pr_info("test 5 of 5\n");
+ 
+ 	/* Erase all eraseblocks */
+ 	err = erase_whole_device();
+@@ -652,7 +650,7 @@ static int __init mtd_oobtest_init(void)
+ 
+ 	/* Write all eraseblocks */
+ 	simple_srand(11);
+-	printk(PRINT_PREF "writing OOBs of whole device\n");
++	pr_info("writing OOBs of whole device\n");
+ 	for (i = 0; i < ebcnt - 1; ++i) {
+ 		int cnt = 2;
+ 		int pg;
+@@ -674,17 +672,16 @@ static int __init mtd_oobtest_init(void)
+ 			if (err)
+ 				goto out;
+ 			if (i % 256 == 0)
+-				printk(PRINT_PREF "written up to eraseblock "
+-				       "%u\n", i);
++				pr_info("written up to eraseblock %u\n", i);
+ 			cond_resched();
+ 			addr += mtd->writesize;
+ 		}
+ 	}
+-	printk(PRINT_PREF "written %u eraseblocks\n", i);
++	pr_info("written %u eraseblocks\n", i);
+ 
+ 	/* Check all eraseblocks */
+ 	simple_srand(11);
+-	printk(PRINT_PREF "verifying all eraseblocks\n");
++	pr_info("verifying all eraseblocks\n");
+ 	for (i = 0; i < ebcnt - 1; ++i) {
+ 		if (bbt[i] || bbt[i + 1])
+ 			continue;
+@@ -702,28 +699,28 @@ static int __init mtd_oobtest_init(void)
+ 		if (err)
+ 			goto out;
+ 		if (memcmp(readbuf, writebuf, mtd->ecclayout->oobavail * 2)) {
+-			printk(PRINT_PREF "error: verify failed at %#llx\n",
++			pr_err("error: verify failed at %#llx\n",
+ 			       (long long)addr);
+ 			errcnt += 1;
+ 			if (errcnt > 1000) {
+-				printk(PRINT_PREF "error: too many errors\n");
++				pr_err("error: too many errors\n");
+ 				goto out;
+ 			}
+ 		}
+ 		if (i % 256 == 0)
+-			printk(PRINT_PREF "verified up to eraseblock %u\n", i);
++			pr_info("verified up to eraseblock %u\n", i);
+ 		cond_resched();
+ 	}
+-	printk(PRINT_PREF "verified %u eraseblocks\n", i);
++	pr_info("verified %u eraseblocks\n", i);
+ 
+-	printk(PRINT_PREF "finished with %d errors\n", errcnt);
++	pr_info("finished with %d errors\n", errcnt);
+ out:
+ 	kfree(bbt);
+ 	kfree(writebuf);
+ 	kfree(readbuf);
+ 	put_mtd_device(mtd);
+ 	if (err)
+-		printk(PRINT_PREF "error %d occurred\n", err);
++		pr_info("error %d occurred\n", err);
+ 	printk(KERN_INFO "=================================================\n");
+ 	return err;
+ }
 -- 
-1.7.10.4
+1.7.4.1
