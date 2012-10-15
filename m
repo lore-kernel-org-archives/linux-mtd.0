@@ -1,20 +1,25 @@
-Sender: Peter Korsgaard <jacmet@gmail.com>
-From: Peter Korsgaard <jacmet@sunsite.dk>
-To: "Philip\, Avinash" <avinashphilip@ti.com>
-Subject: Re: [PATCH 3/4] ARM: OMAP2: gpmc: Add support for BCH ECC scheme
-References: <1349274589-11389-1-git-send-email-avinashphilip@ti.com>
- <1349274589-11389-4-git-send-email-avinashphilip@ti.com>
-Date: Mon, 15 Oct 2012 20:48:30 +0200
-In-Reply-To: <1349274589-11389-4-git-send-email-avinashphilip@ti.com> (Avinash
- Philip's message of "Wed, 3 Oct 2012 19:59:48 +0530")
-Message-ID: <87vcebvaf5.fsf@macbook.be.48ers.dk>
+Received: from quartz.orcorp.ca ([184.70.90.242])
+ by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TNq1V-00019J-EU
+ for linux-mtd@lists.infradead.org; Mon, 15 Oct 2012 19:08:25 +0000
+Date: Mon, 15 Oct 2012 13:08:13 -0600
+From: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] [MTD] Adjust the NOR CFI flash timeouts to round better
+Message-ID: <20121015190813.GA7638@obsidianresearch.com>
+References: <20121005183202.GA11385@obsidianresearch.com>
+ <1350308556.5769.5.camel@sauron.fi.intel.com>
+ <1350317380.14124.26.camel@shinybook.infradead.org>
+ <20121015165719.GB32563@obsidianresearch.com>
+ <1350322301.14124.45.camel@shinybook.infradead.org>
+ <20121015174907.GA529@obsidianresearch.com>
+ <1350325973.14124.49.camel@shinybook.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: afzal@ti.com, linux-doc@vger.kernel.org, tony@atomide.com,
- artem.bityutskiy@linux.intel.com, devicetree-discuss@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- ivan.djelic@parrot.com, linux-omap@vger.kernel.org, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=unknown-8bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1350325973.14124.49.camel@shinybook.infradead.org>
+Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,34 +29,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->>>>> Philip, Avinash <avinashphilip@ti.com> writes:
+On Mon, Oct 15, 2012 at 11:32:53AM -0700, David Woodhouse wrote:
 
- > Add support for BCH ECC scheme to gpmc driver and also enabling multi
- > sector read/write. This helps in doing single shot NAND page read and
- > write.
+> Yes, HZ/1500+1 I could understand. That's the number of jiffies that
+> give you '666µs or more'. The +2 is odd though.
 
- > ECC engine configurations
- > BCH 4 bit support
- > 1. write => ECC engine configured in wrap mode 6 and with ecc_size0 as 32.
- > 2. read  => ECC engine configured in wrap mode 1 and with ecc_size0 as
- > 13 and ecc_size1 as 1.
+Looking more closely I agree, it seems bogus - the use of time_after
+takes care of the short first jiffy problem, the real problem I see is
+that 1500 was supposed to be µs, that is close to the datasheet spec
+for the flash I have. Fixing that will almost double the timeout on my
+systems...
 
- > BCH 8 bit support
- > 1. write => ECC engine configured in wrap mode 6 and with ecc_size0 as 32.
- > 2. read  => ECC engine configured in wrap mode 1 and with ecc_size0 as
- > 26 and ecc_size1 as 2.
+> > > I'd like someone with infinite amounts of free time to go through and
+> > > clean them all up :)
+> > 
+> > lol! Would you accept msecs_to_jiffies conversion for the cfi files?
+> 
+> Absolutely. Although I'd like to take a little step back and take a more
+> thoughtful view of how we *should* be handing these timeouts, rather
+> than a simple janitor-style conversion of the existing code.
 
- > Note: For BCH8 ECC bytes set to 14 to make compatible with RBL.
+Okay, well, I'll send a patch in a few days, if there is a better way
+than:
 
-On what device? In the am335x TRM (spruh73f.pdf) figure 26-15 (pg 4273)
-the rom code is documented to not use any padding on the ECC bytes
-(E.G. oob 2..53):
+ unsigned long uWriteTimeout = usecs_to_jiffies(1500);
+ timeo = jiffies + uWriteTimeout;
+ if (time_after(jiffies, timeo)) // TIMEOUT
 
-http://www.ti.com/litv/pdf/spruh73f
+Maybe someone will pipe up?
 
-I see the driver in the u-boot-am33x tree (ti81xx_nand.c) seems to use
-4x14 bytes as well though, so perhaps that's a bug in the documentation
-instead?
-
--- 
-Bye, Peter Korsgaard
+Jason
