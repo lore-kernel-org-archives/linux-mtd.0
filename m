@@ -1,21 +1,20 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TNmOK-0008QX-An
- for linux-mtd@lists.infradead.org; Mon, 15 Oct 2012 15:15:42 +0000
-Message-ID: <1350314130.5769.17.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] ubi: use list_move_tail instead of list_del/list_add_tail
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Wei Yongjun <weiyj.lk@gmail.com>
-Date: Mon, 15 Oct 2012 18:15:30 +0300
-In-Reply-To: <CAPgLHd_AHHe7=H18K54LvbiS0M7_w1vTMOxwwxgVdRaiXNN-OA@mail.gmail.com>
-References: <CAPgLHd_AHHe7=H18K54LvbiS0M7_w1vTMOxwwxgVdRaiXNN-OA@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-tRnwX2uJOF5+MjvTCJEn"
-Mime-Version: 1.0
-Cc: richard@nod.at, yongjun_wei@trendmicro.com.cn, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mail-vc0-f177.google.com ([209.85.220.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TNnC6-0005UN-1a
+ for linux-mtd@lists.infradead.org; Mon, 15 Oct 2012 16:07:06 +0000
+Received: by mail-vc0-f177.google.com with SMTP id p16so6248524vcq.36
+ for <linux-mtd@lists.infradead.org>; Mon, 15 Oct 2012 09:07:03 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <507B04AA.1050502@vanka.net>
+References: <507B04AA.1050502@vanka.net>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Mon, 15 Oct 2012 12:06:42 -0400
+Message-ID: <CAMjpGUd8mjZniGcbKw3jZ0V1kGbnYxoHUJg4jGVrSFtdVTadyQ@mail.gmail.com>
+Subject: Re: [PATCH] Devicetree support for enc28j60 SPI Ethernet chip
+To: Michal Vanka <mv@vanka.net>
+Content-Type: text/plain; charset=UTF-8
+Cc: nios2-dev@sopc.et.ntust.edu.tw, lanconelli.claudio@eptar.com,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,48 +24,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Sun, Oct 14, 2012 at 2:30 PM, Michal Vanka wrote:
+> the following patch adds generic openfirmware/devicetree support to enc28j60
+> driver.
 
---=-tRnwX2uJOF5+MjvTCJEn
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+this should go to the net list, not the mtd list, since this is a net driver
 
-On Tue, 2012-10-09 at 14:14 +0800, Wei Yongjun wrote:
-> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
->=20
-> Using list_move_tail() instead of list_del() + list_add_tail().
->=20
-> dpatch engine is used to auto generate this patch.
-> (https://github.com/weiyj/dpatch)
->=20
-> Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+however, your patch needs a little work.  please send it with `git
+send-email` rather than formatting things yourself.
 
-Pushed to linux-ubi.git, thanks!
+> +       if(priv->interrupt_deassert_reg)
+> +               writeb(1,priv->interrupt_deassert_reg);
 
---=20
-Best Regards,
-Artem Bityutskiy
+needs a space after the "if" and after the ",".  please run your patch
+through checkpatch.pl before re-submitting.
 
---=-tRnwX2uJOF5+MjvTCJEn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+> +static int __devinit enc28j60_of_probe(struct spi_device *spi,struct
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+more space issues
 
-iQIcBAABAgAGBQJQfCiSAAoJECmIfjd9wqK0DUUP/1V4hLIYHK81ac+KlW/oNFiy
-8H2QSbPCfJhS6hsIXpKOOZ/09M1qbt+J0klUyKShnqr2ZbrBmrJgr+1KcYWYYn5u
-o2RCuq//IV8YCuINZVmOyt+FoK1ooueKSXQnKXZNPo14Z9oqyzlGkHgLygh1Df8P
-HaC2zU4SO+XnSiveYlqVYrf/EOarYUYbFb9JZHg6UxqfHJUr7eIAeSkB/rjEwPNX
-ifhU2AO5H4VNaHrfAvQAP+GGOHQhTrl52Z42Da80fmWxSr3Jjnfl7e5Ml1E2XPI+
-sistT7laUmTvTFhet0ajBu2cHkyKxVZaonoHbrqQy30ONk7ORaqfvE4miKDN4wuJ
-g6P3ye9VJJSuZ37OjOHDNhOFlN0R694Ld5/hHbMxJDxuvLw0r0qS9PM2bR8p4cDc
-WswqZ+BIer98uiJi7wJZJDEGDfHlpDh+OksYeytXLCuiBj0+4JPVV3RyzYZtU3cl
-NQ9/u07dOBuFMkFe8BLQ2HkVL8fSHoSmrRDryJDhHhrBG9Xgfdplv9pZhSYwfcsq
-HFeRhemRDd5pdlBJmuBB2azg+eKzsfwbRrZySLzY4qAeBev8mvIhPNZViLrYLU1N
-4lVxX4WnkEtnjA6vPCBK9lXp47ZdRONUMDO+DTTmODFjgZfc40t4F4UY4HpKtFP5
-AAHtWF0CPJzBapzSSV5l
-=7VKN
------END PGP SIGNATURE-----
+> +{
+> +
+> +       u8 *reg;
 
---=-tRnwX2uJOF5+MjvTCJEn--
+kill off that blank line
+
+> +       if(prop && len>=sizeof(__be32))
+
+more space issues
+
+> +       if(!devm_request_mem_region(&spi->dev, reg, 4, DRV_NAME))
+
+here too
+-mike
