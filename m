@@ -1,27 +1,21 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TNlDi-0001cI-IL
- for linux-mtd@lists.infradead.org; Mon, 15 Oct 2012 14:00:38 +0000
-Message-ID: <1350309643.5769.12.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] [RFC] mtd/uclinux: support ROM and allow passing the
- base address
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Greg Ungerer <gerg@snapgear.com>
-Date: Mon, 15 Oct 2012 17:00:43 +0300
-In-Reply-To: <5077B167.40009@snapgear.com>
-References: <1349709952-4332-1-git-send-email-u.kleine-koenig@pengutronix.de>
- <50739A2A.9070405@snapgear.com> <20121009084418.GH18531@pengutronix.de>
- <5073FE55.2000402@snapgear.com>
- <CAMjpGUe_aTEjGF9q1uraU_ikCif0J-+bSTLkr-X6jEYqjMHOtQ@mail.gmail.com>
- <5077B167.40009@snapgear.com>
+ id 1TNmOK-0008QX-An
+ for linux-mtd@lists.infradead.org; Mon, 15 Oct 2012 15:15:42 +0000
+Message-ID: <1350314130.5769.17.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] ubi: use list_move_tail instead of list_del/list_add_tail
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Wei Yongjun <weiyj.lk@gmail.com>
+Date: Mon, 15 Oct 2012 18:15:30 +0300
+In-Reply-To: <CAPgLHd_AHHe7=H18K54LvbiS0M7_w1vTMOxwwxgVdRaiXNN-OA@mail.gmail.com>
+References: <CAPgLHd_AHHe7=H18K54LvbiS0M7_w1vTMOxwwxgVdRaiXNN-OA@mail.gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-dDF/xHCsmK1JVLcLeUUo"
+ boundary="=-tRnwX2uJOF5+MjvTCJEn"
 Mime-Version: 1.0
-Cc: Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
- linux-mtd@lists.infradead.org, kernel@pengutronix.de,
- Mike Frysinger <vapier.adi@gmail.com>, Greg Ungerer <gerg@uclinux.org>
-Reply-To: artem.bityutskiy@linux.intel.com
+Cc: richard@nod.at, yongjun_wei@trendmicro.com.cn, dwmw2@infradead.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,21 +26,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-dDF/xHCsmK1JVLcLeUUo
+--=-tRnwX2uJOF5+MjvTCJEn
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2012-10-12 at 15:57 +1000, Greg Ungerer wrote:
-> I haven't picked it up. I assumed Artem would, but I have not seen
-> any response from him on this yet.=20
+On Tue, 2012-10-09 at 14:14 +0800, Wei Yongjun wrote:
+> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+>=20
+> Using list_move_tail() instead of list_del() + list_add_tail().
+>=20
+> dpatch engine is used to auto generate this patch.
+> (https://github.com/weiyj/dpatch)
+>=20
+> Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 
-I did not pick up anything. Also, your patches are now in Linuses tree.
+Pushed to linux-ubi.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-dDF/xHCsmK1JVLcLeUUo
+--=-tRnwX2uJOF5+MjvTCJEn
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -54,19 +54,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQfBcLAAoJECmIfjd9wqK0q2cP/jj4xhve4MNjKyeDXTVNGH1m
-hoeP0Of1FYd/Smu7iL0ja8AZpTkqo/Ubo2zAYQtnSv+yDVSr/kpIzHGahRytYYQy
-OA0T7SXzVoQgSMbkekh+G9LOdfFVlLoCE1FsQzSgN9VwqeXgqBCnKTYIvsUJBBxK
-9unDhdL7gkGqwPczN59YWWu5XtID4O5Hh/MW6GuOR+lEWqspJ6io5zlfhsNAg3uj
-h3jg/JpodFDAtf/Wapsir8S4eu4Rz8UqdwIvRcoT3782yErxQOAEXvXqfIgVNwuh
-jf1Nr8J4QOBxCAhXT8fFhahOgUu5YlENQf9MVUt4QPOHNdejb32wvExVorcIWism
-9Zb1MqeiWahCTfy6wrOR05iQkXG/Z5yKEss+aeDoRa/b7gItj2wQb9d9obIXIF38
-5o8h2/bcnMczSd2HTb45hqVEk0alc+ywF6RwOAI9QdhJoeTdcQe8hjoJ42qP4ySF
-KTeBD4x6RBdDeL4HlB4nM1oQDO0HFMgUBkd55iIi2PUfsS297hWFJGlfINXtx+01
-l+R6xX/W0T+30lZknA5Q1a2YAtClK2/QO/ROSdjDED1SQczykQ2LDgK+bBU6xGVe
-ihxoDbv9laVPok37Jj8wK3P2Wav0BgC7ZVNAKjADlBOCnkhO1hWTxGKIM26V/uT4
-JQkeao/98iN7ZgCu3tF7
-=e3yF
+iQIcBAABAgAGBQJQfCiSAAoJECmIfjd9wqK0DUUP/1V4hLIYHK81ac+KlW/oNFiy
+8H2QSbPCfJhS6hsIXpKOOZ/09M1qbt+J0klUyKShnqr2ZbrBmrJgr+1KcYWYYn5u
+o2RCuq//IV8YCuINZVmOyt+FoK1ooueKSXQnKXZNPo14Z9oqyzlGkHgLygh1Df8P
+HaC2zU4SO+XnSiveYlqVYrf/EOarYUYbFb9JZHg6UxqfHJUr7eIAeSkB/rjEwPNX
+ifhU2AO5H4VNaHrfAvQAP+GGOHQhTrl52Z42Da80fmWxSr3Jjnfl7e5Ml1E2XPI+
+sistT7laUmTvTFhet0ajBu2cHkyKxVZaonoHbrqQy30ONk7ORaqfvE4miKDN4wuJ
+g6P3ye9VJJSuZ37OjOHDNhOFlN0R694Ld5/hHbMxJDxuvLw0r0qS9PM2bR8p4cDc
+WswqZ+BIer98uiJi7wJZJDEGDfHlpDh+OksYeytXLCuiBj0+4JPVV3RyzYZtU3cl
+NQ9/u07dOBuFMkFe8BLQ2HkVL8fSHoSmrRDryJDhHhrBG9Xgfdplv9pZhSYwfcsq
+HFeRhemRDd5pdlBJmuBB2azg+eKzsfwbRrZySLzY4qAeBev8mvIhPNZViLrYLU1N
+4lVxX4WnkEtnjA6vPCBK9lXp47ZdRONUMDO+DTTmODFjgZfc40t4F4UY4HpKtFP5
+AAHtWF0CPJzBapzSSV5l
+=7VKN
 -----END PGP SIGNATURE-----
 
---=-dDF/xHCsmK1JVLcLeUUo--
+--=-tRnwX2uJOF5+MjvTCJEn--
