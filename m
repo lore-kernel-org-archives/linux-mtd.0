@@ -1,16 +1,23 @@
-Received: from email2.cablenet.cz ([81.200.48.21])
- by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TNT4r-0002Md-H4
- for linux-mtd@lists.infradead.org; Sun, 14 Oct 2012 18:38:21 +0000
-Message-ID: <507B04AA.1050502@vanka.net>
-Date: Sun, 14 Oct 2012 20:30:02 +0200
-From: Michal Vanka <mv@vanka.net>
+Received: from dnvwsmailout1.mcafee.com ([161.69.31.173])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TNc2h-00029v-O3
+ for linux-mtd@lists.infradead.org; Mon, 15 Oct 2012 04:12:40 +0000
+Message-ID: <507B8DBF.2030104@snapgear.com>
+Date: Mon, 15 Oct 2012 14:14:55 +1000
+From: Greg Ungerer <gerg@snapgear.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] Devicetree support for enc28j60 SPI Ethernet chip
-Content-Type: text/plain; charset=ISO-8859-2; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: nios2-dev@sopc.et.ntust.edu.tw, lanconelli.claudio@eptar.com
+To: =?ISO-8859-1?Q?Uwe_Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH 1/2 RFC v2] mtd/uclinux: support ROM and allow passing
+ the base address
+References: <1349709952-4332-1-git-send-email-u.kleine-koenig@pengutronix.de>
+ <1350027693-19528-1-git-send-email-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <1350027693-19528-1-git-send-email-u.kleine-koenig@pengutronix.de>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-mtd@lists.infradead.org, Mike
+ Frysinger <vapier.adi@gmail.com>, kernel@pengutronix.de,
+ Greg Ungerer <gerg@uclinux.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,168 +27,152 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-the following patch adds generic openfirmware/devicetree support to 
-enc28j60 driver.
+Hi Uwe,
 
-It also adds support for custom hardware based (FPGA) "interrupt line 
-deasserter" for processors with level triggered interrupts
-(for example Altera Nios2).
+On 12/10/12 17:41, Uwe Kleine-K=F6nig wrote:
+> This allows to put the filesystem at a defined address in ROM allowing
+> to save more precious RAM.
+>
+> I think it's save to default to ROM because the intention of using the
+                ^^^^
+                safe
 
-The interrupt line is deasserted by writing 1 to some output register
-in the address space (this address is configured also through
-devicetree).
+> uclinux map is to use a romfs and so mtd-ram doesn't give you anything
+> that mtd-rom doesn't.
+>
+> Signed-off-by: Uwe Kleine-K=C3=B7nig <u.kleine-koenig@pengutronix.de>
 
-Note: The interrupt line in enc28j60 chip can be deasserted by software
-by clearing bit INTIE in the EIE register.
-However this can't be done in interrupt context as the write goes
-through SPI bus.
+Unfortunately email to me goes through an exchange server and openchange,
+and it manages to often mangle anything more than 7bit ascii. Not too
+much I can do about it, sorry.
 
-The patch was tested on custom Altera Nios2 system.
 
-Signed-off-by: Michal Vanka <mv@vanka.net>
+> Changed since (implicit) v1:
+>
+>   - don't make uclinux_ram_map static as pointed out by Mike and Greg.
+>
+>   drivers/mtd/maps/Kconfig   |    2 +-
+>   drivers/mtd/maps/uclinux.c |   28 ++++++++++++++++++++++------
+>   2 files changed, 23 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+> index 5ba2458..d945950 100644
+> --- a/drivers/mtd/maps/Kconfig
+> +++ b/drivers/mtd/maps/Kconfig
+> @@ -443,7 +443,7 @@ config MTD_GPIO_ADDR
+>
+>   config MTD_UCLINUX
+>   	bool "Generic uClinux RAM/ROM filesystem support"
+> -	depends on MTD_RAM=3Dy && !MMU
+> +	depends on (MTD_RAM=3Dy || MTD_ROM=3Dy) && !MMU
+>   	help
+>   	  Map driver to support image based filesystems for uClinux.
+>
+> diff --git a/drivers/mtd/maps/uclinux.c b/drivers/mtd/maps/uclinux.c
+> index c3bb304..f5e8e9a 100644
+> --- a/drivers/mtd/maps/uclinux.c
+> +++ b/drivers/mtd/maps/uclinux.c
+> @@ -24,11 +24,12 @@
+>   /**********************************************************************=
+******/
+>
+>   struct map_info uclinux_ram_map =3D {
+> -	.name =3D "RAM",
+> -	.phys =3D (unsigned long)__bss_stop,
+>   	.size =3D 0,
+>   };
+>
+> +static unsigned long physaddr =3D -1;
+> +module_param(physaddr, ulong, S_IRUGO);
+> +
+>   static struct mtd_info *uclinux_ram_mtdinfo;
+>
+>   /**********************************************************************=
+******/
+> @@ -60,11 +61,17 @@ static int __init uclinux_mtd_init(void)
+>   	struct map_info *mapp;
+>
+>   	mapp =3D &uclinux_ram_map;
+> +
+> +	if (physaddr =3D=3D -1)
+> +		mapp->phys =3D (resource_size_t)__bss_stop;
+> +	else
+> +		mapp->phys =3D physaddr;
+> +
+>   	if (!mapp->size)
+>   		mapp->size =3D PAGE_ALIGN(ntohl(*((unsigned long *)(mapp->phys + 8)))=
+);
+>   	mapp->bankwidth =3D 4;
+>
+> -	printk("uclinux[mtd]: RAM probe address=3D0x%x size=3D0x%x\n",
+> +	printk("uclinux[mtd]: RAM/ROM probe address=3D0x%x size=3D0x%x\n",
+>   	       	(int) mapp->phys, (int) mapp->size);
 
-diff -uprN 
-a/Documentation/devicetree/bindings/net/microchip-enc28j60.txt 
-b/Documentation/devicetree/bindings/net/microchip-enc28j60.txt
---- a/Documentation/devicetree/bindings/net/microchip-enc28j60.txt 
-1969-12-31 19:00:00.000000000 -0500
-+++ b/Documentation/devicetree/bindings/net/microchip-enc28j60.txt 
-2011-10-14 13:46:58.000000000 -0400
-@@ -0,0 +1,31 @@
-+* Microchip enc28j60 Ethernet
-+
-+Required properties:
-+- compatible : Should be "microchip,enc28j60"
-+- interrupts : Should contain 1 interrupt.
-+- reg : Should be 0
-+
-+Optional properties:
-+- interrupt_deassert_reg : should contain address of additional (FPGA)
-+  interrupt deassert hardware for processors with level triggered 
-interrupts
-+
-+
-+Example (for enc28j60 under opencores tinyspi controller):
-+
-+tiny_spi_1: spi@0x2160 {
-+	compatible = "opencores,tiny-spi-1.0", "opencores,tiny-spi-rtlsvn2";
-+	reg = < 0x00002160 0x00000020 >;
-+	interrupt-parent = < &cpu >;
-+	interrupts = < 2 >;
-+	clock-frequency = < 100000000 >;
-+	baud-width = < 8 >;	/* BAUD_WIDTH type NUMBER */
-+	gpios = < &spi1_cs 0 0 >;
-+	ethernet: enc28j60@0 {
-+		compatible = "microchip,enc28j60";
-+		spi-max-frequency = < 20000000 >;
-+		reg = < 0 >;
-+		interrupts = < 4 >;
-+		interrupt_deassert_reg = < 0x00003000 >;
-+	};			
-+}; //end spi@0x2160 (tiny_spi_1)
-+
-diff -uprN a/drivers/net/ethernet/microchip/enc28j60.c 
-b/drivers/net/ethernet/microchip/enc28j60.c
---- a/drivers/net/ethernet/microchip/enc28j60.c	2011-10-02 
-07:31:43.000000000 -0400
-+++ b/drivers/net/ethernet/microchip/enc28j60.c	2011-10-14 
-13:54:15.000000000 -0400
-@@ -32,7 +32,7 @@
-  #include "enc28j60_hw.h"
+Is there any value in saying "RAM/ROM"?
+Why don't we just drop those chars altogether.
 
-  #define DRV_NAME	"enc28j60"
--#define DRV_VERSION	"1.01"
-+#define DRV_VERSION	"1.02"
 
-  #define SPI_OPLEN	1
+>
+>   	mapp->virt =3D ioremap_nocache(mapp->phys, mapp->size);
+> @@ -76,9 +83,18 @@ static int __init uclinux_mtd_init(void)
+>
+>   	simple_map_init(mapp);
+>
+> -	mtd =3D do_map_probe("map_ram", mapp);
+> +	mapp->name =3D "ROM";
+> +	mtd =3D do_map_probe("map_rom", mapp);
+> +	if (!mtd) {
+> +		/* fall back to ram probing for compatibility reasons */
+> +		mapp->name =3D "RAM";
+> +		mtd =3D do_map_probe("map_ram", mapp);
+> +		if (mtd && IS_ENABLED(CONFIG_MTD_ROM))
+> +			pr_err("Failed to map rom, but ram succeeded. Please report this issu=
+e!\n");
 
-@@ -73,6 +73,7 @@ struct enc28j60_net {
-  	int rxfilter;
-  	u32 msg_enable;
-  	u8 spi_transfer_buf[SPI_TRANSFER_BUF_LEN];
-+	u8 *interrupt_deassert_reg;
-  };
+Do we really want this message?
+My predominate usage of this code is in RAM mappings. Network
+loading kernel+filesystem images on bare boards. Anyone who wants
+to know and is looking in the kernel boot messages will see
+something like:
 
-  /* use ethtool to change the level for any given device */
-@@ -1320,6 +1321,10 @@ static irqreturn_t enc28j60_irq(int irq,
-  	 * Remember that we access enc28j60 registers through SPI bus
-  	 * via spi_sync() call.
-  	 */
-+
-+	if(priv->interrupt_deassert_reg)
-+		writeb(1,priv->interrupt_deassert_reg);
-+
-  	schedule_work(&priv->irq_work);
+     Creating 1 MTD partitions on "RAM":
+     0x000000000000-0x0000000d8000 : "ROMfs"
 
-  	return IRQ_HANDLED;
-@@ -1541,6 +1546,36 @@ static const struct net_device_ops enc28
-  	.ndo_validate_addr	= eth_validate_addr,
-  };
+So they will know what type of mapping it was loaded from.
 
-+#ifdef CONFIG_OF
-+#include <linux/of.h>
-+#include <linux/ioport.h>
-+#include <linux/io.h>
-+
-+static int __devinit enc28j60_of_probe(struct spi_device *spi,struct 
-enc28j60_net *priv)
-+{
-+
-+	u8 *reg;
-+	const __be32 *prop;
-+	int len;
-+	
-+	if (!of_device_is_available(spi->dev.of_node))
-+		return -ENODEV;	
-+
-+	prop = of_get_property(spi->dev.of_node, "interrupt_deassert_reg", &len);
-+	
-+	if(prop && len>=sizeof(__be32))
-+		reg = be32_to_cpup(prop);
-+	else
-+		return -ENODEV;
-+
-+	if(!devm_request_mem_region(&spi->dev, reg, 4, DRV_NAME))
-+		return -ENOMEM;
-+
-+	priv->interrupt_deassert_reg = devm_ioremap_nocache(&spi->dev, reg, 4);
-+	return 0;	
-+}
-+#endif
-+
-  static int __devinit enc28j60_probe(struct spi_device *spi)
-  {
-  	struct net_device *dev;
-@@ -1569,6 +1604,10 @@ static int __devinit enc28j60_probe(stru
-  	INIT_WORK(&priv->restart_work, enc28j60_restart_work_handler);
-  	dev_set_drvdata(&spi->dev, priv);	/* spi to priv reference */
-  	SET_NETDEV_DEV(dev, &spi->dev);
-+	priv->interrupt_deassert_reg = 0;
-+#ifdef CONFIG_OF
-+	enc28j60_of_probe(spi,priv);
-+#endif	
 
-  	if (!enc28j60_chipset_init(dev)) {
-  		if (netif_msg_probe(priv))
-@@ -1631,10 +1670,20 @@ static int __devexit enc28j60_remove(str
-  	return 0;
-  }
+> +	}
+> +
+>   	if (!mtd) {
+> -		printk("uclinux[mtd]: failed to find a mapping?\n");
+> +		printk("uclinux[mtd]: failed to find a rom/ram mapping?\n");
 
-+#ifdef CONFIG_OF
-+static const struct of_device_id enc28j60_dt_ids[] = {
-+	{ .compatible = "microchip,enc28j60", },
-+	{ /* sentinel */ }
-+};
-+#else
-+#define enc28j60_dt_ids NULL
-+#endif
-+
-  static struct spi_driver enc28j60_driver = {
-  	.driver = {
-  		   .name = DRV_NAME,
-  		   .owner = THIS_MODULE,
-+		   .of_match_table = enc28j60_dt_ids,
-  	 },
-  	.probe = enc28j60_probe,
-  	.remove = __devexit_p(enc28j60_remove),
+Again, is there any point in changing this message?
+Adding "rom/ram" doesn't add any value here.
+
+Regards
+Greg
+
+
+
+>   		iounmap(mapp->virt);
+>   		return(-ENXIO);
+>   	}
+> @@ -115,6 +131,6 @@ module_exit(uclinux_mtd_cleanup);
+>
+>   MODULE_LICENSE("GPL");
+>   MODULE_AUTHOR("Greg Ungerer <gerg@snapgear.com>");
+> -MODULE_DESCRIPTION("Generic RAM based MTD for uClinux");
+> +MODULE_DESCRIPTION("Generic RAM/ROM based MTD for uClinux");
+>
+>   /**********************************************************************=
+******/
+>
+
+
+--=20
+------------------------------------------------------------------------
+Greg Ungerer  --  Principal Engineer        EMAIL:     gerg@snapgear.com
+SnapGear Group, McAfee                      PHONE:       +61 7 3435 2888
+8 Gardner Close                             FAX:         +61 7 3217 5323
+Milton, QLD, 4064, Australia                WEB: http://www.SnapGear.com
