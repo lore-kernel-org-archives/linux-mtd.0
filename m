@@ -1,15 +1,20 @@
-Received: from anubis.se.axis.com ([195.60.68.12])
- by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TO5fx-0001TI-WA
- for linux-mtd@lists.infradead.org; Tue, 16 Oct 2012 11:51:12 +0000
-Subject: [PATCH] mtd: mkfs.ubifs: Improve error handling of is_contained()
-From: Marcus Prebble <marcus.prebble@axis.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Content-Type: multipart/mixed; boundary="=-TkMpzh3UxBfLprSWL/Gd"
-Date: Tue, 16 Oct 2012 13:51:01 +0200
-Message-ID: <1350388261.25368.92.camel@lnxprebble2.se.axis.com>
+Received: from mail-ob0-f177.google.com ([209.85.214.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TOBVW-0002WZ-Rp
+ for linux-mtd@lists.infradead.org; Tue, 16 Oct 2012 18:04:48 +0000
+Received: by mail-ob0-f177.google.com with SMTP id wd20so6770685obb.36
+ for <linux-mtd@lists.infradead.org>; Tue, 16 Oct 2012 11:04:44 -0700 (PDT)
 MIME-Version: 1.0
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+In-Reply-To: <1350371967-8914-1-git-send-email-josh.wu@atmel.com>
+References: <1350371967-8914-1-git-send-email-josh.wu@atmel.com>
+Date: Tue, 16 Oct 2012 11:04:44 -0700
+Message-ID: <CACiLriQ1fTbGs7eCK5eeF=99um=EQaj-vefjEnvDS0bwWa5m=w@mail.gmail.com>
+Subject: Re: [PATCH] avr32: fix build error in atstk1006_defconfig
+From: =?ISO-8859-1?Q?H=E5vard_Skinnemoen?= <havard@skinnemoen.net>
+To: Josh Wu <josh.wu@atmel.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: dedekind1@gmail.com, linux-kernel@vger.kernel.org, hskinnemoen@gmail.com,
+ linux-mtd@lists.infradead.org, fengguang.wu@intel.com, egtvedt@samfundet.no
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,110 +24,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---=-TkMpzh3UxBfLprSWL/Gd
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+On Tue, Oct 16, 2012 at 12:19 AM, Josh Wu <josh.wu@atmel.com> wrote:
+> fixed the following compile error when use avr32 atstk1006_defconfig:
+>   drivers/mtd/nand/atmel_nand.c: In function 'pmecc_err_location':
+>   drivers/mtd/nand/atmel_nand.c:639: error: implicit declaration of function 'writel_relaxed'
+>
+> which was introduced by commit 1c7b874d33b463 ("mtd: at91: atmel_nand: add Programmable Multibit ECC controller support").
+> The PMECC for nand flash code uses writel_relaxed(). But in avr32, there is no macro "writel_relaxed" defined. This patch add writex_relaxed macro definitions.
+>
+> Signed-off-by: Josh Wu <josh.wu@atmel.com>
 
-mtd: mtd-utils/mkfs.ubifs: Improve error handling of is_contained()
+Acked-by: Havard Skinnemoen <havard@skinnemoen.net>
 
-The is_contained() function returns -1 if an error occurs when
-canonicalizing the output file path/root directory. This resulted in the
-confusing error message 'Error: The output file cannot be in the UBIFS
-root' when specifying a non-existent directory for the output.
-This patch changes the error handling to display a different error
-message for the case when is_contained() returns -1.
-Additionally it frees all memory allocated by is_contained().
+I think it's OK to just forward to write[bwl] -- the relaxed variants
+merely provide fewer ordering guarantees than the non-relaxed
+variants. The worst that could happen is a small performance hit (and
+on AVR32, even that is highly unlikely).
 
-Signed-off-by: Marcus Prebble <marcus.prebble@axis.com>
-
-
-
---=-TkMpzh3UxBfLprSWL/Gd
-Content-Disposition: attachment;
-	filename="0001-mkfs.ubifs-is-contained-err-handling.patch"
-Content-Type: text/x-patch;
-	name="0001-mkfs.ubifs-is-contained-err-handling.patch"; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-
-diff --git a/mtd-utils/mkfs.ubifs/mkfs.ubifs.c b/mtd-utils/mkfs.ubifs/mkfs.ubifs.c
-index a361df9..24554de 100644
---- a/mtd-utils/mkfs.ubifs/mkfs.ubifs.c
-+++ b/mtd-utils/mkfs.ubifs/mkfs.ubifs.c
-@@ -252,7 +252,10 @@ static char *make_path(const char *dir, const char *name)
-  */
- static int is_contained(const char *file, const char *dir)
- {
--	char *file_base, *copy, *real_file, *real_dir, *p;
-+	char *real_file = NULL;
-+	char *real_dir = NULL;
-+	char *file_base, *copy;
-+	int ret = -1;
- 
- 	/* Make a copy of the file path because 'dirname()' can modify it */
- 	copy = strdup(file);
-@@ -262,31 +265,29 @@ static int is_contained(const char *file, const char *dir)
- 
- 	/* Turn the paths into the canonical form */
- 	real_file = malloc(PATH_MAX);
--	if (!real_file) {
--		free(copy);
--		return -1;
--	}
-+	if (!real_file)
-+		goto out_free;
- 
- 	real_dir = malloc(PATH_MAX);
--	if (!real_dir) {
--		free(real_file);
--		free(copy);
--		return -1;
--	}
-+	if (!real_dir)
-+		goto out_free;
-+
- 	if (!realpath(file_base, real_file)) {
--		perror("realpath");
--		return -1;
-+		perror("Could not canonicalize file path");
-+		goto out_free;
- 	}
- 	if (!realpath(dir, real_dir)) {
--		perror("realpath");
--		return -1;
-+		perror("Could not canonicalize directory");
-+		goto out_free;
- 	}
- 
--	p = strstr(real_file, real_dir);
--	free(real_dir);
--	free(real_file);
-+	ret = !!strstr(real_file, real_dir);
-+
-+out_free:
- 	free(copy);
--	return !!p;
-+	free(real_file);
-+	free(real_dir);
-+	return ret;
- }
- 
- /**
-@@ -346,9 +347,13 @@ static int validate_options(void)
- 
- 	if (!output)
- 		return err_msg("no output file or UBI volume specified");
--	if (root && is_contained(output, root))
--		return err_msg("output file cannot be in the UBIFS root "
--			       "directory");
-+	if (root) {
-+		if ((tmp = is_contained(output, root)) < 0)
-+			return err_msg("failed to perform output file root check");
-+		else if (tmp)
-+			return err_msg("output file cannot be in the UBIFS root "
-+			               "directory");
-+	}
- 	if (!is_power_of_2(c->min_io_size))
- 		return err_msg("min. I/O unit size should be power of 2");
- 	if (c->leb_size < c->min_io_size)
-
---=-TkMpzh3UxBfLprSWL/Gd--
+Havard
