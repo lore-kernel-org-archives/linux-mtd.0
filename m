@@ -1,23 +1,15 @@
-Received: from mail-bk0-f49.google.com ([209.85.214.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TO5M2-0001Ps-8c
- for linux-mtd@lists.infradead.org; Tue, 16 Oct 2012 11:30:35 +0000
-Received: by mail-bk0-f49.google.com with SMTP id j4so2659629bkw.36
- for <linux-mtd@lists.infradead.org>; Tue, 16 Oct 2012 04:30:31 -0700 (PDT)
-Message-ID: <507D454E.6060101@gmail.com>
-Date: Tue, 16 Oct 2012 13:30:22 +0200
-From: "=?ISO-8859-1?Q?Andreas_Bie=DFmann?=" <andreas.devel@googlemail.com>
+Received: from anubis.se.axis.com ([195.60.68.12])
+ by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TO5fx-0001TI-WA
+ for linux-mtd@lists.infradead.org; Tue, 16 Oct 2012 11:51:12 +0000
+Subject: [PATCH] mtd: mkfs.ubifs: Improve error handling of is_contained()
+From: Marcus Prebble <marcus.prebble@axis.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: multipart/mixed; boundary="=-TkMpzh3UxBfLprSWL/Gd"
+Date: Tue, 16 Oct 2012 13:51:01 +0200
+Message-ID: <1350388261.25368.92.camel@lnxprebble2.se.axis.com>
 MIME-Version: 1.0
-To: Hans-Christian Egtvedt <egtvedt@samfundet.no>
-Subject: Re: [PATCH] avr32: fix build error in atstk1006_defconfig
-References: <1350371967-8914-1-git-send-email-josh.wu@atmel.com>
- <20121016091740.GA6243@samfundet.no>
-In-Reply-To: <20121016091740.GA6243@samfundet.no>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
-Cc: dedekind1@gmail.com, linux-kernel@vger.kernel.org,
- Josh Wu <josh.wu@atmel.com>, linux-mtd@lists.infradead.org,
- fengguang.wu@intel.com, hskinnemoen@gmail.com
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,48 +19,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 16.10.2012 11:17, Hans-Christian Egtvedt wrote:
-> Around Tue 16 Oct 2012 15:19:27 +0800 or thereabout, Josh Wu wrote:
->> fixed the following compile error when use avr32 atstk1006_defconfig:
->>   drivers/mtd/nand/atmel_nand.c: In function 'pmecc_err_location':
->>   drivers/mtd/nand/atmel_nand.c:639: error: implicit declaration of function 'writel_relaxed'
->>
->> which was introduced by commit 1c7b874d33b463 ("mtd: at91: atmel_nand: add Programmable Multibit ECC controller support").
->> The PMECC for nand flash code uses writel_relaxed(). But in avr32, there is no macro "writel_relaxed" defined. This patch add writex_relaxed macro definitions.
->>
->> Signed-off-by: Josh Wu <josh.wu@atmel.com>
->> ---
->>  arch/avr32/include/asm/io.h |    4 ++++
->>  1 file changed, 4 insertions(+)
->>
->> diff --git a/arch/avr32/include/asm/io.h b/arch/avr32/include/asm/io.h
->> index cf60d0a..fc6483f 100644
->> --- a/arch/avr32/include/asm/io.h
->> +++ b/arch/avr32/include/asm/io.h
->> @@ -165,6 +165,10 @@ BUILDIO_IOPORT(l, u32)
->>  #define readw_be			__raw_readw
->>  #define readl_be			__raw_readl
->>  
->> +#define writeb_relaxed			writeb
->> +#define writew_relaxed			writew
->> +#define writel_relaxed			writel
->> +
-> 
-> I'm wondering if they should be something similar to SH arch:
-> 
-> #define writeb_relaxed(v,c) ((void)__raw_writeb((__force u8)ioswabb(v),c))
+--=-TkMpzh3UxBfLprSWL/Gd
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 
-I think it is OK to just use the writeX here. These are in fact an
-inlined function built out of a macro. The inlined function does nearly
-what you have written down here and in contrast to the ARM version omits
-the memory barrier.
-The main difference between __raw_ access and the writeX/readX access
-for AVR32 is this little __swizzle_addr_. It takes the configuration of
-SMC (8/16/32 bit access) into account which would be omitted when we
-switch to __raw_ accessors here. This would be a major change if one
-used the writeX/readX accessors before and switched the SMC to something
-different than 32 Bit access.
+mtd: mtd-utils/mkfs.ubifs: Improve error handling of is_contained()
 
-Best regards
+The is_contained() function returns -1 if an error occurs when
+canonicalizing the output file path/root directory. This resulted in the
+confusing error message 'Error: The output file cannot be in the UBIFS
+root' when specifying a non-existent directory for the output.
+This patch changes the error handling to display a different error
+message for the case when is_contained() returns -1.
+Additionally it frees all memory allocated by is_contained().
 
-Andreas Bieﬂmann
+Signed-off-by: Marcus Prebble <marcus.prebble@axis.com>
+
+
+
+--=-TkMpzh3UxBfLprSWL/Gd
+Content-Disposition: attachment;
+	filename="0001-mkfs.ubifs-is-contained-err-handling.patch"
+Content-Type: text/x-patch;
+	name="0001-mkfs.ubifs-is-contained-err-handling.patch"; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+
+diff --git a/mtd-utils/mkfs.ubifs/mkfs.ubifs.c b/mtd-utils/mkfs.ubifs/mkfs.ubifs.c
+index a361df9..24554de 100644
+--- a/mtd-utils/mkfs.ubifs/mkfs.ubifs.c
++++ b/mtd-utils/mkfs.ubifs/mkfs.ubifs.c
+@@ -252,7 +252,10 @@ static char *make_path(const char *dir, const char *name)
+  */
+ static int is_contained(const char *file, const char *dir)
+ {
+-	char *file_base, *copy, *real_file, *real_dir, *p;
++	char *real_file = NULL;
++	char *real_dir = NULL;
++	char *file_base, *copy;
++	int ret = -1;
+ 
+ 	/* Make a copy of the file path because 'dirname()' can modify it */
+ 	copy = strdup(file);
+@@ -262,31 +265,29 @@ static int is_contained(const char *file, const char *dir)
+ 
+ 	/* Turn the paths into the canonical form */
+ 	real_file = malloc(PATH_MAX);
+-	if (!real_file) {
+-		free(copy);
+-		return -1;
+-	}
++	if (!real_file)
++		goto out_free;
+ 
+ 	real_dir = malloc(PATH_MAX);
+-	if (!real_dir) {
+-		free(real_file);
+-		free(copy);
+-		return -1;
+-	}
++	if (!real_dir)
++		goto out_free;
++
+ 	if (!realpath(file_base, real_file)) {
+-		perror("realpath");
+-		return -1;
++		perror("Could not canonicalize file path");
++		goto out_free;
+ 	}
+ 	if (!realpath(dir, real_dir)) {
+-		perror("realpath");
+-		return -1;
++		perror("Could not canonicalize directory");
++		goto out_free;
+ 	}
+ 
+-	p = strstr(real_file, real_dir);
+-	free(real_dir);
+-	free(real_file);
++	ret = !!strstr(real_file, real_dir);
++
++out_free:
+ 	free(copy);
+-	return !!p;
++	free(real_file);
++	free(real_dir);
++	return ret;
+ }
+ 
+ /**
+@@ -346,9 +347,13 @@ static int validate_options(void)
+ 
+ 	if (!output)
+ 		return err_msg("no output file or UBI volume specified");
+-	if (root && is_contained(output, root))
+-		return err_msg("output file cannot be in the UBIFS root "
+-			       "directory");
++	if (root) {
++		if ((tmp = is_contained(output, root)) < 0)
++			return err_msg("failed to perform output file root check");
++		else if (tmp)
++			return err_msg("output file cannot be in the UBIFS root "
++			               "directory");
++	}
+ 	if (!is_power_of_2(c->min_io_size))
+ 		return err_msg("min. I/O unit size should be power of 2");
+ 	if (c->leb_size < c->min_io_size)
+
+--=-TkMpzh3UxBfLprSWL/Gd--
