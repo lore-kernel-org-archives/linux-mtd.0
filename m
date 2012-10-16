@@ -1,20 +1,26 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TO13y-0004Sg-Is
- for linux-mtd@lists.infradead.org; Tue, 16 Oct 2012 06:55:39 +0000
-Message-ID: <1350370552.5769.31.camel@sauron.fi.intel.com>
-Subject: Re: Unstable bits CEWG project
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ezequiel Garcia <elezegarcia@gmail.com>
-Date: Tue, 16 Oct 2012 09:55:52 +0300
-In-Reply-To: <CALF0-+XMSfxrXDM0GiEfu0jtDHKv7O0hFPtsZ2=LGUcGz-ctVQ@mail.gmail.com>
-References: <CALF0-+XMSfxrXDM0GiEfu0jtDHKv7O0hFPtsZ2=LGUcGz-ctVQ@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-+4N5x8xYs3u0rvZiYLPx"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TO14a-0004Yl-IR
+ for linux-mtd@lists.infradead.org; Tue, 16 Oct 2012 06:56:17 +0000
+Date: Tue, 16 Oct 2012 08:56:11 +0200
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+To: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH 1/2 RFC v2] mtd/uclinux: support ROM and allow passing
+ the base address
+Message-ID: <20121016065611.GP639@pengutronix.de>
+References: <1349709952-4332-1-git-send-email-u.kleine-koenig@pengutronix.de>
+ <1350027693-19528-1-git-send-email-u.kleine-koenig@pengutronix.de>
+ <507B8DBF.2030104@snapgear.com>
+ <20121015065855.GG639@pengutronix.de>
+ <507CB4A1.4080609@snapgear.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <507CB4A1.4080609@snapgear.com>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-mtd@lists.infradead.org, Mike Frysinger <vapier.adi@gmail.com>,
+ kernel@pengutronix.de, Greg Ungerer <gerg@uclinux.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,67 +30,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello Greg,
 
---=-+4N5x8xYs3u0rvZiYLPx
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Tue, Oct 16, 2012 at 11:13:05AM +1000, Greg Ungerer wrote:
+> On 15/10/12 16:58, Uwe Kleine-König wrote:
+> >On Mon, Oct 15, 2012 at 02:14:55PM +1000, Greg Ungerer wrote:
+> >>>  	mapp->virt = ioremap_nocache(mapp->phys, mapp->size);
+> >>>@@ -76,9 +83,18 @@ static int __init uclinux_mtd_init(void)
+> >>>
+> >>>  	simple_map_init(mapp);
+> >>>
+> >>>-	mtd = do_map_probe("map_ram", mapp);
+> >>>+	mapp->name = "ROM";
+> >>>+	mtd = do_map_probe("map_rom", mapp);
+> >>>+	if (!mtd) {
+> >>>+		/* fall back to ram probing for compatibility reasons */
+> >>>+		mapp->name = "RAM";
+> >>>+		mtd = do_map_probe("map_ram", mapp);
+> >>>+		if (mtd && IS_ENABLED(CONFIG_MTD_ROM))
+> >>>+			pr_err("Failed to map rom, but ram succeeded. Please report this issue!\n");
+> >>
+> >>Do we really want this message?
+> >>My predominate usage of this code is in RAM mappings. Network
+> >>loading kernel+filesystem images on bare boards. Anyone who wants
+> >>to know and is looking in the kernel boot messages will see
+> >>something like:
+> >>
+> >>     Creating 1 MTD partitions on "RAM":
+> >>     0x000000000000-0x0000000d8000 : "ROMfs"
+> >>
+> >>So they will know what type of mapping it was loaded from.
+> >I want it because if nobody reports it it might well be possible to drop
+> >map_ram support.
+> 
+> I am not sure I follow. The message is only printed if both ROM and
+> RAM mappings are enabled. Many of the configs I use only have RAM
+> mappings enabled.
+Yeah, in this case it doesn't help. I also thought about adding a
+warning for !IS_ENABLED(CONFIG_MTD_ROM). But this seemed too harsh, so I
+dropped the idea.
 
-On Mon, 2012-10-15 at 18:28 -0300, Ezequiel Garcia wrote:
-> Hello all,
->=20
-> I'm considering to propose myself as a candidate for the CEWG funded
-> "Unstable bits" project [1].
->=20
-> I'd like to know if anyone has considered the posibility of adding
-> power-cut emulation to nandsim driver;
-> or if this is just a stupid idea.
+Still, the theory is that MTD_ROM should be enough for the uclinux map.
+If it's not it's at least not silently fixed up and we might get a
+report about what was wrong with my assumption.
 
-I'd suggest to add this in UBI instead.
+Best regards
+Uwe
 
-1. nandsim is quite unreadable already and difficult to deal with
-2. UBI is cleaner and all the I/O goes through functions in the io.c
-   file.
-3. By having it in UBI it is possible to force p-c emulation in
-   interesting places, like when we are updating the volume table,
-   or recovering from a failed write, or torturing a PEB, or writing
-   EC/VID headers, or doing something fastmap-related.
-
-   If you do this in nandsim, you will get 99% of power cuts when
-   writing data, so you will mostly test this, and very rarely cover
-   other places, unless you run for days.
-
-   We passes through this when developing UBIFS, and this is why we
-   put the power-cut emulation to UBIFS. I guess nowadays you can move
-   it down to UBI.
-
-Also, FYI, we have the integck test which supports emulated power-cut
-testing for UBIFS.
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-+4N5x8xYs3u0rvZiYLPx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQfQT5AAoJECmIfjd9wqK0TesP/1KWeKlpJOOUcGU0VSD2tZHQ
-KPeURaHLmBWWTuqLcQIVRIL9XC0sRSh/CEe/+fMI9HRmWxWgSMOaKbFKOE+JjGPI
-qh9PkX4N9QP0IyZtwZs/5FWJQT3EaKzajjHyzVRmkxClrvd57R5cMztftVz8ExYO
-LG8ZpiED41M1ha6TtdL7gSb24lrA1PTLTSLnmGSkKaKyUPhG2C7habOP50oIc4mH
-AoSugwVAMQrkbFY7E43vmYomvk68JbcFmiOd7D1UOCvROJrHNS2Do4XbPdfkS78Z
-0J+YGTo9ygoCXMAUBZogUNmLKaZ0T8OuiLRNo2EBc49qFXJZpcZANOyjk2J5Av0y
-bVI3aOKu/LBKBqqSb6MqFMXtt9NHuGzV77EtlycM52CcSHc7VUguXT3v0iwpjbrj
-8UAfSvqLPIS8uvLyLsFvWcNGHlsMazX9P2/kp8eSIH19StLjLs1kYWY2/VI0aYxn
-FAA+QayG8QemN2gBKBWoj3htA61PvrJgvJJ2K7K3sE5aOzbo1cbpZqwaCgwWEBHE
-V8sWnKLkYyTV9MKIV9chuVwXle7/YFmhM5JetIbFp5j+G1kKqeTNl+QZMa2lYFIG
-HkmmDM02JmURahLWStr+zkvs7EuTyXf/jttLEnP//UB4Z5DmOoqISpRA+W5rSlrH
-pU4i8+rrBuVWWVO8KEXc
-=2gOb
------END PGP SIGNATURE-----
-
---=-+4N5x8xYs3u0rvZiYLPx--
+-- 
+Pengutronix e.K.                           | Uwe Kleine-König            |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
