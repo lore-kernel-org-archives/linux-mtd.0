@@ -1,20 +1,22 @@
-Received: from mail-ob0-f177.google.com ([209.85.214.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TOBVW-0002WZ-Rp
- for linux-mtd@lists.infradead.org; Tue, 16 Oct 2012 18:04:48 +0000
-Received: by mail-ob0-f177.google.com with SMTP id wd20so6770685obb.36
- for <linux-mtd@lists.infradead.org>; Tue, 16 Oct 2012 11:04:44 -0700 (PDT)
+Date: Tue, 16 Oct 2012 11:06:01 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: Ivan Djelic <ivan.djelic@parrot.com>
+Subject: Re: [PATCH v2 00/14] OMAP-GPMC related cleanup for common zImage
+Message-ID: <20121016180600.GA15569@atomide.com>
+References: <cover.1349672877.git.afzal@ti.com>
+ <C8443D0743D26F4388EA172BF4E2A7A93E9F7B0A@DBDE01.ent.ti.com>
+ <20121010163840.GA13585@parrot.com>
 MIME-Version: 1.0
-In-Reply-To: <1350371967-8914-1-git-send-email-josh.wu@atmel.com>
-References: <1350371967-8914-1-git-send-email-josh.wu@atmel.com>
-Date: Tue, 16 Oct 2012 11:04:44 -0700
-Message-ID: <CACiLriQ1fTbGs7eCK5eeF=99um=EQaj-vefjEnvDS0bwWa5m=w@mail.gmail.com>
-Subject: Re: [PATCH] avr32: fix build error in atstk1006_defconfig
-From: =?ISO-8859-1?Q?H=E5vard_Skinnemoen?= <havard@skinnemoen.net>
-To: Josh Wu <josh.wu@atmel.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: dedekind1@gmail.com, linux-kernel@vger.kernel.org, hskinnemoen@gmail.com,
- linux-mtd@lists.infradead.org, fengguang.wu@intel.com, egtvedt@samfundet.no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20121010163840.GA13585@parrot.com>
+Cc: "Mohammed, Afzal" <afzal@ti.com>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Paul Walmsley <paul@pwsan.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Hunter,
+ Jon" <jon-hunter@ti.com>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,21 +26,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 16, 2012 at 12:19 AM, Josh Wu <josh.wu@atmel.com> wrote:
-> fixed the following compile error when use avr32 atstk1006_defconfig:
->   drivers/mtd/nand/atmel_nand.c: In function 'pmecc_err_location':
->   drivers/mtd/nand/atmel_nand.c:639: error: implicit declaration of function 'writel_relaxed'
->
-> which was introduced by commit 1c7b874d33b463 ("mtd: at91: atmel_nand: add Programmable Multibit ECC controller support").
-> The PMECC for nand flash code uses writel_relaxed(). But in avr32, there is no macro "writel_relaxed" defined. This patch add writex_relaxed macro definitions.
->
-> Signed-off-by: Josh Wu <josh.wu@atmel.com>
+* Ivan Djelic <ivan.djelic@parrot.com> [121010 09:40]:
+> 
+> I ran several mtd regression tests on a Beagle Board on your gpmc-czimage-v2 tag.
+> All BCH error correcting tests passed successfully.
+> 
+> I occasionally had weird read errors though, especially when reading blank pages:
+> the omap driver returned 512-byte sectors containing something like:
+> 
+> 30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff
+> 30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff
+> 30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff
+> 30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff
+> 30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff
+> 30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> 
+> instead of:
+> 
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+> 
+> I was able to reproduce the problem also on l2-mtd tip, albeit less often.
+> The problem seems to occur quite randomly, it may be a hardware issue on
+> my board...
 
-Acked-by: Havard Skinnemoen <havard@skinnemoen.net>
+Things like this typically happen in the GPMC timings are not correct.
+Maybe add #define DEBUG to top of gpmc.c and compare the timings
+before and after Afzal's patches? 
 
-I think it's OK to just forward to write[bwl] -- the relaxed variants
-merely provide fewer ordering guarantees than the non-relaxed
-variants. The worst that could happen is a small performance hit (and
-on AVR32, even that is highly unlikely).
+> Anyway, the ECC handling part looks OK to me.
 
-Havard
+Regards,
+
+Tony
