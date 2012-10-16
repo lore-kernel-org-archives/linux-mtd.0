@@ -1,22 +1,13 @@
-Date: Tue, 16 Oct 2012 11:06:01 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: Ivan Djelic <ivan.djelic@parrot.com>
-Subject: Re: [PATCH v2 00/14] OMAP-GPMC related cleanup for common zImage
-Message-ID: <20121016180600.GA15569@atomide.com>
-References: <cover.1349672877.git.afzal@ti.com>
- <C8443D0743D26F4388EA172BF4E2A7A93E9F7B0A@DBDE01.ent.ti.com>
- <20121010163840.GA13585@parrot.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20121010163840.GA13585@parrot.com>
-Cc: "Mohammed, Afzal" <afzal@ti.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- Paul Walmsley <paul@pwsan.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Hunter,
- Jon" <jon-hunter@ti.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Does your business/project need a loan
+To: Recipients <margaret-richmnd@inbox.com>
+From: First Trust <margaret-richmnd@inbox.com>
+Date: Tue, 16 Oct 2012 22:08:07 +0200
+Message-Id: <20121016200008.413D04A0AF1@mail.gard1x.com>
+Reply-To: margaret-richmnd@inbox.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,60 +17,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Ivan Djelic <ivan.djelic@parrot.com> [121010 09:40]:
-> 
-> I ran several mtd regression tests on a Beagle Board on your gpmc-czimage-v2 tag.
-> All BCH error correcting tests passed successfully.
-> 
-> I occasionally had weird read errors though, especially when reading blank pages:
-> the omap driver returned 512-byte sectors containing something like:
-> 
-> 30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff
-> 30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff
-> 30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff
-> 30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff
-> 30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff
-> 30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ff30ffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> 
-> instead of:
-> 
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-> 
-> I was able to reproduce the problem also on l2-mtd tip, albeit less often.
-> The problem seems to occur quite randomly, it may be a hardware issue on
-> my board...
+RE: PROJECT FUNDING.
 
-Things like this typically happen in the GPMC timings are not correct.
-Maybe add #define DEBUG to top of gpmc.c and compare the timings
-before and after Afzal's patches? 
+Does your business/project need a FAST EASY injection of capital at reasona=
+ble rates? Do it right the first time with our financing solutions speciali=
+sts.
 
-> Anyway, the ECC handling part looks OK to me.
+At First Trust Capital Group Plc brokerage firm, we have access to a combin=
+ed International pool of nearly Half a Trillion in available Liquidity and =
+if you have the right project, we have the right funding. We obtain financi=
+al commitments for loans, project funding, proof of funds, bank guarantees,=
+ letters of credit, standby letters of credit, collateral enhancements, cre=
+dit enhancements, and funds for charities and non-profit organisations from=
+ domestic and international lending institutions which we would have approv=
+ed for individuals, businesses, governments, corporations, and organisation=
+s.
 
-Regards,
+These days everybody seems to have a project in need of funding but very fe=
+w actually possess great intentions and innovative ideas. We only accept pr=
+ojects that we feel confident we can get funded and applications are obtain=
+ed, reviewed and chosen selectively through this Invitation Only Proposal.
 
-Tony
+We invite you to take this opportunity of an unbeatable fast easy program a=
+nd if we accept your project, it will be because we think it has merit and =
+stands a good chance of funding. You will need to ensure you have all the n=
+ecessary documentation (Business Plan, Executive Summary and what have you)=
+ to support your application. Once your application and supporting material=
+ is submitted, you will be contacted for any clarifications or questions th=
+at will assist us in providing you the best financing the market has to off=
+er.
+
+It is our primary objective to work with you and for you in a spirit of coo=
+peration and direct communication to make this painless and a =E2=80=9Cno s=
+urprises=E2=80=9D and =E2=80=9Cno delays=E2=80=9D experience!
+
+You are advised to act now and submit your application for Commitment today=
+ however choosing not to act is a choice in itself but can cost you and you=
+r project dearly. Remember fortune smiles on those who act at the right pla=
+ce, right time and right now. We value quality over quantity and time is al=
+ways of the essence.
+
+For more information about this opportunity of funding, please call during =
+office hours or send a fax or email.
+We will be happy to serve you.
+
+Thank you.
+Sincerely,
+Margaret Richmond (Ms),
+First Trust Capital Group Plc,
+40, Bank Street, Poplar, London,
+E14 5DS, United Kingdom.
+
+Please consider the environment before printing this email.
+******************* DISCLAIMER *******************
+P.S. This is strictly on the guidelines of CAN-SPAM act of 2003. We have cl=
+early mentioned the source mail-id of this mail,also clearly mentioned the =
+subject lines and they are in no way misleading in any form. We have found =
+your mail address through our own efforts on the web search and not through=
+ any un-authentic way. If you find this mail unsolicited, please reply with=
+ "Remove" in the subject line and we will take care that you do not receive=
+ any further mail from us.
+This message contains confidential information and is intended only for the=
+ recipient. If you are not the named addressee you should not disseminate, =
+distribute or copy this e-mail. Please notify the sender immediately if you=
+ have received this e-mail by mistake and delete this e-mail from your syst=
+em.
