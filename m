@@ -1,26 +1,27 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TO14a-0004Yl-IR
- for linux-mtd@lists.infradead.org; Tue, 16 Oct 2012 06:56:17 +0000
-Date: Tue, 16 Oct 2012 08:56:11 +0200
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-To: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH 1/2 RFC v2] mtd/uclinux: support ROM and allow passing
- the base address
-Message-ID: <20121016065611.GP639@pengutronix.de>
-References: <1349709952-4332-1-git-send-email-u.kleine-koenig@pengutronix.de>
- <1350027693-19528-1-git-send-email-u.kleine-koenig@pengutronix.de>
- <507B8DBF.2030104@snapgear.com>
- <20121015065855.GG639@pengutronix.de>
- <507CB4A1.4080609@snapgear.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <507CB4A1.4080609@snapgear.com>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-mtd@lists.infradead.org, Mike Frysinger <vapier.adi@gmail.com>,
- kernel@pengutronix.de, Greg Ungerer <gerg@uclinux.org>
+Message-ID: <1350371511.5769.43.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 07/11] fsmc/nand: Provide contiguous buffers to dma
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Tue, 16 Oct 2012 10:11:51 +0300
+In-Reply-To: <CAN8TOE-7d=YUSYsHFw9X5vnz8cpSJYv5uZfvBpDyhg+-F_LDiQ@mail.gmail.com>
+References: <cover.1349778820.git.vipin.kumar@st.com>
+ <2b88c853b3691338fae037f569917fc300cd6032.1349778821.git.vipin.kumar@st.com>
+ <CACRpkdb6ArMUQ6MAsue+Gh15UfOUrWNAc9wrxd6awc0BTwOGiw@mail.gmail.com>
+ <CAOh2x=ksMr7VRCnpF-rK+Mesg1p4Td++SQ-t=ShrguRRVWSSSQ@mail.gmail.com>
+ <CACRpkdYjA8QUh4HqvE1rsnXcGA4WafTkMq_wLNJ__gXEnEYrow@mail.gmail.com>
+ <507794B6.2000107@st.com> <1350307104.4115.23.camel@sauron.fi.intel.com>
+ <CAN8TOE-7d=YUSYsHFw9X5vnz8cpSJYv5uZfvBpDyhg+-F_LDiQ@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-7VNS0LQDYZtqDPcw5haq"
+Mime-Version: 1.0
+Cc: Vinod Koul <vinod.koul@intel.com>, viresh kumar <viresh.kumar@linaro.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ spear-devel <spear-devel@list.st.com>, Vipin Kumar <vipin.kumar@st.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "plagnioj@jcrosoft.com" <plagnioj@jcrosoft.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,53 +31,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Greg,
 
-On Tue, Oct 16, 2012 at 11:13:05AM +1000, Greg Ungerer wrote:
-> On 15/10/12 16:58, Uwe Kleine-König wrote:
-> >On Mon, Oct 15, 2012 at 02:14:55PM +1000, Greg Ungerer wrote:
-> >>>  	mapp->virt = ioremap_nocache(mapp->phys, mapp->size);
-> >>>@@ -76,9 +83,18 @@ static int __init uclinux_mtd_init(void)
-> >>>
-> >>>  	simple_map_init(mapp);
-> >>>
-> >>>-	mtd = do_map_probe("map_ram", mapp);
-> >>>+	mapp->name = "ROM";
-> >>>+	mtd = do_map_probe("map_rom", mapp);
-> >>>+	if (!mtd) {
-> >>>+		/* fall back to ram probing for compatibility reasons */
-> >>>+		mapp->name = "RAM";
-> >>>+		mtd = do_map_probe("map_ram", mapp);
-> >>>+		if (mtd && IS_ENABLED(CONFIG_MTD_ROM))
-> >>>+			pr_err("Failed to map rom, but ram succeeded. Please report this issue!\n");
-> >>
-> >>Do we really want this message?
-> >>My predominate usage of this code is in RAM mappings. Network
-> >>loading kernel+filesystem images on bare boards. Anyone who wants
-> >>to know and is looking in the kernel boot messages will see
-> >>something like:
-> >>
-> >>     Creating 1 MTD partitions on "RAM":
-> >>     0x000000000000-0x0000000d8000 : "ROMfs"
-> >>
-> >>So they will know what type of mapping it was loaded from.
-> >I want it because if nobody reports it it might well be possible to drop
-> >map_ram support.
-> 
-> I am not sure I follow. The message is only printed if both ROM and
-> RAM mappings are enabled. Many of the configs I use only have RAM
-> mappings enabled.
-Yeah, in this case it doesn't help. I also thought about adding a
-warning for !IS_ENABLED(CONFIG_MTD_ROM). But this seemed too harsh, so I
-dropped the idea.
+--=-7VNS0LQDYZtqDPcw5haq
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Still, the theory is that MTD_ROM should be enough for the uclinux map.
-If it's not it's at least not silently fixed up and we might get a
-report about what was wrong with my assumption.
+On Mon, 2012-10-15 at 09:27 -0700, Brian Norris wrote:
+> > I'd really prefer to just switch to kmalloc() everywhere instead of
+> > adding hacks like this to the drivers. Then if this is a problem for
+> > someone, he can fix it by either switching to smaller buffers (possible
+> > in many places), or by improving memory fragmentation issues on his
+> > system, or by just using CMA.
+>=20
+> I think I can suggest that this is already a problem on real systems.
+> In bringing up a board on v3.3 kernel, I experienced a kernel memory
+> allocation error when trying to memdup_user() in eraseblock-size
+> regions. I believe I would experience more of these if all
+> eraseblock-sized buffers were kmalloc()'d.
+>=20
+> See the commit description for the following commit in mtd-utils.git:
+>=20
+>     commit 71c76e74661492b4f68f670514866cfc85f47089
+>     libmtd: fix mtd_write() issues for large data-only writes
 
-Best regards
-Uwe
+Well, this is another work-around. The better way to fix this would be
+to change kernel's 'mtdchar_write_ioctl()' to be iterative and avoid
+calling 'memdup_user(len)' for arbitrary 'len' passed from user-space.
 
--- 
-Pengutronix e.K.                           | Uwe Kleine-König            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+> I would prefer not building a solution that hopes kmalloc() can get a
+> large contiguous buffer (remember, eraseblock sizes come as large as
+> 2MB these days). A real solution like CMA or scatter-gather seems like
+> a better idea.
+
+Me too. But this does not happen. People bring this up for years. Of
+course it is easier to hack drivers, and very understandable. So what
+I would like to do is somehow force people to fix this issue.
+
+So I thought about something like introducing an mtd_alloc() which
+would:
+   a. Try doing CMA allocation: dma_alloc_from_contiguous()
+   b. If it fails, use kmalloc().
+
+This function would probably need a cookie which it returns and which
+the mtd_free() function would use to call either kfree() or
+dma_release_from_contiguous()...
+
+If both fail - bad luck. Go look at the code and switch to S-G lists
+instead of allocating contiguous regions. As I said, in many places it
+is easy to do, and there are few places when you would need to spend a
+bit more time.
+
+How does this sound to you?
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+
+
+--=-7VNS0LQDYZtqDPcw5haq
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQfQi3AAoJECmIfjd9wqK0WUkP/39CkcTmx05hL/wdWnMEeqOj
+3NADAUTk0m7EWlt6FXr/66sfcYyZvjaXNPA7XLdLti/XlEZwhlePt9EBfyIRa+Ux
+tB5S69sUCeGOOf5VEAtLqkMfervuSQWVOxiUQdqFp9B9d9epwgGXdgmA45ChsZtz
+koLAVfqkrbyacNtfkdkBwiwaLqz0kSGxSLjDLL8fyvG8C5/q8+KouPjssveXjUCf
+nerO+eGi/KFrSsHJ4Mq/Mz1udcelUEhGGYMAwdpPEKn4n3GKg4c8jIAVPv9iKUaN
+98fq4sFtDJqkvLA1E+VBzmc9RAZ2N1Pq/5K6iQolDw+N1eRglYK3c3y8BXbdpCEC
+w/n0ZcwGS0HVDXEkobV95pUWauAhz7HuQ13P2+D4RJng3APRF4FfKlOOChdiZCBp
+d/XlxOhNVnuxUFDrlzocof5hp95aezYc1JBHUImtwjZIu6tEU3W+Qc2lY8cc+K8e
+GHklQAcmFu+G+JUKu+y16ldB65RyZP8+U6UFlNZD7LUob0v5apLhcoewwF3CYoV5
+O37Rs5Ly24UEZasXF0W3fqEHHsBQkJzxyBGA358rDheqMqZOgyG3RVivruvP9ttj
+egMXddf8SbNynjcT0fjp3goPUyQ0nvjnrD0BgZP5mZIomJ/EzmFfX3fz+r6GW04m
+VUfm1gXjdJ8Lmoz+WUMW
+=K90N
+-----END PGP SIGNATURE-----
+
+--=-7VNS0LQDYZtqDPcw5haq--
