@@ -1,18 +1,24 @@
-MIME-Version: 1.0
-In-Reply-To: <1350473030.5769.137.camel@sauron.fi.intel.com>
-References: <1349776729-9311-1-git-send-email-hechtb@gmail.com>
- <1350473030.5769.137.camel@sauron.fi.intel.com>
-Date: Wed, 17 Oct 2012 15:05:09 +0200
-Message-ID: <CABYn4szACuH3LQ193VJj6E=J4q4Ye4E4O6cUgjB8jmQK6RRmpA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] Add DMA and device tree support to the flash
- controller FLCTL
-From: Bastian Hecht <hechtb@googlemail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-sh@vger.kernel.org, Vikram Narayanan <vikram186@gmail.com>,
- Magnus Damm <magnus.damm@gmail.com>, linux-mtd@lists.infradead.org,
- Guennadi Liakhovetski <g.liakhovetski@gmx.de>,
- linux-arm-kernel@lists.infradead.org
+Received: from mga14.intel.com ([143.182.124.37])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TOTN3-0007If-VO
+ for linux-mtd@lists.infradead.org; Wed, 17 Oct 2012 13:09:14 +0000
+Message-ID: <1350479369.5769.153.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] [MTD] MTD driver for LPDDR2-NVM PCM memories
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Vincenzo Aliberti <vincenzo.aliberti@gmail.com>
+Date: Wed, 17 Oct 2012 16:09:29 +0300
+In-Reply-To: <507DD09C.6050600@gmail.com>
+References: <1349385434-3073-1-git-send-email-valibert@micron.com>
+ <1349954577.12014.13.camel@sauron.fi.intel.com>
+ <507DD09C.6050600@gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-duizr8Wuofclj7EueSSn"
+Mime-Version: 1.0
+Cc: arnd@arndb.de, dmanna@micron.com, lporzio@micron.com,
+ linux-mtd@lists.infradead.org, valibert@micron.com, svenkatr@ti.com,
+ dwmw2@infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,63 +28,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
 
-> Hi, I used to be able to compile MTD stuff for mackerel board with the
-> defconfig attached, but now it fails with 3.7-rc1 with as error:
->
-> /tmp/cc2Nr7AN.s: Error: bad immediate value for 8-bit offset (1024)
->
-> It fails for dogc4.c, but if I disable DOCG4, it fails for other drivers
-> with a similar error.
->
-> I've tried (arm) gcc 4.6.3 and the latest Linaro 4.7 build.
->
-> Any idea? I did not dig this, is this a known issue? Could you try to
-> reproduce this in your setup?
->
+--=-duizr8Wuofclj7EueSSn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-I can reproduce the error with the following output:
-/tmp/ccYAbker.s: Assembler messages:
-/tmp/ccYAbker.s: Error: bad immediate value for 8-bit offset (2048)
-make[3]: *** [drivers/mtd/nand/docg4.o] Error 1
+On Tue, 2012-10-16 at 23:24 +0200, Vincenzo Aliberti wrote:
+> The only Warning is
+> WARNING: line over 80 characters
+> #605: FILE: include/uapi/mtd/mtd-abi.h:112:
+> +#define MTD_CAP_PCM		(MTD_WRITEABLE | MTD_BIT_WRITEABLE | MTD_NO_ERASE)
+>=20
+> But in the file include/uapi/mtd/mtd-abi.h there is already the raw:
+> #define MTD_CAP_RAM		(MTD_WRITEABLE | MTD_BIT_WRITEABLE | MTD_NO_ERASE)
 
-The compiler version is: gcc version 4.6.3 (Ubuntu/Linaro 4.6.3-1ubuntu5)
-I usually use: gcc version 4.4.1 (Sourcery G++ Lite 2010q1-202) and
-can compile things without problems.
+You can ignore this warning.
 
-I found some old bug reports (from 2005) on the same issue with arm gcc.
+--=20
+Best Regards,
+Artem Bityutskiy
 
-Do we want to send a bug report? I've read in the gnu gcc docs about
-reporting and they want the minimal set of data to reproduce this bug.
-Hmmmm....
+--=-duizr8Wuofclj7EueSSn
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-The command line used (with --save-temps added as they want it) is:
-arm-linux-gnueabi-gcc -Wp,-MD,drivers/mtd/nand/.docg4.o.d  -nostdinc
--isystem /usr/lib/gcc/arm-linux-gnueabi/4.6/include
--I$KERNEL_DIR/arch/arm/include -Iarch/arm/include/generated  -Iinclude
--I$KERNEL_DIR/arch/arm/include/uapi -Iarch/arm/include/generated/uapi
--I$KERNEL_DIR/include/uapi -Iinclude/generated/uapi -include
-$KERNEL_DIR/include/linux/kconfig.h -D__KERNEL__ -mlittle-endian
--Iarch/arm/mach-shmobile/include -Wall -Wundef -Wstrict-prototypes
--Wno-trigraphs -fno-strict-aliasing -fno-common
--Werror-implicit-function-declaration -Wno-format-security
--fno-delete-null-pointer-checks -O2 -marm -fno-dwarf2-cfi-asm
--fno-omit-frame-pointer -mapcs -mno-sched-prolog -mabi=aapcs-linux
--mno-thumb-interwork -D__LINUX_ARM_ARCH__=7 -march=armv7-a
--msoft-float -Uarm -Wframe-larger-than=1024 -fno-stack-protector
--Wno-unused-but-set-variable -fno-omit-frame-pointer
--fno-optimize-sibling-calls -Wdeclaration-after-statement
--Wno-pointer-sign -fno-strict-overflow -fconserve-stack  -DMODULE
--D"KBUILD_STR(s)=#s" -D"KBUILD_BASENAME=KBUILD_STR(docg4)"
--D"KBUILD_MODNAME=KBUILD_STR(docg4)" --save-temps -c -o
-drivers/mtd/nand/docg4.o drivers/mtd/nand/docg4.c
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-This generates docg4.i.
+iQIcBAABAgAGBQJQfq4JAAoJECmIfjd9wqK0jjwP/jNBAnUX5C9J7QujegEuCwEW
+DSA6dOE6lR/fvyg5yNMoELvGMmzONXx5lASy9qei+JvEvI1J2WkfFdpJopoKsDrH
+CxwfuGUwparevyjKRxQc3DDft2Ax5N99p74rjtBh3unrP7eUbFSd4J2uBU34yj1H
+gSUKJwC9hy/tuoe12xIfKowtjQJJ7ZdWgaauSZ9TxVheC00oXQE2WGa30VbXO1+q
+TBhOWAPL8FcTK7D3tTBHAOvEwA059q+5vfQhVuoqrjAH9LBmCVRXYWfLNYvTsiLZ
+sZGNIDMTWpFDFhWQp5FxHZqnhtpllXyFNSW1dL6+TpmpDIXvKbYG9NW93u2ZGn8N
+5G6w26cy7QlmFtk9ixISQwugH45Kmwz1ahfKQ4En4hjs8h89CgdUT7Uzz4AAmHXZ
+bBS5QPtpAhz8XDlfdbAY1Bej82tDfsv0qZuqJ3SUQ5NQaEuzmD3N7WO8tZUEBACm
+aAynt1a6REOL2DkDwK4NelU52JH3b+hD/qYMDUSTuRKRl2BDFDqg8aazeS0OTRup
+QPprKhi4O/zv0gvRZ02xhLWcK4uB+jfxpVUWFlDkOUR7cproGoGxUawuhxdgibr/
+C9Ni+0+xLhq+5dRPwAoQuXuCn4n/y74tGMclZbStEuHCxm6Vj7dNzyApo2eaDw5j
+y9mGEz1q0O9XmpnsV3Dv
+=b48n
+-----END PGP SIGNATURE-----
 
-The only way for them to reproduce it would be getting the kernel as a
-whole with the .config, no?
-
-cheers,
-
- Bastian
+--=-duizr8Wuofclj7EueSSn--
