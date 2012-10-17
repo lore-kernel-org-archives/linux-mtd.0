@@ -1,17 +1,18 @@
-Message-ID: <1350478116.5769.150.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 00/11] mtd/nand: fsmc driver updates
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Vipin Kumar <vipin.kumar@st.com>
-Date: Wed, 17 Oct 2012 15:48:36 +0300
-In-Reply-To: <cover.1349778820.git.vipin.kumar@st.com>
-References: <cover.1349778820.git.vipin.kumar@st.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-ZORJjynz5D4l2+9j4mTX"
-Mime-Version: 1.0
-Cc: plagnioj@jcrosoft.com, linus.walleij@linaro.org, spear-devel@list.st.com,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+MIME-Version: 1.0
+In-Reply-To: <1350473030.5769.137.camel@sauron.fi.intel.com>
+References: <1349776729-9311-1-git-send-email-hechtb@gmail.com>
+ <1350473030.5769.137.camel@sauron.fi.intel.com>
+Date: Wed, 17 Oct 2012 15:05:09 +0200
+Message-ID: <CABYn4szACuH3LQ193VJj6E=J4q4Ye4E4O6cUgjB8jmQK6RRmpA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] Add DMA and device tree support to the flash
+ controller FLCTL
+From: Bastian Hecht <hechtb@googlemail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-sh@vger.kernel.org, Vikram Narayanan <vikram186@gmail.com>,
+ Magnus Damm <magnus.damm@gmail.com>, linux-mtd@lists.infradead.org,
+ Guennadi Liakhovetski <g.liakhovetski@gmx.de>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,48 +22,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Artem,
 
---=-ZORJjynz5D4l2+9j4mTX
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> Hi, I used to be able to compile MTD stuff for mackerel board with the
+> defconfig attached, but now it fails with 3.7-rc1 with as error:
+>
+> /tmp/cc2Nr7AN.s: Error: bad immediate value for 8-bit offset (1024)
+>
+> It fails for dogc4.c, but if I disable DOCG4, it fails for other drivers
+> with a similar error.
+>
+> I've tried (arm) gcc 4.6.3 and the latest Linaro 4.7 build.
+>
+> Any idea? I did not dig this, is this a known issue? Could you try to
+> reproduce this in your setup?
+>
 
-On Tue, 2012-10-09 at 16:14 +0530, Vipin Kumar wrote:
-> This patch-set contains several fixes and a few enhancements in fsmc driv=
-er.
-> Modifications include
+I can reproduce the error with the following output:
+/tmp/ccYAbker.s: Assembler messages:
+/tmp/ccYAbker.s: Error: bad immediate value for 8-bit offset (2048)
+make[3]: *** [drivers/mtd/nand/docg4.o] Error 1
 
-OK, picked some patches from your series, some do not apply. Please,
-send v2 against the l2-mtd.git tree:
+The compiler version is: gcc version 4.6.3 (Ubuntu/Linaro 4.6.3-1ubuntu5)
+I usually use: gcc version 4.4.1 (Sourcery G++ Lite 2010q1-202) and
+can compile things without problems.
 
-git://git.infradead.org/users/dedekind/l2-mtd.git
+I found some old bug reports (from 2005) on the same issue with arm gcc.
 
-Thanks!
+Do we want to send a bug report? I've read in the gnu gcc docs about
+reporting and they want the minimal set of data to reproduce this bug.
+Hmmmm....
 
---=20
-Best Regards,
-Artem Bityutskiy
+The command line used (with --save-temps added as they want it) is:
+arm-linux-gnueabi-gcc -Wp,-MD,drivers/mtd/nand/.docg4.o.d  -nostdinc
+-isystem /usr/lib/gcc/arm-linux-gnueabi/4.6/include
+-I$KERNEL_DIR/arch/arm/include -Iarch/arm/include/generated  -Iinclude
+-I$KERNEL_DIR/arch/arm/include/uapi -Iarch/arm/include/generated/uapi
+-I$KERNEL_DIR/include/uapi -Iinclude/generated/uapi -include
+$KERNEL_DIR/include/linux/kconfig.h -D__KERNEL__ -mlittle-endian
+-Iarch/arm/mach-shmobile/include -Wall -Wundef -Wstrict-prototypes
+-Wno-trigraphs -fno-strict-aliasing -fno-common
+-Werror-implicit-function-declaration -Wno-format-security
+-fno-delete-null-pointer-checks -O2 -marm -fno-dwarf2-cfi-asm
+-fno-omit-frame-pointer -mapcs -mno-sched-prolog -mabi=aapcs-linux
+-mno-thumb-interwork -D__LINUX_ARM_ARCH__=7 -march=armv7-a
+-msoft-float -Uarm -Wframe-larger-than=1024 -fno-stack-protector
+-Wno-unused-but-set-variable -fno-omit-frame-pointer
+-fno-optimize-sibling-calls -Wdeclaration-after-statement
+-Wno-pointer-sign -fno-strict-overflow -fconserve-stack  -DMODULE
+-D"KBUILD_STR(s)=#s" -D"KBUILD_BASENAME=KBUILD_STR(docg4)"
+-D"KBUILD_MODNAME=KBUILD_STR(docg4)" --save-temps -c -o
+drivers/mtd/nand/docg4.o drivers/mtd/nand/docg4.c
 
---=-ZORJjynz5D4l2+9j4mTX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+This generates docg4.i.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+The only way for them to reproduce it would be getting the kernel as a
+whole with the .config, no?
 
-iQIcBAABAgAGBQJQfqklAAoJECmIfjd9wqK0XeUP/jmsXKmux8A5yCjbP4k5uGO8
-n8Yqav+0Uq9LwuGNAgHrd6W9Oh0p9OQeHRWNhmHEQyGnuARwwO1wy4HEzit8OXYk
-ychKHm3ZaJpZBBd9VjAY3SLMdVVdrz5JbiIcxbM7390xiPYZ6lGXcRdFCJXKiVUA
-h7iewF+Uacy4hlGNoblvnKDN7B0/8f2MITNpzt8RyWO0GuFhg7G6z3grZTmviO3m
-ECq4tEr2oX/Xq2xcqwOXJ9Vhl9E3k0FjwYJyzc+njWuKTGke4nWWW+4KFsLPVSPg
-+XAE0tP2vrZHTMasU2LmVcMcM6HDK9EA+rEqlx16oIGnODqKQorYrsuCvrJ0A2XX
-fdIHCVhTsnSlnS81kiK/UfBOfW6Z9yo0Bz6f1/4YGpiLFJwIsGfhIXCvbNj6tdvb
-CqvLr3SSZ2O+Yjx+HluCJ5vYuW3dc7U2afG/D3d5KAKi1tz0ky+w3H0OhGF70fll
-oL7/d1eijVtO1O05ztm2YfBZelMCozeIUd6vB0QhUID0/+jT4Dx1OYaqNCpDVmtF
-FtzkpAS9xbiAbh50jSyHpfaKvKZ3Sr6BQIvTQ8fy8uJjj4e9w7RgDEanTBCspatH
-xssB0lC5u7bJarjCclXikbqTN9Tv4xXQNbeXxkHKYzKG+KLmHCFTH3rFfKeEqBCE
-8FlrlIs03gMJlU3FC7jp
-=dOq9
------END PGP SIGNATURE-----
+cheers,
 
---=-ZORJjynz5D4l2+9j4mTX--
+ Bastian
