@@ -1,20 +1,17 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TOSwn-0006qO-Rl
- for linux-mtd@lists.infradead.org; Wed, 17 Oct 2012 12:42:08 +0000
-Message-ID: <1350477742.5769.144.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH RESEND] jffs2: Fix lock acquisition order bug in
- jffs2_write_begin
+Message-ID: <1350478066.5769.149.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 06/11] fsmc/nand: Modify the wait to uninterruptible
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Thomas Betker <thomas.betker@freenet.de>
-Date: Wed, 17 Oct 2012 15:42:22 +0300
-In-Reply-To: <507476E7.8030705@freenet.de>
-References: <507321E6.1050609@freenet.de> <507476E7.8030705@freenet.de>
+To: Vipin Kumar <vipin.kumar@st.com>
+Date: Wed, 17 Oct 2012 15:47:46 +0300
+In-Reply-To: <3dcb002d0ad03dde9a91e8128dbaa320b8a264a9.1349778821.git.vipin.kumar@st.com>
+References: <cover.1349778820.git.vipin.kumar@st.com>
+ <3dcb002d0ad03dde9a91e8128dbaa320b8a264a9.1349778821.git.vipin.kumar@st.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-Eltsj7YwxFLtKUjGY0r5"
+ boundary="=-xz1u90G2mAuEbQ5+msKt"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, thomas.betker@rohde-schwarz.com
+Cc: plagnioj@jcrosoft.com, linus.walleij@linaro.org, spear-devel@list.st.com,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,35 +23,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-Eltsj7YwxFLtKUjGY0r5
+--=-xz1u90G2mAuEbQ5+msKt
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-10-09 at 21:11 +0200, Thomas Betker wrote:
-> jffs2_write_begin() first acquires the page lock, then f->sem. This cause=
-s an AB-BA deadlock with jffs2_garbage_collect_live(), which first acquires=
- f->sem, then the page lock:
+On Tue, 2012-10-09 at 16:14 +0530, Vipin Kumar wrote:
+> Interruptible wait caused trouble in fsmc hardware state machine if the
+> application was killed abruptly. To make fsmc operation safe turn wait in=
+ to
+> un-interruptible.
+>=20
+> Signed-off-by: Vipin Kumar <vipin.kumar@st.com>
 
-This patch does not apply to l2-mtd.git, which is based on 3.7-rc1.
-
-$:~/git/l2-mtd$ git apply --check ~/tmp/thomas.mbox
-error: patch failed: fs/jffs2/file.c:138
-error: fs/jffs2/file.c: patch does not apply
-
-Could you please wrap commit message lines to 80 characters when you
-re-send?
-
-Also, would you please add Cc: stable@vger.kernel.org [vX.Y+], where
-vX.Y is the starting version for which this patch is relevant, e.g.,
-v3.0.
-
-Thanks!
+Pushed this one to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-Eltsj7YwxFLtKUjGY0r5
+--=-xz1u90G2mAuEbQ5+msKt
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -62,19 +49,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQfqeuAAoJECmIfjd9wqK0JpkQALHtwUv7lT8Xb//GRagxk1hQ
-b0FAQFe8rbrt2vJW7kmOpxXNvujRVM5lFUkNofF34gEbaBC71Mc3KpXq28vNJGeg
-oi4S7u9FaiLl5S14A82oc3N+7f0rB+z9odlobRsQhXOJUL/6VAH4IH3JAsS5FUNX
-FBdnbnhaNEWkWFqid/z5NxxbKb2gIVUHCBi3KMXQHxSbBu8lIaWLMo2LR2zIc4DI
-BW3QFAxOV0wYX1DsiOY2YxRHObdAewnv/RKwn2TBcF7vURWEp/ZQSZSXP+EiSTTR
-bRbxvaQwnRd4JsTttqjZZi7Uax1cUMLS1um16FOIS3JS11I0HIekdyWmfeTmugpp
-ztpayuRlrAayxloXz6+eZwbljno0dARHZuRR7bwAujInDtVIoSgvEorXbSWPg09S
-Mvhgwh9/2uKgxEcD+LfwAzTcsdHJvxVY2huWKTytep9mq/tqA8jDqxm7R6EMHUem
-IgKrkscj4kOkYq58sRhLj17zza9CdhIkYzNyR+o3w9BVmWPMxWpvYd5ZDEH62CCe
-CpeLFVjcZxPNhR5uXL+qqatg578UXV2omTr303DhpWN60/uSd/x2vtmGLRcFa7/R
-R5CxNL031M3dzz1RtsiUj49u4fsjj4zwj0hRBpLinSqiLZdKz9QfgpQyBdQDkK6r
-xQoAvhv4ybRYjt8I528r
-=C5GM
+iQIcBAABAgAGBQJQfqjyAAoJECmIfjd9wqK0zuUP/jumn8llmvhcjdY0JALoLGMg
+adGeAKQuRaxWKmTVRG8IyWXrrjAooc2d7eKvhktgayOkB+lCZbi4e5BNzY/BDaUX
+IqJX0DQmpeVwoK+IG8qytp7+9fWKlvcT5ChMjnq692YtdaWjIwfkX+6zpyQXapn8
+nDmSEUTzOAitTazwv8zD+ZaRd/HwA16b1dmmYbxw8qRxkREwGhEdUuHWqNj51enH
+n5t3/8PHDTyBNvEOXj2qRwpT10fUBDFZ5ey9Ldsk0gHwI3yKGHjAoe2+teZs8zzJ
+dV7PZz9AgIxYp8fUJp4qevb644RyEU8lvEh6rBDaKwBReKc9/p0NeLkD3XdXO/i6
+0KaTJLRY3gXNaEX1BxI4VFQsJA/ZWai+rtKT1YaQzoHDHNYHj+Y89JiAFroC189f
+9oqEnHitHDiv3wsC62WRY9RvIMP+4FdRy1jsoHCWuoGHl6hV98FLglqMn5fa/9Zr
+ZtH++44fMchEpT1ZgSg9NECR6/TUDfP+X+559Uy5VbKgYCk72a9aGVeqPUWQEBWa
+B21ZHyID3gtOFuRh8ilcqfxXDQnc2v/RtJUuO7tgXevWDDUph4aKyZrVflj13zBb
+LPVmImL8IxolmP3FG4NHEY/P74p1ayXs15JZlUf1s2+5LtXJwScjaEoKM4rO8GEf
+W0koUDzga3lRGr7k/26l
+=VqW7
 -----END PGP SIGNATURE-----
 
---=-Eltsj7YwxFLtKUjGY0r5--
+--=-xz1u90G2mAuEbQ5+msKt--
