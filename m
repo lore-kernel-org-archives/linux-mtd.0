@@ -1,16 +1,20 @@
-Received: from mout1.freenet.de ([195.4.92.91])
+Received: from mout2.freenet.de ([2001:748:100:40::2:4])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TOako-0001q7-Sd
- for linux-mtd@lists.infradead.org; Wed, 17 Oct 2012 21:02:15 +0000
+ id 1TOb6g-0005wh-MT
+ for linux-mtd@lists.infradead.org; Wed, 17 Oct 2012 21:24:51 +0000
+Message-ID: <507F219A.4000700@freenet.de>
+Date: Wed, 17 Oct 2012 23:22:34 +0200
 From: Thomas Betker <thomas.betker@freenet.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH v3] jffs2: Fix lock acquisition order bug in jffs2_write_begin
-Date: Wed, 17 Oct 2012 22:59:30 +0200
-Message-ID: <20779914.XYDRY924qZ@linux-fiwg>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Cc: Joakim.Tjernlund@transmode.se, Thomas.Betker@rohde-schwarz.com
+To: dedekind1@gmail.com
+Subject: Re: [PATCH RESEND] jffs2: Fix lock acquisition order bug in
+ jffs2_write_begin
+References: <507321E6.1050609@freenet.de> <507476E7.8030705@freenet.de>
+ <1350477742.5769.144.camel@sauron.fi.intel.com>
+In-Reply-To: <1350477742.5769.144.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, thomas.betker@rohde-schwarz.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,133 +24,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-jffs2_write_begin() first acquires the page lock, then f->sem. This 
-causes an AB-BA deadlock with jffs2_garbage_collect_live(), which first 
-acquires f->sem, then the page lock:
+Hello Artem,
 
-jffs2_garbage_collect_live
-    mutex_lock(&f->sem)                         (A)
-    jffs2_garbage_collect_dnode
-        jffs2_gc_fetch_page
-            read_cache_page_async
-                do_read_cache_page
-                    lock_page(page)             (B)
+I have mailed theupdated patch to the list as "[PATCH v3] ...".
 
-jffs2_write_begin
-    grab_cache_page_write_begin
-        find_lock_page
-            lock_page(page)                     (B)
-    mutex_lock(&f->sem)                         (A)
+> This patch does not apply to l2-mtd.git, which is based on 3.7-rc1.
+>
+> $:~/git/l2-mtd$ git apply --check ~/tmp/thomas.mbox
+> error: patch failed: fs/jffs2/file.c:138
+> error: fs/jffs2/file.c: patch does not apply
 
-We fix this by restructuring jffs2_write_begin() to take f->sem before 
-the page lock. However, we make sure that f->sem is not held when 
-calling jffs2_reserve_space(), as this is not permitted by the locking 
-rules.
+Fixed, using another mailer ...
 
-The deadlock above was observed multiple times on an SoC with a dual 
-ARMv7 (Cortex-A9), running the long-term 3.4.11 kernel; it occurred 
-when using scp to copy files from a host system to the ARM target 
-system. The fix was heavily tested on the same target system.
+> Could you please wrap commit message lines to 80 characters when you
+> re-send?
 
-Cc: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
-Cc: stable@vger.kernel.org [v3.4+],
-Signed-off-by: Thomas Betker <thomas.betker@rohde-schwarz.com>
+Fixed -- sorry, this should not have happened.
 
-diff -Naur linux-3.4.11-orig/fs/jffs2/file.c linux-3.4.11/fs/jffs2/file.c
---- linux-3.4.11-orig/fs/jffs2/file.c	2012-09-14 22:18:55.000000000 +0000
-+++ linux-3.4.11/fs/jffs2/file.c	2012-10-05 09:01:10.000000000 +0000
-@@ -138,33 +138,39 @@
- 	struct page *pg;
- 	struct inode *inode = mapping->host;
- 	struct jffs2_inode_info *f = JFFS2_INODE_INFO(inode);
-+	struct jffs2_sb_info *c = JFFS2_SB_INFO(inode->i_sb);
-+	struct jffs2_raw_inode ri;
-+	uint32_t alloc_len = 0;
- 	pgoff_t index = pos >> PAGE_CACHE_SHIFT;
- 	uint32_t pageofs = index << PAGE_CACHE_SHIFT;
- 	int ret = 0;
- 
-+	jffs2_dbg(1, "%s()\n", __func__);
-+
-+	if (pageofs > inode->i_size) {
-+		ret = jffs2_reserve_space(c, sizeof(ri), &alloc_len,
-+					  ALLOC_NORMAL, JFFS2_SUMMARY_INODE_SIZE);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	mutex_lock(&f->sem);
- 	pg = grab_cache_page_write_begin(mapping, index, flags);
--	if (!pg)
-+	if (!pg) {
-+		if (alloc_len)
-+			jffs2_complete_reservation(c);
-+		mutex_unlock(&f->sem);
- 		return -ENOMEM;
-+	}
- 	*pagep = pg;
- 
--	jffs2_dbg(1, "%s()\n", __func__);
--
--	if (pageofs > inode->i_size) {
-+	if (alloc_len) {
- 		/* Make new hole frag from old EOF to new page */
--		struct jffs2_sb_info *c = JFFS2_SB_INFO(inode->i_sb);
--		struct jffs2_raw_inode ri;
- 		struct jffs2_full_dnode *fn;
--		uint32_t alloc_len;
- 
- 		jffs2_dbg(1, "Writing new hole frag 0x%x-0x%x between current EOF and new page\n",
- 			  (unsigned int)inode->i_size, pageofs);
- 
--		ret = jffs2_reserve_space(c, sizeof(ri), &alloc_len,
--					  ALLOC_NORMAL, JFFS2_SUMMARY_INODE_SIZE);
--		if (ret)
--			goto out_page;
--
--		mutex_lock(&f->sem);
- 		memset(&ri, 0, sizeof(ri));
- 
- 		ri.magic = cpu_to_je16(JFFS2_MAGIC_BITMASK);
-@@ -191,7 +197,6 @@
- 		if (IS_ERR(fn)) {
- 			ret = PTR_ERR(fn);
- 			jffs2_complete_reservation(c);
--			mutex_unlock(&f->sem);
- 			goto out_page;
- 		}
- 		ret = jffs2_add_full_dnode_to_inode(c, f, fn);
-@@ -206,12 +211,10 @@
- 			jffs2_mark_node_obsolete(c, fn->raw);
- 			jffs2_free_full_dnode(fn);
- 			jffs2_complete_reservation(c);
--			mutex_unlock(&f->sem);
- 			goto out_page;
- 		}
- 		jffs2_complete_reservation(c);
- 		inode->i_size = pageofs;
--		mutex_unlock(&f->sem);
- 	}
- 
- 	/*
-@@ -220,18 +223,18 @@
- 	 * case of a short-copy.
- 	 */
- 	if (!PageUptodate(pg)) {
--		mutex_lock(&f->sem);
- 		ret = jffs2_do_readpage_nolock(inode, pg);
--		mutex_unlock(&f->sem);
- 		if (ret)
- 			goto out_page;
- 	}
-+	mutex_unlock(&f->sem);
- 	jffs2_dbg(1, "end write_begin(). pg->flags %lx\n", pg->flags);
- 	return ret;
- 
- out_page:
- 	unlock_page(pg);
- 	page_cache_release(pg);
-+	mutex_unlock(&f->sem);
- 	return ret;
- }
- 
+> Also, would you please add Cc: stable@vger.kernel.org [vX.Y+], where
+> vX.Y is the starting version for which this patch is relevant, e.g.,
+> v3.0.
+
+Fixed, using [v3.4+]. (The patch may also be relevant for earlier kernel versions, but I don't have the means to test them.)
+
+Thanks,
+Thomas
