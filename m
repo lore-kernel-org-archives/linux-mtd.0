@@ -1,23 +1,22 @@
-Received: from mga14.intel.com ([143.182.124.37])
+Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TOTN3-0007If-VO
- for linux-mtd@lists.infradead.org; Wed, 17 Oct 2012 13:09:14 +0000
-Message-ID: <1350479369.5769.153.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] [MTD] MTD driver for LPDDR2-NVM PCM memories
+ id 1TOTPd-0007cU-9q
+ for linux-mtd@lists.infradead.org; Wed, 17 Oct 2012 13:11:53 +0000
+Message-ID: <1350479529.5769.155.camel@sauron.fi.intel.com>
+Subject: Re: GPMI NAND crashes with UBIFS
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Vincenzo Aliberti <vincenzo.aliberti@gmail.com>
-Date: Wed, 17 Oct 2012 16:09:29 +0300
-In-Reply-To: <507DD09C.6050600@gmail.com>
-References: <1349385434-3073-1-git-send-email-valibert@micron.com>
- <1349954577.12014.13.camel@sauron.fi.intel.com>
- <507DD09C.6050600@gmail.com>
+To: Marek Vasut <marex@denx.de>
+Date: Wed, 17 Oct 2012 16:12:09 +0300
+In-Reply-To: <201210111355.33836.marex@denx.de>
+References: <201210050345.49507.marex@denx.de>
+ <1349954707.12014.14.camel@sauron.fi.intel.com>
+ <201210111355.33836.marex@denx.de>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-duizr8Wuofclj7EueSSn"
+ boundary="=-TAX0Yopd1BHfufPzWNUb"
 Mime-Version: 1.0
-Cc: arnd@arndb.de, dmanna@micron.com, lporzio@micron.com,
- linux-mtd@lists.infradead.org, valibert@micron.com, svenkatr@ti.com,
- dwmw2@infradead.org
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,26 +28,37 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-duizr8Wuofclj7EueSSn
+--=-TAX0Yopd1BHfufPzWNUb
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-10-16 at 23:24 +0200, Vincenzo Aliberti wrote:
-> The only Warning is
-> WARNING: line over 80 characters
-> #605: FILE: include/uapi/mtd/mtd-abi.h:112:
-> +#define MTD_CAP_PCM		(MTD_WRITEABLE | MTD_BIT_WRITEABLE | MTD_NO_ERASE)
+On Thu, 2012-10-11 at 13:55 +0200, Marek Vasut wrote:
+> Dear Artem Bityutskiy,
 >=20
-> But in the file include/uapi/mtd/mtd-abi.h there is already the raw:
-> #define MTD_CAP_RAM		(MTD_WRITEABLE | MTD_BIT_WRITEABLE | MTD_NO_ERASE)
+> > On Fri, 2012-10-05 at 03:45 +0200, Marek Vasut wrote:
+> > > Hello guys,
+> > >=20
+> > > I tried integck from mtd-utils 1.5.0 on GPMI NAND driver since I susp=
+ect
+> > > it still has issues with UBI. See the outcome for yourself, log
+> > > attached. Any suggestions would be very appreciated.
+> > >=20
+> > > :~/mtd-utils-1.5.0/tests/fs-tests/integrity# ./integck /media
+> >=20
+> > Wait, you have power-cut emulation enabled, did you deliberately enable
+> > it via UBIFS debugfs files?
+>=20
+> I enabled this:
+> echo 1 > /sys/kernel/debug/ubifs/tst_recovery
 
-You can ignore this warning.
+Then this is expected behavior. You can run integck with -p, then it
+will be aware for the power-cut emulation and will continue running.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-duizr8Wuofclj7EueSSn
+--=-TAX0Yopd1BHfufPzWNUb
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -56,19 +66,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQfq4JAAoJECmIfjd9wqK0jjwP/jNBAnUX5C9J7QujegEuCwEW
-DSA6dOE6lR/fvyg5yNMoELvGMmzONXx5lASy9qei+JvEvI1J2WkfFdpJopoKsDrH
-CxwfuGUwparevyjKRxQc3DDft2Ax5N99p74rjtBh3unrP7eUbFSd4J2uBU34yj1H
-gSUKJwC9hy/tuoe12xIfKowtjQJJ7ZdWgaauSZ9TxVheC00oXQE2WGa30VbXO1+q
-TBhOWAPL8FcTK7D3tTBHAOvEwA059q+5vfQhVuoqrjAH9LBmCVRXYWfLNYvTsiLZ
-sZGNIDMTWpFDFhWQp5FxHZqnhtpllXyFNSW1dL6+TpmpDIXvKbYG9NW93u2ZGn8N
-5G6w26cy7QlmFtk9ixISQwugH45Kmwz1ahfKQ4En4hjs8h89CgdUT7Uzz4AAmHXZ
-bBS5QPtpAhz8XDlfdbAY1Bej82tDfsv0qZuqJ3SUQ5NQaEuzmD3N7WO8tZUEBACm
-aAynt1a6REOL2DkDwK4NelU52JH3b+hD/qYMDUSTuRKRl2BDFDqg8aazeS0OTRup
-QPprKhi4O/zv0gvRZ02xhLWcK4uB+jfxpVUWFlDkOUR7cproGoGxUawuhxdgibr/
-C9Ni+0+xLhq+5dRPwAoQuXuCn4n/y74tGMclZbStEuHCxm6Vj7dNzyApo2eaDw5j
-y9mGEz1q0O9XmpnsV3Dv
-=b48n
+iQIcBAABAgAGBQJQfq6pAAoJECmIfjd9wqK07wkP/iRkn6/rJ1X4OhK7EUdIUODd
+Vxw49P//ZFFBswOirvNe/lX7hqhx/dN4hCViWP9qzCbAzn6spLcIjFrbS3efx64A
+ZV1r983cjApGnnfECqU8ySPuDoW4K4+Q3BWQIDjeAnaEjiCf+QUB8KPD0bui6M8+
+0hBtw1QKq1nkRw+AcFyXy/w0dAsuqDef5XPSJ8sTMhvwaHAjw4dOxtlMLO9BoISy
+61/hlDGrXoEyNNCeJUj6E6IdtiE74KsR0Hd3uwMbVIBWcEFHSRDXY+5Zmp8zp5Gz
+wUpiTMPUeLzvsJV2XildZnCBaH4XfQdGxpp+LqzeJ14/3BZWV7RmibW2uP/dfkAW
+xli1Uyk9WMnyvwPCd2tUY1iB7XRYOzF0Hq0qr5LPQoanPAXXQ0yJO5t/+qOnzskB
+PjCSgzaK95w3gnAfBRxJt8+UZ0XzckKyK16Vuy3eI/eGMJ4HFVeY5QPDyPqui4QC
+rtEZH6+zvlpi8xbi75wnus6PioN8zDlpK2pyn+8yHS5I0lNPrr4+/6tkfsDo5+8b
+nCxuio6ezaw3aAbZRCnBJaR2FLJQppnYYUJT6gEA1NfPRRZBAv+3+Fzq6lEFq+sT
+DjuBB6I5NrdDldbF3mi6CPF3pjeYReUyB29SfioE7LWDyVwAkJ3sivgv3xFF6C8y
++ur2M2B4dCZvM1Jage/i
+=oAed
 -----END PGP SIGNATURE-----
 
---=-duizr8Wuofclj7EueSSn--
+--=-TAX0Yopd1BHfufPzWNUb--
