@@ -1,21 +1,15 @@
-Message-ID: <507E424B.8040706@ti.com>
-Date: Wed, 17 Oct 2012 10:59:47 +0530
-From: Afzal Mohammed <x0148406@ti.com>
-MIME-Version: 1.0
-To: Tony Lindgren <tony@atomide.com>, Ivan Djelic <ivan.djelic@parrot.com>
-Subject: Re: [PATCH v2 00/14] OMAP-GPMC related cleanup for common zImage
-References: <cover.1349672877.git.afzal@ti.com>
- <C8443D0743D26F4388EA172BF4E2A7A93E9F7B0A@DBDE01.ent.ti.com>
- <20121010163840.GA13585@parrot.com> <20121016180600.GA15569@atomide.com>
-In-Reply-To: <20121016180600.GA15569@atomide.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Paul Walmsley <paul@pwsan.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Hunter,
- Jon" <jon-hunter@ti.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Received: from smtp20.mail.ru ([94.100.176.173])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TOMnz-0004b1-6u
+ for linux-mtd@lists.infradead.org; Wed, 17 Oct 2012 06:08:36 +0000
+From: Alexander Shiyan <shc_work@mail.ru>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: gpio-nand: Ability to use driver for configurations
+ without RDY-pin
+Date: Wed, 17 Oct 2012 10:08:27 +0400
+Message-Id: <1350454107-3754-1-git-send-email-shc_work@mail.ru>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ David Woodhouse <dwmw2@infradead.org>, Alexander Shiyan <shc_work@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,39 +19,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ivan,
+In some configurations of "gpio-nand" RDY-pin may be not connected.
+This patch allow to use driver for these configurations. In this case
+we are assume that device always ready.
 
-On Tuesday 16 October 2012 11:36 PM, Tony Lindgren wrote:
-> * Ivan Djelic<ivan.djelic@parrot.com>  [121010 09:40]:
+Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+---
+ drivers/mtd/nand/gpio.c |   22 +++++++++++++++-------
+ 1 files changed, 15 insertions(+), 7 deletions(-)
 
->> I ran several mtd regression tests on a Beagle Board on your gpmc-czimage-v2 tag.
->> All BCH error correcting tests passed successfully.
-
->> I occasionally had weird read errors though, especially when reading blank pages:
->> the omap driver returned 512-byte sectors containing something like:
-
->> I was able to reproduce the problem also on l2-mtd tip, albeit less often.
->> The problem seems to occur quite randomly, it may be a hardware issue on
->> my board...
-
-> Things like this typically happen in the GPMC timings are not correct.
-> Maybe add #define DEBUG to top of gpmc.c and compare the timings
-> before and after Afzal's patches?
-
-Latest series for gpmc related cleanup for common zImage removed
-dependency on minor timing cleanups (this series was dependent on
-on another series that did minor timing cleanups).
-
-A pull request for the new series on gpmc cleanup for common zImage
-that does not contain timing related changes and without dependency
-on timing related changes has been sent to Tony (forwarded to you now).
-He has pulled those changes onto l-o in
-"omap-for-v3.8/cleanup-headers-gpmc"
-
-As there are no changes w.r.t timing's in the new series, behaviour
-should be same as without.
-
->> Anyway, the ECC handling part looks OK to me.
-
-Regards
-Afzal
+diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
+index bc73bc5..b1653bf 100644
+--- a/drivers/mtd/nand/gpio.c
++++ b/drivers/mtd/nand/gpio.c
+@@ -134,7 +134,11 @@ static void gpio_nand_readbuf16(struct mtd_info *mtd, u_char *buf, int len)
+ static int gpio_nand_devready(struct mtd_info *mtd)
+ {
+ 	struct gpiomtd *gpiomtd = gpio_nand_getpriv(mtd);
+-	return gpio_get_value(gpiomtd->plat.gpio_rdy);
++
++	if (gpio_is_valid(gpiomtd->plat.gpio_rdy))
++		return gpio_get_value(gpiomtd->plat.gpio_rdy);
++
++	return 1;
+ }
+ 
+ #ifdef CONFIG_OF
+@@ -252,7 +256,8 @@ static int __devexit gpio_nand_remove(struct platform_device *dev)
+ 	gpio_free(gpiomtd->plat.gpio_nce);
+ 	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
+ 		gpio_free(gpiomtd->plat.gpio_nwp);
+-	gpio_free(gpiomtd->plat.gpio_rdy);
++	if (gpio_is_valid(gpiomtd->plat.gpio_rdy))
++		gpio_free(gpiomtd->plat.gpio_rdy);
+ 
+ 	kfree(gpiomtd);
+ 
+@@ -336,10 +341,12 @@ static int __devinit gpio_nand_probe(struct platform_device *dev)
+ 	if (ret)
+ 		goto err_cle;
+ 	gpio_direction_output(gpiomtd->plat.gpio_cle, 0);
+-	ret = gpio_request(gpiomtd->plat.gpio_rdy, "NAND RDY");
+-	if (ret)
+-		goto err_rdy;
+-	gpio_direction_input(gpiomtd->plat.gpio_rdy);
++	if (gpio_is_valid(gpiomtd->plat.gpio_rdy)) {
++		ret = gpio_request(gpiomtd->plat.gpio_rdy, "NAND RDY");
++		if (ret)
++			goto err_rdy;
++		gpio_direction_input(gpiomtd->plat.gpio_rdy);
++	}
+ 
+ 
+ 	this->IO_ADDR_W  = this->IO_ADDR_R;
+@@ -386,7 +393,8 @@ static int __devinit gpio_nand_probe(struct platform_device *dev)
+ err_wp:
+ 	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
+ 		gpio_set_value(gpiomtd->plat.gpio_nwp, 0);
+-	gpio_free(gpiomtd->plat.gpio_rdy);
++	if (gpio_is_valid(gpiomtd->plat.gpio_rdy))
++		gpio_free(gpiomtd->plat.gpio_rdy);
+ err_rdy:
+ 	gpio_free(gpiomtd->plat.gpio_cle);
+ err_cle:
+-- 
+1.7.3.4
