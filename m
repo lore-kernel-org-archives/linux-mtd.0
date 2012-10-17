@@ -1,22 +1,20 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TOTPd-0007cU-9q
- for linux-mtd@lists.infradead.org; Wed, 17 Oct 2012 13:11:53 +0000
-Message-ID: <1350479529.5769.155.camel@sauron.fi.intel.com>
-Subject: Re: GPMI NAND crashes with UBIFS
+ id 1TOTRL-0007ng-Ew
+ for linux-mtd@lists.infradead.org; Wed, 17 Oct 2012 13:13:40 +0000
+Message-ID: <1350479636.5769.156.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 3.6.0-] mtd/spear_smi: use module_platform_driver macro
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Marek Vasut <marex@denx.de>
-Date: Wed, 17 Oct 2012 16:12:09 +0300
-In-Reply-To: <201210111355.33836.marex@denx.de>
-References: <201210050345.49507.marex@denx.de>
- <1349954707.12014.14.camel@sauron.fi.intel.com>
- <201210111355.33836.marex@denx.de>
+To: Srinivas KANDAGATLA <srinivas.kandagatla@st.com>
+Date: Wed, 17 Oct 2012 16:13:56 +0300
+In-Reply-To: <1349894399-9715-1-git-send-email-srinivas.kandagatla@st.com>
+References: <1349894399-9715-1-git-send-email-srinivas.kandagatla@st.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-TAX0Yopd1BHfufPzWNUb"
+ boundary="=-3CYsrKoekS9cOV91RNPD"
 Mime-Version: 1.0
-Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org
+Cc: shiraz.hashim@st.com, linux-mtd@lists.infradead.org,
+ David.Woodhouse@intel.com
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,37 +26,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-TAX0Yopd1BHfufPzWNUb
+--=-3CYsrKoekS9cOV91RNPD
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-10-11 at 13:55 +0200, Marek Vasut wrote:
-> Dear Artem Bityutskiy,
+On Wed, 2012-10-10 at 19:39 +0100, Srinivas KANDAGATLA wrote:
+> From: Srinivas Kandagatla <srinivas.kandagatla@st.com>
 >=20
-> > On Fri, 2012-10-05 at 03:45 +0200, Marek Vasut wrote:
-> > > Hello guys,
-> > >=20
-> > > I tried integck from mtd-utils 1.5.0 on GPMI NAND driver since I susp=
-ect
-> > > it still has issues with UBI. See the outcome for yourself, log
-> > > attached. Any suggestions would be very appreciated.
-> > >=20
-> > > :~/mtd-utils-1.5.0/tests/fs-tests/integrity# ./integck /media
-> >=20
-> > Wait, you have power-cut emulation enabled, did you deliberately enable
-> > it via UBIFS debugfs files?
+> This patch removes some code duplication by using
+> module_platform_driver.
 >=20
-> I enabled this:
-> echo 1 > /sys/kernel/debug/ubifs/tst_recovery
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@st.com>
 
-Then this is expected behavior. You can run integck with -p, then it
-will be aware for the power-cut emulation and will continue running.
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-TAX0Yopd1BHfufPzWNUb
+--=-3CYsrKoekS9cOV91RNPD
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -66,19 +52,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQfq6pAAoJECmIfjd9wqK07wkP/iRkn6/rJ1X4OhK7EUdIUODd
-Vxw49P//ZFFBswOirvNe/lX7hqhx/dN4hCViWP9qzCbAzn6spLcIjFrbS3efx64A
-ZV1r983cjApGnnfECqU8ySPuDoW4K4+Q3BWQIDjeAnaEjiCf+QUB8KPD0bui6M8+
-0hBtw1QKq1nkRw+AcFyXy/w0dAsuqDef5XPSJ8sTMhvwaHAjw4dOxtlMLO9BoISy
-61/hlDGrXoEyNNCeJUj6E6IdtiE74KsR0Hd3uwMbVIBWcEFHSRDXY+5Zmp8zp5Gz
-wUpiTMPUeLzvsJV2XildZnCBaH4XfQdGxpp+LqzeJ14/3BZWV7RmibW2uP/dfkAW
-xli1Uyk9WMnyvwPCd2tUY1iB7XRYOzF0Hq0qr5LPQoanPAXXQ0yJO5t/+qOnzskB
-PjCSgzaK95w3gnAfBRxJt8+UZ0XzckKyK16Vuy3eI/eGMJ4HFVeY5QPDyPqui4QC
-rtEZH6+zvlpi8xbi75wnus6PioN8zDlpK2pyn+8yHS5I0lNPrr4+/6tkfsDo5+8b
-nCxuio6ezaw3aAbZRCnBJaR2FLJQppnYYUJT6gEA1NfPRRZBAv+3+Fzq6lEFq+sT
-DjuBB6I5NrdDldbF3mi6CPF3pjeYReUyB29SfioE7LWDyVwAkJ3sivgv3xFF6C8y
-+ur2M2B4dCZvM1Jage/i
-=oAed
+iQIcBAABAgAGBQJQfq8UAAoJECmIfjd9wqK0bJMQAMEJidlhFE2MHOUfkuwfGdCA
+6vHqLUAFYiKFUDZZp2MoSw9Ue/w/IDKclULjqzI1SjFGnFgjk7VRI7pucNo7QHlt
+OYxwZDCpJnSSeiyNCcM0DHRMjMPm5VVitmdBA1aYSbXWO0ID/6Z/wyk8lGL3AdJB
+JPpQQZHrNzAAYtivQ7Gue+1hxCFgy1hilFZPAQMRTXq1yjlcYKWZOu2cEBqTa0CM
+Ie1VLCq+8c7PuwZrOCOT6+a3Ob81uuekLDbZkckLxnCdhHU5I8TsNVL1E5Kklyq/
+rfQcOtUeEpMkHU/5DoOKov+fKipR3nj58Pe/d4nVdYrCaMxQz8LuLeKa7S38l//v
+5meylROpmvwv9XN0qdBWIoqAL1LWqIZ3nxWPCGXHMAFm+ZXbsmS/arqPm4/zBhi4
+M4rAmANyIaJK381HV9ksPb8sgpUko6F2AROuOeNk1YYhaVcTtSms03XawfBRC14k
+VrrxWmixvYC1GrWTVO+LCLD7LlE9a7nh+0BES8NdbTd4LaiPcr9Jk/6+DKJg/HCV
+Of9N0h7r2CSeWHMM2vPxyIjBBg5ThJFWONaUP2byl+yzR9+TeF1ePLQqM5s1gLwt
+mqRDY06QZIs2xe3lh4rhi1qQlIyBS+vslOarB5+rqZltVOTJzet1wxjNiqLmjjHY
+znEtfHY6nd6eajp5bU+g
+=cg+v
 -----END PGP SIGNATURE-----
 
---=-TAX0Yopd1BHfufPzWNUb--
+--=-3CYsrKoekS9cOV91RNPD--
