@@ -1,24 +1,26 @@
-From: Marek Vasut <marex@denx.de>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH] dma: add new DMA control commands
-Date: Thu, 18 Oct 2012 09:14:58 +0200
-References: <1350538335-29026-1-git-send-email-b32955@freescale.com>
- <1350541111.5263.3.camel@vkoul-udesk3> <507FA595.4020507@freescale.com>
-In-Reply-To: <507FA595.4020507@freescale.com>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <201210180914.58527.marex@denx.de>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de,
- artem.bityutskiy@linux.intel.com, perex@perex.cz,
- linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
- Huang Shijie <shijie8@gmail.com>, linux@arm.linux.org.uk, cjb@laptop.org,
- lrg@ti.com, ben-linux@fluff.org, linux-arm-kernel@lists.infradead.org,
- Fabio Estevam <fabio.estevam@freescale.com>,
- Vinod Koul <vinod.koul@linux.intel.com>, broonie@opensource.wolfsonmicro.com,
- linux-mmc@vger.kernel.org, w.sang@pengutronix.de, linux-kernel@vger.kernel.org,
- djbw@fb.com, khali@linux-fr.org, shawn.guo@linaro.org, dwmw2@infradead.org
+Received: from mga11.intel.com ([192.55.52.93])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TOkkt-0002mK-IF
+ for linux-mtd@lists.infradead.org; Thu, 18 Oct 2012 07:43:00 +0000
+Message-ID: <1350546197.5769.297.camel@sauron.fi.intel.com>
+Subject: Re: GPMI NAND crashes with UBIFS
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Ezequiel Garcia <elezegarcia@gmail.com>
+Date: Thu, 18 Oct 2012 10:43:17 +0300
+In-Reply-To: <CALF0-+W0SqnxBVaTHjpjTzdw-fJoQ1qHBY8u3-rMcZ6wwc7z3w@mail.gmail.com>
+References: <201210050345.49507.marex@denx.de>
+ <201210111355.33836.marex@denx.de>
+ <1350479529.5769.155.camel@sauron.fi.intel.com>
+ <201210171516.55693.marex@denx.de>
+ <1350480112.5769.160.camel@sauron.fi.intel.com>
+ <CALF0-+W0SqnxBVaTHjpjTzdw-fJoQ1qHBY8u3-rMcZ6wwc7z3w@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-+ZrRk6yNsA7Maj4T2Xwv"
+Mime-Version: 1.0
+Cc: Marek Vasut <marex@denx.de>, Fabio Estevam <fabio.estevam@freescale.com>,
+ linux-mtd@lists.infradead.org, Huang Shijie <b32955@freescale.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,59 +30,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Huang Shijie,
 
-Why such massive CC ?
+--=-+ZrRk6yNsA7Maj4T2Xwv
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> =E4=BA=8E 2012=E5=B9=B410=E6=9C=8818=E6=97=A5 14:18, Vinod Koul =E5=86=99=
-=E9=81=93:
-> > Why cant you do start (prepare clock etc) when you submit the descriptor
-> > to dmaengine. Can be done in tx_submit callback.
-> > Similarly remove the clock when dma transaction gets completed.
+On Wed, 2012-10-17 at 15:28 -0300, Ezequiel Garcia wrote:
+> On Wed, Oct 17, 2012 at 10:21 AM, Artem Bityutskiy <dedekind1@gmail.com> =
+wrote:
+> > On Wed, 2012-10-17 at 15:16 +0200, Marek Vasut wrote:
+> >> Ok, I'll re-check. Though I suspect this problem disappeared with the
+> >> recently
+> >> applied UBI patches.
+> >
+> > No, you ask UBIFS to emulate a power cut, so it switched to R/O mode at
+> > a random point. It printed scary error messages, which are normal
+> > because an I/O operation failed. Then integck reported you the error an=
+d
+> > stopped.
+> >
+> > All expected.
+> >
+> > If you use -p integck option you will just make integck _not_ fail when
+> > the file-system suddenly becomes R/O, integck will just unmount it,
+> > mount back, remove all its data, and start over. Then you'll get anothe=
+r
+> > emulated power cut, and so on.
+> >
+> > Ideally this should never stop. The idea is to test that UBIFS can moun=
+t
+> > the file-system in case of a power cut.
+> >
+> > If there is a problem, integck should die.
+> >
+> > To just stress-test your driver you do not need power-cut emulation.
+> >
 >=20
-> I ever thought this method too.
->=20
-> But it will become low efficient in the following case:
->=20
->    Assuming the gpmi-nand driver has to read out 1024 pages in one
-> _SINGLE_ read operation.
-> The gpmi-nand will submit the descriptor to dmaengine per page.
+> Is this expected behavior documented somewhere?
 
-It will? Then GPMI NAND is flat our broken ... again.
+Sorry, no. I do not mind if someone sends a patch for mtd-www.git with
+some docs WRT power-cut emulation stuff.
 
-> So with
-> your method,
-> the system will repeat the enable/disable dma clock 1024 time.
+--=20
+Best Regards,
+Artem Bityutskiy
 
-Yes, it is the driver that's wrong.
+--=-+ZrRk6yNsA7Maj4T2Xwv
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-> At every
-> enable/disable dma clock,
-> the system has to enable the clock chain and it's parents ...
->=20
-> But with this patch, we only need to enable/disable dma clock one time,
-> just at we select the nand chip.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-You are fixing a driver problem at a framework level, wrong.
+iQIcBAABAgAGBQJQf7MVAAoJECmIfjd9wqK0SLgP/2b1+xyL+wC4R/iMYZqO4fy6
+kcGEO9hgPx0PcTmkn/SSXEmBaQBlCX4quCwcURpV+HCWD3l2gap2W2AxzxQtXI7N
+UDWzt/uOw8PpaiMNRq4j+TCviRKdR9ylQKJPsxbwtnrFMvRVMvGBKWvFmBBFtkh2
+gFSVVJ0lX0hSMS53DoQz/9nbFYfFe1eogqFf8zencbKpOWlvJ9wS347WShW0C8vj
+SpGWRSzONuO+0Ip3NMrCjsgsGqCYl3KMzKXiH2sSdgfaaqeUSrF9mYLvfF15ucXH
+6nNFHkURkCmyqezI58tEELrq/g5nxaL9xoPqtbpahc2W5S8+uaN+3ZU187h8bnbJ
+AtjMeaktxsHyPEVtGpK9+Bst1o5YGWl482ob49iZj/EbODuJVn3oyBbEFpYIUW3b
+tMkAgcJWmZDL5Pi5s4O+PB0WSWpeqxICJMDfGy8s5waGNB3tkI/WxwREJEjLetK4
+v+C/YlGCn8azZ8/xUsdrSR+LLJS/7zJNiBV58CsQW0wbnhU8RpcNCIALufZZEUxw
+0QpQPMZ7BVg6pkxtjr+9eDAHXjA18E1sn1xKaIB4lNzxiFyTc1RQrurFna8s2cXO
+odKh0jX++C+kAzBw71DWFD3O3OI8s+kSwwDtkHG9CrUrUoTLGZVzNd9om/BV3D5j
+jyQ4B6xzKNEQt498LHu6
+=wcQ0
+-----END PGP SIGNATURE-----
 
-So, check how the MXS SPI driver handles descriptor chaining. Indeed, the=20
-Sigmatel screwed the DMA stuff good. But if you analyze the SPI driver, you=
-'ll=20
-notice a few important points that might come handy when you fix the GPMI N=
-AND=20
-driver properly.
-
-The direction to take here is:
-1) Implement DMA chaining into the GPMI NAND driver
-2) You might need to do one PIO transfer to reconfigure the IP registers be=
-tween=20
-each segment of the DMA chain (just as MXS SPI does it)
-3) You might run out of DMA descriptors when doing too long chains -- so yo=
-u=20
-might need to fix that part of the mxs DMA driver.
-
-> thanks
-> Huang Shijie
-
-Best regards,
-Marek Vasut
+--=-+ZrRk6yNsA7Maj4T2Xwv--
