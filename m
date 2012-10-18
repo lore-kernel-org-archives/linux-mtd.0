@@ -1,21 +1,15 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TOuqJ-0002OM-Hp
- for linux-mtd@lists.infradead.org; Thu, 18 Oct 2012 18:29:16 +0000
-Received: by mail-pb0-f49.google.com with SMTP id xa7so8901484pbc.36
- for <linux-mtd@lists.infradead.org>; Thu, 18 Oct 2012 11:29:11 -0700 (PDT)
-Message-ID: <50804A6C.8010609@gmail.com>
-Date: Thu, 18 Oct 2012 23:59:00 +0530
-From: Vikram Narayanan <vikram186@gmail.com>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [RESEND PATCH 0/9] mtd_tests cleanup
-References: <5075B105.4080701@gmail.com>
- <1350552046.5769.302.camel@sauron.fi.intel.com>
-In-Reply-To: <1350552046.5769.302.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Received: from smtp.freemail.ru ([217.197.114.153] helo=e-post13.km.ru)
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TOvxV-00021b-It
+ for linux-mtd@lists.infradead.org; Thu, 18 Oct 2012 19:40:45 +0000
+Message-Id: <uWFWwFbzj5Y5pahl6SSoQajFTXtS0DHPlVOGvvH6Ac5M@freemail.ru>
+Mime-Version: 1.0
+From: =?windows-1251?B?dHJ1ZWJvYXJkLnJ1?= <opl127@freemail.ru>
+To: linux-mtd@lists.infradead.org
+Subject: =?windows-1251?B?xO7x6uAg4eXx7+vg8u379SDu4fr/4uvl7ejpIPEgyuDy4Ovu4+7sIM7w4+Dt6Ofg9ujp?=
+Date: Thu, 18 Oct 2012 23:42:33 +0400
+Content-type: text/plain; charset=windows-1251; format=flowed
+Content-transfer-encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,29 +19,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/18/2012 2:50 PM, Artem Bityutskiy wrote:
-> On Wed, 2012-10-10 at 23:01 +0530, Vikram Narayanan wrote:
->> This patch series removes the usage of PRINT_PREF and printk's and
->> replaces it with pr_{info,err,crit} whichever is applicable.
->>
->> Cc: Brian Norris<computersforpeace@gmail.com>
->> Cc: Artem Bityutskiy<dedekind1@gmail.com>
->
-> Pushed the series to l2-mtd.git, thanks!
+=D0=E0=E7=EC=E5=F1=F2=E8=F2=E5 =C2=E0=F8=E5 =EE=E1=FA=FF=E2=EB=E5=ED=
+=E8=E5 =E1=E5=F1=EF=EB=E0=F2=ED=EE =ED=E0 =ED=E0=F8=E5=E9 =C4=EE=F1=EA=
+=E5 =EE=E1=FA=FF=E2=EB=E5=ED=E8=E9 =E8 =E2 =CA=E0=F2=E0=EB=EE=E3=E5 =
+=CE=F0=E3=E0=ED=E8=E7=E0=F6=E8=E9 trueboard=2Eru, =FD=F2=EE =EF=EE=EC=
+=EE=E6=E5=F2 =C2=E0=EC =EB=E8=F7=ED=EE =E8=EB=E8 =C2=E0=F8=E5=E9 =CE=
+=F0=E3=E0=ED=E8=E7=E0=F6=E8=E8 =E4=EE=EF=EE=EB=ED=E8=F2=E5=EB=FC=ED=EE =
+=EF=F0=EE=F0=E5=EA=EB=E0=EC=E8=F0=EE=E2=E0=F2=FC =C2=E0=F8=E8 =F2=EE=
+=E2=E0=F0=FB =E8=EB=E8 =F3=F1=EB=F3=E3=E8 =E8 =E4=E0=F1=F2 =E4=EE=EF=
+=EE=EB=ED=E8=F2=E5=EB=FC=ED=FB=F5 =EA=EB=E8=E5=ED=F2=EE=E2 =F1 =ED=E0=
+=F8=E5=E9 =C4=EE=F1=EA=E8 =EE=E1=FA=FF=E2=EB=E5=ED=E8=E9 =E8 =EF=EE=E4=
+=F0=EE=E1=ED=F3=FE =E8=ED=F4=EE=F0=EC=E0=F6=E8=FE =EE =C2=E0=F1 =E8=E7 =
+=CA=E0=F2=E0=EB=EE=E3=E0 =CE=F0=E3=E0=ED=E8=E7=E0=F6=E8=E9 =2E
+ =CA=F0=EE=EC=E5 =F2=EE=E3=EE =E5=F1=EB=E8 =F3 =C2=E0=F1 =E5=F1=F2=FC =
+=F1=E0=E9=F2, =F0=E0=E7=EC=E5=F1=F2=E8=F2=E5 =ED=E0 =ED=E5=EC =ED=E0=
+=F8 =E8=ED=F4=EE=F0=EC=E5=F0 (=F1=EC =F0=E0=E7=E4=E5=EB "=D3=F1=EB=F3=
+=E3=E8") =E8 =C2=FB =EF=EE=EB=F3=F7=E8=F2=E5 VIP =EE=E1=FA=FF=E2=EB=E5=
+=ED=E8=E5 =E1=E5=F1=EF=EB=E0=F2=ED=EE!
 
-Thanks Artem. Can you please make Brian Norris as the author for the 
-last patch? i.e., mtd: mtd_oobtest: printk -> pr_{info,err,crit}
 
-I forgot to post the patch with the original headers. But I've reposted 
-it a few days back. Sorry about that.
 
-> You can send the erase helper patch as well. I think you can put this
-> helper to mtdcore.c. And I think UBI and JFFS2 and may be mtdswap and
-> other drivers may reuse it - you can take a look.
->
-
-Yeah, Sure. I need to grep into the sources to find the users of it. 
-I'll post it soon.
-
-Thanks,
-Vikram
+www=2Etrueboard=2Eru
