@@ -1,5 +1,5 @@
-Message-ID: <507FBDF1.5050602@freescale.com>
-Date: Thu, 18 Oct 2012 16:29:37 +0800
+Message-ID: <507FC290.10205@freescale.com>
+Date: Thu, 18 Oct 2012 16:49:20 +0800
 From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
 To: Marek Vasut <marex@denx.de>
@@ -16,11 +16,9 @@ Cc: alsa-devel@alsa-project.org, tiwai@suse.de,
  Huang Shijie <shijie8@gmail.com>, linux@arm.linux.org.uk, cjb@laptop.org,
  lrg@ti.com, ben-linux@fluff.org, linux-arm-kernel@lists.infradead.org,
  Fabio Estevam <fabio.estevam@freescale.com>,
- Vinod Koul <vinod.koul@linux.intel.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- broonie@opensource.wolfsonmicro.com, linux-mmc@vger.kernel.org,
- w.sang@pengutronix.de, linux-kernel@vger.kernel.org, djbw@fb.com,
- khali@linux-fr.org, shawn.guo@linaro.org, dwmw2@infradead.org
+ Vinod Koul <vinod.koul@linux.intel.com>, broonie@opensource.wolfsonmicro.com,
+ linux-mmc@vger.kernel.org, w.sang@pengutronix.de, linux-kernel@vger.kernel.org,
+ djbw@fb.com, khali@linux-fr.org, shawn.guo@linaro.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,9 +34,10 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 mework to
 > allow that. Maybe implement a command queue?
 >
-
-to Artem & David:
-    is this possible to stream the data out with a command queue?
+IMHO, it's not possible. Because the READ-PAGE(00h-30h) command needs to=20
+check the busy status
+which means we have to stop in the middle, so we can not chain the all=20
+the read-pages DMA commands.
 
 thanks
 Huang Shijie
