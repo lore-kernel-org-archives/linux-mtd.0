@@ -1,15 +1,15 @@
-Message-ID: <507FC290.10205@freescale.com>
-Date: Thu, 18 Oct 2012 16:49:20 +0800
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: Marek Vasut <marex@denx.de>
+From: Marek Vasut <marex@denx.de>
+To: Huang Shijie <b32955@freescale.com>
 Subject: Re: [PATCH] dma: add new DMA control commands
+Date: Thu, 18 Oct 2012 10:49:21 +0200
 References: <1350538335-29026-1-git-send-email-b32955@freescale.com>
- <201210180914.58527.marex@denx.de> <507FB495.7050104@freescale.com>
- <201210181016.06782.marex@denx.de>
-In-Reply-To: <201210181016.06782.marex@denx.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+ <201210181016.06782.marex@denx.de> <507FC290.10205@freescale.com>
+In-Reply-To: <507FC290.10205@freescale.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
+Message-Id: <201210181049.21556.marex@denx.de>
 Cc: alsa-devel@alsa-project.org, tiwai@suse.de,
  artem.bityutskiy@linux.intel.com, perex@perex.cz,
  linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
@@ -28,16 +28,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2012=E5=B9=B410=E6=9C=8818=E6=97=A5 16:16, Marek Vasut =E5=86=99=
-=E9=81=93:
-> So we can't stream data from the chip? About time to adjust the MTD fra=
-mework to
-> allow that. Maybe implement a command queue?
->
-IMHO, it's not possible. Because the READ-PAGE(00h-30h) command needs to=20
-check the busy status
-which means we have to stop in the middle, so we can not chain the all=20
-the read-pages DMA commands.
+Dear Huang Shijie,
 
-thanks
-Huang Shijie
+> =E4=BA=8E 2012=E5=B9=B410=E6=9C=8818=E6=97=A5 16:16, Marek Vasut =E5=86=
+=99=E9=81=93:
+> > So we can't stream data from the chip? About time to adjust the MTD
+> > framework to allow that. Maybe implement a command queue?
+>=20
+> IMHO, it's not possible. Because the READ-PAGE(00h-30h) command needs to
+> check the busy status
+> which means we have to stop in the middle, so we can not chain the all
+> the read-pages DMA commands.
+
+Can the DMA not branch?
+
+> thanks
+> Huang Shijie
+
+Best regards,
+Marek Vasut
