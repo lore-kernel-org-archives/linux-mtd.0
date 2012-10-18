@@ -1,17 +1,21 @@
-Message-ID: <1350552998.5769.306.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/1] MTD: atmel_nand: use devm_xxx gpio kzalloc, gpio
- and ioremap
+Received: from mga01.intel.com ([192.55.52.88])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TOmZS-00067k-K2
+ for linux-mtd@lists.infradead.org; Thu, 18 Oct 2012 09:39:19 +0000
+Message-ID: <1350553177.5769.307.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] Devicetree support for enc28j60 SPI Ethernet chip
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-Date: Thu, 18 Oct 2012 12:36:38 +0300
-In-Reply-To: <1350129982-12106-1-git-send-email-plagnioj@jcrosoft.com>
-References: <1350129982-12106-1-git-send-email-plagnioj@jcrosoft.com>
+To: Michal Vanka <mv@vanka.net>
+Date: Thu, 18 Oct 2012 12:39:37 +0300
+In-Reply-To: <507B04AA.1050502@vanka.net>
+References: <507B04AA.1050502@vanka.net>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-lgiN0SgeMXO1zLpyxGK9"
+ boundary="=-iYU7jbEjY5Pe8jqeSAZ1"
 Mime-Version: 1.0
-Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
+Cc: nios2-dev@sopc.et.ntust.edu.tw, lanconelli.claudio@eptar.com,
+ linux-mtd@lists.infradead.org,
+ devicetree-discuss <devicetree-discuss@lists.ozlabs.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,31 +27,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-lgiN0SgeMXO1zLpyxGK9
+--=-iYU7jbEjY5Pe8jqeSAZ1
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, 2012-10-13 at 14:06 +0200, Jean-Christophe PLAGNIOL-VILLARD
-wrote:
-> this will allow to simply the error and remove path
+On Sun, 2012-10-14 at 20:30 +0200, Michal Vanka wrote:
+> Hi,
+> the following patch adds generic openfirmware/devicetree support to=20
+> enc28j60 driver.
 >=20
-> Cc: linux-mtd@lists.infradead.org
-> Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
-> Signed-off-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+> It also adds support for custom hardware based (FPGA) "interrupt line=20
+> deasserter" for processors with level triggered interrupts
+> (for example Altera Nios2).
 
-$:~/git/l2-mtd$ git apply --check ~/tmp/jc.mbox
-error: patch failed: drivers/mtd/nand/atmel_nand.c:1420
-error: drivers/mtd/nand/atmel_nand.c: patch does not apply
+Hi, please, re-send with
 
-Please, send an l2-mtd.git-based version.
+devicetree-discuss@lists.ozlabs.org
 
-git://git.infradead.org/users/dedekind/l2-mtd-2.6.git
+in CC.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-lgiN0SgeMXO1zLpyxGK9
+--=-iYU7jbEjY5Pe8jqeSAZ1
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -55,19 +58,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQf82mAAoJECmIfjd9wqK0sisP/02+xUAMA4axWqt/95oP9zn3
-4b6jENCWT5UMuv+1okvIk9IJDuTeq7ferHt6JskFVYeH6PBHTHdwQxwuqPd+QAsY
-3DMkIfhlcKRX3nwWh8R0q8+QbSycsA2iU45dIsR4BiC74J9u+8DnZWXEBDOETmBU
-Ja/AomLVS5CtZEQRhXEVXd4Z/tM8WMHKDuym2tWdtxKNe/D4HlGDYdhd1vY4rJLn
-B0RhxJaQJoQbOILVuJAb8TJyWeeCwQLfb1QSXTfWkbeK3HL4Rmmj0NnwAT7w5LAv
-WDoAwi4T1SyG/JLRXovlXJ1H8yQf3y8I15qyDJ1Tn/xuq0bXgNDiYHOMYJsIpbnA
-qsaYPXIj5KeTAAZFMF3Os6WTovRWW42kUKYBsqzzR8MezFxLsN+CFATxfLOomF0x
-4yFjiq1z/0j1ShJmSS3SF8RGS8tXlluDlkA9CgiPMMbJ7jOhsxPbf9Voo6st2aHa
-/tcgQHxZxg7D3iSyKB5+EPRC7g3wBJJxvOvRHJH6QV2i1DEyKwI4O25Wrsb7gbgw
-5eTg0vHUiGuk7+wzrbRHhGU51DkTfECSfdQmtj45NtU4YEzCPrXxsb/Hnsq9MFHX
-nBq+8r9xb9QVKQZmZh6GKUbYRXxbUQA2EEjWj/Rwd9atHPnZ7KWmI/8Sl2mZuIWO
-q2AmuScFLhuABSeBYyr+
-=iOlD
+iQIcBAABAgAGBQJQf85ZAAoJECmIfjd9wqK0KecP/jtw/9B1DGC8guGyIzExM4Rv
+fi5+N7sH20SAfv40RKONs1PdUPiANkv1GCKQjWx+ku7i7H/8ukQcL79QVOgnKPtK
+VlypVFxc+UXifqE3cs7AZwjcTldsQuwKYBVwpfZwC+baLsSANiEdQ9azpm9cOQDg
+6Pm6gOyJTHAwJJq+/820OqLJ13KWB8g2kmDUuUfiyhLa61QInHqRloeve+sYbUZ2
+S310EV1kMvtf44QlVZuigav3KcT5+AQYe5GFfxamueaagWzZYZcxTvZVIviiiBQa
+iS92HQgt2OArg43U0KBSxjMK0iaXXhjOd5He+Ys5LLOhPoZXPmszQZ2ITbTuHcge
+DQlLLOdksZC7+xw6qkIp/lsbSMwO+DOhFaFSTIOR2Jh4/45HzNEPdjLa87MwowQd
+3LZhfRQnPqNXLeUuHSVZYde1RXsgmrcfYJyWUqSHX33J7yROBLkuG+OkzBEJqmp2
+BWQB2LWz4AJTPQ3EhlZ9o39z5geC1ie3i9VJI25OiMM7CBk0ESh1pHnIuL6tjHOk
+TOJNNX+fe3z0I7xePTv9GS5qRvdgS9j5SiOP2ftIZ9c8QhTr4P8SzKrSIPYASBK4
+bkCe8Q/G4ygOMXdjPkW4qZA6JE7W+J0ngVk/uy9mBFsAVZ89H/F5P6As6+0ElPNB
+2pCHM4t/G/JjQ1zW5sPH
+=P1q3
 -----END PGP SIGNATURE-----
 
---=-lgiN0SgeMXO1zLpyxGK9--
+--=-iYU7jbEjY5Pe8jqeSAZ1--
