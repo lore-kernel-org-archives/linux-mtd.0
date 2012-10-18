@@ -1,32 +1,21 @@
-Received: from mail-vc0-f177.google.com ([209.85.220.177])
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TOryW-0006Un-Ia
- for linux-mtd@lists.infradead.org; Thu, 18 Oct 2012 15:25:33 +0000
-Received: by mail-vc0-f177.google.com with SMTP id p16so9923042vcq.36
- for <linux-mtd@lists.infradead.org>; Thu, 18 Oct 2012 08:25:31 -0700 (PDT)
+ id 1TOuqJ-0002OM-Hp
+ for linux-mtd@lists.infradead.org; Thu, 18 Oct 2012 18:29:16 +0000
+Received: by mail-pb0-f49.google.com with SMTP id xa7so8901484pbc.36
+ for <linux-mtd@lists.infradead.org>; Thu, 18 Oct 2012 11:29:11 -0700 (PDT)
+Message-ID: <50804A6C.8010609@gmail.com>
+Date: Thu, 18 Oct 2012 23:59:00 +0530
+From: Vikram Narayanan <vikram186@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAMiH66H=VMEgHFMdEhCTqA5AtVw6iN97-cbwUd86Ghd77OLcWA@mail.gmail.com>
-References: <1350538335-29026-1-git-send-email-b32955@freescale.com>
- <1350541111.5263.3.camel@vkoul-udesk3>
- <507FA595.4020507@freescale.com>
- <CAJe_ZhfarH-HpJkEOpH=jY1Gc-UPEyuA4bJ4LSQES7Uyea2BQw@mail.gmail.com>
- <CAMiH66H=VMEgHFMdEhCTqA5AtVw6iN97-cbwUd86Ghd77OLcWA@mail.gmail.com>
-Date: Thu, 18 Oct 2012 20:55:30 +0530
-Message-ID: <CAJe_ZheWd3scXDhWukeZMuOOz8+bZRwZOw_ftDW8wmkqq9H45Q@mail.gmail.com>
-Subject: Re: [PATCH] dma: add new DMA control commands
-From: Jassi Brar <jaswinder.singh@linaro.org>
-To: Huang Shijie <shijie8@gmail.com>
-Content-Type: text/plain; charset=GB2312
-Content-Transfer-Encoding: quoted-printable
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de,
- artem.bityutskiy@linux.intel.com, perex@perex.cz,
- linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org, marex@denx.de,
- linux@arm.linux.org.uk, cjb@laptop.org, lrg@ti.com, ben-linux@fluff.org,
- linux-arm-kernel@lists.infradead.org, Vinod Koul <vinod.koul@linux.intel.com>,
- broonie@opensource.wolfsonmicro.com, linux-mmc@vger.kernel.org,
- w.sang@pengutronix.de, linux-kernel@vger.kernel.org,
- Huang Shijie <b32955@freescale.com>, djbw@fb.com, khali@linux-fr.org,
- shawn.guo@linaro.org, dwmw2@infradead.org
+To: dedekind1@gmail.com
+Subject: Re: [RESEND PATCH 0/9] mtd_tests cleanup
+References: <5075B105.4080701@gmail.com>
+ <1350552046.5769.302.camel@sauron.fi.intel.com>
+In-Reply-To: <1350552046.5769.302.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,45 +25,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 18 October 2012 20:48, Huang Shijie <shijie8@gmail.com> wrote:
-> On Thu, Oct 18, 2012 at 5:29 AM, Jassi Brar <jaswinder.singh@linaro.org> =
-wrote:
->> On 18 October 2012 12:15, Huang Shijie <b32955@freescale.com> wrote:
->>> =D3=DA 2012=C4=EA10=D4=C218=C8=D5 14:18, Vinod Koul =D0=B4=B5=C0:
->>>
->>>> Why cant you do start (prepare clock etc) when you submit the descript=
-or
->>>> to dmaengine. Can be done in tx_submit callback.
->>>> Similarly remove the clock when dma transaction gets completed.
->>>
->>> I ever thought this method too.
->>>
->>> But it will become low efficient in the following case:
->>>
->>>   Assuming the gpmi-nand driver has to read out 1024 pages in one _SING=
-LE_
->>> read operation.
->>> The gpmi-nand will submit the descriptor to dmaengine per page. So with=
- your
->>> method,
->>> the system will repeat the enable/disable dma clock 1024 time. At every
->>> enable/disable dma clock,
->>> the system has to enable the clock chain and it's parents ...
->>>
->>> But with this patch, we only need to enable/disable dma clock one time,=
- just
->>> at we select the nand chip.
->>>
->> If the clock is the dmac's property (not channels'), the toggling
->> seems too aggressive.
->> You could try using runtime_suspend/resume for clock
->> disabling/enabling. How about employing autosuspend with a few ms
->> delay?
+On 10/18/2012 2:50 PM, Artem Bityutskiy wrote:
+> On Wed, 2012-10-10 at 23:01 +0530, Vikram Narayanan wrote:
+>> This patch series removes the usage of PRINT_PREF and printk's and
+>> replaces it with pr_{info,err,crit} whichever is applicable.
+>>
+>> Cc: Brian Norris<computersforpeace@gmail.com>
+>> Cc: Artem Bityutskiy<dedekind1@gmail.com>
 >
-> Yes, employing the autosuspend is workable method too.o
-> But it's a little more complicated then this patch. You have to create
-> a thread or workqueue to
-> do the job.
+> Pushed the series to l2-mtd.git, thanks!
+
+Thanks Artem. Can you please make Brian Norris as the author for the 
+last patch? i.e., mtd: mtd_oobtest: printk -> pr_{info,err,crit}
+
+I forgot to post the patch with the original headers. But I've reposted 
+it a few days back. Sorry about that.
+
+> You can send the erase helper patch as well. I think you can put this
+> helper to mtdcore.c. And I think UBI and JFFS2 and may be mtdswap and
+> other drivers may reuse it - you can take a look.
 >
-I am not sure why you would need to create any thread/workqueue ?
-Just pm_runtime_put_autosuspend() in drivers/ to see how it works.
+
+Yeah, Sure. I need to grep into the sources to find the users of it. 
+I'll post it soon.
+
+Thanks,
+Vikram
