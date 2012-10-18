@@ -1,24 +1,20 @@
-Message-ID: <507FC827.40601@freescale.com>
-Date: Thu, 18 Oct 2012 17:13:11 +0800
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH] dma: add new DMA control commands
-References: <1350538335-29026-1-git-send-email-b32955@freescale.com>
- <201210181016.06782.marex@denx.de> <507FC290.10205@freescale.com>
- <201210181049.21556.marex@denx.de>
-In-Reply-To: <201210181049.21556.marex@denx.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de,
- artem.bityutskiy@linux.intel.com, perex@perex.cz,
- linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
- Huang Shijie <shijie8@gmail.com>, linux@arm.linux.org.uk, cjb@laptop.org,
- lrg@ti.com, ben-linux@fluff.org, linux-arm-kernel@lists.infradead.org,
- Fabio Estevam <fabio.estevam@freescale.com>,
- Vinod Koul <vinod.koul@linux.intel.com>, broonie@opensource.wolfsonmicro.com,
- linux-mmc@vger.kernel.org, w.sang@pengutronix.de, linux-kernel@vger.kernel.org,
- djbw@fb.com, khali@linux-fr.org, shawn.guo@linaro.org, dwmw2@infradead.org
+Received: from mga01.intel.com ([192.55.52.88])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TOmHE-0007tS-0v
+ for linux-mtd@lists.infradead.org; Thu, 18 Oct 2012 09:20:28 +0000
+Message-ID: <1350552046.5769.302.camel@sauron.fi.intel.com>
+Subject: Re: [RESEND PATCH 0/9] mtd_tests cleanup
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Vikram Narayanan <vikram186@gmail.com>
+Date: Thu, 18 Oct 2012 12:20:46 +0300
+In-Reply-To: <5075B105.4080701@gmail.com>
+References: <5075B105.4080701@gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-asqFNlXQDt85tSaQlErb"
+Mime-Version: 1.0
+Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,21 +24,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2012=E5=B9=B410=E6=9C=8818=E6=97=A5 16:49, Marek Vasut =E5=86=99=
-=E9=81=93:
-> Dear Huang Shijie,
->
->> =E4=BA=8E 2012=E5=B9=B410=E6=9C=8818=E6=97=A5 16:16, Marek Vasut =E5=86=
-=99=E9=81=93:
->>> So we can't stream data from the chip? About time to adjust the MTD
->>> framework to allow that. Maybe implement a command queue?
->> IMHO, it's not possible. Because the READ-PAGE(00h-30h) command needs =
-to
->> check the busy status
->> which means we have to stop in the middle, so we can not chain the all
->> the read-pages DMA commands.
-> Can the DMA not branch?
-it's too complicated to the MTD layer, as well as the gpmi driver.
 
-Best Regards
-Huang Shijie
+--=-asqFNlXQDt85tSaQlErb
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, 2012-10-10 at 23:01 +0530, Vikram Narayanan wrote:
+> This patch series removes the usage of PRINT_PREF and printk's and
+> replaces it with pr_{info,err,crit} whichever is applicable.
+>=20
+> Cc: Brian Norris <computersforpeace@gmail.com>
+> Cc: Artem Bityutskiy <dedekind1@gmail.com>
+
+Pushed the series to l2-mtd.git, thanks!
+
+You can send the erase helper patch as well. I think you can put this
+helper to mtdcore.c. And I think UBI and JFFS2 and may be mtdswap and
+other drivers may reuse it - you can take a look.
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-asqFNlXQDt85tSaQlErb
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQf8nuAAoJECmIfjd9wqK0AW8QAK69+r7htjjfpsNZew956HYG
+vQLYCMhmhJ4YTjOgAF4g454r+gYRnNTS/1GJtI+/wC8vrf7o7Jx7/cTBqob0OQuW
+gOMJbLU/NNu775NZw4KFJz9cnwtkqinJxHTt4gWZ9fgmTBZEgqTneUPCnIPHGzK4
+th/2F1zkyDQpw1cLSHlq0tMOGaJrG2F1QRRZo3LJLaYN5Le5PJBMKpk3KDYER0gd
+uJECeZ16n8uinMXrnUIBbbfN68cxgayc9v7pNLWYnQcjK4OVbbHDe9eFR8dnOQM8
+++O6xlrjfX6uOI7y/yH0UDx/2m1gqVsyggxK7l7MA3fHBHIFNGenPiKDqV3Ox7CB
+uHN2kI6Q55EyO7Rx43N8JWSpmmOlLzGNt70mw4+iJu0mhEAGgYhkZC1UbkBG+9xV
+Jzgn13ejtsplmLQDNV5xl2LzrChBFNodeHAZh/xNl24APcfy+lUL5JqFFJ326YfG
++BhMGao6/Dc5y/3diNzV3Rc8K5RDxMtE/nx0QYRtZJn/cuq2zuw/FfdG+zurAzYv
+BRHtFLJWG0o91LRKeljtNPz1FYiehUtgU8r23TLPjzK7vFNPswS+7ExW6TQnOiHK
+8BGo9/c6Y/OsCMd5WhnT+u+fvLBRsG7+2RHjkmgyrH2cM6AyCSU4f0zC/sYaA3W0
+zB46nw+WxK1ndvQlMW6X
+=h7ke
+-----END PGP SIGNATURE-----
+
+--=-asqFNlXQDt85tSaQlErb--
