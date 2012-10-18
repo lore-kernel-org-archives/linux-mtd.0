@@ -1,20 +1,19 @@
-Received: from mout2.freenet.de ([2001:748:100:40::2:4])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TOb6g-0005wh-MT
- for linux-mtd@lists.infradead.org; Wed, 17 Oct 2012 21:24:51 +0000
-Message-ID: <507F219A.4000700@freenet.de>
-Date: Wed, 17 Oct 2012 23:22:34 +0200
-From: Thomas Betker <thomas.betker@freenet.de>
+Message-ID: <507F81F8.9030107@st.com>
+Date: Thu, 18 Oct 2012 09:43:44 +0530
+From: Vipin Kumar <vipin.kumar@st.com>
 MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCH RESEND] jffs2: Fix lock acquisition order bug in
- jffs2_write_begin
-References: <507321E6.1050609@freenet.de> <507476E7.8030705@freenet.de>
- <1350477742.5769.144.camel@sauron.fi.intel.com>
-In-Reply-To: <1350477742.5769.144.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>
+Subject: Re: [PATCH 00/11] mtd/nand: fsmc driver updates
+References: <cover.1349778820.git.vipin.kumar@st.com>
+ <1350478116.5769.150.camel@sauron.fi.intel.com>
+In-Reply-To: <1350478116.5769.150.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, thomas.betker@rohde-schwarz.com
+Cc: "plagnioj@jcrosoft.com" <plagnioj@jcrosoft.com>,
+ "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+ spear-devel <spear-devel@list.st.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,28 +23,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Artem,
-
-I have mailed theupdated patch to the list as "[PATCH v3] ...".
-
-> This patch does not apply to l2-mtd.git, which is based on 3.7-rc1.
+On 10/17/2012 6:18 PM, Artem Bityutskiy wrote:
+> On Tue, 2012-10-09 at 16:14 +0530, Vipin Kumar wrote:
+>> This patch-set contains several fixes and a few enhancements in fsmc driver.
+>> Modifications include
 >
-> $:~/git/l2-mtd$ git apply --check ~/tmp/thomas.mbox
-> error: patch failed: fs/jffs2/file.c:138
-> error: fs/jffs2/file.c: patch does not apply
+> OK, picked some patches from your series, some do not apply. Please,
+> send v2 against the l2-mtd.git tree:
+>
+> git://git.infradead.org/users/dedekind/l2-mtd.git
+>
 
-Fixed, using another mailer ...
+Sure, I would do that soon. Thanks
 
-> Could you please wrap commit message lines to 80 characters when you
-> re-send?
-
-Fixed -- sorry, this should not have happened.
-
-> Also, would you please add Cc: stable@vger.kernel.org [vX.Y+], where
-> vX.Y is the starting version for which this patch is relevant, e.g.,
-> v3.0.
-
-Fixed, using [v3.4+]. (The patch may also be relevant for earlier kernel versions, but I don't have the means to test them.)
-
-Thanks,
-Thomas
+-Vipin
