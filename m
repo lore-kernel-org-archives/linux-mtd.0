@@ -1,16 +1,13 @@
-Received: from mail-ea0-f177.google.com ([209.85.215.177])
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TPEWH-0004nH-PG
- for linux-mtd@lists.infradead.org; Fri, 19 Oct 2012 15:29:54 +0000
-Received: by mail-ea0-f177.google.com with SMTP id n13so198879eaa.36
- for <linux-mtd@lists.infradead.org>; Fri, 19 Oct 2012 08:29:50 -0700 (PDT)
-Sender: Castet Matthieu <matthieu.castet@gmail.com>
-From: Matthieu CASTET <matthieu.castet@parrot.com>
+ id 1TPajr-00061W-9h
+ for linux-mtd@lists.infradead.org; Sat, 20 Oct 2012 15:13:24 +0000
+From: Wolfram Sang <w.sang@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtdoops : don't erase flash at each boot
-Date: Fri, 19 Oct 2012 17:29:33 +0200
-Message-Id: <1350660573-6631-1-git-send-email-matthieu.castet@parrot.com>
-Cc: Matthieu CASTET <matthieu.castet@parrot.com>
+Subject: [PATCH] ubiformat: really skip some messages when quiet
+Date: Sat, 20 Oct 2012 17:12:56 +0200
+Message-Id: <1350745976-1774-1-git-send-email-w.sang@pengutronix.de>
+Cc: Wolfram Sang <w.sang@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,49 +17,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If there is no oops stored (flash is erased), find_next_position will
-exit with maxcount == 0xffffffff and erase the first page.
+Both logic (only print when not quiet) and the indentation suggest that
+the braces around the block have been forgotten.
 
-Only erase it if mark_is_used.
-
-Signed-off-by: Matthieu Castet <matthieu.castet@parrot@com>
+Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
 ---
- drivers/mtd/mtdoops.c |   15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+ ubi-utils/ubiformat.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
-index f5b3f91..97bb8f6 100644
---- a/drivers/mtd/mtdoops.c
-+++ b/drivers/mtd/mtdoops.c
-@@ -271,7 +271,7 @@ static void find_next_position(struct mtdoops_context *cxt)
- 
- 		if (count[0] == 0xffffffff && count[1] == 0xffffffff)
- 			mark_page_unused(cxt, page);
--		if (count[0] == 0xffffffff)
-+		if (count[0] == 0xffffffff || count[1] != MTDOOPS_KERNMSG_MAGIC)
- 			continue;
- 		if (maxcount == 0xffffffff) {
- 			maxcount = count[0];
-@@ -289,14 +289,13 @@ static void find_next_position(struct mtdoops_context *cxt)
- 		}
- 	}
- 	if (maxcount == 0xffffffff) {
--		cxt->nextpage = 0;
--		cxt->nextcount = 1;
--		schedule_work(&cxt->work_erase);
--		return;
-+		cxt->nextpage = cxt->oops_pages - 1;
-+		cxt->nextcount = 0;
-+	}
-+	else {
-+		cxt->nextpage = maxpos;
-+		cxt->nextcount = maxcount;
- 	}
--
--	cxt->nextpage = maxpos;
--	cxt->nextcount = maxcount;
- 
- 	mtdoops_inc_counter(cxt);
- }
+diff --git a/ubi-utils/ubiformat.c b/ubi-utils/ubiformat.c
+index a265a9a..8f9bd3a 100644
+--- a/ubi-utils/ubiformat.c
++++ b/ubi-utils/ubiformat.c
+@@ -875,11 +875,12 @@ int main(int argc, char * const argv[])
+ 		 * erase counters.
+ 		 */
+ 		if (percent < 50) {
+-			if (!args.yes || !args.quiet)
++			if (!args.yes || !args.quiet) {
+ 				warnmsg("only %d of %d eraseblocks have valid erase counter",
+ 					si->ok_cnt, si->good_cnt);
+ 				normsg("erase counter 0 will be used for all eraseblocks");
+ 				normsg("note, arbitrary erase counter value may be specified using -e option");
++			}
+ 			if (!args.yes && want_exit()) {
+ 				if (args.yes && !args.quiet)
+ 					printf("yes\n");
+@@ -888,11 +889,12 @@ int main(int argc, char * const argv[])
+ 			 args.ec = 0;
+ 			 args.override_ec = 1;
+ 		} else if (percent < 95) {
+-			if (!args.yes || !args.quiet)
++			if (!args.yes || !args.quiet) {
+ 				warnmsg("only %d of %d eraseblocks have valid erase counter",
+ 					si->ok_cnt, si->good_cnt);
+ 				normsg("mean erase counter %lld will be used for the rest of eraseblock",
+ 				       si->mean_ec);
++			}
+ 			if (!args.yes && want_exit()) {
+ 				if (args.yes && !args.quiet)
+ 					printf("yes\n");
 -- 
 1.7.10.4
