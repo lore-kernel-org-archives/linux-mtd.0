@@ -1,5 +1,5 @@
 MIME-Version: 1.0
-In-Reply-To: <1350371511.5769.43.camel@sauron.fi.intel.com>
+In-Reply-To: <CACRpkdY2=PLS_MT1h_nQJj+2ju26yXtt-aXSi=t9uUQ5+WJasA@mail.gmail.com>
 References: <cover.1349778820.git.vipin.kumar@st.com>
  <2b88c853b3691338fae037f569917fc300cd6032.1349778821.git.vipin.kumar@st.com>
  <CACRpkdb6ArMUQ6MAsue+Gh15UfOUrWNAc9wrxd6awc0BTwOGiw@mail.gmail.com>
@@ -8,15 +8,16 @@ References: <cover.1349778820.git.vipin.kumar@st.com>
  <507794B6.2000107@st.com>
  <1350307104.4115.23.camel@sauron.fi.intel.com>
  <CAN8TOE-7d=YUSYsHFw9X5vnz8cpSJYv5uZfvBpDyhg+-F_LDiQ@mail.gmail.com>
- <1350371511.5769.43.camel@sauron.fi.intel.com>
-Date: Sun, 21 Oct 2012 00:21:18 -0700
-Message-ID: <CAN8TOE9tDbW5QoRnY0wAOPJZqXEO=kdtVkS=BHYAUjebrPq=GA@mail.gmail.com>
+ <CACRpkdao_9TkH7=ia7kXB-KsQhNZQ7EfSS5B1X0wFPgg5OsuHA@mail.gmail.com>
+ <1350371685.5769.45.camel@sauron.fi.intel.com>
+ <CACRpkdY2=PLS_MT1h_nQJj+2ju26yXtt-aXSi=t9uUQ5+WJasA@mail.gmail.com>
+Date: Sun, 21 Oct 2012 00:38:57 -0700
+Message-ID: <CAN8TOE91TDewmo=w7585sDrsXcPmBnvOjmD7sTizPSJ8RH8_Gg@mail.gmail.com>
 Subject: Re: [PATCH 07/11] fsmc/nand: Provide contiguous buffers to dma
 From: Brian Norris <computersforpeace@gmail.com>
-To: dedekind1@gmail.com
+To: Linus Walleij <linus.walleij@linaro.org>, dedekind1@gmail.com
 Content-Type: text/plain; charset=ISO-8859-1
 Cc: Vinod Koul <vinod.koul@intel.com>, viresh kumar <viresh.kumar@linaro.org>,
- Linus Walleij <linus.walleij@linaro.org>,
  spear-devel <spear-devel@list.st.com>, Vipin Kumar <vipin.kumar@st.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "plagnioj@jcrosoft.com" <plagnioj@jcrosoft.com>,
@@ -30,44 +31,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 16, 2012 at 12:11 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Mon, 2012-10-15 at 09:27 -0700, Brian Norris wrote:
->> See the commit description for the following commit in mtd-utils.git:
+On Tue, Oct 16, 2012 at 3:05 AM, Linus Walleij <linus.walleij@linaro.org> wrote:
+> On Tue, Oct 16, 2012 at 9:14 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+>> On Mon, 2012-10-15 at 21:51 +0200, Linus Walleij wrote:
+>>> On Mon, Oct 15, 2012 at 6:27 PM, Brian Norris
+>>> <computersforpeace@gmail.com> wrote:
+>>>
+>>> > I would prefer not building a solution that hopes kmalloc() can get a
+>>> > large contiguous buffer (remember, eraseblock sizes come as large as
+>>> > 2MB these days). A real solution like CMA or scatter-gather seems like
+>>> > a better idea.
+>>>
+>>> +1 on that, and as I think I illustrated the MMC subsystem is using
+>>> the block layer helpers to form scatter-gather lists for it's requests.
+>>> I don't see why the MTD subsystem need to be very different?
 >>
->>     commit 71c76e74661492b4f68f670514866cfc85f47089
->>     libmtd: fix mtd_write() issues for large data-only writes
+>> This is good idea, the problem is that it is a bit more work than
+>> hacking the driver, so most people prefer the latter. By removing all
+>> kmalloc()'s I basically wish to force people to go this way.
+
+Did you mean vmalloc()'s?
+
+>> What are the SC functions names you refer?
 >
-> Well, this is another work-around.
+> I'm mainly thinking of blk_rq_map_sg()
+> from block/blk-merge.c
 
-Yeah, I know it was a workaround. It's another issue of balancing time
-and the "best" solution. Of course, the solutions actually don't seem
-that difficult now, so I probably should have just fixed the ioctl()
-in the first place... But I was simply pointing this out as evidence
-of a real memory-fragmentation issue.
+I am also interested in the potential for the S-G approach. I'll see
+what kind of work it takes to implement soon, hopefully.
 
-> The better way to fix this would be
-> to change kernel's 'mtdchar_write_ioctl()' to be iterative and avoid
-> calling 'memdup_user(len)' for arbitrary 'len' passed from user-space.
-
-That's one way, but it would require specifying some arbitrary
-iteration length, right? Like some multiple of writesize?
-
-Instead, how about modelling it more closely after mtdchar_write(),
-using mtd_kmalloc_up_to(), then iteratively call copy_from_user()?
-
-> So I thought about something like introducing an mtd_alloc() which
-> would:
->    a. Try doing CMA allocation: dma_alloc_from_contiguous()
->    b. If it fails, use kmalloc().
-...
-> If both fail - bad luck. Go look at the code and switch to S-G lists
-> instead of allocating contiguous regions. As I said, in many places it
-> is easy to do, and there are few places when you would need to spend a
-> bit more time.
->
-> How does this sound to you?
-
-It sounds OK, but that depends on the success rate of
-dma_alloc_from_contiguous(). I'm not familiar with it.
+As a side note, my hardware can, in fact, perform scatter-gather DMA.
+If we were to support both S-G hardware like mine in addition to
+standard, page-at-time access (nand_chip->write_page, for example),
+could we introduce a DMA interface to nand_chip? Then this interface
+would just be set to NULL for those that can't handle it.
 
 Brian
