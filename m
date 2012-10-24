@@ -1,37 +1,19 @@
-Received: from e23smtp08.au.ibm.com ([202.81.31.141])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TQx9Y-000642-01
- for linux-mtd@lists.infradead.org; Wed, 24 Oct 2012 09:21:33 +0000
-Received: from /spool/local
- by e23smtp08.au.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
- Violators will be prosecuted
- for <linux-mtd@lists.infradead.org> from <hejianet@linux.vnet.ibm.com>;
- Wed, 24 Oct 2012 19:20:36 +1000
-Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
- by d23relay03.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
- q9O9LNwm51118142
- for <linux-mtd@lists.infradead.org>; Wed, 24 Oct 2012 20:21:24 +1100
-Received: from d23av03.au.ibm.com (loopback [127.0.0.1])
- by d23av03.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
- q9O9LMwj014080
- for <linux-mtd@lists.infradead.org>; Wed, 24 Oct 2012 20:21:23 +1100
-Received: from [127.0.0.1] ([9.123.236.215])
- by d23av03.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
- q9O9KwIw013566
- for <linux-mtd@lists.infradead.org>; Wed, 24 Oct 2012 20:21:22 +1100
-Message-ID: <5087B304.8010903@linux.vnet.ibm.com>
-Date: Wed, 24 Oct 2012 17:21:08 +0800
-From: hejianet <hejianet@linux.vnet.ibm.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
+Received: from mail2.shareable.org ([80.68.89.115])
+ by bombadil.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TQxeQ-0006tK-51
+ for linux-mtd@lists.infradead.org; Wed, 24 Oct 2012 09:53:26 +0000
+Date: Wed, 24 Oct 2012 10:53:06 +0100
+From: Jamie Lokier <jamie@shareable.org>
+To: Thomas.Betker@rohde-schwarz.com
 Subject: Re: [question]MTD:unstable bit issues?
+Message-ID: <20121024095305.GA17431@jl-vm1.vm.bytemark.co.uk>
 References: <50877953.9040602@linux.vnet.ibm.com>
  <OFCD7F9EAE.28A631AD-ONC1257AA1.002B4604-C1257AA1.002D248C@rohde-schwarz.com>
- <5087AC58.1000402@linux.vnet.ibm.com>
- <OF4005835E.007816E8-ONC1257AA1.0030E2F0-C1257AA1.003189CF@rohde-schwarz.com>
-In-Reply-To: <OF4005835E.007816E8-ONC1257AA1.0030E2F0-C1257AA1.003189CF@rohde-schwarz.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <OFCD7F9EAE.28A631AD-ONC1257AA1.002B4604-C1257AA1.002D248C@rohde-schwarz.com>
+Cc: linux-mtd@lists.infradead.org, hejianet <hejianet@linux.vnet.ibm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,39 +23,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Thomas
-till now, we have no evidence that it is a jffs2.
-we only observed a ubi error msg(not 100% sure it caused this hole):
-
-Oct 15 20:09:10 (none) kernel: UBI error: ubi_io_write error -5 while writing 2048 bytes to PEB 1663:20480, written 0 bytes
-
-Besides, it only appeared in power-cut stress cut, so I suspect it is relevant
-to "unstable bits issue". from google information, this issue appears in both
-nand and nor flash, but more frequently in nand.
-
-On 2012-10-24 17:01, Thomas.Betker@rohde-schwarz.com wrote:
+Thomas.Betker@rohde-schwarz.com wrote:
 > Hello Jia:
->
->> Yes, we use jffs2.
->> How did u solve your bug? :)
->>>> ----------------------------------------------------- 
->>>> 2)a 4k bytes hole with all 0 in the flash file.
->>>> -----------------------------------------------------
-> Unfortunately, we didn't solve it. Some day, it was simply gone; I have no 
-> idea what had changed. I couldn't reproduce it anymore, so I couldn't do 
-> any further analysis.
->
-> Anyway, most likely this is not a NAND issue or MTD issue, but a JFFS2 
-> issue. And I would certainly want to hear about it if you manage to find 
-> and fix it ...
->
-> Best regards,
-> Thomas
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
->
->
+> We have also seen this "4k zeros" issue for some time. I never found out 
+> was was happening because the issue was suddenly no longer reproducible. 
+> :-(
+> 
+> In our case, though, we didn't have NAND flash, but JFFF2 with serial NOR 
+> flash. So I would guess that this is not a NAND problem.
+
+I've seen it a number of times with JFFS2 with parallel NOR, on
+ancient kernels (2.4.26-uc0).  Typically the symptom would be an
+executable crashing, and a 4k hole would be causing that.
+
+We always put it down to a faulty board with poor signal and/or timings
+to the NOR, as it "seemed" to happen on particular boards more, and
+simply removed those boards from service.  However testing wasn't very
+systematic.
+
+If JFFS2 sees a corrupt block (detected by CRC), it simply discards
+that block from the file data as if it's never been written, making a
+hole.  An I/O error would be much nicer than corrupt data, but a hole
+is what we get.
+
+It might have been caused by faulty boards but in a different way:
+Some of our boards crashed every few weeks because the manufacturer's
+tolerances between CPU and DRAM were too tight.  After a very long
+time in the field (years), we learned to underclock those slightly.
+Maybe, occasional DRAM corruption was also causing occasional NOR
+corruption as a side effect (e.g. writing/reading data that didn't
+match the CRC during JFFS2 GC), leading to 4k holes in previously good
+files (bad but understandable); or maybe occasional crashes caused it
+(not acceptable and shouldn't happen).  But I am not sure the two
+issues were correlated anyway.
+
+-- Jamie
