@@ -1,31 +1,32 @@
-From: "Philip, Avinash" <avinashphilip@ti.com>
-To: Peter Korsgaard <jacmet@sunsite.dk>
-Subject: RE: [PATCH 2/4] mtd: devices: elm: Add support for ELM error
- correction
-Date: Tue, 23 Oct 2012 10:17:58 +0000
-Message-ID: <518397C60809E147AF5323E0420B992E3E9D29C3@DBDE01.ent.ti.com>
-References: <1349274589-11389-1-git-send-email-avinashphilip@ti.com>
- <1349274589-11389-3-git-send-email-avinashphilip@ti.com>
- <87hapvv800.fsf@macbook.be.48ers.dk>
-In-Reply-To: <87hapvv800.fsf@macbook.be.48ers.dk>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from e23smtp06.au.ibm.com ([202.81.31.148])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TQtJH-0001Ni-NJ
+ for linux-mtd@lists.infradead.org; Wed, 24 Oct 2012 05:15:20 +0000
+Received: from /spool/local
+ by e23smtp06.au.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+ Violators will be prosecuted
+ for <linux-mtd@lists.infradead.org> from <hejianet@linux.vnet.ibm.com>;
+ Wed, 24 Oct 2012 15:13:03 +1000
+Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
+ by d23relay05.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+ q9O54w5S63504616
+ for <linux-mtd@lists.infradead.org>; Wed, 24 Oct 2012 16:04:58 +1100
+Received: from d23av03.au.ibm.com (loopback [127.0.0.1])
+ by d23av03.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+ q9O5F5ND001379
+ for <linux-mtd@lists.infradead.org>; Wed, 24 Oct 2012 16:15:05 +1100
+Received: from [127.0.0.1] ([9.123.236.215])
+ by d23av03.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
+ q9O5EoYi000886
+ for <linux-mtd@lists.infradead.org>; Wed, 24 Oct 2012 16:15:04 +1100
+Message-ID: <50877953.9040602@linux.vnet.ibm.com>
+Date: Wed, 24 Oct 2012 13:14:59 +0800
+From: hejianet <hejianet@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Cc: "Mohammed, Afzal" <afzal@ti.com>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "tony@atomide.com" <tony@atomide.com>,
- "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
- "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Rob Herring <rob.herring@calxeda.com>,
- Grant Likely <grant.likely@secretlab.ca>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Rob Landley <rob@landley.net>,
- "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: linux-mtd@lists.infradead.org
+Subject: [question]MTD:unstable bit issues?
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,99 +36,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 16, 2012 at 01:10:47, Peter Korsgaard wrote:
-> >>>>> Philip, Avinash <avinashphilip@ti.com> writes:
->=20
->  > Platforms containing the ELM module can be used to correct errors
->  > reported by BCH 4, 8 & 16 bit ECC scheme. For now only 4 & 8 bit
->  > support is added.
->=20
-> This sounds odd to me. What about something like:
->=20
-> The ELM hardware module can be used to speedup BCH 4/8/16 ECC scheme
-> error correction.
->=20
-> For now only 4 & 8 bit support is added.
+My hardware: vcs452 nandflash
+my kernel:2.6.16(I know it is too old:(,but this problem seems not
+relevant to the kernel version)
 
-Ok I will correct it.
+test steps:
+1.copy a 100M file to the nand flash partition from remote client
+2.use fsync to flush the mem to flash
+3.use md5 to check whether the original file is different from the
+copied one
+4.repeat power-cuts test for 5 times, when booting up, it will check
+the md5 again.
+5.do step1 again
 
->=20
->=20
->  > +++ b/drivers/mtd/devices/Makefile
->  > @@ -17,8 +17,10 @@ obj-$(CONFIG_MTD_LART)		+=3D lart.o
->  >  obj-$(CONFIG_MTD_BLOCK2MTD)	+=3D block2mtd.o
->  >  obj-$(CONFIG_MTD_DATAFLASH)	+=3D mtd_dataflash.o
->  >  obj-$(CONFIG_MTD_M25P80)	+=3D m25p80.o
->  > +obj-$(CONFIG_MTD_NAND_OMAP2)	+=3D elm.o
->=20
-> You seem to only use it in 4/4 if CONFIG_MTD_NAND_OMAP_BCH is set, so it
-> probably makes more sense to use that symbol to not needlessly include
-> it if it won't be used.
+after a whole night test,(power-cut for 100 times), the step 4 failed.
+1)there are some bytes changed:
+-----------------------------------------------------
+-original-file D0 40 E8 3E 00 00 BA 1A D0 40 0A 00 43 00 00 00
++file-in-flash D0 40 0F 41 00 00 BA 1A D0 40 0A 00 43 00 00 00
+----------------------------------------------------- 
+2)a 4k bytes hole with all 0 in the flash file.
+-----------------------------------------------------
+-original-file DD AF C8 EE 57 EB 84 CE A1 7F B1 38 E7 22 51 2F
+-    94 AE 77 5B 48 EA 61 8C 09 BB C5 74 6E B1 87 D2 
+-    A9 32 8D 2A E7 7F D2 C3 DB 1A 92 E7 66 7C B8 4E 
+......
+     
++file-in-flash 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
++    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
++    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+......
+-----------------------------------------------------
 
-Ok. This been good.
+I search google and find it might be relevant to "unstable bits
+issue"(bit-flip) in nand.
+I wonder is the bit-flip the possible reason to cause such a 4k all-zero
+hole?
+Thanks for any suggestion.
 
->=20
->=20
->  > +static void elm_write_reg(void *offset, u32 val)
->  > +{
->  > +	writel(val, offset);
->  > +}
->  > +
->  > +static u32 elm_read_reg(void *offset)
->  > +{
->  > +	return readl(offset);
->  > +}
->=20
-> As written these read/write wrappers don't add anything. How about
-> passing struct elm_info and offset as an integer so you can drop
-> elm_base from all call sites, E.G.:
->=20
-> static void elm_write_reg(struct elm_info *info, int offset, u32 val)
-> {
->         writel(val, info->elm_base + offset);
-> }
->
-
-Ok, this helps to reduce some indentation levels also.
-=20
->=20
->  > +void elm_decode_bch_error_page(struct device *dev, u8 *ecc_calc,
->  > +		struct elm_errorvec *err_vec)
->  > +{
->  > +	int i;
->  > +	u8 syndrome[BCH_MAX_ECC_BYTES_PER_SECTOR] =3D {0}, *syn_p;
->=20
->=20
-> Why do you need to keep the entire syndrome around? You seem to only use
-> it between elm_reverse_eccdata() and elm_load_syndrome(), so it could as
-> well be BCH8_ECC_OOB_BYTES long (or rather a multiple of sizeof(u32).
->=20
-> It would also be good to do the shuffeling directly in elm_load_syndrome
-> so you don't need the extra copy.
-
-I will check.
-
->=20
->=20
->  > + */
->  > +
->  > +#ifndef __ELM_H
->  > +#define __ELM_H
->  > +
->  > +enum bch_ecc {
->  > +	BCH4_ECC =3D 0,
->  > +	BCH8_ECC,
->  > +	BCH16_ECC,
->=20
-> It probably makes more sense to not provide the enum value for BCH16 as
-> you don't support it.
->=20
-
-Ok I will remove.
-
->=20
->  > +};
->  > +
-
-Thanks
-Avinash
+B.R.
+Jia
