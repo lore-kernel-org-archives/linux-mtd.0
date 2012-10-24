@@ -1,32 +1,20 @@
-Received: from e23smtp06.au.ibm.com ([202.81.31.148])
+Received: from mail-vb0-f49.google.com ([209.85.212.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TQtJH-0001Ni-NJ
- for linux-mtd@lists.infradead.org; Wed, 24 Oct 2012 05:15:20 +0000
-Received: from /spool/local
- by e23smtp06.au.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
- Violators will be prosecuted
- for <linux-mtd@lists.infradead.org> from <hejianet@linux.vnet.ibm.com>;
- Wed, 24 Oct 2012 15:13:03 +1000
-Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
- by d23relay05.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
- q9O54w5S63504616
- for <linux-mtd@lists.infradead.org>; Wed, 24 Oct 2012 16:04:58 +1100
-Received: from d23av03.au.ibm.com (loopback [127.0.0.1])
- by d23av03.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
- q9O5F5ND001379
- for <linux-mtd@lists.infradead.org>; Wed, 24 Oct 2012 16:15:05 +1100
-Received: from [127.0.0.1] ([9.123.236.215])
- by d23av03.au.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
- q9O5EoYi000886
- for <linux-mtd@lists.infradead.org>; Wed, 24 Oct 2012 16:15:04 +1100
-Message-ID: <50877953.9040602@linux.vnet.ibm.com>
-Date: Wed, 24 Oct 2012 13:14:59 +0800
-From: hejianet <hejianet@linux.vnet.ibm.com>
+ id 1TQuDt-0006da-Ka
+ for linux-mtd@lists.infradead.org; Wed, 24 Oct 2012 06:13:50 +0000
+Received: by mail-vb0-f49.google.com with SMTP id fo1so161165vbb.36
+ for <linux-mtd@lists.infradead.org>; Tue, 23 Oct 2012 23:13:46 -0700 (PDT)
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: [question]MTD:unstable bit issues?
+In-Reply-To: <1350147809-19616-1-git-send-email-shijie8@gmail.com>
+References: <1350147809-19616-1-git-send-email-shijie8@gmail.com>
+Date: Wed, 24 Oct 2012 14:13:46 +0800
+Message-ID: <CAMiH66E8WtAj3BedPEWaOPZzz8qamhGAZg_te4Rkqey4UB33Dg@mail.gmail.com>
+Subject: Re: [PATCH] mtd: gpmi: remove unneccessary header
+From: Huang Shijie <shijie8@gmail.com>
+To: dwmw2@infradead.org
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Cc: Huang Shijie <shijie8@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,43 +24,145 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-My hardware: vcs452 nandflash
-my kernel:2.6.16(I know it is too old:(,but this problem seems not
-relevant to the kernel version)
+ping.
 
-test steps:
-1.copy a 100M file to the nand flash partition from remote client
-2.use fsync to flush the mem to flash
-3.use md5 to check whether the original file is different from the
-copied one
-4.repeat power-cuts test for 5 times, when booting up, it will check
-the md5 again.
-5.do step1 again
-
-after a whole night test,(power-cut for 100 times), the step 4 failed.
-1)there are some bytes changed:
------------------------------------------------------
--original-file D0 40 E8 3E 00 00 BA 1A D0 40 0A 00 43 00 00 00
-+file-in-flash D0 40 0F 41 00 00 BA 1A D0 40 0A 00 43 00 00 00
------------------------------------------------------ 
-2)a 4k bytes hole with all 0 in the flash file.
------------------------------------------------------
--original-file DD AF C8 EE 57 EB 84 CE A1 7F B1 38 E7 22 51 2F
--    94 AE 77 5B 48 EA 61 8C 09 BB C5 74 6E B1 87 D2 
--    A9 32 8D 2A E7 7F D2 C3 DB 1A 92 E7 66 7C B8 4E 
-......
-     
-+file-in-flash 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
-+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
-......
------------------------------------------------------
-
-I search google and find it might be relevant to "unstable bits
-issue"(bit-flip) in nand.
-I wonder is the bit-flip the possible reason to cause such a 4k all-zero
-hole?
-Thanks for any suggestion.
-
-B.R.
-Jia
+On Sun, Oct 14, 2012 at 1:03 AM, Huang Shijie <shijie8@gmail.com> wrote:
+> The whole gpmi-nand driver has turned to pure devicetree supported.
+> So the linux/mtd/gpmi-nand.h is not neccessary now. Just remove it,
+> and move some macros to the gpmi-nand driver itself.
+>
+> Signed-off-by: Huang Shijie <shijie8@gmail.com>
+> ---
+>  drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |    1 -
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    7 +++-
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.h |    1 -
+>  include/linux/mtd/gpmi-nand.h          |   68 --------------------------------
+>  4 files changed, 6 insertions(+), 71 deletions(-)
+>  delete mode 100644 include/linux/mtd/gpmi-nand.h
+>
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+> index 3502acc..1585c5b 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+> @@ -18,7 +18,6 @@
+>   * with this program; if not, write to the Free Software Foundation, Inc.,
+>   * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+>   */
+> -#include <linux/mtd/gpmi-nand.h>
+>  #include <linux/delay.h>
+>  #include <linux/clk.h>
+>
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> index e2c56fc..d376198 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -25,7 +25,6 @@
+>  #include <linux/slab.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/module.h>
+> -#include <linux/mtd/gpmi-nand.h>
+>  #include <linux/mtd/partitions.h>
+>  #include <linux/pinctrl/consumer.h>
+>  #include <linux/of.h>
+> @@ -33,6 +32,12 @@
+>  #include <linux/of_mtd.h>
+>  #include "gpmi-nand.h"
+>
+> +/* Resource names for the GPMI NAND driver. */
+> +#define GPMI_NAND_GPMI_REGS_ADDR_RES_NAME  "gpmi-nand"
+> +#define GPMI_NAND_BCH_REGS_ADDR_RES_NAME   "bch"
+> +#define GPMI_NAND_BCH_INTERRUPT_RES_NAME   "bch"
+> +#define GPMI_NAND_DMA_INTERRUPT_RES_NAME   "gpmi-dma"
+> +
+>  /* add our owner bbt descriptor */
+>  static uint8_t scan_ff_pattern[] = { 0xff };
+>  static struct nand_bbt_descr gpmi_bbt_descr = {
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+> index 7ac25c1..3d93a5e 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+> @@ -130,7 +130,6 @@ struct gpmi_nand_data {
+>         /* System Interface */
+>         struct device           *dev;
+>         struct platform_device  *pdev;
+> -       struct gpmi_nand_platform_data  *pdata;
+>
+>         /* Resources */
+>         struct resources        resources;
+> diff --git a/include/linux/mtd/gpmi-nand.h b/include/linux/mtd/gpmi-nand.h
+> deleted file mode 100644
+> index ed3c4e0..0000000
+> --- a/include/linux/mtd/gpmi-nand.h
+> +++ /dev/null
+> @@ -1,68 +0,0 @@
+> -/*
+> - * Copyright (C) 2011 Freescale Semiconductor, Inc. All Rights Reserved.
+> - *
+> - * This program is free software; you can redistribute it and/or modify
+> - * it under the terms of the GNU General Public License as published by
+> - * the Free Software Foundation; either version 2 of the License, or
+> - * (at your option) any later version.
+> - *
+> - * This program is distributed in the hope that it will be useful,
+> - * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> - * GNU General Public License for more details.
+> - *
+> - * You should have received a copy of the GNU General Public License along
+> - * with this program; if not, write to the Free Software Foundation, Inc.,
+> - * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+> - */
+> -
+> -#ifndef __MACH_MXS_GPMI_NAND_H__
+> -#define __MACH_MXS_GPMI_NAND_H__
+> -
+> -/* The size of the resources is fixed. */
+> -#define GPMI_NAND_RES_SIZE     6
+> -
+> -/* Resource names for the GPMI NAND driver. */
+> -#define GPMI_NAND_GPMI_REGS_ADDR_RES_NAME  "gpmi-nand"
+> -#define GPMI_NAND_GPMI_INTERRUPT_RES_NAME  "GPMI NAND GPMI Interrupt"
+> -#define GPMI_NAND_BCH_REGS_ADDR_RES_NAME   "bch"
+> -#define GPMI_NAND_BCH_INTERRUPT_RES_NAME   "bch"
+> -#define GPMI_NAND_DMA_CHANNELS_RES_NAME    "GPMI NAND DMA Channels"
+> -#define GPMI_NAND_DMA_INTERRUPT_RES_NAME   "gpmi-dma"
+> -
+> -/**
+> - * struct gpmi_nand_platform_data - GPMI NAND driver platform data.
+> - *
+> - * This structure communicates platform-specific information to the GPMI NAND
+> - * driver that can't be expressed as resources.
+> - *
+> - * @platform_init:           A pointer to a function the driver will call to
+> - *                           initialize the platform (e.g., set up the pin mux).
+> - * @min_prop_delay_in_ns:    Minimum propagation delay of GPMI signals to and
+> - *                           from the NAND Flash device, in nanoseconds.
+> - * @max_prop_delay_in_ns:    Maximum propagation delay of GPMI signals to and
+> - *                           from the NAND Flash device, in nanoseconds.
+> - * @max_chip_count:          The maximum number of chips for which the driver
+> - *                           should configure the hardware. This value most
+> - *                           likely reflects the number of pins that are
+> - *                           connected to a NAND Flash device. If this is
+> - *                           greater than the SoC hardware can support, the
+> - *                           driver will print a message and fail to initialize.
+> - * @partitions:              An optional pointer to an array of partition
+> - *                           descriptions.
+> - * @partition_count:         The number of elements in the partitions array.
+> - */
+> -struct gpmi_nand_platform_data {
+> -       /* SoC hardware information. */
+> -       int             (*platform_init)(void);
+> -
+> -       /* NAND Flash information. */
+> -       unsigned int    min_prop_delay_in_ns;
+> -       unsigned int    max_prop_delay_in_ns;
+> -       unsigned int    max_chip_count;
+> -
+> -       /* Medium information. */
+> -       struct          mtd_partition *partitions;
+> -       unsigned        partition_count;
+> -};
+> -#endif
+> --
+> 1.7.4.4
+>
