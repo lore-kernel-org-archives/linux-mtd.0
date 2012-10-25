@@ -1,19 +1,23 @@
-Message-ID: <1351148122.2507.63.camel@sauron.fi.intel.com>
-Subject: Re: Possible regression in arm/io.h
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Will Deacon <will.deacon@arm.com>
-Date: Thu, 25 Oct 2012 09:55:22 +0300
-In-Reply-To: <20121024105223.GC23775@mudshark.cambridge.arm.com>
-References: <CABYn4syj0GZAsDYVQfXg_qKAFkbrxPLoZWpKRzwf3gfRkMGZkQ@mail.gmail.com>
- <20121024105223.GC23775@mudshark.cambridge.arm.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-jiihOvxVN6a7af9hOX0m"
-Mime-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, Bastian Hecht <hechtb@googlemail.com>
-Reply-To: dedekind1@gmail.com
+Received: from mail-pa0-f49.google.com ([209.85.220.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TRHgV-0005G1-MQ
+ for linux-mtd@lists.infradead.org; Thu, 25 Oct 2012 07:16:56 +0000
+Received: by mail-pa0-f49.google.com with SMTP id bi5so878203pad.36
+ for <linux-mtd@lists.infradead.org>; Thu, 25 Oct 2012 00:16:53 -0700 (PDT)
+Date: Thu, 25 Oct 2012 15:16:34 +0800
+From: Shawn Guo <shawn.guo@linaro.org>
+To: Huang Shijie <b32955@freescale.com>, Arnd Bergmann <arnd@arndb.de>,
+ Olof Johansson <olof@lixom.net>
+Subject: Re: [PATCH] ARM: dts: mxs: add the "clock-names" for gpmi-nand
+Message-ID: <20121025071629.GD2464@S2101-09.ap.freescale.net>
+References: <201210101237.13640.marex@denx.de>
+ <1349864829-19565-1-git-send-email-b32955@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1349864829-19565-1-git-send-email-b32955@freescale.com>
+Cc: marex@denx.de, linux-mtd@lists.infradead.org, festevam@gmail.com,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,46 +27,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Arnd, Olof,
 
---=-jiihOvxVN6a7af9hOX0m
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Can you please apply this fix for -rc?  Otherwise, please let me know
+if you prefer to get a pull request from me.
 
-On Wed, 2012-10-24 at 11:52 +0100, Will Deacon wrote:
-> 	(a) Understand what has changed in GCC to cause this error to start
-> 	    cropping up.
+Shawn
 
-This is about already quite old gcc 4.6.3, which I use for about 4 last
-kernel releases already. So it is only the kernel that changed.
-
-You can download the GCC I used from here:
-http://kernel.org/pub/tools/crosstool/
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-jiihOvxVN6a7af9hOX0m
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQiOJaAAoJECmIfjd9wqK0wNkP/i3iIw9GSSooYZYLMtrk49z7
-dRpwHlWkYH3A+gS2WOlK58eqRJLMSKEYo4uIKeXEYxVvYaHtuM6RfCVl+jsZz9nj
-jEPril122776Z3J/+iT2xJ5qtQrG8M2owrPLRi19xpzRyZPtSbDopCLH+68iY3Y2
-h86yZNFryR5W+8O2N8/f7VsaHInGs0R3gjF6GdcIETbBLFTZ+Jb8F5Ec5Wwr6HVI
-1zfy8fAxm/ngngVpr42H6wfZ3AuU5SyjmHng6fYzq93LXK9AtqnG8K/elHWphxyl
-zwAHVNR7ObjNInzIVKAm0ycp8v7VZTmvGw2hj0hQGYXqz+4hs84aFK0wSP/wKAqD
-q13jKsfr52T+XnIR+En94+bXJhaIlxs+2iXSAoNbL042LgBTubiB6cdYrhDdagqL
-sypMAWbbSN+dE5gG4lggCPnTJlwpOmdot1Lx1MR3uEDoJoGs6To3o1depjpZXB8k
-4Lk2eZwjyDOSiy3RqvPFyI98AIX+HxfpBWuDBxpngp26jhXim+DNEfs0VbqNBvyw
-N6bSa3Yj89srLrU9K5lhOnpIxD8FQP0vYe5Cf7Ve2IUaApgaf9gSqeHUJfra7PbP
-fIumHMWmS6gGGWNqhufcjVT1QtxHxJ7nWEPtHRET3x+mjU6T3JNtoIjItLITvCKx
-xtI/qnGpLmZPLyKb0nHo
-=ei3h
------END PGP SIGNATURE-----
-
---=-jiihOvxVN6a7af9hOX0m--
+On Wed, Oct 10, 2012 at 06:27:09PM +0800, Huang Shijie wrote:
+> The current DT nodes for mx23/mx28 miss the `clocks-names` item for gpmi-nand.
+> So the gpmi-nand driver could not find the proper clock.
+> 
+> This patch fixes this issue.
+> 
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
+> ---
+>  arch/arm/boot/dts/imx23.dtsi |    1 +
+>  arch/arm/boot/dts/imx28.dtsi |    1 +
+>  2 files changed, 2 insertions(+), 0 deletions(-)
+> 
+> diff --git a/arch/arm/boot/dts/imx23.dtsi b/arch/arm/boot/dts/imx23.dtsi
+> index 9ca4ca7..6d31aa3 100644
+> --- a/arch/arm/boot/dts/imx23.dtsi
+> +++ b/arch/arm/boot/dts/imx23.dtsi
+> @@ -69,6 +69,7 @@
+>  				interrupts = <13>, <56>;
+>  				interrupt-names = "gpmi-dma", "bch";
+>  				clocks = <&clks 34>;
+> +				clock-names = "gpmi_io";
+>  				fsl,gpmi-dma-channel = <4>;
+>  				status = "disabled";
+>  			};
+> diff --git a/arch/arm/boot/dts/imx28.dtsi b/arch/arm/boot/dts/imx28.dtsi
+> index e16d631..55c57ea 100644
+> --- a/arch/arm/boot/dts/imx28.dtsi
+> +++ b/arch/arm/boot/dts/imx28.dtsi
+> @@ -85,6 +85,7 @@
+>  				interrupts = <88>, <41>;
+>  				interrupt-names = "gpmi-dma", "bch";
+>  				clocks = <&clks 50>;
+> +				clock-names = "gpmi_io";
+>  				fsl,gpmi-dma-channel = <4>;
+>  				status = "disabled";
+>  			};
+> -- 
+> 1.7.0.4
+> 
+> 
