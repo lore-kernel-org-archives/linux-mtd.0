@@ -1,19 +1,20 @@
-From: Arnd Bergmann <arnd@arndb.de>
-To: linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] ARM: dts: mxs: add the "clock-names" for gpmi-nand
-Date: Thu, 25 Oct 2012 13:23:33 +0000
-References: <201210101237.13640.marex@denx.de>
- <1349864829-19565-1-git-send-email-b32955@freescale.com>
- <20121025071629.GD2464@S2101-09.ap.freescale.net>
-In-Reply-To: <20121025071629.GD2464@S2101-09.ap.freescale.net>
+Received: from astoria.ccjclearline.com ([64.235.106.9])
+ by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TRNiU-00077H-QK
+ for linux-mtd@lists.infradead.org; Thu, 25 Oct 2012 13:43:26 +0000
+Received: from cpe78cd8ec702a0-cm78cd8ec7029d.cpe.net.cable.rogers.com
+ ([174.116.193.149]:50969 helo=crashcourse.ca)
+ by astoria.ccjclearline.com with esmtpsa (TLSv1:AES256-SHA:256)
+ (Exim 4.77) (envelope-from <rpjday@crashcourse.ca>)
+ id 1TRNiL-0008HM-Bq
+ for linux-mtd@lists.infradead.org; Thu, 25 Oct 2012 09:43:13 -0400
+Date: Thu, 25 Oct 2012 09:43:10 -0400 (EDT)
+From: "Robert P. J. Day" <rpjday@crashcourse.ca>
+To: MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: [PATCH] MTD: Fix kernel-doc content to avoid warning.
+Message-ID: <alpine.DEB.2.02.1210250941170.27692@oneiric>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201210251323.34353.arnd@arndb.de>
-Cc: marex@denx.de, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org, Olof Johansson <olof@lixom.net>,
- Shawn Guo <shawn.guo@linaro.org>, festevam@gmail.com
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,15 +24,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 25 October 2012, Shawn Guo wrote:
-> 
-> Hi Arnd, Olof,
-> 
-> Can you please apply this fix for -rc?  Otherwise, please let me know
-> if you prefer to get a pull request from me.
-> 
 
-Applied to fixes branch, and added your Ack as well as the Review
-tag from Marek.
+Add missing colons to fix kernel-doc generation warnings.
 
-	Arnd
+Signed-off-by: Robert P. J. Day <rpjday@crashcourse.ca>
+
+---
+
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 24e9159..9d8a604 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -471,8 +471,8 @@ struct nand_buffers {
+  *			non 0 if ONFI supported.
+  * @onfi_params:	[INTERN] holds the ONFI page parameter when ONFI is
+  *			supported, 0 otherwise.
+- * @onfi_set_features	[REPLACEABLE] set the features for ONFI nand
+- * @onfi_get_features	[REPLACEABLE] get the features for ONFI nand
++ * @onfi_set_features:	[REPLACEABLE] set the features for ONFI nand
++ * @onfi_get_features:	[REPLACEABLE] get the features for ONFI nand
+  * @ecclayout:		[REPLACEABLE] the default ECC placement scheme
+  * @bbt:		[INTERN] bad block table pointer
+  * @bbt_td:		[REPLACEABLE] bad block table descriptor for flash
+
+-- 
+
+========================================================================
+Robert P. J. Day                                 Ottawa, Ontario, CANADA
+                        http://crashcourse.ca
+
+Twitter:                                       http://twitter.com/rpjday
+LinkedIn:                               http://ca.linkedin.com/in/rpjday
+========================================================================
