@@ -1,20 +1,24 @@
 Received: from mail-pb0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TRPxW-00083a-Jy
- for linux-mtd@lists.infradead.org; Thu, 25 Oct 2012 16:07:03 +0000
-Received: by mail-pb0-f49.google.com with SMTP id xa7so1959325pbc.36
- for <linux-mtd@lists.infradead.org>; Thu, 25 Oct 2012 09:07:00 -0700 (PDT)
+ id 1TRVUG-0002cQ-1W
+ for linux-mtd@lists.infradead.org; Thu, 25 Oct 2012 22:01:12 +0000
+Received: by mail-pb0-f49.google.com with SMTP id xa7so2146481pbc.36
+ for <linux-mtd@lists.infradead.org>; Thu, 25 Oct 2012 15:01:09 -0700 (PDT)
+Message-ID: <5089B692.1030203@gmail.com>
+Date: Fri, 26 Oct 2012 00:00:50 +0200
+From: Vincenzo Aliberti <vincenzo.aliberti@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1350272844-21866-1-git-send-email-shijie8@gmail.com>
-References: <1350272844-21866-1-git-send-email-shijie8@gmail.com>
-Date: Thu, 25 Oct 2012 09:07:00 -0700
-Message-ID: <CAN8TOE9BAHUFZf0pW7RvE4B0gbQgXNywQi9mvRgP_f3MKMmtuA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: use the NAND_STATUS_FAIL to replace the hardcode
-From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <shijie8@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org, dedekind1@gmail.com
+To: dedekind1@gmail.com
+Subject: Re: [PATCH] [MTD] MTD driver for LPDDR2-NVM PCM memories
+References: <1349385434-3073-1-git-send-email-valibert@micron.com>
+ <1349954577.12014.13.camel@sauron.fi.intel.com> <507DD09C.6050600@gmail.com>
+ <1350479369.5769.153.camel@sauron.fi.intel.com>
+In-Reply-To: <1350479369.5769.153.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: arnd@arndb.de, dmanna@micron.com, lporzio@micron.com,
+ linux-mtd@lists.infradead.org, valibert@micron.com, svenkatr@ti.com,
+ dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,12 +28,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-FWIW
+On 10/17/2012 03:09 PM, Artem Bityutskiy wrote:
+> On Tue, 2012-10-16 at 23:24 +0200, Vincenzo Aliberti wrote:
+>> The only Warning is
+>> WARNING: line over 80 characters
+>> #605: FILE: include/uapi/mtd/mtd-abi.h:112:
+>> +#define MTD_CAP_PCM		(MTD_WRITEABLE | MTD_BIT_WRITEABLE | MTD_NO_ERASE)
+>>
+>> But in the file include/uapi/mtd/mtd-abi.h there is already the raw:
+>> #define MTD_CAP_RAM		(MTD_WRITEABLE | MTD_BIT_WRITEABLE | MTD_NO_ERASE)
+> 
+> You can ignore this warning.
+> 
 
-On Sun, Oct 14, 2012 at 8:47 PM, Huang Shijie <shijie8@gmail.com> wrote:
-> Use the NAND_STATUS_FAIL to replace the hardcode "0x01",
-> which make the code more readable.
->
-> Signed-off-by: Huang Shijie <shijie8@gmail.com>
-
-Acked-by: Brian Norris <computersforpeace@gmail.com>
+Artem, David do you see the need for further changes or do you think it can be
+pulled in the main line?
