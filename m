@@ -1,35 +1,22 @@
-Received: from e28smtp03.in.ibm.com ([122.248.162.3])
+Received: from utopia.booyaka.com ([74.50.51.50])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TRZ0I-0008WU-De
- for linux-mtd@lists.infradead.org; Fri, 26 Oct 2012 01:46:31 +0000
-Received: from /spool/local
- by e28smtp03.in.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
- Violators will be prosecuted
- for <linux-mtd@lists.infradead.org> from <hejianet@linux.vnet.ibm.com>;
- Fri, 26 Oct 2012 07:16:26 +0530
-Received: from d28av02.in.ibm.com (d28av02.in.ibm.com [9.184.220.64])
- by d28relay03.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
- q9Q1kNjV40304700
- for <linux-mtd@lists.infradead.org>; Fri, 26 Oct 2012 07:16:23 +0530
-Received: from d28av02.in.ibm.com (loopback [127.0.0.1])
- by d28av02.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
- q9Q7FLDg011847
- for <linux-mtd@lists.infradead.org>; Fri, 26 Oct 2012 18:15:22 +1100
-Received: from [127.0.0.1] ([9.123.236.215])
- by d28av02.in.ibm.com (8.14.4/8.13.1/NCO v10.0 AVin) with ESMTP id
- q9Q7EjFx009923
- for <linux-mtd@lists.infradead.org>; Fri, 26 Oct 2012 18:15:21 +1100
-Message-ID: <5089EB4B.5020800@linux.vnet.ibm.com>
-Date: Fri, 26 Oct 2012 09:45:47 +0800
-From: hejianet <hejianet@linux.vnet.ibm.com>
+ id 1TRZ2U-0000Gw-NP
+ for linux-mtd@lists.infradead.org; Fri, 26 Oct 2012 01:48:47 +0000
+Date: Fri, 26 Oct 2012 01:48:44 +0000 (UTC)
+From: Paul Walmsley <paul@pwsan.com>
+To: Afzal Mohammed <afzal@ti.com>, Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH v2 06/14] mtd: onenand: omap: use pdata info instead of
+ cpu_is
+In-Reply-To: <860ba92c34cbb490beccd5442087087c1751a6a2.1349672877.git.afzal@ti.com>
+Message-ID: <alpine.DEB.2.00.1210260146270.11251@utopia.booyaka.com>
+References: <cover.1349672877.git.afzal@ti.com>
+ <860ba92c34cbb490beccd5442087087c1751a6a2.1349672877.git.afzal@ti.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: jffs2 copy too long after mounting
-References: <50881109.3010107@linux.vnet.ibm.com>
- <508898B6.8060504@linux.vnet.ibm.com>
-In-Reply-To: <508898B6.8060504@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, linux-mtd@lists.infradead.org,
+ Jon Hunter <jon-hunter@ti.com>, Ivan Djelic <ivan.djelic@parrot.com>,
+ linux-omap@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,117 +26,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sorry,maybe my question is long and bothering:(
-I try to make it more easily and clearly
-in jffs2_garbage_collect_deletion_dirent(),
-what does it mean, why in nand, we can't actually mark nodes obsolete
-pernamently
-    /* On a medium where we can't actually mark nodes obsolete
-       pernamently, such as NAND flash, ..... */
+Hi Afzal
 
-On 2012-10-25 09:41, hejianet wrote:
-> Hi all
->   I think I find the reason why there are so many similar logs("Check
-> potential deletion dirent").
->   It seems in jffs2_garbage_collect_deletion_dirent(), jffs2 tries to 
-> find "whether this deletion dirent is still needed to actively delete
-> a 'real' dirent with the same name that's still somewhere else on the 
-> flash."
->   I wonder why there is such a necessary handling procedure? There must
-> be a newest valid direntry. Why we need to remove the older one and 
-> "write out a new deletion dirent to replace it"? What if jffs2 just 
-> did not search the older deletion dirent allover the flash?
-> Thanks.
-> B.R.
-> Jia
->
->
-> On 2012-10-23 15:13, hejianet wrote:
->> Hi Artem, thanks for your reply
->> Now I can reproduce it after 2-3 days stress tests:
->> 1.just do lots of small writing(4k bytes each time) radomly in one of 1000
->>  thousand file
->> 2.remove the 1000 files,now the jffs2 fs is *very* dirty.
->> 3.I dynamically increase the threshold nr_free_blocks to trigger the gc
->> in jffs2_thread_should_wake():
->>      if (c->nr_free_blocks + c->nr_erasing_blocks < c->resv_blocks_gctrigger &&
->>             (dirty > c->nospc_dirty_size))
->>         ret = 1;
->> 4. I watched after a while, there were tens of  thousands of lines (I enable the
->> jffs2 log level to be 1)
->> Check potential deletion dirent at 008ddd24
->> Check potential deletion dirent at 008ddcf4
->> Check potential deletion dirent at 008ddcc4
->> Check potential deletion dirent at 008ddc68
->> Check potential deletion dirent at 008dca34
->> Check potential deletion dirent at 008dca04
->> Check potential deletion dirent at 0088d77c
->> Check potential deletion dirent at 0088d74c
->> Check potential deletion dirent at 0088d71c
->> Check potential deletion dirent at 0088d6ec
->> Check potential deletion dirent at 0088d6bc
->> Check potential deletion dirent at 0088c648
->> Check potential deletion dirent at 0088c618
->> Check potential deletion dirent at 0088c2a8
->> Check potential deletion dirent at 0088c278
->> Check potential deletion dirent at 0088c248
->> Check potential deletion dirent at 0088c218
->> Check potential deletion dirent at 0088c1e8
->> Check potential deletion dirent at 00886b50
->> Check potential deletion dirent at 00885388
->> Check potential deletion dirent at 00885358
->> Check potential deletion dirent at 008852a8
->> Check potential deletion dirent at 00885278
->> 5. I did find that the free blocks number of jffs2 is very slowly increased
->>
->> So could you give me any ideas, it is normal or abnormal?
->> Thanks a lot
->> On 2012-08-24 15:53, Artem Bityutskiy wrote:
->>> On Thu, 2012-08-02 at 11:04 +0800, hejianet wrote:
->>>> hi All
->>>> my kernel is 2.6.16
->>>> after mounting the nand flash with jffs2 partition, the first copy operation
->>>> for a 15M file(from jffs2 partition to jffs2 partition) take 9
->>>> minutes,but the
->>>> second copy operation takes 1 minutes.
->>>> the disk usage(df result) is over 85%.
->>>> I wonder is there any patch ported to such old kernel?
->>> His is because how JFFS2 is designed. When the mount operation is
->>> finished, JFFS2 does not really finish mounting. There is the background
->>> process which keeps working - it basically reads all files in the system
->>> and checks the CRC, which is needed to find out which nodes are new and
->>> which are obsolete.
->>>
->>> So what happens is that you mount JFFS2, the background thread keeps
->>> working (see 'top' for example).
->>>
->>> While the background thread works, you can read files. But you cannot
->>> write - writes will be blocked. Well, it is a bit more complex - you can
->>> write a little, but from some point your writes will be blocked until
->>> the background thread finishes. Then the write will continue and finish.
->>>
->>> In you case, you mount, start writing your 15MiB file, write gets
->>> blocked, waits for the background thread, then continues write. The
->>> background thread takes ages to finish on big partitions.
->>>
->>> The second write is fast because you do not wait for the background
->>> thread any longer.
->>>
->>
->> ______________________________________________________
->> Linux MTD discussion mailing list
->> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->>
->>
->>
->
->
->
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
->
->
+On Mon, 8 Oct 2012, Afzal Mohammed wrote:
+
+> platform data now contains a field to indicate whether
+> soc belongs to omap34xx family, use it instead of
+> cpu_is_* check.
+> 
+> This helps in removing dependency of platform specific
+> header file - cpu.h
+> 
+> Signed-off-by: Afzal Mohammed <afzal@ti.com>
+
+This one breaks an N800 multi-OMAP build here:
+
+  LD      init/built-in.o
+drivers/built-in.o: In function `omap2_onenand_probe':
+/home/paul/linux-bisect/drivers/mtd/onenand/omap2.c:788: undefined 
+reference to `omap3_onenand_read_bufferram'
+/home/paul/linux-bisect/drivers/mtd/onenand/omap2.c:788: undefined 
+reference to `omap3_onenand_write_bufferram'
+make: *** [vmlinux] Error 1
+
+A fix is below.
+
+
+- Paul
+
+
+---
+ drivers/mtd/onenand/omap2.c |   18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
+index 53069ae..f87cf39 100644
+--- a/drivers/mtd/onenand/omap2.c
++++ b/drivers/mtd/onenand/omap2.c
+@@ -445,13 +445,19 @@ out_copy:
+ 
+ #else
+ 
+-int omap3_onenand_read_bufferram(struct mtd_info *mtd, int area,
+-				 unsigned char *buffer, int offset,
+-				 size_t count);
++static int omap3_onenand_read_bufferram(struct mtd_info *mtd, int area,
++					unsigned char *buffer, int offset,
++					size_t count)
++{
++	return -ENOSYS;
++}
+ 
+-int omap3_onenand_write_bufferram(struct mtd_info *mtd, int area,
+-				  const unsigned char *buffer,
+-				  int offset, size_t count);
++static int omap3_onenand_write_bufferram(struct mtd_info *mtd, int area,
++					 const unsigned char *buffer,
++					 int offset, size_t count)
++{
++	return -ENOSYS;
++}
+ 
+ #endif
+ 
+-- 
+1.7.10.4
