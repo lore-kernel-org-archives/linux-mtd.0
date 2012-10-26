@@ -1,17 +1,15 @@
-Received: from mtxmxout9.matrox.com ([138.11.2.99] helo=mtxmxout7.matrox.com)
- by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TRpey-000578-Mt
- for linux-mtd@lists.infradead.org; Fri, 26 Oct 2012 19:33:39 +0000
-Date: Fri, 26 Oct 2012 15:36:43 -0400
+Received: from mtxmxout1.matrox.com ([138.11.2.91])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TRptx-0003zp-K2
+ for linux-mtd@lists.infradead.org; Fri, 26 Oct 2012 19:49:07 +0000
+Date: Fri, 26 Oct 2012 15:34:10 -0400
 From: Christopher Harvey <charvey@matrox.com>
 To: linux-omap@vger.kernel.org
-Subject: [PATCH v2] mtd: omap: nand: Remove 0xFF's that prefixed 16bit NAND
- commands
-Message-ID: <20121026193643.GA21510@harvey-pc.matrox.com>
+Subject: [PATCH v2] 16 bit NAND fix, request for testers
+Message-ID: <20121026193410.GA21474@harvey-pc.matrox.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20121026193410.GA21474@harvey-pc.matrox.com>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -22,52 +20,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In 16bit NAND mode the GPMC would send the command 0xNN as 0xFFNN
-instead of 0x00NN on the bus. The 0xFFs were actually uninitialized
-bits that were left unset in the GPMC command output register. The
-reason they weren't initialized in 16bit mode is that if the same code
-that writes to this register was used in 8bit mode then 2 commands
-would be output in 8bit mode. One for the low byte, and an extra 0x0
-command for the high byte. This commit uses writew if we're using
-16bit NAND.
+just a small patch to access GPMC NAND registers with 16 bits when the
+NAND is in 16 bit mode. I tested this on a 2.6.37 kernel, and noticed
+it was still unpatched in the latest kernel. I don't have the hardware
+setup or defconfigs to test this patch out, and even if I did I don't
+have the logic analyzer setup to completely reproduce it on other
+hardware with the latest kernel. It would be nice to get a tested-by
+on this patch.
 
-Most chips seem fine with the extra 0xFFs, but the ONFI spec says
-otherwise.
+(CC'd mtd list this time)
 
-Signed-off-by: Christopher Harvey <charvey@matrox.com>
----
+Thanks.
+
+
+Christopher Harvey (1):
+  mtd: omap: nand: Remove 0xFF's that prefixed 16bit NAND commands
+
  drivers/mtd/nand/omap2.c |   14 +++++++++-----
  1 files changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 5b31386..ae6738f 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -225,16 +225,20 @@ static void omap_hwcontrol(struct mtd_info *mtd, int cmd, unsigned int ctrl)
- {
- 	struct omap_nand_info *info = container_of(mtd,
- 					struct omap_nand_info, mtd);
-+	void __iomem *reg;
- 
- 	if (cmd != NAND_CMD_NONE) {
- 		if (ctrl & NAND_CLE)
--			writeb(cmd, info->reg.gpmc_nand_command);
--
-+			reg = info->reg.gpmc_nand_command;
- 		else if (ctrl & NAND_ALE)
--			writeb(cmd, info->reg.gpmc_nand_address);
--
-+			reg = info->reg.gpmc_nand_address;
- 		else /* NAND_NCE */
--			writeb(cmd, info->reg.gpmc_nand_data);
-+			reg = info->reg.gpmc_nand_data;
-+
-+		if (info->nand.options & NAND_BUSWIDTH_16)
-+			writew(cmd, reg);
-+		else
-+			writeb(cmd, reg);
- 	}
- }
- 
 -- 
 1.7.8.6
