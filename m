@@ -1,21 +1,18 @@
-Date: Fri, 26 Oct 2012 09:41:15 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: Paul Walmsley <paul@pwsan.com>
-Subject: Re: [PATCH v2 06/14] mtd: onenand: omap: use pdata info instead of
- cpu_is
-Message-ID: <20121026164115.GE11908@atomide.com>
-References: <cover.1349672877.git.afzal@ti.com>
- <860ba92c34cbb490beccd5442087087c1751a6a2.1349672877.git.afzal@ti.com>
- <alpine.DEB.2.00.1210260146270.11251@utopia.booyaka.com>
- <alpine.DEB.2.00.1210260411140.27963@utopia.booyaka.com>
+Received: from mtxmxout9.matrox.com ([138.11.2.99] helo=mtxmxout7.matrox.com)
+ by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TRpey-000578-Mt
+ for linux-mtd@lists.infradead.org; Fri, 26 Oct 2012 19:33:39 +0000
+Date: Fri, 26 Oct 2012 15:36:43 -0400
+From: Christopher Harvey <charvey@matrox.com>
+To: linux-omap@vger.kernel.org
+Subject: [PATCH v2] mtd: omap: nand: Remove 0xFF's that prefixed 16bit NAND
+ commands
+Message-ID: <20121026193643.GA21510@harvey-pc.matrox.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.00.1210260411140.27963@utopia.booyaka.com>
-Cc: Afzal Mohammed <afzal@ti.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- linux-mtd@lists.infradead.org, Jon Hunter <jon-hunter@ti.com>,
- Ivan Djelic <ivan.djelic@parrot.com>, linux-omap@vger.kernel.org,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20121026193410.GA21474@harvey-pc.matrox.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,77 +22,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Paul Walmsley <paul@pwsan.com> [121025 22:05]:
-> On Fri, 26 Oct 2012, Paul Walmsley wrote:
-> 
-> > On Mon, 8 Oct 2012, Afzal Mohammed wrote:
-> > 
-> > > platform data now contains a field to indicate whether
-> > > soc belongs to omap34xx family, use it instead of
-> > > cpu_is_* check.
-> > > 
-> > > This helps in removing dependency of platform specific
-> > > header file - cpu.h
-> > > 
-> > > Signed-off-by: Afzal Mohammed <afzal@ti.com>
-> > 
-> > This one breaks an N800 multi-OMAP build here:
-> 
-> It also breaks an OMAP3+4 config:
-> 
-> drivers/built-in.o: In function `omap2_onenand_probe':
-> /home/paul/test_build/temp/test_cleanup_prcm_8634155e_with_fixes/20121025214236/linux/drivers/mtd/onenand/omap2.c:742: 
-> undefined reference to `omap2_onenand_read_bufferram'
-> /home/paul/test_build/temp/test_cleanup_prcm_8634155e_with_fixes/20121025214236/linux/drivers/mtd/onenand/omap2.c:743: 
-> undefined reference to `omap2_onenand_write_bufferram'
-> /home/paul/test_build/temp/test_cleanup_prcm_8634155e_with_fixes/20121025214236/linux/drivers/mtd/onenand/omap2.c:742: 
-> undefined reference to `omap2_onenand_read_bufferram'
-> /home/paul/test_build/temp/test_cleanup_prcm_8634155e_with_fixes/20121025214236/linux/drivers/mtd/onenand/omap2.c:743: 
-> undefined reference to `omap2_onenand_write_bufferram'
-> 
-> Fix below.
+In 16bit NAND mode the GPMC would send the command 0xNN as 0xFFNN
+instead of 0x00NN on the bus. The 0xFFs were actually uninitialized
+bits that were left unset in the GPMC command output register. The
+reason they weren't initialized in 16bit mode is that if the same code
+that writes to this register was used in 8bit mode then 2 commands
+would be output in 8bit mode. One for the low byte, and an extra 0x0
+command for the high byte. This commit uses writew if we're using
+16bit NAND.
 
-Thanks, I'd like to pull this fix in too along with the
-others.
+Most chips seem fine with the extra 0xFFs, but the ONFI spec says
+otherwise.
 
-Regards,
+Signed-off-by: Christopher Harvey <charvey@matrox.com>
+---
+ drivers/mtd/nand/omap2.c |   14 +++++++++-----
+ 1 files changed, 9 insertions(+), 5 deletions(-)
 
-Tony
-
-
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index 5b31386..ae6738f 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -225,16 +225,20 @@ static void omap_hwcontrol(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+ {
+ 	struct omap_nand_info *info = container_of(mtd,
+ 					struct omap_nand_info, mtd);
++	void __iomem *reg;
  
->  drivers/mtd/onenand/omap2.c |   18 ++++++++++++------
->  1 file changed, 12 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-> index f87cf39..99f96e1 100644
-> --- a/drivers/mtd/onenand/omap2.c
-> +++ b/drivers/mtd/onenand/omap2.c
-> @@ -555,13 +555,19 @@ static int omap2_onenand_write_bufferram(struct mtd_info *mtd, int area,
->  
->  #else
->  
-> -int omap2_onenand_read_bufferram(struct mtd_info *mtd, int area,
-> -				 unsigned char *buffer, int offset,
-> -				 size_t count);
-> +static int omap2_onenand_read_bufferram(struct mtd_info *mtd, int area,
-> +					unsigned char *buffer, int offset,
-> +					size_t count)
-> +{
-> +	return -ENOSYS;
-> +}
->  
-> -int omap2_onenand_write_bufferram(struct mtd_info *mtd, int area,
-> -				  const unsigned char *buffer,
-> -				  int offset, size_t count);
-> +static int omap2_onenand_write_bufferram(struct mtd_info *mtd, int area,
-> +					 const unsigned char *buffer,
-> +					 int offset, size_t count)
-> +{
-> +	return -ENOSYS;
-> +}
->  
->  #endif
->  
-> -- 
-> 1.7.10.4
+ 	if (cmd != NAND_CMD_NONE) {
+ 		if (ctrl & NAND_CLE)
+-			writeb(cmd, info->reg.gpmc_nand_command);
+-
++			reg = info->reg.gpmc_nand_command;
+ 		else if (ctrl & NAND_ALE)
+-			writeb(cmd, info->reg.gpmc_nand_address);
+-
++			reg = info->reg.gpmc_nand_address;
+ 		else /* NAND_NCE */
+-			writeb(cmd, info->reg.gpmc_nand_data);
++			reg = info->reg.gpmc_nand_data;
++
++		if (info->nand.options & NAND_BUSWIDTH_16)
++			writew(cmd, reg);
++		else
++			writeb(cmd, reg);
+ 	}
+ }
+ 
+-- 
+1.7.8.6
