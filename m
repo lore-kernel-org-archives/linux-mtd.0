@@ -1,17 +1,18 @@
-Received: from mail-pa0-f49.google.com ([209.85.220.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TSsyB-0008Cf-Ib
- for linux-mtd@lists.infradead.org; Mon, 29 Oct 2012 17:17:48 +0000
-Received: by mail-pa0-f49.google.com with SMTP id bi5so3253465pad.36
- for <linux-mtd@lists.infradead.org>; Mon, 29 Oct 2012 10:17:45 -0700 (PDT)
-From: Viresh Kumar <viresh.kumar@linaro.org>
-To: dwmw2@infradead.org
-Subject: [PATCH] mtd: map: Fix compilation warning
-Date: Mon, 29 Oct 2012 22:47:26 +0530
-Message-Id: <dd11b4d47ab566931cb943dea34e67c1ce2c3e59.1351530856.git.viresh.kumar@linaro.org>
-Cc: linaro-dev@lists.linaro.org, dedekind1@gmail.com,
- Viresh Kumar <viresh.kumar@linaro.org>, patches@linaro.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Received: from mtxmxout5.matrox.com ([138.11.2.95])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TSvce-0002iS-M6
+ for linux-mtd@lists.infradead.org; Mon, 29 Oct 2012 20:07:46 +0000
+Date: Mon, 29 Oct 2012 15:51:27 -0400
+From: Christopher Harvey <charvey@matrox.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH v3] mtd: omap: nand: Remove 0xFF's that prefixed 16bit NAND
+ addresses
+Message-ID: <20121029195127.GA32749@harvey-pc.matrox.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20121026193410.GA21474@harvey-pc.matrox.com>
+Cc: Ivan Djelic <ivan.djelic@parrot.com>, linux-omap@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,33 +22,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch is an attempt to fix following compilation warning.
+In 16bit NAND mode the GPMC would send the address 0xNN as 0xFFNN
+instead of 0x00NN on the bus. The 0xFFs were actually uninitialized
+bits that were left unset in the GPMC command output register. The
+reason they weren't initialized in 16bit mode is that if the same code
+that writes to this register was used in 8bit mode then 2 commands
+would be output in 8bit mode. One for the low byte, and an extra 0x0
+command for the high byte. This commit uses writew if we're using
+16bit NAND. This commit also changes the high byte in the command
+output register, but they are ignored by NAND chips anyway.
 
-In file included from drivers/mtd/chips/cfi_cmdset_0001.c:35:0:
-drivers/mtd/chips/cfi_cmdset_0001.c: In function 'cfi_intelext_write_words':
-include/linux/mtd/map.h:331:11: warning: 'r.x[0]' may be used uninitialized in this function [-Wmaybe-uninitialized]
+Most chips seem fine with the extra 0xFFs, but the ONFI spec says
+otherwise.
 
-I could have used uninitialized_var() too, but didn't used it as the final else
-part of map_word_load() is missing. So there is a chance that it might be passed
-uninitialized. Better initialize to zero.
-
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Christopher Harvey <charvey@matrox.com>
 ---
- include/linux/mtd/map.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/omap2.c |   14 +++++++++-----
+ 1 files changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/mtd/map.h b/include/linux/mtd/map.h
-index 3595a02..56c7936 100644
---- a/include/linux/mtd/map.h
-+++ b/include/linux/mtd/map.h
-@@ -328,7 +328,7 @@ static inline int map_word_bitsset(struct map_info *map, map_word val1, map_word
- 
- static inline map_word map_word_load(struct map_info *map, const void *ptr)
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index 5b31386..ae6738f 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -225,16 +225,20 @@ static void omap_hwcontrol(struct mtd_info *mtd, int cmd, unsigned int ctrl)
  {
--	map_word r;
-+	map_word r = {{0} };
+ 	struct omap_nand_info *info = container_of(mtd,
+ 					struct omap_nand_info, mtd);
++	void __iomem *reg;
  
- 	if (map_bankwidth_is_1(map))
- 		r.x[0] = *(unsigned char *)ptr;
+ 	if (cmd != NAND_CMD_NONE) {
+ 		if (ctrl & NAND_CLE)
+-			writeb(cmd, info->reg.gpmc_nand_command);
+-
++			reg = info->reg.gpmc_nand_command;
+ 		else if (ctrl & NAND_ALE)
+-			writeb(cmd, info->reg.gpmc_nand_address);
+-
++			reg = info->reg.gpmc_nand_address;
+ 		else /* NAND_NCE */
+-			writeb(cmd, info->reg.gpmc_nand_data);
++			reg = info->reg.gpmc_nand_data;
++
++		if (info->nand.options & NAND_BUSWIDTH_16)
++			writew(cmd, reg);
++		else
++			writeb(cmd, reg);
+ 	}
+ }
+ 
 -- 
-1.7.12.rc2.18.g61b472e
+1.7.8.6
