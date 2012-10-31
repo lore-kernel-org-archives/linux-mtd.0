@@ -1,25 +1,20 @@
-Received: from li9-11.members.linode.com ([67.18.176.11] helo=imap.thunk.org)
+Received: from bear.ext.ti.com ([192.94.94.41])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TTOzT-0008Ct-4m
- for linux-mtd@lists.infradead.org; Wed, 31 Oct 2012 03:29:15 +0000
-Date: Tue, 30 Oct 2012 23:29:02 -0400
-From: Theodore Ts'o <tytso@mit.edu>
-To: Akinobu Mita <akinobu.mita@gmail.com>
-Subject: Re: [PATCH 1/9] random32: introduce random32_get_bytes() and
- prandom32_get_bytes()
-Message-ID: <20121031032902.GD9475@thunk.org>
-References: <1351408746-8623-1-git-send-email-akinobu.mita@gmail.com>
- <20121029203937.GC7098@thunk.org>
- <CAC5umyhje4oDtKzw6kYSXw99rVzZJOaeApfizGeDos3SnmUcjA@mail.gmail.com>
- <CAC5umyi=f+Q2Dxc4KS8nKd8uD3yvVNf8M9g1-nBt+6UsqSGHdg@mail.gmail.com>
+ id 1TTSfM-0007fm-SC
+ for linux-mtd@lists.infradead.org; Wed, 31 Oct 2012 07:24:45 +0000
+From: "Philip, Avinash" <avinashphilip@ti.com>
+To: <dwmw2@infradead.org>, <artem.bityutskiy@linux.intel.com>, <afzal@ti.com>,
+ <tony@atomide.com>, <broonie@opensource.wolfsonmicro.com>,
+ <rmk+kernel@arm.linux.org.uk>, <gregkh@linuxfoundation.org>
+Subject: [PATCH v2 0/3] mtd: nand: OMAP: ELM error correction support for BCH
+ ecc
+Date: Wed, 31 Oct 2012 12:38:24 +0530
+Message-ID: <1351667307-447-1-git-send-email-avinashphilip@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAC5umyi=f+Q2Dxc4KS8nKd8uD3yvVNf8M9g1-nBt+6UsqSGHdg@mail.gmail.com>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
- David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain
+Cc: linux-doc@vger.kernel.org, devicetree-discuss@lists.ozlabs.org,
+ nsekhar@ti.com, linux-kernel@vger.kernel.org, gururaja.hebbar@ti.com,
+ linux-mtd@lists.infradead.org, ivan.djelic@parrot.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,21 +24,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 30, 2012 at 08:12:39PM +0900, Akinobu Mita wrote:
-> >>
-> >> How about prandom32_get_bytes_state() and prandom32_get_bytes() instead?
-> >
-> > I agree with your suggestion.  I'll rename them and try again.
-> >
-> > By the way, should we also rename the existing random32() and
-> > prandom32() in the future?
+Support to use ELM as BCH 4 & 8 bit error correction module. Also performance
+enhancement by adding single shot read_page and write_page functions for the
+nand flashes with page size less than 4 KB.
 
-I suppose the other way to go is to just use random32 as the common
-prefix, and just have random32() and random32_state().  My concern was
-that people might assume that prandom32() and random32() might imply
-that only prandom32() was the one using a pseudo-random number
-generator.  This might be easier since there are large number of uses
-of random32() in the source tree, but only a relative few using
-prandom32().
+ELM module can be used to correct errors reported by BCH 4, 8 & 16 bit
+ECC scheme. For now only 4 & 8 bit support is added.
 
-    	   	     	    	     - Ted
+BCH 4 & 8 bit error detection support is already available in mainline
+kernel and works with software error correction.
+
+This series is based on [1] and tested with RFC: OMAP GPMC bindings
+patch series
+
+1. linux-next/20121030
+
+Changes since v1:
+	- Erased page is identified by checking byte [13/7] in read
+	  ecc. To filter out bit flips in OOB area, check 0 bits in
+	  the byte greater than 4.
+	- GPMC ecc engine configuration moves to omap2.c NAND driver.
+
+Philip, Avinash (3):
+  mtd: nand: omap2: Update nerrors using ecc.strength
+  mtd: devices: elm: Add support for ELM error correction
+  mtd: nand: omap2: Support for hardware BCH error correction
+
+ Documentation/devicetree/bindings/mtd/elm.txt |   18 +
+ drivers/mtd/devices/Makefile                  |    4 +-
+ drivers/mtd/devices/elm.c                     |  420 +++++++++++++++++++
+ drivers/mtd/nand/omap2.c                      |  542 +++++++++++++++++++++++--
+ include/linux/platform_data/elm.h             |   54 +++
+ include/linux/platform_data/mtd-nand-omap2.h  |    1 +
+ 6 files changed, 997 insertions(+), 42 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/elm.txt
+ create mode 100644 drivers/mtd/devices/elm.c
+ create mode 100644 include/linux/platform_data/elm.h
