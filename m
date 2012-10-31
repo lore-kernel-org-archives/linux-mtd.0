@@ -1,15 +1,27 @@
-Received: from protonic.xs4all.nl ([213.84.116.84])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TTVbd-0003CU-Ry
- for linux-mtd@lists.infradead.org; Wed, 31 Oct 2012 10:33:08 +0000
-From: Robin van der Gracht <robin@protonic.nl>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: nand: Take celltype into account when parsing Samsung
- ext. nand ID's
-Date: Wed, 31 Oct 2012 11:32:19 +0100
-Message-Id: <1351679539-30651-1-git-send-email-robin@protonic.nl>
-Cc: sjhill@realitydiluted.com, tglx@linutronix.de, computersforpeace@gmail.com,
- dwmw2@infradead.org, Robin van der Gracht <robin@protonic.nl>
+Received: from mail-ob0-f177.google.com ([209.85.214.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TTWrI-0007RO-98
+ for linux-mtd@lists.infradead.org; Wed, 31 Oct 2012 11:53:20 +0000
+Received: by mail-ob0-f177.google.com with SMTP id wd20so1233777obb.36
+ for <linux-mtd@lists.infradead.org>; Wed, 31 Oct 2012 04:53:19 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20121031032902.GD9475@thunk.org>
+References: <1351408746-8623-1-git-send-email-akinobu.mita@gmail.com>
+ <20121029203937.GC7098@thunk.org>
+ <CAC5umyhje4oDtKzw6kYSXw99rVzZJOaeApfizGeDos3SnmUcjA@mail.gmail.com>
+ <CAC5umyi=f+Q2Dxc4KS8nKd8uD3yvVNf8M9g1-nBt+6UsqSGHdg@mail.gmail.com>
+ <20121031032902.GD9475@thunk.org>
+Date: Wed, 31 Oct 2012 20:53:19 +0900
+Message-ID: <CAC5umyjO5t6VVeSQo0V=pA3HkZEzYfTg=iVhWRje5owBWXYC8g@mail.gmail.com>
+Subject: Re: [PATCH 1/9] random32: introduce random32_get_bytes() and
+ prandom32_get_bytes()
+From: Akinobu Mita <akinobu.mita@gmail.com>
+To: "Theodore Ts'o" <tytso@mit.edu>, Akinobu Mita <akinobu.mita@gmail.com>,
+ linux-kernel@vger.kernel.org,
+ akpm@linux-foundation.org, Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, David Woodhouse <dwmw2@infradead.org>,
+ linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,51 +31,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When using a Samsung nandflash with 2 level cells, the wrong page size,
-erase size and oobsize is calculated.
+2012/10/31 Theodore Ts'o <tytso@mit.edu>:
+> On Tue, Oct 30, 2012 at 08:12:39PM +0900, Akinobu Mita wrote:
+>> >>
+>> >> How about prandom32_get_bytes_state() and prandom32_get_bytes() instead?
+>> >
+>> > I agree with your suggestion.  I'll rename them and try again.
+>> >
+>> > By the way, should we also rename the existing random32() and
+>> > prandom32() in the future?
+>
+> I suppose the other way to go is to just use random32 as the common
+> prefix, and just have random32() and random32_state().  My concern was
+> that people might assume that prandom32() and random32() might imply
+> that only prandom32() was the one using a pseudo-random number
+> generator.  This might be easier since there are large number of uses
+> of random32() in the source tree, but only a relative few using
+> prandom32().
 
-I'm using a Samsung K9K8G08U0B nandflash (ID: 0xECD3519558). When booting the kernel i get:
-NAND device: Manufacturer ID: 0xec, Chip ID: 0xd3 (Samsung NAND 1GiB 3,3V 8-bit), page size: 4096, OOB size: 128
+Using random32 as the common prefix sounds good idea.  I'm going to
+prepare the following patch set:
 
-This is wrong. My nand flash has a pagesize of 2048 and oobsize 64.
-
-This patch should work for all Samsung 6 byte ID chips, found on:
-http://www.linux-mtd.infradead.org/nand-data/nanddata.html
-
-Signed-off-by: Robin van der Gracht <robin@protonic.nl>
----
- drivers/mtd/nand/nand_base.c |    3 ++-
- include/linux/mtd/nand.h     |    4 ++++
- 2 files changed, 6 insertions(+), 1 deletions(-)
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index ec6841d..e292074 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2989,7 +2989,8 @@ static void nand_decode_ext_id(struct mtd_info *mtd, struct nand_chip *chip,
- 	 * Check for ID length, cell type, and Hynix/Samsung ID to decide what
- 	 * to do.
- 	 */
--	if (id_len == 6 && id_data[0] == NAND_MFR_SAMSUNG) {
-+	if (id_len == 6 && id_data[0] == NAND_MFR_SAMSUNG &&
-+			(chip->cellinfo & NAND_CI_CELLTYPE_4LVL)) {
- 		/* Calc pagesize */
- 		mtd->writesize = 2048 << (extid & 0x03);
- 		extid >>= 2;
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 24e9159..3e3860e 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -227,6 +227,10 @@ typedef enum {
- /* Cell info constants */
- #define NAND_CI_CHIPNR_MSK	0x03
- #define NAND_CI_CELLTYPE_MSK	0x0C
-+#define NAND_CI_CELLTYPE_2LVL	0x00
-+#define NAND_CI_CELLTYPE_4LVL	0x04
-+#define NAND_CI_CELLTYPE_8LVL	0x08
-+#define NAND_CI_CELLTYPE_16LVL	0x0C
- 
- /* Keep gcc happy */
- struct nand_chip;
--- 
-1.7.5.4
+[patch 1] rename prandom32 to randome32_state
+[patch 2] introduce random32_get_bytes and random32_get_bytes_state
+[patch 3-] proliferate random32_get_bytes and random32_get_bytes_state
