@@ -1,25 +1,25 @@
-Received: from mail-ob0-f177.google.com ([209.85.214.177])
+Received: from li9-11.members.linode.com ([67.18.176.11] helo=imap.thunk.org)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TT9kQ-0005tX-RR
- for linux-mtd@lists.infradead.org; Tue, 30 Oct 2012 11:12:43 +0000
-Received: by mail-ob0-f177.google.com with SMTP id wd20so107846obb.36
- for <linux-mtd@lists.infradead.org>; Tue, 30 Oct 2012 04:12:39 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CAC5umyhje4oDtKzw6kYSXw99rVzZJOaeApfizGeDos3SnmUcjA@mail.gmail.com>
+ id 1TTOzT-0008Ct-4m
+ for linux-mtd@lists.infradead.org; Wed, 31 Oct 2012 03:29:15 +0000
+Date: Tue, 30 Oct 2012 23:29:02 -0400
+From: Theodore Ts'o <tytso@mit.edu>
+To: Akinobu Mita <akinobu.mita@gmail.com>
+Subject: Re: [PATCH 1/9] random32: introduce random32_get_bytes() and
+ prandom32_get_bytes()
+Message-ID: <20121031032902.GD9475@thunk.org>
 References: <1351408746-8623-1-git-send-email-akinobu.mita@gmail.com>
  <20121029203937.GC7098@thunk.org>
  <CAC5umyhje4oDtKzw6kYSXw99rVzZJOaeApfizGeDos3SnmUcjA@mail.gmail.com>
-Date: Tue, 30 Oct 2012 20:12:39 +0900
-Message-ID: <CAC5umyi=f+Q2Dxc4KS8nKd8uD3yvVNf8M9g1-nBt+6UsqSGHdg@mail.gmail.com>
-Subject: Re: [PATCH 1/9] random32: introduce random32_get_bytes() and
- prandom32_get_bytes()
-From: Akinobu Mita <akinobu.mita@gmail.com>
-To: "Theodore Ts'o" <tytso@mit.edu>, Akinobu Mita <akinobu.mita@gmail.com>,
- linux-kernel@vger.kernel.org,
- akpm@linux-foundation.org, Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>, David Woodhouse <dwmw2@infradead.org>,
- linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+ <CAC5umyi=f+Q2Dxc4KS8nKd8uD3yvVNf8M9g1-nBt+6UsqSGHdg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAC5umyi=f+Q2Dxc4KS8nKd8uD3yvVNf8M9g1-nBt+6UsqSGHdg@mail.gmail.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,43 +29,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2012/10/30 Akinobu Mita <akinobu.mita@gmail.com>:
-> 2012/10/30 Theodore Ts'o <tytso@mit.edu>:
->> On Sun, Oct 28, 2012 at 04:18:58PM +0900, Akinobu Mita wrote:
->>>  /**
->>> + *   prandom32_get_bytes - get the requested number of pseudo-random bytes
->>> + *   @state: pointer to state structure holding seeded state.
->>> + *   @buf: where to copy the pseudo-random bytes to
->>> + *   @bytes: the requested number of bytes
->>> + *
->>> + *   This is used for pseudo-randomness with no outside seeding.
->>> + *   For more random results, use random32_get_bytes().
->>> + */
->>> +
->>> +/**
->>> + *   random32_get_bytes - get the requested number of pseudo-random bytes
->>> + *   @buf: where to copy the pseudo-random bytes to
->>> + *   @bytes: the requested number of bytes
->>> + */
->>
->> This naming scheme is going to be very confusing.  If the function is
->> going to return a pseudo-random number, it *must* have a "prandom"
->> suffix.  Otherwise some kernel developer, somewhere, will get confused
->> between get_random_bytes() and random32_get_bytes(), and the result
->> may be a very embarassing security exposure.
->>
->> How about prandom32_get_bytes_state() and prandom32_get_bytes() instead?
->
-> I agree with your suggestion.  I'll rename them and try again.
->
-> By the way, should we also rename the existing random32() and
-> prandom32() in the future?
->
-> Specifically, rename random32() to prandom32(), and prandom32() to
-> prandom32_state().  As a result, it will cause a little confusion
-> between old and new prandom32(). But the number of arguments will
-> be changed from 3 to 2, so gcc can detect the misuse of prandom32().
+On Tue, Oct 30, 2012 at 08:12:39PM +0900, Akinobu Mita wrote:
+> >>
+> >> How about prandom32_get_bytes_state() and prandom32_get_bytes() instead?
+> >
+> > I agree with your suggestion.  I'll rename them and try again.
+> >
+> > By the way, should we also rename the existing random32() and
+> > prandom32() in the future?
 
-Oops, I intended to say "the number of arguments of prandom32() will be
-changed from 1 to 0". And I realized that the exisiting srandom32() also should
-be renamed to sprandom32().
+I suppose the other way to go is to just use random32 as the common
+prefix, and just have random32() and random32_state().  My concern was
+that people might assume that prandom32() and random32() might imply
+that only prandom32() was the one using a pseudo-random number
+generator.  This might be easier since there are large number of uses
+of random32() in the source tree, but only a relative few using
+prandom32().
+
+    	   	     	    	     - Ted
