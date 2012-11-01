@@ -1,37 +1,93 @@
-From: loanhouse@london.com (First Trust Capital Group Plc)
-Date: Thu, 18 Oct 2012 14:36:10 +0200
-Subject: Does your business/project need
-Message-ID: <mailman.26.1350580022.1458.linux-mtd@lists.infradead.org>
-To: linux-mtd@lists.infradead.org
-List-Id: linux-mtd.lists.infradead.org
+Received: from ch1ehsobe001.messaging.microsoft.com ([216.32.181.181]
+ helo=ch1outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TToMU-0005di-Gy
+ for linux-mtd@lists.infradead.org; Thu, 01 Nov 2012 06:34:43 +0000
+From: Huang Shijie <b32955@freescale.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH] mtd: cmdlinepart: fix the overflow of big mtd partitions
+Date: Thu, 1 Nov 2012 13:58:17 +0800
+Message-ID: <1351749497-31692-1-git-send-email-b32955@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, dedekind1@gmail.com
+List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+List-Post: <mailto:linux-mtd@lists.infradead.org>
+List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-RE: PROJECT FUNDING.
+When the kernel parses the following cmdline
 
-Hi There,
+	#mtdparts=gpmi-nand:16m(boot),16m(kernel),1g(home),4g(test),-(usr)
 
-Does your business/project need a FAST EASY injection of capital at reasonable rates? Do it right the first time with our financing solutions specialists.
+for a big nand chip Micron MT29F64G08AFAAAWP(8GB), we got the following wrong
+result:
 
-At First Trust Capital Group Plc brokerage firm, we have access to a combined International pool of nearly Half a Trillion in available Liquidity and if you have the right project, we have the right funding. We obtain financial commitments for loans, project funding, proof of funds, bank guarantees, letters of credit, standby letters of credit, collateral enhancements, credit enhancements, and funds for charities and non-profit organisations from domestic and international lending institutions which we would have approved for individuals, businesses, governments, corporations, and organisations.
+	.............................................
+		"mtd: partition size too small (0)"
+	.............................................
 
-These days everybody seems to have a project in need of funding but very few actually possess great intentions and innovative ideas. We only accept projects that we feel confident we can get funded and applications are obtained, reviewed and chosen selectively through this Invitation Only Proposal.
+We can not get any partition.
 
-We invite you to take this opportunity of an unbeatable fast easy program and if we accept your project, it will be because we think it has merit and stands a good chance of funding. You will need to ensure you have all the necessary documentation (Business Plan, Executive Summary and what have you) to support your application. Once your application and supporting material is submitted, you will be contacted for any clarifications or questions that will assist us in providing you the best financing the market has to offer.
+The "4g(test)" partition triggers a overflow of the "size". The memparse()
+returns 4g to the "size", but the size is "unsigned long" type, so a overflow
+occurs, the "size" becomes zero in the end.
 
-It is our primary objective to work with you and for you in a spirit of cooperation and direct communication to make this painless and a ?no surprises? and ?no delays? experience!
+This patch changes the "size"/"offset" to "unsigned long long" type,
+and replaces the UINT_MAX with ULLONG_MAX for macros SIZE_REMAINING and
+OFFSET_CONTINUOUS.
 
-You are advised to act now and submit your application for Commitment today however choosing not to act is a choice in itself but can cost you and your project dearly. Remember fortune smiles on those who act at the right place, right time and right now. We value quality over quantity and time is always of the essence.
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+ drivers/mtd/cmdlinepart.c |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
 
-For more information about this opportunity of funding, please call during office hours or send a fax or email.
-We will be happy to serve you.
-
-Thank you.
-Sincerely,
-Margaret Richmond (Ms),
-First Trust Capital Group Plc,
-40, Bank Street, Poplar, London,
-E14 5DS, United Kingdom.
-
-Please consider the environment before printing this email.
-******************* DISCLAIMER *******************
-P.S. This is strictly on the guidelines of CAN-SPAM act of 2003. We have clearly mentioned the source mail-id of this mail,also clearly mentioned the subject lines and they are in no way misleading in any form. We have found your mail address through our own efforts on the web search and not through any un-authentic way. If you find this mail unsolicited, please reply with "Remove" in the subject line and we will take care that you do not receive any further mail from us.
-This message contains confidential information and is intended only for the recipient. If you are not the named addressee you should not disseminate, distribute or copy this e-mail. Please notify the sender immediately if you have received this e-mail by mistake and delete this e-mail from your system.
+diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
+index 4baab3b..1cfd741 100644
+--- a/drivers/mtd/cmdlinepart.c
++++ b/drivers/mtd/cmdlinepart.c
+@@ -56,8 +56,8 @@
+ 
+ 
+ /* special size referring to all the remaining space in a partition */
+-#define SIZE_REMAINING UINT_MAX
+-#define OFFSET_CONTINUOUS UINT_MAX
++#define SIZE_REMAINING ULLONG_MAX
++#define OFFSET_CONTINUOUS ULLONG_MAX
+ 
+ struct cmdline_mtd_partition {
+ 	struct cmdline_mtd_partition *next;
+@@ -89,7 +89,7 @@ static struct mtd_partition * newpart(char *s,
+ 				      int extra_mem_size)
+ {
+ 	struct mtd_partition *parts;
+-	unsigned long size, offset = OFFSET_CONTINUOUS;
++	unsigned long long size, offset = OFFSET_CONTINUOUS;
+ 	char *name;
+ 	int name_len;
+ 	unsigned char *extra_mem;
+@@ -104,7 +104,7 @@ static struct mtd_partition * newpart(char *s,
+ 	} else {
+ 		size = memparse(s, &s);
+ 		if (size < PAGE_SIZE) {
+-			printk(KERN_ERR ERRP "partition size too small (%lx)\n", size);
++			printk(KERN_ERR ERRP "partition size too small (%llx)\n", size);
+ 			return ERR_PTR(-EINVAL);
+ 		}
+ 	}
+@@ -296,7 +296,7 @@ static int parse_cmdline_partitions(struct mtd_info *master,
+ 				    struct mtd_partition **pparts,
+ 				    struct mtd_part_parser_data *data)
+ {
+-	unsigned long offset;
++	unsigned long long offset;
+ 	int i, err;
+ 	struct cmdline_mtd_partition *part;
+ 	const char *mtd_id = master->name;
+-- 
+1.7.0.4
