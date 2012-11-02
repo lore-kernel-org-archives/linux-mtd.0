@@ -1,21 +1,29 @@
-Date: Fri, 2 Nov 2012 00:15:30 +0100
-From: Jan Kara <jack@suse.cz>
-To: Boaz Harrosh <bharrosh@panasas.com>
-Subject: Re: [PATCH 1/3] bdi: Track users that require stable page writes
-Message-ID: <20121101231530.GC31937@quack.suse.cz>
+Received: from mail-vc0-f177.google.com ([209.85.220.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TU5FB-0001k5-S4
+ for linux-mtd@lists.infradead.org; Fri, 02 Nov 2012 00:36:20 +0000
+Received: by mail-vc0-f177.google.com with SMTP id p16so3270917vcq.36
+ for <linux-mtd@lists.infradead.org>; Thu, 01 Nov 2012 17:36:16 -0700 (PDT)
+Sender: Jeff Layton <jlayton@poochiereds.net>
+Date: Thu, 1 Nov 2012 20:36:08 -0400
+From: Jeff Layton <jlayton@samba.org>
+To: "Darrick J. Wong" <darrick.wong@oracle.com>
+Subject: Re: [PATCH 3/3] fs: Fix remaining filesystems to wait for stable
+ page writeback
+Message-ID: <20121101203608.336aff49@corrin.poochiereds.net>
+In-Reply-To: <20121101224730.GJ19591@blackbox.djwong.org>
 References: <20121101075805.16153.64714.stgit@blackbox.djwong.org>
- <20121101075813.16153.94581.stgit@blackbox.djwong.org>
- <5092BDA2.6090001@panasas.com>
- <20121101185756.GI19591@blackbox.djwong.org>
- <5092FE22.30906@panasas.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5092FE22.30906@panasas.com>
+ <20121101075829.16153.92036.stgit@blackbox.djwong.org>
+ <5092C2CE.7070209@panasas.com>
+ <20121101162254.03dbbd9a@tlielax.poochiereds.net>
+ <20121101224730.GJ19591@blackbox.djwong.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Cc: lucho@ionkov.net, jack@suse.cz, neilb@suse.de, david@fromorbit.com,
  linux-kernel@vger.kernel.org, dhowells@redhat.com, linux-mm@kvack.org,
  linux-mtd@lists.infradead.org, linux-afs@lists.infradead.org,
- linux-cifs@vger.kernel.org, "Darrick J. Wong" <darrick.wong@oracle.com>,
+ linux-cifs@vger.kernel.org, Boaz Harrosh <bharrosh@panasas.com>,
  v9fs-developer@lists.sourceforge.net, linux-ext4@vger.kernel.org,
  sage@inktank.com, ericvh@gmail.com, mfasheh@suse.com, jlbec@evilplan.org,
  ceph-devel@vger.kernel.org, axboe@kernel.dk, tytso@mit.edu,
@@ -31,54 +39,146 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu 01-11-12 15:56:34, Boaz Harrosh wrote:
-> On 11/01/2012 11:57 AM, Darrick J. Wong wrote:
-> > On Thu, Nov 01, 2012 at 11:21:22AM -0700, Boaz Harrosh wrote:
-> >> On 11/01/2012 12:58 AM, Darrick J. Wong wrote:
-> >>> This creates a per-backing-device counter that tracks the number of users which
-> >>> require pages to be held immutable during writeout.  Eventually it will be used
-> >>> to waive wait_for_page_writeback() if nobody requires stable pages.
-> >>>
-> >>
-> >> There is two things I do not like:
-> >> 1. Please remind me why we need the users counter?
-> >>    If the device needs it, it will always be needed. The below 
-> >>    queue_unrequire_stable_pages call at blk_integrity_unregister
-> >>    only happens at device destruction time, no?
-> >>
-> >>    It was also said that maybe individual filesystems would need
-> >>    stable pages where other FSs using the same BDI do not. But
-> >>    since the FS is at the driving seat in any case, it can just
-> >>    do wait_for_writeback() regardless and can care less about
-> >>    the bdi flag and the other FSs. Actually all those FSs already
-> >>    do this this, and do not need any help. So this reason is
-> >>    mute.
-> > 
-> > The counter exists so that a filesystem can forcibly enable stable page writes
-> > even if the underlying device doesn't require it, because the generic fs/mm
-> > waiting only happens if stable_pages_required=1.  The idea here was to allow a
-> > filesystem that needs stable page writes for its own purposes (i.e. data block
-> > checksumming) to be able to enforce the requirement even if the disk doesn't
-> > care (or doesn't exist).
-> > 
-> 
-> But the filesystem does not need BDI flag to do that, It can just call
-> wait_on_page_writeback() directly and or any other waiting like cifs does,
-> and this way will not affect any other partitions of the same BDI. So this flag
-> is never needed by the FS, it is always to service the device.
-  But if they use some generic VFS functions, these VFS functions need to
-know whether to wait or not - e.g. grab_cache_page_write_begin() or
-block_page_mkwrite().
+On Thu, 1 Nov 2012 15:47:30 -0700
+"Darrick J. Wong" <darrick.wong@oracle.com> wrote:
 
-> > But maybe there are no such filesystems?
+> On Thu, Nov 01, 2012 at 04:22:54PM -0400, Jeff Layton wrote:
+> > On Thu, 1 Nov 2012 11:43:26 -0700
+> > Boaz Harrosh <bharrosh@panasas.com> wrote:
 > > 
+> > > On 11/01/2012 12:58 AM, Darrick J. Wong wrote:
+> > > > Fix up the filesystems that provide their own ->page_mkwrite handlers to
+> > > > provide stable page writes if necessary.
+> > > > 
+> > > > Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+> > > > ---
+> > > >  fs/9p/vfs_file.c |    1 +
+> > > >  fs/afs/write.c   |    4 ++--
+> > > >  fs/ceph/addr.c   |    1 +
+> > > >  fs/cifs/file.c   |    1 +
+> > > >  fs/ocfs2/mmap.c  |    1 +
+> > > >  fs/ubifs/file.c  |    4 ++--
+> > > >  6 files changed, 8 insertions(+), 4 deletions(-)
+> > > > 
+> > > > 
+> > > > diff --git a/fs/9p/vfs_file.c b/fs/9p/vfs_file.c
+> > > > index c2483e9..aa253f0 100644
+> > > > --- a/fs/9p/vfs_file.c
+> > > > +++ b/fs/9p/vfs_file.c
+> > > > @@ -620,6 +620,7 @@ v9fs_vm_page_mkwrite(struct vm_area_struct *vma, struct vm_fault *vmf)
+> > > >  	lock_page(page);
+> > > >  	if (page->mapping != inode->i_mapping)
+> > > >  		goto out_unlock;
+> > > > +	wait_on_stable_page_write(page);
+> > > >  
+> > > 
+> > > Good god thanks, yes please ;-)
+> > > 
+> > > >  	return VM_FAULT_LOCKED;
+> > > >  out_unlock:
+> > > > diff --git a/fs/afs/write.c b/fs/afs/write.c
+> > > > index 9aa52d9..39eb2a4 100644
+> > > > --- a/fs/afs/write.c
+> > > > +++ b/fs/afs/write.c
+> > > > @@ -758,7 +758,7 @@ int afs_page_mkwrite(struct vm_area_struct *vma, struct page *page)
+> > > 
+> > > afs, is it not a network filesystem? which means that it has it's own emulated none-block-device
+> > > BDI, registered internally. So if you do need stable pages someone should call
+> > > bdi_require_stable_pages()
+> > > 
+> > > But again since it is a network filesystem I don't see how it is needed, and/or it might be
+> > > taken care of already.
+> > > 
+> > > >  #ifdef CONFIG_AFS_FSCACHE
+> > > >  	fscache_wait_on_page_write(vnode->cache, page);
+> > > >  #endif
+> > > > -
+> > > > +	wait_on_stable_page_write(page);
+> > > >  	_leave(" = 0");
+> > > > -	return 0;
+> > > > +	return VM_FAULT_LOCKED;
+> > > >  }
+> > > > diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
+> > > 
+> > > CEPH for sure has it's own "emulated none-block-device BDI". This one is also
+> > > a pure networking filesystem.
+> > > 
+> > > And it already does what it needs to do with wait_on_writeback().
+> > > 
+> > > So i do not think you should touch CEPH
+> > > 
+> > > > index 6690269..e9734bf 100644
+> > > > --- a/fs/ceph/addr.c
+> > > > +++ b/fs/ceph/addr.c
+> > > > @@ -1208,6 +1208,7 @@ static int ceph_page_mkwrite(struct vm_area_struct *vma, struct vm_fault *vmf)
+> > > >  		set_page_dirty(page);
+> > > >  		up_read(&mdsc->snap_rwsem);
+> > > >  		ret = VM_FAULT_LOCKED;
+> > > > +		wait_on_stable_page_write(page);
+> > > >  	} else {
+> > > >  		if (ret == -ENOMEM)
+> > > >  			ret = VM_FAULT_OOM;
+> > > > diff --git a/fs/cifs/file.c b/fs/cifs/file.c
+> > > 
+> > > Cifs also self-BDI network filesystem, but
+> > > 
+> > > > index edb25b4..a8770bf 100644
+> > > > --- a/fs/cifs/file.c
+> > > > +++ b/fs/cifs/file.c
+> > > > @@ -2997,6 +2997,7 @@ cifs_page_mkwrite(struct vm_area_struct *vma, struct vm_fault *vmf)
+> > > >  	struct page *page = vmf->page;
+> > > >  
+> > > >  	lock_page(page);
+> > > 
+> > > It waits by locking the page, that's cifs naive way of waiting for writeback
+> > > 
+> > > > +	wait_on_stable_page_write(page);
+> > > 
+> > > Instead it could do better and not override page_mkwrite at all, and all it needs
+> > > to do is call bdi_require_stable_pages() at it's own registered BDI
+> > > 
+> > 
+> > Hmm...I don't know...
+> > 
+> > I've never been crazy about using the page lock for this, but in the
+> > absence of a better way to guarantee stable pages, it was what I ended
+> > up with at the time. cifs_writepages will hold the page lock until
+> > kernel_sendmsg returns. At that point the TCP layer will have copied
+> > off the page data so it's safe to release it.
+> > 
+> > With this change though, we're going to end up blocking until the
+> > writeback flag clears, right? And I think that will happen when the
+> > reply comes in? So, we'll end up blocking for much longer than is
+> > really necessary in page_mkwrite with this change.
 > 
-> Exactly, all the FSs that do care, already take care of it.
-  I'm not exactly sure whether FSs that do care didn't start to use generic
-functions which now always call wait_on_page_writeback() for quite a few
-releases...
+> That's a very good point to make-- network FSes can stop the stable-waiting
+> after the request is sent.
 
-								Honza
+Well, it depends...
+
+If the fs in question uses kernel_sendpage (or the equivalent) then the
+page will be inlined into the fraglist of the skb. If you use that,
+then you can't just drop it after the send. It's also possible that the
+fs doesn't care about page stability at all (like if signatures aren't
+being used).
+
+So I think you probably need to account for several different
+possibilities of "page stability lifetimes" here...
+
+> Can I interest you in a new page flag (PG_stable)
+> that indicates when a page has to be held for stable write?  Along with a
+> modification to wait_on_stable_page_write that uses the new PG_stable flag
+> instead of just writeback?  Then, you can clear PG_stable right after the
+> sendmsg() and release the page for further activity without having to overload
+> the page lock.
+> 
+> I wrote a patch that does exactly that as part of my work to defer the
+> integrity checksumming until the last possible instant.  However, I haven't
+> gotten that part to work yet, so I left the PG_stable patch out of this
+> submission.  On the other hand, it sounds like you could use it.
+> 
+
+That sounds much more suitable for CIFS and possibly for others too.
+
 -- 
-Jan Kara <jack@suse.cz>
-SUSE Labs, CR
+Jeff Layton <jlayton@samba.org>
