@@ -1,17 +1,17 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from bear.ext.ti.com ([192.94.94.41])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TUI6w-0004Rl-TO
- for linux-mtd@lists.infradead.org; Fri, 02 Nov 2012 14:20:39 +0000
+ id 1TUI97-0004XW-Hn
+ for linux-mtd@lists.infradead.org; Fri, 02 Nov 2012 14:22:56 +0000
 From: Murali Karicheri <m-karicheri2@ti.com>
 To: <grant.likely@secretlab.ca>, <rob.herring@calxeda.com>, <rob@landley.net>,
  <dwmw2@infradead.org>, <artem.bityutskiy@linux.intel.com>,
  <hs@denx.de>, <nsekhar@ti.com>, <mikedunn@newsguy.com>,
  <devicetree-discuss@lists.ozlabs.org>, <linux-doc@vger.kernel.org>,
  <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
- <linux-keystone@ti.com>
-Subject: [PATCH] mtd: davinci: add support for parition binding nodes
-Date: Fri, 2 Nov 2012 10:20:23 -0400
-Message-ID: <1351866023-15470-1-git-send-email-m-karicheri2@ti.com>
+ <linux-keystone@list.ti.com>
+Subject: [RESEND PATCH] mtd: davinci: add support for parition binding nodes
+Date: Fri, 2 Nov 2012 10:22:41 -0400
+Message-ID: <1351866161-15516-1-git-send-email-m-karicheri2@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: Murali Karicheri <m-karicheri2@ti.com>
