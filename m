@@ -1,16 +1,16 @@
-Received: from mail-da0-f49.google.com ([209.85.210.49])
+Received: from mail-pa0-f49.google.com ([209.85.220.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TUftf-0007dj-4C
- for linux-mtd@lists.infradead.org; Sat, 03 Nov 2012 15:44:32 +0000
-Received: by mail-da0-f49.google.com with SMTP id q27so1903540daj.36
- for <linux-mtd@lists.infradead.org>; Sat, 03 Nov 2012 08:44:30 -0700 (PDT)
+ id 1TUfth-0007dU-0J
+ for linux-mtd@lists.infradead.org; Sat, 03 Nov 2012 15:44:34 +0000
+Received: by mail-pa0-f49.google.com with SMTP id bi5so2835547pad.36
+ for <linux-mtd@lists.infradead.org>; Sat, 03 Nov 2012 08:44:32 -0700 (PDT)
 From: Akinobu Mita <akinobu.mita@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	akpm@linux-foundation.org
-Subject: [PATCH v2 07/11] mtd: mtd_oobtest: convert to use
+Subject: [PATCH v2 08/11] mtd: mtd_pagetest: convert to use
  random32_get_bytes_state()
-Date: Sun,  4 Nov 2012 00:43:38 +0900
-Message-Id: <1351957422-23243-8-git-send-email-akinobu.mita@gmail.com>
+Date: Sun,  4 Nov 2012 00:43:39 +0900
+Message-Id: <1351957422-23243-9-git-send-email-akinobu.mita@gmail.com>
 In-Reply-To: <1351957422-23243-1-git-send-email-akinobu.mita@gmail.com>
 References: <1351957422-23243-1-git-send-email-akinobu.mita@gmail.com>
 Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
@@ -35,25 +35,25 @@ Cc: linux-mtd@lists.infradead.org
 * v2
 - rename prandom32_get_bytes to random32_get_bytes_state
 
- drivers/mtd/tests/mtd_oobtest.c | 49 ++++++++++++++---------------------------
- 1 file changed, 16 insertions(+), 33 deletions(-)
+ drivers/mtd/tests/mtd_pagetest.c | 43 ++++++++++++----------------------------
+ 1 file changed, 13 insertions(+), 30 deletions(-)
 
-diff --git a/drivers/mtd/tests/mtd_oobtest.c b/drivers/mtd/tests/mtd_oobtest.c
-index ed9b628..ef42622 100644
---- a/drivers/mtd/tests/mtd_oobtest.c
-+++ b/drivers/mtd/tests/mtd_oobtest.c
+diff --git a/drivers/mtd/tests/mtd_pagetest.c b/drivers/mtd/tests/mtd_pagetest.c
+index 252ddb0..d95a16c 100644
+--- a/drivers/mtd/tests/mtd_pagetest.c
++++ b/drivers/mtd/tests/mtd_pagetest.c
 @@ -27,6 +27,7 @@
  #include <linux/mtd/mtd.h>
  #include <linux/slab.h>
  #include <linux/sched.h>
 +#include <linux/random.h>
  
- #define PRINT_PREF KERN_INFO "mtd_oobtest: "
+ #define PRINT_PREF KERN_INFO "mtd_pagetest: "
  
-@@ -46,26 +47,7 @@ static int use_offset;
- static int use_len;
- static int use_len_max;
- static int vary_offset;
+@@ -45,26 +46,7 @@ static int bufsize;
+ static int ebcnt;
+ static int pgcnt;
+ static int errcnt;
 -static unsigned long next = 1;
 -
 -static inline unsigned int simple_rand(void)
@@ -78,115 +78,94 @@ index ed9b628..ef42622 100644
  
  static int erase_eraseblock(int ebnum)
  {
-@@ -130,7 +112,7 @@ static int write_eraseblock(int ebnum)
+@@ -98,7 +80,7 @@ static int write_eraseblock(int ebnum)
+ 	size_t written;
  	loff_t addr = ebnum * mtd->erasesize;
  
- 	for (i = 0; i < pgcnt; ++i, addr += mtd->writesize) {
--		set_random_data(writebuf, use_len);
-+		random32_get_bytes_state(&rnd_state, writebuf, use_len);
- 		ops.mode      = MTD_OPS_AUTO_OOB;
- 		ops.len       = 0;
- 		ops.retlen    = 0;
-@@ -183,7 +165,7 @@ static int verify_eraseblock(int ebnum)
- 	loff_t addr = ebnum * mtd->erasesize;
+-	set_random_data(writebuf, mtd->erasesize);
++	random32_get_bytes_state(&rnd_state, writebuf, mtd->erasesize);
+ 	cond_resched();
+ 	err = mtd_write(mtd, addr, mtd->erasesize, &written, writebuf);
+ 	if (err || written != mtd->erasesize)
+@@ -124,7 +106,7 @@ static int verify_eraseblock(int ebnum)
+ 	for (i = 0; i < ebcnt && bbt[ebcnt - i - 1]; ++i)
+ 		addrn -= mtd->erasesize;
  
- 	for (i = 0; i < pgcnt; ++i, addr += mtd->writesize) {
--		set_random_data(writebuf, use_len);
-+		random32_get_bytes_state(&rnd_state, writebuf, use_len);
- 		ops.mode      = MTD_OPS_AUTO_OOB;
- 		ops.len       = 0;
- 		ops.retlen    = 0;
-@@ -275,7 +257,7 @@ static int verify_eraseblock_in_one_go(int ebnum)
- 	loff_t addr = ebnum * mtd->erasesize;
- 	size_t len = mtd->ecclayout->oobavail * pgcnt;
+-	set_random_data(writebuf, mtd->erasesize);
++	random32_get_bytes_state(&rnd_state, writebuf, mtd->erasesize);
+ 	for (j = 0; j < pgcnt - 1; ++j, addr += pgsize) {
+ 		/* Do a read to set the internal dataRAMs to different data */
+ 		err = mtd_read(mtd, addr0, bufsize, &read, twopages);
+@@ -160,7 +142,8 @@ static int verify_eraseblock(int ebnum)
+ 	}
+ 	/* Check boundary between eraseblocks */
+ 	if (addr <= addrn - pgsize - pgsize && !bbt[ebnum + 1]) {
+-		unsigned long oldnext = next;
++		struct rnd_state old_state = rnd_state;
++
+ 		/* Do a read to set the internal dataRAMs to different data */
+ 		err = mtd_read(mtd, addr0, bufsize, &read, twopages);
+ 		if (mtd_is_bitflip(err))
+@@ -188,13 +171,13 @@ static int verify_eraseblock(int ebnum)
+ 			return err;
+ 		}
+ 		memcpy(boundary, writebuf + mtd->erasesize - pgsize, pgsize);
+-		set_random_data(boundary + pgsize, pgsize);
++		random32_get_bytes_state(&rnd_state, boundary + pgsize, pgsize);
+ 		if (memcmp(twopages, boundary, bufsize)) {
+ 			printk(PRINT_PREF "error: verify failed at %#llx\n",
+ 			       (long long)addr);
+ 			errcnt += 1;
+ 		}
+-		next = oldnext;
++		rnd_state = old_state;
+ 	}
+ 	return err;
+ }
+@@ -326,7 +309,7 @@ static int erasecrosstest(void)
+ 		return err;
  
--	set_random_data(writebuf, len);
-+	random32_get_bytes_state(&rnd_state, writebuf, len);
- 	ops.mode      = MTD_OPS_AUTO_OOB;
- 	ops.len       = 0;
- 	ops.retlen    = 0;
-@@ -426,12 +408,12 @@ static int __init mtd_oobtest_init(void)
- 	if (err)
- 		goto out;
+ 	printk(PRINT_PREF "writing 1st page of block %d\n", ebnum);
+-	set_random_data(writebuf, pgsize);
++	random32_get_bytes_state(&rnd_state, writebuf, pgsize);
+ 	strcpy(writebuf, "There is no data like this!");
+ 	err = mtd_write(mtd, addr0, pgsize, &written, writebuf);
+ 	if (err || written != pgsize) {
+@@ -359,7 +342,7 @@ static int erasecrosstest(void)
+ 		return err;
  
--	simple_srand(1);
-+	srandom32_state(&rnd_state, 1);
- 	err = write_whole_device();
- 	if (err)
- 		goto out;
+ 	printk(PRINT_PREF "writing 1st page of block %d\n", ebnum);
+-	set_random_data(writebuf, pgsize);
++	random32_get_bytes_state(&rnd_state, writebuf, pgsize);
+ 	strcpy(writebuf, "There is no data like this!");
+ 	err = mtd_write(mtd, addr0, pgsize, &written, writebuf);
+ 	if (err || written != pgsize) {
+@@ -417,7 +400,7 @@ static int erasetest(void)
+ 		return err;
  
--	simple_srand(1);
-+	srandom32_state(&rnd_state, 1);
- 	err = verify_all_eraseblocks();
- 	if (err)
- 		goto out;
-@@ -446,13 +428,13 @@ static int __init mtd_oobtest_init(void)
- 	if (err)
- 		goto out;
- 
--	simple_srand(3);
-+	srandom32_state(&rnd_state, 3);
- 	err = write_whole_device();
- 	if (err)
- 		goto out;
- 
- 	/* Check all eraseblocks */
--	simple_srand(3);
-+	srandom32_state(&rnd_state, 3);
- 	printk(PRINT_PREF "verifying all eraseblocks\n");
- 	for (i = 0; i < ebcnt; ++i) {
- 		if (bbt[i])
-@@ -481,7 +463,7 @@ static int __init mtd_oobtest_init(void)
- 	use_len = mtd->ecclayout->oobavail;
- 	use_len_max = mtd->ecclayout->oobavail;
- 	vary_offset = 1;
--	simple_srand(5);
-+	srandom32_state(&rnd_state, 5);
- 
- 	err = write_whole_device();
- 	if (err)
-@@ -492,7 +474,7 @@ static int __init mtd_oobtest_init(void)
- 	use_len = mtd->ecclayout->oobavail;
- 	use_len_max = mtd->ecclayout->oobavail;
- 	vary_offset = 1;
--	simple_srand(5);
-+	srandom32_state(&rnd_state, 5);
- 	err = verify_all_eraseblocks();
- 	if (err)
- 		goto out;
-@@ -651,7 +633,7 @@ static int __init mtd_oobtest_init(void)
- 		goto out;
+ 	printk(PRINT_PREF "writing 1st page of block %d\n", ebnum);
+-	set_random_data(writebuf, pgsize);
++	random32_get_bytes_state(&rnd_state, writebuf, pgsize);
+ 	err = mtd_write(mtd, addr0, pgsize, &written, writebuf);
+ 	if (err || written != pgsize) {
+ 		printk(PRINT_PREF "error: write failed at %#llx\n",
+@@ -565,7 +548,7 @@ static int __init mtd_pagetest_init(void)
+ 	printk(PRINT_PREF "erased %u eraseblocks\n", i);
  
  	/* Write all eraseblocks */
--	simple_srand(11);
-+	srandom32_state(&rnd_state, 11);
- 	printk(PRINT_PREF "writing OOBs of whole device\n");
- 	for (i = 0; i < ebcnt - 1; ++i) {
- 		int cnt = 2;
-@@ -661,7 +643,7 @@ static int __init mtd_oobtest_init(void)
- 			continue;
- 		addr = (i + 1) * mtd->erasesize - mtd->writesize;
- 		for (pg = 0; pg < cnt; ++pg) {
--			set_random_data(writebuf, sz);
-+			random32_get_bytes_state(&rnd_state, writebuf, sz);
- 			ops.mode      = MTD_OPS_AUTO_OOB;
- 			ops.len       = 0;
- 			ops.retlen    = 0;
-@@ -683,12 +665,13 @@ static int __init mtd_oobtest_init(void)
+-	simple_srand(1);
++	srandom32_state(&rnd_state, 1);
+ 	printk(PRINT_PREF "writing whole device\n");
+ 	for (i = 0; i < ebcnt; ++i) {
+ 		if (bbt[i])
+@@ -580,7 +563,7 @@ static int __init mtd_pagetest_init(void)
  	printk(PRINT_PREF "written %u eraseblocks\n", i);
  
  	/* Check all eraseblocks */
--	simple_srand(11);
-+	srandom32_state(&rnd_state, 11);
+-	simple_srand(1);
++	srandom32_state(&rnd_state, 1);
  	printk(PRINT_PREF "verifying all eraseblocks\n");
- 	for (i = 0; i < ebcnt - 1; ++i) {
- 		if (bbt[i] || bbt[i + 1])
- 			continue;
--		set_random_data(writebuf, mtd->ecclayout->oobavail * 2);
-+		random32_get_bytes_state(&rnd_state, writebuf,
-+					mtd->ecclayout->oobavail * 2);
- 		addr = (i + 1) * mtd->erasesize - mtd->writesize;
- 		ops.mode      = MTD_OPS_AUTO_OOB;
- 		ops.len       = 0;
+ 	for (i = 0; i < ebcnt; ++i) {
+ 		if (bbt[i])
 -- 
 1.7.11.7
