@@ -1,18 +1,19 @@
 Received: from mail-pb0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TUftb-0007eR-Il
- for linux-mtd@lists.infradead.org; Sat, 03 Nov 2012 15:44:28 +0000
-Received: by mail-pb0-f49.google.com with SMTP id xa7so2829098pbc.36
- for <linux-mtd@lists.infradead.org>; Sat, 03 Nov 2012 08:44:26 -0700 (PDT)
+ id 1TUftd-0007eB-7A
+ for linux-mtd@lists.infradead.org; Sat, 03 Nov 2012 15:44:30 +0000
+Received: by mail-pb0-f49.google.com with SMTP id xa7so2829087pbc.36
+ for <linux-mtd@lists.infradead.org>; Sat, 03 Nov 2012 08:44:29 -0700 (PDT)
 From: Akinobu Mita <akinobu.mita@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	akpm@linux-foundation.org
-Subject: [PATCH v2 05/11] ubifs: use random32_get_bytes
-Date: Sun,  4 Nov 2012 00:43:36 +0900
-Message-Id: <1351957422-23243-6-git-send-email-akinobu.mita@gmail.com>
+Subject: [PATCH v2 06/11] mtd: mtd_nandecctest: use random32_get_bytes instead
+ of get_random_bytes()
+Date: Sun,  4 Nov 2012 00:43:37 +0900
+Message-Id: <1351957422-23243-7-git-send-email-akinobu.mita@gmail.com>
 In-Reply-To: <1351957422-23243-1-git-send-email-akinobu.mita@gmail.com>
 References: <1351957422-23243-1-git-send-email-akinobu.mita@gmail.com>
-Cc: Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
  Akinobu Mita <akinobu.mita@gmail.com>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,44 +24,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This also converts filling memory loop to use memset.
+Using random32_get_bytes() is enough.  Because this data is only used
+for testing, not used for cryptographic use.
 
 Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: linux-mtd@lists.infradead.org
 ---
 no change from v1
 
- fs/ubifs/debug.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ drivers/mtd/tests/mtd_nandecctest.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
-index 6291163..f3e4a25 100644
---- a/fs/ubifs/debug.c
-+++ b/fs/ubifs/debug.c
-@@ -2560,7 +2560,7 @@ static int power_cut_emulated(struct ubifs_info *c, int lnum, int write)
- static int corrupt_data(const struct ubifs_info *c, const void *buf,
- 			unsigned int len)
- {
--	unsigned int from, to, i, ffs = chance(1, 2);
-+	unsigned int from, to, ffs = chance(1, 2);
- 	unsigned char *p = (void *)buf;
+diff --git a/drivers/mtd/tests/mtd_nandecctest.c b/drivers/mtd/tests/mtd_nandecctest.c
+index a5fb9b0..0ddcbec 100644
+--- a/drivers/mtd/tests/mtd_nandecctest.c
++++ b/drivers/mtd/tests/mtd_nandecctest.c
+@@ -253,7 +253,7 @@ static int nand_ecc_test_run(const size_t size)
+ 		goto error;
+ 	}
  
- 	from = random32() % (len + 1);
-@@ -2571,11 +2571,9 @@ static int corrupt_data(const struct ubifs_info *c, const void *buf,
- 		   ffs ? "0xFFs" : "random data");
+-	get_random_bytes(correct_data, size);
++	random32_get_bytes(correct_data, size);
+ 	__nand_calculate_ecc(correct_data, size, correct_ecc);
  
- 	if (ffs)
--		for (i = from; i < to; i++)
--			p[i] = 0xFF;
-+		memset(p + from, 0xFF, to - from);
- 	else
--		for (i = from; i < to; i++)
--			p[i] = random32() % 0x100;
-+		random32_get_bytes(p + from, to - from);
- 
- 	return to;
- }
+ 	for (i = 0; i < ARRAY_SIZE(nand_ecc_test); i++) {
 -- 
 1.7.11.7
