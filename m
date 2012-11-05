@@ -1,14 +1,17 @@
-Received: from blu0-omc1-s13.blu0.hotmail.com ([65.55.116.24])
+Received: from mail.ispras.ru ([83.149.199.43])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TVRKD-0005lZ-94
- for linux-mtd@lists.infradead.org; Mon, 05 Nov 2012 18:23:06 +0000
-Message-ID: <BLU0-SMTP308EDE3F432519B05D37A0B8640@phx.gbl>
-From: Bill Pringlemeir <bpringle@sympatico.ca>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/2] ubi-tests/integ: Add PRIxxx_t defines.
-Date: Mon, 5 Nov 2012 13:04:33 -0500
-MIME-Version: 1.0
-Content-Type: text/plain
+ id 1TVRbJ-0008BP-7T
+ for linux-mtd@lists.infradead.org; Mon, 05 Nov 2012 18:40:47 +0000
+From: Alexey Khoroshilov <khoroshilov@ispras.ru>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] jffs2: Make handling of erase_completion_lock consistent in
+ jffs2_do_reserve_space()
+Date: Mon,  5 Nov 2012 22:40:14 +0400
+Message-Id: <1352140814-25208-1-git-send-email-khoroshilov@ispras.ru>
+Cc: ldv-project@linuxtesting.org,
+ Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Alexey Khoroshilov <khoroshilov@ispras.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,50 +21,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Message-ID: <87ehk7nc1l.fsf@sympatico.ca>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/23.2 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
---text follows this line--
-I doubt this is the 'correct' solution, but it does show the issue.
+Users of jffs2_do_reserve_space() expect they still held
+erase_completion_lock after call to it. But there is a path
+where jffs2_do_reserve_space() leaves erase_completion_lock unlocked.
+The patch fixes it.
 
-common.h is shadowed by local copy of the same name.
-Also include inttype.h in case the c library does not.
+Found by Linux Driver Verification project (linuxtesting.org).
 
-Signed-off-by: Bill Pringlemeir <bpringlemeir@nbsps.com>
+Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
 ---
- tests/ubi-tests/integ.c |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ fs/jffs2/nodemgmt.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/tests/ubi-tests/integ.c b/tests/ubi-tests/integ.c
-index e48f533..9b1347f 100644
---- a/tests/ubi-tests/integ.c
-+++ b/tests/ubi-tests/integ.c
-@@ -7,6 +7,7 @@
- #include <stdlib.h>
- #include <stdio.h>
- #include <stdint.h>
-+#include <inttypes.h>
- #include <string.h>
- #include <errno.h>
+diff --git a/fs/jffs2/nodemgmt.c b/fs/jffs2/nodemgmt.c
+index 0c96eb5..0331072 100644
+--- a/fs/jffs2/nodemgmt.c
++++ b/fs/jffs2/nodemgmt.c
+@@ -417,14 +417,16 @@ static int jffs2_do_reserve_space(struct jffs2_sb_info *c, uint32_t minsize,
+ 			spin_unlock(&c->erase_completion_lock);
  
-@@ -16,6 +17,17 @@
- #include "libubi.h"
- #include "common.h"
+ 			ret = jffs2_prealloc_raw_node_refs(c, jeb, 1);
+-			if (ret)
+-				return ret;
++
+ 			/* Just lock it again and continue. Nothing much can change because
+ 			   we hold c->alloc_sem anyway. In fact, it's not entirely clear why
+ 			   we hold c->erase_completion_lock in the majority of this function...
+ 			   but that's a question for another (more caffeine-rich) day. */
+ 			spin_lock(&c->erase_completion_lock);
  
-+/* Duplicate: of common.h in top 'include'. */
-+/* Define a print format specifier for off_t */
-+#ifdef __USE_FILE_OFFSET64
-+#define PRIxoff_t PRIx64
-+#define PRIdoff_t PRId64
-+#else
-+#define PRIxoff_t "l"PRIx32
-+#define PRIdoff_t "l"PRId32
-+#endif
++			if (ret)
++				return ret;
 +
-+
- struct erase_block_info;
- struct volume_info;
- struct ubi_device_info;
+ 			waste = jeb->free_size;
+ 			jffs2_link_node_ref(c, jeb,
+ 					    (jeb->offset + c->sector_size - waste) | REF_OBSOLETE,
 -- 
-1.7.10.4
+1.7.9.5
