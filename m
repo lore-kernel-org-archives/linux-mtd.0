@@ -1,17 +1,15 @@
-Received: from mail-bk0-f49.google.com ([209.85.214.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TVNEW-0005uZ-Rs
- for linux-mtd@lists.infradead.org; Mon, 05 Nov 2012 14:00:59 +0000
-Received: by mail-bk0-f49.google.com with SMTP id j4so1941062bkw.36
- for <linux-mtd@lists.infradead.org>; Mon, 05 Nov 2012 06:00:53 -0800 (PST)
-Sender: Castet Matthieu <matthieu.castet@gmail.com>
-From: Matthieu CASTET <matthieu.castet@parrot.com>
+Received: from blu0-omc1-s6.blu0.hotmail.com ([65.55.116.17])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TVRHy-0005fd-5r
+ for linux-mtd@lists.infradead.org; Mon, 05 Nov 2012 18:20:47 +0000
+Message-ID: <BLU0-SMTP90A53F512B3AC4BEA5374B8640@phx.gbl>
+From: Bill Pringlemeir <bpringle@sympatico.ca>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH] nand_wait : warn if the nand is busy on exit
-Date: Mon,  5 Nov 2012 15:00:44 +0100
-Message-Id: <1352124044-31627-1-git-send-email-matthieu.castet@parrot.com>
-Cc: Ivan Djelic <ivan.djelic@parrot.com>,
- Matthieu CASTET <matthieu.castet@parrot.com>, dedekind1@gmail.com
+Subject: [PATCH 1/2] ubi-test/io_update: ubi_leb_change_start() no longer uses
+ 'dtype'.
+Date: Mon, 5 Nov 2012 12:38:36 -0500
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,38 +19,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch allow to detect buggy driver/hardware with
-bad RnB (dev_ready) management or when timeout occurs in polling mode.
 
-This works when dev_ready is set or not set.
-There are 2 methods to wait for an erase/program command completion:
+This will not compile for me (due to bit rot?).  Maybe the program is
+never used?
 
-1. Wait until nand RnB pin goes high (that's what chip->dev_ready usually does)
-2. Poll the device: send a status (0x70) command and read status byte in a loop
-   until bit NAND_STATUS_READY is set
-
-In all cases, you should send a status command after completion, to check if
-the operation was successful. And if the operation completed, the status should
-have bit NAND_STATUS_READY set.
-
-Signed-off-by: Matthieu CASTET <matthieu.castet@parrot.com>
-CC: Ivan Djelic <ivan.djelic@parrot.com>
+Signed-off-by: Bill Pringlemeir <bpringlemeir@nbsps.com>
 ---
- drivers/mtd/nand/nand_base.c |    2 ++
- 1 file changed, 2 insertions(+)
+ tests/ubi-tests/io_update.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index ee49fe2..5894c2c 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -865,6 +865,8 @@ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
- 	led_trigger_event(nand_led_trigger, LED_OFF);
+diff --git a/tests/ubi-tests/io_update.c b/tests/ubi-tests/io_update.c
+index e8f0986..ec109e0 100644
+--- a/tests/ubi-tests/io_update.c
++++ b/tests/ubi-tests/io_update.c
+@@ -102,8 +102,7 @@ static int test_update1(struct ubi_vol_info *vol_info, int leb_change)
+ 		test_len = total_len - (rand() % (total_len / 10));
  
- 	status = (int)chip->read_byte(mtd);
-+	/* This can happen if in case of timeout or buggy dev_ready */
-+	WARN_ON(!(status & NAND_STATUS_READY));
- 	return status;
- }
- 
+ 		if (leb_change) {
+-			if (ubi_leb_change_start(libubi, fd, 0, test_len,
+-						 UBI_SHORTTERM)) {
++			if (ubi_leb_change_start(libubi, fd, 0, test_len)) {
+ 				failed("ubi_update_start");
+ 				goto close;
+ 			}
 -- 
 1.7.10.4
