@@ -1,13 +1,20 @@
 From: Arnd Bergmann <arnd@arndb.de>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 2/8] mtd: diskonchip: use inline functions for DocRead/DocWrite
-Date: Tue,  6 Nov 2012 22:55:27 +0100
-Message-Id: <1352238933-4886-3-git-send-email-arnd@arndb.de>
-In-Reply-To: <1352238933-4886-1-git-send-email-arnd@arndb.de>
-References: <1352238933-4886-1-git-send-email-arnd@arndb.de>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Arnd Bergmann <arnd@arndb.de>, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 0/8] warning fixes for v3.7-rc4
+Date: Tue,  6 Nov 2012 22:55:25 +0100
+Message-Id: <1352238933-4886-1-git-send-email-arnd@arndb.de>
+Cc: Peter Zijlstra <a.p.zijlstra@chello.nl>,
+ Mark Langsdorf <mark.langsdorf@calxeda.com>, Arnd Bergmann <arnd@arndb.de>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Rahul Sharma <rahul.sharma@samsung.com>,
+ Peter Boonstoppel <pboonstoppel@nvidia.com>,
+ Rob Herring <rob.herring@calxeda.com>, Jeff Garzik <jgarzik@redhat.com>,
+ Inki Dae <inki.dae@samsung.com>, Will Newton <will.newton@imgtec.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ Thomas Abraham <thomas.abraham@linaro.org>, linux-mtd@lists.infradead.org,
+ Rob Clark <rob@ti.com>, Chris Ball <cjb@laptop.org>,
+ David Woodhouse <dwmw2@infradead.org>, Ingo Molnar <mingo@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, Paul Turner <pjt@google.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,69 +24,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The diskonchip drivers traditionally use home-grown macros for
-doing MMIO accesses, which cause a lot of warnings, at least
-on ARM machines:
+Hi everyone,
 
-drivers/mtd/devices/doc2000.c: In function 'doc_write':
-drivers/mtd/devices/doc2000.c:854:5: warning: value computed is not used [-Wunused-value]
-drivers/mtd/devices/doc2000.c: In function 'doc_erase':
-drivers/mtd/devices/doc2000.c:1123:5: warning: value computed is not used [-Wunused-value
-drivers/mtd/nand/diskonchip.c: In function 'doc2000_read_byte':
-drivers/mtd/nand/diskonchip.c:318:3: warning: value computed is not used [-Wunused-value]
+Here are a few patches for remaining or newly introduced build
+warnings in the ARM defconfig builds. The MTD patches have
+been around for some time, but I had not submitted them because
+I had to redo most of them first.
 
-A nicer solution is to use the architecture-defined I/O accessors.
-Here, we use the __raw_readl/__raw_writel style, instead of the
-proper readl/writel ones, in order to preserve the odd semantics
-of the existing macros that have their own barrier implementation
-and no byte swap. It would be nice to fix this properly and use
-the correct accessors as well as make the word size independent
-from the architecture, but I guess the hardware is obsolete
-enough that we should better not mess the driver an more than
-necessary.
+The only build error in this series is the exynos drm patch,
+which is a very recent regression.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Cc: David Woodhouse <dwmw2@infradead.org>
+Please apply in to the respective maintainer trees.
+
+	Arnd
+
+Arnd Bergmann (8):
+  mtd: diskonchip: don't warn about ARM architecture
+  mtd: diskonchip: use inline functions for DocRead/DocWrite
+  mtd: uninitialized variable warning in map.h
+  sched: warnings in kernel/sched/fair.c
+  mmc: dw_mmc: fix modular build for exynos back-end
+  mmc: dw_mmc: constify dw_mci_idmac_ops in exynos back-end
+  ata: highbank: mark ahci_highbank_probe as __devinit
+  drm/exynos: don't include plat/gpio-cfg.h
+
+ drivers/ata/sata_highbank.c          |    2 +-
+ drivers/gpu/drm/exynos/exynos_hdmi.c |    1 -
+ drivers/mmc/host/dw_mmc-exynos.c     |    8 ++++----
+ drivers/mmc/host/dw_mmc-pltfm.c      |    2 +-
+ drivers/mmc/host/dw_mmc-pltfm.h      |    2 +-
+ drivers/mmc/host/dw_mmc.c            |    2 +-
+ drivers/mtd/devices/docprobe.c       |    2 --
+ drivers/mtd/nand/diskonchip.c        |    2 --
+ include/linux/mmc/dw_mmc.h           |    4 ++--
+ include/linux/mtd/doc2000.h          |   22 ++++++++++++++++++----
+ include/linux/mtd/map.h              |    2 +-
+ kernel/sched/fair.c                  |    2 +-
+ 12 files changed, 30 insertions(+), 21 deletions(-)
+
+
 Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Cc: Chris Ball <cjb@laptop.org>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Inki Dae <inki.dae@samsung.com>
+Cc: Jeff Garzik <jgarzik@redhat.com>
+Cc: Kyungmin Park <kyungmin.park@samsung.com>
+Cc: Mark Langsdorf <mark.langsdorf@calxeda.com>
+Cc: Paul Turner <pjt@google.com>
+Cc: Peter Boonstoppel <pboonstoppel@nvidia.com>
+Cc: Peter Zijlstra <a.p.zijlstra@chello.nl>
+Cc: Rahul Sharma <rahul.sharma@samsung.com>
+Cc: Rob Clark <rob@ti.com>
+Cc: Rob Herring <rob.herring@calxeda.com>
+Cc: Thomas Abraham <thomas.abraham@linaro.org>
+Cc: Will Newton <will.newton@imgtec.com>
 Cc: linux-mtd@lists.infradead.org
----
- include/linux/mtd/doc2000.h |   22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
-
-diff --git a/include/linux/mtd/doc2000.h b/include/linux/mtd/doc2000.h
-index 0f6fea7..407d1e5 100644
---- a/include/linux/mtd/doc2000.h
-+++ b/include/linux/mtd/doc2000.h
-@@ -92,12 +92,26 @@
-  * Others use readb/writeb
-  */
- #if defined(__arm__)
--#define ReadDOC_(adr, reg)      ((unsigned char)(*(volatile __u32 *)(((unsigned long)adr)+((reg)<<2))))
--#define WriteDOC_(d, adr, reg)  do{ *(volatile __u32 *)(((unsigned long)adr)+((reg)<<2)) = (__u32)d; wmb();} while(0)
-+static inline u8 ReadDOC_(u32 __iomem *addr, unsigned long reg)
-+{
-+	return __raw_readl(addr + reg);
-+}
-+static inline void WriteDOC_(u8 data, u32 __iomem *addr, unsigned long reg)
-+{
-+	__raw_writel(data, addr + reg);
-+	wmb();
-+}
- #define DOC_IOREMAP_LEN 0x8000
- #elif defined(__ppc__)
--#define ReadDOC_(adr, reg)      ((unsigned char)(*(volatile __u16 *)(((unsigned long)adr)+((reg)<<1))))
--#define WriteDOC_(d, adr, reg)  do{ *(volatile __u16 *)(((unsigned long)adr)+((reg)<<1)) = (__u16)d; wmb();} while(0)
-+static inline u8 ReadDOC_(u16 __iomem *addr, unsigned long reg)
-+{
-+	return __raw_readw(addr + reg);
-+}
-+static inline void WriteDOC_(u8 data, u16 __iomem *addr, unsigned long reg)
-+{
-+	__raw_writew(data, addr + reg);
-+	wmb();
-+}
- #define DOC_IOREMAP_LEN 0x4000
- #else
- #define ReadDOC_(adr, reg)      readb((void __iomem *)(adr) + (reg))
 -- 
 1.7.10
