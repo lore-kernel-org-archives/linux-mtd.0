@@ -1,25 +1,22 @@
-Received: from mho-04-ewr.mailhop.org ([204.13.248.74]
- helo=mho-02-ewr.mailhop.org)
+Received: from arroyo.ext.ti.com ([192.94.94.40])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TVo4X-000206-5y
- for linux-mtd@lists.infradead.org; Tue, 06 Nov 2012 18:40:26 +0000
-Date: Tue, 6 Nov 2012 10:40:20 -0800
-From: Tony Lindgren <tony@atomide.com>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-Subject: Re: [PATCH 3/3] omap3 nand : use NAND_BUSWIDTH_AUTO
-Message-ID: <20121106184019.GI6801@atomide.com>
-References: <1352199105-30215-1-git-send-email-matthieu.castet@parrot.com>
- <1352199105-30215-3-git-send-email-matthieu.castet@parrot.com>
- <50990473.2090300@compulab.co.il> <50993F16.8070908@parrot.com>
+ id 1TVpqZ-0002q0-70
+ for linux-mtd@lists.infradead.org; Tue, 06 Nov 2012 20:34:08 +0000
+Message-ID: <5099743B.3040804@ti.com>
+Date: Tue, 6 Nov 2012 14:34:03 -0600
+From: Jon Hunter <jon-hunter@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+Subject: Re: [PATCH 1/3] omap gpmc : add support of setting CYCLE2CYCLEDELAY
+ and BUSTURNAROUND
+References: <1352220277-4251-1-git-send-email-matthieu.castet@parrot.com>
+ <5099478A.50901@ti.com> <5099504A.5060505@parrot.com>
+In-Reply-To: <5099504A.5060505@parrot.com>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <50993F16.8070908@parrot.com>
 Cc: Afzal Mohammed <afzal@ti.com>,
  "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Igor Grinberg <grinberg@compulab.co.il>,
  "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,47 +27,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Matthieu CASTET <matthieu.castet@parrot.com> [121106 08:49]:
-> Igor Grinberg a Ã©crit :
-> > Cc: Tony Lindgren, Afzal Mohammed,
-> > 
-> > On 11/06/12 12:51, Matthieu CASTET wrote:
-> >> This allow to clean the omap nand driver that were trying in x8 and x16 bits mode.
-> >>
-> >> This also make work onfi detection on beagleboard :
-> >>
-> >> Before :
-> >> [    1.954803] NAND device: Manufacturer ID: 0x2c, Chip ID: 0xba (Micron NAND 256MiB 1,8V 16-bit), page size: 2048, OOB size: 64
-> >>
-> >> After :
-> >> [    1.914825] ONFI param page 0 valid
-> >> [    1.919158] ONFI flash detected
-> >> [    1.922515] NAND device: Manufacturer ID: 0x2c, Chip ID: 0xba (Micron MT29F2G16ABD), page size: 2048, OOB size: 64
-> >>
-> >> platform data devsize is renamed bussize. It now indicate the maximun size of the nand bus.
-> >>
-> >> Signed-off-by: Matthieu CASTET <matthieu.castet@parrot.com>
-> > 
-> > I think, you should base on one of Tony's branches with that kind of patches.
-> > Because, for example the omap_nand_flash_init() function does not exist anymore
-> > in Tony's master and may be several more things will need to have adjustments.
-> > Also, the GPMC related stuff inside the NAND driver
-> > should probably be coordinated with Afzal, as he is reworking the whole
-> > GPMC related code.
+
+On 11/06/2012 12:00 PM, Matthieu CASTET wrote:
+> Jon Hunter a écrit :
+>> On 11/06/2012 10:44 AM, Matthieu CASTET wrote:
+>>>  
+>>>  	/* caller is expected to have initialized CONFIG1 to cover
+>>>  	 * at least sync vs async
+>>> diff --git a/arch/arm/plat-omap/include/plat/gpmc.h b/arch/arm/plat-omap/include/plat/gpmc.h
+>>> index 2e6e259..34ca454 100644
+>>> --- a/arch/arm/plat-omap/include/plat/gpmc.h
+>>> +++ b/arch/arm/plat-omap/include/plat/gpmc.h
+>>> @@ -131,6 +131,8 @@ struct gpmc_timings {
+>>>  	/* The following are only on OMAP3430 */
+>>>  	u16 wr_access;		/* WRACCESSTIME */
+>>>  	u16 wr_data_mux_bus;	/* WRDATAONADMUXBUS */
+>>> +	u16 cycle2cycledelay;	/* CYCLE2CYCLEDELAY */
+>>> +	u16 busturnaround;		/* BUSTURNAROUND */
+>>
+>> So you should be able to move these out of OMAP3430 specific as they are
+>> generic.
+> Thanks for the quick review.
 > 
-> Thanks for the info.
-> 
-> Where such tree could be found ?
+> I will post another patch, unless this is already done in  Afzal patch (Is there
+> a tree where I can get Afzal pending patches ?)
 
-You should be able to use omap-for-v3.8/cleanup-headers-gpmc
-branch as a base for your patches [1].
+Afzal keeps his kernel tree on gitorious [1]. However, I am not sure
+what Afzal's plans are for the remaining patches not yet merged and
+which branch you should look at (I have a lot of problems viewing
+anything on gitorious these days).
 
-Eventually once when we're done with all the clean up, the MTD
-driver should be completely separated from the core omap code
-and I'll be out of the way.
+Afzal, let us know how you prefer to handle this.
 
-Regards,
+Cheers
+Jon
 
-Tony
-
-[1] http://git.kernel.org/?p=linux/kernel/git/tmlind/linux-omap.git;a=shortlog;h=refs/heads/omap-for-v3.8/cleanup-headers-gpmc
+[1] http://gitorious.org/x0148406-public/linux-kernel
