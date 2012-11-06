@@ -1,8 +1,8 @@
 From: Arnd Bergmann <arnd@arndb.de>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 1/8] mtd: diskonchip: don't warn about ARM architecture
-Date: Tue,  6 Nov 2012 22:55:26 +0100
-Message-Id: <1352238933-4886-2-git-send-email-arnd@arndb.de>
+Subject: [PATCH 2/8] mtd: diskonchip: use inline functions for DocRead/DocWrite
+Date: Tue,  6 Nov 2012 22:55:27 +0100
+Message-Id: <1352238933-4886-3-git-send-email-arnd@arndb.de>
 In-Reply-To: <1352238933-4886-1-git-send-email-arnd@arndb.de>
 References: <1352238933-4886-1-git-send-email-arnd@arndb.de>
 Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
@@ -17,48 +17,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Enabling the diskonchip drivers on most architectures results
-in a pointless warning "#warning Unknown architecture for
-DiskOnChip. No default probe locations defined". The driver
-can in fact handle the default location already through the
-CONFIG_MTD_DOCPROBE_ADDRESS, which gets set on the platforms
-that need it, and we get a run-time error if this is not
-set correctly.
+The diskonchip drivers traditionally use home-grown macros for
+doing MMIO accesses, which cause a lot of warnings, at least
+on ARM machines:
+
+drivers/mtd/devices/doc2000.c: In function 'doc_write':
+drivers/mtd/devices/doc2000.c:854:5: warning: value computed is not used [-Wunused-value]
+drivers/mtd/devices/doc2000.c: In function 'doc_erase':
+drivers/mtd/devices/doc2000.c:1123:5: warning: value computed is not used [-Wunused-value
+drivers/mtd/nand/diskonchip.c: In function 'doc2000_read_byte':
+drivers/mtd/nand/diskonchip.c:318:3: warning: value computed is not used [-Wunused-value]
+
+A nicer solution is to use the architecture-defined I/O accessors.
+Here, we use the __raw_readl/__raw_writel style, instead of the
+proper readl/writel ones, in order to preserve the odd semantics
+of the existing macros that have their own barrier implementation
+and no byte swap. It would be nice to fix this properly and use
+the correct accessors as well as make the word size independent
+from the architecture, but I guess the hardware is obsolete
+enough that we should better not mess the driver an more than
+necessary.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 Cc: linux-mtd@lists.infradead.org
 ---
- drivers/mtd/devices/docprobe.c |    2 --
- drivers/mtd/nand/diskonchip.c  |    2 --
- 2 files changed, 4 deletions(-)
+ include/linux/mtd/doc2000.h |   22 ++++++++++++++++++----
+ 1 file changed, 18 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/devices/docprobe.c b/drivers/mtd/devices/docprobe.c
-index 706b847..88b3fd3 100644
---- a/drivers/mtd/devices/docprobe.c
-+++ b/drivers/mtd/devices/docprobe.c
-@@ -70,8 +70,6 @@ static unsigned long __initdata doc_locations[] = {
- 	0xe0000, 0xe2000, 0xe4000, 0xe6000,
- 	0xe8000, 0xea000, 0xec000, 0xee000,
- #endif /*  CONFIG_MTD_DOCPROBE_HIGH */
--#else
--#warning Unknown architecture for DiskOnChip. No default probe locations defined
- #endif
- 	0xffffffff };
- 
-diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/diskonchip.c
-index 256eb30..81fa578 100644
---- a/drivers/mtd/nand/diskonchip.c
-+++ b/drivers/mtd/nand/diskonchip.c
-@@ -53,8 +53,6 @@ static unsigned long __initdata doc_locations[] = {
- 	0xe0000, 0xe2000, 0xe4000, 0xe6000,
- 	0xe8000, 0xea000, 0xec000, 0xee000,
- #endif /*  CONFIG_MTD_DOCPROBE_HIGH */
--#else
--#warning Unknown architecture for DiskOnChip. No default probe locations defined
- #endif
- 	0xffffffff };
- 
+diff --git a/include/linux/mtd/doc2000.h b/include/linux/mtd/doc2000.h
+index 0f6fea7..407d1e5 100644
+--- a/include/linux/mtd/doc2000.h
++++ b/include/linux/mtd/doc2000.h
+@@ -92,12 +92,26 @@
+  * Others use readb/writeb
+  */
+ #if defined(__arm__)
+-#define ReadDOC_(adr, reg)      ((unsigned char)(*(volatile __u32 *)(((unsigned long)adr)+((reg)<<2))))
+-#define WriteDOC_(d, adr, reg)  do{ *(volatile __u32 *)(((unsigned long)adr)+((reg)<<2)) = (__u32)d; wmb();} while(0)
++static inline u8 ReadDOC_(u32 __iomem *addr, unsigned long reg)
++{
++	return __raw_readl(addr + reg);
++}
++static inline void WriteDOC_(u8 data, u32 __iomem *addr, unsigned long reg)
++{
++	__raw_writel(data, addr + reg);
++	wmb();
++}
+ #define DOC_IOREMAP_LEN 0x8000
+ #elif defined(__ppc__)
+-#define ReadDOC_(adr, reg)      ((unsigned char)(*(volatile __u16 *)(((unsigned long)adr)+((reg)<<1))))
+-#define WriteDOC_(d, adr, reg)  do{ *(volatile __u16 *)(((unsigned long)adr)+((reg)<<1)) = (__u16)d; wmb();} while(0)
++static inline u8 ReadDOC_(u16 __iomem *addr, unsigned long reg)
++{
++	return __raw_readw(addr + reg);
++}
++static inline void WriteDOC_(u8 data, u16 __iomem *addr, unsigned long reg)
++{
++	__raw_writew(data, addr + reg);
++	wmb();
++}
+ #define DOC_IOREMAP_LEN 0x4000
+ #else
+ #define ReadDOC_(adr, reg)      readb((void __iomem *)(adr) + (reg))
 -- 
 1.7.10
