@@ -1,27 +1,28 @@
-Received: from mail-oa0-f49.google.com ([209.85.219.49])
+Received: from comal.ext.ti.com ([198.47.26.152])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TVipx-00078a-Dv
- for linux-mtd@lists.infradead.org; Tue, 06 Nov 2012 13:05:02 +0000
-Received: by mail-oa0-f49.google.com with SMTP id l10so331013oag.36
- for <linux-mtd@lists.infradead.org>; Tue, 06 Nov 2012 05:04:59 -0800 (PST)
+ id 1TVle7-0007y0-1t
+ for linux-mtd@lists.infradead.org; Tue, 06 Nov 2012 16:05:00 +0000
+Message-ID: <50993511.3020906@ti.com>
+Date: Tue, 6 Nov 2012 11:04:33 -0500
+From: Murali Karicheri <m-karicheri2@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <AE90C24D6B3A694183C094C60CF0A2F6026B7094@saturn3.aculab.com>
-References: <1351957422-23243-1-git-send-email-akinobu.mita@gmail.com>
- <90816.1352178872@turing-police.cc.vt.edu>
- <AE90C24D6B3A694183C094C60CF0A2F6026B7094@saturn3.aculab.com>
-Date: Tue, 6 Nov 2012 22:04:59 +0900
-Message-ID: <CAC5umyh7cSiBaBLroNbAJoZ4_B1W9o+qLPGMtXj4Yqn7sTAaTw@mail.gmail.com>
-Subject: Re: [PATCH v2 00/11] introduce random32_get_bytes() and
- random32_get_bytes_state()
-From: Akinobu Mita <akinobu.mita@gmail.com>
-To: David Laight <David.Laight@aculab.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Michel Lespinasse <walken@google.com>, Theodore Ts'o <tytso@mit.edu>,
- Artem Bityutskiy <dedekind1@gmail.com>, netdev@vger.kernel.org,
- Adrian Hunter <adrian.hunter@intel.com>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, devel@open-fcoe.org, Valdis.Kletnieks@vt.edu,
- akpm@linux-foundation.org, Robert Love <robert.w.love@intel.com>,
- David Woodhouse <dwmw2@infradead.org>, Eilon Greenstein <eilong@broadcom.com>
+To: Sekhar Nori <nsekhar@ti.com>
+Subject: Re: [RFC PATCH 1/2] memory: davinci - add aemif controller platform
+ driver
+References: <1351873278-27325-1-git-send-email-m-karicheri2@ti.com>
+ <1351873278-27325-2-git-send-email-m-karicheri2@ti.com>
+ <50967307.5030500@gmail.com> <50982AC3.8030000@ti.com>
+ <5098BFE1.3020906@ti.com>
+In-Reply-To: <5098BFE1.3020906@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: davinci-linux-open-source@linux.davincidsp.com, santosh.shilimkar@ti.com,
+ swarren@wwwdotorg.org, artem.bityutskiy@linux.intel.com,
+ devicetree-discuss@lists.ozlabs.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, grant.likely@secretlab.ca, b32955@freescale.com,
+ wim@iguana.be, Rob Herring <robherring2@gmail.com>, rob@landley.net,
+ gregkh@linuxfoundation.org, linux-mtd@lists.infradead.org, hs@denx.de,
+ dwmw2@infradead.org, shubhrajyoti@ti.com, hdoyu@nvidia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,40 +32,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2012/11/6 David Laight <David.Laight@aculab.com>:
->> On Sun, 04 Nov 2012 00:43:31 +0900, Akinobu Mita said:
->> > This patchset introduces new functions into random32 library for
->> > getting the requested number of pseudo-random bytes.
->> >
->> > Before introducing these new functions into random32 library,
->> > prandom32() and prandom32_seed() with "prandom32" prefix are
->> > renamed to random32_state() and srandom32_state() respectively.
->> >
->> > The purpose of this renaming is to prevent some kernel developers
->> > from assuming that prandom32() and random32() might imply that only
->> > prandom32() was the one using a pseudo-random number generator by
->> > prandom32's "p", and the result may be a very embarassing security
->> > exposure.
->>
->> Out of curiosity, why the '32'?  I'm just waiting for some kernel developer to
->> do something stupid with this on a 64-bit arch because they think it's a 32-bit API. ;)
->>
->> Should we bite the bullet and lose the 32, as long as we're churning the code *anyhow*?
+On 11/06/2012 02:44 AM, Sekhar Nori wrote:
+> On 11/6/2012 2:38 AM, Murali Karicheri wrote:
+>> On 11/04/2012 08:52 AM, Rob Herring wrote:
+>>> OMAP GPMC
+>> Could you send me a link please?
+> https://www.google.com/search?q=RFC+OMAP+GPMC+DT+bindings
 >
-> Also why remove the 'pseudo' part of the name?
-> It is an important part of the name.
+> The patches series is sent by Daniel Mack. v3 was the last version sent.
+>
+> Thanks,
+> Sekhar
+>
+>
+One of the question I have on this is what is the final location of the 
+GPMC driver? The patch referred here is located inside the mach-omap2. 
+This will not work for us as AEMIF driver is used across multiple 
+architecture. range is also used in AEMIF bindings to refer the CS 
+memory map. So there is no issue here. I will fix the documentation. Or 
+Am I missing something?
 
-Thanks for the heads-up.  Then, what is the ideal function name for
-pseudo-random library?
-
-I propose the following renaming, 'p' prefix is restored and '32' is
-removed for not returning 32bit pseudo-random number functions.
-
-void prandom_seed(u32 seed);    /* rename from srandom32() */
-u32 prandom32(void);            /* rename from random32() */
-void prandom_get_byte(void *buf, int bytes);
-
-void prandom_seed_state(struct rnd_state *state, u64 seed);
-                                        /* rename from prandom32_seed() */
-u32 prandom32_state(struct rnd_state *state);   /* rename from prandom32() */
-void prandom_get_byte_state(struct rnd_state *state, void *buf, int bytes);
+Murali
