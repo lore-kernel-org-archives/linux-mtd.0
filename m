@@ -1,23 +1,27 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TVnSA-0007mA-OU
- for linux-mtd@lists.infradead.org; Tue, 06 Nov 2012 18:00:47 +0000
-Message-ID: <5099504A.5060505@parrot.com>
-Date: Tue, 6 Nov 2012 19:00:42 +0100
-From: Matthieu CASTET <matthieu.castet@parrot.com>
+Received: from devils.ext.ti.com ([198.47.26.153])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TVnvG-0001Fe-CD
+ for linux-mtd@lists.infradead.org; Tue, 06 Nov 2012 18:30:51 +0000
+Message-ID: <5099573D.2090707@ti.com>
+Date: Tue, 6 Nov 2012 13:30:21 -0500
+From: Murali Karicheri <m-karicheri2@ti.com>
 MIME-Version: 1.0
-To: Jon Hunter <jon-hunter@ti.com>
-Subject: Re: [PATCH 1/3] omap gpmc : add support of setting CYCLE2CYCLEDELAY
- and BUSTURNAROUND
-References: <1352220277-4251-1-git-send-email-matthieu.castet@parrot.com>
- <5099478A.50901@ti.com>
-In-Reply-To: <5099478A.50901@ti.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8bit
-Cc: Afzal Mohammed <afzal@ti.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>
+To: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: [RFC PATCH 1/2] memory: davinci - add aemif controller platform
+ driver
+References: <1351873278-27325-1-git-send-email-m-karicheri2@ti.com>
+ <1351873278-27325-2-git-send-email-m-karicheri2@ti.com>
+ <50941960.3060407@wwwdotorg.org>
+In-Reply-To: <50941960.3060407@wwwdotorg.org>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: davinci-linux-open-source@linux.davincidsp.com, linux-doc@vger.kernel.org,
+ artem.bityutskiy@linux.intel.com, devicetree-discuss@lists.ozlabs.org,
+ nsekhar@ti.com, linux-kernel@vger.kernel.org, rob.herring@calxeda.com,
+ grant.likely@secretlab.ca, b32955@freescale.com, wim@iguana.be,
+ linux-mtd@lists.infradead.org, rob@landley.net, gregkh@linuxfoundation.org,
+ santosh.shilimkar@ti.com, hs@denx.de, dwmw2@infradead.org, shubhrajyoti@ti.com,
+ hdoyu@nvidia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,28 +31,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jon Hunter a écrit :
-> On 11/06/2012 10:44 AM, Matthieu CASTET wrote:
->>  
->>  	/* caller is expected to have initialized CONFIG1 to cover
->>  	 * at least sync vs async
->> diff --git a/arch/arm/plat-omap/include/plat/gpmc.h b/arch/arm/plat-omap/include/plat/gpmc.h
->> index 2e6e259..34ca454 100644
->> --- a/arch/arm/plat-omap/include/plat/gpmc.h
->> +++ b/arch/arm/plat-omap/include/plat/gpmc.h
->> @@ -131,6 +131,8 @@ struct gpmc_timings {
->>  	/* The following are only on OMAP3430 */
->>  	u16 wr_access;		/* WRACCESSTIME */
->>  	u16 wr_data_mux_bus;	/* WRDATAONADMUXBUS */
->> +	u16 cycle2cycledelay;	/* CYCLE2CYCLEDELAY */
->> +	u16 busturnaround;		/* BUSTURNAROUND */
-> 
-> So you should be able to move these out of OMAP3430 specific as they are
-> generic.
-Thanks for the quick review.
+On 11/02/2012 03:05 PM, Stephen Warren wrote:
+> On 11/02/2012 10:21 AM, Murali Karicheri wrote:
+>> This is a platform driver for asynchronous external memory interface
+>> available on TI SoCs. This driver was previously located inside the
+>> mach-davinci folder. As this DaVinci IP is re-used across multiple
+>> family of devices such as c6x, keystone etc, the driver is moved to drivers.
+>> The driver configures async bus parameters associated with a particular
+>> chip select. For DaVinci controller driver and driver for other async
+>> devices such as NOR flash, ASRAM etc, the bus confuguration is
+>> done by this driver at init time. A set of APIs (set/get) provided to
+>> update the values based on specific driver usage.
+>> +++ b/Documentation/devicetree/bindings/arm/davinci/aemif.txt
+> If the HW/binding is generic, I'd assume the documentation would be
+> place somewhere more like
+> Documentation/devicetree/bindings/memory/davinci-aemif.txt?
+Thanks for your comments.
 
-I will post another patch, unless this is already done in  Afzal patch (Is there
-a tree where I can get Afzal pending patches ?)
+I think this is a generic driver that should be re-usable across 
+multiple architectures such as arm, c6x and other new SoCs from TI that 
+uses the AEMIF IP. AEMIF IP can be configured on a per chip select 
+basis.  There will be nand controller, NOR flash and other async devices 
+on this bus. So cs bindings for each of this device will be a sub node 
+under thie aemif device. AEMIF driver iterate over the cs sub nodes and 
+configure the bus.
 
+Let me post the complete bindings in the next revision so that this will 
+be more clear and we can discuss it based on that. I will also move the 
+nand documentation to a generic place and refer the bindings inside the 
+aemif documentation. I will address some of the comments below in my 
+next revision of the patch, but some of the comments discussion will 
+have to be deferred to version v2 of the patch.
 
-Matthieu
+Murali
+>> @@ -0,0 +1,62 @@
+>> +* Texas Instruments Davinci AEMIF bus interface
+>> +
+>> +This file provides information for the davinci-emif chip select
+>> +bindings.
+> Shouldn't the binding be for an IP block (the AEMIF bus controller I
+> assume), rather than for a particular chip-select generated by the
+> controller?
+AEMIF has multiple functions such as it functions as a NAND controller, 
+it provides interfaces to async devices. The bus is configured using the 
+CS sub node inside the aemif device node (compatible ti, davinci-emif).
+
+>> +This is a sub device node inside the davinci-emif device node
+>> +to describe a async bus for a specific chip select. For NAND,
+>> +CFI flash device bindings described inside an aemif node,
+>> +etc, a cs sub node is defined to associate the bus parameter
+>> +bindings used by the device.
+> Oh, this file only documents part of the controller's node? It seems
+> unusual to do that; the documentation for an entire node would usually
+> be in a single file, which seems to be
+> Documentation/devicetree/bindings/arm/davinci/nand.txt right now. Is
+> this "cs" sub-node really something that gets re-used across multiple
+> different memory controller IPs?
+>
+> If so, I guess this file should be called something more like
+> davinci-aemif-cs.txt than davinci-aemif.txt. I'd suggest moving
+> arm/davinci/nand.txt into a common location too (and renaming it to
+> davici-nand.txt to better represent the compatible value it documents).
+>
+>> +Required properties:=
+>> +- compatible: "ti,davinci-cs";
+>> +- #address-cells = <1>;
+>> +- #size-cells = <1>;
+>> +- cs - cs used by the device (NAND, CFI flash etc. values in the range: 2-5
+>> +
+>> +Optional properties:-
+>> +- asize - asynchronous data bus width (0 - 8bit, 1 - 16 bit)
+>> +  All of the params below in nanoseconds
+>> +
+>> +- ta - Minimum turn around time
+>> +- rhold - read hold width
+>> +- rstobe - read strobe width
+>> +- rsetup - read setup width
+>> +- whold - write hold width
+>> +- wstrobe - write strobe width
+>> +- wsetup - write setup width
+>> +- ss - enable/disable select strobe (0 - disable, 1 - enable)
+>> +- ew - enable/disable extended wait cycles (0 - disable, 1 - enable)
+> I assume all of those are pretty custom to this binding, and not
+> something you'd expect to re-use across multiple vendors' bindings? If
+> so, shouldn't they have a "ti," vendor prefix?
+>
+>> +Example for davinci nand chip select
+>> +
+>> +aemif@60000000 {
+>> +
+>> +	compatible = "ti,davinci-aemif";
+> You need a reg property here.
+>
+>> +	#address-cells = <2>;
+>> +	#size-cells = <1>;
+>> +
+>> +	nand_cs:cs2@70000000 {
+>> +		compatible = "ti,davinci-cs";
+> You need a reg property here. The unit address "@70000000" in the node
+> name only has one address cell, whereas the parent node sets
+> #address-cells = <2>.
