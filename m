@@ -1,26 +1,24 @@
-Received: from avon.wwwdotorg.org ([2001:470:1f0f:bd7::2])
+Received: from plane.gmane.org ([80.91.229.3])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TWBvr-0006RJ-0s
- for linux-mtd@lists.infradead.org; Wed, 07 Nov 2012 20:09:03 +0000
-Message-ID: <509ABFD9.8090704@wwwdotorg.org>
-Date: Wed, 07 Nov 2012 13:08:57 -0700
-From: Stephen Warren <swarren@wwwdotorg.org>
-MIME-Version: 1.0
-To: Murali Karicheri <m-karicheri2@ti.com>
-Subject: Re: [RFC v2 PATCH 2/2] mtd: davinci - remove DaVinci architecture
- depedency
-References: <1352238427-26085-1-git-send-email-m-karicheri2@ti.com>
- <1352238427-26085-3-git-send-email-m-karicheri2@ti.com>
-In-Reply-To: <1352238427-26085-3-git-send-email-m-karicheri2@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: davinci-linux-open-source@linux.davincidsp.com, mikedunn@newsguy.com,
- linux-doc@vger.kernel.org, artem.bityutskiy@linux.intel.com,
- devicetree-discuss@lists.ozlabs.org, nsekhar@ti.com,
- linux-kernel@vger.kernel.org, rob.herring@calxeda.com,
- grant.likely@secretlab.ca, linux-mtd@lists.infradead.org, rob@landley.net,
- gregkh@linuxfoundation.org, santosh.shilimkar@ti.com, hs@denx.de,
- dwmw2@infradead.org, hdoyu@nvidia.com
+ id 1TWDFL-0000ww-Jc
+ for linux-mtd@lists.infradead.org; Wed, 07 Nov 2012 21:33:17 +0000
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1TWDFM-0005kH-Tp
+ for linux-mtd@lists.infradead.org; Wed, 07 Nov 2012 22:33:16 +0100
+Received: from 206-248-185-91.dsl.teksavvy.com ([206.248.185.91])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <linux-mtd@lists.infradead.org>; Wed, 07 Nov 2012 22:33:16 +0100
+Received: from micah by 206-248-185-91.dsl.teksavvy.com with local (Gmexim 0.1
+ (Debian)) id 1AlnuQ-0007hv-00
+ for <linux-mtd@lists.infradead.org>; Wed, 07 Nov 2012 22:33:16 +0100
+To: linux-mtd@lists.infradead.org
+From: Micah Anderson <micah@riseup.net>
+Subject: UBIFS error (pid 564): read_znode: bad indexing node at LEB 484:66064, error 2
+Date: Wed, 07 Nov 2012 16:32:54 -0500
+Message-ID: <87625h85fd.fsf@minnow.riseup.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,49 +28,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/06/2012 02:47 PM, Murali Karicheri wrote:
-> DaVinci NAND driver is a controller driver based on the AEMIF hardware
-> IP found on TI SoCs. It is also used on SoCs that are not DaVinci based. This
-> patch removes the driver dependency on DaVinci architecture so that it
-> can be used on other architectures such as c6x, keystone etc.
-> 
-> Also migrate the driver to use the new AEMIF platform driver API and
-> moving Documentation to Documentation/devicetree/bindings/mtd/davinci-nand.txt
-> as this is expected to be used outside of arm/davinci.
 
->  delete mode 100644 Documentation/devicetree/bindings/arm/davinci/nand.txt
->  create mode 100644 Documentation/devicetree/bindings/mtd/davinci-nand.txt
->  create mode 100644 include/linux/platform_data/davinci-nand.h
+I had a power outage yesterday. When things came back and I tried to
+boot my guruplug, I am not getting the following:
 
-Using "git format-patch -M" might show this as a file move/rename rather
-than a delete/add, which would be useful to highlight any changes you
-made at the same time.
+[   97.273764] UBIFS error (pid 564): read_znode: bad indexing node at LEB 484:66064, error 2
+[   97.282188] UBIFS warning (pid 564): ubifs_ro_mode: switched to read-only mode, error -22
+[   97.290431] UBIFS error (pid 564): ubifs_budget_space: cannot budget space, error -22
 
-> diff --git a/Documentation/devicetree/bindings/mtd/davinci-nand.txt b/Documentation/devicetree/bindings/mtd/davinci-nand.txt
+The filesystem is read-only and I can't seem to figure out how to get it
+out of this state. As far as I can tell, there is no fsck.ubifs and I'm
+at a loss at how to get things back to a reasonable state. I found the
+'nandtest' command, which might be useful for mapping out bad areas, but
+I'm not going to run that without a better clue at how likely I am to
+brick things.
 
-> +Example (enbw_cmc board):
-> +aemif@60000000 {
-> +	compatible = "ti,davinci-aemif";
-> +	#address-cells = <2>;
-> +	#size-cells = <1>;
-> +	reg = <0x68000000 0x80000>;
-> +	ranges = <2 0 0x60000000 0x02000000
-> +		  3 0 0x62000000 0x02000000
-> +		  4 0 0x64000000 0x02000000
-> +		  5 0 0x66000000 0x02000000
-> +		  6 0 0x68000000 0x02000000>;
-> +	nand@3,0 {
+Thanks for any suggestions or help!
+micah
 
-Here, isn't 3,0 the aemif chip-select ID that is decoding the NAND accesses?
-
-> +		compatible = "ti,davinci-nand";
-> +		reg = <3 0x0 0x807ff
-> +			6 0x0 0x8000>;
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		ti,davinci-chipselect = <1>;
-
-So I don't understand why that chipselect property is needed, or has a
-different value. Is this muxing the AEMIF output chip-selects onto
-different SoC package pins or something? Seems like a job for pinctrl
-perhaps?
+-- 
