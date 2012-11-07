@@ -1,20 +1,25 @@
-From: Arnd Bergmann <arnd@arndb.de>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH 0/8] warning fixes for v3.7-rc4
-Date: Tue,  6 Nov 2012 22:55:25 +0100
-Message-Id: <1352238933-4886-1-git-send-email-arnd@arndb.de>
-Cc: Peter Zijlstra <a.p.zijlstra@chello.nl>,
- Mark Langsdorf <mark.langsdorf@calxeda.com>, Arnd Bergmann <arnd@arndb.de>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Rahul Sharma <rahul.sharma@samsung.com>,
- Peter Boonstoppel <pboonstoppel@nvidia.com>,
- Rob Herring <rob.herring@calxeda.com>, Jeff Garzik <jgarzik@redhat.com>,
- Inki Dae <inki.dae@samsung.com>, Will Newton <will.newton@imgtec.com>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Thomas Abraham <thomas.abraham@linaro.org>, linux-mtd@lists.infradead.org,
- Rob Clark <rob@ti.com>, Chris Ball <cjb@laptop.org>,
- David Woodhouse <dwmw2@infradead.org>, Ingo Molnar <mingo@kernel.org>,
- linux-arm-kernel@lists.infradead.org, Paul Turner <pjt@google.com>
+Received: from bear.ext.ti.com ([192.94.94.41])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TVtpN-0001Id-SV
+ for linux-mtd@lists.infradead.org; Wed, 07 Nov 2012 00:49:12 +0000
+Message-ID: <5099AFF6.50400@ti.com>
+Date: Tue, 6 Nov 2012 18:48:54 -0600
+From: Santosh Shilimkar <santosh.shilimkar@ti.com>
+MIME-Version: 1.0
+To: Murali Karicheri <m-karicheri2@ti.com>
+Subject: Re: [RFC v2 PATCH 1/2] memory: davinci - add aemif controller platform
+ driver
+References: <1352238427-26085-1-git-send-email-m-karicheri2@ti.com>
+ <1352238427-26085-2-git-send-email-m-karicheri2@ti.com>
+In-Reply-To: <1352238427-26085-2-git-send-email-m-karicheri2@ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: davinci-linux-open-source@linux.davincidsp.com, mikedunn@newsguy.com,
+ linux-doc@vger.kernel.org, artem.bityutskiy@linux.intel.com,
+ devicetree-discuss@lists.ozlabs.org, swarren@wwwdotorg.org, nsekhar@ti.com,
+ linux-kernel@vger.kernel.org, rob.herring@calxeda.com,
+ grant.likely@secretlab.ca, linux-mtd@lists.infradead.org, rob@landley.net,
+ gregkh@linuxfoundation.org, hs@denx.de, dwmw2@infradead.org, hdoyu@nvidia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,61 +29,593 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi everyone,
+On Tuesday 06 November 2012 03:47 PM, Murali Karicheri wrote:
+> This is a platform driver for asynchronous external memory interface
+> available on TI SoCs. This driver was previously located inside the
+> mach-davinci folder. As this DaVinci IP is re-used across multiple
+> family of devices such as c6x, keystone etc, the driver is moved to drivers.
+> The driver configures async bus parameters associated with a particular
+> chip select. For DaVinci NAND controller driver and driver for other async
+> devices such as NOR flash, ASRAM etc, the bus confuguration is
+> done by this driver at probe. A set of APIs (set/get) are provided to
+> update the values based on specific driver usage.
+>
+> This supports configuration of the bus either through platform_data or
+> through DT bindings.
+>
+> Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
+> ---
+>   .../devicetree/bindings/memory/davinci-aemif.txt   |  103 +++++
+>   drivers/memory/Kconfig                             |   10 +
+>   drivers/memory/Makefile                            |    1 +
+>   drivers/memory/davinci-aemif.c                     |  479 ++++++++++++++++++++
+>   include/linux/platform_data/davinci-aemif.h        |   47 ++
+>   5 files changed, 640 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/memory/davinci-aemif.txt
+>   create mode 100644 drivers/memory/davinci-aemif.c
+>   create mode 100644 include/linux/platform_data/davinci-aemif.h
+>
+Please split the DT and drivers/memory/* changes in two seperate
+patches.
 
-Here are a few patches for remaining or newly introduced build
-warnings in the ARM defconfig builds. The MTD patches have
-been around for some time, but I had not submitted them because
-I had to redo most of them first.
+> diff --git a/Documentation/devicetree/bindings/memory/davinci-aemif.txt b/Documentation/devicetree/bindings/memory/davinci-aemif.txt
+> new file mode 100644
+> index 0000000..a79b3ed
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/memory/davinci-aemif.txt
+> @@ -0,0 +1,103 @@
+> +* Texas Instruments Davinci AEMIF bus interface
+> +
+> +This file provides information for the davinci-emif device and
+> +async bus bindings.
+> +
+> +Required properties:=
+> +- compatible: "ti,davinci-aemif";
+> +- #address-cells : Should be either two or three.  The first cell is the
+> +                   chipselect number, and the remaining cells are the
+> +                   offset into the chipselect.
+> +- #size-cells : Either one or two, depending on how large each chipselect
+> +                can be.
+> +- reg : contains offset/length value for AEMIF control registers space
+> +- ranges : Each range corresponds to a single chipselect, and cover
+> +           the entire access window as configured.
+> +
+> +Child device nodes describe the devices connected to IFC such as NOR (e.g.
+> +cfi-flash) and NAND (ti,davinci-nand, see Documentation/devicetree/bindings/
+> +mtd/davinci-nand.txt). There might be board specific devices like FPGAs.
+> +
+> +In addition, optional child sub nodes contains bindings for the async bus
+> +interface for a given chip select.
+> +
+> +Optional cs node properties:-
+> +- compatible: "ti,davinci-cs"
+> +
+> +  All of the params below in nanoseconds and are optional
+> +
+> +- ti,davinci-cs-asize - asynchronous data bus width (0 - 8bit, 1 - 16 bit)
+> +- ti,davinci-cs-ta - Minimum turn around time
+> +- ti,davinci-cs-rhold - read hold width
+> +- ti,davinci-cs-rstobe - read strobe width
+> +- ti,davinci-cs-rsetup - read setup width
+> +- ti,davinci-cs-whold - write hold width
+> +- ti,davinci-cs-wstrobe - write strobe width
+> +- ti,davinci-cs-wsetup - write setup width
+> +- ti,davinci-cs-ss - enable/disable select strobe (0 - disable, 1 - enable)
+> +- ti,davinci-cs-ew - enable/disable extended wait cycles (0 - disable, 1 - enable)
+> +
+> +if any of the above parameters are absent, hardware register default or that
+> +set by a boot loader are used.
+> +
+> +Example for aemif, davinci nand and nor flash chip select shown below.
+> +
+> +aemif@60000000 {
+> +	compatible = "ti,davinci-aemif";
+> +	#address-cells = <2>;
+> +	#size-cells = <1>;
+> +	reg = <0x68000000 0x80000>;
+> +	ranges = <2 0 0x60000000 0x02000000
+> +		  3 0 0x62000000 0x02000000
+> +		  4 0 0x64000000 0x02000000
+> +		  5 0 0x66000000 0x02000000
+> +		  6 0 0x68000000 0x02000000>;
+> +
+> +	nand_cs:cs2@60000000 {
+> +		compatible = "ti,davinci-cs";
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		/* all timings in nanoseconds */
+> +		ti,davinci-cs-ta = <0>;
+> +		ti,davinci-cs-rhold = <7>;
+> +		ti,davinci-cs-rstrobe = <42>;
+> +		ti,davinci-cs-rsetup = <14>;
+> +		ti,davinci-cs-whold = <7>;
+> +		ti,davinci-cs-wstrobe = <42>;
+> +		ti,davinci-cs-wsetup = <14>;
+> +	};
+> +
+> +	nor_cs:cs3@62000000 {
+> +		compatible = "ti,davinci-cs";
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		/* all timings in nanoseconds */
+> +		ti,davinci-cs-ta = <0>;
+> +		ti,davinci-cs-rhold = <7>;
+> +		ti,davinci-cs-rstrobe = <42>;
+> +		ti,davinci-cs-rsetup = <14>;
+> +		ti,davinci-cs-whold = <7>;
+> +		ti,davinci-cs-wstrobe = <42>;
+> +		ti,davinci-cs-wsetup = <14>;
+> +		ti,davinci-cs-asize = <1>;
+> +	};
+> +
+> +	nand@3,0 {
+> +		compatible = "ti,davinci-nand";
+> +		reg = <3 0x0 0x807ff
+> +			6 0x0 0x8000>;
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +
+> +		.. See Documentation/devicetree/bindings/mtd/davinci-nand.txt
+> +	};
+> +
+> +	flash@2,0 {
+> +		compatible = "cfi-flash";
+> +		reg = <2 0x0 0x400000>;
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		bank-width = <2>;
+> +		device-width = <2>;
+> +	};
+> +};
+> diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
+> index 067f311..2636a95 100644
+> --- a/drivers/memory/Kconfig
+> +++ b/drivers/memory/Kconfig
+> @@ -40,4 +40,14 @@ config TEGRA30_MC
+>   	  analysis, especially for IOMMU/SMMU(System Memory Management
+>   	  Unit) module.
+>
+> +config TI_DAVINCI_AEMIF
+> +	bool "Texas Instruments DaVinci AEMIF driver"
+Add some default depends on ARCH here otherwise, this driver
+will get build for all the generic builds and might show
+build errors.
 
-The only build error in this series is the exynos drm patch,
-which is a very recent regression.
+> +	help
+> +	  This driver is for the AEMIF module available in Texas Instruments
+> +	  SoCs. AEMIF stands for Asynchronous External Memory Interface and
+> +	  is intended to provide a glue-less interface to a variety of
+> +	  asynchronuous memory devices like ASRAM, NOR and NAND memory. A total
+> +	  of 256M bytes of any of these memories can be accessed at a given
+> +	  time via four chip selects with 64M byte access per chip select.
+> +
+>   endif
+> diff --git a/drivers/memory/Makefile b/drivers/memory/Makefile
+> index 42b3ce9..246aa61 100644
+> --- a/drivers/memory/Makefile
+> +++ b/drivers/memory/Makefile
+> @@ -5,3 +5,4 @@
+>   obj-$(CONFIG_TI_EMIF)		+= emif.o
+>   obj-$(CONFIG_TEGRA20_MC)	+= tegra20-mc.o
+>   obj-$(CONFIG_TEGRA30_MC)	+= tegra30-mc.o
+> +obj-$(CONFIG_TI_DAVINCI_AEMIF)	+= davinci-aemif.o
+> diff --git a/drivers/memory/davinci-aemif.c b/drivers/memory/davinci-aemif.c
+> new file mode 100644
+> index 0000000..27a6995
+> --- /dev/null
+> +++ b/drivers/memory/davinci-aemif.c
+> @@ -0,0 +1,479 @@
+> +/*
+> + * AEMIF support for DaVinci SoCs
+> + *
+> + * Copyright (C) 2010 Texas Instruments Incorporated. http://www.ti.com/
+s/2010/2012
+> + * Copyright (C) Heiko Schocher <hs@denx.de>
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License version 2 as
+> + * published by the Free Software Foundation.
+> + */
+> +
+> +#include <linux/clk.h>
+> +#include <linux/err.h>
+> +#include <linux/io.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/of_address.h>
+> +#include <linux/platform_data/davinci-aemif.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/time.h>
+> +
+> +#define TA_SHIFT	2
+> +#define RHOLD_SHIFT	4
+> +#define RSTROBE_SHIFT	7
+> +#define RSETUP_SHIFT	13
+> +#define WHOLD_SHIFT	17
+> +#define WSTROBE_SHIFT	20
+> +#define WSETUP_SHIFT	26
+> +#define EW_SHIFT	30
+> +#define SS_SHIFT	31
+> +
+> +#define TA(x)		((x) << TA_SHIFT)
+> +#define RHOLD(x)	((x) << RHOLD_SHIFT)
+> +#define RSTROBE(x)	((x) << RSTROBE_SHIFT)
+> +#define RSETUP(x)	((x) << RSETUP_SHIFT)
+> +#define WHOLD(x)	((x) << WHOLD_SHIFT)
+> +#define WSTROBE(x)	((x) << WSTROBE_SHIFT)
+> +#define WSETUP(x)	((x) << WSETUP_SHIFT)
+> +#define EW(x)		((x) << EW_SHIFT)
+> +#define SS(x)		((x) << SS_SHIFT)
+> +
+Can you not use BIT(*) directly instead above magics
 
-Please apply in to the respective maintainer trees.
+> +#define ASIZE_MAX	0x1
+> +#define TA_MAX		0x3
+> +#define RHOLD_MAX	0x7
+> +#define RSTROBE_MAX	0x3f
+> +#define RSETUP_MAX	0xf
+> +#define WHOLD_MAX	0x7
+> +#define WSTROBE_MAX	0x3f
+> +#define WSETUP_MAX	0xf
+> +#define EW_MAX		0x1
+> +#define SS_MAX		0x1
+> +#define NUM_CS		4
+> +
+> +#define TA_VAL(x)	(((x) & TA(TA_MAX)) >> TA_SHIFT)
+> +#define RHOLD_VAL(x)	(((x) & RHOLD(RHOLD_MAX)) >> RHOLD_SHIFT)
+> +#define RSTROBE_VAL(x)	(((x) & RSTROBE(RSTROBE_MAX)) >> RSTROBE_SHIFT)
+> +#define RSETUP_VAL(x)	(((x) & RSETUP(RSETUP_MAX)) >> RSETUP_SHIFT)
+> +#define WHOLD_VAL(x)	(((x) & WHOLD(WHOLD_MAX)) >> WHOLD_SHIFT)
+> +#define WSTROBE_VAL(x)	(((x) & WSTROBE(WSTROBE_MAX)) >> WSTROBE_SHIFT)
+> +#define WSETUP_VAL(x)	(((x) & WSETUP(WSETUP_MAX)) >> WSETUP_SHIFT)
+> +#define EW_VAL(x)	(((x) & EW(EW_MAX)) >> EW_SHIFT)
+> +#define SS_VAL(x)	(((x) & SS(SS_MAX)) >> SS_SHIFT)
+> +
+Same here..
 
-	Arnd
+> +
+> +#define CONFIG_MASK	(TA(TA_MAX) | \
+> +				RHOLD(RHOLD_MAX) | \
+> +				RSTROBE(RSTROBE_MAX) |	\
+> +				RSETUP(RSETUP_MAX) | \
+> +				WHOLD(WHOLD_MAX) | \
+> +				WSTROBE(WSTROBE_MAX) | \
+> +				WSETUP(WSETUP_MAX) | \
+> +				EW(EW_MAX) | SS(SS_MAX) | \
+> +				ASIZE_MAX)
+> +
+This mask is next to impossible if reviewer needs to decode it.
 
-Arnd Bergmann (8):
-  mtd: diskonchip: don't warn about ARM architecture
-  mtd: diskonchip: use inline functions for DocRead/DocWrite
-  mtd: uninitialized variable warning in map.h
-  sched: warnings in kernel/sched/fair.c
-  mmc: dw_mmc: fix modular build for exynos back-end
-  mmc: dw_mmc: constify dw_mci_idmac_ops in exynos back-end
-  ata: highbank: mark ahci_highbank_probe as __devinit
-  drm/exynos: don't include plat/gpio-cfg.h
+> +#define DRV_NAME "davinci-aemif"
+> +
+> +struct aemif_device {
+> +	struct davinci_aemif_pdata *cfg;
+> +	void __iomem *base;
+> +	struct clk *clk;
+> +	/* clock rate in KHz */
+> +	unsigned long clk_rate;
+> +};
+> +
+> +static struct aemif_device *aemif;
+> +/**
+> + * aemif_calc_rate - calculate timing data.
+> + * @wanted: The cycle time needed in nanoseconds.
+> + * @clk: The input clock rate in kHz.
+> + * @max: The maximum divider value that can be programmed.
+> + *
+> + * On success, returns the calculated timing value minus 1 for easy
+> + * programming into AEMIF timing registers, else negative errno.
+> + */
+> +static int aemif_calc_rate(int wanted, unsigned long clk, int max)
+> +{
+> +	int result;
+> +
+> +	result = DIV_ROUND_UP((wanted * clk), NSEC_PER_MSEC) - 1;
+> +
+> +	pr_debug("%s: result %d from %ld, %d\n", __func__, result, clk, wanted);
+> +
+> +	/* It is generally OK to have a more relaxed timing than requested... */
+> +	if (result < 0)
+> +		result = 0;
+> +
+don't break if--else with un-ncessary new line here.
 
- drivers/ata/sata_highbank.c          |    2 +-
- drivers/gpu/drm/exynos/exynos_hdmi.c |    1 -
- drivers/mmc/host/dw_mmc-exynos.c     |    8 ++++----
- drivers/mmc/host/dw_mmc-pltfm.c      |    2 +-
- drivers/mmc/host/dw_mmc-pltfm.h      |    2 +-
- drivers/mmc/host/dw_mmc.c            |    2 +-
- drivers/mtd/devices/docprobe.c       |    2 --
- drivers/mtd/nand/diskonchip.c        |    2 --
- include/linux/mmc/dw_mmc.h           |    4 ++--
- include/linux/mtd/doc2000.h          |   22 ++++++++++++++++++----
- include/linux/mtd/map.h              |    2 +-
- kernel/sched/fair.c                  |    2 +-
- 12 files changed, 30 insertions(+), 21 deletions(-)
+> +	/* ... But configuring tighter timings is not an option. */
+> +	else if (result > max)
+> +		result = -EINVAL;
+> +
+> +	return result;
+> +}
+> +
+> +/**
+> + * davinci_aemif_config_abus - configure async bus parameters given
+> + * AEMIF interface
+> + * @cs: chip-select to program the timing values for
+> + * @data: aemif chip select configuration
+> + * @base: aemif io mapped configuration base
+> + *
+> + * This function programs the given timing values (in real clock) into the
+> + * AEMIF registers taking the AEMIF clock into account.
+> + *
+> + * This function does not use any locking while programming the AEMIF
+> + * because it is expected that there is only one user of a given
+> + * chip-select.
+> + *
+> + * Returns 0 on success, else negative errno.
+> + */
+> +static int davinci_aemif_config_abus(unsigned int cs,
+> +				void __iomem *base,
+> +				struct davinci_aemif_cs_data *data)
+> +{
+> +	int ta, rhold, rstrobe, rsetup, whold, wstrobe, wsetup;
+> +	unsigned offset = A1CR_OFFSET + cs * 4;
+> +	u32 set, val;
+> +
+> +	if (!data)
+> +		return -EINVAL;
+> +
+> +	ta	= aemif_calc_rate(data->ta, aemif->clk_rate, TA_MAX);
+> +	rhold	= aemif_calc_rate(data->rhold, aemif->clk_rate, RHOLD_MAX);
+> +	rstrobe	= aemif_calc_rate(data->rstrobe, aemif->clk_rate, RSTROBE_MAX);
+> +	rsetup	= aemif_calc_rate(data->rsetup, aemif->clk_rate, RSETUP_MAX);
+> +	whold	= aemif_calc_rate(data->whold, aemif->clk_rate, WHOLD_MAX);
+> +	wstrobe	= aemif_calc_rate(data->wstrobe, aemif->clk_rate, WSTROBE_MAX);
+> +	wsetup	= aemif_calc_rate(data->wsetup, aemif->clk_rate, WSETUP_MAX);
+> +
+> +	if (ta < 0 || rhold < 0 || rstrobe < 0 || rsetup < 0 ||
+> +			whold < 0 || wstrobe < 0 || wsetup < 0) {
+> +		pr_err("%s: cannot get suitable timings\n", __func__);
+> +		return -EINVAL;
+> +	}
+> +
+> +	set = TA(ta) | RHOLD(rhold) | RSTROBE(rstrobe) | RSETUP(rsetup) |
+> +		WHOLD(whold) | WSTROBE(wstrobe) | WSETUP(wsetup);
+> +
+> +	set |= (data->asize & ACR_ASIZE_MASK);
+> +	if (data->enable_ew)
+> +		set |= ACR_EW_MASK;
+> +	if (data->enable_ss)
+> +		set |= ACR_SS_MASK;
+> +
+> +	val = readl(aemif->base + offset);
+> +	val &= ~CONFIG_MASK;
+> +	val |= set;
+> +	writel(val, aemif->base + offset);
+> +
+> +	return 0;
+> +}
+> +
+> +inline int aemif_cycles_to_nsec(int val)
+> +{
+> +	return (val * NSEC_PER_MSEC) / aemif->clk_rate;
+> +}
+> +
+> +/**
+> + * davinci_aemif_get_hw_params - function to read hw register values
+> + * @cs: chip select
+> + * @data: ptr to cs data
+> + *
+> + * This function reads the defaults from the registers and update
+> + * the timing values. Required for get/set commands and also for
+> + * the case when driver needs to use defaults in hardware.
+> + */
+> +static void davinci_aemif_get_hw_params(int cs,
+> +		struct davinci_aemif_cs_data *data)
+> +{
+> +	u32 val, offset = A1CR_OFFSET + cs * 4;
+> +
+> +	val = readl(aemif->base + offset);
+> +	data->ta = aemif_cycles_to_nsec(TA_VAL(val));
+> +	data->rhold = aemif_cycles_to_nsec(RHOLD_VAL(val));
+> +	data->rstrobe = aemif_cycles_to_nsec(RSTROBE_VAL(val));
+> +	data->rsetup = aemif_cycles_to_nsec(RSETUP_VAL(val));
+> +	data->whold = aemif_cycles_to_nsec(WHOLD_VAL(val));
+> +	data->wstrobe = aemif_cycles_to_nsec(WSTROBE_VAL(val));
+> +	data->wsetup = aemif_cycles_to_nsec(WSETUP_VAL(val));
+> +	data->enable_ew = EW_VAL(val);
+> +	data->enable_ss = SS_VAL(val);
+> +	data->asize = val & ASIZE_MAX;
+> +}
+> +
+> +/**
+> + * get_cs_data - helper function to get bus configuration data for a given cs
+> + * @cs: chip-select, values 2-5
+> + */
+> +static struct davinci_aemif_cs_data *get_cs_data(int cs)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < aemif->cfg->num_cs; i++) {
+> +		if (cs == aemif->cfg->cs_data[i].cs)
+> +			break;
+> +	}
+> +
+> +	if (i == aemif->cfg->num_cs)
+> +		return NULL;
+> +
+> +	return &aemif->cfg->cs_data[i];
+> +}
+> +
+> +/**
+> + * davinci_aemif_set_abus_params - Set bus configuration data for a given cs
+> + * @cs: chip-select, values 2-5
+> + * @data: ptr to a struct to hold the configuration data to be set
+> + *
+> + * This function is called to configure emif bus parameters for a given cs.
+> + * Users call this function after calling davinci_aemif_get_abus_params()
+> + * to get current parameters, modify and call this function
+> + */
+> +int davinci_aemif_set_abus_params(unsigned int cs,
+> +			struct davinci_aemif_cs_data *data)
+> +{
+> +	struct davinci_aemif_cs_data *curr_cs_data;
+> +	int ret = -EINVAL, chip_cs;
+> +
+> +	if (data == NULL)
+> +		return ret;
+> +
+> +	if (aemif->base == NULL)
+> +		return ret;
+> +
+> +	/* translate to chip CS which starts at 2 */
+what is chip CS ? you can either use CS or chip select..
+> +	chip_cs = cs + 2;
+Use a macro like AEMIF_CS_START instead of hardcoding it.
 
+> +
+> +	curr_cs_data = get_cs_data(chip_cs);
+> +	if (curr_cs_data) {
+> +		/* for configuration we use cs since it is used to index ACR */
+> +		ret = davinci_aemif_config_abus(chip_cs, aemif->base, data);
+> +		if (!ret) {
+> +			*curr_cs_data = *data;
+> +			return 0;
+> +		}
+> +	}
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL(davinci_aemif_set_abus_params);
+> +
+Who is the user of this EXPORT ?
 
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Cc: Chris Ball <cjb@laptop.org>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Inki Dae <inki.dae@samsung.com>
-Cc: Jeff Garzik <jgarzik@redhat.com>
-Cc: Kyungmin Park <kyungmin.park@samsung.com>
-Cc: Mark Langsdorf <mark.langsdorf@calxeda.com>
-Cc: Paul Turner <pjt@google.com>
-Cc: Peter Boonstoppel <pboonstoppel@nvidia.com>
-Cc: Peter Zijlstra <a.p.zijlstra@chello.nl>
-Cc: Rahul Sharma <rahul.sharma@samsung.com>
-Cc: Rob Clark <rob@ti.com>
-Cc: Rob Herring <rob.herring@calxeda.com>
-Cc: Thomas Abraham <thomas.abraham@linaro.org>
-Cc: Will Newton <will.newton@imgtec.com>
-Cc: linux-mtd@lists.infradead.org
--- 
-1.7.10
+> +/**
+> + * davinci_aemif_get_abus_params - Get bus configuration data for a given cs
+> + * @cs: chip-select, values 2-5
+> + * returns: ptr to a struct having the current configuration data
+> + */
+> +struct davinci_aemif_cs_data *davinci_aemif_get_abus_params(unsigned int cs)
+> +{
+> +	/* translate to chip CS which starts at 2 */
+> +	return get_cs_data(cs + 2);
+> +}
+> +EXPORT_SYMBOL(davinci_aemif_get_abus_params);
+> +
+This one too.
+
+[...]
+
+> +static int __devinit davinci_aemif_probe(struct platform_device *pdev)
+> +{
+> +	struct davinci_aemif_pdata *cfg;
+> +	int ret  = -ENODEV, i;
+> +	struct resource *res;
+> +
+> +	aemif = devm_kzalloc(&pdev->dev, sizeof(*aemif), GFP_KERNEL);
+> +
+> +	if (!aemif)
+> +		return -ENOMEM;
+> +
+> +	aemif->clk = clk_get(NULL, "aemif");
+Please use dev attributes. Above usage of clk_get isn't recommonded
+in drivers. You might have to add alias entries in your clock data for
+it to work though.
+
+> +	if (IS_ERR(aemif->clk))
+> +		return PTR_ERR(aemif->clk);
+> +
+> +	clk_prepare_enable(aemif->clk);
+> +	aemif->clk_rate = clk_get_rate(aemif->clk) / 1000;
+> +
+/1000 for what ? Converting it into KHz ?
+
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	if (!res) {
+> +		pr_err("No IO memory address defined\n");
+> +		goto error;
+> +	}
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +
+> +	aemif->base = devm_request_and_ioremap(&pdev->dev, res);
+> +	if (!aemif->base) {
+> +		ret = -EBUSY;
+> +		pr_err("ioremap failed\n");
+> +		goto error;
+> +	}
+> +
+> +	if (pdev->dev.platform_data == NULL) {
+> +		/* Not platform data, we get the cs data from the cs nodes */
+> +		cfg = devm_kzalloc(&pdev->dev, sizeof(*cfg), GFP_KERNEL);
+> +		if (cfg == NULL)
+> +			return -ENOMEM;
+> +
+> +		aemif->cfg = cfg;
+> +		if (of_davinci_aemif_cs_init(pdev->dev.of_node) < 0) {
+> +			pr_err("No platform data or cs of node present\n");
+> +			goto error;
+> +		}
+> +	} else {
+> +		cfg = pdev->dev.platform_data;
+> +		aemif->cfg = cfg;
+> +	}
+> +
+> +	for (i = 0; i < cfg->num_cs; i++) {
+> +		/* cs is from 2-5. Internally we use cs-2 to access ACR */
+> +		ret = davinci_aemif_config_abus(cfg->cs_data[i].cs - 2,
+> +				aemif->base, &cfg->cs_data[i]);
+> +		if (ret < 0) {
+> +			pr_err("Error configuring chip select %d\n",
+> +				cfg->cs_data[i].cs);
+> +			goto error;
+> +		}
+> +	}
+> +	return 0;
+> +error:
+> +	clk_disable_unprepare(aemif->clk);
+> +	clk_put(aemif->clk);
+Alos unmap 'aemif->base' here..
+
+> +	return ret;
+> +}
+> +
+> +static struct platform_driver davinci_aemif_driver = {
+> +	.probe = davinci_aemif_probe,
+> +	.driver = {
+> +		.name = DRV_NAME,
+> +		.owner = THIS_MODULE,
+> +		.of_match_table = davinci_aemif_of_match,
+> +	},
+> +};
+> +
+> +static int __init davinci_aemif_init(void)
+> +{
+> +	return platform_driver_register(&davinci_aemif_driver);
+> +}
+> +subsys_initcall(davinci_aemif_init);
+> +
+> +static void __exit davinci_aemif_exit(void)
+> +{
+> +	clk_disable_unprepare(aemif->clk);
+> +	clk_put(aemif->clk);
+> +	platform_driver_unregister(&davinci_aemif_driver);
+> +}
+> +module_exit(davinci_aemif_exit);
+> +
+> +MODULE_AUTHOR("Murali Karicheri <m-karicheri2@ti.com>");
+> +MODULE_DESCRIPTION("Texas Instruments AEMIF driver");
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_ALIAS("platform:" DRV_NAME);
+> diff --git a/include/linux/platform_data/davinci-aemif.h b/include/linux/platform_data/davinci-aemif.h
+> new file mode 100644
+> index 0000000..03f3ad0
+> --- /dev/null
+> +++ b/include/linux/platform_data/davinci-aemif.h
+> @@ -0,0 +1,47 @@
+> +/*
+> + * TI DaVinci AEMIF support
+> + *
+> + * Copyright 2010 (C) Texas Instruments, Inc. http://www.ti.com/
+> + *
+s/2010/2012
+> + * This file is licensed under the terms of the GNU General Public License
+> + * version 2. This program is licensed "as is" without any warranty of any
+> + * kind, whether express or implied.
+> + */
+> +#ifndef _MACH_DAVINCI_AEMIF_H
+> +#define _MACH_DAVINCI_AEMIF_H
+Fix the header guard as per new directory
+
+Regards
+Santosh
