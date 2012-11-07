@@ -1,27 +1,24 @@
-Received: from mho-04-ewr.mailhop.org ([204.13.248.74]
- helo=mho-02-ewr.mailhop.org)
+Received: from mail-ea0-f177.google.com ([209.85.215.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TWDMC-0001xf-5Q
- for linux-mtd@lists.infradead.org; Wed, 07 Nov 2012 21:40:20 +0000
-Date: Wed, 7 Nov 2012 13:40:14 -0800
-From: Tony Lindgren <tony@atomide.com>
-To: "Mohammed, Afzal" <afzal@ti.com>
-Subject: Re: [PATCH 1/3] omap gpmc : add support of setting
- CYCLE2CYCLEDELAY and BUSTURNAROUND
-Message-ID: <20121107214014.GM6801@atomide.com>
-References: <1352220277-4251-1-git-send-email-matthieu.castet@parrot.com>
- <5099478A.50901@ti.com> <5099504A.5060505@parrot.com>
- <5099743B.3040804@ti.com>
- <C8443D0743D26F4388EA172BF4E2A7A93EA0E2D6@DBDE01.ent.ti.com>
+ id 1TWEIh-0000Jn-Ga
+ for linux-mtd@lists.infradead.org; Wed, 07 Nov 2012 22:40:48 +0000
+Received: by mail-ea0-f177.google.com with SMTP id n13so817815eaa.36
+ for <linux-mtd@lists.infradead.org>; Wed, 07 Nov 2012 14:40:44 -0800 (PST)
+Message-ID: <509AE364.8070509@gmail.com>
+Date: Wed, 07 Nov 2012 23:40:36 +0100
+From: Vincenzo Aliberti <vincenzo.aliberti@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <C8443D0743D26F4388EA172BF4E2A7A93EA0E2D6@DBDE01.ent.ti.com>
-Cc: "dedekind1@gmail.com" <dedekind1@gmail.com>,
- Matthieu CASTET <matthieu.castet@parrot.com>, Daniel Mack <zonque@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Hunter,
- Jon" <jon-hunter@ti.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+To: dedekind1@gmail.com
+Subject: Re: [PATCH] [MTD] MTD driver for LPDDR2-NVM PCM memories
+References: <1349385434-3073-1-git-send-email-valibert@micron.com>
+ <1349954577.12014.13.camel@sauron.fi.intel.com> <507DD09C.6050600@gmail.com>
+ <1350479369.5769.153.camel@sauron.fi.intel.com> <5089B692.1030203@gmail.com>
+In-Reply-To: <5089B692.1030203@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: arnd@arndb.de, dmanna@micron.com, lporzio@micron.com,
+ linux-mtd@lists.infradead.org, valibert@micron.com, svenkatr@ti.com,
+ dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,83 +28,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Mohammed, Afzal <afzal@ti.com> [121107 01:00]:
-> + Tony, Daniel
+On 10/26/2012 12:00 AM, Vincenzo Aliberti wrote:
+> On 10/17/2012 03:09 PM, Artem Bityutskiy wrote:
+>> On Tue, 2012-10-16 at 23:24 +0200, Vincenzo Aliberti wrote:
+>>> The only Warning is
+>>> WARNING: line over 80 characters
+>>> #605: FILE: include/uapi/mtd/mtd-abi.h:112:
+>>> +#define MTD_CAP_PCM		(MTD_WRITEABLE | MTD_BIT_WRITEABLE | MTD_NO_ERASE)
+>>>
+>>> But in the file include/uapi/mtd/mtd-abi.h there is already the raw:
+>>> #define MTD_CAP_RAM		(MTD_WRITEABLE | MTD_BIT_WRITEABLE | MTD_NO_ERASE)
+>>
+>> You can ignore this warning.
+>>
 > 
-> Hi,
+> Artem, David do you see the need for further changes or do you think it can be
+> pulled in the main line?
 > 
-> On Wed, Nov 07, 2012 at 02:04:03, Hunter, Jon wrote:
-> > On 11/06/2012 12:00 PM, Matthieu CASTET wrote:
-> 
-> > > I will post another patch, unless this is already done in  Afzal patch (Is there
-> > > a tree where I can get Afzal pending patches ?)
-> 
-> > Afzal keeps his kernel tree on gitorious [1]. However, I am not sure
-> > what Afzal's plans are for the remaining patches not yet merged and
-> > which branch you should look at (I have a lot of problems viewing
-> > anything on gitorious these days).
-> > 
-> > Afzal, let us know how you prefer to handle this.
-> 
-> My initial plan was to do timing related changes first and then dt
-> conversion. But at the present moment, it seems higher priority has
-> to be given for dt conversion over timing changes (it involves
-> using generic timing routine for all required gpmc peripherals,
-> handling additional timings inclusive of $subject) and hence timing
-> related changes were put in suspended animation for now.
-> 
-> And Daniel has started working on gpmc dt. Let us take Tony's
-> opinion on how to deal with this, Tony ?
 
-Up to you to figure out the ordering.
- 
-> Following are the pending changes w.r.t timing available @[1]
-> (please note that these would have to be rebased over branch/tag
-> specified by Tony in reply to Matthieu's patch 3/3)
-> a. d42eafa ARM: OMAP2+: nand: remove redundant rounding
-> b. f229aba ARM: OMAP2+: gpmc: handle additional timings
-> c. 14cbb87 ARM: OMAP2+: gpmc: generic timing calculation
-> d. 9830264 ARM: OMAP2+: onenand: generic timing calculation
-> e. 5f33ea5 ARM: OMAP2+: smc91x: generic timing calculation
-> f. 9876020 ARM: OMAP2+: tusb6010: generic timing calculation (HEAD)
-> 
-> 'b' is a superset of $subject
-> 
-> Originally 'a' and 'b' was part of gpmc cleanup series for common
-> zImage, then Tony requested for minimal changes for it, hence
-> 'a' & 'b' was left out in the pull request (picked up by Tony),
-> so that gpmc common zImage cleanup series would not create any
-> timing related issues.
-
-Maybe send pull requests for the ones that are ready to go?
-
-They should be done against what we have in clean-up probably, so
-omap-for-v3.8/cleanup-headers-prepare-multiplatform-v3 or against
-omap-for-v3.8/cleanup-headers-gpmc it that merges easily with
-the cleanup branch.
- 
-> One thing to note is that cycle2cycledelay and busturnaround field's
-> would get zeroed out with $subject patch for those peripheral's that
-> call gpmc_cs_set_timings(). If there are any boards silently
-> depending on bootloader setting these values, it may be affected, so
-> this change would need to be verified for existing boards in mainline.
-> 
-> Perhaps 'b' (for $subject patch) can be taken ahead if Tony is
-> happy with it.
-> 
-> And regarding patches 2 & 3 of Matthieu's series that calculate
-> timings, I was wondering whether generic timing routine (c) can
-> learn from it as well as vice-versa. Also with gpmc common zImage
-> series, omap-nand driver does not have access to timing related
-> gpmc functions, a new gpmc function would have to be exported
-> that translates onfi timings to gpmc (or educate generic timing
-> routine with onfi translation too ?)
-
-Right, once we enable CONFIG_ARCH_MULTIPLATFORM, drivers trying
-to include <mach/*.h> or <plat/*.h> files will fail to build.
-
-Regards,
-
-Tony
- 
-> [a] git://gitorious.org/x0148406-public/linux-kernel.git gpmc-timing
+I have just tested the patch also with 3.7.0-rc4 and it works fine: do you have any
+estimation on when it can be pulled in the main line?
