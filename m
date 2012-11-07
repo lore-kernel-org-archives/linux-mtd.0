@@ -1,15 +1,26 @@
-Received: from smtp34.i.mail.ru ([94.100.177.94])
+Received: from avon.wwwdotorg.org ([2001:470:1f0f:bd7::2])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TW9jC-0008LY-IQ
- for linux-mtd@lists.infradead.org; Wed, 07 Nov 2012 17:47:52 +0000
-From: Alexander Shiyan <shc_work@mail.ru>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH RESEND] mtd: gpio-nand: Ability to use driver for
- configurations without RDY-pin
-Date: Wed,  7 Nov 2012 21:47:41 +0400
-Message-Id: <1352310461-21742-1-git-send-email-shc_work@mail.ru>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- David Woodhouse <dwmw2@infradead.org>, Alexander Shiyan <shc_work@mail.ru>
+ id 1TWBse-0005lr-Ev
+ for linux-mtd@lists.infradead.org; Wed, 07 Nov 2012 20:05:45 +0000
+Message-ID: <509ABF12.5080804@wwwdotorg.org>
+Date: Wed, 07 Nov 2012 13:05:38 -0700
+From: Stephen Warren <swarren@wwwdotorg.org>
+MIME-Version: 1.0
+To: Murali Karicheri <m-karicheri2@ti.com>
+Subject: Re: [RFC v2 PATCH 1/2] memory: davinci - add aemif controller platform
+ driver
+References: <1352238427-26085-1-git-send-email-m-karicheri2@ti.com>
+ <1352238427-26085-2-git-send-email-m-karicheri2@ti.com>
+In-Reply-To: <1352238427-26085-2-git-send-email-m-karicheri2@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: davinci-linux-open-source@linux.davincidsp.com, mikedunn@newsguy.com,
+ linux-doc@vger.kernel.org, artem.bityutskiy@linux.intel.com,
+ devicetree-discuss@lists.ozlabs.org, nsekhar@ti.com,
+ linux-kernel@vger.kernel.org, rob.herring@calxeda.com,
+ grant.likely@secretlab.ca, linux-mtd@lists.infradead.org, rob@landley.net,
+ gregkh@linuxfoundation.org, santosh.shilimkar@ti.com, hs@denx.de,
+ dwmw2@infradead.org, hdoyu@nvidia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,68 +30,165 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In some hardware configurations of "gpio-nand" RDY-pin may be not
-connected. This patch allow to use driver for these configurations.
-In this case we are assume that NAND device always ready.
+On 11/06/2012 02:47 PM, Murali Karicheri wrote:
+> This is a platform driver for asynchronous external memory interface
+> available on TI SoCs. This driver was previously located inside the
+> mach-davinci folder. As this DaVinci IP is re-used across multiple
+> family of devices such as c6x, keystone etc, the driver is moved to drivers.
+> The driver configures async bus parameters associated with a particular
+> chip select. For DaVinci NAND controller driver and driver for other async
+> devices such as NOR flash, ASRAM etc, the bus confuguration is
+> done by this driver at probe. A set of APIs (set/get) are provided to
+> update the values based on specific driver usage.
 
-Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
----
- drivers/mtd/nand/gpio.c |   22 +++++++++++++++-------
- 1 files changed, 15 insertions(+), 7 deletions(-)
+> diff --git a/Documentation/devicetree/bindings/memory/davinci-aemif.txt b/Documentation/devicetree/bindings/memory/davinci-aemif.txt
 
-diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
-index bc73bc5..0b3c815 100644
---- a/drivers/mtd/nand/gpio.c
-+++ b/drivers/mtd/nand/gpio.c
-@@ -134,7 +134,11 @@ static void gpio_nand_readbuf16(struct mtd_info *mtd, u_char *buf, int len)
- static int gpio_nand_devready(struct mtd_info *mtd)
- {
- 	struct gpiomtd *gpiomtd = gpio_nand_getpriv(mtd);
--	return gpio_get_value(gpiomtd->plat.gpio_rdy);
-+
-+	if (gpio_is_valid(gpiomtd->plat.gpio_rdy))
-+		return gpio_get_value(gpiomtd->plat.gpio_rdy);
-+
-+	return 1;
- }
- 
- #ifdef CONFIG_OF
-@@ -252,7 +256,8 @@ static int __devexit gpio_nand_remove(struct platform_device *dev)
- 	gpio_free(gpiomtd->plat.gpio_nce);
- 	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
- 		gpio_free(gpiomtd->plat.gpio_nwp);
--	gpio_free(gpiomtd->plat.gpio_rdy);
-+	if (gpio_is_valid(gpiomtd->plat.gpio_rdy))
-+		gpio_free(gpiomtd->plat.gpio_rdy);
- 
- 	kfree(gpiomtd);
- 
-@@ -336,10 +341,12 @@ static int __devinit gpio_nand_probe(struct platform_device *dev)
- 	if (ret)
- 		goto err_cle;
- 	gpio_direction_output(gpiomtd->plat.gpio_cle, 0);
--	ret = gpio_request(gpiomtd->plat.gpio_rdy, "NAND RDY");
--	if (ret)
--		goto err_rdy;
--	gpio_direction_input(gpiomtd->plat.gpio_rdy);
-+	if (gpio_is_valid(gpiomtd->plat.gpio_rdy)) {
-+		ret = gpio_request(gpiomtd->plat.gpio_rdy, "NAND RDY");
-+		if (ret)
-+			goto err_rdy;
-+		gpio_direction_input(gpiomtd->plat.gpio_rdy);
-+	}
- 
- 
- 	this->IO_ADDR_W  = this->IO_ADDR_R;
-@@ -386,7 +393,8 @@ static int __devinit gpio_nand_probe(struct platform_device *dev)
- err_wp:
- 	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
- 		gpio_set_value(gpiomtd->plat.gpio_nwp, 0);
--	gpio_free(gpiomtd->plat.gpio_rdy);
-+	if (gpio_is_valid(gpiomtd->plat.gpio_rdy))
-+		gpio_free(gpiomtd->plat.gpio_rdy);
- err_rdy:
- 	gpio_free(gpiomtd->plat.gpio_cle);
- err_cle:
--- 
-1.7.8.6
+> +* Texas Instruments Davinci AEMIF bus interface
+> +
+> +This file provides information for the davinci-emif device and
+> +async bus bindings.
+> +
+> +Required properties:=
+> +- compatible: "ti,davinci-aemif";
+> +- #address-cells : Should be either two or three.  The first cell is the
+> +                   chipselect number, and the remaining cells are the
+> +                   offset into the chipselect.
+> +- #size-cells : Either one or two, depending on how large each chipselect
+> +                can be.
+
+What about "how large each chipselect can be" determines 2-vs-3
+(address) or 1-vs-2 (size) cells? I assume it's 32-vs-64-bit bus? It
+might be best to make that explicit.
+
+> +- reg : contains offset/length value for AEMIF control registers space
+> +- ranges : Each range corresponds to a single chipselect, and cover
+
+add "s" at the end of that line.
+
+> +           the entire access window as configured.
+> +
+> +Child device nodes describe the devices connected to IFC such as NOR (e.g.
+> +cfi-flash) and NAND (ti,davinci-nand, see Documentation/devicetree/bindings/
+> +mtd/davinci-nand.txt). There might be board specific devices like FPGAs.
+> +
+> +In addition, optional child sub nodes contains bindings for the async bus
+> +interface for a given chip select.
+
+Hmmm. That's two different kinds of children, which appear to use
+different addressing schemes given the examples below; more on that below.
+
+> +Optional cs node properties:-
+> +- compatible: "ti,davinci-cs"
+> +
+> +  All of the params below in nanoseconds and are optional
+> +
+> +- ti,davinci-cs-asize - asynchronous data bus width (0 - 8bit, 1 - 16 bit)
+
+Perhaps s/asize/bus-width/? Also, directly using values 8 and 16 would
+be a lot more obvious to read than 0 and 1.
+
+> +- ti,davinci-cs-ta - Minimum turn around time
+> +- ti,davinci-cs-rhold - read hold width
+> +- ti,davinci-cs-rstobe - read strobe width
+> +- ti,davinci-cs-rsetup - read setup width
+> +- ti,davinci-cs-whold - write hold width
+> +- ti,davinci-cs-wstrobe - write strobe width
+> +- ti,davinci-cs-wsetup - write setup width
+
+The comments in the examples indicate these are in nS. This should be
+mentioned here instead I think.
+
+Does there need to be a specification of bus clock rate? How does the
+driver convert nS into number-of-clock-cycles, which I assume is what
+the HW would be programmed with?
+
+> +- ti,davinci-cs-ss - enable/disable select strobe (0 - disable, 1 - enable)
+> +- ti,davinci-cs-ew - enable/disable extended wait cycles (0 - disable, 1 - enable)
+
+Boolean properties are usually represented as present (on/enabled/1) or
+missing (off/disabled/0). Shouldn't these two properties work that way?
+I see the comment below:
+
+> +if any of the above parameters are absent, hardware register default or that
+> +set by a boot loader are used.
+
+implied they're really tri-state (explicitly off or on, or just not
+programmed). However, I think it'd be better if the DT always
+represented the complete configuration, since the DT and binding should
+be a full description of the HW rather than just the data you expect a
+particular Linux driver to need after a particular boot loader has
+executed first.
+
+> +Example for aemif, davinci nand and nor flash chip select shown below.
+> +
+> +aemif@60000000 {
+> +	compatible = "ti,davinci-aemif";
+> +	#address-cells = <2>;
+> +	#size-cells = <1>;
+> +	reg = <0x68000000 0x80000>;
+> +	ranges = <2 0 0x60000000 0x02000000
+> +		  3 0 0x62000000 0x02000000
+> +		  4 0 0x64000000 0x02000000
+> +		  5 0 0x66000000 0x02000000
+> +		  6 0 0x68000000 0x02000000>;
+> +
+> +	nand_cs:cs2@60000000 {
+
+This node has no reg property, but it needs one if you use a unit
+address ("@60000000") in the node name.
+
+The numbering scheme unit address above doesn't seem to match the
+addresses provided to child nodes by the ranges property. Perhaps the
+node layout you want is:
+
+
+aemif {
+    chip-selects {
+        nand_cs:cs2@60000000 {
+        };
+    };
+    devices {
+        nand@3,0 {
+        }
+    };
+};
+
+so that the chip-selects and devices nodes can both set appropriate and
+different #address-cells and #size-cells?
+
+That does feel a bit wierd though, and I imagine writing the ranges
+property in the aemif node would be hard.
+
+Perhaps the chip-select timings should just be written as properties in
+the aemif controller, rather than child nodes?
+
+ti,cs-timings =
+    < ... > /* 0 */
+    < ... > /* 1 */
+    < ... > /* 2 */
+    ;
+
+with each <...> being a list of n cells in a specific order?
+
+> +		compatible = "ti,davinci-cs";
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		/* all timings in nanoseconds */
+> +		ti,davinci-cs-ta = <0>;
+> +		ti,davinci-cs-rhold = <7>;
+> +		ti,davinci-cs-rstrobe = <42>;
+> +		ti,davinci-cs-rsetup = <14>;
+> +		ti,davinci-cs-whold = <7>;
+> +		ti,davinci-cs-wstrobe = <42>;
+> +		ti,davinci-cs-wsetup = <14>;
+> +	};
+...
+> +	nand@3,0 {
+> +		compatible = "ti,davinci-nand";
+> +		reg = <3 0x0 0x807ff
+> +			6 0x0 0x8000>;
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +
+> +		.. See Documentation/devicetree/bindings/mtd/davinci-nand.txt
+> +	};
