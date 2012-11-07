@@ -1,23 +1,26 @@
-Received: from 17.mo4.mail-out.ovh.net ([46.105.41.16]
- helo=mo4.mail-out.ovh.net)
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TW7e4-0000Sz-Cj
- for linux-mtd@lists.infradead.org; Wed, 07 Nov 2012 15:34:25 +0000
-Received: from mail192.ha.ovh.net (b6.ovh.net [213.186.33.56])
- by mo4.mail-out.ovh.net (Postfix) with SMTP id 1FD9D104D995
- for <linux-mtd@lists.infradead.org>; Wed,  7 Nov 2012 16:41:43 +0100 (CET)
-Date: Wed, 7 Nov 2012 16:32:16 +0100
-From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-To: linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 1/1] mtd: physmap_of: allow to specify the mtd name for
- retro compatiblity
-Message-ID: <20121107153216.GF4576@game.jcrosoft.org>
+Received: from bear.ext.ti.com ([192.94.94.41])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TW7jF-0001xg-6J
+ for linux-mtd@lists.infradead.org; Wed, 07 Nov 2012 15:39:46 +0000
+Message-ID: <509A80A9.7050800@ti.com>
+Date: Wed, 7 Nov 2012 10:39:21 -0500
+From: Murali Karicheri <m-karicheri2@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: David Woodhouse <dwmw2@infradead.org>, devicetree-discuss@lists.ozlabs.org,
- Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
- linux-mtd@lists.infradead.org
+To: Santosh Shilimkar <santosh.shilimkar@ti.com>
+Subject: Re: [RFC v2 PATCH 1/2] memory: davinci - add aemif controller platform
+ driver
+References: <1352238427-26085-1-git-send-email-m-karicheri2@ti.com>
+ <1352238427-26085-2-git-send-email-m-karicheri2@ti.com>
+ <5099AFF6.50400@ti.com>
+In-Reply-To: <5099AFF6.50400@ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: davinci-linux-open-source@linux.davincidsp.com, mikedunn@newsguy.com,
+ linux-doc@vger.kernel.org, artem.bityutskiy@linux.intel.com,
+ devicetree-discuss@lists.ozlabs.org, swarren@wwwdotorg.org, nsekhar@ti.com,
+ linux-kernel@vger.kernel.org, rob.herring@calxeda.com,
+ grant.likely@secretlab.ca, linux-mtd@lists.infradead.org, rob@landley.net,
+ gregkh@linuxfoundation.org, hs@denx.de, dwmw2@infradead.org, hdoyu@nvidia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,59 +30,179 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-linux,mtd-name allow to specify the mtd name for retro capability with
-physmap-flash drivers as boot loader pass the mtd partition via the old
-device name physmap-flash.
+Santhosh,
 
-Signed-off-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
----
- Documentation/devicetree/bindings/mtd/mtd-physmap.txt |    3 +++
- drivers/mtd/maps/physmap_of.c                         |    5 ++++-
- 2 files changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
-index 94de19b..dab7847 100644
---- a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
-+++ b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
-@@ -23,6 +23,9 @@ file systems on embedded devices.
-    unaligned accesses as implemented in the JFFS2 code via memcpy().
-    By defining "no-unaligned-direct-access", the flash will not be
-    exposed directly to the MTD users (e.g. JFFS2) any more.
-+ - linux,mtd-name: allow to specify the mtd name for retro capability with
-+   physmap-flash drivers as boot loader pass the mtd partition via the old
-+   device name physmap-flash.
- 
- For JEDEC compatible devices, the following additional properties
- are defined:
-diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
-index 6f19aca..9a8db0c 100644
---- a/drivers/mtd/maps/physmap_of.c
-+++ b/drivers/mtd/maps/physmap_of.c
-@@ -170,6 +170,7 @@ static int __devinit of_flash_probe(struct platform_device *dev)
- 	resource_size_t res_size;
- 	struct mtd_part_parser_data ppdata;
- 	bool map_indirect;
-+	const char *mtd_name;
- 
- 	match = of_match_device(of_flash_match, &dev->dev);
- 	if (!match)
-@@ -178,6 +179,8 @@ static int __devinit of_flash_probe(struct platform_device *dev)
- 
- 	reg_tuple_size = (of_n_addr_cells(dp) + of_n_size_cells(dp)) * sizeof(u32);
- 
-+	of_property_read_string(dp, "linux,mtd-name", &mtd_name);
-+
- 	/*
- 	 * Get number of "reg" tuples. Scan for MTD devices on area's
- 	 * described by each "reg" region. This makes it possible (including
-@@ -234,7 +237,7 @@ static int __devinit of_flash_probe(struct platform_device *dev)
- 			goto err_out;
- 		}
- 
--		info->list[i].map.name = dev_name(&dev->dev);
-+		info->list[i].map.name = mtd_name ? mtd_name : dev_name(&dev->dev);
- 		info->list[i].map.phys = res.start;
- 		info->list[i].map.size = res_size;
- 		info->list[i].map.bankwidth = be32_to_cpup(width);
--- 
-1.7.10.4
+Thanks for the review. Some of the comments below applies to the 
+original code as this driver is moved from mach-davinci to memory. I 
+will fix them though. See below my response.
+>> +
+>> +    curr_cs_data = get_cs_data(chip_cs);
+>> +    if (curr_cs_data) {
+>> +        /* for configuration we use cs since it is used to index ACR */
+>> +        ret = davinci_aemif_config_abus(chip_cs, aemif->base, data);
+>> +        if (!ret) {
+>> +            *curr_cs_data = *data;
+>> +            return 0;
+>> +        }
+>> +    }
+>> +
+>> +    return ret;
+>> +}
+>> +EXPORT_SYMBOL(davinci_aemif_set_abus_params);
+>> +
+> Who is the user of this EXPORT ?
+Mostly not needed, but there is a use case for connecting FPGA that 
+needs to do the configuration dynamically I guess. Want to hear from 
+others if this is needed? Same for below comment. May be we can remove 
+this now and add it later if needed.
+>
+>> +/**
+>> + * davinci_aemif_get_abus_params - Get bus configuration data for a 
+>> given cs
+>> + * @cs: chip-select, values 2-5
+>> + * returns: ptr to a struct having the current configuration data
+>> + */
+>> +struct davinci_aemif_cs_data *davinci_aemif_get_abus_params(unsigned 
+>> int cs)
+>> +{
+>> +    /* translate to chip CS which starts at 2 */
+>> +    return get_cs_data(cs + 2);
+>> +}
+>> +EXPORT_SYMBOL(davinci_aemif_get_abus_params);
+>> +
+> This one too.
+>
+> [...]
+>
+>> +static int __devinit davinci_aemif_probe(struct platform_device *pdev)
+>> +{
+>> +    struct davinci_aemif_pdata *cfg;
+>> +    int ret  = -ENODEV, i;
+>> +    struct resource *res;
+>> +
+>> +    aemif = devm_kzalloc(&pdev->dev, sizeof(*aemif), GFP_KERNEL);
+>> +
+>> +    if (!aemif)
+>> +        return -ENOMEM;
+>> +
+>> +    aemif->clk = clk_get(NULL, "aemif");
+> Please use dev attributes. Above usage of clk_get isn't recommonded
+> in drivers. You might have to add alias entries in your clock data for
+> it to work though.
+>
+Need to investigate.
+>> +    if (IS_ERR(aemif->clk))
+>> +        return PTR_ERR(aemif->clk);
+>> +
+>> +    clk_prepare_enable(aemif->clk);
+>> +    aemif->clk_rate = clk_get_rate(aemif->clk) / 1000;
+>> +
+> /1000 for what ? Converting it into KHz ?
+>
+Yes. WIll add a comment.
+>> +    res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>> +    if (!res) {
+>> +        pr_err("No IO memory address defined\n");
+>> +        goto error;
+>> +    }
+>> +
+>> +    res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>> +
+>> +    aemif->base = devm_request_and_ioremap(&pdev->dev, res);
+>> +    if (!aemif->base) {
+>> +        ret = -EBUSY;
+>> +        pr_err("ioremap failed\n");
+>> +        goto error;
+>> +    }
+>> +
+>> +    if (pdev->dev.platform_data == NULL) {
+>> +        /* Not platform data, we get the cs data from the cs nodes */
+>> +        cfg = devm_kzalloc(&pdev->dev, sizeof(*cfg), GFP_KERNEL);
+>> +        if (cfg == NULL)
+>> +            return -ENOMEM;
+>> +
+>> +        aemif->cfg = cfg;
+>> +        if (of_davinci_aemif_cs_init(pdev->dev.of_node) < 0) {
+>> +            pr_err("No platform data or cs of node present\n");
+>> +            goto error;
+>> +        }
+>> +    } else {
+>> +        cfg = pdev->dev.platform_data;
+>> +        aemif->cfg = cfg;
+>> +    }
+>> +
+>> +    for (i = 0; i < cfg->num_cs; i++) {
+>> +        /* cs is from 2-5. Internally we use cs-2 to access ACR */
+>> +        ret = davinci_aemif_config_abus(cfg->cs_data[i].cs - 2,
+>> +                aemif->base, &cfg->cs_data[i]);
+>> +        if (ret < 0) {
+>> +            pr_err("Error configuring chip select %d\n",
+>> +                cfg->cs_data[i].cs);
+>> +            goto error;
+>> +        }
+>> +    }
+>> +    return 0;
+>> +error:
+>> +    clk_disable_unprepare(aemif->clk);
+>> +    clk_put(aemif->clk);
+> Alos unmap 'aemif->base' here..
+>
+I thought devm_ API do this automatically. I will check.
+>> +    return ret;
+>> +}
+>> +
+>> +static struct platform_driver davinci_aemif_driver = {
+>> +    .probe = davinci_aemif_probe,
+>> +    .driver = {
+>> +        .name = DRV_NAME,
+>> +        .owner = THIS_MODULE,
+>> +        .of_match_table = davinci_aemif_of_match,
+>> +    },
+>> +};
+>> +
+>> +static int __init davinci_aemif_init(void)
+>> +{
+>> +    return platform_driver_register(&davinci_aemif_driver);
+>> +}
+>> +subsys_initcall(davinci_aemif_init);
+>> +
+>> +static void __exit davinci_aemif_exit(void)
+>> +{
+>> +    clk_disable_unprepare(aemif->clk);
+>> +    clk_put(aemif->clk);
+>> +    platform_driver_unregister(&davinci_aemif_driver);
+>> +}
+>> +module_exit(davinci_aemif_exit);
+>> +
+>> +MODULE_AUTHOR("Murali Karicheri <m-karicheri2@ti.com>");
+>> +MODULE_DESCRIPTION("Texas Instruments AEMIF driver");
+>> +MODULE_LICENSE("GPL v2");
+>> +MODULE_ALIAS("platform:" DRV_NAME);
+>> diff --git a/include/linux/platform_data/davinci-aemif.h 
+>> b/include/linux/platform_data/davinci-aemif.h
+>> new file mode 100644
+>> index 0000000..03f3ad0
+>> --- /dev/null
+>> +++ b/include/linux/platform_data/davinci-aemif.h
+>> @@ -0,0 +1,47 @@
+>> +/*
+>> + * TI DaVinci AEMIF support
+>> + *
+>> + * Copyright 2010 (C) Texas Instruments, Inc. http://www.ti.com/
+>> + *
+> s/2010/2012
+>> + * This file is licensed under the terms of the GNU General Public 
+>> License
+>> + * version 2. This program is licensed "as is" without any warranty 
+>> of any
+>> + * kind, whether express or implied.
+>> + */
+>> +#ifndef _MACH_DAVINCI_AEMIF_H
+>> +#define _MACH_DAVINCI_AEMIF_H
+> Fix the header guard as per new directory
+>
+Ok.
+> Regards
+> Santosh
+>
+>
