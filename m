@@ -1,19 +1,21 @@
-Received: from co1ehsobe004.messaging.microsoft.com ([216.32.180.187]
- helo=co1outboundpool.messaging.microsoft.com)
+Received: from mail-ie0-f177.google.com ([209.85.223.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TVyyI-0004QY-NW
- for linux-mtd@lists.infradead.org; Wed, 07 Nov 2012 06:18:43 +0000
-Message-ID: <5099FE29.1010400@freescale.com>
-Date: Wed, 7 Nov 2012 14:22:33 +0800
-From: Huang Shijie <b32955@freescale.com>
+ id 1TW17T-0007ci-7E
+ for linux-mtd@lists.infradead.org; Wed, 07 Nov 2012 08:36:19 +0000
+Received: by mail-ie0-f177.google.com with SMTP id e14so1945032iej.36
+ for <linux-mtd@lists.infradead.org>; Wed, 07 Nov 2012 00:36:16 -0800 (PST)
 MIME-Version: 1.0
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-Subject: Re: [PATCH] mtd nand : print flash size during detection
-References: <1352199836-4516-1-git-send-email-matthieu.castet@parrot.com>
-In-Reply-To: <1352199836-4516-1-git-send-email-matthieu.castet@parrot.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
+In-Reply-To: <dd11b4d47ab566931cb943dea34e67c1ce2c3e59.1351530856.git.viresh.kumar@linaro.org>
+References: <dd11b4d47ab566931cb943dea34e67c1ce2c3e59.1351530856.git.viresh.kumar@linaro.org>
+Date: Wed, 7 Nov 2012 14:06:16 +0530
+Message-ID: <CAKohpokakFB6v9P=ocmb3Zx8K6k7qmibzha7+2+boDSBt-TQbQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: map: Fix compilation warning
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: dwmw2@infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linaro-dev@lists.linaro.org, dedekind1@gmail.com,
+ Viresh Kumar <viresh.kumar@linaro.org>, patches@linaro.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,16 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2012=E5=B9=B411=E6=9C=8806=E6=97=A5 19:03, Matthieu CASTET =E5=86=
-=99=E9=81=93:
-> This help to detect bad flash identification in case the size is not pr=
-esent
-> on the name (ONFI).
+On 29 October 2012 22:47, Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> This patch is an attempt to fix following compilation warning.
 >
-I think you should give us a example of "bad flash identification".
+> In file included from drivers/mtd/chips/cfi_cmdset_0001.c:35:0:
+> drivers/mtd/chips/cfi_cmdset_0001.c: In function 'cfi_intelext_write_words':
+> include/linux/mtd/map.h:331:11: warning: 'r.x[0]' may be used uninitialized in this function [-Wmaybe-uninitialized]
+>
+> I could have used uninitialized_var() too, but didn't used it as the final else
+> part of map_word_load() is missing. So there is a chance that it might be passed
+> uninitialized. Better initialize to zero.
+>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-I also want to add this patch to print out the flash size during=20
-detection, but not for the "bad flash identification" reason,
-
-Best Regards
-Huang Shijie
+Ping!!
