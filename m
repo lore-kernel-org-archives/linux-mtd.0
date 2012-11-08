@@ -1,22 +1,18 @@
-Received: from mail-ie0-f177.google.com ([209.85.223.177])
+Received: from co1ehsobe006.messaging.microsoft.com ([216.32.180.189]
+ helo=co1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TWN5S-0006Wy-8u
- for linux-mtd@lists.infradead.org; Thu, 08 Nov 2012 08:03:43 +0000
-Received: by mail-ie0-f177.google.com with SMTP id e14so3699224iej.36
- for <linux-mtd@lists.infradead.org>; Thu, 08 Nov 2012 00:03:38 -0800 (PST)
+ id 1TWNEr-0001Pp-Ho
+ for linux-mtd@lists.infradead.org; Thu, 08 Nov 2012 08:13:26 +0000
+From: Prabhakar Kushwaha <prabhakar@freescale.com>
+To: <linux-mtd@lists.infradead.org>, <linuxppc-dev@lists.ozlabs.org>
+Subject: [PATCH] driver/mtd/IFC:Wait tWB time,
+ poll R/B before command execution
+Date: Thu, 8 Nov 2012 13:42:59 +0530
+Message-ID: <1352362380-13568-1-git-send-email-prabhakar@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <1351701009.8774.24.camel@shinybook.infradead.org>
-References: <1351679539-30651-1-git-send-email-robin@protonic.nl>
- <50914F32.7020605@gmail.com>
- <1351701009.8774.24.camel@shinybook.infradead.org>
-Date: Thu, 8 Nov 2012 00:03:38 -0800
-Message-ID: <CAN8TOE9usd7pwQi5hNkfnWiy+sgNojbTFU1arynV2WZi8x=05g@mail.gmail.com>
-Subject: Re: [PATCH] mtd: nand: Take celltype into account when parsing
- Samsung ext. nand ID's
-From: Brian Norris <computersforpeace@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain
+Cc: scottwood@freescale.com, Hemant Nautiyal <hemant.nautiyal@freescale.com>,
+ Prabhakar Kushwaha <prabhakar@freescale.com>, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,16 +22,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Oct 31, 2012 at 9:30 AM, David Woodhouse <dwmw2@infradead.org> wrote:
-> On Wed, 2012-10-31 at 09:17 -0700, Brian Norris wrote:
->> I believe this regression has already been fixed and accepted by David
->> Woodhouse and is awaiting upstream submission - hopefully for the 3.7-rc
->> cycle. This should be its ID, in linux-mtd.git (and linux-next):
->
-> Hm, did I not push that to Linus yet? I'll do so shortly. Anything else
-> we need to get in to 3.7 while I'm at it?
+IFC_FIR_OP_CMD0 issues command for execution without checking flash
+readiness. It may cause problem if flash is not ready. Instead use
+IFC_FIR_OP_CW0 which Wait for tWB time and poll R/B to return high or
+time-out, before issuing command.
 
-I haven't seen any pull requests to Linus. Bump?
+NAND_CMD_READID command implemention does not fulfill above requirement. So
+update its programming.
 
-Regards,
-Brian
+Signed-off-by: Prabhakar Kushwaha <prabhakar@freescale.com>
+Signed-off-by: Hemant Nautiyal <hemant.nautiyal@freescale.com>
+---
+ Based upon git://git.infradead.org/linux-mtd.git branch master
+
+ drivers/mtd/nand/fsl_ifc_nand.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
+index 8f0dd13..7e5b17c 100644
+--- a/drivers/mtd/nand/fsl_ifc_nand.c
++++ b/drivers/mtd/nand/fsl_ifc_nand.c
+@@ -382,7 +382,7 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
+ 			timing = IFC_FIR_OP_RBCD;
+ 
+ 		out_be32(&ifc->ifc_nand.nand_fir0,
+-				(IFC_FIR_OP_CMD0 << IFC_NAND_FIR0_OP0_SHIFT) |
++				(IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
+ 				(IFC_FIR_OP_UA  << IFC_NAND_FIR0_OP1_SHIFT) |
+ 				(timing << IFC_NAND_FIR0_OP2_SHIFT));
+ 		out_be32(&ifc->ifc_nand.nand_fcr0,
+@@ -785,7 +785,7 @@ static void fsl_ifc_sram_init(struct fsl_ifc_mtd *priv)
+ 
+ 	/* READID */
+ 	out_be32(&ifc->ifc_nand.nand_fir0,
+-			(IFC_FIR_OP_CMD0 << IFC_NAND_FIR0_OP0_SHIFT) |
++			(IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
+ 			(IFC_FIR_OP_UA  << IFC_NAND_FIR0_OP1_SHIFT) |
+ 			(IFC_FIR_OP_RB << IFC_NAND_FIR0_OP2_SHIFT));
+ 	out_be32(&ifc->ifc_nand.nand_fcr0,
+-- 
+1.7.9.5
