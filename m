@@ -1,25 +1,17 @@
-Received: from plane.gmane.org ([80.91.229.3])
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TWOp8-0006cT-ST
- for linux-mtd@lists.infradead.org; Thu, 08 Nov 2012 09:54:59 +0000
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1TWOpD-0000bO-Lf
- for linux-mtd@lists.infradead.org; Thu, 08 Nov 2012 10:55:04 +0100
-Received: from 194-208-216-12.ikanos.com ([194-208-216-12.ikanos.com])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <linux-mtd@lists.infradead.org>; Thu, 08 Nov 2012 10:55:03 +0100
-Received: from tttechmail by 194-208-216-12.ikanos.com with local (Gmexim 0.1
- (Debian)) id 1AlnuQ-0007hv-00
- for <linux-mtd@lists.infradead.org>; Thu, 08 Nov 2012 10:55:03 +0100
+ id 1TWP7y-0007qR-R2
+ for linux-mtd@lists.infradead.org; Thu, 08 Nov 2012 10:14:27 +0000
+Received: by mail-pb0-f49.google.com with SMTP id xa7so1801283pbc.36
+ for <linux-mtd@lists.infradead.org>; Thu, 08 Nov 2012 02:14:24 -0800 (PST)
+From: Sachin Kamat <sachin.kamat@linaro.org>
 To: linux-mtd@lists.infradead.org
-From: Joe <tttechmail@gmail.com>
-Subject: Frequent Writes to NAND flash with UBIFS in sychronous mode 
-Date: Thu, 8 Nov 2012 09:51:48 +0000 (UTC)
-Message-ID: <loom.20121108T103932-198@post.gmane.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Subject: [PATCH 1/2] mtd: s3c2410: Change return type of
+ s3c2410_nand_add_partition function
+Date: Thu,  8 Nov 2012 15:38:43 +0530
+Message-Id: <1352369324-25771-1-git-send-email-sachin.kamat@linaro.org>
+Cc: sachin.kamat@linaro.org, patches@linaro.org, dwmw2@infradead.org,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,29 +21,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
- I have the following observation when UBIFS is mounted as synchronous fs. (-o
-sync option from bootargs). 
+The return value of s3c2410_nand_add_partition() is not checked for error
+or success in the calling function. Hence change the return type to void.
 
- 1. For every file read, there are writes  to nand flash. 
- 2. For the execution of every command, there are writes to nand flash. 
- For ex. On execution of any command, say 'cd' or 'ls' i observe quiet a few
-writes happening to NAND flash. 
+Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+---
+ drivers/mtd/nand/s3c2410.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
-What could be the reason for this behaviour? Any other option to bring down the
-amount of writes but by retaining the synchronous behaviour? 
-
-With sync option enabled, we expect Flash writes to happen more frequently ,
-how-ever we do not want  writes to happen with the execution of every command. 
-
-This observation holds true for linux 2.6.28, 2.6.35 & 3.4.10 linux kernel
-versions. 
-
-Since, there is a limit on number of writes per block of nand flash, we are
-concerned if the above behaviour will trigger a faster nand corruption on the
-long run. 
-
-Regards,
-Joe. 
-
+diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+index 295e4be..dfb8636 100644
+--- a/drivers/mtd/nand/s3c2410.c
++++ b/drivers/mtd/nand/s3c2410.c
+@@ -726,15 +726,15 @@ static int s3c24xx_nand_remove(struct platform_device *pdev)
+ 	return 0;
+ }
  
+-static int s3c2410_nand_add_partition(struct s3c2410_nand_info *info,
++static void s3c2410_nand_add_partition(struct s3c2410_nand_info *info,
+ 				      struct s3c2410_nand_mtd *mtd,
+ 				      struct s3c2410_nand_set *set)
+ {
+ 	if (set)
+ 		mtd->mtd.name = set->name;
+ 
+-	return mtd_device_parse_register(&mtd->mtd, NULL, NULL,
+-					 set->partitions, set->nr_partitions);
++	mtd_device_parse_register(&mtd->mtd, NULL, NULL,
++				  set->partitions, set->nr_partitions);
+ }
+ 
+ /**
+-- 
+1.7.4.1
