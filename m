@@ -1,21 +1,28 @@
-Received: from mail.ch.keymile.com ([193.17.201.103])
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TWQ0M-00010O-D1
- for linux-mtd@lists.infradead.org; Thu, 08 Nov 2012 11:10:40 +0000
-Message-ID: <509B9143.4020506@keymile.com>
-Date: Thu, 08 Nov 2012 12:02:27 +0100
-From: Gerlando Falauto <gerlando.falauto@keymile.com>
+Received: from devils.ext.ti.com ([198.47.26.153])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TWRdJ-00034t-FM
+ for linux-mtd@lists.infradead.org; Thu, 08 Nov 2012 12:54:58 +0000
+From: "Mohammed, Afzal" <afzal@ti.com>
+To: Tony Lindgren <tony@atomide.com>
+Subject: RE: [PATCH 1/3] omap gpmc : add support of setting CYCLE2CYCLEDELAY
+ and BUSTURNAROUND
+Date: Thu, 8 Nov 2012 12:54:48 +0000
+Message-ID: <C8443D0743D26F4388EA172BF4E2A7A93EA0ED9E@DBDE01.ent.ti.com>
+References: <1352220277-4251-1-git-send-email-matthieu.castet@parrot.com>
+ <5099478A.50901@ti.com> <5099504A.5060505@parrot.com>
+ <5099743B.3040804@ti.com>
+ <C8443D0743D26F4388EA172BF4E2A7A93EA0E2D6@DBDE01.ent.ti.com>
+ <20121107214014.GM6801@atomide.com>
+In-Reply-To: <20121107214014.GM6801@atomide.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-To: Christopher Harvey <charvey@matrox.com>
-Subject: Re: state of support for "external ECC hardware"
-References: <20121029204227.GA32300@harvey-pc.matrox.com>
-In-Reply-To: <20121029204227.GA32300@harvey-pc.matrox.com>
-Content-Type: text/plain;
-	charset=ISO-8859-1;
-	format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: stefan.bigler@keymile.com, Ivan Djelic <ivan.djelic@parrot.com>, "Brunck,
- Holger" <Holger.Brunck@keymile.com>, linux-mtd@lists.infradead.org
+Cc: "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ Matthieu CASTET <matthieu.castet@parrot.com>, Daniel Mack <zonque@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Hunter,
+ Jon" <jon-hunter@ti.com>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,72 +32,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Chris,
-
-good to hear we're not alone in this thinking... :-)
-We're now facing the exact same issue as some Micron NAND chips (most 
-likely the same one you're dealing with) can no longer live with the 
-default, simple 1-bit ECC implementation used by default 
-(NAND_ECC_SOFT), I guess because chances of having multiple bitflips 
-within the same page are no longer negligible. So some 4-bit ECC 
-mechanism must be used at the very least.
-
-Support for software-based multiple-bit-resilient ECC mechanism (BCH) 
-was posted (http://lwn.net/Articles/426856/) by Ivan Djelic (which I 
-took liberty to Cc:) and merged in March last year.
-I haven't been able to track how the situation evolved, but apparently 
-you need to enable it (in addition to within the kernel configuration), 
-also within your flash controller setup.
-Micron gives an example of how to enable it on a sample NAND host 
-controller S3C6410 in this TN (rest of the code, mainly from the above 
-patch, would be already present in recent kernels):
-http://www.micron.com/~/media/Documents/Products/Technical%20Note/NAND%20Flash/tn2971_software_bch_ecc_on_linux.pdf 
-
-
-As for hardware-based (or on-die) ECC support, one of the application 
-notes from Micron (TN-29-56 Enabling On-Die ECC for OMAP3 on 
-Linux/Android OS, 
-http://www.micron.com/~/media/Documents/Products/Technical%20Note/NAND%20Flash/tn2956_ondie_ecc_omap3_linux.pdf) 
-shows how to enable that (rather, it shows how to disable software ECC 
-altogether after enabling it on the chip). However, I haven't been able 
-to find a code section where the information returned by the chip 
-("Rewrite recommended") is actually used to solicit scrubbing... Neither 
-on the TN, nor on the upstream linux kernel... My next step would be to 
-give it a go and see what happens.
-
-I'd love to hear some feedback, if anyone has had experience with this.
-I know it's not been a long time since your post, but perhaps you've 
-heard something in the meantime?
-
-I have one additional question though. Looking at the code I got the 
-impression that decisions upon ECC seem to be based on the flash 
-controller rather than on the flash chip itself.
-I mean, I would think of having a default 1-bit NAND_ECC_SOFT 
-implementation; only when it is detected that the flash part either 
-supports HW ECC or requires multiple-bit ECC, should the ECC mode get 
-switched to NAND_ECC_NONE or NAND_ECC_SOFT_BCH respectively.
-No matter what the flash controller, I would say.
-
-Ivan, do you think that makes any sense?
-
-Thank you so much!
-Gerlando
-
-On 10/29/2012 09:42 PM, Christopher Harvey wrote:
-> I know of at least one Micron NAND chip that has the ability to handle
-> ECC completely on the NAND chip itself. All the host has to do is send
-> data and the OOB section is updated automatically. The automatic ECC
-> hardware can be enabled and disabled with the "Set Feature" command,
-> (0xEF) and bit flips are reported via get status after page reads. I
-> don't see support for this in 2.6.37, and a quick check in the logs
-> doesn't show anything new for these chips in the latest version of the
-> kernel. Any idea floating around on this list? Are these chips going
-> to be the future for NAND and does Linux care about them?
->
-> thanks,
-> Chris
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+SGkgVG9ueSwNCg0KT24gVGh1LCBOb3YgMDgsIDIwMTIgYXQgMDM6MTA6MTQsIFRvbnkgTGluZGdy
+ZW4gd3JvdGU6DQo+ICogTW9oYW1tZWQsIEFmemFsIDxhZnphbEB0aS5jb20+IFsxMjExMDcgMDE6
+MDBdOg0KDQo+ID4gQW5kIERhbmllbCBoYXMgc3RhcnRlZCB3b3JraW5nIG9uIGdwbWMgZHQuIExl
+dCB1cyB0YWtlIFRvbnkncw0KPiA+IG9waW5pb24gb24gaG93IHRvIGRlYWwgd2l0aCB0aGlzLCBU
+b255ID8NCg0KPiBVcCB0byB5b3UgdG8gZmlndXJlIG91dCB0aGUgb3JkZXJpbmcuDQoNCj4gTWF5
+YmUgc2VuZCBwdWxsIHJlcXVlc3RzIGZvciB0aGUgb25lcyB0aGF0IGFyZSByZWFkeSB0byBnbz8N
+Cg0KUGVuZGluZyB0aW1pbmcgcmVsYXRlZCBwYXRjaGVzLA0KDQphLiBBUk06IE9NQVAyKzogbmFu
+ZDogcmVtb3ZlIHJlZHVuZGFudCByb3VuZGluZw0KYi4gQVJNOiBPTUFQMis6IGdwbWM6IGhhbmRs
+ZSBhZGRpdGlvbmFsIHRpbWluZ3MNCmMuIEFSTTogT01BUDIrOiBncG1jOiBnZW5lcmljIHRpbWlu
+ZyBjYWxjdWxhdGlvbg0KZC4gQVJNOiBPTUFQMis6IG9uZW5hbmQ6IGdlbmVyaWMgdGltaW5nIGNh
+bGN1bGF0aW9uDQplLiBBUk06IE9NQVAyKzogc21jOTF4OiBnZW5lcmljIHRpbWluZyBjYWxjdWxh
+dGlvbg0KZi4gQVJNOiBPTUFQMis6IHR1c2I2MDEwOiBnZW5lcmljIHRpbWluZyBjYWxjdWxhdGlv
+bg0KDQpjYW4gYmUgZGl2aWRlZCB0byB0d28gY2F0ZWdvcmllcywNCg0KMS4gdGltaW5nIGNsZWFu
+dXAgKGEsYikNCjIuIG1pZ3JhdGUgdG8gZ2VuZXJpYyB0aW1pbmcgcm91dGluZSAoYy1mKQ0KDQon
+MScgaGFzIGJlZW4gdGVzdGVkIG9uIG9tYXAzZXZtIChhbHNvIHdpdGggdGhlIGhlbHAgb2YgYSBs
+b2NhbCBwYXRjaA0KYWRkaW5nIG9uZW5hbmQgc3VwcG9ydCkuDQoNCicyJyBoYXMgYmVlbiB2ZXJp
+ZmllZCBvbiBvbWFwM2V2bSBvbmVuYW5kIGFzeW5jIG9wZXJhdGlvbiAoc3VwcG9ydCBmb3INCm9t
+YXAzZXZtIG9uZW5hbmQgaXMgbm90IHByZXNlbnQgaW4gbWFpbmxpbmUpIGFuZCBieSBzaW11bGF0
+aW9uLiBUaGVzZQ0KY2hhbmdlcyBjb3VsZCBub3QgYmUgdmFsaWRhdGVkIG9uIGJvYXJkcyBzdXBw
+b3J0ZWQgaW4gbWFpbmxpbmUgdGhhdA0KbWFrZSB1c2Ugb2YgcnVudGltZSB0aW1pbmcgY2FsY3Vs
+YXRpb24gYXMgSSBkbyBub3QgaGF2ZSB0aG9zZSBib2FyZHMuDQoNCkkgd2lsbCBiZSBzZW5kaW5n
+IHB1bGwgcmVxdWVzdCBjb250YWluaW5nIGJvdGggc2V0cyAxICYgMiwgcGxlYXNlIGxldA0KbWUg
+a25vdyBpbiBjYXNlIHlvdSBoYXZlIGEgZGlmZmVyZW50IG9waW5pb24uDQoNClJlZ2FyZHMNCkFm
+emFsDQoNCg==
