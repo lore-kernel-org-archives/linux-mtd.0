@@ -1,20 +1,27 @@
-Received: from mtxmxout6.matrox.com ([138.11.2.96])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TWTrQ-0003H7-UJ
- for linux-mtd@lists.infradead.org; Thu, 08 Nov 2012 15:17:45 +0000
-Date: Thu, 8 Nov 2012 10:21:25 -0500
-From: Christopher Harvey <charvey@matrox.com>
-To: Gerlando Falauto <gerlando.falauto@keymile.com>
-Subject: Re: state of support for "external ECC hardware"
-Message-ID: <20121108152125.GR2389@harvey-pc.matrox.com>
-References: <20121029204227.GA32300@harvey-pc.matrox.com>
- <509B9143.4020506@keymile.com>
+Received: from devils.ext.ti.com ([198.47.26.153])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TWUKC-0006OB-7e
+ for linux-mtd@lists.infradead.org; Thu, 08 Nov 2012 15:47:25 +0000
+Message-ID: <509BD3F0.9030409@ti.com>
+Date: Thu, 8 Nov 2012 10:46:56 -0500
+From: Murali Karicheri <m-karicheri2@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <509B9143.4020506@keymile.com>
-Cc: stefan.bigler@keymile.com, Ivan Djelic <ivan.djelic@parrot.com>, "Brunck,
- Holger" <Holger.Brunck@keymile.com>, linux-mtd@lists.infradead.org
+To: Stephen Warren <swarren@wwwdotorg.org>
+Subject: Re: [RFC v2 PATCH 1/2] memory: davinci - add aemif controller platform
+ driver
+References: <1352238427-26085-1-git-send-email-m-karicheri2@ti.com>
+ <1352238427-26085-2-git-send-email-m-karicheri2@ti.com>
+ <509ABF12.5080804@wwwdotorg.org>
+In-Reply-To: <509ABF12.5080804@wwwdotorg.org>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: davinci-linux-open-source@linux.davincidsp.com, mikedunn@newsguy.com,
+ linux-doc@vger.kernel.org, artem.bityutskiy@linux.intel.com,
+ devicetree-discuss@lists.ozlabs.org, nsekhar@ti.com,
+ linux-kernel@vger.kernel.org, rob.herring@calxeda.com,
+ grant.likely@secretlab.ca, linux-mtd@lists.infradead.org, rob@landley.net,
+ gregkh@linuxfoundation.org, santosh.shilimkar@ti.com, hs@denx.de,
+ dwmw2@infradead.org, hdoyu@nvidia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,112 +31,208 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 08, 2012 at 12:02:27PM +0100, Gerlando Falauto wrote:
-> Hi Chris,
-> 
-> good to hear we're not alone in this thinking... :-)
-> We're now facing the exact same issue as some Micron NAND chips (most 
-> likely the same one you're dealing with) can no longer live with the 
-> default, simple 1-bit ECC implementation used by default 
-> (NAND_ECC_SOFT), I guess because chances of having multiple bitflips 
-> within the same page are no longer negligible. So some 4-bit ECC 
-> mechanism must be used at the very least.
+Stephen,
 
-We had BCH8 code running, but it wasn't enough. The main reason we
-switched away from host side ECC was because we were getting bitflips
-within the ECC codeword data itself. Yes, it would have been possible
-to add a 1 byte hamming code to protect the main ECC data, but it was
-just easier to say, "hey, Micron knows their hardware, so we'll trust
-their algorithms", and enable the Micron ECC hardware. Although it
-didn't require too much work to enable it's all a total hack. I took
-the code that runs the "ECC disabled mode", and sprinkled in some
-extra init code and error checking code. Would be nice to add an
-"external ecc mode" to support these chips explicitly.
+Thanks for reviewing this. See my responses below
+On 11/07/2012 03:05 PM, Stephen Warren wrote:
+> On 11/06/2012 02:47 PM, Murali Karicheri wrote:
+>> This is a platform driver for asynchronous external memory interface
+>> available on TI SoCs. This driver was previously located inside the
+>> mach-davinci folder. As this DaVinci IP is re-used across multiple
+>> family of devices such as c6x, keystone etc, the driver is moved to drivers.
+>> The driver configures async bus parameters associated with a particular
+>> chip select. For DaVinci NAND controller driver and driver for other async
+>> devices such as NOR flash, ASRAM etc, the bus confuguration is
+>> done by this driver at probe. A set of APIs (set/get) are provided to
+>> update the values based on specific driver usage.
+>> diff --git a/Documentation/devicetree/bindings/memory/davinci-aemif.txt b/Documentation/devicetree/bindings/memory/davinci-aemif.txt
+>> +* Texas Instruments Davinci AEMIF bus interface
+>> +
+>> +This file provides information for the davinci-emif device and
+>> +async bus bindings.
+>> +
+>> +Required properties:=
+>> +- compatible: "ti,davinci-aemif";
+>> +- #address-cells : Should be either two or three.  The first cell is the
+>> +                   chipselect number, and the remaining cells are the
+>> +                   offset into the chipselect.
+>> +- #size-cells : Either one or two, depending on how large each chipselect
+>> +                can be.
+> What about "how large each chipselect can be" determines 2-vs-3
+> (address) or 1-vs-2 (size) cells? I assume it's 32-vs-64-bit bus? It
+> might be best to make that explicit.
+I have re-used the bindings from another patch and don't know why the 
+above description is used.
+I am using a value of 2 for address cells and 1 for size-cells which I 
+believe is how these will be used as shown below.
 
-> Support for software-based multiple-bit-resilient ECC mechanism (BCH) 
-> was posted (http://lwn.net/Articles/426856/) by Ivan Djelic (which I 
-> took liberty to Cc:) and merged in March last year.
-> I haven't been able to track how the situation evolved, but apparently 
-> you need to enable it (in addition to within the kernel configuration), 
-> also within your flash controller setup.
-> Micron gives an example of how to enable it on a sample NAND host 
-> controller S3C6410 in this TN (rest of the code, mainly from the above 
-> patch, would be already present in recent kernels):
-> http://www.micron.com/~/media/Documents/Products/Technical%20Note/NAND%20Flash/tn2971_software_bch_ecc_on_linux.pdf 
+                         ranges = <2 0 0x70000000 0x08000000
+                                 3 0 0x74000000 0x04000000
+                                 4 0 0x78000000 0x04000000
+                                 5 0 0x7C000000 0x04000000
+                                 6 0 0x20c00000 0x100>;
 
-I haven't looked into current software ECC algorithms in the
-kernel. Do the protect against corrupted ECC data? As in, corruptions
-in the out of bounds area?
+So I will change the description as below.
 
-> As for hardware-based (or on-die) ECC support, one of the application 
-> notes from Micron (TN-29-56 Enabling On-Die ECC for OMAP3 on 
-> Linux/Android OS, 
-> http://www.micron.com/~/media/Documents/Products/Technical%20Note/NAND%20Flash/tn2956_ondie_ecc_omap3_linux.pdf) 
-> shows how to enable that (rather, it shows how to disable software ECC 
-> altogether after enabling it on the chip). However, I haven't been able 
-> to find a code section where the information returned by the chip 
-> ("Rewrite recommended") is actually used to solicit scrubbing... Neither 
-> on the TN, nor on the upstream linux kernel... My next step would be to 
-> give it a go and see what happens.
+- compatible: must be "ti,davinci-aemif"
+- reg: AEMIF control registers base and size
+- #address-cells: must be 2 (chip-select + offset)
+- #size-cells: must be 1
+- ranges: mapping from EMIF space to parent space. Each range 
+corresponds to a single chip select, and covers the entire access window 
+as configured.
+>> +- reg : contains offset/length value for AEMIF control registers space
+>> +- ranges : Each range corresponds to a single chipselect, and cover
+> add "s" at the end of that line.
+Ok
+>> +           the entire access window as configured.
+>> +
+>> +Child device nodes describe the devices connected to IFC such as NOR (e.g.
+>> +cfi-flash) and NAND (ti,davinci-nand, see Documentation/devicetree/bindings/
+>> +mtd/davinci-nand.txt). There might be board specific devices like FPGAs.
+>> +
+>> +In addition, optional child sub nodes contains bindings for the async bus
+>> +interface for a given chip select.
+> Hmmm. That's two different kinds of children, which appear to use
+> different addressing schemes given the examples below; more on that below.
+>
+>> +Optional cs node properties:-
+>> +- compatible: "ti,davinci-cs"
+>> +
+>> +  All of the params below in nanoseconds and are optional
+>> +
+>> +- ti,davinci-cs-asize - asynchronous data bus width (0 - 8bit, 1 - 16 bit)
+> Perhaps s/asize/bus-width/? Also, directly using values 8 and 16 would
+> be a lot more obvious to read than 0 and 1.
+Ok. Will fix,
+>
+>> +- ti,davinci-cs-ta - Minimum turn around time
+>> +- ti,davinci-cs-rhold - read hold width
+>> +- ti,davinci-cs-rstobe - read strobe width
+>> +- ti,davinci-cs-rsetup - read setup width
+>> +- ti,davinci-cs-whold - write hold width
+>> +- ti,davinci-cs-wstrobe - write strobe width
+>> +- ti,davinci-cs-wsetup - write setup width
+> The comments in the examples indicate these are in nS. This should be
+> mentioned here instead I think.
+Ok.
+>
+> Does there need to be a specification of bus clock rate? How does the
+> driver convert nS into number-of-clock-cycles, which I assume is what
+> the HW would be programmed with?
+aemif driver clk is either specified as a clk device node or as a device 
+bindings. Aemif driver gets the clk rate and do the conversion of ns to 
+emif clk cycles internally in the driver.
+>> +- ti,davinci-cs-ss - enable/disable select strobe (0 - disable, 1 - enable)
+>> +- ti,davinci-cs-ew - enable/disable extended wait cycles (0 - disable, 1 - enable)
+> Boolean properties are usually represented as present (on/enabled/1) or
+> missing (off/disabled/0). Shouldn't these two properties work that way?
+> I see the comment below:
+>> +if any of the above parameters are absent, hardware register default or that
+>> +set by a boot loader are used.
+> implied they're really tri-state (explicitly off or on, or just not
+> programmed). However, I think it'd be better if the DT always
+> represented the complete configuration, since the DT and binding should
+> be a full description of the HW rather than just the data you expect a
+> particular Linux driver to need after a particular boot loader has
+> executed first.
+Actually this driver has to work on various platforms some of them set 
+values in boot loader, others explicitly specify it in bindings or 
+platform data. If set in boot loader, these bindings are not required 
+(so that it is compatible with old implementation) to be configured in 
+Linux kernel. So I believe I should be using something like
 
-I got that working, if you're running in "eec disabled mode", try something like this:
+ti,davinci-cs-enable-ss - "on", "off"
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index a796dd7..68af8b0 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -1069,7 +1069,16 @@ static int nand_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
-                              uint8_t *buf, int page)
- {
-        chip->read_buf(mtd, buf, mtd->writesize);
--       chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
-+       chip->read_buf(mtd, chip->oob_poi, mtd->oobsize); /* (this data used in sw ecc) */
-+
-+       /* TODO: only do this CMD_STATUS if we have Micron NAND */
-+       chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
-+       if (chip->read_byte(mtd) & NAND_STATUS_REWRITE_RECOMMENDED) {
-+               /* Micron NAND is telling us that this block may be going bad,
-+                  tell Linux to move it */
-+               mtd->ecc_stats.corrected++; /* (we don't actually know if it's just one correction, could be up to 4) */
-+       }
-+
-        return 0;
- }
+As cs node is optional, If not present, hw values will be used. I don't 
+think it make sense to make it tri-state based on my explanation above.
+>> +Example for aemif, davinci nand and nor flash chip select shown below.
+>> +
+>> +aemif@60000000 {
+>> +	compatible = "ti,davinci-aemif";
+>> +	#address-cells = <2>;
+>> +	#size-cells = <1>;
+>> +	reg = <0x68000000 0x80000>;
+>> +	ranges = <2 0 0x60000000 0x02000000
+>> +		  3 0 0x62000000 0x02000000
+>> +		  4 0 0x64000000 0x02000000
+>> +		  5 0 0x66000000 0x02000000
+>> +		  6 0 0x68000000 0x02000000>;
+>> +
+>> +	nand_cs:cs2@60000000 {
+> This node has no reg property, but it needs one if you use a unit
+> address ("@60000000") in the node name.
+So let  me drop the unit address as it is not needed for the cs node. 
+The AEMIF control register address is specified by the parent reg 
+property and is common to all chip selects.
+> The numbering scheme unit address above doesn't seem to match the
+> addresses provided to child nodes by the ranges property. Perhaps the
+> node layout you want is:
+>
+>
+> aemif {
+>      chip-selects {
+>          nand_cs:cs2@60000000 {
+>          };
+>      };
+>      devices {
+>          nand@3,0 {
+>          }
+>      };
+> };
+>
+> so that the chip-selects and devices nodes can both set appropriate and
+> different #address-cells and #size-cells?
+>
+> That does feel a bit wierd though, and I imagine writing the ranges
+> property in the aemif node would be hard.
+>
+> Perhaps the chip-select timings should just be written as properties in
+> the aemif controller, rather than child nodes?
+>
+> ti,cs-timings =
+>      < ... > /* 0 */
+>      < ... > /* 1 */
+>      < ... > /* 2 */
+>      ;
+>
+> with each <...> being a list of n cells in a specific order?
+>
+  To make this simple, I will drop the unit address from cs node and 
+represent it as
+
+nand_cs:cs2 {
+
+};
+
+nor_cs:cs3 {
+
+};
 
 
-Ran a trace on some manually inserted bitflips, and the block was moved.
++		compatible = "ti,davinci-cs";
++		#address-cells = <1>;
++		#size-cells = <1>;
++		/* all timings in nanoseconds */
++		ti,davinci-cs-ta = <0>;
++		ti,davinci-cs-rhold = <7>;
++		ti,davinci-cs-rstrobe = <42>;
++		ti,davinci-cs-rsetup = <14>;
++		ti,davinci-cs-whold = <7>;
++		ti,davinci-cs-wstrobe = <42>;
++		ti,davinci-cs-wsetup = <14>;
++	};
 
-Hope that helps.
-
-> I'd love to hear some feedback, if anyone has had experience with this.
-> I know it's not been a long time since your post, but perhaps you've 
-> heard something in the meantime?
-> 
-> I have one additional question though. Looking at the code I got the 
-> impression that decisions upon ECC seem to be based on the flash 
-> controller rather than on the flash chip itself.
-> I mean, I would think of having a default 1-bit NAND_ECC_SOFT 
-> implementation; only when it is detected that the flash part either 
-> supports HW ECC or requires multiple-bit ECC, should the ECC mode get 
-> switched to NAND_ECC_NONE or NAND_ECC_SOFT_BCH respectively.
-> No matter what the flash controller, I would say.
-> 
-> Ivan, do you think that makes any sense?
-> 
-> Thank you so much!
-> Gerlando
-> 
-> On 10/29/2012 09:42 PM, Christopher Harvey wrote:
-> > I know of at least one Micron NAND chip that has the ability to handle
-> > ECC completely on the NAND chip itself. All the host has to do is send
-> > data and the OOB section is updated automatically. The automatic ECC
-> > hardware can be enabled and disabled with the "Set Feature" command,
-> > (0xEF) and bit flips are reported via get status after page reads. I
-> > don't see support for this in 2.6.37, and a quick check in the logs
-> > doesn't show anything new for these chips in the latest version of the
-> > kernel. Any idea floating around on this list? Are these chips going
-> > to be the future for NAND and does Linux care about them?
-> >
-> > thanks,
-> > Chris
-> >
+> ...
+>> +	nand@3,0 {
+>> +		compatible = "ti,davinci-nand";
+>> +		reg = <3 0x0 0x807ff
+>> +			6 0x0 0x8000>;
+>> +		#address-cells = <1>;
+>> +		#size-cells = <1>;
+>> +
+>> +		.. See Documentation/devicetree/bindings/mtd/davinci-nand.txt
+>> +	};
+>
+>
+>
