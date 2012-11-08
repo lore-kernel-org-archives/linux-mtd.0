@@ -1,24 +1,27 @@
-Received: from mtxmxout9.matrox.com ([138.11.2.99] helo=mtxmxout7.matrox.com)
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TWVSY-0004K1-4k
- for linux-mtd@lists.infradead.org; Thu, 08 Nov 2012 17:00:08 +0000
-Date: Thu, 8 Nov 2012 12:03:53 -0500
-From: Christopher Harvey <charvey@matrox.com>
-To: Gerlando Falauto <gerlando.falauto@keymile.com>
-Subject: Re: state of support for "external ECC hardware"
-Message-ID: <20121108170353.GT2389@harvey-pc.matrox.com>
-References: <20121029204227.GA32300@harvey-pc.matrox.com>
- <509B9143.4020506@keymile.com>
- <20121108152125.GR2389@harvey-pc.matrox.com>
- <509BDE9B.3080909@keymile.com> <509BDFBD.3030604@keymile.com>
+Received: from avon.wwwdotorg.org ([2001:470:1f0f:bd7::2])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TWVlH-00085r-5g
+ for linux-mtd@lists.infradead.org; Thu, 08 Nov 2012 17:19:27 +0000
+Message-ID: <509BE99A.8060705@wwwdotorg.org>
+Date: Thu, 08 Nov 2012 10:19:22 -0700
+From: Stephen Warren <swarren@wwwdotorg.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <509BDFBD.3030604@keymile.com>
-Cc: "Brunck, Holger" <Holger.Brunck@keymile.com>,
- Ivan Djelic <ivan.djelic@parrot.com>, "Bigler,
- Stefan" <Stefan.Bigler@keymile.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+To: Murali Karicheri <m-karicheri2@ti.com>
+Subject: Re: [RFC v2 PATCH 2/2] mtd: davinci - remove DaVinci architecture
+ depedency
+References: <1352238427-26085-1-git-send-email-m-karicheri2@ti.com>
+ <1352238427-26085-3-git-send-email-m-karicheri2@ti.com>
+ <509ABFD9.8090704@wwwdotorg.org> <509BD67E.2090200@ti.com>
+In-Reply-To: <509BD67E.2090200@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: davinci-linux-open-source@linux.davincidsp.com, mikedunn@newsguy.com,
+ linux-doc@vger.kernel.org, artem.bityutskiy@linux.intel.com,
+ devicetree-discuss@lists.ozlabs.org, nsekhar@ti.com,
+ linux-kernel@vger.kernel.org, rob.herring@calxeda.com,
+ grant.likely@secretlab.ca, linux-mtd@lists.infradead.org, rob@landley.net,
+ gregkh@linuxfoundation.org, santosh.shilimkar@ti.com, hs@denx.de,
+ dwmw2@infradead.org, hdoyu@nvidia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,19 +31,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 08, 2012 at 05:37:17PM +0100, Gerlando Falauto wrote:
-> Hi Chris,
-> On 11/08/2012 05:32 PM, Gerlando Falauto wrote:
-> >
-> >> Ran a trace on some manually inserted bitflips, and the block was moved.
-> >
-> > Could you give some pointers on how to manually insert bitflips?
-> > nanddump/nandwrite from mtd-utils perhaps?
-> 
-> And BTW, wouldn't you also need to explicitly disable on-die ECC in 
-> order to force that, anyway?
+On 11/08/2012 08:57 AM, Murali Karicheri wrote:
+> On 11/07/2012 03:08 PM, Stephen Warren wrote:
+>> On 11/06/2012 02:47 PM, Murali Karicheri wrote:
+>>> DaVinci NAND driver is a controller driver based on the AEMIF hardware
+>>> IP found on TI SoCs. It is also used on SoCs that are not DaVinci
+>>> based. This
+>>> patch removes the driver dependency on DaVinci architecture so that it
+>>> can be used on other architectures such as c6x, keystone etc.
+>>>
+>>> Also migrate the driver to use the new AEMIF platform driver API and
+>>> moving Documentation to
+>>> Documentation/devicetree/bindings/mtd/davinci-nand.txt
+>>> as this is expected to be used outside of arm/davinci.
+>>>   delete mode 100644
+>>> Documentation/devicetree/bindings/arm/davinci/nand.txt
+>>>   create mode 100644
+>>> Documentation/devicetree/bindings/mtd/davinci-nand.txt
+>>>   create mode 100644 include/linux/platform_data/davinci-nand.h
+>> Using "git format-patch -M" might show this as a file move/rename rather
+>> than a delete/add, which would be useful to highlight any changes you
+>> made at the same time.
+>>
+>>> diff --git a/Documentation/devicetree/bindings/mtd/davinci-nand.txt
+>>> b/Documentation/devicetree/bindings/mtd/davinci-nand.txt
+>>> +Example (enbw_cmc board):
+>>> +aemif@60000000 {
+>>> +    compatible = "ti,davinci-aemif";
+>>> +    #address-cells = <2>;
+>>> +    #size-cells = <1>;
+>>> +    reg = <0x68000000 0x80000>;
+>>> +    ranges = <2 0 0x60000000 0x02000000
+>>> +          3 0 0x62000000 0x02000000
+>>> +          4 0 0x64000000 0x02000000
+>>> +          5 0 0x66000000 0x02000000
+>>> +          6 0 0x68000000 0x02000000>;
+>>> +    nand@3,0 {
+>> Here, isn't 3,0 the aemif chip-select ID that is decoding the NAND
+>> accesses?
+>>
+> Yes.
+>>> +        compatible = "ti,davinci-nand";
+>>> +        reg = <3 0x0 0x807ff
+>>> +            6 0x0 0x8000>;
+>>> +        #address-cells = <1>;
+>>> +        #size-cells = <1>;
+>>> +        ti,davinci-chipselect = <1>;
+>> So I don't understand why that chipselect property is needed, or has a
+>> different value. Is this muxing the AEMIF output chip-selects onto
+>> different SoC package pins or something? Seems like a job for pinctrl
+>> perhaps?
+>
+> Actually this was added by somebody else. Do you know what 0 in 3,0
+> stands for? Is there a way I can retrieve the chip-select id so that I
+> can remove the davinci-chipselect property. The driver uses a cs index
+> of 0-3 and the hardware documentation refers CS2-5. Actually cs2 is CE0
+> signal. So internally driver
+> translates to 2-5 to 0-3. pinmux is currently done in platform specific
+> init code and probably need to migrate to use pictrl later.
 
-Depends on the version I think. IIRC, some are "enabled by default",
-others are "disabled by default".
-
--C
+for a node named "nand@3,0", the "3,0" is the address value from the
+first entry in the reg property "reg = <3 0x0 0x807ff ...". Given your
+previous email, that means chip-select 3 offset 0, I believe. Presumably
+you can read the reg property directly to find these numbers, or perhaps
+there are already some helper functions for this. I have no idea why
+there's a "3" in the node name and reg property, but
+"ti,davinci-chipselect = <1>" not "= <3>".
