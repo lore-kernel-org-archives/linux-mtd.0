@@ -1,18 +1,25 @@
-Received: from co1ehsobe006.messaging.microsoft.com ([216.32.180.189]
- helo=co1outboundpool.messaging.microsoft.com)
+Received: from plane.gmane.org ([80.91.229.3])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TWNEr-0001Pp-Ho
- for linux-mtd@lists.infradead.org; Thu, 08 Nov 2012 08:13:26 +0000
-From: Prabhakar Kushwaha <prabhakar@freescale.com>
-To: <linux-mtd@lists.infradead.org>, <linuxppc-dev@lists.ozlabs.org>
-Subject: [PATCH] driver/mtd/IFC:Wait tWB time,
- poll R/B before command execution
-Date: Thu, 8 Nov 2012 13:42:59 +0530
-Message-ID: <1352362380-13568-1-git-send-email-prabhakar@freescale.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: scottwood@freescale.com, Hemant Nautiyal <hemant.nautiyal@freescale.com>,
- Prabhakar Kushwaha <prabhakar@freescale.com>, dedekind1@gmail.com
+ id 1TWOp8-0006cT-ST
+ for linux-mtd@lists.infradead.org; Thu, 08 Nov 2012 09:54:59 +0000
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1TWOpD-0000bO-Lf
+ for linux-mtd@lists.infradead.org; Thu, 08 Nov 2012 10:55:04 +0100
+Received: from 194-208-216-12.ikanos.com ([194-208-216-12.ikanos.com])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <linux-mtd@lists.infradead.org>; Thu, 08 Nov 2012 10:55:03 +0100
+Received: from tttechmail by 194-208-216-12.ikanos.com with local (Gmexim 0.1
+ (Debian)) id 1AlnuQ-0007hv-00
+ for <linux-mtd@lists.infradead.org>; Thu, 08 Nov 2012 10:55:03 +0100
+To: linux-mtd@lists.infradead.org
+From: Joe <tttechmail@gmail.com>
+Subject: Frequent Writes to NAND flash with UBIFS in sychronous mode 
+Date: Thu, 8 Nov 2012 09:51:48 +0000 (UTC)
+Message-ID: <loom.20121108T103932-198@post.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,43 +29,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-IFC_FIR_OP_CMD0 issues command for execution without checking flash
-readiness. It may cause problem if flash is not ready. Instead use
-IFC_FIR_OP_CW0 which Wait for tWB time and poll R/B to return high or
-time-out, before issuing command.
+Hi,
+ I have the following observation when UBIFS is mounted as synchronous fs. (-o
+sync option from bootargs). 
 
-NAND_CMD_READID command implemention does not fulfill above requirement. So
-update its programming.
+ 1. For every file read, there are writes  to nand flash. 
+ 2. For the execution of every command, there are writes to nand flash. 
+ For ex. On execution of any command, say 'cd' or 'ls' i observe quiet a few
+writes happening to NAND flash. 
 
-Signed-off-by: Prabhakar Kushwaha <prabhakar@freescale.com>
-Signed-off-by: Hemant Nautiyal <hemant.nautiyal@freescale.com>
----
- Based upon git://git.infradead.org/linux-mtd.git branch master
+What could be the reason for this behaviour? Any other option to bring down the
+amount of writes but by retaining the synchronous behaviour? 
 
- drivers/mtd/nand/fsl_ifc_nand.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+With sync option enabled, we expect Flash writes to happen more frequently ,
+how-ever we do not want  writes to happen with the execution of every command. 
 
-diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
-index 8f0dd13..7e5b17c 100644
---- a/drivers/mtd/nand/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/fsl_ifc_nand.c
-@@ -382,7 +382,7 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
- 			timing = IFC_FIR_OP_RBCD;
+This observation holds true for linux 2.6.28, 2.6.35 & 3.4.10 linux kernel
+versions. 
+
+Since, there is a limit on number of writes per block of nand flash, we are
+concerned if the above behaviour will trigger a faster nand corruption on the
+long run. 
+
+Regards,
+Joe. 
+
  
- 		out_be32(&ifc->ifc_nand.nand_fir0,
--				(IFC_FIR_OP_CMD0 << IFC_NAND_FIR0_OP0_SHIFT) |
-+				(IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
- 				(IFC_FIR_OP_UA  << IFC_NAND_FIR0_OP1_SHIFT) |
- 				(timing << IFC_NAND_FIR0_OP2_SHIFT));
- 		out_be32(&ifc->ifc_nand.nand_fcr0,
-@@ -785,7 +785,7 @@ static void fsl_ifc_sram_init(struct fsl_ifc_mtd *priv)
- 
- 	/* READID */
- 	out_be32(&ifc->ifc_nand.nand_fir0,
--			(IFC_FIR_OP_CMD0 << IFC_NAND_FIR0_OP0_SHIFT) |
-+			(IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
- 			(IFC_FIR_OP_UA  << IFC_NAND_FIR0_OP1_SHIFT) |
- 			(IFC_FIR_OP_RB << IFC_NAND_FIR0_OP2_SHIFT));
- 	out_be32(&ifc->ifc_nand.nand_fcr0,
--- 
-1.7.9.5
