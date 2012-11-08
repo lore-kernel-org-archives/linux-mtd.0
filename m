@@ -1,24 +1,24 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
+Received: from mtxmxout1.matrox.com ([138.11.2.91])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TWXRf-0001Ey-95
- for linux-mtd@lists.infradead.org; Thu, 08 Nov 2012 19:07:19 +0000
-Date: Thu, 8 Nov 2012 20:07:14 +0100
-From: Ivan Djelic <ivan.djelic@parrot.com>
-To: Gerlando Falauto <gerlando.falauto@keymile.com>
+ id 1TWXd4-0002Gs-7p
+ for linux-mtd@lists.infradead.org; Thu, 08 Nov 2012 19:19:07 +0000
+Date: Thu, 8 Nov 2012 14:22:50 -0500
+From: Christopher Harvey <charvey@matrox.com>
+To: Ivan Djelic <ivan.djelic@parrot.com>
 Subject: Re: state of support for "external ECC hardware"
-Message-ID: <20121108190714.GD28118@parrot.com>
+Message-ID: <20121108192250.GU2389@harvey-pc.matrox.com>
 References: <20121029204227.GA32300@harvey-pc.matrox.com>
  <509B9143.4020506@keymile.com>
  <20121108152125.GR2389@harvey-pc.matrox.com>
- <509BDE9B.3080909@keymile.com>
+ <20121108185942.GC28118@parrot.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <509BDE9B.3080909@keymile.com>
-Cc: "Bigler, Stefan" <Stefan.Bigler@keymile.com>,
- Christopher Harvey <charvey@matrox.com>, "Brunck,
+In-Reply-To: <20121108185942.GC28118@parrot.com>
+Cc: "stefan.bigler@keymile.com" <stefan.bigler@keymile.com>, "Brunck,
  Holger" <Holger.Brunck@keymile.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Gerlando Falauto <gerlando.falauto@keymile.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,21 +28,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 08, 2012 at 04:32:27PM +0000, Gerlando Falauto wrote:
-(...)
-> Right, datasheets and TNs don't even mention what the threshold actually 
-> is. They just say "Rewrite recommended". Perhaps you could get some 
-> feeling while running your tests? I mean, if you could get bitflips by 
-> using host-software ECC (within a reasonable time), and after enabling 
-> on-die ECC you couldn't anymore, it probably means HW ECC won't tell you 
-> about bitflips until they reach a number higher than 1. Am I right?
+On Thu, Nov 08, 2012 at 07:59:42PM +0100, Ivan Djelic wrote:
+> On Thu, Nov 08, 2012 at 03:21:25PM +0000, Christopher Harvey wrote:
+> (...) 
+> > We had BCH8 code running, but it wasn't enough. The main reason we
+> > switched away from host side ECC was because we were getting bitflips
+> > within the ECC codeword data itself.
 > 
-> [Did you ever ask Micron by any chance?]
+> But the ECC bytes are part of the BCH codeword, therefore I don't understand
+> what the issue could be ? Are you sure bitflips were not in some unprotected
+> OOB area ?
 
-IIRC, Micron on-die ECC reports a "rewrite recommended" status when the
-number of bitflips has reached the internal error correction capability
-(4 in my case). In other words, a "rewrite recommended" means you should
-rewrite the block ASAP before an additional bitflip triggers an ECC failure.
+Ok, the ECC bytes I had were stored in the OOB area and were
+unprotected. Any bit flips in the OOB area was a disaster. This was
+coming from a heavily modified forked kernel that had BCH8 bugs in the
+past. For example, I had to fix this one before the patch came out:
+http://arago-project.org/git/projects/linux-omap3.git?p=projects/linux-omap3.git;a=commitdiff;h=adc46d691d745604da1197d154fe712e10ec468d;hp=9e78267ed6302537474489e88bd59827315db15b
+I can't explain why this implementation fails on ECC byte corruption.
 
---
-Ivan
+-Chris
