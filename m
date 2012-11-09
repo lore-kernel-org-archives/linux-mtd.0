@@ -1,25 +1,25 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TWXqg-00037d-EW
- for linux-mtd@lists.infradead.org; Thu, 08 Nov 2012 19:33:11 +0000
-Date: Thu, 8 Nov 2012 20:33:08 +0100
-From: Ivan Djelic <ivan.djelic@parrot.com>
-To: Christopher Harvey <charvey@matrox.com>
-Subject: Re: state of support for "external ECC hardware"
-Message-ID: <20121108193308.GE28118@parrot.com>
-References: <20121029204227.GA32300@harvey-pc.matrox.com>
- <509B9143.4020506@keymile.com>
- <20121108152125.GR2389@harvey-pc.matrox.com>
- <20121108185942.GC28118@parrot.com>
- <20121108192250.GU2389@harvey-pc.matrox.com>
-MIME-Version: 1.0
+Received: from imta22.fe.bosch.de ([139.15.243.26])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TWjQ9-0006Xp-LW
+ for linux-mtd@lists.infradead.org; Fri, 09 Nov 2012 07:54:35 +0000
+Received: from smtp2-v.fe.bosch.de (imta24.fe.bosch.de [139.15.243.27])
+ by imta22.fe.bosch.de (Postfix) with ESMTP id AA0821E4061A
+ for <linux-mtd@lists.infradead.org>; Fri,  9 Nov 2012 08:45:47 +0100 (CET)
+Received: from vsmta11.fe.internet.bosch.com (unknown [10.4.98.51])
+ by imta24.fe.bosch.de (Postfix) with ESMTP id 206EAB0020E
+ for <linux-mtd@lists.infradead.org>; Fri,  9 Nov 2012 08:45:38 +0100 (CET)
+Received: from localhost (vsgw4.fe.internet.bosch.com [10.4.98.12])
+ by vsmta11.fe.internet.bosch.com (Postfix) with SMTP id BB78343C025F
+ for <linux-mtd@lists.infradead.org>; Fri,  9 Nov 2012 08:45:21 +0100 (CET)
+From: "Prins Anton (ST-CO/ENG1.1)" <Anton.Prins@nl.bosch.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Fri, 9 Nov 2012 08:45:24 +0100
+Subject: Patch to solve NULL pointer dereference in physmap_of.c
+Message-ID: <85D877DD6EE67B4A9FCA9B9C3A4865670C3ADE0635@SI-MBX14.de.bosch.com>
+Content-Language: en-US
 Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20121108192250.GU2389@harvey-pc.matrox.com>
-Cc: "stefan.bigler@keymile.com" <stefan.bigler@keymile.com>, "Brunck,
- Holger" <Holger.Brunck@keymile.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Gerlando Falauto <gerlando.falauto@keymile.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,28 +29,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 08, 2012 at 07:22:50PM +0000, Christopher Harvey wrote:
-> On Thu, Nov 08, 2012 at 07:59:42PM +0100, Ivan Djelic wrote:
-> > On Thu, Nov 08, 2012 at 03:21:25PM +0000, Christopher Harvey wrote:
-> > (...) 
-> > > We had BCH8 code running, but it wasn't enough. The main reason we
-> > > switched away from host side ECC was because we were getting bitflips
-> > > within the ECC codeword data itself.
-> > 
-> > But the ECC bytes are part of the BCH codeword, therefore I don't understand
-> > what the issue could be ? Are you sure bitflips were not in some unprotected
-> > OOB area ?
-> 
-> Ok, the ECC bytes I had were stored in the OOB area and were
-> unprotected. Any bit flips in the OOB area was a disaster. This was
-> coming from a heavily modified forked kernel that had BCH8 bugs in the
-> past. For example, I had to fix this one before the patch came out:
-> http://arago-project.org/git/projects/linux-omap3.git?p=projects/linux-omap3.git;a=commitdiff;h=adc46d691d745604da1197d154fe712e10ec468d;hp=9e78267ed6302537474489e88bd59827315db15b
-> I can't explain why this implementation fails on ECC byte corruption.
+commit 0905a6f4aec377123e94d2260f2f7a0d867e19be
+Author: Anton Prins <anton.prins@nl.bosch.com>
+Date:   Fri Nov 9 10:12:58 2012 +0100
 
-Oooh, I think I understand now... I had very similar issues with some BCH8 code on an OMAP3630 board.
-The error correction code was buggy, and would trip on errors located in ecc bytes.
-Actually, this (and performance issues) is what pushed me into writing lib/bch.c :)
-BR,
--- 
-Ivan
+    Correct error checking to prevent a NULL pointer dereference
+
+    The problem only occurs if the DTS is not correct, the requested mappin=
+g is not reserved on the parent bus.
+    In this special case the count is 1, but the list_size after mapping is=
+ 0. list_size 0 should generate an error!
+
+diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
+index 2e6fb68..83d121e 100644
+--- a/drivers/mtd/maps/physmap_of.c
++++ b/drivers/mtd/maps/physmap_of.c
+@@ -267,13 +267,14 @@ static int __devinit of_flash_probe(struct platform_d=
+evice *dev)
+                info->list[i].mtd->dev.parent =3D &dev->dev;
+        }
+
+-       err =3D 0;
+        if (info->list_size =3D=3D 1) {
++               err =3D 0;
+                info->cmtd =3D info->list[0].mtd;
+        } else if (info->list_size > 1) {
+                /*
+                 * We detected multiple devices. Concatenate them together.
+                 */
++               err =3D 0;
+                info->cmtd =3D mtd_concat_create(mtd_list, info->list_size,
+                                               dev_name(&dev->dev));
+                if (info->cmtd =3D=3D NULL)
