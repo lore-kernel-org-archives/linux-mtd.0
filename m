@@ -1,20 +1,25 @@
-Received: from moutng.kundenserver.de ([212.227.126.171])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TWnl7-0001kQ-Ps
- for linux-mtd@lists.infradead.org; Fri, 09 Nov 2012 12:32:30 +0000
-Message-ID: <509CF7DA.8060505@corscience.de>
-Date: Fri, 09 Nov 2012 13:32:26 +0100
-From: =?ISO-8859-1?Q?Andreas_Bie=DFmann?= <biessmann@corscience.de>
+Received: from asav3.lyse.net ([81.167.37.131])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TWoYA-0004ih-G2
+ for linux-mtd@lists.infradead.org; Fri, 09 Nov 2012 13:23:11 +0000
+Received: from localhost (localhost.localdomain [127.0.0.1])
+ by asav3.lyse.net (Postfix) with ESMTP id 1F4CB840EF
+ for <linux-mtd@lists.infradead.org>; Fri,  9 Nov 2012 14:23:04 +0100 (CET)
+Received: from srv.nordgard-hansen.net (82.79-160-147.customer.lyse.net
+ [79.160.147.82]) by asav3.lyse.net (Postfix) with ESMTP id 6C4F08408B
+ for <linux-mtd@lists.infradead.org>; Fri,  9 Nov 2012 14:23:03 +0100 (CET)
+Received: from srv.nordgard-hansen.net ([192.168.42.5])
+ by srv.nordgard-hansen.net with esmtps (TLS1.0:DHE_RSA_AES_256_CBC_SHA1:32)
+ (Exim 4.71) (envelope-from <hhansen@pvv.org>) id 1TWoY4-0002Dv-PI
+ for linux-mtd@lists.infradead.org; Fri, 09 Nov 2012 14:23:05 +0100
+Message-ID: <509D03B7.3070304@pvv.org>
+Date: Fri, 09 Nov 2012 14:23:03 +0100
+From: Harald Nordgard-Hansen <hhansen@pvv.org>
 MIME-Version: 1.0
-To: Dimax <dimax.main@gmail.com>
-Subject: Re: UBIFS failure on SheevaPlug Basic
-References: <CAF9kqNHybAtg8od-h=B8qKKVuWhkieBnXfUuhxW53aHvEdeDZg@mail.gmail.com>
- <509CE712.60303@corscience.de>
- <CAF9kqNFLvf+Kzesk9XZOvy61v6LzqUA+cnmxtPLK7kPfTLpKSw@mail.gmail.com>
-In-Reply-To: <CAF9kqNFLvf+Kzesk9XZOvy61v6LzqUA+cnmxtPLK7kPfTLpKSw@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+To: linux-mtd@lists.infradead.org
+Subject: Fix recovery after failed write-buffer operation in cfi_cmdset_0002.c
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,135 +29,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Dimax,
+Hi.
 
-On 09.11.2012 12:41, Dimax wrote:
-> HI Andreas,
-> Thanks for your help. I'm not so advanced in Linux knowledge and will
-> ask for deeper explanations.=20
+When working on a problem with some flash chips that lock up during
+write-buffer operations, I think there may be a bug in the linux
+handling of chips using cfi_cmdset_0002.c.
 
-all of us started some time ...
+The datasheets I have found for a number of these chips all specify that
+when aborting a write-buffer command, it is not enough to use the
+standard reset.  Rather a "write-to-buffer-reset command" is needed.
+This command is quite similar for all chips, the main variance seem to
+be if the final 0xF0 can go to any address or must go to addr_unlock1.
 
-> Or more exactly I understand what you
-> mean but do not know how to do it.
-> Please see below
->=20
-> On Fri, Nov 9, 2012 at 1:20 PM, Andreas Bie=DFmann
-> <biessmann@corscience.de> wrote:
->> Dear Dimax,
->>
->> On 09.11.2012 10:35, Dimax wrote:
->>> 1. Problem Description
->>> ---------------------------------
->>
->> <snip>
->>
->>> Error reading superblock on volume 'ubi:rootfs'!
->>> UBIFS not mounted, use ubifs mount to mount volume first!
->>> UBIFS not mounted, use ubifs mount to mount volume first!
->>> Wrong Image Format for bootm command
->>> ERROR: can't get kernel image!
->>>
->>
->> we discussed that already:
->> http://thread.gmane.org/gmane.comp.boot-loaders.u-boot/145526
->> And a possible solution exists here:
->> http://patchwork.ozlabs.org/patch/195174/
->>
->=20
-> This is what I'm trying to do. I'm working now on building an u-boot
-> image with suggested patch.
+The bug is then in the recovery handling when timing out at the end of
+do_write_buffer, where using the normal reset command is not sufficient.
 
-Ok
+Without this change, if the write-buffer command fails then any
+following operations on the flash also fail.
 
->>> 1.3 Recovery
->>>
->>> 2. Fixing
->>> =3D=3D=3D=3D=3D=3D
->>> 2. Make rootfs partition read only
->>
->> No, just use a /boot ro. All you need is kernel and initrd which shoul=
-d
->> be located in /boot. You can use a raw mtd for that too to avoid that
->> ubifs fails (as I understood is your fear).
->=20
-> Please explain how to get initrd in /boot ?
+The small patch here should apply against just about all kernels I've
+seen over the last 5 years, the code has not changed in this area for a
+long time...
 
-cp <initrd provided by debian distro> /boot
-BTW: debian will install the initrd into /boot
+-Harald Nordgård-Hansen
 
-> And what is a row mtd ?
+--------
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c      2012-05-21
+13:46:28.679794861 +0200
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c      2012-10-30
+18:27:49.939109556 +0100
+@@ -1536,8 +1536,10 @@
+                UDELAY(map, chip, adr, 1);
+        }
 
-I mean a RAW mtd section. You can access the mtd with tools from
-mtd-utils to write raw data on it (without an file system). These data
-can you get out of the mtd from u-boot, again without interaction with
-an fs.
+-       /* reset on all failures. */
+-       map_write( map, CMD(0xF0), chip->start );
++       /* write-to-buffer-reset on all failures. */
++       cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
+cfi->device_type, NULL);
++       cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi,
+cfi->device_type, NULL);
++       cfi_send_gen_cmd(0xF0, cfi->addr_unlock1, chip->start, map, cfi,
+cfi->device_type, NULL);
+        xip_enable(map, chip, adr);
+        /* FIXME - should have reset delay before continuing */
+--------
 
->> Another alternative is to have two logical ubifs in a physical ubi
->> section. One of them is ro, the other rw mounted.
->>
-> How can I arrange it?
 
-You can leave your mtdparts setting in u-boot as is and just create two
-different ubifs filesystems in it. Lets call the first one <boot> and
-the second one <fs>. So you will end up with these commands (not
-checked, please read man page before using them):
-
-% ubiformat -y -q /dev/mtd1
-% ubiattach -p /dev/mtd1
-% ubimkvol /dev/ubi0 -N boot -s 10MiB
-% ubimkvol /dev/ubi0 -N fs -m
-% mount -t ubifs ubi0:fs /target
-% mkdir /target/boot
-% mount -t ubifs ubi0:boot /target/boot
-% debootstrap ...
-
-Then configure your /etc/fstab and ensure the /boot is mounted ro
-always. Just mount rw for an kernel update and then remount ro right
-after the update.
-
->>> 3. Fix u-boot settings
->>> And here I'm not sure how to do all this.
->>
->> Just provide a correct cmdline so that the kernel knows about your
->> special nand organization. u-boot also want to know that to load the
->> kernel from appropriate position. Read about the mtdpart parameter in
->> u-boot, that should be sufficient for your needs.
->>
-> OK
-> Will do it
->=20
->>> 2.3. u-boot
->>> I assume I should start with changing partitioning in u-boot:
->>> Currently I have
->>> mtdparts mtdparts=3Dorion_nand:0xa0000@0x0(u-boot),0x400000@0x100000(=
-uImage),0x1fb00000@0x500000(rootfs)
->> ---------------------------------^----------------------------^
->>
->> you will waste some space here! BTW did you think about your block siz=
-e?
->>
-> Where exactly?
-
-Well, there is a gap of 0x60000 between u-boot and uImage section.
-
-> I actually do not understand why should I have uImage partition as
-> uImage is located now under /boot in rootfs partition as far as I
-> understand. But this is what I took from other discussion thread.
-
-Well, as mentioned above you can have a RAW mtd which could hold for
-example the uImage.
-
->>> How to split rootfs into two partitions?
->>
->> You could handle it on a directory basis, just mount /boot from anothe=
-r fs.
->>
->=20
-> How can I do it?
-
-Just mount /boot as another fs, as described above.
-
-Best regards
-
-Andreas Bie=DFmann
+-- 
+Harald Nordgård-Hansen
