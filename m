@@ -1,23 +1,14 @@
-Received: from imta22.fe.bosch.de ([139.15.243.26])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TWjQ9-0006Xp-LW
- for linux-mtd@lists.infradead.org; Fri, 09 Nov 2012 07:54:35 +0000
-Received: from smtp2-v.fe.bosch.de (imta24.fe.bosch.de [139.15.243.27])
- by imta22.fe.bosch.de (Postfix) with ESMTP id AA0821E4061A
- for <linux-mtd@lists.infradead.org>; Fri,  9 Nov 2012 08:45:47 +0100 (CET)
-Received: from vsmta11.fe.internet.bosch.com (unknown [10.4.98.51])
- by imta24.fe.bosch.de (Postfix) with ESMTP id 206EAB0020E
- for <linux-mtd@lists.infradead.org>; Fri,  9 Nov 2012 08:45:38 +0100 (CET)
-Received: from localhost (vsgw4.fe.internet.bosch.com [10.4.98.12])
- by vsmta11.fe.internet.bosch.com (Postfix) with SMTP id BB78343C025F
- for <linux-mtd@lists.infradead.org>; Fri,  9 Nov 2012 08:45:21 +0100 (CET)
-From: "Prins Anton (ST-CO/ENG1.1)" <Anton.Prins@nl.bosch.com>
+Received: from mail.sdt.be ([81.83.20.17] helo=remote.sdt.be)
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TWk7m-0001qq-Eb
+ for linux-mtd@lists.infradead.org; Fri, 09 Nov 2012 08:39:39 +0000
+From: David MONTICELLI <david@sdt.be>
 To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Fri, 9 Nov 2012 08:45:24 +0100
-Subject: Patch to solve NULL pointer dereference in physmap_of.c
-Message-ID: <85D877DD6EE67B4A9FCA9B9C3A4865670C3ADE0635@SI-MBX14.de.bosch.com>
+Subject: huge rootfs mount time at boot
+Date: Fri, 9 Nov 2012 08:38:50 +0000
+Message-ID: <8F58A6635F694F4A9BB3FB4CE69A335C08467548@PANDORA.sdt.local>
 Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,35 +20,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-commit 0905a6f4aec377123e94d2260f2f7a0d867e19be
-Author: Anton Prins <anton.prins@nl.bosch.com>
-Date:   Fri Nov 9 10:12:58 2012 +0100
+Hi,
 
-    Correct error checking to prevent a NULL pointer dereference
 
-    The problem only occurs if the DTS is not correct, the requested mappin=
-g is not reserved on the parent bus.
-    In this special case the count is 1, but the list_size after mapping is=
- 0. list_size 0 should generate an error!
+Our embedded linux is using a NOR flash.
 
-diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
-index 2e6fb68..83d121e 100644
---- a/drivers/mtd/maps/physmap_of.c
-+++ b/drivers/mtd/maps/physmap_of.c
-@@ -267,13 +267,14 @@ static int __devinit of_flash_probe(struct platform_d=
-evice *dev)
-                info->list[i].mtd->dev.parent =3D &dev->dev;
-        }
+Recently I have noticed the following:
 
--       err =3D 0;
-        if (info->list_size =3D=3D 1) {
-+               err =3D 0;
-                info->cmtd =3D info->list[0].mtd;
-        } else if (info->list_size > 1) {
-                /*
-                 * We detected multiple devices. Concatenate them together.
-                 */
-+               err =3D 0;
-                info->cmtd =3D mtd_concat_create(mtd_list, info->list_size,
-                                               dev_name(&dev->dev));
-                if (info->cmtd =3D=3D NULL)
+1) I erase the root fs partition from uboot
+2) I tftp the root fs image from uboot
+3) I boot up on 25 sec
+
+4) I SCP 2 files of 14 Mb each to /home
+5) I boot up on 45 sec
+6) I delete those 2 files
+7) I still boot up on 45 sec!
+8) To boot up on 25 sec again, I have to erase root fs from uboot
+
+Note:
+     Since I have noticed that behavior, I have searched and learnt a lot, =
+so I have now selected the "End block Summary"
+      For JFFS2 into menu config, have rebuilt everything and remake the jf=
+fs2 images.
+
+      After having modified a small program(www.embedded-linux.co.uk/downlo=
+ads/nand_check.tar.gz) found here    (http://www.embedded-linux.co.uk/tutor=
+ial/jffs2-summary) to make it works for NOR flash; I can see that blocks of=
+ my    root fs Image correctly end with EBS; but next blocks don't (like th=
+e ones about the 2 files I've added).
+        Then I have tried the "pad" option from the menu config, to pad the=
+ root fs image with 0xff to the size of my root      fs partition; but the =
+result is that my root fs jffs2 image size remain the same as before having=
+ checked the   "pad(size)" option.
+
+
+Could you please tell me why it acts like that (slow mount even after havin=
+g deleted the 2 files) and how to fix it?
+
+
+
+Thanks in advance,
+
+David
+
+
+David MONTICELLI Developer & IT Administrator
+SDT International sa-nv
+Boulevard de l'Humanit=E9 415
+1190 Brussels - Belgium
+Tel: +32 2 332 32 25
+www.sdt.eu
