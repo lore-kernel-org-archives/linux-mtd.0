@@ -1,21 +1,17 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TWqW0-0006q0-U3
- for linux-mtd@lists.infradead.org; Fri, 09 Nov 2012 15:29:05 +0000
-Message-ID: <1352474975.1814.41.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: gpio-nand: Ability to use driver for
- configurations without RDY-pin
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Alexander Shiyan <shc_work@mail.ru>
-Date: Fri, 09 Nov 2012 17:29:35 +0200
-In-Reply-To: <1350454107-3754-1-git-send-email-shc_work@mail.ru>
-References: <1350454107-3754-1-git-send-email-shc_work@mail.ru>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-2bu2lRLCv1TiVCYGHXO+"
-Mime-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Reply-To: artem.bityutskiy@linux.intel.com
+Received: from mail-gg0-f177.google.com ([209.85.161.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TWqeC-0007te-FT
+ for linux-mtd@lists.infradead.org; Fri, 09 Nov 2012 15:37:33 +0000
+Received: by mail-gg0-f177.google.com with SMTP id h1so792746gge.36
+ for <linux-mtd@lists.infradead.org>; Fri, 09 Nov 2012 07:37:30 -0800 (PST)
+From: Ezequiel Garcia <elezegarcia@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd_blkdev: Use a different name for block_device_operations
+ variable
+Date: Fri,  9 Nov 2012 12:36:35 -0300
+Message-Id: <1352475395-11917-1-git-send-email-elezegarcia@gmail.com>
+Cc: Ezequiel Garcia <elezegarcia@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,45 +21,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+struct mtd_blktrans_ops is a type, and mtd_blktrans_ops is a variable.
+To improve code clarity it's better to not use the same names,
+so we just change the latter.
 
---=-2bu2lRLCv1TiVCYGHXO+
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Cc: David Woodhouse <dwmw2@infradead.org>
+Signed-off-by: Ezequiel Garcia <elezegarcia@gmail.com>
+---
+ drivers/mtd/mtd_blkdevs.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-On Wed, 2012-10-17 at 10:08 +0400, Alexander Shiyan wrote:
-> In some configurations of "gpio-nand" RDY-pin may be not connected.
-> This patch allow to use driver for these configurations. In this case
-> we are assume that device always ready.
->=20
-> Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
-
-Pushed to l2-mtd.git, thanks!
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-2bu2lRLCv1TiVCYGHXO+
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQnSFfAAoJECmIfjd9wqK0IWkQALVqxhcRY+u3GMZ602AYUxtj
-yKutlKhaZsoF37HYv7KQRtJ//uz05hB8/lJb767izIMpVRa08OCV5MbIWl2bzgzH
-w9opyHbQ9mK31wArg5G+UQtPkI+RaTBmGF3O5Qr0pmbvy4TSuYcZmYD/TA54h9fe
-PxLbbK1TfsaIcO10/thI5pjJ2L/yweh+Le+dSgeWDEq61exRihL1hgbic/3nTFmG
-DCLiQxeCF4k2JZ/UhBPkFuvPCaNEWreJdGri1q6RyPhcsmqEsKRECfzmP8pUYUVB
-xlrBRuxX3uMURnJB6Mk/Dc7oJerCn4UOyH5Qz9mV1Qiet3du3wSaxDZEVSKK1/BD
-/xDDRFW0bQDpjuRnvrdrC0zxiBewl+v0Op+x3HBSa19q6sxgFa/kQmyPM+/B0Tjj
-MI17QBqi60dltgH8ktMOCneoBvzFVS+HHXjrA6ebhJroGBkXFSNNo+t+i5JOe0Xz
-JiGkAQS23DcoHchAj2q1HoPxBZgT4bZnv6PhVueebqWLMKpIxJhU1yRHJl+ZGoPI
-QjkkvQyhxdNVaPA9aXGzL0n0/wJ7xiWc/xWSb6zgJdPWJIP6sqLMot6e16xWVU10
-dwqpbnpnYvoEFvcV2qPUyJ/YKJQvB9EOwHFi5XTgMUbZGHTL3S13SZPpP6hPu1V4
-yqv7KAca+ilzc6nrUApQ
-=dq5j
------END PGP SIGNATURE-----
-
---=-2bu2lRLCv1TiVCYGHXO+--
+diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+index f1f0671..26ef2a7 100644
+--- a/drivers/mtd/mtd_blkdevs.c
++++ b/drivers/mtd/mtd_blkdevs.c
+@@ -325,7 +325,7 @@ unlock:
+ 	return ret;
+ }
+ 
+-static const struct block_device_operations mtd_blktrans_ops = {
++static const struct block_device_operations mtd_block_ops = {
+ 	.owner		= THIS_MODULE,
+ 	.open		= blktrans_open,
+ 	.release	= blktrans_release,
+@@ -401,7 +401,7 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+ 	gd->private_data = new;
+ 	gd->major = tr->major;
+ 	gd->first_minor = (new->devnum) << tr->part_bits;
+-	gd->fops = &mtd_blktrans_ops;
++	gd->fops = &mtd_block_ops;
+ 
+ 	if (tr->part_bits)
+ 		if (new->devnum < 26)
+-- 
+1.7.8.6
