@@ -1,23 +1,24 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TWqek-000805-Fs
- for linux-mtd@lists.infradead.org; Fri, 09 Nov 2012 15:38:07 +0000
-Message-ID: <1352475517.1814.44.camel@sauron.fi.intel.com>
-Subject: Re: Cortex A9 Ubifs Issues with SMP enable kernel <ubifs recovery
- needed>
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Darshan Nandanwar <dk.manit@gmail.com>
-Date: Fri, 09 Nov 2012 17:38:37 +0200
-In-Reply-To: <CAHeY5Qe2U8sGqMrvd5_uYOiBYu09Y818GUfFhJh3-TnMPnijbA@mail.gmail.com>
-References: <CAHeY5Qe2U8sGqMrvd5_uYOiBYu09Y818GUfFhJh3-TnMPnijbA@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-k4l3BMgbu/sDJbnK5NKd"
-Mime-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Mike Dunn <mikedunn@newsguy.com>,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mail-vb0-f43.google.com ([209.85.212.43])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TX033-0008Ce-Td
+ for linux-mtd@lists.infradead.org; Sat, 10 Nov 2012 01:39:51 +0000
+Received: by mail-vb0-f43.google.com with SMTP id fq11so5804798vbb.16
+ for <linux-mtd@lists.infradead.org>; Fri, 09 Nov 2012 17:39:47 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1352473841.1814.35.camel@sauron.fi.intel.com>
+References: <1350147809-19616-1-git-send-email-shijie8@gmail.com>
+ <1351258892.1823.20.camel@sauron.fi.intel.com>
+ <508B4586.4090600@freescale.com>
+ <1352473841.1814.35.camel@sauron.fi.intel.com>
+Date: Fri, 9 Nov 2012 20:39:47 -0500
+Message-ID: <CAMiH66E9WTtt=6EhX9XVv9afErGd5Ajfg9qN6dVQhE5FEJVrTw@mail.gmail.com>
+Subject: Re: [PATCH] mtd: gpmi: remove unneccessary header
+From: Huang Shijie <shijie8@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,60 +28,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, Nov 9, 2012 at 10:10 AM, Artem Bityutskiy <dedekind1@gmail.com> wro=
+te:
+> On Sat, 2012-10-27 at 10:23 +0800, Huang Shijie wrote:
+>> =E4=BA=8E 2012=E5=B9=B410=E6=9C=8826=E6=97=A5 21:41, Artem Bityutskiy =
+=E5=86=99=E9=81=93:
+>> > On Sat, 2012-10-13 at 13:03 -0400, Huang Shijie wrote:
+>> > > The whole gpmi-nand driver has turned to pure devicetree supported.
+>> > > So the linux/mtd/gpmi-nand.h is not neccessary now. Just remove it,
+>> > > and move some macros to the gpmi-nand driver itself.
+>> > >
+>> > > Signed-off-by: Huang Shijie <shijie8@gmail.com>
+>> > I cannot compile-test it because the MXS configuration file I always
+>> I tested this patch in mxs and mx6q with the linux-next-20121026.
+>> I do not meet such compiler errors.
+>>
+>> I think the l2-mtd tree is lack of some patches in other people's
+>> tree.
+>> In the current l2-mtd tree, even i DISABLE the gpmi driver, the kernel
+>> still
+>> meets the compiler errors.
+>
+> It is based on v3.7-rc4. Once the patches you refer are in Linus's tree,
+> let me know. Thanks!
+>
+I re-created the .config based on the latest l2-mtd tree. I compiled
+the kernel with this patch again, and
+there is no compiler error anymore.
 
---=-k4l3BMgbu/sDJbnK5NKd
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Could you re-create your mxs config with "make ARCH=3DARM
+mxs_defconfig", and test this patch again?
 
-On Thu, 2012-07-26 at 23:37 +0530, Darshan Nandanwar wrote:
-> Artem/Brian,,
->  I am facing  the issue when try to mount rootfs which inside one of
-> the ubi partition .Linux kernel 3.x is being used .All goes perfect
-> when i use it uni-processor mode but  when i enable SMP , then  it
-> cribs for *ubifs recovery needed*. Does it imply that partition got
-> corrupted?  if it is , then why its not in the case of  non-smp kernel
-> image?  did you guys happen to face such kind of issue?
->=20
-The "recovery needed" message is there when you do not unmount the
-file-system before reboot. The recovery is done automatically, and if it
-mounts, it should be all-right.
+thanks
+Huang Shijie
 
-> if any recovery is required ubifs has to do by itself..  isn't it? cpu
-> goes dead  after popping up s *ubifs recovery needed* message .. but
-> when i used nfs ,same  kernel image works fine..
-
-I do not think your system dies because of UBIFS recovery. UBIFS is
-SMP-safe and was hevily tested in multicore systems. This is some kind
-of coincidence.
-
-Run mtd tests to start with.
-
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-k4l3BMgbu/sDJbnK5NKd
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQnSN9AAoJECmIfjd9wqK0LtEP+wT+uIuoD76gFUlagN6jn3At
-ik2NrG/HIaJvHaLAuRJEfbX6L1dIHxL44mXJj8PJ72xR3FznDqasqXM1T1iC5XKN
-5dKLrqtZEH6ANVW00sCBd0YdxdGqkJf5+e25kWk3eGnyD3+ClZ3pAo9+1N6VcPh3
-w9AIxuuqiIKaupnIZmg3M1XS4LrDi7Zw3UAP46mbEnGPZ0unoxDGggiK0coINPOd
-5GOtI5IvTbo8mayP472EtYTG+ejLBLMKY7KadFgoDMLvPl5ps2KgGLExGwDmI9jT
-PWKJ1y0Xi7B4h3JxzWF06HrsqJyrm9OUaLRicBmz0zbVD7jhiGfFY03kHFaf+r95
-G+8+tbzXVivZ2jWuKBVGIMdbKvfj9pRBJlj1TktPXr4v/yK01CWbwrE6FkB3hhcG
-KwJWlDCtXoOVLB+hbXd1/GJgCaxVcOP62SJD9BMwoMp38PN9/mhRGTy4yeQAxn0v
-YusiRfpB5hUK6xSGayCBbboPnVQgyX9MIUubjIKtydI0Kfo+bmvqWiCrMTbJhT7T
-TIrHUI5fa3Hb4KfXfQ6nzMCsC9bSa5l65yiBxtkjiJpRUGTnRlBC0W8XzUp6IXz7
-w/MxMWgCJ1Jf+cL+2SnXiFaamMeGLvicnFJhvO4IxRSzClfSh1LNQ6WWD/9YG3C5
-N9PMdzr1tLquYPb9GesL
-=Feiq
------END PGP SIGNATURE-----
-
---=-k4l3BMgbu/sDJbnK5NKd--
+> --
+> Best Regards,
+> Artem Bityutskiy
