@@ -1,24 +1,18 @@
-Received: from mail-vb0-f43.google.com ([209.85.212.43])
+Received: from mail-gg0-f177.google.com ([209.85.161.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TX033-0008Ce-Td
- for linux-mtd@lists.infradead.org; Sat, 10 Nov 2012 01:39:51 +0000
-Received: by mail-vb0-f43.google.com with SMTP id fq11so5804798vbb.16
- for <linux-mtd@lists.infradead.org>; Fri, 09 Nov 2012 17:39:47 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <1352473841.1814.35.camel@sauron.fi.intel.com>
-References: <1350147809-19616-1-git-send-email-shijie8@gmail.com>
- <1351258892.1823.20.camel@sauron.fi.intel.com>
- <508B4586.4090600@freescale.com>
- <1352473841.1814.35.camel@sauron.fi.intel.com>
-Date: Fri, 9 Nov 2012 20:39:47 -0500
-Message-ID: <CAMiH66E9WTtt=6EhX9XVv9afErGd5Ajfg9qN6dVQhE5FEJVrTw@mail.gmail.com>
-Subject: Re: [PATCH] mtd: gpmi: remove unneccessary header
-From: Huang Shijie <shijie8@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org
+ id 1TXDcC-00065Z-W3
+ for linux-mtd@lists.infradead.org; Sat, 10 Nov 2012 16:09:01 +0000
+Received: by mail-gg0-f177.google.com with SMTP id h1so963268gge.36
+ for <linux-mtd@lists.infradead.org>; Sat, 10 Nov 2012 08:08:57 -0800 (PST)
+From: Ezequiel Garcia <elezegarcia@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [RFC/PATCH] mtd_blkdevs: Replace request handler kthread with a
+ workqueue
+Date: Sat, 10 Nov 2012 13:08:20 -0300
+Message-Id: <1352563700-5268-1-git-send-email-elezegarcia@gmail.com>
+Cc: Ezequiel Garcia <elezegarcia@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,40 +22,162 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Nov 9, 2012 at 10:10 AM, Artem Bityutskiy <dedekind1@gmail.com> wro=
-te:
-> On Sat, 2012-10-27 at 10:23 +0800, Huang Shijie wrote:
->> =E4=BA=8E 2012=E5=B9=B410=E6=9C=8826=E6=97=A5 21:41, Artem Bityutskiy =
-=E5=86=99=E9=81=93:
->> > On Sat, 2012-10-13 at 13:03 -0400, Huang Shijie wrote:
->> > > The whole gpmi-nand driver has turned to pure devicetree supported.
->> > > So the linux/mtd/gpmi-nand.h is not neccessary now. Just remove it,
->> > > and move some macros to the gpmi-nand driver itself.
->> > >
->> > > Signed-off-by: Huang Shijie <shijie8@gmail.com>
->> > I cannot compile-test it because the MXS configuration file I always
->> I tested this patch in mxs and mx6q with the linux-next-20121026.
->> I do not meet such compiler errors.
->>
->> I think the l2-mtd tree is lack of some patches in other people's
->> tree.
->> In the current l2-mtd tree, even i DISABLE the gpmi driver, the kernel
->> still
->> meets the compiler errors.
->
-> It is based on v3.7-rc4. Once the patches you refer are in Linus's tree,
-> let me know. Thanks!
->
-I re-created the .config based on the latest l2-mtd tree. I compiled
-the kernel with this patch again, and
-there is no compiler error anymore.
+By replacing a kthread with a workqueue, the code is now a bit clearer.
+There's also a slight reduction of code size (numbers apply for x86):
+Before:
+   text	   data	    bss	    dec	    hex	filename
+   3248	     36	      0	   3284	    cd4	drivers/mtd/mtd_blkdevs.o
 
-Could you re-create your mxs config with "make ARCH=3DARM
-mxs_defconfig", and test this patch again?
+After:
+   text	   data	    bss	    dec	    hex	filename
+   3150	     36	      0	   3186	    c72	drivers/mtd/mtd_blkdevs.o
 
-thanks
-Huang Shijie
+Due to lack of real hardware, tests have been performed on an emulated
+environment with mtdswap and mtdblock over nandsim devices.
+Some real testing should be done, before merging this patch.
 
-> --
-> Best Regards,
-> Artem Bityutskiy
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>
+Signed-off-by: Ezequiel Garcia <elezegarcia@gmail.com>
+---
+ drivers/mtd/mtd_blkdevs.c    |   47 +++++++++++++----------------------------
+ include/linux/mtd/blktrans.h |    4 ++-
+ 2 files changed, 18 insertions(+), 33 deletions(-)
+
+diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+index f1f0671..ba375ba 100644
+--- a/drivers/mtd/mtd_blkdevs.c
++++ b/drivers/mtd/mtd_blkdevs.c
+@@ -32,7 +32,6 @@
+ #include <linux/hdreg.h>
+ #include <linux/init.h>
+ #include <linux/mutex.h>
+-#include <linux/kthread.h>
+ #include <asm/uaccess.h>
+ 
+ #include "mtdcore.h"
+@@ -121,16 +120,14 @@ static int do_blktrans_request(struct mtd_blktrans_ops *tr,
+ 
+ int mtd_blktrans_cease_background(struct mtd_blktrans_dev *dev)
+ {
+-	if (kthread_should_stop())
+-		return 1;
+-
+ 	return dev->bg_stop;
+ }
+ EXPORT_SYMBOL_GPL(mtd_blktrans_cease_background);
+ 
+-static int mtd_blktrans_thread(void *arg)
++static void mtd_blktrans_work(struct work_struct *work)
+ {
+-	struct mtd_blktrans_dev *dev = arg;
++	struct mtd_blktrans_dev *dev =
++		container_of(work, struct mtd_blktrans_dev, work);
+ 	struct mtd_blktrans_ops *tr = dev->tr;
+ 	struct request_queue *rq = dev->rq;
+ 	struct request *req = NULL;
+@@ -138,7 +135,7 @@ static int mtd_blktrans_thread(void *arg)
+ 
+ 	spin_lock_irq(rq->queue_lock);
+ 
+-	while (!kthread_should_stop()) {
++	while (1) {
+ 		int res;
+ 
+ 		dev->bg_stop = false;
+@@ -156,15 +153,7 @@ static int mtd_blktrans_thread(void *arg)
+ 				background_done = !dev->bg_stop;
+ 				continue;
+ 			}
+-			set_current_state(TASK_INTERRUPTIBLE);
+-
+-			if (kthread_should_stop())
+-				set_current_state(TASK_RUNNING);
+-
+-			spin_unlock_irq(rq->queue_lock);
+-			schedule();
+-			spin_lock_irq(rq->queue_lock);
+-			continue;
++			break;
+ 		}
+ 
+ 		spin_unlock_irq(rq->queue_lock);
+@@ -185,8 +174,6 @@ static int mtd_blktrans_thread(void *arg)
+ 		__blk_end_request_all(req, -EIO);
+ 
+ 	spin_unlock_irq(rq->queue_lock);
+-
+-	return 0;
+ }
+ 
+ static void mtd_blktrans_request(struct request_queue *rq)
+@@ -199,10 +186,8 @@ static void mtd_blktrans_request(struct request_queue *rq)
+ 	if (!dev)
+ 		while ((req = blk_fetch_request(rq)) != NULL)
+ 			__blk_end_request_all(req, -ENODEV);
+-	else {
+-		dev->bg_stop = true;
+-		wake_up_process(dev->thread);
+-	}
++	else
++		queue_work(dev->wq, &dev->work);
+ }
+ 
+ static int blktrans_open(struct block_device *bdev, fmode_t mode)
+@@ -437,14 +422,13 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+ 
+ 	gd->queue = new->rq;
+ 
+-	/* Create processing thread */
+-	/* TODO: workqueue ? */
+-	new->thread = kthread_run(mtd_blktrans_thread, new,
+-			"%s%d", tr->name, new->mtd->index);
+-	if (IS_ERR(new->thread)) {
+-		ret = PTR_ERR(new->thread);
++	/* Create processing workqueue */
++	new->wq = alloc_workqueue("%s%d", 0, 0,
++				  tr->name, new->mtd->index);
++	if (!new->wq)
+ 		goto error4;
+-	}
++	INIT_WORK(&new->work, mtd_blktrans_work);
++
+ 	gd->driverfs_dev = &new->mtd->dev;
+ 
+ 	if (new->readonly)
+@@ -484,9 +468,8 @@ int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
+ 	/* Stop new requests to arrive */
+ 	del_gendisk(old->disk);
+ 
+-
+-	/* Stop the thread */
+-	kthread_stop(old->thread);
++	/* Stop workqueue. This will perform any pending request. */
++	destroy_workqueue(old->wq);
+ 
+ 	/* Kill current requests */
+ 	spin_lock_irqsave(&old->queue_lock, flags);
+diff --git a/include/linux/mtd/blktrans.h b/include/linux/mtd/blktrans.h
+index ed270bd..4eb0a50 100644
+--- a/include/linux/mtd/blktrans.h
++++ b/include/linux/mtd/blktrans.h
+@@ -23,6 +23,7 @@
+ #include <linux/mutex.h>
+ #include <linux/kref.h>
+ #include <linux/sysfs.h>
++#include <linux/workqueue.h>
+ 
+ struct hd_geometry;
+ struct mtd_info;
+@@ -43,7 +44,8 @@ struct mtd_blktrans_dev {
+ 	struct kref ref;
+ 	struct gendisk *disk;
+ 	struct attribute_group *disk_attributes;
+-	struct task_struct *thread;
++	struct workqueue_struct *wq;
++	struct work_struct work;
+ 	struct request_queue *rq;
+ 	spinlock_t queue_lock;
+ 	void *priv;
+-- 
+1.7.8.6
