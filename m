@@ -1,19 +1,23 @@
 Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TXwIP-000219-0u
- for linux-mtd@lists.infradead.org; Mon, 12 Nov 2012 15:51:34 +0000
-Message-ID: <1352735510.2262.16.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] MTD: Fix kernel-doc content to avoid warning.
+ id 1TXwMH-0002nS-VW
+ for linux-mtd@lists.infradead.org; Mon, 12 Nov 2012 15:55:34 +0000
+Message-ID: <1352735767.2262.18.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] [MTD] MTD driver for LPDDR2-NVM PCM memories
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Robert P. J. Day" <rpjday@crashcourse.ca>
-Date: Mon, 12 Nov 2012 17:51:50 +0200
-In-Reply-To: <alpine.DEB.2.02.1210250941170.27692@oneiric>
-References: <alpine.DEB.2.02.1210250941170.27692@oneiric>
+To: Vincenzo Aliberti <vincenzo.aliberti@gmail.com>
+Date: Mon, 12 Nov 2012 17:56:07 +0200
+In-Reply-To: <507DD09C.6050600@gmail.com>
+References: <1349385434-3073-1-git-send-email-valibert@micron.com>
+ <1349954577.12014.13.camel@sauron.fi.intel.com>
+ <507DD09C.6050600@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-kriO4vt/ysZnK+glCvuj"
+ boundary="=-2SRyKrCxmZ1DB24zUsIn"
 Mime-Version: 1.0
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>
+Cc: arnd@arndb.de, dmanna@micron.com, lporzio@micron.com,
+ linux-mtd@lists.infradead.org, valibert@micron.com, svenkatr@ti.com,
+ dwmw2@infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,22 +29,31 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-kriO4vt/ysZnK+glCvuj
+--=-2SRyKrCxmZ1DB24zUsIn
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-10-25 at 09:43 -0400, Robert P. J. Day wrote:
-> Add missing colons to fix kernel-doc generation warnings.
->=20
-> Signed-off-by: Robert P. J. Day <rpjday@crashcourse.ca>
+On Tue, 2012-10-16 at 23:24 +0200, Vincenzo Aliberti wrote:
+> Considering the number of changes you can find here-below the whole patch=
+: I have=20
+> successfully compiled it with 3.7-rc1
 
-Pushed to l2-mtd.git, thanks!
+I cannot apply this patch - it is line-wrapped. Please, re-send properly
+and send it as a separate e-mail, include nice commit message. Do not do
+it like in this e-mail, because the above stuff will go to the commit
+message when I use 'git am'.
+
+Generally, you should be able to save your own e-mail from the mailing
+list, then feed it to 'git am' and it should apply cleanly, and the
+resulting commit message should be sensible.
+
+Thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-kriO4vt/ysZnK+glCvuj
+--=-2SRyKrCxmZ1DB24zUsIn
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -48,19 +61,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQoRsWAAoJECmIfjd9wqK09scQALao010SZz79gAMES1mhLKwM
-m/X5DcH1kAaN9DBPQ5isegcoFDX+JClldgqwhiuIN9GwU7tPYa1Qt/SD2WdxcWYn
-2pvGAUzhU8wGcDpBiLgn7lFkbW9tzzu0jjd0T5/bS7ejADT8EkJNbzFKZs/a4o/P
-Cc+spl+W688v0o/mDu3/0IZwFqykLBQxcP9wi9gDR6lFlhXF/EmePVhb//jTtpVi
-/KYVn9jpLkycETLGu5fH3jpm9zwkL0fg+hMsOd/dX8mT46QAx3OFpkrbBLFMJwyI
-o9ZSg1L9RqEXuIsxfaeqtEO7RinJ/rYfTErnt8vaX+Pl+H/2wKl8VbYpuNGlz5wG
-NNuHtXvtRv1SJYh0QfyPtrWfrpcBuRVQKocnzf1XKa+30ZzBCUYMMq0BL7Mi+6jd
-hd8VbN+XN37jb3zGa3ahLMlTCkNvowl8mtAWGiiqSV3PwlBouMq76HxGeg496LtZ
-/ZrghV+xOA7G+T39+iAEGo6l9Y6ha5PHSLiUC9gnZDrx8bWKe0MCYqrd2l4/9Wt0
-GyR7traq2eRl169j+33pxV4zojLNAylGGDLU0LIdnDibaVC+XpE40FHaugAxJ9nq
-toKf7CJfYy7VtfminPWRDEJAqbjptdgj0YiGh9o5OkNdBnNRWgxyP/1/8NzxFaY8
-QVMDEn1v/34Hn5VhrmI5
-=qnxm
+iQIcBAABAgAGBQJQoRwXAAoJECmIfjd9wqK0WAsP/A9qVJfqowM9jDxiP8b9IWm9
+F5zMX2OP8AL6ruUeQSmL10RVjBblcVuaRLtFQ83N+gVWrM+/n2E0yEkUiqI8TCnb
+0uY+bKlGfIGhjBCbLzouMadd/AigsXDO6lX3kB+yQ21t1sg/PmY9LCPF0v3bqGBM
+TEnnlzwXJzMgUZD8jhkrWbADRSqm/EbzF8WQ+jcz3rjHdwvb33V7jlM1XmFGIi5o
+cBfCKGrVZHIkm3YwkOIfieMrC/Qhqmp8qExcD0jjoKtCMBa+klCzgGfWXwUYbRHp
+x3x2b0NT4OHxTxhOgX1uKnlh+rndqB/Zu1vZLfFVON4Ke5S5bD3bOr5r+cDew4Q4
+qxmBOz+D60scrbECr5ypMstNo401wMQQXWmicM5VYENsAUlCyQ8m6H6GLX2KTOMn
+mWvF2O+CfyZGy+qKd1gWUKRwbfEyQmKahyoXEIS+oxsLLGUq6V3zn9DysWGoS9af
+IaDqKqRYFcQa7iehcrqCBm2+QvheXAAYlAAC8vfW/PNBZ9E/nClCqo7aIWkLMpjJ
+bnXy8IKdY6/9kQsFkI2HnYO5+NnzggIlMOVvwL+3lfXHWmlWTfHadInOsyERQfQ3
+RXgcPaoz2usb0M4XKWAhjOJNlzSwN+YhHMTrJFBJ+8rDSkN6J+rpzsgnHy9IV/Hz
+OVn8XrBXLIF7qDbZlK5x
+=m0u8
 -----END PGP SIGNATURE-----
 
---=-kriO4vt/ysZnK+glCvuj--
+--=-2SRyKrCxmZ1DB24zUsIn--
