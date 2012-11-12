@@ -1,19 +1,19 @@
-Message-ID: <1352733455.2262.0.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v3 1/3] mtd: sh_flctl: Minor cleanups
+Received: from mga02.intel.com ([134.134.136.20])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TXvoV-0008VX-Ui
+ for linux-mtd@lists.infradead.org; Mon, 12 Nov 2012 15:20:42 +0000
+Message-ID: <1352733657.2262.1.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] ubiformat: really skip some messages when quiet
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Bastian Hecht <hechtb@googlemail.com>
-Date: Mon, 12 Nov 2012 17:17:35 +0200
-In-Reply-To: <1350641736-18192-2-git-send-email-hechtb@gmail.com>
-References: <1350641736-18192-1-git-send-email-hechtb@gmail.com>
- <1350641736-18192-2-git-send-email-hechtb@gmail.com>
+To: Wolfram Sang <w.sang@pengutronix.de>
+Date: Mon, 12 Nov 2012 17:20:57 +0200
+In-Reply-To: <1350745976-1774-1-git-send-email-w.sang@pengutronix.de>
+References: <1350745976-1774-1-git-send-email-w.sang@pengutronix.de>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-rvHTxkHiqfN7N8WCUWsA"
+ boundary="=-I4vPy1IE3RN7vyMHmCBG"
 Mime-Version: 1.0
-Cc: linux-sh@vger.kernel.org, Vikram Narayanan <vikram186@gmail.com>,
- Magnus Damm <magnus.damm@gmail.com>, linux-mtd@lists.infradead.org,
- Guennadi Liakhovetski <g.liakhovetski@gmx.de>,
- linux-arm-kernel@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,33 +25,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-rvHTxkHiqfN7N8WCUWsA
+--=-I4vPy1IE3RN7vyMHmCBG
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2012-10-19 at 12:15 +0200, Bastian Hecht wrote:
-> Some small fixes to avoid sparse and smatch complain. Other cosmetic fixe=
-s
-> as well.
+On Sat, 2012-10-20 at 17:12 +0200, Wolfram Sang wrote:
+> Both logic (only print when not quiet) and the indentation suggest that
+> the braces around the block have been forgotten.
 >=20
-> - Change of the type of the member index in struct sh_flctl from signed
-> to unsigned. We use index by addressing array members, so unsigned is mor=
-e
-> concise here. Adapt functions relying on sh_flctl::index.
-> - Remove a blurring cast in write_fiforeg().
-> - Apply consistent naming scheme when refering to the data buffer.
-> - Shorten some unnecessarily verbose functions.
-> - Remove spaces at start of lines.
->=20
-> Signed-off-by: Bastian Hecht <hechtb@gmail.com>
+> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
 
-Pushed to l2-mtd.git, thanks!
+Pushed to mtd-utils.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-rvHTxkHiqfN7N8WCUWsA
+--=-I4vPy1IE3RN7vyMHmCBG
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -59,19 +49,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQoRMPAAoJECmIfjd9wqK0mEEQALwBlkt0dtFHg3ukenZ7Fc1e
-Fd0/tHX8eqg2A/E71Ev7BZC7RzbU9361QAOfozW1DyYWIq5MLoQBzkxCvVu4NcJy
-SN1IpChmspEFiUnGnC5m4dUsXmB7+aAfrUod6v36OVmu6A78+LmPq8fD1LtpGqUD
-TxPkBR+k6jWaGRVR3jv3Q6dVZOP4o3/2bW3raj66B6XUKoLDH0uKjxh5NHiUGLku
-x29kcWfxlD43gjiYLSwgI3CKBMmbiBMKaHEwi45oP45L3IjFNokGCHB/qagA7Q9x
-yl8oSfYSk7FsBKUS1qzKtTvxflWNAxBGnlJ4GxIRT0dyPygCcnXPGsOJcbVeGvyK
-nej3vE4foy3yZnWhqoSMBq9RfgiHwJyQxgiTs+6RaaaruIaU+hQgVOsOJo1XpX5D
-bEVBlEGDQCVGbuV5R582M+HFDyh3/wwfd+edX1hCHGGIG2JGI9uzMgMpQ5NSmfzH
-vheu/eqJEQAPxFUu0/mMZOa3eHCNFnD2A8Ze1GJnMT0wy1osP86wxZBrToTh2aH6
-YuHtQIkAcmh3gYvMnBT9k5kQNqYcMfdz5PRjX+xp7JJY9ZwZymqXqT86fAekkpmo
-Hzzk3r480vvnTcQF8gRUWSYlKqfff/bgALnkOJXFR/Z8ypJXnIjfehTlc7EACIRy
-9OutnhzHu9wmB+MW4pr9
-=en0j
+iQIcBAABAgAGBQJQoRPZAAoJECmIfjd9wqK0lVEQANEp3K7keTTB6XZgDMUHdN4O
+HYcX4CyJoxjycmQg9z2OxAISfT+I1dprOtQVB+4HXrhJ94iBaszy96Hz4Yfc7U6H
+R9PJEpYn4voPqBjPmFtcA9PbVxopecLMCeIB9Is++yO7cR43yADu43NSRzv7IwC1
+05XO9j1w+IH9SfXbbvYCBp9yPVGrUQmOiuknH1G9moDNgYL+5MAwPAc6YeJwTYEK
+QTx5ZadsJJ9SJVy7U6LLJgKsIuPFa6t8Z5Tgpc5kASjTTStmohGrJYWsJKwG2i2n
+14HwkhY3QFlLWwkin6Tp9fxuIvflSCAdATYf3SFk0uDxahFA+W2T/dNhSe2fOi9c
+UTUFjRSSqkRJ4XxLxhp7pf7NbewvPok4P3Y04sBsI8I86l7u301bL2lp+CAfKJ5+
+GLqWTHHA36AXe3b0OBQe2/CbFiE2qTtN7tuZJ7+YmjmP6WrrRtdibad5zypx+AFE
+V9ONfGjrajr6Kyeo16A9k4TkTzzIKTviJCxHgRkzATvHpoXpkYwucWXGIS4NVeyu
+WkuUBGR2opXMFZ5EcStS9Nxk0qYEh9qVWUge0UKMnCmKwzimfLQx+9zJd5BTRiwn
+h60e6Hlgwz9RIX9bI3lPpu9JVygrV7g7YrpIlBavdGA+j7X+bKfcDYmf1455wSZK
+2l7BVyT0lVHG1wcWRni5
+=KnRJ
 -----END PGP SIGNATURE-----
 
---=-rvHTxkHiqfN7N8WCUWsA--
+--=-I4vPy1IE3RN7vyMHmCBG--
