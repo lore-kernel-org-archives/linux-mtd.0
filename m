@@ -1,15 +1,14 @@
 Received: from mail-bk0-f49.google.com ([209.85.214.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TXqh6-00014O-SU
- for linux-mtd@lists.infradead.org; Mon, 12 Nov 2012 09:52:42 +0000
-Received: by mail-bk0-f49.google.com with SMTP id j4so2247427bkw.36
- for <linux-mtd@lists.infradead.org>; Mon, 12 Nov 2012 01:52:40 -0800 (PST)
+ id 1TXqh8-00014w-Ln
+ for linux-mtd@lists.infradead.org; Mon, 12 Nov 2012 09:52:43 +0000
+Received: by mail-bk0-f49.google.com with SMTP id j4so2247441bkw.36
+ for <linux-mtd@lists.infradead.org>; Mon, 12 Nov 2012 01:52:42 -0800 (PST)
 From: Jonas Gorski <jonas.gorski@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 4/5] MTD: bcm63xxpart: move the last curpart++ to its correct
- place
-Date: Mon, 12 Nov 2012 10:52:50 +0100
-Message-Id: <1352713971-1685-5-git-send-email-jonas.gorski@gmail.com>
+Subject: [PATCH 5/5] MTD: bcm63xxpart: use correct printk format for partitions
+Date: Mon, 12 Nov 2012 10:52:51 +0100
+Message-Id: <1352713971-1685-6-git-send-email-jonas.gorski@gmail.com>
 In-Reply-To: <1352713971-1685-1-git-send-email-jonas.gorski@gmail.com>
 References: <1352713971-1685-1-git-send-email-jonas.gorski@gmail.com>
 Cc: Maxime Bizon <mbizon@freebox.fr>, Kevin Cernekee <cernekee@gmail.com>,
@@ -24,27 +23,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The line belongs above the comment, not below it.
+Use ll to be able to remove the casts.
 
 Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
 ---
- drivers/mtd/bcm63xxpart.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ drivers/mtd/bcm63xxpart.c |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mtd/bcm63xxpart.c b/drivers/mtd/bcm63xxpart.c
-index b3db8e3..44cba4e 100644
+index 44cba4e..6eeb84c 100644
 --- a/drivers/mtd/bcm63xxpart.c
 +++ b/drivers/mtd/bcm63xxpart.c
-@@ -190,9 +190,9 @@ static int bcm63xx_parse_cfe_partitions(struct mtd_info *master,
- 	parts[curpart].name = "nvram";
- 	parts[curpart].offset = master->size - nvramlen;
- 	parts[curpart].size = nvramlen;
-+	curpart++;
- 
- 	/* Global partition "linux" to make easy firmware upgrade */
--	curpart++;
- 	parts[curpart].name = "linux";
- 	parts[curpart].offset = cfelen;
+@@ -198,9 +198,8 @@ static int bcm63xx_parse_cfe_partitions(struct mtd_info *master,
  	parts[curpart].size = master->size - cfelen - nvramlen;
+ 
+ 	for (i = 0; i < nrparts; i++)
+-		pr_info("Partition %d is %s offset %lx and length %lx\n", i,
+-			parts[i].name, (long unsigned int)(parts[i].offset),
+-			(long unsigned int)(parts[i].size));
++		pr_info("Partition %d is %s offset %llx and length %llx\n", i,
++			parts[i].name, parts[i].offset,	parts[i].size);
+ 
+ 	pr_info("Spare partition is offset %x and length %x\n",	spareaddr,
+ 		sparelen);
 -- 
 1.7.2.5
