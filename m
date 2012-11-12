@@ -1,19 +1,20 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TXvoV-0008VX-Ui
- for linux-mtd@lists.infradead.org; Mon, 12 Nov 2012 15:20:42 +0000
-Message-ID: <1352733657.2262.1.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] ubiformat: really skip some messages when quiet
+ id 1TXvzG-0006Cr-P6
+ for linux-mtd@lists.infradead.org; Mon, 12 Nov 2012 15:31:49 +0000
+Message-ID: <1352734340.2262.4.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] Add devicetree support to m25p80 driver
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Wolfram Sang <w.sang@pengutronix.de>
-Date: Mon, 12 Nov 2012 17:20:57 +0200
-In-Reply-To: <1350745976-1774-1-git-send-email-w.sang@pengutronix.de>
-References: <1350745976-1774-1-git-send-email-w.sang@pengutronix.de>
+To: Michal Vanka <mv@vanka.net>
+Date: Mon, 12 Nov 2012 17:32:20 +0200
+In-Reply-To: <5084241A.5050801@vanka.net>
+References: <5084241A.5050801@vanka.net>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-I4vPy1IE3RN7vyMHmCBG"
+ boundary="=-AjjQkTjF1PIwWqKbFxQ4"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: devicetree-discuss@lists.ozlabs.org, linux-mtd@lists.infradead.org,
+ mike@steroidmicros.com
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,23 +26,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-I4vPy1IE3RN7vyMHmCBG
+--=-AjjQkTjF1PIwWqKbFxQ4
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, 2012-10-20 at 17:12 +0200, Wolfram Sang wrote:
-> Both logic (only print when not quiet) and the indentation suggest that
-> the braces around the block have been forgotten.
+On Sun, 2012-10-21 at 18:34 +0200, Michal Vanka wrote:
+> The following patch adds support for devicetree to m25p80 driver.
+> Note that for jedec chips the chip identification was simplified.
+> The particular chip is identified by jedec_id only.
+> Tested on custom Altera Nios2 system.
 >=20
-> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
+> Signed-off-by: Michal Vanka <mv@vanka.net>
 
-Pushed to mtd-utils.git, thanks!
+This patch is wrapped and does not apply. I tried to fix the wrapping,
+but it does not apply to the l2-mtd.git tree anyway. The l2 tree is
+based on v3.7-rc4. Please, send a cleanly applicable version against the
+l2-mtd.git tree:
+
+http://git.infradead.org/users/dedekind/l2-mtd.git
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-I4vPy1IE3RN7vyMHmCBG
+--=-AjjQkTjF1PIwWqKbFxQ4
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -49,19 +57,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQoRPZAAoJECmIfjd9wqK0lVEQANEp3K7keTTB6XZgDMUHdN4O
-HYcX4CyJoxjycmQg9z2OxAISfT+I1dprOtQVB+4HXrhJ94iBaszy96Hz4Yfc7U6H
-R9PJEpYn4voPqBjPmFtcA9PbVxopecLMCeIB9Is++yO7cR43yADu43NSRzv7IwC1
-05XO9j1w+IH9SfXbbvYCBp9yPVGrUQmOiuknH1G9moDNgYL+5MAwPAc6YeJwTYEK
-QTx5ZadsJJ9SJVy7U6LLJgKsIuPFa6t8Z5Tgpc5kASjTTStmohGrJYWsJKwG2i2n
-14HwkhY3QFlLWwkin6Tp9fxuIvflSCAdATYf3SFk0uDxahFA+W2T/dNhSe2fOi9c
-UTUFjRSSqkRJ4XxLxhp7pf7NbewvPok4P3Y04sBsI8I86l7u301bL2lp+CAfKJ5+
-GLqWTHHA36AXe3b0OBQe2/CbFiE2qTtN7tuZJ7+YmjmP6WrrRtdibad5zypx+AFE
-V9ONfGjrajr6Kyeo16A9k4TkTzzIKTviJCxHgRkzATvHpoXpkYwucWXGIS4NVeyu
-WkuUBGR2opXMFZ5EcStS9Nxk0qYEh9qVWUge0UKMnCmKwzimfLQx+9zJd5BTRiwn
-h60e6Hlgwz9RIX9bI3lPpu9JVygrV7g7YrpIlBavdGA+j7X+bKfcDYmf1455wSZK
-2l7BVyT0lVHG1wcWRni5
-=KnRJ
+iQIcBAABAgAGBQJQoRaEAAoJECmIfjd9wqK0rFgP/RUF1NHo6YfL8+eP2NoagUd+
+QrTf8GlO8DLAuCPedj26b3XRV8q9wKHaKc7R9mVS3im68fxpr18EU04yNA6DHIAN
+UDrU6AR0IoZzccFiSOfYmGCXastj3jDQ/X5zrdVk7kN+bI+6j/EF1pF3PXJpwoDB
+mabFDZLNzgXkNxsRrJz4Wd0n++GS0u+IEE68JG98cpdKmo4wAKyaxncd76+IEB9o
+DfVo0eAOSxQQdl6HPVk6WA4Uwoxow/Ls5YZx0fiSs1AQmfRIQecIQ+y51Yv6zZRY
+L5tFW6yAFkoWl0Ub3V54hkrQYmUOcHgYTq4PoNOBnXKLJ2+u6nRmp+0JN6591Ds+
+8kABewp20uBaR4i3Mb2siq/WK/0FBZo+UCDu764xX1TpHjDWuMw0bhcjmRqUrAaj
+zr+VsGuSoODWyiGKohTUW+zgiWh/qdDVESEVWeCBLUKqPYtWtNGocb8vc3qNiTez
++6rcSRmdRWxfVzvtv76a8lnnHtOxz2yMfoBUnnrNeSD4nWeC4VEygGLO6hVpAaX9
+wN5f4kdVtKrXeWyYqvty0U6RDkaHxNVJTthaibKfS8oFZ93CdOoUhputPE+sO7iM
+b0mblLUdyYpZnsAM3lnveqPqOKxo23OmsVtA9dXrfFKNXmCfWoU36vU4D8SPPwgr
+lpRGgi15wYT39wxsFPFM
+=l3SC
 -----END PGP SIGNATURE-----
 
---=-I4vPy1IE3RN7vyMHmCBG--
+--=-AjjQkTjF1PIwWqKbFxQ4--
