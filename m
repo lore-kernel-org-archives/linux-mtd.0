@@ -1,24 +1,26 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TXwUo-0003sZ-Qr
- for linux-mtd@lists.infradead.org; Mon, 12 Nov 2012 16:04:24 +0000
-Message-ID: <1352736296.2262.25.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] [MTD] MTD driver for LPDDR2-NVM PCM memories
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Vincenzo Aliberti <vincenzo.aliberti@gmail.com>
-Date: Mon, 12 Nov 2012 18:04:56 +0200
-In-Reply-To: <507DD09C.6050600@gmail.com>
-References: <1349385434-3073-1-git-send-email-valibert@micron.com>
- <1349954577.12014.13.camel@sauron.fi.intel.com>
- <507DD09C.6050600@gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-UYsBgtWnotx2DlS3NxYn"
-Mime-Version: 1.0
-Cc: arnd@arndb.de, dmanna@micron.com, lporzio@micron.com,
- linux-mtd@lists.infradead.org, valibert@micron.com, svenkatr@ti.com,
- dwmw2@infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mail.ch.keymile.com ([193.17.201.103])
+ by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TXxg6-0007Yd-0P
+ for linux-mtd@lists.infradead.org; Mon, 12 Nov 2012 17:20:07 +0000
+Message-ID: <50A12FBD.8020801@keymile.com>
+Date: Mon, 12 Nov 2012 18:19:57 +0100
+From: Gerlando Falauto <gerlando.falauto@keymile.com>
+MIME-Version: 1.0
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: state of support for "external ECC hardware"
+References: <20121029204227.GA32300@harvey-pc.matrox.com><509B9143.4020506@keymile.com>
+ <20121108152125.GR2389@harvey-pc.matrox.com>	
+ <509BDE9B.3080909@keymile.com>
+ <alpine.DEB.2.00.1211090938500.29771@lnxricardw.se.axis.com>
+In-Reply-To: <alpine.DEB.2.00.1211090938500.29771@lnxricardw.se.axis.com>
+Content-Type: text/plain;
+	charset=ISO-8859-15;
+	format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "Brunck, Holger" <Holger.Brunck@keymile.com>,
+ Christopher Harvey <charvey@matrox.com>, "Bigler,
+ Stefan" <Stefan.Bigler@keymile.com>, Ivan Djelic <ivan.djelic@parrot.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,135 +30,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi everyone,
 
---=-UYsBgtWnotx2DlS3NxYn
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+first of all I am very grateful for your feedback. Thanks a lot to all 
+of you!!
 
-On Tue, 2012-10-16 at 23:24 +0200, Vincenzo Aliberti wrote:
-> +/*
-> + * Internal Type Definitions
-> + * pcm_int_data contains memory controller details:
-> + * @reg_data : LPDDR2_MODE_REG_DATA register address after remapping
-> + * @reg_cfg  : LPDDR2_MODE_REG_CFG register address after remapping
-> + * &bus_width: memory bus-width (eg: x16 2 Bytes, x32 4 Bytes)
-> + */
-> +struct pcm_int_data {
-> +	void __iomem *reg_data;
-> +	void __iomem *reg_cfg;
-> +	int bus_width;
-> +};
-> +
-> +static DEFINE_MUTEX(lpdd2_nvm_mutex);
+On 11/09/2012 09:46 AM, Ricard Wanderlof wrote:
 
-A global mutes? So if you have 2 independent PCM chips handled by this
-driver, the access to them will be mutually excluded?
+> Some manufacturers (Micron for instance I believe) have started to deliver
+> 1 Gb chips using a higher density technology where they specify a
+> requirement for 4-bit ECC. These naturally exhibit a much higher bitflip
+> rate.
 
-> +
-> +static inline map_word build_map_word(u_long myword)
-> +{
-> +	map_word val =3D { {0} };
-> +	val.x[0] =3D myword;
-> +	return val;
-> +}
-> +
-> +static inline u_int build_mr_cfgmaks(u_int bus_width)
-> +{
-> +	u_int val =3D MR_CFGMASK;
-> +
-> +	if (bus_width =3D=3D 0x0004)		/* x32 device */
-> +		val =3D val<<16;
-> +
-> +	return val;
-> +}
-> +
-> +static inline u_int build_sr_ok_datamask(u_int bus_width)
-> +{
-> +	u_int val =3D SR_OK_DATAMASK;
-> +
-> +	if (bus_width =3D=3D 0x0004)		/* x32 device */
-> +		val =3D (val<<16)+val;
-> +
-> +	return val;
-> +}
+Would there be any reason *NOT* to use 4-bit ECC with parts which do not 
+require it? Apart from performance, of course.
 
-How about adding some comments about what the functions above do?
+I mean, we need to be as flexible as possible as far as hardware parts 
+are concerned, as long as the basic requirements are met.
+So we would like to have a single kernel which can run on different 
+flash parts, past, present, and (as far as we can predict) future.
+As pointed out within this thread, dynamic detection might be a bit 
+tricky, so perhaps finding a common solution might be a good compromise.
 
-> +
-> +/*
-> + * Enable lpddr2-nvm Overlay Window
-> + */
+> At any rate, the ECC algorithm itself should be able to take care of bit
+> flips in the ECC codes. For the 1-bit algorithm in nand_ecc.c it does this
+> by comparing the computed ECC with the actual ECC; if there's a difference
+> of exactly one bit (rather than a more complex diff which after
+> calculations points out the flipped bit in the main area), it is assumed
+> that the bitflip is in the ECC area rather than the data. I don't know how
+> BCH does this though.
 
-How about a short comment explaining what is the Overlay Window?
+Ivan, I came to understand (but I am not sure), that the implementation 
+you provided (and currently mainlined) *DOES* handle this correctly. It 
+was instead an old one which did not handle this properly. Is my 
+understanding correct?
 
-> +static int lpddr2_nvm_do_op(struct map_info *map, u_long cmd_code,
-> +	u_long cmd_data, u_long cmd_add, u_long cmd_mpr, u_char *buf)
-> +{
-> +	map_word add_l =3D { {0} }, add_h =3D { {0} }, mpr_l =3D { {0} },
-> +		mpr_h =3D { {0} }, data_l =3D { {0} }, cmd =3D { {0} },
-> +		exec_cmd =3D { {0} }, sr;
-> +	map_word data_h =3D { {0} };	/* only for 2x x16 devices stacked */
-> +	u_long i, status_reg, prg_buff_ofs;
-> +	struct pcm_int_data *pcm_data =3D map->fldrv_priv;
-> +	u_int sr_ok_datamask =3D build_sr_ok_datamask(pcm_data->bus_width);
-> +
-> +	/* Builds low and high words for OW Control Registers */
-> +	add_l.x[0]	=3D cmd_add&0x0000FFFF;
-> +	add_h.x[0]	=3D (cmd_add>>16)&0x0000FFFF;
-> +	mpr_l.x[0]	=3D cmd_mpr&0x0000FFFF;
-> +	mpr_h.x[0]	=3D (cmd_mpr>>16)&0x0000FFFF;
-> +	cmd.x[0]	=3D cmd_code&0x0000FFFF;
-> +	exec_cmd.x[0]	=3D 0x0001;
-> +	data_l.x[0]	=3D cmd_data&0x0000FFFF;
-> +	data_h.x[0]	=3D (cmd_data>>16)&0x0000FFFF; /* only for 2x x16 */
-> +
-> +	/* Set Overlay Window Control Registers */
-> +	map_write(map, cmd, map->pfow_base+CMD_CODE_OFS*pcm_data->bus_width);
-> +	map_write(map, data_l, map->pfow_base+CMD_DATA_OFS*pcm_data->bus_width)=
-;
-> +	map_write(map, add_l, map->pfow_base+CMD_ADD_L_OFS*pcm_data->bus_width)=
-;
-> +	map_write(map, add_h, map->pfow_base+CMD_ADD_H_OFS*pcm_data->bus_width)=
-;
-> +	map_write(map, mpr_l, map->pfow_base+MPR_L_OFS*pcm_data->bus_width);
-> +	map_write(map, mpr_h, map->pfow_base+MPR_H_OFS*pcm_data->bus_width);
-
-How about introducing a small helper inline unction for
-
-map->pfow_base+ X * pcm_data->bus_width
-
-It is repeated everywhere and makes driver difficult to follow, no?
-
-Also, see the coding style about how to place spaces correctly. Make
-sure checkpatch.pl is happy or almost happy (sometimes you should ignore
-its complaints, they and not always correct).
+Thank you again,
+Gerlando
 
 
---=20
-Best Regards,
-Artem Bityutskiy
 
---=-UYsBgtWnotx2DlS3NxYn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQoR4oAAoJECmIfjd9wqK0704P/12fA8R2X2AfuVdACZ2sYY+B
-XwbpIaOud2OhS+LLoZJLmWW0d0T6SZW/dGGmozjg8oWsdRnFhr9BFpM5u9yxJK9J
-Af4Cl+Iq5VJJo5HQ79uZAddEeD9/iXJ4rG8KARxmEolD/C1CG+R82cFN2wWPhiMC
-zTJdJq2T/dGjkdb3zBNrSVQnj1jCeUP5LfYkBuYGlVasd3kw7oVsaZ0UYM5rXj/N
-b3f+v4zchdVhABTLtNC5A933jMaMJJFCUDW3sGVb0HPLIElAQ4paVzPn1qxfMlMg
-lCaSJdmLZIvMt/31nWyqAw7MFidrxs3bPtXQiROdE7VNBk+O6aUcKrB/APATNHHP
-AjeXX4AlmfVmz1lZPHm0M19wPfUvUrSSLLvTE9OKsyWzgQt3IIpBq2k1LscpSwrJ
-A1rL/sGjlARV7IvwntmwyioO3+yNakAgeXMx1vwKtRSzHK80tgLCZcxpRykoZlBo
-P8N5kcuJzOcZ9lTSUlT8GLk2djy5npxMK5qyxJVrtnpJ1JeNKxfMJDbd/+EdP2EE
-1epZ5q77YR70jcs8hsuO7gqYQx7qEgnPXC18dRtQYrOkoaV5Q7dzamFWCEOquyB0
-l+ghlXkCgCRNNOSQz1W7F9t61u8YGVDik3qHkQIlFNo4q1bguY4NEy3Ng/TQszNA
-8TJcxaJeyRRkvszpcNMR
-=HMCI
------END PGP SIGNATURE-----
-
---=-UYsBgtWnotx2DlS3NxYn--
+>
+> /Ricard
