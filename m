@@ -1,15 +1,15 @@
-Received: from mail-ee0-f49.google.com ([74.125.83.49])
+Received: from mail-ea0-f177.google.com ([209.85.215.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TXsjp-00055k-LM
- for linux-mtd@lists.infradead.org; Mon, 12 Nov 2012 12:03:39 +0000
-Received: by mail-ee0-f49.google.com with SMTP id c1so3339724eek.36
- for <linux-mtd@lists.infradead.org>; Mon, 12 Nov 2012 04:03:37 -0800 (PST)
+ id 1TXsjr-00055T-KJ
+ for linux-mtd@lists.infradead.org; Mon, 12 Nov 2012 12:03:41 +0000
+Received: by mail-ea0-f177.google.com with SMTP id n13so2357999eaa.36
+ for <linux-mtd@lists.infradead.org>; Mon, 12 Nov 2012 04:03:39 -0800 (PST)
 From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: linux-mtd@lists.infradead.org,
 	Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH V2 2/6] mtd: prepare place for BCMA NAND flash driver(s)
-Date: Mon, 12 Nov 2012 13:03:21 +0100
-Message-Id: <1352721805-14064-3-git-send-email-zajec5@gmail.com>
+Subject: [PATCH V2 3/6] mtd: bcm47xxnflash: init NAND on BCM4706
+Date: Mon, 12 Nov 2012 13:03:22 +0100
+Message-Id: <1352721805-14064-4-git-send-email-zajec5@gmail.com>
 In-Reply-To: <1352721805-14064-1-git-send-email-zajec5@gmail.com>
 References: <1352721805-14064-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
@@ -25,103 +25,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-BCMA bus can contain NAND flash memory, it's registered in system as
-platform device. This adds required hooks and place for controler
-specific drivers.
-
 Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
 ---
-There is the only warning reported to this patchset:
+ drivers/mtd/nand/bcm47xxnflash/Makefile      |    1 +
+ drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c |  109 ++++++++++++++++++++++++++
+ 2 files changed, 110 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c
 
-
-checkpatch.pl results for patch "[PATCH 2/6] mtd: prepare place for BCMA NAND flash driver(s)"
-
-WARNING:STATIC_CONST_CHAR_ARRAY: static const char * array should probably be static const char * const
-#114: FILE: drivers/mtd/nand/bcm47xxnflash/main.c:24:
-+static const char *probes[] = { "bcm47xxpart", NULL };
-
-total: 0 errors, 1 warnings, 146 lines checked
-
-
-AFAIK the code is correct, all the parsers I've checked have the same
-definition of probes.
----
- drivers/mtd/nand/Kconfig                       |    9 ++
- drivers/mtd/nand/Makefile                      |    1 +
- drivers/mtd/nand/bcm47xxnflash/Makefile        |    3 +
- drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h |   14 +++
- drivers/mtd/nand/bcm47xxnflash/main.c          |  108 ++++++++++++++++++++++++
- 5 files changed, 135 insertions(+), 0 deletions(-)
- create mode 100644 drivers/mtd/nand/bcm47xxnflash/Makefile
- create mode 100644 drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h
- create mode 100644 drivers/mtd/nand/bcm47xxnflash/main.c
-
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index a803d9b..3314e92 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -460,6 +460,15 @@ config MTD_NAND_GPMI_NAND
- 	 block, such as SD card. So pay attention to it when you enable
- 	 the GPMI.
- 
-+config MTD_NAND_BCM47XXNFLASH
-+	tristate "R/O support for NAND flash on BCMA bus"
-+	depends on BCMA_NFLASH
-+	help
-+	  BCMA bus can have various flash memories attached, they are
-+	  registered by bcma as platform devices. This enables driver for
-+	  NAND flash memories. For now only read mode for BCM4706 is
-+	  implemented.
-+
- config MTD_NAND_PLATFORM
- 	tristate "Support for generic platform NAND driver"
- 	depends on HAS_IOMEM
-diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-index 44fca05..3c3f215 100644
---- a/drivers/mtd/nand/Makefile
-+++ b/drivers/mtd/nand/Makefile
-@@ -54,5 +54,6 @@ obj-$(CONFIG_MTD_NAND_RICOH)		+= r852.o
- obj-$(CONFIG_MTD_NAND_JZ4740)		+= jz4740_nand.o
- obj-$(CONFIG_MTD_NAND_GPMI_NAND)	+= gpmi-nand/
- obj-$(CONFIG_MTD_NAND_XWAY)		+= xway_nand.o
-+obj-$(CONFIG_MTD_NAND_BCM47XXNFLASH)	+= bcm47xxnflash/
- 
- nand-objs := nand_base.o nand_bbt.o
 diff --git a/drivers/mtd/nand/bcm47xxnflash/Makefile b/drivers/mtd/nand/bcm47xxnflash/Makefile
-new file mode 100644
-index 0000000..1d0693a
---- /dev/null
+index 1d0693a..4f688f9 100644
+--- a/drivers/mtd/nand/bcm47xxnflash/Makefile
 +++ b/drivers/mtd/nand/bcm47xxnflash/Makefile
-@@ -0,0 +1,3 @@
-+bcm47xxnflash-y				+= main.o
-+
-+obj-$(CONFIG_MTD_NAND_BCM47XXNFLASH)	+= bcm47xxnflash.o
-diff --git a/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h b/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h
+@@ -1,3 +1,4 @@
+ bcm47xxnflash-y				+= main.o
++bcm47xxnflash-				+= ops_bcm4706.o
+ 
+ obj-$(CONFIG_MTD_NAND_BCM47XXNFLASH)	+= bcm47xxnflash.o
+diff --git a/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c b/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c
 new file mode 100644
-index 0000000..2e8864a
+index 0000000..ae8a793
 --- /dev/null
-+++ b/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h
-@@ -0,0 +1,14 @@
-+#ifndef __BCM47XXNFLASH_H
-+#define __BCM47XXNFLASH_H
-+
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/nand.h>
-+
-+struct bcm47xxnflash {
-+	struct bcma_drv_cc *cc;
-+
-+	struct nand_chip nand_chip;
-+	struct mtd_info mtd;
-+};
-+
-+#endif /* BCM47XXNFLASH */
-diff --git a/drivers/mtd/nand/bcm47xxnflash/main.c b/drivers/mtd/nand/bcm47xxnflash/main.c
-new file mode 100644
-index 0000000..fc9139d
---- /dev/null
-+++ b/drivers/mtd/nand/bcm47xxnflash/main.c
-@@ -0,0 +1,108 @@
++++ b/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c
+@@ -0,0 +1,109 @@
 +/*
 + * BCM47XX NAND flash driver
 + *
@@ -136,99 +61,100 @@ index 0000000..fc9139d
 +#include <linux/module.h>
 +#include <linux/kernel.h>
 +#include <linux/slab.h>
-+#include <linux/platform_device.h>
 +#include <linux/bcma/bcma.h>
 +
 +#include "bcm47xxnflash.h"
 +
-+MODULE_DESCRIPTION("NAND flash driver for BCMA bus");
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Rafał Miłecki");
++/**************************************************
++ * Various helpers
++ **************************************************/
 +
-+static const char *probes[] = { "bcm47xxpart", NULL };
-+
-+static int bcm47xxnflash_probe(struct platform_device *pdev)
++static inline u8 bcm47xxnflash_ops_bcm4706_ns_to_cycle(u16 ns, u16 clock)
 +{
-+	struct bcma_nflash *nflash = dev_get_platdata(&pdev->dev);
-+	struct bcm47xxnflash *b47n;
-+	int err = 0;
-+
-+	b47n = kzalloc(sizeof(*b47n), GFP_KERNEL);
-+	if (!b47n) {
-+		err = -ENOMEM;
-+		goto out;
-+	}
-+
-+	b47n->nand_chip.priv = b47n;
-+	b47n->mtd.owner = THIS_MODULE;
-+	b47n->mtd.priv = &b47n->nand_chip; /* Required */
-+	b47n->cc = container_of(nflash, struct bcma_drv_cc, nflash);
-+
-+	if (0) {
-+		/* TODO: init device */
-+	} else {
-+		pr_err("Device not supported\n");
-+		err = -ENOTSUPP;
-+	}
-+	if (err) {
-+		pr_err("Initialization failed: %d\n", err);
-+		goto err_init;
-+	}
-+
-+	err = mtd_device_parse_register(&b47n->mtd, probes, NULL, NULL, 0);
-+	if (err) {
-+		pr_err("Failed to register MTD device: %d\n", err);
-+		goto err_dev_reg;
-+	}
-+
-+	return 0;
-+
-+err_dev_reg:
-+err_init:
-+	kfree(b47n);
-+out:
-+	return err;
++	return ((ns * 1000 * clock) / 1000000) + 1;
 +}
 +
-+static int __devexit bcm47xxnflash_remove(struct platform_device *pdev)
++/**************************************************
++ * NAND chip ops
++ **************************************************/
++
++/* Default nand_select_chip calls cmd_ctrl, which is not used in BCM4706 */
++static void bcm47xxnflash_ops_bcm4706_select_chip(struct mtd_info *mtd,
++						  int chip)
 +{
-+	struct bcma_nflash *nflash = dev_get_platdata(&pdev->dev);
-+
-+	if (nflash->mtd)
-+		mtd_device_unregister(nflash->mtd);
-+
-+	return 0;
++	return;
 +}
 +
-+static struct platform_driver bcm47xxnflash_driver = {
-+	.remove = __devexit_p(bcm47xxnflash_remove),
-+	.driver = {
-+		.name = "bcma_nflash",
-+		.owner = THIS_MODULE,
-+	},
-+};
++/**************************************************
++ * Init
++ **************************************************/
 +
-+static int __init bcm47xxnflash_init(void)
++int bcm47xxnflash_ops_bcm4706_init(struct bcm47xxnflash *b47n)
 +{
 +	int err;
++	u32 freq;
++	u16 clock;
++	u8 w0, w1, w2, w3, w4;
 +
-+	/*
-+	 * Platform device "bcma_nflash" exists on SoCs and is registered very
-+	 * early, it won't be added during runtime (use platform_driver_probe).
-+	 */
-+	err = platform_driver_probe(&bcm47xxnflash_driver, bcm47xxnflash_probe);
++	unsigned long chipsize; /* MiB */
++	u8 tbits, col_bits, col_size, row_bits, row_bsize;
++	u32 val;
++
++	b47n->nand_chip.select_chip = bcm47xxnflash_ops_bcm4706_select_chip;
++	b47n->nand_chip.ecc.mode = NAND_ECC_NONE; /* TODO: implement ECC */
++
++	/* Enable NAND flash access */
++	bcma_cc_set32(b47n->cc, BCMA_CC_4706_FLASHSCFG,
++		      BCMA_CC_4706_FLASHSCFG_NF1);
++
++	/* Configure wait counters */
++	if (b47n->cc->status & BCMA_CC_CHIPST_4706_PKG_OPTION) {
++		freq = 100000000;
++	} else {
++		freq = bcma_chipco_pll_read(b47n->cc, 4);
++		freq = (freq * 0xFFF) >> 3;
++		freq = (freq * 25000000) >> 3;
++	}
++	clock = freq / 1000000;
++	w0 = bcm47xxnflash_ops_bcm4706_ns_to_cycle(15, clock);
++	w1 = bcm47xxnflash_ops_bcm4706_ns_to_cycle(20, clock);
++	w2 = bcm47xxnflash_ops_bcm4706_ns_to_cycle(10, clock);
++	w3 = bcm47xxnflash_ops_bcm4706_ns_to_cycle(10, clock);
++	w4 = bcm47xxnflash_ops_bcm4706_ns_to_cycle(100, clock);
++	bcma_cc_write32(b47n->cc, BCMA_CC_NFLASH_WAITCNT0,
++			(w4 << 24 | w3 << 18 | w2 << 12 | w1 << 6 | w0));
++
++	/* Scan NAND */
++	err = nand_scan(&b47n->mtd, 1);
++	if (err) {
++		pr_err("Could not scan NAND flash: %d\n", err);
++		goto exit;
++	}
++
++	/* Configure FLASH */
++	chipsize = b47n->nand_chip.chipsize >> 20;
++	tbits = ffs(chipsize); /* find first bit set */
++	if (!tbits || tbits != fls(chipsize)) {
++		pr_err("Invalid flash size: 0x%lX\n", chipsize);
++		err = -ENOTSUPP;
++		goto exit;
++	}
++	tbits += 19; /* Broadcom increases *index* by 20, we increase *pos* */
++
++	col_bits = b47n->nand_chip.page_shift + 1;
++	col_size = (col_bits + 7) / 8;
++
++	row_bits = tbits - col_bits + 1;
++	row_bsize = (row_bits + 7) / 8;
++
++	val = ((row_bsize - 1) << 6) | ((col_size - 1) << 4) | 2;
++	bcma_cc_write32(b47n->cc, BCMA_CC_NFLASH_CONF, val);
++
++exit:
 +	if (err)
-+		pr_err("Failed to register serial flash driver: %d\n", err);
-+
++		bcma_cc_mask32(b47n->cc, BCMA_CC_4706_FLASHSCFG,
++			       ~BCMA_CC_4706_FLASHSCFG_NF1);
 +	return err;
 +}
-+
-+static void __exit bcm47xxnflash_exit(void)
-+{
-+	platform_driver_unregister(&bcm47xxnflash_driver);
-+}
-+
-+module_init(bcm47xxnflash_init);
-+module_exit(bcm47xxnflash_exit);
 -- 
 1.7.7
