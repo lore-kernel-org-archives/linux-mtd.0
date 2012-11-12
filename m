@@ -1,21 +1,25 @@
-Received: from mail-ee0-f49.google.com ([74.125.83.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TXsjx-00055k-23
- for linux-mtd@lists.infradead.org; Mon, 12 Nov 2012 12:03:46 +0000
-Received: by mail-ee0-f49.google.com with SMTP id c1so3339724eek.36
- for <linux-mtd@lists.infradead.org>; Mon, 12 Nov 2012 04:03:44 -0800 (PST)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: linux-mtd@lists.infradead.org,
-	Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH V2 6/6] mtd: bcm47xxnflash: enable BCM4706 driver
-Date: Mon, 12 Nov 2012 13:03:25 +0100
-Message-Id: <1352721805-14064-7-git-send-email-zajec5@gmail.com>
-In-Reply-To: <1352721805-14064-1-git-send-email-zajec5@gmail.com>
-References: <1352721805-14064-1-git-send-email-zajec5@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+Received: from mga09.intel.com ([134.134.136.24])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TXvP2-0004Kc-1c
+ for linux-mtd@lists.infradead.org; Mon, 12 Nov 2012 14:54:20 +0000
+Message-ID: <1352732095.15788.55.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: gpmi: remove unneccessary header
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Huang Shijie <shijie8@gmail.com>
+Date: Mon, 12 Nov 2012 16:54:55 +0200
+In-Reply-To: <CAMiH66E9WTtt=6EhX9XVv9afErGd5Ajfg9qN6dVQhE5FEJVrTw@mail.gmail.com>
+References: <1350147809-19616-1-git-send-email-shijie8@gmail.com>
+ <1351258892.1823.20.camel@sauron.fi.intel.com>
+ <508B4586.4090600@freescale.com>
+ <1352473841.1814.35.camel@sauron.fi.intel.com>
+ <CAMiH66E9WTtt=6EhX9XVv9afErGd5Ajfg9qN6dVQhE5FEJVrTw@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-PTDjR2B9QFAzimi3B/FP"
+Mime-Version: 1.0
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,48 +29,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
----
- drivers/mtd/nand/bcm47xxnflash/Makefile        |    2 +-
- drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h |    2 ++
- drivers/mtd/nand/bcm47xxnflash/main.c          |    4 ++--
- 3 files changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/bcm47xxnflash/Makefile b/drivers/mtd/nand/bcm47xxnflash/Makefile
-index 4f688f9..f05b119 100644
---- a/drivers/mtd/nand/bcm47xxnflash/Makefile
-+++ b/drivers/mtd/nand/bcm47xxnflash/Makefile
-@@ -1,4 +1,4 @@
- bcm47xxnflash-y				+= main.o
--bcm47xxnflash-				+= ops_bcm4706.o
-+bcm47xxnflash-y				+= ops_bcm4706.o
- 
- obj-$(CONFIG_MTD_NAND_BCM47XXNFLASH)	+= bcm47xxnflash.o
-diff --git a/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h b/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h
-index 264aec4..0bdb2ce 100644
---- a/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h
-+++ b/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h
-@@ -17,4 +17,6 @@ struct bcm47xxnflash {
- 	u8 id_data[8];
- };
- 
-+int bcm47xxnflash_ops_bcm4706_init(struct bcm47xxnflash *b47n);
-+
- #endif /* BCM47XXNFLASH */
-diff --git a/drivers/mtd/nand/bcm47xxnflash/main.c b/drivers/mtd/nand/bcm47xxnflash/main.c
-index fc9139d..2b8b05b 100644
---- a/drivers/mtd/nand/bcm47xxnflash/main.c
-+++ b/drivers/mtd/nand/bcm47xxnflash/main.c
-@@ -40,8 +40,8 @@ static int bcm47xxnflash_probe(struct platform_device *pdev)
- 	b47n->mtd.priv = &b47n->nand_chip; /* Required */
- 	b47n->cc = container_of(nflash, struct bcma_drv_cc, nflash);
- 
--	if (0) {
--		/* TODO: init device */
-+	if (b47n->cc->core->bus->chipinfo.id == BCMA_CHIP_ID_BCM4706) {
-+		err = bcm47xxnflash_ops_bcm4706_init(b47n);
- 	} else {
- 		pr_err("Device not supported\n");
- 		err = -ENOTSUPP;
--- 
-1.7.7
+--=-PTDjR2B9QFAzimi3B/FP
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, 2012-11-09 at 20:39 -0500, Huang Shijie wrote:
+> Could you re-create your mxs config with "make ARCH=3DARM
+> mxs_defconfig", and test this patch again?
+
+Done, works now, pushed your patch to l2-mtd.git, thanks!
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-PTDjR2B9QFAzimi3B/FP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQoQ2/AAoJECmIfjd9wqK0pc0QAJrzmBGp6cz8IgVpb8AXgH3E
+XUXwMqvFi6rHKFYva5QvP6T319XRZ9dR4iquZwCoDkVUK3S9MJbeBceyIs3/z0Ce
+z2Tl5Bzo3+ZLKOnJGqTLwVWA21iEQEl7yWilTzrljus2T1hPRZFVUDzPw9Q97s7I
+LgP6ORkKYS4+kCQGgUcFULRyWkhhhON8P6/6kqDA8pNlkeqTCBtKUUMeQ5mvAUow
+dzUwWzyncz1GNjEU0cCwxAPHxciQtuvEvnWPfT9sZ92yY5bGsL0AkiczbW1dWsUr
+bmSN2oBUQaoE6EYtUV3SaCxCASEehjuVK0Wiot2i+o5Q9UwKJOzKKsnjBs9P1uhr
+He6is61Xw8MO0og9xHHGvapTmRXPZQSdjUkOkbMzX+ixOoGSk1eLu/jtALfSQSYA
+bbPARsnraOsTtgwaN+56uOaVPSoSlUKdMWaInqvzgUw/fEw433N3Xqr9a8+MhC3H
+MLdc+iWqGRpCNLUNsBVFk8DBJyuGv49xBzbMFytADPzvZulfhHMJMXCeOcXluGXj
+ICWVtjBaRH8mQLQ0UG4+4ioNJukn2ah7Ao/EdQZqy9n48GFT7CdJziJikmDu8nYf
+R5aRW+F4Bk6KTWqb/JvBcnoKU1sY7PGwv8RH/OuQOQSrUHawVSqzvUXi9JUPMOIV
+vj9xNsj5mPfeiQb4utZA
+=qlxV
+-----END PGP SIGNATURE-----
+
+--=-PTDjR2B9QFAzimi3B/FP--
