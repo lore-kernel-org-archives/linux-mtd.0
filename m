@@ -1,19 +1,20 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TYDEh-0007Wu-Op
- for linux-mtd@lists.infradead.org; Tue, 13 Nov 2012 09:56:52 +0000
-Message-ID: <50A21959.5050505@parrot.com>
-Date: Tue, 13 Nov 2012 10:56:41 +0100
-From: Matthieu CASTET <matthieu.castet@parrot.com>
-MIME-Version: 1.0
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Subject: Re: [PATCH] mtdoops : don't erase flash at each boot
-References: <1350660573-6631-1-git-send-email-matthieu.castet@parrot.com>
- <1352735412.2262.15.camel@sauron.fi.intel.com>
-In-Reply-To: <1352735412.2262.15.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+ id 1TYEuY-00052L-8W
+ for linux-mtd@lists.infradead.org; Tue, 13 Nov 2012 11:44:10 +0000
+Message-ID: <1352807066.2262.53.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH resend] Add devicetree support to m25p80 driver
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Michal Vanka <mv@vanka.net>
+Date: Tue, 13 Nov 2012 13:44:26 +0200
+In-Reply-To: <50A2193A.2040100@vanka.net>
+References: <5084241A.5050801@vanka.net> <50A2193A.2040100@vanka.net>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-KRDDoswjtskCwRgsbIk8"
+Mime-Version: 1.0
+Cc: devicetree-discuss@lists.ozlabs.org, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,42 +24,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem Bityutskiy a écrit :
-> On Fri, 2012-10-19 at 17:29 +0200, Matthieu CASTET wrote:
->> If there is no oops stored (flash is erased), find_next_position will
->> exit with maxcount == 0xffffffff and erase the first page.
->>
->> Only erase it if mark_is_used.
->>
->> Signed-off-by: Matthieu Castet <matthieu.castet@parrot@com>
-> 
-> The code of mtdoops is really hard to read. Could you please provide a
-> better commit message with better description about what you do:
-> 
-> 1. what problem you fix exactly, and why is it a problem
-> 2. how the code currently works
-> 3. how you change it to make the problem go away
-> 
-> Thanks!
-> 
 
-Is the following changelog ok ?
+--=-KRDDoswjtskCwRgsbIk8
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, 2012-11-13 at 10:56 +0100, Michal Vanka wrote:
+>                 return -ENODEV;
+>   #endif
+> @@ -825,27 +848,39 @@ static int __devinit m25p_probe(struct
+> spi_device
+> *spi)
+>                         dev_warn(&spi->dev, "unrecognized id %s\n",
+> data->type);=20
 
-The current version on mtdoops erase first block of mtdoops partition at each
-boot if there is no oops stored in flash. This can wear the flash.
+Still line-wrapped:
 
-When mtdoops start, find_next_position is called to find the next free entry in
-the circular buffer. But if the flash is erased, find_next_position don't find
-anything (maxcount == 0xffffffff) and start with the first entry after erasing it.
+$ git apply --check ~/tmp/mvanka.mbox
+fatal: corrupt patch at line 122
 
-The scanning that is done in find_next_position already track free/used entries.
-So if at the end of the scanning we don't find anything, we can start at the
-first entry and erased the entry only if it is marked as used.
-Most of this is implemented in mtdoops_inc_counter, so to avoid duplicating
-code, if we don't find anything we set position to -1. mtdoops_inc_counter with
-increment it, erase the entry if needed and start as before with nextpage = 0
-and nextcount = 1).
+Please, make sure it applies to the l2-mtd.git tree. Send it to
+yourself, save your own e-mail, and verify with 'git apply --check'.
 
-Also during the scan phase, we use the MTDOOPS_KERNMSG_MAGIC to detect corruped
-entries.
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-KRDDoswjtskCwRgsbIk8
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQojKaAAoJECmIfjd9wqK0NagP/Rj5fwmqDFdM54y4WHZUEmKh
+HE2wfW55001d5T0N4Z+aQS0QJVJ5VRYFPl6Mho3nmZkJDwJqRDksspZh293KujKg
+sTubYIZszzT5jZayOI4bu2mto565zdYlZ3BqkPnsmOjkow0rWwKvRW7mZyw35PPA
+4sTKRqJWrG2CImzvp2R70hXCwzGzZfbjInn3NvtdhXuLACXW4FDmOU4SFw0+P8+y
+hQ+b6e4uQbYXt3Hi+qecDXAL9o2cQlk1r9tvgbXnG6MMRFQij7G2eLAlKHWlYKPq
+lFXUs9oazX4jMg5qrvkj3xiz9eyHkMA9t3YuRWWzdP83lGy0OgVvWKL8rWOwmHT0
+OgBZXca1wratZncJOxVLidWv1rgF2DQxlBWdyMJzBsQz9LN/X5WLljUhnqnFHfBZ
+knHMkN1IryK4438qMmIGVJDyqrJkoSDJJBooyplMJh6ruQ/Eyb7Whs45xP0wZUf/
+CDW57hM2XHLqEmkQOsWFsNqEs2kfx2OBKD+KKmafyx8usMvrXUC4CQ1R2kjDLWJj
+lyuq3yRHcD+R/pdeWn5KVjB1TKJF9P/yusocFY7Acq77q58vGmSAFbBbdoyaLuMN
+LyAatjv7uKpbAZwVS9A48cFcPLgx8W1Gukg9aslHWm/ZptcQ/YLxDmyJWZuZ1KZa
+udhc2UTbxkHPwOaaTh9Z
+=UzK+
+-----END PGP SIGNATURE-----
+
+--=-KRDDoswjtskCwRgsbIk8--
