@@ -1,20 +1,22 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TYEuY-00052L-8W
- for linux-mtd@lists.infradead.org; Tue, 13 Nov 2012 11:44:10 +0000
-Message-ID: <1352807066.2262.53.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH resend] Add devicetree support to m25p80 driver
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Michal Vanka <mv@vanka.net>
-Date: Tue, 13 Nov 2012 13:44:26 +0200
-In-Reply-To: <50A2193A.2040100@vanka.net>
-References: <5084241A.5050801@vanka.net> <50A2193A.2040100@vanka.net>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-KRDDoswjtskCwRgsbIk8"
-Mime-Version: 1.0
-Cc: devicetree-discuss@lists.ozlabs.org, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mail-pa0-f49.google.com ([209.85.220.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TYGgL-0005gr-It
+ for linux-mtd@lists.infradead.org; Tue, 13 Nov 2012 13:37:42 +0000
+Received: by mail-pa0-f49.google.com with SMTP id bi5so4642430pad.36
+ for <linux-mtd@lists.infradead.org>; Tue, 13 Nov 2012 05:37:32 -0800 (PST)
+From: Akinobu Mita <akinobu.mita@gmail.com>
+To: linux-kernel@vger.kernel.org,
+	akpm@linux-foundation.org
+Subject: [PATCH v3 00/11] rename random32 to prandom and introduce
+ prandom_bytes()
+Date: Tue, 13 Nov 2012 22:36:59 +0900
+Message-Id: <1352813830-4624-1-git-send-email-akinobu.mita@gmail.com>
+Cc: Michel Lespinasse <walken@google.com>, Theodore Ts'o <tytso@mit.edu>,
+ Artem Bityutskiy <dedekind1@gmail.com>, netdev@vger.kernel.org,
+ Adrian Hunter <adrian.hunter@intel.com>, Akinobu Mita <akinobu.mita@gmail.com>,
+ linux-mtd@lists.infradead.org, devel@open-fcoe.org,
+ Robert Love <robert.w.love@intel.com>, David Woodhouse <dwmw2@infradead.org>,
+ Eilon Greenstein <eilong@broadcom.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,53 +26,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This patchset introduces new functions into random32 library for
+getting the requested number of pseudo-random bytes.
 
---=-KRDDoswjtskCwRgsbIk8
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Before introducing these new functions into random32 library,
+rename all random32 functions to have 'prandom_' prefix.  As a result
+the function prototypes are as follows:
 
-On Tue, 2012-11-13 at 10:56 +0100, Michal Vanka wrote:
->                 return -ENODEV;
->   #endif
-> @@ -825,27 +848,39 @@ static int __devinit m25p_probe(struct
-> spi_device
-> *spi)
->                         dev_warn(&spi->dev, "unrecognized id %s\n",
-> data->type);=20
+void prandom_seed(u32 seed);	/* rename from srandom32() */
+u32 prandom_u32(void);		/* rename from random32() */
+void prandom_bytes(void *buf, int nbytes);
 
-Still line-wrapped:
+void prandom_seed_state(struct rnd_state *state, u64 seed);
+				/* rename from prandom32_seed() */
+u32 prandom_u32_state(struct rnd_state *state);
+				/* rename from prandom32() */
+void prandom_bytes_state(struct rnd_state *state, void *buf, int nbytes);
 
-$ git apply --check ~/tmp/mvanka.mbox
-fatal: corrupt patch at line 122
+The purpose of this renaming is to prevent some kernel developers
+from assuming that prandom32() and random32() might imply that only
+prandom32() was the one using a pseudo-random number generator by
+prandom32's "p", and the result may be a very embarassing security
+exposure.  This concern was expressed by Theodore Ts'o.
 
-Please, make sure it applies to the l2-mtd.git tree. Send it to
-yourself, save your own e-mail, and verify with 'git apply --check'.
+Changelog
 
---=20
-Best Regards,
-Artem Bityutskiy
+* v3
+- change common prefix from 'random32_' to 'prandom_'
+- ensure prandom_bytes_state() generates same bytes with same rnd_state
 
---=-KRDDoswjtskCwRgsbIk8
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+* v2
+- rename prandom32 to random32_state
+- dropped lib/uuid.c patch
+- add bnx2 and mtd_stresstest patches
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+Akinobu Mita (11):
+  random32: rename random32 to prandom
+  prandom: introduce prandom_bytes() and prandom_bytes_state()
+  bnx2x: use prandom_bytes()
+  mtd: nandsim: use prandom_bytes
+  ubifs: use prandom_bytes
+  mtd: mtd_nandecctest: use prandom_bytes instead of get_random_bytes()
+  mtd: mtd_oobtest: convert to use prandom library
+  mtd: mtd_pagetest: convert to use prandom library
+  mtd: mtd_speedtest: use prandom_bytes
+  mtd: mtd_subpagetest: convert to use prandom library
+  mtd: mtd_stresstest: use prandom_bytes()
 
-iQIcBAABAgAGBQJQojKaAAoJECmIfjd9wqK0NagP/Rj5fwmqDFdM54y4WHZUEmKh
-HE2wfW55001d5T0N4Z+aQS0QJVJ5VRYFPl6Mho3nmZkJDwJqRDksspZh293KujKg
-sTubYIZszzT5jZayOI4bu2mto565zdYlZ3BqkPnsmOjkow0rWwKvRW7mZyw35PPA
-4sTKRqJWrG2CImzvp2R70hXCwzGzZfbjInn3NvtdhXuLACXW4FDmOU4SFw0+P8+y
-hQ+b6e4uQbYXt3Hi+qecDXAL9o2cQlk1r9tvgbXnG6MMRFQij7G2eLAlKHWlYKPq
-lFXUs9oazX4jMg5qrvkj3xiz9eyHkMA9t3YuRWWzdP83lGy0OgVvWKL8rWOwmHT0
-OgBZXca1wratZncJOxVLidWv1rgF2DQxlBWdyMJzBsQz9LN/X5WLljUhnqnFHfBZ
-knHMkN1IryK4438qMmIGVJDyqrJkoSDJJBooyplMJh6ruQ/Eyb7Whs45xP0wZUf/
-CDW57hM2XHLqEmkQOsWFsNqEs2kfx2OBKD+KKmafyx8usMvrXUC4CQ1R2kjDLWJj
-lyuq3yRHcD+R/pdeWn5KVjB1TKJF9P/yusocFY7Acq77q58vGmSAFbBbdoyaLuMN
-LyAatjv7uKpbAZwVS9A48cFcPLgx8W1Gukg9aslHWm/ZptcQ/YLxDmyJWZuZ1KZa
-udhc2UTbxkHPwOaaTh9Z
-=UzK+
------END PGP SIGNATURE-----
+ drivers/mtd/nand/nandsim.c                      |  5 +-
+ drivers/mtd/tests/mtd_nandecctest.c             |  2 +-
+ drivers/mtd/tests/mtd_oobtest.c                 | 49 ++++---------
+ drivers/mtd/tests/mtd_pagetest.c                | 43 ++++-------
+ drivers/mtd/tests/mtd_speedtest.c               |  9 +--
+ drivers/mtd/tests/mtd_stresstest.c              |  3 +-
+ drivers/mtd/tests/mtd_subpagetest.c             | 42 +++--------
+ drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c |  5 +-
+ drivers/scsi/fcoe/fcoe_ctlr.c                   |  4 +-
+ fs/ubifs/debug.c                                |  8 +-
+ include/linux/random.h                          | 19 +++--
+ lib/interval_tree_test_main.c                   |  7 +-
+ lib/random32.c                                  | 97 +++++++++++++++++++------
+ lib/rbtree_test.c                               |  6 +-
+ 14 files changed, 145 insertions(+), 154 deletions(-)
 
---=-KRDDoswjtskCwRgsbIk8--
+Cc: "Theodore Ts'o" <tytso@mit.edu>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Cc: Eilon Greenstein <eilong@broadcom.com>
+Cc: netdev@vger.kernel.org
+Cc: Robert Love <robert.w.love@intel.com>
+Cc: devel@open-fcoe.org
+Cc: Michel Lespinasse <walken@google.com>
+-- 
+1.7.11.7
