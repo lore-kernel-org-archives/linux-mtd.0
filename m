@@ -1,23 +1,18 @@
-Received: from mail-ia0-f177.google.com ([209.85.210.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TYBK5-000080-62
- for linux-mtd@lists.infradead.org; Tue, 13 Nov 2012 07:54:17 +0000
-Received: by mail-ia0-f177.google.com with SMTP id u21so2237918ial.36
- for <linux-mtd@lists.infradead.org>; Mon, 12 Nov 2012 23:54:15 -0800 (PST)
+Received: from email2.cablenet.cz ([81.200.48.21])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TYDE7-0007Sr-KF
+ for linux-mtd@lists.infradead.org; Tue, 13 Nov 2012 09:56:20 +0000
+Message-ID: <50A2193A.2040100@vanka.net>
+Date: Tue, 13 Nov 2012 10:56:10 +0100
+From: Michal Vanka <mv@vanka.net>
 MIME-Version: 1.0
-In-Reply-To: <50A183DF.1000304@gmail.com>
-References: <5082B755.1070109@gmail.com>
- <201210220928.19538.jbe@pengutronix.de>
- <50A183DF.1000304@gmail.com>
-Date: Mon, 12 Nov 2012 23:54:14 -0800
-Message-ID: <CAN8TOE_5ra-yJwoFmy7qvA80iGYkSNe2gAW6nYnc8vtpvi5+1w@mail.gmail.com>
-Subject: Re: [oselas] Mini2440 boot failure on kernel 3.7-rc1
-From: Brian Norris <computersforpeace@gmail.com>
-To: Sylwester Nawrocki <sylvester.nawrocki@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: oselas@community.pengutronix.de, Juergen Beisert <jbe@pengutronix.de>,
- linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- linux-samsung-soc <linux-samsung-soc@vger.kernel.org>
+To: dedekind1@gmail.com, artem.bityutskiy@linux.intel.com
+Subject: [PATCH resend] Add devicetree support to m25p80 driver
+References: <5084241A.5050801@vanka.net>
+In-Reply-To: <5084241A.5050801@vanka.net>
+Content-Type: text/plain; charset=ISO-8859-2; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: devicetree-discuss@lists.ozlabs.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,119 +22,169 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Sylwester,
+The following patch adds support for devicetree to m25p80 driver.
+Note that for jedec chips the chip identification was simplified.
+When configured by devicetree, the particular chip is identified
+by jedec_id only.
+Tested on custom Altera Nios2 system.
 
-On Mon, Nov 12, 2012 at 3:18 PM, Sylwester Nawrocki
-<sylvester.nawrocki@gmail.com> wrote:
-> On 10/22/2012 09:28 AM, Juergen Beisert wrote:
->> Sylwester Nawrocki wrote:
->>>
->>> [...]
->>> [    2.455000] NAND device: Manufacturer ID: 0xec, Chip ID: 0xf1 (Samsung
->>> NAND 128MiB 3,3V 8-bit), 8
->>> [    2.460000] 4 cmdlinepart partitions found on MTD device nand
->>> [    2.465000] Creating 4 MTD partitions on "nand":
->>> [    2.470000] 0x000000000000-0x000000080000 : "barebox"
->>> [    2.475000] mtd: partition "barebox" doesn't end on an erase block --
->>> force read-only
->>> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
->>> This "force read-only" doesn't happen with v3.6.
->>
->> This looks to me the NAND database uses a wrong block size for this NAND
->> device. This device has 128 kiB block sizes. So, a 512 kiB partition
->> *is* block aligned.
->>
->> Maybe you should take a look into the generic code, what block size the
->> 3.7-rc1 uses for this NAND.
->
-> Thanks a lot for these pointers. I've found that the commit causing this
-> regression is this one:
->
-> commit e2d3a35ee427aaba99b6c68a56609ce276c51270
-> Author: Brian Norris <computersforpeace@gmail.com>
-> Date:   Mon Sep 24 20:40:55 2012 -0700
->
->     mtd: nand: detect Samsung K9GBG08U0A, K9GAG08U0F ID
+Signed-off-by: Michal Vanka <mv@vanka.net>
 
-Yes, this patch is already known to cause at least one type of
-regression. There's been a fix for a while but David still has
-neglected to send it to Linus. It seems that you have quoted it below,
-though, and it may not fix your particular regression.
+diff --git a/Documentation/devicetree/bindings/mtd/m25pxx.txt
+b/Documentation/devicetree/bindings/mtd/m25pxx.txt
+index e69de29..c454a5b 100644
+--- a/Documentation/devicetree/bindings/mtd/m25pxx.txt
++++ b/Documentation/devicetree/bindings/mtd/m25pxx.txt
+@@ -0,0 +1,39 @@
++* M25PXX Serial Flash
++
++Required properties:
++- compatible : For jedec part should be "generic,m25pxx"
++               For non-jedec part should be one of the following:
++		"catalyst,cat25c11"
++		"catalyst,cat25c03"
++		"catalyst,cat25c09"
++		"catalyst,cat25c17"
++		"catalyst,cat25128"
++		"stmicro,m25p05-nonjedec"
++		"stmicro,m25p10-nonjedec"
++		"stmicro,m25p20-nonjedec"
++		"stmicro,m25p40-nonjedec"
++		"stmicro,m25p80-nonjedec"
++		"stmicro,m25p16-nonjedec"
++		"stmicro,m25p32-nonjedec"
++		"stmicro,m25p64-nonjedec"
++		"stmicro,m25p128-nonjedec"
++
++- spi-max-frequency : Maximum operating frequency for the given chip.
++- reg : Chipselect bit number on gpios chipselect port.
++
++Example: S25FL064K hooked to tinyspi controller:
++
++tiny_spi_2: spi@0x4000 {
++	compatible = "opencores,tiny-spi-1.0", "opencores,tiny-spi-rtlsvn2";
++	reg = < 0x00004000 0x00000020 >;
++	interrupt-parent = < &cpu >;
++	interrupts = < 5 >;
++	clock-frequency = < 100000000 >;
++	baud-width = < 8 >;	/* BAUD_WIDTH type NUMBER */
++	gpios = < &spi2_cs 0 0 >;
++	spansion_flash: m25pxx@0 {
++		compatible = "generic,m25pxx";
++		spi-max-frequency = < 20000000 >;
++		reg = <0>;
++	};
++};
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 5d0d68c..1db2c63 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -744,6 +744,29 @@ static const struct spi_device_id m25p_ids[] = {
+  };
+  MODULE_DEVICE_TABLE(spi, m25p_ids);
 
-> When I revert it the crash is gone and everything works well. The Flash
-> chip is K9F1G08U0C and according to the datasheet it has 5 byte ID.
-> However nand_id_len() returns 6 and id_data[] is: ec, f1, 00, 95, 40, ec.
++#ifdef CONFIG_OF
++static const struct of_device_id m25pxx_dt_ids[] = {
++	{ .compatible = "generic,m25pxx", },
++	{ .compatible = "catalyst,cat25c11", },
++	{ .compatible = "catalyst,cat25c03", },
++	{ .compatible = "catalyst,cat25c09", },
++	{ .compatible = "catalyst,cat25c17", },
++	{ .compatible = "catalyst,cat25128", },
++	{ .compatible = "stmicro,m25p05-nonjedec", },
++	{ .compatible = "stmicro,m25p10-nonjedec", },
++	{ .compatible = "stmicro,m25p20-nonjedec", },
++	{ .compatible = "stmicro,m25p40-nonjedec", },
++	{ .compatible = "stmicro,m25p80-nonjedec", },
++	{ .compatible = "stmicro,m25p16-nonjedec", },
++	{ .compatible = "stmicro,m25p32-nonjedec", },
++	{ .compatible = "stmicro,m25p64-nonjedec", },
++	{ .compatible = "stmicro,m25p128-nonjedec", },
++	{ /* sentinel */ }
++};
++#else
++#define m25pxx_dt_ids NULL
++#endif
++
+  static const struct spi_device_id *__devinit jedec_probe(struct
+spi_device *spi)
+  {
+  	int			tmp;
+@@ -798,7 +821,7 @@ static int __devinit m25p_probe(struct spi_device *spi)
+  	unsigned			i;
+  	struct mtd_part_parser_data	ppdata;
 
-Samsung seems to have created some problems by under-specifying the ID
-on their NAND. Your NAND is not detected as 5-byte ID for good reason:
-the ID wraps around after 6 bytes, not 5. But that's partly
-speculation, as you have not provided the full ID.
+-#ifdef CONFIG_MTD_OF_PARTS
++#if defined(CONFIG_MTD_OF_PARTS) || defined(CONFIG_OF)
+  	if (!of_device_is_available(spi->dev.of_node))
+  		return -ENODEV;
+  #endif
+@@ -825,27 +848,39 @@ static int __devinit m25p_probe(struct spi_device
+*spi)
+  			dev_warn(&spi->dev, "unrecognized id %s\n", data->type);
+  	}
 
-Can you please list a full 8-byte string of id_data[]? This will be
-very helpful. I know of at least one solution that will fix your
-problem, but I need to know your full ID to help lay this issue to
-rest for good.
+-	info = (void *)id->driver_data;
+-
+-	if (info->jedec_id) {
+-		const struct spi_device_id *jid;
+-
+-		jid = jedec_probe(spi);
+-		if (IS_ERR(jid)) {
+-			return PTR_ERR(jid);
+-		} else if (jid != id) {
+-			/*
+-			 * JEDEC knows better, so overwrite platform ID. We
+-			 * can't trust partitions any longer, but we'll let
+-			 * mtd apply them anyway, since some partitions may be
+-			 * marked read-only, and we don't want to lose that
+-			 * information, even if it's not 100% accurate.
+-			 */
+-			dev_warn(&spi->dev, "found %s, expected %s\n",
+-				 jid->name, id->name);
+-			id = jid;
+-			info = (void *)jid->driver_data;
++	if (id) {
++		info = (void *)id->driver_data;
++		if (info->jedec_id) {
++			const struct spi_device_id *jid;
++
++			jid = jedec_probe(spi);
++			if (IS_ERR(jid)) {
++				return PTR_ERR(jid);
++			} else if (jid != id) {
++				/*
++				 * JEDEC knows better, so overwrite platform ID.
++				 * We can't trust partitions any longer, but
++				 * we'll let mtd apply them anyway, since some
++				 * partitions may be marked read-only,
++				 * and we don't want to lose that information,
++				 * even if it's not 100% accurate.
++				 */
++				dev_warn(&spi->dev, "found %s, expected %s\n",
++					 jid->name, id->name);
++				id = jid;
++				info = (void *)jid->driver_data;
++			}
+  		}
++	} else {
++		/*
++		 * No id -> we have been most likely configured
++		 * by devicetree "generic,m25pxx" record.
++		 */
++		id = jedec_probe(spi);
++		if (IS_ERR(id))
++			return PTR_ERR(id);
++
++		info = (void *)id->driver_data;
+  	}
 
-> I've found a mail thread where similar issue has been discussed [1]. It
-> seems
-> the mentioned chunk in commit
-> "mtd: nand: add generic READ ID length calculation functions"
->
-> is missing. Still it doesn't fix the problem for me.
->
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index ec6841d..93d6df3 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -2989,7 +2989,8 @@ static void nand_decode_ext_id(struct mtd_info *mtd,
-> struct nand_chip *chip,
->          * Check for ID length, cell type, and Hynix/Samsung ID to decide
-> what
->          * to do.
->          */
-> -       if (id_len == 6 && id_data[0] == NAND_MFR_SAMSUNG) {
-> +       if (id_len == 6 && id_data[0] == NAND_MFR_SAMSUNG &&
-> +           id_data[5] != 0x00) {
->                 /* Calc pagesize */
->                 mtd->writesize = 2048 << (extid & 0x03);
->                 extid >>= 2;
->
-...
-> The following change eliminates the problem for this particular chip,
-> however it will likely break others.
->
-> From efab2f7d0a9049588c8b155fab21f8f8c2433b19 Mon Sep 17 00:00:00 2001
-> From: Sylwester Nawrocki <sylvester.nawrocki@gmail.com>
-> Date: Tue, 13 Nov 2012 00:10:06 +0100
-> Subject: [PATCH] mtd: Change calculation of length of nand id with repeated
-> pattern
->
-> Corrects ID length calculation for Samsung K9F1G08U0C NAND Flash,
-> ID: [ec, f1, 00, 95, 40], ec.
->
-> Signed-off-by: Sylwester Nawrocki <sylvester.nawrocki@gmail.com>
-> ---
->  drivers/mtd/nand/nand_base.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
->
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index ec6841d..884e951 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -2954,7 +2954,7 @@ static int nand_id_len(u8 *id_data, int arrlen)
->
->         /* There's a repeated pattern */
->         if (period < arrlen)
-> -               return period;
-> +               return period - 1;
->
->         /* There are trailing zeros */
->         if (last_nonzero < arrlen - 1)
-
-You're right, this patch is not correct. The period of repetition
-*should* be equal to the ID length, but it seems in your case that
-your NAND repeats at 'period + 1'. So we have to figure out something
-else.
-
-Thanks,
-Brian
+  	flash = kzalloc(sizeof *flash, GFP_KERNEL);
+@@ -968,6 +1003,7 @@ static struct spi_driver m25p80_driver = {
+  	.driver = {
+  		.name	= "m25p80",
+  		.owner	= THIS_MODULE,
++		.of_match_table = m25pxx_dt_ids,
+  	},
+  	.id_table	= m25p_ids,
+  	.probe	= m25p_probe,
