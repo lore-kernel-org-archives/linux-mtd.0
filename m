@@ -1,19 +1,18 @@
-Received: from mail-da0-f49.google.com ([209.85.210.49])
+Received: from mail-pa0-f49.google.com ([209.85.220.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TYGgU-0005lP-UI
+ id 1TYGgR-0005gr-IY
  for linux-mtd@lists.infradead.org; Tue, 13 Nov 2012 13:37:48 +0000
-Received: by mail-da0-f49.google.com with SMTP id q27so2938282daj.36
- for <linux-mtd@lists.infradead.org>; Tue, 13 Nov 2012 05:37:45 -0800 (PST)
+Received: by mail-pa0-f49.google.com with SMTP id bi5so4642430pad.36
+ for <linux-mtd@lists.infradead.org>; Tue, 13 Nov 2012 05:37:43 -0800 (PST)
 From: Akinobu Mita <akinobu.mita@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	akpm@linux-foundation.org
-Subject: [PATCH v3 06/11] mtd: mtd_nandecctest: use prandom_bytes instead of
- get_random_bytes()
-Date: Tue, 13 Nov 2012 22:37:05 +0900
-Message-Id: <1352813830-4624-7-git-send-email-akinobu.mita@gmail.com>
+Subject: [PATCH v3 05/11] ubifs: use prandom_bytes
+Date: Tue, 13 Nov 2012 22:37:04 +0900
+Message-Id: <1352813830-4624-6-git-send-email-akinobu.mita@gmail.com>
 In-Reply-To: <1352813830-4624-1-git-send-email-akinobu.mita@gmail.com>
 References: <1352813830-4624-1-git-send-email-akinobu.mita@gmail.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+Cc: Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
  Akinobu Mita <akinobu.mita@gmail.com>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,32 +23,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Using prandom_bytes() is enough.  Because this data is only used
-for testing, not used for cryptographic use.
+This also converts filling memory loop to use memset.
 
 Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
 Cc: linux-mtd@lists.infradead.org
 ---
 * v3
 - rename random32_get_bytes to prandom_bytes
 
- drivers/mtd/tests/mtd_nandecctest.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ubifs/debug.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/tests/mtd_nandecctest.c b/drivers/mtd/tests/mtd_nandecctest.c
-index a5fb9b0..9b7b9fa 100644
---- a/drivers/mtd/tests/mtd_nandecctest.c
-+++ b/drivers/mtd/tests/mtd_nandecctest.c
-@@ -253,7 +253,7 @@ static int nand_ecc_test_run(const size_t size)
- 		goto error;
- 	}
+diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
+index 6291163..12817ff 100644
+--- a/fs/ubifs/debug.c
++++ b/fs/ubifs/debug.c
+@@ -2560,7 +2560,7 @@ static int power_cut_emulated(struct ubifs_info *c, int lnum, int write)
+ static int corrupt_data(const struct ubifs_info *c, const void *buf,
+ 			unsigned int len)
+ {
+-	unsigned int from, to, i, ffs = chance(1, 2);
++	unsigned int from, to, ffs = chance(1, 2);
+ 	unsigned char *p = (void *)buf;
  
--	get_random_bytes(correct_data, size);
-+	prandom_bytes(correct_data, size);
- 	__nand_calculate_ecc(correct_data, size, correct_ecc);
+ 	from = random32() % (len + 1);
+@@ -2571,11 +2571,9 @@ static int corrupt_data(const struct ubifs_info *c, const void *buf,
+ 		   ffs ? "0xFFs" : "random data");
  
- 	for (i = 0; i < ARRAY_SIZE(nand_ecc_test); i++) {
+ 	if (ffs)
+-		for (i = from; i < to; i++)
+-			p[i] = 0xFF;
++		memset(p + from, 0xFF, to - from);
+ 	else
+-		for (i = from; i < to; i++)
+-			p[i] = random32() % 0x100;
++		prandom_bytes(p + from, to - from);
+ 
+ 	return to;
+ }
 -- 
 1.7.11.7
