@@ -1,25 +1,22 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TYeGn-0000Zp-GA
- for linux-mtd@lists.infradead.org; Wed, 14 Nov 2012 14:48:50 +0000
-Message-ID: <50A3AF4A.9010004@parrot.com>
-Date: Wed, 14 Nov 2012 15:48:42 +0100
-From: Matthieu CASTET <matthieu.castet@parrot.com>
+Received: from mail-ie0-f177.google.com ([209.85.223.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TYezz-0007NL-RN
+ for linux-mtd@lists.infradead.org; Wed, 14 Nov 2012 15:35:32 +0000
+Received: by mail-ie0-f177.google.com with SMTP id e14so754640iej.36
+ for <linux-mtd@lists.infradead.org>; Wed, 14 Nov 2012 07:35:30 -0800 (PST)
 MIME-Version: 1.0
-To: Angus CLARK <angus.clark@st.com>
-Subject: Re: state of support for "external ECC hardware"
-References: <20121029204227.GA32300@harvey-pc.matrox.com><509B9143.4020506@keymile.com><20121108152125.GR2389@harvey-pc.matrox.com><509BDE9B.3080909@keymile.com><alpine.DEB.2.00.1211090938500.29771@lnxricardw.se.axis.com><50A12FBD.8020801@keymile.com><20121112173515.GA3041@parrot.com><50A13461.7070304@keymile.com>
- <20121112185231.GA6843@parrot.com> <50A36E92.7070204@keymile.com>
- <50A39B9B.7020808@st.com>
-In-Reply-To: <50A39B9B.7020808@st.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8bit
-Cc: "Bigler, Stefan" <Stefan.Bigler@keymile.com>, "Brunck,
- Holger" <Holger.Brunck@keymile.com>,
- Gerlando Falauto <gerlando.falauto@keymile.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ricard Wanderlof <ricard.wanderlof@axis.com>,
- Ivan Djelic <ivan.djelic@parrot.com>, Christopher Harvey <charvey@matrox.com>
+In-Reply-To: <1352563700-5268-1-git-send-email-elezegarcia@gmail.com>
+References: <1352563700-5268-1-git-send-email-elezegarcia@gmail.com>
+Date: Wed, 14 Nov 2012 12:35:30 -0300
+Message-ID: <CALF0-+VcRv2C9jx=vwAK6xdgauVuqzCZLgZ9aCGpUad42jtyaw@mail.gmail.com>
+Subject: Re: [RFC/PATCH] mtd_blkdevs: Replace request handler kthread with a
+ workqueue
+From: Ezequiel Garcia <elezegarcia@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Ezequiel Garcia <elezegarcia@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,66 +26,181 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Angus CLARK a écrit :
-> Hi Gerlando,
-> 
-> On 11/14/2012 10:12 AM, Gerlando Falauto wrote:
->> Hi Ivan,
->>
+On Sat, Nov 10, 2012 at 1:08 PM, Ezequiel Garcia <elezegarcia@gmail.com> wrote:
+> By replacing a kthread with a workqueue, the code is now a bit clearer.
+> There's also a slight reduction of code size (numbers apply for x86):
+> Before:
+>    text    data     bss     dec     hex filename
+>    3248      36       0    3284     cd4 drivers/mtd/mtd_blkdevs.o
+>
+> After:
+>    text    data     bss     dec     hex filename
+>    3150      36       0    3186     c72 drivers/mtd/mtd_blkdevs.o
+>
+> Due to lack of real hardware, tests have been performed on an emulated
+> environment with mtdswap and mtdblock over nandsim devices.
+> Some real testing should be done, before merging this patch.
+>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Artem Bityutskiy <dedekind1@gmail.com>
+> Signed-off-by: Ezequiel Garcia <elezegarcia@gmail.com>
+> ---
+>  drivers/mtd/mtd_blkdevs.c    |   47 +++++++++++++----------------------------
+>  include/linux/mtd/blktrans.h |    4 ++-
+>  2 files changed, 18 insertions(+), 33 deletions(-)
+>
+> diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+> index f1f0671..ba375ba 100644
+> --- a/drivers/mtd/mtd_blkdevs.c
+> +++ b/drivers/mtd/mtd_blkdevs.c
+> @@ -32,7 +32,6 @@
+>  #include <linux/hdreg.h>
+>  #include <linux/init.h>
+>  #include <linux/mutex.h>
+> -#include <linux/kthread.h>
+>  #include <asm/uaccess.h>
+>
+>  #include "mtdcore.h"
+> @@ -121,16 +120,14 @@ static int do_blktrans_request(struct mtd_blktrans_ops *tr,
+>
+>  int mtd_blktrans_cease_background(struct mtd_blktrans_dev *dev)
+>  {
+> -       if (kthread_should_stop())
+> -               return 1;
+> -
+>         return dev->bg_stop;
+>  }
+>  EXPORT_SYMBOL_GPL(mtd_blktrans_cease_background);
+>
+> -static int mtd_blktrans_thread(void *arg)
+> +static void mtd_blktrans_work(struct work_struct *work)
+>  {
+> -       struct mtd_blktrans_dev *dev = arg;
+> +       struct mtd_blktrans_dev *dev =
+> +               container_of(work, struct mtd_blktrans_dev, work);
+>         struct mtd_blktrans_ops *tr = dev->tr;
+>         struct request_queue *rq = dev->rq;
+>         struct request *req = NULL;
+> @@ -138,7 +135,7 @@ static int mtd_blktrans_thread(void *arg)
+>
+>         spin_lock_irq(rq->queue_lock);
+>
+> -       while (!kthread_should_stop()) {
+> +       while (1) {
+>                 int res;
+>
+>                 dev->bg_stop = false;
+> @@ -156,15 +153,7 @@ static int mtd_blktrans_thread(void *arg)
+>                                 background_done = !dev->bg_stop;
+>                                 continue;
+>                         }
+> -                       set_current_state(TASK_INTERRUPTIBLE);
+> -
+> -                       if (kthread_should_stop())
+> -                               set_current_state(TASK_RUNNING);
+> -
+> -                       spin_unlock_irq(rq->queue_lock);
+> -                       schedule();
+> -                       spin_lock_irq(rq->queue_lock);
+> -                       continue;
+> +                       break;
+>                 }
+>
+>                 spin_unlock_irq(rq->queue_lock);
+> @@ -185,8 +174,6 @@ static int mtd_blktrans_thread(void *arg)
+>                 __blk_end_request_all(req, -EIO);
+>
+>         spin_unlock_irq(rq->queue_lock);
+> -
+> -       return 0;
+>  }
+>
+>  static void mtd_blktrans_request(struct request_queue *rq)
+> @@ -199,10 +186,8 @@ static void mtd_blktrans_request(struct request_queue *rq)
+>         if (!dev)
+>                 while ((req = blk_fetch_request(rq)) != NULL)
+>                         __blk_end_request_all(req, -ENODEV);
+> -       else {
+> -               dev->bg_stop = true;
+> -               wake_up_process(dev->thread);
+> -       }
+> +       else
+> +               queue_work(dev->wq, &dev->work);
+>  }
+>
+>  static int blktrans_open(struct block_device *bdev, fmode_t mode)
+> @@ -437,14 +422,13 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+>
+>         gd->queue = new->rq;
+>
+> -       /* Create processing thread */
+> -       /* TODO: workqueue ? */
+> -       new->thread = kthread_run(mtd_blktrans_thread, new,
+> -                       "%s%d", tr->name, new->mtd->index);
+> -       if (IS_ERR(new->thread)) {
+> -               ret = PTR_ERR(new->thread);
+> +       /* Create processing workqueue */
+> +       new->wq = alloc_workqueue("%s%d", 0, 0,
+> +                                 tr->name, new->mtd->index);
+> +       if (!new->wq)
+>                 goto error4;
+> -       }
+> +       INIT_WORK(&new->work, mtd_blktrans_work);
+> +
+>         gd->driverfs_dev = &new->mtd->dev;
+>
+>         if (new->readonly)
+> @@ -484,9 +468,8 @@ int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
+>         /* Stop new requests to arrive */
+>         del_gendisk(old->disk);
+>
+> -
+> -       /* Stop the thread */
+> -       kthread_stop(old->thread);
+> +       /* Stop workqueue. This will perform any pending request. */
+> +       destroy_workqueue(old->wq);
+>
+>         /* Kill current requests */
+>         spin_lock_irqsave(&old->queue_lock, flags);
+> diff --git a/include/linux/mtd/blktrans.h b/include/linux/mtd/blktrans.h
+> index ed270bd..4eb0a50 100644
+> --- a/include/linux/mtd/blktrans.h
+> +++ b/include/linux/mtd/blktrans.h
+> @@ -23,6 +23,7 @@
+>  #include <linux/mutex.h>
+>  #include <linux/kref.h>
+>  #include <linux/sysfs.h>
+> +#include <linux/workqueue.h>
+>
+>  struct hd_geometry;
+>  struct mtd_info;
+> @@ -43,7 +44,8 @@ struct mtd_blktrans_dev {
+>         struct kref ref;
+>         struct gendisk *disk;
+>         struct attribute_group *disk_attributes;
+> -       struct task_struct *thread;
+> +       struct workqueue_struct *wq;
+> +       struct work_struct work;
+>         struct request_queue *rq;
+>         spinlock_t queue_lock;
+>         void *priv;
+> --
+> 1.7.8.6
+>
 
->>
->> Feasibility aside, would that make any sense?
->>
-> 
-> In general I am in favour of anything that facilitates the automatic probing of
-> devices.  However, I can see a number of complications in trying to implement
-> what you suggest.  Storing static information in a fixed location is never a
-> good idea on NAND.  A further issue relates to the very information you are
-> trying to store.  The data itself would need to be protected by ECC, but for it
-> to be useful, you need to be able to retrieve it without knowing what ECC/layout
-> was used when storing it.  Perhaps, for this ECC/layout data, one could use a
-> special dedicated S/W ECC scheme, strong enough for any device.  Yet another
-> layout of complexity though.
-You can use what is used on onfi flash for read parameter data [1] :
-- duplicate data over n page
-- use crc to detect corruption
+I guess lack of comments at least means this patch is not junk ;-)
 
+Another thing worth mentioning is that UBI uses kernel threads,
+instead of workqueues.
 
+Moreover, it fires a thread per ubi device, which on a first glance
+seems like a lot of overhead.
 
-Matthieu
+We should really have a very good reason for prefering kernel threads
+to workqueues, the latter being much cheaper.
 
-[1]
-The host should issue the Read Parameter Page (ECh) command. This command returns
-information that includes the capabilities, features, and operating parameters
-of the device.
-When the information is read from the device, the host shall check the CRC to
-ensure that the
-data was received correctly and without error prior to taking action on that data.
-If the CRC of the first parameter page read is not valid (refer to section
-5.7.1.24), the host should
-read redundant parameter page copies. The host can determine whether a redundant
-parameter
-page is present or not by checking if the first four bytes contain at least two
-bytes of the
-parameter page signature. If the parameter page signature is present, then the
-host should read
-the entirety of that redundant parameter page. The host should then check the
-CRC of that
-redundant parameter page. If the CRC is correct, the host may take action based
-on the contents
-of that redundant parameter page. If the CRC is incorrect, then the host should
-attempt to read
-the next redundant parameter page by the same procedure.
-The host should continue reading redundant parameter pages until the host is
-able to accurately
-reconstruct the parameter page contents. All parameter pages returned by the
-Target may have
-invalid CRC values; however, bit-wise majority or other ECC techniques may be
-used to recover
-the contents of the parameter page. The host may use bit-wise majority or other
-ECC techniques
-to recover the contents of the parameter page from the parameter page copies
-present. When
-the host determines that a parameter page signature is not present (refer to
-section 5.7.1.1), then
-all parameter pages have been read.
+I'll try to fix an rfc/patch for this, in case anyone wants to give it a try.
+
+Thanks,
+
+    Ezequiel
