@@ -1,21 +1,20 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TYzge-0004LX-Bx
- for linux-mtd@lists.infradead.org; Thu, 15 Nov 2012 13:40:59 +0000
-Message-ID: <1352986893.2221.49.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH for 3.7] mtd: nand: fix Samsung SLC detection regression
+ id 1TYzk2-0005Wy-DZ
+ for linux-mtd@lists.infradead.org; Thu, 15 Nov 2012 13:44:29 +0000
+Message-ID: <1352987104.2221.50.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: cmdlinepart: fix the overflow of big mtd partitions
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Thu, 15 Nov 2012 15:41:33 +0200
-In-Reply-To: <1352958390-15553-1-git-send-email-computersforpeace@gmail.com>
-References: <1352958390-15553-1-git-send-email-computersforpeace@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Date: Thu, 15 Nov 2012 15:45:04 +0200
+In-Reply-To: <1351749497-31692-1-git-send-email-b32955@freescale.com>
+References: <1351749497-31692-1-git-send-email-b32955@freescale.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-eiz43cbmLQnAklKq6AS0"
+ boundary="=-uXeJfmipn9k3VFi5TE6P"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org,
- Sylwester Nawrocki <sylvester.nawrocki@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,30 +26,44 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-eiz43cbmLQnAklKq6AS0
+--=-uXeJfmipn9k3VFi5TE6P
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-11-14 at 21:46 -0800, Brian Norris wrote:
-> This patch fixes errors seen in identifying old Samsung SLC, due to the
-> following commits:
+On Thu, 2012-11-01 at 13:58 +0800, Huang Shijie wrote:
+> When the kernel parses the following cmdline
 >=20
->     commit e2d3a35ee427aaba99b6c68a56609ce276c51270
->     mtd: nand: detect Samsung K9GBG08U0A, K9GAG08U0F ID
+> 	#mtdparts=3Dgpmi-nand:16m(boot),16m(kernel),1g(home),4g(test),-(usr)
 >=20
->     commit e3b88bd604283ef83ae6e8f53622d5b1ffe9d43a
->     mtd: nand: add generic READ ID length calculation functions
+> for a big nand chip Micron MT29F64G08AFAAAWP(8GB), we got the following w=
+rong
+> result:
+>=20
+> 	.............................................
+> 		"mtd: partition size too small (0)"
+> 	.............................................
+>=20
+> We can not get any partition.
+>=20
+> The "4g(test)" partition triggers a overflow of the "size". The memparse(=
+)
+> returns 4g to the "size", but the size is "unsigned long" type, so a over=
+flow
+> occurs, the "size" becomes zero in the end.
+>=20
+> This patch changes the "size"/"offset" to "unsigned long long" type,
+> and replaces the UINT_MAX with ULLONG_MAX for macros SIZE_REMAINING and
+> OFFSET_CONTINUOUS.
+>=20
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
 
-I've added this patch and the other fix to my l2 tree, and will bug
-dwmw2 about merging this, before it is too late.
-
-Thanks!
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-eiz43cbmLQnAklKq6AS0
+--=-uXeJfmipn9k3VFi5TE6P
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -58,19 +71,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQpPENAAoJECmIfjd9wqK0BuAP/A1WAcCLsFqVPbCGTUPtz37U
-GB82wL4afPL065VeaJ+Udt1U2Pu5a53zkYFAsgpisyndSaGpjjrr225Uq0Y9ZcXJ
-WqJNMTQrKt587NYmggDeqW3gCjZQdwsHnY/P/c11agzCw1jo4t0YgZWHzRImyMIv
-UeeSLiSmeLjUyTqYBPe8hbOBJJuAgI+PhUyHEZYqFCdGzCApyDK3Y2DKr3z3m71/
-wSjkHEjYDEjgDqYZPRVYCklyzkc0AazpHzNT44p3aznA5T2QZd4fgYqovFSXsU8g
-iyAoP/HG1g1YjFt9Yk9RkMXKj8mUh+dFfpB8/svd5NJvVQpAA6W5a28zmENhDkB3
-VwIO5XKeNeHQsCDpDZyUhb5AHvKfEdRFsCk10+soKk1GUBiw5EHm4U+e2X872rkB
-L+H/rM8X7nGkmVfln1JprVpXUQs/Yqg04hsT8nmTkyEgX8VGN1WP73C6m5ITP6aY
-tBqr1gl7HrrrdmzhOMJqGRxzvA8HD6sOyv7nYzXuPXbJ9YC7o4GEIeS80TEzrT2/
-bbME4GhceIF3YAaA3Nd2+0dp6VYpwTW9E9NBOcoE7VRATWDcb7TUxDdy9JylXrS7
-yy7dmBImscKuuZqMtU3/qiFORoIwMSOhi/sKfJy9hqLZFtConkVvfg5Q9uxDurRW
-LO5+r7cx+cor9AR57Zn9
-=YAjI
+iQIcBAABAgAGBQJQpPHgAAoJECmIfjd9wqK0n9kQALMBpSJLG1ggyGGJxkkctJg3
+hc/QOtsoOG0MLMCSVjfREg/WposAPsVg4/aB/s+boln1xyChg51Wul7N87VOyTlN
+qKJTd1D8HLoEr0cKUhRvfDAx94Xs7EVU1SV8keOzp6WVW2H0ZUn/qfqC9+5ETcIj
+QjxOLMD549Hq/ygHbba3zkvAKi9wKTE9mbDak4dWYQ3DURuXk/KJGuQdhlPfXclw
+59vFcLSz3ueR9sFU2NsFrZIj0CRatVnwWJn1jRInlqO+Ek1IaKfdt9F/acqQMZko
+k0yLZjLdHKvYKNuiqTtIwiIn/HEkvKSvCaOBAqs8VK6uZlxtvAMjw16J6cvdMuxm
+VNQzo8c/afo9RxBvlWqT0b7L1oFtYkEHasW5/oeXs9N4q7Hc88g9pTW5yYiAZSE6
+9thg1iVBD2/rEt4KPvMD18kNp8PLuO2vlGjaIhbx3oX9NobbbBbHwGY3+sQH/aX/
+m8W3jnHJZsN70sLiITXeqYDCM2SKDtHtZesnxXrjsIDWsnHLGIboGszkMMNX/BJd
+aNh0+b2LUGfoepqrIadI3H8Skts4JRLdvE4klu5c0t0zEVKajbpfnZ7icOzVZGxJ
+BNLceXBK6aoZhIvHDU1dh2gGIALtwfabiDMkTAdYKXUEfd8iWMGe/15I8sdk7z6g
+XWZ+jAjk1CibDkCfAfIQ
+=fYaT
 -----END PGP SIGNATURE-----
 
---=-eiz43cbmLQnAklKq6AS0--
+--=-uXeJfmipn9k3VFi5TE6P--
