@@ -1,22 +1,22 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mtxmxout3.matrox.com ([138.11.2.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TZ0M6-0001rw-UX
- for linux-mtd@lists.infradead.org; Thu, 15 Nov 2012 14:23:48 +0000
-Message-ID: <1352989463.2221.59.camel@sauron.fi.intel.com>
-Subject: Re: ubifs  can not be mounted rw : could not find an empty LEB
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-Date: Thu, 15 Nov 2012 16:24:23 +0200
-In-Reply-To: <5098D625.7050103@parrot.com>
-References: <5098D625.7050103@parrot.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-aW5dahkjHy2YktWFqoov"
-Mime-Version: 1.0
-Cc: Artem Bityutskiy <dedekind@infradead.org>,
- Ivan Djelic <ivan.djelic@parrot.com>,
- Linux mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+ id 1TZ0jc-0005BQ-LZ
+ for linux-mtd@lists.infradead.org; Thu, 15 Nov 2012 14:48:05 +0000
+Date: Thu, 15 Nov 2012 09:48:00 -0500
+From: Christopher Harvey <charvey@matrox.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH v3] mtd: omap: nand: Remove 0xFF's that prefixed 16bit
+ NAND addresses
+Message-ID: <20121115144800.GI2508@harvey-pc.matrox.com>
+References: <20121029195127.GA32749@harvey-pc.matrox.com>
+ <1352977329.2221.29.camel@sauron.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1352977329.2221.29.camel@sauron.fi.intel.com>
+Cc: Ivan Djelic <ivan.djelic@parrot.com>, linux-omap@vger.kernel.org,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,51 +26,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, Nov 15, 2012 at 01:02:09PM +0200, Artem Bityutskiy wrote:
+> On Mon, 2012-10-29 at 15:51 -0400, Christopher Harvey wrote:
+> > In 16bit NAND mode the GPMC would send the address 0xNN as 0xFFNN
+> > instead of 0x00NN on the bus. The 0xFFs were actually uninitialized
+> > bits that were left unset in the GPMC command output register. The
+> > reason they weren't initialized in 16bit mode is that if the same code
+> > that writes to this register was used in 8bit mode then 2 commands
+> > would be output in 8bit mode. One for the low byte, and an extra 0x0
+> > command for the high byte. This commit uses writew if we're using
+> > 16bit NAND. This commit also changes the high byte in the command
+> > output register, but they are ignored by NAND chips anyway.
+> > 
+> > Most chips seem fine with the extra 0xFFs, but the ONFI spec says
+> > otherwise.
+> > 
+> > Signed-off-by: Christopher Harvey <charvey@matrox.com>
+> 
+> Pushed to l2-mtd.git, thanks!
 
---=-aW5dahkjHy2YktWFqoov
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+!!! Did anybody get around to testing this? I thought this patch had
+    been abandoned. Will testing get done on an omap chip now that it
+    is in a tree?
 
-On Tue, 2012-11-06 at 10:19 +0100, Matthieu CASTET wrote:
-> Hi,
->=20
-> on some of our product, when we try to mount a partition rw, we got the e=
-rror :
-> could not find an empty LEB and mount return "No space left on device".
+I should have prefixed it with RFC.
 
-The symptoms are the same as the symptoms of the problem I recently
-fixed. Please, see the following 2 patches in linux-ubifs.git:
+-C
 
-UBIFS: introduce categorized lprops counter
-UBIFS: fix mounting problems after power cuts
+-- 
 
-I'll send them to Linus for 3.7 shortly.
+CONFIDENTIAL & WITHOUT PREJUDICE
 
---=20
-Best Regards,
-Artem Bityutskiy
+This e-mail and any files transmitted with it, is confidential, may be
+protected under NDA and/or privileged and shall be treated as
+such. The e-mail and its attachments are intended only for use of the
+individual(s) or entity(ies) indicated above. Any other person is
+hereby advised that it strictly forbidden to disclose, distribute or
+reproduce this message.  If you have received this e-mail in error,
+please advise me by return e-mail or by telephone at 514-822-6000,
+immediately and destroy the message and its contents immediately.
+Thank You.
 
---=-aW5dahkjHy2YktWFqoov
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+CONFIDENTIEL - SANS PRÉJUDICE
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQpPsXAAoJECmIfjd9wqK0K08QALWD7UvDA7SXRNDpEIg3kUxK
-4grVXk06wiO4jbY6logpkx/VeHuDpPnnJiUZyqCw0jOWFJBzw1DrXnb2KAnH2inA
-a1BsGBdFAO+f8G3dej9aPTpZPfOMsi/lLQFCw0LXWc+/wf6Q5Wf+jHM0ZtnosA20
-nSSB3GQv/zwbeBiW+ztQixNfGUXumCileJyqa9Lgrk023C1rc4X90OChxYj4vebd
-e+epm+SHvW3bmQppEEpylPeSILXIgE96S9iapyvFWEi2l3vsJSS8KoM4pZO+fHsE
-OUgPRAd4WKceYPUIaXp28IHge2WrVIOCSKuF6IyscuH7NifLWA9pB9zUQq8RZsPr
-In9rcycYup27BKBXeDVhp5+AXOQnqrWEq8GKLsVtyjhzhD3posMJ2HA1vUIy7Dpp
-VMbXqON4GBAOBz9eESamd/umxO9+1n6Vggji8MU8q9RHBvZ0ml8AXUmiKQ7YAeF7
-DgKzxyRCE6NV0Wff89HESan6K5JECLpYYtvXqC2mLoWK+ReqKkdQO5M0cpuW2q+l
-DQs/tOgSpAMtNrsC4pRcCYMdNLvvoDHNqzD+OokewBsp977YSq9MigKjE2mfXnG7
-RRbthhqylOr2XfiTorja720WW15PhgVkypB6BKFicYXudf7S+cn0HF8sz38JegNg
-bmRLPyE8edWTMowittuJ
-=FNcj
------END PGP SIGNATURE-----
-
---=-aW5dahkjHy2YktWFqoov--
+Ce courriel et tout document qui y est joint, est confidentiel, peut
+être privilégié et protégé par entente de confidentialité et est à
+l'usage exclusif du destinataire. Toute autre personne est par les
+présentes avisée qu'il lui est strictement interdit de le diffuser, le
+distribuer ou le reproduire. Si vous recevez ce courriel par erreur,
+veuillez m'en aviser immédiatement, par retour de courriel ou par
+téléphone au (514) 822-6000 et détruire ce message et toute copie de
+celui-ci immédiatement.  Merci.
