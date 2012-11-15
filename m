@@ -1,21 +1,21 @@
 Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TYxex-0003F3-TZ
- for linux-mtd@lists.infradead.org; Thu, 15 Nov 2012 11:31:04 +0000
-Message-ID: <1352979100.2221.34.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: map: Fix compilation warning
+ id 1TYz5y-0006D9-3S
+ for linux-mtd@lists.infradead.org; Thu, 15 Nov 2012 13:03:03 +0000
+Message-ID: <1352984619.2221.40.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtdoops : don't erase flash at each boot
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Thu, 15 Nov 2012 13:31:40 +0200
-In-Reply-To: <dd11b4d47ab566931cb943dea34e67c1ce2c3e59.1351530856.git.viresh.kumar@linaro.org>
-References: <dd11b4d47ab566931cb943dea34e67c1ce2c3e59.1351530856.git.viresh.kumar@linaro.org>
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+Date: Thu, 15 Nov 2012 15:03:39 +0200
+In-Reply-To: <50A21959.5050505@parrot.com>
+References: <1350660573-6631-1-git-send-email-matthieu.castet@parrot.com>
+ <1352735412.2262.15.camel@sauron.fi.intel.com>
+ <50A21959.5050505@parrot.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-PC5xNdubqss0/04/nttW"
+ boundary="=-c+A9PJgyX4V6rH7rIVWN"
 Mime-Version: 1.0
-Cc: linaro-dev@lists.linaro.org, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- patches@linaro.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,32 +27,20 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-PC5xNdubqss0/04/nttW
+--=-c+A9PJgyX4V6rH7rIVWN
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2012-10-29 at 22:47 +0530, Viresh Kumar wrote:
-> This patch is an attempt to fix following compilation warning.
->=20
-> In file included from drivers/mtd/chips/cfi_cmdset_0001.c:35:0:
-> drivers/mtd/chips/cfi_cmdset_0001.c: In function 'cfi_intelext_write_word=
-s':
-> include/linux/mtd/map.h:331:11: warning: 'r.x[0]' may be used uninitializ=
-ed in this function [-Wmaybe-uninitialized]
->=20
-> I could have used uninitialized_var() too, but didn't used it as the fina=
-l else
-> part of map_word_load() is missing. So there is a chance that it might be=
- passed
-> uninitialized. Better initialize to zero.
+On Tue, 2012-11-13 at 10:56 +0100, Matthieu CASTET wr
+> Is the following changelog ok ?
 
-Pushed to l2-mtd.git, thanks!
+Better, thanks. I've pushed this patch to l2-mtd.git.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-PC5xNdubqss0/04/nttW
+--=-c+A9PJgyX4V6rH7rIVWN
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -60,19 +48,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQpNKcAAoJECmIfjd9wqK0q5oP/0QdOzZ4RECzHjoYddrFAHK8
-YJBFhKeK55B07cR7NyWve6Y30REBCubv9gccLsmCI192FMXchjFMuTm5i6HCN7QE
-RBeKBmcOMnHLDrJRuJI1nKnScinp8dA6P6dLQTgqODYlcajhq11L8dr4TqI7GlgV
-3cVNPtSz5IWUxbRqaUlrdoowrLqEfmXhdozP7smKD4vyk0LNwNWGhZzZMT8Rl6lW
-jei6W3ZW/9FvjmLQLYMmtZq+nIvf6gXf9M6Tjz96WY2mBAyqk9XXu1qDVIQCxWlH
-gW58Xg7e52aWRFzLPz73JNb3I4vYzR4/NP/4CcTcEX+wYByKBmXmVknJKsjTp1sQ
-MMEpooUyZoy71ApyoLkCaHIv5i467xAxlk0y7i2YHXan6ONr0L4Raxg9q1XYWV7A
-UUjZqNpqAmMEL+Szu7HWAVUclI/VAdGMZoNSJIU6nBQzQH1wh4YmXygsRPo55eBK
-LSdiSymfwzbXEvtllYqt91d6WfrHrYfdnROjcru8KF/uerlPDoJOLyI5IeCLx27e
-P9S+ANasaK0236x/Oo5/0h35UpPY0I+RwI7k1SZk6JQs2o+yxSASZyybwhvnJJUY
-xVxVQOlkh4/dJ84fLhinKJI2vxCOhlPqPX3mJwE/17rcxLhS/LQUWZ4/QwiJ3hKw
-QjXK+k3vAv82pXIYnN+D
-=qaga
+iQIcBAABAgAGBQJQpOgrAAoJECmIfjd9wqK0Rr0QAIGQA73kHko6hn53G1CrEMDN
+SdjaSBXvKs5T+8FWwlRS5gHwdBfbrm1IKtMF3oRjEl2zmoxysm3+t/JfPyQlalzj
+fiQoh3Z8rKoAKjDVZJlvYblSNhEblMqjz1L7AjaHZPCRVQLjp7iQ7LmdufXVBbsJ
+yqKR3MW7dZS3UkNYrDbNEjebglZb0jLsSzM6J3zuHx0ZDIUqhAiRyYCrTjuWC8ir
+GoZnKFWATz6nzYQqiofPL6INBJeByt17W/8UB8oS3i/hM86obGmiBweA6xvVPl4D
+eCuag1n1lKSoTSUp8vicirI/z87chG/fKzbZqkNZNiApv7DtVeWCAgC4gxc8IR3r
+W0+EriF7s1r+1tJKfx9Djd+teRz8eoB2BQjERruNj5SBKdRYdmBAfDxZNcskYu3s
+cWHVie0SoC2wnvmxaHsWTen1EOgkeNIE6fVfEPKUfSwm2GVQL1kzvgO8BS19No4C
+lHkKFBV06BbqR5+0ffDFk5VCpLxETCbvQa7xd+0zNkUgJJnUPqSU+RC3UYPWd3dw
+bB3ExkzK3bGjC8O+UYPj90bIUBmvCR5SbNvE54+Mk5GdzKu4keSxwDlhyoJ113z6
+WQS9UJSKbtj8rShFitZVaRxb6PenOmfkdKycSIu4xpFq2EewIQi/e7cPiBAScM9D
+kgjTB2bqHy5S+rrQDjj4
+=U74J
 -----END PGP SIGNATURE-----
 
---=-PC5xNdubqss0/04/nttW--
+--=-c+A9PJgyX4V6rH7rIVWN--
