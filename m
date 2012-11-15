@@ -1,19 +1,23 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mtxmxout1.matrox.com ([138.11.2.91])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TZ1F3-00079u-HA
- for linux-mtd@lists.infradead.org; Thu, 15 Nov 2012 15:20:34 +0000
-Message-ID: <1352992872.2221.62.camel@sauron.fi.intel.com>
-Subject: [GIT PULL] UBIFS changes for 3.7-rc6
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 15 Nov 2012 17:21:12 +0200
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-1Ce7NDS2bKk+SmXErVh/"
-Mime-Version: 1.0
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Reply-To: dedekind1@gmail.com
+ id 1TZ1WE-0007kJ-2j
+ for linux-mtd@lists.infradead.org; Thu, 15 Nov 2012 15:38:18 +0000
+Date: Thu, 15 Nov 2012 10:38:14 -0500
+From: Christopher Harvey <charvey@matrox.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH v3] mtd: omap: nand: Remove 0xFF's that prefixed 16bit
+ NAND addresses
+Message-ID: <20121115153814.GL2508@harvey-pc.matrox.com>
+References: <20121029195127.GA32749@harvey-pc.matrox.com>
+ <1352977329.2221.29.camel@sauron.fi.intel.com>
+ <20121115144800.GI2508@harvey-pc.matrox.com>
+ <1352992724.2221.61.camel@sauron.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1352992724.2221.61.camel@sauron.fi.intel.com>
+Cc: Ivan Djelic <ivan.djelic@parrot.com>, linux-omap@vger.kernel.org,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,75 +27,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, Nov 15, 2012 at 05:18:44PM +0200, Artem Bityutskiy wrote:
+> On Thu, 2012-11-15 at 09:48 -0500, Christopher Harvey wrote:
+> > On Thu, Nov 15, 2012 at 01:02:09PM +0200, Artem Bityutskiy wrote:
+> > > On Mon, 2012-10-29 at 15:51 -0400, Christopher Harvey wrote:
+> > > > In 16bit NAND mode the GPMC would send the address 0xNN as 0xFFNN
+> > > > instead of 0x00NN on the bus. The 0xFFs were actually uninitialized
+> > > > bits that were left unset in the GPMC command output register. The
+> > > > reason they weren't initialized in 16bit mode is that if the same code
+> > > > that writes to this register was used in 8bit mode then 2 commands
+> > > > would be output in 8bit mode. One for the low byte, and an extra 0x0
+> > > > command for the high byte. This commit uses writew if we're using
+> > > > 16bit NAND. This commit also changes the high byte in the command
+> > > > output register, but they are ignored by NAND chips anyway.
+> > > > 
+> > > > Most chips seem fine with the extra 0xFFs, but the ONFI spec says
+> > > > otherwise.
+> > > > 
+> > > > Signed-off-by: Christopher Harvey <charvey@matrox.com>
+> > > 
+> > > Pushed to l2-mtd.git, thanks!
+> > 
+> > !!! Did anybody get around to testing this? I thought this patch had
+> >     been abandoned. Will testing get done on an omap chip now that it
+> >     is in a tree?
+> > 
+> > I should have prefixed it with RFC.
+> 
+> I assume _you_ tested it, and Ivan was happy. But if it is untested, I
+> am dropping it.
+> 
 
---=-1Ce7NDS2bKk+SmXErVh/
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+I'm running a slight variation of it on another version of the
+kernel. I'm glad you're dropping it though...I have a reputation to
+maintain as well as a kernel. ;)
 
-Hi Linus,
-
-please, pull UBIFS fixes.
-
-The following changes since commit 6f0c0580b70c89094b3422ba81118c7b959c7556=
-:
-
-  Linux 3.7-rc2 (2012-10-20 12:11:32 -0700)
-
-are available in the git repository at:
-
-  git://git.infradead.org/linux-ubifs.git tags/upstream-3.7-rc6
-
-for you to fetch changes up to a28ad42a4a0c6f302f488f26488b8b37c9b30024:
-
-  UBIFS: fix mounting problems after power cuts (2012-10-26 16:26:44 +0300)
-
-----------------------------------------------------------------
-Two patches which fix a problem reported by several people in the past,
-but only fixed now because no one gave enough material for debugging.
-
-Anyway, these fix the problem that sometimes after a power cut the
-file-system is not mountable with the following symptom:
-
-        grab_empty_leb: could not find an empty LEB
-
-The fixes make the file-system mountable again.
-
-----------------------------------------------------------------
-Artem Bityutskiy (2):
-      UBIFS: introduce categorized lprops counter
-      UBIFS: fix mounting problems after power cuts
-
- fs/ubifs/find.c   |   12 ++++++++++--
- fs/ubifs/lprops.c |    6 ++++++
- fs/ubifs/ubifs.h  |    3 +++
- 3 files changed, 19 insertions(+), 2 deletions(-)
-
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-1Ce7NDS2bKk+SmXErVh/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQpQhoAAoJECmIfjd9wqK0UNAQAJLJ9tX7GMBYrSnp44QFqwSH
-4EPGgPdZhg37wmDXZ7OsusSJb0KleGf6KO/jv4F7YM64EEOMKFPWvHEMUW4Ed0l5
-WAifgTh46AchX/IptjHUSkcTMll4qrdzM+qY/NRlyeYloXtvpWZ/BkfPj8n1iNKY
-usEA2U5yCWGqg+aqTXDehyzhB5VkduNZtteHOe/pI6dsosZrEO1zmdgI9KQ8mhKn
-dLXv8EFmUO2onhm9zsgoOLiNlfs4yYL0br91ndNcg4UwTWZEvyrJ5MzriZXcgRzJ
-/JsaB8QoNbSQZ7EuooFR8fm0t0lZFZkpEjtLBJ2o+IKT4DbN7olGLb4zPWU2Dpms
-JwUQ9YcrKsAhffG99EulXAKkJUr6gBOkapxaOlhfCioZns8//fTeX6YYfjxPPZIK
-2d5u9thiKPB1921wgUxJlSRyfO1UXE9Zo1HCi1QUREYQdrLkMIg2zD6ldbkzHea6
-aJLz36EHq202StQEglCZZdrcQUVVTK9edKJAjMQPilduuvM4M4AuEpTsknBwne84
-x7ZTujXNEos/2g7sfyuiqaEZ8vZePPrWEq1C8jHSWU3eqYP36v9o6cflpJ54Fjfz
-YnNcGuTmHEl6wQw+NieCcqbabLv5QsxA0dfRAmI186lO0ZIC04v2iq7C64lU54GS
-VtqpMd6UvPle8HqOTQyP
-=wdE3
------END PGP SIGNATURE-----
-
---=-1Ce7NDS2bKk+SmXErVh/--
+-C
