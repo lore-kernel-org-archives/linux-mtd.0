@@ -1,21 +1,26 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TYzk2-0005Wy-DZ
- for linux-mtd@lists.infradead.org; Thu, 15 Nov 2012 13:44:29 +0000
-Message-ID: <1352987104.2221.50.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: cmdlinepart: fix the overflow of big mtd partitions
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Date: Thu, 15 Nov 2012 15:45:04 +0200
-In-Reply-To: <1351749497-31692-1-git-send-email-b32955@freescale.com>
-References: <1351749497-31692-1-git-send-email-b32955@freescale.com>
+ id 1TYzpk-0007QL-1Y
+ for linux-mtd@lists.infradead.org; Thu, 15 Nov 2012 13:50:20 +0000
+Message-ID: <1352987449.2221.51.camel@sauron.fi.intel.com>
+Subject: Re: [RESEND PATCH] mtd: davinci: add support for parition binding
+ nodes
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Murali Karicheri <m-karicheri2@ti.com>
+Date: Thu, 15 Nov 2012 15:50:49 +0200
+In-Reply-To: <1351866161-15516-1-git-send-email-m-karicheri2@ti.com>
+References: <1351866161-15516-1-git-send-email-m-karicheri2@ti.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-uXeJfmipn9k3VFi5TE6P"
+ boundary="=-cIDqQXKT/hKZqRWFQxti"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org
-Reply-To: dedekind1@gmail.com
+Cc: mikedunn@newsguy.com, linux-doc@vger.kernel.org,
+ devicetree-discuss@lists.ozlabs.org, nsekhar@ti.com,
+ linux-kernel@vger.kernel.org, rob.herring@calxeda.com,
+ linux-keystone@list.ti.com, grant.likely@secretlab.ca,
+ linux-mtd@lists.infradead.org, rob@landley.net, hs@denx.de,
+ dwmw2@infradead.org
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,36 +31,15 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-uXeJfmipn9k3VFi5TE6P
+--=-cIDqQXKT/hKZqRWFQxti
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-11-01 at 13:58 +0800, Huang Shijie wrote:
-> When the kernel parses the following cmdline
+On Fri, 2012-11-02 at 10:22 -0400, Murali Karicheri wrote:
+> Enhance the driver to support partition subnodes inside the nand
+> device bindings to describe partions on the nand device.
 >=20
-> 	#mtdparts=3Dgpmi-nand:16m(boot),16m(kernel),1g(home),4g(test),-(usr)
->=20
-> for a big nand chip Micron MT29F64G08AFAAAWP(8GB), we got the following w=
-rong
-> result:
->=20
-> 	.............................................
-> 		"mtd: partition size too small (0)"
-> 	.............................................
->=20
-> We can not get any partition.
->=20
-> The "4g(test)" partition triggers a overflow of the "size". The memparse(=
-)
-> returns 4g to the "size", but the size is "unsigned long" type, so a over=
-flow
-> occurs, the "size" becomes zero in the end.
->=20
-> This patch changes the "size"/"offset" to "unsigned long long" type,
-> and replaces the UINT_MAX with ULLONG_MAX for macros SIZE_REMAINING and
-> OFFSET_CONTINUOUS.
->=20
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
+> Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
 
 Pushed to l2-mtd.git, thanks!
 
@@ -63,7 +47,7 @@ Pushed to l2-mtd.git, thanks!
 Best Regards,
 Artem Bityutskiy
 
---=-uXeJfmipn9k3VFi5TE6P
+--=-cIDqQXKT/hKZqRWFQxti
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -71,19 +55,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQpPHgAAoJECmIfjd9wqK0n9kQALMBpSJLG1ggyGGJxkkctJg3
-hc/QOtsoOG0MLMCSVjfREg/WposAPsVg4/aB/s+boln1xyChg51Wul7N87VOyTlN
-qKJTd1D8HLoEr0cKUhRvfDAx94Xs7EVU1SV8keOzp6WVW2H0ZUn/qfqC9+5ETcIj
-QjxOLMD549Hq/ygHbba3zkvAKi9wKTE9mbDak4dWYQ3DURuXk/KJGuQdhlPfXclw
-59vFcLSz3ueR9sFU2NsFrZIj0CRatVnwWJn1jRInlqO+Ek1IaKfdt9F/acqQMZko
-k0yLZjLdHKvYKNuiqTtIwiIn/HEkvKSvCaOBAqs8VK6uZlxtvAMjw16J6cvdMuxm
-VNQzo8c/afo9RxBvlWqT0b7L1oFtYkEHasW5/oeXs9N4q7Hc88g9pTW5yYiAZSE6
-9thg1iVBD2/rEt4KPvMD18kNp8PLuO2vlGjaIhbx3oX9NobbbBbHwGY3+sQH/aX/
-m8W3jnHJZsN70sLiITXeqYDCM2SKDtHtZesnxXrjsIDWsnHLGIboGszkMMNX/BJd
-aNh0+b2LUGfoepqrIadI3H8Skts4JRLdvE4klu5c0t0zEVKajbpfnZ7icOzVZGxJ
-BNLceXBK6aoZhIvHDU1dh2gGIALtwfabiDMkTAdYKXUEfd8iWMGe/15I8sdk7z6g
-XWZ+jAjk1CibDkCfAfIQ
-=fYaT
+iQIcBAABAgAGBQJQpPM5AAoJECmIfjd9wqK0DzIQAMmgiCv4Y21upsshcR3vTlmh
+3FzvJeSwFASb0pedw9FrELADnT2RZSMpuVD9fpDNxDdjGNGxGcLNFyX3jsTRCCKu
+OquCi6m4U0If3abBsxsmOLXRB4vtzFGRvDx9A/krBUfEservNbT9l8ehQjaOLEru
+JtIG+dgsdh9+5htUfDhV22MbLB9jQStfDOsE+nHUYDziXtEl3kiXWj1JwNtNCMIo
+o69o39t2fRBew7A/d7e+iVKtoEfqgs2JvG2yiJfrYh0JKmKU+1gG9nxJV6YJMHh+
+zRSCmklyxHOptgA0tDNiqEp2IlUl4inwGoXSiGilW6oZcoB/dnXxXJ844GQzphEh
+D38xes9wAkiyBX8LPt2dbvJPjxbmAs68WJ6ioCRpfi8/KxRVpYXFg8TtYglSb/71
+Hn1wYPAkiHk97vgA+recwwvQO9s/0tBsXVBILOPgQ2Ym0BIahBFjyKBi+2e48Wf2
+I8Xpnb4ZFTCgc7WofFMneylAqm55ZHE2IM1X2smDh2yUVrRLvxSOH6VtOcO8aECE
+P7YuW8vcEG/nuLalb1iDNJTK9YlV4Ao8rWBAwtvKe3s8hFa5qgC0pt1pRtFEFhgc
+w/789s4ahhVr+ewqYXHkDLvV/MWE7u2rwgZ+Mc5uBNs61erbtl1B9upG9JtVaJX4
+r5cmFYB5xeuvHgq3W99x
+=bFi+
 -----END PGP SIGNATURE-----
 
---=-uXeJfmipn9k3VFi5TE6P--
+--=-cIDqQXKT/hKZqRWFQxti--
