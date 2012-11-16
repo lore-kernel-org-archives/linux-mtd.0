@@ -1,17 +1,23 @@
-Message-ID: <1353056520.20111.9.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/1] mtd: physmap_of: allow to specify the mtd name for
- retro compatiblity
+Received: from mga01.intel.com ([192.55.52.88])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TZHon-0005jb-GW
+ for linux-mtd@lists.infradead.org; Fri, 16 Nov 2012 09:02:34 +0000
+Message-ID: <1353056590.20111.10.camel@sauron.fi.intel.com>
+Subject: Re: ubifs  can not be mounted rw : could not find an empty LEB
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-Date: Fri, 16 Nov 2012 11:02:00 +0200
-In-Reply-To: <20121107153216.GF4576@game.jcrosoft.org>
-References: <20121107153216.GF4576@game.jcrosoft.org>
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+Date: Fri, 16 Nov 2012 11:03:10 +0200
+In-Reply-To: <50A600D9.5040804@parrot.com>
+References: <5098D625.7050103@parrot.com>
+ <1352989463.2221.59.camel@sauron.fi.intel.com>
+ <50A600D9.5040804@parrot.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-+UwNshY8rJBEoNpARE1b"
+ boundary="=-BcmtaDcVdlIITDq9To0J"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, devicetree-discuss@lists.ozlabs.org,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Cc: Artem Bityutskiy <dedekind@infradead.org>,
+ Ivan Djelic <ivan.djelic@parrot.com>,
+ Linux mtd <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,25 +29,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-+UwNshY8rJBEoNpARE1b
+--=-BcmtaDcVdlIITDq9To0J
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-11-07 at 16:32 +0100, Jean-Christophe PLAGNIOL-VILLARD
-wrote:
-> linux,mtd-name allow to specify the mtd name for retro capability with
-> physmap-flash drivers as boot loader pass the mtd partition via the old
-> device name physmap-flash.
->=20
-> Signed-off-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+On Fri, 2012-11-16 at 10:01 +0100, Matthieu CASTET wrote:
+> > I'll send them to Linus for 3.7 shortly.
+> >=20
+> Thanks, it solved the issue.
 
-Pushed to l2-mtd.git, thanks!
+I'm glad it helped!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-+UwNshY8rJBEoNpARE1b
+--=-BcmtaDcVdlIITDq9To0J
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -49,19 +52,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQpgEIAAoJECmIfjd9wqK06+oQAJkP7xk8jWbnCPhz+Nini4ai
-Zp5fF9JccxCinMPFRf3b+CzgyQMMHmclE7kvtntYHKNweONBbZBE7lSS0OknKgsi
-WXGqBus//El5yJCEDvv3jXwNORLz19Y27odEx6Z483OCvOsuOLt2a6OyZpQu1tzF
-lzhcU+bvEmXuwLjXMxufSsXzrY2xQY97YT2gsU+Me0DhRI4BBDmUAiHJpQt6vV9W
-9qFARy9zEOy+7XOjzgeH9b7wYo84bZcy9MCZA3HCVwvoueigkMoCE/TT1asoP6+e
-5/TK4UhOUWddKs2HapZ2UxCbP/mED7qfwvrXVC6YPPmXI8ez8K02qYb3tWNyTrJP
-7tWDoHUZXocbDBS4YUNQRVB4WAVXTtg0h2xslcBVNyDyZUoDkCFJRB/on8wpBx5e
-xBSUE7DAkt15uSdiP8kM7T/nr/MyCueJy7xMzR+fZUsOEVrS/OeCAojNGpEc/+O7
-CSe0Hxw8RlWKakDCtBsI2apPpSntBHMMe1xWWbsiyoYnzGNBEZoBGKyZW9MnKOiq
-7LLoRzVBiebEJO25B33jTMtSVHz+1arCPfI/RrfREIEj6pC3OYO3D9YNXGnRe+SG
-PVDb0GubbmhOD7t3Frbh5oUyFABuBYAc/dCN6Bvvlh0ecFWsPNKzdWX6IycxxvOy
-ZxC3T+dMMxaCbwdgyVdc
-=MJ43
+iQIcBAABAgAGBQJQpgFOAAoJECmIfjd9wqK079EP/ixg9LaJ3q9ERyxgdmte1fJz
+JlxPa5TCqnFGXp/I7jdLwVm4QXS2pKSUuu8J66ZWpaFjsQA5LQgks0LprhFjdJ59
+nwGt4/A4WFdDTRG+hC2rjtRP5tDUKrQzZKBtJLaXurRRaf4L1AateZv+ZxCi2+LU
+Pqj8LpR1bV27BzhKNxmT//lZ9PtroJPJjSn0Hlm4hpTEMnLPddpbU6dI/GqKtSer
+MJegUK3VC88RIB9dXQj9zEMSLuSYbeeWFRvsi0hwQdPI31W6WhRiIFC0dYBC0P9T
+boSOZzgsB4sW/4MlmLmO8ex+kZiMCjyiqr5JMTV0Tr3lK6E6pyGLNDWVZDqdDxQG
+spVab13kZfdXjGa+OzEoIba9eRrxBdJWVnypwf1uqAc1xQHUVKz7UqOUdG7b+vRj
+/w6uBkCdPFV8wTmJazKaStYdgAAORv+EpH9O43eGwXPFMRl5SaWFH7YqnfB05Q1e
+mu5emoSIV9/Ou85waayVLL6aOVbeWOfEIcwjdVTPSo8UAnWt7Lsq6fU68CWjmBPq
+Yh2iDENW4B0WiOUMFcx5UrcTUEtuKks1/QUL8eF+HYsy6r24l1HnaKCG65wxatWA
+JYo2IFRRdrMLX9aQgPQuhJTbA3aNuzFiHqE6ST+K0mOzbnamyoy3ya/DNdYqiFPq
+uALWqRi8omCIiQpQiIju
+=U24a
 -----END PGP SIGNATURE-----
 
---=-+UwNshY8rJBEoNpARE1b--
+--=-BcmtaDcVdlIITDq9To0J--
