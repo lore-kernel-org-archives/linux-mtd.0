@@ -1,17 +1,18 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TZHD1-0006dR-50
- for linux-mtd@lists.infradead.org; Fri, 16 Nov 2012 08:23:31 +0000
-Message-ID: <1353054248.3618.3.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd nand : print flash size during detection
+ id 1TZHJm-00077h-1A
+ for linux-mtd@lists.infradead.org; Fri, 16 Nov 2012 08:30:30 +0000
+Message-ID: <1353054666.3618.6.camel@sauron.fi.intel.com>
+Subject: Re: UBIFS error (pid 564): read_znode: bad indexing node at LEB
+ 484:66064, error 2
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-Date: Fri, 16 Nov 2012 10:24:08 +0200
-In-Reply-To: <1352199836-4516-1-git-send-email-matthieu.castet@parrot.com>
-References: <1352199836-4516-1-git-send-email-matthieu.castet@parrot.com>
+To: Micah Anderson <micah@riseup.net>
+Date: Fri, 16 Nov 2012 10:31:06 +0200
+In-Reply-To: <87625h85fd.fsf@minnow.riseup.net>
+References: <87625h85fd.fsf@minnow.riseup.net>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-KsvCyyUegNqM+94LOI32"
+ boundary="=-kNyzu06N+BosBIbotFbl"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
@@ -25,40 +26,40 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-KsvCyyUegNqM+94LOI32
+--=-kNyzu06N+BosBIbotFbl
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-11-06 at 12:03 +0100, Matthieu CASTET wrote:
-> This help to detect bad flash identification in case the size is not pres=
-ent
-> on the name (ONFI).
+On Wed, 2012-11-07 at 16:32 -0500, Micah Anderson wrote:
+> I had a power outage yesterday. When things came back and I tried to
+> boot my guruplug, I am not getting the following:
 >=20
-> Signed-off-by: Matthieu CASTET <matthieu.castet@parrot.com>
-> ---
->  drivers/mtd/nand/nand_base.c |    4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index c90ef66..8916bc6 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -3292,10 +3292,10 @@ ident_done:
->  		chip->cmdfunc =3D nand_command_lp;
-> =20
->  	pr_info("NAND device: Manufacturer ID: 0x%02x, Chip ID: 0x%02x (%s %s),=
-"
-> -		" page size: %d, OOB size: %d\n",
-> +		" %dMiB page size: %d, OOB size: %d\n",
+> [   97.273764] UBIFS error (pid 564): read_znode: bad indexing node at LE=
+B 484:66064, error 2
+> [   97.282188] UBIFS warning (pid 564): ubifs_ro_mode: switched to read-o=
+nly mode, error -22
+> [   97.290431] UBIFS error (pid 564): ubifs_budget_space: cannot budget s=
+pace, error -22
 
-Is this readable? No comma after the size. I guess it is better to add
-"size %dMiB," instead?
+I'd need to see entire log, no -ENOCLUE with this amount of input.
+
+> The filesystem is read-only and I can't seem to figure out how to get it
+> out of this state. As far as I can tell, there is no fsck.ubifs and I'm
+> at a loss at how to get things back to a reasonable state. I found the
+> 'nandtest' command, which might be useful for mapping out bad areas, but
+> I'm not going to run that without a better clue at how likely I am to
+> brick things.
+
+No, there is no recovery program, the file-system is supposed to always
+be mountable. Please, use mtdtests to validate the HW:
+
+http://www.linux-mtd.infradead.org/doc/general.html#L_mtd_tests
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-KsvCyyUegNqM+94LOI32
+--=-kNyzu06N+BosBIbotFbl
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -66,19 +67,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQpfgoAAoJECmIfjd9wqK0LhoQALhVRbtL7TH2aurnVUk3ev7J
-IvYDhrcs+vkn9yCjzXU4hxzxARxZSPi2hz3WJjDkDRy2DAKKvPFxj51N4LNp+V37
-dG+X4HqVBG672XUEYF/UAT1ww3qFc+1ruf0wIAvK2sc/9aGr9vTutyfGS41+gZDg
-uS4/Y5HliyY/FxZYp4XLBUSS1jjEOKPazpkJvAydLgB0GrrSxqltdDNgjX0tOR2Q
-6hs94e82DyxPtnMCaXQGXqnvvGWsfQssOcU/y3LxZRds4KIsdug1lc8hNAp/ISUW
-eSr3flyJsWGvKt+X4PpTYowwoap094tuZ1y9AA9xwun6YosWRrlc2HUIx2OnNNN3
-QQ7YXf/hXAwbgoKJ6x6ulJ2VJoM7fVtkFqnR7c5qO8sMu/m/VYVRXfz5BCdFi0Yh
-LCfC+BAc1541dplRel31JAFwDNABzgFrYp+4s8sZer9ZuCluI48tgjl7BpYSKZrd
-TsspWE+u9yQ5HfWFCkl/KNrND4QUu0wkE/ZwFJa4kflGRy43fjJk+aqcetSE0C8+
-87mhJapyXiNcJgx+BbrtjzPz/1KsDhaVRuYQpxnGNbjnOZ15qoAuJwTs5gqsJuWQ
-bukRoJ5JHC7/SxYbaCPnWSoVnazI7bc5wj3wn3/1UUfouY/7O6Ek5QDoXElWkEYE
-kKHryK1fruaNn4cT5L82
-=Go+H
+iQIcBAABAgAGBQJQpfnKAAoJECmIfjd9wqK03TMQAIXNkJG5V8Hw+NGG1QqLnVIE
+xF5uJ9M+Tduz9sZGCNX7gRx3FITVYOA2c/txN9li6cYu9sX0Jh/0SgClQQ0nem3Q
+FIhGORyVmQ4rGmN0SrQ70W1ISKsmFUKPycHuP3KJRpNqfU7+piJynknySSh1lPbQ
+xg3EBlNI/tIcsMI1RsI/GsOPVyTg4CLqe5qy7H0Hky0Des5XbTsbaMfeUcDRK+zQ
+JZHmhFgv5f6ShOdyCLPpERxIpoJOnXJRaysJt/Nd908ImtheESQ8GPwSDrJM1j6J
+yybzKlY2gbroNGxGIa59E4Jv3o6JOWBIAIcMMPHAuWoDY5Sk/YEl8wCKu2WXaijQ
+TuokfW2/nhOTzQgvTsKX8D2G+pFWUBTJPpPebNpGnhVZ2cKGnR0fMHRl1aTuLgHX
+zM9zzo2XT4QY3TcyBnVK8sQJuta/eiWKBEmF1gHdY8iL8wXZNM/AtfWfB4n7ybb3
+ewHihtNQkfHjzS6e4jB03vGiADBDoWYKxHCGhsZxdzYIvskOuEvjUed//SB9l1C6
+Tm15PABPof9ZyyJiv3dS1+Sm0hXXIScqfu284slPz/00PhyXEV+Qr0BcaoN3C+ux
+NYKHFPDImknHTXRn3Wg9ZDtDjugdk8a0Y0oZC5E0a29VQ06Fxeeo9TZCiYPpynVA
+2IvYjk5xkh2fbHgS+lit
+=uVSG
 -----END PGP SIGNATURE-----
 
---=-KsvCyyUegNqM+94LOI32--
+--=-kNyzu06N+BosBIbotFbl--
