@@ -1,20 +1,20 @@
-Received: from va3ehsobe005.messaging.microsoft.com ([216.32.180.31]
- helo=va3outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TZHNK-0007tW-7f
- for linux-mtd@lists.infradead.org; Fri, 16 Nov 2012 08:34:11 +0000
-Message-ID: <50A5FB79.3030305@freescale.com>
-Date: Fri, 16 Nov 2012 16:38:17 +0800
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: <dedekind1@gmail.com>
-Subject: Re: [PATCH] mtd nand : print flash size during detection
-References: <1352199836-4516-1-git-send-email-matthieu.castet@parrot.com>
- <1353054248.3618.3.camel@sauron.fi.intel.com>
-In-Reply-To: <1353054248.3618.3.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, Matthieu CASTET <matthieu.castet@parrot.com>
+Received: from mga09.intel.com ([134.134.136.24])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TZHVY-00015A-II
+ for linux-mtd@lists.infradead.org; Fri, 16 Nov 2012 08:42:41 +0000
+Message-ID: <1353055388.20111.3.camel@sauron.fi.intel.com>
+Subject: Re: Frequent Writes to NAND flash with UBIFS in sychronous mode
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Joe <tttechmail@gmail.com>
+Date: Fri, 16 Nov 2012 10:43:08 +0200
+In-Reply-To: <loom.20121108T103932-198@post.gmane.org>
+References: <loom.20121108T103932-198@post.gmane.org>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-SH8o34h1q19LzRLVY6KG"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,40 +24,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2012=E5=B9=B411=E6=9C=8816=E6=97=A5 16:24, Artem Bityutskiy =E5=
-=86=99=E9=81=93:
-> On Tue, 2012-11-06 at 12:03 +0100, Matthieu CASTET wrote:
->> This help to detect bad flash identification in case the size is not p=
-resent
->> on the name (ONFI).
->>
->> Signed-off-by: Matthieu CASTET<matthieu.castet@parrot.com>
->> ---
->>   drivers/mtd/nand/nand_base.c |    4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base=
-.c
->> index c90ef66..8916bc6 100644
->> --- a/drivers/mtd/nand/nand_base.c
->> +++ b/drivers/mtd/nand/nand_base.c
->> @@ -3292,10 +3292,10 @@ ident_done:
->>   		chip->cmdfunc =3D nand_command_lp;
->>
->>   	pr_info("NAND device: Manufacturer ID: 0x%02x, Chip ID: 0x%02x (%s =
-%s),"
->> -		" page size: %d, OOB size: %d\n",
->> +		" %dMiB page size: %d, OOB size: %d\n",
-> Is this readable? No comma after the size. I guess it is better to add
-> "size %dMiB," instead?
->
-In multi chip enables nand chips, such as some Micron nand chips, you=20
-will find half size is printed
-after this patch is applied. Why? because we only scan one #CE, but this=20
-nand chip has two #CE, the #CE0 and #CE1.
+
+--=-SH8o34h1q19LzRLVY6KG
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, 2012-11-08 at 09:51 +0000, Joe wrote:
+> Hi,
+>  I have the following observation when UBIFS is mounted as synchronous fs=
+. (-o
+> sync option from bootargs).=20
+>=20
+>  1. For every file read, there are writes  to nand flash.=20
+
+I do not believe it is UBIFS's fault. May be shell history?
+
+>  2. For the execution of every command, there are writes to nand flash.=
+=20
+>  For ex. On execution of any command, say 'cd' or 'ls' i observe quiet a =
+few
+> writes happening to NAND flash.
+
+Also I do not believe it is UBIFS's fault.
+
+>=20
+> What could be the reason for this behaviour? Any other option to bring do=
+wn the
+> amount of writes but by retaining the synchronous behaviour?=20
+
+This is your environment most probably.
+
+> With sync option enabled, we expect Flash writes to happen more frequentl=
+y ,
+> how-ever we do not want  writes to happen with the execution of every com=
+mand.=20
+
+Sure, explore who does the writes and why. E.g., enabe the "general" extra
+messages - this should print PIDs and file-names for all I/O. See
+
+http://www.linux-mtd.infradead.org/faq/ubifs.html#L_how_debug
+=20
+> This observation holds true for linux 2.6.28, 2.6.35 & 3.4.10 linux kerne=
+l
+> versions.=20
+
+--=20
+Best Regards,
+Artem Bityutskiy
 
 
-a little confused.
+--=-SH8o34h1q19LzRLVY6KG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-Best Regards
-Huang Shijie
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQpfycAAoJECmIfjd9wqK0mlQQAKuIyq49orvBLX4FHxjq5/5k
+fk9RreTJqy0Ia9sMxOmlXoCjOiB2mZqYbGyX0uLA0yqHDP7/tFZcVqEoup/1AxW+
+C09tt1e1EhTHtHAo54XaOVXGrst55rcQVL0NCAOH97s74hTFamQso5NLfHC/n4jq
+DT6PJ+SEIdnBayj9nX/CjhsSb0XdI7zbxp+tAPpgd1AruwIH/+ehaf2Z789tPNQk
+OYtqSm6/ZcbcwqqqHLcvLziAh26f2uVeoOfCXZHv/nvQKduOqI2jtHdYfb6bHq+2
+vlYS5qmz1IkYc+yHNRBUXVsW4/2lmaRXFfhrKgTt5wJ6xuSZTBTKo99Aj8hJGHvJ
+nfEx/8pbKfutrcNM8FjSwGGGakE+/4ZxVP/50IotBXsxUkO/gWPqQtdUcnxrbU5v
+RqFw2FifXfL0W3hSbMFBO3cNgaYhD5WpelrypZJdiV2pTeJj/f7hH/u/bk0E6KdG
+MsvDKA/J4Mmv6taDjU/Emu9Lkfl0iF+BD29xxS5XZTrKaAErQVtg5RiQhEpBQqyt
+FsnFMvu0E/fcusuyth8LKvordjo7XKj1RclFfm2A92eu/uZzgWTjFa+ar7GtrbZY
+wvEWBxWUvgvGHEBH9RpRxfe6rl65MfMhoj2P2etEnVPgUuO+lFyLfKoqRyEnwZsr
+Rt6Oo1OZsG/zfECL/NPU
+=gBRL
+-----END PGP SIGNATURE-----
+
+--=-SH8o34h1q19LzRLVY6KG--
