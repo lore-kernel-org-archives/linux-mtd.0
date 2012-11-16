@@ -1,17 +1,16 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
+Received: from mail-vb0-f49.google.com ([209.85.212.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TZJPN-0001Jd-9o
- for linux-mtd@lists.infradead.org; Fri, 16 Nov 2012 10:44:25 +0000
-Received: by mail-pb0-f49.google.com with SMTP id un15so1754799pbc.36
- for <linux-mtd@lists.infradead.org>; Fri, 16 Nov 2012 02:44:21 -0800 (PST)
-From: Sachin Kamat <sachin.kamat@linaro.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH Resend] mtd: s3c2410: Fix potential NULL pointer dereference
- error
-Date: Fri, 16 Nov 2012 16:08:22 +0530
-Message-Id: <1353062302-10266-1-git-send-email-sachin.kamat@linaro.org>
-Cc: sachin.kamat@linaro.org, patches@linaro.org, dwmw2@infradead.org,
- dedekind1@gmail.com
+ id 1TZJsj-0003zB-8A
+ for linux-mtd@lists.infradead.org; Fri, 16 Nov 2012 11:14:46 +0000
+Received: by mail-vb0-f49.google.com with SMTP id fo1so2627881vbb.36
+ for <linux-mtd@lists.infradead.org>; Fri, 16 Nov 2012 03:14:42 -0800 (PST)
+MIME-Version: 1.0
+From: Josselin Costanzi <josselin.costanzi@mobile-devices.fr>
+Date: Fri, 16 Nov 2012 12:14:22 +0100
+Message-ID: <CAJA4uhcD+bGAdKMb6Nv-Kvs+o229PaLQL-9Dok-ddCUS5rbGpg@mail.gmail.com>
+Subject: UBIFS: Advice request on how to reduce orph_buf size
+To: MTD Maling List <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,34 +20,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-'set' is tested for NULL. But subsequently accessed without the check.
-Thus making it conditional to avoid NULL pointer dereferencing.
+Hi,
+In order to reduce UBIFS memory consumption when used in RW I'm trying to
+reduce orph_buf size from one LEB to max_write_size. I changed avail_orphs and
+tot_avail_orphs functions to report correct orphan counts but I'm now stuck
+with the consolidate function. I don't see how I could atomically write all my
+orphans in a new LEB with a max_write_size sized orph_buf. One potential
+solution would be to try allocating a LEB sized buffer only when consolidating
+the orphans but this means commit_orphans may now fail due to memory exhaustion.
 
-Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
----
- drivers/mtd/nand/s3c2410.c |    7 +++++--
- 1 files changed, 5 insertions(+), 2 deletions(-)
+Have any of you an idea on how to correctly do this? What would be an acceptable
+solution?
 
-diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
-index 295e4be..bbc49c4 100644
---- a/drivers/mtd/nand/s3c2410.c
-+++ b/drivers/mtd/nand/s3c2410.c
-@@ -730,11 +730,14 @@ static int s3c2410_nand_add_partition(struct s3c2410_nand_info *info,
- 				      struct s3c2410_nand_mtd *mtd,
- 				      struct s3c2410_nand_set *set)
- {
--	if (set)
-+	if (set) {
- 		mtd->mtd.name = set->name;
- 
--	return mtd_device_parse_register(&mtd->mtd, NULL, NULL,
-+		return mtd_device_parse_register(&mtd->mtd, NULL, NULL,
- 					 set->partitions, set->nr_partitions);
-+	}
-+
-+	return -ENODEV;
- }
- 
- /**
--- 
-1.7.4.1
+Regards,
+Josselin Costanzi
+Embedded Linux System Engineer
