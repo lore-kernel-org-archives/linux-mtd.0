@@ -1,19 +1,26 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TZH0d-0004Wm-QX
- for linux-mtd@lists.infradead.org; Fri, 16 Nov 2012 08:10:44 +0000
-Message-ID: <1353053478.3618.1.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 2/2] ubi-tests/integ: Add PRIxxx_t defines.
+ id 1TZHBW-0006Bo-Aq
+ for linux-mtd@lists.infradead.org; Fri, 16 Nov 2012 08:22:00 +0000
+Message-ID: <1353054136.3618.2.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 3/3] omap3 nand : use NAND_BUSWIDTH_AUTO
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Bill Pringlemeir <bpringle@sympatico.ca>
-Date: Fri, 16 Nov 2012 10:11:18 +0200
-In-Reply-To: <BLU0-SMTP308EDE3F432519B05D37A0B8640@phx.gbl>
-References: <BLU0-SMTP308EDE3F432519B05D37A0B8640@phx.gbl>
+To: Tony Lindgren <tony@atomide.com>
+Date: Fri, 16 Nov 2012 10:22:16 +0200
+In-Reply-To: <20121106184019.GI6801@atomide.com>
+References: <1352199105-30215-1-git-send-email-matthieu.castet@parrot.com>
+ <1352199105-30215-3-git-send-email-matthieu.castet@parrot.com>
+ <50990473.2090300@compulab.co.il> <50993F16.8070908@parrot.com>
+ <20121106184019.GI6801@atomide.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-3nXZuOPU7BPnJtOeALhI"
+ boundary="=-a69bSsBCRPeT6fCqWdPb"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: Afzal Mohammed <afzal@ti.com>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Igor Grinberg <grinberg@compulab.co.il>,
+ Matthieu CASTET <matthieu.castet@parrot.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,31 +32,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-3nXZuOPU7BPnJtOeALhI
+--=-a69bSsBCRPeT6fCqWdPb
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2012-11-05 at 13:04 -0500, Bill Pringlemeir wrote:
-> Message-ID: <87ehk7nc1l.fsf@sympatico.ca>
-> User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/23.2 (gnu/linux)
-> MIME-Version: 1.0
-> Content-Type: text/plain; charset=3Dus-ascii
-> --text follows this line--
-> I doubt this is the 'correct' solution, but it does show the issue.
+On Tue, 2012-11-06 at 10:40 -0800, Tony Lindgren wrote:
+> > Where such tree could be found ?
 >=20
-> common.h is shadowed by local copy of the same name.
-> Also include inttype.h in case the c library does not.
->=20
-> Signed-off-by: Bill Pringlemeir <bpringlemeir@nbsps.com>
+> You should be able to use omap-for-v3.8/cleanup-headers-gpmc
+> branch as a base for your patches [1].
 
-Instead, I just pushed a huge commit which changes ubi-tests so that
-they use the top-level common.h. Now everything compiles fine. Thanks!
+Is this a stable branch which I may pull into l2-mtd.git? Then I could
+merge Matthieu's patches.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-3nXZuOPU7BPnJtOeALhI
+--=-a69bSsBCRPeT6fCqWdPb
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -57,19 +57,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQpfUmAAoJECmIfjd9wqK0dXAP/jbrqiSTxwT8l3QH7vpROTCS
-WQyK68Weu8T2Frmrot/Lo8gM+lS02bKbkNe4J08TkwHPj2oglNltL+dPZNCeYRd2
-bq7yT0uDZrn1YqBSwjkdTIFcuQyzyurOw409bvHmoai+++fJ/v2X8J0q1c3jMWGq
-L3jdY4AibHYNmvevlfxyO5ygE4W98X3Se+w55AoJshFvjIrgA24ZebNcykrQASbg
-apmDoWsfu3qJqf3wTu6V2FlMk0A89tgFp6d4pyCEa6d9Zl1mu3+7AnjH2xbVOoct
-COZNq2z/H9KFu10pS+GvXLELj32Ma7kAn3c/0/ORups9pKem9WhP5nSfbCxkm4bu
-V2kk8JaUvpQ6Od0BafPqnjUEYlJBYU5hJM9P6WHXP6UoTJIhpzNO4Kl2HEdkf42g
-3gNbvQ5CyYirKJJCu64M7E8Iqugcpbfh5bhHYGtZgPX84snzi/ngREsPqxfJvsB7
-YKVlHuuuCnxRGq82RjnxbTX+1KysWSCmJ2HCo2j3Aw6cLZVTzpQg26SIrUIVP6NK
-forr3v3CVdnZboTHNCvwz/c9S6qMiUC8ZDinDT8LgBGAkhKGVS++p5GDABkLU1sp
-Ev3ekGwzku1TJIvkA44V08WI/116KhAU8uvoOSQYpUC2Zj700N35y0wNrMUV96nw
-Lahokk3RQ8zrGAa2HrV4
-=wrUc
+iQIcBAABAgAGBQJQpfe4AAoJECmIfjd9wqK0OpoP/3aFBz5jZIfNv6VqQH9PeWiM
+aEakyAOOAiM1Mr9hvpfKmv8VH4SfguFI4tFICQXhAs7yZjnZX3iKaOtQaL05sIYW
+eR09Iij8+JBBxDHp+jvBakGg6g5RQNAfxloCmIwChXL6mOKGpGzpay2wpweqZNTF
+ifSTx3SIIPe13fm1T4cUwVPoZlHzO2ZXm3aIqPEG8adf/uFdA1k0TsU8+8taV4EC
+zJUOVne7mlnA0lW8ax0cDbSSQqpJZ3sVYvsvzMVgrmfpts5JrVxPc2ylBPnnEy6Z
+pyuEgcNk+y53QI6omq1u4igeVNACb2s/xwcoLwVf1x1oxQmZvzJOio1WbHTGwio9
+p7h1PP1F2an6TsunXaFTyCSNtWqfioyEUFxSaif0vN+FmhM57uZZn4c2SfHEhNjW
+Tnkg4rROvW7vrtLX7axGvgBM7aOdTOi7R7iHCbET4CvCUuhQ8A2xFA0WPJV01Mje
+KUdb/eYmFCwyFP8EHuDIyqpKvOrvMzdrcHsKDJzdSu5/QshwdRWKVhuY0/569Wk2
+t0Qqq4i884oiskAiRDUifuyZ4u3p2zS+BgnRZ+hQDGQ50O0lipGiX/sB8IDQsXeh
+GT0RKkpgdxM6f9ECgnRg50aQz/EsbOUKpBwwWaYvfwTN1Y41Lud2lTZIqQ6HRSl8
+S4mj+LaW/Dg3dq9jaDR/
+=015B
 -----END PGP SIGNATURE-----
 
---=-3nXZuOPU7BPnJtOeALhI--
+--=-a69bSsBCRPeT6fCqWdPb--
