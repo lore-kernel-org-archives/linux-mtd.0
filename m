@@ -1,18 +1,22 @@
-Message-ID: <1353055849.20111.7.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/8] mtd: diskonchip: don't warn about ARM architecture
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Date: Fri, 16 Nov 2012 10:50:49 +0200
-In-Reply-To: <1352238933-4886-2-git-send-email-arnd@arndb.de>
-References: <1352238933-4886-1-git-send-email-arnd@arndb.de>
- <1352238933-4886-2-git-send-email-arnd@arndb.de>
+Received: from mga03.intel.com ([143.182.124.21])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TZHmh-0005Fz-Q8
+ for linux-mtd@lists.infradead.org; Fri, 16 Nov 2012 09:00:24 +0000
+Message-ID: <1353056458.20111.8.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] jffs2: Make handling of erase_completion_lock
+ consistent in jffs2_do_reserve_space()
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Alexey Khoroshilov <khoroshilov@ispras.ru>
+Date: Fri, 16 Nov 2012 11:00:58 +0200
+In-Reply-To: <1352140814-25208-1-git-send-email-khoroshilov@ispras.ru>
+References: <1352140814-25208-1-git-send-email-khoroshilov@ispras.ru>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-eNXl6kIH6env3rQVVrCs"
+ boundary="=-gdVzduy1btVmWwKOx2qE"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Reply-To: artem.bityutskiy@linux.intel.com
+Cc: ldv-project@linuxtesting.org, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +27,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-eNXl6kIH6env3rQVVrCs
+--=-gdVzduy1btVmWwKOx2qE
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-11-06 at 22:55 +0100, Arnd Bergmann wrote:
-> Enabling the diskonchip drivers on most architectures results
-> in a pointless warning "#warning Unknown architecture for
-> DiskOnChip. No default probe locations defined". The driver
-> can in fact handle the default location already through the
-> CONFIG_MTD_DOCPROBE_ADDRESS, which gets set on the platforms
-> that need it, and we get a run-time error if this is not
-> set correctly.
+On Mon, 2012-11-05 at 22:40 +0400, Alexey Khoroshilov wrote:
+> Users of jffs2_do_reserve_space() expect they still held
+> erase_completion_lock after call to it. But there is a path
+> where jffs2_do_reserve_space() leaves erase_completion_lock unlocked.
+> The patch fixes it.
+>=20
+> Found by Linux Driver Verification project (linuxtesting.org).
+>=20
+> Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
 
-Pushed patches 1, 2, and 3 to l2-mtd.git, thanks!
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-eNXl6kIH6env3rQVVrCs
+--=-gdVzduy1btVmWwKOx2qE
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -50,19 +55,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQpf5pAAoJECmIfjd9wqK0Lc4P/03ountaYjOzekyNt2lov3zV
-HzkITwuBsKt7j/mMMQnRxr5inKeogDRZJQkUctnAvmDby5s7i0+CwuRJn0Ft0V/6
-aZ0qvfJT5z6UKuHAu6JDD7bRQzZpYE6ERJwP6ToABlVyajW2PZpOQf9hx+SMFqCT
-14uzrHhQ8ikNw5uBHRxHvszW1EN/buGy9hYCof5h08YjtFLbf6hW1CEnH0IFuwGs
-YuSQkkDPJTECWAJoTmixnXP/L8YUnB0gtGDIr8Y3bwRurw8JSt3a1MHrNNki10F1
-pJMKoK225nmH/rG3umTFtZTpTxkHL0IBd8u2Rp/iaGAnD/+i3TFcSJSRNCj2gCso
-899hU6bvfVrLXunKfngY9LoE3FOaNZBGwmH4h7gzJxXnwXJ1pmDae0QNowvUpcQ6
-ZA1Zi3DTdiUJmZvSRKnWs6rpJXx33sKj8tA8gDUlZZmGupWkmbxtMBg/BxF8AXTb
-bA3bC7ZYqeYIxjTmg26nxlLcTMiAHjiSY1mlfMAO9nW1AHA81hDFbaVP8ZaOh4XR
-RBa4A6eQi2HN76/E14T7YOOv4DwD04+GzgSQTH1JipNXUp9WPPKOidkwh3AbFUFF
-qPeYN/Ox9L0iY5nQpg5QtaXJSZ5xKy84dvMq/3zAai1u9236NT05A3cwEhUJExaV
-K3v06JeW4E7RQJ+yD53R
-=V7ou
+iQIcBAABAgAGBQJQpgDKAAoJECmIfjd9wqK0guQP+waXozU33WI+ACTmbSCJar05
+BbPYnr4hK90tXTbY8rB8nQh8tNcdqk3cRXTBDF7BbGCCXfDS90eXPI4Nt1+Li1ny
+lX/m0wTreI7t0GCql+K7i0mia206XNAHp3uCQlDQiXibeI7ljo+D5EWhhwR5AIZk
+YDINVT2zsNkkCUaKixgAKPoFo4uaicejrnRahY+QYQe2nTtHpP8a+WEKxH34N/F1
+A+XDV+UwbcJgE5Kg+teKKVJCmxl1N3mLjrUlQhlt47WJloQajzh9EIIxJDAW9+o0
+uvrQQaG+lJ40CKuDLSFp4hpRLX+/Mi38sUTETwBtxOyxA2f63TEVcoIpHzhKNUb1
+Td0ANXxayur7m2VABCXiLsyhhlDs/2kLKsFkncsmJnlY3FZCOsjojE2QyJJPxoj8
+1aiVEuL/V5YRxHuEju67owKjMfNAGycNZ75CQH1Vs6gi0xY5H/apl62cI6UZYhyq
+4lJbVzDnTJwWB4sbtSMygb5NUVnMnT7m48TZrHfLETeEaoMYUdTFWUJpwMygX9Lg
+fl9fZp072vtc/4YC2jHdBFPNzD/6x7nh6daHyazFgwgdTphSCfQpeJjeQMrUzT+y
+dq3/gR1qMFIsE1M+T1XgH3NEbdkXFl1oBgJ83oPQGrQ8X9SlbhyCOSp7+P0v4s0v
+xXAN+HFnMAPQhG9CZTTT
+=/abk
 -----END PGP SIGNATURE-----
 
---=-eNXl6kIH6env3rQVVrCs--
+--=-gdVzduy1btVmWwKOx2qE--
