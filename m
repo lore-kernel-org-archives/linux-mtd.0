@@ -1,21 +1,20 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TZHY2-0001hi-2R
- for linux-mtd@lists.infradead.org; Fri, 16 Nov 2012 08:45:15 +0000
-Message-ID: <1353055550.20111.4.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] driver/mtd/IFC:Wait tWB time, poll R/B before command
- execution
+ id 1TZHaK-0002pw-MO
+ for linux-mtd@lists.infradead.org; Fri, 16 Nov 2012 08:47:37 +0000
+Message-ID: <1353055692.20111.5.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/2] mtd: s3c2410: Change return type of
+ s3c2410_nand_add_partition function
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Prabhakar Kushwaha <prabhakar@freescale.com>
-Date: Fri, 16 Nov 2012 10:45:50 +0200
-In-Reply-To: <1352362380-13568-1-git-send-email-prabhakar@freescale.com>
-References: <1352362380-13568-1-git-send-email-prabhakar@freescale.com>
+To: Sachin Kamat <sachin.kamat@linaro.org>
+Date: Fri, 16 Nov 2012 10:48:12 +0200
+In-Reply-To: <1352369324-25771-1-git-send-email-sachin.kamat@linaro.org>
+References: <1352369324-25771-1-git-send-email-sachin.kamat@linaro.org>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-p1u89ZdsBtvAtDSqQGJd"
+ boundary="=-hGWcEwc3lgi3p38davBr"
 Mime-Version: 1.0
-Cc: scottwood@freescale.com, linuxppc-dev@lists.ozlabs.org,
- linux-mtd@lists.infradead.org, Hemant Nautiyal <hemant.nautiyal@freescale.com>
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org, patches@linaro.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,30 +26,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-p1u89ZdsBtvAtDSqQGJd
+--=-hGWcEwc3lgi3p38davBr
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-11-08 at 13:42 +0530, Prabhakar Kushwaha wrote:
-> IFC_FIR_OP_CMD0 issues command for execution without checking flash
-> readiness. It may cause problem if flash is not ready. Instead use
-> IFC_FIR_OP_CW0 which Wait for tWB time and poll R/B to return high or
-> time-out, before issuing command.
+On Thu, 2012-11-08 at 15:38 +0530, Sachin Kamat wrote:
+> The return value of s3c2410_nand_add_partition() is not checked for error
+> or success in the calling function. Hence change the return type to void.
 >=20
-> NAND_CMD_READID command implemention does not fulfill above requirement. =
-So
-> update its programming.
->=20
-> Signed-off-by: Prabhakar Kushwaha <prabhakar@freescale.com>
-> Signed-off-by: Hemant Nautiyal <hemant.nautiyal@freescale.com>
+> Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 
-Pushed to l2-mtd.git, thanks!
+This means you should fix the calling function instead hiding errors.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-p1u89ZdsBtvAtDSqQGJd
+--=-hGWcEwc3lgi3p38davBr
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -58,19 +50,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQpf0+AAoJECmIfjd9wqK0VYgQALKyCPQINHPfi2KU+qyEkiuJ
-RQzzoCS/U9nmdFnpBRrby1cXdXadtKl3uN7bb1hnncGYDRORc6DS+841B6UsyHWP
-GIghG2THSU2CbIeyLJQr5PWyPMPtlr2SU74bLeeU2OVcgbX8Ssv+WorZwjGNMzpb
-n3uKjOJZkXxGgQOMwJGesgb6rIJfbzQ3u/XLkUH6pgfM1jzNphxnQlqY4sP0NdTq
-OXSYIbCp9V8eEv824a4+xZtjOHrim2wHM58bVh6baKP0fVfGvlpsgtf1jXXX2CEV
-lLsfsL9oaZSab7PQWhPpkVYwzlVcZJPCj3HOqD7pZRhXSCjNqYULGeg+1RFJqwme
-n8HKf2oyl9Pr3ZsbYTVY05aYNWk2PAVSynwh13OZaLJApso9puJUTAs9GdzWAXBA
-TNenOtvlZmPQOYUToTstp7AOedGyTOAEEWaWmcFRBBH1s6wCxRtK4Ll991jhw5Yj
-JWzA3gDzEWvH1jIs52N8cyWxyhwpH+NNS6Bt64X15LaFUIl68OAUhYggKFXppuSp
-EoUGFdWK5JEU5ylnYJwCxt3/8glgHxjFmYSa7SSQfXErqBPR1+m0GK3WvyQ20cxP
-f3wdhMfQcFRh/hws/jZ9iJknsCMdwYYEtTxI6MV759GefsqgRjKl6Z+r7Kv5QlFe
-sQh4aCsf5T0Ahzo0DW/3
-=2daM
+iQIcBAABAgAGBQJQpf3MAAoJECmIfjd9wqK0ksMP+wRhPnZvmKMk58txBp9OXCwW
+RmmqNd05rRi9a+IWZMJDwggVRI0QrHek+N46nC2hRAaZYh+A19tNjQa/+ZDEKQIO
+MXmgN34QhydT45M4CrCi3i0TPCfx8enQI67+cLo60Swv/jehpjhVWOaOewrE+/O0
+regxxA4RCEp13umuriey/VLMQViFI4UE8AXC/SmHJZZ2BeyMx9UEfwrBKSDJ/fbn
+Kavpf9P7dSz858E/mYa26vULISZVzFzE/Im/dWcbqNrlsq0jPn+nKo9wAbZ/NdUE
+7tlisO4h129vO8ll/bllX4kIvvXxNCKum/IuK46GLMVAXUEsdcJSnThSj5Ptrd55
+Cg/lKR5AqiPk+FCVZD70gigtnWqfF6obgxqPn8v4KzXjiifGoMCMy8K04h6aVIWD
+WmpCKphsbYGZ7C/MTWwfR1ZjvOnUCXAT+CmdsLoUa3pU3g28uBv0V24I3SvTpxQL
+PQ5jIC1Tk89nNQPLHfX+sekI0BhIQrRL4OIi8chFeRvB8Gcyn8SnEcg4qjLiUKEs
+9a2zObAtopW8PE4umtqWqiYy3YnT6OKfJDwXFHTHthEdT1+gH2AIQ8S3iIybgd6e
+uiJl+l843hWyIufU7aJK4Pj+tKG5XEQWuPIVV+0RAFM2eEHCWbaSJcRmAt2qFn4S
+ZhLN1bfG9w65uIapfYDZ
+=pSuY
 -----END PGP SIGNATURE-----
 
---=-p1u89ZdsBtvAtDSqQGJd--
+--=-hGWcEwc3lgi3p38davBr--
