@@ -1,21 +1,21 @@
-From: "Yang, Wenyou" <Wenyou.Yang@atmel.com>
-To: Baruch Siach <baruch@tkos.co.il>
-Subject: RE: [PATCH 17/17] mtd: m25p80: change the m25p80_read to reading
- page to page
-Date: Fri, 16 Nov 2012 06:45:29 +0000
-Message-ID: <B256D81BAE5131468A838E5D7A24364139FA506F@penmbx02>
-References: <1352710357-3265-1-git-send-email-wenyou.yang@atmel.com>
- <1352710357-3265-18-git-send-email-wenyou.yang@atmel.com>
- <20121112091239.GA8518@sapphire.tkos.co.il>
-In-Reply-To: <20121112091239.GA8518@sapphire.tkos.co.il>
-Content-Language: en-US
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Ferre,
- Nicolas" <Nicolas.FERRE@atmel.com>, "Lin, JM" <JM.Lin@atmel.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Received: from mga01.intel.com ([192.55.52.88])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TZGTl-0000K6-2K
+ for linux-mtd@lists.infradead.org; Fri, 16 Nov 2012 07:36:45 +0000
+Message-ID: <1353051431.3618.0.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/2] ubi-test/io_update: ubi_leb_change_start() no
+ longer uses 'dtype'.
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Bill Pringlemeir <bpringle@sympatico.ca>
+Date: Fri, 16 Nov 2012 09:37:11 +0200
+In-Reply-To: <BLU0-SMTP90A53F512B3AC4BEA5374B8640@phx.gbl>
+References: <BLU0-SMTP90A53F512B3AC4BEA5374B8640@phx.gbl>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-KCUr++VAmamcZyw29vro"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,68 +25,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgQmFydWNoLA0KDQpUaGFua3MgYSBsb3QgZm9yIHlvdXIgZmVlZGJhY2suDQpJIGxvb2tlZCB0
-aHJvdWdoIHRoZSBkcml2ZSBjb2RlIGNhcmVmdWxseSBhZ2FpbiwgSSB0aGluayBJIHNob3VsZCBm
-aXggdGhpcyBidWcgaW5zaWRlIG15IGRyaXZlci4NCkkgd2lsbCBmaXggaW4gdGhlIG5leHQgdmVy
-c2lvbi4NCg0KQmVzdCBSZWdhcmRzDQpXZW55b3UgWWFuZw0KDQo+IC0tLS0tT3JpZ2luYWwgTWVz
-c2FnZS0tLS0tDQo+IEZyb206IEJhcnVjaCBTaWFjaCBbbWFpbHRvOmJhcnVjaEB0a29zLmNvLmls
-XQ0KPiBTZW50OiAyMDEyxOoxMdTCMTLI1SAxNzoxMw0KPiBUbzogWWFuZywgV2VueW91DQo+IENj
-OiBsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmc7IGR3bXcyQGluZnJhZGVhZC5v
-cmc7IExpbiwgSk07IEZlcnJlLA0KPiBOaWNvbGFzOyBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFk
-Lm9yZw0KPiBTdWJqZWN0OiBSZTogW1BBVENIIDE3LzE3XSBtdGQ6IG0yNXA4MDogY2hhbmdlIHRo
-ZSBtMjVwODBfcmVhZCB0byByZWFkaW5nIHBhZ2UNCj4gdG8gcGFnZQ0KPiANCj4gSGkgV2VueW91
-IFlhbmcsDQo+IA0KPiBPbiBNb24sIE5vdiAxMiwgMjAxMiBhdCAwNDo1MjozN1BNICswODAwLCBX
-ZW55b3UgWWFuZyB3cm90ZToNCj4gPiBXaGVuIHJ1biAiZmxhc2hjcCAvYmluL2J1c3lib3ggL2Rl
-di9tdGRYIiwgaXQgYXJpc2VkIGEgT09QUy4gY2hhbmdpbmcgdG8gZml4IHRoZQ0KPiBbQlVHXS4N
-Cj4gDQo+IFBsZWFzZSBwb3N0IHRoZSBCVUcgcHJpbnRvdXQsIGFuZCBpbmNsdWRlIGl0IHdpdGgg
-dGhlIGNvbW1pdCBsb2cuDQo+IA0KPiBiYXJ1Y2gNCj4gDQo+ID4gU2lnbmVkLW9mZi1ieTogV2Vu
-eW91IFlhbmcgPHdlbnlvdS55YW5nQGF0bWVsLmNvbT4NCj4gPiBDYzogZHdtdzJAaW5mcmFkZWFk
-Lm9yZw0KPiA+IENjOiBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPiA+IC0tLQ0KPiA+
-ICBkcml2ZXJzL210ZC9kZXZpY2VzL20yNXA4MC5jIHwgICA0NA0KPiArKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKystLS0NCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDQxIGluc2Vy
-dGlvbnMoKyksIDMgZGVsZXRpb25zKC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9t
-dGQvZGV2aWNlcy9tMjVwODAuYyBiL2RyaXZlcnMvbXRkL2RldmljZXMvbTI1cDgwLmMNCj4gPiBp
-bmRleCAwMzgzOGJhLi43M2U1ZmVhIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvbXRkL2Rldmlj
-ZXMvbTI1cDgwLmMNCj4gPiArKysgYi9kcml2ZXJzL210ZC9kZXZpY2VzL20yNXA4MC5jDQo+ID4g
-QEAgLTM0MCw2ICszNDAsNyBAQCBzdGF0aWMgaW50IG0yNXA4MF9yZWFkKHN0cnVjdCBtdGRfaW5m
-byAqbXRkLCBsb2ZmX3QgZnJvbSwNCj4gc2l6ZV90IGxlbiwNCj4gPiAgCXNpemVfdCAqcmV0bGVu
-LCB1X2NoYXIgKmJ1ZikNCj4gPiAgew0KPiA+ICAJc3RydWN0IG0yNXAgKmZsYXNoID0gbXRkX3Rv
-X20yNXAobXRkKTsNCj4gPiArCXUzMiBwYWdlX29mZnNldCwgcGFnZV9zaXplOw0KPiA+ICAJc3Ry
-dWN0IHNwaV90cmFuc2ZlciB0WzJdOw0KPiA+ICAJc3RydWN0IHNwaV9tZXNzYWdlIG07DQo+ID4N
-Cj4gPiBAQCAtMzU4LDcgKzM1OSw2IEBAIHN0YXRpYyBpbnQgbTI1cDgwX3JlYWQoc3RydWN0IG10
-ZF9pbmZvICptdGQsIGxvZmZfdCBmcm9tLA0KPiBzaXplX3QgbGVuLA0KPiA+ICAJc3BpX21lc3Nh
-Z2VfYWRkX3RhaWwoJnRbMF0sICZtKTsNCj4gPg0KPiA+ICAJdFsxXS5yeF9idWYgPSBidWY7DQo+
-ID4gLQl0WzFdLmxlbiA9IGxlbjsNCj4gPiAgCXNwaV9tZXNzYWdlX2FkZF90YWlsKCZ0WzFdLCAm
-bSk7DQo+ID4NCj4gPiAgCW11dGV4X2xvY2soJmZsYXNoLT5sb2NrKTsNCj4gPiBAQCAtMzc5LDkg
-KzM3OSw0NyBAQCBzdGF0aWMgaW50IG0yNXA4MF9yZWFkKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBs
-b2ZmX3QgZnJvbSwNCj4gc2l6ZV90IGxlbiwNCj4gPiAgCWZsYXNoLT5jb21tYW5kWzBdID0gT1BD
-T0RFX1JFQUQ7DQo+ID4gIAltMjVwX2FkZHIyY21kKGZsYXNoLCBmcm9tLCBmbGFzaC0+Y29tbWFu
-ZCk7DQo+ID4NCj4gPiAtCXNwaV9zeW5jKGZsYXNoLT5zcGksICZtKTsNCj4gPiArCXBhZ2Vfb2Zm
-c2V0ID0gZnJvbSAmIChmbGFzaC0+cGFnZV9zaXplIC0gMSk7DQo+ID4gKw0KPiA+ICsJLyogZG8g
-YWxsIHRoZSBieXRlcyBmaXQgb250byBvbmUgcGFnZT8gKi8NCj4gPiArCWlmIChwYWdlX29mZnNl
-dCArIGxlbiA8PSBmbGFzaC0+cGFnZV9zaXplKSB7DQo+ID4gKwkJdFsxXS5sZW4gPSBsZW47DQo+
-ID4gKw0KPiA+ICsJCXNwaV9zeW5jKGZsYXNoLT5zcGksICZtKTsNCj4gPiArDQo+ID4gKwkJKnJl
-dGxlbiA9IG0uYWN0dWFsX2xlbmd0aCAtIG0yNXBfY21kc3ooZmxhc2gpDQo+ID4gKwkJCQkJLSBG
-QVNUX1JFQURfRFVNTVlfQllURTsNCj4gPiArDQo+ID4gKwl9IGVsc2Ugew0KPiA+ICsJCXUzMiBp
-Ow0KPiA+ICsNCj4gPiArCQkvKiB0aGUgc2l6ZSBvZiBkYXRhIHJlbWFpbmluZyBvbiB0aGUgZmly
-c3QgcGFnZSAqLw0KPiA+ICsJCXBhZ2Vfc2l6ZSA9IGZsYXNoLT5wYWdlX3NpemUgLSBwYWdlX29m
-ZnNldDsNCj4gPiArDQo+ID4gKwkJdFsxXS5sZW4gPSBwYWdlX3NpemU7DQo+ID4gKwkJc3BpX3N5
-bmMoZmxhc2gtPnNwaSwgJm0pOw0KPiA+ICsNCj4gPiArCQkqcmV0bGVuID0gbS5hY3R1YWxfbGVu
-Z3RoIC0gbTI1cF9jbWRzeihmbGFzaCkNCj4gPiArCQkJCQktIEZBU1RfUkVBRF9EVU1NWV9CWVRF
-Ow0KPiA+ICsNCj4gPiArCQkvKiB3cml0ZSBldmVyeXRoaW5nIGluIGZsYXNoLT5wYWdlX3NpemUg
-Y2h1bmtzICovDQo+ID4gKwkJZm9yIChpID0gcGFnZV9zaXplOyBpIDwgbGVuOyBpICs9IHBhZ2Vf
-c2l6ZSkgew0KPiA+ICsJCQlwYWdlX3NpemUgPSBsZW4gLSBpOw0KPiA+ICsJCQlpZiAocGFnZV9z
-aXplID4gZmxhc2gtPnBhZ2Vfc2l6ZSkNCj4gPiArCQkJCXBhZ2Vfc2l6ZSA9IGZsYXNoLT5wYWdl
-X3NpemU7DQo+ID4gKw0KPiA+ICsJCQkvKiB3cml0ZSB0aGUgbmV4dCBwYWdlIHRvIGZsYXNoICov
-DQo+ID4gKwkJCW0yNXBfYWRkcjJjbWQoZmxhc2gsIGZyb20gKyBpLCBmbGFzaC0+Y29tbWFuZCk7
-DQo+ID4gKw0KPiA+ICsJCQl0WzFdLnJ4X2J1ZiA9IGJ1ZiArIGk7DQo+ID4gKwkJCXRbMV0ubGVu
-ID0gcGFnZV9zaXplOw0KPiA+ICsNCj4gPiArCQkJc3BpX3N5bmMoZmxhc2gtPnNwaSwgJm0pOw0K
-PiA+DQo+ID4gLQkqcmV0bGVuID0gbS5hY3R1YWxfbGVuZ3RoIC0gbTI1cF9jbWRzeihmbGFzaCkg
-LSBGQVNUX1JFQURfRFVNTVlfQllURTsNCj4gPiArCQkJKnJldGxlbiArPSBtLmFjdHVhbF9sZW5n
-dGggLSBtMjVwX2NtZHN6KGZsYXNoKQ0KPiA+ICsJCQkJCQktIEZBU1RfUkVBRF9EVU1NWV9CWVRF
-Ow0KPiA+ICsJCX0NCj4gPiArCX0NCj4gPg0KPiA+ICAJbXV0ZXhfdW5sb2NrKCZmbGFzaC0+bG9j
-ayk7DQo+ID4NCj4gPiAtLQ0KPiA+IDEuNy45LjUNCj4gDQo+IC0tDQo+ICAgICAgaHR0cDovL2Jh
-cnVjaC5zaWFjaC5uYW1lL2Jsb2cvICAgICAgICAgICAgICAgICAgfi4gLn4gICBUayBPcGVuIFN5
-c3RlbXMNCj4gPX0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS1vb08tLVUtLU9vby0tLS0tLS0tLS0tLXs9DQo+ICAgIC0gYmFydWNoQHRrb3MuY28uaWwgLSB0
-ZWw6ICs5NzIuMi42NzkuNTM2NCwgaHR0cDovL3d3dy50a29zLmNvLmlsIC0NCg==
+
+--=-KCUr++VAmamcZyw29vro
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, 2012-11-05 at 12:38 -0500, Bill Pringlemeir wrote:
+> This will not compile for me (due to bit rot?).  Maybe the program is
+> never used?
+>=20
+> Signed-off-by: Bill Pringlemeir <bpringlemeir@nbsps.com>
+
+It was used, but recently the dtype stuff was removed and the test was
+not amended. Thanks, pushed to mtd-utils.git.
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-KCUr++VAmamcZyw29vro
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQpe0nAAoJECmIfjd9wqK0MWQP/2SPMU8rWg5SdhuzzdmbPWeV
+UUXsBwobQluh5ixOADWzWmW4A5n8ajndYfBgUOIcnwJ2qhasyfiUjJy8zETOVOv9
+uzXW3/eFz7W34g8C9opLfmQQNSfxrA7+za6COvB/j3ZYW7S5MFi/I5bRKdmqi9YG
+iIFYNcmhlGUd/JUEojnN7CymqoeH6CqTTxfWkZpjsfI7DRyUw9gP8mPs7kbGLbLK
+ya8hLRLE9COftvuIQTFx+pEhyQoP6BH51bAfdTKDhYS6P33lA2IKhUsQoEvsS9J/
+2aJ5u+AWHkizrL+TlcEgbwbPz2rreFILXcd1+X6/h1Dpu1JtgufeaX4yNLNjJhQH
+Q/jJQTlymq3RrPdmYBKZoA6BfcQRE3jmVBioMblpWcPrNcrigRUh2SGXjEZwo0Fz
+0hPzHREl0gE8eJN42iObgZwPWsXwrV6OgEmA2e8ax6achLi432DvtseQ2EzErIEs
+E7xPaLLbTtW9p6TEm1lIp9WoyBcLp27bwSUyjWgnm6DM326soHxVIKG/0zgjN98M
+ybKy/m/DL0ANu078kply7oOGXbx/5oGKjufKX8AZe14blOZr4aOhy3cZsUufG+aY
+B0+Cj8nlK5GG4vpbrRsLgShVfmWUVjUUzZcCS/ZIGWekQWdx1efJ8kq3rI9wFnRi
+GigwTWv+gpU+vOa38ISQ
+=YnX4
+-----END PGP SIGNATURE-----
+
+--=-KCUr++VAmamcZyw29vro--
