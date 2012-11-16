@@ -1,19 +1,21 @@
 Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TZHVY-00015A-II
- for linux-mtd@lists.infradead.org; Fri, 16 Nov 2012 08:42:41 +0000
-Message-ID: <1353055388.20111.3.camel@sauron.fi.intel.com>
-Subject: Re: Frequent Writes to NAND flash with UBIFS in sychronous mode
+ id 1TZHY2-0001hi-2R
+ for linux-mtd@lists.infradead.org; Fri, 16 Nov 2012 08:45:15 +0000
+Message-ID: <1353055550.20111.4.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] driver/mtd/IFC:Wait tWB time, poll R/B before command
+ execution
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Joe <tttechmail@gmail.com>
-Date: Fri, 16 Nov 2012 10:43:08 +0200
-In-Reply-To: <loom.20121108T103932-198@post.gmane.org>
-References: <loom.20121108T103932-198@post.gmane.org>
+To: Prabhakar Kushwaha <prabhakar@freescale.com>
+Date: Fri, 16 Nov 2012 10:45:50 +0200
+In-Reply-To: <1352362380-13568-1-git-send-email-prabhakar@freescale.com>
+References: <1352362380-13568-1-git-send-email-prabhakar@freescale.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-SH8o34h1q19LzRLVY6KG"
+ boundary="=-p1u89ZdsBtvAtDSqQGJd"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: scottwood@freescale.com, linuxppc-dev@lists.ozlabs.org,
+ linux-mtd@lists.infradead.org, Hemant Nautiyal <hemant.nautiyal@freescale.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,55 +27,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-SH8o34h1q19LzRLVY6KG
+--=-p1u89ZdsBtvAtDSqQGJd
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-11-08 at 09:51 +0000, Joe wrote:
-> Hi,
->  I have the following observation when UBIFS is mounted as synchronous fs=
-. (-o
-> sync option from bootargs).=20
+On Thu, 2012-11-08 at 13:42 +0530, Prabhakar Kushwaha wrote:
+> IFC_FIR_OP_CMD0 issues command for execution without checking flash
+> readiness. It may cause problem if flash is not ready. Instead use
+> IFC_FIR_OP_CW0 which Wait for tWB time and poll R/B to return high or
+> time-out, before issuing command.
 >=20
->  1. For every file read, there are writes  to nand flash.=20
-
-I do not believe it is UBIFS's fault. May be shell history?
-
->  2. For the execution of every command, there are writes to nand flash.=
-=20
->  For ex. On execution of any command, say 'cd' or 'ls' i observe quiet a =
-few
-> writes happening to NAND flash.
-
-Also I do not believe it is UBIFS's fault.
-
+> NAND_CMD_READID command implemention does not fulfill above requirement. =
+So
+> update its programming.
 >=20
-> What could be the reason for this behaviour? Any other option to bring do=
-wn the
-> amount of writes but by retaining the synchronous behaviour?=20
+> Signed-off-by: Prabhakar Kushwaha <prabhakar@freescale.com>
+> Signed-off-by: Hemant Nautiyal <hemant.nautiyal@freescale.com>
 
-This is your environment most probably.
-
-> With sync option enabled, we expect Flash writes to happen more frequentl=
-y ,
-> how-ever we do not want  writes to happen with the execution of every com=
-mand.=20
-
-Sure, explore who does the writes and why. E.g., enabe the "general" extra
-messages - this should print PIDs and file-names for all I/O. See
-
-http://www.linux-mtd.infradead.org/faq/ubifs.html#L_how_debug
-=20
-> This observation holds true for linux 2.6.28, 2.6.35 & 3.4.10 linux kerne=
-l
-> versions.=20
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
-
---=-SH8o34h1q19LzRLVY6KG
+--=-p1u89ZdsBtvAtDSqQGJd
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -81,19 +58,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQpfycAAoJECmIfjd9wqK0mlQQAKuIyq49orvBLX4FHxjq5/5k
-fk9RreTJqy0Ia9sMxOmlXoCjOiB2mZqYbGyX0uLA0yqHDP7/tFZcVqEoup/1AxW+
-C09tt1e1EhTHtHAo54XaOVXGrst55rcQVL0NCAOH97s74hTFamQso5NLfHC/n4jq
-DT6PJ+SEIdnBayj9nX/CjhsSb0XdI7zbxp+tAPpgd1AruwIH/+ehaf2Z789tPNQk
-OYtqSm6/ZcbcwqqqHLcvLziAh26f2uVeoOfCXZHv/nvQKduOqI2jtHdYfb6bHq+2
-vlYS5qmz1IkYc+yHNRBUXVsW4/2lmaRXFfhrKgTt5wJ6xuSZTBTKo99Aj8hJGHvJ
-nfEx/8pbKfutrcNM8FjSwGGGakE+/4ZxVP/50IotBXsxUkO/gWPqQtdUcnxrbU5v
-RqFw2FifXfL0W3hSbMFBO3cNgaYhD5WpelrypZJdiV2pTeJj/f7hH/u/bk0E6KdG
-MsvDKA/J4Mmv6taDjU/Emu9Lkfl0iF+BD29xxS5XZTrKaAErQVtg5RiQhEpBQqyt
-FsnFMvu0E/fcusuyth8LKvordjo7XKj1RclFfm2A92eu/uZzgWTjFa+ar7GtrbZY
-wvEWBxWUvgvGHEBH9RpRxfe6rl65MfMhoj2P2etEnVPgUuO+lFyLfKoqRyEnwZsr
-Rt6Oo1OZsG/zfECL/NPU
-=gBRL
+iQIcBAABAgAGBQJQpf0+AAoJECmIfjd9wqK0VYgQALKyCPQINHPfi2KU+qyEkiuJ
+RQzzoCS/U9nmdFnpBRrby1cXdXadtKl3uN7bb1hnncGYDRORc6DS+841B6UsyHWP
+GIghG2THSU2CbIeyLJQr5PWyPMPtlr2SU74bLeeU2OVcgbX8Ssv+WorZwjGNMzpb
+n3uKjOJZkXxGgQOMwJGesgb6rIJfbzQ3u/XLkUH6pgfM1jzNphxnQlqY4sP0NdTq
+OXSYIbCp9V8eEv824a4+xZtjOHrim2wHM58bVh6baKP0fVfGvlpsgtf1jXXX2CEV
+lLsfsL9oaZSab7PQWhPpkVYwzlVcZJPCj3HOqD7pZRhXSCjNqYULGeg+1RFJqwme
+n8HKf2oyl9Pr3ZsbYTVY05aYNWk2PAVSynwh13OZaLJApso9puJUTAs9GdzWAXBA
+TNenOtvlZmPQOYUToTstp7AOedGyTOAEEWaWmcFRBBH1s6wCxRtK4Ll991jhw5Yj
+JWzA3gDzEWvH1jIs52N8cyWxyhwpH+NNS6Bt64X15LaFUIl68OAUhYggKFXppuSp
+EoUGFdWK5JEU5ylnYJwCxt3/8glgHxjFmYSa7SSQfXErqBPR1+m0GK3WvyQ20cxP
+f3wdhMfQcFRh/hws/jZ9iJknsCMdwYYEtTxI6MV759GefsqgRjKl6Z+r7Kv5QlFe
+sQh4aCsf5T0Ahzo0DW/3
+=2daM
 -----END PGP SIGNATURE-----
 
---=-SH8o34h1q19LzRLVY6KG--
+--=-p1u89ZdsBtvAtDSqQGJd--
