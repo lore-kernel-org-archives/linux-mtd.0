@@ -1,24 +1,17 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TZHon-0005jb-GW
- for linux-mtd@lists.infradead.org; Fri, 16 Nov 2012 09:02:34 +0000
-Message-ID: <1353056590.20111.10.camel@sauron.fi.intel.com>
-Subject: Re: ubifs  can not be mounted rw : could not find an empty LEB
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-Date: Fri, 16 Nov 2012 11:03:10 +0200
-In-Reply-To: <50A600D9.5040804@parrot.com>
-References: <5098D625.7050103@parrot.com>
- <1352989463.2221.59.camel@sauron.fi.intel.com>
- <50A600D9.5040804@parrot.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-BcmtaDcVdlIITDq9To0J"
-Mime-Version: 1.0
-Cc: Artem Bityutskiy <dedekind@infradead.org>,
- Ivan Djelic <ivan.djelic@parrot.com>,
- Linux mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TZJPN-0001Jd-9o
+ for linux-mtd@lists.infradead.org; Fri, 16 Nov 2012 10:44:25 +0000
+Received: by mail-pb0-f49.google.com with SMTP id un15so1754799pbc.36
+ for <linux-mtd@lists.infradead.org>; Fri, 16 Nov 2012 02:44:21 -0800 (PST)
+From: Sachin Kamat <sachin.kamat@linaro.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH Resend] mtd: s3c2410: Fix potential NULL pointer dereference
+ error
+Date: Fri, 16 Nov 2012 16:08:22 +0530
+Message-Id: <1353062302-10266-1-git-send-email-sachin.kamat@linaro.org>
+Cc: sachin.kamat@linaro.org, patches@linaro.org, dwmw2@infradead.org,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,43 +21,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+'set' is tested for NULL. But subsequently accessed without the check.
+Thus making it conditional to avoid NULL pointer dereferencing.
 
---=-BcmtaDcVdlIITDq9To0J
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+---
+ drivers/mtd/nand/s3c2410.c |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
 
-On Fri, 2012-11-16 at 10:01 +0100, Matthieu CASTET wrote:
-> > I'll send them to Linus for 3.7 shortly.
-> >=20
-> Thanks, it solved the issue.
-
-I'm glad it helped!
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-BcmtaDcVdlIITDq9To0J
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQpgFOAAoJECmIfjd9wqK079EP/ixg9LaJ3q9ERyxgdmte1fJz
-JlxPa5TCqnFGXp/I7jdLwVm4QXS2pKSUuu8J66ZWpaFjsQA5LQgks0LprhFjdJ59
-nwGt4/A4WFdDTRG+hC2rjtRP5tDUKrQzZKBtJLaXurRRaf4L1AateZv+ZxCi2+LU
-Pqj8LpR1bV27BzhKNxmT//lZ9PtroJPJjSn0Hlm4hpTEMnLPddpbU6dI/GqKtSer
-MJegUK3VC88RIB9dXQj9zEMSLuSYbeeWFRvsi0hwQdPI31W6WhRiIFC0dYBC0P9T
-boSOZzgsB4sW/4MlmLmO8ex+kZiMCjyiqr5JMTV0Tr3lK6E6pyGLNDWVZDqdDxQG
-spVab13kZfdXjGa+OzEoIba9eRrxBdJWVnypwf1uqAc1xQHUVKz7UqOUdG7b+vRj
-/w6uBkCdPFV8wTmJazKaStYdgAAORv+EpH9O43eGwXPFMRl5SaWFH7YqnfB05Q1e
-mu5emoSIV9/Ou85waayVLL6aOVbeWOfEIcwjdVTPSo8UAnWt7Lsq6fU68CWjmBPq
-Yh2iDENW4B0WiOUMFcx5UrcTUEtuKks1/QUL8eF+HYsy6r24l1HnaKCG65wxatWA
-JYo2IFRRdrMLX9aQgPQuhJTbA3aNuzFiHqE6ST+K0mOzbnamyoy3ya/DNdYqiFPq
-uALWqRi8omCIiQpQiIju
-=U24a
------END PGP SIGNATURE-----
-
---=-BcmtaDcVdlIITDq9To0J--
+diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+index 295e4be..bbc49c4 100644
+--- a/drivers/mtd/nand/s3c2410.c
++++ b/drivers/mtd/nand/s3c2410.c
+@@ -730,11 +730,14 @@ static int s3c2410_nand_add_partition(struct s3c2410_nand_info *info,
+ 				      struct s3c2410_nand_mtd *mtd,
+ 				      struct s3c2410_nand_set *set)
+ {
+-	if (set)
++	if (set) {
+ 		mtd->mtd.name = set->name;
+ 
+-	return mtd_device_parse_register(&mtd->mtd, NULL, NULL,
++		return mtd_device_parse_register(&mtd->mtd, NULL, NULL,
+ 					 set->partitions, set->nr_partitions);
++	}
++
++	return -ENODEV;
+ }
+ 
+ /**
+-- 
+1.7.4.1
