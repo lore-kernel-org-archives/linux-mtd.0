@@ -1,22 +1,22 @@
 Received: from mail-lb0-f177.google.com ([209.85.217.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Ta2NV-00039g-CF
- for linux-mtd@lists.infradead.org; Sun, 18 Nov 2012 10:45:30 +0000
-Received: by mail-lb0-f177.google.com with SMTP id n10so1251210lbo.36
- for <linux-mtd@lists.infradead.org>; Sun, 18 Nov 2012 02:45:26 -0800 (PST)
-Message-ID: <1353235514.1592.0.camel@kyv>
-Subject: Re: [PATCH Resend] mtd: s3c2410: Fix potential NULL pointer
- dereference error
+ id 1Ta5UN-00021x-UQ
+ for linux-mtd@lists.infradead.org; Sun, 18 Nov 2012 14:04:48 +0000
+Received: by mail-lb0-f177.google.com with SMTP id n10so1306234lbo.36
+ for <linux-mtd@lists.infradead.org>; Sun, 18 Nov 2012 06:04:44 -0800 (PST)
+Message-ID: <1353247472.1592.1.camel@kyv>
+Subject: Re: [PATCH] [trivial] mtd: Fix typo mtd/tests
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Sachin Kamat <sachin.kamat@linaro.org>
-Date: Sun, 18 Nov 2012 12:45:14 +0200
-In-Reply-To: <1353062302-10266-1-git-send-email-sachin.kamat@linaro.org>
-References: <1353062302-10266-1-git-send-email-sachin.kamat@linaro.org>
+To: Masanari Iida <standby24x7@gmail.com>
+Date: Sun, 18 Nov 2012 16:04:32 +0200
+In-Reply-To: <1352470858-12121-1-git-send-email-standby24x7@gmail.com>
+References: <1352470858-12121-1-git-send-email-standby24x7@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-GVN1WXWFBY5ljgfyIf3M"
+ boundary="=-eg8fqBXyBr2f0xEVTao/"
 Mime-Version: 1.0
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org, patches@linaro.org
+Cc: trivial@kernel.org, linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,15 +28,14 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-GVN1WXWFBY5ljgfyIf3M
+--=-eg8fqBXyBr2f0xEVTao/
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2012-11-16 at 16:08 +0530, Sachin Kamat wrote:
-> 'set' is tested for NULL. But subsequently accessed without the check.
-> Thus making it conditional to avoid NULL pointer dereferencing.
+On Fri, 2012-11-09 at 23:20 +0900, Masanari Iida wrote:
+> Correct spelling typo in printk within drivers/mtd/tests.
 >=20
-> Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+> Signed-off-by: Masanari Iida <standby24x7@gmail.com>
 
 Pushed to l2-mtd.git, thanks!
 
@@ -44,7 +43,7 @@ Pushed to l2-mtd.git, thanks!
 Best Regards,
 Artem Bityutskiy
 
---=-GVN1WXWFBY5ljgfyIf3M
+--=-eg8fqBXyBr2f0xEVTao/
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -52,19 +51,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQqLw6AAoJECmIfjd9wqK0uMcQAKWdv6a7aSJGwgaL/00DPcGK
-E3ne6eYlzt0txiSMpvbaGjmJZOJGANsKn7fbjsj2tiBr/fmDqvT7gR/8i81XoMQl
-o10Fjqb2lHH+zV9RU7t0AKvBfewYaKRo36BaQkYyNgOaKXMnxRQFoFllBM+oGm+3
-qBFXAz5516Dug8YI8duNmj7WwbOD3IXQ8gVuWQCUMl25vWqwcEr81OhaDUxYY+lx
-EgTkFY+1DuvUQjIJzl+5kQkrS3Fn0YqCu675LeOM0O5D+rsCCg4IhGJ9kHdvXBJy
-9XONZ5iVFt58Pzu8jspDHlmR85eOk2dn7z2YCqWZ9NA2hnD/pTKN2yWHZI768frs
-Uwsm/vwQ0drO2I0aqQP1ip54VWY0R3K1BA0dPNbsh52+oPLQx3jh/03etGk/WBY9
-1H79Jmzx7kryj25oiqBJ+iIrtn3CZpWoxzbkfjbrFcFV2MXNNhkv5rYcgEcNlaia
-tHQ1OGjDeQLmRfx3bpvw9kA/2HJFV4vtSy5Jdo9Bz+AtJhBwgVULS+RO2eU1GGEq
-0GdZ1Tcyrk+fSSG0YhQVCw1ojn2Pcs/OXUxJ6J+dK4e9TNiqSb4+aCUa6YhaBx+G
-6PG8lywlelyAxPGyvtXlM5GkhSn27VReI7JRUWmAKpYtsqz7TZ2NBXjiiO+WL0nL
-ghW4PmdqLHIVbrgZmPG7
-=4xD9
+iQIcBAABAgAGBQJQqOrwAAoJECmIfjd9wqK0HKIQAJnVQPY+lEvjQqNBUyz1gU4V
+UsngKbkHABOAAUQHto8q6FlBcisWmxoptXSUI+Bl//pIXUcOHhWZQ7bbjqAneT3q
+ehrD3lcnnAzBF2OtXCZeJZ+CBxeZha6PcEjd442yV8im853sQdAtWDwgXRN5/eKA
+Rh/H6ppDg6/zVAilBzB9ElVr+wQo0lDZ1rvdgaZvJRprX8+Dpy+SUXR8jiOgHFxJ
+diLbA+UJN3XkCikN9G1valwbE7ZhnPq21KmU+Z9SC2Q7j//RNqF+MLOav7VJeS6H
+zaiPZ/4nKTCiT4dOoM8IMPYTpXRbMuZRuweQdS1T7+1DH0rZx+9ejJJpyDXmn1hI
+u5uIZl5wTxqbYgKnE+25dJn6q+nFsxctnqZNMnzX2RfBxEOIiPbd80n5Qn+GVhJ4
+Y67hILyiRmbxJmZeLxOapqTswXDVdYGb+mHs1G2HsQdVhdfElQ9SMrKnP9gxpvyE
+u6CSnngNRg/PuV78BOY4WCBUFnLkh4BhDRIho5ivYDgiSuCYSdSUgPPrArjMsB7g
+2LgB+eFiHHpx/RNZkrUqtZf2tpYB7ZljCCsP/SvGH3dp/KzDGjGCDDxz4NtBgb9e
+5I5g27O4UsC0TRhE/yZzvHDH5JCX92nkss5kZbQZ7Myh9I/L8d9Mocufxu+lqkuO
+ix0hRaKmTLzqN8cTHsA3
+=fEQo
 -----END PGP SIGNATURE-----
 
---=-GVN1WXWFBY5ljgfyIf3M--
+--=-eg8fqBXyBr2f0xEVTao/--
