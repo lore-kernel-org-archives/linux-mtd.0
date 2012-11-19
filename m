@@ -1,23 +1,18 @@
-Received: from mail-la0-f49.google.com ([209.85.215.49])
+Received: from ch1ehsobe005.messaging.microsoft.com ([216.32.181.185]
+ helo=ch1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Ta5Um-000236-PQ
- for linux-mtd@lists.infradead.org; Sun, 18 Nov 2012 14:05:17 +0000
-Received: by mail-la0-f49.google.com with SMTP id r15so2943883lag.36
- for <linux-mtd@lists.infradead.org>; Sun, 18 Nov 2012 06:05:10 -0800 (PST)
-Message-ID: <1353247498.1592.2.camel@kyv>
-Subject: Re: [PATCH] mtd: de-select the chip when it is not used
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Date: Sun, 18 Nov 2012 16:04:58 +0200
-In-Reply-To: <1352449425-16496-1-git-send-email-b32955@freescale.com>
-References: <1352449425-16496-1-git-send-email-b32955@freescale.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-WKnhYIhCC6rITT3o8EGS"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org
-Reply-To: dedekind1@gmail.com
+ id 1TaLiN-0000fH-IV
+ for linux-mtd@lists.infradead.org; Mon, 19 Nov 2012 07:24:20 +0000
+From: Huang Shijie <b32955@freescale.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH 1/2] mtd: remove the de-select chip code in
+ nand_release_device()
+Date: Mon, 19 Nov 2012 14:43:29 +0800
+Message-ID: <1353307410-17529-1-git-send-email-b32955@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,55 +22,150 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The nand_get_device() does not select the chip, but nand_release_device()
+does de-select the chip. It is really strange.
 
---=-WKnhYIhCC6rITT3o8EGS
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+With the current code, nand_sync() will de-select the chip, even if the chip
+has never been selected.
 
-On Fri, 2012-11-09 at 16:23 +0800, Huang Shijie wrote:
-> When we scan several nand chips with nand_scan(), such as
->      .......................
->       nand_scan(*, 2);
->      .......................
->=20
-> In nand_scan_ident(), the maxchips will become 2, so the current code
-> will select chip 1 to read the device ID. But the chip 0 is still
-> selected in this case.
->=20
-> To make the logic clear, we'd better de-select the chip when it is not us=
-ed.
->=20
-> This patch de-select the nand chip if it is not used any more.
->=20
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
+To make the balance of select/de-select chip, it's better to remove the
+de-select chip code in nand_release_device() which makes the code more
+clear.
 
-Pushed to l2-mtd.git, thanks!
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+ drivers/mtd/nand/nand_base.c |   35 +++++++++++++++++++++++++----------
+ 1 files changed, 25 insertions(+), 10 deletions(-)
 
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-WKnhYIhCC6rITT3o8EGS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQqOsKAAoJECmIfjd9wqK097oQAII5hnjUNqQvq+3s9h8d+O6X
-SfYuy7hRLLVRaZnkpjmtU+bajA7C8J0lJza/f4oskiBNRMJ6R1fUS7le6se6StZy
-EV1QC+ghUbHFQfHySTfkSPydaNHd4gkZUn0EK7ogu/bcR8cRMhB79Cab1iDqp287
-8SUutD8dcCudlm6ezPndUpMFSBQEMDdQEqdpah9fR8JhYIdqQiBdrRQfqCVMvMWQ
-MwtYx1CnXSpv3CjFR6fkM5q1QezscfsZOyd2a/VlgAqqNP+0yNLv+Ga5bSWsW/Bp
-OMyPR8LsmAAQzOM3qz1z+ItDRDkdASF08qiCQaPcI4BoWtadHDMzQl7JOxAKXVsz
-85eNTJfnUdLd1qxi8V7AV+MAAGQOjAkFDTqcV2mh/cCglZTKlYDuSkqFl5nM8KEe
-SdUN7ZLe83dAGVXPtj74gr41kAJ3bb3+lR0nbDyjC80CvzGGgEeKz483ocNoIiPt
-ZptLkt61av2zfMTi9A93RLFsOLyzg1bV6dW8zFnGJnpgNsrxz8I/4EUh21KH1pD2
-TZs6YfRt+SUhswfWLYQeq2T0/g8q6WrtDnohyt4ISiZ9ON0P0XQD5t+6wjkJvEZs
-UtrDqacmPGJ8DTSlqIuteJdeYURbR0H7kt5Rkj9G2R0Zf2x+1JEYXVLjIeA4EWj5
-5Yzv85W+lk2hsshM+zWZ
-=UbnZ
------END PGP SIGNATURE-----
-
---=-WKnhYIhCC6rITT3o8EGS--
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 6eef7fb..861a87d 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -130,15 +130,12 @@ static int check_offs_len(struct mtd_info *mtd,
+  * nand_release_device - [GENERIC] release chip
+  * @mtd: MTD device structure
+  *
+- * Deselect, release chip lock and wake up anyone waiting on the device.
++ * Release chip lock and wake up anyone waiting on the device.
+  */
+ static void nand_release_device(struct mtd_info *mtd)
+ {
+ 	struct nand_chip *chip = mtd->priv;
+ 
+-	/* De-select the NAND device */
+-	chip->select_chip(mtd, -1);
+-
+ 	/* Release the controller and the chip */
+ 	spin_lock(&chip->controller->lock);
+ 	chip->controller->active = NULL;
+@@ -333,8 +330,10 @@ static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
+ 		i++;
+ 	} while (!res && i < 2 && (chip->bbt_options & NAND_BBT_SCAN2NDPAGE));
+ 
+-	if (getchip)
++	if (getchip) {
++		chip->select_chip(mtd, -1);
+ 		nand_release_device(mtd);
++	}
+ 
+ 	return res;
+ }
+@@ -952,6 +951,7 @@ int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 	ret = __nand_unlock(mtd, ofs, len, 0);
+ 
+ out:
++	chip->select_chip(mtd, -1);
+ 	nand_release_device(mtd);
+ 
+ 	return ret;
+@@ -1016,6 +1016,7 @@ int nand_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 	ret = __nand_unlock(mtd, ofs, len, 0x1);
+ 
+ out:
++	chip->select_chip(mtd, -1);
+ 	nand_release_device(mtd);
+ 
+ 	return ret;
+@@ -1552,6 +1553,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 			chip->select_chip(mtd, chipnr);
+ 		}
+ 	}
++	chip->select_chip(mtd, -1);
+ 
+ 	ops->retlen = ops->len - (size_t) readlen;
+ 	if (oob)
+@@ -1806,6 +1808,7 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
+ 			chip->select_chip(mtd, chipnr);
+ 		}
+ 	}
++	chip->select_chip(mtd, -1);
+ 
+ 	ops->oobretlen = ops->ooblen - readlen;
+ 
+@@ -2188,8 +2191,10 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
+ 	chip->select_chip(mtd, chipnr);
+ 
+ 	/* Check, if it is write protected */
+-	if (nand_check_wp(mtd))
+-		return -EIO;
++	if (nand_check_wp(mtd)) {
++		ret = -EIO;
++		goto err_out;
++	}
+ 
+ 	realpage = (int)(to >> chip->page_shift);
+ 	page = realpage & chip->pagemask;
+@@ -2201,8 +2206,10 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
+ 		chip->pagebuf = -1;
+ 
+ 	/* Don't allow multipage oob writes with offset */
+-	if (oob && ops->ooboffs && (ops->ooboffs + ops->ooblen > oobmaxlen))
+-		return -EINVAL;
++	if (oob && ops->ooboffs && (ops->ooboffs + ops->ooblen > oobmaxlen)) {
++		ret = -EINVAL;
++		goto err_out;
++	}
+ 
+ 	while (1) {
+ 		int bytes = mtd->writesize;
+@@ -2253,6 +2260,9 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
+ 	ops->retlen = ops->len - writelen;
+ 	if (unlikely(oob))
+ 		ops->oobretlen = ops->ooblen;
++
++err_out:
++	chip->select_chip(mtd, -1);
+ 	return ret;
+ }
+ 
+@@ -2379,8 +2389,10 @@ static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
+ 	chip->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
+ 
+ 	/* Check, if it is write protected */
+-	if (nand_check_wp(mtd))
++	if (nand_check_wp(mtd)) {
++		chip->select_chip(mtd, -1);
+ 		return -EROFS;
++	}
+ 
+ 	/* Invalidate the page cache, if we write to the cached page */
+ 	if (page == chip->pagebuf)
+@@ -2393,6 +2405,8 @@ static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
+ 	else
+ 		status = chip->ecc.write_oob(mtd, chip, page & chip->pagemask);
+ 
++	chip->select_chip(mtd, -1);
++
+ 	if (status)
+ 		return status;
+ 
+@@ -2625,6 +2639,7 @@ erase_exit:
+ 	ret = instr->state == MTD_ERASE_DONE ? 0 : -EIO;
+ 
+ 	/* Deselect and wake up anyone waiting on the device */
++	chip->select_chip(mtd, -1);
+ 	nand_release_device(mtd);
+ 
+ 	/* Do call back function */
+-- 
+1.7.0.4
