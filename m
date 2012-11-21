@@ -1,19 +1,20 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga14.intel.com ([143.182.124.37])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TbBrS-0003YG-SC
- for linux-mtd@lists.infradead.org; Wed, 21 Nov 2012 15:05:13 +0000
-Message-ID: <1353510354.2701.10.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: sm_ftl: Remove unused kthread stuff
+ id 1TbBsC-00045G-FB
+ for linux-mtd@lists.infradead.org; Wed, 21 Nov 2012 15:05:58 +0000
+Message-ID: <1353510397.2701.11.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] MTD: use SQUASHFS_MAGIC from uapi/linux/magic.h
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ezequiel Garcia <elezegarcia@gmail.com>
-Date: Wed, 21 Nov 2012 17:05:54 +0200
-In-Reply-To: <1352565322-8731-1-git-send-email-elezegarcia@gmail.com>
-References: <1352565322-8731-1-git-send-email-elezegarcia@gmail.com>
+To: Luka Perkov <luka@openwrt.org>
+Date: Wed, 21 Nov 2012 17:06:37 +0200
+In-Reply-To: <1352662335-12028-1-git-send-email-luka@openwrt.org>
+References: <1352662335-12028-1-git-send-email-luka@openwrt.org>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-Hlq0dZriq4Lt/KqFBiL2"
+ boundary="=-h+ejz9pJDuERauZtIrJW"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, Maxim Levitsky <maximlevitsky@gmail.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,36 +26,21 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-Hlq0dZriq4Lt/KqFBiL2
+--=-h+ejz9pJDuERauZtIrJW
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, 2012-11-10 at 13:35 -0300, Ezequiel Garcia wrote:
-> This driver uses workqueues, not kthreads.
-> Remove kthread header and thread related comment.
->=20
-> Cc: Maxim Levitsky <maximlevitsky@gmail.com>
-> Signed-off-by: Ezequiel Garcia <elezegarcia@gmail.com>
+On Sun, 2012-11-11 at 20:32 +0100, Luka Perkov wrote:
+> Signed-off-by: Luka Perkov <luka@openwrt.org>
+> ---
 
-Aiaiai [1]!=20
-
-Aiaiai found out that this breaks the build!
-
-drivers/mtd/sm_ftl.c:1025:2: error: implicit declaration of function 'IS_ER=
-R' [-Werror=3Dimplicit-function-declaration]
-drivers/mtd/sm_ftl.c:1026:3: error: implicit declaration of function 'PTR_E=
-RR' [-Werror=3Dimplicit-function-declaration]
-
-Include <linux/err.h> instead, I guess.
-
-[1] git://git.infradead.org/users/dedekind/maintaining.git
-    git://git.infradead.org/users/dedekind/aiaiai.git
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-Hlq0dZriq4Lt/KqFBiL2
+--=-h+ejz9pJDuERauZtIrJW
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -62,19 +48,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQrO3SAAoJECmIfjd9wqK0i6kP/ReqBvCfo5+OzpaGag85WFRR
-mtwv71yx2JFAZQeo49r/krBh14sG61MAZLBh7koNYfhcNZM0Xb1XYR6Gje9fKPkz
-D9oCC4uP8YT83JwcMHf4CS8a6h3eDXbDHFrKDkNvN/E3GZZYo5k1TPyEA1V9fF6T
-kpLO23VnHpr4EUZ0KMbCXF6pwIOuNHdcbzUlfO4D7/s2ujRXVObHhUmsQqOJwxzD
-yMTqIAk3dw/Xhpc/moMBdJAEvB/tEhYlKqok+u+kd/BsxKllD/P9h/Pvse3oVGgM
-SIXV25cGRcD+0nXSq/xk3zAsJocuVo2DQhgL+bvjgfr86w7iEvJX56ws7kk8nhL7
-wXPMsxffHcTGMdBCMz6uVAwvq81LZPfmTZYDVTFrt9whKFsfTbSxUJwSkeaPWHNN
-/gRDCHXJy4+s64nWlw9vKrqKj4gl109p0+W6bh7B6t0xSwEVMTO6TQ0Lfsm7eNMf
-a4dSSCSl8KFjMIEGspRf030C4AqaBB9se2RLNqGBOx7FxTIhHvr6wd9d2r/fUa/Z
-LIlhLcV/fQyZY8BLWUSLoySYdVHjmLvns8dvXE9I7eVm6dKbe1HNYlXhEpsC5Z0h
-cXyiAPpKRnIJOjXtyFuAE37BPMHlW8CK+eMKSPQGd6i2x4ojoWhuxb5p9kvhr4Fl
-bMnycs0X6PEt+/o4KsSp
-=05J4
+iQIcBAABAgAGBQJQrO39AAoJECmIfjd9wqK0rx4P/1gknvDdYxTk8VuBT0DYkOBl
+wNN6TTdXCK0jGgCgYPWUUX9WUtPPBpfobcJLMWGlZwakqoDiG5p3vdiHk5SDAxx9
+soy922WhN6+tlcZihgPzway3VYz0HmE1xVjmlo/LaYXR20StwVZn3hBMpFu0C5z2
+cwgX8eX2lmJQoTdYRFu9W6AL42DRLWj7AT2JHunxXOXQWfUUWRqZ3PcQYYMqov2i
+6BTTne2XfDiQVTYK7/6MC8YLqB8w3tt7d9Ct6jnxmXGlRluAk5JAr87QPV1bunom
+a03CqwONYiqN4fo+HXBRQPQ5NG56uDsVI3P1KS5b+FPFPKGKi7TWeEMgOfs4Z3w4
+9mMQd8Ei4H97xN3kKZWjj2Cgha/9bMA8pJm9SHNUMPaSk6Hxe/t+d7e8QRcnUxwE
+oZoiZDMpgni7S3+coUeMMUEdF37EUYxAT6/t2zZTgVK7zQvwAyDDjuPfTGeUe0S2
++pGTgLQe/EgvH+HUptXjJAbOZFxZCFASpaZkxl7wQywxkI1WukSh+/QsiewwwoJB
+rSKTAOguot055RaTcqGkmQMkmhMVI1Zbwy/piho+DiwtMdldB480T3cFaV5LdrlU
+NCPAnXXZgWus3Q0fVsMNjwZFFVTQf8upV8rz0eihFVHoonCYVzvqsLEQaOllPpmt
+2Ro6lV3ngPWruvNW2ZvH
+=uzU4
 -----END PGP SIGNATURE-----
 
---=-Hlq0dZriq4Lt/KqFBiL2--
+--=-h+ejz9pJDuERauZtIrJW--
