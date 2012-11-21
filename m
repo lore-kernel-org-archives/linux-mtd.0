@@ -1,23 +1,16 @@
-Received: from mail.free-electrons.com ([88.190.12.23])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Tb7BQ-0005Go-3k
- for linux-mtd@lists.infradead.org; Wed, 21 Nov 2012 10:05:29 +0000
-Date: Wed, 21 Nov 2012 11:05:18 +0100
-From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: [RFC/PATCH 0/1] ubi: Add ubiblock driver
-Message-ID: <20121121110518.3147bd34@skate>
-In-Reply-To: <alpine.DEB.2.00.1211211059540.21683@lnxricardw.se.axis.com>
-References: <CALF0-+WuaUn5b=2XrzqW7pvM=N1MfQf=sFwLFOrokTkHbOXh3w@mail.gmail.com>
- <alpine.DEB.2.00.1211210626110.357@lnxricardw.se.axis.com>
- <20121121105636.4c8687e0@skate>
- <alpine.DEB.2.00.1211211059540.21683@lnxricardw.se.axis.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Message-ID: <50ACA764.3030002@atmel.com>
+Date: Wed, 21 Nov 2012 11:05:24 +0100
+From: Nicolas Ferre <nicolas.ferre@atmel.com>
+MIME-Version: 1.0
+To: Josh Wu <josh.wu@atmel.com>
+Subject: Re: [PATCH] MTD: at91: atmel_nand: return bit flips for the PMECC
+ read_page()
+References: <1353474863-28430-1-git-send-email-josh.wu@atmel.com>
+In-Reply-To: <1353474863-28430-1-git-send-email-josh.wu@atmel.com>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: Michael Opdenacker <michael.opdenacker@free-electrons.com>,
- Ezequiel Garcia <elezegarcia@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: mikedunn@newsguy.com, plagnioj@jcrosoft.com, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,23 +20,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Ricard Wanderlof,
-
-On Wed, 21 Nov 2012 11:00:49 +0100, Ricard Wanderlof wrote:
-
-> > The idea, when David Wagner implemented this, was to be able to use
-> > read-only block filesystems such as squashfs on top of a UBI volume.
-> > squashfs provides an excellent compression ratio, which makes it
-> > interesting.
+On 11/21/2012 06:14 AM, Josh Wu :
 > 
-> Yes, I agree, that would be useful.
+> 
 
-Yes, but only the read-only side of ubiblock. The write side is
-dangerous and useless, IMO.
+Can we have more comment to figure out why it is needed please?
 
-Thomas
+Best regards,
+
+> Signed-off-by: Josh Wu <josh.wu@atmel.com>
+> ---
+>  drivers/mtd/nand/atmel_nand.c |   13 +++++++++----
+>  1 file changed, 9 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+> index 9144557..860dd36 100644
+> --- a/drivers/mtd/nand/atmel_nand.c
+> +++ b/drivers/mtd/nand/atmel_nand.c
+> @@ -723,6 +723,7 @@ static int pmecc_correction(struct mtd_info *mtd, u32 pmecc_stat, uint8_t *buf,
+>  	struct atmel_nand_host *host = nand_chip->priv;
+>  	int i, err_nbr, eccbytes;
+>  	uint8_t *buf_pos;
+> +	int total_err = 0;
+>  
+>  	eccbytes = nand_chip->ecc.bytes;
+>  	for (i = 0; i < eccbytes; i++)
+> @@ -750,12 +751,13 @@ normal_check:
+>  				pmecc_correct_data(mtd, buf_pos, ecc, i,
+>  					host->pmecc_bytes_per_sector, err_nbr);
+>  				mtd->ecc_stats.corrected += err_nbr;
+> +				total_err += err_nbr;
+>  			}
+>  		}
+>  		pmecc_stat >>= 1;
+>  	}
+>  
+> -	return 0;
+> +	return total_err;
+>  }
+>  
+>  static int atmel_nand_pmecc_read_page(struct mtd_info *mtd,
+> @@ -767,6 +769,7 @@ static int atmel_nand_pmecc_read_page(struct mtd_info *mtd,
+>  	uint32_t *eccpos = chip->ecc.layout->eccpos;
+>  	uint32_t stat;
+>  	unsigned long end_time;
+> +	int bitflips = 0;
+>  
+>  	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_RST);
+>  	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_DISABLE);
+> @@ -789,11 +792,13 @@ static int atmel_nand_pmecc_read_page(struct mtd_info *mtd,
+>  	}
+>  
+>  	stat = pmecc_readl_relaxed(host->ecc, ISR);
+> -	if (stat != 0)
+> -		if (pmecc_correction(mtd, stat, buf, &oob[eccpos[0]]) != 0)
+> +	if (stat != 0) {
+> +		bitflips = pmecc_correction(mtd, stat, buf, &oob[eccpos[0]]);
+> +		if (bitflips < 0)
+>  			return -EIO;
+> +	}
+>  
+> -	return 0;
+> +	return bitflips;
+>  }
+>  
+>  static int atmel_nand_pmecc_write_page(struct mtd_info *mtd,
+> 
+
+
 -- 
-Thomas Petazzoni, Free Electrons
-Kernel, drivers, real-time and embedded Linux
-development, consulting, training and support.
-http://free-electrons.com
+Nicolas Ferre
