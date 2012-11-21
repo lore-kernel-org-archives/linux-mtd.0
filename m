@@ -1,20 +1,23 @@
-Received: from ipmail04.adl6.internode.on.net ([2001:44b8:8060:ff02:300:1:6:4])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Tb8ja-0006Db-Na
- for linux-mtd@lists.infradead.org; Wed, 21 Nov 2012 11:44:52 +0000
-Subject: Re: BUG at kernel/timer.c:1100 when using JFFS2
-From: Nathan Williams <nathan@traverse.com.au>
-To: dedekind1@gmail.com
-In-Reply-To: <1353496126.2378.6.camel@laptop>
-References: <1353483457.9160.26.camel@laptop>
- <1353484194.2701.5.camel@sauron.fi.intel.com>
- <1353496126.2378.6.camel@laptop>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 21 Nov 2012 22:44:47 +1100
-Message-ID: <1353498287.2378.9.camel@laptop>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Received: from [2002:4e20:1eda::1] (helo=caramon.arm.linux.org.uk)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Tb8xi-0002Vy-QV
+ for linux-mtd@lists.infradead.org; Wed, 21 Nov 2012 11:59:29 +0000
+Date: Wed, 21 Nov 2012 11:58:48 +0000
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+To: Bill Pemberton <wfp5p@virginia.edu>
+Subject: Re: [PATCH 238/493] mtd: remove use of __devinit
+Message-ID: <20121121115848.GI3290@n2100.arm.linux.org.uk>
+References: <1353349642-3677-1-git-send-email-wfp5p@virginia.edu>
+ <1353349642-3677-238-git-send-email-wfp5p@virginia.edu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1353349642-3677-238-git-send-email-wfp5p@virginia.edu>
+Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Wan ZongShun <mcuos.com@gmail.com>, gregkh@linuxfoundation.org,
+ Kyungmin Park <kyungmin.park@samsung.com>, linux-mtd@lists.infradead.org,
+ Olof Johansson <olof@lixom.net>, linuxppc-dev@lists.ozlabs.org,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,16 +27,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2012-11-21 at 22:08 +1100, Nathan Williams wrote:
-> On Wed, 2012-11-21 at 09:49 +0200, Artem Bityutskiy wrote:
-> > You probably use 3.5? There was a bug which was fixed, try the latest
-> > stable 3.5 version, the fix must be there.
-> > 
-> 
-> No I'm using 3.6.  Do you know what the patch was so I can look it up?
-> 
-Ok I'll try 3.6.7.  "JFFS2: fix unmount regression" seems to be your
-patch.  Thanks for your help.
+On Mon, Nov 19, 2012 at 01:23:07PM -0500, Bill Pemberton wrote:
+>  drivers/mtd/maps/pismo.c               | 14 +++++++-------
+>  drivers/mtd/maps/sa1100-flash.c        |  5 ++---
 
-Regards,
-Nathan
+For these two,
+
+Acked-by: Russell King <rmk+kernel@arm.linux.org.uk>
