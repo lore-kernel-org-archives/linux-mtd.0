@@ -1,36 +1,19 @@
-Date: Wed, 21 Nov 2012 19:45:54 +0200
-From: Felipe Balbi <balbi@ti.com>
-To: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH 4/5] ARM: OMAP: Move plat-omap/dma-omap.h to
- include/linux/omap-dma.h
-Message-ID: <20121121174554.GC13262@arwen.pp.htv.fi>
-References: <20121121174201.25576.61961.stgit@muffinssi.local>
- <20121121174233.25576.58781.stgit@muffinssi.local>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="hxkXGo8AKqTJ+9QI"
-Content-Disposition: inline
-In-Reply-To: <20121121174233.25576.58781.stgit@muffinssi.local>
-Cc: linux-fbdev@vger.kernel.org, Lokesh Vutla <lokeshvutla@ti.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-mtd@lists.infradead.org,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Kevin Hilman <khilman@ti.com>, Russell King <linux@arm.linux.org.uk>,
- Florian Tobias Schandinat <FlorianSchandinat@gmx.de>,
- Vinod Koul <vinod.koul@intel.com>, Vaibhav Hiremath <hvaibhav@ti.com>,
- Tomi Valkeinen <tomi.valkeinen@ti.com>, Hans Verkuil <hans.verkuil@cisco.com>,
- linux-media@vger.kernel.org, Afzal Mohammed <afzal@ti.com>,
- Rusty Russell <rusty@rustcorp.com.au>,
- Mauro Carvalho Chehab <mchehab@infradead.org>, linux-omap@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- =?iso-8859-1?Q?Beno=EEt?= Cousson <b-cousson@ti.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
- Felipe Balbi <balbi@ti.com>, Guennadi Liakhovetski <g.liakhovetski@gmx.de>,
- Herbert Xu <herbert@gondor.hengli.com.au>,
- Kyungmin Park <kyungmin.park@samsung.com>, linux-crypto@vger.kernel.org,
- Dan Williams <djbw@fb.com>, David Woodhouse <dwmw2@infradead.org>,
- "David S. Miller" <davem@davemloft.net>
-Reply-To: balbi@ti.com
+Received: from aserp1040.oracle.com ([141.146.126.69])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TbIz8-0008WO-Hu
+ for linux-mtd@lists.infradead.org; Wed, 21 Nov 2012 22:41:35 +0000
+From: Dave Kleikamp <dave.kleikamp@oracle.com>
+To: linux-fsdevel@vger.kernel.org
+Subject: [PATCH v4 31/31] ubifs: convert file ops from aio_read/write to
+ read/write_iter
+Date: Wed, 21 Nov 2012 16:41:11 -0600
+Message-Id: <1353537671-26284-32-git-send-email-dave.kleikamp@oracle.com>
+In-Reply-To: <1353537671-26284-1-git-send-email-dave.kleikamp@oracle.com>
+References: <1353537671-26284-1-git-send-email-dave.kleikamp@oracle.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-kernel@vger.kernel.org,
+ Dave Kleikamp <dave.kleikamp@oracle.com>, linux-mtd@lists.infradead.org,
+ Zach Brown <zab@zabbo.net>, "Maxim V. Patlasov" <mpatlasov@parallels.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,111 +23,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---hxkXGo8AKqTJ+9QI
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: linux-mtd@lists.infradead.org
+---
+ fs/ubifs/file.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Hi,
-
-On Wed, Nov 21, 2012 at 09:42:33AM -0800, Tony Lindgren wrote:
-> Based on earlier discussions[1] we attempted to find a suitable
-> location for the omap DMA header in commit 2b6c4e73 (ARM: OMAP:
-> DMA: Move plat/dma.h to plat-omap/dma-omap.h) until the conversion
-> to dmaengine is complete.
->=20
-> Unfortunately that was before I was able to try to test compile
-> of the ARM multiplatform builds for omap2+, and the end result
-> was not very good.
->=20
-> So I'm creating yet another all over the place patch to cut the
-> last dependency for building omap2+ for ARM multiplatform. After
-> this, we have finally removed the driver dependencies to the
-> arch/arm code, except for few drivers that are being worked on.
->=20
-> The other option was to make the <plat-omap/dma-omap.h> path
-> to work, but we'd have to add some new header directory to for
-> multiplatform builds.
->=20
-> Or we would have to manually include arch/arm/plat-omap/include
-> again from arch/arm/Makefile for omap2+.
->=20
-> Neither of these alternatives sound appealing as they will
-> likely lead addition of various other headers exposed to the
-> drivers, which we want to avoid for the multiplatform kernels.
->=20
-> Since we already have a minimal include/linux/omap-dma.h,
-> let's just use that instead and add a note to it to not
-> use the custom omap DMA functions any longer where possible.
->=20
-> Note that converting omap DMA to dmaengine depends on
-> dmaengine supporting automatically incrementing the FIFO
-> address at the device end, and converting all the remaining
-> legacy drivers. So it's going to be few more merge windows.
->=20
-> [1] https://patchwork.kernel.org/patch/1519591/#
->=20
-> cc: Russell King <linux@arm.linux.org.uk>
-> cc: Kevin Hilman <khilman@ti.com>
-> cc: "Beno=EEt Cousson" <b-cousson@ti.com>
-> cc: Herbert Xu <herbert@gondor.apana.org.au>
-> cc: "David S. Miller" <davem@davemloft.net>
-> cc: Vinod Koul <vinod.koul@intel.com>
-> cc: Dan Williams <djbw@fb.com>
-> cc: Mauro Carvalho Chehab <mchehab@infradead.org>
-> cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> cc: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-> cc: David Woodhouse <dwmw2@infradead.org>
-> cc: Kyungmin Park <kyungmin.park@samsung.com>
-> cc: Felipe Balbi <balbi@ti.com>
-> cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
-> cc: Florian Tobias Schandinat <FlorianSchandinat@gmx.de>
-> cc: Hans Verkuil <hans.verkuil@cisco.com>
-> cc: Vaibhav Hiremath <hvaibhav@ti.com>
-> cc: Lokesh Vutla <lokeshvutla@ti.com>
-> cc: Rusty Russell <rusty@rustcorp.com.au>
-> cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> cc: Afzal Mohammed <afzal@ti.com>
-> cc: linux-crypto@vger.kernel.org
-> cc: linux-media@vger.kernel.org
-> cc: linux-mtd@lists.infradead.org
-> cc: linux-usb@vger.kernel.org
-> cc: linux-fbdev@vger.kernel.org
-> Signed-off-by: Tony Lindgren <tony@atomide.com>
-
-=2E..
-
->  drivers/usb/gadget/omap_udc.c                      |    2=20
->  drivers/usb/musb/tusb6010_omap.c                   |    2=20
-
-for omap_udc and musb:
-
-Acked-by: Felipe Balbi <balbi@ti.com>
-
---=20
-balbi
-
---hxkXGo8AKqTJ+9QI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJQrRNSAAoJEIaOsuA1yqRE+5gP/0880MUsBsYtdW3jT0VLytVA
-P8rgqv7dOo3Z7yNw8CKIx/OnHTLOH3dRBCk10A2962718ZABaDP0hO46jgSX3n+t
-DuF1JGQPSatwIuJwyPBmrq6nuOgl/hC1PcoMRy5ZMQG6i1NhMQZvkoJtWO5glu+X
-WtBqFZlMe8vwc4fQF51s2IAYfZY3ylgvtOVviq7lGk4ec6KMNwBQAEoXdpO1SYlN
-6hjXhXoLe3ejbmU4h2EphYdYzaoyQ0b6Hp3AJF/hupKm8eKgIv76YyI1OhELyHko
-rlZZGQBXdEthj9cXEHgUdW4Bv7+GYmOSC1disQp9/eD/c5hS+khX06POVVVpTaXE
-LgpQESD47HoOnhZN8SvtU2DkUlPa43RGCgXq3aUdWHpGDthoat89pwrcYj1eXByS
-iGw33qfKTD0Cp8J8tLdG584i/gTNvp0SEmaBNU5zmHvFfP3ltzGAlJbFeJKIdQIq
-rlKScahigB8Kn4ZJkcqPUsbKX9P/v9JFuSUq7o6nzFBP/xT5Ayq5a0/KUiIRlBIr
-QAnoFRjedQSP5H92u26dhJ8k0XCdjVSSTGVCN8qyRXhsiBTSShFG7v5IG3R3mWGI
-cA7+GkUfBXsU0uYNcPEY9Tcc3ugJM4Ti2Z54K1TWB4DkDmVJG1AvDs2CuOKzRXQO
-iEsgS/epNF00zwH6+sOL
-=7WD8
------END PGP SIGNATURE-----
-
---hxkXGo8AKqTJ+9QI--
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index 5bc7781..cfe6210 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -44,7 +44,7 @@
+  * 'ubifs_writepage()' we are only guaranteed that the page is locked.
+  *
+  * Similarly, @i_mutex is not always locked in 'ubifs_readpage()', e.g., the
+- * read-ahead path does not lock it ("sys_read -> generic_file_aio_read ->
++ * read-ahead path does not lock it ("sys_read -> generic_file_read_iter ->
+  * ondemand_readahead -> readpage"). In case of readahead, @I_SYNC flag is not
+  * set as well. However, UBIFS disables readahead.
+  */
+@@ -1394,8 +1394,8 @@ static int update_mctime(struct ubifs_info *c, struct inode *inode)
+ 	return 0;
+ }
+ 
+-static ssize_t ubifs_aio_write(struct kiocb *iocb, const struct iovec *iov,
+-			       unsigned long nr_segs, loff_t pos)
++static ssize_t ubifs_write_iter(struct kiocb *iocb, struct iov_iter *iter,
++				loff_t pos)
+ {
+ 	int err;
+ 	struct inode *inode = iocb->ki_filp->f_mapping->host;
+@@ -1405,7 +1405,7 @@ static ssize_t ubifs_aio_write(struct kiocb *iocb, const struct iovec *iov,
+ 	if (err)
+ 		return err;
+ 
+-	return generic_file_aio_write(iocb, iov, nr_segs, pos);
++	return generic_file_write_iter(iocb, iter, pos);
+ }
+ 
+ static int ubifs_set_page_dirty(struct page *page)
+@@ -1580,8 +1580,8 @@ const struct file_operations ubifs_file_operations = {
+ 	.llseek         = generic_file_llseek,
+ 	.read           = do_sync_read,
+ 	.write          = do_sync_write,
+-	.aio_read       = generic_file_aio_read,
+-	.aio_write      = ubifs_aio_write,
++	.read_iter       = generic_file_read_iter,
++	.write_iter      = ubifs_write_iter,
+ 	.mmap           = ubifs_file_mmap,
+ 	.fsync          = ubifs_fsync,
+ 	.unlocked_ioctl = ubifs_ioctl,
+-- 
+1.8.0
