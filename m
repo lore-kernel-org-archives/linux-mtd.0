@@ -1,16 +1,20 @@
-Received: from ipmail04.adl6.internode.on.net ([2001:44b8:8060:ff02:300:1:6:4])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Tb4sW-0006jl-5r
- for linux-mtd@lists.infradead.org; Wed, 21 Nov 2012 07:37:49 +0000
-Subject: BUG at kernel/timer.c:1100 when using JFFS2
-From: Nathan Williams <nathan@traverse.com.au>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 21 Nov 2012 18:37:37 +1100
-Message-ID: <1353483457.9160.26.camel@laptop>
+ id 1Tb4wO-0007ji-SC
+ for linux-mtd@lists.infradead.org; Wed, 21 Nov 2012 07:41:50 +0000
+Message-ID: <1353483740.2701.1.camel@sauron.fi.intel.com>
+Subject: Re: Patch to solve NULL pointer dereference in physmap_of.c
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: "Prins Anton (ST-CO/ENG1.1)" <Anton.Prins@nl.bosch.com>
+Date: Wed, 21 Nov 2012 09:42:20 +0200
+In-Reply-To: <85D877DD6EE67B4A9FCA9B9C3A4865670C3ADE0635@SI-MBX14.de.bosch.com>
+References: <85D877DD6EE67B4A9FCA9B9C3A4865670C3ADE0635@SI-MBX14.de.bosch.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-4AXoTifHnW8ZBlH3Mcu3"
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-kernel@vger.kernel.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,55 +24,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
 
-I've come across a problem when loading a module straight after unmounting a JFFS2 partition.
-I'm using a Geos ADSL router board with an AMD Geode LX/CS5536 chipset and a Hynix H27U1G8F2BTR NAND flash.
+--=-4AXoTifHnW8ZBlH3Mcu3
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-I can reproduce my problem with this shell script:
+On Fri, 2012-11-09 at 08:45 +0100, Prins Anton (ST-CO/ENG1.1) wrote:
+> commit 0905a6f4aec377123e94d2260f2f7a0d867e19be
+> Author: Anton Prins <anton.prins@nl.bosch.com>
+> Date:   Fri Nov 9 10:12:58 2012 +0100
+>=20
+>     Correct error checking to prevent a NULL pointer dereference
+>=20
+>     The problem only occurs if the DTS is not correct, the requested mapp=
+ing is not reserved on the parent bus.
+>     In this special case the count is 1, but the list_size after mapping =
+is 0. list_size 0 should generate an error!
 
-#!/bin/sh
-mount -t jffs2 mtd:logs /mnt
-echo "Hello World" > /mnt/file
-umount /mnt
-modprobe r8169
+Sorry, I do not really understand which problem this patch solves, could
+you please improve the commit message and re-send?
 
-After a few seconds I get this panic:
+>=20
+> diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.=
+c
+> index 2e6fb68..83d121e 100644
+> --- a/drivers/mtd/maps/physmap_of.c
+> +++ b/drivers/mtd/maps/physmap_of.c
+> @@ -267,13 +267,14 @@ static int __devinit of_flash_probe(struct platform=
+_device *dev)
+>                 info->list[i].mtd->dev.parent =3D &dev->dev;
+>         }
+>=20
 
-kernel BUG at kernel/timer.c:1100!
-invalid opcode: 0000 [#1] 
-Modules linked in: r8169 cs553x_nand [last unloaded: r8169]
-Pid: 0, comm: swapper Not tainted 3.6.0 #1  
-EIP: 0060:[<c10285ea>] EFLAGS: 00010082 CPU: 0
-EIP is at cascade+0x11e/0x122
-EAX: ce809f98 EBX: ce809f98 ECX: cea67938 EDX: 00000000
-ESI: 00000000 EDI: cea67938 EBP: c138ea80 ESP: ce809f8c
- DS: 007b ES: 007b FS: 0000 GS: 0000 SS: 0068
-CR0: 8005003b CR2: b7701d8a CR3: 0dd36000 CR4: 00000090                         
-DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000                         
-DR6: ffff0ff0 DR7: 00000400                                                     
-Process swapper (pid: 0, ti=ce808000 task=c13244c0 task.ti=c1318000)            
-Stack:                                                                          
- ce809f98 0000001d 00000000 cea67938 cea67938 c138ea80 00000000 ce809fc8        
- 00000100 c10287d0 00000246 c138f890 c138f690 c138f490 c138f290 ce809fc8        
- ce809fc8 00000004 00000001 00000001 00000100 c10241ef 0000000a 00200000        
-Call Trace:                                                                     
- [<c10287d0>] ? run_timer_softirq+0x134/0x1ac                                   
- [<c10241ef>] ? __do_softirq+0x79/0x11c                                         
- [<c1024176>] ? irq_enter+0x4c/0x4c                                             
- <IRQ>                                                                          
- [<c102402c>] ? irq_exit+0x5b/0x69                                              
- [<c1003344>] ? do_IRQ+0x34/0x7d                                                
- [<c12661c9>] ? common_interrupt+0x29/0x30                                      
- [<c10078e9>] ? default_idle+0x21/0x2d                                          
- [<c1007b3f>] ? cpu_idle+0x52/0x54                                              
- [<c1344935>] ? start_kernel+0x236/0x286                                        
-Code: c1 e8 1a 8d 94 c5 10 0e 00 00 e9 7c ff ff ff 8b 44 24 04 83 c4 14 5b 5e 5f
-EIP: [<c10285ea>] cascade+0x11e/0x122 SS:ESP 0068:ce809f8c                      
----[ end trace 9942a8bf288b5a17 ]---                                            
-Kernel panic - not syncing: Fatal exception in interrupt
+It seems the error condition should be checked and acted upon here. What
+you looks more like making the code less readable.
 
-Any ideas on what I should do next?
+> -       err =3D 0;
+>         if (info->list_size =3D=3D 1) {
+> +               err =3D 0;
+>                 info->cmtd =3D info->list[0].mtd;
+>         } else if (info->list_size > 1) {
+>                 /*
+>                  * We detected multiple devices. Concatenate them togethe=
+r.
+>                  */
+> +               err =3D 0;
+>                 info->cmtd =3D mtd_concat_create(mtd_list, info->list_siz=
+e,
+>                                                dev_name(&dev->dev));
+>                 if (info->cmtd =3D=3D NULL)
 
-Regards,
-Nathan
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-4AXoTifHnW8ZBlH3Mcu3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQrIXdAAoJECmIfjd9wqK0UEYP/jDPPvwtfjDYxtU88yqGl/0D
+OUHgSEZFwG6Br3C5BURKO5HY2FL5ZV62VcomejSW+PeSZnNCIecpvaHDmLL4forW
+qafGrh9Y1uxGPTTTP2h7QRFcOCGBoin8a6h7T3FqSHoRFMm20xrUaNp8YhC03C/a
+ti1htjghvPZwI7Goj+0lIqeo+rTiNP/08WvcDLIcQW6yD87UO9kONkL1Ll5G+owx
+QfCxLXMtvsScJO/y/Rfli8pB1ylJ+X3N8ATPK2MPjNG+LR0vfQFmYR8d1bp2iv6r
+W/Z1116gk0QdKhb8M5SXhcLv8J6rCE4+gyxAyCqdqTI7ZCZR6WaMKbzlH1UbA10b
+kNq0bUF3+cuNiFfIL8f7V42wZgJ0b5NUyN0GVmLzUZqAcGNodKu/YZZ4neHh4QZy
+QkqXxtS2aINMWMkwYgbQfRaKi1SV0C+Z8UfIi76m6tr9UfQ8Qw5RtvDULtSHQa4B
+qMF0TfNHE5Vj1y9aHTrRDpfn4hdPiFLioy45r76nNTc7aZ1u0BaEYsyuWRMfJnBr
+bN2si+tulqFttpYffXL1nxagNhg99pqdILizwH8KpVZs89rZP7lBM1tmjLSmOqvW
+WuCdYoMfpioP1HNbDLTz6WyYDcGv5HZAmymIoqukI+wFuUVOQ8Ja3qFgzofaMYSm
+rfO/dj1G+CIj4OiSsImh
+=C/NO
+-----END PGP SIGNATURE-----
+
+--=-4AXoTifHnW8ZBlH3Mcu3--
