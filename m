@@ -1,22 +1,20 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Tb6Z3-0003ki-84
- for linux-mtd@lists.infradead.org; Wed, 21 Nov 2012 09:25:51 +0000
-Date: Wed, 21 Nov 2012 10:25:40 +0100
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: =?iso-8859-15?Q?Beno=EEt_Th=E9baudeau?= <benoit.thebaudeau@advansee.com>
-Subject: Re: mtd: nand: mxc: oobfree layout?
-Message-ID: <20121121092540.GP10369@pengutronix.de>
-References: <1214095427.1646097.1353358014121.JavaMail.root@advansee.com>
- <880504158.1762783.1353441918369.JavaMail.root@advansee.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <880504158.1762783.1353441918369.JavaMail.root@advansee.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, linux-mtd@lists.infradead.org,
- Sascha Hauer <kernel@pengutronix.de>, Scott Wood <scottwood@freescale.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Received: from mail.free-electrons.com ([88.190.12.23])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Tb736-0002B9-6E
+ for linux-mtd@lists.infradead.org; Wed, 21 Nov 2012 09:56:52 +0000
+Date: Wed, 21 Nov 2012 10:56:36 +0100
+From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: [RFC/PATCH 0/1] ubi: Add ubiblock driver
+Message-ID: <20121121105636.4c8687e0@skate>
+In-Reply-To: <alpine.DEB.2.00.1211210626110.357@lnxricardw.se.axis.com>
+References: <CALF0-+WuaUn5b=2XrzqW7pvM=N1MfQf=sFwLFOrokTkHbOXh3w@mail.gmail.com>
+ <alpine.DEB.2.00.1211210626110.357@lnxricardw.se.axis.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Ezequiel Garcia <elezegarcia@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,34 +24,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Nov 20, 2012 at 09:05:18PM +0100, Benoît Thébaudeau wrote:
-> Dear Sascha Hauer,
-> 
-> I've seen in the history of mxc_nand.c that you have worked on the
-> nand_ecclayout structs. The following things look abnormal. Can you confirm?
->  - nandv1_hw_eccoob_smallpage and nandv2_hw_eccoob_smallpage:
->     * Why are bytes 0 and 1 in oobfree? These bytes are used for bad block
->       information on the 16-bit variants of these 512-byte-page NANDs.
+Dear Ricard Wanderlof,
 
-This is probably a bug. Very few people seem to use 16bit flashes.
+On Wed, 21 Nov 2012 06:28:43 +0100, Ricard Wanderlof wrote:
 
->  - nandv1_hw_eccoob_largepage:
->     * According to the i.MX31 reference manual, the BI bytes of the spare area
->       buffers are not free to use. So why are bytes 5, 11, 27, 43 and 59 in
->       oobfree? On the contrary, if this note is a mistake in the RM, then why
->       are bytes 21, 37 and 53 not in oobfree?
->  - nandv2_hw_eccoob_smallpage, nandv2_hw_eccoob_largepage and
->    nandv2_hw_eccoob_4k:
->     * Why is byte 6 not in oobfree?
+> I don't want to diminish your work in any way, but what is the point of 
+> the ubiblock feature? Mtd block devices are really only used in order to 
+> give the mount/umount commands a block device, and for ubifs the device is 
+> specified in another way. So I suspect the intended usage for ubiblock is 
+> something else.
 
-Probably bugs aswell. Most people do not use filesystems requiring OOB
-data anymore, so bugs may stay uncovered for longer.
+The idea, when David Wagner implemented this, was to be able to use
+read-only block filesystems such as squashfs on top of a UBI volume.
+squashfs provides an excellent compression ratio, which makes it
+interesting.
 
-Sascha
+Best regards,
 
-
+Thomas
 -- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Thomas Petazzoni, Free Electrons
+Kernel, drivers, real-time and embedded Linux
+development, consulting, training and support.
+http://free-electrons.com
