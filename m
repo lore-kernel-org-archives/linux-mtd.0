@@ -1,12 +1,18 @@
-From: Josh Wu <josh.wu@atmel.com>
-To: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- dedekind1@gmail.com
-Subject: [PATCH] MTD: at91: atmel_nand: return bit flips for the PMECC
- read_page()
-Date: Wed, 21 Nov 2012 13:14:23 +0800
-Message-Id: <1353474863-28430-1-git-send-email-josh.wu@atmel.com>
-Cc: nicolas.ferre@atmel.com, mikedunn@newsguy.com, plagnioj@jcrosoft.com,
- Josh Wu <josh.wu@atmel.com>
+Received: from ra.se.axis.com ([195.60.68.13])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Tb2rh-0002Za-OG
+ for linux-mtd@lists.infradead.org; Wed, 21 Nov 2012 05:28:50 +0000
+Date: Wed, 21 Nov 2012 06:28:43 +0100
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Ezequiel Garcia <elezegarcia@gmail.com>
+Subject: Re: [RFC/PATCH 0/1] ubi: Add ubiblock driver
+In-Reply-To: <CALF0-+WuaUn5b=2XrzqW7pvM=N1MfQf=sFwLFOrokTkHbOXh3w@mail.gmail.com>
+Message-ID: <alpine.DEB.2.00.1211210626110.357@lnxricardw.se.axis.com>
+References: <CALF0-+WuaUn5b=2XrzqW7pvM=N1MfQf=sFwLFOrokTkHbOXh3w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-15"; format=flowed
+Content-Transfer-Encoding: 8BIT
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,63 +23,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
+On Tue, 20 Nov 2012, Ezequiel Garcia wrote:
 
-Signed-off-by: Josh Wu <josh.wu@atmel.com>
----
- drivers/mtd/nand/atmel_nand.c |   13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+> I'm happy to announce we finally have a read/write ubiblock implementation!
+>
+> What follows are some historical notes and some implementation hints.
+> Feel free to comment on anything, ask questions or provide feedback.
+> You can even fire some flames if you like, my asbestos suite works just fine ;-)
 
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index 9144557..860dd36 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -723,6 +723,7 @@ static int pmecc_correction(struct mtd_info *mtd, u32 pmecc_stat, uint8_t *buf,
- 	struct atmel_nand_host *host = nand_chip->priv;
- 	int i, err_nbr, eccbytes;
- 	uint8_t *buf_pos;
-+	int total_err = 0;
- 
- 	eccbytes = nand_chip->ecc.bytes;
- 	for (i = 0; i < eccbytes; i++)
-@@ -750,12 +751,13 @@ normal_check:
- 				pmecc_correct_data(mtd, buf_pos, ecc, i,
- 					host->pmecc_bytes_per_sector, err_nbr);
- 				mtd->ecc_stats.corrected += err_nbr;
-+				total_err += err_nbr;
- 			}
- 		}
- 		pmecc_stat >>= 1;
- 	}
- 
--	return 0;
-+	return total_err;
- }
- 
- static int atmel_nand_pmecc_read_page(struct mtd_info *mtd,
-@@ -767,6 +769,7 @@ static int atmel_nand_pmecc_read_page(struct mtd_info *mtd,
- 	uint32_t *eccpos = chip->ecc.layout->eccpos;
- 	uint32_t stat;
- 	unsigned long end_time;
-+	int bitflips = 0;
- 
- 	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_RST);
- 	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_DISABLE);
-@@ -789,11 +792,13 @@ static int atmel_nand_pmecc_read_page(struct mtd_info *mtd,
- 	}
- 
- 	stat = pmecc_readl_relaxed(host->ecc, ISR);
--	if (stat != 0)
--		if (pmecc_correction(mtd, stat, buf, &oob[eccpos[0]]) != 0)
-+	if (stat != 0) {
-+		bitflips = pmecc_correction(mtd, stat, buf, &oob[eccpos[0]]);
-+		if (bitflips < 0)
- 			return -EIO;
-+	}
- 
--	return 0;
-+	return bitflips;
- }
- 
- static int atmel_nand_pmecc_write_page(struct mtd_info *mtd,
+I don't want to diminish your work in any way, but what is the point of 
+the ubiblock feature? Mtd block devices are really only used in order to 
+give the mount/umount commands a block device, and for ubifs the device is 
+specified in another way. So I suspect the intended usage for ubiblock is 
+something else.
+
+/Ricard
 -- 
-1.7.9.5
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
