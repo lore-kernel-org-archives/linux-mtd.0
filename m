@@ -1,19 +1,20 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Tb4wO-0007ji-SC
- for linux-mtd@lists.infradead.org; Wed, 21 Nov 2012 07:41:50 +0000
-Message-ID: <1353483740.2701.1.camel@sauron.fi.intel.com>
-Subject: Re: Patch to solve NULL pointer dereference in physmap_of.c
+ id 1Tb52M-0000xV-E5
+ for linux-mtd@lists.infradead.org; Wed, 21 Nov 2012 07:47:59 +0000
+Message-ID: <1353484119.2701.4.camel@sauron.fi.intel.com>
+Subject: Re: Fix recovery after failed write-buffer operation in
+ cfi_cmdset_0002.c
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Prins Anton (ST-CO/ENG1.1)" <Anton.Prins@nl.bosch.com>
-Date: Wed, 21 Nov 2012 09:42:20 +0200
-In-Reply-To: <85D877DD6EE67B4A9FCA9B9C3A4865670C3ADE0635@SI-MBX14.de.bosch.com>
-References: <85D877DD6EE67B4A9FCA9B9C3A4865670C3ADE0635@SI-MBX14.de.bosch.com>
+To: Harald Nordgard-Hansen <hhansen@pvv.org>
+Date: Wed, 21 Nov 2012 09:48:39 +0200
+In-Reply-To: <509D03B7.3070304@pvv.org>
+References: <509D03B7.3070304@pvv.org>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-4AXoTifHnW8ZBlH3Mcu3"
+ boundary="=-2KobOJPOOLEDB1DmsXUd"
 Mime-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,60 +26,72 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-4AXoTifHnW8ZBlH3Mcu3
+--=-2KobOJPOOLEDB1DmsXUd
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2012-11-09 at 08:45 +0100, Prins Anton (ST-CO/ENG1.1) wrote:
-> commit 0905a6f4aec377123e94d2260f2f7a0d867e19be
-> Author: Anton Prins <anton.prins@nl.bosch.com>
-> Date:   Fri Nov 9 10:12:58 2012 +0100
->=20
->     Correct error checking to prevent a NULL pointer dereference
->=20
->     The problem only occurs if the DTS is not correct, the requested mapp=
-ing is not reserved on the parent bus.
->     In this special case the count is 1, but the list_size after mapping =
-is 0. list_size 0 should generate an error!
+Hi,
 
-Sorry, I do not really understand which problem this patch solves, could
-you please improve the commit message and re-send?
-
+On Fri, 2012-11-09 at 14:23 +0100, Harald Nordgard-Hansen wrote:
+> When working on a problem with some flash chips that lock up during
+> write-buffer operations, I think there may be a bug in the linux
+> handling of chips using cfi_cmdset_0002.c.
 >=20
-> diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.=
-c
-> index 2e6fb68..83d121e 100644
-> --- a/drivers/mtd/maps/physmap_of.c
-> +++ b/drivers/mtd/maps/physmap_of.c
-> @@ -267,13 +267,14 @@ static int __devinit of_flash_probe(struct platform=
-_device *dev)
->                 info->list[i].mtd->dev.parent =3D &dev->dev;
+> The datasheets I have found for a number of these chips all specify that
+> when aborting a write-buffer command, it is not enough to use the
+> standard reset.  Rather a "write-to-buffer-reset command" is needed.
+> This command is quite similar for all chips, the main variance seem to
+> be if the final 0xF0 can go to any address or must go to addr_unlock1.
+>=20
+> The bug is then in the recovery handling when timing out at the end of
+> do_write_buffer, where using the normal reset command is not sufficient.
+>=20
+> Without this change, if the write-buffer command fails then any
+> following operations on the flash also fail.
+>=20
+> The small patch here should apply against just about all kernels I've
+> seen over the last 5 years, the code has not changed in this area for a
+> long time...
+>=20
+> -Harald Nordg=C3=A5rd-Hansen
+
+Hi, your patch is not applicable, it is line-wrapped. Can you please
+send a patch I can easily apply?
+>=20
+> --------
+> --- a/drivers/mtd/chips/cfi_cmdset_0002.c      2012-05-21
+> 13:46:28.679794861 +0200
+> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c      2012-10-30
+> 18:27:49.939109556 +0100
+> @@ -1536,8 +1536,10 @@
+>                 UDELAY(map, chip, adr, 1);
 >         }
 >=20
+> -       /* reset on all failures. */
+> -       map_write( map, CMD(0xF0), chip->start );
 
-It seems the error condition should be checked and acted upon here. What
-you looks more like making the code less readable.
+Would be nice to put a short comment about what you do and why, may be
+some reference as well. Just to make sure if someone reads the code,
+he/she has some clue what are these about.
 
-> -       err =3D 0;
->         if (info->list_size =3D=3D 1) {
-> +               err =3D 0;
->                 info->cmtd =3D info->list[0].mtd;
->         } else if (info->list_size > 1) {
->                 /*
->                  * We detected multiple devices. Concatenate them togethe=
-r.
->                  */
-> +               err =3D 0;
->                 info->cmtd =3D mtd_concat_create(mtd_list, info->list_siz=
-e,
->                                                dev_name(&dev->dev));
->                 if (info->cmtd =3D=3D NULL)
+Thanks!
+
+> +       /* write-to-buffer-reset on all failures. */
+> +       cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
+> cfi->device_type, NULL);
+> +       cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi,
+> cfi->device_type, NULL);
+> +       cfi_send_gen_cmd(0xF0, cfi->addr_unlock1, chip->start, map, cfi,
+> cfi->device_type, NULL);
+>         xip_enable(map, chip, adr);
+>         /* FIXME - should have reset delay before continuing */
+
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-4AXoTifHnW8ZBlH3Mcu3
+--=-2KobOJPOOLEDB1DmsXUd
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -86,19 +99,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQrIXdAAoJECmIfjd9wqK0UEYP/jDPPvwtfjDYxtU88yqGl/0D
-OUHgSEZFwG6Br3C5BURKO5HY2FL5ZV62VcomejSW+PeSZnNCIecpvaHDmLL4forW
-qafGrh9Y1uxGPTTTP2h7QRFcOCGBoin8a6h7T3FqSHoRFMm20xrUaNp8YhC03C/a
-ti1htjghvPZwI7Goj+0lIqeo+rTiNP/08WvcDLIcQW6yD87UO9kONkL1Ll5G+owx
-QfCxLXMtvsScJO/y/Rfli8pB1ylJ+X3N8ATPK2MPjNG+LR0vfQFmYR8d1bp2iv6r
-W/Z1116gk0QdKhb8M5SXhcLv8J6rCE4+gyxAyCqdqTI7ZCZR6WaMKbzlH1UbA10b
-kNq0bUF3+cuNiFfIL8f7V42wZgJ0b5NUyN0GVmLzUZqAcGNodKu/YZZ4neHh4QZy
-QkqXxtS2aINMWMkwYgbQfRaKi1SV0C+Z8UfIi76m6tr9UfQ8Qw5RtvDULtSHQa4B
-qMF0TfNHE5Vj1y9aHTrRDpfn4hdPiFLioy45r76nNTc7aZ1u0BaEYsyuWRMfJnBr
-bN2si+tulqFttpYffXL1nxagNhg99pqdILizwH8KpVZs89rZP7lBM1tmjLSmOqvW
-WuCdYoMfpioP1HNbDLTz6WyYDcGv5HZAmymIoqukI+wFuUVOQ8Ja3qFgzofaMYSm
-rfO/dj1G+CIj4OiSsImh
-=C/NO
+iQIcBAABAgAGBQJQrIdXAAoJECmIfjd9wqK0kGcP/3oZi1ZuAYo6fPLSMiOm7NYT
+igK0sfifvwtY0V3LfgaSFR32VigrQ1dm3mbkCS04dGoq+Tf6R/d6RlAtZYl5y4Bh
+I36mJpxqzFnG0maeEkIQ9pYcQ5W6QFMZHYAyC4n04X0UQkQ/96psJIaKDMXNqayo
+VXefuwkjmAXQUeOG4WVfku+cCFdKHn6teWn2rpkZpRk72TLAR1wZpH6Kk5JWqiPd
+6eEiLO1mh4xhCe/ycoVm7A5YLYXvt4sLVIbHoRwocN4SeE7C6ugwvtzlXbDnk3/J
+lDFwqcrrsMn6k55wIDs5W8ganHxJc3qH2AxyWMWmPbkGLJ/pBm6lrW3WFCjqwDXY
+YZxwLLJ0Vf/rH6oL0PQPo5q9XeyL+HL3joH37wOez+/ol6T/s6F4P6U8Svrpt9hn
+zHB0uwkgBnI4YV3SETbHtoJo8OGLYMXRCxKKmlvApuJDIgBDA4B3QbMPMlo1d6Yh
+FIYXGKXuzAH9ZeTigptCKaOFYm+sWOPpmdg2Lsfk/8o1nY2WUbxUA4rG6LeN/1yD
+nJrtejk5bVmjn9f7kUO6+VSKjP/k098sWl4u8IDRx5eHUsqiylskxzb1yT7rDfE5
+dkhh3mJnXcCENxW3ZKXd51PEKxN90nQl57eguA+axZj2/FHuz24npiwGIhS1q0z5
+m0z+ujUlO5GOvngCRCxh
+=mcup
 -----END PGP SIGNATURE-----
 
---=-4AXoTifHnW8ZBlH3Mcu3--
+--=-2KobOJPOOLEDB1DmsXUd--
