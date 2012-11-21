@@ -1,21 +1,19 @@
 Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TbBog-0001dK-Nf
- for linux-mtd@lists.infradead.org; Wed, 21 Nov 2012 15:02:19 +0000
-Message-ID: <1353510173.2701.7.camel@sauron.fi.intel.com>
-Subject: Re: [RFC/PATCH] mtd_blkdevs: Replace request handler kthread with a
- workqueue
+ id 1TbBrS-0003YG-SC
+ for linux-mtd@lists.infradead.org; Wed, 21 Nov 2012 15:05:13 +0000
+Message-ID: <1353510354.2701.10.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: sm_ftl: Remove unused kthread stuff
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Ezequiel Garcia <elezegarcia@gmail.com>
-Date: Wed, 21 Nov 2012 17:02:53 +0200
-In-Reply-To: <1352563700-5268-1-git-send-email-elezegarcia@gmail.com>
-References: <1352563700-5268-1-git-send-email-elezegarcia@gmail.com>
+Date: Wed, 21 Nov 2012 17:05:54 +0200
+In-Reply-To: <1352565322-8731-1-git-send-email-elezegarcia@gmail.com>
+References: <1352565322-8731-1-git-send-email-elezegarcia@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-WFLYCMai6pYn34gU6uNV"
+ boundary="=-Hlq0dZriq4Lt/KqFBiL2"
 Mime-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org, Maxim Levitsky <maximlevitsky@gmail.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,32 +25,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-WFLYCMai6pYn34gU6uNV
+--=-Hlq0dZriq4Lt/KqFBiL2
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, 2012-11-10 at 13:08 -0300, Ezequiel Garcia wrote:
-> By replacing a kthread with a workqueue, the code is now a bit clearer.
-> There's also a slight reduction of code size (numbers apply for x86):
-> Before:
->    text	   data	    bss	    dec	    hex	filename
->    3248	     36	      0	   3284	    cd4	drivers/mtd/mtd_blkdevs.o
+On Sat, 2012-11-10 at 13:35 -0300, Ezequiel Garcia wrote:
+> This driver uses workqueues, not kthreads.
+> Remove kthread header and thread related comment.
 >=20
-> After:
->    text	   data	    bss	    dec	    hex	filename
->    3150	     36	      0	   3186	    c72	drivers/mtd/mtd_blkdevs.o
->=20
-> Due to lack of real hardware, tests have been performed on an emulated
-> environment with mtdswap and mtdblock over nandsim devices.
-> Some real testing should be done, before merging this patch.
+> Cc: Maxim Levitsky <maximlevitsky@gmail.com>
+> Signed-off-by: Ezequiel Garcia <elezegarcia@gmail.com>
 
-Looks good to me, thanks, pushed to l2-mtd.git.
+Aiaiai [1]!=20
+
+Aiaiai found out that this breaks the build!
+
+drivers/mtd/sm_ftl.c:1025:2: error: implicit declaration of function 'IS_ER=
+R' [-Werror=3Dimplicit-function-declaration]
+drivers/mtd/sm_ftl.c:1026:3: error: implicit declaration of function 'PTR_E=
+RR' [-Werror=3Dimplicit-function-declaration]
+
+Include <linux/err.h> instead, I guess.
+
+[1] git://git.infradead.org/users/dedekind/maintaining.git
+    git://git.infradead.org/users/dedekind/aiaiai.git
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-WFLYCMai6pYn34gU6uNV
+--=-Hlq0dZriq4Lt/KqFBiL2
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -60,19 +62,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQrO0dAAoJECmIfjd9wqK0piMQAMhcbdB0HeEj8TfitfYq7+LK
-2uMAim0/Mq7WJ3zZE6PVJ5CddCDfDwb04UNbSdUPig7CXkLNA8d3YWJXbj3nbERS
-It7F4DRWhkiSVIrSbnrAxd9hb8kHDUL7aGBg5kTDdZIq4CwDRcJArWKUvfhcD9OQ
-ors/G7WbM2JTPHdXkuKM2YzodyH9SQEFlT0wpix9ctBAnBIx/RgYDWgmIR3/fQlo
-hcAGAXr2bMRLJ7hDSggYJkEJiqYhOKe8+rFV74MHx6b1KHIknhF3h7vjNJU6LiEf
-nEBZrzbLFif+WCqUsyMJ055iccSOJgQ110c6yxMncQ6Io5JZgF0zxC/wOYUrR8uC
-EBCuXpf/hZccxpbXwsZqpNhOqjYjq2D7HldxVx3dZ/QoLej1tsrILtw0aKbWHAWL
-k00rIYZJM2P4vxHRguwEO+e4scMwxR+vjK4K+eFzq7rr81ubotQuKkCZt2rwgy++
-loTVd9fQvIlPZSsfI+KYcByqBuWXTM7PoWMFoSaPfDrGyJZvZnZM8BmfGhyj2eRf
-H3qhsBIa0A0mve99mFEWDjdkKGgvprw0qZGxkskziaIaEPuAoQa3ih3cX3qs2YzU
-FFmOxFHHdKU1nRGfR6vUHJ8QPimLuNZjNfywhInQtvoRtRAyN06/CK6NzfkjVtoR
-lcdUWACedIqUP1cRrSvS
-=+o2c
+iQIcBAABAgAGBQJQrO3SAAoJECmIfjd9wqK0i6kP/ReqBvCfo5+OzpaGag85WFRR
+mtwv71yx2JFAZQeo49r/krBh14sG61MAZLBh7koNYfhcNZM0Xb1XYR6Gje9fKPkz
+D9oCC4uP8YT83JwcMHf4CS8a6h3eDXbDHFrKDkNvN/E3GZZYo5k1TPyEA1V9fF6T
+kpLO23VnHpr4EUZ0KMbCXF6pwIOuNHdcbzUlfO4D7/s2ujRXVObHhUmsQqOJwxzD
+yMTqIAk3dw/Xhpc/moMBdJAEvB/tEhYlKqok+u+kd/BsxKllD/P9h/Pvse3oVGgM
+SIXV25cGRcD+0nXSq/xk3zAsJocuVo2DQhgL+bvjgfr86w7iEvJX56ws7kk8nhL7
+wXPMsxffHcTGMdBCMz6uVAwvq81LZPfmTZYDVTFrt9whKFsfTbSxUJwSkeaPWHNN
+/gRDCHXJy4+s64nWlw9vKrqKj4gl109p0+W6bh7B6t0xSwEVMTO6TQ0Lfsm7eNMf
+a4dSSCSl8KFjMIEGspRf030C4AqaBB9se2RLNqGBOx7FxTIhHvr6wd9d2r/fUa/Z
+LIlhLcV/fQyZY8BLWUSLoySYdVHjmLvns8dvXE9I7eVm6dKbe1HNYlXhEpsC5Z0h
+cXyiAPpKRnIJOjXtyFuAE37BPMHlW8CK+eMKSPQGd6i2x4ojoWhuxb5p9kvhr4Fl
+bMnycs0X6PEt+/o4KsSp
+=05J4
 -----END PGP SIGNATURE-----
 
---=-WFLYCMai6pYn34gU6uNV--
+--=-Hlq0dZriq4Lt/KqFBiL2--
