@@ -1,16 +1,17 @@
-Received: from ipmail06.adl2.internode.on.net ([2001:44b8:8060:ff02:300:1:2:6])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TbJwf-0004TH-2P
- for linux-mtd@lists.infradead.org; Wed, 21 Nov 2012 23:43:06 +0000
-Subject: [PATCH] mtd cs553x_nand: Initialise ecc.strength before nand_scan()
-From: Nathan Williams <nathan@traverse.com.au>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 22 Nov 2012 10:42:52 +1100
-Message-ID: <1353541372.12585.14.camel@laptop>
-Mime-Version: 1.0
+Message-ID: <50AD9E8E.7050402@atmel.com>
+Date: Thu, 22 Nov 2012 11:39:58 +0800
+From: Josh Wu <josh.wu@atmel.com>
+MIME-Version: 1.0
+To: Nicolas Ferre <nicolas.ferre@atmel.com>
+Subject: Re: [PATCH] MTD: at91: atmel_nand: return bit flips for the PMECC
+ read_page()
+References: <1353474863-28430-1-git-send-email-josh.wu@atmel.com>
+ <50ACA764.3030002@atmel.com>
+In-Reply-To: <50ACA764.3030002@atmel.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: mikedunn@newsguy.com, plagnioj@jcrosoft.com, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,63 +21,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Loading cs553x_nand with Hynix H27U1G8F2BTR NAND flash causes this bug:
+Hi, Nicolas
 
-kernel BUG at drivers/mtd/nand/nand_base.c:3345!
-invalid opcode: 0000 [#1] 
-Modules linked in: cs553x_nand(+) vfat fat usb_storage ehci_hcd usbcore usb_comr
-Pid: 436, comm: modprobe Not tainted 3.6.7 #1  
-EIP: 0060:[<c118d205>] EFLAGS: 00010296 CPU: 0
-EIP is at nand_scan_tail+0x64c/0x69c
-EAX: 00000034 EBX: cea6ed98 ECX: 00000000 EDX: 00000000
-ESI: cea6ec00 EDI: cea6ec00 EBP: 20000000 ESP: cdd17e48                         
- DS: 007b ES: 007b FS: 0000 GS: 0000 SS: 0068                                   
-CR0: 8005003b CR2: 0804e119 CR3: 0d850000 CR4: 00000090                         
-DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000                         
-DR6: ffff0ff0 DR7: 00000400                                                     
-Process modprobe (pid: 436, ti=cdd16000 task=cdd1c320 task.ti=cdd16000)         
-Stack:                                                                          
- c12e962c c118f7ef 00000003 cea6ed98 d014b25c 20000000 fffff007 00000001        
- 00000000 cdd53b00 d014b000 c1001021 cdd53b00 d01493c0 cdd53b00 cdd53b00        
- d01493c0 c1047f83 d014b4a0 00000000 cdd17f9c ce4be454 cdd17f48 cdd1c320        
-Call Trace:                                                                     
- [<c118f7ef>] ? nand_scan+0x1b/0x4d                                             
- [<d014b25c>] ? init_module+0x25c/0x2de [cs553x_nand]                           
- [<d014b000>] ? 0xd014afff                                                      
- [<c1001021>] ? do_one_initcall+0x21/0x111                                      
- [<c1047f83>] ? sys_init_module+0xe4/0x1261                                     
- [<c1031207>] ? task_work_run+0x36/0x43                                         
- [<c1265ced>] ? syscall_call+0x7/0xb                                            
-Code: fa ff ff c7 86 d8 00 00 00 01 00 00 00 e9 5f fc ff ff 68 f8 26 2e c1 e8 a7
-EIP: [<c118d205>] nand_scan_tail+0x64c/0x69c SS:ESP 0068:cdd17e48
+On 11/21/2012 6:05 PM, Nicolas Ferre wrote:
+> On 11/21/2012 06:14 AM, Josh Wu :
+>>
+> Can we have more comment to figure out why it is needed please?
 
-Initialising ecc.strength before the call to nand_scan() fixes this.
+I will add following comment in the commit message in the v2 version.
 
-Signed-off-by: Nathan Williams <nathan@traverse.com.au>
----
- drivers/mtd/nand/cs553x_nand.c |    3 +--
- 1 files changed, 1 insertions(+), 2 deletions(-)
+Since the commit: 3f91e94f7f511de74c0d2abe08672ccdbdd1961c ("mtd: nand: 
+read_page() returns max_bitflips ()")
+The ecc.read_page() method for nand drivers is changed to return the 
+maximum number of bitflips instead of just returning 0.
 
-diff --git a/drivers/mtd/nand/cs553x_nand.c b/drivers/mtd/nand/cs553x_nand.c
-index adb6c3e..2cdeab8 100644
---- a/drivers/mtd/nand/cs553x_nand.c
-+++ b/drivers/mtd/nand/cs553x_nand.c
-@@ -237,6 +237,7 @@ static int __init cs553x_init_one(int cs, int mmio, unsigned long adr)
- 	this->ecc.hwctl  = cs_enable_hwecc;
- 	this->ecc.calculate = cs_calculate_ecc;
- 	this->ecc.correct  = nand_correct_data;
-+	this->ecc.strength = 1;
- 
- 	/* Enable the following for a flash based bad block table */
- 	this->bbt_options = NAND_BBT_USE_FLASH;
-@@ -247,8 +248,6 @@ static int __init cs553x_init_one(int cs, int mmio, unsigned long adr)
- 		goto out_ior;
- 	}
- 
--	this->ecc.strength = 1;
--
- 	new_mtd->name = kasprintf(GFP_KERNEL, "cs553x_nand_cs%d", cs);
- 
- 	cs553x_mtd[cs] = new_mtd;
--- 
-1.7.2.5
+And the nand.h is also explain that. I would like to adapt to it.
+
+Best Regards,
+Josh Wu
+>
+> Best regards,
+>
+>> Signed-off-by: Josh Wu <josh.wu@atmel.com>
+>> ---
+>>   drivers/mtd/nand/atmel_nand.c |   13 +++++++++----
+>>   1 file changed, 9 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+>> index 9144557..860dd36 100644
+>> --- a/drivers/mtd/nand/atmel_nand.c
+>> +++ b/drivers/mtd/nand/atmel_nand.c
+>> @@ -723,6 +723,7 @@ static int pmecc_correction(struct mtd_info *mtd, u32 pmecc_stat, uint8_t *buf,
+>>   	struct atmel_nand_host *host = nand_chip->priv;
+>>   	int i, err_nbr, eccbytes;
+>>   	uint8_t *buf_pos;
+>> +	int total_err = 0;
+>>   
+>>   	eccbytes = nand_chip->ecc.bytes;
+>>   	for (i = 0; i < eccbytes; i++)
+>> @@ -750,12 +751,13 @@ normal_check:
+>>   				pmecc_correct_data(mtd, buf_pos, ecc, i,
+>>   					host->pmecc_bytes_per_sector, err_nbr);
+>>   				mtd->ecc_stats.corrected += err_nbr;
+>> +				total_err += err_nbr;
+>>   			}
+>>   		}
+>>   		pmecc_stat >>= 1;
+>>   	}
+>>   
+>> -	return 0;
+>> +	return total_err;
+>>   }
+>>   
+>>   static int atmel_nand_pmecc_read_page(struct mtd_info *mtd,
+>> @@ -767,6 +769,7 @@ static int atmel_nand_pmecc_read_page(struct mtd_info *mtd,
+>>   	uint32_t *eccpos = chip->ecc.layout->eccpos;
+>>   	uint32_t stat;
+>>   	unsigned long end_time;
+>> +	int bitflips = 0;
+>>   
+>>   	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_RST);
+>>   	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_DISABLE);
+>> @@ -789,11 +792,13 @@ static int atmel_nand_pmecc_read_page(struct mtd_info *mtd,
+>>   	}
+>>   
+>>   	stat = pmecc_readl_relaxed(host->ecc, ISR);
+>> -	if (stat != 0)
+>> -		if (pmecc_correction(mtd, stat, buf, &oob[eccpos[0]]) != 0)
+>> +	if (stat != 0) {
+>> +		bitflips = pmecc_correction(mtd, stat, buf, &oob[eccpos[0]]);
+>> +		if (bitflips < 0)
+>>   			return -EIO;
+>> +	}
+>>   
+>> -	return 0;
+>> +	return bitflips;
+>>   }
+>>   
+>>   static int atmel_nand_pmecc_write_page(struct mtd_info *mtd,
+>>
+>
