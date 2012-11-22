@@ -1,23 +1,15 @@
-Received: from mail-ie0-f177.google.com ([209.85.223.177])
+Received: from mail-da0-f49.google.com ([209.85.210.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TbO5z-0002uz-5K
- for linux-mtd@lists.infradead.org; Thu, 22 Nov 2012 04:09:00 +0000
-Received: by mail-ie0-f177.google.com with SMTP id e14so11047718iej.36
- for <linux-mtd@lists.infradead.org>; Wed, 21 Nov 2012 20:08:55 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <1353541372.12585.14.camel@laptop>
-References: <1353541372.12585.14.camel@laptop>
-Date: Wed, 21 Nov 2012 20:08:55 -0800
-Message-ID: <CAN8TOE-10VYTOS8EbPWxs0HyhdeZBzxL_8gmJsMmXPO1ti_6bQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd cs553x_nand: Initialise ecc.strength before
- nand_scan()
-From: Brian Norris <computersforpeace@gmail.com>
-To: Nathan Williams <nathan@traverse.com.au>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Mike Dunn <mikedunn@newsguy.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+ id 1TbQkD-0006JY-HM
+ for linux-mtd@lists.infradead.org; Thu, 22 Nov 2012 06:58:42 +0000
+Received: by mail-da0-f49.google.com with SMTP id v40so2306725dad.36
+ for <linux-mtd@lists.infradead.org>; Wed, 21 Nov 2012 22:58:40 -0800 (PST)
+From: Liming Wang <walimisdev@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [resend] [PATCH] mtd: m25p80: modify info for Micron N25Q128
+Date: Thu, 22 Nov 2012 14:58:09 +0800
+Message-Id: <1353567489-29220-1-git-send-email-walimisdev@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Jan Luebbe <jlu@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,19 +19,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Nov 21, 2012 at 3:42 PM, Nathan Williams <nathan@traverse.com.au> wrote:
-> Loading cs553x_nand with Hynix H27U1G8F2BTR NAND flash causes this bug:
->
-> kernel BUG at drivers/mtd/nand/nand_base.c:3345!
-...
-> Initialising ecc.strength before the call to nand_scan() fixes this.
+Micron N25Q128 has two types of flash:
 
-Acked-by: Brian Norris <computersforpeace@gmail.com>
+ - One is for 1.8v supply voltage, prefixed with "n25q128a11" and the jedec
+   code is 0x20bb18.
 
-BTW, I made a quick read through of the other NAND drivers to look for
-similar errors. I think this is the only one where the only
-ecc.strenght initialization occurred after the nand_scan() or
-nand_scan_tail() call.
+ - Another is for 3v supply voltage, prefixed with "n25q128a13" and the jedec
+   code is 0x20ba18.
 
-Thanks,
-Brian
+So modify the original type info and add another type for Micron N25Q128.
+
+Signed-off-by: Liming Wang <walimisdev@gmail.com>
+---
+ drivers/mtd/devices/m25p80.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 03838ba..9945a2a 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -664,7 +664,8 @@ static const struct spi_device_id m25p_ids[] = {
+ 	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
+ 
+ 	/* Micron */
+-	{ "n25q128",  INFO(0x20ba18, 0, 64 * 1024, 256, 0) },
++	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024, 256, 0) },
++	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024, 256, 0) },
+ 	{ "n25q256a", INFO(0x20ba19, 0, 64 * 1024, 512, SECT_4K) },
+ 
+ 	/* Spansion -- single (large) sector size only, at least
+-- 
+1.7.9.5
