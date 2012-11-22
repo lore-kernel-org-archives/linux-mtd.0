@@ -1,17 +1,23 @@
-Message-ID: <50AD9E8E.7050402@atmel.com>
-Date: Thu, 22 Nov 2012 11:39:58 +0800
-From: Josh Wu <josh.wu@atmel.com>
+Received: from mail-ie0-f177.google.com ([209.85.223.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TbO5z-0002uz-5K
+ for linux-mtd@lists.infradead.org; Thu, 22 Nov 2012 04:09:00 +0000
+Received: by mail-ie0-f177.google.com with SMTP id e14so11047718iej.36
+ for <linux-mtd@lists.infradead.org>; Wed, 21 Nov 2012 20:08:55 -0800 (PST)
 MIME-Version: 1.0
-To: Nicolas Ferre <nicolas.ferre@atmel.com>
-Subject: Re: [PATCH] MTD: at91: atmel_nand: return bit flips for the PMECC
- read_page()
-References: <1353474863-28430-1-git-send-email-josh.wu@atmel.com>
- <50ACA764.3030002@atmel.com>
-In-Reply-To: <50ACA764.3030002@atmel.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: mikedunn@newsguy.com, plagnioj@jcrosoft.com, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, dedekind1@gmail.com
+In-Reply-To: <1353541372.12585.14.camel@laptop>
+References: <1353541372.12585.14.camel@laptop>
+Date: Wed, 21 Nov 2012 20:08:55 -0800
+Message-ID: <CAN8TOE-10VYTOS8EbPWxs0HyhdeZBzxL_8gmJsMmXPO1ti_6bQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd cs553x_nand: Initialise ecc.strength before
+ nand_scan()
+From: Brian Norris <computersforpeace@gmail.com>
+To: Nathan Williams <nathan@traverse.com.au>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Mike Dunn <mikedunn@newsguy.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,83 +27,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Nicolas
-
-On 11/21/2012 6:05 PM, Nicolas Ferre wrote:
-> On 11/21/2012 06:14 AM, Josh Wu :
->>
-> Can we have more comment to figure out why it is needed please?
-
-I will add following comment in the commit message in the v2 version.
-
-Since the commit: 3f91e94f7f511de74c0d2abe08672ccdbdd1961c ("mtd: nand: 
-read_page() returns max_bitflips ()")
-The ecc.read_page() method for nand drivers is changed to return the 
-maximum number of bitflips instead of just returning 0.
-
-And the nand.h is also explain that. I would like to adapt to it.
-
-Best Regards,
-Josh Wu
+On Wed, Nov 21, 2012 at 3:42 PM, Nathan Williams <nathan@traverse.com.au> wrote:
+> Loading cs553x_nand with Hynix H27U1G8F2BTR NAND flash causes this bug:
 >
-> Best regards,
->
->> Signed-off-by: Josh Wu <josh.wu@atmel.com>
->> ---
->>   drivers/mtd/nand/atmel_nand.c |   13 +++++++++----
->>   1 file changed, 9 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
->> index 9144557..860dd36 100644
->> --- a/drivers/mtd/nand/atmel_nand.c
->> +++ b/drivers/mtd/nand/atmel_nand.c
->> @@ -723,6 +723,7 @@ static int pmecc_correction(struct mtd_info *mtd, u32 pmecc_stat, uint8_t *buf,
->>   	struct atmel_nand_host *host = nand_chip->priv;
->>   	int i, err_nbr, eccbytes;
->>   	uint8_t *buf_pos;
->> +	int total_err = 0;
->>   
->>   	eccbytes = nand_chip->ecc.bytes;
->>   	for (i = 0; i < eccbytes; i++)
->> @@ -750,12 +751,13 @@ normal_check:
->>   				pmecc_correct_data(mtd, buf_pos, ecc, i,
->>   					host->pmecc_bytes_per_sector, err_nbr);
->>   				mtd->ecc_stats.corrected += err_nbr;
->> +				total_err += err_nbr;
->>   			}
->>   		}
->>   		pmecc_stat >>= 1;
->>   	}
->>   
->> -	return 0;
->> +	return total_err;
->>   }
->>   
->>   static int atmel_nand_pmecc_read_page(struct mtd_info *mtd,
->> @@ -767,6 +769,7 @@ static int atmel_nand_pmecc_read_page(struct mtd_info *mtd,
->>   	uint32_t *eccpos = chip->ecc.layout->eccpos;
->>   	uint32_t stat;
->>   	unsigned long end_time;
->> +	int bitflips = 0;
->>   
->>   	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_RST);
->>   	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_DISABLE);
->> @@ -789,11 +792,13 @@ static int atmel_nand_pmecc_read_page(struct mtd_info *mtd,
->>   	}
->>   
->>   	stat = pmecc_readl_relaxed(host->ecc, ISR);
->> -	if (stat != 0)
->> -		if (pmecc_correction(mtd, stat, buf, &oob[eccpos[0]]) != 0)
->> +	if (stat != 0) {
->> +		bitflips = pmecc_correction(mtd, stat, buf, &oob[eccpos[0]]);
->> +		if (bitflips < 0)
->>   			return -EIO;
->> +	}
->>   
->> -	return 0;
->> +	return bitflips;
->>   }
->>   
->>   static int atmel_nand_pmecc_write_page(struct mtd_info *mtd,
->>
->
+> kernel BUG at drivers/mtd/nand/nand_base.c:3345!
+...
+> Initialising ecc.strength before the call to nand_scan() fixes this.
+
+Acked-by: Brian Norris <computersforpeace@gmail.com>
+
+BTW, I made a quick read through of the other NAND drivers to look for
+similar errors. I think this is the only one where the only
+ecc.strenght initialization occurred after the nand_scan() or
+nand_scan_tail() call.
+
+Thanks,
+Brian
