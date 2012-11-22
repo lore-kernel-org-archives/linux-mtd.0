@@ -1,17 +1,17 @@
 Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TbRCx-0007SS-Cf
- for linux-mtd@lists.infradead.org; Thu, 22 Nov 2012 07:28:24 +0000
-Message-ID: <1353569347.2701.16.camel@sauron.fi.intel.com>
-Subject: Re: /dev/ubi{x} MAJOR number enumeration
+ id 1TbRH4-0007cT-HE
+ for linux-mtd@lists.infradead.org; Thu, 22 Nov 2012 07:32:39 +0000
+Message-ID: <1353569603.2701.17.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH V2 0/6] bcm47xxnflash: read support for BCM4706
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: simon widmer <simonxwidmer@gmail.com>
-Date: Thu, 22 Nov 2012 09:29:07 +0200
-In-Reply-To: <50A3CE88.1080402@gmail.com>
-References: <50A3CE88.1080402@gmail.com>
+To: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
+Date: Thu, 22 Nov 2012 09:33:23 +0200
+In-Reply-To: <1352721805-14064-1-git-send-email-zajec5@gmail.com>
+References: <1352721805-14064-1-git-send-email-zajec5@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-T2BM2R4/Np6yTJT9n8Xi"
+ boundary="=-KcEM0EBuMugpug8cseYm"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
@@ -25,36 +25,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-T2BM2R4/Np6yTJT9n8Xi
+--=-KcEM0EBuMugpug8cseYm
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-11-14 at 18:02 +0100, simon widmer wrote:
-> hej,
+On Mon, 2012-11-12 at 13:03 +0100, Rafa=C5=82 Mi=C5=82ecki wrote:
+> I believe I've made "verify" tool working in my system and fixed
+> all warning/errors reported by it.
 >=20
-> I'm faceing an issue with ubi-enumeration. I am using UBI out of=20
-> mtd-1.5, i hope its more or less recent.
-> My issue is as follows. i have 7 ubi partitions. if im detaching every=
-=20
-> partition and try to reattach a single partition, in this case /dev/mtd6
-> to /dev/ubi2, there is some issue with the MAJOR nummer. I suppose its=
-=20
-> ubiattach's fault, it tells me to have attached the partition to ubi2
-> but in fact it attached it to the first (ubi0). Please consult the log=
-=20
-> below.
-> Is it me how is maloperating or is this a bug?
 
-Not sure what is going on. The ubi tools use /sys/class/ubi/ directory
-for finding most of the things. I suggest you to clone the latest
-mtd-utils, compile UBI tools with -g, and debug with gdb and see what
-see what is going on.
+Looks good to me, thanks, pushed to l2-mtd.git.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-T2BM2R4/Np6yTJT9n8Xi
+--=-KcEM0EBuMugpug8cseYm
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -62,19 +48,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQrdRDAAoJECmIfjd9wqK0TtUP/3WLwGYkXll7yzsspviwBqmQ
-cPjVdV3+t7EGoJfykhY8DEDiz8tSqlNUPq026jwt69LMH7HrT5WBumT7cY+5KbNG
-WtRnKN5H2w/+9589CXuCGEok64AtchBnxFb2jQDJKBH2AqXp6EdGH7jgLJhNEoz3
-fFFg1UcnCo+w4YkdAkUsNj52L0RyMiaPXUoj2Td8+kuJ0qYIYUvLn8E2XdFUsjyo
-rD1Q5FMQ//yl4AHMlge3/bxHQ/a8EkAfcqINrQ5r4ZwZ1H3Oia8l7yHd6MRKjFJI
-0p3EPXKtSWemfy5BMTInXlDh91kvv9NuBo9Jr4oDdlRYjtAihwPIxhI7mBpy4vhc
-FTJRWI6NEeAUIBa88MWIhBoGCi2T5HxMflSmKrXCOBZOVo0NUVY7LhDTlZIkKygA
-KHKdHoW8QEqEgLO8i1NeVj8gEUf44jg34hQKut8iBxjmzR5CMKKXcKcb8umd5c8R
-yi7zImFaJYdNA4UKHdaQCWvVsIyug6pViQXYQ3pgnH1cE8aCB4pDz/2NGyhJxOI7
-c6cPwfBT2DpdKwiYZbe/z2aJNm6L1Ored6NUPZsPcXs6zxEyv/PBVYSPURZ3s2lF
-B71+uCzlkW/PTGrTyYboy+5b6mwMFpWEJYIqWw4Gq8L5cMRN4+TCKHBXZVN5gOCZ
-ZPSp9yrQOWJHp8tUgsPC
-=dqDd
+iQIcBAABAgAGBQJQrdVDAAoJECmIfjd9wqK0wW0P/AmW9A0LFMfBPYDbi/R88LPs
+Gaf27zUYFZvavVIi52Itg3V54I5yMvg9BBW+B1NNpR38v+cJFBe1QXN54qymECFL
+gX4qwub37DrD4mTisiVL/mIfv+NUIPYUTcKAVOMZQgQkXdH9avDmImR/J/6QjH3O
+TuoPzfENGMOx2nYQGkHbuYSZiDDy1HTOCptyZOeO7qTzePYxMqLaElokiKd23Pxg
+Rge49ZdCZ00Fbod/YO8IkmZmOaFYmdB0e2EJghCusbDwKRYVhUfYCXw3HBzzH/nO
+qmDp3Ahb9ARUNonR16jmDsSoJF0qbc65SqkJXzHJo065D7i68LAoT2TX/xLzpKyV
+fLVw00jpcl78i0CYfce+rONvbRCUCzHdxs142zQRI8cXIXvzqc5+tQujzCoZ90yc
+igDixDSbtwMJ4HJ4zVam587G8NKaK2esfTHoXTYn2vJP+U2tUhAqMLZyQ5AsAR24
+jvfwC11D0MuIAR/iV/WFnQ2SPKOziWkskD/IkwlGHf9iBlu2zx+G1jQWPHD4rGuC
+aXtRUSOzGpBpoquy5ckiI2wSDeuSW1uUHveMbmTKHJqVC8ZT0p5gzHTjPRPoPcyL
+TeUQQqWRTwEg+ZCf0zcOQalfEbOtsOmpSEcawB6DaDAMItEU4EjZNrfn5V6yyB+c
+pcoWLyFSt8kvCB2gkPAW
+=+LH8
 -----END PGP SIGNATURE-----
 
---=-T2BM2R4/Np6yTJT9n8Xi--
+--=-KcEM0EBuMugpug8cseYm--
