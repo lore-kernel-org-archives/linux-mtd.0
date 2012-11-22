@@ -1,21 +1,22 @@
 Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TbUuv-0005kZ-8E
- for linux-mtd@lists.infradead.org; Thu, 22 Nov 2012 11:26:01 +0000
-Message-ID: <1353583603.2701.45.camel@sauron.fi.intel.com>
+ id 1TbUxc-00067W-QZ
+ for linux-mtd@lists.infradead.org; Thu, 22 Nov 2012 11:28:49 +0000
+Message-ID: <1353583773.2701.46.camel@sauron.fi.intel.com>
 Subject: Re: [patch] UBIFS: use kmalloc_array() in recomp_data_node()
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Dan Carpenter <dan.carpenter@oracle.com>
-Date: Thu, 22 Nov 2012 13:26:43 +0200
-In-Reply-To: <20121122111411.GJ6186@mwanda>
+Date: Thu, 22 Nov 2012 13:29:33 +0200
+In-Reply-To: <1353583603.2701.45.camel@sauron.fi.intel.com>
 References: <20121117151126.GA16900@elgon.mountain>
  <1353580297.2701.29.camel@sauron.fi.intel.com>
  <20121122111411.GJ6186@mwanda>
+ <1353583603.2701.45.camel@sauron.fi.intel.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-NbfXp+APIYqk7a3zkI2s"
+ boundary="=-nhL1oeWd+WFqaAMpXiQw"
 Mime-Version: 1.0
-Cc: kernel-janitors@vger.kernel.org, linux-mtd@lists.infradead.org,
+Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
  Adrian Hunter <adrian.hunter@intel.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,40 +29,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-NbfXp+APIYqk7a3zkI2s
+--=-nhL1oeWd+WFqaAMpXiQw
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-11-22 at 14:14 +0300, Dan Carpenter wrote:
-> On Thu, Nov 22, 2012 at 12:31:37PM +0200, Artem Bityutskiy wrote:
-> > On Sat, 2012-11-17 at 18:11 +0300, Dan Carpenter wrote:
-> > >  	out_len =3D le32_to_cpu(dn->size);
-> > > -	buf =3D kmalloc(out_len * WORST_COMPR_FACTOR, GFP_NOFS);
-> > > +	buf =3D kmalloc_array(out_len, WORST_COMPR_FACTOR, GFP_NOFS);
-> > >  	if (!buf)
-> > >  		return -ENOMEM;
-> >=20
-> > I think this makes the code unreadable, because we really allocate a
-> > buffer, not an array.
->=20
-> The problem with the original code is that the multiply looks very
-> suspect.  Everyone who reads it has to backtrack to find where
-> dn->size is capped.
->=20
-> I guess in one sense we never allocate an array, we always declare
-> it on the stack.  We debated the naming and there really isn't a
-> good name.  kmalloc_safe() isn't right either.  But anyway, the
-> intent is that eventually someone will right a coccinelle script
-> which replaces all these allocations with kmalloc_array().
+On Thu, 2012-11-22 at 13:26 +0200, Artem Bityutskiy wrote:
+> Did you consider kcalloc() ? Just like malloc() / calloc() libc
+> functions?=20
 
-Did you consider kcalloc() ? Just like malloc() / calloc() libc
-functions?
+Ah, there is kcaoloc already, so I guess then we could just put the
+overflow check there instead?
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-NbfXp+APIYqk7a3zkI2s
+--=-nhL1oeWd+WFqaAMpXiQw
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -69,19 +52,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQrgvzAAoJECmIfjd9wqK0xtQQALE1ajjLjBzAxH+77s4QtdmK
-SQ6IB8b81EP3g1DOcQWNCVVRwVt9V0V+vjMbhy8iCGJNRC8Z8lLIDESiVrRWs1kx
-E6OC1yFwJtxr3DO80oW4SyF25M5A7JEHLR85IiNa7dwlFGuUsDg8SGhac+5gLZ7B
-dbbifqIEAyZUXt/n7BlmmkSzWFXiNGEeAuoxthZG1vodOEGoNQiGeflDNbDvAMAm
-JmT70FsI1uLoAoNWhCQWW2h+pvhXlG9ECDYSuMTsln8NE8ryVg71+IpsBkx+JZkb
-86mQl0rpVP1C9EpfB1Dz6bWOKRdfN+DMceUv2sAFe7IBVdqKPItGwlNxJNJeghY4
-0QoBXzlvdSsO/Zifa0iBr0r6e7Yxp4gTNvRJmlueNpZr1/+VTPWG/bzECBVnjp0T
-QDXXbwGm/Woi74IsDxiOQ1GxM4nBW1TGiytFK/L1pQzV6HmDDl18PArQiLbTzqSr
-XkpGVr2RqtQ37lIKTqFlCKbUnUXQ2uW+1vFkpI2jGdRE7Q4KERAgqKE2zaaegeir
-Fqse0FPEPYGp1l8cH+zW5bYTlFGdyoK4L9gF/y8dW6qwvcgdrtiKkpzPdRPVSU2I
-Jt2TKLrEvUO2A/s8DbhGgCncYRMj6OjZne0egzyjoE57Id4y7cMDUZelNFUuLVBC
-v5afhaMfz+mZxpiegOgR
-=nIaL
+iQIcBAABAgAGBQJQrgydAAoJECmIfjd9wqK0OewP/iCE4xQu7H8orlxcTuruBUgU
+t7D6S/qPBQQQbV+4Y4JtuwGVKuUAgUXerthoTX84smTM/Sj32BXTeVKni0TYPOhN
+sXmt1oi3DfvNIsoU4Lo5VdfSO9MORtvaa4b75Nf4mkUjky5Xfr/a4xkp26yrrHMu
++mBrO6fJ72cuin1yMndLArarcp7k12Q0R1TDbp5FFyFjg1SLMM3d4WiRYNHa0ERc
+9d1CNScGzPARrc02l7Rmsodm1msQBUBWnQ/6pFvByQaK0Hj4UwCyHDdSzDxJYmu0
+skhVsujrbftglS1CsuO1bk17svibLit9b+TfmwL4SafGeOUCNp1dXUAsGCuJFR14
+cbUdnuhN4LR/Vzw8dggr8zxUDTsnUWXgHywxJvSZT7NboD3gImVz8SuV6+mh/Pdm
+6f8lJxEfubFfbKKrwgHTVlFym62eota8SdeQejE2dqp4F1Qw/EKjNH/HieuLV3rI
+95G1+p9VOP5ThPiZYNIcY1VwjgMbo3fJnS0TjNjT9pUHSZulyCx8AWDuTVjfYtim
+2xn8qMCtio2E8hmGs+EoTIFn17oCDnqyahg4Z+Ea7fejXrmhx13xghBwPmCueATA
+RvTXWPI3ftpaxZOMX5vdbM5a+E8tDnbB/GOK+AcasIEcgLuHiUCIjUtvNXNWU2/+
+9caGwLia4LSEkBIiO/dr
+=WtJ2
 -----END PGP SIGNATURE-----
 
---=-NbfXp+APIYqk7a3zkI2s--
+--=-nhL1oeWd+WFqaAMpXiQw--
