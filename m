@@ -1,25 +1,20 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TbatA-00048M-HK
- for linux-mtd@lists.infradead.org; Thu, 22 Nov 2012 17:48:39 +0000
-Message-ID: <50AE6571.5030100@parrot.com>
-Date: Thu, 22 Nov 2012 18:48:33 +0100
-From: Matthieu CASTET <matthieu.castet@parrot.com>
+Received: from mail-ia0-f177.google.com ([209.85.210.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Tbfmv-0007QJ-5k
+ for linux-mtd@lists.infradead.org; Thu, 22 Nov 2012 23:02:29 +0000
+Received: by mail-ia0-f177.google.com with SMTP id u21so5853108ial.36
+ for <linux-mtd@lists.infradead.org>; Thu, 22 Nov 2012 15:02:27 -0800 (PST)
 MIME-Version: 1.0
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Subject: Re: [PATCH 3/3] omap3 nand : use NAND_BUSWIDTH_AUTO
-References: <1352199105-30215-1-git-send-email-matthieu.castet@parrot.com>	
- <1352199105-30215-3-git-send-email-matthieu.castet@parrot.com>	
- <50990473.2090300@compulab.co.il> <50993F16.8070908@parrot.com>	
- <20121106184019.GI6801@atomide.com>
- <1353054136.3618.2.camel@sauron.fi.intel.com>
-In-Reply-To: <1353054136.3618.2.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Cc: Tony Lindgren <tony@atomide.com>, Afzal Mohammed <afzal@ti.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Igor Grinberg <grinberg@compulab.co.il>
+In-Reply-To: <1353510354.2701.10.camel@sauron.fi.intel.com>
+References: <1352565322-8731-1-git-send-email-elezegarcia@gmail.com>
+ <1353510354.2701.10.camel@sauron.fi.intel.com>
+Date: Thu, 22 Nov 2012 20:02:26 -0300
+Message-ID: <CALF0-+X9M3eQOBXerRCtmnZHaLP01CdW0PWxv88D3EZ2J-_fMA@mail.gmail.com>
+Subject: Re: [PATCH] mtd: sm_ftl: Remove unused kthread stuff
+From: Ezequiel Garcia <elezegarcia@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org, Maxim Levitsky <maximlevitsky@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,25 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem Bityutskiy a écrit :
-> On Tue, 2012-11-06 at 10:40 -0800, Tony Lindgren wrote:
->>> Where such tree could be found ?
->> You should be able to use omap-for-v3.8/cleanup-headers-gpmc
->> branch as a base for your patches [1].
-> 
-> Is this a stable branch which I may pull into l2-mtd.git? Then I could
-> merge Matthieu's patches.
-> 
+On Wed, Nov 21, 2012 at 12:05 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Sat, 2012-11-10 at 13:35 -0300, Ezequiel Garcia wrote:
+>> This driver uses workqueues, not kthreads.
+>> Remove kthread header and thread related comment.
+>>
+>> Cc: Maxim Levitsky <maximlevitsky@gmail.com>
+>> Signed-off-by: Ezequiel Garcia <elezegarcia@gmail.com>
+>
+> Aiaiai [1]!
+>
+> Aiaiai found out that this breaks the build!
+>
+> drivers/mtd/sm_ftl.c:1025:2: error: implicit declaration of function 'IS_ERR' [-Werror=implicit-function-declaration]
+> drivers/mtd/sm_ftl.c:1026:3: error: implicit declaration of function 'PTR_ERR' [-Werror=implicit-function-declaration]
+>
+> Include <linux/err.h> instead, I guess.
 
-patch 1 and 2 are not controller dependent.
+I can do that. But I can't get that error here :-(
 
-I added the support for the omap controller because I can easily test on it (and
- beagleboard got a x16 onfi flash).
+Mind me posting your config?
 
-What a shame that omap workflow is so complex :
-- I think Artem want support for at least one controller before merging generic code
-- I can rebase on omap-for-v3.8/cleanup-headers-gpmc, but this is weird to add
-generic code for nand that is not specific to omap on it ?
-
-
-Matthieu
+    Ezequiel
