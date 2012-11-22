@@ -1,22 +1,35 @@
-Received: from aserp1040.oracle.com ([141.146.126.69])
+Received: from bear.ext.ti.com ([192.94.94.41])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TbVy6-0000zx-AG
- for linux-mtd@lists.infradead.org; Thu, 22 Nov 2012 12:33:23 +0000
-Date: Thu, 22 Nov 2012 15:33:00 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [patch] UBIFS: use kmalloc_array() in recomp_data_node()
-Message-ID: <20121122123300.GM6186@mwanda>
-References: <20121117151126.GA16900@elgon.mountain>
- <1353580297.2701.29.camel@sauron.fi.intel.com>
- <20121122111411.GJ6186@mwanda>
- <1353583450.2701.44.camel@sauron.fi.intel.com>
+ id 1TbXvz-0004oY-CQ
+ for linux-mtd@lists.infradead.org; Thu, 22 Nov 2012 14:39:20 +0000
+From: "Philip, Avinash" <avinashphilip@ti.com>
+To: "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>
+Subject: RE: [PATCH v2 0/3] mtd: nand: OMAP: ELM error correction support
+ for BCH ecc
+Date: Thu, 22 Nov 2012 14:37:58 +0000
+Message-ID: <518397C60809E147AF5323E0420B992E3E9EE329@DBDE01.ent.ti.com>
+References: <1351667307-447-1-git-send-email-avinashphilip@ti.com>
+ <1352978534.2221.33.camel@sauron.fi.intel.com>
+ <518397C60809E147AF5323E0420B992E3E9EC70D@DBDE01.ent.ti.com>
+ <1353581032.2701.34.camel@sauron.fi.intel.com>
+In-Reply-To: <1353581032.2701.34.camel@sauron.fi.intel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1353583450.2701.44.camel@sauron.fi.intel.com>
-Cc: kernel-janitors@vger.kernel.org, linux-mtd@lists.infradead.org,
- Adrian Hunter <adrian.hunter@intel.com>
+Cc: "Mohammed, Afzal" <afzal@ti.com>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "tony@atomide.com" <tony@atomide.com>,
+ "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+ "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>,
+ "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>,
+ "Nori, Sekhar" <nsekhar@ti.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Hebbar,
+ Gururaja" <gururaja.hebbar@ti.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "rmk+kernel@arm.linux.org.uk" <rmk+kernel@arm.linux.org.uk>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,44 +39,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 22, 2012 at 01:24:10PM +0200, Artem Bityutskiy wrote:
-> On Thu, 2012-11-22 at 14:14 +0300, Dan Carpenter wrote:
-> > On Thu, Nov 22, 2012 at 12:31:37PM +0200, Artem Bityutskiy wrote:
-> > > On Sat, 2012-11-17 at 18:11 +0300, Dan Carpenter wrote:
-> > > >  	out_len = le32_to_cpu(dn->size);
-> > > > -	buf = kmalloc(out_len * WORST_COMPR_FACTOR, GFP_NOFS);
-> > > > +	buf = kmalloc_array(out_len, WORST_COMPR_FACTOR, GFP_NOFS);
-> > > >  	if (!buf)
-> > > >  		return -ENOMEM;
-> > > 
-> > > I think this makes the code unreadable, because we really allocate a
-> > > buffer, not an array.
-> > 
-> > The problem with the original code is that the multiply looks very
-> > suspect.  Everyone who reads it has to backtrack to find where
-> > dn->size is capped.
-> > 
-> > I guess in one sense we never allocate an array, we always declare
-> > it on the stack.  We debated the naming and there really isn't a
-> > good name.  kmalloc_safe() isn't right either.  But anyway, the
-> > intent is that eventually someone will right a coccinelle script
-> > which replaces all these allocations with kmalloc_array().
-> > 
-> > When I look at this code more, I still don't see a place where
-> > dn->size is capped.  So I think we *need* the integer overflow
-> > check as an integer overflow fix and not just as a cleanup.
-> 
-> It is validated in fs/ubifs/io.c in 'ubifs_check_node()'.
-> 
-> 'dn' stands for 'direntry node'. We read it from the media and validate
-> it immediately after we've read it, including 'dn->len'.
-> 
-> The entire code is written with the following assumption that whatever
-> is read from the flash media is validated.
-
-It's actually dn->size that we care about here.  That's not checked
-in ubifs_check_node().  :(  It may be checked somewhere else, I'm
-still looking.
-
-regards,
-dan cparenter
+T24gVGh1LCBOb3YgMjIsIDIwMTIgYXQgMTY6MTM6NTIsIEFydGVtIEJpdHl1dHNraXkgd3JvdGU6
+DQo+IE9uIFdlZCwgMjAxMi0xMS0yMSBhdCAwNzowMSArMDAwMCwgUGhpbGlwLCBBdmluYXNoIHdy
+b3RlOg0KPiA+ID4gSSBhbSBub3Qgc3VyZSBob3cgdGhpcyBkZXBlbmRlbmN5IGhhcyB0byBiZSBo
+YW5kbGVkIGZvciB0aGlzIHNlcmllcywNCj4gPiA+IGxldCBtZSBrbm93IHdoZXRoZXIgeW91IHN0
+aWxsIHdhbnQgaXQgdG8gYmUgbWFkZSBvdmVyIGwyLW10ZD8NCj4gPiANCj4gPiBBcnRlbSwNCj4g
+PiANCj4gPiBJcyBpdCBwb3NzaWJsZSBmb3IgeW91IHRvIGdpdmUgYWNrIGZvciB0aGVzZSBwYXRj
+aGVzIHNvIHRoYXQgdGhlc2UgcGF0Y2hlcw0KPiA+IGNhbiBnbyBpbiBUb255J3MgdHJlZSB3aGVy
+ZSBPbWFwLWdwbWMgY2hhbmdlcyBhcmUgcHJlc2VudD8NCj4gDQo+IEkgd291bGQgcHJlZmVyIGlm
+IHBlb3BsZSBsaWtlIEl2YW4gY291bGQgdGFrZSBhIGxvb2sgYXQgdGhpcyBmaXJzdC4NCg0KT2su
+DQoNCj4gDQo+IEFsc28sIEkgYW0gbm90IHN1cmUgdGhpcyBpcyBhIGdvb2QgaWRlYS4gT3IgYXQg
+bGVhc3Qgd2Ugc2hvdWxkIGFncmVlIG9uDQo+IHNvbWUgY29tbW9uIHN0cmF0ZWd5IGZvciBiaXQt
+ZmxpcHMgaW4gdGhlIGVyYXNlZCBhcmVhczoNCj4gDQo+ICIrICogMS4gSWYgcGFnZSBpcyBlcmFz
+ZWQsIGNoZWNrIHdpdGggc3RhbmRhcmQgZWNjIHZlY3RvciAoZWNjIHZlY3Rvcg0KPiArICogZm9y
+IGVyYXNlZCBwYWdlIHRvIGZpbmQgYW55IGJpdCBmbGlwKS4gSWYgY2hlY2sgZmFpbHMsIGJpdCBm
+bGlwDQo+ICsgKiBpcyBwcmVzZW50IGluIGVyYXNlZCBwYWdlLiBDb3VudCB0aGUgYml0IGZsaXBz
+IGluIGVyYXNlZCBwYWdlIGFuZA0KPiArICogaWYgaXQgZmFsbHMgdW5kZXIgY29ycmVjdGFibGUg
+bGV2ZWwsIHJlcG9ydCBwYWdlIHdpdGggMHhGRiBhbmQNCj4gKyAqIHVwZGF0ZSB0aGUgY29ycmVj
+dGFibGUgYml0IGluZm9ybWF0aW9uLiINCj4gDQoNCklkZWEgaGVyZSBpcyB0byBtYWtlIGZhc3Rl
+ciBzY2FubmluZyBvZiBlcmFzZWQgcGFnZSB3aXRob3V0IGJpdCBmbGlwcy4NCkZvciBvbWFwIG5h
+bmQgZHJpdmVyIGVjYyByZXBvcnRlZCBieSBoYXJkd2FyZSBpcyBub24temVybyBhbmQgbm9uIDB4
+ZmYuDQpTbyBjb21wYXJpbmcgd2l0aCB0aGUgc3RhbmRhcmQgdmVjdG9yIGZvciBlcmFzZWQgcGFn
+ZSBhbmQgc2tpcHBpbmcgZXJyb3INCmNvcnJlY3Rpb24gZm9yIGVyYXNlZCBwYWdlIHdpdGhvdXQg
+Yml0IGZsaXBzLg0KDQpTdHJhdGVneSBmb3IgYml0IGZsaXBzIGluIGVyYXNlZCBwYWdlIGJpdCBm
+bGlwcywgY2FuIGJlDQoxLiBEb24ndCBtYWtlIGFzIGVyYXNlZCBwYWdlIGFuZCBtYXJrIGl0IGFz
+IGJhZC4NCjIuIFJlcG9ydCB0aGUgZXJhc2VkIHBhZ2Ugd2l0aCBjb3JyZWN0YWJsZSBiaXQgZmxp
+cCBpZiBpdCBmYWxscyB1bmRlcg0KICAgY29ycmVjdGFibGUgbGV2ZWwuIFJlcG9ydCB0aGUgcGFn
+ZSB3aXRoIGVyYXNlZCBwYWdlIHdpdGggY29ycmVjdGFibGUNCiAgIGVycm9ycy4NCklzIHRoZSBj
+b25jZXJuIGlzIGhlcmUgd2l0aCBlcmFzZWQgcGFnZSB3aXRoIGNvcnJlY3RhYmxlIGVycm9yPw0K
+SSB0aGluayBhcyBlcnJvciBpcyB1bmRlciBjb3JyZWN0YWJsZSBsZXZlbCwgd2Ugc3RpbGwgY2Fu
+IHVzZSB0aGUgcGFnZS4NCk1heSBiZSB3ZSBjYW4gdGhpbmsgb2YgbGltaXRpbmcgdGhlIGNoZWNr
+IHRvIGhhbGYgb2YgY29ycmVjdGFibGUgbGV2ZWw/DQoNCkkgd291bGQgZ28gZm9yIG9wdGlvbiAy
+LCBzZWUgZGlzY3Vzc2lvbiBbMV0uDQogDQpPcHRpb24gMiBhZG9wdGVkIGluIHRoaXMgcGF0Y2gg
+c2VyaWVzLg0KDQo+IEJhc2ljYWxseSwgeW91IGFyZSB3b3JraW5nLWFyb3VuZCBKRkZTMiBsaW1p
+dGF0aW9ucy4NCj4gDQo+IERvIHlvdSBzdWdnZXN0IHdlIGRvIHRoaXMgaW4gYWxsIHRoZSBkcml2
+ZXJzPw0KDQpJIGFtIG5vdCBzdXJlIGhvdyB0aGUgc2l0dWF0aW9uIGhhbmRsZWQgaW4gb3RoZXIg
+ZHJpdmVycy4NClRoaXMgZGVwZW5kcyBvbiB0aGUgcGxhdGZvcm1zLiBUaGlzIG1ldGhvZCBjYW4g
+YmUgYWRvcHRlZCBmb3INCnBsYXRmb3JtcyB3aGVyZSBlY2MgcmVwb3J0ZWQgbm9uLXplcm8gJiBu
+b24gMHhmZiB3aXRoIGVyYXNlZCBwYWdlLg0KDQo+IA0KPiBJZiB3ZSB3YW50IHRvIGRvIHRoaXMs
+IG1heSBiZSB3ZSBiZXR0ZXIgZG8gdGhpcyBpbiBoaWdoZXIgbGV2ZWwsIGNvbW1vbg0KPiB0byBh
+bGwgZHJpdmVycz8NCj4gDQoNCkkgZG91YnQgaG93IHdlIGhhbmRsZSBpbiBoaWdoZXIgbGV2ZWwg
+d2l0aCBleGlzdGluZyBNVEQgc2V0dXAuDQpJc3N1ZXMgSSBhbSBzZWVpbmcgb24gaW1wbGVtZW50
+aW5nIGF0IGhpZ2hlciBsYXllciBpcw0KMS4gQ2FsY3VsYXRpb24gb2Ygc3RhbmRhcmQgZWNjIHZl
+Y3RvciBmb3IgZXJhc2VkIHBhZ2UuDQoyLiBTa2lwcGluZyBlY2MgZXJyb3IgY29ycmVjdGlvbiwg
+YXMgY3VycmVudGx5IGVycm9yIGNvcnJlY3Rpb24gaW4NCiAgIC5yZWFkX3BhZ2UoKQ0KIENhbiBi
+ZSBoYW5kbGVkIGJ5IGFkZGluZyBjb21tb24gLnJlYWRfcGFnZSgpIG1ldGhvZCBvbiBjZXJ0YWlu
+IGZsYWcsDQogcG9wdWxhdGVkIGZvciBwbGF0Zm9ybSBzcGVjaWZpYy4NCg0KMS4gaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2xpbnV4LW10ZC8yMDExLUFwcmlsLzAzNDYwNC5o
+dG1sDQoNClRoYW5rcw0KQXZpbmFzaA0KDQo+IC0tIA0KPiBCZXN0IFJlZ2FyZHMsDQo+IEFydGVt
+IEJpdHl1dHNraXkNCj4gDQoNCg==
