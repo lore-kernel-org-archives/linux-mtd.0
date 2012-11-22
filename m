@@ -1,23 +1,21 @@
-Received: from mail-wi0-f177.google.com ([209.85.212.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TbRKZ-0007tG-8x
- for linux-mtd@lists.infradead.org; Thu, 22 Nov 2012 07:36:15 +0000
-Received: by mail-wi0-f177.google.com with SMTP id c10so377929wiw.0
- for <linux-mtd@lists.infradead.org>; Wed, 21 Nov 2012 23:36:11 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <1353569732.2701.19.camel@sauron.fi.intel.com>
-References: <1352721805-14064-1-git-send-email-zajec5@gmail.com>
- <1353511181.2701.13.camel@sauron.fi.intel.com>
- <CACna6rzc1zvMQWD=eFoiNWjXV40BkDv-gCkH=tgKqEEb=b36wg@mail.gmail.com>
- <1353569732.2701.19.camel@sauron.fi.intel.com>
-Date: Thu, 22 Nov 2012 08:36:10 +0100
-Message-ID: <CACna6rz4+BXRdSy6CDahJtsqgU6Sz+qgNc-r4qwhZwv7LwXocQ@mail.gmail.com>
-Subject: Re: [PATCH V2 0/6] bcm47xxnflash: read support for BCM4706
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Received: from mga11.intel.com ([192.55.52.93])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TbRSM-0000gk-Qz
+ for linux-mtd@lists.infradead.org; Thu, 22 Nov 2012 07:44:19 +0000
+Message-ID: <1353570301.2701.20.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: m25p80: add support for the Winbond w25q80bl chip
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Stephen Warren <swarren@wwwdotorg.org>
+Date: Thu, 22 Nov 2012 09:45:01 +0200
+In-Reply-To: <1352750308-1095-1-git-send-email-swarren@wwwdotorg.org>
+References: <1352750308-1095-1-git-send-email-swarren@wwwdotorg.org>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-2D11SCe3PMBjiN0EM8h4"
+Mime-Version: 1.0
+Cc: Stephen Warren <swarren@nvidia.com>, David Woodhouse <dwmw2@infradead.org>,
+ linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,29 +25,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2012/11/22 Artem Bityutskiy <dedekind1@gmail.com>:
-> On Wed, 2012-11-21 at 17:19 +0100, Rafa=C5=82 Mi=C5=82ecki wrote:
->> 2012/11/21 Artem Bityutskiy <dedekind1@gmail.com>:
->> > On Mon, 2012-11-12 at 13:03 +0100, Rafa=C5=82 Mi=C5=82ecki wrote:
->> >> I believe I've made "verify" tool working in my system and fixed
->> >> all warning/errors reported by it.
->> >
->> > Please, send me a configuration which I can use to compile-test this
->> > stuff.
->>
->> I think this is the .config user by OpenWRT building system. It has
->> CONFIG_MTD_NAND_BCM47XXNFLASH=3Dy
->> so looks sane.
->>
->> Unfortunately it's not a minimal config possible, that allows testing
->> bcm47xxnflash. Are you OK with that?
->
-> Thanks. I've actually instead modified my own mips-bcm47xx_defconfig
-> from the 'maintaining.git' project, so it has
-> CONFIG_MTD_NAND_BCM47XXNFLASH=3Dm now.
 
-Good idea, thanks :) I'll just use your config in the future for
-testing changes.
+--=-2D11SCe3PMBjiN0EM8h4
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, 2012-11-12 at 12:58 -0700, Stephen Warren wrote:
+> From: Stephen Warren <swarren@nvidia.com>
+>=20
+> Signed-off-by: Stephen Warren <swarren@nvidia.com>
+
+Pushed to l2-mtd.git, thanks!
 
 --=20
-Rafa=C5=82
+Best Regards,
+Artem Bityutskiy
+
+--=-2D11SCe3PMBjiN0EM8h4
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQrdf9AAoJECmIfjd9wqK0wJIQAJiC2RDoVTEtPHLaGDITxnGU
+tzW9ZGHYC0AE4zrk/X3/pLb2SmL0OrPeCQeRBBCGwiiwaaW1BBN9i0u/B9WSDrII
+WRhC/WQftnCzhaetemrcYQvgns+jI/sqUrJk6lw1CUkNRfcI8rf69T+BfROssdXd
+UEDnivexv8HgYyYFFF/CsfSi+oIELjZ4hdS1lohLZ1Yc79S6VkIZEHcfQpkrZEbM
+sLqfAMlaysTvhcxU0l9VO679wCnSOONclFhoms5Lctc0kGU0Z0Ddz25xrop7RS5X
+FVZpTK86hKUEgTuleHKciLRxEuZYd6toSdf5DIM7o4HC9/ur+AdQq0vRSKWz36k/
+Sgg7yrcTx3JB9QRhncmYbruVcEo8jh818wUsdBfhp2Z4PBsULafNI22Zj6nU60JS
+QjGaSjGnaDET0hfTpdwd01Wu/i/cO7Q69RQDZnF4MKgw07ACVvyAoDt1cdcdY98F
+7/TkhTRy9zSV+KKV6t/trxe3rjLaNDdk659gwkTCez0/oSy/+JeqjmH/n0EDL0U4
+DA7vSfS8FyWKGY9ylYHsV9ylnOJ3DRMi/oGFYpGEdRsZGknBSYNQBxo4DKhfDagg
+cSExXIiHj0lP5C8p7rcqNt9XPi/bnnMKkXSXWtUJPXt5dfZp1bb/ocN/GvJCxwZ6
+HEYKOV0rgF5ovcjcnBJ8
+=sSSt
+-----END PGP SIGNATURE-----
+
+--=-2D11SCe3PMBjiN0EM8h4--
