@@ -1,19 +1,21 @@
-Received: from asav4.lyse.net ([81.167.36.150])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Tc1Sq-0004li-Dz
- for linux-mtd@lists.infradead.org; Fri, 23 Nov 2012 22:11:13 +0000
-Message-ID: <50AFF477.2030803@pvv.org>
-Date: Fri, 23 Nov 2012 23:11:03 +0100
-From: Harald Nordgard-Hansen <hhansen@pvv.org>
+Received: from mail-ie0-f177.google.com ([209.85.223.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Tc2tK-0005gj-Gw
+ for linux-mtd@lists.infradead.org; Fri, 23 Nov 2012 23:42:39 +0000
+Received: by mail-ie0-f177.google.com with SMTP id k13so2045077iea.36
+ for <linux-mtd@lists.infradead.org>; Fri, 23 Nov 2012 15:42:35 -0800 (PST)
 MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: Fix recovery after failed write-buffer operation in
- cfi_cmdset_0002.c
-References: <509D03B7.3070304@pvv.org>
- <1353484119.2701.4.camel@sauron.fi.intel.com>
-In-Reply-To: <1353484119.2701.4.camel@sauron.fi.intel.com>
-Content-Type: multipart/mixed; boundary="------------090307080802020901090303"
-Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <20121123232600.5e0c5aab.shmulik.ladkani@gmail.com>
+References: <1353672809-4768-1-git-send-email-elezegarcia@gmail.com>
+ <20121123232600.5e0c5aab.shmulik.ladkani@gmail.com>
+Date: Fri, 23 Nov 2012 20:42:35 -0300
+Message-ID: <CALF0-+VLju8MNu=T9_qVZJsQK6w7H9gq_qnTKTySKPQnZi5QTA@mail.gmail.com>
+Subject: Re: [RFC/PATCH] ubi: Replace wear leveling thread with a workqueue
+From: Ezequiel Garcia <elezegarcia@gmail.com>
+To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,57 +25,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
---------------090307080802020901090303
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Hi Shmulik,
 
-On 11/21/12 08:48, Artem Bityutskiy wrote:
-> Hi, your patch is not applicable, it is line-wrapped. Can you
-> please send a patch I can easily apply?
+Thanks for the review.
 
-Sorry about that.  It's been way too many years since I regularly sent
-patches in mail.  If this attempt does not work better, I'll just do
-it all manually instead of trying to use these new-fangled MUAs. :-)
+On Fri, Nov 23, 2012 at 6:26 PM, Shmulik Ladkani
+<shmulik.ladkani@gmail.com> wrote:
+[...]
+>> -             spin_lock(&ubi->wl_lock);
+>> -             if (list_empty(&ubi->works) || ubi->ro_mode ||
+>
+> Originally, 'ubi_thread' did nothing if 'ubi->ro_mode'.
+> This filtering is missing from 'ubi_wl_do_work' implementation.
+> How do we guarantee 'ubi_wl_do_work' is never queued when in RO mode?
+>
 
-> Would be nice to put a short comment about what you do and why, may
-> be some reference as well. Just to make sure if someone reads the
-> code, he/she has some clue what are these about.
+I believe that we do this through ubi->wq_enabled. See here:
 
-Hopefully in place now.
+static void __schedule_ubi_work(struct ubi_device *ubi, struct ubi_work *wrk)
+{
+        spin_lock(&ubi->wl_lock);
+        list_add_tail(&wrk->list, &ubi->works);
+        ubi_assert(ubi->works_count >= 0);
+        ubi->works_count += 1;
+        if (ubi->wq_enabled && !ubi_dbg_is_bgt_disabled(ubi))
+                queue_work(ubi->workqueue, &ubi->work);
+        spin_unlock(&ubi->wl_lock);
+}
 
--Harald
--- 
-Harald Nordgård-Hansen
+As you can see from above, work is queued only if ubi->wq_enabled
+(which should be a boolean and probably with inverse logic,
+but that's not important).
+Unless I've missed something, this patch doesn't change that.
 
---------------090307080802020901090303
-Content-Type: text/x-patch;
- name="write_buffer_recovery.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="write_buffer_recovery.patch"
+[...]
+>> +     if (failures++ > WL_MAX_FAILURES) {
+>> +             /*
+>> +              * Too many failures, disable the workqueue and
+>> +              * switch to read-only mode.
+>> +              */
+>
+> This condition will never be met (after your change), since 'failures'
+> is local to 'ubi_wl_do_work' (per work invocation).
+>
+> Formerly, 'failures' was local to 'ubi_thread' (per ubi device's
+> thread), hence it was possible that several 'do_works()' calls have
+> failed during thread's lifetime, reaching the WL_MAX_FAILURES limit.
+>
+> If we'd like to preseve the 'failures' semantics, 'failures' should be
+> an 'ubi_device' property.
+>
 
-diff -ru a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
---- a/drivers/mtd/chips/cfi_cmdset_0002.c	2012-11-23 22:43:05.000000000 +0100
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c	2012-11-23 23:01:58.000000000 +0100
-@@ -1536,8 +1536,16 @@
- 		UDELAY(map, chip, adr, 1);
- 	}
- 
--	/* reset on all failures. */
--	map_write( map, CMD(0xF0), chip->start );
-+	/*
-+	 * Recovery from write-buffer programming failures requires
-+	 * the write-to-buffer-reset sequence.  Since the last part
-+	 * of the sequence also works as a normal reset, we can run
-+	 * the same commands regardless of why we are here.
-+	 * See e.g. http://www.spansion.com/Support/Application%20Notes/MirrorBit_Write_Buffer_Prog_Page_Buffer_Read_AN.pdf
-+	 */
-+	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
-+	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->device_type, NULL);
-+	cfi_send_gen_cmd(0xF0, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
- 	xip_enable(map, chip, adr);
- 	/* FIXME - should have reset delay before continuing */
- 
+Ah, totally right. I overlooked and assumed 'failures' was per-device.
+Now I see it's local scoped. Will fix in V2.
 
---------------090307080802020901090303--
+> One last thing:
+> Some variables and functions (debug and sysfs) are still named *bgt*,
+> which is confusing.
+>
+
+I made specific reference to that in the commit message.
+I didn't want to change any userspace related to prevent
+userspace tools/scripts from stop working.
+
+If we all agree (and specially Artem) I can rename everything
+to something like wq_foo, wq_bar.
+
+Thanks again!
+
+    Ezequiel
