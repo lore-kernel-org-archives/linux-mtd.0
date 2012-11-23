@@ -1,19 +1,22 @@
-Received: from mail-ea0-f177.google.com ([209.85.215.177])
+Received: from mail-ie0-f177.google.com ([209.85.223.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Tbp5R-0003xK-MY
- for linux-mtd@lists.infradead.org; Fri, 23 Nov 2012 08:58:14 +0000
-Received: by mail-ea0-f177.google.com with SMTP id c10so1683973eaa.36
- for <linux-mtd@lists.infradead.org>; Fri, 23 Nov 2012 00:58:12 -0800 (PST)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: linux-mtd@lists.infradead.org,
-	Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH][SEE DEPENDENCY] bcm47xxnflash: support NAND_CMD_STATUS
-Date: Fri, 23 Nov 2012 09:58:11 +0100
-Message-Id: <1353661091-6426-1-git-send-email-zajec5@gmail.com>
+ id 1TbpGS-0005vR-HI
+ for linux-mtd@lists.infradead.org; Fri, 23 Nov 2012 09:09:40 +0000
+Received: by mail-ie0-f177.google.com with SMTP id k13so1143436iea.36
+ for <linux-mtd@lists.infradead.org>; Fri, 23 Nov 2012 01:09:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+In-Reply-To: <CALF0-+VY17Gud1p0EFkXFP1YG+AEbjmXLbgjGSFrjd61paJZ5A@mail.gmail.com>
+References: <CAMjNe_cJG6wkiPDvVZzqURz4gVTW8Dx4JrM-KPVbVedLwsDfcw@mail.gmail.com>
+ <CALF0-+WioO2vhKWA7ZofktKnfcKCcKTsqdEVpwA2BjQzqCSE9Q@mail.gmail.com>
+ <CAMjNe_ce5Ra7C=yNiSPaq36e1B1qbcvp53Rnc11YS0qoZ9sc1g@mail.gmail.com>
+ <CALF0-+VY17Gud1p0EFkXFP1YG+AEbjmXLbgjGSFrjd61paJZ5A@mail.gmail.com>
+Date: Fri, 23 Nov 2012 14:39:34 +0530
+Message-ID: <CAMjNe_cPnj4gj6TisGt4=OppEnHyBrDMCC31WcczzrpzFppoeg@mail.gmail.com>
+Subject: Re: [RFC] LFTL: a FTL for large parallel IO flash cards
+From: srimugunthan dhandapani <srimugunthan.dhandapani@gmail.com>
+To: Ezequiel Garcia <elezegarcia@gmail.com>, jevinsweval@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,57 +26,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Sat, Nov 17, 2012 at 6:41 PM, Ezequiel Garcia <elezegarcia@gmail.com> wrote:
+> Hi,
+>
+> On Sat, Nov 17, 2012 at 8:37 AM, srimugunthan dhandapani
+> <srimugunthan.dhandapani@gmail.com> wrote:
+>> On Sat, Nov 17, 2012 at 2:04 AM, Ezequiel Garcia <elezegarcia@gmail.com> wrote:
+>>> Hi,
+>>>
+>>> Thanks for the patch!
+>>>
+>>> Though I haven't read the code in detail, I have a few minor comments to make.
+>>
+>> Thanks for the comments. This is my first big patch. I have only sent
+>> trivial patches before.
+>> Sorry for the mistakes
+>> I will resend with formatted patch later.
+>>
+>> I realize the code is not perfect. There are also some very long functions.
+>> For this thread, I request people to kindly ignore code format.
+>> Some general comments with respect to design, any reference
+>> papers/code i should be aware of,
+>> or ideas to improve performance(particularly random IO performance)
+>>  will be very helpful for me.
+>>
+>
+> I understand that. However, keep in mind some developers feel uncomfortable
+> when looking at badly formatted code and this may hurt the reviewing process.
+>
+> IMHO, if you want to get feedback, try to ease developers reviewing process
+> by making the code as polished as possible.
+> Some numbers on how this is performing, comparing against current alternatives
+> as ubifs, jffs2, etc. might be useful.
+>
+> Just a thought!
+>
+> Good luck,
+>
+>     Ezequiel
 
-Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
----
-Please note this patch depends on:
-[PATCH] bcm47xxnflash: define some magic numbers
----
- drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c |   11 +++++++++++
- 1 files changed, 11 insertions(+), 0 deletions(-)
+People were asking about what was the flash card that i was using.
+It is NetApp FlashCache.
 
-diff --git a/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c b/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c
-index 672dc90..ece343c 100644
---- a/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c
-+++ b/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c
-@@ -156,6 +156,7 @@ static void bcm47xxnflash_ops_bcm4706_cmdfunc(struct mtd_info *mtd,
- {
- 	struct nand_chip *nand_chip = (struct nand_chip *)mtd->priv;
- 	struct bcm47xxnflash *b47n = (struct bcm47xxnflash *)nand_chip->priv;
-+	struct bcma_drv_cc *cc = b47n->cc;
- 	u32 ctlcode;
- 	int i;
- 
-@@ -196,6 +197,11 @@ static void bcm47xxnflash_ops_bcm4706_cmdfunc(struct mtd_info *mtd,
- 		}
- 
- 		break;
-+	case NAND_CMD_STATUS:
-+		ctlcode = NCTL_CSA | NCTL_CMD0 | NAND_CMD_STATUS;
-+		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(cc, ctlcode))
-+			pr_err("STATUS command error\n");
-+		break;
- 	case NAND_CMD_READ0:
- 		break;
- 	case NAND_CMD_READOOB:
-@@ -213,6 +219,7 @@ static u8 bcm47xxnflash_ops_bcm4706_read_byte(struct mtd_info *mtd)
- {
- 	struct nand_chip *nand_chip = (struct nand_chip *)mtd->priv;
- 	struct bcm47xxnflash *b47n = (struct bcm47xxnflash *)nand_chip->priv;
-+	struct bcma_drv_cc *cc = b47n->cc;
- 	u32 tmp = 0;
- 
- 	switch (b47n->curr_command) {
-@@ -223,6 +230,10 @@ static u8 bcm47xxnflash_ops_bcm4706_read_byte(struct mtd_info *mtd)
- 			return 0;
- 		}
- 		return b47n->id_data[b47n->curr_column++];
-+	case NAND_CMD_STATUS:
-+		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(cc, NCTL_READ))
-+			return 0;
-+		return bcma_cc_read32(cc, BCMA_CC_NFLASH_DATA) & 0xff;
- 	case NAND_CMD_READOOB:
- 		bcm47xxnflash_ops_bcm4706_read(mtd, (u8 *)&tmp, 4);
- 		return tmp & 0xFF;
--- 
-1.7.7
+http://www.netapp.com/us/products/storage-systems/flash-cache/
+
+It is currently used as accelaration flash cards.
+
+The card was donated to our college and I did the LFTL as part of my
+masters thesis.
+thanks,
+mugunthan
