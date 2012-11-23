@@ -1,21 +1,19 @@
-Received: from mail-wi0-f173.google.com ([209.85.212.173])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Tc0lW-0008N3-9L
- for linux-mtd@lists.infradead.org; Fri, 23 Nov 2012 21:26:27 +0000
-Received: by mail-wi0-f173.google.com with SMTP id hn17so1428742wib.0
- for <linux-mtd@lists.infradead.org>; Fri, 23 Nov 2012 13:26:23 -0800 (PST)
-Date: Fri, 23 Nov 2012 23:26:00 +0200
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: Ezequiel Garcia <elezegarcia@gmail.com>
-Subject: Re: [RFC/PATCH] ubi: Replace wear leveling thread with a workqueue
-Message-ID: <20121123232600.5e0c5aab.shmulik.ladkani@gmail.com>
-In-Reply-To: <1353672809-4768-1-git-send-email-elezegarcia@gmail.com>
-References: <1353672809-4768-1-git-send-email-elezegarcia@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Artem Bityutskiy <dedekind1@gmail.com>
+Received: from asav4.lyse.net ([81.167.36.150])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Tc1Sq-0004li-Dz
+ for linux-mtd@lists.infradead.org; Fri, 23 Nov 2012 22:11:13 +0000
+Message-ID: <50AFF477.2030803@pvv.org>
+Date: Fri, 23 Nov 2012 23:11:03 +0100
+From: Harald Nordgard-Hansen <hhansen@pvv.org>
+MIME-Version: 1.0
+To: dedekind1@gmail.com
+Subject: Re: Fix recovery after failed write-buffer operation in
+ cfi_cmdset_0002.c
+References: <509D03B7.3070304@pvv.org>
+ <1353484119.2701.4.camel@sauron.fi.intel.com>
+In-Reply-To: <1353484119.2701.4.camel@sauron.fi.intel.com>
+Content-Type: multipart/mixed; boundary="------------090307080802020901090303"
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,93 +23,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ezequiel,
+This is a multi-part message in MIME format.
+--------------090307080802020901090303
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, 23 Nov 2012 09:13:29 -0300 Ezequiel Garcia <elezegarcia@gmail.com> wrote:
->  /**
-> - * ubi_thread - UBI background thread.
-> + * ubi_wl_do_work - UBI background wl worker function.
->   * @u: the UBI device description object pointer
->   */
-> -int ubi_thread(void *u)
-> +void ubi_wl_do_work(struct work_struct *work)
->  {
-> +	int err;
->  	int failures = 0;
-> -	struct ubi_device *ubi = u;
-> -
-> -	ubi_msg("background thread \"%s\" started, PID %d",
-> -		ubi->bgt_name, task_pid_nr(current));
-> -
-> -	set_freezable();
-> -	for (;;) {
-> -		int err;
-> -
-> -		if (kthread_should_stop())
-> -			break;
-> +	struct ubi_device *ubi = container_of(work, struct ubi_device, work);
->  
-> -		if (try_to_freeze())
-> -			continue;
-> -
-> -		spin_lock(&ubi->wl_lock);
-> -		if (list_empty(&ubi->works) || ubi->ro_mode ||
+On 11/21/12 08:48, Artem Bityutskiy wrote:
+> Hi, your patch is not applicable, it is line-wrapped. Can you
+> please send a patch I can easily apply?
 
-Originally, 'ubi_thread' did nothing if 'ubi->ro_mode'.
-This filtering is missing from 'ubi_wl_do_work' implementation.
-How do we guarantee 'ubi_wl_do_work' is never queued when in RO mode?
+Sorry about that.  It's been way too many years since I regularly sent
+patches in mail.  If this attempt does not work better, I'll just do
+it all manually instead of trying to use these new-fangled MUAs. :-)
 
-> -		    !ubi->thread_enabled || ubi_dbg_is_bgt_disabled(ubi)) {
-> -			set_current_state(TASK_INTERRUPTIBLE);
-> -			spin_unlock(&ubi->wl_lock);
-> -			schedule();
-> -			continue;
-> -		}
-> -		spin_unlock(&ubi->wl_lock);
-> +	err = do_work(ubi);
-> +	if (!err)
-> +		return;
->  
-> -		err = do_work(ubi);
-> -		if (err) {
-> -			ubi_err("%s: work failed with error code %d",
-> -				ubi->bgt_name, err);
-> -			if (failures++ > WL_MAX_FAILURES) {
-> -				/*
-> -				 * Too many failures, disable the thread and
-> -				 * switch to read-only mode.
-> -				 */
-> -				ubi_msg("%s: %d consecutive failures",
-> -					ubi->bgt_name, WL_MAX_FAILURES);
-> -				ubi_ro_mode(ubi);
-> -				ubi->thread_enabled = 0;
-> -				continue;
-> -			}
-> -		} else
-> -			failures = 0;
-> -
-> -		cond_resched();
-> +	ubi_err("%s: work failed with error code %d",
-> +		ubi->wq_name, err);
-> +	if (failures++ > WL_MAX_FAILURES) {
-> +		/*
-> +		 * Too many failures, disable the workqueue and
-> +		 * switch to read-only mode.
-> +		 */
+> Would be nice to put a short comment about what you do and why, may
+> be some reference as well. Just to make sure if someone reads the
+> code, he/she has some clue what are these about.
 
-This condition will never be met (after your change), since 'failures'
-is local to 'ubi_wl_do_work' (per work invocation).
+Hopefully in place now.
 
-Formerly, 'failures' was local to 'ubi_thread' (per ubi device's
-thread), hence it was possible that several 'do_works()' calls have
-failed during thread's lifetime, reaching the WL_MAX_FAILURES limit.
+-Harald
+-- 
+Harald Nordgård-Hansen
 
-If we'd like to preseve the 'failures' semantics, 'failures' should be
-an 'ubi_device' property.
+--------------090307080802020901090303
+Content-Type: text/x-patch;
+ name="write_buffer_recovery.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="write_buffer_recovery.patch"
 
-One last thing:
-Some variables and functions (debug and sysfs) are still named *bgt*,
-which is confusing.
+diff -ru a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c	2012-11-23 22:43:05.000000000 +0100
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c	2012-11-23 23:01:58.000000000 +0100
+@@ -1536,8 +1536,16 @@
+ 		UDELAY(map, chip, adr, 1);
+ 	}
+ 
+-	/* reset on all failures. */
+-	map_write( map, CMD(0xF0), chip->start );
++	/*
++	 * Recovery from write-buffer programming failures requires
++	 * the write-to-buffer-reset sequence.  Since the last part
++	 * of the sequence also works as a normal reset, we can run
++	 * the same commands regardless of why we are here.
++	 * See e.g. http://www.spansion.com/Support/Application%20Notes/MirrorBit_Write_Buffer_Prog_Page_Buffer_Read_AN.pdf
++	 */
++	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
++	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->device_type, NULL);
++	cfi_send_gen_cmd(0xF0, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
+ 	xip_enable(map, chip, adr);
+ 	/* FIXME - should have reset delay before continuing */
+ 
 
-Regards,
-Shmulik
+--------------090307080802020901090303--
