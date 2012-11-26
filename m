@@ -1,16 +1,22 @@
-Received: from sauhun.de ([89.238.76.85] helo=pokefinder.org)
+Received: from co9ehsobe005.messaging.microsoft.com ([207.46.163.28]
+ helo=co9outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Td7m8-0007jM-NR
- for linux-mtd@lists.infradead.org; Mon, 26 Nov 2012 23:07:41 +0000
-From: Wolfram Sang <wolfram@the-dreams.de>
-To: linux-mtd@lists.infradead.org
-Subject: =?UTF-8?q?=5BPATCH=5D=20mtd=3A=20nand=3A=20Kconfig=3A=20drop=20utf8=20characters?=
-Date: Tue, 27 Nov 2012 00:07:25 +0100
-Message-Id: <1353971245-26735-1-git-send-email-wolfram@the-dreams.de>
+ id 1Td7xE-00086h-ML
+ for linux-mtd@lists.infradead.org; Mon, 26 Nov 2012 23:19:09 +0000
+Date: Mon, 26 Nov 2012 17:18:48 -0600
+From: Scott Wood <scottwood@freescale.com>
+Subject: Re: [PATCH] mtd: nand: Kconfig: drop utf8 characters
+To: Wolfram Sang <wolfram@the-dreams.de>
+References: <1353971245-26735-1-git-send-email-wolfram@the-dreams.de>
+In-Reply-To: <1353971245-26735-1-git-send-email-wolfram@the-dreams.de> (from
+ wolfram@the-dreams.de on Mon Nov 26 17:07:25 2012)
+Message-ID: <1353971928.2383.18@tyr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Wolfram Sang <wolfram@the-dreams.de>, Martin Walch <walch.martin@web.de>
+Content-Type: text/plain; charset="us-ascii"; delsp=Yes; format=Flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Cc: Wolfram Sang <wolfram@the-dreams.de>, Martin Walch <walch.martin@web.de>,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,37 +26,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The Linux Kernel Configuration system (lkc) expects 8 bit characters
-only (declared in scripts/kconfig/zconf.l: %option 8bit). Fix two flaws
-that cause minor glitches like broken characters in xconfig.
+On 11/26/2012 05:07:25 PM, Wolfram Sang wrote:
+> The Linux Kernel Configuration system (lkc) expects 8 bit characters
+> only (declared in scripts/kconfig/zconf.l: %option 8bit).
 
-Reported-by: Martin Walch <walch.martin@web.de>
-Signed-off-by: Wolfram Sang <wolfram@the-dreams.de>
----
+That option contrasts with being limited to 7-bit characters, not with =20
+accepting UTF-8.  It may be that kconfig has problems with UTF-8, but I =20
+don't think this is why.
 
-Fixes bugzilla entry #43067
-
- drivers/mtd/nand/Kconfig |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 4883139..5a5bae7 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -354,12 +354,12 @@ config MTD_NAND_SHARPSL
- 	depends on ARCH_PXA
- 
- config MTD_NAND_CAFE
--	tristate "NAND support for OLPC CAFÉ chip"
-+	tristate "NAND support for OLPC CAFE chip"
- 	depends on PCI
- 	select REED_SOLOMON
- 	select REED_SOLOMON_DEC16
- 	help
--	  Use NAND flash attached to the CAFÉ chip designed for the OLPC
-+	  Use NAND flash attached to the CAFE chip designed for the OLPC
- 	  laptop.
- 
- config MTD_NAND_CS553X
--- 
-1.7.10.4
+-Scott=
