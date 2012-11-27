@@ -1,18 +1,34 @@
-Message-ID: <50B42617.3060701@atmel.com>
-Date: Tue, 27 Nov 2012 10:31:51 +0800
-From: Josh Wu <josh.wu@atmel.com>
+Received: from devils.ext.ti.com ([198.47.26.153])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TdH9Q-0002Fd-86
+ for linux-mtd@lists.infradead.org; Tue, 27 Nov 2012 09:08:21 +0000
+From: "Philip, Avinash" <avinashphilip@ti.com>
+To: "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>
+Subject: RE: [PATCH v2 0/3] mtd: nand: OMAP: ELM error correction support
+ for BCH ecc
+Date: Tue, 27 Nov 2012 09:07:00 +0000
+Message-ID: <518397C60809E147AF5323E0420B992E3E9F0484@DBDE01.ent.ti.com>
+References: <1351667307-447-1-git-send-email-avinashphilip@ti.com>
+ <1352978534.2221.33.camel@sauron.fi.intel.com>
+ <518397C60809E147AF5323E0420B992E3E9EC70D@DBDE01.ent.ti.com>
+ <1353581032.2701.34.camel@sauron.fi.intel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-To: Mike Dunn <mikedunn@newsguy.com>
-Subject: Re: [PATCH] MTD: at91: atmel_nand: return bit flips for the PMECC
- read_page()
-References: <1353474863-28430-1-git-send-email-josh.wu@atmel.com>
- <50B3D35C.2000704@newsguy.com>
-In-Reply-To: <50B3D35C.2000704@newsguy.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: nicolas.ferre@atmel.com, plagnioj@jcrosoft.com,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- dedekind1@gmail.com
+Cc: "Mohammed, Afzal" <afzal@ti.com>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "tony@atomide.com" <tony@atomide.com>,
+ "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+ "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>,
+ "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>,
+ "Nori, Sekhar" <nsekhar@ti.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Hebbar,
+ Gururaja" <gururaja.hebbar@ti.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "rmk+kernel@arm.linux.org.uk" <rmk+kernel@arm.linux.org.uk>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,114 +38,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Mike
-
-On 11/27/2012 4:38 AM, Mike Dunn wrote:
-> Hi Josh, sorry for the delay.
->
-> I guess maybe I missed this one when I did the bitflips patch?
-
-no, it seems that my patch is merged in mtd git tree after your changes. 
-So when you do the bitflips patch, my patch is not existed in that 
-moment.  :)
-
-> Anyway, please
-> see below...
->
->
-> On 11/20/2012 09:14 PM, Josh Wu wrote:
->> Signed-off-by: Josh Wu <josh.wu@atmel.com>
->> ---
->>   drivers/mtd/nand/atmel_nand.c |   13 +++++++++----
->>   1 file changed, 9 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
->> index 9144557..860dd36 100644
->> --- a/drivers/mtd/nand/atmel_nand.c
->> +++ b/drivers/mtd/nand/atmel_nand.c
->> @@ -723,6 +723,7 @@ static int pmecc_correction(struct mtd_info *mtd, u32 pmecc_stat, uint8_t *buf,
->>   	struct atmel_nand_host *host = nand_chip->priv;
->>   	int i, err_nbr, eccbytes;
->>   	uint8_t *buf_pos;
->> +	int total_err = 0;
->>   
->>   	eccbytes = nand_chip->ecc.bytes;
->>   	for (i = 0; i < eccbytes; i++)
->> @@ -750,12 +751,13 @@ normal_check:
->>   				pmecc_correct_data(mtd, buf_pos, ecc, i,
->>   					host->pmecc_bytes_per_sector, err_nbr);
->>   				mtd->ecc_stats.corrected += err_nbr;
->> +				total_err += err_nbr;
->>   			}
->>   		}
->>   		pmecc_stat >>= 1;
->>   	}
->>   
->> -	return 0;
->> +	return total_err;
->>   }
->>   
->>   static int atmel_nand_pmecc_read_page(struct mtd_info *mtd,
->> @@ -767,6 +769,7 @@ static int atmel_nand_pmecc_read_page(struct mtd_info *mtd,
->>   	uint32_t *eccpos = chip->ecc.layout->eccpos;
->>   	uint32_t stat;
->>   	unsigned long end_time;
->> +	int bitflips = 0;
->>   
->>   	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_RST);
->>   	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_DISABLE);
->> @@ -789,11 +792,13 @@ static int atmel_nand_pmecc_read_page(struct mtd_info *mtd,
->>   	}
->>   
->>   	stat = pmecc_readl_relaxed(host->ecc, ISR);
->> -	if (stat != 0)
->> -		if (pmecc_correction(mtd, stat, buf, &oob[eccpos[0]]) != 0)
->> +	if (stat != 0) {
->> +		bitflips = pmecc_correction(mtd, stat, buf, &oob[eccpos[0]]);
->> +		if (bitflips < 0)
->>   			return -EIO;
->
-> This is wrong.  In the case of uncorrectible bitflips, read_page() should return
-> 0.  The nand infrastructure code is alerted to the uncorrectible bitflips case
-> by the ecc_stats, and returns -EBADMSG.  This is the correct return code from
-> the mtd layer (i.e., mtd_read()) for uncorrectible bitflips.  (See the bottom of
-> nand_do_read_ops() in nand_base.c.)
->
-> Returning 0 when uncorrectible bitflips occur is a bit counter-intuitive and
-> potentially confusing, I know.  (Fixing that would involve some rework to
-> nand_base.c.)  This prompted me to add this comment in nand.h:
->
->   * @read_page:	function to read a page according to the ECC generator
->   *		requirements; returns maximum number of bitflips corrected in
->   *		any single ECC step, 0 if bitflips uncorrectable, -EIO hw error
-
-yes, I just noticed this. I think in the v2 patch, I included this fix too.
->
-> I made a similiar mistake in the docg4 driver, where I returned -EBADMSG on
-> uncorrectible errors.  One consequence of that mistake was that mtdchar returned
-> 0 to userspace, which user code interprets as 0 bytes read, and typically
-> re-issues the read.  When I ran nanddump, the read of a page containing the
-> uncorrectible errors was repeated over and over.  In the case of this patch as
-> currently implemented, -EIO will get propagated up as-is, and the entire read
-> operation will be aborted with an error.  -EIO should only be returned in the
-> case of a hardware error.
-
-Thanks for all the detail information, that is very clear to me. I will 
-send out v2 patch soon.
-
-Best Regards,
-Josh Wu
-
->
-> Hope this makes sense.
->
-> Mike
->
->
->> +	}
->>   
->> -	return 0;
->> +	return bitflips;
->>   }
->>   
->>   static int atmel_nand_pmecc_write_page(struct mtd_info *mtd,
+T24gVGh1LCBOb3YgMjIsIDIwMTIgYXQgMjA6MDY6NDEsIFBoaWxpcCwgQXZpbmFzaCB3cm90ZToN
+Cj4gT24gVGh1LCBOb3YgMjIsIDIwMTIgYXQgMTY6MTM6NTIsIEFydGVtIEJpdHl1dHNraXkgd3Jv
+dGU6DQo+ID4gT24gV2VkLCAyMDEyLTExLTIxIGF0IDA3OjAxICswMDAwLCBQaGlsaXAsIEF2aW5h
+c2ggd3JvdGU6DQo+ID4gPiA+IEkgYW0gbm90IHN1cmUgaG93IHRoaXMgZGVwZW5kZW5jeSBoYXMg
+dG8gYmUgaGFuZGxlZCBmb3IgdGhpcyBzZXJpZXMsDQo+ID4gPiA+IGxldCBtZSBrbm93IHdoZXRo
+ZXIgeW91IHN0aWxsIHdhbnQgaXQgdG8gYmUgbWFkZSBvdmVyIGwyLW10ZD8NCj4gPiA+IA0KPiA+
+ID4gQXJ0ZW0sDQo+ID4gPiANCj4gPiA+IElzIGl0IHBvc3NpYmxlIGZvciB5b3UgdG8gZ2l2ZSBh
+Y2sgZm9yIHRoZXNlIHBhdGNoZXMgc28gdGhhdCB0aGVzZSBwYXRjaGVzDQo+ID4gPiBjYW4gZ28g
+aW4gVG9ueSdzIHRyZWUgd2hlcmUgT21hcC1ncG1jIGNoYW5nZXMgYXJlIHByZXNlbnQ/DQo+ID4g
+DQo+ID4gSSB3b3VsZCBwcmVmZXIgaWYgcGVvcGxlIGxpa2UgSXZhbiBjb3VsZCB0YWtlIGEgbG9v
+ayBhdCB0aGlzIGZpcnN0Lg0KPiANCj4gT2suDQoNCkl2YW4vQXJ0ZW0sDQoNCkFueSBjb21tZW50
+cyBpbiB0aGlzIHBhdGNoIHNlcmllcz8NCkkgaG9wZSBFTE0gc3VwcG9ydCBjYW4gZ2V0IGluIDMu
+OC4NCg0KPiANCj4gPiANCj4gPiBBbHNvLCBJIGFtIG5vdCBzdXJlIHRoaXMgaXMgYSBnb29kIGlk
+ZWEuIE9yIGF0IGxlYXN0IHdlIHNob3VsZCBhZ3JlZSBvbg0KPiA+IHNvbWUgY29tbW9uIHN0cmF0
+ZWd5IGZvciBiaXQtZmxpcHMgaW4gdGhlIGVyYXNlZCBhcmVhczoNCj4gPiANCj4gPiAiKyAqIDEu
+IElmIHBhZ2UgaXMgZXJhc2VkLCBjaGVjayB3aXRoIHN0YW5kYXJkIGVjYyB2ZWN0b3IgKGVjYyB2
+ZWN0b3INCj4gPiArICogZm9yIGVyYXNlZCBwYWdlIHRvIGZpbmQgYW55IGJpdCBmbGlwKS4gSWYg
+Y2hlY2sgZmFpbHMsIGJpdCBmbGlwDQo+ID4gKyAqIGlzIHByZXNlbnQgaW4gZXJhc2VkIHBhZ2Uu
+IENvdW50IHRoZSBiaXQgZmxpcHMgaW4gZXJhc2VkIHBhZ2UgYW5kDQo+ID4gKyAqIGlmIGl0IGZh
+bGxzIHVuZGVyIGNvcnJlY3RhYmxlIGxldmVsLCByZXBvcnQgcGFnZSB3aXRoIDB4RkYgYW5kDQo+
+ID4gKyAqIHVwZGF0ZSB0aGUgY29ycmVjdGFibGUgYml0IGluZm9ybWF0aW9uLiINCj4gPiANCj4g
+DQo+IElkZWEgaGVyZSBpcyB0byBtYWtlIGZhc3RlciBzY2FubmluZyBvZiBlcmFzZWQgcGFnZSB3
+aXRob3V0IGJpdCBmbGlwcy4NCj4gRm9yIG9tYXAgbmFuZCBkcml2ZXIgZWNjIHJlcG9ydGVkIGJ5
+IGhhcmR3YXJlIGlzIG5vbi16ZXJvIGFuZCBub24gMHhmZi4NCj4gU28gY29tcGFyaW5nIHdpdGgg
+dGhlIHN0YW5kYXJkIHZlY3RvciBmb3IgZXJhc2VkIHBhZ2UgYW5kIHNraXBwaW5nIGVycm9yDQo+
+IGNvcnJlY3Rpb24gZm9yIGVyYXNlZCBwYWdlIHdpdGhvdXQgYml0IGZsaXBzLg0KPiANCj4gU3Ry
+YXRlZ3kgZm9yIGJpdCBmbGlwcyBpbiBlcmFzZWQgcGFnZSBiaXQgZmxpcHMsIGNhbiBiZQ0KPiAx
+LiBEb24ndCBtYWtlIGFzIGVyYXNlZCBwYWdlIGFuZCBtYXJrIGl0IGFzIGJhZC4NCj4gMi4gUmVw
+b3J0IHRoZSBlcmFzZWQgcGFnZSB3aXRoIGNvcnJlY3RhYmxlIGJpdCBmbGlwIGlmIGl0IGZhbGxz
+IHVuZGVyDQo+ICAgIGNvcnJlY3RhYmxlIGxldmVsLiBSZXBvcnQgdGhlIHBhZ2Ugd2l0aCBlcmFz
+ZWQgcGFnZSB3aXRoIGNvcnJlY3RhYmxlDQo+ICAgIGVycm9ycy4NCj4gSXMgdGhlIGNvbmNlcm4g
+aXMgaGVyZSB3aXRoIGVyYXNlZCBwYWdlIHdpdGggY29ycmVjdGFibGUgZXJyb3I/DQo+IEkgdGhp
+bmsgYXMgZXJyb3IgaXMgdW5kZXIgY29ycmVjdGFibGUgbGV2ZWwsIHdlIHN0aWxsIGNhbiB1c2Ug
+dGhlIHBhZ2UuDQo+IE1heSBiZSB3ZSBjYW4gdGhpbmsgb2YgbGltaXRpbmcgdGhlIGNoZWNrIHRv
+IGhhbGYgb2YgY29ycmVjdGFibGUgbGV2ZWw/DQo+IA0KPiBJIHdvdWxkIGdvIGZvciBvcHRpb24g
+Miwgc2VlIGRpc2N1c3Npb24gWzFdLg0KPiAgDQo+IE9wdGlvbiAyIGFkb3B0ZWQgaW4gdGhpcyBw
+YXRjaCBzZXJpZXMuDQo+IA0KPiA+IEJhc2ljYWxseSwgeW91IGFyZSB3b3JraW5nLWFyb3VuZCBK
+RkZTMiBsaW1pdGF0aW9ucy4NCj4gPiANCj4gPiBEbyB5b3Ugc3VnZ2VzdCB3ZSBkbyB0aGlzIGlu
+IGFsbCB0aGUgZHJpdmVycz8NCj4gDQo+IEkgYW0gbm90IHN1cmUgaG93IHRoZSBzaXR1YXRpb24g
+aGFuZGxlZCBpbiBvdGhlciBkcml2ZXJzLg0KPiBUaGlzIGRlcGVuZHMgb24gdGhlIHBsYXRmb3Jt
+cy4gVGhpcyBtZXRob2QgY2FuIGJlIGFkb3B0ZWQgZm9yDQo+IHBsYXRmb3JtcyB3aGVyZSBlY2Mg
+cmVwb3J0ZWQgbm9uLXplcm8gJiBub24gMHhmZiB3aXRoIGVyYXNlZCBwYWdlLg0KDQpBbnkgY29t
+bWVudHM/DQoNClRoYW5rcw0KQXZpbmFzaA0KDQo+IA0KPiA+IA0KPiA+IElmIHdlIHdhbnQgdG8g
+ZG8gdGhpcywgbWF5IGJlIHdlIGJldHRlciBkbyB0aGlzIGluIGhpZ2hlciBsZXZlbCwgY29tbW9u
+DQo+ID4gdG8gYWxsIGRyaXZlcnM/DQo+ID4gDQo+IA0KPiBJIGRvdWJ0IGhvdyB3ZSBoYW5kbGUg
+aW4gaGlnaGVyIGxldmVsIHdpdGggZXhpc3RpbmcgTVREIHNldHVwLg0KPiBJc3N1ZXMgSSBhbSBz
+ZWVpbmcgb24gaW1wbGVtZW50aW5nIGF0IGhpZ2hlciBsYXllciBpcw0KPiAxLiBDYWxjdWxhdGlv
+biBvZiBzdGFuZGFyZCBlY2MgdmVjdG9yIGZvciBlcmFzZWQgcGFnZS4NCj4gMi4gU2tpcHBpbmcg
+ZWNjIGVycm9yIGNvcnJlY3Rpb24sIGFzIGN1cnJlbnRseSBlcnJvciBjb3JyZWN0aW9uIGluDQo+
+ICAgIC5yZWFkX3BhZ2UoKQ0KPiAgQ2FuIGJlIGhhbmRsZWQgYnkgYWRkaW5nIGNvbW1vbiAucmVh
+ZF9wYWdlKCkgbWV0aG9kIG9uIGNlcnRhaW4gZmxhZywNCj4gIHBvcHVsYXRlZCBmb3IgcGxhdGZv
+cm0gc3BlY2lmaWMuDQo+IA0KPiAxLiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9waXBlcm1h
+aWwvbGludXgtbXRkLzIwMTEtQXByaWwvMDM0NjA0Lmh0bWwNCj4gDQo+IFRoYW5rcw0KPiBBdmlu
+YXNoDQo+IA0KPiA+IC0tIA0KPiA+IEJlc3QgUmVnYXJkcywNCj4gPiBBcnRlbSBCaXR5dXRza2l5
+DQo+ID4gDQo+IA0KPiANCg0K
