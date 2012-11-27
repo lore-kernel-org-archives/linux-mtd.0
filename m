@@ -1,18 +1,23 @@
-Message-ID: <50B50143.7080408@newsguy.com>
-Date: Tue, 27 Nov 2012 10:06:59 -0800
+Received: from smtp.newsguy.com ([74.209.136.69])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TdPcc-0003Vw-GL
+ for linux-mtd@lists.infradead.org; Tue, 27 Nov 2012 18:11:03 +0000
+Message-ID: <50B5024C.3030907@newsguy.com>
+Date: Tue, 27 Nov 2012 10:11:24 -0800
 From: Mike Dunn <mikedunn@newsguy.com>
 MIME-Version: 1.0
-To: Josh Wu <josh.wu@atmel.com>
-Subject: Re: [PATCH] MTD: at91: atmel_nand: return bit flips for the PMECC
- read_page()
-References: <1353474863-28430-1-git-send-email-josh.wu@atmel.com>
- <50ACA764.3030002@atmel.com> <50AD9E8E.7050402@atmel.com>
-In-Reply-To: <50AD9E8E.7050402@atmel.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd cs553x_nand: Initialise ecc.strength before
+ nand_scan()
+References: <1353541372.12585.14.camel@laptop>
+ <CAN8TOE-10VYTOS8EbPWxs0HyhdeZBzxL_8gmJsMmXPO1ti_6bQ@mail.gmail.com>
+In-Reply-To: <CAN8TOE-10VYTOS8EbPWxs0HyhdeZBzxL_8gmJsMmXPO1ti_6bQ@mail.gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: plagnioj@jcrosoft.com, Nicolas Ferre <nicolas.ferre@atmel.com>,
- linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
- dedekind1@gmail.com
+Cc: Nathan Williams <nathan@traverse.com.au>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +27,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/21/2012 07:39 PM, Josh Wu wrote:
-> Hi, Nicolas
+On 11/21/2012 08:08 PM, Brian Norris wrote:
+> On Wed, Nov 21, 2012 at 3:42 PM, Nathan Williams <nathan@traverse.com.au> wrote:
+>> Loading cs553x_nand with Hynix H27U1G8F2BTR NAND flash causes this bug:
+>>
+>> kernel BUG at drivers/mtd/nand/nand_base.c:3345!
+> ...
+>> Initialising ecc.strength before the call to nand_scan() fixes this.
 > 
-> On 11/21/2012 6:05 PM, Nicolas Ferre wrote:
->> On 11/21/2012 06:14 AM, Josh Wu :
->>>
->> Can we have more comment to figure out why it is needed please?
-> 
-> I will add following comment in the commit message in the v2 version.
-> 
-> Since the commit: 3f91e94f7f511de74c0d2abe08672ccdbdd1961c ("mtd: nand:
-> read_page() returns max_bitflips ()")
-> The ecc.read_page() method for nand drivers is changed to return the maximum
-> number of bitflips instead of just returning 0.
-> 
-> And the nand.h is also explain that. I would like to adapt to it.
+> Acked-by: Brian Norris <computersforpeace@gmail.com>
 
 
-This patch avails the atmel_nand device of a change that was merged to the
-kernel mtd code several months ago.  That change fixed a problem where higher
-layers that use the -EUCLEAN return code to make judgements on block wear (e.g.
-ubi) were marking blocks as bad when a normal number of bitflip corrections were
-made.  The problem affected newer nands with greater ecc strength.  See the
-entry on 'bitflip_threshold' in Documentation/ABI/testing/sysfs-class-mtd
+Acked-by: Mike Dunn <mikedunn@newsguy.com>
 
-Thanks,
+
+> 
+> BTW, I made a quick read through of the other NAND drivers to look for
+> similar errors. I think this is the only one where the only
+> ecc.strenght initialization occurred after the nand_scan() or
+> nand_scan_tail() call.
+
+
+Thanks for that Brian.  I thought I did this when another driver had a similiar
+problem a while back.  Maybe I just intended to :(
+
 Mike
