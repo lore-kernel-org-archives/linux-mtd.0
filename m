@@ -1,12 +1,18 @@
-From: Josh Wu <josh.wu@atmel.com>
-To: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- dedekind1@gmail.com
-Subject: [PATCH v2] MTD: at91: atmel_nand: return bit flips for the PMECC
+Message-ID: <50B50143.7080408@newsguy.com>
+Date: Tue, 27 Nov 2012 10:06:59 -0800
+From: Mike Dunn <mikedunn@newsguy.com>
+MIME-Version: 1.0
+To: Josh Wu <josh.wu@atmel.com>
+Subject: Re: [PATCH] MTD: at91: atmel_nand: return bit flips for the PMECC
  read_page()
-Date: Tue, 27 Nov 2012 18:50:31 +0800
-Message-Id: <1354013431-13598-1-git-send-email-josh.wu@atmel.com>
-Cc: nicolas.ferre@atmel.com, mikedunn@newsguy.com, plagnioj@jcrosoft.com,
- Josh Wu <josh.wu@atmel.com>
+References: <1353474863-28430-1-git-send-email-josh.wu@atmel.com>
+ <50ACA764.3030002@atmel.com> <50AD9E8E.7050402@atmel.com>
+In-Reply-To: <50AD9E8E.7050402@atmel.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: plagnioj@jcrosoft.com, Nicolas Ferre <nicolas.ferre@atmel.com>,
+ linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,79 +22,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch fix pmecc's read_page() to return maximum number of bitflips, 0 if uncorrectable.
+On 11/21/2012 07:39 PM, Josh Wu wrote:
+> Hi, Nicolas
+> 
+> On 11/21/2012 6:05 PM, Nicolas Ferre wrote:
+>> On 11/21/2012 06:14 AM, Josh Wu :
+>>>
+>> Can we have more comment to figure out why it is needed please?
+> 
+> I will add following comment in the commit message in the v2 version.
+> 
+> Since the commit: 3f91e94f7f511de74c0d2abe08672ccdbdd1961c ("mtd: nand:
+> read_page() returns max_bitflips ()")
+> The ecc.read_page() method for nand drivers is changed to return the maximum
+> number of bitflips instead of just returning 0.
+> 
+> And the nand.h is also explain that. I would like to adapt to it.
 
-In the commit: 3f91e94f7f511de74c0d2abe08672ccdbdd1961c ("mtd: nand: read_page() returns max_bitflips ()"),
-The ecc.read_page() is changed to return the maximum number of bitflips.
-And when meet uncorrectable bitflips it needs to return 0.
 
-See the comment in nand.h:
- * @read_page:	function to read a page according to the ECC generator
- *		requirements; returns maximum number of bitflips corrected in
- *		any single ECC step, 0 if bitflips uncorrectable, -EIO hw error
+This patch avails the atmel_nand device of a change that was merged to the
+kernel mtd code several months ago.  That change fixed a problem where higher
+layers that use the -EUCLEAN return code to make judgements on block wear (e.g.
+ubi) were marking blocks as bad when a normal number of bitflip corrections were
+made.  The problem affected newer nands with greater ecc strength.  See the
+entry on 'bitflip_threshold' in Documentation/ABI/testing/sysfs-class-mtd
 
-Signed-off-by: Josh Wu <josh.wu@atmel.com>
----
-change since v1:
-  1. add detail commit message for the fix.
-  2. return 0 when meet uncorrectable bitflips according to Mike Dunn's suggestion.
-
- drivers/mtd/nand/atmel_nand.c |   16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index c918386..1669d27 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -723,6 +723,7 @@ static int pmecc_correction(struct mtd_info *mtd, u32 pmecc_stat, uint8_t *buf,
- 	struct atmel_nand_host *host = nand_chip->priv;
- 	int i, err_nbr, eccbytes;
- 	uint8_t *buf_pos;
-+	int total_err = 0;
- 
- 	eccbytes = nand_chip->ecc.bytes;
- 	for (i = 0; i < eccbytes; i++)
-@@ -750,12 +751,13 @@ normal_check:
- 				pmecc_correct_data(mtd, buf_pos, ecc, i,
- 					host->pmecc_bytes_per_sector, err_nbr);
- 				mtd->ecc_stats.corrected += err_nbr;
-+				total_err += err_nbr;
- 			}
- 		}
- 		pmecc_stat >>= 1;
- 	}
- 
--	return 0;
-+	return total_err;
- }
- 
- static int atmel_nand_pmecc_read_page(struct mtd_info *mtd,
-@@ -767,6 +769,7 @@ static int atmel_nand_pmecc_read_page(struct mtd_info *mtd,
- 	uint32_t *eccpos = chip->ecc.layout->eccpos;
- 	uint32_t stat;
- 	unsigned long end_time;
-+	int bitflips = 0;
- 
- 	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_RST);
- 	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_DISABLE);
-@@ -789,11 +792,14 @@ static int atmel_nand_pmecc_read_page(struct mtd_info *mtd,
- 	}
- 
- 	stat = pmecc_readl_relaxed(host->ecc, ISR);
--	if (stat != 0)
--		if (pmecc_correction(mtd, stat, buf, &oob[eccpos[0]]) != 0)
--			return -EIO;
-+	if (stat != 0) {
-+		bitflips = pmecc_correction(mtd, stat, buf, &oob[eccpos[0]]);
-+		if (bitflips < 0)
-+			/* uncorrectable errors */
-+			return 0;
-+	}
- 
--	return 0;
-+	return bitflips;
- }
- 
- static int atmel_nand_pmecc_write_page(struct mtd_info *mtd,
--- 
-1.7.9.5
+Thanks,
+Mike
