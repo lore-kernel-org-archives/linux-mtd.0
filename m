@@ -1,15 +1,21 @@
-Received: from smtpuni.servlinks.com ([38.127.70.215])
+Received: from server157.star-server.info ([195.78.76.157])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TdTeN-0002CQ-FV
- for linux-mtd@lists.infradead.org; Tue, 27 Nov 2012 22:29:09 +0000
-Message-ID: <50B53ED3.6030503@douville.org>
-Date: Tue, 27 Nov 2012 17:29:39 -0500
-From: <linux-mtd@douville.org>
+ id 1TddX0-0001QE-5Z
+ for linux-mtd@lists.infradead.org; Wed, 28 Nov 2012 09:02:11 +0000
+Received: from [192.168.1.11] (563B90B0.catv.pool.telekom.hu [86.59.144.176])
+ (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by server157.star-server.info (Postfix) with ESMTP id A3CCA15E5BCE
+ for <linux-mtd@lists.infradead.org>; Wed, 28 Nov 2012 10:02:03 +0100 (CET)
+Message-ID: <50B5D30B.9070609@infracont.hu>
+Date: Wed, 28 Nov 2012 10:02:03 +0100
+From: =?ISO-8859-2?Q?Tak=E1cs_=C1ron?= <takacs.aron@infracont.hu>
 MIME-Version: 1.0
-To: <linux-mtd@lists.infradead.org>
-Subject: UBI error -74 (ECC error)
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+To: linux-mtd@lists.infradead.org
+Subject: Bad sectors
+Content-Type: text/plain; charset=ISO-8859-2; format=flowed
+Content-Transfer-Encoding: 8bit
+Reply-To: takacs.aron@infracont.hu
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,48 +25,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi
+Hello,
 
-I am making a ubi/ubifs image for an AM335x board. When I flash using 
-UBI tools (ubiformat / ubiupdatevol) from Linux, it works fine. I can 
-flash either the ubi or the ubifs image without any issue.
+I have the following problem: I am using a PXA27x based module with two 
+16bit flash chips (Intel P33) parallel on it. We have been using these 
+modules without any problems with linux-2.6 kernels and jffs2 filesystem 
+on top of mtdblock.
+Recently I moved to the 3.6-rc4 kernel. Since then the following error 
+happened to two different modules: they were working for a while (some 
+days, week), and then suddenly some blocks of the flash became 
+uneraseable. I get a lot of such error messages while trying to dd the 
+jffs2 image to /dev/mtdblockX:
 
-However I also need to be able to flash from the boot loader (u-boot) on 
-first boot.
-Both flash_eraseall/nandwrite from Linux and u-boot's nand erase + nand 
-write commands give me this error when booting the kernel:
+[  478.796166] Buffer I/O error on device mtdblock2, logical block 2085
+[  478.802472] lost page write due to I/O error on mtdblock2
+[  479.068366] mtdblock: erase of region [0x300000, 0x40000] on 
+"Filesystem" failed
+[  479.075760] end_request: I/O error, dev mtdblock2, sector 16688
 
-[    1.487209] UBIFS: mounted UBI device 0, volume 0, name "root"
-[    1.493306] UBIFS: mounted read-only
-[    1.497061] UBIFS: file system size:   18284544 bytes (17856 KiB, 17 
-MiB, 144 LEBs)
-[    1.505055] UBIFS: journal size:       2920448 bytes (2852 KiB, 2 
-MiB, 23 LEBs)
-[    1.512691] UBIFS: media format:       w4/r0 (latest is w4/r0)
-[    1.518787] UBIFS: default compressor: lzo
-[    1.523060] UBIFS: reserved for root:  0 bytes (0 KiB)
-[    1.530052] VFS: Mounted root (ubifs filesystem) readonly on device 0:12.
-[    1.537901] devtmpfs: mounted
-[    1.541312] Freeing init memory: 140K
-[    1.885519] udevd[358]: starting version 181
-[    2.392869] UBIFS: start fixing up free space
-[    2.401172] UBI error: ubi_io_read: error -74 (ECC error) while 
-reading 4096 bytes from PEB 3:4096, read 4096 bytes
-[    2.412095] UBIFS error (pid 381): ubifs_leb_read: reading 4096 bytes 
-from LEB 1:0 failed, error -74
+I have tried to erase the block with openocd, u-boot and WinCE too, but 
+all of them failed.
 
-The ubifs is generated using the -F switch. The filesystem is mounted 
-read-only. If I try to mount it read-write, I get the same error again.
+The error occurred after a few writes to the flash (far less than 100k), 
+so I don't think it was a wearing issue.
 
-I read the FAQ at this page:
-http://www.linux-mtd.infradead.org/faq/ubi.html#L_ecc_error
+Is it theoretically possible the damage sectors by any software error 
+(bad kernel config)? Or do I have to think of hardware defects (maybe ESD)?
 
-I confirmed that ubiattach works on my MTD device right after I erase it 
-with flash_eraseall. The filesystem is also mounted with ubi.mtd=9,2048 
-so I already ignore sub-pages.
+Thank you very much for your help! It is very important to me to exclude 
+software problems.
 
-Does anyone have an idea?
+Best regards:
 
-thanks
-
-Xavier
+Áron
