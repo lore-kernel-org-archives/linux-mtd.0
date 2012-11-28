@@ -1,14 +1,14 @@
-Received: from mail-qa0-f49.google.com ([209.85.216.49])
+Received: from mail-qc0-f177.google.com ([209.85.216.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TdgbK-0004fH-Si
- for linux-mtd@lists.infradead.org; Wed, 28 Nov 2012 12:18:52 +0000
-Received: by mail-qa0-f49.google.com with SMTP id c3so4689713qae.15
- for <linux-mtd@lists.infradead.org>; Wed, 28 Nov 2012 04:18:49 -0800 (PST)
+ id 1TdgbQ-0004g2-La
+ for linux-mtd@lists.infradead.org; Wed, 28 Nov 2012 12:18:58 +0000
+Received: by mail-qc0-f177.google.com with SMTP id u28so9497571qcs.36
+ for <linux-mtd@lists.infradead.org>; Wed, 28 Nov 2012 04:18:55 -0800 (PST)
 From: Ezequiel Garcia <elezegarcia@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] ubi: Introduce helpers dbg_chk_{io, gen}
-Date: Wed, 28 Nov 2012 09:18:29 -0300
-Message-Id: <1354105110-24721-2-git-send-email-elezegarcia@gmail.com>
+Subject: [PATCH] ubi: Embed ubi_debug_info field in ubi_device struct
+Date: Wed, 28 Nov 2012 09:18:30 -0300
+Message-Id: <1354105110-24721-3-git-send-email-elezegarcia@gmail.com>
 In-Reply-To: <1354105110-24721-1-git-send-email-elezegarcia@gmail.com>
 References: <1354105110-24721-1-git-send-email-elezegarcia@gmail.com>
 Cc: Ezequiel Garcia <elezegarcia@gmail.com>,
@@ -22,185 +22,297 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-With this patch code is a bit more readable and there's no
-generated code or functionality impact.
-Furthermore, this abstracts implementation details and
-will allow to change ubi_debug_info in a less invasive way.
+ubi_debug_info struct was dynamically allocated which
+is always suboptimal, for it tends to fragment memory
+and make the code error-prone.
+Fix this by embedding it in ubi_device struct.
 
 Cc: Artem Bityutskiy <dedekind1@gmail.com>
 Signed-off-by: Ezequiel Garcia <elezegarcia@gmail.com>
 ---
- drivers/mtd/ubi/attach.c |    4 ++--
- drivers/mtd/ubi/debug.h  |    9 +++++++++
- drivers/mtd/ubi/io.c     |   14 +++++++-------
- drivers/mtd/ubi/vmt.c    |    2 +-
- drivers/mtd/ubi/vtbl.c   |    2 +-
- drivers/mtd/ubi/wl.c     |    6 +++---
- 6 files changed, 23 insertions(+), 14 deletions(-)
+ drivers/mtd/ubi/build.c |    9 +-------
+ drivers/mtd/ubi/debug.c |   34 +++---------------------------
+ drivers/mtd/ubi/debug.h |   52 +++++-----------------------------------------
+ drivers/mtd/ubi/ubi.h   |   40 +++++++++++++++++++++++++++++++++++-
+ 4 files changed, 50 insertions(+), 85 deletions(-)
 
-diff --git a/drivers/mtd/ubi/attach.c b/drivers/mtd/ubi/attach.c
-index fec406b..b6edfeb 100644
---- a/drivers/mtd/ubi/attach.c
-+++ b/drivers/mtd/ubi/attach.c
-@@ -1453,7 +1453,7 @@ int ubi_attach(struct ubi_device *ubi, int force_scan)
- 		goto out_wl;
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 9003f98..3eac8774 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -985,14 +985,10 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
+ 	if (!ubi->fm_buf)
+ 		goto out_free;
+ #endif
+-	err = ubi_debugging_init_dev(ubi);
+-	if (err)
+-		goto out_free;
+-
+ 	err = ubi_attach(ubi, 0);
+ 	if (err) {
+ 		ubi_err("failed to attach mtd%d, error %d", mtd->index, err);
+-		goto out_debugging;
++		goto out_free;
+ 	}
  
- #ifdef CONFIG_MTD_UBI_FASTMAP
--	if (ubi->fm && ubi->dbg->chk_gen) {
-+	if (ubi->fm && ubi_dbg_chk_gen(ubi)) {
- 		struct ubi_attach_info *scan_ai;
+ 	if (ubi->autoresize_vol_id != -1) {
+@@ -1053,8 +1049,6 @@ out_detach:
+ 	ubi_wl_close(ubi);
+ 	ubi_free_internal_volumes(ubi);
+ 	vfree(ubi->vtbl);
+-out_debugging:
+-	ubi_debugging_exit_dev(ubi);
+ out_free:
+ 	vfree(ubi->peb_buf);
+ 	vfree(ubi->fm_buf);
+@@ -1132,7 +1126,6 @@ int ubi_detach_mtd_dev(int ubi_num, int anyway)
+ 	ubi_free_internal_volumes(ubi);
+ 	vfree(ubi->vtbl);
+ 	put_mtd_device(ubi->mtd);
+-	ubi_debugging_exit_dev(ubi);
+ 	vfree(ubi->peb_buf);
+ 	vfree(ubi->fm_buf);
+ 	ubi_msg("mtd%d is detached from ubi%d", ubi->mtd->index, ubi->ubi_num);
+diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
+index 26908a5..63cb1d7 100644
+--- a/drivers/mtd/ubi/debug.c
++++ b/drivers/mtd/ubi/debug.c
+@@ -217,32 +217,6 @@ void ubi_dump_mkvol_req(const struct ubi_mkvol_req *req)
+ 	pr_err("\t1st 16 characters of name: %s\n", nm);
+ }
  
- 		scan_ai = alloc_ai("ubi_ckh_aeb_slab_cache");
-@@ -1503,7 +1503,7 @@ static int self_check_ai(struct ubi_device *ubi, struct ubi_attach_info *ai)
- 	struct ubi_ainf_peb *aeb, *last_aeb;
- 	uint8_t *buf;
+-/**
+- * ubi_debugging_init_dev - initialize debugging for an UBI device.
+- * @ubi: UBI device description object
+- *
+- * This function initializes debugging-related data for UBI device @ubi.
+- * Returns zero in case of success and a negative error code in case of
+- * failure.
+- */
+-int ubi_debugging_init_dev(struct ubi_device *ubi)
+-{
+-	ubi->dbg = kzalloc(sizeof(struct ubi_debug_info), GFP_KERNEL);
+-	if (!ubi->dbg)
+-		return -ENOMEM;
+-
+-	return 0;
+-}
+-
+-/**
+- * ubi_debugging_exit_dev - free debugging data for an UBI device.
+- * @ubi: UBI device description object
+- */
+-void ubi_debugging_exit_dev(struct ubi_device *ubi)
+-{
+-	kfree(ubi->dbg);
+-}
+-
+ /*
+  * Root directory for UBI stuff in debugfs. Contains sub-directories which
+  * contain the stuff specific to particular UBI devices.
+@@ -295,7 +269,7 @@ static ssize_t dfs_file_read(struct file *file, char __user *user_buf,
+ 	ubi = ubi_get_device(ubi_num);
+ 	if (!ubi)
+ 		return -ENODEV;
+-	d = ubi->dbg;
++	d = &ubi->dbg;
  
--	if (!ubi->dbg->chk_gen)
-+	if (!ubi_dbg_chk_gen(ubi))
+ 	if (dent == d->dfs_chk_gen)
+ 		val = d->chk_gen;
+@@ -341,7 +315,7 @@ static ssize_t dfs_file_write(struct file *file, const char __user *user_buf,
+ 	ubi = ubi_get_device(ubi_num);
+ 	if (!ubi)
+ 		return -ENODEV;
+-	d = ubi->dbg;
++	d = &ubi->dbg;
+ 
+ 	buf_size = min_t(size_t, count, (sizeof(buf) - 1));
+ 	if (copy_from_user(buf, user_buf, buf_size)) {
+@@ -398,7 +372,7 @@ int ubi_debugfs_init_dev(struct ubi_device *ubi)
+ 	unsigned long ubi_num = ubi->ubi_num;
+ 	const char *fname;
+ 	struct dentry *dent;
+-	struct ubi_debug_info *d = ubi->dbg;
++	struct ubi_debug_info *d = &ubi->dbg;
+ 
+ 	if (!IS_ENABLED(CONFIG_DEBUG_FS))
  		return 0;
- 
- 	/*
+@@ -471,5 +445,5 @@ out:
+ void ubi_debugfs_exit_dev(struct ubi_device *ubi)
+ {
+ 	if (IS_ENABLED(CONFIG_DEBUG_FS))
+-		debugfs_remove_recursive(ubi->dbg->dfs_dir);
++		debugfs_remove_recursive(ubi->dbg.dfs_dir);
+ }
 diff --git a/drivers/mtd/ubi/debug.h b/drivers/mtd/ubi/debug.h
-index 3dbc877..0add8d8 100644
+index 0add8d8..33f8f3b 100644
 --- a/drivers/mtd/ubi/debug.h
 +++ b/drivers/mtd/ubi/debug.h
-@@ -158,4 +158,13 @@ static inline int ubi_dbg_is_erase_failure(const struct ubi_device *ubi)
+@@ -60,51 +60,11 @@ void ubi_dump_aeb(const struct ubi_ainf_peb *aeb, int type);
+ void ubi_dump_mkvol_req(const struct ubi_mkvol_req *req);
+ int ubi_self_check_all_ff(struct ubi_device *ubi, int pnum, int offset,
+ 			  int len);
+-int ubi_debugging_init_dev(struct ubi_device *ubi);
+-void ubi_debugging_exit_dev(struct ubi_device *ubi);
+ int ubi_debugfs_init(void);
+ void ubi_debugfs_exit(void);
+ int ubi_debugfs_init_dev(struct ubi_device *ubi);
+ void ubi_debugfs_exit_dev(struct ubi_device *ubi);
+ 
+-/*
+- * The UBI debugfs directory name pattern and maximum name length (3 for "ubi"
+- * + 2 for the number plus 1 for the trailing zero byte.
+- */
+-#define UBI_DFS_DIR_NAME "ubi%d"
+-#define UBI_DFS_DIR_LEN  (3 + 2 + 1)
+-
+-/**
+- * struct ubi_debug_info - debugging information for an UBI device.
+- *
+- * @chk_gen: if UBI general extra checks are enabled
+- * @chk_io: if UBI I/O extra checks are enabled
+- * @disable_bgt: disable the background task for testing purposes
+- * @emulate_bitflips: emulate bit-flips for testing purposes
+- * @emulate_io_failures: emulate write/erase failures for testing purposes
+- * @dfs_dir_name: name of debugfs directory containing files of this UBI device
+- * @dfs_dir: direntry object of the UBI device debugfs directory
+- * @dfs_chk_gen: debugfs knob to enable UBI general extra checks
+- * @dfs_chk_io: debugfs knob to enable UBI I/O extra checks
+- * @dfs_disable_bgt: debugfs knob to disable the background task
+- * @dfs_emulate_bitflips: debugfs knob to emulate bit-flips
+- * @dfs_emulate_io_failures: debugfs knob to emulate write/erase failures
+- */
+-struct ubi_debug_info {
+-	unsigned int chk_gen:1;
+-	unsigned int chk_io:1;
+-	unsigned int disable_bgt:1;
+-	unsigned int emulate_bitflips:1;
+-	unsigned int emulate_io_failures:1;
+-	char dfs_dir_name[UBI_DFS_DIR_LEN + 1];
+-	struct dentry *dfs_dir;
+-	struct dentry *dfs_chk_gen;
+-	struct dentry *dfs_chk_io;
+-	struct dentry *dfs_disable_bgt;
+-	struct dentry *dfs_emulate_bitflips;
+-	struct dentry *dfs_emulate_io_failures;
+-};
+-
+ /**
+  * ubi_dbg_is_bgt_disabled - if the background thread is disabled.
+  * @ubi: UBI device description object
+@@ -114,7 +74,7 @@ struct ubi_debug_info {
+  */
+ static inline int ubi_dbg_is_bgt_disabled(const struct ubi_device *ubi)
+ {
+-	return ubi->dbg->disable_bgt;
++	return ubi->dbg.disable_bgt;
+ }
+ 
+ /**
+@@ -125,7 +85,7 @@ static inline int ubi_dbg_is_bgt_disabled(const struct ubi_device *ubi)
+  */
+ static inline int ubi_dbg_is_bitflip(const struct ubi_device *ubi)
+ {
+-	if (ubi->dbg->emulate_bitflips)
++	if (ubi->dbg.emulate_bitflips)
+ 		return !(random32() % 200);
+ 	return 0;
+ }
+@@ -139,7 +99,7 @@ static inline int ubi_dbg_is_bitflip(const struct ubi_device *ubi)
+  */
+ static inline int ubi_dbg_is_write_failure(const struct ubi_device *ubi)
+ {
+-	if (ubi->dbg->emulate_io_failures)
++	if (ubi->dbg.emulate_io_failures)
+ 		return !(random32() % 500);
+ 	return 0;
+ }
+@@ -153,18 +113,18 @@ static inline int ubi_dbg_is_write_failure(const struct ubi_device *ubi)
+  */
+ static inline int ubi_dbg_is_erase_failure(const struct ubi_device *ubi)
+ {
+-	if (ubi->dbg->emulate_io_failures)
++	if (ubi->dbg.emulate_io_failures)
+ 		return !(random32() % 400);
  	return 0;
  }
  
-+static inline int ubi_dbg_chk_io(const struct ubi_device *ubi)
-+{
-+	return ubi->dbg->chk_io;
-+}
-+
-+static inline int ubi_dbg_chk_gen(const struct ubi_device *ubi)
-+{
-+	return ubi->dbg->chk_gen;
-+}
+ static inline int ubi_dbg_chk_io(const struct ubi_device *ubi)
+ {
+-	return ubi->dbg->chk_io;
++	return ubi->dbg.chk_io;
+ }
+ 
+ static inline int ubi_dbg_chk_gen(const struct ubi_device *ubi)
+ {
+-	return ubi->dbg->chk_gen;
++	return ubi->dbg.chk_gen;
+ }
  #endif /* !__UBI_DEBUG_H__ */
-diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
-index 78a1dcb..bf79def 100644
---- a/drivers/mtd/ubi/io.c
-+++ b/drivers/mtd/ubi/io.c
-@@ -1132,7 +1132,7 @@ static int self_check_not_bad(const struct ubi_device *ubi, int pnum)
- {
- 	int err;
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index d28b002..8c78386 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -85,6 +85,13 @@
+ #define UBI_UNKNOWN -1
  
--	if (!ubi->dbg->chk_io)
-+	if (!ubi_dbg_chk_io(ubi))
- 		return 0;
+ /*
++ * The UBI debugfs directory name pattern and maximum name length (3 for "ubi"
++ * + 2 for the number plus 1 for the trailing zero byte.
++ */
++#define UBI_DFS_DIR_NAME "ubi%d"
++#define UBI_DFS_DIR_LEN  (3 + 2 + 1)
++
++/*
+  * Error codes returned by the I/O sub-system.
+  *
+  * UBI_IO_FF: the read region of flash contains only 0xFFs
+@@ -342,6 +349,37 @@ struct ubi_volume_desc {
+ struct ubi_wl_entry;
  
- 	err = ubi_io_is_bad(ubi, pnum);
-@@ -1159,7 +1159,7 @@ static int self_check_ec_hdr(const struct ubi_device *ubi, int pnum,
- 	int err;
- 	uint32_t magic;
+ /**
++ * struct ubi_debug_info - debugging information for an UBI device.
++ *
++ * @chk_gen: if UBI general extra checks are enabled
++ * @chk_io: if UBI I/O extra checks are enabled
++ * @disable_bgt: disable the background task for testing purposes
++ * @emulate_bitflips: emulate bit-flips for testing purposes
++ * @emulate_io_failures: emulate write/erase failures for testing purposes
++ * @dfs_dir_name: name of debugfs directory containing files of this UBI device
++ * @dfs_dir: direntry object of the UBI device debugfs directory
++ * @dfs_chk_gen: debugfs knob to enable UBI general extra checks
++ * @dfs_chk_io: debugfs knob to enable UBI I/O extra checks
++ * @dfs_disable_bgt: debugfs knob to disable the background task
++ * @dfs_emulate_bitflips: debugfs knob to emulate bit-flips
++ * @dfs_emulate_io_failures: debugfs knob to emulate write/erase failures
++ */
++struct ubi_debug_info {
++	unsigned int chk_gen:1;
++	unsigned int chk_io:1;
++	unsigned int disable_bgt:1;
++	unsigned int emulate_bitflips:1;
++	unsigned int emulate_io_failures:1;
++	char dfs_dir_name[UBI_DFS_DIR_LEN + 1];
++	struct dentry *dfs_dir;
++	struct dentry *dfs_chk_gen;
++	struct dentry *dfs_chk_io;
++	struct dentry *dfs_disable_bgt;
++	struct dentry *dfs_emulate_bitflips;
++	struct dentry *dfs_emulate_io_failures;
++};
++
++/**
+  * struct ubi_device - UBI device description structure
+  * @dev: UBI device object to use the the Linux device model
+  * @cdev: character device object to create character device
+@@ -548,7 +586,7 @@ struct ubi_device {
+ 	struct mutex buf_mutex;
+ 	struct mutex ckvol_mutex;
  
--	if (!ubi->dbg->chk_io)
-+	if (!ubi_dbg_chk_io(ubi))
- 		return 0;
+-	struct ubi_debug_info *dbg;
++	struct ubi_debug_info dbg;
+ };
  
- 	magic = be32_to_cpu(ec_hdr->magic);
-@@ -1197,7 +1197,7 @@ static int self_check_peb_ec_hdr(const struct ubi_device *ubi, int pnum)
- 	uint32_t crc, hdr_crc;
- 	struct ubi_ec_hdr *ec_hdr;
- 
--	if (!ubi->dbg->chk_io)
-+	if (!ubi_dbg_chk_io(ubi))
- 		return 0;
- 
- 	ec_hdr = kzalloc(ubi->ec_hdr_alsize, GFP_NOFS);
-@@ -1241,7 +1241,7 @@ static int self_check_vid_hdr(const struct ubi_device *ubi, int pnum,
- 	int err;
- 	uint32_t magic;
- 
--	if (!ubi->dbg->chk_io)
-+	if (!ubi_dbg_chk_io(ubi))
- 		return 0;
- 
- 	magic = be32_to_cpu(vid_hdr->magic);
-@@ -1282,7 +1282,7 @@ static int self_check_peb_vid_hdr(const struct ubi_device *ubi, int pnum)
- 	struct ubi_vid_hdr *vid_hdr;
- 	void *p;
- 
--	if (!ubi->dbg->chk_io)
-+	if (!ubi_dbg_chk_io(ubi))
- 		return 0;
- 
- 	vid_hdr = ubi_zalloc_vid_hdr(ubi, GFP_NOFS);
-@@ -1334,7 +1334,7 @@ static int self_check_write(struct ubi_device *ubi, const void *buf, int pnum,
- 	void *buf1;
- 	loff_t addr = (loff_t)pnum * ubi->peb_size + offset;
- 
--	if (!ubi->dbg->chk_io)
-+	if (!ubi_dbg_chk_io(ubi))
- 		return 0;
- 
- 	buf1 = __vmalloc(len, GFP_NOFS, PAGE_KERNEL);
-@@ -1398,7 +1398,7 @@ int ubi_self_check_all_ff(struct ubi_device *ubi, int pnum, int offset, int len)
- 	void *buf;
- 	loff_t addr = (loff_t)pnum * ubi->peb_size + offset;
- 
--	if (!ubi->dbg->chk_io)
-+	if (!ubi_dbg_chk_io(ubi))
- 		return 0;
- 
- 	buf = __vmalloc(len, GFP_NOFS, PAGE_KERNEL);
-diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
-index 99ef8a1..8330703 100644
---- a/drivers/mtd/ubi/vmt.c
-+++ b/drivers/mtd/ubi/vmt.c
-@@ -847,7 +847,7 @@ static int self_check_volumes(struct ubi_device *ubi)
- {
- 	int i, err = 0;
- 
--	if (!ubi->dbg->chk_gen)
-+	if (!ubi_dbg_chk_gen(ubi))
- 		return 0;
- 
- 	for (i = 0; i < ubi->vtbl_slots; i++) {
-diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
-index 926e3df..d77b1c1 100644
---- a/drivers/mtd/ubi/vtbl.c
-+++ b/drivers/mtd/ubi/vtbl.c
-@@ -858,7 +858,7 @@ out_free:
-  */
- static void self_vtbl_check(const struct ubi_device *ubi)
- {
--	if (!ubi->dbg->chk_gen)
-+	if (!ubi_dbg_chk_gen(ubi))
- 		return;
- 
- 	if (vtbl_check(ubi, ubi->vtbl)) {
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index 9447f05..5a05c69 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -2016,7 +2016,7 @@ static int self_check_ec(struct ubi_device *ubi, int pnum, int ec)
- 	long long read_ec;
- 	struct ubi_ec_hdr *ec_hdr;
- 
--	if (!ubi->dbg->chk_gen)
-+	if (!ubi_dbg_chk_gen(ubi))
- 		return 0;
- 
- 	ec_hdr = kzalloc(ubi->ec_hdr_alsize, GFP_NOFS);
-@@ -2056,7 +2056,7 @@ out_free:
- static int self_check_in_wl_tree(const struct ubi_device *ubi,
- 				 struct ubi_wl_entry *e, struct rb_root *root)
- {
--	if (!ubi->dbg->chk_gen)
-+	if (!ubi_dbg_chk_gen(ubi))
- 		return 0;
- 
- 	if (in_wl_tree(e, root))
-@@ -2082,7 +2082,7 @@ static int self_check_in_pq(const struct ubi_device *ubi,
- 	struct ubi_wl_entry *p;
- 	int i;
- 
--	if (!ubi->dbg->chk_gen)
-+	if (!ubi_dbg_chk_gen(ubi))
- 		return 0;
- 
- 	for (i = 0; i < UBI_PROT_QUEUE_LEN; ++i)
+ /**
 -- 
 1.7.8.6
