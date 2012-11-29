@@ -1,15 +1,24 @@
-Received: from mail-we0-f177.google.com ([74.125.82.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Te9ln-0001j7-SE
- for linux-mtd@lists.infradead.org; Thu, 29 Nov 2012 19:27:36 +0000
-Received: by mail-we0-f177.google.com with SMTP id x48so5432574wey.36
- for <linux-mtd@lists.infradead.org>; Thu, 29 Nov 2012 11:27:30 -0800 (PST)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+Received: from tur.go2.pl ([193.17.41.50])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TeCNW-0006tK-2q
+ for linux-mtd@lists.infradead.org; Thu, 29 Nov 2012 22:14:43 +0000
+Received: from moh3-ve1.go2.pl (moh3-ve1.go2.pl [193.17.41.30])
+ by tur.go2.pl (Postfix) with ESMTP id 56F196983D7
+ for <linux-mtd@lists.infradead.org>; Thu, 29 Nov 2012 23:13:08 +0100 (CET)
+Received: from moh3-ve1.go2.pl (unknown [10.0.0.117])
+ by moh3-ve1.go2.pl (Postfix) with ESMTP id DFE93A6A017
+ for <linux-mtd@lists.infradead.org>; Thu, 29 Nov 2012 23:12:30 +0100 (CET)
+Received: from unknown (unknown [10.0.0.142])
+ by moh3-ve1.go2.pl (Postfix) with SMTP
+ for <linux-mtd@lists.infradead.org>; Thu, 29 Nov 2012 23:12:29 +0100 (CET)
+Date: Thu, 29 Nov 2012 23:12:31 +0100
+From: Dawid Prus - praca <dawid.prus@o2.pl>
+Message-ID: <4716786.20121129231231@o2.pl>
 To: linux-mtd@lists.infradead.org
-Subject: [WIP][PATCH][DON'T APPLY] bcm47xxnflash: writing support
-Date: Thu, 29 Nov 2012 20:27:22 +0100
-Message-Id: <1354217242-19808-1-git-send-email-zajec5@gmail.com>
-Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+Subject: Problem with NAND on MIPS32 board (mtd 20050122)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,127 +28,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
----
-Just to show my work in case someone is interested in it. I still have
-to check it with aiaiai & friends :)
----
- drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c |   76 ++++++++++++++++++++++++++
- 1 files changed, 76 insertions(+), 0 deletions(-)
+Hello.
 
-diff --git a/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c b/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c
-index e776a4b..20a406f 100644
---- a/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c
-+++ b/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c
-@@ -30,6 +30,7 @@
- #define NCTL_CMD0			0x00010000
- #define NCTL_CMD1W			0x00080000
- #define NCTL_READ			0x00100000
-+#define NCTL_WRITE			0x00200000
- #define NCTL_SPECADDR			0x01000000
- #define NCTL_READY			0x04000000
- #define NCTL_ERR			0x08000000
-@@ -139,6 +140,36 @@ static void bcm47xxnflash_ops_bcm4706_read(struct mtd_info *mtd, uint8_t *buf,
- 	}
- }
- 
-+static void bcm47xxnflash_ops_bcm4706_write(struct mtd_info *mtd,
-+					    const uint8_t *buf, int len)
-+{
-+	struct nand_chip *nand_chip = (struct nand_chip *)mtd->priv;
-+	struct bcm47xxnflash *b47n = (struct bcm47xxnflash *)nand_chip->priv;
-+	struct bcma_drv_cc *cc = b47n->cc;
-+
-+	u32 ctlcode;
-+	const u32 *data = (u32 *)buf;
-+	int i;
-+
-+	BUG_ON(b47n->curr_page_addr & ~nand_chip->pagemask);
-+	/* Don't validate column using nand_chip->page_shift, it may be bigger
-+	 * when accessing OOB */
-+
-+	for (i = 0; i < len; i += 4, data++) {
-+		bcma_cc_write32(cc, BCMA_CC_NFLASH_DATA, *data);
-+
-+		ctlcode = NCTL_CSA | 0x30000000 | NCTL_WRITE;
-+		if (i == len - 4) /* Last read goes without that */
-+			ctlcode &= ~NCTL_CSA;
-+		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(cc, ctlcode)) {
-+			pr_err("%s ctl_cmd didn't work!\n", __func__);
-+			return;
-+		}
-+	}
-+
-+	b47n->curr_column += len;
-+}
-+
- /**************************************************
-  * NAND chip ops
-  **************************************************/
-@@ -215,6 +246,35 @@ static void bcm47xxnflash_ops_bcm4706_cmdfunc(struct mtd_info *mtd,
- 		if (page_addr != -1)
- 			b47n->curr_column += mtd->writesize;
- 		break;
-+	case NAND_CMD_ERASE1:
-+		bcma_cc_write32(cc, BCMA_CC_NFLASH_ROW_ADDR,
-+				b47n->curr_page_addr);
-+		ctlcode = 0x00040000 | NCTL_CMD1W | NCTL_CMD0 | NAND_CMD_ERASE1 | (NAND_CMD_ERASE2 << 8);
-+		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(cc, ctlcode))
-+			pr_err("ERASE1 failed\n");;
-+		break;
-+	case NAND_CMD_ERASE2:
-+		break;
-+	case NAND_CMD_SEQIN:
-+		/* Set page and column */
-+		bcma_cc_write32(cc, BCMA_CC_NFLASH_COL_ADDR,
-+				b47n->curr_column);
-+		bcma_cc_write32(cc, BCMA_CC_NFLASH_ROW_ADDR,
-+				b47n->curr_page_addr);
-+
-+		/* Prepare to write */
-+		ctlcode = 0x40000000 | 0x00040000 | 0x00020000 | 0x00010000;
-+		ctlcode |= NAND_CMD_SEQIN;
-+		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(cc, ctlcode))
-+			pr_err("SEQIN failed\n");;
-+		break;
-+	case NAND_CMD_PAGEPROG:
-+		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(cc, 0x00010000 |
-+							  NAND_CMD_PAGEPROG))
-+			pr_err("PAGEPROG failed\n");
-+		if (bcm47xxnflash_ops_bcm4706_poll(cc))
-+			pr_err("PAGEPROG not ready\n");
-+		break;
- 	default:
- 		pr_err("Command 0x%X unsupported\n", command);
- 		break;
-@@ -266,6 +326,21 @@ static void bcm47xxnflash_ops_bcm4706_read_buf(struct mtd_info *mtd,
- 	pr_err("Invalid command for buf read: 0x%X\n", b47n->curr_command);
- }
- 
-+static void bcm47xxnflash_ops_bcm4706_write_buf(struct mtd_info *mtd,
-+						const uint8_t *buf, int len)
-+{
-+	struct nand_chip *nand_chip = (struct nand_chip *)mtd->priv;
-+	struct bcm47xxnflash *b47n = (struct bcm47xxnflash *)nand_chip->priv;
-+
-+	switch (b47n->curr_command) {
-+	case NAND_CMD_SEQIN:
-+		bcm47xxnflash_ops_bcm4706_write(mtd, buf, len);
-+		return;
-+	}
-+
-+	pr_err("Invalid command for buf write: 0x%X\n", b47n->curr_command);
-+}
-+
- /**************************************************
-  * Init
-  **************************************************/
-@@ -285,6 +360,7 @@ int bcm47xxnflash_ops_bcm4706_init(struct bcm47xxnflash *b47n)
- 	b47n->nand_chip.cmdfunc = bcm47xxnflash_ops_bcm4706_cmdfunc;
- 	b47n->nand_chip.read_byte = bcm47xxnflash_ops_bcm4706_read_byte;
- 	b47n->nand_chip.read_buf = bcm47xxnflash_ops_bcm4706_read_buf;
-+	b47n->nand_chip.write_buf = bcm47xxnflash_ops_bcm4706_write_buf;
- 	b47n->nand_chip.bbt_options = NAND_BBT_USE_FLASH;
- 	b47n->nand_chip.ecc.mode = NAND_ECC_NONE; /* TODO: implement ECC */
- 
--- 
-1.7.7
+I'm trying to use a MIPS32-24KE (from Vitesse 7429) with NAND flash SAMSUNG=
+ K9F1G08U0B / Micron 29F2G08AAD,
+and I have problem with reading it. Software I'm using is KAMIKAZE 8.09.2 (=
+mtd 20050122)
+
+Problem is when i try to read also the ID or any data from chip.
+When I read ID for SAMSUNG I getting:
+NAND device: Manufacturer ID: 0xFF, Chip ID: 0xEC (next readed byte is 0xF1=
+) - 0xFF in mfc field makes
+that my NAND is not recognized
+Same situation with Micron (first byte 0xFF)
+
+I changed nand_base.c and put one extra read command before reading first I=
+D byte:
+
+chip->cmdfunc(mtd, NAND_CMD_READID, 0x00, -1);
+read_byte(mtd);  // added command
+*maf_id =3D chip->read_byte(mtd);
+
+NAND is now recognized and I have log (dmesg) like this:
+.....
+RedBoot partition parsing not available
+Using physmap partition information                                        =
+    =20
+Creating 4 MTD partitions on "physmap-flash.0":                            =
+    =20
+0x00000000-0x00040000 : "redboot"                                          =
+    =20
+0x00040000-0x00080000 : "config"                                           =
+    =20
+0x007c0000-0x008c0000 : "linux"                                            =
+    =20
+0x008c0000-0x00bc0000 : "rootfs"                                           =
+    =20
+mtd: partition "rootfs" set to be root filesystem                          =
+    =20
+block2mtd: version $Revision: 1.30 $                                       =
+    =20
+NAND device: ec,f1,80,15,40 // this is my exta function                    =
+                 =20
+NAND device: Manufacturer ID: 0xec, Chip ID: 0xf1 (Samsung NAND 128MiB 3,3V=
+ 8-b)
+Scanning device for bad blocks                                             =
+    =20
+Creating 1 MTD partitions on "gen_nand":                                   =
+    =20
+0x00000000-0x08000000 : "rootfs_data"                                      =
+    =20
+TCP cubic registered                                                       =
+    =20
+NET: Registered protocol family 17                                         =
+    =20
+VFS: Mounted root (squashfs filesystem) readonly.                          =
+    =20
+Freeing unused kernel memory: 108k freed
+......
+
+
+After this, when NAND is recognized I have still problem with reading
+(first byte is FF and other are shifted to right)
+You can see it when I do nandtest (from mtd-utils)
+
+root@OpenWrt:/# nandtest /dev/mtd4                                         =
+    =20
+ECC corrections: 0                                                         =
+    =20
+ECC failures   : 0                                                         =
+    =20
+Bad blocks     : 0                                                         =
+    =20
+BBT blocks     : 0                                                         =
+    =20
+00000000: reading...
+ECC failed at 00000000                                                     =
+    =20
+00000000: checking...                                                      =
+    =20
+compare failed. seed 1797617246                                            =
+    =20
+Byte 0x0 is ff should be 0a                                                =
+    =20
+Byte 0x1 is 0a should be 6e                                                =
+    =20
+Byte 0x2 is 6e should be 7e                                                =
+    =20
+Byte 0x3 is 7e should be 8e                                                =
+    =20
+Byte 0x4 is 8e should be aa                                                =
+    =20
+Byte 0x5 is aa should be 23                                                =
+    =20
+Byte 0x6 is 23 should be 91=20
+
+From=20myself I can add that NAND i permanently selected - CS pin goes to G=
+ND (through 10k)
+
+Please help me to find some solution to fix this issue.
+Sorry about my english
+
+Best Regards
+Dawid
