@@ -1,19 +1,19 @@
-Received: from mail-ia0-f177.google.com ([209.85.210.177])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Te6D3-0004kA-QQ
- for linux-mtd@lists.infradead.org; Thu, 29 Nov 2012 15:39:30 +0000
-Received: by mail-ia0-f177.google.com with SMTP id u21so10468598ial.36
- for <linux-mtd@lists.infradead.org>; Thu, 29 Nov 2012 07:39:27 -0800 (PST)
+Message-ID: <50B79979.1090406@newsguy.com>
+Date: Thu, 29 Nov 2012 09:20:57 -0800
+From: Mike Dunn <mikedunn@newsguy.com>
 MIME-Version: 1.0
-In-Reply-To: <CAAXf6LU86rF1tkx-SRLup8rpvVG9cgD_nryn8UZG45-c7+FpRg@mail.gmail.com>
-References: <CAAXf6LU86rF1tkx-SRLup8rpvVG9cgD_nryn8UZG45-c7+FpRg@mail.gmail.com>
-Date: Thu, 29 Nov 2012 16:39:26 +0100
-Message-ID: <CAAXf6LWu1Qcuki_NnHJZfO3-RNnePqaqnxmV99hB=xH+CGUN3w@mail.gmail.com>
-Subject: Re: Handling bus locking of CFI Flash devices
-From: Thomas De Schampheleire <patrickdepinguin@gmail.com>
-To: linux-mtd <linux-mtd@lists.infradead.org>
+To: Josh Wu <josh.wu@atmel.com>
+Subject: Re: [PATCH v2] MTD: at91: atmel_nand: return bit flips for the PMECC
+ read_page()
+References: <1354013431-13598-1-git-send-email-josh.wu@atmel.com>
+ <50B50D81.3060401@newsguy.com> <50B51605.9040703@newsguy.com>
+ <50B71292.4020604@atmel.com>
+In-Reply-To: <50B71292.4020604@atmel.com>
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: Thomas De Schampheleire <patrickdepinguin@gmail.com>
+Content-Transfer-Encoding: 7bit
+Cc: plagnioj@jcrosoft.com, nicolas.ferre@atmel.com,
+ linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,33 +23,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Nov 23, 2012 at 7:34 PM, Thomas De Schampheleire
-<patrickdepinguin@gmail.com> wrote:
-> Hi,
->
-> I have an embedded PowerPC system with a CFI Flash located on the local bus.
-> Additionally, there is a control device with a 'flash-write-protect'
-> feature. By default, no writes can happen to the flash device on the
-> local bus, unless the flash-write-protect bit is cleared.
->
-> This also means that detection of the flash chip using CFI commands
-> will fail by default, as this incurs write operations to the bus.
->
-> Note that this flash-write-protect is different from the standard
-> flash 'lock/unlock' feature. The former is implemented on a specific
-> control logic chip of the board, while the latter is part of the flash
-> chip/controller itself.
->
-> My question is: what is the best way to handle this flash-write-protect bit?
-> Right now, I am simply clearing the bit before booting the kernel,
-> which means that all write access to the flash is allowed. While this
-> works, it completely bypasses the protection feature.
-> Is there already a place in the MTD subsystem to handle such a
-> flash-write-protect bit, for example a hook that can be implemented
-> for a particular board?
-> If not, how do you suggest I proceed?
+On 11/28/2012 11:45 PM, Josh Wu wrote:
+> Hi, Mike
+> 
+> On 11/28/2012 3:35 AM, Mike Dunn wrote:
+>>
+>> BTW, with such a wide range for ecc strength - up to 24 bits, according to the
+>> commit message for the pmecc patch - you may want to think about setting an
+>> appropriate bitflip_threshold in the driver.  I'm not a nand expert, and I don't
+>> know much about the atmel_nand specifically, but I would think that if 23 bits
+>> are corrected on a page of size 2k (or less), maybe a return code of -EUCLEAN
+>> from mtd_read() might be appropriate.
+> 
+> After checking the nand_base.c, I saw it will set the mtd.bitflip_threshold to
+> mtd->ecc.strength during nand_scan_tail().
+> in the atmel_nand code, the ecc strength will be set correctly, that means
+> bitflip_threashold should be set up correctly by default.
+> so I think I don't need set up the the bitflip_threshold anymore if I set ecc
+> strength correctly. Am I missing any point here?
 
-Any feedback on this issue?
 
-Thanks,
-Thomas
+No, you are correct; bitflip_threshold is set to ecc.strength by default if the
+driver has not assigned it a value already.  I just wondered if the default
+value is too liberal given the possibility of such high ecc strength in your
+case.  With bitflip_threshold == 24 (default for the greatest possible
+ecc.strength on atmel_nand with pmecc) mtd_read() will not return -EUCLEAN until
+24 bitflips are corrected on a page that is no greater than 2k in size, and may
+be as small as 512 bytes (if I read the code correctly).
+
+The -EUCLEAN return code is used by higher layers as an indication that a block
+may be going bad.  I don't know whether or not a block bears scrutiny when 23
+bitflips are corrected on a page.  I guess it depends on the particular flash
+device.  It was just a thought.
+
+Hope this makes sense.
+Mike
