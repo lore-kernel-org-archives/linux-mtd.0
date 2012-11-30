@@ -1,22 +1,20 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga14.intel.com ([143.182.124.37])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TeMVJ-0001Sg-2M
- for linux-mtd@lists.infradead.org; Fri, 30 Nov 2012 09:03:25 +0000
-Message-ID: <1354266254.30168.62.camel@sauron.fi.intel.com>
-Subject: Re: UBIFS error (pid 564): read_znode: bad indexing node at LEB
- 484:66064, error 2
+ id 1TeMvR-0002HH-Fm
+ for linux-mtd@lists.infradead.org; Fri, 30 Nov 2012 09:30:26 +0000
+Message-ID: <1354267874.30168.73.camel@sauron.fi.intel.com>
+Subject: Re: UBIFS: Advice request on how to reduce orph_buf size
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: micah anderson <micah@riseup.net>
-Date: Fri, 30 Nov 2012 11:04:14 +0200
-In-Reply-To: <87a9uhi6sa.fsf@minnow.riseup.net>
-References: <87625h85fd.fsf@minnow.riseup.net>
- <1353054666.3618.6.camel@sauron.fi.intel.com>
- <87obixil6r.fsf@minnow.riseup.net> <87a9uhi6sa.fsf@minnow.riseup.net>
+To: Josselin Costanzi <josselin.costanzi@mobile-devices.fr>, Ezequiel Garcia
+ <elezegarcia@gmail.com>, Wolfram Sang <w.sang@pengutronix.de>
+Date: Fri, 30 Nov 2012 11:31:14 +0200
+In-Reply-To: <CAJA4uhcD+bGAdKMb6Nv-Kvs+o229PaLQL-9Dok-ddCUS5rbGpg@mail.gmail.com>
+References: <CAJA4uhcD+bGAdKMb6Nv-Kvs+o229PaLQL-9Dok-ddCUS5rbGpg@mail.gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-4Mn2c9Ei/ZluNJIYotb9"
+ boundary="=-2t9sMZX64UhJTIpauyqv"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,31 +26,63 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-4Mn2c9Ei/ZluNJIYotb9
+--=-2t9sMZX64UhJTIpauyqv
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2012-11-16 at 16:20 -0500, micah anderson wrote:
-> Can you tell me what specifically I should run if I were to get these
-> built? Some of these look destructive, some of them I cannot tell if
-> they are destructive or not, and some of them seem like they aren't
-> relevant (speed tests), but I'm out of my league here, so any pointers
-> would be very helpful!=20
+On Fri, 2012-11-16 at 12:14 +0100, Josselin Costanzi wrote:
+> In order to reduce UBIFS memory consumption when used in RW I'm trying to
+> reduce orph_buf size from one LEB to max_write_size. I changed avail_orph=
+s and
+> tot_avail_orphs functions to report correct orphan counts but I'm now stu=
+ck
+> with the consolidate function. I don't see how I could atomically write a=
+ll my
+> orphans in a new LEB with a max_write_size sized orph_buf. One potential
+> solution would be to try allocating a LEB sized buffer only when consolid=
+ating
+> the orphans but this means commit_orphans may now fail due to memory exha=
+ustion.
+>=20
+> Have any of you an idea on how to correctly do this? What would be an acc=
+eptable
+> solution?
 
-Oh, sorry, I cannot help. Using the ancient kernel is the risk you took,
-and now you should pay for that. The price is - the community is not
-interested in supporting you.
+Hi,
 
-You should back-port the tests I guess, from the newer kernel.
+well, it does not look like you can easily do this. The difficult
+solution would be to implement scatter-gather lists support in UBI and
+UBIFS, so that it would not require continuous buffers at all. Then may
+of the LEB-sized buffers would not be needed at all.
 
-Running them is a good idea respectively - they validate your flash
-drivers.
+I mean, why do we allocate a lot of LEB-sized buggers on mount time?
+Simply because later we may have no memory, and we do not want UBIFS to
+fail at random point with an error like "cannot write your files - no
+memeory".
+
+But if we implement SC support, we will be doing small allocations
+instead of 128KiB+ allocations. Small allocations, like allocating one
+page, do not fail. I mean, thy can fail sometimes, but extremely rarely.
+And if they do, your system is dead anyway. Besides, the kernel always
+have some pool of memory for urgent needs. Additionally, we can always
+create our own memory pool with some amount of pages which are always
+guaranteed to be there.
+
+So, this is basically my answer. This is a big work. But it would make
+UBIFS use a lot less RAM. It would also solve another problem people
+scream for years about - UBI/UBIFS use vmalloc() which is not DMA-able
+in many ARM systems. With SC lists we'd allocate smaller amount of
+memory (mostly one page, and sometimes 2 pages), and we could use normal
+kmalloc().
+
+CCing Ezequiel Garcia <elezegarcia@gmail.com> - may be he is
+enthusiastic enough to make a proposal about this in http://elinux.org.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-4Mn2c9Ei/ZluNJIYotb9
+--=-2t9sMZX64UhJTIpauyqv
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -60,19 +90,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQuHaOAAoJECmIfjd9wqK0uh4P/2xPnmfraHpLqv4bUtW2lU0X
-8Mhvbildp1HP7ToONGclbK+W3pirVhBGu+RYM9hsAg+570IjdQGBQMVM+jhruBDm
-BYU9/5jADsUIoGq68s4aqL0kLXmvRe54P4+JPqNIMLbKRk5D//D/cRPXXCCrT19z
-fOT5+viErPxLjYb6ImgNvFNwcyN3L8sHJwGwI1iq904t5TeMumsKuh3AtDpeHaYC
-eD/lhHEWbHnwNDCs2p+ZQDUPm0pj3XPH73SGxM0KI5Bkbmx5xa1i8lY0t31SRZoE
-x5x9w9LMArFGIbwH1Ixm0tAe8kOq32Ymnqft3CoDrHAqxi8Eyg+sRT26iNki8pOv
-UHmJ2/E8wzhSI3LsaTqXhvvxdcl9fFKaqcgObjQgw+gwzpATWUHOs1lgLbDwdu66
-e2/rBih700Sij3Ad9YjylcQJ3KfpsCE6BS5FQqXicAW0IH251u77PdDXwW2YiWsh
-jZB2CbHRGRMfSKpwXOIqGHtyzXfYw1X93rNoFR/A6DYOJ7R7y9KocMsDjiSDPCR8
-6Ytzw3iTsxxA7tS8e80u5czjyAkbpsk9+so8rSug6lVBQZlXLduB0JwtTZLq7E8S
-UmkfMRbEIHh7TDWZL6SrYSHNirFXrwykTcTRnYjh+SSy+JhP+s0/en0dt9UDNJUX
-xrxthZ2qjFH/ztI9IXXW
-=NjzS
+iQIcBAABAgAGBQJQuHziAAoJECmIfjd9wqK0mrQP/2hdzrWWoy1qXXzlKhrpJ734
+t2jyMeS3Ye1S/zFohAkulpwiuKoWKUXzIA4CJNqPi+V6tWM+Vn8UzGG9zqepIbsI
+soyR+isDkq56HlmY9p411iavyfW5xhllWDPZSxy0myuhq96vLjzx0lsFopkzH+Ph
+FRHmmLkmoC4zUZjNB2D1eZRvbxd5k4komwY2fh+64mxgbfcZtywrc+kkR54JR08b
+ucpQlBaia/eopRuW2OkA7hJ1kluBIAlQ2eR4kjm324auq7U3f7zVg90egxe6AdJ8
+Wli1WBfMf/pXsm0/BLT7iYBTv0aVdSoeAm5Mg+Hnon7lW13NQaRUy+Ugah6/kV1D
+ml0cRgivqHdclTUlE2y2Pac10Yf3VKfE/bzR2BNaz7oriX1qY0m49A3JNhJ65Ana
+dTbL8UUEw1QKwcqZEj7kI2ZLpxmLW6T5M3v7FJhgaxuItdxkwkQujUWc70MESwZO
+v3Cr7wcqXAaynu8IkEVEN2Tvb3dTR74tHgPSBh510ynLdWP7fNSdFQYHOEK1wHif
+TeIhk/NMKsL/TEI12TkCjCc+20/9LSk+Ldtach51Fe8LNPfqkC5ugnfYVMd9VZMX
+gpaplCPwlOuq/DkN9vBxI+JhuPU9+poGP/OmMwRhexO9JAmthFE3G154C/f1EJqK
+LXyp8t4Nm3WIkSyFtesX
+=fnJw
 -----END PGP SIGNATURE-----
 
---=-4Mn2c9Ei/ZluNJIYotb9--
+--=-2t9sMZX64UhJTIpauyqv--
