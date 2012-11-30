@@ -1,24 +1,24 @@
 Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TeOVY-0001xF-6S
- for linux-mtd@lists.infradead.org; Fri, 30 Nov 2012 11:11:49 +0000
-Message-ID: <1354273947.30168.91.camel@sauron.fi.intel.com>
-Subject: Re: [RFC/PATCH 1/1] ubi: Add ubiblock driver
+ id 1TeOYr-00037N-7t
+ for linux-mtd@lists.infradead.org; Fri, 30 Nov 2012 11:15:13 +0000
+Message-ID: <1354274146.30168.94.camel@sauron.fi.intel.com>
+Subject: Re: [RFC/PATCH 0/1] ubi: Add ubiblock driver
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ezequiel Garcia <elezegarcia@gmail.com>
-Date: Fri, 30 Nov 2012 13:12:27 +0200
-In-Reply-To: <CALF0-+UVNwAcEe5UVK9MdKYGwwubCi70DRXdWaojEUDg3uR+Xg@mail.gmail.com>
-References: <1353451183-18807-1-git-send-email-elezegarcia@gmail.com>
- <CAFLxGvxuRtbvTob0j-YgfK6Ydz9TVCdjD5NOToyyKQb2S7bC9Q@mail.gmail.com>
- <CALF0-+UVNwAcEe5UVK9MdKYGwwubCi70DRXdWaojEUDg3uR+Xg@mail.gmail.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Date: Fri, 30 Nov 2012 13:15:46 +0200
+In-Reply-To: <alpine.DEB.2.00.1211210626110.357@lnxricardw.se.axis.com>
+References: <CALF0-+WuaUn5b=2XrzqW7pvM=N1MfQf=sFwLFOrokTkHbOXh3w@mail.gmail.com>
+ <alpine.DEB.2.00.1211210626110.357@lnxricardw.se.axis.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-t9H/mpfk7CtLw34LVLXn"
+ boundary="=-dvSwhA+eRQh13N+RtDec"
 Mime-Version: 1.0
-Cc: richard -rw- weinberger <richard.weinberger@gmail.com>,
- michael.opdenacker@free-electrons.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Tim Bird <tim.bird@am.sony.com>,
- dwmw2@infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Ezequiel Garcia <elezegarcia@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Tim Bird <tim.bird@am.sony.com>,
+ Michael Opdenacker <michael.opdenacker@free-electrons.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,30 +30,48 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-t9H/mpfk7CtLw34LVLXn
+--=-dvSwhA+eRQh13N+RtDec
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-11-21 at 07:20 -0300, Ezequiel Garcia wrote:
-> Yes, I thought of this.
+On Wed, 2012-11-21 at 06:28 +0100, Ricard Wanderlof wrote:
+> On Tue, 20 Nov 2012, Ezequiel Garcia wrote:
 >=20
-> For now, I decided to keep the implementation as simple as possible.
+> > I'm happy to announce we finally have a read/write ubiblock implementat=
+ion!
+> >
+> > What follows are some historical notes and some implementation hints.
+> > Feel free to comment on anything, ask questions or provide feedback.
+> > You can even fire some flames if you like, my asbestos suite works just=
+ fine ;-)
+>=20
+> I don't want to diminish your work in any way, but what is the point of=
+=20
+> the ubiblock feature? Mtd block devices are really only used in order to=
+=20
+> give the mount/umount commands a block device, and for ubifs the device i=
+s=20
+> specified in another way. So I suspect the intended usage for ubiblock is=
+=20
+> something else.
 
-WRT atomic LEB caches and barriers - I guess if there are users who
-would prefer higher I/O speed to the power-cut tolerance, you could:
+Well, it would give you a _usable_ block device. mtdblocks are unusable
+because they ignore bad blocks, no wear-levelling, no power-cut
+tolerance.
 
-1. ignore I/O barriers
-2. use plain leb_unmap/leb_write instead of atomic leb change, which is
-faster.
+When/if we have ubiblock devices, we can kill mtdblock devices even, and
+may be have some thin layer which would emulate mtdblock devices
+optionally. They would be ubublock devices whti mtdblock name and
+major:minor. Hmm? Makes sense?
 
-There could be a switch, probably an ioctl? But this is not very
-important now, I am just throwing an idea.
+P.S. Dunno why people were removed from CC. If this was done on purpose
+- I do not think it was a good idea.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-t9H/mpfk7CtLw34LVLXn
+--=-dvSwhA+eRQh13N+RtDec
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -61,19 +79,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQuJSbAAoJECmIfjd9wqK0FJkQAJWgCsQ7n3z1qaffKQWHJjvz
-YxYMudjb9G1uhKkzDQBxnj7Qj5+LFj1YRdnz48Pu/6bGtoUQgw8Bx04FowABNDtR
-3z+cZl1Qrj9Zgosx5A08OaaiVcePkkS3TuEH/DTVIswi0hd2h2J4O+iJS5e6uALw
-lFHqj8K5zH9H7DWiUFuHK/Nva8XzARgbpKjyJ0d79r0jII2gbBFbzF/uLqrhv15Z
-iV9bqwlBfrh8InCRu067PONejfW46RF6nGKP4hvxWXSR5XdtOdKALFTnG38zm4qG
-1XNhNjSuW/U8bRKdAxbr2Kd+DBx3bW3AI4pbba/vAuYH5SIoZChZTbscUYSawphF
-DicCCorwwyXO7J/imSPqTzmMkoic6iwSwbsBTxDN66O/wp1ZEpvIIr/xIph/tKCo
-T8GiQnzZtnLmUVdOZ6gaOPG3nPCAeSZXSBDRPaNgkxSblE6Va7xJqQWfm9shtDk8
-U9GMaD+dR+9jqlyRGGaEP/Y/u/v+2O1XUKQxQgkNZV4noOVgKNdIrqU8Xk5pxYOd
-gTJfEhrrCPIQRPkrHaybV8zZ27pZS9W4amWViFtd7AP03pIfaVuxCv3ab1Co4811
-c4Gweqqi7jjlzg+jjTFB/4hF3//oL9p1ukEG/z6NuYcQ+wPSfxBr3Cfxd2PEKEyj
-2TBbRZz+kqUEk31cyC5C
-=2pVT
+iQIbBAABAgAGBQJQuJViAAoJECmIfjd9wqK051IP+Jbjoz5I52jH96nrWLoEqvy0
+GJpLwNNRFg/kqsHARSAsQ1UudKXWgocVIHWbH/a3mpjrIxPGMHMMdD60YX+x6RNc
+MFRVtIzdL/n3KTEiJoZSb+aROQs8uKmoqCb6HVxmPXq1gXhrvlHPnqsqwOgc9mq1
+mxEp6rXZQfxjdYXqXV0RlW1X2xHAgwKhg5wxLO71a2FQqsVLWjaGWtzuF+j2upqM
+U8f0r/0Ul4B7kshc2b4qXneoQNVrGAkbb5jk7ngeUTvIl7FUnmnP2NGSi7pUKQ4S
+TubRTXeB8zq/pSw5y9x+Iln0oUbYz9HgLMuwda1f0fWYt3oWCFXfHjk+9s8HO2Wp
+CB1wIR8OLdz4wTYP1YlGtijNSdX0j/uqGTeq3GYVY90GifA4LzRGX/d4U2zTJH9j
+hae0krZDK7bpMHSkVmx47dmqObRqq9T2uPy/UQaczVS3u4gNesnmYkcS98Gx+6cB
+Wtl44L6Vdm7IX5sAAQjXXbacAri/37Om7BhzKT03xSl24We0HmV9EI5MYfldnkM1
++Db/rA6uhDfR+LlJ3ul380v7nHPXT06S0wKRjq/CbEM6kH8F6sstqpw5n80lN/jG
+62ZOk74IRqep2oUpeINJQALJ8aK0mykkLfZCiuEvAM8tYa3vzbta17Y9yDJ0RVvY
+9gr4fmL5IetJqc01jsw=
+=Lz38
 -----END PGP SIGNATURE-----
 
---=-t9H/mpfk7CtLw34LVLXn--
+--=-dvSwhA+eRQh13N+RtDec--
