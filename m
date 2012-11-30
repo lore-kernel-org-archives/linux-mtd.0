@@ -1,22 +1,19 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TeQW8-0006dA-R2
- for linux-mtd@lists.infradead.org; Fri, 30 Nov 2012 13:20:33 +0000
-Message-ID: <1354281682.30168.134.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 2/3] mtd nand : add NAND_BUSWIDTH_AUTO to autodetect bus
- width
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-Date: Fri, 30 Nov 2012 15:21:22 +0200
-In-Reply-To: <1352199105-30215-2-git-send-email-matthieu.castet@parrot.com>
-References: <1352199105-30215-1-git-send-email-matthieu.castet@parrot.com>
- <1352199105-30215-2-git-send-email-matthieu.castet@parrot.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-4XWZ0XUoAZjQ2Co/Va5j"
-Mime-Version: 1.0
-Cc: linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mika.eatserver.nl ([2001:67c:28fc:195:20:9:75:0])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TeRL4-0001m1-Cn
+ for linux-mtd@lists.infradead.org; Fri, 30 Nov 2012 14:13:11 +0000
+Message-ID: <50B8BEEA.3070808@aimvalley.nl>
+Date: Fri, 30 Nov 2012 15:12:58 +0100
+From: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
+MIME-Version: 1.0
+To: Thomas De Schampheleire <patrickdepinguin@gmail.com>
+Subject: Re: Handling bus locking of CFI Flash devices
+References: <CAAXf6LU86rF1tkx-SRLup8rpvVG9cgD_nryn8UZG45-c7+FpRg@mail.gmail.com>
+ <CAAXf6LWu1Qcuki_NnHJZfO3-RNnePqaqnxmV99hB=xH+CGUN3w@mail.gmail.com>
+In-Reply-To: <CAAXf6LWu1Qcuki_NnHJZfO3-RNnePqaqnxmV99hB=xH+CGUN3w@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,46 +23,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 11/29/12 16:39, Thomas De Schampheleire wrote:
+> On Fri, Nov 23, 2012 at 7:34 PM, Thomas De Schampheleire
+> <patrickdepinguin@gmail.com>  wrote:
+>> Hi,
+>>
+>> I have an embedded PowerPC system with a CFI Flash located on the local bus.
+>> Additionally, there is a control device with a 'flash-write-protect'
+>> feature. By default, no writes can happen to the flash device on the
+>> local bus, unless the flash-write-protect bit is cleared.
+>>
+>> This also means that detection of the flash chip using CFI commands
+>> will fail by default, as this incurs write operations to the bus.
+>>
+>> Note that this flash-write-protect is different from the standard
+>> flash 'lock/unlock' feature. The former is implemented on a specific
+>> control logic chip of the board, while the latter is part of the flash
+>> chip/controller itself.
+>>
+>> My question is: what is the best way to handle this flash-write-protect bit?
+>> Right now, I am simply clearing the bit before booting the kernel,
+>> which means that all write access to the flash is allowed. While this
+>> works, it completely bypasses the protection feature.
+>> Is there already a place in the MTD subsystem to handle such a
+>> flash-write-protect bit, for example a hook that can be implemented
+>> for a particular board?
+>> If not, how do you suggest I proceed?
+>
+> Any feedback on this issue?
+>
 
---=-4XWZ0XUoAZjQ2Co/Va5j
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, 2012-11-06 at 11:51 +0100, Matthieu CASTET wrote:
-> The driver call nand_scan_ident in 8 bit mode, then
-> readid or onfi detection are done (and detect bus width).
-> The driver should update its bus width before calling nand_scan_tail.
->=20
-> This work because readid and onfi are read work 8 byte mode.
 
 
-Pushed this one alone to l2-mtd.git, thanks!
+I do not think there is a hook for this.
 
---=20
-Best Regards,
-Artem Bityutskiy
+You'd have to make such a hook yourself (in the mtd map_info struct ?)
 
---=-4XWZ0XUoAZjQ2Co/Va5j
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+or you can make your own mtd map driver that handles flash-write-protect
+bit as desired.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQuLLSAAoJECmIfjd9wqK0u1UP/01DsQHnEms9qe4Q3OdSzjLk
-iqlPCwC0o6Jlf8Pe67BjjI/AH6W0wTJp32AOz2ZFpinUtriJyjNa8zHypyQPa9BL
-R6rGZlF2M4JE2FfQOPWVsHTpQLCcrlKVWafzuA00Mqc4Ad4fPXpUeBULsB2CKTbS
-0aOhoz89O/mG63ThFkkKGKA4SkypziCtna0TxG63dq/wRQ19b1+XrddJclkesL6P
-OKGXtSKtX3ez9hrWISQnSqBEQL2HZ1jlC6Ui8JmTPK7+m8735DlRgWx69tMs/Okr
-qxqEAyw6AhV19EskSwxax7tsUVwmMQLnO754GMyOebNaEoV8Rpcb43uB/SGc7AEu
-F3Hq9nzZ3CobsyxbT8V/3zam6SN4Adx+BpAev+jY4/GxLBf0j1mk2PgyJt4r/Hcs
-iW7yQEkFu8m+I0RHLXPhl91L9caGCCi7V5mp22YB1tTrv1VYHRxWCbCDAsYqmmNw
-MiGPASC63xqGZpwQwfdRhXFvVOiOBv5F6lFKRZwJm8K0Ml0y5UC1Xpy8Hv5uIdAC
-tfaWvaEe1EXpllipaO2lnBCGLlKPsQLDe50R3cGRPTOAN8SkGkh7JkbYYXIGY9Yt
-1l+2t1cqLEpjmcLGqbj1VsWiuk6qoqgyoBUJotnbWlb1lVqNX4LiU7v/ZWvXhJDg
-Hcj9x0LUbzm5lh9GmqgS
-=D//6
------END PGP SIGNATURE-----
-
---=-4XWZ0XUoAZjQ2Co/Va5j--
+---
+N. van Bolhuis.
