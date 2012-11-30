@@ -1,20 +1,20 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TeMSC-00018s-Lv
- for linux-mtd@lists.infradead.org; Fri, 30 Nov 2012 09:00:13 +0000
-Message-ID: <1354266059.30168.59.camel@sauron.fi.intel.com>
+ id 1TeMVJ-0001Sg-2M
+ for linux-mtd@lists.infradead.org; Fri, 30 Nov 2012 09:03:25 +0000
+Message-ID: <1354266254.30168.62.camel@sauron.fi.intel.com>
 Subject: Re: UBIFS error (pid 564): read_znode: bad indexing node at LEB
  484:66064, error 2
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: micah anderson <micah@riseup.net>
-Date: Fri, 30 Nov 2012 11:00:59 +0200
-In-Reply-To: <87obixil6r.fsf@minnow.riseup.net>
+Date: Fri, 30 Nov 2012 11:04:14 +0200
+In-Reply-To: <87a9uhi6sa.fsf@minnow.riseup.net>
 References: <87625h85fd.fsf@minnow.riseup.net>
  <1353054666.3618.6.camel@sauron.fi.intel.com>
- <87obixil6r.fsf@minnow.riseup.net>
+ <87obixil6r.fsf@minnow.riseup.net> <87a9uhi6sa.fsf@minnow.riseup.net>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-hzdXfWsjOzXRKAj3cKkM"
+ boundary="=-4Mn2c9Ei/ZluNJIYotb9"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
@@ -28,56 +28,31 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-hzdXfWsjOzXRKAj3cKkM
+--=-4Mn2c9Ei/ZluNJIYotb9
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2012-11-16 at 11:09 -0500, micah anderson wrote:
-> [   97.273764] UBIFS error (pid 564): read_znode: bad indexing node at LE=
-B 484:66064, error 2
-> [   97.282188] UBIFS warning (pid 564): ubifs_ro_mode: switched to read-o=
-nly mode, error -22
+On Fri, 2012-11-16 at 16:20 -0500, micah anderson wrote:
+> Can you tell me what specifically I should run if I were to get these
+> built? Some of these look destructive, some of them I cannot tell if
+> they are destructive or not, and some of them seem like they aren't
+> relevant (speed tests), but I'm out of my league here, so any pointers
+> would be very helpful!=20
 
-Did you re-size you UBI partition? The corresponding code in
-'read_znode' is:
+Oh, sorry, I cannot help. Using the ancient kernel is the risk you took,
+and now you should pay for that. The price is - the community is not
+interested in supporting you.
 
-                if (zbr->lnum < c->main_first ||
-                    zbr->lnum >=3D c->leb_cnt || zbr->offs < 0 ||
-                    zbr->offs + zbr->len > c->leb_size || zbr->offs & 7) {
-                        ubifs_err("bad branch %d", i);
-                        err =3D 2;
-                        goto out_dump;
-                }
+You should back-port the tests I guess, from the newer kernel.
 
-But I do not see the 'bad branch' message. Your UBIFS code-base is so ancie=
-nt?
-
-Then, in 'out_dump' we actually dump the znode. But this is not in your
-logs. Most probably because we dump with KERN_DEBUG level, which does
-not make it to your console. You need to boot with the 'ignore_loglevel'
-kernel parameter.
-
-But anyway, this does not look like something related to your flash
-driver - the znode CRC checksum is correct, but the contents makes no
-sense. This can be an UBIFS bug, but this is the first time I see this.
-Often things like this are caused by memory corruption - if you have a
-buggy driver which corrupts memory and writes garbage to UBIFS memory,
-this kind of stuff may happen. You can try to enable memory
-instrumentation like full slab/slub debugging and red zones, and
-validate your system. Read carefully the docs - AFAIR slub debugging
-options in the kernel config only add debugging support, but do not
-enable it by default - you need to enable it separately.
-
-Also, try to take the latest code from a UBIFS back-port tree, although
-ubifs-v2.6.32 is not supported any more, but at least it is a lot newer
-than vanilla 2.6.32, which is only interesting for archaeologists
-nowadays :-)
+Running them is a good idea respectively - they validate your flash
+drivers.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-hzdXfWsjOzXRKAj3cKkM
+--=-4Mn2c9Ei/ZluNJIYotb9
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -85,19 +60,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQuHXLAAoJECmIfjd9wqK0O2gQAKGm7TlaGR/BxAeuVFAe17M8
-YFz4GQXobKZ/gHWuELJPdRqTJXa22tiDDZmSpYOa+PcELYKzjdoOxPh1IaoDZyNw
-Kn7cJA0xt7iu5BpAaEEqUnH6WVlH7jigta0kQ74+c/NVyRaJ55zhLpEZKkdeEzzo
-xAaFLU3R6SQ6UJZDucdIxjSo4alJnSuhiaYKzNgcfQqxeX2Yb62pqpGFUwxuj6Qf
-Tg/uj1MBhKiGx4g/TGRDy/Zr8IrrIWQJBLkYDDk0LgQRs4uFP/UO/i3EmQM0xibJ
-yLKUPOCiWJ3xi9dNbSrNBc/nx8oEbD16NYvyi/43P3pbxbwDZxZheQBk/4+Ldr8D
-a9c4tjwwsbdRqThaYaczz+d2UtPP5ENFxChAlaDFpugZbMMW+zB1VSin73IN4wfl
-pEhfRNZbKMfQQJqMFw3v8z+4x3EXn0guos4vz/kt1qinJc7t/68ATvu21Obq8AyK
-ew2F2t78+/xwzbjUYMmoXJV0ayGUlM2rWByqDvJS/ZE7Cpaz/BgjJX4LDQlb9nPG
-XpACBSDGLX/XsPep/jVNGPOboMC2owHIcRd/jFUvkB7kekDDQ3DCZ0I0pXC6R4Rf
-LG2vQWXm9jVOFrJMwLmDMCvO20NBtaZxvwk3vQAXqNfjLwzcSrdp6uHrOI/pD8DR
-cG4f/KjqBNauVeLPctgF
-=ci4z
+iQIcBAABAgAGBQJQuHaOAAoJECmIfjd9wqK0uh4P/2xPnmfraHpLqv4bUtW2lU0X
+8Mhvbildp1HP7ToONGclbK+W3pirVhBGu+RYM9hsAg+570IjdQGBQMVM+jhruBDm
+BYU9/5jADsUIoGq68s4aqL0kLXmvRe54P4+JPqNIMLbKRk5D//D/cRPXXCCrT19z
+fOT5+viErPxLjYb6ImgNvFNwcyN3L8sHJwGwI1iq904t5TeMumsKuh3AtDpeHaYC
+eD/lhHEWbHnwNDCs2p+ZQDUPm0pj3XPH73SGxM0KI5Bkbmx5xa1i8lY0t31SRZoE
+x5x9w9LMArFGIbwH1Ixm0tAe8kOq32Ymnqft3CoDrHAqxi8Eyg+sRT26iNki8pOv
+UHmJ2/E8wzhSI3LsaTqXhvvxdcl9fFKaqcgObjQgw+gwzpATWUHOs1lgLbDwdu66
+e2/rBih700Sij3Ad9YjylcQJ3KfpsCE6BS5FQqXicAW0IH251u77PdDXwW2YiWsh
+jZB2CbHRGRMfSKpwXOIqGHtyzXfYw1X93rNoFR/A6DYOJ7R7y9KocMsDjiSDPCR8
+6Ytzw3iTsxxA7tS8e80u5czjyAkbpsk9+so8rSug6lVBQZlXLduB0JwtTZLq7E8S
+UmkfMRbEIHh7TDWZL6SrYSHNirFXrwykTcTRnYjh+SSy+JhP+s0/en0dt9UDNJUX
+xrxthZ2qjFH/ztI9IXXW
+=NjzS
 -----END PGP SIGNATURE-----
 
---=-hzdXfWsjOzXRKAj3cKkM--
+--=-4Mn2c9Ei/ZluNJIYotb9--
