@@ -1,17 +1,17 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TeP8P-00066f-8Q
- for linux-mtd@lists.infradead.org; Fri, 30 Nov 2012 11:51:57 +0000
-Message-ID: <1354276363.30168.103.camel@sauron.fi.intel.com>
-Subject: Re: [TRIVIAL PATCH] ubi/gluebi: Rename misleading variables
+ id 1TePAK-0006N3-Ui
+ for linux-mtd@lists.infradead.org; Fri, 30 Nov 2012 11:53:57 +0000
+Message-ID: <1354276486.30168.104.camel@sauron.fi.intel.com>
+Subject: Re: [TRIVIAL PATCH] ubi: Remove spurious comment
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Ezequiel Garcia <elezegarcia@gmail.com>
-Date: Fri, 30 Nov 2012 13:52:43 +0200
-In-Reply-To: <1353368120-5899-1-git-send-email-elezegarcia@gmail.com>
-References: <1353368120-5899-1-git-send-email-elezegarcia@gmail.com>
+Date: Fri, 30 Nov 2012 13:54:46 +0200
+In-Reply-To: <1353512772-2649-1-git-send-email-elezegarcia@gmail.com>
+References: <1353512772-2649-1-git-send-email-elezegarcia@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-SzhznWpAOQFq85PN5kiu"
+ boundary="=-+OSnVVrZtvA3OADZgCyF"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
@@ -25,25 +25,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-SzhznWpAOQFq85PN5kiu
+--=-+OSnVVrZtvA3OADZgCyF
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2012-11-19 at 20:35 -0300, Ezequiel Garcia wrote:
-> Both names 'total_read' and 'total_written' are actually used
-> as the number of bytes left to read and write.
-> Fix this confusion by renaming both to 'bytes_left'.
+On Wed, 2012-11-21 at 12:46 -0300, Ezequiel Garcia wrote:
+> This line of comment looks completely bogus.
 >=20
-> Cc: Artem Bityutskiy <dedekind1@gmail.com>
-> Signed-off-by: Ezequiel Garcia <elezegarcia@gmail.com>
+> It was introduced in:
+> commit d99383b00eba9c6ac3dea462d718b2849012ee03
+> Author: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+> Date:   Wed May 18 14:47:34 2011 +0300
+>=20
+>     UBI: change the interface of a debugging check function
+>=20
+> Remove it.
 
-Pushed to linux-ubi, thanks!
+Pushed to linux-ubi.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-SzhznWpAOQFq85PN5kiu
+--=-+OSnVVrZtvA3OADZgCyF
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -51,19 +55,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQuJ4LAAoJECmIfjd9wqK0vSoQAMj+n+/3SqKUNSH597smpZ4r
-d/vAfyYRrSpUn93Z5Xu5l7fIaGBNTR/EAS0hT7+EzN+veohxi9Ntk4USzxYRl+Yt
-0OGmDSpEB/O2bXbzfNnh8AOQdChNo78TK5cJlKYY0kKZOcHfvMkC10U/B4WbbfLe
-abhGumZJ0+xUk1E58NK2nNMQoGcCReMdXhU5YDTXdwCBs7YHxTIVfU1A1+jrK942
-jbKCn8RcQ/5VGUhahzGcSClT8WrIU/qh05nIXrsixNHEIs+YxjzSjC1l0Q7S7NL1
-5YNljaTq0yvDY68OPEYvH8+fuTQn+0mSpVyQFeaV9X14EIY93PC89PxajTQE4xOU
-PKl1gzvOhwONG24HN+bIU7u04FqGTWl6moWhiypHCY1ap+Thao3mHE8HIFaVgOTG
-HJJRUPbhjpDCX8LMRBRLaV14o5Axv+s1J1L6apTbBgh806BGa3DM/EXHJ8DiZwj+
-J2I8yLXqw3JoB8EX8X56tzjTsKgvXCjkRZ7LQzVKHKZhMQ/muHwrI+4tLT38iFTm
-+OfQefpcXSdgkZQbC9eewukE7EiwOCHrQR2nYOktjboQFKFtbHUUc9mO4R939yUw
-bN1ZXUK6kzlvcdAFnqjKQTWfV/KaJXSHpJy3/05q3dyf/23NAoa94Kjcq4zqlbX1
-PABHKjyjfHxKRC94GRnp
-=95XZ
+iQIcBAABAgAGBQJQuJ6GAAoJECmIfjd9wqK0R2EP/iTGOz7hjXm38klEVADvkVzE
+TAN1+9Y3x+LuGobL9teJNpc1FXVwNwicQGXuPchT1Vs4MXrvKjhT4zRLpjcUxzEV
+KaeiC9cVTo7VoRmf9en2VdlYb0w/6Ex1eojsnx4rTIy0Fedu91tpudWC70+LmwFq
+vnvJm5rf99pm+/r/uf6ZaubBjJlJjS2FldR4nfG7neFOpgqB9WO/8A2hLatzebtG
+A9VdJzxqC9e0NICeOobsBjgb/5cxjXjnZRL3qjv+yiZqCHw8+dysmfOoXfNBPyTy
+Pq2ucE7YyNer+B7xxXSu+mkHxmDcs0dWvz4Fh/V6jfMiJsP8efXZ8OvCGFOxhtRK
+Bmmk6MuRTgoMueBCQL+CeNt4ouNUBcaNwjTi7sQUyYVaRlsOpjWP+kyN+16GHjPs
+N4Y9YpL+TfxQl35gEJn9KDuVbO88Jz5wlvLcMMvdx2U1j456cRUfQSQViJL85Vos
+kY7Tskdrb9qppb4Dzcz6V+3dyqM3dSbpSX0r1KWjap/2hJJcot457l+ueHxxpkw5
+J7lHGpLe63mIcp2Yk/RlIDclrSjkFh1VUIVqiMKMQhvzcxbG/0ve5YEYzCDrp55+
+DACGceCwuFT/UzYtibmfI3PrIGxWNRJWWsDIQPLKjQV5NAnWLP0988GZXinsqQ/U
+jXj6rTrYiqW0okOtL5Ap
+=mAzV
 -----END PGP SIGNATURE-----
 
---=-SzhznWpAOQFq85PN5kiu--
+--=-+OSnVVrZtvA3OADZgCyF--
