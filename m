@@ -1,23 +1,26 @@
-Received: from mga14.intel.com ([143.182.124.37])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TeObB-0003nV-MR
- for linux-mtd@lists.infradead.org; Fri, 30 Nov 2012 11:17:38 +0000
-Message-ID: <1354274305.30168.96.camel@sauron.fi.intel.com>
+ id 1TeOgh-0004mz-BH
+ for linux-mtd@lists.infradead.org; Fri, 30 Nov 2012 11:23:20 +0000
+Message-ID: <1354274647.30168.99.camel@sauron.fi.intel.com>
 Subject: Re: [RFC/PATCH 0/1] ubi: Add ubiblock driver
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Date: Fri, 30 Nov 2012 13:18:25 +0200
-In-Reply-To: <20121121110518.3147bd34@skate>
+To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Date: Fri, 30 Nov 2012 13:24:07 +0200
+In-Reply-To: <20121125093621.47f9cb25@pixies.home.jungo.com>
 References: <CALF0-+WuaUn5b=2XrzqW7pvM=N1MfQf=sFwLFOrokTkHbOXh3w@mail.gmail.com>
  <alpine.DEB.2.00.1211210626110.357@lnxricardw.se.axis.com>
  <20121121105636.4c8687e0@skate>
  <alpine.DEB.2.00.1211211059540.21683@lnxricardw.se.axis.com>
  <20121121110518.3147bd34@skate>
+ <CALF0-+W-Ont1bhn_Go4YRBEpEk46=cXWGJPckAeKPgqwy+QUFw@mail.gmail.com>
+ <20121125093621.47f9cb25@pixies.home.jungo.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-kBgH08TUbCV5FE9LGYs4"
+ boundary="=-nQCF51oCLWcMRDH/K66S"
 Mime-Version: 1.0
-Cc: Ezequiel Garcia <elezegarcia@gmail.com>,
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Ezequiel Garcia <elezegarcia@gmail.com>,
  Ricard Wanderlof <ricard.wanderlof@axis.com>,
  Michael Opdenacker <michael.opdenacker@free-electrons.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
@@ -33,33 +36,61 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-kBgH08TUbCV5FE9LGYs4
+--=-nQCF51oCLWcMRDH/K66S
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-11-21 at 11:05 +0100, Thomas Petazzoni wrote:
-> Dear Ricard Wanderlof,
+On Sun, 2012-11-25 at 09:36 +0200, Shmulik Ladkani wrote:
+> Hi Ezequiel,
 >=20
-> On Wed, 21 Nov 2012 11:00:49 +0100, Ricard Wanderlof wrote:
+> On Sat, 24 Nov 2012 18:02:59 -0300 Ezequiel Garcia <elezegarcia@gmail.com=
+> wrote:
+> > I've started working on a workload scenario to measure if ubiblock writ=
+e
+> > is useful or just plain nonsense.
 >=20
-> > > The idea, when David Wagner implemented this, was to be able to use
-> > > read-only block filesystems such as squashfs on top of a UBI volume.
-> > > squashfs provides an excellent compression ratio, which makes it
-> > > interesting.
-> >=20
-> > Yes, I agree, that would be useful.
+> Please note eraseblock wear is just one aspect of using a standard r/w
+> filesystem over ubiblock.
 >=20
-> Yes, but only the read-only side of ubiblock. The write side is
-> dangerous and useless, IMO.
+> There's another potential hazard of using r/w ubiblock, which is the
+> lack of power-cut tolerance.
+> Changing a file atomically in ubifs or jffs2 is tolerant to power
+> cuts (see [1]).
+> I'm not sure this is possible in ubiblock case, due to the 1-LEB
+> writeback cache: if a file (in the mounted fs) is synced, are there any
+> guarantees the 1-LEB cache is flushed synchronously?
+> (you mentioned the actual write is only done when a request arrives to
+> read or write to a different LEB or when the device is released).
 
-Oh, I think it is natural to always expand on the topic when calling
-something dangerous and useless. Would you explain what you meant?
+Why would not it be? ubiblk is just like a hard drive or and SSD fro a
+file-system. If it caches something, it is just like an internal disk
+cache. The I/O barrier should flush it. And we have an atomic LEB change
+operation, so when you want to change the LEB contents, you can do it in
+power-cut-safe manner.
+
+Do I miss something?
+
+>=20
+> > Since read-only ubiblock is less controversial, I'll post a read-only
+> > version of ubiblock (with an option to use a vmalloced
+> > buffer to cache reads?).
+> > We can add write support later, if it's not useless.
+> >=20
+> > Any thoughts?
+>=20
+> Well I was about to suggest that approach :)
+> I would even split your patch further: the core stuff (with r/o
+> support), and an additional patch with all the DEBUG stuff. This may
+> ease reviewer's job.
+
+I do not see why R/W ubiblock is controversial. You can use FAT on top
+of this, which is a use-case many people wanted. Or even ext4.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-kBgH08TUbCV5FE9LGYs4
+--=-nQCF51oCLWcMRDH/K66S
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -67,19 +98,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQuJYBAAoJECmIfjd9wqK0SkcP/2Fwf4lSs3QEywzIoVAViRtp
-GpcupMo92kuO+2Wjdd/ilrR5AHjU/b154fdRKwpXoscOw93KzklI+40HPk+dq5wF
-EipWNg8WYmMT+yy8TYRqfySGmz9P9xLDyQmCD/78SEiMq3wl08/GFcIDt4BI0R4r
-arL9qL1Mgr6abqP8ZhfGcbZa0lqHp6MX1AM3bPkXt53KA9D8aeqdXLfIfraIsf8u
-TYQL5RPr+rw8u4+fZA7dXdZUK7oaihx/SoV5XYa/vC6Ovjhz9ZkfS/DvQia5prlS
-x7gRyR7OkGOhrOO2VJAsdwtgbLV5o4ZnCX68V33hjypmKSJgCWnMpgpRb/xQ4xF4
-H6BOgVaFCuNOpxYEAhmCeYVIiLBuzXEUy1R5IeVWedIDkCgUcu0FhP1GqfG1ik1F
-H0FbglAGQEjejG1XVac0oJxbuqJqK96m+45ACdHgCvvsc1JNWG8zBKl5rBDH6zVX
-Pt8xraHdgrDMpSmO4Ws1xWcXD+SxBMXzmNDQflas81HMQ1keCXHbD3TEFCgrvv2s
-1wHbJNKY66N2oqEkFbhCcQnfBrY1O0URv0veGJGxyhUMk0oLAu3tB57tkU+nJg6U
-BKsxQboci6INlqDRq7Xga5JCSThz7/eBH7jSSebd7F2ETtWPs8k7BEXTz8p6GzFy
-VhuhnvhR2VWnLTf3X1ay
-=2oU5
+iQIcBAABAgAGBQJQuJdXAAoJECmIfjd9wqK0tYQP/3nbJUZ+RLlBb4Uow8mBxkFI
+5caMv+r2oQoUN8+0N2U20A1dGATSKvfbNJHWTkShDxu5FwggYj/d/OGnvlNZumlQ
+Pd2uIGALwLXIsPMWmYG+NrgEDDwQrmkA7XMcwXbj6U7V1+zNrkSVPNo5YYzIGy5u
+NL0CnA0JKhf+aQrUZDmWRF8oTv5KzqJPghu5ipc+sKSAjhWrDrqHxuQtuNKqOGG2
+acMjGw9CCSzD0gS03UAN8wybgDmsRFHfzfQdre306VzGCyKL/MIzNXuRyGp+YgMB
+ZlQVUGdy7zDhL4uVxUqK3QAfskKyHrwivpg1UTPUOBIowwIu2RNsxnel2BRXrgPz
+hADB9VVLKQkZ6C3c7PmPyWZ0bxSeLHCfXBgP+mvUywwc+AnQs+v+MYd5m0WTbagK
++b+PRWUbbVyhlfo63M8ppfUVblZyaB7Lia1QF82aweki5jYQ5vyB17OaCbbg68Ns
+u1XTul17+JXkfr7NxKf+GrWq6WcOdHk1a2xAbTFF14peg2QfkfEtiLQz25um2VgS
+mQ+jNDmATwfVjehOXN1MHORKUQwcu/kYNqWpWr02EBtLuWDUU5imVOtvGX0boKKp
+FjTUCQextThjxH+CQfY24o5ZsiWjc0G8D/A4FUa0WJoZBQHeaIsRoA69KJAZzUSH
+WayVkax2anymHZ6yH703
+=SoJe
 -----END PGP SIGNATURE-----
 
---=-kBgH08TUbCV5FE9LGYs4--
+--=-nQCF51oCLWcMRDH/K66S--
