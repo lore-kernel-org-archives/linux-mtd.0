@@ -1,22 +1,24 @@
 Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TeORO-0000P4-Sc
- for linux-mtd@lists.infradead.org; Fri, 30 Nov 2012 11:07:32 +0000
-Message-ID: <1354273697.30168.87.camel@sauron.fi.intel.com>
-Subject: Re: [RFC/PATCH 0/1] ubi: Add ubiblock driver
+ id 1TeOVY-0001xF-6S
+ for linux-mtd@lists.infradead.org; Fri, 30 Nov 2012 11:11:49 +0000
+Message-ID: <1354273947.30168.91.camel@sauron.fi.intel.com>
+Subject: Re: [RFC/PATCH 1/1] ubi: Add ubiblock driver
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Ezequiel Garcia <elezegarcia@gmail.com>
-Date: Fri, 30 Nov 2012 13:08:17 +0200
-In-Reply-To: <CALF0-+WuaUn5b=2XrzqW7pvM=N1MfQf=sFwLFOrokTkHbOXh3w@mail.gmail.com>
-References: <CALF0-+WuaUn5b=2XrzqW7pvM=N1MfQf=sFwLFOrokTkHbOXh3w@mail.gmail.com>
+Date: Fri, 30 Nov 2012 13:12:27 +0200
+In-Reply-To: <CALF0-+UVNwAcEe5UVK9MdKYGwwubCi70DRXdWaojEUDg3uR+Xg@mail.gmail.com>
+References: <1353451183-18807-1-git-send-email-elezegarcia@gmail.com>
+ <CAFLxGvxuRtbvTob0j-YgfK6Ydz9TVCdjD5NOToyyKQb2S7bC9Q@mail.gmail.com>
+ <CALF0-+UVNwAcEe5UVK9MdKYGwwubCi70DRXdWaojEUDg3uR+Xg@mail.gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-T2ppY0xXSwzL6fac1S/H"
+ boundary="=-t9H/mpfk7CtLw34LVLXn"
 Mime-Version: 1.0
-Cc: Michael Opdenacker <michael.opdenacker@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Tim Bird <tim.bird@am.sony.com>
+Cc: richard -rw- weinberger <richard.weinberger@gmail.com>,
+ michael.opdenacker@free-electrons.com, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Tim Bird <tim.bird@am.sony.com>,
+ dwmw2@infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,59 +30,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-T2ppY0xXSwzL6fac1S/H
+--=-t9H/mpfk7CtLw34LVLXn
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi, without the reveiw, I can say that overall this sounds good, thanks!
-
-On Tue, 2012-11-20 at 19:39 -0300, Ezequiel Garcia wrote:
-> Also, I've decided to make block devices get automatically created for
-> each ubi volume present.
-> This has been done to match gluebi behavior of automatically create an
-> mtd device
-> per ubi volume, and to save us the usertool trouble.
+On Wed, 2012-11-21 at 07:20 -0300, Ezequiel Garcia wrote:
+> Yes, I thought of this.
 >=20
-> The latter is the most important reason: a new usertool means an added
-> complexity
-> for the user and yet more crap to maintain.
+> For now, I decided to keep the implementation as simple as possible.
 
-> I don't know how many ubi volumes a user typically creates, but I
-> expect not to be too many.
+WRT atomic LEB caches and barriers - I guess if there are users who
+would prefer higher I/O speed to the power-cut tolerance, you could:
 
-I think I saw something like 8-10 in some peoples' reports.
+1. ignore I/O barriers
+2. use plain leb_unmap/leb_write instead of atomic leb change, which is
+faster.
 
-> * Read/write support
->=20
-> Yes, this implementation supports read/write access.
-> It's expected to work fairly well because the request queue at block elev=
-ator
-> is suppose to order block transfers to be space-effective.
-> In other words, it's expected that reads and writes gets ordered
-> to point to the same LEB (see Artem's hint at [1]).
->=20
-> To help this and reduce access to the UBI volume, a 1-LEB size
-> write-back cache has been implemented (similar to the one at mtdblock.c).
->=20
-> Every read and every write, goes through this cache and the write is only
-> done when a request arrives to read or write to a different LEB or when
-> the device is released, when the last file handle is closed.
-
-Sounds good, but you should make sure you flush the cache when the
-file-system syncs a file. You can consider this as a disk cache.
-File-systems usually sends I/O barriers when the disk cache has to be
-flushed. I guess this is what you should also do.
-
-> This cache is 1-LEB bytes, vmalloced at open() and freed at release().
-
-Is it per-block device? Then I am not sure it is a good idea to
-automatically create them for every volume...
+There could be a switch, probably an ioctl? But this is not very
+important now, I am just throwing an idea.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-T2ppY0xXSwzL6fac1S/H
+--=-t9H/mpfk7CtLw34LVLXn
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -88,19 +61,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQuJOhAAoJECmIfjd9wqK0gSkP/3PCVs4QxCNHWVuIqa9gh/Fa
-tlMvC1lHaX0m0Xpq9N/cZyLmJNu73Bmop8hpUhWAk01y9P+fhgGbQliJP5+dZXpo
-uMxLynGMPNW2mrFfCCPzVJjA0QIJ+249j53VzDzjzj+O7HG4bwI+UwV8PSFXZlLT
-21tUnRjr0YEytorY9Swr/J6tETAhLIyn6L2gjYeLxS2QfYpzNn+t1UIJeJwKv+gQ
-flSvZbBPvV75fd+kI+E7m7wXphf3ljRdAP8ioXdJUR36M8nyzlE5P7PXJChxOm2E
-2tjaDDdVSjoA0D2SW2HSiqjCecS5dWWmtwOn2FEkYK2sHL0qoZi2wLQSb0gubZGf
-e0t2BUhhFQjm1xq5iKKIeIQeCuRt3FEWfq5A2AAz1H2FIyDtOd8VCxWPTx/LHJWb
-jArGLFiLazR4K2q/2ajhan7S4bfDHLTCC/HeyTa3PQGd51CAhZtQJQwqzzdBHYGW
-W24GwuL3AyNkkbj8WjPL6rtwzxwfSzcd71VXfCUcO7ttO3OFV/9PMTbQwDxM/uXq
-P0YUy5lCWQhR6OzArSgoADZ6A1PHXr4ww6aNcWK5FZAt6ZxphDUOlOt38IkTeZ04
-y27Jc3DvizX7vtjVO7oa5WrMJuoY+gRU6Fs7Y44l2xhjuN6rUSql39DxwyUndID5
-4P1wX/5FB6RpenH1Qn+/
-=KaAc
+iQIcBAABAgAGBQJQuJSbAAoJECmIfjd9wqK0FJkQAJWgCsQ7n3z1qaffKQWHJjvz
+YxYMudjb9G1uhKkzDQBxnj7Qj5+LFj1YRdnz48Pu/6bGtoUQgw8Bx04FowABNDtR
+3z+cZl1Qrj9Zgosx5A08OaaiVcePkkS3TuEH/DTVIswi0hd2h2J4O+iJS5e6uALw
+lFHqj8K5zH9H7DWiUFuHK/Nva8XzARgbpKjyJ0d79r0jII2gbBFbzF/uLqrhv15Z
+iV9bqwlBfrh8InCRu067PONejfW46RF6nGKP4hvxWXSR5XdtOdKALFTnG38zm4qG
+1XNhNjSuW/U8bRKdAxbr2Kd+DBx3bW3AI4pbba/vAuYH5SIoZChZTbscUYSawphF
+DicCCorwwyXO7J/imSPqTzmMkoic6iwSwbsBTxDN66O/wp1ZEpvIIr/xIph/tKCo
+T8GiQnzZtnLmUVdOZ6gaOPG3nPCAeSZXSBDRPaNgkxSblE6Va7xJqQWfm9shtDk8
+U9GMaD+dR+9jqlyRGGaEP/Y/u/v+2O1XUKQxQgkNZV4noOVgKNdIrqU8Xk5pxYOd
+gTJfEhrrCPIQRPkrHaybV8zZ27pZS9W4amWViFtd7AP03pIfaVuxCv3ab1Co4811
+c4Gweqqi7jjlzg+jjTFB/4hF3//oL9p1ukEG/z6NuYcQ+wPSfxBr3Cfxd2PEKEyj
+2TBbRZz+kqUEk31cyC5C
+=2pVT
 -----END PGP SIGNATURE-----
 
---=-T2ppY0xXSwzL6fac1S/H--
+--=-t9H/mpfk7CtLw34LVLXn--
