@@ -1,19 +1,20 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TfU3s-0003mM-Mr
- for linux-mtd@lists.infradead.org; Mon, 03 Dec 2012 11:19:45 +0000
-Date: Mon, 3 Dec 2012 12:19:34 +0100
-From: Richard Weinberger <richard@nod.at>
-To: dedekind1@gmail.com
-Subject: Re: UBI wl_tree_add problems after PEB scrubbed
-Message-ID: <20121203121934.5c365ca7@spider.haslach.nod.at>
-In-Reply-To: <1354531729.30168.189.camel@sauron.fi.intel.com>
-References: <50B8CB36.3010604@itwatchdogs.com>
- <1354531729.30168.189.camel@sauron.fi.intel.com>
+Received: from mga03.intel.com ([143.182.124.21])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TfUam-0005Pa-92
+ for linux-mtd@lists.infradead.org; Mon, 03 Dec 2012 11:53:45 +0000
+Message-ID: <1354535678.30168.192.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 4/5] ubi: Replace memcpy with struct assignment
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Ezequiel Garcia <elezegarcia@gmail.com>
+Date: Mon, 03 Dec 2012 13:54:38 +0200
+In-Reply-To: <1353671885-2287-1-git-send-email-elezegarcia@gmail.com>
+References: <1353671885-2287-1-git-send-email-elezegarcia@gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-Yr+uFMNaZcWwgcUC985z"
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Zach Sadecki <zsadecki@itwatchdogs.com>
+Cc: Peter Senna Tschudin <peter.senna@gmail.com>, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,67 +24,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Mon, 03 Dec 2012 12:48:49 +0200
-schrieb Artem Bityutskiy <dedekind1@gmail.com>:
 
-> On Fri, 2012-11-30 at 09:05 -0600, Zach Sadecki wrote:
-> > Every time I see UBI scrub a PEB with fixable bit-flips (on my
-> > custom Freescale i.MX28 board) the background thread has problems
-> > shortly thereafter.  I'm not exactly sure where to start debugging
-> > this and I'm hoping someone can help point me in the right
-> > direction.  Below are kernel messages showing the problem from 2
-> > different runs (in which both ended up with a hung CPU).  This is
-> > using kernel 3.7-rc7.
-> > 
-> > Also worth noting is that I had to modify the gpmi-nand driver to 
-> > actually report max_bitflips back to the MTD layer to even get to
-> > this point (before that everything would just run along happily
-> > until it hit an uncorrectable ECC error).  I will submit a patch
-> > for this once everything seems OK...
-> 
-> Ack, reproducible on nandsim with 
-> 
-> sudo sh -c 'echo 1 > /sys/kernel/debug/ubi/ubi0/tst_emulate_bitflips'
-> 
-> I did not confirm this by bisecting, but it seems it is fastmap that
-> broke it.
-> 
-> And looking at fastmap changes, I immediately see some thing
-> completely bogus, not related to this:
-> 
-> 
-> /**
->  * __wl_get_peb - get a physical eraseblock.
->  * @ubi: UBI device description object
->  *
->  * This function returns a physical eraseblock in case of success and
-> a
->  * negative error code in case of failure. Might sleep.
->  */
-> static int __wl_get_peb(struct ubi_device *ubi)
-> 
-> Might sleep? Well, yes, because it calls 
-> 
-> ubi_self_check_all_ff()
-> 
-> But then why is this:
-> 
->        spin_lock(&ubi->wl_lock);
->        peb = __wl_get_peb(ubi);
->        spin_unlock(&ubi->wl_lock);
-> 
-> Bogus.
-> 
-> Richard, could you please re-test fastmap with all debugging enabled?
-> I see at least one bug already.
-> 
-> Namely these ones: chk_gen  chk_io  tst_disable_bgt
-> 
-> Also, it seems UBI is completely broken ATM - it craps out immediately
-> on the first bit-flip. Let me revert fastmap and check if it is
-> fastmap.
+--=-Yr+uFMNaZcWwgcUC985z
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Okay, I'll look at it this afternoon.
+On Fri, 2012-11-23 at 08:58 -0300, Ezequiel Garcia wrote:
+> This kind of memcpy() is error-prone. Its replacement with a struct
+> assignment is prefered because it's type-safe and much easier to read.
+>=20
+> Found by coccinelle. Hand patched and reviewed.
+> Tested by compilation only.
+>=20
+> A simplified version of the semantic match that finds this problem is as
+> follows: (http://coccinelle.lip6.fr/)
 
-Thanks,
-//richard
+Pushed to linux-ubi.git, thanks!
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-Yr+uFMNaZcWwgcUC985z
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQvJL+AAoJECmIfjd9wqK0PdsP/jEU92BVSEDCcf972h5gQSEy
+trYOfEDZA/2hulT4zItCy3t/UGAt1zRgaF0wDHmafKR0GV1AMzgAIjj6ZCNVx+4g
+sPs1nBkzC3ySB55pAqr1Xy27zh4CHON3pQg+xeacf7vx7K8MqnAIQaw0wYhKSoq7
+padZfbD32RKcFknXH14TYZotKKbc78ziaubLVQBWHxzx0ww36ap3u+fuWVxTd0jv
+5cizAxYO32xPXeXm6P7KBMDngPKnNireKsScc/gC+KcRMJYce/pkZhH+NTIfuR0g
+g9aCX3cYk+CC8Sw7Kc8DoFoSt0z60bd97F+dbNg6AiibPgn5SIRT4SUJ8KSPVju8
+3z1Woun3F6nV3pQ1EjsQJcz1HM2JpeuP9vUwzPLC4kk5bqyFqiCQLDXrh+6TihMr
+2DiMh8guqEb3QLx5eAkQC9BEZ4YxH/1+x7OBY4wVggfl51WrlsgYLpRbMi+YQps3
+dEQvhmAwyheVCqWR3E+GU29IjpwVrMuCvXMrVOlcxD/7MFkRIYdYYowxqRNLiYo+
+Nx5h2C79tlgSw2Z8mBaU+KS+ZRbofNyU4p8x35wY5Fp/WxBTK/51Pif1wK4Jgmz8
+ZzGjbUNKS2ahFT6cUNMp4BwXicdC3Xvs+3Uk0lZTV3fIytdrFqxHrBtXVeoNemUe
+eyDy9jaGFYnCTrlw55CK
+=/qfD
+-----END PGP SIGNATURE-----
+
+--=-Yr+uFMNaZcWwgcUC985z--
