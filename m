@@ -1,32 +1,15 @@
-Received: from mail-ie0-f177.google.com ([209.85.223.177])
+Received: from mail.pce.us.com ([69.40.160.195])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TfblH-00073j-Sp
- for linux-mtd@lists.infradead.org; Mon, 03 Dec 2012 19:33:04 +0000
-Received: by mail-ie0-f177.google.com with SMTP id k13so4667014iea.36
- for <linux-mtd@lists.infradead.org>; Mon, 03 Dec 2012 11:33:02 -0800 (PST)
+ id 1Tfbzz-0007Sh-8C
+ for linux-mtd@lists.infradead.org; Mon, 03 Dec 2012 19:48:15 +0000
+Message-ID: <50BD01F8.3040003@itwatchdogs.com>
+Date: Mon, 3 Dec 2012 13:48:08 -0600
+From: Zach Sadecki <zsadecki@itwatchdogs.com>
 MIME-Version: 1.0
-In-Reply-To: <CALF0-+WLGSq6tNBExt9PFJccAeKwj0BpVb7vVwQit39xbFiq4A@mail.gmail.com>
-References: <CALF0-+WuaUn5b=2XrzqW7pvM=N1MfQf=sFwLFOrokTkHbOXh3w@mail.gmail.com>
- <alpine.DEB.2.00.1211210626110.357@lnxricardw.se.axis.com>
- <20121121105636.4c8687e0@skate>
- <alpine.DEB.2.00.1211211059540.21683@lnxricardw.se.axis.com>
- <20121121110518.3147bd34@skate>
- <CALF0-+W-Ont1bhn_Go4YRBEpEk46=cXWGJPckAeKPgqwy+QUFw@mail.gmail.com>
- <20121125093621.47f9cb25@pixies.home.jungo.com>
- <1354274647.30168.99.camel@sauron.fi.intel.com>
- <20121202193954.2dd3ea8f@pixies.home.jungo.com>
- <CALF0-+WLGSq6tNBExt9PFJccAeKwj0BpVb7vVwQit39xbFiq4A@mail.gmail.com>
-Date: Mon, 3 Dec 2012 16:33:01 -0300
-Message-ID: <CALF0-+Vab6HZX-yRh0N6HxRSu4GavNXTpzrF6Ry7sDFwAXMHeg@mail.gmail.com>
-Subject: Re: [RFC/PATCH 0/1] ubi: Add ubiblock driver
-From: Ezequiel Garcia <elezegarcia@gmail.com>
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Ricard Wanderlof <ricard.wanderlof@axis.com>, dedekind1@gmail.com,
- Michael Opdenacker <michael.opdenacker@free-electrons.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Tim Bird <tim.bird@am.sony.com>, David Woodhouse <dwmw2@infradead.org>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: gpmi: Always report ECC stats and return max_bitflips
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,36 +19,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Dec 2, 2012 at 9:58 PM, Ezequiel Garcia <elezegarcia@gmail.com> wrote:
-[...]
->>
->> To my undesrtanding, the ubiblock fetches requests from the request
->> queue, and executes them (ubi leb read/write, or using its internal
->> cache).
->> What would be the actual indication mechanism that notifies ubiblock to
->> flush its internal cache? Is it a part of the request structure?
->>
->
-> I believe that this is done through req->cmd_flag & REQ_FLUSH.
->
-> You can search REQ_FLUSH in drivers/block/loop.c or drivers/scsi/sd.c.
->
-> AFAIK, this the only mechanism to notify a block device to flush its cache.
-> Am I wrong? Is there another one?
->
+Always report corrected and failed ECC stats back up to the MTD layer.  Also
+return max_bitflips from read_page() as is expected from NAND drivers now.
 
-After a:
+Signed-off-by: Zach Sadecki <zsadecki@itwatchdogs.com>
+---
+   drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   27 ++++++++-------------------
+   1 file changed, 8 insertions(+), 19 deletions(-)
 
-  $ git grep "REQ_FLUSH"
-
-I discovered there is a document at
-Documentation/block/writeback_cache_control.txt
-wich is an excellent resource on block driver's writeback caches.
-
-So "git grep" is my new favorite tool ;-) credit goes to Thomas Petazzoni [1].
-
-Hope this helps,
-
-    Ezequiel
-
-[1] http://elinux.org/Tim's_Tips_and_Tricks
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index d79696b..fe10c53 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -914,8 +914,7 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+   	dma_addr_t    auxiliary_phys;
+   	unsigned int  i;
+   	unsigned char *status;
+-	unsigned int  failed;
+-	unsigned int  corrected;
++	unsigned int  max_bitflips = 0;
+   	int           ret;
+   
+   	pr_debug("page number is : %d\n", page);
+@@ -939,35 +938,25 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+   			payload_virt, payload_phys);
+   	if (ret) {
+   		pr_err("Error in ECC-based read: %d\n", ret);
+-		goto exit_nfc;
++		return ret;
+   	}
+   
+   	/* handle the block mark swapping */
+   	block_mark_swapping(this, payload_virt, auxiliary_virt);
+   
+   	/* Loop over status bytes, accumulating ECC status. */
+-	failed		= 0;
+-	corrected	= 0;
+-	status		= auxiliary_virt + nfc_geo->auxiliary_status_offset;
++	status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
+   
+   	for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
+   		if ((*status == STATUS_GOOD) || (*status == STATUS_ERASED))
+   			continue;
+   
+   		if (*status == STATUS_UNCORRECTABLE) {
+-			failed++;
++			mtd->ecc_stats.failed++;
+   			continue;
+   		}
+-		corrected += *status;
+-	}
+-
+-	/*
+-	 * Propagate ECC status to the owning MTD only when failed or
+-	 * corrected times nearly reaches our ECC correction threshold.
+-	 */
+-	if (failed || corrected >= (nfc_geo->ecc_strength - 1)) {
+-		mtd->ecc_stats.failed    += failed;
+-		mtd->ecc_stats.corrected += corrected;
++		mtd->ecc_stats.corrected += *status;
++		max_bitflips = max_t(unsigned int, max_bitflips, *status);
+   	}
+   
+   	if (oob_required) {
+@@ -989,8 +978,8 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+   			this->payload_virt, this->payload_phys,
+   			nfc_geo->payload_size,
+   			payload_virt, payload_phys);
+-exit_nfc:
+-	return ret;
++
++	return max_bitflips;
+   }
+   
+   static int gpmi_ecc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+-- 
+1.7.9.5
