@@ -1,22 +1,32 @@
-Received: from mga14.intel.com ([143.182.124.37])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TfY0D-0007kU-PN
- for linux-mtd@lists.infradead.org; Mon, 03 Dec 2012 15:32:14 +0000
-Message-ID: <1354548780.11583.21.camel@sauron.fi.intel.com>
-Subject: Re: UBI wl_tree_add problems after PEB scrubbed
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Date: Mon, 03 Dec 2012 17:33:00 +0200
-In-Reply-To: <20121203160258.4a719a67@spider.haslach.nod.at>
-References: <50B8CB36.3010604@itwatchdogs.com>
- <1354545960.11583.17.camel@sauron.fi.intel.com>
- <20121203160258.4a719a67@spider.haslach.nod.at>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-LnLfGic3jRgnGKPVQBQH"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, Zach Sadecki <zsadecki@itwatchdogs.com>
-Reply-To: dedekind1@gmail.com
+Received: from mail-ie0-f177.google.com ([209.85.223.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TfblH-00073j-Sp
+ for linux-mtd@lists.infradead.org; Mon, 03 Dec 2012 19:33:04 +0000
+Received: by mail-ie0-f177.google.com with SMTP id k13so4667014iea.36
+ for <linux-mtd@lists.infradead.org>; Mon, 03 Dec 2012 11:33:02 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <CALF0-+WLGSq6tNBExt9PFJccAeKwj0BpVb7vVwQit39xbFiq4A@mail.gmail.com>
+References: <CALF0-+WuaUn5b=2XrzqW7pvM=N1MfQf=sFwLFOrokTkHbOXh3w@mail.gmail.com>
+ <alpine.DEB.2.00.1211210626110.357@lnxricardw.se.axis.com>
+ <20121121105636.4c8687e0@skate>
+ <alpine.DEB.2.00.1211211059540.21683@lnxricardw.se.axis.com>
+ <20121121110518.3147bd34@skate>
+ <CALF0-+W-Ont1bhn_Go4YRBEpEk46=cXWGJPckAeKPgqwy+QUFw@mail.gmail.com>
+ <20121125093621.47f9cb25@pixies.home.jungo.com>
+ <1354274647.30168.99.camel@sauron.fi.intel.com>
+ <20121202193954.2dd3ea8f@pixies.home.jungo.com>
+ <CALF0-+WLGSq6tNBExt9PFJccAeKwj0BpVb7vVwQit39xbFiq4A@mail.gmail.com>
+Date: Mon, 3 Dec 2012 16:33:01 -0300
+Message-ID: <CALF0-+Vab6HZX-yRh0N6HxRSu4GavNXTpzrF6Ry7sDFwAXMHeg@mail.gmail.com>
+Subject: Re: [RFC/PATCH 0/1] ubi: Add ubiblock driver
+From: Ezequiel Garcia <elezegarcia@gmail.com>
+To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Ricard Wanderlof <ricard.wanderlof@axis.com>, dedekind1@gmail.com,
+ Michael Opdenacker <michael.opdenacker@free-electrons.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Tim Bird <tim.bird@am.sony.com>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,61 +36,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Sun, Dec 2, 2012 at 9:58 PM, Ezequiel Garcia <elezegarcia@gmail.com> wrote:
+[...]
+>>
+>> To my undesrtanding, the ubiblock fetches requests from the request
+>> queue, and executes them (ubi leb read/write, or using its internal
+>> cache).
+>> What would be the actual indication mechanism that notifies ubiblock to
+>> flush its internal cache? Is it a part of the request structure?
+>>
+>
+> I believe that this is done through req->cmd_flag & REQ_FLUSH.
+>
+> You can search REQ_FLUSH in drivers/block/loop.c or drivers/scsi/sd.c.
+>
+> AFAIK, this the only mechanism to notify a block device to flush its cache.
+> Am I wrong? Is there another one?
+>
 
---=-LnLfGic3jRgnGKPVQBQH
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+After a:
 
-On Mon, 2012-12-03 at 16:02 +0100, Richard Weinberger wrote:
-> Am Mon, 03 Dec 2012 16:46:00 +0200
-> schrieb Artem Bityutskiy <dedekind1@gmail.com>:
->=20
-> > /me looks at Richard...
->=20
-> /me looks at the code. ;)
->=20
-> > OK, I confirm that this is fastmap to blame. Namely, this commit:
->=20
-> CONFIG_MTD_UBI_FASTMAP is y and ubi.fm_autoconvert is 1, correct?
-> What tests are you using? ubi-tests?
+  $ git grep "REQ_FLUSH"
 
-No, CONFIG_MTD_UBI_FASTMAP is "no", it is switched off.
+I discovered there is a document at
+Documentation/block/writeback_cache_control.txt
+wich is an excellent resource on block driver's writeback caches.
 
-I used integck. Here is the command I was using:
+So "git grep" is my new favorite tool ;-) credit goes to Thomas Petazzoni [1].
 
-$ sudo modprobe nandsim && sudo modprobe ubi mtd=3D0 && sudo ubimkvol -N te=
-st -m /dev/ubi0 && sudo modprobe ubifs && sudo mount -t ubifs /dev/ubi0_0 /=
-mnt/ubifs/ && cd /home/dedekind/git/mtd-utils/tests/fs-tests/integrity && s=
-udo sh -c 'echo 1 > /sys/kernel/debug/ubi/ubi0/tst_emulate_bitflips' && sud=
-o ./integck -n2 /mnt/ubifs/
+Hope this helps,
 
-(sorry, you can easily split it).
+    Ezequiel
 
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-LnLfGic3jRgnGKPVQBQH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQvMYsAAoJECmIfjd9wqK0K+cQANB5nnjrpqFkWNU0Jlttadzn
-BdJDMdrjUUl1AcHqcErXY5x/EbrJxWq1ghCUJs9qdP/kaIIePJctSdzTEqNHsQV7
-qvYVtNMUc+9CblZ4uT3zoiK4MK8fDs0lOR84GnfXN4hfBrL8HIGP1J2CPYZwKSjJ
-4pbeiEwmmf+asIfAEhwURz65XysHlGGYr5RF6tIpLqvJHfhw19cTUDme7uSy4Of5
-DJ2iBjR99cQx2g8XaU22SaXNiDYusPFthaBmtwh/kqKoqcHkjiFGOMvqM+TNS9oZ
-3q5EamgzsFaMTzmCpEfBHyG+RJ+azGNC94u7UnK5YToa0qNaQTEpdfPVrY735+ht
-aMJZYa0Jl8uJZdKy1DRSYEMkRfcSK2zgTIs7bdVKHNa5DjjQPARzGFBsbChMpYSn
-xsJuXPsbck/PvhMoydSbb+QyjzS+kVvspMJylIbywEsGbEiAeGZU3yWKzV0lYWSu
-gnKiDsU+AztlogDigkwkAHv0C6C6XI3+gzv7QqRRE8Z+NvD2rMy3cVP6+SpyfSiM
-ucBj0+Q8j9lYwf+sj1WPVVodIyfPtsn2VqlR2fepPF6EVs+NPEzZHCNx+jy6sFm8
-jovG70ZbhaDvu36vOQOGV75Q7nOE0Lo7JMLJJKonPlnUi8ouIpU0avwmRFxownrv
-c8sGpKO3NsvdQhUVnw3b
-=Q5xi
------END PGP SIGNATURE-----
-
---=-LnLfGic3jRgnGKPVQBQH--
+[1] http://elinux.org/Tim's_Tips_and_Tricks
