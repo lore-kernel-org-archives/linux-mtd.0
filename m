@@ -1,19 +1,19 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TfW11-00060G-4Y
- for linux-mtd@lists.infradead.org; Mon, 03 Dec 2012 13:24:55 +0000
-Message-ID: <1354541151.11583.8.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] ubi-tests: fix pthreads linking
+ id 1TfW3m-0007Pa-0B
+ for linux-mtd@lists.infradead.org; Mon, 03 Dec 2012 13:27:47 +0000
+Message-ID: <1354541302.11583.11.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: nand: Kconfig: drop utf8 characters
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Mon, 03 Dec 2012 15:25:51 +0200
-In-Reply-To: <1353828369-14493-1-git-send-email-computersforpeace@gmail.com>
-References: <1353828369-14493-1-git-send-email-computersforpeace@gmail.com>
+To: Wolfram Sang <wolfram@the-dreams.de>
+Date: Mon, 03 Dec 2012 15:28:22 +0200
+In-Reply-To: <1353971245-26735-1-git-send-email-wolfram@the-dreams.de>
+References: <1353971245-26735-1-git-send-email-wolfram@the-dreams.de>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-pQBk6jLcnTXEQ9j5QKDc"
+ boundary="=-PqL+wXkvFGr73sK8TWqR"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: Martin Walch <walch.martin@web.de>, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,25 +25,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-pQBk6jLcnTXEQ9j5QKDc
+--=-PqL+wXkvFGr73sK8TWqR
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, 2012-11-24 at 23:26 -0800, Brian Norris wrote:
-> Technically, '-l' linker options should be included only after the
-> objects which must link to the library. So when we include '-lpthread'
-> in the LDFLAGS variable, it gets placed too early (i.e., before the
-> io_paral.o object), and so the pthread linkage never occurs. The
-> following error probably only shows up with linkers that don't link
-> pthreads by default.
+On Tue, 2012-11-27 at 00:07 +0100, Wolfram Sang wrote:
+>  config MTD_NAND_CAFE
+> -	tristate "NAND support for OLPC CAF=C3=89 chip"
+> +	tristate "NAND support for OLPC CAFE chip"
 
-Pushed to mtd-utils, thanks!
+Wolfram, despite of all of my respect, I have to Nack this patch. We are
+livin in 21st century and the world switched to UTF-8. If a lkc has
+issues with UTF8 - it is lkc issues - it should rather be fixed.
+
+Thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-pQBk6jLcnTXEQ9j5QKDc
+--=-PqL+wXkvFGr73sK8TWqR
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -51,19 +52,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQvKhfAAoJECmIfjd9wqK0sCoP/1bXyN/C5gRl6Q38KBpj62pL
-GBvnvTXPR518Fwrxd2k2hdqs4qe/V2lWWXzfp7usTqrS6NvROlus+Kl1q4pYpedQ
-a7TzgiJXfVQRES48eQuggV28NTd9M2inrRoG3Z5caC6d73+QRIhmlsF2uZ0s2afm
-cPR8ejSfatqyAFks/jMFtPxdgUAEZjizVTH12nqyLLiD2aspkZZHX+ViByoj0ket
-ANZdEz7GwDnn+gKI6eFfDVQu8lT8EqpW5ablK7KAsPXbS/II0tO4+TSqLvB43YW/
-fs7EdBalvsS848apUgGWOqt5hdJhohqdaMQjr6xc30kz85+UABV4mDQChpm5FPW/
-Rbr0c1tETRV6dFmaBkSbyAEJbYPUJGjpnR05XgWJxr6UHCNf3qmdQW/Wojyduw4h
-F/cgG1bSivAUThF85eYekjwAmlNTTib6BGag5nnhCs0aGmJbYBuheImanVdUzqK4
-/WjpWXoIhgiMZWjuohXxX3nQAbklrsNKgUtVMPNneWsrKxvWNiPUiaLuovGluNqL
-K2kP1RvzL6IxwMPiLpzcgXaAVw1vWbClnQiEvsZrnnwccGPshZpZtyd+oon5qg97
-QtjKle05ZQjE2evXUe4w1rZbU08gaTpv9OB8LsxmrHDF75ACDyigE85917Omj+gi
-CJLE1giNLqfpFoolaKng
-=AMxS
+iQIcBAABAgAGBQJQvKj2AAoJECmIfjd9wqK080UQAJNXrw9cbTbyMEfiXfFfGS1F
+6P7XMCRvuqFc2n+2vueONQDwN93UX6LJSXIVhv9v2ureXgDi5Bv6NmqOzTPjQBy5
+ICH8b0Z8mV3i/uPJAx9igzlP5Ye7LDwTTnLG+vOCwgivHdbzQOCw2inhZkG12Umc
+IT0qKY4E5L6Qcrhct6qIM7us7CizIYZEtYVykHFjEZuV8OGfDq/bU/1G2mg+hl7+
+g8kkc73PEzgpnfTtEXl4cqK6RgqSVh+oQ/sg+JbCk9H5TnuVyKqCBzAUoPaP/Clf
+nOJATpmqNwn7kfWYhfe2XJAWC0NPn32IMfZxknWgbgxYVA7DwkWwcfUAysoaoFHl
+aGJWtUglel2VEtrnkaVq7BGVH3RIQEYz968Efppe0u3EjZ3TTJnM4qChIa+LLl9m
+LXMc6IYuCzpm0rP+MJ1fgme3aptTu06TFj7Pzo7KQwZGKODqejnFubmy6sBdGBXy
+TwTjQjlq5T7z4BJqnETMgvssEoUmXDp+LE1+ddQ+gQrvUFf8/oUhaFL8l0r5i8mQ
+AXO6moTLuyu/ehqjsPZR+pKUWe7YU4DsTHMRNXIkJzFnEy7YAZvfL400edlkrhJK
+jKOgYJuLEAMvXuhEGoM0F1RZ2sV736bi5rJnLG+mTDACJ/UCG5VNAC4Ki9elfa/o
+cmZDgT4HWy0Bw4fjHsTx
+=oSuS
 -----END PGP SIGNATURE-----
 
---=-pQBk6jLcnTXEQ9j5QKDc--
+--=-PqL+wXkvFGr73sK8TWqR--
