@@ -1,19 +1,19 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TfUam-0005Pa-92
- for linux-mtd@lists.infradead.org; Mon, 03 Dec 2012 11:53:45 +0000
-Message-ID: <1354535678.30168.192.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 4/5] ubi: Replace memcpy with struct assignment
+ id 1TfVmZ-0004KB-SL
+ for linux-mtd@lists.infradead.org; Mon, 03 Dec 2012 13:10:00 +0000
+Message-ID: <1354540234.11583.5.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] nandsim: Introduce debugfs infrastructure
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Ezequiel Garcia <elezegarcia@gmail.com>
-Date: Mon, 03 Dec 2012 13:54:38 +0200
-In-Reply-To: <1353671885-2287-1-git-send-email-elezegarcia@gmail.com>
-References: <1353671885-2287-1-git-send-email-elezegarcia@gmail.com>
+Date: Mon, 03 Dec 2012 15:10:34 +0200
+In-Reply-To: <1353808304-2538-1-git-send-email-elezegarcia@gmail.com>
+References: <1353808304-2538-1-git-send-email-elezegarcia@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-Yr+uFMNaZcWwgcUC985z"
+ boundary="=-004ECdzFdlHnEsq/K6t9"
 Mime-Version: 1.0
-Cc: Peter Senna Tschudin <peter.senna@gmail.com>, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,27 +25,45 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-Yr+uFMNaZcWwgcUC985z
+--=-004ECdzFdlHnEsq/K6t9
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2012-11-23 at 08:58 -0300, Ezequiel Garcia wrote:
-> This kind of memcpy() is error-prone. Its replacement with a struct
-> assignment is prefered because it's type-safe and much easier to read.
+On Sat, 2012-11-24 at 22:51 -0300, Ezequiel Garcia wrote:
+> It's more user friendly to report debug information and statistics
+> through debugfs, than to use printing facilites.
 >=20
-> Found by coccinelle. Hand patched and reviewed.
-> Tested by compilation only.
+> This patch introduces a very minimal debugfs infrastructure
+> and moves eraseblock wear report to an entry located at:
 >=20
-> A simplified version of the semantic match that finds this problem is as
-> follows: (http://coccinelle.lip6.fr/)
+> /sys/kernel/debug/nandsim/wear_report
+>=20
+> This means we can remove rptwear option and just let
+> the user read the wear report when we needs to.
+>=20
+> Cc: Artem Bityutskiy <dedekind1@gmail.com>
+> Signed-off-by: Ezequiel Garcia <elezegarcia@gmail.com>
 
-Pushed to linux-ubi.git, thanks!
+Looks good but would you please refactor it to get rid of the following
+warnings identified by aiaiai:
+
+--- before_patching.log
++++ after_patching.log
+@@ @@
++drivers/mtd/nand/nandsim.c:528:5: warning: no previous prototype for 'nand=
+sim_debugfs_create' [-Wmissing-prototypes]
++drivers/mtd/nand/nandsim.c:528:5: warning: symbol 'nandsim_debugfs_create'=
+ was not declared. Should it be static? [sparse]
++drivers/mtd/nand/nandsim.c:564:6: warning: no previous prototype for 'nand=
+sim_debugfs_remove' [-Wmissing-prototypes]
++drivers/mtd/nand/nandsim.c:564:6: warning: symbol 'nandsim_debugfs_remove'=
+ was not declared. Should it be static? [sparse]
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-Yr+uFMNaZcWwgcUC985z
+--=-004ECdzFdlHnEsq/K6t9
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -53,19 +71,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQvJL+AAoJECmIfjd9wqK0PdsP/jEU92BVSEDCcf972h5gQSEy
-trYOfEDZA/2hulT4zItCy3t/UGAt1zRgaF0wDHmafKR0GV1AMzgAIjj6ZCNVx+4g
-sPs1nBkzC3ySB55pAqr1Xy27zh4CHON3pQg+xeacf7vx7K8MqnAIQaw0wYhKSoq7
-padZfbD32RKcFknXH14TYZotKKbc78ziaubLVQBWHxzx0ww36ap3u+fuWVxTd0jv
-5cizAxYO32xPXeXm6P7KBMDngPKnNireKsScc/gC+KcRMJYce/pkZhH+NTIfuR0g
-g9aCX3cYk+CC8Sw7Kc8DoFoSt0z60bd97F+dbNg6AiibPgn5SIRT4SUJ8KSPVju8
-3z1Woun3F6nV3pQ1EjsQJcz1HM2JpeuP9vUwzPLC4kk5bqyFqiCQLDXrh+6TihMr
-2DiMh8guqEb3QLx5eAkQC9BEZ4YxH/1+x7OBY4wVggfl51WrlsgYLpRbMi+YQps3
-dEQvhmAwyheVCqWR3E+GU29IjpwVrMuCvXMrVOlcxD/7MFkRIYdYYowxqRNLiYo+
-Nx5h2C79tlgSw2Z8mBaU+KS+ZRbofNyU4p8x35wY5Fp/WxBTK/51Pif1wK4Jgmz8
-ZzGjbUNKS2ahFT6cUNMp4BwXicdC3Xvs+3Uk0lZTV3fIytdrFqxHrBtXVeoNemUe
-eyDy9jaGFYnCTrlw55CK
-=/qfD
+iQIcBAABAgAGBQJQvKTKAAoJECmIfjd9wqK0aScP/02w/IHjzWHntLEcOymaPLsC
+CGYfjw8978B+6h+tw/sMshPeJPkscmFLp0TBT+0xPJEbokGtO8i+zTouB3oWfxoT
+CEZOfvf/nCuicW94iHV7YtHlpBqCSyJYNaeaHy2XN5jun4OajCGm4pWZASoq0wAn
+EBW7vYFD3Bip0kRWZ3YPXbz85Oq31gZA0nVlWGD94PV2Kdj6jRMT/71B7YoO32X1
+FWXa34SV9ddw8EGMQRjIaHLqnYN30EWvvLzhN3k1iEMXdLEtaxmCBnH74O0WE6Kp
+X1uuDbkwI+Gwkqj0WQUarqnHHAz6nmEaUUODdMsiPJjvBU9j58uFQvT3AZiwUCrt
+gJ7AtM5KLnFUMTMlEcn2HOBCiVorCFTjyzVtl/rn+nLqsCcKSkIQOD1Jz5Qgd66j
+vU95gAdLTJWVyKY9YmYmn+0k4OTx2II9JImzga16CuN/zNeSJeQH4ZVYWwvHSUvv
+t2W3M0PN9pEC/7UePSnC2neI+pHCubI59OhNKsenWMC4zXppSOUITDzPYR393Z1j
+kW1EjAixWfjWqg8W67xAvwXvhT3Mo608WyXpi0WGQ4etdcAF3bbRlhSv2Zt+WzTj
+CxMoy9R1zLgrGx97OEKxPqbBb62KAnBkMTEZdkyY/pIZ63pVTgq+bRZO6sCoTKSy
+2V9dIi7WdRJ/F3TSEqth
+=MliB
 -----END PGP SIGNATURE-----
 
---=-Yr+uFMNaZcWwgcUC985z--
+--=-004ECdzFdlHnEsq/K6t9--
