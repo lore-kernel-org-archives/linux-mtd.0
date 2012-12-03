@@ -1,21 +1,19 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TfTl2-0002Rw-H1
- for linux-mtd@lists.infradead.org; Mon, 03 Dec 2012 11:00:17 +0000
-Message-ID: <1354532461.30168.191.camel@sauron.fi.intel.com>
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TfU3s-0003mM-Mr
+ for linux-mtd@lists.infradead.org; Mon, 03 Dec 2012 11:19:45 +0000
+Date: Mon, 3 Dec 2012 12:19:34 +0100
+From: Richard Weinberger <richard@nod.at>
+To: dedekind1@gmail.com
 Subject: Re: UBI wl_tree_add problems after PEB scrubbed
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Zach Sadecki <zsadecki@itwatchdogs.com>
-Date: Mon, 03 Dec 2012 13:01:01 +0200
+Message-ID: <20121203121934.5c365ca7@spider.haslach.nod.at>
 In-Reply-To: <1354531729.30168.189.camel@sauron.fi.intel.com>
 References: <50B8CB36.3010604@itwatchdogs.com>
  <1354531729.30168.189.camel@sauron.fi.intel.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-sZBkprJ9Z9JW6veacKCM"
 Mime-Version: 1.0
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, Zach Sadecki <zsadecki@itwatchdogs.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,44 +23,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Am Mon, 03 Dec 2012 12:48:49 +0200
+schrieb Artem Bityutskiy <dedekind1@gmail.com>:
 
---=-sZBkprJ9Z9JW6veacKCM
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, 2012-12-03 at 12:48 +0200, Artem Bityutskiy wrote:
+> On Fri, 2012-11-30 at 09:05 -0600, Zach Sadecki wrote:
+> > Every time I see UBI scrub a PEB with fixable bit-flips (on my
+> > custom Freescale i.MX28 board) the background thread has problems
+> > shortly thereafter.  I'm not exactly sure where to start debugging
+> > this and I'm hoping someone can help point me in the right
+> > direction.  Below are kernel messages showing the problem from 2
+> > different runs (in which both ended up with a hung CPU).  This is
+> > using kernel 3.7-rc7.
+> > 
+> > Also worth noting is that I had to modify the gpmi-nand driver to 
+> > actually report max_bitflips back to the MTD layer to even get to
+> > this point (before that everything would just run along happily
+> > until it hit an uncorrectable ECC error).  I will submit a patch
+> > for this once everything seems OK...
+> 
+> Ack, reproducible on nandsim with 
+> 
+> sudo sh -c 'echo 1 > /sys/kernel/debug/ubi/ubi0/tst_emulate_bitflips'
+> 
+> I did not confirm this by bisecting, but it seems it is fastmap that
+> broke it.
+> 
+> And looking at fastmap changes, I immediately see some thing
+> completely bogus, not related to this:
+> 
+> 
+> /**
+>  * __wl_get_peb - get a physical eraseblock.
+>  * @ubi: UBI device description object
+>  *
+>  * This function returns a physical eraseblock in case of success and
+> a
+>  * negative error code in case of failure. Might sleep.
+>  */
+> static int __wl_get_peb(struct ubi_device *ubi)
+> 
+> Might sleep? Well, yes, because it calls 
+> 
+> ubi_self_check_all_ff()
+> 
+> But then why is this:
+> 
+>        spin_lock(&ubi->wl_lock);
+>        peb = __wl_get_peb(ubi);
+>        spin_unlock(&ubi->wl_lock);
+> 
+> Bogus.
+> 
+> Richard, could you please re-test fastmap with all debugging enabled?
+> I see at least one bug already.
+> 
+> Namely these ones: chk_gen  chk_io  tst_disable_bgt
+> 
 > Also, it seems UBI is completely broken ATM - it craps out immediately
 > on the first bit-flip. Let me revert fastmap and check if it is
-> fastmap.=20
+> fastmap.
 
-When I revert fastmap the assert goes away but the WL thread craps out
-differently. I will try to investigate it.
+Okay, I'll look at it this afternoon.
 
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-sZBkprJ9Z9JW6veacKCM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQvIZtAAoJECmIfjd9wqK0PPgP/0cHYA+gCj6wj/udo0oa8n+H
-I0oejGTXLS17cwvoTUTUV5TlgqMw22B0swM28qxRJEaTc1pYlvz7SHJLKCfDTqTU
-Xl3lzy2EGWgbUnzkWHpUrlFothN6xQLWNSFeNC2rpQb4blL0M7ilwEyhBkGDDvtX
-gJYyDzeTekdKiY5xWD8mSx3BAFUEn3k8fThUoGk8mIsn9eysI3044SPhBOEfeUc0
-/izwqtrvxuUltt0GGgB0rJJQmOIEyh4E4D2mci4Fh2xDm1QH2bJws7Yv1alel6VS
-ZVAwAu++2MwK4BvdUMeEFhNYMoreav77bhoUZ6LyblCJyt0GP+BL8cpgwAqw3JSq
-IExewsLRyPwr/z8YK4IWubQ14KK7OtcIJooNBKkT2xGMr+NFhLAPCmxcDYRLZB1k
-6+4OfGvW5cq8Ae2i39lkJmBUqZPmLtgJBiP7vfcRsNDgv6+A/ied7ue6EQ+pKxWU
-Hed+aKc9BSOmiMSTGyK8KsItnWkh1wwFw0M9Q8T7scJ+tzD7Hlx/JbO/yV+U7xZo
-JgJaUrGjqbdIyijV+swdA1O6FN1O17SjSNP3Zgg5gxuDnK2xf9Mw2arVsdICnWTq
-E5JyBuHlYqimqU3k56dSPwMldeXVgkw0tMp0lQFY5xtfAxihoXPQGj40suLgKKs/
-3N5TyyyUXVWUFYAHai2/
-=MxIa
------END PGP SIGNATURE-----
-
---=-sZBkprJ9Z9JW6veacKCM--
+Thanks,
+//richard
