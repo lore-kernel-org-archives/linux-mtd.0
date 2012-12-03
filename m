@@ -1,19 +1,34 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-ea0-f177.google.com ([209.85.215.177])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TfcCV-0008BU-8o
- for linux-mtd@lists.infradead.org; Mon, 03 Dec 2012 20:01:12 +0000
-Date: Mon, 3 Dec 2012 21:01:08 +0100
-From: Richard Weinberger <richard@nod.at>
-To: Philipp Zabel <p.zabel@pengutronix.de>
-Subject: Re: Kernel with MTD_UBI_FASTMAP=y, fm_autoconvert=0 fails to attach
- and resize UBI image
-Message-ID: <20121203210108.48a5b769@spider.haslach.nod.at>
-In-Reply-To: <1354543614.2437.59.camel@pizza.hi.pengutronix.de>
-References: <1354543614.2437.59.camel@pizza.hi.pengutronix.de>
+ id 1TfdAa-00052O-CI
+ for linux-mtd@lists.infradead.org; Mon, 03 Dec 2012 21:03:17 +0000
+Received: by mail-ea0-f177.google.com with SMTP id c10so1325261eaa.36
+ for <linux-mtd@lists.infradead.org>; Mon, 03 Dec 2012 13:03:14 -0800 (PST)
+Date: Mon, 3 Dec 2012 23:03:05 +0200
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To: Ezequiel Garcia <elezegarcia@gmail.com>
+Subject: Re: [RFC/PATCH 0/1] ubi: Add ubiblock driver
+Message-ID: <20121203230305.7be51ad2.shmulik.ladkani@gmail.com>
+In-Reply-To: <CALF0-+Vab6HZX-yRh0N6HxRSu4GavNXTpzrF6Ry7sDFwAXMHeg@mail.gmail.com>
+References: <CALF0-+WuaUn5b=2XrzqW7pvM=N1MfQf=sFwLFOrokTkHbOXh3w@mail.gmail.com>
+ <alpine.DEB.2.00.1211210626110.357@lnxricardw.se.axis.com>
+ <20121121105636.4c8687e0@skate>
+ <alpine.DEB.2.00.1211211059540.21683@lnxricardw.se.axis.com>
+ <20121121110518.3147bd34@skate>
+ <CALF0-+W-Ont1bhn_Go4YRBEpEk46=cXWGJPckAeKPgqwy+QUFw@mail.gmail.com>
+ <20121125093621.47f9cb25@pixies.home.jungo.com>
+ <1354274647.30168.99.camel@sauron.fi.intel.com>
+ <20121202193954.2dd3ea8f@pixies.home.jungo.com>
+ <CALF0-+WLGSq6tNBExt9PFJccAeKwj0BpVb7vVwQit39xbFiq4A@mail.gmail.com>
+ <CALF0-+Vab6HZX-yRh0N6HxRSu4GavNXTpzrF6Ry7sDFwAXMHeg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Ricard Wanderlof <ricard.wanderlof@axis.com>, dedekind1@gmail.com,
+ Michael Opdenacker <michael.opdenacker@free-electrons.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Tim Bird <tim.bird@am.sony.com>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,54 +38,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Philipp,
+Hi Ezequiel,
 
-Am Mon, 03 Dec 2012 15:06:54 +0100
-schrieb Philipp Zabel <p.zabel@pengutronix.de>:
+On Mon, 3 Dec 2012 16:33:01 -0300 Ezequiel Garcia <elezegarcia@gmail.com> wrote:
+> Hope this helps,
 
-> Hi,
-> 
-> on v3.7-rc7 with CONFIG_MTD_UBI_FASTMAP=y, I see the following error
-> when trying to attach an UBI image without fastmap information that
-> has to be resized because it is smaller than the mtd partition size:
-> 
->     $ cat /sys/module/ubi/parameters/fm_autoconvert
->     N
-> 
->     $ ubiattach -p /dev/mtd3
->     ubiattach: error!: cannot attach "/dev/mtd3"
->                error 28 (No space left on device)
-> 
-> If I either disable MTD_UBI_FASTMAP in the kernel config or enable the
-> fm_autoconvert module parameter, attaching works just fine.
-> 
-> Without fm_autoconvert, ubi_resize_volume fails with -ENOSPC, caused
-> by ubi_wl_get_peb due to pool->size == 0.
-> It gets to this point on an otherwise empty flash because ubi_scan_all
-> puts all PEBs into the erase list. erase_work doesn't seem to be
-> scheduled before ubi_wl_init returns with ubi->free.rb_node == NULL
-> and ubi->free_count == 0. Because of this, refill_wl_user_pool breaks
-> out of its loop immediately and never increases the pool->size
-> counter.
-> 
-> If I force synchronous erase in ubi_wl_init, the ubiattach succeeds
-> the next time I try it as now all PEBs go in the free list:
-> 
-> @@ -1899,7 +1907,7 @@ int ubi_wl_init(struct ubi_device *ubi, struct
-> ubi_attach_info *ai) e->ec = aeb->ec;
->                 ubi_assert(!ubi_is_fm_block(ubi, e->pnum));
->                 ubi->lookuptbl[e->pnum] = e;
-> -               if (schedule_erase(ubi, e, aeb->vol_id, aeb->lnum,
-> 0)) {
-> +               if (do_sync_erase(ubi, e, aeb->vol_id, aeb->lnum, 0))
-> { kmem_cache_free(ubi_wl_entry_slab, e);
->                         goto out_free;
->                 }
-> 
+Helps indeed, thanks.
 
-Thanks a lot for identifying this issue!
-But I'm not sure whether do_sync_erase() is the perfect solution
-for the issue. Tomorrow I'll try to reproduce it.
+So basically you need ubiblock to state it supports flushing caches, and
+properly handle REQ_FLUSH in its request_fn.
 
-Thanks,
-//richard
+Regards,
+Shmulik
