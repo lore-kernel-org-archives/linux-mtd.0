@@ -1,17 +1,18 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TfWfi-0006U9-4n
- for linux-mtd@lists.infradead.org; Mon, 03 Dec 2012 14:06:58 +0000
-Subject: Kernel with MTD_UBI_FASTMAP=y, fm_autoconvert=0 fails to attach
- and resize UBI image
-From: Philipp Zabel <p.zabel@pengutronix.de>
-To: Richard Weinberger <richard@nod.at>, Artem Bityutskiy <dedekind1@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 03 Dec 2012 15:06:54 +0100
-Message-ID: <1354543614.2437.59.camel@pizza.hi.pengutronix.de>
+Message-ID: <1354545316.11583.14.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v2] MTD: at91: atmel_nand: return bit flips for the
+ PMECC read_page()
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Josh Wu <josh.wu@atmel.com>
+Date: Mon, 03 Dec 2012 16:35:16 +0200
+In-Reply-To: <1354013431-13598-1-git-send-email-josh.wu@atmel.com>
+References: <1354013431-13598-1-git-send-email-josh.wu@atmel.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-kGMSG3dMEIJ0isTpnFiY"
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: plagnioj@jcrosoft.com, mikedunn@newsguy.com, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, nicolas.ferre@atmel.com
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,42 +22,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
 
-on v3.7-rc7 with CONFIG_MTD_UBI_FASTMAP=y, I see the following error
-when trying to attach an UBI image without fastmap information that has
-to be resized because it is smaller than the mtd partition size:
+--=-kGMSG3dMEIJ0isTpnFiY
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-    $ cat /sys/module/ubi/parameters/fm_autoconvert
-    N
+On Tue, 2012-11-27 at 18:50 +0800, Josh Wu wrote:
+> This patch fix pmecc's read_page() to return maximum number of bitflips, =
+0 if uncorrectable.
+>=20
+> In the commit: 3f91e94f7f511de74c0d2abe08672ccdbdd1961c ("mtd: nand: read=
+_page() returns max_bitflips ()"),
+> The ecc.read_page() is changed to return the maximum number of bitflips.
+> And when meet uncorrectable bitflips it needs to return 0.
+>=20
+> See the comment in nand.h:
+>  * @read_page:	function to read a page according to the ECC generator
+>  *		requirements; returns maximum number of bitflips corrected in
+>  *		any single ECC step, 0 if bitflips uncorrectable, -EIO hw error
+>=20
+> Signed-off-by: Josh Wu <josh.wu@atmel.com>
 
-    $ ubiattach -p /dev/mtd3
-    ubiattach: error!: cannot attach "/dev/mtd3"
-               error 28 (No space left on device)
+Pushed to l2-mtd.git, thanks!
 
-If I either disable MTD_UBI_FASTMAP in the kernel config or enable the
-fm_autoconvert module parameter, attaching works just fine.
+--=20
+Best Regards,
+Artem Bityutskiy
 
-Without fm_autoconvert, ubi_resize_volume fails with -ENOSPC, caused by
-ubi_wl_get_peb due to pool->size == 0.
-It gets to this point on an otherwise empty flash because ubi_scan_all
-puts all PEBs into the erase list. erase_work doesn't seem to be
-scheduled before ubi_wl_init returns with ubi->free.rb_node == NULL and
-ubi->free_count == 0. Because of this, refill_wl_user_pool breaks out of
-its loop immediately and never increases the pool->size counter.
+--=-kGMSG3dMEIJ0isTpnFiY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-If I force synchronous erase in ubi_wl_init, the ubiattach succeeds the
-next time I try it as now all PEBs go in the free list:
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-@@ -1899,7 +1907,7 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
-                e->ec = aeb->ec;
-                ubi_assert(!ubi_is_fm_block(ubi, e->pnum));
-                ubi->lookuptbl[e->pnum] = e;
--               if (schedule_erase(ubi, e, aeb->vol_id, aeb->lnum, 0)) {
-+               if (do_sync_erase(ubi, e, aeb->vol_id, aeb->lnum, 0)) {
-                        kmem_cache_free(ubi_wl_entry_slab, e);
-                        goto out_free;
-                }
+iQIcBAABAgAGBQJQvLikAAoJECmIfjd9wqK0HWoP/iR95mCX8HZR7CSB0enyf9zq
+HIkcT9Xix7eBqMZPkeFFj1bSGa3rlefxn4yQKUHBDGwV1/HCpb5sEVIT6B2frUfG
+3JN+JiUxMRyxvNJ47HvBJ2kqwJLna7jpsKzgPQTvNiClPsOIFALQnq6JIWal9gRC
+MpYKcfoDedg9DC7Z+rY2rZUm/WHq2YjPOfesYLO+unRZQ1ijHX1B6+SltG8fk6B8
+lJ/qMIpmWRyJKAYjEqbmqt7F2DwxxcVJa0+03NWddOqN7IMmneWGZHSzQAgETQP7
+M1+ocm2NYSMqbsGp606rDw11+OQcDIXFTJNxLiv/aIYEIVIsbfETGodnDldxSE1S
++xZ6XyEts6ZZfmEY8fRxsnAbJyPAGfq8P6h7zHOhB0U7R3CtwNBrw2m2mgAndyf1
+0DcU6gmevrrr66DXflK3TaD5zqLRCF+D/DHrC2gBMohzzlydh710cA1H9etL2g5/
+opd2rZScbDGQCH1iEEH+PW/AnwVwaHFPnMY/gE4JuFpE+396epNhoM3oV6xw/UDI
+tcTYhewAujFkpcnGWvVavcofed1KCElLrVGLcPqncyD3mlPV3/JoMY5QmdmXjhqb
+esQS5MYULIInV930DlN1SvlChoQ/YJqdxhMGexXP1WnIn7gOQTLJoQdwIiw1xFXL
+8czTrWIEkj8IjSJEnY5h
+=xdd9
+-----END PGP SIGNATURE-----
 
-regards
-Philipp
+--=-kGMSG3dMEIJ0isTpnFiY--
