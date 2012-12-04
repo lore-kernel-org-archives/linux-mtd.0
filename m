@@ -1,23 +1,20 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TfnKd-0006AL-8F
- for linux-mtd@lists.infradead.org; Tue, 04 Dec 2012 07:54:20 +0000
-Message-ID: <1354607715.11583.49.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 2/2] ubi: Dont call ubi_self_check_all_ff() in
- __wl_get_peb()
-From: Artem Bityutskiy <dedekind1@gmail.com>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TfnKw-0006BG-G9
+ for linux-mtd@lists.infradead.org; Tue, 04 Dec 2012 07:54:39 +0000
+Subject: Re: Kernel with MTD_UBI_FASTMAP=y, fm_autoconvert=0 fails to
+ attach and resize UBI image
+From: Philipp Zabel <p.zabel@pengutronix.de>
 To: Richard Weinberger <richard@nod.at>
-Date: Tue, 04 Dec 2012 09:55:15 +0200
-In-Reply-To: <1354564667-9549-3-git-send-email-richard@nod.at>
-References: <1354548780.11583.21.camel@sauron.fi.intel.com>
- <1354564667-9549-1-git-send-email-richard@nod.at>
- <1354564667-9549-3-git-send-email-richard@nod.at>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-bHzcqK3yYhV2FGodF2DQ"
+In-Reply-To: <20121203210108.48a5b769@spider.haslach.nod.at>
+References: <1354543614.2437.59.camel@pizza.hi.pengutronix.de>
+ <20121203210108.48a5b769@spider.haslach.nod.at>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 04 Dec 2012 08:54:34 +0100
+Message-ID: <1354607674.2744.3.camel@pizza.hi.pengutronix.de>
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, zsadecki@itwatchdogs.com
-Reply-To: dedekind1@gmail.com
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,53 +24,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Richard,
 
---=-bHzcqK3yYhV2FGodF2DQ
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Am Montag, den 03.12.2012, 21:01 +0100 schrieb Richard Weinberger:
+> Philipp,
+> 
+> Am Mon, 03 Dec 2012 15:06:54 +0100
+> schrieb Philipp Zabel <p.zabel@pengutronix.de>:
+> 
+> > Hi,
+> > 
+> > on v3.7-rc7 with CONFIG_MTD_UBI_FASTMAP=y, I see the following error
+> > when trying to attach an UBI image without fastmap information that
+> > has to be resized because it is smaller than the mtd partition size:
+> > 
+> >     $ cat /sys/module/ubi/parameters/fm_autoconvert
+> >     N
+> > 
+> >     $ ubiattach -p /dev/mtd3
+> >     ubiattach: error!: cannot attach "/dev/mtd3"
+> >                error 28 (No space left on device)
+> > 
+> > If I either disable MTD_UBI_FASTMAP in the kernel config or enable the
+> > fm_autoconvert module parameter, attaching works just fine.
+> > 
+> > Without fm_autoconvert, ubi_resize_volume fails with -ENOSPC, caused
+> > by ubi_wl_get_peb due to pool->size == 0.
+> > It gets to this point on an otherwise empty flash because ubi_scan_all
+> > puts all PEBs into the erase list. erase_work doesn't seem to be
+> > scheduled before ubi_wl_init returns with ubi->free.rb_node == NULL
+> > and ubi->free_count == 0. Because of this, refill_wl_user_pool breaks
+> > out of its loop immediately and never increases the pool->size
+> > counter.
+> > 
+> > If I force synchronous erase in ubi_wl_init, the ubiattach succeeds
+> > the next time I try it as now all PEBs go in the free list:
+> > 
+> > @@ -1899,7 +1907,7 @@ int ubi_wl_init(struct ubi_device *ubi, struct
+> > ubi_attach_info *ai) e->ec = aeb->ec;
+> >                 ubi_assert(!ubi_is_fm_block(ubi, e->pnum));
+> >                 ubi->lookuptbl[e->pnum] = e;
+> > -               if (schedule_erase(ubi, e, aeb->vol_id, aeb->lnum,
+> > 0)) {
+> > +               if (do_sync_erase(ubi, e, aeb->vol_id, aeb->lnum, 0))
+> > { kmem_cache_free(ubi_wl_entry_slab, e);
+> >                         goto out_free;
+> >                 }
+> > 
+> 
+> Thanks a lot for identifying this issue!
+> But I'm not sure whether do_sync_erase() is the perfect solution
+> for the issue. Tomorrow I'll try to reproduce it.
 
-On Mon, 2012-12-03 at 20:57 +0100, Richard Weinberger wrote:
-> +	err =3D ubi_self_check_all_ff(ubi, peb, ubi->vid_hdr_aloffset,
-> +				    ubi->peb_size - ubi->vid_hdr_aloffset);
-> +	if (err) {
-> +		ubi_err("new PEB %d does not contain all 0xFF bytes", peb);
-> +		return err;
-> +	}
-> +
+Thank you, I'm sure it is not. Enabling fm_autoconvert works for me, so
+I just wanted to put all information I've got out there before wasting
+too much time trying to wrap my head around the issue myself.
 
-The original idea was to verify that all PEBs from the free list (tree
-actually) are really filled with 0xFFs.
-
-What I see is that with fastmap this is not done.
-
-I think the code should be re-thought and re-structured to make the
-verification happen with fastmap enabled as well.
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-bHzcqK3yYhV2FGodF2DQ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQvaxjAAoJECmIfjd9wqK0b84P/2pYDffoVW26BWBcyOAFY7xT
-4PmmXC6fOh1SOhALGmcNaNQVRJ1JREV4Nkaow2g96b1UBBfoR8/h+5sLb7rG1TBD
-wkSex3iVyGaV6fpn5ZYyFBiYsuF3Dz4BaHtmTdkaFYJEIdwoDtUq7n8nnWPWCI2P
-Add7mMFMgrTilxuVe/Z1oxvAd76weDwCljJ8mj3o/IlzUFynxKHmRMyFdlrVb0o7
-y8NLL+Yc43JnuE4fIDEarG0FfRy8gBAh8Oo/oVA/9H0K9P+EKBvF9mmjB2thN3Tq
-iZwDEKGqAebfR5DYiVk2ynQCUyi/u6i5u2Ao9LrjKYIckbBiZ+FdJcVgJOTRzdy1
-udxh02C04+IXYJJaNU8Zz3E/PZqHRg42iUbv4V1s4EJhVUeVinBbVIaV9zwN5lqi
-T6mTLkVNGW2RW38fnrn0binsaX1ng4aL1woQ92s1um6yOuINBxNmlcCGNq4fuVck
-O0jY6THOSChLhnzISob3rYV4YYh2jMji/Zsk+hCFISyENrB9Ee7dYdZnIeuCGnuM
-LaAZ4xWCC4cGQvRuyahMrqqu1uart1mqchdNFdQvmKT00CL5Xmk3OVtNED3JrEUC
-wCd21Iz2jl+VWJK2v9jVgEGS2fdiMw+gs+h1hPS8oo64fOLfr73SMfxW6SUDKUeY
-ea4sa7JfhU7r0OF1TP8T
-=VHNP
------END PGP SIGNATURE-----
-
---=-bHzcqK3yYhV2FGodF2DQ--
+regards
+Philipp
