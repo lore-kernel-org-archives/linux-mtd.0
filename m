@@ -1,18 +1,19 @@
 Received: from mail.pce.us.com ([69.40.160.195])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TftfT-00056n-HM
- for linux-mtd@lists.infradead.org; Tue, 04 Dec 2012 14:40:16 +0000
-Message-ID: <50BE0B4A.9000503@itwatchdogs.com>
-Date: Tue, 4 Dec 2012 08:40:10 -0600
+ id 1TftkR-0005w7-Ce
+ for linux-mtd@lists.infradead.org; Tue, 04 Dec 2012 14:45:23 +0000
+Message-ID: <50BE0C7E.6000001@itwatchdogs.com>
+Date: Tue, 4 Dec 2012 08:45:18 -0600
 From: Zach Sadecki <zsadecki@itwatchdogs.com>
 MIME-Version: 1.0
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH] mtd: gpmi: Always report ECC stats and return max_bitflips
-References: <50BD01F8.3040003@itwatchdogs.com> <50BD6F62.80200@freescale.com>
-In-Reply-To: <50BD6F62.80200@freescale.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, "dedekind1@gmail.com" <dedekind1@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Subject: Re: UBI Fastmap fixes for 3.7
+References: <1354548780.11583.21.camel@sauron.fi.intel.com>
+ <1354564667-9549-1-git-send-email-richard@nod.at>
+In-Reply-To: <1354564667-9549-1-git-send-email-richard@nod.at>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,100 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/03/2012 09:34 PM, Huang Shijie wrote:
-> 于 2012年12月04日 03:48, Zach Sadecki 写道:
->> Always report corrected and failed ECC stats back up to the MTD 
->> layer. Also
->> return max_bitflips from read_page() as is expected from NAND drivers 
->> now.
->>
->> Signed-off-by: Zach Sadecki <zsadecki@itwatchdogs.com>
->> ---
->> drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 27 ++++++++-------------------
->> 1 file changed, 8 insertions(+), 19 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c 
->> b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
->> index d79696b..fe10c53 100644
->> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
->> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
->> @@ -914,8 +914,7 @@ static int gpmi_ecc_read_page(struct mtd_info 
->> *mtd, struct nand_chip *chip,
->> dma_addr_t auxiliary_phys;
->> unsigned int i;
->> unsigned char *status;
->> - unsigned int failed;
->> - unsigned int corrected;
->> + unsigned int max_bitflips = 0;
->> int ret;
->> pr_debug("page number is : %d\n", page);
->> @@ -939,35 +938,25 @@ static int gpmi_ecc_read_page(struct mtd_info 
->> *mtd, struct nand_chip *chip,
->> payload_virt, payload_phys);
->> if (ret) {
->> pr_err("Error in ECC-based read: %d\n", ret);
->> - goto exit_nfc;
->> + return ret;
->> }
->> /* handle the block mark swapping */
->> block_mark_swapping(this, payload_virt, auxiliary_virt);
->> /* Loop over status bytes, accumulating ECC status. */
->> - failed = 0;
->> - corrected = 0;
->> - status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
->> + status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
->> for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
->> if ((*status == STATUS_GOOD) || (*status == STATUS_ERASED))
->> continue;
->> if (*status == STATUS_UNCORRECTABLE) {
->> - failed++;
->> + mtd->ecc_stats.failed++;
->> continue;
->> }
->> - corrected += *status;
->> - }
->> -
->> - /*
->> - * Propagate ECC status to the owning MTD only when failed or
->> - * corrected times nearly reaches our ECC correction threshold.
->> - */
->> - if (failed || corrected >= (nfc_geo->ecc_strength - 1)) {
->> - mtd->ecc_stats.failed += failed;
->> - mtd->ecc_stats.corrected += corrected;
->> + mtd->ecc_stats.corrected += *status;
->> + max_bitflips = max_t(unsigned int, max_bitflips, *status);
+On 12/03/2012 01:57 PM, Richard Weinberger wrote:
+> This patch series contains two brown-paper-bag-bugfixes.
+> I'm very sorry for them!
 >
-> Does the max_bitflips stand for the whole page's bitfips ? or just the 
-> bitfips of one part of the page?
-> The gpmi driver splits a page into several parts when it does the ECC.
+> [PATCH 1/2] ubi: Remove PEB from free tree in get_peb_for_wl()
+> This one fixes a very odd issue with fastmap disabled.
+> With fastmap disabled get_peb_for_wl() did not remove PEBs from
+> the free list. Therefore the free, used and scrub trees got corrupted.
 >
-> thanks
-> Huang Shijie
+> [PATCH 2/2] ubi: Dont call ubi_self_check_all_ff() in __wl_get_peb()
+> The issue fixed by that patch is also very nasty. I missed that
+> ubi_self_check_all_ff() can sleep. So, we cannot call it from
+> __wl_get_peb().
 >
-max_bitflips represents the maximum number of bitflips per ECC corrected 
-region in a page.  The MTD layer needs it to compare to 
-bitflip_threshold to know when to return -EUCLEAN to upper layers (like 
-UBI) so a nearly corrupt page can be copied elsewhere.  This is pretty 
-much identical to the way other drivers do this as I copied it from 
-those.  Here's where it was added in the other drivers: 
-http://git.infradead.org/linux-mtd.git/commit/3f91e94f7f511de74c0d2abe08672ccdbdd1961c 
-
-
-Zach
->
->> }
->> if (oob_required) {
->> @@ -989,8 +978,8 @@ static int gpmi_ecc_read_page(struct mtd_info 
->> *mtd, struct nand_chip *chip,
->> this->payload_virt, this->payload_phys,
->> nfc_geo->payload_size,
->> payload_virt, payload_phys);
->> -exit_nfc:
->> - return ret;
->> +
->> + return max_bitflips;
->> }
->> static int gpmi_ecc_write_page(struct mtd_info *mtd, struct nand_chip 
->> *chip,
->
->
+> Thanks,
+> //richard
+Thanks, guys.  An overnight test run has shown that these patches have 
+fixed the UBI problems on my board.  Something else odd is happening, 
+but that's for another thread...
