@@ -1,37 +1,19 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TfsRj-0004rO-8N
- for linux-mtd@lists.infradead.org; Tue, 04 Dec 2012 13:21:59 +0000
-From: "Philip, Avinash" <avinashphilip@ti.com>
-To: "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>
-Subject: RE: [PATCH v2 0/3] mtd: nand: OMAP: ELM error correction support
- for BCH ecc
-Date: Tue, 4 Dec 2012 13:20:50 +0000
-Message-ID: <518397C60809E147AF5323E0420B992E3EA108CE@DBDE01.ent.ti.com>
-References: <1351667307-447-1-git-send-email-avinashphilip@ti.com>
- <1352978534.2221.33.camel@sauron.fi.intel.com>
- <518397C60809E147AF5323E0420B992E3E9EC70D@DBDE01.ent.ti.com>
- <1353581032.2701.34.camel@sauron.fi.intel.com>
- <518397C60809E147AF5323E0420B992E3E9EE329@DBDE01.ent.ti.com>
- <1354278498.30168.117.camel@sauron.fi.intel.com>
-In-Reply-To: <1354278498.30168.117.camel@sauron.fi.intel.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: "Mohammed, Afzal" <afzal@ti.com>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "tony@atomide.com" <tony@atomide.com>,
- "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
- "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>,
- "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>,
- "Nori, Sekhar" <nsekhar@ti.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Hebbar,
- Gururaja" <gururaja.hebbar@ti.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "rmk+kernel@arm.linux.org.uk" <rmk+kernel@arm.linux.org.uk>,
- "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+Received: from mga09.intel.com ([134.134.136.24])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TftIG-0001L6-DN
+ for linux-mtd@lists.infradead.org; Tue, 04 Dec 2012 14:16:18 +0000
+Message-ID: <1354630632.11583.69.camel@sauron.fi.intel.com>
+Subject: [GIT PULL] UBI changes for 3.7-rc9
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 04 Dec 2012 16:17:12 +0200
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-AeJv+JTfkZFt4aCDizHl"
+Mime-Version: 1.0
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,24 +23,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gRnJpLCBOb3YgMzAsIDIwMTIgYXQgMTc6NTg6MTgsIEFydGVtIEJpdHl1dHNraXkgd3JvdGU6
-DQo+IE9uIFRodSwgMjAxMi0xMS0yMiBhdCAxNDozNyArMDAwMCwgUGhpbGlwLCBBdmluYXNoIHdy
-b3RlOg0KPiA+IElkZWEgaGVyZSBpcyB0byBtYWtlIGZhc3RlciBzY2FubmluZyBvZiBlcmFzZWQg
-cGFnZSB3aXRob3V0IGJpdCBmbGlwcy4NCj4gPiBGb3Igb21hcCBuYW5kIGRyaXZlciBlY2MgcmVw
-b3J0ZWQgYnkgaGFyZHdhcmUgaXMgbm9uLXplcm8gYW5kIG5vbg0KPiA+IDB4ZmYuDQo+ID4gU28g
-Y29tcGFyaW5nIHdpdGggdGhlIHN0YW5kYXJkIHZlY3RvciBmb3IgZXJhc2VkIHBhZ2UgYW5kIHNr
-aXBwaW5nDQo+ID4gZXJyb3INCj4gPiBjb3JyZWN0aW9uIGZvciBlcmFzZWQgcGFnZSB3aXRob3V0
-IGJpdCBmbGlwcy4NCj4gDQo+IFNvIHlvdSBtZWFuIHRoYXQgd2hlbiB5b3UgcmVhZCBhIHBhZ2Us
-IGFuZCB5b3Ugc2VlIHRoZXJlIGFyZSBiaXQtZmxpcHMsDQo+IHlvdSBzdGFydCBjb3JyZWN0aW5n
-IHRoZW0uIEJ1dCBpZiB5b3Ugbm90aWNlIHRoYXQgdGhlIHBhZ2UgaXMgYWN0dWFsbHkNCj4gYW4g
-ZXJhc2VkIHBhZ2UsIHlvdSBvcHRpbWl6ZSB0aGlzIGNhc2UgYnkgbm90IHJ1bm5pbmcgdGhlIGNv
-cnJlY3Rpb24NCj4gbWFjaGluZXJ5LCBidXQganVzdCBmaWxsaW5nIHRoZSBidWZmZXIgd2l0aCAw
-eEZGcy4gUmlnaHQ/DQoNClllcyBpdCBpcyBhbiBvcHRpbWl6YXRpb24gZm9yIGVyYXNlZCBwYWdl
-IGJpdCBmbGlwIGhhbmRsaW5nLg0KT24gZXJhc2VkIHBhZ2UsIGVjYyBieXRlcyBub3QgdmFsaWQu
-ICBTbyBubyBkaXJlY3QgY29ycmVjdGlvbiBtYWNoaW5lcnkNCmF2YWlsYWJsZSBmb3IgYml0IGZs
-aXBzIGluIGVyYXNlZCBwYWdlLiBIZW5jZSBJIHdhcyBjaGVja2luZyBpZiBhbnkgYml0IGZsaXBz
-DQpyZXBvcnRlZCBpbiBlcmFzZWQgcGFnZS4gSWYgYml0IGZsaXAgcHJlc2VudCBpbiBlcmFzZWQg
-cGFnZSBhbmQgZmFsbHMgdW5kZXINCmNvcnJlY3RhYmxlIGxldmVsLCByZXBvcnQgdGhlIHBhZ2Ug
-d2l0aCAweGZmIHdpdGggY29ycmVjdGFibGUgZXJyb3JzLg0KDQoNClRoYW5rcw0KQXZpbmFzaA0K
-DQo+ID4gDQo+IC0tIA0KPiBCZXN0IFJlZ2FyZHMsDQo+IEFydGVtIEJpdHl1dHNraXkNCj4gDQoN
-Cg==
+
+--=-AeJv+JTfkZFt4aCDizHl
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hi Linus,
+
+it is nice that you decided to postpone 3.8, because we found a couple
+of bad bugs in UBI. Please, pull the fixes.
+
+The following changes since commit 9489e9dcae718d5fde988e4a684a0f55b5f94d17=
+:
+
+  Linux 3.7-rc7 (2012-11-25 17:59:19 -0800)
+
+are available in the git repository at:
+
+  git://git.infradead.org/linux-ubi.git tags/upstream-3.7-rc9
+
+for you to fetch changes up to 894aef215775b56b725e9dde856b7a8b091ddfcc:
+
+  UBI: dont call ubi_self_check_all_ff() in __wl_get_peb() (2012-12-04 16:0=
+4:31 +0200)
+
+----------------------------------------------------------------
+Fixes for 2 brown-paperbag bugs introduced this merge window by the fastmap
+code:
+
+1. The UBI background thread got stuck when a bit-flip happened because fre=
+e
+   LEBs was not removed from the "free" tree when we started using it.
+2. I/O debugging checks did not work because we called a sleeping function =
+in
+   atomic context.
+
+----------------------------------------------------------------
+Richard Weinberger (2):
+      UBI: remove PEB from free tree in get_peb_for_wl()
+      UBI: dont call ubi_self_check_all_ff() in __wl_get_peb()
+
+ drivers/mtd/ubi/wl.c |   26 ++++++++++++++++----------
+ 1 file changed, 16 insertions(+), 10 deletions(-)
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-AeJv+JTfkZFt4aCDizHl
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQvgXoAAoJECmIfjd9wqK0F98QAI1m4cDDVTk80frIGvFmln86
+O1pTQIRSx5QbWG7+A8/GSUOM4sS3478mTr5OTXg3DgOW2+bHuBngpEpdkqlgBHvY
+E5v1Nve/M2H5Td/2r9EhakJlfK5xFzNNsc/blKC7UlMyk/L0b3vDXvRop5ytfTws
+l5wTR6njYLOJ6Aj6oIwFCpvbJANN7ZtdHJCH6wqp1ret905U1ha4ku5FZLzcYVdU
+4Sba8xtMhLD3UMXWLitpqin6cBq8FgcJmHUwaLFjr9riQTLpUjcIWdltpO6/tAKS
+chgCznsC5XTDH6NzJG6OoERIaopRFeB5Q6ZKg+TvL/qiXducq7SX/3as05b4VJ8J
+5NwxRWXbn+oQilTUGFNJcpNN5csJQqeG6p15ianM1/m9qw3ho1NGZQth2iHiaCs+
+zHgfzb/dGVzKK/hUVzCOxUduKjqZA5stHL8fuPFNF5gQkZU5hEsoffTcvVbhMK3H
+3d77BjT80Y1P09qR7SudOK823O59p+I1/sSqGrQt/Wem/IhaN4NbbAUF62QBrQdw
+taUwgWjsVAhwbEpyGaUigMrwRLTQmM4yGmvUe8ZLY3juH+mBtYg03pU97pkwrs/d
+v0PCga7utzyf5HjFnjTHUY4CEfnNqx+hx3VW0P9LY43OMdiW7F+u/fz9vlndYJAF
+Fv3cpr/gcQCHkYZW9R4m
+=Y6Ci
+-----END PGP SIGNATURE-----
+
+--=-AeJv+JTfkZFt4aCDizHl--
