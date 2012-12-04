@@ -1,19 +1,23 @@
-Received: from ch1ehsobe003.messaging.microsoft.com ([216.32.181.183]
- helo=ch1outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TfjD8-00046l-Sa
- for linux-mtd@lists.infradead.org; Tue, 04 Dec 2012 03:30:21 +0000
-Message-ID: <50BD6F62.80200@freescale.com>
-Date: Tue, 4 Dec 2012 11:34:58 +0800
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: Zach Sadecki <zsadecki@itwatchdogs.com>
-Subject: Re: [PATCH] mtd: gpmi: Always report ECC stats and return max_bitflips
-References: <50BD01F8.3040003@itwatchdogs.com>
-In-Reply-To: <50BD01F8.3040003@itwatchdogs.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, "dedekind1@gmail.com" <dedekind1@gmail.com>
+Received: from mga09.intel.com ([134.134.136.24])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TfnKd-0006AL-8F
+ for linux-mtd@lists.infradead.org; Tue, 04 Dec 2012 07:54:20 +0000
+Message-ID: <1354607715.11583.49.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 2/2] ubi: Dont call ubi_self_check_all_ff() in
+ __wl_get_peb()
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Date: Tue, 04 Dec 2012 09:55:15 +0200
+In-Reply-To: <1354564667-9549-3-git-send-email-richard@nod.at>
+References: <1354548780.11583.21.camel@sauron.fi.intel.com>
+ <1354564667-9549-1-git-send-email-richard@nod.at>
+ <1354564667-9549-3-git-send-email-richard@nod.at>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-bHzcqK3yYhV2FGodF2DQ"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org, zsadecki@itwatchdogs.com
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,88 +27,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2012=E5=B9=B412=E6=9C=8804=E6=97=A5 03:48, Zach Sadecki =E5=86=99=
-=E9=81=93:
-> Always report corrected and failed ECC stats back up to the MTD layer.=20
-> Also
-> return max_bitflips from read_page() as is expected from NAND drivers=20
-> now.
->
-> Signed-off-by: Zach Sadecki <zsadecki@itwatchdogs.com>
-> ---
-> drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 27 ++++++++-------------------
-> 1 file changed, 8 insertions(+), 19 deletions(-)
->
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c=20
-> b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> index d79696b..fe10c53 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -914,8 +914,7 @@ static int gpmi_ecc_read_page(struct mtd_info=20
-> *mtd, struct nand_chip *chip,
-> dma_addr_t auxiliary_phys;
-> unsigned int i;
-> unsigned char *status;
-> - unsigned int failed;
-> - unsigned int corrected;
-> + unsigned int max_bitflips =3D 0;
-> int ret;
-> pr_debug("page number is : %d\n", page);
-> @@ -939,35 +938,25 @@ static int gpmi_ecc_read_page(struct mtd_info=20
-> *mtd, struct nand_chip *chip,
-> payload_virt, payload_phys);
-> if (ret) {
-> pr_err("Error in ECC-based read: %d\n", ret);
-> - goto exit_nfc;
-> + return ret;
-> }
-> /* handle the block mark swapping */
-> block_mark_swapping(this, payload_virt, auxiliary_virt);
-> /* Loop over status bytes, accumulating ECC status. */
-> - failed =3D 0;
-> - corrected =3D 0;
-> - status =3D auxiliary_virt + nfc_geo->auxiliary_status_offset;
-> + status =3D auxiliary_virt + nfc_geo->auxiliary_status_offset;
-> for (i =3D 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
-> if ((*status =3D=3D STATUS_GOOD) || (*status =3D=3D STATUS_ERASED))
-> continue;
-> if (*status =3D=3D STATUS_UNCORRECTABLE) {
-> - failed++;
-> + mtd->ecc_stats.failed++;
-> continue;
-> }
-> - corrected +=3D *status;
-> - }
-> -
-> - /*
-> - * Propagate ECC status to the owning MTD only when failed or
-> - * corrected times nearly reaches our ECC correction threshold.
-> - */
-> - if (failed || corrected >=3D (nfc_geo->ecc_strength - 1)) {
-> - mtd->ecc_stats.failed +=3D failed;
-> - mtd->ecc_stats.corrected +=3D corrected;
-> + mtd->ecc_stats.corrected +=3D *status;
-> + max_bitflips =3D max_t(unsigned int, max_bitflips, *status);
 
-Does the max_bitflips stand for the whole page's bitfips ? or just the=20
-bitfips of one part of the page?
-The gpmi driver splits a page into several parts when it does the ECC.
+--=-bHzcqK3yYhV2FGodF2DQ
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-thanks
-Huang Shijie
-
-
-> }
-> if (oob_required) {
-> @@ -989,8 +978,8 @@ static int gpmi_ecc_read_page(struct mtd_info=20
-> *mtd, struct nand_chip *chip,
-> this->payload_virt, this->payload_phys,
-> nfc_geo->payload_size,
-> payload_virt, payload_phys);
-> -exit_nfc:
-> - return ret;
+On Mon, 2012-12-03 at 20:57 +0100, Richard Weinberger wrote:
+> +	err =3D ubi_self_check_all_ff(ubi, peb, ubi->vid_hdr_aloffset,
+> +				    ubi->peb_size - ubi->vid_hdr_aloffset);
+> +	if (err) {
+> +		ubi_err("new PEB %d does not contain all 0xFF bytes", peb);
+> +		return err;
+> +	}
 > +
-> + return max_bitflips;
-> }
-> static int gpmi_ecc_write_page(struct mtd_info *mtd, struct nand_chip=20
-> *chip,
+
+The original idea was to verify that all PEBs from the free list (tree
+actually) are really filled with 0xFFs.
+
+What I see is that with fastmap this is not done.
+
+I think the code should be re-thought and re-structured to make the
+verification happen with fastmap enabled as well.
+
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-bHzcqK3yYhV2FGodF2DQ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQvaxjAAoJECmIfjd9wqK0b84P/2pYDffoVW26BWBcyOAFY7xT
+4PmmXC6fOh1SOhALGmcNaNQVRJ1JREV4Nkaow2g96b1UBBfoR8/h+5sLb7rG1TBD
+wkSex3iVyGaV6fpn5ZYyFBiYsuF3Dz4BaHtmTdkaFYJEIdwoDtUq7n8nnWPWCI2P
+Add7mMFMgrTilxuVe/Z1oxvAd76weDwCljJ8mj3o/IlzUFynxKHmRMyFdlrVb0o7
+y8NLL+Yc43JnuE4fIDEarG0FfRy8gBAh8Oo/oVA/9H0K9P+EKBvF9mmjB2thN3Tq
+iZwDEKGqAebfR5DYiVk2ynQCUyi/u6i5u2Ao9LrjKYIckbBiZ+FdJcVgJOTRzdy1
+udxh02C04+IXYJJaNU8Zz3E/PZqHRg42iUbv4V1s4EJhVUeVinBbVIaV9zwN5lqi
+T6mTLkVNGW2RW38fnrn0binsaX1ng4aL1woQ92s1um6yOuINBxNmlcCGNq4fuVck
+O0jY6THOSChLhnzISob3rYV4YYh2jMji/Zsk+hCFISyENrB9Ee7dYdZnIeuCGnuM
+LaAZ4xWCC4cGQvRuyahMrqqu1uart1mqchdNFdQvmKT00CL5Xmk3OVtNED3JrEUC
+wCd21Iz2jl+VWJK2v9jVgEGS2fdiMw+gs+h1hPS8oo64fOLfr73SMfxW6SUDKUeY
+ea4sa7JfhU7r0OF1TP8T
+=VHNP
+-----END PGP SIGNATURE-----
+
+--=-bHzcqK3yYhV2FGodF2DQ--
