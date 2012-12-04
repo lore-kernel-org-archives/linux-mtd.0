@@ -1,19 +1,18 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TftIG-0001L6-DN
- for linux-mtd@lists.infradead.org; Tue, 04 Dec 2012 14:16:18 +0000
-Message-ID: <1354630632.11583.69.camel@sauron.fi.intel.com>
-Subject: [GIT PULL] UBI changes for 3.7-rc9
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 04 Dec 2012 16:17:12 +0200
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-AeJv+JTfkZFt4aCDizHl"
-Mime-Version: 1.0
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Reply-To: dedekind1@gmail.com
+Received: from mail.pce.us.com ([69.40.160.195])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TftfT-00056n-HM
+ for linux-mtd@lists.infradead.org; Tue, 04 Dec 2012 14:40:16 +0000
+Message-ID: <50BE0B4A.9000503@itwatchdogs.com>
+Date: Tue, 4 Dec 2012 08:40:10 -0600
+From: Zach Sadecki <zsadecki@itwatchdogs.com>
+MIME-Version: 1.0
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH] mtd: gpmi: Always report ECC stats and return max_bitflips
+References: <50BD01F8.3040003@itwatchdogs.com> <50BD6F62.80200@freescale.com>
+In-Reply-To: <50BD6F62.80200@freescale.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,74 +22,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 12/03/2012 09:34 PM, Huang Shijie wrote:
+> 于 2012年12月04日 03:48, Zach Sadecki 写道:
+>> Always report corrected and failed ECC stats back up to the MTD 
+>> layer. Also
+>> return max_bitflips from read_page() as is expected from NAND drivers 
+>> now.
+>>
+>> Signed-off-by: Zach Sadecki <zsadecki@itwatchdogs.com>
+>> ---
+>> drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 27 ++++++++-------------------
+>> 1 file changed, 8 insertions(+), 19 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c 
+>> b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+>> index d79696b..fe10c53 100644
+>> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+>> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+>> @@ -914,8 +914,7 @@ static int gpmi_ecc_read_page(struct mtd_info 
+>> *mtd, struct nand_chip *chip,
+>> dma_addr_t auxiliary_phys;
+>> unsigned int i;
+>> unsigned char *status;
+>> - unsigned int failed;
+>> - unsigned int corrected;
+>> + unsigned int max_bitflips = 0;
+>> int ret;
+>> pr_debug("page number is : %d\n", page);
+>> @@ -939,35 +938,25 @@ static int gpmi_ecc_read_page(struct mtd_info 
+>> *mtd, struct nand_chip *chip,
+>> payload_virt, payload_phys);
+>> if (ret) {
+>> pr_err("Error in ECC-based read: %d\n", ret);
+>> - goto exit_nfc;
+>> + return ret;
+>> }
+>> /* handle the block mark swapping */
+>> block_mark_swapping(this, payload_virt, auxiliary_virt);
+>> /* Loop over status bytes, accumulating ECC status. */
+>> - failed = 0;
+>> - corrected = 0;
+>> - status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
+>> + status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
+>> for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
+>> if ((*status == STATUS_GOOD) || (*status == STATUS_ERASED))
+>> continue;
+>> if (*status == STATUS_UNCORRECTABLE) {
+>> - failed++;
+>> + mtd->ecc_stats.failed++;
+>> continue;
+>> }
+>> - corrected += *status;
+>> - }
+>> -
+>> - /*
+>> - * Propagate ECC status to the owning MTD only when failed or
+>> - * corrected times nearly reaches our ECC correction threshold.
+>> - */
+>> - if (failed || corrected >= (nfc_geo->ecc_strength - 1)) {
+>> - mtd->ecc_stats.failed += failed;
+>> - mtd->ecc_stats.corrected += corrected;
+>> + mtd->ecc_stats.corrected += *status;
+>> + max_bitflips = max_t(unsigned int, max_bitflips, *status);
+>
+> Does the max_bitflips stand for the whole page's bitfips ? or just the 
+> bitfips of one part of the page?
+> The gpmi driver splits a page into several parts when it does the ECC.
+>
+> thanks
+> Huang Shijie
+>
+max_bitflips represents the maximum number of bitflips per ECC corrected 
+region in a page.  The MTD layer needs it to compare to 
+bitflip_threshold to know when to return -EUCLEAN to upper layers (like 
+UBI) so a nearly corrupt page can be copied elsewhere.  This is pretty 
+much identical to the way other drivers do this as I copied it from 
+those.  Here's where it was added in the other drivers: 
+http://git.infradead.org/linux-mtd.git/commit/3f91e94f7f511de74c0d2abe08672ccdbdd1961c 
 
---=-AeJv+JTfkZFt4aCDizHl
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hi Linus,
-
-it is nice that you decided to postpone 3.8, because we found a couple
-of bad bugs in UBI. Please, pull the fixes.
-
-The following changes since commit 9489e9dcae718d5fde988e4a684a0f55b5f94d17=
-:
-
-  Linux 3.7-rc7 (2012-11-25 17:59:19 -0800)
-
-are available in the git repository at:
-
-  git://git.infradead.org/linux-ubi.git tags/upstream-3.7-rc9
-
-for you to fetch changes up to 894aef215775b56b725e9dde856b7a8b091ddfcc:
-
-  UBI: dont call ubi_self_check_all_ff() in __wl_get_peb() (2012-12-04 16:0=
-4:31 +0200)
-
-----------------------------------------------------------------
-Fixes for 2 brown-paperbag bugs introduced this merge window by the fastmap
-code:
-
-1. The UBI background thread got stuck when a bit-flip happened because fre=
-e
-   LEBs was not removed from the "free" tree when we started using it.
-2. I/O debugging checks did not work because we called a sleeping function =
-in
-   atomic context.
-
-----------------------------------------------------------------
-Richard Weinberger (2):
-      UBI: remove PEB from free tree in get_peb_for_wl()
-      UBI: dont call ubi_self_check_all_ff() in __wl_get_peb()
-
- drivers/mtd/ubi/wl.c |   26 ++++++++++++++++----------
- 1 file changed, 16 insertions(+), 10 deletions(-)
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-AeJv+JTfkZFt4aCDizHl
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQvgXoAAoJECmIfjd9wqK0F98QAI1m4cDDVTk80frIGvFmln86
-O1pTQIRSx5QbWG7+A8/GSUOM4sS3478mTr5OTXg3DgOW2+bHuBngpEpdkqlgBHvY
-E5v1Nve/M2H5Td/2r9EhakJlfK5xFzNNsc/blKC7UlMyk/L0b3vDXvRop5ytfTws
-l5wTR6njYLOJ6Aj6oIwFCpvbJANN7ZtdHJCH6wqp1ret905U1ha4ku5FZLzcYVdU
-4Sba8xtMhLD3UMXWLitpqin6cBq8FgcJmHUwaLFjr9riQTLpUjcIWdltpO6/tAKS
-chgCznsC5XTDH6NzJG6OoERIaopRFeB5Q6ZKg+TvL/qiXducq7SX/3as05b4VJ8J
-5NwxRWXbn+oQilTUGFNJcpNN5csJQqeG6p15ianM1/m9qw3ho1NGZQth2iHiaCs+
-zHgfzb/dGVzKK/hUVzCOxUduKjqZA5stHL8fuPFNF5gQkZU5hEsoffTcvVbhMK3H
-3d77BjT80Y1P09qR7SudOK823O59p+I1/sSqGrQt/Wem/IhaN4NbbAUF62QBrQdw
-taUwgWjsVAhwbEpyGaUigMrwRLTQmM4yGmvUe8ZLY3juH+mBtYg03pU97pkwrs/d
-v0PCga7utzyf5HjFnjTHUY4CEfnNqx+hx3VW0P9LY43OMdiW7F+u/fz9vlndYJAF
-Fv3cpr/gcQCHkYZW9R4m
-=Y6Ci
------END PGP SIGNATURE-----
-
---=-AeJv+JTfkZFt4aCDizHl--
+Zach
+>
+>> }
+>> if (oob_required) {
+>> @@ -989,8 +978,8 @@ static int gpmi_ecc_read_page(struct mtd_info 
+>> *mtd, struct nand_chip *chip,
+>> this->payload_virt, this->payload_phys,
+>> nfc_geo->payload_size,
+>> payload_virt, payload_phys);
+>> -exit_nfc:
+>> - return ret;
+>> +
+>> + return max_bitflips;
+>> }
+>> static int gpmi_ecc_write_page(struct mtd_info *mtd, struct nand_chip 
+>> *chip,
+>
+>
