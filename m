@@ -1,34 +1,19 @@
-Received: from mail-ea0-f177.google.com ([209.85.215.177])
+Received: from ch1ehsobe003.messaging.microsoft.com ([216.32.181.183]
+ helo=ch1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TfdAa-00052O-CI
- for linux-mtd@lists.infradead.org; Mon, 03 Dec 2012 21:03:17 +0000
-Received: by mail-ea0-f177.google.com with SMTP id c10so1325261eaa.36
- for <linux-mtd@lists.infradead.org>; Mon, 03 Dec 2012 13:03:14 -0800 (PST)
-Date: Mon, 3 Dec 2012 23:03:05 +0200
-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To: Ezequiel Garcia <elezegarcia@gmail.com>
-Subject: Re: [RFC/PATCH 0/1] ubi: Add ubiblock driver
-Message-ID: <20121203230305.7be51ad2.shmulik.ladkani@gmail.com>
-In-Reply-To: <CALF0-+Vab6HZX-yRh0N6HxRSu4GavNXTpzrF6Ry7sDFwAXMHeg@mail.gmail.com>
-References: <CALF0-+WuaUn5b=2XrzqW7pvM=N1MfQf=sFwLFOrokTkHbOXh3w@mail.gmail.com>
- <alpine.DEB.2.00.1211210626110.357@lnxricardw.se.axis.com>
- <20121121105636.4c8687e0@skate>
- <alpine.DEB.2.00.1211211059540.21683@lnxricardw.se.axis.com>
- <20121121110518.3147bd34@skate>
- <CALF0-+W-Ont1bhn_Go4YRBEpEk46=cXWGJPckAeKPgqwy+QUFw@mail.gmail.com>
- <20121125093621.47f9cb25@pixies.home.jungo.com>
- <1354274647.30168.99.camel@sauron.fi.intel.com>
- <20121202193954.2dd3ea8f@pixies.home.jungo.com>
- <CALF0-+WLGSq6tNBExt9PFJccAeKwj0BpVb7vVwQit39xbFiq4A@mail.gmail.com>
- <CALF0-+Vab6HZX-yRh0N6HxRSu4GavNXTpzrF6Ry7sDFwAXMHeg@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Ricard Wanderlof <ricard.wanderlof@axis.com>, dedekind1@gmail.com,
- Michael Opdenacker <michael.opdenacker@free-electrons.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Tim Bird <tim.bird@am.sony.com>, David Woodhouse <dwmw2@infradead.org>
+ id 1TfjD8-00046l-Sa
+ for linux-mtd@lists.infradead.org; Tue, 04 Dec 2012 03:30:21 +0000
+Message-ID: <50BD6F62.80200@freescale.com>
+Date: Tue, 4 Dec 2012 11:34:58 +0800
+From: Huang Shijie <b32955@freescale.com>
+MIME-Version: 1.0
+To: Zach Sadecki <zsadecki@itwatchdogs.com>
+Subject: Re: [PATCH] mtd: gpmi: Always report ECC stats and return max_bitflips
+References: <50BD01F8.3040003@itwatchdogs.com>
+In-Reply-To: <50BD01F8.3040003@itwatchdogs.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,15 +23,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ezequiel,
+=E4=BA=8E 2012=E5=B9=B412=E6=9C=8804=E6=97=A5 03:48, Zach Sadecki =E5=86=99=
+=E9=81=93:
+> Always report corrected and failed ECC stats back up to the MTD layer.=20
+> Also
+> return max_bitflips from read_page() as is expected from NAND drivers=20
+> now.
+>
+> Signed-off-by: Zach Sadecki <zsadecki@itwatchdogs.com>
+> ---
+> drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 27 ++++++++-------------------
+> 1 file changed, 8 insertions(+), 19 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c=20
+> b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> index d79696b..fe10c53 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -914,8 +914,7 @@ static int gpmi_ecc_read_page(struct mtd_info=20
+> *mtd, struct nand_chip *chip,
+> dma_addr_t auxiliary_phys;
+> unsigned int i;
+> unsigned char *status;
+> - unsigned int failed;
+> - unsigned int corrected;
+> + unsigned int max_bitflips =3D 0;
+> int ret;
+> pr_debug("page number is : %d\n", page);
+> @@ -939,35 +938,25 @@ static int gpmi_ecc_read_page(struct mtd_info=20
+> *mtd, struct nand_chip *chip,
+> payload_virt, payload_phys);
+> if (ret) {
+> pr_err("Error in ECC-based read: %d\n", ret);
+> - goto exit_nfc;
+> + return ret;
+> }
+> /* handle the block mark swapping */
+> block_mark_swapping(this, payload_virt, auxiliary_virt);
+> /* Loop over status bytes, accumulating ECC status. */
+> - failed =3D 0;
+> - corrected =3D 0;
+> - status =3D auxiliary_virt + nfc_geo->auxiliary_status_offset;
+> + status =3D auxiliary_virt + nfc_geo->auxiliary_status_offset;
+> for (i =3D 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
+> if ((*status =3D=3D STATUS_GOOD) || (*status =3D=3D STATUS_ERASED))
+> continue;
+> if (*status =3D=3D STATUS_UNCORRECTABLE) {
+> - failed++;
+> + mtd->ecc_stats.failed++;
+> continue;
+> }
+> - corrected +=3D *status;
+> - }
+> -
+> - /*
+> - * Propagate ECC status to the owning MTD only when failed or
+> - * corrected times nearly reaches our ECC correction threshold.
+> - */
+> - if (failed || corrected >=3D (nfc_geo->ecc_strength - 1)) {
+> - mtd->ecc_stats.failed +=3D failed;
+> - mtd->ecc_stats.corrected +=3D corrected;
+> + mtd->ecc_stats.corrected +=3D *status;
+> + max_bitflips =3D max_t(unsigned int, max_bitflips, *status);
 
-On Mon, 3 Dec 2012 16:33:01 -0300 Ezequiel Garcia <elezegarcia@gmail.com> wrote:
-> Hope this helps,
+Does the max_bitflips stand for the whole page's bitfips ? or just the=20
+bitfips of one part of the page?
+The gpmi driver splits a page into several parts when it does the ECC.
 
-Helps indeed, thanks.
+thanks
+Huang Shijie
 
-So basically you need ubiblock to state it supports flushing caches, and
-properly handle REQ_FLUSH in its request_fn.
 
-Regards,
-Shmulik
+> }
+> if (oob_required) {
+> @@ -989,8 +978,8 @@ static int gpmi_ecc_read_page(struct mtd_info=20
+> *mtd, struct nand_chip *chip,
+> this->payload_virt, this->payload_phys,
+> nfc_geo->payload_size,
+> payload_virt, payload_phys);
+> -exit_nfc:
+> - return ret;
+> +
+> + return max_bitflips;
+> }
+> static int gpmi_ecc_write_page(struct mtd_info *mtd, struct nand_chip=20
+> *chip,
