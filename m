@@ -1,21 +1,31 @@
-Message-ID: <50BF3819.9010200@ti.com>
-Date: Wed, 5 Dec 2012 17:33:37 +0530
-From: Sekhar Nori <nsekhar@ti.com>
-MIME-Version: 1.0
-To: "Philip, Avinash" <avinashphilip@ti.com>
-Subject: Re: [PATCH v3 1/3] mtd: nand: omap2: Update nerrors using ecc.strength
+From: "Philip, Avinash" <avinashphilip@ti.com>
+To: "Nori, Sekhar" <nsekhar@ti.com>
+Subject: RE: [PATCH v3 1/3] mtd: nand: omap2: Update nerrors using ecc.strength
+Date: Wed, 5 Dec 2012 12:43:59 +0000
+Message-ID: <518397C60809E147AF5323E0420B992E3EA1139B@DBDE01.ent.ti.com>
 References: <1354189595-12784-1-git-send-email-avinashphilip@ti.com>
  <1354189595-12784-2-git-send-email-avinashphilip@ti.com>
-In-Reply-To: <1354189595-12784-2-git-send-email-avinashphilip@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Cc: afzal@ti.com, linux-doc@vger.kernel.org, tony@atomide.com,
- artem.bityutskiy@linux.intel.com, devicetree-discuss@lists.ozlabs.org,
- broonie@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org,
- gururaja.hebbar@ti.com, linux-mtd@lists.infradead.org,
- gregkh@linuxfoundation.org, rmk+kernel@arm.linux.org.uk,
- ivan.djelic@parrot.com, linux-omap@vger.kernel.org, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+ <50BF3819.9010200@ti.com>
+In-Reply-To: <50BF3819.9010200@ti.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Cc: "Mohammed, Afzal" <afzal@ti.com>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "tony@atomide.com" <tony@atomide.com>,
+ "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>,
+ "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Hebbar,
+ Gururaja" <gururaja.hebbar@ti.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+ "rmk+kernel@arm.linux.org.uk" <rmk+kernel@arm.linux.org.uk>,
+ "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,72 +35,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Avinash,
-
-On 11/29/2012 5:16 PM, Philip, Avinash wrote:
-> Update number of errors using nand ecc strength.
-> Also add macro definitions BCH8_ERROR_MAX & BCH4_ERROR_MAX
-
-Can you please describe why the original method of setting nerrors was
-incorrect? Was it causing any issues in any particular configuration?
-Mentioning this will help maintainers assign priority to your patch. If
-this is a real bug affecting existing platforms, then there is a chance
-this patch can get into v3.7 (or at least into v3.8-rc1).
-
-Like Peter who commented on this before, I am not a fan of using macros
-for self-describing constants - especially when you end up using the
-same numbers inside the macro name itself. No need to resend any thing
-just for this, you can wait to see if the maintainers are okay with it.
-
-Thanks,
-Sekhar
-
-> 
-> Signed-off-by: Philip, Avinash <avinashphilip@ti.com>
-> ---
-> :100644 100644 359293e... 7e61dac... M	drivers/mtd/nand/omap2.c
->  drivers/mtd/nand/omap2.c |   12 ++++++++----
->  1 files changed, 8 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index 359293e..7e61dac 100644
-> --- a/drivers/mtd/nand/omap2.c
-> +++ b/drivers/mtd/nand/omap2.c
-> @@ -118,6 +118,9 @@
->  
->  #define OMAP24XX_DMA_GPMC		4
->  
-> +#define BCH8_MAX_ERROR		8	/* upto 8 bit correctable */
-> +#define BCH4_MAX_ERROR		4	/* upto 4 bit correctable */
-> +
->  /* oob info generated runtime depending on ecc algorithm and layout selected */
->  static struct nand_ecclayout omap_oobinfo;
->  /* Define some generic bad / good block scan pattern which are used
-> @@ -1042,7 +1045,7 @@ static void omap3_enable_hwecc_bch(struct mtd_info *mtd, int mode)
->  	struct nand_chip *chip = mtd->priv;
->  	u32 val;
->  
-> -	nerrors = (info->nand.ecc.bytes == 13) ? 8 : 4;
-> +	nerrors = info->nand.ecc.strength;
->  	dev_width = (chip->options & NAND_BUSWIDTH_16) ? 1 : 0;
->  	nsectors = 1;
->  	/*
-> @@ -1219,13 +1222,14 @@ static int omap3_init_bch(struct mtd_info *mtd, int ecc_opt)
->  	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
->  						   mtd);
->  #ifdef CONFIG_MTD_NAND_OMAP_BCH8
-> -	const int hw_errors = 8;
-> +	const int hw_errors = BCH8_MAX_ERROR;
->  #else
-> -	const int hw_errors = 4;
-> +	const int hw_errors = BCH4_MAX_ERROR;
->  #endif
->  	info->bch = NULL;
->  
-> -	max_errors = (ecc_opt == OMAP_ECC_BCH8_CODE_HW) ? 8 : 4;
-> +	max_errors = (ecc_opt == OMAP_ECC_BCH8_CODE_HW) ?
-> +		BCH8_MAX_ERROR : BCH4_MAX_ERROR;
->  	if (max_errors != hw_errors) {
->  		pr_err("cannot configure %d-bit BCH ecc, only %d-bit supported",
->  		       max_errors, hw_errors);
-> 
+T24gV2VkLCBEZWMgMDUsIDIwMTIgYXQgMTc6MzM6MzcsIE5vcmksIFNla2hhciB3cm90ZToNCj4g
+SGkgQXZpbmFzaCwNCj4gDQo+IE9uIDExLzI5LzIwMTIgNToxNiBQTSwgUGhpbGlwLCBBdmluYXNo
+IHdyb3RlOg0KPiA+IFVwZGF0ZSBudW1iZXIgb2YgZXJyb3JzIHVzaW5nIG5hbmQgZWNjIHN0cmVu
+Z3RoLg0KPiA+IEFsc28gYWRkIG1hY3JvIGRlZmluaXRpb25zIEJDSDhfRVJST1JfTUFYICYgQkNI
+NF9FUlJPUl9NQVgNCj4gDQo+IENhbiB5b3UgcGxlYXNlIGRlc2NyaWJlIHdoeSB0aGUgb3JpZ2lu
+YWwgbWV0aG9kIG9mIHNldHRpbmcgbmVycm9ycyB3YXMNCj4gaW5jb3JyZWN0PyBXYXMgaXQgY2F1
+c2luZyBhbnkgaXNzdWVzIGluIGFueSBwYXJ0aWN1bGFyIGNvbmZpZ3VyYXRpb24/DQoNCkl0IGFm
+ZmVjdHMgdGhlIHJldXNhYmlsaXR5IG9mIHRoZSBjb2RlLiBGb3IgZXhhbXBsZSBCQ0g4IHdpdGgg
+QU0zMzV4IFJCTCANCmNvbXBhdGliaWxpdHkgcmVxdWlyZXMgIDE0IGJ5dGVzIGluc3RlYWQgb2Yg
+MTMgYnl0ZS4gU28gc2V0dGluZyBuZXJyb3JzDQp3aXRoDQoJbmVycm9ycyA9IChpbmZvLT5uYW5k
+LmVjYy5ieXRlcyA9PSAxMykgPyA4IDogNDsNCndpbGwgYnJlYWsgYW0zMzV4IFJCTCBjb21wYXRp
+YmlsaXR5Lg0KDQo+IE1lbnRpb25pbmcgdGhpcyB3aWxsIGhlbHAgbWFpbnRhaW5lcnMgYXNzaWdu
+IHByaW9yaXR5IHRvIHlvdXIgcGF0Y2guIElmDQo+IHRoaXMgaXMgYSByZWFsIGJ1ZyBhZmZlY3Rp
+bmcgZXhpc3RpbmcgcGxhdGZvcm1zLCB0aGVuIHRoZXJlIGlzIGEgY2hhbmNlDQo+IHRoaXMgcGF0
+Y2ggY2FuIGdldCBpbnRvIHYzLjcgKG9yIGF0IGxlYXN0IGludG8gdjMuOC1yYzEpLg0KPiANCj4g
+TGlrZSBQZXRlciB3aG8gY29tbWVudGVkIG9uIHRoaXMgYmVmb3JlLCBJIGFtIG5vdCBhIGZhbiBv
+ZiB1c2luZyBtYWNyb3MNCj4gZm9yIHNlbGYtZGVzY3JpYmluZyBjb25zdGFudHMgLSBlc3BlY2lh
+bGx5IHdoZW4geW91IGVuZCB1cCB1c2luZyB0aGUNCj4gc2FtZSBudW1iZXJzIGluc2lkZSB0aGUg
+bWFjcm8gbmFtZSBpdHNlbGYuIE5vIG5lZWQgdG8gcmVzZW5kIGFueSB0aGluZw0KPiBqdXN0IGZv
+ciB0aGlzLCB5b3UgY2FuIHdhaXQgdG8gc2VlIGlmIHRoZSBtYWludGFpbmVycyBhcmUgb2theSB3
+aXRoIGl0Lg0KDQpZZXMgSSBhZ3JlZS4gQnV0IHRoZSBzYW1lIGNvbnN0YW50cyBhcmUgdXNlZCBp
+biBtdWx0aXBsZSBwbGFjZXMgaGVyZS4NClNvIHVzYWdlIG9mIG1hY3JvIGhlbHBzIGluIHJlYWRh
+YmlsaXR5ICYgY29kZSBkZWJ1Z2dpbmcuDQoNClRoYW5rcw0KQXZpbmFzaA0KIA0KPiANCj4gVGhh
+bmtzLA0KPiBTZWtoYXINCj4gDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogUGhpbGlwLCBBdmlu
+YXNoIDxhdmluYXNocGhpbGlwQHRpLmNvbT4NCj4gPiAtLS0NCj4gPiA6MTAwNjQ0IDEwMDY0NCAz
+NTkyOTNlLi4uIDdlNjFkYWMuLi4gTQlkcml2ZXJzL210ZC9uYW5kL29tYXAyLmMNCj4gPiAgZHJp
+dmVycy9tdGQvbmFuZC9vbWFwMi5jIHwgICAxMiArKysrKysrKy0tLS0NCj4gPiAgMSBmaWxlcyBj
+aGFuZ2VkLCA4IGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pDQo+ID4gDQo+ID4gZGlmZiAt
+LWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvb21hcDIuYyBiL2RyaXZlcnMvbXRkL25hbmQvb21hcDIu
+Yw0KPiA+IGluZGV4IDM1OTI5M2UuLjdlNjFkYWMgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9t
+dGQvbmFuZC9vbWFwMi5jDQo+ID4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9vbWFwMi5jDQo+ID4g
+QEAgLTExOCw2ICsxMTgsOSBAQA0KPiA+ICANCj4gPiAgI2RlZmluZSBPTUFQMjRYWF9ETUFfR1BN
+QwkJNA0KPiA+ICANCj4gPiArI2RlZmluZSBCQ0g4X01BWF9FUlJPUgkJOAkvKiB1cHRvIDggYml0
+IGNvcnJlY3RhYmxlICovDQo+ID4gKyNkZWZpbmUgQkNINF9NQVhfRVJST1IJCTQJLyogdXB0byA0
+IGJpdCBjb3JyZWN0YWJsZSAqLw0KPiA+ICsNCj4gPiAgLyogb29iIGluZm8gZ2VuZXJhdGVkIHJ1
+bnRpbWUgZGVwZW5kaW5nIG9uIGVjYyBhbGdvcml0aG0gYW5kIGxheW91dCBzZWxlY3RlZCAqLw0K
+PiA+ICBzdGF0aWMgc3RydWN0IG5hbmRfZWNjbGF5b3V0IG9tYXBfb29iaW5mbzsNCj4gPiAgLyog
+RGVmaW5lIHNvbWUgZ2VuZXJpYyBiYWQgLyBnb29kIGJsb2NrIHNjYW4gcGF0dGVybiB3aGljaCBh
+cmUgdXNlZA0KPiA+IEBAIC0xMDQyLDcgKzEwNDUsNyBAQCBzdGF0aWMgdm9pZCBvbWFwM19lbmFi
+bGVfaHdlY2NfYmNoKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBpbnQgbW9kZSkNCj4gPiAgCXN0cnVj
+dCBuYW5kX2NoaXAgKmNoaXAgPSBtdGQtPnByaXY7DQo+ID4gIAl1MzIgdmFsOw0KPiA+ICANCj4g
+PiAtCW5lcnJvcnMgPSAoaW5mby0+bmFuZC5lY2MuYnl0ZXMgPT0gMTMpID8gOCA6IDQ7DQo+ID4g
+KwluZXJyb3JzID0gaW5mby0+bmFuZC5lY2Muc3RyZW5ndGg7DQo+ID4gIAlkZXZfd2lkdGggPSAo
+Y2hpcC0+b3B0aW9ucyAmIE5BTkRfQlVTV0lEVEhfMTYpID8gMSA6IDA7DQo+ID4gIAluc2VjdG9y
+cyA9IDE7DQo+ID4gIAkvKg0KPiA+IEBAIC0xMjE5LDEzICsxMjIyLDE0IEBAIHN0YXRpYyBpbnQg
+b21hcDNfaW5pdF9iY2goc3RydWN0IG10ZF9pbmZvICptdGQsIGludCBlY2Nfb3B0KQ0KPiA+ICAJ
+c3RydWN0IG9tYXBfbmFuZF9pbmZvICppbmZvID0gY29udGFpbmVyX29mKG10ZCwgc3RydWN0IG9t
+YXBfbmFuZF9pbmZvLA0KPiA+ICAJCQkJCQkgICBtdGQpOw0KPiA+ICAjaWZkZWYgQ09ORklHX01U
+RF9OQU5EX09NQVBfQkNIOA0KPiA+IC0JY29uc3QgaW50IGh3X2Vycm9ycyA9IDg7DQo+ID4gKwlj
+b25zdCBpbnQgaHdfZXJyb3JzID0gQkNIOF9NQVhfRVJST1I7DQo+ID4gICNlbHNlDQo+ID4gLQlj
+b25zdCBpbnQgaHdfZXJyb3JzID0gNDsNCj4gPiArCWNvbnN0IGludCBod19lcnJvcnMgPSBCQ0g0
+X01BWF9FUlJPUjsNCj4gPiAgI2VuZGlmDQo+ID4gIAlpbmZvLT5iY2ggPSBOVUxMOw0KPiA+ICAN
+Cj4gPiAtCW1heF9lcnJvcnMgPSAoZWNjX29wdCA9PSBPTUFQX0VDQ19CQ0g4X0NPREVfSFcpID8g
+OCA6IDQ7DQo+ID4gKwltYXhfZXJyb3JzID0gKGVjY19vcHQgPT0gT01BUF9FQ0NfQkNIOF9DT0RF
+X0hXKSA/DQo+ID4gKwkJQkNIOF9NQVhfRVJST1IgOiBCQ0g0X01BWF9FUlJPUjsNCj4gPiAgCWlm
+IChtYXhfZXJyb3JzICE9IGh3X2Vycm9ycykgew0KPiA+ICAJCXByX2VycigiY2Fubm90IGNvbmZp
+Z3VyZSAlZC1iaXQgQkNIIGVjYywgb25seSAlZC1iaXQgc3VwcG9ydGVkIiwNCj4gPiAgCQkgICAg
+ICAgbWF4X2Vycm9ycywgaHdfZXJyb3JzKTsNCj4gPiANCj4gDQoNCg==
