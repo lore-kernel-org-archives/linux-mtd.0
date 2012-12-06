@@ -1,22 +1,22 @@
 Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TgW9a-0004lk-Rp
- for linux-mtd@lists.infradead.org; Thu, 06 Dec 2012 07:45:55 +0000
-Date: Thu, 6 Dec 2012 08:45:51 +0100
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Lothar =?iso-8859-15?Q?Wa=DFmann?= <LW@KARO-electronics.de>
-Subject: Re: [PATCH 1/2] mtd: mxc_nand: fix unbalanced clk_disable() in error
- path
-Message-ID: <20121206074551.GU10369@pengutronix.de>
-References: <1354779748-28869-1-git-send-email-LW@KARO-electronics.de>
+ id 1TgY7v-0002sy-RL
+ for linux-mtd@lists.infradead.org; Thu, 06 Dec 2012 09:52:21 +0000
+Date: Thu, 6 Dec 2012 10:52:13 +0100
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH] mtd: nand: gpmi: reset BCH earlier, too, to avoid NAND
+ startup problems
+Message-ID: <20121206095213.GA2589@pengutronix.de>
+References: <1354740362-20412-1-git-send-email-w.sang@pengutronix.de>
+ <50BFFFE8.8040002@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="IJpNTDwzlM2Ie8A6"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1354779748-28869-1-git-send-email-LW@KARO-electronics.de>
-Cc: David Woodhouse <dwmw2@infradead.org>, Shawn Guo <shawn.guo@linaro.org>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+In-Reply-To: <50BFFFE8.8040002@freescale.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <david.woodhouse@intel.com>,
+ linux-arm-kernel@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,46 +26,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 06, 2012 at 08:42:27AM +0100, Lothar Waﬂmann wrote:
-> If nand_scan_ident() or nand_scan_tail() fails, the NAND chip may have
-> been deselected and the clock already disabled. Thus, check 'clk_act'
-> in the error path to decide whether the clock still needs to be
-> disabled.
-> 
-> This fixes a:
-> |WARNING: at drivers/clk/clk.c:472 __clk_disable+0x3c/0x78()
-> 
-> Signed-off-by: Lothar Waﬂmann <LW@KARO-electronics.de>
 
-Both: Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
+--IJpNTDwzlM2Ie8A6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Sascha
+On Thu, Dec 06, 2012 at 10:16:08AM +0800, Huang Shijie wrote:
+> =E4=BA=8E 2012=E5=B9=B412=E6=9C=8806=E6=97=A5 04:46, Wolfram Sang =E5=86=
+=99=E9=81=93:
+> > correctly after warm rebooting, so the kernel could not find the UBI or
+> which Soc do you meet this issue? the mx23 or mx28?
 
-> ---
->  drivers/mtd/nand/mxc_nand.c |    3 ++-
->  1 files changed, 2 insertions(+), 1 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-> index d316324..d965809 100644
-> --- a/drivers/mtd/nand/mxc_nand.c
-> +++ b/drivers/mtd/nand/mxc_nand.c
-> @@ -1556,7 +1556,8 @@ static int mxcnd_probe(struct platform_device *pdev)
->  	return 0;
->  
->  escan:
-> -	clk_disable_unprepare(host->clk);
-> +	if (host->clk_act)
-> +		clk_disable_unprepare(host->clk);
->  
->  	return err;
->  }
-> -- 
-> 1.7.2.5
-> 
-> 
+MX28.
 
--- 
-Pengutronix e.K.                           |                             |
+> It's bad news to me. I ever thought the BCH-reset-issue is gone.
+> I ever tested many times in mx28(> 10000 times) with freescale's uboot.
+
+Did you power-cycle between each test or reboot? I still need to test if
+this really makes a difference, but I think the issue shows more often
+when only rebooting.
+
+> I guest you are not use the freescale's uboot. The uboot also will reset
+> the BCH/GPMI.
+
+I just checked its sources. It also has this flaw. GPMI and BCH need to
+be reset at the same time, i.e. before first commands are sent to the
+NAND (although they don't need ECC).
+
+I use barebox, but that isn't of importance here. If I don't fix
+barebox, I see NAND issues in barebox or the kernel. If I fix barebox, I
+still see issues in the kernel, but not in barebox anymore.
+
+The setup needs to be done properly to ensure a consistent state at the
+beginning, especially when somebody used the NAND before (ROM code,
+bootloader). Fixing the bootloader alone is not enough.
+
+Thanks,
+
+   Wolfram
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
 Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+
+--IJpNTDwzlM2Ie8A6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEARECAAYFAlDAas0ACgkQD27XaX1/VRs8iQCgrqb5nADGL5Dyi+csfSdSLWSR
+/mUAoJN91gz+1QiqVUsNdHtwX9jpAdZC
+=nMk3
+-----END PGP SIGNATURE-----
+
+--IJpNTDwzlM2Ie8A6--
