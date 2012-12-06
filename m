@@ -1,21 +1,18 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TgY7v-0002sy-RL
- for linux-mtd@lists.infradead.org; Thu, 06 Dec 2012 09:52:21 +0000
-Date: Thu, 6 Dec 2012 10:52:13 +0100
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH] mtd: nand: gpmi: reset BCH earlier, too, to avoid NAND
- startup problems
-Message-ID: <20121206095213.GA2589@pengutronix.de>
+MIME-Version: 1.0
+In-Reply-To: <20121206095213.GA2589@pengutronix.de>
 References: <1354740362-20412-1-git-send-email-w.sang@pengutronix.de>
  <50BFFFE8.8040002@freescale.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="IJpNTDwzlM2Ie8A6"
-Content-Disposition: inline
-In-Reply-To: <50BFFFE8.8040002@freescale.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <david.woodhouse@intel.com>,
+ <20121206095213.GA2589@pengutronix.de>
+Date: Thu, 6 Dec 2012 09:58:13 -0500
+Message-ID: <CAMiH66EPDKhd=pBJWhtm3P+qgGcdVbHD-hb93ZB7Ou7Sc=vByg@mail.gmail.com>
+Subject: Re: [PATCH] mtd: nand: gpmi: reset BCH earlier, too, to avoid NAND
+ startup problems
+From: Huang Shijie <shijie8@gmail.com>
+To: Wolfram Sang <w.sang@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ David Woodhouse <david.woodhouse@intel.com>,
  linux-arm-kernel@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,61 +23,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
---IJpNTDwzlM2Ie8A6
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Dec 06, 2012 at 10:16:08AM +0800, Huang Shijie wrote:
-> =E4=BA=8E 2012=E5=B9=B412=E6=9C=8806=E6=97=A5 04:46, Wolfram Sang =E5=86=
+On Thu, Dec 6, 2012 at 4:52 AM, Wolfram Sang <w.sang@pengutronix.de> wrote:
+> On Thu, Dec 06, 2012 at 10:16:08AM +0800, Huang Shijie wrote:
+>> =E4=BA=8E 2012=E5=B9=B412=E6=9C=8806=E6=97=A5 04:46, Wolfram Sang =E5=86=
 =99=E9=81=93:
-> > correctly after warm rebooting, so the kernel could not find the UBI or
-> which Soc do you meet this issue? the mx23 or mx28?
+>> > correctly after warm rebooting, so the kernel could not find the UBI o=
+r
+>> which Soc do you meet this issue? the mx23 or mx28?
+>
+> MX28.
+>
+>> It's bad news to me. I ever thought the BCH-reset-issue is gone.
+>> I ever tested many times in mx28(> 10000 times) with freescale's uboot.
+>
+> Did you power-cycle between each test or reboot? I still need to test if
+What's the meaning of "power-cycle"?
+I only tested with the soft reset, the power is never shut down.
 
-MX28.
 
-> It's bad news to me. I ever thought the BCH-reset-issue is gone.
-> I ever tested many times in mx28(> 10000 times) with freescale's uboot.
+> this really makes a difference, but I think the issue shows more often
+> when only rebooting.
+>
+>> I guest you are not use the freescale's uboot. The uboot also will reset
+>> the BCH/GPMI.
+>
+> I just checked its sources. It also has this flaw. GPMI and BCH need to
+> be reset at the same time, i.e. before first commands are sent to the
+> NAND (although they don't need ECC).
+>
 
-Did you power-cycle between each test or reboot? I still need to test if
-this really makes a difference, but I think the issue shows more often
-when only rebooting.
+With your patch, we have resetted the BCH twice in the driver. Could
+we only reset BCH one time?
+Do you ever remove another reset-bch code, and test it?
+Frankly speaking, it's strange to reset the BCH twice, and it makes no sens=
+e. :(
+I am afraid that we have to add three-reset-bch in the future, if we
+can not find the root cause.
+If you can remove another reset-bch code, i will ack the patch.
 
-> I guest you are not use the freescale's uboot. The uboot also will reset
-> the BCH/GPMI.
 
-I just checked its sources. It also has this flaw. GPMI and BCH need to
-be reset at the same time, i.e. before first commands are sent to the
-NAND (although they don't need ECC).
+> I use barebox, but that isn't of importance here. If I don't fix
+> barebox, I see NAND issues in barebox or the kernel. If I fix barebox, I
+> still see issues in the kernel, but not in barebox anymore.
+>
+I ever met the same case with the freescale's BSP code.
+I fixed the issue in uboot, and fixed the driver too.
 
-I use barebox, but that isn't of importance here. If I don't fix
-barebox, I see NAND issues in barebox or the kernel. If I fix barebox, I
-still see issues in the kernel, but not in barebox anymore.
 
-The setup needs to be done properly to ensure a consistent state at the
-beginning, especially when somebody used the NAND before (ROM code,
-bootloader). Fixing the bootloader alone is not enough.
 
-Thanks,
+> The setup needs to be done properly to ensure a consistent state at the
+> beginning, especially when somebody used the NAND before (ROM code,
+At the beginning? it's really interesting.
+I want to test it myself.
 
-   Wolfram
+could you wait for some time?
 
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Best Regards
+Huang Shijie
 
---IJpNTDwzlM2Ie8A6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAlDAas0ACgkQD27XaX1/VRs8iQCgrqb5nADGL5Dyi+csfSdSLWSR
-/mUAoJN91gz+1QiqVUsNdHtwX9jpAdZC
-=nMk3
------END PGP SIGNATURE-----
-
---IJpNTDwzlM2Ie8A6--
+> bootloader). Fixing the bootloader alone is not enough.
+>
+> Thanks,
+>
+>    Wolfram
+>
+> --
+> Pengutronix e.K.                           | Wolfram Sang                =
+|
+> Industrial Linux Solutions                 | http://www.pengutronix.de/  =
+|
+>
+> -----BEGIN PGP SIGNATURE-----
+> Version: GnuPG v1.4.10 (GNU/Linux)
+>
+> iEYEARECAAYFAlDAas0ACgkQD27XaX1/VRs8iQCgrqb5nADGL5Dyi+csfSdSLWSR
+> /mUAoJN91gz+1QiqVUsNdHtwX9jpAdZC
+> =3DnMk3
+> -----END PGP SIGNATURE-----
+>
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>
