@@ -1,16 +1,22 @@
-MIME-Version: 1.0
-In-Reply-To: <20121206095213.GA2589@pengutronix.de>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Tgely-0000Bp-FT
+ for linux-mtd@lists.infradead.org; Thu, 06 Dec 2012 16:58:07 +0000
+Date: Thu, 6 Dec 2012 17:58:00 +0100
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Huang Shijie <shijie8@gmail.com>
+Subject: Re: [PATCH] mtd: nand: gpmi: reset BCH earlier, too, to avoid NAND
+ startup problems
+Message-ID: <20121206165800.GA17129@pengutronix.de>
 References: <1354740362-20412-1-git-send-email-w.sang@pengutronix.de>
  <50BFFFE8.8040002@freescale.com>
  <20121206095213.GA2589@pengutronix.de>
-Date: Thu, 6 Dec 2012 09:58:13 -0500
-Message-ID: <CAMiH66EPDKhd=pBJWhtm3P+qgGcdVbHD-hb93ZB7Ou7Sc=vByg@mail.gmail.com>
-Subject: Re: [PATCH] mtd: nand: gpmi: reset BCH earlier, too, to avoid NAND
- startup problems
-From: Huang Shijie <shijie8@gmail.com>
-To: Wolfram Sang <w.sang@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+ <CAMiH66EPDKhd=pBJWhtm3P+qgGcdVbHD-hb93ZB7Ou7Sc=vByg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="uAKRQypu60I7Lcqm"
+Content-Disposition: inline
+In-Reply-To: <CAMiH66EPDKhd=pBJWhtm3P+qgGcdVbHD-hb93ZB7Ou7Sc=vByg@mail.gmail.com>
 Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
  David Woodhouse <david.woodhouse@intel.com>,
  linux-arm-kernel@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
@@ -23,87 +29,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 6, 2012 at 4:52 AM, Wolfram Sang <w.sang@pengutronix.de> wrote:
-> On Thu, Dec 06, 2012 at 10:16:08AM +0800, Huang Shijie wrote:
->> =E4=BA=8E 2012=E5=B9=B412=E6=9C=8806=E6=97=A5 04:46, Wolfram Sang =E5=86=
-=99=E9=81=93:
->> > correctly after warm rebooting, so the kernel could not find the UBI o=
-r
->> which Soc do you meet this issue? the mx23 or mx28?
->
-> MX28.
->
->> It's bad news to me. I ever thought the BCH-reset-issue is gone.
->> I ever tested many times in mx28(> 10000 times) with freescale's uboot.
->
-> Did you power-cycle between each test or reboot? I still need to test if
-What's the meaning of "power-cycle"?
-I only tested with the soft reset, the power is never shut down.
+
+--uAKRQypu60I7Lcqm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
 
-> this really makes a difference, but I think the issue shows more often
-> when only rebooting.
->
->> I guest you are not use the freescale's uboot. The uboot also will reset
->> the BCH/GPMI.
->
-> I just checked its sources. It also has this flaw. GPMI and BCH need to
-> be reset at the same time, i.e. before first commands are sent to the
-> NAND (although they don't need ECC).
->
+> > Did you power-cycle between each test or reboot? I still need to test if
+> What's the meaning of "power-cycle"?
 
-With your patch, we have resetted the BCH twice in the driver. Could
-we only reset BCH one time?
-Do you ever remove another reset-bch code, and test it?
-Frankly speaking, it's strange to reset the BCH twice, and it makes no sens=
-e. :(
-I am afraid that we have to add three-reset-bch in the future, if we
-can not find the root cause.
-If you can remove another reset-bch code, i will ack the patch.
+power off - power on
 
+> I only tested with the soft reset, the power is never shut down.
 
-> I use barebox, but that isn't of importance here. If I don't fix
-> barebox, I see NAND issues in barebox or the kernel. If I fix barebox, I
-> still see issues in the kernel, but not in barebox anymore.
->
-I ever met the same case with the freescale's BSP code.
-I fixed the issue in uboot, and fixed the driver too.
+OK.
 
+> With your patch, we have resetted the BCH twice in the driver. Could
+> we only reset BCH one time?
 
+You tell me, please :) Is it needed when changing the layout? I don't
+have any setup to test that. Unless I can test that, I prefer to not
+remove it. I am a bit anxious, because the reason for the stalled BCH is
+not fully understood and all I can reliably say is that resetting twice
+does not hurt.
 
-> The setup needs to be done properly to ensure a consistent state at the
-> beginning, especially when somebody used the NAND before (ROM code,
-At the beginning? it's really interesting.
-I want to test it myself.
+> Do you ever remove another reset-bch code, and test it?
 
-could you wait for some time?
+It will probably work, but we don't cover the case of changing the
+layout?
 
-Best Regards
-Huang Shijie
+> Frankly speaking, it's strange to reset the BCH twice, and it makes no se=
+nse. :(
 
+The stalled BCH makes no sense either, currently.
 
-> bootloader). Fixing the bootloader alone is not enough.
->
-> Thanks,
->
->    Wolfram
->
-> --
-> Pengutronix e.K.                           | Wolfram Sang                =
-|
-> Industrial Linux Solutions                 | http://www.pengutronix.de/  =
-|
->
-> -----BEGIN PGP SIGNATURE-----
-> Version: GnuPG v1.4.10 (GNU/Linux)
->
-> iEYEARECAAYFAlDAas0ACgkQD27XaX1/VRs8iQCgrqb5nADGL5Dyi+csfSdSLWSR
-> /mUAoJN91gz+1QiqVUsNdHtwX9jpAdZC
-> =3DnMk3
-> -----END PGP SIGNATURE-----
->
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
->
+> I am afraid that we have to add three-reset-bch in the future, if we
+> can not find the root cause.
+
+Well, ask the IC guys if something can go wrong when the BCH has been
+active and the GPMI gets reset and issues NAND commands (without needing
+ECC).
+
+> If you can remove another reset-bch code, i will ack the patch.
+
+Removing code that late in the cycle without proof sounds dangerous to
+me.
+
+> > The setup needs to be done properly to ensure a consistent state at the
+> > beginning, especially when somebody used the NAND before (ROM code,
+> At the beginning? it's really interesting.
+> I want to test it myself.
+>=20
+> could you wait for some time?
+
+What is some time? :)
+
+Thanks,
+
+   Wolfram
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--uAKRQypu60I7Lcqm
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iEYEARECAAYFAlDAzpgACgkQD27XaX1/VRu9vwCfZ2IE6f2/3NicotB1GS2N7I0l
+OlcAni1ug6lCqxNCLPLIwNIkLpVbKwEL
+=vHh8
+-----END PGP SIGNATURE-----
+
+--uAKRQypu60I7Lcqm--
