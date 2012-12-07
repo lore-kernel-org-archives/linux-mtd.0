@@ -1,16 +1,24 @@
-Received: from mo6-p05-ob.rzone.de ([2a01:238:20a:202:5305::1])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TgsGv-0005JR-4j
- for linux-mtd@lists.infradead.org; Fri, 07 Dec 2012 07:22:58 +0000
-From: Stefan Roese <sr@denx.de>
-To: linux-mtd@lists.infradead.org,
-	devicetree-discuss@ozlabs.org
-Subject: [PATCH] mtd: cfi_cmdset_0002: Support Persistent Protection Bits
- (PPB) locking
-Date: Fri,  7 Dec 2012 08:22:34 +0100
-Message-Id: <1354864954-30290-1-git-send-email-sr@denx.de>
-Cc: Holger Brunck <holger.brunck@keymile.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Message-ID: <50C1C6E3.5020300@ti.com>
+Date: Fri, 7 Dec 2012 16:07:23 +0530
+From: Sekhar Nori <nsekhar@ti.com>
+MIME-Version: 1.0
+To: "Philip, Avinash" <avinashphilip@ti.com>
+Subject: Re: [PATCH v3 2/3] mtd: devices: elm: Add support for ELM error
+ correction
+References: <1354189595-12784-1-git-send-email-avinashphilip@ti.com>
+ <1354189595-12784-3-git-send-email-avinashphilip@ti.com>
+In-Reply-To: <1354189595-12784-3-git-send-email-avinashphilip@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Cc: afzal@ti.com, linux-doc@vger.kernel.org, tony@atomide.com,
+ artem.bityutskiy@linux.intel.com, devicetree-discuss@lists.ozlabs.org,
+ broonie@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org,
+ Rob Herring <rob.herring@calxeda.com>, gururaja.hebbar@ti.com,
+ Grant Likely <grant.likely@secretlab.ca>, linux-mtd@lists.infradead.org,
+ Rob Landley <rob@landley.net>, gregkh@linuxfoundation.org,
+ rmk+kernel@arm.linux.org.uk, ivan.djelic@parrot.com,
+ linux-omap@vger.kernel.org, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,334 +28,423 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Currently cfi_cmdset_0002.c does not support PPB locking of sectors. This
-patch adds support for this locking/unlocking mechanism. It is needed on
-some platforms, since newer U-Boot versions do support this PPB locking
-and protect for example their environment sector(s) this way.
+On 11/29/2012 5:16 PM, Philip, Avinash wrote:
+> The ELM hardware module can be used to speedup BCH 4/8/16 ECC scheme
+> error correction.
+> For now only 4 & 8 bit support is added
+> 
+> Signed-off-by: Philip, Avinash <avinashphilip@ti.com>
+> Cc: Grant Likely <grant.likely@secretlab.ca>
+> Cc: Rob Herring <rob.herring@calxeda.com>
+> Cc: Rob Landley <rob@landley.net>
+> ---
+> Changes since v2:
+> 	- Remove __devinit & __devexit annotations
+> 
+> Changes since v1:
+> 	- Change build attribute to CONFIG_MTD_NAND_OMAP_BCH
+> 	- Reduced indentation using by passing elm_info , offset
+> 	  to elm_read & elm_write
+> 	- Removed syndrome manipulation functions.
+> 
+> :000000 100644 0000000... b88ee83... A	Documentation/devicetree/bindings/mtd/elm.txt
+> :100644 100644 395733a... 369a194... M	drivers/mtd/devices/Makefile
+> :000000 100644 0000000... d2667f3... A	drivers/mtd/devices/elm.c
+> :000000 100644 0000000... d4fce31... A	include/linux/platform_data/elm.h
+>  Documentation/devicetree/bindings/mtd/elm.txt |   17 +
+>  drivers/mtd/devices/Makefile                  |    4 +-
+>  drivers/mtd/devices/elm.c                     |  418 +++++++++++++++++++++++++
+>  include/linux/platform_data/elm.h             |   54 ++++
+>  4 files changed, 493 insertions(+), 1 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/elm.txt b/Documentation/devicetree/bindings/mtd/elm.txt
+> new file mode 100644
+> index 0000000..b88ee83
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/elm.txt
+> @@ -0,0 +1,17 @@
+> +Error location module
+> +
+> +Required properties:
+> +- compatible: Must be "ti,elm"
+> +- reg: physical base address and size of the registers map.
+> +- interrupts: Interrupt number for the elm.
+> +- interrupt-parent: The parent interrupt controller
+> +
+> +Optional properties:
+> +- ti,hwmods: Name of the hwmod associated to the elm
+> +
+> +Example:
+> +elm: elm@0 {
+> +	compatible	= "ti,elm";
+> +	reg = <0x48080000 0x2000>;
+> +	interrupts = <4>;
+> +};
+> diff --git a/drivers/mtd/devices/Makefile b/drivers/mtd/devices/Makefile
+> index 395733a..369a194 100644
+> --- a/drivers/mtd/devices/Makefile
+> +++ b/drivers/mtd/devices/Makefile
+> @@ -17,8 +17,10 @@ obj-$(CONFIG_MTD_LART)		+= lart.o
+>  obj-$(CONFIG_MTD_BLOCK2MTD)	+= block2mtd.o
+>  obj-$(CONFIG_MTD_DATAFLASH)	+= mtd_dataflash.o
+>  obj-$(CONFIG_MTD_M25P80)	+= m25p80.o
+> +obj-$(CONFIG_MTD_NAND_OMAP_BCH)	+= elm.o
+>  obj-$(CONFIG_MTD_SPEAR_SMI)	+= spear_smi.o
+>  obj-$(CONFIG_MTD_SST25L)	+= sst25l.o
+>  obj-$(CONFIG_MTD_BCM47XXSFLASH)	+= bcm47xxsflash.o
+>  
+> -CFLAGS_docg3.o			+= -I$(src)
+> \ No newline at end of file
+> +
+> +CFLAGS_docg3.o			+= -I$(src)
+> diff --git a/drivers/mtd/devices/elm.c b/drivers/mtd/devices/elm.c
+> new file mode 100644
+> index 0000000..d2667f3
+> --- /dev/null
+> +++ b/drivers/mtd/devices/elm.c
+> @@ -0,0 +1,418 @@
+> +/*
+> + * Error Location Module
+> + *
+> + * Copyright (C) 2012 Texas Instruments Incorporated - http://www.ti.com/
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation; either version 2 of the License, or
+> + * (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+> + * GNU General Public License for more details.
+> + *
+> + */
+> +
+> +#include <linux/platform_device.h>
+> +#include <linux/module.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/io.h>
+> +#include <linux/of.h>
+> +#include <linux/pm_runtime.h>
+> +#include <linux/platform_data/elm.h>
+> +
+> +#define ELM_IRQSTATUS			0x018
+> +#define ELM_IRQENABLE			0x01c
+> +#define ELM_LOCATION_CONFIG		0x020
+> +#define ELM_PAGE_CTRL			0x080
+> +#define ELM_SYNDROME_FRAGMENT_0		0x400
+> +#define ELM_SYNDROME_FRAGMENT_6		0x418
+> +#define ELM_LOCATION_STATUS		0x800
+> +#define ELM_ERROR_LOCATION_0		0x880
+> +
+> +/* ELM Interrupt Status Register */
+> +#define INTR_STATUS_PAGE_VALID		BIT(8)
+> +
+> +/* ELM Interrupt Enable Register */
+> +#define INTR_EN_PAGE_MASK		BIT(8)
+> +
+> +/* ELM Location Configuration Register */
+> +#define ECC_BCH_LEVEL_MASK		0x3
+> +
+> +/* ELM syndrome */
+> +#define ELM_SYNDROME_VALID		BIT(16)
+> +
+> +/* ELM_LOCATION_STATUS Register */
+> +#define ECC_CORRECTABLE_MASK		BIT(8)
+> +#define ECC_NB_ERRORS_MASK		0x1f
+> +
+> +/* ELM_ERROR_LOCATION_0-15 Registers */
+> +#define ECC_ERROR_LOCATION_MASK		0x1fff
+> +
+> +#define ELM_ECC_SIZE			0x7ff
+> +
+> +#define SYNDROME_FRAGMENT_REG_SIZE	0x40
+> +#define ERROR_LOCATION_SIZE		0x100
+> +
+> +struct elm_info {
+> +	struct device *dev;
+> +	void __iomem *elm_base;
+> +	struct completion elm_completion;
+> +	struct list_head list;
+> +	enum bch_ecc bch_type;
+> +};
+> +
+> +static LIST_HEAD(elm_devices);
+> +
+> +static void elm_write_reg(struct elm_info *info, int offset, u32 val)
+> +{
+> +	writel(val, info->elm_base + offset);
+> +}
+> +
+> +static u32 elm_read_reg(struct elm_info *info, int offset)
+> +{
+> +	return readl(info->elm_base + offset);
+> +}
+> +
+> +/**
+> + * elm_config - Configure ELM module
+> + * @info:	elm info
+> + */
+> +static void elm_config(struct elm_info *info)
 
-This PPB locking/unlocking will be enabled for all devices supported by
-cfi_cmdset_0002 reporting 8 in the CFI word 0x49 (Sector Protect/Unprotect
-scheme).
+This is called "config", but there is no configuration information
+passed which looks odd..
 
-Please note that PPB locking does support sector-by-sector locking. But
-the whole chip can only be unlocked together. So unlocking one sector
-will automatically unlock all sectors of this device. Because of this
-chip limitation, the PPB unlocking function saves the current locking
-status of all sectors before unlocking the whole device. After unlocking
-the saved locking status is re-configured. This way only the addressed
-sectors will be unlocked.
+> +{
+> +	u32 reg_val;
+> +
+> +	reg_val = (info->bch_type & ECC_BCH_LEVEL_MASK) | (ELM_ECC_SIZE << 16);
+> +	elm_write_reg(info, ELM_LOCATION_CONFIG, reg_val);
+> +}
 
-To selectively enable this advanced sector protection mechanism, the
-device-tree property "use-advanced-sector-protection" has been created.
-To enable support for this locking this property needs to be present in the
-flash DT node. E.g.:
+Is there a use case where BCH type needs to be changed after NAND has
+been probed? You will have to erase any existing data written to NAND if
+you change the ECC type. That sounds destructive enough to avoid such a
+thing.
 
-nor_flash@0,0 {
-	compatible = "amd,s29gl256n", "cfi-flash";
-	bank-width = <2>;
-	use-advanced-sector-protection;
-	...
+> +
+> +/**
+> + * elm_configure_page_mode - Enable/Disable page mode
+> + * @info:	elm info
+> + * @index:	index number of syndrome fragment vector
+> + * @enable:	enable/disable flag for page mode
+> + *
+> + * Enable page mode for syndrome fragment index
+> + */
+> +static void elm_configure_page_mode(struct elm_info *info, int index,
+> +		bool enable)
+> +{
+> +	u32 reg_val;
+> +
+> +	reg_val = elm_read_reg(info, ELM_PAGE_CTRL);
+> +	if (enable)
+> +		reg_val |= BIT(index);	/* enable page mode */
+> +	else
+> +		reg_val &= ~BIT(index);	/* disable page mode */
+> +
+> +	elm_write_reg(info, ELM_PAGE_CTRL, reg_val);
+> +}
+> +
+> +/**
+> + * elm_load_syndrome - Load ELM syndrome reg
+> + * @info:	elm info
+> + * @err_vec:	elm error vectors
+> + * @ecc:	buffer with calculated ecc
+> + *
+> + * Load syndrome fragment registers with calculated ecc in reverse order.
+> + */
+> +static void elm_load_syndrome(struct elm_info *info,
+> +		struct elm_errorvec *err_vec, u8 *ecc)
+> +{
+> +	int i, offset;
+> +	u32 val;
+> +
+> +	for (i = 0; i < ERROR_VECTOR_MAX; i++) {
+> +
+> +		/* Check error reported */
+> +		if (err_vec[i].error_reported) {
+> +			elm_configure_page_mode(info, i, true);
+> +			offset = ELM_SYNDROME_FRAGMENT_0 +
+> +				SYNDROME_FRAGMENT_REG_SIZE * i;
+> +
+> +			/* BCH8 */
+> +			if (info->bch_type) {
+> +
+> +				/* syndrome fragment 0 = ecc[9-12B] */
+> +				val = cpu_to_be32(*(u32 *) &ecc[9]);
+> +				elm_write_reg(info, offset, val);
+> +
+> +				/* syndrome fragment 1 = ecc[5-8B] */
+> +				offset += 4;
+> +				val = cpu_to_be32(*(u32 *) &ecc[5]);
+> +				elm_write_reg(info, offset, val);
+> +
+> +				/* syndrome fragment 2 = ecc[1-4B] */
+> +				offset += 4;
+> +				val = cpu_to_be32(*(u32 *) &ecc[1]);
+> +				elm_write_reg(info, offset, val);
+> +
+> +				/* syndrome fragment 3 = ecc[0B] */
+> +				offset += 4;
+> +				val = ecc[0];
+> +				elm_write_reg(info, offset, val);
+> +			} else {
+> +				/* syndrome fragment 0 = ecc[20-52b] bits */
+> +				val = (cpu_to_be32(*(u32 *) &ecc[3]) >> 4) |
+> +					((ecc[2] & 0xf) << 28);
+> +				elm_write_reg(info, offset, val);
+> +
+> +				/* syndrome fragment 1 = ecc[0-20b] bits */
+> +				offset += 4;
+> +				val = cpu_to_be32(*(u32 *) &ecc[0]) >> 12;
+> +				elm_write_reg(info, offset, val);
+> +			}
+> +		}
+> +
+> +		/* Update ecc pointer with ecc byte size */
+> +		ecc += info->bch_type ? BCH8_SIZE : BCH4_SIZE;
+> +	}
+> +}
+> +
+> +/**
+> + * elm_start_processing - start elm syndrome processing
+> + * @info:	elm info
+> + * @err_vec:	elm error vectors
+> + *
+> + * Set syndrome valid bit for syndrome fragment registers for which
+> + * elm syndrome fragment registers are loaded. This enables elm module
+> + * to start processing syndrome vectors.
+> + */
+> +static void elm_start_processing(struct elm_info *info,
+> +		struct elm_errorvec *err_vec)
+> +{
+> +	int i, offset;
+> +	u32 reg_val;
+> +
+> +	/*
+> +	 * Set syndrome vector valid, so that ELM module
+> +	 * will process it for vectors error is reported
+> +	 */
+> +	for (i = 0; i < ERROR_VECTOR_MAX; i++) {
+> +		if (err_vec[i].error_reported) {
+> +			offset = ELM_SYNDROME_FRAGMENT_6 +
+> +				SYNDROME_FRAGMENT_REG_SIZE * i;
+> +			reg_val = elm_read_reg(info, offset);
+> +			reg_val |= ELM_SYNDROME_VALID;
+> +			elm_write_reg(info, offset, reg_val);
+> +		}
+> +	}
+> +}
+> +
+> +/**
+> + * elm_error_correction - locate correctable error position
+> + * @info:	elm info
+> + * @err_vec:	elm error vectors
+> + *
+> + * On completion of processing by elm module, error location status
+> + * register updated with correctable/uncorrectable error information.
+> + * In case of correctable errors, number of errors located from
+> + * elm location status register & read the positions from
+> + * elm error location register.
+> + */
+> +static void elm_error_correction(struct elm_info *info,
+> +		struct elm_errorvec *err_vec)
+> +{
+> +	int i, j, errors = 0;
+> +	int offset;
+> +	u32 reg_val;
+> +
+> +	for (i = 0; i < ERROR_VECTOR_MAX; i++) {
+> +
+> +		/* Check error reported */
+> +		if (err_vec[i].error_reported) {
+> +			offset = ELM_LOCATION_STATUS + ERROR_LOCATION_SIZE * i;
+> +			reg_val = elm_read_reg(info, offset);
+> +
+> +			/* Check correctable error or not */
+> +			if (reg_val & ECC_CORRECTABLE_MASK) {
+> +				offset = ELM_ERROR_LOCATION_0 +
+> +					ERROR_LOCATION_SIZE * i;
+> +
+> +				/* Read count of correctable errors */
+> +				err_vec[i].error_count = reg_val &
+> +					ECC_NB_ERRORS_MASK;
+> +
+> +				/* Update the error locations in error vector */
+> +				for (j = 0; j < err_vec[i].error_count; j++) {
+> +
+> +					reg_val = elm_read_reg(info, offset);
+> +					err_vec[i].error_loc[j] = reg_val &
+> +						ECC_ERROR_LOCATION_MASK;
+> +
+> +					/* Update error location register */
+> +					offset += 4;
+> +				}
+> +
+> +				errors += err_vec[i].error_count;
+> +			} else {
+> +				err_vec[i].error_uncorrectable = true;
+> +			}
+> +
+> +			/* Clearing interrupts for processed error vectors */
+> +			elm_write_reg(info, ELM_IRQSTATUS, BIT(i));
+> +
+> +			/* Disable page mode */
+> +			elm_configure_page_mode(info, i, false);
+> +		}
+> +	}
+> +}
+> +
+> +/**
+> + * elm_decode_bch_error_page - Locate error position
+> + * @dev:	device pointer
+> + * @ecc_calc:	calculated ECC bytes from GPMC
+> + * @err_vec:	elm error vectors
+> + *
+> + * Called with one or more error reported vectors & vectors with
+> + * error reported is updated in err_vec[].error_reported
+> + *
+> + */
+> +void elm_decode_bch_error_page(struct device *dev, u8 *ecc_calc,
+> +		struct elm_errorvec *err_vec)
+> +{
+> +	struct elm_info *info = dev_get_drvdata(dev);
+> +	u32 reg_val;
+> +
+> +	/* Enable page mode interrupt */
+> +	reg_val = elm_read_reg(info, ELM_IRQSTATUS);
+> +	elm_write_reg(info, ELM_IRQSTATUS, reg_val & INTR_STATUS_PAGE_VALID);
+> +	elm_write_reg(info, ELM_IRQENABLE, INTR_EN_PAGE_MASK);
+> +
+> +	/* Load valid ecc byte to syndrome fragment register */
+> +	elm_load_syndrome(info, err_vec, ecc_calc);
+> +
+> +	/* Enable syndrome processing for which syndrome fragment is updated */
+> +	elm_start_processing(info, err_vec);
+> +
+> +	/* Wait for ELM module to finish locating error correction */
+> +	wait_for_completion(&info->elm_completion);
+> +
+> +	/* Disable page mode interrupt */
+> +	reg_val = elm_read_reg(info, ELM_IRQENABLE);
+> +	elm_write_reg(info, ELM_IRQENABLE, reg_val & ~INTR_EN_PAGE_MASK);
+> +	elm_error_correction(info, err_vec);
+> +}
+> +EXPORT_SYMBOL(elm_decode_bch_error_page);
+> +
+> +static irqreturn_t elm_isr(int this_irq, void *dev_id)
+> +{
+> +	u32 reg_val;
+> +	struct elm_info *info = dev_id;
+> +
+> +	reg_val = elm_read_reg(info, ELM_IRQSTATUS);
+> +
+> +	/* All error vectors processed */
+> +	if (reg_val & INTR_STATUS_PAGE_VALID) {
+> +		elm_write_reg(info, ELM_IRQSTATUS,
+> +				reg_val & INTR_STATUS_PAGE_VALID);
+> +		complete(&info->elm_completion);
+> +		return IRQ_HANDLED;
+> +	}
+> +
+> +	return IRQ_NONE;
+> +}
+> +
+> +struct device *elm_request(enum bch_ecc bch_type)
+> +{
+> +	struct elm_info *info;
+> +
+> +	list_for_each_entry(info, &elm_devices, list) {
+> +		if (info && info->dev) {
+> +				info->bch_type = bch_type;
+> +				elm_config(info);
+> +				return info->dev;
+> +		}
+> +	}
 
-Tested with Spanion S29GL512S10THI and Micron JS28F512M29EWx flash
-devices.
+This will always return the first ELM device probed since you never
+remove the allocated device from the list. I wonder why you really need
+a list?
 
-Signed-off-by: Stefan Roese <sr@denx.de>
-Cc: Holger Brunck <holger.brunck@keymile.com>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>
----
- .../devicetree/bindings/mtd/mtd-physmap.txt        |   3 +
- drivers/mtd/chips/cfi_cmdset_0002.c                | 211 +++++++++++++++++++++
- drivers/mtd/maps/physmap_of.c                      |   1 +
- include/linux/mtd/map.h                            |   1 +
- 4 files changed, 216 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
-index 94de19b..15902b8 100644
---- a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
-+++ b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
-@@ -23,6 +23,9 @@ file systems on embedded devices.
-    unaligned accesses as implemented in the JFFS2 code via memcpy().
-    By defining "no-unaligned-direct-access", the flash will not be
-    exposed directly to the MTD users (e.g. JFFS2) any more.
-+ - use-advanced-sector-protection: boolean to enable support for the
-+   advanced sector protection (Spansion: PPB - Persistent Protection
-+   Bits) locking.
- 
- For JEDEC compatible devices, the following additional properties
- are defined:
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 5ff5c4a..b4f314b 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -33,6 +33,7 @@
- #include <linux/delay.h>
- #include <linux/interrupt.h>
- #include <linux/reboot.h>
-+#include <linux/of_platform.h>
- #include <linux/mtd/map.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/cfi.h>
-@@ -74,6 +75,10 @@ static void put_chip(struct map_info *map, struct flchip *chip, unsigned long ad
- static int cfi_atmel_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
- static int cfi_atmel_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
- 
-+static int cfi_ppb_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
-+static int cfi_ppb_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
-+static int cfi_ppb_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len);
-+
- static struct mtd_chip_driver cfi_amdstd_chipdrv = {
- 	.probe		= NULL, /* Not usable directly */
- 	.destroy	= cfi_amdstd_destroy,
-@@ -496,6 +501,7 @@ static void cfi_fixup_m29ew_delay_after_resume(struct cfi_private *cfi)
- struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
- {
- 	struct cfi_private *cfi = map->fldrv_priv;
-+	struct device_node *np = map->device_node;
- 	struct mtd_info *mtd;
- 	int i;
- 
-@@ -570,6 +576,15 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
- 			cfi_tell_features(extp);
- #endif
- 
-+			if (np && of_property_read_bool(
-+				    np, "use-advanced-sector-protection")
-+			    && extp->BlkProtUnprot == 8) {
-+				printk(KERN_INFO "  Advanced Sector Protection (PPB Locking) supported\n");
-+				mtd->_lock = cfi_ppb_lock;
-+				mtd->_unlock = cfi_ppb_unlock;
-+				mtd->_is_locked = cfi_ppb_is_locked;
-+			}
-+
- 			bootloc = extp->TopBottom;
- 			if ((bootloc < 2) || (bootloc > 5)) {
- 				printk(KERN_WARNING "%s: CFI contains unrecognised boot "
-@@ -2160,6 +2175,202 @@ static int cfi_atmel_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- 	return cfi_varsize_frob(mtd, do_atmel_unlock, ofs, len, NULL);
- }
- 
-+/*
-+ * Advanced Sector Protection - PPB (Persistent Protection Bit) locking
-+ */
-+
-+struct ppb_lock {
-+	struct flchip *chip;
-+	loff_t offset;
-+	int locked;
-+};
-+
-+#define MAX_SECTORS			512
-+
-+#define DO_XXLOCK_ONEBLOCK_LOCK		((void *)1)
-+#define DO_XXLOCK_ONEBLOCK_UNLOCK	((void *)2)
-+#define DO_XXLOCK_ONEBLOCK_GETLOCK	((void *)3)
-+
-+static int do_ppb_xxlock(struct map_info *map, struct flchip *chip,
-+			 unsigned long adr, int len, void *thunk)
-+{
-+	struct cfi_private *cfi = map->fldrv_priv;
-+	unsigned long timeo;
-+	int ret;
-+
-+	mutex_lock(&chip->mutex);
-+	ret = get_chip(map, chip, adr + chip->start, FL_LOCKING);
-+	if (ret) {
-+		mutex_unlock(&chip->mutex);
-+		return ret;
-+	}
-+
-+	pr_debug("MTD %s(): XXLOCK 0x%08lx len %d\n", __func__, adr, len);
-+
-+	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
-+			 cfi->device_type, NULL);
-+	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi,
-+			 cfi->device_type, NULL);
-+	/* PPB entry command */
-+	cfi_send_gen_cmd(0xC0, cfi->addr_unlock1, chip->start, map, cfi,
-+			 cfi->device_type, NULL);
-+
-+	if (thunk == DO_XXLOCK_ONEBLOCK_LOCK) {
-+		chip->state = FL_LOCKING;
-+		map_write(map, CMD(0xA0), chip->start + adr);
-+		map_write(map, CMD(0x00), chip->start + adr);
-+	} else if (thunk == DO_XXLOCK_ONEBLOCK_UNLOCK) {
-+		/*
-+		 * Unlocking of one specific sector is not supported, so we
-+		 * have to unlock all sectors of this device instead
-+		 */
-+		chip->state = FL_UNLOCKING;
-+		map_write(map, CMD(0x80), chip->start);
-+		map_write(map, CMD(0x30), chip->start);
-+	} else if (thunk == DO_XXLOCK_ONEBLOCK_GETLOCK) {
-+		chip->state = FL_JEDEC_QUERY;
-+		/* Return locked status: 0->locked, 1->unlocked */
-+		ret = !cfi_read_query(map, adr);
-+	} else
-+		BUG();
-+
-+	/*
-+	 * Wait for some time as unlocking of all sectors takes quite long
-+	 */
-+	timeo = jiffies + (2 * HZ);	/* 2s max (un)locking */
-+	for (;;) {
-+		if (chip_ready(map, adr))
-+			break;
-+
-+		if (time_after(jiffies, timeo)) {
-+			printk(KERN_ERR "Waiting for chip to be ready timed out.\n");
-+			ret = -EIO;
-+			break;
-+		}
-+		mutex_unlock(&chip->mutex);
-+		cfi_udelay(1);
-+		mutex_lock(&chip->mutex);
-+	}
-+
-+	/* Exit BC commands */
-+	map_write(map, CMD(0x90), chip->start);
-+	map_write(map, CMD(0x00), chip->start);
-+
-+	chip->state = FL_READY;
-+	put_chip(map, chip, adr + chip->start);
-+	mutex_unlock(&chip->mutex);
-+
-+	return ret;
-+}
-+
-+static int cfi_ppb_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
-+{
-+	return cfi_varsize_frob(mtd, do_ppb_xxlock, ofs, len,
-+				DO_XXLOCK_ONEBLOCK_LOCK);
-+}
-+
-+static int cfi_ppb_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
-+{
-+	struct mtd_erase_region_info *regions = mtd->eraseregions;
-+	struct map_info *map = mtd->priv;
-+	struct cfi_private *cfi = map->fldrv_priv;
-+	struct ppb_lock *sect;
-+	unsigned long adr;
-+	loff_t offset;
-+	uint64_t length;
-+	int chipnum;
-+	int i;
-+	int sectors;
-+	int ret;
-+
-+	/*
-+	 * PPB unlocking always unlocks all sectors of the flash chip.
-+	 * We need to re-lock all previously locked sectors. So lets
-+	 * first check the locking status of all sectors and save
-+	 * it for future use.
-+	 */
-+	sect = kzalloc(MAX_SECTORS * sizeof(struct ppb_lock), GFP_KERNEL);
-+	if (!sect)
-+		return -ENOMEM;
-+
-+	/*
-+	 * This code to walk all sectors is a slightly modified version
-+	 * of the cfi_varsize_frob() code.
-+	 */
-+	i = 0;
-+	chipnum = 0;
-+	adr = 0;
-+	sectors = 0;
-+	offset = 0;
-+	length = mtd->size;
-+
-+	while (length) {
-+		int size = regions[i].erasesize;
-+
-+		/*
-+		 * Only test sectors that shall not be unlocked. The other
-+		 * sectors shall be unlocked, so lets keep their locking
-+		 * status at "unlocked" (locked=0) for the final re-locking.
-+		 */
-+		if ((adr < ofs) || (adr >= (ofs + len))) {
-+			sect[sectors].chip = &cfi->chips[chipnum];
-+			sect[sectors].offset = offset;
-+			sect[sectors].locked = do_ppb_xxlock(
-+				map, &cfi->chips[chipnum], adr, 0,
-+				DO_XXLOCK_ONEBLOCK_GETLOCK);
-+		}
-+
-+		adr += size;
-+		offset += size;
-+		length -= size;
-+
-+		if (offset == regions[i].offset + size * regions[i].numblocks)
-+			i++;
-+
-+		if (adr >> cfi->chipshift) {
-+			adr = 0;
-+			chipnum++;
-+
-+			if (chipnum >= cfi->numchips)
-+				break;
-+		}
-+
-+		sectors++;
-+		if (sectors >= MAX_SECTORS) {
-+			printk(KERN_ERR "Only %d sectors for PPB locking supported!\n",
-+			       MAX_SECTORS);
-+			kfree(sect);
-+			return -EINVAL;
-+		}
-+	}
-+
-+	/* Now unlock the whole chip */
-+	ret = cfi_varsize_frob(mtd, do_ppb_xxlock, ofs, len,
-+			       DO_XXLOCK_ONEBLOCK_UNLOCK);
-+	if (ret) {
-+		kfree(sect);
-+		return ret;
-+	}
-+
-+	/*
-+	 * PPB unlocking always unlocks all sectors of the flash chip.
-+	 * We need to re-lock all previously locked sectors.
-+	 */
-+	for (i = 0; i < sectors; i++) {
-+		if (sect[i].locked)
-+			do_ppb_xxlock(map, sect[i].chip, sect[i].offset, 0,
-+				      DO_XXLOCK_ONEBLOCK_LOCK);
-+	}
-+
-+	kfree(sect);
-+	return ret;
-+}
-+
-+static int cfi_ppb_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
-+{
-+	return cfi_varsize_frob(mtd, do_ppb_xxlock, ofs, len,
-+				DO_XXLOCK_ONEBLOCK_GETLOCK) ? 1 : 0;
-+}
- 
- static void cfi_amdstd_sync (struct mtd_info *mtd)
- {
-diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
-index 6f19aca..d2999fc 100644
---- a/drivers/mtd/maps/physmap_of.c
-+++ b/drivers/mtd/maps/physmap_of.c
-@@ -238,6 +238,7 @@ static int __devinit of_flash_probe(struct platform_device *dev)
- 		info->list[i].map.phys = res.start;
- 		info->list[i].map.size = res_size;
- 		info->list[i].map.bankwidth = be32_to_cpup(width);
-+		info->list[i].map.device_node = dp;
- 
- 		err = -ENOMEM;
- 		info->list[i].map.virt = ioremap(info->list[i].map.phys,
-diff --git a/include/linux/mtd/map.h b/include/linux/mtd/map.h
-index 3595a02..41db531 100644
---- a/include/linux/mtd/map.h
-+++ b/include/linux/mtd/map.h
-@@ -245,6 +245,7 @@ struct map_info {
- 	unsigned long pfow_base;
- 	unsigned long map_priv_1;
- 	unsigned long map_priv_2;
-+	struct device_node *device_node;
- 	void *fldrv_priv;
- 	struct mtd_chip_driver *fldrv;
- };
--- 
-1.8.0.1
+Thanks,
+Sekhar
