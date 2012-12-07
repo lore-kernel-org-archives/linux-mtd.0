@@ -1,25 +1,16 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+Received: from mo6-p05-ob.rzone.de ([2a01:238:20a:202:5305::1])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Tgely-0000Bp-FT
- for linux-mtd@lists.infradead.org; Thu, 06 Dec 2012 16:58:07 +0000
-Date: Thu, 6 Dec 2012 17:58:00 +0100
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Huang Shijie <shijie8@gmail.com>
-Subject: Re: [PATCH] mtd: nand: gpmi: reset BCH earlier, too, to avoid NAND
- startup problems
-Message-ID: <20121206165800.GA17129@pengutronix.de>
-References: <1354740362-20412-1-git-send-email-w.sang@pengutronix.de>
- <50BFFFE8.8040002@freescale.com>
- <20121206095213.GA2589@pengutronix.de>
- <CAMiH66EPDKhd=pBJWhtm3P+qgGcdVbHD-hb93ZB7Ou7Sc=vByg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="uAKRQypu60I7Lcqm"
-Content-Disposition: inline
-In-Reply-To: <CAMiH66EPDKhd=pBJWhtm3P+qgGcdVbHD-hb93ZB7Ou7Sc=vByg@mail.gmail.com>
-Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- David Woodhouse <david.woodhouse@intel.com>,
- linux-arm-kernel@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+ id 1TgsGv-0005JR-4j
+ for linux-mtd@lists.infradead.org; Fri, 07 Dec 2012 07:22:58 +0000
+From: Stefan Roese <sr@denx.de>
+To: linux-mtd@lists.infradead.org,
+	devicetree-discuss@ozlabs.org
+Subject: [PATCH] mtd: cfi_cmdset_0002: Support Persistent Protection Bits
+ (PPB) locking
+Date: Fri,  7 Dec 2012 08:22:34 +0100
+Message-Id: <1354864954-30290-1-git-send-email-sr@denx.de>
+Cc: Holger Brunck <holger.brunck@keymile.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,80 +20,334 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Currently cfi_cmdset_0002.c does not support PPB locking of sectors. This
+patch adds support for this locking/unlocking mechanism. It is needed on
+some platforms, since newer U-Boot versions do support this PPB locking
+and protect for example their environment sector(s) this way.
 
---uAKRQypu60I7Lcqm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This PPB locking/unlocking will be enabled for all devices supported by
+cfi_cmdset_0002 reporting 8 in the CFI word 0x49 (Sector Protect/Unprotect
+scheme).
 
+Please note that PPB locking does support sector-by-sector locking. But
+the whole chip can only be unlocked together. So unlocking one sector
+will automatically unlock all sectors of this device. Because of this
+chip limitation, the PPB unlocking function saves the current locking
+status of all sectors before unlocking the whole device. After unlocking
+the saved locking status is re-configured. This way only the addressed
+sectors will be unlocked.
 
-> > Did you power-cycle between each test or reboot? I still need to test if
-> What's the meaning of "power-cycle"?
+To selectively enable this advanced sector protection mechanism, the
+device-tree property "use-advanced-sector-protection" has been created.
+To enable support for this locking this property needs to be present in the
+flash DT node. E.g.:
 
-power off - power on
+nor_flash@0,0 {
+	compatible = "amd,s29gl256n", "cfi-flash";
+	bank-width = <2>;
+	use-advanced-sector-protection;
+	...
 
-> I only tested with the soft reset, the power is never shut down.
+Tested with Spanion S29GL512S10THI and Micron JS28F512M29EWx flash
+devices.
 
-OK.
+Signed-off-by: Stefan Roese <sr@denx.de>
+Cc: Holger Brunck <holger.brunck@keymile.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>
+---
+ .../devicetree/bindings/mtd/mtd-physmap.txt        |   3 +
+ drivers/mtd/chips/cfi_cmdset_0002.c                | 211 +++++++++++++++++++++
+ drivers/mtd/maps/physmap_of.c                      |   1 +
+ include/linux/mtd/map.h                            |   1 +
+ 4 files changed, 216 insertions(+)
 
-> With your patch, we have resetted the BCH twice in the driver. Could
-> we only reset BCH one time?
-
-You tell me, please :) Is it needed when changing the layout? I don't
-have any setup to test that. Unless I can test that, I prefer to not
-remove it. I am a bit anxious, because the reason for the stalled BCH is
-not fully understood and all I can reliably say is that resetting twice
-does not hurt.
-
-> Do you ever remove another reset-bch code, and test it?
-
-It will probably work, but we don't cover the case of changing the
-layout?
-
-> Frankly speaking, it's strange to reset the BCH twice, and it makes no se=
-nse. :(
-
-The stalled BCH makes no sense either, currently.
-
-> I am afraid that we have to add three-reset-bch in the future, if we
-> can not find the root cause.
-
-Well, ask the IC guys if something can go wrong when the BCH has been
-active and the GPMI gets reset and issues NAND commands (without needing
-ECC).
-
-> If you can remove another reset-bch code, i will ack the patch.
-
-Removing code that late in the cycle without proof sounds dangerous to
-me.
-
-> > The setup needs to be done properly to ensure a consistent state at the
-> > beginning, especially when somebody used the NAND before (ROM code,
-> At the beginning? it's really interesting.
-> I want to test it myself.
->=20
-> could you wait for some time?
-
-What is some time? :)
-
-Thanks,
-
-   Wolfram
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---uAKRQypu60I7Lcqm
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iEYEARECAAYFAlDAzpgACgkQD27XaX1/VRu9vwCfZ2IE6f2/3NicotB1GS2N7I0l
-OlcAni1ug6lCqxNCLPLIwNIkLpVbKwEL
-=vHh8
------END PGP SIGNATURE-----
-
---uAKRQypu60I7Lcqm--
+diff --git a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
+index 94de19b..15902b8 100644
+--- a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
++++ b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
+@@ -23,6 +23,9 @@ file systems on embedded devices.
+    unaligned accesses as implemented in the JFFS2 code via memcpy().
+    By defining "no-unaligned-direct-access", the flash will not be
+    exposed directly to the MTD users (e.g. JFFS2) any more.
++ - use-advanced-sector-protection: boolean to enable support for the
++   advanced sector protection (Spansion: PPB - Persistent Protection
++   Bits) locking.
+ 
+ For JEDEC compatible devices, the following additional properties
+ are defined:
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index 5ff5c4a..b4f314b 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -33,6 +33,7 @@
+ #include <linux/delay.h>
+ #include <linux/interrupt.h>
+ #include <linux/reboot.h>
++#include <linux/of_platform.h>
+ #include <linux/mtd/map.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/cfi.h>
+@@ -74,6 +75,10 @@ static void put_chip(struct map_info *map, struct flchip *chip, unsigned long ad
+ static int cfi_atmel_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
+ static int cfi_atmel_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
+ 
++static int cfi_ppb_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
++static int cfi_ppb_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
++static int cfi_ppb_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len);
++
+ static struct mtd_chip_driver cfi_amdstd_chipdrv = {
+ 	.probe		= NULL, /* Not usable directly */
+ 	.destroy	= cfi_amdstd_destroy,
+@@ -496,6 +501,7 @@ static void cfi_fixup_m29ew_delay_after_resume(struct cfi_private *cfi)
+ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
+ {
+ 	struct cfi_private *cfi = map->fldrv_priv;
++	struct device_node *np = map->device_node;
+ 	struct mtd_info *mtd;
+ 	int i;
+ 
+@@ -570,6 +576,15 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
+ 			cfi_tell_features(extp);
+ #endif
+ 
++			if (np && of_property_read_bool(
++				    np, "use-advanced-sector-protection")
++			    && extp->BlkProtUnprot == 8) {
++				printk(KERN_INFO "  Advanced Sector Protection (PPB Locking) supported\n");
++				mtd->_lock = cfi_ppb_lock;
++				mtd->_unlock = cfi_ppb_unlock;
++				mtd->_is_locked = cfi_ppb_is_locked;
++			}
++
+ 			bootloc = extp->TopBottom;
+ 			if ((bootloc < 2) || (bootloc > 5)) {
+ 				printk(KERN_WARNING "%s: CFI contains unrecognised boot "
+@@ -2160,6 +2175,202 @@ static int cfi_atmel_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 	return cfi_varsize_frob(mtd, do_atmel_unlock, ofs, len, NULL);
+ }
+ 
++/*
++ * Advanced Sector Protection - PPB (Persistent Protection Bit) locking
++ */
++
++struct ppb_lock {
++	struct flchip *chip;
++	loff_t offset;
++	int locked;
++};
++
++#define MAX_SECTORS			512
++
++#define DO_XXLOCK_ONEBLOCK_LOCK		((void *)1)
++#define DO_XXLOCK_ONEBLOCK_UNLOCK	((void *)2)
++#define DO_XXLOCK_ONEBLOCK_GETLOCK	((void *)3)
++
++static int do_ppb_xxlock(struct map_info *map, struct flchip *chip,
++			 unsigned long adr, int len, void *thunk)
++{
++	struct cfi_private *cfi = map->fldrv_priv;
++	unsigned long timeo;
++	int ret;
++
++	mutex_lock(&chip->mutex);
++	ret = get_chip(map, chip, adr + chip->start, FL_LOCKING);
++	if (ret) {
++		mutex_unlock(&chip->mutex);
++		return ret;
++	}
++
++	pr_debug("MTD %s(): XXLOCK 0x%08lx len %d\n", __func__, adr, len);
++
++	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
++			 cfi->device_type, NULL);
++	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi,
++			 cfi->device_type, NULL);
++	/* PPB entry command */
++	cfi_send_gen_cmd(0xC0, cfi->addr_unlock1, chip->start, map, cfi,
++			 cfi->device_type, NULL);
++
++	if (thunk == DO_XXLOCK_ONEBLOCK_LOCK) {
++		chip->state = FL_LOCKING;
++		map_write(map, CMD(0xA0), chip->start + adr);
++		map_write(map, CMD(0x00), chip->start + adr);
++	} else if (thunk == DO_XXLOCK_ONEBLOCK_UNLOCK) {
++		/*
++		 * Unlocking of one specific sector is not supported, so we
++		 * have to unlock all sectors of this device instead
++		 */
++		chip->state = FL_UNLOCKING;
++		map_write(map, CMD(0x80), chip->start);
++		map_write(map, CMD(0x30), chip->start);
++	} else if (thunk == DO_XXLOCK_ONEBLOCK_GETLOCK) {
++		chip->state = FL_JEDEC_QUERY;
++		/* Return locked status: 0->locked, 1->unlocked */
++		ret = !cfi_read_query(map, adr);
++	} else
++		BUG();
++
++	/*
++	 * Wait for some time as unlocking of all sectors takes quite long
++	 */
++	timeo = jiffies + (2 * HZ);	/* 2s max (un)locking */
++	for (;;) {
++		if (chip_ready(map, adr))
++			break;
++
++		if (time_after(jiffies, timeo)) {
++			printk(KERN_ERR "Waiting for chip to be ready timed out.\n");
++			ret = -EIO;
++			break;
++		}
++		mutex_unlock(&chip->mutex);
++		cfi_udelay(1);
++		mutex_lock(&chip->mutex);
++	}
++
++	/* Exit BC commands */
++	map_write(map, CMD(0x90), chip->start);
++	map_write(map, CMD(0x00), chip->start);
++
++	chip->state = FL_READY;
++	put_chip(map, chip, adr + chip->start);
++	mutex_unlock(&chip->mutex);
++
++	return ret;
++}
++
++static int cfi_ppb_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
++{
++	return cfi_varsize_frob(mtd, do_ppb_xxlock, ofs, len,
++				DO_XXLOCK_ONEBLOCK_LOCK);
++}
++
++static int cfi_ppb_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
++{
++	struct mtd_erase_region_info *regions = mtd->eraseregions;
++	struct map_info *map = mtd->priv;
++	struct cfi_private *cfi = map->fldrv_priv;
++	struct ppb_lock *sect;
++	unsigned long adr;
++	loff_t offset;
++	uint64_t length;
++	int chipnum;
++	int i;
++	int sectors;
++	int ret;
++
++	/*
++	 * PPB unlocking always unlocks all sectors of the flash chip.
++	 * We need to re-lock all previously locked sectors. So lets
++	 * first check the locking status of all sectors and save
++	 * it for future use.
++	 */
++	sect = kzalloc(MAX_SECTORS * sizeof(struct ppb_lock), GFP_KERNEL);
++	if (!sect)
++		return -ENOMEM;
++
++	/*
++	 * This code to walk all sectors is a slightly modified version
++	 * of the cfi_varsize_frob() code.
++	 */
++	i = 0;
++	chipnum = 0;
++	adr = 0;
++	sectors = 0;
++	offset = 0;
++	length = mtd->size;
++
++	while (length) {
++		int size = regions[i].erasesize;
++
++		/*
++		 * Only test sectors that shall not be unlocked. The other
++		 * sectors shall be unlocked, so lets keep their locking
++		 * status at "unlocked" (locked=0) for the final re-locking.
++		 */
++		if ((adr < ofs) || (adr >= (ofs + len))) {
++			sect[sectors].chip = &cfi->chips[chipnum];
++			sect[sectors].offset = offset;
++			sect[sectors].locked = do_ppb_xxlock(
++				map, &cfi->chips[chipnum], adr, 0,
++				DO_XXLOCK_ONEBLOCK_GETLOCK);
++		}
++
++		adr += size;
++		offset += size;
++		length -= size;
++
++		if (offset == regions[i].offset + size * regions[i].numblocks)
++			i++;
++
++		if (adr >> cfi->chipshift) {
++			adr = 0;
++			chipnum++;
++
++			if (chipnum >= cfi->numchips)
++				break;
++		}
++
++		sectors++;
++		if (sectors >= MAX_SECTORS) {
++			printk(KERN_ERR "Only %d sectors for PPB locking supported!\n",
++			       MAX_SECTORS);
++			kfree(sect);
++			return -EINVAL;
++		}
++	}
++
++	/* Now unlock the whole chip */
++	ret = cfi_varsize_frob(mtd, do_ppb_xxlock, ofs, len,
++			       DO_XXLOCK_ONEBLOCK_UNLOCK);
++	if (ret) {
++		kfree(sect);
++		return ret;
++	}
++
++	/*
++	 * PPB unlocking always unlocks all sectors of the flash chip.
++	 * We need to re-lock all previously locked sectors.
++	 */
++	for (i = 0; i < sectors; i++) {
++		if (sect[i].locked)
++			do_ppb_xxlock(map, sect[i].chip, sect[i].offset, 0,
++				      DO_XXLOCK_ONEBLOCK_LOCK);
++	}
++
++	kfree(sect);
++	return ret;
++}
++
++static int cfi_ppb_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
++{
++	return cfi_varsize_frob(mtd, do_ppb_xxlock, ofs, len,
++				DO_XXLOCK_ONEBLOCK_GETLOCK) ? 1 : 0;
++}
+ 
+ static void cfi_amdstd_sync (struct mtd_info *mtd)
+ {
+diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
+index 6f19aca..d2999fc 100644
+--- a/drivers/mtd/maps/physmap_of.c
++++ b/drivers/mtd/maps/physmap_of.c
+@@ -238,6 +238,7 @@ static int __devinit of_flash_probe(struct platform_device *dev)
+ 		info->list[i].map.phys = res.start;
+ 		info->list[i].map.size = res_size;
+ 		info->list[i].map.bankwidth = be32_to_cpup(width);
++		info->list[i].map.device_node = dp;
+ 
+ 		err = -ENOMEM;
+ 		info->list[i].map.virt = ioremap(info->list[i].map.phys,
+diff --git a/include/linux/mtd/map.h b/include/linux/mtd/map.h
+index 3595a02..41db531 100644
+--- a/include/linux/mtd/map.h
++++ b/include/linux/mtd/map.h
+@@ -245,6 +245,7 @@ struct map_info {
+ 	unsigned long pfow_base;
+ 	unsigned long map_priv_1;
+ 	unsigned long map_priv_2;
++	struct device_node *device_node;
+ 	void *fldrv_priv;
+ 	struct mtd_chip_driver *fldrv;
+ };
+-- 
+1.8.0.1
