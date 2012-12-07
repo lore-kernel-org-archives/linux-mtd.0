@@ -1,21 +1,19 @@
-Received: from mail-de.keymile.com ([195.8.104.1])
- by merlin.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TgvNp-0005Oe-7l
- for linux-mtd@lists.infradead.org; Fri, 07 Dec 2012 10:42:18 +0000
-Message-ID: <50C1C7F6.9010504@keymile.com>
-Date: Fri, 07 Dec 2012 11:41:58 +0100
-From: Holger Brunck <holger.brunck@keymile.com>
+Received: from mail-ia0-f175.google.com ([209.85.210.175])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TgzoW-0000IF-QE
+ for linux-mtd@lists.infradead.org; Fri, 07 Dec 2012 15:26:10 +0000
+Received: by mail-ia0-f175.google.com with SMTP id z3so711069iad.34
+ for <linux-mtd@lists.infradead.org>; Fri, 07 Dec 2012 07:26:06 -0800 (PST)
 MIME-Version: 1.0
-To: Stefan Roese <sr@denx.de>
-Subject: Re: [PATCH] mtd: cfi_cmdset_0002: Support Persistent Protection Bits
- (PPB) locking
-References: <1354864954-30290-1-git-send-email-sr@denx.de>
-In-Reply-To: <1354864954-30290-1-git-send-email-sr@denx.de>
-Content-Type: text/plain;
-	charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: devicetree-discuss@ozlabs.org, linux-mtd@lists.infradead.org,
- Artem Bityutskiy <dedekind1@gmail.com>
+Sender: jphilippe.francois@gmail.com
+Date: Fri, 7 Dec 2012 16:26:06 +0100
+Message-ID: <CAGGh5h23djGTUynnoVUaGAQCuWVCDAW=PLQsvnyBVKGDfwERAQ@mail.gmail.com>
+Subject: U-boot bch4_sw vs omap bch4_hw
+From: jean-philippe francois <jp.francois@cynove.com>
+To: ivan.djelic@parrot.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,54 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Stefan,
+Hi Ivan,
 
-On 12/07/2012 08:22 AM, Stefan Roese wrote:
-> Currently cfi_cmdset_0002.c does not support PPB locking of sectors. This
-> patch adds support for this locking/unlocking mechanism. It is needed on
-> some platforms, since newer U-Boot versions do support this PPB locking
-> and protect for example their environment sector(s) this way.
-> 
-> This PPB locking/unlocking will be enabled for all devices supported by
-> cfi_cmdset_0002 reporting 8 in the CFI word 0x49 (Sector Protect/Unprotect
-> scheme).
-> 
-> Please note that PPB locking does support sector-by-sector locking. But
-> the whole chip can only be unlocked together. So unlocking one sector
-> will automatically unlock all sectors of this device. Because of this
-> chip limitation, the PPB unlocking function saves the current locking
-> status of all sectors before unlocking the whole device. After unlocking
-> the saved locking status is re-configured. This way only the addressed
-> sectors will be unlocked.
-> 
-> To selectively enable this advanced sector protection mechanism, the
-> device-tree property "use-advanced-sector-protection" has been created.
-> To enable support for this locking this property needs to be present in the
-> flash DT node. E.g.:
-> 
-> nor_flash@0,0 {
-> 	compatible = "amd,s29gl256n", "cfi-flash";
-> 	bank-width = <2>;
-> 	use-advanced-sector-protection;
-> 	...
-> 
-> Tested with Spanion S29GL512S10THI and Micron JS28F512M29EWx flash
-> devices.
-> 
-> Signed-off-by: Stefan Roese <sr@denx.de>
-> Cc: Holger Brunck <holger.brunck@keymile.com>
-> Cc: Artem Bityutskiy <dedekind1@gmail.com>
-> ---
->  .../devicetree/bindings/mtd/mtd-physmap.txt        |   3 +
->  drivers/mtd/chips/cfi_cmdset_0002.c                | 211 +++++++++++++++++++++
->  drivers/mtd/maps/physmap_of.c                      |   1 +
->  include/linux/mtd/map.h                            |   1 +
->  4 files changed, 216 insertions(+)
-> 
+I have applied your patches for hardware bch ecc support on
+OMAP. On the linux side, everything is fine. However I have some trouble
+when it comes to u-boot and kernel interoperability.
 
-Tested-by: Holger Brunck <holger.brunck@keymile.com>
+A nand page written with bch4_sw ecc by U-boot fails the ecc step when
+read by the kernel. Looking at a nanddump, OOB placement and size of
+the ecc data are the same.
 
-with an Spanion S29GL512S10THI.
+Do you know of any patch for u-boot that would make the  bch4_sw ecc
+identical to the kernel one ?
 
-Regards
-Holger
+Thank you,
+Jean-Philippe Fran=C3=A7ois
