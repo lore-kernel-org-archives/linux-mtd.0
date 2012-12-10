@@ -1,28 +1,24 @@
-Received: from moutng.kundenserver.de ([212.227.17.9])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Ti1Gg-0002ce-P4
- for linux-mtd@lists.infradead.org; Mon, 10 Dec 2012 11:11:27 +0000
-Received: from mail.er.corscience.de (mail.er.corscience.de [192.168.1.6])
- by corscience.de (Postfix) with ESMTP id 30B4551EAF
- for <linux-mtd@lists.infradead.org>; Mon, 10 Dec 2012 12:11:24 +0100 (CET)
-Received: from [192.168.102.103] (azuregos.2og.er.corscience.de
- [192.168.102.103])
- by mail.er.corscience.de (Postfix) with ESMTPSA id E62F3347A147
- for <linux-mtd@lists.infradead.org>; Mon, 10 Dec 2012 12:11:24 +0100 (CET)
-Message-ID: <50C5C35C.4050804@corscience.de>
-Date: Mon, 10 Dec 2012 12:11:24 +0100
-From: =?UTF-8?B?QW5kcmVhcyBCaWXDn21hbm4=?=
- <andreas.biessmann@corscience.de>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: U-boot bch4_sw vs omap bch4_hw
-References: <CAGGh5h23djGTUynnoVUaGAQCuWVCDAW=PLQsvnyBVKGDfwERAQ@mail.gmail.com>
- <20121208082935.GA17392@parrot.com>
- <CAGGh5h2CoQTbOL32+f3jhtvUwCbFp7EPhL7g61PFkVGtXwAd-w@mail.gmail.com>
- <50C5BAD6.2010500@corscience.de>
-In-Reply-To: <50C5BAD6.2010500@corscience.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Received: from mga11.intel.com ([192.55.52.93])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Ti1HZ-0002ne-Pj
+ for linux-mtd@lists.infradead.org; Mon, 10 Dec 2012 11:12:22 +0000
+Message-ID: <1355138000.25188.131.camel@sauron.fi.intel.com>
+Subject: Re: UBIFS: Advice request on how to reduce orph_buf size
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Ezequiel Garcia <elezegarcia@gmail.com>
+Date: Mon, 10 Dec 2012 13:13:20 +0200
+In-Reply-To: <CALF0-+V2eZcEj-t2P-58XS7uStX_Uj4Gbf=ScpuMRBkxf4bnuw@mail.gmail.com>
+References: <CAJA4uhcD+bGAdKMb6Nv-Kvs+o229PaLQL-9Dok-ddCUS5rbGpg@mail.gmail.com>
+ <1354267874.30168.73.camel@sauron.fi.intel.com>
+ <CALF0-+V2eZcEj-t2P-58XS7uStX_Uj4Gbf=ScpuMRBkxf4bnuw@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-H4SGsdneNV8XdEO7jDnM"
+Mime-Version: 1.0
+Cc: Josselin Costanzi <josselin.costanzi@mobile-devices.fr>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Wolfram Sang <w.sang@pengutronix.de>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,22 +28,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10.12.2012 11:35, Andreas Bie=C3=9Fmann wrote:
-> Hi Ivan Djelic and Jean-Philippe Francois,
->=20
-> On 10.12.2012 10:41, jean-philippe francois wrote:
->> 2012/12/8 Ivan Djelic <ivan.djelic@parrot.com>:
 
-<snip>
+--=-H4SGsdneNV8XdEO7jDnM
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
->=20
->  * use 1-bit hamming 'ROM-layout' for SPL mtd and 4-bit BCH8 in all
-> other sections, see my u-boot patches.
+On Fri, 2012-11-30 at 15:46 -0300, Ezequiel Garcia wrote:
+> Artem: is there any other place in the kernel you can point me at
+> that implement something similar to this SC list?
 
-it is in fact 8-bit BCH (not 4-bit). I have chosen BCH8 here cause some
-OMAP3 seem to have broken BCH4. The kernel also recommends to use BCH8
-for the same cause. However this can be made configurable in u-boot.
+Linus W. mentioned it in this discussion:
 
-best regards
+http://www.spinics.net/lists/arm-kernel/msg200950.html
 
-Andreas Bie=C3=9Fmann
+--=20
+Best Regards,
+Artem Bityutskiy
+
+--=-H4SGsdneNV8XdEO7jDnM
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJQxcPQAAoJECmIfjd9wqK0sicQANJSdzhaTGP3BtHJzrFPkyuO
+Qpf17WkWYEkaV0WP08LFoNnHgnyLIaaAPbKt73NhP+I9sUSzZd2hdNXbTWR29gZl
+dl4Z27s6A+lEPmJXL4hvnpLJvYYmopeUnjGL2Zt+j1cuthC5TJ77Ig2lnuiQDBcU
+aMDbK/lBbU3cRXbBScohc6L51QGZkdQiHHhkeJwaRuYHMl0PuyzEWmjxmmexmMMt
+IqaTyMtwPeeU8MRaPO2cGTazDUuT/6HsAAYs3ID9xp9VWKmT3OzPpy0SyE4rsR3l
+7inPZoI/3b+/Jr4Rblo9jtnxk2ZaAT8k8Ync7cB8R50gS5qvlcNsE9P0hIzwmYh1
+Q98Bjo/XlfzV7Lt/u4WluBuv88thSZF77PmA0Fw7atQVPHyTm2zsL0ZajFl/jCBP
+C9IYLA1QqDcIYtyOs3wfq1BiWOg8yfT6RYfrOvz42esSL81AYePF/PRial5/JfVP
+CbHBXPGjN6Dcv7l0FjzqHL3I/rAvwp+2gejPQv32dzGG+ZEnRrFfJdeTANXngPB4
+qMhVpWw9qQt+wWlisal/GL7/NDxoWKnjyDgVkzDg2ZlqvnXhMkwCK5SYTZZ88rN5
+LPqh0T3gk09RpvlHwHtGoyyRl8NOB3r5A8/3rrnA8svkosmdfo12b5E9aIRPtPhC
+5TYKzKRFToO3esWZ5uxq
+=32y3
+-----END PGP SIGNATURE-----
+
+--=-H4SGsdneNV8XdEO7jDnM--
