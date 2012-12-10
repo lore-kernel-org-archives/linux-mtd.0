@@ -1,22 +1,22 @@
-Received: from mga14.intel.com ([143.182.124.37])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Ti2dM-0002tN-0L
- for linux-mtd@lists.infradead.org; Mon, 10 Dec 2012 12:38:56 +0000
-Message-ID: <1355143196.2657.19.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] bcm47xxnflash: writing support
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
-Date: Mon, 10 Dec 2012 14:39:56 +0200
-In-Reply-To: <CACna6rx5Y2NfS8Eth9C9Aq7DNwj4-+gLjenaVy+gH7Qujm06jA@mail.gmail.com>
-References: <1354526555-27143-1-git-send-email-zajec5@gmail.com>
- <1355141432.2657.0.camel@sauron.fi.intel.com>
- <CACna6rx5Y2NfS8Eth9C9Aq7DNwj4-+gLjenaVy+gH7Qujm06jA@mail.gmail.com>
+ id 1Ti3Oo-0007M5-SW
+ for linux-mtd@lists.infradead.org; Mon, 10 Dec 2012 13:27:59 +0000
+Message-ID: <1355146138.2657.29.camel@sauron.fi.intel.com>
+Subject: Re: [patch] mtg: docg3: potential divide by zero in doc_write_oob()
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Date: Mon, 10 Dec 2012 15:28:58 +0200
+In-Reply-To: <20121129141651.GA12199@elgon.mountain>
+References: <20121129141651.GA12199@elgon.mountain>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-toFAYkG5TTnh8p+s6AE2"
+ boundary="=-DsWlkbLouT5zh4UFmN1Z"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Cc: Mike Dunn <mikedunn@newsguy.com>, David Woodhouse <dwmw2@infradead.org>,
+ kernel-janitors@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Ivan Djelic <ivan.djelic@parrot.com>, Robert Jarzmik <robert.jarzmik@free.fr>
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +27,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-toFAYkG5TTnh8p+s6AE2
+--=-DsWlkbLouT5zh4UFmN1Z
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2012-12-10 at 13:19 +0100, Rafa=C5=82 Mi=C5=82ecki wrote:
-> 2012/12/10 Artem Bityutskiy <dedekind1@gmail.com>:
-> > On Mon, 2012-12-03 at 10:22 +0100, Rafa=C5=82 Mi=C5=82ecki wrote:
-> >> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
-> >
-> > Pushed to l2-mtd.git, thanks!
+On Thu, 2012-11-29 at 17:16 +0300, Dan Carpenter wrote:
+> If we set oobdelta to zero then we will either return -EINVAL or hit
+> a divide (modulus) by zero on the next line when we check
+> "(ooblen % oobdelta)".  It's better to just return -EINVAL here instead.
 >=20
-> 3.8 is going to be lovely for BCM4706 =3D)
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Depends on dwmw2!
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-toFAYkG5TTnh8p+s6AE2
+--=-DsWlkbLouT5zh4UFmN1Z
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -54,19 +52,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQxdgcAAoJECmIfjd9wqK0zBkP/RF+PeIw8IN6UkzPAa6VcxHt
-8c2ZIZgIGkHUnkFndhrOl/d2EwNevlSxQYQAqJbY8aas+VlbKAhJ6Mz6r7nQ9cWm
-AC96oe0alvL6Keasm0/NyCa8wspcKTF7ZnAgCMOH8f78sl9w262hIyw3NZ1lWFf5
-O6+y3gCwelKLbqa0YtmuaqoSgNH/MINsFEpu+nYuL8qui/bKnLSCV98Jm4QQt9RZ
-bI/WVNyxzYXFDxNHt7AIH/PSPr5wovHc89biQnfavkpWgeshhEwKtkoRUHNLEWmR
-wzqdTtvchJXPVWuqdIPG1014f/RGTUbYKWmCaQZmOyO9fHStjAi3DKOzmhdY1gOm
-YeNnJ495emoSomDjTdETHvTbEWkSv5q02PHxB4FQf4+OExKHUbPJMTdba2w1i/G3
-N/vXIKdTz4a8b2zNh+mMr+HzIN3Wtk+05CCvOaXu0qy5AR52eueOtkKQZ53porOv
-wV13BUMXTAfBuIjhxM7eV4waDLiT+wkHnEAEXOpv0ECUfzIfxR2VU4WEA0SpovXT
-e1E9PaSAQPxVGDysskhPGwj0/0j0D+DCPBMYO3B3qBAL8AWLPo3qeZXEc1E9Ggia
-vJeqdN7A8+BGdpSXhNf0fqK5CKRitCd5TBmclRNCvPIuoJlJqdCYROcuVYzbpITv
-oEV4rvlv9nkA2nW5zJFV
-=CD0G
+iQIcBAABAgAGBQJQxeOaAAoJECmIfjd9wqK0uDQQAJGiCVB4ALc3pkFZEMi7hJE9
+yE6Ebu56YU6SzMlPpReKyJbFF1YH24vd9BQDryV4Ms9xd+VBaGItw4G4UZ6JhrbA
+z9dWf0GVGSEjyi8KLg/InoPhvOaz52O3SThyBWACDxAvkrt7asC0NeJUOEuk/y7h
+udfu4QGHk5j4Luh3uqtyWgD9b4cgQO7eu+y5Mlxvr3zZnmocYrU8KLAeP9fexfHQ
+JwlVPzEgXWOparxjdyofiK4uQStaJYeD83wkSpIXjhFzf/jOsM7/dqTNMg7DmA/M
+LJSQZXfctCw4FXNXnTx1tgBw8xzzMSSDXBHo8M8Cn/Pyejkd0MDwVjJHcEBHF+w1
+Bdz7b08CM2Dat2VkOInSOpIyMapzYxCHtQPrhVU0PtK24e2nDO3s2hl3gh8RI8XK
+bDSbREyf+xU6Lt7qu4NR2l+nJZICHtsj2/WVmAw9ZolW+PjAPG8XWnNxu1ffM419
+HcBa4fLVZBSiwWcf1pXtobIdiaMB985dW1AhycO0IGde3FzncW+5kaVlcICWt/VX
+jrgHE4UEW5PtzqOBZp1JyPLDXZQhdiFyQoscv/JaGKg+y1akcYQy1DAfrJwEpmrk
+3MxWl/gTontdA+eFJJxQfSL8FQjqi0Lt/YS8itOYBHETkEUnrBGFKf/094kYpwW7
+gtPuF01mNdE1YEEBbfnY
+=BM0c
 -----END PGP SIGNATURE-----
 
---=-toFAYkG5TTnh8p+s6AE2--
+--=-DsWlkbLouT5zh4UFmN1Z--
