@@ -1,33 +1,22 @@
-From: "Philip, Avinash" <avinashphilip@ti.com>
-To: "Nori, Sekhar" <nsekhar@ti.com>
-Subject: RE: [PATCH v3 1/3] mtd: nand: omap2: Update nerrors using ecc.strength
-Date: Mon, 10 Dec 2012 06:44:02 +0000
-Message-ID: <518397C60809E147AF5323E0420B992E3EA1FA1B@DBDE01.ent.ti.com>
-References: <1354189595-12784-1-git-send-email-avinashphilip@ti.com>
- <1354189595-12784-2-git-send-email-avinashphilip@ti.com>
- <50BF3819.9010200@ti.com>
- <518397C60809E147AF5323E0420B992E3EA1139B@DBDE01.ent.ti.com>
- <50C1C784.4040209@ti.com>
-In-Reply-To: <50C1C784.4040209@ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from mail-ia0-f171.google.com ([209.85.210.171])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1ThzrN-0006ik-0a
+ for linux-mtd@lists.infradead.org; Mon, 10 Dec 2012 09:41:14 +0000
+Received: by mail-ia0-f171.google.com with SMTP id k27so3737842iad.2
+ for <linux-mtd@lists.infradead.org>; Mon, 10 Dec 2012 01:41:11 -0800 (PST)
 MIME-Version: 1.0
-Cc: "Mohammed, Afzal" <afzal@ti.com>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "tony@atomide.com" <tony@atomide.com>,
- "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
- "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>,
- "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Hebbar,
- Gururaja" <gururaja.hebbar@ti.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
- "rmk+kernel@arm.linux.org.uk" <rmk+kernel@arm.linux.org.uk>,
- "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Sender: jphilippe.francois@gmail.com
+In-Reply-To: <20121208082935.GA17392@parrot.com>
+References: <CAGGh5h23djGTUynnoVUaGAQCuWVCDAW=PLQsvnyBVKGDfwERAQ@mail.gmail.com>
+ <20121208082935.GA17392@parrot.com>
+Date: Mon, 10 Dec 2012 10:41:10 +0100
+Message-ID: <CAGGh5h2CoQTbOL32+f3jhtvUwCbFp7EPhL7g61PFkVGtXwAd-w@mail.gmail.com>
+Subject: Re: U-boot bch4_sw vs omap bch4_hw
+From: jean-philippe francois <jp.francois@cynove.com>
+To: Ivan Djelic <ivan.djelic@parrot.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,22 +26,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gRnJpLCBEZWMgMDcsIDIwMTIgYXQgMTY6MTA6MDQsIE5vcmksIFNla2hhciB3cm90ZToNCj4g
-T24gMTIvNS8yMDEyIDY6MTMgUE0sIFBoaWxpcCwgQXZpbmFzaCB3cm90ZToNCj4gPiBPbiBXZWQs
-IERlYyAwNSwgMjAxMiBhdCAxNzozMzozNywgTm9yaSwgU2VraGFyIHdyb3RlOg0KPiA+PiBIaSBB
-dmluYXNoLA0KPiA+Pg0KPiA+PiBPbiAxMS8yOS8yMDEyIDU6MTYgUE0sIFBoaWxpcCwgQXZpbmFz
-aCB3cm90ZToNCj4gPj4+IFVwZGF0ZSBudW1iZXIgb2YgZXJyb3JzIHVzaW5nIG5hbmQgZWNjIHN0
-cmVuZ3RoLg0KPiA+Pj4gQWxzbyBhZGQgbWFjcm8gZGVmaW5pdGlvbnMgQkNIOF9FUlJPUl9NQVgg
-JiBCQ0g0X0VSUk9SX01BWA0KPiA+Pg0KPiA+PiBDYW4geW91IHBsZWFzZSBkZXNjcmliZSB3aHkg
-dGhlIG9yaWdpbmFsIG1ldGhvZCBvZiBzZXR0aW5nIG5lcnJvcnMgd2FzDQo+ID4+IGluY29ycmVj
-dD8gV2FzIGl0IGNhdXNpbmcgYW55IGlzc3VlcyBpbiBhbnkgcGFydGljdWxhciBjb25maWd1cmF0
-aW9uPw0KPiA+IA0KPiA+IEl0IGFmZmVjdHMgdGhlIHJldXNhYmlsaXR5IG9mIHRoZSBjb2RlLiBG
-b3IgZXhhbXBsZSBCQ0g4IHdpdGggQU0zMzV4IFJCTCANCj4gPiBjb21wYXRpYmlsaXR5IHJlcXVp
-cmVzICAxNCBieXRlcyBpbnN0ZWFkIG9mIDEzIGJ5dGUuIFNvIHNldHRpbmcgbmVycm9ycw0KPiA+
-IHdpdGgNCj4gPiAJbmVycm9ycyA9IChpbmZvLT5uYW5kLmVjYy5ieXRlcyA9PSAxMykgPyA4IDog
-NDsNCj4gPiB3aWxsIGJyZWFrIGFtMzM1eCBSQkwgY29tcGF0aWJpbGl0eS4NCj4gDQo+IFRoaXMg
-c2hvdWxkIGJlIHN1bW1hcml6ZWQgaW4gdGhlIHBhdGNoIGRlc2NyaXB0aW9uIHNvIHRoZSBtb3Rp
-dmF0aW9uIGlzDQo+IGNsZWFyIHRvIHRob3NlIHdobyByZWFkIHRoZSBoaXN0b3J5IGxhdGVyLg0K
-DQpPayBJIHdpbGwgYWRkIHRoZSBkZXRhaWxzIGluIHBhdGNoIGRlc2NyaXB0aW9uIGluIG5leHQg
-dmVyc2lvbi4NCg0KVGhhbmtzDQpBdmluYXNoDQoNCj4gDQo+IFRoYW5rcywNCj4gU2VraGFyDQo+
-IA0KDQo=
+2012/12/8 Ivan Djelic <ivan.djelic@parrot.com>:
+> On Fri, Dec 07, 2012 at 03:26:06PM +0000, jean-philippe francois wrote:
+>> Hi Ivan,
+>>
+>> I have applied your patches for hardware bch ecc support on
+>> OMAP. On the linux side, everything is fine. However I have some trouble
+>> when it comes to u-boot and kernel interoperability.
+>>
+>> A nand page written with bch4_sw ecc by U-boot fails the ecc step when
+>> read by the kernel. Looking at a nanddump, OOB placement and size of
+>> the ecc data are the same.
+>>
+>> Do you know of any patch for u-boot that would make the  bch4_sw ecc
+>> identical to the kernel one ?
+>
+> Hi Jean-Philippe,
+>
+> If you point me to a git repo with the exact u-boot version you are using=
+,
+> I can probably provide a patch (or at least understand the problem).
+> BR,
+> --
+> Ivan
+I am using an u-boot from the arago project :
+http://arago-project.org/git/projects/?p=3Du-boot-omap3.git;a=3Dtags
+
+So it is quite old.
+I will probably have to modify x-loader, too.
+Both implementation use very similar file for hardware assisted
+bch decoding.
+
+If this code is too old for you to look at, could you help me find an omap
+project that "new ecc" all the way up from x-loader to u-boot + kernel ?
+
+If I understands things correctly, I have two options if I want to use
+Nand that needs
+4-bit ecc :
+- Stick with the old ecc scheme in x-loader and u-boot, and use
+software 4-bit bch in the kernel.
+  Is this compatible with using ubifs ?
+- Implement new ecc scheme in x-loader and u-boot, and use hardware
+assisted bch-4 in the kernel.
+Is this correct ?
+
+Thank you for your interest,
+
+Jean-Philippe Fran=C3=A7ois.
