@@ -1,22 +1,19 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Ti4pc-0006QE-7D
- for linux-mtd@lists.infradead.org; Mon, 10 Dec 2012 14:59:45 +0000
-Message-ID: <1355151644.2657.41.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: cfi_cmdset_0002: Support Persistent Protection
- Bits (PPB) locking
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Stefan Roese <sr@denx.de>
-Date: Mon, 10 Dec 2012 17:00:44 +0200
-In-Reply-To: <1354864954-30290-1-git-send-email-sr@denx.de>
-References: <1354864954-30290-1-git-send-email-sr@denx.de>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-qmbivP428WM2wAwOGY+4"
-Mime-Version: 1.0
-Cc: Holger Brunck <holger.brunck@keymile.com>, devicetree-discuss@ozlabs.org,
- linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mail.pce.us.com ([69.40.160.195])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Ti4zi-0007XT-Q0
+ for linux-mtd@lists.infradead.org; Mon, 10 Dec 2012 15:10:11 +0000
+Message-ID: <50C5FB4A.9000302@itwatchdogs.com>
+Date: Mon, 10 Dec 2012 09:10:02 -0600
+From: Zach Sadecki <zsadecki@itwatchdogs.com>
+MIME-Version: 1.0
+To: <dedekind1@gmail.com>
+Subject: [PATCH] mtd: gpmi: Always report ECC stats and return max_bitflips
+References: <50BD01F8.3040003@itwatchdogs.com>
+ <1355147097.2657.33.camel@sauron.fi.intel.com>
+In-Reply-To: <1355147097.2657.33.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,73 +23,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Always report corrected and failed ECC stats back up to the MTD layer.  Also
+return max_bitflips from read_page() as is expected from NAND drivers now.
 
---=-qmbivP428WM2wAwOGY+4
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Zach Sadecki <zsadecki@itwatchdogs.com>
+Acked-by: Huang Shijie <b32955@freescale.com>
+---
+  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   27 ++++++++-------------------
+  1 file changed, 8 insertions(+), 19 deletions(-)
 
-On Fri, 2012-12-07 at 08:22 +0100, Stefan Roese wrote:
-> +       /*
-> +        * Wait for some time as unlocking of all sectors takes quite lon=
-g
-> +        */
-> +       timeo =3D jiffies + (2 * HZ);     /* 2s max (un)locking */
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c 
+b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 5cd141f..1535bd5 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -921,8 +921,7 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, 
+struct nand_chip *chip,
+      dma_addr_t    auxiliary_phys;
+      unsigned int  i;
+      unsigned char *status;
+-    unsigned int  failed;
+-    unsigned int  corrected;
++    unsigned int  max_bitflips = 0;
+      int           ret;
 
-Please, use msecs_to_jiffies() instead.
+      pr_debug("page number is : %d\n", page);
+@@ -946,35 +945,25 @@ static int gpmi_ecc_read_page(struct mtd_info 
+*mtd, struct nand_chip *chip,
+              payload_virt, payload_phys);
+      if (ret) {
+          pr_err("Error in ECC-based read: %d\n", ret);
+-        goto exit_nfc;
++        return ret;
+      }
 
-> +       for (;;) {
-> +               if (chip_ready(map, adr))
-> +                       break;
-> +
-> +               if (time_after(jiffies, timeo)) {
-> +                       printk(KERN_ERR "Waiting for chip to be ready tim=
-ed out.\n");
-> +                       ret =3D -EIO;
-> +                       break;
-> +               }
-> +               mutex_unlock(&chip->mutex);
-> +               cfi_udelay(1);
-> +               mutex_lock(&chip->mutex);
-> +       }=20
+      /* handle the block mark swapping */
+      block_mark_swapping(this, payload_virt, auxiliary_virt);
 
-Would you please educate me a bit and explain what is protected by
-'chip->mutex' and by 'get_chip()'.
+      /* Loop over status bytes, accumulating ECC status. */
+-    failed        = 0;
+-    corrected    = 0;
+-    status        = auxiliary_virt + nfc_geo->auxiliary_status_offset;
++    status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
 
-Why you need to drop the mutex here?
+      for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
+          if ((*status == STATUS_GOOD) || (*status == STATUS_ERASED))
+              continue;
 
-Why is it not an ABBA deadlock to do this:
+          if (*status == STATUS_UNCORRECTABLE) {
+-            failed++;
++            mtd->ecc_stats.failed++;
+              continue;
+          }
+-        corrected += *status;
+-    }
+-
+-    /*
+-     * Propagate ECC status to the owning MTD only when failed or
+-     * corrected times nearly reaches our ECC correction threshold.
+-     */
+-    if (failed || corrected >= (nfc_geo->ecc_strength - 1)) {
+-        mtd->ecc_stats.failed    += failed;
+-        mtd->ecc_stats.corrected += corrected;
++        mtd->ecc_stats.corrected += *status;
++        max_bitflips = max_t(unsigned int, max_bitflips, *status);
+      }
 
-Task 1: In the loop above, has chip locked, doing
-        mutex_lock(&chip->mutex);
+      if (oob_required) {
+@@ -996,8 +985,8 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, 
+struct nand_chip *chip,
+              this->payload_virt, this->payload_phys,
+              nfc_geo->payload_size,
+              payload_virt, payload_phys);
+-exit_nfc:
+-    return ret;
++
++    return max_bitflips;
+  }
 
-Task 2: done mutex_lock(&chip->mutex), now doing
-        ret =3D get_chip(map, chip, adr + chip->start, FL_LOCKING);
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-qmbivP428WM2wAwOGY+4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQxfkcAAoJECmIfjd9wqK05A8P/A0ZeaRk0/BWp3jeGxmxvFwM
-FjuxU48bhoek8JVhLip0pt7Ld4ta3FXydjE9iIvFeRm71snudMGye2s5VWCK2JJB
-dECVW3/Gogt2HhlP6rFjCKA2E7yJUsRZOIFo2LF1v9rXo0YPVPS2EY2jpmd6CTcb
-+2P8m5OnZsijTempqxeRogQcAsUzJd6YGsCA3HfcLQpFCCAz/ewWmf2HL/WcYW6g
-k+r4mWLiCUmiRKE3SwR/9LrbnJXLZaBbMYitWmNQBxrF3CWj91+sX5AzpsxeK1n8
-Th4WFdwpHSFpb5B+to1PcUVIyKG1EEyUZey7DG7uSGGh/p+sbBQ7I2XsD9WgAUSo
-GHGpvZ+sEF9hUfiU7gJ2Y85N6Ne3jHFm+7E+cJE9whc6asktaxTu1E1p+pkBQVnO
-LGxXjjuyYW7I+yA/9H6bNNoftWtxJNe8yaWljICGzD7pR3FyPw862OwHyx20Vdlw
-cCOQmcm0zagLryLjjEUFMHWUhabeRgNfvurDF6plrIIazA40yFCeBPJvf2CYzS7c
-MaarqWK0D9zXh5dWqgHgp/JVLVRxKTxsM2wtV25wf+f2ib52rC3SToR5t4lUbpeA
-+POUewc/a97u3ZOu6EIsglZ6tjP7N6VQsbZ6E0wO7rVEpv7NFtk1+cQcAvWqRwr8
-4rJ4139OLFl84avgPs59
-=PI/C
------END PGP SIGNATURE-----
-
---=-qmbivP428WM2wAwOGY+4--
+  static int gpmi_ecc_write_page(struct mtd_info *mtd, struct nand_chip 
+*chip,
+-- 
+1.7.9.5
