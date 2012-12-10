@@ -1,20 +1,23 @@
 Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Ti4Yh-0003vE-Ei
- for linux-mtd@lists.infradead.org; Mon, 10 Dec 2012 14:42:16 +0000
-Message-ID: <1355150594.2657.34.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v2] nandsim: Introduce debugfs infrastructure
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ezequiel Garcia <elezegarcia@gmail.com>
-Date: Mon, 10 Dec 2012 16:43:14 +0200
-In-Reply-To: <1354541500-436-1-git-send-email-elezegarcia@gmail.com>
-References: <1354541500-436-1-git-send-email-elezegarcia@gmail.com>
+ id 1Ti4bP-00045H-TT
+ for linux-mtd@lists.infradead.org; Mon, 10 Dec 2012 14:45:04 +0000
+Message-ID: <1355150764.2657.35.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/2] mtd: mxc_nand: fix unbalanced clk_disable() in
+ error path
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Lothar =?ISO-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+Date: Mon, 10 Dec 2012 16:46:04 +0200
+In-Reply-To: <1354779748-28869-1-git-send-email-LW@KARO-electronics.de>
+References: <1354779748-28869-1-git-send-email-LW@KARO-electronics.de>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-AWjfILSrpzrhXUPa/wx3"
+ boundary="=-hLZUFHVxbzo6TI9v/LuP"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,21 +28,18 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-AWjfILSrpzrhXUPa/wx3
+--=-hLZUFHVxbzo6TI9v/LuP
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2012-12-03 at 10:31 -0300, Ezequiel Garcia wrote:
-> It's more user friendly to report debug information and statistics
-> through debugfs, than to use printing facilites.
+On Thu, 2012-12-06 at 08:42 +0100, Lothar Wa=C3=9Fmann wrote:
+> If nand_scan_ident() or nand_scan_tail() fails, the NAND chip may have
+> been deselected and the clock already disabled. Thus, check 'clk_act'
+> in the error path to decide whether the clock still needs to be
+> disabled.
 >=20
-> This patch introduces a very minimal debugfs infrastructure
-> and moves eraseblock wear report to an entry located at:
->=20
-> /sys/kernel/debug/nandsim/wear_report
->=20
-> This means we can remove rptwear option and just let
-> the user get the wear report when we needs to.
+> This fixes a:
+> |WARNING: at drivers/clk/clk.c:472 __clk_disable+0x3c/0x78()
 
 Pushed to l2-mtd.git, thanks!
 
@@ -47,7 +47,7 @@ Pushed to l2-mtd.git, thanks!
 Best Regards,
 Artem Bityutskiy
 
---=-AWjfILSrpzrhXUPa/wx3
+--=-hLZUFHVxbzo6TI9v/LuP
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -55,19 +55,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQxfUCAAoJECmIfjd9wqK0D/gP/AwYb5gYPYgdnB0hHX7ajgKA
-SQPe6p/HAor8H8QGqwRtJK78nFhkou9oDcZxPsYXTI/0oUK493JalbDOhzctHdd6
-ZVhUbLerpcemd939aHWGzxMCZ9YHDVB0s9FoJV/5XeD4xbP0jSRCIQfzvM6nXvvL
-j7NMi72FqIHZpiKg46nJI+o5gjDQfPrYUT+JkgdDIa/GI0sR9IJxBmvneMpJGweP
-nyMqhF5+hXlLbxbsRCoWUnfeZLb+soYdNZWmbzBDKKR0LRkgfSwn24HIvPgvwxpL
-kUIsln0GyOCOLFnb0BZs3CfrY+Z84d0GsoeDdJozUNLEH6YGIYIvtlZII9WSg8EC
-R4rCC0t2JpHX6yG1IP3sJeX/SAmKlGM2AXNGL26Vb18+Sjnd/+eCmJ2rvc9kaHhd
-gqboDw1FHb3FnizaQp6fQnxOCqh0ms3o6TBddkxkYjwS2NSZFr0oUcIMLj5jledR
-p6sgowTasr1gD9oGBFXqXRxU8T4VEK4/VPOVkIDqdJx5JujnZnFuOFGjfY2wOhSi
-gPaGKcKTGVl3DM2apHi0KDdOcFBbTJgBQkNG9zqH5hSBf1f7FXVYg/SmUkw49AZp
-KKXeIRRKF+76VKlWmyRn6vEpJtFwPoaoWM2bnEfFTYPsDCaQHot5YyQgOKRfi7lN
-rZ8/BIK3r8GsQDhamp9K
-=5RTu
+iQIcBAABAgAGBQJQxfWsAAoJECmIfjd9wqK0pHIP/RKLDmWRuyH3K/tbvCJfEU6Q
+ad8J+BOPzFEAR3mBuaMPwRYy+EUghDVUxaWHYW9/5TlOQM7m2kCun9P1UWZLJArs
+mShDiLKPfJWWytcIj02SFBBA2iLJz5HrZHrr5RmAs48D4fQatb7VeY3Wae7CZgNN
+GrLY6rs/Bwpcxaejtf7kYjhPcRU5EcVQ/6e5sruAyB++wUrguNQaYGCIuC69qgNk
+2fBePfYisZ4KxqJ4PrWBCKVohHbNJfEwL/oAjsj39lqSAp0uJ4IydrqhbIZyQ0aL
+qlFPhHME6DeLrh2p42zgAaA5cEAlBQdVur4gePhIyTgpVpSeB/Skp7mAucilGZbk
+1+GVgrynqu/uK0+9hOuLFOPoC3yjuZEyiCburOcfELae4165PM4/Id3M1GpjGogD
+30PpM8fGkjIO7/e/AgeEy1gP+lEyu7S0MZyPkKYQCuNge8qpBeKFRgq8c/V02QcF
+jmJ50NZRW1Lb41xYHJrmp3VEtyof3pgjuw10wloGbfWDb9BuOhIK3Cy2CtNvB2pV
+jHWsEoUaufOEpr2IlAw1RlTll9OYlt3e93UxjLgpJeBkLcRT7JyLzaMGEV29C7FE
+Gn0rOw6E2IkuMYpQvkIoXbm+R1M00MC2P69Ark+OdNKJ17UZn3sSMbproS6N9ZyY
+4rMI+vh5RlcuphWqGvFu
+=9spq
 -----END PGP SIGNATURE-----
 
---=-AWjfILSrpzrhXUPa/wx3--
+--=-hLZUFHVxbzo6TI9v/LuP--
