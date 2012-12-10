@@ -1,9 +1,9 @@
 Received: from mail.pce.us.com ([69.40.160.195])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Ti4zi-0007XT-Q0
- for linux-mtd@lists.infradead.org; Mon, 10 Dec 2012 15:10:11 +0000
-Message-ID: <50C5FB4A.9000302@itwatchdogs.com>
-Date: Mon, 10 Dec 2012 09:10:02 -0600
+ id 1Ti57s-00084e-S9
+ for linux-mtd@lists.infradead.org; Mon, 10 Dec 2012 15:18:37 +0000
+Message-ID: <50C5FD4A.6090405@itwatchdogs.com>
+Date: Mon, 10 Dec 2012 09:18:34 -0600
 From: Zach Sadecki <zsadecki@itwatchdogs.com>
 MIME-Version: 1.0
 To: <dedekind1@gmail.com>
@@ -27,81 +27,76 @@ Always report corrected and failed ECC stats back up to the MTD layer.  Also
 return max_bitflips from read_page() as is expected from NAND drivers now.
 
 Signed-off-by: Zach Sadecki <zsadecki@itwatchdogs.com>
-Acked-by: Huang Shijie <b32955@freescale.com>
+Acked-by: Huang Shijie <b32955 at freescale.com>
 ---
   drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   27 ++++++++-------------------
   1 file changed, 8 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c 
-b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
 index 5cd141f..1535bd5 100644
 --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
 +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -921,8 +921,7 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, 
-struct nand_chip *chip,
-      dma_addr_t    auxiliary_phys;
-      unsigned int  i;
-      unsigned char *status;
--    unsigned int  failed;
--    unsigned int  corrected;
-+    unsigned int  max_bitflips = 0;
-      int           ret;
-
-      pr_debug("page number is : %d\n", page);
-@@ -946,35 +945,25 @@ static int gpmi_ecc_read_page(struct mtd_info 
-*mtd, struct nand_chip *chip,
-              payload_virt, payload_phys);
-      if (ret) {
-          pr_err("Error in ECC-based read: %d\n", ret);
--        goto exit_nfc;
-+        return ret;
-      }
-
-      /* handle the block mark swapping */
-      block_mark_swapping(this, payload_virt, auxiliary_virt);
-
-      /* Loop over status bytes, accumulating ECC status. */
--    failed        = 0;
--    corrected    = 0;
--    status        = auxiliary_virt + nfc_geo->auxiliary_status_offset;
-+    status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
-
-      for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
-          if ((*status == STATUS_GOOD) || (*status == STATUS_ERASED))
-              continue;
-
-          if (*status == STATUS_UNCORRECTABLE) {
--            failed++;
-+            mtd->ecc_stats.failed++;
-              continue;
-          }
--        corrected += *status;
--    }
+@@ -921,8 +921,7 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+  	dma_addr_t    auxiliary_phys;
+  	unsigned int  i;
+  	unsigned char *status;
+-	unsigned int  failed;
+-	unsigned int  corrected;
++	unsigned int  max_bitflips = 0;
+  	int           ret;
+  
+  	pr_debug("page number is : %d\n", page);
+@@ -946,35 +945,25 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+  			payload_virt, payload_phys);
+  	if (ret) {
+  		pr_err("Error in ECC-based read: %d\n", ret);
+-		goto exit_nfc;
++		return ret;
+  	}
+  
+  	/* handle the block mark swapping */
+  	block_mark_swapping(this, payload_virt, auxiliary_virt);
+  
+  	/* Loop over status bytes, accumulating ECC status. */
+-	failed		= 0;
+-	corrected	= 0;
+-	status		= auxiliary_virt + nfc_geo->auxiliary_status_offset;
++	status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
+  
+  	for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
+  		if ((*status == STATUS_GOOD) || (*status == STATUS_ERASED))
+  			continue;
+  
+  		if (*status == STATUS_UNCORRECTABLE) {
+-			failed++;
++			mtd->ecc_stats.failed++;
+  			continue;
+  		}
+-		corrected += *status;
+-	}
 -
--    /*
--     * Propagate ECC status to the owning MTD only when failed or
--     * corrected times nearly reaches our ECC correction threshold.
--     */
--    if (failed || corrected >= (nfc_geo->ecc_strength - 1)) {
--        mtd->ecc_stats.failed    += failed;
--        mtd->ecc_stats.corrected += corrected;
-+        mtd->ecc_stats.corrected += *status;
-+        max_bitflips = max_t(unsigned int, max_bitflips, *status);
-      }
-
-      if (oob_required) {
-@@ -996,8 +985,8 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, 
-struct nand_chip *chip,
-              this->payload_virt, this->payload_phys,
-              nfc_geo->payload_size,
-              payload_virt, payload_phys);
+-	/*
+-	 * Propagate ECC status to the owning MTD only when failed or
+-	 * corrected times nearly reaches our ECC correction threshold.
+-	 */
+-	if (failed || corrected >= (nfc_geo->ecc_strength - 1)) {
+-		mtd->ecc_stats.failed    += failed;
+-		mtd->ecc_stats.corrected += corrected;
++		mtd->ecc_stats.corrected += *status;
++		max_bitflips = max_t(unsigned int, max_bitflips, *status);
+  	}
+  
+  	if (oob_required) {
+@@ -996,8 +985,8 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+  			this->payload_virt, this->payload_phys,
+  			nfc_geo->payload_size,
+  			payload_virt, payload_phys);
 -exit_nfc:
--    return ret;
+-	return ret;
 +
-+    return max_bitflips;
++	return max_bitflips;
   }
-
-  static int gpmi_ecc_write_page(struct mtd_info *mtd, struct nand_chip 
-*chip,
+  
+  static int gpmi_ecc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
 -- 
 1.7.9.5
