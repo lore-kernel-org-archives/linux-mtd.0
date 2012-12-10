@@ -1,18 +1,17 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Ti1hc-0006Lo-7R
- for linux-mtd@lists.infradead.org; Mon, 10 Dec 2012 11:39:16 +0000
-Message-ID: <1355139583.25188.148.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] ubi: Embed ubi_debug_info field in ubi_device struct
+ id 1Ti2B5-0007Za-4R
+ for linux-mtd@lists.infradead.org; Mon, 10 Dec 2012 12:09:43 +0000
+Message-ID: <1355141432.2657.0.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] bcm47xxnflash: writing support
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ezequiel Garcia <elezegarcia@gmail.com>
-Date: Mon, 10 Dec 2012 13:39:43 +0200
-In-Reply-To: <1354105110-24721-3-git-send-email-elezegarcia@gmail.com>
-References: <1354105110-24721-1-git-send-email-elezegarcia@gmail.com>
- <1354105110-24721-3-git-send-email-elezegarcia@gmail.com>
+To: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
+Date: Mon, 10 Dec 2012 14:10:32 +0200
+In-Reply-To: <1354526555-27143-1-git-send-email-zajec5@gmail.com>
+References: <1354526555-27143-1-git-send-email-zajec5@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-HgEdGDqvUXDu0x9WSXfN"
+ boundary="=-R0Vo83/H7XSFV8nmiTh8"
 Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
@@ -26,18 +25,12 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-HgEdGDqvUXDu0x9WSXfN
+--=-R0Vo83/H7XSFV8nmiTh8
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-11-28 at 09:18 -0300, Ezequiel Garcia wrote:
-> ubi_debug_info struct was dynamically allocated which
-> is always suboptimal, for it tends to fragment memory
-> and make the code error-prone.
-> Fix this by embedding it in ubi_device struct.
->=20
-> Cc: Artem Bityutskiy <dedekind1@gmail.com>
-> Signed-off-by: Ezequiel Garcia <elezegarcia@gmail.com>=20
+On Mon, 2012-12-03 at 10:22 +0100, Rafa=C5=82 Mi=C5=82ecki wrote:
+> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
 
 Pushed to l2-mtd.git, thanks!
 
@@ -45,7 +38,7 @@ Pushed to l2-mtd.git, thanks!
 Best Regards,
 Artem Bityutskiy
 
---=-HgEdGDqvUXDu0x9WSXfN
+--=-R0Vo83/H7XSFV8nmiTh8
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -53,19 +46,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQxcn/AAoJECmIfjd9wqK0ie8QAKyguooixXfZdHzbXtWNKjA8
-80zRb7tUvQngiK9qe/gbFkhstC3GNabpo8xYozT4AnaH8i69ySRZ15h+v/1ntb+u
-kgAunqQkOYOGN6wzjMJHFNC7aR1ZArU8W/1tSTiH6lhvSLim4Y5JsiJhZ+M3LYnh
-bc8dX4Ea5DezmYbz5nKXCoShKczIkvuGHo54tOlu/EnTQEl/n650x5fzzPvBwe0A
-BUX/ECFlfM7+okTnoWB3U1byIuRzAv+gcw0GFvQ+yk63nYoGSA1RkRa8UfgmQqwh
-EtRNAyAE661iHz3gbsNesNRpSjBnGtuUgai26kemoLTMm8Nlo/yOkLEDx99nzUvl
-8OkWJFzwX752sC8dCUoHwWxELc9OaQuak8F8qnJJ5Hrhe6qTJU/wNah1WfF2nCUP
-AGh7v/M+6WpwmIiC+SLq0Jmtw54ZHjkZjEkg1okFt1ZtZ3FiFmwJFF0QeHFoky9a
-jof9xkiabU9luo1cL/vyumpnkvuZfPmZmymTpCLVCZBSIkf4mNUMgkNN5eVPfCql
-6qfxPLP/xcHwSK9UrciiwcNuZMS4NgPYq5cmXPqvEyH9RY8rqgpXZJaTOshCAYIp
-lY/11iJUb1t5fVDkX5yhZ72PO79CzM6v6g96Xf0NLEDjfxROLycBrLKqnGzClYQf
-Y8Vf9qA/EbTfIHfq5GmV
-=rC0Y
+iQIcBAABAgAGBQJQxdE4AAoJECmIfjd9wqK0SOQQAKVB8m/fhTaxwXi/d5lyCwAI
+SeOWvNghKiKiMXuQIri1Kw4d143CWLK9eZ0jVdKg/E7f7hHMg+byJBVkeXTeqkpk
+JWArf8yLTd0npsxPSBKtSzX75WHVwPa5/tM722Xr8Uib3tc502lawMy1yyPLz5GN
+v9FqZAbnChnpfdPvuhm8vdpqhbv4dcxWPkpcpJtJm8i7R3DU0g4TyoUT3CCZix0x
++6g4eUB9YVlj/Fi+StMDRRf9PIiH8NF8VoiX3LMYyB7jPePIZ/jQbdUUASyz+igK
+dlP99EFVgTNOHwE4OpfMTbUmqe99oWB2Jj750xtov2Dizt284akcWHGDYyM0oeRl
+VnQW/uj8D0xyueSIhiYcgsA49qDy027O3AX0+3UnJFsk7XIU6fZ9WYrsycKNjZiQ
+Jdsc1psMSdlRS0LHJSyLi4Rx6i9RFEEDgtP0FmL12jwb7SKSFYqIawGOYt/mLZ/p
+LtUwZxPqc2l+KwD6J8Xrwn+lxxxXCL9Vhgwol2Js323y96rwZ1vVS2fgjgfsOhSg
++mKFOsjcppKkqmJ3M0cdXrgaC2rhsLmLWcVBi8vJBlKvx8HP18eMx2whKfVq3AUC
+caxWlbu1aRojRW7ZJyrqS8A80frQgcXmkZf623Cs/c5Agv6QtdqFyMLEz6bjPjPi
+KHdS7KY1jF4dhxjQptIZ
+=VWjL
 -----END PGP SIGNATURE-----
 
---=-HgEdGDqvUXDu0x9WSXfN--
+--=-R0Vo83/H7XSFV8nmiTh8--
