@@ -1,21 +1,17 @@
-Received: from smtp.newsguy.com ([74.209.136.69])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Ti971-0004RO-KV
- for linux-mtd@lists.infradead.org; Mon, 10 Dec 2012 19:33:59 +0000
-Message-ID: <50C6393E.9070207@newsguy.com>
-Date: Mon, 10 Dec 2012 11:34:22 -0800
-From: Mike Dunn <mikedunn@newsguy.com>
+Message-ID: <50C693EC.7050702@freescale.com>
+Date: Tue, 11 Dec 2012 10:01:16 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH 1/3] mtd: nand/docg4: add support for writing in reliable
- mode
-References: <1354910843-5598-1-git-send-email-mikedunn@newsguy.com>
- <1354910843-5598-2-git-send-email-mikedunn@newsguy.com>
- <87hanvplmy.fsf@free.fr> <87a9tnpl2j.fsf@free.fr>
-In-Reply-To: <87a9tnpl2j.fsf@free.fr>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+To: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: [PATCH] mtd: nand: gpmi: reset BCH earlier, too, to avoid NAND
+ startup problems
+References: <1354740362-20412-1-git-send-email-w.sang@pengutronix.de>
+ <50BFFFE8.8040002@freescale.com> <20121206095213.GA2589@pengutronix.de>
+In-Reply-To: <20121206095213.GA2589@pengutronix.de>
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <david.woodhouse@intel.com>,
+ linux-arm-kernel@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +21,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/09/2012 02:38 AM, Robert Jarzmik wrote:
-> Robert Jarzmik <robert.jarzmik@free.fr> writes:
-> 
->> I was considering adding this to the docg3 driver, but I didn't because I was
->> afraid what would happen if you change this mode *after* mounting a partition.
->> Imagine you have your rootfs mounted on /dev/mtd2, and u-boot is in /dev/mtd1 :
->> wouldn't changing the reliable mode to write "mtd1" corrupt all writes to mtd2
->> ?
-> 
-> I will rephrase that : I didn't "succeed" in having that parameter mtd partition
-> bound. If you find a way, I'll steal it for docg3 driver :)
+=D3=DA 2012=C4=EA12=D4=C206=C8=D5 17:52, Wolfram Sang =D0=B4=B5=C0:
+> The setup needs to be done properly to ensure a consistent state at the
+> beginning, especially when somebody used the NAND before (ROM code,
+> bootloader). Fixing the bootloader alone is not enough.
+I tried to make some time to test it.
+But i am too busy this week.
+Anyway, let this patch get merged.
+
+Acked-by: Huang Shijie <b32955@freescale.com>
 
 
-Yeah, I seemed to recall that reliable mode is supported in the docg3 driver.
-
-
-> 
-> If you don't, your patch is fine :
-> Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
-> 
-
-Thanks Robert.
-
-Mike
+thanks
+Huang Shijie
