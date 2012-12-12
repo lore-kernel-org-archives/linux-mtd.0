@@ -1,26 +1,16 @@
-Received: from mail.free-electrons.com ([88.190.12.23])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Tiq4Z-0001C8-3h
- for linux-mtd@lists.infradead.org; Wed, 12 Dec 2012 17:26:19 +0000
-Message-ID: <50C8BE2D.5090706@free-electrons.com>
-Date: Wed, 12 Dec 2012 18:26:05 +0100
-From: Michael Opdenacker <michael.opdenacker@free-electrons.com>
+Received: from mail-vc0-f177.google.com ([209.85.220.177])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TiqpS-0006rX-ST
+ for linux-mtd@lists.infradead.org; Wed, 12 Dec 2012 18:14:47 +0000
+Received: by mail-vc0-f177.google.com with SMTP id m8so1131308vcd.36
+ for <linux-mtd@lists.infradead.org>; Wed, 12 Dec 2012 10:14:43 -0800 (PST)
 MIME-Version: 1.0
-To: Ezequiel Garcia <elezegarcia@gmail.com>
-Subject: Re: [RFC/PATCH v2] ubi: Add ubiblock read-write driver
-References: <1355314912-9321-1-git-send-email-elezegarcia@gmail.com>
- <CAFLxGvw9fL_U-KT9sysdyZOLry5skNWR6AUt_XNT10op38e+Gg@mail.gmail.com>
- <CALF0-+Uy5Cc5DDT_80ArK8r7BE5fg9YgxKGoJ34Q3LzT_jhL+g@mail.gmail.com>
- <CALF0-+WzXEbzfZfnkM7eX53JENDSPQoO5-qYiwX593pM_jwW1g@mail.gmail.com>
-In-Reply-To: <CALF0-+WzXEbzfZfnkM7eX53JENDSPQoO5-qYiwX593pM_jwW1g@mail.gmail.com>
+Date: Wed, 12 Dec 2012 13:14:43 -0500
+Message-ID: <CAOd_LFycV4LUmk=Ua+f64AsL_BxFqmw_wF601RbdO9ou94_kow@mail.gmail.com>
+Subject: whiteout for UBIFS
+From: Cliff Brake <cliff.brake@gmail.com>
+To: MTD mailing list <linux-mtd@lists.infradead.org>
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- richard -rw- weinberger <richard.weinberger@gmail.com>,
- gregkh <gregkh@linuxfoundation.org>,
- Ezequiel Garcia <ezequiel@free-electrons.com>, linux-mtd@lists.infradead.org,
- Tim Bird <tim.bird@am.sony.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,23 +20,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/12/2012 05:35 PM, Ezequiel Garcia wrote:
-> On a second thought and considering this code is originally
-> copyrighted by Free Electrons,
-> I'd guess I need their permission to make a license change (right?).
->
-> So considering Greg's comments, I'll leave it as it is and let Free
-> Electrons decide.
+Hello,
 
-OK for GPLv2 only. You have Free Electron's permission.
+I'm trying to use overlayfs with UBIFS, and its complaining about lack
+of whiteout support (with kernel 3.5).  Has anyone looked into
+implementing this, and are there patches available?
 
-Thanks for asking!
-
-Michael.
+Thanks,
+Cliff
 
 -- 
-Michael Opdenacker, Free Electrons
-Kernel, drivers, real-time and embedded Linux
-development, consulting, training and support.
-http://free-electrons.com
-+33 484 258 098
+=================
+http://bec-systems.com
