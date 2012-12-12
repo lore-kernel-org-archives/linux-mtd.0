@@ -1,18 +1,21 @@
-Message-ID: <1355325103.3400.2.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: nand: gpmi: reset BCH earlier, too, to avoid NAND
- startup problems
+Received: from mga02.intel.com ([134.134.136.20])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Tio3F-0004do-Km
+ for linux-mtd@lists.infradead.org; Wed, 12 Dec 2012 15:16:50 +0000
+Message-ID: <1355325438.3400.4.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: gpmi: Always report ECC stats and return max_bitflips
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Wolfram Sang <w.sang@pengutronix.de>
-Date: Wed, 12 Dec 2012 17:11:43 +0200
-In-Reply-To: <1354740362-20412-1-git-send-email-w.sang@pengutronix.de>
-References: <1354740362-20412-1-git-send-email-w.sang@pengutronix.de>
+To: Zach Sadecki <zsadecki@itwatchdogs.com>
+Date: Wed, 12 Dec 2012 17:17:18 +0200
+In-Reply-To: <50C5FD4A.6090405@itwatchdogs.com>
+References: <50BD01F8.3040003@itwatchdogs.com>
+ <1355147097.2657.33.camel@sauron.fi.intel.com>
+ <50C5FD4A.6090405@itwatchdogs.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-uMIMS8Ua1vh5vE/RZyi1"
+ boundary="=-qfucCHryNieXtEpkQpYm"
 Mime-Version: 1.0
-Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- David Woodhouse <david.woodhouse@intel.com>,
- linux-arm-kernel@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,36 +27,35 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-uMIMS8Ua1vh5vE/RZyi1
+--=-qfucCHryNieXtEpkQpYm
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-12-05 at 21:46 +0100, Wolfram Sang wrote:
-> It could happen (1 out of 100 times) that NAND did not start up
-> correctly after warm rebooting, so the kernel could not find the UBI or
-> DMA timed out due to a stalled BCH. When resetting BCH together with
-> GPMI, the issue could not be observed anymore (after 10000+ reboots). We
-> probably need the consistent state already before sending any command to
-> NAND, even when no ECC is needed. I chose to keep the extra reset for
-> BCH when changing the flash layout to be on the safe side.
+On Mon, 2012-12-10 at 09:18 -0600, Zach Sadecki wrote:
+> Always report corrected and failed ECC stats back up to the MTD layer.  A=
+lso
+> return max_bitflips from read_page() as is expected from NAND drivers now=
+.
 >=20
-> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
-> Cc: Huang Shijie <b32955@freescale.com>
-> Cc: Artem Bityutskiy <dedekind1@gmail.com>
-> Cc: David Woodhouse <david.woodhouse@intel.com>
+> Signed-off-by: Zach Sadecki <zsadecki@itwatchdogs.com>
+> Acked-by: Huang Shijie <b32955 at freescale.com>
 > ---
->=20
-> Would be really great to have in 3.7. Also a stable-candidate IMO.
+>   drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   27 ++++++++-----------------=
+--
+>   1 file changed, 8 insertions(+), 19 deletions(-)
 
-Pushed to l2-mtd.git, thanks
-
-If you believe this is suitable for stable, please let me know.
+patching file drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+Hunk #1 FAILED at 921.
+Hunk #2 FAILED at 946.
+Hunk #3 FAILED at 996.
+3 out of 3 hunks FAILED -- saving rejects to file drivers/mtd/nand/gpmi-nan=
+d/gpmi-nand.c.rej
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-uMIMS8Ua1vh5vE/RZyi1
+--=-qfucCHryNieXtEpkQpYm
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -61,19 +63,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQyJ6vAAoJECmIfjd9wqK04noP/RlBK5y8+si/3XCknOeBvC4U
-SF1XDLjY5KOvIJVB4t91Te2lXWNmxX1JRIKP3yQPFkTzjkfO4lhvfrz1KHEVTkbI
-k9aRT6zowdVfX4u2X+a1UhBG/Mb0SjAmCXNYtxyY3MibBWGXBiMSzSyw92kgx+X9
-nbRNwwCa15iY8NMV73BJ6LRRoTYov+gAdvTEJ8w18CFCf5A4dUKd/fjBWnRYfprV
-QSaCofogJ7Y9GY7zP48cpjeMM/MiuWDaA3hQRswl/QBAZbkK3/whNLe3RPhizKxz
-t4qnnLU4XTttBK8w09uBPLVDhRCAk5D9tETsMj85TvOyfqOF2LnWHLqimbNCIOiG
-dhi4dx6rtKe7xQpIetz8v/csjDJKEqcaWRu5IHyyraBJErlgzzW68W4/uSV90A6g
-s7MMPuocZTKSqEELFMX8KAiw0sMJghNeZrhbG3PHa1/BEKJ7fQob4VBLON0BsGl7
-CWsJTnSvAdB15EMS6nozSsksnvIdXfqS5EjcJjwfCDADy3BSeO+MwFOTk3pdSofL
-2y3hSNqSUCYZmvwU+mH+cZ4XKSlPaq04o76nwJ2y1IYn8xflrvDYWg4DQj9k+4q5
-mZZydSbzGcf+tdeVAU4GE5IoANK2AM9hU6MF9eoaE//XQ2e+Z4gRAfu+Be2aEBao
-7gXJz09bjUlTPaZtzb+H
-=KfqA
+iQIcBAABAgAGBQJQyJ/+AAoJECmIfjd9wqK0eswQAL7FFOH1YJ9vrwW/fmbqkAOL
+lK3+ESyY/BzYjOSBXXh22FZsJFKEelwtaxrRwG3S5MkSQEOZdzETREv/KLHMgR1V
+hxlvK9e5hlGB/hhhWaZNCenMOay1FAgUHObsJn6QJLBCHWifyGURnKZP9TrNvf88
+udf3LhikyiKzIhxHIE/+P1nGajy6ZKuqgIRXPCT3Xz4jPA2pMDmGFzk3O4rkVA5h
+WYuNdk6aG52JpUk/0hm/2QT3bOI7MPPnO29eBp+41tyoDJ31W4F0ghRjCl09WYTY
+t4aCigXKZXcr+ZIofE4gExhiC1SZdoVAC8ynFyDRiBmH9g9SBknqKAsTe1vtLCJ/
++iIw39rYHgwkgC8GqvrTRtOcansLb6UlPkWrsXcflNlwfREI+UTGPXRApKRU/YMA
++XcO9EmT2fcTeNqjF7s2PbJNXqWkS7DnFj2ugD+MxDVpS7dctxtL0W9G9J1zKrin
+v9s8pYFCGt9FE6Vobx1oOhtEPrw+OhAR40/a2Er6uYDhaSuX51vXRVw4t71OMLa+
+lDD/SRPNJlVNBBl8O7O46U3glD3Z/NwFiVmTPOBax1hJBynC5qAwfmHtiMHgFRWB
+0D3pxBMkL/dK45apgKLWsMax082QGzeM613a92pd406NEkEsb0wZXhP4ndvXc5OE
+f2rCqBWJwQrexUtjT9br
+=3gms
 -----END PGP SIGNATURE-----
 
---=-uMIMS8Ua1vh5vE/RZyi1--
+--=-qfucCHryNieXtEpkQpYm--
