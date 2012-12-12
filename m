@@ -1,23 +1,26 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+Received: from mail-oa0-f49.google.com ([209.85.219.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TiokG-0000hi-Kv
- for linux-mtd@lists.infradead.org; Wed, 12 Dec 2012 16:01:17 +0000
-Date: Wed, 12 Dec 2012 17:01:08 +0100
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH] mtd: nand: gpmi: reset BCH earlier, too, to avoid NAND
- startup problems
-Message-ID: <20121212160108.GA2607@pengutronix.de>
-References: <1354740362-20412-1-git-send-email-w.sang@pengutronix.de>
- <1355325103.3400.2.camel@sauron.fi.intel.com>
+ id 1TioxH-0003IA-MF
+ for linux-mtd@lists.infradead.org; Wed, 12 Dec 2012 16:14:44 +0000
+Received: by mail-oa0-f49.google.com with SMTP id l10so931093oag.36
+ for <linux-mtd@lists.infradead.org>; Wed, 12 Dec 2012 08:14:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="gBBFr7Ir9EOA20Yy"
-Content-Disposition: inline
-In-Reply-To: <1355325103.3400.2.camel@sauron.fi.intel.com>
-Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- David Woodhouse <david.woodhouse@intel.com>,
- linux-arm-kernel@lists.infradead.org
+In-Reply-To: <CADx9zJDhV9+1hZWd8TPqNg7fs38qpY=wmp6yh3a4iLdeOtegPA@mail.gmail.com>
+References: <1355314912-9321-1-git-send-email-elezegarcia@gmail.com>
+ <CAFLxGvw9fL_U-KT9sysdyZOLry5skNWR6AUt_XNT10op38e+Gg@mail.gmail.com>
+ <CADx9zJDhV9+1hZWd8TPqNg7fs38qpY=wmp6yh3a4iLdeOtegPA@mail.gmail.com>
+Date: Wed, 12 Dec 2012 17:14:41 +0100
+Message-ID: <CAFLxGvyQ5q3T7JfsY3fqiEB1DKiEBj=jWZEEfJpApc0fuNv2AA@mail.gmail.com>
+Subject: Re: [RFC/PATCH v2] ubi: Add ubiblock read-write driver
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
+To: Gregory CLEMENT <gclement00@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Ezequiel Garcia <elezegarcia@gmail.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Michael Opdenacker <michael.opdenacker@free-electrons.com>,
+ Ezequiel Garcia <ezequiel@free-electrons.com>, linux-mtd@lists.infradead.org,
+ Tim Bird <tim.bird@am.sony.com>, Greg KH <gregkh@linuxfoundation.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,51 +30,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, Dec 12, 2012 at 4:50 PM, Gregory CLEMENT <gclement00@gmail.com> wrote:
+> 2012/12/12 richard -rw- weinberger <richard.weinberger@gmail.com>:
+>> Hi!
+>>
+>> A few comments...
+>>
+>> On Wed, Dec 12, 2012 at 1:21 PM, Ezequiel Garcia <elezegarcia@gmail.com> wrote:
+>>> --- /dev/null
+>>> +++ b/drivers/mtd/ubi/ubiblock.c
+>>> @@ -0,0 +1,830 @@
+>>> +/*
+>>> + * Copyright (c) 2012 Ezequiel Garcia
+>>> + * Copyright (c) 2011 Free Electrons
+>>> + *
+>>> + * This program is free software; you can redistribute it and/or modify
+>>> + * it under the terms of the GNU General Public License as published by
+>>> + * the Free Software Foundation; either version 2 of the License, or
+>>> + * (at your option) any later version.
+>>
+>> Linux is GPLv2 and not v2 or any later version...
+>
+> I think it is more complicate than this.
+> In the kernel you have code under GPLv2, GPLv2+ and even BSD licenses.
+> All these licenses are compatible but if you want to distribute all the sources
+> of the kernel then you are under the more restrictive license: GPLv2.
+> So we can say that kernel is GPLv2, but it doesn't prevent to submit code
+> under GPLv2+.
 
---gBBFr7Ir9EOA20Yy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The kernel is GPLv2. period.
 
-On Wed, Dec 12, 2012 at 05:11:43PM +0200, Artem Bityutskiy wrote:
-> On Wed, 2012-12-05 at 21:46 +0100, Wolfram Sang wrote:
-> > It could happen (1 out of 100 times) that NAND did not start up
-> > correctly after warm rebooting, so the kernel could not find the UBI or
-> > DMA timed out due to a stalled BCH. When resetting BCH together with
-> > GPMI, the issue could not be observed anymore (after 10000+ reboots). We
-> > probably need the consistent state already before sending any command to
-> > NAND, even when no ECC is needed. I chose to keep the extra reset for
-> > BCH when changing the flash layout to be on the safe side.
-> >=20
-> > Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
-> > Cc: Huang Shijie <b32955@freescale.com>
-> > Cc: Artem Bityutskiy <dedekind1@gmail.com>
-> > Cc: David Woodhouse <david.woodhouse@intel.com>
-> > ---
-> >=20
-> > Would be really great to have in 3.7. Also a stable-candidate IMO.
->=20
-> Pushed to l2-mtd.git, thanks
->=20
-> If you believe this is suitable for stable, please let me know.
+> There seems to have a couple of files under GPLv2:
+> git grep "(at your option) any later version" | wc -l
+> 6800
 
-I strongly believe that.
+These lines are wrong.
 
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---gBBFr7Ir9EOA20Yy
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAlDIqkQACgkQD27XaX1/VRtrBwCfbjWamaayesbwosHgPMYSpKcz
-uswAoMVlHVTuFBGfWloQX30893Jia4eK
-=7i81
------END PGP SIGNATURE-----
-
---gBBFr7Ir9EOA20Yy--
+-- 
+Thanks,
+//richard
