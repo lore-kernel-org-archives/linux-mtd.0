@@ -1,18 +1,34 @@
-Received: from newsmtp5.atmel.com ([204.2.163.5] helo=sjogate2.atmel.com)
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Tij0e-0001s7-Uo
- for linux-mtd@lists.infradead.org; Wed, 12 Dec 2012 09:53:51 +0000
-Received: from [10.217.3.59] ([10.217.3.59])
- by sjogate2.atmel.com (8.13.6/8.13.6) with ESMTP id qBC9mQPV029507
- for <linux-mtd@lists.infradead.org>; Wed, 12 Dec 2012 01:48:27 -0800 (PST)
-Message-ID: <50C85426.2090309@atmel.com>
-Date: Wed, 12 Dec 2012 17:53:42 +0800
-From: Josh Wu <josh.wu@atmel.com>
+Message-ID: <50C86767.60806@ti.com>
+Date: Wed, 12 Dec 2012 16:45:51 +0530
+From: Sekhar Nori <nsekhar@ti.com>
 MIME-Version: 1.0
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: [qestion] about multi-page read/write in nand flash
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+To: "Philip, Avinash" <avinashphilip@ti.com>
+Subject: Re: [PATCH v3 2/3] mtd: devices: elm: Add support for ELM error
+ correction
+References: <1354189595-12784-1-git-send-email-avinashphilip@ti.com>
+ <1354189595-12784-3-git-send-email-avinashphilip@ti.com>
+ <50C1C6E3.5020300@ti.com>
+ <518397C60809E147AF5323E0420B992E3EA1FA14@DBDE01.ent.ti.com>
+In-Reply-To: <518397C60809E147AF5323E0420B992E3EA1FA14@DBDE01.ent.ti.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
+Cc: "Mohammed, Afzal" <afzal@ti.com>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "tony@atomide.com" <tony@atomide.com>,
+ "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>,
+ "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Rob Herring <rob.herring@calxeda.com>, "Hebbar,
+ Gururaja" <gururaja.hebbar@ti.com>, Grant Likely <grant.likely@secretlab.ca>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Rob Landley <rob@landley.net>,
+ "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+ "rmk+kernel@arm.linux.org.uk" <rmk+kernel@arm.linux.org.uk>,
+ "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,15 +38,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On 12/10/2012 12:13 PM, Philip, Avinash wrote:
+> On Fri, Dec 07, 2012 at 16:07:23, Nori, Sekhar wrote:
+>> On 11/29/2012 5:16 PM, Philip, Avinash wrote:
 
-I have a question about the nand flash driver. Whether the 
-nand_ecc_ctrl->read_page/write_page can do more than one page operation? 
-or is there any interface for nand_ecc_ctrl to let driver support 
-multi-page read/write?
+[...]
 
-Since in that case I can do some optimization in multiple pages 
-read/write operation. for example: prepare the buffer for next page.
+>>> +struct device *elm_request(enum bch_ecc bch_type)
+>>> +{
+>>> +	struct elm_info *info;
+>>> +
+>>> +	list_for_each_entry(info, &elm_devices, list) {
+>>> +		if (info && info->dev) {
+>>> +				info->bch_type = bch_type;
+>>> +				elm_config(info);
+>>> +				return info->dev;
+>>> +		}
+>>> +	}
+>>
+>> This will always return the first ELM device probed since you never
+>> remove the allocated device from the list.
+> 
+> But now I realized that, there is no mechanism of freeing the requested
+> resource.
 
-Best Regards,
-Josh Wu
+Right. You essentially want to assign an ELM instance to work with a
+given instance of GPMC and that could be done statically too. Just pass
+phandle of ELM node in GPMC DT data?
+
+> So I will add mechanism to request ELM module successfully only if ELM
+> module is not requested already and add mechanism to free it, on NAND
+> driver module unload (loadable module support). This way ELM driver
+> can achieve multi instance support.
+> 
+>> I wonder why you really need a list?
+> 
+> The prime motivation for the list is the driver should support multi
+> instances of ELM by removing global symbols.
+
+I still think a request/free API is bit too much for something that will
+turn out to be a simple 1-to-1 match anyway. Can you please look at the
+phandle suggestion above? I am no DT expert, but I think that will work
+for your use case.
+
+Thanks,
+Sekhar
