@@ -1,19 +1,18 @@
-Received: from mga03.intel.com ([143.182.124.21])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TinrQ-00031o-Oh
- for linux-mtd@lists.infradead.org; Wed, 12 Dec 2012 15:04:38 +0000
-Message-ID: <1355324722.3400.0.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 0/3] mtd: nand/docg4: set of fixes and enhancements
+Message-ID: <1355325103.3400.2.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: nand: gpmi: reset BCH earlier, too, to avoid NAND
+ startup problems
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Dunn <mikedunn@newsguy.com>
-Date: Wed, 12 Dec 2012 17:05:22 +0200
-In-Reply-To: <1354910843-5598-1-git-send-email-mikedunn@newsguy.com>
-References: <1354910843-5598-1-git-send-email-mikedunn@newsguy.com>
+To: Wolfram Sang <w.sang@pengutronix.de>
+Date: Wed, 12 Dec 2012 17:11:43 +0200
+In-Reply-To: <1354740362-20412-1-git-send-email-w.sang@pengutronix.de>
+References: <1354740362-20412-1-git-send-email-w.sang@pengutronix.de>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-0HgShI1GKsBFdc7Y4QWr"
+ boundary="=-uMIMS8Ua1vh5vE/RZyi1"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ David Woodhouse <david.woodhouse@intel.com>,
+ linux-arm-kernel@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,27 +24,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-0HgShI1GKsBFdc7Y4QWr
+--=-uMIMS8Ua1vh5vE/RZyi1
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2012-12-07 at 12:07 -0800, Mike Dunn wrote:
-> Hi, this is a short set of minor fixes and enhancements to the docg4, tes=
-ted on
-> my Palm Treo 680.
+On Wed, 2012-12-05 at 21:46 +0100, Wolfram Sang wrote:
+> It could happen (1 out of 100 times) that NAND did not start up
+> correctly after warm rebooting, so the kernel could not find the UBI or
+> DMA timed out due to a stalled BCH. When resetting BCH together with
+> GPMI, the issue could not be observed anymore (after 10000+ reboots). We
+> probably need the consistent state already before sending any command to
+> NAND, even when no ECC is needed. I chose to keep the extra reset for
+> BCH when changing the flash layout to be on the safe side.
 >=20
-> Mike Dunn (3):
->   mtd: nand/docg4: add support for writing in reliable mode
->   mtd: nand/docg4: reserve bb marker area in ecclayout
->   mtd: nand/docg4: fix and improve read of factory bbt
+> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
+> Cc: Huang Shijie <b32955@freescale.com>
+> Cc: Artem Bityutskiy <dedekind1@gmail.com>
+> Cc: David Woodhouse <david.woodhouse@intel.com>
+> ---
+>=20
+> Would be really great to have in 3.7. Also a stable-candidate IMO.
 
-Pushed to l2-mtd.git, thanks!
+Pushed to l2-mtd.git, thanks
+
+If you believe this is suitable for stable, please let me know.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-0HgShI1GKsBFdc7Y4QWr
+--=-uMIMS8Ua1vh5vE/RZyi1
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -53,19 +61,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQyJ0yAAoJECmIfjd9wqK0wegP/iQeDXY6tOPkRH6m5781JVU0
-kS7mjNjOU8Fr/DNMXEEyIl6/VWCPqP+YMuaqvNBUIVmB9XQk20j3Jk5hy9HQ0rKQ
-B/sThXWtZIxT46w9gAq7bj8uMU/1s1ZGZ9ZhN37UZP4n5GoNbp17ypO1GGw3/EIu
-Wkr4X4v0ZQqlk/Ic/LG8Q8ebiDMoODneWuPMCWFJdTiQaiWuz7K8+fH5/S4RnNBg
-3xJxOhgILiAkE3vFlWqm2K7JThldE7lrZY4TPGOSrDGRt7V44sPTzasKqIQ3invS
-EHTrzxf7naMBBVHA+Vb1sDpFBS/XFziZMFPtYWygP53zPHSY8Oc2gpva7LzmDhFS
-VQRgTgfjtwD9BfftrLWgiYzUXubNiaH58D3dVFj45KpH357dW25pYYOikEdkueHC
-S/YsoOFhBH7URXMLXFlZyXbhGcDQAnDkOvA7hWpX6mHx1eyMt+lvrToWvRwwFdjc
-6/0nUMyloBm/2X+gw2t29bbYF3g347V7oOG5rQiMuhJYcMLERNU+r0hVFInwwTgN
-vkdvZC+CIh8czEXwB6RUohbNdJBESLqDszdbpDaDebhu7Qoq55TlVGHgyNU8tgy3
-Rc56S3iIHhIX/AP7mDgdncGPgcJ3n2jBcy3O00D0zOpJm/oxhV1myXnuMNc8orxy
-OTqwDn/iLReccM+8bwQy
-=LFDS
+iQIcBAABAgAGBQJQyJ6vAAoJECmIfjd9wqK04noP/RlBK5y8+si/3XCknOeBvC4U
+SF1XDLjY5KOvIJVB4t91Te2lXWNmxX1JRIKP3yQPFkTzjkfO4lhvfrz1KHEVTkbI
+k9aRT6zowdVfX4u2X+a1UhBG/Mb0SjAmCXNYtxyY3MibBWGXBiMSzSyw92kgx+X9
+nbRNwwCa15iY8NMV73BJ6LRRoTYov+gAdvTEJ8w18CFCf5A4dUKd/fjBWnRYfprV
+QSaCofogJ7Y9GY7zP48cpjeMM/MiuWDaA3hQRswl/QBAZbkK3/whNLe3RPhizKxz
+t4qnnLU4XTttBK8w09uBPLVDhRCAk5D9tETsMj85TvOyfqOF2LnWHLqimbNCIOiG
+dhi4dx6rtKe7xQpIetz8v/csjDJKEqcaWRu5IHyyraBJErlgzzW68W4/uSV90A6g
+s7MMPuocZTKSqEELFMX8KAiw0sMJghNeZrhbG3PHa1/BEKJ7fQob4VBLON0BsGl7
+CWsJTnSvAdB15EMS6nozSsksnvIdXfqS5EjcJjwfCDADy3BSeO+MwFOTk3pdSofL
+2y3hSNqSUCYZmvwU+mH+cZ4XKSlPaq04o76nwJ2y1IYn8xflrvDYWg4DQj9k+4q5
+mZZydSbzGcf+tdeVAU4GE5IoANK2AM9hU6MF9eoaE//XQ2e+Z4gRAfu+Be2aEBao
+7gXJz09bjUlTPaZtzb+H
+=KfqA
 -----END PGP SIGNATURE-----
 
---=-0HgShI1GKsBFdc7Y4QWr--
+--=-uMIMS8Ua1vh5vE/RZyi1--
