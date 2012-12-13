@@ -1,20 +1,20 @@
-Received: from mga03.intel.com ([143.182.124.21])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Tj76S-00027z-Mq
- for linux-mtd@lists.infradead.org; Thu, 13 Dec 2012 11:37:25 +0000
-Message-ID: <1355398701.3400.48.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: nand: typo in nand_id_has_period() comments
+Message-ID: <1355398862.3400.49.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: nand: gpmi: reset BCH earlier, too, to avoid NAND
+ startup problems
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Thu, 13 Dec 2012 13:38:21 +0200
-In-Reply-To: <CAN8TOE-mh1C=7Pw_VXWCGsqfEbk4c3E2WT_ZM-e2Ak5=EnVKEg@mail.gmail.com>
-References: <1352958860-16430-1-git-send-email-computersforpeace@gmail.com>
- <CAN8TOE-mh1C=7Pw_VXWCGsqfEbk4c3E2WT_ZM-e2Ak5=EnVKEg@mail.gmail.com>
+To: Wolfram Sang <w.sang@pengutronix.de>
+Date: Thu, 13 Dec 2012 13:41:02 +0200
+In-Reply-To: <20121212160108.GA2607@pengutronix.de>
+References: <1354740362-20412-1-git-send-email-w.sang@pengutronix.de>
+ <1355325103.3400.2.camel@sauron.fi.intel.com>
+ <20121212160108.GA2607@pengutronix.de>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-cs4OeHelwx9yuvopavb3"
+ boundary="=-JWPyXJ47q5fM3+YJsuJY"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ David Woodhouse <david.woodhouse@intel.com>,
+ linux-arm-kernel@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,27 +26,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-cs4OeHelwx9yuvopavb3
+--=-JWPyXJ47q5fM3+YJsuJY
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2012-12-11 at 13:44 -0800, Brian Norris wrote:
-> On Wed, Nov 14, 2012 at 9:54 PM, Brian Norris
-> <computersforpeace@gmail.com> wrote:
-> > The simple example provided in the comments for nand_id_has_period()
-> > actually has a period of 3, not 2. Silly mistake...
-> >
-> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
->=20
-> Bump?
+On Wed, 2012-12-12 at 17:01 +0100, Wolfram Sang wrote:
 
-Ouch! Pushed to l2, thanks!
+> > If you believe this is suitable for stable, please let me know.
+>=20
+> I strongly believe that.
+
+OK, added
+
+Cc: stable@vger.kernel.org
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-cs4OeHelwx9yuvopavb3
+--=-JWPyXJ47q5fM3+YJsuJY
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -54,19 +52,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQyb4tAAoJECmIfjd9wqK0hywQAKPq0MeMuwqDs038wzyQ7eUm
-61kaoUtFipojVFv5zVpjHe9iIBGQSizbN3cCxU7YElhzSQr4FY1X1cXH/HjhGWvT
-iNTm8DNB6ES05sBgG12sib2WiOBBfeBMAoBkYcpwuzfRENqko/FJNmz7hdo7BiiX
-05gz9VFEoXSvHDmTvhiRfD9DcxGgsho1RNqsSobLpRv5afuVgyXp6fsaIr4GDV8g
-duqcyGPidLpx9niRLHIegQyRBeSNSxpXA2R7z6xp3ZMXACPsB022x5ZUMdJupbd1
-3XULsB9NNIW224dUm6pZ6NwqXMDF+3I6/tcgUSzo9wjNBmMBi3n2pvcSPNMl6gLO
-CGO5gxRh3IhPWJpOuMY0Xrztj5YQHlfoU2/8IiS2HE6tXIL9CVrSYw+b/ocezB12
-nFCqWiPTgvcBCGVabMEp4uiriicreloOCQNqq4bTYy1Cp9mi630TFn5bB5lOOrch
-Udk92r+sacpLkO5Fa2t8ZeumwSXu3xnh1c/twSj9eesMYhkCsAhcXtlXmCFSw/WH
-W7moBfpN7qZg5sGBCDpT8/Pz1ynxa11kvwokm8weZrLr75M/oGy0pJldKk9z/zgd
-mGL11x7r0UlpNav2YuRxVXQ9w5vtlW4HxYm1DtUVltL8l8B46wt5Syj2c1xOJpvU
-qy4Iz+YjtXTOrXHQsy0S
-=inwI
+iQIcBAABAgAGBQJQyb7OAAoJECmIfjd9wqK0+z0P/2mKNvXb2WyZ95MJRN/8OXB6
+yTnY0DXv3KWxzgug8RjfcmVJNsoeMVehD1BUHARqS3RKczoP8PExOaHg78V491Ii
+Esv/GVwHv5mJh+A+Uqjrexrbi5vhFJKXnbQAIVCqINeX7M6qOSOn84YrM/nXlEgJ
+TVGmHDuTmJKOEdUmpvDBdCe0fvRr0UNVS9M5mAwGfgOZnK2j8linZciBJuThBggc
+MMBxnU6H76FHNYAULg2c/o/FIN8d3OoumKsKaqYECr6X5Le2vnUhtSvtw2y6MmHZ
+xQdop0Xkfoah+P4k+YTIoQDGkgXBDVU47Mrnci96XPYTxCj0FhsMTgrdrdjL8LtZ
+MZtHWpN1+xQv7qvkZeceYyuW3kyajv7o14w37GBAUwts/a61sNi6OC77uTwQ5JeW
+k5k5NH1HbI2nSUHfh4UDcUcfBcb2iSSYsB5uCzEtLTZGGlrcR9oB7K9/wrjYVkn/
+vS5QSaeFEyO3lEEsYAeEUW5o9dt1oTvNX5Y3N5lrMFzwjLd56IrZR3bJr/R8kkb+
+Vdyv1/ZZX5oAE/AqTTq9y8yCfpSw2LR0kWUeEqHBaARPeyIcQuII9rLHNiXyLfPy
+fU/cBvdJ3lPuAEhfrdxjl/pxky9t26lBK40eOXtb74GLthXzC8k8Qux37Rk5XPoV
+Ld2Mf47SjV4A1neXv7Bt
+=+ahH
 -----END PGP SIGNATURE-----
 
---=-cs4OeHelwx9yuvopavb3--
+--=-JWPyXJ47q5fM3+YJsuJY--
