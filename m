@@ -1,9 +1,9 @@
 Received: from mail.pce.us.com ([69.40.160.195])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TjL8a-00045W-RV
- for linux-mtd@lists.infradead.org; Fri, 14 Dec 2012 02:36:33 +0000
-Message-ID: <50CA90AD.8010800@itwatchdogs.com>
-Date: Thu, 13 Dec 2012 20:36:29 -0600
+ id 1TjL8r-00046S-4U
+ for linux-mtd@lists.infradead.org; Fri, 14 Dec 2012 02:36:49 +0000
+Message-ID: <50CA90BB.5030801@itwatchdogs.com>
+Date: Thu, 13 Dec 2012 20:36:43 -0600
 From: Zach Sadecki <zsadecki@itwatchdogs.com>
 MIME-Version: 1.0
 To: <dedekind1@gmail.com>
@@ -29,7 +29,7 @@ Always report corrected and failed ECC stats back up to the MTD layer.  Also
 return max_bitflips from read_page() as is expected from NAND drivers now.
 
 Signed-off-by: Zach Sadecki <zsadecki@itwatchdogs.com>
-Acked-by: Huang Shijie <b32955 at freescale.com>
+Acked-by: Huang Shijie <b32955@freescale.com>
 ---
   drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   27 ++++++++-------------------
   1 file changed, 8 insertions(+), 19 deletions(-)
