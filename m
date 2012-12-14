@@ -1,14 +1,21 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+Received: from mail.pce.us.com ([69.40.160.195])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TjBqa-0007nU-4n
- for linux-mtd@lists.infradead.org; Thu, 13 Dec 2012 16:41:20 +0000
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] ubiformat: fix error path
-Date: Thu, 13 Dec 2012 17:41:14 +0100
-Message-Id: <1355416874-23907-1-git-send-email-w.sang@pengutronix.de>
-Cc: Wolfram Sang <w.sang@pengutronix.de>,
- Artem Bityutskiy <dedekind1@gmail.com>
+ id 1TjL8a-00045W-RV
+ for linux-mtd@lists.infradead.org; Fri, 14 Dec 2012 02:36:33 +0000
+Message-ID: <50CA90AD.8010800@itwatchdogs.com>
+Date: Thu, 13 Dec 2012 20:36:29 -0600
+From: Zach Sadecki <zsadecki@itwatchdogs.com>
+MIME-Version: 1.0
+To: <dedekind1@gmail.com>
+Subject: [PATCH] mtd: gpmi: Always report ECC stats and return max_bitflips
+References: <50BD01F8.3040003@itwatchdogs.com>
+ <1355147097.2657.33.camel@sauron.fi.intel.com>
+ <50C5FD4A.6090405@itwatchdogs.com>
+ <1355398036.3400.45.camel@sauron.fi.intel.com>
+In-Reply-To: <1355398036.3400.45.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,42 +25,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-A few error paths were closing the device, although it was not opened
-yet.
+Always report corrected and failed ECC stats back up to the MTD layer.  Also
+return max_bitflips from read_page() as is expected from NAND drivers now.
 
-Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
+Signed-off-by: Zach Sadecki <zsadecki@itwatchdogs.com>
+Acked-by: Huang Shijie <b32955 at freescale.com>
 ---
- ubi-utils/ubiformat.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   27 ++++++++-------------------
+  1 file changed, 8 insertions(+), 19 deletions(-)
 
-diff --git a/ubi-utils/ubiformat.c b/ubi-utils/ubiformat.c
-index c49af29..899f9fc 100644
---- a/ubi-utils/ubiformat.c
-+++ b/ubi-utils/ubiformat.c
-@@ -740,7 +740,7 @@ int main(int argc, char * const argv[])
- 	if (!is_power_of_2(mtd.min_io_size)) {
- 		errmsg("min. I/O size is %d, but should be power of 2",
- 		       mtd.min_io_size);
--		goto out_close;
-+		goto out_close_mtd;
- 	}
- 
- 	if (!mtd_info.sysfs_supported) {
-@@ -768,13 +768,13 @@ int main(int argc, char * const argv[])
- 		/* Do some sanity check */
- 		if (args.subpage_size > mtd.min_io_size) {
- 			errmsg("sub-page cannot be larger than min. I/O unit");
--			goto out_close;
-+			goto out_close_mtd;
- 		}
- 
- 		if (mtd.min_io_size % args.subpage_size) {
- 			errmsg("min. I/O unit size should be multiple of "
- 			       "sub-page size");
--			goto out_close;
-+			goto out_close_mtd;
- 		}
- 	}
- 
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 5cd141f..1535bd5 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -921,8 +921,7 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+  	dma_addr_t    auxiliary_phys;
+  	unsigned int  i;
+  	unsigned char *status;
+-	unsigned int  failed;
+-	unsigned int  corrected;
++	unsigned int  max_bitflips = 0;
+  	int           ret;
+  
+  	pr_debug("page number is : %d\n", page);
+@@ -946,35 +945,25 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+  			payload_virt, payload_phys);
+  	if (ret) {
+  		pr_err("Error in ECC-based read: %d\n", ret);
+-		goto exit_nfc;
++		return ret;
+  	}
+  
+  	/* handle the block mark swapping */
+  	block_mark_swapping(this, payload_virt, auxiliary_virt);
+  
+  	/* Loop over status bytes, accumulating ECC status. */
+-	failed		= 0;
+-	corrected	= 0;
+-	status		= auxiliary_virt + nfc_geo->auxiliary_status_offset;
++	status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
+  
+  	for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
+  		if ((*status == STATUS_GOOD) || (*status == STATUS_ERASED))
+  			continue;
+  
+  		if (*status == STATUS_UNCORRECTABLE) {
+-			failed++;
++			mtd->ecc_stats.failed++;
+  			continue;
+  		}
+-		corrected += *status;
+-	}
+-
+-	/*
+-	 * Propagate ECC status to the owning MTD only when failed or
+-	 * corrected times nearly reaches our ECC correction threshold.
+-	 */
+-	if (failed || corrected >= (nfc_geo->ecc_strength - 1)) {
+-		mtd->ecc_stats.failed    += failed;
+-		mtd->ecc_stats.corrected += corrected;
++		mtd->ecc_stats.corrected += *status;
++		max_bitflips = max_t(unsigned int, max_bitflips, *status);
+  	}
+  
+  	if (oob_required) {
+@@ -996,8 +985,8 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+  			this->payload_virt, this->payload_phys,
+  			nfc_geo->payload_size,
+  			payload_virt, payload_phys);
+-exit_nfc:
+-	return ret;
++
++	return max_bitflips;
+  }
+  
+  static int gpmi_ecc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
 -- 
-1.7.10.4
+1.7.9.5
