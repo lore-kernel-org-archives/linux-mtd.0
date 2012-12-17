@@ -1,30 +1,21 @@
-Received: from plane.gmane.org ([80.91.229.3])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TkPIF-0006vo-13
- for linux-mtd@lists.infradead.org; Mon, 17 Dec 2012 01:14:56 +0000
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1TkPIO-00043v-NC
- for linux-mtd@lists.infradead.org; Mon, 17 Dec 2012 02:15:05 +0100
-Received: from mail.nanometrics.ca ([mail.nanometrics.ca])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <linux-mtd@lists.infradead.org>; Mon, 17 Dec 2012 02:15:04 +0100
-Received: from christophercordahi by mail.nanometrics.ca with local (Gmexim
- 0.1 (Debian)) id 1AlnuQ-0007hv-00
- for <linux-mtd@lists.infradead.org>; Mon, 17 Dec 2012 02:15:04 +0100
-To: linux-mtd@lists.infradead.org
-From: Christopher Cordahi <christophercordahi@nanometrics.ca>
-Subject: Re: [PATCH 1/3] mtd: cmdlinepart: make the partitions rule more strict
-Date: Mon, 17 Dec 2012 01:11:24 +0000 (UTC)
-Message-ID: <loom.20121217T021112-577@post.gmane.org>
-References: <1346001700-26895-1-git-send-email-shijie8@gmail.com>
- <1346656701.3061.8.camel@sauron.fi.intel.com>
- <CAMiH66GX7h5tve9CLHzj8MMrUv90fL+4BWYPZ6KQkP5bbXY9ag@mail.gmail.com>
- <1346686544.3061.75.camel@sauron.fi.intel.com>
- <20120904144826.7b9b7518@halley> <5046B504.6000608@freescale.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Received: from mout.web.de ([212.227.15.4])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TkRMY-0001Gg-Ub
+ for linux-mtd@lists.infradead.org; Mon, 17 Dec 2012 03:27:31 +0000
+From: Martin Walch <walch.martin@web.de>
+To: dedekind1@gmail.com
+Subject: Re: [PATCH] mtd: nand: Kconfig: drop utf8 characters
+Date: Mon, 17 Dec 2012 04:27:20 +0100
+Message-ID: <1568980.QkbR4hXzWB@tacticalops>
+In-Reply-To: <1354541353.11583.12.camel@sauron.fi.intel.com>
+References: <1353971245-26735-1-git-send-email-wolfram@the-dreams.de>
+ <1353971928.2383.18@tyr> <1354541353.11583.12.camel@sauron.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart3677513.YEyCJF3qZI";
+ micalg="pgp-sha1"; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 7Bit
+Cc: Scott Wood <scottwood@freescale.com>, Wolfram Sang <wolfram@the-dreams.de>,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,69 +25,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Huang Shijie <b32955 <at> freescale.com> writes:
 
-> 于 2012年09月04日 19:48, Shmulik Ladkani 写道:
-> >
-> > My POV is that sorting and verification is not needed, is troublesome,
-> > and might affect users in ways they don't expect.
-> >
-> > So far, mtdparts commandline parsing has been very lenient and liberal.
-> > I think we should keep this approach; give the user the flexibility,
-> > he'll be responsible to provide meaningful cmdline parts for his
-> > system.
-> >
-> > Actually, Huang's initial complaint was that 'parse_cmdline_partitions'
-> > was too strict - the truncated partition was not registered!
-> >
-> > Now, philosophy aside, let's talk about some usecases that might break.
-> >
-> > I remember overlapping partitions (more precisely, partition that is a
-> > subset of another) being common in some embedded systems, where the
-> > "rootfs" and "kernel" partitions are a subset of the "overall image"
-> > partition.
-> > Why break this? if users enjoy the flexibility, and careful not to
-> > create silly partitions, I'm in favor of keeping the flexibility.
-> >
-> > Same goes for sorting.
-> > If one has a system hacked to work with mtd0 hardcodedly, but mtd0's
-> > physical location is somewhere at the end of the device, why reorder the
-> > partitions enumeration affecting this system?
-> >
-> > I'd say keep it simple and flexible.
-> yes, it's really simple and flexible.
+--nextPart3677513.YEyCJF3qZI
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
 
-Is it agreed that sorting is not necessary and will not be implemented?
-If so are there objections to me modifying the documentation to indicate
-that out of order partitions is part of the supported design?
+Am Montag, 3. Dezember 2012, 15:29:13 schrieb Artem Bityutskiy:
+> On Mon, 2012-11-26 at 17:18 -0600, Scott Wood wrote:
+> > On 11/26/2012 05:07:25 PM, Wolfram Sang wrote:
+> > > The Linux Kernel Configuration system (lkc) expects 8 bit characters
+> > > only (declared in scripts/kconfig/zconf.l: %option 8bit).
+> > 
+> > That option contrasts with being limited to 7-bit characters, not with
+> > accepting UTF-8.  It may be that kconfig has problems with UTF-8, but I
+> > don't think this is why.
+> 
+> Whatever has problems with UTF-8 - it is better to fix that instead of
+> hiding the problem by removing UTF-8 characters.
 
-In my embedded distribution, I would like to introduce a MTD partition
-at the end of the list to not affect existing hardcoded MTD numbers.
+The kernel configuration system does not support multibyte characters. I have 
+not found any hint that support for multibyte characters has been specified or 
+taken into account. In many places throughout the configuration system, only 
+single byte characters are assumed. In bug #43067
 
-The fw_printenv/fw_setenv command line interface to U-Boot environment
-makes use of a /etc/fw_env.config with hardcoded device numbers which
-would be broken by a sort.
+> https://bugzilla.kernel.org/show_bug.cgi?id=43067
 
-Although my out of order partitions worked, I couldn't find any
-documentation indicating it was a supported feature.  This thread with
-Artem's support for sorting got me worried.
+I have attached screenshots showing a problem with utf-8 characters in the 
+interactive nconfig menu.
 
-If the only reason for sorting is to prevent overlapping partitions,
-I think this can be written just as efficiently without a sort although
-Shmulik also gives a reason why this restriction should not exist.
-I'd prefer to accept that task rather than have to handle changing
-MTD numbers.
+More usage of utf-8 characters could even lead to worse problems: the flex 
+scanner only allows the characters [A-Za-z0-9_] in symbol names. Other input 
+will make the scanner ignore a character or refuse the input at all ("syntax 
+error").
 
-> But I think it's not wise to export the 0-size partition to user.
-> The user may confused at this.
+The handling of multibyte characters in string values depends on the 
+configuration menu in use. menuconfig will not allow any multibyte input. When 
+editing a predefined string with multibyte characters in it, things will break. 
+nconfig is even worse. xconfig substitutes characters with '?'.
 
-Although I just submitted a patch to improve this, personally I think
-if a user specifies a zero sized partition, they should get it.  Or if
-it's inherently incorrect I think it should be an error.  Similarly
-I'd expect the same for truncated partitions, either provide the size
-specified or error.  Since I don't ever foresee using either of these
-two features I don't have any objections to current situation.  These
-are just my $0.02
+Character counts do not work correctly. When using many multibyte characters 
+funny things happen like text lines being cut off.
 
---
-Chris
+To make a long story short: multibyte characters in Kconfig files lead to 
+undefined behaviour. This is no implementation bug. The configuration system 
+just has not been designed for processing them. So utf-8 support can not be 
+achieved with an easy fix, but will need comprehensive changes.
+
+I do not know if anyone is willing to actually make all the necessary work to 
+properly support utf-8 in the configuration system. However, I suppose this 
+will not happen any time soon. Therefore I suggest removing the multibyte 
+characters for now. 
+
+Regards
+Martin Walch
+-- 
+
+--nextPart3677513.YEyCJF3qZI
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.19 (GNU/Linux)
+
+iEYEABECAAYFAlDOkRgACgkQM6S4K8IXn9f7RQCdHciP/YqvwpjjhMB0qvWDneUk
+lqMAoKOdd9wyhflZzbQnw/pNz+Fu7G2w
+=NLF+
+-----END PGP SIGNATURE-----
+
+--nextPart3677513.YEyCJF3qZI--
