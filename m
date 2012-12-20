@@ -1,19 +1,25 @@
-Received: from mga14.intel.com ([143.182.124.37])
+Received: from mail.comelit.it ([213.149.219.85] helo=relayer.comelit.it)
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TlbCw-0002BY-3P
- for linux-mtd@lists.infradead.org; Thu, 20 Dec 2012 08:10:23 +0000
-Message-ID: <1355991091.4106.64.camel@sauron.fi.intel.com>
-Subject: [GIT PULL] UBI changes for 3.8-rc1
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 20 Dec 2012 10:11:31 +0200
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-idqWTdFJ4Wz2A44gfrt5"
-Mime-Version: 1.0
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Reply-To: dedekind1@gmail.com
+ id 1TliZR-0004TL-2o
+ for linux-mtd@lists.infradead.org; Thu, 20 Dec 2012 16:02:10 +0000
+Message-ID: <50D33678.4080904@comelit.it>
+Date: Thu, 20 Dec 2012 17:02:00 +0100
+From: Luca Ceresoli <luca.ceresoli@comelit.it>
+MIME-Version: 1.0
+To: =?ISO-8859-1?Q?Andreas_Bie=DFmann?= <andreas.devel@googlemail.com>
+Subject: Re: [U-Boot] Bricked when trying to attach UBI
+References: <50D1A4C2.6020207@comelit.it> <50D1DC30.1060701@gmail.com>
+ <50D1E3AD.30208@comelit.it> <50D1E6BF.9090407@gmail.com>
+ <50D1FB46.9000209@comelit.it>
+In-Reply-To: <50D1FB46.9000209@comelit.it>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>, kmpark@infradead.org,
+ Maxim Levitsky <maximlevitsky@gmail.com>,
+ "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
+ Holger Brunck <holger.brunck@keymile.com>,
+ Luca Ceresoli <luca@lucaceresoli.net>, linux-mtd@lists.infradead.org,
+ Stefan Roese <sr@denx.de>, Brian Norris <norris@broadcom.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,104 +29,255 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
---=-idqWTdFJ4Wz2A44gfrt5
-Content-Type: multipart/mixed; boundary="=-iCT7nJabTiKRDAkOsVlT"
+I'm Cc'ing the linux-mtd list as well as the authors of the Linux
+commits cited below.
 
+For these new readers: I reported a problem with U-Boot 2012.04.01 not
+being able to attach an UBI partition in NAND, while Linux (2.6.37) can
+attach and repair it.
 
---=-iCT7nJabTiKRDAkOsVlT
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+It looks like an U-Boot bug, but I discovered strange things around the
+chip->badblockbits variable (in the NAND code) by comparing the
+relevant code in U-Boot and Linux.
 
-Hi Linus,
+Sorry for Cc'ing so many people, but following this issue I was lead
+from one subsystem to another (and from U-Boot to Linux).
 
-please, pull UBI changes.
+Previous discussion is here:
+http://thread.gmane.org/gmane.comp.boot-loaders.u-boot/149624
 
-The following changes since commit 6f0c0580b70c89094b3422ba81118c7b959c7556=
-:
+Luca Ceresoli wrote:
+> Hi Andreas,
+>
+> Andreas Bießmann wrote:
+>> Hi Luca,
+>>
+>> On 19.12.2012 16:56, Luca Ceresoli wrote:
+>>> Hi Andreas,
+>>>
+>>> Andreas Bießmann wrote:
+>>> ...
+>>>>> Creating 1 MTD partitions on "nand0":
+>>>>> 0x000000100000-0x000010000000 : "mtd=3"
+>>>>> UBI: attaching mtd1 to ubi0
+>>>>> UBI: physical eraseblock size:   131072 bytes (128 KiB)
+>>>>> UBI: logical eraseblock size:    129024 bytes
+>>>>> UBI: smallest flash I/O unit:    2048
+>>>>> UBI: sub-page size:              512
+>>>>> UBI: VID header offset:          512 (aligned 512)
+>>>>> UBI: data offset:                2048
+>>>>> UBI error: ubi_wl_init_scan: no enough physical eraseblocks (0,
+>>>>> need 1)
+>>>>>
+>>>>> Now the device is totally blocked, and power cycling does not change
+>>>>> the result.
+>>>>
+>>>> have you tried to increase the malloc arena in u-boot
+>>>> (CONIG_SYS_MALLOC_LEN)?
+>>>> We had errors like this before [1],[2] and [3], maybe others -
+>>>> apparently with another error message, but please give it a try. We
+>>>> know
+>>>> ubi recovery needs some ram and 1MiB may be not enough.
+>>>
+>>> Thanks for your suggestion.
+>>>
+>>> Unfortunately this does not seem to be the cause of my problem: I tried
+>>> increasing my CONFIG_SYS_MALLOC_LEN in include/configs/dig297.h from
+>>> (1024 << 10) to both (1024 << 12) and (1024 << 14), but without any
+>>> difference.
+>>
+>> Well, ok ... Malloc arena is always my first thought if I read about
+>> problems with ubi in u-boot.
+>> Have you looked up the differences in drivers/mtd/ubi/ in your u-boot
+>> and linux tree? Maybe you can see something obviously different in the
+>> ubi_wl_init_scan()?
+>
+> I had some days ago, but I double-checked now as you suggested. Indeed
+> there is an important difference: attach_by_scanning() (build.c) calls
+> ubi_wl_init_scan() and ubi_eba_init_scan() just like Linux does, but in
+> a swapped order!
+>
+> This swap dates back to:
+>
+> commit d63894654df72b010de2abb4b3f07d0d755f65b6
+> Author: Holger Brunck <holger.brunck@keymile.com>
+> Date:   Mon Oct 10 13:08:19 2011 +0200
+>
+>      UBI: init eba tables before wl when attaching a device
+>
+>      This fixes that u-boot gets stuck when a bitflip was detected
+>      during "ubi part <ubi_device>". If a bitflip was detected UBI tries
+>      to copy the PEB to a different place. This needs that the eba table
+>      are initialized, but this was done after the wear levelling worker
+>      detects the bitflip. So changes the initialisation of these two
+>      tasks in u-boot.
+>
+>      This is a u-boot specific patch and not needed in the linux layer,
+>      because due to commit 1b1f9a9d00447d
+>      UBI: Ensure that "background thread" operations are really executed
+>      we schedule these tasks in place and not as in linux after the inital
+>      task which schedule this new task is finished.
+>
+>      Signed-off-by: Holger Brunck <holger.brunck@keymile.com>
+>      cc: Stefan Roese <sr@denx.de>
+>      Signed-off-by: Stefan Roese <sr@denx.de>
+>
+> I tried reverting that commit and... surprise! U-Boot can now attach UBI
+> and boot properly!
+>
+> But the cited commit actually fixed a bug that bite our board a few
+> months back, so it should not be reverted without thinking twice. Now
+> it apparently introduced another bug. :-(
+>
+> I'm Cc:ing the commit author for comments.
+>
+> Nonetheless, I have evidence of a different behaviour between U-Boot
+> and Linux even before the two swapped functions are called.
+>
+> What attach_by_scanning() does in Linux is (abbreviated):
+>
+> static int attach_by_scanning(struct ubi_device *ubi)
+> {
+>          si = ubi_scan(ubi);
+>      ...fill ubi->some_fields...;
+>          err = ubi_read_volume_table(ubi, si);
+>      /* MARK */
+>          err = ubi_eba_init_scan(ubi, si); /* swapped in U-Boot */
+>          err = ubi_wl_init_scan(ubi, si);  /* swapped in U-Boot */
+>          ubi_scan_destroy_si(si);
+>          return 0;
+> }
+>
+> See the two swapped calls.
+>
+> At MARK, I printed some of the peb counters in *ubi, and I got
+> different results for ubi->avail_pebs between U-Boot and Linux:
+> U-Boot: UBI: POST_TBL: rsvd=2018, avail=21, beb_rsvd_{pebs,level}=0,0
+> Linux:  UBI: POST_TBL: rsvd=2018, avail=22, beb_rsvd_{pebs,level}=0,0
+>
+> The printed values were equal before calling ubi_read_volume_table().
+> I have no idea about where this difference comes from, nor if this
+> difference can cause my troubles.
+> I will better investigate tomorrow looking into ubi_read_volume_table().
 
-  Linux 3.7-rc2 (2012-10-20 12:11:32 -0700)
+After half a day of debugging and an insane amount of printk()s added to
+both U-Boot and Linux, I have some more hints to understand the problem.
 
-are available in the git repository at:
+The two different results quoted above show that U-Boot counted 21
+available eraseblocks, while Linux counts 22. I am not sure if this can
+cause my problem, but it's the first visible difference between U-Boot
+and Linux.
 
-  git://git.infradead.org/linux-ubi.git tags/upstream-3.8-rc1
+This originates from ubi_scan() (scan.c): in U-Boot, it sets
+si->bad_peb_count to 1, in Linux to 0. U-Boot's ubi_scan() is very
+similar to Linux's, and the differences do not seem to relevant in my 
+case. So let's dig down...
 
-for you to fetch changes up to eab737722ed6a5638f6251e83f0d293c2ffe549f:
+- ubi_scan() (scan.c) calls process_eb() (scan.c) for each EB
+- process_eb() calls ubi_io_is_bad() (io.c), and if it returns >0 it
+   increments si->bad_peb_count, which is what is happening to my board
+   when executing U-Boot
+- ubi_io_is_bad() calls mtd->block_isbad(), which points to
+   nand_block_isbad() (nand_base.c)
+- nand_block_isbad() is a wrapper to nand_block_checkbad() (nand_base.c)
+- nand_block_checkbad() differs from the Linux code in something
+   related to lazy bad block scanning (commit fb49454b1b6c7c6, Feb 2012),
+   but this does not seem to change the behaviour I observe;
+- nand_block_checkbad() calls either chip->block_bad() or
+   nand_isbad_bbt(); I tracked only into the former, but I suspect the
+   latter produces the same effects with regard to the problem I'm facing
+- chip->block_bad() points to nand_block_bad() (nand_base.c)
 
-  UBI: embed ubi_debug_info field in ubi_device struct (2012-12-10 13:38:59=
- +0200)
+nand_block_bad() (nand_base.c) does the following:
+static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
+{
+	...
 
-----------------------------------------------------------------
-Nothing exciting, just clean-ups and nicification. Oh, and one small
-optimization which makes UBI to use less RAM.
+         if (likely(chip->badblockbits == 8))
+                 res = bad != 0xFF;
+         else
+                 res = hweight8(bad) < chip->badblockbits;
 
-----------------------------------------------------------------
-Artem Bityutskiy (1):
-      UBI: do not allocate the memory unnecessarily
+         if (getchip)
+                 nand_release_device(mtd);
 
-Ezequiel Garcia (5):
-      UBI: gluebi: rename misleading variables
-      UBI: remove spurious comment
-      UBI: replace memcpy with struct assignment
-      UBI: introduce helpers dbg_chk_{io, gen}
-      UBI: embed ubi_debug_info field in ubi_device struct
+         return res;
+}
 
-Wei Yongjun (1):
-      UBI: use list_move_tail instead of list_del/list_add_tail
+I don't understand the algorithm, but the relevant variables have these
+values:
+U-Boot: nand_block_bad: chip->badblockbits=8, bad=0000, hweight8(bad)=0
+Linux:  nand_block_bad: chip->badblockbits=0, bad=0000, hweight8(bad)=0
+                                            ^
 
- drivers/mtd/ubi/attach.c  |   23 +++++++++--------------
- drivers/mtd/ubi/build.c   |   12 ++----------
- drivers/mtd/ubi/debug.c   |   34 ++++------------------------------
- drivers/mtd/ubi/debug.h   |   57 +++++++++++++----------------------------=
-----------------
- drivers/mtd/ubi/fastmap.c |    6 ++----
- drivers/mtd/ubi/gluebi.c  |   28 ++++++++++++++--------------
- drivers/mtd/ubi/io.c      |   14 +++++++-------
- drivers/mtd/ubi/ubi.h     |   40 +++++++++++++++++++++++++++++++++++++++-
- drivers/mtd/ubi/upd.c     |    6 ++----
- drivers/mtd/ubi/vmt.c     |    4 ++--
- drivers/mtd/ubi/vtbl.c    |    2 +-
- drivers/mtd/ubi/wl.c      |    7 +++----
- 12 files changed, 98 insertions(+), 135 deletions(-)
+Obviously the U-Boot and Linux produce a different return value.
+This propagates up to ubi->bad_peb_count in ubi_scan(), and from there
+it changes the behaviour of the following code, leading to a block in
+U-Boot and a successful attach in Linux.
 
---=20
-Best Regards,
-Artem Bityutskiy
+chip->badblockbits in current Linux master is described as
+"minimum number of set bits in a good block's bad block marker
+position; i.e., BBM == 11110111b is not bad when badblockbits == 7".
 
---=-iCT7nJabTiKRDAkOsVlT
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Disposition: inline
-Content-Transfer-Encoding: base64
+Still a bit obscure to me because I don't have a general picture.
+Anyway, here's how its value comes to be different between U-Boot
+(2012.04.01) and Linux (2.6.37).
 
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQpM
-aW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QNCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLw0K
+Linux:
+a) commit e0b58d0a7005, Feb 2010:
+    mtd: nand: add ->badblockbits for minimum number of set bits in bad
+    block byte
+    declared the new variable and introduced in nand_get_flash_type()
+    (nand_base.c) the following line:
+      chip->badblockbits = 8;
+b) commit c7b28e25cb9, Jul 2010:
+    mtd: nand: refactor BB marker detection
+    removed from nand_get_flash_type() (nand_base.c) the same line:
+      chip->badblockbits = 8;
+c) commit 26d9be11485e, Apr 2011:
+    mtd: return badblockbits back
+    restored in nand_get_flash_type() (nand_base.c) the following line:
+      chip->badblockbits = 8;
+   claiming it had been accidentally removed in commit b).
 
+The version of Linux I'm using (2.6.37), contains commits a) and b), so
+it has chip->badblockbits equal to 0. According to the log message of
+commit c), this should be wrong, but the resulting kernel works!
 
---=-iCT7nJabTiKRDAkOsVlT--
+The version of U-Boot (2012.04.01) contains the result of all 3 commits,
+since
 
---=-idqWTdFJ4Wz2A44gfrt5
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+   commit 2a8e0fc8b3dc31a3c571e439fbf04b882c8986be
+   Author: Christian Hitz <christian.hitz@aizo.com>
+   Date:   Wed Oct 12 09:32:02 2011 +0200
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+       nand: Merge changes from Linux nand driver
 
-iQIcBAABAgAGBQJQ0sgzAAoJECmIfjd9wqK0lCIQAKyll3GsxQHb5YqKcFihaf3C
-MHsKQ0OSfMnzIZxqKe+rqSxf+uV0v8HZgvKbw9K/zM6l3Eo22PxtqRlN1YEXbo4u
-WVQ82mCD/vBmWKCKifFuu7x7wO8rPuaAtCR62RsJECRH2hg/JPCpurNyDLUQGH95
-4URUwHMz2H8fB5FvMdpA9AUoFfTaC+TZjBOB4nQl/XmP7JWxKzEiaIDsA+w/C6N6
-fBNhdNYmPlC5tuluRMdu3/JEiRfapwFxlPVd6Njs5TG+9hMf9li7uyx3oZbvK2mY
-loNGnwQefuTJnsWeVhzBnUhHguR8nNlS+Qmq/KXyoUVafwOLZxCRvOGbU0qhhfxD
-Y26DvOuNzBaKvrZy8MkwB91vvokwmndduts6mvRzOZYLYcSpw3KIhBVvKDKl1ag6
-ylPGJ+cTiFmx+PKyX0DzsZh5z3LXuzoFuo55TT+QxNmjZ3ujoEXXrCRAr5HeRX4P
-NLrXxc/9O1m3phydbRuxw5l0X4W084Ty4IPrxoIaiu+hadZ1kJoeheddqFEKwEEi
-Yy2BsLYTx8PBB2BiFEGNzJZnCmDbb9Myn6y/MNl1YBKz4U8fBYeqHmVQmZIfdCge
-dBLK08O6wGzltv4eTekR7Lf1jljYb4U+SXMFMjfthDUNRZIlXNULhEbg7rMSUha/
-Ax/OCKU6+IzpEKjR7T6z
-=BJMn
------END PGP SIGNATURE-----
+       [backport from linux commit
+           02f8c6aee8df3cdc935e9bdd4f2d020306035dbe]
 
---=-idqWTdFJ4Wz2A44gfrt5--
+       This patch synchronizes the nand driver with the Linux 3.0 state.
+
+This looks like an improvement, but it bricks my board!
+
+I could not resist, and without even trying to understand what I was
+doing, I did in U-Boot's nand_get_flash_type() (nand_base.c):
+
+-       chip->badblockbits = 8;
++       chip->badblockbits = 0;
+
+and guess what? U-Boot attached UBI, loaded Linux from it and booted
+successfully!
+
+No, I don't think changing lines here and there without any real
+understanding is a way to produce reliable software. But I'm unable
+to understand why the software that should work better actually bricks
+the board and the other one runs fine? And how do I know what the
+correct value for chip->badblockbits should be?
+
+And last but most important: how can I properly fix U-Boot?
+
+Thanks,
+Luca
