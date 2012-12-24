@@ -1,16 +1,17 @@
-Received: from guitar.tcltek.co.il ([192.115.133.116] helo=sivan.tkos.co.il)
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TmjSY-0005X6-Hn
- for linux-mtd@lists.infradead.org; Sun, 23 Dec 2012 11:11:14 +0000
-From: Baruch Siach <baruch@tkos.co.il>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: physmap_of: fix cmdline partition method w/o linux,
- mtd-name
-Date: Sun, 23 Dec 2012 13:10:50 +0200
-Message-Id: <df9da712b775781366ae23aac28ed20849b4e4d3.1356260943.git.baruch@tkos.co.il>
-Cc: devicetree-discuss@lists.ozlabs.org,
- Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
- Baruch Siach <baruch@tkos.co.il>
+MIME-Version: 1.0
+Date: Sun, 23 Dec 2012 21:02:05 -0300
+Message-ID: <CALF0-+VOjr6O=+EPFsav1jghfsp624H9w48+JP8_JQgFoAAt=Q@mail.gmail.com>
+Subject: [PATCH 0/3] OMAP GPMC OneNAND DT bindings
+From: Ezequiel Garcia <elezegarcia@gmail.com>
+To: linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Javier Martinez Canillas <martinez.javier@gmail.com>,
+ Benoit Cousson <b-cousson@ti.com>, Tony Lindgren <tony@atomide.com>,
+ Daniel Mack <zonque@gmail.com>, Grant Likely <grant.likely@secretlab.ca>,
+ Enric Balletbo Serra <eballetbo@gmail.com>, jon-hunter@ti.com,
+ matthias.bgg@googlemail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,30 +21,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Commit d68cbdd4fb (mtd: physmap_of: allow to specify the mtd name for retro
-compatiblity) broke cmdline partitioning using dev_name() in the kernel command
-line.  of_property_read_string() does not touch mtd_name when linux,mtd-name is
-not present in the device tree, which causes map.name to be set to a random
-value.  Fix this by initializing mtd_name to NULL.
+Hi everyone,
 
-Cc: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-Signed-off-by: Baruch Siach <baruch@tkos.co.il>
----
- drivers/mtd/maps/physmap_of.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Just in case anyone wants to access his OneNAND device,
+here's a little patchset. Feedback is more than welcome.
 
-diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
-index 37cdc20..6fb2bd8 100644
---- a/drivers/mtd/maps/physmap_of.c
-+++ b/drivers/mtd/maps/physmap_of.c
-@@ -170,7 +170,7 @@ static int of_flash_probe(struct platform_device *dev)
- 	resource_size_t res_size;
- 	struct mtd_part_parser_data ppdata;
- 	bool map_indirect;
--	const char *mtd_name;
-+	const char *mtd_name = NULL;
- 
- 	match = of_match_device(of_flash_match, &dev->dev);
- 	if (!match)
+It's based on arm-soc/for-next with Daniel Mack's GPMC patches.
+
+Ezequiel Garcia (3):
+  mtd: omap-onenand: pass device_node in platform data
+  arm: omap2: gpmc-onenand: drop __init annotation
+  arm: omap2: gpmc: add DT bindings for OneNAND
+
+ .../devicetree/bindings/mtd/gpmc-onenand.txt       |   44 ++++++++++++++++++++
+ arch/arm/mach-omap2/gpmc-onenand.c                 |    2 +-
+ arch/arm/mach-omap2/gpmc.c                         |   44 ++++++++++++++++++++
+ drivers/mtd/onenand/omap2.c                        |    4 +-
+ include/linux/platform_data/mtd-onenand-omap2.h    |    3 +
+ 5 files changed, 95 insertions(+), 2 deletions(-)
+
+Regards,
+
 -- 
-1.7.10.4
+    Ezequiel
