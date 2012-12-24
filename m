@@ -1,19 +1,19 @@
-Received: from mail-da0-f53.google.com ([209.85.210.53])
+Received: from mail-ee0-f45.google.com ([74.125.83.45])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TmxZM-0000kf-60
- for linux-mtd@lists.infradead.org; Mon, 24 Dec 2012 02:15:09 +0000
-Received: by mail-da0-f53.google.com with SMTP id x6so2932361dac.12
- for <linux-mtd@lists.infradead.org>; Sun, 23 Dec 2012 18:15:06 -0800 (PST)
-From: Akinobu Mita <akinobu.mita@gmail.com>
-To: linux-kernel@vger.kernel.org,
-	akpm@linux-foundation.org
-Subject: [PATCH 17/29] mtd: rename random32() to prandom_u32()
-Date: Mon, 24 Dec 2012 11:14:04 +0900
-Message-Id: <1356315256-6572-18-git-send-email-akinobu.mita@gmail.com>
-In-Reply-To: <1356315256-6572-1-git-send-email-akinobu.mita@gmail.com>
-References: <1356315256-6572-1-git-send-email-akinobu.mita@gmail.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Akinobu Mita <akinobu.mita@gmail.com>, Artem Bityutskiy <dedekind1@gmail.com>
+ id 1TnAzE-0006Fy-6G
+ for linux-mtd@lists.infradead.org; Mon, 24 Dec 2012 16:34:44 +0000
+Received: by mail-ee0-f45.google.com with SMTP id d49so3549325eek.4
+ for <linux-mtd@lists.infradead.org>; Mon, 24 Dec 2012 08:34:40 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
+ David Woodhouse <David.Woodhouse@intel.com>
+Subject: [FIX][PATCH 3.8] mtd: bcm47xxnflash: increase NFLASH_READY_RETRIES
+Date: Mon, 24 Dec 2012 17:34:29 +0100
+Message-Id: <1356366869-22943-1-git-send-email-zajec5@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,153 +23,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use more preferable function name which implies using a pseudo-random
-number generator.
+Recently imlemented writing support has shown that current num of
+retries is too low. Writing requires longer waiting than simple reading.
 
-Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>
-Cc: linux-mtd@lists.infradead.org
+Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
 ---
- drivers/mtd/nand/nandsim.c          |  6 +++---
- drivers/mtd/tests/mtd_nandecctest.c | 10 +++++-----
- drivers/mtd/tests/mtd_stresstest.c  |  8 ++++----
- drivers/mtd/ubi/debug.h             |  6 +++---
- 4 files changed, 15 insertions(+), 15 deletions(-)
+ drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index 818b65c..4c31798 100644
---- a/drivers/mtd/nand/nandsim.c
-+++ b/drivers/mtd/nand/nandsim.c
-@@ -1476,12 +1476,12 @@ int do_read_error(struct nandsim *ns, int num)
+diff --git a/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c b/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c
+index 86c9a79..595de40 100644
+--- a/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c
++++ b/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c
+@@ -17,8 +17,8 @@
+ #include "bcm47xxnflash.h"
  
- void do_bit_flips(struct nandsim *ns, int num)
- {
--	if (bitflips && random32() < (1 << 22)) {
-+	if (bitflips && prandom_u32() < (1 << 22)) {
- 		int flips = 1;
- 		if (bitflips > 1)
--			flips = (random32() % (int) bitflips) + 1;
-+			flips = (prandom_u32() % (int) bitflips) + 1;
- 		while (flips--) {
--			int pos = random32() % (num * 8);
-+			int pos = prandom_u32() % (num * 8);
- 			ns->buf.byte[pos / 8] ^= (1 << (pos % 8));
- 			NS_WARN("read_page: flipping bit %d in page %d "
- 				"reading from %d ecc: corrected=%u failed=%u\n",
-diff --git a/drivers/mtd/tests/mtd_nandecctest.c b/drivers/mtd/tests/mtd_nandecctest.c
-index ceb261f..2e6b41e 100644
---- a/drivers/mtd/tests/mtd_nandecctest.c
-+++ b/drivers/mtd/tests/mtd_nandecctest.c
-@@ -43,7 +43,7 @@ struct nand_ecc_test {
- static void single_bit_error_data(void *error_data, void *correct_data,
- 				size_t size)
- {
--	unsigned int offset = random32() % (size * BITS_PER_BYTE);
-+	unsigned int offset = prandom_u32() % (size * BITS_PER_BYTE);
+ /* Broadcom uses 1'000'000 but it seems to be too many. Tests on WNDR4500 has
+- * shown 164 retries as maxiumum. */
+-#define NFLASH_READY_RETRIES		1000
++ * shown ~1000 retries as maxiumum. */
++#define NFLASH_READY_RETRIES		10000
  
- 	memcpy(error_data, correct_data, size);
- 	__change_bit_le(offset, error_data);
-@@ -54,9 +54,9 @@ static void double_bit_error_data(void *error_data, void *correct_data,
- {
- 	unsigned int offset[2];
- 
--	offset[0] = random32() % (size * BITS_PER_BYTE);
-+	offset[0] = prandom_u32() % (size * BITS_PER_BYTE);
- 	do {
--		offset[1] = random32() % (size * BITS_PER_BYTE);
-+		offset[1] = prandom_u32() % (size * BITS_PER_BYTE);
- 	} while (offset[0] == offset[1]);
- 
- 	memcpy(error_data, correct_data, size);
-@@ -67,7 +67,7 @@ static void double_bit_error_data(void *error_data, void *correct_data,
- 
- static unsigned int random_ecc_bit(size_t size)
- {
--	unsigned int offset = random32() % (3 * BITS_PER_BYTE);
-+	unsigned int offset = prandom_u32() % (3 * BITS_PER_BYTE);
- 
- 	if (size == 256) {
- 		/*
-@@ -75,7 +75,7 @@ static unsigned int random_ecc_bit(size_t size)
- 		 * and 17th bit) in ECC code for 256 byte data block
- 		 */
- 		while (offset == 16 || offset == 17)
--			offset = random32() % (3 * BITS_PER_BYTE);
-+			offset = prandom_u32() % (3 * BITS_PER_BYTE);
- 	}
- 
- 	return offset;
-diff --git a/drivers/mtd/tests/mtd_stresstest.c b/drivers/mtd/tests/mtd_stresstest.c
-index dc89e32..4e9fc1f 100644
---- a/drivers/mtd/tests/mtd_stresstest.c
-+++ b/drivers/mtd/tests/mtd_stresstest.c
-@@ -57,7 +57,7 @@ static int rand_eb(void)
- 	unsigned int eb;
- 
- again:
--	eb = random32();
-+	eb = prandom_u32();
- 	/* Read or write up 2 eraseblocks at a time - hence 'ebcnt - 1' */
- 	eb %= (ebcnt - 1);
- 	if (bbt[eb])
-@@ -69,7 +69,7 @@ static int rand_offs(void)
- {
- 	unsigned int offs;
- 
--	offs = random32();
-+	offs = prandom_u32();
- 	offs %= bufsize;
- 	return offs;
- }
-@@ -78,7 +78,7 @@ static int rand_len(int offs)
- {
- 	unsigned int len;
- 
--	len = random32();
-+	len = prandom_u32();
- 	len %= (bufsize - offs);
- 	return len;
- }
-@@ -148,7 +148,7 @@ static int do_write(void)
- 
- static int do_operation(void)
- {
--	if (random32() & 1)
-+	if (prandom_u32() & 1)
- 		return do_read();
- 	else
- 		return do_write();
-diff --git a/drivers/mtd/ubi/debug.h b/drivers/mtd/ubi/debug.h
-index 33f8f3b..cba89fc 100644
---- a/drivers/mtd/ubi/debug.h
-+++ b/drivers/mtd/ubi/debug.h
-@@ -86,7 +86,7 @@ static inline int ubi_dbg_is_bgt_disabled(const struct ubi_device *ubi)
- static inline int ubi_dbg_is_bitflip(const struct ubi_device *ubi)
- {
- 	if (ubi->dbg.emulate_bitflips)
--		return !(random32() % 200);
-+		return !(prandom_u32() % 200);
- 	return 0;
- }
- 
-@@ -100,7 +100,7 @@ static inline int ubi_dbg_is_bitflip(const struct ubi_device *ubi)
- static inline int ubi_dbg_is_write_failure(const struct ubi_device *ubi)
- {
- 	if (ubi->dbg.emulate_io_failures)
--		return !(random32() % 500);
-+		return !(prandom_u32() % 500);
- 	return 0;
- }
- 
-@@ -114,7 +114,7 @@ static inline int ubi_dbg_is_write_failure(const struct ubi_device *ubi)
- static inline int ubi_dbg_is_erase_failure(const struct ubi_device *ubi)
- {
- 	if (ubi->dbg.emulate_io_failures)
--		return !(random32() % 400);
-+		return !(prandom_u32() % 400);
- 	return 0;
- }
+ #define NFLASH_SECTOR_SIZE		512
  
 -- 
-1.7.11.7
+1.7.7
