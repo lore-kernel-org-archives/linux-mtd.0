@@ -1,17 +1,21 @@
-Received: from mail-ea0-f171.google.com ([209.85.215.171])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Tnqfp-0007LL-3T
- for linux-mtd@lists.infradead.org; Wed, 26 Dec 2012 13:05:29 +0000
-Received: by mail-ea0-f171.google.com with SMTP id n10so3568500eaa.16
- for <linux-mtd@lists.infradead.org>; Wed, 26 Dec 2012 05:05:26 -0800 (PST)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [RFC][PATCH] mtd: bcm47xxsflash: add own struct for abstrating bus
- type
-Date: Wed, 26 Dec 2012 14:05:22 +0100
-Message-Id: <1356527122-32137-1-git-send-email-zajec5@gmail.com>
-Cc: Hauke Mehrtens <hauke@hauke-m.de>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+Received: from intranet.asianux.com ([58.214.24.6])
+ by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1ToRbQ-0003vN-Rs
+ for linux-mtd@lists.infradead.org; Fri, 28 Dec 2012 04:31:32 +0000
+Message-ID: <50DD20B2.6040204@asianux.com>
+Date: Fri, 28 Dec 2012 12:31:46 +0800
+From: Chen Gang <gang.chen@asianux.com>
+MIME-Version: 1.0
+To: jack@suse.cz, akpm@linux-foundation.org, adilger.kernel@dilger.ca,
+ Theodore Ts'o <tytso@mit.edu>,
+ jaegeuk.kim@samsung.com, dwmw2@infradead.org,
+ torvalds@linux-foundation.org, linux-ext4@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
+ reiserfs-devel@vger.kernel.org
+Subject: [PATCH] fs/ext*,f2fs,jffs2,reiserfs: give comments for acl size and
+ count calculation
+Content-Type: text/plain; charset=GB2312
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,129 +25,288 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
----
-The biggest problem with that seems to be:
-> b47s->window = sflash->window;
-> b47s->blocksize = sflash->blocksize;
-> b47s->numblocks = sflash->numblocks;
-> b47s->size = sflash->size;
 
-In theory we could use some generic struct with that fields and modify
-bcma to user that generic struct. I'm just not sure if it's worth adding
-extra struct to just avoid such a 4 lines...?
----
- drivers/mtd/devices/bcm47xxsflash.c         |   37 +++++++++++++++++---------
- include/linux/bcma/bcma_driver_chipcommon.h |    1 +
- 2 files changed, 25 insertions(+), 13 deletions(-)
+  give comments (by Theodore Ts'o)
 
-diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
-index f293682..13634c3 100644
---- a/drivers/mtd/devices/bcm47xxsflash.c
-+++ b/drivers/mtd/devices/bcm47xxsflash.c
-@@ -5,6 +5,8 @@
- #include <linux/platform_device.h>
- #include <linux/bcma/bcma.h>
+    ACL_USER_OBJ ACL_USER*[1] ACL_GROUP_OBJ ACL_GROUP*[1] ACL_MASK[2] ACL_OTHER
+
+    [1] Where * is the regexp sense of "0 or more times"
+    [2] Only if there is at least one ACL_USER or ACL_GROUP tag;
+        otherwise skip ACL_MASK.
+
+  use macro instead of hard code number (by Chen Gang)
+
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Chen Gang <gang.chen@asianux.com>
+---
+ fs/ext2/acl.h             |   10 +++++-----
+ fs/ext3/acl.h             |   10 +++++-----
+ fs/ext4/acl.h             |   10 +++++-----
+ fs/f2fs/acl.c             |   12 +++++++-----
+ fs/jffs2/acl.c            |   15 +++++++++------
+ fs/reiserfs/acl.h         |   10 +++++-----
+ include/linux/posix_acl.h |    9 +++++++++
+ 7 files changed, 45 insertions(+), 31 deletions(-)
+
+diff --git a/fs/ext2/acl.h b/fs/ext2/acl.h
+index 503bfb0..9af79d0 100644
+--- a/fs/ext2/acl.h
++++ b/fs/ext2/acl.h
+@@ -25,13 +25,13 @@ typedef struct {
  
-+#include "bcm47xxsflash.h"
-+
- MODULE_LICENSE("GPL");
- MODULE_DESCRIPTION("Serial flash driver for BCMA bus");
- 
-@@ -13,26 +15,27 @@ static const char *probes[] = { "bcm47xxpart", NULL };
- static int bcm47xxsflash_read(struct mtd_info *mtd, loff_t from, size_t len,
- 			      size_t *retlen, u_char *buf)
+ static inline size_t ext2_acl_size(int count)
  {
--	struct bcma_sflash *sflash = mtd->priv;
-+	struct bcm47xxsflash *b47s = mtd->priv;
- 
- 	/* Check address range */
- 	if ((from + len) > mtd->size)
- 		return -EINVAL;
- 
--	memcpy_fromio(buf, (void __iomem *)KSEG0ADDR(sflash->window + from),
-+	memcpy_fromio(buf, (void __iomem *)KSEG0ADDR(b47s->window + from),
- 		      len);
- 
- 	return len;
- }
- 
--static void bcm47xxsflash_fill_mtd(struct bcma_sflash *sflash,
--				   struct mtd_info *mtd)
-+static void bcm47xxsflash_fill_mtd(struct bcm47xxsflash *b47s)
- {
--	mtd->priv = sflash;
-+	struct mtd_info *mtd = &b47s->mtd;
-+
-+	mtd->priv = b47s;
- 	mtd->name = "bcm47xxsflash";
- 	mtd->owner = THIS_MODULE;
- 	mtd->type = MTD_ROM;
--	mtd->size = sflash->size;
-+	mtd->size = b47s->size;
- 	mtd->_read = bcm47xxsflash_read;
- 
- 	/* TODO: implement writing support and verify/change following code */
-@@ -43,16 +46,23 @@ static void bcm47xxsflash_fill_mtd(struct bcma_sflash *sflash,
- static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
- {
- 	struct bcma_sflash *sflash = dev_get_platdata(&pdev->dev);
-+	struct bcm47xxsflash *b47s;
- 	int err;
- 
--	sflash->mtd = kzalloc(sizeof(struct mtd_info), GFP_KERNEL);
--	if (!sflash->mtd) {
-+	b47s = kzalloc(sizeof(*b47s), GFP_KERNEL);
-+	if (!b47s) {
- 		err = -ENOMEM;
- 		goto out;
+-	if (count <= 4) {
++	if (count <= ACL_MAX_SHORT_ENTRY) {
+ 		return sizeof(ext2_acl_header) +
+ 		       count * sizeof(ext2_acl_entry_short);
+ 	} else {
+ 		return sizeof(ext2_acl_header) +
+-		       4 * sizeof(ext2_acl_entry_short) +
+-		       (count - 4) * sizeof(ext2_acl_entry);
++		       ACL_MAX_SHORT_ENTRY * sizeof(ext2_acl_entry_short) +
++		       (count - ACL_MAX_SHORT_ENTRY) * sizeof(ext2_acl_entry);
  	}
--	bcm47xxsflash_fill_mtd(sflash, sflash->mtd);
-+	sflash->priv = b47s;
-+
-+	b47s->window = sflash->window;
-+	b47s->blocksize = sflash->blocksize;
-+	b47s->numblocks = sflash->numblocks;
-+	b47s->size = sflash->size;
-+	bcm47xxsflash_fill_mtd(b47s);
- 
--	err = mtd_device_parse_register(sflash->mtd, probes, NULL, NULL, 0);
-+	err = mtd_device_parse_register(&b47s->mtd, probes, NULL, NULL, 0);
- 	if (err) {
- 		pr_err("Failed to register MTD device: %d\n", err);
- 		goto err_dev_reg;
-@@ -61,7 +71,7 @@ static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
- 	return 0;
- 
- err_dev_reg:
--	kfree(sflash->mtd);
-+	kfree(&b47s->mtd);
- out:
- 	return err;
  }
-@@ -69,9 +79,10 @@ out:
- static int bcm47xxsflash_bcma_remove(struct platform_device *pdev)
+ 
+@@ -39,7 +39,7 @@ static inline int ext2_acl_count(size_t size)
  {
- 	struct bcma_sflash *sflash = dev_get_platdata(&pdev->dev);
-+	struct bcm47xxsflash *b47s = sflash->priv;
- 
--	mtd_device_unregister(sflash->mtd);
--	kfree(sflash->mtd);
-+	mtd_device_unregister(&b47s->mtd);
-+	kfree(b47s);
- 
- 	return 0;
+ 	ssize_t s;
+ 	size -= sizeof(ext2_acl_header);
+-	s = size - 4 * sizeof(ext2_acl_entry_short);
++	s = size - ACL_MAX_SHORT_ENTRY * sizeof(ext2_acl_entry_short);
+ 	if (s < 0) {
+ 		if (size % sizeof(ext2_acl_entry_short))
+ 			return -1;
+@@ -47,7 +47,7 @@ static inline int ext2_acl_count(size_t size)
+ 	} else {
+ 		if (s % sizeof(ext2_acl_entry))
+ 			return -1;
+-		return s / sizeof(ext2_acl_entry) + 4;
++		return s / sizeof(ext2_acl_entry) + ACL_MAX_SHORT_ENTRY;
+ 	}
  }
-diff --git a/include/linux/bcma/bcma_driver_chipcommon.h b/include/linux/bcma/bcma_driver_chipcommon.h
-index 1cfd613..aa3be07 100644
---- a/include/linux/bcma/bcma_driver_chipcommon.h
-+++ b/include/linux/bcma/bcma_driver_chipcommon.h
-@@ -532,6 +532,7 @@ struct bcma_sflash {
- 	u32 size;
  
- 	struct mtd_info *mtd;
-+	void *priv;
- };
- #endif
+diff --git a/fs/ext3/acl.h b/fs/ext3/acl.h
+index dbc921e..b1cf2c0 100644
+--- a/fs/ext3/acl.h
++++ b/fs/ext3/acl.h
+@@ -25,13 +25,13 @@ typedef struct {
  
+ static inline size_t ext3_acl_size(int count)
+ {
+-	if (count <= 4) {
++	if (count <= ACL_MAX_SHORT_ENTRY) {
+ 		return sizeof(ext3_acl_header) +
+ 		       count * sizeof(ext3_acl_entry_short);
+ 	} else {
+ 		return sizeof(ext3_acl_header) +
+-		       4 * sizeof(ext3_acl_entry_short) +
+-		       (count - 4) * sizeof(ext3_acl_entry);
++		       ACL_MAX_SHORT_ENTRY * sizeof(ext3_acl_entry_short) +
++		       (count - ACL_MAX_SHORT_ENTRY) * sizeof(ext3_acl_entry);
+ 	}
+ }
+ 
+@@ -39,7 +39,7 @@ static inline int ext3_acl_count(size_t size)
+ {
+ 	ssize_t s;
+ 	size -= sizeof(ext3_acl_header);
+-	s = size - 4 * sizeof(ext3_acl_entry_short);
++	s = size - ACL_MAX_SHORT_ENTRY * sizeof(ext3_acl_entry_short);
+ 	if (s < 0) {
+ 		if (size % sizeof(ext3_acl_entry_short))
+ 			return -1;
+@@ -47,7 +47,7 @@ static inline int ext3_acl_count(size_t size)
+ 	} else {
+ 		if (s % sizeof(ext3_acl_entry))
+ 			return -1;
+-		return s / sizeof(ext3_acl_entry) + 4;
++		return s / sizeof(ext3_acl_entry) + ACL_MAX_SHORT_ENTRY;
+ 	}
+ }
+ 
+diff --git a/fs/ext4/acl.h b/fs/ext4/acl.h
+index 18cb39e..66d1fa3 100644
+--- a/fs/ext4/acl.h
++++ b/fs/ext4/acl.h
+@@ -25,13 +25,13 @@ typedef struct {
+ 
+ static inline size_t ext4_acl_size(int count)
+ {
+-	if (count <= 4) {
++	if (count <= ACL_MAX_SHORT_ENTRY) {
+ 		return sizeof(ext4_acl_header) +
+ 		       count * sizeof(ext4_acl_entry_short);
+ 	} else {
+ 		return sizeof(ext4_acl_header) +
+-		       4 * sizeof(ext4_acl_entry_short) +
+-		       (count - 4) * sizeof(ext4_acl_entry);
++		       ACL_MAX_SHORT_ENTRY * sizeof(ext4_acl_entry_short) +
++		       (count - ACL_MAX_SHORT_ENTRY) * sizeof(ext4_acl_entry);
+ 	}
+ }
+ 
+@@ -39,7 +39,7 @@ static inline int ext4_acl_count(size_t size)
+ {
+ 	ssize_t s;
+ 	size -= sizeof(ext4_acl_header);
+-	s = size - 4 * sizeof(ext4_acl_entry_short);
++	s = size - ACL_MAX_SHORT_ENTRY * sizeof(ext4_acl_entry_short);
+ 	if (s < 0) {
+ 		if (size % sizeof(ext4_acl_entry_short))
+ 			return -1;
+@@ -47,7 +47,7 @@ static inline int ext4_acl_count(size_t size)
+ 	} else {
+ 		if (s % sizeof(ext4_acl_entry))
+ 			return -1;
+-		return s / sizeof(ext4_acl_entry) + 4;
++		return s / sizeof(ext4_acl_entry) + ACL_MAX_SHORT_ENTRY;
+ 	}
+ }
+ 
+diff --git a/fs/f2fs/acl.c b/fs/f2fs/acl.c
+index fed74d1..42e0070 100644
+--- a/fs/f2fs/acl.c
++++ b/fs/f2fs/acl.c
+@@ -22,13 +22,15 @@
+ 
+ static inline size_t f2fs_acl_size(int count)
+ {
+-	if (count <= 4) {
++	if (count <= ACL_MAX_SHORT_ENTRY) {
+ 		return sizeof(struct f2fs_acl_header) +
+ 			count * sizeof(struct f2fs_acl_entry_short);
+ 	} else {
+ 		return sizeof(struct f2fs_acl_header) +
+-			4 * sizeof(struct f2fs_acl_entry_short) +
+-			(count - 4) * sizeof(struct f2fs_acl_entry);
++			ACL_MAX_SHORT_ENTRY
++			 * sizeof(struct f2fs_acl_entry_short) +
++			(count - ACL_MAX_SHORT_ENTRY)
++			 * sizeof(struct f2fs_acl_entry);
+ 	}
+ }
+ 
+@@ -36,7 +38,7 @@ static inline int f2fs_acl_count(size_t size)
+ {
+ 	ssize_t s;
+ 	size -= sizeof(struct f2fs_acl_header);
+-	s = size - 4 * sizeof(struct f2fs_acl_entry_short);
++	s = size - ACL_MAX_SHORT_ENTRY * sizeof(struct f2fs_acl_entry_short);
+ 	if (s < 0) {
+ 		if (size % sizeof(struct f2fs_acl_entry_short))
+ 			return -1;
+@@ -44,7 +46,7 @@ static inline int f2fs_acl_count(size_t size)
+ 	} else {
+ 		if (s % sizeof(struct f2fs_acl_entry))
+ 			return -1;
+-		return s / sizeof(struct f2fs_acl_entry) + 4;
++		return s / sizeof(struct f2fs_acl_entry) + ACL_MAX_SHORT_ENTRY;
+ 	}
+ }
+ 
+diff --git a/fs/jffs2/acl.c b/fs/jffs2/acl.c
+index 223283c..48ef4b8 100644
+--- a/fs/jffs2/acl.c
++++ b/fs/jffs2/acl.c
+@@ -25,13 +25,15 @@
+ 
+ static size_t jffs2_acl_size(int count)
+ {
+-	if (count <= 4) {
++	if (count <= ACL_MAX_SHORT_ENTRY) {
+ 		return sizeof(struct jffs2_acl_header)
+ 		       + count * sizeof(struct jffs2_acl_entry_short);
+ 	} else {
+ 		return sizeof(struct jffs2_acl_header)
+-		       + 4 * sizeof(struct jffs2_acl_entry_short)
+-		       + (count - 4) * sizeof(struct jffs2_acl_entry);
++		       + ACL_MAX_SHORT_ENTRY
++				 * sizeof(struct jffs2_acl_entry_short)
++		       + (count - ACL_MAX_SHORT_ENTRY)
++				 * sizeof(struct jffs2_acl_entry);
+ 	}
+ }
+ 
+@@ -40,15 +42,16 @@ static int jffs2_acl_count(size_t size)
+ 	size_t s;
+ 
+ 	size -= sizeof(struct jffs2_acl_header);
+-	if (size < 4 * sizeof(struct jffs2_acl_entry_short)) {
++	if (size < ACL_MAX_SHORT_ENTRY * sizeof(struct jffs2_acl_entry_short)) {
+ 		if (size % sizeof(struct jffs2_acl_entry_short))
+ 			return -1;
+ 		return size / sizeof(struct jffs2_acl_entry_short);
+ 	} else {
+-		s = size - 4 * sizeof(struct jffs2_acl_entry_short);
++		s = size - ACL_MAX_SHORT_ENTRY
++				 * sizeof(struct jffs2_acl_entry_short);
+ 		if (s % sizeof(struct jffs2_acl_entry))
+ 			return -1;
+-		return s / sizeof(struct jffs2_acl_entry) + 4;
++		return s / sizeof(struct jffs2_acl_entry) + ACL_MAX_SHORT_ENTRY;
+ 	}
+ }
+ 
+diff --git a/fs/reiserfs/acl.h b/fs/reiserfs/acl.h
+index f096b80..cb967a3 100644
+--- a/fs/reiserfs/acl.h
++++ b/fs/reiserfs/acl.h
+@@ -20,13 +20,13 @@ typedef struct {
+ 
+ static inline size_t reiserfs_acl_size(int count)
+ {
+-	if (count <= 4) {
++	if (count <= ACL_MAX_SHORT_ENTRY) {
+ 		return sizeof(reiserfs_acl_header) +
+ 		    count * sizeof(reiserfs_acl_entry_short);
+ 	} else {
+ 		return sizeof(reiserfs_acl_header) +
+-		    4 * sizeof(reiserfs_acl_entry_short) +
+-		    (count - 4) * sizeof(reiserfs_acl_entry);
++		    ACL_MAX_SHORT_ENTRY * sizeof(reiserfs_acl_entry_short) +
++		    (count - ACL_MAX_SHORT_ENTRY) * sizeof(reiserfs_acl_entry);
+ 	}
+ }
+ 
+@@ -34,7 +34,7 @@ static inline int reiserfs_acl_count(size_t size)
+ {
+ 	ssize_t s;
+ 	size -= sizeof(reiserfs_acl_header);
+-	s = size - 4 * sizeof(reiserfs_acl_entry_short);
++	s = size - ACL_MAX_SHORT_ENTRY * sizeof(reiserfs_acl_entry_short);
+ 	if (s < 0) {
+ 		if (size % sizeof(reiserfs_acl_entry_short))
+ 			return -1;
+@@ -42,7 +42,7 @@ static inline int reiserfs_acl_count(size_t size)
+ 	} else {
+ 		if (s % sizeof(reiserfs_acl_entry))
+ 			return -1;
+-		return s / sizeof(reiserfs_acl_entry) + 4;
++		return s / sizeof(reiserfs_acl_entry) + ACL_MAX_SHORT_ENTRY;
+ 	}
+ }
+ 
+diff --git a/include/linux/posix_acl.h b/include/linux/posix_acl.h
+index 7931efe..d75d2f6 100644
+--- a/include/linux/posix_acl.h
++++ b/include/linux/posix_acl.h
+@@ -26,6 +26,15 @@
+ #define ACL_MASK		(0x10)
+ #define ACL_OTHER		(0x20)
+ 
++/*
++ * ACL_USER_OBJ ACL_USER*[1] ACL_GROUP_OBJ ACL_GROUP*[1] ACL_MASK[2] ACL_OTHER
++ *
++ * [1] Where * is the regexp sense of "0 or more times"
++ * [2] Only if there is at least one ACL_USER or ACL_GROUP tag;
++ *     otherwise skip ACL_MASK.
++ */
++#define ACL_MAX_SHORT_ENTRY     (4)
++
+ /* permissions in the e_perm field */
+ #define ACL_READ		(0x04)
+ #define ACL_WRITE		(0x02)
 -- 
-1.7.7
+1.7.10.4
