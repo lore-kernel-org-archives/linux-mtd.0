@@ -1,9 +1,9 @@
 From: Tony Prisk <linux@prisktech.co.nz>
 To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] mtd: vt8500: Add support for Wondermedia Serial Flash
+Subject: [PATCH v2] mtd: vt8500: Add support for Wondermedia Serial Flash
  Controller
-Date: Mon, 31 Dec 2012 09:56:41 +1300
-Message-Id: <1356901001-13224-1-git-send-email-linux@prisktech.co.nz>
+Date: Mon, 31 Dec 2012 10:00:07 +1300
+Message-Id: <1356901207-13536-1-git-send-email-linux@prisktech.co.nz>
 Cc: vt8500-wm8505-linux-kernel@googlegroups.com,
  Tony Prisk <linux@prisktech.co.nz>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
@@ -21,6 +21,8 @@ found on WM8505, WM8650 and WM8850 SoCs.
 
 Signed-off-by: Tony Prisk <linux@prisktech.co.nz>
 ---
+v2: Whitespace tidyup
+
  drivers/mtd/devices/Kconfig      |    7 +
  drivers/mtd/devices/Makefile     |    3 +-
  drivers/mtd/devices/wmt_sflash.c |  614 ++++++++++++++++++++++++++++++++++++++
@@ -61,7 +63,7 @@ index 395733a..10b8bec 100644
 +CFLAGS_docg3.o			+= -I$(src)
 diff --git a/drivers/mtd/devices/wmt_sflash.c b/drivers/mtd/devices/wmt_sflash.c
 new file mode 100644
-index 0000000..f6b5a15
+index 0000000..49359ea
 --- /dev/null
 +++ b/drivers/mtd/devices/wmt_sflash.c
 @@ -0,0 +1,614 @@
@@ -117,7 +119,7 @@ index 0000000..f6b5a15
 +#define SF_CS1_WR_EN			BIT(1)
 +
 +/* SF_SPI_ER_CTR bit fields */
-+#define SF_SEC_ER_EN           		BIT(31)
++#define SF_SEC_ER_EN			BIT(31)
 +
 +/* SF_SPI_ERROR_STATUS bit fields */
 +#define SF_ERR_TIMEOUT			BIT(31)
@@ -441,7 +443,7 @@ index 0000000..f6b5a15
 +
 +	addr &= ~(info->sf_mtd->erasesize - 1);
 +	writel(addr, info->base + SF_SPI_ER_START_ADDR);
-+		
++
 +	writel(SF_SEC_ER_EN, info->base + SF_SPI_ER_CTR);
 +
 +	val = sf_spi_read_status(info, chip);
@@ -464,7 +466,7 @@ index 0000000..f6b5a15
 +		clk_disable(info->sf_clk);
 +		return ret;
 +	}
-+	
++
 +	instr->state = MTD_ERASE_DONE;
 +	mtd_erase_callback(instr);
 +
@@ -516,7 +518,7 @@ index 0000000..f6b5a15
 +		return -EBUSY;
 +	if (sf_spi_read_status(info, 1))
 +		return -EBUSY;
-+	
++
 +	writel(SF_CS0_WR_EN | SF_CS1_WR_EN, info->base + SF_SPI_WR_EN_CTR);
 +
 +	count = 0;
@@ -526,7 +528,7 @@ index 0000000..f6b5a15
 +								data_size);
 +		count += data_size;
 +		len -= data_size;
-+		
++
 +		if (len) {
 +			data_size = (len >= 4) ? 4 : 1;
 +			memcpy_toio(((u_char *)(addr_to + count)), buf + count,
