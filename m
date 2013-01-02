@@ -1,24 +1,17 @@
-Received: from mail-la0-f44.google.com ([209.85.215.44])
+Received: from mail.dev.rtsoft.ru ([213.79.90.226] helo=wasted.dev.rtsoft.ru)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TqTJQ-0006zc-3s
- for linux-mtd@lists.infradead.org; Wed, 02 Jan 2013 18:45:13 +0000
-Received: by mail-la0-f44.google.com with SMTP id fr10so6638242lab.17
- for <linux-mtd@lists.infradead.org>; Wed, 02 Jan 2013 10:45:08 -0800 (PST)
-Message-ID: <50E48DFD.2030908@mvista.com>
-Date: Wed, 02 Jan 2013 22:43:57 +0300
-From: Sergei Shtylyov <sshtylyov@mvista.com>
+ id 1TqTuq-0004Dv-Sr
+ for linux-mtd@lists.infradead.org; Wed, 02 Jan 2013 19:23:53 +0000
+To: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Subject: [PATCH] davinci_nand: fix compilation with CONFIG_OF=y
+From: Sergei Shtylyov <sshtylyov@ru.mvista.com>
+Date: Wed, 2 Jan 2013 23:22:27 +0300
 MIME-Version: 1.0
-To: Heiko Schocher <hs@denx.de>
-Subject: Re: [PATCH v6] ARM: mtd: nand: davinci: add OF support for davinci
- nand controller
-References: <1343632944-25971-1-git-send-email-hs@denx.de>
-In-Reply-To: <1343632944-25971-1-git-send-email-hs@denx.de>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
-Cc: davinci-linux-open-source@linux.davincidsp.com,
- devicetree-discuss@lists.ozlabs.org, Grant Likely <grant.likely@secretlab.ca>,
- linux-mtd@lists.infradead.org, Scott Wood <scottwood@freescale.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201301022322.27541.sshtylyov@ru.mvista.com>
+Cc: davinci-linux-open-source@linux.davincidsp.com, hs@denx.de, nsekhar@ti.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,47 +21,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello.
+Commit cdeadd712f52b16a9285386d61ee26fd14eb4085 (mtd: nand: davinci: add OF
+support for davinci nand controller) obviously has never been really build
+tested with CONFIG_OF=y.  Now it prevents DaVinci family kernels from building:
+all due to stupidly missing semicolon after a structure initializer...
 
-On 07/30/2012 11:22 AM, Heiko Schocher wrote:
+Signed-off-by: Sergei Shtylyov <sshtylyov@ru.mvista.com>
+Cc: stable@vger.kernel.org # 3.7
 
-> add OF support for the davinci nand controller.
+---
+Sekhar, have you build tested at least 3.8-rc1?
 
-> Signed-off-by: Heiko Schocher <hs@denx.de>
-> Cc: davinci-linux-open-source@linux.davincidsp.com
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: devicetree-discuss@lists.ozlabs.org
-> Cc: linux-mtd@lists.infradead.org
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Grant Likely <grant.likely@secretlab.ca>
-> Cc: Sekhar Nori <nsekhar@ti.com>
-> Cc: Wolfgang Denk <wd@denx.de>
-> Cc: Scott Wood <scottwood@freescale.com>
 
-[...]
+ drivers/mtd/nand/davinci_nand.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-> index d94b03c..f386b3c 100644
-> --- a/drivers/mtd/nand/davinci_nand.c
-> +++ b/drivers/mtd/nand/davinci_nand.c
-[...]
-> @@ -518,9 +519,75 @@ static struct nand_ecclayout hwecc4_2048 __initconst = {
->  	},
->  };
->  
-> +#if defined(CONFIG_OF)
-> +static const struct of_device_id davinci_nand_of_match[] = {
-> +	{.compatible = "ti,davinci-nand", },
-> +	{},
-> +}
-
-   I have only one question: have you ever try to compile this patch with
-CONFIG_OF enabled? If you have, you would have noticed:
-
-drivers/mtd/nand/davinci_nand.c:527: error: expected ‘,’ or ‘;’ before ‘extern’
-
-> +MODULE_DEVICE_TABLE(of, davinci_nand_of_match);
-
-   No need to worry now, I'll send out the trivial patch...
-
-WBR, Sergei
+Index: linux/drivers/mtd/nand/davinci_nand.c
+===================================================================
+--- linux.orig/drivers/mtd/nand/davinci_nand.c
++++ linux/drivers/mtd/nand/davinci_nand.c
+@@ -523,7 +523,7 @@ static struct nand_ecclayout hwecc4_2048
+ static const struct of_device_id davinci_nand_of_match[] = {
+ 	{.compatible = "ti,davinci-nand", },
+ 	{},
+-}
++};
+ MODULE_DEVICE_TABLE(of, davinci_nand_of_match);
+ 
+ static struct davinci_nand_pdata
