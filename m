@@ -1,22 +1,17 @@
-Received: from utopia.booyaka.com ([74.50.51.50])
+Received: from mail.dev.rtsoft.ru ([213.79.90.226] helo=wasted.dev.rtsoft.ru)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TqoJ9-0005Ek-P9
- for linux-mtd@lists.infradead.org; Thu, 03 Jan 2013 17:10:22 +0000
-Date: Thu, 3 Jan 2013 17:10:17 +0000 (UTC)
-From: Paul Walmsley <paul@pwsan.com>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-Subject: Re: [PATCH 1/3] mtd nand : onfi need to be probed in 8 bits mode
-In-Reply-To: <50E40336.2080008@parrot.com>
-Message-ID: <alpine.DEB.2.00.1301031704460.8721@utopia.booyaka.com>
-References: <1352199105-30215-1-git-send-email-matthieu.castet@parrot.com>
- <1354530053.30168.183.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1212240023100.17282@utopia.booyaka.com>
- <50E40336.2080008@parrot.com>
+ id 1TqobP-0006bT-Ut
+ for linux-mtd@lists.infradead.org; Thu, 03 Jan 2013 17:29:12 +0000
+To: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Subject: [PATCH v2] davinci_nand: fix modular build with CONFIG_OF=y
+From: Sergei Shtylyov <sshtylyov@ru.mvista.com>
+Date: Thu, 3 Jan 2013 21:27:34 +0300
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201301032127.34467.sshtylyov@ru.mvista.com>
+Cc: davinci-linux-open-source@linux.davincidsp.com, hs@denx.de, nsekhar@ti.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,33 +21,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi
+Commit cdeadd712f52b16a9285386d61ee26fd14eb4085 (mtd: nand: davinci: add OF
+support for davinci nand controller) has never been really build tested with
+the driver as a module.  When the driver is built-in, the missing semicolon
+after structure initializer is "compensated" by MODULE_DEVICE_TABLE() macro
+being empty and so the initializer using the trailing semicolon on the next
+line; when the driver is built as a module, compilation error ensues, and as
+the 'davinci_all_defconfig' has the NAND driver modular, this error prevents
+DaVinci family kernel from building...
 
-On Wed, 2 Jan 2013, Matthieu CASTET wrote:
+Signed-off-by: Sergei Shtylyov <sshtylyov@ru.mvista.com>
+Cc: stable@vger.kernel.org # 3.7
 
-> I put a warning in order we fix drivers instead of a silent failure.
-> 
-> The omap driver was fixed in the same series with
-> http://article.gmane.org/gmane.linux.ports.arm.omap/88551 and
+---
+The patch is atop of the recent Linus' tree.
+Sekhar, have you build tested at least 3.8-rc1?
 
-... which got merged by Artem.
+ drivers/mtd/nand/davinci_nand.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> http://article.gmane.org/gmane.linux.ports.arm.omap/88549
-
-... which did not get merged because Tony requested that it should be 
-based on top of his cleanup work (which takes priority over adding new 
-features):
-
-http://thread.gmane.org/gmane.linux.ports.arm.omap/88550/focus=88549
-
-Could you please update this "omap3 nand : use NAND_BUSWIDTH_AUTO" patch 
-on v3.8-rc2 and repost?
-
-> For drivers that can't support ONFI, I don't know what to do.
-> May we should be replace the WARN_ON by a printk and early return.
-
-That sounds like a good idea to me.  The traceback seems excessive, since 
-the NAND was usable before this series.
-
-
-- Paul
+Index: linux/drivers/mtd/nand/davinci_nand.c
+===================================================================
+--- linux.orig/drivers/mtd/nand/davinci_nand.c
++++ linux/drivers/mtd/nand/davinci_nand.c
+@@ -523,7 +523,7 @@ static struct nand_ecclayout hwecc4_2048
+ static const struct of_device_id davinci_nand_of_match[] = {
+ 	{.compatible = "ti,davinci-nand", },
+ 	{},
+-}
++};
+ MODULE_DEVICE_TABLE(of, davinci_nand_of_match);
+ 
+ static struct davinci_nand_pdata
