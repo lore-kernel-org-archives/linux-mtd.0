@@ -1,18 +1,18 @@
-Received: from mail-pa0-f48.google.com ([209.85.220.48])
+Received: from mail-pa0-f46.google.com ([209.85.220.46])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TqjmJ-0003hH-8n
- for linux-mtd@lists.infradead.org; Thu, 03 Jan 2013 12:20:08 +0000
-Received: by mail-pa0-f48.google.com with SMTP id fa1so8686247pad.7
- for <linux-mtd@lists.infradead.org>; Thu, 03 Jan 2013 04:20:05 -0800 (PST)
+ id 1TqjmQ-0003hj-8f
+ for linux-mtd@lists.infradead.org; Thu, 03 Jan 2013 12:20:14 +0000
+Received: by mail-pa0-f46.google.com with SMTP id bh2so8569476pad.19
+ for <linux-mtd@lists.infradead.org>; Thu, 03 Jan 2013 04:20:12 -0800 (PST)
 From: Akinobu Mita <akinobu.mita@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	akpm@linux-foundation.org
-Subject: [PATCH -v2 13/26] ubifs: rename random32() to prandom_u32()
-Date: Thu,  3 Jan 2013 21:19:09 +0900
-Message-Id: <1357215562-6288-14-git-send-email-akinobu.mita@gmail.com>
+Subject: [PATCH -v2 17/26] mtd: rename random32() to prandom_u32()
+Date: Thu,  3 Jan 2013 21:19:13 +0900
+Message-Id: <1357215562-6288-18-git-send-email-akinobu.mita@gmail.com>
 In-Reply-To: <1357215562-6288-1-git-send-email-akinobu.mita@gmail.com>
 References: <1357215562-6288-1-git-send-email-akinobu.mita@gmail.com>
-Cc: Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
  Akinobu Mita <akinobu.mita@gmail.com>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,108 +27,152 @@ Use more preferable function name which implies using a pseudo-random
 number generator.
 
 Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
 Cc: linux-mtd@lists.infradead.org
 ---
 
 No change from v1
 
- fs/ubifs/debug.c      |  8 ++++----
- fs/ubifs/lpt_commit.c | 14 +++++++-------
- fs/ubifs/tnc_commit.c |  2 +-
- 3 files changed, 12 insertions(+), 12 deletions(-)
+ drivers/mtd/nand/nandsim.c          |  6 +++---
+ drivers/mtd/tests/mtd_nandecctest.c | 10 +++++-----
+ drivers/mtd/tests/mtd_stresstest.c  |  8 ++++----
+ drivers/mtd/ubi/debug.h             |  6 +++---
+ 4 files changed, 15 insertions(+), 15 deletions(-)
 
-diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
-index 12817ff..7f60e90 100644
---- a/fs/ubifs/debug.c
-+++ b/fs/ubifs/debug.c
-@@ -2459,7 +2459,7 @@ error_dump:
+diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+index 818b65c..4c31798 100644
+--- a/drivers/mtd/nand/nandsim.c
++++ b/drivers/mtd/nand/nandsim.c
+@@ -1476,12 +1476,12 @@ int do_read_error(struct nandsim *ns, int num)
  
- static inline int chance(unsigned int n, unsigned int out_of)
+ void do_bit_flips(struct nandsim *ns, int num)
  {
--	return !!((random32() % out_of) + 1 <= n);
-+	return !!((prandom_u32() % out_of) + 1 <= n);
+-	if (bitflips && random32() < (1 << 22)) {
++	if (bitflips && prandom_u32() < (1 << 22)) {
+ 		int flips = 1;
+ 		if (bitflips > 1)
+-			flips = (random32() % (int) bitflips) + 1;
++			flips = (prandom_u32() % (int) bitflips) + 1;
+ 		while (flips--) {
+-			int pos = random32() % (num * 8);
++			int pos = prandom_u32() % (num * 8);
+ 			ns->buf.byte[pos / 8] ^= (1 << (pos % 8));
+ 			NS_WARN("read_page: flipping bit %d in page %d "
+ 				"reading from %d ecc: corrected=%u failed=%u\n",
+diff --git a/drivers/mtd/tests/mtd_nandecctest.c b/drivers/mtd/tests/mtd_nandecctest.c
+index ceb261f..2e6b41e 100644
+--- a/drivers/mtd/tests/mtd_nandecctest.c
++++ b/drivers/mtd/tests/mtd_nandecctest.c
+@@ -43,7 +43,7 @@ struct nand_ecc_test {
+ static void single_bit_error_data(void *error_data, void *correct_data,
+ 				size_t size)
+ {
+-	unsigned int offset = random32() % (size * BITS_PER_BYTE);
++	unsigned int offset = prandom_u32() % (size * BITS_PER_BYTE);
  
- }
+ 	memcpy(error_data, correct_data, size);
+ 	__change_bit_le(offset, error_data);
+@@ -54,9 +54,9 @@ static void double_bit_error_data(void *error_data, void *correct_data,
+ {
+ 	unsigned int offset[2];
  
-@@ -2477,13 +2477,13 @@ static int power_cut_emulated(struct ubifs_info *c, int lnum, int write)
- 			if (chance(1, 2)) {
- 				d->pc_delay = 1;
- 				/* Fail withing 1 minute */
--				delay = random32() % 60000;
-+				delay = prandom_u32() % 60000;
- 				d->pc_timeout = jiffies;
- 				d->pc_timeout += msecs_to_jiffies(delay);
- 				ubifs_warn("failing after %lums", delay);
- 			} else {
- 				d->pc_delay = 2;
--				delay = random32() % 10000;
-+				delay = prandom_u32() % 10000;
- 				/* Fail within 10000 operations */
- 				d->pc_cnt_max = delay;
- 				ubifs_warn("failing after %lu calls", delay);
-@@ -2563,7 +2563,7 @@ static int corrupt_data(const struct ubifs_info *c, const void *buf,
- 	unsigned int from, to, ffs = chance(1, 2);
- 	unsigned char *p = (void *)buf;
+-	offset[0] = random32() % (size * BITS_PER_BYTE);
++	offset[0] = prandom_u32() % (size * BITS_PER_BYTE);
+ 	do {
+-		offset[1] = random32() % (size * BITS_PER_BYTE);
++		offset[1] = prandom_u32() % (size * BITS_PER_BYTE);
+ 	} while (offset[0] == offset[1]);
  
--	from = random32() % (len + 1);
-+	from = prandom_u32() % (len + 1);
- 	/* Corruption may only span one max. write unit */
- 	to = min(len, ALIGN(from, c->max_write_size));
+ 	memcpy(error_data, correct_data, size);
+@@ -67,7 +67,7 @@ static void double_bit_error_data(void *error_data, void *correct_data,
  
-diff --git a/fs/ubifs/lpt_commit.c b/fs/ubifs/lpt_commit.c
-index 9daaeef..4b826ab 100644
---- a/fs/ubifs/lpt_commit.c
-+++ b/fs/ubifs/lpt_commit.c
-@@ -2007,28 +2007,28 @@ static int dbg_populate_lsave(struct ubifs_info *c)
+ static unsigned int random_ecc_bit(size_t size)
+ {
+-	unsigned int offset = random32() % (3 * BITS_PER_BYTE);
++	unsigned int offset = prandom_u32() % (3 * BITS_PER_BYTE);
  
- 	if (!dbg_is_chk_gen(c))
- 		return 0;
--	if (random32() & 3)
-+	if (prandom_u32() & 3)
- 		return 0;
- 
- 	for (i = 0; i < c->lsave_cnt; i++)
- 		c->lsave[i] = c->main_first;
- 
- 	list_for_each_entry(lprops, &c->empty_list, list)
--		c->lsave[random32() % c->lsave_cnt] = lprops->lnum;
-+		c->lsave[prandom_u32() % c->lsave_cnt] = lprops->lnum;
- 	list_for_each_entry(lprops, &c->freeable_list, list)
--		c->lsave[random32() % c->lsave_cnt] = lprops->lnum;
-+		c->lsave[prandom_u32() % c->lsave_cnt] = lprops->lnum;
- 	list_for_each_entry(lprops, &c->frdi_idx_list, list)
--		c->lsave[random32() % c->lsave_cnt] = lprops->lnum;
-+		c->lsave[prandom_u32() % c->lsave_cnt] = lprops->lnum;
- 
- 	heap = &c->lpt_heap[LPROPS_DIRTY_IDX - 1];
- 	for (i = 0; i < heap->cnt; i++)
--		c->lsave[random32() % c->lsave_cnt] = heap->arr[i]->lnum;
-+		c->lsave[prandom_u32() % c->lsave_cnt] = heap->arr[i]->lnum;
- 	heap = &c->lpt_heap[LPROPS_DIRTY - 1];
- 	for (i = 0; i < heap->cnt; i++)
--		c->lsave[random32() % c->lsave_cnt] = heap->arr[i]->lnum;
-+		c->lsave[prandom_u32() % c->lsave_cnt] = heap->arr[i]->lnum;
- 	heap = &c->lpt_heap[LPROPS_FREE - 1];
- 	for (i = 0; i < heap->cnt; i++)
--		c->lsave[random32() % c->lsave_cnt] = heap->arr[i]->lnum;
-+		c->lsave[prandom_u32() % c->lsave_cnt] = heap->arr[i]->lnum;
- 
- 	return 1;
- }
-diff --git a/fs/ubifs/tnc_commit.c b/fs/ubifs/tnc_commit.c
-index 523bbad..52a6559 100644
---- a/fs/ubifs/tnc_commit.c
-+++ b/fs/ubifs/tnc_commit.c
-@@ -683,7 +683,7 @@ static int alloc_idx_lebs(struct ubifs_info *c, int cnt)
- 		c->ilebs[c->ileb_cnt++] = lnum;
- 		dbg_cmt("LEB %d", lnum);
+ 	if (size == 256) {
+ 		/*
+@@ -75,7 +75,7 @@ static unsigned int random_ecc_bit(size_t size)
+ 		 * and 17th bit) in ECC code for 256 byte data block
+ 		 */
+ 		while (offset == 16 || offset == 17)
+-			offset = random32() % (3 * BITS_PER_BYTE);
++			offset = prandom_u32() % (3 * BITS_PER_BYTE);
  	}
--	if (dbg_is_chk_index(c) && !(random32() & 7))
-+	if (dbg_is_chk_index(c) && !(prandom_u32() & 7))
- 		return -ENOSPC;
+ 
+ 	return offset;
+diff --git a/drivers/mtd/tests/mtd_stresstest.c b/drivers/mtd/tests/mtd_stresstest.c
+index dc89e32..4e9fc1f 100644
+--- a/drivers/mtd/tests/mtd_stresstest.c
++++ b/drivers/mtd/tests/mtd_stresstest.c
+@@ -57,7 +57,7 @@ static int rand_eb(void)
+ 	unsigned int eb;
+ 
+ again:
+-	eb = random32();
++	eb = prandom_u32();
+ 	/* Read or write up 2 eraseblocks at a time - hence 'ebcnt - 1' */
+ 	eb %= (ebcnt - 1);
+ 	if (bbt[eb])
+@@ -69,7 +69,7 @@ static int rand_offs(void)
+ {
+ 	unsigned int offs;
+ 
+-	offs = random32();
++	offs = prandom_u32();
+ 	offs %= bufsize;
+ 	return offs;
+ }
+@@ -78,7 +78,7 @@ static int rand_len(int offs)
+ {
+ 	unsigned int len;
+ 
+-	len = random32();
++	len = prandom_u32();
+ 	len %= (bufsize - offs);
+ 	return len;
+ }
+@@ -148,7 +148,7 @@ static int do_write(void)
+ 
+ static int do_operation(void)
+ {
+-	if (random32() & 1)
++	if (prandom_u32() & 1)
+ 		return do_read();
+ 	else
+ 		return do_write();
+diff --git a/drivers/mtd/ubi/debug.h b/drivers/mtd/ubi/debug.h
+index 33f8f3b..cba89fc 100644
+--- a/drivers/mtd/ubi/debug.h
++++ b/drivers/mtd/ubi/debug.h
+@@ -86,7 +86,7 @@ static inline int ubi_dbg_is_bgt_disabled(const struct ubi_device *ubi)
+ static inline int ubi_dbg_is_bitflip(const struct ubi_device *ubi)
+ {
+ 	if (ubi->dbg.emulate_bitflips)
+-		return !(random32() % 200);
++		return !(prandom_u32() % 200);
  	return 0;
  }
+ 
+@@ -100,7 +100,7 @@ static inline int ubi_dbg_is_bitflip(const struct ubi_device *ubi)
+ static inline int ubi_dbg_is_write_failure(const struct ubi_device *ubi)
+ {
+ 	if (ubi->dbg.emulate_io_failures)
+-		return !(random32() % 500);
++		return !(prandom_u32() % 500);
+ 	return 0;
+ }
+ 
+@@ -114,7 +114,7 @@ static inline int ubi_dbg_is_write_failure(const struct ubi_device *ubi)
+ static inline int ubi_dbg_is_erase_failure(const struct ubi_device *ubi)
+ {
+ 	if (ubi->dbg.emulate_io_failures)
+-		return !(random32() % 400);
++		return !(prandom_u32() % 400);
+ 	return 0;
+ }
+ 
 -- 
 1.7.11.7
