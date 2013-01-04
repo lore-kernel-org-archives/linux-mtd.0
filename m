@@ -1,21 +1,20 @@
-Received: from b.relay.invitel.net ([62.77.203.4])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Tr0xO-0004Gb-Ux
- for linux-mtd@lists.infradead.org; Fri, 04 Jan 2013 06:40:44 +0000
-Date: Fri, 04 Jan 2013 07:40:09 +0100
-From: Heiko Schocher <hs@denx.de>
-Subject: Re: [PATCH v2] davinci_nand: fix modular build with CONFIG_OF=y
-In-reply-to: <201301032127.34467.sshtylyov@ru.mvista.com>
-To: Sergei Shtylyov <sshtylyov@ru.mvista.com>
-Message-id: <50E67949.6010302@denx.de>
-MIME-version: 1.0
-Content-type: text/plain; charset=UTF-8; format=flowed
-Content-transfer-encoding: 7BIT
-References: <201301032127.34467.sshtylyov@ru.mvista.com>
-Cc: linux-mtd@lists.infradead.org,
- davinci-linux-open-source@linux.davincidsp.com, dwmw2@infradead.org,
- nsekhar@ti.com
-Reply-To: hs@denx.de
+From: Philip Avinash <avinashphilip@ti.com>
+To: <dwmw2@infradead.org>, <artem.bityutskiy@linux.intel.com>,
+ <tony@atomide.com>, <rmk+kernel@arm.linux.org.uk>,
+ <grant.likely@secretlab.ca>, <rob.herring@calxeda.com>,
+ <rob@landley.net>, <zonque@gmail.com>
+Subject: [PATCH v4 1/3] mtd: nand: omap2: Update nerrors using ecc.strength
+Date: Fri, 4 Jan 2013 13:26:49 +0530
+Message-ID: <1357286211-5012-2-git-send-email-avinashphilip@ti.com>
+In-Reply-To: <1357286211-5012-1-git-send-email-avinashphilip@ti.com>
+References: <1357286211-5012-1-git-send-email-avinashphilip@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: afzal@ti.com, linux-doc@vger.kernel.org,
+ devicetree-discuss@lists.ozlabs.org, nsekhar@ti.com,
+ linux-kernel@vger.kernel.org, gururaja.hebbar@ti.com,
+ linux-mtd@lists.infradead.org, ivan.djelic@parrot.com,
+ linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,48 +24,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Sergei
+Remove check of ecc bytes with 13, number of errors can directly update
+from nand ecc strength. This will increase re-usability of the code.
+Also add macro definitions BCH8_ERROR_MAX & BCH4_ERROR_MAX for better
+readability and cleaner code.
 
-On 03.01.2013 19:27, Sergei Shtylyov wrote:
-> Commit cdeadd712f52b16a9285386d61ee26fd14eb4085 (mtd: nand: davinci: add OF
-> support for davinci nand controller) has never been really build tested with
-> the driver as a module.  When the driver is built-in, the missing semicolon
-> after structure initializer is "compensated" by MODULE_DEVICE_TABLE() macro
-> being empty and so the initializer using the trailing semicolon on the next
-> line; when the driver is built as a module, compilation error ensues, and as
-> the 'davinci_all_defconfig' has the NAND driver modular, this error prevents
-> DaVinci family kernel from building...
->
-> Signed-off-by: Sergei Shtylyov<sshtylyov@ru.mvista.com>
-> Cc: stable@vger.kernel.org # 3.7
->
-> ---
-> The patch is atop of the recent Linus' tree.
-> Sekhar, have you build tested at least 3.8-rc1?
->
->   drivers/mtd/nand/davinci_nand.c |    2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> Index: linux/drivers/mtd/nand/davinci_nand.c
-> ===================================================================
-> --- linux.orig/drivers/mtd/nand/davinci_nand.c
-> +++ linux/drivers/mtd/nand/davinci_nand.c
-> @@ -523,7 +523,7 @@ static struct nand_ecclayout hwecc4_2048
->   static const struct of_device_id davinci_nand_of_match[] = {
->   	{.compatible = "ti,davinci-nand", },
->   	{},
-> -}
-> +};
->   MODULE_DEVICE_TABLE(of, davinci_nand_of_match);
->
->   static struct davinci_nand_pdata
+Signed-off-by: Philip Avinash <avinashphilip@ti.com>
+---
+Changes since v3:
+	- Update commit message.
 
-Acked-by: Heiko Schocher <hs@denx.de>
+ drivers/mtd/nand/omap2.c |   12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-Thanks for detecting this!
-
-bye,
-Heiko
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index 1d333497c..7d907b7 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -117,6 +117,9 @@
+ 
+ #define OMAP24XX_DMA_GPMC		4
+ 
++#define BCH8_MAX_ERROR		8	/* upto 8 bit correctable */
++#define BCH4_MAX_ERROR		4	/* upto 4 bit correctable */
++
+ /* oob info generated runtime depending on ecc algorithm and layout selected */
+ static struct nand_ecclayout omap_oobinfo;
+ /* Define some generic bad / good block scan pattern which are used
+@@ -1041,7 +1044,7 @@ static void omap3_enable_hwecc_bch(struct mtd_info *mtd, int mode)
+ 	struct nand_chip *chip = mtd->priv;
+ 	u32 val;
+ 
+-	nerrors = (info->nand.ecc.bytes == 13) ? 8 : 4;
++	nerrors = info->nand.ecc.strength;
+ 	dev_width = (chip->options & NAND_BUSWIDTH_16) ? 1 : 0;
+ 	nsectors = 1;
+ 	/*
+@@ -1218,13 +1221,14 @@ static int omap3_init_bch(struct mtd_info *mtd, int ecc_opt)
+ 	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
+ 						   mtd);
+ #ifdef CONFIG_MTD_NAND_OMAP_BCH8
+-	const int hw_errors = 8;
++	const int hw_errors = BCH8_MAX_ERROR;
+ #else
+-	const int hw_errors = 4;
++	const int hw_errors = BCH4_MAX_ERROR;
+ #endif
+ 	info->bch = NULL;
+ 
+-	max_errors = (ecc_opt == OMAP_ECC_BCH8_CODE_HW) ? 8 : 4;
++	max_errors = (ecc_opt == OMAP_ECC_BCH8_CODE_HW) ?
++		BCH8_MAX_ERROR : BCH4_MAX_ERROR;
+ 	if (max_errors != hw_errors) {
+ 		pr_err("cannot configure %d-bit BCH ecc, only %d-bit supported",
+ 		       max_errors, hw_errors);
 -- 
-DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+1.7.9.5
