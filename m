@@ -1,17 +1,17 @@
-Received: from mail-ia0-f172.google.com ([209.85.210.172])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Trb3Q-0005Mz-Sw
- for linux-mtd@lists.infradead.org; Sat, 05 Jan 2013 21:13:21 +0000
-Received: by mail-ia0-f172.google.com with SMTP id z13so14756587iaz.17
- for <linux-mtd@lists.infradead.org>; Sat, 05 Jan 2013 13:13:18 -0800 (PST)
+Received: from smtp03.smtpout.orange.fr ([80.12.242.125]
+ helo=smtp.smtpout.orange.fr)
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TrdL2-0006eI-8e
+ for linux-mtd@lists.infradead.org; Sat, 05 Jan 2013 23:39:41 +0000
+Message-ID: <50E8B9B8.2020701@wanadoo.fr>
+Date: Sun, 06 Jan 2013 00:39:36 +0100
+From: Michel Stempin <michel.stempin@wanadoo.fr>
 MIME-Version: 1.0
-Date: Sat, 5 Jan 2013 22:13:18 +0100
-Message-ID: <CACRpkdYp1Aok5rgyavq_o_P6eA7tZJE-F2vx+70go40yev=pdQ@mail.gmail.com>
-Subject: Missing DT code in FSMC driver?
-From: Linus Walleij <linus.walleij@linaro.org>
-To: linux-mtd@lists.infradead.org, Stefan Roese <sr@denx.de>,
- vipin.kumar@st.com, Viresh Kumar <viresh.kumar@linaro.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: chips: Add support for GigaDevice GD25Q32/GD25Q64 SPI
+ Flash in m25p80.c
 Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,30 +21,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Vipin,
+Add support for GigaDevice GD25Q32 32 Mbit (4 MB) SPI Flash (see datasheet: http://www.gigadevice.com/UserFiles/GD25Q32_Rev0.2(1).pdf) used in Hame MPR-A1 and clones, and for GigaDevice GD25Q64 64 Mbit (8 MB) SPI Flash used in 
+Hame MPR-A2 devices (datasheet: http://www.gigadevice.com/UserFiles/GD25Q64.pdf).
 
-I just found this in the SPEAr devicetree for FSMC:
+Signed-off-by: Michel Stempin <michel.stempin@wanadoo.fr>
+---
+ b/drivers/mtd/devices/m25p80.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-(...)
-	reg-names = "fsmc_regs", "nand_data", "nand_addr", "nand_cmd";
-	st,mode = <2>;
-	status = "okay";
-(...)
-
-st,mode?
-
-I guess this is for setting e.g. DMA mode, but there is no code for parsing
-this in the current FSMC driver, so it seems the device tree is out of sync
-with the code in the driver.
-
-Also there seems to be no bindings for setting the timings from device
-tree.
-
-Do you want me to look into this or do you have code waiting to be
-submitted? (I would guess you have some code since you have added
-that property to the device tree...)
-Documentation/devicetree/bindings/mtd/fsmc-nand.txt need to be
-fixed too I guess.
-
-Yours,
-Linus Walleij
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 4eeeb2d..566471e 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -642,6 +642,10 @@ static const struct spi_device_id m25p_ids[] = {
+ 	/* Everspin */
+ 	{ "mr25h256", CAT25_INFO(  32 * 1024, 1, 256, 2) },
+ 
++	/* GigaDevice */
++	{ "gd25q32", INFO(0xc84016, 0, 64 * 1024,  64, SECT_4K) },
++	{ "gd25q64", INFO(0xc84017, 0, 64 * 1024, 128, SECT_4K) },
++
+ 	/* Intel/Numonyx -- xxxs33b */
+ 	{ "160s33b",  INFO(0x898911, 0, 64 * 1024,  32, 0) },
+ 	{ "320s33b",  INFO(0x898912, 0, 64 * 1024,  64, 0) },
