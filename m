@@ -1,17 +1,17 @@
-Received: from outbound-241.asp.reflexion.net ([69.84.129.241]
- helo=asp.reflexion.net)
+Received: from mail-ia0-f172.google.com ([209.85.210.172])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TrWMz-0001in-0c
- for linux-mtd@lists.infradead.org; Sat, 05 Jan 2013 16:13:14 +0000
-From: Dan Donahue <ddonahue@gridcosystems.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: JFFS2 Garbage Collection causing mtd do_write_buffer timeouts?
-Date: Sat, 5 Jan 2013 16:13:07 +0000
-Message-ID: <99124789FD278148B0B056AC36E5D8DB496CC2FD@THOR.gridco.local>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ id 1Trb3Q-0005Mz-Sw
+ for linux-mtd@lists.infradead.org; Sat, 05 Jan 2013 21:13:21 +0000
+Received: by mail-ia0-f172.google.com with SMTP id z13so14756587iaz.17
+ for <linux-mtd@lists.infradead.org>; Sat, 05 Jan 2013 13:13:18 -0800 (PST)
 MIME-Version: 1.0
+Date: Sat, 5 Jan 2013 22:13:18 +0100
+Message-ID: <CACRpkdYp1Aok5rgyavq_o_P6eA7tZJE-F2vx+70go40yev=pdQ@mail.gmail.com>
+Subject: Missing DT code in FSMC driver?
+From: Linus Walleij <linus.walleij@linaro.org>
+To: linux-mtd@lists.infradead.org, Stefan Roese <sr@denx.de>,
+ vipin.kumar@st.com, Viresh Kumar <viresh.kumar@linaro.org>
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,47 +21,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Greetings,
+Hi Vipin,
 
-Some data:
----------------
-- proprietary board with ARM processor booting out of CFI NOR flash
-- Linux kernel 3.1.0
-- BusyBox v1.19.v
-- JFFS2 mounted mtdblocks
-- using JFFS2 for disk-like storage of images; not using JFFS2 for=A0
-root file system (that's in RAM)
+I just found this in the SPEAr devicetree for FSMC:
 
-summary:
-I am seeing intermittent mtd do_write_buffer() timeouts when un'taring a la=
-rge file (10MB) directly to flash and believe the cause to be a mutex issue=
- with jffs2 garbage collection thread.
+(...)
+	reg-names = "fsmc_regs", "nand_data", "nand_addr", "nand_cmd";
+	st,mode = <2>;
+	status = "okay";
+(...)
 
-details:
-Flash status returned in chip_ready() (cfi_cmdset_0002.c) when the timeouts=
- occur indicate "Erase in progress" (DQ3=3D1, DQ2 toggling, DQ6 toggling), =
-which shouldn't be the case when writing the flash. My guess is there is a =
-mutex issue occurring with the jffs2_gcd_mtdX when it's erasing a block it =
-recently collected.
+st,mode?
 
-I've killed the gcd thread and am currently re-running my test. I've yet to=
- see a timeout.
+I guess this is for setting e.g. DMA mode, but there is no code for parsing
+this in the current FSMC driver, so it seems the device tree is out of sync
+with the code in the driver.
 
-questions:
-Could jffs2 garbage collection erase contend with a write operation (especi=
-ally when the write is large and takes a while)?
+Also there seems to be no bindings for setting the timings from device
+tree.
 
-If so, then how should garbage collection be turned off when doing large wr=
-ites to flash?=20
+Do you want me to look into this or do you have code waiting to be
+submitted? (I would guess you have some code since you have added
+that property to the device tree...)
+Documentation/devicetree/bindings/mtd/fsmc-nand.txt need to be
+fixed too I guess.
 
-I've read the gc thread is optional (gc done regardless). Is that true? If =
-so, how do I turn it off? I didn't see an associated configs parameter.
-
-Could it be related to this issue: http://lists.infradead.org/pipermail/lin=
-ux-mtd/2012-February/039787.html
-
-Thanks for reading this far...
-
-
-Dan Donahue
-Gridco Systems, Inc.
+Yours,
+Linus Walleij
