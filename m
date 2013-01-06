@@ -1,17 +1,15 @@
-Received: from mail-bk0-f48.google.com ([209.85.214.48])
+Received: from mail-bk0-f44.google.com ([209.85.214.44])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Trrq8-0000TQ-TS
- for linux-mtd@lists.infradead.org; Sun, 06 Jan 2013 15:08:45 +0000
-Received: by mail-bk0-f48.google.com with SMTP id jc3so7904806bkc.21
- for <linux-mtd@lists.infradead.org>; Sun, 06 Jan 2013 07:08:42 -0800 (PST)
+ id 1Trwpv-0006vJ-Kr
+ for linux-mtd@lists.infradead.org; Sun, 06 Jan 2013 20:28:52 +0000
+Received: by mail-bk0-f44.google.com with SMTP id w11so8157605bku.31
+ for <linux-mtd@lists.infradead.org>; Sun, 06 Jan 2013 12:28:49 -0800 (PST)
 From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
  David Woodhouse <David.Woodhouse@intel.com>
-Subject: [PATCH 2/2] mtd: bcm47xxpart: register extra "firmware" partition
-Date: Sun,  6 Jan 2013 16:08:36 +0100
-Message-Id: <1357484916-29965-2-git-send-email-zajec5@gmail.com>
-In-Reply-To: <1357484916-29965-1-git-send-email-zajec5@gmail.com>
-References: <1357484916-29965-1-git-send-email-zajec5@gmail.com>
+Subject: [PATCH] mtd: bcm47xxsflash: add own struct for abstrating bus type
+Date: Sun,  6 Jan 2013 21:28:50 +0100
+Message-Id: <1357504130-21951-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -26,62 +24,150 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It's required for accessing trx header (usually re-calculating a
-checksum) and for writing a new firmware.
-
 Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
 ---
-I've checked this patch and got:
+After not receiving any NACKs and testing this patch with "maintaining":
 > Successfully built configuration "mips-bcm47xx_defconfig,mips,mips-linux-", no issues
+I'm resending it without RFC.
 
-I've also succesfully installed new firmware using
-mtd -r write /tmp/openwrt-brcm47xx-squashfs-noloader-wndr4500.trx firmware
+This patch is based on a
+> mtd: bcm47xxsflash: adjust names of bus-specific functions
 ---
- drivers/mtd/bcm47xxpart.c |   11 +++++++++++
- 1 files changed, 11 insertions(+), 0 deletions(-)
+ drivers/mtd/devices/bcm47xxsflash.c         |   37 +++++++++++++++++---------
+ drivers/mtd/devices/bcm47xxsflash.h         |   15 +++++++++++
+ include/linux/bcma/bcma_driver_chipcommon.h |    1 +
+ 3 files changed, 40 insertions(+), 13 deletions(-)
+ create mode 100644 drivers/mtd/devices/bcm47xxsflash.h
 
-diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
-index 06125eb..3411bc2 100644
---- a/drivers/mtd/bcm47xxpart.c
-+++ b/drivers/mtd/bcm47xxpart.c
-@@ -61,6 +61,8 @@ static int bcm47xxpart_parse(struct mtd_info *master,
- 	uint32_t offset;
- 	uint32_t blocksize = 0x10000;
- 	struct trx_header *trx;
-+	int trx_part = -1;
-+	int last_trx_part = -1;
+diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
+index f293682..13634c3 100644
+--- a/drivers/mtd/devices/bcm47xxsflash.c
++++ b/drivers/mtd/devices/bcm47xxsflash.c
+@@ -5,6 +5,8 @@
+ #include <linux/platform_device.h>
+ #include <linux/bcma/bcma.h>
  
- 	/* Alloc */
- 	parts = kzalloc(sizeof(struct mtd_partition) * BCM47XXPART_MAX_PARTS,
-@@ -131,6 +133,10 @@ static int bcm47xxpart_parse(struct mtd_info *master,
- 		if (buf[0x000 / 4] == TRX_MAGIC) {
- 			trx = (struct trx_header *)buf;
- 
-+			trx_part = curr_part;
-+			bcm47xxpart_add_part(&parts[curr_part++], "firmware",
-+					     offset, 0);
++#include "bcm47xxsflash.h"
 +
- 			i = 0;
- 			/* We have LZMA loader if offset[2] points to sth */
- 			if (trx->offset[2]) {
-@@ -154,6 +160,8 @@ static int bcm47xxpart_parse(struct mtd_info *master,
- 					     offset + trx->offset[i], 0);
- 			i++;
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("Serial flash driver for BCMA bus");
  
-+			last_trx_part = curr_part - 1;
+@@ -13,26 +15,27 @@ static const char *probes[] = { "bcm47xxpart", NULL };
+ static int bcm47xxsflash_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 			      size_t *retlen, u_char *buf)
+ {
+-	struct bcma_sflash *sflash = mtd->priv;
++	struct bcm47xxsflash *b47s = mtd->priv;
+ 
+ 	/* Check address range */
+ 	if ((from + len) > mtd->size)
+ 		return -EINVAL;
+ 
+-	memcpy_fromio(buf, (void __iomem *)KSEG0ADDR(sflash->window + from),
++	memcpy_fromio(buf, (void __iomem *)KSEG0ADDR(b47s->window + from),
+ 		      len);
+ 
+ 	return len;
+ }
+ 
+-static void bcm47xxsflash_fill_mtd(struct bcma_sflash *sflash,
+-				   struct mtd_info *mtd)
++static void bcm47xxsflash_fill_mtd(struct bcm47xxsflash *b47s)
+ {
+-	mtd->priv = sflash;
++	struct mtd_info *mtd = &b47s->mtd;
 +
- 			/*
- 			 * We have whole TRX scanned, skip to the next part. Use
- 			 * roundown (not roundup), as the loop will increase
-@@ -174,6 +182,9 @@ static int bcm47xxpart_parse(struct mtd_info *master,
- 				       parts[i + 1].offset : master->size;
++	mtd->priv = b47s;
+ 	mtd->name = "bcm47xxsflash";
+ 	mtd->owner = THIS_MODULE;
+ 	mtd->type = MTD_ROM;
+-	mtd->size = sflash->size;
++	mtd->size = b47s->size;
+ 	mtd->_read = bcm47xxsflash_read;
  
- 		parts[i].size = next_part_offset - parts[i].offset;
-+		if (i == last_trx_part && trx_part >= 0)
-+			parts[trx_part].size = next_part_offset -
-+					       parts[trx_part].offset;
+ 	/* TODO: implement writing support and verify/change following code */
+@@ -43,16 +46,23 @@ static void bcm47xxsflash_fill_mtd(struct bcma_sflash *sflash,
+ static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
+ {
+ 	struct bcma_sflash *sflash = dev_get_platdata(&pdev->dev);
++	struct bcm47xxsflash *b47s;
+ 	int err;
+ 
+-	sflash->mtd = kzalloc(sizeof(struct mtd_info), GFP_KERNEL);
+-	if (!sflash->mtd) {
++	b47s = kzalloc(sizeof(*b47s), GFP_KERNEL);
++	if (!b47s) {
+ 		err = -ENOMEM;
+ 		goto out;
  	}
+-	bcm47xxsflash_fill_mtd(sflash, sflash->mtd);
++	sflash->priv = b47s;
++
++	b47s->window = sflash->window;
++	b47s->blocksize = sflash->blocksize;
++	b47s->numblocks = sflash->numblocks;
++	b47s->size = sflash->size;
++	bcm47xxsflash_fill_mtd(b47s);
  
- 	*pparts = parts;
+-	err = mtd_device_parse_register(sflash->mtd, probes, NULL, NULL, 0);
++	err = mtd_device_parse_register(&b47s->mtd, probes, NULL, NULL, 0);
+ 	if (err) {
+ 		pr_err("Failed to register MTD device: %d\n", err);
+ 		goto err_dev_reg;
+@@ -61,7 +71,7 @@ static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
+ 	return 0;
+ 
+ err_dev_reg:
+-	kfree(sflash->mtd);
++	kfree(&b47s->mtd);
+ out:
+ 	return err;
+ }
+@@ -69,9 +79,10 @@ out:
+ static int bcm47xxsflash_bcma_remove(struct platform_device *pdev)
+ {
+ 	struct bcma_sflash *sflash = dev_get_platdata(&pdev->dev);
++	struct bcm47xxsflash *b47s = sflash->priv;
+ 
+-	mtd_device_unregister(sflash->mtd);
+-	kfree(sflash->mtd);
++	mtd_device_unregister(&b47s->mtd);
++	kfree(b47s);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/mtd/devices/bcm47xxsflash.h b/drivers/mtd/devices/bcm47xxsflash.h
+new file mode 100644
+index 0000000..ebf6f71
+--- /dev/null
++++ b/drivers/mtd/devices/bcm47xxsflash.h
+@@ -0,0 +1,15 @@
++#ifndef __BCM47XXSFLASH_H
++#define __BCM47XXSFLASH_H
++
++#include <linux/mtd/mtd.h>
++
++struct bcm47xxsflash {
++	u32 window;
++	u32 blocksize;
++	u16 numblocks;
++	u32 size;
++
++	struct mtd_info mtd;
++};
++
++#endif /* BCM47XXSFLASH */
+diff --git a/include/linux/bcma/bcma_driver_chipcommon.h b/include/linux/bcma/bcma_driver_chipcommon.h
+index ee332fa..fba90af 100644
+--- a/include/linux/bcma/bcma_driver_chipcommon.h
++++ b/include/linux/bcma/bcma_driver_chipcommon.h
+@@ -528,6 +528,7 @@ struct bcma_sflash {
+ 	u32 size;
+ 
+ 	struct mtd_info *mtd;
++	void *priv;
+ };
+ #endif
+ 
 -- 
 1.7.7
