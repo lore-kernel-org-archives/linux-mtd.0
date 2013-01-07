@@ -1,21 +1,24 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TsGGl-00061m-5B
- for linux-mtd@lists.infradead.org; Mon, 07 Jan 2013 17:13:51 +0000
-Date: Mon, 7 Jan 2013 18:13:44 +0100
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH] mtd: mxc_nand: Make use of supplied pinctrl data
-Message-ID: <20130107171344.GB13025@pengutronix.de>
-References: <1357568885-15507-1-git-send-email-marex@denx.de>
+ id 1TsIFr-0003HX-TG
+ for linux-mtd@lists.infradead.org; Mon, 07 Jan 2013 19:21:05 +0000
+Date: Mon, 7 Jan 2013 20:20:16 +0100
+From: Jan Kara <jack@suse.cz>
+To: Chen Gang <gang.chen@asianux.com>
+Subject: Re: [PATCH v3] fs/ext*,f2fs,jffs2,reiserfs: give comments for acl
+ size and count calculation
+Message-ID: <20130107192016.GD13659@quack.suse.cz>
+References: <50DD20B2.6040204@asianux.com> <50E646BC.2090201@asianux.com>
+ <50E64A4E.7010408@asianux.com> <50E64BFD.6090000@asianux.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1357568885-15507-1-git-send-email-marex@denx.de>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- Lothar =?iso-8859-15?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+In-Reply-To: <50E64BFD.6090000@asianux.com>
+Cc: jack@suse.cz, torvalds@linux-foundation.org, reiserfs-devel@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, adilger.kernel@dilger.ca,
+ linux-mtd@lists.infradead.org, jaegeuk.kim@samsung.com,
+ Theodore Ts'o <tytso@mit.edu>, akpm@linux-foundation.org,
+ linux-ext4@vger.kernel.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,68 +28,328 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jan 07, 2013 at 03:28:05PM +0100, Marek Vasut wrote:
-> The MXC NAND driver doesn't consider the pinctrl data supplied via DT, which
-> will result in NAND pins not being properly configured.
+On Fri 04-01-13 11:26:53, Chen Gang wrote:
 > 
-> Make the driver use pinctrl, but to prevent breakage on various boards, do not
-> fail if the pinctrl data are not available, only print a warning message.
+>   give comments (by Theodore Ts'o)
 > 
-> Signed-off-by: Marek Vasut <marex@denx.de>
-> Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> Cc: Lothar Waﬂmann <LW@KARO-electronics.de>
-> Cc: Sascha Hauer <s.hauer@pengutronix.de>
+>     ACL_USER_OBJ ACL_USER*[1] ACL_GROUP_OBJ ACL_GROUP*[1] ACL_MASK[2] ACL_OTHER
+> 
+>     [1] Where * is the regexp sense of "0 or more times"
+>     [2] Only if there is at least one ACL_USER or ACL_GROUP tag;
+>         otherwise skip ACL_MASK.
+  Note that I actually updated the entry [2] to be more precise in my
+suggested comment. I wrote:
+[2] If ACL_USER or ACL_GROUP is present, then ACL_MASK must be present.
 
-Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
+  Please use this formulation because the old version suggests ACL_MASK
+cannot be present if neither ACL_USER nor ACL_GROUP are present and that's
+not true. Otherwise your patch looks fine. Thanks!
 
-Sascha
+								Honza
 
+> 
+>   give comments (by Jan Kara)
+>     posix_acl_valid() makes sure that if there are <= 4 ACL entries, then
+>     all of them are short. Otherwise exactly 4 entries are short ones and
+>     other have full length. See comment before that function for exact ACL
+>     format.
+> 
+>   use macro instead of hard code number (by Chen Gang)
+> 
+> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+> Signed-off-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: Chen Gang <gang.chen@asianux.com>
 > ---
->  drivers/mtd/nand/mxc_nand.c |    6 ++++++
->  1 file changed, 6 insertions(+)
+>  fs/ext2/acl.h             |   10 +++++-----
+>  fs/ext3/acl.h             |   10 +++++-----
+>  fs/ext4/acl.h             |   10 +++++-----
+>  fs/f2fs/acl.c             |   12 +++++++-----
+>  fs/jffs2/acl.c            |   15 +++++++++------
+>  fs/posix_acl.c            |    8 ++++++++
+>  fs/reiserfs/acl.h         |   10 +++++-----
+>  include/linux/posix_acl.h |    8 ++++++++
+>  8 files changed, 52 insertions(+), 31 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-> index 45204e4..ed805fb 100644
-> --- a/drivers/mtd/nand/mxc_nand.c
-> +++ b/drivers/mtd/nand/mxc_nand.c
-> @@ -34,6 +34,7 @@
->  #include <linux/completion.h>
->  #include <linux/of_device.h>
->  #include <linux/of_mtd.h>
-> +#include <linux/pinctrl/consumer.h>
+> diff --git a/fs/ext2/acl.h b/fs/ext2/acl.h
+> index 503bfb0..9af79d0 100644
+> --- a/fs/ext2/acl.h
+> +++ b/fs/ext2/acl.h
+> @@ -25,13 +25,13 @@ typedef struct {
 >  
->  #include <asm/mach/flash.h>
->  #include <linux/platform_data/mtd-mxc_nand.h>
-> @@ -1385,6 +1386,7 @@ static int mxcnd_probe(struct platform_device *pdev)
->  	struct mtd_info *mtd;
->  	struct mxc_nand_host *host;
->  	struct resource *res;
-> +	struct pinctrl *pinctrl;
->  	int err = 0;
+>  static inline size_t ext2_acl_size(int count)
+>  {
+> -	if (count <= 4) {
+> +	if (count <= ACL_MAX_SHORT_ENTRY) {
+>  		return sizeof(ext2_acl_header) +
+>  		       count * sizeof(ext2_acl_entry_short);
+>  	} else {
+>  		return sizeof(ext2_acl_header) +
+> -		       4 * sizeof(ext2_acl_entry_short) +
+> -		       (count - 4) * sizeof(ext2_acl_entry);
+> +		       ACL_MAX_SHORT_ENTRY * sizeof(ext2_acl_entry_short) +
+> +		       (count - ACL_MAX_SHORT_ENTRY) * sizeof(ext2_acl_entry);
+>  	}
+>  }
 >  
->  	/* Allocate memory for MTD device structure and private data */
-> @@ -1449,6 +1451,10 @@ static int mxcnd_probe(struct platform_device *pdev)
->  	if (!res)
->  		return -ENODEV;
+> @@ -39,7 +39,7 @@ static inline int ext2_acl_count(size_t size)
+>  {
+>  	ssize_t s;
+>  	size -= sizeof(ext2_acl_header);
+> -	s = size - 4 * sizeof(ext2_acl_entry_short);
+> +	s = size - ACL_MAX_SHORT_ENTRY * sizeof(ext2_acl_entry_short);
+>  	if (s < 0) {
+>  		if (size % sizeof(ext2_acl_entry_short))
+>  			return -1;
+> @@ -47,7 +47,7 @@ static inline int ext2_acl_count(size_t size)
+>  	} else {
+>  		if (s % sizeof(ext2_acl_entry))
+>  			return -1;
+> -		return s / sizeof(ext2_acl_entry) + 4;
+> +		return s / sizeof(ext2_acl_entry) + ACL_MAX_SHORT_ENTRY;
+>  	}
+>  }
 >  
-> +	pinctrl = devm_pinctrl_get_select_default(&pdev->dev);
-> +	if (IS_ERR(pinctrl))
-> +		dev_warn(&pdev->dev, "No PINCTRL data for the NAND driver!\n");
+> diff --git a/fs/ext3/acl.h b/fs/ext3/acl.h
+> index dbc921e..b1cf2c0 100644
+> --- a/fs/ext3/acl.h
+> +++ b/fs/ext3/acl.h
+> @@ -25,13 +25,13 @@ typedef struct {
+>  
+>  static inline size_t ext3_acl_size(int count)
+>  {
+> -	if (count <= 4) {
+> +	if (count <= ACL_MAX_SHORT_ENTRY) {
+>  		return sizeof(ext3_acl_header) +
+>  		       count * sizeof(ext3_acl_entry_short);
+>  	} else {
+>  		return sizeof(ext3_acl_header) +
+> -		       4 * sizeof(ext3_acl_entry_short) +
+> -		       (count - 4) * sizeof(ext3_acl_entry);
+> +		       ACL_MAX_SHORT_ENTRY * sizeof(ext3_acl_entry_short) +
+> +		       (count - ACL_MAX_SHORT_ENTRY) * sizeof(ext3_acl_entry);
+>  	}
+>  }
+>  
+> @@ -39,7 +39,7 @@ static inline int ext3_acl_count(size_t size)
+>  {
+>  	ssize_t s;
+>  	size -= sizeof(ext3_acl_header);
+> -	s = size - 4 * sizeof(ext3_acl_entry_short);
+> +	s = size - ACL_MAX_SHORT_ENTRY * sizeof(ext3_acl_entry_short);
+>  	if (s < 0) {
+>  		if (size % sizeof(ext3_acl_entry_short))
+>  			return -1;
+> @@ -47,7 +47,7 @@ static inline int ext3_acl_count(size_t size)
+>  	} else {
+>  		if (s % sizeof(ext3_acl_entry))
+>  			return -1;
+> -		return s / sizeof(ext3_acl_entry) + 4;
+> +		return s / sizeof(ext3_acl_entry) + ACL_MAX_SHORT_ENTRY;
+>  	}
+>  }
+>  
+> diff --git a/fs/ext4/acl.h b/fs/ext4/acl.h
+> index 18cb39e..66d1fa3 100644
+> --- a/fs/ext4/acl.h
+> +++ b/fs/ext4/acl.h
+> @@ -25,13 +25,13 @@ typedef struct {
+>  
+>  static inline size_t ext4_acl_size(int count)
+>  {
+> -	if (count <= 4) {
+> +	if (count <= ACL_MAX_SHORT_ENTRY) {
+>  		return sizeof(ext4_acl_header) +
+>  		       count * sizeof(ext4_acl_entry_short);
+>  	} else {
+>  		return sizeof(ext4_acl_header) +
+> -		       4 * sizeof(ext4_acl_entry_short) +
+> -		       (count - 4) * sizeof(ext4_acl_entry);
+> +		       ACL_MAX_SHORT_ENTRY * sizeof(ext4_acl_entry_short) +
+> +		       (count - ACL_MAX_SHORT_ENTRY) * sizeof(ext4_acl_entry);
+>  	}
+>  }
+>  
+> @@ -39,7 +39,7 @@ static inline int ext4_acl_count(size_t size)
+>  {
+>  	ssize_t s;
+>  	size -= sizeof(ext4_acl_header);
+> -	s = size - 4 * sizeof(ext4_acl_entry_short);
+> +	s = size - ACL_MAX_SHORT_ENTRY * sizeof(ext4_acl_entry_short);
+>  	if (s < 0) {
+>  		if (size % sizeof(ext4_acl_entry_short))
+>  			return -1;
+> @@ -47,7 +47,7 @@ static inline int ext4_acl_count(size_t size)
+>  	} else {
+>  		if (s % sizeof(ext4_acl_entry))
+>  			return -1;
+> -		return s / sizeof(ext4_acl_entry) + 4;
+> +		return s / sizeof(ext4_acl_entry) + ACL_MAX_SHORT_ENTRY;
+>  	}
+>  }
+>  
+> diff --git a/fs/f2fs/acl.c b/fs/f2fs/acl.c
+> index fed74d1..42e0070 100644
+> --- a/fs/f2fs/acl.c
+> +++ b/fs/f2fs/acl.c
+> @@ -22,13 +22,15 @@
+>  
+>  static inline size_t f2fs_acl_size(int count)
+>  {
+> -	if (count <= 4) {
+> +	if (count <= ACL_MAX_SHORT_ENTRY) {
+>  		return sizeof(struct f2fs_acl_header) +
+>  			count * sizeof(struct f2fs_acl_entry_short);
+>  	} else {
+>  		return sizeof(struct f2fs_acl_header) +
+> -			4 * sizeof(struct f2fs_acl_entry_short) +
+> -			(count - 4) * sizeof(struct f2fs_acl_entry);
+> +			ACL_MAX_SHORT_ENTRY
+> +			 * sizeof(struct f2fs_acl_entry_short) +
+> +			(count - ACL_MAX_SHORT_ENTRY)
+> +			 * sizeof(struct f2fs_acl_entry);
+>  	}
+>  }
+>  
+> @@ -36,7 +38,7 @@ static inline int f2fs_acl_count(size_t size)
+>  {
+>  	ssize_t s;
+>  	size -= sizeof(struct f2fs_acl_header);
+> -	s = size - 4 * sizeof(struct f2fs_acl_entry_short);
+> +	s = size - ACL_MAX_SHORT_ENTRY * sizeof(struct f2fs_acl_entry_short);
+>  	if (s < 0) {
+>  		if (size % sizeof(struct f2fs_acl_entry_short))
+>  			return -1;
+> @@ -44,7 +46,7 @@ static inline int f2fs_acl_count(size_t size)
+>  	} else {
+>  		if (s % sizeof(struct f2fs_acl_entry))
+>  			return -1;
+> -		return s / sizeof(struct f2fs_acl_entry) + 4;
+> +		return s / sizeof(struct f2fs_acl_entry) + ACL_MAX_SHORT_ENTRY;
+>  	}
+>  }
+>  
+> diff --git a/fs/jffs2/acl.c b/fs/jffs2/acl.c
+> index 223283c..48ef4b8 100644
+> --- a/fs/jffs2/acl.c
+> +++ b/fs/jffs2/acl.c
+> @@ -25,13 +25,15 @@
+>  
+>  static size_t jffs2_acl_size(int count)
+>  {
+> -	if (count <= 4) {
+> +	if (count <= ACL_MAX_SHORT_ENTRY) {
+>  		return sizeof(struct jffs2_acl_header)
+>  		       + count * sizeof(struct jffs2_acl_entry_short);
+>  	} else {
+>  		return sizeof(struct jffs2_acl_header)
+> -		       + 4 * sizeof(struct jffs2_acl_entry_short)
+> -		       + (count - 4) * sizeof(struct jffs2_acl_entry);
+> +		       + ACL_MAX_SHORT_ENTRY
+> +				 * sizeof(struct jffs2_acl_entry_short)
+> +		       + (count - ACL_MAX_SHORT_ENTRY)
+> +				 * sizeof(struct jffs2_acl_entry);
+>  	}
+>  }
+>  
+> @@ -40,15 +42,16 @@ static int jffs2_acl_count(size_t size)
+>  	size_t s;
+>  
+>  	size -= sizeof(struct jffs2_acl_header);
+> -	if (size < 4 * sizeof(struct jffs2_acl_entry_short)) {
+> +	if (size < ACL_MAX_SHORT_ENTRY * sizeof(struct jffs2_acl_entry_short)) {
+>  		if (size % sizeof(struct jffs2_acl_entry_short))
+>  			return -1;
+>  		return size / sizeof(struct jffs2_acl_entry_short);
+>  	} else {
+> -		s = size - 4 * sizeof(struct jffs2_acl_entry_short);
+> +		s = size - ACL_MAX_SHORT_ENTRY
+> +				 * sizeof(struct jffs2_acl_entry_short);
+>  		if (s % sizeof(struct jffs2_acl_entry))
+>  			return -1;
+> -		return s / sizeof(struct jffs2_acl_entry) + 4;
+> +		return s / sizeof(struct jffs2_acl_entry) + ACL_MAX_SHORT_ENTRY;
+>  	}
+>  }
+>  
+> diff --git a/fs/posix_acl.c b/fs/posix_acl.c
+> index 8bd2135..8cfdebe 100644
+> --- a/fs/posix_acl.c
+> +++ b/fs/posix_acl.c
+> @@ -72,6 +72,14 @@ posix_acl_clone(const struct posix_acl *acl, gfp_t flags)
+>  
+>  /*
+>   * Check if an acl is valid. Returns 0 if it is, or -E... otherwise.
+> + *
+> + * make sure ACL format is the following:
+> + *
+> + *   ACL_USER_OBJ ACL_USER*[1] ACL_GROUP_OBJ ACL_GROUP*[1] ACL_MASK[2] ACL_OTHER
+> + *
+> + *   [1] Where * is the regexp sense of "0 or more times"
+> + *   [2] Only if there is at least one ACL_USER or ACL_GROUP tag;
+> + *       otherwise skip ACL_MASK.
+>   */
+>  int
+>  posix_acl_valid(const struct posix_acl *acl)
+> diff --git a/fs/reiserfs/acl.h b/fs/reiserfs/acl.h
+> index f096b80..cb967a3 100644
+> --- a/fs/reiserfs/acl.h
+> +++ b/fs/reiserfs/acl.h
+> @@ -20,13 +20,13 @@ typedef struct {
+>  
+>  static inline size_t reiserfs_acl_size(int count)
+>  {
+> -	if (count <= 4) {
+> +	if (count <= ACL_MAX_SHORT_ENTRY) {
+>  		return sizeof(reiserfs_acl_header) +
+>  		    count * sizeof(reiserfs_acl_entry_short);
+>  	} else {
+>  		return sizeof(reiserfs_acl_header) +
+> -		    4 * sizeof(reiserfs_acl_entry_short) +
+> -		    (count - 4) * sizeof(reiserfs_acl_entry);
+> +		    ACL_MAX_SHORT_ENTRY * sizeof(reiserfs_acl_entry_short) +
+> +		    (count - ACL_MAX_SHORT_ENTRY) * sizeof(reiserfs_acl_entry);
+>  	}
+>  }
+>  
+> @@ -34,7 +34,7 @@ static inline int reiserfs_acl_count(size_t size)
+>  {
+>  	ssize_t s;
+>  	size -= sizeof(reiserfs_acl_header);
+> -	s = size - 4 * sizeof(reiserfs_acl_entry_short);
+> +	s = size - ACL_MAX_SHORT_ENTRY * sizeof(reiserfs_acl_entry_short);
+>  	if (s < 0) {
+>  		if (size % sizeof(reiserfs_acl_entry_short))
+>  			return -1;
+> @@ -42,7 +42,7 @@ static inline int reiserfs_acl_count(size_t size)
+>  	} else {
+>  		if (s % sizeof(reiserfs_acl_entry))
+>  			return -1;
+> -		return s / sizeof(reiserfs_acl_entry) + 4;
+> +		return s / sizeof(reiserfs_acl_entry) + ACL_MAX_SHORT_ENTRY;
+>  	}
+>  }
+>  
+> diff --git a/include/linux/posix_acl.h b/include/linux/posix_acl.h
+> index 7931efe..2c5609c 100644
+> --- a/include/linux/posix_acl.h
+> +++ b/include/linux/posix_acl.h
+> @@ -26,6 +26,14 @@
+>  #define ACL_MASK		(0x10)
+>  #define ACL_OTHER		(0x20)
+>  
+> +/*
+> + * posix_acl_valid() makes sure that if there are <= 4 ACL entries, then
+> + * all of them are short. Otherwise exactly 4 entries are short ones and
+> + * other have full length. See comment before that function for exact ACL
+> + * format.
+> + */
+> +#define ACL_MAX_SHORT_ENTRY	4
 > +
->  	host->base = devm_request_and_ioremap(&pdev->dev, res);
->  	if (!host->base)
->  		return -ENOMEM;
+>  /* permissions in the e_perm field */
+>  #define ACL_READ		(0x04)
+>  #define ACL_WRITE		(0x02)
 > -- 
 > 1.7.10.4
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
 -- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Jan Kara <jack@suse.cz>
+SUSE Labs, CR
