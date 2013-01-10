@@ -1,16 +1,18 @@
 Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TtL2q-0003XY-K5
- for linux-mtd@lists.infradead.org; Thu, 10 Jan 2013 16:31:57 +0000
+ id 1TtL2s-0003Xr-TD
+ for linux-mtd@lists.infradead.org; Thu, 10 Jan 2013 16:31:59 +0000
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-Date: Thu, 10 Jan 2013 17:31:37 +0100
-Message-Id: <1357835498-23904-1-git-send-email-u.kleine-koenig@pengutronix.de>
+Date: Thu, 10 Jan 2013 17:31:38 +0100
+Message-Id: <1357835498-23904-2-git-send-email-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <1357835498-23904-1-git-send-email-u.kleine-koenig@pengutronix.de>
+References: <1357835498-23904-1-git-send-email-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Subject: [PATCH 1/2 v3] mtd/uclinux: support ROM and allow passing the base
- address
+Subject: [PATCH 2/2 v3] mtd/uclinux: add a comment about why uclinux_ram_map
+ must not be static
 Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
  Mike Frysinger <vapier.adi@gmail.com>, kernel@pengutronix.de,
  Greg Ungerer <gerg@uclinux.org>
@@ -23,109 +25,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This allows to put the filesystem at a defined address in ROM allowing
-to save more precious RAM.
-
-I think it's safe to default to ROM because the intention of using the
-uclinux map is to use a romfs and so mtd-ram doesn't give you anything
-that mtd-rom doesn't.
-
-Just in case I missed something a warning is added if the driver has to
-fall back to the RAM mapping.
+I was (at least) the second person trying to fix a warning by sparse, so
+document in the code why this is a bad idea and add an extern declaration to
+make sparse happy.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Acked-by: Mike Frysinger <vapier@gentoo.org>
+Acked-by: Greg Ungerer <gerg@uclinux.org>
 ---
-Changes since v2, id:1350027693-19528-1-git-send-email-u.kleine-koenig@pengutronix.de:
+Changes since v2, sent with
+Message-Id: 1350027693-19528-2-git-send-email-u.kleine-koenig@pengutronix.de:
 
- - drop a few "ram"s from printks instead of making them "ram/rom"
- - fix a typo in the commit log and add rational for the introduced warning.
+- note in the commit log that an extern declaration was added for sparse
 
-Who is responsible for taking (or not) these two patches? David? Artem?
+ drivers/mtd/maps/uclinux.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Best regards
-Uwe
-
----
- drivers/mtd/maps/Kconfig   |    2 +-
- drivers/mtd/maps/uclinux.c |   26 +++++++++++++++++++++-----
- 2 files changed, 22 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index 2e47c2e..0dc86fc 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -443,7 +443,7 @@ config MTD_GPIO_ADDR
- 
- config MTD_UCLINUX
- 	bool "Generic uClinux RAM/ROM filesystem support"
--	depends on MTD_RAM=y && (!MMU || COLDFIRE)
-+	depends on (MTD_RAM=y || MTD_ROM=y) && (!MMU || COLDFIRE)
- 	help
- 	  Map driver to support image based filesystems for uClinux.
- 
 diff --git a/drivers/mtd/maps/uclinux.c b/drivers/mtd/maps/uclinux.c
-index 299bf88..b3a9c54 100644
+index b3a9c54..fe1c83c 100644
 --- a/drivers/mtd/maps/uclinux.c
 +++ b/drivers/mtd/maps/uclinux.c
-@@ -24,11 +24,12 @@
+@@ -23,6 +23,12 @@
+ 
  /****************************************************************************/
  
++/*
++ * Blackfin uses uclinux_ram_map during startup, so it must not be static.
++ * Provide a dummy declaration to make sparse happy.
++ */
++extern struct map_info uclinux_ram_map;
++
  struct map_info uclinux_ram_map = {
--	.name = "RAM",
--	.phys = (unsigned long)__bss_stop,
  	.size = 0,
  };
- 
-+static unsigned long physaddr = -1;
-+module_param(physaddr, ulong, S_IRUGO);
-+
- static struct mtd_info *uclinux_ram_mtdinfo;
- 
- /****************************************************************************/
-@@ -60,11 +61,17 @@ static int __init uclinux_mtd_init(void)
- 	struct map_info *mapp;
- 
- 	mapp = &uclinux_ram_map;
-+
-+	if (physaddr == -1)
-+		mapp->phys = (resource_size_t)__bss_stop;
-+	else
-+		mapp->phys = physaddr;
-+
- 	if (!mapp->size)
- 		mapp->size = PAGE_ALIGN(ntohl(*((unsigned long *)(mapp->phys + 8))));
- 	mapp->bankwidth = 4;
- 
--	printk("uclinux[mtd]: RAM probe address=0x%x size=0x%x\n",
-+	printk("uclinux[mtd]: probe address=0x%x size=0x%x\n",
- 	       	(int) mapp->phys, (int) mapp->size);
- 
- 	/*
-@@ -82,7 +89,16 @@ static int __init uclinux_mtd_init(void)
- 
- 	simple_map_init(mapp);
- 
--	mtd = do_map_probe("map_ram", mapp);
-+	mapp->name = "ROM";
-+	mtd = do_map_probe("map_rom", mapp);
-+	if (!mtd) {
-+		/* fall back to ram probing for compatibility reasons */
-+		mapp->name = "RAM";
-+		mtd = do_map_probe("map_ram", mapp);
-+		if (mtd && IS_ENABLED(CONFIG_MTD_ROM))
-+			pr_err("Failed to map rom, but ram succeeded. Please report this issue!\n");
-+	}
-+
- 	if (!mtd) {
- 		printk("uclinux[mtd]: failed to find a mapping?\n");
- 		return(-ENXIO);
-@@ -118,6 +134,6 @@ module_exit(uclinux_mtd_cleanup);
- 
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Greg Ungerer <gerg@snapgear.com>");
--MODULE_DESCRIPTION("Generic RAM based MTD for uClinux");
-+MODULE_DESCRIPTION("Generic MTD for uClinux");
- 
- /****************************************************************************/
 -- 
 1.7.10.4
