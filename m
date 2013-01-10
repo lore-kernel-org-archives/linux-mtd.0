@@ -1,23 +1,18 @@
-Received: from co9ehsobe003.messaging.microsoft.com ([207.46.163.26]
- helo=co9outboundpool.messaging.microsoft.com)
+Received: from mika.eatserver.nl ([2001:67c:28fc:195:20:9:75:0])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Tt8pV-0004c8-Dg
- for linux-mtd@lists.infradead.org; Thu, 10 Jan 2013 03:29:22 +0000
-Message-ID: <50EE356A.1000108@freescale.com>
-Date: Thu, 10 Jan 2013 11:28:42 +0800
-From: Huang Shijie <b32955@freescale.com>
+ id 1TtFNM-0000D2-DS
+ for linux-mtd@lists.infradead.org; Thu, 10 Jan 2013 10:28:48 +0000
+Message-ID: <50EE97D5.5060906@aimvalley.nl>
+Date: Thu, 10 Jan 2013 11:28:37 +0100
+From: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
 MIME-Version: 1.0
-To: Zach Sadecki <zsadecki@itwatchdogs.com>
-Subject: Re: [PATCH] mtd: gpmi: Always report ECC stats and return max_bitflips
-References: <50BD01F8.3040003@itwatchdogs.com>
- <1355147097.2657.33.camel@sauron.fi.intel.com>
- <50C5FD4A.6090405@itwatchdogs.com>
- <1355398036.3400.45.camel@sauron.fi.intel.com>
- <50CA917C.6070408@itwatchdogs.com>
-In-Reply-To: <50CA917C.6070408@itwatchdogs.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
+To: Bosi Daniele <Daniele.Bosi@mta.it>
+Subject: Re: UBI corruption on a NOR flash
+References: <BE7AFD5DB9EB17418CAAAEEA76697290190E878AA7@mta-mail.MTA.INT>
+In-Reply-To: <BE7AFD5DB9EB17418CAAAEEA76697290190E878AA7@mta-mail.MTA.INT>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,40 +22,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2012=E5=B9=B412=E6=9C=8814=E6=97=A5 10:39, Zach Sadecki =E5=86=99=
-=E9=81=93:
-> On 12/13/2012 05:27 AM, Artem Bityutskiy wrote:
->> On Mon, 2012-12-10 at 09:18 -0600, Zach Sadecki wrote:
->>> Always report corrected and failed ECC stats back up to the MTD=20
->>> layer. Also
->>> return max_bitflips from read_page() as is expected from NAND=20
->>> drivers now.
->>>
->>> Signed-off-by: Zach Sadecki <zsadecki@itwatchdogs.com>
->>> Acked-by: Huang Shijie <b32955 at freescale.com>
->>> ---
->> Dunno, may be your patch is corrupted or something. Try to save it and
->> apply. This is what I get:
->>
->> $ git apply --check ~/tmp/zach.mbox
->> error: patch failed: drivers/mtd/nand/gpmi-nand/gpmi-nand.c:921
->> error: drivers/mtd/nand/gpmi-nand/gpmi-nand.c: patch does not apply
->>
->> $ git log -1 --oneline
->> 70df8b3 mtd: nand: gpmi: reset BCH earlier, too, to avoid NAND=20
->> startup problems
->>
->> I've attached the zach.mbox file for you.
->>
-> OK. I rebased the patch on the latest l2-mtd and I tested it with git=20
-> apply, so this one should work...
+On 01/09/13 14:43, Bosi Daniele wrote:
+> Hello List,
+> we are working on an embedded device running on Linux 2.6.24.6.
+> We had some devices returned from the field with corrupted UBI partitions on a NOR flash.
+> The corruption was probably caused by a power cut, but we aren't sure about the root cause of the failure.
 >
-> Sent as a separate reply with only the patch in it.
-Dear Zach,
-I think you'd better check the patch with /scripts/checkpatch.pl before=20
-you send out the patch.
-I saw many "trailing whitespace" in your patch.
+> We found a similar issue in an old thread from the mailing list where Artem said that UBI on NOR could have some bugs that can lead to such a failure (http://lists.infradead.org/pipermail/linux-mtd/2009-May/025737.html), but no final statements was given on that thread.
+>
+> Any help would be appreciated, thank you.
+>
 
-thanks.
 
-Huang Shijie
+I believe the final statement of the referred thread was that one
+of the problems was UBI/UBIFS assumes a (CFI) write buffer size of
+8 bytes. This is often not the case with NOR flash. It did not lead
+to kernel patches though.
+
+Lateron this problem was found (again) by Anatolij Gustschin
+(see the thread "UBIFS partition on NOR flash not mountable after power cut test"
+from december 2010) and he fixed it properly. His patches ended up in the mainline.
+
+Btw. it could be your problem is another or a related ubi/ubifs NOR flash power
+cut problem. Some other problem have been found and solved as well (mostly by Artem
+and Anatolij).
+
+If you update to the ubi/ubifs backported linux-2.6.32 (this is the oldest one
+still available) which can be found here:
+http://git.infradead.org/users/dedekind/ubifs-v2.6.32.git
+you'll probably be fine.
+
+hth,
+Norbert van Bolhuis
