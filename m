@@ -1,17 +1,19 @@
-Message-ID: <1357923268.1438.73.camel@shinybook.infradead.org>
-Subject: Re: [PATCH v2] davinci_nand: fix modular build with CONFIG_OF=y
-From: David Woodhouse <dwmw2@infradead.org>
-To: Sergei Shtylyov <sshtylyov@mvista.com>
-Date: Fri, 11 Jan 2013 16:54:28 +0000
-In-Reply-To: <50F04F8E.30001@mvista.com>
-References: <201301032127.34467.sshtylyov@ru.mvista.com>
- <50F04F8E.30001@mvista.com>
-Content-Type: multipart/signed; micalg="sha1";
- protocol="application/x-pkcs7-signature";
- boundary="=-PQLTp7ff5klh9bpzleGL"
-Mime-Version: 1.0
-Cc: davinci-linux-open-source@linux.davincidsp.com, hs@denx.de,
- linux-mtd@lists.infradead.org
+Received: from va3ehsobe010.messaging.microsoft.com ([216.32.180.30]
+ helo=va3outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Ttn3k-0004gn-45
+ for linux-mtd@lists.infradead.org; Fri, 11 Jan 2013 22:26:45 +0000
+Date: Fri, 11 Jan 2013 16:23:59 -0600
+From: Kim Phillips <kim.phillips@freescale.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: fsl_ifc_nand: use more portable i/o accessors
+Message-ID: <20130111162359.33980fd3436fcc65e71da1c0@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Prabhakar Kushwaha <prabhakar@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,138 +23,463 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+in/out_be32 accessors are Power arch centric whereas
+ioread/writebe32 are available in other arches.
 
---=-PQLTp7ff5klh9bpzleGL
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Since the IFC device registers are annotated big endian in
+fsl_ifc.h, the accessor annotations now match, resulting in the
+pleasant side-effect of this patch silencing sparse endian
+warnings such as the following:
 
-On Fri, 2013-01-11 at 20:44 +0300, Sergei Shtylyov wrote:
->=20
-> > The patch is atop of the recent Linus' tree.
->=20
->    OK, a week has passed. Anybody going to queue this up for 3.8?
+drivers/mtd/nand/fsl_ifc_nand.c:179:19: warning: incorrect type in argument 1 (different base types)
+drivers/mtd/nand/fsl_ifc_nand.c:179:19:    expected unsigned int volatile [noderef] [usertype] <asn:2>*addr
+drivers/mtd/nand/fsl_ifc_nand.c:179:19:    got restricted __be32 [noderef] <asn:2>*<noident>
 
-I've just applied it to my tree; I'll send it in a day or so. Thanks for
-the reminder.
+Signed-off-by: Kim Phillips <kim.phillips@freescale.com>
+---
+ drivers/mtd/nand/fsl_ifc_nand.c | 233 ++++++++++++++++++++--------------------
+ 1 file changed, 119 insertions(+), 114 deletions(-)
 
---=20
-dwmw2
-
-
---=-PQLTp7ff5klh9bpzleGL
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIUbjCCBjQw
-ggQcoAMCAQICAR4wDQYJKoZIhvcNAQEFBQAwfTELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0
-Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxKTAn
-BgNVBAMTIFN0YXJ0Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MB4XDTA3MTAyNDIxMDE1NVoX
-DTE3MTAyNDIxMDE1NVowgYwxCzAJBgNVBAYTAklMMRYwFAYDVQQKEw1TdGFydENvbSBMdGQuMSsw
-KQYDVQQLEyJTZWN1cmUgRGlnaXRhbCBDZXJ0aWZpY2F0ZSBTaWduaW5nMTgwNgYDVQQDEy9TdGFy
-dENvbSBDbGFzcyAxIFByaW1hcnkgSW50ZXJtZWRpYXRlIENsaWVudCBDQTCCASIwDQYJKoZIhvcN
-AQEBBQADggEPADCCAQoCggEBAMcJg8zOLdgasSmkLhOrlr6KMoOMpohBllVHrdRvEg/q6r8jR+EK
-75xCGhR8ToREoqe7zM9/UnC6TS2y9UKTpT1v7RSMzR0t6ndl0TWBuUr/UXBhPk+Kmy7bI4yW4urC
-+y7P3/1/X7U8ocb8VpH/Clt+4iq7nirMcNh6qJR+xjOhV+VHzQMALuGYn5KZmc1NbJQYclsGkDxD
-z2UbFqE2+6vIZoL+jb9x4Pa5gNf1TwSDkOkikZB1xtB4ZqtXThaABSONdfmv/Z1pua3FYxnCFmdr
-/+N2JLKutIxMYqQOJebr/f/h5t95m4JgrM3Y/w7YX9d7YAL9jvN4SydHsU6n65cCAwEAAaOCAa0w
-ggGpMA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0PAQH/BAQDAgEGMB0GA1UdDgQWBBRTcu2SnODaywFc
-fH6WNU7y1LhRgjAfBgNVHSMEGDAWgBROC+8apEBbpRdphzDKNGhD0EGu8jBmBggrBgEFBQcBAQRa
-MFgwJwYIKwYBBQUHMAGGG2h0dHA6Ly9vY3NwLnN0YXJ0c3NsLmNvbS9jYTAtBggrBgEFBQcwAoYh
-aHR0cDovL3d3dy5zdGFydHNzbC5jb20vc2ZzY2EuY3J0MFsGA1UdHwRUMFIwJ6AloCOGIWh0dHA6
-Ly93d3cuc3RhcnRzc2wuY29tL3Nmc2NhLmNybDAnoCWgI4YhaHR0cDovL2NybC5zdGFydHNzbC5j
-b20vc2ZzY2EuY3JsMIGABgNVHSAEeTB3MHUGCysGAQQBgbU3AQIBMGYwLgYIKwYBBQUHAgEWImh0
-dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwNAYIKwYBBQUHAgEWKGh0dHA6Ly93d3cu
-c3RhcnRzc2wuY29tL2ludGVybWVkaWF0ZS5wZGYwDQYJKoZIhvcNAQEFBQADggIBAAqDCH14qywG
-XLhjjF6uHLkjd02hcdh9hrw+VUsv+q1eeQWB21jWj3kJ96AUlPCoEGZ/ynJNScWy6QMVQjbbMXlt
-UfO4n4bGGdKo3awPWp61tjAFgraLJgDk+DsSvUD6EowjMTNx25GQgyYJ5RPIzKKR9tQW8gGK+2+R
-HxkUCTbYFnL6kl8Ch507rUdPPipJ9CgJFws3kDS3gOS5WFMxcjO5DwKfKSETEPrHh7p5shuuNktv
-sv6hxHTLhiMKX893gxdT3XLS9OKmCv87vkINQcNEcIIoFWbP9HORz9v3vQwR4e3ksLc2JZOAFK+s
-sS5XMEoznzpihEP0PLc4dCBYjbvSD7kxgDwZ+Aj8Q9PkbvE9sIPP7ON0fz095HdThKjiVJe6vofq
-+n6b1NBc8XdrQvBmunwxD5nvtTW4vtN6VY7mUCmxsCieuoBJ9OlqmsVWQvifIYf40dJPZkk9YgGT
-zWLpXDSfLSplbY2LL9C9U0ptvjcDjefLTvqSFc7tw1sEhF0n/qpA2r0GpvkLRDmcSwVyPvmjFBGq
-Up/pNy8ZuPGQmHwFi2/14+xeSUDG2bwnsYJQG2EdJCB6luQ57GEnTA/yKZSTKI8dDQa8Sd3zfXb1
-9mOgSF0bBdXbuKhEpuP9wirslFe6fQ1t5j5R0xi72MZ8ikMu1RQZKCyDbMwazlHiMIIHFzCCBf+g
-AwIBAgIDBCZ6MA0GCSqGSIb3DQEBBQUAMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRD
-b20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYG
-A1UEAxMvU3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0EwHhcN
-MTIwNTAxMTI1ODI3WhcNMTMwNTAzMTEzNzIwWjBdMRkwFwYDVQQNExA4Y1VOSzUzMTc0ODRYRjk3
-MRwwGgYDVQQDDBNkd213MkBpbmZyYWRlYWQub3JnMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZy
-YWRlYWQub3JnMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyYe7wo6MrtrB4uIGGbrY
-4IifY/Xsq22pSv605yganL0+uyUdd8rCjrYlH6Q/ra5TVJCQFTgzaepkuqPQc79DC/Cxmzm6Qo+s
-wLZy868oFsccsVokL2bPAWIPaRXfNPJKkYR1FTWQfZpWJVQmT+sPf1XFUullVBAK+d9RztopyacI
-xWoZ/W/Cmv7mseQbttYTtGKJa0btX73nsQRWl6SgErWXo59zg9friCLTy1GXMXJYB8H+PtnuwX0w
-MrAvWDdX1ABgIlA17W3FraCn0eW15ZM46eyu0/amGzJZNtemCWF73P7BAijzeV1jNmiJFXdZ0DT0
-w+hmtMO9PxdDUyt78QIDAQABo4IDrjCCA6owCQYDVR0TBAIwADALBgNVHQ8EBAMCBLAwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMB0GA1UdDgQWBBTkfe5UOr3PcirsjApibyyUEfsyRzAf
-BgNVHSMEGDAWgBRTcu2SnODaywFcfH6WNU7y1LhRgjAeBgNVHREEFzAVgRNkd213MkBpbmZyYWRl
-YWQub3JnMIICIQYDVR0gBIICGDCCAhQwggIQBgsrBgEEAYG1NwECAjCCAf8wLgYIKwYBBQUHAgEW
-Imh0dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwNAYIKwYBBQUHAgEWKGh0dHA6Ly93
-d3cuc3RhcnRzc2wuY29tL2ludGVybWVkaWF0ZS5wZGYwgfcGCCsGAQUFBwICMIHqMCcWIFN0YXJ0
-Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MAMCAQEagb5UaGlzIGNlcnRpZmljYXRlIHdhcyBp
-c3N1ZWQgYWNjb3JkaW5nIHRvIHRoZSBDbGFzcyAxIFZhbGlkYXRpb24gcmVxdWlyZW1lbnRzIG9m
-IHRoZSBTdGFydENvbSBDQSBwb2xpY3ksIHJlbGlhbmNlIG9ubHkgZm9yIHRoZSBpbnRlbmRlZCBw
-dXJwb3NlIGluIGNvbXBsaWFuY2Ugb2YgdGhlIHJlbHlpbmcgcGFydHkgb2JsaWdhdGlvbnMuMIGc
-BggrBgEFBQcCAjCBjzAnFiBTdGFydENvbSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTADAgECGmRM
-aWFiaWxpdHkgYW5kIHdhcnJhbnRpZXMgYXJlIGxpbWl0ZWQhIFNlZSBzZWN0aW9uICJMZWdhbCBh
-bmQgTGltaXRhdGlvbnMiIG9mIHRoZSBTdGFydENvbSBDQSBwb2xpY3kuMDYGA1UdHwQvMC0wK6Ap
-oCeGJWh0dHA6Ly9jcmwuc3RhcnRzc2wuY29tL2NydHUxLWNybC5jcmwwgY4GCCsGAQUFBwEBBIGB
-MH8wOQYIKwYBBQUHMAGGLWh0dHA6Ly9vY3NwLnN0YXJ0c3NsLmNvbS9zdWIvY2xhc3MxL2NsaWVu
-dC9jYTBCBggrBgEFBQcwAoY2aHR0cDovL2FpYS5zdGFydHNzbC5jb20vY2VydHMvc3ViLmNsYXNz
-MS5jbGllbnQuY2EuY3J0MCMGA1UdEgQcMBqGGGh0dHA6Ly93d3cuc3RhcnRzc2wuY29tLzANBgkq
-hkiG9w0BAQUFAAOCAQEAqDU1FKifNtCFJbLnvOi1BLRfk7mut55PMtPSZLJ4/AnG7AjmJnbBI4U5
-DELwvVq3mIpwUpGqZUkqkZMEfBPIbfq517UZB3h4iANtqif+ULfTLhg5XgcK5eF8/T6EtX2c3epq
-ylARdleCbj/0FwiUDvPlTsA6PIN4SCekjRLgjKERrL3heFz+Hteq1rtMAvMkNuyL0/0ijyyg2y45
-NASAl2Afl9SLes/fnoh9nBwzfNQfb6qDYUFpnglfpGrq/0b1NtaOUb2z1SR+H1tKlb8bVJJIdvpu
-mEi27kSRIhzk3h30uTfKkKetgy++ouyldxZ7KZ0PuoLQrBy465EoQLosETCCBxcwggX/oAMCAQIC
-AwQmejANBgkqhkiG9w0BAQUFADCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0
-ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMT
-L1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBMB4XDTEyMDUw
-MTEyNTgyN1oXDTEzMDUwMzExMzcyMFowXTEZMBcGA1UEDRMQOGNVTks1MzE3NDg0WEY5NzEcMBoG
-A1UEAwwTZHdtdzJAaW5mcmFkZWFkLm9yZzEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFk
-Lm9yZzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMmHu8KOjK7aweLiBhm62OCIn2P1
-7KttqUr+tOcoGpy9PrslHXfKwo62JR+kP62uU1SQkBU4M2nqZLqj0HO/QwvwsZs5ukKPrMC2cvOv
-KBbHHLFaJC9mzwFiD2kV3zTySpGEdRU1kH2aViVUJk/rD39VxVLpZVQQCvnfUc7aKcmnCMVqGf1v
-wpr+5rHkG7bWE7RiiWtG7V+957EEVpekoBK1l6Ofc4PX64gi08tRlzFyWAfB/j7Z7sF9MDKwL1g3
-V9QAYCJQNe1txa2gp9HlteWTOOnsrtP2phsyWTbXpglhe9z+wQIo83ldYzZoiRV3WdA09MPoZrTD
-vT8XQ1Mre/ECAwEAAaOCA64wggOqMAkGA1UdEwQCMAAwCwYDVR0PBAQDAgSwMB0GA1UdJQQWMBQG
-CCsGAQUFBwMCBggrBgEFBQcDBDAdBgNVHQ4EFgQU5H3uVDq9z3Iq7IwKYm8slBH7MkcwHwYDVR0j
-BBgwFoAUU3Ltkpzg2ssBXHx+ljVO8tS4UYIwHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9y
-ZzCCAiEGA1UdIASCAhgwggIUMIICEAYLKwYBBAGBtTcBAgIwggH/MC4GCCsGAQUFBwIBFiJodHRw
-Oi8vd3d3LnN0YXJ0c3NsLmNvbS9wb2xpY3kucGRmMDQGCCsGAQUFBwIBFihodHRwOi8vd3d3LnN0
-YXJ0c3NsLmNvbS9pbnRlcm1lZGlhdGUucGRmMIH3BggrBgEFBQcCAjCB6jAnFiBTdGFydENvbSBD
-ZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTADAgEBGoG+VGhpcyBjZXJ0aWZpY2F0ZSB3YXMgaXNzdWVk
-IGFjY29yZGluZyB0byB0aGUgQ2xhc3MgMSBWYWxpZGF0aW9uIHJlcXVpcmVtZW50cyBvZiB0aGUg
-U3RhcnRDb20gQ0EgcG9saWN5LCByZWxpYW5jZSBvbmx5IGZvciB0aGUgaW50ZW5kZWQgcHVycG9z
-ZSBpbiBjb21wbGlhbmNlIG9mIHRoZSByZWx5aW5nIHBhcnR5IG9ibGlnYXRpb25zLjCBnAYIKwYB
-BQUHAgIwgY8wJxYgU3RhcnRDb20gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkwAwIBAhpkTGlhYmls
-aXR5IGFuZCB3YXJyYW50aWVzIGFyZSBsaW1pdGVkISBTZWUgc2VjdGlvbiAiTGVnYWwgYW5kIExp
-bWl0YXRpb25zIiBvZiB0aGUgU3RhcnRDb20gQ0EgcG9saWN5LjA2BgNVHR8ELzAtMCugKaAnhiVo
-dHRwOi8vY3JsLnN0YXJ0c3NsLmNvbS9jcnR1MS1jcmwuY3JsMIGOBggrBgEFBQcBAQSBgTB/MDkG
-CCsGAQUFBzABhi1odHRwOi8vb2NzcC5zdGFydHNzbC5jb20vc3ViL2NsYXNzMS9jbGllbnQvY2Ew
-QgYIKwYBBQUHMAKGNmh0dHA6Ly9haWEuc3RhcnRzc2wuY29tL2NlcnRzL3N1Yi5jbGFzczEuY2xp
-ZW50LmNhLmNydDAjBgNVHRIEHDAahhhodHRwOi8vd3d3LnN0YXJ0c3NsLmNvbS8wDQYJKoZIhvcN
-AQEFBQADggEBAKg1NRSonzbQhSWy57zotQS0X5O5rreeTzLT0mSyePwJxuwI5iZ2wSOFOQxC8L1a
-t5iKcFKRqmVJKpGTBHwTyG36ude1GQd4eIgDbaon/lC30y4YOV4HCuXhfP0+hLV9nN3qaspQEXZX
-gm4/9BcIlA7z5U7AOjyDeEgnpI0S4IyhEay94Xhc/h7Xqta7TALzJDbsi9P9Io8soNsuOTQEgJdg
-H5fUi3rP356IfZwcM3zUH2+qg2FBaZ4JX6Rq6v9G9TbWjlG9s9Ukfh9bSpW/G1SSSHb6bphItu5E
-kSIc5N4d9Lk3ypCnrYMvvqLspXcWeymdD7qC0KwcuOuRKEC6LBExggNvMIIDawIBATCBlDCBjDEL
-MAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdp
-dGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFy
-eSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMEJnowCQYFKw4DAhoFAKCCAa8wGAYJKoZIhvcNAQkD
-MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTMwMTExMTY1NDI4WjAjBgkqhkiG9w0BCQQx
-FgQU+D+wjAWDPyy3VCKts/xDUj9ftSAwgaUGCSsGAQQBgjcQBDGBlzCBlDCBjDELMAkGA1UEBhMC
-SUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRp
-ZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1l
-ZGlhdGUgQ2xpZW50IENBAgMEJnowgacGCyqGSIb3DQEJEAILMYGXoIGUMIGMMQswCQYDVQQGEwJJ
-TDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlm
-aWNhdGUgU2lnbmluZzE4MDYGA1UEAxMvU3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVk
-aWF0ZSBDbGllbnQgQ0ECAwQmejANBgkqhkiG9w0BAQEFAASCAQAX3Nw0LCMRakD2YDlK1ctgKQQQ
-q9GpnygqrPXkRQM026V5ARZyoKAGWbTs1y00gcDUidnKgbmO0uvV8yWLdhOyhL+QWqtK5UW3lwvp
-C4kknJ8+uDf9FA0FP1Mhdmn30T6ya5mAhTEt7MZNwlubQtsuM5m3eZmPE5jSqzMlOIayU98Km4qz
-+sarpj1ZxGUnIij3qcSWG8sAmWYD/8zfS8AWSn/pkSYMGyvreSIPQ3JTEgtMrXStHVO4mbRS+F+C
-RKs7FyFOFJxrf9OVIAuc6ZrRpkHisXnEUtxSjSCQB6Dn3ki7NJbU+LMylSK5+hayzeon77OWUa+f
-itqX2f1F+eqJAAAAAAAA
-
-
---=-PQLTp7ff5klh9bpzleGL--
+diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
+index ad62226..f1f7f12 100644
+--- a/drivers/mtd/nand/fsl_ifc_nand.c
++++ b/drivers/mtd/nand/fsl_ifc_nand.c
+@@ -176,8 +176,8 @@ static void set_addr(struct mtd_info *mtd, int column, int page_addr, int oob)
+ 
+ 	ifc_nand_ctrl->page = page_addr;
+ 	/* Program ROW0/COL0 */
+-	out_be32(&ifc->ifc_nand.row0, page_addr);
+-	out_be32(&ifc->ifc_nand.col0, (oob ? IFC_NAND_COL_MS : 0) | column);
++	iowrite32be(page_addr, &ifc->ifc_nand.row0);
++	iowrite32be((oob ? IFC_NAND_COL_MS : 0) | column, &ifc->ifc_nand.col0);
+ 
+ 	buf_num = page_addr & priv->bufnum_mask;
+ 
+@@ -239,18 +239,19 @@ static void fsl_ifc_run_command(struct mtd_info *mtd)
+ 	int i;
+ 
+ 	/* set the chip select for NAND Transaction */
+-	out_be32(&ifc->ifc_nand.nand_csel, priv->bank << IFC_NAND_CSEL_SHIFT);
++	iowrite32be(priv->bank << IFC_NAND_CSEL_SHIFT,
++		    &ifc->ifc_nand.nand_csel);
+ 
+ 	dev_vdbg(priv->dev,
+ 			"%s: fir0=%08x fcr0=%08x\n",
+ 			__func__,
+-			in_be32(&ifc->ifc_nand.nand_fir0),
+-			in_be32(&ifc->ifc_nand.nand_fcr0));
++			ioread32be(&ifc->ifc_nand.nand_fir0),
++			ioread32be(&ifc->ifc_nand.nand_fcr0));
+ 
+ 	ctrl->nand_stat = 0;
+ 
+ 	/* start read/write seq */
+-	out_be32(&ifc->ifc_nand.nandseq_strt, IFC_NAND_SEQ_STRT_FIR_STRT);
++	iowrite32be(IFC_NAND_SEQ_STRT_FIR_STRT, &ifc->ifc_nand.nandseq_strt);
+ 
+ 	/* wait for command complete flag or timeout */
+ 	wait_event_timeout(ctrl->nand_wait, ctrl->nand_stat,
+@@ -273,7 +274,7 @@ static void fsl_ifc_run_command(struct mtd_info *mtd)
+ 		int sector_end = sector + chip->ecc.steps - 1;
+ 
+ 		for (i = sector / 4; i <= sector_end / 4; i++)
+-			eccstat[i] = in_be32(&ifc->ifc_nand.nand_eccstat[i]);
++			eccstat[i] = ioread32be(&ifc->ifc_nand.nand_eccstat[i]);
+ 
+ 		for (i = sector; i <= sector_end; i++) {
+ 			errors = check_read_ecc(mtd, ctrl, eccstat, i);
+@@ -313,31 +314,33 @@ static void fsl_ifc_do_read(struct nand_chip *chip,
+ 
+ 	/* Program FIR/IFC_NAND_FCR0 for Small/Large page */
+ 	if (mtd->writesize > 512) {
+-		out_be32(&ifc->ifc_nand.nand_fir0,
+-			 (IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
+-			 (IFC_FIR_OP_CA0 << IFC_NAND_FIR0_OP1_SHIFT) |
+-			 (IFC_FIR_OP_RA0 << IFC_NAND_FIR0_OP2_SHIFT) |
+-			 (IFC_FIR_OP_CMD1 << IFC_NAND_FIR0_OP3_SHIFT) |
+-			 (IFC_FIR_OP_RBCD << IFC_NAND_FIR0_OP4_SHIFT));
+-		out_be32(&ifc->ifc_nand.nand_fir1, 0x0);
+-
+-		out_be32(&ifc->ifc_nand.nand_fcr0,
+-			(NAND_CMD_READ0 << IFC_NAND_FCR0_CMD0_SHIFT) |
+-			(NAND_CMD_READSTART << IFC_NAND_FCR0_CMD1_SHIFT));
++		iowrite32be((IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
++			    (IFC_FIR_OP_CA0 << IFC_NAND_FIR0_OP1_SHIFT) |
++			    (IFC_FIR_OP_RA0 << IFC_NAND_FIR0_OP2_SHIFT) |
++			    (IFC_FIR_OP_CMD1 << IFC_NAND_FIR0_OP3_SHIFT) |
++			    (IFC_FIR_OP_RBCD << IFC_NAND_FIR0_OP4_SHIFT),
++			    &ifc->ifc_nand.nand_fir0);
++		iowrite32be(0x0, &ifc->ifc_nand.nand_fir1);
++
++		iowrite32be((NAND_CMD_READ0 << IFC_NAND_FCR0_CMD0_SHIFT) |
++			    (NAND_CMD_READSTART << IFC_NAND_FCR0_CMD1_SHIFT),
++			    &ifc->ifc_nand.nand_fcr0);
+ 	} else {
+-		out_be32(&ifc->ifc_nand.nand_fir0,
+-			 (IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
+-			 (IFC_FIR_OP_CA0 << IFC_NAND_FIR0_OP1_SHIFT) |
+-			 (IFC_FIR_OP_RA0  << IFC_NAND_FIR0_OP2_SHIFT) |
+-			 (IFC_FIR_OP_RBCD << IFC_NAND_FIR0_OP3_SHIFT));
+-		out_be32(&ifc->ifc_nand.nand_fir1, 0x0);
++		iowrite32be((IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
++			    (IFC_FIR_OP_CA0 << IFC_NAND_FIR0_OP1_SHIFT) |
++			    (IFC_FIR_OP_RA0  << IFC_NAND_FIR0_OP2_SHIFT) |
++			    (IFC_FIR_OP_RBCD << IFC_NAND_FIR0_OP3_SHIFT),
++			    &ifc->ifc_nand.nand_fir0);
++		iowrite32be(0x0, &ifc->ifc_nand.nand_fir1);
+ 
+ 		if (oob)
+-			out_be32(&ifc->ifc_nand.nand_fcr0,
+-				 NAND_CMD_READOOB << IFC_NAND_FCR0_CMD0_SHIFT);
++			iowrite32be(NAND_CMD_READOOB <<
++				    IFC_NAND_FCR0_CMD0_SHIFT,
++				    &ifc->ifc_nand.nand_fcr0);
+ 		else
+-			out_be32(&ifc->ifc_nand.nand_fcr0,
+-				NAND_CMD_READ0 << IFC_NAND_FCR0_CMD0_SHIFT);
++			iowrite32be(NAND_CMD_READ0 <<
++				    IFC_NAND_FCR0_CMD0_SHIFT,
++				    &ifc->ifc_nand.nand_fcr0);
+ 	}
+ }
+ 
+@@ -357,7 +360,7 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
+ 	switch (command) {
+ 	/* READ0 read the entire buffer to use hardware ECC. */
+ 	case NAND_CMD_READ0:
+-		out_be32(&ifc->ifc_nand.nand_fbcr, 0);
++		iowrite32be(0, &ifc->ifc_nand.nand_fbcr);
+ 		set_addr(mtd, 0, page_addr, 0);
+ 
+ 		ifc_nand_ctrl->read_bytes = mtd->writesize + mtd->oobsize;
+@@ -372,7 +375,7 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
+ 
+ 	/* READOOB reads only the OOB because no ECC is performed. */
+ 	case NAND_CMD_READOOB:
+-		out_be32(&ifc->ifc_nand.nand_fbcr, mtd->oobsize - column);
++		iowrite32be(mtd->oobsize - column, &ifc->ifc_nand.nand_fbcr);
+ 		set_addr(mtd, column, page_addr, 1);
+ 
+ 		ifc_nand_ctrl->read_bytes = mtd->writesize + mtd->oobsize;
+@@ -388,19 +391,19 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
+ 		if (command == NAND_CMD_PARAM)
+ 			timing = IFC_FIR_OP_RBCD;
+ 
+-		out_be32(&ifc->ifc_nand.nand_fir0,
+-				(IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
+-				(IFC_FIR_OP_UA  << IFC_NAND_FIR0_OP1_SHIFT) |
+-				(timing << IFC_NAND_FIR0_OP2_SHIFT));
+-		out_be32(&ifc->ifc_nand.nand_fcr0,
+-				command << IFC_NAND_FCR0_CMD0_SHIFT);
+-		out_be32(&ifc->ifc_nand.row3, column);
++		iowrite32be((IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
++			    (IFC_FIR_OP_UA  << IFC_NAND_FIR0_OP1_SHIFT) |
++			    (timing << IFC_NAND_FIR0_OP2_SHIFT),
++			    &ifc->ifc_nand.nand_fir0);
++		iowrite32be(command << IFC_NAND_FCR0_CMD0_SHIFT,
++			    &ifc->ifc_nand.nand_fcr0);
++		iowrite32be(column, &ifc->ifc_nand.row3);
+ 
+ 		/*
+ 		 * although currently it's 8 bytes for READID, we always read
+ 		 * the maximum 256 bytes(for PARAM)
+ 		 */
+-		out_be32(&ifc->ifc_nand.nand_fbcr, 256);
++		iowrite32be(256, &ifc->ifc_nand.nand_fbcr);
+ 		ifc_nand_ctrl->read_bytes = 256;
+ 
+ 		set_addr(mtd, 0, 0, 0);
+@@ -415,16 +418,16 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
+ 
+ 	/* ERASE2 uses the block and page address from ERASE1 */
+ 	case NAND_CMD_ERASE2:
+-		out_be32(&ifc->ifc_nand.nand_fir0,
+-			 (IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
+-			 (IFC_FIR_OP_RA0 << IFC_NAND_FIR0_OP1_SHIFT) |
+-			 (IFC_FIR_OP_CMD1 << IFC_NAND_FIR0_OP2_SHIFT));
++		iowrite32be((IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
++			    (IFC_FIR_OP_RA0 << IFC_NAND_FIR0_OP1_SHIFT) |
++			    (IFC_FIR_OP_CMD1 << IFC_NAND_FIR0_OP2_SHIFT),
++			    &ifc->ifc_nand.nand_fir0);
+ 
+-		out_be32(&ifc->ifc_nand.nand_fcr0,
+-			 (NAND_CMD_ERASE1 << IFC_NAND_FCR0_CMD0_SHIFT) |
+-			 (NAND_CMD_ERASE2 << IFC_NAND_FCR0_CMD1_SHIFT));
++		iowrite32be((NAND_CMD_ERASE1 << IFC_NAND_FCR0_CMD0_SHIFT) |
++			    (NAND_CMD_ERASE2 << IFC_NAND_FCR0_CMD1_SHIFT),
++			    &ifc->ifc_nand.nand_fcr0);
+ 
+-		out_be32(&ifc->ifc_nand.nand_fbcr, 0);
++		iowrite32be(0, &ifc->ifc_nand.nand_fbcr);
+ 		ifc_nand_ctrl->read_bytes = 0;
+ 		fsl_ifc_run_command(mtd);
+ 		return;
+@@ -440,26 +443,28 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
+ 				(NAND_CMD_SEQIN << IFC_NAND_FCR0_CMD0_SHIFT) |
+ 				(NAND_CMD_PAGEPROG << IFC_NAND_FCR0_CMD1_SHIFT);
+ 
+-			out_be32(&ifc->ifc_nand.nand_fir0,
+-				 (IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
+-				 (IFC_FIR_OP_CA0 << IFC_NAND_FIR0_OP1_SHIFT) |
+-				 (IFC_FIR_OP_RA0 << IFC_NAND_FIR0_OP2_SHIFT) |
+-				 (IFC_FIR_OP_WBCD  << IFC_NAND_FIR0_OP3_SHIFT) |
+-				 (IFC_FIR_OP_CW1 << IFC_NAND_FIR0_OP4_SHIFT));
++			iowrite32be(
++				(IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
++				(IFC_FIR_OP_CA0 << IFC_NAND_FIR0_OP1_SHIFT) |
++				(IFC_FIR_OP_RA0 << IFC_NAND_FIR0_OP2_SHIFT) |
++				(IFC_FIR_OP_WBCD << IFC_NAND_FIR0_OP3_SHIFT) |
++				(IFC_FIR_OP_CW1 << IFC_NAND_FIR0_OP4_SHIFT),
++				&ifc->ifc_nand.nand_fir0);
+ 		} else {
+ 			nand_fcr0 = ((NAND_CMD_PAGEPROG <<
+ 					IFC_NAND_FCR0_CMD1_SHIFT) |
+ 				    (NAND_CMD_SEQIN <<
+ 					IFC_NAND_FCR0_CMD2_SHIFT));
+ 
+-			out_be32(&ifc->ifc_nand.nand_fir0,
+-				 (IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
+-				 (IFC_FIR_OP_CMD2 << IFC_NAND_FIR0_OP1_SHIFT) |
+-				 (IFC_FIR_OP_CA0 << IFC_NAND_FIR0_OP2_SHIFT) |
+-				 (IFC_FIR_OP_RA0 << IFC_NAND_FIR0_OP3_SHIFT) |
+-				 (IFC_FIR_OP_WBCD << IFC_NAND_FIR0_OP4_SHIFT));
+-			out_be32(&ifc->ifc_nand.nand_fir1,
+-				 (IFC_FIR_OP_CW1 << IFC_NAND_FIR1_OP5_SHIFT));
++			iowrite32be(
++				(IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
++				(IFC_FIR_OP_CMD2 << IFC_NAND_FIR0_OP1_SHIFT) |
++				(IFC_FIR_OP_CA0 << IFC_NAND_FIR0_OP2_SHIFT) |
++				(IFC_FIR_OP_RA0 << IFC_NAND_FIR0_OP3_SHIFT) |
++				(IFC_FIR_OP_WBCD << IFC_NAND_FIR0_OP4_SHIFT),
++				&ifc->ifc_nand.nand_fir0);
++			iowrite32be(IFC_FIR_OP_CW1 << IFC_NAND_FIR1_OP5_SHIFT,
++				    &ifc->ifc_nand.nand_fir1);
+ 
+ 			if (column >= mtd->writesize)
+ 				nand_fcr0 |=
+@@ -474,7 +479,7 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
+ 			column -= mtd->writesize;
+ 			ifc_nand_ctrl->oob = 1;
+ 		}
+-		out_be32(&ifc->ifc_nand.nand_fcr0, nand_fcr0);
++		iowrite32be(nand_fcr0, &ifc->ifc_nand.nand_fcr0);
+ 		set_addr(mtd, column, page_addr, ifc_nand_ctrl->oob);
+ 		return;
+ 	}
+@@ -482,10 +487,11 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
+ 	/* PAGEPROG reuses all of the setup from SEQIN and adds the length */
+ 	case NAND_CMD_PAGEPROG: {
+ 		if (ifc_nand_ctrl->oob) {
+-			out_be32(&ifc->ifc_nand.nand_fbcr,
+-				ifc_nand_ctrl->index - ifc_nand_ctrl->column);
++			iowrite32be(ifc_nand_ctrl->index -
++				    ifc_nand_ctrl->column,
++				    &ifc->ifc_nand.nand_fbcr);
+ 		} else {
+-			out_be32(&ifc->ifc_nand.nand_fbcr, 0);
++			iowrite32be(0, &ifc->ifc_nand.nand_fbcr);
+ 		}
+ 
+ 		fsl_ifc_run_command(mtd);
+@@ -493,12 +499,12 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
+ 	}
+ 
+ 	case NAND_CMD_STATUS:
+-		out_be32(&ifc->ifc_nand.nand_fir0,
+-				(IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
+-				(IFC_FIR_OP_RB << IFC_NAND_FIR0_OP1_SHIFT));
+-		out_be32(&ifc->ifc_nand.nand_fcr0,
+-				NAND_CMD_STATUS << IFC_NAND_FCR0_CMD0_SHIFT);
+-		out_be32(&ifc->ifc_nand.nand_fbcr, 1);
++		iowrite32be((IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
++			    (IFC_FIR_OP_RB << IFC_NAND_FIR0_OP1_SHIFT),
++			    &ifc->ifc_nand.nand_fir0);
++		iowrite32be(NAND_CMD_STATUS << IFC_NAND_FCR0_CMD0_SHIFT,
++			    &ifc->ifc_nand.nand_fcr0);
++		iowrite32be(1, &ifc->ifc_nand.nand_fbcr);
+ 		set_addr(mtd, 0, 0, 0);
+ 		ifc_nand_ctrl->read_bytes = 1;
+ 
+@@ -512,10 +518,10 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
+ 		return;
+ 
+ 	case NAND_CMD_RESET:
+-		out_be32(&ifc->ifc_nand.nand_fir0,
+-				IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT);
+-		out_be32(&ifc->ifc_nand.nand_fcr0,
+-				NAND_CMD_RESET << IFC_NAND_FCR0_CMD0_SHIFT);
++		iowrite32be(IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT,
++			    &ifc->ifc_nand.nand_fir0);
++		iowrite32be(NAND_CMD_RESET << IFC_NAND_FCR0_CMD0_SHIFT,
++			    &ifc->ifc_nand.nand_fcr0);
+ 		fsl_ifc_run_command(mtd);
+ 		return;
+ 
+@@ -639,18 +645,18 @@ static int fsl_ifc_wait(struct mtd_info *mtd, struct nand_chip *chip)
+ 	u32 nand_fsr;
+ 
+ 	/* Use READ_STATUS command, but wait for the device to be ready */
+-	out_be32(&ifc->ifc_nand.nand_fir0,
+-		 (IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
+-		 (IFC_FIR_OP_RDSTAT << IFC_NAND_FIR0_OP1_SHIFT));
+-	out_be32(&ifc->ifc_nand.nand_fcr0, NAND_CMD_STATUS <<
+-			IFC_NAND_FCR0_CMD0_SHIFT);
+-	out_be32(&ifc->ifc_nand.nand_fbcr, 1);
++	iowrite32be((IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
++		    (IFC_FIR_OP_RDSTAT << IFC_NAND_FIR0_OP1_SHIFT),
++		    &ifc->ifc_nand.nand_fir0);
++	iowrite32be(NAND_CMD_STATUS << IFC_NAND_FCR0_CMD0_SHIFT,
++		    &ifc->ifc_nand.nand_fcr0);
++	iowrite32be(1, &ifc->ifc_nand.nand_fbcr);
+ 	set_addr(mtd, 0, 0, 0);
+ 	ifc_nand_ctrl->read_bytes = 1;
+ 
+ 	fsl_ifc_run_command(mtd);
+ 
+-	nand_fsr = in_be32(&ifc->ifc_nand.nand_fsr);
++	nand_fsr = ioread32be(&ifc->ifc_nand.nand_fsr);
+ 
+ 	/*
+ 	 * The chip always seems to report that it is
+@@ -744,34 +750,34 @@ static void fsl_ifc_sram_init(struct fsl_ifc_mtd *priv)
+ 	uint32_t cs = priv->bank;
+ 
+ 	/* Save CSOR and CSOR_ext */
+-	csor = in_be32(&ifc->csor_cs[cs].csor);
+-	csor_ext = in_be32(&ifc->csor_cs[cs].csor_ext);
++	csor = ioread32be(&ifc->csor_cs[cs].csor);
++	csor_ext = ioread32be(&ifc->csor_cs[cs].csor_ext);
+ 
+ 	/* chage PageSize 8K and SpareSize 1K*/
+ 	csor_8k = (csor & ~(CSOR_NAND_PGS_MASK)) | 0x0018C000;
+-	out_be32(&ifc->csor_cs[cs].csor, csor_8k);
+-	out_be32(&ifc->csor_cs[cs].csor_ext, 0x0000400);
++	iowrite32be(csor_8k, &ifc->csor_cs[cs].csor);
++	iowrite32be(0x0000400, &ifc->csor_cs[cs].csor_ext);
+ 
+ 	/* READID */
+-	out_be32(&ifc->ifc_nand.nand_fir0,
+-			(IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
+-			(IFC_FIR_OP_UA  << IFC_NAND_FIR0_OP1_SHIFT) |
+-			(IFC_FIR_OP_RB << IFC_NAND_FIR0_OP2_SHIFT));
+-	out_be32(&ifc->ifc_nand.nand_fcr0,
+-			NAND_CMD_READID << IFC_NAND_FCR0_CMD0_SHIFT);
+-	out_be32(&ifc->ifc_nand.row3, 0x0);
++	iowrite32be((IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
++		    (IFC_FIR_OP_UA  << IFC_NAND_FIR0_OP1_SHIFT) |
++		    (IFC_FIR_OP_RB << IFC_NAND_FIR0_OP2_SHIFT),
++		    &ifc->ifc_nand.nand_fir0);
++	iowrite32be(NAND_CMD_READID << IFC_NAND_FCR0_CMD0_SHIFT,
++		    &ifc->ifc_nand.nand_fcr0);
++	iowrite32be(0x0, &ifc->ifc_nand.row3);
+ 
+-	out_be32(&ifc->ifc_nand.nand_fbcr, 0x0);
++	iowrite32be(0x0, &ifc->ifc_nand.nand_fbcr);
+ 
+ 	/* Program ROW0/COL0 */
+-	out_be32(&ifc->ifc_nand.row0, 0x0);
+-	out_be32(&ifc->ifc_nand.col0, 0x0);
++	iowrite32be(0x0, &ifc->ifc_nand.row0);
++	iowrite32be(0x0, &ifc->ifc_nand.col0);
+ 
+ 	/* set the chip select for NAND Transaction */
+-	out_be32(&ifc->ifc_nand.nand_csel, cs << IFC_NAND_CSEL_SHIFT);
++	iowrite32be(cs << IFC_NAND_CSEL_SHIFT, &ifc->ifc_nand.nand_csel);
+ 
+ 	/* start read seq */
+-	out_be32(&ifc->ifc_nand.nandseq_strt, IFC_NAND_SEQ_STRT_FIR_STRT);
++	iowrite32be(IFC_NAND_SEQ_STRT_FIR_STRT, &ifc->ifc_nand.nandseq_strt);
+ 
+ 	/* wait for command complete flag or timeout */
+ 	wait_event_timeout(ctrl->nand_wait, ctrl->nand_stat,
+@@ -781,8 +787,8 @@ static void fsl_ifc_sram_init(struct fsl_ifc_mtd *priv)
+ 		printk(KERN_ERR "fsl-ifc: Failed to Initialise SRAM\n");
+ 
+ 	/* Restore CSOR and CSOR_ext */
+-	out_be32(&ifc->csor_cs[cs].csor, csor);
+-	out_be32(&ifc->csor_cs[cs].csor_ext, csor_ext);
++	iowrite32be(csor, &ifc->csor_cs[cs].csor);
++	iowrite32be(csor_ext, &ifc->csor_cs[cs].csor_ext);
+ }
+ 
+ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
+@@ -799,7 +805,7 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
+ 
+ 	/* fill in nand_chip structure */
+ 	/* set up function call table */
+-	if ((in_be32(&ifc->cspr_cs[priv->bank].cspr)) & CSPR_PORT_SIZE_16)
++	if ((ioread32be(&ifc->cspr_cs[priv->bank].cspr)) & CSPR_PORT_SIZE_16)
+ 		chip->read_byte = fsl_ifc_read_byte16;
+ 	else
+ 		chip->read_byte = fsl_ifc_read_byte;
+@@ -813,13 +819,13 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
+ 	chip->bbt_td = &bbt_main_descr;
+ 	chip->bbt_md = &bbt_mirror_descr;
+ 
+-	out_be32(&ifc->ifc_nand.ncfgr, 0x0);
++	iowrite32be(0x0, &ifc->ifc_nand.ncfgr);
+ 
+ 	/* set up nand options */
+ 	chip->bbt_options = NAND_BBT_USE_FLASH;
+ 
+ 
+-	if (in_be32(&ifc->cspr_cs[priv->bank].cspr) & CSPR_PORT_SIZE_16) {
++	if (ioread32be(&ifc->cspr_cs[priv->bank].cspr) & CSPR_PORT_SIZE_16) {
+ 		chip->read_byte = fsl_ifc_read_byte16;
+ 		chip->options |= NAND_BUSWIDTH_16;
+ 	} else {
+@@ -832,7 +838,7 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
+ 	chip->ecc.read_page = fsl_ifc_read_page;
+ 	chip->ecc.write_page = fsl_ifc_write_page;
+ 
+-	csor = in_be32(&ifc->csor_cs[priv->bank].csor);
++	csor = ioread32be(&ifc->csor_cs[priv->bank].csor);
+ 
+ 	/* Hardware generates ECC per 512 Bytes */
+ 	chip->ecc.size = 512;
+@@ -884,7 +890,7 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
+ 		chip->ecc.mode = NAND_ECC_SOFT;
+ 	}
+ 
+-	ver = in_be32(&ifc->ifc_rev);
++	ver = ioread32be(&ifc->ifc_rev);
+ 	if (ver == FSL_IFC_V1_1_0)
+ 		fsl_ifc_sram_init(priv);
+ 
+@@ -910,7 +916,7 @@ static int fsl_ifc_chip_remove(struct fsl_ifc_mtd *priv)
+ static int match_bank(struct fsl_ifc_regs __iomem *ifc, int bank,
+ 		      phys_addr_t addr)
+ {
+-	u32 cspr = in_be32(&ifc->cspr_cs[bank].cspr);
++	u32 cspr = ioread32be(&ifc->cspr_cs[bank].cspr);
+ 
+ 	if (!(cspr & CSPR_V))
+ 		return 0;
+@@ -997,17 +1003,16 @@ static int fsl_ifc_nand_probe(struct platform_device *dev)
+ 
+ 	dev_set_drvdata(priv->dev, priv);
+ 
+-	out_be32(&ifc->ifc_nand.nand_evter_en,
+-			IFC_NAND_EVTER_EN_OPC_EN |
+-			IFC_NAND_EVTER_EN_FTOER_EN |
+-			IFC_NAND_EVTER_EN_WPER_EN);
++	iowrite32be(IFC_NAND_EVTER_EN_OPC_EN |
++		    IFC_NAND_EVTER_EN_FTOER_EN |
++		    IFC_NAND_EVTER_EN_WPER_EN,
++		    &ifc->ifc_nand.nand_evter_en);
+ 
+ 	/* enable NAND Machine Interrupts */
+-	out_be32(&ifc->ifc_nand.nand_evter_intr_en,
+-			IFC_NAND_EVTER_INTR_OPCIR_EN |
+-			IFC_NAND_EVTER_INTR_FTOERIR_EN |
+-			IFC_NAND_EVTER_INTR_WPERIR_EN);
+-
++	iowrite32be(IFC_NAND_EVTER_INTR_OPCIR_EN |
++		    IFC_NAND_EVTER_INTR_FTOERIR_EN |
++		    IFC_NAND_EVTER_INTR_WPERIR_EN,
++		    &ifc->ifc_nand.nand_evter_intr_en);
+ 	priv->mtd.name = kasprintf(GFP_KERNEL, "%x.flash", (unsigned)res.start);
+ 	if (!priv->mtd.name) {
+ 		ret = -ENOMEM;
+-- 
+1.8.1
