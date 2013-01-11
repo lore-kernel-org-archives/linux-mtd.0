@@ -1,23 +1,20 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+Received: from mail-lb0-f181.google.com ([209.85.217.181])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TtfBm-00068J-6c
- for linux-mtd@lists.infradead.org; Fri, 11 Jan 2013 14:02:31 +0000
-Date: Fri, 11 Jan 2013 15:02:22 +0100
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-To: Greg Ungerer <gregungerer@westnet.com.au>
-Subject: Re: [PATCH 1/2 v3] mtd/uclinux: support ROM and allow passing the
- base address
-Message-ID: <20130111140222.GJ14860@pengutronix.de>
-References: <1357835498-23904-1-git-send-email-u.kleine-koenig@pengutronix.de>
- <50F01599.30309@westnet.com.au>
+ id 1Tthkd-0000RY-74
+ for linux-mtd@lists.infradead.org; Fri, 11 Jan 2013 16:46:41 +0000
+Received: by mail-lb0-f181.google.com with SMTP id ge1so1438307lbb.40
+ for <linux-mtd@lists.infradead.org>; Fri, 11 Jan 2013 08:46:36 -0800 (PST)
+Message-ID: <50F04F8E.30001@mvista.com>
+Date: Fri, 11 Jan 2013 20:44:46 +0300
+From: Sergei Shtylyov <sshtylyov@mvista.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <50F01599.30309@westnet.com.au>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-mtd@lists.infradead.org, Mike Frysinger <vapier.adi@gmail.com>,
- kernel@pengutronix.de, Greg Ungerer <gerg@uclinux.org>
+To: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2] davinci_nand: fix modular build with CONFIG_OF=y
+References: <201301032127.34467.sshtylyov@ru.mvista.com>
+In-Reply-To: <201301032127.34467.sshtylyov@ru.mvista.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: davinci-linux-open-source@linux.davincidsp.com, hs@denx.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,123 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Greg,
+Hello.
 
-On Fri, Jan 11, 2013 at 11:37:29PM +1000, Greg Ungerer wrote:
-> On 01/11/2013 02:31 AM, Uwe Kleine-König wrote:
-> >This allows to put the filesystem at a defined address in ROM allowing
-> >to save more precious RAM.
-> >
-> >I think it's safe to default to ROM because the intention of using the
-> >uclinux map is to use a romfs and so mtd-ram doesn't give you anything
-> >that mtd-rom doesn't.
-> >
-> >Just in case I missed something a warning is added if the driver has to
-> >fall back to the RAM mapping.
-> >
-> >Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> >---
-> >Changes since v2, id:1350027693-19528-1-git-send-email-u.kleine-koenig@pengutronix.de:
-> >
-> >  - drop a few "ram"s from printks instead of making them "ram/rom"
-> >  - fix a typo in the commit log and add rational for the introduced warning.
-> >
-> >Who is responsible for taking (or not) these two patches? David? Artem?
-> >
-> >Best regards
-> >Uwe
-> >
-> >---
-> >  drivers/mtd/maps/Kconfig   |    2 +-
-> >  drivers/mtd/maps/uclinux.c |   26 +++++++++++++++++++++-----
-> >  2 files changed, 22 insertions(+), 6 deletions(-)
-> >
-> >diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-> >index 2e47c2e..0dc86fc 100644
-> >--- a/drivers/mtd/maps/Kconfig
-> >+++ b/drivers/mtd/maps/Kconfig
-> >@@ -443,7 +443,7 @@ config MTD_GPIO_ADDR
-> >
-> >  config MTD_UCLINUX
-> >  	bool "Generic uClinux RAM/ROM filesystem support"
-> >-	depends on MTD_RAM=y && (!MMU || COLDFIRE)
-> >+	depends on (MTD_RAM=y || MTD_ROM=y) && (!MMU || COLDFIRE)
-> >  	help
-> >  	  Map driver to support image based filesystems for uClinux.
-> >
-> >diff --git a/drivers/mtd/maps/uclinux.c b/drivers/mtd/maps/uclinux.c
-> >index 299bf88..b3a9c54 100644
-> >--- a/drivers/mtd/maps/uclinux.c
-> >+++ b/drivers/mtd/maps/uclinux.c
-> >@@ -24,11 +24,12 @@
-> >  /****************************************************************************/
-> >
-> >  struct map_info uclinux_ram_map = {
-> >-	.name = "RAM",
-> >-	.phys = (unsigned long)__bss_stop,
-> >  	.size = 0,
-> >  };
-> >
-> >+static unsigned long physaddr = -1;
-> >+module_param(physaddr, ulong, S_IRUGO);
-> >+
-> >  static struct mtd_info *uclinux_ram_mtdinfo;
-> >
-> >  /****************************************************************************/
-> >@@ -60,11 +61,17 @@ static int __init uclinux_mtd_init(void)
-> >  	struct map_info *mapp;
-> >
-> >  	mapp = &uclinux_ram_map;
-> >+
-> >+	if (physaddr == -1)
-> >+		mapp->phys = (resource_size_t)__bss_stop;
-> >+	else
-> >+		mapp->phys = physaddr;
-> >+
-> >  	if (!mapp->size)
-> >  		mapp->size = PAGE_ALIGN(ntohl(*((unsigned long *)(mapp->phys + 8))));
-> >  	mapp->bankwidth = 4;
-> >
-> >-	printk("uclinux[mtd]: RAM probe address=0x%x size=0x%x\n",
-> >+	printk("uclinux[mtd]: probe address=0x%x size=0x%x\n",
-> >  	       	(int) mapp->phys, (int) mapp->size);
-> >
-> >  	/*
-> >@@ -82,7 +89,16 @@ static int __init uclinux_mtd_init(void)
-> >
-> >  	simple_map_init(mapp);
-> >
-> >-	mtd = do_map_probe("map_ram", mapp);
-> >+	mapp->name = "ROM";
-> >+	mtd = do_map_probe("map_rom", mapp);
-> >+	if (!mtd) {
-> >+		/* fall back to ram probing for compatibility reasons */
-> >+		mapp->name = "RAM";
-> >+		mtd = do_map_probe("map_ram", mapp);
-> >+		if (mtd && IS_ENABLED(CONFIG_MTD_ROM))
-> >+			pr_err("Failed to map rom, but ram succeeded. Please report this issue!\n");
-> 
-> I still don't like this, as per:
-> 
-> http://lists.infradead.org/pipermail/linux-mtd/2012-October/044612.html
-I remember your concerns, but as you didn't write back on my last try to
-explain why I consider the warning useful, I resent.
+On 01/03/2013 09:27 PM, Sergei Shtylyov wrote:
 
-You wrote:
+> Commit cdeadd712f52b16a9285386d61ee26fd14eb4085 (mtd: nand: davinci: add OF
+> support for davinci nand controller) has never been really build tested with
+> the driver as a module.  When the driver is built-in, the missing semicolon
+> after structure initializer is "compensated" by MODULE_DEVICE_TABLE() macro
+> being empty and so the initializer using the trailing semicolon on the next
+> line; when the driver is built as a module, compilation error ensues, and as
+> the 'davinci_all_defconfig' has the NAND driver modular, this error prevents
+> DaVinci family kernel from building...
 
- The message is only printed if both ROM and RAM mappings are enabled.
- Many of the configs I use only have RAM mappings enabled.
+> Signed-off-by: Sergei Shtylyov <sshtylyov@ru.mvista.com>
+> Cc: stable@vger.kernel.org # 3.7
 
-Yeah, so the warning will not trigger for you. And this is correct,
-because the only thing I want to catch is map_rom not being able to
-provide everything needed when map_ram does.
+> ---
+> The patch is atop of the recent Linus' tree.
 
-I don't know what you would prefer. Just drop the warning? Force the
-usage of map_rom by depending on (or selecting) MTD_ROM?
+   OK, a week has passed. Anybody going to queue this up for 3.8?
 
-Best regards
-Uwe
-
--- 
-Pengutronix e.K.                           | Uwe Kleine-König            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+WBR, Sergei
