@@ -1,21 +1,17 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+Received: from mail-da0-f44.google.com ([209.85.210.44])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TtL2s-0003Xr-TD
- for linux-mtd@lists.infradead.org; Thu, 10 Jan 2013 16:31:59 +0000
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+ id 1TtXUX-0006Ik-5F
+ for linux-mtd@lists.infradead.org; Fri, 11 Jan 2013 05:49:22 +0000
+Received: by mail-da0-f44.google.com with SMTP id z20so606249dae.31
+ for <linux-mtd@lists.infradead.org>; Thu, 10 Jan 2013 21:49:18 -0800 (PST)
+From: Daniel Tang <dt.tangr@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
+Subject: Implementing NAND driver on a PrimeCell SMC PL350 series
+Message-Id: <D9B11571-8012-4206-B903-A4C59B85F318@gmail.com>
+Date: Fri, 11 Jan 2013 16:49:12 +1100
 To: linux-mtd@lists.infradead.org
-Date: Thu, 10 Jan 2013 17:31:38 +0100
-Message-Id: <1357835498-23904-2-git-send-email-u.kleine-koenig@pengutronix.de>
-In-Reply-To: <1357835498-23904-1-git-send-email-u.kleine-koenig@pengutronix.de>
-References: <1357835498-23904-1-git-send-email-u.kleine-koenig@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Subject: [PATCH 2/2 v3] mtd/uclinux: add a comment about why uclinux_ram_map
- must not be static
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Mike Frysinger <vapier.adi@gmail.com>, kernel@pengutronix.de,
- Greg Ungerer <gerg@uclinux.org>
+Mime-Version: 1.0 (Mac OS X Mail 6.0 \(1486\))
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,38 +21,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I was (at least) the second person trying to fix a warning by sparse, so
-document in the code why this is a bad idea and add an extern declaration to
-make sparse happy.
+Hi,
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Acked-by: Mike Frysinger <vapier@gentoo.org>
-Acked-by: Greg Ungerer <gerg@uclinux.org>
----
-Changes since v2, sent with
-Message-Id: 1350027693-19528-2-git-send-email-u.kleine-koenig@pengutronix.de:
+I'm trying to write a NAND driver for the PL350 memory controller.=20
 
-- note in the commit log that an extern declaration was added for sparse
+The problem is that the memory controller abstracts quite a lot of the =
+processes needed to access the NAND. For example, the controller handles =
+all the hardware controlling (like dealing with the CLE and ALE lines). =
+This makes it difficult to write a driver that integrates cleanly with =
+the current NAND subsystem of the kernel.
 
- drivers/mtd/maps/uclinux.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+The issue specifically is the cmd_ctrl function that my driver needs to =
+provide. When the kernel needs to write a command and address, it calls =
+the function multiple times to write all the information. E.g. set CLE, =
+write command, set ALE, then write one byte of the page address at a =
+time. The controller, on the other hand, needs all that information to =
+be in a single write to the controller. It does this by embedding the =
+command into the address and have the data value be the page address.
 
-diff --git a/drivers/mtd/maps/uclinux.c b/drivers/mtd/maps/uclinux.c
-index b3a9c54..fe1c83c 100644
---- a/drivers/mtd/maps/uclinux.c
-+++ b/drivers/mtd/maps/uclinux.c
-@@ -23,6 +23,12 @@
- 
- /****************************************************************************/
- 
-+/*
-+ * Blackfin uses uclinux_ram_map during startup, so it must not be static.
-+ * Provide a dummy declaration to make sparse happy.
-+ */
-+extern struct map_info uclinux_ram_map;
-+
- struct map_info uclinux_ram_map = {
- 	.size = 0,
- };
--- 
-1.7.10.4
+There is a flow chart on page 51 of the reference manual if this seems =
+unclear =
+(http://infocenter.arm.com/help/topic/com.arm.doc.ddi0380g/DDI0380G_smc_pl=
+350_series_r2p1_trm.pdf).
+
+Can anyone advise what would be the best way to implement the driver?
+
+Thanks,
+Daniel=
