@@ -1,23 +1,20 @@
-Received: from smtp.newsguy.com ([74.209.136.69])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TuoHX-0003vp-9z
- for linux-mtd@lists.infradead.org; Mon, 14 Jan 2013 17:57:12 +0000
-Received: from [192.168.12.102] (254.sub-70-199-231.myvzw.com [70.199.231.254])
- (authenticated bits=0)
- by smtp.newsguy.com (8.14.3/8.14.3) with ESMTP id r0EHv1m5079753
- for <linux-mtd@lists.infradead.org>; Mon, 14 Jan 2013 09:57:08 -0800 (PST)
- (envelope-from mikedunn@newsguy.com)
-Message-ID: <50F44706.1010206@newsguy.com>
-Date: Mon, 14 Jan 2013 09:57:26 -0800
-From: Mike Dunn <mikedunn@newsguy.com>
+Received: from smtp1-g21.free.fr ([2a01:e0c:1:1599::10])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TupI7-0001M7-Vl
+ for linux-mtd@lists.infradead.org; Mon, 14 Jan 2013 19:01:54 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: linux-next: Tree for Jan 14 (mtd)
+References: <20130114154649.cb077b499876da60463fb304@canb.auug.org.au>
+ <50F43197.6010308@infradead.org>
+Date: Mon, 14 Jan 2013 20:01:37 +0100
+In-Reply-To: <50F43197.6010308@infradead.org> (Randy Dunlap's message of "Mon,
+ 14 Jan 2013 08:25:59 -0800")
+Message-ID: <874nija8ry.fsf@free.fr>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: Implementing NAND driver on a PrimeCell SMC PL350 series
-References: <D9B11571-8012-4206-B903-A4C59B85F318@gmail.com>
- <alpine.DEB.2.00.1301111155250.13078@lnxricardw.se.axis.com>
-In-Reply-To: <alpine.DEB.2.00.1301111155250.13078@lnxricardw.se.axis.com>
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, linux-next@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,37 +24,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/11/2013 03:02 AM, Ricard Wanderlof wrote:
-> 
-> On Fri, 11 Jan 2013, Daniel Tang wrote:
-> 
->> I'm trying to write a NAND driver for the PL350 memory controller.
->>
->> The problem is that the memory controller abstracts quite a lot of the
->> processes needed to access the NAND. For example, the controller handles all
->> the hardware controlling (like dealing with the CLE and ALE lines). This makes
->> it difficult to write a driver that integrates cleanly with the current NAND
->> subsystem of the kernel.
->>
->> The issue specifically is the cmd_ctrl function that my driver needs to
->> provide. When the kernel needs to write a command and address, it calls the
->> function multiple times to write all the information. E.g. set CLE, write
->> command, set ALE, then write one byte of the page address at a time. The
->> controller, on the other hand, needs all that information to be in a single
->> write to the controller. It does this by embedding the command into the
->> address and have the data value be the page address.
-> 
-> Have you looked among the existing NAND controller drivers in drivers/mtd/nand
-> to see if there's another driver which has similar requirements which you could
-> use as a starting point? It's not unusual for NAND controllers to do some of the
-> operations automatically, and the mtd framework supports this by letting you
-> replace higher-level functions with functions from the driver, and not just the
-> low-level functions such as hwcontrol and read_byte.
+Randy Dunlap <rdunlap@infradead.org> writes:
+> ERROR: "byte_rev_table" [drivers/mtd/devices/docg3.ko] undefined!
 
+Thanks for the report. I have a trivial patch attached. Should it go through
+Artem's tree or do you want to take it directly ?
 
-You might find it helpful to take a look at docg4.c in particular.  This device
-is a nand wrapped in a proprietary controller, which sounds similiar to your
-hardware.  This device does not have control of low-level lines either.
+Cheers.
 
-Hope this helps,
-Mike
+--
+Robert
+
+---8>---
+
+>From 771d13b0094421b98310171d8794f2a793ec5d4d Mon Sep 17 00:00:00 2001
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Date: Mon, 9 Apr 2012 13:19:08 +0200
+Subject: [PATCH] mtd: docg3 fix missing bitreverse lib
+
+Fix missing dependency which can cause a build error such
+as: ERROR: "byte_rev_table" [drivers/mtd/devices/docg3.ko]
+undefined!
+
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+---
+ drivers/mtd/devices/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
+index 27f80cd..46dcb54 100644
+--- a/drivers/mtd/devices/Kconfig
++++ b/drivers/mtd/devices/Kconfig
+@@ -272,6 +272,7 @@ config MTD_DOCG3
+ 	tristate "M-Systems Disk-On-Chip G3"
+ 	select BCH
+ 	select BCH_CONST_PARAMS
++	select BITREVERSE
+ 	---help---
+ 	  This provides an MTD device driver for the M-Systems DiskOnChip
+ 	  G3 devices.
+-- 
+1.7.10.4
