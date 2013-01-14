@@ -1,13 +1,16 @@
-From: Huang Shijie <b32955@freescale.com>
-To: <dwmw2@infradead.org>
-Subject: [PATCH] mtd: gpmi: dump the BCH registers
-Date: Mon, 14 Jan 2013 15:19:29 +0800
-Message-ID: <1358147969-31878-1-git-send-email-b32955@freescale.com>
+Message-ID: <50F3C980.7070507@atmel.com>
+Date: Mon, 14 Jan 2013 17:01:52 +0800
+From: Josh Wu <josh.wu@atmel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- dedekind1@gmail.com
+To: Josh Wu <josh.wu@atmel.com>
+Subject: Re: [PATCH 0/3] at91: PMECC: enable PMECC in dt for at91sam9x5ek,
+ at91sam9n12ek
+References: <1355912840-29501-1-git-send-email-josh.wu@atmel.com>
+In-Reply-To: <1355912840-29501-1-git-send-email-josh.wu@atmel.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: plagnioj@jcrosoft.com, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, nicolas.ferre@atmel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,40 +20,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dump the BCH registers in gpmi_dump_info().
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
- drivers/mtd/nand/gpmi-nand/bch-regs.h |    2 ++
- drivers/mtd/nand/gpmi-nand/gpmi-lib.c |    5 +++++
- 2 files changed, 7 insertions(+), 0 deletions(-)
+Ping? Any feedback for these patches?
 
-diff --git a/drivers/mtd/nand/gpmi-nand/bch-regs.h b/drivers/mtd/nand/gpmi-nand/bch-regs.h
-index a092451..d67bca5 100644
---- a/drivers/mtd/nand/gpmi-nand/bch-regs.h
-+++ b/drivers/mtd/nand/gpmi-nand/bch-regs.h
-@@ -103,4 +103,6 @@
- 		? (((v) >> 2) & MX6Q_BM_BCH_FLASH0LAYOUT1_DATAN_SIZE)	\
- 		: ((v) & BM_BCH_FLASH0LAYOUT1_DATAN_SIZE)		\
- 	)
-+
-+#define HW_BCH_VERSION				0x00000160
- #endif
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-index d84699c..01cc570 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-@@ -208,6 +208,11 @@ void gpmi_dump_info(struct gpmi_nand_data *this)
- 	}
- 
- 	/* start to print out the BCH info */
-+	pr_err("Show BCH registers :\n");
-+	for (i = 0; i <= HW_BCH_VERSION / 0x10 + 1; i++) {
-+		reg = readl(r->bch_regs + i * 0x10);
-+		pr_err("offset 0x%.3x : 0x%.8x\n", i * 0x10, reg);
-+	}
- 	pr_err("BCH Geometry :\n");
- 	pr_err("GF length              : %u\n", geo->gf_len);
- 	pr_err("ECC Strength           : %u\n", geo->ecc_strength);
--- 
-1.7.0.4
+On 12/19/2012 6:27 PM, Josh Wu wrote:
+> Those patches will enable PMECC in dt parameters for at91sam9x5ek, at91sam9n12ek.
+>
+> Josh Wu (3):
+>    MTD: at91: atmel_nand: for PMECC, add code to choose the ecc bits and
+>      sector size according to the ONFI parameter ECC requirement.
+>    at91: 9x5: add DT parameters to enable PMECC
+>    at91: at91sam9n12: add DT parameters to enable PMECC
+>
+>   arch/arm/boot/dts/at91sam9n12.dtsi  |    1 +
+>   arch/arm/boot/dts/at91sam9n12ek.dts |    5 +-
+>   arch/arm/boot/dts/at91sam9x5.dtsi   |    4 ++
+>   arch/arm/boot/dts/at91sam9x5cm.dtsi |    5 +-
+>   drivers/mtd/nand/atmel_nand.c       |   89 +++++++++++++++++++++++++++++++++++
+>   5 files changed, 102 insertions(+), 2 deletions(-)
+>
+
+Best Regards,
+Josh Wu
