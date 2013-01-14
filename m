@@ -1,17 +1,13 @@
-Received: from co1ehsobe002.messaging.microsoft.com ([216.32.180.185]
- helo=co1outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Tuf98-00086I-T2
- for linux-mtd@lists.infradead.org; Mon, 14 Jan 2013 08:11:55 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH] mtd: apply tPROG delay for ONFI nand's page program
-Date: Mon, 14 Jan 2013 15:17:33 +0800
-Message-ID: <1358147853-31826-1-git-send-email-b32955@freescale.com>
+Subject: [PATCH] mtd: gpmi: dump the BCH registers
+Date: Mon, 14 Jan 2013 15:19:29 +0800
+Message-ID: <1358147969-31878-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, dedekind1@gmail.com
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,32 +17,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-With some latest Micron's onfi nand(such as MT29F64G08CBABAWP),
-I find that if we do not apply the tPROG delay as the datasheet tells us,
-the page program may fails. You will read out the all 0xff from this page
-in this case.
-
-This patch adds the tPROG delay for page program when it is an onfi nand.
+Dump the BCH registers in gpmi_dump_info().
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- drivers/mtd/nand/nand_base.c |    4 ++++
- 1 files changed, 4 insertions(+), 0 deletions(-)
+ drivers/mtd/nand/gpmi-nand/bch-regs.h |    2 ++
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c |    5 +++++
+ 2 files changed, 7 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 8323ac9..b628dd5 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -841,6 +841,10 @@ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
- 	 */
- 	ndelay(100);
- 
-+	/* Apply the tPROG delay for ONFI nand program. */
-+	if (chip->onfi_version && state == FL_WRITING)
-+		udelay(le16_to_cpu(chip->onfi_params.t_prog));
+diff --git a/drivers/mtd/nand/gpmi-nand/bch-regs.h b/drivers/mtd/nand/gpmi-nand/bch-regs.h
+index a092451..d67bca5 100644
+--- a/drivers/mtd/nand/gpmi-nand/bch-regs.h
++++ b/drivers/mtd/nand/gpmi-nand/bch-regs.h
+@@ -103,4 +103,6 @@
+ 		? (((v) >> 2) & MX6Q_BM_BCH_FLASH0LAYOUT1_DATAN_SIZE)	\
+ 		: ((v) & BM_BCH_FLASH0LAYOUT1_DATAN_SIZE)		\
+ 	)
 +
- 	if ((state == FL_ERASING) && (chip->options & NAND_IS_AND))
- 		chip->cmdfunc(mtd, NAND_CMD_STATUS_MULTI, -1, -1);
- 	else
++#define HW_BCH_VERSION				0x00000160
+ #endif
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+index d84699c..01cc570 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+@@ -208,6 +208,11 @@ void gpmi_dump_info(struct gpmi_nand_data *this)
+ 	}
+ 
+ 	/* start to print out the BCH info */
++	pr_err("Show BCH registers :\n");
++	for (i = 0; i <= HW_BCH_VERSION / 0x10 + 1; i++) {
++		reg = readl(r->bch_regs + i * 0x10);
++		pr_err("offset 0x%.3x : 0x%.8x\n", i * 0x10, reg);
++	}
+ 	pr_err("BCH Geometry :\n");
+ 	pr_err("GF length              : %u\n", geo->gf_len);
+ 	pr_err("ECC Strength           : %u\n", geo->ecc_strength);
 -- 
 1.7.0.4
