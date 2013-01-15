@@ -1,19 +1,19 @@
-MIME-Version: 1.0
-In-Reply-To: <1356307280-8323-1-git-send-email-ezequiel.garcia@free-electrons.com>
-References: <1356307280-8323-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Date: Tue, 15 Jan 2013 19:48:56 -0300
-Message-ID: <CALF0-+Xpvn45ZXOawyFzkqMt5t7--CLZYhkr6RwRX7WWnqdnqw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] mtd: omap-onenand: pass device_node in platform data
-From: Ezequiel Garcia <elezegarcia@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- martinez.javier@gmail.com, matthias.bgg@googlemail.com, eballetbo@gmail.com,
- zonque@gmail.com, grant.likely@secretlab.ca, Tony Lindgren <tony@atomide.com>,
- linux-mtd@lists.infradead.org, jon-hunter@ti.com,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- b-cousson@ti.com
+Message-ID: <1358292641.11794.1.camel@gitbox>
+Subject: Re: [PATCH v2] mtd: vt8500: Add support for Wondermedia Serial
+ Flash Controller
+From: Tony Prisk <linux@prisktech.co.nz>
+To: dedekind1@gmail.com
+Date: Wed, 16 Jan 2013 12:30:41 +1300
+In-Reply-To: <1358277072.1668.2.camel@kyv>
+References: <1356901207-13536-1-git-send-email-linux@prisktech.co.nz>
+ <1358261750.2731.148.camel@sauron.fi.intel.com>
+ <1358271907.31593.1.camel@gitbox> <1358277072.1668.2.camel@kyv>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Cc: vt8500-wm8505-linux-kernel@googlegroups.com, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,66 +23,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem,
+On Tue, 2013-01-15 at 21:11 +0200, Artem Bityutskiy wrote:
+> On Wed, 2013-01-16 at 06:45 +1300, Tony Prisk wrote:
+> > On Tue, 2013-01-15 at 16:55 +0200, Artem Bityutskiy wrote:
+> > > On Mon, 2012-12-31 at 10:00 +1300, Tony Prisk wrote:
+> > > > This patch adds support for the Wondermedia serial flash controller
+> > > > found on WM8505, WM8650 and WM8850 SoCs.
+> > > > 
+> > > > Signed-off-by: Tony Prisk <linux@prisktech.co.nz>
+> > > > ---
+> > > > v2: Whitespace tidyup
+> > > 
+> > > Hi, would you please take a look at these warings, identified by aiaiai:
+> > > 
+> > > Successfully built configuration "x86_64_defconfig,x86_64,", results:
+> > > 
+> > > --- before_patching.log
+> > > +++ after_patching.log
+> > > @@ @@
+> > > +drivers/mtd/devices/wmt_sflash.c: In function ‘sf_read’:
+> > > +drivers/mtd/devices/wmt_sflash.c:425:9: warning: format ‘%d’ expects argument of type ‘int’, but argument 4 has type ‘size_t’ [-Wformat]
+> > > +drivers/mtd/devices/wmt_sflash.c: In function ‘sf_sector_write’:
+> > > +drivers/mtd/devices/wmt_sflash.c:442:16: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+> > > +drivers/mtd/devices/wmt_sflash.c:442:24: warning: cast removes address space of expression [sparse]
+> > > +drivers/mtd/devices/wmt_sflash.c:458:16: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+> > > +drivers/mtd/devices/wmt_sflash.c:458:31: warning: incorrect type in argument 1 (different address spaces) [sparse]
+> > > +drivers/mtd/devices/wmt_sflash.c:458:31:    expected void volatile [noderef] <asn:2>*dst [sparse]
+> > > +drivers/mtd/devices/wmt_sflash.c:458:31:    got unsigned char [usertype] *<noident> [sparse]
+> > > +drivers/mtd/devices/wmt_sflash.c:465:17: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+> > > +drivers/mtd/devices/wmt_sflash.c:465:39: warning: incorrect type in argument 1 (different address spaces) [sparse]
+> > > +drivers/mtd/devices/wmt_sflash.c:465:39:    expected void volatile [noderef] <asn:2>*dst [sparse]
+> > > +drivers/mtd/devices/wmt_sflash.c:465:39:    got unsigned char [usertype] *<noident> [sparse]
+> > > 
+> > 
+> > Apologies - This driver shouldn't be selectable for x86_64.
+> > It is an ARM driver for an embedded device. Will fix.
+> 
+> Note, there are also warnings when it is compiled for other platforms,
+> not only x86_64. Take a look at them. Also note, than many warnings come
+> from sparse, you probably just did not run it.
+> 
 
-On Sun, Dec 23, 2012 at 9:01 PM, Ezequiel Garcia
-<ezequiel.garcia@free-electrons.com> wrote:
-> Pass an optional device_node pointer in the platform data,
-> which in turn will be put into a mtd_part_parser_data.
-> This way, code that sets up the platform devices can pass
-> along the node from DT so that the partitions can be parsed.
->
-> For non-DT boards, this change has no effect.
->
-> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> ---
->  drivers/mtd/onenand/omap2.c                     |    4 +++-
->  include/linux/platform_data/mtd-onenand-omap2.h |    3 +++
->  2 files changed, 6 insertions(+), 1 deletions(-)
->
-> diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-> index 065f3fe..eec2aed 100644
-> --- a/drivers/mtd/onenand/omap2.c
-> +++ b/drivers/mtd/onenand/omap2.c
-> @@ -637,6 +637,7 @@ static int omap2_onenand_probe(struct platform_device *pdev)
->         struct onenand_chip *this;
->         int r;
->         struct resource *res;
-> +       struct mtd_part_parser_data ppdata = {};
->
->         pdata = pdev->dev.platform_data;
->         if (pdata == NULL) {
-> @@ -767,7 +768,8 @@ static int omap2_onenand_probe(struct platform_device *pdev)
->         if ((r = onenand_scan(&c->mtd, 1)) < 0)
->                 goto err_release_regulator;
->
-> -       r = mtd_device_parse_register(&c->mtd, NULL, NULL,
-> +       ppdata.of_node = pdata->of_node;
-> +       r = mtd_device_parse_register(&c->mtd, NULL, &ppdata,
->                                       pdata ? pdata->parts : NULL,
->                                       pdata ? pdata->nr_parts : 0);
->         if (r)
-> diff --git a/include/linux/platform_data/mtd-onenand-omap2.h b/include/linux/platform_data/mtd-onenand-omap2.h
-> index 685af7e..e9a9fb1 100644
-> --- a/include/linux/platform_data/mtd-onenand-omap2.h
-> +++ b/include/linux/platform_data/mtd-onenand-omap2.h
-> @@ -29,5 +29,8 @@ struct omap_onenand_platform_data {
->         u8                      flags;
->         u8                      regulator_can_sleep;
->         u8                      skip_initial_unlocking;
-> +
-> +       /* for passing the partitions */
-> +       struct device_node      *of_node;
->  };
->  #endif
-> --
-> 1.7.8.6
->
+I posted the patch for this problem this morning. It should only be
+selectable on arch-vt8500 and the new patch fixes this problem.
 
-I saw you have acked the gpmc patch on nand.
-Can I add your Acked-by on this one, when I send the rebased patch set?
+It incorrectly depended on MTD rather than ARCH_VT8500
 
-Thanks,
-
--- 
-    Ezequiel
+Regards
+Tony P
