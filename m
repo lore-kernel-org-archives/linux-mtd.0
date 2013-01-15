@@ -1,23 +1,25 @@
-Received: from mga14.intel.com ([143.182.124.37])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Tv4yg-0004Sm-QV
- for linux-mtd@lists.infradead.org; Tue, 15 Jan 2013 11:46:51 +0000
-Message-ID: <1358250495.2731.126.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 0/2] mtd: cmdlinepart: minor fixes handling zero sized
- partitions
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+ id 1Tv4zs-0004Xf-FC
+ for linux-mtd@lists.infradead.org; Tue, 15 Jan 2013 11:48:05 +0000
+Message-ID: <1358250569.2731.127.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/3] mtd: cmdlinepart: make the partitions rule more strict
+From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Christopher Cordahi <christophercordahi@nanometrics.ca>
-Date: Tue, 15 Jan 2013 13:48:15 +0200
-In-Reply-To: <cover.1355438632.git.christophercordahi@nanometrics.ca>
-References: <cover.1355438632.git.christophercordahi@nanometrics.ca>
+Date: Tue, 15 Jan 2013 13:49:29 +0200
+In-Reply-To: <loom.20121217T021112-577@post.gmane.org>
+References: <1346001700-26895-1-git-send-email-shijie8@gmail.com>
+ <1346656701.3061.8.camel@sauron.fi.intel.com>
+ <CAMiH66GX7h5tve9CLHzj8MMrUv90fL+4BWYPZ6KQkP5bbXY9ag@mail.gmail.com>
+ <1346686544.3061.75.camel@sauron.fi.intel.com>
+ <20120904144826.7b9b7518@halley> <5046B504.6000608@freescale.com>
+ <loom.20121217T021112-577@post.gmane.org>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-G7+S9RW9QJ8Po0Vgf5vQ"
+ boundary="=-OeyTQmwXqI1N+lGxtQOu"
 Mime-Version: 1.0
-Cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>,
- David Woodhouse <David.Woodhouse@intel.com>,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Reply-To: artem.bityutskiy@linux.intel.com
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,23 +30,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-G7+S9RW9QJ8Po0Vgf5vQ
+--=-OeyTQmwXqI1N+lGxtQOu
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, 2012-12-16 at 19:59 -0500, Christopher Cordahi wrote:
-> Removing zero sized partitions was introduced in commit
-> 7baf04261062826ea225ab23e07c541e279143fa.
-> http://permalink.gmane.org/gmane.linux.drivers.mtd/43507
-> These changes fix a minor error and make the handling more consistent.
+On Mon, 2012-12-17 at 01:11 +0000, Christopher Cordahi wrote:
+> > > I'd say keep it simple and flexible.
+> > yes, it's really simple and flexible.
+>=20
+> Is it agreed that sorting is not necessary and will not be implemented?
+> If so are there objections to me modifying the documentation to indicate
+> that out of order partitions is part of the supported design?
 
-Pushed both to l2-mtd.git, thanks!
+I think we agreed not to do this.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-G7+S9RW9QJ8Po0Vgf5vQ
+--=-OeyTQmwXqI1N+lGxtQOu
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -52,19 +56,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQ9UH/AAoJECmIfjd9wqK0tLoQAJgSRSelrxPLOdsd/b1J2DC8
-4P4TmAYE00c+fQnv68A1+jb73+qBZpN67FPn8dQIqxLVjs61kofyyet6QG781T01
-J7JGWfQW3FyEHU2N371uSP5A8YMYoU4wVzkGinuIw5Hpp9Y41M+e2KBxWl4mynNe
-POYCUx9XalYeiGCo6WzYFjwY/Vy/JOXpq8hJoKFE99Xl510CvfNJ/v2pVE6X8SqG
-dKl1Ujjkoyr3xae1cD8AtGgEwKHsybChHsz9caVmZL+cfyKjWcz5Ah8o69gXH5Ac
-e2uiC6O9fR9H0ka6l4kDqSEWQEFosTPtUqb0dyuqdjzxd2DoeJemlzGZ21MzJnzQ
-S9hE2bj+I7iy5CwkCeQhtPrs+93miEbrPA+47T0cTE15VHmM6uqmrlfrdMm3v2Me
-/QmQz7XziS8m+HWHZ7wwYbY1m5IyP19WQS+Y+CdcJ2GVkJo1fOEF/nZI93WepjWH
-4pbRh994//1kYRjjk4zubah6T3/LYq4DEZT4MQNNL6aWipgefpZ9sgTyaThAFJPy
-V9/8j8pAIROCTWjN+l1HtjK9lsr4WmA3UH7J6Zv8H4Y2PAbU4gGeE4DrSNitto+V
-Ko/LgZhbmNrhsJ7M7NtDYoHfEQwBzdRQcBoAgd1xjKRieqrNv1VuL9YWpiMs+2vf
-1Z+H8wMYzqfBtm6NU15q
-=RsHY
+iQIcBAABAgAGBQJQ9UJJAAoJECmIfjd9wqK0+zcQAM5E2/HEFEKff3jFd2w3QdhR
+pYgDK22TR+wUFZKguG9piSsBix4QX0MGnPbhOjS1158Maes6BRL30z4zvr3ndFs/
+Mxu77WQ4Iam9stgPTKMH+ZglH8jowJHhkJDzclf06xfdZt0fHN4845zxXIMhHWta
+sWACPX20eVR97xn7JNO9v6gH/Kch2WOu2qhGZjQzowZ/q2qpZ52H+bMNqvNHvgY9
+ILwRBS8oJ21NwJrAgNw21VGh9GxaWhlBYrw2pAfHVQNsicgpSZnjELHbdZQF0hfE
+9DZv5V//2w7oWZiAzW1TMkYXtr4Zl7IOPLxtSb24GBhNxDIPWamG6KBZ76cWFOzS
+2TY8oDMGNFDx9IVkIwPJ1eQeGOBFedXlTzk5SnN0+Sb0UQFAjk88jMS1Zr+0DRqd
+aL0U7MrodlDb4w85ZlNs1GNOirzSDqeikhKPL6KGGyV+tfxfoPNAc43BlFKZqJiu
+KjtGDYC7M4TlN0wK1BsFySfz9y71myh+kfzoYhC5RGDiiHI/d8mm69Wm0g7CwukU
+1mt8KsS4dbPQTVg72i2mLO4qg6xOshTcMAGFwzMdcYZhauwdS/FxzjMssZezUov5
+YfgfszkWlMUtafLiGIMG4XaskMcj2fNTIU7osh84o1O5Rnn2XjHIwADDms/mESv8
+880+gifndx4oQ9NDJqox
+=vdAa
 -----END PGP SIGNATURE-----
 
---=-G7+S9RW9QJ8Po0Vgf5vQ--
+--=-OeyTQmwXqI1N+lGxtQOu--
