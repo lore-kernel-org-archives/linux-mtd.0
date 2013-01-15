@@ -1,20 +1,22 @@
-Message-ID: <1358252760.2731.133.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/3] MTD: at91: atmel_nand: for PMECC, add code to
- choose the ecc bits and sector size according to the ONFI parameter ECC
- requirement.
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Josh Wu <josh.wu@atmel.com>
-Date: Tue, 15 Jan 2013 14:26:00 +0200
-In-Reply-To: <1355912840-29501-2-git-send-email-josh.wu@atmel.com>
-References: <1355912840-29501-1-git-send-email-josh.wu@atmel.com>
- <1355912840-29501-2-git-send-email-josh.wu@atmel.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-myoLeFwOo5SpjnJzsNDs"
-Mime-Version: 1.0
-Cc: nicolas.ferre@atmel.com, plagnioj@jcrosoft.com,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Date: Tue, 15 Jan 2013 07:33:07 -0500
+From: Jason Cooper <jason@lakedaemon.net>
+To: Stefan Peter <s.peter@mpl.ch>
+Subject: Re: [PATCH 3/4] Enable ecc-mode selection in the driver
+Message-ID: <20130115123307.GA13433@titan.lakedaemon.net>
+References: <cover.1358242644.git.s.peter@mpl.ch>
+ <2d08c4c072fd4922a6056362adb96a455307d583.1358242644.git.s.peter@mpl.ch>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2d08c4c072fd4922a6056362adb96a455307d583.1358242644.git.s.peter@mpl.ch>
+Cc: andrew@lunn.ch, linux@arm.linux.org.uk, iwamatsu@nigauri.org, arnd@arndb.de,
+ nico@linaro.org, artem.bityutskiy@linux.intel.com,
+ devicetree-discuss@lists.ozlabs.org, broonie@opensource.wolfsonmicro.com,
+ sebastian.hesselbarth@googlemail.com, linux-kernel@vger.kernel.org,
+ rob.herring@calxeda.com, grant.likely@secretlab.ca, wfp5p@virginia.edu,
+ linux-mtd@lists.infradead.org, rob@landley.net, gregkh@linuxfoundation.org,
+ dwmw2@infradead.org, jm@lentin.co.uk, linux-arm-kernel@lists.infradead.org,
+ mchehab@redhat.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,65 +26,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Stefan,
 
---=-myoLeFwOo5SpjnJzsNDs
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+This is a good-looking patch series, nice and small!  A few comments:
 
-I cannot compile this patch:
+On Tue, Jan 15, 2013 at 01:13:12PM +0100, Stefan Peter wrote:
+> In order to be able to use the ecc-mode, add the bch module to the default
+> settings for the kirwood boards and enable the activation in orin-nand.c
 
-ERROR (phandle_references): Reference to non-existent node or label "pinctr=
-l_ssc0_tx"
+s/orin-nand/orion-nand/
 
-ERROR: Input tree has errors, aborting (use -f to force output)
-make[2]: *** [arch/arm/boot/dts/at91sam9g20ek.dtb] Error 2
+> 
+> Signed-off-by: Stefan Peter <s.peter@mpl.ch>
+> ---
+> diff --git a/arch/arm/configs/kirkwood_defconfig b/arch/arm/configs/kirkwood_defconfig
+> index 93f3794..4a9d3f7 100644
+> --- a/arch/arm/configs/kirkwood_defconfig
+> +++ b/arch/arm/configs/kirkwood_defconfig
+> @@ -84,6 +84,7 @@ CONFIG_MTD_CFI_STAA=y
+>  CONFIG_MTD_PHYSMAP=y
+>  CONFIG_MTD_M25P80=y
+>  CONFIG_MTD_NAND=y
+> +CONFIG_MTD_NAND_ECC_BCH=y
+>  CONFIG_MTD_NAND_ORION=y
+>  CONFIG_BLK_DEV_LOOP=y
+>  # CONFIG_SCSI_PROC_FS is not set
 
+Please make the defconfig change a separate patch.
 
-On Wed, 2012-12-19 at 18:27 +0800, Josh Wu wrote:
-> This patch will check NAND flash's ecc minimum requirement in ONFI parame=
-ter. If it is equal or smaller than pmecc-cap in dtsi, then use ecc_bits in=
- ONFI. otherwise, return an error since pmecc-cap in dtsi don't meet the ec=
-c minimum reqirement.
->=20
-> This patch also check sector size (codeword) requirement in ONFI. If it i=
-s equal or bigger than sector_size in dtsi, then use the one of ONFI. other=
-wise return error.
->=20
-> Currently we don't support to read the ECC parameter in ONFI extended par=
-ameter page. So in that case we just use the value specified in dts.
->=20
-> For non-ONFI nand flash, we assume the minimum ecc requirement is 2bits i=
-n 512 bytes.
->=20
-> Signed-off-by: Josh Wu <josh.wu@atmel.com>
+As a general note (this series shouldn't be a problem), please sort the
+series so that you add the driver feature first, then enable it in
+defconfig, then use it in DT.  This way, a future bisection won't run
+into any nasty surprises, other than what they're looking for. ;-)
 
-Please, wrap the lines like kernel developers usually do.
+thx,
 
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-myoLeFwOo5SpjnJzsNDs
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQ9UrYAAoJECmIfjd9wqK0b7YP/2/vLGfJ43WHkUJkGM/6na+A
-qlKJJ2qnpkUMzbLYUpmTuP57Ob+o/RckwXb+ywMHEADtjAW8i250FHfqeuhTgRAl
-8qZr+b3P800KdVeMIxseRIndh/+HGdB2eE0gv1DxVYGA4GQYrpLXqH86gYomoy2C
-sL1V2sIGcQmqcBDLGYdPuAG/aBLg4yjCmHhBLENEA/qBlMHI3ve/DBxxyZ9AO8rJ
-3ieTo/orDM6BU6OPtjssbGWgVrqfxXpUBYrP6nnQljtwjWcShSVcw4HqS9ReYDbl
-uvoc/VAsz3ug4gXbZV9/1TBYr7Enc6gFqc1dWXOdbD5johhW2UGr2w4NAXsOdesa
-eHUe1hUxELfU4orCDP82fGmZihPQFFau1qlZ8Ef4i9qoQ2ZdIEqlVV5A2r1EYHU7
-Y+2pM3fvysKZEgY/gmECxdLByW+LSSsoFUmMG6he9ejJplgxaxEoJhh7QCbhIS1e
-8YynfVLRds6B0J96vtXeXuIMC1J6wmrGHJ1AyMBqRKLfowWPQjTPQqIYdeiaKH4U
-YiO0yrud1fvwfxwC+WawsP0YpfU1GbXRRnr+CWxinjni8pHp/vOh7QQDKOVXbnoz
-Mwv2gKjfTgM943uMSHvAt8TAQ6VxilgRSpax+MhNJddiXz7GqlbsmzJUAYGw3bn1
-16kcYBmaQRwRsf5zqmKa
-=3q0Y
------END PGP SIGNATURE-----
-
---=-myoLeFwOo5SpjnJzsNDs--
+Jason.
