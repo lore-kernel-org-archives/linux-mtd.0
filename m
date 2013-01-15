@@ -1,23 +1,22 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Tv2oy-0000yA-UH
- for linux-mtd@lists.infradead.org; Tue, 15 Jan 2013 09:28:41 +0000
-Message-ID: <1358242205.2731.119.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: gpmi: Always report ECC stats and return max_bitflips
+ id 1Tv3cn-0000vX-Uu
+ for linux-mtd@lists.infradead.org; Tue, 15 Jan 2013 10:20:11 +0000
+Message-ID: <1358245292.2731.120.camel@sauron.fi.intel.com>
+Subject: Re: linux-next: Tree for Jan 14 (mtd)
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Zach Sadecki <zsadecki@itwatchdogs.com>
-Date: Tue, 15 Jan 2013 11:30:05 +0200
-In-Reply-To: <50CA90BB.5030801@itwatchdogs.com>
-References: <50BD01F8.3040003@itwatchdogs.com>
- <1355147097.2657.33.camel@sauron.fi.intel.com>
- <50C5FD4A.6090405@itwatchdogs.com>
- <1355398036.3400.45.camel@sauron.fi.intel.com>
- <50CA90BB.5030801@itwatchdogs.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Date: Tue, 15 Jan 2013 12:21:32 +0200
+In-Reply-To: <874nija8ry.fsf@free.fr>
+References: <20130114154649.cb077b499876da60463fb304@canb.auug.org.au>
+ <50F43197.6010308@infradead.org> <874nija8ry.fsf@free.fr>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-mD0Ck3rVtopVRdQPe+xD"
+ boundary="=-eRN9/7eR5P4w7/7S+L+o"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
+ Randy Dunlap <rdunlap@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-next@vger.kernel.org, linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,26 +28,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-mD0Ck3rVtopVRdQPe+xD
+--=-eRN9/7eR5P4w7/7S+L+o
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2012-12-13 at 20:36 -0600, Zach Sadecki wrote:
-> Always report corrected and failed ECC stats back up to the MTD layer.  A=
-lso
-> return max_bitflips from read_page() as is expected from NAND drivers now=
-.
+On Mon, 2013-01-14 at 20:01 +0100, Robert Jarzmik wrote:
+> Randy Dunlap <rdunlap@infradead.org> writes:
+> > ERROR: "byte_rev_table" [drivers/mtd/devices/docg3.ko] undefined!
 >=20
-> Signed-off-by: Zach Sadecki <zsadecki@itwatchdogs.com>
-> Acked-by: Huang Shijie <b32955@freescale.com>
+> Thanks for the report. I have a trivial patch attached. Should it go thro=
+ugh
+> Artem's tree or do you want to take it directly ?
 
-Pushed to l2-mtd.git, thanks!
+David just picked this patch to the MTD tree.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-mD0Ck3rVtopVRdQPe+xD
+--=-eRN9/7eR5P4w7/7S+L+o
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -56,19 +54,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQ9SGdAAoJECmIfjd9wqK0jjcP/2uuiEmSLNTBgAcpakHkFG5c
-g0do/IUU0WXxVBALrZWLB1q9qSWkJtkEFbEoeJxuKZ77IipSOdDzJYUBfuEbW/cx
-skzensqBeWhkuD1rcJyjuAV+XFzKlQnRdFuShKRdd542xyzvzhXpSvAJsDUo8CvP
-3c2a4UUTVe4Yn5f2C0X7epldfT1nzoEJDpoTtR9Rs4/PixnjgN3r9Vc/bk+TlGJA
-EqUytNFKx85hlFe6+wZ7rPDkFZEHw3yFxTO4ceDXJvB07Fe8Vbb62FcRxEC3TmgA
-G/rMYGjrTvgBtT58Bg63fOZhDrfPSGe5iK4OdBmt/ETGNYT88YK36Qm6GCa1DmH8
-WN8DzkFa8jhIc4NF6I6pO9G7DGBczpJKGUaujo9Y1pWRSM1H3kT9G9ZrIHzTHhhH
-q79p0UHkhpmJLpFDIxxFrBBZ21zlN/1YBp+OT7QIDZlk1FjLOxvBboe0/qJpCsxH
-cALSpBo5vkSXf8Hqj5UwQT7aehV1jZAmlD/ziICR5RRjeMCsErDC4q4OvHjnSqTh
-FMvgjA5eSN+NpNaJp1QEaXFtJ2gv8izoiXcWB6OX/Dha2OkyiRNNWtHSeH5YWS0B
-o2gZR+jmay6/5crdR28rJRGM/nX9tPVpTdGZJZfgyb01p+AGC6yop06sni2WmTNu
-OwZjjAEiH/baXkn1KS6+
-=gnsx
+iQIcBAABAgAGBQJQ9S2sAAoJECmIfjd9wqK0hmMQAIZsKXeZxrUN2qMdIU2U1GKt
+7qzVvCZ0ZrEoBB1TMV1ZFrzrjk+AFwxkWplFk67NmQbYsPb87knRf+7MtDelA/pG
+8fWYT6KQJfq8z0GazEBM1E7eBXUOeo+d8trCmHNbrDHYAT//DM99m1hUullWn6Hk
+F6RXIvcfW4mYtG7TI4v3xwFV2JLedPDC0SxdUsynQElV5r7xYLbuKQJJK1Ovd/9R
+NxAAZGncw/1t4PWQyLACNRPTK7Bs8HFkrAuB12n6byUkQGPMLCjQiFa4YJeSAhr9
+Twy++EXyODDjc8Dt98tZeizaB4kz9fGQOHSyRCgtwrW5zn2Sg91Eqg3+tNxwRk5+
+vmYeTzrvHMt0q057OmU9rcJ/SC3il/L3FuVutK5UutI1OGTEnxkw9FJH4nLbmLj1
+poYF3kHk8+XEEpy/es26Fm6v/CLAQzTyz3SllGkVqUDM/g8NUPaSyIc7Rt/G1fhR
+31SIAbwJGO0bPkwmjsW5azzEww+UHGqFIf06B1E6vMHTJAabX37vxpKlKCuLgM30
+ZXccEdVMHBaqPtVyc5lJCvrTgaD7HCG4sOv4yYxr7m64+0fpKFG8iB7Xh+zZ2w86
+sGci2ZP9xz4Wos5achyVit6v1GIVuFgE3MmcT8sZbNez7rOFjiIqyXn6gGhI8T7D
+OHk6VuUEeFw/3oWvD0cW
+=RYSJ
 -----END PGP SIGNATURE-----
 
---=-mD0Ck3rVtopVRdQPe+xD--
+--=-eRN9/7eR5P4w7/7S+L+o--
