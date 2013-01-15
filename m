@@ -1,19 +1,19 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Tv1TO-00053G-O1
- for linux-mtd@lists.infradead.org; Tue, 15 Jan 2013 08:02:19 +0000
-Message-ID: <1358237024.2731.98.camel@sauron.fi.intel.com>
-Subject: Re: ubimkvol killed and kernel crashed
+ id 1Tv1UH-0005CL-4i
+ for linux-mtd@lists.infradead.org; Tue, 15 Jan 2013 08:03:13 +0000
+Message-ID: <1358237077.2731.99.camel@sauron.fi.intel.com>
+Subject: Re: [qestion] about multi-page read/write in nand flash
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Sri Charan Chalasani <sricharan.chalasani@yahoo.com>
-Date: Tue, 15 Jan 2013 10:03:44 +0200
-In-Reply-To: <1354778591.97261.YahooMailClassic@web125505.mail.ne1.yahoo.com>
-References: <1354778591.97261.YahooMailClassic@web125505.mail.ne1.yahoo.com>
+To: Josh Wu <josh.wu@atmel.com>
+Date: Tue, 15 Jan 2013 10:04:37 +0200
+In-Reply-To: <50C85426.2090309@atmel.com>
+References: <50C85426.2090309@atmel.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-o/CMIIemZnMDW4kLZx6R"
+ boundary="=-87PrnsuXJWKYOLeXsxcY"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,25 +25,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-o/CMIIemZnMDW4kLZx6R
+--=-87PrnsuXJWKYOLeXsxcY
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-12-05 at 23:23 -0800, Sri Charan Chalasani wrote:
-> Hi all,
+On Wed, 2012-12-12 at 17:53 +0800, Josh Wu wrote:
+> Hi,
 >=20
-> We are basically trying to mount our inbuilt NAND flash device and
-> write some files onto it using UBI/UBI-FS.
+> I have a question about the nand flash driver. Whether the=20
+> nand_ecc_ctrl->read_page/write_page can do more than one page operation?=
+=20
+> or is there any interface for nand_ecc_ctrl to let driver support=20
+> multi-page read/write?
 >=20
+> Since in that case I can do some optimization in multiple pages=20
+> read/write operation. for example: prepare the buffer for next page.
 
-Also, please, do not send HTML e-mails, they will not go through the
-mailing list filter.
+I think OneNand driver does multi-page I/O, check it.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-o/CMIIemZnMDW4kLZx6R
+--=-87PrnsuXJWKYOLeXsxcY
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -51,19 +55,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQ9Q1gAAoJECmIfjd9wqK0nNYP/2llsFBuzDW+27+uvDp2ftF7
-/xm+1EXFgrTvL1nkt8pVsq+sQm6yVGfQtFdqEP9GP9/gDXFOWvY7j2/dzz6/h6fF
-bbmwXrOxZwEVMAkZDS1M7t9NsXnDKrllXsg6kyxbTooA6wRuUNfqQTECrS7enmh9
-o7UjHinlK1N2aZrp29yo/UiFd8FU59kdxtcgxG+PZWoCnpx3u8Jchy5LuHpJOsqS
-4KJKO20eKa2Y2Csr/Cd6oYpG5iEfWIsr3YHxenYo7lVVwJ4K6duFrYOXj/vYnP+b
-MJAdt7IZrZ3RmBA23LvWTEoxTknweueISjPbrCjtIRMv40jY3o0c0yKztYfpXAwL
-LekzJhpRumKPCmU5oN8iZHr+F+1Can5PwGBbZutf0AG0hT8HvQeq4o+BUX5mixj6
-v0qvW/raoQKqlcRiBOJkR4UPS9RXgB8/DcI0tQaElcwS9phdOy+WyO1ImGww5aHy
-tUC/Wxc6WSu4oQW3+qnootpCAQmRhqpGL1+i4jnCnp12v33aoU7SAcop1pZ8P4cY
-hDFnyBDu4PoVLXNaX9mrDkS2il2iyU4xxUUtr4ko6QP1iIJ8qevq5gn+XiG4Ew3S
-AaMhJRBeN2HAn/Y6f0WF3OU+sUqI2Spa3JEozC5WuijWCsiOr2F0ErYZURStVTt5
-1zEVhHiO77WAFa2b+pnK
-=us4Z
+iQIcBAABAgAGBQJQ9Q2VAAoJECmIfjd9wqK0NPUP/2grwONOb1VYjkFRufB7djQl
+KATSDGGMKKAu4j4i0GgwnRi6ZoBvoebxDFuGUzR0sC7gA83Jv/ntwo11dA/UFjUe
+tWciZDNV2tpIntNvdk2CRaz2OZcHRs+5gtBSdFAEgObzN6/ygHzLKqd0T5fnwyap
+MT6Seq0Yc3sA1twBwBFLdRoWLQWBFWyUyvs4qpHNijb4v1ocWdNSvX9CqIIv36+U
+NY+GxRE17RevTaRgG+4kdoKaVfshGqaW9q/+hItRremzCi+Yc1AfzBrDbVXcc4VR
+h8ms2HdN3C7X1myldCPtQcXM4UvWlKatFg8Gd4SAnWv8dH3HVhJPFBBKgwGMa11n
+HdrkgufMSZfeAn4e040zh8yRLNmmrOCmacfmd1B58Zjtf16AQCAHyUtGyzvWkkzF
+QLYRnEhorq4H2P5dcWAk7fqEdlZKhXl4SOQaiVZEVEGU8Ea/bja9xVXfvZgvQt0s
+VYO2L3BHKcNAKTfgAF5Me/ROEJM1hSvSV/tYo3SuIBEUIIpyJgEqGba4qTrchSsL
+YyuoYblZFB75WfI9+YdoNcum5b9SzTsESI+MFk4NIOa7w/9g3vjxeO78/IdUcUpr
+TrZ81E01ZZ3wNpC8Ab5iAjl4fIvHxTatdmQA7ZAzeaoDr1BWRmLnFdvuY6tsro/U
+aWJzyh673XCmMo1ywjuw
+=As17
 -----END PGP SIGNATURE-----
 
---=-o/CMIIemZnMDW4kLZx6R--
+--=-87PrnsuXJWKYOLeXsxcY--
