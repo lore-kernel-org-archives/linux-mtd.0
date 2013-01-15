@@ -1,16 +1,26 @@
-Message-ID: <50F458D2.6070000@infradead.org>
-Date: Mon, 14 Jan 2013 11:13:22 -0800
-From: Randy Dunlap <rdunlap@infradead.org>
+Received: from aserp1040.oracle.com ([141.146.126.69])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TuzJ7-0006bM-5p
+ for linux-mtd@lists.infradead.org; Tue, 15 Jan 2013 05:43:35 +0000
+Subject: [PATCH 6/6] ubifs: Wait for page writeback to provide stable pages
+To: axboe@kernel.dk, lucho@ionkov.net, jack@suse.cz, darrick.wong@oracle.com,
+ ericvh@gmail.com, tytso@mit.edu, viro@zeniv.linux.org.uk,
+ rminnich@sandia.gov
+From: "Darrick J. Wong" <darrick.wong@oracle.com>
+Date: Mon, 14 Jan 2013 21:43:20 -0800
+Message-ID: <20130115054320.1563.54829.stgit@blackbox.djwong.org>
+In-Reply-To: <20130115054235.1563.12967.stgit@blackbox.djwong.org>
+References: <20130115054235.1563.12967.stgit@blackbox.djwong.org>
 MIME-Version: 1.0
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: linux-next: Tree for Jan 14 (mtd)
-References: <20130114154649.cb077b499876da60463fb304@canb.auug.org.au>
- <50F43197.6010308@infradead.org> <874nija8ry.fsf@free.fr>
-In-Reply-To: <874nija8ry.fsf@free.fr>
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, linux-next@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: martin.petersen@oracle.com, Artem Bityutskiy <dedekind1@gmail.com>,
+ neilb@suse.de, linux-kernel@vger.kernel.org, david@fromorbit.com,
+ gnehzuil.liu@gmail.com, Adrian Hunter <adrian.hunter@intel.com>,
+ hch@infradead.org, jlayton@samba.org, adilger.kernel@dilger.ca,
+ bharrosh@panasas.com, linux-fsdevel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-ext4@vger.kernel.org,
+ hirofumi@mail.parknet.co.jp
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,56 +30,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/14/13 11:01, Robert Jarzmik wrote:
-> Randy Dunlap <rdunlap@infradead.org> writes:
->> ERROR: "byte_rev_table" [drivers/mtd/devices/docg3.ko] undefined!
-> 
-> Thanks for the report. I have a trivial patch attached. Should it go through
-> Artem's tree or do you want to take it directly ?
+When stable pages are required, we have to wait if the page is just
+going to disk and we want to modify it. Add proper callback to
+ubifs_vm_page_mkwrite().
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-I suppose that it should go thru Artem's tree.
-
-Thanks.
-
-
-> Cheers.
-> 
-> --
-> Robert
-> 
-> ---8>---
-> 
-> From 771d13b0094421b98310171d8794f2a793ec5d4d Mon Sep 17 00:00:00 2001
-> From: Robert Jarzmik <robert.jarzmik@free.fr>
-> Date: Mon, 9 Apr 2012 13:19:08 +0200
-> Subject: [PATCH] mtd: docg3 fix missing bitreverse lib
-> 
-> Fix missing dependency which can cause a build error such
-> as: ERROR: "byte_rev_table" [drivers/mtd/devices/docg3.ko]
-> undefined!
-> 
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-> ---
->  drivers/mtd/devices/Kconfig |    1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
-> index 27f80cd..46dcb54 100644
-> --- a/drivers/mtd/devices/Kconfig
-> +++ b/drivers/mtd/devices/Kconfig
-> @@ -272,6 +272,7 @@ config MTD_DOCG3
->  	tristate "M-Systems Disk-On-Chip G3"
->  	select BCH
->  	select BCH_CONST_PARAMS
-> +	select BITREVERSE
->  	---help---
->  	  This provides an MTD device driver for the M-Systems DiskOnChip
->  	  G3 devices.
-> 
+CC: Artem Bityutskiy <dedekind1@gmail.com>
+From: Jan Kara <jack@suse.cz>
+CC: Adrian Hunter <adrian.hunter@intel.com>
+CC: linux-mtd@lists.infradead.org
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ fs/ubifs/file.c |    1 +
+ 1 file changed, 1 insertion(+)
 
 
--- 
-~Randy
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index 5bc7781..4f6493c 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -1522,6 +1522,7 @@ static int ubifs_vm_page_mkwrite(struct vm_area_struct *vma,
+ 			ubifs_release_dirty_inode_budget(c, ui);
+ 	}
+ 
++	wait_for_stable_page(page);
+ 	unlock_page(page);
+ 	return 0;
+ 
