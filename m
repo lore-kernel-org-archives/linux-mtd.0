@@ -1,22 +1,22 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Tv3cn-0000vX-Uu
- for linux-mtd@lists.infradead.org; Tue, 15 Jan 2013 10:20:11 +0000
-Message-ID: <1358245292.2731.120.camel@sauron.fi.intel.com>
-Subject: Re: linux-next: Tree for Jan 14 (mtd)
+ id 1Tv3ue-0003iN-VT
+ for linux-mtd@lists.infradead.org; Tue, 15 Jan 2013 10:38:38 +0000
+Message-ID: <1358246400.2731.123.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: nand: Kconfig: drop utf8 characters
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Date: Tue, 15 Jan 2013 12:21:32 +0200
-In-Reply-To: <874nija8ry.fsf@free.fr>
-References: <20130114154649.cb077b499876da60463fb304@canb.auug.org.au>
- <50F43197.6010308@infradead.org> <874nija8ry.fsf@free.fr>
+To: Martin Walch <walch.martin@web.de>
+Date: Tue, 15 Jan 2013 12:40:00 +0200
+In-Reply-To: <1568980.QkbR4hXzWB@tacticalops>
+References: <1353971245-26735-1-git-send-email-wolfram@the-dreams.de>
+ <1353971928.2383.18@tyr> <1354541353.11583.12.camel@sauron.fi.intel.com>
+ <1568980.QkbR4hXzWB@tacticalops>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-eRN9/7eR5P4w7/7S+L+o"
+ boundary="=-IGutuGEyy3oqH1r7W/ik"
 Mime-Version: 1.0
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
- Randy Dunlap <rdunlap@infradead.org>, linux-mtd@lists.infradead.org,
- linux-next@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Scott Wood <scottwood@freescale.com>, Wolfram Sang <wolfram@the-dreams.de>,
+ linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,25 +28,41 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-eRN9/7eR5P4w7/7S+L+o
+--=-IGutuGEyy3oqH1r7W/ik
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2013-01-14 at 20:01 +0100, Robert Jarzmik wrote:
-> Randy Dunlap <rdunlap@infradead.org> writes:
-> > ERROR: "byte_rev_table" [drivers/mtd/devices/docg3.ko] undefined!
+On Mon, 2012-12-17 at 04:27 +0100, Martin Walch wrote:
 >=20
-> Thanks for the report. I have a trivial patch attached. Should it go thro=
-ugh
-> Artem's tree or do you want to take it directly ?
+> To make a long story short: multibyte characters in Kconfig files lead to=
+=20
+> undefined behaviour. This is no implementation bug. The configuration sys=
+tem=20
+> just has not been designed for processing them. So utf-8 support can not =
+be=20
+> achieved with an easy fix, but will need comprehensive changes.
+>=20
+> I do not know if anyone is willing to actually make all the necessary wor=
+k to=20
+> properly support utf-8 in the configuration system. However, I suppose th=
+is=20
+> will not happen any time soon. Therefore I suggest removing the multibyte=
+=20
+> characters for now.=20
 
-David just picked this patch to the MTD tree.
+Sure, thanks for a detailed analysis. What I agree with is removing
+non-ASCII characters in case they cause a functional or build problems,
+just because, as you said, fixing Kbuild is a big task.
+
+However, in this particular case, this is just about user seeing rubbins
+in the configuration menu, which is not a big deal, I think, so I would
+prefer to rather expose the issue than fix it.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-eRN9/7eR5P4w7/7S+L+o
+--=-IGutuGEyy3oqH1r7W/ik
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -54,19 +70,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQ9S2sAAoJECmIfjd9wqK0hmMQAIZsKXeZxrUN2qMdIU2U1GKt
-7qzVvCZ0ZrEoBB1TMV1ZFrzrjk+AFwxkWplFk67NmQbYsPb87knRf+7MtDelA/pG
-8fWYT6KQJfq8z0GazEBM1E7eBXUOeo+d8trCmHNbrDHYAT//DM99m1hUullWn6Hk
-F6RXIvcfW4mYtG7TI4v3xwFV2JLedPDC0SxdUsynQElV5r7xYLbuKQJJK1Ovd/9R
-NxAAZGncw/1t4PWQyLACNRPTK7Bs8HFkrAuB12n6byUkQGPMLCjQiFa4YJeSAhr9
-Twy++EXyODDjc8Dt98tZeizaB4kz9fGQOHSyRCgtwrW5zn2Sg91Eqg3+tNxwRk5+
-vmYeTzrvHMt0q057OmU9rcJ/SC3il/L3FuVutK5UutI1OGTEnxkw9FJH4nLbmLj1
-poYF3kHk8+XEEpy/es26Fm6v/CLAQzTyz3SllGkVqUDM/g8NUPaSyIc7Rt/G1fhR
-31SIAbwJGO0bPkwmjsW5azzEww+UHGqFIf06B1E6vMHTJAabX37vxpKlKCuLgM30
-ZXccEdVMHBaqPtVyc5lJCvrTgaD7HCG4sOv4yYxr7m64+0fpKFG8iB7Xh+zZ2w86
-sGci2ZP9xz4Wos5achyVit6v1GIVuFgE3MmcT8sZbNez7rOFjiIqyXn6gGhI8T7D
-OHk6VuUEeFw/3oWvD0cW
-=RYSJ
+iQIcBAABAgAGBQJQ9TIAAAoJECmIfjd9wqK0MjEP/0jgIoxpe1rE5d49hZ1l8wml
+jpiF+qGEZallsEndcxpaIBCA33xhHNQR4Q1XX/bS3xtBZJeIni/fVMbRaCrOrZaI
+tf0HxI+X1qDW+QnSmMjdBsg4pFZrUnIDi/gz8vpDnQFrPG+wWI6BgYspdh/7rjVt
+Kybg5Clh9c+CkScoerrT+w1KL2w5bt9iOZdyRMrH8VVYE0uRslgVOdWInro5Q9+N
+t5a1ZPPWljwxCvmfBzXKLxYbdzD2lMpBckPHM71SrTIINDnu9C61ROKdCyW0hDD5
+St4k4MieUehs15lk2FW4DQWEZHEsJJBP3HVXKKm6TzGXy0sRyDP/4rDcYhTUbGEZ
+NsSsbX/8CkFJDbrlnHkYK9C7duJmwRp0XvC/Crie0W9MIlTbYvrwd3erxozgrrvl
+z5WBo/RE5V+Ip5tHHrX7P566fLgcEqDY/NSxnVt9PXK0fAerIURmdYTc9N8VOkpW
+uF9A3nRFOPuP32qWy078N0HTBpEERSxIJ5VC5HEGEt1wvDMmo6UgFVvTYA54W+3c
+bhKlpJJB/+Btau9D0zx5gqSW9EmHUHZ1rbvg2T31WS9cs8SqoOWj9HBLaj2SUFGv
+LteDQpfHOAWYFb9t/jAIAF87N6Ccjjbk/PSSuZaSe9clzpAeNPx0f1IIr3wfcMOk
+ugNgbOlImC3GLUIjykw1
+=/CUZ
 -----END PGP SIGNATURE-----
 
---=-eRN9/7eR5P4w7/7S+L+o--
+--=-IGutuGEyy3oqH1r7W/ik--
