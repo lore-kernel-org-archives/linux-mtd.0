@@ -1,20 +1,20 @@
-Message-ID: <1358276967.1668.0.camel@kyv>
-Subject: Re: [PATCH v8 2/5] mtd: omap-nand: pass device_node in platform data
+Message-ID: <1358277072.1668.2.camel@kyv>
+Subject: Re: [PATCH v2] mtd: vt8500: Add support for Wondermedia Serial
+ Flash Controller
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Tony Lindgren <tony@atomide.com>
-Date: Tue, 15 Jan 2013 21:09:27 +0200
-In-Reply-To: <20130115185251.GB14149@atomide.com>
-References: <1355481404-27695-1-git-send-email-zonque@gmail.com>
- <1355481404-27695-3-git-send-email-zonque@gmail.com>
- <20130115185251.GB14149@atomide.com>
+To: Tony Prisk <linux@prisktech.co.nz>
+Date: Tue, 15 Jan 2013 21:11:12 +0200
+In-Reply-To: <1358271907.31593.1.camel@gitbox>
+References: <1356901207-13536-1-git-send-email-linux@prisktech.co.nz>
+ <1358261750.2731.148.camel@sauron.fi.intel.com>
+ <1358271907.31593.1.camel@gitbox>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-zCN4dCgSBtfzMZh8qgsi"
+ boundary="=-RLKBgFK/epAwi1lY6fRD"
 Mime-Version: 1.0
-Cc: paul@pwsan.com, x0148406@ti.com, devicetree-discuss@lists.ozlabs.org,
- nsekhar@ti.com, rob.herring@calxeda.com, Daniel Mack <zonque@gmail.com>,
- grant.likely@secretlab.ca, jon-hunter@ti.com, linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: vt8500-wm8505-linux-kernel@googlegroups.com, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,26 +26,69 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-zCN4dCgSBtfzMZh8qgsi
+--=-RLKBgFK/epAwi1lY6fRD
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2013-01-15 at 10:52 -0800, Tony Lindgren wrote:
-> Artem,
+On Wed, 2013-01-16 at 06:45 +1300, Tony Prisk wrote:
+> On Tue, 2013-01-15 at 16:55 +0200, Artem Bityutskiy wrote:
+> > On Mon, 2012-12-31 at 10:00 +1300, Tony Prisk wrote:
+> > > This patch adds support for the Wondermedia serial flash controller
+> > > found on WM8505, WM8650 and WM8850 SoCs.
+> > >=20
+> > > Signed-off-by: Tony Prisk <linux@prisktech.co.nz>
+> > > ---
+> > > v2: Whitespace tidyup
+> >=20
+> > Hi, would you please take a look at these warings, identified by aiaiai=
+:
+> >=20
+> > Successfully built configuration "x86_64_defconfig,x86_64,", results:
+> >=20
+> > --- before_patching.log
+> > +++ after_patching.log
+> > @@ @@
+> > +drivers/mtd/devices/wmt_sflash.c: In function =E2=80=98sf_read=E2=80=
+=99:
+> > +drivers/mtd/devices/wmt_sflash.c:425:9: warning: format =E2=80=98%d=E2=
+=80=99 expects argument of type =E2=80=98int=E2=80=99, but argument 4 has t=
+ype =E2=80=98size_t=E2=80=99 [-Wformat]
+> > +drivers/mtd/devices/wmt_sflash.c: In function =E2=80=98sf_sector_write=
+=E2=80=99:
+> > +drivers/mtd/devices/wmt_sflash.c:442:16: warning: cast from pointer to=
+ integer of different size [-Wpointer-to-int-cast]
+> > +drivers/mtd/devices/wmt_sflash.c:442:24: warning: cast removes address=
+ space of expression [sparse]
+> > +drivers/mtd/devices/wmt_sflash.c:458:16: warning: cast to pointer from=
+ integer of different size [-Wint-to-pointer-cast]
+> > +drivers/mtd/devices/wmt_sflash.c:458:31: warning: incorrect type in ar=
+gument 1 (different address spaces) [sparse]
+> > +drivers/mtd/devices/wmt_sflash.c:458:31:    expected void volatile [no=
+deref] <asn:2>*dst [sparse]
+> > +drivers/mtd/devices/wmt_sflash.c:458:31:    got unsigned char [usertyp=
+e] *<noident> [sparse]
+> > +drivers/mtd/devices/wmt_sflash.c:465:17: warning: cast to pointer from=
+ integer of different size [-Wint-to-pointer-cast]
+> > +drivers/mtd/devices/wmt_sflash.c:465:39: warning: incorrect type in ar=
+gument 1 (different address spaces) [sparse]
+> > +drivers/mtd/devices/wmt_sflash.c:465:39:    expected void volatile [no=
+deref] <asn:2>*dst [sparse]
+> > +drivers/mtd/devices/wmt_sflash.c:465:39:    got unsigned char [usertyp=
+e] *<noident> [sparse]
+> >=20
 >=20
-> Looks like this patch related to making GPMC work with DT was
-> never sent to linux-mtd or to you so adding to cc.
->=20
-> Is this OK to apply along with the GPMC patches, or do you want to
-> take this separately with the MTD patches?
+> Apologies - This driver shouldn't be selectable for x86_64.
+> It is an ARM driver for an embedded device. Will fix.
 
-Please, go ahead!
+Note, there are also warnings when it is compiled for other platforms,
+not only x86_64. Take a look at them. Also note, than many warnings come
+from sparse, you probably just did not run it.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-zCN4dCgSBtfzMZh8qgsi
+--=-RLKBgFK/epAwi1lY6fRD
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -53,19 +96,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQ9alnAAoJECmIfjd9wqK0eDkQAKdNIdSv9qXjkhjJbLXh5yVr
-L0SAf6shltjc/156o85FwRUeQqoXnW1KPRlHPu7YcRx4jPGuq/O05pESpBMf1qkg
-TZkeb25SChc6ymRtJziyf7gO9D2zCOXLv6LDq9AMllTzorIg2362W2L5QyuXra49
-BE6jgasfRDVV5Xtv42YXfj33fMdMUvvf0s52N9PKVcWc3J75G7EOYQDD6gEbyyD0
-Qs4ltUA3lOxRDvxJzDjrXQ8awj5Pil0n8XJECRV8bq/adL/+N7WfhDROp9zMuxZW
-PrEu/lyt+NoJGNj5NjD3bJE+Beo9yGiNhUDegJimgzuJO1nUDYchCKGDVHNKoNjN
-sp7BNvkXd6lz5YFD/6xNfBWA60KC5jcAa4mAQTXo4Osk45l3dqwQ+6lM05wQFcVt
-YifqAE0ykDr/CPTQRRiZnbTs0VmSzkfEoxBauIiIyLYZPVjII9/a+lXtbhELSNYD
-n/0NeCCCBY3gzlUQOH0w4LmR5myKJ8/mMbeupDOd1PEz0BbYyKo2ItxGEx2KPN6B
-CsRLQo0muYS9Iuili1Pxr7uMsHpX/m/0GJhC3pgwfyGl5XmNaBcPiApyCGrHwiMM
-4FnhlimGjgct+E57PkFWtRlmBRmHi25qQhauEuGsQrdLWglnIRBgKk2N/2GicxMj
-SCqySuUAo8ar9T/GP+aC
-=vULi
+iQIcBAABAgAGBQJQ9anQAAoJECmIfjd9wqK0kncP/jD/9YJ6ZuGbsiQ1tqRRzWct
+7/dm8Ds+HIZ1SWud58ctlAD6CqWZODf/Xzfyup94tgcpr24OTduygmeewSPV2lKn
+B9miQFOKczuK9VW4nDbTsF83KOM5kWjspoJ9npVrilJe2912Lr5lr1gUbzo2AGzb
+sf8M5PIps2kXmA3FL8KvmT/AFRhNcPlgV0r7e0pQtd0gVPVMtde7a63v/qSSdYD6
+wKm6umY6zc8usHMjOqlWK6XMAsG05FIFhaLDtkAl7DKTcZplwJUYnrqGyTWudNpS
+mhmtdzwMBb2c5ko/TUv+K9oWb5lzGJqTT9T/KEaGc9wPVjEI1l58nth7WVjRMjnh
+qHM7CRiXP1/Njvp30BbyHDPTadPpy1z8KFKGM/7a/6JjBRmlHsUUWG2jdmQAb6RC
+CDSCQXkwNuw1U4G9EbIxGZZhCu4pODh+CeB80bNsoGUpsbMup+FlrO2bzZYzJ2JU
+9nhcWiyEc1ZCkWw9Ko+DGuqTyIJHf/b643An/Nbi2IVmnzImIuVHsgo/DP86Wxyt
+QQKsf6ISGzc5xEJQabzNlIWA/pF2UnCa8VU3ulqZkUVbliEgujbogAGyf1ptpc93
+JkfeIbtV4tQ8/OYzyBip+39n7828v1Od1mdLeYw0z4txrEj+IzPreBgSNsGfxTvd
+zjtkoO626olTmLWfVVca
+=mufj
 -----END PGP SIGNATURE-----
 
---=-zCN4dCgSBtfzMZh8qgsi--
+--=-RLKBgFK/epAwi1lY6fRD--
