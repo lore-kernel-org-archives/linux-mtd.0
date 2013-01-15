@@ -1,21 +1,18 @@
-Message-ID: <1358278545.1668.10.camel@kyv>
-Subject: Re: [PATCH v8 2/5] mtd: omap-nand: pass device_node in platform data
+Message-ID: <1358278604.1668.11.camel@kyv>
+Subject: Re: [PATCH v2] mtd: vt8500: Add support for Wondermedia Serial
+ Flash Controller
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Tony Lindgren <tony@atomide.com>
-Date: Tue, 15 Jan 2013 21:35:45 +0200
-In-Reply-To: <20130115192624.GD14149@atomide.com>
-References: <1355481404-27695-1-git-send-email-zonque@gmail.com>
- <1355481404-27695-3-git-send-email-zonque@gmail.com>
- <20130115185251.GB14149@atomide.com> <1358276967.1668.0.camel@kyv>
- <20130115192624.GD14149@atomide.com>
+To: Tony Prisk <linux@prisktech.co.nz>
+Date: Tue, 15 Jan 2013 21:36:44 +0200
+In-Reply-To: <1358272414-6266-1-git-send-email-linux@prisktech.co.nz>
+References: <1358272414-6266-1-git-send-email-linux@prisktech.co.nz>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-YVPHlURYise3scmIFSlZ"
+ boundary="=-7Q8BLSdwlrlPelw+GlT/"
 Mime-Version: 1.0
-Cc: paul@pwsan.com, x0148406@ti.com, devicetree-discuss@lists.ozlabs.org,
- nsekhar@ti.com, rob.herring@calxeda.com, Daniel Mack <zonque@gmail.com>,
- grant.likely@secretlab.ca, jon-hunter@ti.com, linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org,
+ vt8500-wm8505-linux-kernel@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,34 +24,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-YVPHlURYise3scmIFSlZ
+--=-7Q8BLSdwlrlPelw+GlT/
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2013-01-15 at 11:26 -0800, Tony Lindgren wrote:
-> * Artem Bityutskiy <dedekind1@gmail.com> [130115 11:12]:
-> > On Tue, 2013-01-15 at 10:52 -0800, Tony Lindgren wrote:
-> > > Artem,
-> > >=20
-> > > Looks like this patch related to making GPMC work with DT was
-> > > never sent to linux-mtd or to you so adding to cc.
-> > >=20
-> > > Is this OK to apply along with the GPMC patches, or do you want to
-> > > take this separately with the MTD patches?
-> >=20
-> > Please, go ahead!
+On Wed, 2013-01-16 at 06:53 +1300, Tony Prisk wrote:
+> This patch adds support for the Wondermedia serial flash controller
+> found on WM8505, WM8650 and WM8850 SoCs.
 >=20
-> OK thanks. Can I add your Acked-by too?
+> Signed-off-by: Tony Prisk <linux@prisktech.co.nz>
 
-Yes Tony, please, do:
-
-Acked-by: Artem Bityutskiy <dedekind1@gmail.com>
+Would please you also send a defconfig which I can use to compile-test
+this?
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-YVPHlURYise3scmIFSlZ
+--=-7Q8BLSdwlrlPelw+GlT/
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -62,19 +49,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQ9a+RAAoJECmIfjd9wqK0U/QQAMeOcaqX2fPwd8roaUoxtLSY
-qjVpZHYDYNCFh6ERbPIv8iZHQhjJ0Q5B7xj4WbYhEXFeXTAtEiA9hIs2/JZe6//k
-xpPOtrr/W+8GTIkvr3sKp8PvLsN5u/6RCmbP7bkRnjnwniv/Ffa6W4oHLrVZJQjw
-qqe6Zne2hGr94E7opUayvml9R8pKLGrPl7EO3QwzHwB8uvOo1/QTUZATpjEP8E0T
-JrGgt52DD8+BpgqF+2O2RP2RRH+VyxJxZpIU5C5O4PzDWtt4bxaeiICR8+L0XSla
-DvAas7lQ/9z5MfgPaQb759EuJgegM/Y1UfuAeuBsYh4ZHfpDVnKLqaXfZBiiVMVC
-iNVzDsOZhXCa9cVjFFhT6wIAN8vXS0ptJ/GgAZGOglT7VhGbSY8WiCgEWMU7IHQp
-FxPJOsxGvI0S3GBuUi5ILoPwcJegkfqO4wuqggbIwtuY3dhv9IsPr5mVEy9aND1W
-AhuKxom0NoLUcD9g4GZQOt02fDe6hfM0/OLGu8eIgscmLcQR0UdW9Q1AANY1ZXeE
-23LhugoUyDiOs++623XhKMKK8lQkLpNZoAHs5BuBbCt1XPKc/k2VOUJccNqfrm5g
-4tH5sOOGPgkKGe+WoFDm+0hJwSUURolwszqt/oFi1XrP15TzyREmse8w41gmwL0e
-O5Agq7f27Dmhb5L0N8X1
-=a7eK
+iQIcBAABAgAGBQJQ9a/MAAoJECmIfjd9wqK0D48QAJOrS9HO7XF2B0E42/mSiiT2
+NqjY9ZcYEk2mMda9oz5ggvRWztDnAc57fd6+M47kka92hPHMtIAfMA2Ydref3pu7
+c8WbIQvUbXXkw43B/CHyAhyMP9WPjbRJ3/duL0KGfZZIqPgJoy+Fszz+6sri3lEu
+92NJqF6od3X8kn2iqr8H4Dd2svO/7uPwnuyFAt67bafA/qZAM8jYQ5in4O4hhm0W
+b/qmadqRdro5AjTDuwjlLDAmWGicUZD2k8iW3Z2EPLC3Ac3LiNBTQVelM7u87srb
+AI5BYF+FCMe0SOaJr+CpvDJ+Oaw6VVam8DLur8quN6xbakOInJjUcq51WK42WNSb
+2e7OhLIfMocaspFt083JznocH+xn5BHNUoAbG034M7J2mug382MJTg81OrzK5bsC
+4FMeSFqxS7LBPFcRq0zdolrRzt5P52J8XriafkXcXRriG9xfs4eW/ySd3dlxDf/N
+IiQYkzriIRItrloMCMHllhQmn7DUlpyzc1hkCp/FZ4a44PQ3zAkNAf0MLA7tBFeH
+2iMEJTorvhwsw34lFqgow818gTbMVzPOOptY7qMXJMz1Fit+Gu0inTDCegzGqxtW
+2Q19T2Mb0vLlD2tqVdvMp8FtStQyn8VKQXUTdyKDRCD6raLo3PJZhf8hEbqvgZ9y
+BJOCNvsfRsGRmPF/jUXG
+=nDJj
 -----END PGP SIGNATURE-----
 
---=-YVPHlURYise3scmIFSlZ--
+--=-7Q8BLSdwlrlPelw+GlT/--
