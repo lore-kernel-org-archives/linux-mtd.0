@@ -1,22 +1,21 @@
-Received: from mga14.intel.com ([143.182.124.37])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Tv7xJ-0002uc-QF
- for linux-mtd@lists.infradead.org; Tue, 15 Jan 2013 14:57:38 +0000
-Message-ID: <1358261813.2731.149.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] davinci_nand: fix compilation with CONFIG_OF=y
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Sergei Shtylyov <sshtylyov@ru.mvista.com>
-Date: Tue, 15 Jan 2013 16:56:53 +0200
-In-Reply-To: <201301022322.27541.sshtylyov@ru.mvista.com>
-References: <201301022322.27541.sshtylyov@ru.mvista.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Tv8kM-0008GL-Qd
+ for linux-mtd@lists.infradead.org; Tue, 15 Jan 2013 15:48:19 +0000
+Message-ID: <50F57A30.10109@pengutronix.de>
+Date: Tue, 15 Jan 2013 16:48:00 +0100
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+MIME-Version: 1.0
+To: Subodh Nijsure <snijsure@grid-net.com>
+Subject: Re: [v4] Add security.* XATTR support for the UBIFS
+References: <1336915488-23943-1-git-send-email-snijsure@grid-net.com>
+In-Reply-To: <1336915488-23943-1-git-send-email-snijsure@grid-net.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="=-UzWP7rdkLnHO321S1Btk"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org,
- davinci-linux-open-source@linux.davincidsp.com, hs@denx.de,
- dwmw2@infradead.org, nsekhar@ti.com
-Reply-To: dedekind1@gmail.com
+ boundary="----enig2UATRGLPVLEEOHEUWPSIP"
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, penguin-kernel@I-love.SAKURA.ne.jp,
+ linux-kernel@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+ linux-security-module@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,51 +25,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
---=-UzWP7rdkLnHO321S1Btk
-Content-Type: text/plain; charset="UTF-8"
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+------enig2UATRGLPVLEEOHEUWPSIP
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2013-01-02 at 23:22 +0300, Sergei Shtylyov wrote:
-> Commit cdeadd712f52b16a9285386d61ee26fd14eb4085 (mtd: nand: davinci: add =
-OF
-> support for davinci nand controller) obviously has never been really buil=
-d
-> tested with CONFIG_OF=3Dy.  Now it prevents DaVinci family kernels from b=
-uilding:
-> all due to stupidly missing semicolon after a structure initializer...
+On 05/13/2012 05:24 AM, Subodh Nijsure wrote:
+> From: Subodh Nijsure <snijsure@grid-net.com>
 >=20
-> Signed-off-by: Sergei Shtylyov <sshtylyov@ru.mvista.com>
-> Cc: stable@vger.kernel.org # 3.7
+> Also fix couple of bugs in UBIFS extended attribute length calculation.=
 
-This patch is currently sitting in the mtd tree, and I believe will be
-merged to 3.8.
+>=20
+> Changes in v4:
+>         Fix lock issues introduced in v3.
+>         Tested with CONFIG_SECURITY enabled & disabled.
+>=20
+> Changes in v3:
+> 	 Remove #ifdef CONFIG_UBIFS_FS_XATTR
+>=20
+> Changes in v2:
+>          Instead of just handling security.selinux extended attribute h=
+andle
+>          all security.* attributes.
+>=20
+> TESTING: Tested on  MX28 based platforms using Micron MT29F2G08ABAEAH4 =
+NAND
+>          With these change we are able to label UBIFS filesystem with
+>          security.selinux and run system with selinux enabled.
+>          This change also allows one to set other security.* extended
+>          attributes, such as security.smack security.evm, security.ima
+>          Ran integck test on UBI filesystem.
+>          This patch set has been tested with CONFIG_LOCKDEP=3Dy and oth=
+er options
+>          suggested in Submitchecklist
+>=20
+> Signed-off-by: Subodh Nijsure <snijsure@grid-net.com>
+
+What's the status of this patch? Was there a v5?
+
+Marc
 
 --=20
-Best Regards,
-Artem Bityutskiy
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
---=-UzWP7rdkLnHO321S1Btk
+
+------enig2UATRGLPVLEEOHEUWPSIP
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
 
-iQIcBAABAgAGBQJQ9W41AAoJECmIfjd9wqK0MJEQAKeYHXGOuYHGB9oOv25C1kJE
-MlYaCvJ+PyDdc3TmxCXAVkyHz0m9f1Ts6dAxsfn1PhTa+BYCB+faEagdaMp3g7NC
-3ssSWM3Gk336O4we4LDv2nqnEsHNUPVYg9ijdtv6Vo871AuE6w2v8QwkV2HxEhIy
-iO80pXI/j1TQPW4ixpfxWZBi8QVvaaznR3WxYFgUxCpUbd9swdhVyFk3HIoAWTuS
-eMGETJy3/jxs2ihvYYSw54flMuK3plWA7V22NIXwtufsybSXfPH+8WDfuOE/3Ja2
-VdNDgufOKE502yxSgmdyheJOcx5+m272g1PvpM9onQLdMCn8DwJ6D87Miceop7C1
-A5mgTf98dvRzrB0Z1jEjseA+UaG6wTGAbvRs1AbrK+1g0Zlw6VA+h3IH9Ijr+ZB4
-4EpoHHFkLZTrJbqBIq/Ntj9O1fkDTffecX2SP0sLHaamgHMALDicYrG3QtthNOJb
-ed6kNFyW1Da1sOTzsYH7MbPKTq/VH2e2heZ5ZvYxada5jwuBTqKN7SOM7y+Yvz9U
-08R90mIWd7w6Vr8sc8rt+LBsfjzkwZI52xml4AwcjHwg3jZH0P/2H/gu5liVkfr+
-0pbTlvdF4F1my8ahq16kJ8UwJ9tuR5JnBNoQjBIC7TDZVGbFn7edvW4HfrAvQ/YA
-iIZuI3jKtPzzzvs9WMom
-=bZX3
+iEYEARECAAYFAlD1ejQACgkQjTAFq1RaXHPlOwCgj2oFC4JYU3BoYfv0rPj+AcLP
+nZMAn0VrMMC7sVTzcdMpHYjnovv2pJRb
+=3CxT
 -----END PGP SIGNATURE-----
 
---=-UzWP7rdkLnHO321S1Btk--
+------enig2UATRGLPVLEEOHEUWPSIP--
