@@ -1,19 +1,21 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Tv6W6-0005v7-Hu
- for linux-mtd@lists.infradead.org; Tue, 15 Jan 2013 13:25:28 +0000
-Message-ID: <1358256409.2731.137.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: bcm47xxsflash: adjust names of bus-specific functions
+ id 1Tv6qF-00035j-0F
+ for linux-mtd@lists.infradead.org; Tue, 15 Jan 2013 13:46:16 +0000
+Message-ID: <1358257658.2731.140.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH -v2 13/26] ubifs: rename random32() to prandom_u32()
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
-Date: Tue, 15 Jan 2013 15:26:49 +0200
-In-Reply-To: <1356526466-27360-1-git-send-email-zajec5@gmail.com>
-References: <1356526466-27360-1-git-send-email-zajec5@gmail.com>
+To: Akinobu Mita <akinobu.mita@gmail.com>
+Date: Tue, 15 Jan 2013 15:47:38 +0200
+In-Reply-To: <1357215562-6288-14-git-send-email-akinobu.mita@gmail.com>
+References: <1357215562-6288-1-git-send-email-akinobu.mita@gmail.com>
+ <1357215562-6288-14-git-send-email-akinobu.mita@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-X/b8GUXUn+AXoHZQFXcy"
+ boundary="=-Di2XiKRPZcm5S9NL7AHm"
 Mime-Version: 1.0
-Cc: Hauke Mehrtens <hauke@hauke-m.de>, linux-mtd@lists.infradead.org
+Cc: akpm@linux-foundation.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,32 +27,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-X/b8GUXUn+AXoHZQFXcy
+--=-Di2XiKRPZcm5S9NL7AHm
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2012-12-26 at 13:54 +0100, Rafa=C5=82 Mi=C5=82ecki wrote:
-> This is needed to add clean support for other buses (like SSB) in the
-> future.
+On Thu, 2013-01-03 at 21:19 +0900, Akinobu Mita wrote:
+> Use more preferable function name which implies using a pseudo-random
+> number generator.
 >=20
-> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
+> Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
 
-Cannot compile-test this patch because of the following build regression
-in 3.8-rc4:
-
-In file included from arch/mips/pci/pci-bcm47xx.c:27:0:
-include/linux/ssb/ssb.h:440:19: error: field 'gpio' has incomplete type
-In file included from include/linux/bcma/bcma.h:7:0,
-                 from arch/mips/pci/pci-bcm47xx.c:28:
-include/linux/bcma/bcma_driver_chipcommon.h:582:19: error: field 'gpio' has=
- incomplete type
-make[2]: *** [arch/mips/pci/pci-bcm47xx.o] Error 1
+Pushed to linux-ubifs.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-X/b8GUXUn+AXoHZQFXcy
+--=-Di2XiKRPZcm5S9NL7AHm
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -58,19 +51,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQ9VkZAAoJECmIfjd9wqK01hkP/1iRW9NwzRtgieYkuFk9lFd6
-1ly31+1MRmQ02P/img4q8IbqgwluWlrlvHD39lEyljYbP7QEy0d1EpaHKv3C53vn
-mTG26YVeMo3Db/sJLIv/Tlxf7OxD8Ec/+q5UBO+qSzwixrfbsNAMYwnYQFpWNPpu
-bLOXOjiqv1UlVaNAaREHJRnw3GxETAXCSPNppzM0WNw6ZTXRbPp6V+o+PcKuENgQ
-Vt2GmF0FR/9ZU1qjGldXJqoyw5RwdMo3wFZHq4cqXiBNU7p8OpXiPR+PYzI39CH+
-pbTfa8fEmBxrsvBPmhMXCU8ib23C5vXikKRhhKhYLgrMOfJKpQmleFfzyjjnDQ93
-NUoZZPqJZlW3MtM++EheOZRe18jQRb31Kmsrf44Jc5ra8F6r1l/FZMSpTSaCQ4+m
-Z31DNrkJuY6a7bxUR3MsshhCvbFJ9bDlfRjQknrxi0qPVTwJIwzdTGyOr3DrjorD
-IylfGdt7xezOSMXACOA0QUeC0IB9Xmg3b8uXc8KeJ0+pR5ig5XCVn11gJDqBkYzf
-iHRcP1qKX4f+XZ04h+7d96fptuHtqeywex9nvjaVK7dM5hSyLfXkWSn6B5dtXw2C
-7Ani92jkSf2LLtbPr1dRqAMMyDiLOLhJgLyQAAZmzzfIzxPp1rbwe3gWd9ILDKz5
-YAhhtVTS5YleSQbh/Ttq
-=STuZ
+iQIcBAABAgAGBQJQ9V36AAoJECmIfjd9wqK0UJwQAKGj6JVnIfCrFsLWSh8d0mYf
+pqpRlg5SXS6cZ9UBAVH1OOFxYbE0mclXH3EsK+5KxBaIAMehfqZ5p4/il4JVCBII
+lrgLDNNoQdHiUEQV+KORDTVymN/ppHHvIxXFQQPLk9fJXVvgEnOrqcglSikZloB0
+SMytJrQ1mGrJCwvjw3aL0TwVzhCAROSa/aU/BU9+LWff1SufIsDd4tUa8nsMuEAL
+uYf80BBqkczk2GePWZ4TIMRN5gFRxH5obRq4I7WnGoo3ndDj9M5460BybFPxY8Nj
+IzZAKLiXuLJa9keYgKHfz4JvKZY+Ny1cZfhfXFsmnPu+cwT0PixFwPwiPX0d8Nfx
+O+erANNd8UjHJpW51rsKOyER4l7AYnvXcDuu7lSb9kGfMkac1Cdpqo+W3JMF7bHw
+M/UqM9q+yKbLAudhrpvAVggKVEU96B4VoV9s8tgpUWZfPjJ6zEe+RmGX9axx2EVM
+YzeP+yTFTy/Eof7HJqr7lkyv3ccCc62HMRZLBKgeqH6r1ZQNRW+E30A0iB/1Ydd5
+UttvwIBbBiq1TqV1x6PVMYXio+laMAdiQ5OG+fqg6EnPjCx9kUhLK7ze5TluVFrq
+dWLEWgTivHoEp0Yf4605190K5BOQ/YmWTrDXem3zHKfdqF5pk2DgaJ9iShfB5E/0
+hJNLZIzXgsJ9PUMoVvXt
+=tSLq
 -----END PGP SIGNATURE-----
 
---=-X/b8GUXUn+AXoHZQFXcy--
+--=-Di2XiKRPZcm5S9NL7AHm--
