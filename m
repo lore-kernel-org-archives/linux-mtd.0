@@ -1,19 +1,19 @@
-Message-ID: <1358278604.1668.11.camel@kyv>
-Subject: Re: [PATCH v2] mtd: vt8500: Add support for Wondermedia Serial
- Flash Controller
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Tony Prisk <linux@prisktech.co.nz>
-Date: Tue, 15 Jan 2013 21:36:44 +0200
-In-Reply-To: <1358272414-6266-1-git-send-email-linux@prisktech.co.nz>
-References: <1358272414-6266-1-git-send-email-linux@prisktech.co.nz>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-7Q8BLSdwlrlPelw+GlT/"
-Mime-Version: 1.0
-Cc: linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org,
- vt8500-wm8505-linux-kernel@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+MIME-Version: 1.0
+In-Reply-To: <1356307280-8323-1-git-send-email-ezequiel.garcia@free-electrons.com>
+References: <1356307280-8323-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Date: Tue, 15 Jan 2013 19:48:56 -0300
+Message-ID: <CALF0-+Xpvn45ZXOawyFzkqMt5t7--CLZYhkr6RwRX7WWnqdnqw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] mtd: omap-onenand: pass device_node in platform data
+From: Ezequiel Garcia <elezegarcia@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ martinez.javier@gmail.com, matthias.bgg@googlemail.com, eballetbo@gmail.com,
+ zonque@gmail.com, grant.likely@secretlab.ca, Tony Lindgren <tony@atomide.com>,
+ linux-mtd@lists.infradead.org, jon-hunter@ti.com,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ b-cousson@ti.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,45 +23,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Artem,
 
---=-7Q8BLSdwlrlPelw+GlT/
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Sun, Dec 23, 2012 at 9:01 PM, Ezequiel Garcia
+<ezequiel.garcia@free-electrons.com> wrote:
+> Pass an optional device_node pointer in the platform data,
+> which in turn will be put into a mtd_part_parser_data.
+> This way, code that sets up the platform devices can pass
+> along the node from DT so that the partitions can be parsed.
+>
+> For non-DT boards, this change has no effect.
+>
+> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> ---
+>  drivers/mtd/onenand/omap2.c                     |    4 +++-
+>  include/linux/platform_data/mtd-onenand-omap2.h |    3 +++
+>  2 files changed, 6 insertions(+), 1 deletions(-)
+>
+> diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
+> index 065f3fe..eec2aed 100644
+> --- a/drivers/mtd/onenand/omap2.c
+> +++ b/drivers/mtd/onenand/omap2.c
+> @@ -637,6 +637,7 @@ static int omap2_onenand_probe(struct platform_device *pdev)
+>         struct onenand_chip *this;
+>         int r;
+>         struct resource *res;
+> +       struct mtd_part_parser_data ppdata = {};
+>
+>         pdata = pdev->dev.platform_data;
+>         if (pdata == NULL) {
+> @@ -767,7 +768,8 @@ static int omap2_onenand_probe(struct platform_device *pdev)
+>         if ((r = onenand_scan(&c->mtd, 1)) < 0)
+>                 goto err_release_regulator;
+>
+> -       r = mtd_device_parse_register(&c->mtd, NULL, NULL,
+> +       ppdata.of_node = pdata->of_node;
+> +       r = mtd_device_parse_register(&c->mtd, NULL, &ppdata,
+>                                       pdata ? pdata->parts : NULL,
+>                                       pdata ? pdata->nr_parts : 0);
+>         if (r)
+> diff --git a/include/linux/platform_data/mtd-onenand-omap2.h b/include/linux/platform_data/mtd-onenand-omap2.h
+> index 685af7e..e9a9fb1 100644
+> --- a/include/linux/platform_data/mtd-onenand-omap2.h
+> +++ b/include/linux/platform_data/mtd-onenand-omap2.h
+> @@ -29,5 +29,8 @@ struct omap_onenand_platform_data {
+>         u8                      flags;
+>         u8                      regulator_can_sleep;
+>         u8                      skip_initial_unlocking;
+> +
+> +       /* for passing the partitions */
+> +       struct device_node      *of_node;
+>  };
+>  #endif
+> --
+> 1.7.8.6
+>
 
-On Wed, 2013-01-16 at 06:53 +1300, Tony Prisk wrote:
-> This patch adds support for the Wondermedia serial flash controller
-> found on WM8505, WM8650 and WM8850 SoCs.
->=20
-> Signed-off-by: Tony Prisk <linux@prisktech.co.nz>
+I saw you have acked the gpmc patch on nand.
+Can I add your Acked-by on this one, when I send the rebased patch set?
 
-Would please you also send a defconfig which I can use to compile-test
-this?
+Thanks,
 
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-7Q8BLSdwlrlPelw+GlT/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQ9a/MAAoJECmIfjd9wqK0D48QAJOrS9HO7XF2B0E42/mSiiT2
-NqjY9ZcYEk2mMda9oz5ggvRWztDnAc57fd6+M47kka92hPHMtIAfMA2Ydref3pu7
-c8WbIQvUbXXkw43B/CHyAhyMP9WPjbRJ3/duL0KGfZZIqPgJoy+Fszz+6sri3lEu
-92NJqF6od3X8kn2iqr8H4Dd2svO/7uPwnuyFAt67bafA/qZAM8jYQ5in4O4hhm0W
-b/qmadqRdro5AjTDuwjlLDAmWGicUZD2k8iW3Z2EPLC3Ac3LiNBTQVelM7u87srb
-AI5BYF+FCMe0SOaJr+CpvDJ+Oaw6VVam8DLur8quN6xbakOInJjUcq51WK42WNSb
-2e7OhLIfMocaspFt083JznocH+xn5BHNUoAbG034M7J2mug382MJTg81OrzK5bsC
-4FMeSFqxS7LBPFcRq0zdolrRzt5P52J8XriafkXcXRriG9xfs4eW/ySd3dlxDf/N
-IiQYkzriIRItrloMCMHllhQmn7DUlpyzc1hkCp/FZ4a44PQ3zAkNAf0MLA7tBFeH
-2iMEJTorvhwsw34lFqgow818gTbMVzPOOptY7qMXJMz1Fit+Gu0inTDCegzGqxtW
-2Q19T2Mb0vLlD2tqVdvMp8FtStQyn8VKQXUTdyKDRCD6raLo3PJZhf8hEbqvgZ9y
-BJOCNvsfRsGRmPF/jUXG
-=nDJj
------END PGP SIGNATURE-----
-
---=-7Q8BLSdwlrlPelw+GlT/--
+-- 
+    Ezequiel
