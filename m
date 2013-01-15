@@ -1,14 +1,18 @@
-Received: from bsmtp1.bon.at ([213.33.87.15] helo=bsmtp.bon.at)
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Tv8si-0000Cb-1K
- for linux-mtd@lists.infradead.org; Tue, 15 Jan 2013 15:56:57 +0000
-From: Roman Schneider <schneider@at.festo.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: mxc_nand: compress ID info for send_read_id_v3
-Date: Tue, 15 Jan 2013 16:56:24 +0100
-Message-Id: <1358265384-23138-1-git-send-email-schneider@at.festo.com>
-Cc: Roman Schneider <schneider@at.festo.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Message-ID: <1358271907.31593.1.camel@gitbox>
+Subject: Re: [PATCH v2] mtd: vt8500: Add support for Wondermedia Serial
+ Flash Controller
+From: Tony Prisk <linux@prisktech.co.nz>
+To: dedekind1@gmail.com
+Date: Wed, 16 Jan 2013 06:45:07 +1300
+In-Reply-To: <1358261750.2731.148.camel@sauron.fi.intel.com>
+References: <1356901207-13536-1-git-send-email-linux@prisktech.co.nz>
+ <1358261750.2731.148.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Cc: vt8500-wm8505-linux-kernel@googlegroups.com, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,40 +22,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
----
- Also compress the id in case of a v3 NAND flash controller (i.mx51, i.mx53)
- and 16Bit buswidth.
+On Tue, 2013-01-15 at 16:55 +0200, Artem Bityutskiy wrote:
+> On Mon, 2012-12-31 at 10:00 +1300, Tony Prisk wrote:
+> > This patch adds support for the Wondermedia serial flash controller
+> > found on WM8505, WM8650 and WM8850 SoCs.
+> > 
+> > Signed-off-by: Tony Prisk <linux@prisktech.co.nz>
+> > ---
+> > v2: Whitespace tidyup
+> 
+> Hi, would you please take a look at these warings, identified by aiaiai:
+> 
+> Successfully built configuration "x86_64_defconfig,x86_64,", results:
+> 
+> --- before_patching.log
+> +++ after_patching.log
+> @@ @@
+> +drivers/mtd/devices/wmt_sflash.c: In function ‘sf_read’:
+> +drivers/mtd/devices/wmt_sflash.c:425:9: warning: format ‘%d’ expects argument of type ‘int’, but argument 4 has type ‘size_t’ [-Wformat]
+> +drivers/mtd/devices/wmt_sflash.c: In function ‘sf_sector_write’:
+> +drivers/mtd/devices/wmt_sflash.c:442:16: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+> +drivers/mtd/devices/wmt_sflash.c:442:24: warning: cast removes address space of expression [sparse]
+> +drivers/mtd/devices/wmt_sflash.c:458:16: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+> +drivers/mtd/devices/wmt_sflash.c:458:31: warning: incorrect type in argument 1 (different address spaces) [sparse]
+> +drivers/mtd/devices/wmt_sflash.c:458:31:    expected void volatile [noderef] <asn:2>*dst [sparse]
+> +drivers/mtd/devices/wmt_sflash.c:458:31:    got unsigned char [usertype] *<noident> [sparse]
+> +drivers/mtd/devices/wmt_sflash.c:465:17: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+> +drivers/mtd/devices/wmt_sflash.c:465:39: warning: incorrect type in argument 1 (different address spaces) [sparse]
+> +drivers/mtd/devices/wmt_sflash.c:465:39:    expected void volatile [noderef] <asn:2>*dst [sparse]
+> +drivers/mtd/devices/wmt_sflash.c:465:39:    got unsigned char [usertype] *<noident> [sparse]
+> 
 
- drivers/mtd/nand/mxc_nand.c |   11 +++++++++++
- 1 files changed, 11 insertions(+), 0 deletions(-)
+Apologies - This driver shouldn't be selectable for x86_64.
+It is an ARM driver for an embedded device. Will fix.
 
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index 45204e4..20e1241 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -530,12 +530,23 @@ static void send_page_v1(struct mtd_info *mtd, unsigned int ops)
- 
- static void send_read_id_v3(struct mxc_nand_host *host)
- {
-+	struct nand_chip *this = &host->nand;
-+
- 	/* Read ID into main buffer */
- 	writel(NFC_ID, NFC_V3_LAUNCH);
- 
- 	wait_op_done(host, true);
- 
- 	memcpy32_fromio(host->data_buf, host->main_area0, 16);
-+
-+	if (this->options & NAND_BUSWIDTH_16) {
-+		/* compress the ID info */
-+		host->data_buf[1] = host->data_buf[2];
-+		host->data_buf[2] = host->data_buf[4];
-+		host->data_buf[3] = host->data_buf[6];
-+		host->data_buf[4] = host->data_buf[8];
-+		host->data_buf[5] = host->data_buf[10];
-+	}
- }
- 
- /* Request the NANDFC to perform a read of the NAND device ID. */
--- 
-1.7.2.5
+Regards
+Tony P
