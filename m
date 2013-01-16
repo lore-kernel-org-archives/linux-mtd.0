@@ -1,23 +1,26 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+Received: from utopia.booyaka.com ([74.50.51.50])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TvU7G-0003T7-Qw
- for linux-mtd@lists.infradead.org; Wed, 16 Jan 2013 14:37:25 +0000
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Date: Wed, 16 Jan 2013 15:36:56 +0100
-Message-Id: <1358347016-507-2-git-send-email-u.kleine-koenig@pengutronix.de>
-In-Reply-To: <1358347016-507-1-git-send-email-u.kleine-koenig@pengutronix.de>
-References: <1357835498-23904-1-git-send-email-u.kleine-koenig@pengutronix.de>
- <1358347016-507-1-git-send-email-u.kleine-koenig@pengutronix.de>
-In-Reply-To: <1357835498-23904-1-git-send-email-u.kleine-koenig@pengutronix.de>
-References: <1357835498-23904-1-git-send-email-u.kleine-koenig@pengutronix.de>
+ id 1TvWaA-0005WY-J1
+ for linux-mtd@lists.infradead.org; Wed, 16 Jan 2013 17:15:23 +0000
+Date: Wed, 16 Jan 2013 17:15:19 +0000 (UTC)
+From: Paul Walmsley <paul@pwsan.com>
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+Subject: Re: [PATCH 1/3] mtd nand : onfi need to be probed in 8 bits mode
+In-Reply-To: <50F6B904.5000600@parrot.com>
+Message-ID: <alpine.DEB.2.00.1301161713380.32170@utopia.booyaka.com>
+References: <1352199105-30215-1-git-send-email-matthieu.castet@parrot.com>
+ <1354530053.30168.183.camel@sauron.fi.intel.com>
+ <alpine.DEB.2.00.1212240023100.17282@utopia.booyaka.com>
+ <50E40336.2080008@parrot.com>
+ <alpine.DEB.2.00.1301031704460.8721@utopia.booyaka.com>
+ <50F6B904.5000600@parrot.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Subject: [PATCH v4 2/2] mtd/uclinux: add a comment about why uclinux_ram_map
- must not be static
-Cc: Mike Frysinger <vapier@gentoo.org>, kernel@pengutronix.de,
- Greg Ungerer <gerg@uclinux.org>
+Content-Type: MULTIPART/MIXED;
+ BOUNDARY="843723315-1778857457-1358356505=:32170"
+Content-ID: <alpine.DEB.2.00.1301161715140.32170@utopia.booyaka.com>
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,44 +30,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I was (at least) the second person trying to fix a warning by sparse, so
-document in the code why this is a bad idea and add an extern declaration to
-make sparse happy.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Acked-by: Mike Frysinger <vapier@gentoo.org>
-Acked-by: Greg Ungerer <gerg@uclinux.org>
----
-No changes between v3 and v4.
+--843723315-1778857457-1358356505=:32170
+Content-Type: TEXT/PLAIN; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-ID: <alpine.DEB.2.00.1301161715141.32170@utopia.booyaka.com>
 
-Changes since v2,
-id:1350027693-19528-2-git-send-email-u.kleine-koenig@pengutronix.de:
+Hi Matthieu,
 
- - note in the commit log that an extern declaration was added for sparse
+On Wed, 16 Jan 2013, Matthieu CASTET wrote:
 
-Changes since v1:
+> Paul Walmsley a =E9crit :
+> > On Wed, 2 Jan 2013, Matthieu CASTET wrote:
+>=20
+> > .... which did not get merged because Tony requested that it should be=
+=20
+> > based on top of his cleanup work (which takes priority over adding new=
+=20
+> > features):
+> >=20
+> > http://thread.gmane.org/gmane.linux.ports.arm.omap/88550/focus=3D88549
+> >=20
+> > Could you please update this "omap3 nand : use NAND_BUSWIDTH_AUTO" patc=
+h=20
+> > on v3.8-rc2 and repost?
+>=20
+> Do you know when this patchset will be submited to mtd ?
+> I think I will wait it is merged in mtd and redo my patch after that.
 
- - new patch
----
- drivers/mtd/maps/uclinux.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+As far as I know, it was merged during the v3.8 merge window.  So it's=20
+already in mainline. =20
 
-diff --git a/drivers/mtd/maps/uclinux.c b/drivers/mtd/maps/uclinux.c
-index f56d0aa..c1af83d 100644
---- a/drivers/mtd/maps/uclinux.c
-+++ b/drivers/mtd/maps/uclinux.c
-@@ -29,6 +29,12 @@
- #define MAP_NAME "ram"
- #endif
- 
-+/*
-+ * Blackfin uses uclinux_ram_map during startup, so it must not be static.
-+ * Provide a dummy declaration to make sparse happy.
-+ */
-+extern struct map_info uclinux_ram_map;
-+
- struct map_info uclinux_ram_map = {
- 	.name = MAP_NAME,
- 	.size = 0,
--- 
-1.7.10.4
+> >> For drivers that can't support ONFI, I don't know what to do.
+> >> May we should be replace the WARN_ON by a printk and early return.
+> >=20
+> > That sounds like a good idea to me.  The traceback seems excessive, sin=
+ce=20
+> > the NAND was usable before this series.
+> >=20
+> I submited a patch for doing that.
+
+Thanks for doing this, it's much appreciated!
+
+
+- Paul
+--843723315-1778857457-1358356505=:32170--
