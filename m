@@ -1,20 +1,24 @@
-Received: from mo6-p05-ob.rzone.de ([2a01:238:20a:202:5305::1])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TvTyt-0002IQ-Bt
- for linux-mtd@lists.infradead.org; Wed, 16 Jan 2013 14:28:44 +0000
-Message-ID: <50F6B90F.8080905@gmail.com>
-Date: Wed, 16 Jan 2013 15:28:31 +0100
-From: Stefan Roese <stefan.roese@gmail.com>
+Received: from co202.xi-lite.net ([149.6.83.202])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TvTz0-0002JB-7Z
+ for linux-mtd@lists.infradead.org; Wed, 16 Jan 2013 14:28:50 +0000
+Message-ID: <50F6B904.5000600@parrot.com>
+Date: Wed, 16 Jan 2013 15:28:20 +0100
+From: Matthieu CASTET <matthieu.castet@parrot.com>
 MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCH v2] mtd: cfi_cmdset_0002: Support Persistent Protection
- Bits (PPB) locking
-References: <1355387350-14002-1-git-send-email-sr@denx.de>
- <1358241038.2731.118.camel@sauron.fi.intel.com>
-In-Reply-To: <1358241038.2731.118.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=windows-1252
+To: Paul Walmsley <paul@pwsan.com>
+Subject: Re: [PATCH 1/3] mtd nand : onfi need to be probed in 8 bits mode
+References: <1352199105-30215-1-git-send-email-matthieu.castet@parrot.com>
+ <1354530053.30168.183.camel@sauron.fi.intel.com>
+ <alpine.DEB.2.00.1212240023100.17282@utopia.booyaka.com>
+ <50E40336.2080008@parrot.com>
+ <alpine.DEB.2.00.1301031704460.8721@utopia.booyaka.com>
+In-Reply-To: <alpine.DEB.2.00.1301031704460.8721@utopia.booyaka.com>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +28,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/15/2013 10:10 AM, Artem Bityutskiy wrote:
-> On Thu, 2012-12-13 at 09:29 +0100, Stefan Roese wrote:
->> Currently cfi_cmdset_0002.c does not support PPB locking of sectors. This
->> patch adds support for this locking/unlocking mechanism. It is needed on
->> some platforms, since newer U-Boot versions do support this PPB locking
->> and protect for example their environment sector(s) this way.
+Hi,
+
+Paul Walmsley a écrit :
+> Hi
 > 
-> Some "#ifdef CONFIG_OF"s are missing:
+> On Wed, 2 Jan 2013, Matthieu CASTET wrote:
+
+> .... which did not get merged because Tony requested that it should be 
+> based on top of his cleanup work (which takes priority over adding new 
+> features):
 > 
-> drivers/mtd/chips/cfi_cmdset_0002.c: In function ‘cfi_cmdset_0002’:
-> drivers/mtd/chips/cfi_cmdset_0002.c:579:4: error: implicit declaration of function ‘of_property_read_bool’ [-Werror=implicit-function-declaration]
-
-Okay. Will add in next version.
-
-> drivers/mtd/chips/cfi_cmdset_0002.c: In function ‘do_read_secsi_onechip’:
-> drivers/mtd/chips/cfi_cmdset_0002.c:1146:16: warning: variable ‘timeo’ set but not used [-Wunused-but-set-variable]
-> cc1: some warnings being treated as errors
-> make[4]: *** [drivers/mtd/chips/cfi_cmdset_0002.o] Error 1
+> http://thread.gmane.org/gmane.linux.ports.arm.omap/88550/focus=88549
 > 
-> Please, check allso the timeo warning.
+> Could you please update this "omap3 nand : use NAND_BUSWIDTH_AUTO" patch 
+> on v3.8-rc2 and repost?
 
-Hmmm. I didn't touch do_read_secsi_onechip() with this patch. And I'm
-not able to reproduce this warning. Are you sure this warning is
-introduced by this PPB locking patch?
+Do you know when this patchset will be submited to mtd ?
+I think I will wait it is merged in mtd and redo my patch after that.
 
-Thanks,
-Stefan
+> 
+>> For drivers that can't support ONFI, I don't know what to do.
+>> May we should be replace the WARN_ON by a printk and early return.
+> 
+> That sounds like a good idea to me.  The traceback seems excessive, since 
+> the NAND was usable before this series.
+> 
+I submited a patch for doing that.
+
+Matthieu
