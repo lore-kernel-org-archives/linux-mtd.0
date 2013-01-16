@@ -1,14 +1,19 @@
-Received: from norkia.v3.sk ([91.210.183.14])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TvHYt-0003Mp-Ow
- for linux-mtd@lists.infradead.org; Wed, 16 Jan 2013 01:13:05 +0000
-From: Lubomir Rintel <lkundrak@v3.sk>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 1/2] mtd: cmdlinepart: Make it into a module
-Date: Wed, 16 Jan 2013 02:12:49 +0100
-Message-Id: <1358298770-20286-1-git-send-email-lkundrak@v3.sk>
-Cc: Lubomir Rintel <lkundrak@v3.sk>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Message-ID: <50F60768.5040509@atmel.com>
+Date: Wed, 16 Jan 2013 09:50:32 +0800
+From: Bo Shen <voice.shen@atmel.com>
+MIME-Version: 1.0
+To: dedekind1@gmail.com
+Subject: Re: [PATCH 1/3] MTD: at91: atmel_nand: for PMECC, add code to choose
+ the ecc bits and sector size according to the ONFI parameter ECC
+ requirement.
+References: <1355912840-29501-1-git-send-email-josh.wu@atmel.com>
+ <1355912840-29501-2-git-send-email-josh.wu@atmel.com>
+ <1358252760.2731.133.camel@sauron.fi.intel.com>
+In-Reply-To: <1358252760.2731.133.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Josh Wu <josh.wu@atmel.com>, plagnioj@jcrosoft.com, nicolas.ferre@atmel.com,
+ linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,66 +23,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-All other partitioning schemes can be compiled as modules
+Hi Artem Bityutskiy,
 
-Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
----
- drivers/mtd/Kconfig       |    4 ++--
- drivers/mtd/cmdlinepart.c |    8 +++++++-
- 2 files changed, 9 insertions(+), 3 deletions(-)
+On 1/15/2013 20:26, Artem Bityutskiy wrote:
+> I cannot compile this patch:
+>
+> ERROR (phandle_references): Reference to non-existent node or label "pinctrl_ssc0_tx"
+>
+> ERROR: Input tree has errors, aborting (use -f to force output)
+> make[2]: *** [arch/arm/boot/dts/at91sam9g20ek.dtb] Error 2
 
-diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index 73fcbbe..4dd3b38 100644
---- a/drivers/mtd/Kconfig
-+++ b/drivers/mtd/Kconfig
-@@ -74,8 +74,8 @@ config MTD_REDBOOT_PARTS_READONLY
- endif # MTD_REDBOOT_PARTS
- 
- config MTD_CMDLINE_PARTS
--	bool "Command line partition table parsing"
--	depends on MTD = "y"
-+	tristate "Command line partition table parsing"
-+	depends on MTD
- 	---help---
- 	  Allow generic configuration of the MTD partition tables via the kernel
- 	  command line. Multiple flash resources are supported for hardware where
-diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
-index aed1b8a..a2bb2ea 100644
---- a/drivers/mtd/cmdlinepart.c
-+++ b/drivers/mtd/cmdlinepart.c
-@@ -70,6 +70,7 @@ struct cmdline_mtd_partition {
- static struct cmdline_mtd_partition *partitions;
- 
- /* the command line passed to mtdpart_setup() */
-+static char *mtdparts;
- static char *cmdline;
- static int cmdline_parsed;
- 
-@@ -360,7 +361,7 @@ static int parse_cmdline_partitions(struct mtd_info *master,
-  *
-  * This function needs to be visible for bootloaders.
-  */
--static int mtdpart_setup(char *s)
-+static int __init mtdpart_setup(char *s)
- {
- 	cmdline = s;
- 	return 1;
-@@ -376,11 +377,16 @@ static struct mtd_part_parser cmdline_parser = {
- 
- static int __init cmdline_parser_init(void)
- {
-+	if (mtdparts)
-+		mtdpart_setup(mtdparts);
- 	return register_mtd_parser(&cmdline_parser);
- }
- 
- module_init(cmdline_parser_init);
- 
-+MODULE_PARM_DESC(mtdparts, "Partitioning specification");
-+module_param(mtdparts, charp, 0);
-+
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Marius Groeger <mag@sysgo.de>");
- MODULE_DESCRIPTION("Command line configuration of MTD partitions");
--- 
-1.7.1
+Sorry for this inconvenience.
+There are patches doesn't go to mainline in time which cause this issue.
+
+[1] https://patchwork.kernel.org/patch/1966321/
+[2] https://patchwork.kernel.org/patch/1966341/
+
+Best Regards,
+Bo Shen
+
+
+>
+> On Wed, 2012-12-19 at 18:27 +0800, Josh Wu wrote:
+>> This patch will check NAND flash's ecc minimum requirement in ONFI parameter. If it is equal or smaller than pmecc-cap in dtsi, then use ecc_bits in ONFI. otherwise, return an error since pmecc-cap in dtsi don't meet the ecc minimum reqirement.
+>>
+>> This patch also check sector size (codeword) requirement in ONFI. If it is equal or bigger than sector_size in dtsi, then use the one of ONFI. otherwise return error.
+>>
+>> Currently we don't support to read the ECC parameter in ONFI extended parameter page. So in that case we just use the value specified in dts.
+>>
+>> For non-ONFI nand flash, we assume the minimum ecc requirement is 2bits in 512 bytes.
+>>
+>> Signed-off-by: Josh Wu <josh.wu@atmel.com>
+>
+> Please, wrap the lines like kernel developers usually do.
+>
+>
+>
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>
