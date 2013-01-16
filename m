@@ -1,17 +1,20 @@
-Received: from mail-wi0-f178.google.com ([209.85.212.178])
+Received: from mo6-p05-ob.rzone.de ([2a01:238:20a:202:5305::1])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TvTwj-0002BA-3W
- for linux-mtd@lists.infradead.org; Wed, 16 Jan 2013 14:26:29 +0000
-Received: by mail-wi0-f178.google.com with SMTP id hn3so1287143wib.5
- for <linux-mtd@lists.infradead.org>; Wed, 16 Jan 2013 06:26:25 -0800 (PST)
-Sender: Castet Matthieu <matthieu.castet@gmail.com>
-From: Matthieu CASTET <matthieu.castet@parrot.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: nand: onfi don't WARN if we are in 16 bits mode
-Date: Wed, 16 Jan 2013 15:25:45 +0100
-Message-Id: <1358346345-7920-1-git-send-email-matthieu.castet@parrot.com>
-Cc: paul@pwsan.com, Matthieu CASTET <matthieu.castet@parrot.com>,
- dedekind1@gmail.com
+ id 1TvTyt-0002IQ-Bt
+ for linux-mtd@lists.infradead.org; Wed, 16 Jan 2013 14:28:44 +0000
+Message-ID: <50F6B90F.8080905@gmail.com>
+Date: Wed, 16 Jan 2013 15:28:31 +0100
+From: Stefan Roese <stefan.roese@gmail.com>
+MIME-Version: 1.0
+To: dedekind1@gmail.com
+Subject: Re: [PATCH v2] mtd: cfi_cmdset_0002: Support Persistent Protection
+ Bits (PPB) locking
+References: <1355387350-14002-1-git-send-email-sr@denx.de>
+ <1358241038.2731.118.camel@sauron.fi.intel.com>
+In-Reply-To: <1358241038.2731.118.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,36 +24,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ff3206b2450499203532af2505a7f6f8413e92c0 adds a WARN if the onfi probe is
-in 16 bits mode.
-This allows to detect driver that need to be fixed, but this is a bit noisy [1].
-Transform the WARN in a pr_err.
+On 01/15/2013 10:10 AM, Artem Bityutskiy wrote:
+> On Thu, 2012-12-13 at 09:29 +0100, Stefan Roese wrote:
+>> Currently cfi_cmdset_0002.c does not support PPB locking of sectors. This
+>> patch adds support for this locking/unlocking mechanism. It is needed on
+>> some platforms, since newer U-Boot versions do support this PPB locking
+>> and protect for example their environment sector(s) this way.
+> 
+> Some "#ifdef CONFIG_OF"s are missing:
+> 
+> drivers/mtd/chips/cfi_cmdset_0002.c: In function ‘cfi_cmdset_0002’:
+> drivers/mtd/chips/cfi_cmdset_0002.c:579:4: error: implicit declaration of function ‘of_property_read_bool’ [-Werror=implicit-function-declaration]
 
-[1]
-http://article.gmane.org/gmane.linux.ports.arm.omap/91317
+Okay. Will add in next version.
 
-Signed-off-by: Matthieu CASTET <matthieu.castet@parrot.com>
----
- drivers/mtd/nand/nand_base.c |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+> drivers/mtd/chips/cfi_cmdset_0002.c: In function ‘do_read_secsi_onechip’:
+> drivers/mtd/chips/cfi_cmdset_0002.c:1146:16: warning: variable ‘timeo’ set but not used [-Wunused-but-set-variable]
+> cc1: some warnings being treated as errors
+> make[4]: *** [drivers/mtd/chips/cfi_cmdset_0002.o] Error 1
+> 
+> Please, check allso the timeo warning.
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 8323ac9..3766682 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2857,8 +2857,11 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
- 	int i;
- 	int val;
- 
--	/* ONFI need to be probed in 8 bits mode */
--	WARN_ON(chip->options & NAND_BUSWIDTH_16);
-+	/* ONFI need to be probed in 8 bits mode, and 16 bits should be selected with NAND_BUSWIDTH_AUTO */
-+	if (chip->options & NAND_BUSWIDTH_16) {
-+		pr_err("Trying ONFI probe in 16 bits mode, aborting !\n");
-+		return 0;
-+	}
- 	/* Try ONFI for unknown chip or LP */
- 	chip->cmdfunc(mtd, NAND_CMD_READID, 0x20, -1);
- 	if (chip->read_byte(mtd) != 'O' || chip->read_byte(mtd) != 'N' ||
--- 
-1.7.10.4
+Hmmm. I didn't touch do_read_secsi_onechip() with this patch. And I'm
+not able to reproduce this warning. Are you sure this warning is
+introduced by this PPB locking patch?
+
+Thanks,
+Stefan
