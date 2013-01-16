@@ -1,23 +1,17 @@
-Date: Wed, 16 Jan 2013 14:24:22 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Stefan Peter <s.peter@mpl.ch>
-Subject: Re: [PATCH 3/4] Enable ecc-mode selection in the driver
-Message-ID: <20130116132422.GI17242@lunn.ch>
-References: <cover.1358242644.git.s.peter@mpl.ch>
- <2d08c4c072fd4922a6056362adb96a455307d583.1358242644.git.s.peter@mpl.ch>
- <20130115125119.GH13482@lunn.ch> <50F6927D.3070303@mpl.ch>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <50F6927D.3070303@mpl.ch>
-Cc: Andrew Lunn <andrew@lunn.ch>, linux@arm.linux.org.uk, jason@lakedaemon.net,
- arnd@arndb.de, gregkh@linuxfoundation.org, iwamatsu@nigauri.org,
- devicetree-discuss@lists.ozlabs.org, broonie@opensource.wolfsonmicro.com,
- sebastian.hesselbarth@googlemail.com, linux-kernel@vger.kernel.org,
- rob.herring@calxeda.com, grant.likely@secretlab.ca, wfp5p@virginia.edu,
- linux-mtd@lists.infradead.org, nico@linaro.org, rob@landley.net,
- artem.bityutskiy@linux.intel.com, dwmw2@infradead.org, jm@lentin.co.uk,
- linux-arm-kernel@lists.infradead.org, mchehab@redhat.com
+Received: from mail-wi0-f178.google.com ([209.85.212.178])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TvTwj-0002BA-3W
+ for linux-mtd@lists.infradead.org; Wed, 16 Jan 2013 14:26:29 +0000
+Received: by mail-wi0-f178.google.com with SMTP id hn3so1287143wib.5
+ for <linux-mtd@lists.infradead.org>; Wed, 16 Jan 2013 06:26:25 -0800 (PST)
+Sender: Castet Matthieu <matthieu.castet@gmail.com>
+From: Matthieu CASTET <matthieu.castet@parrot.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: nand: onfi don't WARN if we are in 16 bits mode
+Date: Wed, 16 Jan 2013 15:25:45 +0100
+Message-Id: <1358346345-7920-1-git-send-email-matthieu.castet@parrot.com>
+Cc: paul@pwsan.com, Matthieu CASTET <matthieu.castet@parrot.com>,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,84 +21,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 16, 2013 at 12:43:57PM +0100, Stefan Peter wrote:
-> Hi Andrew
-> 
-> on 15.01.2013 13:51, Andrew Lunn wrote:
-> > On Tue, Jan 15, 2013 at 01:13:12PM +0100, Stefan Peter wrote:
-> >> In order to be able to use the ecc-mode, add the bch module to the default
-> >> settings for the kirwood boards and enable the activation in orin-nand.c
-> >>
-> >> Signed-off-by: Stefan Peter <s.peter@mpl.ch>
-> >> ---
-> >> diff --git a/arch/arm/configs/kirkwood_defconfig b/arch/arm/configs/kirkwood_defconfig
-> >> index 93f3794..4a9d3f7 100644
-> >> --- a/arch/arm/configs/kirkwood_defconfig
-> >> +++ b/arch/arm/configs/kirkwood_defconfig
-> >> @@ -84,6 +84,7 @@ CONFIG_MTD_CFI_STAA=y
-> >>  CONFIG_MTD_PHYSMAP=y
-> >>  CONFIG_MTD_M25P80=y
-> >>  CONFIG_MTD_NAND=y
-> >> +CONFIG_MTD_NAND_ECC_BCH=y
-> >>  CONFIG_MTD_NAND_ORION=y
-> >>  CONFIG_BLK_DEV_LOOP=y
-> >>  # CONFIG_SCSI_PROC_FS is not set
-> >> diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
-> >> index cd72b92..1a35257 100644
-> >> --- a/drivers/mtd/nand/orion_nand.c
-> >> +++ b/drivers/mtd/nand/orion_nand.c
-> >> @@ -14,6 +14,7 @@
-> >>  #include <linux/module.h>
-> >>  #include <linux/platform_device.h>
-> >>  #include <linux/of.h>
-> >> +#include <linux/of_mtd.h>
-> >>  #include <linux/mtd/mtd.h>
-> >>  #include <linux/mtd/nand.h>
-> >>  #include <linux/mtd/partitions.h>
-> >> @@ -130,6 +131,7 @@ static int __init orion_nand_probe(struct platform_device *pdev)
-> >>  		if (!of_property_read_u32(pdev->dev.of_node,
-> >>  						"chip-delay", &val))
-> >>  			board->chip_delay = (u8)val;
-> >> +		board->ecc_mode = of_get_nand_ecc_mode(pdev->dev.of_node);
-> > 
-> >>  	} else
-> >>  		board = pdev->dev.platform_data;
-> >>  
-> >> @@ -140,7 +142,8 @@ static int __init orion_nand_probe(struct platform_device *pdev)
-> >>  	nc->IO_ADDR_R = nc->IO_ADDR_W = io_base;
-> >>  	nc->cmd_ctrl = orion_nand_cmd_ctrl;
-> >>  	nc->read_buf = orion_nand_read_buf;
-> >> -	nc->ecc.mode = NAND_ECC_SOFT;
-> >> +	nc->ecc.mode = board->ecc_mode == NAND_ECC_SOFT_BCH ?
-> >> +		NAND_ECC_SOFT_BCH : NAND_ECC_SOFT;
-> > 
-> > Hi Stefan
-> > 
-> > What about a user that wants one of the other valid values?
-> > NAND_ECC_OOB_FIRST, NAND_ECC_HW_SYNDROME, etc.
-> 
-> As far as I understand, NAND_ECC_NONE, NAND_ECC_SOFT and
-> NAND_ECC_SOFT_BCH are the only ECC modes that do not require
-> corresponding hardware support which is missing in the marvell
-> 88F6180/88F619x/88F628x. From my point of view, NAND_ECC_NONE does not
-> make sense, too, because MLC NAND Flash requires ECC to be usable.
-> 
-> > 
-> > Would:
-> > 
-> > 	if (IS_ERR(board->ecc_mode)) {
-> > 		nc->ecc.mode = NAND_ECC_SOFT;
-> > 		dev_info(&pdev->dev, "Defaulting to NAND_ECC_SOFT");
-> > 	} else
-> > 		nc->ecc.mode = board->ecc_mode
-> > 
-> > be better?
-> 
-> I feel safer by limiting the modes to what I could test.
+ff3206b2450499203532af2505a7f6f8413e92c0 adds a WARN if the onfi probe is
+in 16 bits mode.
+This allows to detect driver that need to be fixed, but this is a bit noisy [1].
+Transform the WARN in a pr_err.
 
-Hi Stefan
+[1]
+http://article.gmane.org/gmane.linux.ports.arm.omap/91317
 
-O.K, but i still think a warning message would be useful when
-board->ecc_mode is an error code.
+Signed-off-by: Matthieu CASTET <matthieu.castet@parrot.com>
+---
+ drivers/mtd/nand/nand_base.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-		Andrew
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 8323ac9..3766682 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2857,8 +2857,11 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+ 	int i;
+ 	int val;
+ 
+-	/* ONFI need to be probed in 8 bits mode */
+-	WARN_ON(chip->options & NAND_BUSWIDTH_16);
++	/* ONFI need to be probed in 8 bits mode, and 16 bits should be selected with NAND_BUSWIDTH_AUTO */
++	if (chip->options & NAND_BUSWIDTH_16) {
++		pr_err("Trying ONFI probe in 16 bits mode, aborting !\n");
++		return 0;
++	}
+ 	/* Try ONFI for unknown chip or LP */
+ 	chip->cmdfunc(mtd, NAND_CMD_READID, 0x20, -1);
+ 	if (chip->read_byte(mtd) != 'O' || chip->read_byte(mtd) != 'N' ||
+-- 
+1.7.10.4
