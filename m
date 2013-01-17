@@ -1,23 +1,21 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TvpdP-0004iF-1E
- for linux-mtd@lists.infradead.org; Thu, 17 Jan 2013 13:35:59 +0000
-Message-ID: <1358429847.2731.251.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v4 1/2] mtd/uclinux: support ROM and allow passing the
- base address
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Date: Thu, 17 Jan 2013 15:37:27 +0200
-In-Reply-To: <1358347016-507-1-git-send-email-u.kleine-koenig@pengutronix.de>
-References: <1357835498-23904-1-git-send-email-u.kleine-koenig@pengutronix.de>
- <1358347016-507-1-git-send-email-u.kleine-koenig@pengutronix.de>
+ id 1Tvpse-0006u2-U4
+ for linux-mtd@lists.infradead.org; Thu, 17 Jan 2013 13:51:45 +0000
+Message-ID: <1358430781.2731.252.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: fsl_ifc_nand: use more portable i/o accessors
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Kim Phillips <kim.phillips@freescale.com>
+Date: Thu, 17 Jan 2013 15:53:01 +0200
+In-Reply-To: <20130111162359.33980fd3436fcc65e71da1c0@freescale.com>
+References: <20130111162359.33980fd3436fcc65e71da1c0@freescale.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-T+7E9Gwq2QVN9B7XO5Yy"
+ boundary="=-QL3lJATxOyBULRaix/qI"
 Mime-Version: 1.0
-Cc: Mike Frysinger <vapier@gentoo.org>, linux-mtd@lists.infradead.org,
- kernel@pengutronix.de, Greg Ungerer <gerg@uclinux.org>
-Reply-To: dedekind1@gmail.com
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Prabhakar Kushwaha <prabhakar@freescale.com>
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,25 +26,35 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-T+7E9Gwq2QVN9B7XO5Yy
+--=-QL3lJATxOyBULRaix/qI
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2013-01-16 at 15:36 +0100, Uwe Kleine-K=C3=B6nig wrote:
-> This allows to put the filesystem at a defined address in ROM allowing
-> to save more precious RAM.
+On Fri, 2013-01-11 at 16:23 -0600, Kim Phillips wrote:
+> in/out_be32 accessors are Power arch centric whereas
+> ioread/writebe32 are available in other arches.
 >=20
-> I think it's safe to default to ROM because the intention of using the
-> uclinux map is to use a romfs and so mtd-ram doesn't give you anything
-> that mtd-rom doesn't.
+> Since the IFC device registers are annotated big endian in
+> fsl_ifc.h, the accessor annotations now match, resulting in the
+> pleasant side-effect of this patch silencing sparse endian
+> warnings such as the following:
+>=20
+> drivers/mtd/nand/fsl_ifc_nand.c:179:19: warning: incorrect type in argume=
+nt 1 (different base types)
+> drivers/mtd/nand/fsl_ifc_nand.c:179:19:    expected unsigned int volatile=
+ [noderef] [usertype] <asn:2>*addr
+> drivers/mtd/nand/fsl_ifc_nand.c:179:19:    got restricted __be32 [noderef=
+] <asn:2>*<noident>
+>=20
+> Signed-off-by: Kim Phillips <kim.phillips@freescale.com>
 
-Pushed both to l2-mtd.git, thanks!
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-T+7E9Gwq2QVN9B7XO5Yy
+--=-QL3lJATxOyBULRaix/qI
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -54,19 +62,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQ9/6XAAoJECmIfjd9wqK0vE4QAJPFxnY/zrbmuC1OtF8+M4w7
-tAULqQ+APjy2Kd2fYdVfcabKekMd4BJow4ae7gnkOb+pCfk89VVZoD/J7w1fYX/i
-7sdNV3N3yHBIoDP8s8gZ7y/LDK6kjaHNHVixzXTbrjNIMFwIyYK3iWYIaIY3vlwY
-cOe4SxWB0RJUa8AE73ypKsHDwOSbBozWmDWJ1Cup52PluJakQtXXtdOph8gDN2xZ
-VUhvG4P/3shxTtzmHpx+xAdPIN8TIGFRsWUPG/vWIpgx6SwmgyI6uAAjpVOQCW7r
-4jds5rWG6IHQLq+wKx76qcJeOUj6Itm4U3sri4A/Qr9VZAkom2IVVgOgoRe8T6Sc
-CBLsIwt0LvTQ8QuWHcisY6hK5+1EzW8afsHF9rFfXAMGuvgYNMgdOzF1qYQw0kbJ
-j7NtdfLgQI6gIEfFHrbGh6h7NijMWWikfi9QMyPTttVe1kdDLRahLVQFd4mR7gR5
-huJhl0rRCnaxJ+fwc5e1rNHRL+6beNLgaaEM8gquNqoB5v6INJVN3FSsBRd2JAoF
-fejBxeTqyZXzarXt21SUutoyeGdKpJRK3vCSCh5Z/MCplBQO+7SNjy6aWzGlm0xt
-Qh0qUNbWOMeySzzrw7cYlXKP3zPnOCVnuyWp9G1VXwKtuxOYxVmxX9L0Dgiy/tsn
-xwbfxn0bJ8ZzuJGz2eSU
-=2nsy
+iQIcBAABAgAGBQJQ+AI9AAoJECmIfjd9wqK0p4AP/1ZHlvLCC9jq3LZtWS5My6Ff
+w3QDDQ5HoCGS+RDqM8BJ0tqsiZIesSnBN1BH2mNE6QQn6wu4nVDnB91pHhaOaRSL
+ICgXRbTi4eJk8hvM3PXlonZL7JnUb+3Oc6O1pDTu3Zi7pyPH8lgPk5d4DjlbxhPZ
+JWSa1X1zDyy9cyoNUGvg3pQXXdfDTyd3ZKkPerqTw07Xt7rcPgdBpohQntJWdVpY
+uIvt596fUz1wsTWYxMnLHSNhKeBAbLIayaxzUrk+NklsYuZsB8KK9QHWRZQIZsIq
+V+ZvIoIh3V3HtdGxjMKpqFu2fvmM3XteQCvzXJAE3JPXiyrqBViXvNq6IuPx1Xx7
+pOjcb7JLyWx+6DSV039uWRsMZxrRQKwDE8Ijh9xbL46KUl7FIXbYlVtr5oTXHXL/
+GZRO11FjK+Pga9e6Wxq/+44sZBN53ld+x/cmt/+0pjaOhiEtVdOh0MalMlsLVAVh
+/vasi2bReQad0FOSb/n6ImnHcoZ1OdIGJ4D0ZH+cNFVk/7vPZR75JLzMijF9yDKH
+kadXmdyOxx/JzA5YilQTC4530/X5ta/TeKqN5Ri7Skae88Sitewlr0PgKs6JuFPl
+fUSTmrDC2LUxrQ5LkdY9bijV73jHMXVOwx7A/ToEmPrz/iOTYiFYxz+jorOUbV1j
+cI/iF3mgIXQU99lZlmQv
+=1TSf
 -----END PGP SIGNATURE-----
 
---=-T+7E9Gwq2QVN9B7XO5Yy--
+--=-QL3lJATxOyBULRaix/qI--
