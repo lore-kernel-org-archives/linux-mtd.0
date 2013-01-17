@@ -1,19 +1,19 @@
-Message-ID: <1358425853.2731.241.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v2] mtd: vt8500: Add support for Wondermedia Serial
- Flash Controller
+Received: from mga09.intel.com ([134.134.136.24])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Tvodt-0004F2-JB
+ for linux-mtd@lists.infradead.org; Thu, 17 Jan 2013 12:32:26 +0000
+Message-ID: <1358426023.2731.243.camel@sauron.fi.intel.com>
+Subject: Re: Booting stops at UBI Scan/UBIFS recovery needed
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Tony Prisk <linux@prisktech.co.nz>
-Date: Thu, 17 Jan 2013 14:30:53 +0200
-In-Reply-To: <1358421664.2731.228.camel@sauron.fi.intel.com>
-References: <1358272414-6266-1-git-send-email-linux@prisktech.co.nz>
- <1358421664.2731.228.camel@sauron.fi.intel.com>
+To: "Vankam, Rajasekhar" <Rajasekhar.Vankam@spx.com>
+Date: Thu, 17 Jan 2013 14:33:43 +0200
+In-Reply-To: <E842BDED18DFB64CA7154362C91840E0019AE7E0@SPX-EXCMB-PRD4.GLOBAL.SPX.COM>
+References: <E842BDED18DFB64CA7154362C91840E0019AE7E0@SPX-EXCMB-PRD4.GLOBAL.SPX.COM>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-MYiRyFB5Pp5cZfSkhtuT"
+ boundary="=-1RhuoQXRwH3VtNW5dlNy"
 Mime-Version: 1.0
-Cc: linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org,
- vt8500-wm8505-linux-kernel@lists.infradead.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,27 +25,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-MYiRyFB5Pp5cZfSkhtuT
+--=-1RhuoQXRwH3VtNW5dlNy
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2013-01-17 at 13:21 +0200, Artem Bityutskiy wrote:
-> Probably this should also be outside of the driver, since it is not
-> specific to this driver.
+On Mon, 2013-01-07 at 19:59 +0000, Vankam, Rajasekhar wrote:
+> Hi,
+>=20
+> =20
+>=20
+> We are facing an issue of fail in booting at UBI/UBIFS during kernel
+> boot but it will happen after several boots but not immediate second
+> boot.
+>=20
+> Booting gets stuck sometimes at UBI scan and sometimes after UBIFS
+> Recovery needed and it stays forever. Below are the log snippets where
+> it exactly stuck.
 
-Take a look at this huge array which constantly gets updated with new
-chips (see git log):
+If the kernel gets stuck, you need to find where exactly it gets stuck.
+Probably by using printks. Please, run mtd-tests for your flash as well:
 
-drivers/mtd/devices/m25p80.c
-static const struct spi_device_id m25p_ids[]
-
-I think this should be generalized and shared across the drivers.
+http://www.linux-mtd.infradead.org/doc/general.html#L_mtd_tests
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-MYiRyFB5Pp5cZfSkhtuT
+--=-1RhuoQXRwH3VtNW5dlNy
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -53,19 +59,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQ9+79AAoJECmIfjd9wqK0igIQAMo0fQu/pXNLAZOIxeOh7Llt
-YwpMPSrDWAJSFzBtkkYSUPr5pXHi9n4vOQDdpiFOJJayr7KugmfTGR/T3WFlO73O
-LTgIFDWs64U5A4+9t8Hpmn/Z0DOU4TXIQWCZRxNujGlJeqaNIAma7fBRrq+xRBxS
-S2r0rmrRGBBI5asdMCZdZ+3FsQGFFsnLKFykmBweZY+zJiGgFGdfG5YmNvtApQEL
-k8vj0hCLQnqoJ9lrOO9U/3QRYG6Z4RrjIFpb33VUDLLqbnQDJWMc05AUk5W2Zzrr
-uogBCCnmTj1yqf/6pOMUjg1VowlKJbIwtUVDpEhZWxGvRCgfW+VU6ax+0qZD7p0v
-tSaaJlyWXUpa1G4h9Y1sEVHfGdrD3xsiO7lQYETKvrLhkV84aIOzYlI5Bweaws2x
-ywy2USGBc9JFjm+ZNows022BTtO9qncfsizIp4oeKUnRCQOOxYJruo5dEBrWkpzu
-yYTOJ357W+ydUp79p0DkwmtrnPppx+E5ccvFq6FBEnXYwt6+60jAPcg4ZOZZ+ncE
-+J6vy5FDM0HYO+C2J+7V/4Nv6cIfclojvn4nx/UjwWp+Xg/VjXPMU8fnXA1/qdO1
-aTyZZHg3jti7zxtD3sQutWrCeAaSFhscFlLclDF3FUgKgOwOscqZ9DJgFtGD81kx
-Rsieu5Ovkwm94c3J/3Jq
-=ZhqR
+iQIcBAABAgAGBQJQ9++nAAoJECmIfjd9wqK02PIP/juYfR1taztBlc5vUbhXSoFw
+yUaBbnrJ8XnMjBWrGBxdb10+Bae/1tn8lTUtqvD5bbAAvxzFxzQ1G5OGxJowfGLz
+txvagstVuPoKNLhvI3u7MOZ/ncm2bU4ErRJ9fxlnnELZ+R5aqlNCv9b7JVBZiksf
+LdI+ik4ceCimtUS3CifFHv9dILKc3tMiO2pPC6WWlb/o47Du/IhRVQqBYI/NpOQY
+C2lGBgHuPqXqF87qqeUePDLXWjuaifv/nJjygg/m4mYOyVFD9c8ybMB89yF7/ALI
++vI98k3vmRyMP5FEU9Qh7jXAZL6dXEDi267R2EBoUodotzGN523RrSgHwlGMv3HP
+mK8lOVWFMCDP4u66nb0Szye/g6hTPepM2qoE7m1pROBUtnhCYfz+l/FwjVKqqM5H
+qJyT4VVLe+NwGwpmR7U6vxXQOnXmbLjksoZl6GnVgpS689uYyTABhYSK9RJee8ME
+zOn16D/j0ZZR86+ECiHouUmFaRzuiShRgdlaqEXaIle4ua2kgtMDl1QWHJsZqy5g
+oVMfCRRbtDO+PZFqaiAC9iKBtOCdtAIUVzF97TufUEX/TDGepVOUQSbB9X19PWoX
+ght3acfPbGY2IuTGDLlBtmRNtng0kiekVWVABa+H3ar93v8S/gWB0xOhbTSmSapv
+YPNE9wT0Nf8VmpdVRQOM
+=WB7v
 -----END PGP SIGNATURE-----
 
---=-MYiRyFB5Pp5cZfSkhtuT--
+--=-1RhuoQXRwH3VtNW5dlNy--
