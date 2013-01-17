@@ -1,20 +1,19 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TvoWl-00034K-5V
- for linux-mtd@lists.infradead.org; Thu, 17 Jan 2013 12:25:03 +0000
-Message-ID: <1358425592.2731.239.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: chips: Add support for GigaDevice GD25Q32/GD25Q64
- SPI Flash in m25p80.c
+Message-ID: <1358425853.2731.241.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v2] mtd: vt8500: Add support for Wondermedia Serial
+ Flash Controller
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Michel Stempin <michel.stempin@wanadoo.fr>
-Date: Thu, 17 Jan 2013 14:26:32 +0200
-In-Reply-To: <50E8B9B8.2020701@wanadoo.fr>
-References: <50E8B9B8.2020701@wanadoo.fr>
+To: Tony Prisk <linux@prisktech.co.nz>
+Date: Thu, 17 Jan 2013 14:30:53 +0200
+In-Reply-To: <1358421664.2731.228.camel@sauron.fi.intel.com>
+References: <1358272414-6266-1-git-send-email-linux@prisktech.co.nz>
+ <1358421664.2731.228.camel@sauron.fi.intel.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-CrpTePO5QsuZIKNET+X4"
+ boundary="=-MYiRyFB5Pp5cZfSkhtuT"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org,
+ vt8500-wm8505-linux-kernel@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,27 +25,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-CrpTePO5QsuZIKNET+X4
+--=-MYiRyFB5Pp5cZfSkhtuT
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, 2013-01-06 at 00:39 +0100, Michel Stempin wrote:
-> Add support for GigaDevice GD25Q32 32 Mbit (4 MB) SPI Flash (see datashee=
-t: http://www.gigadevice.com/UserFiles/GD25Q32_Rev0.2(1).pdf) used in Hame =
-MPR-A1 and clones, and for GigaDevice GD25Q64 64 Mbit (8 MB) SPI Flash used=
- in=20
-> Hame MPR-A2 devices (datasheet: http://www.gigadevice.com/UserFiles/GD25Q=
-64.pdf).
->=20
-> Signed-off-by: Michel Stempin <michel.stempin@wanadoo.fr>
+On Thu, 2013-01-17 at 13:21 +0200, Artem Bityutskiy wrote:
+> Probably this should also be outside of the driver, since it is not
+> specific to this driver.
 
-Pushed to l2-mtd.git, thanks!
+Take a look at this huge array which constantly gets updated with new
+chips (see git log):
+
+drivers/mtd/devices/m25p80.c
+static const struct spi_device_id m25p_ids[]
+
+I think this should be generalized and shared across the drivers.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-CrpTePO5QsuZIKNET+X4
+--=-MYiRyFB5Pp5cZfSkhtuT
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -54,19 +53,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQ9+34AAoJECmIfjd9wqK0ADUP/07MXUHK1Fh2WsSrsvmCw9Pd
-vTXbmU9AMX7f38B37AYFw3Lq6CgdOieAJVj1cCidjSepUv6c6A6J0WaNa0dr+cup
-9HauSHCh9ONPzjAenlRvapA1zTNnmgY/I0TPMvjbNsTKXkeOCoTamKKxLxa6f2oB
-SEdbr7oE2v6+N58KdEq5/rVcQSk/M9XVP5z4z+8Z4cDtCBRAIXfzC0UfR9v9zAv4
-dNqW2QBW2sVEMypjM0Y3uaHTeWqZRTobHV91V0k6SlGvrAYgXm4s97LxTkfKufdj
-JZVP84SXDIv28t7HdXOM80k+Ch1l09ISshyglIJlj/f5r15cCaoUpz+oRNU4i2Zo
-wDu8Z9Igp6mEEaI0NaarQ6Pe8/qLTRPc+vCvJlm57nXpEMgJmBQaGTt+5KqZTU9M
-KVvBtEmcT1MtzrSCf2GPEOYJsFXsd0SoASRS1bB6XQA4u50Z9E9r230LaHbcule8
-z78/hKapyXt8/7ud6MzlFasRwd7tjqXxntvg3I7HzPFCf3GJQA48CcEsrZpfygWD
-4BHuP9Rl65u+bUggu/5p54DuOOaBQ+85Izh1UxS38uvph5qy0b1I+PlBMvAH6Ixi
-sjz0CsIs8nnN1LjqdTc1IvODEAIblUPT8klFhKZgty8a3x9t/EsoQd029SjGqR9w
-OXPEOBTIFIBXHBkK79iH
-=TSXg
+iQIcBAABAgAGBQJQ9+79AAoJECmIfjd9wqK0igIQAMo0fQu/pXNLAZOIxeOh7Llt
+YwpMPSrDWAJSFzBtkkYSUPr5pXHi9n4vOQDdpiFOJJayr7KugmfTGR/T3WFlO73O
+LTgIFDWs64U5A4+9t8Hpmn/Z0DOU4TXIQWCZRxNujGlJeqaNIAma7fBRrq+xRBxS
+S2r0rmrRGBBI5asdMCZdZ+3FsQGFFsnLKFykmBweZY+zJiGgFGdfG5YmNvtApQEL
+k8vj0hCLQnqoJ9lrOO9U/3QRYG6Z4RrjIFpb33VUDLLqbnQDJWMc05AUk5W2Zzrr
+uogBCCnmTj1yqf/6pOMUjg1VowlKJbIwtUVDpEhZWxGvRCgfW+VU6ax+0qZD7p0v
+tSaaJlyWXUpa1G4h9Y1sEVHfGdrD3xsiO7lQYETKvrLhkV84aIOzYlI5Bweaws2x
+ywy2USGBc9JFjm+ZNows022BTtO9qncfsizIp4oeKUnRCQOOxYJruo5dEBrWkpzu
+yYTOJ357W+ydUp79p0DkwmtrnPppx+E5ccvFq6FBEnXYwt6+60jAPcg4ZOZZ+ncE
++J6vy5FDM0HYO+C2J+7V/4Nv6cIfclojvn4nx/UjwWp+Xg/VjXPMU8fnXA1/qdO1
+aTyZZHg3jti7zxtD3sQutWrCeAaSFhscFlLclDF3FUgKgOwOscqZ9DJgFtGD81kx
+Rsieu5Ovkwm94c3J/3Jq
+=ZhqR
 -----END PGP SIGNATURE-----
 
---=-CrpTePO5QsuZIKNET+X4--
+--=-MYiRyFB5Pp5cZfSkhtuT--
