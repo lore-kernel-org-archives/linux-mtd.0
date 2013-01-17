@@ -1,21 +1,20 @@
 Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Tvpse-0006u2-U4
- for linux-mtd@lists.infradead.org; Thu, 17 Jan 2013 13:51:45 +0000
-Message-ID: <1358430781.2731.252.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: fsl_ifc_nand: use more portable i/o accessors
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Kim Phillips <kim.phillips@freescale.com>
-Date: Thu, 17 Jan 2013 15:53:01 +0200
-In-Reply-To: <20130111162359.33980fd3436fcc65e71da1c0@freescale.com>
-References: <20130111162359.33980fd3436fcc65e71da1c0@freescale.com>
+ id 1TvpvU-0007gl-3K
+ for linux-mtd@lists.infradead.org; Thu, 17 Jan 2013 13:54:41 +0000
+Message-ID: <1358430969.2731.253.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v2] mtd/nand: Print source of error message
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Tormod Volden <lists.tormod@gmail.com>
+Date: Thu, 17 Jan 2013 15:56:09 +0200
+In-Reply-To: <1357986867-22396-1-git-send-email-lists.tormod@gmail.com>
+References: <1357986867-22396-1-git-send-email-lists.tormod@gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-QL3lJATxOyBULRaix/qI"
+ boundary="=-DXEKb/osPSQpyiOxu7RR"
 Mime-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Prabhakar Kushwaha <prabhakar@freescale.com>
-Reply-To: artem.bityutskiy@linux.intel.com
+Cc: Vikram Narayanan <vikram186@gmail.com>, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,35 +25,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-QL3lJATxOyBULRaix/qI
+--=-DXEKb/osPSQpyiOxu7RR
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2013-01-11 at 16:23 -0600, Kim Phillips wrote:
-> in/out_be32 accessors are Power arch centric whereas
-> ioread/writebe32 are available in other arches.
+On Sat, 2013-01-12 at 11:34 +0100, Tormod Volden wrote:
+> From: Tormod Volden <debian.tormod@gmail.com>
 >=20
-> Since the IFC device registers are annotated big endian in
-> fsl_ifc.h, the accessor annotations now match, resulting in the
-> pleasant side-effect of this patch silencing sparse endian
-> warnings such as the following:
+> Add the function name to the error message.
 >=20
-> drivers/mtd/nand/fsl_ifc_nand.c:179:19: warning: incorrect type in argume=
-nt 1 (different base types)
-> drivers/mtd/nand/fsl_ifc_nand.c:179:19:    expected unsigned int volatile=
- [noderef] [usertype] <asn:2>*addr
-> drivers/mtd/nand/fsl_ifc_nand.c:179:19:    got restricted __be32 [noderef=
-] <asn:2>*<noident>
+> These messages are not very helpful:
 >=20
-> Signed-off-by: Kim Phillips <kim.phillips@freescale.com>
+> [183356.176682] uncorrectable error :
+> [183356.180273] uncorrectable error :
+> [183356.184194] uncorrectable error :
+> [183356.187773] uncorrectable error :
+> [183356.191280] uncorrectable error :
+>=20
+> Signed-off-by: Tormod Volden <debian.tormod@gmail.com>
 
-Pushed to l2-mtd.git, thanks!
+Pushed to l2-mtd.git with a minor amendment (kill the semicolon at the
+end).
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-QL3lJATxOyBULRaix/qI
+--=-DXEKb/osPSQpyiOxu7RR
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -62,19 +59,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQ+AI9AAoJECmIfjd9wqK0p4AP/1ZHlvLCC9jq3LZtWS5My6Ff
-w3QDDQ5HoCGS+RDqM8BJ0tqsiZIesSnBN1BH2mNE6QQn6wu4nVDnB91pHhaOaRSL
-ICgXRbTi4eJk8hvM3PXlonZL7JnUb+3Oc6O1pDTu3Zi7pyPH8lgPk5d4DjlbxhPZ
-JWSa1X1zDyy9cyoNUGvg3pQXXdfDTyd3ZKkPerqTw07Xt7rcPgdBpohQntJWdVpY
-uIvt596fUz1wsTWYxMnLHSNhKeBAbLIayaxzUrk+NklsYuZsB8KK9QHWRZQIZsIq
-V+ZvIoIh3V3HtdGxjMKpqFu2fvmM3XteQCvzXJAE3JPXiyrqBViXvNq6IuPx1Xx7
-pOjcb7JLyWx+6DSV039uWRsMZxrRQKwDE8Ijh9xbL46KUl7FIXbYlVtr5oTXHXL/
-GZRO11FjK+Pga9e6Wxq/+44sZBN53ld+x/cmt/+0pjaOhiEtVdOh0MalMlsLVAVh
-/vasi2bReQad0FOSb/n6ImnHcoZ1OdIGJ4D0ZH+cNFVk/7vPZR75JLzMijF9yDKH
-kadXmdyOxx/JzA5YilQTC4530/X5ta/TeKqN5Ri7Skae88Sitewlr0PgKs6JuFPl
-fUSTmrDC2LUxrQ5LkdY9bijV73jHMXVOwx7A/ToEmPrz/iOTYiFYxz+jorOUbV1j
-cI/iF3mgIXQU99lZlmQv
-=1TSf
+iQIcBAABAgAGBQJQ+AL5AAoJECmIfjd9wqK0M+gP/2HU1eZytk3IU9k0+twL1baO
+B3vPuuxBUMiU3LGTrNnTI19qpFvI3e8iHiZ0mVcGaD8vsZfv5JcpARs7ylnXRp1s
+Us67HODC5QUejdasQSxgJtrT72xv4boQNaw0tOJB+CzF/Cad6wQSypKj4n+ew5su
+oB1H6rmamWQ01tFnmOwIMhLu7KsGHamE5cuxI/zRxwfrxpdHLmdUU1kDVF8hGcLp
+6dzKSqMNpit98TwN54QognRNkr0HyH39a7WLjfkQUL8/EcFyjJs/hZWjYyJMmwfs
+Z8dBcY/WpcEuGEwF4yd8QPPIhJwV9RW4nTHCUM8S7Z0U4KnGE0HZ8t+bqrIg0S5G
+JCcsmN+ZaNpTTSGWuWMp3/46PqACjolDriCar1TWc6PcnwOZkPYqFn/1zS4Mf/Rd
+btEMiRD93XLjbVh/TS8AwocvCfDMNpouRc18lO0OwCIQC58y3MKT8F2TnFQiN+Nx
+u3C2/jSOWfwe/TP3Q88QKanhrNJg7Yd7W7naSQvoCVpXSdl7dsn8yPicR/s0fRIw
+BaxcuhjbAXIo8P3tFiXyPORLXu+G8PkSzwYutDWbbPSDHnVDmBK0tUSpeNOiI9Mw
+Sl12B/DJXr1ZCOnrnJtX6B7wgSpHCD9FKTmVNHJQBs3ILRRaZF9oiLLncLgbD6ep
+/O3VjFtNwhxwE8JcH6oF
+=ExGP
 -----END PGP SIGNATURE-----
 
---=-QL3lJATxOyBULRaix/qI--
+--=-DXEKb/osPSQpyiOxu7RR--
