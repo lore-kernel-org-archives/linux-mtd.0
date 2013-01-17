@@ -1,17 +1,18 @@
-Message-ID: <1358433343.2731.254.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: gpmi: dump the BCH registers
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Date: Thu, 17 Jan 2013 16:35:43 +0200
-In-Reply-To: <1358147969-31878-1-git-send-email-b32955@freescale.com>
-References: <1358147969-31878-1-git-send-email-b32955@freescale.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-dLgDS2nTpVnFBGZAuouM"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mail.prodrive.nl ([212.61.153.67])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Tvu6Y-0007Sx-G0
+ for linux-mtd@lists.infradead.org; Thu, 17 Jan 2013 18:22:26 +0000
+From: Stef van Os <stef.van.os@prodrive.nl>
+To: <dwmw2@infradead.org>, <artem.bityutskiy@linux.intel.com>,
+ <wfp5p@virginia.edu>, <gregkh@linuxfoundation.org>, <sr@denx.de>,
+ <plagnioj@jcrosoft.com>
+Subject: [PATCH 1/1] mtd: physmap_of: fix illegal dereference
+Date: Thu, 17 Jan 2013 19:22:12 +0100
+Message-ID: <1358446932-7238-1-git-send-email-stef.van.os@prodrive.nl>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: Stef van Os <stef.van.os@prodrive.nl>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,47 +22,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+d68cbdd introduced a new way of getting the name of an mtd
+partion. The character pointer is not initialized, and only
+checked against NULL, not at other random garbage.
+This patch fixes the resulting panic.
 
---=-dLgDS2nTpVnFBGZAuouM
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Stef van Os <stef.van.os@prodrive.nl>
+---
+ drivers/mtd/maps/physmap_of.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-On Mon, 2013-01-14 at 15:19 +0800, Huang Shijie wrote:
-> Dump the BCH registers in gpmi_dump_info().
->=20
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
-> ---
->  drivers/mtd/nand/gpmi-nand/bch-regs.h |    2 ++
->  drivers/mtd/nand/gpmi-nand/gpmi-lib.c |    5 +++++
->  2 files changed, 7 insertions(+), 0 deletions(-)
-
-Pushed to l2-mtd.git, thanks!
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-dLgDS2nTpVnFBGZAuouM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJQ+Aw/AAoJECmIfjd9wqK0k3YP/2hhD2v2sRGj4/RmLVQNjBdl
-Ou2sE/u0zK3kdlVTDasmhOZ03NgNjp1UKWiC9basZuTDHD+oWmy9rMwtMN1zLWza
-2hTJ2hWEgo5EGTbN8WEnD8UXjMKctVBLB8/IPXQ8YZpyu6VL8vTWbA5AvN9cb8Iv
-74uASlKLgQJVIjHZONmi5ohUIoF9QG5TG0QlupYYs5MY+Ch+xPUtvY5D8NcO6mdh
-b22zdPMN9bAjIqUoqPCjDV8O8qBPFWjR9G6yHZ4hM3mszYduTGId8b34Elt8TgFP
-GfQ1+mpZEycGzsxSnEKbSHoUK0hFUIgeN6TOpVbXQhcqqeGmNLXs/u5OT7CGSasr
-8gQkH8+b2HOY9NKrVaI+bn3EuXVkEWADFh/+KVyDmbH4l9zwDAto6uzdqKeXrGrj
-DR+8cwrIXoc4sZGgS3UmsM22YPor7lhTsx5yOK7W6Gn5sZq94ESYCRKO1ialdSsv
-AMpkRziPRO9R/kcwjKLEFKBv1s/WCUBMrRJXR8flcDP5Bmxr2iEt3aao5D9Oy69I
-rTmVv6/9aM7es11/pC/WJwl072Caj1mNLrkL5+7mt0zy45NE0WOJlN+G2P5mXe5J
-i3bw0mPsLCYaoMaintlKmNTDrKyjQCcjQofxNel6gxPbIbicJjI9hE03HfTL4vzr
-S9Crk9Pn0b1xGYWpp1wB
-=W+fs
------END PGP SIGNATURE-----
-
---=-dLgDS2nTpVnFBGZAuouM--
+diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
+index 67cc73c..7901d72 100644
+--- a/drivers/mtd/maps/physmap_of.c
++++ b/drivers/mtd/maps/physmap_of.c
+@@ -170,7 +170,7 @@ static int of_flash_probe(struct platform_device *dev)
+ 	resource_size_t res_size;
+ 	struct mtd_part_parser_data ppdata;
+ 	bool map_indirect;
+-	const char *mtd_name;
++	const char *mtd_name = NULL;
+ 
+ 	match = of_match_device(of_flash_match, &dev->dev);
+ 	if (!match)
+-- 
+1.7.2.5
