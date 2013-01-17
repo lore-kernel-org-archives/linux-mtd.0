@@ -1,19 +1,20 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Tvo0a-0002X8-Cy
- for linux-mtd@lists.infradead.org; Thu, 17 Jan 2013 11:51:49 +0000
-Message-ID: <1358423594.2731.231.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: mxc_nand: compress ID info for send_read_id_v3
+Message-ID: <1358423675.2731.232.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/3] MTD: at91: atmel_nand: for PMECC, add code to
+ choose the ecc bits and sector size according to the ONFI parameter ECC
+ requirement.
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Roman Schneider <schneider@at.festo.com>
-Date: Thu, 17 Jan 2013 13:53:14 +0200
-In-Reply-To: <1358265384-23138-1-git-send-email-schneider@at.festo.com>
-References: <1358265384-23138-1-git-send-email-schneider@at.festo.com>
+To: Josh Wu <josh.wu@atmel.com>
+Date: Thu, 17 Jan 2013 13:54:35 +0200
+In-Reply-To: <50F664BC.7@atmel.com>
+References: <1355912840-29501-1-git-send-email-josh.wu@atmel.com>
+ <1355912840-29501-2-git-send-email-josh.wu@atmel.com>
+ <1358252760.2731.133.camel@sauron.fi.intel.com> <50F664BC.7@atmel.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-M/iTSbCMEYWvV0qXh+Mk"
+ boundary="=-LGCLUCydEGJn4+dSyjXd"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: nicolas.ferre@atmel.com, plagnioj@jcrosoft.com,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,24 +26,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-M/iTSbCMEYWvV0qXh+Mk
+--=-LGCLUCydEGJn4+dSyjXd
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2013-01-15 at 16:56 +0100, Roman Schneider wrote:
-> ---
->  Also compress the id in case of a v3 NAND flash controller (i.mx51, i.mx=
-53)
->  and 16Bit buswidth.
+On Wed, 2013-01-16 at 16:28 +0800, Josh Wu wrote:
+> Hi, Artem
+>=20
+> On 1/15/2013 8:26 PM, Artem Bityutskiy wrote:
+> > I cannot compile this patch:
+> >
+> > ERROR (phandle_references): Reference to non-existent node or label "pi=
+nctrl_ssc0_tx"
+> >
+> > ERROR: Input tree has errors, aborting (use -f to force output)
+> > make[2]: *** [arch/arm/boot/dts/at91sam9g20ek.dtb] Error 2
+>=20
+> As Bo Shen already mentioned, they are caused by ssc pinctrl patches. it=
+=20
+> will be merged in next rc or late.
 
-OK, I fixed the commit message and added your S-o-b, just like Fabio
-noted, and pushed to l2-mtd.git, thanks!
+Then ping me when the patches are ready to go, please.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-M/iTSbCMEYWvV0qXh+Mk
+--=-LGCLUCydEGJn4+dSyjXd
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -50,19 +60,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQ9+YqAAoJECmIfjd9wqK0uc8P/ih/3AtjLEqje/d6bTfAfkUw
-+jpDiPNV61W5dsWZtIe850Yb5cDMqj9yXEHixkikg4hCkewKzcWctse0ybPwNMC6
-Zxes+R+zD8DKbR77i8Lcau9QWwEk1F2kv+BJQZl/cZSVp6SjDK6sWkNCNsZV4h9n
-FbRJS+JO5Y/k4wFcc3qqHkS5easIZ6JeK7L12pv3dEYPkNRp1l8V+0o0NZ/Rz0F3
-OZIVufT4UxsWwgsBq3cMnCGq2qLQXK/ulR6U0G6LL1+TQWYjcrRRrQUR0O8amdqj
-Lf0u90h+HjmfrIdxbnnJRq3Ep8BI6dgShT6yIiASIkW37L1T/ii2/S9GggGeXMh+
-o3K7Msc0BtxJGAF38QJfTG74OkYqz3sB+Qttz4AUJVc1Fyc2XuakOsWz7I9kXZWW
-xRZOuwlx4MWRM1a5NWGVqAUOC0JEwQzkToXaPvVDbbS2clG0G3xOXarxvQ3I4RA5
-4gzekEMNiCiDock5YHXoqwCX5xAUOy7sFMNOhyPqfidBv5lP72DDwObTrgeW3R3M
-2MrCDy8uK1P/mAz28qXvMXVrT8WRm8ZZNPExwz0qs1jM2oUjLyy7GRE2KvbsM9qi
-f1d8jK+j23qgPvvz4caTLDkYvD78g2Alap1gik+LOVbGfKMoUeHyUcJfNl75MKet
-NSCal95zppNh5uHJ091A
-=h7mb
+iQIcBAABAgAGBQJQ9+Z7AAoJECmIfjd9wqK0Hb4P/0aFTbGIynzRNMPMUjZTGW5g
+bYn5ylTW9JxssTdBLWNfej4GD0rlkCn8jiWhjH6hRB1CGqlYVB2Zbs1Eq1OkTc68
+lpSZv4auBY+GQCulknKyJZ13Y/mtsZWjMeLaKyIFILRqBOQJw6cIc4CHvXMs28a/
+PM5jP3BiIuKC8BZoH6njhqmg1egDjI9bTW7QBeG+bb2b3jUkAQBIG3nKXN46xrR7
+KQzqA9GmcsEG3Sw7u/+nBLYylMXI3iyBJ+Sqkf7jytI4/+C9BeOYtTStvgU/Io83
+Z5GeElPyT8bXck4sW5AC2ok9wVvNH5XrRAvW/8Yy702AGlHeWfWWt+j5pr6uki8j
+yz0XqcO/PDY9icg4ks10MxDVhsrkSAphVNsLFRGycMTykcxwTxrvgwQb3gxtalkF
+/Df1mGUKM1p/9+YzXLYBlxVuXhGHBEmEQY14cMINTW1AEYsrJ8TalnK772v1Xnzo
+RAVp23GbW9j4sVmK/f6QpU5Gq9t8bc2mz4wZMj77Gh3SLNN36mkriBtmSF3s4tH/
+7Jlqrvzkf2zFuqd09yZENjr5pyV9J7LRFEG/heDecPbrgPhN17/+C/UZXeeWOGIw
+JSi4n23Ykig34gg0XzJ0yZi2MaHo25s5eMWQ8vgoXEFOpUamSqpY22U+TqeOUuQM
+97wRrvQgOupYiRj+vNaL
+=6cm3
 -----END PGP SIGNATURE-----
 
---=-M/iTSbCMEYWvV0qXh+Mk--
+--=-LGCLUCydEGJn4+dSyjXd--
