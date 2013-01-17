@@ -1,21 +1,34 @@
-Message-ID: <1358423675.2731.232.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/3] MTD: at91: atmel_nand: for PMECC, add code to
- choose the ecc bits and sector size according to the ONFI parameter ECC
- requirement.
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Josh Wu <josh.wu@atmel.com>
-Date: Thu, 17 Jan 2013 13:54:35 +0200
-In-Reply-To: <50F664BC.7@atmel.com>
-References: <1355912840-29501-1-git-send-email-josh.wu@atmel.com>
- <1355912840-29501-2-git-send-email-josh.wu@atmel.com>
- <1358252760.2731.133.camel@sauron.fi.intel.com> <50F664BC.7@atmel.com>
+Message-ID: <1358424375.2731.234.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v4 0/3] mtd: nand: OMAP: ELM error correction support
+ for BCH ecc
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: "Philip, Avinash" <avinashphilip@ti.com>
+Date: Thu, 17 Jan 2013 14:06:15 +0200
+In-Reply-To: <518397C60809E147AF5323E0420B992E3EA5DFA9@DBDE01.ent.ti.com>
+References: <1357286211-5012-1-git-send-email-avinashphilip@ti.com>
+ <518397C60809E147AF5323E0420B992E3EA5DFA9@DBDE01.ent.ti.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-LGCLUCydEGJn4+dSyjXd"
+ boundary="=-97PiZq+ZXz3zLdWxUiVi"
 Mime-Version: 1.0
-Cc: nicolas.ferre@atmel.com, plagnioj@jcrosoft.com,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Cc: "Mohammed, Afzal" <afzal@ti.com>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "tony@atomide.com" <tony@atomide.com>,
+ "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>,
+ "Nori, Sekhar" <nsekhar@ti.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "rob.herring@calxeda.com" <rob.herring@calxeda.com>,
+ "zonque@gmail.com" <zonque@gmail.com>,
+ "grant.likely@secretlab.ca" <grant.likely@secretlab.ca>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "rob@landley.net" <rob@landley.net>,
+ "rmk+kernel@arm.linux.org.uk" <rmk+kernel@arm.linux.org.uk>,
+ "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "Hebbar, Gururaja" <gururaja.hebbar@ti.com>
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,33 +39,37 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-LGCLUCydEGJn4+dSyjXd
+--=-97PiZq+ZXz3zLdWxUiVi
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2013-01-16 at 16:28 +0800, Josh Wu wrote:
-> Hi, Artem
+On Wed, 2013-01-16 at 12:22 +0000, Philip, Avinash wrote:
+> > This series is based on linux 3.8-rc2 and tested with [1].
+> > Also this patch series depend on [1] for NAND flash device
+> > tree data and gpmc nand device tree binding documentation updates.
+> >=20
+> > 1. [PATCH v7 0/5] OMAP GPMC DT bindings
+> > http://www.spinics.net/lists/linux-omap/msg83505.html
+> >=20
+> > Tested on am335x-evm for BCH 4 and 8 bit error correction.
 >=20
-> On 1/15/2013 8:26 PM, Artem Bityutskiy wrote:
-> > I cannot compile this patch:
-> >
-> > ERROR (phandle_references): Reference to non-existent node or label "pi=
-nctrl_ssc0_tx"
-> >
-> > ERROR: Input tree has errors, aborting (use -f to force output)
-> > make[2]: *** [arch/arm/boot/dts/at91sam9g20ek.dtb] Error 2
->=20
-> As Bo Shen already mentioned, they are caused by ssc pinctrl patches. it=
-=20
-> will be merged in next rc or late.
+> Can you apply this patch series on l2-mtd tree as it will help RBL compat=
+ibility
+> ecc layout for NAND flash in am335x-platforms and hardware based BCH erro=
+r
+> correction.
 
-Then ping me when the patches are ready to go, please.
+OK, I've applied them. I dropped the part that updates the
+documentation. Please, handle it separately when Daniel's patches are
+in.
+
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-LGCLUCydEGJn4+dSyjXd
+--=-97PiZq+ZXz3zLdWxUiVi
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -60,19 +77,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQ9+Z7AAoJECmIfjd9wqK0Hb4P/0aFTbGIynzRNMPMUjZTGW5g
-bYn5ylTW9JxssTdBLWNfej4GD0rlkCn8jiWhjH6hRB1CGqlYVB2Zbs1Eq1OkTc68
-lpSZv4auBY+GQCulknKyJZ13Y/mtsZWjMeLaKyIFILRqBOQJw6cIc4CHvXMs28a/
-PM5jP3BiIuKC8BZoH6njhqmg1egDjI9bTW7QBeG+bb2b3jUkAQBIG3nKXN46xrR7
-KQzqA9GmcsEG3Sw7u/+nBLYylMXI3iyBJ+Sqkf7jytI4/+C9BeOYtTStvgU/Io83
-Z5GeElPyT8bXck4sW5AC2ok9wVvNH5XrRAvW/8Yy702AGlHeWfWWt+j5pr6uki8j
-yz0XqcO/PDY9icg4ks10MxDVhsrkSAphVNsLFRGycMTykcxwTxrvgwQb3gxtalkF
-/Df1mGUKM1p/9+YzXLYBlxVuXhGHBEmEQY14cMINTW1AEYsrJ8TalnK772v1Xnzo
-RAVp23GbW9j4sVmK/f6QpU5Gq9t8bc2mz4wZMj77Gh3SLNN36mkriBtmSF3s4tH/
-7Jlqrvzkf2zFuqd09yZENjr5pyV9J7LRFEG/heDecPbrgPhN17/+C/UZXeeWOGIw
-JSi4n23Ykig34gg0XzJ0yZi2MaHo25s5eMWQ8vgoXEFOpUamSqpY22U+TqeOUuQM
-97wRrvQgOupYiRj+vNaL
-=6cm3
+iQIcBAABAgAGBQJQ9+k3AAoJECmIfjd9wqK0h78P/ihNKGVzJ6EZoycfAIadjAbb
+yYsq/A3Zo4Ex4X7GqJFADPW5IpEHQakQ//plP6Ug5r58ZTViQGmhT4ZT1VE3mmZ2
+8A+aLkTGGqu9QSzzhYlyQYROFgdJPOc+oTzfGqE9H9c6l2uN0YWlVA6622dd8j8q
+4PF0Z7CWmWmzremwWoHtJTS/+WVmrhGx3qDODEglMY8MoBu53ljFBO1HYQwT630g
+SHmHTJ5oxAfUGvWkb+9J6nJl6KEiaojCKdb0KqMCLjnNVL3YpqbM8URmE5G3WXqt
+ywzoovgMiXXGa+8HG4xJV1IoshEnJFEsBplYRRBqlQjTPMbAgmP1qqVjFGaWtKSg
+M/PpbsEhHdOzTfLdeqxDHSCyPyHKu4RG6qbF+NrZeSgM4PsUNKMQvwMvyZV6sLk0
+8LELXZTcnaJ7xB/diVXH38TuHXWOCL4SiAfNd6NRSxSSbPsQRWsw8WLRi3ad5Hn7
+chKo/Dk/K27iPZPIm8Ym1WlRHyzLspjvkh2Mzn7lhRmAMSxKdweNH+vKus5BHOGv
+oPXajCRUROrtfO5xaHcQlMa/R7ooUT9J/QawljBrE8zsJK0W/rRxDJWLIKsaSW+R
+KQWpjw9YavHSWLk57Z3F4MVgK8rXRGyBV/Lxy2GzGOpBPfOnCAQoRA3UVICkPikM
+wycjvDqWHtLjIJVWwwHc
+=JGA8
 -----END PGP SIGNATURE-----
 
---=-LGCLUCydEGJn4+dSyjXd--
+--=-97PiZq+ZXz3zLdWxUiVi--
