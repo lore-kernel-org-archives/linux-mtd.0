@@ -1,18 +1,22 @@
-Message-ID: <1358421664.2731.228.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v2] mtd: vt8500: Add support for Wondermedia Serial
- Flash Controller
+Message-ID: <1358423248.2731.230.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/3] mtd: omap-onenand: pass device_node in platform data
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Tony Prisk <linux@prisktech.co.nz>
-Date: Thu, 17 Jan 2013 13:21:04 +0200
-In-Reply-To: <1358272414-6266-1-git-send-email-linux@prisktech.co.nz>
-References: <1358272414-6266-1-git-send-email-linux@prisktech.co.nz>
+To: Ezequiel Garcia <elezegarcia@gmail.com>
+Date: Thu, 17 Jan 2013 13:47:28 +0200
+In-Reply-To: <CALF0-+Xpvn45ZXOawyFzkqMt5t7--CLZYhkr6RwRX7WWnqdnqw@mail.gmail.com>
+References: <1356307280-8323-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <CALF0-+Xpvn45ZXOawyFzkqMt5t7--CLZYhkr6RwRX7WWnqdnqw@mail.gmail.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-X5RpUSkhjIONZypM2RaN"
+ boundary="=-Awu28s4LBuOvA9H97Op1"
 Mime-Version: 1.0
-Cc: linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org,
- vt8500-wm8505-linux-kernel@lists.infradead.org
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ martinez.javier@gmail.com, matthias.bgg@googlemail.com, eballetbo@gmail.com,
+ zonque@gmail.com, grant.likely@secretlab.ca, Tony Lindgren <tony@atomide.com>,
+ linux-mtd@lists.infradead.org, jon-hunter@ti.com,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ b-cousson@ti.com
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,119 +28,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-X5RpUSkhjIONZypM2RaN
+--=-Awu28s4LBuOvA9H97Op1
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2013-01-16 at 06:53 +1300, Tony Prisk wrote:
-> This patch adds support for the Wondermedia serial flash controller
-> found on WM8505, WM8650 and WM8850 SoCs.
->=20
-> Signed-off-by: Tony Prisk <linux@prisktech.co.nz>
-> ---
-> v2:
-> Change Kconfig depends to ARCH_VT8500 as this driver can't be used on oth=
-er
-> platforms.
+On Tue, 2013-01-15 at 19:48 -0300, Ezequiel Garcia wrote:
+> I saw you have acked the gpmc patch on nand.
+> Can I add your Acked-by on this one, when I send the rebased patch set?
 
-Sparse still complains:
+Yes, I saw this series which depends on Daniel Mack's work. It looks
+good. You can add
 
-@@ @@
-+drivers/mtd/devices/wmt_sflash.c:442:24: warning: cast removes address spa=
-ce of expression [sparse]
-+drivers/mtd/devices/wmt_sflash.c:458:17: warning: incorrect type in argume=
-nt 1 (different address spaces) [sparse]
-+drivers/mtd/devices/wmt_sflash.c:458:17:    expected void volatile [nodere=
-f] <asn:2>*<noident> [sparse]
-+drivers/mtd/devices/wmt_sflash.c:458:17:    got unsigned char [usertype] *=
-<noident> [sparse]
-+drivers/mtd/devices/wmt_sflash.c:465:25: warning: incorrect type in argume=
-nt 1 (different address spaces) [sparse]
-+drivers/mtd/devices/wmt_sflash.c:465:25:    expected void volatile [nodere=
-f] <asn:2>*<noident> [sparse]
-+drivers/mtd/devices/wmt_sflash.c:465:25:    got unsigned char [usertype] *=
-<noident> [sparse]
-
-Also, checkpatch.pl has a valid complaint:
-
-WARNING:CONFIG_DESCRIPTION: please write a paragraph that describes the con=
-fig symbol fully
-#26: FILE: drivers/mtd/devices/Kconfig:131:
-+config MTD_WMT_SFLASH
-
-total: 0 errors, 1 warnings, 636 lines checked
-
-...
-
-> +/* WinBond */
-> +#define WB_W25X40BV		0x3013	/* 512 KB */
-> +#define WB_X16A			0x3015	/* 2 MB */
-> +#define WB_X32			0x3016	/* 4 MB */
-> +#define WB_X64			0x3017	/* 8 MB */
-> +
-> +
-> +#define SF_ID(mfr, mdl)		((mfr << 16) | mdl)
-
-The flash manufacturer IDs are not specific to this driver, and should
-be defined in a common header.
-
-
-> +
-> +#define FLASH_UNKNOWN		0x00ffffff
-> +
-> +struct wmt_flash_id {
-> +	u32	id;
-> +	u32	size;		/* Size in KB */
-> +};
-> +
-> +static struct wmt_flash_id flash_ids[] =3D {
-> +	{ SF_ID(MFR_SPANSION,	SPAN_FL016A),	2048 },
-> +	{ SF_ID(MFR_SPANSION,	SPAN_FL064A),	8192 },
-> +	{ SF_ID(MFR_EON,	EON_25P16),	2048 },
-> +	{ SF_ID(MFR_EON,	EON_25P64),	8192 },
-> +	{ SF_ID(MFR_EON,	EON_25F40),	512 },
-> +	{ SF_ID(MFR_EON,	EON_25F16),	2048 },
-> +	{ SF_ID(MFR_ATMEL,	AT_25DF041A),	512 },
-> +	{ SF_ID(MFR_NUMONYX,	NX_25P16),	2048 },
-> +	{ SF_ID(MFR_NUMONYX,	NX_25P64),	8192 },
-> +	{ SF_ID(MFR_FUDAN,	FM_25F04),	512 },
-> +	{ SF_ID(MFR_SST,	SST_VF016B),	2048 },
-> +	{ SF_ID(MFR_MXIC,	MX_L512),	64 },
-> +	{ SF_ID(MFR_MXIC,	MX_L4005A),	512 },
-> +	{ SF_ID(MFR_MXIC,	MX_L1605D),	2048 },
-> +	{ SF_ID(MFR_MXIC,	MX_L3205D),	4192 },
-> +	{ SF_ID(MFR_MXIC,	MX_L6405D),	8192 },
-> +	{ SF_ID(MFR_MXIC,	MX_L1635D),	2048 },
-> +	{ SF_ID(MFR_MXIC,	MX_L3235D),	4192 },
-> +	{ SF_ID(MFR_MXIC,	MX_L12805D),	16384 },
-> +	{ SF_ID(MFR_WINBOND,	WB_W25X40BV),	512 },
-> +	{ SF_ID(MFR_WINBOND,	WB_X16A),	2048 },
-> +	{ SF_ID(MFR_WINBOND,	WB_X32),	4096 },
-> +	{ SF_ID(MFR_WINBOND,	WB_X64),	8192 },
-> +	{ 0, 0 },
-> +};
-
-Probably this should also be outside of the driver, since it is not
-specific to this driver.
-
-> +static u32 sf_get_chip_size(struct device *dev, u32 id)
-> +{
-> +	int i;
-> +	for (i =3D 0; flash_ids[i].id !=3D 0; i++)
-> +		if (flash_ids[i].id =3D=3D id)
-> +			return flash_ids[i].size * 1024;
-> +
-> +	dev_err(dev, "Unknown flash id (%08x)\n", id);
-> +	return 0;
-> +}
-
-And this.
+Acked-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-X5RpUSkhjIONZypM2RaN
+--=-Awu28s4LBuOvA9H97Op1
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -144,19 +53,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQ996gAAoJECmIfjd9wqK0S7oQALLlfrbb72mitN8Tn3quj+sM
-fN70SwQSiHgDDReJjuxmlOu0fTe1VSH+Ap+xT66HQj5OBgsoigrBLMTZnHJOj/6T
-fsmIVucnolqrK6nq7fdPOAb+L//kVqM/eXfqKVl3pnlaPqYAwvCdxDHnxnJQjB0/
-GkySda8PybSJLStiX+qydt3+VyU4cf+d2/6qiiemocd/BqX9nxwzNV6dogdyaAZK
-22P4qMfpCRL+Z4U6MWnujZQyaaGo44NnPg9QA9CPjaK8JrbMBj9XalBYJfspbawf
-CYyNyrzCSAtYvlCSirhCHn36uwAvWvBY8Vy/zXbcj+bMRogBL5ewF9q+Y0p/YQWB
-AnkYR44qHTFX1Qj7EMm04t6ZXGSpcskGZemEinZvfIZPlaqYszUcVTZwJskQMJYT
-mMe8WAinOJG6MsCxt4xGbmEebw8Kgd07uqyXvXWf4SwIaQmhBz8y2GcrXRLUP/s7
-HQqRe6JUTTv3xlGTE/d88bUi6IvoLIMHu4Y2yH6euCxYu5IQMOJGytP0/ylrqogq
-8O6ZRXK6mcvS6G38ODp8bRv/bLedNsVJwCPmtGIY8bCy46punlLa0W5APL60JAq4
-xH4uGoh8/jpKNTqu+1g6dD72QBoUj/iraM9Jbikp/cLRQ/ROukpmo8TSWXExiezm
-PvKWDHTt9UuWY47mFmJf
-=Xz1m
+iQIcBAABAgAGBQJQ9+TQAAoJECmIfjd9wqK00pEP/Rw7B4Pa5iV5NpNJW0Q9Lv0o
+rpKfVdz5/KTwcaN1Owznyd6rBr+DrhsM9KI5bO/hUpOWHNI4zf2JxQjzjFFuLpNM
+Q1DGjezMSIi1MSAcFd45d2wXHxL9s3wwkih6yTfc8FYDOskqnKuUYb3kk2O5fYu5
+x40KLleucDKfzmO0ZhR5IuCcVhahalpRWKwdAfm8gLqdCgwqFfwczhL5rHDBM/Tl
+4WI3LytJXc6ZQsMOH6J7HkyENL76HkfVK7H7bQ4pnAyvAUMQU0goL8mFsXwaEANu
+QTuHd63wUMBgPhAbX6wZZ6HOaj8OWaPOVuzuzILt9cvC8iQAJTjJtLUCpzLm6Lx+
+Wrq6pVOYB3NbeARgoh5F+hP7/H/xojHCR2eH8JsQwwaaH98aUwiNHoAVWs85W/DB
+TVGYbAfWbXjyPM+Pq2mBpRKEpffY9CaIusNeE9v0n1KixRDr0GJvxDygngwY7Yyr
+gbBKPJWk8Ze9MzzG5GA2LDhq/6Wcik/qp75gYoDot0Ok2Zazah/3JNGUfP3w7QCx
+EwE6jOa0l5VhEwRC/2UnffhV4LKtpfRF98vn6X9NOPcZuvGEEhXK6Y2GQ10tDW1v
+dEs8fXeohKZWXSrcoPKnLMYjlr62vgycky6XENPRENVCdgKFHFC+xxW9/nvTuCK+
+EIILgMaGZ8ZnGo3RCJ3o
+=t8Ut
 -----END PGP SIGNATURE-----
 
---=-X5RpUSkhjIONZypM2RaN--
+--=-Awu28s4LBuOvA9H97Op1--
