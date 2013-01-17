@@ -1,21 +1,20 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Tvmta-0006bi-6T
- for linux-mtd@lists.infradead.org; Thu, 17 Jan 2013 10:40:31 +0000
-Message-ID: <1358419318.2731.218.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: m25p80: Flash protection support for STmicro chips
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Austin Boyle <Austin.Boyle@aviatnet.com>
-Date: Thu, 17 Jan 2013 12:41:58 +0200
-In-Reply-To: <1357257748.31023.12.camel@pc786-ubu.GNET.GLOBAL.VPN>
-References: <1357257748.31023.12.camel@pc786-ubu.GNET.GLOBAL.VPN>
+ id 1Tvn6s-0003kh-Ca
+ for linux-mtd@lists.infradead.org; Thu, 17 Jan 2013 10:54:16 +0000
+Message-ID: <1358420143.2731.223.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: mxc_nand: compress ID info for send_read_id_v3
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Roman Schneider <schneider@at.festo.com>, Shawn Guo <shawn.guo@linaro.org>
+Date: Thu, 17 Jan 2013 12:55:43 +0200
+In-Reply-To: <1358265384-23138-1-git-send-email-schneider@at.festo.com>
+References: <1358265384-23138-1-git-send-email-schneider@at.festo.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-WpyN74ceTYkPetSLAioR"
+ boundary="=-jkQ6wVVKB7Qcrgx4QUt4"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- linux-kernel@vger.kernel.org
-Reply-To: artem.bityutskiy@linux.intel.com
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,28 +25,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-WpyN74ceTYkPetSLAioR
+--=-jkQ6wVVKB7Qcrgx4QUt4
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2013-01-04 at 13:02 +1300, Austin Boyle wrote:
-> This patch adds generic support for flash protection on STmicro chips.
-> On chips with less than 3 protection bits, the unused bits are don't care=
-s
-> and so can be written anyway. The lock function will only change the
-> protection bits if it would not unlock other areas. Similarly, the unlock
-> function will not lock currently unlocked areas. Tested on the m25p64.
->=20
-> From: Austin Boyle <Austin.Boyle@aviatnet.com>
-> Signed-off-by: Austin Boyle <Austin.Boyle@aviatnet.com>
+On Tue, 2013-01-15 at 16:56 +0100, Roman Schneider wrote:
+> ---
+>  Also compress the id in case of a v3 NAND flash controller (i.mx51, i.mx=
+53)
+>  and 16Bit buswidth.
 
-Pushed to l2-mtd.git, thanks!
+Unfortunately I cannot compile-test it with the configuration I have.
+This is not your fault, just a breakage in upstream. I'll wait when this
+is fixed upstream, and then take a look at your patch. The breakage is:
+
+arch/arm/mach-imx/built-in.o: In function `imx6q_restart':
+platform-spi_imx.c:(.text+0x2220): undefined reference to `imx_src_prepare_=
+restart'
+arch/arm/mach-imx/built-in.o: In function `imx6q_pm_enter':
+platform-spi_imx.c:(.text+0x22e4): undefined reference to `imx_set_cpu_jump=
+'
+arch/arm/mach-imx/built-in.o: In function `imx6q_init_irq':
+platform-spi_imx.c:(.init.text+0x7280): undefined reference to `imx_src_ini=
+t'
+make[1]: *** [vmlinux] Error 1
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-WpyN74ceTYkPetSLAioR
+--=-jkQ6wVVKB7Qcrgx4QUt4
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -55,19 +62,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQ99V2AAoJECmIfjd9wqK0H2cP/1Qg0pPTCCqdHB80lTJqZ6iL
-/iMPqbH27lCSvgYxBHuz/8TIxfqksHacIE62lFGC7Aptau7wKIpy9Lw+SZZ7jVFl
-YBDx+MW6j633FKdUWvpZHQuyd006aFCsYAl/HUFHm1mkm0q5kGJXGU3zAjRsrHr6
-2paZ2NCqUZtojcDcBsLabCW908YccN1Lv8f6aST2OtCRmqsGsVVAYXRsoQe8gfsX
-8XvWhhtYk8gUbma61s6t2r42XsKsNuBN789qNyFvoVguAfdOpz05D08cWw+I2Cve
-OFZxyn58OcV+Gc5guV7r5AP7XbIWZ3+lf51Rf7KmbL5f0ayxXo0ASS+J239yr1gU
-vteGsYmuF7Cjlm6o5JDwcf5UQBi0tUqoJLe924rmZhmPgSpCx67WwkNuLobpU3Gi
-NW17eBZXIa5xRlMrbJN8NLCyel3TBjSBa5PYCqAmVPJkEfH1V/eHpA9CgPE9bQJL
-uVVELnGdQtDCngcdc1LdlbLGmCso5l61rlYcv8AKIeG9Y/yUPmcno3nAEW06lxHu
-bO0MBK15rvlDbIuBW0KRr3vAnC8eVrXrLYsg+jPY6APvcstgXwgfhUHNAU0WAVJm
-uZ07w7aHMtLudBfduNrE7fB79RLBFfK3Pa6ECGsrdZ/ugAYdCxO6TPztmEJcJ0Et
-xF4TzdwkDHWcUAecJSsW
-=hKcS
+iQIcBAABAgAGBQJQ99ivAAoJECmIfjd9wqK02PgQAMQlM+Erw4hNAGDLf7+nugob
+zqpVVLMJKZAR7wIvvN2ON78iWp2nuJ81PK8U3yDVJpE6CjG6aGFbqhLtVsjAVTP9
+3aYv05D2Yrz6tiisMI0Fw5JPsNbJoGOB5zGxWSFKHtUrSpWgMJFYqt2mYkWpt5AW
+V2wJeEVhbzJCWCI2rbZDWssE8ObHE/uQrKxUkIfE/74KIn4DYNan96fLAdaijgML
+d1DXm1Or13n1/rO1gTsTfVE/LXAuuPZqysp5x4D/R7LX/KHxwZqnhPmxj7bOgJ2S
+YAumpofDV0dSXcF8ivyUHeflKXBP+1b9DQirRQxdeL4BB8ngJAoLjfDWbqtRDxSR
+c657s3h2kxe+KxfO6t/g8ko+dAai1bJ88yJL8xFoqTdGaXQ76tr9wh/P72x8DYGi
+84ZhFj7hBR1ne8ALohf0m3kPCjsZ4hJwYgMfzTgZhKHiowE3FTmIbkRRLHDkLgDf
+EV1VMbSGY5bpBO1STVna4PQ9WhXJu60DMWcrtRKYp7cC9rb0sQkPkgOtlsVznOq9
+2AnOrW7VezQN/vJccNXy+xE9nTAay3BBKtuh0Du1CUOr9XsjZkYZJjtehc2aqfD4
+ysDZgK/PnHQZ3/jAEoEJPVoZBAoqgJnx1tZpFTvRS4cDYdtoDglSH/jTqY9szNfS
+inRBSGlZAQwQY8oky3MA
+=Rkgb
 -----END PGP SIGNATURE-----
 
---=-WpyN74ceTYkPetSLAioR--
+--=-jkQ6wVVKB7Qcrgx4QUt4--
