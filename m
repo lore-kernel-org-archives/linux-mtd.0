@@ -1,14 +1,21 @@
-From: Josh Wu <josh.wu@atmel.com>
-To: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- dedekind1@gmail.com
-Subject: [PATCH v2 1/3] MTD: at91: atmel_nand: for PMECC,
- add code to choose the ecc bits and sector size according to the ONFI
- parameter ECC requirement.
-Date: Thu, 17 Jan 2013 11:24:30 +0800
-Message-Id: <1358393072-14794-2-git-send-email-josh.wu@atmel.com>
-In-Reply-To: <1358393072-14794-1-git-send-email-josh.wu@atmel.com>
-References: <1358393072-14794-1-git-send-email-josh.wu@atmel.com>
-Cc: nicolas.ferre@atmel.com, plagnioj@jcrosoft.com, Josh Wu <josh.wu@atmel.com>
+Received: from mga09.intel.com ([134.134.136.24])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Tvmta-0006bi-6T
+ for linux-mtd@lists.infradead.org; Thu, 17 Jan 2013 10:40:31 +0000
+Message-ID: <1358419318.2731.218.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: m25p80: Flash protection support for STmicro chips
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Austin Boyle <Austin.Boyle@aviatnet.com>
+Date: Thu, 17 Jan 2013 12:41:58 +0200
+In-Reply-To: <1357257748.31023.12.camel@pc786-ubu.GNET.GLOBAL.VPN>
+References: <1357257748.31023.12.camel@pc786-ubu.GNET.GLOBAL.VPN>
+Content-Type: multipart/signed; micalg="pgp-sha1";
+ protocol="application/pgp-signature";
+ boundary="=-WpyN74ceTYkPetSLAioR"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,138 +25,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch will check NAND flash's ecc minimum requirement in ONFI parameter.
 
-If ecc minimum requirement is equal or smaller than pmecc-cap in dtsi, then 
-use ecc_bits in ONFI. otherwise, return an error since pmecc-cap in dtsi 
-doesn't meet the ecc minimum reqirement.
+--=-WpyN74ceTYkPetSLAioR
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This patch also check sector size (codeword) requirement in ONFI. If it is 
-equal or bigger than sector_size in dtsi, then use the one of ONFI. 
-otherwise return error.
+On Fri, 2013-01-04 at 13:02 +1300, Austin Boyle wrote:
+> This patch adds generic support for flash protection on STmicro chips.
+> On chips with less than 3 protection bits, the unused bits are don't care=
+s
+> and so can be written anyway. The lock function will only change the
+> protection bits if it would not unlock other areas. Similarly, the unlock
+> function will not lock currently unlocked areas. Tested on the m25p64.
+>=20
+> From: Austin Boyle <Austin.Boyle@aviatnet.com>
+> Signed-off-by: Austin Boyle <Austin.Boyle@aviatnet.com>
 
-Currently we don't support to read the ECC parameter in ONFI extended 
-parameter page. So in that case we just use the value specified in dts.
+Pushed to l2-mtd.git, thanks!
 
-For non-ONFI support nand flash, we assume the minimum ecc requirement is 
-2bits in 512 bytes.
+--=20
+Best Regards,
+Artem Bityutskiy
 
-Signed-off-by: Josh Wu <josh.wu@atmel.com>
----
-change log:
-  v2: wrap the commit message. 
+--=-WpyN74ceTYkPetSLAioR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
- drivers/mtd/nand/atmel_nand.c |   89 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 89 insertions(+)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index c516a94..b50283a 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -908,6 +908,84 @@ static void atmel_pmecc_core_init(struct mtd_info *mtd)
- 	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_ENABLE);
- }
- 
-+/*
-+ * Get ECC requirement in ONFI parameters, returns -1 if ONFI
-+ * parameters is not supported.
-+ * return 0 if success to get the ECC requirement.
-+ */
-+static int get_onfi_ecc_param(struct nand_chip *chip,
-+		int *ecc_bits, int *sector_size)
-+{
-+	*ecc_bits = *sector_size = 0;
-+
-+	if (chip->onfi_params.ecc_bits == 0xff)
-+		/* TODO: the sector_size and ecc_bits need to be find in
-+		 * extended ecc parameter, currently we don't support it.
-+		 */
-+		return -1;
-+
-+	*ecc_bits = chip->onfi_params.ecc_bits;
-+
-+	/* The default sector size (ecc codeword size) is 512 */
-+	*sector_size = 512;
-+
-+	return 0;
-+}
-+
-+/*
-+ * Choose ecc cap and sector size in atmel_nand_host according to ONFI
-+ * parameters ecc requirement.
-+ * return 0 if success. otherwise return error code.
-+ */
-+static int pmecc_choose_ecc_bits(struct atmel_nand_host *host,
-+		struct nand_chip *chip)
-+{
-+	int ecc_bits, sector_size;
-+
-+	if (!get_onfi_ecc_param(chip, &ecc_bits, &sector_size)) {
-+		dev_info(host->dev, "ONFI params, minimum required ECC: %dbits in %d bytes\n",
-+				ecc_bits, sector_size);
-+
-+		if (ecc_bits > host->pmecc_corr_cap) {
-+			dev_err(host->dev, "Error: Need to set a bigger pmecc-cap in dts. Current is: %d\n",
-+				host->pmecc_corr_cap);
-+			return -EINVAL;
-+		}
-+		if (sector_size < host->pmecc_sector_size) {
-+			dev_err(host->dev, "Error: Need to set a smaller pmecc-sector-size in dts. Current is: %d\n",
-+					host->pmecc_sector_size);
-+			return -EINVAL;
-+		}
-+
-+		/* use the most fitable ecc bits (the near bigger one ) */
-+		if (ecc_bits <= 2)
-+			host->pmecc_corr_cap = 2;
-+		else if (ecc_bits <= 4)
-+			host->pmecc_corr_cap = 4;
-+		else if (ecc_bits < 8)
-+			host->pmecc_corr_cap = 8;
-+		else if (ecc_bits < 12)
-+			host->pmecc_corr_cap = 12;
-+		else if (ecc_bits < 24)
-+			host->pmecc_corr_cap = 24;
-+		else
-+			return -EINVAL;
-+
-+		/* use the most fitable sector size (the near smaller one ) */
-+		if (sector_size >= 1024)
-+			host->pmecc_sector_size = 1024;
-+		else if (sector_size >= 512)
-+			host->pmecc_sector_size = 512;
-+		else
-+			return -EINVAL;
-+	} else {
-+		dev_info(host->dev,
-+		"NAND chip ECC reqirement is in Extended ONFI parameter, we don't support yet. So use default setting in dts\n");
-+	}
-+
-+	return 0;
-+}
-+
- static int __init atmel_pmecc_nand_init_params(struct platform_device *pdev,
- 					 struct atmel_nand_host *host)
- {
-@@ -916,8 +994,19 @@ static int __init atmel_pmecc_nand_init_params(struct platform_device *pdev,
- 	struct resource *regs, *regs_pmerr, *regs_rom;
- 	int cap, sector_size, err_no;
- 
-+	if (nand_chip->onfi_version) {
-+		/* Choose ecc cap and sector size base on ONFI parameters */
-+		err_no = pmecc_choose_ecc_bits(host, nand_chip);
-+		if (err_no)
-+			return err_no;
-+	} else {
-+		dev_info(host->dev, "NAND chip is not ONFI compliant, assume ecc_bits is 2");
-+		host->pmecc_corr_cap = 2;
-+	}
-+
- 	cap = host->pmecc_corr_cap;
- 	sector_size = host->pmecc_sector_size;
-+
- 	dev_info(host->dev, "Initialize PMECC params, cap: %d, sector: %d\n",
- 		 cap, sector_size);
- 
--- 
-1.7.9.5
+iQIcBAABAgAGBQJQ99V2AAoJECmIfjd9wqK0H2cP/1Qg0pPTCCqdHB80lTJqZ6iL
+/iMPqbH27lCSvgYxBHuz/8TIxfqksHacIE62lFGC7Aptau7wKIpy9Lw+SZZ7jVFl
+YBDx+MW6j633FKdUWvpZHQuyd006aFCsYAl/HUFHm1mkm0q5kGJXGU3zAjRsrHr6
+2paZ2NCqUZtojcDcBsLabCW908YccN1Lv8f6aST2OtCRmqsGsVVAYXRsoQe8gfsX
+8XvWhhtYk8gUbma61s6t2r42XsKsNuBN789qNyFvoVguAfdOpz05D08cWw+I2Cve
+OFZxyn58OcV+Gc5guV7r5AP7XbIWZ3+lf51Rf7KmbL5f0ayxXo0ASS+J239yr1gU
+vteGsYmuF7Cjlm6o5JDwcf5UQBi0tUqoJLe924rmZhmPgSpCx67WwkNuLobpU3Gi
+NW17eBZXIa5xRlMrbJN8NLCyel3TBjSBa5PYCqAmVPJkEfH1V/eHpA9CgPE9bQJL
+uVVELnGdQtDCngcdc1LdlbLGmCso5l61rlYcv8AKIeG9Y/yUPmcno3nAEW06lxHu
+bO0MBK15rvlDbIuBW0KRr3vAnC8eVrXrLYsg+jPY6APvcstgXwgfhUHNAU0WAVJm
+uZ07w7aHMtLudBfduNrE7fB79RLBFfK3Pa6ECGsrdZ/ugAYdCxO6TPztmEJcJ0Et
+xF4TzdwkDHWcUAecJSsW
+=hKcS
+-----END PGP SIGNATURE-----
+
+--=-WpyN74ceTYkPetSLAioR--
