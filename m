@@ -1,18 +1,18 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
+Received: from mail-da0-f48.google.com ([209.85.210.48])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TwFB4-0004Bl-SN
- for linux-mtd@lists.infradead.org; Fri, 18 Jan 2013 16:52:27 +0000
-Received: by mail-pb0-f49.google.com with SMTP id un15so2136001pbc.22
- for <linux-mtd@lists.infradead.org>; Fri, 18 Jan 2013 08:52:25 -0800 (PST)
-Message-ID: <50F97DB5.7040801@gmail.com>
-Date: Fri, 18 Jan 2013 22:22:05 +0530
+ id 1TwFEE-0004Y1-VF
+ for linux-mtd@lists.infradead.org; Fri, 18 Jan 2013 16:55:43 +0000
+Received: by mail-da0-f48.google.com with SMTP id k18so1712540dae.21
+ for <linux-mtd@lists.infradead.org>; Fri, 18 Jan 2013 08:55:41 -0800 (PST)
+Message-ID: <50F97E6C.7030201@gmail.com>
+Date: Fri, 18 Jan 2013 22:25:08 +0530
 From: Vikram Narayanan <vikram186@gmail.com>
 MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Subject: mtd_oobtest fails with GPMI-NAND
+Subject: UBIFS space consumption
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Huang Shijie <b32955@freescale.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,34 +22,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+I am using UBIFS with the below partitioning layout.
 
-When I try to run the mtd_oobtest on an i.Mx6Q board, it results in a 
-failure with the following error.
-I'm using 3.5.7 Kernel.
+<6m(bootloader)
+512k(environment)
+512k(redundant-environment)
+5m(kernel),
+170m(filesystem),
+40m(user_data1),
+-(user_data2)>
 
-root@freescale:/# insmod mtd_oobtest.ko dev=6
-[ 7534.508880]
-[ 7534.511228] =================================================
-[ 7534.518460] mtd_oobtest: MTD device: 6
-[ 7534.523000] mtd_oobtest: MTD device size 304087040, eraseblock size 
-262144, page size 4096, count of eraseblocks 1160, pages per eraseblock 
-64, OOB size 128
-[ 7534.539301] mtd_oobtest: scanning for bad eraseblocks
-[ 7534.545345] mtd_oobtest: scanned 1160 eraseblocks, 0 are bad
-[ 7534.552482] mtd_oobtest: test 1 of 5
-[ 7534.556797] mtd_oobtest: erasing whole device
-[ 7537.523540] mtd_oobtest: erased 1160 eraseblocks
-[ 7537.528888] mtd_oobtest: writing OOBs of whole device
-[ 7537.534704] mtd_oobtest: error: writeoob failed at 0x0
-[ 7537.540562] mtd_oobtest: error: use_len 0, use_offset 0
-[ 7537.546565] mtd_oobtest: error -22 occurred
-[ 7537.551456] =================================================
+For the UBI volume 0 which has 170 MiB,
+ubinfo reports 164.7 MiB, which is explained by:
 
-This boils down to the fake "struct nand_ecclayout" defined in
-<drivers/mtd/nand/gpmi-nand/gpmi-nand.c>
+(PEB size - LEB size) * (no of PEB's - reserved PEBs)
+(256 - 248) * (680 - 6) = 5.392 MiB
+Total size = 170 MiB - 5.39 = 164.6 MiB
 
-Is there a way to run this test successfully?
+
+root@BOX:/# ubinfo /dev/ubi0
+ubi0
+Volumes count:                           1
+Logical eraseblock size:                 253952 bytes, 248.0 KiB
+Total amount of logical eraseblocks:     680 (172687360 bytes, 164.7 MiB)
+Amount of available logical eraseblocks: 0 (0 bytes)
+Maximum count of volumes                 128
+Count of bad physical eraseblocks:       0
+Count of reserved physical eraseblocks:  6
+Current maximum erase counter value:     5
+Minimum input/output unit size:          4096 bytes
+Character device major/minor:            253:0
+Present volumes:                         0
+
+But according to "df",  UBI volume 0 is sized 148.9 MiB. That's, 15.8 
+MiB more in terms of consumption.
+
+root@BOX:/# df -h
+Filesystem                Size      Used Available Use% Mounted on
+ubi0:rootfs             148.9M    132.8M     16.1M  89% /
+root@BOX:/#
+
+Can someone explain where this 15 MiB is getting lost?
 
 Regards,
 Vikram
