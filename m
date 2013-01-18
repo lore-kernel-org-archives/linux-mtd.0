@@ -1,25 +1,21 @@
-Message-ID: <1358494068.21816.2.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 3/4] Enable ecc-mode selection in the driver
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Stefan Peter <s.peter@mpl.ch>
-Date: Fri, 18 Jan 2013 09:27:48 +0200
-In-Reply-To: <50F6927D.3070303@mpl.ch>
-References: <cover.1358242644.git.s.peter@mpl.ch>
- <2d08c4c072fd4922a6056362adb96a455307d583.1358242644.git.s.peter@mpl.ch>
- <20130115125119.GH13482@lunn.ch> <50F6927D.3070303@mpl.ch>
+Received: from mga14.intel.com ([143.182.124.37])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Tw6un-0007FT-Th
+ for linux-mtd@lists.infradead.org; Fri, 18 Jan 2013 08:03:06 +0000
+Message-ID: <1358496270.21816.3.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/2] mtd: cmdlinepart: Make it into a module
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Lubomir Rintel <lkundrak@v3.sk>
+Date: Fri, 18 Jan 2013 10:04:30 +0200
+In-Reply-To: <1358298770-20286-1-git-send-email-lkundrak@v3.sk>
+References: <1358298770-20286-1-git-send-email-lkundrak@v3.sk>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-CrpCoex3dzrHKWZmEWFd"
+ boundary="=-rzLx6FuqsGZfH6/ryiD+"
 Mime-Version: 1.0
-Cc: Andrew Lunn <andrew@lunn.ch>, linux@arm.linux.org.uk, jason@lakedaemon.net,
- arnd@arndb.de, nico@linaro.org, iwamatsu@nigauri.org,
- devicetree-discuss@lists.ozlabs.org, broonie@opensource.wolfsonmicro.com,
- sebastian.hesselbarth@googlemail.com, linux-kernel@vger.kernel.org,
- rob.herring@calxeda.com, grant.likely@secretlab.ca, wfp5p@virginia.edu,
- linux-mtd@lists.infradead.org, rob@landley.net, gregkh@linuxfoundation.org,
- dwmw2@infradead.org, jm@lentin.co.uk, linux-arm-kernel@lists.infradead.org,
- mchehab@redhat.com
-Reply-To: artem.bityutskiy@linux.intel.com
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,21 +26,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-CrpCoex3dzrHKWZmEWFd
+--=-rzLx6FuqsGZfH6/ryiD+
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2013-01-16 at 12:43 +0100, Stefan Peter wrote:
-> Hi Andrew
+On Wed, 2013-01-16 at 02:12 +0100, Lubomir Rintel wrote:
+> All other partitioning schemes can be compiled as modules
+>=20
+> Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
 
-For some reasons I do not see your patches in the mailing lists which
-are in CC.
+Both pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-CrpCoex3dzrHKWZmEWFd
+--=-rzLx6FuqsGZfH6/ryiD+
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -52,19 +49,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJQ+Pl0AAoJECmIfjd9wqK0LWIP/3CDKUIxU/JRAmJzi5wXaK3n
-Of62QwKuNC8u+7iwK9WfKSP2AdliJlGG2mfYWfHudB71awAviuENsk+k0OfbPazf
-HluqmYRj8QfxSyuDpuPyjTcsgabSqRRr4DnnGPbmXidg2i3Bokk9SL1dGfAlEXRK
-NX7VCEmFnhUAQLsI2ukfxD/I8Eoj3jevHmvQidO9fjK8CqBDTwIv3Mv8ENEDfzcy
-LUIrvRKrNtM5b0Fnt1G01vwa/218xtDMEoxx83+F1t9E5XKIgFrwU+eNjXAnCQJd
-4MaSPZDYUmPQh5lj8ie7jj5so/MVZk5acTfJWhz/ZtIqJBSEmaoDWspo3+iqawT9
-2GAZtIlBtqXObD+P1+wZbyW1t3BC5dj7W1OG1CT7jwuzK+k8lO0puHb5gCeLdACk
-YxQ/r6EbWe/EaGPc65uff/ZFwgVYeTo4riH79XPULZCGXNAtzM/f++a6axco8zzt
-tkkRA4EeS16AtHMi4eApjVgMZifjWyNhSR7yAgrfW5oHirqZHj1TtPMPG/xfHfs5
-X0GNphmcPFv2kA2Xlwr7bXO7MuqG5ZiY87CZBbmsUknKBhlilDK3IL2RJFk1GzBR
-ntqR7fxTmvALuHYJDCGo29FfKq+yjFIY253ZWC2ZXuQWmDg103qnOSxKFCpESHGi
-HtZu+8muHyb5z/7VZK5V
-=l9HE
+iQIcBAABAgAGBQJQ+QIOAAoJECmIfjd9wqK0+CsP/2hylVPVFT5wfFU54C6wkOpa
+49juJcm1IIFppBGOoQ5KSI/GzZyvzWldcaYsKbxGiAG38Oqc+HdK3IiUc4nLk5Ow
+LzpnuMQaBq6NEkZi5IEN0e5t3CfYe5w/iabY3JpoZcO1Ii8O5XXypm5SLWnrkEEG
+FkNV7vgea+qNHwHsR5DUGCfvbzd/9eX8Z9JcpQUhfdTcI0DMbBr0PcagQefLbr9H
+zwhDwsqbHoUf7Q3TSFA79Rh5NV3vqOy8XdhVZXZCCBLwj2g24seKh9G8wjf74GgF
+f1nhda9oUyYu6At2/iRX6854SA8aCV09snWk9bD0zg1zsrYDBcP9ZBCR/7rg2u2I
+K6OEZxBH3M9imh5wUlpRC58YHgqjFKkTiCFqHNUdUGp+na9s/sjiG6lVHcu+mm58
++gGEqtWQFoyvREpb0qXZgvGWNks41Rzgx+ZW914X+mCSGZY+uUIYLPJhYpivny0D
+sRMNfDJ4UEvL6vvodZo5hdmCi0oWngiMBjO+4smIzHgIDX7SNZBYltHKeET3Euyv
+y2lxn4wY4nO0RHgbEnfzov5fO24cBvuozjVUcPGbsRtSX/+hkPk801va/WPzixn2
+7J33bn97xiN7gi1nyBsVPKwacWlzeCY0CWIXh0fLvIFwSosl7YK9y9rguMgBD226
+4W8ySrVXp6ifkC0p1VzU
+=cn7o
 -----END PGP SIGNATURE-----
 
---=-CrpCoex3dzrHKWZmEWFd--
+--=-rzLx6FuqsGZfH6/ryiD+--
