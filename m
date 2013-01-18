@@ -1,20 +1,21 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TwB20-0005OJ-4U
- for linux-mtd@lists.infradead.org; Fri, 18 Jan 2013 12:26:49 +0000
-Message-ID: <50F93F65.90805@parrot.com>
-Date: Fri, 18 Jan 2013 13:26:13 +0100
-From: Matthieu CASTET <matthieu.castet@parrot.com>
+Received: from mail-pb0-f45.google.com ([209.85.160.45])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TwB8p-0002Pc-RD
+ for linux-mtd@lists.infradead.org; Fri, 18 Jan 2013 12:33:52 +0000
+Received: by mail-pb0-f45.google.com with SMTP id mc8so2018925pbc.4
+ for <linux-mtd@lists.infradead.org>; Fri, 18 Jan 2013 04:33:49 -0800 (PST)
+Message-ID: <50F94122.3000609@gmail.com>
+Date: Fri, 18 Jan 2013 18:03:38 +0530
+From: Vikram Narayanan <vikram186@gmail.com>
 MIME-Version: 1.0
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: question: Why the nand_wait() wait for 20ms for nand program.
-References: <50F9023D.5040408@freescale.com>
-In-Reply-To: <50F9023D.5040408@freescale.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+To: Stefan Roese <sr@denx.de>
+Subject: Re: [PATCH v3] mtd: cfi_cmdset_0002: Support Persistent Protection
+ Bits (PPB) locking
+References: <1358511005-23258-1-git-send-email-sr@denx.de>
+In-Reply-To: <1358511005-23258-1-git-send-email-sr@denx.de>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,17 +25,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Huang Shijie a écrit :
-> Hi all:
-> Why the nand_wait() wait for 20ms for nand program. could we
-> expand this time to 40ms? I have a nand chip : Micron MT29F64G08CBABAWP.
-> The chip's BUSY/READY pin may needs more then 20ms to become ready,
-> though its
-> datasheet tells me the tPROG's max value is 2.5ms.
-> 
-Don't you have an hardware problem (missing pullup/down on ready busy pin) ?
+On 1/18/2013 5:40 PM, Stefan Roese wrote:
+<snip>
+> nor_flash@0,0 {
+> 	compatible = "amd,s29gl256n", "cfi-flash";
+> 	bank-width = <2>;
+> 	use-advanced-sector-protection;
+> 	...
+>
+> Tested with Spanion S29GL512S10THI and Micron JS28F512M29EWx flash
+> devices.
 
-If the datasheet say the max value is 2.5 ms , how it can be more than 20 ms.
+Minor nitpick.
+Isn't it Spansion?
 
-
-Matthieu
+~Vikram
