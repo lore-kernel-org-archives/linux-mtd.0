@@ -1,26 +1,13 @@
-Received: from userp1040.oracle.com ([156.151.31.81])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TwMzz-0003yn-Bb
- for linux-mtd@lists.infradead.org; Sat, 19 Jan 2013 01:13:31 +0000
-Subject: [PATCH 6/6] ubifs: Wait for page writeback to provide stable pages
-To: axboe@kernel.dk, lucho@ionkov.net, jack@suse.cz, darrick.wong@oracle.com,
- ericvh@gmail.com, viro@zeniv.linux.org.uk, rminnich@sandia.gov,
- tytso@mit.edu
-From: "Darrick J. Wong" <darrick.wong@oracle.com>
-Date: Fri, 18 Jan 2013 17:13:16 -0800
-Message-ID: <20130119011316.20902.56721.stgit@blackbox.djwong.org>
-In-Reply-To: <20130119011231.20902.55954.stgit@blackbox.djwong.org>
-References: <20130119011231.20902.55954.stgit@blackbox.djwong.org>
+Message-Id: <201301191628.r0JDFCMG032510@relay.aragon.es>
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Cc: martin.petersen@oracle.com, Artem Bityutskiy <dedekind1@gmail.com>,
- neilb@suse.de, linux-kernel@vger.kernel.org, david@fromorbit.com,
- gnehzuil.liu@gmail.com, Adrian Hunter <adrian.hunter@intel.com>,
- hch@infradead.org, jlayton@samba.org, adilger.kernel@dilger.ca,
- bharrosh@panasas.com, linux-fsdevel@vger.kernel.org,
- linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
- linux-ext4@vger.kernel.org, hirofumi@mail.parknet.co.jp
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: You Where Choosen
+To: Recipients <egm@ciudad.com.ar>
+From: "Cassey Carrington and Matt" <egm@ciudad.com.ar>
+Date: Sat, 19 Jan 2013 18:27:31 +0200
+Reply-To: casseyandmatt2013@gmx.co.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,30 +17,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When stable pages are required, we have to wait if the page is just
-going to disk and we want to modify it. Add proper callback to
-ubifs_vm_page_mkwrite().
+Greetings to You & Your Family!
 
-CC: Artem Bityutskiy <dedekind1@gmail.com>
-CC: Adrian Hunter <adrian.hunter@intel.com>
-CC: linux-mtd@lists.infradead.org
-From: Jan Kara <jack@suse.cz>
-Signed-off-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
----
- fs/ubifs/file.c |    1 +
- 1 file changed, 1 insertion(+)
+Send response to :  casseyandmatt2013@gmx.co.uk
+My fiances Cassey Carrington  and I won one of the biggest Euro Millions lo=
+ttery prize of =A345,000,000.00 GBP in February  this year 2012 and now we =
+just =
 
+commenced our 2012 Year Charity Donation Scheme.
+We will be giving out cash grants of =A31,000,000.00 GBP each to improve =
 
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index 5bc7781..4f6493c 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -1522,6 +1522,7 @@ static int ubifs_vm_page_mkwrite(struct vm_area_struct *vma,
- 			ubifs_release_dirty_inode_budget(c, ui);
- 	}
- 
-+	wait_for_stable_page(page);
- 	unlock_page(page);
- 	return 0;
- 
+the lives and careers of five(5) Lucky Individuals, =
+
+Charity Organizations from any part of the world,making out  =
+
+donations.
+
+To confirm this,you may watch our interview by visiting the web page below;
+
+http://www.bbc.co.uk/news/uk-england-nottinghamshire-16961132
+
+Your email address was submitted to my fiances and me from the best web =
+
+directory and search engine by legal advisers to the donation scheme. =
+
+You received this message because we have listed you as one of our =
+
+five lucky millionaires.
+If you receive this email on your office email address, you are =
+
+advised to reply with this message on your private email address for =
+
+more details on how to receive your cash grant.
+
+Congratulations.
+
+Cassey Carrington and Matt Topham
+London.United Kingdom
+Email:  casseyandmatt2013@gmx.co.uk
