@@ -1,13 +1,14 @@
-Message-Id: <201301191628.r0JDFCMG032510@relay.aragon.es>
-Content-Type: text/plain; charset="iso-8859-1"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: You Where Choosen
-To: Recipients <egm@ciudad.com.ar>
-From: "Cassey Carrington and Matt" <egm@ciudad.com.ar>
-Date: Sat, 19 Jan 2013 18:27:31 +0200
-Reply-To: casseyandmatt2013@gmx.co.uk
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: linux-omap@vger.kernel.org
+Subject: [PATCH v2 1/3] mtd: omap-onenand: pass device_node in platform data
+Date: Sat, 19 Jan 2013 19:27:55 -0300
+Message-Id: <1358634477-25868-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: thomas.petazzoni@free-electrons.com, martinez.javier@gmail.com,
+ Ezequiel Garcia <elezegarcia@gmail.com>, matthias.bgg@googlemail.com,
+ eballetbo@gmail.com, devicetree-discuss@lists.ozlabs.org, zonque@gmail.com,
+ grant.likely@secretlab.ca, tony@atomide.com, linux-mtd@lists.infradead.org,
+ jon-hunter@ti.com, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ linux-arm-kernel@lists.infradead.org, b-cousson@ti.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,41 +18,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Greetings to You & Your Family!
+Pass an optional device_node pointer in the platform data,
+which in turn will be put into a mtd_part_parser_data.
+This way, code that sets up the platform devices can pass
+along the node from DT so that the partitions can be parsed.
 
-Send response to :  casseyandmatt2013@gmx.co.uk
-My fiances Cassey Carrington  and I won one of the biggest Euro Millions lo=
-ttery prize of =A345,000,000.00 GBP in February  this year 2012 and now we =
-just =
+For non-DT boards, this change has no effect.
 
-commenced our 2012 Year Charity Donation Scheme.
-We will be giving out cash grants of =A31,000,000.00 GBP each to improve =
+Acked-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+---
+ drivers/mtd/onenand/omap2.c                     |    4 +++-
+ include/linux/platform_data/mtd-onenand-omap2.h |    3 +++
+ 2 files changed, 6 insertions(+), 1 deletions(-)
 
-the lives and careers of five(5) Lucky Individuals, =
-
-Charity Organizations from any part of the world,making out  =
-
-donations.
-
-To confirm this,you may watch our interview by visiting the web page below;
-
-http://www.bbc.co.uk/news/uk-england-nottinghamshire-16961132
-
-Your email address was submitted to my fiances and me from the best web =
-
-directory and search engine by legal advisers to the donation scheme. =
-
-You received this message because we have listed you as one of our =
-
-five lucky millionaires.
-If you receive this email on your office email address, you are =
-
-advised to reply with this message on your private email address for =
-
-more details on how to receive your cash grant.
-
-Congratulations.
-
-Cassey Carrington and Matt Topham
-London.United Kingdom
-Email:  casseyandmatt2013@gmx.co.uk
+diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
+index 065f3fe..eec2aed 100644
+--- a/drivers/mtd/onenand/omap2.c
++++ b/drivers/mtd/onenand/omap2.c
+@@ -637,6 +637,7 @@ static int omap2_onenand_probe(struct platform_device *pdev)
+ 	struct onenand_chip *this;
+ 	int r;
+ 	struct resource *res;
++	struct mtd_part_parser_data ppdata = {};
+ 
+ 	pdata = pdev->dev.platform_data;
+ 	if (pdata == NULL) {
+@@ -767,7 +768,8 @@ static int omap2_onenand_probe(struct platform_device *pdev)
+ 	if ((r = onenand_scan(&c->mtd, 1)) < 0)
+ 		goto err_release_regulator;
+ 
+-	r = mtd_device_parse_register(&c->mtd, NULL, NULL,
++	ppdata.of_node = pdata->of_node;
++	r = mtd_device_parse_register(&c->mtd, NULL, &ppdata,
+ 				      pdata ? pdata->parts : NULL,
+ 				      pdata ? pdata->nr_parts : 0);
+ 	if (r)
+diff --git a/include/linux/platform_data/mtd-onenand-omap2.h b/include/linux/platform_data/mtd-onenand-omap2.h
+index 685af7e..e9a9fb1 100644
+--- a/include/linux/platform_data/mtd-onenand-omap2.h
++++ b/include/linux/platform_data/mtd-onenand-omap2.h
+@@ -29,5 +29,8 @@ struct omap_onenand_platform_data {
+ 	u8			flags;
+ 	u8			regulator_can_sleep;
+ 	u8			skip_initial_unlocking;
++
++	/* for passing the partitions */
++	struct device_node	*of_node;
+ };
+ #endif
+-- 
+1.7.8.6
