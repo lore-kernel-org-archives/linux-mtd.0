@@ -1,26 +1,18 @@
-Date: Mon, 21 Jan 2013 10:33:48 -0800
-From: Tony Lindgren <tony@atomide.com>
-To: Ezequiel Garcia <elezegarcia@gmail.com>
-Subject: Re: [PATCH v2 3/3] arm: omap2: gpmc: add DT bindings for OneNAND
-Message-ID: <20130121183348.GI22517@atomide.com>
-References: <1358634477-25868-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1358634477-25868-3-git-send-email-ezequiel.garcia@free-electrons.com>
- <20130121123020.GI15707@e106331-lin.cambridge.arm.com>
- <CALF0-+VOxtsfQLZCGujvjMrsGacbfVTMytRUX=CfKa3+FgnU1w@mail.gmail.com>
+Received: from lxorguk.ukuu.org.uk ([81.2.110.251])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TxQjT-0000tW-FV
+ for linux-mtd@lists.infradead.org; Mon, 21 Jan 2013 23:24:53 +0000
+Received: from bob.linux.org.uk (earthlight.etchedpixels.co.uk [81.2.110.250])
+ by lxorguk.ukuu.org.uk (8.14.5/8.14.1) with ESMTP id r0M088LU012939
+ for <linux-mtd@lists.infradead.org>; Tue, 22 Jan 2013 00:08:13 GMT
+Subject: [PATCH] goldfish: NAND flash driver
+To: linux-mtd@lists.infradead.org
+From: Alan Cox <alan@linux.intel.com>
+Date: Mon, 21 Jan 2013 23:45:10 +0000
+Message-ID: <20130121234502.19934.61017.stgit@bob.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALF0-+VOxtsfQLZCGujvjMrsGacbfVTMytRUX=CfKa3+FgnU1w@mail.gmail.com>
-Cc: Mark Rutland <mark.rutland@arm.com>,
- "martinez.javier@gmail.com" <martinez.javier@gmail.com>,
- "matthias.bgg@googlemail.com" <matthias.bgg@googlemail.com>,
- "eballetbo@gmail.com" <eballetbo@gmail.com>,
- "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>,
- Daniel Mack <zonque@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,110 +22,587 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Ezequiel Garcia <elezegarcia@gmail.com> [130121 09:00]:
-> Hi Mark,
-> 
-> On Mon, Jan 21, 2013 at 9:30 AM, Mark Rutland <mark.rutland@arm.com> wrote:
-> > [...]
-> >
-> >> diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
-> >> index 01ce462..f7de9eb 100644
-> >> --- a/arch/arm/mach-omap2/gpmc.c
-> >> +++ b/arch/arm/mach-omap2/gpmc.c
-> >> @@ -39,6 +39,7 @@
-> >>  #include "omap_device.h"
-> >>  #include "gpmc.h"
-> >>  #include "gpmc-nand.h"
-> >> +#include "gpmc-onenand.h"
-> >>
-> >>  #define      DEVICE_NAME             "omap-gpmc"
-> >>
-> >> @@ -1259,6 +1260,43 @@ static int gpmc_probe_nand_child(struct platform_device *pdev,
-> >>  }
-> >>  #endif
-> >>
-> >> +#ifdef CONFIG_MTD_ONENAND
-> >> +static int gpmc_probe_onenand_child(struct platform_device *pdev,
-> >> +                              struct device_node *child)
-> >> +{
-> >> +     u32 val;
-> >> +     struct omap_onenand_platform_data *gpmc_onenand_data;
-> >> +
-> >> +     if (of_property_read_u32(child, "reg", &val) < 0) {
-> >> +             dev_err(&pdev->dev, "%s has no 'reg' property\n",
-> >> +                     child->full_name);
-> >> +             return -ENODEV;
-> >> +     }
-> >> +
-> >> +     gpmc_onenand_data = devm_kzalloc(&pdev->dev, sizeof(*gpmc_onenand_data),
-> >> +                                      GFP_KERNEL);
-> >> +     if (!gpmc_onenand_data)
-> >> +             return -ENOMEM;
-> >> +
-> >> +     gpmc_onenand_data->cs = val;
-> >> +     gpmc_onenand_data->of_node = child;
-> >> +     gpmc_onenand_data->dma_channel = -1;
-> >> +
-> >> +     if (!of_property_read_u32(child, "dma-channel", &val))
-> >> +             gpmc_onenand_data->dma_channel = val;
-> >> +
-> >> +     gpmc_onenand_init(gpmc_onenand_data);
-> >> +
-> >> +     return 0;
-> >> +}
-> >> +#else
-> >> +static int gpmc_probe_onenand_child(struct platform_device *pdev,
-> >> +                                 struct device_node *child)
-> >> +{
-> >> +     return 0;
-> >> +}
-> >> +#endif
-> >> +
-> >>  static int gpmc_probe_dt(struct platform_device *pdev)
-> >>  {
-> >>       int ret;
-> >> @@ -1276,6 +1314,12 @@ static int gpmc_probe_dt(struct platform_device *pdev)
-> >>                       return ret;
-> >>       }
-> >>
-> >
-> > This doesn't look right to me:
-> >
-> >> +     for_each_node_by_name(child, "onenand") {
-> >> +             ret = gpmc_probe_onenand_child(pdev, child);
-> >> +             of_node_put(child);
-> >> +             if (ret < 0)
-> >> +                     return ret;
-> >> +     }
-> >
-> > for_each_node_by_name automatically calls of_node_put on each node once passed,
-> > and as far as I can tell, gpmc_probe_onenand_child doesn't do anything that'd
-> > increment a node's refcount.
-> >
-> > As far as I can see, you only need the of_node_put in the error case:
-> >
-> > for_each_node_by_name(child, "onenand") {
-> >         ret = gpmc_probe_onenand_child(pdev, child);
-> >         if (ret < 0) {
-> >                 of_node_put(child);
-> >                 return ret;
-> >         }
-> > }
-> >
-> > Have I missed something here?
-> >
-> 
-> Mmm... perhaps I've overlooked that code.
-> 
-> After some digging through source and reading for_each_node_by_name()
-> it seems to me you're right.
-> 
-> @Daniel: It seems this would also apply to the NAND binding.
-> What do you think?
+From: Arve Hjønnevåg <arve@google.com>
 
-Would prefer this done as a fix against the omap-for-v3.9/gpmc
-branch before we apply Ezequiel's patches.
+Fold together the NAND driver for Goldfish from Arve with cleanups by
+Jun Nakajima and a tidy up to 3.7 and checkpatch.
 
-Regards,
+Signed-off-by: Mike A. Chan <mikechan@google.com>
+Signed-off-by: Arve Hjønnevåg <arve@android.com>
+[Ported to handle x86]
+Signed-off-by: Sheng Yang <sheng@linux.intel.com>
+Signed-off-by: Yunhong Jiang <yunhong.jiang@intel.com>
+Signed-off-by: Xiaohui Xin <xiaohui.xin@intel.com>
+Signed-off-by: Jun Nakajima <jun.nakajima@intel.com>
+Signed-off-by: Bruce Beare <bruce.j.beare@intel.com>
+[Ported to 3.4]
+Signed-off-by: Tom Keel <thomas.keel@intel.com>
+[Ported to 3.7 and tided for checkpatch etc]
+Signed-off-by: Alan Cox <alan@linux.intel.com>
+---
 
-Tony
+ drivers/mtd/devices/Kconfig             |    7 
+ drivers/mtd/devices/Makefile            |    1 
+ drivers/mtd/devices/goldfish_nand.c     |  444 +++++++++++++++++++++++++++++++
+ drivers/mtd/devices/goldfish_nand_reg.h |   72 +++++
+ 4 files changed, 524 insertions(+)
+ create mode 100644 drivers/mtd/devices/goldfish_nand.c
+ create mode 100644 drivers/mtd/devices/goldfish_nand_reg.h
+
+
+diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
+index 12311f5..6d6d77e 100644
+--- a/drivers/mtd/devices/Kconfig
++++ b/drivers/mtd/devices/Kconfig
+@@ -343,4 +343,11 @@ config MTD_DOCPROBE_55AA
+ 	  LinuxBIOS or if you need to recover a DiskOnChip Millennium on which
+ 	  you have managed to wipe the first block.
+ 
++config MTD_GOLDFISH_NAND
++	tristate "Goldfish NAND device"
++	depends on GOLDFISH
++	help
++	  Drives the emulated NAND flash device on the Google Goldfish
++	  Android virtual device.
++
+ endmenu
+diff --git a/drivers/mtd/devices/Makefile b/drivers/mtd/devices/Makefile
+index 369a194..ba835c5 100644
+--- a/drivers/mtd/devices/Makefile
++++ b/drivers/mtd/devices/Makefile
+@@ -21,6 +21,7 @@ obj-$(CONFIG_MTD_NAND_OMAP_BCH)	+= elm.o
+ obj-$(CONFIG_MTD_SPEAR_SMI)	+= spear_smi.o
+ obj-$(CONFIG_MTD_SST25L)	+= sst25l.o
+ obj-$(CONFIG_MTD_BCM47XXSFLASH)	+= bcm47xxsflash.o
++obj-$(CONFIG_MTD_GOLDFISH_NAND)	+= goldfish_nand.o
+ 
+ 
+ CFLAGS_docg3.o			+= -I$(src)
+diff --git a/drivers/mtd/devices/goldfish_nand.c b/drivers/mtd/devices/goldfish_nand.c
+new file mode 100644
+index 0000000..1891d89
+--- /dev/null
++++ b/drivers/mtd/devices/goldfish_nand.c
+@@ -0,0 +1,444 @@
++/*
++ * drivers/mtd/devices/goldfish_nand.c
++ *
++ * Copyright (C) 2007 Google, Inc.
++ * Copyright (C) 2012 Intel, Inc.
++ * Copyright (C) 2013 Intel, Inc.
++ *
++ * This software is licensed under the terms of the GNU General Public
++ * License version 2, as published by the Free Software Foundation, and
++ * may be copied, distributed, and modified under those terms.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ */
++
++#include <linux/io.h>
++#include <linux/device.h>
++#include <linux/module.h>
++#include <linux/slab.h>
++#include <linux/ioport.h>
++#include <linux/vmalloc.h>
++#include <linux/init.h>
++#include <linux/mtd/mtd.h>
++#include <linux/platform_device.h>
++
++#include <asm/div64.h>
++
++#include "goldfish_nand_reg.h"
++
++struct goldfish_nand {
++	spinlock_t              lock;
++	unsigned char __iomem  *base;
++	struct cmd_params       *cmd_params;
++	size_t                  mtd_count;
++	struct mtd_info         mtd[0];
++};
++
++static u32 goldfish_nand_cmd_with_params(struct mtd_info *mtd,
++			enum nand_cmd cmd, u64 addr, u32 len,
++			void *ptr, u32 *rv)
++{
++	u32 cmdp;
++	struct goldfish_nand *nand = mtd->priv;
++	struct cmd_params *cps = nand->cmd_params;
++	unsigned char __iomem  *base = nand->base;
++
++	if (cps == NULL)
++		return -1;
++
++	switch (cmd) {
++	case NAND_CMD_ERASE:
++		cmdp = NAND_CMD_ERASE_WITH_PARAMS;
++		break;
++	case NAND_CMD_READ:
++		cmdp = NAND_CMD_READ_WITH_PARAMS;
++		break;
++	case NAND_CMD_WRITE:
++		cmdp = NAND_CMD_WRITE_WITH_PARAMS;
++		break;
++	default:
++		return -1;
++	}
++	cps->dev = mtd - nand->mtd;
++	cps->addr_high = (u32)(addr >> 32);
++	cps->addr_low = (u32)addr;
++	cps->transfer_size = len;
++	cps->data = (u32)ptr;
++	writel(cmdp, base + NAND_COMMAND);
++	*rv = cps->result;
++	return 0;
++}
++
++static u32 goldfish_nand_cmd(struct mtd_info *mtd, enum nand_cmd cmd,
++				u64 addr, u32 len, void *ptr)
++{
++	struct goldfish_nand *nand = mtd->priv;
++	u32 rv;
++	unsigned long irq_flags;
++	unsigned char __iomem  *base = nand->base;
++
++	spin_lock_irqsave(&nand->lock, irq_flags);
++	if (goldfish_nand_cmd_with_params(mtd, cmd, addr, len, ptr, &rv)) {
++		writel(mtd - nand->mtd, base + NAND_DEV);
++		writel((u32)(addr >> 32), base + NAND_ADDR_HIGH);
++		writel((u32)addr, base + NAND_ADDR_LOW);
++		writel(len, base + NAND_TRANSFER_SIZE);
++		writel((u32)ptr, base + NAND_DATA);
++		writel(cmd, base + NAND_COMMAND);
++		rv = readl(base + NAND_RESULT);
++	}
++	spin_unlock_irqrestore(&nand->lock, irq_flags);
++	return rv;
++}
++
++static int goldfish_nand_erase(struct mtd_info *mtd, struct erase_info *instr)
++{
++	loff_t ofs = instr->addr;
++	u32 len = instr->len;
++	u32 rem;
++
++	if (ofs + len > mtd->size)
++		goto invalid_arg;
++	rem = do_div(ofs, mtd->writesize);
++	if (rem)
++		goto invalid_arg;
++	ofs *= (mtd->writesize + mtd->oobsize);
++
++	if (len % mtd->writesize)
++		goto invalid_arg;
++	len = len / mtd->writesize * (mtd->writesize + mtd->oobsize);
++
++	if (goldfish_nand_cmd(mtd, NAND_CMD_ERASE, ofs, len, NULL) != len) {
++		pr_err("goldfish_nand_erase: erase failed, start %llx, len %x, dev_size %llx, erase_size %x\n",
++			ofs, len, mtd->size, mtd->erasesize);
++		return -EIO;
++	}
++
++	instr->state = MTD_ERASE_DONE;
++	mtd_erase_callback(instr);
++
++	return 0;
++
++invalid_arg:
++	pr_err("goldfish_nand_erase: invalid erase, start %llx, len %x, dev_size %llx, erase_size %x\n",
++		ofs, len, mtd->size, mtd->erasesize);
++	return -EINVAL;
++}
++
++static int goldfish_nand_read_oob(struct mtd_info *mtd, loff_t ofs,
++				struct mtd_oob_ops *ops)
++{
++	u32 rem;
++
++	if (ofs + ops->len > mtd->size)
++		goto invalid_arg;
++	if (ops->datbuf && ops->len && ops->len != mtd->writesize)
++		goto invalid_arg;
++	if (ops->ooblen + ops->ooboffs > mtd->oobsize)
++		goto invalid_arg;
++
++	rem = do_div(ofs, mtd->writesize);
++	if (rem)
++		goto invalid_arg;
++	ofs *= (mtd->writesize + mtd->oobsize);
++
++	if (ops->datbuf)
++		ops->retlen = goldfish_nand_cmd(mtd, NAND_CMD_READ, ofs,
++						ops->len, ops->datbuf);
++	ofs += mtd->writesize + ops->ooboffs;
++	if (ops->oobbuf)
++		ops->oobretlen = goldfish_nand_cmd(mtd, NAND_CMD_READ, ofs,
++						ops->ooblen, ops->oobbuf);
++	return 0;
++
++invalid_arg:
++	pr_err("goldfish_nand_read_oob: invalid read, start %llx, len %x, ooblen %x, dev_size %llx, write_size %x\n",
++		ofs, ops->len, ops->ooblen, mtd->size, mtd->writesize);
++	return -EINVAL;
++}
++
++static int goldfish_nand_write_oob(struct mtd_info *mtd, loff_t ofs,
++				struct mtd_oob_ops *ops)
++{
++	u32 rem;
++
++	if (ofs + ops->len > mtd->size)
++		goto invalid_arg;
++	if (ops->len && ops->len != mtd->writesize)
++		goto invalid_arg;
++	if (ops->ooblen + ops->ooboffs > mtd->oobsize)
++		goto invalid_arg;
++
++	rem = do_div(ofs, mtd->writesize);
++	if (rem)
++		goto invalid_arg;
++	ofs *= (mtd->writesize + mtd->oobsize);
++
++	if (ops->datbuf)
++		ops->retlen = goldfish_nand_cmd(mtd, NAND_CMD_WRITE, ofs,
++						ops->len, ops->datbuf);
++	ofs += mtd->writesize + ops->ooboffs;
++	if (ops->oobbuf)
++		ops->oobretlen = goldfish_nand_cmd(mtd, NAND_CMD_WRITE, ofs,
++						ops->ooblen, ops->oobbuf);
++	return 0;
++
++invalid_arg:
++	pr_err("goldfish_nand_write_oob: invalid write, start %llx, len %x, ooblen %x, dev_size %llx, write_size %x\n",
++		ofs, ops->len, ops->ooblen, mtd->size, mtd->writesize);
++	return -EINVAL;
++}
++
++static int goldfish_nand_read(struct mtd_info *mtd, loff_t from, size_t len,
++				size_t *retlen, u_char *buf)
++{
++	u32 rem;
++
++	if (from + len > mtd->size)
++		goto invalid_arg;
++	if (len != mtd->writesize)
++		goto invalid_arg;
++
++	rem = do_div(from, mtd->writesize);
++	if (rem)
++		goto invalid_arg;
++	from *= (mtd->writesize + mtd->oobsize);
++
++	*retlen = goldfish_nand_cmd(mtd, NAND_CMD_READ, from, len, buf);
++	return 0;
++
++invalid_arg:
++	pr_err("goldfish_nand_read: invalid read, start %llx, len %x, dev_size %llx, write_size %x\n",
++		from, len, mtd->size, mtd->writesize);
++	return -EINVAL;
++}
++
++static int goldfish_nand_write(struct mtd_info *mtd, loff_t to, size_t len,
++				size_t *retlen, const u_char *buf)
++{
++	u32 rem;
++
++	if (to + len > mtd->size)
++		goto invalid_arg;
++	if (len != mtd->writesize)
++		goto invalid_arg;
++
++	rem = do_div(to, mtd->writesize);
++	if (rem)
++		goto invalid_arg;
++	to *= (mtd->writesize + mtd->oobsize);
++
++	*retlen = goldfish_nand_cmd(mtd, NAND_CMD_WRITE, to, len, (void *)buf);
++	return 0;
++
++invalid_arg:
++	pr_err("goldfish_nand_write: invalid write, start %llx, len %x, dev_size %llx, write_size %x\n",
++		to, len, mtd->size, mtd->writesize);
++	return -EINVAL;
++}
++
++static int goldfish_nand_block_isbad(struct mtd_info *mtd, loff_t ofs)
++{
++	u32 rem;
++
++	if (ofs >= mtd->size)
++		goto invalid_arg;
++
++	rem = do_div(ofs, mtd->erasesize);
++	if (rem)
++		goto invalid_arg;
++	ofs *= mtd->erasesize / mtd->writesize;
++	ofs *= (mtd->writesize + mtd->oobsize);
++
++	return goldfish_nand_cmd(mtd, NAND_CMD_BLOCK_BAD_GET, ofs, 0, NULL);
++
++invalid_arg:
++	pr_err("goldfish_nand_block_isbad: invalid arg, ofs %llx, dev_size %llx, write_size %x\n",
++		ofs, mtd->size, mtd->writesize);
++	return -EINVAL;
++}
++
++static int goldfish_nand_block_markbad(struct mtd_info *mtd, loff_t ofs)
++{
++	u32 rem;
++
++	if (ofs >= mtd->size)
++		goto invalid_arg;
++
++	rem = do_div(ofs, mtd->erasesize);
++	if (rem)
++		goto invalid_arg;
++	ofs *= mtd->erasesize / mtd->writesize;
++	ofs *= (mtd->writesize + mtd->oobsize);
++
++	if (goldfish_nand_cmd(mtd, NAND_CMD_BLOCK_BAD_SET, ofs, 0, NULL) != 1)
++		return -EIO;
++	return 0;
++
++invalid_arg:
++	pr_err("goldfish_nand_block_markbad: invalid arg, ofs %llx, dev_size %llx, write_size %x\n",
++		ofs, mtd->size, mtd->writesize);
++	return -EINVAL;
++}
++
++static int nand_setup_cmd_params(struct platform_device *pdev,
++						struct goldfish_nand *nand)
++{
++	u64 paddr;
++	unsigned char __iomem  *base = nand->base;
++
++	nand->cmd_params = devm_kzalloc(&pdev->dev,
++					sizeof(struct cmd_params), GFP_KERNEL);
++	if (!nand->cmd_params)
++		return -1;
++
++	paddr = __pa(nand->cmd_params);
++	writel((u32)(paddr >> 32), base + NAND_CMD_PARAMS_ADDR_HIGH);
++	writel((u32)paddr, base + NAND_CMD_PARAMS_ADDR_LOW);
++	return 0;
++}
++
++static int goldfish_nand_init_device(struct platform_device *pdev,
++					struct goldfish_nand *nand, int id)
++{
++	u32 name_len;
++	u32 result;
++	u32 flags;
++	unsigned long irq_flags;
++	unsigned char __iomem  *base = nand->base;
++	struct mtd_info *mtd = &nand->mtd[id];
++	char *name;
++
++	spin_lock_irqsave(&nand->lock, irq_flags);
++	writel(id, base + NAND_DEV);
++	flags = readl(base + NAND_DEV_FLAGS);
++	name_len = readl(base + NAND_DEV_NAME_LEN);
++	mtd->writesize = readl(base + NAND_DEV_PAGE_SIZE);
++	mtd->size = readl(base + NAND_DEV_SIZE_LOW);
++	mtd->size |= (u64)readl(base + NAND_DEV_SIZE_HIGH) << 32;
++	mtd->oobsize = readl(base + NAND_DEV_EXTRA_SIZE);
++	mtd->oobavail = mtd->oobsize;
++	mtd->erasesize = readl(base + NAND_DEV_ERASE_SIZE) /
++			(mtd->writesize + mtd->oobsize) * mtd->writesize;
++	do_div(mtd->size, mtd->writesize + mtd->oobsize);
++	mtd->size *= mtd->writesize;
++	dev_dbg(&pdev->dev, 
++		"goldfish nand dev%d: size %llx, page %d, extra %d, erase %d\n",
++		       id, mtd->size, mtd->writesize, mtd->oobsize, mtd->erasesize);
++	spin_unlock_irqrestore(&nand->lock, irq_flags);
++
++	mtd->priv = nand;
++
++	mtd->name = name = devm_kzalloc(&pdev->dev, name_len + 1, GFP_KERNEL);
++	if (name == NULL)
++		return -ENOMEM;
++
++	result = goldfish_nand_cmd(mtd, NAND_CMD_GET_DEV_NAME, 0, name_len,
++									name);
++	if (result != name_len) {
++		dev_err(&pdev->dev, 
++			"goldfish_nand_init_device failed to get dev name %d != %d\n",
++			       result, name_len);
++		return -ENODEV;
++	}
++	((char *) mtd->name)[name_len] = '\0';
++
++	/* Setup the MTD structure */
++	mtd->type = MTD_NANDFLASH;
++	mtd->flags = MTD_CAP_NANDFLASH;
++	if (flags & NAND_DEV_FLAG_READ_ONLY)
++		mtd->flags &= ~MTD_WRITEABLE;
++	if (flags & NAND_DEV_FLAG_CMD_PARAMS_CAP)
++		nand_setup_cmd_params(pdev, nand);
++
++	mtd->owner = THIS_MODULE;
++	mtd->_erase = goldfish_nand_erase;
++	mtd->_read = goldfish_nand_read;
++	mtd->_write = goldfish_nand_write;
++	mtd->_read_oob = goldfish_nand_read_oob;
++	mtd->_write_oob = goldfish_nand_write_oob;
++	mtd->_block_isbad = goldfish_nand_block_isbad;
++	mtd->_block_markbad = goldfish_nand_block_markbad;
++
++	if (mtd_device_register(mtd, NULL, 0))
++		return -EIO;
++
++	return 0;
++}
++
++static int goldfish_nand_probe(struct platform_device *pdev)
++{
++	u32 num_dev;
++	int i;
++	int err;
++	u32 num_dev_working;
++	u32 version;
++	struct resource *r;
++	struct goldfish_nand *nand;
++	unsigned char __iomem  *base;
++
++	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (r == NULL)
++		return -ENODEV;
++
++	base = devm_ioremap(&pdev->dev, r->start, PAGE_SIZE);
++	if (base == NULL)
++		return -ENOMEM;
++
++	version = readl(base + NAND_VERSION);
++	if (version != NAND_VERSION_CURRENT) {
++		dev_err(&pdev->dev, 
++			"goldfish_nand_init: version mismatch, got %d, expected %d\n",
++				version, NAND_VERSION_CURRENT);
++		return -ENODEV;
++	}
++	num_dev = readl(base + NAND_NUM_DEV);
++	if (num_dev == 0)
++		return -ENODEV;
++
++	nand = devm_kzalloc(&pdev->dev, sizeof(*nand) + 
++				sizeof(struct mtd_info) * num_dev, GFP_KERNEL);
++	if (nand == NULL)
++		return -ENOMEM;
++
++	spin_lock_init(&nand->lock);
++	nand->base = base;
++	nand->mtd_count = num_dev;
++	platform_set_drvdata(pdev, nand);
++
++	num_dev_working = 0;
++	for (i = 0; i < num_dev; i++) {
++		err = goldfish_nand_init_device(pdev, nand, i);
++		if (err == 0)
++			num_dev_working++;
++	}
++	if (num_dev_working == 0)
++		return -ENODEV;
++	return 0;
++}
++
++static int goldfish_nand_remove(struct platform_device *pdev)
++{
++	struct goldfish_nand *nand = platform_get_drvdata(pdev);
++	int i;
++	for (i = 0; i < nand->mtd_count; i++) {
++		if (nand->mtd[i].name)
++			mtd_device_unregister(&nand->mtd[i]);
++	}
++	return 0;
++}
++
++static struct platform_driver goldfish_nand_driver = {
++	.probe		= goldfish_nand_probe,
++	.remove		= goldfish_nand_remove,
++	.driver = {
++		.name = "goldfish_nand"
++	}
++};
++
++module_platform_driver(goldfish_nand_driver);
++MODULE_LICENSE("GPL");
+diff --git a/drivers/mtd/devices/goldfish_nand_reg.h b/drivers/mtd/devices/goldfish_nand_reg.h
+new file mode 100644
+index 0000000..956c6c3
+--- /dev/null
++++ b/drivers/mtd/devices/goldfish_nand_reg.h
+@@ -0,0 +1,72 @@
++/* drivers/mtd/devices/goldfish_nand_reg.h
++**
++** Copyright (C) 2007 Google, Inc.
++**
++** This software is licensed under the terms of the GNU General Public
++** License version 2, as published by the Free Software Foundation, and
++** may be copied, distributed, and modified under those terms.
++**
++** This program is distributed in the hope that it will be useful,
++** but WITHOUT ANY WARRANTY; without even the implied warranty of
++** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++** GNU General Public License for more details.
++**
++*/
++
++#ifndef GOLDFISH_NAND_REG_H
++#define GOLDFISH_NAND_REG_H
++
++enum nand_cmd {
++	NAND_CMD_GET_DEV_NAME,  /* Write device name for NAND_DEV to NAND_DATA (vaddr) */
++	NAND_CMD_READ,
++	NAND_CMD_WRITE,
++	NAND_CMD_ERASE,
++	NAND_CMD_BLOCK_BAD_GET, /* NAND_RESULT is 1 if block is bad, 0 if it is not */
++	NAND_CMD_BLOCK_BAD_SET,
++	NAND_CMD_READ_WITH_PARAMS,
++	NAND_CMD_WRITE_WITH_PARAMS,
++	NAND_CMD_ERASE_WITH_PARAMS
++};
++
++enum nand_dev_flags {
++	NAND_DEV_FLAG_READ_ONLY = 0x00000001,
++	NAND_DEV_FLAG_CMD_PARAMS_CAP = 0x00000002,
++};
++
++#define NAND_VERSION_CURRENT (1)
++
++enum nand_reg {
++	/* Global */
++	NAND_VERSION        = 0x000,
++	NAND_NUM_DEV        = 0x004,
++	NAND_DEV            = 0x008,
++
++	/* Dev info */
++	NAND_DEV_FLAGS      = 0x010,
++	NAND_DEV_NAME_LEN   = 0x014,
++	NAND_DEV_PAGE_SIZE  = 0x018,
++	NAND_DEV_EXTRA_SIZE = 0x01c,
++	NAND_DEV_ERASE_SIZE = 0x020,
++	NAND_DEV_SIZE_LOW   = 0x028,
++	NAND_DEV_SIZE_HIGH  = 0x02c,
++
++	/* Command */
++	NAND_RESULT         = 0x040,
++	NAND_COMMAND        = 0x044,
++	NAND_DATA           = 0x048,
++	NAND_TRANSFER_SIZE  = 0x04c,
++	NAND_ADDR_LOW       = 0x050,
++	NAND_ADDR_HIGH      = 0x054,
++	NAND_CMD_PARAMS_ADDR_LOW = 0x058,
++	NAND_CMD_PARAMS_ADDR_HIGH = 0x05c,
++};
++
++struct cmd_params {
++	uint32_t dev;
++	uint32_t addr_low;
++	uint32_t addr_high;
++	uint32_t transfer_size;
++	uint32_t data;
++	uint32_t result;
++};
++#endif
