@@ -1,24 +1,19 @@
-Received: from va3ehsobe005.messaging.microsoft.com ([216.32.180.31]
- helo=va3outboundpool.messaging.microsoft.com)
+Received: from moutng.kundenserver.de ([212.227.17.8])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TxDnL-0006LF-7q
- for linux-mtd@lists.infradead.org; Mon, 21 Jan 2013 09:36:00 +0000
-Message-ID: <50FD0BE9.3020506@freescale.com>
-Date: Mon, 21 Jan 2013 17:35:37 +0800
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-Subject: Re: question: Why the nand_wait() wait for 20ms for nand program.
-References: <50F9023D.5040408@freescale.com> <50F93F65.90805@parrot.com>
- <50FCB75D.1000200@freescale.com> <50FD02EA.5050209@parrot.com>
- <50FD0554.8030108@freescale.com> <50FD073C.8050209@parrot.com>
- <50FD0981.8050507@freescale.com> <50FD0B3D.2070803@parrot.com>
-In-Reply-To: <50FD0B3D.2070803@parrot.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: David Woodhouse <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+ id 1TxEKp-00060Y-Bj
+ for linux-mtd@lists.infradead.org; Mon, 21 Jan 2013 10:10:38 +0000
+From: Thierry Reding <thierry.reding@avionic-design.de>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH 19/33] mtd: Convert to devm_ioremap_resource()
+Date: Mon, 21 Jan 2013 11:09:12 +0100
+Message-Id: <1358762966-20791-20-git-send-email-thierry.reding@avionic-design.de>
+In-Reply-To: <1358762966-20791-1-git-send-email-thierry.reding@avionic-design.de>
+References: <1358762966-20791-1-git-send-email-thierry.reding@avionic-design.de>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Wolfram Sang <w.sang@pengutronix.de>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,72 +23,270 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B401=E6=9C=8821=E6=97=A5 17:32, Matthieu CASTET =E5=86=
-=99=E9=81=93:
-> Huang Shijie a =C3=A9crit :
->> =E4=BA=8E 2013=E5=B9=B401=E6=9C=8821=E6=97=A5 17:15, Matthieu CASTET =E5=
-=86=99=E9=81=93:
->>> Huang Shijie a =C3=A9crit :
->>>>    =E4=BA=8E 2013=E5=B9=B401=E6=9C=8821=E6=97=A5 16:57, Matthieu CAS=
-TET =E5=86=99=E9=81=93:
->>>>> Huang Shijie a =C3=A9crit :
->>>>>> =E4=BA=8E 2013=E5=B9=B401=E6=9C=8818=E6=97=A5 20:26, Matthieu CAST=
-ET =E5=86=99=E9=81=93:
->>>>>>> Huang Shijie a =C3=A9crit :
->>>>>>>> Hi all:
->>>>>>>> Why the nand_wait() wait for 20ms for nand program. could we
->>>>>>>> expand this time to 40ms? I have a nand chip : Micron MT29F64G08=
-CBABAWP.
->>>>>>>> The chip's BUSY/READY pin may needs more then 20ms to become rea=
-dy,
->>>>>>>> though its
->>>>>>>> datasheet tells me the tPROG's max value is 2.5ms.
->>>>>>>>
->>>>>>> Don't you have an hardware problem (missing pullup/down on ready =
-busy pin) ?
->>>>>>>
->>>>>>> If the datasheet say the max value is 2.5 ms , how it can be more=
- than 20 ms.
->>>>>> I finally found the root cause.
->>>>>>
->>>>>> I added the do_gettimeofday() in the nand_wait() to measure the
->>>>>> READY/BUSY time. The code is like this:
->>>>>> ---------------------------------------------------- code start
->>>>>>
->>>>> Could you dump jiffies and timeo in your code ?
->>>> The following just shows some part of the log:
->>>>
->>>> [my_nand_wait]status : 80,<21480, 21480>,<   665911, 664170>,<1, 174=
-1>
->>>> [my_nand_wait]status : 80,<21480, 21480>,<   735989, 734626>,<1, 136=
-3>
->>>> [my_nand_wait]status : 80,<21480, 21480>,<   805693, 804825>,<0, 868=
->
->>>>
->>>>    From the log, we can see that the kernel just waits for 1741us to=
- break
->>>> the while loop,
->>>> not 20ms.
->>>>
->>> Yes but you should display jiffies and timeo value to understand why =
-the kernel
->>> thinks 2 jiffies elapsed.
->> I dumpped the jiffies and timeo too. The jiffies is really _equal_ to
->> the timeo, and then the while loop breaks.
->>
->> thanks for your comments.
->>
->> I think there is something wrong with the timer.
->>
-> timeo +=3D (HZ * 20) / 1000;
->
-> So what is the value of HZ ?
-my CONFIG_HZ is 100.
+Convert all uses of devm_request_and_ioremap() to the newly introduced
+devm_ioremap_resource() which provides more consistent error handling.
 
-thanks
-Huang Shijie
-> In order (HZ * 20) / 1000 is 0 HZ should be<  50.
->
->
-> Matthieu
->
+devm_ioremap_resource() provides its own error messages so all explicit
+error messages can be removed from the failure code paths.
+
+Signed-off-by: Thierry Reding <thierry.reding@avionic-design.de>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+---
+ drivers/mtd/devices/spear_smi.c   |  7 +++----
+ drivers/mtd/maps/autcpu12-nvram.c |  9 ++++-----
+ drivers/mtd/maps/lantiq-flash.c   |  8 ++++----
+ drivers/mtd/nand/fsmc_nand.c      | 33 +++++++++++++--------------------
+ drivers/mtd/nand/lpc32xx_mlc.c    |  9 ++++-----
+ drivers/mtd/nand/lpc32xx_slc.c    |  8 +++-----
+ drivers/mtd/nand/mxc_nand.c       | 12 ++++++------
+ drivers/mtd/nand/s3c2410.c        |  7 +++----
+ drivers/mtd/nand/txx9ndfmc.c      |  7 ++++---
+ 9 files changed, 44 insertions(+), 56 deletions(-)
+
+diff --git a/drivers/mtd/devices/spear_smi.c b/drivers/mtd/devices/spear_smi.c
+index 2aabd96..8a82b8b 100644
+--- a/drivers/mtd/devices/spear_smi.c
++++ b/drivers/mtd/devices/spear_smi.c
+@@ -949,10 +949,9 @@ static int spear_smi_probe(struct platform_device *pdev)
+ 
+ 	smi_base = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 
+-	dev->io_base = devm_request_and_ioremap(&pdev->dev, smi_base);
+-	if (!dev->io_base) {
+-		ret = -EIO;
+-		dev_err(&pdev->dev, "devm_request_and_ioremap fail\n");
++	dev->io_base = devm_ioremap_resource(&pdev->dev, smi_base);
++	if (IS_ERR(dev->io_base)) {
++		ret = PTR_ERR(dev->io_base);
+ 		goto err;
+ 	}
+ 
+diff --git a/drivers/mtd/maps/autcpu12-nvram.c b/drivers/mtd/maps/autcpu12-nvram.c
+index a2dc2ae..c3525d2 100644
+--- a/drivers/mtd/maps/autcpu12-nvram.c
++++ b/drivers/mtd/maps/autcpu12-nvram.c
+@@ -16,6 +16,7 @@
+  * along with this program; if not, write to the Free Software
+  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  */
++#include <linux/err.h>
+ #include <linux/sizes.h>
+ 
+ #include <linux/types.h>
+@@ -55,12 +56,10 @@ static int autcpu12_nvram_probe(struct platform_device *pdev)
+ 	priv->map.bankwidth	= 4;
+ 	priv->map.phys		= res->start;
+ 	priv->map.size		= resource_size(res);
+-	priv->map.virt		= devm_request_and_ioremap(&pdev->dev, res);
++	priv->map.virt = devm_ioremap_resource(&pdev->dev, res);
+ 	strcpy((char *)priv->map.name, res->name);
+-	if (!priv->map.virt) {
+-		dev_err(&pdev->dev, "failed to remap mem resource\n");
+-		return -EBUSY;
+-	}
++	if (IS_ERR(priv->map.virt))
++		return PTR_ERR(priv->map.virt);
+ 
+ 	simple_map_init(&priv->map);
+ 
+diff --git a/drivers/mtd/maps/lantiq-flash.c b/drivers/mtd/maps/lantiq-flash.c
+index 3c3c791..d1da6ed 100644
+--- a/drivers/mtd/maps/lantiq-flash.c
++++ b/drivers/mtd/maps/lantiq-flash.c
+@@ -7,6 +7,7 @@
+  *  Copyright (C) 2010 John Crispin <blogic@openwrt.org>
+  */
+ 
++#include <linux/err.h>
+ #include <linux/module.h>
+ #include <linux/types.h>
+ #include <linux/kernel.h>
+@@ -136,10 +137,9 @@ ltq_mtd_probe(struct platform_device *pdev)
+ 	ltq_mtd->map = kzalloc(sizeof(struct map_info), GFP_KERNEL);
+ 	ltq_mtd->map->phys = ltq_mtd->res->start;
+ 	ltq_mtd->map->size = resource_size(ltq_mtd->res);
+-	ltq_mtd->map->virt = devm_request_and_ioremap(&pdev->dev, ltq_mtd->res);
+-	if (!ltq_mtd->map->virt) {
+-		dev_err(&pdev->dev, "failed to remap mem resource\n");
+-		err = -EBUSY;
++	ltq_mtd->map->virt = devm_ioremap_resource(&pdev->dev, ltq_mtd->res);
++	if (IS_ERR(ltq_mtd->map->virt)) {
++		err = PTR_ERR(ltq_mtd->map->virt);
+ 		goto err_out;
+ 	}
+ 
+diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
+index 67e62d3..c543cc0 100644
+--- a/drivers/mtd/nand/fsmc_nand.c
++++ b/drivers/mtd/nand/fsmc_nand.c
+@@ -937,42 +937,35 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 	if (!res)
+ 		return -EINVAL;
+ 
+-	host->data_va = devm_request_and_ioremap(&pdev->dev, res);
+-	if (!host->data_va) {
+-		dev_err(&pdev->dev, "data ioremap failed\n");
+-		return -ENOMEM;
+-	}
++	host->data_va = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(host->data_va))
++		return PTR_ERR(host->data_va);
++	
+ 	host->data_pa = (dma_addr_t)res->start;
+ 
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "nand_addr");
+ 	if (!res)
+ 		return -EINVAL;
+ 
+-	host->addr_va = devm_request_and_ioremap(&pdev->dev, res);
+-	if (!host->addr_va) {
+-		dev_err(&pdev->dev, "ale ioremap failed\n");
+-		return -ENOMEM;
+-	}
++	host->addr_va = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(host->addr_va))
++		return PTR_ERR(host->addr_va);
+ 
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "nand_cmd");
+ 	if (!res)
+ 		return -EINVAL;
+ 
+-	host->cmd_va = devm_request_and_ioremap(&pdev->dev, res);
+-	if (!host->cmd_va) {
+-		dev_err(&pdev->dev, "ale ioremap failed\n");
+-		return -ENOMEM;
+-	}
++	host->cmd_va = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(host->cmd_va))
++		return PTR_ERR(host->cmd_va);
+ 
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "fsmc_regs");
+ 	if (!res)
+ 		return -EINVAL;
+ 
+-	host->regs_va = devm_request_and_ioremap(&pdev->dev, res);
+-	if (!host->regs_va) {
+-		dev_err(&pdev->dev, "regs ioremap failed\n");
+-		return -ENOMEM;
+-	}
++	host->regs_va = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(host->regs_va))
++		return PTR_ERR(host->regs_va);
+ 
+ 	host->clk = clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(host->clk)) {
+diff --git a/drivers/mtd/nand/lpc32xx_mlc.c b/drivers/mtd/nand/lpc32xx_mlc.c
+index f182bef..0ca22ae 100644
+--- a/drivers/mtd/nand/lpc32xx_mlc.c
++++ b/drivers/mtd/nand/lpc32xx_mlc.c
+@@ -677,11 +677,10 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+ 		return -ENXIO;
+ 	}
+ 
+-	host->io_base = devm_request_and_ioremap(&pdev->dev, rc);
+-	if (host->io_base == NULL) {
+-		dev_err(&pdev->dev, "ioremap failed\n");
+-		return -EIO;
+-	}
++	host->io_base = devm_ioremap_resource(&pdev->dev, rc);
++	if (IS_ERR(host->io_base))
++		return PTR_ERR(host->io_base);
++	
+ 	host->io_base_phy = rc->start;
+ 
+ 	mtd = &host->mtd;
+diff --git a/drivers/mtd/nand/lpc32xx_slc.c b/drivers/mtd/nand/lpc32xx_slc.c
+index 030b78c..be94ed5 100644
+--- a/drivers/mtd/nand/lpc32xx_slc.c
++++ b/drivers/mtd/nand/lpc32xx_slc.c
+@@ -778,11 +778,9 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+ 	}
+ 	host->io_base_dma = rc->start;
+ 
+-	host->io_base = devm_request_and_ioremap(&pdev->dev, rc);
+-	if (host->io_base == NULL) {
+-		dev_err(&pdev->dev, "ioremap failed\n");
+-		return -ENOMEM;
+-	}
++	host->io_base = devm_ioremap_resource(&pdev->dev, rc);
++	if (IS_ERR(host->io_base))
++		return PTR_ERR(host->io_base);
+ 
+ 	if (pdev->dev.of_node)
+ 		host->ncfg = lpc32xx_parse_dt(&pdev->dev);
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index 45204e4..60ac5b9 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -1437,9 +1437,9 @@ static int mxcnd_probe(struct platform_device *pdev)
+ 		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 		if (!res)
+ 			return -ENODEV;
+-		host->regs_ip = devm_request_and_ioremap(&pdev->dev, res);
+-		if (!host->regs_ip)
+-			return -ENOMEM;
++		host->regs_ip = devm_ioremap_resource(&pdev->dev, res);
++		if (IS_ERR(host->regs_ip))
++			return PTR_ERR(host->regs_ip);
+ 
+ 		res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+ 	} else {
+@@ -1449,9 +1449,9 @@ static int mxcnd_probe(struct platform_device *pdev)
+ 	if (!res)
+ 		return -ENODEV;
+ 
+-	host->base = devm_request_and_ioremap(&pdev->dev, res);
+-	if (!host->base)
+-		return -ENOMEM;
++	host->base = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(host->base))
++		return PTR_ERR(host->base);
+ 
+ 	host->main_area0 = host->base;
+ 
+diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+index df954b4..d65afd2 100644
+--- a/drivers/mtd/nand/s3c2410.c
++++ b/drivers/mtd/nand/s3c2410.c
+@@ -952,10 +952,9 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
+ 	info->platform	= plat;
+ 	info->cpu_type	= cpu_type;
+ 
+-	info->regs	= devm_request_and_ioremap(&pdev->dev, res);
+-	if (info->regs == NULL) {
+-		dev_err(&pdev->dev, "cannot reserve register region\n");
+-		err = -EIO;
++	info->regs = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(info->regs)) {
++		err = PTR_ERR(info->regs);
+ 		goto exit_error;
+ 	}
+ 
+diff --git a/drivers/mtd/nand/txx9ndfmc.c b/drivers/mtd/nand/txx9ndfmc.c
+index e3d7266..e1e8748 100644
+--- a/drivers/mtd/nand/txx9ndfmc.c
++++ b/drivers/mtd/nand/txx9ndfmc.c
+@@ -9,6 +9,7 @@
+  * (C) Copyright TOSHIBA CORPORATION 2004-2007
+  * All Rights Reserved.
+  */
++#include <linux/err.h>
+ #include <linux/init.h>
+ #include <linux/slab.h>
+ #include <linux/module.h>
+@@ -286,9 +287,9 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
+ 	drvdata = devm_kzalloc(&dev->dev, sizeof(*drvdata), GFP_KERNEL);
+ 	if (!drvdata)
+ 		return -ENOMEM;
+-	drvdata->base = devm_request_and_ioremap(&dev->dev, res);
+-	if (!drvdata->base)
+-		return -EBUSY;
++	drvdata->base = devm_ioremap_resource(&dev->dev, res);
++	if (IS_ERR(drvdata->base))
++		return PTR_ERR(drvdata->base);
+ 
+ 	hold = plat->hold ?: 20; /* tDH */
+ 	spw = plat->spw ?: 90; /* max(tREADID, tWP, tRP) */
+-- 
+1.8.1.1
