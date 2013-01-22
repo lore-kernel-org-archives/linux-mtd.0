@@ -1,19 +1,26 @@
-Received: from va3ehsobe010.messaging.microsoft.com ([216.32.180.30]
- helo=va3outboundpool.messaging.microsoft.com)
+Received: from utopia.booyaka.com ([74.50.51.50])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TxTZY-00034N-HC
- for linux-mtd@lists.infradead.org; Tue, 22 Jan 2013 02:26:49 +0000
-From: Huang Shijie <b32955@freescale.com>
-To: <dwmw2@infradead.org>
-Subject: [PATCH v2] mtd: fix the wrong timeo for panic_nand_wait()
-Date: Tue, 22 Jan 2013 09:30:30 +0800
-Message-ID: <1358818230-27037-1-git-send-email-b32955@freescale.com>
-In-Reply-To: <CAMiH66HWn5PtjX20=WT7GMMV=J72rg3jx64iACSBiExjoD+X7A@mail.gmail.com>
-References: <CAMiH66HWn5PtjX20=WT7GMMV=J72rg3jx64iACSBiExjoD+X7A@mail.gmail.com>
+ id 1TxTaT-0003Ep-NI
+ for linux-mtd@lists.infradead.org; Tue, 22 Jan 2013 02:27:46 +0000
+Date: Tue, 22 Jan 2013 02:27:44 +0000 (UTC)
+From: Paul Walmsley <paul@pwsan.com>
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+Subject: Re: [PATCH 1/3] mtd nand : onfi need to be probed in 8 bits mode
+In-Reply-To: <alpine.DEB.2.00.1301161713380.32170@utopia.booyaka.com>
+Message-ID: <alpine.DEB.2.00.1301220226530.25789@utopia.booyaka.com>
+References: <1352199105-30215-1-git-send-email-matthieu.castet@parrot.com>
+ <1354530053.30168.183.camel@sauron.fi.intel.com>
+ <alpine.DEB.2.00.1212240023100.17282@utopia.booyaka.com>
+ <50E40336.2080008@parrot.com>
+ <alpine.DEB.2.00.1301031704460.8721@utopia.booyaka.com>
+ <50F6B904.5000600@parrot.com>
+ <alpine.DEB.2.00.1301161713380.32170@utopia.booyaka.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, matthieu.castet@parrot.com, dedekind1@gmail.com
+Content-Type: MULTIPART/MIXED;
+ BOUNDARY="843723315-1431612762-1358821664=:25789"
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,47 +30,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In nand_wait(), the timeo for panic_nand_wait() is assigned with
-wrong value(jiffies + some delay). The timeo should be set like the
-panic_nand_write() does.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-This patch fixes it, and also uses the msecs_to_jiffies() to make the
-code more readable.
+--843723315-1431612762-1358821664=:25789
+Content-Type: TEXT/PLAIN; charset=ISO-8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
-fix the compiler error in version 1, and add some commits.
+Hi Matthieu,
 
----
- drivers/mtd/nand/nand_base.c |    8 ++------
- 1 files changed, 2 insertions(+), 6 deletions(-)
+On Wed, 16 Jan 2013, Paul Walmsley wrote:
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 8323ac9..a8c1fb4 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -825,13 +825,8 @@ static void panic_nand_wait(struct mtd_info *mtd, struct nand_chip *chip,
- static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
- {
- 
--	unsigned long timeo = jiffies;
- 	int status, state = chip->state;
--
--	if (state == FL_ERASING)
--		timeo += (HZ * 400) / 1000;
--	else
--		timeo += (HZ * 20) / 1000;
-+	unsigned long timeo = (state == FL_ERASING ? 400 : 20);
- 
- 	led_trigger_event(nand_led_trigger, LED_FULL);
- 
-@@ -849,6 +844,7 @@ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
- 	if (in_interrupt() || oops_in_progress)
- 		panic_nand_wait(mtd, chip, timeo);
- 	else {
-+		timeo = jiffies + msecs_to_jiffies(timeo);
- 		while (time_before(jiffies, timeo)) {
- 			if (chip->dev_ready) {
- 				if (chip->dev_ready(mtd))
--- 
-1.7.0.4
+> On Wed, 16 Jan 2013, Matthieu CASTET wrote:
+>=20
+> > Paul Walmsley a =E9crit :
+> > > On Wed, 2 Jan 2013, Matthieu CASTET wrote:
+> >=20
+> > > .... which did not get merged because Tony requested that it should b=
+e=20
+> > > based on top of his cleanup work (which takes priority over adding ne=
+w=20
+> > > features):
+> > >=20
+> > > http://thread.gmane.org/gmane.linux.ports.arm.omap/88550/focus=3D8854=
+9
+> > >=20
+> > > Could you please update this "omap3 nand : use NAND_BUSWIDTH_AUTO" pa=
+tch=20
+> > > on v3.8-rc2 and repost?
+> >=20
+> > Do you know when this patchset will be submited to mtd ?
+> > I think I will wait it is merged in mtd and redo my patch after that.
+>=20
+> As far as I know, it was merged during the v3.8 merge window.  So it's=20
+> already in mainline. =20
+
+Any progress on updating and resending your "omap3 nand : use=20
+NAND_BUSWIDTH_AUTO" patch?  We're in danger of missing the 3.9 merge=20
+window if it takes too much longer.
+
+
+- Paul
+--843723315-1431612762-1358821664=:25789--
