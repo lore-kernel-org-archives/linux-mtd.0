@@ -1,24 +1,22 @@
-Received: from utopia.booyaka.com ([74.50.51.50])
+Received: from ch1ehsobe001.messaging.microsoft.com ([216.32.181.181]
+ helo=ch1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TxTaT-0003Ep-NI
- for linux-mtd@lists.infradead.org; Tue, 22 Jan 2013 02:27:46 +0000
-Date: Tue, 22 Jan 2013 02:27:44 +0000 (UTC)
-From: Paul Walmsley <paul@pwsan.com>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-Subject: Re: [PATCH 1/3] mtd nand : onfi need to be probed in 8 bits mode
-In-Reply-To: <alpine.DEB.2.00.1301161713380.32170@utopia.booyaka.com>
-Message-ID: <alpine.DEB.2.00.1301220226530.25789@utopia.booyaka.com>
-References: <1352199105-30215-1-git-send-email-matthieu.castet@parrot.com>
- <1354530053.30168.183.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1212240023100.17282@utopia.booyaka.com>
- <50E40336.2080008@parrot.com>
- <alpine.DEB.2.00.1301031704460.8721@utopia.booyaka.com>
- <50F6B904.5000600@parrot.com>
- <alpine.DEB.2.00.1301161713380.32170@utopia.booyaka.com>
+ id 1TxTsx-00068I-OV
+ for linux-mtd@lists.infradead.org; Tue, 22 Jan 2013 02:46:52 +0000
+Message-ID: <50FDFD89.7030407@freescale.com>
+Date: Tue, 22 Jan 2013 10:46:33 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: MULTIPART/MIXED;
- BOUNDARY="843723315-1431612762-1358821664=:25789"
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+Subject: Re: question: Why the nand_wait() wait for 20ms for nand program.
+References: <50F9023D.5040408@freescale.com> <50F93F65.90805@parrot.com>
+ <50FCB75D.1000200@freescale.com> <50FD02EA.5050209@parrot.com>
+ <50FD0554.8030108@freescale.com> <50FD073C.8050209@parrot.com>
+ <50FD0981.8050507@freescale.com> <50FD0B3D.2070803@parrot.com>
+In-Reply-To: <50FD0B3D.2070803@parrot.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: David Woodhouse <dwmw2@infradead.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,45 +28,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+=E4=BA=8E 2013=E5=B9=B401=E6=9C=8821=E6=97=A5 17:32, Matthieu CASTET =E5=86=
+=99=E9=81=93:
+> Huang Shijie a =C3=A9crit :
+>> =E4=BA=8E 2013=E5=B9=B401=E6=9C=8821=E6=97=A5 17:15, Matthieu CASTET =E5=
+=86=99=E9=81=93:
+>>> Huang Shijie a =C3=A9crit :
+>>>>    =E4=BA=8E 2013=E5=B9=B401=E6=9C=8821=E6=97=A5 16:57, Matthieu CAS=
+TET =E5=86=99=E9=81=93:
+>>>>> Huang Shijie a =C3=A9crit :
+>>>>>> =E4=BA=8E 2013=E5=B9=B401=E6=9C=8818=E6=97=A5 20:26, Matthieu CAST=
+ET =E5=86=99=E9=81=93:
+>>>>>>> Huang Shijie a =C3=A9crit :
+>>>>>>>> Hi all:
+>>>>>>>> Why the nand_wait() wait for 20ms for nand program. could we
+>>>>>>>> expand this time to 40ms? I have a nand chip : Micron MT29F64G08=
+CBABAWP.
+>>>>>>>> The chip's BUSY/READY pin may needs more then 20ms to become rea=
+dy,
+>>>>>>>> though its
+>>>>>>>> datasheet tells me the tPROG's max value is 2.5ms.
+>>>>>>>>
+>>>>>>> Don't you have an hardware problem (missing pullup/down on ready =
+busy pin) ?
+>>>>>>>
+>>>>>>> If the datasheet say the max value is 2.5 ms , how it can be more=
+ than 20 ms.
+>>>>>> I finally found the root cause.
+>>>>>>
+>>>>>> I added the do_gettimeofday() in the nand_wait() to measure the
+>>>>>> READY/BUSY time. The code is like this:
+>>>>>> ---------------------------------------------------- code start
+>>>>>>
+>>>>> Could you dump jiffies and timeo in your code ?
+>>>> The following just shows some part of the log:
+>>>>
+>>>> [my_nand_wait]status : 80,<21480, 21480>,<   665911, 664170>,<1, 174=
+1>
+>>>> [my_nand_wait]status : 80,<21480, 21480>,<   735989, 734626>,<1, 136=
+3>
+>>>> [my_nand_wait]status : 80,<21480, 21480>,<   805693, 804825>,<0, 868=
+>
+>>>>
+>>>>    From the log, we can see that the kernel just waits for 1741us to=
+ break
+>>>> the while loop,
+>>>> not 20ms.
+>>>>
+>>> Yes but you should display jiffies and timeo value to understand why =
+the kernel
+>>> thinks 2 jiffies elapsed.
+>> I dumpped the jiffies and timeo too. The jiffies is really _equal_ to
+>> the timeo, and then the while loop breaks.
+>>
+>> thanks for your comments.
+>>
+>> I think there is something wrong with the timer.
+>>
+> timeo +=3D (HZ * 20) / 1000;
+>
+> So what is the value of HZ ?
+>
+> In order (HZ * 20) / 1000 is 0 HZ should be<  50.
 
---843723315-1431612762-1358821664=:25789
-Content-Type: TEXT/PLAIN; charset=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+thanks for your help.
 
-Hi Matthieu,
+I really appreciate it.
 
-On Wed, 16 Jan 2013, Paul Walmsley wrote:
-
-> On Wed, 16 Jan 2013, Matthieu CASTET wrote:
->=20
-> > Paul Walmsley a =E9crit :
-> > > On Wed, 2 Jan 2013, Matthieu CASTET wrote:
-> >=20
-> > > .... which did not get merged because Tony requested that it should b=
-e=20
-> > > based on top of his cleanup work (which takes priority over adding ne=
-w=20
-> > > features):
-> > >=20
-> > > http://thread.gmane.org/gmane.linux.ports.arm.omap/88550/focus=3D8854=
-9
-> > >=20
-> > > Could you please update this "omap3 nand : use NAND_BUSWIDTH_AUTO" pa=
-tch=20
-> > > on v3.8-rc2 and repost?
-> >=20
-> > Do you know when this patchset will be submited to mtd ?
-> > I think I will wait it is merged in mtd and redo my patch after that.
->=20
-> As far as I know, it was merged during the v3.8 merge window.  So it's=20
-> already in mainline. =20
-
-Any progress on updating and resending your "omap3 nand : use=20
-NAND_BUSWIDTH_AUTO" patch?  We're in danger of missing the 3.9 merge=20
-window if it takes too much longer.
+this bug is caused by our unstable kernel.
+I tried with some other stable code, the issue never occurs.
 
 
-- Paul
---843723315-1431612762-1358821664=:25789--
+thanks
+Huang shijie
+>
+> Matthieu
+>
