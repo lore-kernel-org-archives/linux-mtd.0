@@ -1,27 +1,18 @@
-In-Reply-To: <20130121183348.GI22517@atomide.com>
-References: <1358634477-25868-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1358634477-25868-3-git-send-email-ezequiel.garcia@free-electrons.com>
- <20130121123020.GI15707@e106331-lin.cambridge.arm.com>
- <CALF0-+VOxtsfQLZCGujvjMrsGacbfVTMytRUX=CfKa3+FgnU1w@mail.gmail.com>
- <20130121183348.GI22517@atomide.com>
+Received: from mail-ie0-f175.google.com ([209.85.223.175])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Txa0l-0004dM-74
+ for linux-mtd@lists.infradead.org; Tue, 22 Jan 2013 09:19:19 +0000
+Received: by mail-ie0-f175.google.com with SMTP id qd14so11365765ieb.34
+ for <linux-mtd@lists.infradead.org>; Tue, 22 Jan 2013 01:19:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 3/3] arm: omap2: gpmc: add DT bindings for OneNAND
-From: Daniel Mack <zonque@gmail.com>
-Date: Tue, 22 Jan 2013 09:32:19 +0800
-To: Tony Lindgren <tony@atomide.com>,Ezequiel Garcia <elezegarcia@gmail.com>
-Message-ID: <af696cd0-8a7f-4839-9600-87d5b9172585@email.android.com>
-Cc: Mark Rutland <mark.rutland@arm.com>,
- "martinez.javier@gmail.com" <martinez.javier@gmail.com>,
- "matthias.bgg@googlemail.com" <matthias.bgg@googlemail.com>,
- "eballetbo@gmail.com" <eballetbo@gmail.com>,
- "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Date: Tue, 22 Jan 2013 10:19:16 +0100
+Message-ID: <CACRpkdZM8+6QaGrRtCCMWoZQO23uej7JDr1xz2zG7TtwQ7Ngqw@mail.gmail.com>
+Subject: [GIT PULL] Nomadik devicetree and cleanups
+From: Linus Walleij <linus.walleij@linaro.org>
+To: arm@kernel.org
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,123 +22,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Tony, Mark, Ezequiel,
+Hi ARM SoC guys,
 
-Tony Lindgren <tony@atomide.com> wrote:
+This patch series converts the Nomadik to use Device Tree.
 
->* Ezequiel Garcia <elezegarcia@gmail.com> [130121 09:00]:
->> Hi Mark,
->> 
->> On Mon, Jan 21, 2013 at 9:30 AM, Mark Rutland <mark.rutland@arm.com>
->wrote:
->> > [...]
->> >
->> >> diff --git a/arch/arm/mach-omap2/gpmc.c
->b/arch/arm/mach-omap2/gpmc.c
->> >> index 01ce462..f7de9eb 100644
->> >> --- a/arch/arm/mach-omap2/gpmc.c
->> >> +++ b/arch/arm/mach-omap2/gpmc.c
->> >> @@ -39,6 +39,7 @@
->> >>  #include "omap_device.h"
->> >>  #include "gpmc.h"
->> >>  #include "gpmc-nand.h"
->> >> +#include "gpmc-onenand.h"
->> >>
->> >>  #define      DEVICE_NAME             "omap-gpmc"
->> >>
->> >> @@ -1259,6 +1260,43 @@ static int gpmc_probe_nand_child(struct
->platform_device *pdev,
->> >>  }
->> >>  #endif
->> >>
->> >> +#ifdef CONFIG_MTD_ONENAND
->> >> +static int gpmc_probe_onenand_child(struct platform_device *pdev,
->> >> +                              struct device_node *child)
->> >> +{
->> >> +     u32 val;
->> >> +     struct omap_onenand_platform_data *gpmc_onenand_data;
->> >> +
->> >> +     if (of_property_read_u32(child, "reg", &val) < 0) {
->> >> +             dev_err(&pdev->dev, "%s has no 'reg' property\n",
->> >> +                     child->full_name);
->> >> +             return -ENODEV;
->> >> +     }
->> >> +
->> >> +     gpmc_onenand_data = devm_kzalloc(&pdev->dev,
->sizeof(*gpmc_onenand_data),
->> >> +                                      GFP_KERNEL);
->> >> +     if (!gpmc_onenand_data)
->> >> +             return -ENOMEM;
->> >> +
->> >> +     gpmc_onenand_data->cs = val;
->> >> +     gpmc_onenand_data->of_node = child;
->> >> +     gpmc_onenand_data->dma_channel = -1;
->> >> +
->> >> +     if (!of_property_read_u32(child, "dma-channel", &val))
->> >> +             gpmc_onenand_data->dma_channel = val;
->> >> +
->> >> +     gpmc_onenand_init(gpmc_onenand_data);
->> >> +
->> >> +     return 0;
->> >> +}
->> >> +#else
->> >> +static int gpmc_probe_onenand_child(struct platform_device *pdev,
->> >> +                                 struct device_node *child)
->> >> +{
->> >> +     return 0;
->> >> +}
->> >> +#endif
->> >> +
->> >>  static int gpmc_probe_dt(struct platform_device *pdev)
->> >>  {
->> >>       int ret;
->> >> @@ -1276,6 +1314,12 @@ static int gpmc_probe_dt(struct
->platform_device *pdev)
->> >>                       return ret;
->> >>       }
->> >>
->> >
->> > This doesn't look right to me:
->> >
->> >> +     for_each_node_by_name(child, "onenand") {
->> >> +             ret = gpmc_probe_onenand_child(pdev, child);
->> >> +             of_node_put(child);
->> >> +             if (ret < 0)
->> >> +                     return ret;
->> >> +     }
->> >
->> > for_each_node_by_name automatically calls of_node_put on each node
->once passed,
->> > and as far as I can tell, gpmc_probe_onenand_child doesn't do
->anything that'd
->> > increment a node's refcount.
->> >
->> > As far as I can see, you only need the of_node_put in the error
->case:
->> >
->> > for_each_node_by_name(child, "onenand") {
->> >         ret = gpmc_probe_onenand_child(pdev, child);
->> >         if (ret < 0) {
->> >                 of_node_put(child);
->> >                 return ret;
->> >         }
->> > }
->> >
->> > Have I missed something here?
->> >
->> 
->> Mmm... perhaps I've overlooked that code.
->> 
->> After some digging through source and reading for_each_node_by_name()
->> it seems to me you're right.
->> 
->> @Daniel: It seems this would also apply to the NAND binding.
->> What do you think?
->
->Would prefer this done as a fix against the omap-for-v3.9/gpmc
->branch before we apply Ezequiel's patches.
+Changes outside of the subsystem are constrained to pinctrl (my subsystem
+and thus OK:ed) and a oneline in drivers/mtd/nand/fsmc_nand.c adding
+a new compatible value.
 
-I'm currently far away from my computer and can't prepare a patch for this, sorry. But I think you are right, so please just submit a patch for that, anyone :-)
+The MTD maintainers have had time enough to ACK that oneliner and it
+shouldn't be a big issue, so:
 
-Best regards,
-Daniel
+Please pull this into your tree.
+
+Yours,
+Linus Walleij
+
+
+The following changes since commit 9931faca02c604c22335f5a935a501bb2ace6e20:
+
+  Linux 3.8-rc3 (2013-01-09 18:59:55 -0800)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-nomadik.git
+tags/nomadik-devicetree
+
+for you to fetch changes up to bf82c67edcc8751903bdd7e45626c47cd2cc7834:
+
+  ARM: nomadik: get rid of <mach/hardware.h> (2013-01-22 08:45:36 +0100)
+
+----------------------------------------------------------------
+This patch set converts the Nomadik (mach-nomadik) to
+Device Tree and delete the old board files, paving the
+road for single zImage.
+
+----------------------------------------------------------------
+Linus Walleij (11):
+      ARM: nomadik: move last custom calls to pinctrl
+      ARM: nomadik: initial devicetree support
+      ARM: nomadik: move pin maps to cpu file
+      ARM: nomadik: move remaining PrimeCells to device tree
+      ARM: nomadik: add FSMC NAND
+      ARM: nomadik: move GPIO and pinctrl to device tree
+      ARM: nomadik: convert SMSC91x ethernet to device tree
+      ARM: nomadik: migrate MMC/SD card support to device tree
+      ARM: nomadik: add I2C devices to the device tree
+      ARM: nomadik: delete old board files
+      ARM: nomadik: get rid of <mach/hardware.h>
+
+ .../devicetree/bindings/arm/ste-nomadik.txt        |  27 ++
+ .../devicetree/bindings/mtd/fsmc-nand.txt          |   2 +-
+ arch/arm/Kconfig                                   |   2 +
+ arch/arm/boot/dts/Makefile                         |   1 +
+ arch/arm/boot/dts/ste-nomadik-s8815.dts            |  30 ++
+ arch/arm/boot/dts/ste-nomadik-stn8815.dtsi         | 256 ++++++++++++++
+ arch/arm/mach-nomadik/Kconfig                      |  10 +-
+ arch/arm/mach-nomadik/Makefile                     |   6 -
+ arch/arm/mach-nomadik/board-nhk8815.c              | 359 --------------------
+ arch/arm/mach-nomadik/cpu-8815.c                   | 370 +++++++++++++++------
+ arch/arm/mach-nomadik/cpu-8815.h                   |   4 -
+ arch/arm/mach-nomadik/i2c-8815nhk.c                |  88 -----
+ arch/arm/mach-nomadik/include/mach/hardware.h      |  90 -----
+ arch/arm/mach-nomadik/include/mach/irqs.h          |   2 -
+ arch/arm/mach-nomadik/include/mach/uncompress.h    |   1 -
+ drivers/mtd/nand/fsmc_nand.c                       |   1 +
+ drivers/pinctrl/pinctrl-nomadik.c                  |   4 +
+ 17 files changed, 601 insertions(+), 652 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/arm/ste-nomadik.txt
+ create mode 100644 arch/arm/boot/dts/ste-nomadik-s8815.dts
+ create mode 100644 arch/arm/boot/dts/ste-nomadik-stn8815.dtsi
+ delete mode 100644 arch/arm/mach-nomadik/board-nhk8815.c
+ delete mode 100644 arch/arm/mach-nomadik/cpu-8815.h
+ delete mode 100644 arch/arm/mach-nomadik/i2c-8815nhk.c
+ delete mode 100644 arch/arm/mach-nomadik/include/mach/hardware.h
