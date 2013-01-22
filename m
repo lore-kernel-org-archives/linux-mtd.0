@@ -1,24 +1,27 @@
-Received: from ch1ehsobe001.messaging.microsoft.com ([216.32.181.181]
- helo=ch1outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TxTsx-00068I-OV
- for linux-mtd@lists.infradead.org; Tue, 22 Jan 2013 02:46:52 +0000
-Message-ID: <50FDFD89.7030407@freescale.com>
-Date: Tue, 22 Jan 2013 10:46:33 +0800
-From: Huang Shijie <b32955@freescale.com>
+In-Reply-To: <20130121183348.GI22517@atomide.com>
+References: <1358634477-25868-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1358634477-25868-3-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20130121123020.GI15707@e106331-lin.cambridge.arm.com>
+ <CALF0-+VOxtsfQLZCGujvjMrsGacbfVTMytRUX=CfKa3+FgnU1w@mail.gmail.com>
+ <20130121183348.GI22517@atomide.com>
 MIME-Version: 1.0
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-Subject: Re: question: Why the nand_wait() wait for 20ms for nand program.
-References: <50F9023D.5040408@freescale.com> <50F93F65.90805@parrot.com>
- <50FCB75D.1000200@freescale.com> <50FD02EA.5050209@parrot.com>
- <50FD0554.8030108@freescale.com> <50FD073C.8050209@parrot.com>
- <50FD0981.8050507@freescale.com> <50FD0B3D.2070803@parrot.com>
-In-Reply-To: <50FD0B3D.2070803@parrot.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: David Woodhouse <dwmw2@infradead.org>,
+Content-Type: text/plain;
+ charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 3/3] arm: omap2: gpmc: add DT bindings for OneNAND
+From: Daniel Mack <zonque@gmail.com>
+Date: Tue, 22 Jan 2013 09:32:19 +0800
+To: Tony Lindgren <tony@atomide.com>,Ezequiel Garcia <elezegarcia@gmail.com>
+Message-ID: <af696cd0-8a7f-4839-9600-87d5b9172585@email.android.com>
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ "martinez.javier@gmail.com" <martinez.javier@gmail.com>,
+ "matthias.bgg@googlemail.com" <matthias.bgg@googlemail.com>,
+ "eballetbo@gmail.com" <eballetbo@gmail.com>,
+ "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,79 +31,123 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B401=E6=9C=8821=E6=97=A5 17:32, Matthieu CASTET =E5=86=
-=99=E9=81=93:
-> Huang Shijie a =C3=A9crit :
->> =E4=BA=8E 2013=E5=B9=B401=E6=9C=8821=E6=97=A5 17:15, Matthieu CASTET =E5=
-=86=99=E9=81=93:
->>> Huang Shijie a =C3=A9crit :
->>>>    =E4=BA=8E 2013=E5=B9=B401=E6=9C=8821=E6=97=A5 16:57, Matthieu CAS=
-TET =E5=86=99=E9=81=93:
->>>>> Huang Shijie a =C3=A9crit :
->>>>>> =E4=BA=8E 2013=E5=B9=B401=E6=9C=8818=E6=97=A5 20:26, Matthieu CAST=
-ET =E5=86=99=E9=81=93:
->>>>>>> Huang Shijie a =C3=A9crit :
->>>>>>>> Hi all:
->>>>>>>> Why the nand_wait() wait for 20ms for nand program. could we
->>>>>>>> expand this time to 40ms? I have a nand chip : Micron MT29F64G08=
-CBABAWP.
->>>>>>>> The chip's BUSY/READY pin may needs more then 20ms to become rea=
-dy,
->>>>>>>> though its
->>>>>>>> datasheet tells me the tPROG's max value is 2.5ms.
->>>>>>>>
->>>>>>> Don't you have an hardware problem (missing pullup/down on ready =
-busy pin) ?
->>>>>>>
->>>>>>> If the datasheet say the max value is 2.5 ms , how it can be more=
- than 20 ms.
->>>>>> I finally found the root cause.
->>>>>>
->>>>>> I added the do_gettimeofday() in the nand_wait() to measure the
->>>>>> READY/BUSY time. The code is like this:
->>>>>> ---------------------------------------------------- code start
->>>>>>
->>>>> Could you dump jiffies and timeo in your code ?
->>>> The following just shows some part of the log:
->>>>
->>>> [my_nand_wait]status : 80,<21480, 21480>,<   665911, 664170>,<1, 174=
-1>
->>>> [my_nand_wait]status : 80,<21480, 21480>,<   735989, 734626>,<1, 136=
-3>
->>>> [my_nand_wait]status : 80,<21480, 21480>,<   805693, 804825>,<0, 868=
->
->>>>
->>>>    From the log, we can see that the kernel just waits for 1741us to=
- break
->>>> the while loop,
->>>> not 20ms.
->>>>
->>> Yes but you should display jiffies and timeo value to understand why =
-the kernel
->>> thinks 2 jiffies elapsed.
->> I dumpped the jiffies and timeo too. The jiffies is really _equal_ to
->> the timeo, and then the while loop breaks.
->>
->> thanks for your comments.
->>
->> I think there is something wrong with the timer.
->>
-> timeo +=3D (HZ * 20) / 1000;
->
-> So what is the value of HZ ?
->
-> In order (HZ * 20) / 1000 is 0 HZ should be<  50.
+Hi Tony, Mark, Ezequiel,
 
-thanks for your help.
+Tony Lindgren <tony@atomide.com> wrote:
 
-I really appreciate it.
-
-this bug is caused by our unstable kernel.
-I tried with some other stable code, the issue never occurs.
-
-
-thanks
-Huang shijie
+>* Ezequiel Garcia <elezegarcia@gmail.com> [130121 09:00]:
+>> Hi Mark,
+>> 
+>> On Mon, Jan 21, 2013 at 9:30 AM, Mark Rutland <mark.rutland@arm.com>
+>wrote:
+>> > [...]
+>> >
+>> >> diff --git a/arch/arm/mach-omap2/gpmc.c
+>b/arch/arm/mach-omap2/gpmc.c
+>> >> index 01ce462..f7de9eb 100644
+>> >> --- a/arch/arm/mach-omap2/gpmc.c
+>> >> +++ b/arch/arm/mach-omap2/gpmc.c
+>> >> @@ -39,6 +39,7 @@
+>> >>  #include "omap_device.h"
+>> >>  #include "gpmc.h"
+>> >>  #include "gpmc-nand.h"
+>> >> +#include "gpmc-onenand.h"
+>> >>
+>> >>  #define      DEVICE_NAME             "omap-gpmc"
+>> >>
+>> >> @@ -1259,6 +1260,43 @@ static int gpmc_probe_nand_child(struct
+>platform_device *pdev,
+>> >>  }
+>> >>  #endif
+>> >>
+>> >> +#ifdef CONFIG_MTD_ONENAND
+>> >> +static int gpmc_probe_onenand_child(struct platform_device *pdev,
+>> >> +                              struct device_node *child)
+>> >> +{
+>> >> +     u32 val;
+>> >> +     struct omap_onenand_platform_data *gpmc_onenand_data;
+>> >> +
+>> >> +     if (of_property_read_u32(child, "reg", &val) < 0) {
+>> >> +             dev_err(&pdev->dev, "%s has no 'reg' property\n",
+>> >> +                     child->full_name);
+>> >> +             return -ENODEV;
+>> >> +     }
+>> >> +
+>> >> +     gpmc_onenand_data = devm_kzalloc(&pdev->dev,
+>sizeof(*gpmc_onenand_data),
+>> >> +                                      GFP_KERNEL);
+>> >> +     if (!gpmc_onenand_data)
+>> >> +             return -ENOMEM;
+>> >> +
+>> >> +     gpmc_onenand_data->cs = val;
+>> >> +     gpmc_onenand_data->of_node = child;
+>> >> +     gpmc_onenand_data->dma_channel = -1;
+>> >> +
+>> >> +     if (!of_property_read_u32(child, "dma-channel", &val))
+>> >> +             gpmc_onenand_data->dma_channel = val;
+>> >> +
+>> >> +     gpmc_onenand_init(gpmc_onenand_data);
+>> >> +
+>> >> +     return 0;
+>> >> +}
+>> >> +#else
+>> >> +static int gpmc_probe_onenand_child(struct platform_device *pdev,
+>> >> +                                 struct device_node *child)
+>> >> +{
+>> >> +     return 0;
+>> >> +}
+>> >> +#endif
+>> >> +
+>> >>  static int gpmc_probe_dt(struct platform_device *pdev)
+>> >>  {
+>> >>       int ret;
+>> >> @@ -1276,6 +1314,12 @@ static int gpmc_probe_dt(struct
+>platform_device *pdev)
+>> >>                       return ret;
+>> >>       }
+>> >>
+>> >
+>> > This doesn't look right to me:
+>> >
+>> >> +     for_each_node_by_name(child, "onenand") {
+>> >> +             ret = gpmc_probe_onenand_child(pdev, child);
+>> >> +             of_node_put(child);
+>> >> +             if (ret < 0)
+>> >> +                     return ret;
+>> >> +     }
+>> >
+>> > for_each_node_by_name automatically calls of_node_put on each node
+>once passed,
+>> > and as far as I can tell, gpmc_probe_onenand_child doesn't do
+>anything that'd
+>> > increment a node's refcount.
+>> >
+>> > As far as I can see, you only need the of_node_put in the error
+>case:
+>> >
+>> > for_each_node_by_name(child, "onenand") {
+>> >         ret = gpmc_probe_onenand_child(pdev, child);
+>> >         if (ret < 0) {
+>> >                 of_node_put(child);
+>> >                 return ret;
+>> >         }
+>> > }
+>> >
+>> > Have I missed something here?
+>> >
+>> 
+>> Mmm... perhaps I've overlooked that code.
+>> 
+>> After some digging through source and reading for_each_node_by_name()
+>> it seems to me you're right.
+>> 
+>> @Daniel: It seems this would also apply to the NAND binding.
+>> What do you think?
 >
-> Matthieu
->
+>Would prefer this done as a fix against the omap-for-v3.9/gpmc
+>branch before we apply Ezequiel's patches.
+
+I'm currently far away from my computer and can't prepare a patch for this, sorry. But I think you are right, so please just submit a patch for that, anyone :-)
+
+Best regards,
+Daniel
