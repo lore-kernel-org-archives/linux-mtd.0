@@ -1,8 +1,5 @@
-Date: Tue, 22 Jan 2013 10:27:49 -0800
-From: Tony Lindgren <tony@atomide.com>
-To: Ezequiel Garcia <elezegarcia@gmail.com>
-Subject: Re: [PATCH v2 3/3] arm: omap2: gpmc: add DT bindings for OneNAND
-Message-ID: <20130122182749.GM15361@atomide.com>
+MIME-Version: 1.0
+In-Reply-To: <20130122182749.GM15361@atomide.com>
 References: <1358634477-25868-1-git-send-email-ezequiel.garcia@free-electrons.com>
  <1358634477-25868-3-git-send-email-ezequiel.garcia@free-electrons.com>
  <20130121123020.GI15707@e106331-lin.cambridge.arm.com>
@@ -10,10 +7,13 @@ References: <1358634477-25868-1-git-send-email-ezequiel.garcia@free-electrons.co
  <20130121183348.GI22517@atomide.com>
  <af696cd0-8a7f-4839-9600-87d5b9172585@email.android.com>
  <CALF0-+WvfyygnV5A=E8UGc=zp9pab79FzJRe1KywjPw-B4UGZA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALF0-+WvfyygnV5A=E8UGc=zp9pab79FzJRe1KywjPw-B4UGZA@mail.gmail.com>
+ <20130122182749.GM15361@atomide.com>
+Date: Tue, 22 Jan 2013 16:43:43 -0300
+Message-ID: <CALF0-+XdsKvJJpmxZEYXyhTZksgKRoAJ4TcyPV+G9WUbb7Dt_g@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] arm: omap2: gpmc: add DT bindings for OneNAND
+From: Ezequiel Garcia <elezegarcia@gmail.com>
+To: Tony Lindgren <tony@atomide.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Cc: Mark Rutland <mark.rutland@arm.com>,
  "martinez.javier@gmail.com" <martinez.javier@gmail.com>,
  "matthias.bgg@googlemail.com" <matthias.bgg@googlemail.com>,
@@ -33,17 +33,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Ezequiel Garcia <elezegarcia@gmail.com> [130122 10:17]:
-> On Mon, Jan 21, 2013 at 10:32 PM, Daniel Mack <zonque@gmail.com> wrote:
-> >
-> > I'm currently far away from my computer and can't prepare a patch for this, sorry. But I think you are right, so please just submit a patch for that, anyone :-)
-> >
-> 
-> Ok, I'll try to submit a patch as soon as possible. If anyone wants to
-> do it instead, fine by me.
+On Tue, Jan 22, 2013 at 3:27 PM, Tony Lindgren <tony@atomide.com> wrote:
+> * Ezequiel Garcia <elezegarcia@gmail.com> [130122 10:17]:
+>> On Mon, Jan 21, 2013 at 10:32 PM, Daniel Mack <zonque@gmail.com> wrote:
+>> >
+>> > I'm currently far away from my computer and can't prepare a patch for this, sorry. But I think you are right, so please just submit a patch for that, anyone :-)
+>> >
+>>
+>> Ok, I'll try to submit a patch as soon as possible. If anyone wants to
+>> do it instead, fine by me.
+>
+> No please go ahead as it seems that you can easily test it too.
+>
 
-No please go ahead as it seems that you can easily test it too.
+No problem.
 
-Regards,
+I now wonder if it's okey to exit upon probe failure.
+In particular, the for_each should be like this:
 
-Tony
+        for_each_node_by_name(child, "nand") {
+                ret = gpmc_probe_nand_child(pdev, child);
+                if (ret < 0) {
+                        of_node_put(child);
+                        return ret;
+                }
+        }
+
+or like this:
+
+        for_each_node_by_name(child, "nand") {
+                ret = gpmc_probe_nand_child(pdev, child);
+                WARN_ON(ret < 0);
+        }
+
+Ideas?
+
+-- 
+    Ezequiel
