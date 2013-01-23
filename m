@@ -1,17 +1,19 @@
-Received: from mail.windriver.com ([147.11.1.11])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Ty5Xo-0001ia-AV
- for linux-mtd@lists.infradead.org; Wed, 23 Jan 2013 18:59:32 +0000
-From: Paul Gortmaker <paul.gortmaker@windriver.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: fix random pointer dereference in OF device name handling
-Date: Wed, 23 Jan 2013 13:59:08 -0500
-Message-Id: <1358967548-25491-1-git-send-email-paul.gortmaker@windriver.com>
-Cc: Paul Gortmaker <paul.gortmaker@windriver.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
- linux-kernel@vger.kernel.org,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Received: from smtp02.smtpout.orange.fr ([80.12.242.124]
+ helo=smtp.smtpout.orange.fr)
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1Ty788-0006Tj-7a
+ for linux-mtd@lists.infradead.org; Wed, 23 Jan 2013 20:41:09 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Alan Cox <alan@linux.intel.com>
+Subject: Re: [PATCH] goldfish: NAND flash driver
+In-Reply-To: <20130121234502.19934.61017.stgit@bob.linux.org.uk> (Alan Cox's
+ message of "Mon, 21 Jan 2013 23:45:10 +0000")
+References: <20130121234502.19934.61017.stgit@bob.linux.org.uk>
+Date: Wed, 23 Jan 2013 21:41:02 +0100
+Message-ID: <87r4lboco1.fsf@free.fr>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,86 +23,168 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Here is the output from an mpc8548 based board.  There are
-three instances of missing device name here:
+Alan Cox <alan@linux.intel.com> writes:
+... zip ...
 
-1 |: Found 4 x16 devices at 0x0 in 32-bit bank. Manufacturer ID 0x008989 Chip ID 0x001818
-2 |Intel/Sharp Extended Query Table at 0x0031
-3 |Intel/Sharp Extended Query Table at 0x0031
-4 |Using buffer write method
-5 |cfi_cmdset_0001: Erase suspend on write enabled
-6 |2 ofpart partitions found on MTD device
-7 |Creating 2 MTD partitions on "":
-8 |0x000000000000-0x000003f00000 : "space"
-9 |0x000003f00000-0x000004000000 : "bootloader"
+Hi Alan,
+I have a couple of questions on your patch.
 
-Lines 1 (BOL), 6 (EOL) and 7 (inside quotes) have the missing
-device name issue.
+> +static u32 goldfish_nand_cmd_with_params(struct mtd_info *mtd,
+> +			enum nand_cmd cmd, u64 addr, u32 len,
+> +			void *ptr, u32 *rv)
+> +{
+> +	u32 cmdp;
+> +	struct goldfish_nand *nand = mtd->priv;
+> +	struct cmd_params *cps = nand->cmd_params;
+> +	unsigned char __iomem  *base = nand->base;
+> +
+> +	if (cps == NULL)
+> +		return -1;
+> +
+> +	switch (cmd) {
+> +	case NAND_CMD_ERASE:
+> +		cmdp = NAND_CMD_ERASE_WITH_PARAMS;
+> +		break;
+> +	case NAND_CMD_READ:
+> +		cmdp = NAND_CMD_READ_WITH_PARAMS;
+> +		break;
+> +	case NAND_CMD_WRITE:
+> +		cmdp = NAND_CMD_WRITE_WITH_PARAMS;
+> +		break;
+> +	default:
+> +		return -1;
+> +	}
+> +	cps->dev = mtd - nand->mtd;
+> +	cps->addr_high = (u32)(addr >> 32);
+> +	cps->addr_low = (u32)addr;
+> +	cps->transfer_size = len;
+> +	cps->data = (u32)ptr;
+> +	writel(cmdp, base + NAND_COMMAND);
+What guarantee do you have on the order of writes here ? Isn't a write barrier
+required here ?
 
-Problem introduced with commit d68cbdd4fb04d2b756ad53c22f36943167b16340
-"mtd: physmap_of: allow to specify the mtd name for retro compatiblity"
 
-There are actually two bugs here.  The 1st is that mtd_name
-is on the stack and never initialized.  It uses a call to
-of_property_read_string() to get the pointer.  However this
-function is explicitly documented as saying that the char
-"...pointer is modified only if a valid string can be decoded."
+> +	*rv = cps->result;
+> +	return 0;
+> +}
+> +
+> +static u32 goldfish_nand_cmd(struct mtd_info *mtd, enum nand_cmd cmd,
+> +				u64 addr, u32 len, void *ptr)
+> +{
+> +	struct goldfish_nand *nand = mtd->priv;
+> +	u32 rv;
+> +	unsigned long irq_flags;
+> +	unsigned char __iomem  *base = nand->base;
+> +
+> +	spin_lock_irqsave(&nand->lock, irq_flags);
+Why this spin_lock and not a mutex ? I didn't see any interrupts used in this
+driver, have I missed something ?
 
-Hence it isn't NULL, and we use a pointer off in the weeds as
-the device name, leading to undefined behaviour.
+> +	if (goldfish_nand_cmd_with_params(mtd, cmd, addr, len, ptr, &rv)) {
+> +		writel(mtd - nand->mtd, base + NAND_DEV);
+> +		writel((u32)(addr >> 32), base + NAND_ADDR_HIGH);
+> +		writel((u32)addr, base + NAND_ADDR_LOW);
+> +		writel(len, base + NAND_TRANSFER_SIZE);
+> +		writel((u32)ptr, base + NAND_DATA);
+> +		writel(cmd, base + NAND_COMMAND);
+> +		rv = readl(base + NAND_RESULT);
+Same question here on the order of the read wrt to previous writes.
 
-The second issue is in the NULL check itself.  It uses a "?"
-operator to choose between mtd_name and the devicetree based
-name.  But the operator isn't given two choices.  One choice
-(mtd_name) is missing from the RHS of the "?".
+> +	}
+> +	spin_unlock_irqrestore(&nand->lock, irq_flags);
+> +	return rv;
+> +}
+> +
+> +static int goldfish_nand_erase(struct mtd_info *mtd, struct erase_info *instr)
+> +{
+> +	loff_t ofs = instr->addr;
+> +	u32 len = instr->len;
+> +	u32 rem;
+> +
+> +	if (ofs + len > mtd->size)
+> +		goto invalid_arg;
+I don't think that test is required, the MTD API gives already that guarantee
+AFAIR.
 
-With these fixed, the output appears as follows:
+... zip ...
 
-1 |fc000000.flash: Found 4 x16 devices at 0x0 in 32-bit bank. Manufacturer ID 0x008989 Chip ID 0x001818
-2 |Intel/Sharp Extended Query Table at 0x0031
-3 |Intel/Sharp Extended Query Table at 0x0031
-4 |Using buffer write method
-5 |cfi_cmdset_0001: Erase suspend on write enabled
-6 |2 ofpart partitions found on MTD device fc000000.flash
-7 |Creating 2 MTD partitions on "fc000000.flash":
-8 |0x000000000000-0x000003f00000 : "space"
-9 |0x000003f00000-0x000004000000 : "bootloader"
+> +static int goldfish_nand_read_oob(struct mtd_info *mtd, loff_t ofs,
+> +				struct mtd_oob_ops *ops)
+> +{
+> +	u32 rem;
+> +
+> +	if (ofs + ops->len > mtd->size)
+> +		goto invalid_arg;
+Ditto.
 
-All the names are now appearing where they should be.
+...zip...
 
-Cc: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
----
+> +static int goldfish_nand_write_oob(struct mtd_info *mtd, loff_t ofs,
+> +				struct mtd_oob_ops *ops)
+> +{
+> +	u32 rem;
+> +
+> +	if (ofs + ops->len > mtd->size)
+> +		goto invalid_arg;
+Ditto.
 
-[Introduced into mainline at v3.8-rc1~47 ; hence no need for stable Cc]
+...zip...
 
- drivers/mtd/maps/physmap_of.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+> +static int goldfish_nand_read(struct mtd_info *mtd, loff_t from, size_t len,
+> +				size_t *retlen, u_char *buf)
+> +{
+> +	u32 rem;
+> +
+> +	if (from + len > mtd->size)
+> +		goto invalid_arg;
+Ditto.
 
-diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
-index 67cc73c..a70c1c4 100644
---- a/drivers/mtd/maps/physmap_of.c
-+++ b/drivers/mtd/maps/physmap_of.c
-@@ -170,7 +170,7 @@ static int of_flash_probe(struct platform_device *dev)
- 	resource_size_t res_size;
- 	struct mtd_part_parser_data ppdata;
- 	bool map_indirect;
--	const char *mtd_name;
-+	const char *mtd_name = NULL;
- 
- 	match = of_match_device(of_flash_match, &dev->dev);
- 	if (!match)
-@@ -237,7 +237,8 @@ static int of_flash_probe(struct platform_device *dev)
- 			goto err_out;
- 		}
- 
--		info->list[i].map.name = mtd_name ?: dev_name(&dev->dev);
-+		info->list[i].map.name = mtd_name ?
-+					 mtd_name : dev_name(&dev->dev);
- 		info->list[i].map.phys = res.start;
- 		info->list[i].map.size = res_size;
- 		info->list[i].map.bankwidth = be32_to_cpup(width);
+..zip...
+
+> +static int goldfish_nand_write(struct mtd_info *mtd, loff_t to, size_t len,
+> +				size_t *retlen, const u_char *buf)
+> +{
+> +	u32 rem;
+> +
+> +	if (to + len > mtd->size)
+> +		goto invalid_arg;
+Ditto.
+
+> +static int nand_setup_cmd_params(struct platform_device *pdev,
+> +						struct goldfish_nand *nand)
+> +{
+> +	u64 paddr;
+> +	unsigned char __iomem  *base = nand->base;
+> +
+> +	nand->cmd_params = devm_kzalloc(&pdev->dev,
+> +					sizeof(struct cmd_params), GFP_KERNEL);
+> +	if (!nand->cmd_params)
+> +		return -1;
+> +
+> +	paddr = __pa(nand->cmd_params);
+That looks weird (the __pa()) usage. I thought drivers should not use __pa()
+directly.
+
+> +	writel((u32)(paddr >> 32), base + NAND_CMD_PARAMS_ADDR_HIGH);
+> +	writel((u32)paddr, base + NAND_CMD_PARAMS_ADDR_LOW);
+> +	return 0;
+> +}
+> +
+> +static int goldfish_nand_init_device(struct platform_device *pdev,
+> +					struct goldfish_nand *nand, int id)
+> +{
+> +	u32 name_len;
+> +	u32 result;
+> +	u32 flags;
+> +	unsigned long irq_flags;
+> +	unsigned char __iomem  *base = nand->base;
+> +	struct mtd_info *mtd = &nand->mtd[id];
+> +	char *name;
+> +
+> +	spin_lock_irqsave(&nand->lock, irq_flags);
+Again same spin_lock question.
+
+Cheers.
+
 -- 
-1.8.1
+Robert
