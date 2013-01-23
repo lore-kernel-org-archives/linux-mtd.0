@@ -1,23 +1,13 @@
-Received: from mail-wi0-f178.google.com ([209.85.212.178])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Txxzg-0002f9-9B
- for linux-mtd@lists.infradead.org; Wed, 23 Jan 2013 10:55:49 +0000
-Received: by mail-wi0-f178.google.com with SMTP id hn3so571213wib.17
- for <linux-mtd@lists.infradead.org>; Wed, 23 Jan 2013 02:55:46 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <50FFBDD7.500@hauke-m.de>
-References: <1358935626-10974-1-git-send-email-zajec5@gmail.com>
- <50FFBDD7.500@hauke-m.de>
-Date: Wed, 23 Jan 2013 11:55:46 +0100
-Message-ID: <CACna6rwzy3rc0uAYM664=QGjStG0z8sDNxddu4XNG8hrzfV2rA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: bcm47xxpflash: add driver for parallel flash on
- BCM47xx
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Hauke Mehrtens <hauke@hauke-m.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <David.Woodhouse@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+From: Josh Wu <josh.wu@atmel.com>
+To: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ dedekind1@gmail.com
+Subject: [PATCH 1/5] MTD: atmel_nand: avoid to report an error when lookup
+ table offset is 0.
+Date: Wed, 23 Jan 2013 20:47:08 +0800
+Message-Id: <1358945232-2282-2-git-send-email-josh.wu@atmel.com>
+In-Reply-To: <1358945232-2282-1-git-send-email-josh.wu@atmel.com>
+References: <1358945232-2282-1-git-send-email-josh.wu@atmel.com>
+Cc: nicolas.ferre@atmel.com, plagnioj@jcrosoft.com, Josh Wu <josh.wu@atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,21 +17,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2013/1/23 Hauke Mehrtens <hauke@hauke-m.de>:
-> On 01/23/2013 11:07 AM, Rafa=C5=82 Mi=C5=82ecki wrote:
->> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
->> ---
->>  drivers/mtd/maps/Kconfig         |   18 ++++
->>  drivers/mtd/maps/Makefile        |    1 +
->>  drivers/mtd/maps/bcm47xxpflash.c |  163 +++++++++++++++++++++++++++++++=
-+++++++
->>  3 files changed, 182 insertions(+), 0 deletions(-)
->>  create mode 100644 drivers/mtd/maps/bcm47xxpflash.c
->
-> Why do you not just use the physmap-flash driver from
-> drivers/mtd/maps/physmap.c ?
+Before this patch, we assume the whole ROM code are mapping to memory. So
+it is wrong if the lookup table offset is 0.
 
-Looks sane. Didn't know about this. Please drop the patch.
+After this patch, we can map only the lookup table of ROM code to memory
+intead of the whole ROM code (about 1M). In this case, one lookup table
+offset can be 0.
 
---=20
-Rafa=C5=82
+Signed-off-by: Josh Wu <josh.wu@atmel.com>
+---
+ drivers/mtd/nand/atmel_nand.c |    9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index c516a94..1d989db 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -1215,7 +1215,7 @@ static void atmel_nand_hwctl(struct mtd_info *mtd, int mode)
+ static int atmel_of_init_port(struct atmel_nand_host *host,
+ 			      struct device_node *np)
+ {
+-	u32 val, table_offset;
++	u32 val;
+ 	u32 offset[2];
+ 	int ecc_mode;
+ 	struct atmel_nand_data *board = &host->board;
+@@ -1288,13 +1288,12 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
+ 		dev_err(host->dev, "Cannot get PMECC lookup table offset\n");
+ 		return -EINVAL;
+ 	}
+-	table_offset = host->pmecc_sector_size == 512 ? offset[0] : offset[1];
+-
+-	if (!table_offset) {
++	if (!offset[0] && !offset[1]) {
+ 		dev_err(host->dev, "Invalid PMECC lookup table offset\n");
+ 		return -EINVAL;
+ 	}
+-	host->pmecc_lookup_table_offset = table_offset;
++	host->pmecc_lookup_table_offset =
++		(host->pmecc_sector_size == 512) ? offset[0] : offset[1];
+ 
+ 	return 0;
+ }
+-- 
+1.7.9.5
