@@ -1,9 +1,9 @@
 From: Philip Avinash <avinashphilip@ti.com>
 To: <khilman@ti.com>, <tony@atomide.com>, <linux@arm.linux.org.uk>,
  <dwmw2@infradead.org>
-Subject: [PATCH 1/4] arch: arm: gpmc: gpmc migration support
-Date: Wed, 23 Jan 2013 14:56:13 +0530
-Message-ID: <1358933176-12409-2-git-send-email-avinashphilip@ti.com>
+Subject: [PATCH 2/4] mtd: devices: elm: Low power transition support
+Date: Wed, 23 Jan 2013 15:15:44 +0530
+Message-ID: <1358934346-16822-3-git-send-email-avinashphilip@ti.com>
 In-Reply-To: <1358933176-12409-1-git-send-email-avinashphilip@ti.com>
 References: <1358933176-12409-1-git-send-email-avinashphilip@ti.com>
 MIME-Version: 1.0
@@ -20,63 +20,116 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-With recent GPMC driver conversion, usage of gpmc_save/restore_context
-can done from gpmc driver itself. Hence removes the usage from pm34xx.c.
-Also removes the conditional compilation primitives ARCH_OMAP3 for
-gpmc_save/restore_context.
+In low power modes of AM335X platforms, peripherals power is cut off.
+This patch supports low power sleep transition support for ELM driver.
 
 Signed-off-by: Philip Avinash <avinashphilip@ti.com>
 ---
- arch/arm/mach-omap2/gpmc.c   |    2 --
- arch/arm/mach-omap2/pm34xx.c |    5 -----
- 2 files changed, 7 deletions(-)
+ drivers/mtd/devices/elm.c |   40 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
 
-diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
-index cbf4e0d..aed958a 100644
---- a/arch/arm/mach-omap2/gpmc.c
-+++ b/arch/arm/mach-omap2/gpmc.c
-@@ -1426,7 +1426,6 @@ static irqreturn_t gpmc_handle_irq(int irq, void *dev)
- 	return IRQ_HANDLED;
+diff --git a/drivers/mtd/devices/elm.c b/drivers/mtd/devices/elm.c
+index f78f43f..4793cb0 100644
+--- a/drivers/mtd/devices/elm.c
++++ b/drivers/mtd/devices/elm.c
+@@ -20,6 +20,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/io.h>
+ #include <linux/of.h>
++#include <linux/sched.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/platform_data/elm.h>
+ 
+@@ -62,6 +63,7 @@ struct elm_info {
+ 	struct completion elm_completion;
+ 	struct list_head list;
+ 	enum bch_ecc bch_type;
++	bool idle;
+ };
+ 
+ static LIST_HEAD(elm_devices);
+@@ -86,9 +88,11 @@ void elm_config(struct device *dev, enum bch_ecc bch_type)
+ 	u32 reg_val;
+ 	struct elm_info *info = dev_get_drvdata(dev);
+ 
++	info->idle = true;
+ 	reg_val = (bch_type & ECC_BCH_LEVEL_MASK) | (ELM_ECC_SIZE << 16);
+ 	elm_write_reg(info, ELM_LOCATION_CONFIG, reg_val);
+ 	info->bch_type = bch_type;
++	info->idle = false;
+ }
+ EXPORT_SYMBOL(elm_config);
+ 
+@@ -280,6 +284,7 @@ void elm_decode_bch_error_page(struct device *dev, u8 *ecc_calc,
+ 	struct elm_info *info = dev_get_drvdata(dev);
+ 	u32 reg_val;
+ 
++	info->idle = true;
+ 	/* Enable page mode interrupt */
+ 	reg_val = elm_read_reg(info, ELM_IRQSTATUS);
+ 	elm_write_reg(info, ELM_IRQSTATUS, reg_val & INTR_STATUS_PAGE_VALID);
+@@ -298,6 +303,7 @@ void elm_decode_bch_error_page(struct device *dev, u8 *ecc_calc,
+ 	reg_val = elm_read_reg(info, ELM_IRQENABLE);
+ 	elm_write_reg(info, ELM_IRQENABLE, reg_val & ~INTR_EN_PAGE_MASK);
+ 	elm_error_correction(info, err_vec);
++	info->idle = false;
+ }
+ EXPORT_SYMBOL(elm_decode_bch_error_page);
+ 
+@@ -368,6 +374,7 @@ static int elm_probe(struct platform_device *pdev)
+ 	INIT_LIST_HEAD(&info->list);
+ 	list_add(&info->list, &elm_devices);
+ 	platform_set_drvdata(pdev, info);
++	info->idle = false;
+ 	return ret;
  }
  
--#ifdef CONFIG_ARCH_OMAP3
- static struct omap3_gpmc_regs gpmc_context;
- 
- void omap3_gpmc_save_context(void)
-@@ -1491,4 +1490,3 @@ void omap3_gpmc_restore_context(void)
- 		}
- 	}
+@@ -379,6 +386,38 @@ static int elm_remove(struct platform_device *pdev)
+ 	return 0;
  }
--#endif /* CONFIG_ARCH_OMAP3 */
-diff --git a/arch/arm/mach-omap2/pm34xx.c b/arch/arm/mach-omap2/pm34xx.c
-index 60fbf0a..cab4c5d 100644
---- a/arch/arm/mach-omap2/pm34xx.c
-+++ b/arch/arm/mach-omap2/pm34xx.c
-@@ -43,7 +43,6 @@
- #include "common.h"
- #include "cm3xxx.h"
- #include "cm-regbits-34xx.h"
--#include "gpmc.h"
- #include "prm-regbits-34xx.h"
- #include "prm3xxx.h"
- #include "pm.h"
-@@ -84,8 +83,6 @@ static void omap3_core_save_context(void)
  
- 	/* Save the Interrupt controller context */
- 	omap_intc_save_context();
--	/* Save the GPMC context */
--	omap3_gpmc_save_context();
- 	/* Save the system control module context, padconf already save above*/
- 	omap3_control_save_context();
- 	omap_dma_global_context_save();
-@@ -95,8 +92,6 @@ static void omap3_core_restore_context(void)
- {
- 	/* Restore the control module context, padconf restored by h/w */
- 	omap3_control_restore_context();
--	/* Restore the GPMC context */
--	omap3_gpmc_restore_context();
- 	/* Restore the interrupt controller context */
- 	omap_intc_restore_context();
- 	omap_dma_global_context_restore();
++static int elm_suspend(struct device *dev)
++{
++	struct elm_info *info = dev_get_drvdata(dev);
++	wait_queue_head_t wq;
++	DECLARE_WAITQUEUE(wait, current);
++
++	init_waitqueue_head(&wq);
++	while (1) {
++		/* Make sure that ELM not running */
++		if (info->idle) {
++			add_wait_queue(&wq, &wait);
++			schedule();
++			remove_wait_queue(&wq, &wait);
++		} else {
++			break;
++		}
++	}
++	pm_runtime_put_sync(dev);
++	return 0;
++}
++
++static int elm_resume(struct device *dev)
++{
++	struct elm_info *info = dev_get_drvdata(dev);
++
++	pm_runtime_get_sync(dev);
++	elm_config(dev, info->bch_type);
++	return 0;
++}
++
++static SIMPLE_DEV_PM_OPS(elm_pm_ops, elm_suspend, elm_resume);
++
+ #ifdef CONFIG_OF
+ static const struct of_device_id elm_of_match[] = {
+ 	{ .compatible = "ti,am33xx-elm" },
+@@ -392,6 +431,7 @@ static struct platform_driver elm_driver = {
+ 		.name	= "elm",
+ 		.owner	= THIS_MODULE,
+ 		.of_match_table = of_match_ptr(elm_of_match),
++		.pm	= &elm_pm_ops,
+ 	},
+ 	.probe	= elm_probe,
+ 	.remove	= elm_remove,
 -- 
 1.7.9.5
