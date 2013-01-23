@@ -1,12 +1,14 @@
-From: Huang Shijie <b32955@freescale.com>
-To: <dwmw2@infradead.org>
-Subject: [PATCH] mtd: gpmi: fix a dereferencing freed memory error
-Date: Wed, 23 Jan 2013 16:20:53 +0800
-Message-ID: <1358929253-29143-1-git-send-email-b32955@freescale.com>
+From: Philip Avinash <avinashphilip@ti.com>
+To: <khilman@ti.com>, <tony@atomide.com>, <linux@arm.linux.org.uk>,
+ <dwmw2@infradead.org>
+Subject: [PATCH 0/4] LOW power sleep support for OMAP nand driver
+Date: Wed, 23 Jan 2013 14:56:12 +0530
+Message-ID: <1358933176-12409-1-git-send-email-avinashphilip@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, dedekind1@gmail.com
+Cc: afzal@ti.com, nsekhar@ti.com, linux-kernel@vger.kernel.org,
+ gururaja.hebbar@ti.com, linux-mtd@lists.infradead.org,
+ linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,29 +18,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The patch "490e280 mtd: gpmi-nand: Convert to module_platform_driver()"
-introduced a "dereferencing freed memory" error.
+This patch series adds low power transition support for OMAP NAND driver.
+This includes low power transition support of
+- GPMC module
+- ELM module
+- OMAP2 NAND driver
 
-This patch fixes it.
+Low power transition support tested on am335x-evm with NAND flash support.
+This patch series based on [1] and depends on [2] and is available [2]
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+1. ARM: OMAP2+: AM33XX: Add suspend-resume support
+   http://comments.gmane.org/gmane.linux.ports.arm.omap/91405
+2. https://github.com/avinashphilip/am335x_linux/commits/NAND_supend_resume_support
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 631564d..38c8b8b 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -1657,8 +1657,8 @@ exit_nfc_init:
- 	release_resources(this);
- exit_acquire_resources:
- 	platform_set_drvdata(pdev, NULL);
--	kfree(this);
- 	dev_err(this->dev, "driver registration failed: %d\n", ret);
-+	kfree(this);
- 
- 	return ret;
- }
+Philip Avinash (4):
+  arch: arm: gpmc: gpmc migration support
+  mtd: devices: elm: Low power transition support
+  arm: gpmc: Low power transition support
+  mtd: nand: omap2: Low power transition support
+
+ arch/arm/mach-omap2/gpmc.c   |   22 ++++++++++++++++++++--
+ arch/arm/mach-omap2/pm34xx.c |    5 -----
+ drivers/mtd/devices/elm.c    |   40 ++++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/nand/omap2.c     |   19 +++++++++++++++++++
+ 4 files changed, 79 insertions(+), 7 deletions(-)
+
 -- 
-1.7.0.4
+1.7.9.5
