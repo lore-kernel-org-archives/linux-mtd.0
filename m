@@ -1,25 +1,22 @@
-Received: from mail-bk0-f53.google.com ([209.85.214.53])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TyICq-0000vV-4N
- for linux-mtd@lists.infradead.org; Thu, 24 Jan 2013 08:30:44 +0000
-Received: by mail-bk0-f53.google.com with SMTP id j10so13750bkw.26
- for <linux-mtd@lists.infradead.org>; Thu, 24 Jan 2013 00:30:41 -0800 (PST)
-Sender: Peter Korsgaard <jacmet@gmail.com>
-From: Peter Korsgaard <jacmet@sunsite.dk>
-To: Philip Avinash <avinashphilip@ti.com>
-Subject: Re: [PATCH] mtd: devices: elm: Removes <xx> literals in elm DT node
-References: <9580c5839ea64e09ddd61610ce922d7cd1adc861.1359010256.git.avinashphilip@ti.com>
-Date: Thu, 24 Jan 2013 09:30:38 +0100
-In-Reply-To: <9580c5839ea64e09ddd61610ce922d7cd1adc861.1359010256.git.avinashphilip@ti.com>
- (Philip Avinash's message of "Thu, 24 Jan 2013 12:23:30 +0530")
-Message-ID: <8738xr2dap.fsf@dell.be.48ers.dk>
+Received: from guitar.tcltek.co.il ([192.115.133.116] helo=sivan.tkos.co.il)
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TyIkl-0005by-1L
+ for linux-mtd@lists.infradead.org; Thu, 24 Jan 2013 09:05:49 +0000
+Date: Thu, 24 Jan 2013 11:05:47 +0200
+From: Baruch Siach <baruch@tkos.co.il>
+To: linux-mtd@lists.infradead.org,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] mtd: physmap_of: fix cmdline partition method w/o
+ linux,mtd-name
+Message-ID: <20130124090547.GB7697@sapphire.tkos.co.il>
+References: <df9da712b775781366ae23aac28ed20849b4e4d3.1356260943.git.baruch@tkos.co.il>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: linux-doc@vger.kernel.org, artem.bityutskiy@linux.intel.com,
- devicetree-discuss@lists.ozlabs.org, nsekhar@ti.com,
- linux-kernel@vger.kernel.org, rob.herring@calxeda.com, gururaja.hebbar@ti.com,
- grant.likely@secretlab.ca, linux-mtd@lists.infradead.org, rob@landley.net,
- dwmw2@infradead.org
+Content-Disposition: inline
+In-Reply-To: <df9da712b775781366ae23aac28ed20849b4e4d3.1356260943.git.baruch@tkos.co.il>
+Cc: devicetree-discuss@lists.ozlabs.org,
+ Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,13 +26,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->>>>> "Philip" == Philip Avinash <avinashphilip@ti.com> writes:
+Hi linux-mtd, Artem, David,
 
- Philip> As part of removing generalized dependency, replace <xx>
- Philip> literal fields in DT compatible field with <52> for am335x
- Philip> platforms.
+Ping?
 
-Acked-by: Peter Korsgaard <jacmet@sunsite.dk>
+It's been a month, and this is a simple uninitialized pointer dereference bug 
+fix.
+
+baruch
+
+On Sun, Dec 23, 2012 at 01:10:50PM +0200, Baruch Siach wrote:
+> Commit d68cbdd4fb (mtd: physmap_of: allow to specify the mtd name for retro
+> compatiblity) broke cmdline partitioning using dev_name() in the kernel command
+> line.  of_property_read_string() does not touch mtd_name when linux,mtd-name is
+> not present in the device tree, which causes map.name to be set to a random
+> value.  Fix this by initializing mtd_name to NULL.
+> 
+> Cc: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+> Signed-off-by: Baruch Siach <baruch@tkos.co.il>
+> ---
+>  drivers/mtd/maps/physmap_of.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
+> index 37cdc20..6fb2bd8 100644
+> --- a/drivers/mtd/maps/physmap_of.c
+> +++ b/drivers/mtd/maps/physmap_of.c
+> @@ -170,7 +170,7 @@ static int of_flash_probe(struct platform_device *dev)
+>  	resource_size_t res_size;
+>  	struct mtd_part_parser_data ppdata;
+>  	bool map_indirect;
+> -	const char *mtd_name;
+> +	const char *mtd_name = NULL;
+>  
+>  	match = of_match_device(of_flash_match, &dev->dev);
+>  	if (!match)
 
 -- 
-Bye, Peter Korsgaard
+     http://baruch.siach.name/blog/                  ~. .~   Tk Open Systems
+=}------------------------------------------------ooO--U--Ooo------------{=
+   - baruch@tkos.co.il - tel: +972.2.679.5364, http://www.tkos.co.il -
