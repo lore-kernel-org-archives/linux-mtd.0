@@ -1,17 +1,15 @@
+Received: from mail.free-electrons.com ([94.23.35.102])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TykcO-00047J-1h
+ for linux-mtd@lists.infradead.org; Fri, 25 Jan 2013 14:51:00 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: <linux-omap@vger.kernel.org>
-Subject: [PATCH v3 3/3] arm: omap2: gpmc: add DT bindings for OneNAND
-Date: Fri, 25 Jan 2013 09:23:11 -0300
-Message-Id: <1359116591-32730-3-git-send-email-ezequiel.garcia@free-electrons.com>
-In-Reply-To: <1359116591-32730-1-git-send-email-ezequiel.garcia@free-electrons.com>
-References: <1359116591-32730-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: mark.rutland@arm.com, Javier Martinez Canillas <martinez.javier@gmail.com>,
- matthias.bgg@googlemail.com, Artem Bityutskiy <dedekind1@gmail.com>,
- tony@atomide.com, devicetree-discuss@lists.ozlabs.org, zonque@gmail.com,
- grant.likely@secretlab.ca, Enric Balletbo Serra <eballetbo@gmail.com>,
- linux-mtd@lists.infradead.org, jon-hunter@ti.com,
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: physmap: Convert to devm_ioremap_resource()
+Date: Fri, 25 Jan 2013 11:50:26 -0300
+Message-Id: <1359125428-23801-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: thierry.reding@avionic-design.de, dwmw2@infradead.org,
  Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- linux-arm-kernel@lists.infradead.org, b-cousson@ti.com
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,140 +19,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds device tree bindings for OMAP OneNAND devices.
-Tested on an OMAP3 3430 IGEPv2 board.
+devm_ioremap_resource() provides its own error messages so all explicit
+error messages can be removed from the failure code paths.
+Tested by compilation only.
 
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
-Changes from v2:
- * Remove unneeded of_node_put() as reported by Mark Rutland
+I can't test this patch for the moment.
+If anyone can give it a try and add its Tested-by, it'll be appreciated.
 
-Changes from v1:
- * Fix typo in Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
+Depends on: https://patchwork.kernel.org/patch/2010191/
 
- .../devicetree/bindings/mtd/gpmc-onenand.txt       |   43 +++++++++++++++++++
- arch/arm/mach-omap2/gpmc.c                         |   45 ++++++++++++++++++++
- 2 files changed, 88 insertions(+), 0 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
+ drivers/mtd/maps/physmap.c |   21 +++++++--------------
+ 1 files changed, 7 insertions(+), 14 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/gpmc-onenand.txt b/Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
-new file mode 100644
-index 0000000..deec9da
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
-@@ -0,0 +1,43 @@
-+Device tree bindings for GPMC connected OneNANDs
-+
-+GPMC connected OneNAND (found on OMAP boards) are represented as child nodes of
-+the GPMC controller with a name of "onenand".
-+
-+All timing relevant properties as well as generic gpmc child properties are
-+explained in a separate documents - please refer to
-+Documentation/devicetree/bindings/bus/ti-gpmc.txt
-+
-+Required properties:
-+
-+ - reg:			The CS line the peripheral is connected to
-+
-+Optional properties:
-+
-+ - dma-channel:		DMA Channel index
-+
-+For inline partiton table parsing (optional):
-+
-+ - #address-cells: should be set to 1
-+ - #size-cells: should be set to 1
-+
-+Example for an OMAP3430 board:
-+
-+	gpmc: gpmc@6e000000 {
-+		compatible = "ti,omap3430-gpmc";
-+		ti,hwmods = "gpmc";
-+		reg = <0x6e000000 0x1000000>;
-+		interrupts = <20>;
-+		gpmc,num-cs = <8>;
-+		gpmc,num-waitpins = <4>;
-+		#address-cells = <2>;
-+		#size-cells = <1>;
-+
-+		onenand@0 {
-+			reg = <0 0 0>; /* CS0, offset 0 */
-+
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			/* partitions go here */
-+		};
-+	};
-diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
-index c6255f7..0636d0a 100644
---- a/arch/arm/mach-omap2/gpmc.c
-+++ b/arch/arm/mach-omap2/gpmc.c
-@@ -39,6 +39,7 @@
- #include "omap_device.h"
- #include "gpmc.h"
- #include "gpmc-nand.h"
-+#include "gpmc-onenand.h"
+diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
+index 21b0b71..7ca1ae9 100644
+--- a/drivers/mtd/maps/physmap.c
++++ b/drivers/mtd/maps/physmap.c
+@@ -20,6 +20,7 @@
+ #include <linux/mtd/physmap.h>
+ #include <linux/mtd/concat.h>
+ #include <linux/io.h>
++#include <linux/err.h>
  
- #define	DEVICE_NAME		"omap-gpmc"
+ #define MAX_RESOURCES		4
  
-@@ -1259,6 +1260,43 @@ static int gpmc_probe_nand_child(struct platform_device *pdev,
- }
- #endif
+@@ -126,19 +127,19 @@ static int physmap_flash_probe(struct platform_device *dev)
+ 	platform_set_drvdata(dev, info);
  
-+#ifdef CONFIG_MTD_ONENAND
-+static int gpmc_probe_onenand_child(struct platform_device *pdev,
-+				 struct device_node *child)
-+{
-+	u32 val;
-+	struct omap_onenand_platform_data *gpmc_onenand_data;
+ 	for (i = 0; i < dev->num_resources; i++) {
++		void __iomem *virt;
 +
-+	if (of_property_read_u32(child, "reg", &val) < 0) {
-+		dev_err(&pdev->dev, "%s has no 'reg' property\n",
-+			child->full_name);
-+		return -ENODEV;
-+	}
-+
-+	gpmc_onenand_data = devm_kzalloc(&pdev->dev, sizeof(*gpmc_onenand_data),
-+					 GFP_KERNEL);
-+	if (!gpmc_onenand_data)
-+		return -ENOMEM;
-+
-+	gpmc_onenand_data->cs = val;
-+	gpmc_onenand_data->of_node = child;
-+	gpmc_onenand_data->dma_channel = -1;
-+
-+	if (!of_property_read_u32(child, "dma-channel", &val))
-+		gpmc_onenand_data->dma_channel = val;
-+
-+	gpmc_onenand_init(gpmc_onenand_data);
-+
-+	return 0;
-+}
-+#else
-+static int gpmc_probe_onenand_child(struct platform_device *pdev,
-+				    struct device_node *child)
-+{
-+	return 0;
-+}
-+#endif
-+
- static int gpmc_probe_dt(struct platform_device *pdev)
- {
- 	int ret;
-@@ -1277,6 +1315,13 @@ static int gpmc_probe_dt(struct platform_device *pdev)
+ 		printk(KERN_NOTICE "physmap platform flash device: %.8llx at %.8llx\n",
+ 		       (unsigned long long)resource_size(&dev->resource[i]),
+ 		       (unsigned long long)dev->resource[i].start);
+ 
+-		if (!devm_request_mem_region(&dev->dev,
+-			dev->resource[i].start,
+-			resource_size(&dev->resource[i]),
+-			dev_name(&dev->dev))) {
+-			dev_err(&dev->dev, "Could not reserve memory region\n");
+-			err = -ENOMEM;
++		virt = devm_ioremap_resource(&dev->dev, &dev->resource[i]);
++		if (IS_ERR(virt)) {
++			err = PTR_ERR(virt);
+ 			goto err_out;
  		}
- 	}
  
-+	for_each_node_by_name(child, "onenand") {
-+		ret = gpmc_probe_onenand_child(pdev, child);
-+		if (ret < 0) {
-+			of_node_put(child);
-+			return ret;
-+		}
-+	}
- 	return 0;
- }
- #else
++		info->map[i].virt = virt;
+ 		info->map[i].name = dev_name(&dev->dev);
+ 		info->map[i].phys = dev->resource[i].start;
+ 		info->map[i].size = resource_size(&dev->resource[i]);
+@@ -147,14 +148,6 @@ static int physmap_flash_probe(struct platform_device *dev)
+ 		info->map[i].pfow_base = physmap_data->pfow_base;
+ 		info->map[i].map_priv_1 = (unsigned long)dev;
+ 
+-		info->map[i].virt = devm_ioremap(&dev->dev, info->map[i].phys,
+-						 info->map[i].size);
+-		if (info->map[i].virt == NULL) {
+-			dev_err(&dev->dev, "Failed to ioremap flash region\n");
+-			err = -EIO;
+-			goto err_out;
+-		}
+-
+ 		simple_map_init(&info->map[i]);
+ 
+ 		probe_type = rom_probe_types;
 -- 
 1.7.8.6
