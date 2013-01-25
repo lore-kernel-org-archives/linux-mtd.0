@@ -1,17 +1,12 @@
-Received: from hauke-2-pt.tunnel.tserv6.fra1.ipv6.he.net
- ([2001:470:1f0a:465::2] helo=hauke-m.de)
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1TyR9V-0006E0-41
- for linux-mtd@lists.infradead.org; Thu, 24 Jan 2013 18:03:54 +0000
-From: Hauke Mehrtens <hauke@hauke-m.de>
-To: dwmw2@infradead.org
-Subject: [PATCH v2 6/6] mtd: bcm47xxpart: improve probing of nvram partition
-Date: Thu, 24 Jan 2013 19:03:37 +0100
-Message-Id: <1359050617-23974-1-git-send-email-hauke@hauke-m.de>
-In-Reply-To: <1359045599-1305-7-git-send-email-hauke@hauke-m.de>
-References: <1359045599-1305-7-git-send-email-hauke@hauke-m.de>
-Cc: Hauke Mehrtens <hauke@hauke-m.de>, zajec5@gmail.com,
- linux-mtd@lists.infradead.org
+From: Huang Shijie <b32955@freescale.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH 1/2] mtd: gpmi: set the Golois Field bit for mx6q's BCH
+Date: Fri, 25 Jan 2013 14:04:07 +0800
+Message-ID: <1359093848-22301-1-git-send-email-b32955@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,81 +16,114 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The nvram in the nvram partition does not start at the beginning of the
-partition on every device. Sometimes they are stating in the middle of
-a partition or the first 0x1000 bytes are free.
+The GF13 can be only used in the following case:
+    The ECC data chunk is less then 1K bytes.
 
-Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+In mx23/mx28, the ecc data chunk is 512 bytes. So it is okay.
+
+But in mx6q, we begin to use some large nand chip whose ecc
+data chunk maybe 1K bytes long.  So when the data chunk is 1K bytes,
+we have to use the GF14.
+
+This patch sets the Golois Field bit when the GF14 is needed.
+
+Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
+ drivers/mtd/nand/gpmi-nand/bch-regs.h  |   20 ++++++++++++++++++++
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |    4 ++++
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    6 ++++--
+ 3 files changed, 28 insertions(+), 2 deletions(-)
 
-v2:
- * 0x8004 assigned to max_bytes_to_read should be a hex value.
-
- drivers/mtd/bcm47xxpart.c |   22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
-index 986ab6e..9bcec8f 100644
---- a/drivers/mtd/bcm47xxpart.c
-+++ b/drivers/mtd/bcm47xxpart.c
-@@ -19,12 +19,6 @@
- /* 10 parts were found on sflash on Netgear WNDR4500 */
- #define BCM47XXPART_MAX_PARTS		12
+diff --git a/drivers/mtd/nand/gpmi-nand/bch-regs.h b/drivers/mtd/nand/gpmi-nand/bch-regs.h
+index d67bca5..588f537 100644
+--- a/drivers/mtd/nand/gpmi-nand/bch-regs.h
++++ b/drivers/mtd/nand/gpmi-nand/bch-regs.h
+@@ -61,6 +61,16 @@
+ 			& BM_BCH_FLASH0LAYOUT0_ECC0)		\
+ 	)
  
--/*
-- * Amount of bytes we read when analyzing each block of flash memory.
-- * Set it big enough to allow detecting partition and reading important data.
-- */
--#define BCM47XXPART_BYTES_TO_READ	0x404
--
- /* Magics */
- #define BOARD_DATA_MAGIC		0x5246504D	/* MPFR */
- #define POT_MAGIC1			0x54544f50	/* POTT */
-@@ -63,14 +57,17 @@ static int bcm47xxpart_parse(struct mtd_info *master,
- 	struct trx_header *trx;
- 	int trx_part = -1;
- 	int last_trx_part = -1;
-+	int max_bytes_to_read = 0x8004;
++#define MX6Q_BP_BCH_FLASH0LAYOUT0_GF_13_14	10
++#define MX6Q_BM_BCH_FLASH0LAYOUT0_GF_13_14			\
++				(0x1 << MX6Q_BP_BCH_FLASH0LAYOUT0_GF_13_14)
++#define BF_BCH_FLASH0LAYOUT0_GF(v, x)				\
++	((GPMI_IS_MX6Q(x) && ((v) == 14))			\
++		? (((1) << MX6Q_BP_BCH_FLASH0LAYOUT0_GF_13_14)	\
++			& MX6Q_BM_BCH_FLASH0LAYOUT0_GF_13_14)	\
++		: 0						\
++	)
++
+ #define BP_BCH_FLASH0LAYOUT0_DATA0_SIZE		0
+ #define BM_BCH_FLASH0LAYOUT0_DATA0_SIZE		\
+ 			(0xfff << BP_BCH_FLASH0LAYOUT0_DATA0_SIZE)
+@@ -93,6 +103,16 @@
+ 			& BM_BCH_FLASH0LAYOUT1_ECCN)		\
+ 	)
  
- 	if (blocksize <= 0x10000)
- 		blocksize = 0x10000;
-+	if (blocksize == 0x20000)
-+		max_bytes_to_read = 0x18004;
++#define MX6Q_BP_BCH_FLASH0LAYOUT1_GF_13_14	10
++#define MX6Q_BM_BCH_FLASH0LAYOUT1_GF_13_14			\
++				(0x1 << MX6Q_BP_BCH_FLASH0LAYOUT1_GF_13_14)
++#define BF_BCH_FLASH0LAYOUT1_GF(v, x)				\
++	((GPMI_IS_MX6Q(x) && ((v) == 14))			\
++		? (((1) << MX6Q_BP_BCH_FLASH0LAYOUT1_GF_13_14)	\
++			& MX6Q_BM_BCH_FLASH0LAYOUT1_GF_13_14)	\
++		: 0						\
++	)
++
+ #define BP_BCH_FLASH0LAYOUT1_DATAN_SIZE		0
+ #define BM_BCH_FLASH0LAYOUT1_DATAN_SIZE		\
+ 			(0xfff << BP_BCH_FLASH0LAYOUT1_DATAN_SIZE)
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+index 01cc570..4f8857f 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+@@ -237,6 +237,7 @@ int bch_set_geometry(struct gpmi_nand_data *this)
+ 	unsigned int metadata_size;
+ 	unsigned int ecc_strength;
+ 	unsigned int page_size;
++	unsigned int gf_len;
+ 	int ret;
  
- 	/* Alloc */
- 	parts = kzalloc(sizeof(struct mtd_partition) * BCM47XXPART_MAX_PARTS,
- 			GFP_KERNEL);
--	buf = kzalloc(BCM47XXPART_BYTES_TO_READ, GFP_KERNEL);
-+	buf = kzalloc(max_bytes_to_read, GFP_KERNEL);
+ 	if (common_nfc_set_geometry(this))
+@@ -247,6 +248,7 @@ int bch_set_geometry(struct gpmi_nand_data *this)
+ 	metadata_size = bch_geo->metadata_size;
+ 	ecc_strength  = bch_geo->ecc_strength >> 1;
+ 	page_size     = bch_geo->page_size;
++	gf_len        = bch_geo->gf_len;
  
- 	/* Parse block by block looking for magics */
- 	for (offset = 0; offset <= master->size - blocksize;
-@@ -85,7 +82,7 @@ static int bcm47xxpart_parse(struct mtd_info *master,
- 		}
+ 	ret = gpmi_enable_clk(this);
+ 	if (ret)
+@@ -268,11 +270,13 @@ int bch_set_geometry(struct gpmi_nand_data *this)
+ 	writel(BF_BCH_FLASH0LAYOUT0_NBLOCKS(block_count)
+ 			| BF_BCH_FLASH0LAYOUT0_META_SIZE(metadata_size)
+ 			| BF_BCH_FLASH0LAYOUT0_ECC0(ecc_strength, this)
++			| BF_BCH_FLASH0LAYOUT0_GF(gf_len, this)
+ 			| BF_BCH_FLASH0LAYOUT0_DATA0_SIZE(block_size, this),
+ 			r->bch_regs + HW_BCH_FLASH0LAYOUT0);
  
- 		/* Read beginning of the block */
--		if (mtd_read(master, offset, BCM47XXPART_BYTES_TO_READ,
-+		if (mtd_read(master, offset, max_bytes_to_read,
- 			     &bytes_read, (uint8_t *)buf) < 0) {
- 			pr_err("mtd_read error while parsing (offset: 0x%X)!\n",
- 			       offset);
-@@ -100,9 +97,16 @@ static int bcm47xxpart_parse(struct mtd_info *master,
- 		}
+ 	writel(BF_BCH_FLASH0LAYOUT1_PAGE_SIZE(page_size)
+ 			| BF_BCH_FLASH0LAYOUT1_ECCN(ecc_strength, this)
++			| BF_BCH_FLASH0LAYOUT1_GF(gf_len, this)
+ 			| BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(block_size, this),
+ 			r->bch_regs + HW_BCH_FLASH0LAYOUT1);
  
- 		/* Standard NVRAM */
--		if (buf[0x000 / 4] == NVRAM_HEADER) {
-+		if (buf[0x000 / 4] == NVRAM_HEADER ||
-+		    buf[0x1000 / 4] == NVRAM_HEADER ||
-+		    buf[0x8000 / 4] == NVRAM_HEADER ||
-+		    (blocksize == 0x20000 && (
-+		      buf[0x10000 / 4] == NVRAM_HEADER ||
-+		      buf[0x11000 / 4] == NVRAM_HEADER ||
-+		      buf[0x18000 / 4] == NVRAM_HEADER))) {
- 			bcm47xxpart_add_part(&parts[curr_part++], "nvram",
- 					     offset, 0);
-+			offset = rounddown(offset, blocksize);
- 			continue;
- 		}
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 38c8b8b..2521678 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -112,10 +112,12 @@ int common_nfc_set_geometry(struct gpmi_nand_data *this)
+ 	/* The default for the length of Galois Field. */
+ 	geo->gf_len = 13;
+ 
+-	/* The default for chunk size. There is no oobsize greater then 512. */
++	/* The default for chunk size. */
+ 	geo->ecc_chunk_size = 512;
+-	while (geo->ecc_chunk_size < mtd->oobsize)
++	while (geo->ecc_chunk_size < mtd->oobsize) {
+ 		geo->ecc_chunk_size *= 2; /* keep C >= O */
++		geo->gf_len = 14;
++	}
+ 
+ 	geo->ecc_chunk_count = mtd->writesize / geo->ecc_chunk_size;
  
 -- 
-1.7.10.4
+1.7.0.4
