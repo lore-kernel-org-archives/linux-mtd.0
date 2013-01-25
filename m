@@ -1,21 +1,15 @@
-Received: from mail-wg0-f54.google.com ([74.125.82.54])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TyiHj-0008Ox-AS
- for linux-mtd@lists.infradead.org; Fri, 25 Jan 2013 12:21:32 +0000
-Received: by mail-wg0-f54.google.com with SMTP id fm10so187952wgb.33
- for <linux-mtd@lists.infradead.org>; Fri, 25 Jan 2013 04:21:29 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <1359045599-1305-4-git-send-email-hauke@hauke-m.de>
-References: <1359045599-1305-1-git-send-email-hauke@hauke-m.de>
- <1359045599-1305-4-git-send-email-hauke@hauke-m.de>
-Date: Fri, 25 Jan 2013 13:21:29 +0100
-Message-ID: <CACna6rzkiHQhDfR1biqODL9kEvat2ObN_Gwjg1EsDpRgOwMKow@mail.gmail.com>
-Subject: Re: [PATCH 3/6] mtd: bcm47xxnflash: fix message
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Hauke Mehrtens <hauke@hauke-m.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: <linux-omap@vger.kernel.org>
+Subject: [PATCH v3 1/3] mtd: omap-onenand: pass device_node in platform data
+Date: Fri, 25 Jan 2013 09:23:09 -0300
+Message-Id: <1359116591-32730-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: mark.rutland@arm.com, Javier Martinez Canillas <martinez.javier@gmail.com>,
+ matthias.bgg@googlemail.com, Artem Bityutskiy <dedekind1@gmail.com>,
+ tony@atomide.com, devicetree-discuss@lists.ozlabs.org, zonque@gmail.com,
+ grant.likely@secretlab.ca, Enric Balletbo Serra <eballetbo@gmail.com>,
+ linux-mtd@lists.infradead.org, jon-hunter@ti.com,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ linux-arm-kernel@lists.infradead.org, b-cousson@ti.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,30 +19,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2013/1/24 Hauke Mehrtens <hauke@hauke-m.de>:
-> This is not a serial flash driver, but a nand flash driver
->
-> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
-> ---
->  drivers/mtd/nand/bcm47xxnflash/main.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/mtd/nand/bcm47xxnflash/main.c b/drivers/mtd/nand/bcm=
-47xxnflash/main.c
-> index 8363a9a..616b56a 100644
-> --- a/drivers/mtd/nand/bcm47xxnflash/main.c
-> +++ b/drivers/mtd/nand/bcm47xxnflash/main.c
-> @@ -94,7 +94,7 @@ static int __init bcm47xxnflash_init(void)
->          */
->         err =3D platform_driver_probe(&bcm47xxnflash_driver, bcm47xxnflas=
-h_probe);
->         if (err)
-> -               pr_err("Failed to register serial flash driver: %d\n", er=
-r);
-> +               pr_err("Failed to register bcm47xx nand flash driver: %d\=
-n", err);
+Pass an optional device_node pointer in the platform data,
+which in turn will be put into a mtd_part_parser_data.
+This way, code that sets up the platform devices can pass
+along the node from DT so that the partitions can be parsed.
 
-WARNING:LONG_LINE: line over 80 characters
+For non-DT boards, this change has no effect.
 
---=20
-Rafa=C5=82
+Acked-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+---
+ drivers/mtd/onenand/omap2.c                     |    4 +++-
+ include/linux/platform_data/mtd-onenand-omap2.h |    3 +++
+ 2 files changed, 6 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
+index 065f3fe..eec2aed 100644
+--- a/drivers/mtd/onenand/omap2.c
++++ b/drivers/mtd/onenand/omap2.c
+@@ -637,6 +637,7 @@ static int omap2_onenand_probe(struct platform_device *pdev)
+ 	struct onenand_chip *this;
+ 	int r;
+ 	struct resource *res;
++	struct mtd_part_parser_data ppdata = {};
+ 
+ 	pdata = pdev->dev.platform_data;
+ 	if (pdata == NULL) {
+@@ -767,7 +768,8 @@ static int omap2_onenand_probe(struct platform_device *pdev)
+ 	if ((r = onenand_scan(&c->mtd, 1)) < 0)
+ 		goto err_release_regulator;
+ 
+-	r = mtd_device_parse_register(&c->mtd, NULL, NULL,
++	ppdata.of_node = pdata->of_node;
++	r = mtd_device_parse_register(&c->mtd, NULL, &ppdata,
+ 				      pdata ? pdata->parts : NULL,
+ 				      pdata ? pdata->nr_parts : 0);
+ 	if (r)
+diff --git a/include/linux/platform_data/mtd-onenand-omap2.h b/include/linux/platform_data/mtd-onenand-omap2.h
+index 685af7e..e9a9fb1 100644
+--- a/include/linux/platform_data/mtd-onenand-omap2.h
++++ b/include/linux/platform_data/mtd-onenand-omap2.h
+@@ -29,5 +29,8 @@ struct omap_onenand_platform_data {
+ 	u8			flags;
+ 	u8			regulator_can_sleep;
+ 	u8			skip_initial_unlocking;
++
++	/* for passing the partitions */
++	struct device_node	*of_node;
+ };
+ #endif
+-- 
+1.7.8.6
