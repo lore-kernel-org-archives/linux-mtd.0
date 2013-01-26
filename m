@@ -1,27 +1,16 @@
+Received: from utopia.booyaka.com ([74.50.51.50])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1Tz0cf-00056d-Va
+ for linux-mtd@lists.infradead.org; Sat, 26 Jan 2013 07:56:23 +0000
+Date: Sat, 26 Jan 2013 07:56:20 +0000 (UTC)
+From: Paul Walmsley <paul@pwsan.com>
+To: David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com,
+ linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: nand: onfi don't WARN if we are in 16 bits mode (fwd)
+Message-ID: <alpine.DEB.2.00.1301260754500.19277@utopia.booyaka.com>
 MIME-Version: 1.0
-In-Reply-To: <20130125155633.GC16795@e106331-lin.cambridge.arm.com>
-References: <1359116591-32730-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1359116591-32730-3-git-send-email-ezequiel.garcia@free-electrons.com>
- <20130125155633.GC16795@e106331-lin.cambridge.arm.com>
-Date: Fri, 25 Jan 2013 15:11:28 -0300
-Message-ID: <CALF0-+X2qsF5OETerRSVsJbjkC-JdVXsZhyw1sxQYR+PWX6LHA@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] arm: omap2: gpmc: add DT bindings for OneNAND
-From: Ezequiel Garcia <elezegarcia@gmail.com>
-To: Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Javier Martinez Canillas <martinez.javier@gmail.com>,
- "matthias.bgg@googlemail.com" <matthias.bgg@googlemail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>, "tony@atomide.com" <tony@atomide.com>,
- "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>,
- "zonque@gmail.com" <zonque@gmail.com>,
- "grant.likely@secretlab.ca" <grant.likely@secretlab.ca>,
- Enric Balletbo Serra <eballetbo@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "jon-hunter@ti.com" <jon-hunter@ti.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "b-cousson@ti.com" <b-cousson@ti.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Matthieu CASTET <matthieu.castet@parrot.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,162 +20,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Mark,
 
-First of all: thanks for reviewing.
+Hi Artem, David,
 
-On Fri, Jan 25, 2013 at 12:56 PM, Mark Rutland <mark.rutland@arm.com> wrote:
-> Hi,
->
-> I have a couple more comments after looking though this a bit more thoroughly.
->
-> On Fri, Jan 25, 2013 at 12:23:11PM +0000, Ezequiel Garcia wrote:
->> This patch adds device tree bindings for OMAP OneNAND devices.
->> Tested on an OMAP3 3430 IGEPv2 board.
->>
->> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
->> ---
->> Changes from v2:
->>  * Remove unneeded of_node_put() as reported by Mark Rutland
->>
->> Changes from v1:
->>  * Fix typo in Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
->>
->>  .../devicetree/bindings/mtd/gpmc-onenand.txt       |   43 +++++++++++++++++++
->>  arch/arm/mach-omap2/gpmc.c                         |   45 ++++++++++++++++++++
->>  2 files changed, 88 insertions(+), 0 deletions(-)
->>  create mode 100644 Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
->>
->> diff --git a/Documentation/devicetree/bindings/mtd/gpmc-onenand.txt b/Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
->> new file mode 100644
->> index 0000000..deec9da
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
->> @@ -0,0 +1,43 @@
->> +Device tree bindings for GPMC connected OneNANDs
->> +
->> +GPMC connected OneNAND (found on OMAP boards) are represented as child nodes of
->> +the GPMC controller with a name of "onenand".
->> +
->> +All timing relevant properties as well as generic gpmc child properties are
->> +explained in a separate documents - please refer to
->> +Documentation/devicetree/bindings/bus/ti-gpmc.txt
->
-> Which tree can I find this in?
->
+if possible, it would be good to get this one into v3.8-rc, due to the 
+large OMAP boot-time warning mentioned at:
 
-GPMC binding was posted by Daniel Mack a while ago.
-Tony has recently pushed it to his master branch here:
-git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap.git
+http://article.gmane.org/gmane.linux.ports.arm.omap/91317
 
->> +
->> +Required properties:
->> +
->> + - reg:                      The CS line the peripheral is connected to
->> +
->> +Optional properties:
->> +
->> + - dma-channel:              DMA Channel index
->> +
->> +For inline partiton table parsing (optional):
->> +
->> + - #address-cells: should be set to 1
->> + - #size-cells: should be set to 1
->> +
->> +Example for an OMAP3430 board:
->> +
->> +     gpmc: gpmc@6e000000 {
->> +             compatible = "ti,omap3430-gpmc";
->> +             ti,hwmods = "gpmc";
->> +             reg = <0x6e000000 0x1000000>;
->> +             interrupts = <20>;
->> +             gpmc,num-cs = <8>;
->> +             gpmc,num-waitpins = <4>;
->> +             #address-cells = <2>;
->> +             #size-cells = <1>;
->> +
->> +             onenand@0 {
->> +                     reg = <0 0 0>; /* CS0, offset 0 */
->> +
->> +                     #address-cells = <1>;
->> +                     #size-cells = <1>;
->> +
->> +                     /* partitions go here */
->> +             };
->> +     };
->> diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
->> index c6255f7..0636d0a 100644
->> --- a/arch/arm/mach-omap2/gpmc.c
->> +++ b/arch/arm/mach-omap2/gpmc.c
->> @@ -39,6 +39,7 @@
->>  #include "omap_device.h"
->>  #include "gpmc.h"
->>  #include "gpmc-nand.h"
->> +#include "gpmc-onenand.h"
->>
->>  #define      DEVICE_NAME             "omap-gpmc"
->>
->> @@ -1259,6 +1260,43 @@ static int gpmc_probe_nand_child(struct platform_device *pdev,
->>  }
->>  #endif
->>
->> +#ifdef CONFIG_MTD_ONENAND
->> +static int gpmc_probe_onenand_child(struct platform_device *pdev,
->> +                              struct device_node *child)
->> +{
->> +     u32 val;
->> +     struct omap_onenand_platform_data *gpmc_onenand_data;
->> +
->> +     if (of_property_read_u32(child, "reg", &val) < 0) {
->> +             dev_err(&pdev->dev, "%s has no 'reg' property\n",
->> +                     child->full_name);
->> +             return -ENODEV;
->> +     }
->
-> I don't understand the format of the reg property, but it seems odd that you
-> only need to read one cell from it. Are the remaining address cell and size
-> cell used anywhere?
->
 
-Okey, I'll give a shot and try to explain this myself:
+thanks,
 
-As you can see by Daniel's first patch [1]
-the reg property originally contained the chip select only, and
-after some discussion in that same thread, and in this one [2]
-It was decided to use a reg property that would also describe
-the base address and size of the gpmc sub-device,
-and use ranges for the address translation.
-This was reflected in Daniel's changelog when he submitted
-the v2 patch series [3].
+- Paul
 
-[1] http://www.spinics.net/lists/arm-kernel/msg202169.html
-[2] http://web.archiveorange.com/archive/v/vEQ2yFI0tmpQJdigvAog
-[3] http://lists.infradead.org/pipermail/linux-arm-kernel/2012-November/129426.html
+---------- Forwarded message ----------
+Date: Wed, 16 Jan 2013 15:25:45 +0100
+From: Matthieu CASTET <matthieu.castet@parrot.com>
+To: linux-mtd@lists.infradead.org
+Cc: dedekind1@gmail.com, paul@pwsan.com,
+    Matthieu CASTET <matthieu.castet@parrot.com>
+Subject: [PATCH] mtd: nand: onfi don't WARN if we are in 16 bits mode
 
->> +
->> +     gpmc_onenand_data = devm_kzalloc(&pdev->dev, sizeof(*gpmc_onenand_data),
->> +                                      GFP_KERNEL);
->> +     if (!gpmc_onenand_data)
->> +             return -ENOMEM;
->> +
->> +     gpmc_onenand_data->cs = val;
->> +     gpmc_onenand_data->of_node = child;
->> +     gpmc_onenand_data->dma_channel = -1;
->> +
->> +     if (!of_property_read_u32(child, "dma-channel", &val))
->> +             gpmc_onenand_data->dma_channel = val;
->> +
->> +     gpmc_onenand_init(gpmc_onenand_data);
->> +
->> +     return 0;
->> +}
->
-> [...]
->
-> Otherwise looks good.
->
+ff3206b2450499203532af2505a7f6f8413e92c0 adds a WARN if the onfi probe is
+in 16 bits mode.
+This allows to detect driver that need to be fixed, but this is a bit noisy [1].
+Transform the WARN in a pr_err.
 
-Thanks,
+[1]
+http://article.gmane.org/gmane.linux.ports.arm.omap/91317
 
+Signed-off-by: Matthieu CASTET <matthieu.castet@parrot.com>
+---
+ drivers/mtd/nand/nand_base.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 8323ac9..3766682 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2857,8 +2857,11 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+ 	int i;
+ 	int val;
+ 
+-	/* ONFI need to be probed in 8 bits mode */
+-	WARN_ON(chip->options & NAND_BUSWIDTH_16);
++	/* ONFI need to be probed in 8 bits mode, and 16 bits should be selected with NAND_BUSWIDTH_AUTO */
++	if (chip->options & NAND_BUSWIDTH_16) {
++		pr_err("Trying ONFI probe in 16 bits mode, aborting !\n");
++		return 0;
++	}
+ 	/* Try ONFI for unknown chip or LP */
+ 	chip->cmdfunc(mtd, NAND_CMD_READID, 0x20, -1);
+ 	if (chip->read_byte(mtd) != 'O' || chip->read_byte(mtd) != 'N' ||
 -- 
-    Ezequiel
+1.7.10.4
