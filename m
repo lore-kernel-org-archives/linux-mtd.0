@@ -1,18 +1,34 @@
-Received: from mail-wi0-f175.google.com ([209.85.212.175])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1Tzn1f-00057m-Iy
- for linux-mtd@lists.infradead.org; Mon, 28 Jan 2013 11:37:25 +0000
-Received: by mail-wi0-f175.google.com with SMTP id hq12so834821wib.14
- for <linux-mtd@lists.infradead.org>; Mon, 28 Jan 2013 03:37:21 -0800 (PST)
+Received: from service87.mimecast.com ([91.220.42.44])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1TznHV-0001xy-7z
+ for linux-mtd@lists.infradead.org; Mon, 28 Jan 2013 11:53:49 +0000
+Date: Mon, 28 Jan 2013 11:53:39 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Ezequiel Garcia <elezegarcia@gmail.com>
+Subject: Re: [PATCH v3 3/3] arm: omap2: gpmc: add DT bindings for OneNAND
+Message-ID: <20130128115339.GD7754@e106331-lin.cambridge.arm.com>
+References: <1359116591-32730-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1359116591-32730-3-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20130125155633.GC16795@e106331-lin.cambridge.arm.com>
+ <CALF0-+X2qsF5OETerRSVsJbjkC-JdVXsZhyw1sxQYR+PWX6LHA@mail.gmail.com>
 MIME-Version: 1.0
-Date: Mon, 28 Jan 2013 12:37:21 +0100
-Message-ID: <CACna6ry0xPuzEAcDRB=hrTT71A5+WoJTZMGwaUS3RjSE4CcgLw@mail.gmail.com>
-Subject: Handling serial flashes on Broadcom SOCs
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Jonas Gorski <jonas.gorski@gmail.com>, Paul Fertser <fercerpav@gmail.com>,
- Hauke Mehrtens <hauke@hauke-m.de>, linux-wireless@vger.kernel.org,
- linux-mtd@lists.infradead.org
-Content-Type: multipart/mixed; boundary=047d7bb03c2a4611e504d457b3bc
+In-Reply-To: <CALF0-+X2qsF5OETerRSVsJbjkC-JdVXsZhyw1sxQYR+PWX6LHA@mail.gmail.com>
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Cc: Javier Martinez Canillas <martinez.javier@gmail.com>,
+ "matthias.bgg@googlemail.com" <matthias.bgg@googlemail.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, "tony@atomide.com" <tony@atomide.com>,
+ "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>,
+ "zonque@gmail.com" <zonque@gmail.com>,
+ "grant.likely@secretlab.ca" <grant.likely@secretlab.ca>,
+ Enric Balletbo Serra <eballetbo@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "jon-hunter@ti.com" <jon-hunter@ti.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "b-cousson@ti.com" <b-cousson@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,162 +38,169 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---047d7bb03c2a4611e504d457b3bc
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Fri, Jan 25, 2013 at 06:11:28PM +0000, Ezequiel Garcia wrote:
+> Hi Mark,
+>=20
+> First of all: thanks for reviewing.
+>=20
+> On Fri, Jan 25, 2013 at 12:56 PM, Mark Rutland <mark.rutland@arm.com> wro=
+te:
+> > Hi,
+> >
+> > I have a couple more comments after looking though this a bit more thor=
+oughly.
+> >
+> > On Fri, Jan 25, 2013 at 12:23:11PM +0000, Ezequiel Garcia wrote:
+> >> This patch adds device tree bindings for OMAP OneNAND devices.
+> >> Tested on an OMAP3 3430 IGEPv2 board.
+> >>
+> >> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> >> ---
+> >> Changes from v2:
+> >>  * Remove unneeded of_node_put() as reported by Mark Rutland
+> >>
+> >> Changes from v1:
+> >>  * Fix typo in Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
+> >>
+> >>  .../devicetree/bindings/mtd/gpmc-onenand.txt       |   43 +++++++++++=
+++++++++
+> >>  arch/arm/mach-omap2/gpmc.c                         |   45 +++++++++++=
++++++++++
+> >>  2 files changed, 88 insertions(+), 0 deletions(-)
+> >>  create mode 100644 Documentation/devicetree/bindings/mtd/gpmc-onenand=
+.txt
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/mtd/gpmc-onenand.txt b/=
+Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
+> >> new file mode 100644
+> >> index 0000000..deec9da
+> >> --- /dev/null
+> >> +++ b/Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
+> >> @@ -0,0 +1,43 @@
+> >> +Device tree bindings for GPMC connected OneNANDs
+> >> +
+> >> +GPMC connected OneNAND (found on OMAP boards) are represented as chil=
+d nodes of
+> >> +the GPMC controller with a name of "onenand".
+> >> +
+> >> +All timing relevant properties as well as generic gpmc child properti=
+es are
+> >> +explained in a separate documents - please refer to
+> >> +Documentation/devicetree/bindings/bus/ti-gpmc.txt
+> >
+> > Which tree can I find this in?
+> >
+>=20
+> GPMC binding was posted by Daniel Mack a while ago.
+> Tony has recently pushed it to his master branch here:
+> git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap.git
 
-Broadcom SOCs have flash memories, some of them are serial flashes.
-They are detected by ssb/bcma and need to be handled by some extra
-drivers.
+Aha. Thanks, it's far easier to understand with the gpmc doc!
 
-Access to that flash memories is specific to the Broadcom devices.
-Reading is simple, as they are memory mapped. Writing is done with the
-ChipCommon (bus device/core) registers.
+>=20
+> >> +
+> >> +Required properties:
+> >> +
+> >> + - reg:                      The CS line the peripheral is connected =
+to
+> >> +
+> >> +Optional properties:
+> >> +
+> >> + - dma-channel:              DMA Channel index
+> >> +
+> >> +For inline partiton table parsing (optional):
+> >> +
+> >> + - #address-cells: should be set to 1
+> >> + - #size-cells: should be set to 1
+> >> +
+> >> +Example for an OMAP3430 board:
+> >> +
+> >> +     gpmc: gpmc@6e000000 {
+> >> +             compatible =3D "ti,omap3430-gpmc";
+> >> +             ti,hwmods =3D "gpmc";
+> >> +             reg =3D <0x6e000000 0x1000000>;
+> >> +             interrupts =3D <20>;
+> >> +             gpmc,num-cs =3D <8>;
+> >> +             gpmc,num-waitpins =3D <4>;
+> >> +             #address-cells =3D <2>;
+> >> +             #size-cells =3D <1>;
+> >> +
+> >> +             onenand@0 {
+> >> +                     reg =3D <0 0 0>; /* CS0, offset 0 */
+> >> +
+> >> +                     #address-cells =3D <1>;
+> >> +                     #size-cells =3D <1>;
+> >> +
+> >> +                     /* partitions go here */
+> >> +             };
+> >> +     };
+> >> diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
+> >> index c6255f7..0636d0a 100644
+> >> --- a/arch/arm/mach-omap2/gpmc.c
+> >> +++ b/arch/arm/mach-omap2/gpmc.c
+> >> @@ -39,6 +39,7 @@
+> >>  #include "omap_device.h"
+> >>  #include "gpmc.h"
+> >>  #include "gpmc-nand.h"
+> >> +#include "gpmc-onenand.h"
+> >>
+> >>  #define      DEVICE_NAME             "omap-gpmc"
+> >>
+> >> @@ -1259,6 +1260,43 @@ static int gpmc_probe_nand_child(struct platfor=
+m_device *pdev,
+> >>  }
+> >>  #endif
+> >>
+> >> +#ifdef CONFIG_MTD_ONENAND
+> >> +static int gpmc_probe_onenand_child(struct platform_device *pdev,
+> >> +                              struct device_node *child)
+> >> +{
+> >> +     u32 val;
+> >> +     struct omap_onenand_platform_data *gpmc_onenand_data;
+> >> +
+> >> +     if (of_property_read_u32(child, "reg", &val) < 0) {
+> >> +             dev_err(&pdev->dev, "%s has no 'reg' property\n",
+> >> +                     child->full_name);
+> >> +             return -ENODEV;
+> >> +     }
+> >
+> > I don't understand the format of the reg property, but it seems odd tha=
+t you
+> > only need to read one cell from it. Are the remaining address cell and =
+size
+> > cell used anywhere?
+> >
+>=20
+> Okey, I'll give a shot and try to explain this myself:
+>=20
+> As you can see by Daniel's first patch [1]
+> the reg property originally contained the chip select only, and
+> after some discussion in that same thread, and in this one [2]
+> It was decided to use a reg property that would also describe
+> the base address and size of the gpmc sub-device,
+> and use ranges for the address translation.
+> This was reflected in Daniel's changelog when he submitted
+> the v2 patch series [3].
+>=20
+> [1] http://www.spinics.net/lists/arm-kernel/msg202169.html
+> [2] http://web.archiveorange.com/archive/v/vEQ2yFI0tmpQJdigvAog
+> [3] http://lists.infradead.org/pipermail/linux-arm-kernel/2012-November/1=
+29426.html
 
-The initial idea was to register platform device in ssb/bcma and then
-access it in a separated driver placed in the mtd tree. However at
-some point it was noticed (by Paul?) that (some of?) the chipsets
-available at ssb/bcma buses are known from other devices. They are
-usually available over SPI bus, and there are available drivers for
-them. An example can be m25p80.c.
+So if I've understood correctly, the first address cell is the CS, and the
+second the offset within this (as the comment in the onenand@0 node hints)?
 
-I can't say yet how much m25p80.c is compatible with chipsets on
-Broadcom devices. Not all of them are available in m25p80.c, I'm
-especially worried about Atmel flashes. There is only one Atmel entry
-in m25p80.c and according to the SSB/BCMA code that devices require
-different programming way.
+If so, the code now makes sense to me :)
 
-I don't think extending m25p80.c to support SSB/BCMA is acceptable, so
-we've two options now:
+I was having difficulty seeing where the base address of the child got
+translated via ranges, but I see in [3] that this doesn't currently happen.
+That answers my question about the remaining cells.
 
-1) Just implement serial flashes support in separated driver operating
-on ssb/bcma buses.
-Easy to do, but requires some code duplication with m25p80.c
+Might it be worth sanity checking the runtime calculated address with the o=
+ne
+translated from dt? That way we can print a warning if the two don't match,
+which would help to discover broken dts (or invalid runtime calculation if
+future hardware breaks it somewhow).
 
-2) Fake SPI master in ssb & bcma and use m25p80.c
-I think it's much more complicated, as there probably isn't any real
-SPI on Broadcom devices. We have to fake/emulate it's operations. From
-early overview, some words-tips are: struct spi_master,
-spi_alloc_master, spi_register_master.
-I also don't know well m25p80.c is going to support chipsets on
-Broadcom devices. With some luck, we will have to extend it's database
-only. But it may happen we will have to add some/many modifications in
-m25p80.c as well.
-Another problem is early flash access. To boot properly we need to
-access serial flash very early to read NVRAM from it (plain text
-partition with board settings). This may be required even before we
-get "alloc" available, which may require additional extra hacks in
-m25p80.c.
-
-Personally I'm for the first option. It's much simpler, doesn't
-require a lot of research (how to correctly emulate SPI calls?). I'm
-also afraid that emulating SPI bus and adding extra hacks into
-m25p80.c will require more code than simple duplication in a ssb/bcma
-focused driver. I also can't predict how well serial flash will behave
-in case of accessing it over emulated SPI. Is this going to be working
-correct? Is this going to be slower/faster?
-
-I wish we discuss this situation and take a one solid decision. I'm
-afraid of second solution, but maybe someone of you sees additional
-advantages and/or has some experience in that matter.
-
---=20
-Rafa=C5=82
-
---047d7bb03c2a4611e504d457b3bc
-Content-Type: application/octet-stream; name="irc.bcm.serial.flash.log"
-Content-Disposition: attachment; filename="irc.bcm.serial.flash.log"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_hchihipw0
-
-UGF1bEZlcnRzZXIg4pSAIFBhdWwgRmVydHNlcgpLYW5qaU1vbnN0ZXIg4pSAIEpvbmFzIEdvcnNr
-aQpaYWplYyDilIAgUmFmYcWCIE1pxYJlY2tpCgpbMTk6MzBdIDxQYXVsRmVydHNlcj4gWmFqZWNf
-OiBoZXkgOikgaSBzYXcgeW91ciBzZXJpYWwgZmxhc2ggcGF0Y2ggY29tbWl0dGVkLiBBcmUgdGhv
-c2UgYnJvYWRjb20gY2hpcHMgaW50ZWdyYXRpbmcgc29tZSB0cmlja3kgbm9uLXNwaSBjb250cm9s
-bGVyIHNwZWNpZmljYWxseSBmb3Igc2VyaWFsIGZsYXNoPwpbMTk6MzldIDxQYXVsRmVydHNlcj4g
-WmFqZWNfOiBtYW55IGRldmljZXMgYmFzZWQgb24gQXRoZXJvcyBhcjcxeHggdXNlIFNQSSBmbGFz
-aCB0b28uIE9uIGJvb3QgdGhlIGZsYXNoIGlzIG1lbW9yeS1tYXBwZWQgYnV0IHRoZW4gd2hpbGUg
-dGhlIGtlcm5lbCBpcyBsb2FkaW5nIGl0IHRvb2tzIG92ZXIgdGhlIFNQSSBjb250cm9sbGVyLCB0
-dXJucyBvZmYgdGhlIG1lbW9yeSBtYXBwaW5nIGFuZCB3b3JrcyB0aGUgdXN1YWwgd2F5IG92ZXIg
-dGhlIFNQSSBidXMuClsxOTo0MV0gPFBhdWxGZXJ0c2VyPiBaYWplY186IFNQSSBpcyBqdXN0IGEg
-YmlkaXJlY3Rpb25hbCAzLXdpcmUgc2VyaWFsIGJ1cy4gU1BJIEVFUFJPTXMgYXJlIGZhaXJseSBj
-b21tb24gYnV0IHRoZW4gdGhlIGNvbW1hbmQgc2V0IGZvciBjb21tdW5pY2F0aW5nIHdpdGggbWVt
-b3J5IHZpYSBTUEkgd2FzIGV4dGVuZGVkIGFuZCBub3cgdGhlcmUncmUgbWFueSBJQ3MgdGhhdCB0
-YWxrIHRoZSBleHRlbmRlZCBwcm90b2NvbCBzdXBwb3J0ZWQgYnkgbTI1cDgwIExpbnV4IGRyaXZl
-ci4KWzE5OjQyXSA8UGF1bEZlcnRzZXI+IFphamVjXzogKHdlbGwsIG5vdCBqdXN0LCBvbmUgb2Yg
-dGhlIGludGVyZXN0aW5nIGZlYXR1cmVzIGlzIHRoYXQgU1BJIGNhbiBiZSBjaGFpbmVkIGFzIGl0
-J3MgYmFzaWNhbGx5IGEgc2hpZnQgcmVnaXN0ZXIpClsxOTo0M10gPFBhdWxGZXJ0c2VyPiBaYWpl
-Y186IGFuZCBjaGFuY2VzIGFyZSB0aGF0IGZvciB0aGUgQkNNIGNoaXBzIHlvdSBjYW4gd3JpdGUg
-YW4gU1BJIGhvc3QgY29udHJvbGxlciBkcml2ZXIgdG9vLCBkaXNhYmxlIGVtdWxhdGlvbiwgYW5k
-IHRoZW4gdXNlIGFsbCB0aGUgcmVhZHktbWFkZSBkcml2ZXJzIG92ZXIgaXQuClsxOTo1Nl0gPFBh
-dWxGZXJ0c2VyPiBaYWplY186IGkgdGhpbmsgaHR0cDovL2x4ci5mcmVlLWVsZWN0cm9ucy5jb20v
-c291cmNlL2RyaXZlcnMvc3BpL3NwaS1hdGg3OS5jI0w5NSBpcyBhYm91dCB0aGUgcGxhY2Ugd2hl
-cmUgdGhlIGZsYXNoIG1lbW9yeSBtYXBwaW5nIGlzIGdldHRpbmcgZGlzYWJsZWQgYW5kIGEgcmVh
-bCBzcGkgY29udHJvbGxlciBkcml2ZXIgdGFrZXMgb3Zlci4KWzIwOjA2XSA8S2FuamlNb25zdGVy
-PiBQYXVsRmVydHNlcjogeW91IGFyZSBhc3N1bWluZyB0aGVyZSBpcyBhIHJlYWwgZ2VuZXJpYyBz
-cGkgY29udHJvbGxlciBhbmQgKHB1YmxpYykgZG9jdW1lbnRlbnRhdGlvbiBmb3IgaXQsIGJ1dCB0
-aGVyZSBpc24ndCBhbnkKWzIwOjA2XSA8UGF1bEZlcnRzZXI+IFphamVjXzogeWVzLCBoZXJlIGlz
-IHRoZSBzYW1lIGNvZGUgaHR0cDovL2NvZGUuZ29vZ2xlLmNvbS9wL3dyNzAzbi11Ym9vdC13aXRo
-LXdlYi1mYWlsc2FmZS9zb3VyY2UvYnJvd3NlL3RydW5rL3UtYm9vdC9ib2FyZC9hcjcxMDAvY29t
-bW9uL2FyNzEwMF9mbGFzaC5jIzEzMSB0byBkaXNhYmxlIHRoYXQgaW50ZWdyYXRlZCBtZW1vcnkg
-bWFwcGluZyBhbmQgdG8gZG8gYml0YmFuZ2luZy4KWzIwOjA3XSA8UGF1bEZlcnRzZXI+IEthbmpp
-TW9uc3RlcjogYnV0IG9uIGFyNzF4eCBhIGJpdGJhbmdpbmcgc3BpIGhvc3QgY29udHJvbGxlciBp
-cyBzdGlsbCBiZXR0ZXIgdGhhbiBtZW1vcnkgbWFwcGluZyAoYW5kIGlzIG5lZWRlZCBhbnl3YXkg
-dG8gd3JpdGUgdG8gZmxhc2gpLgpbMjA6MDldIDxLYW5qaU1vbnN0ZXI+IFBhdWxGZXJ0c2VyOiB0
-aGlzIGFzc3VtZXMgdGhhdCB0aGUgc3BpIGxpbmVzIGFyZSBhdmFpbGFibGUgYXMgZ2VuZXJpYyBn
-cGlvcywgYWZhaWsgdGhleSBhcmVuJ3QKWzIwOjA5XSA8UGF1bEZlcnRzZXI+IEthbmppTW9uc3Rl
-cjogZG8geW91IHRoaW5rIGl0J3MgcG9zc2libGUgdGhlIEJDTSBjaGlwcyB0aGF0IFphamVjXydz
-IHdvcmtpbmcgb24gYWN0dWFsbHkgcHJvdmlkZSBhbiBhYnN0cmFjdGlvbiBvbiBhIGxldmVsIGhp
-Z2hlciB0aGFuIGFuIHNwaSBjb250cm9sbGVyIGJ1dCBsb3dlciB0aGFuIGFuIGFjdHVhbCBmbGFz
-aCBtZW1vcnkgZHJpdmVyPwpbMjA6MTNdIDxQYXVsRmVydHNlcj4gS2FuamlNb25zdGVyOiBobSwg
-aSBzaG91bGQgaGF2ZSByZWFkIGh0dHBzOi8vZGV2Lm9wZW53cnQub3JnL2Jyb3dzZXIvdHJ1bmsv
-dGFyZ2V0L2xpbnV4L2JyY200N3h4L3BhdGNoZXMtMy42LzA2MC1zc2ItYWRkLXNlcmlhbC1mbGFz
-aC1kcml2ZXIucGF0Y2ggaW5kZWVkClsyMDoxOF0gPFBhdWxGZXJ0c2VyPiBLYW5qaU1vbnN0ZXI6
-IGJ1dCBpcyBpdCBwb3NzaWJsZSB0byBzaGFyZSB0aGUgZGF0YWJhc2Ugb2Yga25vd24gZmxhc2gg
-Y2hpcHMgYXQgbGVhc3Q/ClsyMDoyMV0gPEthbmppTW9uc3Rlcj4gUGF1bEZlcnRzZXI6IGluIHRo
-ZW9yeSB5ZXMsIGluIHByYWN0aXNlIEknbSBub3Qgc3VyZSBpZiBpdCdzIHdvcnRoLCBhcyB0aGUg
-YmNtNDd4eCBzZmxhc2ggY29udHJvbGxlciBzdXBwb3J0cyBvbmx5IGEgc3Vic2V0IG9mIGZsYXNo
-ZXMKWzIwOjI2XSA8UGF1bEZlcnRzZXI+IEthbmppTW9uc3RlcjogdGhlIGxpc3Qgb2Ygb3Bjb2Rl
-cyBoZXJlIGh0dHA6Ly93d3cuY3MuZnN1LmVkdS9+YmFrZXIvZGV2aWNlcy9seHIvaHR0cC9zb3Vy
-Y2UvbGludXgvaW5jbHVkZS9saW51eC9zc2Ivc3NiX2RyaXZlcl9jaGlwY29tbW9uLmgjTDQ3NyBp
-cyBsb29raW5nIHZlcnkgbXVjaCBsaWtlIHRoZSBsaXN0IG9mIGFjdHVhbCBTUEkgZmxhc2ggb3Bj
-b2Rlcy4KWzIwOjMyXSA8S2FuamlNb25zdGVyPiBQYXVsRmVydHNlcjogdGhlIHByb2JsZW0gaXMg
-dGhhdCB0aGlzIGlzbid0IGEgZnVsbHkgd29ya2luZyBzcGkgY29udHJvbGxlciwgaXQgY2FuJ3Qg
-ZG8gYXJiaXRyYXJ5IHJlYWRzIG9yIHdyaXRlcyAoZnJvbSB3aGF0IEkgY2FuIHRlbGwgeW91IGNh
-biByZWFkIGF0IG1vc3QgNCBieXRlIGF0IGEgdGltZSksIHNvIGUuZy4gbTI1cDgwIHdpbGwgdXR0
-ZXJseSBmYWlsClsyMDozNF0gPFBhdWxGZXJ0c2VyPiBLYW5qaU1vbnN0ZXI6IGknbSBub3Qgc3Vy
-ZSBpIGZvbGxvdy4gSG93IGRvZXMgbTI1cDgwIElDIGRpZmZlciBmcm9tIG0yNXA2NCBpbiB0aGlz
-IHJlZ2FyZD8KWzIwOjM0XSA8S2FuamlNb25zdGVyPiBQYXVsRmVydHNlcjogIm0yNXA4MCIgaXMg
-dGhlIGRyaXZlciBuYW1lIGZvciBzcGkgY29ubmVjdGVkIGZsYXNoZXMgKGNvbm5lY3RlZCB0byBy
-ZWFsIHNwaSBjb250cm9sbGVycykKWzIwOjM1XSA8S2FuamlNb25zdGVyPiBpbiByZXRyb3NwZWN0
-IHF1aXRlIGEgYmFkIGNob2ljZSBvZiBuYW1lClsyMDozNl0gPFBhdWxGZXJ0c2VyPiBLYW5qaU1v
-bnN0ZXI6IGFoLCBpIHRob3VnaHQgeW91J3JlIHJlZmVycmluZyB0byB0aGUgY2hpcCBuYW1lIHRo
-YXQgd291bGQgcG9zc2libHkgZmFpbCB3aXRoIHNzYiBjb250cm9sbGVyLgpbMjA6MzldIDxQYXVs
-RmVydHNlcj4gQXBwYXJlbnRseSB0aGF0IHNzYiBjb250cm9sbGVyIGNvdmVycyBkZXZpY2VzIHRo
-YXQgYXJlIHVzdWFsbHkgdXNlZCB3aXRoIG10ZF9kYXRhZmxhc2guYyB0b28KWzIxOjA2XSA8UGF1
-bEZlcnRzZXI+IEthbmppTW9uc3RlcjogbTI1cDgwIG5lZWRzIGxvbmcgcmVhZHMgb25seSB0byBy
-ZWFkIGRhdGEgZnJvbSBmbGFzaCwgdGhhdCBhbiBvbmx5IGZ1bmN0aW9uLiBJJ20gbm90IHN1cmUg
-ZXZlcnl0aGluZyBlbHNlIGNhbid0IGJlIGVtdWxhdGVkIG92ZXIgdGhlIHNzYiBjb250cm9sbGVy
-LiBJJ20gbG9va2luZyBhdCB0aGUgY29kZSBhZ2FpbiBhbmQgYWdhaW4gYW5kIGl0IHNlZW1zIHBv
-c3NpYmxlLgpbMjE6MDddIDxLYW5qaU1vbnN0ZXI+IFBhdWxGZXJ0c2VyOiB3ZWxsLCByZWFkaW5n
-IGZyb20gZmxhc2ggaXMgcXVpdGUgZXNzZW50aWFsIDspClsyMTowOV0gPEthbmppTW9uc3Rlcj4g
-UGF1bEZlcnRzZXI6IGFuZCBtMjVwODAgd2lsbCBwYXNzIGFueSByZWFkIHNpemVzIGZyb20gdXNl
-cnNwYWNlLCBzbyBpZiB5b3UgZG8gZS5nLiA0MDk2IGJ5dGVzIHJlYWQgdG8gYSBtdGQgZGV2aWNl
-LCB0aGVuIG0yNXA4MCBleHBlY3RzIHRvIGJlIGFibGUgdG8gcmVhZCB0aGVzZSA0SyBhdCBvbmNl
-ClsyMTowOV0gPFBhdWxGZXJ0c2VyPiBLYW5qaU1vbnN0ZXI6IGlmIHRoZSBleGlzdGluZyBtMjVw
-ODAgZHJpdmVyIGNhbiBiZSBtYWRlIHRvIHdvcmsgd2l0aCByZWFzb25hYmx5IGxpdHRsZSBlZmZv
-cnQgb2YgYWRkaW5nIGEgImhhbmRpY2FwcGVkIiAgc3BpIGNvbnRyb2xsZXIgYW5kIGEgc2luZ2xl
-IGN1c3RvbSBmdW5jdGlvbiwgd2VsbCwgaXQnZCBwcm9iYWJseSBiZSBuaWNlIHRvIGRvIGl0IHRo
-YXQgd2F5LgpbMjE6MDldIDxLYW5qaU1vbnN0ZXI+IFBhdWxGZXJ0c2VyOiBJIHNlcmlvdXNseSBk
-b3VidCBpdCBpcyB3b3J0aCBpdCBvbmx5IHRvIGF2b2lkIGEgYml0IG9mIGRhdGEgZHVwbGljYXRp
-b24KWzIxOjEyXSA8UGF1bEZlcnRzZXI+IEthbmppTW9uc3RlcjogaSdtIG5vdCBzdXJlIHRoYXQn
-cyBvbmx5IGEgYml0LiBUaGUgc2ZsYXNoIGRyaXZlciBpcyBub3QgZXhhY3RseSBzbWFsbCBvciB0
-cml2aWFsLCBhbmQgaWYgaXQgY291bGQgYmUgcmVkdWNlZCB0byBmZXcgZnVuY3Rpb25zIHByZXRl
-bmRpbmcgdG8gYmUgYW4gc3BpIGNvbnRyb2xsZXIsIHByb2JhYmx5IHRoYXQgd291bGQgcmVkdWNl
-IGNvbXBsZXhpdHkgaW4gdGhlIGxvbmcgcnVuLgpbMjE6MTNdIDxQYXVsRmVydHNlcj4gSG0sIHBy
-b2JhYmx5IGl0IGlzIHNtYWxsIGFuZCBpdCBzZWVtZWQgYmlnIHRvIG1lIGJlY2F1c2UgaSd2ZSBy
-ZWFkIGl0IGZvciB0aGUgZmlyc3QgdGltZS4KWzIxOjE0XSA8UGF1bEZlcnRzZXI+IEJ1dCBpdCdz
-IHN0aWxsIHNvIGNsb3NlIHRvIGV4aXN0aW5nIGNvZGUgdGhhdCBpJ2QgdGVtcHRlZCB0byB0cnkg
-dG8gdW5pZnkgdGhhdC4KWzIxOjE4XSA8UGF1bEZlcnRzZXI+IE1laCwgaWYgb25seSB0aGUgZGF0
-YXNoZWV0IGZvciB0aGF0IGNvbnRyb2xsZXIgd2FzIGF2YWlsYWJsZS4K
---047d7bb03c2a4611e504d457b3bc--
+Thanks,
+Mark.
