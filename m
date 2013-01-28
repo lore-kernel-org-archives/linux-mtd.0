@@ -1,20 +1,22 @@
-Received: from hauke-2-pt.tunnel.tserv6.fra1.ipv6.he.net
- ([2001:470:1f0a:465::2] helo=hauke-m.de)
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Tzv6l-0001dT-G5
- for linux-mtd@lists.infradead.org; Mon, 28 Jan 2013 20:15:12 +0000
-Message-ID: <5106DC46.5030809@hauke-m.de>
-Date: Mon, 28 Jan 2013 21:15:02 +0100
-From: Hauke Mehrtens <hauke@hauke-m.de>
+Received: from mail-pa0-f45.google.com ([209.85.220.45])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1TzwIl-0000FF-Qo
+ for linux-mtd@lists.infradead.org; Mon, 28 Jan 2013 21:31:41 +0000
+Received: by mail-pa0-f45.google.com with SMTP id bg2so1760431pad.4
+ for <linux-mtd@lists.infradead.org>; Mon, 28 Jan 2013 13:31:38 -0800 (PST)
+Date: Mon, 28 Jan 2013 13:31:35 -0800
+From: Olof Johansson <olof@lixom.net>
+To: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [GIT PULL] Nomadik devicetree and cleanups
+Message-ID: <20130128213135.GA3047@quad.lixom.net>
+References: <CACRpkdZM8+6QaGrRtCCMWoZQO23uej7JDr1xz2zG7TtwQ7Ngqw@mail.gmail.com>
 MIME-Version: 1.0
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: Re: Handling serial flashes on Broadcom SOCs
-References: <CACna6ry0xPuzEAcDRB=hrTT71A5+WoJTZMGwaUS3RjSE4CcgLw@mail.gmail.com>
-In-Reply-To: <CACna6ry0xPuzEAcDRB=hrTT71A5+WoJTZMGwaUS3RjSE4CcgLw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Paul Fertser <fercerpav@gmail.com>, linux-mtd@lists.infradead.org,
- linux-wireless@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkdZM8+6QaGrRtCCMWoZQO23uej7JDr1xz2zG7TtwQ7Ngqw@mail.gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, arm@kernel.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,71 +26,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/28/2013 12:37 PM, Rafał Miłecki wrote:
-> Broadcom SOCs have flash memories, some of them are serial flashes.
-> They are detected by ssb/bcma and need to be handled by some extra
-> drivers.
+On Tue, Jan 22, 2013 at 10:19:16AM +0100, Linus Walleij wrote:
+> Hi ARM SoC guys,
 > 
-> Access to that flash memories is specific to the Broadcom devices.
-> Reading is simple, as they are memory mapped. Writing is done with the
-> ChipCommon (bus device/core) registers.
+> This patch series converts the Nomadik to use Device Tree.
 > 
-> The initial idea was to register platform device in ssb/bcma and then
-> access it in a separated driver placed in the mtd tree. However at
-> some point it was noticed (by Paul?) that (some of?) the chipsets
-> available at ssb/bcma buses are known from other devices. They are
-> usually available over SPI bus, and there are available drivers for
-> them. An example can be m25p80.c.
+> Changes outside of the subsystem are constrained to pinctrl (my subsystem
+> and thus OK:ed) and a oneline in drivers/mtd/nand/fsmc_nand.c adding
+> a new compatible value.
 > 
-> I can't say yet how much m25p80.c is compatible with chipsets on
-> Broadcom devices. Not all of them are available in m25p80.c, I'm
-> especially worried about Atmel flashes. There is only one Atmel entry
-> in m25p80.c and according to the SSB/BCMA code that devices require
-> different programming way.
+> The MTD maintainers have had time enough to ACK that oneliner and it
+> shouldn't be a big issue, so:
 > 
-> I don't think extending m25p80.c to support SSB/BCMA is acceptable, so
-> we've two options now:
-> 
-> 1) Just implement serial flashes support in separated driver operating
-> on ssb/bcma buses.
-> Easy to do, but requires some code duplication with m25p80.c
-> 
-> 2) Fake SPI master in ssb & bcma and use m25p80.c
-> I think it's much more complicated, as there probably isn't any real
-> SPI on Broadcom devices. We have to fake/emulate it's operations. From
-> early overview, some words-tips are: struct spi_master,
-> spi_alloc_master, spi_register_master.
-> I also don't know well m25p80.c is going to support chipsets on
-> Broadcom devices. With some luck, we will have to extend it's database
-> only. But it may happen we will have to add some/many modifications in
-> m25p80.c as well.
-> Another problem is early flash access. To boot properly we need to
-> access serial flash very early to read NVRAM from it (plain text
-> partition with board settings). This may be required even before we
-> get "alloc" available, which may require additional extra hacks in
-> m25p80.c.
-> 
-> Personally I'm for the first option. It's much simpler, doesn't
-> require a lot of research (how to correctly emulate SPI calls?). I'm
-> also afraid that emulating SPI bus and adding extra hacks into
-> m25p80.c will require more code than simple duplication in a ssb/bcma
-> focused driver. I also can't predict how well serial flash will behave
-> in case of accessing it over emulated SPI. Is this going to be working
-> correct? Is this going to be slower/faster?
-> 
-> I wish we discuss this situation and take a one solid decision. I'm
-> afraid of second solution, but maybe someone of you sees additional
-> advantages and/or has some experience in that matter.
-> 
+> Please pull this into your tree.
 
-I just had a quick look into the m25p80 driver, but emulating a spi
-controller does not sounds easy to me and m25p80 still has to be
-extended. The current code used in OpenWrt with kernel 2.6 supports all
-serial flash chip connected to these SoC I have see I would also go with
-duplicating some code and writing an own driver.
+Hi,
 
-This driver should be written to support the serial flash chips found on
-SoCs using ssb and bcma and it should share more code than the current
-implementation used in OpenWrt with kernel 3.6.
+Sorry for a late feedback on this, but after merging, this doesn't seem to
+build due to lack of vic_of_init symbol visibility (i.e. it's exported out of
+drivers/irqchip/irq-vic.c, but it's not actually defined in any header file.
 
-Hauke
+Also, a couple of small merge conflicts with the timer and irq cleanup
+branches.
+
+Would you mind rebasing on top of the depends/cleanup branch in arm-soc, sort
+out the breakage (and test it) and resubmit?
+
+
+Thanks!
+
+-Olof
