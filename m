@@ -1,15 +1,16 @@
-Received: from mail-ia0-x22b.google.com ([2607:f8b0:4001:c02::22b])
+Received: from ia-in-x0233.1e100.net ([2607:f8b0:4001:c02::233]
+ helo=mail-ia0-x233.google.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TzwZX-0001cy-Dd
- for linux-mtd@lists.infradead.org; Mon, 28 Jan 2013 21:48:59 +0000
-Received: by mail-ia0-f171.google.com with SMTP id z13so4995237iaz.30
- for <linux-mtd@lists.infradead.org>; Mon, 28 Jan 2013 13:48:58 -0800 (PST)
+ id 1TzxK1-0006iD-5F
+ for linux-mtd@lists.infradead.org; Mon, 28 Jan 2013 22:37:02 +0000
+Received: by mail-ia0-f179.google.com with SMTP id x24so5052619iak.10
+ for <linux-mtd@lists.infradead.org>; Mon, 28 Jan 2013 14:37:00 -0800 (PST)
 MIME-Version: 1.0
 In-Reply-To: <20130128213135.GA3047@quad.lixom.net>
 References: <CACRpkdZM8+6QaGrRtCCMWoZQO23uej7JDr1xz2zG7TtwQ7Ngqw@mail.gmail.com>
  <20130128213135.GA3047@quad.lixom.net>
-Date: Mon, 28 Jan 2013 22:48:58 +0100
-Message-ID: <CACRpkdZB-zcd8R=pmsONY9JgdiJFn=5HWApo7QiL1MLKL13=2Q@mail.gmail.com>
+Date: Mon, 28 Jan 2013 23:36:59 +0100
+Message-ID: <CACRpkdaHo_xLwqUDF9C71HbuGEcJHg_Jrsf0gCSPYXa4E+yJGA@mail.gmail.com>
 Subject: Re: [GIT PULL] Nomadik devicetree and cleanups
 From: Linus Walleij <linus.walleij@linaro.org>
 To: Olof Johansson <olof@lixom.net>
@@ -27,39 +28,72 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Mon, Jan 28, 2013 at 10:31 PM, Olof Johansson <olof@lixom.net> wrote:
-> On Tue, Jan 22, 2013 at 10:19:16AM +0100, Linus Walleij wrote:
->> Hi ARM SoC guys,
->>
->> This patch series converts the Nomadik to use Device Tree.
->>
->> Changes outside of the subsystem are constrained to pinctrl (my subsystem
->> and thus OK:ed) and a oneline in drivers/mtd/nand/fsmc_nand.c adding
->> a new compatible value.
->>
->> The MTD maintainers have had time enough to ACK that oneliner and it
->> shouldn't be a big issue, so:
->>
->> Please pull this into your tree.
->
-> Hi,
->
-> Sorry for a late feedback on this, but after merging, this doesn't seem to
-> build due to lack of vic_of_init symbol visibility (i.e. it's exported out of
-> drivers/irqchip/irq-vic.c, but it's not actually defined in any header file.
-
-Hm?
-arch/arm/include/asm/hardware/vic.h
-int vic_of_init(struct device_node *node, struct device_node *parent);
-
-> Also, a couple of small merge conflicts with the timer and irq cleanup
-> branches.
-
-Do you think the above also comes from that branch?
 
 > Would you mind rebasing on top of the depends/cleanup branch in arm-soc, sort
 > out the breakage (and test it) and resubmit?
 
-I'll try!
+So Olof, please try this instead, based on the ARM depends/cleanup HEAD
+when I fetched it:
 
-Yours,
-Linus Walleij
+The following changes since commit f8060f5446b1f2782f0a8ca9be2d870ea4198aee:
+
+  Merge tag 'gic-vic-to-irqchip' of
+git://sources.calxeda.com/kernel/linux into next/cleanup (2013-01-14
+19:55:03 -0800)
+
+are available in the git repository at:
+
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-nomadik.git
+tags/nmk-dt-on-cleanups
+
+for you to fetch changes up to dea3eacd087cfa692ea20aafbfaf4827607afe45:
+
+  ARM: nomadik: get rid of <mach/hardware.h> (2013-01-28 23:25:40 +0100)
+
+----------------------------------------------------------------
+Nomadik Device Tree conversion rebased on ARM SoC cleanup branch
+
+This patch set converts the Nomadik (mach-nomadik) to
+Device Tree and delete the old board files, paving the
+road for single zImage.
+
+----------------------------------------------------------------
+Linus Walleij (11):
+      ARM: nomadik: move last custom calls to pinctrl
+      ARM: nomadik: initial devicetree support
+      ARM: nomadik: move pin maps to cpu file
+      ARM: nomadik: move remaining PrimeCells to device tree
+      ARM: nomadik: add FSMC NAND
+      ARM: nomadik: move GPIO and pinctrl to device tree
+      ARM: nomadik: convert SMSC91x ethernet to device tree
+      ARM: nomadik: migrate MMC/SD card support to device tree
+      ARM: nomadik: add I2C devices to the device tree
+      ARM: nomadik: delete old board files
+      ARM: nomadik: get rid of <mach/hardware.h>
+
+ .../devicetree/bindings/arm/ste-nomadik.txt        |  27 ++
+ .../devicetree/bindings/mtd/fsmc-nand.txt          |   2 +-
+ arch/arm/Kconfig                                   |   2 +
+ arch/arm/boot/dts/Makefile                         |   1 +
+ arch/arm/boot/dts/ste-nomadik-s8815.dts            |  30 ++
+ arch/arm/boot/dts/ste-nomadik-stn8815.dtsi         | 256 +++++++++++++++
+ arch/arm/mach-nomadik/Kconfig                      |  10 +-
+ arch/arm/mach-nomadik/Makefile                     |   6 -
+ arch/arm/mach-nomadik/board-nhk8815.c              | 353 --------------------
+ arch/arm/mach-nomadik/cpu-8815.c                   | 358 +++++++++++++++------
+ arch/arm/mach-nomadik/cpu-8815.h                   |   4 -
+ arch/arm/mach-nomadik/i2c-8815nhk.c                |  88 -----
+ arch/arm/mach-nomadik/include/mach/hardware.h      |  90 ------
+ arch/arm/mach-nomadik/include/mach/irqs.h          |   2 -
+ arch/arm/mach-nomadik/include/mach/uncompress.h    |   1 -
+ drivers/mtd/nand/fsmc_nand.c                       |   1 +
+ drivers/pinctrl/pinctrl-nomadik.c                  |   4 +
+ 17 files changed, 588 insertions(+), 647 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/arm/ste-nomadik.txt
+ create mode 100644 arch/arm/boot/dts/ste-nomadik-s8815.dts
+ create mode 100644 arch/arm/boot/dts/ste-nomadik-stn8815.dtsi
+ delete mode 100644 arch/arm/mach-nomadik/board-nhk8815.c
+ delete mode 100644 arch/arm/mach-nomadik/cpu-8815.h
+ delete mode 100644 arch/arm/mach-nomadik/i2c-8815nhk.c
+ delete mode 100644 arch/arm/mach-nomadik/include/mach/hardware.h
