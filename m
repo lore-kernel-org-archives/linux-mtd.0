@@ -1,19 +1,19 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1Tzr8s-0007o7-DK
- for linux-mtd@lists.infradead.org; Mon, 28 Jan 2013 16:01:08 +0000
-Message-ID: <1359388941.7570.17.camel@sauron.fi.intel.com>
+ id 1TzrIe-0000Uq-AH
+ for linux-mtd@lists.infradead.org; Mon, 28 Jan 2013 16:11:12 +0000
+Message-ID: <1359389561.7570.18.camel@sauron.fi.intel.com>
 Subject: Re: [PATCH] mtd: physmap_of: fix cmdline partition method w/o
  linux,mtd-name
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 To: Baruch Siach <baruch@tkos.co.il>
-Date: Mon, 28 Jan 2013 18:02:21 +0200
+Date: Mon, 28 Jan 2013 18:12:41 +0200
 In-Reply-To: <20130124090547.GB7697@sapphire.tkos.co.il>
 References: <df9da712b775781366ae23aac28ed20849b4e4d3.1356260943.git.baruch@tkos.co.il>
  <20130124090547.GB7697@sapphire.tkos.co.il>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-aFszTwIW50rirgRBsoQK"
+ boundary="=-IlvbmqD85IcuV6+DH3Fk"
 Mime-Version: 1.0
 Cc: David Woodhouse <dwmw2@infradead.org>, devicetree-discuss@lists.ozlabs.org,
  Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
@@ -29,12 +29,9 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-aFszTwIW50rirgRBsoQK
+--=-IlvbmqD85IcuV6+DH3Fk
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-
-I pinged dwmw2 about this already. This is his call to merge the driver.
-I will ping him again.
 
 On Thu, 2013-01-24 at 11:05 +0200, Baruch Siach wrote:
 > Hi linux-mtd, Artem, David,
@@ -44,48 +41,14 @@ On Thu, 2013-01-24 at 11:05 +0200, Baruch Siach wrote:
 > It's been a month, and this is a simple uninitialized pointer dereference=
  bug=20
 > fix.
->=20
-> baruch
->=20
-> On Sun, Dec 23, 2012 at 01:10:50PM +0200, Baruch Siach wrote:
-> > Commit d68cbdd4fb (mtd: physmap_of: allow to specify the mtd name for r=
-etro
-> > compatiblity) broke cmdline partitioning using dev_name() in the kernel=
- command
-> > line.  of_property_read_string() does not touch mtd_name when linux,mtd=
--name is
-> > not present in the device tree, which causes map.name to be set to a ra=
-ndom
-> > value.  Fix this by initializing mtd_name to NULL.
-> >=20
-> > Cc: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-> > Signed-off-by: Baruch Siach <baruch@tkos.co.il>
-> > ---
-> >  drivers/mtd/maps/physmap_of.c |    2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >=20
-> > diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_o=
-f.c
-> > index 37cdc20..6fb2bd8 100644
-> > --- a/drivers/mtd/maps/physmap_of.c
-> > +++ b/drivers/mtd/maps/physmap_of.c
-> > @@ -170,7 +170,7 @@ static int of_flash_probe(struct platform_device *d=
-ev)
-> >  	resource_size_t res_size;
-> >  	struct mtd_part_parser_data ppdata;
-> >  	bool map_indirect;
-> > -	const char *mtd_name;
-> > +	const char *mtd_name =3D NULL;
-> > =20
-> >  	match =3D of_match_device(of_flash_match, &dev->dev);
-> >  	if (!match)
->=20
+
+It is in linux-mtd now.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-aFszTwIW50rirgRBsoQK
+--=-IlvbmqD85IcuV6+DH3Fk
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -93,19 +56,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.13 (GNU/Linux)
 
-iQIcBAABAgAGBQJRBqENAAoJECmIfjd9wqK06OQQAIxVuIcs20xcVDq3kqC67Hpp
-cLMD7miC/3UE5FiGaJfLgMjfPc+Z12xFzFaldcPaLSnnAi+IP1+b3wXkBjpe5Wpu
-hDDC1leYNx8aR5vJmLgF1edVHK6H4p/uAzUnOdR9yTJ8as8UtwaeWnhrZBJGBTOZ
-wQBl1iVIMl1wqS9VqVr7rGp1GnVH0MRtnMnRknbTYXgpck32OND9VDnl13qwhbBP
-Dek7FDTpyTZKL1L45zXEfYONNux+/1kmL49lIaoPRyVbIfUCkJ8jjf/ZcIwO+l+X
-RJU0rjHw1cdLRTzPQhIdjy33zv8YdFQtWGeUAGMBbGkHBJNDyCvqag1lu9aKk89r
-TQ6t8ULRxNwZCJH33lGKljyIgcNNwh+AZohPc1CpZB9sW1r2Lc2aZdb8/jalFNhZ
-c5PDn3TAacma+SjFlRbsDTH7ZLrUemYyuLC8qbVc8CPFsKJho+BH2Dbb5285rfxM
-N6DUZlqbrYAZOKdJgx5w3quL8hjRDWPofjemC2ZpxGh7IMZHyYQJno6GKlWiFKpG
-926L1lMn8UYlnoTQ9+6Zjt6YKH44Njfnk1tn8HJqcArxaupB9n5cZ7lceAe2XwaP
-cGk4Z9WVsE8vUaDltsCnroace/qmWJij6iILxndrLItvLFgfwXv5ashKbkYQCDIV
-nTzmHlNDqdofEb8WUCUc
-=3Zgq
+iQIcBAABAgAGBQJRBqN5AAoJECmIfjd9wqK0oM0P/irHLG9gziQXzDhilDIpCdYg
+cPPSOvcC2WBtiXTlXSiKfdUvSPYoU76LzWdv4ygdBPHuKs5M7FYZ3PaQOYUaJu89
+7CNKEqTFJxxQLZn/lcaqEkSFWuA1zSKt+hRIt4FoiQy0TqJNbJvzWPUKUstd+geH
+/wWAs84KKqRBHbYRc5kfZ9XSlho6PpPEuxjR/cuz/RWASkJ6zVyJC1SfHuLpGPM4
+aOafss3nEx1oPUS6anXInixsWInKxGnsI+GsRxGXYMsuGzZxiK/W3WFB0qxYlEhU
+16/uQDjb8YuqqV4x8Y6e780L+6BeTbiVJvQKbSHN7FiXZYmfVYSFATrAmWsvhru3
+pOqJ+nG4zyYfjDjcprjPShPxIekuk94G1bl2LOWxlIbQQ6I+b+6RAJAcHyHZ6mqh
+siiUw/zCJX8Bsr773/Q5omZy4PiGFJWzDwgyAPFeCYOy73Y8VowZMYaPAzr0Ojvs
+YLXKW3oDl6Su5uDU8NJab3q/iw0/W533NGspc8MlATS0Z0plvR5g5o9uLTIMT9mO
+Km88ZRds3pS63QtEWTE/O347TIrpPJDjPbd2d9H7wXk6LfN+R6iAXRGSnXlTFdnE
+g392zt+IgeAn8KAHwC5zP3s9HjGOVeZeWBiNwM1XREQH+7kRZlea+eycFDrjUh+T
+kp7BT4/JEtrKmELmodFL
+=Ksn+
 -----END PGP SIGNATURE-----
 
---=-aFszTwIW50rirgRBsoQK--
+--=-IlvbmqD85IcuV6+DH3Fk--
