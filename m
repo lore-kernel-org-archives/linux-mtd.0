@@ -1,14 +1,14 @@
-Received: from mail-pb0-f47.google.com ([209.85.160.47])
+Received: from mail-pa0-f65.google.com ([209.85.220.65])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TzdWv-0000h9-He
- for linux-mtd@lists.infradead.org; Mon, 28 Jan 2013 01:29:02 +0000
-Received: by mail-pb0-f47.google.com with SMTP id rp8so384893pbb.20
- for <linux-mtd@lists.infradead.org>; Sun, 27 Jan 2013 17:29:00 -0800 (PST)
+ id 1TzdWx-0000hS-Gn
+ for linux-mtd@lists.infradead.org; Mon, 28 Jan 2013 01:29:04 +0000
+Received: by mail-pa0-f65.google.com with SMTP id rl6so1699225pac.0
+ for <linux-mtd@lists.infradead.org>; Sun, 27 Jan 2013 17:29:01 -0800 (PST)
 From: Adam Thomas <adamthomas1111@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 1/2] UBIFS: fix use of freed ubifs_orphan objects
-Date: Mon, 28 Jan 2013 01:28:32 +0000
-Message-Id: <1359336513-6259-2-git-send-email-adamthomas1111@gmail.com>
+Subject: [PATCH 2/2] UBIFS: fix double free of ubifs_orphan objects
+Date: Mon, 28 Jan 2013 01:28:33 +0000
+Message-Id: <1359336513-6259-3-git-send-email-adamthomas1111@gmail.com>
 In-Reply-To: <1359336513-6259-1-git-send-email-adamthomas1111@gmail.com>
 References: <1359336513-6259-1-git-send-email-adamthomas1111@gmail.com>
 Cc: Adam Thomas <adamthomas1111@gmail.com>
@@ -21,84 +21,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The last orphan in the cnext list has its cnext set to NULL. Because
-of that, ubifs_delete_orphan assumes that it is not on the cnext list
-and frees it immediately instead of adding it to the dnext list. The
-freed orphan is later modified by write_orph_node.
-
-This can cause various inconsistencies including directory entries
-that cannot be removed and this error:
-
-UBIFS error (pid 20685): layout_cnodes: LPT out of space at LEB 14:129009 needing 17, done_ltab 1, done_lsave 1
-
-This is a regression introduced by
-"7074e5eb UBIFS: remove invalid reference to list iterator variable".
+The last orphan in the dnext list has its dnext set to NULL. Because
+of that, ubifs_delete_orphan assumes that it is not on the dnext list
+and frees it immediately instead ignoring it as a second delete. The
+orphan is later freed again by erase_deleted.
 
 This change adds an explicit flag to ubifs_orphan indicating whether
-it is pending commit.
+it is pending delete.
 ---
- fs/ubifs/orphan.c |    6 +++++-
- fs/ubifs/ubifs.h  |    4 +++-
- 2 files changed, 8 insertions(+), 2 deletions(-)
+ fs/ubifs/orphan.c |    5 ++++-
+ fs/ubifs/ubifs.h  |    2 ++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/fs/ubifs/orphan.c b/fs/ubifs/orphan.c
-index 769701c..8433f53 100644
+index 8433f53..071d607 100644
 --- a/fs/ubifs/orphan.c
 +++ b/fs/ubifs/orphan.c
-@@ -132,7 +132,7 @@ void ubifs_delete_orphan(struct ubifs_info *c, ino_t inum)
+@@ -126,13 +126,14 @@ void ubifs_delete_orphan(struct ubifs_info *c, ino_t inum)
+ 		else if (inum > o->inum)
+ 			p = p->rb_right;
+ 		else {
+-			if (o->dnext) {
++			if (o->del) {
+ 				spin_unlock(&c->orphan_lock);
+ 				dbg_gen("deleted twice ino %lu",
  					(unsigned long)inum);
  				return;
  			}
--			if (o->cnext) {
-+			if (o->cmt) {
+ 			if (o->cmt) {
++				o->del = 1;
  				o->dnext = c->orph_dnext;
  				c->orph_dnext = o;
  				spin_unlock(&c->orphan_lock);
-@@ -172,7 +172,9 @@ int ubifs_orphan_start_commit(struct ubifs_info *c)
- 	last = &c->orph_cnext;
- 	list_for_each_entry(orphan, &c->orph_new, new_list) {
- 		ubifs_assert(orphan->new);
-+		ubifs_assert(!orphan->cmt);
- 		orphan->new = 0;
-+		orphan->cmt = 1;
- 		*last = orphan;
- 		last = &orphan->cnext;
- 	}
-@@ -299,6 +301,7 @@ static int write_orph_node(struct ubifs_info *c, int atomic)
- 	cnext = c->orph_cnext;
- 	for (i = 0; i < cnt; i++) {
- 		orphan = cnext;
-+		ubifs_assert(orphan->cmt);
- 		orph->inos[i] = cpu_to_le64(orphan->inum);
- 		cnext = orphan->cnext;
- 		orphan->cnext = NULL;
-@@ -378,6 +381,7 @@ static int consolidate(struct ubifs_info *c)
- 		list_for_each_entry(orphan, &c->orph_list, list) {
- 			if (orphan->new)
- 				continue;
-+			orphan->cmt = 1;
- 			*last = orphan;
- 			last = &orphan->cnext;
- 			cnt += 1;
+@@ -446,6 +447,7 @@ static void erase_deleted(struct ubifs_info *c)
+ 		orphan = dnext;
+ 		dnext = orphan->dnext;
+ 		ubifs_assert(!orphan->new);
++		ubifs_assert(orphan->del);
+ 		rb_erase(&orphan->rb, &c->orph_tree);
+ 		list_del(&orphan->list);
+ 		c->tot_orphans -= 1;
+@@ -535,6 +537,7 @@ static int insert_dead_orphan(struct ubifs_info *c, ino_t inum)
+ 	rb_link_node(&orphan->rb, parent, p);
+ 	rb_insert_color(&orphan->rb, &c->orph_tree);
+ 	list_add_tail(&orphan->list, &c->orph_list);
++	orphan->del = 1;
+ 	orphan->dnext = c->orph_dnext;
+ 	c->orph_dnext = orphan;
+ 	dbg_mnt("ino %lu, new %d, tot %d", (unsigned long)inum,
 diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index d133c27..c16fff7 100644
+index c16fff7..b2babce 100644
 --- a/fs/ubifs/ubifs.h
 +++ b/fs/ubifs/ubifs.h
-@@ -904,6 +904,7 @@ struct ubifs_budget_req {
-  * @dnext: next orphan to delete
+@@ -905,6 +905,7 @@ struct ubifs_budget_req {
   * @inum: inode number
   * @new: %1 => added since the last commit, otherwise %0
-+ * @cmt: %1 => commit pending, otherwise %0
+  * @cmt: %1 => commit pending, otherwise %0
++ * @del: %1 => delete pending, otherwise %0
   */
  struct ubifs_orphan {
  	struct rb_node rb;
-@@ -912,7 +913,8 @@ struct ubifs_orphan {
- 	struct ubifs_orphan *cnext;
- 	struct ubifs_orphan *dnext;
+@@ -915,6 +916,7 @@ struct ubifs_orphan {
  	ino_t inum;
--	int new;
-+	unsigned new:1;
-+	unsigned cmt:1;
+ 	unsigned new:1;
+ 	unsigned cmt:1;
++	unsigned del:1;
  };
  
  /**
