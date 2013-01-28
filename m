@@ -1,17 +1,22 @@
-Received: from mail-pa0-f65.google.com ([209.85.220.65])
+Received: from ch1ehsobe002.messaging.microsoft.com ([216.32.181.182]
+ helo=ch1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1TzdWx-0000hS-Gn
- for linux-mtd@lists.infradead.org; Mon, 28 Jan 2013 01:29:04 +0000
-Received: by mail-pa0-f65.google.com with SMTP id rl6so1699225pac.0
- for <linux-mtd@lists.infradead.org>; Sun, 27 Jan 2013 17:29:01 -0800 (PST)
-From: Adam Thomas <adamthomas1111@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/2] UBIFS: fix double free of ubifs_orphan objects
-Date: Mon, 28 Jan 2013 01:28:33 +0000
-Message-Id: <1359336513-6259-3-git-send-email-adamthomas1111@gmail.com>
-In-Reply-To: <1359336513-6259-1-git-send-email-adamthomas1111@gmail.com>
-References: <1359336513-6259-1-git-send-email-adamthomas1111@gmail.com>
-Cc: Adam Thomas <adamthomas1111@gmail.com>
+ id 1Tze5X-00024T-66
+ for linux-mtd@lists.infradead.org; Mon, 28 Jan 2013 02:04:48 +0000
+Message-ID: <5105DCAE.8090907@freescale.com>
+Date: Mon, 28 Jan 2013 10:04:30 +0800
+From: Huang Shijie <b32955@freescale.com>
+MIME-Version: 1.0
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH v2 2/3] mtd: add a new table for the unparsable nand chips
+References: <1359007901-26464-1-git-send-email-b32955@freescale.com>
+ <1359007901-26464-3-git-send-email-b32955@freescale.com>
+In-Reply-To: <1359007901-26464-3-git-send-email-b32955@freescale.com>
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: quoted-printable
+Cc: artem.bityutskiy@linux.intel.com, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, shmulik.ladkani@gmail.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,73 +26,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The last orphan in the dnext list has its dnext set to NULL. Because
-of that, ubifs_delete_orphan assumes that it is not on the dnext list
-and frees it immediately instead ignoring it as a second delete. The
-orphan is later freed again by erase_deleted.
+=D3=DA 2013=C4=EA01=D4=C224=C8=D5 14:11, Huang Shijie =D0=B4=B5=C0:
+> We have 4 Toshiba nand chips which can not be parsed out by the
+> id data.  Add a new table for the unparsable nand chips.
+>
+> It makes mess if we add these entries to the nand_flash_ids table.
+> The entries in the nand_flash_ids stands for a class of nand chips.
+> But the unparsable nand chips are just some singular chips.
+>
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
+> ---
+>  drivers/mtd/nand/nand_ids.c |   22 ++++++++++++++++++++++
+>  include/linux/mtd/nand.h    |    1 +
+>  2 files changed, 23 insertions(+), 0 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
+> index 9dc2e54..c1e32d2 100644
+> --- a/drivers/mtd/nand/nand_ids.c
+> +++ b/drivers/mtd/nand/nand_ids.c
+> @@ -11,6 +11,28 @@
+>  #include <linux/module.h>
+>  #include <linux/mtd/nand.h>
+>  #include <linux/sizes.h>
+> +#include <linux/sizes.h>
+sorry, i added the same header twice.
 
-This change adds an explicit flag to ubifs_orphan indicating whether
-it is pending delete.
----
- fs/ubifs/orphan.c |    5 ++++-
- fs/ubifs/ubifs.h  |    2 ++
- 2 files changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/fs/ubifs/orphan.c b/fs/ubifs/orphan.c
-index 8433f53..071d607 100644
---- a/fs/ubifs/orphan.c
-+++ b/fs/ubifs/orphan.c
-@@ -126,13 +126,14 @@ void ubifs_delete_orphan(struct ubifs_info *c, ino_t inum)
- 		else if (inum > o->inum)
- 			p = p->rb_right;
- 		else {
--			if (o->dnext) {
-+			if (o->del) {
- 				spin_unlock(&c->orphan_lock);
- 				dbg_gen("deleted twice ino %lu",
- 					(unsigned long)inum);
- 				return;
- 			}
- 			if (o->cmt) {
-+				o->del = 1;
- 				o->dnext = c->orph_dnext;
- 				c->orph_dnext = o;
- 				spin_unlock(&c->orphan_lock);
-@@ -446,6 +447,7 @@ static void erase_deleted(struct ubifs_info *c)
- 		orphan = dnext;
- 		dnext = orphan->dnext;
- 		ubifs_assert(!orphan->new);
-+		ubifs_assert(orphan->del);
- 		rb_erase(&orphan->rb, &c->orph_tree);
- 		list_del(&orphan->list);
- 		c->tot_orphans -= 1;
-@@ -535,6 +537,7 @@ static int insert_dead_orphan(struct ubifs_info *c, ino_t inum)
- 	rb_link_node(&orphan->rb, parent, p);
- 	rb_insert_color(&orphan->rb, &c->orph_tree);
- 	list_add_tail(&orphan->list, &c->orph_list);
-+	orphan->del = 1;
- 	orphan->dnext = c->orph_dnext;
- 	c->orph_dnext = orphan;
- 	dbg_mnt("ino %lu, new %d, tot %d", (unsigned long)inum,
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index c16fff7..b2babce 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -905,6 +905,7 @@ struct ubifs_budget_req {
-  * @inum: inode number
-  * @new: %1 => added since the last commit, otherwise %0
-  * @cmt: %1 => commit pending, otherwise %0
-+ * @del: %1 => delete pending, otherwise %0
-  */
- struct ubifs_orphan {
- 	struct rb_node rb;
-@@ -915,6 +916,7 @@ struct ubifs_orphan {
- 	ino_t inum;
- 	unsigned new:1;
- 	unsigned cmt:1;
-+	unsigned del:1;
- };
- 
- /**
--- 
-1.7.9.5
+> +
+> +/* This table uses the full ID data as the keyword. */
+> +struct nand_flash_dev nand_flash_full_ids[] =3D {
+> +	/* TOSHIBA */
+> +	{"TC58NVG2S0F 4G 3.3V 8-bit ",
+> +		{0x98, 0xdc, 0x90, 0x26, 0x76, 0x15, 0x01, 0x08},
+> +			SZ_4K, SZ_512, SZ_256K, 0, 8, 224},
+> +	{"TC58NVG3S0F 8G 3.3V 8-bit ",
+> +		{0x98, 0xd3, 0x90, 0x26, 0x76, 0x15, 0x02, 0x08},
+> +			SZ_4K, SZ_1K, SZ_256K, 0, 8, 232},
+> +	{"TC58NVG5D2 32G 3.3V 8-bit ",
+> +		{0x98, 0xd7, 0x94, 0x32, 0x76, 0x56, 0x09, 0x00},
+> +			SZ_8K, SZ_4K, SZ_1M, 0, 8, 640},
+> +	{"TC58NVG6D2 64G 3.3V 8-bit ",
+> +		{0x98, 0xde, 0x94, 0x82, 0x76, 0x56, 0x04, 0x20},
+> +			SZ_8K, SZ_8K, SZ_2M, 0, 8, 640},
+> +
+> +	/* end here */
+> +	{NULL,}
+> +};
+> +
+> =20
+>  /*
+>  *	Chip ID list
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index 5293447..346a389 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -620,6 +620,7 @@ struct nand_manufacturers {
+>  };
+> =20
+>  extern struct nand_flash_dev nand_flash_ids[];
+> +extern struct nand_flash_dev nand_flash_full_ids[];
+>  extern struct nand_manufacturers nand_manuf_ids[];
+> =20
+>  extern int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *=
+bd);
