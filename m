@@ -1,22 +1,20 @@
-Received: from ia-in-x022f.1e100.net ([2607:f8b0:4001:c02::22f]
- helo=mail-ia0-x22f.google.com)
+Received: from aserp1040.oracle.com ([141.146.126.69])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U0BCz-0004sP-LZ
- for linux-mtd@lists.infradead.org; Tue, 29 Jan 2013 13:26:42 +0000
-Received: by mail-ia0-f175.google.com with SMTP id r4so529006iaj.6
- for <linux-mtd@lists.infradead.org>; Tue, 29 Jan 2013 05:26:40 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <CACna6ry0xPuzEAcDRB=hrTT71A5+WoJTZMGwaUS3RjSE4CcgLw@mail.gmail.com>
-References: <CACna6ry0xPuzEAcDRB=hrTT71A5+WoJTZMGwaUS3RjSE4CcgLw@mail.gmail.com>
-From: Jonas Gorski <jonas.gorski@gmail.com>
-Date: Tue, 29 Jan 2013 14:26:19 +0100
-Message-ID: <CAOiHx=k4h-ZHijqbuN+95GjVxs-FLGZsnh3vc_x2W6bO-n1P_w@mail.gmail.com>
-Subject: Re: Handling serial flashes on Broadcom SOCs
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Paul Fertser <fercerpav@gmail.com>, Hauke Mehrtens <hauke@hauke-m.de>,
- linux-wireless@vger.kernel.org, linux-mtd@lists.infradead.org
+ id 1U0Dyy-0006j7-AO
+ for linux-mtd@lists.infradead.org; Tue, 29 Jan 2013 16:24:25 +0000
+From: Dave Kleikamp <dave.kleikamp@oracle.com>
+To: Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH V6 30/30] ubifs: convert file ops from aio_read/write to
+ read/write_iter
+Date: Tue, 29 Jan 2013 10:23:43 -0600
+Message-Id: <1359476623-10544-31-git-send-email-dave.kleikamp@oracle.com>
+In-Reply-To: <1359476623-10544-1-git-send-email-dave.kleikamp@oracle.com>
+References: <1359476623-10544-1-git-send-email-dave.kleikamp@oracle.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, linux-kernel@vger.kernel.org,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Dave Kleikamp <dave.kleikamp@oracle.com>, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, Zach Brown <zab@zabbo.net>,
+ "Maxim V. Patlasov" <mpatlasov@parallels.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,40 +24,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 28 January 2013 12:37, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
-> (snip)
-> I don't think extending m25p80.c to support SSB/BCMA is acceptable, so
-> we've two options now:
->
-> 1) Just implement serial flashes support in separated driver operating
-> on ssb/bcma buses.
-> Easy to do, but requires some code duplication with m25p80.c
->
-> 2) Fake SPI master in ssb & bcma and use m25p80.c
-> I think it's much more complicated, as there probably isn't any real
-> SPI on Broadcom devices. We have to fake/emulate it's operations. From
-> early overview, some words-tips are: struct spi_master,
-> spi_alloc_master, spi_register_master.
-> I also don't know well m25p80.c is going to support chipsets on
-> Broadcom devices. With some luck, we will have to extend it's database
-> only. But it may happen we will have to add some/many modifications in
-> m25p80.c as well.
-> Another problem is early flash access. To boot properly we need to
-> access serial flash very early to read NVRAM from it (plain text
-> partition with board settings). This may be required even before we
-> get "alloc" available, which may require additional extra hacks in
-> m25p80.c.
+Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: linux-mtd@lists.infradead.org
+---
+ fs/ubifs/file.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Going from my experience in implementing/rewriting an SPI controller
-driver, and having played around with the Broadcom sflash driver, I'd
-definitely vote for 1). The expectations to an SPI controller are
-quite broad, and the possibilities of the serial flash controller are
-quite limited, so making it work with m25p80 will be likely add more
-code than could be saved by emulating an SPI controller.
-
-What I think might be doable is to export the SPI flashes list of
-m25p80 list and letting both drivers use it. Not sure how much there
-is to gain, though.
-
-
-Jonas
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index 5bc7781..cfe6210 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -44,7 +44,7 @@
+  * 'ubifs_writepage()' we are only guaranteed that the page is locked.
+  *
+  * Similarly, @i_mutex is not always locked in 'ubifs_readpage()', e.g., the
+- * read-ahead path does not lock it ("sys_read -> generic_file_aio_read ->
++ * read-ahead path does not lock it ("sys_read -> generic_file_read_iter ->
+  * ondemand_readahead -> readpage"). In case of readahead, @I_SYNC flag is not
+  * set as well. However, UBIFS disables readahead.
+  */
+@@ -1394,8 +1394,8 @@ static int update_mctime(struct ubifs_info *c, struct inode *inode)
+ 	return 0;
+ }
+ 
+-static ssize_t ubifs_aio_write(struct kiocb *iocb, const struct iovec *iov,
+-			       unsigned long nr_segs, loff_t pos)
++static ssize_t ubifs_write_iter(struct kiocb *iocb, struct iov_iter *iter,
++				loff_t pos)
+ {
+ 	int err;
+ 	struct inode *inode = iocb->ki_filp->f_mapping->host;
+@@ -1405,7 +1405,7 @@ static ssize_t ubifs_aio_write(struct kiocb *iocb, const struct iovec *iov,
+ 	if (err)
+ 		return err;
+ 
+-	return generic_file_aio_write(iocb, iov, nr_segs, pos);
++	return generic_file_write_iter(iocb, iter, pos);
+ }
+ 
+ static int ubifs_set_page_dirty(struct page *page)
+@@ -1580,8 +1580,8 @@ const struct file_operations ubifs_file_operations = {
+ 	.llseek         = generic_file_llseek,
+ 	.read           = do_sync_read,
+ 	.write          = do_sync_write,
+-	.aio_read       = generic_file_aio_read,
+-	.aio_write      = ubifs_aio_write,
++	.read_iter       = generic_file_read_iter,
++	.write_iter      = ubifs_write_iter,
+ 	.mmap           = ubifs_file_mmap,
+ 	.fsync          = ubifs_fsync,
+ 	.unlocked_ioctl = ubifs_ioctl,
+-- 
+1.8.1.1
