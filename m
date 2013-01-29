@@ -1,22 +1,28 @@
-Received: from am1ehsobe006.messaging.microsoft.com ([213.199.154.209]
- helo=am1outboundpool.messaging.microsoft.com)
+Received: from intranet.asianux.com ([58.214.24.6])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U0146-0003kf-Ps
- for linux-mtd@lists.infradead.org; Tue, 29 Jan 2013 02:36:51 +0000
-Message-ID: <510735B3.1040509@freescale.com>
-Date: Tue, 29 Jan 2013 10:36:35 +0800
-From: Huang Shijie <b32955@freescale.com>
+ id 1U06UM-0001ij-4l
+ for linux-mtd@lists.infradead.org; Tue, 29 Jan 2013 08:24:21 +0000
+Message-ID: <51078725.9000802@asianux.com>
+Date: Tue, 29 Jan 2013 16:24:05 +0800
+From: Chen Gang <gang.chen@asianux.com>
 MIME-Version: 1.0
-To: Vikram Narayanan <vikram186@gmail.com>
-Subject: Re: mtd_oobtest fails with GPMI-NAND
-References: <50F97DB5.7040801@gmail.com> <50FCA426.6030309@freescale.com>
- <5105E4CE.1090800@gmail.com> <5105EE9B.9050405@freescale.com>
- <5106AFAA.1020502@gmail.com> <51072EA4.7000201@freescale.com>
- <51073373.4080006@gmail.com>
-In-Reply-To: <51073373.4080006@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+To: viro@zeniv.linux.org.uk
+Subject: Re: [PATCH v4] fs/ext*,f2fs,jffs2,reiserfs: give comments for acl
+ size and count calculation
+References: <50DD20B2.6040204@asianux.com> <50E646BC.2090201@asianux.com>
+ <50E64A4E.7010408@asianux.com> <50E64BFD.6090000@asianux.com>
+ <20130107192016.GD13659@quack.suse.cz> <50EFD427.8060100@asianux.com>
+ <50FB9696.7090702@asianux.com> <20130121102428.GA5588@quack.suse.cz>
+ <50FD1B22.1020906@asianux.com>
+In-Reply-To: <50FD1B22.1020906@asianux.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Theodore Ts'o <tytso@mit.edu>, torvalds@linux-foundation.org,
+ reiserfs-devel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ paul.gortmaker@windriver.com, adilger.kernel@dilger.ca, ebiederm@xmission.com,
+ linux-mtd@lists.infradead.org, jaegeuk.kim@samsung.com,
+ linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.cz>,
+ akpm@linux-foundation.org, linux-ext4@vger.kernel.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,61 +32,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B401=E6=9C=8829=E6=97=A5 10:26, Vikram Narayanan =E5=
-=86=99=E9=81=93:
-> On 1/29/2013 7:36 AM, Huang Shijie wrote:
->> =E4=BA=8E 2013=E5=B9=B401=E6=9C=8829=E6=97=A5 01:04, Vikram Narayanan =
-=E5=86=99=E9=81=93:
->>> On 1/28/2013 8:50 AM, Huang Shijie wrote:
->>>> =E4=BA=8E 2013=E5=B9=B401=E6=9C=8828=E6=97=A5 10:39, Vikram Narayana=
-n =E5=86=99=E9=81=93:
->>>>> Hello Huang,
->>>>>
->>>>> On 1/21/2013 7:42 AM, Huang Shijie wrote:
->>>>>> =E4=BA=8E 2013=E5=B9=B401=E6=9C=8819=E6=97=A5 00:52, Vikram Naraya=
-nan =E5=86=99=E9=81=93:
->>>>>>> Hi,
->>>>>>>
->>>>>>> When I try to run the mtd_oobtest on an i.Mx6Q board, it results=20
->>>>>>> in a
->> Which mx6q' board are you using? the mx6q-arm2 or mx6q-ard?
->
-> I'm using a custom board.
-ok.
->
->> The kernel only supports the mx6q-arm2 now.
->
-> May I know in what way the driver is restricted for using with other=20
-> boards?
-The devicetree. Please check the dts file in arch/arm/boot/dts/.
-If there is no dts file for your board, the gpmi will not works very=20
-well for your board.
-for example, there is arch/arm/boot/dts/imx6q-arm2.dts for the MX6Q-ARM2=20
-board.
+Hello Al Viro:
 
->
->>>
->>> Toshiba, 4 Gbit, (4096 +224) bytes =C3=9764 pages =C3=972048blocks
->>
->> The Toshiba's nand is not well supported by the kernel.
->> Are you sure the kernel parse out the correct geometry for the toshiba=
-'s
->> nand?
->> Please recheck the page size and oob size with "mtdinfo /dev/mtd0".
->>
->
-> You're right and we knew it earlier as the Kernel detects the OOB size=20
-> as 128 bytes. So, some remaining bytes become unused at the end of=20
-> each page. i.e., (224-128). Instead of supporting ecc strength as ECC9=20
-> we end up using ECC8. Should this be a cause for the -74 error?
-no. this is not the cause. even you get the wrong geometry of the nand=20
-chip. the gpmi still can works.
+  could you give a glance for this comment patch when you have time ?
 
-I think the root cause is the devicetree issue as above.
+    (at least for me, most of comment patches are valuable for integrating)
 
-thanks
-Huang Shijie
->
-> Regards,
-> Vikram
->
+
+  thanks.
+
+gchen.
+
+
+于 2013年01月21日 18:40, Chen Gang 写道:
+> 于 2013年01月21日 18:24, Jan Kara 写道:
+>>   Al Viro (you have him on CC list) is the right guy to merge this patch.
+>> But he's not very responsive at times... You can also check whether he just
+>> didn't silently merge your patch into his tree -
+>> http://git.kernel.org/?p=linux/kernel/git/viro/vfs.git
+>> I don't see the patch there right now, last update to the tree has
+>> happened 3 weeks ago. Maybe he's on vacation...
+> 
+>   thank you very much for your patient details replying.
+> 
+>   sorry, it is my fault for my original mail address not including Viro 
+>     so it is necessary to wait additional week for getting his response.
+> 
+>   next time, I need only use ./script/get_maintainers.pl to get mail address.
+> 
+>   :-(
+> 
+> 
+
+
+-- 
+Chen Gang
+
+Asianux Corporation
