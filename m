@@ -1,14 +1,22 @@
-From: Huang Shijie <b32955@freescale.com>
-To: <dwmw2@infradead.org>
-Subject: [PATCH v2] mtd: gpmi: add sanity check for the ECC
-Date: Tue, 29 Jan 2013 09:23:38 +0800
-Message-ID: <1359422618-7185-1-git-send-email-b32955@freescale.com>
-In-Reply-To: <1359093848-22301-2-git-send-email-b32955@freescale.com>
-References: <1359093848-22301-2-git-send-email-b32955@freescale.com>
+Received: from mail-pa0-f42.google.com ([209.85.220.42])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1U00ui-0002tZ-DL
+ for linux-mtd@lists.infradead.org; Tue, 29 Jan 2013 02:27:08 +0000
+Received: by mail-pa0-f42.google.com with SMTP id rl6so72287pac.29
+ for <linux-mtd@lists.infradead.org>; Mon, 28 Jan 2013 18:27:06 -0800 (PST)
+Message-ID: <51073373.4080006@gmail.com>
+Date: Tue, 29 Jan 2013 07:56:59 +0530
+From: Vikram Narayanan <vikram186@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, dedekind1@gmail.com
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: mtd_oobtest fails with GPMI-NAND
+References: <50F97DB5.7040801@gmail.com> <50FCA426.6030309@freescale.com>
+ <5105E4CE.1090800@gmail.com> <5105EE9B.9050405@freescale.com>
+ <5106AFAA.1020502@gmail.com> <51072EA4.7000201@freescale.com>
+In-Reply-To: <51072EA4.7000201@freescale.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,85 +26,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We do the check based on the following two facts:
+On 1/29/2013 7:36 AM, Huang Shijie wrote:
+> 于 2013年01月29日 01:04, Vikram Narayanan 写道:
+>> On 1/28/2013 8:50 AM, Huang Shijie wrote:
+>>> 于 2013年01月28日 10:39, Vikram Narayanan 写道:
+>>>> Hello Huang,
+>>>>
+>>>> On 1/21/2013 7:42 AM, Huang Shijie wrote:
+>>>>> 于 2013年01月19日 00:52, Vikram Narayanan 写道:
+>>>>>> Hi,
+>>>>>>
+>>>>>> When I try to run the mtd_oobtest on an i.Mx6Q board, it results in a
+> Which mx6q' board are you using? the mx6q-arm2 or mx6q-ard?
 
-[1] The mx23/mx28 can only support 20-bits ECC, while the mx6
-    can supports 40-bits ECC.
+I'm using a custom board.
 
-[2] The mx23/mx28 can only support the GF13, while the mx6
-    can supports GF13 and GF14.
+> The kernel only supports the mx6q-arm2 now.
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
-v1 --> v2:
-     [1] add the Golois Field check.
-     [2] change the comments.
+May I know in what way the driver is restricted for using with other boards?
 
----
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   28 ++++++++++++++++++++++++++--
- drivers/mtd/nand/gpmi-nand/gpmi-nand.h |    4 ++++
- 2 files changed, 30 insertions(+), 2 deletions(-)
+>>
+>> Toshiba, 4 Gbit, (4096 +224) bytes ×64 pages ×2048blocks
+>
+> The Toshiba's nand is not well supported by the kernel.
+> Are you sure the kernel parse out the correct geometry for the toshiba's
+> nand?
+> Please recheck the page size and oob size with "mtdinfo /dev/mtd0".
+>
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 2521678..717881a 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -94,6 +94,25 @@ static inline int get_ecc_strength(struct gpmi_nand_data *this)
- 	return round_down(ecc_strength, 2);
- }
- 
-+static inline bool gpmi_check_ecc(struct gpmi_nand_data *this)
-+{
-+	struct bch_geometry *geo = &this->bch_geometry;
-+
-+	/* Do the sanity check. */
-+	if (GPMI_IS_MX23(this) || GPMI_IS_MX28(this)) {
-+		/* The mx23/mx28 only support the GF13. */
-+		if (geo->gf_len == 14)
-+			return false;
-+
-+		if (geo->ecc_strength > MXS_ECC_STRENGTH_MAX)
-+			return false;
-+	} else if (GPMI_IS_MX6Q(this)) {
-+		if (geo->ecc_strength > MX6_ECC_STRENGTH_MAX)
-+			return false;
-+	}
-+	return true;
-+}
-+
- int common_nfc_set_geometry(struct gpmi_nand_data *this)
- {
- 	struct bch_geometry *geo = &this->bch_geometry;
-@@ -123,8 +142,13 @@ int common_nfc_set_geometry(struct gpmi_nand_data *this)
- 
- 	/* We use the same ECC strength for all chunks. */
- 	geo->ecc_strength = get_ecc_strength(this);
--	if (!geo->ecc_strength) {
--		pr_err("wrong ECC strength.\n");
-+	if (!gpmi_check_ecc(this)) {
-+		dev_err(this->dev,
-+			"We can not support this nand chip."
-+			" Its required ecc strength(%d) is beyond our"
-+			" capability(%d).\n", geo->ecc_strength,
-+			(GPMI_IS_MX6Q(this) ? MX6_ECC_STRENGTH_MAX
-+					: MXS_ECC_STRENGTH_MAX));
- 		return -EINVAL;
- 	}
- 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-index 3d93a5e..0729477 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-@@ -284,6 +284,10 @@ extern int gpmi_read_page(struct gpmi_nand_data *,
- #define STATUS_ERASED		0xff
- #define STATUS_UNCORRECTABLE	0xfe
- 
-+/* BCH's bit correction capability. */
-+#define MXS_ECC_STRENGTH_MAX	20	/* mx23 and mx28 */
-+#define MX6_ECC_STRENGTH_MAX	40
-+
- /* Use the platform_id to distinguish different Archs. */
- #define IS_MX23			0x0
- #define IS_MX28			0x1
--- 
-1.7.0.4
+You're right and we knew it earlier as the Kernel detects the OOB size 
+as 128 bytes. So, some remaining bytes become unused at the end of each 
+page. i.e., (224-128). Instead of supporting ecc strength as ECC9 we end 
+up using ECC8. Should this be a cause for the -74 error?
+
+Regards,
+Vikram
