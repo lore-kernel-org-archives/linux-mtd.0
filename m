@@ -1,21 +1,17 @@
-Received: from co1ehsobe003.messaging.microsoft.com ([216.32.180.186]
- helo=co1outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U0Nw6-0004rk-R8
- for linux-mtd@lists.infradead.org; Wed, 30 Jan 2013 03:02:07 +0000
-From: Huang Shijie <b32955@freescale.com>
-To: <dwmw2@infradead.org>
-Subject: [PATCH v3] mtd: fix the wrong timeo for panic_nand_wait()
-Date: Wed, 30 Jan 2013 10:03:56 +0800
-Message-ID: <1359511436-12107-1-git-send-email-b32955@freescale.com>
-In-Reply-To: <201301292200.14622.ffainelli@freebox.fr>
-References: <201301292200.14622.ffainelli@freebox.fr>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: dedekind1@gmail.com, linux-kernel@vger.kernel.org,
- matthieu.castet@parrot.com, gabriel.matni@gmail.com,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- ffainelli@freebox.fr
+Received: from service87.mimecast.com ([91.220.42.44])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1U0V34-00021A-NS
+ for linux-mtd@lists.infradead.org; Wed, 30 Jan 2013 10:37:48 +0000
+From: Pawel Moll <pawel.moll@arm.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] mtd: physmap_of: Fix map name when "linux, mtd-name" is absent
+Date: Wed, 30 Jan 2013 10:37:36 +0000
+Message-Id: <1359542256-19135-1-git-send-email-pawel.moll@arm.com>
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
+ Pawel Moll <pawel.moll@arm.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,52 +21,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The panic_nand_wait() expects the timeo in ms and not in jiffies.
-But in nand_wait(), the timeo for panic_nand_wait() is assigned with
-wrong value(jiffies + some delay). The timeo should be set like the
-panic_nand_write() does.
+Commit d68cbdd4fb04d2b756ad53c22f36943167b16340 "mtd: physmap_of:
+allow to specify the mtd name for retro compatiblity" introduced
+a "linux,mtd-name" property to override map names, but when
+this property is absent (so of_property_read_string() returns
+value !=3D 0) an uninitialized value is used (as mtd_name is not
+set). This may lead to kernel oopses when the name is
+derefernced, eg:
 
-This patch passes timeo in ms to panic_nand_wait().
-And this patch also passes timeo in jiffies(converted by msecs_to_jiffies)
-to time_before() which makes the code more readable.
+Unable to handle kernel NULL pointer dereference at virtual address 0000000=
+1
+pgd =3D 80004000
+[00000001] *pgd=3D00000000
+Internal error: Oops: 5 [#1] SMP ARM
+Modules linked in:
+CPU: 3    Not tainted  (3.8.0-rc5+ #644)
+PC is at strcmp+0x4/0x30
+LR is at parse_cmdline_partitions+0x54/0x2f8
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
+Fixed by initializing the variable to NULL.
+
+Signed-off-by: Pawel Moll <pawel.moll@arm.com>
 ---
-v1 --> v2:
-	fixed a compiler error.
+ drivers/mtd/maps/physmap_of.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-v2 --> v3:
-	add more comments.
----
- drivers/mtd/nand/nand_base.c |    8 ++------
- 1 files changed, 2 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 8323ac9..a8c1fb4 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -825,13 +825,8 @@ static void panic_nand_wait(struct mtd_info *mtd, struct nand_chip *chip,
- static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
- {
- 
--	unsigned long timeo = jiffies;
- 	int status, state = chip->state;
--
--	if (state == FL_ERASING)
--		timeo += (HZ * 400) / 1000;
--	else
--		timeo += (HZ * 20) / 1000;
-+	unsigned long timeo = (state == FL_ERASING ? 400 : 20);
- 
- 	led_trigger_event(nand_led_trigger, LED_FULL);
- 
-@@ -849,6 +844,7 @@ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
- 	if (in_interrupt() || oops_in_progress)
- 		panic_nand_wait(mtd, chip, timeo);
- 	else {
-+		timeo = jiffies + msecs_to_jiffies(timeo);
- 		while (time_before(jiffies, timeo)) {
- 			if (chip->dev_ready) {
- 				if (chip->dev_ready(mtd))
--- 
-1.7.0.4
+diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
+index 67cc73c..7901d72 100644
+--- a/drivers/mtd/maps/physmap_of.c
++++ b/drivers/mtd/maps/physmap_of.c
+@@ -170,7 +170,7 @@ static int of_flash_probe(struct platform_device *dev)
+ =09resource_size_t res_size;
+ =09struct mtd_part_parser_data ppdata;
+ =09bool map_indirect;
+-=09const char *mtd_name;
++=09const char *mtd_name =3D NULL;
+=20
+ =09match =3D of_match_device(of_flash_match, &dev->dev);
+ =09if (!match)
+--=20
+1.7.10.4
