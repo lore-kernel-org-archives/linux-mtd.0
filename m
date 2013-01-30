@@ -1,24 +1,16 @@
-Received: from mail-ee0-f45.google.com ([74.125.83.45])
+Received: from mail-we0-x234.google.com ([2a00:1450:400c:c03::234])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U0VYa-0005so-6o
- for linux-mtd@lists.infradead.org; Wed, 30 Jan 2013 11:10:20 +0000
-Received: by mail-ee0-f45.google.com with SMTP id b57so731884eek.4
- for <linux-mtd@lists.infradead.org>; Wed, 30 Jan 2013 03:10:17 -0800 (PST)
-Sender: Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <5108FEE9.4040805@openwrt.org>
-Date: Wed, 30 Jan 2013 12:07:21 +0100
-From: Florian Fainelli <florian@openwrt.org>
+ id 1U0Vl8-000783-EE
+ for linux-mtd@lists.infradead.org; Wed, 30 Jan 2013 11:23:19 +0000
+Received: by mail-we0-f180.google.com with SMTP id k14so1099631wer.11
+ for <linux-mtd@lists.infradead.org>; Wed, 30 Jan 2013 03:23:12 -0800 (PST)
 MIME-Version: 1.0
-To: Pawel Moll <pawel.moll@arm.com>
-Subject: Re: [PATCH] mtd: physmap_of: Fix map name when "linux, mtd-name"
- is absent
-References: <1359542256-19135-1-git-send-email-pawel.moll@arm.com>
-In-Reply-To: <1359542256-19135-1-git-send-email-pawel.moll@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Date: Wed, 30 Jan 2013 12:23:12 +0100
+Message-ID: <CACKLOr3XoQfTuy4XpORz4QwqPhfEa8mQNzdKdrbJ2UCA-X+MhQ@mail.gmail.com>
+Subject: cmdline partition parsing behavior has changed: regression?
+From: javier Martin <javier.martin@vista-silicon.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,53 +20,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello
+Hi,
+I've been using the following cmdline string to boot my kernel for
+several releases until 3.6:
 
-On 01/30/2013 11:37 AM, Pawel Moll wrote:
-> Commit d68cbdd4fb04d2b756ad53c22f36943167b16340 "mtd: physmap_of:
-> allow to specify the mtd name for retro compatiblity" introduced
-> a "linux,mtd-name" property to override map names, but when
-> this property is absent (so of_property_read_string() returns
-> value != 0) an uninitialized value is used (as mtd_name is not
-> set). This may lead to kernel oopses when the name is
-> derefernced, eg:
->
-> Unable to handle kernel NULL pointer dereference at virtual address 00000001
-> pgd = 80004000
-> [00000001] *pgd=00000000
-> Internal error: Oops: 5 [#1] SMP ARM
-> Modules linked in:
-> CPU: 3    Not tainted  (3.8.0-rc5+ #644)
-> PC is at strcmp+0x4/0x30
-> LR is at parse_cmdline_partitions+0x54/0x2f8
->
-> Fixed by initializing the variable to NULL.
+"console=ttymxc0,115200 mem=54MB init=/sbin/preinit
+root=/dev/mtdblock2
+mtdparts=physmap-flash.0:384k(U-Boot),2560k(kernel0),27904k(rootfs0),2048k(config0),2560k(kernel1),27904k(rootfs1),2048k(config1),32k(env1),32k(env2);"
 
-This is the 3rd time such a patch is submitted.
+Partition parsing always has worked properly and the "physmap-flash.0"
+NOR flash was properly detected and partitioned.
 
-1358446932-7238-1-git-send-email-stef.van.os@prodrive.nl
-df9da712b775781366ae23aac28ed20849b4e4d3.1356260943.git.baruch@tkos.co.il
+However, in 3.8-rc3 I've found that this string does not work any
+longer. In fact I had to add the following dirty hack to make it work:
 
-Fortunately it is now in linux-mtd:
-http://git.infradead.org/linux-mtd.git/commit/7dfe4be351e81656ca1068e5d4ead235c7ba94b1
+-------
+    mtd: dirty hack to fix cmdline partition parsing.
 
->
-> Signed-off-by: Pawel Moll <pawel.moll@arm.com>
-> ---
->   drivers/mtd/maps/physmap_of.c |    2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
-> index 67cc73c..7901d72 100644
-> --- a/drivers/mtd/maps/physmap_of.c
-> +++ b/drivers/mtd/maps/physmap_of.c
-> @@ -170,7 +170,7 @@ static int of_flash_probe(struct platform_device *dev)
->   	resource_size_t res_size;
->   	struct mtd_part_parser_data ppdata;
->   	bool map_indirect;
-> -	const char *mtd_name;
-> +	const char *mtd_name = NULL;
->
->   	match = of_match_device(of_flash_match, &dev->dev);
->   	if (!match)
->
+    Behavior of cmdline partition parsing seems to have changed
+    recently. Currently, it doesn't like that we end our partition
+    description string with a ';' character.
+
+    A more suitable solution is yet to be found.
+
+    Signed-off-by: Javier Martin <javier.martin@vista-silicon.com>
+
+diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
+index c533f27..4ef0e7a 100644
+--- a/drivers/mtd/cmdlinepart.c
++++ b/drivers/mtd/cmdlinepart.c
+@@ -271,6 +271,10 @@ static int mtdpart_setup_real(char *s)
+                     this_mtd->mtd_id, this_mtd->num_parts));
+
+
++               /* FIXME: dirty hack */
++               if (*s == ';')
++                       return 0;
++
+                /* EOS - we're done */
+                if (*s == 0)
+                        break;
+
+Is this a regression? Should I just change my cmdline string?
+
+Regards.
+
+-- 
+Javier Martin
+Vista Silicon S.L.
+CDTUC - FASE C - Oficina S-345
+Avda de los Castros s/n
+39005- Santander. Cantabria. Spain
++34 942 25 32 60
+www.vista-silicon.com
