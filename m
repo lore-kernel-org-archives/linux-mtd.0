@@ -1,23 +1,22 @@
-Received: from co9ehsobe005.messaging.microsoft.com ([207.46.163.28]
- helo=co9outboundpool.messaging.microsoft.com)
+Received: from co1ehsobe002.messaging.microsoft.com ([216.32.180.185]
+ helo=co1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U0NPA-0002jn-Qf
- for linux-mtd@lists.infradead.org; Wed, 30 Jan 2013 02:28:05 +0000
-Message-ID: <5108852C.5040002@freescale.com>
-Date: Wed, 30 Jan 2013 10:27:56 +0800
+ id 1U0NT7-0003fo-AE
+ for linux-mtd@lists.infradead.org; Wed, 30 Jan 2013 02:32:11 +0000
+Message-ID: <51088619.5060102@freescale.com>
+Date: Wed, 30 Jan 2013 10:31:53 +0800
 From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-To: Vikram Narayanan <vikram186@gmail.com>
-Subject: Re: mtd_oobtest fails with GPMI-NAND
-References: <50F97DB5.7040801@gmail.com> <50FCA426.6030309@freescale.com>
- <5105E4CE.1090800@gmail.com> <5105EE9B.9050405@freescale.com>
- <5106AFAA.1020502@gmail.com> <51072EA4.7000201@freescale.com>
- <51073373.4080006@gmail.com> <510735B3.1040509@freescale.com>
- <5107F899.5090506@gmail.com>
-In-Reply-To: <5107F899.5090506@gmail.com>
+To: Florian Fainelli <ffainelli@freebox.fr>
+Subject: Re: [PATCH v2] mtd: fix the wrong timeo for panic_nand_wait()
+References: <CAMiH66HWn5PtjX20=WT7GMMV=J72rg3jx64iACSBiExjoD+X7A@mail.gmail.com>
+ <1358818230-27037-1-git-send-email-b32955@freescale.com>
+ <201301292200.14622.ffainelli@freebox.fr>
+In-Reply-To: <201301292200.14622.ffainelli@freebox.fr>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ linux-kernel@vger.kernel.org, matthieu.castet@parrot.com, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,50 +26,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B401=E6=9C=8830=E6=97=A5 00:28, Vikram Narayanan =E5=
+=E4=BA=8E 2013=E5=B9=B401=E6=9C=8830=E6=97=A5 05:00, Florian Fainelli =E5=
 =86=99=E9=81=93:
-> On 1/29/2013 8:06 AM, Huang Shijie wrote:
->>> May I know in what way the driver is restricted for using with other
->>> boards?
->> The devicetree. Please check the dts file in arch/arm/boot/dts/.
->> If there is no dts file for your board, the gpmi will not works very
->> well for your board.
->> for example, there is arch/arm/boot/dts/imx6q-arm2.dts for the MX6Q-AR=
-M2
->> board.
+> Hello Huang,
 >
-> I've a valid dts file for my board which is good enough to probe the=20
-> Toshiba NAND on-board and mount a UBIFS filesystem.
-could you tell the dts file for your board?
-are you sure the pinmux settings are right?
-
->
->>> You're right and we knew it earlier as the Kernel detects the OOB siz=
-e
->>> as 128 bytes. So, some remaining bytes become unused at the end of
->>> each page. i.e., (224-128). Instead of supporting ecc strength as ECC=
-9
->>> we end up using ECC8. Should this be a cause for the -74 error?
->> no. this is not the cause. even you get the wrong geometry of the nand
->> chip. the gpmi still can works.
+> Le mardi 22 janvier 2013 02:30:30, Huang Shijie a =C3=A9crit :
+>> In nand_wait(), the timeo for panic_nand_wait() is assigned with
+>> wrong value(jiffies + some delay). The timeo should be set like the
+>> panic_nand_write() does.
 >>
->> I think the root cause is the devicetree issue as above.
->
-> Something else is causing the issue. Can you give some other pointers=20
-> which can potentially cause this -74 error while mounting?
-the -74 error is the EBADMSG, it's caused by the uncorrectable ECC failur=
-e.
-There are many reasons can cause this error:
-    [1] the pinmux setting is not right, the gpmi does not works well.
-    [2] the wrong setting of BCH. for example, the page size is 8K, you=20
-set 4k to BCH.
-        so you can set the correct nand geometry parameters for your=20
-nand chip firstly, and then do the debug.
-    [3] timings.
+>> This patch fixes it, and also uses the msecs_to_jiffies() to make the
+>> code more readable.
+> You are not exactly explaining what is the issue with the current code,=
+ and
+> how you are fixing it. If someone needs to backport this patch for what=
+ever
+> reason, it must be clear as to what it fixes.
+ok, i can add more comments.
+thanks for your review.
 
-BR
+Best Regards
 Huang Shijie
->
-> Regards,
-> Vikram
->
+
+>> Signed-off-by: Huang Shijie<b32955@freescale.com>
+>> ---
+>> fix the compiler error in version 1, and add some commits.
+>>
+>> ---
+>>   drivers/mtd/nand/nand_base.c |    8 ++------
+>>   1 files changed, 2 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base=
+.c
+>> index 8323ac9..a8c1fb4 100644
+>> --- a/drivers/mtd/nand/nand_base.c
+>> +++ b/drivers/mtd/nand/nand_base.c
+>> @@ -825,13 +825,8 @@ static void panic_nand_wait(struct mtd_info *mtd,
+>> struct nand_chip *chip, static int nand_wait(struct mtd_info *mtd, str=
+uct
+>> nand_chip *chip) {
+>>
+>> -	unsigned long timeo =3D jiffies;
+>>   	int status, state =3D chip->state;
+>> -
+>> -	if (state =3D=3D FL_ERASING)
+>> -		timeo +=3D (HZ * 400) / 1000;
+>> -	else
+>> -		timeo +=3D (HZ * 20) / 1000;
+>> +	unsigned long timeo =3D (state =3D=3D FL_ERASING ? 400 : 20);
+>>
+>>   	led_trigger_event(nand_led_trigger, LED_FULL);
+>>
+>> @@ -849,6 +844,7 @@ static int nand_wait(struct mtd_info *mtd, struct
+>> nand_chip *chip) if (in_interrupt() || oops_in_progress)
+>>   		panic_nand_wait(mtd, chip, timeo);
+>>   	else {
+>> +		timeo =3D jiffies + msecs_to_jiffies(timeo);
+>>   		while (time_before(jiffies, timeo)) {
+>>   			if (chip->dev_ready) {
+>>   				if (chip->dev_ready(mtd))
