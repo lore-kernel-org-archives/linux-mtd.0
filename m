@@ -1,23 +1,19 @@
-Received: from mail-ob0-f177.google.com ([209.85.214.177])
+Received: from mail-qc0-f175.google.com ([209.85.216.175])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U0g1k-0001ug-7V
- for linux-mtd@lists.infradead.org; Wed, 30 Jan 2013 22:21:09 +0000
-Received: by mail-ob0-f177.google.com with SMTP id wc18so2161557obb.22
- for <linux-mtd@lists.infradead.org>; Wed, 30 Jan 2013 14:21:06 -0800 (PST)
+ id 1U0iIo-0006og-2U
+ for linux-mtd@lists.infradead.org; Thu, 31 Jan 2013 00:46:54 +0000
+Received: by mail-qc0-f175.google.com with SMTP id j3so1025077qcs.20
+ for <linux-mtd@lists.infradead.org>; Wed, 30 Jan 2013 16:46:52 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20130129173641.GA17935@quad.lixom.net>
-References: <CACRpkdZM8+6QaGrRtCCMWoZQO23uej7JDr1xz2zG7TtwQ7Ngqw@mail.gmail.com>
- <20130128213135.GA3047@quad.lixom.net>
- <CACRpkdaHo_xLwqUDF9C71HbuGEcJHg_Jrsf0gCSPYXa4E+yJGA@mail.gmail.com>
- <20130129173641.GA17935@quad.lixom.net>
-Date: Wed, 30 Jan 2013 23:21:06 +0100
-Message-ID: <CACRpkdaVOV4d9xeuKnMyfGgM+Su3M6dmo2pyeEQE9Qb2sErzzA@mail.gmail.com>
-Subject: Re: [GIT PULL] Nomadik devicetree and cleanups
-From: Linus Walleij <linus.walleij@linaro.org>
-To: arm@kernel.org
+In-Reply-To: <CACKLOr3XoQfTuy4XpORz4QwqPhfEa8mQNzdKdrbJ2UCA-X+MhQ@mail.gmail.com>
+References: <CACKLOr3XoQfTuy4XpORz4QwqPhfEa8mQNzdKdrbJ2UCA-X+MhQ@mail.gmail.com>
+Date: Wed, 30 Jan 2013 19:46:52 -0500
+Message-ID: <CAF_O4JsF365WKFJ7UstS2D_gk69WMQ5ZrXKfQzTMN-zpp8Rqrg@mail.gmail.com>
+Subject: Re: cmdline partition parsing behavior has changed: regression?
+From: Christopher Cordahi <christophercordahi@nanometrics.ca>
+To: javier Martin <javier.martin@vista-silicon.com>
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,103 +23,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 29, 2013 at 6:36 PM, Olof Johansson <olof@lixom.net> wrote:
-> On Mon, Jan 28, 2013 at 11:36:59PM +0100, Linus Walleij wrote:
->> On Mon, Jan 28, 2013 at 10:31 PM, Olof Johansson <olof@lixom.net> wrote:
->>
->> > Would you mind rebasing on top of the depends/cleanup branch in arm-soc, sort
->> > out the breakage (and test it) and resubmit?
->>
->> So Olof, please try this instead, based on the ARM depends/cleanup HEAD
->> when I fetched it:
->>
->> The following changes since commit f8060f5446b1f2782f0a8ca9be2d870ea4198aee:
->>
->>   Merge tag 'gic-vic-to-irqchip' of
->> git://sources.calxeda.com/kernel/linux into next/cleanup (2013-01-14
->> 19:55:03 -0800)
->>
->> are available in the git repository at:
->>
->>
->>   git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-nomadik.git
->> tags/nmk-dt-on-cleanups
+Hi Javier,
+
+On Wed, Jan 30, 2013 at 6:23 AM, javier Martin
+<javier.martin@vista-silicon.com> wrote:
+> I've been using the following cmdline string to boot my kernel for
+> several releases until 3.6:
 >
-> Beautiful! Pulled. Zero conflicts. :)
+> "console=ttymxc0,115200 mem=54MB init=/sbin/preinit
+> root=/dev/mtdblock2
+> mtdparts=physmap-flash.0:384k(U-Boot),2560k(kernel0),27904k(rootfs0),2048k(config0),2560k(kernel1),27904k(rootfs1),2048k(config1),32k(env1),32k(env2);"
 
-So as I heard this blew up for selecting OF instead of USE_OF here
-is yet another pull request, with this oneliner change in the relevant
-patch ("ARM: nomadik: delete old board files"):
+The semicolon is meant to be a separator, not a terminator.  See
+comment at top of file that predates 2.6.12
+The format for the command line is as follows:
+mtdparts=<mtddef>[;<mtddef]
 
-- select OF
-+ select USE_OF
+> Partition parsing always has worked properly and the "physmap-flash.0"
+> NOR flash was properly detected and partitioned.
 
-I have tried to provoke builderrors with the defconfig but couldn't.
+I suspect you were always getting a warning on boot prior to the first
+mtd partition listing
+mtd: no mtd-id
 
-Here is then yet another pull request, and let's hope it works this
-time around:
+> However, in 3.8-rc3 I've found that this string does not work any
+> longer.
 
-The following changes since commit f8060f5446b1f2782f0a8ca9be2d870ea4198aee:
+This technically invalid mtdparts string is now treated as an error
+with revised error handling
+http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=9e0606fc4ea27fb275f6987751224c60ee055ef1
 
-  Merge tag 'gic-vic-to-irqchip' of
-git://sources.calxeda.com/kernel/linux into next/cleanup (2013-01-14
-19:55:03 -0800)
+> In fact I had to add the following dirty hack to make it work:
+>
+> diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
+> index c533f27..4ef0e7a 100644
+> --- a/drivers/mtd/cmdlinepart.c
+> +++ b/drivers/mtd/cmdlinepart.c
+> @@ -271,6 +271,10 @@ static int mtdpart_setup_real(char *s)
+>                      this_mtd->mtd_id, this_mtd->num_parts));
+>
+>
+> +               /* FIXME: dirty hack */
+> +               if (*s == ';')
+> +                       return 0;
+> +
+>                 /* EOS - we're done */
+>                 if (*s == 0)
+>                         break;
 
-are available in the git repository at:
+I believe this "dirty hack" will break any implementations (including
+mine) with more than one MTD part definition where the semicolon is
+required as a separator.  A less intrusive and forgiving "hack" is to
+add an identical "EOS - we're done" test and break immediately before
+the error is returned where "mtd: no mtd-id" is output.
 
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-nomadik.git
-tags/nomadik-devicetree-v2
-
-for you to fetch changes up to 2cac860881884564c86eeda4f622d8a7ca9b089c:
-
-  ARM: nomadik: get rid of <mach/hardware.h> (2013-01-30 22:55:34 +0100)
-
-----------------------------------------------------------------
-Nomadik Device Tree conversion rebased on ARM SoC cleanup branch
-
-This patch set converts the Nomadik (mach-nomadik) to
-Device Tree and delete the old board files, paving the
-road for single zImage.
-
-This version also selects USE_OF instead of just OF.
-
-----------------------------------------------------------------
-Linus Walleij (11):
-      ARM: nomadik: move last custom calls to pinctrl
-      ARM: nomadik: initial devicetree support
-      ARM: nomadik: move pin maps to cpu file
-      ARM: nomadik: move remaining PrimeCells to device tree
-      ARM: nomadik: add FSMC NAND
-      ARM: nomadik: move GPIO and pinctrl to device tree
-      ARM: nomadik: convert SMSC91x ethernet to device tree
-      ARM: nomadik: migrate MMC/SD card support to device tree
-      ARM: nomadik: add I2C devices to the device tree
-      ARM: nomadik: delete old board files
-      ARM: nomadik: get rid of <mach/hardware.h>
-
- .../devicetree/bindings/arm/ste-nomadik.txt        |  27 ++
- .../devicetree/bindings/mtd/fsmc-nand.txt          |   2 +-
- arch/arm/Kconfig                                   |   2 +
- arch/arm/boot/dts/Makefile                         |   1 +
- arch/arm/boot/dts/ste-nomadik-s8815.dts            |  30 ++
- arch/arm/boot/dts/ste-nomadik-stn8815.dtsi         | 256 +++++++++++++++
- arch/arm/mach-nomadik/Kconfig                      |  10 +-
- arch/arm/mach-nomadik/Makefile                     |   6 -
- arch/arm/mach-nomadik/board-nhk8815.c              | 353 --------------------
- arch/arm/mach-nomadik/cpu-8815.c                   | 358 +++++++++++++++------
- arch/arm/mach-nomadik/cpu-8815.h                   |   4 -
- arch/arm/mach-nomadik/i2c-8815nhk.c                |  88 -----
- arch/arm/mach-nomadik/include/mach/hardware.h      |  90 ------
- arch/arm/mach-nomadik/include/mach/irqs.h          |   2 -
- arch/arm/mach-nomadik/include/mach/uncompress.h    |   1 -
- drivers/mtd/nand/fsmc_nand.c                       |   1 +
- drivers/pinctrl/pinctrl-nomadik.c                  |   4 +
- 17 files changed, 588 insertions(+), 647 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/arm/ste-nomadik.txt
- create mode 100644 arch/arm/boot/dts/ste-nomadik-s8815.dts
- create mode 100644 arch/arm/boot/dts/ste-nomadik-stn8815.dtsi
- delete mode 100644 arch/arm/mach-nomadik/board-nhk8815.c
- delete mode 100644 arch/arm/mach-nomadik/cpu-8815.h
- delete mode 100644 arch/arm/mach-nomadik/i2c-8815nhk.c
- delete mode 100644 arch/arm/mach-nomadik/include/mach/hardware.h
+--
+Chris
