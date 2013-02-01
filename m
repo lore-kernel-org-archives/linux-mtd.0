@@ -1,27 +1,19 @@
-Received: from ia-in-x022b.1e100.net ([2607:f8b0:4001:c02::22b]
- helo=mail-ia0-x22b.google.com)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U1CCB-0007yP-VY
- for linux-mtd@lists.infradead.org; Fri, 01 Feb 2013 08:42:05 +0000
-Received: by mail-ia0-f171.google.com with SMTP id z13so5073355iaz.30
- for <linux-mtd@lists.infradead.org>; Fri, 01 Feb 2013 00:42:01 -0800 (PST)
+Received: from mga03.intel.com ([143.182.124.21])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1U1GXH-0007vr-6t
+ for linux-mtd@lists.infradead.org; Fri, 01 Feb 2013 13:20:08 +0000
+Message-ID: <510BC1D9.8040308@intel.com>
+Date: Fri, 01 Feb 2013 15:23:37 +0200
+From: Adrian Hunter <adrian.hunter@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20130131232015.GA3314@quad.lixom.net>
-References: <CACRpkdZM8+6QaGrRtCCMWoZQO23uej7JDr1xz2zG7TtwQ7Ngqw@mail.gmail.com>
- <20130128213135.GA3047@quad.lixom.net>
- <CACRpkdaHo_xLwqUDF9C71HbuGEcJHg_Jrsf0gCSPYXa4E+yJGA@mail.gmail.com>
- <20130129173641.GA17935@quad.lixom.net>
- <CACRpkdaVOV4d9xeuKnMyfGgM+Su3M6dmo2pyeEQE9Qb2sErzzA@mail.gmail.com>
- <20130131232015.GA3314@quad.lixom.net>
-Date: Fri, 1 Feb 2013 09:42:01 +0100
-Message-ID: <CACRpkdYyUeqcST0n20az4otfLfqoFNNibWgk-i7p=AcNCA+Qzw@mail.gmail.com>
-Subject: Re: [GIT PULL] Nomadik devicetree and cleanups
-From: Linus Walleij <linus.walleij@linaro.org>
-To: Olof Johansson <olof@lixom.net>
+To: Adam Thomas <adamthomas1111@gmail.com>
+Subject: Re: [PATCH 1/2] UBIFS: fix use of freed ubifs_orphan objects
+References: <1359336513-6259-1-git-send-email-adamthomas1111@gmail.com>
+ <1359336513-6259-2-git-send-email-adamthomas1111@gmail.com>
+In-Reply-To: <1359336513-6259-2-git-send-email-adamthomas1111@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: David Woodhouse <dwmw2@infradead.org>, arm@kernel.org,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- Artem Bityutskiy <dedekind1@gmail.com>
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,24 +23,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Feb 1, 2013 at 12:20 AM, Olof Johansson <olof@lixom.net> wrote:
-> On Wed, Jan 30, 2013 at 11:21:06PM +0100, Linus Walleij wrote:
->> So as I heard this blew up for selecting OF instead of USE_OF here
->> is yet another pull request, with this oneliner change in the relevant
->> patch ("ARM: nomadik: delete old board files"):
->>
->> - select OF
->> + select USE_OF
->>
->> I have tried to provoke builderrors with the defconfig but couldn't.
->>
->> Here is then yet another pull request, and let's hope it works this
->> time around:
->
-> Dropping and replacing branches is awkward, and you rewrote history here. It'd
-> be better to just take a fixup patch on top that switches the two selects.
+On 28/01/13 03:28, Adam Thomas wrote:
+> The last orphan in the cnext list has its cnext set to NULL. Because
+> of that, ubifs_delete_orphan assumes that it is not on the cnext list
+> and frees it immediately instead of adding it to the dnext list. The
+> freed orphan is later modified by write_orph_node.
 
-Sure, I'll fix...
+Very true!
 
-Yours,
-Linus Walleij
+> 
+> This can cause various inconsistencies including directory entries
+> that cannot be removed and this error:
+> 
+> UBIFS error (pid 20685): layout_cnodes: LPT out of space at LEB 14:129009 needing 17, done_ltab 1, done_lsave 1
+> 
+> This is a regression introduced by
+> "7074e5eb UBIFS: remove invalid reference to list iterator variable".
+> 
+> This change adds an explicit flag to ubifs_orphan indicating whether
+> it is pending commit.
+
+OK
+
+Needs an signed-off line.
+
+> ---
+>  fs/ubifs/orphan.c |    6 +++++-
+>  fs/ubifs/ubifs.h  |    4 +++-
+>  2 files changed, 8 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/ubifs/orphan.c b/fs/ubifs/orphan.c
+> index 769701c..8433f53 100644
+> --- a/fs/ubifs/orphan.c
+> +++ b/fs/ubifs/orphan.c
+> @@ -132,7 +132,7 @@ void ubifs_delete_orphan(struct ubifs_info *c, ino_t inum)
+>  					(unsigned long)inum);
+>  				return;
+>  			}
+> -			if (o->cnext) {
+> +			if (o->cmt) {
+>  				o->dnext = c->orph_dnext;
+>  				c->orph_dnext = o;
+>  				spin_unlock(&c->orphan_lock);
+> @@ -172,7 +172,9 @@ int ubifs_orphan_start_commit(struct ubifs_info *c)
+>  	last = &c->orph_cnext;
+>  	list_for_each_entry(orphan, &c->orph_new, new_list) {
+>  		ubifs_assert(orphan->new);
+> +		ubifs_assert(!orphan->cmt);
+>  		orphan->new = 0;
+> +		orphan->cmt = 1;
+>  		*last = orphan;
+>  		last = &orphan->cnext;
+>  	}
+> @@ -299,6 +301,7 @@ static int write_orph_node(struct ubifs_info *c, int atomic)
+>  	cnext = c->orph_cnext;
+>  	for (i = 0; i < cnt; i++) {
+>  		orphan = cnext;
+> +		ubifs_assert(orphan->cmt);
+>  		orph->inos[i] = cpu_to_le64(orphan->inum);
+>  		cnext = orphan->cnext;
+>  		orphan->cnext = NULL;
+> @@ -378,6 +381,7 @@ static int consolidate(struct ubifs_info *c)
+>  		list_for_each_entry(orphan, &c->orph_list, list) {
+>  			if (orphan->new)
+>  				continue;
+> +			orphan->cmt = 1;
+>  			*last = orphan;
+>  			last = &orphan->cnext;
+>  			cnt += 1;
+> diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+> index d133c27..c16fff7 100644
+> --- a/fs/ubifs/ubifs.h
+> +++ b/fs/ubifs/ubifs.h
+> @@ -904,6 +904,7 @@ struct ubifs_budget_req {
+>   * @dnext: next orphan to delete
+>   * @inum: inode number
+>   * @new: %1 => added since the last commit, otherwise %0
+> + * @cmt: %1 => commit pending, otherwise %0
+
+You need to set cmt to zero in write_orph_node().
+
+>   */
+>  struct ubifs_orphan {
+>  	struct rb_node rb;
+> @@ -912,7 +913,8 @@ struct ubifs_orphan {
+>  	struct ubifs_orphan *cnext;
+>  	struct ubifs_orphan *dnext;
+>  	ino_t inum;
+> -	int new;
+> +	unsigned new:1;
+> +	unsigned cmt:1;
+>  };
+>  
+>  /**
+> 
