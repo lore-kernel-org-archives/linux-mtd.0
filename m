@@ -1,39 +1,27 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1U1BNM-0002iF-Na
- for linux-mtd@lists.infradead.org; Fri, 01 Feb 2013 07:49:34 +0000
-Message-ID: <1359705069.32509.67.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH V6 18/30] fs: add read_iter and write_iter to several
- file systems
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Dave Kleikamp <dave.kleikamp@oracle.com>
-Date: Fri, 01 Feb 2013 09:51:09 +0200
-In-Reply-To: <1359476623-10544-19-git-send-email-dave.kleikamp@oracle.com>
-References: <1359476623-10544-1-git-send-email-dave.kleikamp@oracle.com>
- <1359476623-10544-19-git-send-email-dave.kleikamp@oracle.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-5GSqoZs9d0FHihhNTP/P"
-Mime-Version: 1.0
-Cc: jfs-discussion@lists.sourceforge.net, Jan Kara <jack@suse.cz>,
- Bob Copeland <me@bobcopeland.com>, linux-mtd@lists.infradead.org,
- Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
- linux-nilfs@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- Christoph Hellwig <hch@infradead.org>, v9fs-developer@lists.sourceforge.net,
- linux-ext4@vger.kernel.org, Prasad Joshi <prasadjoshi.linux@gmail.com>,
- "Maxim V.
- Patlasov" <mpatlasov@parallels.com>, Evgeniy Dushistov <dushistov@mail.ru>,
- user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>,
- reiserfs-devel@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
- OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, Joern Engel <joern@logfs.org>,
- "Tigran A. Aivazian" <tigran@aivazian.fsnet.co.uk>,
- linux-kernel@vger.kernel.org, logfs@logfs.org,
- Benny Halevy <bhalevy@tonian.com>, linux-fsdevel@vger.kernel.org,
- Andreas Dilger <adilger.kernel@dilger.ca>,
- Andrew Morton <akpm@linux-foundation.org>, Zach Brown <zab@zabbo.net>,
- David Woodhouse <dwmw2@infradead.org>, linux-karma-devel@lists.sourceforge.net,
- osd-dev@open-osd.org
-Reply-To: dedekind1@gmail.com
+Received: from ia-in-x022b.1e100.net ([2607:f8b0:4001:c02::22b]
+ helo=mail-ia0-x22b.google.com)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1U1CCB-0007yP-VY
+ for linux-mtd@lists.infradead.org; Fri, 01 Feb 2013 08:42:05 +0000
+Received: by mail-ia0-f171.google.com with SMTP id z13so5073355iaz.30
+ for <linux-mtd@lists.infradead.org>; Fri, 01 Feb 2013 00:42:01 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <20130131232015.GA3314@quad.lixom.net>
+References: <CACRpkdZM8+6QaGrRtCCMWoZQO23uej7JDr1xz2zG7TtwQ7Ngqw@mail.gmail.com>
+ <20130128213135.GA3047@quad.lixom.net>
+ <CACRpkdaHo_xLwqUDF9C71HbuGEcJHg_Jrsf0gCSPYXa4E+yJGA@mail.gmail.com>
+ <20130129173641.GA17935@quad.lixom.net>
+ <CACRpkdaVOV4d9xeuKnMyfGgM+Su3M6dmo2pyeEQE9Qb2sErzzA@mail.gmail.com>
+ <20130131232015.GA3314@quad.lixom.net>
+Date: Fri, 1 Feb 2013 09:42:01 +0100
+Message-ID: <CACRpkdYyUeqcST0n20az4otfLfqoFNNibWgk-i7p=AcNCA+Qzw@mail.gmail.com>
+Subject: Re: [GIT PULL] Nomadik devicetree and cleanups
+From: Linus Walleij <linus.walleij@linaro.org>
+To: Olof Johansson <olof@lixom.net>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: David Woodhouse <dwmw2@infradead.org>, arm@kernel.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -43,49 +31,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, Feb 1, 2013 at 12:20 AM, Olof Johansson <olof@lixom.net> wrote:
+> On Wed, Jan 30, 2013 at 11:21:06PM +0100, Linus Walleij wrote:
+>> So as I heard this blew up for selecting OF instead of USE_OF here
+>> is yet another pull request, with this oneliner change in the relevant
+>> patch ("ARM: nomadik: delete old board files"):
+>>
+>> - select OF
+>> + select USE_OF
+>>
+>> I have tried to provoke builderrors with the defconfig but couldn't.
+>>
+>> Here is then yet another pull request, and let's hope it works this
+>> time around:
+>
+> Dropping and replacing branches is awkward, and you rewrote history here. It'd
+> be better to just take a fixup patch on top that switches the two selects.
 
---=-5GSqoZs9d0FHihhNTP/P
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Sure, I'll fix...
 
-On Tue, 2013-01-29 at 10:23 -0600, Dave Kleikamp wrote:
-> -       .aio_read =3D generic_file_aio_read,
-> -       .aio_write =3D generic_file_aio_write,
-> +       .read_iter =3D generic_file_read_iter,
-> +       .write_iter =3D generic_file_write_iter,=20
-
-The new names a lot less self-documenting than the old ones - I read
-them as "read iteration", because "iter" is often used for "iteration",
-and this gives me no clue that they are related to AIO...
-
-I apologize if this was already discussed, but why did you choose
-"iter"?
-
---=20
-Best Regards,
-Artem Bityutskiy
-
---=-5GSqoZs9d0FHihhNTP/P
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.13 (GNU/Linux)
-
-iQIcBAABAgAGBQJRC3PtAAoJECmIfjd9wqK0wRMQALvjuIWMlqGKDjYZ+Oc05zpM
-umuYU9hx82FV8OzKkb0EBd2OZyhC5Eujwa2YO+oZUNrhabUexK1D7sTE8PY/mFKs
-jPXtfieaMxyxZr38lM+bFVpbVg/3AHuXd4kUAodYWBR+6UwZt8WQ5MLn1RS1nUYl
-Pki/4MO63nfikAL1va/Ruu3jgw4jZ3Bhr5K9Oa5rpE4YTHAtfwMFMP0DTNyt7r+s
-PlgQtdVPvFTCiGcvdMtXAsKbAb0/3d7cQJdUPtoughEvfpdgkSDRTjaT4iGzx9iC
-cBAYTK/jqSPg2jX0YmHv9NNjNZaPv6yXOq5DW/PpDDzVJyvKRLMfsGxcYgjqej0Q
-0Ph5HjXyhHf+7emKFd9svAzfYapyVoX0AIna5FedSpab4lHTtB4ecydJMG9KgWi5
-zebZ/ZVMmkg+mIs4VNBGIwKpgPebhUUJa1yaK/T2KbGj32y1QnRXdzLjYnMmx83L
-QW+1su+bI4xQQVqsu4WkkfavCsk57nPsiOjSVzHl21RHlz2MkXCtumoHbbQCcrbO
-w3EMCDfXFpjEUX4LpcRiyGHChs5gOZfQuPzP8OwmNUbhHNHX5wginXRnUN4+WFdy
-SlryvuodGFXxHOlGJRb3WDZjE5ucOVc3FsKmdcbyrzcJ/QXtObvk89chzWD5fyrz
-MijqIe/1hjIksBnGPx7F
-=ay3H
------END PGP SIGNATURE-----
-
---=-5GSqoZs9d0FHihhNTP/P--
+Yours,
+Linus Walleij
