@@ -1,21 +1,20 @@
-Received: from mail.prodrive.nl ([212.61.153.67])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1U1K8y-0007Wb-A7
- for linux-mtd@lists.infradead.org; Fri, 01 Feb 2013 17:11:16 +0000
-Message-ID: <510BF720.5020708@prodrive.nl>
-Date: Fri, 1 Feb 2013 18:10:56 +0100
-From: Stef van Os <stef.van.os@prodrive.nl>
+Received: from mail-pb0-f41.google.com ([209.85.160.41])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1U1KU5-0001f6-Lp
+ for linux-mtd@lists.infradead.org; Fri, 01 Feb 2013 17:33:06 +0000
+Received: by mail-pb0-f41.google.com with SMTP id ro12so2255598pbb.28
+ for <linux-mtd@lists.infradead.org>; Fri, 01 Feb 2013 09:33:03 -0800 (PST)
+Message-ID: <510BFC47.5000500@gmail.com>
+Date: Fri, 01 Feb 2013 23:02:55 +0530
+From: Vikram Narayanan <vikram186@gmail.com>
 MIME-Version: 1.0
-To: <artem.bityutskiy@linux.intel.com>
-Subject: Re: [PATCH 1/1] mtd: physmap_of: fix illegal dereference
-References: <1358446932-7238-1-git-send-email-stef.van.os@prodrive.nl>
- <1359737697.2942.16.camel@sauron.fi.intel.com>
-In-Reply-To: <1359737697.2942.16.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To: linux-mtd@lists.infradead.org
+Subject: Re: UBIFS space consumption
+References: <50F97E6C.7030201@gmail.com>
+In-Reply-To: <50F97E6C.7030201@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
- wfp5p@virginia.edu, linux-mtd@lists.infradead.org, sr@denx.de,
- plagnioj@jcrosoft.com, dwmw2@infradead.org
+Cc: Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,17 +24,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/01/2013 05:54 PM, Artem Bityutskiy wrote:
-> On Thu, 2013-01-17 at 19:22 +0100, Stef van Os wrote:
->> d68cbdd introduced a new way of getting the name of an mtd
->> partion. The character pointer is not initialized, and only
->> checked against NULL, not at other random garbage.
->> This patch fixes the resulting panic.
->>
->> Signed-off-by: Stef van Os<stef.van.os@prodrive.nl>
-> A similar fix already sits in the mtd tree:
+On 1/18/2013 10:25 PM, Vikram Narayanan wrote:
+> I am using UBIFS with the below partitioning layout.
 >
-> http://git.infradead.org/mtd-2.6.git/commit/7dfe4be351e81656ca1068e5d4ead235c7ba94b1
+> <6m(bootloader)
+> 512k(environment)
+> 512k(redundant-environment)
+> 5m(kernel),
+> 170m(filesystem),
+> 40m(user_data1),
+> -(user_data2)>
 >
-Ah, sorry, I wasn't aware of this. But, as long as some fix for this 
-issue makes it into mainline, I'm happy :)
+> For the UBI volume 0 which has 170 MiB,
+> ubinfo reports 164.7 MiB, which is explained by:
+>
+> (PEB size - LEB size) * (no of PEB's - reserved PEBs)
+> (256 - 248) * (680 - 6) = 5.392 MiB
+> Total size = 170 MiB - 5.39 = 164.6 MiB
+>
+>
+> root@BOX:/# ubinfo /dev/ubi0
+> ubi0
+> Volumes count:                           1
+> Logical eraseblock size:                 253952 bytes, 248.0 KiB
+> Total amount of logical eraseblocks:     680 (172687360 bytes, 164.7 MiB)
+> Amount of available logical eraseblocks: 0 (0 bytes)
+> Maximum count of volumes                 128
+> Count of bad physical eraseblocks:       0
+> Count of reserved physical eraseblocks:  6
+> Current maximum erase counter value:     5
+> Minimum input/output unit size:          4096 bytes
+> Character device major/minor:            253:0
+> Present volumes:                         0
+>
+> But according to "df",  UBI volume 0 is sized 148.9 MiB. That's, 15.8
+> MiB more in terms of consumption.
+>
+> root@BOX:/# df -h
+> Filesystem                Size      Used Available Use% Mounted on
+> ubi0:rootfs             148.9M    132.8M     16.1M  89% /
+> root@BOX:/#
+>
+> Can someone explain where this 15 MiB is getting lost?
+
+Artem, Any ideas on this?
+
+Thanks,
+Vikram
