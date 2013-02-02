@@ -1,27 +1,15 @@
-Received: from ie-in-x0230.1e100.net ([2607:f8b0:4001:c03::230]
- helo=mail-ie0-x230.google.com)
+Received: from mo6-p05-ob.rzone.de ([2a01:238:20a:202:5305::1])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U1Xnk-0003OT-5d
- for linux-mtd@lists.infradead.org; Sat, 02 Feb 2013 07:46:16 +0000
-Received: by mail-ie0-f176.google.com with SMTP id k13so2376258iea.7
- for <linux-mtd@lists.infradead.org>; Fri, 01 Feb 2013 23:46:14 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <CAMiH66F5t90sMDXDFufO+YrySYx4V+J1V3LbP1EGk8yL=-eMCA@mail.gmail.com>
-References: <50F97DB5.7040801@gmail.com> <50FCA426.6030309@freescale.com>
- <5105E4CE.1090800@gmail.com> <5105EE9B.9050405@freescale.com>
- <5106AFAA.1020502@gmail.com> <51072EA4.7000201@freescale.com>
- <51073373.4080006@gmail.com> <510735B3.1040509@freescale.com>
- <5107F899.5090506@gmail.com> <5108852C.5040002@freescale.com>
- <510CB507.4020105@gmail.com>
- <CAMiH66F5t90sMDXDFufO+YrySYx4V+J1V3LbP1EGk8yL=-eMCA@mail.gmail.com>
-Date: Sat, 2 Feb 2013 15:46:14 +0800
-Message-ID: <CAMiH66Fb8=Rh-zmFBNvBc+FXVaAiert3kYBP2g+Y8jax93c81g@mail.gmail.com>
-Subject: Re: mtd_oobtest fails with GPMI-NAND
-From: Huang Shijie <shijie8@gmail.com>
-To: Vikram Narayanan <vikram186@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org
+ id 1U1aJ7-0006QU-9B
+ for linux-mtd@lists.infradead.org; Sat, 02 Feb 2013 10:26:50 +0000
+From: Stefan Roese <sr@denx.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: cfi_cmdset_0002: Fix compilation warnings introduced by
+ PPB patch
+Date: Sat,  2 Feb 2013 11:26:33 +0100
+Message-Id: <1359800793-17914-1-git-send-email-sr@denx.de>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Stephen Rothwell <sfr@canb.auug.org.au>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,112 +19,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Feb 2, 2013 at 3:42 PM, Huang Shijie <shijie8@gmail.com> wrote:
-> On Sat, Feb 2, 2013 at 2:41 PM, Vikram Narayanan <vikram186@gmail.com> wr=
-ote:
->> On 1/30/2013 7:57 AM, Huang Shijie wrote:
->>>
->>> =E4=BA=8E 2013=E5=B9=B401=E6=9C=8830=E6=97=A5 00:28, Vikram Narayanan =
-=E5=86=99=E9=81=93:
->>>>
->>>> On 1/29/2013 8:06 AM, Huang Shijie wrote:
->>>>>>
->>>>>> May I know in what way the driver is restricted for using with other
->>>>>> boards?
->>>>>
->>>>> The devicetree. Please check the dts file in arch/arm/boot/dts/.
->>>>> If there is no dts file for your board, the gpmi will not works very
->>>>> well for your board.
->>>>> for example, there is arch/arm/boot/dts/imx6q-arm2.dts for the MX6Q-A=
-RM2
->>>>> board.
->>>>
->>>>
->>>> I've a valid dts file for my board which is good enough to probe the
->>>> Toshiba NAND on-board and mount a UBIFS filesystem.
->>>
->>> could you tell the dts file for your board?
->>> are you sure the pinmux settings are right?
->>
->>
->> I'm using the same pinumx settings mentioned in the file
->> "arch/arm/boot/dts/imx6q.dtsi". Hope that is right.
->>
->>
->
-> The pinmux  was  set for the arm2 board. So i am  not sure it is
-> suitable for your board.
->
-> i suggest you check this carefully with your board.
->
->
->>>>
->>>>>> You're right and we knew it earlier as the Kernel detects the OOB si=
-ze
->>>>>> as 128 bytes. So, some remaining bytes become unused at the end of
->>>>>> each page. i.e., (224-128). Instead of supporting ecc strength as EC=
-C9
->>>>>> we end up using ECC8. Should this be a cause for the -74 error?
->>>>>
->>>>> no. this is not the cause. even you get the wrong geometry of the nan=
-d
->>>>> chip. the gpmi still can works.
->>>>>
->>>>> I think the root cause is the devicetree issue as above.
->>>>
->>>>
->>>> Something else is causing the issue. Can you give some other pointers
->>>> which can potentially cause this -74 error while mounting?
->>>
->>> the -74 error is the EBADMSG, it's caused by the uncorrectable ECC
->>> failure.
->>> There are many reasons can cause this error:
->>>     [1] the pinmux setting is not right, the gpmi does not works well.
->>
->>
->> As said above, my pinmux settings are right. GPMI detects my NAND, does
->> read/write/erase/mount. At times I'm seeing this -74 issue. Sometimes th=
-is
->> error goes off in the next reboot.
->>
->>
->>>     [2] the wrong setting of BCH. for example, the page size is 8K, you
->>> set 4k to BCH.
->>>         so you can set the correct nand geometry parameters for your
->>> nand chip firstly, and then do the debug.
->>
->>
->> From the driver I understood that the geometry are determined according =
-to
->> the data from the read_id bytes. mtd layer detects my NAND as 4K page-si=
-zed.
->> So, this shouldn't be a problem I guess.
->>
-> yes. i agree.
->
->>>     [3] timings.
->>
->>
->> Should I tweak something specific according to the NAND device that I ha=
-ve?
->> Can you give more hints please?
->>
-> Could you make sure that the page write is good?
-> You can test it with the mtd_torture.c
+This patch fixes the compilation warnings introduced with this patch:
 
-sorry.  it should be the mtd_torturetest.c.
+"mtd: cfi_cmdset_0002: Support Persistent Protection Bits (PPB) locking":
 
+In file included from drivers/mtd/chips/cfi_cmdset_0002.c:36:0:
+include/linux/of_platform.h:107:13: warning: 'struct of_device_id' declared inside parameter list [enabled by default]
+include/linux/of_platform.h:107:13: warning: its scope is only this definition or declaration, which is probably not what you want [enabled by default]
+include/linux/of_platform.h:107:13: warning: 'struct device_node' declared inside parameter list [enabled by default]
+drivers/mtd/chips/cfi_cmdset_0002.c: In function 'cfi_cmdset_0002':
+drivers/mtd/chips/cfi_cmdset_0002.c:504:22: warning: unused variable 'np' [-Wunused-variable]
+drivers/mtd/chips/cfi_cmdset_0002.c: At top level:
+drivers/mtd/chips/cfi_cmdset_0002.c:2279:12: warning: 'cfi_ppb_lock' defined but not used [-Wunused-function]
+drivers/mtd/chips/cfi_cmdset_0002.c:2285:12: warning: 'cfi_ppb_unlock' defined but not used [-Wunused-function]
+drivers/mtd/chips/cfi_cmdset_0002.c:2382:12: warning: 'cfi_ppb_is_locked' defined but not used [-Wunused-function]
 
->
-> thanks
-> Huang Shijie
->
->
->
->> Thanks,
->>
->> Vikram
->>
->> ______________________________________________________
->> Linux MTD discussion mailing list
->> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Signed-off-by: Stefan Roese <sr@denx.de>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index 5d5ed93..fff665d 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -33,6 +33,7 @@
+ #include <linux/delay.h>
+ #include <linux/interrupt.h>
+ #include <linux/reboot.h>
++#include <linux/of.h>
+ #include <linux/of_platform.h>
+ #include <linux/mtd/map.h>
+ #include <linux/mtd/mtd.h>
+@@ -501,7 +502,7 @@ static void cfi_fixup_m29ew_delay_after_resume(struct cfi_private *cfi)
+ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
+ {
+ 	struct cfi_private *cfi = map->fldrv_priv;
+-	struct device_node *np = map->device_node;
++	struct device_node __maybe_unused *np = map->device_node;
+ 	struct mtd_info *mtd;
+ 	int i;
+ 
+@@ -2205,8 +2206,9 @@ struct ppb_lock {
+ #define DO_XXLOCK_ONEBLOCK_UNLOCK	((void *)2)
+ #define DO_XXLOCK_ONEBLOCK_GETLOCK	((void *)3)
+ 
+-static int do_ppb_xxlock(struct map_info *map, struct flchip *chip,
+-			 unsigned long adr, int len, void *thunk)
++static int __maybe_unused do_ppb_xxlock(struct map_info *map,
++					struct flchip *chip,
++					unsigned long adr, int len, void *thunk)
+ {
+ 	struct cfi_private *cfi = map->fldrv_priv;
+ 	unsigned long timeo;
+@@ -2276,13 +2278,15 @@ static int do_ppb_xxlock(struct map_info *map, struct flchip *chip,
+ 	return ret;
+ }
+ 
+-static int cfi_ppb_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
++static int __maybe_unused cfi_ppb_lock(struct mtd_info *mtd, loff_t ofs,
++				       uint64_t len)
+ {
+ 	return cfi_varsize_frob(mtd, do_ppb_xxlock, ofs, len,
+ 				DO_XXLOCK_ONEBLOCK_LOCK);
+ }
+ 
+-static int cfi_ppb_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
++static int __maybe_unused cfi_ppb_unlock(struct mtd_info *mtd, loff_t ofs,
++					 uint64_t len)
+ {
+ 	struct mtd_erase_region_info *regions = mtd->eraseregions;
+ 	struct map_info *map = mtd->priv;
+@@ -2379,7 +2383,8 @@ static int cfi_ppb_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 	return ret;
+ }
+ 
+-static int cfi_ppb_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
++static int __maybe_unused cfi_ppb_is_locked(struct mtd_info *mtd, loff_t ofs,
++					    uint64_t len)
+ {
+ 	return cfi_varsize_frob(mtd, do_ppb_xxlock, ofs, len,
+ 				DO_XXLOCK_ONEBLOCK_GETLOCK) ? 1 : 0;
+-- 
+1.8.1.2
