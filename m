@@ -1,31 +1,28 @@
-Date: Fri, 1 Feb 2013 14:12:10 -0800
-From: Tony Lindgren <tony@atomide.com>
-To: Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v3 3/3] arm: omap2: gpmc: add DT bindings for OneNAND
-Message-ID: <20130201221209.GA22517@atomide.com>
-References: <1359116591-32730-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1359116591-32730-3-git-send-email-ezequiel.garcia@free-electrons.com>
- <20130125155633.GC16795@e106331-lin.cambridge.arm.com>
- <CALF0-+X2qsF5OETerRSVsJbjkC-JdVXsZhyw1sxQYR+PWX6LHA@mail.gmail.com>
- <20130128115339.GD7754@e106331-lin.cambridge.arm.com>
+Received: from intranet.asianux.com ([58.214.24.6])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1U1VNS-0000lQ-3Y
+ for linux-mtd@lists.infradead.org; Sat, 02 Feb 2013 05:10:58 +0000
+Message-ID: <510C9FD8.1040601@asianux.com>
+Date: Sat, 02 Feb 2013 13:10:48 +0800
+From: Chen Gang <gang.chen@asianux.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20130128115339.GD7754@e106331-lin.cambridge.arm.com>
-Cc: Javier Martinez Canillas <martinez.javier@gmail.com>,
- Ezequiel Garcia <elezegarcia@gmail.com>,
- "matthias.bgg@googlemail.com" <matthias.bgg@googlemail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Enric Balletbo Serra <eballetbo@gmail.com>,
- "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>,
- "zonque@gmail.com" <zonque@gmail.com>,
- "grant.likely@secretlab.ca" <grant.likely@secretlab.ca>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "jon-hunter@ti.com" <jon-hunter@ti.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "b-cousson@ti.com" <b-cousson@ti.com>
+To: viro@zeniv.linux.org.uk
+Subject: Re: [PATCH v4] fs/ext*,f2fs,jffs2,reiserfs: give comments for acl
+ size and count calculation
+References: <50DD20B2.6040204@asianux.com> <50E646BC.2090201@asianux.com>
+ <50E64A4E.7010408@asianux.com> <50E64BFD.6090000@asianux.com>
+ <20130107192016.GD13659@quack.suse.cz> <50EFD427.8060100@asianux.com>
+ <50FB9696.7090702@asianux.com> <20130121102428.GA5588@quack.suse.cz>
+ <50FD1B22.1020906@asianux.com> <51078725.9000802@asianux.com>
+In-Reply-To: <51078725.9000802@asianux.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Theodore Ts'o <tytso@mit.edu>, torvalds@linux-foundation.org,
+ reiserfs-devel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ paul.gortmaker@windriver.com, adilger.kernel@dilger.ca, ebiederm@xmission.com,
+ linux-mtd@lists.infradead.org, jaegeuk.kim@samsung.com,
+ linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.cz>,
+ akpm@linux-foundation.org, linux-ext4@vger.kernel.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,16 +32,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Mark Rutland <mark.rutland@arm.com> [130128 03:57]:
+Hello Al Viro:
+
+
+  could you give a glance for this comment patch when you have time ?
+    I am so sorry for not including your mail address for this patch, originally
+      (it is really my fault, although the comment patch itself is innocence)
+
+    I should notice next time.
+      (and now, I always use ./script/get_maintainers.pl to get mail address)
+
+
+  maybe, the comment patch seems quite minor.
+    but at least for me, I think most of comment patches are not minor.
+      (in correct place, providing correct comments are not minor)
+
+    I also plan to provide more comment patches, in 2nd half of this year.
+      (if it seems not a good idea, please tell me, thanks)
+
+    if you have another opinions, welcome to discussion.
+
+
+  whether this patch will be applied or not, I still thank to relative members:
+    Theodore Ts'o: always give helpful responses at key point time.
+                     (not only for this patch).
+
+    Jan Kara:      provide more useful informations in action.
+                     (not only for this patch).
+
+
+  thanks.
+
+gchen.
+
+于 2013年01月29日 16:24, Chen Gang 写道:
+> Hello Al Viro:
 > 
-> So if I've understood correctly, the first address cell is the CS, and the
-> second the offset within this (as the comment in the onenand@0 node hints)?
+>   could you give a glance for this comment patch when you have time ?
 > 
-> If so, the code now makes sense to me :)
+>     (at least for me, most of comment patches are valuable for integrating)
+> 
+> 
+>   thanks.
+> 
+> gchen.
 
-Sounds like further checking can be added as needed, so applying this
-series into omap-for-v3.9/gpmc.
 
-Regards,
+-- 
+Chen Gang
 
-Tony
+Asianux Corporation
