@@ -1,28 +1,24 @@
-Received: from intranet.asianux.com ([58.214.24.6])
+Received: from mail-pa0-f47.google.com ([209.85.220.47])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U1VNS-0000lQ-3Y
- for linux-mtd@lists.infradead.org; Sat, 02 Feb 2013 05:10:58 +0000
-Message-ID: <510C9FD8.1040601@asianux.com>
-Date: Sat, 02 Feb 2013 13:10:48 +0800
-From: Chen Gang <gang.chen@asianux.com>
+ id 1U1Wmv-00028m-Rz
+ for linux-mtd@lists.infradead.org; Sat, 02 Feb 2013 06:41:23 +0000
+Received: by mail-pa0-f47.google.com with SMTP id bj3so1419185pad.34
+ for <linux-mtd@lists.infradead.org>; Fri, 01 Feb 2013 22:41:20 -0800 (PST)
+Message-ID: <510CB507.4020105@gmail.com>
+Date: Sat, 02 Feb 2013 12:11:11 +0530
+From: Vikram Narayanan <vikram186@gmail.com>
 MIME-Version: 1.0
-To: viro@zeniv.linux.org.uk
-Subject: Re: [PATCH v4] fs/ext*,f2fs,jffs2,reiserfs: give comments for acl
- size and count calculation
-References: <50DD20B2.6040204@asianux.com> <50E646BC.2090201@asianux.com>
- <50E64A4E.7010408@asianux.com> <50E64BFD.6090000@asianux.com>
- <20130107192016.GD13659@quack.suse.cz> <50EFD427.8060100@asianux.com>
- <50FB9696.7090702@asianux.com> <20130121102428.GA5588@quack.suse.cz>
- <50FD1B22.1020906@asianux.com> <51078725.9000802@asianux.com>
-In-Reply-To: <51078725.9000802@asianux.com>
-Content-Type: text/plain; charset=UTF-8
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: mtd_oobtest fails with GPMI-NAND
+References: <50F97DB5.7040801@gmail.com> <50FCA426.6030309@freescale.com>
+ <5105E4CE.1090800@gmail.com> <5105EE9B.9050405@freescale.com>
+ <5106AFAA.1020502@gmail.com> <51072EA4.7000201@freescale.com>
+ <51073373.4080006@gmail.com> <510735B3.1040509@freescale.com>
+ <5107F899.5090506@gmail.com> <5108852C.5040002@freescale.com>
+In-Reply-To: <5108852C.5040002@freescale.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Cc: Theodore Ts'o <tytso@mit.edu>, torvalds@linux-foundation.org,
- reiserfs-devel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- paul.gortmaker@windriver.com, adilger.kernel@dilger.ca, ebiederm@xmission.com,
- linux-mtd@lists.infradead.org, jaegeuk.kim@samsung.com,
- linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.cz>,
- akpm@linux-foundation.org, linux-ext4@vger.kernel.org, dwmw2@infradead.org
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,53 +28,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Al Viro:
+On 1/30/2013 7:57 AM, Huang Shijie wrote:
+> 于 2013年01月30日 00:28, Vikram Narayanan 写道:
+>> On 1/29/2013 8:06 AM, Huang Shijie wrote:
+>>>> May I know in what way the driver is restricted for using with other
+>>>> boards?
+>>> The devicetree. Please check the dts file in arch/arm/boot/dts/.
+>>> If there is no dts file for your board, the gpmi will not works very
+>>> well for your board.
+>>> for example, there is arch/arm/boot/dts/imx6q-arm2.dts for the MX6Q-ARM2
+>>> board.
+>>
+>> I've a valid dts file for my board which is good enough to probe the
+>> Toshiba NAND on-board and mount a UBIFS filesystem.
+> could you tell the dts file for your board?
+> are you sure the pinmux settings are right?
 
+I'm using the same pinumx settings mentioned in the file
+"arch/arm/boot/dts/imx6q.dtsi". Hope that is right.
 
-  could you give a glance for this comment patch when you have time ?
-    I am so sorry for not including your mail address for this patch, originally
-      (it is really my fault, although the comment patch itself is innocence)
+>>
+>>>> You're right and we knew it earlier as the Kernel detects the OOB size
+>>>> as 128 bytes. So, some remaining bytes become unused at the end of
+>>>> each page. i.e., (224-128). Instead of supporting ecc strength as ECC9
+>>>> we end up using ECC8. Should this be a cause for the -74 error?
+>>> no. this is not the cause. even you get the wrong geometry of the nand
+>>> chip. the gpmi still can works.
+>>>
+>>> I think the root cause is the devicetree issue as above.
+>>
+>> Something else is causing the issue. Can you give some other pointers
+>> which can potentially cause this -74 error while mounting?
+> the -74 error is the EBADMSG, it's caused by the uncorrectable ECC failure.
+> There are many reasons can cause this error:
+>     [1] the pinmux setting is not right, the gpmi does not works well.
 
-    I should notice next time.
-      (and now, I always use ./script/get_maintainers.pl to get mail address)
+As said above, my pinmux settings are right. GPMI detects my NAND, does 
+read/write/erase/mount. At times I'm seeing this -74 issue. Sometimes 
+this error goes off in the next reboot.
 
+>     [2] the wrong setting of BCH. for example, the page size is 8K, you
+> set 4k to BCH.
+>         so you can set the correct nand geometry parameters for your
+> nand chip firstly, and then do the debug.
 
-  maybe, the comment patch seems quite minor.
-    but at least for me, I think most of comment patches are not minor.
-      (in correct place, providing correct comments are not minor)
+ From the driver I understood that the geometry are determined according 
+to the data from the read_id bytes. mtd layer detects my NAND as 4K 
+page-sized. So, this shouldn't be a problem I guess.
 
-    I also plan to provide more comment patches, in 2nd half of this year.
-      (if it seems not a good idea, please tell me, thanks)
+>     [3] timings.
 
-    if you have another opinions, welcome to discussion.
+Should I tweak something specific according to the NAND device that I 
+have? Can you give more hints please?
 
-
-  whether this patch will be applied or not, I still thank to relative members:
-    Theodore Ts'o: always give helpful responses at key point time.
-                     (not only for this patch).
-
-    Jan Kara:      provide more useful informations in action.
-                     (not only for this patch).
-
-
-  thanks.
-
-gchen.
-
-于 2013年01月29日 16:24, Chen Gang 写道:
-> Hello Al Viro:
-> 
->   could you give a glance for this comment patch when you have time ?
-> 
->     (at least for me, most of comment patches are valuable for integrating)
-> 
-> 
->   thanks.
-> 
-> gchen.
-
-
--- 
-Chen Gang
-
-Asianux Corporation
+Thanks,
+Vikram
