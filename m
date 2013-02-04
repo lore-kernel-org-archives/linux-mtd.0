@@ -1,23 +1,23 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1U2Gb0-0005SO-Cc
- for linux-mtd@lists.infradead.org; Mon, 04 Feb 2013 07:36:06 +0000
-Message-ID: <1359963456.13791.10.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v3] mtd: fix the wrong timeo for panic_nand_wait()
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Date: Mon, 04 Feb 2013 09:37:36 +0200
-In-Reply-To: <1359511436-12107-1-git-send-email-b32955@freescale.com>
-References: <201301292200.14622.ffainelli@freebox.fr>
- <1359511436-12107-1-git-send-email-b32955@freescale.com>
+ id 1U2H1K-00066R-CR
+ for linux-mtd@lists.infradead.org; Mon, 04 Feb 2013 08:03:18 +0000
+Message-ID: <1359965101.13791.11.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: fix random pointer dereference in OF device name
+ handling
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Paul Gortmaker <paul.gortmaker@windriver.com>
+Date: Mon, 04 Feb 2013 10:05:01 +0200
+In-Reply-To: <1358967548-25491-1-git-send-email-paul.gortmaker@windriver.com>
+References: <1358967548-25491-1-git-send-email-paul.gortmaker@windriver.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-Mq6ZV8QeatpCqPg2jXAM"
+ boundary="=-zLB4sqBWOty5dL5QyLzB"
 Mime-Version: 1.0
-Cc: linux-kernel@vger.kernel.org, matthieu.castet@parrot.com,
- gabriel.matni@gmail.com, linux-mtd@lists.infradead.org, ffainelli@freebox.fr,
- dwmw2@infradead.org
-Reply-To: dedekind1@gmail.com
+Cc: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,30 +28,21 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-Mq6ZV8QeatpCqPg2jXAM
+--=-zLB4sqBWOty5dL5QyLzB
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2013-01-30 at 10:03 +0800, Huang Shijie wrote:
-> The panic_nand_wait() expects the timeo in ms and not in jiffies.
-> But in nand_wait(), the timeo for panic_nand_wait() is assigned with
-> wrong value(jiffies + some delay). The timeo should be set like the
-> panic_nand_write() does.
->=20
-> This patch passes timeo in ms to panic_nand_wait().
-> And this patch also passes timeo in jiffies(converted by msecs_to_jiffies=
-)
-> to time_before() which makes the code more readable.
->=20
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
+On Wed, 2013-01-23 at 13:59 -0500, Paul Gortmaker wrote:
+> Here is the output from an mpc8548 based board.  There are
+> three instances of missing device name here:
 
-Pushed to l2-mtd.git, thanks!
+A similar fix is already in the linux-mtd.git tree.
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-Mq6ZV8QeatpCqPg2jXAM
+--=-zLB4sqBWOty5dL5QyLzB
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -59,19 +50,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.13 (GNU/Linux)
 
-iQIcBAABAgAGBQJRD2VAAAoJECmIfjd9wqK0OSEQAKySBEfCqdehlFoShCAth8YZ
-qozatIYA1Z7UYmv8a7Gv7R/tCKNNUa+IGEqhRDtibwQR/LwVawfS3ZNSEKnsvGnJ
-wHj9gajkNvToVAEiKpZrsRp72ifzoOTvg08zKOHZmJreQq0b16rhR+zHI6vNG+rT
-+mo0h2OSZ2NxEf5G8wuvkCRyWSBrLxks5QknrSns1vP7nL2lh2ZKLW8sGbQS5qdU
-KGnw/qggJMyZd/vTI4Hf33WBghdCYlBZGR9Sevzh10F+fY1+mUxZ7herm8B9yDEd
-MEAIGYxgPv0xu4MBzIBLLiTHwCdYhXJUoJtv1FDMO4zF3sE1/6oVCZK4nZ8o1Jht
-3BE1EvJ1s9nY3siTUC9dNS4EmF+WBGCqOXcf60pLs6iFEoaprjwE5K3wOmZjDova
-TRmoyU+7pWhpT3g3zOf0laGU1G0CZ+PQ0qYdVcnnGhjAEwjWr16OMLOlqQTIfYES
-e/f3r6/v5GK59YRbFA329m0kE2pdZmW7vOEV0dig3vlNK5GgANiUlzEgjLxypbIB
-CLmBlDIiZ4S15ZwXT1n5E2dheuzOwoS+OcDXeVyDb3p4typipydpbb8qCo6wl+6Z
-Tx6QO0NvmYNug9SR2jF9NgV7Wfz/ukJAA2uE1Tf/C4eEyD+FO776nZH5cAHYdyzW
-lSSXodDEpE5fN0HhEq3g
-=Pbqh
+iQIcBAABAgAGBQJRD2utAAoJECmIfjd9wqK0sIwP/1ro+FypPr8AHbAPiv9pzSln
+OCgaUBBAqE6exD5hfjj5GGCzfLtX6IpyAH7zzxLvFttEsEakM5dmzYdgok80Gqg7
+NQyBSxphcWKB9VfankM5LRUzN7y/enNXMuTSIZu1rXZ0KBwwNc1QrNIXa4BNlFxx
+E1e4CTF8JkQXxBL5o/Vg+u0mZ76Aspfcj3Q82Mtx4nA6l3fPmvU9SbyuJpkFdZ2e
+fkRWLxuQknWx6QGO+ViRzHQUvCA2McOkDt8yfIe+GFdA9mn/XgGZ0DulH5XEaKIL
+wMebfwRTOOJszEi+KtbxVtJ9BreTCpaMu5fqjzyNCs5Xx/qwC8IFlaE+HzRZXdx2
+P5WIT0tva+0TC0EKE6eUARmM8xFrIFq8vWv9QuuDugtnYHsonIscLdZrNa0Gwci9
+H47+RUKJPdNQRlvsuLCI7dU81nINvjOSsl4+GArrPqb4YrcpQl9RB2ajyYLPvCbl
+QVTeNRKRlFSTiL0B5PLeCEWBv6cYFGpqGoeai+/QvLxnuOFg5+nelpfxxJCIaaX4
+phEG0LXtWN3baUP1poXoPdgDuiq/Rc5hhH1Ls6bNntPTl26fitQsTdqTxLIEu+Ts
+eVRDbG7c5v+VQGOyfYIQLqn24MUmUjL4JV0BDaJVk2DLrN8Q8ZIFyqx7Zpte6Xug
+wgGUVZTQGvgMq1FqG8FF
+=k2d+
 -----END PGP SIGNATURE-----
 
---=-Mq6ZV8QeatpCqPg2jXAM--
+--=-zLB4sqBWOty5dL5QyLzB--
