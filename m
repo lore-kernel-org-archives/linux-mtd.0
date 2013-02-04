@@ -1,19 +1,17 @@
-Received: from mga03.intel.com ([143.182.124.21])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1U2G4D-0001pu-9i
- for linux-mtd@lists.infradead.org; Mon, 04 Feb 2013 07:02:13 +0000
-Message-ID: <1359961435.13791.4.camel@sauron.fi.intel.com>
-Subject: Re: UBIFS space consumption
+Message-ID: <1359961661.13791.5.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 05/11 v2] ARM: nomadik: add FSMC NAND
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Vikram Narayanan <vikram186@gmail.com>
-Date: Mon, 04 Feb 2013 09:03:55 +0200
-In-Reply-To: <50F97E6C.7030201@gmail.com>
-References: <50F97E6C.7030201@gmail.com>
+To: Linus Walleij <linus.walleij@linaro.org>
+Date: Mon, 04 Feb 2013 09:07:41 +0200
+In-Reply-To: <1358607204-24264-1-git-send-email-linus.walleij@linaro.org>
+References: <1358607204-24264-1-git-send-email-linus.walleij@linaro.org>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-x/iJro56SP7PlwhZO7ru"
+ boundary="=-QPEngBasPml5wDpxxixE"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Cc: Mark Rutland <mark.rutland@arm.com>, linux-mtd@vger.kernel.org,
+ linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-arm-kernel@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,24 +23,34 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-x/iJro56SP7PlwhZO7ru
+--=-QPEngBasPml5wDpxxixE
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2013-01-18 at 22:25 +0530, Vikram Narayanan wrote:
-> But according to "df",  UBI volume 0 is sized 148.9 MiB. That's, 15.8=20
-> MiB more in terms of consumption.
+On Sat, 2013-01-19 at 15:53 +0100, Linus Walleij wrote:
+> This adds the FSMC NAND driver and flash partitions to the Nomadik
+> device tree.
+>=20
+> The only compatible string accepted by this driver is currently
+> "st,spear600-fsmc-nand" which is inappropriate for this system, so
+> this patch adds the compatible value "stericsson,fsmc-nand" as
+> well.
+>=20
+> Cc: linux-mtd@vger.kernel.org
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Artem Bityutskiy <dedekind1@gmail.com>
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
+> I'm requesting an ACK from the MTD maintainers to be able to apply
+> this patch through the ARM SoC tree.
 
-Df is not accurate with UBIFS by design, this is covered by this FAQ
-entry:
-
-http://www.linux-mtd.infradead.org/faq/ubifs.html#L_df_report
+Acked-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-x/iJro56SP7PlwhZO7ru
+--=-QPEngBasPml5wDpxxixE
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -50,19 +58,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.13 (GNU/Linux)
 
-iQIcBAABAgAGBQJRD11bAAoJECmIfjd9wqK0Ot8P+wWBbO6mY8KhC2Vn37W2DwVF
-K34vHd6y9r+ywD1eTu6wl1NZgSz9dEd+T0thDnqeVecOEyxzT1EhyR+fLtI+TlI/
-qx6U/1QRAI9QEhmbXOpMoEIm9y6BY4UFfGTBt+9muCeJfWSPYCmq0PGC7U7qtaoM
-LCWAmPF5jrzCOMQ7QlwyGBTnAcDXxCYXfhnjjg7bDXFfOaVk7hp9eWOT5sU+jqP6
-Dkx02YQ8vgmISOL7GkYoPrtUy85pXYV2mctY7YVN8yzy1OjwYrLhfmfhoMzGbTye
-if+szlY1OE6CYylJ523uP7EwSNh0jozZssxjOiXJGvLkCMJp10jzo3qpCyJCdJ/G
-wxBWJvj30PnI3A5g8LB2FWvi5oIFVBLDfckgS3RpS56q6PIRiGyBAcVVpSgC255I
-bBVdd908MrbAhVfDN1faBcfX1X6Pb2zJxbQabS/EyDQL7xgjRTegCRjkx95GN85G
-qbTL4cKgfajEWgEX129n+Se3canow+9ZSK61s45qvpGHhlFl+AL5lKiE3XJsQRut
-dKXVoddbhvVGdTzQVTq9vrYxK+LlM8aCkBUYZuVV7PDcDW/s4y0Qb83MfZX3Kxop
-D9+Zf0Z8O9DGSZTUNuWj3sX1csfZQTa49FBstbyvhJnw56x3j4o/BKFsyP9wf+YM
-kPbLMOHikIQZPowCproF
-=1U9b
+iQIcBAABAgAGBQJRD149AAoJECmIfjd9wqK0/SYP/j5mEMeHPgodj+wXDOzcOSi1
+mN18mIcTR+sJMmn1xfbHZbY0PREj2eF1jJzi1oStgDT8P5IgplUUP4oxxNoNXz1N
+qkqkuP+GlXo/Slv4jZJUzZSlgk0ahusjAlb6i37bfrarX5TB6o5a+ZlQ1E8U7gT5
+Sw23QGBMJAGjgHWRIb/bmsNHqP2hwQvRzQuwv79B/5TVaq0skJdhmcbEOZDFkoJu
+AVm5RCxn5El/pgwwydhF0oxQL4MIzgLzZmrQdJTmvP3cx7DhHkcTjyyDeJX7pjwP
+5adiCF9uEKFRnJEt7H5f+OoavdB7LOvsfMtgS1ZxAwkPug72Rwij8318EdMQZ3wj
+wwwpsZVmoJ1udxjCDsGjvIOF74OJfy31Z+vbGfpa6ZqW1FodUZ56ZItMsAd3YoGp
+rhFembsRFjlzjR7eOPf7NPSNVsiHWjCwJG5IIXkGoi9ryQBMp231DMRWDLYIp0LJ
+9OhE4udEMEPvGpw9Az7/lp92HI8LWVWvGN/UayXOihO9Suppa//p7nFbfvYs7VbT
+MzeqTM+gUkbtiPoaRtuzggRLy1wDM1B1WVkFZjO+mNgqTZkfzUGyuZajBonoYyxu
+Pwg4k2Xq0ZZurVoa6F4hZN+0fYFEV0wge8aeFZ0qg9TrnrsCXh9UsWCJ/8kUKa/+
+r3UrmiMG6Mwj+twVNQeL
+=ILEK
 -----END PGP SIGNATURE-----
 
---=-x/iJro56SP7PlwhZO7ru--
+--=-QPEngBasPml5wDpxxixE--
