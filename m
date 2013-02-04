@@ -1,16 +1,19 @@
-Message-ID: <1359966688.13791.16.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/2] mtd: gpmi: set the Golois Field bit for mx6q's BCH
+Received: from mga01.intel.com ([192.55.52.88])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1U2HS5-0008EZ-5S
+ for linux-mtd@lists.infradead.org; Mon, 04 Feb 2013 08:30:57 +0000
+Message-ID: <1359966761.13791.17.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 0/6] mtd: bcm47xx: some fixes for the flash drivers
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Date: Mon, 04 Feb 2013 10:31:28 +0200
-In-Reply-To: <1359093848-22301-1-git-send-email-b32955@freescale.com>
-References: <1359093848-22301-1-git-send-email-b32955@freescale.com>
+To: Hauke Mehrtens <hauke@hauke-m.de>
+Date: Mon, 04 Feb 2013 10:32:41 +0200
+In-Reply-To: <1359045599-1305-1-git-send-email-hauke@hauke-m.de>
+References: <1359045599-1305-1-git-send-email-hauke@hauke-m.de>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-hwS3X8rFeNLweyBXi2h1"
+ boundary="=-4JGQHgq7G3vdK94G0D+9"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, zajec5@gmail.com, dwmw2@infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -22,30 +25,21 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-hwS3X8rFeNLweyBXi2h1
+--=-4JGQHgq7G3vdK94G0D+9
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2013-01-25 at 14:04 +0800, Huang Shijie wrote:
-> +#define BF_BCH_FLASH0LAYOUT0_GF(v, x)				\
-> +	((GPMI_IS_MX6Q(x) && ((v) =3D=3D 14))			\
-> +		? (((1) << MX6Q_BP_BCH_FLASH0LAYOUT0_GF_13_14)	\
-> +			& MX6Q_BM_BCH_FLASH0LAYOUT0_GF_13_14)	\
-> +		: 0						\
-> +	)
+On Thu, 2013-01-24 at 17:39 +0100, Hauke Mehrtens wrote:
+> These patches are fixing some problems which I saw in my tests with=20
+> some devices and these flash drivers.
 
-Did you consider using static inline functions instead of macro
-definitions? The added value would be at least type-checking. You would
-also probably use names better than "v" and "x", you could even have
-commentaries. Please, consider doing this.
-
-Anyway, pushed to l2-mtd.git, thanks!
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-hwS3X8rFeNLweyBXi2h1
+--=-4JGQHgq7G3vdK94G0D+9
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -53,19 +47,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.13 (GNU/Linux)
 
-iQIcBAABAgAGBQJRD3HgAAoJECmIfjd9wqK0u48P/jY0N5hvEea75Ke3pF6OQyXA
-mbxooDMFJ3jgCrf+Z94uMQp+qlhAEHfl8DFjl0fZIngRoznGgV4f7eKzf+/giv9t
-tp2lYLvHB5pNesxQ/+Weg4qlAmoUHKnLPqEe03RO2fH+EBdKVauaP3ztn6C9ORj1
-gVMK9pNy5I65VIg4dBzo1sK+BWIq1DR1NIguRsZC6Nz8pJIICAIPyaYEHe0gMpUD
-YqYAqks1Of2kfa5BiDgaiGHq85g+xUYmzi6wdlql1xIWFcc0YRA/YHeLSo0yx8k8
-NsLKqFpgSAk9fkxKNFcLLMAt9d0wO6X9yxxV2OgTgiP2QdwR1fXbmSwe0U38TkIH
-FkRhpnAK4CKL124NA9r7FS20AnGJvwL71lkqIw66LslKFSYl5NMxtrL2JVoz3AQH
-PD4qS9cFkBq9expcxt4I+G92vJIaoGVNpBqbnfslWNCOYgXDRazzdYWr7PHIS3nQ
-ib6il4KpEnEnXcnlwFuFfMiAnw9ark6xYCFGkBwpZ7aG1iz6Q8VHJhCqKymU/Yoi
-JXLhkLGM480OshldGSgsntW3nrIpX9k4lIOHVmSyxyNdiQIeOhNW3yZ6sB8eeJ+o
-MqD3pbjiwdCeJ1wkH4WvnCCf9rW98ygsNLZwmXHFw/tURm7OkVqU/H8sDCQwV3oC
-xExjxoXspoXkzNLmEN7o
-=zvGI
+iQIcBAABAgAGBQJRD3IpAAoJECmIfjd9wqK0+aoQAJfZyTzlFwUaDEzo7Wr4eRDb
+z2HWP/Z44/QbYLFXuoNjiP4JRDX0e8EyM5Jf+qKQdcQQqgiAaAuGiSJqrCOc2oTl
+I7SzXYnbR2WBWVaPsGOBLcwCAFX4Pn9aqqcoPXOS5QU7otr3zVehb+pKvgFfLfR7
+6X+JoFI0HPvSOWVi5Nex0nAOvcz3PWld/qtsUTceGDiCIMZogc5n89vvW8pxzg9L
+bLEr6N8jLLZgfkJm91/OHSHmXxOfdQYBKRsHCl4ms3hptVe/K8u+tiw2GoLCQxAc
+b7NcwuBJdlwF2u+h3ts0ORVrxxcF6jYKMaCiXOuGEa6t/UejCwZZSHGUk+wMmTOM
+TKYRCBVPoeLQ0lZQhkYHezVjhFJSkLyu8yX31NKkPr4FvGas9nQ34ulWbJXe6w9m
+dCMQ+svfJasZk7hLSjXzpDKMIS6IFPbwyzs5pWMqv6qqaThuSXfRc6ayTuuR+IZ6
+ftd3cJUZs0NhMMahDqEzj6IqGlyI0P+8wcKZYNFTLz4rgfXukWl9shoWYGQ+9FCD
+tjqSmApi/VdqkATpq189bDd0fVy1KYeUj5YmOAPWIZpvCG8lI0EbGFiuGvrFyhw0
+x77ZbfR4FpR4B+UOeK97U2hmiqwIrhIDz5rtJlf+K+K94OIB1YGVVX3vAZMWQwJi
+JpU4J/SXZqCl9t6SYnuz
+=88gT
 -----END PGP SIGNATURE-----
 
---=-hwS3X8rFeNLweyBXi2h1--
+--=-4JGQHgq7G3vdK94G0D+9--
