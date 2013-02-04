@@ -1,21 +1,24 @@
-Received: from mga03.intel.com ([143.182.124.21])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1U2JMI-00015q-T3
- for linux-mtd@lists.infradead.org; Mon, 04 Feb 2013 10:33:07 +0000
-Message-ID: <1359973956.13791.36.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: map: BUG() in non handled cases
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Dmitry Eremin-Solenikov <dmitry_eremin@mentor.com>
-Date: Mon, 04 Feb 2013 12:32:36 +0200
-In-Reply-To: <1359651994-27363-1-git-send-email-dmitry_eremin@mentor.com>
-References: <1359651994-27363-1-git-send-email-dmitry_eremin@mentor.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-uLvg00JGLWJcrwwWsYmf"
-Mime-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Reply-To: dedekind1@gmail.com
+Received: from ia-in-x0236.1e100.net ([2607:f8b0:4001:c02::236]
+ helo=mail-ia0-x236.google.com)
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1U2LHn-0006BB-7x
+ for linux-mtd@lists.infradead.org; Mon, 04 Feb 2013 12:36:35 +0000
+Received: by mail-ia0-f182.google.com with SMTP id w33so8028315iag.13
+ for <linux-mtd@lists.infradead.org>; Mon, 04 Feb 2013 04:36:33 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1359125428-23801-2-git-send-email-ezequiel.garcia@free-electrons.com>
+References: <1359125428-23801-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1359125428-23801-2-git-send-email-ezequiel.garcia@free-electrons.com>
+Date: Mon, 4 Feb 2013 09:36:33 -0300
+Message-ID: <CALF0-+WzFdwyMmNB4A0RjisQRA-xR1TcOgOitJbQL9T9sgLSVA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mtd: physmap_of: Convert device allocation to managed
+ devm_kzalloc()
+From: Ezequiel Garcia <elezegarcia@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: dwmw2@infradead.org, thierry.reding@avionic-design.de,
+ linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,47 +28,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Artem,
 
---=-uLvg00JGLWJcrwwWsYmf
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Fri, Jan 25, 2013 at 11:50 AM, Ezequiel Garcia
+<ezequiel.garcia@free-electrons.com> wrote:
+> Tested by compilation only.
+>
+> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> ---
+>  drivers/mtd/maps/physmap_of.c |    8 +++-----
+>  1 files changed, 3 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
+> index 67cc73c..c69e5c4 100644
+> --- a/drivers/mtd/maps/physmap_of.c
+> +++ b/drivers/mtd/maps/physmap_of.c
+> @@ -68,9 +68,6 @@ static int of_flash_remove(struct platform_device *dev)
+>                         kfree(info->list[i].res);
+>                 }
+>         }
+> -
+> -       kfree(info);
+> -
+>         return 0;
+>  }
+>
+> @@ -199,8 +196,9 @@ static int of_flash_probe(struct platform_device *dev)
+>         map_indirect = of_property_read_bool(dp, "no-unaligned-direct-access");
+>
+>         err = -ENOMEM;
+> -       info = kzalloc(sizeof(struct of_flash) +
+> -                      sizeof(struct of_flash_list) * count, GFP_KERNEL);
+> +       info = devm_kzalloc(&dev->dev,
+> +                           sizeof(struct of_flash) +
+> +                           sizeof(struct of_flash_list) * count, GFP_KERNEL);
+>         if (!info)
+>                 goto err_flash_remove;
+>
+> --
+> 1.7.8.6
+>
 
-On Thu, 2013-01-31 at 21:06 +0400, Dmitry Eremin-Solenikov wrote:
-> Several map-related functions look like a serie of ifs, checking
-> widths of map. Those functions do not have any handling for default
-> case. Instead of fiddling with uninitialized_var in those functions,
-> let's just add a (correct) BUG() to the default case on those maps. This
-> will also allow us to catch potential errors in maps setup in future.
->=20
-> Signed-off-by: Dmitry Eremin-Solenikov <dmitry_eremin@mentor.com>
+I've just tested this physmap series.
+Can you pick only this one?
 
-Pushed to l2-mtd.git, thanks!
+The other two depend on the devm_ioremap_resource() patch,
+so I'll re-submit them when that patch hits your tree.
 
---=20
-Best Regards,
-Artem Bityutskiy
+Thanks,
 
---=-uLvg00JGLWJcrwwWsYmf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.13 (GNU/Linux)
-
-iQIcBAABAgAGBQJRD45EAAoJECmIfjd9wqK0mHoQAKJWUlwGdyM7dzvBE8ddudj+
-6OXcXzAWb6GStgXLZ7KDimbllxgiykGx8/SmmC3nmWlsCnJcB4xr7XDrLlbJlGV/
-l92jFuABYzAnGtdE7TN9LBD3F8SD8Nw+YSIv0NFRB713lLJ9DW+PyHB7dYEAyTD4
-rU4eEq0RXk6AByR604ic5jWJvq4r6WU8wC7/6ZWi1jetUC9POssZ6D4ESVNorWmO
-N34T2ZNArvgMyrUXqiGU3A5gkXLM03wxSGd5FmPv9zL73M6ug4OLxsmTnQoiAR+i
-SjAe7jQ5bURMTO1MKO0+z7SajtzMXMTKGGfFXPxBvwoJwab7ksdaNZ4jYPJoXKNJ
-+Rz1SqKIZqskYF21BaTsgA+yWW02NnsRmrHRaCscjs07w2NQEQxGIgx/DARtN9Ms
-OV3ttW2kJ3Z9g7byaS7fSCKqfplhdy6C+2rdqI0pqhsUGnaoD1wSVQPofo+rF4ar
-cCqUR7YhIOMGNRabJZyxrHg7CTMOAXgQhrH1F0JqTHMxViRNkkm1DH61BQQCrdE2
-R4tEXNIU+HZwXUvB7aYRV4aNaP0tMF64d6N8gVC84htKAbyHpOxse1Xz+U8jBQRm
-eodsM/tp3V/hL27WiaD4GAeH15t2c4r6DQaZuUcixdkklJkvKxGgd5yNIsRCMOjF
-ceW8t5+wBbIjVB+OI4er
-=ti/m
------END PGP SIGNATURE-----
-
---=-uLvg00JGLWJcrwwWsYmf--
+-- 
+    Ezequiel
