@@ -1,21 +1,20 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1U2JL2-00012T-NW
- for linux-mtd@lists.infradead.org; Mon, 04 Feb 2013 10:31:49 +0000
-Message-ID: <1359973902.13791.35.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v2 1/2] UBIFS: fix use of freed ubifs_orphan objects
+ id 1U2JMI-00015q-T3
+ for linux-mtd@lists.infradead.org; Mon, 04 Feb 2013 10:33:07 +0000
+Message-ID: <1359973956.13791.36.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: map: BUG() in non handled cases
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Adam Thomas <adamthomas1111@gmail.com>
-Date: Mon, 04 Feb 2013 12:31:42 +0200
-In-Reply-To: <1359844351-5889-2-git-send-email-adamthomas1111@gmail.com>
-References: <510BC1D9.8040308@intel.com>
- <1359844351-5889-1-git-send-email-adamthomas1111@gmail.com>
- <1359844351-5889-2-git-send-email-adamthomas1111@gmail.com>
+To: Dmitry Eremin-Solenikov <dmitry_eremin@mentor.com>
+Date: Mon, 04 Feb 2013 12:32:36 +0200
+In-Reply-To: <1359651994-27363-1-git-send-email-dmitry_eremin@mentor.com>
+References: <1359651994-27363-1-git-send-email-dmitry_eremin@mentor.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-oMS5GCS9TVYUOWqmR2KH"
+ boundary="=-uLvg00JGLWJcrwwWsYmf"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, adrian.hunter@intel.com
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,37 +26,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-oMS5GCS9TVYUOWqmR2KH
+--=-uLvg00JGLWJcrwwWsYmf
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, 2013-02-02 at 22:32 +0000, Adam Thomas wrote:
-> The last orphan in the cnext list has its cnext set to NULL. Because
-> of that, ubifs_delete_orphan assumes that it is not on the cnext list
-> and frees it immediately instead of adding it to the dnext list. The
-> freed orphan is later modified by write_orph_node.
+On Thu, 2013-01-31 at 21:06 +0400, Dmitry Eremin-Solenikov wrote:
+> Several map-related functions look like a serie of ifs, checking
+> widths of map. Those functions do not have any handling for default
+> case. Instead of fiddling with uninitialized_var in those functions,
+> let's just add a (correct) BUG() to the default case on those maps. This
+> will also allow us to catch potential errors in maps setup in future.
 >=20
-> This can cause various inconsistencies including directory entries
-> that cannot be removed and this error:
->=20
-> UBIFS error (pid 20685): layout_cnodes: LPT out of space at LEB 14:129009=
- needing 17, done_ltab 1, done_lsave 1
->=20
-> This is a regression introduced by
-> "7074e5eb UBIFS: remove invalid reference to list iterator variable".
->=20
-> This change adds an explicit flag to ubifs_orphan indicating whether
-> it is pending commit.
->=20
-> Signed-off-by: Adam Thomas <adamthomas1111@gmail.com>
+> Signed-off-by: Dmitry Eremin-Solenikov <dmitry_eremin@mentor.com>
 
-Pushed both to linux-ubifs.git, added 'Cc: stable@vger.kernel.org'.
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-oMS5GCS9TVYUOWqmR2KH
+--=-uLvg00JGLWJcrwwWsYmf
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -65,19 +53,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.13 (GNU/Linux)
 
-iQIcBAABAgAGBQJRD44OAAoJECmIfjd9wqK0LYgP/28rH0ZYj65xv3bNdrOLb8cF
-Rs8ydb0ZGKfPQLXJ3tPJsBH3Wxr3xy1pprbdIcSWq06ecjVvzQXc9JMxFvTXQAIH
-DWZTY7CODVoVcvJebQPoBlwxXRaGyEwE+yT8q9LPjINAZEsj2vbLM1+m1ghVr8rY
-GC5d9YYFp7wn4Dhfw3HZWtLZzXAWxtp/jr8GBpLtNiUq/BKwzbDN7lVQDMDWy6Qf
-YzUGb2nd7ucTHI0cHklgT5RE38HxuAw6QG1c5sXoEAzytHqpb40rCGxCZUWdoMSQ
-UvPLY+p9DOzqK0j710UC7FHPJsTAhK9thoMHjg6TIvgQglgBJ6B/pbGJ1uCQmvGo
-SsTdhdvcxH+LyEL1CQW2M58AzMEeXoqIbTO2J39x1ckIhn+fTsFuGTYaxdlCPsCE
-VcwRPnQxj7HeBbw6IV4MIUi0Jr3vXInzpLkFHpxSxMKTLj7QCC9hJhUUgzGIDYS/
-KtZqfacYhynkY78nDu1zdCXsLtovAjd/sPu/lZclsJ72svdYiLikf9rweTe7y1I3
-76ssCdL6tO4ZugJNz0MZcIyofDkzqGChhjtFUgV2DGDpUe0++qnzWxgfD5cINPpB
-8eNu9o/61AOnVFXRYV7ylVz3ZkHobGeCaXjX8QTsT7wEgxDjBXtLtNg41qV55kbn
-8CyK0N/qvdH4ajx31/zC
-=gjPS
+iQIcBAABAgAGBQJRD45EAAoJECmIfjd9wqK0mHoQAKJWUlwGdyM7dzvBE8ddudj+
+6OXcXzAWb6GStgXLZ7KDimbllxgiykGx8/SmmC3nmWlsCnJcB4xr7XDrLlbJlGV/
+l92jFuABYzAnGtdE7TN9LBD3F8SD8Nw+YSIv0NFRB713lLJ9DW+PyHB7dYEAyTD4
+rU4eEq0RXk6AByR604ic5jWJvq4r6WU8wC7/6ZWi1jetUC9POssZ6D4ESVNorWmO
+N34T2ZNArvgMyrUXqiGU3A5gkXLM03wxSGd5FmPv9zL73M6ug4OLxsmTnQoiAR+i
+SjAe7jQ5bURMTO1MKO0+z7SajtzMXMTKGGfFXPxBvwoJwab7ksdaNZ4jYPJoXKNJ
++Rz1SqKIZqskYF21BaTsgA+yWW02NnsRmrHRaCscjs07w2NQEQxGIgx/DARtN9Ms
+OV3ttW2kJ3Z9g7byaS7fSCKqfplhdy6C+2rdqI0pqhsUGnaoD1wSVQPofo+rF4ar
+cCqUR7YhIOMGNRabJZyxrHg7CTMOAXgQhrH1F0JqTHMxViRNkkm1DH61BQQCrdE2
+R4tEXNIU+HZwXUvB7aYRV4aNaP0tMF64d6N8gVC84htKAbyHpOxse1Xz+U8jBQRm
+eodsM/tp3V/hL27WiaD4GAeH15t2c4r6DQaZuUcixdkklJkvKxGgd5yNIsRCMOjF
+ceW8t5+wBbIjVB+OI4er
+=ti/m
 -----END PGP SIGNATURE-----
 
---=-oMS5GCS9TVYUOWqmR2KH--
+--=-uLvg00JGLWJcrwwWsYmf--
