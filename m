@@ -1,23 +1,22 @@
-Received: from mga03.intel.com ([143.182.124.21])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1U2Hbt-0001NY-8I
- for linux-mtd@lists.infradead.org; Mon, 04 Feb 2013 08:41:06 +0000
-Message-ID: <1359967368.13791.22.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v2 1/3] mtd: add new fields to nand_flash_dev{}
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Huang Shijie <b32955@freescale.com>
-Date: Mon, 04 Feb 2013 10:42:48 +0200
-In-Reply-To: <5105DD0E.1010500@freescale.com>
-References: <1359007901-26464-1-git-send-email-b32955@freescale.com>
- <1359007901-26464-2-git-send-email-b32955@freescale.com>
- <5105DD0E.1010500@freescale.com>
-Content-Type: multipart/signed; micalg="pgp-sha1";
- protocol="application/pgp-signature";
- boundary="=-4CWMzGYPcj9eIFzh/fDF"
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, shmulik.ladkani@gmail.com, linux-kernel@vger.kernel.org
-Reply-To: artem.bityutskiy@linux.intel.com
+Received: from mail-ob0-f171.google.com ([209.85.214.171])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1U2Hd2-0001Vt-3Z
+ for linux-mtd@lists.infradead.org; Mon, 04 Feb 2013 08:42:16 +0000
+Received: by mail-ob0-f171.google.com with SMTP id lz20so6091026obb.30
+ for <linux-mtd@lists.infradead.org>; Mon, 04 Feb 2013 00:42:14 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1359966902.13791.19.camel@sauron.fi.intel.com>
+References: <1359368750-19763-3-git-send-email-zajec5@gmail.com>
+ <1359966902.13791.19.camel@sauron.fi.intel.com>
+Date: Mon, 4 Feb 2013 09:42:14 +0100
+Message-ID: <CACna6ry0B9nPZDUEDgYZnqM7YsGeDkWG9r6eKihbK+=WLqUcLw@mail.gmail.com>
+Subject: Re: [PATCH V2 3/6] mtd: bcm47xxnflash: fix message
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Hauke Mehrtens <hauke@hauke-m.de>, linux-mtd@lists.infradead.org,
+ David Woodhouse <David.Woodhouse@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,46 +26,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+2013/2/4 Artem Bityutskiy <dedekind1@gmail.com>:
+> On Mon, 2013-01-28 at 11:25 +0100, Rafa=C5=82 Mi=C5=82ecki wrote:
+>> From: Hauke Mehrtens <hauke@hauke-m.de>
+>>
+>> This is not a serial flash driver, but a nand flash driver
+>>
+>> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+>> ---
+>> V2: break line to match 80 chars
+>
+> When sending v2 for individual patches, please, remember 2 things:
+>
+> 1. Keep them part of the original thread (ensure correct In-Reply-To:).
 
---=-4CWMzGYPcj9eIFzh/fDF
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Whoops, I've to learn how to make that with git send-email.
 
-On Mon, 2013-01-28 at 10:06 +0800, Huang Shijie wrote:
-> > +     unsigned int id_len;
-> > +     unsigned long oobsize;
-> > +     unsigned long ecc_len;
-> I think it's better to submit another patch set to solve the ECC
-> problem.
 
-Would you please strip the cited text when bottom-posting - this would
-be a lot mailing-list-friendly.
->=20
+> 2. Add your own signed-off-by.
+
+It was so trivial... I wasn't sure if it's worth signing-it-by... ;)
+
 --=20
-Best Regards,
-Artem Bityutskiy
-
---=-4CWMzGYPcj9eIFzh/fDF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.13 (GNU/Linux)
-
-iQIcBAABAgAGBQJRD3SIAAoJECmIfjd9wqK04V0QAIe0aP4NYMF7c0tQpkfxBLC9
-pi5h4JCrH+zAO/wlWbwCk2r315l/1Pir7OvYvGRU5ygobGYxX1nomL/XHYYxSeoA
-D9F2fVr3vYrlCrS43ujw7MEt9ya9mLNyOs2DZESDiL57ikfx2cWfi2qxSSwbQ4zd
-7KvP6tGADueRas8LL9TegBSijLD1NgAw2alb0kAFGoRlpSzOp8zHJxOaSSD8K63u
-UMMEeP1b7fiLRK5m9xEAoWoZwlSd1VxgT7UBkzZJD7B99kAhq1uuIvwChq7NjFOQ
-h2PC2l3NKeyUaF+CdGjI2oJZA5VgzhzpThVQ40h7jtRz/2gxgAcXpndsb42EJPTb
-iUHhRG4LdcEuRBZaahwzEmpp2Wo1bc2SqQ47IrvrwTWOnLsOaXwyVEw5vz3avwKb
-bnP6gUwYo1P0R+dn1/QrqM4gBJ1lR8RuUOwjtW4WoR6QHAicTLnJem/q+0Eelv61
-djpynJMPNsgMDICGr8Ti5KpUXYbkSTDT+VpyLse4IgWuCCcxdFYJSRiwy96f273I
-qDoNXfx3H/DF8yGXESq+NW1OElRKaTu7UO1/5Sxm4r5mkLZ6hX4CvgSt+2zStbyk
-yjf65BMvtM0NfOw88XXUcmu1nivVi51pn585PHax3JPb5Jhjopl7UQEA9J8MJK4A
-Vg5VTGmsNSxJn+LzwiPC
-=C/Es
------END PGP SIGNATURE-----
-
---=-4CWMzGYPcj9eIFzh/fDF--
+Rafa=C5=82
