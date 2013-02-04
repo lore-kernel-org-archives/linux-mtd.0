@@ -1,21 +1,19 @@
-Received: from mail-ia0-x234.google.com ([2607:f8b0:4001:c02::234])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U2Pr1-0007M0-UZ
- for linux-mtd@lists.infradead.org; Mon, 04 Feb 2013 17:29:16 +0000
-Received: by mail-ia0-f180.google.com with SMTP id f27so8237536iae.25
- for <linux-mtd@lists.infradead.org>; Mon, 04 Feb 2013 09:29:14 -0800 (PST)
-Message-ID: <510FEFE2.3060704@gmail.com>
-Date: Mon, 04 Feb 2013 22:59:06 +0530
-From: Vikram Narayanan <vikram186@gmail.com>
+Received: from mms1.broadcom.com ([216.31.210.17])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1U2Td1-0008KH-Vq
+ for linux-mtd@lists.infradead.org; Mon, 04 Feb 2013 21:31:05 +0000
+From: "Al Cooper" <alcooperx@gmail.com>
+To: dwmw2@infradead.org,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: mtd_torturetest can cause stack overflows
+Date: Mon, 4 Feb 2013 16:29:50 -0500
+Message-ID: <1360013390-30179-1-git-send-email-alcooperx@gmail.com>
+In-Reply-To: <y>
+References: <y>
 MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: UBIFS space consumption
-References: <50F97E6C.7030201@gmail.com>
- <1359961435.13791.4.camel@sauron.fi.intel.com>
-In-Reply-To: <1359961435.13791.4.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: Al Cooper <alcooperx@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,23 +23,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2/4/2013 12:33 PM, Artem Bityutskiy wrote:
-> On Fri, 2013-01-18 at 22:25 +0530, Vikram Narayanan wrote:
->> But according to "df",  UBI volume 0 is sized 148.9 MiB. That's, 15.8
->> MiB more in terms of consumption.
->
-> Df is not accurate with UBIFS by design, this is covered by this FAQ
-> entry:
->
-> http://www.linux-mtd.infradead.org/faq/ubifs.html#L_df_report
->
+mtd_torturetest uses the module parm "ebcnt" to control the size of a
+stack based array of int's. When "ebcnt" is large, Ex: 1000, it
+causes stack overflows on systems with small kernel stacks. The fix
+is to move the array from the stack to kmalloc memory.
 
-Sorry, I think you've mistaken my question. I've referred the above FAQ 
-before framing this mail.
+Signed-off-by: Al Cooper <alcooperx@gmail.com>
+---
+ drivers/mtd/tests/mtd_torturetest.c |   10 +++++++++-
+ 1 files changed, 9 insertions(+), 1 deletions(-)
 
-The above FAQ explains why the _free_ space shown by 'df' isn't 
-accurate. I'm concerned here about the _total_ size shown to me by df, 
-which is less than what is reported by ubinfo.
-
-Thanks,
-Vikram
+diff --git a/drivers/mtd/tests/mtd_torturetest.c b/drivers/mtd/tests/mtd_torturetest.c
+index c4cde1e..a777cc8 100644
+--- a/drivers/mtd/tests/mtd_torturetest.c
++++ b/drivers/mtd/tests/mtd_torturetest.c
+@@ -208,7 +208,7 @@ static inline int write_pattern(int ebnum, void *buf)
+ static int __init tort_init(void)
+ {
+ 	int err = 0, i, infinite = !cycles_count;
+-	int bad_ebs[ebcnt];
++	int *bad_ebs;
+ 
+ 	printk(KERN_INFO "\n");
+ 	printk(KERN_INFO "=================================================\n");
+@@ -273,6 +273,12 @@ static int __init tort_init(void)
+ 		goto out_patt_FF;
+ 	}
+ 
++	bad_ebs = kmalloc(sizeof(*bad_ebs) * ebcnt, GFP_KERNEL);
++	if (!bad_ebs) {
++		pr_err("error: cannot allocate memory\n");
++		goto out_check_buf;
++	}
++
+ 	err = 0;
+ 
+ 	/* Initialize patterns */
+@@ -394,6 +400,8 @@ out:
+ 
+ 	pr_info("finished after %u erase cycles\n",
+ 	       erase_cycles);
++	kfree(bad_ebs);
++out_check_buf:
+ 	kfree(check_buf);
+ out_patt_FF:
+ 	kfree(patt_FF);
+-- 
+1.7.6
