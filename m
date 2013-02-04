@@ -1,22 +1,23 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga14.intel.com ([143.182.124.37])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1U2H1K-00066R-CR
- for linux-mtd@lists.infradead.org; Mon, 04 Feb 2013 08:03:18 +0000
-Message-ID: <1359965101.13791.11.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: fix random pointer dereference in OF device name
- handling
+ id 1U2H4G-0006Fq-27
+ for linux-mtd@lists.infradead.org; Mon, 04 Feb 2013 08:06:21 +0000
+Message-ID: <1359965280.13791.12.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: devices: elm: Removes <xx> literals in elm DT node
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Paul Gortmaker <paul.gortmaker@windriver.com>
-Date: Mon, 04 Feb 2013 10:05:01 +0200
-In-Reply-To: <1358967548-25491-1-git-send-email-paul.gortmaker@windriver.com>
-References: <1358967548-25491-1-git-send-email-paul.gortmaker@windriver.com>
+To: Philip Avinash <avinashphilip@ti.com>
+Date: Mon, 04 Feb 2013 10:08:00 +0200
+In-Reply-To: <9580c5839ea64e09ddd61610ce922d7cd1adc861.1359010256.git.avinashphilip@ti.com>
+References: <9580c5839ea64e09ddd61610ce922d7cd1adc861.1359010256.git.avinashphilip@ti.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-zLB4sqBWOty5dL5QyLzB"
+ boundary="=-xwUgq7gi4ffNHM1Nna01"
 Mime-Version: 1.0
-Cc: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Cc: linux-doc@vger.kernel.org, devicetree-discuss@lists.ozlabs.org,
+ nsekhar@ti.com, linux-kernel@vger.kernel.org, rob.herring@calxeda.com,
+ gururaja.hebbar@ti.com, grant.likely@secretlab.ca,
+ linux-mtd@lists.infradead.org, hvaibhav@ti.com, rob@landley.net,
+ dwmw2@infradead.org
 Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,21 +29,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-zLB4sqBWOty5dL5QyLzB
+--=-xwUgq7gi4ffNHM1Nna01
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2013-01-23 at 13:59 -0500, Paul Gortmaker wrote:
-> Here is the output from an mpc8548 based board.  There are
-> three instances of missing device name here:
+On Thu, 2013-01-24 at 12:23 +0530, Philip Avinash wrote:
+> As part of removing generalized dependency, replace <xx> literal fields
+> in DT compatible field with <52> for am335x platforms.
+>=20
+> Signed-off-by: Philip Avinash <avinashphilip@ti.com>
 
-A similar fix is already in the linux-mtd.git tree.
+Pushed to l2-mtd.git, thanks!
 
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-zLB4sqBWOty5dL5QyLzB
+--=-xwUgq7gi4ffNHM1Nna01
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -50,19 +53,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.13 (GNU/Linux)
 
-iQIcBAABAgAGBQJRD2utAAoJECmIfjd9wqK0sIwP/1ro+FypPr8AHbAPiv9pzSln
-OCgaUBBAqE6exD5hfjj5GGCzfLtX6IpyAH7zzxLvFttEsEakM5dmzYdgok80Gqg7
-NQyBSxphcWKB9VfankM5LRUzN7y/enNXMuTSIZu1rXZ0KBwwNc1QrNIXa4BNlFxx
-E1e4CTF8JkQXxBL5o/Vg+u0mZ76Aspfcj3Q82Mtx4nA6l3fPmvU9SbyuJpkFdZ2e
-fkRWLxuQknWx6QGO+ViRzHQUvCA2McOkDt8yfIe+GFdA9mn/XgGZ0DulH5XEaKIL
-wMebfwRTOOJszEi+KtbxVtJ9BreTCpaMu5fqjzyNCs5Xx/qwC8IFlaE+HzRZXdx2
-P5WIT0tva+0TC0EKE6eUARmM8xFrIFq8vWv9QuuDugtnYHsonIscLdZrNa0Gwci9
-H47+RUKJPdNQRlvsuLCI7dU81nINvjOSsl4+GArrPqb4YrcpQl9RB2ajyYLPvCbl
-QVTeNRKRlFSTiL0B5PLeCEWBv6cYFGpqGoeai+/QvLxnuOFg5+nelpfxxJCIaaX4
-phEG0LXtWN3baUP1poXoPdgDuiq/Rc5hhH1Ls6bNntPTl26fitQsTdqTxLIEu+Ts
-eVRDbG7c5v+VQGOyfYIQLqn24MUmUjL4JV0BDaJVk2DLrN8Q8ZIFyqx7Zpte6Xug
-wgGUVZTQGvgMq1FqG8FF
-=k2d+
+iQIcBAABAgAGBQJRD2xgAAoJECmIfjd9wqK013EQAICi9n36zs4RoRxN98qurA+K
+r7blCtPgWEi4TpxKXD9TYAGlMtEgkT7zhD7RfH+k7TC42mo2pWmSLcMPwmmkSOX0
+SbWcgqEy+N498K+Id25W6yNX51qLlrQ/GWvLWtMw9seOiYz3Lt6jr+cCGTZI3ZO6
+ZO6gOD+7jlqs1R1aGUGQR5NOqdGQcqARCmbm138p0AJzL1+qatLxUV8i+xaHUldB
+TQzr0tR7uH/mH1PFAsxs0LVWjJS1REXQGQKY980hnUVNcGwPEiURXbSUFyn1p4ai
+2DHCihDX3p2oKOH1gVLDUQp2amTtZvhoUyJSiqGAO9auDOTSP0No2iP4F1tlTRJo
+43Drn+GNZgYRs4zuXGBQI4S9tt0nUlgc3/Q0eBDjA79X5CH46U4aVxw6kDKfFeUV
+g9IkYIvq2MKqd4Ka3gZ4mdb8OmWSEEuTLP8FKLkmc5cwCLdXnRr2yevTi4YgbqiA
+LDdFic6BoMDeJ2MDm+m2J0xZsMKgkj3RNOYnh3QsV4/onOWmoMD4Bv3IOP1vVF5L
+yR26vRMq/zBUpEQb1hrSQM03L0P7AgDJnDOz6Rj8KLnLrUaUz5oEG1yiuvkcuvu+
+D2cAPqkMG+IvuX+tBVYIb8vW1cEyxzvb8uru1i99IgpSHckoN/ppr/rQxYWrK4GS
+sI/PtrEftGSUjTtxIhRn
+=7p52
 -----END PGP SIGNATURE-----
 
---=-zLB4sqBWOty5dL5QyLzB--
+--=-xwUgq7gi4ffNHM1Nna01--
