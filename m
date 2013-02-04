@@ -1,22 +1,21 @@
-Received: from mail.windriver.com ([147.11.1.11])
+Received: from mail-ia0-x234.google.com ([2607:f8b0:4001:c02::234])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U2NaA-00019Y-Ln
- for linux-mtd@lists.infradead.org; Mon, 04 Feb 2013 15:03:43 +0000
-Message-ID: <510FCDD9.7060900@windriver.com>
-Date: Mon, 4 Feb 2013 10:03:53 -0500
-From: Paul Gortmaker <paul.gortmaker@windriver.com>
+ id 1U2Pr1-0007M0-UZ
+ for linux-mtd@lists.infradead.org; Mon, 04 Feb 2013 17:29:16 +0000
+Received: by mail-ia0-f180.google.com with SMTP id f27so8237536iae.25
+ for <linux-mtd@lists.infradead.org>; Mon, 04 Feb 2013 09:29:14 -0800 (PST)
+Message-ID: <510FEFE2.3060704@gmail.com>
+Date: Mon, 04 Feb 2013 22:59:06 +0530
+From: Vikram Narayanan <vikram186@gmail.com>
 MIME-Version: 1.0
-To: <artem.bityutskiy@linux.intel.com>
-Subject: Re: [PATCH] mtd: fix random pointer dereference in OF device name
- handling
-References: <1358967548-25491-1-git-send-email-paul.gortmaker@windriver.com>
- <1359965101.13791.11.camel@sauron.fi.intel.com>
-In-Reply-To: <1359965101.13791.11.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+To: dedekind1@gmail.com
+Subject: Re: UBIFS space consumption
+References: <50F97E6C.7030201@gmail.com>
+ <1359961435.13791.4.camel@sauron.fi.intel.com>
+In-Reply-To: <1359961435.13791.4.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,24 +25,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 13-02-04 03:05 AM, Artem Bityutskiy wrote:
-> On Wed, 2013-01-23 at 13:59 -0500, Paul Gortmaker wrote:
->> Here is the output from an mpc8548 based board.  There are
->> three instances of missing device name here:
-> 
-> A similar fix is already in the linux-mtd.git tree.
+On 2/4/2013 12:33 PM, Artem Bityutskiy wrote:
+> On Fri, 2013-01-18 at 22:25 +0530, Vikram Narayanan wrote:
+>> But according to "df",  UBI volume 0 is sized 148.9 MiB. That's, 15.8
+>> MiB more in terms of consumption.
+>
+> Df is not accurate with UBIFS by design, this is covered by this FAQ
+> entry:
+>
+> http://www.linux-mtd.infradead.org/faq/ubifs.html#L_df_report
+>
 
-OK, I see it in linux-next for 3.9 (commit 7dfe4be351e816) but
-it needs to get to mainline/Linus before 3.8 gets released,
-since that is where the regression is introduced (and that
-is why I ended up not seeing the fix, and redoing it, as
-I was working off of mainline).
+Sorry, I think you've mistaken my question. I've referred the above FAQ 
+before framing this mail.
 
-$ git describe --contains d68cbdd4fb
-v3.8-rc1~47^2~53
+The above FAQ explains why the _free_ space shown by 'df' isn't 
+accurate. I'm concerned here about the _total_ size shown to me by df, 
+which is less than what is reported by ubinfo.
 
 Thanks,
-Paul.
-
-
-> 
+Vikram
