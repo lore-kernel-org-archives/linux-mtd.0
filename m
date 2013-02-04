@@ -1,23 +1,22 @@
-Received: from mail.free-electrons.com ([94.23.35.102])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1U2Lnf-0008Sl-GB
- for linux-mtd@lists.infradead.org; Mon, 04 Feb 2013 13:09:31 +0000
-Date: Mon, 4 Feb 2013 10:09:27 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH 37/62] mtd: convert to idr_alloc()
-Message-ID: <20130204130926.GA16825@localhost>
-References: <1359854463-2538-1-git-send-email-tj@kernel.org>
- <1359854463-2538-38-git-send-email-tj@kernel.org>
+Received: from mail.windriver.com ([147.11.1.11])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1U2NaA-00019Y-Ln
+ for linux-mtd@lists.infradead.org; Mon, 04 Feb 2013 15:03:43 +0000
+Message-ID: <510FCDD9.7060900@windriver.com>
+Date: Mon, 4 Feb 2013 10:03:53 -0500
+From: Paul Gortmaker <paul.gortmaker@windriver.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1359854463-2538-38-git-send-email-tj@kernel.org>
-Cc: axboe@kernel.dk, skinsbursky@parallels.com, rusty@rustcorp.com.au,
- jmorris@namei.org, linux-kernel@vger.kernel.org, bfields@fieldses.org,
- linux-mtd@lists.infradead.org, ebiederm@xmission.com,
- akpm@linux-foundation.org, David Woodhouse <dwmw2@infradead.org>
+To: <artem.bityutskiy@linux.intel.com>
+Subject: Re: [PATCH] mtd: fix random pointer dereference in OF device name
+ handling
+References: <1358967548-25491-1-git-send-email-paul.gortmaker@windriver.com>
+ <1359965101.13791.11.camel@sauron.fi.intel.com>
+In-Reply-To: <1359965101.13791.11.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Cc: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,15 +26,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Feb 02, 2013 at 05:20:38PM -0800, Tejun Heo wrote:
-> Convert to the much saner new idr interface.
+On 13-02-04 03:05 AM, Artem Bityutskiy wrote:
+> On Wed, 2013-01-23 at 13:59 -0500, Paul Gortmaker wrote:
+>> Here is the output from an mpc8548 based board.  There are
+>> three instances of missing device name here:
 > 
-> Only compile tested.
+> A similar fix is already in the linux-mtd.git tree.
+
+OK, I see it in linux-next for 3.9 (commit 7dfe4be351e816) but
+it needs to get to mainline/Linus before 3.8 gets released,
+since that is where the regression is introduced (and that
+is why I ended up not seeing the fix, and redoing it, as
+I was working off of mainline).
+
+$ git describe --contains d68cbdd4fb
+v3.8-rc1~47^2~53
+
+Thanks,
+Paul.
+
+
 > 
-
-Tested-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
