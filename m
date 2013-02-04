@@ -1,22 +1,23 @@
-Received: from mail-ob0-f171.google.com ([209.85.214.171])
+Received: from db3ehsobe006.messaging.microsoft.com ([213.199.154.144]
+ helo=db3outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U2Hd2-0001Vt-3Z
- for linux-mtd@lists.infradead.org; Mon, 04 Feb 2013 08:42:16 +0000
-Received: by mail-ob0-f171.google.com with SMTP id lz20so6091026obb.30
- for <linux-mtd@lists.infradead.org>; Mon, 04 Feb 2013 00:42:14 -0800 (PST)
+ id 1U2HhT-00028I-Df
+ for linux-mtd@lists.infradead.org; Mon, 04 Feb 2013 08:46:52 +0000
+Message-ID: <510F7577.7070300@freescale.com>
+Date: Mon, 4 Feb 2013 16:46:47 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <1359966902.13791.19.camel@sauron.fi.intel.com>
-References: <1359368750-19763-3-git-send-email-zajec5@gmail.com>
- <1359966902.13791.19.camel@sauron.fi.intel.com>
-Date: Mon, 4 Feb 2013 09:42:14 +0100
-Message-ID: <CACna6ry0B9nPZDUEDgYZnqM7YsGeDkWG9r6eKihbK+=WLqUcLw@mail.gmail.com>
-Subject: Re: [PATCH V2 3/6] mtd: bcm47xxnflash: fix message
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
+To: <artem.bityutskiy@linux.intel.com>
+Subject: Re: [PATCH v2 1/3] mtd: add new fields to nand_flash_dev{}
+References: <1359007901-26464-1-git-send-email-b32955@freescale.com>	
+ <1359007901-26464-2-git-send-email-b32955@freescale.com>	
+ <5105DD0E.1010500@freescale.com>
+ <1359967368.13791.22.camel@sauron.fi.intel.com>
+In-Reply-To: <1359967368.13791.22.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: quoted-printable
-Cc: Hauke Mehrtens <hauke@hauke-m.de>, linux-mtd@lists.infradead.org,
- David Woodhouse <David.Woodhouse@intel.com>
+Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, shmulik.ladkani@gmail.com, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,26 +27,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2013/2/4 Artem Bityutskiy <dedekind1@gmail.com>:
-> On Mon, 2013-01-28 at 11:25 +0100, Rafa=C5=82 Mi=C5=82ecki wrote:
->> From: Hauke Mehrtens <hauke@hauke-m.de>
->>
->> This is not a serial flash driver, but a nand flash driver
->>
->> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
->> ---
->> V2: break line to match 80 chars
->
-> When sending v2 for individual patches, please, remember 2 things:
->
-> 1. Keep them part of the original thread (ensure correct In-Reply-To:).
+=E4=BA=8E 2013=E5=B9=B402=E6=9C=8804=E6=97=A5 16:42, Artem Bityutskiy =E5=
+=86=99=E9=81=93:
+> On Mon, 2013-01-28 at 10:06 +0800, Huang Shijie wrote:
+>>> +     unsigned int id_len;
+>>> +     unsigned long oobsize;
+>>> +     unsigned long ecc_len;
+>> I think it's better to submit another patch set to solve the ECC
+>> problem.
+> Would you please strip the cited text when bottom-posting - this would
+> be a lot mailing-list-friendly.
 
-Whoops, I've to learn how to make that with git send-email.
+ok. I will keep in mind about this.
 
-
-> 2. Add your own signed-off-by.
-
-It was so trivial... I wasn't sure if it's worth signing-it-by... ;)
-
---=20
-Rafa=C5=82
+thanks
+Huang Shijie
