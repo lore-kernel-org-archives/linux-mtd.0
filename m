@@ -1,21 +1,23 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1U2HYx-00014P-VY
- for linux-mtd@lists.infradead.org; Mon, 04 Feb 2013 08:38:04 +0000
-Message-ID: <1359967187.13791.21.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: nand: onfi don't WARN if we are in 16 bits mode (fwd)
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Paul Walmsley <paul@pwsan.com>
-Date: Mon, 04 Feb 2013 10:39:47 +0200
-In-Reply-To: <alpine.DEB.2.00.1301260754500.19277@utopia.booyaka.com>
-References: <alpine.DEB.2.00.1301260754500.19277@utopia.booyaka.com>
+ id 1U2Hbt-0001NY-8I
+ for linux-mtd@lists.infradead.org; Mon, 04 Feb 2013 08:41:06 +0000
+Message-ID: <1359967368.13791.22.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v2 1/3] mtd: add new fields to nand_flash_dev{}
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Huang Shijie <b32955@freescale.com>
+Date: Mon, 04 Feb 2013 10:42:48 +0200
+In-Reply-To: <5105DD0E.1010500@freescale.com>
+References: <1359007901-26464-1-git-send-email-b32955@freescale.com>
+ <1359007901-26464-2-git-send-email-b32955@freescale.com>
+ <5105DD0E.1010500@freescale.com>
 Content-Type: multipart/signed; micalg="pgp-sha1";
  protocol="application/pgp-signature";
- boundary="=-+T7vhqgGbuLwfEJLW7QX"
+ boundary="=-4CWMzGYPcj9eIFzh/fDF"
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Matthieu CASTET <matthieu.castet@parrot.com>
-Reply-To: dedekind1@gmail.com
+Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, shmulik.ladkani@gmail.com, linux-kernel@vger.kernel.org
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,27 +28,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-+T7vhqgGbuLwfEJLW7QX
+--=-4CWMzGYPcj9eIFzh/fDF
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, 2013-01-26 at 07:56 +0000, Paul Walmsley wrote:
-> Hi Artem, David,
->=20
-> if possible, it would be good to get this one into v3.8-rc, due to the=
-=20
-> large OMAP boot-time warning mentioned at:
->=20
-> http://article.gmane.org/gmane.linux.ports.arm.omap/91317
+On Mon, 2013-01-28 at 10:06 +0800, Huang Shijie wrote:
+> > +     unsigned int id_len;
+> > +     unsigned long oobsize;
+> > +     unsigned long ecc_len;
+> I think it's better to submit another patch set to solve the ECC
+> problem.
 
-It is in David's tree, he merges things upstream, I do not know about
-his plans WRT this patch, unfortunately.
-
+Would you please strip the cited text when bottom-posting - this would
+be a lot mailing-list-friendly.
+>=20
 --=20
 Best Regards,
 Artem Bityutskiy
 
---=-+T7vhqgGbuLwfEJLW7QX
+--=-4CWMzGYPcj9eIFzh/fDF
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
@@ -54,19 +54,19 @@ Content-Transfer-Encoding: 7bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.13 (GNU/Linux)
 
-iQIcBAABAgAGBQJRD3PTAAoJECmIfjd9wqK0bg8QAMgIBIkhzNTx/KjKTfZPugM3
-+GasRz/Iz4CiI0OAraet3pfTBhfRXe8pNw+Tgfy7hRAQ0m2zefh+3kehfbWtN5qS
-aDk0OXB0hJ6DQMXPygEDy7dQvUZ46jsQ9dXuupuDP2p+FFGCw3meQaM3yvp7TajJ
-xI5zVm3iCNDKLj+6RrOdp82oyvaqZOnjHfwPRBHs/2jdeeRDd2JarIVZjCjMjzoo
-l8vT+zWBYsVueWcUA3CIKdzw1dE74r+ydrkJ6o8EUI4swnzcl2MRoAITdXDHqUg4
-uCRSb9Mo1Rjp55cRZA9rzUFNYYBQ3v3XIqGzXK3u4jiVWQ/Dd//usUj0B8fNA8KU
-1+SAHyjeZgXje57zv1p/k4YbC1xMPn/Qt3MksizfcR1akY7q+5+6/HnGrWVvsji1
-Z8enBsToyWJuGUJBH5fhfAOm5jDfe5ZeOTwM01nV9fOYGmKidaJppHCC9ZTq1BXQ
-kmCo4p/1hcjM/uBbPec+JHh3hn8r0sjoKtM8Q6T1qAiRUT1DHcR7bhFPQMJdIV+j
-p/h2pep/nkmaz3ZSssgFM2VTXF5yRIvqVhi6LdUwuzLmu8va1b5+EcFjt0/WfP0U
-e1qpB/fRG+8WbE0rEYb4W9XsTQR7nXDE0IOiYmMZgmh1m8kcqqjyPPKq+74Xwv4m
-giUIDdQdjhbC420WwFP+
-=q6K5
+iQIcBAABAgAGBQJRD3SIAAoJECmIfjd9wqK04V0QAIe0aP4NYMF7c0tQpkfxBLC9
+pi5h4JCrH+zAO/wlWbwCk2r315l/1Pir7OvYvGRU5ygobGYxX1nomL/XHYYxSeoA
+D9F2fVr3vYrlCrS43ujw7MEt9ya9mLNyOs2DZESDiL57ikfx2cWfi2qxSSwbQ4zd
+7KvP6tGADueRas8LL9TegBSijLD1NgAw2alb0kAFGoRlpSzOp8zHJxOaSSD8K63u
+UMMEeP1b7fiLRK5m9xEAoWoZwlSd1VxgT7UBkzZJD7B99kAhq1uuIvwChq7NjFOQ
+h2PC2l3NKeyUaF+CdGjI2oJZA5VgzhzpThVQ40h7jtRz/2gxgAcXpndsb42EJPTb
+iUHhRG4LdcEuRBZaahwzEmpp2Wo1bc2SqQ47IrvrwTWOnLsOaXwyVEw5vz3avwKb
+bnP6gUwYo1P0R+dn1/QrqM4gBJ1lR8RuUOwjtW4WoR6QHAicTLnJem/q+0Eelv61
+djpynJMPNsgMDICGr8Ti5KpUXYbkSTDT+VpyLse4IgWuCCcxdFYJSRiwy96f273I
+qDoNXfx3H/DF8yGXESq+NW1OElRKaTu7UO1/5Sxm4r5mkLZ6hX4CvgSt+2zStbyk
+yjf65BMvtM0NfOw88XXUcmu1nivVi51pn585PHax3JPb5Jhjopl7UQEA9J8MJK4A
+Vg5VTGmsNSxJn+LzwiPC
+=C/Es
 -----END PGP SIGNATURE-----
 
---=-+T7vhqgGbuLwfEJLW7QX--
+--=-4CWMzGYPcj9eIFzh/fDF--
