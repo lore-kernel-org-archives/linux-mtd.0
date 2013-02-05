@@ -1,18 +1,23 @@
-Received: from co9ehsobe001.messaging.microsoft.com ([207.46.163.24]
- helo=co9outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U2Z4r-0001tD-Bv
- for linux-mtd@lists.infradead.org; Tue, 05 Feb 2013 03:20:10 +0000
-From: Huang Shijie <b32955@freescale.com>
-To: <dwmw2@infradead.org>
-Subject: [PATCH 1/2] mtd: torturetest: rewrite the erase-write-verify process
- into one block unit.
-Date: Tue, 5 Feb 2013 10:20:19 +0800
-Message-ID: <1360030820-21491-1-git-send-email-b32955@freescale.com>
+Received: from ra.se.axis.com ([195.60.68.13])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1U2dWx-0007x1-AI
+ for linux-mtd@lists.infradead.org; Tue, 05 Feb 2013 08:05:28 +0000
+Date: Tue, 5 Feb 2013 09:05:18 +0100
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH 2/2] mtd: torturetest: add the support for random data
+ pattern
+In-Reply-To: <1360030820-21491-2-git-send-email-b32955@freescale.com>
+Message-ID: <alpine.DEB.2.00.1302050900010.3736@lnxricardw.se.axis.com>
+References: <1360030820-21491-1-git-send-email-b32955@freescale.com>
+ <1360030820-21491-2-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, dedekind1@gmail.com
+Content-Type: text/plain; charset="ISO-8859-15"; format=flowed
+Content-Transfer-Encoding: 8BIT
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,79 +27,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Rewrite the torture cycle, do the erase-write-verify process in
-one block unit, not in several blocks unit.
 
-This patch makes preparations for adding the rand data pattern support.
+On Tue, 5 Feb 2013, Huang Shijie wrote:
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
- drivers/mtd/tests/mtd_torturetest.c |   29 +++++++----------------------
- 1 files changed, 7 insertions(+), 22 deletions(-)
+> Add a new module parameter 'pattern'. If it is set to zero, we will use 
+> the 55/AA pattern to torture the nand blocks; if it is set to a non-zero 
+> value, we will use the random data pattern.
 
-diff --git a/drivers/mtd/tests/mtd_torturetest.c b/drivers/mtd/tests/mtd_torturetest.c
-index c4cde1e..516cf66 100644
---- a/drivers/mtd/tests/mtd_torturetest.c
-+++ b/drivers/mtd/tests/mtd_torturetest.c
-@@ -313,21 +313,18 @@ static int __init tort_init(void)
- 		int i;
- 		void *patt;
- 
--		/* Erase all eraseblocks */
- 		for (i = eb; i < eb + ebcnt; i++) {
- 			if (bad_ebs[i - eb])
- 				continue;
-+
-+			/* Erase all eraseblocks */
- 			err = erase_eraseblock(i);
- 			if (err)
- 				goto out;
- 			cond_resched();
--		}
- 
--		/* Check if the eraseblocks contain only 0xFF bytes */
--		if (check) {
--			for (i = eb; i < eb + ebcnt; i++) {
--				if (bad_ebs[i - eb])
--					continue;
-+			/* Check if the eraseblocks contain only 0xFF bytes */
-+			if (check) {
- 				err = check_eraseblock(i, patt_FF);
- 				if (err) {
- 					pr_info("verify failed"
-@@ -336,12 +333,8 @@ static int __init tort_init(void)
- 				}
- 				cond_resched();
- 			}
--		}
- 
--		/* Write the pattern */
--		for (i = eb; i < eb + ebcnt; i++) {
--			if (bad_ebs[i - eb])
--				continue;
-+			/* Write the pattern */
- 			if ((eb + erase_cycles) & 1)
- 				patt = patt_5A5;
- 			else
-@@ -350,17 +343,9 @@ static int __init tort_init(void)
- 			if (err)
- 				goto out;
- 			cond_resched();
--		}
- 
--		/* Verify what we wrote */
--		if (check) {
--			for (i = eb; i < eb + ebcnt; i++) {
--				if (bad_ebs[i - eb])
--					continue;
--				if ((eb + erase_cycles) & 1)
--					patt = patt_5A5;
--				else
--					patt = patt_A5A;
-+			/* Verify what we wrote */
-+			if (check) {
- 				err = check_eraseblock(i, patt);
- 				if (err) {
- 					pr_info("verify failed for %s"
+Not a big issue in any way, but if you're using a numeric parameter value 
+anyway, could not one use a range of the permissable values to set a seed 
+for the random generation, so that the test can be repeated with the same 
+set of random numbers?
+
+Something like
+
+0 => 55/AA
+-1 => random
+1 and up => random, specifying seed for random number generator.
+
+> +MODULE_PARM_DESC(pattern, "0 for 55/AA pattern(default), else for
+> +				the random pattern");
+
+I'd suggest something like "0 for 55/AA pattern (default), non-zero for 
+random pattern".
+
+(Or "-1 for 55/AA pattern (default), else random; >=1 sets seed" if 
+changed according to the above).
+
+/Ricard
 -- 
-1.7.0.4
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
