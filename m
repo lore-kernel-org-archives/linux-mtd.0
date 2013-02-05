@@ -1,19 +1,19 @@
-Received: from co9ehsobe003.messaging.microsoft.com ([207.46.163.26]
- helo=co9outboundpool.messaging.microsoft.com)
+Received: from ch1ehsobe004.messaging.microsoft.com ([216.32.181.184]
+ helo=ch1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U2XuO-0006Gr-Hr
- for linux-mtd@lists.infradead.org; Tue, 05 Feb 2013 02:05:17 +0000
-Message-ID: <511068DA.4070508@freescale.com>
-Date: Tue, 5 Feb 2013 10:05:14 +0800
+ id 1U2Z4p-0001tC-JV
+ for linux-mtd@lists.infradead.org; Tue, 05 Feb 2013 03:20:08 +0000
 From: Huang Shijie <b32955@freescale.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH 2/2] mtd: torturetest: add the support for random data pattern
+Date: Tue, 5 Feb 2013 10:20:20 +0800
+Message-ID: <1360030820-21491-2-git-send-email-b32955@freescale.com>
+In-Reply-To: <1360030820-21491-1-git-send-email-b32955@freescale.com>
+References: <1360030820-21491-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-To: Al Cooper <alcooperx@gmail.com>
-Subject: Re: [PATCH] mtd: mtd_torturetest can cause stack overflows
-References: <y> <1360013390-30179-1-git-send-email-alcooperx@gmail.com>
-In-Reply-To: <1360013390-30179-1-git-send-email-alcooperx@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
+Content-Type: text/plain
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +23,154 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B402=E6=9C=8805=E6=97=A5 05:29, Al Cooper =E5=86=99=E9=
-=81=93:
-> diff --git a/drivers/mtd/tests/mtd_torturetest.c b/drivers/mtd/tests/mt=
-d_torturetest.c
-> index c4cde1e..a777cc8 100644
-> --- a/drivers/mtd/tests/mtd_torturetest.c
-> +++ b/drivers/mtd/tests/mtd_torturetest.c
-> @@ -208,7 +208,7 @@ static inline int write_pattern(int ebnum, void *bu=
-f)
->   static int __init tort_init(void)
->   {
->   	int err =3D 0, i, infinite =3D !cycles_count;
-> -	int bad_ebs[ebcnt];
-> +	int *bad_ebs;
->
->   	printk(KERN_INFO "\n");
->   	printk(KERN_INFO "=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D\n");
-> @@ -273,6 +273,12 @@ static int __init tort_init(void)
->   		goto out_patt_FF;
->   	}
->
-> +	bad_ebs =3D kmalloc(sizeof(*bad_ebs) * ebcnt, GFP_KERNEL);
-I think it's better to use the kcalloc() here.
+Add a new module parameter 'pattern'. If it is set to zero,
+we will use the 55/AA pattern to torture the nand blocks; if it is set
+to a non-zero value, we will use the random data pattern.
 
-thanks
-Huang Shijie
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+ drivers/mtd/tests/mtd_torturetest.c |   72 ++++++++++++++++++++++++-----------
+ 1 files changed, 50 insertions(+), 22 deletions(-)
+
+diff --git a/drivers/mtd/tests/mtd_torturetest.c b/drivers/mtd/tests/mtd_torturetest.c
+index 516cf66..07655bc 100644
+--- a/drivers/mtd/tests/mtd_torturetest.c
++++ b/drivers/mtd/tests/mtd_torturetest.c
+@@ -32,6 +32,7 @@
+ #include <linux/mtd/mtd.h>
+ #include <linux/slab.h>
+ #include <linux/sched.h>
++#include <linux/random.h>
+ 
+ #define RETRIES 3
+ 
+@@ -64,6 +65,11 @@ module_param(cycles_count, uint, S_IRUGO);
+ MODULE_PARM_DESC(cycles_count, "how many erase cycles to do "
+ 			       "(infinite by default)");
+ 
++static int pattern;
++module_param(pattern, int, S_IRUGO);
++MODULE_PARM_DESC(pattern, "0 for 55/AA pattern(default), else for
++				the random pattern");
++
+ static struct mtd_info *mtd;
+ 
+ /* This buffer contains 0x555555...0xAAAAAA... pattern */
+@@ -72,6 +78,8 @@ static unsigned char *patt_5A5;
+ static unsigned char *patt_A5A;
+ /* This buffer contains all 0xFF bytes */
+ static unsigned char *patt_FF;
++/* This buffer contains the random data. */
++static unsigned char *patt_rd;
+ /* This a temporary buffer is use when checking data */
+ static unsigned char *check_buf;
+ /* How many erase cycles were done */
+@@ -228,6 +236,8 @@ static int __init tort_init(void)
+ 		pr_info("torturing just %d pages per eraseblock\n",
+ 			pgcnt);
+ 	pr_info("write verify %s\n", check ? "enabled" : "disabled");
++	pr_info("Test pattern is %s\n",
++			pattern ? "random data pattern" : "55/AA pattern");
+ 
+ 	mtd = get_mtd_device(NULL, dev);
+ 	if (IS_ERR(mtd)) {
+@@ -249,16 +259,24 @@ static int __init tort_init(void)
+ 	}
+ 
+ 	err = -ENOMEM;
+-	patt_5A5 = kmalloc(mtd->erasesize, GFP_KERNEL);
+-	if (!patt_5A5) {
+-		pr_err("error: cannot allocate memory\n");
+-		goto out_mtd;
+-	}
++	if (!pattern) {
++		patt_5A5 = kmalloc(mtd->erasesize, GFP_KERNEL);
++		if (!patt_5A5) {
++			pr_err("error: cannot allocate memory\n");
++			goto out_mtd;
++		}
+ 
+-	patt_A5A = kmalloc(mtd->erasesize, GFP_KERNEL);
+-	if (!patt_A5A) {
+-		pr_err("error: cannot allocate memory\n");
+-		goto out_patt_5A5;
++		patt_A5A = kmalloc(mtd->erasesize, GFP_KERNEL);
++		if (!patt_A5A) {
++			pr_err("error: cannot allocate memory\n");
++			goto out_patt_5A5;
++		}
++	} else {
++		patt_rd = kmalloc(mtd->erasesize, GFP_KERNEL);
++		if (!patt_rd) {
++			pr_err("error: cannot allocate memory\n");
++			goto out_patt_rd;
++		}
+ 	}
+ 
+ 	patt_FF = kmalloc(mtd->erasesize, GFP_KERNEL);
+@@ -277,13 +295,15 @@ static int __init tort_init(void)
+ 
+ 	/* Initialize patterns */
+ 	memset(patt_FF, 0xFF, mtd->erasesize);
+-	for (i = 0; i < mtd->erasesize / pgsize; i++) {
+-		if (!(i & 1)) {
+-			memset(patt_5A5 + i * pgsize, 0x55, pgsize);
+-			memset(patt_A5A + i * pgsize, 0xAA, pgsize);
+-		} else {
+-			memset(patt_5A5 + i * pgsize, 0xAA, pgsize);
+-			memset(patt_A5A + i * pgsize, 0x55, pgsize);
++	if (!pattern) {
++		for (i = 0; i < mtd->erasesize / pgsize; i++) {
++			if (!(i & 1)) {
++				memset(patt_5A5 + i * pgsize, 0x55, pgsize);
++				memset(patt_A5A + i * pgsize, 0xAA, pgsize);
++			} else {
++				memset(patt_5A5 + i * pgsize, 0xAA, pgsize);
++				memset(patt_A5A + i * pgsize, 0x55, pgsize);
++			}
+ 		}
+ 	}
+ 
+@@ -335,10 +355,15 @@ static int __init tort_init(void)
+ 			}
+ 
+ 			/* Write the pattern */
+-			if ((eb + erase_cycles) & 1)
+-				patt = patt_5A5;
+-			else
+-				patt = patt_A5A;
++			if (!pattern) {
++				if ((eb + erase_cycles) & 1)
++					patt = patt_5A5;
++				else
++					patt = patt_A5A;
++			} else {
++				patt = patt_rd;
++				prandom_bytes(patt, mtd->erasesize);
++			}
+ 			err = write_pattern(i, patt);
+ 			if (err)
+ 				goto out;
+@@ -350,8 +375,9 @@ static int __init tort_init(void)
+ 				if (err) {
+ 					pr_info("verify failed for %s"
+ 					       " pattern\n",
+-					       ((eb + erase_cycles) & 1) ?
+-					       "0x55AA55..." : "0xAA55AA...");
++					       pattern ? "random pattern" :
++					       (((eb + erase_cycles) & 1) ?
++					       "0x55AA55..." : "0xAA55AA..."));
+ 					goto out;
+ 				}
+ 				cond_resched();
+@@ -386,6 +412,8 @@ out_patt_A5A:
+ 	kfree(patt_A5A);
+ out_patt_5A5:
+ 	kfree(patt_5A5);
++out_patt_rd:
++	kfree(patt_rd);
+ out_mtd:
+ 	put_mtd_device(mtd);
+ 	if (err)
+-- 
+1.7.0.4
