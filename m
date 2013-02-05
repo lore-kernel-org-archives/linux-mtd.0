@@ -1,13 +1,13 @@
-Received: from co1ehsobe005.messaging.microsoft.com ([216.32.180.188]
+Received: from co1ehsobe003.messaging.microsoft.com ([216.32.180.186]
  helo=co1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U2eiG-00073c-5U
- for linux-mtd@lists.infradead.org; Tue, 05 Feb 2013 09:21:13 +0000
+ id 1U2erO-0003Dq-GF
+ for linux-mtd@lists.infradead.org; Tue, 05 Feb 2013 09:30:39 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH v2] mtd: torturetest: add the support for random data pattern
-Date: Tue, 5 Feb 2013 16:21:25 +0800
-Message-ID: <1360052485-11961-1-git-send-email-b32955@freescale.com>
+Subject: [PATCH V3] mtd: torturetest: add the support for random data pattern
+Date: Tue, 5 Feb 2013 16:30:50 +0800
+Message-ID: <1360053050-18043-1-git-send-email-b32955@freescale.com>
 In-Reply-To: <alpine.DEB.2.00.1302050900010.3736@lnxricardw.se.axis.com>
 References: <alpine.DEB.2.00.1302050900010.3736@lnxricardw.se.axis.com>
 MIME-Version: 1.0
@@ -31,16 +31,17 @@ Add a new module parameter 'pattern'. The meaning of the pattern is:
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
-
 v1 --> v2:
-   add the seed support.
+   add seed support.
 
+v2 --> v3:
+   fix a type in pr_info
 ---
  drivers/mtd/tests/mtd_torturetest.c |   82 +++++++++++++++++++++++++---------
  1 files changed, 60 insertions(+), 22 deletions(-)
 
 diff --git a/drivers/mtd/tests/mtd_torturetest.c b/drivers/mtd/tests/mtd_torturetest.c
-index 516cf66..5481c99 100644
+index 516cf66..051015d 100644
 --- a/drivers/mtd/tests/mtd_torturetest.c
 +++ b/drivers/mtd/tests/mtd_torturetest.c
 @@ -32,6 +32,7 @@
@@ -83,7 +84,7 @@ index 516cf66..5481c99 100644
 +	else if (pattern < 0)
 +		pr_info("Test pattern is random.\n");
 +	else
-+		pr_info("Test pattern is random, seed is 0x%d.\n", pattern);
++		pr_info("Test pattern is random, seed is 0x%x.\n", pattern);
  
  	mtd = get_mtd_device(NULL, dev);
  	if (IS_ERR(mtd)) {
