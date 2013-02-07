@@ -1,20 +1,14 @@
-Received: from mail-ee0-f49.google.com ([74.125.83.49])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U3P9J-0006kH-Hy
- for linux-mtd@lists.infradead.org; Thu, 07 Feb 2013 10:56:14 +0000
-Received: by mail-ee0-f49.google.com with SMTP id d4so1199583eek.36
- for <linux-mtd@lists.infradead.org>; Thu, 07 Feb 2013 02:56:11 -0800 (PST)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
- David Woodhouse <David.Woodhouse@intel.com>
-Subject: [PATCH] mtd: bcm47xxnflash: use pr_fmt for module prefix in messages
-Date: Thu,  7 Feb 2013 11:56:04 +0100
-Message-Id: <1360234564-6455-1-git-send-email-zajec5@gmail.com>
+From: Philip Avinash <avinashphilip@ti.com>
+To: <khilman@ti.com>, <tony@atomide.com>, <linux@arm.linux.org.uk>,
+ <dwmw2@infradead.org>, <artem.bityutskiy@linux.intel.com>
+Subject: [PATCH v2 0/4] suspend/resume support for OMAP nand driver
+Date: Thu, 7 Feb 2013 18:06:54 +0530
+Message-ID: <1360240618-11094-1-git-send-email-avinashphilip@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Hauke Mehrtens <hauke@hauke-m.de>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+Content-Type: text/plain
+Cc: afzal@ti.com, nsekhar@ti.com, linux-kernel@vger.kernel.org, hvaibhav@ti.com,
+ gururaja.hebbar@ti.com, linux-mtd@lists.infradead.org,
+ linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,69 +18,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This patch series adds low power transition support for OMAP NAND driver.
+With recent driver conversion of GPMC to platform_driver, pm_runtime calls
+can be used to handle module enable & disable of GPMC. This is taken care
+patch #1.
 
-Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
----
- drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h |    4 ++++
- drivers/mtd/nand/bcm47xxnflash/main.c          |    4 ++--
- drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c   |    4 ++--
- 3 files changed, 8 insertions(+), 4 deletions(-)
+patch #2 is for GPMC suspend/resume support.
 
-diff --git a/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h b/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h
-index 0bdb2ce..c005a62 100644
---- a/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h
-+++ b/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h
-@@ -1,6 +1,10 @@
- #ifndef __BCM47XXNFLASH_H
- #define __BCM47XXNFLASH_H
- 
-+#ifndef pr_fmt
-+#define pr_fmt(fmt)		KBUILD_MODNAME ": " fmt
-+#endif
-+
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/nand.h>
- 
-diff --git a/drivers/mtd/nand/bcm47xxnflash/main.c b/drivers/mtd/nand/bcm47xxnflash/main.c
-index a52acdc..7bae569 100644
---- a/drivers/mtd/nand/bcm47xxnflash/main.c
-+++ b/drivers/mtd/nand/bcm47xxnflash/main.c
-@@ -9,14 +9,14 @@
-  *
-  */
- 
-+#include "bcm47xxnflash.h"
-+
- #include <linux/module.h>
- #include <linux/kernel.h>
- #include <linux/slab.h>
- #include <linux/platform_device.h>
- #include <linux/bcma/bcma.h>
- 
--#include "bcm47xxnflash.h"
--
- MODULE_DESCRIPTION("NAND flash driver for BCMA bus");
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Rafał Miłecki");
-diff --git a/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c b/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c
-index 595de40..b2ab373 100644
---- a/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c
-+++ b/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c
-@@ -9,13 +9,13 @@
-  *
-  */
- 
-+#include "bcm47xxnflash.h"
-+
- #include <linux/module.h>
- #include <linux/kernel.h>
- #include <linux/slab.h>
- #include <linux/bcma/bcma.h>
- 
--#include "bcm47xxnflash.h"
--
- /* Broadcom uses 1'000'000 but it seems to be too many. Tests on WNDR4500 has
-  * shown ~1000 retries as maxiumum. */
- #define NFLASH_READY_RETRIES		10000
+This includes low power transition support of
+- GPMC module
+- ELM module
+- OMAP2 NAND driver
+
+User initiated suspend/resume sequence tested on am335x-evm with NAND
+flash support. Also tested in omap3-evm for user initiated
+suspend/resume sequence with NAND flash.
+This patch series based on [1] and is present in [2].
+
+1. ARM: OMAP2+: AM33XX: Add suspend-resume support
+   http://comments.gmane.org/gmane.linux.ports.arm.omap/91405
+2. https://github.com/avinashphilip/am335x_linux/commits/NAND_supend_resume_support
+
+
+Philip Avinash (4):
+  arm: gpmc: Converts GPMC driver to pm_runtime capable
+  arm: gpmc: Low power transition support
+  mtd: devices: elm: Low power transition support
+  mtd: nand: omap2: Low power transition support
+
+ arch/arm/mach-omap2/gpmc.c |   30 +++++++++++++++++++++++++++---
+ drivers/mtd/devices/elm.c  |   40 ++++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/nand/omap2.c   |   19 +++++++++++++++++++
+ 3 files changed, 86 insertions(+), 3 deletions(-)
+
 -- 
-1.7.10.4
+1.7.9.5
