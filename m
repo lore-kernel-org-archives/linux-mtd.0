@@ -1,17 +1,20 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from mail-ee0-f49.google.com ([74.125.83.49])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U3Olw-00042R-I3
- for linux-mtd@lists.infradead.org; Thu, 07 Feb 2013 10:32:04 +0000
-From: Mrugesh Katepallewar <mrugesh.mk@ti.com>
-To: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <davinci-linux-open-source@linux.davincidsp.com>
-Subject: [PATCH] mtd: davinci_nand: Use managed resources
-Date: Thu, 7 Feb 2013 16:03:15 +0530
-Message-ID: <1360233195-8575-1-git-send-email-mrugesh.mk@ti.com>
+ id 1U3P9J-0006kH-Hy
+ for linux-mtd@lists.infradead.org; Thu, 07 Feb 2013 10:56:14 +0000
+Received: by mail-ee0-f49.google.com with SMTP id d4so1199583eek.36
+ for <linux-mtd@lists.infradead.org>; Thu, 07 Feb 2013 02:56:11 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
+ David Woodhouse <David.Woodhouse@intel.com>
+Subject: [PATCH] mtd: bcm47xxnflash: use pr_fmt for module prefix in messages
+Date: Thu,  7 Feb 2013 11:56:04 +0100
+Message-Id: <1360234564-6455-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: artem.bityutskiy@linux.intel.com, m-karicheri2@ti.com, dwmw2@infradead.org,
- nsekhar@ti.com, mturquette@linaro.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Hauke Mehrtens <hauke@hauke-m.de>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,93 +24,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-davinci_nand driver currently uses normal kzalloc, ioremap and get_clk
-routines. This patch replaces these routines with devm_kzalloc,
-devm_request_and_ioremap and devm_clk_get resp.
 
-Signed-off-by: Mrugesh Katepallewar <mrugesh.mk@ti.com>
+Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
 ---
-Apply on top of v3.8-rc6 of linus tree.
+ drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h |    4 ++++
+ drivers/mtd/nand/bcm47xxnflash/main.c          |    4 ++--
+ drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c   |    4 ++--
+ 3 files changed, 8 insertions(+), 4 deletions(-)
 
-:100644 100644 3502606... e7d5bd6... M	drivers/mtd/nand/davinci_nand.c
- drivers/mtd/nand/davinci_nand.c |   24 +++++-------------------
- 1 file changed, 5 insertions(+), 19 deletions(-)
-
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-index 3502606..e7d5bd6 100644
---- a/drivers/mtd/nand/davinci_nand.c
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -606,7 +606,7 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
- 	if (pdev->id < 0 || pdev->id > 3)
- 		return -ENODEV;
+diff --git a/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h b/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h
+index 0bdb2ce..c005a62 100644
+--- a/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h
++++ b/drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h
+@@ -1,6 +1,10 @@
+ #ifndef __BCM47XXNFLASH_H
+ #define __BCM47XXNFLASH_H
  
--	info = kzalloc(sizeof(*info), GFP_KERNEL);
-+	info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
- 	if (!info) {
- 		dev_err(&pdev->dev, "unable to allocate memory\n");
- 		ret = -ENOMEM;
-@@ -623,11 +623,11 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
- 		goto err_nomem;
- 	}
++#ifndef pr_fmt
++#define pr_fmt(fmt)		KBUILD_MODNAME ": " fmt
++#endif
++
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/nand.h>
  
--	vaddr = ioremap(res1->start, resource_size(res1));
--	base = ioremap(res2->start, resource_size(res2));
-+	vaddr = devm_request_and_ioremap(&pdev->dev, res1);
-+	base = devm_request_and_ioremap(&pdev->dev, res2);
- 	if (!vaddr || !base) {
- 		dev_err(&pdev->dev, "ioremap failed\n");
--		ret = -EINVAL;
-+		ret = -EADDRNOTAVAIL;
- 		goto err_ioremap;
- 	}
+diff --git a/drivers/mtd/nand/bcm47xxnflash/main.c b/drivers/mtd/nand/bcm47xxnflash/main.c
+index a52acdc..7bae569 100644
+--- a/drivers/mtd/nand/bcm47xxnflash/main.c
++++ b/drivers/mtd/nand/bcm47xxnflash/main.c
+@@ -9,14 +9,14 @@
+  *
+  */
  
-@@ -717,7 +717,7 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
- 	}
- 	info->chip.ecc.mode = ecc_mode;
++#include "bcm47xxnflash.h"
++
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/slab.h>
+ #include <linux/platform_device.h>
+ #include <linux/bcma/bcma.h>
  
--	info->clk = clk_get(&pdev->dev, "aemif");
-+	info->clk = devm_clk_get(&pdev->dev, "aemif");
- 	if (IS_ERR(info->clk)) {
- 		ret = PTR_ERR(info->clk);
- 		dev_dbg(&pdev->dev, "unable to get AEMIF clock, err %d\n", ret);
-@@ -845,8 +845,6 @@ err_timing:
- 	clk_disable_unprepare(info->clk);
- 
- err_clk_enable:
--	clk_put(info->clk);
+-#include "bcm47xxnflash.h"
 -
- 	spin_lock_irq(&davinci_nand_lock);
- 	if (ecc_mode == NAND_ECC_HW_SYNDROME)
- 		ecc4_busy = false;
-@@ -855,13 +853,7 @@ err_clk_enable:
- err_ecc:
- err_clk:
- err_ioremap:
--	if (base)
--		iounmap(base);
--	if (vaddr)
--		iounmap(vaddr);
+ MODULE_DESCRIPTION("NAND flash driver for BCMA bus");
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Rafał Miłecki");
+diff --git a/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c b/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c
+index 595de40..b2ab373 100644
+--- a/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c
++++ b/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c
+@@ -9,13 +9,13 @@
+  *
+  */
+ 
++#include "bcm47xxnflash.h"
++
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/slab.h>
+ #include <linux/bcma/bcma.h>
+ 
+-#include "bcm47xxnflash.h"
 -
- err_nomem:
--	kfree(info);
- 	return ret;
- }
- 
-@@ -874,15 +866,9 @@ static int __exit nand_davinci_remove(struct platform_device *pdev)
- 		ecc4_busy = false;
- 	spin_unlock_irq(&davinci_nand_lock);
- 
--	iounmap(info->base);
--	iounmap(info->vaddr);
--
- 	nand_release(&info->mtd);
- 
- 	clk_disable_unprepare(info->clk);
--	clk_put(info->clk);
--
--	kfree(info);
- 
- 	return 0;
- }
+ /* Broadcom uses 1'000'000 but it seems to be too many. Tests on WNDR4500 has
+  * shown ~1000 retries as maxiumum. */
+ #define NFLASH_READY_RETRIES		10000
 -- 
-1.7.9.5
+1.7.10.4
