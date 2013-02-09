@@ -1,24 +1,22 @@
-Received: from [2002:4e20:1eda::1] (helo=caramon.arm.linux.org.uk)
+Received: from mail-vc0-f169.google.com ([209.85.220.169])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U47ap-00030H-24
- for linux-mtd@lists.infradead.org; Sat, 09 Feb 2013 10:23:35 +0000
-Date: Sat, 9 Feb 2013 10:22:44 +0000
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-To: Philip Avinash <avinashphilip@ti.com>
-Subject: Re: [PATCH v2 3/4] mtd: devices: elm: Low power transition support
-Message-ID: <20130209102243.GH17852@n2100.arm.linux.org.uk>
-References: <1360240618-11094-1-git-send-email-avinashphilip@ti.com>
- <1360240618-11094-4-git-send-email-avinashphilip@ti.com>
+ id 1U4JJn-00055q-5y
+ for linux-mtd@lists.infradead.org; Sat, 09 Feb 2013 22:54:48 +0000
+Received: by mail-vc0-f169.google.com with SMTP id n10so3105951vcn.14
+ for <linux-mtd@lists.infradead.org>; Sat, 09 Feb 2013 14:54:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1360240618-11094-4-git-send-email-avinashphilip@ti.com>
-Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: khilman@ti.com, afzal@ti.com, tony@atomide.com,
- artem.bityutskiy@linux.intel.com, nsekhar@ti.com, linux-kernel@vger.kernel.org,
- hvaibhav@ti.com, gururaja.hebbar@ti.com, linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+In-Reply-To: <Pine.LNX.4.64.1302022239300.8751@axis700.grange>
+References: <Pine.LNX.4.64.1212310952190.23808@axis700.grange>
+ <Pine.LNX.4.64.1302022239300.8751@axis700.grange>
+Date: Sat, 9 Feb 2013 14:54:43 -0800
+Message-ID: <CAN8TOE_uc=_ja64jWtEF2TTo7rqYaasShrQ+iPyZHBaGOv5oFw@mail.gmail.com>
+Subject: Re: [PATCH] mtd: fix uninitialised mtd map name
+From: Brian Norris <computersforpeace@gmail.com>
+To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
+ linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,24 +26,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Feb 07, 2013 at 06:06:57PM +0530, Philip Avinash wrote:
-> +static int elm_suspend(struct device *dev)
-> +{
-> +	struct elm_info *info = dev_get_drvdata(dev);
-> +	wait_queue_head_t wq;
-> +	DECLARE_WAITQUEUE(wait, current);
-> +
-> +	init_waitqueue_head(&wq);
-> +	while (1) {
-> +		/* Make sure that ELM not running */
-> +		if (info->idle) {
-> +			add_wait_queue(&wq, &wait);
-> +			schedule();
-> +			remove_wait_queue(&wq, &wait);
-> +		} else {
-> +			break;
-> +		}
-> +	}
+On Sat, Feb 2, 2013 at 1:48 PM, Guennadi Liakhovetski
+<g.liakhovetski@gmx.de> wrote:
+> Do I see it right, that this patch didn't make it into the kernel on time
+> for 3.8? Could you please, make sure it makes it to 3.9?
 
-The above code looks really wrong - it will just spin endlessly with the
-waitqueues doing nothing useful.  What are you trying to do here?
+It looks like an independent but identical patch made it in for 3.8-rc7:
+
+commit 7dfe4be351e81656ca1068e5d4ead235c7ba94b1
+Author: Baruch Siach <baruch@tkos.co.il>
+Date:   Sun Dec 23 13:10:50 2012 +0200
+
+    mtd: physmap_of: fix cmdline partition method w/o linux, mtd-name
+
+    Commit d68cbdd4fb (mtd: physmap_of: allow to specify the mtd name for retro
+    compatiblity) broke cmdline partitioning using dev_name() in the
+kernel command
+    line.  of_property_read_string() does not touch mtd_name when
+linux,mtd-name is
+    not present in the device tree, which causes map.name to be set to a random
+    value.  Fix this by initializing mtd_name to NULL.
+
+    Cc: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+    Signed-off-by: Baruch Siach <baruch@tkos.co.il>
+    Signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
+
+Brian
