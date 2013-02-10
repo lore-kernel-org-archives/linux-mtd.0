@@ -1,21 +1,16 @@
-Received: from mail-vb0-f49.google.com ([209.85.212.49])
+Received: from mail-bk0-f54.google.com ([209.85.214.54])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U4SBc-0005pp-0J
- for linux-mtd@lists.infradead.org; Sun, 10 Feb 2013 08:22:56 +0000
-Received: by mail-vb0-f49.google.com with SMTP id s24so3159479vbi.22
- for <linux-mtd@lists.infradead.org>; Sun, 10 Feb 2013 00:22:54 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <1359967187.13791.21.camel@sauron.fi.intel.com>
-References: <alpine.DEB.2.00.1301260754500.19277@utopia.booyaka.com>
- <1359967187.13791.21.camel@sauron.fi.intel.com>
-Date: Sun, 10 Feb 2013 00:14:42 -0800
-Message-ID: <CAN8TOE9K=__xFzvwsrPphqg7-5xzg_-_HjymrV5=8rcCZjH9GA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: nand: onfi don't WARN if we are in 16 bits mode (fwd)
-From: Brian Norris <computersforpeace@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: David Woodhouse <dwmw2@infradead.org>, Paul Walmsley <paul@pwsan.com>,
- linux-mtd@lists.infradead.org, Matthieu CASTET <matthieu.castet@parrot.com>
+ id 1U4c2A-0007SH-VZ
+ for linux-mtd@lists.infradead.org; Sun, 10 Feb 2013 18:53:51 +0000
+Received: by mail-bk0-f54.google.com with SMTP id w5so2373676bku.27
+ for <linux-mtd@lists.infradead.org>; Sun, 10 Feb 2013 10:53:49 -0800 (PST)
+From: Daniel Schwierzeck <daniel.schwierzeck@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: m25p80: add support for Macronix MX66L51235L
+Date: Sun, 10 Feb 2013 19:53:44 +0100
+Message-Id: <1360522424-3360-1-git-send-email-daniel.schwierzeck@gmail.com>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Daniel Schwierzeck <daniel.schwierzeck@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,18 +20,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Feb 4, 2013 at 12:39 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Sat, 2013-01-26 at 07:56 +0000, Paul Walmsley wrote:
->> Hi Artem, David,
->>
->> if possible, it would be good to get this one into v3.8-rc, due to the
->> large OMAP boot-time warning mentioned at:
->>
->> http://article.gmane.org/gmane.linux.ports.arm.omap/91317
->
-> It is in David's tree, he merges things upstream, I do not know about
-> his plans WRT this patch, unfortunately.
+Signed-off-by: Daniel Schwierzeck <daniel.schwierzeck@gmail.com>
+---
+ drivers/mtd/devices/m25p80.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-It was merged for 3.8-rc7, FYI.
-
-Brian
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 33ec9229..702c3e2 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -663,6 +663,7 @@ static const struct spi_device_id m25p_ids[] = {
+ 	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
+ 	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
+ 	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
++	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, 0) },
+ 
+ 	/* Micron */
+ 	{ "n25q128",  INFO(0x20ba18, 0, 64 * 1024, 256, 0) },
+-- 
+1.8.1.1
