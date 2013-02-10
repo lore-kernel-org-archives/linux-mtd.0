@@ -1,22 +1,24 @@
-Received: from mail-vc0-f169.google.com ([209.85.220.169])
+Received: from mail-pa0-f51.google.com ([209.85.220.51])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U4JJn-00055q-5y
- for linux-mtd@lists.infradead.org; Sat, 09 Feb 2013 22:54:48 +0000
-Received: by mail-vc0-f169.google.com with SMTP id n10so3105951vcn.14
- for <linux-mtd@lists.infradead.org>; Sat, 09 Feb 2013 14:54:44 -0800 (PST)
+ id 1U4Kxj-0001nb-Ul
+ for linux-mtd@lists.infradead.org; Sun, 10 Feb 2013 00:40:08 +0000
+Received: by mail-pa0-f51.google.com with SMTP id hz1so2655654pad.10
+ for <linux-mtd@lists.infradead.org>; Sat, 09 Feb 2013 16:40:06 -0800 (PST)
+Date: Sat, 9 Feb 2013 16:40:10 -0800
+From: Olof Johansson <olof@lixom.net>
+To: Nicolas Ferre <nicolas.ferre@atmel.com>
+Subject: Re: [PATCH 0/5 v3] at91: PMECC: enable PMECC in dt for at91sam9x5ek,
+ at91sam9n12ek
+Message-ID: <20130210004010.GE16278@quad.lixom.net>
+References: <1358945232-2282-1-git-send-email-josh.wu@atmel.com>
+ <5113D347.8050409@atmel.com>
 MIME-Version: 1.0
-In-Reply-To: <Pine.LNX.4.64.1302022239300.8751@axis700.grange>
-References: <Pine.LNX.4.64.1212310952190.23808@axis700.grange>
- <Pine.LNX.4.64.1302022239300.8751@axis700.grange>
-Date: Sat, 9 Feb 2013 14:54:43 -0800
-Message-ID: <CAN8TOE_uc=_ja64jWtEF2TTo7rqYaasShrQ+iPyZHBaGOv5oFw@mail.gmail.com>
-Subject: Re: [PATCH] mtd: fix uninitialised mtd map name
-From: Brian Norris <computersforpeace@gmail.com>
-To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
- linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5113D347.8050409@atmel.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Josh Wu <josh.wu@atmel.com>, linux-mtd@lists.infradead.org,
+ plagnioj@jcrosoft.com, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,29 +28,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Feb 2, 2013 at 1:48 PM, Guennadi Liakhovetski
-<g.liakhovetski@gmx.de> wrote:
-> Do I see it right, that this patch didn't make it into the kernel on time
-> for 3.8? Could you please, make sure it makes it to 3.9?
+On Thu, Feb 07, 2013 at 05:16:07PM +0100, Nicolas Ferre wrote:
+> On 01/23/2013 01:47 PM, Josh Wu :
+> > Those patches will enable PMECC in dt parameters for at91sam9x5ek and 
+> > at91sam9n12ek.
+> > 
+> > The PMECC driver will check minimum required ecc on ONFI parameter from NAND 
+> > flash.
+> > 
+> > If pmecc-cap, pmecc-sector-size in dts file is specified, use those two.
+> > otherwise, set those according to NAND flash ONFI parameters.
+> > 
+> > If the pmecc-cap, pmecc-sector-size in dts are different with ecc requirement
+> > in ONFI, print out a warning.
+> > 
+> > 
+> > For the following compile error:
+> >   ERROR (phandle_references): Reference to non-existent node or label "pinctrl_ssc0_tx"
+> > 
+> >   ERROR: Input tree has errors, aborting (use -f to force output)
+> >   make[2]: *** [arch/arm/boot/dts/at91sam9g20ek.dtb] Error 2
+> > 
+> > the fixes are already merged in Linux mainline in v3.8-rc4.
+> > you can find in: 
+> >  544ae6b2e676c3c37fb8c93ef9327932fc2e5bc2 (ARM: at91/dts: add pinctrl support for SSC peripheral)
+> >  ea03c81521bde526570e1dec96eaa21fe5ac84a2 (ASoC: atmel-ssc: add pinctrl selection to driver) 
+> 
+> Artem,
+> 
+> I propose to take patches 2 and 3/5 of this series via arm-soc git tree.
+> I will specify to merge them at the end of the merge-window so that the
+> Device Tree properties will not be out-of-sync with driver modifications
+> (may not cause big issues anyway).
 
-It looks like an independent but identical patch made it in for 3.8-rc7:
+I'm not cc:d on the patches, but if it's just new properties then there's
+no reason to hold off to "late in the merge window". There's actually no
+way for you to hold that off yourself, since we won't accept new patches
+to arm-soc that late.
 
-commit 7dfe4be351e81656ca1068e5d4ead235c7ba94b1
-Author: Baruch Siach <baruch@tkos.co.il>
-Date:   Sun Dec 23 13:10:50 2012 +0200
+I don't see any cc to devicetree-discuss of the device tree bindings
+though, and no update of Documentation/device-tree/bindings/, so the
+patches are not ready to go in yet.
 
-    mtd: physmap_of: fix cmdline partition method w/o linux, mtd-name
 
-    Commit d68cbdd4fb (mtd: physmap_of: allow to specify the mtd name for retro
-    compatiblity) broke cmdline partitioning using dev_name() in the
-kernel command
-    line.  of_property_read_string() does not touch mtd_name when
-linux,mtd-name is
-    not present in the device tree, which causes map.name to be set to a random
-    value.  Fix this by initializing mtd_name to NULL.
-
-    Cc: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-    Signed-off-by: Baruch Siach <baruch@tkos.co.il>
-    Signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
-
-Brian
+-Olof
