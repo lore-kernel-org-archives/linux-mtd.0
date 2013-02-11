@@ -1,20 +1,18 @@
-Received: from utopia.booyaka.com ([74.50.51.50])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U4hI6-0002js-5V
- for linux-mtd@lists.infradead.org; Mon, 11 Feb 2013 00:30:38 +0000
-Date: Mon, 11 Feb 2013 00:30:36 +0000 (UTC)
-From: Paul Walmsley <paul@pwsan.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: nand: onfi don't WARN if we are in 16 bits mode (fwd)
-In-Reply-To: <CAN8TOE9K=__xFzvwsrPphqg7-5xzg_-_HjymrV5=8rcCZjH9GA@mail.gmail.com>
-Message-ID: <alpine.DEB.2.00.1302110030020.6247@utopia.booyaka.com>
-References: <alpine.DEB.2.00.1301260754500.19277@utopia.booyaka.com>
- <1359967187.13791.21.camel@sauron.fi.intel.com>
- <CAN8TOE9K=__xFzvwsrPphqg7-5xzg_-_HjymrV5=8rcCZjH9GA@mail.gmail.com>
+Message-ID: <51186901.9060400@atmel.com>
+Date: Mon, 11 Feb 2013 11:44:01 +0800
+From: Josh Wu <josh.wu@atmel.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Matthieu CASTET <matthieu.castet@parrot.com>, dedekind1@gmail.com
+To: Olof Johansson <olof@lixom.net>
+Subject: Re: [PATCH 0/5 v3] at91: PMECC: enable PMECC in dt for at91sam9x5ek,
+ at91sam9n12ek
+References: <1358945232-2282-1-git-send-email-josh.wu@atmel.com>
+ <5113D347.8050409@atmel.com> <20130210004010.GE16278@quad.lixom.net>
+In-Reply-To: <20130210004010.GE16278@quad.lixom.net>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Arnd Bergmann <arnd@arndb.de>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Nicolas Ferre <nicolas.ferre@atmel.com>, linux-mtd@lists.infradead.org,
+ plagnioj@jcrosoft.com, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,23 +22,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 10 Feb 2013, Brian Norris wrote:
+Hi, Olof
 
-> On Mon, Feb 4, 2013 at 12:39 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> > On Sat, 2013-01-26 at 07:56 +0000, Paul Walmsley wrote:
-> >> Hi Artem, David,
-> >>
-> >> if possible, it would be good to get this one into v3.8-rc, due to the
-> >> large OMAP boot-time warning mentioned at:
-> >>
-> >> http://article.gmane.org/gmane.linux.ports.arm.omap/91317
-> >
-> > It is in David's tree, he merges things upstream, I do not know about
-> > his plans WRT this patch, unfortunately.
-> 
-> It was merged for 3.8-rc7, FYI.
+On 2/10/2013 8:40 AM, Olof Johansson wrote:
+> On Thu, Feb 07, 2013 at 05:16:07PM +0100, Nicolas Ferre wrote:
+>> On 01/23/2013 01:47 PM, Josh Wu :
+>>> Those patches will enable PMECC in dt parameters for at91sam9x5ek and
+>>> at91sam9n12ek.
+>>>
+>>> The PMECC driver will check minimum required ecc on ONFI parameter from NAND
+>>> flash.
+>>>
+>>> If pmecc-cap, pmecc-sector-size in dts file is specified, use those two.
+>>> otherwise, set those according to NAND flash ONFI parameters.
+>>>
+>>> If the pmecc-cap, pmecc-sector-size in dts are different with ecc requirement
+>>> in ONFI, print out a warning.
+>>>
+>>>
+>>> For the following compile error:
+>>>    ERROR (phandle_references): Reference to non-existent node or label "pinctrl_ssc0_tx"
+>>>
+>>>    ERROR: Input tree has errors, aborting (use -f to force output)
+>>>    make[2]: *** [arch/arm/boot/dts/at91sam9g20ek.dtb] Error 2
+>>>
+>>> the fixes are already merged in Linux mainline in v3.8-rc4.
+>>> you can find in:
+>>>   544ae6b2e676c3c37fb8c93ef9327932fc2e5bc2 (ARM: at91/dts: add pinctrl support for SSC peripheral)
+>>>   ea03c81521bde526570e1dec96eaa21fe5ac84a2 (ASoC: atmel-ssc: add pinctrl selection to driver)
+>> Artem,
+>>
+>> I propose to take patches 2 and 3/5 of this series via arm-soc git tree.
+>> I will specify to merge them at the end of the merge-window so that the
+>> Device Tree properties will not be out-of-sync with driver modifications
+>> (may not cause big issues anyway).
+> I'm not cc:d on the patches, but if it's just new properties then there's
+> no reason to hold off to "late in the merge window". There's actually no
+> way for you to hold that off yourself, since we won't accept new patches
+> to arm-soc that late.
+>
+> I don't see any cc to devicetree-discuss of the device tree bindings
+> though, and no update of Documentation/device-tree/bindings/, so the
+> patches are not ready to go in yet.
 
-Thanks, things are much better now in v3.8-rc7.
+Since in my commit: a41b51a1f7c15a1b00f30a3ad2d0373ad51b883d (mtd: at91: 
+add dt parameters for Atmel PMECC), it already added following 
+properties to DT documentation:
+   atmel,pmecc-cap
+   atmel,pmecc-sector-size
+   atmel,pmecc-lookup-table-offset
+so in this patches series, NO. 2 and 3 just add it to at91 board's dts 
+file according to the DT documentation.
 
+Indeed, this patch series make a little bit different from the DT 
+documentation, that is: the ROM code mapping size are smaller than the 
+DT documentation example.
+But original DT documentation example still works.
 
-- Paul
+So I think the DT documentation's explanation are proper for this patch 
+series. It seems I don't have to update the DT documentation so far.
+
+>
+>
+> -Olof
+
+Best Regards,
+Josh Wu
