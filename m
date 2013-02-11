@@ -1,18 +1,15 @@
-Message-ID: <51186901.9060400@atmel.com>
-Date: Mon, 11 Feb 2013 11:44:01 +0800
-From: Josh Wu <josh.wu@atmel.com>
-MIME-Version: 1.0
-To: Olof Johansson <olof@lixom.net>
-Subject: Re: [PATCH 0/5 v3] at91: PMECC: enable PMECC in dt for at91sam9x5ek,
- at91sam9n12ek
-References: <1358945232-2282-1-git-send-email-josh.wu@atmel.com>
- <5113D347.8050409@atmel.com> <20130210004010.GE16278@quad.lixom.net>
-In-Reply-To: <20130210004010.GE16278@quad.lixom.net>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Arnd Bergmann <arnd@arndb.de>, Artem Bityutskiy <dedekind1@gmail.com>,
- Nicolas Ferre <nicolas.ferre@atmel.com>, linux-mtd@lists.infradead.org,
- plagnioj@jcrosoft.com, linux-arm-kernel@lists.infradead.org
+Received: from mail-ye0-f174.google.com ([209.85.213.174])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1U4vff-0003U6-9Z
+ for linux-mtd@lists.infradead.org; Mon, 11 Feb 2013 15:51:56 +0000
+Received: by mail-ye0-f174.google.com with SMTP id m3so1246346yen.19
+ for <linux-mtd@lists.infradead.org>; Mon, 11 Feb 2013 07:51:54 -0800 (PST)
+From: Fabio Estevam <festevam@gmail.com>
+To: artem.bityutskiy@linux.intel.com
+Subject: [PATCH] mtd: mxc_nand: Fix sparse warning
+Date: Mon, 11 Feb 2013 13:51:43 -0200
+Message-Id: <1360597903-10378-1-git-send-email-festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,69 +19,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Olof
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-On 2/10/2013 8:40 AM, Olof Johansson wrote:
-> On Thu, Feb 07, 2013 at 05:16:07PM +0100, Nicolas Ferre wrote:
->> On 01/23/2013 01:47 PM, Josh Wu :
->>> Those patches will enable PMECC in dt parameters for at91sam9x5ek and
->>> at91sam9n12ek.
->>>
->>> The PMECC driver will check minimum required ecc on ONFI parameter from NAND
->>> flash.
->>>
->>> If pmecc-cap, pmecc-sector-size in dts file is specified, use those two.
->>> otherwise, set those according to NAND flash ONFI parameters.
->>>
->>> If the pmecc-cap, pmecc-sector-size in dts are different with ecc requirement
->>> in ONFI, print out a warning.
->>>
->>>
->>> For the following compile error:
->>>    ERROR (phandle_references): Reference to non-existent node or label "pinctrl_ssc0_tx"
->>>
->>>    ERROR: Input tree has errors, aborting (use -f to force output)
->>>    make[2]: *** [arch/arm/boot/dts/at91sam9g20ek.dtb] Error 2
->>>
->>> the fixes are already merged in Linux mainline in v3.8-rc4.
->>> you can find in:
->>>   544ae6b2e676c3c37fb8c93ef9327932fc2e5bc2 (ARM: at91/dts: add pinctrl support for SSC peripheral)
->>>   ea03c81521bde526570e1dec96eaa21fe5ac84a2 (ASoC: atmel-ssc: add pinctrl selection to driver)
->> Artem,
->>
->> I propose to take patches 2 and 3/5 of this series via arm-soc git tree.
->> I will specify to merge them at the end of the merge-window so that the
->> Device Tree properties will not be out-of-sync with driver modifications
->> (may not cause big issues anyway).
-> I'm not cc:d on the patches, but if it's just new properties then there's
-> no reason to hold off to "late in the merge window". There's actually no
-> way for you to hold that off yourself, since we won't accept new patches
-> to arm-soc that late.
->
-> I don't see any cc to devicetree-discuss of the device tree bindings
-> though, and no update of Documentation/device-tree/bindings/, so the
-> patches are not ready to go in yet.
+Fix the following sparse warning:
 
-Since in my commit: a41b51a1f7c15a1b00f30a3ad2d0373ad51b883d (mtd: at91: 
-add dt parameters for Atmel PMECC), it already added following 
-properties to DT documentation:
-   atmel,pmecc-cap
-   atmel,pmecc-sector-size
-   atmel,pmecc-lookup-table-offset
-so in this patches series, NO. 2 and 3 just add it to at91 board's dts 
-file according to the DT documentation.
+drivers/mtd/nand/mxc_nand.c:269:25: warning: duplicate const
 
-Indeed, this patch series make a little bit different from the DT 
-documentation, that is: the ROM code mapping size are smaller than the 
-DT documentation example.
-But original DT documentation example still works.
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ drivers/mtd/nand/mxc_nand.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-So I think the DT documentation's explanation are proper for this patch 
-series. It seems I don't have to update the DT documentation so far.
-
->
->
-> -Olof
-
-Best Regards,
-Josh Wu
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index 45204e4..37037cb 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -266,7 +266,7 @@ static struct nand_ecclayout nandv2_hw_eccoob_4k = {
+ 	}
+ };
+ 
+-static const char const *part_probes[] = {
++static const char *part_probes[] = {
+ 	"cmdlinepart", "RedBoot", "ofpart", NULL };
+ 
+ static void memcpy32_fromio(void *trg, const void __iomem  *src, size_t size)
+-- 
+1.7.9.5
