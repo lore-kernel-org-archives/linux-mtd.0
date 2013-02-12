@@ -1,10 +1,18 @@
+Received: from imx12.toshiba.co.jp ([61.202.160.132])
+ by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+ id 1U53hI-0000mN-Ha
+ for linux-mtd@lists.infradead.org; Tue, 12 Feb 2013 00:26:11 +0000
+From: <katsuki.uwatoko@toshiba.co.jp>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: nand: support BENAND (Built-in ECC NAND)
+Date: Tue, 12 Feb 2013 00:25:54 +0000
+Message-ID: <F3B6523425E7914AA6214ED358D820AF25D9879D@TGXML316.toshiba.local>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-ID: <64C8DD7EA6537B43ABF55906E74CAC28@toshiba.local>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Date: Tue, 12 Feb 2013 00:06:17 +0100
-Message-ID: <CAAQYJAsygSk8VvZJhcA0zO2T217_Br35tMoRaxHohALin2vvbg@mail.gmail.com>
-Subject: [ARM][collie][sa1100-flash] collie mtd fixes
-From: Andrea Adami <andrea.adami@gmail.com>
-To: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
-Content-Type: multipart/mixed; boundary=bcaec54b48d0db280a04d57af46b
+Cc: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -14,313 +22,311 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---bcaec54b48d0db280a04d57af46b
-Content-Type: text/plain; charset=ISO-8859-1
+This enables support for BENAND, which is an SLC NAND flash solution
+with embedded error correction code (ECC), currently supports only
+128bytes OOB type.
 
-Hello,
+In the read sequence, "status read command" is executed to check the
+ECC status after read data. If bitflips occur, these are
+automatically corrected by BENAND and the status indicates the result.
 
-trying to revive the old Zaurus collie I've rebuilt the last known
-working kernel 2.6.31 and the 3.8-rc5.
+The write sequence is the same as raw write and the ECC data are
+automatically written to OOB by BENAND.
 
-Apart other issues, all kernels are lacking mtd devices so I've
-googled a bit and found:
+Signed-off-by: UWATOKO Katsuki <katsuki.uwatoko@toshiba.co.jp>
+---
+ drivers/mtd/nand/Kconfig        |   11 ++++
+ drivers/mtd/nand/Makefile       |    1 +
+ drivers/mtd/nand/nand_base.c    |   25 +++++++++
+ drivers/mtd/nand/nand_benand.c  |  113 +++++++++++++++++++++++++++++++++++=
+++++
+ include/linux/mtd/nand.h        |    2 +
+ include/linux/mtd/nand_benand.h |   47 ++++++++++++++++
+ 6 files changed, 199 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/mtd/nand/nand_benand.c
+ create mode 100644 include/linux/mtd/nand_benand.h
 
-http://lists.infradead.org/pipermail/linux-mtd/2005-November/014273.html
-
-Well, guided by those hints I ended up using a different erasesize
-
--ERASEINFO(0x40000,16),
-+ERASEINFO(0x08000,128),
-
-With the attached patches the mtd partitions are correctly detected as expected.
-(Though, there is a warning...sa1100-0: Found different chip or no
-chip at all (mfr 0xc, id 0x5) at 0x1000000)
-As you can see in the 3.8-rc5 log attached, the cramfs partition is
-detected and mounted, read only.
-
-But when I try to ubiformat mtd2 it sorts out the flash is locked so I
-tried to unlock the flash as suggested here
-
-http://lists.infradead.org/pipermail/linux-mtd/2005-November/014300.html
-http://lists.infradead.org/pipermail/linux-mtd/2005-November/014304.html
-
-Unfortunately, no luck :/
-This collie-mtd-rw.patch still applies with kernel 3.2 but as results
-kernel stops booting :/
-
-Testing with more recent kernels I get:
-  sa1100-flash.c:121:13: error: 'struct mtd_info' has no member named 'unlock'
-
-Now, what is exactly needed nowaday to unlock the flash?
-
-Thanks all for your attention
-
-Regards
-
-Andrea
-
---bcaec54b48d0db280a04d57af46b
-Content-Type: text/plain; charset=UTF-8; name="logs-3.8-rc5.txt"
-Content-Disposition: attachment; filename="logs-3.8-rc5.txt"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_hd27sya10
-
-Qm9vdGluZyBMaW51eCBvbiBwaHlzaWNhbCBDUFUgMHgwCkxpbnV4IHZlcnNpb24gMy44LjAtcmM1
-IChhbmRyZWFAbWl6YXIpIChnY2MgdmVyc2lvbiA0LjcuMiAoR0NDKSApICMxIFN1biBKYW4gMjcg
-MDA6NTY6MjggQ0VUIDIwMTMKQ1BVOiBTdHJvbmdBUk0tMTExMCBbNjkwMWIxMThdIHJldmlzaW9u
-IDggKEFSTXY0KSwgY3I9YzAwMDcxN2YKQ1BVOiBWSVZUIGRhdGEgY2FjaGUsIFZJVlQgaW5zdHJ1
-Y3Rpb24gY2FjaGUKTWFjaGluZTogU2hhcnAtQ29sbGllCk1lbW9yeSBwb2xpY3k6IEVDQyBkaXNh
-YmxlZCwgRGF0YSBjYWNoZSB3cml0ZWJhY2sKT24gbm9kZSAwIHRvdGFscGFnZXM6IDE2Mzg0CiAg
-Tm9ybWFsIHpvbmU6IDEyOCBwYWdlcyB1c2VkIGZvciBtZW1tYXAKICBOb3JtYWwgem9uZTogMCBw
-YWdlcyByZXNlcnZlZAogIE5vcm1hbCB6b25lOiAxNjI1NiBwYWdlcywgTElGTyBiYXRjaDozCnBj
-cHUtYWxsb2M6IHMwIHIwIGQzMjc2OCB1MzI3NjggYWxsb2M9MSozMjc2OApwY3B1LWFsbG9jOiBb
-MF0gMCAKQnVpbHQgMSB6b25lbGlzdHMgaW4gWm9uZSBvcmRlciwgbW9iaWxpdHkgZ3JvdXBpbmcg
-b24uICBUb3RhbCBwYWdlczogMTYyNTYKS2VybmVsIGNvbW1hbmQgbGluZTogY29uc29sZT10dHkx
-IGNvbnNvbGU9dHR5U0EwLDExNTIwMG44IGZiY29uPXJvdGF0ZToxIG1lbT02NE0gZGVidWcKUElE
-IGhhc2ggdGFibGUgZW50cmllczogMjU2IChvcmRlcjogLTIsIDEwMjQgYnl0ZXMpCkRlbnRyeSBj
-YWNoZSBoYXNoIHRhYmxlIGVudHJpZXM6IDgxOTIgKG9yZGVyOiAzLCAzMjc2OCBieXRlcykKSW5v
-ZGUtY2FjaGUgaGFzaCB0YWJsZSBlbnRyaWVzOiA0MDk2IChvcmRlcjogMiwgMTYzODQgYnl0ZXMp
-Cl9fZXhfdGFibGUgYWxyZWFkeSBzb3J0ZWQsIHNraXBwaW5nIHNvcnQKTWVtb3J5OiA2NE1CID0g
-NjRNQiB0b3RhbApNZW1vcnk6IDYyMjA4ay82MjIwOGsgYXZhaWxhYmxlLCAzMzI4ayByZXNlcnZl
-ZCwgMEsgaGlnaG1lbQpWaXJ0dWFsIGtlcm5lbCBtZW1vcnkgbGF5b3V0OgogICAgdmVjdG9yICA6
-IDB4ZmZmZjAwMDAgLSAweGZmZmYxMDAwICAgKCAgIDQga0IpCiAgICBmaXhtYXAgIDogMHhmZmYw
-MDAwMCAtIDB4ZmZmZTAwMDAgICAoIDg5NiBrQikKICAgIHZtYWxsb2MgOiAweGM0ODAwMDAwIC0g
-MHhmZjAwMDAwMCAgICggOTM2IE1CKQogICAgbG93bWVtICA6IDB4YzAwMDAwMDAgLSAweGM0MDAw
-MDAwICAgKCAgNjQgTUIpCiAgICAgIC50ZXh0IDogMHhjMDAwODAwMCAtIDB4YzAyNDdjNGMgICAo
-MjMwNCBrQikKICAgICAgLmluaXQgOiAweGMwMjQ4MDAwIC0gMHhjMDI3M2NiYyAgICggMTc2IGtC
-KQogICAgICAuZGF0YSA6IDB4YzAyNzQwMDAgLSAweGMwMjhlYjYwICAgKCAxMDcga0IpCiAgICAg
-ICAuYnNzIDogMHhjMDI4ZWI2MCAtIDB4YzAyYTZjZjggICAoICA5NyBrQikKTlJfSVJRUzoxNiBu
-cl9pcnFzOjUzIDUzCnNjaGVkX2Nsb2NrOiAzMiBiaXRzIGF0IDM2ODZrSHosIHJlc29sdXRpb24g
-MjcxbnMsIHdyYXBzIGV2ZXJ5IDExNjUwODRtcwpDb25zb2xlOiBjb2xvdXIgZHVtbXkgZGV2aWNl
-IDgweDMwCmNvbnNvbGUgW3R0eTFdIGVuYWJsZWQKY29uc29sZSBbdHR5U0EwXSBlbmFibGVkCkNh
-bGlicmF0aW5nIGRlbGF5IGxvb3AuLi4gMTM2LjYwIEJvZ29NSVBTIChscGo9NjgzMDA4KQpwaWRf
-bWF4OiBkZWZhdWx0OiA0MDk2IG1pbmltdW06IDMwMQpNb3VudC1jYWNoZSBoYXNoIHRhYmxlIGVu
-dHJpZXM6IDUxMgpDUFU6IFRlc3Rpbmcgd3JpdGUgYnVmZmVyIGNvaGVyZW5jeTogb2sKU2V0dGlu
-ZyB1cCBzdGF0aWMgaWRlbnRpdHkgbWFwIGZvciAweGMwMjBlMWIwIC0gMHhjMDIwZTIwOApkZXZ0
-bXBmczogaW5pdGlhbGl6ZWQKRE1BOiBwcmVhbGxvY2F0ZWQgMjU2IEtpQiBwb29sIGZvciBhdG9t
-aWMgY29oZXJlbnQgYWxsb2NhdGlvbnMKU2hhcnAgU2Nvb3AgRGV2aWNlIGZvdW5kIGF0IDB4NDA4
-MDAwMDAgLT4gMHhjNDg0NjAwMApiaW86IGNyZWF0ZSBzbGFiIDxiaW8tMD4gYXQgMApTQ1NJIHN1
-YnN5c3RlbSBpbml0aWFsaXplZApsaWJhdGEgdmVyc2lvbiAzLjAwIGxvYWRlZC4KU3dpdGNoaW5n
-IHRvIGNsb2Nrc291cmNlIG9zY3IKTG9Db01vIENoaXA6IDc2NDkKamZmczI6IHZlcnNpb24gMi4y
-LiAoTkFORCkgKFNVTU1BUlkpICDCqSAyMDAxLTIwMDYgUmVkIEhhdCwgSW5jLgpCbG9jayBsYXll
-ciBTQ1NJIGdlbmVyaWMgKGJzZykgZHJpdmVyIHZlcnNpb24gMC40IGxvYWRlZCAobWFqb3IgMjUz
-KQppbyBzY2hlZHVsZXIgbm9vcCByZWdpc3RlcmVkCmlvIHNjaGVkdWxlciBkZWFkbGluZSByZWdp
-c3RlcmVkIChkZWZhdWx0KQpDb25zb2xlOiBzd2l0Y2hpbmcgdG8gY29sb3VyIGZyYW1lIGJ1ZmZl
-ciBkZXZpY2UgMzB4NDAKU2VyaWFsOiBTQTExeDAgZHJpdmVyCnNhMTF4MC11YXJ0LjE6IHR0eVNB
-MSBhdCBNTUlPIDB4ODAwMTAwMDAgKGlycSA9IDE1KSBpcyBhIFNBMTEwMApzYTExeDAtdWFydC4z
-OiB0dHlTQTAgYXQgTU1JTyAweDgwMDUwMDAwIChpcnEgPSAxNykgaXMgYSBTQTExMDAKbG9vcDog
-bW9kdWxlIGxvYWRlZAppbnB1dDogVG91Y2hzY3JlZW4gcGFuZWwgYXMgL2RldmljZXMvcGxhdGZv
-cm0vc2ExMXgwLW1jcC9tY3AwL3VjYjF4MDAvdWNiMXgwMC9pbnB1dDAKRm91bmQ6IExIMjhGNjQw
-QkYKc2ExMTAwLTA6IEZvdW5kIDQgeDggZGV2aWNlcyBhdCAweDAgaW4gMzItYml0IGJhbmsKc2Ex
-MTAwLTA6IEZvdW5kIGRpZmZlcmVudCBjaGlwIG9yIG5vIGNoaXAgYXQgYWxsIChtZnIgMHhjLCBp
-ZCAweDUpIGF0IDB4MTAwMDAwMAplcmFzZSByZWdpb24gMDogb2Zmc2V0PTB4MCxzaXplPTB4MjAw
-MDAsYmxvY2tzPTEyOApTQTExMDAgZmxhc2g6IENGSSBkZXZpY2UgYXQgMHgwMDAwMDAwMCwgMTZN
-aUIsIDMyLWJpdApDcmVhdGluZyAzIE1URCBwYXJ0aXRpb25zIG9uICJzYTExMDAiOgoweDAwMDAw
-MDAwMDAwMC0weDAwMDAwMDBjMDAwMCA6ICJib290bG9hZGVyIgoweDAwMDAwMDBjMDAwMC0weDAw
-MDAwMDFjMDAwMCA6ICJrZXJuZWwiCjB4MDAwMDAwMWMwMDAwLTB4MDAwMDAwZmUwMDAwIDogInJv
-b3RmcyIKbW91c2VkZXY6IFBTLzIgbW91c2UgZGV2aWNlIGNvbW1vbiBmb3IgYWxsIG1pY2UKaW5w
-dXQ6IExvQ29NbyBrZXlib2FyZCBhcyAvZGV2aWNlcy9wbGF0Zm9ybS9sb2NvbW8uMC9sb2NvbW8t
-a2V5Ym9hcmQvaW5wdXQvaW5wdXQxCnNhMTEwMC1ydGMgc2ExMTAwLXJ0Yzogd2FybmluZzogaW5p
-dGlhbGl6aW5nIGRlZmF1bHQgY2xvY2sgZGl2aWRlci90cmltIHZhbHVlCnNhMTEwMC1ydGMgc2Ex
-MTAwLXJ0YzogcnRjIGNvcmU6IHJlZ2lzdGVyZWQgc2ExMTAwLXJ0YyBhcyBydGMwCkFQTSBCYXR0
-ZXJ5IERyaXZlcgpwY21jaWFfc29ja2V0IHBjbWNpYV9zb2NrZXQwOiBwY2NhcmQ6IFBDTUNJQSBj
-YXJkIGluc2VydGVkIGludG8gc2xvdCAwCnBjbWNpYSAwLjA6IHBjbWNpYTogcmVnaXN0ZXJpbmcg
-bmV3IGRldmljZSBwY21jaWEwLjAgKElSUTogMzUpCnNhMTEwMC1ydGMgc2ExMTAwLXJ0Yzogc2V0
-dGluZyBzeXN0ZW0gY2xvY2sgdG8gMTk3MC0wMS0wMSAwMDowMDowMCBVVEMgKDApCkZyZWVpbmcg
-aW5pdCBtZW1vcnk6IDE3MksKa2V4ZWNib290IDAuNS45IHN0YXJ0aW5nCkknbSB0aGUgaW5pdC1w
-cm9jZXNzIQpLZXJuZWwgY21kbGluZTogY29uc29sZT10dHkxIGNvbnNvbGU9dHR5U0EwLDExNTIw
-MG44IGZiY29uPXJvdGF0ZToxIG1lbT02NE0gZGVidWcKRkIgYW5nbGUgaXMgMjcwLCB0dHkgaXMg
-L2Rldi90dHkxCkZyYW1lYnVmZmVyIHN0cnVjdHVyZQpEZXNjcmlwdG9yOiAzClR5cGU6IDAKVmlz
-dWFsOiAyCldpZHRoOiAyNDAsIGhlaWdodDogMzIwClJlYWwgd2lkdGg6IDMyMCwgcmVhbCBoZWln
-aHQ6IDI0MApCUFA6IDE2LCBkZXB0aDogMTYKU3RyaWRlOiA2NDAKU2NyZWVuc2l6ZTogMTUzNjAw
-CkFuZ2xlOiAyNzAKUkdCbW9kZTogMQpSZWQgb2Zmc2V0OiAxMSwgcmVkIGxlbmd0aDogNQpHcmVl
-biBvZmZzZXQ6IDUsIGdyZWVuIGxlbmd0aDogNgpCbHVlIG9mZnNldDogMCwgYmx1ZSBsZW5ndGg6
-IDUKRm91bmQgZGV2aWNlICcvZGV2L210ZGJsb2NrMCcgKDMxLCAwKSBvZiBzaXplIDBNYgorIGNy
-ZWF0aW5nIGRldmljZSBub2RlCisgY2FuJ3QgaWRlbnRpZnkgRlMgdHlwZQpGb3VuZCBkZXZpY2Ug
-Jy9kZXYvbXRkYmxvY2sxJyAoMzEsIDEpIG9mIHNpemUgMU1iCisgY3JlYXRpbmcgZGV2aWNlIG5v
-ZGUKKyBjYW4ndCBpZGVudGlmeSBGUyB0eXBlCkZvdW5kIGRldmljZSAnL2Rldi9tdGRibG9jazIn
-ICgzMSwgMikgb2Ygc2l6ZSAxNE1iCisgY3JlYXRpbmcgZGV2aWNlIG5vZGUKKyBGUyB0eXBlICdj
-cmFtZnMnIGRldGVjdGVkCisgY2FuJ3Qgb3BlbiBjb25maWcgZmlsZTogTm8gc3VjaCBmaWxlIG9y
-IGRpcmVjdG9yeQorIG5vIGNvbmZpZyBmaWxlIG5vciBhbnkga2VybmVscyBmb3VuZApGb3VuZCBk
-ZXZpY2UgJy9kZXYvc2RhJyAoOCwgMCkgb2Ygc2l6ZSA0OTlNYgorIGNyZWF0aW5nIGRldmljZSBu
-b2RlCisgY2FuJ3QgaWRlbnRpZnkgRlMgdHlwZQpGb3VuZCBkZXZpY2UgJy9kZXYvc2RhMScgKDgs
-IDEpIG9mIHNpemUgNDk4TWIKKyBjcmVhdGluZyBkZXZpY2Ugbm9kZQorIEZTIHR5cGUgJ3ZmYXQn
-IGRldGVjdGVkCisgY2FuJ3QgbW91bnQgZGV2aWNlIC9kZXYvc2RhMTogSW52YWxpZCBhcmd1bWVu
-dApObyBpdGVtcyBmb3IgbWVudSBmb3VuZAorIFRyeWluZyBldmRldiAnZXZlbnQxJwogKyBTeW5j
-CiArIEtleXMgb3IgQnV0dG9ucwogKyBSZXBlYXQKICsgUG93ZXIKKyBBZGRlZCBldmRldiAnZXZl
-bnQxJworIFRyeWluZyBldmRldiAnZXZlbnQwJwogKyBTeW5jCiArIEtleXMgb3IgQnV0dG9ucwog
-KyBBYnNvbHV0ZSBBeGVzCisgQWRkZWQgZXZkZXYgJ2V2ZW50MCcK
---bcaec54b48d0db280a04d57af46b
-Content-Type: application/octet-stream; name="collie-jedec-probe.patch"
-Content-Disposition: attachment; filename="collie-jedec-probe.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_hd27t7mj1
-
-LS0tIGEvYXJjaC9hcm0vbWFjaC1zYTExMDAvY29sbGllLmMKKysrIGIvYXJjaC9hcm0vbWFjaC1z
-YTExMDAvY29sbGllLmMKQEAgLTI4OSw3ICsyODksNyBAQAogfQogCiBzdGF0aWMgc3RydWN0IGZs
-YXNoX3BsYXRmb3JtX2RhdGEgY29sbGllX2ZsYXNoX2RhdGEgPSB7Ci0JLm1hcF9uYW1lCT0gImNm
-aV9wcm9iZSIsCisJLm1hcF9uYW1lCT0gImplZGVjX3Byb2JlIiwKIAkuaW5pdAkJPSBjb2xsaWVf
-Zmxhc2hfaW5pdCwKIAkuc2V0X3ZwcAk9IGNvbGxpZV9zZXRfdnBwLAogCS5leGl0CQk9IGNvbGxp
-ZV9mbGFzaF9leGl0LAo=
---bcaec54b48d0db280a04d57af46b
-Content-Type: application/octet-stream; name="collie-eraseinfo.patch"
-Content-Disposition: attachment; filename="collie-eraseinfo.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_hd27tcek2
-
-LS0tIGEvZHJpdmVycy9tdGQvY2hpcHMvamVkZWNfcHJvYmUuYworKysgYi9kcml2ZXJzL210ZC9j
-aGlwcy9qZWRlY19wcm9iZS5jCkBAIC0xMzA1LDcgKzEzMDUsNyBAQAogCQkuY21kX3NldAk9IFBf
-SURfSU5URUxfU1RELAogCQkubnJfcmVnaW9ucwk9IDEsCiAJCS5yZWdpb25zCT0gewotCQkJRVJB
-U0VJTkZPKDB4NDAwMDAsMTYpLAorCQkJRVJBU0VJTkZPKDB4MDgwMDAsMTI4KSwKIAkJfQogCX0s
-IHsKIAkJLm1mcl9pZAkJPSBDRklfTUZSX1NTVCwK
---bcaec54b48d0db280a04d57af46b
-Content-Type: text/plain; charset=US-ASCII; name="ubiformat-failed.txt"
-Content-Disposition: attachment; filename="ubiformat-failed.txt"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_hd27tn2u3
-
-DQovICMgbW91bnQgLXQgcHJvYyBwcm9jIC9wcm9jDQovICMgbW91bnQgLXQgc3lzZnMgc3lzZnMg
-L3N5cw0KLyAjIHViaW5mbyAtYQ0KVUJJIHZlcnNpb246ICAgICAgICAgICAgICAgICAgICAxDQpD
-b3VudCBvZiBVQkkgZGV2aWNlczogICAgICAgICAgIDANClVCSSBjb250cm9sIGRldmljZSBtYWpv
-ci9taW5vcjogMTA6NjMNCi8gIyBjYXQgL3Byb2MvcGFydGl0aW9ucw0KbWFqb3IgbWlub3IgICNi
-bG9ja3MgIG5hbWUNCg0KICAzMSAgICAgICAgMCAgICAgICAgNzY4IG10ZGJsb2NrMA0KICAzMSAg
-ICAgICAgMSAgICAgICAxMDI0IG10ZGJsb2NrMQ0KICAzMSAgICAgICAgMiAgICAgIDE0NDY0IG10
-ZGJsb2NrMg0KICAgOCAgICAgICAgMCAgICAgNTExMDU2IHNkYQ0KICAgOCAgICAgICAgMSAgICAg
-NTEwOTQxIHNkYTENCi8gIyBjYXQgL3Byb2MvbXRkDQpkZXY6ICAgIHNpemUgICBlcmFzZXNpemUg
-IG5hbWUNCm10ZDA6IDAwMGMwMDAwIDAwMDIwMDAwICJib290bG9hZGVyIg0KbXRkMTogMDAxMDAw
-MDAgMDAwMjAwMDAgImtlcm5lbCINCm10ZDI6IDAwZTIwMDAwIDAwMDIwMDAwICJyb290ZnMiDQov
-ICMgdWJpZm9ybWF0IC9kZXYvbXRkMg0KdWJpZm9ybWF0OiBtdGQyIChub3IpLCBzaXplIDE0ODEx
-MTM2IGJ5dGVzICgxNC4xIE1pQiksIDExMyBlcmFzZWJsb2NrcyBvZiAxMzEwNzIgYnl0ZXMgKDEy
-OC4wIEtpQiksIG1pbi4gSS9PIHNpemUgMSBieXRlcw0KDQpsaWJzY2FuOiBzY2FubmluZyBlcmFz
-ZWJsb2NrIDAgLS0gIDAgJSBjb21wbGV0ZSAgDQpsaWJzY2FuOiBzY2FubmluZyBlcmFzZWJsb2Nr
-IDEgLS0gIDEgJSBjb21wbGV0ZSAgDQpsaWJzY2FuOiBzY2FubmluZyBlcmFzZWJsb2NrIDIgLS0g
-IDIgJSBjb21wbGV0ZSAgDQpsaWJzY2FuOiBzY2FubmluZyBlcmFzZWJsb2NrIDMgLS0gIDMgJSBj
-b21wbGV0ZSAgDQpsaWJzY2FuOiBzY2FubmluZyBlcmFzZWJsb2NrIDQgLS0gIDQgJSBjb21wbGV0
-ZSAgDQpsaWJzY2FuOiBzY2FubmluZyBlcmFzZWJsb2NrIDUgLS0gIDUgJSBjb21wbGV0ZSAgDQps
-aWJzY2FuOiBzY2FubmluZyBlcmFzZWJsb2NrIDYgLS0gIDYgJSBjb21wbGV0ZSAgDQpsaWJzY2Fu
-OiBzY2FubmluZyBlcmFzZWJsb2NrIDcgLS0gIDcgJSBjb21wbGV0ZSAgDQpsaWJzY2FuOiBzY2Fu
-bmluZyBlcmFzZWJsb2NrIDggLS0gIDcgJSBjb21wbGV0ZSAgDQpsaWJzY2FuOiBzY2FubmluZyBl
-cmFzZWJsb2NrIDkgLS0gIDggJSBjb21wbGV0ZSAgDQpsaWJzY2FuOiBzY2FubmluZyBlcmFzZWJs
-b2NrIDEwIC0tICA5ICUgY29tcGxldGUgIA0KbGlic2Nhbjogc2Nhbm5pbmcgZXJhc2VibG9jayAx
-MSAtLSAxMCAlIGNvbXBsZXRlICANCmxpYnNjYW46IHNjYW5uaW5nIGVyYXNlYmxvY2sgMTIgLS0g
-MTEgJSBjb21wbGV0ZSAgDQpsaWJzY2FuOiBzY2FubmluZyBlcmFzZWJsb2NrIDEzIC0tIDEyICUg
-Y29tcGxldGUgIA0KbGlic2Nhbjogc2Nhbm5pbmcgZXJhc2VibG9jayAxNCAtLSAxMyAlIGNvbXBs
-ZXRlICANCmxpYnNjYW46IHNjYW5uaW5nIGVyYXNlYmxvY2sgMTUgLS0gMTQgJSBjb21wbGV0ZSAg
-DQpsaWJzY2FuOiBzY2FubmluZyBlcmFzZWJsb2NrIDE2IC0tIDE1ICUgY29tcGxldGUgIA0KbGli
-c2Nhbjogc2Nhbm5pbmcgZXJhc2VibG9jayAxNyAtLSAxNSAlIGNvbXBsZXRlICANCmxpYnNjYW46
-IHNjYW5uaW5nIGVyYXNlYmxvY2sgMTggLS0gMTYgJSBjb21wbGV0ZSAgDQpsaWJzY2FuOiBzY2Fu
-bmluZyBlcmFzZWJsb2NrIDE5IC0tIDE3ICUgY29tcGxldGUgIA0KbGlic2Nhbjogc2Nhbm5pbmcg
-ZXJhc2VibG9jayAyMCAtLSAxOCAlIGNvbXBsZXRlICANCmxpYnNjYW46IHNjYW5uaW5nIGVyYXNl
-YmxvY2sgMjEgLS0gMTkgJSBjb21wbGV0ZSAgDQpsaWJzY2FuOiBzY2FubmluZyBlcmFzZWJsb2Nr
-IDIyIC0tIDIwICUgY29tcGxldGUgIA0KbGlic2Nhbjogc2Nhbm5pbmcgZXJhc2VibG9jayAyMyAt
-LSAyMSAlIGNvbXBsZXRlICANCmxpYnNjYW46IHNjYW5uaW5nIGVyYXNlYmxvY2sgMjQgLS0gMjIg
-JSBjb21wbGV0ZSAgDQpsaWJzY2FuOiBzY2FubmluZyBlcmFzZWJsb2NrIDI1IC0tIDIzICUgY29t
-cGxldGUgIA0KbGlic2Nhbjogc2Nhbm5pbmcgZXJhc2VibG9jayAyNiAtLSAyMyAlIGNvbXBsZXRl
-ICANCmxpYnNjYW46IHNjYW5uaW5nIGVyYXNlYmxvY2sgMjcgLS0gMjQgJSBjb21wbGV0ZSAgDQps
-aWJzY2FuOiBzY2FubmluZyBlcmFzZWJsb2NrIDI4IC0tIDI1ICUgY29tcGxldGUgIA0KbGlic2Nh
-bjogc2Nhbm5pbmcgZXJhc2VibG9jayAyOSAtLSAyNiAlIGNvbXBsZXRlICANCmxpYnNjYW46IHNj
-YW5uaW5nIGVyYXNlYmxvY2sgMzAgLS0gMjcgJSBjb21wbGV0ZSAgDQpsaWJzY2FuOiBzY2Fubmlu
-ZyBlcmFzZWJsb2NrIDMxIC0tIDI4ICUgY29tcGxldGUgIA0KbGlic2Nhbjogc2Nhbm5pbmcgZXJh
-c2VibG9jayAzMiAtLSAyOSAlIGNvbXBsZXRlICANCmxpYnNjYW46IHNjYW5uaW5nIGVyYXNlYmxv
-Y2sgMzMgLS0gMzAgJSBjb21wbGV0ZSAgDQpsaWJzY2FuOiBzY2FubmluZyBlcmFzZWJsb2NrIDM0
-IC0tIDMwICUgY29tcGxldGUgIA0KbGlic2Nhbjogc2Nhbm5pbmcgZXJhc2VibG9jayAzNSAtLSAz
-MSAlIGNvbXBsZXRlICANCmxpYnNjYW46IHNjYW5uaW5nIGVyYXNlYmxvY2sgMzYgLS0gMzIgJSBj
-b21wbGV0ZSAgDQpsaWJzY2FuOiBzY2FubmluZyBlcmFzZWJsb2NrIDM3IC0tIDMzICUgY29tcGxl
-dGUgIA0KbGlic2Nhbjogc2Nhbm5pbmcgZXJhc2VibG9jayAzOCAtLSAzNCAlIGNvbXBsZXRlICAN
-CmxpYnNjYW46IHNjYW5uaW5nIGVyYXNlYmxvY2sgMzkgLS0gMzUgJSBjb21wbGV0ZSAgDQpsaWJz
-Y2FuOiBzY2FubmluZyBlcmFzZWJsb2NrIDQwIC0tIDM2ICUgY29tcGxldGUgIA0KbGlic2Nhbjog
-c2Nhbm5pbmcgZXJhc2VibG9jayA0MSAtLSAzNyAlIGNvbXBsZXRlICANCmxpYnNjYW46IHNjYW5u
-aW5nIGVyYXNlYmxvY2sgNDIgLS0gMzggJSBjb21wbGV0ZSAgDQpsaWJzY2FuOiBzY2FubmluZyBl
-cmFzZWJsb2NrIDQzIC0tIDM4ICUgY29tcGxldGUgIA0KbGlic2Nhbjogc2Nhbm5pbmcgZXJhc2Vi
-bG9jayA0NCAtLSAzOSAlIGNvbXBsZXRlICANCmxpYnNjYW46IHNjYW5uaW5nIGVyYXNlYmxvY2sg
-NDUgLS0gNDAgJSBjb21wbGV0ZSAgDQpsaWJzY2FuOiBzY2FubmluZyBlcmFzZWJsb2NrIDQ2IC0t
-IDQxICUgY29tcGxldGUgIA0KbGlic2Nhbjogc2Nhbm5pbmcgZXJhc2VibG9jayA0NyAtLSA0MiAl
-IGNvbXBsZXRlICANCmxpYnNjYW46IHNjYW5uaW5nIGVyYXNlYmxvY2sgNDggLS0gNDMgJSBjb21w
-bGV0ZSAgDQpsaWJzY2FuOiBzY2FubmluZyBlcmFzZWJsb2NrIDQ5IC0tIDQ0ICUgY29tcGxldGUg
-IA0KbGlic2Nhbjogc2Nhbm5pbmcgZXJhc2VibG9jayA1MCAtLSA0NSAlIGNvbXBsZXRlICANCmxp
-YnNjYW46IHNjYW5uaW5nIGVyYXNlYmxvY2sgNTEgLS0gNDYgJSBjb21wbGV0ZSAgDQpsaWJzY2Fu
-OiBzY2FubmluZyBlcmFzZWJsb2NrIDUyIC0tIDQ2ICUgY29tcGxldGUgIA0KbGlic2Nhbjogc2Nh
-bm5pbmcgZXJhc2VibG9jayA1MyAtLSA0NyAlIGNvbXBsZXRlICANCmxpYnNjYW46IHNjYW5uaW5n
-IGVyYXNlYmxvY2sgNTQgLS0gNDggJSBjb21wbGV0ZSAgDQpsaWJzY2FuOiBzY2FubmluZyBlcmFz
-ZWJsb2NrIDU1IC0tIDQ5ICUgY29tcGxldGUgIA0KbGlic2Nhbjogc2Nhbm5pbmcgZXJhc2VibG9j
-ayA1NiAtLSA1MCAlIGNvbXBsZXRlICANCmxpYnNjYW46IHNjYW5uaW5nIGVyYXNlYmxvY2sgNTcg
-LS0gNTEgJSBjb21wbGV0ZSAgDQpsaWJzY2FuOiBzY2FubmluZyBlcmFzZWJsb2NrIDU4IC0tIDUy
-ICUgY29tcGxldGUgIA0KbGlic2Nhbjogc2Nhbm5pbmcgZXJhc2VibG9jayA1OSAtLSA1MyAlIGNv
-bXBsZXRlICANCmxpYnNjYW46IHNjYW5uaW5nIGVyYXNlYmxvY2sgNjAgLS0gNTMgJSBjb21wbGV0
-ZSAgDQpsaWJzY2FuOiBzY2FubmluZyBlcmFzZWJsb2NrIDYxIC0tIDU0ICUgY29tcGxldGUgIA0K
-bGlic2Nhbjogc2Nhbm5pbmcgZXJhc2VibG9jayA2MiAtLSA1NSAlIGNvbXBsZXRlICANCmxpYnNj
-YW46IHNjYW5uaW5nIGVyYXNlYmxvY2sgNjMgLS0gNTYgJSBjb21wbGV0ZSAgDQpsaWJzY2FuOiBz
-Y2FubmluZyBlcmFzZWJsb2NrIDY0IC0tIDU3ICUgY29tcGxldGUgIA0KbGlic2Nhbjogc2Nhbm5p
-bmcgZXJhc2VibG9jayA2NSAtLSA1OCAlIGNvbXBsZXRlICANCmxpYnNjYW46IHNjYW5uaW5nIGVy
-YXNlYmxvY2sgNjYgLS0gNTkgJSBjb21wbGV0ZSAgDQpsaWJzY2FuOiBzY2FubmluZyBlcmFzZWJs
-b2NrIDY3IC0tIDYwICUgY29tcGxldGUgIA0KbGlic2Nhbjogc2Nhbm5pbmcgZXJhc2VibG9jayA2
-OCAtLSA2MSAlIGNvbXBsZXRlICANCmxpYnNjYW46IHNjYW5uaW5nIGVyYXNlYmxvY2sgNjkgLS0g
-NjEgJSBjb21wbGV0ZSAgDQpsaWJzY2FuOiBzY2FubmluZyBlcmFzZWJsb2NrIDcwIC0tIDYyICUg
-Y29tcGxldGUgIA0KbGlic2Nhbjogc2Nhbm5pbmcgZXJhc2VibG9jayA3MSAtLSA2MyAlIGNvbXBs
-ZXRlICANCmxpYnNjYW46IHNjYW5uaW5nIGVyYXNlYmxvY2sgNzIgLS0gNjQgJSBjb21wbGV0ZSAg
-DQpsaWJzY2FuOiBzY2FubmluZyBlcmFzZWJsb2NrIDczIC0tIDY1ICUgY29tcGxldGUgIA0KbGli
-c2Nhbjogc2Nhbm5pbmcgZXJhc2VibG9jayA3NCAtLSA2NiAlIGNvbXBsZXRlICANCmxpYnNjYW46
-IHNjYW5uaW5nIGVyYXNlYmxvY2sgNzUgLS0gNjcgJSBjb21wbGV0ZSAgDQpsaWJzY2FuOiBzY2Fu
-bmluZyBlcmFzZWJsb2NrIDc2IC0tIDY4ICUgY29tcGxldGUgIA0KbGlic2Nhbjogc2Nhbm5pbmcg
-ZXJhc2VibG9jayA3NyAtLSA2OSAlIGNvbXBsZXRlICANCmxpYnNjYW46IHNjYW5uaW5nIGVyYXNl
-YmxvY2sgNzggLS0gNjkgJSBjb21wbGV0ZSAgDQpsaWJzY2FuOiBzY2FubmluZyBlcmFzZWJsb2Nr
-IDc5IC0tIDcwICUgY29tcGxldGUgIA0KbGlic2Nhbjogc2Nhbm5pbmcgZXJhc2VibG9jayA4MCAt
-LSA3MSAlIGNvbXBsZXRlICANCmxpYnNjYW46IHNjYW5uaW5nIGVyYXNlYmxvY2sgODEgLS0gNzIg
-JSBjb21wbGV0ZSAgDQpsaWJzY2FuOiBzY2FubmluZyBlcmFzZWJsb2NrIDgyIC0tIDczICUgY29t
-cGxldGUgIA0KbGlic2Nhbjogc2Nhbm5pbmcgZXJhc2VibG9jayA4MyAtLSA3NCAlIGNvbXBsZXRl
-ICANCmxpYnNjYW46IHNjYW5uaW5nIGVyYXNlYmxvY2sgODQgLS0gNzUgJSBjb21wbGV0ZSAgDQps
-aWJzY2FuOiBzY2FubmluZyBlcmFzZWJsb2NrIDg1IC0tIDc2ICUgY29tcGxldGUgIA0KbGlic2Nh
-bjogc2Nhbm5pbmcgZXJhc2VibG9jayA4NiAtLSA3NiAlIGNvbXBsZXRlICANCmxpYnNjYW46IHNj
-YW5uaW5nIGVyYXNlYmxvY2sgODcgLS0gNzcgJSBjb21wbGV0ZSAgDQpsaWJzY2FuOiBzY2Fubmlu
-ZyBlcmFzZWJsb2NrIDg4IC0tIDc4ICUgY29tcGxldGUgIA0KbGlic2Nhbjogc2Nhbm5pbmcgZXJh
-c2VibG9jayA4OSAtLSA3OSAlIGNvbXBsZXRlICANCmxpYnNjYW46IHNjYW5uaW5nIGVyYXNlYmxv
-Y2sgOTAgLS0gODAgJSBjb21wbGV0ZSAgDQpsaWJzY2FuOiBzY2FubmluZyBlcmFzZWJsb2NrIDkx
-IC0tIDgxICUgY29tcGxldGUgIA0KbGlic2Nhbjogc2Nhbm5pbmcgZXJhc2VibG9jayA5MiAtLSA4
-MiAlIGNvbXBsZXRlICANCmxpYnNjYW46IHNjYW5uaW5nIGVyYXNlYmxvY2sgOTMgLS0gODMgJSBj
-b21wbGV0ZSAgDQpsaWJzY2FuOiBzY2FubmluZyBlcmFzZWJsb2NrIDk0IC0tIDg0ICUgY29tcGxl
-dGUgIA0KbGlic2Nhbjogc2Nhbm5pbmcgZXJhc2VibG9jayA5NSAtLSA4NCAlIGNvbXBsZXRlICAN
-CmxpYnNjYW46IHNjYW5uaW5nIGVyYXNlYmxvY2sgOTYgLS0gODUgJSBjb21wbGV0ZSAgDQpsaWJz
-Y2FuOiBzY2FubmluZyBlcmFzZWJsb2NrIDk3IC0tIDg2ICUgY29tcGxldGUgIA0KbGlic2Nhbjog
-c2Nhbm5pbmcgZXJhc2VibG9jayA5OCAtLSA4NyAlIGNvbXBsZXRlICANCmxpYnNjYW46IHNjYW5u
-aW5nIGVyYXNlYmxvY2sgOTkgLS0gODggJSBjb21wbGV0ZSAgDQpsaWJzY2FuOiBzY2FubmluZyBl
-cmFzZWJsb2NrIDEwMCAtLSA4OSAlIGNvbXBsZXRlICANCmxpYnNjYW46IHNjYW5uaW5nIGVyYXNl
-YmxvY2sgMTAxIC0tIDkwICUgY29tcGxldGUgIA0KbGlic2Nhbjogc2Nhbm5pbmcgZXJhc2VibG9j
-ayAxMDIgLS0gOTEgJSBjb21wbGV0ZSAgDQpsaWJzY2FuOiBzY2FubmluZyBlcmFzZWJsb2NrIDEw
-MyAtLSA5MiAlIGNvbXBsZXRlICANCmxpYnNjYW46IHNjYW5uaW5nIGVyYXNlYmxvY2sgMTA0IC0t
-IDkyICUgY29tcGxldGUgIA0KbGlic2Nhbjogc2Nhbm5pbmcgZXJhc2VibG9jayAxMDUgLS0gOTMg
-JSBjb21wbGV0ZSAgDQpsaWJzY2FuOiBzY2FubmluZyBlcmFzZWJsb2NrIDEwNiAtLSA5NCAlIGNv
-bXBsZXRlICANCmxpYnNjYW46IHNjYW5uaW5nIGVyYXNlYmxvY2sgMTA3IC0tIDk1ICUgY29tcGxl
-dGUgIA0KbGlic2Nhbjogc2Nhbm5pbmcgZXJhc2VibG9jayAxMDggLS0gOTYgJSBjb21wbGV0ZSAg
-DQpsaWJzY2FuOiBzY2FubmluZyBlcmFzZWJsb2NrIDEwOSAtLSA5NyAlIGNvbXBsZXRlICANCmxp
-YnNjYW46IHNjYW5uaW5nIGVyYXNlYmxvY2sgMTEwIC0tIDk4ICUgY29tcGxldGUgIA0KbGlic2Nh
-bjogc2Nhbm5pbmcgZXJhc2VibG9jayAxMTEgLS0gOTkgJSBjb21wbGV0ZSAgDQpsaWJzY2FuOiBz
-Y2FubmluZyBlcmFzZWJsb2NrIDExMiAtLSAxMDAgJSBjb21wbGV0ZSAgDQp1Ymlmb3JtYXQ6IHdh
-cm5pbmchOiAxMTMgb2YgMTEzIGVyYXNlYmxvY2tzIGNvbnRhaW4gbm9uLXViaWZzIGRhdGENCnVi
-aWZvcm1hdDogY29udGludWU/ICh5ZXMvbm8pICB5DQp1Ymlmb3JtYXQ6IHdhcm5pbmchOiBvbmx5
-IDAgb2YgMTEzIGVyYXNlYmxvY2tzIGhhdmUgdmFsaWQgZXJhc2UgY291bnRlcg0KdWJpZm9ybWF0
-OiBlcmFzZSBjb3VudGVyIDAgd2lsbCBiZSB1c2VkIGZvciBhbGwgZXJhc2VibG9ja3MNCnViaWZv
-cm1hdDogbm90ZSwgYXJiaXRyYXJ5IGVyYXNlIGNvdW50ZXIgdmFsdWUgbWF5IGJlIHNwZWNpZmll
-ZCB1c2luZyAtZSBvcHRpb24NCnViaWZvcm1hdDogY29udGludWU/ICh5ZXMvbm8pICB5DQp1Ymlm
-b3JtYXQ6IHVzZSBlcmFzZSBjb3VudGVyIDAgZm9yIGFsbCBlcmFzZWJsb2Nrcw0KDQp1Ymlmb3Jt
-YXQ6IGZvcm1hdHRpbmcgZXJhc2VibG9jayAwIC0tICAwICUgY29tcGxldGUgIGxpYm10ZDogZXJy
-b3IhOiBNRU1FUkFTRTY0IGlvY3RsIGZhaWxlZCBmb3IgZXJhc2VibG9jayAwIChtdGQyKQ0KICAg
-ICAgICBlcnJvciAzMCAoUmVhZC1vbmx5IGZpbGUgc3lzdGVtKQ0KDQp1Ymlmb3JtYXQ6IGVycm9y
-ITogZmFpbGVkIHRvIGVyYXNlIGVyYXNlYmxvY2sgMA0KICAgICAgICAgICBlcnJvciAzMCAoUmVh
-ZC1vbmx5IGZpbGUgc3lzdGVtKQ0KLyAjIA0K
---bcaec54b48d0db280a04d57af46b
-Content-Type: application/octet-stream; name="collie-mtd-rw.patch"
-Content-Disposition: attachment; filename="collie-mtd-rw.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_hd285nq74
-
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL21hcHMvc2ExMTAwLWZsYXNoLmMgYi9kcml2ZXJzL210
-ZC9tYXBzL3NhMTEwMC1mbGFzaC5jCmluZGV4IGZhOWMwYTkuLmJmNmIwNGYgMTAwNjQ0Ci0tLSBh
-L2RyaXZlcnMvbXRkL21hcHMvc2ExMTAwLWZsYXNoLmMKKysrIGIvZHJpdmVycy9tdGQvbWFwcy9z
-YTExMDAtZmxhc2guYwpAQCAtMjA2LDYgKzIwNiw3IEBAIHN0YXRpYyBpbnQgc2ExMTAwX3Byb2Jl
-X3N1YmRldihzdHJ1Y3Qgc2Ffc3ViZGV2X2luZm8gKnN1YmRldiwgc3RydWN0IHJlc291cmNlICpy
-CiAJCWdvdG8gZXJyOwogCX0KIAlzdWJkZXYtPm10ZC0+b3duZXIgPSBUSElTX01PRFVMRTsKKwlz
-dWJkZXYtPm10ZC0+dW5sb2NrKHN1YmRldi0+bXRkLCAweGMwMDAwLCBzdWJkZXYtPm10ZC0+c2l6
-ZSAtIDB4YzAwMDApOwogCiAJcHJpbnRrKEtFUk5fSU5GTyAiU0ExMTAwIGZsYXNoOiBDRkkgZGV2
-aWNlIGF0IDB4JTA4bHgsICV1TWlCLCAlZC1iaXRcbiIsCiAJCXBoeXMsICh1bnNpZ25lZCkoc3Vi
-ZGV2LT5tdGQtPnNpemUgPj4gMjApLAo=
---bcaec54b48d0db280a04d57af46b--
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 4883139..acf0c25 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -37,6 +37,17 @@ config MTD_NAND_ECC_BCH
+ 	  ECC codes. They are used with NAND devices requiring more than 1 bit
+ 	  of error correction.
+=20
++config MTD_NAND_BENAND
++	bool "Support BENAND (embedded ECC NAND)"
++	default n
++	help
++	  This enables support for BENAND, which is an SLC NAND flash
++	  solution with embedded error correction code (ECC).
++	  currently supports only 128bytes OOB type.
++	  In the read sequence, "status read command" is executed to check
++	  the ECC status after read data.
++	  The write sequence is the same as raw write.
++
+ config MTD_SM_COMMON
+ 	tristate
+ 	default n
+diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+index 2cbd091..f58dee8 100644
+--- a/drivers/mtd/nand/Makefile
++++ b/drivers/mtd/nand/Makefile
+@@ -5,6 +5,7 @@
+ obj-$(CONFIG_MTD_NAND)			+=3D nand.o
+ obj-$(CONFIG_MTD_NAND_ECC)		+=3D nand_ecc.o
+ obj-$(CONFIG_MTD_NAND_BCH)		+=3D nand_bch.o
++obj-$(CONFIG_MTD_NAND_BENAND)		+=3D nand_benand.o
+ obj-$(CONFIG_MTD_NAND_IDS)		+=3D nand_ids.o
+ obj-$(CONFIG_MTD_SM_COMMON) 		+=3D sm_common.o
+=20
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 1a03b7f..2b0c178 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -43,6 +43,7 @@
+ #include <linux/mtd/nand.h>
+ #include <linux/mtd/nand_ecc.h>
+ #include <linux/mtd/nand_bch.h>
++#include <linux/mtd/nand_benand.h>
+ #include <linux/interrupt.h>
+ #include <linux/bitops.h>
+ #include <linux/leds.h>
+@@ -3076,6 +3077,11 @@ static void nand_decode_ext_id(struct mtd_info *mtd,=
+ struct nand_chip *chip,
+ 		extid >>=3D 2;
+ 		/* Get buswidth information */
+ 		*busw =3D (extid & 0x01) ? NAND_BUSWIDTH_16 : 0;
++
++		/* check BENAND (embedded ECC) */
++		if (id_data[0] =3D=3D NAND_MFR_TOSHIBA &&
++		    (id_data[4] & 1 << 7))
++			nand_benand_setupecc(mtd, &(chip->ecc.mode));
+ 	}
+ }
+=20
+@@ -3530,6 +3536,25 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 			chip->ecc.bytes * 8 / fls(8 * chip->ecc.size);
+ 		break;
+=20
++	case NAND_ECC_BENAND:
++		if (!mtd_nand_has_benand()) {
++			pr_warn("CONFIG_MTD_BENAND not enabled\n");
++			BUG();
++		}
++
++		chip->ecc.read_page =3D nand_read_page_benand;
++		chip->ecc.write_page =3D nand_write_page_raw;
++		chip->ecc.read_page_raw =3D nand_read_page_raw;
++		chip->ecc.write_page_raw =3D nand_write_page_raw;
++		chip->ecc.read_oob =3D nand_read_oob_std;
++		chip->ecc.write_oob =3D nand_write_oob_std;
++
++		if (nand_benand_init(mtd)) {
++			pr_warn("BENAND initialization failed!\n");
++			BUG();
++		}
++		break;
++
+ 	case NAND_ECC_NONE:
+ 		pr_warn("NAND_ECC_NONE selected by board driver. "
+ 			   "This is not recommended!\n");
+diff --git a/drivers/mtd/nand/nand_benand.c b/drivers/mtd/nand/nand_benand.=
+c
+new file mode 100644
+index 0000000..fe8008d
+--- /dev/null
++++ b/drivers/mtd/nand/nand_benand.c
+@@ -0,0 +1,113 @@
++/*
++ * This file provides functions for BENAND, which is an SLC NAND flash
++ * solution with embedded error correction code (ECC).
++ *
++ * (C) Copyright TOSHIBA CORPORATION 2013
++ * All Rights Reserved.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  =
+USA
++ */
++
++#include <linux/types.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/slab.h>
++#include <linux/bitops.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/nand.h>
++#include <linux/mtd/nand_benand.h>
++
++static struct nand_ecclayout benand_oob_128 =3D {
++	.oobfree =3D {
++		{.offset =3D 2, .length =3D 3},
++		{.offset =3D 18, .length =3D 3},
++		{.offset =3D 34, .length =3D 3},
++		{.offset =3D 50, .length =3D 3},
++		{.offset =3D 66, .length =3D 3},
++		{.offset =3D 82, .length =3D 3},
++		{.offset =3D 98, .length =3D 3},
++		{.offset =3D 114, .length =3D 3},
++	}
++};
++
++/**
++ * nand_read_page_raw - [Intern] read raw page data with benand.
++ * @mtd: mtd info structure
++ * @chip: nand chip info structure
++ * @buf: buffer to store read data
++ * @oob_required: caller requires OOB data read to chip->oob_poi
++ * @page: page number to read
++ *
++ * Not for syndrome calculating ECC controllers, which use a special oob l=
+ayout.
++ */
++
++int nand_read_page_benand(struct mtd_info *mtd, struct nand_chip *chip,
++			  uint8_t *buf, int oob_required, int page)
++{
++	u8 status;
++	unsigned int max_bitflips =3D 0;
++
++	chip->ecc.read_page_raw(mtd, chip, buf, oob_required, page);
++
++	/* Check Read Status */
++
++	chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
++	status =3D chip->read_byte(mtd);
++
++	if (status & NAND_STATUS_FAIL)
++		/* uncorrectable error */
++		mtd->ecc_stats.failed++;
++	else if (status & NAND_CHIP_READ_STATUS) {
++		/* correctable error
++		   How many bits have been corrected is unknown.
++		   therefore bitflips is set to ecc.strength. */
++		mtd->ecc_stats.corrected +=3D chip->ecc.strength;
++		max_bitflips =3D chip->ecc.strength;
++	}
++
++	return max_bitflips;
++}
++EXPORT_SYMBOL(nand_read_page_benand);
++
++void nand_benand_setupecc(struct mtd_info *mtd, nand_ecc_modes_t *mode)
++{
++	/* support only 128bytes OOB type */
++	if (mtd->oobsize =3D=3D 128)
++		*mode =3D NAND_ECC_BENAND;
++}
++
++int nand_benand_init(struct mtd_info *mtd)
++{
++	struct nand_chip *chip =3D mtd->priv;
++
++	chip->ecc.size =3D mtd->writesize;
++
++	if (mtd->oobsize =3D=3D 128) {
++		chip->ecc.layout =3D &benand_oob_128;
++		chip->ecc.bytes =3D 72;      /* 9B * (4096B/512B) */
++		chip->ecc.strength =3D 32;   /* 4b * (4096B/512B) */
++	} else {
++		pr_warn("%d unsupported oobsize in benand_init\n",
++			mtd->oobsize);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL(nand_benand_init);
++
++MODULE_AUTHOR("TOSHIBA Corporation");
++MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("BENAND (embedded ECC NAND) support");
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 24e9159..2163ae9 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -129,6 +129,7 @@ extern int nand_unlock(struct mtd_info *mtd, loff_t ofs=
+, uint64_t len);
+ /* Status bits */
+ #define NAND_STATUS_FAIL	0x01
+ #define NAND_STATUS_FAIL_N1	0x02
++#define NAND_CHIP_READ_STATUS   0x08  /* for BENAND */
+ #define NAND_STATUS_TRUE_READY	0x20
+ #define NAND_STATUS_READY	0x40
+ #define NAND_STATUS_WP		0x80
+@@ -143,6 +144,7 @@ typedef enum {
+ 	NAND_ECC_HW_SYNDROME,
+ 	NAND_ECC_HW_OOB_FIRST,
+ 	NAND_ECC_SOFT_BCH,
++	NAND_ECC_BENAND,
+ } nand_ecc_modes_t;
+=20
+ /*
+diff --git a/include/linux/mtd/nand_benand.h b/include/linux/mtd/nand_benan=
+d.h
+new file mode 100644
+index 0000000..ac043e5
+--- /dev/null
++++ b/include/linux/mtd/nand_benand.h
+@@ -0,0 +1,47 @@
++/*
++ * (C) Copyright TOSHIBA CORPORATION 2013
++ * All Rights Reserved.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * This file is the header for the NAND BENAND implementation.
++ */
++
++#ifndef __MTD_NAND_BENAND_H__
++#define __MTD_NAND_BENAND_H__
++
++#if defined(CONFIG_MTD_NAND_BENAND)
++
++static inline int mtd_nand_has_benand(void) { return 1; }
++
++void nand_benand_setupecc(struct mtd_info *mtd, nand_ecc_modes_t *mode);
++
++int nand_read_page_benand(struct mtd_info *mtd, struct nand_chip *chip,
++			  uint8_t *buf, int oob_required, int page);
++
++int nand_benand_init(struct mtd_info *mtd);
++
++#else /* !CONFIG_MTD_NAND_BENAND */
++
++static inline int mtd_nand_has_benand(void) { return 0; }
++
++static inline void nand_benand_setupecc(struct mtd_info *mtd,
++					nand_ecc_modes_t *mode) {}
++
++static inline int nand_read_page_benand(struct mtd_info *mtd,
++					struct nand_chip *chip,
++					uint8_t *buf, int oob_required,
++					int page)
++{
++	return -1;
++}
++
++static inline int nand_benand_init(struct mtd_info *mtd)
++{
++	return -1;
++}
++
++#endif /* CONFIG_MTD_NAND_BENAND */
++#endif /* __MTD_NAND_BENAND_H__ */
+--=20
+1.7.4.1
