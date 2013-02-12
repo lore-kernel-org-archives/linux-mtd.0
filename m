@@ -1,19 +1,22 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1U5II2-00005N-2F
- for linux-mtd@lists.infradead.org; Tue, 12 Feb 2013 16:01:03 +0000
-Message-ID: <1360684853.12703.118.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: lantiq: Add NAND support on Lantiq Falcon SoC.
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: John Crispin <blogic@openwrt.org>
-Date: Tue, 12 Feb 2013 18:00:53 +0200
-In-Reply-To: <1359577936-7004-1-git-send-email-blogic@openwrt.org>
-References: <1359577936-7004-1-git-send-email-blogic@openwrt.org>
+ id 1U5IQe-0001me-S1
+ for linux-mtd@lists.infradead.org; Tue, 12 Feb 2013 16:09:58 +0000
+Message-ID: <1360685406.12703.119.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/2] mtd: physmap_of: Convert device allocation to
+ managed devm_kzalloc()
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Date: Tue, 12 Feb 2013 18:10:06 +0200
+In-Reply-To: <1359125428-23801-2-git-send-email-ezequiel.garcia@free-electrons.com>
+References: <1359125428-23801-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1359125428-23801-2-git-send-email-ezequiel.garcia@free-electrons.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Thomas Langer <thomas.langer@lantiq.com>, linux-mtd@lists.infradead.org
-Reply-To: artem.bityutskiy@linux.intel.com
+Cc: dwmw2@infradead.org, thierry.reding@avionic-design.de,
+ linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,17 +26,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2013-01-30 at 21:32 +0100, John Crispin wrote:
-> The driver uses plat_nand. As the platform_device is loaded from DT, we need
-> to lookup the node and attach our falcon specific "struct platform_nand_data"
-> to it.
+On Fri, 2013-01-25 at 11:50 -0300, Ezequiel Garcia wrote:
+> Tested by compilation only.
 > 
-> Signed-off-by: Thomas Langer <thomas.langer@lantiq.com>
-> Signed-off-by: John Crispin <blogic@openwrt.org>
+> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 
-Would you please send me or point to the defconfig file which I can use
-to compile-test this?
-
+Pushed this one to l2-mtd.git, thanks!
 -- 
 Best Regards,
 Artem Bityutskiy
