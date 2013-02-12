@@ -1,18 +1,20 @@
-Message-ID: <1360681264.12703.112.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 0/5 v3] at91: PMECC: enable PMECC in dt for
- at91sam9x5ek, at91sam9n12ek
+Received: from mga02.intel.com ([134.134.136.20])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1U5I4a-0006Xb-OQ
+ for linux-mtd@lists.infradead.org; Tue, 12 Feb 2013 15:47:09 +0000
+Message-ID: <1360684037.12703.117.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH V3 1/3] mtd: add new fields to nand_flash_dev{}
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Nicolas Ferre <nicolas.ferre@atmel.com>
-Date: Tue, 12 Feb 2013 17:01:04 +0200
-In-Reply-To: <5113D347.8050409@atmel.com>
-References: <1358945232-2282-1-git-send-email-josh.wu@atmel.com>
- <5113D347.8050409@atmel.com>
+To: Huang Shijie <b32955@freescale.com>
+Date: Tue, 12 Feb 2013 17:47:17 +0200
+In-Reply-To: <1359349039-11510-2-git-send-email-b32955@freescale.com>
+References: <1359349039-11510-1-git-send-email-b32955@freescale.com>
+ <1359349039-11510-2-git-send-email-b32955@freescale.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Arnd Bergmann <arnd@arndb.de>, Josh Wu <josh.wu@atmel.com>,
- linux-mtd@lists.infradead.org, Olof Johansson <olof@lixom.net>,
- plagnioj@jcrosoft.com, linux-arm-kernel@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,40 +25,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2013-02-07 at 17:16 +0100, Nicolas Ferre wrote:
-> On 01/23/2013 01:47 PM, Josh Wu :
-> > Those patches will enable PMECC in dt parameters for at91sam9x5ek and 
-> > at91sam9n12ek.
-> > 
-> > The PMECC driver will check minimum required ecc on ONFI parameter from NAND 
-> > flash.
-> > 
-> > If pmecc-cap, pmecc-sector-size in dts file is specified, use those two.
-> > otherwise, set those according to NAND flash ONFI parameters.
-> > 
-> > If the pmecc-cap, pmecc-sector-size in dts are different with ecc requirement
-> > in ONFI, print out a warning.
-> > 
-> > 
-> > For the following compile error:
-> >   ERROR (phandle_references): Reference to non-existent node or label "pinctrl_ssc0_tx"
-> > 
-> >   ERROR: Input tree has errors, aborting (use -f to force output)
-> >   make[2]: *** [arch/arm/boot/dts/at91sam9g20ek.dtb] Error 2
-> > 
-> > the fixes are already merged in Linux mainline in v3.8-rc4.
-> > you can find in: 
-> >  544ae6b2e676c3c37fb8c93ef9327932fc2e5bc2 (ARM: at91/dts: add pinctrl support for SSC peripheral)
-> >  ea03c81521bde526570e1dec96eaa21fe5ac84a2 (ASoC: atmel-ssc: add pinctrl selection to driver) 
-> 
-> Artem,
-> 
-> I propose to take patches 2 and 3/5 of this series via arm-soc git tree.
-> I will specify to merge them at the end of the merge-window so that the
-> Device Tree properties will not be out-of-sync with driver modifications
-> (may not cause big issues anyway).
+On Mon, 2013-01-28 at 12:57 +0800, Huang Shijie wrote:
+> +       {"SmartMedia 256MiB 3,3V",      {0, 0x71}, 512, 256, 0x4000 },
+> +       {"SmartMedia 256MiB 3,3V ROM",  {0, 0x5b}, 512, 256, 0x4000,
+> NAND_ROM},
 
-Hi, just pushed patches 1, 3, and 4 to the l2-mtd.git tree, thanks!
+Sorry for a possibly stupid question, but what does it buy you adding
+another "0" to all the entries? I see you add another table, which you
+look up if the "traditional" table does not work. Why you need to add
+these zeroes?
+
 -- 
 Best Regards,
 Artem Bityutskiy
