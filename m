@@ -1,22 +1,21 @@
-Received: from mail-vb0-f43.google.com ([209.85.212.43])
+Received: from inet-tsb5.toshiba.co.jp ([202.33.96.24] helo=imx2.toshiba.co.jp)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U5Mnz-0006lz-C8
- for linux-mtd@lists.infradead.org; Tue, 12 Feb 2013 20:50:20 +0000
-Received: by mail-vb0-f43.google.com with SMTP id fs19so328294vbb.30
- for <linux-mtd@lists.infradead.org>; Tue, 12 Feb 2013 12:50:18 -0800 (PST)
+ id 1U5VmV-0002ef-8m
+ for linux-mtd@lists.infradead.org; Wed, 13 Feb 2013 06:25:25 +0000
+From: <katsuki.uwatoko@toshiba.co.jp>
+To: <matthieu.castet@parrot.com>
+Subject: Re: [PATCH] mtd: nand: support BENAND (Built-in ECC NAND)
+Date: Wed, 13 Feb 2013 06:25:14 +0000
+Message-ID: <F3B6523425E7914AA6214ED358D820AF25D99FB1@TGXML316.toshiba.local>
+References: <F3B6523425E7914AA6214ED358D820AF25D9879D@TGXML316.toshiba.local>
+ <511A0D18.2030408@parrot.com>
+In-Reply-To: <511A0D18.2030408@parrot.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-ID: <E6CD5695001E06458FC671492C491138@toshiba.local>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <CALF0-+W=FiQvSchT9Z3DosGvf-r2d20PK9NZDFnYzmtpYi+ieQ@mail.gmail.com>
-References: <1360597903-10378-1-git-send-email-festevam@gmail.com>
- <CALF0-+W=FiQvSchT9Z3DosGvf-r2d20PK9NZDFnYzmtpYi+ieQ@mail.gmail.com>
-Date: Tue, 12 Feb 2013 18:50:17 -0200
-Message-ID: <CAOMZO5D_e6qqFC-M8WtDR7QoSNCizrMrcD0n=60M1EQMrha0BQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd: mxc_nand: Fix sparse warning
-From: Fabio Estevam <festevam@gmail.com>
-To: Ezequiel Garcia <elezegarcia@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- artem.bityutskiy@linux.intel.com, linux-mtd@lists.infradead.org,
- joe@perches.com
+Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,28 +25,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ezequiel,
+> Are you planning to add support to other Toshiba BENAND ?
 
-On Tue, Feb 12, 2013 at 12:39 AM, Ezequiel Garcia <elezegarcia@gmail.com> wrote:
+Unfortunately, I am not currently, because I do not have=20
+any boards of the other BENANDs.
 
->> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
->> index 45204e4..37037cb 100644
->> --- a/drivers/mtd/nand/mxc_nand.c
->> +++ b/drivers/mtd/nand/mxc_nand.c
->> @@ -266,7 +266,7 @@ static struct nand_ecclayout nandv2_hw_eccoob_4k = {
->>         }
->>  };
->>
->> -static const char const *part_probes[] = {
->> +static const char *part_probes[] = {
->>         "cmdlinepart", "RedBoot", "ofpart", NULL };
->>
->
-> Are you sure checkpatch.pl didn't complain about this patch?
-
-Yes, checkpatch complains, but it seems that checkpatch and sparse are
-in contradiction then.
-
-Regards,
-
-Fabio Estevam
+But I suppose that it is easy to support the other BENANDs=20
+by little modification of nand_read_page_benand() to get=20
+a number of bitflips.
+--=20
+UWATOKO Katsuki=
