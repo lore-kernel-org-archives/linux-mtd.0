@@ -1,17 +1,18 @@
 Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U5ZUz-00014N-Tf
- for linux-mtd@lists.infradead.org; Wed, 13 Feb 2013 10:23:34 +0000
+ id 1U5ZV0-00014R-Pi
+ for linux-mtd@lists.infradead.org; Wed, 13 Feb 2013 10:23:36 +0000
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH RFC 1/5] UBIFS: xattr: protect ui_size and data_len by ui_mutex
-Date: Wed, 13 Feb 2013 11:23:14 +0100
-Message-Id: <1360750998-15191-2-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH RFC 2/5] UBIFS: fix couple bugs in UBIFS extended attribute
+ length calculation
+Date: Wed, 13 Feb 2013 11:23:15 +0100
+Message-Id: <1360750998-15191-3-git-send-email-mkl@pengutronix.de>
 In-Reply-To: <1360750998-15191-1-git-send-email-mkl@pengutronix.de>
 References: <1360750998-15191-1-git-send-email-mkl@pengutronix.de>
-Cc: artem.bityutskiy@linux.intel.com, linux-security-module@vger.kernel.org,
- Marc Kleine-Budde <mkl@pengutronix.de>, linux-kernel@vger.kernel.org,
- kernel@pengutronix.de
+Cc: Subodh Nijsure <snijsure@grid-net.com>, artem.bityutskiy@linux.intel.com,
+ linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org,
+ Marc Kleine-Budde <mkl@pengutronix.de>, kernel@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,44 +22,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch moves the modification of ui->ui_size and ui->data_len in the
-create_xattr() and change_xattr() functions, so that they are protected by the
-ui_mutex as stated in the documenation of the the struct ubifs_inode.
+From: Subodh Nijsure <snijsure@grid-net.com>
 
+Signed-off-by: Subodh Nijsure <snijsure@grid-net.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- fs/ubifs/xattr.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ fs/ubifs/journal.c |   10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
-index 0f7139b..1395307 100644
---- a/fs/ubifs/xattr.c
-+++ b/fs/ubifs/xattr.c
-@@ -143,10 +143,10 @@ static int create_xattr(struct ubifs_info *c, struct inode *host,
- 		err = -ENOMEM;
- 		goto out_free;
- 	}
--	inode->i_size = ui->ui_size = size;
--	ui->data_len = size;
+diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+index afaad07..6981d7d 100644
+--- a/fs/ubifs/journal.c
++++ b/fs/ubifs/journal.c
+@@ -572,7 +572,12 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
  
- 	mutex_lock(&host_ui->ui_mutex);
-+	inode->i_size = ui->ui_size = size;
-+	ui->data_len = size;
- 	host->i_ctime = ubifs_current_time(host);
- 	host_ui->xattr_cnt += 1;
- 	host_ui->xattr_size += CALC_DENT_SIZE(nm->len);
-@@ -208,10 +208,10 @@ static int change_xattr(struct ubifs_info *c, struct inode *host,
- 		err = -ENOMEM;
- 		goto out_free;
- 	}
--	inode->i_size = ui->ui_size = size;
--	ui->data_len = size;
+ 	aligned_dlen = ALIGN(dlen, 8);
+ 	aligned_ilen = ALIGN(ilen, 8);
+-	len = aligned_dlen + aligned_ilen + UBIFS_INO_NODE_SZ;
++	/*
++	 * Make sure to account for dir_ui+data_len in length
++	 * calculation in case there is extended attribute.
++	 */
++	len = aligned_dlen + aligned_ilen +
++	      UBIFS_INO_NODE_SZ + dir_ui->data_len;
+ 	dent = kmalloc(len, GFP_NOFS);
+ 	if (!dent)
+ 		return -ENOMEM;
+@@ -649,7 +654,8 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
  
- 	mutex_lock(&host_ui->ui_mutex);
-+	inode->i_size = ui->ui_size = size;
-+	ui->data_len = size;
- 	host->i_ctime = ubifs_current_time(host);
- 	host_ui->xattr_size -= CALC_XATTR_BYTES(ui->data_len);
- 	host_ui->xattr_size += CALC_XATTR_BYTES(size);
+ 	ino_key_init(c, &ino_key, dir->i_ino);
+ 	ino_offs += aligned_ilen;
+-	err = ubifs_tnc_add(c, &ino_key, lnum, ino_offs, UBIFS_INO_NODE_SZ);
++	err = ubifs_tnc_add(c, &ino_key, lnum, ino_offs,
++			    UBIFS_INO_NODE_SZ + dir_ui->data_len);
+ 	if (err)
+ 		goto out_ro;
+ 
 -- 
 1.7.10.4
