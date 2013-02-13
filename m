@@ -1,22 +1,26 @@
-Received: from mail.free-electrons.com ([94.23.35.102])
- by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1U5aTd-0005Xy-Dq
- for linux-mtd@lists.infradead.org; Wed, 13 Feb 2013 11:26:14 +0000
-Date: Wed, 13 Feb 2013 08:26:05 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v4] mtd: torturetest: add the support for random data
- pattern
-Message-ID: <20130213112604.GA2466@localhost>
-References: <1360053050-18043-1-git-send-email-b32955@freescale.com>
- <1360055199-6679-1-git-send-email-b32955@freescale.com>
+From: "Philip, Avinash" <avinashphilip@ti.com>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: RE: [PATCH v2 3/4] mtd: devices: elm: Low power transition support
+Date: Wed, 13 Feb 2013 11:42:01 +0000
+Message-ID: <518397C60809E147AF5323E0420B992E3EA7491C@DBDE01.ent.ti.com>
+References: <1360240618-11094-1-git-send-email-avinashphilip@ti.com>
+ <1360240618-11094-4-git-send-email-avinashphilip@ti.com>
+ <20130209102243.GH17852@n2100.arm.linux.org.uk>
+In-Reply-To: <20130209102243.GH17852@n2100.arm.linux.org.uk>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1360055199-6679-1-git-send-email-b32955@freescale.com>
-Cc: joe@perches.com, ricard.wanderlof@axis.com, dwmw2@infradead.org,
- linux-mtd@lists.infradead.org, dedekind1@gmail.com
+Cc: "Hilman, Kevin" <khilman@ti.com>, "Mohammed, Afzal" <afzal@ti.com>,
+ "tony@atomide.com" <tony@atomide.com>,
+ "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>, "Nori,
+ Sekhar" <nsekhar@ti.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Hiremath,
+ Vaibhav" <hvaibhav@ti.com>, "Hebbar, Gururaja" <gururaja.hebbar@ti.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,215 +30,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Huang,
+On Sat, Feb 09, 2013 at 15:52:44, Russell King - ARM Linux wrote:
+> On Thu, Feb 07, 2013 at 06:06:57PM +0530, Philip Avinash wrote:
+> > +static int elm_suspend(struct device *dev)
+> > +{
+> > +	struct elm_info *info =3D dev_get_drvdata(dev);
+> > +	wait_queue_head_t wq;
+> > +	DECLARE_WAITQUEUE(wait, current);
+> > +
+> > +	init_waitqueue_head(&wq);
+> > +	while (1) {
+> > +		/* Make sure that ELM not running */
+> > +		if (info->idle) {
+> > +			add_wait_queue(&wq, &wait);
+> > +			schedule();
+> > +			remove_wait_queue(&wq, &wait);
+> > +		} else {
+> > +			break;
+> > +		}
+> > +	}
+>=20
+> The above code looks really wrong - it will just spin endlessly with the
+> waitqueues doing nothing useful.  What are you trying to do here?
 
-On Tue, Feb 05, 2013 at 05:06:39PM +0800, Huang Shijie wrote:
-> Add a new module parameter 'pattern'. The meaning of the pattern is:
->   (1) pattern == 0 for 55/AA pattern.
->   (2) pattern < 0 for random pattern.
->   (3) pattern > 0 for random pattern too, the value of the pattern is used
->       as the seed for the random generator.
-> 
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
-> ---
-> v1 --> v2:
->    add seed support.
-> 
-> v2 --> v3:
->    fix a type in pr_info
-> 
-> v3 --> v4:
->    fix a confusing description.
-> ---
->  drivers/mtd/tests/mtd_torturetest.c |   82 +++++++++++++++++++++++++---------
->  1 files changed, 60 insertions(+), 22 deletions(-)
-> 
-> diff --git a/drivers/mtd/tests/mtd_torturetest.c b/drivers/mtd/tests/mtd_torturetest.c
-> index 516cf66..671e8dd 100644
-> --- a/drivers/mtd/tests/mtd_torturetest.c
-> +++ b/drivers/mtd/tests/mtd_torturetest.c
-> @@ -32,6 +32,7 @@
->  #include <linux/mtd/mtd.h>
->  #include <linux/slab.h>
->  #include <linux/sched.h>
-> +#include <linux/random.h>
->  
->  #define RETRIES 3
->  
-> @@ -64,6 +65,13 @@ module_param(cycles_count, uint, S_IRUGO);
->  MODULE_PARM_DESC(cycles_count, "how many erase cycles to do "
->  			       "(infinite by default)");
->  
-> +static int pattern;
-> +module_param(pattern, int, S_IRUGO);
-> +MODULE_PARM_DESC(pattern, "0 for 55/AA pattern(default);"
-> +			"less then 0 for random pattern;"
-> +			"greater then 0 for random pattern too, "
-> +			"the value of the parameter is the seed.");
-> +
->  static struct mtd_info *mtd;
->  
->  /* This buffer contains 0x555555...0xAAAAAA... pattern */
-> @@ -72,6 +80,8 @@ static unsigned char *patt_5A5;
->  static unsigned char *patt_A5A;
->  /* This buffer contains all 0xFF bytes */
->  static unsigned char *patt_FF;
-> +/* This buffer contains the random data. */
-> +static unsigned char *patt_rd;
->  /* This a temporary buffer is use when checking data */
->  static unsigned char *check_buf;
->  /* How many erase cycles were done */
-> @@ -228,6 +238,12 @@ static int __init tort_init(void)
->  		pr_info("torturing just %d pages per eraseblock\n",
->  			pgcnt);
->  	pr_info("write verify %s\n", check ? "enabled" : "disabled");
-> +	if (pattern == 0)
-> +		pr_info("Test pattern is 55/AA.\n");
-> +	else if (pattern < 0)
-> +		pr_info("Test pattern is random.\n");
-> +	else
-> +		pr_info("Test pattern is random, seed is 0x%x.\n", pattern);
->  
->  	mtd = get_mtd_device(NULL, dev);
->  	if (IS_ERR(mtd)) {
-> @@ -249,16 +265,24 @@ static int __init tort_init(void)
->  	}
->  
->  	err = -ENOMEM;
-> -	patt_5A5 = kmalloc(mtd->erasesize, GFP_KERNEL);
-> -	if (!patt_5A5) {
-> -		pr_err("error: cannot allocate memory\n");
+The intention of waitqeue is to make the suspend process really wait till
+the ELM module finishes current activity. Although this type of protection
+already achieved in mtd layer using nand_suspend(), this one is particularl=
+y
+required for ELM module to really make sure that *any pending* corrections =
+to
+finish really before gone to suspend.
 
-Once again: you don't want to print this message!
-In case the kmalloc actually fails, your "cannot allocate memory"
-message won't be of any use to anyone.
+If suspend activity initiated and NAND driver requested service of ELM
+module for error correction, then suspend activity has to wait till
+(info->idle =3D=3D false), so that ELM module finishes activity.
 
-When the system gets out of memory it will print a lot
-of more useful information, including a stack dump
-(see warn_alloc_failed in mm/page_alloc.c).
+I can think of adding different states to ELM module and take action.
+I will add following states.
 
-Moreover, printing an unneeded message adds a string increasing kernel
-size.
+RUNNING
+SUSPEND
 
-Joe Perches is massively removing this sort of printing,
-and I'm sure he will appreciate if we stop adding them :-)
+Thanks
+Avinash
 
-http://lkml.org/lkml/2013/2/11/364
-
-> -		goto out_mtd;
-> -	}
-> +	if (!pattern) {
-> +		patt_5A5 = kmalloc(mtd->erasesize, GFP_KERNEL);
-> +		if (!patt_5A5) {
-> +			pr_err("error: cannot allocate memory\n");
-
-ditto.
-
-> +			goto out_mtd;
-> +		}
->  
-> -	patt_A5A = kmalloc(mtd->erasesize, GFP_KERNEL);
-> -	if (!patt_A5A) {
-> -		pr_err("error: cannot allocate memory\n");
-
-ditto.
-
-> -		goto out_patt_5A5;
-> +		patt_A5A = kmalloc(mtd->erasesize, GFP_KERNEL);
-> +		if (!patt_A5A) {
-> +			pr_err("error: cannot allocate memory\n");
-
-ditto.
-
-> +			goto out_patt_5A5;
-> +		}
-> +	} else {
-> +		patt_rd = kmalloc(mtd->erasesize, GFP_KERNEL);
-> +		if (!patt_rd) {
-> +			pr_err("error: cannot allocate memory\n");
-
-ditto.
-
-> +			goto out_patt_rd;
-> +		}
->  	}
->  
->  	patt_FF = kmalloc(mtd->erasesize, GFP_KERNEL);
-> @@ -277,14 +301,20 @@ static int __init tort_init(void)
->  
->  	/* Initialize patterns */
->  	memset(patt_FF, 0xFF, mtd->erasesize);
-> -	for (i = 0; i < mtd->erasesize / pgsize; i++) {
-> -		if (!(i & 1)) {
-> -			memset(patt_5A5 + i * pgsize, 0x55, pgsize);
-> -			memset(patt_A5A + i * pgsize, 0xAA, pgsize);
-> -		} else {
-> -			memset(patt_5A5 + i * pgsize, 0xAA, pgsize);
-> -			memset(patt_A5A + i * pgsize, 0x55, pgsize);
-> +	if (!pattern) {
-> +		for (i = 0; i < mtd->erasesize / pgsize; i++) {
-> +			if (!(i & 1)) {
-> +				memset(patt_5A5 + i * pgsize, 0x55, pgsize);
-> +				memset(patt_A5A + i * pgsize, 0xAA, pgsize);
-> +			} else {
-> +				memset(patt_5A5 + i * pgsize, 0xAA, pgsize);
-> +				memset(patt_A5A + i * pgsize, 0x55, pgsize);
-> +			}
->  		}
-> +	} else {
-> +		/* set the seed. */
-> +		if (pattern > 0)
-> +			prandom_seed(pattern);
->  	}
->  
->  	/*
-> @@ -335,10 +365,15 @@ static int __init tort_init(void)
->  			}
->  
->  			/* Write the pattern */
-> -			if ((eb + erase_cycles) & 1)
-> -				patt = patt_5A5;
-> -			else
-> -				patt = patt_A5A;
-> +			if (!pattern) {
-> +				if ((eb + erase_cycles) & 1)
-> +					patt = patt_5A5;
-> +				else
-> +					patt = patt_A5A;
-> +			} else {
-> +				patt = patt_rd;
-> +				prandom_bytes(patt, mtd->erasesize);
-> +			}
->  			err = write_pattern(i, patt);
->  			if (err)
->  				goto out;
-> @@ -350,8 +385,9 @@ static int __init tort_init(void)
->  				if (err) {
->  					pr_info("verify failed for %s"
->  					       " pattern\n",
-> -					       ((eb + erase_cycles) & 1) ?
-> -					       "0x55AA55..." : "0xAA55AA...");
-> +					       pattern ? "random pattern" :
-> +					       (((eb + erase_cycles) & 1) ?
-> +					       "0x55AA55..." : "0xAA55AA..."));
->  					goto out;
->  				}
->  				cond_resched();
-> @@ -386,6 +422,8 @@ out_patt_A5A:
->  	kfree(patt_A5A);
->  out_patt_5A5:
->  	kfree(patt_5A5);
-> +out_patt_rd:
-> +	kfree(patt_rd);
->  out_mtd:
->  	put_mtd_device(mtd);
->  	if (err)
-> -- 
-> 1.7.0.4
-> 
-> 
-
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+>=20
