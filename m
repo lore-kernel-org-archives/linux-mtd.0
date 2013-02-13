@@ -1,21 +1,24 @@
-Received: from inet-tsb5.toshiba.co.jp ([202.33.96.24] helo=imx2.toshiba.co.jp)
+Received: from ie-in-x022c.1e100.net ([2607:f8b0:4001:c03::22c]
+ helo=mail-ie0-x22c.google.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U5VmV-0002ef-8m
- for linux-mtd@lists.infradead.org; Wed, 13 Feb 2013 06:25:25 +0000
-From: <katsuki.uwatoko@toshiba.co.jp>
-To: <matthieu.castet@parrot.com>
-Subject: Re: [PATCH] mtd: nand: support BENAND (Built-in ECC NAND)
-Date: Wed, 13 Feb 2013 06:25:14 +0000
-Message-ID: <F3B6523425E7914AA6214ED358D820AF25D99FB1@TGXML316.toshiba.local>
-References: <F3B6523425E7914AA6214ED358D820AF25D9879D@TGXML316.toshiba.local>
- <511A0D18.2030408@parrot.com>
-In-Reply-To: <511A0D18.2030408@parrot.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-ID: <E6CD5695001E06458FC671492C491138@toshiba.local>
-Content-Transfer-Encoding: quoted-printable
+ id 1U5XtG-0008N3-6i
+ for linux-mtd@lists.infradead.org; Wed, 13 Feb 2013 08:40:30 +0000
+Received: by mail-ie0-f172.google.com with SMTP id c10so1343064ieb.17
+ for <linux-mtd@lists.infradead.org>; Wed, 13 Feb 2013 00:40:28 -0800 (PST)
 MIME-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
+In-Reply-To: <CAOMZO5D_e6qqFC-M8WtDR7QoSNCizrMrcD0n=60M1EQMrha0BQ@mail.gmail.com>
+References: <1360597903-10378-1-git-send-email-festevam@gmail.com>
+ <CALF0-+W=FiQvSchT9Z3DosGvf-r2d20PK9NZDFnYzmtpYi+ieQ@mail.gmail.com>
+ <CAOMZO5D_e6qqFC-M8WtDR7QoSNCizrMrcD0n=60M1EQMrha0BQ@mail.gmail.com>
+Date: Wed, 13 Feb 2013 05:40:26 -0300
+Message-ID: <CALF0-+Ub1vqYqXc60tDjpe2ppxw3vmBbEsNU_GGJDeNHXRS-tQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: mxc_nand: Fix sparse warning
+From: Ezequiel Garcia <elezegarcia@gmail.com>
+To: Fabio Estevam <festevam@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ artem.bityutskiy@linux.intel.com, linux-mtd@lists.infradead.org,
+ joe@perches.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,13 +28,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Are you planning to add support to other Toshiba BENAND ?
+Hi Fabio,
 
-Unfortunately, I am not currently, because I do not have=20
-any boards of the other BENANDs.
+On Tue, Feb 12, 2013 at 5:50 PM, Fabio Estevam <festevam@gmail.com> wrote:
+> On Tue, Feb 12, 2013 at 12:39 AM, Ezequiel Garcia <elezegarcia@gmail.com> wrote:
+>
+>>> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+>>> index 45204e4..37037cb 100644
+>>> --- a/drivers/mtd/nand/mxc_nand.c
+>>> +++ b/drivers/mtd/nand/mxc_nand.c
+>>> @@ -266,7 +266,7 @@ static struct nand_ecclayout nandv2_hw_eccoob_4k = {
+>>>         }
+>>>  };
+>>>
+>>> -static const char const *part_probes[] = {
+>>> +static const char *part_probes[] = {
+>>>         "cmdlinepart", "RedBoot", "ofpart", NULL };
+>>>
+>>
+>> Are you sure checkpatch.pl didn't complain about this patch?
+>
+> Yes, checkpatch complains, but it seems that checkpatch and sparse are
+> in contradiction then.
+>
 
-But I suppose that it is easy to support the other BENANDs=20
-by little modification of nand_read_page_benand() to get=20
-a number of bitflips.
---=20
-UWATOKO Katsuki=
+Well it doesn't seem in contradiction to me. You fixed a redundant
+double const:
+
+-static const char const *part_probes[] = {
++static const char *part_probes[] = {
+        "cmdlinepart", "RedBoot", "ofpart", NULL };
+
+Notice how the 'const char const' type is nonesense.
+And checkpatch.pl will suggest you this in turn:
+
+static const char * const part_probes[] = {
+        "cmdlinepart", "RedBoot", "ofpart", NULL };
+
+Notice how the second 'const' is after the pointer.
+
+My point is, the code you're fixing needs a fix,
+just not the fix you were proposing :-)
+
+Hope it helped,
+
+-- 
+    Ezequiel
