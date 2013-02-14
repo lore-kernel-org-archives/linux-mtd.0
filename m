@@ -1,15 +1,15 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1U5tEZ-0002Ad-Q1
- for linux-mtd@lists.infradead.org; Thu, 14 Feb 2013 07:27:56 +0000
-Message-ID: <1360826890.12703.158.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH RFC 4/5] UBIFS: Add security.* XATTR support for the UBIFS
+ id 1U5tFh-0002GV-SE
+ for linux-mtd@lists.infradead.org; Thu, 14 Feb 2013 07:29:06 +0000
+Message-ID: <1360826960.12703.159.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH RFC 5/5] UBIFS: add ubifs_err() to print error reason
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 To: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Thu, 14 Feb 2013 09:28:10 +0200
-In-Reply-To: <1360750998-15191-5-git-send-email-mkl@pengutronix.de>
+Date: Thu, 14 Feb 2013 09:29:20 +0200
+In-Reply-To: <1360750998-15191-6-git-send-email-mkl@pengutronix.de>
 References: <1360750998-15191-1-git-send-email-mkl@pengutronix.de>
- <1360750998-15191-5-git-send-email-mkl@pengutronix.de>
+ <1360750998-15191-6-git-send-email-mkl@pengutronix.de>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -27,17 +27,16 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Wed, 2013-02-13 at 11:23 +0100, Marc Kleine-Budde wrote:
-> --- a/fs/ubifs/journal.c
-> +++ b/fs/ubifs/journal.c
-> @@ -553,7 +553,8 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
->  
->         dbg_jnl("ino %lu, dent '%.*s', data len %d in dir ino %lu",
->                 inode->i_ino, nm->len, nm->name, ui->data_len, dir->i_ino);
-> -       ubifs_assert(dir_ui->data_len == 0);
-> +       if (!xent)
-> +               ubifs_assert(dir_ui->data_len == 0);
+>         err = ubifs_init_security(dir, inode, &dentry->d_name);
+> -       if (err)
+> +       if (err) {
+> +               ubifs_err("cannot initialize extended attribute, error %d",
+> +                         err);
+>                 goto out_cancel;
+> +       }
 
-Shouldn't this snippet be in 2/5 instead?
+Would you please instead make 'ubifs_init_security()' print the error
+message.
 
 -- 
 Best Regards,
