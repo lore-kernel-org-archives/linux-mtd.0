@@ -1,23 +1,23 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U5xZC-0000gS-9c
- for linux-mtd@lists.infradead.org; Thu, 14 Feb 2013 12:05:30 +0000
-Message-ID: <511CD300.7080207@pengutronix.de>
-Date: Thu, 14 Feb 2013 13:05:20 +0100
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-MIME-Version: 1.0
-To: artem.bityutskiy@linux.intel.com
-Subject: Re: [PATCH RFC 4/5] UBIFS: Add security.* XATTR support for the UBIFS
-References: <1360750998-15191-1-git-send-email-mkl@pengutronix.de>
- <1360750998-15191-5-git-send-email-mkl@pengutronix.de>
- <1360826890.12703.158.camel@sauron.fi.intel.com>
-In-Reply-To: <1360826890.12703.158.camel@sauron.fi.intel.com>
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="----enig2LJJLALTOKVWQNJUWIOCB"
-Cc: linux-security-module@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, kernel@pengutronix.de,
- Subodh Nijsure <snijsure@grid-net.com>
+Received: from mga02.intel.com ([134.134.136.20])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1U5xbi-0001F4-B6
+ for linux-mtd@lists.infradead.org; Thu, 14 Feb 2013 12:08:07 +0000
+Message-ID: <1360843685.12703.165.camel@sauron.fi.intel.com>
+Subject: Re: SELinux + ubifs: possible circular locking dependency
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Thu, 14 Feb 2013 14:08:05 +0200
+In-Reply-To: <511CD0EC.6070200@pengutronix.de>
+References: <51123C80.2050400@pengutronix.de> <5115076E.3070703@pengutronix.de>
+ <1360759673.12703.147.camel@sauron.fi.intel.com>
+ <511BA51E.9000606@pengutronix.de>
+ <1360826119.12703.155.camel@sauron.fi.intel.com>
+ <511CD0EC.6070200@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,48 +27,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
-------enig2LJJLALTOKVWQNJUWIOCB
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Thu, 2013-02-14 at 12:56 +0100, Marc Kleine-Budde wrote:
+> On 02/14/2013 08:15 AM, Artem Bityutskiy wrote:
+> > Mark, how about this one? I compiled it and ran on my fedora 16 with
+> > SElinux enabled, no obvious issues.
+> > 
+> > From a19350097200570571aa522afebb96b34db534f4 Mon Sep 17 00:00:00 2001
+> > From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+> > Date: Thu, 14 Feb 2013 09:07:36 +0200
+> > Subject: [PATCH] selinux: do not confuse lockdep
+> > 
+> > Selinux has per-inode mutexes called 'isec->lock', and they are initialized in
+> > the same place, which makes lockdep treat all of the them as if they were
+> > identical. However, locking rules may be a little bit different depending on
+> > the file-system, so we should put these locks to separate classes, just like we
+> > do for 'i_mutex'. Namely, we should put them to per-FS type classes, which is
+> > exactly what this patch does.
+> > 
+> > The problem this patch intends to fix is a strange lockdep warning, which I,
+> > frankly speaking, do not really understand, but I believe the root-cause should
+> > be fixed by this patch.
+> 
+> Thanks, this works with mainline, but not with my xattr patch series
+> applied.
 
-On 02/14/2013 08:28 AM, Artem Bityutskiy wrote:
-> On Wed, 2013-02-13 at 11:23 +0100, Marc Kleine-Budde wrote:
->> --- a/fs/ubifs/journal.c
->> +++ b/fs/ubifs/journal.c
->> @@ -553,7 +553,8 @@ int ubifs_jnl_update(struct ubifs_info *c, const s=
-truct inode *dir,
->> =20
->>         dbg_jnl("ino %lu, dent '%.*s', data len %d in dir ino %lu",
->>                 inode->i_ino, nm->len, nm->name, ui->data_len, dir->i_=
-ino);
->> -       ubifs_assert(dir_ui->data_len =3D=3D 0);
->> +       if (!xent)
->> +               ubifs_assert(dir_ui->data_len =3D=3D 0);
->=20
-> Shouldn't this snippet be in 2/5 instead?
-will do
+Hmm, probably I have to annotate the ui mutex. Let's drop security
+mailing lists from the loop so far, I'll come up with a patch tomorrow.
 
-Marc
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
-------enig2LJJLALTOKVWQNJUWIOCB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
-
-iEYEARECAAYFAlEc0wAACgkQjTAFq1RaXHObRACZAa7xadNENbmsVDz5dy4yUtMy
-33wAn22eKpbjiPgud+9AwduwBcpxeF9u
-=wjuM
------END PGP SIGNATURE-----
-
-------enig2LJJLALTOKVWQNJUWIOCB--
+-- 
+Best Regards,
+Artem Bityutskiy
