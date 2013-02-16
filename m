@@ -1,23 +1,25 @@
-Received: from mail-ia0-x229.google.com ([2607:f8b0:4001:c02::229])
+Received: from ie-in-x0233.1e100.net ([2607:f8b0:4001:c03::233]
+ helo=mail-ie0-x233.google.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U6Yx0-00074t-S6
- for linux-mtd@lists.infradead.org; Sat, 16 Feb 2013 04:00:35 +0000
-Received: by mail-ia0-f169.google.com with SMTP id j5so3963443iaf.0
- for <linux-mtd@lists.infradead.org>; Fri, 15 Feb 2013 20:00:33 -0800 (PST)
+ id 1U6Yxe-0007QJ-HG
+ for linux-mtd@lists.infradead.org; Sat, 16 Feb 2013 04:01:16 +0000
+Received: by mail-ie0-f179.google.com with SMTP id k11so5656049iea.10
+ for <linux-mtd@lists.infradead.org>; Fri, 15 Feb 2013 20:01:09 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1360751856.12703.132.camel@sauron.fi.intel.com>
-References: <alpine.DEB.2.00.1302050900010.3736@lnxricardw.se.axis.com>
- <1360052485-11961-1-git-send-email-b32955@freescale.com>
- <1360751856.12703.132.camel@sauron.fi.intel.com>
-Date: Sat, 16 Feb 2013 12:00:33 +0800
-Message-ID: <CAMiH66FFzeSg7r_hedet5deynxY6OF18UMcASsX-GaHjGmXiZQ@mail.gmail.com>
-Subject: Re: [PATCH v2] mtd: torturetest: add the support for random data
+In-Reply-To: <20130213112604.GA2466@localhost>
+References: <1360053050-18043-1-git-send-email-b32955@freescale.com>
+ <1360055199-6679-1-git-send-email-b32955@freescale.com>
+ <20130213112604.GA2466@localhost>
+Date: Sat, 16 Feb 2013 12:01:09 +0800
+Message-ID: <CAMiH66EmL_bCeisqZMqnsFDkK5dHWPsb0yhtWZNzzRFdKsxkoQ@mail.gmail.com>
+Subject: Re: [PATCH v4] mtd: torturetest: add the support for random data
  pattern
 From: Huang Shijie <shijie8@gmail.com>
-To: dedekind1@gmail.com
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 Content-Type: text/plain; charset=UTF-8
-Cc: Huang Shijie <b32955@freescale.com>, ricard.wanderlof@axis.com,
- dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Cc: ricard.wanderlof@axis.com, dedekind1@gmail.com,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ joe@perches.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,29 +29,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Feb 13, 2013 at 6:37 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Tue, 2013-02-05 at 16:21 +0800, Huang Shijie wrote:
+On Wed, Feb 13, 2013 at 7:26 PM, Ezequiel Garcia
+<ezequiel.garcia@free-electrons.com> wrote:
+> Hi Huang,
+>
+> On Tue, Feb 05, 2013 at 05:06:39PM +0800, Huang Shijie wrote:
 >> Add a new module parameter 'pattern'. The meaning of the pattern is:
 >>   (1) pattern == 0 for 55/AA pattern.
 >>   (2) pattern < 0 for random pattern.
 >>   (3) pattern > 0 for random pattern too, the value of the pattern is used
 >>       as the seed for the random generator.
+>>
+>> Signed-off-by: Huang Shijie <b32955@freescale.com>
+>> ---
+>> v1 --> v2:
+>>    add seed support.
+>>
+>> v2 --> v3:
+>>    fix a type in pr_info
+>>
+>> v3 --> v4:
+>>    fix a confusing description.
+>> ---
+>>  drivers/mtd/tests/mtd_torturetest.c |   82 +++++++++++++++++++++++++---------
+>>  1 files changed, 60 insertions(+), 22 deletions(-)
+>>
+>> diff --git a/drivers/mtd/tests/mtd_torturetest.c b/drivers/mtd/tests/mtd_torturetest.c
+>> index 516cf66..671e8dd 100644
+>> --- a/drivers/mtd/tests/mtd_torturetest.c
+>> +++ b/drivers/mtd/tests/mtd_torturetest.c
+>> @@ -32,6 +32,7 @@
+>>  #include <linux/mtd/mtd.h>
+>>  #include <linux/slab.h>
+>>  #include <linux/sched.h>
+>> +#include <linux/random.h>
+>>
+>>  #define RETRIES 3
+>>
+>> @@ -64,6 +65,13 @@ module_param(cycles_count, uint, S_IRUGO);
+>>  MODULE_PARM_DESC(cycles_count, "how many erase cycles to do "
+>>                              "(infinite by default)");
+>>
+>> +static int pattern;
+>> +module_param(pattern, int, S_IRUGO);
+>> +MODULE_PARM_DESC(pattern, "0 for 55/AA pattern(default);"
+>> +                     "less then 0 for random pattern;"
+>> +                     "greater then 0 for random pattern too, "
+>> +                     "the value of the parameter is the seed.");
+>> +
+>>  static struct mtd_info *mtd;
+>>
+>>  /* This buffer contains 0x555555...0xAAAAAA... pattern */
+>> @@ -72,6 +80,8 @@ static unsigned char *patt_5A5;
+>>  static unsigned char *patt_A5A;
+>>  /* This buffer contains all 0xFF bytes */
+>>  static unsigned char *patt_FF;
+>> +/* This buffer contains the random data. */
+>> +static unsigned char *patt_rd;
+>>  /* This a temporary buffer is use when checking data */
+>>  static unsigned char *check_buf;
+>>  /* How many erase cycles were done */
+>> @@ -228,6 +238,12 @@ static int __init tort_init(void)
+>>               pr_info("torturing just %d pages per eraseblock\n",
+>>                       pgcnt);
+>>       pr_info("write verify %s\n", check ? "enabled" : "disabled");
+>> +     if (pattern == 0)
+>> +             pr_info("Test pattern is 55/AA.\n");
+>> +     else if (pattern < 0)
+>> +             pr_info("Test pattern is random.\n");
+>> +     else
+>> +             pr_info("Test pattern is random, seed is 0x%x.\n", pattern);
+>>
+>>       mtd = get_mtd_device(NULL, dev);
+>>       if (IS_ERR(mtd)) {
+>> @@ -249,16 +265,24 @@ static int __init tort_init(void)
+>>       }
+>>
+>>       err = -ENOMEM;
+>> -     patt_5A5 = kmalloc(mtd->erasesize, GFP_KERNEL);
+>> -     if (!patt_5A5) {
+>> -             pr_err("error: cannot allocate memory\n");
 >
-> Please, do not add parameters, make it simple - teach the test to use
-> both the old patterns plus additional cycles with random patterns.
+> Once again: you don't want to print this message!
+> In case the kmalloc actually fails, your "cannot allocate memory"
+> message won't be of any use to anyone.
+>
 
-but if we do not add new parameter, how can we create a random seed?
-Is it ok without set the random seed?
+got it.
+thanks.
 
-thanks
 Huang Shijie
-
->
-> --
-> Best Regards,
-> Artem Bityutskiy
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
