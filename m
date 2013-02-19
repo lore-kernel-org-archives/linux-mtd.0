@@ -1,16 +1,21 @@
-Received: from mail-ob0-f182.google.com ([209.85.214.182])
+Received: from ia-in-x024a.1e100.net ([2607:f8b0:4001:c02::24a]
+ helo=mail-ia0-x24a.google.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U7sAz-00025d-UO
- for linux-mtd@lists.infradead.org; Tue, 19 Feb 2013 18:44:31 +0000
-Received: by mail-ob0-f182.google.com with SMTP id va7so6878401obc.27
- for <linux-mtd@lists.infradead.org>; Tue, 19 Feb 2013 10:44:25 -0800 (PST)
+ id 1U7tyh-0005Uy-VQ
+ for linux-mtd@lists.infradead.org; Tue, 19 Feb 2013 20:39:53 +0000
+Received: by mail-ia0-f202.google.com with SMTP id p22so1351197iad.3
+ for <linux-mtd@lists.infradead.org>; Tue, 19 Feb 2013 12:39:48 -0800 (PST)
 MIME-Version: 1.0
-Date: Tue, 19 Feb 2013 10:44:24 -0800
-Message-ID: <CAHeJuP946AQD2FOp1f=y_AKxXbLGYhTe1TZGOAtpNVoPbE5JEA@mail.gmail.com>
-Subject: [UBIFS][CRC Mismatch]
-From: Colin Foe-Parker <colin.foeparker@aclimalabs.com>
+Message-ID: <90e6ba3fd257b53d7004d619d7c7@google.com>
+Date: Tue, 19 Feb 2013 20:39:48 +0000
+Subject: =?GB2312?B?R1BTIHRyYWNrZXIgd2l0aCAgbXVsdGkgZGlzY3JldGUgaW5wdXQgYW5kIG91dHB1dCAvQQ==?=
+ =?GB2312?B?dHRuOiBwdXJjaGFzZSBtYW5hZ2Vy0+vE+rmyz+3By8/gsuGhow==?=
+From: "GPS tracker with multi discrete input and output /Attn: purchase
+ manager" <188@exbusines.com>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: multipart/related; boundary=90e6ba3fd257b53d6404d619d7c5
+Reply-To: "GPS tracker with multi discrete input and output /Attn: purchase
+ manager" <188@exbusines.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,1032 +25,298 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
+--90e6ba3fd257b53d6404d619d7c5
+Content-Type: multipart/alternative; boundary=90e6ba3fd257b53d2604d619d7c4
 
-I am seeing an issue that I would love some outside help on.
+--90e6ba3fd257b53d2604d619d7c4
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed; delsp=yes
 
-I am running UBIFS on TI's latest Linux 3.2.0 PSP (5.06.00.09) and
-their AM3352 ARMv7a processor.  We are using a Micron MT29F2G08ABBEAHC
-2 Gb SLC NAND chip.  (w/ a BCH8 ECC)
+Tips:  GPS tracker with  multi discrete input and output /Attn: purchase  
+manager
 
-We have 50+ devices deployed and over the deployment (40 days) we have
-seen ~10 of the devices go read only.  The devices are slowly going
-read only with no apparent correlation with uptime.  And the devices
-are running in inside environments.  Because the devices are deployed,
-we do not have easy or quick access to the kernel logs.  But I was
-able to capture one instance where the device went from RW to RO.  See
-the bottom for the dump.  (1)  The message seems pretty straight
-forward; there is a CRC mismatch between what was stored in NAND and
-what was calculated.  But I am a little stuck on why.
+Dear Sir
 
-So far it seems that the options are:
+        This is Anna,the sales manager of Redview GPS in China.
+        VT310 is a GPS tracker with 5 discrete inputs ,5 discrete outputs  
+and 2 analog ports . With VT310,you can get vehicle windows status, door  
+status, engine status, temperature and tank fuel level ,etc. This is widely  
+used in truck tracking application.
 
-1.) Unstable bits: Our device has a 1 Ah back up battery and should
-have had very very few (< 3 ) bad power off events after it had the
-RFS put in NAND with ubiformat to its present state.   Additionally,
-the devices should have stayed on for the entire time they have been
-deployed.  (We are logging that from now on)
+        I would appreciate if you forward this letter to Technical Manager  
+or to other expert responsible for technical integration of new products in  
+your company, or provide me with his contact for we could discuss all the  
+details of our future cooperation.
 
-2.) NAND/Driver Corruption: I have run the MTD oobtest and read test
-to near ad nauseum with almost perfect passing results.  In 500+
-iterations of each test, split on multiple devices, I saw one OOB
-verify error.  And since I enabled further debugging, I have not been
-able to reproduce it.  Additionally, I have gone through and verified
-that the GPMC (General Purpose Memory Controller) bus that connects
-the AM335x to the NAND chip is within the chip's timing requirements.
+        Your early reply is highly appreciated.
 
-3.) Memory Corruption: Is it possible the the write buffer can be
-corrupted before it is written to NAND?  Hence having a bad CRC value
-in NAND?
+Best Regards
 
-Things to note:
+Anna
 
-1.) The TI PSP tree does not have all the ubifs back port patches
-incorporated into it.  I am going to try to get them built in going
-forward.  However, since we have not developed a repeatable method to
-create the issue, I don't know when more debug information will be
-available.  Also, I have gone through a tried to see if any glaring
-patches are missing with no luck.
+https://picasaweb.google.com/lh/sredir?uname=112929289252248580218&target=ALBUM&id=5846766329567613953&authkey=Gv1sRgCL6Hjayf8vWCFg&invite=CNqi5KcJ&feat=email
 
-2.) Once the device starts going read only, a reboot will
-traditionally return it RW  However, the device quickly finds it way
-back to the RO state.  I have a kernel log of that as (2).
+--90e6ba3fd257b53d2604d619d7c4
+Content-Type: text/html; charset=GB2312
+Content-Transfer-Encoding: quoted-printable
 
-3.) It appears that the same bad ubifs node causes the transition in
-both (1) and (2)
+<body style=3D"font-family: Arial, Helvetica, sans-serif; background-color:=
+white">
+<table border=3D0 cellpadding=3D0 cellspacing=3D0 width=3D"600px">
+<tr>
+<td bgcolor=3D"#E1ECFF" width=3D"10px"></td>
+<td width=3D"*" style=3D"border: 1px solid #ccc; padding: .6em .8em;">
+<div style=3D"padding-bottom: .6em; font-weight: bold; font-size: 12pt; col=
+or: #333;">=D1=FB=C7=EB=C4=FA=B9=DB=BF=B4 GPS tracker with multi discrete i=
+nput and output /Attn: purchase manager =B5=C4=CF=E0=B2=E1=A3=BA <a href=3D=
+'https://picasaweb.google.com/lh/sredir?uname=3D112929289252248580218&targe=
+t=3DALBUM&id=3D5846766329567613953&authkey=3DGv1sRgCL6Hjayf8vWCFg&invite=3D=
+CNqi5KcJ&feat=3Demail'>VT310</a></div>
+<div style=3D"background-color: #F5F5F5; border: 1px solid #CCC; padding: 0=
+.8em;">
+<table cellspacing=3D0 cellpadding=3D0>
+<tr>
+<td valign=3D"top">
+<div style=3D"border: 1px solid #ccc; padding: 7px; background-color: #FFF;=
+">
+<a href=3D"https://picasaweb.google.com/lh/sredir?uname=3D11292928925224858=
+0218&target=3DALBUM&id=3D5846766329567613953&authkey=3DGv1sRgCL6Hjayf8vWCFg=
+&invite=3DCNqi5KcJ&feat=3Demail"><img src=3D"cid:5846766329567613953" style=
+=3D"border: 1px solid #7f7f7f;"></a>
+</div>
+</td>
+<td valign=3D"top" style=3D"padding-left: 0.7em; color: #666;">
+<div style=3D"font-size: 11pt; font-weight: bold; color: #333; padding-bott=
+om: 0.1em">VT310</div>
+<div style=3D"display: inline; font-weight: normal; font-size: 10pt; paddin=
+g-bottom: 0.2em">2013=C4=EA2=D4=C219=C8=D5<br>
+=CC=E1=B9=A9=D5=DF=A3=BA<b>GPS tracker with multi discrete input and output=
+ /Attn: purchase manager</b>
+</div>
+<div style=3D"border-bottom: 1px dotted #B3B3B3; margin: 0.5em 0 0.3em; pad=
+ding: 0"></div>
+<div style=3D"line-height: 1.3em;">
+<a href=3D"https://picasaweb.google.com/lh/sredir?uname=3D11292928925224858=
+0218&target=3DALBUM&id=3D5846766329567613953&authkey=3DGv1sRgCL6Hjayf8vWCFg=
+&invite=3DCNqi5KcJ&feat=3Demail" style=3D"font-size: 10pt;font-weight: bold=
+;">=B2=E9=BF=B4=CF=E0=B2=E1</a>
+<br/>
+<a href=3D"https://picasaweb.google.com/lh/sredir?uname=3D11292928925224858=
+0218&target=3DALBUM&id=3D5846766329567613953&authkey=3DGv1sRgCL6Hjayf8vWCFg=
+&invite=3DCNqi5KcJ&feat=3Demail&mode=3DSLIDESHOW" style=3D"font-size: 10pt;=
+">=B2=A5=B7=C5=BB=C3=B5=C6=C6=AC</a>
+<br/>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div style=3D"margin: 1em 1em;">
+<div style=3D"font-weight: bold; font-size: 10pt; color: #00681C;">=C0=B4=
+=D7=D4 GPS tracker with multi discrete input and output /Attn: purchase man=
+ager =B5=C4=CF=FB=CF=A2=A3=BA</div>
+<div style=3D"font-weight: normal; font-size: 9pt; color: #333; margin-top:=
+ 0.2em;">Tips: GPS tracker with multi discrete input and output /Attn: purc=
+hase manager<BR><BR>Dear Sir <BR> <BR> This is Anna,the sales manager of Re=
+dview GPS in China. <BR> VT310 is a GPS tracker with 5 discrete inputs ,5 d=
+iscrete outputs and 2 analog ports . With VT310,you can get vehicle windows=
+ status, door status, engine status, temperature and tank fuel level ,etc. =
+This is widely used in truck tracking application. <BR><BR> I would appreci=
+ate if you forward this letter to Technical Manager or to other expert resp=
+onsible for technical integration of new products in your company, or provi=
+de me with his contact for we could discuss all the details of our future c=
+ooperation.<BR><BR> Your early reply is highly appreciated.<BR><BR>Best Reg=
+ards<BR><BR>Anna</div>
+</div>
+<div style=3D"font-weight: normal; font-size: 8pt; color: #666; margin-top:=
+ 1em;">
+=C8=E7=B9=FB=C4=FA=D4=DA=D4=C4=B6=C1=B4=CB=B5=E7=D7=D3=D3=CA=BC=FE=CA=B1=B3=
+=F6=CF=D6=CE=CA=CC=E2=A3=AC=C7=EB=BD=AB=D2=D4=CF=C2=B5=D8=D6=B7=B8=B4=D6=C6=
+=B2=A2=D5=B3=CC=F9=B5=BD=C4=FA=B5=C4=E4=AF=C0=C0=C6=F7=D6=D0=A3=BA<br>
+<a href=3D"https://picasaweb.google.com/lh/sredir?uname=3D11292928925224858=
+0218&target=3DALBUM&id=3D5846766329567613953&authkey=3DGv1sRgCL6Hjayf8vWCFg=
+&invite=3DCNqi5KcJ&feat=3Demail">https://picasaweb.google.com/lh/sredir?una=
+me=3D112929289252248580218&target=3DALBUM&id=3D5846766329567613953&authkey=
+=3DGv1sRgCL6Hjayf8vWCFg&invite=3DCNqi5KcJ&feat=3Demail</a>
+</div>
+<div style=3D"font-weight: normal; font-size: 8pt; color: #666; margin-top:=
+ 0.6em;">=D2=AA=B7=D6=CF=ED=C4=FA=B5=C4=D5=D5=C6=AC=BB=F2=D4=DA=C5=F3=D3=D1=
+=D3=EB=C4=FA=B7=D6=CF=ED=D5=D5=C6=AC=CA=B1=CA=D5=B5=BD=CD=A8=D6=AA=A3=AC=C7=
+=EB<a href=3D"https://picasaweb.google.com">=BB=F1=C8=A1=CA=F4=D3=DA=C4=FA=
+=D7=D4=BC=BA=B5=C4=C3=E2=B7=D1 Picasa =CD=F8=C2=E7=CF=E0=B2=E1=D5=CA=BB=A7<=
+/a>=A1=A3</div>
+<div style=3D"text-align: right; padding: 6px;">
+<a href=3D"https://picasaweb.google.com">
+<img src=3D"cid:picasaweblogo-zh_CN.gif" border=3D"0" />
+</a>
+</div>
+</td>
+<td bgcolor=3D"#E1ECFF" width=3D"10px"></td>
+</tr>
+</table>
+</body>
 
-4.) I booted the device that provided (1) and (2) from a SD card and
-did a nand_dump on the ubifs partition.  The nand_dump popped up four
-of so messages saying:
-    ECC: 1 corrected bitflip(s) at offset 0x01625000
-    ECC: 1 corrected bitflip(s) at offset 0x018fd000
-    ECC: 1 corrected bitflip(s) at offset 0x019cd800
+--90e6ba3fd257b53d2604d619d7c4--
 
-none of the offsets correlated with the bad LEB node in (1) and (2).
+--90e6ba3fd257b53d6404d619d7c5
+Content-Type: image/gif; name="picasaweblogo-zh_CN.gif"
+Content-Disposition: attachment; filename="picasaweblogo-zh_CN.gif"
+Content-Transfer-Encoding: base64
+Content-ID: <picasaweblogo-zh_CN.gif>
 
-5.) After step four, the device stayed rw for ~ 4 hours running out of
-nand.  (Where it was going read only within 30 minutes previously)
-Then it ran into bug (2) and reverted to read only. (Same LEB 911 as
-before)
+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
+--90e6ba3fd257b53d6404d619d7c5
+Content-Type: image/jpeg; name="email.jpg"
+Content-Disposition: attachment; filename="email.jpg"
+Content-Transfer-Encoding: base64
+Content-ID: <5846766329567613953>
 
-So, in summary, if anyone has seen similar behavior, or can point me
-in the right direction for further debugging I would be very
-appreciative.  I have read through the linux-mtd ubi sections etc.
-And I am still a little unsure if this is a NAND driver or a UBI
-issue.  I would imagine that I would see kernel messages related to
-uncorrectable errors that the ECC detected if NAND corruption that had
-occurred?  Is that correct?
-
-Thanks in advance for any/all help.  I have dug through the UBI/UBIFS
-code, but I still have a long ways to go before I really "get" most of
-it.
-
--Colin
-
-
--------------------------
-(1)
-[ 5022.038085] UBIFS error (pid 84): ubifs_check_node: bad CRC:
-calculated 0xff173047, read 0x97202e55
-[ 5022.047821] UBIFS error (pid 84): ubifs_check_node: bad node at LEB 911:1600
-[ 5022.056610]  magic          0x6101831
-[ 5022.056610]  crc            0x97202e55
-[ 5022.056640]  node_type      1 (data node)
-[ 5022.056640]  group_type     0 (no node group)
-[ 5022.056671]  sqnum          674325
-[ 5022.056671]  len            1318
-[ 5022.056701]  key            (17878, data, 177)
-[ 5022.056701]  size           4096
-[ 5022.056701]  compr_typ      1
-[ 5022.056732]  data size      1270
-[ 5022.056732]  data:
-[ 5022.056762]  00000000: 09 ba 50 c9 b7 6a 8b ba 60 b0 36 03 00 60 00
-07 2c 9d fe 29 96 46 c4 1a 68 26 bc 01 08 bb b6 41
-[ 5022.056793]  00000020: 94 9c 34 62 a1 18 03 01 78 03 07 00 0a 4c af
-38 4d c3 de 8c 60 dc 01 06 32 75 57 fc e8 c1 86 2e
-[ 5022.056793]  00000040: b8 dc 05 07 c4 0f e2 12 b9 2f 10 da 08 27 bc
-07 06 96 25 d2 03 59 5f f7 29 60 dc 01 06 c9 c4 0d
-[ 5022.056823]  00000060: da 9f dd 97 da c0 dc 01 07 c4 e5 b2 3d 47 26
-25 26 28 28 bc 05 07 73 6b f5 d7 f0 06 42 6b 98 05
-[ 5022.056854]  00000080: bc 0d 07 0c cc bc c5 f8 be e0 54 08 06 bc 01
-06 d5 e4 08 0f 90 cc b8 e5 78 dc 01 06 c0 c2 83 52
-[ 5022.056884]  000000a0: d5 87 f2 f5 06 97 13 00 00 58 dc 00 fb 00 88
-0f 0b 8b 01 30 37 0d 9e 00 40 85 be 00 c0 87 bc 00
-[ 5022.056915]  000000c0: 90 02 39 10 00 b7 12 00 00 40 b8 0f 02 00 45
-67 08 00 60 00 00 18 9a 49 4f a0 da d2 04 00 52 33
-[ 5022.056945]  000000e0: e9 28 5b 00 00 00 dc 44 64 1c 5c c0 44 7c 8e
-e5 26 42 ea 97 a7 b7 e6 47 b9 a9 25 ba 71 56 d0 00
-[ 5022.056976]  00000100: a0 07 07 18 9c fe 21 3a bf 9a 41 28 01 bc 01
-06 a3 26 8d 80 19 9f f0 80 78 dc 01 07 a2 16 59 8b
-[ 5022.057006]  00000120: c3 29 96 12 80 25 a4 0e 01 ba 50 c9 b7 7e 32
-10 c2 bc 01 05 f3 be ae dd e3 76 b0 c6 20 a7 5e 06
-[ 5022.057037]  00000140: 20 11 be 32 c0 82 dd 30 84 dd 00 89 dc 00 70
-2c 39 0c 00 b7 28 00 00 72 cc 04 05 c5 0c 4a 81 d6
-[ 5022.057037]  00000160: 05 86 0c d8 01 27 1a 00 30 13 bc 0c e0 02 fc
-06 00 20 4d 45 53 53 41 47 45 3d 63 6f 6e 6e 6d 61
-[ 5022.057067]  00000180: 6e 64 5b 35 33 34 34 5d 3a 20 6e 74 70 3a 20
-74 69 6d 65 20 73 6c 65 77 20 2b 30 2e 30 31 36 32
-[ 5022.057098]  000001a0: 32 32 20 73 a4 08 b5 31 00 27 3d 08 46 df 41
-09 a8 95 9c 41 01 c1 91 2f 29 32 3c 08 05 d0 f5 5d
-[ 5022.057128]  000001c0: f5 10 c9 47 9c 20 1f 3e 08 b8 12 bc 19 fc 1d
-20 8f 3c 08 fe 2f 7a 00 a0 00 05 a7 86 05 72 72 8b
-[ 5022.057159]  000001e0: 8e 4e b4 01 28 16 00 f0 14 bc 1c e4 02 fc 06
-fc 36 00 15 30 31 2f 30 39 2f 32 30 31 33 20 31 32
-[ 5022.057159]  00000200: 3a 35 39 3a 34 38 20 50 4d 20 2d 20 44 45 42
-55 47 20 2d 20 53 79 73 74 65 6d a8 39 02 76 61 6c
-[ 5022.057189]  00000220: 69 64 a4 09 2e fd 06 47 dc 37 01 56 16 27 a3
-7c 79 01 ef ff c0 2b 32 fc 06 05 93 d9 96 60 be 6b
-[ 5022.057220]  00000240: 8a 6d 20 0f fd 06 d0 dc 7b 06 62 bf a5 ae c3
-72 d7 da 70 dc 1a fe 1e c8 02 a4 1b 05 ab 55 e6 32
-[ 5022.057250]  00000260: 20 4b b4 2d 3e 9d 15 a8 dc ae 06 d4 88 f8 4a
-1b b4 28 25 f8 dc 01 07 5d d1 34 37 4a f9 34 00 50
-[ 5022.057281]  00000280: 04 bc 09 06 f1 b6 de 8c 57 e4 d4 7a c0 dc 01
-06 aa 92 d7 f7 f6 af 3a 94 30 dc aa 05 17 b7 f0 fe
-[ 5022.057281]  000002a0: 27 21 9b 2a 20 0f 9c 15 b7 0b 00 00 89 b8 29
-06 00 61 16 94 8a ff 80 a5 07 d8 01 27 1a 00 c0 16
-[ 5022.057312]  000002c0: 20 1e fe 06 41 74 58 37 00 09 70 74 69 6e 67
-20 74 6f 20 72 65 61 64 20 66 72 6f 6d 20 48 57 20
-[ 5022.057342]  000002e0: 63 6c 6f 63 6b c4 0d 2e 3d 07 48 de 39 bc 34
-bf 39 55 1e c1 33 3c 07 06 55 49 07 98 33 60 a1 24
-[ 5022.057373]  00000300: d0 20 0e 7c 16 2e 3d 07 30 dc 1c fc 20 20 97
-3d 07 7d dc 29 05 b3 88 6d e7 39 b4 bc 70 d8 01 27
-[ 5022.057403]  00000320: 1a 00 80 18 20 1e 3c 07 05 46 69 6e 69 73 68
-65 64 88 39 74 3a 03 52 54 43 00 00 00 2e fd 06 49
-[ 5022.057403]  00000340: de 37 d4 b0 be 37 6d 9a 34 fc 06 05 87 d7 fe
-f5 f5 54 b8 53 20 1f fd 06 00 dc 1a fc 1e 20 97 fd
-[ 5022.057434]  00000360: 06 82 c4 35 07 a4 32 54 39 d3 73 e3 d4 20 c4
-2c be 06 48 1a 2c 3c 00 fc 78 20 08 3c 15 58 35 00
-[ 5022.057464]  00000380: 04 20 76 6f 6c 74 61 67 65 20 69 73 20 6c 6f
-77 3a 20 06 61 6c 73 65 a0 0f 2e 1d 07 4a de 38 00
-[ 5022.057495]  000003a0: c7 be 38 99 b0 34 1c 07 05 90 6d c7 2b 1f 93
-e7 f7 20 1f 1e 07 c0 19 bc 1b fc 1f 20 97 1d 07 79
-[ 5022.057525]  000003c0: b8 29 06 00 e8 ea ac 12 df a4 c9 4a d8 01 27
-1a 00 08 1c bc 1c e0 02 20 10 1d 07 56 6c e1 07 61
-[ 5022.057525]  000003e0: 74 65 20 6e 65 74 77 6f 72 36 1d 15 4b de 37
-ca ec be 37 63 d6 34 fc 06 05 dc b5 3f 00 13 44 cd
-[ 5022.057556]  00000400: 69 20 1f fe 06 88 1b bc 1a fc 1e 20 97 fd 06
-c7 c0 33 05 83 27 c2 eb 89 b6 8f 2d d8 01 27 1a 00
-[ 5022.057586]  00000420: 10 1e bc 1c e0 02 2e fc 06 2e 3c 2a 00 26 77
-6c 61 6e 30 20 7b 64 65 6c 7d 20 72 6f 75 74 65 20
-[ 5022.057617]  00000440: 32 36 32 30 3a 30 3a 31 30 30 30 3a 66 64 38
-32 3a 32 31 38 3a 33 30 66 66 3a 66 65 30 61 3a 36
-[ 5022.057647]  00000460: 66 35 61 20 67 77 20 04 98 00 0f 73 63 6f 70
-65 20 30 20 3c 55 4e 49 56 45 52 53 45 3e 2f 3d 16
-[ 5022.057647]  00000480: 4c df 40 1c 26 54 23 7f 24 d4 0f ee 33 3c 1d
-05 96 de d5 9f 4f 7a 4e bd 20 0f 1e 08 80 25 a4 87
-[ 5022.057678]  000004a0: 26 be 33 48 1d bc 23 fc 27 20 97 7d 2b 78 c0
-3c 05 db d9 69 15 49 c9 29 e5 d8 01 27 1a 00 c8 1f
-[ 5022.057708]  000004c0: bc 1c e0 02 2e 1c 08 2f 7d 2b 35 2d 7d 2b 50
-6c e8 07 73 75 63 63 65 73 73 66 75 6c b7 28 00 00
-[ 5022.057739]  000004e0: 40 c1 09 4d df 36 97 32 c1 9c 36 01 30 1c 5b
-2c 32 5c 2b 11 00 00
-[ 5022.057800] [<c0010001>] (unwind_backtrace+0x1/0xb0) from
-[<c013e777>] (ubifs_check_node+0x1b7/0x1f8)
-[ 5022.067779] [<c013e777>] (ubifs_check_node+0x1b7/0x1f8) from
-[<c01439ad>] (ubifs_scan_a_node+0xc1/0x1b8)
-[ 5022.079162] [<c01439ad>] (ubifs_scan_a_node+0xc1/0x1b8) from
-[<c0143d8d>] (ubifs_scan+0x55/0x20c)
-[ 5022.089935] [<c0143d8d>] (ubifs_scan+0x55/0x20c) from [<c0147197>]
-(ubifs_garbage_collect_leb+0x153/0x5ec)
-[ 5022.101501] [<c0147197>] (ubifs_garbage_collect_leb+0x153/0x5ec)
-from [<c01477d3>] (ubifs_garbage_collect+0x1a3/0x3d0)
-[ 5022.114166] [<c01477d3>] (ubifs_garbage_collect+0x1a3/0x3d0) from
-[<c013517f>] (make_reservation+0xdb/0x384)
-[ 5022.125915] [<c013517f>] (make_reservation+0xdb/0x384) from
-[<c0135d27>] (ubifs_jnl_write_data+0x133/0x210)
-[ 5022.137603] [<c0135d27>] (ubifs_jnl_write_data+0x133/0x210) from
-[<c013793f>] (do_writepage+0x87/0x170)
-[ 5022.148925] [<c013793f>] (do_writepage+0x87/0x170) from
-[<c0073d4b>] (__writepage+0xb/0x3a)
-[ 5022.159118] [<c0073d4b>] (__writepage+0xb/0x3a) from [<c007423b>]
-(write_cache_pages+0x197/0x244)
-[ 5022.169860] [<c007423b>] (write_cache_pages+0x197/0x244) from
-[<c0074309>] (generic_writepages+0x21/0x38)
-[ 5022.181365] [<c0074309>] (generic_writepages+0x21/0x38) from
-[<c00a5577>] (writeback_single_inode+0xbb/0x1d4)
-[ 5022.193206] [<c00a5577>] (writeback_single_inode+0xbb/0x1d4) from
-[<c00a584f>] (writeback_sb_inodes+0xdf/0x13c)
-[ 5022.205261] [<c00a584f>] (writeback_sb_inodes+0xdf/0x13c) from
-[<c00a58ed>] (__writeback_inodes_wb+0x41/0x6c)
-[ 5022.217163] [<c00a58ed>] (__writeback_inodes_wb+0x41/0x6c) from
-[<c00a59dd>] (wb_writeback+0xc5/0x160)
-[ 5022.228332] [<c00a59dd>] (wb_writeback+0xc5/0x160) from
-[<c00a5e9f>] (wb_do_writeback+0xe5/0x13a)
-[ 5022.239074] [<c00a5e9f>] (wb_do_writeback+0xe5/0x13a) from
-[<c00a5f63>] (bdi_writeback_thread+0x6f/0x164)
-[ 5022.250579] [<c00a5f63>] (bdi_writeback_thread+0x6f/0x164) from
-[<c003f5df>] (kthread+0x4b/0x58)
-[ 5022.261260] [<c003f5df>] (kthread+0x4b/0x58) from [<c000d329>]
-(kernel_thread_exit+0x1/0x6)
-[ 5022.271423] UBIFS error (pid 84): ubifs_scan: bad node
-[ 5022.278259] UBIFS error (pid 84): ubifs_scanned_corruption:
-corruption at LEB 911:1600
-[ 5022.287994] UBIFS error (pid 84): ubifs_scanned_corruption: first
-8192 bytes from LEB 911:1600
-[ 5022.298492] 00000000: 06101831 97202e55 000a4a15 00000000 00000526
-00000001 000045d6 200000b1  1...U. ..J......&........E.....
-[ 5022.298553] 00000020: 00000000 00000000 00001000 00000001 c950ba09
-ba8b6ab7 0336b060 07006000  ..................P..j..`.6..`..
-[ 5022.298583] 00000040: 29fe9d2c 1ac44696 01bc2668 41b6bb08 62349c94
-010318a1 00070378 38af4c0a  ,..).F..h&.....A..4b....x....L.8
-[ 5022.298614] 00000060: 8cdec34d 0601dc60 fc577532 2e86c1e8 0705dcb8
-12e20fc4 da102fb9 07bc2708  M...`...2uW............../...'..
-[ 5022.298675] 00000080: d2259606 f75f5903 01dc6029 0dc4c906 97dd9fda
-01dcc0da b2e5c407 2526473d  ..%..Y_.)`..................=G&%
-[ 5022.298706] 000000a0: bc282826 6b730705 06f0d7f5 05986b42 0c070dbc
-f8c5bccc 0854e0be 0601bc06  &((...sk....Bk............T.....
-[ 5022.298736] 000000c0: 0f08e4d5 e5b8cc90 0601dc78 5283c2c0 f5f287d5
-00139706 00dc5800 0f8800fb  ........x......R.........X......
-[ 5022.298797] 000000e0: 30018b0b 009e0d37 00be8540 00bc87c0 10390290
-0012b700 0fb84000 67450002  ...07...@.........9......@....Eg
-[ 5022.298828] 00000100: 00600008 499a1800 d2daa04f 33520004 005b28e9
-44dc0000 c05c1c64 e58e7c44  ..`....IO.....R3.([....Dd.\.D|..
-[ 5022.298858] 00000120: 97ea4226 47e6b7a7 ba25a9b9 00d05671 180707a0
-3a21fe9c 28419abf 0601bc01  &B.....G..%.qV........!:..A(....
-[ 5022.298919] 00000140: 808d26a3 80f09f19 0701dc78 8b5916a2 129629c3
-0ea42580 c950ba01 10327eb7  .&......x.....Y..)...%....P..~2.
-[ 5022.298950] 00000160: 0501bcc2 ddaebef3 c6b076e3 065ea720 32be1120
-30dd82c0 8900dd84 2c7000dc  .........v.. .^. ..2...0......p,
-[ 5022.299011] 00000180: b7000c39 72000028 c50504cc d6814a0c d80c8605
-001a2701 0cbc1330 06fc02e0  9...(..r.....J.......'..0.......
-[ 5022.299041] 000001a0: 454d2000 47415353 6f633d45 616d6e6e 355b646e
-5d343433 746e203a 74203a70  . MESSAGE=connmand[5344]: ntp: t
-[ 5022.299072] 000001c0: 20656d69 77656c73 2e302b20 32363130 73203232
-31b508a4 083d2700 0941df46  ime slew +0.016222 s...1.'=.F.A.
-[ 5022.299133] 000001e0: 419c95a8 2f91c101 083c3229 5df5d005 47c910f5
-3e1f209c bc12b808 201dfc19  ...A.../)2<....]...G. .>.......
-[ 5022.299163] 00000200: fe083c8f a0007a2f 86a70500 8b727205 01b44e8e
-f0001628 e41cbc14 fc06fc02  .<../z.......rr..N..(...........
-[ 5022.299194] 00000220: 30150036 39302f31 3130322f 32312033 3a39353a
-50203834 202d204d 55424544  6..01/09/2013 12:59:48 PM - DEBU
-[ 5022.299255] 00000240: 202d2047 74737953 39a86d65 6c617602 09a46469
-4706fd2e 560137dc 7ca32716  G - System.9.valid.....G.7.V.'.|
-[ 5022.299285] 00000260: ffef0179 fc322bc0 d9930506 6bbe6096 0f206d8a
-dcd006fd bf62067b 72c3aea5  y....+2......`.k.m .....{.b....r
-[ 5022.299316] 00000280: dc70dad7 c81efe1a 051ba402 32e655ab 2db44b20
-a8159d3e d406aedc 1b4af888  ..p..........U.2 K.->.........J.
-[ 5022.299377] 000002a0: f82528b4 5d0701dc 4a3734d1 500034f9 0609bc04
-8cdeb6f1 7ad4e457 0601dcc0  .(%....].47J.4.P........W..z....
-[ 5022.299407] 000002c0: f7d792aa 943aaff6 05aadc30 fef0b717 2a9b2127
-159c0f20 00000bb7 0629b889  ......:.0.......'!.* .........).
-[ 5022.299438] 000002e0: 94166100 a580ff8a 2701d807 16c0001a 06fe1e20
-37587441 74700900 20676e69  .a.........'.... ...AtX7..pting
-[ 5022.299499] 00000300: 72206f74 20646165 6d6f7266 20574820 636f6c63
-2e0dc46b de48073d bf34bc39  to read from HW clock...=.H.9.4.
-[ 5022.299530] 00000320: c11e5539 06073c33 98074955 24a16033 7c0e20d0
-073d2e16 fc1cdc30 3d972020  9U..3<..UI..3`.$. .|..=.0...  .=
-[ 5022.299560] 00000340: 29dc7d07 6d88b305 bcb439e7 2701d870 1880001a
-073c1e20 6e694605 65687369  .}.)...m.9..p..'.... .<..Finishe
-[ 5022.299621] 00000360: 74398864 5452033a 00000043 4906fd2e b0d437de
-9a6d37be 0506fc34 f5fed787  d.9t:.RTC......I.7...7m.4.......
-[ 5022.299652] 00000380: 53b854f5 06fd1f20 fc1adc00 fd97201e 35c48206
-5432a407 e373d339 2cc420d4  .T.S ........ .....5..2T9.s.. .,
-[ 5022.299682] 000003a0: 1a4806be fc003c2c 3c082078 00355815 6f762004
-6761746c 73692065 776f6c20  ..H.,<..x .<.X5.. voltage is low
-[ 5022.299743] 000003c0: 6106203a a065736c 071d2e0f 0038de4a 9938bec7
-071c34b0 c76d9005 e7931f2b  : .alse.....J.8...8..4....m.+...
-[ 5022.299774] 000003e0: 1e1f20f7 bc19c007 201ffc1b 79071d97 000629b8
-12aceae8 4ac9a4df 1a2701d8  . ......... ...y.).........J..'.
-[ 5022.299835] 00000400: bc1c0800 2002e01c 56071d10 6107e16c 6e206574
-6f777465 151d3672 ca37de4b  ....... ...Vl..ate networ6..K.7.
-[ 5022.299865] 00000420: 6337beec 06fc34d6 3fb5dc05 cd441300 fe1f2069
-bc1b8806 201efc1a c706fd97  ..7c.4.....?..D.i ......... ....
-[ 5022.299896] 00000440: 830533c0 89ebc227 d82d8fb6 001a2701 1cbc1e10
-fc2e02e0 2a3c2e06 6c772600  .3..'.....-..'............<*.&wl
-[ 5022.299957] 00000460: 20306e61 6c65647b 6f72207d 20657475 30323632
-313a303a 3a303030 32386466  an0 {del} route 2620:0:1000:fd82
-[ 5022.299987] 00000480: 3831323a 6630333a 65663a66 363a6130 20613566
-04207767 730f0098 65706f63  :218:30ff:fe0a:6f5a gw ....scope
-[ 5022.300048] 000004a0: 3c203020 56494e55 45535245 163d2f3e 1c40df4c
-7f235426 ee0fd424 051d3c33   0 <UNIVERSE>/=.L.@.&T#.$...3<..
-[ 5022.300079] 000004c0: 9fd5de96 bd4e7a4f 081e0f20 87a42580 4833be26
-fc23bc1d 7d972027 3cc0782b  ....OzN. ....%..&.3H..#.' .}+x.<
-[ 5022.300109] 000004e0: 69d9db05 29c94915 2701d8e5 1fc8001a 02e01cbc
-2f081c2e 2d352b7d 6c502b7d  ...i.I.)...'.........../}+5-}+Pl
-[ 5022.300170] 00000500: 757307e8 73656363 6c756673 000028b7 4d09c140
-329736df 01369cc1 2c5b1c30  ..successful.(..@..M.6.2..6.0.[,
-[ 5022.300201] 00000520: 112b5c32 00000000 06101831 908a8a3b 000a4a16
-00000000 00000714 00000001  2\+.....1...;....J..............
-[ 5022.300231] 00000540: 000045d6 200000b3 00000000 00000000 00001000
-00000001 0b322002 00430000  .E..... ................. 2...C.
-[ 5022.300292] 00000560: 570b3a18 32000000 11000094 59530000 474f4c53
-4544495f 4649544e 3d524549  .:.W...2......SYSLOG_IDENTIFIER=
-[ 5022.300323] 00000580: 5253552f 4942532f 52432f4e dd444e4f 00dd0104
-0500dc4f 166f88ea eb7bc1dc  /USR/SBIN/CROND.....O.....o...{.
-[ 5022.300354] 000005a0: 1a2701d8 bc322000 fc02e00b 060cdc06 3d444950
-36343737 7002fd00 730505c0  ..'.. 2.........PID=7746...p...s
-[ 5022.300415] 000005c0: 910fdb87 d8e1b577 00182701 00013c36 53454d1e
-45474153 6f72283d 2029746f  ....w....'..6<...MESSAGE=(root)
-[ 5022.300445] 000005e0: 20444d43 73752f28 69622f72 63612f6e 616d696c
-6770755f 65646172 79702e72  CMD (/usr/bin/aclima_upgrader.py
-[ 5022.300476] 00000600: 490dfd29 05050bc4 5b8e4eea d8a73263 00182701
-5f01bd36 a802e427 5b09fd05  )..I.....N.[c2...'..6.._'......[
-[ 5022.300537] 00000620: 000601b8 083e9672 8f7126b1 182701d8 9009fe00
-2622bdbe 5f0503c4 4c444d43  ....r.>..&q...'......."&..._CMDL
-[ 5022.300567] 00000640: 2e454e49 2d2005bb fd04846e 01946b0b ec000007
-938b90e4 d853caa7 00182701  INE... -n....k............S..'..
-[ 5022.300598] 00000660: 02e00bfc 5f0e06fc 52554f53 525f4543 544c4145
-5f454d49 04000070 4d415453  ......._SOURCE_REALTIME_p...STAM
-[ 5022.300659] 00000680: 33313d50 33373735 31303436 39323137 07893936
-00009703 08c36000 84086754  P=1357736401712969.......`..Tg..
-[ 5022.300689] 000006a0: 44290902 d2daa3ec 2dc20004 1d6c2c86 44dc0800
-c05c1c64 e58e7c44 97ea4226  ..)D.......-.,l....Dd.\.D|..&B..
-[ 5022.300750] 000006c0: 75e1b7a7 64c7b308 40089b71 ff0708a4 a56c489d
-28b3285c 0709a001 808d26a3  ...u...dq..@.....Hl.\(.(.....&..
-[ 5022.300781] 000006e0: 80f09f19 1fbc2f80 96a2c906 64587873 01dcd891
-4cf91b07 3debd4d6 bc304054  ...../......sxXd.......L...=T@0.
-[ 5022.300811] 00000700: 904afd03 5d2701dc 03bc3108 031836fe 0a060bbc
-4d38af4c 608cdec3 320701dc  ..J...'].1...6......L.8M...`...2
-[ 5022.300872] 00000720: e8fc5775 e02e86c1 0705bc2b e4a53453 69e833ea
-01bc2c30 08f6b306 d9147ef4  uW......+...S4...3.i0,.......~..
-[ 5022.300903] 00000740: 09dc503d dce836fd 490c0703 37a19fda 2d5089bf
-a00605bc ce3dfb5a b027cba7  =P...6.....I...7..P-....Z.=...'.
-[ 5022.300933] 00000760: 30fe05dc 0fbc0598 bccc0c07 e0bef8c5 bc060854
-e4d50601 cc900f08 dc78e5b8  ...0............T.............x.
-[ 5022.300994] 00000780: c2c00601 87d55283 9706f5f2 38000029 c5f000de
-37fe0bbc 01be3880 00bebfb8  .....R......)..8.......7.8......
-[ 5022.301025] 000007a0: 00bcc218 4800de2e 2002bcc6 a000dd0f 00dd1620
-dc0620f8 001fb700 1bdc7800  .......H... .... .... .......x..
-[ 5022.301055] 000007c0: 94b3f405 cdb97626 2701d8e3 34d8001a 375817be
-c40200bd 0079fc03 2f31301e  ....&v.....'...4..X7......y..01/
-[ 5022.301116] 000007e0: 322f3930 20333130 303a3130 32303a30 204d5020
-4544202d 20475542 6f46202d  09/2013 01:00:02 PM - DEBUG - Fo
-[ 5022.301147] 00000800: 20646e75 74656e69 64646120 004eb772 10c14000
-9756df55 569ff743 33912d4f  und inet addr.N..@..U.V.C..VO-.3
-[ 5022.301177] 00000820: c0070adc ba3407ec d0c0c959 0507a000 21fe9c18
-419abf3a 780add2e a20658dc  ......4.Y..........!:..A...x.X..
-[ 5022.301239] 00000840: c38b5916 d0129629 620601dc c3aea5bf 60dad772
-1dfe19dc 09bc02c8 e655ab05  .Y..)......b....r..`..........U.
-[ 5022.301269] 00000860: b44b2032 0a9d3e2d 0656dca8 4af888d4 2528b41b
-0701dcf8 3734d15d 0034f94a  2 K.->....V....J..(%....].47J.4.
-[ 5022.301330] 00000880: 09bc0450 deb6f106 d4e4578c 01dcc07a d792aa06
-3aaff6f7 50dc3094 f0b71705  P........W..z..........:.0.P....
-[ 5022.301361] 000008a0: 9b2127fe 5c0f202a 04fd2e0a 1a27df56 279ff859
-209242d2 2e04fcfc c2000e7d  .'!.* .\....V.'.Y..'.B. ....}...
-[ 5022.301422] 000008c0: bc361800 2f01d85b 3ab70018 c47f0000 84790803
-be9cb147 030831c9 b802c40c  ..6.[../...:......y.G....1......
-[ 5022.301452] 000008e0: b582fc00 55d60001 65fc0000 021bfc28 2054554f
-0cf93028 0e677834 20746f47  .......U...e(...OUT (0..4xg.Got
-[ 5022.301483] 00000900: 656c6572 73657361 5d5b203a 011c2729 2c05cbfc
-ad221630 fcd800fc 3600fc0c  releases: [])'.....,0."........6
-[ 5022.301544] 00000920: 032001fc 3403197c 34323430 21a42435 cbfd4cfc
-014cdc57 a40fcf1b b8d3cb7f  .. .|..404245$.!.L..W.L.........
-[ 5022.301574] 00000940: 099c33a9 48e7a307 85b4ec38 a44008cd 7e172008
-bc2ab819 d12f0631 926b17eb  .3.....H8.....@.. .~..*.1./...k.
-[ 5022.301605] 00000960: dc907a51 902efd8f 4805c5dc f41390f6 3e3b5a72
-2f200edc 3810197e 30fc13bc  Qz.........H....rZ;>.. /~..8...0
-[ 5022.301666] 00000980: 0f1c0f20 c80a1e2e fc09bcc9 195e2e37 03bcc490
-2000de2e 2002bcca 7800dd0f   ...........7.^........ ... ...x
-[ 5022.301696] 000009a0: 00dd1620 de0e20d0 e441e800 3e00bc53 c868029e
-cc9019be cf0800be d18000be   .... ....A.S..>..h.............
-[ 5022.301727] 000009c0: d3f000be d65800be d8c800be db1800be e12800be
-e81800be ed1000be ef6800be  ......X...........(...........h.
-[ 5022.301788] 000009e0: f1b800be f40000be f64000be f88800be fac800be
-fd1000be ff5800be 01a800be  ..........@...............X.....
-[ 5022.301818] 00000a00: def87cbd dd06707d 00be0801 00be0ac8 00be0cd0
-00be0ed8 00be10a8 00be1278  .|..}p......................x...
-[ 5022.301849] 00000a20: 00be1448 00be1618 00be17e8 00be19b8 00be1be0
-00be1e08 00be1f88 00be2b28  H...........................(+..
-[ 5022.301910] 00000a40: 00be2ca8 00be2ea0 00be3088 00be3298 00be34a0
-00be36a8 00be38b0 00dd3a88  .,.......0...2...4...6...8...:..
-[ 5022.301940] 00000a60: d000be3c f800be3d 3800be3f 6000be41 a000be84
-e000be85 2000be86 6000be88  <...=...?..8A..`........... ...`
-[ 5022.301971] 00000a80: a000be89 e000be8a 2000be8b 6000be8d a000be8e
-e000be8f 2000be90 6000be92  ........... ...`........... ...`
-[ 5022.302032] 00000aa0: a000be93 e000be94 2000be95 6000be97 a000be98
-e000be99 2000be9a 6000be9c  ........... ...`........... ...`
-[ 5022.302062] 00000ac0: a000be9d e000be9e 2000be9f 6000bea1 a000bea2
-e000bea3 2000bea4 6000bea6  ........... ...`........... ...`
-[ 5022.302093] 00000ae0: f800bea7 3800bea8 7800beaa b800beab f800beac
-3800bead 7800beaf b800beb0  .......8...x...........8...x....
-[ 5022.302154] 00000b00: f800beb1 3800beb2 7800beb4 b800beb5 f800beb6
-3800beb7 7800beb9 b800beba  .......8...x...........8...x....
-[ 5022.302185] 00000b20: f800bebb 3800bebc 7800bebe b800bebf f800bec0
-3800bec1 7800bec3 b800bec4  .......8...x...........8...x....
-[ 5022.302246] 00000b40: f800bec5 3800bec6 7800bec8 b800bec9 f800beca
-3800becb 7800becd b800bece  .......8...x...........8...x....
-[ 5022.302276] 00000b60: f800becf 3800bed0 7800bed2 b800bed3 f800bed4
-3800bed5 7800bed7 b800bed8  .......8...x...........8...x....
-[ 5022.302307] 00000b80: f800bed9 3800beda 7800bedc b800bedd f800bede
-3800bedf 7800bee1 b800bee2  .......8...x...........8...x....
-[ 5022.302368] 00000ba0: f800bee3 3800bee4 7800bee6 b800bee7 f800bee8
-3800bee9 7800beeb b800beec  .......8...x...........8...x....
-[ 5022.302398] 00000bc0: f800beed 3800beee 7800bef0 b800bef1 f800bef2
-3800bef3 7800bef5 5000bef6  .......8...x...........8...x...P
-[ 5022.302429] 00000be0: 1800befb 5800befd 9800befe d800bfff 95820d00
-00be0218 00be3730 00be3870  .......X................07..p8..
-[ 5022.302490] 00000c00: 00be39b0 00be3af0 00be3c30 00be3d70 00be3eb0
-00be3ff0 00be41c0 00be4300  .9...:..0<..p=...>...?...A...C..
-[ 5022.302520] 00000c20: 00be4440 00be5060 00be52e0 00bc5420 0d559805
-00000000 00001100 c706fd97  @D..`P...R.. T....U.............
-[ 5022.302551] 00000c40: 06101831 2a4384c4 000a4a17 00000000 000000ef
-00000001 000045d6 200000b4  1.....C*.J...............E.....
-[ 5022.302612] 00000c60: 00000000 00000000 00001000 00000001 0d571002
-00430000 540d5850 00000100  ..................W...C.PX.T....
-[ 5022.302642] 00000c80: 00be5990 00be5ad0 00be5c10 00be5d50 00be5e90
-00be5fd0 00be6110 00be6848  .Y...Z...\..P]...^..._...a..Hh..
-[ 5022.302673] 00000ca0: 00be6988 00be6ac8 00be6c08 00be6d48 00be6e88
-00be6fc8 00be7108 00be7248  .i...j...l..Hm...n...o...q..Hr..
-[ 5022.302734] 00000cc0: 00be73e0 00be7520 00be7660 00be77a0 00be7b08
-00be7c48 00be7d88 00be82c0  .s.. u..`v...w...{..H|...}......
-[ 5022.302764] 00000ce0: 00be8400 00be8540 00be8680 00be87c0 00be8900
-00be8ab8 00be8c78 00be8e48  ....@...................x...H...
-[ 5022.302825] 00000d00: 00be9008 00be91d0 00be9390 00be9548 00be9718
-00bc98e0 00202690 00000000  ............H............& .....
-[ 5022.302856] 00000d20: 00000000 00000000 0010a800 90000011 06101831
-9a06f46e 000a4a18 00000000  ................1...n....J......
-[ 5022.302886] 00000d40: 000001e2 00000001 000045d6 200000b8 00000000
-00000000 00001000 00000001  .........E..... ................
-[ 5022.302947] 00000d60: 0cc5b802 00430000 540cc6f8 00000100 00bec838
-00bec978 00becab8 00becbf8  ......C....T....8...x...........
-[ 5022.302978] 00000d80: 00becd38 00bece78 00becfb8 00bed0f8 00bed238
-00bed378 00bed4b8 00bed5f8  8...x...........8...x...........
-[ 5022.303009] 00000da0: 00bed738 00bed878 00bed9b8 00bedaf8 00bedc38
-00bedd78 00bedeb8 00bedff8  8...x...........8...x...........
-[ 5022.303039] 00000dc0: 00bee138 00bee278 00bee3b8 00bee4f8 00bee638
-00bee778 00bee8b8 00bee9f8  8...x...........8...x...........
-[ 5022.303100] 00000de0: 00beeb38 00beec78 00beedb8 00beeef8 00bef038
-00bef178 00bef2b8 00bef3f8  8...x...........8...x...........
-[ 5022.303131] 00000e00: 00bef538 00bef678 00befb50 00befd18 00befe58
-00bfff98 9e0d00d8 be02182a  8...x...P.......X...........*...
-[ 5022.303161] 00000e20: be373000 be387000 be39b000 be3af000 be3c3000
-be3d7000 be3eb000 be3ff000  .07..p8...9...:..0<..p=...>...?.
-[ 5022.303222] 00000e40: be41c000 be430000 be444000 be506000 be52e000
-be542000 be559800 be571000  ..A...C..@D..`P...R.. T...U...W.
-[ 5022.303253] 00000e60: be585000 be599000 be5ad000 be5c1000 be5d5000
-be5e9000 be5fd000 be611000  .PX...Y...Z...\..P]...^..._...a.
-[ 5022.303314] 00000e80: be684800 be698800 be6ac800 be6c0800 be6d4800
-be6e8800 be6fc800 be710800  .Hh...i...j...l..Hm...n...o...q.
-[ 5022.303344] 00000ea0: be724800 be73e000 be752000 be766000 be77a000
-be7b0800 be7c4800 be7d8800  .Hr...s.. u..`v...w...{..H|...}.
-[ 5022.303375] 00000ec0: be82c000 be840000 be854000 be868000 be87c000
-be890000 be8ab800 be8c7800  .........@...................x..
-[ 5022.303436] 00000ee0: be8e4800 be900800 be91d000 be939000 be954800
-be971800 bc98e000 20389000  .H...............H............8
-[ 5022.303466] 00000f00: 00000000 00000000 00000000 110010be 0a060000
-4d38af4c 06101831 3f156cea  ....................L.8M1....l.?
-[ 5022.303497] 00000f20: 000a4a19 00000000 0000049c 00000001 000045d6
-200000be 00000000 00000000  .J...............E..... ........
-[ 5022.303558] 00000f40: 00001000 00000001 0c17e802 00430000 540c19b8
-00000100 00bd1be0 00019701  ..............C....T............
-[ 5022.303588] 00000f60: 00dc9900 14989b05 96261700 2701d831 e128001b
-002c270b 06fc0160 454d4700  ..........&.1..'..(..',.`....GME
-[ 5022.303619] 00000f80: 47415353 72283d45 29746f6f 444d4320 2054554f
-464e4928 202d204f 656c6946  SSAGE=(root) CMDOUT (INFO - File
-[ 5022.303680] 00000fa0: 656d616e 612f203a 6d696c63 69662f61 61776d72
-752f6572 302f6273 372e372e  name: /aclima/firmware/usb/0.7.7
-[ 5022.303710] 00000fc0: 7261502f 53746f72 6f736e65 69745372 742e6b63
-73297478 0000000c dc6b0cfd  /ParrotSensorStick.txt)s......k.
-[ 5022.303741] 00000fe0: 94680501 b85709d8 01d82336 36001827 5f0e027c
-52554f53 525f4543 544c4145  ..h...W.6#..'..6|.._SOURCE_REALT
-[ 5022.303802] 00001000: 5f454d49 04000070 4d415453 33313d50 33373735
-35303436 39323939 098d3431  IME_p...STAMP=1357736405992914..
-[ 5022.303833] 00001020: 00009703 0fc36000 84086763 33180002 daa42db9
-eb0004d2 5b2cc7a2 dc000000  .....`..cg.....3.-........,[....
-[ 5022.303863] 00001040: 5c1c6444 8e7c44c0 ea4226e5 05b7a797 9da2d55f
-0836ec68 0708a440 6c489dff  Dd.\.D|..&B....._...h.6.@.....Hl
-[ 5022.303924] 00001060: b3285ca5 09a00128 8d26a307 f09f1980 bc2f8080
-a2c90628 58787396 dcd89164  .\(.(.....&......./.(....sxXd...
-[ 5022.303955] 00001080: f91b0701 ebd4d64c 2ab8543d 2f0703bc 6b17ebd1
-187a5192 fe01bce0 bc2b9032  ....L...=T.*.../...k.Qz.....2.+.
-[ 5022.303985] 000010a0: f6480701 72f41390 03183b5a 0a060bbc 4d38af4c
-608cdec3 320601dc e8fc5775  ..H....rZ;......L.8M...`...2uW..
-[ 5022.304046] 000010c0: e02e86c1 530705dc eae4a534 3069e833 0707bc2c
-f408f6b3 3dd9147e 01bc3150  .......S4...3.i0,.......~..=P1..
-[ 5022.304077] 000010e0: 3e967206 7126b108 03dce88f da490c07 bf37a19f
-bc2d5089 5aa00603 a7ce3dfb  .r.>..&q......I...7..P-....Z.=..
-[ 5022.304138] 00001100: dcb827cb 9830fe11 070fbc05 c5bccc0c 54e0bef8
-01bc0608 08e4d506 b8cc900f  .'....0............T............
-[ 5022.304168] 00001120: 01dc78e5 83c2c006 f287d552 299706f5 dee80000
-bc209800 1837fe50 100dbee8  .x......R......)...... .P.7.....
-[ 5022.304199] 00001140: 6800beed b800beef 0000bef1 4000bef4 8800bef6
-c800bef8 1000befa 5800befd  ...h...........@...............X
-[ 5022.304260] 00001160: a800beff f80bbe01 7000be03 f800be06 c800be08
-d000be0a d800be0c a800be0e  ...........p....................
-[ 5022.304290] 00001180: 7800be10 4800be12 1800be14 e800be16 2e00bc17
-1e080d3e 9e2e02bc bc232003  ...x...H............>........ #.
-[ 5022.304321] 000011a0: 9ebf2002 2025a803 30039ec5 9cc52028 0074d903
-0adca720 94b719fc c0930000  . ....% ...0( ....t. ...........
-[ 5022.304382] 000011c0: df380502 5fdc1674 01d850f4 18001a27 e088bce8
-3c06fc02 52031bdc 53424d41  ..8.t.._.P..'..........<...RAMBS
-[ 5022.304412] 000011e0: 1bd4354c 41520100 53425f4d 30302e4c 2e36302e
-332e3530 1bc42834 ddfc0bfc  L5....RAM_BSL.00.06.05.34(......
-[ 5022.304473] 00001200: 2f9a1f05 e3cf8203 fc0ffc35 025c3600 1bbc0620
-30303301 b4098836 1bbd28d5  .../....5....6\. ....3006....(..
-[ 5022.304504] 00001220: 2bddde64 c4ddbee8 1bbc34d1 4216d106 5b6683be
-2e200841 e7101bbe 31fd2dbc  d..+.....4.....B..f[A. ......-.1
-[ 5022.304534] 00001240: 20d7dc90 a81bbd57 30fc11dc 1bbe1720 2d980288
-fc001027 9e9f2037 dd1f881b  ... W......0 ......-'...7 ......
-[ 5022.304595] 00001260: 00be2ba0 00be2ca8 00be2ea0 00be3088 00be3298
-00be34a0 00be36a8 00be38b0  .+...,.......0...2...4...6...8..
-[ 5022.304626] 00001280: 00dd3a88 f000bf3c 258e0d45 00be47c0 00be4990
-00be4b60 00be4d30 00be4f00  .:..<...E..%.G...I..`K..0M...O..
-[ 5022.304656] 000012a0: 00be62c0 00be6490 00be66e8 00be7950 00be7f38
-00bc8108 ca200b90 8afc0010  .b...d...f..Py..8......... .....
-[ 5022.304718] 000012c0: 052f9c26 35082993 77feaeea fc04082e fc02fc51
-13bd3c06 2f542546 2013c435  &./..).5...w....Q....<..F%T/5..
-[ 5022.304748] 000012e0: 052f9c12 025960dd 5f622d65 00fc10fc 20027c36
-3613de08 2e098837 df6513dd  ../..`Y.e-b_....6|. ...67.....e.
-[ 5022.304779] 00001300: 2e09e79e 812f9e23 13dc34f3 481ab805 d075529c
-de2f200c bcec0013 2032fc9e  ....#./..4.....H.Ru.. /.......2
-[ 5022.304840] 00001320: a013dd5f 30fc11dc 13dc0f20 948146fd 0000072d
-eabed500 e984382f 00fd01f8  _......0 ....F..-......./8......
-[ 5022.304870] 00001340: 2f7c2568 06fc01fc 0009bc3c 65755110 6e697972
-6f662067 65642072 65636976  h%|/....<....Querying for device
-[ 5022.304901] 00001360: 6f742073 67707520 65646172 362e2e2e 9b0538fc
-aa9b46e2 fc191e12 3600fc0d  s to upgrade...6.8...F.........6
-[ 5022.304962] 00001380: 0720021c 3531095f 2e098838 de66095d bf36f74a
-c820904a 0538fc33 dae1646d  .. ._.158...].f.J.6.J. .3.8.md..
-[ 5022.304992] 000013a0: d4d6dc58 095c2f20 0bee7005 00000000 00001100
-3800bee9 06101831 865cdea8  X... /\..p.............81.....\.
-[ 5022.305023] 000013c0: 000a4a1a 00000000 000003ce 00000001 000045d6
-200000c4 00000000 00000000  .J...............E..... ........
-[ 5022.305084] 000013e0: 00001000 00000001 00014008 00000000 08678900
-1a000078 5ba41400 04d2daa4  .........@........g.x......[....
-[ 5022.305114] 00001400: f58dad00 00005b2c 6444dc00 44c05c1c 26e58e7c
-a797ea42 06d69eb7 a5226887  ....,[....Dd.\.D|..&B........h".
-[ 5022.305145] 00001420: 0100d0a1 1807059c 3a21fe9c 28419abf 0601bc01
-808d26a3 80f09f19 0701dc78  ..........!:..A(.....&......x...
-[ 5022.305206] 00001440: 8b5916a2 129629c3 03bc1b60 31bff306 fbd97507
-01dcc057 5cd92607 d5f04b7e  ..Y..)..`......1.u..W....&.\~K..
-[ 5022.305236] 00001460: bc1c380e f9ce0703 7d1b5cee 0318e0a0 0a0601bc
-4d38af4c 608cdec3 320601dc  .8.......\.}........L.8M...`...2
-[ 5022.305267] 00001480: e8fc5775 802e86c1 be0605dc 20612152 d88d2d66
-0b0701dc e2805fd3 3826e491  uW..........R!a f-......._....&8
-[ 5022.305328] 000014a0: 0607bc1d cbd00c24 2219d526 0701dcc0 863dddde
-5120c83e 03bc1e30 f366f207  ....$...&.."......=.>. Q0.....f.
-[ 5022.305358] 000014c0: d5626f78 bc0598f5 cc0c0701 bef8c5bc 060854e0
-d50601bc 900f08e4 78e5b8cc  xob..............T.............x
-[ 5022.305419] 000014e0: c00601dc d55283c2 03f5f287 00001f97 0004ba40
-0f27de8a c727becb fefd20b4  ......R.........@.....'...'.. ..
-[ 5022.305450] 00001500: a2000604 bc41e800 3800f700 018a0c41 00be8460
-00be85a0 00be86e0 00be8820  ......A....8A...`........... ...
-[ 5022.305480] 00001520: 00be8960 00be8aa0 00be8be0 00be8d20 00be8e60
-00be8fa0 00be90e0 00be9220  `........... ...`........... ...
-[ 5022.305541] 00001540: 00be9360 00be94a0 00be95e0 00be9720 00be9860
-00be99a0 00be9ae0 00be9c20  `........... ...`........... ...
-[ 5022.305572] 00001560: 00be9d60 00be9ea0 00be9fe0 00bea120 00bea260
-00bea3a0 00bea4e0 00bea620  `........... ...`........... ...
-[ 5022.305603] 00001580: 00bea760 00bea8f8 00beaa38 00beab78 00beacb8
-00beadf8 00beaf38 00beb078  `.......8...x...........8...x...
-[ 5022.305664] 000015a0: 00beb1b8 00beb2f8 00beb438 00beb578 00beb6b8
-00beb7f8 00beb938 00beba78  ........8...x...........8...x...
-[ 5022.305694] 000015c0: 00bebbb8 00bebcf8 00bebe38 00bebf78 00bec0b8
-00bec1f8 00bec338 00bec478  ........8...x...........8...x...
-[ 5022.305725] 000015e0: 00bec5b8 00bec6f8 00bec838 00bec978 00becab8
-00becbf8 00becd38 00bece78  ........8...x...........8...x...
-[ 5022.305786] 00001600: 00becfb8 00bed0f8 00bed238 00bed378 00bed4b8
-00bed5f8 00bed738 00bed878  ........8...x...........8...x...
-[ 5022.305816] 00001620: 00bed9b8 00bedaf8 00bedc38 00bedd78 00bedeb8
-00bedff8 00bee138 00bee278  ........8...x...........8...x...
-[ 5022.305847] 00001640: 00bee3b8 00bee4f8 00bee638 00bee778 00bee8b8
-00bee9f8 00beeb38 00beec78  ........8...x...........8...x...
-[ 5022.305908] 00001660: 00beedb8 00beeef8 00bef038 00bef178 00bef2b8
-00bef3f8 00bef538 00bef678  ........8...x...........8...x...
-[ 5022.305938] 00001680: 00befb50 00befd18 00befe58 00bfff98 9e0d00d8
-be021860 be373000 be387000  P.......X...........`....07..p8.
-[ 5022.305969] 000016a0: be39b000 be3af000 be3c3000 be3d7000 be3eb000
-be3ff000 be41c000 be430000  ..9...:..0<..p=...>...?...A...C.
-[ 5022.306030] 000016c0: be444000 be506000 be52e000 be542000 be559800
-be571000 be585000 be599000  .@D..`P...R.. T...U...W..PX...Y.
-[ 5022.306060] 000016e0: be5ad000 be5c1000 be5d5000 be5e9000 be5fd000
-be611000 be684800 be698800  ..Z...\..P]...^..._...a..Hh...i.
-[ 5022.306121] 00001700: be6ac800 be6c0800 be6d4800 be6e8800 be6fc800
-be710800 be724800 be73e000  ..j...l..Hm...n...o...q..Hr...s.
-[ 5022.306152] 00001720: be752000 be766000 be77a000 be7b0800 be7c4800
-be7d8800 be82c000 be840000  . u..`v...w...{..H|...}.........
-[ 5022.306182] 00001740: be854000 be868000 be87c000 be890000 be8ab800
-be8c7800 be8e4800 be900800  .@...................x...H......
-[ 5022.306243] 00001760: be91d000 be939000 be954800 be971800 bc98e000
-20389000 00000000 00000000  .........H............8 ........
-[ 5022.306274] 00001780: 11001082 72280000 06101831 a893f622 00000000
-00000000 0000001c 00000005  ......(r1..."...................
-[ 5022.306304] 000017a0: 0000021c 00000000 00000000 00000000 00000000
-00000000 00000000 00000000  ................................
-[ 5022.306335] 000017c0: 00000000 00000000 00000000 00000000 00000000
-00000000 00000000 00000000  ................................
-[ 5022.306396] 000017e0: 00000000 00000000 00000000 00000000 00000000
-00000000 00000000 00000000  ................................
-[ 5022.306427] 00001800: 00000000 00000000 00000000 00000000 00000000
-00000000 00000000 00000000  ................................
-[ 5022.306457] 00001820: 00000000 00000000 00000000 00000000 00000000
-00000000 00000000 00000000  ................................
-[ 5022.306518] 00001840: 00000000 00000000 00000000 00000000 00000000
-00000000 00000000 00000000  ................................
-[ 5022.306549] 00001860: 00000000 00000000 00000000 00000000 00000000
-00000000 00000000 00000000  ................................
-[ 5022.306579] 00001880: 00000000 00000000 00000000 00000000 00000000
-00000000 00000000 00000000  ................................
-[ 5022.306610] 000018a0: 00000000 00000000 00000000 00000000 00000000
-00000000 00000000 00000000  ................................
-[ 5022.306671] 000018c0: 00000000 00000000 00000000 00000000 00000000
-00000000 00000000 00000000  ................................
-[ 5022.306701] 000018e0: 00000000 00000000 00000000 00000000 00000000
-00000000 00000000 00000000  ................................
-[ 5022.306732] 00001900: 00000000 00000000 00000000 00000000 00000000
-00000000 00000000 00000000  ................................
-[ 5022.306762] 00001920: 00000000 00000000 00000000 00000000 00000000
-00000000 00000000 00000000  ................................
-[ 5022.306854] 00001940: 00000000 00000000 00000000 00000000 00000000
-00000000 00000000 00000000  ................................
-[ 5022.306884] 00001960: 00000000 00000000 00000000 00000000 00000000
-00000000 00000000 00000000  ................................
-[ 5022.306945] 00001980: 00000000 00000000 00000000 00000000 00000000
-00000000 00000000 00000000  ................................
-[ 5022.306976] 000019a0: 00000000 00000000 00000000 00000000 00000000
-00000000 00000000 00000000  ................................
-[ 5022.307006] 000019c0: 06101831 df5488fb 000a4a23 00000000 000003de
-00000001 000045d6 200000c4  1.....T.#J...............E.....
-[ 5022.307037] 000019e0: 00000000 00000000 00001000 00000001 00014008
-00000000 08678900 1a000078  .................@........g.x...
-[ 5022.307098] 00001a00: 5ba41400 04d2daa4 f58dad00 00005b2c 6444dc00
-44c05c1c 26e58e7c a797ea42  ...[........,[....Dd.\.D|..&B...
-[ 5022.307128] 00001a20: 06d69eb7 a5226887 0100d0a1 1807059c 3a21fe9c
-28419abf 0601bc01 808d26a3  .....h"...........!:..A(.....&..
-[ 5022.307189] 00001a40: 80f09f19 0701dc78 8b5916a2 129629c3 03bc1b60
-31bff306 fbd97507 01dcc057  ....x.....Y..)..`......1.u..W...
-[ 5022.307220] 00001a60: 5cd92607 d5f04b7e bc1c380e f9ce0703 7d1b5cee
-0318e0a0 0a0601bc 4d38af4c  .&.\~K...8.......\.}........L.8M
-[ 5022.307250] 00001a80: 608cdec3 320601dc e8fc5775 802e86c1 be0605dc
-20612152 d88d2d66 0b0701dc  ...`...2uW..........R!a f-......
-[ 5022.307312] 00001aa0: e2805fd3 3826e491 0607bc1d cbd00c24 2219d526
-0701dcc0 863dddde 5120c83e  ._....&8....$...&.."......=.>. Q
-[ 5022.307342] 00001ac0: 03bc1e30 f366f207 d5626f78 bc0598f5 cc0c0701
-bef8c5bc 060854e0 d50601bc  0.....f.xob..............T......
-[ 5022.307373] 00001ae0: 900f08e4 78e5b8cc c00601dc d55283c2 03f5f287
-00001f97 0004ba40 0f27de8a  .......x......R.........@.....'.
-[ 5022.307434] 00001b00: c727becb fefd20b4 a2000604 bc41e800 3800f700
-018a0c41 00be8460 00be85a0  ..'.. ........A....8A...`.......
-[ 5022.307464] 00001b20: 00be86e0 00be8820 00be8960 00be8aa0 00be8be0
-00be8d20 00be8e60 00be8fa0  .... ...`........... ...`.......
-[ 5022.307495] 00001b40: 00be90e0 00be9220 00be9360 00be94a0 00be95e0
-00be9720 00be9860 00be99a0  .... ...`........... ...`.......
-[ 5022.307556] 00001b60: 00be9ae0 00be9c20 00be9d60 00be9ea0 00be9fe0
-00bea120 00bea260 00bea3a0  .... ...`........... ...`.......
-[ 5022.307586] 00001b80: 00bea4e0 00bea620 00bea760 00bea8f8 00beaa38
-00beab78 00beacb8 00beadf8  .... ...`.......8...x...........
-[ 5022.307617] 00001ba0: 00beaf38 00beb078 00beb1b8 00beb2f8 00beb438
-00beb578 00beb6b8 00beb7f8  8...x...........8...x...........
-[ 5022.307678] 00001bc0: 00beb938 00beba78 00bebbb8 00bebcf8 00bebe38
-00bebf78 00bec0b8 00bec1f8  8...x...........8...x...........
-[ 5022.307708] 00001be0: 00bec338 00bec478 00bec5b8 00bec6f8 00bec838
-00bec978 00becab8 00becbf8  8...x...........8...x...........
-[ 5022.307739] 00001c00: 00becd38 00bece78 00becfb8 00bed0f8 00bed238
-00bed378 00bed4b8 00bed5f8  8...x...........8...x...........
-[ 5022.307800] 00001c20: 00bed738 00bed878 00bed9b8 00bedaf8 00bedc38
-00bedd78 00bedeb8 00bedff8  8...x...........8...x...........
-[ 5022.307830] 00001c40: 00bee138 00bee278 00bee3b8 00bee4f8 00bee638
-00bee778 00bee8b8 00bee9f8  8...x...........8...x...........
-[ 5022.307861] 00001c60: 00beeb38 00beec78 00beedb8 00beeef8 00bef038
-00bef178 00bef2b8 00bef3f8  8...x...........8...x...........
-[ 5022.307922] 00001c80: 00bef538 00bef678 00befb50 00befd18 00befe58
-00bfff98 9e0d00d8 be021860  8...x...P.......X...........`...
-[ 5022.307952] 00001ca0: be373000 be387000 be39b000 be3af000 be3c3000
-be3d7000 be3eb000 be3ff000  .07..p8...9...:..0<..p=...>...?.
-[ 5022.307983] 00001cc0: be41c000 be430000 be444000 be506000 be52e000
-be542000 be559800 be571000  ..A...C..@D..`P...R.. T...U...W.
-[ 5022.308044] 00001ce0: be585000 be599000 be5ad000 be5c1000 be5d5000
-be5e9000 be5fd000 be611000  .PX...Y...Z...\..P]...^..._...a.
-[ 5022.308074] 00001d00: be684800 be698800 be6ac800 be6c0800 be6d4800
-be6e8800 be6fc800 be710800  .Hh...i...j...l..Hm...n...o...q.
-[ 5022.308105] 00001d20: be724800 be73e000 be752000 be766000 be77a000
-be7b0800 be7c4800 be7d8800  .Hr...s.. u..`v...w...{..H|...}.
-[ 5022.308166] 00001d40: be82c000 be840000 be854000 be868000 be87c000
-be890000 be8ab800 be8c7800  .........@...................x..
-[ 5022.308197] 00001d60: be8e4800 be900800 be91d000 be939000 be954800
-be971800 be98e000 be9aa800  .H...............H..............
-[ 5022.308227] 00001d80: be9c6800 be9e2000 bc9f6000 203c9000 00000000
-00000000 11001062 00be0000  .h... ...`....< ........b.......
-[ 5022.308288] 00001da0: 06101831 656d2327 000a4a24 00000000 0000042d
-00000001 000045d6 200000d9  1...'#me$J......-........E.....
-[ 5022.308319] 00001dc0: 00000000 00000000 00001000 00000001 52206707
-00004354 a2000300 bf014000  .................g RTC.......@..
-[ 5022.308380] 00001de0: 08682d00 18000180 a78d500d 0004d2da 302739a6
-0000005b 1c6444dc 7c44c05c  .-h......P.......9'0[....Dd.\.D|
-[ 5022.308410] 00001e00: 4226e58e b7a797ea 41eb5dd1 bc1cd011 07a000d0
-fe9c1807 9abf3a21 bc012841  ..&B.....].A............!:..A(..
-[ 5022.308441] 00001e20: 26a30601 9f19808d dc7880f0 16a20601 29c38b59
-dcd01296 bf620801 72c3aea5  ...&......x.....Y..)......b....r
-[ 5022.308502] 00001e40: 8f88dad7 070d9c0d 537802e5 9f1830dd 07bc02c8
-e655ab07 b44b2032 bc03182d  ..........xS.0........U.2 K.-...
-[ 5022.308532] 00001e60: 4c0a0601 c34d38af dc608cde 75320601 c1e8fc57
-dca82e86 88d40601 b41b4af8  ...L.8M...`...2uW............J..
-[ 5022.308563] 00001e80: dcf82528 d15d0701 f94a3734 04500034 f10607bc
-578cdeb6 c07ad4e4 aa0701dc  (%....].47J.4.P........W..z.....
-[ 5022.308624] 00001ea0: f6f7d792 30943aaf 0603bc05 fef0b717 2a9b2127
-0701dc98 c5bccc0c 54e0bef8  .....:.0........'!.*...........T
-[ 5022.308654] 00001ec0: 03bc0608 08e4d506 b8cc900f 01dc78e5 83c2c005
-f287d552 0003b7f5 18948200  .............x......R...........
-[ 5022.308715] 00001ee0: fe000007 684f23ca d86bd143 001a2701 1cbc91d0
-06fc02e0 454d0400 47415353  .....#OhC.k..'............MESSAG
-[ 5022.308746] 00001f00: 31303d45 2f39302f 33313032 3a313020 16000068
-4d502032 44202d20 47554245  E=01/09/2013 01:h...2 PM - DEBUG
-[ 5022.308776] 00001f20: 52202d20 76204354 61746c6f 69206567 6f6c2073
-46203a77 65736c61 1d2e0aa4   - RTC voltage is low: False....
-[ 5022.308837] 00001f40: 38de2e07 38be6d04 1c34569e 95ca0607 a3a45db0
-20d048d5 48071d1e 1ffc1bdc  ...8.m.8.V4......]...H. ...H....
-[ 5022.308868] 00001f60: 071d9720 0629b879 471d7c00 d884000c 2701d89c
-9390001a 071c1e20 6c61560c   ...y.)..|.G.......'.... ....Val
-[ 5022.308898] 00001f80: 74616469 656e2065 726f7774 fd2e45e0 37de2f06
-37be9cf0 fc34868a 42480506  idate networ.E.../.7...7..4...HB
-[ 5022.308959] 00001fa0: 64cc1ed4 1f20bfdc dc1006fd 201efc1a 7806fd97
-bb0535c4 5113495a d80c74b2  ...d.. ........ ...x.5..ZI.Q.t..
-[ 5022.308990] 00001fc0: 001a2701 0e209548 313106fe 0c0e1c2c 676e6950
-63757320 73736563 2e6c7566  .'..H. ...11,...Ping successful.
-[ 5022.309020] 00001fe0: dc3006dd 942b0136 a77fa817 33b17dc5 8f0514fc
-9d01da05 202f7052 d006de1f  ..0.6.+......}.3........Rp/ ....
-[ 5022.309051] UBIFS error (pid 84): ubifs_scan: LEB 911 scanning failed
-[ 5022.316497] UBIFS warning (pid 84): ubifs_ro_mode: switched to
-read-only mode, error -117
-[ 5022.326568] [<c0010001>] (unwind_backtrace+0x1/0xb0) from
-[<c01479c1>] (ubifs_garbage_collect+0x391/0x3d0)
-[ 5022.338134] [<c01479c1>] (ubifs_garbage_collect+0x391/0x3d0) from
-[<c013517f>] (make_reservation+0xdb/0x384)
-[ 5022.349884] [<c013517f>] (make_reservation+0xdb/0x384) from
-[<c0135d27>] (ubifs_jnl_write_data+0x133/0x210)
-[ 5022.361572] [<c0135d27>] (ubifs_jnl_write_data+0x133/0x210) from
-[<c013793f>] (do_writepage+0x87/0x170)
-[ 5022.372863] [<c013793f>] (do_writepage+0x87/0x170) from
-[<c0073d4b>] (__writepage+0xb/0x3a)
-[ 5022.383087] [<c0073d4b>] (__writepage+0xb/0x3a) from [<c007423b>]
-(write_cache_pages+0x197/0x244)
-[ 5022.393829] [<c007423b>] (write_cache_pages+0x197/0x244) from
-[<c0074309>] (generic_writepages+0x21/0x38)
-[ 5022.405334] [<c0074309>] (generic_writepages+0x21/0x38) from
-[<c00a5577>] (writeback_single_inode+0xbb/0x1d4)
-[ 5022.417175] [<c00a5577>] (writeback_single_inode+0xbb/0x1d4) from
-[<c00a584f>] (writeback_sb_inodes+0xdf/0x13c)
-[ 5022.429229] [<c00a584f>] (writeback_sb_inodes+0xdf/0x13c) from
-[<c00a58ed>] (__writeback_inodes_wb+0x41/0x6c)
-[ 5022.441070] [<c00a58ed>] (__writeback_inodes_wb+0x41/0x6c) from
-[<c00a59dd>] (wb_writeback+0xc5/0x160)
-[ 5022.452270] [<c00a59dd>] (wb_writeback+0xc5/0x160) from
-[<c00a5e9f>] (wb_do_writeback+0xe5/0x13a)
-[ 5022.463043] [<c00a5e9f>] (wb_do_writeback+0xe5/0x13a) from
-[<c00a5f63>] (bdi_writeback_thread+0x6f/0x164)
-[ 5022.474548] [<c00a5f63>] (bdi_writeback_thread+0x6f/0x164) from
-[<c003f5df>] (kthread+0x4b/0x58)
-[ 5022.485198] [<c003f5df>] (kthread+0x4b/0x58) from [<c000d329>]
-(kernel_thread_exit+0x1/0x6)
-[ 5022.495422] UBIFS error (pid 84): make_reservation: cannot reserve
-1307 bytes in jhead 2, error -117
-[ 5022.506469] UBIFS error (pid 84): do_writepage: cannot write page
-173 of inode 23851, error -117
-[ 5022.522216] UBIFS error (pid 84): make_reservation: cannot reserve
-1549 bytes in jhead 2, error -30
-[ 5022.532318] UBIFS error (pid 84): do_writepage: cannot write page
-177 of inode 23851, error -30
-[ 5027.546722] UBIFS error (pid 84): make_reservation: cannot reserve
-1420 bytes in jhead 2, error -30
-[ 5027.556274] UBIFS error (pid 84): do_writepage: cannot write page
-191 of inode 23851, error -30
-root@odieboard:/media/card# [ 5052.556182] UBIFS error (pid 84):
-make_reservation: cannot reserve 160 bytes in jhead 1, error -30
-[ 5052.565643] UBIFS error (pid 84): ubifs_write_inode: can't write
-inode 7071, error -30
-[ 5057.586791] UBIFS error (pid 84): make_reservation: cannot reserve
-757 bytes in jhead 2, error -30
-[ 5057.596343] UBIFS error (pid 84): do_writepage: cannot write page
-210 of inode 23851, error -30
-
-
-(2)
-
-[  148.721343] ubifs_lpt_lookup_dirty: UBIFS DBG lp: LEB 1469, free 0,
-dirty 8496, flags 16
-[  148.721374] ubifs_change_lp: UBIFS DBG lp: LEB 1469, free
--2147483647, dirty 9924, flags 16
-[  148.721374] ubifs_lpt_lookup_dirty: UBIFS DBG lp: LEB 1469, free 0,
-dirty 8496, flags 16
-[  148.721435] ubifs_writepage: UBIFS DBG gen: ino 23851, pg 367, pg flags 0xa6d
-[  148.721466] ubifs_jnl_write_data: UBIFS DBG jnl: ino 23851, blk
-367, len 4096, key (23851, data, 367)
-[  148.721679] write_node: UBIFS DBG jnl: jhead 2 (data), LEB
-1910:87496, len 1333
-[  148.721740] ubifs_wbuf_write_nolock: UBIFS DBG io: 1333 bytes (data
-node) to jhead 2 (data) wbuf at LEB 1910:87496
-[  148.721771] ubifs_wbuf_write_nolock: UBIFS DBG io: flush jhead 2
-(data) wbuf to LEB 1910:86016
-[  148.722442] ubifs_lpt_lookup_dirty: UBIFS DBG lp: LEB 1910, free
-39480, dirty 0, flags 16
-[  148.722473] ubifs_change_lp: UBIFS DBG lp: LEB 1910, free 38144,
-dirty 0, flags 16
-[  148.722503] ubifs_lpt_lookup_dirty: UBIFS DBG lp: LEB 1910, free
-39480, dirty 0, flags 16
-[  148.722534] new_wbuf_timer_nolock: UBIFS DBG io: set timer for
-jhead 2 (data), 3000-5000 millisecs
-[  148.722564] ubifs_tnc_add: UBIFS DBG tnc: 1910:87496, len 1333, key
-(23851, data, 367)
-[  148.722595] lookup_level0_dirty: UBIFS DBG tnc: search and dirty
-key (23851, data, 367)
-[  148.722625] lookup_level0_dirty: UBIFS DBG tnc: found 1, lvl 0, n 0
-[  148.722625] ubifs_lpt_lookup_dirty: UBIFS DBG lp: LEB 1469, free 0,
-dirty 9928, flags 16
-[  148.722656] ubifs_change_lp: UBIFS DBG lp: LEB 1469, free
--2147483647, dirty 11261, flags 16
-[  148.722686] ubifs_lpt_lookup_dirty: UBIFS DBG lp: LEB 1469, free 0,
-dirty 9928, flags 16
-[  148.722717] ubifs_writepage: UBIFS DBG gen: ino 23851, pg 368, pg flags 0xa6d
-[  148.722747] ubifs_jnl_write_data: UBIFS DBG jnl: ino 23851, blk
-368, len 4096, key (23851, data, 368)
-[  148.722961] write_node: UBIFS DBG jnl: jhead 2 (data), LEB
-1910:88832, len 1385
-[  148.723022] ubifs_wbuf_write_nolock: UBIFS DBG io: 1385 bytes (data
-node) to jhead 2 (data) wbuf at LEB 1910:88832
-[  148.723052] ubifs_wbuf_write_nolock: UBIFS DBG io: flush jhead 2
-(data) wbuf to LEB 1910:88064
-[  148.723724] ubifs_lpt_lookup_dirty: UBIFS DBG lp: LEB 1910, free
-38144, dirty 0, flags 16
-[  148.723754] ubifs_change_lp: UBIFS DBG lp: LEB 1910, free 36752,
-dirty 0, flags 16
-[  148.723785] ubifs_lpt_lookup_dirty: UBIFS DBG lp: LEB 1910, free
-38144, dirty 0, flags 16
-[  148.723815] new_wbuf_timer_nolock: UBIFS DBG io: set timer for
-jhead 2 (data), 3000-5000 millisecs
-[  148.723846] ubifs_tnc_add: UBIFS DBG tnc: 1910:88832, len 1385, key
-(23851, data, 368)
-[  148.723876] lookup_level0_dirty: UBIFS DBG tnc: search and dirty
-key (23851, data, 368)
-[  148.723876] lookup_level0_dirty: UBIFS DBG tnc: found 1, lvl 0, n 1
-[  148.723907] ubifs_lpt_lookup_dirty: UBIFS DBG lp: LEB 1469, free 0,
-dirty 11264, flags 16
-[  148.723937] ubifs_change_lp: UBIFS DBG lp: LEB 1469, free
--2147483647, dirty 12649, flags 16
-[  148.723968] ubifs_lpt_lookup_dirty: UBIFS DBG lp: LEB 1469, free 0,
-dirty 11264, flags 16
-[  148.723999] ubifs_writepage: UBIFS DBG gen: ino 23851, pg 369, pg flags 0xa6d
-[  148.724029] ubifs_jnl_write_data: UBIFS DBG jnl: ino 23851, blk
-369, len 4096, key (23851, data, 369)
-[  148.724243] write_node: UBIFS DBG jnl: jhead 2 (data), LEB
-1910:90224, len 1321
-[  148.724304] ubifs_wbuf_write_nolock: UBIFS DBG io: 1321 bytes (data
-node) to[  151.855712] UBIFS error (pid 82): ubifs_check_node: bad
-CRC: calculated 0xff173047, read 0x97202e55
- jhead 2 (data) [  151.865447] UBIFS error (pid 82): ubifs_check_node:
-bad node at LEB 911:1600
-wbuf at LEB 1910[  151.875427] [<c0010001>]
-(unwind_backtrace+0x1/0xb0) from [<c013e777>]
-(ubifs_check_node+0x1b7/0x1f8)
-:90224
-[  148.7[  151.885437] [<c013e777>] (ubifs_check_node+0x1b7/0x1f8)
-from [<c01439ad>] (ubifs_scan_a_node+0xc1/0x1b8)
-24334] ubifs_lpt[  151.896820] [<c01439ad>]
-(ubifs_scan_a_node+0xc1/0x1b8) from [<c0143d8d>]
-(ubifs_scan+0x55/0x20c)
-_lookup_dirty: U[  151.907592] [<c0143d8d>] (ubifs_scan+0x55/0x20c)
-from [<c0147197>] (ubifs_garbage_collect_leb+0x153/0x5ec)
-BIFS DBG lp: LEB[  151.919158] [<c0147197>]
-(ubifs_garbage_collect_leb+0x153/0x5ec) from [<c01477d3>]
-(ubifs_garbage_collect+0x1a3/0x3d0)
- 1910, free 3675[  151.931854] [<c01477d3>]
-(ubifs_garbage_collect+0x1a3/0x3d0) from [<c013517f>]
-(make_reservation+0xdb/0x384)
-2, dirty 0, flag[  151.943603] [<c013517f>]
-(make_reservation+0xdb/0x384) from [<c0135d27>]
-(ubifs_jnl_write_data+0x133/0x210)
-s 16
-[  148.724[  151.955291] [<c0135d27>]
-(ubifs_jnl_write_data+0x133/0x210) from [<c013793f>]
-(do_writepage+0x87/0x170)
-334] ubifs_chang[  151.966583] [<c013793f>] (do_writepage+0x87/0x170)
-from [<c0073d4b>] (__writepage+0xb/0x3a)
-e_lp: UBIFS DBG [  151.976806] [<c0073d4b>] (__writepage+0xb/0x3a)
-from [<c007423b>] (write_cache_pages+0x197/0x244)
-lp: LEB 1910, fr[  151.987548] [<c007423b>]
-(write_cache_pages+0x197/0x244) from [<c0074309>]
-(generic_writepages+0x21/0x38)
-ee 35424, dirty [  151.999053] [<c0074309>]
-(generic_writepages+0x21/0x38) from [<c00a5577>]
-(writeback_single_inode+0xbb/0x1d4)
-0, flags 16
-[  [  152.010894] [<c00a5577>] (writeback_single_inode+0xbb/0x1d4)
-from [<c00a584f>] (writeback_sb_inodes+0xdf/0x13c)
-148.724365] ubif[  152.022918] [<c00a584f>]
-(writeback_sb_inodes+0xdf/0x13c) from [<c00a59d3>]
-(wb_writeback+0xbb/0x160)
-s_lpt_lookup_dir[  152.034057] [<c00a59d3>] (wb_writeback+0xbb/0x160)
-from [<c00a5e19>] (wb_do_writeback+0x5f/0x13a)
-ty: UBIFS DBG lp[  152.044799] [<c00a5e19>]
-(wb_do_writeback+0x5f/0x13a) from [<c00a5f63>]
-(bdi_writeback_thread+0x6f/0x164)
-: LEB 1910, free[  152.056365] [<c00a5f63>]
-(bdi_writeback_thread+0x6f/0x164) from [<c003f5df>]
-(kthread+0x4b/0x58)
- 36752, dirty 0,[  152.066986] [<c003f5df>] (kthread+0x4b/0x58) from
-[<c000d329>] (kernel_thread_exit+0x1/0x6)
- flags 16
-[  14[  152.077178] UBIFS error (pid 82): ubifs_scan: bad node
-8.724395] new_wb[  152.083984] UBIFS error (pid 82):
-ubifs_scanned_corruption: corruption at LEB 911:1600
-uf_timer_nolock:[  152.093719] UBIFS error (pid 82):
-ubifs_scanned_corruption: first 8192 bytes from LEB 911:1600
- UBIFS DBG io: set timer for jhead 2 (data), 3000-5000 millisecs
-[  148.724426] ubifs_tnc_add: UBIFS DBG tnc: 1910:90224, len 1[
-152.114532] UBIFS error (pid 82): ubifs_scan: LEB 911 scanning failed
-321, key (23851,[  152.122314] UBIFS warning (pid 82): ubifs_ro_mode:
-switched to read-only mode, error -117
- data, 369)
-[  [  152.132354] [<c0010001>] (unwind_backtrace+0x1/0xb0) from
-[<c01479c1>] (ubifs_garbage_collect+0x391/0x3d0)
-148.724456] look[  152.143951] [<c01479c1>]
-(ubifs_garbage_collect+0x391/0x3d0) from [<c013517f>]
-(make_reservation+0xdb/0x384)
-up_level0_dirty:[  152.155670] [<c013517f>]
-(make_reservation+0xdb/0x384) from [<c0135d27>]
-(ubifs_jnl_write_data+0x133/0x210)
- UBIFS DBG tnc: [  152.167358] [<c0135d27>]
-(ubifs_jnl_write_data+0x133/0x210) from [<c013793f>]
-(do_writepage+0x87/0x170)
-search and dirty[  152.178680] [<c013793f>] (do_writepage+0x87/0x170)
-from [<c0073d4b>] (__writepage+0xb/0x3a)
- key (23851, dat[  152.188873] [<c0073d4b>] (__writepage+0xb/0x3a)
-from [<c007423b>] (write_cache_pages+0x197/0x244)
-a, 369)
-[  148.[  152.199645] [<c007423b>] (write_cache_pages+0x197/0x244)
-from [<c0074309>] (generic_writepages+0x21/0x38)
-724487] lookup_l[  152.211120] [<c0074309>]
-(generic_writepages+0x21/0x38) from [<c00a5577>]
-(writeback_single_inode+0xbb/0x1d4)
-evel0_dirty: UBI[  152.222991] [<c00a5577>]
-(writeback_single_inode+0xbb/0x1d4) from [<c00a584f>]
-(writeback_sb_inodes+0xdf/0x13c)
-FS DBG tnc: foun[  152.235015] [<c00a584f>]
-(writeback_sb_inodes+0xdf/0x13c) from [<c00a59d3>]
-(wb_writeback+0xbb/0x160)
-[  152.246124] [<c00a59d3>] (wb_writeback+0xbb/0x160) from
-[<c00a5e19>] (wb_do_writeback+0x5f/0x13a)
-
-[  148.724517] [  152.256896] [<c00a5e19>]
-(wb_do_writeback+0x5f/0x13a) from [<c00a5f63>]
-(bdi_writeback_thread+0x6f/0x164)
-ubifs_lpt_lookup[  152.268371] [<c00a5f63>]
-(bdi_writeback_thread+0x6f/0x164) from [<c003f5df>]
-(kthread+0x4b/0x58)
-_dirty: UBIFS DB[  152.279052] [<c003f5df>] (kthread+0x4b/0x58) from
-[<c000d329>] (kernel_thread_exit+0x1/0x6)
-G lp: LEB 1469, [  152.289337] UBIFS error (pid 82): make_reservation:
-cannot reserve 1640 bytes in jhead 2, error -117
-free 0, dirty 12[  152.300292] UBIFS error (pid 82): do_writepage:
-cannot write page 106 of inode 23851, error -117
-656, flags 16
-[  148.724548] ubifs_change_lp: UBIFS DBG lp: LEB 1469, free
--2147483647, dirty 13977, flags 16
-[  148.724578] ubifs_lpt_lookup_dirty: UBIFS DBG lp: LEB 1469, free 0,
-dirty 12656, flags 16
-[  148.724609] ubifs_writepage: UBIFS DBG gen: ino 23851, pg 371, pg flags 0xa6d
-[  148.724639] ubifs_jnl_write_data: UBIFS DBG jnl: ino 23851, blk
-371, len 4096, key (23851, data, 371)
-[  148.724853] write_node: UBIFS DBG jnl: jhead 2 (data), LEB
-1910:91552, len 1345
-[  148.724914] ubifs_wbuf_write_nolock: UBIFS DBG io: 1345 bytes (data
-node) to jhead 2 (data) wbuf at LEB 1910:91552
-[  148.724945] ubifs_wbuf_write_nolock: UBIFS DBG io: flush jhead 2
-(data) wbuf to LEB 1910:90112
-[  148.725616] ubifs_lpt_lookup_dirty: UBIFS DBG lp: LEB 1910, free
-35424, dirty 0, flags 16
-[  148.725646] ubifs_change_lp: UBIFS DBG lp: LEB 1910, free 34072,
-dirty 0, flags 16
-[  148.725677] ubifs_lpt_lookup_dirty: UBIFS DBG lp: LEB 1910, free
-35424, dirty 0, flags 16
-[  148.725708] new_wbuf_timer_nolock: UBIFS DBG io: set timer for
-jhead 2 (data), 3000-5000 millisecs
-[  148.725738] ubifs_tnc_add: UBIFS DBG tnc: 1910:91552, len 1345, key
-(23851, data, 371)
-[  148.725738] lookup_level0_dirty: UBIFS DBG tnc: search and dirty
-key (23851, data, 371)
-[  148.725769] lookup_level0_dirty: UBIFS DBG tnc: found 1, lvl 0, n 4
-[  148.725799] ubifs_lpt_lookup_dirty: UBIFS DBG lp: LEB 1469, free 0,
-dirty 13984, flags 16
-[  148.725830] ubifs_change_lp: UBIFS DBG lp: LEB 1469, free
--2147483647, dirty 15327, flags 16
-[  148.725860] ubifs_lpt_lookup_dirty: UBIFS DBG lp: LEB 1469, free 0,
-dirty 13984, flags 16
-[  148.725891] ubifs_writepage: UBIFS DBG gen: ino 23851, pg 372, pg flags 0xa6d
-[  148.725921] ubifs_jnl_write_data: UBIFS DBG jnl: ino 23851, blk
-372, len 4096, key (23851, data, 372)
-[  148.726135] write_node: UBIFS DBG jnl: jhead 2 (data), LEB
-1910:92904, len 1408
-[  148.726196] ubifs_wbuf_write_no[  152.478851] UBIFS error (pid 82):
-make_reservation: cannot reserve 160 bytes in jhead 1, error -30
-lock: UBIFS DBG [  152.489044] UBIFS error (pid 82):
-ubifs_write_inode: can't write inode 23851, error -30
-io: 1408 bytes (data node) to jh[  152.500457] UBIFS error (pid 82):
-make_reservation: cannot reserve 160 bytes in jhead 1, error -30
-ead 2 (data) wbu[  152.511169] UBIFS error (pid 82):
-ubifs_write_inode: can't write inode 7071, error -30
-f at LEB 1910:92904
-
---
-
-
-Colin Foe-Parker
-Software Engineer
-
-ACLIMA INC
-Direct 415 735 5062  |  Email colin.foeparker@aclimalabs.com
-10 Lombard St. Suite 210  |  San Francisco, CA 94111
-
-This email and any attachments may contain private, confidential and
-privileged material for the sole use of the intended recipient. If you
-are not the intended recipient, please immediately delete this email
-and any attachments.
+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
+--90e6ba3fd257b53d6404d619d7c5--
