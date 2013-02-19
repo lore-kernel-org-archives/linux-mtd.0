@@ -1,16 +1,14 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U7Nou-0004tU-5V
- for linux-mtd@lists.infradead.org; Mon, 18 Feb 2013 10:19:36 +0000
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtdchar: handle chips that have user otp but no factory otp
-Date: Mon, 18 Feb 2013 11:19:28 +0100
-Message-Id: <1361182768-31919-1-git-send-email-u.kleine-koenig@pengutronix.de>
+From: Philip Avinash <avinashphilip@ti.com>
+To: <khilman@ti.com>, <tony@atomide.com>, <linux@arm.linux.org.uk>,
+ <dwmw2@infradead.org>
+Subject: [PATCH v3 0/3] suspend/resume support for OMAP nand driver
+Date: Tue, 19 Feb 2013 18:20:16 +0530
+Message-ID: <1361278219-23108-1-git-send-email-avinashphilip@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: kernel@pengutronix.de
+Content-Type: text/plain
+Cc: afzal@ti.com, nsekhar@ti.com, linux-kernel@vger.kernel.org, hvaibhav@ti.com,
+ gururaja.hebbar@ti.com, linux-mtd@lists.infradead.org,
+ linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,74 +18,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Before this patch mtd_read_fact_prot_reg was used to check availability
-for both MTD_OTP_FACTORY and MTD_OTP_USER access. This made accessing
-user otp for chips that don't have a factory otp area impossible. So use
-the right wrapper depending on the intended area to be accessed.
+This patch series adds low power transition support for OMAP NAND driver.
+With recent driver conversion of GPMC to platform_driver, pm_runtime calls
+can be used to handle module enable & disable of GPMC. This is taken care
+patch #1.
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
-Hello,
+patch #2 is for GPMC suspend/resume support.
 
-I'm currently working on accessing the user otp area of MT29F2G nand
-flash that doesn't have a factory otp. Reading and writing are not ready
-yet, but this change is an obvious prerequisite.
+This includes low power transition support of
+- GPMC module
+- ELM module
 
-Best regards
-Uwe
+User initiated suspend/resume sequence tested on am335x-evm with NAND
+flash support. Also tested in omap3-evm for user initiated
+suspend/resume sequence with NAND flash.
+This patch series based on [1] and is present in [2].
 
- drivers/mtd/mtdchar.c |   30 +++++++++++++++++++-----------
- 1 file changed, 19 insertions(+), 11 deletions(-)
+1. ARM: OMAP2+: AM33XX: Add suspend-resume support
+   http://comments.gmane.org/gmane.linux.ports.arm.omap/91405
+2. https://github.com/avinashphilip/am335x_linux/commits/NAND_supend_resume_support
 
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index a6e7451..1f4034a 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -371,26 +371,34 @@ static int otp_select_filemode(struct mtd_file_info *mfi, int mode)
- 	struct mtd_info *mtd = mfi->mtd;
- 	size_t retlen;
- 	int ret = 0;
--
--	/*
--	 * Make a fake call to mtd_read_fact_prot_reg() to check if OTP
--	 * operations are supported.
--	 */
--	if (mtd_read_fact_prot_reg(mtd, -1, 0, &retlen, NULL) == -EOPNOTSUPP)
--		return -EOPNOTSUPP;
-+	int (*func)(struct mtd_info *, loff_t, size_t, size_t *, u_char *) =
-+		NULL;
-+	enum mtd_file_modes outmode = MTD_FILE_MODE_NORMAL;
- 
- 	switch (mode) {
- 	case MTD_OTP_FACTORY:
--		mfi->mode = MTD_FILE_MODE_OTP_FACTORY;
-+		outmode = MTD_FILE_MODE_OTP_FACTORY;
-+		func = mtd_read_fact_prot_reg;
- 		break;
- 	case MTD_OTP_USER:
--		mfi->mode = MTD_FILE_MODE_OTP_USER;
-+		outmode = MTD_FILE_MODE_OTP_USER;
-+		func = mtd_read_user_prot_reg;
- 		break;
--	default:
--		ret = -EINVAL;
- 	case MTD_OTP_OFF:
- 		break;
-+	default:
-+		ret = -EINVAL;
- 	}
-+
-+	/*
-+	 * Make a fake call to mtd_read_fact_prot_reg() or
-+	 * mtd_read_user_prot_reg() to check if OTP operations are supported.
-+	 */
-+	if (func && func(mtd, -1, 0, &retlen, NULL) == -EOPNOTSUPP)
-+		return -EOPNOTSUPP;
-+
-+	mfi->mode = outmode;
-+
- 	return ret;
- }
- #else
+Changes Since v2:
+- Remove calll back of nand_suspend from omap2 nand driver, as the same call already
+  done from suspend activity mtd class driver.
+
+Philip Avinash (3):
+  arm: gpmc: Converts GPMC driver to pm_runtime capable
+  arm: gpmc: Low power transition support
+  mtd: devices: elm: Low power transition support
+
+ arch/arm/mach-omap2/gpmc.c |   30 +++++++++++++++++++++---
+ drivers/mtd/devices/elm.c  |   54 ++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 81 insertions(+), 3 deletions(-)
+
 -- 
-1.7.10.4
+1.7.9.5
