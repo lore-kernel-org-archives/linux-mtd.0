@@ -1,21 +1,17 @@
-Received: from ia-in-x024a.1e100.net ([2607:f8b0:4001:c02::24a]
- helo=mail-ia0-x24a.google.com)
+Received: from xes-mad.com ([216.165.139.218])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U7tyh-0005Uy-VQ
- for linux-mtd@lists.infradead.org; Tue, 19 Feb 2013 20:39:53 +0000
-Received: by mail-ia0-f202.google.com with SMTP id p22so1351197iad.3
- for <linux-mtd@lists.infradead.org>; Tue, 19 Feb 2013 12:39:48 -0800 (PST)
+ id 1U7vas-0002KT-AI
+ for linux-mtd@lists.infradead.org; Tue, 19 Feb 2013 22:23:23 +0000
+Date: Tue, 19 Feb 2013 16:23:13 -0600 (CST)
+From: Aaron Sierra <asierra@xes-inc.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH] mtd: ofpart: support partitions of 4 GB and larger
+Message-ID: <3a708bb0-af78-4d31-b61f-8cff1612be8d@zimbra>
+In-Reply-To: <f0151b07-ba77-472d-8c7d-b35c2113e9a2@zimbra>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Message-ID: <90e6ba3fd257b53d7004d619d7c7@google.com>
-Date: Tue, 19 Feb 2013 20:39:48 +0000
-Subject: =?GB2312?B?R1BTIHRyYWNrZXIgd2l0aCAgbXVsdGkgZGlzY3JldGUgaW5wdXQgYW5kIG91dHB1dCAvQQ==?=
- =?GB2312?B?dHRuOiBwdXJjaGFzZSBtYW5hZ2Vy0+vE+rmyz+3By8/gsuGhow==?=
-From: "GPS tracker with multi discrete input and output /Attn: purchase
- manager" <188@exbusines.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: multipart/related; boundary=90e6ba3fd257b53d6404d619d7c5
-Reply-To: "GPS tracker with multi discrete input and output /Attn: purchase
- manager" <188@exbusines.com>
+Cc: linux-mtd@lists.infradead.org, Joe Schaack <jschaack@xes-inc.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,298 +21,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---90e6ba3fd257b53d6404d619d7c5
-Content-Type: multipart/alternative; boundary=90e6ba3fd257b53d2604d619d7c4
+Author: Joe Schaack <jschaack@xes-inc.com>
 
---90e6ba3fd257b53d2604d619d7c4
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed; delsp=yes
+Previously, partitions were limited to less than 4 GB in size because
+the address and size were read as 32-bit values. Add support for 64-bit
+values to support devices of 4 GB and larger.
 
-Tips:  GPS tracker with  multi discrete input and output /Attn: purchase  
-manager
+Signed-off-by: Joe Schaack <jschaack@xes-inc.com>
+Signed-off-by: Nate Case <ncase@xes-inc.com>
+Signed-off-by: Aaron Sierra <asierra@xes-inc.com>
+---
+ drivers/mtd/ofpart.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-Dear Sir
-
-        This is Anna,the sales manager of Redview GPS in China.
-        VT310 is a GPS tracker with 5 discrete inputs ,5 discrete outputs  
-and 2 analog ports . With VT310,you can get vehicle windows status, door  
-status, engine status, temperature and tank fuel level ,etc. This is widely  
-used in truck tracking application.
-
-        I would appreciate if you forward this letter to Technical Manager  
-or to other expert responsible for technical integration of new products in  
-your company, or provide me with his contact for we could discuss all the  
-details of our future cooperation.
-
-        Your early reply is highly appreciated.
-
-Best Regards
-
-Anna
-
-https://picasaweb.google.com/lh/sredir?uname=112929289252248580218&target=ALBUM&id=5846766329567613953&authkey=Gv1sRgCL6Hjayf8vWCFg&invite=CNqi5KcJ&feat=email
-
---90e6ba3fd257b53d2604d619d7c4
-Content-Type: text/html; charset=GB2312
-Content-Transfer-Encoding: quoted-printable
-
-<body style=3D"font-family: Arial, Helvetica, sans-serif; background-color:=
-white">
-<table border=3D0 cellpadding=3D0 cellspacing=3D0 width=3D"600px">
-<tr>
-<td bgcolor=3D"#E1ECFF" width=3D"10px"></td>
-<td width=3D"*" style=3D"border: 1px solid #ccc; padding: .6em .8em;">
-<div style=3D"padding-bottom: .6em; font-weight: bold; font-size: 12pt; col=
-or: #333;">=D1=FB=C7=EB=C4=FA=B9=DB=BF=B4 GPS tracker with multi discrete i=
-nput and output /Attn: purchase manager =B5=C4=CF=E0=B2=E1=A3=BA <a href=3D=
-'https://picasaweb.google.com/lh/sredir?uname=3D112929289252248580218&targe=
-t=3DALBUM&id=3D5846766329567613953&authkey=3DGv1sRgCL6Hjayf8vWCFg&invite=3D=
-CNqi5KcJ&feat=3Demail'>VT310</a></div>
-<div style=3D"background-color: #F5F5F5; border: 1px solid #CCC; padding: 0=
-.8em;">
-<table cellspacing=3D0 cellpadding=3D0>
-<tr>
-<td valign=3D"top">
-<div style=3D"border: 1px solid #ccc; padding: 7px; background-color: #FFF;=
-">
-<a href=3D"https://picasaweb.google.com/lh/sredir?uname=3D11292928925224858=
-0218&target=3DALBUM&id=3D5846766329567613953&authkey=3DGv1sRgCL6Hjayf8vWCFg=
-&invite=3DCNqi5KcJ&feat=3Demail"><img src=3D"cid:5846766329567613953" style=
-=3D"border: 1px solid #7f7f7f;"></a>
-</div>
-</td>
-<td valign=3D"top" style=3D"padding-left: 0.7em; color: #666;">
-<div style=3D"font-size: 11pt; font-weight: bold; color: #333; padding-bott=
-om: 0.1em">VT310</div>
-<div style=3D"display: inline; font-weight: normal; font-size: 10pt; paddin=
-g-bottom: 0.2em">2013=C4=EA2=D4=C219=C8=D5<br>
-=CC=E1=B9=A9=D5=DF=A3=BA<b>GPS tracker with multi discrete input and output=
- /Attn: purchase manager</b>
-</div>
-<div style=3D"border-bottom: 1px dotted #B3B3B3; margin: 0.5em 0 0.3em; pad=
-ding: 0"></div>
-<div style=3D"line-height: 1.3em;">
-<a href=3D"https://picasaweb.google.com/lh/sredir?uname=3D11292928925224858=
-0218&target=3DALBUM&id=3D5846766329567613953&authkey=3DGv1sRgCL6Hjayf8vWCFg=
-&invite=3DCNqi5KcJ&feat=3Demail" style=3D"font-size: 10pt;font-weight: bold=
-;">=B2=E9=BF=B4=CF=E0=B2=E1</a>
-<br/>
-<a href=3D"https://picasaweb.google.com/lh/sredir?uname=3D11292928925224858=
-0218&target=3DALBUM&id=3D5846766329567613953&authkey=3DGv1sRgCL6Hjayf8vWCFg=
-&invite=3DCNqi5KcJ&feat=3Demail&mode=3DSLIDESHOW" style=3D"font-size: 10pt;=
-">=B2=A5=B7=C5=BB=C3=B5=C6=C6=AC</a>
-<br/>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<div style=3D"margin: 1em 1em;">
-<div style=3D"font-weight: bold; font-size: 10pt; color: #00681C;">=C0=B4=
-=D7=D4 GPS tracker with multi discrete input and output /Attn: purchase man=
-ager =B5=C4=CF=FB=CF=A2=A3=BA</div>
-<div style=3D"font-weight: normal; font-size: 9pt; color: #333; margin-top:=
- 0.2em;">Tips: GPS tracker with multi discrete input and output /Attn: purc=
-hase manager<BR><BR>Dear Sir <BR> <BR> This is Anna,the sales manager of Re=
-dview GPS in China. <BR> VT310 is a GPS tracker with 5 discrete inputs ,5 d=
-iscrete outputs and 2 analog ports . With VT310,you can get vehicle windows=
- status, door status, engine status, temperature and tank fuel level ,etc. =
-This is widely used in truck tracking application. <BR><BR> I would appreci=
-ate if you forward this letter to Technical Manager or to other expert resp=
-onsible for technical integration of new products in your company, or provi=
-de me with his contact for we could discuss all the details of our future c=
-ooperation.<BR><BR> Your early reply is highly appreciated.<BR><BR>Best Reg=
-ards<BR><BR>Anna</div>
-</div>
-<div style=3D"font-weight: normal; font-size: 8pt; color: #666; margin-top:=
- 1em;">
-=C8=E7=B9=FB=C4=FA=D4=DA=D4=C4=B6=C1=B4=CB=B5=E7=D7=D3=D3=CA=BC=FE=CA=B1=B3=
-=F6=CF=D6=CE=CA=CC=E2=A3=AC=C7=EB=BD=AB=D2=D4=CF=C2=B5=D8=D6=B7=B8=B4=D6=C6=
-=B2=A2=D5=B3=CC=F9=B5=BD=C4=FA=B5=C4=E4=AF=C0=C0=C6=F7=D6=D0=A3=BA<br>
-<a href=3D"https://picasaweb.google.com/lh/sredir?uname=3D11292928925224858=
-0218&target=3DALBUM&id=3D5846766329567613953&authkey=3DGv1sRgCL6Hjayf8vWCFg=
-&invite=3DCNqi5KcJ&feat=3Demail">https://picasaweb.google.com/lh/sredir?una=
-me=3D112929289252248580218&target=3DALBUM&id=3D5846766329567613953&authkey=
-=3DGv1sRgCL6Hjayf8vWCFg&invite=3DCNqi5KcJ&feat=3Demail</a>
-</div>
-<div style=3D"font-weight: normal; font-size: 8pt; color: #666; margin-top:=
- 0.6em;">=D2=AA=B7=D6=CF=ED=C4=FA=B5=C4=D5=D5=C6=AC=BB=F2=D4=DA=C5=F3=D3=D1=
-=D3=EB=C4=FA=B7=D6=CF=ED=D5=D5=C6=AC=CA=B1=CA=D5=B5=BD=CD=A8=D6=AA=A3=AC=C7=
-=EB<a href=3D"https://picasaweb.google.com">=BB=F1=C8=A1=CA=F4=D3=DA=C4=FA=
-=D7=D4=BC=BA=B5=C4=C3=E2=B7=D1 Picasa =CD=F8=C2=E7=CF=E0=B2=E1=D5=CA=BB=A7<=
-/a>=A1=A3</div>
-<div style=3D"text-align: right; padding: 6px;">
-<a href=3D"https://picasaweb.google.com">
-<img src=3D"cid:picasaweblogo-zh_CN.gif" border=3D"0" />
-</a>
-</div>
-</td>
-<td bgcolor=3D"#E1ECFF" width=3D"10px"></td>
-</tr>
-</table>
-</body>
-
---90e6ba3fd257b53d2604d619d7c4--
-
---90e6ba3fd257b53d6404d619d7c5
-Content-Type: image/gif; name="picasaweblogo-zh_CN.gif"
-Content-Disposition: attachment; filename="picasaweblogo-zh_CN.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <picasaweblogo-zh_CN.gif>
-
-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
---90e6ba3fd257b53d6404d619d7c5
-Content-Type: image/jpeg; name="email.jpg"
-Content-Disposition: attachment; filename="email.jpg"
-Content-Transfer-Encoding: base64
-Content-ID: <5846766329567613953>
-
-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
---90e6ba3fd257b53d6404d619d7c5--
+diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
+index 30bd907..553d6d6 100644
+--- a/drivers/mtd/ofpart.c
++++ b/drivers/mtd/ofpart.c
+@@ -55,6 +55,7 @@ static int parse_ofpart_partitions(struct mtd_info *master,
+ 	while ((pp = of_get_next_child(node, pp))) {
+ 		const __be32 *reg;
+ 		int len;
++		int a_cells, s_cells;
+ 
+ 		reg = of_get_property(pp, "reg", &len);
+ 		if (!reg) {
+@@ -62,8 +63,10 @@ static int parse_ofpart_partitions(struct mtd_info *master,
+ 			continue;
+ 		}
+ 
+-		(*pparts)[i].offset = be32_to_cpu(reg[0]);
+-		(*pparts)[i].size = be32_to_cpu(reg[1]);
++		a_cells = of_n_addr_cells(pp);
++		s_cells = of_n_size_cells(pp);
++		(*pparts)[i].offset = of_read_number(reg, a_cells);
++		(*pparts)[i].size = of_read_number(reg + a_cells, s_cells);
+ 
+ 		partname = of_get_property(pp, "label", &len);
+ 		if (!partname)
+-- 
+1.7.9.5
