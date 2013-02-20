@@ -1,13 +1,14 @@
 Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U8CjP-0000YK-D5
- for linux-mtd@lists.infradead.org; Wed, 20 Feb 2013 16:41:20 +0000
+ id 1U8Cjf-0000cu-Un
+ for linux-mtd@lists.infradead.org; Wed, 20 Feb 2013 16:41:36 +0000
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 To: linux-mtd@lists.infradead.org,
 	Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH mtd-utils] flash_otp_write: fix format string warning
-Date: Wed, 20 Feb 2013 17:41:09 +0100
-Message-Id: <1361378469-18631-1-git-send-email-u.kleine-koenig@pengutronix.de>
+Subject: [PATCH mtd-utils] Makefile: also build and install flash_otp_lock and
+ flash_otp_write
+Date: Wed, 20 Feb 2013 17:41:31 +0100
+Message-Id: <1361378491-18687-1-git-send-email-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -21,27 +22,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This fixes
-	flash_otp_write.c: In function 'main':
-	flash_otp_write.c:61:2: warning: format '%lx' expects argument of type 'long unsigned int', but argument 3 has type 'off_t' [-Wformat]
-
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- flash_otp_write.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .gitignore |    2 ++
+ Makefile   |    3 ++-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/flash_otp_write.c b/flash_otp_write.c
-index d407ebb..41cf1c5 100644
---- a/flash_otp_write.c
-+++ b/flash_otp_write.c
-@@ -58,7 +58,7 @@ int main(int argc,char *argv[])
- 		return errno;
- 	}
- 
--	printf("Writing OTP user data on %s at offset 0x%lx\n", argv[2], offset);
-+	printf("Writing OTP user data on %s at offset 0x%lx\n", argv[2], (unsigned long)offset);
- 
- 	if (mtdInfo.type == MTD_NANDFLASH)
- 		len = mtdInfo.writesize;
+diff --git a/.gitignore b/.gitignore
+index d4771fb..83ca938 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -25,6 +25,8 @@
+ /flash_lock
+ /flash_otp_dump
+ /flash_otp_info
++/flash_otp_lock
++/flash_otp_write
+ /flash_unlock
+ /flashcp
+ /ftl_check
+diff --git a/Makefile b/Makefile
+index 190db58..3f9c24f 100644
+--- a/Makefile
++++ b/Makefile
+@@ -19,7 +19,8 @@ TESTS = tests
+ MTD_BINS = \
+ 	ftl_format flash_erase nanddump doc_loadbios \
+ 	ftl_check mkfs.jffs2 flash_lock flash_unlock \
+-	flash_otp_info flash_otp_dump mtd_debug flashcp nandwrite nandtest \
++	flash_otp_info flash_otp_dump flash_otp_lock flash_otp_write \
++	mtd_debug flashcp nandwrite nandtest \
+ 	jffs2dump \
+ 	nftldump nftl_format docfdisk \
+ 	rfddump rfdformat \
 -- 
 1.7.10.4
