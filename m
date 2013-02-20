@@ -1,19 +1,20 @@
-Received: from mail-ve0-f172.google.com ([209.85.128.172])
+Received: from ch1ehsobe001.messaging.microsoft.com ([216.32.181.181]
+ helo=ch1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U7xWV-0003V6-0N
- for linux-mtd@lists.infradead.org; Wed, 20 Feb 2013 00:27:00 +0000
-Received: by mail-ve0-f172.google.com with SMTP id cz11so6437897veb.17
- for <linux-mtd@lists.infradead.org>; Tue, 19 Feb 2013 16:26:55 -0800 (PST)
+ id 1U7z0T-0006ET-50
+ for linux-mtd@lists.infradead.org; Wed, 20 Feb 2013 02:02:03 +0000
+Message-ID: <51242E9A.3080901@freescale.com>
+Date: Wed, 20 Feb 2013 10:02:02 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <2131687.FmJCQHlDMX@ws-stein>
-References: <2131687.FmJCQHlDMX@ws-stein>
-Date: Tue, 19 Feb 2013 16:26:54 -0800
-Message-ID: <CAN8TOE-eWhvVF_c48548HeA9OZ4D5Mp0xSLJBz9RsdTYwPRqOg@mail.gmail.com>
-Subject: Re: mtdoops: helper application for readout?
-From: Brian Norris <computersforpeace@gmail.com>
-To: Alexander Stein <alexander.stein@systec-electronic.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org, Richard Purdie <rpurdie@linux.intel.com>
+To: Aaron Sierra <asierra@xes-inc.com>
+Subject: Re: [PATCH] mtd: ofpart: support partitions of 4 GB and larger
+References: <3a708bb0-af78-4d31-b61f-8cff1612be8d@zimbra>
+In-Reply-To: <3a708bb0-af78-4d31-b61f-8cff1612be8d@zimbra>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, Joe Schaack <jschaack@xes-inc.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,27 +24,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Feb 14, 2013 at 3:40 AM, Alexander Stein
-<alexander.stein@systec-electronic.com> wrote:
-> is there already some helper application which can shows the stored oops/panics with mtdoops?
+=E4=BA=8E 2013=E5=B9=B402=E6=9C=8820=E6=97=A5 06:23, Aaron Sierra =E5=86=99=
+=E9=81=93:
+> Author: Joe Schaack<jschaack@xes-inc.com>
+>
+> Previously, partitions were limited to less than 4 GB in size because
+> the address and size were read as 32-bit values. Add support for 64-bit
+> values to support devices of 4 GB and larger.
+>
+> Signed-off-by: Joe Schaack<jschaack@xes-inc.com>
+> Signed-off-by: Nate Case<ncase@xes-inc.com>
+> Signed-off-by: Aaron Sierra<asierra@xes-inc.com>
+> ---
+>   drivers/mtd/ofpart.c |    7 +++++--
+>   1 file changed, 5 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
+> index 30bd907..553d6d6 100644
+> --- a/drivers/mtd/ofpart.c
+> +++ b/drivers/mtd/ofpart.c
+> @@ -55,6 +55,7 @@ static int parse_ofpart_partitions(struct mtd_info *m=
+aster,
+>   	while ((pp =3D of_get_next_child(node, pp))) {
+>   		const __be32 *reg;
+>   		int len;
+> +		int a_cells, s_cells;
+>
+>   		reg =3D of_get_property(pp, "reg",&len);
+>   		if (!reg) {
+> @@ -62,8 +63,10 @@ static int parse_ofpart_partitions(struct mtd_info *=
+master,
+>   			continue;
+>   		}
+>
+> -		(*pparts)[i].offset =3D be32_to_cpu(reg[0]);
+> -		(*pparts)[i].size =3D be32_to_cpu(reg[1]);
+> +		a_cells =3D of_n_addr_cells(pp);
+> +		s_cells =3D of_n_size_cells(pp);
+> +		(*pparts)[i].offset =3D of_read_number(reg, a_cells);
+> +		(*pparts)[i].size =3D of_read_number(reg + a_cells, s_cells);
+>
+>   		partname =3D of_get_property(pp, "label",&len);
+>   		if (!partname)
+I think it's better to update the=20
+Documentation/devicetree/bindings/mtd/partition.txt too. for example,=20
+add a example for the
+partition larger then 4G.
 
-After a bit of googling, it looks like there are scattered URL
-references to a no-longer-available "oopslog.c", written by the author
-of mtdoops, Richard Purdie. I CC'd him at his last-known address from
-the git logs, but he doesn't seem to have touched this in a while.
-
-AFAIK, the output from mtdoops is just plain text data (not
-compressed), so you can just dump it straight from the /dev/mtdX
-(where X is the MTD number) with something like 'cat /dev/mtdX'. Of
-course, that will not account for when the ring buffer wraps around
-nor if there are bad blocks.
-
-Brian
-
-P.S. With a little more digging, I found a source tarball in the Maemo
-archives that contains oopslog.c. It's a very simple program, and I
-haven't tested it. Use at your own risk:
-
-http://maemo.org/packages/view/sp-oops-extract/
-
-http://repository.maemo.org/pool/maemo5.0/free/s/sp-oops-extract/sp-oops-extract_0.0.7-1.tar.gz
+thanks
+Huang Shijie
