@@ -1,16 +1,15 @@
-Received: from mail-ee0-f43.google.com ([74.125.83.43])
+Received: from mail-ea0-f182.google.com ([209.85.215.182])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U83E9-00081N-Eb
- for linux-mtd@lists.infradead.org; Wed, 20 Feb 2013 06:32:26 +0000
-Received: by mail-ee0-f43.google.com with SMTP id c50so4042458eek.16
- for <linux-mtd@lists.infradead.org>; Tue, 19 Feb 2013 22:32:23 -0800 (PST)
+ id 1U83EC-00081y-8W
+ for linux-mtd@lists.infradead.org; Wed, 20 Feb 2013 06:32:29 +0000
+Received: by mail-ea0-f182.google.com with SMTP id a12so3096292eaa.27
+ for <linux-mtd@lists.infradead.org>; Tue, 19 Feb 2013 22:32:26 -0800 (PST)
 From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
  David Woodhouse <David.Woodhouse@intel.com>
-Subject: [PATCH 2/3] mtd: bcm47xxsflash: keep a reference to the BCMA
- ChipCommon
-Date: Wed, 20 Feb 2013 07:32:08 +0100
-Message-Id: <1361341929-11153-2-git-send-email-zajec5@gmail.com>
+Subject: [PATCH 3/3] mtd: bcm47xxsflash: define opcodes
+Date: Wed, 20 Feb 2013 07:32:09 +0100
+Message-Id: <1361341929-11153-3-git-send-email-zajec5@gmail.com>
 In-Reply-To: <1361341929-11153-1-git-send-email-zajec5@gmail.com>
 References: <1361341929-11153-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
@@ -27,50 +26,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-To implement erase and write support we need to "talk" with ChipCommon
-BCMA core which serial flash it attached to.
+We need them to add erase/write support. This may duplicate some defines
+with bcma and/or ssb code, but it makes more sense to keep that in
+bcm47xxsflash which is supposed to work with both buses.
+Duplicated defines will be removed from ssb/bcma.
 
 Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
 ---
- drivers/mtd/devices/bcm47xxsflash.c |    2 ++
- drivers/mtd/devices/bcm47xxsflash.h |    6 ++++++
- 2 files changed, 8 insertions(+)
+ drivers/mtd/devices/bcm47xxsflash.h |   48 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
 
-diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
-index 155a7ea..e04e2c5 100644
---- a/drivers/mtd/devices/bcm47xxsflash.c
-+++ b/drivers/mtd/devices/bcm47xxsflash.c
-@@ -70,6 +70,8 @@ static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
- 		break;
- 	}
- 
-+	b47s->bcma_cc = container_of(sflash, struct bcma_drv_cc, sflash);
-+
- 	b47s->window = sflash->window;
- 	b47s->blocksize = sflash->blocksize;
- 	b47s->numblocks = sflash->numblocks;
 diff --git a/drivers/mtd/devices/bcm47xxsflash.h b/drivers/mtd/devices/bcm47xxsflash.h
-index 7d5654b..1574ea8 100644
+index 1574ea8..3faffcc 100644
 --- a/drivers/mtd/devices/bcm47xxsflash.h
 +++ b/drivers/mtd/devices/bcm47xxsflash.h
-@@ -3,12 +3,18 @@
+@@ -3,6 +3,54 @@
  
  #include <linux/mtd/mtd.h>
  
-+struct bcma_drv_cc;
++/* Used for ST flashes only. */
++#define OPCODE_ST_WREN		0x0006		/* Write Enable */
++#define OPCODE_ST_WRDIS		0x0004		/* Write Disable */
++#define OPCODE_ST_RDSR		0x0105		/* Read Status Register */
++#define OPCODE_ST_WRSR		0x0101		/* Write Status Register */
++#define OPCODE_ST_READ		0x0303		/* Read Data Bytes */
++#define OPCODE_ST_PP		0x0302		/* Page Program */
++#define OPCODE_ST_SE		0x02d8		/* Sector Erase */
++#define OPCODE_ST_BE		0x00c7		/* Bulk Erase */
++#define OPCODE_ST_DP		0x00b9		/* Deep Power-down */
++#define OPCODE_ST_RES		0x03ab		/* Read Electronic Signature */
++#define OPCODE_ST_CSA		0x1000		/* Keep chip select asserted */
++#define OPCODE_ST_SSE		0x0220		/* Sub-sector Erase */
 +
++/* Used for Atmel flashes only. */
++#define OPCODE_AT_READ				0x07e8
++#define OPCODE_AT_PAGE_READ			0x07d2
++#define OPCODE_AT_STATUS			0x01d7
++#define OPCODE_AT_BUF1_WRITE			0x0384
++#define OPCODE_AT_BUF2_WRITE			0x0387
++#define OPCODE_AT_BUF1_ERASE_PROGRAM		0x0283
++#define OPCODE_AT_BUF2_ERASE_PROGRAM		0x0286
++#define OPCODE_AT_BUF1_PROGRAM			0x0288
++#define OPCODE_AT_BUF2_PROGRAM			0x0289
++#define OPCODE_AT_PAGE_ERASE			0x0281
++#define OPCODE_AT_BLOCK_ERASE			0x0250
++#define OPCODE_AT_BUF1_WRITE_ERASE_PROGRAM	0x0382
++#define OPCODE_AT_BUF2_WRITE_ERASE_PROGRAM	0x0385
++#define OPCODE_AT_BUF1_LOAD			0x0253
++#define OPCODE_AT_BUF2_LOAD			0x0255
++#define OPCODE_AT_BUF1_COMPARE			0x0260
++#define OPCODE_AT_BUF2_COMPARE			0x0261
++#define OPCODE_AT_BUF1_REPROGRAM		0x0258
++#define OPCODE_AT_BUF2_REPROGRAM		0x0259
++
++/* Status register bits for ST flashes */
++#define SR_ST_WIP		0x01		/* Write In Progress */
++#define SR_ST_WEL		0x02		/* Write Enable Latch */
++#define SR_ST_BP_MASK		0x1c		/* Block Protect */
++#define SR_ST_BP_SHIFT		2
++#define SR_ST_SRWD		0x80		/* Status Register Write Disable */
++
++/* Status register bits for Atmel flashes */
++#define SR_AT_READY		0x80
++#define SR_AT_MISMATCH		0x40
++#define SR_AT_ID_MASK		0x38
++#define SR_AT_ID_SHIFT		3
++
+ struct bcma_drv_cc;
+ 
  enum bcm47xxsflash_type {
- 	BCM47XXSFLASH_TYPE_ATMEL,
- 	BCM47XXSFLASH_TYPE_ST,
- };
- 
- struct bcm47xxsflash {
-+	union {
-+		struct bcma_drv_cc *bcma_cc;
-+	};
-+
- 	enum bcm47xxsflash_type type;
- 
- 	u32 window;
 -- 
 1.7.10.4
