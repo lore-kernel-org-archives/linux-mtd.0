@@ -1,20 +1,20 @@
-Received: from dan.rpsys.net ([93.97.175.187])
+Received: from mail-ea0-f179.google.com ([209.85.215.179])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U82Bc-0006Jx-SG
- for linux-mtd@lists.infradead.org; Wed, 20 Feb 2013 05:25:46 +0000
-Message-ID: <1361337905.13247.3.camel@ted>
-Subject: Re: mtdoops: helper application for readout?
-From: Richard Purdie <richard.purdie@linuxfoundation.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Tue, 19 Feb 2013 21:25:05 -0800
-In-Reply-To: <CAN8TOE-eWhvVF_c48548HeA9OZ4D5Mp0xSLJBz9RsdTYwPRqOg@mail.gmail.com>
-References: <2131687.FmJCQHlDMX@ws-stein>
- <CAN8TOE-eWhvVF_c48548HeA9OZ4D5Mp0xSLJBz9RsdTYwPRqOg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Richard Purdie <rpurdie@linux.intel.com>,
- Alexander Stein <alexander.stein@systec-electronic.com>
+ id 1U83E7-00081L-Bm
+ for linux-mtd@lists.infradead.org; Wed, 20 Feb 2013 06:32:24 +0000
+Received: by mail-ea0-f179.google.com with SMTP id d12so3073961eaa.38
+ for <linux-mtd@lists.infradead.org>; Tue, 19 Feb 2013 22:32:18 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
+ David Woodhouse <David.Woodhouse@intel.com>
+Subject: [PATCH 1/3] mtd: bcm47xxsflash: store info about flash type
+Date: Wed, 20 Feb 2013 07:32:07 +0100
+Message-Id: <1361341929-11153-1-git-send-email-zajec5@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Hauke Mehrtens <hauke@hauke-m.de>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,35 +24,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2013-02-19 at 16:26 -0800, Brian Norris wrote:
-> On Thu, Feb 14, 2013 at 3:40 AM, Alexander Stein
-> <alexander.stein@systec-electronic.com> wrote:
-> > is there already some helper application which can shows the stored oops/panics with mtdoops?
-> 
-> After a bit of googling, it looks like there are scattered URL
-> references to a no-longer-available "oopslog.c", written by the author
-> of mtdoops, Richard Purdie. I CC'd him at his last-known address from
-> the git logs, but he doesn't seem to have touched this in a while.
-> 
-> AFAIK, the output from mtdoops is just plain text data (not
-> compressed), so you can just dump it straight from the /dev/mtdX
-> (where X is the MTD number) with something like 'cat /dev/mtdX'. Of
-> course, that will not account for when the ring buffer wraps around
-> nor if there are bad blocks.
-> 
-> Brian
-> 
-> P.S. With a little more digging, I found a source tarball in the Maemo
-> archives that contains oopslog.c. It's a very simple program, and I
-> haven't tested it. Use at your own risk:
-> 
-> http://maemo.org/packages/view/sp-oops-extract/
-> 
-> http://repository.maemo.org/pool/maemo5.0/free/s/sp-oops-extract/sp-oops-extract_0.0.7-1.tar.gz
+It's going to be needed for erase and write operations, they differ
+between Atmel and ST flashes.
 
-You've found the code that works with that setup, I haven't touched it
-in a long time...
+Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+---
+ drivers/mtd/devices/bcm47xxsflash.c |    9 +++++++++
+ drivers/mtd/devices/bcm47xxsflash.h |    7 +++++++
+ 2 files changed, 16 insertions(+)
 
-Cheers,
-
-Richard
+diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
+index 9526628..155a7ea 100644
+--- a/drivers/mtd/devices/bcm47xxsflash.c
++++ b/drivers/mtd/devices/bcm47xxsflash.c
+@@ -61,6 +61,15 @@ static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
+ 	}
+ 	sflash->priv = b47s;
+ 
++	switch (b47s->bcma_cc->capabilities & BCMA_CC_CAP_FLASHT) {
++	case BCMA_CC_FLASHT_STSER:
++		b47s->type = BCM47XXSFLASH_TYPE_ST;
++		break;
++	case BCMA_CC_FLASHT_ATSER:
++		b47s->type = BCM47XXSFLASH_TYPE_ATMEL;
++		break;
++	}
++
+ 	b47s->window = sflash->window;
+ 	b47s->blocksize = sflash->blocksize;
+ 	b47s->numblocks = sflash->numblocks;
+diff --git a/drivers/mtd/devices/bcm47xxsflash.h b/drivers/mtd/devices/bcm47xxsflash.h
+index ebf6f71..7d5654b 100644
+--- a/drivers/mtd/devices/bcm47xxsflash.h
++++ b/drivers/mtd/devices/bcm47xxsflash.h
+@@ -3,7 +3,14 @@
+ 
+ #include <linux/mtd/mtd.h>
+ 
++enum bcm47xxsflash_type {
++	BCM47XXSFLASH_TYPE_ATMEL,
++	BCM47XXSFLASH_TYPE_ST,
++};
++
+ struct bcm47xxsflash {
++	enum bcm47xxsflash_type type;
++
+ 	u32 window;
+ 	u32 blocksize;
+ 	u16 numblocks;
+-- 
+1.7.10.4
