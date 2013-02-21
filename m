@@ -1,21 +1,20 @@
 Received: from co202.xi-lite.net ([149.6.83.202])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1U8SkY-0003Va-Bt
- for linux-mtd@lists.infradead.org; Thu, 21 Feb 2013 09:47:35 +0000
-Message-ID: <5125ED30.3020305@parrot.com>
-Date: Thu, 21 Feb 2013 10:47:28 +0100
+ id 1U8SnB-0003tq-Jc
+ for linux-mtd@lists.infradead.org; Thu, 21 Feb 2013 09:50:18 +0000
+Message-ID: <5125EDD7.40202@parrot.com>
+Date: Thu, 21 Feb 2013 10:50:15 +0100
 From: Matthieu CASTET <matthieu.castet@parrot.com>
 MIME-Version: 1.0
-To: =?UTF-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= <u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH RFC] mtd/nand: implement user otp for Micron chips
-References: <1361394332-19415-1-git-send-email-u.kleine-koenig@pengutronix.de>
-In-Reply-To: <1361394332-19415-1-git-send-email-u.kleine-koenig@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+To: "katsuki.uwatoko@toshiba.co.jp" <katsuki.uwatoko@toshiba.co.jp>
+Subject: Re: [PATCH v2] mtd: nand: support BENAND (Built-in ECC NAND)
+References: <F3B6523425E7914AA6214ED358D820AF2674E3EA@TGXML341.toshiba.local>
+In-Reply-To: <F3B6523425E7914AA6214ED358D820AF2674E3EA@TGXML341.toshiba.local>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 8bit
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- David Woodhouse <dwmw2@infradead.org>,
- "kernel@pengutronix.de" <kernel@pengutronix.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: "vikram186@gmail.com" <vikram186@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,36 +24,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Uwe Kleine-König a écrit :
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> ---
-> Hello,
+katsuki.uwatoko@toshiba.co.jp a �crit :
+> This enables support for BENAND, which is an SLC NAND flash solution
+> with embedded error correction code (ECC), currently supports only
+> 128bytes OOB type.
 > 
-> there are some things to clean up before this patch can be applied. See
-> the respective comments in the code, most of them are marked with XXX,
-> but I'm sure you'll find things to criticize that I didn't mark :-)
+> In the read sequence, "status read command" is executed to check the
+> ECC status after read data. If bitflips occur, these are
+> automatically corrected by BENAND and the status indicates the result.
 > 
-> About the unsuitablity of nand_do_read_ops and nand_do_write_ops I'd like to
-> hear your thoughts. Would you prefer a new function that does only the
-> necessary stuff, or should I add another parameter to make them do the
-> right thing for me?
+> The write sequence is the same as raw write and the ECC data are
+> automatically written to OOB by BENAND.
 > 
-> BTW, to make use of this patch you'd need
-> 	http://patchwork.ozlabs.org/patch/221191/
-> 
-> Best regards
-> Uwe
-> 
->  drivers/mtd/nand/nand_base.c |  126 ++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 126 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 3766682..10e51f3 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -2753,6 +2753,116 @@ static int nand_onfi_get_features(struct mtd_info *mtd, struct nand_chip *chip,
->  	return 0;
-Shouldn't vendor specific code go in another file ?
+> Signed-off-by: UWATOKO Katsuki <katsuki.uwatoko@toshiba.co.jp>
+
+> +       case NAND_ECC_BENAND:
+> +               if (!IS_ENABLED(CONFIG_MTD_NAND_BENAND)) {
+> +                       pr_warn("CONFIG_MTD_BENAND not enabled\n");
+> +                       BUG();
+> +               }
+> +
+> +               chip->ecc.read_page = nand_read_page_benand;
+> +               chip->ecc.write_page = nand_write_page_raw;
+> +               chip->ecc.read_page_raw = nand_read_page_raw;
+> +               chip->ecc.write_page_raw = nand_write_page_raw;
+> +               chip->ecc.read_oob = nand_read_oob_std;
+> +               chip->ecc.write_oob = nand_write_oob_std;
+> +
+Do you have a way to disable internal ecc ?
+
+If not read_page_raw and write_page_raw won't do what is expected :
+- read without ecc correction
+- write without writing ecc or write custom ecc
+
+I don't know if it could cause some problem.
 
 
 Matthieu
