@@ -1,21 +1,22 @@
-Received: from inet-tsb5.toshiba.co.jp ([202.33.96.24] helo=imx2.toshiba.co.jp)
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U8m2P-0005ay-3p
- for linux-mtd@lists.infradead.org; Fri, 22 Feb 2013 06:23:19 +0000
-From: <katsuki.uwatoko@toshiba.co.jp>
-To: <matthieu.castet@parrot.com>
-Subject: Re: [PATCH v2] mtd: nand: support BENAND (Built-in ECC NAND)
-Date: Fri, 22 Feb 2013 06:23:09 +0000
-Message-ID: <F3B6523425E7914AA6214ED358D820AF2674F613@TGXML341.toshiba.local>
-References: <F3B6523425E7914AA6214ED358D820AF2674E3EA@TGXML341.toshiba.local>
- <5125EDD7.40202@parrot.com>
-In-Reply-To: <5125EDD7.40202@parrot.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-ID: <4A5D2B3D67B19547B6174CB44AC5DFD6@toshiba.local>
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: vikram186@gmail.com, linux-mtd@lists.infradead.org, dedekind1@gmail.com
+Received: from mga02.intel.com ([134.134.136.20])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1U8mlx-0002be-25
+ for linux-mtd@lists.infradead.org; Fri, 22 Feb 2013 07:10:22 +0000
+Message-ID: <1361517037.2734.145.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH RFC 4/5] UBIFS: Add security.* XATTR support for the UBIFS
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Fri, 22 Feb 2013 09:10:37 +0200
+In-Reply-To: <1360750998-15191-5-git-send-email-mkl@pengutronix.de>
+References: <1360750998-15191-1-git-send-email-mkl@pengutronix.de>
+ <1360750998-15191-5-git-send-email-mkl@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-security-module@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+ Subodh Nijsure <snijsure@grid-net.com>
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,36 +26,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+OK, the lockdep warnings clearly tell the reason:
 
-> > +       case NAND_ECC_BENAND:
-> > +               if (!IS_ENABLED(CONFIG_MTD_NAND_BENAND)) {
-> > +                       pr_warn("CONFIG_MTD_BENAND not enabled\n");
-> > +                       BUG();
-> > +               }
-> > +
-> > +               chip->ecc.read_page =3D nand_read_page_benand;
-> > +               chip->ecc.write_page =3D nand_write_page_raw;
-> > +               chip->ecc.read_page_raw =3D nand_read_page_raw;
-> > +               chip->ecc.write_page_raw =3D nand_write_page_raw;
-> > +               chip->ecc.read_oob =3D nand_read_oob_std;
-> > +               chip->ecc.write_oob =3D nand_write_oob_std;
-> > +
-> Do you have a way to disable internal ecc ?
+        CPU0                    CPU1
+        ----                    ----
+   lock(&ui->ui_mutex);
+                                lock(&sb->s_type->i_mutex_key#10);
+                                lock(&ui->ui_mutex);
+   lock(&sb->s_type->i_mutex_key#10);
 
-Does "internal ecc" mean the BENAND's ECC function? If so, we cannot disabl=
-e it.
-This means that we cannot read the raw data, which is not corrected,=20
-unless there are too many bitflips for BENAND to correct.
+And then there are 2 tracebacks which are useful and show that you
+unnecessarily initialize the inode security contenxt whil holding the
+parent inode lock. I think you do not need to hold that lock. Move the
+initialization out of the protected section.
 
-> If not read_page_raw and write_page_raw won't do what is expected :
-> - read without ecc correction
-> - write without writing ecc or write custom ecc
->=20
-> I don't know if it could cause some problem.
+See below my suggestions.
 
-I think that "writing ecc/ecc correction" would be just waste
-and any other problems do not happen as long as these functions
-do not destroy the OOB for BENAND ECC.=20
---=20
-UWATOKO Katsuki=
+On Wed, 2013-02-13 at 11:23 +0100, Marc Kleine-Budde wrote:
+> @@ -280,6 +280,10 @@ static int ubifs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+>  	err = ubifs_jnl_update(c, dir, &dentry->d_name, inode, 0, 0);
+>  	if (err)
+>  		goto out_cancel;
+> +
+> +	err = ubifs_init_security(dir, inode, &dentry->d_name);
+> +	if (err)
+> +		goto out_cancel;
+>  	mutex_unlock(&dir_ui->ui_mutex);
+
+Can you move ubifs_init_security() up to before
+'mutex_lock(&dir_ui->ui_mutex)'
+
+> @@ -742,6 +746,10 @@ static int ubifs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+...
+> +	err = ubifs_init_security(dir, inode, &dentry->d_name);
+> +	if (err)
+> +		goto out_cancel;
+>  	mutex_unlock(&dir_ui->ui_mutex);
+
+Ditto.
+
+> @@ -818,6 +826,10 @@ static int ubifs_mknod(struct inode *dir, struct dentry *dentry,
+...
+> +	err = ubifs_init_security(dir, inode, &dentry->d_name);
+> +	if (err)
+> +		goto out_cancel;
+>  	mutex_unlock(&dir_ui->ui_mutex);
+
+Ditto.
+
+> @@ -894,6 +906,10 @@ static int ubifs_symlink(struct inode *dir, struct dentry *dentry,
+...
+> +	err = ubifs_init_security(dir, inode, &dentry->d_name);
+> +	if (err)
+> +		goto out_cancel;
+>  	mutex_unlock(&dir_ui->ui_mutex);
+
+Ditto.
+
+> +int ubifs_init_security(struct inode *dentry, struct inode *inode,
+> +			const struct qstr *qstr)
+> +{
+> +	int err;
+> +
+> +	mutex_lock(&inode->i_mutex);
+> +	err = security_inode_init_security(inode, dentry, qstr,
+> +					   &ubifs_initxattrs, 0);
+> +	mutex_unlock(&inode->i_mutex);
+
+I did not verify, but I doubt that you need i_mutex here, because you
+only call this function when you create an inode, before it becomes
+visible to VFS. Please, double-check this.
+
+Thanks!
+
+-- 
+Best Regards,
+Artem Bityutskiy
