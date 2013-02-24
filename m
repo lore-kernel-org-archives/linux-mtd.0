@@ -1,20 +1,20 @@
-Received: from mail-vc0-f175.google.com ([209.85.220.175])
+Received: from mail-ea0-f174.google.com ([209.85.215.174])
  by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U92N1-0003V1-8L
- for linux-mtd@lists.infradead.org; Fri, 22 Feb 2013 23:49:40 +0000
-Received: by mail-vc0-f175.google.com with SMTP id fw7so759779vcb.20
- for <linux-mtd@lists.infradead.org>; Fri, 22 Feb 2013 15:49:38 -0800 (PST)
+ id 1U9b9B-0001Xe-JW
+ for linux-mtd@lists.infradead.org; Sun, 24 Feb 2013 12:57:42 +0000
+Received: by mail-ea0-f174.google.com with SMTP id 1so878144eaa.33
+ for <linux-mtd@lists.infradead.org>; Sun, 24 Feb 2013 04:57:38 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
+ David Woodhouse <David.Woodhouse@intel.com>
+Subject: [PATCH] mtd: m25p80: add entry for w25q128
+Date: Sun, 24 Feb 2013 13:57:26 +0100
+Message-Id: <1361710646-11731-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <87621kdma0.fsf@dell.be.48ers.dk>
-References: <1361570842-6442-1-git-send-email-computersforpeace@gmail.com>
- <87621kdma0.fsf@dell.be.48ers.dk>
-Date: Fri, 22 Feb 2013 15:43:51 -0800
-Message-ID: <CAN8TOE_HjxO_WMYkDyFs4B9s1BEDq2o0PDACOXQboHUiKYCMAg@mail.gmail.com>
-Subject: Re: [PATCH] mtd: m25p80: n25q064 is Micron, not Intel/Numonyx
-From: Brian Norris <computersforpeace@gmail.com>
-To: Peter Korsgaard <jacmet@sunsite.dk>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Hauke Mehrtens <hauke@hauke-m.de>, Felix Fietkau <nbd@openwrt.org>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,16 +24,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2013/2/22 Peter Korsgaard <jacmet@sunsite.dk>:
->>>>>> "Brian" == Brian Norris <computersforpeace@gmail.com> writes:
->
->  Brian> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
->
-> Acked-by: Peter Korsgaard <jacmet@sunsite.dk>
+This device was reported over a year ago on OpenWrt mailing list in the
+thread [OpenWrt-Devel] RedBoot partition table with winbond m25q128vb
+(unfortunately, I can't find message id). Macpaul seemed to have
+problems with partition driver, but it seems the device was working OK.
 
-BTW, I neglected to mention: the datasheet I have actually says
-Numonyx, but it has been integrated into the Micron line, and the ID
-follows the Micron pattern. So it makes sense to file this under the
-Micron ID section.
+Reported-by: Macpaul Lin <macpaul@gmail.com>
+Cc: Felix Fietkau <nbd@openwrt.org>
+Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+---
+Felix: I've asked you for upstreaming this patch about a month ago, but
+I didn't receive any answer, hope it's fine.
+---
+ drivers/mtd/devices/m25p80.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-Brian
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 5b6b072..1baf80b 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -838,6 +838,7 @@ static const struct spi_device_id m25p_ids[] = {
+ 	{ "w25q64", INFO(0xef4017, 0, 64 * 1024, 128, SECT_4K) },
+ 	{ "w25q80", INFO(0xef5014, 0, 64 * 1024,  16, SECT_4K) },
+ 	{ "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16, SECT_4K) },
++	{ "w25q128", INFO(0xef4018, 0, 64 * 1024, 256, SECT_4K) },
+ 	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512, SECT_4K) },
+ 
+ 	/* Catalyst / On Semiconductor -- non-JEDEC */
+-- 
+1.7.10.4
