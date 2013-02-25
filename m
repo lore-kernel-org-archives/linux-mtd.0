@@ -1,21 +1,22 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1U9uWW-00063p-4N
- for linux-mtd@lists.infradead.org; Mon, 25 Feb 2013 09:39:05 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
+Received: from anubis.se.axis.com ([195.60.68.12])
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1U9v8N-0007Z8-Lt
+ for linux-mtd@lists.infradead.org; Mon, 25 Feb 2013 10:18:12 +0000
+Date: Mon, 25 Feb 2013 11:18:06 +0100
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: "Gupta, Pekon" <pekon@ti.com>
 Subject: RE: [PATCH v2] mtd: nand: support BENAND (Built-in ECC NAND)
-Date: Mon, 25 Feb 2013 09:38:58 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E99A07D@DBDE01.ent.ti.com>
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E99A07D@DBDE01.ent.ti.com>
+Message-ID: <alpine.DEB.2.00.1302251109570.3736@lnxricardw.se.axis.com>
 References: <F3B6523425E7914AA6214ED358D820AF2674E3EA@TGXML341.toshiba.local>
  <20980858CB6D3A4BAE95CA194937D5E73E99A025@DBDE01.ent.ti.com>
  <512B2DC6.8090104@parrot.com>
-In-Reply-To: <512B2DC6.8090104@parrot.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ <20980858CB6D3A4BAE95CA194937D5E73E99A07D@DBDE01.ent.ti.com>
 MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="iso-8859-1"; format=flowed
+Content-Transfer-Encoding: 8BIT
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Matthieu CASTET <matthieu.castet@parrot.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,71 +27,43 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
+On Mon, 25 Feb 2013, Gupta, Pekon wrote:
 
-> -----Original Message-----
-> From: Matthieu CASTET [mailto:matthieu.castet@parrot.com]
-> Sent: Monday, February 25, 2013 2:54 PM
-> To: Gupta, Pekon
-> Cc: katsuki.uwatoko@toshiba.co.jp; linux-mtd@lists.infradead.org
-> Subject: Re: [PATCH v2] mtd: nand: support BENAND (Built-in ECC NAND)
->=20
-> Gupta, Pekon a =E9crit :
-> > Hi,
-> >
-> >> This enables support for BENAND, which is an SLC NAND flash solution
-> >> with embedded error correction code (ECC), currently supports only
-> >> 128bytes OOB type.
-> >>
-> >> In the read sequence, "status read command" is executed to check the
-> >> ECC status after read data. If bitflips occur, these are
-> >> automatically corrected by BENAND and the status indicates the result.
-> >>
-> >> The write sequence is the same as raw write and the ECC data are
-> >> automatically written to OOB by BENAND.
-> >
-> > Just inquisitive, can anyone please share any throughput comparison
-> between 'BENAND' & 'normal NAND' devices having same capacity and
-> working on same clock-freq ?
-> >
-> > (a) Usually on-chip memory controllers work on faster clock frequencies=
-, as
-> compared to the NAND devices connected to them externally on board.
-> > Thus I assume, ECC computation & correction can be done at faster rate.
-> >
-> > (b) However, on other hand BENAND(s) have luxury of accessing the Flash
-> storage array locally, thus eliminating I/O delays | un-optimized IO sign=
-al
-> timing from the access-path.
-> >
-> > So, if you can share the details throughput comparison between the two
-> types of NAND devices, under various conditions it would be helpful.
-> >
-> You always have to transfer the data from/to the nand devices to/from the
-> host.
->=20
-> - Either the ecc internal controller is fast and the throughput are the s=
-ame
-> than 'normal nand' (assuming the ecc controller on the host is fast),
-> - either it is slow and the throughput is limited by the internal ecc con=
-troller
-> (throughput is slower than 'normal nand')
->=20
-I agree about the data portion..=20
-But assuming there is no file-system OOB metadata | cleanmarker to be store=
-d (like in UBIFS)
-Do we still need to transfer OOB data from Host processor to NAND device ?
-If yes, then ECC calculation & correction which at times is main bottle-nec=
-k in NAND accesses,=20
-may be best done at Host-processor side..=20
+> But assuming there is no file-system OOB metadata | cleanmarker to be stored (like in UBIFS)
+> Do we still need to transfer OOB data from Host processor to NAND device ?
+> If yes, then ECC calculation & correction which at times is main bottle-neck in NAND accesses,
+> may be best done at Host-processor side..
+>
+> Also, In-case there is some file-system metadata to be stored in OOB|spare area along with ECC,
+> how do we ensure that layout of metadata does not overlap with ECC syndrome in BENAND ?
+> Is the BENAND capable of re-adjusting its ECC layout ?
 
-Also, In-case there is some file-system metadata to be stored in OOB|spare =
-area along with ECC,
-how do we ensure that layout of metadata does not overlap with ECC syndrome=
- in BENAND ?
-Is the BENAND capable of re-adjusting its ECC layout ?=20
+BENAND uses a separate non-addressable area for its on-chip ECC. Thus, 
+the complete OOB area is available for the user (except bad block marker 
+bytes).
 
+IIUC, however, BENAND has a restriction on how data can written to the 
+flash. For instance, for a BENAND with 2k pages and 64 bytes OOB per page, 
+each 512 byte area is paired with 16 bytes of the OOB. When writing using 
+the on-chip ECC, one must write the 512 area of the main page followed by 
+the paired 16 bytes in the OOB area, without writing a new column address 
+to the flash. It is also possible just to write the main area, but then 
+the paired OOB bytes cannot be written at a later date, as that will cause 
+overwriting of the on-chip ECC, causing read errors during subsequent 
+read.
 
-with regards, pekon
+I don't know if it's possible to write the whole 2k page in one go, 
+followed immediately by the 64 byte OOB. I think not, but the 
+documentation is not clear on this point IMHO, and I have not tested it.
 
->=20
-> Matthieu
+The most efficient use of BENAND is probably to avoid using the OOB if 
+possible, and just use the main area. This does require that the driver be 
+configured accordingly which is a pity in a production environment where 
+one wants to have as wide a range of chips to choose from during the 
+production run.
+
+/Ricard
+-- 
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
