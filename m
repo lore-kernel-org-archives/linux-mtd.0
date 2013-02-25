@@ -1,19 +1,18 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
- id 1U9uIN-0004pa-8Q
- for linux-mtd@lists.infradead.org; Mon, 25 Feb 2013 09:24:29 +0000
-Message-ID: <512B2DC6.8090104@parrot.com>
-Date: Mon, 25 Feb 2013 10:24:22 +0100
-From: Matthieu CASTET <matthieu.castet@parrot.com>
-MIME-Version: 1.0
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [PATCH v2] mtd: nand: support BENAND (Built-in ECC NAND)
-References: <F3B6523425E7914AA6214ED358D820AF2674E3EA@TGXML341.toshiba.local>
- <20980858CB6D3A4BAE95CA194937D5E73E99A025@DBDE01.ent.ti.com>
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E99A025@DBDE01.ent.ti.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+ id 1U9uPG-0005em-KG
+ for linux-mtd@lists.infradead.org; Mon, 25 Feb 2013 09:31:35 +0000
+Message-ID: <1361784714.2974.3.camel@sauron.fi.intel.com>
+Subject: [GIT PULL] UBIFS changes for 3.9-rc1
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Mon, 25 Feb 2013 11:31:54 +0200
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,35 +22,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Gupta, Pekon a écrit :
-> Hi,
-> 
->> This enables support for BENAND, which is an SLC NAND flash solution
->> with embedded error correction code (ECC), currently supports only
->> 128bytes OOB type.
->>
->> In the read sequence, "status read command" is executed to check the
->> ECC status after read data. If bitflips occur, these are
->> automatically corrected by BENAND and the status indicates the result.
->>
->> The write sequence is the same as raw write and the ECC data are
->> automatically written to OOB by BENAND.
-> 
-> Just inquisitive, can anyone please share any throughput comparison between 'BENAND' & 'normal NAND' devices having same capacity and working on same clock-freq ?
-> 
-> (a) Usually on-chip memory controllers work on faster clock frequencies, as compared to the NAND devices connected to them externally on board.
-> Thus I assume, ECC computation & correction can be done at faster rate.
-> 
-> (b) However, on other hand BENAND(s) have luxury of accessing the Flash storage array locally, thus eliminating I/O delays | un-optimized IO signal timing from the access-path.
-> 
-> So, if you can share the details throughput comparison between the two types of NAND devices, under various conditions it would be helpful.
-> 
-You always have to transfer the data from/to the nand devices to/from the host.
+Hi Linus,
 
-- Either the ecc internal controller is fast and the throughput are the same
-than 'normal nand' (assuming the ecc controller on the host is fast),
-- either it is slow and the throughput is limited by the internal ecc controller
-(throughput is slower than 'normal nand')
+please pull UBIFS changes for 3.9-rc1.
 
+The following changes since commit 9931faca02c604c22335f5a935a501bb2ace6e20:
 
-Matthieu
+  Linux 3.8-rc3 (2013-01-09 18:59:55 -0800)
+
+are available in the git repository at:
+
+  git://git.infradead.org/linux-ubifs.git tags/upstream-3.9-rc1
+
+for you to fetch changes up to 8afd500cb52a5d00bab4525dd5a560d199f979b9:
+
+  UBIFS: fix double free of ubifs_orphan objects (2013-02-04 12:31:48 +0200)
+
+----------------------------------------------------------------
+I's been quite silent and we have only a couple of bug-fixes for the orphans
+handling code plus one cosmetic change.
+
+----------------------------------------------------------------
+Adam Thomas (2):
+      UBIFS: fix use of freed ubifs_orphan objects
+      UBIFS: fix double free of ubifs_orphan objects
+
+Akinobu Mita (1):
+      UBIFS: rename random32() to prandom_u32()
+
+ fs/ubifs/debug.c      |    8 ++++----
+ fs/ubifs/lpt_commit.c |   14 +++++++-------
+ fs/ubifs/orphan.c     |   12 ++++++++++--
+ fs/ubifs/tnc_commit.c |    2 +-
+ fs/ubifs/ubifs.h      |    6 +++++-
+ 5 files changed, 27 insertions(+), 15 deletions(-)
+
+-- 
+Best Regards,
+Artem Bityutskiy
