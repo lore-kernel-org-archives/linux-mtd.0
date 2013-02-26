@@ -1,23 +1,18 @@
-Received: from imx12.toshiba.co.jp ([61.202.160.132])
- by merlin.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
- id 1UAATa-0001c4-5U
- for linux-mtd@lists.infradead.org; Tue, 26 Feb 2013 02:41:08 +0000
-From: <katsuki.uwatoko@toshiba.co.jp>
-To: <pekon@ti.com>
-Subject: RE: [PATCH v2] mtd: nand: support BENAND (Built-in ECC NAND)
-Date: Tue, 26 Feb 2013 02:41:18 +0000
-Message-ID: <F3B6523425E7914AA6214ED358D820AF26751047@TGXML341.toshiba.local>
-References: <F3B6523425E7914AA6214ED358D820AF2674E3EA@TGXML341.toshiba.local>
- <20980858CB6D3A4BAE95CA194937D5E73E99A025@DBDE01.ent.ti.com>
- <512B2DC6.8090104@parrot.com>
- <20980858CB6D3A4BAE95CA194937D5E73E99A07D@DBDE01.ent.ti.com>
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E99A07D@DBDE01.ent.ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-ID: <09B5F00E6A7D9D4D98E2C0D75C4F7D71@toshiba.local>
-Content-Transfer-Encoding: quoted-printable
+Received: from mercuryimc.plus.com ([80.229.200.144]
+ helo=centos1.newflow.co.uk)
+ by merlin.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+ id 1UAJ7g-00067n-0p
+ for linux-mtd@lists.infradead.org; Tue, 26 Feb 2013 11:55:05 +0000
+Message-ID: <512CA290.6050509@mimc.co.uk>
+Date: Tue, 26 Feb 2013 11:54:56 +0000
+From: Mark Jackson <mpfj-list@mimc.co.uk>
 MIME-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, matthieu.castet@parrot.com
+To: linux-next@vger.kernel.org
+Subject: linux-next: JFFS2 deadlock
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ lkml <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,46 +22,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Just tested the current next-20130226 on a custom AM335X board, and I received the JFFS2 deadlock shown below.
 
-> > > Just inquisitive, can anyone please share any throughput comparison
-> > between 'BENAND' & 'normal NAND' devices having same capacity and
-> > working on same clock-freq ?
-
-I think that the following would be helpful.
-
-http://www.toshiba-components.com/memory/benand.html
-http://www.toshiba-components.com/memory/data/BENAND%20QA_V1.0_121031.pdf
-http://www.toshiba-components.com/memory/data/Whitepaper_BENAND_11_2012.pdf
-
-> But assuming there is no file-system OOB metadata | cleanmarker to be sto=
-red (like in UBIFS)
-> Do we still need to transfer OOB data from Host processor to NAND device =
-?
-
-No, we don't.
-
-> how do we ensure that layout of metadata does not overlap with ECC syndro=
-me in BENAND ?
-> Is the BENAND capable of re-adjusting its ECC layout ?=20
-
-The area which we can use is defined as nand_ecclayout in nand_benand.c.
-And the area is covered by the built-in ECC.
-
-+static struct nand_ecclayout benand_oob_128 =3D {
-+	.oobfree =3D {
-+		{.offset =3D 2, .length =3D 3},
-+		{.offset =3D 18, .length =3D 3},
-+		{.offset =3D 34, .length =3D 3},
-+		{.offset =3D 50, .length =3D 3},
-+		{.offset =3D 66, .length =3D 3},
-+		{.offset =3D 82, .length =3D 3},
-+		{.offset =3D 98, .length =3D 3},
-+		{.offset =3D 114, .length =3D 3},
-+	}
-+};
-
-In the case of 24nm products, which are NOT 128bytes OOB type,=20
-the whole area of OOB can be available and is covered by the built-in ECC.=
-=20
---=20
-UWATOKO Katsuki=
+Regards
+Mark JACKSON
+---
+[    3.250349] jffs2: notice: (1) jffs2_build_xattr_subsystem: complete building xattr subsystem, 0 of xdatum (0 unchecked, 0 orphan) and 0 of xref (0 dead, 0 orphan) found.
+[    3.268364] VFS: Mounted root (jffs2 filesystem) readonly on device 31:6.
+[    3.277233] devtmpfs: mounted
+[    3.280982] Freeing init memory: 332K
+[    3.706697]
+[    3.708306] ======================================================
+[    3.714804] [ INFO: possible circular locking dependency detected ]
+[    3.721398] 3.8.0-next-20130226-dirty #10 Not tainted
+[    3.726708] -------------------------------------------------------
+[    3.733297] rcS/686 is trying to acquire lock:
+[    3.737969]  (&mm->mmap_sem){++++++}, at: [<c00f0af4>] might_fault+0x3c/0x90
+[    3.745437]
+[    3.745437] but task is already holding lock:
+[    3.751569]  (&f->sem){+.+.+.}, at: [<c023d128>] jffs2_readdir+0x44/0x1a8
+[    3.758748]
+[    3.758748] which lock already depends on the new lock.
+[    3.758748]
+[    3.767348]
+[    3.767348] the existing dependency chain (in reverse order) is:
+[    3.775215]
+-> #1 (&f->sem){+.+.+.}:
+[    3.779184]        [<c0092df0>] lock_acquire+0x9c/0x104
+[    3.784701]        [<c04b76e4>] mutex_lock_nested+0x3c/0x334
+[    3.790666]        [<c023d950>] jffs2_readpage+0x20/0x44
+[    3.796261]        [<c00d9d38>] __do_page_cache_readahead+0x2a0/0x2cc
+[    3.803050]        [<c00da004>] ra_submit+0x28/0x30
+[    3.808187]        [<c00d179c>] filemap_fault+0x304/0x458
+[    3.813884]        [<c00f0c58>] __do_fault+0x6c/0x490
+[    3.819203]        [<c00f3c5c>] handle_pte_fault+0xb0/0x6f0
+[    3.825071]        [<c00f433c>] handle_mm_fault+0xa0/0xd4
+[    3.830755]        [<c04bbdcc>] do_page_fault+0x2a0/0x3d4
+[    3.836449]        [<c000845c>] do_DataAbort+0x30/0x9c
+[    3.841861]        [<c04ba2a4>] __dabt_svc+0x44/0x80
+[    3.847089]        [<c0289c34>] __clear_user_std+0x1c/0x64
+[    3.852877]
+-> #0 (&mm->mmap_sem){++++++}:
+[    3.857393]        [<c00927ec>] __lock_acquire+0x1d70/0x1de0
+[    3.863353]        [<c0092df0>] lock_acquire+0x9c/0x104
+[    3.868855]        [<c00f0b18>] might_fault+0x60/0x90
+[    3.874174]        [<c011bc3c>] filldir+0x5c/0x158
+[    3.879230]        [<c023d1c0>] jffs2_readdir+0xdc/0x1a8
+[    3.884823]        [<c011becc>] vfs_readdir+0x98/0xb4
+[    3.890144]        [<c011bfcc>] sys_getdents+0x74/0xd0
+[    3.895554]        [<c0013820>] ret_fast_syscall+0x0/0x3c
+[    3.901251]
+[    3.901251] other info that might help us debug this:
+[    3.901251]
+[    3.909668]  Possible unsafe locking scenario:
+[    3.909668]
+[    3.915892]        CPU0                    CPU1
+[    3.920652]        ----                    ----
+[    3.925411]   lock(&f->sem);
+[    3.928451]                                lock(&mm->mmap_sem);
+[    3.934688]                                lock(&f->sem);
+[    3.940376]   lock(&mm->mmap_sem);
+[    3.943965]
+[    3.943965]  *** DEADLOCK ***
+[    3.943965]
+[    3.950196] 2 locks held by rcS/686:
+[    3.953952]  #0:  (&type->i_mutex_dir_key){+.+.+.}, at: [<c011be90>] vfs_readdir+0x5c/0xb4
+[    3.962686]  #1:  (&f->sem){+.+.+.}, at: [<c023d128>] jffs2_readdir+0x44/0x1a8
+[    3.970320]
+[    3.970320] stack backtrace:
+[    3.974930] [<c001b158>] (unwind_backtrace+0x0/0xf0) from [<c008f29c>] (print_circular_bug+0x1d0/0x2dc)
+[    3.984815] [<c008f29c>] (print_circular_bug+0x1d0/0x2dc) from [<c00927ec>] (__lock_acquire+0x1d70/0x1de0)
+[    3.994975] [<c00927ec>] (__lock_acquire+0x1d70/0x1de0) from [<c0092df0>] (lock_acquire+0x9c/0x104)
+[    4.004494] [<c0092df0>] (lock_acquire+0x9c/0x104) from [<c00f0b18>] (might_fault+0x60/0x90)
+[    4.013376] [<c00f0b18>] (might_fault+0x60/0x90) from [<c011bc3c>] (filldir+0x5c/0x158)
+[    4.021802] [<c011bc3c>] (filldir+0x5c/0x158) from [<c023d1c0>] (jffs2_readdir+0xdc/0x1a8)
+[    4.030502] [<c023d1c0>] (jffs2_readdir+0xdc/0x1a8) from [<c011becc>] (vfs_readdir+0x98/0xb4)
+[    4.039477] [<c011becc>] (vfs_readdir+0x98/0xb4) from [<c011bfcc>] (sys_getdents+0x74/0xd0)
+[    4.048270] [<c011bfcc>] (sys_getdents+0x74/0xd0) from [<c0013820>] (ret_fast_syscall+0x0/0x3c)
