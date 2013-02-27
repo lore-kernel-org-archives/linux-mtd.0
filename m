@@ -1,22 +1,16 @@
-Received: from mercuryimc.plus.com ([80.229.200.144]
- helo=centos1.newflow.co.uk)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UAimo-0007VY-Ty
- for linux-mtd@lists.infradead.org; Wed, 27 Feb 2013 15:19:16 +0000
-Message-ID: <512E23F0.2060408@mimc.co.uk>
-Date: Wed, 27 Feb 2013 15:19:12 +0000
-From: Mark Jackson <mpfj-list@mimc.co.uk>
+From: Shawn Guo <shawn.guo@linaro.org>
+To: <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH 07/12] mtd: gpmi: move to use generic DMA helper
+Date: Wed, 27 Feb 2013 23:25:43 +0800
+Message-ID: <1361978748-25281-8-git-send-email-shawn.guo@linaro.org>
+In-Reply-To: <1361978748-25281-1-git-send-email-shawn.guo@linaro.org>
+References: <1361978748-25281-1-git-send-email-shawn.guo@linaro.org>
 MIME-Version: 1.0
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: linux-next: JFFS2 deadlock
-References: <512CA290.6050509@mimc.co.uk>
- <20130227101704.90466ae6df78ab9b3aa4ba22@canb.auug.org.au>
-In-Reply-To: <20130227101704.90466ae6df78ab9b3aa4ba22@canb.auug.org.au>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-next@vger.kernel.org,
- linux-mtd@lists.infradead.org, lkml <linux-kernel@vger.kernel.org>,
- Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, Arnd Bergmann <arnd@arndb.de>,
+ Huang Shijie <b32955@freescale.com>, Vinod Koul <vinod.koul@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org, Shawn Guo <shawn.guo@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,82 +20,153 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 26/02/13 23:17, Stephen Rothwell wrote:
-> Hi Mark,
-> 
-> On Tue, 26 Feb 2013 11:54:56 +0000 Mark Jackson <mpfj-list@mimc.co.uk> wrote:
->>
->> Just tested the current next-20130226 on a custom AM335X board, and I received the JFFS2 deadlock shown below.
-> 
-> Is this new today?  is it reproducible? Does if ail for Linus' tree?
+With the generic DMA device tree helper supported by mxs-dma driver,
+client devices only need to call dma_request_slave_channel() for
+requesting a DMA channel from dmaengine.
 
-Almost identical on Linus' tree:-
+Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>
+Cc: linux-mtd@lists.infradead.org
+---
+ .../devicetree/bindings/mtd/gpmi-nand.txt          |   17 ++++---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c             |   51 +-------------------
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h             |    3 +-
+ 3 files changed, 12 insertions(+), 59 deletions(-)
 
-[    3.685186]
-[    3.686803] ======================================================
-[    3.693333] [ INFO: possible circular locking dependency detected ]
-[    3.699962] 3.8.0-09426-g986876f-dirty #133 Not tainted
-[    3.705482] -------------------------------------------------------
-[    3.712105] rcS/682 is trying to acquire lock:
-[    3.716801]  (&mm->mmap_sem){++++++}, at: [<c00f1258>] might_fault+0x3c/0x90
-[    3.724307]
-[    3.724307] but task is already holding lock:
-[    3.730470]  (&f->sem){+.+.+.}, at: [<c023cb30>] jffs2_readdir+0x44/0x1a8
-[    3.737686]
-[    3.737686] which lock already depends on the new lock.
-[    3.737686]
-[    3.746331]
-[    3.746331] the existing dependency chain (in reverse order) is:
-[    3.754239]
--> #1 (&f->sem){+.+.+.}:
-[    3.758229]        [<c0093614>] lock_acquire+0x9c/0x104
-[    3.763775]        [<c04b3b4c>] mutex_lock_nested+0x3c/0x334
-[    3.769769]        [<c023d358>] jffs2_readpage+0x20/0x44
-[    3.775392]        [<c00da510>] __do_page_cache_readahead+0x2a0/0x2cc
-[    3.782217]        [<c00da7dc>] ra_submit+0x28/0x30
-[    3.787380]        [<c00d2010>] filemap_fault+0x304/0x458
-[    3.793094]        [<c00f13bc>] __do_fault+0x6c/0x490
-[    3.798439]        [<c00f43a4>] handle_pte_fault+0xb0/0x6f0
-[    3.804337]        [<c00f4a84>] handle_mm_fault+0xa0/0xd4
-[    3.810050]        [<c04b80e8>] do_page_fault+0x2a0/0x3d4
-[    3.815773]        [<c000845c>] do_DataAbort+0x30/0x9c
-[    3.821212]        [<c04b65e4>] __dabt_svc+0x44/0x80
-[    3.826467]        [<c0288d10>] __clear_user_std+0x1c/0x64
-[    3.832285]
--> #0 (&mm->mmap_sem){++++++}:
-[    3.836824]        [<c0093010>] __lock_acquire+0x1d70/0x1de0
-[    3.842815]        [<c0093614>] lock_acquire+0x9c/0x104
-[    3.848345]        [<c00f127c>] might_fault+0x60/0x90
-[    3.853690]        [<c011c504>] filldir+0x5c/0x158
-[    3.858762]        [<c023cbc8>] jffs2_readdir+0xdc/0x1a8
-[    3.864384]        [<c011c794>] vfs_readdir+0x98/0xb4
-[    3.869729]        [<c011c894>] sys_getdents+0x74/0xd0
-[    3.875166]        [<c0013800>] ret_fast_syscall+0x0/0x3c
-[    3.880890]
-[    3.880890] other info that might help us debug this:
-[    3.880890]
-[    3.889350]  Possible unsafe locking scenario:
-[    3.889350]
-[    3.895604]        CPU0                    CPU1
-[    3.900388]        ----                    ----
-[    3.905171]   lock(&f->sem);
-[    3.908227]                                lock(&mm->mmap_sem);
-[    3.914494]                                lock(&f->sem);
-[    3.920210]   lock(&mm->mmap_sem);
-[    3.923816]
-[    3.923816]  *** DEADLOCK ***
-[    3.923816]
-[    3.930077] 2 locks held by rcS/682:
-[    3.933851]  #0:  (&type->i_mutex_dir_key){+.+.+.}, at: [<c011c758>] vfs_readdir+0x5c/0xb4
-[    3.942625]  #1:  (&f->sem){+.+.+.}, at: [<c023cb30>] jffs2_readdir+0x44/0x1a8
-[    3.950298]
-[    3.950298] stack backtrace:
-[    3.954930] [<c001b11c>] (unwind_backtrace+0x0/0xf0) from [<c008fac0>] (print_circular_bug+0x1d0/0x2dc)
-[    3.964870] [<c008fac0>] (print_circular_bug+0x1d0/0x2dc) from [<c0093010>] (__lock_acquire+0x1d70/0x1de0)
-[    3.975081] [<c0093010>] (__lock_acquire+0x1d70/0x1de0) from [<c0093614>] (lock_acquire+0x9c/0x104)
-[    3.984650] [<c0093614>] (lock_acquire+0x9c/0x104) from [<c00f127c>] (might_fault+0x60/0x90)
-[    3.993573] [<c00f127c>] (might_fault+0x60/0x90) from [<c011c504>] (filldir+0x5c/0x158)
-[    4.002039] [<c011c504>] (filldir+0x5c/0x158) from [<c023cbc8>] (jffs2_readdir+0xdc/0x1a8)
-[    4.010781] [<c023cbc8>] (jffs2_readdir+0xdc/0x1a8) from [<c011c794>] (vfs_readdir+0x98/0xb4)
-[    4.019797] [<c011c794>] (vfs_readdir+0x98/0xb4) from [<c011c894>] (sys_getdents+0x74/0xd0)
-[    4.028629] [<c011c894>] (sys_getdents+0x74/0xd0) from [<c0013800>] (ret_fast_syscall+0x0/0x3c)
+diff --git a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
+index 3fb3f901..6f74e23 100644
+--- a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
+@@ -7,10 +7,12 @@ Required properties:
+   - compatible : should be "fsl,<chip>-gpmi-nand"
+   - reg : should contain registers location and length for gpmi and bch.
+   - reg-names: Should contain the reg names "gpmi-nand" and "bch"
+-  - interrupts : The first is the DMA interrupt number for GPMI.
+-                 The second is the BCH interrupt number.
+-  - interrupt-names : The interrupt names "gpmi-dma", "bch";
+-  - fsl,gpmi-dma-channel : Should contain the dma channel it uses.
++  - interrupts : BCH interrupt number.
++  - interrupt-names : Should be "bch".
++  - dmas: DMA specifier, consisting of a phandle to DMA controller node
++    and GPMI DMA channel ID.
++    Refer to dma.txt and fsl-mxs-dma.txt for details.
++  - dma-names: Must be "gpmi".
+ 
+ Optional properties:
+   - nand-on-flash-bbt: boolean to enable on flash bbt option if not
+@@ -27,9 +29,10 @@ gpmi-nand@8000c000 {
+ 	#size-cells = <1>;
+ 	reg = <0x8000c000 2000>, <0x8000a000 2000>;
+ 	reg-names = "gpmi-nand", "bch";
+-	interrupts = <88>, <41>;
+-	interrupt-names = "gpmi-dma", "bch";
+-	fsl,gpmi-dma-channel = <4>;
++	interrupts = <41>;
++	interrupt-names = "bch";
++	dmas = <&dma_apbh 4>;
++	dma-names = "gpmi";
+ 
+ 	partition@0 {
+ 	...
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 717881a..64d4d61 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -36,7 +36,6 @@
+ #define GPMI_NAND_GPMI_REGS_ADDR_RES_NAME  "gpmi-nand"
+ #define GPMI_NAND_BCH_REGS_ADDR_RES_NAME   "bch"
+ #define GPMI_NAND_BCH_INTERRUPT_RES_NAME   "bch"
+-#define GPMI_NAND_DMA_INTERRUPT_RES_NAME   "gpmi-dma"
+ 
+ /* add our owner bbt descriptor */
+ static uint8_t scan_ff_pattern[] = { 0xff };
+@@ -420,28 +419,6 @@ static void release_bch_irq(struct gpmi_nand_data *this)
+ 		free_irq(i, this);
+ }
+ 
+-static bool gpmi_dma_filter(struct dma_chan *chan, void *param)
+-{
+-	struct gpmi_nand_data *this = param;
+-	int dma_channel = (int)this->private;
+-
+-	if (!mxs_dma_is_apbh(chan))
+-		return false;
+-	/*
+-	 * only catch the GPMI dma channels :
+-	 *	for mx23 :	MX23_DMA_GPMI0 ~ MX23_DMA_GPMI3
+-	 *		(These four channels share the same IRQ!)
+-	 *
+-	 *	for mx28 :	MX28_DMA_GPMI0 ~ MX28_DMA_GPMI7
+-	 *		(These eight channels share the same IRQ!)
+-	 */
+-	if (dma_channel == chan->chan_id) {
+-		chan->private = &this->dma_data;
+-		return true;
+-	}
+-	return false;
+-}
+-
+ static void release_dma_channels(struct gpmi_nand_data *this)
+ {
+ 	unsigned int i;
+@@ -455,36 +432,10 @@ static void release_dma_channels(struct gpmi_nand_data *this)
+ static int acquire_dma_channels(struct gpmi_nand_data *this)
+ {
+ 	struct platform_device *pdev = this->pdev;
+-	struct resource *r_dma;
+-	struct device_node *dn;
+-	u32 dma_channel;
+-	int ret;
+ 	struct dma_chan *dma_chan;
+-	dma_cap_mask_t mask;
+-
+-	/* dma channel, we only use the first one. */
+-	dn = pdev->dev.of_node;
+-	ret = of_property_read_u32(dn, "fsl,gpmi-dma-channel", &dma_channel);
+-	if (ret) {
+-		pr_err("unable to get DMA channel from dt.\n");
+-		goto acquire_err;
+-	}
+-	this->private = (void *)dma_channel;
+-
+-	/* gpmi dma interrupt */
+-	r_dma = platform_get_resource_byname(pdev, IORESOURCE_IRQ,
+-					GPMI_NAND_DMA_INTERRUPT_RES_NAME);
+-	if (!r_dma) {
+-		pr_err("Can't get resource for DMA\n");
+-		goto acquire_err;
+-	}
+-	this->dma_data.chan_irq = r_dma->start;
+ 
+ 	/* request dma channel */
+-	dma_cap_zero(mask);
+-	dma_cap_set(DMA_SLAVE, mask);
+-
+-	dma_chan = dma_request_channel(mask, gpmi_dma_filter, this);
++	dma_chan = dma_request_slave_channel(&pdev->dev, "gpmi");
+ 	if (!dma_chan) {
+ 		pr_err("Failed to request DMA channel.\n");
+ 		goto acquire_err;
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+index 0729477..a7685e3 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+@@ -20,7 +20,7 @@
+ #include <linux/mtd/nand.h>
+ #include <linux/platform_device.h>
+ #include <linux/dma-mapping.h>
+-#include <linux/fsl/mxs-dma.h>
++#include <linux/dmaengine.h>
+ 
+ #define GPMI_CLK_MAX 5 /* MX6Q needs five clocks */
+ struct resources {
+@@ -180,7 +180,6 @@ struct gpmi_nand_data {
+ 	/* DMA channels */
+ #define DMA_CHANS		8
+ 	struct dma_chan		*dma_chans[DMA_CHANS];
+-	struct mxs_dma_data	dma_data;
+ 	enum dma_ops_type	last_dma_type;
+ 	enum dma_ops_type	dma_type;
+ 	struct completion	dma_done;
+-- 
+1.7.9.5
