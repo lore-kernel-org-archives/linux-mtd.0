@@ -1,18 +1,22 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UAies-000724-Of
- for linux-mtd@lists.infradead.org; Wed, 27 Feb 2013 15:11:04 +0000
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd/nand: don't use {read,write}_buf for 8-bit transfers
-Date: Wed, 27 Feb 2013 16:10:52 +0100
-Message-Id: <1361977852-18233-1-git-send-email-u.kleine-koenig@pengutronix.de>
+Received: from mercuryimc.plus.com ([80.229.200.144]
+ helo=centos1.newflow.co.uk)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UAifw-00074K-VH
+ for linux-mtd@lists.infradead.org; Wed, 27 Feb 2013 15:12:10 +0000
+Message-ID: <512E2241.9040705@mimc.co.uk>
+Date: Wed, 27 Feb 2013 15:12:01 +0000
+From: Mark Jackson <mpfj-list@mimc.co.uk>
 MIME-Version: 1.0
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: linux-next: JFFS2 corruption
+References: <512CD9BA.3080300@mimc.co.uk>
+ <20130227101824.6e18ba21fb99070594420f29@canb.auug.org.au>
+In-Reply-To: <20130227101824.6e18ba21fb99070594420f29@canb.auug.org.au>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Huang Shijie <b32955@freescale.com>,
- David Woodhouse <David.Woodhouse@intel.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Content-Transfer-Encoding: 7bit
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-next@vger.kernel.org,
+ linux-mtd@lists.infradead.org, lkml <linux-kernel@vger.kernel.org>,
+ Al Viro <viro@zeniv.linux.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,95 +26,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-According to the Open NAND Flash Interface Specification (ONFI) Revision
-3.1 "Parameters are always transferred on the lower 8-bits of the data
-bus." for the Get Features and Set Features commands.
+On 26/02/13 23:18, Stephen Rothwell wrote:
+> Hi Mark,
+> 
+> On Tue, 26 Feb 2013 15:50:18 +0000 Mark Jackson <mpfj-list@mimc.co.uk> wrote:
+>>
+>> Just tested the current next-20130226 on a custom AM335X board, and if I mount
+>> our JFFS2 image as read/write, the next reboot shows the image as being corrupt.
+>>
+>> If I reprogram the jffs2 image into NAND and only mount the volume as read-only,
+>> no corruption occurs and the system remains intact.
+>>
+>> I have also tested:-
+>>
+>> (a) reprogram ubifs image into nand
+>> (b) boot the volume as read-only (corrupt -> no)
+>> (c) remount the volume as read/write
+>> (d) rebooting the volume as read-only (corrupt -> yes)
+> 
+> Thanks for all the testing.  Sam questions as in my other email.
 
-So using read_buf and write_buf is wrong for 16-bit wide nand chips as
-they use I/O[15:0]. The Get Features command is easily fixed using 4
-times the read_byte callback. For Set Features error out as there is no
-write_byte callback.
+Okay, just tested 3v8 plus:-
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
-Hello,
+https://patchwork.kernel.org/patch/1931251/
+https://patchwork.kernel.org/patch/1931221/
+https://patchwork.kernel.org/patch/1931201/
+and changed drivers/mtd/nand/elm.c, line 388 "ti,am33xx-elm" to "ti,am3352-elm"
 
-note this is only compile tested and I don't have a 16-bit wide nand, so I
-don't even saw a failure.
+This produces an identical corruption.
 
-The problem exists since commit
+I have also tested next-20130225 and next-20130227, and both cause the same corruption.
 
-	7db03ec (mtd: add helpers to set/get features for ONFI nand)
-
-which introduced the two functions.
-
-Still I'd like to know how I can write a byte (or a sequence of bytes) as this
-is necessary for locking the otp are of micron chips. Well, I could implement
-it for 8-bit chips only, but this isn't very satisfying.
-
-Do we need to add a write_byte callback to struct nand_chip? Or is there
-a way to do write a byte that I'm just too blind to see?
-
-Is this patch relevant for stable? Probably not!?
-
-Best regards
-Uwe
-
- drivers/mtd/nand/nand_base.c |   14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 4321415..abfd8ca 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2706,7 +2706,7 @@ static int nand_block_markbad(struct mtd_info *mtd, loff_t ofs)
- }
- 
- /**
-- * nand_onfi_set_features- [REPLACEABLE] set features for ONFI nand
-+ * nand_onfi_set_features - [REPLACEABLE] set features for ONFI nand
-  * @mtd: MTD device structure
-  * @chip: nand chip info structure
-  * @addr: feature address.
-@@ -2720,6 +2720,11 @@ static int nand_onfi_set_features(struct mtd_info *mtd, struct nand_chip *chip,
- 	if (!chip->onfi_version)
- 		return -EINVAL;
- 
-+	if (chip->options & NAND_BUSWIDTH_16) {
-+		pr_warn("onfi set feature command buggy for 16-bit chips\n");
-+		return -ENOTSUPP;
-+	}
-+
- 	chip->cmdfunc(mtd, NAND_CMD_SET_FEATURES, addr, -1);
- 	chip->write_buf(mtd, subfeature_param, ONFI_SUBFEATURE_PARAM_LEN);
- 	status = chip->waitfunc(mtd, chip);
-@@ -2729,7 +2734,7 @@ static int nand_onfi_set_features(struct mtd_info *mtd, struct nand_chip *chip,
- }
- 
- /**
-- * nand_onfi_get_features- [REPLACEABLE] get features for ONFI nand
-+ * nand_onfi_get_features - [REPLACEABLE] get features for ONFI nand
-  * @mtd: MTD device structure
-  * @chip: nand chip info structure
-  * @addr: feature address.
-@@ -2738,6 +2743,8 @@ static int nand_onfi_set_features(struct mtd_info *mtd, struct nand_chip *chip,
- static int nand_onfi_get_features(struct mtd_info *mtd, struct nand_chip *chip,
- 			int addr, uint8_t *subfeature_param)
- {
-+	int i;
-+
- 	if (!chip->onfi_version)
- 		return -EINVAL;
- 
-@@ -2745,7 +2752,8 @@ static int nand_onfi_get_features(struct mtd_info *mtd, struct nand_chip *chip,
- 	memset(subfeature_param, 0, ONFI_SUBFEATURE_PARAM_LEN);
- 
- 	chip->cmdfunc(mtd, NAND_CMD_GET_FEATURES, addr, -1);
--	chip->read_buf(mtd, subfeature_param, ONFI_SUBFEATURE_PARAM_LEN);
-+	for (i = 0; i < ONFI_SUBFEATURE_PARAM_LEN; ++i)
-+		*subfeature_param++ = chip->read_byte(mtd);
- 	return 0;
- }
- 
--- 
-1.7.10.4
+Regards
+Mark J.
