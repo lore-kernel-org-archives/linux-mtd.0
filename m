@@ -1,22 +1,18 @@
-Received: from [2002:c35c:fd02::1] (helo=ZenIV.linux.org.uk)
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UAUsN-0000pM-Oy
- for linux-mtd@lists.infradead.org; Wed, 27 Feb 2013 00:28:05 +0000
-Date: Wed, 27 Feb 2013 00:27:55 +0000
-From: Al Viro <viro@ZenIV.linux.org.uk>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: linux-next: JFFS2 deadlock
-Message-ID: <20130227002755.GL4503@ZenIV.linux.org.uk>
-References: <512CA290.6050509@mimc.co.uk>
- <20130227101704.90466ae6df78ab9b3aa4ba22@canb.auug.org.au>
+ id 1UAies-000724-Of
+ for linux-mtd@lists.infradead.org; Wed, 27 Feb 2013 15:11:04 +0000
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd/nand: don't use {read,write}_buf for 8-bit transfers
+Date: Wed, 27 Feb 2013 16:10:52 +0100
+Message-Id: <1361977852-18233-1-git-send-email-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20130227101704.90466ae6df78ab9b3aa4ba22@canb.auug.org.au>
-Sender: Al Viro <viro@ftp.linux.org.uk>
-Cc: linux-mtd@lists.infradead.org, linux-next@vger.kernel.org,
- Mark Jackson <mpfj-list@mimc.co.uk>, David Woodhouse <dwmw2@infradead.org>,
- lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Huang Shijie <b32955@freescale.com>,
+ David Woodhouse <David.Woodhouse@intel.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,25 +22,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Feb 27, 2013 at 10:17:04AM +1100, Stephen Rothwell wrote:
-> Hi Mark,
-> 
-> On Tue, 26 Feb 2013 11:54:56 +0000 Mark Jackson <mpfj-list@mimc.co.uk> wrote:
-> >
-> > Just tested the current next-20130226 on a custom AM335X board, and I received the JFFS2 deadlock shown below.
-> 
-> Is this new today?  is it reproducible? Does if ail for Linus' tree?
-> 
-> Al, could this be something to do with the new stuff in the vfs tree?
+According to the Open NAND Flash Interface Specification (ONFI) Revision
+3.1 "Parameters are always transferred on the lower 8-bits of the data
+bus." for the Get Features and Set Features commands.
 
-Very unlikely.  jffs2_readdir() does, indeed, grab ->sem on the inode in
-question and then calls the callback (which might fault, grabbing ->mmap_sem).
-Had been doing that all along.  And if the userland area we are doing
-getdents(2) into had been mmapped from jffs2 file, jffs2_readpage() would
-be called, which would grab ->sem on the inode of file mmaped in there.
-Again, that had been going on all along.  Unlike the situation with ->i_mutex,
-this one is probably a false positive - ->sem on directories nests outside of
-->mmap_sem, ->sem on non-directories - inside.  But that false positive
-shouldn't be something new; hell, both paths are present in 2.6.12 with
-the lock orders as in the current tree (except that ->sem used to be
-a semaphore instead of a mutex).
+So using read_buf and write_buf is wrong for 16-bit wide nand chips as
+they use I/O[15:0]. The Get Features command is easily fixed using 4
+times the read_byte callback. For Set Features error out as there is no
+write_byte callback.
+
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+Hello,
+
+note this is only compile tested and I don't have a 16-bit wide nand, so I
+don't even saw a failure.
+
+The problem exists since commit
+
+	7db03ec (mtd: add helpers to set/get features for ONFI nand)
+
+which introduced the two functions.
+
+Still I'd like to know how I can write a byte (or a sequence of bytes) as this
+is necessary for locking the otp are of micron chips. Well, I could implement
+it for 8-bit chips only, but this isn't very satisfying.
+
+Do we need to add a write_byte callback to struct nand_chip? Or is there
+a way to do write a byte that I'm just too blind to see?
+
+Is this patch relevant for stable? Probably not!?
+
+Best regards
+Uwe
+
+ drivers/mtd/nand/nand_base.c |   14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 4321415..abfd8ca 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2706,7 +2706,7 @@ static int nand_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ }
+ 
+ /**
+- * nand_onfi_set_features- [REPLACEABLE] set features for ONFI nand
++ * nand_onfi_set_features - [REPLACEABLE] set features for ONFI nand
+  * @mtd: MTD device structure
+  * @chip: nand chip info structure
+  * @addr: feature address.
+@@ -2720,6 +2720,11 @@ static int nand_onfi_set_features(struct mtd_info *mtd, struct nand_chip *chip,
+ 	if (!chip->onfi_version)
+ 		return -EINVAL;
+ 
++	if (chip->options & NAND_BUSWIDTH_16) {
++		pr_warn("onfi set feature command buggy for 16-bit chips\n");
++		return -ENOTSUPP;
++	}
++
+ 	chip->cmdfunc(mtd, NAND_CMD_SET_FEATURES, addr, -1);
+ 	chip->write_buf(mtd, subfeature_param, ONFI_SUBFEATURE_PARAM_LEN);
+ 	status = chip->waitfunc(mtd, chip);
+@@ -2729,7 +2734,7 @@ static int nand_onfi_set_features(struct mtd_info *mtd, struct nand_chip *chip,
+ }
+ 
+ /**
+- * nand_onfi_get_features- [REPLACEABLE] get features for ONFI nand
++ * nand_onfi_get_features - [REPLACEABLE] get features for ONFI nand
+  * @mtd: MTD device structure
+  * @chip: nand chip info structure
+  * @addr: feature address.
+@@ -2738,6 +2743,8 @@ static int nand_onfi_set_features(struct mtd_info *mtd, struct nand_chip *chip,
+ static int nand_onfi_get_features(struct mtd_info *mtd, struct nand_chip *chip,
+ 			int addr, uint8_t *subfeature_param)
+ {
++	int i;
++
+ 	if (!chip->onfi_version)
+ 		return -EINVAL;
+ 
+@@ -2745,7 +2752,8 @@ static int nand_onfi_get_features(struct mtd_info *mtd, struct nand_chip *chip,
+ 	memset(subfeature_param, 0, ONFI_SUBFEATURE_PARAM_LEN);
+ 
+ 	chip->cmdfunc(mtd, NAND_CMD_GET_FEATURES, addr, -1);
+-	chip->read_buf(mtd, subfeature_param, ONFI_SUBFEATURE_PARAM_LEN);
++	for (i = 0; i < ONFI_SUBFEATURE_PARAM_LEN; ++i)
++		*subfeature_param++ = chip->read_byte(mtd);
+ 	return 0;
+ }
+ 
+-- 
+1.7.10.4
