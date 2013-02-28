@@ -1,17 +1,17 @@
 Received: from ns.omicron.at ([212.183.10.25])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UB1b5-0006VA-NH
- for linux-mtd@lists.infradead.org; Thu, 28 Feb 2013 11:24:25 +0000
+ id 1UB1bt-0006xe-Go
+ for linux-mtd@lists.infradead.org; Thu, 28 Feb 2013 11:25:15 +0000
 From: Christian Riesch <christian.riesch@omicron.at>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH RFC 0/4] mtd: cfi_cmdset_0002: Add OTP support for Micron
- M29EW NOR flashes
-Date: Thu, 28 Feb 2013 12:23:22 +0100
+Subject: [PATCH RFC 1/4] mtd: cfi_probe: Fix detection of Micron M29EW flashes
+Date: Thu, 28 Feb 2013 12:23:23 +0100
+In-Reply-To: <1362050606-29475-1-git-send-email-christian.riesch@omicron.at>
+References: <1362050606-29475-1-git-send-email-christian.riesch@omicron.at>
 MIME-Version: 1.0
 Content-Type: text/plain
-Message-ID: <bf9a9f72-17b8-42d7-9f6c-7c1c152ef246@mary.at.omicron.at>
+Message-ID: <d18e4efe-d65f-4ba6-b037-ba6201de8449@mary.at.omicron.at>
 Cc: Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>,
- Uwe Kleine-Koenig <u.kleine-koenig@pengutronix.de>,
  Christian Riesch <christian.riesch@omicron.at>,
  Gerlando Falauto <gerlando.falauto@keymile.com>,
  David Woodhouse <David.Woodhouse@intel.com>
@@ -24,47 +24,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Commit 420962884379bd434a7f643d0936281b2ab4b30c introduces two
+bugfixes for Micron M29EW flash chips.
+
+Whereas the fixes are fine, the detection of the M29EW devices only
+checks the first byte of the device code and not the full three byte
+code. Similar to some Spansion devices, the Micron M29EW have an extended
+three byte id.
+
+Reading the three byte id is already supported for Spansion flashes.
+This patch applies this also for Micron M29EW devices (which have
+an Intel manufacturer ID).
+
+Signed-off-by: Christian Riesch <christian.riesch@omicron.at>
+Cc: Gerlando Falauto <gerlando.falauto@keymile.com>
+Cc: Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>
+Cc: David Woodhouse <David.Woodhouse@intel.com>
+---
+
 Hi,
 
-this patchset is a first attempt to add support for reading and
-writing the one time programmable (OTP) memory of Micron M29EW NOR flashes.
+According to the datasheet of the Micron M29EW, the device codes obtained
+with the patch below should be
 
-These flashes have a 256 byte OTP memory, which is called extended
-memory region in its datasheet. The flash is compatible to Spansion S29GL
-and Macronix MX29GL devices, so support for the OTP memory of these
-flashes should also be possible.
+0x2201 for 256 Mb devices,
+0x2301 for 512 Mb devices,
+0x2801 for 1 Gb devices, and
+0x4801 for 2 Gb devices.
 
-Later I would like to add support for locking this memory region, too.
-
-I only did a few basic tests with this patchset with a single Micron
-M29EW device (512Mbit, 16 bit, only one chip) on a custom board
-with a Texas Instruments AM1808 system on chip. I am submitting this
-patchset now before doing more testing since I would like to hear
-your comments on it; this is my first patchset in the mtd subsystem.
-
-Please see also my comments in the patches, I have a few questions there.
+However, with my 512 Mb flash (ordering code PC28F512M29EWH), the code results
+in 0x3901, this is why I added this device code in is_m29ew() as well. Has
+anyone any experience with these flashes? Is there anyone around who could try
+this patch on a M29EW device?
 
 Thank you!
 
 Best regards, Christian
 
-Cc: Gerlando Falauto <gerlando.falauto@keymile.com>
-Cc: Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>
-Cc: David Woodhouse <David.Woodhouse@intel.com>
-Cc: Uwe Kleine-Koenig <u.kleine-koenig@pengutronix.de>
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-Christian Riesch (4):
-  mtd: cfi_probe: Fix detection of Micron M29EW flashes
-  mtd: cfi_cmdset_0002: Add support for reading OTP memory of Micron
-    M29EW
-  mtd: cfi_cmdset_0002: Invalidate cache after entering/exiting OTP
-    memory
-  mtd: cfi_cmdset_0002: Add support for writing OTP memory
-
- drivers/mtd/chips/Kconfig           |    1 +
- drivers/mtd/chips/cfi_cmdset_0002.c |  228 ++++++++++++++++++++++++++++++++---
- drivers/mtd/chips/cfi_probe.c       |    4 +-
- 3 files changed, 212 insertions(+), 21 deletions(-)
-
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index b861972..8391890 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -434,8 +434,8 @@ static void cfi_fixup_major_minor(struct cfi_private *cfi,
+ static int is_m29ew(struct cfi_private *cfi)
+ {
+ 	if (cfi->mfr == CFI_MFR_INTEL &&
+-	    ((cfi->device_type == CFI_DEVICETYPE_X8 && (cfi->id & 0xff) == 0x7e) ||
+-	     (cfi->device_type == CFI_DEVICETYPE_X16 && cfi->id == 0x227e)))
++	    (cfi->id == 0x2201 || cfi->id == 0x2301 || cfi->id == 0x2801 ||
++	     cfi->id == 0x4801 || cfi->id == 0x3901))
+ 		return 1;
+ 	return 0;
+ }
+diff --git a/drivers/mtd/chips/cfi_probe.c b/drivers/mtd/chips/cfi_probe.c
+index d255352..3d4b42d 100644
+--- a/drivers/mtd/chips/cfi_probe.c
++++ b/drivers/mtd/chips/cfi_probe.c
+@@ -228,8 +228,8 @@ static int __xipram cfi_chip_setup(struct map_info *map,
+ 	cfi->mfr = cfi_read_query16(map, base);
+ 	cfi->id = cfi_read_query16(map, base + ofs_factor);
+ 
+-	/* Get AMD/Spansion extended JEDEC ID */
+-	if (cfi->mfr == CFI_MFR_AMD && (cfi->id & 0xff) == 0x7e)
++	/* Get AMD/Spansion (and compatible devices) extended JEDEC ID */
++	if ((cfi->mfr == CFI_MFR_AMD || cfi->mfr == CFI_MFR_INTEL) && (cfi->id & 0xff) == 0x7e)
+ 		cfi->id = cfi_read_query(map, base + 0xe * ofs_factor) << 8 |
+ 			  cfi_read_query(map, base + 0xf * ofs_factor);
+ 
 -- 
 1.7.9.5
