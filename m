@@ -1,21 +1,22 @@
-From: "Philip, Avinash" <avinashphilip@ti.com>
-To: Mark Jackson <mpfj-list@mimc.co.uk>, Stephen Rothwell
- <sfr@canb.auug.org.au>
-Subject: RE: linux-next: JFFS2 corruption
-Date: Thu, 28 Feb 2013 04:11:56 +0000
-Message-ID: <518397C60809E147AF5323E0420B992E3EA8EF4A@DBDE01.ent.ti.com>
-References: <512CD9BA.3080300@mimc.co.uk>
- <20130227101824.6e18ba21fb99070594420f29@canb.auug.org.au>
- <512E2241.9040705@mimc.co.uk>
-In-Reply-To: <512E2241.9040705@mimc.co.uk>
+Received: from comal.ext.ti.com ([198.47.26.152])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UAxBP-0003Tn-Hv
+ for linux-mtd@lists.infradead.org; Thu, 28 Feb 2013 06:41:37 +0000
+Received: from dbdp20.itg.ti.com ([172.24.170.38])
+ by comal.ext.ti.com (8.13.7/8.13.7) with ESMTP id r1S6fWFf007040
+ for <linux-mtd@lists.infradead.org>; Thu, 28 Feb 2013 00:41:33 -0600
+Received: from DBDE70.ent.ti.com (localhost [127.0.0.1])
+ by dbdp20.itg.ti.com (8.13.8/8.13.8) with ESMTP id r1S6fVG5023104
+ for <linux-mtd@lists.infradead.org>; Thu, 28 Feb 2013 12:11:31 +0530 (IST)
+From: "Gupta, Pekon" <pekon@ti.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: NAND subpage write support interface
+Date: Thu, 28 Feb 2013 06:41:31 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E99AFBE@DBDE01.ent.ti.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>, lkml <linux-kernel@vger.kernel.org>,
- Al Viro <viro@zeniv.linux.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,58 +26,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Feb 27, 2013 at 20:42:01, Mark Jackson wrote:
-> On 26/02/13 23:18, Stephen Rothwell wrote:
-> > Hi Mark,
-> >=20
-> > On Tue, 26 Feb 2013 15:50:18 +0000 Mark Jackson <mpfj-list@mimc.co.uk> =
-wrote:
-> >>
-> >> Just tested the current next-20130226 on a custom AM335X board, and if=
- I mount
-> >> our JFFS2 image as read/write, the next reboot shows the image as bein=
-g corrupt.
-> >>
-> >> If I reprogram the jffs2 image into NAND and only mount the volume as =
-read-only,
-> >> no corruption occurs and the system remains intact.
-> >>
-> >> I have also tested:-
-> >>
-> >> (a) reprogram ubifs image into nand
-> >> (b) boot the volume as read-only (corrupt -> no)
-> >> (c) remount the volume as read/write
-> >> (d) rebooting the volume as read-only (corrupt -> yes)
-> >=20
-> > Thanks for all the testing.  Sam questions as in my other email.
->=20
-> Okay, just tested 3v8 plus:-
->=20
-> https://patchwork.kernel.org/patch/1931251/
-> https://patchwork.kernel.org/patch/1931221/
-> https://patchwork.kernel.org/patch/1931201/
-> and changed drivers/mtd/nand/elm.c, line 388 "ti,am33xx-elm" to "ti,am335=
-2-elm"
->=20
-> This produces an identical corruption.
->=20
-> I have also tested next-20130225 and next-20130227, and both cause the sa=
-me corruption.
+Hi All,
 
-JFFS2 is not supported in am335x with BCH8 ecc scheme because of ECC layout=
- constraints.
-Reasons for disabling JFFS2 support documented in the wiki
-http://processors.wiki.ti.com/index.php/AM335x_JFFS2_Support_Guide#Reasons_=
-for_disabling_JFFS2_support
+Need a suggestion, based on my understanding of following flow in NAND driv=
+er:
+
+MTD Writes: (Currently implemented)
+nand_write [Interface]
+    +-- nand_do_write_ops  [Internal]
+              +-- chip->write_page   [Replacable]
+                        +-- chip->ecc.write_page_raw  [Replaceable]
+                        +-- chip->ecc.write_page [Replaceable]
 
 
-Thanks
-Avinash
->=20
-> Regards
-> Mark J.
->=20
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->=20
+MTD Read: (Currently implemented)
+nand_read [Interface]
+    +-- nand_do_read_ops  [Internal]
+                +-- chip->ecc.read_page_raw  [Replaceable]
+                +-- chip->ecc.read_subpage [Replaceable]
+                +-- chip->ecc.write_page [Replaceable]
+
+
+As per above, the 'MTD_Write' data-path is not same as 'MTD_Read'.
+There is extra interface of  'chip->write_page', which was probably kept=20
+for different programming modes on MLC/SLC nands.
+
+
+My queries:=20
+ (1) Going forward, Can the MLC and SLC programming sequence be merged=20
+In generic 'nand_do_write_ops' ?=20
+And 'chip->write_page' interface can be deprecated?
+Currently I do not see any driver  except 'lpc32xx_mlc.c' using this interf=
+ace.=20
+
+--------------------------------------------------
+
+MTD Writes: (with deprecated chip->write_page interface)
+nand_write [Interface]
+    +-- nand_do_write_ops  [Internal]
+               +-- chip->ecc.write_page_raw  [Replaceable]
+               +-- chip->ecc.write_page [Replaceable]
+
+--------------------------------------------------
+
+
+ (2) To add support for NAND subpage writes, I need to pass 'column' offset=
+=20
+also till chip->ecc.nand_subpage_write. So I need to either update existing=
+=20
+'chip->write_page' interface, =20
+OR add a new interface 'chip->write_subpage' in parallel.
+
+--------------------------------------------------
+
+MTD Writes: (including chip->write_subpage in addition to chip->write_page)
+nand_write [Interface]
+    +-- nand_do_write_ops  [Internal]
+              +-- chip->write_page   [Replacable]
+                         +-- chip->ecc.write_page_raw  [Replaceable]
+                         +-- chip->ecc.write_page [Replaceable]
+              +-- chip->write_subpage_page   [Replacable]
+                         +-- chip->ecc.write_subpage [Replaceable]
+
+--------------------------------------------------
+
+Please suggest which is approach is more scalable, and clean going forward.
+(Apologies if the mail formatting was messed up)
+
+
+with regards, pekon
