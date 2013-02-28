@@ -1,20 +1,21 @@
-Received: from co1ehsobe001.messaging.microsoft.com ([216.32.180.184]
- helo=co1outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UAtWq-00062k-Bs
- for linux-mtd@lists.infradead.org; Thu, 28 Feb 2013 02:47:29 +0000
-Message-ID: <512EC54F.3090400@freescale.com>
-Date: Thu, 28 Feb 2013 10:47:43 +0800
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: =?UTF-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= <u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH] mtd/nand: don't use {read,write}_buf for 8-bit transfers
-References: <1361977852-18233-1-git-send-email-u.kleine-koenig@pengutronix.de>
-In-Reply-To: <1361977852-18233-1-git-send-email-u.kleine-koenig@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+From: "Philip, Avinash" <avinashphilip@ti.com>
+To: Mark Jackson <mpfj-list@mimc.co.uk>, Stephen Rothwell
+ <sfr@canb.auug.org.au>
+Subject: RE: linux-next: JFFS2 corruption
+Date: Thu, 28 Feb 2013 04:11:56 +0000
+Message-ID: <518397C60809E147AF5323E0420B992E3EA8EF4A@DBDE01.ent.ti.com>
+References: <512CD9BA.3080300@mimc.co.uk>
+ <20130227101824.6e18ba21fb99070594420f29@canb.auug.org.au>
+ <512E2241.9040705@mimc.co.uk>
+In-Reply-To: <512E2241.9040705@mimc.co.uk>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-mtd@lists.infradead.org, David Woodhouse <David.Woodhouse@intel.com>
+MIME-Version: 1.0
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>, lkml <linux-kernel@vger.kernel.org>,
+ Al Viro <viro@zeniv.linux.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,25 +25,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B402=E6=9C=8827=E6=97=A5 23:10, Uwe Kleine-K=C3=B6ni=
-g =E5=86=99=E9=81=93:
-> According to the Open NAND Flash Interface Specification (ONFI) Revisio=
-n
-> 3.1 "Parameters are always transferred on the lower 8-bits of the data
-> bus." for the Get Features and Set Features commands.
->
-yes. the set/get features should works in 8-bit.
+On Wed, Feb 27, 2013 at 20:42:01, Mark Jackson wrote:
+> On 26/02/13 23:18, Stephen Rothwell wrote:
+> > Hi Mark,
+> >=20
+> > On Tue, 26 Feb 2013 15:50:18 +0000 Mark Jackson <mpfj-list@mimc.co.uk> =
+wrote:
+> >>
+> >> Just tested the current next-20130226 on a custom AM335X board, and if=
+ I mount
+> >> our JFFS2 image as read/write, the next reboot shows the image as bein=
+g corrupt.
+> >>
+> >> If I reprogram the jffs2 image into NAND and only mount the volume as =
+read-only,
+> >> no corruption occurs and the system remains intact.
+> >>
+> >> I have also tested:-
+> >>
+> >> (a) reprogram ubifs image into nand
+> >> (b) boot the volume as read-only (corrupt -> no)
+> >> (c) remount the volume as read/write
+> >> (d) rebooting the volume as read-only (corrupt -> yes)
+> >=20
+> > Thanks for all the testing.  Sam questions as in my other email.
+>=20
+> Okay, just tested 3v8 plus:-
+>=20
+> https://patchwork.kernel.org/patch/1931251/
+> https://patchwork.kernel.org/patch/1931221/
+> https://patchwork.kernel.org/patch/1931201/
+> and changed drivers/mtd/nand/elm.c, line 388 "ti,am33xx-elm" to "ti,am335=
+2-elm"
+>=20
+> This produces an identical corruption.
+>=20
+> I have also tested next-20130225 and next-20130227, and both cause the sa=
+me corruption.
 
-I have never met a 16-bit onfi nand yet. :)
+JFFS2 is not supported in am335x with BCH8 ecc scheme because of ECC layout=
+ constraints.
+Reasons for disabling JFFS2 support documented in the wiki
+http://processors.wiki.ti.com/index.php/AM335x_JFFS2_Support_Guide#Reasons_=
+for_disabling_JFFS2_support
 
-> So using read_buf and write_buf is wrong for 16-bit wide nand chips as
-> they use I/O[15:0]. The Get Features command is easily fixed using 4
-> times the read_byte callback. For Set Features error out as there is no
-yes. for get features, it's easy to fix it.
-> write_byte callback.
-Most of the time, the nand controller will overwrite the write_buf hook..=
-.
-I also think we need a write_byte callback.
 
-thanks
-Huang Shijie
+Thanks
+Avinash
+>=20
+> Regards
+> Mark J.
+>=20
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>=20
