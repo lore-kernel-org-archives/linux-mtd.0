@@ -1,22 +1,18 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from smtp17.mail.ru ([94.100.176.154])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UAxBP-0003Tn-Hv
- for linux-mtd@lists.infradead.org; Thu, 28 Feb 2013 06:41:37 +0000
-Received: from dbdp20.itg.ti.com ([172.24.170.38])
- by comal.ext.ti.com (8.13.7/8.13.7) with ESMTP id r1S6fWFf007040
- for <linux-mtd@lists.infradead.org>; Thu, 28 Feb 2013 00:41:33 -0600
-Received: from DBDE70.ent.ti.com (localhost [127.0.0.1])
- by dbdp20.itg.ti.com (8.13.8/8.13.8) with ESMTP id r1S6fVG5023104
- for <linux-mtd@lists.infradead.org>; Thu, 28 Feb 2013 12:11:31 +0530 (IST)
-From: "Gupta, Pekon" <pekon@ti.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: NAND subpage write support interface
-Date: Thu, 28 Feb 2013 06:41:31 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E99AFBE@DBDE01.ent.ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+ id 1UAyRm-00052W-HE
+ for linux-mtd@lists.infradead.org; Thu, 28 Feb 2013 08:02:36 +0000
+From: Alexander Shiyan <shc_work@mail.ru>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 2/3] mtd: nand_base: Removed unnecessary cleaning
+ "onfi_version" variable
+Date: Thu, 28 Feb 2013 12:02:20 +0400
+Message-Id: <1362038541-22406-2-git-send-email-shc_work@mail.ru>
+In-Reply-To: <1362038541-22406-1-git-send-email-shc_work@mail.ru>
+References: <1362038541-22406-1-git-send-email-shc_work@mail.ru>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Alexander Shiyan <shc_work@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,72 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
+Variable "onfi_version" is already set to zero before nand_flash_detect_onfi()
+call, so additional cleaning is not necessary.
 
-Need a suggestion, based on my understanding of following flow in NAND driv=
-er:
+Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+---
+ drivers/mtd/nand/nand_base.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
 
-MTD Writes: (Currently implemented)
-nand_write [Interface]
-    +-- nand_do_write_ops  [Internal]
-              +-- chip->write_page   [Replacable]
-                        +-- chip->ecc.write_page_raw  [Replaceable]
-                        +-- chip->ecc.write_page [Replaceable]
-
-
-MTD Read: (Currently implemented)
-nand_read [Interface]
-    +-- nand_do_read_ops  [Internal]
-                +-- chip->ecc.read_page_raw  [Replaceable]
-                +-- chip->ecc.read_subpage [Replaceable]
-                +-- chip->ecc.write_page [Replaceable]
-
-
-As per above, the 'MTD_Write' data-path is not same as 'MTD_Read'.
-There is extra interface of  'chip->write_page', which was probably kept=20
-for different programming modes on MLC/SLC nands.
-
-
-My queries:=20
- (1) Going forward, Can the MLC and SLC programming sequence be merged=20
-In generic 'nand_do_write_ops' ?=20
-And 'chip->write_page' interface can be deprecated?
-Currently I do not see any driver  except 'lpc32xx_mlc.c' using this interf=
-ace.=20
-
---------------------------------------------------
-
-MTD Writes: (with deprecated chip->write_page interface)
-nand_write [Interface]
-    +-- nand_do_write_ops  [Internal]
-               +-- chip->ecc.write_page_raw  [Replaceable]
-               +-- chip->ecc.write_page [Replaceable]
-
---------------------------------------------------
-
-
- (2) To add support for NAND subpage writes, I need to pass 'column' offset=
-=20
-also till chip->ecc.nand_subpage_write. So I need to either update existing=
-=20
-'chip->write_page' interface, =20
-OR add a new interface 'chip->write_subpage' in parallel.
-
---------------------------------------------------
-
-MTD Writes: (including chip->write_subpage in addition to chip->write_page)
-nand_write [Interface]
-    +-- nand_do_write_ops  [Internal]
-              +-- chip->write_page   [Replacable]
-                         +-- chip->ecc.write_page_raw  [Replaceable]
-                         +-- chip->ecc.write_page [Replaceable]
-              +-- chip->write_subpage_page   [Replacable]
-                         +-- chip->ecc.write_subpage [Replaceable]
-
---------------------------------------------------
-
-Please suggest which is approach is more scalable, and clean going forward.
-(Apologies if the mail formatting was messed up)
-
-
-with regards, pekon
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 13c89c9..382b857 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2888,8 +2888,6 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+ 		chip->onfi_version = 20;
+ 	else if (val & (1 << 1))
+ 		chip->onfi_version = 10;
+-	else
+-		chip->onfi_version = 0;
+ 
+ 	if (!chip->onfi_version) {
+ 		pr_info("%s: unsupported ONFI version: %d\n", __func__, val);
+-- 
+1.7.3.4
