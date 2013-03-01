@@ -1,24 +1,23 @@
-Received: from mx.mcc-med.de ([213.148.153.242])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UBMOT-0003kL-W9
- for linux-mtd@lists.infradead.org; Fri, 01 Mar 2013 09:36:47 +0000
-From: "Velykokhatko, Sergey" <Sergey.Velykokhatko@mcc-med.de>
-To: "'Richard Genoud'" <richard.genoud@gmail.com>, Brian Norris
- <computersforpeace@gmail.com>
-Date: Fri, 1 Mar 2013 10:36:35 +0100
-Subject: AW: Bug in mtd_get_device_size()?
-Message-ID: <BAF0C2081321BA469F9ADF648F97D9B04C78FA6076@MCC023.weinmann.com>
-References: <BAF0C2081321BA469F9ADF648F97D9B04C78FA6069@MCC023.weinmann.com>
- <CAN8TOE9YJBvUE9GDW3krZB-Js6gUkqY23gYNLS4gFX0e2NDNZw@mail.gmail.com>
- <CACQ1gAgz+nko3S4=KC=fAa8-V0gEchB05W6y1edOxYRmB9W0UQ@mail.gmail.com>
-In-Reply-To: <CACQ1gAgz+nko3S4=KC=fAa8-V0gEchB05W6y1edOxYRmB9W0UQ@mail.gmail.com>
-Content-Language: de-DE
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UBMkJ-00060h-I1
+ for linux-mtd@lists.infradead.org; Fri, 01 Mar 2013 09:59:20 +0000
+Date: Fri, 1 Mar 2013 10:59:14 +0100
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+Subject: Re: [PATCH] mtd/nand: don't use {read,write}_buf for 8-bit transfers
+Message-ID: <20130301095914.GK22886@pengutronix.de>
+References: <1361977852-18233-1-git-send-email-u.kleine-koenig@pengutronix.de>
+ <512EC54F.3090400@freescale.com> <513072F5.6010609@parrot.com>
 MIME-Version: 1.0
-Cc: "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <513072F5.6010609@parrot.com>
+Cc: Huang Shijie <b32955@freescale.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+ David Woodhouse <David.Woodhouse@intel.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,111 +27,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgUmljaGFyZCwNCg0KVGhhbmtzLCBJIHNhdyB0aGF0IGRlZmluaXRpb24gYW5kIGNhbGN1bGF0
-aW9uIGZvcm11bGEuIEJ1dCBpdCBpcyBhbWJpZ3VvdXMuIERlcGVuZGluZyBvbiB3aGF0IHlvdSB0
-YWtlIGZvciBiYXNpcyBmb3IgdGhhdCAxMDI0LiBJZiB5b3UgdGFrZSBNVEQgc2l6ZSB5b3UgZ2V0
-IGNvbXBsZXRlbHkgb3RoZXIgcmVzdWx0IGFzIGZvciBiYXNpcyB3aXRoIHdob2xlIGNoaXAgc2l6
-ZS4gSW4gbXkgaW50ZXJwcmV0YXRpb24gb2YgYWN0dWFsIGltcGxlbWVudGF0aW9uIHRoZSBiYXNp
-cyBvZiB3aG9sZSBjaGlwIHNpemUgZm9yIHRoaXMgY2FzZSBpcyB0b3RhbGx5IHdyb25nIHNpbmNl
-IGl0IGJyaW5ncyBsaW1pdGF0aW9ucyBvZiBtaW5pbXVtIHBhcnRpdGlvbiBzaXplIGRyaXZlbiB3
-aXRoIFVCSSAoc29tZW9uZSBmcm9tIHlvdSBhbHJlYWR5IGxpc3RlZCB0aGlzIGFyZ3VtZW50IHRv
-bykuIEluIG15IGNhc2UgSSBwYXRjaGVkIHRoaXMgdGhpbmcgaW4gbXRkX2dldF9kZXZpY2Vfc2l6
-ZSgpLiBJIHVuZGVyc3RhbmQgdGhhdCBwYXRjaCBpcyB3cm9uZyBmb3IgY29tcGxldGUgc3lzdGVt
-IGluIHlvdXIgaW50ZXJwcmV0YXRpb24uIEJ1dCBJIHJlcG9ydCB5b3UgbXkgcHJvYmxlbSBjYXNl
-LCBsaXN0ZWQgeW91IG15IGFyZ3VtZW50cyBhbmQgeW91IGRlY2lkZSB3aGF0IHRvIGRvLiBJbiAi
-b3VyIiAzLjggS2VybmVsIEkgbGVmdCBteSBwYXRjaCBzaW5jZSBub3cgc3lzdGVtIHdvcmtzIHNv
-IGFzIEkgZXhwZWN0ZWQuIA0KDQpUaGFua3MgYSBsb3QsDQpCZXN0IHJlZ2FyZHMsDQpTZXJnZXkN
-Cg0KDQoNCi0tLS0tVXJzcHLDvG5nbGljaGUgTmFjaHJpY2h0LS0tLS0NClZvbjogUmljaGFyZCBH
-ZW5vdWQgW21haWx0bzpyaWNoYXJkLmdlbm91ZEBnbWFpbC5jb21dIA0KR2VzZW5kZXQ6IEZyZWl0
-YWcsIDEuIE3DpHJ6IDIwMTMgMDk6MTENCkFuOiBCcmlhbiBOb3JyaXMNCkNjOiBWZWx5a29raGF0
-a28sIFNlcmdleTsgbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IGxpbnV4LWtlcm5lbEB2
-Z2VyLmtlcm5lbC5vcmc7IGFydGVtLmJpdHl1dHNraXlAbGludXguaW50ZWwuY29tDQpCZXRyZWZm
-OiBSZTogQnVnIGluIG10ZF9nZXRfZGV2aWNlX3NpemUoKT8NCg0KMjAxMy8yLzI4IEJyaWFuIE5v
-cnJpcyA8Y29tcHV0ZXJzZm9ycGVhY2VAZ21haWwuY29tPjoNCj4gKyBSaWNoYXJkDQo+DQo+IE9u
-IFRodSwgRmViIDI4LCAyMDEzIGF0IDQ6MzAgQU0sIFZlbHlrb2toYXRrbywgU2VyZ2V5IA0KPiA8
-U2VyZ2V5LlZlbHlrb2toYXRrb0BtY2MtbWVkLmRlPiB3cm90ZToNCj4+IEkgZ290IHRvZGF5IHN1
-Y2ggY2FzZToNCj4+DQo+PiAgICAgICAqIEtlcm5lbCAzLjgNCj4+DQo+PiAgICAgICAqIFdlIGFy
-ZSB1c2luZyBNMjlGMkcxNiBOQU5EIGNoaXAgd2l0aCA0MDk2IGJsb2NrcywgZWFjaCBoYXMgDQo+
-PiAxMjhrDQo+Pg0KPj4gICAgICAgKiBDb25maWd1cmVkIHdpdGggQ09ORklHX01URF9VQklfQkVC
-X0xJTUlUPTEwMA0KPg0KPiBUaGlzIGlzIHlvdXIgcHJvYmxlbS4gU2VlIGJlbG93IGZvciBtb3Jl
-IGNvbW1lbnRzLg0KPg0KPj4gICAgICAgKiBPdXIgcm9vdGZzIHBhcnRpdGlvbiBjb250YWlucyA2
-NDAgRUJzDQo+Pg0KPj4gICAgICAgKiBBdCBzeXN0ZW0gc3RhcnQgY29tZXMgZm9sbG93aW5nIGVy
-cm9yIG1lc3NhZ2U6DQo+Pg0KPj4gRmViIDI4IDA5OjIzOjA5IChub25lKSBrZXJuLm5vdGljZSBr
-ZXJuZWw6IFsgICAgMC4zNzUwMDBdIENyZWF0aW5nIDYgTVREDQo+PiBwYXJ0aXRpb25zIG9uICJh
-dG1lbF9uYW5kIjoNCj4+DQo+PiBGZWIgMjggMDk6MjM6MDkgKG5vbmUpIGtlcm4ubm90aWNlIGtl
-cm5lbDogWyAgICAwLjM3NTAwMF0NCj4+IDB4MDAwMDAwMDAwMDAwLTB4MDAwMDAwMDIwMDAwIDog
-Im9ic29sZXRlX2Jvb3RzdHJhcCINCj4+DQo+PiBGZWIgMjggMDk6MjM6MDkgKG5vbmUpIGtlcm4u
-bm90aWNlIGtlcm5lbDogWyAgICAwLjM4MTAwMF0NCj4+IDB4MDAwMDAwMDIwMDAwLTB4MDAwMDAw
-MzIwMDAwIDogImtlcm5lbF9hIg0KPj4NCj4+IEZlYiAyOCAwOToyMzowOSAobm9uZSkga2Vybi5u
-b3RpY2Uga2VybmVsOiBbICAgIDAuMzg2MDAwXQ0KPj4gMHgwMDAwMDAzMjAwMDAtMHgwMDAwMDA2
-MjAwMDAgOiAia2VybmVsX2IiDQo+Pg0KPj4gRmViIDI4IDA5OjIzOjA5IChub25lKSBrZXJuLm5v
-dGljZSBrZXJuZWw6IFsgICAgMC4zOTIwMDBdDQo+PiAweDAwMDAwMDYyMDAwMC0weDAwMDAwNTYy
-MDAwMCA6ICJyb290ZnNfYSINCj4+DQo+PiBGZWIgMjggMDk6MjM6MDkgKG5vbmUpIGtlcm4ubm90
-aWNlIGtlcm5lbDogWyAgICAwLjM5OTAwMF0NCj4+IDB4MDAwMDA1NjIwMDAwLTB4MDAwMDBhNjIw
-MDAwIDogInJvb3Rmc19iIg0KPj4NCj4+IEZlYiAyOCAwOToyMzowOSAobm9uZSkga2Vybi5ub3Rp
-Y2Uga2VybmVsOiBbICAgIDAuNDA2MDAwXQ0KPj4gMHgwMDAwMGE2MjAwMDAtMHgwMDAwMjAwMDAw
-MDAgOiAiY29uZmlnX2RhdGEiDQo+Pg0KPj4gLi4uDQo+Pg0KPj4NCj4+DQo+PiBGZWIgMjggMDk6
-MjM6MTAgKG5vbmUpIGtlcm4uaW5mbyBrZXJuZWw6IFsgICAgMC41NDYwMDBdIE5FVDogUmVnaXN0
-ZXJlZA0KPj4gcHJvdG9jb2wgZmFtaWx5IDE3DQo+Pg0KPj4gRmViIDI4IDA5OjIzOjEwIChub25l
-KSBrZXJuLm5vdGljZSBrZXJuZWw6IFsgICAgMC41NTcwMDBdIFVCSTogYXR0YWNoaW5nDQo+PiBt
-dGQzIHRvIHViaTANCj4+DQo+PiBGZWIgMjggMDk6MjM6MTAgKG5vbmUpIGtlcm4uaW5mbyBrZXJu
-ZWw6IFsgICAgMC43NDgwMDBdIHVzYiAxLTI6IG5ldw0KPj4gaGlnaC1zcGVlZCBVU0IgZGV2aWNl
-IG51bWJlciAyIHVzaW5nIGF0bWVsLWVoY2kNCj4+DQo+PiBGZWIgMjggMDk6MjM6MTAgKG5vbmUp
-IGtlcm4ubm90aWNlIGtlcm5lbDogWyAgICAwLjgxMDAwMF0gVUJJOiBzY2FubmluZyBpcw0KPj4g
-ZmluaXNoZWQNCj4+DQo+PiBGZWIgMjggMDk6MjM6MTAgKG5vbmUpIGtlcm4ud2FybiBrZXJuZWw6
-IFsgICAgMC44MjEwMDBdIFVCSSB3YXJuaW5nOg0KPj4gcHJpbnRfcnN2ZF93YXJuaW5nOiBjYW5u
-b3QgcmVzZXJ2ZSBlbm91Z2ggUEVCcyBmb3IgYmFkIFBFQiBoYW5kbGluZywgDQo+PiByZXNlcnZl
-ZCAxMTUsIG5lZWQgNDAwDQo+Pg0KPj4gRmViIDI4IDA5OjIzOjEwIChub25lKSBrZXJuLm5vdGlj
-ZSBrZXJuZWw6IFsgICAgMC44MjYwMDBdIFVCSTogYXR0YWNoZWQgbXRkMw0KPj4gKG5hbWUgInJv
-b3Rmc19hIiwgc2l6ZSA4MCBNaUIpIHRvIHViaTANCj4+DQo+PiBGZWIgMjggMDk6MjM6MTAgKG5v
-bmUpIGtlcm4ubm90aWNlIGtlcm5lbDogWyAgICAwLjgyNjAwMF0gVUJJOiBQRUIgc2l6ZToNCj4+
-IDEzMTA3MiBieXRlcyAoMTI4IEtpQiksIExFQiBzaXplOiAxMjkwMjQgYnl0ZXMNCj4+DQo+PiBG
-ZWIgMjggMDk6MjM6MTAgKG5vbmUpIGtlcm4ubm90aWNlIGtlcm5lbDogWyAgICAwLjgyNjAwMF0g
-VUJJOiBtaW4uL21heC4gSS9PDQo+PiB1bml0IHNpemVzOiAyMDQ4LzIwNDgsIHN1Yi1wYWdlIHNp
-emUgNTEyDQo+Pg0KPj4gRmViIDI4IDA5OjIzOjEwIChub25lKSBrZXJuLm5vdGljZSBrZXJuZWw6
-IFsgICAgMC44MjYwMDBdIFVCSTogVklEIGhlYWRlcg0KPj4gb2Zmc2V0OiA1MTIgKGFsaWduZWQg
-NTEyKSwgZGF0YSBvZmZzZXQ6IDIwNDgNCj4+DQo+PiBGZWIgMjggMDk6MjM6MTAgKG5vbmUpIGtl
-cm4ubm90aWNlIGtlcm5lbDogWyAgICAwLjgyNjAwMF0gVUJJOiBnb29kIFBFQnM6DQo+PiA2NDAs
-IGJhZCBQRUJzOiAwLCBjb3JydXB0ZWQgUEVCczogMA0KPj4NCj4+IEZlYiAyOCAwOToyMzoxMCAo
-bm9uZSkga2Vybi5ub3RpY2Uga2VybmVsOiBbICAgIDAuODI2MDAwXSBVQkk6IHVzZXIgdm9sdW1l
-Og0KPj4gMSwgaW50ZXJuYWwgdm9sdW1lczogMSwgbWF4LiB2b2x1bWVzIGNvdW50OiAxMjgNCj4+
-DQo+PiBGZWIgMjggMDk6MjM6MTAgKG5vbmUpIGtlcm4ubm90aWNlIGtlcm5lbDogWyAgICAwLjgy
-NjAwMF0gVUJJOiBtYXgvbWVhbg0KPj4gZXJhc2UgY291bnRlcjogMzk5LzIwMiwgV0wgdGhyZXNo
-b2xkOiA0MDk2LCBpbWFnZSBzZXF1ZW5jZSBudW1iZXI6IA0KPj4gNTQ4MzA0MjU1DQo+Pg0KPj4g
-RmViIDI4IDA5OjIzOjEwIChub25lKSBrZXJuLm5vdGljZSBrZXJuZWw6IFsgICAgMC44MjYwMDBd
-IFVCSTogYXZhaWxhYmxlDQo+PiBQRUJzOiAwLCB0b3RhbCByZXNlcnZlZCBQRUJzOiA2NDAsIFBF
-QnMgcmVzZXJ2ZWQgZm9yIGJhZCBQRUIgDQo+PiBoYW5kbGluZzogMTE1DQo+Pg0KPj4gRmViIDI4
-IDA5OjIzOjEwIChub25lKSBrZXJuLm5vdGljZSBrZXJuZWw6IFsgICAgMC44MjcwMDBdIFVCSTog
-YmFja2dyb3VuZA0KPj4gdGhyZWFkICJ1YmlfYmd0MGQiIHN0YXJ0ZWQsIFBJRCAyODgNCj4+DQo+
-PiBVQkkgd2FudGVkIHRvIHJlc2VydmUgNDAwIGJsb2NrcyBvbiBNVEQgd2l0aCA2NDAuIEhtLi4u
-IER1cmluZyANCj4+IGRlYnVnZ2luZyBJIGZvdW5kIHRoYXQgbXRkX2dldF9kZXZpY2Vfc2l6ZSgp
-IGdpdmVzIHRoZSBzaXplIG9mIHdob2xlIA0KPj4gZmxhc2ggbWVtb3J5IGJhY2sNCj4+ICg0MDk2
-IGJsb2NrcyAqIDEyOGtCKS4gSSBndWVzcyB0aGF0IEkgZm91bmQgc21hbGwgZXJyb3IuIFdpdGgg
-bWljcm8gDQo+PiBwYXRjaCB0aGUgcHJvYmxlbSBzZWVtcyB0byBiZSBjb3JyZWN0ZWQgZm9yIG15
-IGNhc2UNCj4NCj4gWW91ciBwYXRjaCBpcyB3cm9uZywgYWN0dWFsbHkuIG10ZF9nZXRfZGV2aWNl
-X3NpemUoKSBzaG91bGQgZ2V0ICJ0aGUgDQo+IHNpemUgb2YgdGhlIGVudGlyZSBmbGFzaCBjaGlw
-Iiwgc28gaWYgbXRkIGlzIGEgcGFydGl0aW9uLCB5b3UgKndhbnQqIA0KPiB0byByZXR1cm4gdGhl
-IHNpemUgb2YgaXRzICdtYXN0ZXInLg0KPg0KPiBJbiBmYWN0LCBldmVyeXRoaW5nIGlzIGJlaGF2
-aW5nIGFzIGV4cGVjdGVkIChieSB0aGUgZGVzaWduZXJzOyBub3QgYnkgDQo+IHlvdSkuIEJlY2F1
-c2UgeW91ciBCRUJfTElNSVQ9MTAwLCB5b3UgYXJlIHJlc2VydmluZyAxMDAqc2l6ZS8xMDI0IA0K
-PiAodGhhdCBpcyA5LjglIG9mIHlvdXIgdG90YWwgc2l6ZSwgb3IgNDAwIGJsb2NrcykgaW4gKmV2
-ZXJ5KiBwYXJ0aXRpb24uDQo+IEkgZG9uJ3Qgc2VlIHdoeSB5b3UgbmVlZCB0aGF0IGhpZ2ggb2Yg
-YSBsaW1pdCwgdGhvdWdoLiBDaGVjayB5b3VyIE5BTkQgDQo+IGRhdGEgc2hlZXQsIGJ1dCB0aGUg
-bGltaXQgZGVmYXVsdHMgcmVhc29uYWJseSB0byAyMCAob3IsIGFib3V0IDIlKS4NCj4gVGhhdCB3
-b3VsZCByZXNlcnZlIG9ubHkgODAgYmxvY2tzIG9uIHlvdXIgc3lzdGVtLCBhbmQgeW91IHdvdWxk
-IG5vdCANCj4gc2VlIHRoZXNlIHdhcm5pbmdzL2Vycm9ycywgc2luY2UgeW91IGFscmVhZHkgaGF2
-ZSAxMTUgYmxvY2tzIHJlc2VydmVkLg0KVGhhdCdzIHJpZ3RoICENClRoZXJlJ3MgYWxzbyBzb21l
-IGRvY3VtZW50YXRpb24gb24gaG93IHRoZSBvdmVyaGVhZCBpcyBjYWxjdWxhdGVkIGhlcmUgOg0K
-aHR0cDovL3d3dy5saW51eC1tdGQuaW5mcmFkZWFkLm9yZy9kb2MvdWJpLmh0bWwjTF9vdmVyaGVh
-ZA0KYW5kIHNvbWUgbW9yZSBleHBsYW5hdGlvbnMgYSBsaXR0bGUgYmVsbG93LCBpbiB0aGUgIlJl
-c2VydmVkIGJsb2NrcyBmb3IgYmFkIGJsb2NrIGhhbmRsaW5nIiBzZWN0aW9uDQoNCj4NCj4gWW91
-IG1pZ2h0IHdhbnQgdG8gcmVhZCB0aGUgY29tbWVudHMgaW4gdGhpcyBjb21taXQ6DQo+DQo+IGNv
-bW1pdCBiYTQwODdlOTU2ZDMzNjQ4OGM2ZGY5ZGZjYTY1ZDFlNzBjZjQ4MGYxDQo+IEF1dGhvcjog
-UmljaGFyZCBHZW5vdWQgPHJpY2hhcmQuZ2Vub3VkQGdtYWlsLmNvbT4NCj4gRGF0ZTogICBUdWUg
-SnVsIDEwIDE4OjIzOjQxIDIwMTIgKzAyMDANCj4NCj4gICAgIFVCSTogdXNlIHRoZSB3aG9sZSBN
-VEQgZGV2aWNlIHNpemUgdG8gZ2V0IGJhZF9wZWJfbGltaXQNCj4NCj4gSXQgbWlnaHQgYmUgd29y
-dGggcmV2aXNpdGluZyB0aGUgY29uY2x1c2lvbnMgb2YgdGhvc2UgYXJndW1lbnRzOyBpdCANCj4g
-ZXNzZW50aWFsbHkgbGltaXRzIHlvdXIgcGFydGl0aW9ucyB0byBhIGNlcnRhaW4gbWluaW11bSBz
-aXplLiBCdXQgYXMgDQo+IGZhciBhcyBJIGNhbiB0ZWxsLCB0aGUgY29kZSB3b3JrcyBhcyBkb2N1
-bWVudGVkLg0KPg0KPiBCcmlhbg0KDQoNCg0KLS0NCmZvciBtZSwgY2sgbWVhbnMgY29uIGtvbGl2
-YXMgYW5kIG5vdCBjYWx2aW4ga2xlaW4uLi4gZG9lcyBpdCBtZWFuIEknbSBhIGdlZWsgPw0K
+On Fri, Mar 01, 2013 at 10:20:53AM +0100, Matthieu CASTET wrote:
+> Huang Shijie a écrit :
+> > 于 2013年02月27日 23:10, Uwe Kleine-König 写道:
+> >> According to the Open NAND Flash Interface Specification (ONFI) Revision
+> >> 3.1 "Parameters are always transferred on the lower 8-bits of the data
+> >> bus." for the Get Features and Set Features commands.
+> >>
+> > yes. the set/get features should works in 8-bit.
+> > 
+> > I have never met a 16-bit onfi nand yet. :)
+> 
+> Beagle board got one.
+Which part does it have? Would you volunteer to test access to its OTP
+area? (Provided you have a Micron chip of course.)
+
+Best regards
+Uwe
+
+-- 
+Pengutronix e.K.                           | Uwe Kleine-König            |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
