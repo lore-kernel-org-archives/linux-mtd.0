@@ -1,30 +1,30 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UBQXU-0001Af-RD
- for linux-mtd@lists.infradead.org; Fri, 01 Mar 2013 14:02:21 +0000
-Message-ID: <5130B4E9.5050700@parrot.com>
-Date: Fri, 1 Mar 2013 15:02:17 +0100
-From: Matthieu CASTET <matthieu.castet@parrot.com>
+Received: from mail-ia0-x22d.google.com ([2607:f8b0:4001:c02::22d])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UBQyC-00027h-IY
+ for linux-mtd@lists.infradead.org; Fri, 01 Mar 2013 14:29:57 +0000
+Received: by mail-ia0-f173.google.com with SMTP id h37so2688945iak.32
+ for <linux-mtd@lists.infradead.org>; Fri, 01 Mar 2013 06:29:55 -0800 (PST)
 MIME-Version: 1.0
-To: Paul Walmsley <paul@pwsan.com>
-Subject: Re: [PATCH 1/3] mtd nand : onfi need to be probed in 8 bits mode
-References: <1352199105-30215-1-git-send-email-matthieu.castet@parrot.com>
- <1354530053.30168.183.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1212240023100.17282@utopia.booyaka.com>
- <50E40336.2080008@parrot.com>
- <alpine.DEB.2.00.1301031704460.8721@utopia.booyaka.com>
- <50F6B904.5000600@parrot.com>
- <alpine.DEB.2.00.1301161713380.32170@utopia.booyaka.com>
- <alpine.DEB.2.00.1301220226530.25789@utopia.booyaka.com>
- <alpine.DEB.2.00.1302062321080.12769@utopia.booyaka.com>
- <5113783B.6010806@parrot.com>
-In-Reply-To: <5113783B.6010806@parrot.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8bit
-Cc: Afzal Mohammed <afzal@ti.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+In-Reply-To: <BAF0C2081321BA469F9ADF648F97D9B04C78FA607E@MCC023.weinmann.com>
+References: <BAF0C2081321BA469F9ADF648F97D9B04C78FA6069@MCC023.weinmann.com>
+ <CAN8TOE9YJBvUE9GDW3krZB-Js6gUkqY23gYNLS4gFX0e2NDNZw@mail.gmail.com>
+ <BAF0C2081321BA469F9ADF648F97D9B04C78FA6071@MCC023.weinmann.com>
+ <CACQ1gAg0rE+X+uxRWbrPKhmdS1T0MG00cwwBbzWM+VwU4zaXmw@mail.gmail.com>
+ <BAF0C2081321BA469F9ADF648F97D9B04C78FA607C@MCC023.weinmann.com>
+ <CACQ1gAg=L7ru5J4C7OQN0r-c2VN3baKX1qqty8Z0ObS5Wk48yg@mail.gmail.com>
+ <BAF0C2081321BA469F9ADF648F97D9B04C78FA607E@MCC023.weinmann.com>
+From: Richard Genoud <richard.genoud@gmail.com>
+Date: Fri, 1 Mar 2013 15:29:33 +0100
+Message-ID: <CACQ1gAhJzy5tGSuejc3GqaqRxtHvkABOY-tODzedveeRXddvxQ@mail.gmail.com>
+Subject: Re: Bug in mtd_get_device_size()?
+To: "Velykokhatko, Sergey" <Sergey.Velykokhatko@mcc-med.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
+ "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,40 +34,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Matthieu CASTET a écrit :
-> Hi Paul,
-> 
-> Paul Walmsley a écrit :
->> Hi Matthieu,
->>
->> On Tue, 22 Jan 2013, Paul Walmsley wrote:
->>
->>> Any progress on updating and resending your "omap3 nand : use 
->>> NAND_BUSWIDTH_AUTO" patch?  We're in danger of missing the 3.9 merge 
->>> window if it takes too much longer.
->> Could you let us know if you're planning to update and repost this one?
->>
-> Sorry for the delay I attached an updated version of the patch.
-> 
-> I was not able to test it : with mtd tree and my configuration I have to apply
-> https://patchwork.kernel.org/patch/1810441/
-> https://patchwork.kernel.org/patch/1884341/
-> http://comments.gmane.org/gmane.linux.ports.arm.omap/91096
-> 
-> in order the kernel build.
-> 
-> And after that the kernel doesn't seem to boot on my beagle board. Could you
-> test the patch ?
-> 
-> 
-> I have also a problem : how should I change nand bus size. It is done by
-> "gpmc_cs_configure(info->gpmc_cs, GPMC_CONFIG_DEV_SIZE, ...);", but now gpmc.h
-> header is not public anymore.
-> 
-> I have to do a '#include "../gpmc.h"'.
-> 
-> 
-Any news on this ?
+2013/3/1 Velykokhatko, Sergey <Sergey.Velykokhatko@mcc-med.de>:
+> Hi Richard,
+>
+>>And if you want to tweak the BEB_LIMIT for each of your UBI partition, it=
+'s possible, via the ubiattach call ( get the master branchof of git://git.=
+infradead.org/mtd-utils.git ) cf http://git.infradead.org/mtd-utils.git/com=
+mit/878e06ea555ba5dbfb974b3904d1a86a9a0e20f5
+>
+> Aha! I didn't see that before. In my case will be useful. Thanks for idea=
+!
+>
+> Let I ask you one more question, probably you have better idea how to res=
+olve it. If you have no other solution as my, should not answer. Also: as I=
+ mentioned before, I have one big partition with 4 UBI volumes on it: one o=
+f volumes will contain extreme important data (for example device type and =
+serial number) and data on this volume will be written only several times f=
+or whole device life; and on other volume will be stored patient data that =
+will be written relative often. Now in my SW that runs as init process I ca=
+ll ubiatach+mount. If ubiattach or mount for any of UBI volumes returns err=
+or, I call ubiformat+ubimkvol+mount again. This is normal use case when the=
+ device booted first time after production.
+>With 2.6.38 and 3.3 kernel I had no problems but after update on 3.7 I got=
+ reported 2 cases when devices lost all their data.
+Hum, that's clearly not normal.
+> Unfortunately I have no additional information why it happened, but anywa=
+y is it really necessary to runs ubiformat+ubimkvol for such cases? Or is i=
+t possible to recover data?
+I honestly don't know, but I'm sure Artem has some idea on that.
+>Since my solution for this case is to put the device data in separate MTD =
+with one single UBI volume. But you know how much space I should reserve on=
+ NAND MTD for single XML-File with 200Bytes :-).
+I've got the same problem with uboot environment for example. It's
+only some hundred bytes, and still I have to reserve the maximum bad
+blocks number + 1 for the environment itself (so for your device 41).
+I know, this looks overkill...
+For 200bytes, I would try to store them elsewhere (spi dataflash,
+eeprom...) if there's such devices on your board.
+There's also the 1st block of the nand device which is guaranteed to
+be "valid" for 1000 erase cycles (valid with 1-bit ECC per 528 bytes)
 
+> Alternative is to try to mount only device volume, copy data in tmpfs, ru=
+n ubiformat+ubimkvol+mount and copy the data back to the device volume. Or =
+you have other idea?
+>
+> Thanks a lot,
+> Best regards,
+> Sergey
+>
 
-Matthieu
+Best regards,
+Richard.
