@@ -1,18 +1,14 @@
-Received: from mail-ee0-f49.google.com ([74.125.83.49])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UBUqN-0002Er-J0
- for linux-mtd@lists.infradead.org; Fri, 01 Mar 2013 18:38:08 +0000
-Received: by mail-ee0-f49.google.com with SMTP id d41so2573332eek.22
- for <linux-mtd@lists.infradead.org>; Fri, 01 Mar 2013 10:38:05 -0800 (PST)
-From: Elie De Brauwer <eliedebrauwer@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 4/4] Typo fixes: avaiable -> available and priortiry ->
- priority
-Date: Fri,  1 Mar 2013 19:37:40 +0100
-Message-Id: <1362163060-5629-5-git-send-email-eliedebrauwer@gmail.com>
-In-Reply-To: <1362163060-5629-1-git-send-email-eliedebrauwer@gmail.com>
-References: <1362163060-5629-1-git-send-email-eliedebrauwer@gmail.com>
-Cc: eliedebrauwer@gmail.com
+Message-ID: <1362170861.9810.126.camel@i7.infradead.org>
+Subject: [GIT *] MTD updates for 3.9
+From: David Woodhouse <dwmw2@infradead.org>
+To: torvalds@linux-foundation.org
+Date: Fri, 01 Mar 2013 20:47:41 +0000
+Content-Type: multipart/signed; micalg="sha1";
+ protocol="application/x-pkcs7-signature";
+ boundary="=-qDY04kYXbZy7mtZ5rwx/"
+Mime-Version: 1.0
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,71 +19,283 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-Signed-off-by: Elie De Brauwer <eliedebrauwer@gmail.com>
----
- mkfs.jffs2.1 |   10 +++++-----
- mkfs.jffs2.c |    4 ++--
- 2 files changed, 7 insertions(+), 7 deletions(-)
+--=-qDY04kYXbZy7mtZ5rwx/
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/mkfs.jffs2.1 b/mkfs.jffs2.1
-index 47a3ac7..7c57ddc 100644
---- a/mkfs.jffs2.1
-+++ b/mkfs.jffs2.1
-@@ -105,7 +105,7 @@ or the present directory, if the
- option is not specified.
- 
- Each block of the files to be placed into the file system image
--are compressed using one of the avaiable compressors depending
-+are compressed using one of the available compressors depending
- on the selected compression mode.
- 
- File systems are created with the same endianness as the host,
-@@ -209,21 +209,21 @@ successful one. The alternatives are:
- .B -x, --disable-compressor=NAME
- Disable a compressor. Use
- .B -L
--to see the list of the avaiable compressors and their default states.
-+to see the list of the available compressors and their default states.
- .TP
- .B -X, --enable-compressor=NAME
- Enable a compressor. Use
- .B -L
--to see the list of the avaiable compressors and their default states.
-+to see the list of the available compressors and their default states.
- .TP
- .B -y, --compressor-priority=PRIORITY:NAME
- Set the priority of a compressor. Use
- .B -L
--to see the list of the avaiable compressors and their default priority.
-+to see the list of the available compressors and their default priority.
- Priorities are used by priority compression mode.
- .TP
- .B -L, --list-compressors
--Show the list of the avaiable compressors and their states.
-+Show the list of the available compressors and their states.
- .TP
- .B -t, --test-compression
- Call decompress after every compress - and compare the result with the original data -, and
-diff --git a/mkfs.jffs2.c b/mkfs.jffs2.c
-index a33a0d6..7ade078 100644
---- a/mkfs.jffs2.c
-+++ b/mkfs.jffs2.c
-@@ -1396,14 +1396,14 @@ static const char helptext[] =
- "                          page size (default: 4KiB)\n"
- "  -e, --eraseblock=SIZE   Use erase block size SIZE (default: 64KiB)\n"
- "  -c, --cleanmarker=SIZE  Size of cleanmarker (default 12)\n"
--"  -m, --compr-mode=MODE   Select compression mode (default: priortiry)\n"
-+"  -m, --compr-mode=MODE   Select compression mode (default: priority)\n"
- "  -x, --disable-compressor=COMPRESSOR_NAME\n"
- "                          Disable a compressor\n"
- "  -X, --enable-compressor=COMPRESSOR_NAME\n"
- "                          Enable a compressor\n"
- "  -y, --compressor-priority=PRIORITY:COMPRESSOR_NAME\n"
- "                          Set the priority of a compressor\n"
--"  -L, --list-compressors  Show the list of the avaiable compressors\n"
-+"  -L, --list-compressors  Show the list of the available compressors\n"
- "  -t, --test-compression  Call decompress and compare with the original (for test)\n"
- "  -n, --no-cleanmarkers   Don't add a cleanmarker to every eraseblock\n"
- "  -o, --output=FILE       Output to FILE (default: stdout)\n"
--- 
-1.7.10.4
+Linus, please pull from
+   git://git.infradead.org/linux-mtd.git for-linus-20130301
+
+Fairly unexciting MTD merge for 3.9:
+
+ * misc clean-ups in the MTD command-line partitioning parser (cmdlinepart)
+ * add flash locking support for STmicro chips serial flash chips, as well =
+a
+   for CFI command set 2 chips.
+ * new driver for the ELM error correction HW module found in various TI ch=
+i
+   enable the OMAP NAND driver to use the ELM HW error correction
+ * added number of new serial flash IDs
+ * various fixes and improvements in the gpmi NAND driver
+ * bcm47xx NAND driver improvements
+ * make the mtdpart module actually removable
+
+Akinobu Mita (1):
+      mtd: rename random32() to prandom_u32()
+
+Al Cooper (1):
+      mtd: mtd_torturetest can cause stack overflows
+
+Austin Boyle (1):
+      mtd: m25p80: Flash protection support for STmicro chips
+
+Christopher Cordahi (4):
+      mtd: cmdlinepart: fix skipping zero sized partition
+      mtd: cmdlinepart: skip partitions truncated to zero
+      mtd: cmdlinepart: describe mtd ordering
+      mtd: cmdlinepart: update /proc/mtd comment
+
+Dmitry Eremin-Solenikov (1):
+      mtd: map: BUG() in non handled cases
+
+Ezequiel Garcia (1):
+      mtd: physmap_of: Convert device allocation to managed devm_kzalloc()
+
+Hauke Mehrtens (6):
+      mtd: bcm47xxsflash: write number of written bytes
+      mtd: bcm47xxsflash: register this as normal driver
+      mtd: bcm47xxnflash: fix message
+      mtd: bcm47xxnflash: register this as normal driver
+      mtd: bcm47xxpart: add support for other erase sizes
+      mtd: bcm47xxpart: improve probing of nvram partition
+
+Huang Shijie (5):
+      mtd: gpmi: dump the BCH registers
+      mtd: fix the wrong timeo for panic_nand_wait()
+      mtd: gpmi: fix a dereferencing freed memory error
+      mtd: gpmi: set the Golois Field bit for mx6q's BCH
+      mtd: gpmi: add sanity check for the ECC
+
+Josh Wu (3):
+      mtd: atmel_nand: avoid to report an error when lookup table offset is=
+ 0.
+      mtd: atmel_nand: make pmecc-cap, pmecc-sector-size in dts is optional=
+.
+      mtd: at91: atmel_nand: for PMECC, add code to check the ONFI paramete=
+r ECC requirement.
+
+Kim Phillips (1):
+      mtd: fsl_ifc_nand: use more portable i/o accessors
+
+Lubomir Rintel (2):
+      mtd: cmdlinepart: Make it into a module
+      mtd: Allow removal of partitioning modules
+
+Michel Stempin (1):
+      mtd: chips: Add support for GigaDevice GD25Q32/GD25Q64 SPI Flash in m=
+25p80.c
+
+Mrugesh Katepallewar (1):
+      mtd: davinci_nand: Use managed resources
+
+Philip Avinash (4):
+      mtd: nand: omap2: Update nerrors using ecc.strength
+      mtd: devices: elm: Add support for ELM error correction
+      mtd: nand: omap2: Support for hardware BCH error correction.
+      mtd: devices: elm: Removes <xx> literals in elm DT node
+
+Rafa=C5=82 Mi=C5=82ecki (5):
+      mtd: bcm47xxpart: simplify size calculation to one loop
+      mtd: bcm47xxpart: register extra "firmware" partition
+      mtd: bcm47xxsflash: add own struct for abstrating bus type
+      mtd: bcm47xxsflash: adjust names of bus-specific functions
+      mtd: bcm47xxnflash: use pr_fmt for module prefix in messages
+
+Robert Jarzmik (1):
+      mtd: docg3 fix missing bitreverse lib
+
+Roman Schneider (1):
+      mtd: mxc_nand: compress ID info for send_read_id_v3
+
+Sergei Shtylyov (1):
+      mtd: davinci_nand: fix modular build with CONFIG_OF=3Dy
+
+Stefan Roese (1):
+      mtd: cfi_cmdset_0002: Support Persistent Protection Bits (PPB) lockin=
+g
+
+Tormod Volden (1):
+      mtd: nane: print source of error message
+
+Uwe Kleine-K=C3=B6nig (2):
+      mtd: uclinux: support ROM and allow passing the base address
+      mtd: uclinux: add a comment about why uclinux_ram_map must not be sta=
+tic
+
+Zach Sadecki (1):
+      mtd: gpmi: Always report ECC stats and return max_bitflips
+
+ Documentation/devicetree/bindings/mtd/elm.txt      |  16 +
+ .../devicetree/bindings/mtd/mtd-physmap.txt        |   3 +
+ drivers/mtd/Kconfig                                |   4 +-
+ drivers/mtd/ar7part.c                              |   6 +
+ drivers/mtd/bcm47xxpart.c                          |  49 +-
+ drivers/mtd/chips/cfi_cmdset_0002.c                | 217 ++++++++
+ drivers/mtd/cmdlinepart.c                          |  47 +-
+ drivers/mtd/devices/Kconfig                        |   1 +
+ drivers/mtd/devices/Makefile                       |   4 +-
+ drivers/mtd/devices/bcm47xxsflash.c                |  55 +-
+ drivers/mtd/devices/bcm47xxsflash.h                |  15 +
+ drivers/mtd/devices/elm.c                          | 404 ++++++++++++++
+ drivers/mtd/devices/m25p80.c                       | 100 ++++
+ drivers/mtd/maps/Kconfig                           |   2 +-
+ drivers/mtd/maps/physmap_of.c                      |   9 +-
+ drivers/mtd/maps/uclinux.c                         |  30 +-
+ drivers/mtd/nand/atmel_nand.c                      | 141 ++++-
+ drivers/mtd/nand/bcm47xxnflash/bcm47xxnflash.h     |   4 +
+ drivers/mtd/nand/bcm47xxnflash/main.c              |  14 +-
+ drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c       |   4 +-
+ drivers/mtd/nand/davinci_nand.c                    |  26 +-
+ drivers/mtd/nand/fsl_ifc_nand.c                    | 233 ++++----
+ drivers/mtd/nand/gpmi-nand/bch-regs.h              |  22 +
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c              |   9 +
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c             |  63 ++-
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h             |   4 +
+ drivers/mtd/nand/mxc_nand.c                        |  11 +
+ drivers/mtd/nand/nand_base.c                       |   8 +-
+ drivers/mtd/nand/nand_ecc.c                        |   5 +-
+ drivers/mtd/nand/nandsim.c                         |   6 +-
+ drivers/mtd/nand/omap2.c                           | 583 +++++++++++++++++=
+++--
+ drivers/mtd/ofpart.c                               |   7 +
+ drivers/mtd/tests/mtd_nandecctest.c                |  10 +-
+ drivers/mtd/tests/mtd_stresstest.c                 |   8 +-
+ drivers/mtd/tests/mtd_torturetest.c                |  25 +-
+ drivers/mtd/ubi/debug.h                            |   6 +-
+ include/linux/bcma/bcma_driver_chipcommon.h        |   1 +
+ include/linux/mtd/map.h                            |   9 +-
+ include/linux/platform_data/elm.h                  |  54 ++
+ 39 files changed, 1883 insertions(+), 332 deletions(-)
+
+
+--=20
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
+
+--=-qDY04kYXbZy7mtZ5rwx/
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIUbjCCBjQw
+ggQcoAMCAQICAR4wDQYJKoZIhvcNAQEFBQAwfTELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0
+Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxKTAn
+BgNVBAMTIFN0YXJ0Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MB4XDTA3MTAyNDIxMDE1NVoX
+DTE3MTAyNDIxMDE1NVowgYwxCzAJBgNVBAYTAklMMRYwFAYDVQQKEw1TdGFydENvbSBMdGQuMSsw
+KQYDVQQLEyJTZWN1cmUgRGlnaXRhbCBDZXJ0aWZpY2F0ZSBTaWduaW5nMTgwNgYDVQQDEy9TdGFy
+dENvbSBDbGFzcyAxIFByaW1hcnkgSW50ZXJtZWRpYXRlIENsaWVudCBDQTCCASIwDQYJKoZIhvcN
+AQEBBQADggEPADCCAQoCggEBAMcJg8zOLdgasSmkLhOrlr6KMoOMpohBllVHrdRvEg/q6r8jR+EK
+75xCGhR8ToREoqe7zM9/UnC6TS2y9UKTpT1v7RSMzR0t6ndl0TWBuUr/UXBhPk+Kmy7bI4yW4urC
++y7P3/1/X7U8ocb8VpH/Clt+4iq7nirMcNh6qJR+xjOhV+VHzQMALuGYn5KZmc1NbJQYclsGkDxD
+z2UbFqE2+6vIZoL+jb9x4Pa5gNf1TwSDkOkikZB1xtB4ZqtXThaABSONdfmv/Z1pua3FYxnCFmdr
+/+N2JLKutIxMYqQOJebr/f/h5t95m4JgrM3Y/w7YX9d7YAL9jvN4SydHsU6n65cCAwEAAaOCAa0w
+ggGpMA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0PAQH/BAQDAgEGMB0GA1UdDgQWBBRTcu2SnODaywFc
+fH6WNU7y1LhRgjAfBgNVHSMEGDAWgBROC+8apEBbpRdphzDKNGhD0EGu8jBmBggrBgEFBQcBAQRa
+MFgwJwYIKwYBBQUHMAGGG2h0dHA6Ly9vY3NwLnN0YXJ0c3NsLmNvbS9jYTAtBggrBgEFBQcwAoYh
+aHR0cDovL3d3dy5zdGFydHNzbC5jb20vc2ZzY2EuY3J0MFsGA1UdHwRUMFIwJ6AloCOGIWh0dHA6
+Ly93d3cuc3RhcnRzc2wuY29tL3Nmc2NhLmNybDAnoCWgI4YhaHR0cDovL2NybC5zdGFydHNzbC5j
+b20vc2ZzY2EuY3JsMIGABgNVHSAEeTB3MHUGCysGAQQBgbU3AQIBMGYwLgYIKwYBBQUHAgEWImh0
+dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwNAYIKwYBBQUHAgEWKGh0dHA6Ly93d3cu
+c3RhcnRzc2wuY29tL2ludGVybWVkaWF0ZS5wZGYwDQYJKoZIhvcNAQEFBQADggIBAAqDCH14qywG
+XLhjjF6uHLkjd02hcdh9hrw+VUsv+q1eeQWB21jWj3kJ96AUlPCoEGZ/ynJNScWy6QMVQjbbMXlt
+UfO4n4bGGdKo3awPWp61tjAFgraLJgDk+DsSvUD6EowjMTNx25GQgyYJ5RPIzKKR9tQW8gGK+2+R
+HxkUCTbYFnL6kl8Ch507rUdPPipJ9CgJFws3kDS3gOS5WFMxcjO5DwKfKSETEPrHh7p5shuuNktv
+sv6hxHTLhiMKX893gxdT3XLS9OKmCv87vkINQcNEcIIoFWbP9HORz9v3vQwR4e3ksLc2JZOAFK+s
+sS5XMEoznzpihEP0PLc4dCBYjbvSD7kxgDwZ+Aj8Q9PkbvE9sIPP7ON0fz095HdThKjiVJe6vofq
++n6b1NBc8XdrQvBmunwxD5nvtTW4vtN6VY7mUCmxsCieuoBJ9OlqmsVWQvifIYf40dJPZkk9YgGT
+zWLpXDSfLSplbY2LL9C9U0ptvjcDjefLTvqSFc7tw1sEhF0n/qpA2r0GpvkLRDmcSwVyPvmjFBGq
+Up/pNy8ZuPGQmHwFi2/14+xeSUDG2bwnsYJQG2EdJCB6luQ57GEnTA/yKZSTKI8dDQa8Sd3zfXb1
+9mOgSF0bBdXbuKhEpuP9wirslFe6fQ1t5j5R0xi72MZ8ikMu1RQZKCyDbMwazlHiMIIHFzCCBf+g
+AwIBAgIDBCZ6MA0GCSqGSIb3DQEBBQUAMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRD
+b20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYG
+A1UEAxMvU3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0EwHhcN
+MTIwNTAxMTI1ODI3WhcNMTMwNTAzMTEzNzIwWjBdMRkwFwYDVQQNExA4Y1VOSzUzMTc0ODRYRjk3
+MRwwGgYDVQQDDBNkd213MkBpbmZyYWRlYWQub3JnMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZy
+YWRlYWQub3JnMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyYe7wo6MrtrB4uIGGbrY
+4IifY/Xsq22pSv605yganL0+uyUdd8rCjrYlH6Q/ra5TVJCQFTgzaepkuqPQc79DC/Cxmzm6Qo+s
+wLZy868oFsccsVokL2bPAWIPaRXfNPJKkYR1FTWQfZpWJVQmT+sPf1XFUullVBAK+d9RztopyacI
+xWoZ/W/Cmv7mseQbttYTtGKJa0btX73nsQRWl6SgErWXo59zg9friCLTy1GXMXJYB8H+PtnuwX0w
+MrAvWDdX1ABgIlA17W3FraCn0eW15ZM46eyu0/amGzJZNtemCWF73P7BAijzeV1jNmiJFXdZ0DT0
+w+hmtMO9PxdDUyt78QIDAQABo4IDrjCCA6owCQYDVR0TBAIwADALBgNVHQ8EBAMCBLAwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMB0GA1UdDgQWBBTkfe5UOr3PcirsjApibyyUEfsyRzAf
+BgNVHSMEGDAWgBRTcu2SnODaywFcfH6WNU7y1LhRgjAeBgNVHREEFzAVgRNkd213MkBpbmZyYWRl
+YWQub3JnMIICIQYDVR0gBIICGDCCAhQwggIQBgsrBgEEAYG1NwECAjCCAf8wLgYIKwYBBQUHAgEW
+Imh0dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwNAYIKwYBBQUHAgEWKGh0dHA6Ly93
+d3cuc3RhcnRzc2wuY29tL2ludGVybWVkaWF0ZS5wZGYwgfcGCCsGAQUFBwICMIHqMCcWIFN0YXJ0
+Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MAMCAQEagb5UaGlzIGNlcnRpZmljYXRlIHdhcyBp
+c3N1ZWQgYWNjb3JkaW5nIHRvIHRoZSBDbGFzcyAxIFZhbGlkYXRpb24gcmVxdWlyZW1lbnRzIG9m
+IHRoZSBTdGFydENvbSBDQSBwb2xpY3ksIHJlbGlhbmNlIG9ubHkgZm9yIHRoZSBpbnRlbmRlZCBw
+dXJwb3NlIGluIGNvbXBsaWFuY2Ugb2YgdGhlIHJlbHlpbmcgcGFydHkgb2JsaWdhdGlvbnMuMIGc
+BggrBgEFBQcCAjCBjzAnFiBTdGFydENvbSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTADAgECGmRM
+aWFiaWxpdHkgYW5kIHdhcnJhbnRpZXMgYXJlIGxpbWl0ZWQhIFNlZSBzZWN0aW9uICJMZWdhbCBh
+bmQgTGltaXRhdGlvbnMiIG9mIHRoZSBTdGFydENvbSBDQSBwb2xpY3kuMDYGA1UdHwQvMC0wK6Ap
+oCeGJWh0dHA6Ly9jcmwuc3RhcnRzc2wuY29tL2NydHUxLWNybC5jcmwwgY4GCCsGAQUFBwEBBIGB
+MH8wOQYIKwYBBQUHMAGGLWh0dHA6Ly9vY3NwLnN0YXJ0c3NsLmNvbS9zdWIvY2xhc3MxL2NsaWVu
+dC9jYTBCBggrBgEFBQcwAoY2aHR0cDovL2FpYS5zdGFydHNzbC5jb20vY2VydHMvc3ViLmNsYXNz
+MS5jbGllbnQuY2EuY3J0MCMGA1UdEgQcMBqGGGh0dHA6Ly93d3cuc3RhcnRzc2wuY29tLzANBgkq
+hkiG9w0BAQUFAAOCAQEAqDU1FKifNtCFJbLnvOi1BLRfk7mut55PMtPSZLJ4/AnG7AjmJnbBI4U5
+DELwvVq3mIpwUpGqZUkqkZMEfBPIbfq517UZB3h4iANtqif+ULfTLhg5XgcK5eF8/T6EtX2c3epq
+ylARdleCbj/0FwiUDvPlTsA6PIN4SCekjRLgjKERrL3heFz+Hteq1rtMAvMkNuyL0/0ijyyg2y45
+NASAl2Afl9SLes/fnoh9nBwzfNQfb6qDYUFpnglfpGrq/0b1NtaOUb2z1SR+H1tKlb8bVJJIdvpu
+mEi27kSRIhzk3h30uTfKkKetgy++ouyldxZ7KZ0PuoLQrBy465EoQLosETCCBxcwggX/oAMCAQIC
+AwQmejANBgkqhkiG9w0BAQUFADCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0
+ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMT
+L1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBMB4XDTEyMDUw
+MTEyNTgyN1oXDTEzMDUwMzExMzcyMFowXTEZMBcGA1UEDRMQOGNVTks1MzE3NDg0WEY5NzEcMBoG
+A1UEAwwTZHdtdzJAaW5mcmFkZWFkLm9yZzEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFk
+Lm9yZzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMmHu8KOjK7aweLiBhm62OCIn2P1
+7KttqUr+tOcoGpy9PrslHXfKwo62JR+kP62uU1SQkBU4M2nqZLqj0HO/QwvwsZs5ukKPrMC2cvOv
+KBbHHLFaJC9mzwFiD2kV3zTySpGEdRU1kH2aViVUJk/rD39VxVLpZVQQCvnfUc7aKcmnCMVqGf1v
+wpr+5rHkG7bWE7RiiWtG7V+957EEVpekoBK1l6Ofc4PX64gi08tRlzFyWAfB/j7Z7sF9MDKwL1g3
+V9QAYCJQNe1txa2gp9HlteWTOOnsrtP2phsyWTbXpglhe9z+wQIo83ldYzZoiRV3WdA09MPoZrTD
+vT8XQ1Mre/ECAwEAAaOCA64wggOqMAkGA1UdEwQCMAAwCwYDVR0PBAQDAgSwMB0GA1UdJQQWMBQG
+CCsGAQUFBwMCBggrBgEFBQcDBDAdBgNVHQ4EFgQU5H3uVDq9z3Iq7IwKYm8slBH7MkcwHwYDVR0j
+BBgwFoAUU3Ltkpzg2ssBXHx+ljVO8tS4UYIwHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiEGA1UdIASCAhgwggIUMIICEAYLKwYBBAGBtTcBAgIwggH/MC4GCCsGAQUFBwIBFiJodHRw
+Oi8vd3d3LnN0YXJ0c3NsLmNvbS9wb2xpY3kucGRmMDQGCCsGAQUFBwIBFihodHRwOi8vd3d3LnN0
+YXJ0c3NsLmNvbS9pbnRlcm1lZGlhdGUucGRmMIH3BggrBgEFBQcCAjCB6jAnFiBTdGFydENvbSBD
+ZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTADAgEBGoG+VGhpcyBjZXJ0aWZpY2F0ZSB3YXMgaXNzdWVk
+IGFjY29yZGluZyB0byB0aGUgQ2xhc3MgMSBWYWxpZGF0aW9uIHJlcXVpcmVtZW50cyBvZiB0aGUg
+U3RhcnRDb20gQ0EgcG9saWN5LCByZWxpYW5jZSBvbmx5IGZvciB0aGUgaW50ZW5kZWQgcHVycG9z
+ZSBpbiBjb21wbGlhbmNlIG9mIHRoZSByZWx5aW5nIHBhcnR5IG9ibGlnYXRpb25zLjCBnAYIKwYB
+BQUHAgIwgY8wJxYgU3RhcnRDb20gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkwAwIBAhpkTGlhYmls
+aXR5IGFuZCB3YXJyYW50aWVzIGFyZSBsaW1pdGVkISBTZWUgc2VjdGlvbiAiTGVnYWwgYW5kIExp
+bWl0YXRpb25zIiBvZiB0aGUgU3RhcnRDb20gQ0EgcG9saWN5LjA2BgNVHR8ELzAtMCugKaAnhiVo
+dHRwOi8vY3JsLnN0YXJ0c3NsLmNvbS9jcnR1MS1jcmwuY3JsMIGOBggrBgEFBQcBAQSBgTB/MDkG
+CCsGAQUFBzABhi1odHRwOi8vb2NzcC5zdGFydHNzbC5jb20vc3ViL2NsYXNzMS9jbGllbnQvY2Ew
+QgYIKwYBBQUHMAKGNmh0dHA6Ly9haWEuc3RhcnRzc2wuY29tL2NlcnRzL3N1Yi5jbGFzczEuY2xp
+ZW50LmNhLmNydDAjBgNVHRIEHDAahhhodHRwOi8vd3d3LnN0YXJ0c3NsLmNvbS8wDQYJKoZIhvcN
+AQEFBQADggEBAKg1NRSonzbQhSWy57zotQS0X5O5rreeTzLT0mSyePwJxuwI5iZ2wSOFOQxC8L1a
+t5iKcFKRqmVJKpGTBHwTyG36ude1GQd4eIgDbaon/lC30y4YOV4HCuXhfP0+hLV9nN3qaspQEXZX
+gm4/9BcIlA7z5U7AOjyDeEgnpI0S4IyhEay94Xhc/h7Xqta7TALzJDbsi9P9Io8soNsuOTQEgJdg
+H5fUi3rP356IfZwcM3zUH2+qg2FBaZ4JX6Rq6v9G9TbWjlG9s9Ukfh9bSpW/G1SSSHb6bphItu5E
+kSIc5N4d9Lk3ypCnrYMvvqLspXcWeymdD7qC0KwcuOuRKEC6LBExggNvMIIDawIBATCBlDCBjDEL
+MAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdp
+dGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFy
+eSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMEJnowCQYFKw4DAhoFAKCCAa8wGAYJKoZIhvcNAQkD
+MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTMwMzAxMjA0NzQxWjAjBgkqhkiG9w0BCQQx
+FgQUy5JzmNMOrDUmabmz5YxjAByxaEwwgaUGCSsGAQQBgjcQBDGBlzCBlDCBjDELMAkGA1UEBhMC
+SUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRp
+ZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1l
+ZGlhdGUgQ2xpZW50IENBAgMEJnowgacGCyqGSIb3DQEJEAILMYGXoIGUMIGMMQswCQYDVQQGEwJJ
+TDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlm
+aWNhdGUgU2lnbmluZzE4MDYGA1UEAxMvU3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVk
+aWF0ZSBDbGllbnQgQ0ECAwQmejANBgkqhkiG9w0BAQEFAASCAQBZlxoTlUW4WyVgSos57iemXBww
+B9O9nsjvaQFNTZ5EDyGEz4GfuCyu2t2lRye15Iwsua/eipiD2EIpQQKhbv7CU/OTdc/aSZ+bNd9c
+0msMp+dTp4phTG89Xx8wNv8Yo27wt4LQ89RuOV+qOBhKBSJEZOktrH+MMLfLC6AizbjbjxvAx8aP
+MJsHxLxGwlFhyCgzLnxx/El1Ib+eW/gnsVIx3jb2cPDYhwVCupiCY3O9RZRdsHj2yUL23p9DvRtT
+J2oawVdg3YJDy1aDPrG1s17M59Nq6Aj2xCV3agQrwGQA0sVAGeCAlnK/UxZ0h10g3eLtkzWhuCZQ
+GeYh6YrgOTa4AAAAAAAA
+
+
+--=-qDY04kYXbZy7mtZ5rwx/--
