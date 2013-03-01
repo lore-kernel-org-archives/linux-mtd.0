@@ -1,15 +1,16 @@
-Received: from mail-ee0-f53.google.com ([74.125.83.53])
+Received: from mail-ee0-f46.google.com ([74.125.83.46])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UBUqK-0002CH-HD
- for linux-mtd@lists.infradead.org; Fri, 01 Mar 2013 18:38:05 +0000
-Received: by mail-ee0-f53.google.com with SMTP id e53so2555413eek.12
- for <linux-mtd@lists.infradead.org>; Fri, 01 Mar 2013 10:38:02 -0800 (PST)
+ id 1UBUqL-0002EB-S2
+ for linux-mtd@lists.infradead.org; Fri, 01 Mar 2013 18:38:06 +0000
+Received: by mail-ee0-f46.google.com with SMTP id e49so2669067eek.33
+ for <linux-mtd@lists.infradead.org>; Fri, 01 Mar 2013 10:38:03 -0800 (PST)
 From: Elie De Brauwer <eliedebrauwer@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/4] integck.c: rework file_check_data to immediately dump the
- buffer containing the errors
-Date: Fri,  1 Mar 2013 19:37:38 +0100
-Message-Id: <1362163060-5629-3-git-send-email-eliedebrauwer@gmail.com>
+Subject: [PATCH 3/4] integck.c: Fix buffer overflow in save_file,
+ avoid possible failure to write buffers when the filename length is
+ equal to max_name_len
+Date: Fri,  1 Mar 2013 19:37:39 +0100
+Message-Id: <1362163060-5629-4-git-send-email-eliedebrauwer@gmail.com>
 In-Reply-To: <1362163060-5629-1-git-send-email-eliedebrauwer@gmail.com>
 References: <1362163060-5629-1-git-send-email-eliedebrauwer@gmail.com>
 Cc: eliedebrauwer@gmail.com
@@ -25,62 +26,59 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Signed-off-by: Elie De Brauwer <eliedebrauwer@gmail.com>
 ---
- tests/fs-tests/integrity/integck.c |   36 ++++++++++++++++++++++++------------
- 1 file changed, 24 insertions(+), 12 deletions(-)
+ tests/fs-tests/integrity/integck.c |   19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
 
 diff --git a/tests/fs-tests/integrity/integck.c b/tests/fs-tests/integrity/integck.c
-index 2c6ffea..5ea3642 100644
+index 5ea3642..ee37a0d 100644
 --- a/tests/fs-tests/integrity/integck.c
 +++ b/tests/fs-tests/integrity/integck.c
-@@ -1502,7 +1502,8 @@ static void file_check_data(struct file_info *file, int fd,
- {
- 	size_t remains, block, i;
- 	off_t r;
--	char buf[IO_BUFFER_SIZE];
-+	unsigned char read_buf[IO_BUFFER_SIZE];
-+	unsigned char check_buf[IO_BUFFER_SIZE];
- 	unsigned int seed = w->random_seed;
+@@ -32,11 +32,11 @@
+ #include <assert.h>
+ #include <mntent.h>
+ #include <execinfo.h>
++#include <bits/stdio_lim.h>
+ #include <sys/mman.h>
+ #include <sys/vfs.h>
+ #include <sys/mount.h>
+ #include <sys/statvfs.h>
+-#include <linux/fs.h>
  
- 	if (args.power_cut_mode && !file->clean)
-@@ -1517,17 +1518,28 @@ static void file_check_data(struct file_info *file, int fd,
- 			block = IO_BUFFER_SIZE;
- 		else
- 			block = remains;
--		CHECK(read(fd, buf, block) == block);
--		for (i = 0; i < block; ++i) {
--			char c = (char)rand_r(&seed);
--			if (buf[i] != c) {
--				errmsg("file_check_data failed at %zu checking "
--				       "data at %llu size %zu", w->size - remains + i,
--					(unsigned long long)w->offset, w->size);
--				file_info_display(file);
--				save_file(fd, file);
--			}
--			CHECK(buf[i] == c);
-+		CHECK(read(fd, read_buf, block) == block);
-+		for (i = 0; i < block; ++i)
-+			check_buf[i] = (char)rand_r(&seed);
-+
-+		if (memcmp(check_buf, read_buf, block) != 0) {
-+			errmsg("file_check_data failed, dumping "
-+				"data at offset %llu size %zu",
-+				(unsigned long long)w->offset, w->size);
-+
-+			fprintf (stderr, "Read data:\n");
-+			for (r = 0; r < block; ++r)
-+				fprintf(stderr, "%02x%c",
-+					read_buf[r], ((r+1)%16)?' ':'\n');
-+			fprintf(stderr, "\nExpected data:\n");
-+			for (r = 0; r < block; ++r)
-+				fprintf(stderr, "%02x%c",
-+					check_buf[r], ((r+1)%16)?' ':'\n');
-+			fprintf(stderr, " \n");
-+
-+			file_info_display(file);
-+			save_file(fd, file);
-+			CHECK(0);
- 		}
- 		remains -= block;
- 	}
+ #define PROGRAM_VERSION "1.1"
+ #define PROGRAM_NAME "integck"
+@@ -1433,12 +1433,17 @@ static void save_file(int fd, struct file_info *file)
+ 	int w_fd;
+ 	struct write_info *w;
+ 	char buf[IO_BUFFER_SIZE];
+-	char name[256];
++	char name[FILENAME_MAX];
++        const char * read_suffix = ".integ.sav.read";
++        const char * write_suffix = ".integ.sav.written";
++        size_t fname_len = strlen(get_file_name(file));
+ 
+ 	/* Open file to save contents to */
+ 	strcpy(name, "/tmp/");
+-	strcat(name, get_file_name(file));
+-	strcat(name, ".integ.sav.read");
++	if (fname_len + strlen(read_suffix) > fsinfo.max_name_len)
++		fname_len = fsinfo.max_name_len - strlen(read_suffix);
++	strncat(name, get_file_name(file), fname_len);
++	strcat(name, read_suffix);
+ 	normsg("Saving %sn", name);
+ 	w_fd = open(name, O_CREAT | O_WRONLY, 0777);
+ 	CHECK(w_fd != -1);
+@@ -1457,8 +1462,10 @@ static void save_file(int fd, struct file_info *file)
+ 
+ 	/* Open file to save contents to */
+ 	strcpy(name, "/tmp/");
+-	strcat(name, get_file_name(file));
+-	strcat(name, ".integ.sav.written");
++	if (fname_len + strlen(write_suffix) > fsinfo.max_name_len)
++		fname_len = fsinfo.max_name_len - strlen(write_suffix);
++	strncat(name, get_file_name(file), fname_len);
++	strcat(name, write_suffix);
+ 	normsg("Saving %s", name);
+ 	w_fd = open(name, O_CREAT | O_WRONLY, 0777);
+ 	CHECK(w_fd != -1);
 -- 
 1.7.10.4
