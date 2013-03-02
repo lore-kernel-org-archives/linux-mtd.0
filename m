@@ -1,18 +1,19 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UBnyx-0005ev-1O
- for linux-mtd@lists.infradead.org; Sat, 02 Mar 2013 15:04:16 +0000
-Message-ID: <1362236681.2745.19.camel@sauron>
-Subject: Re: [UBIFS][CRC Mismatch]
+ id 1UBoAH-00060H-Ja
+ for linux-mtd@lists.infradead.org; Sat, 02 Mar 2013 15:15:58 +0000
+Message-ID: <1362237384.2745.20.camel@sauron>
+Subject: Re: [PATCH] phram: Allow the user to set the erase page size.
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Colin Foe-Parker <colin.foeparker@aclimalabs.com>
-Date: Sat, 02 Mar 2013 17:04:41 +0200
-In-Reply-To: <CAHeJuP946AQD2FOp1f=y_AKxXbLGYhTe1TZGOAtpNVoPbE5JEA@mail.gmail.com>
-References: <CAHeJuP946AQD2FOp1f=y_AKxXbLGYhTe1TZGOAtpNVoPbE5JEA@mail.gmail.com>
+To: Patrick O'Grady <patrick@baymotion.com>
+Date: Sat, 02 Mar 2013 17:16:24 +0200
+In-Reply-To: <CAJ7m5OqYv_=JB9NhHsqBsa8YU0DFRoP7C+W10PY22wonAGJK=A@mail.gmail.com>
+References: <CAJ7m5OqYv_=JB9NhHsqBsa8YU0DFRoP7C+W10PY22wonAGJK=A@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>, Joern Engel <joern@lazybastard.org>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,56 +24,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2013-02-19 at 10:44 -0800, Colin Foe-Parker wrote:
-> Hi All,
+On Fri, 2013-02-15 at 12:35 -0800, Patrick O'Grady wrote:
+> From: Patrick O'Grady <patrick@baymotion.com>
 > 
-> I am seeing an issue that I would love some outside help on.
+> Permit the user to specify the erase page size as a parameter.
+> This solves two problems:
 > 
-> I am running UBIFS on TI's latest Linux 3.2.0 PSP (5.06.00.09) and
-> their AM3352 ARMv7a processor.  We are using a Micron MT29F2G08ABBEAHC
-> 2 Gb SLC NAND chip.  (w/ a BCH8 ECC)
+> - phram can access images made by mkfs.jffs2.  mkfs.jffs2 won't
+> create images with erase sizes less than 8KiB; many architectures
+> define PAGE_SIZE as 4KiB.
 > 
-> We have 50+ devices deployed and over the deployment (40 days) we have
-> seen ~10 of the devices go read only.  The devices are slowly going
-> read only with no apparent correlation with uptime.  And the devices
-> are running in inside environments.  Because the devices are deployed,
-> we do not have easy or quick access to the kernel logs.  But I was
-> able to capture one instance where the device went from RW to RO.  See
-> the bottom for the dump.  (1)  The message seems pretty straight
-> forward; there is a CRC mismatch between what was stored in NAND and
-> what was calculated.  But I am a little stuck on why.
-> 
-> So far it seems that the options are:
-> 
-> 1.) Unstable bits: Our device has a 1 Ah back up battery and should
-> have had very very few (< 3 ) bad power off events after it had the
-> RFS put in NAND with ubiformat to its present state.   Additionally,
-> the devices should have stayed on for the entire time they have been
-> deployed.  (We are logging that from now on)
-> 
-> 2.) NAND/Driver Corruption: I have run the MTD oobtest and read test
-> to near ad nauseum with almost perfect passing results.  In 500+
-> iterations of each test, split on multiple devices, I saw one OOB
-> verify error.  And since I enabled further debugging, I have not been
-> able to reproduce it.  Additionally, I have gone through and verified
-> that the GPMC (General Purpose Memory Controller) bus that connects
-> the AM335x to the NAND chip is within the chip's timing requirements.
-> 
-> 3.) Memory Corruption: Is it possible the the write buffer can be
-> corrupted before it is written to NAND?  Hence having a bad CRC value
-> in NAND?
+> - Allows more effective use of small capacity devices.  JFFS2
+> needs somewhere between 2 and 5 empty pages for garbage collection;
+> and for an NVRAM part with only 32KiB of space, a smaller erase page
+> allows much better utilization in applications where garbage collection
+> is important.
 
-Well, the only obvious suggestion that I could get is that you should
-find a way to reproduce the issue. Then you can try enabling I/O
-debugging in UBI. And then adding various hacks around to narrow down
-the problem. Depending on how quickly this is can bereproduced, you can
-go as far as duplicating all the NAND writes to a file and comparing the
-contents of NAND with the contents of file and finding when something
-becomes corrupted... just a crazy idea.
-
-You probably can check version 3 rather easily by reading the data from
-your flash a different way and verifying the CRC.
-
+Unfortunately, the patch is line-wrapped and not applicable to the
+latest kernel tree. Would you please refresh and re-send properly?
 
 -- 
 Best Regards,
