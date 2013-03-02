@@ -1,19 +1,19 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UBoIB-0006Jy-B6
- for linux-mtd@lists.infradead.org; Sat, 02 Mar 2013 15:24:08 +0000
-Message-ID: <1362237855.2745.24.camel@sauron>
-Subject: Re: [UBIFS][CRC Mismatch]
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Colin Foe-Parker <colin.foeparker@aclimalabs.com>
-Date: Sat, 02 Mar 2013 17:24:15 +0200
-In-Reply-To: <CAHeJuP946AQD2FOp1f=y_AKxXbLGYhTe1TZGOAtpNVoPbE5JEA@mail.gmail.com>
-References: <CAHeJuP946AQD2FOp1f=y_AKxXbLGYhTe1TZGOAtpNVoPbE5JEA@mail.gmail.com>
+ id 1UBoLN-0006TM-LA
+ for linux-mtd@lists.infradead.org; Sat, 02 Mar 2013 15:27:26 +0000
+Message-ID: <1362238074.2745.25.camel@sauron>
+Subject: Re: [PATCH] mtd: m25p80: add support for Macronix MX66L51235L
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Daniel Schwierzeck <daniel.schwierzeck@gmail.com>
+Date: Sat, 02 Mar 2013 17:27:54 +0200
+In-Reply-To: <1360522424-3360-1-git-send-email-daniel.schwierzeck@gmail.com>
+References: <1360522424-3360-1-git-send-email-daniel.schwierzeck@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,17 +23,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2013-02-19 at 10:44 -0800, Colin Foe-Parker wrote:
-> 
-> Thanks in advance for any/all help.  I have dug through the UBI/UBIFS
-> code, but I still have a long ways to go before I really "get" most of
-> it.
+On Sun, 2013-02-10 at 19:53 +0100, Daniel Schwierzeck wrote:
+> Signed-off-by: Daniel Schwierzeck <daniel.schwierzeck@gmail.com>
 
-Probably finding ways to reproduce this quickly enough is more
-important.
-
-BTW, if you use sub-pages, you may try disable them and see if the
-problem goes away.
+Pushed both of your patches to l2-mtd.git, thanks!
 
 -- 
 Best Regards,
