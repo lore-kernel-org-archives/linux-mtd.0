@@ -1,20 +1,23 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga14.intel.com ([143.182.124.37])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UBnHH-0003fa-Au
- for linux-mtd@lists.infradead.org; Sat, 02 Mar 2013 14:19:08 +0000
-Message-ID: <1362233972.2745.7.camel@sauron>
+ id 1UBnJD-0003kK-0x
+ for linux-mtd@lists.infradead.org; Sat, 02 Mar 2013 14:21:07 +0000
+Message-ID: <1362234094.2745.9.camel@sauron>
 Subject: Re: [PATCH V3 1/3] mtd: add new fields to nand_flash_dev{}
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Date: Sat, 02 Mar 2013 16:19:32 +0200
-In-Reply-To: <1359349039-11510-2-git-send-email-b32955@freescale.com>
+To: Huang Shijie <shijie8@gmail.com>
+Date: Sat, 02 Mar 2013 16:21:34 +0200
+In-Reply-To: <CAMiH66ExMK8rPMw3kvs9M2b-0ZSkfxBYteTi8QTZf+XCzJw5Dw@mail.gmail.com>
 References: <1359349039-11510-1-git-send-email-b32955@freescale.com>
  <1359349039-11510-2-git-send-email-b32955@freescale.com>
+ <1360684037.12703.117.camel@sauron.fi.intel.com>
+ <CAMiH66ExMK8rPMw3kvs9M2b-0ZSkfxBYteTi8QTZf+XCzJw5Dw@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org
+Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,44 +28,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2013-01-28 at 12:57 +0800, Huang Shijie wrote:
-> As time goes on, we begin to meet the situation that we can not get enough
-> information from some nand chips's id data. Take some Toshiba's nand chips
-> for example. I have 4 Toshiba's nand chips in my hand:
-> 	TC58NVG2S0F, TC58NVG3S0F, TC58NVG5D2, TC58NVG6D2
+On Sat, 2013-02-16 at 11:56 +0800, Huang Shijie wrote:
+> On Tue, Feb 12, 2013 at 11:47 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> > On Mon, 2013-01-28 at 12:57 +0800, Huang Shijie wrote:
+> >> +       {"SmartMedia 256MiB 3,3V",      {0, 0x71}, 512, 256, 0x4000 },
+> >> +       {"SmartMedia 256MiB 3,3V ROM",  {0, 0x5b}, 512, 256, 0x4000,
+> >> NAND_ROM},
+> >
+> > Sorry for a possibly stupid question, but what does it buy you adding
+> > another "0" to all the entries? I see you add another table, which you
+> > look up if the "traditional" table does not work. Why you need to add
+> > these zeroes?
 > 
-> When we read these chips' datasheets, we will get the geometry of these chips:
-> 	TC58NVG2S0F : 4096 + 224
-> 	TC58NVG3S0F : 4096 + 232
-> 	TC58NVG5D2  : 8192 + 640
-> 	TC58NVG6D2  : 8192 + 640
+> The zeros are for the maf_id.
 > 
-> But we can not parse out the correct oob size for these chips from the id data.
+> The dev_id is the second byte of the 8-byte id data.
 
-Very good start of the commit message - you clearly defined the problem.
-
-> So it is time to add some new fields to the nand_flash_dev{}, and update the
-> detection mechanisms.
-
-But continued with very poor description of how you address the problem.
-Please, provide a better description.
-
-> This patch just adds some new fields to the nand_flash_dev{}:
->   @id[8] : the 8 bytes id data.
-
-id[8] = 8 bytes id data, just like password[5] = 5 bytes of password
-data. Please, provide a better commentary.
-
->   @id_len: the valid length of the id data.
-
-What does "valid" mean? Are "invalid" parts?
-
->   @oobsize: the oob size.
-
-Try to invent a better comment.
-
-Huang, it is not that I am trying to be difficult, but I truly do not
-understand how you are solving the issue.
+It does not really make me understand why we add these zeroes, they
+still look useless to me... Would you please be a little more verbose
+about your solution?
 
 -- 
 Best Regards,
