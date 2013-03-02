@@ -1,23 +1,23 @@
-Received: from mga14.intel.com ([143.182.124.37])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UBnJD-0003kK-0x
- for linux-mtd@lists.infradead.org; Sat, 02 Mar 2013 14:21:07 +0000
-Message-ID: <1362234094.2745.9.camel@sauron>
-Subject: Re: [PATCH V3 1/3] mtd: add new fields to nand_flash_dev{}
+ id 1UBnfl-0004Vi-R0
+ for linux-mtd@lists.infradead.org; Sat, 02 Mar 2013 14:44:26 +0000
+Message-ID: <1362235493.2745.11.camel@sauron>
+Subject: Re: [PATCH v2] mtd: torturetest: add the support for random data
+ pattern
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Huang Shijie <shijie8@gmail.com>
-Date: Sat, 02 Mar 2013 16:21:34 +0200
-In-Reply-To: <CAMiH66ExMK8rPMw3kvs9M2b-0ZSkfxBYteTi8QTZf+XCzJw5Dw@mail.gmail.com>
-References: <1359349039-11510-1-git-send-email-b32955@freescale.com>
- <1359349039-11510-2-git-send-email-b32955@freescale.com>
- <1360684037.12703.117.camel@sauron.fi.intel.com>
- <CAMiH66ExMK8rPMw3kvs9M2b-0ZSkfxBYteTi8QTZf+XCzJw5Dw@mail.gmail.com>
+Date: Sat, 02 Mar 2013 16:44:53 +0200
+In-Reply-To: <CAMiH66FFzeSg7r_hedet5deynxY6OF18UMcASsX-GaHjGmXiZQ@mail.gmail.com>
+References: <alpine.DEB.2.00.1302050900010.3736@lnxricardw.se.axis.com>
+ <1360052485-11961-1-git-send-email-b32955@freescale.com>
+ <1360751856.12703.132.camel@sauron.fi.intel.com>
+ <CAMiH66FFzeSg7r_hedet5deynxY6OF18UMcASsX-GaHjGmXiZQ@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org
+Cc: Huang Shijie <b32955@freescale.com>, ricard.wanderlof@axis.com,
+ dwmw2@infradead.org, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,25 +28,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2013-02-16 at 11:56 +0800, Huang Shijie wrote:
-> On Tue, Feb 12, 2013 at 11:47 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> > On Mon, 2013-01-28 at 12:57 +0800, Huang Shijie wrote:
-> >> +       {"SmartMedia 256MiB 3,3V",      {0, 0x71}, 512, 256, 0x4000 },
-> >> +       {"SmartMedia 256MiB 3,3V ROM",  {0, 0x5b}, 512, 256, 0x4000,
-> >> NAND_ROM},
+On Sat, 2013-02-16 at 12:00 +0800, Huang Shijie wrote:
+> On Wed, Feb 13, 2013 at 6:37 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> > On Tue, 2013-02-05 at 16:21 +0800, Huang Shijie wrote:
+> >> Add a new module parameter 'pattern'. The meaning of the pattern is:
+> >>   (1) pattern == 0 for 55/AA pattern.
+> >>   (2) pattern < 0 for random pattern.
+> >>   (3) pattern > 0 for random pattern too, the value of the pattern is used
+> >>       as the seed for the random generator.
 > >
-> > Sorry for a possibly stupid question, but what does it buy you adding
-> > another "0" to all the entries? I see you add another table, which you
-> > look up if the "traditional" table does not work. Why you need to add
-> > these zeroes?
+> > Please, do not add parameters, make it simple - teach the test to use
+> > both the old patterns plus additional cycles with random patterns.
 > 
-> The zeros are for the maf_id.
-> 
-> The dev_id is the second byte of the 8-byte id data.
+> but if we do not add new parameter, how can we create a random seed?
 
-It does not really make me understand why we add these zeroes, they
-still look useless to me... Would you please be a little more verbose
-about your solution?
+Unless you have a real practical reason to let users pass the initial
+random seed, do not do this.
+
+> Is it ok without set the random seed?
+
+I think so.
 
 -- 
 Best Regards,
