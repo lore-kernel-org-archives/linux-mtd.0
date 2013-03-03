@@ -1,23 +1,15 @@
-Received: from mail-we0-f173.google.com ([74.125.82.173])
+Received: from svenfoo.org ([82.94.215.22] helo=mail.zonque.de)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UCH0f-0003Ol-7x
- for linux-mtd@lists.infradead.org; Sun, 03 Mar 2013 22:04:02 +0000
-Received: by mail-we0-f173.google.com with SMTP id r5so3899552wey.18
- for <linux-mtd@lists.infradead.org>; Sun, 03 Mar 2013 14:03:21 -0800 (PST)
-Message-ID: <5133C8A3.7070008@gmail.com>
-Date: Sun, 03 Mar 2013 23:03:15 +0100
+ id 1UCImY-0005fF-3g
+ for linux-mtd@lists.infradead.org; Sun, 03 Mar 2013 23:57:37 +0000
 From: Daniel Mack <zonque@gmail.com>
-MIME-Version: 1.0
-To: Peter Korsgaard <jacmet@sunsite.dk>
-Subject: Re: [PATCH] mtd: devices: elm: check for device's presence before
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH v2] mtd: devices: elm: check for device's presence before
  configuration
-References: <1362345178-12536-1-git-send-email-zonque@gmail.com>
- <87k3pow44a.fsf@dell.be.48ers.dk>
-In-Reply-To: <87k3pow44a.fsf@dell.be.48ers.dk>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date: Mon,  4 Mar 2013 00:57:20 +0100
+Message-Id: <1362355040-27344-1-git-send-email-zonque@gmail.com>
+Cc: dwmw2@infradead.org, Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Daniel Mack <zonque@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,39 +19,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03.03.2013 22:44, Peter Korsgaard wrote:
->>>>>> "Daniel" == Daniel Mack <zonque@gmail.com> writes:
-> 
->  Daniel> In case the driver is not probed - due to config mismatches or errors
->  Daniel> in the DTS files - dev_get_drvdata() returns NULL, leading to an Ooops
->  Daniel> during boot. Better bail out with a warning in such cases.
-> 
->  Daniel> Signed-off-by: Daniel Mack <zonque@gmail.com>
->  Daniel> Cc: Philip Avinash <avinashphilip@ti.com>
->  Daniel> Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
->  Daniel> ---
->  Daniel>  drivers/mtd/devices/elm.c | 5 +++++
->  Daniel>  1 file changed, 5 insertions(+)
-> 
->  Daniel> diff --git a/drivers/mtd/devices/elm.c b/drivers/mtd/devices/elm.c
->  Daniel> index 2ec5da9..a9b6d04 100644
->  Daniel> --- a/drivers/mtd/devices/elm.c
->  Daniel> +++ b/drivers/mtd/devices/elm.c
->  Daniel> @@ -86,6 +86,11 @@ void elm_config(struct device *dev, enum bch_ecc bch_type)
->  Daniel>  	u32 reg_val;
->  Daniel>  	struct elm_info *info = dev_get_drvdata(dev);
->  
->  Daniel> +	if (!info) {
->  Daniel> +		dev_err(dev, "Unable to configure elm - device not probed?\n");
->  Daniel> +		return;
->  Daniel> +	}
->  Daniel> +
-> 
-> Even better would be to propagate the error message (E.G. return
-> -ENODEV) and let omap2.c deal with it (fall back to sw).
-> 
+In case the driver is not probed - due to config mismatches or errors
+in the DTS files - dev_get_drvdata() returns NULL, leading to an Ooops
+during boot.
 
-Yes, you're right. Will send an updated version later ...
+Make elm_config() return an error in such cases to propagate the error
+up to the user, so it can fall back to software mode.
 
-Thanks,
-Daniel
+Signed-off-by: Daniel Mack <zonque@gmail.com>
+Cc: Philip Avinash <avinashphilip@ti.com>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Cc: Peter Korsgaard <jacmet@sunsite.dk>
+---
+ drivers/mtd/devices/elm.c         | 9 ++++++++-
+ drivers/mtd/nand/omap2.c          | 5 +++--
+ include/linux/platform_data/elm.h | 2 +-
+ 3 files changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/devices/elm.c b/drivers/mtd/devices/elm.c
+index 2ec5da9..dccef9f 100644
+--- a/drivers/mtd/devices/elm.c
++++ b/drivers/mtd/devices/elm.c
+@@ -81,14 +81,21 @@ static u32 elm_read_reg(struct elm_info *info, int offset)
+  * @dev:	ELM device
+  * @bch_type:	Type of BCH ecc
+  */
+-void elm_config(struct device *dev, enum bch_ecc bch_type)
++int elm_config(struct device *dev, enum bch_ecc bch_type)
+ {
+ 	u32 reg_val;
+ 	struct elm_info *info = dev_get_drvdata(dev);
+ 
++	if (!info) {
++		dev_err(dev, "Unable to configure elm - device not probed?\n");
++		return -ENODEV;
++	}
++
+ 	reg_val = (bch_type & ECC_BCH_LEVEL_MASK) | (ELM_ECC_SIZE << 16);
+ 	elm_write_reg(info, ELM_LOCATION_CONFIG, reg_val);
+ 	info->bch_type = bch_type;
++
++	return 0;
+ }
+ EXPORT_SYMBOL(elm_config);
+ 
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index 8e820dd..b97ef3b 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -1701,8 +1701,9 @@ static int omap3_init_bch(struct mtd_info *mtd, int ecc_opt)
+ 		elm_node = of_find_node_by_phandle(be32_to_cpup(parp));
+ 		pdev = of_find_device_by_node(elm_node);
+ 		info->elm_dev = &pdev->dev;
+-		elm_config(info->elm_dev, bch_type);
+-		info->is_elm_used = true;
++
++		if (elm_config(info->elm_dev, bch_type) == 0)
++			info->is_elm_used = true;
+ 	}
+ 
+ 	if (info->is_elm_used && (mtd->writesize <= 4096)) {
+diff --git a/include/linux/platform_data/elm.h b/include/linux/platform_data/elm.h
+index 1bd5244..bf0a83b 100644
+--- a/include/linux/platform_data/elm.h
++++ b/include/linux/platform_data/elm.h
+@@ -50,5 +50,5 @@ struct elm_errorvec {
+ 
+ void elm_decode_bch_error_page(struct device *dev, u8 *ecc_calc,
+ 		struct elm_errorvec *err_vec);
+-void elm_config(struct device *dev, enum bch_ecc bch_type);
++int elm_config(struct device *dev, enum bch_ecc bch_type);
+ #endif /* __ELM_H */
+-- 
+1.8.1.4
