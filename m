@@ -1,17 +1,16 @@
-Received: from mail-vc0-f169.google.com ([209.85.220.169])
+Received: from mail-ve0-f171.google.com ([209.85.128.171])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UCa99-0006iJ-L1
- for linux-mtd@lists.infradead.org; Mon, 04 Mar 2013 18:30:00 +0000
-Received: by mail-vc0-f169.google.com with SMTP id n10so3553631vcn.14
- for <linux-mtd@lists.infradead.org>; Mon, 04 Mar 2013 10:29:57 -0800 (PST)
+ id 1UCaFG-0007qW-BO
+ for linux-mtd@lists.infradead.org; Mon, 04 Mar 2013 18:36:18 +0000
+Received: by mail-ve0-f171.google.com with SMTP id b10so4966401vea.2
+ for <linux-mtd@lists.infradead.org>; Mon, 04 Mar 2013 10:36:16 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1362415349-7107-12-git-send-email-dedekind1@gmail.com>
+In-Reply-To: <1362415349-7107-2-git-send-email-dedekind1@gmail.com>
 References: <1362415349-7107-1-git-send-email-dedekind1@gmail.com>
- <1362415349-7107-12-git-send-email-dedekind1@gmail.com>
-Date: Mon, 4 Mar 2013 10:29:57 -0800
-Message-ID: <CAN8TOE-0RmFhSAW7rj7mdNbk2zp3YaeUXA2BtYVDQwOZcro_jg@mail.gmail.com>
-Subject: Re: [PATCH 11/12] mtd: nand: rename the id filed of 'struct
- nand_flash_dev'
+ <1362415349-7107-2-git-send-email-dedekind1@gmail.com>
+Date: Mon, 4 Mar 2013 10:36:16 -0800
+Message-ID: <CAN8TOE-bJxgJ3HJCWyqkRJuOGjtoq0sLMNsDeFmZLAoB+Qg0bg@mail.gmail.com>
+Subject: Re: [PATCH 01/12] mtd: nand_ids: minor clean-ups
 From: Brian Norris <computersforpeace@gmail.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
@@ -27,18 +26,67 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Mon, Mar 4, 2013 at 8:42 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
->
-> The 'id' is a bit confusing name because NAND IDs are multi-byte. Re-name
-> it to 'dev_id' to make it clear that this is the "device ID" part (the second
-> byte).
->
-> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+> diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
+> index e3aa274..b110742 100644
+> --- a/drivers/mtd/nand/nand_ids.c
+> +++ b/drivers/mtd/nand/nand_ids.c
+> @@ -10,17 +10,17 @@
+>   */
+>  #include <linux/module.h>
+>  #include <linux/mtd/nand.h>
+> +
+> +#define LP_OPTIONS NAND_SAMSUNG_LP_OPTIONS
+> +#define LP_OPTIONS16 (LP_OPTIONS | NAND_BUSWIDTH_16)
+> +
+>  /*
+> -*      Chip ID list
+> -*
+> -*      Name. ID code, pagesize, chipsize in MegaByte, eraseblock size,
+> -*      options
+> -*
+> -*      Pagesize; 0, 256, 512
+> -*      0       get this information from the extended chip ID
+> -+      256     256 Byte page size
+> -*      512     512 Byte page size
+> -*/
+> + * The chip ID list:
+> + *    name, device ID, page size, chip size in MiB, eraseblock size, options
+> + *
+> + * If page size and eraseblock size is 0, the sizes are taken from the extended
 
-While we're going for typos (a la Jan's comment on another part of
-this series) the subject of this patch/email says "filed" where it
-should be "field".
+Grammar correction: "is" should be "are".
 
-Still reviewing the rest of this.
+> + * chip ID.
+> + */
+>  struct nand_flash_dev nand_flash_ids[] = {
+>
+>  #ifdef CONFIG_MTD_NAND_MUSEUM_IDS
+> @@ -67,11 +67,9 @@ struct nand_flash_dev nand_flash_ids[] = {
+>         {"NAND 256MiB 3,3V 8-bit",      0x71, 512, 256, 0x4000, 0},
+>
+>         /*
+> -        * These are the new chips with large page size. The pagesize and the
+> -        * erasesize is determined from the extended id bytes
+
+The original form has incorrect grammar; "is" should be "are".
+
+> +        * These are the new chips with large page size, page size and
+> +        * eraseblock size is determined from the extended id bytes.
+
+This is also incorrect grammar. It uses a comma to divide sentences
+and also uses "is". I would write something like this:
+
+"These are the new chips with large page size. Their page size and
+eraseblock size are determined from the extended ID bytes."
+
+>          */
+> -#define LP_OPTIONS NAND_SAMSUNG_LP_OPTIONS
+> -#define LP_OPTIONS16 (LP_OPTIONS | NAND_BUSWIDTH_16)
+>
+>         /* 512 Megabit */
+>         {"NAND 64MiB 1,8V 8-bit",       0xA2, 0,  64, 0, LP_OPTIONS},
+> --
+> 1.7.10.4
+>
 
 Brian
