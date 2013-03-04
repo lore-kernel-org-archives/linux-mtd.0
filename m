@@ -1,13 +1,16 @@
 Received: from mga14.intel.com ([143.182.124.37])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UCYRh-0004CV-1Z
- for linux-mtd@lists.infradead.org; Mon, 04 Mar 2013 16:41:09 +0000
+ id 1UCYRo-0004CX-9H
+ for linux-mtd@lists.infradead.org; Mon, 04 Mar 2013 16:41:11 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>,
  Huang Shijie <b32955@freescale.com>
-Subject: [PATCH 00/12] mtd: nand: provision full ID support
-Date: Mon,  4 Mar 2013 18:42:17 +0200
-Message-Id: <1362415349-7107-1-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 03/12] arm: defconfigs: lpc32xx_defconfig: remove museum NAND
+ option
+Date: Mon,  4 Mar 2013 18:42:20 +0200
+Message-Id: <1362415349-7107-4-git-send-email-dedekind1@gmail.com>
+In-Reply-To: <1362415349-7107-1-git-send-email-dedekind1@gmail.com>
+References: <1362415349-7107-1-git-send-email-dedekind1@gmail.com>
 Cc: Mike Dunn <mikedunn@newsguy.com>,
  MTD Maling List <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,15 +24,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-Hi,
+The MTD_NAND_MUSEUM_IDS configuration options was removed - update the
+lpc32xx_defconfig file.
 
-this is an RFC which adds full ID support provision which Huang can then
-use to solve his problem described here:
+Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+---
+ arch/arm/configs/lpc32xx_defconfig |    1 -
+ 1 file changed, 1 deletion(-)
 
-http://thread.gmane.org/gmane.linux.kernel/1428345/focus=45290
-
-But before adding full ID support, I cleaned up things a little and removed
-AG-AND support as part of the clean-up.
-
-Thanks,
-Artem.
+diff --git a/arch/arm/configs/lpc32xx_defconfig b/arch/arm/configs/lpc32xx_defconfig
+index 92386b2..e77326f 100644
+--- a/arch/arm/configs/lpc32xx_defconfig
++++ b/arch/arm/configs/lpc32xx_defconfig
+@@ -55,7 +55,6 @@ CONFIG_MTD_CHAR=y
+ CONFIG_MTD_BLOCK=y
+ CONFIG_MTD_M25P80=y
+ CONFIG_MTD_NAND=y
+-CONFIG_MTD_NAND_MUSEUM_IDS=y
+ CONFIG_MTD_NAND_SLC_LPC32XX=y
+ CONFIG_MTD_NAND_MLC_LPC32XX=y
+ CONFIG_BLK_DEV_LOOP=y
+-- 
+1.7.10.4
