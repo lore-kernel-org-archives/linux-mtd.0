@@ -1,25 +1,19 @@
-Received: from f40.mail.ru ([217.69.128.62])
+Received: from mail-ve0-f179.google.com ([209.85.128.179])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UCbbW-0005Zy-42
- for linux-mtd@lists.infradead.org; Mon, 04 Mar 2013 20:03:26 +0000
-From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
-To: =?UTF-8?B?QnJpYW4gTm9ycmlz?= <computersforpeace@gmail.com>
-Subject: =?UTF-8?B?UmVbNF06IFtQQVRDSCAwNi8xMl0gbXRkOiBuYW5kOiByZW1vdmUgYSBidW5j?=
- =?UTF-8?B?aCBvZiB1bnVzZWQgY29tbWFuZHM=?=
-Mime-Version: 1.0
-Date: Tue, 05 Mar 2013 00:03:15 +0400
-Message-ID: <1362427395.920173594@f40.mail.ru>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-In-Reply-To: <CAN8TOE9yNs5orCz39P_oEuMj_8_TABM6WSKUn3jkGVFsO1hauQ@mail.gmail.com>
-References: <1362415349-7107-1-git-send-email-dedekind1@gmail.com>
- <1362425367.155383507@f92.mail.ru>
- <CAN8TOE9yNs5orCz39P_oEuMj_8_TABM6WSKUn3jkGVFsO1hauQ@mail.gmail.com>
-Cc: =?UTF-8?B?SHVhbmcgU2hpamll?= <b32955@freescale.com>,
- =?UTF-8?B?TWlrZSBEdW5u?= <mikedunn@newsguy.com>,
- =?UTF-8?B?TVREIE1hbGluZyBMaXN0?= <linux-mtd@lists.infradead.org>,
- =?UTF-8?B?QXJ0ZW0gQml0eXV0c2tpeQ==?= <dedekind1@gmail.com>
-Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+ id 1UCboy-0006lP-Fv
+ for linux-mtd@lists.infradead.org; Mon, 04 Mar 2013 20:17:17 +0000
+Received: by mail-ve0-f179.google.com with SMTP id da11so5182204veb.10
+ for <linux-mtd@lists.infradead.org>; Mon, 04 Mar 2013 12:17:15 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1362395027-6513-1-git-send-email-dedekind1@gmail.com>
+References: <1362395027-6513-1-git-send-email-dedekind1@gmail.com>
+Date: Mon, 4 Mar 2013 12:17:15 -0800
+Message-ID: <CAN8TOE_QuG+Ff-+HhsPPLDyRHp8+LeZ8SB9AuunnUUAzYXojWA@mail.gmail.com>
+Subject: Re: [PATCH] NAND table: alternate row colors
+From: Brian Norris <computersforpeace@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,51 +23,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiBPbiBNb24sIE1hciA0LCAyMDEzIGF0IDExOjI5IEFNLCBBbGV4YW5kZXIgU2hpeWFuIDxzaGNf
-d29ya0BtYWlsLnJ1PiB3cm90ZToKPiA+PiBPbiBNb24sIE1hciA0LCAyMDEzIGF0IDg6NDIgQU0s
-IEFydGVtIEJpdHl1dHNraXkgPGRlZGVraW5kMUBnbWFpbC5jb20+IHdyb3RlOgo+ID4+ID4gRnJv
-bTogQXJ0ZW0gQml0eXV0c2tpeSA8YXJ0ZW0uYml0eXV0c2tpeUBsaW51eC5pbnRlbC5jb20+Cj4g
-Pj4gPgo+ID4+ID4gU2lnbmVkLW9mZi1ieTogQXJ0ZW0gQml0eXV0c2tpeSA8YXJ0ZW0uYml0eXV0
-c2tpeUBsaW51eC5pbnRlbC5jb20+Cj4gPj4gPiAtLS0KPiA+PiA+ICBkcml2ZXJzL210ZC9uYW5k
-L2NhZmVfbmFuZC5jICAgfCAgICA2IC0tLS0tLQo+ID4+ID4gIGRyaXZlcnMvbXRkL25hbmQvbmFu
-ZF9iYXNlLmMgICB8ICAgMTAgLS0tLS0tLS0tLQo+ID4+ID4gIGRyaXZlcnMvbXRkL25hbmQvbmFu
-ZHNpbS5jICAgICB8ICAgIDggLS0tLS0tLS0KPiA+PiA+ICBkcml2ZXJzL210ZC9uYW5kL251Yzkw
-MF9uYW5kLmMgfCAgICA5IC0tLS0tLS0tLQo+ID4+ID4gIGluY2x1ZGUvbGludXgvbXRkL25hbmQu
-aCAgICAgICB8ICAgMjAgLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiA+PiA+ICA1IGZpbGVzIGNoYW5n
-ZWQsIDUzIGRlbGV0aW9ucygtKQo+ID4+ID4KPiA+Pgo+ID4+IC4uLiB0cmltbWVkIC4uLgo+ID4g
-Li4uCj4gPj4gPiAtICogTm90ZTogdGhlIGNvbW1hbmQgZm9yIE5BTkRfQ01EX0RFUExFVEUxIGlz
-IHJlYWxseSAweDAwIGJ1dAo+ID4+ID4gLSAqICAgICAgIHRoZXJlIGlzIG5vIHdheSB0byBkaXN0
-aW5ndWlzaCB0aGF0IGZyb20gTkFORF9DTURfUkVBRDAKPiA+PiA+IC0gKiAgICAgICB1bnRpbCB0
-aGUgcmVtYWluaW5nIHNlcXVlbmNlIG9mIGNvbW1hbmRzIGhhcyBiZWVuIGNvbXBsZXRlZAo+ID4+
-ID4gLSAqICAgICAgIHNvIGFkZCBhIGhpZ2ggb3JkZXIgYml0IGFuZCBtYXNrIGl0IG9mZiBpbiB0
-aGUgY29tbWFuZC4KPiA+PiA+IC0gKi8KPiA+PiA+IC0jZGVmaW5lIE5BTkRfQ01EX0RFUExFVEUx
-ICAgICAgMHgxMDAKPiA+Pgo+ID4+IFBlcmhhcHMgdGhpcyBpcyB0aGUgcmVhc29uIGZvciB0aGUg
-InVubmVjZXNzYXJ5IGNvbW1hbmQgbWFza2luZyIgbm90ZWQKPiA+PiBieSBBbGV4YW5kZXI/IFRo
-ZXJlIGlzIG9uZSBpbnN0YW5jZSBvZiBhIGNvbW1hbmQgZnVuY3Rpb24gd2hpY2ggbWFza3MKPiA+
-PiBjb21tYW5kICYgMHhmZi4gTWF5YmUgQWxleGFuZGVyJ3MgcGF0Y2ggY2FuIGJlIHVwZGF0ZWQg
-dG8gbWVudGlvbiB0aGlzCj4gPj4gbGlrZWx5IGNhdXNlIGZvciB0aGUgb3JpZ2luYWwgbWFza2lu
-ZyBhbmQgY2FuIGJlIGFwcGxpZWQgb24gdG9wIG9mCj4gPj4gQXJ0ZW0ncyBjbGVhbnVwIHNlcmll
-cz8gQW55d2F5LCB0aGUgbWFzayB3YXMgbGlrZWx5IG5vdCB1c2VkIGFueXdheSwKPiA+PiBzaW5j
-ZSAoYXMgQXJ0ZW0gbWVudGlvbnMgaW4gdGhpcyBwYXRjaCBzZXJpZXMpIEFHLUFORCBoYWQgdmVy
-eSBsaXR0bGUKPiA+PiBnZW5lcmFsIHVzZSAob3Igbm9uZT8pLgo+ID4KPiA+IE15IHBhdGNoIGlz
-IGNsZWFudXAgb25seS4gSSB0aGluayB0aGF0IHRoZSBtYXNrIHdhcyBvcmlnaW5hbGx5IGluY2x1
-ZGVkIHRvCj4gPiBsaW1pdCB0aGUgYnl0ZSBib3VuZGFyaWVzLiBIb3dldmVyLCB0aGlzIGlzIG5v
-dCBuZWNlc3NhcnkgYmVjYXVzZSBjYWxsYmFjawo+ID4gZnVuY3Rpb25zICJjbWRfY3RybCIgdXNl
-IHdyaXRlYi9pb3dyaXRlOCBmb3Igc2VuZCBjb21tYW5kLCBpZSBkbyBub3QgYWxsb3cKPiA+IHRo
-ZSB1c2Ugb2YgdGhlIHdyb25nIHNpemUuIEFkZHJlc3MgYWxzbyBwYXNzZWQgdG8gImNtZF9jdHJs
-IiB2aWEgImNtZCIKPiA+IHBhcmFtZXRlciwgd2hpY2ggaXMgbm90IG1hc2tlZCBidXQgb25seSBz
-aGlmdGVkLCBpLmUuIHdlIGhhdmUgYSB2YWx1ZXMKPiA+IGFib3ZlIDB4ZmYsIHNvIHRoYXQgaXMg
-bm90IGEgcHJvYmxlbS4KPiAKPiBUbyBiZSBjbGVhciwgSSdtIHJlZmVycmluZyB0byB5b3VyIHBh
-dGNoOgo+IAo+ICAgW1BBVENIIDEvM10gbXRkOiBuYW5kX2Jhc2U6IFJlbW92ZWQgdW5uZWNlc3Nh
-cnkgY29tbWFuZCBtYXNraW5nCj4gCj4gVGhlIGZ1bmN0aW9uIHRoYXQgeW91IGFyZSBlZGl0aW5n
-IChuYW5kX2NvbW1hbmRfbHApIGNhbiBiZSB1c2VkIGZvcgoKT0ssIGZvciBTYW1zdW5nIGNoaXBz
-IHRvby4KCj4gQUctQU5EIGRldmljZXMuIFRoZSBkcml2ZXIgKHJ0Y19mcm9tNC5jIC0gc2xhdGVk
-IGZvciByZW1vdmFsIGluIHRoaXMKPiBzZXJpZXMpIGNhbiBzZW5kIE5BTkRfQ01EX0RFUExFVEUx
-LCB3aGljaCBhY2NvcmRpbmcgdG8gdGhlIGNvbW1lbnRzIGluCj4gbmFuZC5oIHRoYXQgSSBoaWdo
-bGlnaHQgYWJvdmUsIHNob3VsZCBiZSAibWFza1tlZF0gLi4uIG9mZiBpbiB0aGUKPiBjb21tYW5k
-Ii4gU28gd2l0aG91dCBBcnRlbSdzIGNoYW5nZSwgeW91ciBwYXRjaCBpcyBhY3R1YWxseSBicmVh
-a2luZwoKV2hlcmUgaXQgYnJlYWtzPyAicnRjX2Zyb200X2h3Y29udHJvbCIgdXNlIHdyaXRlYigp
-IGZvciAiY21kIiBwYXJhbWV0ZXIsCnNvIGl0cyBub3QgYnJlYWtzLiBJcyBJIHRoaW5rIGluY29y
-cmVjdD8KCj4gcnRjX2Zyb200LmMuIFVuZm9ydW5hdGVseSwgbm8gb25lIGJvdGhlcmVkIHRvIGFj
-dHVhbGx5IGRvY3VtZW50IHRoaXMKPiB3aXRoaW4gbmFuZF9jb21tYW5kX2xwLCBidXQgc3VjaCBp
-cyBsaWZlLgoKLS0tCg==
+On Mon, Mar 4, 2013 at 3:03 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+>
+> The truly great NAND table that we have is rather difficult to follow because
+> it is big. Make this a bit easier by applying different background colors to
+> different rows. Alternate the colors with period = 4.
+>
+> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+
+Thanks, I agree that it can be difficult to follow as-is. I primarily
+deal with it using spreadsheet software, so I have helpful aids there
+:)
+
+Your color scheme can clash a bit with foreground blue/red text (for
+"unsupported" chips), but hey, I'm not a web designer, and I think
+this is an improvement.
+
+Acked-by: Brian Norris <computersforpeace@gmail.com>
