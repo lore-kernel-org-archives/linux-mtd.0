@@ -1,23 +1,25 @@
-Received: from mail-we0-f169.google.com ([74.125.82.169])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UCQ88-0004jA-M9
- for linux-mtd@lists.infradead.org; Mon, 04 Mar 2013 07:48:17 +0000
-Received: by mail-we0-f169.google.com with SMTP id t11so4463079wey.28
- for <linux-mtd@lists.infradead.org>; Sun, 03 Mar 2013 23:47:50 -0800 (PST)
-Sender: Peter Korsgaard <jacmet@gmail.com>
-From: Peter Korsgaard <jacmet@sunsite.dk>
-To: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH v2] mtd: devices: elm: check for device's presence before
- configuration
-References: <1362355040-27344-1-git-send-email-zonque@gmail.com>
-Date: Mon, 04 Mar 2013 08:47:47 +0100
-In-Reply-To: <1362355040-27344-1-git-send-email-zonque@gmail.com> (Daniel
- Mack's message of "Mon, 4 Mar 2013 00:57:20 +0100")
-Message-ID: <87r4jvehcs.fsf@dell.be.48ers.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Received: from mga03.intel.com ([143.182.124.21])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UCQCB-0005BG-Ed
+ for linux-mtd@lists.infradead.org; Mon, 04 Mar 2013 07:52:28 +0000
+Message-ID: <1362383434.2943.5.camel@sauron>
+Subject: Re: [PATCH V3 1/3] mtd: add new fields to nand_flash_dev{}
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Date: Mon, 04 Mar 2013 09:50:34 +0200
+In-Reply-To: <513437DF.2030505@freescale.com>
+References: <1359349039-11510-1-git-send-email-b32955@freescale.com>
+ <1359349039-11510-2-git-send-email-b32955@freescale.com>
+ <1360684037.12703.117.camel@sauron.fi.intel.com>
+ <CAMiH66ExMK8rPMw3kvs9M2b-0ZSkfxBYteTi8QTZf+XCzJw5Dw@mail.gmail.com>
+ <1362234094.2745.9.camel@sauron> <513437DF.2030505@freescale.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
+ Huang Shijie <shijie8@gmail.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,21 +29,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->>>>> "Daniel" == Daniel Mack <zonque@gmail.com> writes:
+On Mon, 2013-03-04 at 13:57 +0800, Huang Shijie wrote:
+> The current code uses the @id to store the device id(byte 1).
+> But if we use the 8 bytes id data as the keyword, and expand the @id 
+> field to 8byte array,
+> the device id is the second byte now. All the added zeros are for the 
 
- Daniel> In case the driver is not probed - due to config mismatches or errors
- Daniel> in the DTS files - dev_get_drvdata() returns NULL, leading to an Ooops
- Daniel> during boot.
+I do not think you need to store the full array of ID's. Device ID's for
+all the 4 of above chips are different, which is enough to distinguish
+between them.
 
- Daniel> Make elm_config() return an error in such cases to propagate the error
- Daniel> up to the user, so it can fall back to software mode.
-
- Daniel> Signed-off-by: Daniel Mack <zonque@gmail.com>
- Daniel> Cc: Philip Avinash <avinashphilip@ti.com>
- Daniel> Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
- Daniel> Cc: Peter Korsgaard <jacmet@sunsite.dk>
-
-Acked-by: Peter Korsgaard <jacmet@sunsite.dk>
+The only thing you need to add is the OOB size field to 'struct
+nand_flash_dev'.
 
 -- 
-Bye, Peter Korsgaard
+Best Regards,
+Artem Bityutskiy
