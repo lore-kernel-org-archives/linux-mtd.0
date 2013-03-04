@@ -1,13 +1,13 @@
 Received: from mga14.intel.com ([143.182.124.37])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UCYRr-0004CX-NM
- for linux-mtd@lists.infradead.org; Mon, 04 Mar 2013 16:41:17 +0000
+ id 1UCYRp-0004CV-CV
+ for linux-mtd@lists.infradead.org; Mon, 04 Mar 2013 16:41:19 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>,
  Huang Shijie <b32955@freescale.com>
-Subject: [PATCH 05/12] mtd: nand: remove AG-AND support
-Date: Mon,  4 Mar 2013 18:42:22 +0200
-Message-Id: <1362415349-7107-6-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 04/12] mtd: nand: remove the rtc_from4 driver support
+Date: Mon,  4 Mar 2013 18:42:21 +0200
+Message-Id: <1362415349-7107-5-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1362415349-7107-1-git-send-email-dedekind1@gmail.com>
 References: <1362415349-7107-1-git-send-email-dedekind1@gmail.com>
 Cc: Mike Dunn <mikedunn@newsguy.com>,
@@ -23,270 +23,667 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-We have only one AG-AND driver and it was not touched since 2005. It looks
-like AG-AND was not really make it to mass-production and can be considered
-a dead technology.
+The AG-AND support is about to be removed from MTD, because this technology is
+dead for long time. Thus, remove this the only AG-AND driver we have in the
+kernel tree.
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- drivers/mtd/nand/nand_base.c |   78 ++----------------------------------------
- drivers/mtd/nand/nand_bbt.c  |   25 --------------
- drivers/mtd/nand/nand_ids.c  |   13 -------
- include/linux/mtd/nand.h     |   16 ---------
- 4 files changed, 2 insertions(+), 130 deletions(-)
+ drivers/mtd/nand/Kconfig     |   10 -
+ drivers/mtd/nand/rtc_from4.c |  624 ------------------------------------------
+ 2 files changed, 634 deletions(-)
+ delete mode 100644 drivers/mtd/nand/rtc_from4.c
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 4321415..0e28f55 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -4,7 +4,6 @@
-  *  Overview:
-  *   This is the generic MTD driver for NAND flash devices. It should be
-  *   capable of working with almost all NAND chips currently available.
-- *   Basic support for AG-AND chips is provided.
-  *
-  *	Additional technical information is available on
-  *	http://www.linux-mtd.infradead.org/doc/nand.html
-@@ -22,7 +21,6 @@
-  *	Enable cached programming for 2k page size chips
-  *	Check, if mtd->ecctype should be set to MTD_ECC_HW
-  *	if we have HW ECC support.
-- *	The AG-AND chips have nice features for speed improvement,
-  *	which are not supported yet. Read / program 4 pages in one go.
-  *	BBT table is not serialized, has to be fixed
-  *
-@@ -836,9 +834,7 @@ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
- 	 */
- 	ndelay(100);
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 0f443ef..a626629 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -193,16 +193,6 @@ config MTD_NAND_BF5XX_BOOTROM_ECC
  
--	if ((state == FL_ERASING) && (chip->options & NAND_IS_AND))
--		chip->cmdfunc(mtd, NAND_CMD_STATUS_MULTI, -1, -1);
--	else
-+	if (state == FL_ERASING)
- 		chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
+ 	  If unsure, say N.
  
- 	if (in_interrupt() || oops_in_progress)
-@@ -2465,24 +2461,6 @@ static void single_erase_cmd(struct mtd_info *mtd, int page)
- }
- 
- /**
-- * multi_erase_cmd - [GENERIC] AND specific block erase command function
-- * @mtd: MTD device structure
-- * @page: the page address of the block which will be erased
+-config MTD_NAND_RTC_FROM4
+-	tristate "Renesas Flash ROM 4-slot interface board (FROM_BOARD4)"
+-	depends on SH_SOLUTION_ENGINE
+-	select REED_SOLOMON
+-	select REED_SOLOMON_DEC8
+-	select BITREVERSE
+-	help
+-	  This enables the driver for the Renesas Technology AG-AND
+-	  flash interface board (FROM_BOARD4)
+-
+ config MTD_NAND_PPCHAMELEONEVB
+ 	tristate "NAND Flash device on PPChameleonEVB board"
+ 	depends on PPCHAMELEONEVB && BROKEN
+diff --git a/drivers/mtd/nand/rtc_from4.c b/drivers/mtd/nand/rtc_from4.c
+deleted file mode 100644
+index e55b5cf..0000000
+--- a/drivers/mtd/nand/rtc_from4.c
++++ /dev/null
+@@ -1,624 +0,0 @@
+-/*
+- *  drivers/mtd/nand/rtc_from4.c
 - *
-- * AND multi block erase command function. Erase 4 consecutive blocks.
+- *  Copyright (C) 2004  Red Hat, Inc.
+- *
+- *  Derived from drivers/mtd/nand/spia.c
+- *       Copyright (C) 2000 Steven J. Hill (sjhill@realitydiluted.com)
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- *
+- * Overview:
+- *   This is a device driver for the AG-AND flash device found on the
+- *   Renesas Technology Corp. Flash ROM 4-slot interface board (FROM_BOARD4),
+- *   which utilizes the Renesas HN29V1G91T-30 part.
+- *   This chip is a 1 GBibit (128MiB x 8 bits) AG-AND flash device.
 - */
--static void multi_erase_cmd(struct mtd_info *mtd, int page)
+-
+-#include <linux/delay.h>
+-#include <linux/kernel.h>
+-#include <linux/init.h>
+-#include <linux/slab.h>
+-#include <linux/rslib.h>
+-#include <linux/bitrev.h>
+-#include <linux/module.h>
+-#include <linux/mtd/mtd.h>
+-#include <linux/mtd/nand.h>
+-#include <linux/mtd/partitions.h>
+-#include <asm/io.h>
+-
+-/*
+- * MTD structure for Renesas board
+- */
+-static struct mtd_info *rtc_from4_mtd = NULL;
+-
+-#define RTC_FROM4_MAX_CHIPS	2
+-
+-/* HS77x9 processor register defines */
+-#define SH77X9_BCR1	((volatile unsigned short *)(0xFFFFFF60))
+-#define SH77X9_BCR2	((volatile unsigned short *)(0xFFFFFF62))
+-#define SH77X9_WCR1	((volatile unsigned short *)(0xFFFFFF64))
+-#define SH77X9_WCR2	((volatile unsigned short *)(0xFFFFFF66))
+-#define SH77X9_MCR	((volatile unsigned short *)(0xFFFFFF68))
+-#define SH77X9_PCR	((volatile unsigned short *)(0xFFFFFF6C))
+-#define SH77X9_FRQCR	((volatile unsigned short *)(0xFFFFFF80))
+-
+-/*
+- * Values specific to the Renesas Technology Corp. FROM_BOARD4 (used with HS77x9 processor)
+- */
+-/* Address where flash is mapped */
+-#define RTC_FROM4_FIO_BASE	0x14000000
+-
+-/* CLE and ALE are tied to address lines 5 & 4, respectively */
+-#define RTC_FROM4_CLE		(1 << 5)
+-#define RTC_FROM4_ALE		(1 << 4)
+-
+-/* address lines A24-A22 used for chip selection */
+-#define RTC_FROM4_NAND_ADDR_SLOT3	(0x00800000)
+-#define RTC_FROM4_NAND_ADDR_SLOT4	(0x00C00000)
+-#define RTC_FROM4_NAND_ADDR_FPGA	(0x01000000)
+-/* mask address lines A24-A22 used for chip selection */
+-#define RTC_FROM4_NAND_ADDR_MASK	(RTC_FROM4_NAND_ADDR_SLOT3 | RTC_FROM4_NAND_ADDR_SLOT4 | RTC_FROM4_NAND_ADDR_FPGA)
+-
+-/* FPGA status register for checking device ready (bit zero) */
+-#define RTC_FROM4_FPGA_SR		(RTC_FROM4_NAND_ADDR_FPGA | 0x00000002)
+-#define RTC_FROM4_DEVICE_READY		0x0001
+-
+-/* FPGA Reed-Solomon ECC Control register */
+-
+-#define RTC_FROM4_RS_ECC_CTL		(RTC_FROM4_NAND_ADDR_FPGA | 0x00000050)
+-#define RTC_FROM4_RS_ECC_CTL_CLR	(1 << 7)
+-#define RTC_FROM4_RS_ECC_CTL_GEN	(1 << 6)
+-#define RTC_FROM4_RS_ECC_CTL_FD_E	(1 << 5)
+-
+-/* FPGA Reed-Solomon ECC code base */
+-#define RTC_FROM4_RS_ECC		(RTC_FROM4_NAND_ADDR_FPGA | 0x00000060)
+-#define RTC_FROM4_RS_ECCN		(RTC_FROM4_NAND_ADDR_FPGA | 0x00000080)
+-
+-/* FPGA Reed-Solomon ECC check register */
+-#define RTC_FROM4_RS_ECC_CHK		(RTC_FROM4_NAND_ADDR_FPGA | 0x00000070)
+-#define RTC_FROM4_RS_ECC_CHK_ERROR	(1 << 7)
+-
+-#define ERR_STAT_ECC_AVAILABLE		0x20
+-
+-/* Undefine for software ECC */
+-#define RTC_FROM4_HWECC	1
+-
+-/* Define as 1 for no virtual erase blocks (in JFFS2) */
+-#define RTC_FROM4_NO_VIRTBLOCKS	0
+-
+-/*
+- * Module stuff
+- */
+-static void __iomem *rtc_from4_fio_base = (void *)P2SEGADDR(RTC_FROM4_FIO_BASE);
+-
+-static const struct mtd_partition partition_info[] = {
+-	{
+-	 .name = "Renesas flash partition 1",
+-	 .offset = 0,
+-	 .size = MTDPART_SIZ_FULL},
+-};
+-
+-#define NUM_PARTITIONS 1
+-
+-/*
+- *	hardware specific flash bbt decriptors
+- *	Note: this is to allow debugging by disabling
+- *		NAND_BBT_CREATE and/or NAND_BBT_WRITE
+- *
+- */
+-static uint8_t bbt_pattern[] = { 'B', 'b', 't', '0' };
+-static uint8_t mirror_pattern[] = { '1', 't', 'b', 'B' };
+-
+-static struct nand_bbt_descr rtc_from4_bbt_main_descr = {
+-	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
+-		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
+-	.offs = 40,
+-	.len = 4,
+-	.veroffs = 44,
+-	.maxblocks = 4,
+-	.pattern = bbt_pattern
+-};
+-
+-static struct nand_bbt_descr rtc_from4_bbt_mirror_descr = {
+-	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
+-		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
+-	.offs = 40,
+-	.len = 4,
+-	.veroffs = 44,
+-	.maxblocks = 4,
+-	.pattern = mirror_pattern
+-};
+-
+-#ifdef RTC_FROM4_HWECC
+-
+-/* the Reed Solomon control structure */
+-static struct rs_control *rs_decoder;
+-
+-/*
+- *      hardware specific Out Of Band information
+- */
+-static struct nand_ecclayout rtc_from4_nand_oobinfo = {
+-	.eccbytes = 32,
+-	.eccpos = {
+-		   0, 1, 2, 3, 4, 5, 6, 7,
+-		   8, 9, 10, 11, 12, 13, 14, 15,
+-		   16, 17, 18, 19, 20, 21, 22, 23,
+-		   24, 25, 26, 27, 28, 29, 30, 31},
+-	.oobfree = {{32, 32}}
+-};
+-
+-#endif
+-
+-/*
+- * rtc_from4_hwcontrol - hardware specific access to control-lines
+- * @mtd:	MTD device structure
+- * @cmd:	hardware control command
+- *
+- * Address lines (A5 and A4) are used to control Command and Address Latch
+- * Enable on this board, so set the read/write address appropriately.
+- *
+- * Chip Enable is also controlled by the Chip Select (CS5) and
+- * Address lines (A24-A22), so no action is required here.
+- *
+- */
+-static void rtc_from4_hwcontrol(struct mtd_info *mtd, int cmd,
+-				unsigned int ctrl)
 -{
--	struct nand_chip *chip = mtd->priv;
--	/* Send commands to erase a block */
--	chip->cmdfunc(mtd, NAND_CMD_ERASE1, -1, page++);
--	chip->cmdfunc(mtd, NAND_CMD_ERASE1, -1, page++);
--	chip->cmdfunc(mtd, NAND_CMD_ERASE1, -1, page++);
--	chip->cmdfunc(mtd, NAND_CMD_ERASE1, -1, page);
--	chip->cmdfunc(mtd, NAND_CMD_ERASE2, -1, -1);
+-	struct nand_chip *chip = (mtd->priv);
+-
+-	if (cmd == NAND_CMD_NONE)
+-		return;
+-
+-	if (ctrl & NAND_CLE)
+-		writeb(cmd, chip->IO_ADDR_W | RTC_FROM4_CLE);
+-	else
+-		writeb(cmd, chip->IO_ADDR_W | RTC_FROM4_ALE);
+-}
+-
+-/*
+- * rtc_from4_nand_select_chip - hardware specific chip select
+- * @mtd:	MTD device structure
+- * @chip:	Chip to select (0 == slot 3, 1 == slot 4)
+- *
+- * The chip select is based on address lines A24-A22.
+- * This driver uses flash slots 3 and 4 (A23-A22).
+- *
+- */
+-static void rtc_from4_nand_select_chip(struct mtd_info *mtd, int chip)
+-{
+-	struct nand_chip *this = mtd->priv;
+-
+-	this->IO_ADDR_R = (void __iomem *)((unsigned long)this->IO_ADDR_R & ~RTC_FROM4_NAND_ADDR_MASK);
+-	this->IO_ADDR_W = (void __iomem *)((unsigned long)this->IO_ADDR_W & ~RTC_FROM4_NAND_ADDR_MASK);
+-
+-	switch (chip) {
+-
+-	case 0:		/* select slot 3 chip */
+-		this->IO_ADDR_R = (void __iomem *)((unsigned long)this->IO_ADDR_R | RTC_FROM4_NAND_ADDR_SLOT3);
+-		this->IO_ADDR_W = (void __iomem *)((unsigned long)this->IO_ADDR_W | RTC_FROM4_NAND_ADDR_SLOT3);
+-		break;
+-	case 1:		/* select slot 4 chip */
+-		this->IO_ADDR_R = (void __iomem *)((unsigned long)this->IO_ADDR_R | RTC_FROM4_NAND_ADDR_SLOT4);
+-		this->IO_ADDR_W = (void __iomem *)((unsigned long)this->IO_ADDR_W | RTC_FROM4_NAND_ADDR_SLOT4);
+-		break;
+-
+-	}
+-}
+-
+-/*
+- * rtc_from4_nand_device_ready - hardware specific ready/busy check
+- * @mtd:	MTD device structure
+- *
+- * This board provides the Ready/Busy state in the status register
+- * of the FPGA.  Bit zero indicates the RDY(1)/BSY(0) signal.
+- *
+- */
+-static int rtc_from4_nand_device_ready(struct mtd_info *mtd)
+-{
+-	unsigned short status;
+-
+-	status = *((volatile unsigned short *)(rtc_from4_fio_base + RTC_FROM4_FPGA_SR));
+-
+-	return (status & RTC_FROM4_DEVICE_READY);
+-
+-}
+-
+-/*
+- * deplete - code to perform device recovery in case there was a power loss
+- * @mtd:	MTD device structure
+- * @chip:	Chip to select (0 == slot 3, 1 == slot 4)
+- *
+- * If there was a sudden loss of power during an erase operation, a
+- * "device recovery" operation must be performed when power is restored
+- * to ensure correct operation.  This routine performs the required steps
+- * for the requested chip.
+- *
+- * See page 86 of the data sheet for details.
+- *
+- */
+-static void deplete(struct mtd_info *mtd, int chip)
+-{
+-	struct nand_chip *this = mtd->priv;
+-
+-	/* wait until device is ready */
+-	while (!this->dev_ready(mtd)) ;
+-
+-	this->select_chip(mtd, chip);
+-
+-	/* Send the commands for device recovery, phase 1 */
+-	this->cmdfunc(mtd, NAND_CMD_DEPLETE1, 0x0000, 0x0000);
+-	this->cmdfunc(mtd, NAND_CMD_DEPLETE2, -1, -1);
+-
+-	/* Send the commands for device recovery, phase 2 */
+-	this->cmdfunc(mtd, NAND_CMD_DEPLETE1, 0x0000, 0x0004);
+-	this->cmdfunc(mtd, NAND_CMD_DEPLETE2, -1, -1);
+-
+-}
+-
+-#ifdef RTC_FROM4_HWECC
+-/*
+- * rtc_from4_enable_hwecc - hardware specific hardware ECC enable function
+- * @mtd:	MTD device structure
+- * @mode:	I/O mode; read or write
+- *
+- * enable hardware ECC for data read or write
+- *
+- */
+-static void rtc_from4_enable_hwecc(struct mtd_info *mtd, int mode)
+-{
+-	volatile unsigned short *rs_ecc_ctl = (volatile unsigned short *)(rtc_from4_fio_base + RTC_FROM4_RS_ECC_CTL);
+-	unsigned short status;
+-
+-	switch (mode) {
+-	case NAND_ECC_READ:
+-		status = RTC_FROM4_RS_ECC_CTL_CLR | RTC_FROM4_RS_ECC_CTL_FD_E;
+-
+-		*rs_ecc_ctl = status;
+-		break;
+-
+-	case NAND_ECC_READSYN:
+-		status = 0x00;
+-
+-		*rs_ecc_ctl = status;
+-		break;
+-
+-	case NAND_ECC_WRITE:
+-		status = RTC_FROM4_RS_ECC_CTL_CLR | RTC_FROM4_RS_ECC_CTL_GEN | RTC_FROM4_RS_ECC_CTL_FD_E;
+-
+-		*rs_ecc_ctl = status;
+-		break;
+-
+-	default:
+-		BUG();
+-		break;
+-	}
+-
+-}
+-
+-/*
+- * rtc_from4_calculate_ecc - hardware specific code to read ECC code
+- * @mtd:	MTD device structure
+- * @dat:	buffer containing the data to generate ECC codes
+- * @ecc_code	ECC codes calculated
+- *
+- * The ECC code is calculated by the FPGA.  All we have to do is read the values
+- * from the FPGA registers.
+- *
+- * Note: We read from the inverted registers, since data is inverted before
+- * the code is calculated. So all 0xff data (blank page) results in all 0xff rs code
+- *
+- */
+-static void rtc_from4_calculate_ecc(struct mtd_info *mtd, const u_char *dat, u_char *ecc_code)
+-{
+-	volatile unsigned short *rs_eccn = (volatile unsigned short *)(rtc_from4_fio_base + RTC_FROM4_RS_ECCN);
+-	unsigned short value;
+-	int i;
+-
+-	for (i = 0; i < 8; i++) {
+-		value = *rs_eccn;
+-		ecc_code[i] = (unsigned char)value;
+-		rs_eccn++;
+-	}
+-	ecc_code[7] |= 0x0f;	/* set the last four bits (not used) */
+-}
+-
+-/*
+- * rtc_from4_correct_data - hardware specific code to correct data using ECC code
+- * @mtd:	MTD device structure
+- * @buf:	buffer containing the data to generate ECC codes
+- * @ecc1	ECC codes read
+- * @ecc2	ECC codes calculated
+- *
+- * The FPGA tells us fast, if there's an error or not. If no, we go back happy
+- * else we read the ecc results from the fpga and call the rs library to decode
+- * and hopefully correct the error.
+- *
+- */
+-static int rtc_from4_correct_data(struct mtd_info *mtd, const u_char *buf, u_char *ecc1, u_char *ecc2)
+-{
+-	int i, j, res;
+-	unsigned short status;
+-	uint16_t par[6], syn[6];
+-	uint8_t ecc[8];
+-	volatile unsigned short *rs_ecc;
+-
+-	status = *((volatile unsigned short *)(rtc_from4_fio_base + RTC_FROM4_RS_ECC_CHK));
+-
+-	if (!(status & RTC_FROM4_RS_ECC_CHK_ERROR)) {
+-		return 0;
+-	}
+-
+-	/* Read the syndrome pattern from the FPGA and correct the bitorder */
+-	rs_ecc = (volatile unsigned short *)(rtc_from4_fio_base + RTC_FROM4_RS_ECC);
+-	for (i = 0; i < 8; i++) {
+-		ecc[i] = bitrev8(*rs_ecc);
+-		rs_ecc++;
+-	}
+-
+-	/* convert into 6 10bit syndrome fields */
+-	par[5] = rs_decoder->index_of[(((uint16_t) ecc[0] >> 0) & 0x0ff) | (((uint16_t) ecc[1] << 8) & 0x300)];
+-	par[4] = rs_decoder->index_of[(((uint16_t) ecc[1] >> 2) & 0x03f) | (((uint16_t) ecc[2] << 6) & 0x3c0)];
+-	par[3] = rs_decoder->index_of[(((uint16_t) ecc[2] >> 4) & 0x00f) | (((uint16_t) ecc[3] << 4) & 0x3f0)];
+-	par[2] = rs_decoder->index_of[(((uint16_t) ecc[3] >> 6) & 0x003) | (((uint16_t) ecc[4] << 2) & 0x3fc)];
+-	par[1] = rs_decoder->index_of[(((uint16_t) ecc[5] >> 0) & 0x0ff) | (((uint16_t) ecc[6] << 8) & 0x300)];
+-	par[0] = (((uint16_t) ecc[6] >> 2) & 0x03f) | (((uint16_t) ecc[7] << 6) & 0x3c0);
+-
+-	/* Convert to computable syndrome */
+-	for (i = 0; i < 6; i++) {
+-		syn[i] = par[0];
+-		for (j = 1; j < 6; j++)
+-			if (par[j] != rs_decoder->nn)
+-				syn[i] ^= rs_decoder->alpha_to[rs_modnn(rs_decoder, par[j] + i * j)];
+-
+-		/* Convert to index form */
+-		syn[i] = rs_decoder->index_of[syn[i]];
+-	}
+-
+-	/* Let the library code do its magic. */
+-	res = decode_rs8(rs_decoder, (uint8_t *) buf, par, 512, syn, 0, NULL, 0xff, NULL);
+-	if (res > 0) {
+-		pr_debug("rtc_from4_correct_data: " "ECC corrected %d errors on read\n", res);
+-	}
+-	return res;
 -}
 -
 -/**
-  * nand_erase - [MTD Interface] erase block(s)
-  * @mtd: MTD device structure
-  * @instr: erase instruction
-@@ -2494,7 +2472,6 @@ static int nand_erase(struct mtd_info *mtd, struct erase_info *instr)
- 	return nand_erase_nand(mtd, instr, 0);
- }
- 
--#define BBT_PAGE_MASK	0xffffff3f
- /**
-  * nand_erase_nand - [INTERN] erase block(s)
-  * @mtd: MTD device structure
-@@ -2508,8 +2485,6 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
- {
- 	int page, status, pages_per_block, ret, chipnr;
- 	struct nand_chip *chip = mtd->priv;
--	loff_t rewrite_bbt[NAND_MAX_CHIPS] = {0};
--	unsigned int bbt_masked_page = 0xffffffff;
- 	loff_t len;
- 
- 	pr_debug("%s: start = 0x%012llx, len = %llu\n",
-@@ -2540,15 +2515,6 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
- 		goto erase_exit;
- 	}
- 
--	/*
--	 * If BBT requires refresh, set the BBT page mask to see if the BBT
--	 * should be rewritten. Otherwise the mask is set to 0xffffffff which
--	 * can not be matched. This is also done when the bbt is actually
--	 * erased to avoid recursive updates.
--	 */
--	if (chip->options & BBT_AUTO_REFRESH && !allowbbt)
--		bbt_masked_page = chip->bbt_td->pages[chipnr] & BBT_PAGE_MASK;
+- * rtc_from4_errstat - perform additional error status checks
+- * @mtd:	MTD device structure
+- * @this:	NAND chip structure
+- * @state:	state or the operation
+- * @status:	status code returned from read status
+- * @page:	startpage inside the chip, must be called with (page & this->pagemask)
+- *
+- * Perform additional error status checks on erase and write failures
+- * to determine if errors are correctable.  For this device, correctable
+- * 1-bit errors on erase and write are considered acceptable.
+- *
+- * note: see pages 34..37 of data sheet for details.
+- *
+- */
+-static int rtc_from4_errstat(struct mtd_info *mtd, struct nand_chip *this,
+-			     int state, int status, int page)
+-{
+-	int er_stat = 0;
+-	int rtn, retlen;
+-	size_t len;
+-	uint8_t *buf;
+-	int i;
 -
- 	/* Loop through the pages */
- 	len = instr->len;
- 
-@@ -2594,15 +2560,6 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
- 			goto erase_exit;
- 		}
- 
--		/*
--		 * If BBT requires refresh, set the BBT rewrite flag to the
--		 * page being erased.
--		 */
--		if (bbt_masked_page != 0xffffffff &&
--		    (page & BBT_PAGE_MASK) == bbt_masked_page)
--			    rewrite_bbt[chipnr] =
--					((loff_t)page << chip->page_shift);
+-	this->cmdfunc(mtd, NAND_CMD_STATUS_CLEAR, -1, -1);
 -
- 		/* Increment page address and decrement length */
- 		len -= (1 << chip->phys_erase_shift);
- 		page += pages_per_block;
-@@ -2612,15 +2569,6 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
- 			chipnr++;
- 			chip->select_chip(mtd, -1);
- 			chip->select_chip(mtd, chipnr);
+-	if (state == FL_ERASING) {
 -
--			/*
--			 * If BBT requires refresh and BBT-PERCHIP, set the BBT
--			 * page mask to see if this BBT should be rewritten.
--			 */
--			if (bbt_masked_page != 0xffffffff &&
--			    (chip->bbt_td->options & NAND_BBT_PERCHIP))
--				bbt_masked_page = chip->bbt_td->pages[chipnr] &
--					BBT_PAGE_MASK;
- 		}
- 	}
- 	instr->state = MTD_ERASE_DONE;
-@@ -2637,23 +2585,6 @@ erase_exit:
- 	if (!ret)
- 		mtd_erase_callback(instr);
- 
--	/*
--	 * If BBT requires refresh and erase was successful, rewrite any
--	 * selected bad block tables.
--	 */
--	if (bbt_masked_page == 0xffffffff || ret)
--		return ret;
+-		for (i = 0; i < 4; i++) {
+-			if (!(status & 1 << (i + 1)))
+-				continue;
+-			this->cmdfunc(mtd, (NAND_CMD_STATUS_ERROR + i + 1),
+-				      -1, -1);
+-			rtn = this->read_byte(mtd);
+-			this->cmdfunc(mtd, NAND_CMD_STATUS_RESET, -1, -1);
 -
--	for (chipnr = 0; chipnr < chip->numchips; chipnr++) {
--		if (!rewrite_bbt[chipnr])
--			continue;
--		/* Update the BBT for chip */
--		pr_debug("%s: nand_update_bbt (%d:0x%0llx 0x%0x)\n",
--				__func__, chipnr, rewrite_bbt[chipnr],
--				chip->bbt_td->pages[chipnr]);
--		nand_update_bbt(mtd, rewrite_bbt[chipnr]);
--	}
--
- 	/* Return more or less happy */
- 	return ret;
- }
-@@ -3286,12 +3217,7 @@ ident_done:
- 	}
- 
- 	chip->badblockbits = 8;
--
--	/* Check for AND chips with 4 page planes */
--	if (chip->options & NAND_4PAGE_ARRAY)
--		chip->erase_cmd = multi_erase_cmd;
--	else
--		chip->erase_cmd = single_erase_cmd;
-+	chip->erase_cmd = single_erase_cmd;
- 
- 	/* Do not replace user supplied command function! */
- 	if (mtd->writesize > 512 && chip->cmdfunc == nand_command)
-diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-index 916d6e9..2672643 100644
---- a/drivers/mtd/nand/nand_bbt.c
-+++ b/drivers/mtd/nand/nand_bbt.c
-@@ -1240,15 +1240,6 @@ int nand_update_bbt(struct mtd_info *mtd, loff_t offs)
-  */
- static uint8_t scan_ff_pattern[] = { 0xff, 0xff };
- 
--static uint8_t scan_agand_pattern[] = { 0x1C, 0x71, 0xC7, 0x1C, 0x71, 0xC7 };
--
--static struct nand_bbt_descr agand_flashbased = {
--	.options = NAND_BBT_SCANEMPTY | NAND_BBT_SCANALLPAGES,
--	.offs = 0x20,
--	.len = 6,
--	.pattern = scan_agand_pattern
--};
--
- /* Generic flash bbt descriptors */
- static uint8_t bbt_pattern[] = {'B', 'b', 't', '0' };
- static uint8_t mirror_pattern[] = {'1', 't', 'b', 'B' };
-@@ -1333,22 +1324,6 @@ int nand_default_bbt(struct mtd_info *mtd)
- {
- 	struct nand_chip *this = mtd->priv;
- 
--	/*
--	 * Default for AG-AND. We must use a flash based bad block table as the
--	 * devices have factory marked _good_ blocks. Erasing those blocks
--	 * leads to loss of the good / bad information, so we _must_ store this
--	 * information in a good / bad table during startup.
--	 */
--	if (this->options & NAND_IS_AND) {
--		/* Use the default pattern descriptors */
--		if (!this->bbt_td) {
--			this->bbt_td = &bbt_main_descr;
--			this->bbt_md = &bbt_mirror_descr;
+-			/* err_ecc_not_avail */
+-			if (!(rtn & ERR_STAT_ECC_AVAILABLE))
+-				er_stat |= 1 << (i + 1);
 -		}
--		this->bbt_options |= NAND_BBT_USE_FLASH;
--		return nand_scan_bbt(mtd, &agand_flashbased);
+-
+-	} else if (state == FL_WRITING) {
+-
+-		unsigned long corrected = mtd->ecc_stats.corrected;
+-
+-		/* single bank write logic */
+-		this->cmdfunc(mtd, NAND_CMD_STATUS_ERROR, -1, -1);
+-		rtn = this->read_byte(mtd);
+-		this->cmdfunc(mtd, NAND_CMD_STATUS_RESET, -1, -1);
+-
+-		if (!(rtn & ERR_STAT_ECC_AVAILABLE)) {
+-			/* err_ecc_not_avail */
+-			er_stat |= 1 << 1;
+-			goto out;
+-		}
+-
+-		len = mtd->writesize;
+-		buf = kmalloc(len, GFP_KERNEL);
+-		if (!buf) {
+-			er_stat = 1;
+-			goto out;
+-		}
+-
+-		/* recovery read */
+-		rtn = nand_do_read(mtd, page, len, &retlen, buf);
+-
+-		/* if read failed or > 1-bit error corrected */
+-		if (rtn || (mtd->ecc_stats.corrected - corrected) > 1)
+-			er_stat |= 1 << 1;
+-		kfree(buf);
+-	}
+-out:
+-	rtn = status;
+-	if (er_stat == 0) {	/* if ECC is available   */
+-		rtn = (status & ~NAND_STATUS_FAIL);	/*   clear the error bit */
 -	}
 -
- 	/* Is a flash based bad block table requested? */
- 	if (this->bbt_options & NAND_BBT_USE_FLASH) {
- 		/* Use the default pattern descriptors */
-diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
-index 35070a2..7c5dec18 100644
---- a/drivers/mtd/nand/nand_ids.c
-+++ b/drivers/mtd/nand/nand_ids.c
-@@ -125,19 +125,6 @@ struct nand_flash_dev nand_flash_ids[] = {
- 	{"NAND 64GiB 1,8V 16-bit",	0x2E, 0, 65536, 0, LP_OPTIONS16},
- 	{"NAND 64GiB 3,3V 16-bit",	0x4E, 0, 65536, 0, LP_OPTIONS16},
- 
--	/*
--	 * Renesas AND 1 Gigabit. Those chips do not support extended id and
--	 * have a strange page/block layout !  The chosen minimum erasesize is
--	 * 4 * 2 * 2048 = 16384 Byte, as those chips have an array of 4 page
--	 * planes 1 block = 2 pages, but due to plane arrangement the blocks
--	 * 0-3 consists of page 0 + 4,1 + 5, 2 + 6, 3 + 7 Anyway JFFS2 would
--	 * increase the eraseblock size so we chose a combined one which can be
--	 * erased in one go There are more speed improvements for reads and
--	 * writes possible, but not implemented now
--	 */
--	{"AND 128MiB 3,3V 8-bit",	0x01, 2048, 128, 0x4000,
--	 NAND_IS_AND | NAND_4PAGE_ARRAY | BBT_AUTO_REFRESH},
+-	return rtn;
+-}
+-#endif
 -
- 	{NULL,}
- };
- 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 7ccb3c5..2aba049 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -171,22 +171,6 @@ typedef enum {
- #define NAND_CACHEPRG		0x00000008
- /* Chip has copy back function */
- #define NAND_COPYBACK		0x00000010
 -/*
-- * AND Chip which has 4 banks and a confusing page / block
-- * assignment. See Renesas datasheet for further information.
+- * Main initialization routine
 - */
--#define NAND_IS_AND		0x00000020
+-static int __init rtc_from4_init(void)
+-{
+-	struct nand_chip *this;
+-	unsigned short bcr1, bcr2, wcr2;
+-	int i;
+-	int ret;
+-
+-	/* Allocate memory for MTD device structure and private data */
+-	rtc_from4_mtd = kmalloc(sizeof(struct mtd_info) + sizeof(struct nand_chip), GFP_KERNEL);
+-	if (!rtc_from4_mtd) {
+-		printk("Unable to allocate Renesas NAND MTD device structure.\n");
+-		return -ENOMEM;
+-	}
+-
+-	/* Get pointer to private data */
+-	this = (struct nand_chip *)(&rtc_from4_mtd[1]);
+-
+-	/* Initialize structures */
+-	memset(rtc_from4_mtd, 0, sizeof(struct mtd_info));
+-	memset(this, 0, sizeof(struct nand_chip));
+-
+-	/* Link the private data with the MTD structure */
+-	rtc_from4_mtd->priv = this;
+-	rtc_from4_mtd->owner = THIS_MODULE;
+-
+-	/* set area 5 as PCMCIA mode to clear the spec of tDH(Data hold time;9ns min) */
+-	bcr1 = *SH77X9_BCR1 & ~0x0002;
+-	bcr1 |= 0x0002;
+-	*SH77X9_BCR1 = bcr1;
+-
+-	/* set */
+-	bcr2 = *SH77X9_BCR2 & ~0x0c00;
+-	bcr2 |= 0x0800;
+-	*SH77X9_BCR2 = bcr2;
+-
+-	/* set area 5 wait states */
+-	wcr2 = *SH77X9_WCR2 & ~0x1c00;
+-	wcr2 |= 0x1c00;
+-	*SH77X9_WCR2 = wcr2;
+-
+-	/* Set address of NAND IO lines */
+-	this->IO_ADDR_R = rtc_from4_fio_base;
+-	this->IO_ADDR_W = rtc_from4_fio_base;
+-	/* Set address of hardware control function */
+-	this->cmd_ctrl = rtc_from4_hwcontrol;
+-	/* Set address of chip select function */
+-	this->select_chip = rtc_from4_nand_select_chip;
+-	/* command delay time (in us) */
+-	this->chip_delay = 100;
+-	/* return the status of the Ready/Busy line */
+-	this->dev_ready = rtc_from4_nand_device_ready;
+-
+-#ifdef RTC_FROM4_HWECC
+-	printk(KERN_INFO "rtc_from4_init: using hardware ECC detection.\n");
+-
+-	this->ecc.mode = NAND_ECC_HW_SYNDROME;
+-	this->ecc.size = 512;
+-	this->ecc.bytes = 8;
+-	this->ecc.strength = 3;
+-	/* return the status of extra status and ECC checks */
+-	this->errstat = rtc_from4_errstat;
+-	/* set the nand_oobinfo to support FPGA H/W error detection */
+-	this->ecc.layout = &rtc_from4_nand_oobinfo;
+-	this->ecc.hwctl = rtc_from4_enable_hwecc;
+-	this->ecc.calculate = rtc_from4_calculate_ecc;
+-	this->ecc.correct = rtc_from4_correct_data;
+-
+-	/* We could create the decoder on demand, if memory is a concern.
+-	 * This way we have it handy, if an error happens
+-	 *
+-	 * Symbolsize is 10 (bits)
+-	 * Primitve polynomial is x^10+x^3+1
+-	 * first consecutive root is 0
+-	 * primitve element to generate roots = 1
+-	 * generator polinomial degree = 6
+-	 */
+-	rs_decoder = init_rs(10, 0x409, 0, 1, 6);
+-	if (!rs_decoder) {
+-		printk(KERN_ERR "Could not create a RS decoder\n");
+-		ret = -ENOMEM;
+-		goto err_1;
+-	}
+-#else
+-	printk(KERN_INFO "rtc_from4_init: using software ECC detection.\n");
+-
+-	this->ecc.mode = NAND_ECC_SOFT;
+-#endif
+-
+-	/* set the bad block tables to support debugging */
+-	this->bbt_td = &rtc_from4_bbt_main_descr;
+-	this->bbt_md = &rtc_from4_bbt_mirror_descr;
+-
+-	/* Scan to find existence of the device */
+-	if (nand_scan(rtc_from4_mtd, RTC_FROM4_MAX_CHIPS)) {
+-		ret = -ENXIO;
+-		goto err_2;
+-	}
+-
+-	/* Perform 'device recovery' for each chip in case there was a power loss. */
+-	for (i = 0; i < this->numchips; i++) {
+-		deplete(rtc_from4_mtd, i);
+-	}
+-
+-#if RTC_FROM4_NO_VIRTBLOCKS
+-	/* use a smaller erase block to minimize wasted space when a block is bad */
+-	/* note: this uses eight times as much RAM as using the default and makes */
+-	/*       mounts take four times as long. */
+-	rtc_from4_mtd->flags |= MTD_NO_VIRTBLOCKS;
+-#endif
+-
+-	/* Register the partitions */
+-	ret = mtd_device_register(rtc_from4_mtd, partition_info,
+-				  NUM_PARTITIONS);
+-	if (ret)
+-		goto err_3;
+-
+-	/* Return happy */
+-	return 0;
+-err_3:
+-	nand_release(rtc_from4_mtd);
+-err_2:
+-	free_rs(rs_decoder);
+-err_1:
+-	kfree(rtc_from4_mtd);
+-	return ret;
+-}
+-
+-module_init(rtc_from4_init);
+-
 -/*
-- * Chip has a array of 4 pages which can be read without
-- * additional ready /busy waits.
+- * Clean up routine
 - */
--#define NAND_4PAGE_ARRAY	0x00000040
--/*
-- * Chip requires that BBT is periodically rewritten to prevent
-- * bits from adjacent blocks from 'leaking' in altering data.
-- * This happens with the Renesas AG-AND chips, possibly others.
-- */
--#define BBT_AUTO_REFRESH	0x00000080
- /* Chip does not allow subpage writes */
- #define NAND_NO_SUBPAGE_WRITE	0x00000200
- 
+-static void __exit rtc_from4_cleanup(void)
+-{
+-	/* Release resource, unregister partitions */
+-	nand_release(rtc_from4_mtd);
+-
+-	/* Free the MTD device structure */
+-	kfree(rtc_from4_mtd);
+-
+-#ifdef RTC_FROM4_HWECC
+-	/* Free the reed solomon resources */
+-	if (rs_decoder) {
+-		free_rs(rs_decoder);
+-	}
+-#endif
+-}
+-
+-module_exit(rtc_from4_cleanup);
+-
+-MODULE_LICENSE("GPL");
+-MODULE_AUTHOR("d.marlin <dmarlin@redhat.com");
+-MODULE_DESCRIPTION("Board-specific glue layer for AG-AND flash on Renesas FROM_BOARD4");
 -- 
 1.7.10.4
