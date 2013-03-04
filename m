@@ -1,19 +1,13 @@
-Received: from f177.mail.ru ([94.100.178.94])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UCRmQ-0005CI-4r
- for linux-mtd@lists.infradead.org; Mon, 04 Mar 2013 09:34:02 +0000
-Received: from mail by f177.mail.ru with local (envelope-from
- <shc_work@mail.ru>) id 1UCRmK-0000gW-FB
- for linux-mtd@lists.infradead.org; Mon, 04 Mar 2013 13:33:52 +0400
-From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
-To: linux-mtd@lists.infradead.org
-Subject: =?UTF-8?B?RGlza29uY2hpcCByZWdyZXNzaW9u?=
-Mime-Version: 1.0
-Date: Mon, 04 Mar 2013 13:33:52 +0400
-Message-ID: <1362389632.763807690@f177.mail.ru>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+Received: from mga03.intel.com ([143.182.124.21])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UCTBK-0005T7-Ey
+ for linux-mtd@lists.infradead.org; Mon, 04 Mar 2013 11:03:51 +0000
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH] NAND table: alternate row colors
+Date: Mon,  4 Mar 2013 13:03:47 +0200
+Message-Id: <1362395027-6513-1-git-send-email-dedekind1@gmail.com>
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,77 +17,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG8gQWxsLgoKSSB3YW50IHRvIGluZm9ybSBhYm91dCBkaXNrb25jaGlwIHJlZ3Jlc3Npb24u
-Ck1vdW50aW5nIGRpc2tvbmNoaXAgcGFydGl0aW9uIG5vdyBmYWlsZWQgZHVlICJtdGQ6IG5hbmQ6
-IGtpbGwgTkFORF9OT19SRUFEUkRZIiBjb21taXQuCgpCdWcgcHJvZHVjZSBpbmZpbml0ZSBlcnJv
-ciBtZXNzYWdlcyBpbiB0aGUgY29uc29sZSwgbGlrZSB0aGlzOgojIG1vdW50IC9kZXYvbXRkYmxv
-Y2s1IC9tbnQvYmJveCAtdCBqZmZzMiAtbyBydwojIGpmZnMyOiBub3RpY2U6ICg0NSkgY2hlY2tf
-bm9kZV9kYXRhOiB3cm9uZyBkYXRhIENSQyBpbiBkYXRhIG5vZGUgYXQgMHgwMGYxNGY5ODogcmVh
-ZCAweGEwZmNiY2MxLCBjYWxjdWxhdGVkIDB4YzMwZTFhMzYuCmpmZnMyOiBtdGQtPnJlYWQoMHg1
-NjcgYnl0ZXMgZnJvbSAweGYxNGEwMCkgcmV0dXJuZWQgRUNDIGVycm9yCmpmZnMyOiBub3RpY2U6
-ICg0NSkgY2hlY2tfbm9kZV9kYXRhOiB3cm9uZyBkYXRhIENSQyBpbiBkYXRhIG5vZGUgYXQgMHgw
-MGYxNDkyNDogcmVhZCAweDczYmE1NWNjLCBjYWxjdWxhdGVkIDB4MTJlY2RkNGIuCmpmZnMyOiBt
-dGQtPnJlYWQoMHg3MjQgYnl0ZXMgZnJvbSAweGYxNDIwMCkgcmV0dXJuZWQgRUNDIGVycm9yCi4u
-LgoKSSBmb3VuZCBwb2ludCB0byBidWcgdXNpbmcgImdpdCBiaXNlY3QiOgpzaGNAc2hjIC9ob21l
-L2dpdC9saW51eC1uZXh0ICQgZ2l0IGJpc2VjdCBsb2cKZ2l0IGJpc2VjdCBzdGFydAojIGJhZDog
-WzI5NTk0NDA0ZDdmZTczY2Q4MGVhYTRlZThjNDNkY2M1Mzk3MGM2MGVdIExpbnV4IDMuNwpnaXQg
-YmlzZWN0IGJhZCAyOTU5NDQwNGQ3ZmU3M2NkODBlYWE0ZWU4YzQzZGNjNTM5NzBjNjBlCiMgZ29v
-ZDogW2EwZDI3MWNiZmVkMWRkNTAyNzhjNmIwNmJlYWQzZDAwYmEwYTg4ZjldIExpbnV4IDMuNgpn
-aXQgYmlzZWN0IGdvb2QgYTBkMjcxY2JmZWQxZGQ1MDI3OGM2YjA2YmVhZDNkMDBiYTBhODhmOQoj
-IGdvb2Q6IFtkNjZlNjczN2Q0NTQ1NTNlMWU2MjEwOWQ4Mjk4ZWRlNTM1MTE3OGE0XSBNZXJnZSBn
-aXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvaGVyYmVydC9jcnlw
-dG8tMi42CmdpdCBiaXNlY3QgZ29vZCBkNjZlNjczN2Q0NTQ1NTNlMWU2MjEwOWQ4Mjk4ZWRlNTM1
-MTE3OGE0CiMgYmFkOiBbZTFiMjgxNDdmNjg0YWY2N2JmYWM5ODk3NTZjMjdjMTk4NTlkM2Q0ZV0g
-TWVyZ2UgYnJhbmNoICdmb3ItbGludXMnIG9mIGdpdDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20v
-bGludXgva2VybmVsL2dpdC9zMzkwL2xpbnV4CmdpdCBiaXNlY3QgYmFkIGUxYjI4MTQ3ZjY4NGFm
-NjdiZmFjOTg5NzU2YzI3YzE5ODU5ZDNkNGUKIyBnb29kOiBbNWUwOTBlZDdhZjEwNzI5YTM5NmEy
-NWRmNDNkNjlhMjM2ZTc4OTczNl0gTWVyZ2UgdGFnICdzb2MtbGF0ZScgb2YgZ2l0Oi8vZ2l0Lmtl
-cm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L2FybS9hcm0tc29jCmdpdCBiaXNlY3Qg
-Z29vZCA1ZTA5MGVkN2FmMTA3MjlhMzk2YTI1ZGY0M2Q2OWEyMzZlNzg5NzM2CiMgZ29vZDogWzBi
-MTczYmM0ZGFhOGY4ZWMwM2E4NWFiZjVlNDdiMjM1MDJmZjgwYWZdIG1tOiBraWxsIHZtYSBmbGFn
-IFZNX0NBTl9OT05MSU5FQVIKZ2l0IGJpc2VjdCBnb29kIDBiMTczYmM0ZGFhOGY4ZWMwM2E4NWFi
-ZjVlNDdiMjM1MDJmZjgwYWYKIyBnb29kOiBbNzIwNTU0MjVlNTM1NDBkOWQwZTU5YTU3YWM4Yzli
-OGNlNzdiNjJkNV0gTWVyZ2UgYnJhbmNoICdmb3ItbGludXMnIG9mIGdpdDovL2dpdC5rZXJuZWwu
-b3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9tYXNvbi9saW51eC1idHJmcwpnaXQgYmlzZWN0
-IGdvb2QgNzIwNTU0MjVlNTM1NDBkOWQwZTU5YTU3YWM4YzliOGNlNzdiNjJkNQojIGJhZDogWzEw
-ZjM5ZjA0YjJjYjdhMDZiYTVkNGVhMGYyMGJkMTU2ZDAzNjdiZWVdIE1lcmdlIHRhZyAnZm9yLWxp
-bnVzLTIwMTIxMDA5JyBvZiBnaXQ6Ly9naXQuaW5mcmFkZWFkLm9yZy9tdGQtMi42CmdpdCBiaXNl
-Y3QgYmFkIDEwZjM5ZjA0YjJjYjdhMDZiYTVkNGVhMGYyMGJkMTU2ZDAzNjdiZWUKIyBiYWQ6IFti
-MDVhMTE4N2JiZjM1MDM1MzAwMzEzOTg3Y2JkMjJlMzYyZDcxZGM2XSBtdGQ6IGFsbG93IHVjbGlu
-dXggbWFwIGRyaXZlciB0byBiZSB1c2VkIG9uIGFueSBDb2xkRmlyZSBDUFUgcGxhdGZvcm0KZ2l0
-IGJpc2VjdCBiYWQgYjA1YTExODdiYmYzNTAzNTMwMDMxMzk4N2NiZDIyZTM2MmQ3MWRjNgojIGJh
-ZDogW2Q1ODQyYWI3MzBkMzY4YWUyZTg5MjVkYzAwYWVjMGNhMTMyYjcyYWJdIG10ZDogbHBjMzJ4
-eF9zbGM6IE1ha2UgcHJvYmUoKSByZXR1cm4gLUVQUk9CRV9ERUZFUiBpZiBuZWNlc3NhcnkKZ2l0
-IGJpc2VjdCBiYWQgZDU4NDJhYjczMGQzNjhhZTJlODkyNWRjMDBhZWMwY2ExMzJiNzJhYgojIGJh
-ZDogWzcxODg1YjY1MGFiMGZkOWQyZDM1Y2Q5MjJiZjk0OWMwN2MxNzFiMDRdIG10ZDogbXhjX25h
-bmQ6IHN3YXAgaW9tZW0gcmVzb3VyY2Ugb3JkZXIKZ2l0IGJpc2VjdCBiYWQgNzE4ODViNjUwYWIw
-ZmQ5ZDJkMzVjZDkyMmJmOTQ5YzA3YzE3MWIwNAojIGdvb2Q6IFs2MjNjNTVjYWEzNzIwM2VjZTZi
-NDQ1MGRhYTBkMmQwNTgyNTVkYTMwXSBtdGQ6IHNoX2ZsY3RsOiBHcm91cCBzZWN0b3IgYWNjZXNz
-ZXMgaW50byBhIHNpbmdsZSB0cmFuc2ZlcgpnaXQgYmlzZWN0IGdvb2QgNjIzYzU1Y2FhMzcyMDNl
-Y2U2YjQ0NTBkYWEwZDJkMDU4MjU1ZGEzMAojIGdvb2Q6IFs2M2Q5OWMwZTg5MDM5ZTE1MDkyMDlk
-MzZlZTE3ZmMzNzRmZDExMmM5XSBtdGQ6IG5hbmQ6IHJlbW92ZSBOQU5EX0JCVF9TRUFSQ0ggb3B0
-aW9uCmdpdCBiaXNlY3QgZ29vZCA2M2Q5OWMwZTg5MDM5ZTE1MDkyMDlkMzZlZTE3ZmMzNzRmZDEx
-MmM5CiMgYmFkOiBbOWQ2MzY3ZjRmNzgzNTEzMWIyYjM5ODdkMTM0ZmQ0YzQ0NjM2ZmE4ZF0gbXRk
-OiBhZGQgSkVERUMgSUQgZm9yIHcyNXEzMmR3IHRvIGNoaXAgdGFibGUKZ2l0IGJpc2VjdCBiYWQg
-OWQ2MzY3ZjRmNzgzNTEzMWIyYjM5ODdkMTM0ZmQ0YzQ0NjM2ZmE4ZAojIGJhZDogWzNkMDU5Njkz
-ZjZlMDQ4OTA2NmE5OGY0NTU2MDExMzdmYTAwM2RmNzddIG5hbmQ6IG14Y19uYW5kOiBVc2UgY2xr
-X3ByZXBhcmVfZW5hYmxlL2Nsa19kaXNhYmxlX3VucHJlcGFyZQpnaXQgYmlzZWN0IGJhZCAzZDA1
-OTY5M2Y2ZTA0ODkwNjZhOThmNDU1NjAxMTM3ZmEwMDNkZjc3CnNoY0BzaGMgL2hvbWUvZ2l0L2xp
-bnV4LW5leHQgJCBnaXQgYmlzZWN0IGJhZAoxNjk2ZTZiYzJhZTgzNzM0ZTY0ZTIwNmFjOTk3NjZl
-YTE5ZTlhMTRlIGlzIHRoZSBmaXJzdCBiYWQgY29tbWl0CmNvbW1pdCAxNjk2ZTZiYzJhZTgzNzM0
-ZTY0ZTIwNmFjOTk3NjZlYTE5ZTlhMTRlCkF1dGhvcjogQnJpYW4gTm9ycmlzIDxjb21wdXRlcnNm
-b3JwZWFjZUBnbWFpbC5jb20+CkRhdGU6ICAgVHVlIE1heSAyMiAyMzo1MDowMCAyMDEyIC0wNzAw
-CgogICAgbXRkOiBuYW5kOiBraWxsIE5BTkRfTk9fUkVBRFJEWQogICAgCiAgICBBY2NvcmRpbmcg
-dG8gaXRzIGRvY3VtZW50YXRpb24sIHRoZSBOQU5EX05PX1JFQURSRFkgb3B0aW9uIGlzIGFsd2F5
-cyB1c2VkCiAgICB3aGVuIGF1dG9pbmNyZW1lbnQgaXMgbm90IHN1cHBvcnRlZC4gQXV0b2luY3Jl
-bWVudCBzdXBwb3J0IHdhcyByZWNlbnRseQogICAgZHJvcHBlZCwgc28gd2UgY2FuIGRyb3AgdGhp
-cyBvcHRpb25zIGFzIHdlbGwgKGRlZmF1bHRpbmcgdG8gIm5vIHJlYWQgcmVhZHkKICAgIGNoZWNr
-IikuCiAgICAKICAgIFNpZ25lZC1vZmYtYnk6IEJyaWFuIE5vcnJpcyA8Y29tcHV0ZXJzZm9ycGVh
-Y2VAZ21haWwuY29tPgogICAgU2lnbmVkLW9mZi1ieTogQXJ0ZW0gQml0eXV0c2tpeSA8YXJ0ZW0u
-Yml0eXV0c2tpeUBsaW51eC5pbnRlbC5jb20+CiAgICBTaWduZWQtb2ZmLWJ5OiBEYXZpZCBXb29k
-aG91c2UgPERhdmlkLldvb2Rob3VzZUBpbnRlbC5jb20+Cgo6MDQwMDAwIDA0MDAwMCA1YmY3ODI3
-NjFlYmYyNTczMzkzYTk5MDBiMThmMTg5MDE4NTViZTkwIDk2MzNmZDRkNWU4ODFhN2Q1MDRjM2Y1
-NTY1Njg1N2YwZjhkNjQwNTIgTSAgICAgICBkcml2ZXJzCjowNDAwMDAgMDQwMDAwIGQ4YmRlYWUy
-NWUwNzRkM2NjOTE1MzIxZTA2MTJkNjY2YmY2OTJlMGEgZDlkZTlkZTFlNjUxNzkxODMyMjY1ZDk0
-OTJmN2U3OTRkMzc3ZDk0OCBNICAgICAgIGluY2x1ZGUKClNvLCBzaG91bGQgd2UgcmV2ZXJ0IHRo
-aXMgY29tbWl0IG9yIGZpbmQgYW5vdGhlciBzb2x1dGlvbj8KVGhhbmtzLgotLS0K
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+
+The truly great NAND table that we have is rather difficult to follow because
+it is big. Make this a bit easier by applying different background colors to
+different rows. Alternate the colors with period = 4.
+
+Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+---
+ nand-data/csvtohtml.py | 2 +-
+ nand-data/header.tmpl  | 3 +++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/nand-data/csvtohtml.py b/nand-data/csvtohtml.py
+index 06b010b..36c72aa 100755
+--- a/nand-data/csvtohtml.py
++++ b/nand-data/csvtohtml.py
+@@ -21,7 +21,7 @@ def csvToHTML(file):
+ 	tmp = open(head, 'r')
+ 	fdout.write(tmp.read())
+ 	tmp.close()
+-	fdout.write('<table>\n')
++	fdout.write('<table class="zebra">\n')
+ 	row = reader.next()
+ 	for i in range(len(row)):
+ 		if (row[i] == "All but Size"):
+diff --git a/nand-data/header.tmpl b/nand-data/header.tmpl
+index d0b3423..a9d5420 100644
+--- a/nand-data/header.tmpl
++++ b/nand-data/header.tmpl
+@@ -22,6 +22,9 @@
+ 	table th { background-color: #eee; }
+ 	.wrong-size { color: #0066FF; }
+ 	.exception { color: red; }
++	.zebra tbody tr:nth-child(4n+1) { background-color: #ffffef;}
++	.zebra tbody tr:nth-child(4n+2) { background-color: #ffefff;}
++	.zebra tbody tr:nth-child(4n+3) { background-color: #efffff;}
+ 	#footer { text-align: left; }
+ </style>
+ <!--
+-- 
+1.8.1.2
