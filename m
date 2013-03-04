@@ -1,12 +1,12 @@
-Received: from mga14.intel.com ([143.182.124.37])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UCQgS-0007lh-1m
- for linux-mtd@lists.infradead.org; Mon, 04 Mar 2013 08:23:44 +0000
-Message-ID: <1362385446.2943.7.camel@sauron>
+ id 1UCQtR-0000Bu-OW
+ for linux-mtd@lists.infradead.org; Mon, 04 Mar 2013 08:37:12 +0000
+Message-ID: <1362386260.2943.9.camel@sauron>
 Subject: Re: [PATCH V3 1/3] mtd: add new fields to nand_flash_dev{}
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Huang Shijie <b32955@freescale.com>
-Date: Mon, 04 Mar 2013 10:24:06 +0200
+Date: Mon, 04 Mar 2013 10:37:40 +0200
 In-Reply-To: <5134566C.2090405@freescale.com>
 References: <1359349039-11510-1-git-send-email-b32955@freescale.com>
  <1359349039-11510-2-git-send-email-b32955@freescale.com>
@@ -50,14 +50,19 @@ On Mon, 2013-03-04 at 16:08 +0800, Huang Shijie wrote:
 > 
 >     {"NAND 8GIB 3,3V 8-bit", 0xDE, 0, 8192, 0, LP_OPTIONS},
 
-Do you know what is this chip?
+OK, I guess for this one:
+
+{"NAND 8GIB 3,3V 8-bit", 0xDE, 0, 8192, 0, LP_OPTIONS, 0},
+
+nand_decode_ext_id() will calculate the OOB size.
 
 >     {"NAND 8GIB 3,3V 8-bit", 0xDE, 0, 8192, 0, LP_OPTIONS, 640},   //OOB 
-> size is 640
+> size is 640.
 
-So there are really 2 different chips with the same device id and
-different OOB size? If you had 2 datasheets for me demonstrating this,
-I'd be grateful.
+And for this one 'nand_decode_ext_id()' will calculate it too, but
+_afterwards_ we change OOB size to 640.
+
+Does this sound sane?
 
 -- 
 Best Regards,
