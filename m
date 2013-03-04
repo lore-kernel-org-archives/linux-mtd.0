@@ -1,16 +1,16 @@
-Received: from mail-ve0-f171.google.com ([209.85.128.171])
+Received: from mail-ve0-f170.google.com ([209.85.128.170])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UCaFG-0007qW-BO
- for linux-mtd@lists.infradead.org; Mon, 04 Mar 2013 18:36:18 +0000
-Received: by mail-ve0-f171.google.com with SMTP id b10so4966401vea.2
- for <linux-mtd@lists.infradead.org>; Mon, 04 Mar 2013 10:36:16 -0800 (PST)
+ id 1UCaGr-0008Kn-W6
+ for linux-mtd@lists.infradead.org; Mon, 04 Mar 2013 18:37:58 +0000
+Received: by mail-ve0-f170.google.com with SMTP id 14so5026099vea.15
+ for <linux-mtd@lists.infradead.org>; Mon, 04 Mar 2013 10:37:56 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1362415349-7107-2-git-send-email-dedekind1@gmail.com>
+In-Reply-To: <1362415349-7107-3-git-send-email-dedekind1@gmail.com>
 References: <1362415349-7107-1-git-send-email-dedekind1@gmail.com>
- <1362415349-7107-2-git-send-email-dedekind1@gmail.com>
-Date: Mon, 4 Mar 2013 10:36:16 -0800
-Message-ID: <CAN8TOE-bJxgJ3HJCWyqkRJuOGjtoq0sLMNsDeFmZLAoB+Qg0bg@mail.gmail.com>
-Subject: Re: [PATCH 01/12] mtd: nand_ids: minor clean-ups
+ <1362415349-7107-3-git-send-email-dedekind1@gmail.com>
+Date: Mon, 4 Mar 2013 10:37:56 -0800
+Message-ID: <CAN8TOE8rhkxuSjunoEZ07u6VgC5SOyC5-+Hjd7y52rpqViNYxg@mail.gmail.com>
+Subject: Re: [PATCH 02/12] mtd: remove museum NAND ID's support
 From: Brian Norris <computersforpeace@gmail.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
@@ -26,67 +26,14 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Mon, Mar 4, 2013 at 8:42 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
-> index e3aa274..b110742 100644
-> --- a/drivers/mtd/nand/nand_ids.c
-> +++ b/drivers/mtd/nand/nand_ids.c
-> @@ -10,17 +10,17 @@
->   */
->  #include <linux/module.h>
->  #include <linux/mtd/nand.h>
-> +
-> +#define LP_OPTIONS NAND_SAMSUNG_LP_OPTIONS
-> +#define LP_OPTIONS16 (LP_OPTIONS | NAND_BUSWIDTH_16)
-> +
->  /*
-> -*      Chip ID list
-> -*
-> -*      Name. ID code, pagesize, chipsize in MegaByte, eraseblock size,
-> -*      options
-> -*
-> -*      Pagesize; 0, 256, 512
-> -*      0       get this information from the extended chip ID
-> -+      256     256 Byte page size
-> -*      512     512 Byte page size
-> -*/
-> + * The chip ID list:
-> + *    name, device ID, page size, chip size in MiB, eraseblock size, options
-> + *
-> + * If page size and eraseblock size is 0, the sizes are taken from the extended
-
-Grammar correction: "is" should be "are".
-
-> + * chip ID.
-> + */
->  struct nand_flash_dev nand_flash_ids[] = {
+> From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 >
->  #ifdef CONFIG_MTD_NAND_MUSEUM_IDS
-> @@ -67,11 +67,9 @@ struct nand_flash_dev nand_flash_ids[] = {
->         {"NAND 256MiB 3,3V 8-bit",      0x71, 512, 256, 0x4000, 0},
+> It is probably OK to remove support for really old NAND chips of 8MiB or
+> smaller size. We had a separate configuration option for them:
+> CONFIG_MTD_NAND_MUSEUM_IDS, which we remove along with this patch.
 >
->         /*
-> -        * These are the new chips with large page size. The pagesize and the
-> -        * erasesize is determined from the extended id bytes
+> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-The original form has incorrect grammar; "is" should be "are".
+I have never seen any of these NAND. So FWIW:
 
-> +        * These are the new chips with large page size, page size and
-> +        * eraseblock size is determined from the extended id bytes.
-
-This is also incorrect grammar. It uses a comma to divide sentences
-and also uses "is". I would write something like this:
-
-"These are the new chips with large page size. Their page size and
-eraseblock size are determined from the extended ID bytes."
-
->          */
-> -#define LP_OPTIONS NAND_SAMSUNG_LP_OPTIONS
-> -#define LP_OPTIONS16 (LP_OPTIONS | NAND_BUSWIDTH_16)
->
->         /* 512 Megabit */
->         {"NAND 64MiB 1,8V 8-bit",       0xA2, 0,  64, 0, LP_OPTIONS},
-> --
-> 1.7.10.4
->
-
-Brian
+Acked-by: Brian Norris <computersforpeace@gmail.com>
