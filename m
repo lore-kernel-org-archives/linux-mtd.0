@@ -1,13 +1,13 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga14.intel.com ([143.182.124.37])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UCYS2-0004H1-R3
- for linux-mtd@lists.infradead.org; Mon, 04 Mar 2013 16:41:27 +0000
+ id 1UCYS2-0004CX-SG
+ for linux-mtd@lists.infradead.org; Mon, 04 Mar 2013 16:41:31 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>,
  Huang Shijie <b32955@freescale.com>
-Subject: [PATCH 12/12] mtd: nand: provision full ID support
-Date: Mon,  4 Mar 2013 18:42:29 +0200
-Message-Id: <1362415349-7107-13-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 08/12] mtd: nand: remove NAND_COPYBACK macro
+Date: Mon,  4 Mar 2013 18:42:25 +0200
+Message-Id: <1362415349-7107-9-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1362415349-7107-1-git-send-email-dedekind1@gmail.com>
 References: <1362415349-7107-1-git-send-email-dedekind1@gmail.com>
 Cc: Mike Dunn <mikedunn@newsguy.com>,
@@ -23,40 +23,38 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
+It is unused.
+
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- include/linux/mtd/nand.h |   12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ include/linux/mtd/nand.h |    5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
 diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 7af6600..951ea0d 100644
+index 822bc48c..9af859f 100644
 --- a/include/linux/mtd/nand.h
 +++ b/include/linux/mtd/nand.h
-@@ -559,7 +559,9 @@ struct nand_chip {
- /**
-  * struct nand_flash_dev - NAND Flash Device ID Structure
-  * @name:	Identify the device type
-- * @dev_id:	device ID code
-+ * @mfr_id:     manufecturer ID part of the full chip ID array (byte 0)
-+ * @dev_id:     device ID part of the full chip ID array (byte 1)
-+ * @id:         full device ID array
-  * @pagesize:	Pagesize in bytes. Either 256 or 512 or 0
-  *		If the pagesize is 0, then the real pagesize
-  *		and the eraseize are determined from the
-@@ -570,7 +572,13 @@ struct nand_chip {
-  */
- struct nand_flash_dev {
- 	char *name;
--	int dev_id;
-+	union {
-+		struct {
-+			uint8_t mfr_id;
-+			uint8_t dev_id;
-+		};
-+		uint8_t id[8];
-+	};
- 	unsigned long pagesize;
- 	unsigned long chipsize;
- 	unsigned long erasesize;
+@@ -147,8 +147,6 @@ typedef enum {
+ #define NAND_BUSWIDTH_16	0x00000002
+ /* Chip has cache program function */
+ #define NAND_CACHEPRG		0x00000008
+-/* Chip has copy back function */
+-#define NAND_COPYBACK		0x00000010
+ /* Chip does not allow subpage writes */
+ #define NAND_NO_SUBPAGE_WRITE	0x00000200
+ 
+@@ -162,11 +160,10 @@ typedef enum {
+ #define NAND_SUBPAGE_READ	0x00001000
+ 
+ /* Options valid for Samsung large page devices */
+-#define NAND_SAMSUNG_LP_OPTIONS (NAND_CACHEPRG | NAND_COPYBACK)
++#define NAND_SAMSUNG_LP_OPTIONS (NAND_CACHEPRG)
+ 
+ /* Macros to identify the above */
+ #define NAND_HAS_CACHEPROG(chip) ((chip->options & NAND_CACHEPRG))
+-#define NAND_HAS_COPYBACK(chip) ((chip->options & NAND_COPYBACK))
+ #define NAND_HAS_SUBPAGE_READ(chip) ((chip->options & NAND_SUBPAGE_READ))
+ 
+ /* Non chip related options */
 -- 
 1.7.10.4
