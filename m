@@ -1,13 +1,13 @@
 Received: from mga14.intel.com ([143.182.124.37])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UCYS2-0004CX-SG
+ id 1UCYS3-0004CV-3o
  for linux-mtd@lists.infradead.org; Mon, 04 Mar 2013 16:41:31 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>,
  Huang Shijie <b32955@freescale.com>
-Subject: [PATCH 08/12] mtd: nand: remove NAND_COPYBACK macro
-Date: Mon,  4 Mar 2013 18:42:25 +0200
-Message-Id: <1362415349-7107-9-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 09/12] mtd: nand: use NAND_HAS_CACHEPROG
+Date: Mon,  4 Mar 2013 18:42:26 +0200
+Message-Id: <1362415349-7107-10-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1362415349-7107-1-git-send-email-dedekind1@gmail.com>
 References: <1362415349-7107-1-git-send-email-dedekind1@gmail.com>
 Cc: Mike Dunn <mikedunn@newsguy.com>,
@@ -23,38 +23,39 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-It is unused.
+We have this unused macro, let's use it and justify its existence.
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- include/linux/mtd/nand.h |    5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/mtd/nand/nand_base.c |    2 +-
+ include/linux/mtd/nand.h     |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 760ee49..e607565 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2045,7 +2045,7 @@ static int nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	 */
+ 	cached = 0;
+ 
+-	if (!cached || !(chip->options & NAND_CACHEPRG)) {
++	if (!cached || !NAND_HAS_CACHEPROG(chip)) {
+ 
+ 		chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
+ 		status = chip->waitfunc(mtd, chip);
 diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 822bc48c..9af859f 100644
+index 9af859f..59dee20 100644
 --- a/include/linux/mtd/nand.h
 +++ b/include/linux/mtd/nand.h
-@@ -147,8 +147,6 @@ typedef enum {
- #define NAND_BUSWIDTH_16	0x00000002
- /* Chip has cache program function */
- #define NAND_CACHEPRG		0x00000008
--/* Chip has copy back function */
--#define NAND_COPYBACK		0x00000010
- /* Chip does not allow subpage writes */
- #define NAND_NO_SUBPAGE_WRITE	0x00000200
- 
-@@ -162,11 +160,10 @@ typedef enum {
+@@ -160,7 +160,7 @@ typedef enum {
  #define NAND_SUBPAGE_READ	0x00001000
  
  /* Options valid for Samsung large page devices */
--#define NAND_SAMSUNG_LP_OPTIONS (NAND_CACHEPRG | NAND_COPYBACK)
-+#define NAND_SAMSUNG_LP_OPTIONS (NAND_CACHEPRG)
+-#define NAND_SAMSUNG_LP_OPTIONS (NAND_CACHEPRG)
++#define NAND_SAMSUNG_LP_OPTIONS NAND_CACHEPRG
  
  /* Macros to identify the above */
  #define NAND_HAS_CACHEPROG(chip) ((chip->options & NAND_CACHEPRG))
--#define NAND_HAS_COPYBACK(chip) ((chip->options & NAND_COPYBACK))
- #define NAND_HAS_SUBPAGE_READ(chip) ((chip->options & NAND_SUBPAGE_READ))
- 
- /* Non chip related options */
 -- 
 1.7.10.4
