@@ -1,14 +1,14 @@
-Received: from mail-pb0-f53.google.com ([209.85.160.53])
+Received: from mail-pb0-f42.google.com ([209.85.160.42])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UCnfk-0008GZ-DG
+ id 1UCnfl-0008Hk-1Q
  for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 08:56:35 +0000
-Received: by mail-pb0-f53.google.com with SMTP id un1so4124125pbc.26
- for <linux-mtd@lists.infradead.org>; Tue, 05 Mar 2013 00:56:28 -0800 (PST)
+Received: by mail-pb0-f42.google.com with SMTP id xb4so4145460pbc.29
+ for <linux-mtd@lists.infradead.org>; Tue, 05 Mar 2013 00:56:31 -0800 (PST)
 From: Sachin Kamat <sachin.kamat@linaro.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 3/8] mtd: orion_nand: Use module_platform_driver_probe macro
-Date: Tue,  5 Mar 2013 14:15:48 +0530
-Message-Id: <1362473153-23515-3-git-send-email-sachin.kamat@linaro.org>
+Subject: [PATCH 4/8] mtd: fsmc_nand: Use module_platform_driver_probe macro
+Date: Tue,  5 Mar 2013 14:15:49 +0530
+Message-Id: <1362473153-23515-4-git-send-email-sachin.kamat@linaro.org>
 In-Reply-To: <1362473153-23515-1-git-send-email-sachin.kamat@linaro.org>
 References: <1362473153-23515-1-git-send-email-sachin.kamat@linaro.org>
 Cc: sachin.kamat@linaro.org, artem.bityutskiy@linux.intel.com,
@@ -27,32 +27,32 @@ the code.
 
 Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 ---
- drivers/mtd/nand/orion_nand.c |   13 +------------
+ drivers/mtd/nand/fsmc_nand.c |   13 +------------
  1 files changed, 1 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
-index cd72b92..8fbd002 100644
---- a/drivers/mtd/nand/orion_nand.c
-+++ b/drivers/mtd/nand/orion_nand.c
-@@ -231,18 +231,7 @@ static struct platform_driver orion_nand_driver = {
+diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
+index 05ba3f0..911e243 100644
+--- a/drivers/mtd/nand/fsmc_nand.c
++++ b/drivers/mtd/nand/fsmc_nand.c
+@@ -1235,18 +1235,7 @@ static struct platform_driver fsmc_nand_driver = {
  	},
  };
  
--static int __init orion_nand_init(void)
+-static int __init fsmc_nand_init(void)
 -{
--	return platform_driver_probe(&orion_nand_driver, orion_nand_probe);
+-	return platform_driver_probe(&fsmc_nand_driver,
+-				     fsmc_nand_probe);
 -}
+-module_init(fsmc_nand_init);
 -
--static void __exit orion_nand_exit(void)
+-static void __exit fsmc_nand_exit(void)
 -{
--	platform_driver_unregister(&orion_nand_driver);
+-	platform_driver_unregister(&fsmc_nand_driver);
 -}
--
--module_init(orion_nand_init);
--module_exit(orion_nand_exit);
-+module_platform_driver_probe(orion_nand_driver, orion_nand_probe);
+-module_exit(fsmc_nand_exit);
++module_platform_driver_probe(fsmc_nand_driver, fsmc_nand_probe);
  
  MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Tzachi Perelstein");
+ MODULE_AUTHOR("Vipin Kumar <vipin.kumar@st.com>, Ashish Priyadarshi");
 -- 
 1.7.4.1
