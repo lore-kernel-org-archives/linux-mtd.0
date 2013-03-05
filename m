@@ -1,21 +1,23 @@
-Received: from mga03.intel.com ([143.182.124.21])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UCnmN-0001o6-My
- for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 09:03:24 +0000
-Message-ID: <1362474237.2943.34.camel@sauron>
-Subject: Re: Re[4]: [PATCH 02/12] mtd: remove museum NAND ID's support
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Alexander Shiyan <shc_work@mail.ru>
-Date: Tue, 05 Mar 2013 11:03:57 +0200
-In-Reply-To: <1362473407.874036293@f171.mail.ru>
-References: <1362416362.801083474@f211.mail.ru>
- <1362472344.590520456@f357.mail.ru> <1362473121.2943.32.camel@sauron>
- <1362473407.874036293@f171.mail.ru>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+Received: from mail-we0-x236.google.com ([2a00:1450:400c:c03::236])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UCp2h-0003wt-Hk
+ for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 10:24:20 +0000
+Received: by mail-we0-f182.google.com with SMTP id t57so5950515wey.13
+ for <linux-mtd@lists.infradead.org>; Tue, 05 Mar 2013 02:24:14 -0800 (PST)
+Message-ID: <5135C7D0.8010906@gmail.com>
+Date: Tue, 05 Mar 2013 11:24:16 +0100
+From: Daniel Mack <zonque@gmail.com>
+MIME-Version: 1.0
+To: Peter Korsgaard <jacmet@sunsite.dk>
+Subject: Re: [PATCH v2] mtd: devices: elm: check for device's presence before
+ configuration
+References: <1362355040-27344-1-git-send-email-zonque@gmail.com>
+ <87r4jvehcs.fsf@dell.be.48ers.dk>
+In-Reply-To: <87r4jvehcs.fsf@dell.be.48ers.dk>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: artem.bityutskiy@linux.intel.com
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,45 +27,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2013-03-05 at 12:50 +0400, Alexander Shiyan wrote:
-> > On Tue, 2013-03-05 at 12:32 +0400, Alexander Shiyan wrote:
-> > > > On Mon, 2013-03-04 at 20:59 +0400, Alexander Shiyan wrote:
-> > > > > >From: Artem Bityutskiy <artem.bityutskiy at linux.intel.com>
-> > > > > >
-> > > > > >It is probably OK to remove support for really old NAND chips of 8MiB or
-> > > > > >smaller size. We had a separate configuration option for them:
-> > > > > >CONFIG_MTD_NAND_MUSEUM_IDS, which we remove along with this patch.
-> > > > > >
-> > > > > >Signed-off-by: Artem Bityutskiy <artem.bityutskiy at linux.intel.com>
-> > > > > >---
-> > > > > > drivers/mtd/nand/Kconfig    |    8 --------
-> > > > > > drivers/mtd/nand/nand_ids.c |   19 -------------------
-> > > > > > 2 files changed, 27 deletions(-)
-> > > > > 
-> > > > > Hello.
-> > > > > This change break systems with these NAND-chips, for example
-> > > > > these IDs is used in old DiskOnChip devices.
-> > > > 
-> > > > Do you have one of those and use them with modern kernels ? Which one is
-> > > > that?
-> > > 
-> > > Yes. ID used in the MD2800-D08. I specifically included a configuration option
-> > > to support this chip ;) Unfortunately, I can not say the exact device ID now because
-> > > all of such devices sent in production, and I have no more now.
-> > > Of course, these devices are not in production at the moment, but they are still
-> > > being sold.
-> > 
-> > Or probably, we can kill NANDs with 256 byte page - they are really from
-> > the stone age, while the 512 bytes ones are at least from the copper
-> > age.
+On 04.03.2013 08:47, Peter Korsgaard wrote:
+>>>>>> "Daniel" == Daniel Mack <zonque@gmail.com> writes:
 > 
-> Hehe :)
-> But, i suggest keep these definitions in the comments.
+>  Daniel> In case the driver is not probed - due to config mismatches or errors
+>  Daniel> in the DTS files - dev_get_drvdata() returns NULL, leading to an Ooops
+>  Daniel> during boot.
+> 
+>  Daniel> Make elm_config() return an error in such cases to propagate the error
+>  Daniel> up to the user, so it can fall back to software mode.
+> 
+>  Daniel> Signed-off-by: Daniel Mack <zonque@gmail.com>
+>  Daniel> Cc: Philip Avinash <avinashphilip@ti.com>
+>  Daniel> Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+>  Daniel> Cc: Peter Korsgaard <jacmet@sunsite.dk>
+> 
+> Acked-by: Peter Korsgaard <jacmet@sunsite.dk>
 
-I want to go even further and just kill 256-bytes NAND p ages support
-altogether, as I believe this is completely useless. Being in linux MTD
-since 2005, I've never seen anyone using those.
+Philip, are you also ok with this?
 
--- 
-Best Regards,
-Artem Bityutskiy
+
+Thanks,
+Daniel
