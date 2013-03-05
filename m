@@ -1,18 +1,20 @@
-Received: from mailout4.samsung.com ([203.254.224.34])
+Received: from mailout2.samsung.com ([203.254.224.25])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UCjUT-0004Cj-EV
- for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 04:28:39 +0000
-Received: from epcpsbgr1.samsung.com
- (u141.gpu120.samsung.co.kr [203.254.230.141])
- by mailout4.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ id 1UCjVH-0004F5-Er
+ for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 04:29:28 +0000
+Received: from epcpsbgr2.samsung.com
+ (u142.gpu120.samsung.co.kr [203.254.230.142])
+ by mailout2.samsung.com (Oracle Communications Messaging Server 7u4-24.01
  (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MJ600MCW72C7ML0@mailout4.samsung.com> for
- linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 13:28:33 +0900 (KST)
+ with ESMTP id <0MJ6003NF751UUI0@mailout2.samsung.com> for
+ linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 13:29:25 +0900 (KST)
 From: Jingoo Han <jg1.han@samsung.com>
 To: 'David Woodhouse' <dwmw2@infradead.org>
-Subject: [PATCH 1/7] mtd: docg3: use module_platform_driver_probe()
-Date: Tue, 05 Mar 2013 13:28:33 +0900
-Message-id: <005c01ce1959$e5833c90$b089b5b0$%han@samsung.com>
+References: <005c01ce1959$e5833c90$b089b5b0$%han@samsung.com>
+In-reply-to: <005c01ce1959$e5833c90$b089b5b0$%han@samsung.com>
+Subject: [PATCH 2/7] mtd: orion_nand: use module_platform_driver_probe()
+Date: Tue, 05 Mar 2013 13:29:20 +0900
+Message-id: <005d01ce195a$017b4550$0471cff0$%han@samsung.com>
 MIME-version: 1.0
 Content-type: text/plain; charset=US-ASCII
 Content-transfer-encoding: 7bit
@@ -32,57 +34,32 @@ the code smaller and simpler.
 
 Signed-off-by: Jingoo Han <jg1.han@samsung.com>
 ---
- drivers/mtd/devices/docg3.c |   13 +------------
- drivers/mtd/nand/docg4.c    |   13 +------------
- 2 files changed, 2 insertions(+), 24 deletions(-)
+ drivers/mtd/nand/orion_nand.c |   13 +------------
+ 1 files changed, 1 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
-index 8510ccb..a0cfa89 100644
---- a/drivers/mtd/devices/docg3.c
-+++ b/drivers/mtd/devices/docg3.c
-@@ -2144,18 +2144,7 @@ static struct platform_driver g3_driver = {
- 	.remove		= __exit_p(docg3_release),
+diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
+index cd72b92..8fbd002 100644
+--- a/drivers/mtd/nand/orion_nand.c
++++ b/drivers/mtd/nand/orion_nand.c
+@@ -231,18 +231,7 @@ static struct platform_driver orion_nand_driver = {
+ 	},
  };
  
--static int __init docg3_init(void)
+-static int __init orion_nand_init(void)
 -{
--	return platform_driver_probe(&g3_driver, docg3_probe);
+-	return platform_driver_probe(&orion_nand_driver, orion_nand_probe);
 -}
--module_init(docg3_init);
 -
--
--static void __exit docg3_exit(void)
+-static void __exit orion_nand_exit(void)
 -{
--	platform_driver_unregister(&g3_driver);
+-	platform_driver_unregister(&orion_nand_driver);
 -}
--module_exit(docg3_exit);
-+module_platform_driver_probe(g3_driver, docg3_probe);
+-
+-module_init(orion_nand_init);
+-module_exit(orion_nand_exit);
++module_platform_driver_probe(orion_nand_driver, orion_nand_probe);
  
  MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Robert Jarzmik <robert.jarzmik@free.fr>");
-diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/docg4.c
-index 18fa448..fa25e7a 100644
---- a/drivers/mtd/nand/docg4.c
-+++ b/drivers/mtd/nand/docg4.c
-@@ -1397,18 +1397,7 @@ static struct platform_driver docg4_driver = {
- 	.remove		= __exit_p(cleanup_docg4),
- };
- 
--static int __init docg4_init(void)
--{
--	return platform_driver_probe(&docg4_driver, probe_docg4);
--}
--
--static void __exit docg4_exit(void)
--{
--	platform_driver_unregister(&docg4_driver);
--}
--
--module_init(docg4_init);
--module_exit(docg4_exit);
-+module_platform_driver_probe(docg4_driver, probe_docg4);
- 
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Mike Dunn");
+ MODULE_AUTHOR("Tzachi Perelstein");
 -- 
 1.7.2.5
