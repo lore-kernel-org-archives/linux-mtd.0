@@ -1,14 +1,14 @@
-Received: from mail-pb0-f42.google.com ([209.85.160.42])
+Received: from mail-pb0-f52.google.com ([209.85.160.52])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UCnfl-0008Hk-1Q
- for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 08:56:35 +0000
-Received: by mail-pb0-f42.google.com with SMTP id xb4so4145460pbc.29
- for <linux-mtd@lists.infradead.org>; Tue, 05 Mar 2013 00:56:31 -0800 (PST)
+ id 1UCnfo-0008Ik-Hq
+ for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 08:56:37 +0000
+Received: by mail-pb0-f52.google.com with SMTP id ma3so4146161pbc.11
+ for <linux-mtd@lists.infradead.org>; Tue, 05 Mar 2013 00:56:34 -0800 (PST)
 From: Sachin Kamat <sachin.kamat@linaro.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 4/8] mtd: fsmc_nand: Use module_platform_driver_probe macro
-Date: Tue,  5 Mar 2013 14:15:49 +0530
-Message-Id: <1362473153-23515-4-git-send-email-sachin.kamat@linaro.org>
+Subject: [PATCH 5/8] mtd: docg4: Use module_platform_driver_probe macro
+Date: Tue,  5 Mar 2013 14:15:50 +0530
+Message-Id: <1362473153-23515-5-git-send-email-sachin.kamat@linaro.org>
 In-Reply-To: <1362473153-23515-1-git-send-email-sachin.kamat@linaro.org>
 References: <1362473153-23515-1-git-send-email-sachin.kamat@linaro.org>
 Cc: sachin.kamat@linaro.org, artem.bityutskiy@linux.intel.com,
@@ -27,32 +27,32 @@ the code.
 
 Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 ---
- drivers/mtd/nand/fsmc_nand.c |   13 +------------
+ drivers/mtd/nand/docg4.c |   13 +------------
  1 files changed, 1 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
-index 05ba3f0..911e243 100644
---- a/drivers/mtd/nand/fsmc_nand.c
-+++ b/drivers/mtd/nand/fsmc_nand.c
-@@ -1235,18 +1235,7 @@ static struct platform_driver fsmc_nand_driver = {
- 	},
+diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/docg4.c
+index 18fa448..fa25e7a 100644
+--- a/drivers/mtd/nand/docg4.c
++++ b/drivers/mtd/nand/docg4.c
+@@ -1397,18 +1397,7 @@ static struct platform_driver docg4_driver = {
+ 	.remove		= __exit_p(cleanup_docg4),
  };
  
--static int __init fsmc_nand_init(void)
+-static int __init docg4_init(void)
 -{
--	return platform_driver_probe(&fsmc_nand_driver,
--				     fsmc_nand_probe);
+-	return platform_driver_probe(&docg4_driver, probe_docg4);
 -}
--module_init(fsmc_nand_init);
 -
--static void __exit fsmc_nand_exit(void)
+-static void __exit docg4_exit(void)
 -{
--	platform_driver_unregister(&fsmc_nand_driver);
+-	platform_driver_unregister(&docg4_driver);
 -}
--module_exit(fsmc_nand_exit);
-+module_platform_driver_probe(fsmc_nand_driver, fsmc_nand_probe);
+-
+-module_init(docg4_init);
+-module_exit(docg4_exit);
++module_platform_driver_probe(docg4_driver, probe_docg4);
  
  MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Vipin Kumar <vipin.kumar@st.com>, Ashish Priyadarshi");
+ MODULE_AUTHOR("Mike Dunn");
 -- 
 1.7.4.1
