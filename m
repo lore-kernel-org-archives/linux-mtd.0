@@ -1,25 +1,22 @@
-Received: from mailout2.samsung.com ([203.254.224.25])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UCjXY-0004t2-Ae
- for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 04:31:49 +0000
-Received: from epcpsbgr2.samsung.com
- (u142.gpu120.samsung.co.kr [203.254.230.142])
- by mailout2.samsung.com (Oracle Communications Messaging Server 7u4-24.01
- (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MJ6004VB78V4VK0@mailout2.samsung.com> for
- linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 13:31:47 +0900 (KST)
-From: Jingoo Han <jg1.han@samsung.com>
-To: 'David Woodhouse' <dwmw2@infradead.org>
-References: <005c01ce1959$e5833c90$b089b5b0$%han@samsung.com>
-In-reply-to: <005c01ce1959$e5833c90$b089b5b0$%han@samsung.com>
-Subject: [PATCH 7/7] mtd: davinci_nand: use module_platform_driver_probe()
-Date: Tue, 05 Mar 2013 13:31:47 +0900
-Message-id: <006201ce195a$59064fe0$0b12efa0$%han@samsung.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Content-transfer-encoding: 7bit
-Content-language: ko
-Cc: 'Jingoo Han' <jg1.han@samsung.com>, linux-mtd@lists.infradead.org
+Received: from mail-ia0-x230.google.com ([2607:f8b0:4001:c02::230])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UCl3L-0002qT-TT
+ for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 06:08:45 +0000
+Received: by mail-ia0-f176.google.com with SMTP id i18so5649594iac.21
+ for <linux-mtd@lists.infradead.org>; Mon, 04 Mar 2013 22:08:41 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1362415349-7107-13-git-send-email-dedekind1@gmail.com>
+References: <1362415349-7107-1-git-send-email-dedekind1@gmail.com>
+ <1362415349-7107-13-git-send-email-dedekind1@gmail.com>
+Date: Tue, 5 Mar 2013 14:08:41 +0800
+Message-ID: <CAMiH66GvpQZ36wLvB_cyiSk79sPPJ+vBKba1Z6WZvi5UD4X=2g@mail.gmail.com>
+Subject: Re: [PATCH 12/12] mtd: nand: provision full ID support
+From: Huang Shijie <shijie8@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: Huang Shijie <b32955@freescale.com>,
+ Brian Norris <computersforpeace@gmail.com>, Mike Dunn <mikedunn@newsguy.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,36 +26,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch uses module_platform_driver_probe() macro which makes
-the code smaller and simpler.
+On Tue, Mar 5, 2013 at 12:42 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+>
+> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+> ---
+>  include/linux/mtd/nand.h |   12 ++++++++++--
+>  1 file changed, 10 insertions(+), 2 deletions(-)
+>
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index 7af6600..951ea0d 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -559,7 +559,9 @@ struct nand_chip {
+>  /**
+>   * struct nand_flash_dev - NAND Flash Device ID Structure
+>   * @name:      Identify the device type
+> - * @dev_id:    device ID code
+> + * @mfr_id:     manufecturer ID part of the full chip ID array (byte 0)
+> + * @dev_id:     device ID part of the full chip ID array (byte 1)
+> + * @id:         full device ID array
+>   * @pagesize:  Pagesize in bytes. Either 256 or 512 or 0
+>   *             If the pagesize is 0, then the real pagesize
+>   *             and the eraseize are determined from the
+> @@ -570,7 +572,13 @@ struct nand_chip {
+>   */
+>  struct nand_flash_dev {
+>         char *name;
+> -       int dev_id;
+> +       union {
+> +               struct {
+> +                       uint8_t mfr_id;
+> +                       uint8_t dev_id;
+> +               };
+> +               uint8_t id[8];
+> +       };
+>
+We can add a new helper like compare_nand_with_devid() to remove the
+mfr_id and dev_id, only left the id[8].
 
-Signed-off-by: Jingoo Han <jg1.han@samsung.com>
----
- drivers/mtd/nand/davinci_nand.c |   12 +-----------
- 1 files changed, 1 insertions(+), 11 deletions(-)
+The compare_nand_with_devid() can be used in places where your patch
+11 does. For example:
+   ..............................................................
+        if (id == nand_flash_ids[i].dev_id) {
 
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-index 94e17af..864717b 100644
---- a/drivers/mtd/nand/davinci_nand.c
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -883,17 +883,7 @@ static struct platform_driver nand_davinci_driver = {
- };
- MODULE_ALIAS("platform:davinci_nand");
- 
--static int __init nand_davinci_init(void)
--{
--	return platform_driver_probe(&nand_davinci_driver, nand_davinci_probe);
--}
--module_init(nand_davinci_init);
--
--static void __exit nand_davinci_exit(void)
--{
--	platform_driver_unregister(&nand_davinci_driver);
--}
--module_exit(nand_davinci_exit);
-+module_platform_driver_probe(nand_davinci_driver, nand_davinci_probe);
- 
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Texas Instruments");
--- 
-1.7.2.5
+   changed to:
+
+        if (compare_nand_with_devid(id)){
+
+  ...............................................................
+
+By this way, we can remove the mfr_id and dev_id.
+
+
+thanks
+Huang Shijie
