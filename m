@@ -1,23 +1,20 @@
-Received: from f303.mail.ru ([128.140.169.167])
+Received: from mail-pb0-f44.google.com ([209.85.160.44])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UClHj-0003qT-Ac
- for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 06:23:36 +0000
-From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
-To: =?UTF-8?B?QnJpYW4gTm9ycmlz?= <computersforpeace@gmail.com>
-Subject: =?UTF-8?B?UmVbMl06IFtQQVRDSCAwMi8xMl0gbXRkOiByZW1vdmUgbXVzZXVtIE5BTkQg?=
- =?UTF-8?B?SUQncyBzdXBwb3J0?=
-Mime-Version: 1.0
-Date: Tue, 05 Mar 2013 10:23:32 +0400
-Message-ID: <1362464612.751635388@f303.mail.ru>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-References: <1362415349-7107-1-git-send-email-dedekind1@gmail.com>
- <1362415349-7107-3-git-send-email-dedekind1@gmail.com>
-Cc: =?UTF-8?B?SHVhbmcgU2hpamll?= <b32955@freescale.com>,
- =?UTF-8?B?TWlrZSBEdW5u?= <mikedunn@newsguy.com>,
- =?UTF-8?B?TVREIE1hbGluZyBMaXN0?= <linux-mtd@lists.infradead.org>,
- =?UTF-8?B?QXJ0ZW0gQml0eXV0c2tpeQ==?= <dedekind1@gmail.com>
-Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+ id 1UCm6z-0008Gx-JZ
+ for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 07:16:34 +0000
+Received: by mail-pb0-f44.google.com with SMTP id wz12so4028969pbc.31
+ for <linux-mtd@lists.infradead.org>; Mon, 04 Mar 2013 23:16:31 -0800 (PST)
+Message-ID: <51359BA5.3060306@gmail.com>
+Date: Mon, 04 Mar 2013 23:15:49 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+MIME-Version: 1.0
+To: Alexander Shiyan <shc_work@mail.ru>
+Subject: Re: Diskonchip regression
+References: <1362389632.763807690@f177.mail.ru>
+In-Reply-To: <1362389632.763807690@f177.mail.ru>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,17 +24,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiBPbiBNb24sIE1hciA0LCAyMDEzIGF0IDg6NDIgQU0sIEFydGVtIEJpdHl1dHNraXkgPGRlZGVr
-aW5kMUBnbWFpbC5jb20+IHdyb3RlOgo+ID4gRnJvbTogQXJ0ZW0gQml0eXV0c2tpeSA8YXJ0ZW0u
-Yml0eXV0c2tpeUBsaW51eC5pbnRlbC5jb20+Cj4gPgo+ID4gSXQgaXMgcHJvYmFibHkgT0sgdG8g
-cmVtb3ZlIHN1cHBvcnQgZm9yIHJlYWxseSBvbGQgTkFORCBjaGlwcyBvZiA4TWlCIG9yCj4gPiBz
-bWFsbGVyIHNpemUuIFdlIGhhZCBhIHNlcGFyYXRlIGNvbmZpZ3VyYXRpb24gb3B0aW9uIGZvciB0
-aGVtOgo+ID4gQ09ORklHX01URF9OQU5EX01VU0VVTV9JRFMsIHdoaWNoIHdlIHJlbW92ZSBhbG9u
-ZyB3aXRoIHRoaXMgcGF0Y2guCj4gPgo+ID4gU2lnbmVkLW9mZi1ieTogQXJ0ZW0gQml0eXV0c2tp
-eSA8YXJ0ZW0uYml0eXV0c2tpeUBsaW51eC5pbnRlbC5jb20+Cj4gCj4gSSBoYXZlIG5ldmVyIHNl
-ZW4gYW55IG9mIHRoZXNlIE5BTkQuIFNvIEZXSVc6Cj4gCj4gQWNrZWQtYnk6IEJyaWFuIE5vcnJp
-cyA8Y29tcHV0ZXJzZm9ycGVhY2VAZ21haWwuY29tPgoKTXkgcHJldmlvdXMgcG9zdCBvbiB0aGlz
-IHRvcGljIGRpZCBub3QgZ28sIHNvIEkgd2lsbCByZXBlYXQ6ClRoZXNlIGNoaXBzIGFyZSB1c2Vk
-IGluIERpc2tPbkNoaXAgYW5kIHJlbW92aW5nIGlkZW50aWZpZXJzIHdpbGwgbGVhZAp0byBtYWxm
-dW5jdGlvbiBvZiBzeXN0ZW1zIHVzaW5nIERpc2tPbkNoaXAgYXMgZXh0cmEgbWVtb3J5LgoKLS0t
-Cg==
+On 03/04/2013 01:33 AM, Alexander Shiyan wrote:
+> Hello All.
+
+Hi Alexander,
+
+> I want to inform about diskonchip regression.
+> Mounting diskonchip partition now failed due "mtd: nand: kill NAND_NO_READRDY" commit.
+>
+> Bug produce infinite error messages in the console, like this:
+> # mount /dev/mtdblock5 /mnt/bbox -t jffs2 -o rw
+> # jffs2: notice: (45) check_node_data: wrong data CRC in data node at 0x00f14f98: read 0xa0fcbcc1, calculated 0xc30e1a36.
+> jffs2: mtd->read(0x567 bytes from 0xf14a00) returned ECC error
+> jffs2: notice: (45) check_node_data: wrong data CRC in data node at 0x00f14924: read 0x73ba55cc, calculated 0x12ecdd4b.
+> jffs2: mtd->read(0x724 bytes from 0xf14200) returned ECC error
+> ...
+>
+> I found point to bug using "git bisect":
+> shc@shc /home/git/linux-next $ git bisect log
+> git bisect start
+...
+
+> git bisect bad 3d059693f6e0489066a98f455601137fa003df77
+> shc@shc /home/git/linux-next $ git bisect bad
+> 1696e6bc2ae83734e64e206ac99766ea19e9a14e is the first bad commit
+> commit 1696e6bc2ae83734e64e206ac99766ea19e9a14e
+> Author: Brian Norris <computersforpeace@gmail.com>
+> Date:   Tue May 22 23:50:00 2012 -0700
+>
+>      mtd: nand: kill NAND_NO_READRDY
+>
+>      According to its documentation, the NAND_NO_READRDY option is always used
+>      when autoincrement is not supported. Autoincrement support was recently
+>      dropped, so we can drop this options as well (defaulting to "no read ready
+>      check").
+>
+>      Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+>      Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+>      Signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
+>
+> :040000 040000 5bf782761ebf2573393a9900b18f18901855be90 9633fd4d5e881a7d504c3f55656857f0f8d64052 M       drivers
+> :040000 040000 d8bdeae25e074d3cc915321e0612d666bf692e0a d9de9de1e651791832265d9492f7e794d377d948 M       include
+>
+> So, should we revert this commit or find another solution?
+
+Including a CC for the author would have been nice :) I found this only 
+because you commented about DoC on another thread.
+
+Does your DoC use small page size (i.e., 512B)? Can you provide a little 
+more information regarding the NAND chip used (e.g., any of 
+manufacturer, part number, page/eraseblock/device size, etc.), so I can 
+document this a little better?
+
+Anyway, I believe I overlooked some things in that patch. The original 
+documentation for NAND_NO_READRDY included "True for all large page 
+devices, as they do not support autoincrement." I was conflating "not 
+support autoincrement" with the NAND_NO_AUTOINCR option, which was in 
+fact doing nothing. But of course that didn't mean NAND_NO_READRDY was 
+doing nothing...
+
+I would recommend a revert (probably sent to stable). I can send this as 
+an explicit patch myself soon, if given a little more info. Sorry for 
+the bug!
+
+Brian
