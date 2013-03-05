@@ -1,24 +1,19 @@
-Received: from f47.mail.ru ([217.69.128.201])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UCmi2-0002iM-Ft
- for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 07:54:52 +0000
-From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
-To: =?UTF-8?B?QnJpYW4gTm9ycmlz?= <computersforpeace@gmail.com>
-Subject: =?UTF-8?B?UmVbMl06IFtQQVRDSCAzLzNdIG10ZDogbmFuZF9iYXNlOiBVc2UgcmVhZHNi?=
- =?UTF-8?B?L3JlYWRzdy93cml0ZXNiL3dyaXRlc3cgaWYgcG9zc2libGU=?=
+Received: from mga09.intel.com ([134.134.136.24])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UCn4C-0004dw-72
+ for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 08:17:45 +0000
+Message-ID: <1362471499.2943.24.camel@sauron>
+Subject: Re: [PATCH 02/12] mtd: remove museum NAND ID's support
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Alexander Shiyan <shc_work@mail.ru>
+Date: Tue, 05 Mar 2013 10:18:19 +0200
+In-Reply-To: <1362416362.801083474@f211.mail.ru>
+References: <1362416362.801083474@f211.mail.ru>
+Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
-Date: Tue, 05 Mar 2013 11:54:42 +0400
-Message-ID: <1362470082.387553774@f47.mail.ru>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-In-Reply-To: <51359FCE.4060605@gmail.com>
-References: <1362038541-22406-1-git-send-email-shc_work@mail.ru>
- <1362038541-22406-3-git-send-email-shc_work@mail.ru>
- <51359FCE.4060605@gmail.com>
-Cc: =?UTF-8?B?RGF2aWQgV29vZGhvdXNl?= <dwmw2@infradead.org>,
- linux-mtd@lists.infradead.org,
- =?UTF-8?B?QXJ0ZW0gQml0eXV0c2tpeQ==?= <artem.bityutskiy@linux.intel.com>
-Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,44 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiBIaSBBbGV4YW5kZXIsCj4gCj4gSSdtIG5vdCBhbiBleHBlcnQgb24gSU8gYWNjZXNzb3JzLCBi
-dXQgc2luY2UgeW91IGFza2VkLi4uCj4gCj4gT24gMDIvMjgvMjAxMyAxMjowMiBBTSwgQWxleGFu
-ZGVyIFNoaXlhbiB3cm90ZToKPiA+IFRoaXMgcGF0Y2ggcHJvdmlkZSB1c2luZyByZWFkc2IvcmVh
-ZHN3L3dyaXRlc2Ivd3JpdGVzdyBmdW5jdGlvbnMKPiA+IGlmIGl0IHBvc3NpYmxlIGZvciBwYXJ0
-aWN1bGFyIHBsYXRmb3JtLgo+IAo+IFRoZSBjb21taXQgZGVzY3JpcHRpb24gZG9lcyBub3QgZ2l2
-ZSBlbm91Z2ggbW90aXZhdGlvbi4gU2hvdWxkIHRoaXMgCj4gaW1wcm92ZSBwZXJmb3JtYW5jZT8g
-T3IgaXMgdGhpcyBqdXN0IGEgImNsZWFudXAiPyAoSWYgdGhlIGxhdHRlciwgdGhlbiAKPiBpdCBm
-YWlscywgYXMgdGhlIHJlc3VsdGluZyBjb2RlIGlzIG11Y2ggbGVzcyBjbGVhbi4pCgpCYXNpYyBp
-ZGVhIGlzIGEgcGVyZm9ybWFuY2UsIGJlY2F1c2UgYXJjaGl0ZWN0dXJlIG1heSBoYXZlIGEKaW1w
-cm92ZWQgZnVuY3Rpb25zIGZvciBtdWx0aXBsZSByZWFkL3dyaXRlLgoKPiAKPiA+IFNpZ25lZC1v
-ZmYtYnk6IEFsZXhhbmRlciBTaGl5YW4gPHNoY193b3JrQG1haWwucnU+Cj4gPiAtLS0KPiA+ICAg
-ZHJpdmVycy9tdGQvbmFuZC9uYW5kX2Jhc2UuYyB8ICAgMjkgKysrKysrKysrKysrKysrKysrKysr
-KysrLS0tLS0KPiA+ICAgMSBmaWxlcyBjaGFuZ2VkLCAyNCBpbnNlcnRpb25zKCspLCA1IGRlbGV0
-aW9ucygtKQo+ID4KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL25hbmRfYmFzZS5j
-IGIvZHJpdmVycy9tdGQvbmFuZC9uYW5kX2Jhc2UuYwo+ID4gaW5kZXggMzgyYjg1Ny4uNGVmZGUw
-MSAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvbmFuZF9iYXNlLmMKPiA+ICsrKyBi
-L2RyaXZlcnMvbXRkL25hbmQvbmFuZF9iYXNlLmMKPiA+IEBAIC0yMTQsMTEgKzIxNCwxNiBAQCBz
-dGF0aWMgdm9pZCBuYW5kX3NlbGVjdF9jaGlwKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBpbnQgY2hp
-cG5yKQo+ID4gICAgKi8KPiA+ICAgc3RhdGljIHZvaWQgbmFuZF93cml0ZV9idWYoc3RydWN0IG10
-ZF9pbmZvICptdGQsIGNvbnN0IHVpbnQ4X3QgKmJ1ZiwgaW50IGxlbikKPiA+ICAgewo+ID4gLQlp
-bnQgaTsKPiA+ICAgCXN0cnVjdCBuYW5kX2NoaXAgKmNoaXAgPSBtdGQtPnByaXY7Cj4gPgo+ID4g
-KyNpZm5kZWYgd3JpdGVzYgo+IAo+IE5vIG9uZSBndWFyYW50ZWVzIHRoYXQgJ3dyaXRlc2InIHdp
-bGwgYmUgYSBtYWNybyBhbmQgbm90IGEgc3RhdGljIGlubGluZSAKPiBmdW5jdGlvbiwgZG8gdGhl
-eT8KPiAKPiA+ICsJaW50IGk7Cj4gPiArCj4gPiAgIAlmb3IgKGkgPSAwOyBpIDwgbGVuOyBpKysp
-Cj4gPiAgIAkJd3JpdGViKGJ1ZltpXSwgY2hpcC0+SU9fQUREUl9XKTsKPiA+ICsjZWxzZQo+ID4g
-Kwl3cml0ZXNiKGNoaXAtPklPX0FERFJfVywgYnVmLCBsZW4pOwo+ID4gKyNlbmRpZgo+ID4gICB9
-Cj4gCj4gVGhlc2UgI2lmbmRlZidzIGFyZSB2ZXJ5IHVnbHkgYW5kIGFyZSBsaWtlbHkgdGhlIHdy
-b25nIHdheShUTSkuIFRoZSAKPiBmaXJzdCBxdWVzdGlvbiBJIGFzayB3aGVuIEkgc2VlIHRoaXMg
-aXM6IHdoeSBpc24ndCB0aGlzIGludGVyZmFjZSAKPiBhdmFpbGFibGUgb24gYWxsIHBsYXRmb3Jt
-cz8gSW4gZmFjdCwgaXQgc2VlbXMgbGlrZSBpdCBoYXMgYmVlbiBkcm9wcGVkIAo+IGZyb20gdGhl
-IGFzbS1nZW5lcmljIGhlYWRlcnMgYW5kIHNwZWNpZmljYWxseSByZWNvbW1lbmRlZCBhZ2FpbnN0
-LiBTZWU6Cj4gCj4gY29tbWl0IGIyNjU2YTEzOGFiN2JjNGU3YWJkM2IxY2JkNmQxZjEwNWM3YTcx
-ODYKPiBBdXRob3I6IFdpbGwgRGVhY29uIDx3aWxsLmRlYWNvbkBhcm0uY29tPgo+IERhdGU6ICAg
-V2VkIE9jdCAxNyAxNjo0NTowMSAyMDEyICswMTAwCj4gCj4gICAgICBhc20tZ2VuZXJpYzogaW86
-IHJlbW92ZSB7cmVhZCx3cml0ZX0gc3RyaW5nIGZ1bmN0aW9ucwo+IAo+IFF1b3RlOiAiV2Ugc2hv
-dWxkIGVuY291cmFnZSBkcml2ZXIgd3JpdGVycyB0byB1c2UgdGhlIAo+IGlve3JlYWQsd3JpdGV9
-ezgsMTYsMzJ9X3JlcCBmdW5jdGlvbnMgaW5zdGVhZC4iCj4gCj4gU28sIGFuIGFsdGVybmF0aXZl
-IHBhdGNoIG1pZ2h0IHVzZSBpb3dyaXRlOF9yZXAoKSBoZXJlIHVuY29uZGl0aW9uYWxseS4KCklu
-ZGVlZC4gU28gSSBjYW4gcmVtYWRlIHBhdGNoIHRvIHVzZSBpb3JlYWQvaW93cml0ZSBhbmQgcmVt
-b3ZlCnVubmVjZXNzYXJ5ICNpZmRlZnMgaWYgeW91IGhhdmUgbm90IGFkZGl0aW9uYWwgY29tbWVu
-dHMuCgotLS0K
+On Mon, 2013-03-04 at 20:59 +0400, Alexander Shiyan wrote:
+> >From: Artem Bityutskiy <artem.bityutskiy at linux.intel.com>
+> >
+> >It is probably OK to remove support for really old NAND chips of 8MiB or
+> >smaller size. We had a separate configuration option for them:
+> >CONFIG_MTD_NAND_MUSEUM_IDS, which we remove along with this patch.
+> >
+> >Signed-off-by: Artem Bityutskiy <artem.bityutskiy at linux.intel.com>
+> >---
+> > drivers/mtd/nand/Kconfig    |    8 --------
+> > drivers/mtd/nand/nand_ids.c |   19 -------------------
+> > 2 files changed, 27 deletions(-)
+> 
+> Hello.
+> This change break systems with these NAND-chips, for example
+> these IDs is used in old DiskOnChip devices.
+
+Do you have one of those and use them with modern kernels ? Which one is
+that?
+
+-- 
+Best Regards,
+Artem Bityutskiy
