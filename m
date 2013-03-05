@@ -1,12 +1,12 @@
 Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UCnR1-000796-ON
- for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 08:41:20 +0000
-Message-ID: <1362472908.2943.30.camel@sauron>
+ id 1UCnUL-0007P0-9r
+ for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 08:44:45 +0000
+Message-ID: <1362473121.2943.32.camel@sauron>
 Subject: Re: Re[2]: [PATCH 02/12] mtd: remove museum NAND ID's support
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 To: Alexander Shiyan <shc_work@mail.ru>
-Date: Tue, 05 Mar 2013 10:41:48 +0200
+Date: Tue, 05 Mar 2013 10:45:21 +0200
 In-Reply-To: <1362472344.590520456@f357.mail.ru>
 References: <1362416362.801083474@f211.mail.ru>
  <1362471499.2943.24.camel@sauron> <1362472344.590520456@f357.mail.ru>
@@ -51,8 +51,9 @@ On Tue, 2013-03-05 at 12:32 +0400, Alexander Shiyan wrote:
 > Of course, these devices are not in production at the moment, but they are still
 > being sold.
 
-OK, probably we can cut on 4MiB boundary then? I mean kill support for
-4MiB NANDs and less?
+Or probably, we can kill NANDs with 256 byte page - they are really from
+the stone age, while the 512 bytes ones are at least from the copper
+age.
 
 -- 
 Best Regards,
