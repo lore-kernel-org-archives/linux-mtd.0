@@ -1,19 +1,19 @@
 Received: from f171.mail.ru ([94.100.178.90])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UCnWa-0007Z9-RT
- for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 08:47:06 +0000
+ id 1UCnZZ-0007ra-4Y
+ for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 08:50:10 +0000
 From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
 To: artem.bityutskiy@linux.intel.com
 Subject: =?UTF-8?B?UmVbNF06IFtQQVRDSCAwMi8xMl0gbXRkOiByZW1vdmUgbXVzZXVtIE5BTkQg?=
  =?UTF-8?B?SUQncyBzdXBwb3J0?=
 Mime-Version: 1.0
-Date: Tue, 05 Mar 2013 12:46:59 +0400
-Message-ID: <1362473219.672348234@f171.mail.ru>
+Date: Tue, 05 Mar 2013 12:50:07 +0400
+Message-ID: <1362473407.874036293@f171.mail.ru>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: base64
-In-Reply-To: <1362472908.2943.30.camel@sauron>
+In-Reply-To: <1362473121.2943.32.camel@sauron>
 References: <1362416362.801083474@f211.mail.ru>
- <1362472344.590520456@f357.mail.ru> <1362472908.2943.30.camel@sauron>
+ <1362472344.590520456@f357.mail.ru> <1362473121.2943.32.camel@sauron>
 Cc: linux-mtd@lists.infradead.org
 Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -47,8 +47,8 @@ cHRpb24KPiA+IHRvIHN1cHBvcnQgdGhpcyBjaGlwIDspIFVuZm9ydHVuYXRlbHksIEkgY2FuIG5v
 dCBzYXkgdGhlIGV4YWN0IGRldmljZSBJRCBub3cgYmVjYXVzZQo+ID4gYWxsIG9mIHN1Y2ggZGV2
 aWNlcyBzZW50IGluIHByb2R1Y3Rpb24sIGFuZCBJIGhhdmUgbm8gbW9yZSBub3cuCj4gPiBPZiBj
 b3Vyc2UsIHRoZXNlIGRldmljZXMgYXJlIG5vdCBpbiBwcm9kdWN0aW9uIGF0IHRoZSBtb21lbnQs
-IGJ1dCB0aGV5IGFyZSBzdGlsbAo+ID4gYmVpbmcgc29sZC4KPiAKPiBPSywgcHJvYmFibHkgd2Ug
-Y2FuIGN1dCBvbiA0TWlCIGJvdW5kYXJ5IHRoZW4/IEkgbWVhbiBraWxsIHN1cHBvcnQgZm9yCj4g
-NE1pQiBOQU5EcyBhbmQgbGVzcz8KCkF0IGxlYXN0IGZvciBtZSBpdCBpcyBPSy4KRGlza29uY2hp
-cCBkZXZpY2VzIGlzIHN0YXJ0ZWQgZnJvbSA4TUIuIEkgbmV2ZXIgc2VlbiBjaGlwcyBsZXNzIHRo
-YW4gOE1CIHNhbWUgYXMgQnJpYW4uCgotLS0K
+IGJ1dCB0aGV5IGFyZSBzdGlsbAo+ID4gYmVpbmcgc29sZC4KPiAKPiBPciBwcm9iYWJseSwgd2Ug
+Y2FuIGtpbGwgTkFORHMgd2l0aCAyNTYgYnl0ZSBwYWdlIC0gdGhleSBhcmUgcmVhbGx5IGZyb20K
+PiB0aGUgc3RvbmUgYWdlLCB3aGlsZSB0aGUgNTEyIGJ5dGVzIG9uZXMgYXJlIGF0IGxlYXN0IGZy
+b20gdGhlIGNvcHBlcgo+IGFnZS4KCkhlaGUgOikKQnV0LCBpIHN1Z2dlc3Qga2VlcCB0aGVzZSBk
+ZWZpbml0aW9ucyBpbiB0aGUgY29tbWVudHMuCgotLS0K
