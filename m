@@ -1,20 +1,21 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UCnUL-0007P0-9r
- for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 08:44:45 +0000
-Message-ID: <1362473121.2943.32.camel@sauron>
-Subject: Re: Re[2]: [PATCH 02/12] mtd: remove museum NAND ID's support
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Alexander Shiyan <shc_work@mail.ru>
-Date: Tue, 05 Mar 2013 10:45:21 +0200
-In-Reply-To: <1362472344.590520456@f357.mail.ru>
-References: <1362416362.801083474@f211.mail.ru>
- <1362471499.2943.24.camel@sauron> <1362472344.590520456@f357.mail.ru>
-Content-Type: text/plain; charset="UTF-8"
+Received: from f171.mail.ru ([94.100.178.90])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UCnWa-0007Z9-RT
+ for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 08:47:06 +0000
+From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+To: artem.bityutskiy@linux.intel.com
+Subject: =?UTF-8?B?UmVbNF06IFtQQVRDSCAwMi8xMl0gbXRkOiByZW1vdmUgbXVzZXVtIE5BTkQg?=
+ =?UTF-8?B?SUQncyBzdXBwb3J0?=
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Date: Tue, 05 Mar 2013 12:46:59 +0400
+Message-ID: <1362473219.672348234@f171.mail.ru>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
+In-Reply-To: <1362472908.2943.30.camel@sauron>
+References: <1362416362.801083474@f211.mail.ru>
+ <1362472344.590520456@f357.mail.ru> <1362472908.2943.30.camel@sauron>
 Cc: linux-mtd@lists.infradead.org
-Reply-To: artem.bityutskiy@linux.intel.com
+Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,37 +25,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2013-03-05 at 12:32 +0400, Alexander Shiyan wrote:
-> > On Mon, 2013-03-04 at 20:59 +0400, Alexander Shiyan wrote:
-> > > >From: Artem Bityutskiy <artem.bityutskiy at linux.intel.com>
-> > > >
-> > > >It is probably OK to remove support for really old NAND chips of 8MiB or
-> > > >smaller size. We had a separate configuration option for them:
-> > > >CONFIG_MTD_NAND_MUSEUM_IDS, which we remove along with this patch.
-> > > >
-> > > >Signed-off-by: Artem Bityutskiy <artem.bityutskiy at linux.intel.com>
-> > > >---
-> > > > drivers/mtd/nand/Kconfig    |    8 --------
-> > > > drivers/mtd/nand/nand_ids.c |   19 -------------------
-> > > > 2 files changed, 27 deletions(-)
-> > > 
-> > > Hello.
-> > > This change break systems with these NAND-chips, for example
-> > > these IDs is used in old DiskOnChip devices.
-> > 
-> > Do you have one of those and use them with modern kernels ? Which one is
-> > that?
-> 
-> Yes. ID used in the MD2800-D08. I specifically included a configuration option
-> to support this chip ;) Unfortunately, I can not say the exact device ID now because
-> all of such devices sent in production, and I have no more now.
-> Of course, these devices are not in production at the moment, but they are still
-> being sold.
-
-Or probably, we can kill NANDs with 256 byte page - they are really from
-the stone age, while the 512 bytes ones are at least from the copper
-age.
-
--- 
-Best Regards,
-Artem Bityutskiy
+PiBPbiBUdWUsIDIwMTMtMDMtMDUgYXQgMTI6MzIgKzA0MDAsIEFsZXhhbmRlciBTaGl5YW4gd3Jv
+dGU6Cj4gPiA+IE9uIE1vbiwgMjAxMy0wMy0wNCBhdCAyMDo1OSArMDQwMCwgQWxleGFuZGVyIFNo
+aXlhbiB3cm90ZToKPiA+ID4gPiA+RnJvbTogQXJ0ZW0gQml0eXV0c2tpeSA8YXJ0ZW0uYml0eXV0
+c2tpeSBhdCBsaW51eC5pbnRlbC5jb20+Cj4gPiA+ID4gPgo+ID4gPiA+ID5JdCBpcyBwcm9iYWJs
+eSBPSyB0byByZW1vdmUgc3VwcG9ydCBmb3IgcmVhbGx5IG9sZCBOQU5EIGNoaXBzIG9mIDhNaUIg
+b3IKPiA+ID4gPiA+c21hbGxlciBzaXplLiBXZSBoYWQgYSBzZXBhcmF0ZSBjb25maWd1cmF0aW9u
+IG9wdGlvbiBmb3IgdGhlbToKPiA+ID4gPiA+Q09ORklHX01URF9OQU5EX01VU0VVTV9JRFMsIHdo
+aWNoIHdlIHJlbW92ZSBhbG9uZyB3aXRoIHRoaXMgcGF0Y2guCj4gPiA+ID4gPgo+ID4gPiA+ID5T
+aWduZWQtb2ZmLWJ5OiBBcnRlbSBCaXR5dXRza2l5IDxhcnRlbS5iaXR5dXRza2l5IGF0IGxpbnV4
+LmludGVsLmNvbT4KPiA+ID4gPiA+LS0tCj4gPiA+ID4gPiBkcml2ZXJzL210ZC9uYW5kL0tjb25m
+aWcgICAgfCAgICA4IC0tLS0tLS0tCj4gPiA+ID4gPiBkcml2ZXJzL210ZC9uYW5kL25hbmRfaWRz
+LmMgfCAgIDE5IC0tLS0tLS0tLS0tLS0tLS0tLS0KPiA+ID4gPiA+IDIgZmlsZXMgY2hhbmdlZCwg
+MjcgZGVsZXRpb25zKC0pCj4gPiA+ID4gCj4gPiA+ID4gSGVsbG8uCj4gPiA+ID4gVGhpcyBjaGFu
+Z2UgYnJlYWsgc3lzdGVtcyB3aXRoIHRoZXNlIE5BTkQtY2hpcHMsIGZvciBleGFtcGxlCj4gPiA+
+ID4gdGhlc2UgSURzIGlzIHVzZWQgaW4gb2xkIERpc2tPbkNoaXAgZGV2aWNlcy4KPiA+ID4gCj4g
+PiA+IERvIHlvdSBoYXZlIG9uZSBvZiB0aG9zZSBhbmQgdXNlIHRoZW0gd2l0aCBtb2Rlcm4ga2Vy
+bmVscyA/IFdoaWNoIG9uZSBpcwo+ID4gPiB0aGF0Pwo+ID4gCj4gPiBZZXMuIElEIHVzZWQgaW4g
+dGhlIE1EMjgwMC1EMDguIEkgc3BlY2lmaWNhbGx5IGluY2x1ZGVkIGEgY29uZmlndXJhdGlvbiBv
+cHRpb24KPiA+IHRvIHN1cHBvcnQgdGhpcyBjaGlwIDspIFVuZm9ydHVuYXRlbHksIEkgY2FuIG5v
+dCBzYXkgdGhlIGV4YWN0IGRldmljZSBJRCBub3cgYmVjYXVzZQo+ID4gYWxsIG9mIHN1Y2ggZGV2
+aWNlcyBzZW50IGluIHByb2R1Y3Rpb24sIGFuZCBJIGhhdmUgbm8gbW9yZSBub3cuCj4gPiBPZiBj
+b3Vyc2UsIHRoZXNlIGRldmljZXMgYXJlIG5vdCBpbiBwcm9kdWN0aW9uIGF0IHRoZSBtb21lbnQs
+IGJ1dCB0aGV5IGFyZSBzdGlsbAo+ID4gYmVpbmcgc29sZC4KPiAKPiBPSywgcHJvYmFibHkgd2Ug
+Y2FuIGN1dCBvbiA0TWlCIGJvdW5kYXJ5IHRoZW4/IEkgbWVhbiBraWxsIHN1cHBvcnQgZm9yCj4g
+NE1pQiBOQU5EcyBhbmQgbGVzcz8KCkF0IGxlYXN0IGZvciBtZSBpdCBpcyBPSy4KRGlza29uY2hp
+cCBkZXZpY2VzIGlzIHN0YXJ0ZWQgZnJvbSA4TUIuIEkgbmV2ZXIgc2VlbiBjaGlwcyBsZXNzIHRo
+YW4gOE1CIHNhbWUgYXMgQnJpYW4uCgotLS0K
