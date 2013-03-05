@@ -1,22 +1,23 @@
-Received: from mail-ia0-x230.google.com ([2607:f8b0:4001:c02::230])
+Received: from f303.mail.ru ([128.140.169.167])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UCl3L-0002qT-TT
- for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 06:08:45 +0000
-Received: by mail-ia0-f176.google.com with SMTP id i18so5649594iac.21
- for <linux-mtd@lists.infradead.org>; Mon, 04 Mar 2013 22:08:41 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <1362415349-7107-13-git-send-email-dedekind1@gmail.com>
-References: <1362415349-7107-1-git-send-email-dedekind1@gmail.com>
- <1362415349-7107-13-git-send-email-dedekind1@gmail.com>
-Date: Tue, 5 Mar 2013 14:08:41 +0800
-Message-ID: <CAMiH66GvpQZ36wLvB_cyiSk79sPPJ+vBKba1Z6WZvi5UD4X=2g@mail.gmail.com>
-Subject: Re: [PATCH 12/12] mtd: nand: provision full ID support
-From: Huang Shijie <shijie8@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: Huang Shijie <b32955@freescale.com>,
- Brian Norris <computersforpeace@gmail.com>, Mike Dunn <mikedunn@newsguy.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>
+ id 1UClB8-0003DP-S8
+ for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 06:16:48 +0000
+From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+To: =?UTF-8?B?QnJpYW4gTm9ycmlz?= <computersforpeace@gmail.com>
+Subject: =?UTF-8?B?UmVbMl06IFtQQVRDSCAxLzNdIG10ZDogbmFuZF9iYXNlOiBSZW1vdmVkIHVu?=
+ =?UTF-8?B?bmVjZXNzYXJ5IGNvbW1hbmQgbWFza2luZw==?=
+Mime-Version: 1.0
+Date: Tue, 05 Mar 2013 10:16:39 +0400
+Message-ID: <1362464199.278385277@f303.mail.ru>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
+In-Reply-To: <CAN8TOE9Q6udV2JTUDZbH7mMnz8c1HiYA--xBhQ79h4b2fhbtAw@mail.gmail.com>
+References: <1362038541-22406-1-git-send-email-shc_work@mail.ru>
+ <CAN8TOE9Q6udV2JTUDZbH7mMnz8c1HiYA--xBhQ79h4b2fhbtAw@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org,
+ =?UTF-8?B?RGF2aWQgV29vZGhvdXNl?= <dwmw2@infradead.org>,
+ =?UTF-8?B?QXJ0ZW0gQml0eXV0c2tpeQ==?= <artem.bityutskiy@linux.intel.com>
+Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,58 +27,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Mar 5, 2013 at 12:42 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
->
-> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> ---
->  include/linux/mtd/nand.h |   12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
->
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index 7af6600..951ea0d 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -559,7 +559,9 @@ struct nand_chip {
->  /**
->   * struct nand_flash_dev - NAND Flash Device ID Structure
->   * @name:      Identify the device type
-> - * @dev_id:    device ID code
-> + * @mfr_id:     manufecturer ID part of the full chip ID array (byte 0)
-> + * @dev_id:     device ID part of the full chip ID array (byte 1)
-> + * @id:         full device ID array
->   * @pagesize:  Pagesize in bytes. Either 256 or 512 or 0
->   *             If the pagesize is 0, then the real pagesize
->   *             and the eraseize are determined from the
-> @@ -570,7 +572,13 @@ struct nand_chip {
->   */
->  struct nand_flash_dev {
->         char *name;
-> -       int dev_id;
-> +       union {
-> +               struct {
-> +                       uint8_t mfr_id;
-> +                       uint8_t dev_id;
-> +               };
-> +               uint8_t id[8];
-> +       };
->
-We can add a new helper like compare_nand_with_devid() to remove the
-mfr_id and dev_id, only left the id[8].
-
-The compare_nand_with_devid() can be used in places where your patch
-11 does. For example:
-   ..............................................................
-        if (id == nand_flash_ids[i].dev_id) {
-
-   changed to:
-
-        if (compare_nand_with_devid(id)){
-
-  ...............................................................
-
-By this way, we can remove the mfr_id and dev_id.
-
-
-thanks
-Huang Shijie
+PiBPbiBUaHUsIEZlYiAyOCwgMjAxMyBhdCAxMjowMiBBTSwgQWxleGFuZGVyIFNoaXlhbiA8c2hj
+X3dvcmtAbWFpbC5ydT4gd3JvdGU6Cj4gPiBOQU5EIGNvbW1hbmQsIHBhc3NlZCB0byBjbWRfY3Ry
+bCgpLCBpcyBtYXNrZWQgd2l0aCAweGZmLiBUaGlzIHBhdGNoCj4gPiByZW1vdmVzIHRoaXMgc2lu
+Y2UgbWFza2luZyBpcyBub3QgbmVjZXNzYXJ5IGFuZCBtYXNraW5nIGlzIG5vdCBwZXJmb3JtZWQK
+PiA+IGluIG90aGVyIHBsYWNlcyBmb3Igc2FtZSBjYWxsLgo+IAo+IEFzIEkgY29tbWVudGVkIG9u
+IHRoZSBvdGhlciB0aHJlYWQsIHRoaXMgaXMgbm90IGEgc3VmZmljaWVudAo+IGV4cGxhbmF0aW9u
+LiBBRy1BTkQgKHNvb24gdG8gYmUgcmVtb3ZlZCkgbWF5IHVzZSBhIGZha2UgOS1iaXQgY29tbWFu
+ZAo+IHdoaWNoIGNvdWxkIGV4cGVjdCB0aGlzIG1hc2tpbmcsIGV2ZW4gdGhvdWdoIG1hc2tpbmcg
+aXMgbm90IGRvbmUKPiBldmVyeXdoZXJlLiBQbGVhc2UgZG9jdW1lbnQgd2h5IHRoZSBjb21tYW5k
+IGRvZXMgbm90IG5lZWQgdG8gYmUKPiBtYXNrZWQuCgpJIHRoaW5rIHRoZSBiZXN0IGlmIEFydGVt
+IHRha2UgdGhpcyBwYXJ0IGludG8gaGlzIHBhdGNoLgpBbmQgd2hhdCBhYm91dCBbMy8zXSBwYXJ0
+PwoKLS0tCg==
