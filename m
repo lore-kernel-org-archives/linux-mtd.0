@@ -1,14 +1,16 @@
-Received: from mail-pb0-f42.google.com ([209.85.160.42])
+Received: from mail-pb0-f51.google.com ([209.85.160.51])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UCnfe-0008Fg-AW
- for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 08:56:27 +0000
-Received: by mail-pb0-f42.google.com with SMTP id xb4so4145452pbc.15
- for <linux-mtd@lists.infradead.org>; Tue, 05 Mar 2013 00:56:22 -0800 (PST)
+ id 1UCnff-0008Fk-9O
+ for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 08:56:28 +0000
+Received: by mail-pb0-f51.google.com with SMTP id un15so4133497pbc.38
+ for <linux-mtd@lists.infradead.org>; Tue, 05 Mar 2013 00:56:25 -0800 (PST)
 From: Sachin Kamat <sachin.kamat@linaro.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 1/8] mtd: txx9ndfmc: Use module_platform_driver_probe macro
-Date: Tue,  5 Mar 2013 14:15:46 +0530
-Message-Id: <1362473153-23515-1-git-send-email-sachin.kamat@linaro.org>
+Subject: [PATCH 2/8] mtd: sh_flctl: Use module_platform_driver_probe macro
+Date: Tue,  5 Mar 2013 14:15:47 +0530
+Message-Id: <1362473153-23515-2-git-send-email-sachin.kamat@linaro.org>
+In-Reply-To: <1362473153-23515-1-git-send-email-sachin.kamat@linaro.org>
+References: <1362473153-23515-1-git-send-email-sachin.kamat@linaro.org>
 Cc: sachin.kamat@linaro.org, artem.bityutskiy@linux.intel.com,
  dwmw2@infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,32 +27,32 @@ the code.
 
 Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 ---
- drivers/mtd/nand/txx9ndfmc.c |   13 +------------
+ drivers/mtd/nand/sh_flctl.c |   13 +------------
  1 files changed, 1 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/mtd/nand/txx9ndfmc.c b/drivers/mtd/nand/txx9ndfmc.c
-index e1e8748..7ed654c 100644
---- a/drivers/mtd/nand/txx9ndfmc.c
-+++ b/drivers/mtd/nand/txx9ndfmc.c
-@@ -427,18 +427,7 @@ static struct platform_driver txx9ndfmc_driver = {
+diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
+index 57b3971..5899738 100644
+--- a/drivers/mtd/nand/sh_flctl.c
++++ b/drivers/mtd/nand/sh_flctl.c
+@@ -1223,18 +1223,7 @@ static struct platform_driver flctl_driver = {
  	},
  };
  
--static int __init txx9ndfmc_init(void)
+-static int __init flctl_nand_init(void)
 -{
--	return platform_driver_probe(&txx9ndfmc_driver, txx9ndfmc_probe);
+-	return platform_driver_probe(&flctl_driver, flctl_probe);
 -}
 -
--static void __exit txx9ndfmc_exit(void)
+-static void __exit flctl_nand_cleanup(void)
 -{
--	platform_driver_unregister(&txx9ndfmc_driver);
+-	platform_driver_unregister(&flctl_driver);
 -}
 -
--module_init(txx9ndfmc_init);
--module_exit(txx9ndfmc_exit);
-+module_platform_driver_probe(txx9ndfmc_driver, txx9ndfmc_probe);
+-module_init(flctl_nand_init);
+-module_exit(flctl_nand_cleanup);
++module_platform_driver_probe(flctl_driver, flctl_probe);
  
  MODULE_LICENSE("GPL");
- MODULE_DESCRIPTION("TXx9 SoC NAND flash controller driver");
+ MODULE_AUTHOR("Yoshihiro Shimoda");
 -- 
 1.7.4.1
