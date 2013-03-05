@@ -1,22 +1,25 @@
-Received: from mga03.intel.com ([143.182.124.21])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UCs0k-0002RP-D4
- for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 13:34:31 +0000
-Message-ID: <1362490491.2943.54.camel@sauron>
-Subject: Re: [PATCH 10/12] mtd: nand_ids: introduce helper macros
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Tue, 05 Mar 2013 15:34:51 +0200
-In-Reply-To: <CAN8TOE_Db-qpWE_a_JAW7QBjyVb-uj2fYBDnuAcBn95yrHFr+Q@mail.gmail.com>
+Received: from mail-ie0-x230.google.com ([2607:f8b0:4001:c03::230])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UCsya-0002eZ-1z
+ for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 14:36:20 +0000
+Received: by mail-ie0-f176.google.com with SMTP id k13so7672276iea.7
+ for <linux-mtd@lists.infradead.org>; Tue, 05 Mar 2013 06:36:02 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1362480128.2943.51.camel@sauron>
 References: <1362415349-7107-1-git-send-email-dedekind1@gmail.com>
- <1362415349-7107-11-git-send-email-dedekind1@gmail.com>
- <CAN8TOE_Db-qpWE_a_JAW7QBjyVb-uj2fYBDnuAcBn95yrHFr+Q@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Huang Shijie <b32955@freescale.com>, Mike Dunn <mikedunn@newsguy.com>,
+ <1362415349-7107-13-git-send-email-dedekind1@gmail.com>
+ <CAMiH66GvpQZ36wLvB_cyiSk79sPPJ+vBKba1Z6WZvi5UD4X=2g@mail.gmail.com>
+ <1362480128.2943.51.camel@sauron>
+Date: Tue, 5 Mar 2013 22:36:02 +0800
+Message-ID: <CAMiH66EZ_grVAWa99rZoLdq1cQGbr3FrBt2SdKb8UNND96YbFw@mail.gmail.com>
+Subject: Re: [PATCH 12/12] mtd: nand: provision full ID support
+From: Huang Shijie <shijie8@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+Cc: Huang Shijie <b32955@freescale.com>,
+ Brian Norris <computersforpeace@gmail.com>, Mike Dunn <mikedunn@newsguy.com>,
  MTD Maling List <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,32 +29,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2013-03-04 at 11:23 -0800, Brian Norris wrote:
-> > +/*
-> > + * A helper for defining older chips which did not have page size and
-> > + * eraseblock size encoded in the chip ID bytes.
-> > + */
-> 
-> Do the "TABLE_NAND" flash really "not have page size and eraseblock
-> size encoded in the chip ID bytes"? I would say they have them
-> "encoded" in a way: the encoding is just a 1-to-1 constant mapping!
-> 
-> The real difference between TABLE_NAND and EXTENDED_ID_NAND is that
-> with EXTENDED_ID_NAND, manufacturers overloaded the same device ID so
-> that the device ID now only represented a particular total chip size
-> (and voltage, buswidth), and the page size, eraseblock size, and OOB
-> size could vary while using the same device ID.
-> 
-> I don't know if I'm just being too picky here or if this actually is
-> worth clarifying/improving these comments. One candidate change:
-> 
-> "A helper for defining older chips whose device ID determines their
-> page size and eraseblock size."
-
-No, you are not picky, you are pointing to a serious flaw in my
-commentaries. Thank you. I'll update the comments accordingly and send
-out the new version for your review.
-
--- 
-Best Regards,
-Artem Bityutskiy
+T24gVHVlLCBNYXIgNSwgMjAxMyBhdCA2OjQyIFBNLCBBcnRlbSBCaXR5dXRza2l5IDxkZWRla2lu
+ZDFAZ21haWwuY29tPiB3cm90ZToNCj4gT24gVHVlLCAyMDEzLTAzLTA1IGF0IDE0OjA4ICswODAw
+LCBIdWFuZyBTaGlqaWUgd3JvdGU6DQo+PiA+ICBzdHJ1Y3QgbmFuZF9mbGFzaF9kZXYgew0KPj4g
+PiAgICAgICAgIGNoYXIgKm5hbWU7DQo+PiA+IC0gICAgICAgaW50IGRldl9pZDsNCj4+ID4gKyAg
+ICAgICB1bmlvbiB7DQo+PiA+ICsgICAgICAgICAgICAgICBzdHJ1Y3Qgew0KPj4gPiArICAgICAg
+ICAgICAgICAgICAgICAgICB1aW50OF90IG1mcl9pZDsNCj4+ID4gKyAgICAgICAgICAgICAgICAg
+ICAgICAgdWludDhfdCBkZXZfaWQ7DQo+PiA+ICsgICAgICAgICAgICAgICB9Ow0KPj4gPiArICAg
+ICAgICAgICAgICAgdWludDhfdCBpZFs4XTsNCj4+ID4gKyAgICAgICB9Ow0KPj4gPg0KPj4gV2Ug
+Y2FuIGFkZCBhIG5ldyBoZWxwZXIgbGlrZSBjb21wYXJlX25hbmRfd2l0aF9kZXZpZCgpIHRvIHJl
+bW92ZSB0aGUNCj4+IG1mcl9pZCBhbmQgZGV2X2lkLCBvbmx5IGxlZnQgdGhlIGlkWzhdLg0KPg0K
+PiBIdWFuZywgZGlkIHlvdSBtaXNzIHRoZSAidW5pb24geyAuLi4gfSIgcGFydCBvciB5b3UgdGhp
+bmsgdXNpbmcgJ2lkW05dJw0KPiBkaXJlY3RseSBpcyByZWFkYWJsZSBlbm91Z2g/DQrvvYnjgIDv
+vZTvvYjvvYnvvY7vvYvjgIDvvZXvvZPvvYnvvY7vvYfjgIDvvZTvvYjvvYXjgIDvvYnvvYTvvLvv
+vL3jgIDvvYnvvZPjgIDvvYXvvY7vvY/vvZXvvYfvvYjvvI4NCu+9lO+9iO+9heOAgO+9le+9ju+9
+ie+9j++9juOAgO+9ie+9k+OAgO+9ku+9he+9hO+9le+9ju+9hO+9ge+9ju+9lO+8jg0KDQrvvZTv
+vYjvvYHvvY7vvYvvvZMNCu+8qO+9le+9ge+9ju+9h+OAgO+8s++9iO+9ie+9iu+9ie+9hQ0K
