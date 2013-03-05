@@ -1,18 +1,21 @@
-Received: from mail-pb0-f53.google.com ([209.85.160.53])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UCnfx-0008MS-38
- for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 08:56:45 +0000
-Received: by mail-pb0-f53.google.com with SMTP id un1so4141448pbc.12
- for <linux-mtd@lists.infradead.org>; Tue, 05 Mar 2013 00:56:44 -0800 (PST)
-From: Sachin Kamat <sachin.kamat@linaro.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 8/8] mtd: docg3: Use module_platform_driver_probe macro
-Date: Tue,  5 Mar 2013 14:15:53 +0530
-Message-Id: <1362473153-23515-8-git-send-email-sachin.kamat@linaro.org>
-In-Reply-To: <1362473153-23515-1-git-send-email-sachin.kamat@linaro.org>
-References: <1362473153-23515-1-git-send-email-sachin.kamat@linaro.org>
-Cc: sachin.kamat@linaro.org, artem.bityutskiy@linux.intel.com,
- dwmw2@infradead.org, dedekind1@gmail.com
+Received: from mga03.intel.com ([143.182.124.21])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UCnmN-0001o6-My
+ for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 09:03:24 +0000
+Message-ID: <1362474237.2943.34.camel@sauron>
+Subject: Re: Re[4]: [PATCH 02/12] mtd: remove museum NAND ID's support
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Alexander Shiyan <shc_work@mail.ru>
+Date: Tue, 05 Mar 2013 11:03:57 +0200
+In-Reply-To: <1362473407.874036293@f171.mail.ru>
+References: <1362416362.801083474@f211.mail.ru>
+ <1362472344.590520456@f357.mail.ru> <1362473121.2943.32.camel@sauron>
+ <1362473407.874036293@f171.mail.ru>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,37 +25,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-module_platform_driver_probe() eliminates the boilerplate and simplifies
-the code.
+On Tue, 2013-03-05 at 12:50 +0400, Alexander Shiyan wrote:
+> > On Tue, 2013-03-05 at 12:32 +0400, Alexander Shiyan wrote:
+> > > > On Mon, 2013-03-04 at 20:59 +0400, Alexander Shiyan wrote:
+> > > > > >From: Artem Bityutskiy <artem.bityutskiy at linux.intel.com>
+> > > > > >
+> > > > > >It is probably OK to remove support for really old NAND chips of 8MiB or
+> > > > > >smaller size. We had a separate configuration option for them:
+> > > > > >CONFIG_MTD_NAND_MUSEUM_IDS, which we remove along with this patch.
+> > > > > >
+> > > > > >Signed-off-by: Artem Bityutskiy <artem.bityutskiy at linux.intel.com>
+> > > > > >---
+> > > > > > drivers/mtd/nand/Kconfig    |    8 --------
+> > > > > > drivers/mtd/nand/nand_ids.c |   19 -------------------
+> > > > > > 2 files changed, 27 deletions(-)
+> > > > > 
+> > > > > Hello.
+> > > > > This change break systems with these NAND-chips, for example
+> > > > > these IDs is used in old DiskOnChip devices.
+> > > > 
+> > > > Do you have one of those and use them with modern kernels ? Which one is
+> > > > that?
+> > > 
+> > > Yes. ID used in the MD2800-D08. I specifically included a configuration option
+> > > to support this chip ;) Unfortunately, I can not say the exact device ID now because
+> > > all of such devices sent in production, and I have no more now.
+> > > Of course, these devices are not in production at the moment, but they are still
+> > > being sold.
+> > 
+> > Or probably, we can kill NANDs with 256 byte page - they are really from
+> > the stone age, while the 512 bytes ones are at least from the copper
+> > age.
+> 
+> Hehe :)
+> But, i suggest keep these definitions in the comments.
 
-Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
----
- drivers/mtd/devices/docg3.c |   13 +------------
- 1 files changed, 1 insertions(+), 12 deletions(-)
+I want to go even further and just kill 256-bytes NAND p ages support
+altogether, as I believe this is completely useless. Being in linux MTD
+since 2005, I've never seen anyone using those.
 
-diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
-index 8510ccb..a0cfa89 100644
---- a/drivers/mtd/devices/docg3.c
-+++ b/drivers/mtd/devices/docg3.c
-@@ -2144,18 +2144,7 @@ static struct platform_driver g3_driver = {
- 	.remove		= __exit_p(docg3_release),
- };
- 
--static int __init docg3_init(void)
--{
--	return platform_driver_probe(&g3_driver, docg3_probe);
--}
--module_init(docg3_init);
--
--
--static void __exit docg3_exit(void)
--{
--	platform_driver_unregister(&g3_driver);
--}
--module_exit(docg3_exit);
-+module_platform_driver_probe(g3_driver, docg3_probe);
- 
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Robert Jarzmik <robert.jarzmik@free.fr>");
 -- 
-1.7.4.1
+Best Regards,
+Artem Bityutskiy
