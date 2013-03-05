@@ -1,13 +1,13 @@
 Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UCriw-0006vW-Mo
- for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 13:16:08 +0000
+ id 1UCriy-0006vW-JH
+ for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 13:16:13 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>,
  MTD Maling List <linux-mtd@lists.infradead.org>
-Subject: [PATCH 02/11] mtd: decommission the NAND museum
-Date: Tue,  5 Mar 2013 15:17:15 +0200
-Message-Id: <1362489444-27762-3-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 06/11] mtd: nand: remove a bunch of unused commands
+Date: Tue,  5 Mar 2013 15:17:19 +0200
+Message-Id: <1362489444-27762-7-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1362489444-27762-1-git-send-email-dedekind1@gmail.com>
 References: <1362489444-27762-1-git-send-email-dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,84 +21,158 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-The MTD subsystem has its own small museum of ancient NANDs in a form of the
-CONFIG_MTD_NAND_MUSEUM_IDS configuration option. The museum contains stone age
-NANDs with 256 bytes pages, as well as iron age NANDs with 512 bytes per page
-and up to 8MiB page size.
-
-It is with great sorrow that I inform you that the museum is being
-decommissioned. The MTD subsystem is out of budget for Kconfig options and
-already has too many of them, and there is a general kernel trend to simplify
-the configuration menu.
-
-We remove the stone age exhibits along with closing the museum, but the iron
-age ones are transferred to the regular NAND depot, since there is still a
-remote possibility that they may be useful for someone.
-
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Acked-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/nand/Kconfig    |    8 --------
- drivers/mtd/nand/nand_ids.c |   28 ++++++++++------------------
- 2 files changed, 10 insertions(+), 26 deletions(-)
+ drivers/mtd/nand/cafe_nand.c   |    6 ------
+ drivers/mtd/nand/nand_base.c   |   10 ----------
+ drivers/mtd/nand/nandsim.c     |    8 --------
+ drivers/mtd/nand/nuc900_nand.c |    9 ---------
+ include/linux/mtd/nand.h       |   20 --------------------
+ 5 files changed, 53 deletions(-)
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 81bf5e5..0f443ef 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -41,14 +41,6 @@ config MTD_SM_COMMON
- 	tristate
- 	default n
+diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
+index 010d612..a01ccb9 100644
+--- a/drivers/mtd/nand/cafe_nand.c
++++ b/drivers/mtd/nand/cafe_nand.c
+@@ -303,13 +303,7 @@ static void cafe_nand_cmdfunc(struct mtd_info *mtd, unsigned command,
+ 	case NAND_CMD_SEQIN:
+ 	case NAND_CMD_RNDIN:
+ 	case NAND_CMD_STATUS:
+-	case NAND_CMD_DEPLETE1:
+ 	case NAND_CMD_RNDOUT:
+-	case NAND_CMD_STATUS_ERROR:
+-	case NAND_CMD_STATUS_ERROR0:
+-	case NAND_CMD_STATUS_ERROR1:
+-	case NAND_CMD_STATUS_ERROR2:
+-	case NAND_CMD_STATUS_ERROR3:
+ 		cafe_writel(cafe, cafe->ctl2, NAND_CTRL2);
+ 		return;
+ 	}
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 925de01..79b1081 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -668,16 +668,6 @@ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
+ 	case NAND_CMD_SEQIN:
+ 	case NAND_CMD_RNDIN:
+ 	case NAND_CMD_STATUS:
+-	case NAND_CMD_DEPLETE1:
+-		return;
+-
+-	case NAND_CMD_STATUS_ERROR:
+-	case NAND_CMD_STATUS_ERROR0:
+-	case NAND_CMD_STATUS_ERROR1:
+-	case NAND_CMD_STATUS_ERROR2:
+-	case NAND_CMD_STATUS_ERROR3:
+-		/* Read error status commands require only a short delay */
+-		udelay(chip->chip_delay);
+ 		return;
  
--config MTD_NAND_MUSEUM_IDS
--	bool "Enable chip ids for obsolete ancient NAND devices"
--	default n
--	help
--	  Enable this option only when your board has first generation
--	  NAND chips (page size 256 byte, erase size 4-8KiB). The IDs
--	  of these chips were reused by later, larger chips.
--
- config MTD_NAND_DENALI
-         tristate "Support Denali NAND controller"
-         help
-diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
-index f1a799c..44f9db3 100644
---- a/drivers/mtd/nand/nand_ids.c
-+++ b/drivers/mtd/nand/nand_ids.c
-@@ -22,24 +22,16 @@
-  * extended chip ID.
-  */
- struct nand_flash_dev nand_flash_ids[] = {
--
--#ifdef CONFIG_MTD_NAND_MUSEUM_IDS
--	{"NAND 1MiB 5V 8-bit",		0x6e, 256, 1, 0x1000, 0},
--	{"NAND 2MiB 5V 8-bit",		0x64, 256, 2, 0x1000, 0},
--	{"NAND 4MiB 5V 8-bit",		0x6b, 512, 4, 0x2000, 0},
--	{"NAND 1MiB 3,3V 8-bit",	0xe8, 256, 1, 0x1000, 0},
--	{"NAND 1MiB 3,3V 8-bit",	0xec, 256, 1, 0x1000, 0},
--	{"NAND 2MiB 3,3V 8-bit",	0xea, 256, 2, 0x1000, 0},
--	{"NAND 4MiB 3,3V 8-bit",	0xd5, 512, 4, 0x2000, 0},
--	{"NAND 4MiB 3,3V 8-bit",	0xe3, 512, 4, 0x2000, 0},
--	{"NAND 4MiB 3,3V 8-bit",	0xe5, 512, 4, 0x2000, 0},
--	{"NAND 8MiB 3,3V 8-bit",	0xd6, 512, 8, 0x2000, 0},
--
--	{"NAND 8MiB 1,8V 8-bit",	0x39, 512, 8, 0x2000, 0},
--	{"NAND 8MiB 3,3V 8-bit",	0xe6, 512, 8, 0x2000, 0},
--	{"NAND 8MiB 1,8V 16-bit",	0x49, 512, 8, 0x2000, NAND_BUSWIDTH_16},
--	{"NAND 8MiB 3,3V 16-bit",	0x59, 512, 8, 0x2000, NAND_BUSWIDTH_16},
--#endif
-+       {"NAND 4MiB 5V 8-bit",          0x6b, 512, 4, 0x2000, 0},
-+       {"NAND 4MiB 3,3V 8-bit",        0xd5, 512, 4, 0x2000, 0},
-+       {"NAND 4MiB 3,3V 8-bit",        0xe3, 512, 4, 0x2000, 0},
-+       {"NAND 4MiB 3,3V 8-bit",        0xe5, 512, 4, 0x2000, 0},
-+       {"NAND 8MiB 3,3V 8-bit",        0xd6, 512, 8, 0x2000, 0},
-+
-+       {"NAND 8MiB 1,8V 8-bit",        0x39, 512, 8, 0x2000, 0},
-+       {"NAND 8MiB 3,3V 8-bit",        0xe6, 512, 8, 0x2000, 0},
-+       {"NAND 8MiB 1,8V 16-bit",       0x49, 512, 8, 0x2000, NAND_BUSWIDTH_16},
-+       {"NAND 8MiB 3,3V 16-bit",       0x59, 512, 8, 0x2000, NAND_BUSWIDTH_16},
+ 	case NAND_CMD_RESET:
+diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+index 891c52a..7199acc 100644
+--- a/drivers/mtd/nand/nandsim.c
++++ b/drivers/mtd/nand/nandsim.c
+@@ -218,7 +218,6 @@ MODULE_PARM_DESC(bch,		 "Enable BCH ecc and set how many bits should "
+ #define STATE_CMD_READOOB      0x00000005 /* read OOB area */
+ #define STATE_CMD_ERASE1       0x00000006 /* sector erase first command */
+ #define STATE_CMD_STATUS       0x00000007 /* read status */
+-#define STATE_CMD_STATUS_M     0x00000008 /* read multi-plane status (isn't implemented) */
+ #define STATE_CMD_SEQIN        0x00000009 /* sequential data input */
+ #define STATE_CMD_READID       0x0000000A /* read ID */
+ #define STATE_CMD_ERASE2       0x0000000B /* sector erase second command */
+@@ -406,8 +405,6 @@ static struct nandsim_operations {
+ 	{OPT_ANY, {STATE_CMD_ERASE1, STATE_ADDR_SEC, STATE_CMD_ERASE2 | ACTION_SECERASE, STATE_READY}},
+ 	/* Read status */
+ 	{OPT_ANY, {STATE_CMD_STATUS, STATE_DATAOUT_STATUS, STATE_READY}},
+-	/* Read multi-plane status */
+-	{OPT_SMARTMEDIA, {STATE_CMD_STATUS_M, STATE_DATAOUT_STATUS_M, STATE_READY}},
+ 	/* Read ID */
+ 	{OPT_ANY, {STATE_CMD_READID, STATE_ADDR_ZERO, STATE_DATAOUT_ID, STATE_READY}},
+ 	/* Large page devices read page */
+@@ -1079,8 +1076,6 @@ static char *get_state_name(uint32_t state)
+ 			return "STATE_CMD_ERASE1";
+ 		case STATE_CMD_STATUS:
+ 			return "STATE_CMD_STATUS";
+-		case STATE_CMD_STATUS_M:
+-			return "STATE_CMD_STATUS_M";
+ 		case STATE_CMD_SEQIN:
+ 			return "STATE_CMD_SEQIN";
+ 		case STATE_CMD_READID:
+@@ -1145,7 +1140,6 @@ static int check_command(int cmd)
+ 	case NAND_CMD_RNDOUTSTART:
+ 		return 0;
  
- 	{"NAND 16MiB 1,8V 8-bit",	0x33, 512, 16, 0x4000, 0},
- 	{"NAND 16MiB 3,3V 8-bit",	0x73, 512, 16, 0x4000, 0},
+-	case NAND_CMD_STATUS_MULTI:
+ 	default:
+ 		return 1;
+ 	}
+@@ -1171,8 +1165,6 @@ static uint32_t get_state_by_command(unsigned command)
+ 			return STATE_CMD_ERASE1;
+ 		case NAND_CMD_STATUS:
+ 			return STATE_CMD_STATUS;
+-		case NAND_CMD_STATUS_MULTI:
+-			return STATE_CMD_STATUS_M;
+ 		case NAND_CMD_SEQIN:
+ 			return STATE_CMD_SEQIN;
+ 		case NAND_CMD_READID:
+diff --git a/drivers/mtd/nand/nuc900_nand.c b/drivers/mtd/nand/nuc900_nand.c
+index a619119..cd6be2e 100644
+--- a/drivers/mtd/nand/nuc900_nand.c
++++ b/drivers/mtd/nand/nuc900_nand.c
+@@ -177,15 +177,6 @@ static void nuc900_nand_command_lp(struct mtd_info *mtd, unsigned int command,
+ 	case NAND_CMD_SEQIN:
+ 	case NAND_CMD_RNDIN:
+ 	case NAND_CMD_STATUS:
+-	case NAND_CMD_DEPLETE1:
+-		return;
+-
+-	case NAND_CMD_STATUS_ERROR:
+-	case NAND_CMD_STATUS_ERROR0:
+-	case NAND_CMD_STATUS_ERROR1:
+-	case NAND_CMD_STATUS_ERROR2:
+-	case NAND_CMD_STATUS_ERROR3:
+-		udelay(chip->chip_delay);
+ 		return;
+ 
+ 	case NAND_CMD_RESET:
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 2aba049..69097e8 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -86,7 +86,6 @@ extern int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
+ #define NAND_CMD_READOOB	0x50
+ #define NAND_CMD_ERASE1		0x60
+ #define NAND_CMD_STATUS		0x70
+-#define NAND_CMD_STATUS_MULTI	0x71
+ #define NAND_CMD_SEQIN		0x80
+ #define NAND_CMD_RNDIN		0x85
+ #define NAND_CMD_READID		0x90
+@@ -105,25 +104,6 @@ extern int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
+ #define NAND_CMD_RNDOUTSTART	0xE0
+ #define NAND_CMD_CACHEDPROG	0x15
+ 
+-/* Extended commands for AG-AND device */
+-/*
+- * Note: the command for NAND_CMD_DEPLETE1 is really 0x00 but
+- *       there is no way to distinguish that from NAND_CMD_READ0
+- *       until the remaining sequence of commands has been completed
+- *       so add a high order bit and mask it off in the command.
+- */
+-#define NAND_CMD_DEPLETE1	0x100
+-#define NAND_CMD_DEPLETE2	0x38
+-#define NAND_CMD_STATUS_MULTI	0x71
+-#define NAND_CMD_STATUS_ERROR	0x72
+-/* multi-bank error status (banks 0-3) */
+-#define NAND_CMD_STATUS_ERROR0	0x73
+-#define NAND_CMD_STATUS_ERROR1	0x74
+-#define NAND_CMD_STATUS_ERROR2	0x75
+-#define NAND_CMD_STATUS_ERROR3	0x76
+-#define NAND_CMD_STATUS_RESET	0x7f
+-#define NAND_CMD_STATUS_CLEAR	0xff
+-
+ #define NAND_CMD_NONE		-1
+ 
+ /* Status bits */
 -- 
 1.7.10.4
