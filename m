@@ -1,22 +1,22 @@
 Received: from f303.mail.ru ([128.140.169.167])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UClB8-0003DP-S8
- for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 06:16:48 +0000
+ id 1UClHj-0003qT-Ac
+ for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 06:23:36 +0000
 From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
 To: =?UTF-8?B?QnJpYW4gTm9ycmlz?= <computersforpeace@gmail.com>
-Subject: =?UTF-8?B?UmVbMl06IFtQQVRDSCAxLzNdIG10ZDogbmFuZF9iYXNlOiBSZW1vdmVkIHVu?=
- =?UTF-8?B?bmVjZXNzYXJ5IGNvbW1hbmQgbWFza2luZw==?=
+Subject: =?UTF-8?B?UmVbMl06IFtQQVRDSCAwMi8xMl0gbXRkOiByZW1vdmUgbXVzZXVtIE5BTkQg?=
+ =?UTF-8?B?SUQncyBzdXBwb3J0?=
 Mime-Version: 1.0
-Date: Tue, 05 Mar 2013 10:16:39 +0400
-Message-ID: <1362464199.278385277@f303.mail.ru>
+Date: Tue, 05 Mar 2013 10:23:32 +0400
+Message-ID: <1362464612.751635388@f303.mail.ru>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: base64
-In-Reply-To: <CAN8TOE9Q6udV2JTUDZbH7mMnz8c1HiYA--xBhQ79h4b2fhbtAw@mail.gmail.com>
-References: <1362038541-22406-1-git-send-email-shc_work@mail.ru>
- <CAN8TOE9Q6udV2JTUDZbH7mMnz8c1HiYA--xBhQ79h4b2fhbtAw@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org,
- =?UTF-8?B?RGF2aWQgV29vZGhvdXNl?= <dwmw2@infradead.org>,
- =?UTF-8?B?QXJ0ZW0gQml0eXV0c2tpeQ==?= <artem.bityutskiy@linux.intel.com>
+References: <1362415349-7107-1-git-send-email-dedekind1@gmail.com>
+ <1362415349-7107-3-git-send-email-dedekind1@gmail.com>
+Cc: =?UTF-8?B?SHVhbmcgU2hpamll?= <b32955@freescale.com>,
+ =?UTF-8?B?TWlrZSBEdW5u?= <mikedunn@newsguy.com>,
+ =?UTF-8?B?TVREIE1hbGluZyBMaXN0?= <linux-mtd@lists.infradead.org>,
+ =?UTF-8?B?QXJ0ZW0gQml0eXV0c2tpeQ==?= <dedekind1@gmail.com>
 Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,15 +27,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiBPbiBUaHUsIEZlYiAyOCwgMjAxMyBhdCAxMjowMiBBTSwgQWxleGFuZGVyIFNoaXlhbiA8c2hj
-X3dvcmtAbWFpbC5ydT4gd3JvdGU6Cj4gPiBOQU5EIGNvbW1hbmQsIHBhc3NlZCB0byBjbWRfY3Ry
-bCgpLCBpcyBtYXNrZWQgd2l0aCAweGZmLiBUaGlzIHBhdGNoCj4gPiByZW1vdmVzIHRoaXMgc2lu
-Y2UgbWFza2luZyBpcyBub3QgbmVjZXNzYXJ5IGFuZCBtYXNraW5nIGlzIG5vdCBwZXJmb3JtZWQK
-PiA+IGluIG90aGVyIHBsYWNlcyBmb3Igc2FtZSBjYWxsLgo+IAo+IEFzIEkgY29tbWVudGVkIG9u
-IHRoZSBvdGhlciB0aHJlYWQsIHRoaXMgaXMgbm90IGEgc3VmZmljaWVudAo+IGV4cGxhbmF0aW9u
-LiBBRy1BTkQgKHNvb24gdG8gYmUgcmVtb3ZlZCkgbWF5IHVzZSBhIGZha2UgOS1iaXQgY29tbWFu
-ZAo+IHdoaWNoIGNvdWxkIGV4cGVjdCB0aGlzIG1hc2tpbmcsIGV2ZW4gdGhvdWdoIG1hc2tpbmcg
-aXMgbm90IGRvbmUKPiBldmVyeXdoZXJlLiBQbGVhc2UgZG9jdW1lbnQgd2h5IHRoZSBjb21tYW5k
-IGRvZXMgbm90IG5lZWQgdG8gYmUKPiBtYXNrZWQuCgpJIHRoaW5rIHRoZSBiZXN0IGlmIEFydGVt
-IHRha2UgdGhpcyBwYXJ0IGludG8gaGlzIHBhdGNoLgpBbmQgd2hhdCBhYm91dCBbMy8zXSBwYXJ0
-PwoKLS0tCg==
+PiBPbiBNb24sIE1hciA0LCAyMDEzIGF0IDg6NDIgQU0sIEFydGVtIEJpdHl1dHNraXkgPGRlZGVr
+aW5kMUBnbWFpbC5jb20+IHdyb3RlOgo+ID4gRnJvbTogQXJ0ZW0gQml0eXV0c2tpeSA8YXJ0ZW0u
+Yml0eXV0c2tpeUBsaW51eC5pbnRlbC5jb20+Cj4gPgo+ID4gSXQgaXMgcHJvYmFibHkgT0sgdG8g
+cmVtb3ZlIHN1cHBvcnQgZm9yIHJlYWxseSBvbGQgTkFORCBjaGlwcyBvZiA4TWlCIG9yCj4gPiBz
+bWFsbGVyIHNpemUuIFdlIGhhZCBhIHNlcGFyYXRlIGNvbmZpZ3VyYXRpb24gb3B0aW9uIGZvciB0
+aGVtOgo+ID4gQ09ORklHX01URF9OQU5EX01VU0VVTV9JRFMsIHdoaWNoIHdlIHJlbW92ZSBhbG9u
+ZyB3aXRoIHRoaXMgcGF0Y2guCj4gPgo+ID4gU2lnbmVkLW9mZi1ieTogQXJ0ZW0gQml0eXV0c2tp
+eSA8YXJ0ZW0uYml0eXV0c2tpeUBsaW51eC5pbnRlbC5jb20+Cj4gCj4gSSBoYXZlIG5ldmVyIHNl
+ZW4gYW55IG9mIHRoZXNlIE5BTkQuIFNvIEZXSVc6Cj4gCj4gQWNrZWQtYnk6IEJyaWFuIE5vcnJp
+cyA8Y29tcHV0ZXJzZm9ycGVhY2VAZ21haWwuY29tPgoKTXkgcHJldmlvdXMgcG9zdCBvbiB0aGlz
+IHRvcGljIGRpZCBub3QgZ28sIHNvIEkgd2lsbCByZXBlYXQ6ClRoZXNlIGNoaXBzIGFyZSB1c2Vk
+IGluIERpc2tPbkNoaXAgYW5kIHJlbW92aW5nIGlkZW50aWZpZXJzIHdpbGwgbGVhZAp0byBtYWxm
+dW5jdGlvbiBvZiBzeXN0ZW1zIHVzaW5nIERpc2tPbkNoaXAgYXMgZXh0cmEgbWVtb3J5LgoKLS0t
+Cg==
