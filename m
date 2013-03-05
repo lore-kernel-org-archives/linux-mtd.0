@@ -1,19 +1,22 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UCn4C-0004dw-72
- for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 08:17:45 +0000
-Message-ID: <1362471499.2943.24.camel@sauron>
-Subject: Re: [PATCH 02/12] mtd: remove museum NAND ID's support
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Alexander Shiyan <shc_work@mail.ru>
-Date: Tue, 05 Mar 2013 10:18:19 +0200
-In-Reply-To: <1362416362.801083474@f211.mail.ru>
-References: <1362416362.801083474@f211.mail.ru>
+ id 1UCnHd-00051T-8Y
+ for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 08:31:38 +0000
+Message-ID: <1362472331.2943.25.camel@sauron>
+Subject: Re: [PATCH 01/12] mtd: nand_ids: minor clean-ups
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Tue, 05 Mar 2013 10:32:11 +0200
+In-Reply-To: <CAN8TOE-bJxgJ3HJCWyqkRJuOGjtoq0sLMNsDeFmZLAoB+Qg0bg@mail.gmail.com>
+References: <1362415349-7107-1-git-send-email-dedekind1@gmail.com>
+ <1362415349-7107-2-git-send-email-dedekind1@gmail.com>
+ <CAN8TOE-bJxgJ3HJCWyqkRJuOGjtoq0sLMNsDeFmZLAoB+Qg0bg@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: artem.bityutskiy@linux.intel.com
+Cc: Huang Shijie <b32955@freescale.com>, Mike Dunn <mikedunn@newsguy.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,25 +26,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2013-03-04 at 20:59 +0400, Alexander Shiyan wrote:
-> >From: Artem Bityutskiy <artem.bityutskiy at linux.intel.com>
-> >
-> >It is probably OK to remove support for really old NAND chips of 8MiB or
-> >smaller size. We had a separate configuration option for them:
-> >CONFIG_MTD_NAND_MUSEUM_IDS, which we remove along with this patch.
-> >
-> >Signed-off-by: Artem Bityutskiy <artem.bityutskiy at linux.intel.com>
-> >---
-> > drivers/mtd/nand/Kconfig    |    8 --------
-> > drivers/mtd/nand/nand_ids.c |   19 -------------------
-> > 2 files changed, 27 deletions(-)
+On Mon, 2013-03-04 at 10:36 -0800, Brian Norris wrote:
+> > +        * These are the new chips with large page size, page size and
+> > +        * eraseblock size is determined from the extended id bytes.
 > 
-> Hello.
-> This change break systems with these NAND-chips, for example
-> these IDs is used in old DiskOnChip devices.
+> This is also incorrect grammar. It uses a comma to divide sentences
+> and also uses "is". I would write something like this:
+> 
+> "These are the new chips with large page size. Their page size and
+> eraseblock size are determined from the extended ID bytes."
 
-Do you have one of those and use them with modern kernels ? Which one is
-that?
+Thanks Brian, will fix.
 
 -- 
 Best Regards,
