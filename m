@@ -1,23 +1,24 @@
-Received: from mail-pb0-f52.google.com ([209.85.160.52])
+Received: from f47.mail.ru ([217.69.128.201])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UCmO9-0000Ub-9H
- for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 07:34:17 +0000
-Received: by mail-pb0-f52.google.com with SMTP id ma3so4054935pbc.11
- for <linux-mtd@lists.infradead.org>; Mon, 04 Mar 2013 23:34:16 -0800 (PST)
-Message-ID: <51359FCE.4060605@gmail.com>
-Date: Mon, 04 Mar 2013 23:33:34 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-MIME-Version: 1.0
-To: Alexander Shiyan <shc_work@mail.ru>
-Subject: Re: [PATCH 3/3] mtd: nand_base: Use readsb/readsw/writesb/writesw
- if possible
+ id 1UCmi2-0002iM-Ft
+ for linux-mtd@lists.infradead.org; Tue, 05 Mar 2013 07:54:52 +0000
+From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+To: =?UTF-8?B?QnJpYW4gTm9ycmlz?= <computersforpeace@gmail.com>
+Subject: =?UTF-8?B?UmVbMl06IFtQQVRDSCAzLzNdIG10ZDogbmFuZF9iYXNlOiBVc2UgcmVhZHNi?=
+ =?UTF-8?B?L3JlYWRzdy93cml0ZXNiL3dyaXRlc3cgaWYgcG9zc2libGU=?=
+Mime-Version: 1.0
+Date: Tue, 05 Mar 2013 11:54:42 +0400
+Message-ID: <1362470082.387553774@f47.mail.ru>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
+In-Reply-To: <51359FCE.4060605@gmail.com>
 References: <1362038541-22406-1-git-send-email-shc_work@mail.ru>
  <1362038541-22406-3-git-send-email-shc_work@mail.ru>
-In-Reply-To: <1362038541-22406-3-git-send-email-shc_work@mail.ru>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+ <51359FCE.4060605@gmail.com>
+Cc: =?UTF-8?B?RGF2aWQgV29vZGhvdXNl?= <dwmw2@infradead.org>,
+ linux-mtd@lists.infradead.org,
+ =?UTF-8?B?QXJ0ZW0gQml0eXV0c2tpeQ==?= <artem.bityutskiy@linux.intel.com>
+Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,66 +28,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Alexander,
-
-I'm not an expert on IO accessors, but since you asked...
-
-On 02/28/2013 12:02 AM, Alexander Shiyan wrote:
-> This patch provide using readsb/readsw/writesb/writesw functions
-> if it possible for particular platform.
-
-The commit description does not give enough motivation. Should this 
-improve performance? Or is this just a "cleanup"? (If the latter, then 
-it fails, as the resulting code is much less clean.)
-
-> Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
-> ---
->   drivers/mtd/nand/nand_base.c |   29 ++++++++++++++++++++++++-----
->   1 files changed, 24 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 382b857..4efde01 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -214,11 +214,16 @@ static void nand_select_chip(struct mtd_info *mtd, int chipnr)
->    */
->   static void nand_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
->   {
-> -	int i;
->   	struct nand_chip *chip = mtd->priv;
->
-> +#ifndef writesb
-
-No one guarantees that 'writesb' will be a macro and not a static inline 
-function, do they?
-
-> +	int i;
-> +
->   	for (i = 0; i < len; i++)
->   		writeb(buf[i], chip->IO_ADDR_W);
-> +#else
-> +	writesb(chip->IO_ADDR_W, buf, len);
-> +#endif
->   }
-
-These #ifndef's are very ugly and are likely the wrong way(TM). The 
-first question I ask when I see this is: why isn't this interface 
-available on all platforms? In fact, it seems like it has been dropped 
-from the asm-generic headers and specifically recommended against. See:
-
-commit b2656a138ab7bc4e7abd3b1cbd6d1f105c7a7186
-Author: Will Deacon <will.deacon@arm.com>
-Date:   Wed Oct 17 16:45:01 2012 +0100
-
-     asm-generic: io: remove {read,write} string functions
-
-Quote: "We should encourage driver writers to use the 
-io{read,write}{8,16,32}_rep functions instead."
-
-So, an alternative patch might use iowrite8_rep() here unconditionally.
-
->   /**
-
-<snipped the rest; same comments apply>
-
-Brian
+PiBIaSBBbGV4YW5kZXIsCj4gCj4gSSdtIG5vdCBhbiBleHBlcnQgb24gSU8gYWNjZXNzb3JzLCBi
+dXQgc2luY2UgeW91IGFza2VkLi4uCj4gCj4gT24gMDIvMjgvMjAxMyAxMjowMiBBTSwgQWxleGFu
+ZGVyIFNoaXlhbiB3cm90ZToKPiA+IFRoaXMgcGF0Y2ggcHJvdmlkZSB1c2luZyByZWFkc2IvcmVh
+ZHN3L3dyaXRlc2Ivd3JpdGVzdyBmdW5jdGlvbnMKPiA+IGlmIGl0IHBvc3NpYmxlIGZvciBwYXJ0
+aWN1bGFyIHBsYXRmb3JtLgo+IAo+IFRoZSBjb21taXQgZGVzY3JpcHRpb24gZG9lcyBub3QgZ2l2
+ZSBlbm91Z2ggbW90aXZhdGlvbi4gU2hvdWxkIHRoaXMgCj4gaW1wcm92ZSBwZXJmb3JtYW5jZT8g
+T3IgaXMgdGhpcyBqdXN0IGEgImNsZWFudXAiPyAoSWYgdGhlIGxhdHRlciwgdGhlbiAKPiBpdCBm
+YWlscywgYXMgdGhlIHJlc3VsdGluZyBjb2RlIGlzIG11Y2ggbGVzcyBjbGVhbi4pCgpCYXNpYyBp
+ZGVhIGlzIGEgcGVyZm9ybWFuY2UsIGJlY2F1c2UgYXJjaGl0ZWN0dXJlIG1heSBoYXZlIGEKaW1w
+cm92ZWQgZnVuY3Rpb25zIGZvciBtdWx0aXBsZSByZWFkL3dyaXRlLgoKPiAKPiA+IFNpZ25lZC1v
+ZmYtYnk6IEFsZXhhbmRlciBTaGl5YW4gPHNoY193b3JrQG1haWwucnU+Cj4gPiAtLS0KPiA+ICAg
+ZHJpdmVycy9tdGQvbmFuZC9uYW5kX2Jhc2UuYyB8ICAgMjkgKysrKysrKysrKysrKysrKysrKysr
+KysrLS0tLS0KPiA+ICAgMSBmaWxlcyBjaGFuZ2VkLCAyNCBpbnNlcnRpb25zKCspLCA1IGRlbGV0
+aW9ucygtKQo+ID4KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL25hbmRfYmFzZS5j
+IGIvZHJpdmVycy9tdGQvbmFuZC9uYW5kX2Jhc2UuYwo+ID4gaW5kZXggMzgyYjg1Ny4uNGVmZGUw
+MSAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvbmFuZF9iYXNlLmMKPiA+ICsrKyBi
+L2RyaXZlcnMvbXRkL25hbmQvbmFuZF9iYXNlLmMKPiA+IEBAIC0yMTQsMTEgKzIxNCwxNiBAQCBz
+dGF0aWMgdm9pZCBuYW5kX3NlbGVjdF9jaGlwKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBpbnQgY2hp
+cG5yKQo+ID4gICAgKi8KPiA+ICAgc3RhdGljIHZvaWQgbmFuZF93cml0ZV9idWYoc3RydWN0IG10
+ZF9pbmZvICptdGQsIGNvbnN0IHVpbnQ4X3QgKmJ1ZiwgaW50IGxlbikKPiA+ICAgewo+ID4gLQlp
+bnQgaTsKPiA+ICAgCXN0cnVjdCBuYW5kX2NoaXAgKmNoaXAgPSBtdGQtPnByaXY7Cj4gPgo+ID4g
+KyNpZm5kZWYgd3JpdGVzYgo+IAo+IE5vIG9uZSBndWFyYW50ZWVzIHRoYXQgJ3dyaXRlc2InIHdp
+bGwgYmUgYSBtYWNybyBhbmQgbm90IGEgc3RhdGljIGlubGluZSAKPiBmdW5jdGlvbiwgZG8gdGhl
+eT8KPiAKPiA+ICsJaW50IGk7Cj4gPiArCj4gPiAgIAlmb3IgKGkgPSAwOyBpIDwgbGVuOyBpKysp
+Cj4gPiAgIAkJd3JpdGViKGJ1ZltpXSwgY2hpcC0+SU9fQUREUl9XKTsKPiA+ICsjZWxzZQo+ID4g
+Kwl3cml0ZXNiKGNoaXAtPklPX0FERFJfVywgYnVmLCBsZW4pOwo+ID4gKyNlbmRpZgo+ID4gICB9
+Cj4gCj4gVGhlc2UgI2lmbmRlZidzIGFyZSB2ZXJ5IHVnbHkgYW5kIGFyZSBsaWtlbHkgdGhlIHdy
+b25nIHdheShUTSkuIFRoZSAKPiBmaXJzdCBxdWVzdGlvbiBJIGFzayB3aGVuIEkgc2VlIHRoaXMg
+aXM6IHdoeSBpc24ndCB0aGlzIGludGVyZmFjZSAKPiBhdmFpbGFibGUgb24gYWxsIHBsYXRmb3Jt
+cz8gSW4gZmFjdCwgaXQgc2VlbXMgbGlrZSBpdCBoYXMgYmVlbiBkcm9wcGVkIAo+IGZyb20gdGhl
+IGFzbS1nZW5lcmljIGhlYWRlcnMgYW5kIHNwZWNpZmljYWxseSByZWNvbW1lbmRlZCBhZ2FpbnN0
+LiBTZWU6Cj4gCj4gY29tbWl0IGIyNjU2YTEzOGFiN2JjNGU3YWJkM2IxY2JkNmQxZjEwNWM3YTcx
+ODYKPiBBdXRob3I6IFdpbGwgRGVhY29uIDx3aWxsLmRlYWNvbkBhcm0uY29tPgo+IERhdGU6ICAg
+V2VkIE9jdCAxNyAxNjo0NTowMSAyMDEyICswMTAwCj4gCj4gICAgICBhc20tZ2VuZXJpYzogaW86
+IHJlbW92ZSB7cmVhZCx3cml0ZX0gc3RyaW5nIGZ1bmN0aW9ucwo+IAo+IFF1b3RlOiAiV2Ugc2hv
+dWxkIGVuY291cmFnZSBkcml2ZXIgd3JpdGVycyB0byB1c2UgdGhlIAo+IGlve3JlYWQsd3JpdGV9
+ezgsMTYsMzJ9X3JlcCBmdW5jdGlvbnMgaW5zdGVhZC4iCj4gCj4gU28sIGFuIGFsdGVybmF0aXZl
+IHBhdGNoIG1pZ2h0IHVzZSBpb3dyaXRlOF9yZXAoKSBoZXJlIHVuY29uZGl0aW9uYWxseS4KCklu
+ZGVlZC4gU28gSSBjYW4gcmVtYWRlIHBhdGNoIHRvIHVzZSBpb3JlYWQvaW93cml0ZSBhbmQgcmVt
+b3ZlCnVubmVjZXNzYXJ5ICNpZmRlZnMgaWYgeW91IGhhdmUgbm90IGFkZGl0aW9uYWwgY29tbWVu
+dHMuCgotLS0K
