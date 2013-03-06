@@ -1,20 +1,23 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UD9zz-0000Fb-2x
- for linux-mtd@lists.infradead.org; Wed, 06 Mar 2013 08:46:56 +0000
-Message-ID: <1362559625.21850.17.camel@sauron>
-Subject: Re: [PATCH v2] mtdchar: handle chips that have user otp but no
- factory otp
+ id 1UDA0G-0000Hl-4c
+ for linux-mtd@lists.infradead.org; Wed, 06 Mar 2013 08:47:12 +0000
+Message-ID: <1362559670.21850.18.camel@sauron>
+Subject: Re: [PATCH 2/2] mtd: nand: provision full ID support
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Date: Wed, 06 Mar 2013 10:47:05 +0200
-In-Reply-To: <1362414924-27506-1-git-send-email-u.kleine-koenig@pengutronix.de>
-References: <1361182768-31919-1-git-send-email-u.kleine-koenig@pengutronix.de>
- <1362414924-27506-1-git-send-email-u.kleine-koenig@pengutronix.de>
+To: Huang Shijie <shijie8@gmail.com>
+Date: Wed, 06 Mar 2013 10:47:50 +0200
+In-Reply-To: <CAMiH66HABdRAkbQvvCP-fVsUqoBsiD3Wp3KDsN_F9gqyHxoJxA@mail.gmail.com>
+References: <1362494376-1588-1-git-send-email-dedekind1@gmail.com>
+ <1362494376-1588-2-git-send-email-dedekind1@gmail.com>
+ <1362494946.2943.55.camel@sauron>
+ <CAMiH66HABdRAkbQvvCP-fVsUqoBsiD3Wp3KDsN_F9gqyHxoJxA@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de
+Content-Transfer-Encoding: 7bit
+Cc: Huang Shijie <b32955@freescale.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,19 +28,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2013-03-04 at 17:35 +0100, Uwe Kleine-König wrote:
-> Before this patch mtd_read_fact_prot_reg was used to check availability
-> for both MTD_OTP_FACTORY and MTD_OTP_USER access. This made accessing
-> user otp for chips that don't have a factory otp area impossible. So use
-> the right wrapper depending on the intended area to be accessed.
-> 
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> Forwarded: id:1361182768-31919-1-git-send-email-u.kleine-koenig@pengutronix.de
+On Wed, 2013-03-06 at 16:00 +0800, Huang Shijie wrote:
+> On Tue, Mar 5, 2013 at 10:49 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> > On Tue, 2013-03-05 at 16:39 +0200, Artem Bityutskiy wrote:
+> >> + * @dev_id: device ID part of the full chip ID array (refers the same memory
+> >> + *          address as @id[0])
+> >
+> > Here it should be @id[1] instead.
+> >
+> >
+> this patch causes a compiler error.
 
-Pushed to l2-mtd.git, thanks.
-
-I've removed the "Forwarded:" tag since I've never seen these to be used
-before and not sure if this is an agreed practice.
+Should be fine now, thanks!
 
 -- 
 Best Regards,
