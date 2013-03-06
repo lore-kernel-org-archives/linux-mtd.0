@@ -1,18 +1,19 @@
-Received: from mga14.intel.com ([143.182.124.37])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UD8Ys-0005dt-09
- for linux-mtd@lists.infradead.org; Wed, 06 Mar 2013 07:14:50 +0000
-Message-ID: <1362554107.21850.4.camel@sauron>
-Subject: Re: [PATCH 1/2] mtd: nand_ids: introduce helper macros
+ id 1UD8cI-00069X-UZ
+ for linux-mtd@lists.infradead.org; Wed, 06 Mar 2013 07:18:23 +0000
+Message-ID: <1362554340.21850.5.camel@sauron>
+Subject: Re: [PATCH 00/12] mtd: nand: provision full ID support
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Date: Wed, 06 Mar 2013 09:15:07 +0200
-In-Reply-To: <1362494376-1588-1-git-send-email-dedekind1@gmail.com>
-References: <1362494376-1588-1-git-send-email-dedekind1@gmail.com>
+Date: Wed, 06 Mar 2013 09:19:00 +0200
+In-Reply-To: <CAN8TOE8No0azN1w3qfiLM-AxwgyG=XOzLQFb4QDMmeLajS2=2Q@mail.gmail.com>
+References: <1362415349-7107-1-git-send-email-dedekind1@gmail.com>
+ <CAN8TOE8No0azN1w3qfiLM-AxwgyG=XOzLQFb4QDMmeLajS2=2Q@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Huang Shijie <b32955@freescale.com>,
+Cc: Huang Shijie <b32955@freescale.com>, Mike Dunn <mikedunn@newsguy.com>,
  MTD Maling List <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,18 +25,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2013-03-05 at 16:39 +0200, Artem Bityutskiy wrote:
-> From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+On Mon, 2013-03-04 at 11:48 -0800, Brian Norris wrote:
+> Thanks for the cleanup work (and thanks Huang, for the initiative on
+> expanding the ID table). Aside from my minor comments, I'll ack
+> patches 1 through 11:
 > 
-> Introduce helper macros for defining NAND chips. These macros do not really add
-> much value in the current code-base. However, we are going to add full ID
-> support which adds some more complexity to the table, and helper macros become
-> useful for readability.
-> 
-> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+> Acked-by: Brian Norris <computersforpeace@gmail.com>
 
-Pushed to l2-mtd.git. If there is more review or tags coming, I can
-amend the patches and re-base the tree. Thanks!
+Added this tag to 1-11, thanks!
 
 -- 
 Best Regards,
