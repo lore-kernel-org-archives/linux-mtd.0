@@ -1,19 +1,19 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UDAZ7-0006ia-Sc
- for linux-mtd@lists.infradead.org; Wed, 06 Mar 2013 09:23:14 +0000
-Message-ID: <1362561831.21850.26.camel@sauron>
-Subject: Re: [PATCH 1/3] mtd: bcm47xxsflash: store info about flash type
+ id 1UDAdQ-0007eC-Ec
+ for linux-mtd@lists.infradead.org; Wed, 06 Mar 2013 09:27:41 +0000
+Message-ID: <1362562073.21850.27.camel@sauron>
+Subject: Re: [PATCH mtd-utils] Makefile: also build and install
+ flash_otp_lock and flash_otp_write
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
-Date: Wed, 06 Mar 2013 11:23:51 +0200
-In-Reply-To: <1361341929-11153-1-git-send-email-zajec5@gmail.com>
-References: <1361341929-11153-1-git-send-email-zajec5@gmail.com>
+To: Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Date: Wed, 06 Mar 2013 11:27:53 +0200
+In-Reply-To: <1361378491-18687-1-git-send-email-u.kleine-koenig@pengutronix.de>
+References: <1361378491-18687-1-git-send-email-u.kleine-koenig@pengutronix.de>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Hauke Mehrtens <hauke@hauke-m.de>, linux-mtd@lists.infradead.org,
- David Woodhouse <David.Woodhouse@intel.com>
+Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,28 +24,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2013-02-20 at 07:32 +0100, Rafał Miłecki wrote:
-> It's going to be needed for erase and write operations, they differ
-> between Atmel and ST flashes.
-> 
-> Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+On Wed, 2013-02-20 at 17:41 +0100, Uwe Kleine-König wrote:
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-Aiaiai!
-
---------------------------------------------------------------------------------
-
-Bisectability test results for configuration "mips-bcm47xx_defconfig,mips,mips-linux-"
-
-Failed to build the following commit for configuration "mips-bcm47xx_defconfig"":
-
-ab61426 mtd: bcm47xxsflash: store info about flash type
-
-
-drivers/mtd/devices/bcm47xxsflash.c: In function 'bcm47xxsflash_bcma_probe':
-drivers/mtd/devices/bcm47xxsflash.c:64:14: error: 'struct bcm47xxsflash' has no member named 'bcma_cc'
-make[4]: *** [drivers/mtd/devices/bcm47xxsflash.o] Error 1
-
---------------------------------------------------------------------------------
+Pushed to mtd-utils.git, thanks!
 
 -- 
 Best Regards,
