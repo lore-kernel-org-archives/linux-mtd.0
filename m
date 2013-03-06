@@ -1,18 +1,22 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UDAUV-0005mb-G2
- for linux-mtd@lists.infradead.org; Wed, 06 Mar 2013 09:18:28 +0000
-Message-ID: <1362561546.21850.24.camel@sauron>
-Subject: Re: [PATCH mtd-utils] flash_otp_write: fix format string warning
+ id 1UDAVO-0005rv-V4
+ for linux-mtd@lists.infradead.org; Wed, 06 Mar 2013 09:19:23 +0000
+Message-ID: <1362561599.21850.25.camel@sauron>
+Subject: Re: [PATCH 03/11] arm: defconfigs: lpc32xx_defconfig: remove the
+ museum NAND option
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Date: Wed, 06 Mar 2013 11:19:06 +0200
-In-Reply-To: <1361378469-18631-1-git-send-email-u.kleine-koenig@pengutronix.de>
-References: <1361378469-18631-1-git-send-email-u.kleine-koenig@pengutronix.de>
+To: Roland Stigge <stigge@antcom.de>
+Date: Wed, 06 Mar 2013 11:19:59 +0200
+In-Reply-To: <513706B3.5090909@antcom.de>
+References: <1362489444-27762-1-git-send-email-dedekind1@gmail.com>
+ <1362489444-27762-4-git-send-email-dedekind1@gmail.com>
+ <1362559787.21850.19.camel@sauron> <513706B3.5090909@antcom.de>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de
+Content-Transfer-Encoding: 7bit
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,22 +27,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2013-02-20 at 17:41 +0100, Uwe Kleine-König wrote:
-> diff --git a/flash_otp_write.c b/flash_otp_write.c
-> index d407ebb..41cf1c5 100644
-> --- a/flash_otp_write.c
-> +++ b/flash_otp_write.c
-> @@ -58,7 +58,7 @@ int main(int argc,char *argv[])
->  		return errno;
->  	}
->  
-> -	printf("Writing OTP user data on %s at offset 0x%lx\n", argv[2], offset);
-> +	printf("Writing OTP user data on %s at offset 0x%lx\n", argv[2], (unsigned long)offset);
+On Wed, 2013-03-06 at 10:04 +0100, Roland Stigge wrote:
+> >>  CONFIG_MTD_BLOCK=y
+> >>  CONFIG_MTD_M25P80=y
+> >>  CONFIG_MTD_NAND=y
+> >> -CONFIG_MTD_NAND_MUSEUM_IDS=y
+> >>  CONFIG_MTD_NAND_SLC_LPC32XX=y
+> >>  CONFIG_MTD_NAND_MLC_LPC32XX=y
+> >>  CONFIG_BLK_DEV_LOOP=y
+> > 
+> > Let me add Roland as this config file was added by him. Roland, FYI.
+> > 
+> 
+> Acked-by: Roland Stigge <stigge@antcom.de>
+> 
+> I'll take this via a lpc32xx branch, for arm-soc, to prevent collisions
+> with other defconfig commits there.
 
-Thanks for the clean-up, but I think last time we discussed this we
-agreed to use the new C99 "PRIx64" stuff, and introduced a helper
-PRIdoff_t helper which we use for 'off_t' printing. See commit
-56840a198a70604ece50d9d727cebcc28930ab4c for example.
+OK, then I am dropping it from l2-mtd.git, thanks!
 
 -- 
 Best Regards,
