@@ -1,19 +1,23 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UD8uo-0007cD-9y
- for linux-mtd@lists.infradead.org; Wed, 06 Mar 2013 07:37:30 +0000
-Message-ID: <1362555488.21850.7.camel@sauron>
-Subject: Re: Mailing list issues
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Alexander Shiyan <shc_work@mail.ru>
-Date: Wed, 06 Mar 2013 09:38:08 +0200
-In-Reply-To: <1362554389.446101736@f175.mail.ru>
-References: <1362554389.446101736@f175.mail.ru>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from tx2ehsobe001.messaging.microsoft.com ([65.55.88.11]
+ helo=tx2outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UD8zC-0007tl-UG
+ for linux-mtd@lists.infradead.org; Wed, 06 Mar 2013 07:42:03 +0000
+Message-ID: <5136F34A.6050608@freescale.com>
+Date: Wed, 6 Mar 2013 15:42:02 +0800
+From: Huang Shijie <b32955@freescale.com>
+MIME-Version: 1.0
+To: <dedekind1@gmail.com>
+Subject: Re: [PATCH 00/12] mtd: nand: provision full ID support
+References: <1362415349-7107-1-git-send-email-dedekind1@gmail.com>	
+ <CAN8TOE8No0azN1w3qfiLM-AxwgyG=XOzLQFb4QDMmeLajS2=2Q@mail.gmail.com>
+ <1362554340.21850.5.camel@sauron>
+In-Reply-To: <1362554340.21850.5.camel@sauron>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: Mike Dunn <mikedunn@newsguy.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,23 +27,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2013-03-06 at 11:19 +0400, Alexander Shiyan wrote:
-> Hello.
-> 
-> More than half of my messages cannot pass into the list,
-> so I have no idea why...
+=E4=BA=8E 2013=E5=B9=B403=E6=9C=8806=E6=97=A5 15:19, Artem Bityutskiy =E5=
+=86=99=E9=81=93:
+> On Mon, 2013-03-04 at 11:48 -0800, Brian Norris wrote:
+>> Thanks for the cleanup work (and thanks Huang, for the initiative on
+>> expanding the ID table). Aside from my minor comments, I'll ack
+>> patches 1 through 11:
+>>
+>> Acked-by: Brian Norris<computersforpeace@gmail.com>
+> Added this tag to 1-11, thanks!
+>
+could you do a compiler test for this patch set?
 
-Your mail client is misconfigured and behaves anti-socially.
+I tested it, and a compiler error occurred.
 
-The reason for trapping your e-mails is:
-
-X-Bad-Reply: 'Re:' in Subject but no References or In-Reply-To headers
-
-When you reply, make sure the reply tags are there and don't break
-threading.
-
-Additionally, it would be nice to disable this "Re[2]" thing.
-
--- 
-Best Regards,
-Artem Bityutskiy
+thanks
+Huang Shijie
