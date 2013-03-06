@@ -1,22 +1,22 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UDCHb-0006XJ-66
- for linux-mtd@lists.infradead.org; Wed, 06 Mar 2013 11:13:16 +0000
-Message-ID: <1362568433.21850.31.camel@sauron>
-Subject: Re: [PATCH V2 1/3] mtd: bcm47xxsflash: keep a reference to the BCMA
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
-Date: Wed, 06 Mar 2013 13:13:53 +0200
-In-Reply-To: <CACna6ryh0Ko3edT_dSHcP6U21rmxAuHgc--Y=sK5e=z2pVPCmg@mail.gmail.com>
-References: <1362567695-17523-1-git-send-email-zajec5@gmail.com>
- <1362568069.21850.28.camel@sauron>
- <CACna6ryh0Ko3edT_dSHcP6U21rmxAuHgc--Y=sK5e=z2pVPCmg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Hauke Mehrtens <hauke@hauke-m.de>, linux-mtd@lists.infradead.org,
+Received: from mail-ee0-f42.google.com ([74.125.83.42])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UDCbA-0006fL-9Q
+ for linux-mtd@lists.infradead.org; Wed, 06 Mar 2013 11:33:30 +0000
+Received: by mail-ee0-f42.google.com with SMTP id b47so5413303eek.15
+ for <linux-mtd@lists.infradead.org>; Wed, 06 Mar 2013 03:33:26 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
  David Woodhouse <David.Woodhouse@intel.com>
-Reply-To: dedekind1@gmail.com
+Subject: [PATCH V3 1/3] mtd: bcm47xxsflash: keep a reference to the BCMA
+Date: Wed,  6 Mar 2013 12:33:17 +0100
+Message-Id: <1362569597-14889-1-git-send-email-zajec5@gmail.com>
+In-Reply-To: <1362567695-17523-1-git-send-email-zajec5@gmail.com>
+References: <1362567695-17523-1-git-send-email-zajec5@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Hauke Mehrtens <hauke@hauke-m.de>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,26 +26,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2013-03-06 at 12:08 +0100, Rafał Miłecki wrote:
-> 2013/3/6 Artem Bityutskiy <dedekind1@gmail.com>:
-> > On Wed, 2013-03-06 at 12:01 +0100, Rafał Miłecki wrote:
-> >> struct bcma_drv_cc;
-> >> +
-> >>  struct bcm47xxsflash {
-> >> +     union {
-> >> +             struct bcma_drv_cc *bcma_cc;
-> >> +     };
-> >
-> > Why union?
-> 
-> It's about adding support for different buses in the future (ssb) I
-> was describing in the other patch.
+To implement erase and write support we need to "talk" with ChipCommon
+BCMA core which serial flash it attached to.
 
-Would be a bit cleaner to add the union when you add the second field
-instead, or at least make sure you add the second field in this series. 
-Otherwise how do I know if you are going to ever send a patch which
-justifies the union?
+Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+---
+V3: don't use "union" for now
+---
+ drivers/mtd/devices/bcm47xxsflash.c |    2 ++
+ drivers/mtd/devices/bcm47xxsflash.h |    4 ++++
+ 2 files changed, 6 insertions(+)
 
+diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
+index 9526628..b22df6d 100644
+--- a/drivers/mtd/devices/bcm47xxsflash.c
++++ b/drivers/mtd/devices/bcm47xxsflash.c
+@@ -61,6 +61,8 @@ static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
+ 	}
+ 	sflash->priv = b47s;
+ 
++	b47s->bcma_cc = container_of(sflash, struct bcma_drv_cc, sflash);
++
+ 	b47s->window = sflash->window;
+ 	b47s->blocksize = sflash->blocksize;
+ 	b47s->numblocks = sflash->numblocks;
+diff --git a/drivers/mtd/devices/bcm47xxsflash.h b/drivers/mtd/devices/bcm47xxsflash.h
+index ebf6f71..e37285e 100644
+--- a/drivers/mtd/devices/bcm47xxsflash.h
++++ b/drivers/mtd/devices/bcm47xxsflash.h
+@@ -3,7 +3,11 @@
+ 
+ #include <linux/mtd/mtd.h>
+ 
++struct bcma_drv_cc;
++
+ struct bcm47xxsflash {
++	struct bcma_drv_cc *bcma_cc;
++
+ 	u32 window;
+ 	u32 blocksize;
+ 	u16 numblocks;
 -- 
-Best Regards,
-Artem Bityutskiy
+1.7.10.4
