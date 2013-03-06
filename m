@@ -1,22 +1,22 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UDA29-00010r-9k
- for linux-mtd@lists.infradead.org; Wed, 06 Mar 2013 08:49:10 +0000
-Message-ID: <1362559787.21850.19.camel@sauron>
-Subject: Re: [PATCH 03/11] arm: defconfigs: lpc32xx_defconfig: remove the
- museum NAND option
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>, Roland Stigge
- <stigge@antcom.de>
-Date: Wed, 06 Mar 2013 10:49:47 +0200
-In-Reply-To: <1362489444-27762-4-git-send-email-dedekind1@gmail.com>
-References: <1362489444-27762-1-git-send-email-dedekind1@gmail.com>
- <1362489444-27762-4-git-send-email-dedekind1@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UDA4q-0001ZR-HH
+ for linux-mtd@lists.infradead.org; Wed, 06 Mar 2013 08:51:57 +0000
+Date: Wed, 6 Mar 2013 09:51:48 +0100
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH v2] mtdchar: handle chips that have user otp but no
+ factory otp
+Message-ID: <20130306085148.GS22886@pengutronix.de>
+References: <1361182768-31919-1-git-send-email-u.kleine-koenig@pengutronix.de>
+ <1362414924-27506-1-git-send-email-u.kleine-koenig@pengutronix.de>
+ <1362559625.21850.17.camel@sauron>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1362559625.21850.17.camel@sauron>
+Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,32 +26,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2013-03-05 at 15:17 +0200, Artem Bityutskiy wrote:
-> From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+On Wed, Mar 06, 2013 at 10:47:05AM +0200, Artem Bityutskiy wrote:
+> On Mon, 2013-03-04 at 17:35 +0100, Uwe Kleine-König wrote:
+> > Before this patch mtd_read_fact_prot_reg was used to check availability
+> > for both MTD_OTP_FACTORY and MTD_OTP_USER access. This made accessing
+> > user otp for chips that don't have a factory otp area impossible. So use
+> > the right wrapper depending on the intended area to be accessed.
+> > 
+> > Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> > Forwarded: id:1361182768-31919-1-git-send-email-u.kleine-koenig@pengutronix.de
 > 
-> The MTD_NAND_MUSEUM_IDS configuration options was removed - update the
-> lpc32xx_defconfig file.
+> Pushed to l2-mtd.git, thanks.
 > 
-> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> ---
->  arch/arm/configs/lpc32xx_defconfig |    1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/arch/arm/configs/lpc32xx_defconfig b/arch/arm/configs/lpc32xx_defconfig
-> index 92386b2..e77326f 100644
-> --- a/arch/arm/configs/lpc32xx_defconfig
-> +++ b/arch/arm/configs/lpc32xx_defconfig
-> @@ -55,7 +55,6 @@ CONFIG_MTD_CHAR=y
->  CONFIG_MTD_BLOCK=y
->  CONFIG_MTD_M25P80=y
->  CONFIG_MTD_NAND=y
-> -CONFIG_MTD_NAND_MUSEUM_IDS=y
->  CONFIG_MTD_NAND_SLC_LPC32XX=y
->  CONFIG_MTD_NAND_MLC_LPC32XX=y
->  CONFIG_BLK_DEV_LOOP=y
+> I've removed the "Forwarded:" tag since I've never seen these to be used
+> before and not sure if this is an agreed practice.
+We use this internally at Pengutronix to keep track of what is already
+sent. Usually I remove the tag before resubmission.
 
-Let me add Roland as this config file was added by him. Roland, FYI.
+Having said that I think it doesn't hurt and tip documents the message
+id, too. But there are more urgent problems to solve and I'm fine with
+dropping the tag.
+
+Thanks
+Uwe
 
 -- 
-Best Regards,
-Artem Bityutskiy
+Pengutronix e.K.                           | Uwe Kleine-König            |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
