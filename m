@@ -1,17 +1,17 @@
 Received: from mail-ee0-f42.google.com ([74.125.83.42])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UDCbA-0006fL-9Q
- for linux-mtd@lists.infradead.org; Wed, 06 Mar 2013 11:33:30 +0000
-Received: by mail-ee0-f42.google.com with SMTP id b47so5413303eek.15
- for <linux-mtd@lists.infradead.org>; Wed, 06 Mar 2013 03:33:26 -0800 (PST)
+ id 1UDCc7-0007Cx-DJ
+ for linux-mtd@lists.infradead.org; Wed, 06 Mar 2013 11:34:28 +0000
+Received: by mail-ee0-f42.google.com with SMTP id b47so5414037eek.15
+ for <linux-mtd@lists.infradead.org>; Wed, 06 Mar 2013 03:34:26 -0800 (PST)
 From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
  David Woodhouse <David.Woodhouse@intel.com>
-Subject: [PATCH V3 1/3] mtd: bcm47xxsflash: keep a reference to the BCMA
-Date: Wed,  6 Mar 2013 12:33:17 +0100
-Message-Id: <1362569597-14889-1-git-send-email-zajec5@gmail.com>
-In-Reply-To: <1362567695-17523-1-git-send-email-zajec5@gmail.com>
-References: <1362567695-17523-1-git-send-email-zajec5@gmail.com>
+Subject: [PATCH V3 2/3] mtd: bcm47xxsflash: store info about flash type
+Date: Wed,  6 Mar 2013 12:34:19 +0100
+Message-Id: <1362569659-14925-1-git-send-email-zajec5@gmail.com>
+In-Reply-To: <1362567695-17523-2-git-send-email-zajec5@gmail.com>
+References: <1362567695-17523-2-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -26,42 +26,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-To implement erase and write support we need to "talk" with ChipCommon
-BCMA core which serial flash it attached to.
+It's going to be needed for erase and write operations, they differ
+between Atmel and ST flashes.
 
 Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
 ---
-V3: don't use "union" for now
+V3: rebase after change in 0001
 ---
- drivers/mtd/devices/bcm47xxsflash.c |    2 ++
- drivers/mtd/devices/bcm47xxsflash.h |    4 ++++
- 2 files changed, 6 insertions(+)
+ drivers/mtd/devices/bcm47xxsflash.c |    9 +++++++++
+ drivers/mtd/devices/bcm47xxsflash.h |    7 +++++++
+ 2 files changed, 16 insertions(+)
 
 diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
-index 9526628..b22df6d 100644
+index b22df6d..2f9e629 100644
 --- a/drivers/mtd/devices/bcm47xxsflash.c
 +++ b/drivers/mtd/devices/bcm47xxsflash.c
-@@ -61,6 +61,8 @@ static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
- 	}
- 	sflash->priv = b47s;
+@@ -63,6 +63,15 @@ static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
  
-+	b47s->bcma_cc = container_of(sflash, struct bcma_drv_cc, sflash);
+ 	b47s->bcma_cc = container_of(sflash, struct bcma_drv_cc, sflash);
+ 
++	switch (b47s->bcma_cc->capabilities & BCMA_CC_CAP_FLASHT) {
++	case BCMA_CC_FLASHT_STSER:
++		b47s->type = BCM47XXSFLASH_TYPE_ST;
++		break;
++	case BCMA_CC_FLASHT_ATSER:
++		b47s->type = BCM47XXSFLASH_TYPE_ATMEL;
++		break;
++	}
 +
  	b47s->window = sflash->window;
  	b47s->blocksize = sflash->blocksize;
  	b47s->numblocks = sflash->numblocks;
 diff --git a/drivers/mtd/devices/bcm47xxsflash.h b/drivers/mtd/devices/bcm47xxsflash.h
-index ebf6f71..e37285e 100644
+index e37285e..4498529 100644
 --- a/drivers/mtd/devices/bcm47xxsflash.h
 +++ b/drivers/mtd/devices/bcm47xxsflash.h
-@@ -3,7 +3,11 @@
+@@ -5,9 +5,16 @@
  
- #include <linux/mtd/mtd.h>
+ struct bcma_drv_cc;
  
-+struct bcma_drv_cc;
++enum bcm47xxsflash_type {
++	BCM47XXSFLASH_TYPE_ATMEL,
++	BCM47XXSFLASH_TYPE_ST,
++};
 +
  struct bcm47xxsflash {
-+	struct bcma_drv_cc *bcma_cc;
+ 	struct bcma_drv_cc *bcma_cc;
+ 
++	enum bcm47xxsflash_type type;
 +
  	u32 window;
  	u32 blocksize;
