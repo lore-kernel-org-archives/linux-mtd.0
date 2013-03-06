@@ -1,18 +1,19 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga14.intel.com ([143.182.124.37])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UD8VC-0005Bf-Ub
- for linux-mtd@lists.infradead.org; Wed, 06 Mar 2013 07:11:03 +0000
-Message-ID: <1362553898.21850.3.camel@sauron>
-Subject: Re: [PATCH 00/11] mtd: removals and simplifications
+ id 1UD8Ys-0005dt-09
+ for linux-mtd@lists.infradead.org; Wed, 06 Mar 2013 07:14:50 +0000
+Message-ID: <1362554107.21850.4.camel@sauron>
+Subject: Re: [PATCH 1/2] mtd: nand_ids: introduce helper macros
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Date: Wed, 06 Mar 2013 09:11:38 +0200
-In-Reply-To: <1362489444-27762-1-git-send-email-dedekind1@gmail.com>
-References: <1362489444-27762-1-git-send-email-dedekind1@gmail.com>
+Date: Wed, 06 Mar 2013 09:15:07 +0200
+In-Reply-To: <1362494376-1588-1-git-send-email-dedekind1@gmail.com>
+References: <1362494376-1588-1-git-send-email-dedekind1@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>
+Cc: Huang Shijie <b32955@freescale.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,17 +24,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2013-03-05 at 15:17 +0200, Artem Bityutskiy wrote:
-> This is the second version of the patch-set. This time I removed the full ID
-> support provisioning part and decided to keep it separate, so this patch-set is
-> basically about misc. clean-ups, code simplifications and removals of old and
-> unused cruft.
+On Tue, 2013-03-05 at 16:39 +0200, Artem Bityutskiy wrote:
+> From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 > 
-> The museum ID patch changed - it now removes only 256-byte NAND pages support.
+> Introduce helper macros for defining NAND chips. These macros do not really add
+> much value in the current code-base. However, we are going to add full ID
+> support which adds some more complexity to the table, and helper macros become
+> useful for readability.
 > 
-> Brian, I've addressed your review comments. I did not put your Acked-by to all
-> of the patches, only to the one you explicitly Acked. But I can add it to all
-> of the patches if you let me know.
+> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
 Pushed to l2-mtd.git. If there is more review or tags coming, I can
 amend the patches and re-base the tree. Thanks!
