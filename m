@@ -1,23 +1,18 @@
-Received: from mail-ee0-f42.google.com ([74.125.83.42])
+Received: from ch1ehsobe001.messaging.microsoft.com ([216.32.181.181]
+ helo=ch1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UDVmw-0003XT-Pt
- for linux-mtd@lists.infradead.org; Thu, 07 Mar 2013 08:02:56 +0000
-Received: by mail-ee0-f42.google.com with SMTP id b47so96979eek.29
- for <linux-mtd@lists.infradead.org>; Thu, 07 Mar 2013 00:02:53 -0800 (PST)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
- David Woodhouse <David.Woodhouse@intel.com>
-Subject: [FIX 3.9][PATCH 2/2] mtd: bcm47xxpart: look for NVRAM at the end of
- device
-Date: Thu,  7 Mar 2013 09:02:39 +0100
-Message-Id: <1362643359-27955-2-git-send-email-zajec5@gmail.com>
-In-Reply-To: <1362643359-27955-1-git-send-email-zajec5@gmail.com>
-References: <1362643359-27955-1-git-send-email-zajec5@gmail.com>
+ id 1UDYPj-0008Kl-VD
+ for linux-mtd@lists.infradead.org; Thu, 07 Mar 2013 10:51:08 +0000
+From: Huang Shijie <b32955@freescale.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH V4 0/3] mtd: use the full-id as the keyword for some nand chips
+Date: Thu, 7 Mar 2013 18:49:21 +0800
+Message-ID: <1362653364-29993-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Hauke Mehrtens <hauke@hauke-m.de>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+Content-Type: text/plain
+Cc: artem.bityutskiy@linux.intel.com, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Huang Shijie <b32955@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,70 +22,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-NVRAM is always placed at the end of device and it does not have to
-start at the beginning of a block, so check few possible offsets.
+As time goes on, we begin to meet the situation that we can not
+get enough information from some nand chips's id data.
+Take some Toshiba's nand chips for example.
+I have 4 Toshiba's nand chips in my hand:
+	TC58NVG2S0F, TC58NVG3S0F, TC58NVG5D2, TC58NVG6D2
 
-Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
----
- drivers/mtd/bcm47xxpart.c |   32 +++++++++++++++++++++++++-------
- 1 file changed, 25 insertions(+), 7 deletions(-)
+When we read these chips' datasheets, we will get the geometry of these chips:
+	TC58NVG2S0F : 4096 + 224
+	TC58NVG3S0F : 4096 + 232
+	TC58NVG5D2  : 8192 + 640
+	TC58NVG6D2  : 8192 + 640
 
-diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
-index 4552afb..9279a91 100644
---- a/drivers/mtd/bcm47xxpart.c
-+++ b/drivers/mtd/bcm47xxpart.c
-@@ -63,6 +63,7 @@ static int bcm47xxpart_parse(struct mtd_info *master,
- 	struct trx_header *trx;
- 	int trx_part = -1;
- 	int last_trx_part = -1;
-+	int possible_nvram_sizes[] = { 0x8000, 0xF000, 0x10000, };
- 
- 	if (blocksize <= 0x10000)
- 		blocksize = 0x10000;
-@@ -99,13 +100,6 @@ static int bcm47xxpart_parse(struct mtd_info *master,
- 			continue;
- 		}
- 
--		/* Standard NVRAM */
--		if (buf[0x000 / 4] == NVRAM_HEADER) {
--			bcm47xxpart_add_part(&parts[curr_part++], "nvram",
--					     offset, 0);
--			continue;
--		}
--
- 		/*
- 		 * board_data starts with board_id which differs across boards,
- 		 * but we can use 'MPFR' (hopefully) magic at 0x100
-@@ -174,6 +168,30 @@ static int bcm47xxpart_parse(struct mtd_info *master,
- 			continue;
- 		}
- 	}
-+
-+	/* Look for NVRAM at the end of the last block. */
-+	for (i = 0; i < ARRAY_SIZE(possible_nvram_sizes); i++) {
-+		if (curr_part > BCM47XXPART_MAX_PARTS) {
-+			pr_warn("Reached maximum number of partitions, scanning stopped!\n");
-+			break;
-+		}
-+
-+		offset = master->size - possible_nvram_sizes[i];
-+		if (mtd_read(master, offset, 0x4, &bytes_read,
-+			     (uint8_t *)buf) < 0) {
-+			pr_err("mtd_read error while reading at offset 0x%X!\n",
-+			       offset);
-+			continue;
-+		}
-+
-+		/* Standard NVRAM */
-+		if (buf[0] == NVRAM_HEADER) {
-+			bcm47xxpart_add_part(&parts[curr_part++], "nvram",
-+					     master->size - blocksize, 0);
-+			break;
-+		}
-+	}
-+
- 	kfree(buf);
- 
- 	/*
--- 
-1.7.10.4
+But we can not parse out the correct oob size for these chips from the id data.
+So it is time to add some new fields to the nand_flash_dev{},
+and update the detection mechanisms.
+
+v3 --> v4:
+	[1] rewrite the code based on the latest l2-mtd.
+	[2] add the full-id nand in the nand_flash_lds.
+
+v2 --> v3:
+	[1] remove the duplicated header.
+	[2] remove the field "ecc_len" in nand_flash_dev{}.
+	[3] fix some coding style warnings.
+	[4] add more comments
+
+Huang Shijie (3):
+  mtd: add new fields to nand_flash_dev{}
+  mtd: add 4 Toshiba nand chips for the full-id case
+  mtd: add the support to parse out the full-id nand type
+
+ drivers/mtd/nand/nand_base.c |   36 +++++++++++++++++++++++++++++++++---
+ drivers/mtd/nand/nand_ids.c  |   15 +++++++++++++++
+ include/linux/mtd/nand.h     |    4 ++++
+ 3 files changed, 52 insertions(+), 3 deletions(-)
