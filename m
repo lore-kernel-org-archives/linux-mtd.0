@@ -1,20 +1,19 @@
-Received: from ch1ehsobe006.messaging.microsoft.com ([216.32.181.186]
- helo=ch1outboundpool.messaging.microsoft.com)
+Received: from bear.ext.ti.com ([192.94.94.41])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UDYQ0-0008Mo-25
- for linux-mtd@lists.infradead.org; Thu, 07 Mar 2013 10:51:25 +0000
-From: Huang Shijie <b32955@freescale.com>
-To: <dwmw2@infradead.org>
-Subject: [PATCH V4 3/3] mtd: add the support to parse out the full-id nand type
-Date: Thu, 7 Mar 2013 18:49:24 +0800
-Message-ID: <1362653364-29993-4-git-send-email-b32955@freescale.com>
-In-Reply-To: <1362653364-29993-1-git-send-email-b32955@freescale.com>
-References: <1362653364-29993-1-git-send-email-b32955@freescale.com>
+ id 1UDZg6-0003PT-BP
+ for linux-mtd@lists.infradead.org; Thu, 07 Mar 2013 12:12:06 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Bill Pringlemeir <bpringle@sympatico.ca>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: RE: 'ubi clone' from Live NAND.
+Date: Thu, 7 Mar 2013 12:11:59 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E99E24B@DBDE01.ent.ti.com>
+References: <BLU0-SMTP76D0EA572C27BC1C088C1FB8E40@phx.gbl>
+In-Reply-To: <BLU0-SMTP76D0EA572C27BC1C088C1FB8E40@phx.gbl>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: artem.bityutskiy@linux.intel.com, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Huang Shijie <b32955@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,70 +23,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When we meet a full-id nand type which @mfr_id is true, we can use
-the find_full_id_nand() to parse out the neccessary information for a
-nand chip.
+> If 'rootfs.ubi' is the 'ubinize' image, then I can mount and see the
+> file system on my PC.  However, if the 'rootfs.ubi' is a 'dump' of the
+> NAND flash, I fail with the following 'dmesg',
 
-If we meet a non full-id nand type, we can handle it in the lagacy way.
+[pekon]=20
+I have tried this, using following steps, and it works well
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
- drivers/mtd/nand/nand_base.c |   36 +++++++++++++++++++++++++++++++++---
- 1 files changed, 33 insertions(+), 3 deletions(-)
+(1) nanddump   -b -s 0x0  -l <size_of_source_partition>  -f  <image_dump.bi=
+n>  <source_partition>
+(2) flash_erase   <target_partition>  0 0=20
+(3) nandwrite -n -r   <target_partition>         <image_dump.bin> =20
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 29c0378..b9a24ff 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -3074,6 +3074,30 @@ static void nand_decode_bbm_options(struct mtd_info *mtd,
- 		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
- }
- 
-+static inline bool is_full_id_nand(struct nand_flash_dev *type)
-+{
-+	return type->mfr_id;
-+}
-+
-+static bool find_full_id_nand(struct mtd_info *mtd, struct nand_chip *chip,
-+		   struct nand_flash_dev *type, u8 *id_data, int *busw)
-+{
-+	if (!strncmp(type->id, id_data, type->id_len)) {
-+		mtd->writesize = type->pagesize;
-+		mtd->erasesize = type->erasesize;
-+		mtd->oobsize = type->oobsize;
-+
-+		chip->cellinfo = id_data[2];
-+		chip->chipsize = (uint64_t)type->chipsize << 20;
-+		chip->options |= type->options;
-+
-+		*busw = type->options & NAND_BUSWIDTH_16;
-+
-+		return true;
-+	}
-+	return false;
-+}
-+
- /*
-  * Get the flash and manufacturer id and lookup if the type is supported.
-  */
-@@ -3125,9 +3149,15 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
- 	if (!type)
- 		type = nand_flash_ids;
- 
--	for (; type->name != NULL; type++)
--		if (*dev_id == type->dev_id)
--			break;
-+	for (; type->name != NULL; type++) {
-+		if (is_full_id_nand(type)) {
-+			if (find_full_id_nand(mtd, chip, type, id_data, &busw))
-+				goto ident_done;
-+		} else {
-+			if (*dev_id == type->dev_id)
-+				break;
-+		}
-+	}
- 
- 	chip->onfi_version = 0;
- 	if (!type->name || !type->pagesize) {
--- 
-1.7.1
+where,
+source_partition=3D partition on source device from which NAND binary would=
+ be dumped. (/dev/mtdX)
+target_partition=3D partition on another device which NAND dumped image wou=
+ld be flashed (/dev/mtdY)
+
+
+You need to keep few things in mind..
+(1) sizeof(target_partion) > sizeof(source_partition), So as to take care o=
+f bad-blocks present on target device.
+
+(2) '-n' option in nandwrite tells NAND driver not to calculate ECC while p=
+rogramming nand, as its is already part of 'raw' binary image
+
+(3) You need to  'nanddump' complete source_partition (and not just image-s=
+ize), because of following reasons
+     (a) Image data may be shifted to other offsets due to presence of bad-=
+blocks
+     (b) If you are using 'autoresize' option, then UBIFS Volume may expand=
+ itself to cover entire free space first mount.
+[Refer http://www.linux-mtd.infradead.org/doc/ubi.html#L_autoresize]
+
+
+with regards, pekon
