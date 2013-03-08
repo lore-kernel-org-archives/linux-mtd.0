@@ -1,18 +1,19 @@
-MIME-Version: 1.0
-In-Reply-To: <1362748785.5101.4.camel@sauron.fi.intel.com>
-References: <1361978748-25281-1-git-send-email-shawn.guo@linaro.org>
- <1361978748-25281-8-git-send-email-shawn.guo@linaro.org>
- <1362748785.5101.4.camel@sauron.fi.intel.com>
-Date: Fri, 8 Mar 2013 11:26:10 -0500
-Message-ID: <CAMiH66EDjSAZLf-gtR-_kMasdKSKGRMrPThxtyw_RAixeNXHug@mail.gmail.com>
-Subject: Re: [PATCH 07/12] mtd: gpmi: move to use generic DMA helper
-From: Huang Shijie <shijie8@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, Arnd Bergmann <arnd@arndb.de>,
- Marek Vasut <marek.vasut@gmail.com>, Vinod Koul <vinod.koul@intel.com>,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+Received: from aserp1040.oracle.com ([141.146.126.69])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UE69l-00008U-HZ
+ for linux-mtd@lists.infradead.org; Fri, 08 Mar 2013 22:52:54 +0000
+From: Dave Kleikamp <dave.kleikamp@oracle.com>
+To: Zach Brown <zab@zabbo.net>
+Subject: [PATCH V7 -next 32/33] ubifs: convert file ops from aio_read/write to
+ read/write_iter
+Date: Fri,  8 Mar 2013 16:52:27 -0600
+Message-Id: <1362783148-22736-33-git-send-email-dave.kleikamp@oracle.com>
+In-Reply-To: <1362783148-22736-1-git-send-email-dave.kleikamp@oracle.com>
+References: <1362783148-22736-1-git-send-email-dave.kleikamp@oracle.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, linux-kernel@vger.kernel.org,
+ Dave Kleikamp <dave.kleikamp@oracle.com>, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,31 +23,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Mar 8, 2013 at 8:19 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Wed, 2013-02-27 at 23:25 +0800, Shawn Guo wrote:
->> With the generic DMA device tree helper supported by mxs-dma driver,
->> client devices only need to call dma_request_slave_channel() for
->> requesting a DMA channel from dmaengine.
->>
->> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
->> Cc: Artem Bityutskiy <dedekind1@gmail.com>
->> Cc: linux-mtd@lists.infradead.org
->
-> It looks like this ne is rather independent and can go via the MTD tree.
-> So pushed this one to l2-mtd.git - let me know if I am confused. Thanks!
-I suggest do not apply this patch. the whole patch set is still under
-review now.
+Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: linux-mtd@lists.infradead.org
+---
+ fs/ubifs/file.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Best Regards
-Huang Shijie
-
->
-> --
-> Best Regards,
-> Artem Bityutskiy
->
->
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index 1437453..d2ba11d 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -44,7 +44,7 @@
+  * 'ubifs_writepage()' we are only guaranteed that the page is locked.
+  *
+  * Similarly, @i_mutex is not always locked in 'ubifs_readpage()', e.g., the
+- * read-ahead path does not lock it ("sys_read -> generic_file_aio_read ->
++ * read-ahead path does not lock it ("sys_read -> generic_file_read_iter ->
+  * ondemand_readahead -> readpage"). In case of readahead, @I_SYNC flag is not
+  * set as well. However, UBIFS disables readahead.
+  */
+@@ -1395,8 +1395,8 @@ static int update_mctime(struct ubifs_info *c, struct inode *inode)
+ 	return 0;
+ }
+ 
+-static ssize_t ubifs_aio_write(struct kiocb *iocb, const struct iovec *iov,
+-			       unsigned long nr_segs, loff_t pos)
++static ssize_t ubifs_write_iter(struct kiocb *iocb, struct iov_iter *iter,
++				loff_t pos)
+ {
+ 	int err;
+ 	struct inode *inode = iocb->ki_filp->f_mapping->host;
+@@ -1406,7 +1406,7 @@ static ssize_t ubifs_aio_write(struct kiocb *iocb, const struct iovec *iov,
+ 	if (err)
+ 		return err;
+ 
+-	return generic_file_aio_write(iocb, iov, nr_segs, pos);
++	return generic_file_write_iter(iocb, iter, pos);
+ }
+ 
+ static int ubifs_set_page_dirty(struct page *page)
+@@ -1582,8 +1582,8 @@ const struct file_operations ubifs_file_operations = {
+ 	.llseek         = generic_file_llseek,
+ 	.read           = do_sync_read,
+ 	.write          = do_sync_write,
+-	.aio_read       = generic_file_aio_read,
+-	.aio_write      = ubifs_aio_write,
++	.read_iter       = generic_file_read_iter,
++	.write_iter      = ubifs_write_iter,
+ 	.mmap           = ubifs_file_mmap,
+ 	.fsync          = ubifs_fsync,
+ 	.unlocked_ioctl = ubifs_ioctl,
+-- 
+1.8.1.5
