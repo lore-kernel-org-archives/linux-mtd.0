@@ -1,20 +1,20 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UDvzX-0008Gh-6N
- for linux-mtd@lists.infradead.org; Fri, 08 Mar 2013 12:01:43 +0000
-Message-ID: <1362744144.21850.196.camel@sauron>
-Subject: Re: [PATCH 1/2] mtd: m25p80: introduce SST_WRITE flag for SST byte
- programming
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Krzysztof Mazur <krzysiek@podlesie.net>
-Date: Fri, 08 Mar 2013 14:02:24 +0200
-In-Reply-To: <1361544666-7148-1-git-send-email-krzysiek@podlesie.net>
-References: <1361544666-7148-1-git-send-email-krzysiek@podlesie.net>
+ id 1UDxAy-0001AV-JV
+ for linux-mtd@lists.infradead.org; Fri, 08 Mar 2013 13:17:36 +0000
+Message-ID: <1362748695.5101.1.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: maps: Remove redundant NULL check before kfree
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Syam Sidhardhan <syamsidhardh@gmail.com>
+Date: Fri, 08 Mar 2013 15:18:15 +0200
+In-Reply-To: <1361908016-3110-1-git-send-email-s.syam@samsung.com>
+References: <1361908016-3110-1-git-send-email-s.syam@samsung.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
-Reply-To: artem.bityutskiy@linux.intel.com
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,18 +24,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2013-02-22 at 15:51 +0100, Krzysztof Mazur wrote:
-> Not all SST devices implement the SST byte programming command.
-> Some devices (like SST25VF064C) implement only standard m25p80 page
-> write command.
+On Wed, 2013-02-27 at 01:16 +0530, Syam Sidhardhan wrote:
+> kfree on NULL pointer is a no-op.
 > 
-> Now SPI flash devices that need sst_write() are explicitly marked
-> with new SST_WRITE flag and the decision to use sst_write() is based
-> on this flag instead of manufacturer id.
-> 
-> Signed-off-by: Krzysztof Mazur <krzysiek@podlesie.net>
+> Signed-off-by: Syam Sidhardhan <s.syam@samsung.com>
 
-Pushed both to l2-mtd.git, thanks!
+Pushed to l2-mtd.git, thanks!
 
 -- 
 Best Regards,
