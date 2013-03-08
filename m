@@ -1,24 +1,18 @@
-Received: from mail-oa0-f44.google.com ([209.85.219.44])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UDyac-0003wL-RZ
- for linux-mtd@lists.infradead.org; Fri, 08 Mar 2013 14:48:12 +0000
-Received: by mail-oa0-f44.google.com with SMTP id h1so2051820oag.3
- for <linux-mtd@lists.infradead.org>; Fri, 08 Mar 2013 06:48:04 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <518397C60809E147AF5323E0420B992E3EA92738@DBDE01.ent.ti.com>
-References: <1362355040-27344-1-git-send-email-zonque@gmail.com>
- <87r4jvehcs.fsf@dell.be.48ers.dk> <5135C7D0.8010906@gmail.com>
- <518397C60809E147AF5323E0420B992E3EA92738@DBDE01.ent.ti.com>
-Date: Fri, 8 Mar 2013 15:48:04 +0100
-Message-ID: <CACTFLAOZ1VfDrR-Z1Z7F26WfaP=-QX7xWHDXKpmfCGbcGs6HOQ@mail.gmail.com>
-Subject: Re: [PATCH v2] mtd: devices: elm: check for device's presence before
- configuration
-From: Daniel Mack <zonque@gmail.com>
-To: "Philip, Avinash" <avinashphilip@ti.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+In-Reply-To: <1362748785.5101.4.camel@sauron.fi.intel.com>
+References: <1361978748-25281-1-git-send-email-shawn.guo@linaro.org>
+ <1361978748-25281-8-git-send-email-shawn.guo@linaro.org>
+ <1362748785.5101.4.camel@sauron.fi.intel.com>
+Date: Fri, 8 Mar 2013 11:26:10 -0500
+Message-ID: <CAMiH66EDjSAZLf-gtR-_kMasdKSKGRMrPThxtyw_RAixeNXHug@mail.gmail.com>
+Subject: Re: [PATCH 07/12] mtd: gpmi: move to use generic DMA helper
+From: Huang Shijie <shijie8@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, Arnd Bergmann <arnd@arndb.de>,
+ Marek Vasut <marek.vasut@gmail.com>, Vinod Koul <vinod.koul@intel.com>,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ Shawn Guo <shawn.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,34 +22,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Mar 5, 2013 at 11:26 AM, Philip, Avinash <avinashphilip@ti.com> wrote:
-> On Tue, Mar 05, 2013 at 15:54:16, Daniel Mack wrote:
->> On 04.03.2013 08:47, Peter Korsgaard wrote:
->> >>>>>> "Daniel" == Daniel Mack <zonque@gmail.com> writes:
->> >
->> >  Daniel> In case the driver is not probed - due to config mismatches or errors
->> >  Daniel> in the DTS files - dev_get_drvdata() returns NULL, leading to an Ooops
->> >  Daniel> during boot.
->> >
->> >  Daniel> Make elm_config() return an error in such cases to propagate the error
->> >  Daniel> up to the user, so it can fall back to software mode.
->> >
->> >  Daniel> Signed-off-by: Daniel Mack <zonque@gmail.com>
->> >  Daniel> Cc: Philip Avinash <avinashphilip@ti.com>
->> >  Daniel> Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
->> >  Daniel> Cc: Peter Korsgaard <jacmet@sunsite.dk>
->> >
->> > Acked-by: Peter Korsgaard <jacmet@sunsite.dk>
+On Fri, Mar 8, 2013 at 8:19 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Wed, 2013-02-27 at 23:25 +0800, Shawn Guo wrote:
+>> With the generic DMA device tree helper supported by mxs-dma driver,
+>> client devices only need to call dma_request_slave_channel() for
+>> requesting a DMA channel from dmaengine.
 >>
->> Philip, are you also ok with this?
+>> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+>> Cc: Artem Bityutskiy <dedekind1@gmail.com>
+>> Cc: linux-mtd@lists.infradead.org
 >
-> Yes.
-> Thanks
-> Avinash
+> It looks like this ne is rather independent and can go via the MTD tree.
+> So pushed this one to l2-mtd.git - let me know if I am confused. Thanks!
+I suggest do not apply this patch. the whole patch set is still under
+review now.
 
-Artem, can this go through your tree?
+Best Regards
+Huang Shijie
 
-
-Thanks, everyone.
-
-Daniel
+>
+> --
+> Best Regards,
+> Artem Bityutskiy
+>
+>
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
