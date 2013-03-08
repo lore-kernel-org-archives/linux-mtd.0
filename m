@@ -1,14 +1,15 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UDxLY-0002LJ-Ne
- for linux-mtd@lists.infradead.org; Fri, 08 Mar 2013 13:28:33 +0000
-Message-ID: <1362749354.5101.9.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/2] mtd: doc: remove support for DoC 2000/2001/2001+
+ id 1UDxMH-0002Pa-KL
+ for linux-mtd@lists.infradead.org; Fri, 08 Mar 2013 13:29:18 +0000
+Message-ID: <1362749399.5101.10.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 2/2] mtd: remove nftl support
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>
-Date: Fri, 08 Mar 2013 15:29:14 +0200
-In-Reply-To: <1362560099-19638-1-git-send-email-dedekind1@gmail.com>
+Date: Fri, 08 Mar 2013 15:29:59 +0200
+In-Reply-To: <1362560099-19638-2-git-send-email-dedekind1@gmail.com>
 References: <1362560099-19638-1-git-send-email-dedekind1@gmail.com>
+ <1362560099-19638-2-git-send-email-dedekind1@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -26,12 +27,12 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 On Wed, 2013-03-06 at 10:54 +0200, Artem Bityutskiy wrote:
 > From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 > 
-> These drivers are deprecated for very long time, and we have a different driver
-> for these called "diskonchip". Thus, kill the ancient cruft.
+> This is very old cruft with all the users probably dead. Newer DoC devices use
+> inftl.
 > 
 > Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-Pushed to l2-mtd.git.
+Dropped this one.
 
 -- 
 Best Regards,
