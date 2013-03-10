@@ -1,20 +1,21 @@
-Received: from mail-ie0-x22f.google.com ([2607:f8b0:4001:c03::22f])
+Received: from mail-vc0-f169.google.com ([209.85.220.169])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UELhm-00017k-UZ
- for linux-mtd@lists.infradead.org; Sat, 09 Mar 2013 15:29:03 +0000
-Received: by mail-ie0-f175.google.com with SMTP id c12so3153724ieb.20
- for <linux-mtd@lists.infradead.org>; Sat, 09 Mar 2013 07:29:01 -0800 (PST)
+ id 1UEZtp-0005l0-M2
+ for linux-mtd@lists.infradead.org; Sun, 10 Mar 2013 06:38:26 +0000
+Received: by mail-vc0-f169.google.com with SMTP id n10so1594622vcn.28
+ for <linux-mtd@lists.infradead.org>; Sat, 09 Mar 2013 22:38:24 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20130303155226.GA1976@edkhil>
-References: <20130303155226.GA1976@edkhil>
-Date: Sat, 9 Mar 2013 12:29:00 -0300
-Message-ID: <CALF0-+UGapoPTWdVG4W=5nzHT9NJU2z65g=zi2Dj2=JVA0_u2w@mail.gmail.com>
-Subject: Re: plat-nand DT support
-From: Ezequiel Garcia <elezegarcia@gmail.com>
-To: Alexander Clouter <alex@digriz.org.uk>
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E99E24B@DBDE01.ent.ti.com>
+References: <BLU0-SMTP76D0EA572C27BC1C088C1FB8E40@phx.gbl>
+ <20980858CB6D3A4BAE95CA194937D5E73E99E24B@DBDE01.ent.ti.com>
+Date: Sat, 9 Mar 2013 22:38:21 -0800
+Message-ID: <CAN8TOE-yrwMshXd+O-Ar0T7O79spzEY+APtxxzFrmA4rK5TKjQ@mail.gmail.com>
+Subject: Re: 'ubi clone' from Live NAND.
+From: Brian Norris <computersforpeace@gmail.com>
+To: "Gupta, Pekon" <pekon@ti.com>
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: hsweeten@visionengravers.com, devicetree-discuss@lists.ozlabs.org,
- linux-mtd@lists.infradead.org, blogic@openwrt.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Bill Pringlemeir <bpringle@sympatico.ca>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,41 +25,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Alexander,
+As a NAND driver developer and a developer of nanddump / nandwrite, I
+have some comments. Note, however, that I have not tried this kind of
+UBI clone, so my suggestions are somewhat of educated guesses.
 
-Sorry for the delay.
-
-On Sun, Mar 3, 2013 at 12:52 PM, Alexander Clouter <alex@digriz.org.uk> wrote:
+On Thu, Mar 7, 2013 at 4:11 AM, Gupta, Pekon <pekon@ti.com> wrote:
+>> If 'rootfs.ubi' is the 'ubinize' image, then I can mount and see the
+>> file system on my PC.  However, if the 'rootfs.ubi' is a 'dump' of the
+>> NAND flash, I fail with the following 'dmesg',
 >
-> https://github.com/jimdigriz/ts78xx/blob/gen-nand-dt/arch/arm/mach-orion5x/board-ts7800.c
-
-I'm not too familiar with this whole bus_register_notifier() business.
-So, I can't really answer if this looks sane. However, I have
-a few things to say see below.
-
-> https://github.com/jimdigriz/ts78xx/blob/gen-nand-dt/arch/arm/boot/dts/orion5x-ts7800.dts
+> [pekon]
+> I have tried this, using following steps, and it works well
 >
+> (1) nanddump   -b -s 0x0  -l <size_of_source_partition>  -f  <image_dump.bin>  <source_partition>
 
-This device tree node looks okay.
+FYI, "-b" (or "omitbad") has been dropped from recent nanddump
+releases. A similar (but not identical) option is now available as
+--bb=skipbad (default). And then, you probably don't want to specify a
+-l (length) option, since the length actually refers to the length of
+the resulting image, which may vary depending on the number of bad
+blocks. So, with recent mtd-utils releases, the equivalent dump would
+be:
 
+nanddump --bb=skipbad -s 0x0 -f <image_dump.bin> <source_partition>
+
+or, because many of the provided options are defaults, the following
+is also equivalent:
+
+nanddump -f <image_dump.bin> <source_partition>
+
+> (2) flash_erase   <target_partition>  0 0
+> (3) nandwrite -n -r   <target_partition>         <image_dump.bin>
+
+This looks likely to cause problems. See my comment below.
+
+> where,
+> source_partition= partition on source device from which NAND binary would be dumped. (/dev/mtdX)
+> target_partition= partition on another device which NAND dumped image would be flashed (/dev/mtdY)
 >
-> [2] could also support the NAND used by arch/arm/mach-ep93xx/ts72xx.c but
-> the whole SoC has not         been ported to DT
 >
+> You need to keep few things in mind..
+> (1) sizeof(target_partion) > sizeof(source_partition), So as to take care of bad-blocks present on target device.
+>
+> (2) '-n' option in nandwrite tells NAND driver not to calculate ECC while programming nand, as its is already part of 'raw' binary image
 
-Okey, here I think you're going in the wrong direction.
-The current trend -and there are very good reasons for this-
-is to NOT litter arch/arm/mach-foo/ but rather put drivers handling in drivers/
-where they rightfully belong.
+The image dump command above does not contain any ECC information, so
+when you write with '-n', you aren't writing *any* ECC information.
+This is quite likely to cause your ECC decoder to flag all your data
+as uncorrectable. Are you sure this has worked for any length of time?
+I would strongly recommend against writing your image in this way.
 
-In other words, the right direction is to write a nand driver if you need one.
-For instance, I find a bit mixed up to have functions like
-ts7800_nand_write/read_buf() in your board.c file.
+I'm guessing that your recommendation of '-n' (no ECC) is to solve the
+0xFF page problem, documented here?
 
-BTW, it could be great if you could upstream your work.
-Also, it could be much easier for you to get support and answers if you
-try to upstream.
+http://www.linux-mtd.infradead.org/faq/ubifs.html#L_why_ubiformat
 
-Hope this helps,
--- 
-    Ezequiel
+Anyway, I don't think you want nandwrite; just use ubiformat.
+
+Brian
