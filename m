@@ -1,21 +1,19 @@
-Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
+Received: from marmot.wormnet.eu ([2a03:9800:10:2d:3203:b3a5:8bdc:5b68])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UEeGq-0007df-RT
- for linux-mtd@lists.infradead.org; Sun, 10 Mar 2013 11:18:31 +0000
-From: Marek Vasut <marex@denx.de>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 1/3] mtd: m25p80: utilize dedicated 4-byte addressing
- commands
-Date: Sun, 10 Mar 2013 12:18:18 +0100
-References: <1362904877-20144-1-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1362904877-20144-1-git-send-email-computersforpeace@gmail.com>
+ id 1UEeU1-0007y3-AQ
+ for linux-mtd@lists.infradead.org; Sun, 10 Mar 2013 11:32:06 +0000
+Date: Sun, 10 Mar 2013 11:31:51 +0000
+From: Alexander Clouter <alex@digriz.org.uk>
+To: Ezequiel Garcia <elezegarcia@gmail.com>
+Subject: Re: plat-nand DT support
+Message-ID: <20130310113151.GS30947@edkhil>
+References: <20130303155226.GA1976@edkhil>
+ <CALF0-+UGapoPTWdVG4W=5nzHT9NJU2z65g=zi2Dj2=JVA0_u2w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201303101218.18769.marex@denx.de>
-Cc: Kevin Cernekee <cernekee@gmail.com>, linux-mtd@lists.infradead.org,
- Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CALF0-+UGapoPTWdVG4W=5nzHT9NJU2z65g=zi2Dj2=JVA0_u2w@mail.gmail.com>
+Cc: devicetree-discuss@lists.ozlabs.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,144 +23,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Brian Norris,
+Thanks for replying!
 
-> Traditionally, the command set used by SPI flash only supported a 3-byte
-> address. However, large SPI flash (>= 32MB, or 256Mbit) require 4 bytes
-> to address the entire flash. Most manufacturers have supplied a mode
-> switch (via a "bank register writer", or a "enable 4-byte mode"
-> command), which tells the flash to expect 4 address cycles from now on,
-> instead of 3. This mode remains until power is cut, the reset line is
-> triggered (on packages where present), or a command is sent to reset the
-> flash or to reset the 3-byte addressing mode.
-> 
-> As an alternative, some flash manufacturers have developed a new command
-> set that accept a full 4-byte address. They can be used orthogonally to
-> any of the modes; that is, they can be used when the flash is in either
-> 3-byte or 4-byte address mode.
-> 
-> Now, there are a number of reasons why the "stateful" 4-byte address
-> mode switch may not be acceptable. For instance, some SoC's perform a
-> dumb boot sequence in which they only send 3-byte read commands to the
-> flash. However, if an unexpected reset occurs, the flash chip cannot be
-> guaranteed to return to its 3-byte mode. Thus, the SoC controller and
-> flash will not understand each other. (One might consider hooking up the
-> aforementioned reset pin to the system reset line so that any system
-> reset will reset the flash to 3-byte mode, but some packages do not
-> provide this pin. And in some other packages, one must choose between
-> having a reset pin and having enough pins for 4-output QSPI support.
-> It is an error prone process choosing a flash that will support a
-> hardware reset pin!)
-> 
-> This patch provides support for the new stateless command set, so that
-> we can avoid the problems that come with a stateful addressing mode
-> change. The flash can be left in "3-byte mode" while still accessing the
-> entire flash.
-> 
-> Note that Spansion supports this command set on all its large flash
-> (e.g, S25FL512S), and Macronix has begun supporting this command set on
-> some new flash (e.g., MX25L25635F). For the moment, I don't know how to
-> differentiate the Macronix that don't support this command set (e.g.,
-> MX25L25635E) from those that do, so this patch only supports Spansion.
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+On Sat, Mar 09, 2013 at 12:29:00PM -0300, Ezequiel Garcia wrote:
+>
+>> [2] could also support the NAND used by arch/arm/mach-ep93xx/ts72xx.c but
+>> the whole SoC has not been ported to DT
+>
+>Okey, here I think you're going in the wrong direction. The current trend -and there are very 
+>good reasons for this- is to NOT litter arch/arm/mach-foo/ but rather put drivers handling in 
+>drivers/ where they rightfully belong.
 
-Looks reasonable
+I would agree.  However, what nags at me is that this driver would be rather board specific and 
+not SoC/platform so the option for re-use is low; the NAND is implemented in an FPGA.
 
-Acked-by: Marek Vasut <marex@denx.de>
+I'm trying to get a feeling of what the lesser evil is so that I can avoid "no, please write a 
+proper driver to live in 'drivers'" or "jeez, not another near-identical driver, use plat-nand". 
+:)
 
-What system/CPU do you observe these issue on just out of curiosity?
+Whats are the thoughts from the MTD world?
+  * plat-nand provides all the common boilerplate NAND code that each driver needs and then has 
+the platform specific non-reusable cases hook in via platform_device
+  * if the SoC has be DT'd, then a unique non-reusable driver is the correct approach
 
-> ---
->  drivers/mtd/devices/m25p80.c | 36 +++++++++++++++++++++++++++++-------
->  1 file changed, 29 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index e80db9e..5ff14ee 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -48,6 +48,12 @@
->  #define	OPCODE_SE		0xd8	/* Sector erase (usually 64KiB) 
-*/
->  #define	OPCODE_RDID		0x9f	/* Read JEDEC ID */
-> 
-> +/* 4-byte address opcodes - used on Spansion and some Macronix flashes. */
-> +#define	OPCODE_NORM_READ_4B	0x13	/* Read data bytes (low 
-frequency) */
-> +#define	OPCODE_FAST_READ_4B	0x0c	/* Read data bytes (high 
-frequency) */
-> +#define	OPCODE_PP_4B		0x12	/* Page program (up to 256 
-bytes) */
-> +#define	OPCODE_SE_4B		0xdc	/* Sector erase (usually 64KiB) 
-*/
-> +
->  /* Used for SST flashes only. */
->  #define	OPCODE_BP		0x02	/* Byte program */
->  #define	OPCODE_WRDI		0x04	/* Write disable */
-> @@ -84,6 +90,8 @@ struct m25p {
->  	u16			page_size;
->  	u16			addr_width;
->  	u8			erase_opcode;
-> +	u8			read_opcode;
-> +	u8			program_opcode;
->  	u8			*command;
->  	bool			fast_read;
->  };
-> @@ -371,7 +379,7 @@ static int m25p80_read(struct mtd_info *mtd, loff_t
-> from, size_t len, */
-> 
->  	/* Set up the write data buffer. */
-> -	opcode = flash->fast_read ? OPCODE_FAST_READ : OPCODE_NORM_READ;
-> +	opcode = flash->read_opcode;
->  	flash->command[0] = opcode;
->  	m25p_addr2cmd(flash, from, flash->command);
-> 
-> @@ -422,7 +430,7 @@ static int m25p80_write(struct mtd_info *mtd, loff_t
-> to, size_t len, write_enable(flash);
-> 
->  	/* Set up the opcode in the write buffer. */
-> -	flash->command[0] = OPCODE_PP;
-> +	flash->command[0] = flash->program_opcode;
->  	m25p_addr2cmd(flash, to, flash->command);
-> 
->  	page_offset = to & (flash->page_size - 1);
-> @@ -1017,6 +1025,11 @@ static int m25p_probe(struct spi_device *spi)
->  		flash->erase_opcode = OPCODE_SE;
->  		flash->mtd.erasesize = info->sector_size;
->  	}
-> +	/* Default commands */
-> +	flash->read_opcode = flash->fast_read ?
-> +		OPCODE_FAST_READ :
-> +		OPCODE_NORM_READ;
-> +	flash->program_opcode = OPCODE_PP;
-> 
->  	if (info->flags & M25P_NO_ERASE)
->  		flash->mtd.flags |= MTD_NO_ERASE;
-> @@ -1038,13 +1051,22 @@ static int m25p_probe(struct spi_device *spi)
-> 
->  	if (info->addr_width)
->  		flash->addr_width = info->addr_width;
-> -	else {
-> +	else if (flash->mtd.size > 0x1000000) {
->  		/* enable 4-byte addressing if the device exceeds 16MiB */
-> -		if (flash->mtd.size > 0x1000000) {
-> -			flash->addr_width = 4;
-> +		flash->addr_width = 4;
-> +		if (JEDEC_MFR(info->jedec_id) == CFI_MFR_AMD) {
-> +			/* Dedicated 4-byte command set */
-> +			flash->read_opcode = flash->fast_read ?
-> +				OPCODE_FAST_READ_4B :
-> +				OPCODE_NORM_READ_4B;
-> +			flash->program_opcode = OPCODE_PP_4B;
-> +			/* No small sector erase for 4-byte command set */
-> +			flash->erase_opcode = OPCODE_SE_4B;
-> +			flash->mtd.erasesize = info->sector_size;
-> +		} else {
->  			set_4byte(flash, info->jedec_id, 1);
-> -		} else
-> -			flash->addr_width = 3;
-> +	} else
-> +		flash->addr_width = 3;
->  	}
-> 
->  	dev_info(&spi->dev, "%s (%lld Kbytes)\n", id->name,
+The only possible other user of the driver is arm/mach-ep93xx (not a DT enabled SoC yet though), 
+but it was made to work with plat-nand:
+
+http://lists.infradead.org/pipermail/linux-mtd/2009-October/027563.html
+
+That year it was also suggested I go with plat-nand, which then got accepted upstream, so I guess 
+everyone was happy with it :)
+
+http://lists.infradead.org/pipermail/linux-mtd/2009-February/024556.html
+
+On a passing note, the plat-nand DT hooks do not work.  One core component is that 
+part_probe_types missed 'ofpart' so that is a bit depressing, but the other 
+nr-chips/chip-delay/bank-width/bbt-use-flash options do mean that all the maintainer needs to do 
+is write the ready/cmd hooks.
+
+>In other words, the right direction is to write a nand driver if you need one.
+>For instance, I find a bit mixed up to have functions like
+>ts7800_nand_write/read_buf() in your board.c file.
+
+Maybe there is an appetite for a hybrid?
+
+I could write a drivers/mtd/nand/ts7xxx.c, a DT enabled NAND driver that shims around plat-nand 
+which has my new DT extending patches.  Means it is all pure DT over in arch/arm and there is 
+still where possible re-use of boilerplate code.
+
+plat-nand, to me, makes sense to save code.  With a DT shim, others could crib from it too.
+
+Never-the-less, I am happy to do whatever the MTD folk want, I just really do not want to go down 
+one path and then told to burn everything and do plan B instead.
+
+>BTW, it could be great if you could upstream your work. Also, it could be much easier for you to 
+>get support and answers if you try to upstream.
+
+This is what I am trying to do.  I am currently trying to port my board 
+arch/arm/mach-orion5x/ts78xx-setup.c (that I am the maintainer for) to DT, the github page is 
+just where I do development on.
+
+Cheers, and thanks again for the reply.
+
+-- 
+Alexander Clouter
+.sigmonster says: He who foresees calamities suffers them twice over.
