@@ -1,20 +1,13 @@
-Received: from mga03.intel.com ([143.182.124.21])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UEysY-0004bm-3I
- for linux-mtd@lists.infradead.org; Mon, 11 Mar 2013 09:18:48 +0000
-Message-ID: <1362993580.5101.63.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v2] mtd: devices: elm: check for device's presence
- before configuration
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Daniel Mack <zonque@gmail.com>
-Date: Mon, 11 Mar 2013 11:19:40 +0200
-In-Reply-To: <1362355040-27344-1-git-send-email-zonque@gmail.com>
-References: <1362355040-27344-1-git-send-email-zonque@gmail.com>
+Message-ID: <1363016099.3348.47.camel@sauron.fi.intel.com>
+Subject: Dead mappings and drivers in MTD
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: linux-mtd@lists.infradead.org
+Date: Mon, 11 Mar 2013 17:34:59 +0200
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
-Reply-To: artem.bityutskiy@linux.intel.com
+Cc: LKML <linux-kernel@vger.kernel.org>, linux-arm-kernel@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,17 +17,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2013-03-04 at 00:57 +0100, Daniel Mack wrote:
-> In case the driver is not probed - due to config mismatches or errors
-> in the DTS files - dev_get_drvdata() returns NULL, leading to an Ooops
-> during boot.
-> 
-> Make elm_config() return an error in such cases to propagate the error
-> up to the user, so it can fall back to software mode.
-> 
-> Signed-off-by: Daniel Mack <zonque@gmail.com>
+Hi MTD folks,
 
-Pushed to l2-mtd.git, thanks!
+we have huge amount of drivers, espacially mapping drives in
+'drivers/mtd', and for sure may of them are for ancient devices which
+are long dead and not supported by modern kernels anyway. I would like
+to do a small clean-up. It is difficult to judge which ones are dead for
+me, so I am asking the community to help. Thanks!
+
+There are few easy cases - some drivers depend on Kconfig symbols which
+are not defined anywhere - I guess these are clear candidates for
+removal. For example this one:
+
+config MTD_DBOX2
+        tristate "CFI Flash device mapped on D-Box2"
+        depends on DBOX2 && MTD_CFI_INTELSTD && MTD_CFI_INTELEXT && MTD_CFI_AMDSTD
+        help
+          This enables access routines for the flash chips on the Nokia/Sagem
+          D-Box 2 board. If you have one of these boards and would like to use
+
+Grepping for "DBOX2" gives nothing.
 
 -- 
 Best Regards,
