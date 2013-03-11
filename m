@@ -1,32 +1,18 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UF5kS-0003B2-UU
- for linux-mtd@lists.infradead.org; Mon, 11 Mar 2013 16:38:53 +0000
-Message-ID: <1363019977.3348.53.camel@sauron.fi.intel.com>
-Subject: Re: UBI. How are critical these messages?
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: "Velykokhatko, Sergey" <Sergey.Velykokhatko@mcc-med.de>
-Date: Mon, 11 Mar 2013 18:39:37 +0200
-In-Reply-To: <BAF0C2081321BA469F9ADF648F97D9B04C78FA60DB@MCC023.weinmann.com>
-References: <BAF0C2081321BA469F9ADF648F97D9B04C78FA6069@MCC023.weinmann.com>
- <CAN8TOE9YJBvUE9GDW3krZB-Js6gUkqY23gYNLS4gFX0e2NDNZw@mail.gmail.com>
- <BAF0C2081321BA469F9ADF648F97D9B04C78FA6071@MCC023.weinmann.com>
- <CACQ1gAg0rE+X+uxRWbrPKhmdS1T0MG00cwwBbzWM+VwU4zaXmw@mail.gmail.com>
- <BAF0C2081321BA469F9ADF648F97D9B04C78FA607C@MCC023.weinmann.com>
- <CACQ1gAg=L7ru5J4C7OQN0r-c2VN3baKX1qqty8Z0ObS5Wk48yg@mail.gmail.com>
- <BAF0C2081321BA469F9ADF648F97D9B04C78FA607E@MCC023.weinmann.com>
- <CACQ1gAhJzy5tGSuejc3GqaqRxtHvkABOY-tODzedveeRXddvxQ@mail.gmail.com>
- <1362989331.5101.41.camel@sauron.fi.intel.com>
- <BAF0C2081321BA469F9ADF648F97D9B04C78FA60DB@MCC023.weinmann.com>
+Message-ID: <1363020239.3348.56.camel@sauron.fi.intel.com>
+Subject: Re: Dead mappings and drivers in MTD
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Olof Johansson <olof@lixom.net>
+Date: Mon, 11 Mar 2013 18:43:59 +0200
+In-Reply-To: <CAOesGMhy6YceRr3T4ZALhYeSQfEuASO+ajJy1Htwws=OMtvrTg@mail.gmail.com>
+References: <1363016099.3348.47.camel@sauron.fi.intel.com>
+ <CAOesGMhy6YceRr3T4ZALhYeSQfEuASO+ajJy1Htwws=OMtvrTg@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Richard Genoud <richard.genoud@gmail.com>,
- Ricard Wanderlof <ricard.wanderlof@axis.com>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Reply-To: artem.bityutskiy@linux.intel.com
+Cc: linux-pcmcia@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>,
+ linuxppc-dev@ozlabs.org, linux-m68k@lists.linux-m68k.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,35 +22,196 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2013-03-11 at 17:13 +0100, Velykokhatko, Sergey wrote:
-> Mar  8 12:38:45 192 kern.notice kernel: [    9.906000] UBI: attaching mtd5 to ubi1
-> Mar  8 12:38:45 192 kern.err kernel: [   10.359000] ecc unrecoverable error
-> Mar  8 12:38:45 192 kern.warn kernel: [   10.363000] UBI warning: ubi_io_read: error -74 (ECC error) while reading 64 bytes from PEB 1110:0, read only 64 bytes, retry
-> Mar  8 12:38:45 192 kern.err kernel: [   10.374000] ecc unrecoverable error
-> Mar  8 12:38:45 192 kern.warn kernel: [   10.378000] UBI warning: ubi_io_read: error -74 (ECC error) while reading 64 bytes from PEB 1110:0, read only 64 bytes, retry
-> Mar  8 12:38:45 192 kern.err kernel: [   10.390000] ecc unrecoverable error
-> Mar  8 12:38:45 192 kern.warn kernel: [   10.393000] UBI warning: ubi_io_read: error -74 (ECC error) while reading 64 bytes from PEB 1110:0, read only 64 bytes, retry
-> Mar  8 12:38:45 192 kern.err kernel: [   10.405000] ecc unrecoverable error
-> Mar  8 12:38:45 192 kern.err kernel: [   10.408000] UBI error: ubi_io_read: error -74 (ECC error) while reading 64 bytes from PEB 1110:0, read 64 bytes
-> Mar  8 12:38:45 192 kern.warn kernel: [   10.418000] Backtrace:
-> Mar  8 12:38:45 192 kern.warn kernel: [   10.421000] [<c000c614>] (dump_backtrace+0x0/0x114) from [<c0315e80>] (dump_stack+0x20/0x24)
-> Mar  8 12:38:45 192 kern.warn kernel: [   10.429000]  r6:c3ac2000 r5:00000040 r4:ffffffb6 r3:c0460e34
-> Mar  8 12:38:45 192 kern.warn kernel: [   10.435000] [<c0315e60>] (dump_stack+0x0/0x24) from [<c021042c>] (ubi_io_read+0x1e8/0x2b4)
-> Mar  8 12:38:45 192 kern.warn kernel: [   10.443000] [<c0210244>] (ubi_io_read+0x0/0x2b4) from [<c021077c>] (ubi_io_read_ec_hdr+0x7c/0x22c)
-> Mar  8 12:38:45 192 kern.warn kernel: [   10.452000] [<c0210700>] (ubi_io_read_ec_hdr+0x0/0x22c) from [<c0215330>] (ubi_attach+0x118/0x13c4)
-> Mar  8 12:38:45 192 kern.warn kernel: [   10.461000] [<c0215218>] (ubi_attach+0x0/0x13c4) from [<c020a8c0>] (ubi_attach_mtd_dev+0x5a8/0xbd8)
-> Mar  8 12:38:45 192 kern.warn kernel: [   10.470000] [<c020a318>] (ubi_attach_mtd_dev+0x0/0xbd8) from [<c020b18c>] (ctrl_cdev_ioctl+0xe0/0x194)
-> Mar  8 12:38:45 192 kern.warn kernel: [   10.479000] [<c020b0ac>] (ctrl_cdev_ioctl+0x0/0x194) from [<c00d5a40>] (vfs_ioctl+0x38/0x4c)
-> Mar  8 12:38:45 192 kern.warn kernel: [   10.488000]  r7:40186f40 r6:00000000 r5:c38880a0 r4:be880bd8
-> Mar  8 12:38:45 192 kern.warn kernel: [   10.494000] [<c00d5a08>] (vfs_ioctl+0x0/0x4c) from [<c00d6608>] (do_vfs_ioctl+0x55c/0x5c4)
-> Mar  8 12:38:45 192 kern.warn kernel: [   10.502000] [<c00d60ac>] (do_vfs_ioctl+0x0/0x5c4) from [<c00d66b8>] (sys_ioctl+0x48/0x70)
-> Mar  8 12:38:45 192 kern.warn kernel: [   10.510000] [<c00d6670>] (sys_ioctl+0x0/0x70) from [<c0009480>] (ret_fast_syscall+0x0/0x44)
-> Mar  8 12:38:45 192 kern.warn kernel: [   10.518000]  r8:c00096e4 r7:00000036 r6:0000c8e0 r5:be880bd8 r4:00000003
+On Mon, 2013-03-11 at 09:20 -0700, Olof Johansson wrote:
+> On Mon, Mar 11, 2013 at 8:34 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> > Hi MTD folks,
+> >
+> > we have huge amount of drivers, espacially mapping drives in
+> > 'drivers/mtd', and for sure may of them are for ancient devices which
+> > are long dead and not supported by modern kernels anyway. I would like
+> > to do a small clean-up. It is difficult to judge which ones are dead for
+> > me, so I am asking the community to help. Thanks!
+> >
+> > There are few easy cases - some drivers depend on Kconfig symbols which
+> > are not defined anywhere - I guess these are clear candidates for
+> > removal. For example this one:
+> >
+> > config MTD_DBOX2
+> >         tristate "CFI Flash device mapped on D-Box2"
+> >         depends on DBOX2 && MTD_CFI_INTELSTD && MTD_CFI_INTELEXT && MTD_CFI_AMDSTD
+> >         help
+> >           This enables access routines for the flash chips on the Nokia/Sagem
+> >           D-Box 2 board. If you have one of these boards and would like to use
+> >
+> > Grepping for "DBOX2" gives nothing.
+> 
+> In 2.6.14, it dropped two dependencies that used to be there for PPC32
+> and 8xx. There still was no DBOX2 symbol to fulfill that dependency
+> back then.
+> 
+> Take it out, if someone finds a user later on it can always be
+> reverted. Seems very very unlikely in this case.
 
-These look like a broken driver, not an UBI/UBIFS problem. Try to run
-MTD tests and validate your driver in the modern kernel first. The MTD
-tests are kernel module, they work by insmoding. You should find some
-info on the MTD website.
+I agree, thanks. I've quickly went through all the MTD map drivers and
+found many candidates for removal. I did not prepare a patch-set yet,
+but the below commit messages from my tree should give enough info about
+what I am thinking to remove.
+
+Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date:   Mon Mar 11 18:24:37 2013 +0200
+
+    mtd: remove the mbx860 map driver
+    
+    This driver depends on CONFIG_MBX which is not defined anywhere, which means
+    this driver is dead.
+    
+    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+
+ drivers/mtd/maps/Kconfig   |    9 --
+ drivers/mtd/maps/Makefile  |    1 -
+ drivers/mtd/maps/ixp2000.c |  253 --------------------------------------------
+ 3 files changed, 263 deletions(-)
+
+commit 3e8b189c4fad6196333fb2069ab1f183b652a81d
+Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date:   Mon Mar 11 18:10:06 2013 +0200
+
+    mtd: remove the dilnetpc map driver support
+    
+    This driver is marked as broken for very long time. Most probably this board is
+    just something ancient no one cares about anyway.
+    
+    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+
+ drivers/mtd/maps/Kconfig    |   16 --
+ drivers/mtd/maps/Makefile   |    1 -
+ drivers/mtd/maps/dilnetpc.c |  496 -------------------------------------------
+ 3 files changed, 513 deletions(-)
+
+commit e9313043d5bb4b2429b60092ebd9974598b5b62d
+Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date:   Mon Mar 11 18:07:35 2013 +0200
+
+    mtd: remove the tqm8xxl map driver
+    
+    This driver depends on the CONFIG_TQM8xxL symbol, which is not defined
+    anywhere, which means that this driver is dead.
+    
+    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+
+ drivers/mtd/maps/Kconfig   |   10 --
+ drivers/mtd/maps/Makefile  |    1 -
+ drivers/mtd/maps/tqm8xxl.c |  249 --------------------------------------------
+ 3 files changed, 260 deletions(-)
+
+commit 1b17ddb0219d9ab6b96a2bc22331d89ac4ca4539
+Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date:   Mon Mar 11 18:05:13 2013 +0200
+
+    pcmcia: remove RPX board stuff
+    
+    The RPX board is not supported by the kernel because CONFIG_RPXCLASSIC and
+    CONFIG_RPXLITE symbols and not defined anywhere. Clean-up the m8xx_pcmcia
+    driver a little bit.
+    
+    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+
+ drivers/pcmcia/m8xx_pcmcia.c |   81 ------------------------------------------
+ 1 file changed, 81 deletions(-)
+
+commit 518fa5d9718cbe00ed3de3798761cc051dcef04b
+Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date:   Mon Mar 11 18:03:11 2013 +0200
+
+    m68k: remove rpxlite stuff
+    
+    The CONFIG_RPXLITE is not defined anywhere, which means that this board is not
+    supported anyway, and we can clean-up commproc.h a little.
+    
+    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+
+ arch/m68k/include/asm/commproc.h |   17 -----------------
+ 1 file changed, 17 deletions(-)
+
+commit de70cc56d0c067275c3cac5659196d9ef4043888
+Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date:   Mon Mar 11 18:01:02 2013 +0200
+
+    mtd: maps: kill the rpxlite map driver
+    
+    This driver depends on the CONFIG_RPXCLASSIC and CONFIG_RPXLITE symbols, which
+    are not defined anywhere, and this means that this driver is dead.
+    
+    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+
+ drivers/mtd/maps/Kconfig   |   10 -------
+ drivers/mtd/maps/Makefile  |    1 -
+ drivers/mtd/maps/rpxlite.c |   64 --------------------------------------------
+ 3 files changed, 75 deletions(-)
+
+commit 1ebbc11e1e2a143308689af47bb766824c035285
+Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date:   Mon Mar 11 17:56:31 2013 +0200
+
+    pcmcia: remove Motorolla MBX860 support
+    
+    The CONFIG_MBX symbol is not defined anywhere in the kernel tree, which means
+    this platform is not supported by the Linux kernel and we can remove the
+    corresponding code from the 'm8xx_pcmcia' driver.
+    
+    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+
+ drivers/pcmcia/m8xx_pcmcia.c |   59 ------------------------------------------
+ 1 file changed, 59 deletions(-)
+
+commit 61f417243e1157d436ac04b1307f40b2996a4923
+Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date:   Mon Mar 11 17:54:11 2013 +0200
+
+    mtd: remove the mbx860 map driver
+    
+    This driver depends on CONFIG_MBX which is not defined anywhere, which means
+    this driver is dead.
+    
+    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+
+ drivers/mtd/maps/Kconfig  |    8 ----
+ drivers/mtd/maps/Makefile |    1 -
+ drivers/mtd/maps/mbx860.c |   98 ---------------------------------------------
+ 3 files changed, 107 deletions(-)
+
+commit 55c159005c92a7ce8234c6d0072d8d2f6e45a57d
+Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date:   Mon Mar 11 17:42:54 2013 +0200
+
+    mtd: remove the dmv182 map driver
+    
+    This driver depends on the CONFIG_DMV182 symbol which is not defined anywhere,
+    and this means that this driver is dead.
+    
+    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+
+ drivers/mtd/maps/Kconfig  |    9 ---
+ drivers/mtd/maps/Makefile |    1 -
+ drivers/mtd/maps/dmv182.c |  146 ---------------------------------------------
+ 3 files changed, 156 deletions(-)
+
+commit 750b26e3b17a148a7a7d64026088d1e29f9cd118
+Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date:   Mon Mar 11 17:38:43 2013 +0200
+
+    mtd: remove the dbox2-flash map driver
+    
+    This driver depends on the CONFIG_DBOX2 symbol which does not exist in
+    the kernel, which means the driver is dead.
+    
+    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+
+ drivers/mtd/maps/Kconfig       |    8 ---
+ drivers/mtd/maps/Makefile      |    1 -
+ drivers/mtd/maps/dbox2-flash.c |  123 ----------------------------------------
+ 3 files changed, 132 deletions(-)
+
 
 -- 
 Best Regards,
