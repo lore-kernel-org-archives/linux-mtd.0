@@ -1,18 +1,18 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga14.intel.com ([143.182.124.37])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UEyPT-0000a7-GA
- for linux-mtd@lists.infradead.org; Mon, 11 Mar 2013 08:48:45 +0000
-Message-ID: <1362991772.5101.60.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 0/4] mtd-utils: integck improvements
+ id 1UEyX5-00023V-Al
+ for linux-mtd@lists.infradead.org; Mon, 11 Mar 2013 08:56:36 +0000
+Message-ID: <1362992249.5101.62.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v2] mtd: nand: support BENAND (Built-in ECC NAND)
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Elie De Brauwer <eliedebrauwer@gmail.com>
-Date: Mon, 11 Mar 2013 10:49:32 +0200
-In-Reply-To: <1362163060-5629-1-git-send-email-eliedebrauwer@gmail.com>
-References: <1362163060-5629-1-git-send-email-eliedebrauwer@gmail.com>
+To: katsuki.uwatoko@toshiba.co.jp
+Date: Mon, 11 Mar 2013 10:57:29 +0200
+In-Reply-To: <F3B6523425E7914AA6214ED358D820AF2674E3EA@TGXML341.toshiba.local>
+References: <F3B6523425E7914AA6214ED358D820AF2674E3EA@TGXML341.toshiba.local>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: vikram186@gmail.com, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,44 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2013-03-01 at 19:37 +0100, Elie De Brauwer wrote:
-> Hello all,
+On Thu, 2013-02-21 at 06:17 +0000, katsuki.uwatoko@toshiba.co.jp wrote:
+> This enables support for BENAND, which is an SLC NAND flash solution
+> with embedded error correction code (ECC), currently supports only
+> 128bytes OOB type.
 > 
-> The past couple of days I've been doing some NAND stress testing on an
-> i.MX28 platform. So far my observation is that at a certain point 
-> integck writes a buffer, then tries to verify this data, concludes the
-> buffer is not what it was written and fails. However the file it saves
-> (and the contents on flash) appear to be the correct data, hence the 
-> standard integck wasn't very useful in assisting troubleshooting this 
-> issue (which only appears once every couple of hours). 
+> In the read sequence, "status read command" is executed to check the
+> ECC status after read data. If bitflips occur, these are
+> automatically corrected by BENAND and the status indicates the result.
+> 
+> The write sequence is the same as raw write and the ECC data are
+> automatically written to OOB by BENAND.
+> 
+> Signed-off-by: UWATOKO Katsuki <katsuki.uwatoko@toshiba.co.jp>
 
-Hi, first of all - thanks for the hard work and the fixes. This test was
-use on early days when we were developing UBIFS, and was extremely
-useful for us. But we mostly used it with nandsim.
+Hi Katsuki, thanks for the patch. I would really like to see someone's
+ack or Tested-by on it. Anyonwe?
 
-When UBIFS became stable, I add ed the "power cut emulation" support
-there, and this is probably when I broke the report printing
-functionality.
-
-The test is not very cleanly written, and it is a bit of spaghetti,
-which did not scare you off, and for which you get my kudos :-)
-
-I've applied and pushed all your patches. I only briefly looked at them,
-they looked OK. And I only compile-tested them. I just have not time
-right now for more thorough review, and I forgot how integck works, and
-your patches looked very trustworthy, so I just pushed them out.
-
-I added your description to the commit messages. This e-mail will be
-lost in the archives, but the commit messages will stay in the git
-history and may be useful. Keep this in mind - put useful descriptive
-comment so that they stay in the commit message, do not put all of them
-to the cover letter.
-
-I also amended few broken indentations - we indent using tabs, as a
-convention. We do use spaces to fine-tune the indentation in tricky
-places, but the basic style is using tabs.
-
-Thanks!
+Does Toshiba still produce SLC BENANDs?
 
 -- 
 Best Regards,
