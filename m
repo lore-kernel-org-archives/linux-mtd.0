@@ -1,20 +1,30 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UExWL-0002Is-Ug
- for linux-mtd@lists.infradead.org; Mon, 11 Mar 2013 07:51:46 +0000
-Message-ID: <1362988316.5101.34.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] flash_otp_write: fix writing to NAND in presence of
- partial reads
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Date: Mon, 11 Mar 2013 09:51:56 +0200
-In-Reply-To: <1362044529-511-1-git-send-email-u.kleine-koenig@pengutronix.de>
-References: <1362044529-511-1-git-send-email-u.kleine-koenig@pengutronix.de>
+ id 1UExm3-0004EE-31
+ for linux-mtd@lists.infradead.org; Mon, 11 Mar 2013 08:08:00 +0000
+Message-ID: <1362989331.5101.41.camel@sauron.fi.intel.com>
+Subject: Re: Bug in mtd_get_device_size()?
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Richard Genoud <richard.genoud@gmail.com>, "Velykokhatko, Sergey"
+ <Sergey.Velykokhatko@mcc-med.de>
+Date: Mon, 11 Mar 2013 10:08:51 +0200
+In-Reply-To: <CACQ1gAhJzy5tGSuejc3GqaqRxtHvkABOY-tODzedveeRXddvxQ@mail.gmail.com>
+References: <BAF0C2081321BA469F9ADF648F97D9B04C78FA6069@MCC023.weinmann.com>
+ <CAN8TOE9YJBvUE9GDW3krZB-Js6gUkqY23gYNLS4gFX0e2NDNZw@mail.gmail.com>
+ <BAF0C2081321BA469F9ADF648F97D9B04C78FA6071@MCC023.weinmann.com>
+ <CACQ1gAg0rE+X+uxRWbrPKhmdS1T0MG00cwwBbzWM+VwU4zaXmw@mail.gmail.com>
+ <BAF0C2081321BA469F9ADF648F97D9B04C78FA607C@MCC023.weinmann.com>
+ <CACQ1gAg=L7ru5J4C7OQN0r-c2VN3baKX1qqty8Z0ObS5Wk48yg@mail.gmail.com>
+ <BAF0C2081321BA469F9ADF648F97D9B04C78FA607E@MCC023.weinmann.com>
+ <CACQ1gAhJzy5tGSuejc3GqaqRxtHvkABOY-tODzedveeRXddvxQ@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de
-Reply-To: dedekind1@gmail.com
+Content-Transfer-Encoding: 7bit
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,20 +34,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2013-02-28 at 10:42 +0100, Uwe Kleine-König wrote:
-> When doing something like:
-> 
-> 	{ printf "\xff"; printf "\xfe"; } | flash_otp_write -u /dev/mtd0 0
-> 
-> flash_otp_write might see only a single byte when reading from stdin for
-> the first tim. In this case (and without this patch) it pads to
-> $writesize with '\xff's and writes that out. In the next iteration it
-> reads the 2nd byte, pads and writes again. So the 2nd byte is written to
-> offset $writesize instead of 1.
-> 
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+On Fri, 2013-03-01 at 15:29 +0100, Richard Genoud wrote:
+> > Unfortunately I have no additional information why it happened, but
+> anyway is it really necessary to runs ubiformat+ubimkvol for such
+> cases? Or is it possible to recover data?
+> I honestly don't know, but I'm sure Artem has some idea on that.
 
-Pushed both to mtd-utils.git, thanks!
+Everything should work in theory. If there are issues, they should be
+looked at and investigated. I do not have any better suggestion off the
+top of my head.
+
+> >Since my solution for this case is to put the device data in separate MTD with one single UBI volume. But you know how much space I should reserve on NAND MTD for single XML-File with 200Bytes :-).
+> I've got the same problem with uboot environment for example. It's
+> only some hundred bytes, and still I have to reserve the maximum bad
+> blocks number + 1 for the environment itself (so for your device 41).
+> I know, this looks overkill...
+> For 200bytes, I would try to store them elsewhere (spi dataflash,
+> eeprom...) if there's such devices on your board.
+> There's also the 1st block of the nand device which is guaranteed to
+> be "valid" for 1000 erase cycles (valid with 1-bit ECC per 528 bytes)
+
+The ideal solution would be to not partition the chip at all, of course.
+
+BTW, if we ara talking about a device for medicine with tens of years of
+lifetime, you need to be careful about read disturb issues. In the MTD
+web site we discuss them - and there is a suggestion to read whole UBI
+device from time to time to force scrubbing.
+
+> > Alternative is to try to mount only device volume, copy data in tmpfs, run ubiformat+ubimkvol+mount and copy the data back to the device volume. Or you have other idea?
+
+Not sure why this would be needed. We did not do any on-flash format
+breakage AFAIK. But I admit I did not read this thread carefully.
+
+Sergey, feel free to ask specific questions in separate threads, to make
+it easier to answer them.
 
 -- 
 Best Regards,
