@@ -1,12 +1,12 @@
 Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UFN38-0007UB-OD
- for linux-mtd@lists.infradead.org; Tue, 12 Mar 2013 11:07:19 +0000
+ id 1UFN39-0007TK-Sb
+ for linux-mtd@lists.infradead.org; Tue, 12 Mar 2013 11:07:24 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD Maling List <linux-mtd@lists.infradead.org>
-Subject: [PATCH 6/9] mtd: physmap_of: add const qualifiers
-Date: Tue, 12 Mar 2013 13:08:25 +0200
-Message-Id: <1363086508-2405-7-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 8/9] mtd: devices: add const qualifiers
+Date: Tue, 12 Mar 2013 13:08:27 +0200
+Message-Id: <1363086508-2405-9-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1363086508-2405-1-git-send-email-dedekind1@gmail.com>
 References: <1363086508-2405-1-git-send-email-dedekind1@gmail.com>
 Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
@@ -25,63 +25,35 @@ Be a bit stricter and add few more 'const' qualifiers.
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- drivers/mtd/maps/physmap_of.c |   16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ drivers/mtd/devices/bcm47xxsflash.c |    2 +-
+ drivers/mtd/devices/docg3.c         |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
-index 363939d..d111097 100644
---- a/drivers/mtd/maps/physmap_of.c
-+++ b/drivers/mtd/maps/physmap_of.c
-@@ -71,6 +71,9 @@ static int of_flash_remove(struct platform_device *dev)
- 	return 0;
+diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
+index 9526628..f86a787 100644
+--- a/drivers/mtd/devices/bcm47xxsflash.c
++++ b/drivers/mtd/devices/bcm47xxsflash.c
+@@ -10,7 +10,7 @@
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("Serial flash driver for BCMA bus");
+ 
+-static const char *probes[] = { "bcm47xxpart", NULL };
++static const char * const probes[] = { "bcm47xxpart", NULL };
+ 
+ static int bcm47xxsflash_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 			      size_t *retlen, u_char *buf)
+diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
+index 8510ccb..a8caad2 100644
+--- a/drivers/mtd/devices/docg3.c
++++ b/drivers/mtd/devices/docg3.c
+@@ -123,7 +123,7 @@ static inline void doc_flash_address(struct docg3 *docg3, u8 addr)
+ 	doc_writeb(docg3, addr, DOC_FLASHADDRESS);
  }
  
-+static const char * const rom_probe_types[] = {
-+	"cfi_probe", "jedec_probe", "map_rom" };
-+
- /* Helper function to handle probing of the obsolete "direct-mapped"
-  * compatible binding, which has an extra "probe-type" property
-  * describing the type of flash probe necessary. */
-@@ -80,8 +83,6 @@ static struct mtd_info *obsolete_probe(struct platform_device *dev,
- 	struct device_node *dp = dev->dev.of_node;
- 	const char *of_probe;
- 	struct mtd_info *mtd;
--	static const char *rom_probe_types[]
--		= { "cfi_probe", "jedec_probe", "map_rom"};
- 	int i;
+-static char const *part_probes[] = { "cmdlinepart", "saftlpart", NULL };
++static char const * const part_probes[] = { "cmdlinepart", "saftlpart", NULL };
  
- 	dev_warn(&dev->dev, "Device tree uses obsolete \"direct-mapped\" "
-@@ -111,9 +112,10 @@ static struct mtd_info *obsolete_probe(struct platform_device *dev,
-    specifies the list of partition probers to use. If none is given then the
-    default is use. These take precedence over other device tree
-    information. */
--static const char *part_probe_types_def[] = { "cmdlinepart", "RedBoot",
--					"ofpart", "ofoldpart", NULL };
--static const char **of_get_probes(struct device_node *dp)
-+static const char * const part_probe_types_def[] = {
-+	"cmdlinepart", "RedBoot", "ofpart", "ofoldpart", NULL };
-+
-+static const char * const *of_get_probes(struct device_node *dp)
+ static int doc_register_readb(struct docg3 *docg3, int reg)
  {
- 	const char *cp;
- 	int cplen;
-@@ -142,7 +144,7 @@ static const char **of_get_probes(struct device_node *dp)
- 	return res;
- }
- 
--static void of_free_probes(const char **probes)
-+static void of_free_probes(const char * const *probes)
- {
- 	if (probes != part_probe_types_def)
- 		kfree(probes);
-@@ -151,7 +153,7 @@ static void of_free_probes(const char **probes)
- static struct of_device_id of_flash_match[];
- static int of_flash_probe(struct platform_device *dev)
- {
--	const char **part_probe_types;
-+	const char * const *part_probe_types;
- 	const struct of_device_id *match;
- 	struct device_node *dp = dev->dev.of_node;
- 	struct resource res;
 -- 
 1.7.10.4
