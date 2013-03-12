@@ -1,13 +1,15 @@
+Received: from mga02.intel.com ([134.134.136.20])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UFN8U-0001ND-Uc
+ for linux-mtd@lists.infradead.org; Tue, 12 Mar 2013 11:12:55 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD Maling List <linux-mtd@lists.infradead.org>
-Subject: [PATCH 07/10] pcmcia: remove RPX board stuff
-Date: Tue, 12 Mar 2013 13:14:12 +0200
-Message-Id: <1363086855-2847-8-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 08/10] mtd: remove the tqm8xxl map driver
+Date: Tue, 12 Mar 2013 13:14:13 +0200
+Message-Id: <1363086855-2847-9-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1363086855-2847-1-git-send-email-dedekind1@gmail.com>
 References: <1363086855-2847-1-git-send-email-dedekind1@gmail.com>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-m68k@lists.linux-m68k.org, linux-pcmcia@lists.infradead.org,
- Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,121 +21,304 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-The RPX board is not supported by the kernel because CONFIG_RPXCLASSIC and
-CONFIG_RPXLITE symbols and not defined anywhere. Clean-up the m8xx_pcmcia
-driver a little bit.
+This driver depends on the CONFIG_TQM8xxL symbol, which is not defined
+anywhere, which means that this driver is dead.
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Cc: linux-pcmcia@lists.infradead.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
 ---
- drivers/pcmcia/m8xx_pcmcia.c |   81 ------------------------------------------
- 1 file changed, 81 deletions(-)
+ drivers/mtd/maps/Kconfig   |   10 --
+ drivers/mtd/maps/Makefile  |    1 -
+ drivers/mtd/maps/tqm8xxl.c |  249 --------------------------------------------
+ 3 files changed, 260 deletions(-)
+ delete mode 100644 drivers/mtd/maps/tqm8xxl.c
 
-NOTE: this commit is independent, and I can merge it via the MTD tree with the
-rest of the patches of this series. Of course, an ACK would be great to have.
-And of course, if PCMCIA people wish to merge it via their tree, it is also
-nice, just let me know.
-
-diff --git a/drivers/pcmcia/m8xx_pcmcia.c b/drivers/pcmcia/m8xx_pcmcia.c
-index 9a12ead..18c0d8d 100644
---- a/drivers/pcmcia/m8xx_pcmcia.c
-+++ b/drivers/pcmcia/m8xx_pcmcia.c
-@@ -68,12 +68,6 @@ MODULE_LICENSE("Dual MPL/GPL");
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index 3fe3216..888e684 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -274,16 +274,6 @@ config MTD_L440GX
  
- #if !defined(CONFIG_PCMCIA_SLOT_A) && !defined(CONFIG_PCMCIA_SLOT_B)
+ 	  BE VERY CAREFUL.
  
--/* The RPX series use SLOT_B */
--#if defined(CONFIG_RPXCLASSIC) || defined(CONFIG_RPXLITE)
--#define CONFIG_PCMCIA_SLOT_B
--#define CONFIG_BD_IS_MHZ
--#endif
+-config MTD_TQM8XXL
+-	tristate "CFI Flash device mapped on TQM8XXL"
+-	depends on MTD_CFI && TQM8xxL
+-	help
+-	  The TQM8xxL PowerPC board has up to two banks of CFI-compliant
+-	  chips, currently uses AMD one. This 'mapping' driver supports
+-	  that arrangement, allowing the CFI probe and command set driver
+-	  code to communicate with the chips on the TQM8xxL board. More at
+-	  <http://www.denx.de/wiki/PPCEmbedded/>.
 -
- /* The ADS board use SLOT_A */
- #ifdef CONFIG_ADS
- #define CONFIG_PCMCIA_SLOT_A
-@@ -253,81 +247,6 @@ static irqreturn_t m8xx_interrupt(int irq, void *dev);
- 
- #define PCMCIA_BMT_LIMIT (15*4)	/* Bus Monitor Timeout value */
- 
--/* ------------------------------------------------------------------------- */
--/* board specific stuff:                                                     */
--/* voltage_set(), hardware_enable() and hardware_disable()                   */
--/* ------------------------------------------------------------------------- */
--/* RPX Boards from Embedded Planet                                           */
--
--#if defined(CONFIG_RPXCLASSIC) || defined(CONFIG_RPXLITE)
--
--/* The RPX boards seems to have it's bus monitor timeout set to 6*8 clocks.
-- * SYPCR is write once only, therefore must the slowest memory be faster
-- * than the bus monitor or we will get a machine check due to the bus timeout.
+ config MTD_CFI_FLAGADM
+ 	tristate "CFI Flash device mapping on FlagaDM"
+ 	depends on 8xx && MTD_CFI
+diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+index 8e2b289..0cdc881 100644
+--- a/drivers/mtd/maps/Makefile
++++ b/drivers/mtd/maps/Makefile
+@@ -23,7 +23,6 @@ obj-$(CONFIG_MTD_PHYSMAP_OF)	+= physmap_of.o
+ obj-$(CONFIG_MTD_PISMO)		+= pismo.o
+ obj-$(CONFIG_MTD_PMC_MSP_EVM)   += pmcmsp-flash.o
+ obj-$(CONFIG_MTD_PCMCIA)	+= pcmciamtd.o
+-obj-$(CONFIG_MTD_TQM8XXL)	+= tqm8xxl.o
+ obj-$(CONFIG_MTD_SA1100)	+= sa1100-flash.o
+ obj-$(CONFIG_MTD_SBC_GXX)	+= sbc_gxx.o
+ obj-$(CONFIG_MTD_SC520CDP)	+= sc520cdp.o
+diff --git a/drivers/mtd/maps/tqm8xxl.c b/drivers/mtd/maps/tqm8xxl.c
+deleted file mode 100644
+index d785879..0000000
+--- a/drivers/mtd/maps/tqm8xxl.c
++++ /dev/null
+@@ -1,249 +0,0 @@
+-/*
+- * Handle mapping of the flash memory access routines
+- * on TQM8xxL based devices.
+- *
+- * based on rpxlite.c
+- *
+- * Copyright(C) 2001 Kirk Lee <kirk@hpc.ee.ntu.edu.tw>
+- *
+- * This code is GPLed
+- *
 - */
 -
--#define PCMCIA_BOARD_MSG "RPX CLASSIC or RPX LITE"
+-/*
+- * According to TQM8xxL hardware manual, TQM8xxL series have
+- * following flash memory organisations:
+- *	| capacity |	| chip type |	| bank0 |	| bank1 |
+- *	    2MiB	   512Kx16	  2MiB		   0
+- *	    4MiB	   1Mx16	  4MiB		   0
+- *	    8MiB	   1Mx16	  4MiB		   4MiB
+- * Thus, we choose CONFIG_MTD_CFI_I2 & CONFIG_MTD_CFI_B4 at
+- * kernel configuration.
+- */
+-#include <linux/module.h>
+-#include <linux/types.h>
+-#include <linux/kernel.h>
+-#include <linux/init.h>
+-#include <linux/slab.h>
 -
--#undef PCMCIA_BMT_LIMIT
--#define PCMCIA_BMT_LIMIT (6*8)
+-#include <linux/mtd/mtd.h>
+-#include <linux/mtd/map.h>
+-#include <linux/mtd/partitions.h>
 -
--static int voltage_set(int slot, int vcc, int vpp)
+-#include <asm/io.h>
+-
+-#define FLASH_ADDR 0x40000000
+-#define FLASH_SIZE 0x00800000
+-#define FLASH_BANK_MAX 4
+-
+-// trivial struct to describe partition information
+-struct mtd_part_def
 -{
--	u32 reg = 0;
+-	int nums;
+-	unsigned char *type;
+-	struct mtd_partition* mtd_part;
+-};
 -
--	switch (vcc) {
--	case 0:
--		break;
--	case 33:
--		reg |= BCSR1_PCVCTL4;
--		break;
--	case 50:
--		reg |= BCSR1_PCVCTL5;
--		break;
--	default:
--		return 1;
+-//static struct mtd_info *mymtd;
+-static struct mtd_info* mtd_banks[FLASH_BANK_MAX];
+-static struct map_info* map_banks[FLASH_BANK_MAX];
+-static struct mtd_part_def part_banks[FLASH_BANK_MAX];
+-static unsigned long num_banks;
+-static void __iomem *start_scan_addr;
+-
+-/*
+- * Here are partition information for all known TQM8xxL series devices.
+- * See include/linux/mtd/partitions.h for definition of the mtd_partition
+- * structure.
+- *
+- * The *_max_flash_size is the maximum possible mapped flash size which
+- * is not necessarily the actual flash size.  It must correspond to the
+- * value specified in the mapping definition defined by the
+- * "struct map_desc *_io_desc" for the corresponding machine.
+- */
+-
+-/* Currently, TQM8xxL has up to 8MiB flash */
+-static unsigned long tqm8xxl_max_flash_size = 0x00800000;
+-
+-/* partition definition for first flash bank
+- * (cf. "drivers/char/flash_config.c")
+- */
+-static struct mtd_partition tqm8xxl_partitions[] = {
+-	{
+-	  .name = "ppcboot",
+-	  .offset = 0x00000000,
+-	  .size = 0x00020000,           /* 128KB           */
+-	  .mask_flags = MTD_WRITEABLE,  /* force read-only */
+-	},
+-	{
+-	  .name = "kernel",             /* default kernel image */
+-	  .offset = 0x00020000,
+-	  .size = 0x000e0000,
+-	  .mask_flags = MTD_WRITEABLE,  /* force read-only */
+-	},
+-	{
+-	  .name = "user",
+-	  .offset = 0x00100000,
+-	  .size = 0x00100000,
+-	},
+-	{
+-	  .name = "initrd",
+-	  .offset = 0x00200000,
+-	  .size = 0x00200000,
+-	}
+-};
+-/* partition definition for second flash bank */
+-static struct mtd_partition tqm8xxl_fs_partitions[] = {
+-	{
+-	  .name = "cramfs",
+-	  .offset = 0x00000000,
+-	  .size = 0x00200000,
+-	},
+-	{
+-	  .name = "jffs",
+-	  .offset = 0x00200000,
+-	  .size = 0x00200000,
+-	  //.size = MTDPART_SIZ_FULL,
+-	}
+-};
+-
+-static int __init init_tqm_mtd(void)
+-{
+-	int idx = 0, ret = 0;
+-	unsigned long flash_addr, flash_size, mtd_size = 0;
+-	/* pointer to TQM8xxL board info data */
+-	bd_t *bd = (bd_t *)__res;
+-
+-	flash_addr = bd->bi_flashstart;
+-	flash_size = bd->bi_flashsize;
+-
+-	//request maximum flash size address space
+-	start_scan_addr = ioremap(flash_addr, flash_size);
+-	if (!start_scan_addr) {
+-		printk(KERN_WARNING "%s:Failed to ioremap address:0x%x\n", __func__, flash_addr);
+-		return -EIO;
 -	}
 -
--	switch (vpp) {
--	case 0:
--		break;
--	case 33:
--	case 50:
--		if (vcc == vpp)
--			reg |= BCSR1_PCVCTL6;
+-	for (idx = 0 ; idx < FLASH_BANK_MAX ; idx++) {
+-		if(mtd_size >= flash_size)
+-			break;
+-
+-		printk(KERN_INFO "%s: chip probing count %d\n", __func__, idx);
+-
+-		map_banks[idx] = kzalloc(sizeof(struct map_info), GFP_KERNEL);
+-		if(map_banks[idx] == NULL) {
+-			ret = -ENOMEM;
+-			/* FIXME: What if some MTD devices were probed already? */
+-			goto error_mem;
+-		}
+-
+-		map_banks[idx]->name = kmalloc(16, GFP_KERNEL);
+-
+-		if (!map_banks[idx]->name) {
+-			ret = -ENOMEM;
+-			/* FIXME: What if some MTD devices were probed already? */
+-			goto error_mem;
+-		}
+-		sprintf(map_banks[idx]->name, "TQM8xxL%d", idx);
+-
+-		map_banks[idx]->size = flash_size;
+-		map_banks[idx]->bankwidth = 4;
+-
+-		simple_map_init(map_banks[idx]);
+-
+-		map_banks[idx]->virt = start_scan_addr;
+-		map_banks[idx]->phys = flash_addr;
+-		/* FIXME: This looks utterly bogus, but I'm trying to
+-		   preserve the behaviour of the original (shown here)...
+-
+-		map_banks[idx]->map_priv_1 =
+-		start_scan_addr + ((idx > 0) ?
+-		(mtd_banks[idx-1] ? mtd_banks[idx-1]->size : 0) : 0);
+-		*/
+-
+-		if (idx && mtd_banks[idx-1]) {
+-			map_banks[idx]->virt += mtd_banks[idx-1]->size;
+-			map_banks[idx]->phys += mtd_banks[idx-1]->size;
+-		}
+-
+-		//start to probe flash chips
+-		mtd_banks[idx] = do_map_probe("cfi_probe", map_banks[idx]);
+-
+-		if (mtd_banks[idx]) {
+-			mtd_banks[idx]->owner = THIS_MODULE;
+-			mtd_size += mtd_banks[idx]->size;
+-			num_banks++;
+-
+-			printk(KERN_INFO "%s: bank%d, name:%s, size:%dbytes \n", __func__, num_banks,
+-			mtd_banks[idx]->name, mtd_banks[idx]->size);
+-		}
+-	}
+-
+-	/* no supported flash chips found */
+-	if (!num_banks) {
+-		printk(KERN_NOTICE "TQM8xxL: No support flash chips found!\n");
+-		ret = -ENXIO;
+-		goto error_mem;
+-	}
+-
+-	/*
+-	 * Select Static partition definitions
+-	 */
+-	part_banks[0].mtd_part = tqm8xxl_partitions;
+-	part_banks[0].type = "Static image";
+-	part_banks[0].nums = ARRAY_SIZE(tqm8xxl_partitions);
+-
+-	part_banks[1].mtd_part = tqm8xxl_fs_partitions;
+-	part_banks[1].type = "Static file system";
+-	part_banks[1].nums = ARRAY_SIZE(tqm8xxl_fs_partitions);
+-
+-	for(idx = 0; idx < num_banks ; idx++) {
+-		if (part_banks[idx].nums == 0)
+-			printk(KERN_NOTICE "TQM flash%d: no partition info available, registering whole flash at once\n", idx);
 -		else
--			return 1;
--		break;
--	case 120:
--		reg |= BCSR1_PCVCTL7;
--	default:
--		return 1;
+-			printk(KERN_NOTICE "TQM flash%d: Using %s partition definition\n",
+-					idx, part_banks[idx].type);
+-		mtd_device_register(mtd_banks[idx], part_banks[idx].mtd_part,
+-		part_banks[idx].nums);
 -	}
--
--	if (!((vcc == 50) || (vcc == 0)))
--		return 1;
--
--	/* first, turn off all power */
--
--	out_be32(((u32 *) RPX_CSR_ADDR),
--		 in_be32(((u32 *) RPX_CSR_ADDR)) & ~(BCSR1_PCVCTL4 |
--						     BCSR1_PCVCTL5 |
--						     BCSR1_PCVCTL6 |
--						     BCSR1_PCVCTL7));
--
--	/* enable new powersettings */
--
--	out_be32(((u32 *) RPX_CSR_ADDR), in_be32(((u32 *) RPX_CSR_ADDR)) | reg);
--
 -	return 0;
+-error_mem:
+-	for(idx = 0 ; idx < FLASH_BANK_MAX ; idx++) {
+-		if(map_banks[idx] != NULL) {
+-			kfree(map_banks[idx]->name);
+-			map_banks[idx]->name = NULL;
+-			kfree(map_banks[idx]);
+-			map_banks[idx] = NULL;
+-		}
+-	}
+-error:
+-	iounmap(start_scan_addr);
+-	return ret;
 -}
 -
--#define socket_get(_slot_) PCMCIA_SOCKET_KEY_5V
--#define hardware_enable(_slot_)	/* No hardware to enable */
--#define hardware_disable(_slot_)	/* No hardware to disable */
+-static void __exit cleanup_tqm_mtd(void)
+-{
+-	unsigned int idx = 0;
+-	for(idx = 0 ; idx < num_banks ; idx++) {
+-		/* destroy mtd_info previously allocated */
+-		if (mtd_banks[idx]) {
+-			mtd_device_unregister(mtd_banks[idx]);
+-			map_destroy(mtd_banks[idx]);
+-		}
+-		/* release map_info not used anymore */
+-		kfree(map_banks[idx]->name);
+-		kfree(map_banks[idx]);
+-	}
 -
--#endif				/* CONFIG_RPXCLASSIC */
+-	if (start_scan_addr) {
+-		iounmap(start_scan_addr);
+-		start_scan_addr = 0;
+-	}
+-}
 -
- /* FADS Boards from Motorola                                               */
- 
- #if defined(CONFIG_FADS)
+-module_init(init_tqm_mtd);
+-module_exit(cleanup_tqm_mtd);
+-
+-MODULE_LICENSE("GPL");
+-MODULE_AUTHOR("Kirk Lee <kirk@hpc.ee.ntu.edu.tw>");
+-MODULE_DESCRIPTION("MTD map driver for TQM8xxL boards");
 -- 
 1.7.10.4
