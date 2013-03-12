@@ -1,15 +1,20 @@
-MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <1363086855-2847-1-git-send-email-dedekind1@gmail.com>
-References: <1363086855-2847-1-git-send-email-dedekind1@gmail.com>
-Date: Tue, 12 Mar 2013 12:21:19 +0100
-Message-ID: <CAMuHMdWT1DXrOjpqXbLWqh982qHD8vAy-dwXGcUn4HoTMEZVxQ@mail.gmail.com>
-Subject: Re: [PATCH 00/10] mtd: remove dead map drivers
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-m68k@lists.linux-m68k.org, linux-pcmcia@lists.infradead.org,
- MTD Maling List <linux-mtd@lists.infradead.org>
+Received: from mga02.intel.com ([134.134.136.20])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UFNJb-0006Lq-41
+ for linux-mtd@lists.infradead.org; Tue, 12 Mar 2013 11:24:20 +0000
+Message-ID: <1363087506.3348.62.camel@sauron.fi.intel.com>
+Subject: Re: MTD : Kernel oops when remounting ubifs as read/write
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Mark Jackson <mpfj-list@mimc.co.uk>
+Date: Tue, 12 Mar 2013 13:25:06 +0200
+In-Reply-To: <5134CEF9.5070502@mimc.co.uk>
+References: <5134CEF9.5070502@mimc.co.uk>
+Content-Type: multipart/mixed; boundary="=-6pErCgAiPlgD9GVVtnXj"
+Mime-Version: 1.0
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ lkml <linux-kernel@vger.kernel.org>, adrian.hunter@intel.com
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,25 +24,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Mar 12, 2013 at 12:14 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> This patch-set removes a bunch of dean MTD map drivers. The way I judged
-> whether a driver is dead or not was looking at driver's dependencies in the
-> Kconfig file. Whenever I saw a driver depending on a Kconfig symbol which is
-> not defined anywhere, I treated the driver as dead.
->
-> The motivation for this patch-set is to clean up the MTD subsystem a little and
-> lessen the maintenance burden. Indeed, the less drivers we have, the easier it
-> is to do MTD framework refactoring.
 
-Most of these are PPC boards, not m68k.
+--=-6pErCgAiPlgD9GVVtnXj
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 
-Gr{oetje,eeting}s,
+On Mon, 2013-03-04 at 16:42 +0000, Mark Jackson wrote:
+> I'm encountering an oops when remounting my ubifs volume as read/write.
+> 
+> # mount -o remount,rw /
+> [   89.434974] UBIFS assert failed in ubifs_write_node at 869 (pid 628)
+> [   89.442122] [<c001b124>] (unwind_backtrace+0x0/0xf0) from [<c01ad7d4>] (ubifs_write_node+0x180/0x1c4)
+> [   89.451896] [<c01ad7d4>] (ubifs_write_node+0x180/0x1c4) from [<c01b3878>] (ubifs_write_master+0x9c/0x134)
+> [   89.462018] [<c01b3878>] (ubifs_write_master+0x9c/0x134) from [<c01a79a4>] (ubifs_remount_fs+0x5d4/0x7f8)
+> [   89.472133] [<c01a79a4>] (ubifs_remount_fs+0x5d4/0x7f8) from [<c010dbf4>] (do_remount_sb+0x98/0x16c)
+> [   89.481790] [<c010dbf4>] (do_remount_sb+0x98/0x16c) from [<c0128268>] (do_mount+0x830/0x888)
+> [   89.490708] [<c0128268>] (do_mount+0x830/0x888) from [<c0128344>] (sys_mount+0x84/0xb8)
+> [   89.499178] [<c0128344>] (sys_mount+0x84/0xb8) from [<c0013800>] (ret_fast_syscall+0x0/0x3c)
+> [   89.510997] UBIFS assert failed in ubifs_write_node at 869 (pid 628)
+> [   89.517884] [<c001b124>] (unwind_backtrace+0x0/0xf0) from [<c01ad7d4>] (ubifs_write_node+0x180/0x1c4)
+> [   89.527641] [<c01ad7d4>] (ubifs_write_node+0x180/0x1c4) from [<c01b38b4>] (ubifs_write_master+0xd8/0x134)
+> [   89.537760] [<c01b38b4>] (ubifs_write_master+0xd8/0x134) from [<c01a79a4>] (ubifs_remount_fs+0x5d4/0x7f8)
+> [   89.547869] [<c01a79a4>] (ubifs_remount_fs+0x5d4/0x7f8) from [<c010dbf4>] (do_remount_sb+0x98/0x16c)
+> [   89.557526] [<c010dbf4>] (do_remount_sb+0x98/0x16c) from [<c0128268>] (do_mount+0x830/0x888)
+> [   89.566435] [<c0128268>] (do_mount+0x830/0x888) from [<c0128344>] (sys_mount+0x84/0xb8)
+> [   89.574905] [<c0128344>] (sys_mount+0x84/0xb8) from [<c0013800>] (ret_fast_syscall+0x0/0x3c)
+> [   89.585939] UBIFS: start fixing up free space
+> [   89.592237] UBIFS: background thread "ubifs_bgt0_0" started, PID 629
+> [   91.419951] UBIFS: free space fixup complete
+> #
+> 
+> If it's any help, if the remount is put into my inittab, I don't get any oops.
 
-                        Geert
+Would you please try this patch (also attached):
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index ac838b8..9791b3c 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1568,6 +1568,12 @@ static int ubifs_remount_rw(struct ubifs_info *c)
+ 	c->remounting_rw = 1;
+ 	c->ro_mount = 0;
+ 
++	if (c->space_fixup) {
++		err = ubifs_fixup_free_space(c);
++		if (err)
++			goto out;
++	}
++
+ 	err = check_free_space(c);
+ 	if (err)
+ 		goto out;
+@@ -1684,12 +1690,6 @@ static int ubifs_remount_rw(struct ubifs_info *c)
+ 		err = dbg_check_space_info(c);
+ 	}
+ 
+-	if (c->space_fixup) {
+-		err = ubifs_fixup_free_space(c);
+-		if (err)
+-			goto out;
+-	}
+-
+ 	mutex_unlock(&c->umount_mutex);
+ 	return err;
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+Best Regards,
+Artem Bityutskiy
+
+--=-6pErCgAiPlgD9GVVtnXj
+Content-Disposition: attachment; filename="ubifs-patch-for-mark.diff"
+Content-Type: text/x-patch; name="ubifs-patch-for-mark.diff"; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index ac838b8..9791b3c 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1568,6 +1568,12 @@ static int ubifs_remount_rw(struct ubifs_info *c)
+ 	c->remounting_rw = 1;
+ 	c->ro_mount = 0;
+ 
++	if (c->space_fixup) {
++		err = ubifs_fixup_free_space(c);
++		if (err)
++			goto out;
++	}
++
+ 	err = check_free_space(c);
+ 	if (err)
+ 		goto out;
+@@ -1684,12 +1690,6 @@ static int ubifs_remount_rw(struct ubifs_info *c)
+ 		err = dbg_check_space_info(c);
+ 	}
+ 
+-	if (c->space_fixup) {
+-		err = ubifs_fixup_free_space(c);
+-		if (err)
+-			goto out;
+-	}
+-
+ 	mutex_unlock(&c->umount_mutex);
+ 	return err;
+ 
+
+--=-6pErCgAiPlgD9GVVtnXj--
