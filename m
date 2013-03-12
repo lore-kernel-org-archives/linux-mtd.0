@@ -1,18 +1,15 @@
-Message-ID: <1363020239.3348.56.camel@sauron.fi.intel.com>
-Subject: Re: Dead mappings and drivers in MTD
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Olof Johansson <olof@lixom.net>
-Date: Mon, 11 Mar 2013 18:43:59 +0200
-In-Reply-To: <CAOesGMhy6YceRr3T4ZALhYeSQfEuASO+ajJy1Htwws=OMtvrTg@mail.gmail.com>
-References: <1363016099.3348.47.camel@sauron.fi.intel.com>
- <CAOesGMhy6YceRr3T4ZALhYeSQfEuASO+ajJy1Htwws=OMtvrTg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-pcmcia@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>,
- linuxppc-dev@ozlabs.org, linux-m68k@lists.linux-m68k.org,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from smtp9.mail.ru ([94.100.176.54])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UFITv-0006oR-Qt
+ for linux-mtd@lists.infradead.org; Tue, 12 Mar 2013 06:14:41 +0000
+From: Alexander Shiyan <shc_work@mail.ru>
+To: linux-mtd@lists.infradead.org
+Subject: [RFC RESEND] mtd: nand_base: Make Diskonchip work again
+Date: Tue, 12 Mar 2013 10:14:24 +0400
+Message-Id: <1363068864-5376-1-git-send-email-shc_work@mail.ru>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Alexander Shiyan <shc_work@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,197 +19,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2013-03-11 at 09:20 -0700, Olof Johansson wrote:
-> On Mon, Mar 11, 2013 at 8:34 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> > Hi MTD folks,
-> >
-> > we have huge amount of drivers, espacially mapping drives in
-> > 'drivers/mtd', and for sure may of them are for ancient devices which
-> > are long dead and not supported by modern kernels anyway. I would like
-> > to do a small clean-up. It is difficult to judge which ones are dead for
-> > me, so I am asking the community to help. Thanks!
-> >
-> > There are few easy cases - some drivers depend on Kconfig symbols which
-> > are not defined anywhere - I guess these are clear candidates for
-> > removal. For example this one:
-> >
-> > config MTD_DBOX2
-> >         tristate "CFI Flash device mapped on D-Box2"
-> >         depends on DBOX2 && MTD_CFI_INTELSTD && MTD_CFI_INTELEXT && MTD_CFI_AMDSTD
-> >         help
-> >           This enables access routines for the flash chips on the Nokia/Sagem
-> >           D-Box 2 board. If you have one of these boards and would like to use
-> >
-> > Grepping for "DBOX2" gives nothing.
-> 
-> In 2.6.14, it dropped two dependencies that used to be there for PPC32
-> and 8xx. There still was no DBOX2 symbol to fulfill that dependency
-> back then.
-> 
-> Take it out, if someone finds a user later on it can always be
-> reverted. Seems very very unlikely in this case.
+According to my post (http://permalink.gmane.org/gmane.linux.drivers.mtd/45657),
+I created a patch to fix the DiskOnChip regression. Patch partially revert
+"mtd: nand: kill NAND_NO_READRDY". We create NAND_NEED_READDRY option as a
+replacement NAND_NO_READRDY but with different logic, and restore RDY
+expectations in reading function, if this option is set. At least, Disconchip
+works again, so probably it can help in solving other NAND-related bugs in
+the latest kernels.
 
-I agree, thanks. I've quickly went through all the MTD map drivers and
-found many candidates for removal. I did not prepare a patch-set yet,
-but the below commit messages from my tree should give enough info about
-what I am thinking to remove.
+Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+---
+ drivers/mtd/nand/diskonchip.c |    1 +
+ drivers/mtd/nand/nand_base.c  |   16 ++++++++++++++++
+ include/linux/mtd/nand.h      |    2 ++
+ 3 files changed, 19 insertions(+), 0 deletions(-)
 
-Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Date:   Mon Mar 11 18:24:37 2013 +0200
-
-    mtd: remove the mbx860 map driver
-    
-    This driver depends on CONFIG_MBX which is not defined anywhere, which means
-    this driver is dead.
-    
-    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-
- drivers/mtd/maps/Kconfig   |    9 --
- drivers/mtd/maps/Makefile  |    1 -
- drivers/mtd/maps/ixp2000.c |  253 --------------------------------------------
- 3 files changed, 263 deletions(-)
-
-commit 3e8b189c4fad6196333fb2069ab1f183b652a81d
-Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Date:   Mon Mar 11 18:10:06 2013 +0200
-
-    mtd: remove the dilnetpc map driver support
-    
-    This driver is marked as broken for very long time. Most probably this board is
-    just something ancient no one cares about anyway.
-    
-    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-
- drivers/mtd/maps/Kconfig    |   16 --
- drivers/mtd/maps/Makefile   |    1 -
- drivers/mtd/maps/dilnetpc.c |  496 -------------------------------------------
- 3 files changed, 513 deletions(-)
-
-commit e9313043d5bb4b2429b60092ebd9974598b5b62d
-Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Date:   Mon Mar 11 18:07:35 2013 +0200
-
-    mtd: remove the tqm8xxl map driver
-    
-    This driver depends on the CONFIG_TQM8xxL symbol, which is not defined
-    anywhere, which means that this driver is dead.
-    
-    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-
- drivers/mtd/maps/Kconfig   |   10 --
- drivers/mtd/maps/Makefile  |    1 -
- drivers/mtd/maps/tqm8xxl.c |  249 --------------------------------------------
- 3 files changed, 260 deletions(-)
-
-commit 1b17ddb0219d9ab6b96a2bc22331d89ac4ca4539
-Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Date:   Mon Mar 11 18:05:13 2013 +0200
-
-    pcmcia: remove RPX board stuff
-    
-    The RPX board is not supported by the kernel because CONFIG_RPXCLASSIC and
-    CONFIG_RPXLITE symbols and not defined anywhere. Clean-up the m8xx_pcmcia
-    driver a little bit.
-    
-    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-
- drivers/pcmcia/m8xx_pcmcia.c |   81 ------------------------------------------
- 1 file changed, 81 deletions(-)
-
-commit 518fa5d9718cbe00ed3de3798761cc051dcef04b
-Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Date:   Mon Mar 11 18:03:11 2013 +0200
-
-    m68k: remove rpxlite stuff
-    
-    The CONFIG_RPXLITE is not defined anywhere, which means that this board is not
-    supported anyway, and we can clean-up commproc.h a little.
-    
-    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-
- arch/m68k/include/asm/commproc.h |   17 -----------------
- 1 file changed, 17 deletions(-)
-
-commit de70cc56d0c067275c3cac5659196d9ef4043888
-Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Date:   Mon Mar 11 18:01:02 2013 +0200
-
-    mtd: maps: kill the rpxlite map driver
-    
-    This driver depends on the CONFIG_RPXCLASSIC and CONFIG_RPXLITE symbols, which
-    are not defined anywhere, and this means that this driver is dead.
-    
-    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-
- drivers/mtd/maps/Kconfig   |   10 -------
- drivers/mtd/maps/Makefile  |    1 -
- drivers/mtd/maps/rpxlite.c |   64 --------------------------------------------
- 3 files changed, 75 deletions(-)
-
-commit 1ebbc11e1e2a143308689af47bb766824c035285
-Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Date:   Mon Mar 11 17:56:31 2013 +0200
-
-    pcmcia: remove Motorolla MBX860 support
-    
-    The CONFIG_MBX symbol is not defined anywhere in the kernel tree, which means
-    this platform is not supported by the Linux kernel and we can remove the
-    corresponding code from the 'm8xx_pcmcia' driver.
-    
-    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-
- drivers/pcmcia/m8xx_pcmcia.c |   59 ------------------------------------------
- 1 file changed, 59 deletions(-)
-
-commit 61f417243e1157d436ac04b1307f40b2996a4923
-Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Date:   Mon Mar 11 17:54:11 2013 +0200
-
-    mtd: remove the mbx860 map driver
-    
-    This driver depends on CONFIG_MBX which is not defined anywhere, which means
-    this driver is dead.
-    
-    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-
- drivers/mtd/maps/Kconfig  |    8 ----
- drivers/mtd/maps/Makefile |    1 -
- drivers/mtd/maps/mbx860.c |   98 ---------------------------------------------
- 3 files changed, 107 deletions(-)
-
-commit 55c159005c92a7ce8234c6d0072d8d2f6e45a57d
-Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Date:   Mon Mar 11 17:42:54 2013 +0200
-
-    mtd: remove the dmv182 map driver
-    
-    This driver depends on the CONFIG_DMV182 symbol which is not defined anywhere,
-    and this means that this driver is dead.
-    
-    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-
- drivers/mtd/maps/Kconfig  |    9 ---
- drivers/mtd/maps/Makefile |    1 -
- drivers/mtd/maps/dmv182.c |  146 ---------------------------------------------
- 3 files changed, 156 deletions(-)
-
-commit 750b26e3b17a148a7a7d64026088d1e29f9cd118
-Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Date:   Mon Mar 11 17:38:43 2013 +0200
-
-    mtd: remove the dbox2-flash map driver
-    
-    This driver depends on the CONFIG_DBOX2 symbol which does not exist in
-    the kernel, which means the driver is dead.
-    
-    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-
- drivers/mtd/maps/Kconfig       |    8 ---
- drivers/mtd/maps/Makefile      |    1 -
- drivers/mtd/maps/dbox2-flash.c |  123 ----------------------------------------
- 3 files changed, 132 deletions(-)
-
-
+diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/diskonchip.c
+index 81fa578..19992f2 100644
+--- a/drivers/mtd/nand/diskonchip.c
++++ b/drivers/mtd/nand/diskonchip.c
+@@ -1580,6 +1580,7 @@ static int __init doc_probe(unsigned long physadr)
+ 	nand->dev_ready		= doc200x_dev_ready;
+ 	nand->waitfunc		= doc200x_wait;
+ 	nand->block_bad		= doc200x_block_bad;
++	nand->options		= NAND_NEED_READRDY;
+ 	nand->ecc.hwctl		= doc200x_enable_hwecc;
+ 	nand->ecc.calculate	= doc200x_calculate_ecc;
+ 	nand->ecc.correct	= doc200x_correct_data;
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 4321415..42c6392 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -1523,6 +1523,14 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 					oobreadlen -= toread;
+ 				}
+ 			}
++
++			if (chip->options & NAND_NEED_READRDY) {
++				/* Apply delay or wait for ready/busy pin */
++				if (!chip->dev_ready)
++					udelay(chip->chip_delay);
++				else
++					nand_wait_ready(mtd);
++			}
+ 		} else {
+ 			memcpy(buf, chip->buffers->databuf + col, bytes);
+ 			buf += bytes;
+@@ -1787,6 +1795,14 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
+ 		len = min(len, readlen);
+ 		buf = nand_transfer_oob(chip, buf, ops, len);
+ 
++		if (chip->options & NAND_NEED_READRDY) {
++			/* Apply delay or wait for ready/busy pin */
++			if (!chip->dev_ready)
++				udelay(chip->chip_delay);
++			else
++				nand_wait_ready(mtd);
++		}
++
+ 		readlen -= len;
+ 		if (!readlen)
+ 			break;
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 7ccb3c5..1c13582 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -187,6 +187,8 @@ typedef enum {
+  * This happens with the Renesas AG-AND chips, possibly others.
+  */
+ #define BBT_AUTO_REFRESH	0x00000080
++/* Chip require ready check on read */
++#define NAND_NEED_READRDY	0x00000100
+ /* Chip does not allow subpage writes */
+ #define NAND_NO_SUBPAGE_WRITE	0x00000200
+ 
 -- 
-Best Regards,
-Artem Bityutskiy
+1.7.3.4
