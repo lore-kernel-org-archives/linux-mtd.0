@@ -1,15 +1,13 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UFN8J-0001Hc-Lg
- for linux-mtd@lists.infradead.org; Tue, 12 Mar 2013 11:12:41 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD Maling List <linux-mtd@lists.infradead.org>
-Subject: [PATCH 02/10] mtd: remove the dmv182 map driver
-Date: Tue, 12 Mar 2013 13:14:07 +0200
-Message-Id: <1363086855-2847-3-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 03/10] mtd: remove the mbx860 map driver
+Date: Tue, 12 Mar 2013 13:14:08 +0200
+Message-Id: <1363086855-2847-4-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1363086855-2847-1-git-send-email-dedekind1@gmail.com>
 References: <1363086855-2847-1-git-send-email-dedekind1@gmail.com>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-m68k@lists.linux-m68k.org, linux-pcmcia@lists.infradead.org,
+ Geert Uytterhoeven <geert@linux-m68k.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,200 +19,154 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-This driver depends on the CONFIG_DMV182 symbol which is not defined anywhere,
-and this means that this driver is dead.
+This driver depends on CONFIG_MBX which is not defined anywhere, which means
+this driver is dead.
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Cc: linux-pcmcia@lists.infradead.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
 ---
- drivers/mtd/maps/Kconfig  |    9 ---
+ drivers/mtd/maps/Kconfig  |    8 ----
  drivers/mtd/maps/Makefile |    1 -
- drivers/mtd/maps/dmv182.c |  146 ---------------------------------------------
- 3 files changed, 156 deletions(-)
- delete mode 100644 drivers/mtd/maps/dmv182.c
+ drivers/mtd/maps/mbx860.c |   98 ---------------------------------------------
+ 3 files changed, 107 deletions(-)
+ delete mode 100644 drivers/mtd/maps/mbx860.c
 
 diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index 74fe0c2..7071486 100644
+index 7071486..300761f 100644
 --- a/drivers/mtd/maps/Kconfig
 +++ b/drivers/mtd/maps/Kconfig
-@@ -425,15 +425,6 @@ config MTD_UCLINUX
- 	help
- 	  Map driver to support image based filesystems for uClinux.
+@@ -294,14 +294,6 @@ config MTD_RPXLITE
+ 	  to communicate with the chips on the RPXLite board. More at
+ 	  <http://www.embeddedplanet.com/>.
  
--config MTD_DMV182
--        tristate "Map driver for Dy-4 SVME/DMV-182 board."
--        depends on DMV182
--	select MTD_MAP_BANK_WIDTH_32
--	select MTD_CFI_I8
--	select MTD_CFI_AMDSTD
--        help
--          Map driver for Dy-4 SVME/DMV-182 board.
+-config MTD_MBX860
+-	tristate "System flash on MBX860 board"
+-	depends on MTD_CFI && MBX
+-	help
+-	  This enables access routines for the flash chips on the Motorola
+-	  MBX860 board. If you have one of these boards and would like
+-	  to use the flash chips on it, say 'Y'.
 -
- config MTD_INTEL_VR_NOR
- 	tristate "NOR flash on Intel Vermilion Range Expansion Bus CS0"
- 	depends on PCI
+ config MTD_CFI_FLAGADM
+ 	tristate "CFI Flash device mapping on FlagaDM"
+ 	depends on 8xx && MTD_CFI
 diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-index 93f4db2..819e2ab 100644
+index 819e2ab..b61ea98 100644
 --- a/drivers/mtd/maps/Makefile
 +++ b/drivers/mtd/maps/Makefile
-@@ -44,7 +44,6 @@ obj-$(CONFIG_MTD_SCB2_FLASH)	+= scb2_flash.o
- obj-$(CONFIG_MTD_H720X)		+= h720x-flash.o
- obj-$(CONFIG_MTD_IXP4XX)	+= ixp4xx.o
- obj-$(CONFIG_MTD_IXP2000)	+= ixp2000.o
--obj-$(CONFIG_MTD_DMV182)	+= dmv182.o
- obj-$(CONFIG_MTD_PLATRAM)	+= plat-ram.o
- obj-$(CONFIG_MTD_INTEL_VR_NOR)	+= intel_vr_nor.o
- obj-$(CONFIG_MTD_BFIN_ASYNC)	+= bfin-async-flash.o
-diff --git a/drivers/mtd/maps/dmv182.c b/drivers/mtd/maps/dmv182.c
+@@ -17,7 +17,6 @@ obj-$(CONFIG_MTD_ICHXROM)	+= ichxrom.o
+ obj-$(CONFIG_MTD_CK804XROM)	+= ck804xrom.o
+ obj-$(CONFIG_MTD_TSUNAMI)	+= tsunami_flash.o
+ obj-$(CONFIG_MTD_PXA2XX)	+= pxa2xx-flash.o
+-obj-$(CONFIG_MTD_MBX860)	+= mbx860.o
+ obj-$(CONFIG_MTD_OCTAGON)	+= octagon-5066.o
+ obj-$(CONFIG_MTD_PHYSMAP)	+= physmap.o
+ obj-$(CONFIG_MTD_PHYSMAP_OF)	+= physmap_of.o
+diff --git a/drivers/mtd/maps/mbx860.c b/drivers/mtd/maps/mbx860.c
 deleted file mode 100644
-index 6538ac6..0000000
---- a/drivers/mtd/maps/dmv182.c
+index 93fa56c..0000000
+--- a/drivers/mtd/maps/mbx860.c
 +++ /dev/null
-@@ -1,146 +0,0 @@
--
+@@ -1,98 +0,0 @@
 -/*
-- * drivers/mtd/maps/dmv182.c
+- * Handle mapping of the flash on MBX860 boards
 - *
-- * Flash map driver for the Dy4 SVME182 board
+- * Author:	Anton Todorov
+- * Copyright:	(C) 2001 Emness Technology
 - *
-- * Copyright 2003-2004, TimeSys Corporation
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
 - *
-- * Based on the SVME181 flash map, by Tom Nelson, Dot4, Inc. for TimeSys Corp.
-- *
-- * This program is free software; you can redistribute  it and/or modify it
-- * under  the terms of  the GNU General  Public License as published by the
-- * Free Software Foundation;  either version 2 of the  License, or (at your
-- * option) any later version.
 - */
 -
 -#include <linux/module.h>
--#include <linux/init.h>
 -#include <linux/types.h>
 -#include <linux/kernel.h>
+-#include <linux/init.h>
 -#include <asm/io.h>
 -#include <linux/mtd/mtd.h>
 -#include <linux/mtd/map.h>
 -#include <linux/mtd/partitions.h>
--#include <linux/errno.h>
 -
--/*
-- * This driver currently handles only the 16MiB user flash bank 1 on the
-- * board.  It does not provide access to bank 0 (contains the Dy4 FFW), bank 2
-- * (VxWorks boot), or the optional 48MiB expansion flash.
-- *
-- * scott.wood@timesys.com: On the newer boards with 128MiB flash, it
-- * now supports the first 96MiB (the boot flash bank containing FFW
-- * is excluded).  The VxWorks loader is in partition 1.
-- */
 -
--#define FLASH_BASE_ADDR 0xf0000000
--#define FLASH_BANK_SIZE (128*1024*1024)
+-#define WINDOW_ADDR 0xfe000000
+-#define WINDOW_SIZE 0x00200000
 -
--MODULE_AUTHOR("Scott Wood, TimeSys Corporation <scott.wood@timesys.com>");
--MODULE_DESCRIPTION("User-programmable flash device on the Dy4 SVME182 board");
--MODULE_LICENSE("GPL");
+-/* Flash / Partition sizing */
+-#define MAX_SIZE_KiB              8192
+-#define BOOT_PARTITION_SIZE_KiB    512
+-#define KERNEL_PARTITION_SIZE_KiB 5632
+-#define APP_PARTITION_SIZE_KiB    2048
 -
--static struct map_info svme182_map = {
--	.name		= "Dy4 SVME182",
--	.bankwidth	= 32,
--	.size		=  128 * 1024 * 1024
+-#define NUM_PARTITIONS 3
+-
+-/* partition_info gives details on the logical partitions that the split the
+- * single flash device into. If the size if zero we use up to the end of the
+- * device. */
+-static struct mtd_partition partition_info[]={
+-	{ .name = "MBX flash BOOT partition",
+-	.offset = 0,
+-	.size =   BOOT_PARTITION_SIZE_KiB*1024 },
+-	{ .name = "MBX flash DATA partition",
+-	.offset = BOOT_PARTITION_SIZE_KiB*1024,
+-	.size = (KERNEL_PARTITION_SIZE_KiB)*1024 },
+-	{ .name = "MBX flash APPLICATION partition",
+-	.offset = (BOOT_PARTITION_SIZE_KiB+KERNEL_PARTITION_SIZE_KiB)*1024 }
 -};
 -
--#define BOOTIMAGE_PART_SIZE		((6*1024*1024)-RESERVED_PART_SIZE)
 -
--// Allow 6MiB for the kernel
--#define NEW_BOOTIMAGE_PART_SIZE  (6 * 1024 * 1024)
--// Allow 1MiB for the bootloader
--#define NEW_BOOTLOADER_PART_SIZE (1024 * 1024)
--// Use the remaining 9MiB at the end of flash for the RFS
--#define NEW_RFS_PART_SIZE        (0x01000000 - NEW_BOOTLOADER_PART_SIZE - \
--                                  NEW_BOOTIMAGE_PART_SIZE)
+-static struct mtd_info *mymtd;
 -
--static struct mtd_partition svme182_partitions[] = {
--	// The Lower PABS is only 128KiB, but the partition code doesn't
--	// like partitions that don't end on the largest erase block
--	// size of the device, even if all of the erase blocks in the
--	// partition are small ones.  The hardware should prevent
--	// writes to the actual PABS areas.
--	{
--		name:       "Lower PABS and CPU 0 bootloader or kernel",
--		size:       6*1024*1024,
--		offset:     0,
--	},
--	{
--		name:       "Root Filesystem",
--		size:       10*1024*1024,
--		offset:     MTDPART_OFS_NXTBLK
--	},
--	{
--		name:       "CPU1 Bootloader",
--		size:       1024*1024,
--		offset:     MTDPART_OFS_NXTBLK,
--	},
--	{
--		name:       "Extra",
--		size:       110*1024*1024,
--		offset:     MTDPART_OFS_NXTBLK
--	},
--	{
--		name:       "Foundation Firmware and Upper PABS",
--		size:       1024*1024,
--		offset:     MTDPART_OFS_NXTBLK,
--		mask_flags: MTD_WRITEABLE // read-only
--	}
+-struct map_info mbx_map = {
+-	.name = "MBX flash",
+-	.size = WINDOW_SIZE,
+-	.phys = WINDOW_ADDR,
+-	.bankwidth = 4,
 -};
 -
--static struct mtd_info *this_mtd;
--
--static int __init init_svme182(void)
+-static int __init init_mbx(void)
 -{
--	struct mtd_partition *partitions;
--	int num_parts = ARRAY_SIZE(svme182_partitions);
+-	printk(KERN_NOTICE "Motorola MBX flash device: 0x%x at 0x%x\n", WINDOW_SIZE*4, WINDOW_ADDR);
+-	mbx_map.virt = ioremap(WINDOW_ADDR, WINDOW_SIZE * 4);
 -
--	partitions = svme182_partitions;
--
--	svme182_map.virt = ioremap(FLASH_BASE_ADDR, svme182_map.size);
--
--	if (svme182_map.virt == 0) {
--		printk("Failed to ioremap FLASH memory area.\n");
+-	if (!mbx_map.virt) {
+-		printk("Failed to ioremap\n");
 -		return -EIO;
 -	}
+-	simple_map_init(&mbx_map);
 -
--	simple_map_init(&svme182_map);
--
--	this_mtd = do_map_probe("cfi_probe", &svme182_map);
--	if (!this_mtd)
--	{
--		iounmap((void *)svme182_map.virt);
--		return -ENXIO;
+-	mymtd = do_map_probe("jedec_probe", &mbx_map);
+-	if (mymtd) {
+-		mymtd->owner = THIS_MODULE;
+-		mtd_device_register(mymtd, NULL, 0);
+-		mtd_device_register(mymtd, partition_info, NUM_PARTITIONS);
+-		return 0;
 -	}
 -
--	printk(KERN_NOTICE "SVME182 flash device: %dMiB at 0x%08x\n",
--		   this_mtd->size >> 20, FLASH_BASE_ADDR);
--
--	this_mtd->owner = THIS_MODULE;
--	mtd_device_register(this_mtd, partitions, num_parts);
--
--	return 0;
+-	iounmap((void *)mbx_map.virt);
+-	return -ENXIO;
 -}
 -
--static void __exit cleanup_svme182(void)
+-static void __exit cleanup_mbx(void)
 -{
--	if (this_mtd)
--	{
--		mtd_device_unregister(this_mtd);
--		map_destroy(this_mtd);
+-	if (mymtd) {
+-		mtd_device_unregister(mymtd);
+-		map_destroy(mymtd);
 -	}
--
--	if (svme182_map.virt)
--	{
--		iounmap((void *)svme182_map.virt);
--		svme182_map.virt = 0;
+-	if (mbx_map.virt) {
+-		iounmap((void *)mbx_map.virt);
+-		mbx_map.virt = 0;
 -	}
--
--	return;
 -}
 -
--module_init(init_svme182);
--module_exit(cleanup_svme182);
+-module_init(init_mbx);
+-module_exit(cleanup_mbx);
+-
+-MODULE_AUTHOR("Anton Todorov <a.todorov@emness.com>");
+-MODULE_DESCRIPTION("MTD map driver for Motorola MBX860 board");
+-MODULE_LICENSE("GPL");
 -- 
 1.7.10.4
