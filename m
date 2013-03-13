@@ -1,21 +1,17 @@
-Received: from mail-ve0-f182.google.com ([209.85.128.182])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UFZ0o-0000SB-Kf
- for linux-mtd@lists.infradead.org; Tue, 12 Mar 2013 23:53:43 +0000
-Received: by mail-ve0-f182.google.com with SMTP id ox1so329426veb.27
- for <linux-mtd@lists.infradead.org>; Tue, 12 Mar 2013 16:53:41 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1363086855-2847-11-git-send-email-dedekind1@gmail.com>
-References: <1363086855-2847-1-git-send-email-dedekind1@gmail.com>
- <1363086855-2847-11-git-send-email-dedekind1@gmail.com>
-Date: Tue, 12 Mar 2013 16:53:41 -0700
-Message-ID: <CAN8TOE93RTGWwmypHWtTSoWjVrN2s12zavw38rOozR-TmgX-kQ@mail.gmail.com>
-Subject: Re: [PATCH 10/10] mtd: remove the mbx860 map driver
-From: Brian Norris <computersforpeace@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>
+Received: from mga14.intel.com ([143.182.124.37])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UFhbP-00066t-9D
+ for linux-mtd@lists.infradead.org; Wed, 13 Mar 2013 09:04:04 +0000
+Message-ID: <1363165492.9457.10.camel@sauron.fi.intel.com>
+Subject: [PATCH 00/10] mtd: remove dead map drivers
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: MTD Maling List <linux-mtd@lists.infradead.org>, linuxppc-dev
+ <linuxppc-dev@lists.ozlabs.org>
+Date: Wed, 13 Mar 2013 11:04:52 +0200
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,22 +21,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
+[Adding the PPC list]
 
-I think you got the subject line and commit message mixed up with
-another patch. This patch looks like the ixp2000 driver, not mbx860.
-Might want to get the engraving on the tombstone right, eh? :)
+This patch-set removes a bunch of dean MTD map drivers. The way I judged
+whether a driver is dead or not was looking at driver's dependencies in the
+Kconfig file. Whenever I saw a driver depending on a Kconfig symbol which is
+not defined anywhere, I treated the driver as dead.
 
-On Tue, Mar 12, 2013 at 4:14 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
->
-> This driver depends on CONFIG_MBX
+The motivation for this patch-set is to clean up the MTD subsystem a little and
+lessen the maintenance burden. Indeed, the less drivers we have, the easier it
+is to do MTD framework refactoring.
 
-s/CONFIG_MBX/CONFIG_ARCH_IXP2000
+Thanks,
+Artem.
 
-> which is not defined anywhere, which means
-> this driver is dead.
->
-> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
-Brian
+-- 
+Best Regards,
+Artem Bityutskiy
