@@ -1,22 +1,16 @@
-Received: from f77.mail.ru ([217.69.128.225])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UFpJS-0004Ja-8C
- for linux-mtd@lists.infradead.org; Wed, 13 Mar 2013 17:18:04 +0000
-From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
-To: =?UTF-8?B?QnJpYW4gTm9ycmlz?= <computersforpeace@gmail.com>
-Subject: =?UTF-8?B?UmU6IFtSRkMgInYyIl0gbXRkOiBuYW5kOiByZWludHJvZHVjZSBOQU5EX05P?=
- =?UTF-8?B?X1JFQURSRFkgYXMgTkFORF9ORUVEX1JFQURSRFk=?=
+Received: from cpsmtpb-ews01.kpnxchange.com ([213.75.39.4])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UFsPP-0002dX-2z
+ for linux-mtd@lists.infradead.org; Wed, 13 Mar 2013 20:36:28 +0000
+Message-ID: <1363206974.1335.10.camel@x61.thuisdomein>
+Subject: [PATCH] mtd: remove ixp2000 driver
+From: Paul Bolle <pebolle@tiscali.nl>
+To: David Woodhouse <dwmw2@infradead.org>
+Date: Wed, 13 Mar 2013 21:36:14 +0100
+Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
-Date: Wed, 13 Mar 2013 21:17:58 +0400
-Message-ID: <1363195078.592606445@f77.mail.ru>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-In-Reply-To: <1363193491-1843-1-git-send-email-computersforpeace@gmail.com>
-References: <1363193491-1843-1-git-send-email-computersforpeace@gmail.com>
-Cc: =?UTF-8?B?RGF2aWQgV29vZGhvdXNl?= <dwmw2@infradead.org>,
- linux-mtd@lists.infradead.org,
- =?UTF-8?B?QXJ0ZW0gQml0eXV0c2tpeQ==?= <dedekind1@gmail.com>
-Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,24 +20,311 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG8uCgo+IFRoaXMgKHNvbWV3aGF0KSByZXZlcnRzIGNvbW1pdCAxNjk2ZTZiYzJhZTgzNzM0
-ZTY0ZTIwNmFjOTk3NjZlYTE5ZTlhMTRlLgo+IAo+IEluIHRoZSBwYXRjaCAibXRkOiBuYW5kOiBr
-aWxsIE5BTkRfTk9fUkVBRFJEWSIsIEkgb3Zlcmxvb2tlZCBhIGZldwo+IHRoaW5ncy4KPiAKPiBU
-aGUgb3JpZ2luYWwgZG9jdW1lbnRhdGlvbiBmb3IgTkFORF9OT19SRUFEUkRZIGluY2x1ZGVkICJU
-cnVlIGZvciBhbGwKPiBsYXJnZSBwYWdlIGRldmljZXMsIGFzIHRoZXkgZG8gbm90IHN1cHBvcnQg
-YXV0b2luY3JlbWVudC4iIEkgd2FzCj4gY29uZmxhdGluZyAibm90IHN1cHBvcnQgYXV0b2luY3Jl
-bWVudCIgd2l0aCB0aGUgTkFORF9OT19BVVRPSU5DUiBvcHRpb24sCj4gd2hpY2ggd2FzIGluIGZh
-Y3QgZG9pbmcgbm90aGluZy4gU28sIHdoZW4gSSBkcm9wcGVkIE5BTkRfTk9fQVVUT0lOQ1IsIEkK
-PiBjb25jbHVkZWQgdGhhdCBJIHRoZW4gY291bGQgaGFybWxlc3NseSBkcm9wIE5BTkRfTk9fUkVB
-RFJEWS4gQnV0IG9mCj4gY291cnNlIHRoZSBmYWN0IHRoZSBOQU5EX05PX0FVVE9JTkNSIHdhcyBk
-b2luZyBub3RoaW5nIGRpZG4ndCBtZWFuCj4gTkFORF9OT19SRUFEUkRZIHdhcyBkb2luZyBub3Ro
-aW5nLi4uCj4gCj4gU28sIE5BTkRfTk9fUkVBRFJEWSBpcyByZS1pbnRyb2R1Y2VkIGFzIE5BTkRf
-TkVFRF9SRUFEUkRZIGFuZCBhcHBsaWVkCj4gb25seSB0byB0aG9zZSBmZXcgcmVtYWluaW5nIHNt
-YWxsLXBhZ2UgTkFORCB3aGljaCBuZWVkZWQgaXQgaW4gdGhlIGZpcnN0Cj4gcGxhY2UuCj4gCj4g
-VGhpcyBpcyBwcm9iYWJseSBhIGNhbmRpZGF0ZSBmb3Igc3RhYmxlLCBidXQgdGhlcmUgd2lsbCBj
-ZXJ0YWlubHkgYmUKPiBjb25mbGljdHMsIGFzIGRyaXZlcnMvbXRkL25hbmQvbmFuZF9pZHMuYyBo
-YXMgY2hhbmdlZCBzaWduaWZpY2FudGx5Lgo+IAo+IENvbXBpbGUtdGVzdGVkIG9ubHk7IEkgZG9u
-J3QgaGF2ZSBhIHNldHVwIHRoYXQgcmVxdWlyZXMgdGhpcy4KPiAKPiBSZXBvcnRlZC1ieTogQWxl
-eGFuZGVyIFNoaXlhbiA8c2hjX3dvcmtAbWFpbC5ydT4KPiBTaWduZWQtb2ZmLWJ5OiBCcmlhbiBO
-b3JyaXMgPGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbT4KClRoYW5rcy4gSSB3aWxsIGNoZWNr
-IHRoaXMgdmVyc2lvbiB0b21vcnJvdy4KCi0tLQo=
+Support for the IXP2000 platform got removed in commit
+c65f2abf54a6d07260f1fa64773154e1d7047961 ("ARM: remove ixp23xx and
+ixp2000 platforms"). That commit removed the ARCH_IXP2000 Kconfig
+symbol. This removes the last driver depending on that symbol.
+
+Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
+---
+Eyeball tested only.
+
+ drivers/mtd/maps/Kconfig   |   9 --
+ drivers/mtd/maps/Makefile  |   1 -
+ drivers/mtd/maps/ixp2000.c | 253 ---------------------------------------------
+ 3 files changed, 263 deletions(-)
+ delete mode 100644 drivers/mtd/maps/ixp2000.c
+
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index 3ed17c4..4a3dbff 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -349,15 +349,6 @@ config MTD_IXP4XX
+ 	  IXDP425 and Coyote. If you have an IXP4xx based board and
+ 	  would like to use the flash chips on it, say 'Y'.
+ 
+-config MTD_IXP2000
+-	tristate "CFI Flash device mapped on Intel IXP2000 based systems"
+-	depends on MTD_CFI && MTD_COMPLEX_MAPPINGS && ARCH_IXP2000
+-	help
+-	  This enables MTD access to flash devices on platforms based
+-	  on Intel's IXP2000 family of network processors. If you have an
+-	  IXP2000 based board and would like to use the flash chips on it,
+-	  say 'Y'.
+-
+ config MTD_AUTCPU12
+ 	bool "NV-RAM mapping AUTCPU12 board"
+ 	depends on ARCH_AUTCPU12
+diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+index 4ded287..70b8a5c 100644
+--- a/drivers/mtd/maps/Makefile
++++ b/drivers/mtd/maps/Makefile
+@@ -44,7 +44,6 @@ obj-$(CONFIG_MTD_NETtel)	+= nettel.o
+ obj-$(CONFIG_MTD_SCB2_FLASH)	+= scb2_flash.o
+ obj-$(CONFIG_MTD_H720X)		+= h720x-flash.o
+ obj-$(CONFIG_MTD_IXP4XX)	+= ixp4xx.o
+-obj-$(CONFIG_MTD_IXP2000)	+= ixp2000.o
+ obj-$(CONFIG_MTD_DMV182)	+= dmv182.o
+ obj-$(CONFIG_MTD_PLATRAM)	+= plat-ram.o
+ obj-$(CONFIG_MTD_INTEL_VR_NOR)	+= intel_vr_nor.o
+diff --git a/drivers/mtd/maps/ixp2000.c b/drivers/mtd/maps/ixp2000.c
+deleted file mode 100644
+index 4a41ced..0000000
+--- a/drivers/mtd/maps/ixp2000.c
++++ /dev/null
+@@ -1,253 +0,0 @@
+-/*
+- * drivers/mtd/maps/ixp2000.c
+- *
+- * Mapping for the Intel XScale IXP2000 based systems
+- *
+- * Copyright (C) 2002 Intel Corp.
+- * Copyright (C) 2003-2004 MontaVista Software, Inc.
+- *
+- * Original Author: Naeem M Afzal <naeem.m.afzal@intel.com>
+- * Maintainer: Deepak Saxena <dsaxena@plexity.net>
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- *
+- */
+-
+-#include <linux/module.h>
+-#include <linux/types.h>
+-#include <linux/init.h>
+-#include <linux/kernel.h>
+-#include <linux/string.h>
+-#include <linux/slab.h>
+-#include <linux/ioport.h>
+-#include <linux/device.h>
+-#include <linux/platform_device.h>
+-
+-#include <linux/mtd/mtd.h>
+-#include <linux/mtd/map.h>
+-#include <linux/mtd/partitions.h>
+-
+-#include <asm/io.h>
+-#include <mach/hardware.h>
+-#include <asm/mach/flash.h>
+-
+-#include <linux/reboot.h>
+-
+-struct ixp2000_flash_info {
+-	struct		mtd_info *mtd;
+-	struct		map_info map;
+-	struct		resource *res;
+-};
+-
+-static inline unsigned long flash_bank_setup(struct map_info *map, unsigned long ofs)
+-{
+-	unsigned long (*set_bank)(unsigned long) =
+-		(unsigned long(*)(unsigned long))map->map_priv_2;
+-
+-	return (set_bank ? set_bank(ofs) : ofs);
+-}
+-
+-#ifdef __ARMEB__
+-/*
+- * Rev A0 and A1 of IXP2400 silicon have a broken addressing unit which
+- * causes the lower address bits to be XORed with 0x11 on 8 bit accesses
+- * and XORed with 0x10 on 16 bit accesses. See the spec update, erratum 44.
+- */
+-static int erratum44_workaround = 0;
+-
+-static inline unsigned long address_fix8_write(unsigned long addr)
+-{
+-	if (erratum44_workaround) {
+-		return (addr ^ 3);
+-	}
+-	return addr;
+-}
+-#else
+-
+-#define address_fix8_write(x)	(x)
+-#endif
+-
+-static map_word ixp2000_flash_read8(struct map_info *map, unsigned long ofs)
+-{
+-	map_word val;
+-
+-	val.x[0] =  *((u8 *)(map->map_priv_1 + flash_bank_setup(map, ofs)));
+-	return val;
+-}
+-
+-/*
+- * We can't use the standard memcpy due to the broken SlowPort
+- * address translation on rev A0 and A1 silicon and the fact that
+- * we have banked flash.
+- */
+-static void ixp2000_flash_copy_from(struct map_info *map, void *to,
+-			      unsigned long from, ssize_t len)
+-{
+-	from = flash_bank_setup(map, from);
+-	while(len--)
+-		*(__u8 *) to++ = *(__u8 *)(map->map_priv_1 + from++);
+-}
+-
+-static void ixp2000_flash_write8(struct map_info *map, map_word d, unsigned long ofs)
+-{
+-	*(__u8 *) (address_fix8_write(map->map_priv_1 +
+-				      flash_bank_setup(map, ofs))) = d.x[0];
+-}
+-
+-static void ixp2000_flash_copy_to(struct map_info *map, unsigned long to,
+-			    const void *from, ssize_t len)
+-{
+-	to = flash_bank_setup(map, to);
+-	while(len--) {
+-		unsigned long tmp = address_fix8_write(map->map_priv_1 + to++);
+-		*(__u8 *)(tmp) = *(__u8 *)(from++);
+-	}
+-}
+-
+-
+-static int ixp2000_flash_remove(struct platform_device *dev)
+-{
+-	struct flash_platform_data *plat = dev->dev.platform_data;
+-	struct ixp2000_flash_info *info = platform_get_drvdata(dev);
+-
+-	platform_set_drvdata(dev, NULL);
+-
+-	if(!info)
+-		return 0;
+-
+-	if (info->mtd) {
+-		mtd_device_unregister(info->mtd);
+-		map_destroy(info->mtd);
+-	}
+-	if (info->map.map_priv_1)
+-		iounmap((void *) info->map.map_priv_1);
+-
+-	if (info->res) {
+-		release_resource(info->res);
+-		kfree(info->res);
+-	}
+-
+-	if (plat->exit)
+-		plat->exit();
+-
+-	return 0;
+-}
+-
+-
+-static int ixp2000_flash_probe(struct platform_device *dev)
+-{
+-	static const char *probes[] = { "RedBoot", "cmdlinepart", NULL };
+-	struct ixp2000_flash_data *ixp_data = dev->dev.platform_data;
+-	struct flash_platform_data *plat;
+-	struct ixp2000_flash_info *info;
+-	unsigned long window_size;
+-	int err = -1;
+-
+-	if (!ixp_data)
+-		return -ENODEV;
+-
+-	plat = ixp_data->platform_data;
+-	if (!plat)
+-		return -ENODEV;
+-
+-	window_size = resource_size(dev->resource);
+-	dev_info(&dev->dev, "Probe of IXP2000 flash(%d banks x %dMiB)\n",
+-		 ixp_data->nr_banks, ((u32)window_size >> 20));
+-
+-	if (plat->width != 1) {
+-		dev_err(&dev->dev, "IXP2000 MTD map only supports 8-bit mode, asking for %d\n",
+-			plat->width * 8);
+-		return -EIO;
+-	}
+-
+-	info = kzalloc(sizeof(struct ixp2000_flash_info), GFP_KERNEL);
+-	if(!info) {
+-		err = -ENOMEM;
+-		goto Error;
+-	}
+-
+-	platform_set_drvdata(dev, info);
+-
+-	/*
+-	 * Tell the MTD layer we're not 1:1 mapped so that it does
+-	 * not attempt to do a direct access on us.
+-	 */
+-	info->map.phys = NO_XIP;
+-
+-	info->map.size = ixp_data->nr_banks * window_size;
+-	info->map.bankwidth = 1;
+-
+-	/*
+- 	 * map_priv_2 is used to store a ptr to the bank_setup routine
+- 	 */
+-	info->map.map_priv_2 = (unsigned long) ixp_data->bank_setup;
+-
+-	info->map.name = dev_name(&dev->dev);
+-	info->map.read = ixp2000_flash_read8;
+-	info->map.write = ixp2000_flash_write8;
+-	info->map.copy_from = ixp2000_flash_copy_from;
+-	info->map.copy_to = ixp2000_flash_copy_to;
+-
+-	info->res = request_mem_region(dev->resource->start,
+-				       resource_size(dev->resource),
+-				       dev_name(&dev->dev));
+-	if (!info->res) {
+-		dev_err(&dev->dev, "Could not reserve memory region\n");
+-		err = -ENOMEM;
+-		goto Error;
+-	}
+-
+-	info->map.map_priv_1 =
+-		(unsigned long)ioremap(dev->resource->start,
+-				       resource_size(dev->resource));
+-	if (!info->map.map_priv_1) {
+-		dev_err(&dev->dev, "Failed to ioremap flash region\n");
+-		err = -EIO;
+-		goto Error;
+-	}
+-
+-#if defined(__ARMEB__)
+-	/*
+-	 * Enable erratum 44 workaround for NPUs with broken slowport
+-	 */
+-
+-	erratum44_workaround = ixp2000_has_broken_slowport();
+-	dev_info(&dev->dev, "Erratum 44 workaround %s\n",
+-	       erratum44_workaround ? "enabled" : "disabled");
+-#endif
+-
+-	info->mtd = do_map_probe(plat->map_name, &info->map);
+-	if (!info->mtd) {
+-		dev_err(&dev->dev, "map_probe failed\n");
+-		err = -ENXIO;
+-		goto Error;
+-	}
+-	info->mtd->owner = THIS_MODULE;
+-
+-	err = mtd_device_parse_register(info->mtd, probes, NULL, NULL, 0);
+-	if (err)
+-		goto Error;
+-
+-	return 0;
+-
+-Error:
+-	ixp2000_flash_remove(dev);
+-	return err;
+-}
+-
+-static struct platform_driver ixp2000_flash_driver = {
+-	.probe		= ixp2000_flash_probe,
+-	.remove		= ixp2000_flash_remove,
+-	.driver		= {
+-		.name	= "IXP2000-Flash",
+-		.owner	= THIS_MODULE,
+-	},
+-};
+-
+-module_platform_driver(ixp2000_flash_driver);
+-
+-MODULE_LICENSE("GPL");
+-MODULE_AUTHOR("Deepak Saxena <dsaxena@plexity.net>");
+-MODULE_ALIAS("platform:IXP2000-Flash");
+-- 
+1.7.11.7
