@@ -1,18 +1,25 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UG5Ee-0003Iw-N4
- for linux-mtd@lists.infradead.org; Thu, 14 Mar 2013 10:18:12 +0000
-Received: by mail-pb0-f49.google.com with SMTP id xa12so1976245pbc.22
- for <linux-mtd@lists.infradead.org>; Thu, 14 Mar 2013 03:18:07 -0700 (PDT)
-From: Sachin Kamat <sachin.kamat@linaro.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 5/5] mtd: sh_flctl: Use of_match_ptr() macro
-Date: Thu, 14 Mar 2013 15:37:04 +0530
-Message-Id: <1363255624-20885-5-git-send-email-sachin.kamat@linaro.org>
-In-Reply-To: <1363255624-20885-1-git-send-email-sachin.kamat@linaro.org>
-References: <1363255624-20885-1-git-send-email-sachin.kamat@linaro.org>
-Cc: sachin.kamat@linaro.org, artem.bityutskiy@linux.intel.com,
- dwmw2@infradead.org, dedekind1@gmail.com
+Received: from mga03.intel.com ([143.182.124.21])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UG5PP-0006nE-Uo
+ for linux-mtd@lists.infradead.org; Thu, 14 Mar 2013 10:29:16 +0000
+Message-ID: <1363257009.11441.97.camel@sauron.fi.intel.com>
+Subject: Re: MTD : Kernel oops when remounting ubifs as read/write
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Mark Jackson <mpfj-list@mimc.co.uk>
+Date: Thu, 14 Mar 2013 12:30:09 +0200
+In-Reply-To: <51419E3A.8030007@mimc.co.uk>
+References: <5134CEF9.5070502@mimc.co.uk>
+ <1363087506.3348.62.camel@sauron.fi.intel.com>
+ <51405F3A.3090901@mimc.co.uk>
+ <1363252425.11441.94.camel@sauron.fi.intel.com>
+ <51419E3A.8030007@mimc.co.uk>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ lkml <linux-kernel@vger.kernel.org>, adrian.hunter@intel.com
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,34 +29,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This eliminates having an #ifdef returning NULL for the case
-when OF is disabled.
+On Thu, 2013-03-14 at 09:54 +0000, Mark Jackson wrote:
+> On 14/03/13 09:13, Artem Bityutskiy wrote:
+> > On Wed, 2013-03-13 at 11:12 +0000, Mark Jackson wrote:
+> >> Sorry ... this just locks up the unit.
+> > 
+> > OK, I've reproduced the issue with 3.9-rc2 in nandsim, see the details
+> > below. The patch I proposed did not get the error path correctly, but it
+> > does fix the issue.
+> > 
+> > I think what you treat as "lockup" is the fixup process. UBIFS basically
+> > reads the entire UBI volume and writes it back. And it uses the atomic
+> > change UBI service, which means it also calculates CRC of everything it
+> > writes. And this all just takes a lot of time. This has to be done only
+> > once on the first mount.
+> 
+> Okay ... I've retried, but how long is "a lot of time" ?
+> 
+> I've waited 15 minutes and still nothing.
+> 
+> And I can see that there's no activity on the NAND chip select !?!
+> 
+> I'll put some debug info into the fixup routines to see if I can trace what's going on.
 
-Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
----
- drivers/mtd/nand/sh_flctl.c |    3 +--
- 1 files changed, 1 insertions(+), 2 deletions(-)
+Just to make sure - try this last patch I sent. I did test it with
+nandsim at least, and I am sure it works. I did not test at all the
+first one.
 
-diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-index 5899738..e57e18e 100644
---- a/drivers/mtd/nand/sh_flctl.c
-+++ b/drivers/mtd/nand/sh_flctl.c
-@@ -1081,7 +1081,6 @@ static struct sh_flctl_platform_data *flctl_parse_dt(struct device *dev)
- 	return pdata;
- }
- #else /* CONFIG_OF */
--#define of_flctl_match NULL
- static struct sh_flctl_platform_data *flctl_parse_dt(struct device *dev)
- {
- 	return NULL;
-@@ -1219,7 +1218,7 @@ static struct platform_driver flctl_driver = {
- 	.driver = {
- 		.name	= "sh_flctl",
- 		.owner	= THIS_MODULE,
--		.of_match_table = of_flctl_match,
-+		.of_match_table = of_match_ptr(of_flctl_match),
- 	},
- };
- 
+And yes, debug messages would be useful, just do not forget to add the
+'ignore_loglevel' kernel boot option, otherwise you won't see the
+messages on your console, since they are of KERN_DEBUG level.
+
+You may have other issues which cause lockup, e.g., in driver level. It
+makes sense to validate your flash with MTD test modules.
+
 -- 
-1.7.4.1
+Best Regards,
+Artem Bityutskiy
