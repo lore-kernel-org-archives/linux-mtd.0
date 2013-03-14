@@ -1,27 +1,12 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UG6Ev-0001cr-7u
- for linux-mtd@lists.infradead.org; Thu, 14 Mar 2013 11:22:29 +0000
-Message-ID: <1363260202.11441.108.camel@sauron.fi.intel.com>
-Subject: Re: MTD : Kernel oops when remounting ubifs as read/write
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mark Jackson <mpfj-list@mimc.co.uk>
-Date: Thu, 14 Mar 2013 13:23:22 +0200
-In-Reply-To: <5141B154.6050504@mimc.co.uk>
-References: <5134CEF9.5070502@mimc.co.uk>
- <1363087506.3348.62.camel@sauron.fi.intel.com>
- <51405F3A.3090901@mimc.co.uk>
- <1363252425.11441.94.camel@sauron.fi.intel.com>
- <51419E3A.8030007@mimc.co.uk>
- <1363257009.11441.97.camel@sauron.fi.intel.com>
- <5141B154.6050504@mimc.co.uk>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- lkml <linux-kernel@vger.kernel.org>, adrian.hunter@intel.com
-Reply-To: dedekind1@gmail.com
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH 1/4] mtd: merge mtdchar module with mtdcore
+Date: Thu, 14 Mar 2013 13:27:40 +0200
+Message-Id: <1363260463-10609-1-git-send-email-dedekind1@gmail.com>
+Cc: Russell King <linux@arm.linux.org.uk>, linux-cris-kernel@axis.com,
+ Haojian Zhuang <haojian.zhuang@gmail.com>, Mikael Starvik <starvik@axis.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,54 +16,179 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2013-03-14 at 11:15 +0000, Mark Jackson wrote:
-> [   28.538525] [d08ea004] *pgd=8f045811, *pte=00000000, *ppte=00000000
-> [   28.545173] Internal error: Oops: 7 [#1] ARM
-> [   28.549685] CPU: 0    Not tainted  (3.8.0-next-20130225-00002-g678576f-dirty #40)
-> [   28.557595] PC is at crc32_le+0x50/0x168
-> [   28.561735] LR is at ubi_eba_atomic_leb_change+0x1b4/0x410
-> [   28.567523] pc : [<c01e7244>]    lr : [<c026dd9c>]    psr: 20000013
-> [   28.567523] sp : cf385de0  ip : 180a985a  fp : c054f840
-> [   28.579632] r10: c054f040  r9 : c054fc40  r8 : 158a1232
-> [   28.585141] r7 : 4d506705  r6 : 9324fd72  r5 : 4dc8a10b  r4 : 4c162691
-> [   28.592025] r3 : c054e040  r2 : c054f440  r1 : d08ea000  r0 : 4c8ee09f
-> [   28.598912] Flags: nzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment user
-> [   28.606439] Control: 10c5387d  Table: 8f3b8019  DAC: 00000015
-> [   28.612501] Process mount (pid: 659, stack limit = 0xcf384238)
-> [   28.618652] Stack: (0xcf385de0 to 0xcf386000)
-> [   28.623254] 5de0: cf2f8554 00000000 d08e6e8c 180a9e88 5a257c4f 58399ee9 c8d98a08 bb0ee864
-> [   28.631886] 5e00: eae10678 c054fc40 c054f040 c054f840 cf2f8000 00000000 d08caffc 00003c00
-> [   28.640517] 5e20: cf2f8000 cf357c00 00000000 0000000c cf2ec000 00000000 0000000c cf2f8554
-> [   28.649148] 5e40: d08cb000 0001e000 00000000 d08cb000 00008000 00000000 00000000 0001e000
-> [   28.657779] 5e60: 00000000 0000000c d08cb000 00000080 0000000c 0000000c 00000000 00000020
-> [   28.666409] 5e80: 00008000 c026c41c 0001e000 cf330000 cf330000 d08cb000 0001e000 c0179b14
-> [   28.675042] 5ea0: 0000000d c0177a68 0001e000 cf330000 00000000 cf330b20 0000000d c0179698
-> [   28.683672] 5ec0: cf330000 00000000 cf330a9c 00000000 cf385f48 c0175170 00000001 60000013
-> [   28.692303] 5ee0: cf32c800 00000000 00000000 00000000 cf385f48 00000000 00000020 c00c9e24
-> [   28.700934] 5f00: 00100100 00200200 cf3a6c80 00008000 cf384000 00208020 00000000 cf01a200
-> [   28.709564] 5f20: cf32c800 c00e3d6c 00000000 0000000c cf32c840 00000000 c0013968 cf31fb80
-> [   28.718195] 5f40: 0000000c 00000000 cf01a210 ce828858 0000000c cf3ac000 000a18b4 00000000
-> [   28.726827] 5f60: 00208020 c0013968 cf384000 00000000 00000003 c00e3e40 00000000 c0071e24
-> [   28.735459] 5f80: 00000000 00000000 cf31fb80 cf31fbc0 a0000010 00000000 bed87b68 b6ff148c
-> [   28.744091] 5fa0: 00000015 c00137c0 00000000 bed87b68 000a18b4 000a18c0 000a18c2 00208020
-> [   28.752720] 5fc0: 00000000 bed87b68 b6ff148c 00000015 00000000 00000000 00000000 00000003
-> [   28.761350] 5fe0: b6fa3f48 bed87a64 00042994 b6fa3f58 a0000010 000a18b4 00000000 00000000
-> [   28.769989] [<c01e7244>] (crc32_le+0x50/0x168) from [<cf2f8000>] (0xcf2f8000)
-> [   28.777522] Code: e58d8008 0a000026 e1a0c005 e58d2004 (e5916004)
-> [   28.784029] ---[ end trace f50f53afffe647f1 ]---
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-OK, this is an independent problem which, as I think, has nothing to do
-with the first one.
+The MTD subsystem has historically tried to be as configurable as possible. The
+side-effect of this is that its configuration menu is rather large, and we are
+gradually shrinking it. For example, we recently merged partitions support with
+the mtdcore.
 
-I do not know why crc32 oopses on your system. You need to investigate
-this. I believe this is not UBI/UBIFS's fault.
+This patch does the next step - it merges the mtdchar module to mtdcore. And in
+this case this is not only about eliminating too fine-grained separation and
+simplifying the configuration menu. This is also about eliminating seemingly
+useless kernel module.
 
-One theory could be that UBI uses vmalloc'ed buffers for the atomic
-update operation, and submits the buffer to the MTD layer for the I/O.
-If your NAND driver is trying to DMA this memory, you may be in trouble,
-because vmalloced memory is often not DMA-able on many systems,
-especially ARM systems which do not have coherent cache support.
+Indeed, mtdchar is a module that allows user-space making use of MTD devices
+via /dev/mtd* character devices. If users do not enable it, they simply cannot
+use MTD devices at all. The cannot read or write the flash contents. Is it a
+sane and useful setup? I believe not. And everyone just enables mtdchar.
 
+Having mtdchar separate is also a little bit harmful. People sometimes miss the
+fact that they need to enable an additional configuration option to have
+user-space MTD interfaces, and then they wonder why on earth the kernel does
+not allow using the flash? They spend time asking around.
+
+Thus, let's just get rid of this module and make it part of mtd core.
+
+Note, mtdchar had additional configuration option to enable OTP interfaces,
+which are present on some flashes. I removed that option as well - it saves a
+really tiny amount space.
+
+Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+---
+ drivers/mtd/Kconfig         |   13 -------------
+ drivers/mtd/Makefile        |    3 +--
+ drivers/mtd/chips/Kconfig   |    1 -
+ drivers/mtd/devices/Kconfig |    1 -
+ drivers/mtd/mtdchar.c       |    6 ------
+ drivers/mtd/mtdcore.c       |    4 ----
+ drivers/mtd/onenand/Kconfig |    1 -
+ 7 files changed, 1 insertion(+), 28 deletions(-)
+
+diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
+index 557bec5..5fab4e6e 100644
+--- a/drivers/mtd/Kconfig
++++ b/drivers/mtd/Kconfig
+@@ -157,19 +157,6 @@ config MTD_BCM47XX_PARTS
+ 
+ comment "User Modules And Translation Layers"
+ 
+-config MTD_CHAR
+-	tristate "Direct char device access to MTD devices"
+-	help
+-	  This provides a character device for each MTD device present in
+-	  the system, allowing the user to read and write directly to the
+-	  memory chips, and also use ioctl() to obtain information about
+-	  the device, or to erase parts of it.
+-
+-config HAVE_MTD_OTP
+-	bool
+-	help
+-	  Enable access to OTP regions using MTD_CHAR.
+-
+ config MTD_BLKDEVS
+ 	tristate "Common interface to block layer for MTD 'translation layers'"
+ 	depends on BLOCK
+diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
+index 18a38e5..4cfb31e 100644
+--- a/drivers/mtd/Makefile
++++ b/drivers/mtd/Makefile
+@@ -4,7 +4,7 @@
+ 
+ # Core functionality.
+ obj-$(CONFIG_MTD)		+= mtd.o
+-mtd-y				:= mtdcore.o mtdsuper.o mtdconcat.o mtdpart.o
++mtd-y				:= mtdcore.o mtdsuper.o mtdconcat.o mtdpart.o mtdchar.o
+ 
+ obj-$(CONFIG_MTD_OF_PARTS)	+= ofpart.o
+ obj-$(CONFIG_MTD_REDBOOT_PARTS) += redboot.o
+@@ -15,7 +15,6 @@ obj-$(CONFIG_MTD_BCM63XX_PARTS)	+= bcm63xxpart.o
+ obj-$(CONFIG_MTD_BCM47XX_PARTS)	+= bcm47xxpart.o
+ 
+ # 'Users' - code which presents functionality to userspace.
+-obj-$(CONFIG_MTD_CHAR)		+= mtdchar.o
+ obj-$(CONFIG_MTD_BLKDEVS)	+= mtd_blkdevs.o
+ obj-$(CONFIG_MTD_BLOCK)		+= mtdblock.o
+ obj-$(CONFIG_MTD_BLOCK_RO)	+= mtdblock_ro.o
+diff --git a/drivers/mtd/chips/Kconfig b/drivers/mtd/chips/Kconfig
+index c219e3d..e4696b3 100644
+--- a/drivers/mtd/chips/Kconfig
++++ b/drivers/mtd/chips/Kconfig
+@@ -146,7 +146,6 @@ config MTD_CFI_I8
+ config MTD_OTP
+ 	bool "Protection Registers aka one-time programmable (OTP) bits"
+ 	depends on MTD_CFI_ADV_OPTIONS
+-	select HAVE_MTD_OTP
+ 	default n
+ 	help
+ 	  This enables support for reading, writing and locking so called
+diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
+index ec4a2cc..2a4d55e 100644
+--- a/drivers/mtd/devices/Kconfig
++++ b/drivers/mtd/devices/Kconfig
+@@ -71,7 +71,6 @@ config MTD_DATAFLASH_WRITE_VERIFY
+ config MTD_DATAFLASH_OTP
+ 	bool "DataFlash OTP support (Security Register)"
+ 	depends on MTD_DATAFLASH
+-	select HAVE_MTD_OTP
+ 	help
+ 	  Newer DataFlash chips (revisions C and D) support 128 bytes of
+ 	  one-time-programmable (OTP) data.  The first half may be written
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index c2b6729..e50b321 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -365,7 +365,6 @@ static void mtdchar_erase_callback (struct erase_info *instr)
+ 	wake_up((wait_queue_head_t *)instr->priv);
+ }
+ 
+-#ifdef CONFIG_HAVE_MTD_OTP
+ static int otp_select_filemode(struct mtd_file_info *mfi, int mode)
+ {
+ 	struct mtd_info *mtd = mfi->mtd;
+@@ -395,9 +394,6 @@ static int otp_select_filemode(struct mtd_file_info *mfi, int mode)
+ 
+ 	return 0;
+ }
+-#else
+-# define otp_select_filemode(f,m)	-EOPNOTSUPP
+-#endif
+ 
+ static int mtdchar_writeoob(struct file *file, struct mtd_info *mtd,
+ 	uint64_t start, uint32_t length, void __user *ptr,
+@@ -890,7 +886,6 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
+ 		break;
+ 	}
+ 
+-#ifdef CONFIG_HAVE_MTD_OTP
+ 	case OTPSELECT:
+ 	{
+ 		int mode;
+@@ -946,7 +941,6 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
+ 		ret = mtd_lock_user_prot_reg(mtd, oinfo.start, oinfo.length);
+ 		break;
+ 	}
+-#endif
+ 
+ 	/* This ioctl is being deprecated - it truncates the ECC layout */
+ 	case ECCGETLAYOUT:
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 681bb6d..a8ff916 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -96,11 +96,7 @@ EXPORT_SYMBOL_GPL(__mtd_next_device);
+ static LIST_HEAD(mtd_notifiers);
+ 
+ 
+-#if defined(CONFIG_MTD_CHAR) || defined(CONFIG_MTD_CHAR_MODULE)
+ #define MTD_DEVT(index) MKDEV(MTD_CHAR_MAJOR, (index)*2)
+-#else
+-#define MTD_DEVT(index) 0
+-#endif
+ 
+ /* REVISIT once MTD uses the driver model better, whoever allocates
+  * the mtd_info will probably want to use the release() hook...
+diff --git a/drivers/mtd/onenand/Kconfig b/drivers/mtd/onenand/Kconfig
+index 91467bb..eac7bb2 100644
+--- a/drivers/mtd/onenand/Kconfig
++++ b/drivers/mtd/onenand/Kconfig
+@@ -40,7 +40,6 @@ config MTD_ONENAND_SAMSUNG
+ 
+ config MTD_ONENAND_OTP
+ 	bool "OneNAND OTP Support"
+-	select HAVE_MTD_OTP
+ 	help
+ 	  One Block of the NAND Flash Array memory is reserved as
+ 	  a One-Time Programmable Block memory area.
 -- 
-Best Regards,
-Artem Bityutskiy
+1.7.10.4
