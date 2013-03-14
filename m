@@ -1,18 +1,12 @@
-Received: from moutng.kundenserver.de ([212.227.17.10])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UGGNi-0000sa-2m
- for linux-mtd@lists.infradead.org; Thu, 14 Mar 2013 22:12:15 +0000
 From: Arnd Bergmann <arnd@arndb.de>
-To: linux-arm-kernel@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org
 Subject: [PATCH 6/6] mtd: remove h720x flash support
-Date: Thu, 14 Mar 2013 23:12:08 +0100
-Message-Id: <1363299128-8192-7-git-send-email-arnd@arndb.de>
-In-Reply-To: <1363299128-8192-1-git-send-email-arnd@arndb.de>
-References: <1363299128-8192-1-git-send-email-arnd@arndb.de>
-Cc: Arnd Bergmann <arnd@arndb.de>, Artem Bityutskiy <dedekind1@gmail.com>,
- patches@linaro.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Olof Johansson <olof@lixom.net>,
- David Woodhouse <dwmw2@infradead.org>
+Date: Thu, 14 Mar 2013 23:12:58 +0100
+Message-Id: <1363299178-8241-7-git-send-email-arnd@arndb.de>
+In-Reply-To: <1363299178-8241-1-git-send-email-arnd@arndb.de>
+References: <1363299178-8241-1-git-send-email-arnd@arndb.de>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Arnd Bergmann <arnd@arndb.de>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
