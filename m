@@ -1,13 +1,13 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UG76Z-0007LO-H4
- for linux-mtd@lists.infradead.org; Thu, 14 Mar 2013 12:17:56 +0000
-Message-ID: <1363263529.11441.109.camel@sauron.fi.intel.com>
+ id 1UG7B8-0007oM-H0
+ for linux-mtd@lists.infradead.org; Thu, 14 Mar 2013 12:22:39 +0000
+Message-ID: <1363263812.11441.112.camel@sauron.fi.intel.com>
 Subject: Re: MTD : Kernel oops when remounting ubifs as read/write
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Mark Jackson <mpfj-list@mimc.co.uk>
-Date: Thu, 14 Mar 2013 14:18:49 +0200
-In-Reply-To: <5141BC63.6060501@mimc.co.uk>
+Date: Thu, 14 Mar 2013 14:23:32 +0200
+In-Reply-To: <1363263529.11441.109.camel@sauron.fi.intel.com>
 References: <5134CEF9.5070502@mimc.co.uk>
  <1363087506.3348.62.camel@sauron.fi.intel.com>
  <51405F3A.3090901@mimc.co.uk>
@@ -17,6 +17,7 @@ References: <5134CEF9.5070502@mimc.co.uk>
  <5141B154.6050504@mimc.co.uk>
  <1363260202.11441.108.camel@sauron.fi.intel.com>
  <5141BC63.6060501@mimc.co.uk>
+ <1363263529.11441.109.camel@sauron.fi.intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -33,15 +34,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2013-03-14 at 12:02 +0000, Mark Jackson wrote:
-> But there's also a call to crc with a size of 122880 bytes, and that's
-> when the oops occurs.
+On Thu, 2013-03-14 at 14:18 +0200, Artem Bityutskiy wrote:
+> > Is this size larger than the allocated buffer ?
 > 
-This is when we do the atomic LEB change.
+> I believe so.
 
-> Is this size larger than the allocated buffer ?
+Err, I mean, the buffer is large enough. I do not believe there is a
+stupid bug like too small buffer. This code has worked for years and I
+do not think it was changes much.
 
-I believe so.
+The oops may be cause by memory corruption - some of your drivers may
+corrupt memory. You need to spend more time debugging this carefully.
+
+Do you have fastmap UBI feature enabled?
 
 -- 
 Best Regards,
