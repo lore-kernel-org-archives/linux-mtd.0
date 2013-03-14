@@ -1,13 +1,13 @@
 Received: from va3ehsobe003.messaging.microsoft.com ([216.32.180.13]
  helo=va3outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UFyQZ-0003Gn-8V
- for linux-mtd@lists.infradead.org; Thu, 14 Mar 2013 03:01:59 +0000
+ id 1UFyQZ-0003Gn-Nw
+ for linux-mtd@lists.infradead.org; Thu, 14 Mar 2013 03:02:00 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH v5 1/3] mtd: add a new field for nand_flash_dev{}
-Date: Thu, 14 Mar 2013 10:59:23 +0800
-Message-ID: <1363229965-13128-2-git-send-email-b32955@freescale.com>
+Subject: [PATCH v5 2/3] mtd: add the support to parse out the full-id nand type
+Date: Thu, 14 Mar 2013 10:59:24 +0800
+Message-ID: <1363229965-13128-3-git-send-email-b32955@freescale.com>
 In-Reply-To: <1363229965-13128-1-git-send-email-b32955@freescale.com>
 References: <1363229965-13128-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
@@ -24,46 +24,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As time goes on, we begin to meet the situation that we can not get enough
-information from some nand chips's id data. Take some Toshiba's nand chips
-for example. I have 4 Toshiba's nand chips in my hand:
-	TC58NVG2S0F, TC58NVG3S0F, TC58NVG5D2, TC58NVG6D2
+When we meet a full-id nand type which @mfr_id is true, we can use
+the find_full_id_nand() to parse out the neccessary information for a
+nand chip.
 
-When we read these chips' datasheets, we will get the geometry of these chips:
-	TC58NVG2S0F : 4096 + 224
-	TC58NVG3S0F : 4096 + 232
-	TC58NVG5D2  : 8192 + 640
-	TC58NVG6D2  : 8192 + 640
-
-But we can not parse out the correct oob size for these chips from the id data.
-
-This patch adds @oobsize for the nand_flash_dev{} to store the oob size for
-these nands.
+If we meet a non full-id nand type, we can handle it in the lagacy way.
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- include/linux/mtd/nand.h |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+ drivers/mtd/nand/nand_base.c |   36 +++++++++++++++++++++++++++++++++---
+ 1 files changed, 33 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index e2c7173..42862e9 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -581,6 +581,7 @@ struct nand_chip {
-  * @chipsize: total chip size in MiB
-  * @erasesize: eraseblock size in bytes (determined from the extended ID if 0)
-  * @options: stores various chip bit options
-+ * @oobsize: OOB size
-  */
- struct nand_flash_dev {
- 	char *name;
-@@ -595,6 +596,7 @@ struct nand_flash_dev {
- 	unsigned int chipsize;
- 	unsigned int erasesize;
- 	unsigned int options;
-+	unsigned int oobsize;
- };
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 72eada2..b7ad9fd 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3123,6 +3123,30 @@ static void nand_decode_bbm_options(struct mtd_info *mtd,
+ 		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
+ }
  
- /**
++static inline bool is_full_id_nand(struct nand_flash_dev *type)
++{
++	return type->mfr_id;
++}
++
++static bool find_full_id_nand(struct mtd_info *mtd, struct nand_chip *chip,
++		   struct nand_flash_dev *type, u8 *id_data, int *busw)
++{
++	if (!strncmp(type->id, id_data, 8)) {
++		mtd->writesize = type->pagesize;
++		mtd->erasesize = type->erasesize;
++		mtd->oobsize = type->oobsize;
++
++		chip->cellinfo = id_data[2];
++		chip->chipsize = (uint64_t)type->chipsize << 20;
++		chip->options |= type->options;
++
++		*busw = type->options & NAND_BUSWIDTH_16;
++
++		return true;
++	}
++	return false;
++}
++
+ /*
+  * Get the flash and manufacturer id and lookup if the type is supported.
+  */
+@@ -3174,9 +3198,15 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+ 	if (!type)
+ 		type = nand_flash_ids;
+ 
+-	for (; type->name != NULL; type++)
+-		if (*dev_id == type->dev_id)
+-			break;
++	for (; type->name != NULL; type++) {
++		if (is_full_id_nand(type)) {
++			if (find_full_id_nand(mtd, chip, type, id_data, &busw))
++				goto ident_done;
++		} else {
++			if (*dev_id == type->dev_id)
++				break;
++		}
++	}
+ 
+ 	chip->onfi_version = 0;
+ 	if (!type->name || !type->pagesize) {
 -- 
 1.7.1
