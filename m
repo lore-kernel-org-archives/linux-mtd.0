@@ -1,13 +1,17 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UG32N-000457-47
- for linux-mtd@lists.infradead.org; Thu, 14 Mar 2013 07:57:19 +0000
+ id 1UG3AA-0004tB-OC
+ for linux-mtd@lists.infradead.org; Thu, 14 Mar 2013 08:05:23 +0000
+Message-ID: <1363248370.11441.87.camel@sauron.fi.intel.com>
+Subject: OneNAND simulator
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: MTD Maling List <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: introduce a macro for max NAND ID sequence length
-Date: Thu, 14 Mar 2013 09:58:58 +0200
-Message-Id: <1363247938-2915-1-git-send-email-dedekind1@gmail.com>
-Cc: Huang Shijie <b32955@freescale.com>
+To: Kyungmin Park <kyungmin.park@samsung.com>
+Date: Thu, 14 Mar 2013 10:06:10 +0200
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,38 +21,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Hi Kyungmin,
 
-Introduce a helpful macro for the maximum NAND ID sequence length instead of
-using the "8" magic number.
+I am trying to remove dead or useless code from MTD. Can I remove
+OneNAND simulator? I was using OneNAND in Nokia, but we never found the
+simulator any useful. I never saw anyone mentioning that they use it. To
+me it seems like something no one really needs.
 
-Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
----
- include/linux/mtd/nand.h |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Can I remove it, or you think it is useful?
 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index e2c7173..33516eb 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -542,6 +542,9 @@ struct nand_chip {
- #define NAND_MFR_MACRONIX	0xc2
- #define NAND_MFR_EON		0x92
- 
-+/* The maximum expected count of bytes in the NAND ID sequence */
-+#define NAND_MAX_ID_LEN 8
-+
- /*
-  * A helper for defining older NAND chips where the second ID byte fully
-  * defined the chip, including the geometry (chip size, eraseblock size, page
-@@ -589,7 +592,7 @@ struct nand_flash_dev {
- 			uint8_t mfr_id;
- 			uint8_t dev_id;
- 		};
--		uint8_t id[8];
-+		uint8_t id[NAND_MAX_ID_LEN];
- 	};
- 	unsigned int pagesize;
- 	unsigned int chipsize;
 -- 
-1.7.10.4
+Best Regards,
+Artem Bityutskiy
