@@ -1,24 +1,22 @@
-Received: from mail-ve0-f172.google.com ([209.85.128.172])
+Received: from mail-vb0-x234.google.com ([2607:f8b0:400c:c02::234])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UG0k0-0006jP-4G
- for linux-mtd@lists.infradead.org; Thu, 14 Mar 2013 05:30:13 +0000
-Received: by mail-ve0-f172.google.com with SMTP id cz11so1408214veb.31
- for <linux-mtd@lists.infradead.org>; Wed, 13 Mar 2013 22:30:11 -0700 (PDT)
+ id 1UG0zY-0008TX-DE
+ for linux-mtd@lists.infradead.org; Thu, 14 Mar 2013 05:46:17 +0000
+Received: by mail-vb0-f52.google.com with SMTP id fa15so963489vbb.25
+ for <linux-mtd@lists.infradead.org>; Wed, 13 Mar 2013 22:46:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAMiH66HyH7tQG96UMKed6prpqBa=sgyntdO1pf0yG+=qyigY0Q@mail.gmail.com>
-References: <1362653364-29993-1-git-send-email-b32955@freescale.com>
- <1362653364-29993-2-git-send-email-b32955@freescale.com>
- <1363172096.11441.11.camel@sauron.fi.intel.com>
- <CAMiH66HyH7tQG96UMKed6prpqBa=sgyntdO1pf0yG+=qyigY0Q@mail.gmail.com>
-Date: Wed, 13 Mar 2013 22:30:11 -0700
-Message-ID: <CAN8TOE_fYQmcFQin8ni8nYqBQRNM=ix4n=YNQg9qhXBaviSiAg@mail.gmail.com>
-Subject: Re: [PATCH V4 1/3] mtd: add new fields to nand_flash_dev{}
+In-Reply-To: <201303101218.18769.marex@denx.de>
+References: <1362904877-20144-1-git-send-email-computersforpeace@gmail.com>
+ <201303101218.18769.marex@denx.de>
+Date: Wed, 13 Mar 2013 22:46:14 -0700
+Message-ID: <CAN8TOE9sfSPn+TiBmu+k1t_zqpOryteizrvwUu7hq1ie0X_zOw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] mtd: m25p80: utilize dedicated 4-byte addressing
+ commands
 From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <shijie8@gmail.com>
+To: Marek Vasut <marex@denx.de>
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: artem.bityutskiy@linux.intel.com, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Huang Shijie <b32955@freescale.com>
+Cc: Kevin Cernekee <cernekee@gmail.com>, linux-mtd@lists.infradead.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,69 +26,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Mar 13, 2013 at 6:04 AM, Huang Shijie <shijie8@gmail.com> wrote:
-> On Wed, Mar 13, 2013 at 6:54 PM, Artem Bityutskiy
-> <artem.bityutskiy@linux.intel.com> wrote:
->> On Thu, 2013-03-07 at 18:49 +0800, Huang Shijie wrote:
->>> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
->>> index 591eeeb..f0a9d93 100644
->>> --- a/include/linux/mtd/nand.h
->>> +++ b/include/linux/mtd/nand.h
->>> @@ -578,6 +578,8 @@ struct nand_chip {
->>>   * @erasesize: eraseblock size in bytes (determined from the extended ID if 0)
->>>   * @chipsize: total chip size in MiB
->>>   * @options: stores various chip bit options
->>> + * @id_len: The valid length of the @id.
->>> + * @oobsize: OOB size
->>>   */
->>>  struct nand_flash_dev {
->>>       char *name;
->>> @@ -592,6 +594,8 @@ struct nand_flash_dev {
->>>       unsigned long chipsize;
->>>       unsigned long erasesize;
->>>       unsigned long options;
->>> +     unsigned long id_len;
->>> +     unsigned long oobsize;
->>>  };
+On Sun, Mar 10, 2013 at 4:18 AM, Marek Vasut <marex@denx.de> wrote:
+>> Traditionally, the command set used by SPI flash only supported a 3-byte
+>> address. However, large SPI flash (>= 32MB, or 256Mbit) require 4 bytes
+>> to address the entire flash. Most manufacturers have supplied a mode
+>> switch (via a "bank register writer", or a "enable 4-byte mode"
+>> command), which tells the flash to expect 4 address cycles from now on,
+>> instead of 3. This mode remains until power is cut, the reset line is
+>> triggered (on packages where present), or a command is sent to reset the
+>> flash or to reset the 3-byte addressing mode.
 >>
->> Why are these of type 'long', which is 64 bits in 64-bit architectures,
->> which seems to be unnecessarily big. Wouldn't 'unsigned int' be enough?
+>> As an alternative, some flash manufacturers have developed a new command
+>> set that accept a full 4-byte address. They can be used orthogonally to
+>> any of the modes; that is, they can be used when the flash is in either
+>> 3-byte or 4-byte address mode.
 >>
-> Frankly speaking, "uint16_t" is enough.
-> "unsigned int" is too long for both the fields.
+>> Now, there are a number of reasons why the "stateful" 4-byte address
+>> mode switch may not be acceptable. For instance, some SoC's perform a
+>> dumb boot sequence in which they only send 3-byte read commands to the
+>> flash. However, if an unexpected reset occurs, the flash chip cannot be
+>> guaranteed to return to its 3-byte mode. Thus, the SoC controller and
+>> flash will not understand each other. (One might consider hooking up the
+>> aforementioned reset pin to the system reset line so that any system
+>> reset will reset the flash to 3-byte mode, but some packages do not
+>> provide this pin. And in some other packages, one must choose between
+>> having a reset pin and having enough pins for 4-output QSPI support.
+>> It is an error prone process choosing a flash that will support a
+>> hardware reset pin!)
+>>
+>> This patch provides support for the new stateless command set, so that
+>> we can avoid the problems that come with a stateful addressing mode
+>> change. The flash can be left in "3-byte mode" while still accessing the
+>> entire flash.
+>>
+>> Note that Spansion supports this command set on all its large flash
+>> (e.g, S25FL512S), and Macronix has begun supporting this command set on
+>> some new flash (e.g., MX25L25635F). For the moment, I don't know how to
+>> differentiate the Macronix that don't support this command set (e.g.,
+>> MX25L25635E) from those that do, so this patch only supports Spansion.
+>>
+>> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 >
->> Also, can we avoid having the 'id_len' field? Can the end of the
+> Looks reasonable
 >
-> For these 4 toshiba nand, we do not need the id_len field.
+> Acked-by: Marek Vasut <marex@denx.de>
 >
->> sequence of ID's be marked with a '0' or '0xFF' marker instead?
->
-> Are you sure that 0 or 0xff are not the valid data during the 8byte id data?
-> I am not sure.
+> What system/CPU do you observe these issue on just out of curiosity?
 
-I am sure that 0x00 is valid data. But I do not see any with 0xFF. Check:
-
-http://www.linux-mtd.infradead.org/nand-data/nanddata.html
-
-Anyway, this sort of magic ID byte is no good, IMO.
-
-> Maybe in future, we may meet a nand which use the 0xff as a valid id-data.
->
-> But we can remove this id_len field now. It's ok to me.
-
-As I noted elsewhere, I would prefer an id_len field. But I can also
-add one if/when it comes up, if we really must.
-
-BTW, I was just thinking; if you really want to save data space, we
-should have just made two totally separate tables: one with full IDs
-and one dev-id patterns. The first table should (hopefully) have fewer
-entries but can have a few extra columns, for a good purpose.
-
-But I'm not sure that space is worth it. We waste more (?) space with
-our static nand_ecclayout structs which aren't even going to be used
-by many drivers. Even those that are "used" aren't very useful, as no
-one really uses OOB for FS data much. (And to go off on more
-tangents...those structs could by shrunk easily with a few 'uint16_t',
-as they are no longer directly exported as the user ABI.)
+A Broadcom 74xx series SoC.
 
 Brian
