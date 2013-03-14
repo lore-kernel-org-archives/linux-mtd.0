@@ -1,14 +1,14 @@
 Received: from mail-pb0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UG5Ec-0003I3-CQ
- for linux-mtd@lists.infradead.org; Thu, 14 Mar 2013 10:18:07 +0000
-Received: by mail-pb0-f49.google.com with SMTP id xa12so1969527pbc.8
- for <linux-mtd@lists.infradead.org>; Thu, 14 Mar 2013 03:18:04 -0700 (PDT)
+ id 1UG5Ee-0003Iw-N4
+ for linux-mtd@lists.infradead.org; Thu, 14 Mar 2013 10:18:12 +0000
+Received: by mail-pb0-f49.google.com with SMTP id xa12so1976245pbc.22
+ for <linux-mtd@lists.infradead.org>; Thu, 14 Mar 2013 03:18:07 -0700 (PDT)
 From: Sachin Kamat <sachin.kamat@linaro.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 4/5] mtd: gpio: Use of_match_ptr() macro
-Date: Thu, 14 Mar 2013 15:37:03 +0530
-Message-Id: <1363255624-20885-4-git-send-email-sachin.kamat@linaro.org>
+Subject: [PATCH 5/5] mtd: sh_flctl: Use of_match_ptr() macro
+Date: Thu, 14 Mar 2013 15:37:04 +0530
+Message-Id: <1363255624-20885-5-git-send-email-sachin.kamat@linaro.org>
 In-Reply-To: <1363255624-20885-1-git-send-email-sachin.kamat@linaro.org>
 References: <1363255624-20885-1-git-send-email-sachin.kamat@linaro.org>
 Cc: sachin.kamat@linaro.org, artem.bityutskiy@linux.intel.com,
@@ -27,27 +27,27 @@ when OF is disabled.
 
 Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 ---
- drivers/mtd/nand/gpio.c |    3 +--
+ drivers/mtd/nand/sh_flctl.c |    3 +--
  1 files changed, 1 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
-index 0cc1394..89065dd 100644
---- a/drivers/mtd/nand/gpio.c
-+++ b/drivers/mtd/nand/gpio.c
-@@ -190,7 +190,6 @@ static struct resource *gpio_nand_get_io_sync_of(struct platform_device *pdev)
- 	return r;
+diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
+index 5899738..e57e18e 100644
+--- a/drivers/mtd/nand/sh_flctl.c
++++ b/drivers/mtd/nand/sh_flctl.c
+@@ -1081,7 +1081,6 @@ static struct sh_flctl_platform_data *flctl_parse_dt(struct device *dev)
+ 	return pdata;
  }
  #else /* CONFIG_OF */
--#define gpio_nand_id_table NULL
- static inline int gpio_nand_get_config_of(const struct device *dev,
- 					  struct gpio_nand_platdata *plat)
+-#define of_flctl_match NULL
+ static struct sh_flctl_platform_data *flctl_parse_dt(struct device *dev)
  {
-@@ -418,7 +417,7 @@ static struct platform_driver gpio_nand_driver = {
- 	.remove		= gpio_nand_remove,
- 	.driver		= {
- 		.name	= "gpio-nand",
--		.of_match_table = gpio_nand_id_table,
-+		.of_match_table = of_match_ptr(gpio_nand_id_table),
+ 	return NULL;
+@@ -1219,7 +1218,7 @@ static struct platform_driver flctl_driver = {
+ 	.driver = {
+ 		.name	= "sh_flctl",
+ 		.owner	= THIS_MODULE,
+-		.of_match_table = of_flctl_match,
++		.of_match_table = of_match_ptr(of_flctl_match),
  	},
  };
  
