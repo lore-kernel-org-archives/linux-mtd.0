@@ -1,19 +1,18 @@
-Received: from cpsmtpb-ews04.kpnxchange.com ([213.75.39.7])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UFuMq-0001rs-8W
- for linux-mtd@lists.infradead.org; Wed, 13 Mar 2013 22:41:52 +0000
-Message-ID: <1363214471.1335.19.camel@x61.thuisdomein>
-Subject: Re: [PATCH] mtd: remove ixp2000 driver
-From: Paul Bolle <pebolle@tiscali.nl>
-To: David Woodhouse <dwmw2@infradead.org>
-Date: Wed, 13 Mar 2013 23:41:11 +0100
-In-Reply-To: <1363206974.1335.10.camel@x61.thuisdomein>
-References: <1363206974.1335.10.camel@x61.thuisdomein>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Artem Bityutskiy <dedekind1@gmail.com>
+Received: from va3ehsobe005.messaging.microsoft.com ([216.32.180.31]
+ helo=va3outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UFyQY-0003GZ-9B
+ for linux-mtd@lists.infradead.org; Thu, 14 Mar 2013 03:01:59 +0000
+From: Huang Shijie <b32955@freescale.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH v5 0/3] mtd: use the full-id as the keyword for some nand chips
+Date: Thu, 14 Mar 2013 10:59:22 +0800
+Message-ID: <1363229965-13128-1-git-send-email-b32955@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: artem.bityutskiy@linux.intel.com, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Huang Shijie <b32955@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,20 +22,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2013-03-13 at 21:36 +0100, Paul Bolle wrote:
-> Support for the IXP2000 platform got removed in commit
-> c65f2abf54a6d07260f1fa64773154e1d7047961 ("ARM: remove ixp23xx and
-> ixp2000 platforms"). That commit removed the ARCH_IXP2000 Kconfig
-> symbol. This removes the last driver depending on that symbol.
-> 
-> Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
+As time goes on, we begin to meet the situation that we can not
+get enough information from some nand chips's id data.
+Take some Toshiba's nand chips for example.
+I have 4 Toshiba's nand chips in my hand:
+	TC58NVG2S0F, TC58NVG3S0F, TC58NVG5D2, TC58NVG6D2
 
-It turns out that Artem Bityutskiy has published a series of patches
-removing this and similar drivers just yesterday:
-http://lists.infradead.org/pipermail/linux-mtd/2013-March/046170.html 
+When we read these chips' datasheets, we will get the geometry of these chips:
+	TC58NVG2S0F : 4096 + 224
+	TC58NVG3S0F : 4096 + 232
+	TC58NVG5D2  : 8192 + 640
+	TC58NVG6D2  : 8192 + 640
 
-A quick scan suggest that's all great stuff! Anyhow, my patch can be
-ignored.
+But we can not parse out the correct oob size for these chips from the id data.
+So it is time to add some new fields to the nand_flash_dev{},
+and update the detection mechanisms.
 
+v4 --> v4:
+	[1] remove the id_len field.
+	[2] based on Artem "mtd: nand: use more reasonable integer types"
+	[3] add more comments.
 
-Paul Bolle
+v3 --> v4:
+	[1] rewrite the code based on the latest l2-mtd.
+	[2] add the full-id nand in the nand_flash_lds.
+
+v2 --> v3:
+	[1] remove the duplicated header.
+	[2] remove the field "ecc_len" in nand_flash_dev{}.
+	[3] fix some coding style warnings.
+	[4] add more comments
+
+Huang Shijie (3):
+  mtd: add a new field for nand_flash_dev{}
+  mtd: add the support to parse out the full-id nand type
+  mtd: add 4 Toshiba nand chips for the full-id case
+
+ drivers/mtd/nand/nand_base.c |   36 +++++++++++++++++++++++++++++++++---
+ drivers/mtd/nand/nand_ids.c  |   22 ++++++++++++++++++++++
+ include/linux/mtd/nand.h     |    2 ++
+ 3 files changed, 57 insertions(+), 3 deletions(-)
