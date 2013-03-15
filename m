@@ -1,24 +1,23 @@
-Received: from mail-ie0-x233.google.com ([2607:f8b0:4001:c03::233])
+Received: from f369.mail.ru ([217.69.141.11])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UGOxI-0001Zm-Km
- for linux-mtd@lists.infradead.org; Fri, 15 Mar 2013 07:21:33 +0000
-Received: by mail-ie0-f179.google.com with SMTP id k11so3984182iea.38
- for <linux-mtd@lists.infradead.org>; Fri, 15 Mar 2013 00:21:30 -0700 (PDT)
-Message-ID: <5142CBF5.4040205@gmail.com>
-Date: Fri, 15 Mar 2013 00:21:25 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-MIME-Version: 1.0
-To: Huang Shijie <shijie8@gmail.com>
-Subject: Re: [PATCH v5 3/3] mtd: add 4 Toshiba nand chips for the full-id case
-References: <1363229965-13128-1-git-send-email-b32955@freescale.com>	<1363229965-13128-4-git-send-email-b32955@freescale.com>
- <CAN8TOE9aGckZ2PrCCPQe4ZgW6Aph3otXGohNuRPssu8f302xaA@mail.gmail.com>
- <5142878A.7050701@gmail.com>
-In-Reply-To: <5142878A.7050701@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Huang Shijie <b32955@freescale.com>, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- artem.bityutskiy@linux.intel.com
+ id 1UGPIP-0003O1-3P
+ for linux-mtd@lists.infradead.org; Fri, 15 Mar 2013 07:43:22 +0000
+From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+To: =?UTF-8?B?RGF2aWQgV29vZGhvdXNl?= <dwmw2@infradead.org>
+Subject: =?UTF-8?B?UmU6IFtSRkMgInYyIl0gbXRkOiBuYW5kOiByZWludHJvZHVjZSBOQU5EX05P?=
+ =?UTF-8?B?X1JFQURSRFkgYXMgTkFORF9ORUVEX1JFQURSRFk=?=
+Mime-Version: 1.0
+Date: Fri, 15 Mar 2013 11:43:16 +0400
+Message-ID: <1363333396.593984979@f369.mail.ru>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
+In-Reply-To: <1363265574.4853.39.camel@i7.infradead.org>
+References: <1363193491-1843-1-git-send-email-computersforpeace@gmail.com>
+ <1363258297.4853.23.camel@i7.infradead.org>
+ <1363265574.4853.39.camel@i7.infradead.org>
+Cc: =?UTF-8?B?QnJpYW4gTm9ycmlz?= <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org, dedekind1@gmail.com
+Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,14 +27,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/14/2013 07:29 PM, Huang Shijie wrote:
-> sorry for my poor english.
-
-No need to apologize.
-
-Thanks for braving through the 6 iterations of this! We were going to 
-need this eventually anyway. Now that the dust is settling, your v6 is 
-looking pretty good. I'll have a closer look later and probably give my 
-Acked/Reviewed-by.
-
-Brian
+PiBPbiBUaHUsIDIwMTMtMDMtMTQgYXQgMTA6NTEgKzAwMDAsIERhdmlkIFdvb2Rob3VzZSB3cm90
+ZToKPiA+IAo+ID4gSSd2ZSBnb3QgYSBjb3VwbGUgb2YgKHVucmVsYXRlZCkgcGF0Y2hlcyBpbiBs
+aW51eC1tdGQuZ2l0IHdoaWNoIEkgd2FzCj4gPiBhYm91dCB0byBzZW5kIHRvIExpbnVzIGZvciAz
+LjkuIExldCdzIHB1dCBpdCBvbiB0b3Agb2YgdGhhdCBhbmQgSSdsbAo+ID4gc2VuZCB0aGUgd2hv
+bGUgbG90IHRvZ2V0aGVyLgo+IAo+IEFsZXhhbmRlciwgcGxlYXNlIGNvdWxkIHlvdSByZXRlc3Qg
+dGhlIHZlcnNpb24gSSd2ZSBqdXN0IHB1c2hlZCBvdXQgdG8KPiBsaW51eC1tdGQuZ2l0Pwo+IAo+
+IFRoYW5rcy4KPiAKPiBodHRwOi8vZ2l0LmluZnJhZGVhZC5vcmcvbGludXgtbXRkLmdpdC9jb21t
+aXRkaWZmLzViYzdjMzNjYQoKQWxsIE9LLgoKVGVzdGVkLWJ5OiBBbGV4YW5kZXIgU2hpeWFuIDxz
+aGNfd29ya0BtYWlsLnJ1PgoKLS0tCg==
