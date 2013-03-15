@@ -1,16 +1,18 @@
-Received: from mail-qe0-f41.google.com ([209.85.128.41])
+Received: from mail-qe0-f47.google.com ([209.85.128.47])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UGXBZ-0006jm-70
- for linux-mtd@lists.infradead.org; Fri, 15 Mar 2013 16:08:49 +0000
-Received: by mail-qe0-f41.google.com with SMTP id 6so2036303qeb.0
- for <linux-mtd@lists.infradead.org>; Fri, 15 Mar 2013 09:08:47 -0700 (PDT)
+ id 1UGXKS-0000Sh-Dl
+ for linux-mtd@lists.infradead.org; Fri, 15 Mar 2013 16:18:01 +0000
+Received: by mail-qe0-f47.google.com with SMTP id q19so2033555qeb.34
+ for <linux-mtd@lists.infradead.org>; Fri, 15 Mar 2013 09:17:58 -0700 (PDT)
 MIME-Version: 1.0
-Date: Fri, 15 Mar 2013 10:08:46 -0600
-Message-ID: <CACwUX0O=_mXexe6RLgGznVThUdMiMFAEMdzdOWBdKxYa1pHcAQ@mail.gmail.com>
-Subject: on-die ECC support
+In-Reply-To: <CACwUX0O=_mXexe6RLgGznVThUdMiMFAEMdzdOWBdKxYa1pHcAQ@mail.gmail.com>
+References: <CACwUX0O=_mXexe6RLgGznVThUdMiMFAEMdzdOWBdKxYa1pHcAQ@mail.gmail.com>
+Date: Fri, 15 Mar 2013 10:17:58 -0600
+Message-ID: <CACwUX0PzC3QcqUEC4CLOrZMc=uuod8dr+LKoczgDVtzhnnz5gQ@mail.gmail.com>
+Subject: Re: on-die ECC support
 From: David Mosberger-Tang <dmosberger@gmail.com>
 To: linux-mtd@lists.infradead.org
-Content-Type: multipart/mixed; boundary=20cf3074b128a31baa04d7f8dafc
+Content-Type: multipart/mixed; boundary=00235429d208832ceb04d7f8fb02
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,40 +22,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---20cf3074b128a31baa04d7f8dafc
+--00235429d208832ceb04d7f8fb02
 Content-Type: text/plain; charset=ISO-8859-1
 
-We need to be able to support 4-bit-correcting ECC with a
-micro-controller that doesn't have hardware-support for that.  We are
-planning to use the on-die ECC controller supported by Micron flash
-chips.  I suppose we could use the BCH swecc support in the Linux
-kernel, but I'm concerned about the performance implication of that
-and we'd also have to add BCH ecc to our bootloader, which would mean
-more development and testing.
+Hopefully this attachment comes through...
 
-For backwards-compatibility, we need to be able to support a
-subpage-size of 512 bytes.  From the Micron data sheets, it's not
-clear to me whether the on-die controller really supports reading 512
-byte subpages but the attached patch certainly *seems* to work fine so
-far.
+On Fri, Mar 15, 2013 at 10:08 AM, David Mosberger-Tang
+<dmosberger@gmail.com> wrote:
+> We need to be able to support 4-bit-correcting ECC with a
+> micro-controller that doesn't have hardware-support for that.  We are
+> planning to use the on-die ECC controller supported by Micron flash
+> chips.  I suppose we could use the BCH swecc support in the Linux
+> kernel, but I'm concerned about the performance implication of that
+> and we'd also have to add BCH ecc to our bootloader, which would mean
+> more development and testing.
+>
+> For backwards-compatibility, we need to be able to support a
+> subpage-size of 512 bytes.  From the Micron data sheets, it's not
+> clear to me whether the on-die controller really supports reading 512
+> byte subpages but the attached patch certainly *seems* to work fine so
+> far.
+>
+> I'd love to get some feedback as to whether I'm on the right track
+> here or whether I should pursue a different path.  The patch does the
+> following:
+>
+>  - Add NAND_ECC_HW_ON_DIE ecc mode
+>  - Add nand_read_subpage_raw() to read a subpage without worrying about ECC
+>  - Hack atmel_nand.c to use on-die ECC.
+>
+> Thanks,
+>
+>   --david
 
-I'd love to get some feedback as to whether I'm on the right track
-here or whether I should pursue a different path.  The patch does the
-following:
-
- - Add NAND_ECC_HW_ON_DIE ecc mode
- - Add nand_read_subpage_raw() to read a subpage without worrying about ECC
- - Hack atmel_nand.c to use on-die ECC.
-
-Thanks,
-
-  --david
-
---20cf3074b128a31baa04d7f8dafc
-Content-Type: application/octet-stream; name="on-die-ecc.diff"
-Content-Disposition: attachment; filename="on-die-ecc.diff"
+--00235429d208832ceb04d7f8fb02
+Content-Type: text/plain; charset=US-ASCII; name="on-die-ecc.diff.txt"
+Content-Disposition: attachment; filename="on-die-ecc.diff.txt"
 Content-Transfer-Encoding: base64
-X-Attachment-Id: f_hebj6n8z0
+X-Attachment-Id: f_hebjvw421
 
 ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvYXRtZWxfbmFuZC5jIGIvZHJpdmVycy9tdGQv
 bmFuZC9hdG1lbF9uYW5kLmMKaW5kZXggOTI2MjNhYy4uODA0M2ZkZSAxMDA2NDQKLS0tIGEvZHJp
@@ -143,4 +149,4 @@ IGEvaW5jbHVkZS9saW51eC9tdGQvbmFuZC5oCisrKyBiL2luY2x1ZGUvbGludXgvbXRkL25hbmQu
 aApAQCAtMTQzLDYgKzE0Myw3IEBAIHR5cGVkZWYgZW51bSB7CiAJTkFORF9FQ0NfSFdfU1lORFJP
 TUUsCiAJTkFORF9FQ0NfSFdfT09CX0ZJUlNULAogCU5BTkRfRUNDX1NPRlRfQkNILAorCU5BTkRf
 RUNDX0hXX09OX0RJRSwKIH0gbmFuZF9lY2NfbW9kZXNfdDsKIAogLyoK
---20cf3074b128a31baa04d7f8dafc--
+--00235429d208832ceb04d7f8fb02--
