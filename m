@@ -1,25 +1,18 @@
-Received: from mail-pb0-f48.google.com ([209.85.160.48])
+Received: from mail-pb0-f43.google.com ([209.85.160.43])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UGYPl-0004Cz-11
- for linux-mtd@lists.infradead.org; Fri, 15 Mar 2013 17:27:33 +0000
-Received: by mail-pb0-f48.google.com with SMTP id wy12so4085256pbc.35
- for <linux-mtd@lists.infradead.org>; Fri, 15 Mar 2013 10:27:31 -0700 (PDT)
-Message-ID: <514359FC.3050800@gmail.com>
-Date: Fri, 15 Mar 2013 10:27:24 -0700
+ id 1UGYgs-0007Av-Rh
+ for linux-mtd@lists.infradead.org; Fri, 15 Mar 2013 17:45:15 +0000
+Received: by mail-pb0-f43.google.com with SMTP id md12so4123986pbc.2
+ for <linux-mtd@lists.infradead.org>; Fri, 15 Mar 2013 10:45:13 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
-MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [RFC "v2"] mtd: nand: reintroduce NAND_NO_READRDY as
- NAND_NEED_READRDY
-References: <1363193491-1843-1-git-send-email-computersforpeace@gmail.com>
- <1363257704.11441.102.camel@sauron.fi.intel.com>
- <1363258297.4853.23.camel@i7.infradead.org>
- <1363265574.4853.39.camel@i7.infradead.org>
-In-Reply-To: <1363265574.4853.39.camel@i7.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Alexander Shiyan <shc_work@mail.ru>,
- dedekind1@gmail.com
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: omap2: fix IOERR
+Date: Fri, 15 Mar 2013 10:44:59 -0700
+Message-Id: <1363369499-29459-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <CAGNmLEPEkre4SwbVgBYhDPhqC+tkn-aLp9-bTjh8dv90Yo6_tw@mail.gmail.com>
+References: <CAGNmLEPEkre4SwbVgBYhDPhqC+tkn-aLp9-bTjh8dv90Yo6_tw@mail.gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>, Toan Pham <tpham3783@gmail.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,20 +22,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/14/2013 05:52 AM, David Woodhouse wrote:
-> On Thu, 2013-03-14 at 10:51 +0000, David Woodhouse wrote:
->>
->> I've got a couple of (unrelated) patches in linux-mtd.git which I was
->> about to send to Linus for 3.9. Let's put it on top of that and I'll
->> send the whole lot together.
->
-> Alexander, please could you retest the version I've just pushed out to
-> linux-mtd.git?
->
-> Thanks.
->
-> http://git.infradead.org/linux-mtd.git/commitdiff/5bc7c33ca
+From: Toan Pham <tpham3783@gmail.com>
 
-Your modified versions looks good to me. Thanks for taking this.
+Fix mtd-utils from returning -EIO.
+Formatting jffs2 filesystem was impossible when CONFIG_HZ was set to a low
+value.
 
-Brian
+Signed-off-by: Toan Pham <tpham3783@gmail.com>
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+Toan: it looks like your mailer uses MIME/HTML formatting, whereas the mailing
+list expects plain text. It also seems your tabs were replaced with spaces. I
+am resubmitting your patch for you, as it is simple and is not worth a lot more
+email struggles. Thanks for the fix!
+
+ drivers/mtd/nand/omap2.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index b97ef3b..81b80af 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -1023,9 +1023,9 @@ static int omap_wait(struct mtd_info *mtd, struct nand_chip *chip)
+ 	int status, state = this->state;
+ 
+ 	if (state == FL_ERASING)
+-		timeo += (HZ * 400) / 1000;
++		timeo += msecs_to_jiffies(400);
+ 	else
+-		timeo += (HZ * 20) / 1000;
++		timeo += msecs_to_jiffies(20);
+ 
+ 	writeb(NAND_CMD_STATUS & 0xFF, info->reg.gpmc_nand_command);
+ 	while (time_before(jiffies, timeo)) {
+-- 
+1.7.9.5
