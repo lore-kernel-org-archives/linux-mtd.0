@@ -1,22 +1,25 @@
-Received: from mail-oa0-f54.google.com ([209.85.219.54])
+Received: from mail-pb0-f48.google.com ([209.85.160.48])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UGXis-0004UM-3N
- for linux-mtd@lists.infradead.org; Fri, 15 Mar 2013 16:43:15 +0000
-Received: by mail-oa0-f54.google.com with SMTP id n12so3642924oag.13
- for <linux-mtd@lists.infradead.org>; Fri, 15 Mar 2013 09:43:12 -0700 (PDT)
+ id 1UGYPl-0004Cz-11
+ for linux-mtd@lists.infradead.org; Fri, 15 Mar 2013 17:27:33 +0000
+Received: by mail-pb0-f48.google.com with SMTP id wy12so4085256pbc.35
+ for <linux-mtd@lists.infradead.org>; Fri, 15 Mar 2013 10:27:31 -0700 (PDT)
+Message-ID: <514359FC.3050800@gmail.com>
+Date: Fri, 15 Mar 2013 10:27:24 -0700
+From: Brian Norris <computersforpeace@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <51434BAC.4080003@hauke-m.de>
-References: <1363343486-3084-1-git-send-email-zajec5@gmail.com>
- <51434BAC.4080003@hauke-m.de>
-Date: Fri, 15 Mar 2013 17:43:11 +0100
-Message-ID: <CACna6rxL5zV8xbJS3nwVi_w_4KXoR2uYKMCfNNEA8u6k1m22Dg@mail.gmail.com>
-Subject: Re: [PATCH] mtd: bcm47xxsflash: implement chip polling
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Hauke Mehrtens <hauke@hauke-m.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <David.Woodhouse@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [RFC "v2"] mtd: nand: reintroduce NAND_NO_READRDY as
+ NAND_NEED_READRDY
+References: <1363193491-1843-1-git-send-email-computersforpeace@gmail.com>
+ <1363257704.11441.102.camel@sauron.fi.intel.com>
+ <1363258297.4853.23.camel@i7.infradead.org>
+ <1363265574.4853.39.camel@i7.infradead.org>
+In-Reply-To: <1363265574.4853.39.camel@i7.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, Alexander Shiyan <shc_work@mail.ru>,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,62 +29,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2013/3/15 Hauke Mehrtens <hauke@hauke-m.de>:
-> On 03/15/2013 11:31 AM, Rafa=C5=82 Mi=C5=82ecki wrote:
+On 03/14/2013 05:52 AM, David Woodhouse wrote:
+> On Thu, 2013-03-14 at 10:51 +0000, David Woodhouse wrote:
 >>
->> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
->> ---
->>  drivers/mtd/devices/bcm47xxsflash.c |   56 ++++++++++++++++++++++++++++=
-+++++++
->>  1 file changed, 56 insertions(+)
->>
->> diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/b=
-cm47xxsflash.c
->> index 2f9e629..75f3cf0 100644
->> --- a/drivers/mtd/devices/bcm47xxsflash.c
->> +++ b/drivers/mtd/devices/bcm47xxsflash.c
->> @@ -1,6 +1,7 @@
->>  #include <linux/kernel.h>
->>  #include <linux/module.h>
->>  #include <linux/slab.h>
->> +#include <linux/delay.h>
->>  #include <linux/mtd/mtd.h>
->>  #include <linux/platform_device.h>
->>  #include <linux/bcma/bcma.h>
->> @@ -12,6 +13,58 @@ MODULE_DESCRIPTION("Serial flash driver for BCMA bus"=
-);
->>
->>  static const char * const probes[] =3D { "bcm47xxpart", NULL };
->>
->> +/**************************************************
->> + * Various helpers
->> + **************************************************/
->> +
->> +static void bcm47xxsflash_cmd(struct bcm47xxsflash *b47s, u32 opcode)
->> +{
->> +     int i;
->> +
->> +     bcma_cc_write32(b47s->bcma_cc, BCMA_CC_FLASHCTL,
->> +                     BCMA_CC_FLASHCTL_START | opcode);
+>> I've got a couple of (unrelated) patches in linux-mtd.git which I was
+>> about to send to Linus for 3.9. Let's put it on top of that and I'll
+>> send the whole lot together.
 >
-> Why do you access the bcma write function directly? When you are adding
-> support for serial flash on ssb you have to double this and probably all
-> the other functions. I would suggest you using some bus abstraction like
-> it you did it in b43.
+> Alexander, please could you retest the version I've just pushed out to
+> linux-mtd.git?
+>
+> Thanks.
+>
+> http://git.infradead.org/linux-mtd.git/commitdiff/5bc7c33ca
 
-To be honest, I had bus abstraction in my code. I removed it because
-of Artem's comments in last patchset. He said he doesn't have a proof
-I'll ever add SSB support and told me to remove code that prepared
-bcm47xxsflash for abstracting bus type.
+Your modified versions looks good to me. Thanks for taking this.
 
-Of course when adding support for SSB, I'll have to rewrite the code
-I've just proposed. I also don't like this idea, but made it that way
-to get it mainline. If we want to make it "the wise" way, with
-designing code for bus abstraction at this point, we have to discuss
-that with Artem.
-
-@Artem: what do you think about this? Personally I'd prefer to start
-designing bcm47xxsflash with keeping bus abstraction in mind.
-
---=20
-Rafa=C5=82
+Brian
