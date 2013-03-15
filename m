@@ -1,20 +1,18 @@
-Received: from mail-ee0-f50.google.com ([74.125.83.50])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UGRvD-0008NK-AB
- for linux-mtd@lists.infradead.org; Fri, 15 Mar 2013 10:31:35 +0000
-Received: by mail-ee0-f50.google.com with SMTP id e51so1539643eek.23
- for <linux-mtd@lists.infradead.org>; Fri, 15 Mar 2013 03:31:33 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
- David Woodhouse <David.Woodhouse@intel.com>
-Subject: [PATCH] mtd: bcm47xxsflash: implement chip polling
-Date: Fri, 15 Mar 2013 11:31:26 +0100
-Message-Id: <1363343486-3084-1-git-send-email-zajec5@gmail.com>
+Received: from mga09.intel.com ([134.134.136.24])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UGTGm-0007wn-M1
+ for linux-mtd@lists.infradead.org; Fri, 15 Mar 2013 11:57:58 +0000
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: =?utf-8?q?=5BPATCH=202/2=5D=20mtd=3A=20remove=20the=20h1910=20NAND=20driver?=
+Date: Fri, 15 Mar 2013 13:59:35 +0200
+Message-Id: <1363348775-24248-2-git-send-email-dedekind1@gmail.com>
+In-Reply-To: <1363348775-24248-1-git-send-email-dedekind1@gmail.com>
+References: <1363348775-24248-1-git-send-email-dedekind1@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Cc: Hauke Mehrtens <hauke@hauke-m.de>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,92 +22,220 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+This driver is marked as broken for 2 years, and no one cares to make it
+compile and work. Now it is time to zap it.
+
+Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- drivers/mtd/devices/bcm47xxsflash.c |   56 +++++++++++++++++++++++++++++++++++
- 1 file changed, 56 insertions(+)
+ drivers/mtd/nand/Kconfig  |    6 --
+ drivers/mtd/nand/Makefile |    1 -
+ drivers/mtd/nand/h1910.c  |  167 ---------------------------------------------
+ 3 files changed, 174 deletions(-)
+ delete mode 100644 drivers/mtd/nand/h1910.c
 
-diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
-index 2f9e629..75f3cf0 100644
---- a/drivers/mtd/devices/bcm47xxsflash.c
-+++ b/drivers/mtd/devices/bcm47xxsflash.c
-@@ -1,6 +1,7 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/slab.h>
-+#include <linux/delay.h>
- #include <linux/mtd/mtd.h>
- #include <linux/platform_device.h>
- #include <linux/bcma/bcma.h>
-@@ -12,6 +13,58 @@ MODULE_DESCRIPTION("Serial flash driver for BCMA bus");
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index e10a665..1cca712 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -73,12 +73,6 @@ config MTD_NAND_DENALI_SCRATCH_REG_ADDR
+           scratch register here to enable this feature. On Intel Moorestown
+           boards, the scratch register is at 0xFF108018.
  
- static const char * const probes[] = { "bcm47xxpart", NULL };
- 
-+/**************************************************
-+ * Various helpers
-+ **************************************************/
-+
-+static void bcm47xxsflash_cmd(struct bcm47xxsflash *b47s, u32 opcode)
-+{
-+	int i;
-+
-+	bcma_cc_write32(b47s->bcma_cc, BCMA_CC_FLASHCTL,
-+			BCMA_CC_FLASHCTL_START | opcode);
-+	for (i = 0; i < 1000; i++) {
-+		if (!(bcma_cc_read32(b47s->bcma_cc, BCMA_CC_FLASHCTL) &
-+		      BCMA_CC_FLASHCTL_BUSY))
-+			return;
-+		cpu_relax();
-+	}
-+	pr_err("Control command failed (timeout)!\n");
-+}
-+
-+static int bcm47xxsflash_poll(struct bcm47xxsflash *b47s, int timeout)
-+{
-+	unsigned long deadline = jiffies + timeout;
-+
-+	do {
-+		switch (b47s->type) {
-+		case BCM47XXSFLASH_TYPE_ST:
-+			bcm47xxsflash_cmd(b47s, OPCODE_ST_RDSR);
-+			if (!(bcma_cc_read32(b47s->bcma_cc, BCMA_CC_FLASHDATA)
-+			      & SR_ST_WIP))
-+				return 0;
-+			break;
-+		case BCM47XXSFLASH_TYPE_ATMEL:
-+			bcm47xxsflash_cmd(b47s, OPCODE_AT_STATUS);
-+			if (bcma_cc_read32(b47s->bcma_cc, BCMA_CC_FLASHDATA)
-+			    & SR_AT_READY)
-+				return 0;
-+			break;
-+		}
-+
-+		cpu_relax();
-+		udelay(1);
-+	} while (!time_after_eq(jiffies, deadline));
-+
-+	pr_err("Timeout waiting for flash to be ready!\n");
-+
-+	return -EBUSY;
-+}
-+
-+/**************************************************
-+ * MTD ops
-+ **************************************************/
-+
- static int bcm47xxsflash_read(struct mtd_info *mtd, loff_t from, size_t len,
- 			      size_t *retlen, u_char *buf)
- {
-@@ -84,6 +137,9 @@ static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
- 		goto err_dev_reg;
- 	}
- 
-+	if (bcm47xxsflash_poll(b47s, HZ / 10))
-+		pr_warn("Serial flash busy\n");
-+
- 	return 0;
- 
- err_dev_reg:
+-config MTD_NAND_H1900
+-	tristate "iPAQ H1900 flash"
+-	depends on ARCH_PXA && BROKEN
+-	help
+-	  This enables the driver for the iPAQ h1900 flash.
+-
+ config MTD_NAND_GPIO
+ 	tristate "GPIO NAND Flash driver"
+ 	depends on GENERIC_GPIO && ARM
+diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+index ff6e72a..bb81891 100644
+--- a/drivers/mtd/nand/Makefile
++++ b/drivers/mtd/nand/Makefile
+@@ -20,7 +20,6 @@ obj-$(CONFIG_MTD_NAND_DAVINCI)		+= davinci_nand.o
+ obj-$(CONFIG_MTD_NAND_DISKONCHIP)	+= diskonchip.o
+ obj-$(CONFIG_MTD_NAND_DOCG4)		+= docg4.o
+ obj-$(CONFIG_MTD_NAND_FSMC)		+= fsmc_nand.o
+-obj-$(CONFIG_MTD_NAND_H1900)		+= h1910.o
+ obj-$(CONFIG_MTD_NAND_SHARPSL)		+= sharpsl.o
+ obj-$(CONFIG_MTD_NAND_NANDSIM)		+= nandsim.o
+ obj-$(CONFIG_MTD_NAND_CS553X)		+= cs553x_nand.o
+diff --git a/drivers/mtd/nand/h1910.c b/drivers/mtd/nand/h1910.c
+deleted file mode 100644
+index 50166e9..0000000
+--- a/drivers/mtd/nand/h1910.c
++++ /dev/null
+@@ -1,167 +0,0 @@
+-/*
+- *  drivers/mtd/nand/h1910.c
+- *
+- *  Copyright (C) 2003 Joshua Wise (joshua@joshuawise.com)
+- *
+- *  Derived from drivers/mtd/nand/edb7312.c
+- *       Copyright (C) 2002 Marius Gröger (mag@sysgo.de)
+- *       Copyright (c) 2001 Thomas Gleixner (gleixner@autronix.de)
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- *
+- *  Overview:
+- *   This is a device driver for the NAND flash device found on the
+- *   iPAQ h1910 board which utilizes the Samsung K9F2808 part. This is
+- *   a 128Mibit (16MiB x 8 bits) NAND flash device.
+- */
+-
+-#include <linux/slab.h>
+-#include <linux/init.h>
+-#include <linux/module.h>
+-#include <linux/mtd/mtd.h>
+-#include <linux/mtd/nand.h>
+-#include <linux/mtd/partitions.h>
+-#include <asm/io.h>
+-#include <mach/hardware.h>
+-#include <asm/sizes.h>
+-#include <mach/h1900-gpio.h>
+-#include <mach/ipaq.h>
+-
+-/*
+- * MTD structure for EDB7312 board
+- */
+-static struct mtd_info *h1910_nand_mtd = NULL;
+-
+-/*
+- * Module stuff
+- */
+-
+-/*
+- * Define static partitions for flash device
+- */
+-static struct mtd_partition partition_info[] = {
+-      {name:"h1910 NAND Flash",
+-	      offset:0,
+-      size:16 * 1024 * 1024}
+-};
+-
+-#define NUM_PARTITIONS 1
+-
+-/*
+- *	hardware specific access to control-lines
+- *
+- *	NAND_NCE: bit 0 - don't care
+- *	NAND_CLE: bit 1 - address bit 2
+- *	NAND_ALE: bit 2 - address bit 3
+- */
+-static void h1910_hwcontrol(struct mtd_info *mtd, int cmd,
+-			    unsigned int ctrl)
+-{
+-	struct nand_chip *chip = mtd->priv;
+-
+-	if (cmd != NAND_CMD_NONE)
+-		writeb(cmd, chip->IO_ADDR_W | ((ctrl & 0x6) << 1));
+-}
+-
+-/*
+- *	read device ready pin
+- */
+-#if 0
+-static int h1910_device_ready(struct mtd_info *mtd)
+-{
+-	return (GPLR(55) & GPIO_bit(55));
+-}
+-#endif
+-
+-/*
+- * Main initialization routine
+- */
+-static int __init h1910_init(void)
+-{
+-	struct nand_chip *this;
+-	void __iomem *nandaddr;
+-
+-	if (!machine_is_h1900())
+-		return -ENODEV;
+-
+-	nandaddr = ioremap(0x08000000, 0x1000);
+-	if (!nandaddr) {
+-		printk("Failed to ioremap nand flash.\n");
+-		return -ENOMEM;
+-	}
+-
+-	/* Allocate memory for MTD device structure and private data */
+-	h1910_nand_mtd = kmalloc(sizeof(struct mtd_info) + sizeof(struct nand_chip), GFP_KERNEL);
+-	if (!h1910_nand_mtd) {
+-		printk("Unable to allocate h1910 NAND MTD device structure.\n");
+-		iounmap((void *)nandaddr);
+-		return -ENOMEM;
+-	}
+-
+-	/* Get pointer to private data */
+-	this = (struct nand_chip *)(&h1910_nand_mtd[1]);
+-
+-	/* Initialize structures */
+-	memset(h1910_nand_mtd, 0, sizeof(struct mtd_info));
+-	memset(this, 0, sizeof(struct nand_chip));
+-
+-	/* Link the private data with the MTD structure */
+-	h1910_nand_mtd->priv = this;
+-	h1910_nand_mtd->owner = THIS_MODULE;
+-
+-	/*
+-	 * Enable VPEN
+-	 */
+-	GPSR(37) = GPIO_bit(37);
+-
+-	/* insert callbacks */
+-	this->IO_ADDR_R = nandaddr;
+-	this->IO_ADDR_W = nandaddr;
+-	this->cmd_ctrl = h1910_hwcontrol;
+-	this->dev_ready = NULL;	/* unknown whether that was correct or not so we will just do it like this */
+-	/* 15 us command delay time */
+-	this->chip_delay = 50;
+-	this->ecc.mode = NAND_ECC_SOFT;
+-
+-	/* Scan to find existence of the device */
+-	if (nand_scan(h1910_nand_mtd, 1)) {
+-		printk(KERN_NOTICE "No NAND device - returning -ENXIO\n");
+-		kfree(h1910_nand_mtd);
+-		iounmap((void *)nandaddr);
+-		return -ENXIO;
+-	}
+-
+-	/* Register the partitions */
+-	mtd_device_parse_register(h1910_nand_mtd, NULL, NULL, partition_info,
+-				  NUM_PARTITIONS);
+-
+-	/* Return happy */
+-	return 0;
+-}
+-
+-module_init(h1910_init);
+-
+-/*
+- * Clean up routine
+- */
+-static void __exit h1910_cleanup(void)
+-{
+-	struct nand_chip *this = (struct nand_chip *)&h1910_nand_mtd[1];
+-
+-	/* Release resources, unregister device */
+-	nand_release(h1910_nand_mtd);
+-
+-	/* Release io resource */
+-	iounmap((void *)this->IO_ADDR_W);
+-
+-	/* Free the MTD device structure */
+-	kfree(h1910_nand_mtd);
+-}
+-
+-module_exit(h1910_cleanup);
+-
+-MODULE_LICENSE("GPL");
+-MODULE_AUTHOR("Joshua Wise <joshua at joshuawise dot com>");
+-MODULE_DESCRIPTION("NAND flash driver for iPAQ h1910");
 -- 
 1.7.10.4
