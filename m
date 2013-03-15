@@ -1,19 +1,16 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UGUUR-0007lJ-0t
- for linux-mtd@lists.infradead.org; Fri, 15 Mar 2013 13:16:08 +0000
-Message-ID: <51431F08.7050103@parrot.com>
-Date: Fri, 15 Mar 2013 14:15:52 +0100
-From: Matthieu CASTET <matthieu.castet@parrot.com>
+Received: from mail-qe0-f41.google.com ([209.85.128.41])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UGXBZ-0006jm-70
+ for linux-mtd@lists.infradead.org; Fri, 15 Mar 2013 16:08:49 +0000
+Received: by mail-qe0-f41.google.com with SMTP id 6so2036303qeb.0
+ for <linux-mtd@lists.infradead.org>; Fri, 15 Mar 2013 09:08:47 -0700 (PDT)
 MIME-Version: 1.0
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [PATCH] mtd: nand: subpage write support for hardware based ECC
- schemes
-References: <1363352378-2825-1-git-send-email-pekon@ti.com>
-In-Reply-To: <1363352378-2825-1-git-send-email-pekon@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Fri, 15 Mar 2013 10:08:46 -0600
+Message-ID: <CACwUX0O=_mXexe6RLgGznVThUdMiMFAEMdzdOWBdKxYa1pHcAQ@mail.gmail.com>
+Subject: on-die ECC support
+From: David Mosberger-Tang <dmosberger@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: multipart/mixed; boundary=20cf3074b128a31baa04d7f8dafc
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,227 +20,127 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On which controller was it tested ?
+--20cf3074b128a31baa04d7f8dafc
+Content-Type: text/plain; charset=ISO-8859-1
 
+We need to be able to support 4-bit-correcting ECC with a
+micro-controller that doesn't have hardware-support for that.  We are
+planning to use the on-die ECC controller supported by Micron flash
+chips.  I suppose we could use the BCH swecc support in the Linux
+kernel, but I'm concerned about the performance implication of that
+and we'd also have to add BCH ecc to our bootloader, which would mean
+more development and testing.
 
-The problem is that lot's of controller driver with hw ecc hack the ecc interface.
+For backwards-compatibility, we need to be able to support a
+subpage-size of 512 bytes.  From the Micron data sheets, it's not
+clear to me whether the on-die controller really supports reading 512
+byte subpages but the attached patch certainly *seems* to work fine so
+far.
 
-For example the TI omap driver don't use the data pointer of ecc.calculate but
-use the data send on the nand interface.
+I'd love to get some feedback as to whether I'm on the right track
+here or whether I should pursue a different path.  The patch does the
+following:
 
-Matthieu
+ - Add NAND_ECC_HW_ON_DIE ecc mode
+ - Add nand_read_subpage_raw() to read a subpage without worrying about ECC
+ - Hack atmel_nand.c to use on-die ECC.
 
-Gupta, Pekon a écrit :
-> From: "Gupta, Pekon" <pekon@ti.com>
-> 
-> This patch adds support for subpage (partial-page) writes when using
-> hardware based ECC schemes.
-> Advantages:
-> (1) reduces storage overhead when using file-systems like UBIFS, which
-> store LEB header at page-size granularity.
-> (2) allows independent subpage writes, thereby increasing NAND storage
-> efficiency for non-page aligned data.
-> 
-> Signed-off-by: Gupta, Pekon <pekon@ti.com>
-> ---
->  drivers/mtd/nand/nand_base.c | 99 ++++++++++++++++++++++++++++++++++++++------
->  include/linux/mtd/nand.h     |  8 +++-
->  2 files changed, 92 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 4321415..5138b6b 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -1127,7 +1127,7 @@ static int nand_read_page_swecc(struct mtd_info *mtd, struct nand_chip *chip,
->  }
->  
->  /**
-> - * nand_read_subpage - [REPLACEABLE] software ECC based sub-page read function
-> + * nand_read_subpage - [REPLACEABLE] ECC based sub-page read function
->   * @mtd: mtd info structure
->   * @chip: nand chip info structure
->   * @data_offs: offset of requested data within the page
-> @@ -1979,6 +1979,67 @@ static int nand_write_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
->  	return 0;
->  }
->  
-> +
-> +/**
-> + * nand_write_subpage_hwecc - [REPLACABLE] hardware ECC based subpage write
-> + * @mtd:	mtd info structure
-> + * @chip:	nand chip info structure
-> + * @column:	column address of subpage within the page
-> + * @data_len:	data length
-> + * @oob_required: must write chip->oob_poi to OOB
-> + */
-> +static int nand_write_subpage_hwecc(struct mtd_info *mtd,
-> +				struct nand_chip *chip, uint32_t offset,
-> +				uint32_t data_len, const uint8_t *data_buf,
-> +				int oob_required)
-> +{
-> +	uint8_t *oob_buf  = chip->oob_poi;
-> +	uint8_t *ecc_calc = chip->buffers->ecccalc;
-> +	int ecc_size      = chip->ecc.size;
-> +	int ecc_bytes     = chip->ecc.bytes;
-> +	int ecc_steps     = chip->ecc.steps;
-> +	uint32_t *eccpos  = chip->ecc.layout->eccpos;
-> +	uint32_t start_step = offset / ecc_size;
-> +	uint32_t end_step   = (offset + data_len - 1) / ecc_size;
-> +	int oob_bytes       = mtd->oobsize / ecc_steps;
-> +	int step, i;
-> +
-> +	for (step = 0; step < ecc_steps; step++) {
-> +		/* configure controller for WRITE access */
-> +		chip->ecc.hwctl(mtd, NAND_ECC_WRITE);
-> +
-> +		/* write data (untouched subpages already masked by 0xFF) */
-> +		chip->write_buf(mtd, data_buf, ecc_size);
-> +
-> +		/* mask ECC of un-touched subpages by padding 0xFF */
-> +		if ((step < start_step) || (step > end_step))
-> +			memset(ecc_calc, 0xff, ecc_bytes);
-> +		else
-> +			chip->ecc.calculate(mtd, data_buf, ecc_calc);
-> +
-> +		/* mask OOB of un-touched subpages by padding 0xFF */
-> +		/* if oob_required, preserve OOB metadata of written subpage */
-> +		if (!oob_required || (step < start_step) || (step > end_step))
-> +			memset(oob_buf, 0xff, oob_bytes);
-> +
-> +		data_buf += ecc_size;
-> +		ecc_calc += ecc_bytes;
-> +		oob_buf  += oob_bytes;
-> +	}
-> +
-> +	/* copy calculated ECC for whole page to chip->buffer->oob */
-> +	/* this include masked-value(0xFF) for unwritten subpages */
-> +	ecc_calc = chip->buffers->ecccalc;
-> +	for (i = 0; i < chip->ecc.total; i++)
-> +		chip->oob_poi[eccpos[i]] = ecc_calc[i];
-> +
-> +	/* write OOB buffer to NAND device */
-> +	chip->write_buf(mtd, chip->oob_poi, mtd->oobsize);
-> +
-> +	return 0;
-> +}
-> +
-> +
->  /**
->   * nand_write_page_syndrome - [REPLACEABLE] hardware ECC syndrome based page write
->   * @mtd: mtd info structure
-> @@ -2031,6 +2092,8 @@ static int nand_write_page_syndrome(struct mtd_info *mtd,
->   * nand_write_page - [REPLACEABLE] write one page
->   * @mtd: MTD device structure
->   * @chip: NAND chip descriptor
-> + * @offset: address offset within the page
-> + * @data_len: length of actual data to be written
->   * @buf: the data to write
->   * @oob_required: must write chip->oob_poi to OOB
->   * @page: page number to write
-> @@ -2038,15 +2101,25 @@ static int nand_write_page_syndrome(struct mtd_info *mtd,
->   * @raw: use _raw version of write_page
->   */
->  static int nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
-> -			   const uint8_t *buf, int oob_required, int page,
-> -			   int cached, int raw)
-> +		uint32_t offset, int data_len, const uint8_t *buf,
-> +		int oob_required, int page, int cached, int raw)
->  {
-> -	int status;
-> +	int status, subpage;
-> +
-> +	if (!(chip->options & NAND_NO_SUBPAGE_WRITE) &&
-> +		chip->ecc.write_subpage)
-> +		subpage = offset || (data_len < mtd->writesize);
-> +	else
-> +		subpage = 0;
->  
->  	chip->cmdfunc(mtd, NAND_CMD_SEQIN, 0x00, page);
->  
->  	if (unlikely(raw))
-> -		status = chip->ecc.write_page_raw(mtd, chip, buf, oob_required);
-> +		status = chip->ecc.write_page_raw(mtd, chip, buf,
-> +							oob_required);
-> +	else if (subpage)
-> +		status = chip->ecc.write_subpage(mtd, chip, offset, data_len,
-> +							 buf, oob_required);
->  	else
->  		status = chip->ecc.write_page(mtd, chip, buf, oob_required);
->  
-> @@ -2160,7 +2233,7 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
->  
->  	uint8_t *oob = ops->oobbuf;
->  	uint8_t *buf = ops->datbuf;
-> -	int ret, subpage;
-> +	int ret;
->  	int oob_required = oob ? 1 : 0;
->  
->  	ops->retlen = 0;
-> @@ -2175,10 +2248,6 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
->  	}
->  
->  	column = to & (mtd->writesize - 1);
-> -	subpage = column || (writelen & (mtd->writesize - 1));
-> -
-> -	if (subpage && oob)
-> -		return -EINVAL;
->  
->  	chipnr = (int)(to >> chip->chip_shift);
->  	chip->select_chip(mtd, chipnr);
-> @@ -2227,9 +2296,9 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
->  			/* We still need to erase leftover OOB data */
->  			memset(chip->oob_poi, 0xff, mtd->oobsize);
->  		}
-> -
-> -		ret = chip->write_page(mtd, chip, wbuf, oob_required, page,
-> -				       cached, (ops->mode == MTD_OPS_RAW));
-> +		ret = chip->write_page(mtd, chip, column, bytes, wbuf,
-> +					oob_required, page, cached,
-> +					(ops->mode == MTD_OPS_RAW));
->  		if (ret)
->  			break;
->  
-> @@ -3458,6 +3527,10 @@ int nand_scan_tail(struct mtd_info *mtd)
->  			chip->ecc.read_oob = nand_read_oob_std;
->  		if (!chip->ecc.write_oob)
->  			chip->ecc.write_oob = nand_write_oob_std;
-> +		if (!chip->ecc.read_subpage)
-> +			chip->ecc.read_subpage = nand_read_subpage;
-> +		if (!chip->ecc.write_subpage)
-> +			chip->ecc.write_subpage = nand_write_subpage_hwecc;
->  
->  	case NAND_ECC_HW_SYNDROME:
->  		if ((!chip->ecc.calculate || !chip->ecc.correct ||
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index 7ccb3c5..7d81403f 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -354,6 +354,7 @@ struct nand_hw_control {
->   *		any single ECC step, 0 if bitflips uncorrectable, -EIO hw error
->   * @read_subpage:	function to read parts of the page covered by ECC;
->   *			returns same as read_page()
-> + * @write_subpage:	function to write parts of the page covered by ECC.
->   * @write_page:	function to write a page according to the ECC generator
->   *		requirements.
->   * @write_oob_raw:	function to write chip OOB data without ECC
-> @@ -385,6 +386,9 @@ struct nand_ecc_ctrl {
->  			uint8_t *buf, int oob_required, int page);
->  	int (*read_subpage)(struct mtd_info *mtd, struct nand_chip *chip,
->  			uint32_t offs, uint32_t len, uint8_t *buf);
-> +	int (*write_subpage)(struct mtd_info *mtd, struct nand_chip *chip,
-> +			uint32_t offset, uint32_t data_len,
-> +			const uint8_t *data_buf, int oob_required);
->  	int (*write_page)(struct mtd_info *mtd, struct nand_chip *chip,
->  			const uint8_t *buf, int oob_required);
->  	int (*write_oob_raw)(struct mtd_info *mtd, struct nand_chip *chip,
-> @@ -520,8 +524,8 @@ struct nand_chip {
->  	int (*errstat)(struct mtd_info *mtd, struct nand_chip *this, int state,
->  			int status, int page);
->  	int (*write_page)(struct mtd_info *mtd, struct nand_chip *chip,
-> -			const uint8_t *buf, int oob_required, int page,
-> -			int cached, int raw);
-> +			uint32_t offset, int data_len, const uint8_t *buf,
-> +			int oob_required, int page, int cached, int raw);
->  	int (*onfi_set_features)(struct mtd_info *mtd, struct nand_chip *chip,
->  			int feature_addr, uint8_t *subfeature_para);
->  	int (*onfi_get_features)(struct mtd_info *mtd, struct nand_chip *chip,
+Thanks,
+
+  --david
+
+--20cf3074b128a31baa04d7f8dafc
+Content-Type: application/octet-stream; name="on-die-ecc.diff"
+Content-Disposition: attachment; filename="on-die-ecc.diff"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_hebj6n8z0
+
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvYXRtZWxfbmFuZC5jIGIvZHJpdmVycy9tdGQv
+bmFuZC9hdG1lbF9uYW5kLmMKaW5kZXggOTI2MjNhYy4uODA0M2ZkZSAxMDA2NDQKLS0tIGEvZHJp
+dmVycy9tdGQvbmFuZC9hdG1lbF9uYW5kLmMKKysrIGIvZHJpdmVycy9tdGQvbmFuZC9hdG1lbF9u
+YW5kLmMKQEAgLTE0NjIsNyArMTQ2MiwxMiBAQCBzdGF0aWMgaW50IF9faW5pdCBhdG1lbF9uYW5k
+X3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCiAJfQogCiAJbmFuZF9jaGlwLT5l
+Y2MubW9kZSA9IGhvc3QtPmJvYXJkLmVjY19tb2RlOworbmFuZF9jaGlwLT5lY2MubW9kZSA9IE5B
+TkRfRUNDX0hXX09OX0RJRTsJLy8gWFhYCituYW5kX2NoaXAtPmVjYy5zaXplID0gNTEyOwkvLyBY
+WFgKK25hbmRfY2hpcC0+ZWNjLnN0cmVuZ3RoID0gNDsJLy8gWFhYCitwcmludGsoIm5hbmRfY2hp
+cC0+ZWNjLm1vZGU9JWRcbiIsIG5hbmRfY2hpcC0+ZWNjLm1vZGUpOwogCW5hbmRfY2hpcC0+Y2hp
+cF9kZWxheSA9IDIwOwkJLyogMjB1cyBjb21tYW5kIGRlbGF5IHRpbWUgKi8KKwluYW5kX2NoaXAt
+PmNoaXBfZGVsYXkgPSA3MDsJLy8gWFhYIHRfUl9FQ0MKIAogCWlmIChob3N0LT5ib2FyZC5idXNf
+d2lkdGhfMTYpCS8qIDE2LWJpdCBidXMgd2lkdGggKi8KIAkJbmFuZF9jaGlwLT5vcHRpb25zIHw9
+IE5BTkRfQlVTV0lEVEhfMTY7CmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL25hbmRfYmFz
+ZS5jIGIvZHJpdmVycy9tdGQvbmFuZC9uYW5kX2Jhc2UuYwppbmRleCAxYTAzYjdmLi44OGVlNTM2
+IDEwMDY0NAotLS0gYS9kcml2ZXJzL210ZC9uYW5kL25hbmRfYmFzZS5jCisrKyBiL2RyaXZlcnMv
+bXRkL25hbmQvbmFuZF9iYXNlLmMKQEAgLTcxMSw2ICs3MTEsMjkgQEAgc3RhdGljIHZvaWQgbmFu
+ZF9jb21tYW5kX2xwKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCB1bnNpZ25lZCBpbnQgY29tbWFuZCwK
+IAkJY2hpcC0+Y21kX2N0cmwobXRkLCBOQU5EX0NNRF9OT05FLAogCQkJICAgICAgIE5BTkRfTkNF
+IHwgTkFORF9DVFJMX0NIQU5HRSk7CiAKKwkJaWYgKDEpIHsKKwkJCXU4IHN0YXR1czsKKworCQkJ
+dWRlbGF5KGNoaXAtPmNoaXBfZGVsYXkpOworCisJCQljaGlwLT5jbWRmdW5jKG10ZCwgTkFORF9D
+TURfU1RBVFVTLCAtMSwgLTEpOworCQkJc3RhdHVzID0gY2hpcC0+cmVhZF9ieXRlKG10ZCk7CisK
+KwkJCWlmIChzdGF0dXMgJiAweDAxKSB7CisJCQkJcHJpbnRrKCJFUlJPUjogb24tZGllIEVDQyBy
+ZWFkIGZhaWx1cmVcbiIpOworCQkJfSBlbHNlIGlmIChzdGF0dXMgJiAweDA4KSB7CisJCQkJLy8g
+Yml0IGZsaXAKKwkJCQlwcmludGsoIkVSUk9SOiBvbi1kaWUgRUNDIHJld3JpdGUgcmVjb21tZW5k
+ZWRcbiIKKyk7CisJCQl9CisKKwkJCWNoaXAtPmNtZF9jdHJsKG10ZCwgTkFORF9DTURfUkVBRDAs
+CisJCQkJICAgICAgIE5BTkRfTkNFIHwgTkFORF9DTEUgfCBOQU5EX0NUUkxfQ0hBTkdFKTsKKwkJ
+CWNoaXAtPmNtZF9jdHJsKG10ZCwgTkFORF9DTURfTk9ORSwKKwkJCQkgICAgICAgTkFORF9OQ0Ug
+fCBOQU5EX0NUUkxfQ0hBTkdFKTsKKwkJCXJldHVybjsKKwkJfQorCiAJCS8qIFRoaXMgYXBwbGll
+cyB0byByZWFkIGNvbW1hbmRzICovCiAJZGVmYXVsdDoKIAkJLyoKQEAgLTEyMjIsNiArMTI0NSw0
+MiBAQCBzdGF0aWMgaW50IG5hbmRfcmVhZF9zdWJwYWdlKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBz
+dHJ1Y3QgbmFuZF9jaGlwICpjaGlwLAogfQogCiAvKioKKyAqIG5hbmRfcmVhZF9zdWJwYWdlX3Jh
+dyAtIFtSRVBMQUNFQUJMRV0gcmF3IHN1Yi1wYWdlIHJlYWQgZnVuY3Rpb24KKyAqIEBtdGQ6IG10
+ZCBpbmZvIHN0cnVjdHVyZQorICogQGNoaXA6IG5hbmQgY2hpcCBpbmZvIHN0cnVjdHVyZQorICog
+QGRhdGFfb2Zmczogb2Zmc2V0IG9mIHJlcXVlc3RlZCBkYXRhIHdpdGhpbiB0aGUgcGFnZQorICog
+QHJlYWRsZW46IGRhdGEgbGVuZ3RoCisgKiBAYnVmcG9pOiBidWZmZXIgdG8gc3RvcmUgcmVhZCBk
+YXRhCisgKi8KK3N0YXRpYyBpbnQgbmFuZF9yZWFkX3N1YnBhZ2VfcmF3KHN0cnVjdCBtdGRfaW5m
+byAqbXRkLCBzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLAorCQkJdWludDMyX3QgZGF0YV9vZmZzLCB1
+aW50MzJfdCByZWFkbGVuLCB1aW50OF90ICpidWZwb2kpCit7CisJaW50IHN0YXJ0X3N0ZXAsIGVu
+ZF9zdGVwLCBudW1fc3RlcHM7CisJdWludDhfdCAqcDsKKwlpbnQgZGF0YV9jb2xfYWRkcjsKKwlp
+bnQgZGF0YWZyYWdfbGVuOworCXVuc2lnbmVkIGludCBtYXhfYml0ZmxpcHMgPSAwOworCisJLyog
+Q29sdW1uIGFkZHJlc3Mgd2l0aGluIHRoZSBwYWdlIGFsaWduZWQgdG8gRUNDIHNpemUgKi8KKwlz
+dGFydF9zdGVwID0gZGF0YV9vZmZzIC8gY2hpcC0+ZWNjLnNpemU7CisJZW5kX3N0ZXAgPSAoZGF0
+YV9vZmZzICsgcmVhZGxlbiAtIDEpIC8gY2hpcC0+ZWNjLnNpemU7CisJbnVtX3N0ZXBzID0gZW5k
+X3N0ZXAgLSBzdGFydF9zdGVwICsgMTsKKworCS8qIERhdGEgc2l6ZSBhbGlnbmVkIHRvIEVDQyBl
+Y2Muc2l6ZSAqLworCWRhdGFmcmFnX2xlbiA9IG51bV9zdGVwcyAqIGNoaXAtPmVjYy5zaXplOwor
+CisJZGF0YV9jb2xfYWRkciA9IHN0YXJ0X3N0ZXAgKiBjaGlwLT5lY2Muc2l6ZTsKKwkvKiBJZiB3
+ZSByZWFkIG5vdCBhIHBhZ2UgYWxpZ25lZCBkYXRhICovCisJaWYgKGRhdGFfY29sX2FkZHIgIT0g
+MCkKKwkJY2hpcC0+Y21kZnVuYyhtdGQsIE5BTkRfQ01EX1JORE9VVCwgZGF0YV9jb2xfYWRkciwg
+LTEpOworCisJcCA9IGJ1ZnBvaSArIGRhdGFfY29sX2FkZHI7CisJY2hpcC0+cmVhZF9idWYobXRk
+LCBwLCBkYXRhZnJhZ19sZW4pOworCisJcmV0dXJuIG1heF9iaXRmbGlwczsKK30KKworLyoqCiAg
+KiBuYW5kX3JlYWRfcGFnZV9od2VjYyAtIFtSRVBMQUNFQUJMRV0gaGFyZHdhcmUgRUNDIGJhc2Vk
+IHBhZ2UgcmVhZCBmdW5jdGlvbgogICogQG10ZDogbXRkIGluZm8gc3RydWN0dXJlCiAgKiBAY2hp
+cDogbmFuZCBjaGlwIGluZm8gc3RydWN0dXJlCkBAIC0zNTMwLDYgKzM1ODksMjEgQEAgaW50IG5h
+bmRfc2Nhbl90YWlsKHN0cnVjdCBtdGRfaW5mbyAqbXRkKQogCQkJY2hpcC0+ZWNjLmJ5dGVzICog
+OCAvIGZscyg4ICogY2hpcC0+ZWNjLnNpemUpOwogCQlicmVhazsKIAorCWNhc2UgTkFORF9FQ0Nf
+SFdfT05fRElFOgorCQljaGlwLT5lY2MucmVhZF9wYWdlID0gbmFuZF9yZWFkX3BhZ2VfcmF3Owor
+CQljaGlwLT5lY2MucmVhZF9zdWJwYWdlID0gbmFuZF9yZWFkX3N1YnBhZ2VfcmF3OworCQljaGlw
+LT5lY2Mud3JpdGVfcGFnZSA9IG5hbmRfd3JpdGVfcGFnZV9yYXc7CisJCWNoaXAtPmVjYy5yZWFk
+X29vYiA9IG5hbmRfcmVhZF9vb2Jfc3RkOworCQljaGlwLT5lY2MucmVhZF9wYWdlX3JhdyA9IG5h
+bmRfcmVhZF9wYWdlX3JhdzsKKwkJY2hpcC0+ZWNjLndyaXRlX3BhZ2VfcmF3ID0gbmFuZF93cml0
+ZV9wYWdlX3JhdzsKKwkJY2hpcC0+ZWNjLndyaXRlX29vYiA9IG5hbmRfd3JpdGVfb29iX3N0ZDsK
+KwkJY2hpcC0+ZWNjLmJ5dGVzID0gMDsKKy8qCisJCWNoaXAtPmVjYy5zaXplID0gbXRkLT53cml0
+ZXNpemU7CisJCWNoaXAtPmVjYy5zdHJlbmd0aCA9IDA7CisqLworCQlicmVhazsKKwogCWNhc2Ug
+TkFORF9FQ0NfTk9ORToKIAkJcHJfd2FybigiTkFORF9FQ0NfTk9ORSBzZWxlY3RlZCBieSBib2Fy
+ZCBkcml2ZXIuICIKIAkJCSAgICJUaGlzIGlzIG5vdCByZWNvbW1lbmRlZCFcbiIpOwpAQCAtMzU5
+MSw2ICszNjY1LDcgQEAgaW50IG5hbmRfc2Nhbl90YWlsKHN0cnVjdCBtdGRfaW5mbyAqbXRkKQog
+CQkJYnJlYWs7CiAJCX0KIAl9CittdGQtPnN1YnBhZ2Vfc2Z0ID0gMjsJLy8gWFhYCiAJY2hpcC0+
+c3VicGFnZXNpemUgPSBtdGQtPndyaXRlc2l6ZSA+PiBtdGQtPnN1YnBhZ2Vfc2Z0OwogCiAJLyog
+SW5pdGlhbGl6ZSBzdGF0ZSAqLwpAQCAtMzYwMyw3ICszNjc4LDkgQEAgaW50IG5hbmRfc2Nhbl90
+YWlsKHN0cnVjdCBtdGRfaW5mbyAqbXRkKQogCWNoaXAtPnBhZ2VidWYgPSAtMTsKIAogCS8qIExh
+cmdlIHBhZ2UgTkFORCB3aXRoIFNPRlRfRUNDIHNob3VsZCBzdXBwb3J0IHN1YnBhZ2UgcmVhZHMg
+Ki8KLQlpZiAoKGNoaXAtPmVjYy5tb2RlID09IE5BTkRfRUNDX1NPRlQpICYmIChjaGlwLT5wYWdl
+X3NoaWZ0ID4gOSkpCisJaWYgKCgoY2hpcC0+ZWNjLm1vZGUgPT0gTkFORF9FQ0NfU09GVCkKKwkg
+ICAgIHx8IChjaGlwLT5lY2MubW9kZSA9PSBOQU5EX0VDQ19IV19PTl9ESUUpKQorCSAgICAmJiAo
+Y2hpcC0+cGFnZV9zaGlmdCA+IDkpKQogCQljaGlwLT5vcHRpb25zIHw9IE5BTkRfU1VCUEFHRV9S
+RUFEOwogCiAJLyogRmlsbCBpbiByZW1haW5pbmcgTVREIGRyaXZlciBkYXRhICovCmRpZmYgLS1n
+aXQgYS9kcml2ZXJzL29mL29mX210ZC5jIGIvZHJpdmVycy9vZi9vZl9tdGQuYwppbmRleCBhMjdl
+Yzk0Li43OWVhMDI2IDEwMDY0NAotLS0gYS9kcml2ZXJzL29mL29mX210ZC5jCisrKyBiL2RyaXZl
+cnMvb2Yvb2ZfbXRkLmMKQEAgLTIzLDYgKzIzLDcgQEAgc3RhdGljIGNvbnN0IGNoYXIgKm5hbmRf
+ZWNjX21vZGVzW10gPSB7CiAJW05BTkRfRUNDX0hXX1NZTkRST01FXQk9ICJod19zeW5kcm9tZSIs
+CiAJW05BTkRfRUNDX0hXX09PQl9GSVJTVF0JPSAiaHdfb29iX2ZpcnN0IiwKIAlbTkFORF9FQ0Nf
+U09GVF9CQ0hdCT0gInNvZnRfYmNoIiwKKwlbTkFORF9FQ0NfSFdfT05fRElFXQk9ICJod19vbl9k
+aWUiLAogfTsKIAogLyoqCmRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L210ZC9uYW5kLmggYi9p
+bmNsdWRlL2xpbnV4L210ZC9uYW5kLmgKaW5kZXggMjRlOTE1OS4uMmM2MmIyYSAxMDA2NDQKLS0t
+IGEvaW5jbHVkZS9saW51eC9tdGQvbmFuZC5oCisrKyBiL2luY2x1ZGUvbGludXgvbXRkL25hbmQu
+aApAQCAtMTQzLDYgKzE0Myw3IEBAIHR5cGVkZWYgZW51bSB7CiAJTkFORF9FQ0NfSFdfU1lORFJP
+TUUsCiAJTkFORF9FQ0NfSFdfT09CX0ZJUlNULAogCU5BTkRfRUNDX1NPRlRfQkNILAorCU5BTkRf
+RUNDX0hXX09OX0RJRSwKIH0gbmFuZF9lY2NfbW9kZXNfdDsKIAogLyoK
+--20cf3074b128a31baa04d7f8dafc--
