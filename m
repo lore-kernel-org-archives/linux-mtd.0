@@ -1,15 +1,13 @@
-Received: from mail-db8lp0186.outbound.messaging.microsoft.com
- ([213.199.154.186] helo=db8outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UGKw6-0007I3-KI
- for linux-mtd@lists.infradead.org; Fri, 15 Mar 2013 03:04:04 +0000
+Received: from tx2ehsobe002.messaging.microsoft.com ([65.55.88.12]
+ helo=tx2outboundpool.messaging.microsoft.com)
+ by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UGKwE-0007s4-8z
+ for linux-mtd@lists.infradead.org; Fri, 15 Mar 2013 03:04:12 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH v6 3/3] mtd: add 4 Toshiba nand chips for the full-id case
-Date: Fri, 15 Mar 2013 11:01:01 +0800
-Message-ID: <1363316461-10592-4-git-send-email-b32955@freescale.com>
-In-Reply-To: <1363316461-10592-1-git-send-email-b32955@freescale.com>
-References: <1363316461-10592-1-git-send-email-b32955@freescale.com>
+Subject: [PATCH v6 0/3] mtd: use the full-id as the keyword for some nand chips
+Date: Fri, 15 Mar 2013 11:00:58 +0800
+Message-ID: <1363316461-10592-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: artem.bityutskiy@linux.intel.com, computersforpeace@gmail.com,
@@ -24,53 +22,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have 4 Toshiba nand chips which can not be parsed out by the
-id data. We can not get the oob size from the id data. So add them
-as the full-id nand chips in the first of nand_flash_ids.
+As time goes on, we begin to meet the situation that we can not
+get enough information from some nand chips's id data.
+Take some Toshiba's nand chips for example.
+I have 4 Toshiba's nand chips in my hand:
+	TC58NVG2S0F, TC58NVG3S0F, TC58NVG5D2, TC58NVG6D2
 
-The comment for the full-id items is from Brian.
+When we read these chips' datasheets, we will get the geometry of these chips:
+	TC58NVG2S0F : 4096 + 224
+	TC58NVG3S0F : 4096 + 232
+	TC58NVG5D2  : 8192 + 640
+	TC58NVG6D2  : 8192 + 640
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
- drivers/mtd/nand/nand_ids.c |   19 +++++++++++++++++++
- 1 files changed, 19 insertions(+), 0 deletions(-)
+But we can not parse out the correct oob size for these chips from the id data.
+So it is time to add some new fields to the nand_flash_dev{},
+and update the detection mechanisms.
 
-diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
-index 625bc89..1c242cc 100644
---- a/drivers/mtd/nand/nand_ids.c
-+++ b/drivers/mtd/nand/nand_ids.c
-@@ -10,6 +10,7 @@
-  */
- #include <linux/module.h>
- #include <linux/mtd/nand.h>
-+#include <linux/sizes.h>
- 
- #define LP_OPTIONS NAND_SAMSUNG_LP_OPTIONS
- #define LP_OPTIONS16 (LP_OPTIONS | NAND_BUSWIDTH_16)
-@@ -22,6 +23,24 @@
-  * extended chip ID.
-  */
- struct nand_flash_dev nand_flash_ids[] = {
-+	/*
-+	 * Some incompatible NAND chips share device ID's and so must be
-+	 * listed by full ID. We list them first so that we can easily identify
-+	 * the most specific match.
-+	 */
-+	{"TC58NVG2S0F 4G 3.3V 8-bit",
-+		{ .id = {0x98, 0xdc, 0x90, 0x26, 0x76, 0x15, 0x01, 0x08} },
-+			SZ_4K, SZ_512, SZ_256K, 0, 8, 224},
-+	{"TC58NVG3S0F 8G 3.3V 8-bit",
-+		{ .id = {0x98, 0xd3, 0x90, 0x26, 0x76, 0x15, 0x02, 0x08} },
-+			SZ_4K, SZ_1K, SZ_256K, 0, 8, 232},
-+	{"TC58NVG5D2 32G 3.3V 8-bit",
-+		{ .id = {0x98, 0xd7, 0x94, 0x32, 0x76, 0x56, 0x09, 0x00} },
-+			SZ_8K, SZ_4K, SZ_1M, 0, 8, 640},
-+	{"TC58NVG6D2 64G 3.3V 8-bit",
-+		{ .id = {0x98, 0xde, 0x94, 0x82, 0x76, 0x56, 0x04, 0x20} },
-+			SZ_8K, SZ_8K, SZ_2M, 0, 8, 640},
-+
- 	LEGACY_ID_NAND("NAND 4MiB 5V 8-bit",   0x6B, 512, 4, 0x2000, 0),
- 	LEGACY_ID_NAND("NAND 4MiB 3,3V 8-bit", 0xE3, 512, 4, 0x2000, 0),
- 	LEGACY_ID_NAND("NAND 4MiB 3,3V 8-bit", 0xE5, 512, 4, 0x2000, 0),
--- 
-1.7.1
+v5 --> v6:
+	[1] add back the id_len as Brian's suggest.
+	[2] use id_len to check the full id nand or not.
+	[3] change the new fields oob_size/id_len to "uint16_t" type.
+	[4] misc
+
+v4 --> v5:
+	[1] remove the id_len field.
+	[2] based on Artem "mtd: nand: use more reasonable integer types"
+	[3] add more comments.
+
+v3 --> v4:
+	[1] rewrite the code based on the latest l2-mtd.
+	[2] add the full-id nand in the nand_flash_lds.
+
+v2 --> v3:
+	[1] remove the duplicated header.
+	[2] remove the field "ecc_len" in nand_flash_dev{}.
+	[3] fix some coding style warnings.
+	[4] add more comments
+
+Huang Shijie (3):
+  mtd: add new fields to nand_flash_dev{}
+  mtd: add the support to parse out the full-id nand type
+  mtd: add 4 Toshiba nand chips for the full-id case
+
+ drivers/mtd/nand/nand_base.c |   35 ++++++++++++++++++++++++++++++++---
+ drivers/mtd/nand/nand_ids.c  |   19 +++++++++++++++++++
+ include/linux/mtd/nand.h     |    4 ++++
+ 3 files changed, 55 insertions(+), 3 deletions(-)
