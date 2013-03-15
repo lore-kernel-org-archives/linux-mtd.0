@@ -1,17 +1,12 @@
 Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UGTGm-0007wn-M1
- for linux-mtd@lists.infradead.org; Fri, 15 Mar 2013 11:57:58 +0000
+ id 1UGTGm-0007wl-NJ
+ for linux-mtd@lists.infradead.org; Fri, 15 Mar 2013 11:57:59 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>
-Subject: =?utf-8?q?=5BPATCH=202/2=5D=20mtd=3A=20remove=20the=20h1910=20NAND=20driver?=
-Date: Fri, 15 Mar 2013 13:59:35 +0200
-Message-Id: <1363348775-24248-2-git-send-email-dedekind1@gmail.com>
-In-Reply-To: <1363348775-24248-1-git-send-email-dedekind1@gmail.com>
-References: <1363348775-24248-1-git-send-email-dedekind1@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Subject: [PATCH 1/2] mtd: remove the ppchameleonevb NAND driver
+Date: Fri, 15 Mar 2013 13:59:34 +0200
+Message-Id: <1363348775-24248-1-git-send-email-dedekind1@gmail.com>
 Cc: MTD Maling List <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,218 +19,454 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-This driver is marked as broken for 2 years, and no one cares to make it
-compile and work. Now it is time to zap it.
+This driver has been marked as broken for long time and it depends on a
+non-existing PPCHAMELEONEVB Kconfig symbol.
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- drivers/mtd/nand/Kconfig  |    6 --
- drivers/mtd/nand/Makefile |    1 -
- drivers/mtd/nand/h1910.c  |  167 ---------------------------------------------
- 3 files changed, 174 deletions(-)
- delete mode 100644 drivers/mtd/nand/h1910.c
+ drivers/mtd/nand/Kconfig          |    6 -
+ drivers/mtd/nand/Makefile         |    1 -
+ drivers/mtd/nand/ppchameleonevb.c |  403 -------------------------------------
+ 3 files changed, 410 deletions(-)
+ delete mode 100644 drivers/mtd/nand/ppchameleonevb.c
 
 diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index e10a665..1cca712 100644
+index a626629..e10a665 100644
 --- a/drivers/mtd/nand/Kconfig
 +++ b/drivers/mtd/nand/Kconfig
-@@ -73,12 +73,6 @@ config MTD_NAND_DENALI_SCRATCH_REG_ADDR
-           scratch register here to enable this feature. On Intel Moorestown
-           boards, the scratch register is at 0xFF108018.
+@@ -193,12 +193,6 @@ config MTD_NAND_BF5XX_BOOTROM_ECC
  
--config MTD_NAND_H1900
--	tristate "iPAQ H1900 flash"
--	depends on ARCH_PXA && BROKEN
+ 	  If unsure, say N.
+ 
+-config MTD_NAND_PPCHAMELEONEVB
+-	tristate "NAND Flash device on PPChameleonEVB board"
+-	depends on PPCHAMELEONEVB && BROKEN
 -	help
--	  This enables the driver for the iPAQ h1900 flash.
+-	  This enables the NAND flash driver on the PPChameleon EVB Board.
 -
- config MTD_NAND_GPIO
- 	tristate "GPIO NAND Flash driver"
- 	depends on GENERIC_GPIO && ARM
+ config MTD_NAND_S3C2410
+ 	tristate "NAND Flash support for Samsung S3C SoCs"
+ 	depends on ARCH_S3C24XX || ARCH_S3C64XX
 diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-index ff6e72a..bb81891 100644
+index 115e033..ff6e72a 100644
 --- a/drivers/mtd/nand/Makefile
 +++ b/drivers/mtd/nand/Makefile
-@@ -20,7 +20,6 @@ obj-$(CONFIG_MTD_NAND_DAVINCI)		+= davinci_nand.o
+@@ -15,7 +15,6 @@ obj-$(CONFIG_MTD_NAND_DENALI_PCI)	+= denali_pci.o
+ obj-$(CONFIG_MTD_NAND_DENALI_DT)	+= denali_dt.o
+ obj-$(CONFIG_MTD_NAND_AU1550)		+= au1550nd.o
+ obj-$(CONFIG_MTD_NAND_BF5XX)		+= bf5xx_nand.o
+-obj-$(CONFIG_MTD_NAND_PPCHAMELEONEVB)	+= ppchameleonevb.o
+ obj-$(CONFIG_MTD_NAND_S3C2410)		+= s3c2410.o
+ obj-$(CONFIG_MTD_NAND_DAVINCI)		+= davinci_nand.o
  obj-$(CONFIG_MTD_NAND_DISKONCHIP)	+= diskonchip.o
- obj-$(CONFIG_MTD_NAND_DOCG4)		+= docg4.o
- obj-$(CONFIG_MTD_NAND_FSMC)		+= fsmc_nand.o
--obj-$(CONFIG_MTD_NAND_H1900)		+= h1910.o
- obj-$(CONFIG_MTD_NAND_SHARPSL)		+= sharpsl.o
- obj-$(CONFIG_MTD_NAND_NANDSIM)		+= nandsim.o
- obj-$(CONFIG_MTD_NAND_CS553X)		+= cs553x_nand.o
-diff --git a/drivers/mtd/nand/h1910.c b/drivers/mtd/nand/h1910.c
+diff --git a/drivers/mtd/nand/ppchameleonevb.c b/drivers/mtd/nand/ppchameleonevb.c
 deleted file mode 100644
-index 50166e9..0000000
---- a/drivers/mtd/nand/h1910.c
+index 0ddd90e..0000000
+--- a/drivers/mtd/nand/ppchameleonevb.c
 +++ /dev/null
-@@ -1,167 +0,0 @@
+@@ -1,403 +0,0 @@
 -/*
-- *  drivers/mtd/nand/h1910.c
+- *  drivers/mtd/nand/ppchameleonevb.c
 - *
-- *  Copyright (C) 2003 Joshua Wise (joshua@joshuawise.com)
+- *  Copyright (C) 2003 DAVE Srl (info@wawnet.biz)
 - *
 - *  Derived from drivers/mtd/nand/edb7312.c
-- *       Copyright (C) 2002 Marius Gröger (mag@sysgo.de)
-- *       Copyright (c) 2001 Thomas Gleixner (gleixner@autronix.de)
+- *
 - *
 - * This program is free software; you can redistribute it and/or modify
 - * it under the terms of the GNU General Public License version 2 as
 - * published by the Free Software Foundation.
 - *
 - *  Overview:
-- *   This is a device driver for the NAND flash device found on the
-- *   iPAQ h1910 board which utilizes the Samsung K9F2808 part. This is
-- *   a 128Mibit (16MiB x 8 bits) NAND flash device.
+- *   This is a device driver for the NAND flash devices found on the
+- *   PPChameleon/PPChameleonEVB system.
+- *   PPChameleon options (autodetected):
+- *   - BA model: no NAND
+- *   - ME model: 32MB (Samsung K9F5608U0B)
+- *   - HI model: 128MB (Samsung K9F1G08UOM)
+- *   PPChameleonEVB options:
+- *   - 32MB (Samsung K9F5608U0B)
 - */
 -
--#include <linux/slab.h>
 -#include <linux/init.h>
+-#include <linux/slab.h>
 -#include <linux/module.h>
 -#include <linux/mtd/mtd.h>
 -#include <linux/mtd/nand.h>
 -#include <linux/mtd/partitions.h>
 -#include <asm/io.h>
--#include <mach/hardware.h>
--#include <asm/sizes.h>
--#include <mach/h1900-gpio.h>
--#include <mach/ipaq.h>
+-#include <platforms/PPChameleonEVB.h>
+-
+-#undef USE_READY_BUSY_PIN
+-#define USE_READY_BUSY_PIN
+-/* see datasheets (tR) */
+-#define NAND_BIG_DELAY_US		25
+-#define NAND_SMALL_DELAY_US		10
+-
+-/* handy sizes */
+-#define SZ_4M                           0x00400000
+-#define NAND_SMALL_SIZE                 0x02000000
+-#define NAND_MTD_NAME		"ppchameleon-nand"
+-#define NAND_EVB_MTD_NAME	"ppchameleonevb-nand"
+-
+-/* GPIO pins used to drive NAND chip mounted on processor module */
+-#define NAND_nCE_GPIO_PIN 		(0x80000000 >> 1)
+-#define NAND_CLE_GPIO_PIN 		(0x80000000 >> 2)
+-#define NAND_ALE_GPIO_PIN 		(0x80000000 >> 3)
+-#define NAND_RB_GPIO_PIN 		(0x80000000 >> 4)
+-/* GPIO pins used to drive NAND chip mounted on EVB */
+-#define NAND_EVB_nCE_GPIO_PIN 	(0x80000000 >> 14)
+-#define NAND_EVB_CLE_GPIO_PIN 	(0x80000000 >> 15)
+-#define NAND_EVB_ALE_GPIO_PIN 	(0x80000000 >> 16)
+-#define NAND_EVB_RB_GPIO_PIN 	(0x80000000 >> 31)
 -
 -/*
-- * MTD structure for EDB7312 board
+- * MTD structure for PPChameleonEVB board
 - */
--static struct mtd_info *h1910_nand_mtd = NULL;
+-static struct mtd_info *ppchameleon_mtd = NULL;
+-static struct mtd_info *ppchameleonevb_mtd = NULL;
 -
 -/*
 - * Module stuff
 - */
+-static unsigned long ppchameleon_fio_pbase = CFG_NAND0_PADDR;
+-static unsigned long ppchameleonevb_fio_pbase = CFG_NAND1_PADDR;
+-
+-#ifdef MODULE
+-module_param(ppchameleon_fio_pbase, ulong, 0);
+-module_param(ppchameleonevb_fio_pbase, ulong, 0);
+-#else
+-__setup("ppchameleon_fio_pbase=", ppchameleon_fio_pbase);
+-__setup("ppchameleonevb_fio_pbase=", ppchameleonevb_fio_pbase);
+-#endif
 -
 -/*
-- * Define static partitions for flash device
+- * Define static partitions for flash devices
 - */
--static struct mtd_partition partition_info[] = {
--      {name:"h1910 NAND Flash",
--	      offset:0,
--      size:16 * 1024 * 1024}
+-static struct mtd_partition partition_info_hi[] = {
+-      { .name = "PPChameleon HI Nand Flash",
+-	.offset = 0,
+-	.size = 128 * 1024 * 1024
+-      }
+-};
+-
+-static struct mtd_partition partition_info_me[] = {
+-      { .name = "PPChameleon ME Nand Flash",
+-	.offset = 0,
+-	.size = 32 * 1024 * 1024
+-      }
+-};
+-
+-static struct mtd_partition partition_info_evb[] = {
+-      { .name = "PPChameleonEVB Nand Flash",
+-	.offset = 0,
+-	.size = 32 * 1024 * 1024
+-      }
 -};
 -
 -#define NUM_PARTITIONS 1
 -
 -/*
 - *	hardware specific access to control-lines
-- *
-- *	NAND_NCE: bit 0 - don't care
-- *	NAND_CLE: bit 1 - address bit 2
-- *	NAND_ALE: bit 2 - address bit 3
 - */
--static void h1910_hwcontrol(struct mtd_info *mtd, int cmd,
--			    unsigned int ctrl)
+-static void ppchameleon_hwcontrol(struct mtd_info *mtdinfo, int cmd,
+-				  unsigned int ctrl)
 -{
 -	struct nand_chip *chip = mtd->priv;
 -
+-	if (ctrl & NAND_CTRL_CHANGE) {
+-#error Missing headerfiles. No way to fix this. -tglx
+-		switch (cmd) {
+-		case NAND_CTL_SETCLE:
+-			MACRO_NAND_CTL_SETCLE((unsigned long)CFG_NAND0_PADDR);
+-			break;
+-		case NAND_CTL_CLRCLE:
+-			MACRO_NAND_CTL_CLRCLE((unsigned long)CFG_NAND0_PADDR);
+-			break;
+-		case NAND_CTL_SETALE:
+-			MACRO_NAND_CTL_SETALE((unsigned long)CFG_NAND0_PADDR);
+-			break;
+-		case NAND_CTL_CLRALE:
+-			MACRO_NAND_CTL_CLRALE((unsigned long)CFG_NAND0_PADDR);
+-			break;
+-		case NAND_CTL_SETNCE:
+-			MACRO_NAND_ENABLE_CE((unsigned long)CFG_NAND0_PADDR);
+-			break;
+-		case NAND_CTL_CLRNCE:
+-			MACRO_NAND_DISABLE_CE((unsigned long)CFG_NAND0_PADDR);
+-			break;
+-		}
+-	}
 -	if (cmd != NAND_CMD_NONE)
--		writeb(cmd, chip->IO_ADDR_W | ((ctrl & 0x6) << 1));
+-		writeb(cmd, chip->IO_ADDR_W);
 -}
 -
+-static void ppchameleonevb_hwcontrol(struct mtd_info *mtdinfo, int cmd,
+-				     unsigned int ctrl)
+-{
+-	struct nand_chip *chip = mtd->priv;
+-
+-	if (ctrl & NAND_CTRL_CHANGE) {
+-#error Missing headerfiles. No way to fix this. -tglx
+-		switch (cmd) {
+-		case NAND_CTL_SETCLE:
+-			MACRO_NAND_CTL_SETCLE((unsigned long)CFG_NAND1_PADDR);
+-			break;
+-		case NAND_CTL_CLRCLE:
+-			MACRO_NAND_CTL_CLRCLE((unsigned long)CFG_NAND1_PADDR);
+-			break;
+-		case NAND_CTL_SETALE:
+-			MACRO_NAND_CTL_SETALE((unsigned long)CFG_NAND1_PADDR);
+-			break;
+-		case NAND_CTL_CLRALE:
+-			MACRO_NAND_CTL_CLRALE((unsigned long)CFG_NAND1_PADDR);
+-			break;
+-		case NAND_CTL_SETNCE:
+-			MACRO_NAND_ENABLE_CE((unsigned long)CFG_NAND1_PADDR);
+-			break;
+-		case NAND_CTL_CLRNCE:
+-			MACRO_NAND_DISABLE_CE((unsigned long)CFG_NAND1_PADDR);
+-			break;
+-		}
+-	}
+-	if (cmd != NAND_CMD_NONE)
+-		writeb(cmd, chip->IO_ADDR_W);
+-}
+-
+-#ifdef USE_READY_BUSY_PIN
 -/*
 - *	read device ready pin
 - */
--#if 0
--static int h1910_device_ready(struct mtd_info *mtd)
+-static int ppchameleon_device_ready(struct mtd_info *minfo)
 -{
--	return (GPLR(55) & GPIO_bit(55));
+-	if (in_be32((volatile unsigned *)GPIO0_IR) & NAND_RB_GPIO_PIN)
+-		return 1;
+-	return 0;
+-}
+-
+-static int ppchameleonevb_device_ready(struct mtd_info *minfo)
+-{
+-	if (in_be32((volatile unsigned *)GPIO0_IR) & NAND_EVB_RB_GPIO_PIN)
+-		return 1;
+-	return 0;
 -}
 -#endif
 -
 -/*
 - * Main initialization routine
 - */
--static int __init h1910_init(void)
+-static int __init ppchameleonevb_init(void)
 -{
 -	struct nand_chip *this;
--	void __iomem *nandaddr;
+-	void __iomem *ppchameleon_fio_base;
+-	void __iomem *ppchameleonevb_fio_base;
 -
--	if (!machine_is_h1900())
--		return -ENODEV;
--
--	nandaddr = ioremap(0x08000000, 0x1000);
--	if (!nandaddr) {
--		printk("Failed to ioremap nand flash.\n");
+-	/*********************************
+-	* Processor module NAND (if any) *
+-	*********************************/
+-	/* Allocate memory for MTD device structure and private data */
+-	ppchameleon_mtd = kmalloc(sizeof(struct mtd_info) + sizeof(struct nand_chip), GFP_KERNEL);
+-	if (!ppchameleon_mtd) {
+-		printk("Unable to allocate PPChameleon NAND MTD device structure.\n");
 -		return -ENOMEM;
 -	}
 -
--	/* Allocate memory for MTD device structure and private data */
--	h1910_nand_mtd = kmalloc(sizeof(struct mtd_info) + sizeof(struct nand_chip), GFP_KERNEL);
--	if (!h1910_nand_mtd) {
--		printk("Unable to allocate h1910 NAND MTD device structure.\n");
--		iounmap((void *)nandaddr);
--		return -ENOMEM;
+-	/* map physical address */
+-	ppchameleon_fio_base = ioremap(ppchameleon_fio_pbase, SZ_4M);
+-	if (!ppchameleon_fio_base) {
+-		printk("ioremap PPChameleon NAND flash failed\n");
+-		kfree(ppchameleon_mtd);
+-		return -EIO;
 -	}
 -
 -	/* Get pointer to private data */
--	this = (struct nand_chip *)(&h1910_nand_mtd[1]);
+-	this = (struct nand_chip *)(&ppchameleon_mtd[1]);
 -
 -	/* Initialize structures */
--	memset(h1910_nand_mtd, 0, sizeof(struct mtd_info));
+-	memset(ppchameleon_mtd, 0, sizeof(struct mtd_info));
 -	memset(this, 0, sizeof(struct nand_chip));
 -
 -	/* Link the private data with the MTD structure */
--	h1910_nand_mtd->priv = this;
--	h1910_nand_mtd->owner = THIS_MODULE;
+-	ppchameleon_mtd->priv = this;
+-	ppchameleon_mtd->owner = THIS_MODULE;
 -
+-	/* Initialize GPIOs */
+-	/* Pin mapping for NAND chip */
 -	/*
--	 * Enable VPEN
+-	   CE   GPIO_01
+-	   CLE  GPIO_02
+-	   ALE  GPIO_03
+-	   R/B  GPIO_04
 -	 */
--	GPSR(37) = GPIO_bit(37);
+-	/* output select */
+-	out_be32((volatile unsigned *)GPIO0_OSRH, in_be32((volatile unsigned *)GPIO0_OSRH) & 0xC0FFFFFF);
+-	/* three-state select */
+-	out_be32((volatile unsigned *)GPIO0_TSRH, in_be32((volatile unsigned *)GPIO0_TSRH) & 0xC0FFFFFF);
+-	/* enable output driver */
+-	out_be32((volatile unsigned *)GPIO0_TCR,
+-		 in_be32((volatile unsigned *)GPIO0_TCR) | NAND_nCE_GPIO_PIN | NAND_CLE_GPIO_PIN | NAND_ALE_GPIO_PIN);
+-#ifdef USE_READY_BUSY_PIN
+-	/* three-state select */
+-	out_be32((volatile unsigned *)GPIO0_TSRH, in_be32((volatile unsigned *)GPIO0_TSRH) & 0xFF3FFFFF);
+-	/* high-impedecence */
+-	out_be32((volatile unsigned *)GPIO0_TCR, in_be32((volatile unsigned *)GPIO0_TCR) & (~NAND_RB_GPIO_PIN));
+-	/* input select */
+-	out_be32((volatile unsigned *)GPIO0_ISR1H,
+-		 (in_be32((volatile unsigned *)GPIO0_ISR1H) & 0xFF3FFFFF) | 0x00400000);
+-#endif
 -
 -	/* insert callbacks */
--	this->IO_ADDR_R = nandaddr;
--	this->IO_ADDR_W = nandaddr;
--	this->cmd_ctrl = h1910_hwcontrol;
--	this->dev_ready = NULL;	/* unknown whether that was correct or not so we will just do it like this */
--	/* 15 us command delay time */
--	this->chip_delay = 50;
+-	this->IO_ADDR_R = ppchameleon_fio_base;
+-	this->IO_ADDR_W = ppchameleon_fio_base;
+-	this->cmd_ctrl = ppchameleon_hwcontrol;
+-#ifdef USE_READY_BUSY_PIN
+-	this->dev_ready = ppchameleon_device_ready;
+-#endif
+-	this->chip_delay = NAND_BIG_DELAY_US;
+-	/* ECC mode */
+-	this->ecc.mode = NAND_ECC_SOFT;
+-
+-	/* Scan to find existence of the device (it could not be mounted) */
+-	if (nand_scan(ppchameleon_mtd, 1)) {
+-		iounmap((void *)ppchameleon_fio_base);
+-		ppchameleon_fio_base = NULL;
+-		kfree(ppchameleon_mtd);
+-		goto nand_evb_init;
+-	}
+-#ifndef USE_READY_BUSY_PIN
+-	/* Adjust delay if necessary */
+-	if (ppchameleon_mtd->size == NAND_SMALL_SIZE)
+-		this->chip_delay = NAND_SMALL_DELAY_US;
+-#endif
+-
+-	ppchameleon_mtd->name = "ppchameleon-nand";
+-
+-	/* Register the partitions */
+-	mtd_device_parse_register(ppchameleon_mtd, NULL, NULL,
+-				  ppchameleon_mtd->size == NAND_SMALL_SIZE ?
+-					partition_info_me : partition_info_hi,
+-				  NUM_PARTITIONS);
+-
+- nand_evb_init:
+-	/****************************
+-	* EVB NAND (always present) *
+-	****************************/
+-	/* Allocate memory for MTD device structure and private data */
+-	ppchameleonevb_mtd = kmalloc(sizeof(struct mtd_info) + sizeof(struct nand_chip), GFP_KERNEL);
+-	if (!ppchameleonevb_mtd) {
+-		printk("Unable to allocate PPChameleonEVB NAND MTD device structure.\n");
+-		if (ppchameleon_fio_base)
+-			iounmap(ppchameleon_fio_base);
+-		return -ENOMEM;
+-	}
+-
+-	/* map physical address */
+-	ppchameleonevb_fio_base = ioremap(ppchameleonevb_fio_pbase, SZ_4M);
+-	if (!ppchameleonevb_fio_base) {
+-		printk("ioremap PPChameleonEVB NAND flash failed\n");
+-		kfree(ppchameleonevb_mtd);
+-		if (ppchameleon_fio_base)
+-			iounmap(ppchameleon_fio_base);
+-		return -EIO;
+-	}
+-
+-	/* Get pointer to private data */
+-	this = (struct nand_chip *)(&ppchameleonevb_mtd[1]);
+-
+-	/* Initialize structures */
+-	memset(ppchameleonevb_mtd, 0, sizeof(struct mtd_info));
+-	memset(this, 0, sizeof(struct nand_chip));
+-
+-	/* Link the private data with the MTD structure */
+-	ppchameleonevb_mtd->priv = this;
+-
+-	/* Initialize GPIOs */
+-	/* Pin mapping for NAND chip */
+-	/*
+-	   CE   GPIO_14
+-	   CLE  GPIO_15
+-	   ALE  GPIO_16
+-	   R/B  GPIO_31
+-	 */
+-	/* output select */
+-	out_be32((volatile unsigned *)GPIO0_OSRH, in_be32((volatile unsigned *)GPIO0_OSRH) & 0xFFFFFFF0);
+-	out_be32((volatile unsigned *)GPIO0_OSRL, in_be32((volatile unsigned *)GPIO0_OSRL) & 0x3FFFFFFF);
+-	/* three-state select */
+-	out_be32((volatile unsigned *)GPIO0_TSRH, in_be32((volatile unsigned *)GPIO0_TSRH) & 0xFFFFFFF0);
+-	out_be32((volatile unsigned *)GPIO0_TSRL, in_be32((volatile unsigned *)GPIO0_TSRL) & 0x3FFFFFFF);
+-	/* enable output driver */
+-	out_be32((volatile unsigned *)GPIO0_TCR, in_be32((volatile unsigned *)GPIO0_TCR) | NAND_EVB_nCE_GPIO_PIN |
+-		 NAND_EVB_CLE_GPIO_PIN | NAND_EVB_ALE_GPIO_PIN);
+-#ifdef USE_READY_BUSY_PIN
+-	/* three-state select */
+-	out_be32((volatile unsigned *)GPIO0_TSRL, in_be32((volatile unsigned *)GPIO0_TSRL) & 0xFFFFFFFC);
+-	/* high-impedecence */
+-	out_be32((volatile unsigned *)GPIO0_TCR, in_be32((volatile unsigned *)GPIO0_TCR) & (~NAND_EVB_RB_GPIO_PIN));
+-	/* input select */
+-	out_be32((volatile unsigned *)GPIO0_ISR1L,
+-		 (in_be32((volatile unsigned *)GPIO0_ISR1L) & 0xFFFFFFFC) | 0x00000001);
+-#endif
+-
+-	/* insert callbacks */
+-	this->IO_ADDR_R = ppchameleonevb_fio_base;
+-	this->IO_ADDR_W = ppchameleonevb_fio_base;
+-	this->cmd_ctrl = ppchameleonevb_hwcontrol;
+-#ifdef USE_READY_BUSY_PIN
+-	this->dev_ready = ppchameleonevb_device_ready;
+-#endif
+-	this->chip_delay = NAND_SMALL_DELAY_US;
+-
+-	/* ECC mode */
 -	this->ecc.mode = NAND_ECC_SOFT;
 -
 -	/* Scan to find existence of the device */
--	if (nand_scan(h1910_nand_mtd, 1)) {
--		printk(KERN_NOTICE "No NAND device - returning -ENXIO\n");
--		kfree(h1910_nand_mtd);
--		iounmap((void *)nandaddr);
+-	if (nand_scan(ppchameleonevb_mtd, 1)) {
+-		iounmap((void *)ppchameleonevb_fio_base);
+-		kfree(ppchameleonevb_mtd);
+-		if (ppchameleon_fio_base)
+-			iounmap(ppchameleon_fio_base);
 -		return -ENXIO;
 -	}
 -
+-	ppchameleonevb_mtd->name = NAND_EVB_MTD_NAME;
+-
 -	/* Register the partitions */
--	mtd_device_parse_register(h1910_nand_mtd, NULL, NULL, partition_info,
+-	mtd_device_parse_register(ppchameleonevb_mtd, NULL, NULL,
+-				  ppchameleon_mtd->size == NAND_SMALL_SIZE ?
+-				  partition_info_me : partition_info_hi,
 -				  NUM_PARTITIONS);
 -
 -	/* Return happy */
 -	return 0;
 -}
 -
--module_init(h1910_init);
+-module_init(ppchameleonevb_init);
 -
 -/*
 - * Clean up routine
 - */
--static void __exit h1910_cleanup(void)
+-static void __exit ppchameleonevb_cleanup(void)
 -{
--	struct nand_chip *this = (struct nand_chip *)&h1910_nand_mtd[1];
+-	struct nand_chip *this;
 -
--	/* Release resources, unregister device */
--	nand_release(h1910_nand_mtd);
+-	/* Release resources, unregister device(s) */
+-	nand_release(ppchameleon_mtd);
+-	nand_release(ppchameleonevb_mtd);
 -
--	/* Release io resource */
--	iounmap((void *)this->IO_ADDR_W);
+-	/* Release iomaps */
+-	this = (struct nand_chip *) &ppchameleon_mtd[1];
+-	iounmap((void *) this->IO_ADDR_R);
+-	this = (struct nand_chip *) &ppchameleonevb_mtd[1];
+-	iounmap((void *) this->IO_ADDR_R);
 -
 -	/* Free the MTD device structure */
--	kfree(h1910_nand_mtd);
+-	kfree (ppchameleon_mtd);
+-	kfree (ppchameleonevb_mtd);
 -}
--
--module_exit(h1910_cleanup);
+-module_exit(ppchameleonevb_cleanup);
 -
 -MODULE_LICENSE("GPL");
--MODULE_AUTHOR("Joshua Wise <joshua at joshuawise dot com>");
--MODULE_DESCRIPTION("NAND flash driver for iPAQ h1910");
+-MODULE_AUTHOR("DAVE Srl <support-ppchameleon@dave-tech.it>");
+-MODULE_DESCRIPTION("MTD map driver for DAVE Srl PPChameleonEVB board");
 -- 
 1.7.10.4
