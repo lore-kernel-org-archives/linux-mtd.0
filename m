@@ -1,18 +1,20 @@
-Received: from mail-qe0-f47.google.com ([209.85.128.47])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UGXKS-0000Sh-Dl
- for linux-mtd@lists.infradead.org; Fri, 15 Mar 2013 16:18:01 +0000
-Received: by mail-qe0-f47.google.com with SMTP id q19so2033555qeb.34
- for <linux-mtd@lists.infradead.org>; Fri, 15 Mar 2013 09:17:58 -0700 (PDT)
+Received: from hauke-2-pt.tunnel.tserv6.fra1.ipv6.he.net
+ ([2001:470:1f0a:465::2] helo=hauke-m.de)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UGXSj-0001G7-AT
+ for linux-mtd@lists.infradead.org; Fri, 15 Mar 2013 16:26:34 +0000
+Message-ID: <51434BAC.4080003@hauke-m.de>
+Date: Fri, 15 Mar 2013 17:26:20 +0100
+From: Hauke Mehrtens <hauke@hauke-m.de>
 MIME-Version: 1.0
-In-Reply-To: <CACwUX0O=_mXexe6RLgGznVThUdMiMFAEMdzdOWBdKxYa1pHcAQ@mail.gmail.com>
-References: <CACwUX0O=_mXexe6RLgGznVThUdMiMFAEMdzdOWBdKxYa1pHcAQ@mail.gmail.com>
-Date: Fri, 15 Mar 2013 10:17:58 -0600
-Message-ID: <CACwUX0PzC3QcqUEC4CLOrZMc=uuod8dr+LKoczgDVtzhnnz5gQ@mail.gmail.com>
-Subject: Re: on-die ECC support
-From: David Mosberger-Tang <dmosberger@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: multipart/mixed; boundary=00235429d208832ceb04d7f8fb02
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Subject: Re: [PATCH] mtd: bcm47xxsflash: implement chip polling
+References: <1363343486-3084-1-git-send-email-zajec5@gmail.com>
+In-Reply-To: <1363343486-3084-1-git-send-email-zajec5@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <David.Woodhouse@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,131 +24,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---00235429d208832ceb04d7f8fb02
-Content-Type: text/plain; charset=ISO-8859-1
+On 03/15/2013 11:31 AM, Rafał Miłecki wrote:
+> 
+> Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+> ---
+>  drivers/mtd/devices/bcm47xxsflash.c |   56 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 56 insertions(+)
+> 
+> diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
+> index 2f9e629..75f3cf0 100644
+> --- a/drivers/mtd/devices/bcm47xxsflash.c
+> +++ b/drivers/mtd/devices/bcm47xxsflash.c
+> @@ -1,6 +1,7 @@
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+>  #include <linux/slab.h>
+> +#include <linux/delay.h>
+>  #include <linux/mtd/mtd.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/bcma/bcma.h>
+> @@ -12,6 +13,58 @@ MODULE_DESCRIPTION("Serial flash driver for BCMA bus");
+>  
+>  static const char * const probes[] = { "bcm47xxpart", NULL };
+>  
+> +/**************************************************
+> + * Various helpers
+> + **************************************************/
+> +
+> +static void bcm47xxsflash_cmd(struct bcm47xxsflash *b47s, u32 opcode)
+> +{
+> +	int i;
+> +
+> +	bcma_cc_write32(b47s->bcma_cc, BCMA_CC_FLASHCTL,
+> +			BCMA_CC_FLASHCTL_START | opcode);
 
-Hopefully this attachment comes through...
+Why do you access the bcma write function directly? When you are adding
+support for serial flash on ssb you have to double this and probably all
+the other functions. I would suggest you using some bus abstraction like
+it you did it in b43.
 
-On Fri, Mar 15, 2013 at 10:08 AM, David Mosberger-Tang
-<dmosberger@gmail.com> wrote:
-> We need to be able to support 4-bit-correcting ECC with a
-> micro-controller that doesn't have hardware-support for that.  We are
-> planning to use the on-die ECC controller supported by Micron flash
-> chips.  I suppose we could use the BCH swecc support in the Linux
-> kernel, but I'm concerned about the performance implication of that
-> and we'd also have to add BCH ecc to our bootloader, which would mean
-> more development and testing.
->
-> For backwards-compatibility, we need to be able to support a
-> subpage-size of 512 bytes.  From the Micron data sheets, it's not
-> clear to me whether the on-die controller really supports reading 512
-> byte subpages but the attached patch certainly *seems* to work fine so
-> far.
->
-> I'd love to get some feedback as to whether I'm on the right track
-> here or whether I should pursue a different path.  The patch does the
-> following:
->
->  - Add NAND_ECC_HW_ON_DIE ecc mode
->  - Add nand_read_subpage_raw() to read a subpage without worrying about ECC
->  - Hack atmel_nand.c to use on-die ECC.
->
-> Thanks,
->
->   --david
-
---00235429d208832ceb04d7f8fb02
-Content-Type: text/plain; charset=US-ASCII; name="on-die-ecc.diff.txt"
-Content-Disposition: attachment; filename="on-die-ecc.diff.txt"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_hebjvw421
-
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvYXRtZWxfbmFuZC5jIGIvZHJpdmVycy9tdGQv
-bmFuZC9hdG1lbF9uYW5kLmMKaW5kZXggOTI2MjNhYy4uODA0M2ZkZSAxMDA2NDQKLS0tIGEvZHJp
-dmVycy9tdGQvbmFuZC9hdG1lbF9uYW5kLmMKKysrIGIvZHJpdmVycy9tdGQvbmFuZC9hdG1lbF9u
-YW5kLmMKQEAgLTE0NjIsNyArMTQ2MiwxMiBAQCBzdGF0aWMgaW50IF9faW5pdCBhdG1lbF9uYW5k
-X3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCiAJfQogCiAJbmFuZF9jaGlwLT5l
-Y2MubW9kZSA9IGhvc3QtPmJvYXJkLmVjY19tb2RlOworbmFuZF9jaGlwLT5lY2MubW9kZSA9IE5B
-TkRfRUNDX0hXX09OX0RJRTsJLy8gWFhYCituYW5kX2NoaXAtPmVjYy5zaXplID0gNTEyOwkvLyBY
-WFgKK25hbmRfY2hpcC0+ZWNjLnN0cmVuZ3RoID0gNDsJLy8gWFhYCitwcmludGsoIm5hbmRfY2hp
-cC0+ZWNjLm1vZGU9JWRcbiIsIG5hbmRfY2hpcC0+ZWNjLm1vZGUpOwogCW5hbmRfY2hpcC0+Y2hp
-cF9kZWxheSA9IDIwOwkJLyogMjB1cyBjb21tYW5kIGRlbGF5IHRpbWUgKi8KKwluYW5kX2NoaXAt
-PmNoaXBfZGVsYXkgPSA3MDsJLy8gWFhYIHRfUl9FQ0MKIAogCWlmIChob3N0LT5ib2FyZC5idXNf
-d2lkdGhfMTYpCS8qIDE2LWJpdCBidXMgd2lkdGggKi8KIAkJbmFuZF9jaGlwLT5vcHRpb25zIHw9
-IE5BTkRfQlVTV0lEVEhfMTY7CmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL25hbmRfYmFz
-ZS5jIGIvZHJpdmVycy9tdGQvbmFuZC9uYW5kX2Jhc2UuYwppbmRleCAxYTAzYjdmLi44OGVlNTM2
-IDEwMDY0NAotLS0gYS9kcml2ZXJzL210ZC9uYW5kL25hbmRfYmFzZS5jCisrKyBiL2RyaXZlcnMv
-bXRkL25hbmQvbmFuZF9iYXNlLmMKQEAgLTcxMSw2ICs3MTEsMjkgQEAgc3RhdGljIHZvaWQgbmFu
-ZF9jb21tYW5kX2xwKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCB1bnNpZ25lZCBpbnQgY29tbWFuZCwK
-IAkJY2hpcC0+Y21kX2N0cmwobXRkLCBOQU5EX0NNRF9OT05FLAogCQkJICAgICAgIE5BTkRfTkNF
-IHwgTkFORF9DVFJMX0NIQU5HRSk7CiAKKwkJaWYgKDEpIHsKKwkJCXU4IHN0YXR1czsKKworCQkJ
-dWRlbGF5KGNoaXAtPmNoaXBfZGVsYXkpOworCisJCQljaGlwLT5jbWRmdW5jKG10ZCwgTkFORF9D
-TURfU1RBVFVTLCAtMSwgLTEpOworCQkJc3RhdHVzID0gY2hpcC0+cmVhZF9ieXRlKG10ZCk7CisK
-KwkJCWlmIChzdGF0dXMgJiAweDAxKSB7CisJCQkJcHJpbnRrKCJFUlJPUjogb24tZGllIEVDQyBy
-ZWFkIGZhaWx1cmVcbiIpOworCQkJfSBlbHNlIGlmIChzdGF0dXMgJiAweDA4KSB7CisJCQkJLy8g
-Yml0IGZsaXAKKwkJCQlwcmludGsoIkVSUk9SOiBvbi1kaWUgRUNDIHJld3JpdGUgcmVjb21tZW5k
-ZWRcbiIKKyk7CisJCQl9CisKKwkJCWNoaXAtPmNtZF9jdHJsKG10ZCwgTkFORF9DTURfUkVBRDAs
-CisJCQkJICAgICAgIE5BTkRfTkNFIHwgTkFORF9DTEUgfCBOQU5EX0NUUkxfQ0hBTkdFKTsKKwkJ
-CWNoaXAtPmNtZF9jdHJsKG10ZCwgTkFORF9DTURfTk9ORSwKKwkJCQkgICAgICAgTkFORF9OQ0Ug
-fCBOQU5EX0NUUkxfQ0hBTkdFKTsKKwkJCXJldHVybjsKKwkJfQorCiAJCS8qIFRoaXMgYXBwbGll
-cyB0byByZWFkIGNvbW1hbmRzICovCiAJZGVmYXVsdDoKIAkJLyoKQEAgLTEyMjIsNiArMTI0NSw0
-MiBAQCBzdGF0aWMgaW50IG5hbmRfcmVhZF9zdWJwYWdlKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBz
-dHJ1Y3QgbmFuZF9jaGlwICpjaGlwLAogfQogCiAvKioKKyAqIG5hbmRfcmVhZF9zdWJwYWdlX3Jh
-dyAtIFtSRVBMQUNFQUJMRV0gcmF3IHN1Yi1wYWdlIHJlYWQgZnVuY3Rpb24KKyAqIEBtdGQ6IG10
-ZCBpbmZvIHN0cnVjdHVyZQorICogQGNoaXA6IG5hbmQgY2hpcCBpbmZvIHN0cnVjdHVyZQorICog
-QGRhdGFfb2Zmczogb2Zmc2V0IG9mIHJlcXVlc3RlZCBkYXRhIHdpdGhpbiB0aGUgcGFnZQorICog
-QHJlYWRsZW46IGRhdGEgbGVuZ3RoCisgKiBAYnVmcG9pOiBidWZmZXIgdG8gc3RvcmUgcmVhZCBk
-YXRhCisgKi8KK3N0YXRpYyBpbnQgbmFuZF9yZWFkX3N1YnBhZ2VfcmF3KHN0cnVjdCBtdGRfaW5m
-byAqbXRkLCBzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLAorCQkJdWludDMyX3QgZGF0YV9vZmZzLCB1
-aW50MzJfdCByZWFkbGVuLCB1aW50OF90ICpidWZwb2kpCit7CisJaW50IHN0YXJ0X3N0ZXAsIGVu
-ZF9zdGVwLCBudW1fc3RlcHM7CisJdWludDhfdCAqcDsKKwlpbnQgZGF0YV9jb2xfYWRkcjsKKwlp
-bnQgZGF0YWZyYWdfbGVuOworCXVuc2lnbmVkIGludCBtYXhfYml0ZmxpcHMgPSAwOworCisJLyog
-Q29sdW1uIGFkZHJlc3Mgd2l0aGluIHRoZSBwYWdlIGFsaWduZWQgdG8gRUNDIHNpemUgKi8KKwlz
-dGFydF9zdGVwID0gZGF0YV9vZmZzIC8gY2hpcC0+ZWNjLnNpemU7CisJZW5kX3N0ZXAgPSAoZGF0
-YV9vZmZzICsgcmVhZGxlbiAtIDEpIC8gY2hpcC0+ZWNjLnNpemU7CisJbnVtX3N0ZXBzID0gZW5k
-X3N0ZXAgLSBzdGFydF9zdGVwICsgMTsKKworCS8qIERhdGEgc2l6ZSBhbGlnbmVkIHRvIEVDQyBl
-Y2Muc2l6ZSAqLworCWRhdGFmcmFnX2xlbiA9IG51bV9zdGVwcyAqIGNoaXAtPmVjYy5zaXplOwor
-CisJZGF0YV9jb2xfYWRkciA9IHN0YXJ0X3N0ZXAgKiBjaGlwLT5lY2Muc2l6ZTsKKwkvKiBJZiB3
-ZSByZWFkIG5vdCBhIHBhZ2UgYWxpZ25lZCBkYXRhICovCisJaWYgKGRhdGFfY29sX2FkZHIgIT0g
-MCkKKwkJY2hpcC0+Y21kZnVuYyhtdGQsIE5BTkRfQ01EX1JORE9VVCwgZGF0YV9jb2xfYWRkciwg
-LTEpOworCisJcCA9IGJ1ZnBvaSArIGRhdGFfY29sX2FkZHI7CisJY2hpcC0+cmVhZF9idWYobXRk
-LCBwLCBkYXRhZnJhZ19sZW4pOworCisJcmV0dXJuIG1heF9iaXRmbGlwczsKK30KKworLyoqCiAg
-KiBuYW5kX3JlYWRfcGFnZV9od2VjYyAtIFtSRVBMQUNFQUJMRV0gaGFyZHdhcmUgRUNDIGJhc2Vk
-IHBhZ2UgcmVhZCBmdW5jdGlvbgogICogQG10ZDogbXRkIGluZm8gc3RydWN0dXJlCiAgKiBAY2hp
-cDogbmFuZCBjaGlwIGluZm8gc3RydWN0dXJlCkBAIC0zNTMwLDYgKzM1ODksMjEgQEAgaW50IG5h
-bmRfc2Nhbl90YWlsKHN0cnVjdCBtdGRfaW5mbyAqbXRkKQogCQkJY2hpcC0+ZWNjLmJ5dGVzICog
-OCAvIGZscyg4ICogY2hpcC0+ZWNjLnNpemUpOwogCQlicmVhazsKIAorCWNhc2UgTkFORF9FQ0Nf
-SFdfT05fRElFOgorCQljaGlwLT5lY2MucmVhZF9wYWdlID0gbmFuZF9yZWFkX3BhZ2VfcmF3Owor
-CQljaGlwLT5lY2MucmVhZF9zdWJwYWdlID0gbmFuZF9yZWFkX3N1YnBhZ2VfcmF3OworCQljaGlw
-LT5lY2Mud3JpdGVfcGFnZSA9IG5hbmRfd3JpdGVfcGFnZV9yYXc7CisJCWNoaXAtPmVjYy5yZWFk
-X29vYiA9IG5hbmRfcmVhZF9vb2Jfc3RkOworCQljaGlwLT5lY2MucmVhZF9wYWdlX3JhdyA9IG5h
-bmRfcmVhZF9wYWdlX3JhdzsKKwkJY2hpcC0+ZWNjLndyaXRlX3BhZ2VfcmF3ID0gbmFuZF93cml0
-ZV9wYWdlX3JhdzsKKwkJY2hpcC0+ZWNjLndyaXRlX29vYiA9IG5hbmRfd3JpdGVfb29iX3N0ZDsK
-KwkJY2hpcC0+ZWNjLmJ5dGVzID0gMDsKKy8qCisJCWNoaXAtPmVjYy5zaXplID0gbXRkLT53cml0
-ZXNpemU7CisJCWNoaXAtPmVjYy5zdHJlbmd0aCA9IDA7CisqLworCQlicmVhazsKKwogCWNhc2Ug
-TkFORF9FQ0NfTk9ORToKIAkJcHJfd2FybigiTkFORF9FQ0NfTk9ORSBzZWxlY3RlZCBieSBib2Fy
-ZCBkcml2ZXIuICIKIAkJCSAgICJUaGlzIGlzIG5vdCByZWNvbW1lbmRlZCFcbiIpOwpAQCAtMzU5
-MSw2ICszNjY1LDcgQEAgaW50IG5hbmRfc2Nhbl90YWlsKHN0cnVjdCBtdGRfaW5mbyAqbXRkKQog
-CQkJYnJlYWs7CiAJCX0KIAl9CittdGQtPnN1YnBhZ2Vfc2Z0ID0gMjsJLy8gWFhYCiAJY2hpcC0+
-c3VicGFnZXNpemUgPSBtdGQtPndyaXRlc2l6ZSA+PiBtdGQtPnN1YnBhZ2Vfc2Z0OwogCiAJLyog
-SW5pdGlhbGl6ZSBzdGF0ZSAqLwpAQCAtMzYwMyw3ICszNjc4LDkgQEAgaW50IG5hbmRfc2Nhbl90
-YWlsKHN0cnVjdCBtdGRfaW5mbyAqbXRkKQogCWNoaXAtPnBhZ2VidWYgPSAtMTsKIAogCS8qIExh
-cmdlIHBhZ2UgTkFORCB3aXRoIFNPRlRfRUNDIHNob3VsZCBzdXBwb3J0IHN1YnBhZ2UgcmVhZHMg
-Ki8KLQlpZiAoKGNoaXAtPmVjYy5tb2RlID09IE5BTkRfRUNDX1NPRlQpICYmIChjaGlwLT5wYWdl
-X3NoaWZ0ID4gOSkpCisJaWYgKCgoY2hpcC0+ZWNjLm1vZGUgPT0gTkFORF9FQ0NfU09GVCkKKwkg
-ICAgIHx8IChjaGlwLT5lY2MubW9kZSA9PSBOQU5EX0VDQ19IV19PTl9ESUUpKQorCSAgICAmJiAo
-Y2hpcC0+cGFnZV9zaGlmdCA+IDkpKQogCQljaGlwLT5vcHRpb25zIHw9IE5BTkRfU1VCUEFHRV9S
-RUFEOwogCiAJLyogRmlsbCBpbiByZW1haW5pbmcgTVREIGRyaXZlciBkYXRhICovCmRpZmYgLS1n
-aXQgYS9kcml2ZXJzL29mL29mX210ZC5jIGIvZHJpdmVycy9vZi9vZl9tdGQuYwppbmRleCBhMjdl
-Yzk0Li43OWVhMDI2IDEwMDY0NAotLS0gYS9kcml2ZXJzL29mL29mX210ZC5jCisrKyBiL2RyaXZl
-cnMvb2Yvb2ZfbXRkLmMKQEAgLTIzLDYgKzIzLDcgQEAgc3RhdGljIGNvbnN0IGNoYXIgKm5hbmRf
-ZWNjX21vZGVzW10gPSB7CiAJW05BTkRfRUNDX0hXX1NZTkRST01FXQk9ICJod19zeW5kcm9tZSIs
-CiAJW05BTkRfRUNDX0hXX09PQl9GSVJTVF0JPSAiaHdfb29iX2ZpcnN0IiwKIAlbTkFORF9FQ0Nf
-U09GVF9CQ0hdCT0gInNvZnRfYmNoIiwKKwlbTkFORF9FQ0NfSFdfT05fRElFXQk9ICJod19vbl9k
-aWUiLAogfTsKIAogLyoqCmRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L210ZC9uYW5kLmggYi9p
-bmNsdWRlL2xpbnV4L210ZC9uYW5kLmgKaW5kZXggMjRlOTE1OS4uMmM2MmIyYSAxMDA2NDQKLS0t
-IGEvaW5jbHVkZS9saW51eC9tdGQvbmFuZC5oCisrKyBiL2luY2x1ZGUvbGludXgvbXRkL25hbmQu
-aApAQCAtMTQzLDYgKzE0Myw3IEBAIHR5cGVkZWYgZW51bSB7CiAJTkFORF9FQ0NfSFdfU1lORFJP
-TUUsCiAJTkFORF9FQ0NfSFdfT09CX0ZJUlNULAogCU5BTkRfRUNDX1NPRlRfQkNILAorCU5BTkRf
-RUNDX0hXX09OX0RJRSwKIH0gbmFuZF9lY2NfbW9kZXNfdDsKIAogLyoK
---00235429d208832ceb04d7f8fb02--
+> +	for (i = 0; i < 1000; i++) {
+> +		if (!(bcma_cc_read32(b47s->bcma_cc, BCMA_CC_FLASHCTL) &
+> +		      BCMA_CC_FLASHCTL_BUSY))
+> +			return;
+> +		cpu_relax();
+> +	}
+> +	pr_err("Control command failed (timeout)!\n");
+> +}
+> +
+> +static int bcm47xxsflash_poll(struct bcm47xxsflash *b47s, int timeout)
+> +{
+> +	unsigned long deadline = jiffies + timeout;
+> +
+> +	do {
+> +		switch (b47s->type) {
+> +		case BCM47XXSFLASH_TYPE_ST:
+> +			bcm47xxsflash_cmd(b47s, OPCODE_ST_RDSR);
+> +			if (!(bcma_cc_read32(b47s->bcma_cc, BCMA_CC_FLASHDATA)
+> +			      & SR_ST_WIP))
+> +				return 0;
+> +			break;
+> +		case BCM47XXSFLASH_TYPE_ATMEL:
+> +			bcm47xxsflash_cmd(b47s, OPCODE_AT_STATUS);
+> +			if (bcma_cc_read32(b47s->bcma_cc, BCMA_CC_FLASHDATA)
+> +			    & SR_AT_READY)
+> +				return 0;
+> +			break;
+> +		}
+> +
+> +		cpu_relax();
+> +		udelay(1);
+> +	} while (!time_after_eq(jiffies, deadline));
+> +
+> +	pr_err("Timeout waiting for flash to be ready!\n");
+> +
+> +	return -EBUSY;
+> +}
+> +
+> +/**************************************************
+> + * MTD ops
+> + **************************************************/
+> +
+>  static int bcm47xxsflash_read(struct mtd_info *mtd, loff_t from, size_t len,
+>  			      size_t *retlen, u_char *buf)
+>  {
+> @@ -84,6 +137,9 @@ static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
+>  		goto err_dev_reg;
+>  	}
+>  
+> +	if (bcm47xxsflash_poll(b47s, HZ / 10))
+> +		pr_warn("Serial flash busy\n");
+> +
+>  	return 0;
+>  
+>  err_dev_reg:
+> 
