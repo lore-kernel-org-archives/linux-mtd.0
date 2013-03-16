@@ -1,19 +1,20 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UGvo3-0004zf-3w
- for linux-mtd@lists.infradead.org; Sat, 16 Mar 2013 18:26:11 +0000
-From: Matthieu Castet <matthieu.castet@parrot.com>
-To: David Mosberger-Tang <dmosberger@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Sat, 16 Mar 2013 18:21:52 +0000
-Subject: RE : ONFI patch
-Message-ID: <C429A122CB68254FACED4BEF16AA357A538A5392AA@OPALE.xi-lite.lan>
-References: <CACwUX0OGZivc3pui7Kgo=Y+Tp+dP7UszR_DNN3-pzovo0L7LAg@mail.gmail.com>
-In-Reply-To: <CACwUX0OGZivc3pui7Kgo=Y+Tp+dP7UszR_DNN3-pzovo0L7LAg@mail.gmail.com>
-Content-Language: fr-FR
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from smtp.newsguy.com ([74.209.136.69])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UGxM6-0002V6-2F
+ for linux-mtd@lists.infradead.org; Sat, 16 Mar 2013 20:05:26 +0000
+Message-ID: <5144C281.6020401@newsguy.com>
+Date: Sat, 16 Mar 2013 12:05:37 -0700
+From: Mike Dunn <mikedunn@newsguy.com>
 MIME-Version: 1.0
+To: Sachin Kamat <sachin.kamat@linaro.org>
+Subject: Re: [PATCH 5/8] mtd: docg4: Use module_platform_driver_probe macro
+References: <1362473153-23515-1-git-send-email-sachin.kamat@linaro.org>
+ <1362473153-23515-5-git-send-email-sachin.kamat@linaro.org>
+In-Reply-To: <1362473153-23515-5-git-send-email-sachin.kamat@linaro.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: artem.bityutskiy@linux.intel.com, linux-mtd@lists.infradead.org,
+ dwmw2@infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,33 +24,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> I would like to propose a patch along the attached to make some of
-> the ONFI support routines work on 16-bit devices.  It does the
-> following:
->=20
->  *   Always call nand_flash_detect_onfi(), even for known chips.
-> Without this, onfi_version stays at 0 and nand_onfi_get_features and
-> nand_onfi_set_features will always fail with EINVAL.
-
-Why do you call it for flash we identify as small page ?
-On which flash it is not working ?
-
->  *   For the READID, GET_FEATURES, and SET_FEATURES commands, the
-> column address is always 1 byte, regardless of bus-width.
-
-This is ugly.
-
-> I see that the linux-mtd tree has a NAND_BUSWIDTH_AUTO features, but
-> I don't see how that's supposed to help for, say,
-Did you look at the omap example ?
-
-> nand_onfi-set_features() or nand_onfi_get_features() as
-> nand_set_defaults() will eventually set the 16-bit transfer routines
-> for 16-bit devices.
-If that's a problem of nand_onfi_get/set_features why don't you fix them to=
- use only 8 bits transfert ?
-
-Isn't there a patch already submitted for doing that ?
+On 03/05/2013 12:45 AM, Sachin Kamat wrote:
+> module_platform_driver_probe() eliminates the boilerplate and simplifies
+> the code.
+> 
+> Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 
 
-Matthieu=
+A bit late, but...
+
+Acked-by: Mike Dunn <mikedunn@newsguy.com>
+
+Thanks
