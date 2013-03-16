@@ -1,20 +1,16 @@
-Received: from smtp.newsguy.com ([74.209.136.69])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UGxM6-0002V6-2F
- for linux-mtd@lists.infradead.org; Sat, 16 Mar 2013 20:05:26 +0000
-Message-ID: <5144C281.6020401@newsguy.com>
-Date: Sat, 16 Mar 2013 12:05:37 -0700
+Message-ID: <5144C334.6060003@newsguy.com>
+Date: Sat, 16 Mar 2013 12:08:36 -0700
 From: Mike Dunn <mikedunn@newsguy.com>
 MIME-Version: 1.0
-To: Sachin Kamat <sachin.kamat@linaro.org>
-Subject: Re: [PATCH 5/8] mtd: docg4: Use module_platform_driver_probe macro
-References: <1362473153-23515-1-git-send-email-sachin.kamat@linaro.org>
- <1362473153-23515-5-git-send-email-sachin.kamat@linaro.org>
-In-Reply-To: <1362473153-23515-5-git-send-email-sachin.kamat@linaro.org>
-Content-Type: text/plain; charset=ISO-8859-1
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH 2/2] mtd: remove nftl support
+References: <1362560099-19638-1-git-send-email-dedekind1@gmail.com>
+ <1362560099-19638-2-git-send-email-dedekind1@gmail.com>
+In-Reply-To: <1362560099-19638-2-git-send-email-dedekind1@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Cc: artem.bityutskiy@linux.intel.com, linux-mtd@lists.infradead.org,
- dwmw2@infradead.org, dedekind1@gmail.com
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,15 +20,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/05/2013 12:45 AM, Sachin Kamat wrote:
-> module_platform_driver_probe() eliminates the boilerplate and simplifies
-> the code.
+On 03/06/2013 12:54 AM, Artem Bityutskiy wrote:
+> From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 > 
-> Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+> This is very old cruft with all the users probably dead. Newer DoC devices use
+> inftl.
 
 
-A bit late, but...
 
-Acked-by: Mike Dunn <mikedunn@newsguy.com>
+Actually the "newest" devices (circa 2005) use yet another incarnation called
+saftl.  I didn't bother trying to support it in the docg4 driver.  IIRC, it
+stands for "serial-access flash translation layer", which I think refers to the
+fact that pages within a block must be written in sequence.
 
-Thanks
+Thanks,
+Mike
