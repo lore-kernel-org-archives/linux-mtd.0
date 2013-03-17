@@ -1,16 +1,17 @@
-Message-ID: <5144C334.6060003@newsguy.com>
-Date: Sat, 16 Mar 2013 12:08:36 -0700
-From: Mike Dunn <mikedunn@newsguy.com>
-MIME-Version: 1.0
+Date: Sun, 17 Mar 2013 21:58:05 +0200
+From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH 2/2] mtd: remove nftl support
-References: <1362560099-19638-1-git-send-email-dedekind1@gmail.com>
- <1362560099-19638-2-git-send-email-dedekind1@gmail.com>
-In-Reply-To: <1362560099-19638-2-git-send-email-dedekind1@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH 1/4] mtd: merge mtdchar module with mtdcore
+Message-ID: <20130317215805.3246b0b5.shmulik.ladkani@gmail.com>
+In-Reply-To: <1363260463-10609-1-git-send-email-dedekind1@gmail.com>
+References: <1363260463-10609-1-git-send-email-dedekind1@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: Russell King <linux@arm.linux.org.uk>, linux-cris-kernel@axis.com,
+ Haojian Zhuang <haojian.zhuang@gmail.com>, Mikael Starvik <starvik@axis.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,18 +21,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/06/2013 12:54 AM, Artem Bityutskiy wrote:
-> From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> 
-> This is very old cruft with all the users probably dead. Newer DoC devices use
-> inftl.
+On Thu, 14 Mar 2013 13:27:40 +0200 Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> Indeed, mtdchar is a module that allows user-space making use of MTD devices
+> via /dev/mtd* character devices. If users do not enable it, they simply cannot
+> use MTD devices at all. The cannot read or write the flash contents. Is it a
 
+s/ The cannot/ They cannot/
 
-
-Actually the "newest" devices (circa 2005) use yet another incarnation called
-saftl.  I didn't bother trying to support it in the docg4 driver.  IIRC, it
-stands for "serial-access flash translation layer", which I think refers to the
-fact that pages within a block must be written in sequence.
+What about the defconfig files?
 
 Thanks,
-Mike
+Shmulik
