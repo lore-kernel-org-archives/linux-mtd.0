@@ -1,14 +1,14 @@
-Received: from mail-da0-x234.google.com ([2607:f8b0:400e:c00::234])
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UHWjw-0005q2-SE
+ id 1UHWjz-0005rL-5D
  for linux-mtd@lists.infradead.org; Mon, 18 Mar 2013 09:52:28 +0000
-Received: by mail-da0-f52.google.com with SMTP id f10so1244900dak.11
- for <linux-mtd@lists.infradead.org>; Mon, 18 Mar 2013 02:52:23 -0700 (PDT)
+Received: by mail-pb0-f49.google.com with SMTP id xa12so6333131pbc.36
+ for <linux-mtd@lists.infradead.org>; Mon, 18 Mar 2013 02:52:26 -0700 (PDT)
 From: Sachin Kamat <sachin.kamat@linaro.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 3/4] mtd: denali_dt: Change return value to fix smatch warning
-Date: Mon, 18 Mar 2013 15:11:13 +0530
-Message-Id: <1363599674-26933-3-git-send-email-sachin.kamat@linaro.org>
+Subject: [PATCH 4/4] mtd: denali_dt: Remove redundant use of of_match_ptr
+Date: Mon, 18 Mar 2013 15:11:14 +0530
+Message-Id: <1363599674-26933-4-git-send-email-sachin.kamat@linaro.org>
 In-Reply-To: <1363599674-26933-1-git-send-email-sachin.kamat@linaro.org>
 References: <1363599674-26933-1-git-send-email-sachin.kamat@linaro.org>
 Cc: sachin.kamat@linaro.org, artem.bityutskiy@linux.intel.com,
@@ -22,12 +22,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-platform_get_irq() also returns -ENXIO upon failure.
-Use it instead of hardcoded return type.
-
-Fixes the following smatch warning:
-drivers/mtd/nand/denali_dt.c:93 denali_dt_probe() info:
-why not propagate 'denali->irq' from platform_get_irq() instead of (-6)?
+Since this driver is dt only and denali_nand_dt_ids is always
+compiled in, use of of_match_ptr() macro is not necessary.
 
 Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 ---
@@ -35,17 +31,17 @@ Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
  1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
-index eb68979..067a505 100644
+index 067a505..9253024 100644
 --- a/drivers/mtd/nand/denali_dt.c
 +++ b/drivers/mtd/nand/denali_dt.c
-@@ -90,7 +90,7 @@ static int denali_dt_probe(struct platform_device *ofdev)
- 	denali->irq = platform_get_irq(ofdev, 0);
- 	if (denali->irq < 0) {
- 		dev_err(&ofdev->dev, "no irq defined\n");
--		return -ENXIO;
-+		return denali->irq;
- 	}
+@@ -146,7 +146,7 @@ static struct platform_driver denali_dt_driver = {
+ 	.driver		= {
+ 		.name	= "denali-nand-dt",
+ 		.owner	= THIS_MODULE,
+-		.of_match_table	= of_match_ptr(denali_nand_dt_ids),
++		.of_match_table	= denali_nand_dt_ids,
+ 	},
+ };
  
- 	denali->flash_reg = request_and_map(&ofdev->dev, denali_reg);
 -- 
 1.7.4.1
