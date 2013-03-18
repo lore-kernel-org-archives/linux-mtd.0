@@ -1,15 +1,21 @@
-Received: from mga14.intel.com ([143.182.124.37])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UHTsK-0002jN-6E
- for linux-mtd@lists.infradead.org; Mon, 18 Mar 2013 06:48:57 +0000
+ id 1UHU0z-0005aU-SC
+ for linux-mtd@lists.infradead.org; Mon, 18 Mar 2013 06:57:51 +0000
+Message-ID: <1363589936.20738.6.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: remove ixp2000 driver
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: MTD Maling List <linux-mtd@lists.infradead.org>
-Subject: [PATCH 7/7] arch: cris: amend Kconfig after mtdchar merge
-Date: Mon, 18 Mar 2013 08:50:22 +0200
-Message-Id: <1363589422-1378-8-git-send-email-dedekind1@gmail.com>
-In-Reply-To: <1363589422-1378-1-git-send-email-dedekind1@gmail.com>
-References: <1363260463-10609-1-git-send-email-dedekind1@gmail.com>
- <1363589422-1378-1-git-send-email-dedekind1@gmail.com>
+To: Paul Bolle <pebolle@tiscali.nl>
+Date: Mon, 18 Mar 2013 08:58:56 +0200
+In-Reply-To: <1363214471.1335.19.camel@x61.thuisdomein>
+References: <1363206974.1335.10.camel@x61.thuisdomein>
+ <1363214471.1335.19.camel@x61.thuisdomein>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,40 +25,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+On Wed, 2013-03-13 at 23:41 +0100, Paul Bolle wrote:
+> On Wed, 2013-03-13 at 21:36 +0100, Paul Bolle wrote:
+> > Support for the IXP2000 platform got removed in commit
+> > c65f2abf54a6d07260f1fa64773154e1d7047961 ("ARM: remove ixp23xx and
+> > ixp2000 platforms"). That commit removed the ARCH_IXP2000 Kconfig
+> > symbol. This removes the last driver depending on that symbol.
+> > 
+> > Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
+> 
+> It turns out that Artem Bityutskiy has published a series of patches
+> removing this and similar drivers just yesterday:
+> http://lists.infradead.org/pipermail/linux-mtd/2013-March/046170.html 
 
-The mtdchar module was merged with the mtdcore module, which means that the
-MTD_CHAR Kconfig symbol does not exist any more.
+Hi,
 
-Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
----
- arch/cris/Kconfig                  |    1 -
- arch/cris/arch-v32/drivers/Kconfig |    1 -
- 2 files changed, 2 deletions(-)
+yes, this mtd driver is removed now, thanks!
 
-diff --git a/arch/cris/Kconfig b/arch/cris/Kconfig
-index bb0ac66..2d15a46 100644
---- a/arch/cris/Kconfig
-+++ b/arch/cris/Kconfig
-@@ -264,7 +264,6 @@ config ETRAX_AXISFLASHMAP
- 	select MTD_CFI
- 	select MTD_CFI_AMDSTD
- 	select MTD_JEDECPROBE if ETRAX_ARCH_V32
--	select MTD_CHAR
- 	select MTD_BLOCK
- 	select MTD_COMPLEX_MAPPINGS
- 	help
-diff --git a/arch/cris/arch-v32/drivers/Kconfig b/arch/cris/arch-v32/drivers/Kconfig
-index af4a486..c55971a 100644
---- a/arch/cris/arch-v32/drivers/Kconfig
-+++ b/arch/cris/arch-v32/drivers/Kconfig
-@@ -404,7 +404,6 @@ config ETRAX_AXISFLASHMAP
- 	select MTD_CFI
- 	select MTD_CFI_AMDSTD
- 	select MTD_JEDECPROBE
--	select MTD_CHAR
- 	select MTD_BLOCK
- 	select MTD_COMPLEX_MAPPINGS
- 	help
 -- 
-1.7.10.4
+Best Regards,
+Artem Bityutskiy
