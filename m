@@ -1,19 +1,21 @@
-Received: from blu0-omc1-s27.blu0.hotmail.com ([65.55.116.38])
+Received: from co202.xi-lite.net ([149.6.83.202])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UHbpw-0004gE-Aj
- for linux-mtd@lists.infradead.org; Mon, 18 Mar 2013 15:18:57 +0000
-Message-ID: <BLU0-SMTP1571BC8B2E1A0CF1ECB92CB8E80@phx.gbl>
-From: Bill Pringlemeir <bpringle@sympatico.ca>
-To: dedekind1@gmail.com
-Subject: Re: 'ubi clone' from Live NAND.
-References: <BLU0-SMTP76D0EA572C27BC1C088C1FB8E40@phx.gbl>
- <1363171938.11441.9.camel@sauron.fi.intel.com>
-Date: Mon, 18 Mar 2013 11:20:11 -0400
-In-Reply-To: <1363171938.11441.9.camel@sauron.fi.intel.com> (Artem
- Bityutskiy's message of "Wed, 13 Mar 2013 12:52:18 +0200")
+ id 1UHc25-0005ou-Fy
+ for linux-mtd@lists.infradead.org; Mon, 18 Mar 2013 15:31:30 +0000
+Message-ID: <5147334C.3040505@parrot.com>
+Date: Mon, 18 Mar 2013 16:31:24 +0100
+From: Matthieu CASTET <matthieu.castet@parrot.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Cc: linux-mtd@lists.infradead.org
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 1/3] mtd: m25p80: utilize dedicated 4-byte addressing
+ commands
+References: <1362904877-20144-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1362904877-20144-1-git-send-email-computersforpeace@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8bit
+Cc: Marek Vasut <marex@denx.de>, Kevin Cernekee <cernekee@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,51 +25,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Brian Norris a écrit :
+> Traditionally, the command set used by SPI flash only supported a 3-byte
+> address. However, large SPI flash (>= 32MB, or 256Mbit) require 4 bytes
+> to address the entire flash. Most manufacturers have supplied a mode
+> switch (via a "bank register writer", or a "enable 4-byte mode"
+> command), which tells the flash to expect 4 address cycles from now on,
+> instead of 3. This mode remains until power is cut, the reset line is
+> triggered (on packages where present), or a command is sent to reset the
+> flash or to reset the 3-byte addressing mode.
+> 
+> As an alternative, some flash manufacturers have developed a new command
+> set that accept a full 4-byte address. They can be used orthogonally to
+> any of the modes; that is, they can be used when the flash is in either
+> 3-byte or 4-byte address mode.
+> 
+> Now, there are a number of reasons why the "stateful" 4-byte address
+> mode switch may not be acceptable. For instance, some SoC's perform a
+> dumb boot sequence in which they only send 3-byte read commands to the
+> flash. However, if an unexpected reset occurs, the flash chip cannot be
+> guaranteed to return to its 3-byte mode. Thus, the SoC controller and
+> flash will not understand each other.
+What's funny is the other side work :
 
-On Wed, 2013-03-06 at 15:08 -0500, Bill Pringlemeir wrote:
->> I have a 'ubinize' image that I have created on a PC and I have a
->> 'raw' copy of the NAND flash on a 'Live' Linux distribution; the
->> target was cleanly unmounted.  I use nandsim, with all my real FLASH
->> id bytes and setup partitions as per the target.  Here is the
->> sequence I follow on my PC.
+you can have a ROM that use 4-byte mode with 3-byte or 2-byte device as soon as
+the read command is the same. [1]
 
->>  modprobe nandsim first_id_byte=0x2c second_id_byte=0xda third_id_byte=0x90 fourth_id_byte=0x95 parts=2,64,64
->>  flash_erase /dev/mtd3 0 0
->>  ubiformat /dev/mtd3 -f rootfs.ubi
->>  modprobe ubi mtd=3
->>  mount -t ubifs /dev/ubi0_3 /mnt/ubifs
+What's happen is that the first 1/2 bytes will be skipped and you need to take
+care of that when flasing the device.
 
-On 13 Mar 2013, dedekind1@gmail.com wrote:
+Matthieu
 
-> Does it work if you do the same, but avoid flashing your 'rootfs.ubi'.
-> Just run 'ubiformat /dev/mtd3'. Can you mount it then, successfully do
-> the I/O, unmount, and remount? If that works fine, you probably did
-> not create 'rootfs.ubi' correctly. Double-check that you specified
-> correct eraseblock size, correct nand page size and subpage size.
-
-Thanks, all.  Indeed everything is fine if I don't use the 'improper'
-rootfs.ubi.  Pekon Gupta had clued me in to the problem; If he hadn't, I
-think Brian would have.  I am not using 'nandump' as I don't want the
-file system to be live.  I wanted to use a flash programmer/JTAG device
-to get a copy of the flash.
-
-The problem is simply that the binary copy must include the 'entire
-flash' and not be limited to a 'df' size because of course UBI does wear
-leveling across the whole partition; a benefit of using it that I had
-forgot about.
-
-The 'dmesg' was basically as if someone suddenly truncated the 'UbiFs'
-file system.
-
-Sorry to trouble you.  I hope the information is useful to someone in
-the future.  Btw, it doesn't seem that I have to avoid bad blocks.  I
-think the 'host' UBI/UbiFs recognizes that erase blocks are bad from the
-'target' copy and doesn't use them, or I was lucky and somehow I didn't
-have bad blocks or the tool/code I am using is somehow removing them.
-
-Regards,
-Bill Pringlemeir.
-
--- 
-If it weren't for pickpockets I'd have no sex life at all. 
-- Rodney Dangerfield
+[1]
+- send Read Data (03h)command
+- send 32 bits address
+- read data
