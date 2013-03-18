@@ -1,24 +1,21 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UHc9h-00038a-NE
- for linux-mtd@lists.infradead.org; Mon, 18 Mar 2013 15:39:22 +0000
-From: Marek Vasut <marex@denx.de>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-Subject: Re: [PATCH 1/3] mtd: m25p80: utilize dedicated 4-byte addressing
- commands
-Date: Mon, 18 Mar 2013 16:39:18 +0100
-References: <1362904877-20144-1-git-send-email-computersforpeace@gmail.com>
- <5147334C.3040505@parrot.com>
-In-Reply-To: <5147334C.3040505@parrot.com>
+Received: from co202.xi-lite.net ([149.6.83.202])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UHcCV-0005TJ-Ln
+ for linux-mtd@lists.infradead.org; Mon, 18 Mar 2013 15:42:16 +0000
+Message-ID: <514735D5.3010105@parrot.com>
+Date: Mon, 18 Mar 2013 16:42:13 +0100
+From: Matthieu CASTET <matthieu.castet@parrot.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <201303181639.18602.marex@denx.de>
-Cc: Kevin Cernekee <cernekee@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+To: "Gupta, Pekon" <pekon@ti.com>
+Subject: Re: [PATCH] mtd: nand: subpage write support for hardware based ECC
+ schemes
+References: <1363352378-2825-1-git-send-email-pekon@ti.com>,
+ <51431F08.7050103@parrot.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9A288C@DBDE01.ent.ti.com>
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9A288C@DBDE01.ent.ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,40 +25,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Matthieu CASTET,
+Gupta, Pekon a écrit :
+> Hi,
+> 
+>> On which controller was it tested ?
+> 
+> [Pekon]: I tested it on TI's omap controller itself :-)
+> However I ran following, to confirm..
+> (1) mtd_subpagetest: part of MTD tests
+> (2) ubiattach & ubiformat of ubi image built with Volume Header at 512 offset
+> that is using -O 512.
+> (3) nand raw read / write with non-page aligned data.
+> 
+> Do you have any other tests in mind ?
+> 
+> 
+>> The problem is that lot's of controller driver with hw ecc hack the ecc interface.
+> 
+>> For example the TI omap driver don't use the data pointer of ecc.calculate but
+>> use the data send on the nand interface.
+> 
+> [Pekon]: Yes i agree. But what I see in TI's hack also that ECC is calculated for 
+> each subpage separately. Its just that instead of using data in 
+> chip->buffers->databuf
+> TI's driver uses data which is present in controller's internal buffers, which 
+> should be the way if we are depending on Hardware (controller) to do ECC.
+> Is this something different from other Hardware based ECC implementations?
+Yes for example some controller have ecc that for a 0xff page is not 0xff.
+And this ecc is generated on the fly : you can't xor it before writing it to the
+flash.
 
-> Brian Norris a =E9crit :
-> > Traditionally, the command set used by SPI flash only supported a 3-byte
-> > address. However, large SPI flash (>=3D 32MB, or 256Mbit) require 4 byt=
-es
-> > to address the entire flash. Most manufacturers have supplied a mode
-> > switch (via a "bank register writer", or a "enable 4-byte mode"
-> > command), which tells the flash to expect 4 address cycles from now on,
-> > instead of 3. This mode remains until power is cut, the reset line is
-> > triggered (on packages where present), or a command is sent to reset the
-> > flash or to reset the 3-byte addressing mode.
-> >=20
-> > As an alternative, some flash manufacturers have developed a new command
-> > set that accept a full 4-byte address. They can be used orthogonally to
-> > any of the modes; that is, they can be used when the flash is in either
-> > 3-byte or 4-byte address mode.
-> >=20
-> > Now, there are a number of reasons why the "stateful" 4-byte address
-> > mode switch may not be acceptable. For instance, some SoC's perform a
-> > dumb boot sequence in which they only send 3-byte read commands to the
-> > flash. However, if an unexpected reset occurs, the flash chip cannot be
-> > guaranteed to return to its 3-byte mode. Thus, the SoC controller and
-> > flash will not understand each other.
->=20
-> What's funny is the other side work :
->=20
-> you can have a ROM that use 4-byte mode with 3-byte or 2-byte device as
-> soon as the read command is the same. [1]
+I know that omap driver with ELM error correction did not generated 0xff ecc for
+a black page. I wonder if it works why your patch.
 
-Well, all of these are crap design. The SPI flash shall be power-cycled if =
-the=20
-platform reboots no matter what exactly to prevent having it in undefined s=
-tate.
 
-Best regards,
-Marek Vasut
+Matthieu
