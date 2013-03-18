@@ -1,14 +1,16 @@
-Received: from mail-pd0-f178.google.com ([209.85.192.178])
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UHWjt-0005p6-W6
+ id 1UHWjv-0005pG-1w
  for linux-mtd@lists.infradead.org; Mon, 18 Mar 2013 09:52:23 +0000
-Received: by mail-pd0-f178.google.com with SMTP id u10so774247pdi.9
- for <linux-mtd@lists.infradead.org>; Mon, 18 Mar 2013 02:52:18 -0700 (PDT)
+Received: by mail-pb0-f49.google.com with SMTP id xa12so6333050pbc.36
+ for <linux-mtd@lists.infradead.org>; Mon, 18 Mar 2013 02:52:19 -0700 (PDT)
 From: Sachin Kamat <sachin.kamat@linaro.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 1/4] mtd: denali_dt: Fix incorrect error check
-Date: Mon, 18 Mar 2013 15:11:11 +0530
-Message-Id: <1363599674-26933-1-git-send-email-sachin.kamat@linaro.org>
+Subject: [PATCH 2/4] mtd: denali_dt: Use module_platform_driver()
+Date: Mon, 18 Mar 2013 15:11:12 +0530
+Message-Id: <1363599674-26933-2-git-send-email-sachin.kamat@linaro.org>
+In-Reply-To: <1363599674-26933-1-git-send-email-sachin.kamat@linaro.org>
+References: <1363599674-26933-1-git-send-email-sachin.kamat@linaro.org>
 Cc: sachin.kamat@linaro.org, artem.bityutskiy@linux.intel.com,
  dwmw2@infradead.org, dinguyen@altera.com, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,29 +22,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The return value of devm_ioremap_nocache should be checked here instead
-of res.
+module_platform_driver() removes some boilerplate and makes the code
+simpler.
 
 Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
-Cc: Dinh Nguyen <dinguyen@altera.com>
 ---
-This series is compile tested against linux-next tree (20130318).
----
- drivers/mtd/nand/denali_dt.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ drivers/mtd/nand/denali_dt.c |   12 +-----------
+ 1 files changed, 1 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
-index 546f8cb..02988b0 100644
+index 02988b0..eb68979 100644
 --- a/drivers/mtd/nand/denali_dt.c
 +++ b/drivers/mtd/nand/denali_dt.c
-@@ -42,7 +42,7 @@ static void __iomem *request_and_map(struct device *dev,
- 	}
+@@ -150,17 +150,7 @@ static struct platform_driver denali_dt_driver = {
+ 	},
+ };
  
- 	ptr = devm_ioremap_nocache(dev, res->start, resource_size(res));
--	if (!res)
-+	if (!ptr)
- 		dev_err(dev, "ioremap_nocache of %s failed!", res->name);
+-static int __init denali_init_dt(void)
+-{
+-	return platform_driver_register(&denali_dt_driver);
+-}
+-module_init(denali_init_dt);
+-
+-static void __exit denali_exit_dt(void)
+-{
+-	platform_driver_unregister(&denali_dt_driver);
+-}
+-module_exit(denali_exit_dt);
++module_platform_driver(denali_dt_driver);
  
- 	return ptr;
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Jamie Iles");
 -- 
 1.7.4.1
