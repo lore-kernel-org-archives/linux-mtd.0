@@ -1,19 +1,16 @@
-Received: from ch1ehsobe005.messaging.microsoft.com ([216.32.181.185]
- helo=ch1outboundpool.messaging.microsoft.com)
+Received: from mail-pb0-f47.google.com ([209.85.160.47])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UHY9U-0000BD-JU
- for linux-mtd@lists.infradead.org; Mon, 18 Mar 2013 11:22:54 +0000
-From: Huang Shijie <b32955@freescale.com>
-To: <dwmw2@infradead.org>
-Subject: [PATCH 09/11] mtd: parse out the ECC info for the full-id nand chips
-Date: Mon, 18 Mar 2013 19:18:52 +0800
-Message-ID: <1363605534-24776-10-git-send-email-b32955@freescale.com>
-In-Reply-To: <1363605534-24776-1-git-send-email-b32955@freescale.com>
-References: <1363605534-24776-1-git-send-email-b32955@freescale.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, matthieu.castet@parrot.com, dedekind1@gmail.com
+ id 1UHYEN-0003PJ-Dm
+ for linux-mtd@lists.infradead.org; Mon, 18 Mar 2013 11:27:57 +0000
+Received: by mail-pb0-f47.google.com with SMTP id rp2so6346554pbb.34
+ for <linux-mtd@lists.infradead.org>; Mon, 18 Mar 2013 04:27:51 -0700 (PDT)
+From: Sachin Kamat <sachin.kamat@linaro.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 1/2] mtd: bf5xx_nand: Use module_platform_driver()
+Date: Mon, 18 Mar 2013 16:46:49 +0530
+Message-Id: <1363605410-4530-1-git-send-email-sachin.kamat@linaro.org>
+Cc: sachin.kamat@linaro.org, artem.bityutskiy@linux.intel.com,
+ dwmw2@infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,25 +20,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Parse out the ECC information for the full-id nand chips.
+module_platform_driver macro removes some boilerplate and makes
+the code simpler.
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
+Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 ---
- drivers/mtd/nand/nand_base.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+ drivers/mtd/nand/bf5xx_nand.c |   16 +---------------
+ 1 files changed, 1 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 1b22ddc..61a732a 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -3198,6 +3198,8 @@ static bool find_full_id_nand(struct mtd_info *mtd, struct nand_chip *chip,
- 		chip->cellinfo = id_data[2];
- 		chip->chipsize = (uint64_t)type->chipsize << 20;
- 		chip->options |= type->options;
-+		chip->ecc_strength = ECC_STRENGTH(type->ecc_info);
-+		chip->ecc_size = ECC_SIZE(type->ecc_info);
+diff --git a/drivers/mtd/nand/bf5xx_nand.c b/drivers/mtd/nand/bf5xx_nand.c
+index 4271e94..776df36 100644
+--- a/drivers/mtd/nand/bf5xx_nand.c
++++ b/drivers/mtd/nand/bf5xx_nand.c
+@@ -874,21 +874,7 @@ static struct platform_driver bf5xx_nand_driver = {
+ 	},
+ };
  
- 		*busw = type->options & NAND_BUSWIDTH_16;
+-static int __init bf5xx_nand_init(void)
+-{
+-	printk(KERN_INFO "%s, Version %s (c) 2007 Analog Devices, Inc.\n",
+-		DRV_DESC, DRV_VERSION);
+-
+-	return platform_driver_register(&bf5xx_nand_driver);
+-}
+-
+-static void __exit bf5xx_nand_exit(void)
+-{
+-	platform_driver_unregister(&bf5xx_nand_driver);
+-}
+-
+-module_init(bf5xx_nand_init);
+-module_exit(bf5xx_nand_exit);
++module_platform_driver(bf5xx_nand_driver);
  
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR(DRV_AUTHOR);
 -- 
-1.7.1
+1.7.4.1
