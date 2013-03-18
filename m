@@ -1,13 +1,12 @@
 Received: from mga14.intel.com ([143.182.124.37])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UHTsE-0002jN-LA
- for linux-mtd@lists.infradead.org; Mon, 18 Mar 2013 06:48:51 +0000
+ id 1UHTsG-0002lN-1n
+ for linux-mtd@lists.infradead.org; Mon, 18 Mar 2013 06:48:55 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD Maling List <linux-mtd@lists.infradead.org>
-Subject: [PATCH 5/7] Documentation: mtd: amend the sysfs docs after mtdchar
- merge
-Date: Mon, 18 Mar 2013 08:50:20 +0200
-Message-Id: <1363589422-1378-6-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 6/7] arm: mach-pxa: amend Kconfig after mtdchar merge
+Date: Mon, 18 Mar 2013 08:50:21 +0200
+Message-Id: <1363589422-1378-7-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1363589422-1378-1-git-send-email-dedekind1@gmail.com>
 References: <1363260463-10609-1-git-send-email-dedekind1@gmail.com>
  <1363589422-1378-1-git-send-email-dedekind1@gmail.com>
@@ -27,32 +26,20 @@ MTD_CHAR Kconfig symbol does not exist any more.
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 ---
- Documentation/ABI/testing/sysfs-class-mtd |    6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ arch/arm/mach-pxa/Kconfig |    1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-class-mtd b/Documentation/ABI/testing/sysfs-class-mtd
-index 938ef71..3105644 100644
---- a/Documentation/ABI/testing/sysfs-class-mtd
-+++ b/Documentation/ABI/testing/sysfs-class-mtd
-@@ -14,8 +14,7 @@ Description:
- 		The /sys/class/mtd/mtd{0,1,2,3,...} directories correspond
- 		to each /dev/mtdX character device.  These may represent
- 		physical/simulated flash devices, partitions on a flash
--		device, or concatenated flash devices.  They exist regardless
--		of whether CONFIG_MTD_CHAR is actually enabled.
-+		device, or concatenated flash devices.
- 
- What:		/sys/class/mtd/mtdXro/
- Date:		April 2009
-@@ -23,8 +22,7 @@ KernelVersion:	2.6.29
- Contact:	linux-mtd@lists.infradead.org
- Description:
- 		These directories provide the corresponding read-only device
--		nodes for /sys/class/mtd/mtdX/ .  They are only created
--		(for the benefit of udev) if CONFIG_MTD_CHAR is enabled.
-+		nodes for /sys/class/mtd/mtdX/ .
- 
- What:		/sys/class/mtd/mtdX/dev
- Date:		April 2009
+diff --git a/arch/arm/mach-pxa/Kconfig b/arch/arm/mach-pxa/Kconfig
+index 86eec41..0e74ba0 100644
+--- a/arch/arm/mach-pxa/Kconfig
++++ b/arch/arm/mach-pxa/Kconfig
+@@ -160,7 +160,6 @@ config MACH_XCEP
+ 	select MTD
+ 	select MTD_CFI
+ 	select MTD_CFI_INTELEXT
+-	select MTD_CHAR
+ 	select MTD_PHYSMAP
+ 	select PXA25x
+ 	select SMC91X
 -- 
 1.7.10.4
