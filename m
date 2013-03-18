@@ -1,21 +1,18 @@
-Received: from imx12.toshiba.co.jp ([61.202.160.132])
+Received: from mail-bk0-x22f.google.com ([2a00:1450:4008:c01::22f])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UHQ05-00023r-Qr
- for linux-mtd@lists.infradead.org; Mon, 18 Mar 2013 02:40:40 +0000
-From: <katsuki.uwatoko@toshiba.co.jp>
-To: <dedekind1@gmail.com>
-Subject: Re: [PATCH v2] mtd: nand: support BENAND (Built-in ECC NAND)
-Date: Mon, 18 Mar 2013 02:40:24 +0000
-Message-ID: <F3B6523425E7914AA6214ED358D820AF26763F69@TGXML341.toshiba.local>
-References: <F3B6523425E7914AA6214ED358D820AF2674E3EA@TGXML341.toshiba.local>
- <1362992249.5101.62.camel@sauron.fi.intel.com>
-In-Reply-To: <1362992249.5101.62.camel@sauron.fi.intel.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-ID: <09B1FD95FCF84449A86B455A90B2A416@toshiba.local>
-Content-Transfer-Encoding: quoted-printable
+ id 1UHQVJ-0003LF-Ru
+ for linux-mtd@lists.infradead.org; Mon, 18 Mar 2013 03:12:54 +0000
+Received: by mail-bk0-f47.google.com with SMTP id jc3so2245375bkc.20
+ for <linux-mtd@lists.infradead.org>; Sun, 17 Mar 2013 20:12:51 -0700 (PDT)
 MIME-Version: 1.0
-Cc: vikram186@gmail.com, linux-mtd@lists.infradead.org
+Date: Mon, 18 Mar 2013 11:12:51 +0800
+Message-ID: <CAPgLHd8Uj4-OWahuXSMxcb4Z3siukbveTm=bWNO1toatPwwcmg@mail.gmail.com>
+Subject: [PATCH -next] UBIFS: fix missing unlock on error in ubifs_remount_rw()
+From: Wei Yongjun <weiyj.lk@gmail.com>
+To: dedekind1@gmail.com, adrian.hunter@intel.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: yongjun_wei@trendmicro.com.cn, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,16 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
+From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 
-I'm sorry for the delay in my response.
+Add the missing unlock before return from function ubifs_remount_rw()
+in the error handling case.
 
-On Mon, 11 Mar 2013 10:57:29 +0200, Artem Bityutskiy wrote:
-> Hi Katsuki, thanks for the patch. I would really like to see someone's
-> ack or Tested-by on it. Anyonwe?
->=20
-> Does Toshiba still produce SLC BENANDs?
+Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+---
+ fs/ubifs/super.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Yes. We can still get SLC BENANDs.
---=20
-UWATOKO Katsuki=
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index f21acf0..9791b3c 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1571,7 +1571,7 @@ static int ubifs_remount_rw(struct ubifs_info *c)
+ 	if (c->space_fixup) {
+ 		err = ubifs_fixup_free_space(c);
+ 		if (err)
+-			return err;
++			goto out;
+ 	}
+ 
+ 	err = check_free_space(c);
