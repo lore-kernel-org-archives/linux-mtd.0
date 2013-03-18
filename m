@@ -1,20 +1,18 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UHU0z-0005aU-SC
- for linux-mtd@lists.infradead.org; Mon, 18 Mar 2013 06:57:51 +0000
-Message-ID: <1363589936.20738.6.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: remove ixp2000 driver
+ id 1UHU9b-0006Pz-2h
+ for linux-mtd@lists.infradead.org; Mon, 18 Mar 2013 07:06:44 +0000
+Message-ID: <1363590463.20738.7.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: onenand: remove OneNAND simulator
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Paul Bolle <pebolle@tiscali.nl>
-Date: Mon, 18 Mar 2013 08:58:56 +0200
-In-Reply-To: <1363214471.1335.19.camel@x61.thuisdomein>
-References: <1363206974.1335.10.camel@x61.thuisdomein>
- <1363214471.1335.19.camel@x61.thuisdomein>
+To: MTD Maling List <linux-mtd@lists.infradead.org>
+Date: Mon, 18 Mar 2013 09:07:43 +0200
+In-Reply-To: <1363258049-28157-1-git-send-email-dedekind1@gmail.com>
+References: <1363258049-28157-1-git-send-email-dedekind1@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- linux-kernel@vger.kernel.org
+Cc: Kyungmin Park <kyungmin.park@samsung.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,22 +23,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2013-03-13 at 23:41 +0100, Paul Bolle wrote:
-> On Wed, 2013-03-13 at 21:36 +0100, Paul Bolle wrote:
-> > Support for the IXP2000 platform got removed in commit
-> > c65f2abf54a6d07260f1fa64773154e1d7047961 ("ARM: remove ixp23xx and
-> > ixp2000 platforms"). That commit removed the ARCH_IXP2000 Kconfig
-> > symbol. This removes the last driver depending on that symbol.
-> > 
-> > Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
+On Thu, 2013-03-14 at 12:47 +0200, Artem Bityutskiy wrote:
+> From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 > 
-> It turns out that Artem Bityutskiy has published a series of patches
-> removing this and similar drivers just yesterday:
-> http://lists.infradead.org/pipermail/linux-mtd/2013-March/046170.html 
+> This commit remove OneNAND simulator on the basis that it is useless.
+> 
+> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-Hi,
-
-yes, this mtd driver is removed now, thanks!
+Pushed to l2-mtd.git, thanks!
 
 -- 
 Best Regards,
