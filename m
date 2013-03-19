@@ -1,21 +1,19 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from co202.xi-lite.net ([149.6.83.202])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UHxBh-0003tE-P4
- for linux-mtd@lists.infradead.org; Tue, 19 Mar 2013 14:06:52 +0000
-Message-ID: <1363702041.14966.20.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH -next] UBIFS: fix missing unlock on error in
- ubifs_remount_rw()
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Wei Yongjun <weiyj.lk@gmail.com>
-Date: Tue, 19 Mar 2013 16:07:21 +0200
-In-Reply-To: <CAPgLHd8Uj4-OWahuXSMxcb4Z3siukbveTm=bWNO1toatPwwcmg@mail.gmail.com>
-References: <CAPgLHd8Uj4-OWahuXSMxcb4Z3siukbveTm=bWNO1toatPwwcmg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: yongjun_wei@trendmicro.com.cn, linux-mtd@lists.infradead.org,
- adrian.hunter@intel.com, linux-kernel@vger.kernel.org
-Reply-To: dedekind1@gmail.com
+ id 1UHyGe-00062N-TT
+ for linux-mtd@lists.infradead.org; Tue, 19 Mar 2013 15:16:01 +0000
+Message-ID: <5148812A.1040607@parrot.com>
+Date: Tue, 19 Mar 2013 16:15:54 +0100
+From: Matthieu CASTET <matthieu.castet@parrot.com>
+MIME-Version: 1.0
+To: David Mosberger-Tang <dmosberger@gmail.com>
+Subject: Re: RE : ONFI patch
+References: <CACwUX0OGZivc3pui7Kgo=Y+Tp+dP7UszR_DNN3-pzovo0L7LAg@mail.gmail.com>	<C429A122CB68254FACED4BEF16AA357A538A5392AA@OPALE.xi-lite.lan>	<CACwUX0P4NeuuFy7q5OgE21m-J9reoXRFO-QL7z76+XVaxure3A@mail.gmail.com>	<51473C88.4000105@parrot.com>
+ <CACwUX0Ma9BxmORGV31D3=Des7P-R0pL_V4ETPTXSxugQM+Bizw@mail.gmail.com>
+In-Reply-To: <CACwUX0Ma9BxmORGV31D3=Des7P-R0pL_V4ETPTXSxugQM+Bizw@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,16 +23,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2013-03-18 at 11:12 +0800, Wei Yongjun wrote:
-> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+David Mosberger-Tang a écrit :
+> Matthieu,
 > 
-> Add the missing unlock before return from function ubifs_remount_rw()
-> in the error handling case.
+
 > 
-> Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+> 
+> I was afraid that might be the case.  Since there is no write_byte
+> callback, would it be OK if we convert the subfeature_param to 16 bits
+> and then write it using the write_buf callback?  If so, I can code that up.
+Yes may be that's the best solution
 
-Thanks, I fixed this up in linux-ubifs.git.
+And while we have a 16 bits version of nand_onfi_set_features we send :
+chip->cmdfunc(mtd, NAND_CMD_SET_FEATURES, addr<<1, -1);
 
--- 
-Best Regards,
-Artem Bityutskiy
+
+Matthieu
