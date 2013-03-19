@@ -1,19 +1,21 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UHyGe-00062N-TT
- for linux-mtd@lists.infradead.org; Tue, 19 Mar 2013 15:16:01 +0000
-Message-ID: <5148812A.1040607@parrot.com>
-Date: Tue, 19 Mar 2013 16:15:54 +0100
-From: Matthieu CASTET <matthieu.castet@parrot.com>
+Received: from co9ehsobe005.messaging.microsoft.com ([207.46.163.28]
+ helo=co9outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UHz4M-0002ji-Sy
+ for linux-mtd@lists.infradead.org; Tue, 19 Mar 2013 16:07:25 +0000
+Message-ID: <1363709327.17844.0.camel@linux-builds1>
+Subject: Re: [PATCH 4/4] mtd: denali_dt: Remove redundant use of of_match_ptr
+From: Dinh Nguyen <dinguyen@altera.com>
+To: Sachin Kamat <sachin.kamat@linaro.org>
+Date: Tue, 19 Mar 2013 11:08:47 -0500
+In-Reply-To: <1363599674-26933-4-git-send-email-sachin.kamat@linaro.org>
+References: <1363599674-26933-1-git-send-email-sachin.kamat@linaro.org>
+ <1363599674-26933-4-git-send-email-sachin.kamat@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-To: David Mosberger-Tang <dmosberger@gmail.com>
-Subject: Re: RE : ONFI patch
-References: <CACwUX0OGZivc3pui7Kgo=Y+Tp+dP7UszR_DNN3-pzovo0L7LAg@mail.gmail.com>	<C429A122CB68254FACED4BEF16AA357A538A5392AA@OPALE.xi-lite.lan>	<CACwUX0P4NeuuFy7q5OgE21m-J9reoXRFO-QL7z76+XVaxure3A@mail.gmail.com>	<51473C88.4000105@parrot.com>
- <CACwUX0Ma9BxmORGV31D3=Des7P-R0pL_V4ETPTXSxugQM+Bizw@mail.gmail.com>
-In-Reply-To: <CACwUX0Ma9BxmORGV31D3=Des7P-R0pL_V4ETPTXSxugQM+Bizw@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: dwmw2@infradead.org, dedekind1@gmail.com, linux-mtd@lists.infradead.org,
+ artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,19 +25,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Mosberger-Tang a écrit :
-> Matthieu,
+Hi Sachin,
+
+On Mon, 2013-03-18 at 15:11 +0530, Sachin Kamat wrote:
+> Since this driver is dt only and denali_nand_dt_ids is always
+> compiled in, use of of_match_ptr() macro is not necessary.
 > 
-
+> Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+> ---
+>  drivers/mtd/nand/denali_dt.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
 > 
-> 
-> I was afraid that might be the case.  Since there is no write_byte
-> callback, would it be OK if we convert the subfeature_param to 16 bits
-> and then write it using the write_buf callback?  If so, I can code that up.
-Yes may be that's the best solution
+> diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
+> index 067a505..9253024 100644
+> --- a/drivers/mtd/nand/denali_dt.c
+> +++ b/drivers/mtd/nand/denali_dt.c
+> @@ -146,7 +146,7 @@ static struct platform_driver denali_dt_driver = {
+>  	.driver		= {
+>  		.name	= "denali-nand-dt",
+>  		.owner	= THIS_MODULE,
+> -		.of_match_table	= of_match_ptr(denali_nand_dt_ids),
+> +		.of_match_table	= denali_nand_dt_ids,
+>  	},
+>  };
+>  
 
-And while we have a 16 bits version of nand_onfi_set_features we send :
-chip->cmdfunc(mtd, NAND_CMD_SET_FEATURES, addr<<1, -1);
+Reviewed-by: Dinh Nguyen <dinguyen@altera.com>
 
+for all 4 patches.
 
-Matthieu
+Thanks,
+Dinh
