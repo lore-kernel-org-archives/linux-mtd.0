@@ -1,17 +1,19 @@
-Received: from bitbox.plus.com ([81.174.226.42] helo=galago.localnet)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UIxDu-0002wX-Ov
- for linux-mtd@lists.infradead.org; Fri, 22 Mar 2013 08:21:18 +0000
-Message-ID: <514C147B.3030609@bitbox.co.uk>
-Date: Fri, 22 Mar 2013 08:21:15 +0000
-From: Peter Horton <phorton@bitbox.co.uk>
+Received: from mail-qc0-x230.google.com ([2607:f8b0:400d:c01::230])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UJ9IY-0008Io-PV
+ for linux-mtd@lists.infradead.org; Fri, 22 Mar 2013 21:14:52 +0000
+Received: by mail-qc0-f176.google.com with SMTP id n41so2063406qco.35
+ for <linux-mtd@lists.infradead.org>; Fri, 22 Mar 2013 14:14:49 -0700 (PDT)
 MIME-Version: 1.0
-To: David Mosberger-Tang <dmosberger@gmail.com>
-Subject: Re: on-die ECC support
+In-Reply-To: <514C147B.3030609@bitbox.co.uk>
 References: <CACwUX0M-04vCTkA8WwNR9si=7N-xuYOTy6aWO7ty8xa1+S3rUw@mail.gmail.com>
-In-Reply-To: <CACwUX0M-04vCTkA8WwNR9si=7N-xuYOTy6aWO7ty8xa1+S3rUw@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+ <514C147B.3030609@bitbox.co.uk>
+Date: Fri, 22 Mar 2013 15:14:49 -0600
+Message-ID: <CACwUX0MqJwed7fGm7miN2meFikY4NhfejhW=Q_NOJ3Fj04475A@mail.gmail.com>
+Subject: Re: on-die ECC support
+From: David Mosberger-Tang <dmosberger@gmail.com>
+To: Peter Horton <phorton@bitbox.co.uk>
+Content-Type: multipart/mixed; boundary=00235429d2080454e504d889f24f
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -22,30 +24,178 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 21/03/2013 20:00, David Mosberger-Tang wrote:
->
-> I missed your email until now.  You said:
->
->   > Be careful using the NAND status register to indicate bit flips. The
->   > chips we were using set the status bit for any correction and this can
->   > result in very high error counts. Some of the pages had bits which are
->   > permanently 0 or 1 meaning they might need correction every read. We
->   > worked around this by re-reading any page that the chip flagged as
->   > corrected and using the software BCH to work out the actual number of
->   > bits in error.
->
-> Ouch.  I think you are right: it looks to me that the chip sets the
-> REWRITE_RECOMMENDED bit
-> for any bit flips.  Is the Linux BCH code compatible with the Micron code?
->
-> Yes, using software BCH to figure out actual number of bitflips would
-> be the right approach then.
-> Is there a patch for that somewhere?
+--00235429d2080454e504d889f24f
+Content-Type: text/plain; charset=ISO-8859-1
 
-Not a patch but the driver file is here :-
+Wow, how did Ivan figure the ECC bit layouts?  I stared at it for a
+while last night and then said: no way!
 
-http://files.bitbox.co.uk/public/nand-on-die-ecc/10CUL494_nand_2.6.37.c
+I ended up going with a brutally simple approach: read the page and if
+it gets the REWRITE status bit, read it again with on-die ECC turned
+off, then do a bitdiff of the data read (and the ECC bytes read) to
+count the number of bitflips.  While perhaps brutish, this approach
+has the advantage of only relying on documented features.  As long as
+the layout described by ecc->layout is accurate, this should work
+reliably.  Thus, Micron can screw around with the ECC encoding as they
+wish, as long as the layout doesn't change, we're fine.
 
-Credit for the Micron ECC layout goes to Ivan Djelic IIRC.
+Note that the patch below doesn't check for bitflips in the OOB areas
+that Micron calls "User metadata I".  We don't care about those bits
+since our file system doesn't use OOB at all.
 
-P.
+Do you have any recommendation on a good value for bitflip_threshold?
+1 is obviously too small and 4 feels a bit like playing with fire, no?
+
+  --david
+
+On Fri, Mar 22, 2013 at 2:21 AM, Peter Horton <phorton@bitbox.co.uk> wrote:
+> On 21/03/2013 20:00, David Mosberger-Tang wrote:
+>>
+>>
+>> I missed your email until now.  You said:
+>>
+>>   > Be careful using the NAND status register to indicate bit flips. The
+>>   > chips we were using set the status bit for any correction and this can
+>>   > result in very high error counts. Some of the pages had bits which are
+>>   > permanently 0 or 1 meaning they might need correction every read. We
+>>   > worked around this by re-reading any page that the chip flagged as
+>>   > corrected and using the software BCH to work out the actual number of
+>>   > bits in error.
+>>
+>> Ouch.  I think you are right: it looks to me that the chip sets the
+>> REWRITE_RECOMMENDED bit
+>> for any bit flips.  Is the Linux BCH code compatible with the Micron code?
+>>
+>> Yes, using software BCH to figure out actual number of bitflips would
+>> be the right approach then.
+>> Is there a patch for that somewhere?
+>
+>
+> Not a patch but the driver file is here :-
+>
+> http://files.bitbox.co.uk/public/nand-on-die-ecc/10CUL494_nand_2.6.37.c
+>
+> Credit for the Micron ECC layout goes to Ivan Djelic IIRC.
+>
+> P.
+>
+
+--00235429d2080454e504d889f24f
+Content-Type: text/plain; charset=US-ASCII; name="bitflip-detect.diff.txt"
+Content-Disposition: attachment; filename="bitflip-detect.diff.txt"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_helukioj0
+
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvbmFuZF9iYXNlLmMgYi9kcml2ZXJzL210ZC9u
+YW5kL25hbmRfYmFzZS5jCmluZGV4IGZhODVkZDUuLjQzZDg5NDQgMTAwNjQ0Ci0tLSBhL2RyaXZl
+cnMvbXRkL25hbmQvbmFuZF9iYXNlLmMKKysrIGIvZHJpdmVycy9tdGQvbmFuZC9uYW5kX2Jhc2Uu
+YwpAQCAtMTE2Nyw3ICsxMTY3LDcgQEAgc3RhdGljIGludCBuYW5kX3JlYWRfcGFnZV9zd2VjYyhz
+dHJ1Y3QgbXRkX2luZm8gKm10ZCwgc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwKICAqIEBidWZwb2k6
+IGJ1ZmZlciB0byBzdG9yZSByZWFkIGRhdGEKICAqLwogc3RhdGljIGludCBuYW5kX3JlYWRfc3Vi
+cGFnZShzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwKLQkJCXVp
+bnQzMl90IGRhdGFfb2ZmcywgdWludDMyX3QgcmVhZGxlbiwgdWludDhfdCAqYnVmcG9pKQorCQkJ
+dWludDMyX3QgZGF0YV9vZmZzLCB1aW50MzJfdCByZWFkbGVuLCB1aW50OF90ICpidWZwb2ksIGlu
+dCBwYWdlKQogewogCWludCBzdGFydF9zdGVwLCBlbmRfc3RlcCwgbnVtX3N0ZXBzOwogCXVpbnQz
+Ml90ICplY2Nwb3MgPSBjaGlwLT5lY2MubGF5b3V0LT5lY2Nwb3M7CkBAIC0xMjY1LDkgKzEyNjUs
+NzQgQEAgc2V0X29uX2RpZV9lY2MgKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBzdHJ1Y3QgbmFuZF9j
+aGlwICpjaGlwLCBpbnQgb24pCiAJcmV0dXJuICgqY2hpcC0+b25maV9zZXRfZmVhdHVyZXMpKG10
+ZCwgY2hpcCwgMHg5MCwgZGF0YSk7CiB9CiAKLXN0YXRpYyBpbnQgY2hlY2tfcmVhZF9zdGF0dXNf
+b25fZGllIChzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgc3RydWN0IG5hbmRfY2hpcCAqY2hpcCkKKy8q
+CisgKiBSZXR1cm4gdGhlIG51bWJlciBvZiBiaXRzIHRoYXQgZGlmZmVyIGJldHdlZW4gYnVmZmVy
+cyBTUkMxIGFuZAorICogU1JDMiwgYm90aCBvZiB3aGljaCBhcmUgTEVOIGJ5dGVzIGxvbmcuCisg
+KgorICogVGhpcyBjb2RlIGNvdWxkIGJlIG9wdGltaXplZCBmb3IsIGJ1dCBpdCBvbmx5IGdldHMg
+Y2FsbGVkIG9uIHBhZ2VzCisgKiB3aXRoIGJpdGZsaXBzIGFuZCBjb21wYXJlZCB0byB0aGUgY29z
+dCBvZiBtaWdyYXRpbmcgYW4gZXJhc2VibG9jaywKKyAqIHRoZSBleGVjdXRpb24gdGltZSBoZXJl
+IGlzIHRyaXZpYWwuLi4KKyAqLworc3RhdGljIGludAorYml0ZGlmZiAoY29uc3Qgdm9pZCAqczEs
+IGNvbnN0IHZvaWQgKnMyLCBzaXplX3QgbGVuKQogewotCXVuc2lnbmVkIGludCBtYXhfYml0Zmxp
+cHMgPSAwOworCWNvbnN0IHVpbnQ4X3QgKnNyYzEgPSBzMSwgKnNyYzIgPSBzMjsKKwlpbnQgY291
+bnQgPSAwLCBpOworCisJZm9yIChpID0gMDsgaSA8IGxlbjsgKytpKQorCQljb3VudCArPSBod2Vp
+Z2h0OCAoKnNyYzErKyBeICpzcmMyKyspOworCXJldHVybiBjb3VudDsKK30KKworc3RhdGljIGlu
+dAorY2hlY2tfZm9yX2JpdGZsaXBzIChzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgc3RydWN0IG5hbmRf
+Y2hpcCAqY2hpcCwgaW50IHBhZ2UpCit7CisJaW50IGZsaXBzID0gMCwgbWF4X2JpdGZsaXBzID0g
+MCwgaSwgaiwgcmVhZF9zaXplOworCXVpbnQ4X3QgKmNoa2J1ZiwgKnJhd2J1ZiwgKmNoa29vYiwg
+KnJhd29vYjsKKwl1aW50MzJfdCAqZWNjcG9zOworCisJY2hrYnVmID0gY2hpcC0+YnVmZmVycy0+
+Y2hrYnVmOworCXJhd2J1ZiA9IGNoaXAtPmJ1ZmZlcnMtPnJhd2J1ZjsKKwlyZWFkX3NpemUgPSBt
+dGQtPndyaXRlc2l6ZSArIG10ZC0+b29ic2l6ZTsKKworCS8qIFJlYWQgZW50aXJlIHBhZ2Ugdy9P
+T0IgYXJlYSB3aXRoIG9uLWRpZSBFQ0Mgb246ICovCisJY2hpcC0+cmVhZF9idWYobXRkLCBjaGti
+dWYsIHJlYWRfc2l6ZSk7CisKKwkvKiBSZS1yZWFkIHBhZ2Ugd2l0aCBvbi1kaWUgRUNDIG9mZjog
+Ki8KKwlzZXRfb25fZGllX2VjYyhtdGQsIGNoaXAsIDApOworCXsKKwkJY2hpcC0+Y21kZnVuYyht
+dGQsIE5BTkRfQ01EX1JFQUQwLCAweDAwLCBwYWdlKTsKKwkJY2hpcC0+cmVhZF9idWYobXRkLCBy
+YXdidWYsIHJlYWRfc2l6ZSk7CisJfQorCXNldF9vbl9kaWVfZWNjKG10ZCwgY2hpcCwgMSk7CisK
+KwljaGtvb2IgPSBjaGtidWYgKyBtdGQtPndyaXRlc2l6ZTsKKwlyYXdvb2IgPSByYXdidWYgKyBt
+dGQtPndyaXRlc2l6ZTsKKwllY2Nwb3MgPSBjaGlwLT5lY2MubGF5b3V0LT5lY2Nwb3M7CisJZm9y
+IChpID0gMDsgaSA8IGNoaXAtPmVjYy5zdGVwczsgKytpKSB7CisJCS8qIENvdW50IGJpdCBmbGlw
+cyBpbiB0aGUgYWN0dWFsIGRhdGEgYXJlYTogKi8KKwkJZmxpcHMgPSBiaXRkaWZmIChjaGtidWYs
+IHJhd2J1ZiwgY2hpcC0+ZWNjLnNpemUpOworCQkvKiBDb3VudCBiaXQgZmxpcHMgaW4gdGhlIEVD
+QyBieXRlczogKi8KKwkJZm9yIChqID0gMDsgaiA8IGNoaXAtPmVjYy5ieXRlczsgKytqKSB7CisJ
+CQlmbGlwcyArPSBod2VpZ2h0OChjaGtvb2JbKmVjY3Bvc10gXiByYXdvb2JbKmVjY3Bvc10pOwor
+CQkJKytlY2Nwb3M7CisJCX0KKwkJaWYgKGZsaXBzID4gMCkKKwkJCW10ZC0+ZWNjX3N0YXRzLmNv
+cnJlY3RlZCArPSBmbGlwczsKKwkJbWF4X2JpdGZsaXBzID0gbWF4X3QoaW50LCBtYXhfYml0Zmxp
+cHMsIGZsaXBzKTsKKwkJY2hrYnVmICs9IGNoaXAtPmVjYy5zaXplOworCQlyYXdidWYgKz0gY2hp
+cC0+ZWNjLnNpemU7CisJfQorCisJLyogUmUtaXNzdWUgdGhlIFJFQUQgY29tbWFuZCBmb3IgdGhl
+IGFjdHVhbCBkYXRhIHJlYWQgdGhhdCBmb2xsb3dzLiAgKi8KKwljaGlwLT5jbWRmdW5jKG10ZCwg
+TkFORF9DTURfUkVBRDAsIDB4MDAsIHBhZ2UpOworCisJcmV0dXJuIG1heF9iaXRmbGlwczsKK30K
+Kworc3RhdGljIGludCBjaGVja19yZWFkX3N0YXR1c19vbl9kaWUgKHN0cnVjdCBtdGRfaW5mbyAq
+bXRkLCBzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLCBpbnQgcGFnZSkKK3sKKwlpbnQgbWF4X2JpdGZs
+aXBzID0gMDsKIAl1aW50OF90IHN0YXR1czsKIAogCS8qIENoZWNrIEVDQyBzdGF0dXMgb2YgcGFn
+ZSBqdXN0IHRyYW5zZmVycmVkIGludG8gTkFORCdzIHBhZ2UgYnVmZmVyOiAqLwpAQCAtMTI4NSwx
+MiArMTM1MCwxNSBAQCBzdGF0aWMgaW50IGNoZWNrX3JlYWRfc3RhdHVzX29uX2RpZSAoc3RydWN0
+IG10ZF9pbmZvICptdGQsIHN0cnVjdCBuYW5kX2NoaXAgKmNoaQogCQltdGQtPmVjY19zdGF0cy5m
+YWlsZWQrKzsKIAllbHNlIGlmIChzdGF0dXMgJiBOQU5EX1NUQVRVU19SRVdSSVRFKSB7CiAJCS8q
+Ci0JCSAqIEJpdCBmbGlwKHMpOyB3ZSBkb24ndCBrbm93IGhvdyBtYW55LCBidXQgc2luY2UgYSBy
+ZXdyaXRlIGlzIHJlY29tbWVuZGVkCi0JCSAqIHdlIHNob3VsZCBhc3N1bWUgZWNjLnN0cmVuZ3Ro
+IGJpdGZsaXBzIHNvIHRoYXQgdGhlIGhpZ2hlci1sZXZlbCBzb2Z0d2FyZQotCQkgKiBpcyBnb2lu
+ZyB0byBkbyBzb21ldGhpbmcgYWJvdXQgaXQuCisJCSAqIFRoZSBNaWNyb24gY2hpcHMgdHVybiBv
+biB0aGUgUkVXUklURSBzdGF0dXMgYml0IGZvcgorCQkgKiBBTlkgYml0IGZsaXBzLiAgU29tZSBw
+YWdlcyBoYXZlIHN0dWNrIGJpdHMsIHNvIHdlCisJCSAqIGRvbid0IHdhbnQgdG8gbWlncmF0ZSBh
+IGJsb2NrIGp1c3QgYmVjYXVzZSBvZgorCQkgKiBzaW5nbGUgYml0IGVycm9ycyBiZWNhdXNlIG90
+aGVyd2lzZSwgdGhhdCBibG9jaworCQkgKiB3b3VsZCBlZmZlY3RpdmVseSBiZWNvbWUgdW51c2Fi
+bGUuICBTbywgd29yayBvdXQgaW4KKwkJICogc29mdHdhcmUgd2hhdCB0aGUgbWF4IG51bWJlciBv
+ZiBmbGlwcGVkIGJpdHMgaXMgZm9yCisJCSAqIGFsbCBzdWJwYWdlcyBpbiBhIHBhZ2U6CiAJCSAq
+LwotCQltdGQtPmVjY19zdGF0cy5jb3JyZWN0ZWQgKz0gY2hpcC0+ZWNjLnN0cmVuZ3RoOwotCQlt
+YXhfYml0ZmxpcHMgPSBjaGlwLT5lY2Muc3RyZW5ndGg7CisJCW1heF9iaXRmbGlwcyA9IGNoZWNr
+X2Zvcl9iaXRmbGlwcyAobXRkLCBjaGlwLCBwYWdlKTsKIAl9CiAJcmV0dXJuIG1heF9iaXRmbGlw
+czsKIH0KQEAgLTEzMDQsNyArMTM3Miw3IEBAIHN0YXRpYyBpbnQgY2hlY2tfcmVhZF9zdGF0dXNf
+b25fZGllIChzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgc3RydWN0IG5hbmRfY2hpcCAqY2hpCiAgKiBA
+YnVmcG9pOiBidWZmZXIgdG8gc3RvcmUgcmVhZCBkYXRhCiAgKi8KIHN0YXRpYyBpbnQgbmFuZF9y
+ZWFkX3N1YnBhZ2Vfb25fZGllKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBzdHJ1Y3QgbmFuZF9jaGlw
+ICpjaGlwLAotCQkJdWludDMyX3QgZGF0YV9vZmZzLCB1aW50MzJfdCByZWFkbGVuLCB1aW50OF90
+ICpidWZwb2kpCisJCQl1aW50MzJfdCBkYXRhX29mZnMsIHVpbnQzMl90IHJlYWRsZW4sIHVpbnQ4
+X3QgKmJ1ZnBvaSwgaW50IHBhZ2UpCiB7CiAJaW50IHN0YXJ0X3N0ZXAsIGVuZF9zdGVwLCBudW1f
+c3RlcHMsIHJldDsKIAlpbnQgZGF0YV9jb2xfYWRkcjsKQEAgLTEzMjQsNyArMTM5Miw3IEBAIHN0
+YXRpYyBpbnQgbmFuZF9yZWFkX3N1YnBhZ2Vfb25fZGllKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBz
+dHJ1Y3QgbmFuZF9jaGlwICpjaGlwCiAKIAlmYWlsZWQgPSBtdGQtPmVjY19zdGF0cy5mYWlsZWQ7
+CiAKLQlyZXQgPSBjaGVja19yZWFkX3N0YXR1c19vbl9kaWUgKG10ZCwgY2hpcCk7CisJcmV0ID0g
+Y2hlY2tfcmVhZF9zdGF0dXNfb25fZGllIChtdGQsIGNoaXAsIHBhZ2UpOwogCWlmIChyZXQgPCAw
+IHx8IG10ZC0+ZWNjX3N0YXRzLmZhaWxlZCAhPSBmYWlsZWQpIHsKIAkJbWVtc2V0IChwLCAwLCBk
+YXRhZnJhZ19sZW4pOwogCQlyZXR1cm4gcmV0OwpAQCAtMTM1NSw3ICsxNDIzLDcgQEAgc3RhdGlj
+IGludCBuYW5kX3JlYWRfcGFnZV9vbl9kaWUoc3RydWN0IG10ZF9pbmZvICptdGQsIHN0cnVjdCBu
+YW5kX2NoaXAgKmNoaXAsCiAKIAlmYWlsZWQgPSBtdGQtPmVjY19zdGF0cy5mYWlsZWQ7CiAKLQly
+ZXQgPSBjaGVja19yZWFkX3N0YXR1c19vbl9kaWUgKG10ZCwgY2hpcCk7CisJcmV0ID0gY2hlY2tf
+cmVhZF9zdGF0dXNfb25fZGllIChtdGQsIGNoaXAsIHBhZ2UpOwogCWlmIChyZXQgPCAwIHx8IG10
+ZC0+ZWNjX3N0YXRzLmZhaWxlZCAhPSBmYWlsZWQpIHsKIAkJbWVtc2V0IChidWYsIDAsIG10ZC0+
+d3JpdGVzaXplKTsKIAkJaWYgKG9vYl9yZXF1aXJlZCkKQEAgLTE2MzksNyArMTcwNyw3IEBAIHN0
+YXRpYyBpbnQgbmFuZF9kb19yZWFkX29wcyhzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgbG9mZl90IGZy
+b20sCiAJCQl9IGVsc2UgaWYgKCFhbGlnbmVkICYmIE5BTkRfSEFTX1NVQlBBR0VfUkVBRChjaGlw
+KSAmJgogCQkJCSAhb29iKQogCQkJCXJldCA9IGNoaXAtPmVjYy5yZWFkX3N1YnBhZ2UobXRkLCBj
+aGlwLAotCQkJCQkJCWNvbCwgYnl0ZXMsIGJ1ZnBvaSk7CisJCQkJCQkJY29sLCBieXRlcywgYnVm
+cG9pLCBwYWdlKTsKIAkJCWVsc2UKIAkJCQlyZXQgPSBjaGlwLT5lY2MucmVhZF9wYWdlKG10ZCwg
+Y2hpcCwgYnVmcG9pLAogCQkJCQkJCSAgb29iX3JlcXVpcmVkLCBwYWdlKTsKZGlmZiAtLWdpdCBh
+L2luY2x1ZGUvbGludXgvbXRkL25hbmQuaCBiL2luY2x1ZGUvbGludXgvbXRkL25hbmQuaAppbmRl
+eCA1M2U5OWM3Li5mMDg2ZGQzIDEwMDY0NAotLS0gYS9pbmNsdWRlL2xpbnV4L210ZC9uYW5kLmgK
+KysrIGIvaW5jbHVkZS9saW51eC9tdGQvbmFuZC5oCkBAIC0zNzksNyArMzc5LDcgQEAgc3RydWN0
+IG5hbmRfZWNjX2N0cmwgewogCWludCAoKnJlYWRfcGFnZSkoc3RydWN0IG10ZF9pbmZvICptdGQs
+IHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsCiAJCQl1aW50OF90ICpidWYsIGludCBvb2JfcmVxdWly
+ZWQsIGludCBwYWdlKTsKIAlpbnQgKCpyZWFkX3N1YnBhZ2UpKHN0cnVjdCBtdGRfaW5mbyAqbXRk
+LCBzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLAotCQkJdWludDMyX3Qgb2ZmcywgdWludDMyX3QgbGVu
+LCB1aW50OF90ICpidWYpOworCQkJdWludDMyX3Qgb2ZmcywgdWludDMyX3QgbGVuLCB1aW50OF90
+ICpidWYsIGludCBwYWdlKTsKIAlpbnQgKCp3cml0ZV9wYWdlKShzdHJ1Y3QgbXRkX2luZm8gKm10
+ZCwgc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwKIAkJCWNvbnN0IHVpbnQ4X3QgKmJ1ZiwgaW50IG9v
+Yl9yZXF1aXJlZCk7CiAJaW50ICgqd3JpdGVfb29iX3Jhdykoc3RydWN0IG10ZF9pbmZvICptdGQs
+IHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsCkBAIC00MDQsNiArNDA0LDggQEAgc3RydWN0IG5hbmRf
+YnVmZmVycyB7CiAJdWludDhfdAllY2NjYWxjW05BTkRfTUFYX09PQlNJWkVdOwogCXVpbnQ4X3QJ
+ZWNjY29kZVtOQU5EX01BWF9PT0JTSVpFXTsKIAl1aW50OF90IGRhdGFidWZbTkFORF9NQVhfUEFH
+RVNJWkUgKyBOQU5EX01BWF9PT0JTSVpFXTsKKwl1aW50OF90IGNoa2J1ZltOQU5EX01BWF9QQUdF
+U0laRSArIE5BTkRfTUFYX09PQlNJWkVdOworCXVpbnQ4X3QgcmF3YnVmW05BTkRfTUFYX1BBR0VT
+SVpFICsgTkFORF9NQVhfT09CU0laRV07CiB9OwogCiAvKioK
+--00235429d2080454e504d889f24f--
