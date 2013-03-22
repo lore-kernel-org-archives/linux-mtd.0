@@ -1,19 +1,15 @@
-Received: from uaepdhost.com ([178.63.83.79] helo=server.uaepdhost.com)
+Received: from mail-vb0-x22b.google.com ([2607:f8b0:400c:c02::22b])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UIosz-0008W4-UC
- for linux-mtd@lists.infradead.org; Thu, 21 Mar 2013 23:27:07 +0000
-Received: from nobody by server.uaepdhost.com with local (Exim 4.80)
- (envelope-from <nobody@server.uaepdhost.com>) id 1UIosx-0001Ls-DZ
- for linux-mtd@lists.infradead.org; Fri, 22 Mar 2013 03:26:38 +0400
-To: linux-mtd@lists.infradead.org
-Subject: Order Request
-From: Tony Bruce <sale.com@server.uaepdhost.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-Message-Id: <E1UIosx-0001Ls-DZ@server.uaepdhost.com>
-Date: Fri, 22 Mar 2013 03:26:38 +0400
-Reply-To: sales@techniquesolutions.net
+ id 1UItoa-0007xX-K4
+ for linux-mtd@lists.infradead.org; Fri, 22 Mar 2013 04:42:53 +0000
+Received: by mail-vb0-f43.google.com with SMTP id fs19so2384645vbb.16
+ for <linux-mtd@lists.infradead.org>; Thu, 21 Mar 2013 21:42:51 -0700 (PDT)
+From: Xi Wang <xi.wang@gmail.com>
+To: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Subject: [PATCH] mtd: denali: fix error handling for devm_ioremap_nocache()
+Date: Fri, 22 Mar 2013 00:42:34 -0400
+Message-Id: <1363927354-13125-1-git-send-email-xi.wang@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Xi Wang <xi.wang@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,41 +19,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Sales,
+Use `ptr' rather than `res' to check the return value.
 
+Signed-off-by: Xi Wang <xi.wang@gmail.com>
+---
+ drivers/mtd/nand/denali_dt.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-Greetings from techniquesolutions. Introduction, I am Tony Bruce the
-founder of the above named company here in South Australia. We are making
-inquiry if
-
-you ship internationally but specifically to our location here in South Australia.
-
-
-
-In addition, we would like to know if you accept credit card payment and
-will be appreciated if you return to us by email with your Website or
-
-attached wholesale price sheets.
-
-
-
-Looking forward to your quick response.
-
-
-
-Best of Regard
-
-Tony Bruce
-
-
-
-techniquesolutions
-
-South Australia
-P.O. Box 2006
-Regency Park SA 5010
-Ph: 1300 187 100
-Fax: 1774 583 544
-
-Email: sales@techniquesolutions.net
+diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
+index 546f8cb..02988b0 100644
+--- a/drivers/mtd/nand/denali_dt.c
++++ b/drivers/mtd/nand/denali_dt.c
+@@ -42,7 +42,7 @@ static void __iomem *request_and_map(struct device *dev,
+ 	}
+ 
+ 	ptr = devm_ioremap_nocache(dev, res->start, resource_size(res));
+-	if (!res)
++	if (!ptr)
+ 		dev_err(dev, "ioremap_nocache of %s failed!", res->name);
+ 
+ 	return ptr;
+-- 
+1.7.10.4
