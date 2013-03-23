@@ -1,24 +1,20 @@
-Received: from mail-wi0-x234.google.com ([2a00:1450:400c:c05::234])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UJOfg-0003MH-Nu
- for linux-mtd@lists.infradead.org; Sat, 23 Mar 2013 13:39:45 +0000
-Received: by mail-wi0-f180.google.com with SMTP id c10so653129wiw.1
- for <linux-mtd@lists.infradead.org>; Sat, 23 Mar 2013 06:39:42 -0700 (PDT)
-Sender: Florian Fainelli <f.fainelli@gmail.com>
-From: Florian Fainelli <florian@openwrt.org>
-To: Jonas Gorski <jogo@openwrt.org>
-Subject: Re: [PATCH 0/3] fix NVRAM partition size if larger than expected
-Date: Sat, 23 Mar 2013 14:39:38 +0100
-References: <1364044070-10486-1-git-send-email-jogo@openwrt.org>
-In-Reply-To: <1364044070-10486-1-git-send-email-jogo@openwrt.org>
+Received: from bitbox.plus.com ([81.174.226.42] helo=galago.localnet)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UJU69-0003Du-KT
+ for linux-mtd@lists.infradead.org; Sat, 23 Mar 2013 19:27:27 +0000
+Message-ID: <514E0229.5040502@bitbox.co.uk>
+Date: Sat, 23 Mar 2013 19:27:37 +0000
+From: Peter Horton <phorton@bitbox.co.uk>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <201303231439.39168.florian@openwrt.org>
-Cc: linux-mips@linux-mips.org, Artem Bityutskiy <dedekind1@gmail.com>,
- Kevin Cernekee <cernekee@gmail.com>, linux-mtd@lists.infradead.org,
- Maxime Bizon <mbizon@freebox.fr>, David Woodhouse <dwmw2@infradead.org>
+To: David Mosberger-Tang <dmosberger@gmail.com>
+Subject: Re: on-die ECC support
+References: <CACwUX0M-04vCTkA8WwNR9si=7N-xuYOTy6aWO7ty8xa1+S3rUw@mail.gmail.com>
+ <514C147B.3030609@bitbox.co.uk>
+ <CACwUX0MqJwed7fGm7miN2meFikY4NhfejhW=Q_NOJ3Fj04475A@mail.gmail.com>
+In-Reply-To: <CACwUX0MqJwed7fGm7miN2meFikY4NhfejhW=Q_NOJ3Fj04475A@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,22 +24,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le samedi 23 mars 2013 14:07:46, Jonas Gorski a =C3=A9crit :
-> Some device vendors use a larger nvram size than expected. While Broadcom
-> has defined it as 64K max, devices with 128K have been seen in the wild.
-> Luckily they properly set the nvram's PSI size to the correct value, so
-> we can use that to size the nvram partion.
->=20
-> Yes it's a bit confusing as there are two nvrams, one with a fixed layout
-> with in the bootloader, with the size information about the other.
->=20
-> Since 2 of 3 patches are for the mtd tree, this patchset should go there
-> (but it applies to both l2-mtd and mips-next fine).
+On 22/03/2013 21:14, David Mosberger-Tang wrote:
+>
+> I ended up going with a brutally simple approach: read the page and if
+> it gets the REWRITE status bit, read it again with on-die ECC turned
+> off, then do a bitdiff of the data read (and the ECC bytes read) to
+> count the number of bitflips.  While perhaps brutish, this approach
+> has the advantage of only relying on documented features.  As long as
+> the layout described by ecc->layout is accurate, this should work
+> reliably.  Thus, Micron can screw around with the ECC encoding as they
+> wish, as long as the layout doesn't change, we're fine.
+>
 
-Besides the minor nitpicks from patch 2, this serie looks good:
+I prefer this solution to ours, much simpler and probably faster too.
 
-Acked-by: Florian Fainelli <florian@openwrt.org>
+> Note that the patch below doesn't check for bitflips in the OOB areas
+> that Micron calls "User metadata I".  We don't care about those bits
+> since our file system doesn't use OOB at all.
+>
+> Do you have any recommendation on a good value for bitflip_threshold?
+> 1 is obviously too small and 4 feels a bit like playing with fire, no?
+>
 
-Thanks!
-=2D-=20
-=46lorian
+IIRC we reprted only when there were three or more bit errors in a page. 
+This would allow two bits with fixed states per page.
+
+P.
