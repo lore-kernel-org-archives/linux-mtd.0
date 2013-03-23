@@ -1,20 +1,25 @@
-Received: from arrakis.dune.hu ([78.24.191.176])
+Received: from mail-wi0-x232.google.com ([2a00:1450:400c:c05::232])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UJOAv-0001s8-Kx
- for linux-mtd@lists.infradead.org; Sat, 23 Mar 2013 13:08:01 +0000
-From: Jonas Gorski <jogo@openwrt.org>
-To: linux-mtd@lists.infradead.org
-Subject: =?UTF-8?q?=5BPATCH=203/3=5D=20MTD=3A=20bcm63xxpart=3A=20use=20nvram=20for=20PSI=20size?=
-Date: Sat, 23 Mar 2013 14:07:49 +0100
-Message-Id: <1364044070-10486-4-git-send-email-jogo@openwrt.org>
-In-Reply-To: <1364044070-10486-1-git-send-email-jogo@openwrt.org>
+ id 1UJOf6-0003G0-AR
+ for linux-mtd@lists.infradead.org; Sat, 23 Mar 2013 13:39:09 +0000
+Received: by mail-wi0-f178.google.com with SMTP id ez12so653002wid.17
+ for <linux-mtd@lists.infradead.org>; Sat, 23 Mar 2013 06:39:05 -0700 (PDT)
+Sender: Florian Fainelli <f.fainelli@gmail.com>
+From: Florian Fainelli <florian@openwrt.org>
+To: Jonas Gorski <jogo@openwrt.org>
+Subject: Re: [PATCH 2/3] MIPS: BCM63XX: export PSI size from nvram
+Date: Sat, 23 Mar 2013 14:39:00 +0100
 References: <1364044070-10486-1-git-send-email-jogo@openwrt.org>
+ <1364044070-10486-3-git-send-email-jogo@openwrt.org>
+In-Reply-To: <1364044070-10486-3-git-send-email-jogo@openwrt.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <201303231439.00694.florian@openwrt.org>
 Cc: linux-mips@linux-mips.org, Artem Bityutskiy <dedekind1@gmail.com>,
- Kevin Cernekee <cernekee@gmail.com>, Maxime Bizon <mbizon@freebox.fr>,
- David Woodhouse <dwmw2@infradead.org>, Florian Fainelli <florian@openwrt.org>
+ Kevin Cernekee <cernekee@gmail.com>, linux-mtd@lists.infradead.org,
+ Maxime Bizon <mbizon@freebox.fr>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,44 +29,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Read out the SPI size from nvram instead of defaulting to 64K - some
-vendors actually use values larger than the "max" value of 64.
+Hello Jonas,
 
-Signed-off-by: Jonas Gorski <jogo@openwrt.org>
----
- drivers/mtd/bcm63xxpart.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+A few minor comments below:
 
-diff --git a/drivers/mtd/bcm63xxpart.c b/drivers/mtd/bcm63xxpart.c
-index fc3d7d0..5c81390 100644
---- a/drivers/mtd/bcm63xxpart.c
-+++ b/drivers/mtd/bcm63xxpart.c
-@@ -4,7 +4,7 @@
-  * Copyright © 2006-2008  Florian Fainelli <florian@openwrt.org>
-  *			  Mike Albon <malbon@openwrt.org>
-  * Copyright © 2009-2010  Daniel Dickinson <openwrt@cshore.neomailbox.net>
-- * Copyright © 2011-2012  Jonas Gorski <jonas.gorski@gmail.com>
-+ * Copyright © 2011-2013  Jonas Gorski <jonas.gorski@gmail.com>
-  *
-  * This program is free software; you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-@@ -33,6 +33,7 @@
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
- 
-+#include <asm/mach-bcm63xx/bcm63xx_nvram.h>
- #include <asm/mach-bcm63xx/bcm963xx_tag.h>
- #include <asm/mach-bcm63xx/board_bcm963xx.h>
- 
-@@ -91,7 +92,8 @@ static int bcm63xx_parse_cfe_partitions(struct mtd_info *master,
- 			      BCM63XX_CFE_BLOCK_SIZE);
- 
- 	cfelen = cfe_erasesize;
--	nvramlen = cfe_erasesize;
-+	nvramlen = bcm63xx_nvram_get_psi_size() * SZ_1K;
-+	nvramlen = roundup(nvramlen, cfe_erasesize);
- 
- 	/* Allocate memory for buffer */
- 	buf = vmalloc(sizeof(struct bcm_tag));
--- 
-1.7.10.4
+Le samedi 23 mars 2013 14:07:48, Jonas Gorski a =C3=A9crit :
+> Signed-off-by: Jonas Gorski <jogo@openwrt.org>
+> ---
+>  arch/mips/bcm63xx/nvram.c                          |   11 +++++++++++
+>  arch/mips/include/asm/mach-bcm63xx/bcm63xx_nvram.h |    2 ++
+>  2 files changed, 13 insertions(+)
+>=20
+> diff --git a/arch/mips/bcm63xx/nvram.c b/arch/mips/bcm63xx/nvram.c
+> index 6206116..44af608 100644
+> --- a/arch/mips/bcm63xx/nvram.c
+> +++ b/arch/mips/bcm63xx/nvram.c
+> @@ -35,6 +35,8 @@ struct bcm963xx_nvram {
+>  	u32	checksum_high;
+>  };
+>=20
+> +#define BCM63XX_DEFAULT_PSI_SIZE	64
+> +
+>  static struct bcm963xx_nvram nvram;
+>  static int mac_addr_used;
+>=20
+> @@ -105,3 +107,12 @@ int bcm63xx_nvram_get_mac_address(u8 *mac)
+>  	return 0;
+>  }
+>  EXPORT_SYMBOL(bcm63xx_nvram_get_mac_address);
+> +
+> +int bcm63xx_nvram_get_psi_size(void)
+> +{
+> +	if (nvram.psi_size > 0)
+> +		return nvram.psi_size;
+> +
+> +	return BCM63XX_DEFAULT_PSI_SIZE;
+
+I wonder if it would not be better to return a size in KBytes here instead =
+of=20
+a multiple of KBytes?
+
+> +}
+> +EXPORT_SYMBOL(bcm63xx_nvram_get_psi_size);
+> diff --git a/arch/mips/include/asm/mach-bcm63xx/bcm63xx_nvram.h
+> b/arch/mips/include/asm/mach-bcm63xx/bcm63xx_nvram.h index
+> 62d6a3b..d76a486 100644
+> --- a/arch/mips/include/asm/mach-bcm63xx/bcm63xx_nvram.h
+> +++ b/arch/mips/include/asm/mach-bcm63xx/bcm63xx_nvram.h
+> @@ -32,4 +32,6 @@ u8 *bcm63xx_nvram_get_name(void);
+>   */
+>  int bcm63xx_nvram_get_mac_address(u8 *mac);
+>=20
+> +int bcm63xx_nvram_get_psi_size(void);
+
+You could use an unsigned int here.
+=2D-=20
+=46lorian
