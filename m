@@ -1,12 +1,12 @@
 Received: from arrakis.dune.hu ([78.24.191.176])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UJOAu-0001rw-UB
- for linux-mtd@lists.infradead.org; Sat, 23 Mar 2013 13:07:58 +0000
+ id 1UJOAv-0001s0-CQ
+ for linux-mtd@lists.infradead.org; Sat, 23 Mar 2013 13:07:59 +0000
 From: Jonas Gorski <jogo@openwrt.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 1/3] MTD: bcm63xxpart: use size macro for CFE block size
-Date: Sat, 23 Mar 2013 14:07:47 +0100
-Message-Id: <1364044070-10486-2-git-send-email-jogo@openwrt.org>
+Subject: [PATCH 2/3] MIPS: BCM63XX: export PSI size from nvram
+Date: Sat, 23 Mar 2013 14:07:48 +0100
+Message-Id: <1364044070-10486-3-git-send-email-jogo@openwrt.org>
 In-Reply-To: <1364044070-10486-1-git-send-email-jogo@openwrt.org>
 References: <1364044070-10486-1-git-send-email-jogo@openwrt.org>
 Cc: linux-mips@linux-mips.org, Artem Bityutskiy <dedekind1@gmail.com>,
@@ -23,29 +23,46 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Signed-off-by: Jonas Gorski <jogo@openwrt.org>
 ---
- drivers/mtd/bcm63xxpart.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/mips/bcm63xx/nvram.c                          |   11 +++++++++++
+ arch/mips/include/asm/mach-bcm63xx/bcm63xx_nvram.h |    2 ++
+ 2 files changed, 13 insertions(+)
 
-diff --git a/drivers/mtd/bcm63xxpart.c b/drivers/mtd/bcm63xxpart.c
-index 6eeb84c..fc3d7d0 100644
---- a/drivers/mtd/bcm63xxpart.c
-+++ b/drivers/mtd/bcm63xxpart.c
-@@ -27,6 +27,7 @@
- #include <linux/crc32.h>
- #include <linux/module.h>
- #include <linux/kernel.h>
-+#include <linux/sizes.h>
- #include <linux/slab.h>
- #include <linux/vmalloc.h>
- #include <linux/mtd/mtd.h>
-@@ -37,7 +38,7 @@
+diff --git a/arch/mips/bcm63xx/nvram.c b/arch/mips/bcm63xx/nvram.c
+index 6206116..44af608 100644
+--- a/arch/mips/bcm63xx/nvram.c
++++ b/arch/mips/bcm63xx/nvram.c
+@@ -35,6 +35,8 @@ struct bcm963xx_nvram {
+ 	u32	checksum_high;
+ };
  
- #define BCM63XX_EXTENDED_SIZE	0xBFC00000	/* Extended flash address */
++#define BCM63XX_DEFAULT_PSI_SIZE	64
++
+ static struct bcm963xx_nvram nvram;
+ static int mac_addr_used;
  
--#define BCM63XX_CFE_BLOCK_SIZE	0x10000		/* always at least 64KiB */
-+#define BCM63XX_CFE_BLOCK_SIZE	SZ_64K		/* always at least 64KiB */
+@@ -105,3 +107,12 @@ int bcm63xx_nvram_get_mac_address(u8 *mac)
+ 	return 0;
+ }
+ EXPORT_SYMBOL(bcm63xx_nvram_get_mac_address);
++
++int bcm63xx_nvram_get_psi_size(void)
++{
++	if (nvram.psi_size > 0)
++		return nvram.psi_size;
++
++	return BCM63XX_DEFAULT_PSI_SIZE;
++}
++EXPORT_SYMBOL(bcm63xx_nvram_get_psi_size);
+diff --git a/arch/mips/include/asm/mach-bcm63xx/bcm63xx_nvram.h b/arch/mips/include/asm/mach-bcm63xx/bcm63xx_nvram.h
+index 62d6a3b..d76a486 100644
+--- a/arch/mips/include/asm/mach-bcm63xx/bcm63xx_nvram.h
++++ b/arch/mips/include/asm/mach-bcm63xx/bcm63xx_nvram.h
+@@ -32,4 +32,6 @@ u8 *bcm63xx_nvram_get_name(void);
+  */
+ int bcm63xx_nvram_get_mac_address(u8 *mac);
  
- #define BCM63XX_CFE_MAGIC_OFFSET 0x4e0
- 
++int bcm63xx_nvram_get_psi_size(void);
++
+ #endif /* BCM63XX_NVRAM_H */
 -- 
 1.7.10.4
