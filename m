@@ -1,15 +1,17 @@
-Received: from mail-ee0-f53.google.com ([74.125.83.53])
+Received: from mail-ea0-x22f.google.com ([2a00:1450:4013:c01::22f])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UJrtJ-0000ob-Jo
- for linux-mtd@lists.infradead.org; Sun, 24 Mar 2013 20:51:46 +0000
-Received: by mail-ee0-f53.google.com with SMTP id c13so189543eek.26
- for <linux-mtd@lists.infradead.org>; Sun, 24 Mar 2013 13:51:42 -0700 (PDT)
+ id 1UJrtM-0000p3-Dt
+ for linux-mtd@lists.infradead.org; Sun, 24 Mar 2013 20:51:49 +0000
+Received: by mail-ea0-f175.google.com with SMTP id o10so2045791eaj.34
+ for <linux-mtd@lists.infradead.org>; Sun, 24 Mar 2013 13:51:46 -0700 (PDT)
 From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
  David Woodhouse <David.Woodhouse@intel.com>
-Subject: [PATCH 1/2] mtd: bcm47xxsflash: implement ChipCommon R/W ops
-Date: Sun, 24 Mar 2013 21:51:30 +0100
-Message-Id: <1364158291-22591-1-git-send-email-zajec5@gmail.com>
+Subject: [PATCH 2/2] mtd: bcm47xxsflash: implement polling chip status
+Date: Sun, 24 Mar 2013 21:51:31 +0100
+Message-Id: <1364158291-22591-2-git-send-email-zajec5@gmail.com>
+In-Reply-To: <1364158291-22591-1-git-send-email-zajec5@gmail.com>
+References: <1364158291-22591-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -24,59 +26,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-They are needed for erasing/writing. Use a magic pointers and small
-functions to preapre code for adding other buses suppoer in the future
-(like SSB).
-
 Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
 ---
- drivers/mtd/devices/bcm47xxsflash.c |   13 +++++++++++++
- drivers/mtd/devices/bcm47xxsflash.h |    2 ++
- 2 files changed, 15 insertions(+)
+ drivers/mtd/devices/bcm47xxsflash.c |   55 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 55 insertions(+)
 
 diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
-index 18e7761..d1f0dec 100644
+index d1f0dec..2060856 100644
 --- a/drivers/mtd/devices/bcm47xxsflash.c
 +++ b/drivers/mtd/devices/bcm47xxsflash.c
-@@ -48,6 +48,17 @@ static void bcm47xxsflash_fill_mtd(struct bcm47xxsflash *b47s)
-  * BCMA
-  **************************************************/
+@@ -1,6 +1,7 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/slab.h>
++#include <linux/delay.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/platform_device.h>
+ #include <linux/bcma/bcma.h>
+@@ -12,6 +13,57 @@ MODULE_DESCRIPTION("Serial flash driver for BCMA bus");
  
-+static int bcm47xxsflash_bcma_cc_read(struct bcm47xxsflash *b47s, u16 offset)
+ static const char * const probes[] = { "bcm47xxpart", NULL };
+ 
++/**************************************************
++ * Various helpers
++ **************************************************/
++
++static void bcm47xxsflash_cmd(struct bcm47xxsflash *b47s, u32 opcode)
 +{
-+	return bcma_cc_read32(b47s->bcma_cc, offset);
++	int i;
++
++	b47s->cc_write(b47s, BCMA_CC_FLASHCTL, BCMA_CC_FLASHCTL_START | opcode);
++	for (i = 0; i < 1000; i++) {
++		if (!(b47s->cc_read(b47s, BCMA_CC_FLASHCTL) &
++		      BCMA_CC_FLASHCTL_BUSY))
++			return;
++		cpu_relax();
++	}
++	pr_err("Control command failed (timeout)!\n");
 +}
 +
-+static void bcm47xxsflash_bcma_cc_write(struct bcm47xxsflash *b47s, u16 offset,
-+					u32 value)
++static int bcm47xxsflash_poll(struct bcm47xxsflash *b47s, int timeout)
 +{
-+	bcma_cc_write32(b47s->bcma_cc, offset, value);
++	unsigned long deadline = jiffies + timeout;
++
++	do {
++		switch (b47s->type) {
++		case BCM47XXSFLASH_TYPE_ST:
++			bcm47xxsflash_cmd(b47s, OPCODE_ST_RDSR);
++			if (!(b47s->cc_read(b47s, BCMA_CC_FLASHDATA) &
++			      SR_ST_WIP))
++				return 0;
++			break;
++		case BCM47XXSFLASH_TYPE_ATMEL:
++			bcm47xxsflash_cmd(b47s, OPCODE_AT_STATUS);
++			if (b47s->cc_read(b47s, BCMA_CC_FLASHDATA) &
++			    SR_AT_READY)
++				return 0;
++			break;
++		}
++
++		cpu_relax();
++		udelay(1);
++	} while (!time_after_eq(jiffies, deadline));
++
++	pr_err("Timeout waiting for flash to be ready!\n");
++
++	return -EBUSY;
 +}
 +
- static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
++/**************************************************
++ * MTD ops
++ **************************************************/
++
+ static int bcm47xxsflash_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 			      size_t *retlen, u_char *buf)
  {
- 	struct bcma_sflash *sflash = dev_get_platdata(&pdev->dev);
-@@ -62,6 +73,8 @@ static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
- 	sflash->priv = b47s;
+@@ -97,6 +149,9 @@ static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
+ 		goto err_dev_reg;
+ 	}
  
- 	b47s->bcma_cc = container_of(sflash, struct bcma_drv_cc, sflash);
-+	b47s->cc_read = bcm47xxsflash_bcma_cc_read;
-+	b47s->cc_write = bcm47xxsflash_bcma_cc_write;
++	if (bcm47xxsflash_poll(b47s, HZ / 10))
++		pr_warn("Serial flash busy\n");
++
+ 	return 0;
  
- 	switch (b47s->bcma_cc->capabilities & BCMA_CC_CAP_FLASHT) {
- 	case BCMA_CC_FLASHT_STSER:
-diff --git a/drivers/mtd/devices/bcm47xxsflash.h b/drivers/mtd/devices/bcm47xxsflash.h
-index f22f8c4..fe93daf 100644
---- a/drivers/mtd/devices/bcm47xxsflash.h
-+++ b/drivers/mtd/devices/bcm47xxsflash.h
-@@ -60,6 +60,8 @@ enum bcm47xxsflash_type {
- 
- struct bcm47xxsflash {
- 	struct bcma_drv_cc *bcma_cc;
-+	int (*cc_read)(struct bcm47xxsflash *b47s, u16 offset);
-+	void (*cc_write)(struct bcm47xxsflash *b47s, u16 offset, u32 value);
- 
- 	enum bcm47xxsflash_type type;
- 
+ err_dev_reg:
 -- 
 1.7.10.4
