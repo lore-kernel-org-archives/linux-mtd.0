@@ -1,13 +1,20 @@
-Received: from marmot.wormnet.eu ([2a03:9800:10:2d:3203:b3a5:8bdc:5b68])
+Received: from mail-ee0-f53.google.com ([74.125.83.53])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UJj7I-0008Dj-K9
- for linux-mtd@lists.infradead.org; Sun, 24 Mar 2013 11:29:38 +0000
-From: Alexander Clouter <alex@digriz.org.uk>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] mtd: plat_nand: add further DT bindings and documentation
-Date: Sun, 24 Mar 2013 11:27:33 +0000
-Message-Id: <1364124453-899-1-git-send-email-alex@digriz.org.uk>
-Cc: linux-mtd@lists.infradead.org, Alexander Clouter <alex@digriz.org.uk>
+ id 1UJrtJ-0000ob-Jo
+ for linux-mtd@lists.infradead.org; Sun, 24 Mar 2013 20:51:46 +0000
+Received: by mail-ee0-f53.google.com with SMTP id c13so189543eek.26
+ for <linux-mtd@lists.infradead.org>; Sun, 24 Mar 2013 13:51:42 -0700 (PDT)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
+ David Woodhouse <David.Woodhouse@intel.com>
+Subject: [PATCH 1/2] mtd: bcm47xxsflash: implement ChipCommon R/W ops
+Date: Sun, 24 Mar 2013 21:51:30 +0100
+Message-Id: <1364158291-22591-1-git-send-email-zajec5@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Hauke Mehrtens <hauke@hauke-m.de>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,218 +24,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The plat_nand driver has some devicetree support but it is currently
-unusable, especially as there is no documentation on how to use it.
+They are needed for erasing/writing. Use a magic pointers and small
+functions to preapre code for adding other buses suppoer in the future
+(like SSB).
 
-This patch adds the much needed documentation as well as adds some common
-properties (bank-width, chip-delay, bbt-use-flash and nr-chips) removing
-further use of the platform_nand_data struct.
-
-Signed-off-by: Alexander Clouter <alex@digriz.org.uk>
+Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
 ---
- .../devicetree/bindings/mtd/plat-nand.txt          |   93 ++++++++++++++++++++
- drivers/mtd/nand/plat_nand.c                       |   53 ++++++++---
- 2 files changed, 134 insertions(+), 12 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mtd/plat-nand.txt
+ drivers/mtd/devices/bcm47xxsflash.c |   13 +++++++++++++
+ drivers/mtd/devices/bcm47xxsflash.h |    2 ++
+ 2 files changed, 15 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mtd/plat-nand.txt b/Documentation/devicetree/bindings/mtd/plat-nand.txt
-new file mode 100644
-index 0000000..d534bfa
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/plat-nand.txt
-@@ -0,0 +1,93 @@
-+NAND support for Generic NAND driver
-+
-+Required properties:
-+- compatible : "gen_nand"
-+- reg : Array of base physical addresses of the NAND and the length of memory
-+	mapped regions.  You *should* have a "nand_data" reg which is the
-+	data io region (if not named, then the first reg is used for
-+	IO_ADDR_R/IO_ADDR_W), additional regs are platform defined
-+- nr-chips : Number of physical chips
-+
-+Optional properties:
-+- reg-name : "nand_data" *should* be defined, additional ones are platform
-+		defined
-+- bank-width : Width in bytes of the device. Default is 1 (8bit), 2 (16bit)
-+		implies NAND_BUSWIDTH_16 and any other value is invalid
-+- chip-delay : Chip dependent delay for transferring data from array to read
-+		registers in usecs
-+- bbt-use-flash : Use a flash based bad block table.  Default, OOB identifier
-+		is saved in OOB area
-+
-+The device tree may optionally contain sub-nodes describing partitions of the
-+address space. See partition.txt for more detail.
-+
-+Example:
-+
-+nand@800 {
-+	#address-cells = <1>;
-+	#size-cells = <1>;
-+	compatible = "ts,nand", "gen_nand";
-+	reg =   <0x800 0x04>,
-+		<0x804 0x04>;
-+	reg-names = "nand_ctrl", "nand_data";
-+	nr-chips = <1>;
-+	chip-delay = <15>;
-+	bbt-use-flash;
-+
-+	partition@0 {
-+		label = "mbr";
-+		reg = <0x00000000 0x20000>;
-+		read-only;
-+	};
-+
-+	partition@20000 {
-+		label = "kernel";
-+		reg = <0x00020000 0x400000>;
-+	};
-+
-+	partition@420000 {
-+		label = "initrd";
-+		reg = <0x00420000 0x400000>;
-+	};
-+
-+	partition@820000 {
-+		label = "rootfs";
-+		reg = <0x00820000 0x1f7e0000>;
-+	};
-+};
-+
-+N.B. to use the plat-nand driver, the platform board code does still need to
-+	setup platform_nand_data and hook it into the platform_device so
-+	the callbacks (for at least .cmd_ctrl and .dev_ready) are available.
-+
-+Example:
-+
-+static struct platform_nand_data ts7800_nand_data = {
-+        .ctrl   = {
-+                .cmd_ctrl               = ts7800_nand_cmd_ctrl,
-+                .dev_ready              = ts7800_nand_dev_ready,
-+        },
-+};
-+
-+static int ts7800_platform_notifier(struct notifier_block *nb,
-+                                  unsigned long event, void *__dev)
+diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
+index 18e7761..d1f0dec 100644
+--- a/drivers/mtd/devices/bcm47xxsflash.c
++++ b/drivers/mtd/devices/bcm47xxsflash.c
+@@ -48,6 +48,17 @@ static void bcm47xxsflash_fill_mtd(struct bcm47xxsflash *b47s)
+  * BCMA
+  **************************************************/
+ 
++static int bcm47xxsflash_bcma_cc_read(struct bcm47xxsflash *b47s, u16 offset)
 +{
-+        struct device *dev = __dev;
-+
-+        if (event != BUS_NOTIFY_ADD_DEVICE)
-+                return NOTIFY_DONE;
-+
-+        if (of_device_is_compatible(dev->of_node, "ts,nand"))
-+                dev->platform_data = &ts7800_nand_data;
-+
-+        return NOTIFY_OK;
++	return bcma_cc_read32(b47s->bcma_cc, offset);
 +}
 +
-+static struct notifier_block ts7800_platform_nb = {
-+        .notifier_call = ts7800_platform_notifier,
-+};
-+
-+void __init ts7800_init(void)
++static void bcm47xxsflash_bcma_cc_write(struct bcm47xxsflash *b47s, u16 offset,
++					u32 value)
 +{
-+        bus_register_notifier(&platform_bus_type, &ts7800_platform_nb);
++	bcma_cc_write32(b47s->bcma_cc, offset, value);
 +}
-diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/plat_nand.c
-index c004566..1407db5 100644
---- a/drivers/mtd/nand/plat_nand.c
-+++ b/drivers/mtd/nand/plat_nand.c
-@@ -12,6 +12,7 @@
- #include <linux/io.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
-+#include <linux/of.h>
- #include <linux/slab.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/nand.h>
-@@ -23,7 +24,7 @@ struct plat_nand_data {
- 	void __iomem		*io_base;
- };
- 
--static const char *part_probe_types[] = { "cmdlinepart", NULL };
-+static const char *part_probe_types[] = { "cmdlinepart", "ofpart", NULL };
- 
- /*
-  * Probe for the NAND device.
-@@ -42,14 +43,11 @@ static int plat_nand_probe(struct platform_device *pdev)
- 		return -EINVAL;
- 	}
- 
--	if (pdata->chip.nr_chips < 1) {
--		dev_err(&pdev->dev, "invalid number of chips specified\n");
--		return -EINVAL;
--	}
--
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "nand_data");
- 	if (!res)
--		return -ENXIO;
-+		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+		if (!res)
-+			return -ENXIO;
- 
- 	/* Allocate memory for the device structure (and zero it) */
- 	data = kzalloc(sizeof(struct plat_nand_data), GFP_KERNEL);
-@@ -79,15 +77,40 @@ static int plat_nand_probe(struct platform_device *pdev)
- 
- 	data->chip.IO_ADDR_R = data->io_base;
- 	data->chip.IO_ADDR_W = data->io_base;
 +
-+	if (pdev->dev.of_node) {
-+		int i;
-+
-+		if (!of_property_read_u32(pdev->dev.of_node,
-+						"nr-chips", &i))
-+			data->chip.numchips = i;
-+		if (!of_property_read_u32(pdev->dev.of_node,
-+						"chip-delay", &i))
-+			data->chip.chip_delay = (u8)i;
-+		if (!of_property_read_u32(pdev->dev.of_node,
-+						"bank-width", &i)) {
-+			if (i == 2)
-+				data->chip.options |= NAND_BUSWIDTH_16;
-+			else if (i != 1) {
-+				dev_warn(&pdev->dev,
-+					"%d bit bus width out of range\n", i);
-+			}
-+		}
-+		if (of_get_property(pdev->dev.of_node, "bbt-use-flash", &i))
-+			data->chip.bbt_options |= NAND_BBT_USE_FLASH;
-+	} else {
-+		data->chip.numchips = pdata->chip.nr_chips;
-+		data->chip.chip_delay = pdata->chip.chip_delay;
-+		data->chip.options |= pdata->chip.options;
-+		data->chip.bbt_options |= pdata->chip.bbt_options;
-+	}
-+
- 	data->chip.cmd_ctrl = pdata->ctrl.cmd_ctrl;
- 	data->chip.dev_ready = pdata->ctrl.dev_ready;
- 	data->chip.select_chip = pdata->ctrl.select_chip;
- 	data->chip.write_buf = pdata->ctrl.write_buf;
- 	data->chip.read_buf = pdata->ctrl.read_buf;
- 	data->chip.read_byte = pdata->ctrl.read_byte;
--	data->chip.chip_delay = pdata->chip.chip_delay;
--	data->chip.options |= pdata->chip.options;
--	data->chip.bbt_options |= pdata->chip.bbt_options;
+ static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
+ {
+ 	struct bcma_sflash *sflash = dev_get_platdata(&pdev->dev);
+@@ -62,6 +73,8 @@ static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
+ 	sflash->priv = b47s;
  
- 	data->chip.ecc.hwctl = pdata->ctrl.hwcontrol;
- 	data->chip.ecc.layout = pdata->chip.ecclayout;
-@@ -102,8 +125,14 @@ static int plat_nand_probe(struct platform_device *pdev)
- 			goto out;
- 	}
+ 	b47s->bcma_cc = container_of(sflash, struct bcma_drv_cc, sflash);
++	b47s->cc_read = bcm47xxsflash_bcma_cc_read;
++	b47s->cc_write = bcm47xxsflash_bcma_cc_write;
  
-+	if (data->chip.numchips < 1) {
-+		dev_err(&pdev->dev, "invalid number of chips specified\n");
-+		err = -EINVAL;
-+		goto out;
-+	}
-+
- 	/* Scan to find existence of the device */
--	if (nand_scan(&data->mtd, pdata->chip.nr_chips)) {
-+	if (nand_scan(&data->mtd, data->chip.numchips)) {
- 		err = -ENXIO;
- 		goto out;
- 	}
+ 	switch (b47s->bcma_cc->capabilities & BCMA_CC_CAP_FLASHT) {
+ 	case BCMA_CC_FLASHT_STSER:
+diff --git a/drivers/mtd/devices/bcm47xxsflash.h b/drivers/mtd/devices/bcm47xxsflash.h
+index f22f8c4..fe93daf 100644
+--- a/drivers/mtd/devices/bcm47xxsflash.h
++++ b/drivers/mtd/devices/bcm47xxsflash.h
+@@ -60,6 +60,8 @@ enum bcm47xxsflash_type {
+ 
+ struct bcm47xxsflash {
+ 	struct bcma_drv_cc *bcma_cc;
++	int (*cc_read)(struct bcm47xxsflash *b47s, u16 offset);
++	void (*cc_write)(struct bcm47xxsflash *b47s, u16 offset, u32 value);
+ 
+ 	enum bcm47xxsflash_type type;
+ 
 -- 
 1.7.10.4
