@@ -1,12 +1,12 @@
 Received: from marmot.wormnet.eu ([2a03:9800:10:2d:3203:b3a5:8bdc:5b68])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UJWcJ-0006MP-Mk
- for linux-mtd@lists.infradead.org; Sat, 23 Mar 2013 22:08:49 +0000
+ id 1UJj7I-0008Dj-K9
+ for linux-mtd@lists.infradead.org; Sun, 24 Mar 2013 11:29:38 +0000
 From: Alexander Clouter <alex@digriz.org.uk>
 To: David Woodhouse <dwmw2@infradead.org>
 Subject: [PATCH] mtd: plat_nand: add further DT bindings and documentation
-Date: Sat, 23 Mar 2013 22:06:43 +0000
-Message-Id: <1364076403-9006-1-git-send-email-alex@digriz.org.uk>
+Date: Sun, 24 Mar 2013 11:27:33 +0000
+Message-Id: <1364124453-899-1-git-send-email-alex@digriz.org.uk>
 Cc: linux-mtd@lists.infradead.org, Alexander Clouter <alex@digriz.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -17,9 +17,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This fixes the lack of plat-nand DT documentation as well as including some
-much needed additional properties (bank-width, chip-delay, bbt-use-flash,
-and nr-chips).
+The plat_nand driver has some devicetree support but it is currently
+unusable, especially as there is no documentation on how to use it.
+
+This patch adds the much needed documentation as well as adds some common
+properties (bank-width, chip-delay, bbt-use-flash and nr-chips) removing
+further use of the platform_nand_data struct.
 
 Signed-off-by: Alexander Clouter <alex@digriz.org.uk>
 ---
