@@ -1,22 +1,18 @@
-Received: from mail-ea0-x22d.google.com ([2a00:1450:4013:c01::22d])
+Received: from mail-da0-x22f.google.com ([2607:f8b0:400e:c00::22f])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UJrv6-00016t-C5
- for linux-mtd@lists.infradead.org; Sun, 24 Mar 2013 20:53:37 +0000
-Received: by mail-ea0-f173.google.com with SMTP id h14so2129315eak.32
- for <linux-mtd@lists.infradead.org>; Sun, 24 Mar 2013 13:53:33 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
- David Woodhouse <David.Woodhouse@intel.com>
-Subject: [PATCH V2 1/2] mtd: bcm47xxsflash: implement ChipCommon R/W ops
-Date: Sun, 24 Mar 2013 21:53:24 +0100
-Message-Id: <1364158404-22627-1-git-send-email-zajec5@gmail.com>
-In-Reply-To: <1364158291-22591-1-git-send-email-zajec5@gmail.com>
-References: <1364158291-22591-1-git-send-email-zajec5@gmail.com>
+ id 1UJxvL-0004WO-Jr
+ for linux-mtd@lists.infradead.org; Mon, 25 Mar 2013 03:18:16 +0000
+Received: by mail-da0-f47.google.com with SMTP id s35so3009620dak.34
+ for <linux-mtd@lists.infradead.org>; Sun, 24 Mar 2013 20:18:13 -0700 (PDT)
+Sender: Paul Henson <paul.b.henson@gmail.com>
+Message-ID: <514FC1F1.8040500@acm.org>
+Date: Sun, 24 Mar 2013 20:18:09 -0700
+From: "Paul B. Henson" <henson@acm.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+To: linux-mtd@lists.infradead.org
+Subject: i.MX28 gpmi-nand underlying geometry
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 8bit
-Cc: Hauke Mehrtens <hauke@hauke-m.de>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,61 +22,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-They are needed for erasing/writing. Use a magic pointers and small
-functions to preapre code for adding other buses support in the future
-(like SSB).
+I'm trying to get the Freescale kobs-ng tool (used to burn boot images 
+to NAND) working under a current kernel.
 
-Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
----
-V2: fix typo in commit message
----
- drivers/mtd/devices/bcm47xxsflash.c |   13 +++++++++++++
- drivers/mtd/devices/bcm47xxsflash.h |    2 ++
- 2 files changed, 15 insertions(+)
+Under the 2.6 kernel that Freescale ships with their BSP, access to the 
+NAND is via the gpmi-nfc driver, which creates a sysfs node at 
+/sys/bus/platform/devices/gpmi-nfc.0/nfc_geometry exposing the 
+underlying geometry of the NAND to user space.
 
-diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
-index 18e7761..d1f0dec 100644
---- a/drivers/mtd/devices/bcm47xxsflash.c
-+++ b/drivers/mtd/devices/bcm47xxsflash.c
-@@ -48,6 +48,17 @@ static void bcm47xxsflash_fill_mtd(struct bcm47xxsflash *b47s)
-  * BCMA
-  **************************************************/
- 
-+static int bcm47xxsflash_bcma_cc_read(struct bcm47xxsflash *b47s, u16 offset)
-+{
-+	return bcma_cc_read32(b47s->bcma_cc, offset);
-+}
-+
-+static void bcm47xxsflash_bcma_cc_write(struct bcm47xxsflash *b47s, u16 offset,
-+					u32 value)
-+{
-+	bcma_cc_write32(b47s->bcma_cc, offset, value);
-+}
-+
- static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
- {
- 	struct bcma_sflash *sflash = dev_get_platdata(&pdev->dev);
-@@ -62,6 +73,8 @@ static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
- 	sflash->priv = b47s;
- 
- 	b47s->bcma_cc = container_of(sflash, struct bcma_drv_cc, sflash);
-+	b47s->cc_read = bcm47xxsflash_bcma_cc_read;
-+	b47s->cc_write = bcm47xxsflash_bcma_cc_write;
- 
- 	switch (b47s->bcma_cc->capabilities & BCMA_CC_CAP_FLASHT) {
- 	case BCMA_CC_FLASHT_STSER:
-diff --git a/drivers/mtd/devices/bcm47xxsflash.h b/drivers/mtd/devices/bcm47xxsflash.h
-index f22f8c4..fe93daf 100644
---- a/drivers/mtd/devices/bcm47xxsflash.h
-+++ b/drivers/mtd/devices/bcm47xxsflash.h
-@@ -60,6 +60,8 @@ enum bcm47xxsflash_type {
- 
- struct bcm47xxsflash {
- 	struct bcma_drv_cc *bcma_cc;
-+	int (*cc_read)(struct bcm47xxsflash *b47s, u16 offset);
-+	void (*cc_write)(struct bcm47xxsflash *b47s, u16 offset, u32 value);
- 
- 	enum bcm47xxsflash_type type;
- 
--- 
-1.7.10.4
+The kobs-ng tool accesses this, and looks up:
+
+"Page Size in Bytes"
+"Metadata Size in Bytes"
+"ECC Chunk Size in Bytes"
+"ECC Chunk Count"
+"Block Mark Byte Offset"
+"Block Mark Bit Offset"
+
+(I think it might only actually be using the last two, but am not 
+completely sure at this point)
+
+With a current kernel, access to the NAND uses the gpmi-nand driver. 
+Almost the exactly identical geometry information is printed out by 
+gpmi_dump_info in gpmi-lib.c, but evidently only in the case of a kernel 
+bug/error.
+
+Is there any way to access this geometry information from user space 
+with the gpmi-nand driver under a current kernel? After a few other 
+minor changes, I was able to successfully get kobs-ng working by hard 
+coding the values based on the output generated while booted under the 
+Freescale kernel. Ideally I'd like to be able to read the necessary 
+information directly from the NAND while booted with a current kernel.
+
+Thanks much�
