@@ -1,20 +1,19 @@
-Received: from mail-pd0-f171.google.com ([209.85.192.171])
+Received: from co1ehsobe006.messaging.microsoft.com ([216.32.180.189]
+ helo=co1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UKCIk-0003fn-1Q
- for linux-mtd@lists.infradead.org; Mon, 25 Mar 2013 18:39:22 +0000
-Received: by mail-pd0-f171.google.com with SMTP id z10so612428pdj.2
- for <linux-mtd@lists.infradead.org>; Mon, 25 Mar 2013 11:39:20 -0700 (PDT)
-Sender: Paul Henson <paul.b.henson@gmail.com>
-Message-ID: <515099D4.1090605@acm.org>
-Date: Mon, 25 Mar 2013 11:39:16 -0700
-From: "Paul B. Henson" <henson@acm.org>
+ id 1UKJRQ-0003pg-4N
+ for linux-mtd@lists.infradead.org; Tue, 26 Mar 2013 02:16:49 +0000
+Message-ID: <51510541.8020209@freescale.com>
+Date: Tue, 26 Mar 2013 10:17:37 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-To: Huang Shijie <b32955@freescale.com>
+To: "Paul B. Henson" <henson@acm.org>
 Subject: Re: i.MX28 gpmi-nand underlying geometry
 References: <514FC1F1.8040500@acm.org> <514FFA64.6000205@freescale.com>
-In-Reply-To: <514FFA64.6000205@freescale.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+ <515099D4.1090605@acm.org>
+In-Reply-To: <515099D4.1090605@acm.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,28 +24,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 3/25/2013 12:19 AM, Huang Shijie wrote:
+=E4=BA=8E 2013=E5=B9=B403=E6=9C=8826=E6=97=A5 02:39, Paul B. Henson =E5=86=
+=99=E9=81=93:
+> Thanks much for the quick response and the offer of assistance. Would=20
+> it be possible to have the information programmatically available such=20
+> that kobs-ng (or some other application) could read/determine it=20
+> itself either via a sysfs node like the previous driver or some other=20
+> method to export the information to user space? A manually triggered=20
+> debug log would remove the need to boot an older kernel to determine=20
+> the information, but would still require a user to transcribe the=20
+> information from the log to kobs-ng. If the sysfs node or other export=20
+> mechanism was only available if a particular command line option was=20
+> supplied to the kernel to avoid contaminating the environments of=20
+> people not interested in such a feature that would be fine.=20
+The latest kobs-ng uses the same method as the kernel to calculate the=20
+necessary parameters.
+It does not depend on the sysfs node any more. So do not worry about this=
+.
 
-> But it's easy to implement it. we can add the dynamic debug code for
-> the gpmi. If you want to see the geometry infor, you can enable the
-> dynamic debug, and enable it in the kernel cmdline.
+You can download the latest kobs-ng for imx6q from freescale's=20
+website(sorry, I do not know the weblink.)
 
-
-Thanks much for the quick response and the offer of assistance. Would it 
-be possible to have the information programmatically available such that 
-kobs-ng (or some other application) could read/determine it itself 
-either via a sysfs node like the previous driver or some other method to 
-export the information to user space? A manually triggered debug log 
-would remove the need to boot an older kernel to determine the 
-information, but would still require a user to transcribe the 
-information from the log to kobs-ng. If the sysfs node or other export 
-mechanism was only available if a particular command line option was 
-supplied to the kernel to avoid contaminating the environments of people 
-not interested in such a feature that would be fine.
-
-I assume someday Freescale will update their BSP kernel to a newer 
-version and run into this issue themselves :), so having this 
-information available programmatically in a current kernel will perhaps 
-make their lives easier someday ;).
-
-Thanks again…
+thanks
+Huang Shijie
