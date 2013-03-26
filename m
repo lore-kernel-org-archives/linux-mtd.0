@@ -1,20 +1,24 @@
-Received: from co1ehsobe006.messaging.microsoft.com ([216.32.180.189]
- helo=co1outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UKJRQ-0003pg-4N
- for linux-mtd@lists.infradead.org; Tue, 26 Mar 2013 02:16:49 +0000
-Message-ID: <51510541.8020209@freescale.com>
-Date: Tue, 26 Mar 2013 10:17:37 +0800
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: "Paul B. Henson" <henson@acm.org>
-Subject: Re: i.MX28 gpmi-nand underlying geometry
-References: <514FC1F1.8040500@acm.org> <514FFA64.6000205@freescale.com>
- <515099D4.1090605@acm.org>
-In-Reply-To: <515099D4.1090605@acm.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Received: from mailout1.samsung.com ([203.254.224.24])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UKNkx-0002tv-AK
+ for linux-mtd@lists.infradead.org; Tue, 26 Mar 2013 06:53:17 +0000
+Received: from epcpsbgr3.samsung.com
+ (u143.gpu120.samsung.co.kr [203.254.230.143])
+ by mailout1.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ (7.0.4.24.0) 64bit (built Nov 17 2011))
+ with ESMTP id <0MK900HCG9PXBVG0@mailout1.samsung.com> for
+ linux-mtd@lists.infradead.org; Tue, 26 Mar 2013 15:53:04 +0900 (KST)
+From: Jingoo Han <jg1.han@samsung.com>
+To: 'Artem Bityutskiy' <dedekind1@gmail.com>
+Subject: [PATCH 1/3] mtd: r852: add CONFIG_PM_SLEEP to suspend/resume functions
+Date: Tue, 26 Mar 2013 15:53:04 +0900
+Message-id: <000f01ce29ee$90692c10$b13b8430$%han@samsung.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-transfer-encoding: 7bit
+Content-language: ko
+Cc: linux-mtd@lists.infradead.org, 'Jingoo Han' <jg1.han@samsung.com>,
+ 'David Woodhouse' <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,26 +28,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B403=E6=9C=8826=E6=97=A5 02:39, Paul B. Henson =E5=86=
-=99=E9=81=93:
-> Thanks much for the quick response and the offer of assistance. Would=20
-> it be possible to have the information programmatically available such=20
-> that kobs-ng (or some other application) could read/determine it=20
-> itself either via a sysfs node like the previous driver or some other=20
-> method to export the information to user space? A manually triggered=20
-> debug log would remove the need to boot an older kernel to determine=20
-> the information, but would still require a user to transcribe the=20
-> information from the log to kobs-ng. If the sysfs node or other export=20
-> mechanism was only available if a particular command line option was=20
-> supplied to the kernel to avoid contaminating the environments of=20
-> people not interested in such a feature that would be fine.=20
-The latest kobs-ng uses the same method as the kernel to calculate the=20
-necessary parameters.
-It does not depend on the sysfs node any more. So do not worry about this=
-.
+Add CONFIG_PM_SLEEP to suspend/resume functions to fix the following
+build warning when CONFIG_PM_SLEEP is not selected. This is because
+sleep PM callbacks defined by SIMPLE_DEV_PM_OPS are only used when
+the CONFIG_PM_SLEEP is enabled. Also, unnecessary NULL defines are
+removed.
 
-You can download the latest kobs-ng for imx6q from freescale's=20
-website(sorry, I do not know the weblink.)
+drivers/mtd/nand/r852.c:1006:12: warning: 'r852_suspend' defined but not used [-Wunused-function]
+drivers/mtd/nand/r852.c:1027:12: warning: 'r852_resume' defined but not used [-Wunused-function]
 
-thanks
-Huang Shijie
+Signed-off-by: Jingoo Han <jg1.han@samsung.com>
+---
+ drivers/mtd/nand/r852.c |    5 +----
+ 1 files changed, 1 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/nand/r852.c b/drivers/mtd/nand/r852.c
+index 4495f85..ef72884 100644
+--- a/drivers/mtd/nand/r852.c
++++ b/drivers/mtd/nand/r852.c
+@@ -1002,7 +1002,7 @@ void r852_shutdown(struct pci_dev *pci_dev)
+ 	pci_disable_device(pci_dev);
+ }
+ 
+-#ifdef CONFIG_PM
++#ifdef CONFIG_PM_SLEEP
+ static int r852_suspend(struct device *device)
+ {
+ 	struct r852_device *dev = pci_get_drvdata(to_pci_dev(device));
+@@ -1055,9 +1055,6 @@ static int r852_resume(struct device *device)
+ 	r852_update_card_detect(dev);
+ 	return 0;
+ }
+-#else
+-#define r852_suspend	NULL
+-#define r852_resume	NULL
+ #endif
+ 
+ static const struct pci_device_id r852_pci_id_tbl[] = {
+-- 
+1.7.2.5
