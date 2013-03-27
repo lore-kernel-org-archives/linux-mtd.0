@@ -1,22 +1,19 @@
-Received: from mail-da0-x231.google.com ([2607:f8b0:400e:c00::231])
+Received: from ch1ehsobe006.messaging.microsoft.com ([216.32.181.186]
+ helo=ch1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UKaoF-00033h-3U
- for linux-mtd@lists.infradead.org; Tue, 26 Mar 2013 20:49:31 +0000
-Received: by mail-da0-f49.google.com with SMTP id t11so3843190daj.36
- for <linux-mtd@lists.infradead.org>; Tue, 26 Mar 2013 13:49:29 -0700 (PDT)
-Sender: Paul Henson <paul.b.henson@gmail.com>
-Message-ID: <515209D5.4020902@acm.org>
-Date: Tue, 26 Mar 2013 13:49:25 -0700
-From: "Paul B. Henson" <henson@acm.org>
+ id 1UKhwO-000776-8T
+ for linux-mtd@lists.infradead.org; Wed, 27 Mar 2013 04:26:26 +0000
+From: Roy Zang <tie-fei.zang@freescale.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [upstream] mtd/ifc: fix ifc driver memory release issue
+Date: Wed, 27 Mar 2013 20:25:00 +0800
+Message-ID: <1364387100-23013-1-git-send-email-tie-fei.zang@freescale.com>
 MIME-Version: 1.0
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: i.MX28 gpmi-nand underlying geometry
-References: <514FC1F1.8040500@acm.org> <514FFA64.6000205@freescale.com>
- <515099D4.1090605@acm.org> <51510541.8020209@freescale.com>
-In-Reply-To: <51510541.8020209@freescale.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Cc: Roy Zang <tie-fei.zang@freescale.com>, galak@kernel.crashing.org,
+ Li Hao <b44421@freescale.com>, scottwood@freescale.com,
+ linuxppc-dev@lists.ozlabs.org, dwmw2@infradead.org,
+ Cao Yonghua <b43619@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,19 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 3/25/2013 7:17 PM, Huang Shijie wrote:
+memory is allocated by devm_kzalloc, so release it using
+devm_kfree() instead kfree();
 
-> The latest kobs-ng uses the same method as the kernel to calculate
-> the necessary parameters. It does not depend on the sysfs node any
-> more. So do not worry about this.
->
-> You can download the latest kobs-ng for imx6q from freescale's
-> website(sorry, I do not know the weblink.)
+Signed-off-by: Li Hao <b44421@freescale.com>
+Signed-off-by: Cao Yonghua <b43619@freescale.com>
+Signed-off-by: Roy Zang <tie-fei.zang@freescale.com>
+---
+ drivers/mtd/nand/fsl_ifc_nand.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-
-Oh, cool; thanks for the info. I'm working with an imx28, and the 
-version of kobs-ng that comes with the latest BSP for that processor. 
-I'll try to get a hold of the newest kobs-ng and see if that works for 
-imx28 on a current kernel.
-
-Thanks again…
+diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
+index f1f7f12..b574ca4 100644
+--- a/drivers/mtd/nand/fsl_ifc_nand.c
++++ b/drivers/mtd/nand/fsl_ifc_nand.c
+@@ -908,7 +908,7 @@ static int fsl_ifc_chip_remove(struct fsl_ifc_mtd *priv)
+ 
+ 	ifc_nand_ctrl->chips[priv->bank] = NULL;
+ 	dev_set_drvdata(priv->dev, NULL);
+-	kfree(priv);
++	devm_kfree(priv->dev, priv);
+ 
+ 	return 0;
+ }
+@@ -974,6 +974,7 @@ static int fsl_ifc_nand_probe(struct platform_device *dev)
+ 		if (!ifc_nand_ctrl) {
+ 			dev_err(&dev->dev, "failed to allocate memory\n");
+ 			mutex_unlock(&fsl_ifc_nand_mutex);
++			devm_kfree(&dev->dev, priv);
+ 			return -ENOMEM;
+ 		}
+ 
+-- 
+1.7.9.5
