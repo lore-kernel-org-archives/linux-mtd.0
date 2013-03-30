@@ -1,18 +1,21 @@
-Received: from marmot.wormnet.eu ([2a03:9800:10:2d:3203:b3a5:8bdc:5b68])
+Received: from mail-db8lp0188.outbound.messaging.microsoft.com
+ ([213.199.154.188] helo=db8outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ULiBN-0002v2-1F
- for linux-mtd@lists.infradead.org; Fri, 29 Mar 2013 22:54:02 +0000
-Date: Fri, 29 Mar 2013 22:53:53 +0000
-From: Alexander Clouter <alex@digriz.org.uk>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] mtd: plat_nand: add further DT bindings and documentation
-Message-ID: <20130329225353.GQ7123@edkhil>
-References: <1364124453-899-1-git-send-email-alex@digriz.org.uk>
+ id 1ULoX9-0003yo-2w
+ for linux-mtd@lists.infradead.org; Sat, 30 Mar 2013 05:40:56 +0000
+Message-ID: <51567AD3.5030704@caviumnetworks.com>
+Date: Fri, 29 Mar 2013 22:40:35 -0700
+From: Aaron Williams <Aaron.Williams@caviumnetworks.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <1364124453-899-1-git-send-email-alex@digriz.org.uk>
-Cc: linux-mtd@lists.infradead.org
+To: Ivan Djelic <ivan.djelic@parrot.com>
+Subject: Re: MTD NAND BCH support for 24 bits/1K of ECC correction?
+References: <5154C2C5.5000903@caviumnetworks.com>
+ <20130329090219.GB6928@parrot.com>
+In-Reply-To: <20130329090219.GB6928@parrot.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,234 +25,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On 03/29/2013 02:02 AM, Ivan Djelic wrote:
+> On Thu, Mar 28, 2013 at 10:23:01PM +0000, Aaron Williams wrote:
+>> Hi all,
+>>
+>> I am trying to clean up our OCTEON NAND flash driver in the Linux kernel
+>> and enable support for multi-bit ECC using BCH and am having some
+>> issues. I am able to successfully work with NAND flash that requires 4
+>> bits ECC per 512 bytes but I am having issues with one of our boards
+>> that has a NAND device that requires 24 bits of ECC per 1024 bytes.
+>>
+>> I was wondering if ECC of this magnitude has been successfully tested in
+>> the past. By my calculations I should have 42 bytes of ECC per 1K block
+>> (m=14, t=24 for 336 bits of ECC data). My problem is that when decoding
+>> an encoded block I am seeing that nroots != err in decode_bch() after
+>> find_poly_roots(). I am seeing this for all of the blocks I attempt to
+>> read. As far as I can tell the data being sent to BCH is good, though it
+>> might have a few bad bits but nowhere near 24.
+>>
+>> I am also seeing this same behavior in my U-Boot code which uses the
+>> identical bch and nand_bch code.
+>>
+> Hi Aaron,
+>
+> CC-ing your message to linux-mtd which is the place to go for such questions :-)
+>
+> Your configuration (m=14 t=24 with 1024 bytes of data) has been tested, and should work
+> with the BCH library. Could you give some details about your ECC setup:
+>
+> 1. Are you trying to locate and correct errors from hardware-computed syndromes ?
+>
+> 2. If yes, did you provide the BCH lib with the specific primitive polynomial used by
+>     your hardware ? What is this polynomial ?
+>
+> 3. Could you provide the ECC bytes generated for the following block patterns:
+>    - a 0xff-filled 1024 bytes block
+>    - a 0xff-filled 1024 bytes block, except for the first byte set to 0xfe
+>    This would help me find out how to setup the library to match your hardware.
+>
+> Regards,
 
-Anyone with any suggestions on what should be done with this patch? For my DT platform porting, 
-is it okay for me to continue making use of this work?  Or is there a plan to kill plat-nand?
+We are doing the BCH support entirely in software due to limitations of 
+our hardware to 1 bit ECC.
 
-I am suspecting folks are aghast with horror at the thought of having plat-nand breeding with 
-devicetree?
+I may have to get back to you. I may have found the problem and will try 
+and look at it some more next week. It looks like I now have it working 
+in U-Boot and the same bug exists in our Linux driver. It wouldn't be 
+the first one... our NAND drivers haven't been updated in ages.
 
-Cheers
-
-On Sun, Mar 24, 2013 at 11:27:33AM +0000, Alexander Clouter wrote:
->The plat_nand driver has some devicetree support but it is currently
->unusable, especially as there is no documentation on how to use it.
->
->This patch adds the much needed documentation as well as adds some common
->properties (bank-width, chip-delay, bbt-use-flash and nr-chips) removing
->further use of the platform_nand_data struct.
->
->Signed-off-by: Alexander Clouter <alex@digriz.org.uk>
->---
-> .../devicetree/bindings/mtd/plat-nand.txt          |   93 ++++++++++++++++++++
-> drivers/mtd/nand/plat_nand.c                       |   53 ++++++++---
-> 2 files changed, 134 insertions(+), 12 deletions(-)
-> create mode 100644 Documentation/devicetree/bindings/mtd/plat-nand.txt
->
->diff --git a/Documentation/devicetree/bindings/mtd/plat-nand.txt b/Documentation/devicetree/bindings/mtd/plat-nand.txt
->new file mode 100644
->index 0000000..d534bfa
->--- /dev/null
->+++ b/Documentation/devicetree/bindings/mtd/plat-nand.txt
->@@ -0,0 +1,93 @@
->+NAND support for Generic NAND driver
->+
->+Required properties:
->+- compatible : "gen_nand"
->+- reg : Array of base physical addresses of the NAND and the length of memory
->+	mapped regions.  You *should* have a "nand_data" reg which is the
->+	data io region (if not named, then the first reg is used for
->+	IO_ADDR_R/IO_ADDR_W), additional regs are platform defined
->+- nr-chips : Number of physical chips
->+
->+Optional properties:
->+- reg-name : "nand_data" *should* be defined, additional ones are platform
->+		defined
->+- bank-width : Width in bytes of the device. Default is 1 (8bit), 2 (16bit)
->+		implies NAND_BUSWIDTH_16 and any other value is invalid
->+- chip-delay : Chip dependent delay for transferring data from array to read
->+		registers in usecs
->+- bbt-use-flash : Use a flash based bad block table.  Default, OOB identifier
->+		is saved in OOB area
->+
->+The device tree may optionally contain sub-nodes describing partitions of the
->+address space. See partition.txt for more detail.
->+
->+Example:
->+
->+nand@800 {
->+	#address-cells = <1>;
->+	#size-cells = <1>;
->+	compatible = "ts,nand", "gen_nand";
->+	reg =   <0x800 0x04>,
->+		<0x804 0x04>;
->+	reg-names = "nand_ctrl", "nand_data";
->+	nr-chips = <1>;
->+	chip-delay = <15>;
->+	bbt-use-flash;
->+
->+	partition@0 {
->+		label = "mbr";
->+		reg = <0x00000000 0x20000>;
->+		read-only;
->+	};
->+
->+	partition@20000 {
->+		label = "kernel";
->+		reg = <0x00020000 0x400000>;
->+	};
->+
->+	partition@420000 {
->+		label = "initrd";
->+		reg = <0x00420000 0x400000>;
->+	};
->+
->+	partition@820000 {
->+		label = "rootfs";
->+		reg = <0x00820000 0x1f7e0000>;
->+	};
->+};
->+
->+N.B. to use the plat-nand driver, the platform board code does still need to
->+	setup platform_nand_data and hook it into the platform_device so
->+	the callbacks (for at least .cmd_ctrl and .dev_ready) are available.
->+
->+Example:
->+
->+static struct platform_nand_data ts7800_nand_data = {
->+        .ctrl   = {
->+                .cmd_ctrl               = ts7800_nand_cmd_ctrl,
->+                .dev_ready              = ts7800_nand_dev_ready,
->+        },
->+};
->+
->+static int ts7800_platform_notifier(struct notifier_block *nb,
->+                                  unsigned long event, void *__dev)
->+{
->+        struct device *dev = __dev;
->+
->+        if (event != BUS_NOTIFY_ADD_DEVICE)
->+                return NOTIFY_DONE;
->+
->+        if (of_device_is_compatible(dev->of_node, "ts,nand"))
->+                dev->platform_data = &ts7800_nand_data;
->+
->+        return NOTIFY_OK;
->+}
->+
->+static struct notifier_block ts7800_platform_nb = {
->+        .notifier_call = ts7800_platform_notifier,
->+};
->+
->+void __init ts7800_init(void)
->+{
->+        bus_register_notifier(&platform_bus_type, &ts7800_platform_nb);
->+}
->diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/plat_nand.c
->index c004566..1407db5 100644
->--- a/drivers/mtd/nand/plat_nand.c
->+++ b/drivers/mtd/nand/plat_nand.c
->@@ -12,6 +12,7 @@
-> #include <linux/io.h>
-> #include <linux/module.h>
-> #include <linux/platform_device.h>
->+#include <linux/of.h>
-> #include <linux/slab.h>
-> #include <linux/mtd/mtd.h>
-> #include <linux/mtd/nand.h>
->@@ -23,7 +24,7 @@ struct plat_nand_data {
-> 	void __iomem		*io_base;
-> };
->
->-static const char *part_probe_types[] = { "cmdlinepart", NULL };
->+static const char *part_probe_types[] = { "cmdlinepart", "ofpart", NULL };
->
-> /*
->  * Probe for the NAND device.
->@@ -42,14 +43,11 @@ static int plat_nand_probe(struct platform_device *pdev)
-> 		return -EINVAL;
-> 	}
->
->-	if (pdata->chip.nr_chips < 1) {
->-		dev_err(&pdev->dev, "invalid number of chips specified\n");
->-		return -EINVAL;
->-	}
->-
->-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "nand_data");
-> 	if (!res)
->-		return -ENXIO;
->+		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->+		if (!res)
->+			return -ENXIO;
->
-> 	/* Allocate memory for the device structure (and zero it) */
-> 	data = kzalloc(sizeof(struct plat_nand_data), GFP_KERNEL);
->@@ -79,15 +77,40 @@ static int plat_nand_probe(struct platform_device *pdev)
->
-> 	data->chip.IO_ADDR_R = data->io_base;
-> 	data->chip.IO_ADDR_W = data->io_base;
->+
->+	if (pdev->dev.of_node) {
->+		int i;
->+
->+		if (!of_property_read_u32(pdev->dev.of_node,
->+						"nr-chips", &i))
->+			data->chip.numchips = i;
->+		if (!of_property_read_u32(pdev->dev.of_node,
->+						"chip-delay", &i))
->+			data->chip.chip_delay = (u8)i;
->+		if (!of_property_read_u32(pdev->dev.of_node,
->+						"bank-width", &i)) {
->+			if (i == 2)
->+				data->chip.options |= NAND_BUSWIDTH_16;
->+			else if (i != 1) {
->+				dev_warn(&pdev->dev,
->+					"%d bit bus width out of range\n", i);
->+			}
->+		}
->+		if (of_get_property(pdev->dev.of_node, "bbt-use-flash", &i))
->+			data->chip.bbt_options |= NAND_BBT_USE_FLASH;
->+	} else {
->+		data->chip.numchips = pdata->chip.nr_chips;
->+		data->chip.chip_delay = pdata->chip.chip_delay;
->+		data->chip.options |= pdata->chip.options;
->+		data->chip.bbt_options |= pdata->chip.bbt_options;
->+	}
->+
-> 	data->chip.cmd_ctrl = pdata->ctrl.cmd_ctrl;
-> 	data->chip.dev_ready = pdata->ctrl.dev_ready;
-> 	data->chip.select_chip = pdata->ctrl.select_chip;
-> 	data->chip.write_buf = pdata->ctrl.write_buf;
-> 	data->chip.read_buf = pdata->ctrl.read_buf;
-> 	data->chip.read_byte = pdata->ctrl.read_byte;
->-	data->chip.chip_delay = pdata->chip.chip_delay;
->-	data->chip.options |= pdata->chip.options;
->-	data->chip.bbt_options |= pdata->chip.bbt_options;
->
-> 	data->chip.ecc.hwctl = pdata->ctrl.hwcontrol;
-> 	data->chip.ecc.layout = pdata->chip.ecclayout;
->@@ -102,8 +125,14 @@ static int plat_nand_probe(struct platform_device *pdev)
-> 			goto out;
-> 	}
->
->+	if (data->chip.numchips < 1) {
->+		dev_err(&pdev->dev, "invalid number of chips specified\n");
->+		err = -EINVAL;
->+		goto out;
->+	}
->+
-> 	/* Scan to find existence of the device */
->-	if (nand_scan(&data->mtd, pdata->chip.nr_chips)) {
->+	if (nand_scan(&data->mtd, data->chip.numchips)) {
-> 		err = -ENXIO;
-> 		goto out;
-> 	}
->-- 
->1.7.10.4
->
+-Aaron
 
 -- 
-Alexander Clouter
-.sigmonster says: Put your brain in gear before starting your mouth in motion.
+Aaron Williams
+Software Engineer
+Cavium, Inc.
+(408) 943-7198  (510) 789-8988 (cell)
