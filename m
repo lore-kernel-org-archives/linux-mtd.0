@@ -1,20 +1,20 @@
-Received: from nasmtp01.atmel.com ([192.199.1.245]
- helo=DVREDG01.corp.atmel.com)
+Received: from userp1040.oracle.com ([156.151.31.81])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UMXzX-00009g-Dd
- for linux-mtd@lists.infradead.org; Mon, 01 Apr 2013 06:13:16 +0000
-Message-ID: <51592560.3030609@atmel.com>
-Date: Mon, 1 Apr 2013 14:12:48 +0800
-From: Josh Wu <josh.wu@atmel.com>
+ id 1UMY9q-0000t6-M9
+ for linux-mtd@lists.infradead.org; Mon, 01 Apr 2013 06:23:55 +0000
+Date: Mon, 1 Apr 2013 09:21:51 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [patch] mtd: denali_dt: harmless case of testing the wrong variable
+Message-ID: <20130401062151.GA5197@longonot.mountain>
 MIME-Version: 1.0
-To: Josh Wu <josh.wu@atmel.com>
-Subject: Re: avr32: fix build error in atstk1006_defconfig
-References: <1350371967-8914-1-git-send-email-josh.wu@atmel.com>
-In-Reply-To: <1350371967-8914-1-git-send-email-josh.wu@atmel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: dedekind1@gmail.com, linux-kernel@vger.kernel.org, hskinnemoen@gmail.com,
- linux-mtd@lists.infradead.org, fengguang.wu@intel.com, egtvedt@samfundet.no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ devicetree-discuss@lists.ozlabs.org, kernel-janitors@vger.kernel.org,
+ Rob Herring <rob.herring@calxeda.com>,
+ Grant Likely <grant.likely@secretlab.ca>, Bill Pemberton <wfp5p@virginia.edu>,
+ linux-mtd@lists.infradead.org, Dinh Nguyen <dinguyen@altera.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,41 +24,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+There is a warning message that can't be printed because we test the
+wrong variable.
 
-Sorry, please drop this email. I will send out another one to include 
-akpm@linux-foundation.org
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Best Regards,
-Josh Wu
-
-On 4/1/2013 1:58 PM, Josh Wu wrote:
-> fixed the following compile error when use avr32 atstk1006_defconfig:
->    drivers/mtd/nand/atmel_nand.c: In function 'pmecc_err_location':
->    drivers/mtd/nand/atmel_nand.c:639: error: implicit declaration of function 'writel_relaxed'
->
-> which was introduced by commit 1c7b874d33b463 ("mtd: at91: atmel_nand: add Programmable Multibit ECC controller support").
-> The PMECC for nand flash code uses writel_relaxed(). But in avr32, there is no macro "writel_relaxed" defined. This patch add writex_relaxed macro definitions.
->
-> Signed-off-by: Josh Wu <josh.wu@atmel.com>
-> Acked-by: Havard Skinnemoen <havard@skinnemoen.net>
-> Acked-by: Hans-Christian Egtvedt <egtvedt@samfundet.no>
->
-> ---
-> arch/avr32/include/asm/io.h |    4 ++++
->   1 file changed, 4 insertions(+)
->
-> diff --git a/arch/avr32/include/asm/io.h b/arch/avr32/include/asm/io.h
-> index cf60d0a..fc6483f 100644
-> --- a/arch/avr32/include/asm/io.h
-> +++ b/arch/avr32/include/asm/io.h
-> @@ -165,6 +165,10 @@ BUILDIO_IOPORT(l, u32)
->   #define readw_be			__raw_readw
->   #define readl_be			__raw_readl
->   
-> +#define writeb_relaxed			writeb
-> +#define writew_relaxed			writew
-> +#define writel_relaxed			writel
-> +
->   #define writeb_be			__raw_writeb
->   #define writew_be			__raw_writew
->   #define writel_be			__raw_writel
+diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
+index 546f8cb..02988b0 100644
+--- a/drivers/mtd/nand/denali_dt.c
++++ b/drivers/mtd/nand/denali_dt.c
+@@ -42,7 +42,7 @@ static void __iomem *request_and_map(struct device *dev,
+ 	}
+ 
+ 	ptr = devm_ioremap_nocache(dev, res->start, resource_size(res));
+-	if (!res)
++	if (!ptr)
+ 		dev_err(dev, "ioremap_nocache of %s failed!", res->name);
+ 
+ 	return ptr;
