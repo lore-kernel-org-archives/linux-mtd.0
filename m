@@ -1,18 +1,17 @@
-Received: from nasmtp01.atmel.com ([192.199.1.245]
- helo=DVREDG01.corp.atmel.com)
+Received: from co1ehsobe003.messaging.microsoft.com ([216.32.180.186]
+ helo=co1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UMYD5-0001Nn-LL
- for linux-mtd@lists.infradead.org; Mon, 01 Apr 2013 06:27:16 +0000
-From: Josh Wu <josh.wu@atmel.com>
-To: <egtvedt@samfundet.no>, <akpm@linux-foundation.org>
-Subject: [PATCH v2] avr32: fix build error in atstk1006_defconfig
-Date: Mon, 1 Apr 2013 14:26:37 +0800
-Message-ID: <1364797597-22005-1-git-send-email-josh.wu@atmel.com>
+ id 1UMbKp-0000VW-D2
+ for linux-mtd@lists.infradead.org; Mon, 01 Apr 2013 09:47:28 +0000
+From: Huang Shijie <b32955@freescale.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH] mtd: cfi_cmdset_0002: print @adr when write timeout occurs
+Date: Mon, 1 Apr 2013 17:40:18 +0800
+Message-ID: <1364809218-28393-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Cc: dedekind1@gmail.com, linux-kernel@vger.kernel.org,
- Josh Wu <josh.wu@atmel.com>, linux-mtd@lists.infradead.org,
- fengguang.wu@intel.com, hskinnemoen@gmail.com
+Cc: artem.bityutskiy@linux.intel.com, linux-mtd@lists.infradead.org,
+ Huang Shijie <b32955@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,42 +21,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-fixed the following compile error when use avr32 atstk1006_defconfig:
-  drivers/mtd/nand/atmel_nand.c: In function 'pmecc_err_location':
-  drivers/mtd/nand/atmel_nand.c:639: error: implicit declaration of function 'writel_relaxed'
+Print out the @adr when the write timeout occurs.
+This is useful to check if the write timeouts occur at the
+same address.
 
-which was introduced by commit:
-  1c7b874d33b463f7150b1ab4617f000af9b327fd
-  mtd: at91: atmel_nand: add Programmable Multibit ECC controller support
-The PMECC for nand flash code uses writel_relaxed(). But in avr32, there is no
-macro "writel_relaxed" defined.
-
-This patch add writex_relaxed macro definitions.
-
-Signed-off-by: Josh Wu <josh.wu@atmel.com>
-Acked-by: Havard Skinnemoen <havard@skinnemoen.net>
-Acked-by: Hans-Christian Egtvedt <egtvedt@samfundet.no>
+Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
-change since v1:
- refined the commit message and wrap it into 80 characters.
+ drivers/mtd/chips/cfi_cmdset_0002.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
- arch/avr32/include/asm/io.h |    4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/arch/avr32/include/asm/io.h b/arch/avr32/include/asm/io.h
-index cf60d0a..fc6483f 100644
---- a/arch/avr32/include/asm/io.h
-+++ b/arch/avr32/include/asm/io.h
-@@ -165,6 +165,10 @@ BUILDIO_IOPORT(l, u32)
- #define readw_be			__raw_readw
- #define readl_be			__raw_readl
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index fff665d..89b9d68 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -1571,8 +1571,8 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
+ 	xip_enable(map, chip, adr);
+ 	/* FIXME - should have reset delay before continuing */
  
-+#define writeb_relaxed			writeb
-+#define writew_relaxed			writew
-+#define writel_relaxed			writel
-+
- #define writeb_be			__raw_writeb
- #define writew_be			__raw_writew
- #define writel_be			__raw_writel
+-	printk(KERN_WARNING "MTD %s(): software timeout\n",
+-	       __func__ );
++	printk(KERN_WARNING "MTD %s(): software timeout, address:0x%.8lx.\n",
++	       __func__, adr);
+ 
+ 	ret = -EIO;
+  op_done:
 -- 
-1.7.9.5
+1.7.1
