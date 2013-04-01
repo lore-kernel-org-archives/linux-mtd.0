@@ -1,17 +1,20 @@
-Received: from [207.45.182.122] (helo=ds1605.securenet-server.net)
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UMNWu-0002kU-LR
- for linux-mtd@lists.infradead.org; Sun, 31 Mar 2013 19:03:06 +0000
-Message-ID: <515884CD.609@webhostinggeeks.com>
-Date: Sun, 31 Mar 2013 20:47:41 +0200
-From: Anja Skrba <anjas@webhostinggeeks.com>
+Received: from nasmtp01.atmel.com ([192.199.1.245]
+ helo=DVREDG01.corp.atmel.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UMXzX-00009g-Dd
+ for linux-mtd@lists.infradead.org; Mon, 01 Apr 2013 06:13:16 +0000
+Message-ID: <51592560.3030609@atmel.com>
+Date: Mon, 1 Apr 2013 14:12:48 +0800
+From: Josh Wu <josh.wu@atmel.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Permission to translate your page at
- http://www.linux-mtd.infradead.org/
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Josh Wu <josh.wu@atmel.com>
+Subject: Re: avr32: fix build error in atstk1006_defconfig
+References: <1350371967-8914-1-git-send-email-josh.wu@atmel.com>
+In-Reply-To: <1350371967-8914-1-git-send-email-josh.wu@atmel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Reply-To: Anja Skrba <anjas@webhostinggeeks.com>
+Cc: dedekind1@gmail.com, linux-kernel@vger.kernel.org, hskinnemoen@gmail.com,
+ linux-mtd@lists.infradead.org, fengguang.wu@intel.com, egtvedt@samfundet.no
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,26 +25,40 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-Dear Sir,
+Sorry, please drop this email. I will send out another one to include 
+akpm@linux-foundation.org
 
-I am writing to inquire regarding your web page about Memory Technology 
-Device where I have found a lot of useful information. My name is Anja 
-and I'm currently studying at the Faculty of Computer Science in Belgrade.
-Here is the URL of your article: 
-http://www.linux-mtd.infradead.org/faq/general.html
+Best Regards,
+Josh Wu
 
-I would like to share it with the people from Former Yugoslav Republics: 
-Serbia, Montenegro, Croatia, Slovenia, Macedonia, Bosnia and Herzegovina.
-
-I would be grateful if you could allow me to translate your writing into 
-Serbo-Croatian language, that is used in all Former Yugoslav Republics 
-and to post it on my website. Hopefully, it will help our people to 
-gather some additional knowledge about computing.
-
-I hope to hear from you soon.
-
-Regards,
-Anja Skrba
-anjas@webhostinggeeks.com
-http://science.webhostinggeeks.com/
-Tel: +381 62 300604
+On 4/1/2013 1:58 PM, Josh Wu wrote:
+> fixed the following compile error when use avr32 atstk1006_defconfig:
+>    drivers/mtd/nand/atmel_nand.c: In function 'pmecc_err_location':
+>    drivers/mtd/nand/atmel_nand.c:639: error: implicit declaration of function 'writel_relaxed'
+>
+> which was introduced by commit 1c7b874d33b463 ("mtd: at91: atmel_nand: add Programmable Multibit ECC controller support").
+> The PMECC for nand flash code uses writel_relaxed(). But in avr32, there is no macro "writel_relaxed" defined. This patch add writex_relaxed macro definitions.
+>
+> Signed-off-by: Josh Wu <josh.wu@atmel.com>
+> Acked-by: Havard Skinnemoen <havard@skinnemoen.net>
+> Acked-by: Hans-Christian Egtvedt <egtvedt@samfundet.no>
+>
+> ---
+> arch/avr32/include/asm/io.h |    4 ++++
+>   1 file changed, 4 insertions(+)
+>
+> diff --git a/arch/avr32/include/asm/io.h b/arch/avr32/include/asm/io.h
+> index cf60d0a..fc6483f 100644
+> --- a/arch/avr32/include/asm/io.h
+> +++ b/arch/avr32/include/asm/io.h
+> @@ -165,6 +165,10 @@ BUILDIO_IOPORT(l, u32)
+>   #define readw_be			__raw_readw
+>   #define readl_be			__raw_readl
+>   
+> +#define writeb_relaxed			writeb
+> +#define writew_relaxed			writew
+> +#define writel_relaxed			writel
+> +
+>   #define writeb_be			__raw_writeb
+>   #define writew_be			__raw_writew
+>   #define writel_be			__raw_writel
