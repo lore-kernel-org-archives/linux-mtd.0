@@ -1,17 +1,31 @@
-Received: from mail-we0-x230.google.com ([2a00:1450:400c:c03::230])
+Received: from utopia.booyaka.com ([74.50.51.50])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UN2Ua-0001go-8V
- for linux-mtd@lists.infradead.org; Tue, 02 Apr 2013 14:47:21 +0000
-Received: by mail-we0-f176.google.com with SMTP id s43so384406wey.7
- for <linux-mtd@lists.infradead.org>; Tue, 02 Apr 2013 07:47:13 -0700 (PDT)
+ id 1UN5wM-0005v7-9q
+ for linux-mtd@lists.infradead.org; Tue, 02 Apr 2013 18:28:15 +0000
+Date: Tue, 2 Apr 2013 18:28:12 +0000 (UTC)
+From: Paul Walmsley <paul@pwsan.com>
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+Subject: Re: [PATCH 1/3] mtd nand : onfi need to be probed in 8 bits mode
+In-Reply-To: <5130B4E9.5050700@parrot.com>
+Message-ID: <alpine.DEB.2.00.1304021826310.27146@utopia.booyaka.com>
+References: <1352199105-30215-1-git-send-email-matthieu.castet@parrot.com>
+ <1354530053.30168.183.camel@sauron.fi.intel.com>
+ <alpine.DEB.2.00.1212240023100.17282@utopia.booyaka.com>
+ <50E40336.2080008@parrot.com>
+ <alpine.DEB.2.00.1301031704460.8721@utopia.booyaka.com>
+ <50F6B904.5000600@parrot.com>
+ <alpine.DEB.2.00.1301161713380.32170@utopia.booyaka.com>
+ <alpine.DEB.2.00.1301220226530.25789@utopia.booyaka.com>
+ <alpine.DEB.2.00.1302062321080.12769@utopia.booyaka.com>
+ <5113783B.6010806@parrot.com> <5130B4E9.5050700@parrot.com>
 MIME-Version: 1.0
-Date: Tue, 2 Apr 2013 22:47:13 +0800
-Message-ID: <CAHgCKdV=Y8KNy6OM6VmDwMDnx-geAyzxYG467GyPYoC_kGAzEA@mail.gmail.com>
-Subject: [PATCH] mtd: m25p80: add support for Macronix chips
-From: Jim-Ting Kuo <jimtingkuo@gmail.com>
-To: dwmw2@infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org
+Content-Type: MULTIPART/MIXED;
+ BOUNDARY="843723315-2069735505-1364927246=:27146"
+Content-ID: <alpine.DEB.2.00.1304021827340.27146@utopia.booyaka.com>
+Cc: Afzal Mohammed <afzal@ti.com>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ jon-hunter@ti.com, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,81 +35,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I changed and added JEDEC id of Macronix SPI flash to "m25p_ids" array.
-This is used for the current Macronix's product. And I initialized Macronix
-chip's status register to 0 which is needed by some Macronix chips. Thanks!
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Signed-off-by: Jim Kuo <jimtingkuo@gmail.com>
----
- drivers/mtd/devices/m25p80.c |   47 ++++++++++++++++++++++++++++++------------
- 1 file changed, 34 insertions(+), 13 deletions(-)
+--843723315-2069735505-1364927246=:27146
+Content-Type: TEXT/PLAIN; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-ID: <alpine.DEB.2.00.1304021827341.27146@utopia.booyaka.com>
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 5b6b072..3120062 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -743,16 +743,36 @@ static const struct spi_device_id m25p_ids[] = {
-  { "n25q064",  INFO(0x20ba17, 0, 64 * 1024, 128, 0) },
+Hi Matthieu,
 
-  /* Macronix */
-- { "mx25l2005a",  INFO(0xc22012, 0, 64 * 1024,   4, SECT_4K) },
-- { "mx25l4005a",  INFO(0xc22013, 0, 64 * 1024,   8, SECT_4K) },
-- { "mx25l8005",   INFO(0xc22014, 0, 64 * 1024,  16, 0) },
-- { "mx25l1606e",  INFO(0xc22015, 0, 64 * 1024,  32, SECT_4K) },
-- { "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, 0) },
-- { "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, 0) },
-- { "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
-- { "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
-- { "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
-- { "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
-+ { "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,    1, SECT_4K) },
-+ { "mx25l5121e",  INFO(0xc22210, 0, 64 * 1024,    1, SECT_4K) },
-+ { "mx25l1006e",  INFO(0xc22011, 0, 64 * 1024,    2, SECT_4K) },
-+ { "mx25l1021e",  INFO(0xc22211, 0, 64 * 1024,    2, SECT_4K) },
-+ { "mx25l2006e",  INFO(0xc22012, 0, 64 * 1024,    4, SECT_4K) },
-+ { "mx25l4006e",  INFO(0xc22013, 0, 64 * 1024,    8, SECT_4K) },
-+ { "mx25u4035",   INFO(0xc22533, 0, 64 * 1024,    8, SECT_4K) },
-+ { "mx25v4035",   INFO(0xc22553, 0, 64 * 1024,    8, SECT_4K) },
-+ { "mx25l8006e",  INFO(0xc22014, 0, 64 * 1024,   16, 0) },
-+ { "mx25u8035",   INFO(0xc22534, 0, 64 * 1024,   16, 0) },
-+ { "mx25v8035",   INFO(0xc22554, 0, 64 * 1024,   16, 0) },
-+ { "mx25l1606e",  INFO(0xc22015, 0, 64 * 1024,   32, 0) },
-+ { "mx25l1633e",  INFO(0xc22415, 0, 64 * 1024,   32, 0) },
-+ { "mx25l1635e",  INFO(0xc22515, 0, 64 * 1024,   32, 0) },
-+ { "mx25u1635e",  INFO(0xc22535, 0, 64 * 1024,   32, 0) },
-+ { "mx25l1655d",  INFO(0xc22615, 0, 64 * 1024,   32, 0) },
-+ { "mx25l3206e",  INFO(0xc22016, 0, 64 * 1024,   64, 0) },
-+ { "mx25l3239e",  INFO(0xc22536, 0, 64 * 1024,   64, 0) },
-+ { "mx25l3225d",  INFO(0xc25e16, 0, 64 * 1024,   64, 0) },
-+ { "mx25l3255d",  INFO(0xc29e16, 0, 64 * 1024,   64, 0) },
-+ { "mx25l6406e",  INFO(0xc22017, 0, 64 * 1024,  128, 0) },
-+ { "mx25l6439e",  INFO(0xc22537, 0, 64 * 1024,  128, 0) },
-+ { "mx25l6455e",  INFO(0xc22617, 0, 64 * 1024,  128, 0) },
-+ { "mx25l12806e", INFO(0xc22018, 0, 64 * 1024,  256, 0) },
-+ { "mx25u12835f", INFO(0xc22538, 0, 64 * 1024,  256, 0) },
-+ { "mx25l12855e", INFO(0xc22618, 0, 64 * 1024,  256, 0) },
-+ { "mx25l25635e", INFO(0xc22019, 0, 64 * 1024,  512, 0) },
-+ { "mx25u25635f", INFO(0xc22539, 0, 64 * 1024,  512, 0) },
-+ { "mx25l25655e", INFO(0xc22619, 0, 64 * 1024,  512, 0) },
-+ { "mx66l51235f", INFO(0xc2201a, 0, 64 * 1024, 1024, 0) },
+On Fri, 1 Mar 2013, Matthieu CASTET wrote:
 
-  /* Micron */
-  { "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024, 256, 0) },
-@@ -970,13 +990,14 @@ static int m25p_probe(struct spi_device *spi)
-  dev_set_drvdata(&spi->dev, flash);
+> Matthieu CASTET a =E9crit :
+> > Paul Walmsley a =E9crit :
+> >> On Tue, 22 Jan 2013, Paul Walmsley wrote:
+> >>
+> >>> Any progress on updating and resending your "omap3 nand : use=20
+> >>> NAND_BUSWIDTH_AUTO" patch?  We're in danger of missing the 3.9 merge=
+=20
+> >>> window if it takes too much longer.
+> >> Could you let us know if you're planning to update and repost this one=
+?
+> >>
+> > Sorry for the delay I attached an updated version of the patch.
+> >=20
+> > I was not able to test it : with mtd tree and my configuration I have t=
+o apply
+> > https://patchwork.kernel.org/patch/1810441/
+> > https://patchwork.kernel.org/patch/1884341/
+> > http://comments.gmane.org/gmane.linux.ports.arm.omap/91096
+> >=20
+> > in order the kernel build.
+> >=20
+> > And after that the kernel doesn't seem to boot on my beagle board. Coul=
+d you
+> > test the patch ?
+> >=20
+> > I have also a problem : how should I change nand bus size. It is done b=
+y
+> > "gpmc_cs_configure(info->gpmc_cs, GPMC_CONFIG_DEV_SIZE, ...);", but now=
+ gpmc.h
+> > header is not public anymore.
+> >=20
+> > I have to do a '#include "../gpmc.h"'.
+> >=20
+> >=20
+> Any news on this ?
 
-  /*
-- * Atmel, SST and Intel/Numonyx serial flash tend to power
-- * up with the software protection bits set
-+ * Atmel, SST, Intel/Numonyx and Macronix serial flash tend
-+ * to power up with the software protection bits set
-  */
+Unfortunately, I don't have the time at the moment to track this issue. =20
+Could you follow up on this with Jon Hunter <jon-hunter@ti.com> ?  He's=20
+been working on the GPMC code for the last few merge windows and is=20
+basically the maintainer of it at this point.
 
-  if (JEDEC_MFR(info->jedec_id) == CFI_MFR_ATMEL ||
-     JEDEC_MFR(info->jedec_id) == CFI_MFR_INTEL ||
--    JEDEC_MFR(info->jedec_id) == CFI_MFR_SST) {
-+    JEDEC_MFR(info->jedec_id) == CFI_MFR_SST   ||
-+    JEDEC_MFR(info->jedec_id) == CFI_MFR_MACRONIX) {
-  write_enable(flash);
-  write_sr(flash, 0);
-  }
+
+- Paul
+--843723315-2069735505-1364927246=:27146--
