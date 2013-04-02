@@ -1,16 +1,17 @@
-Received: from mail-we0-x231.google.com ([2a00:1450:400c:c03::231])
+Received: from mail-we0-x230.google.com ([2a00:1450:400c:c03::230])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UMyOf-0006hz-9b
- for linux-mtd@lists.infradead.org; Tue, 02 Apr 2013 10:24:58 +0000
-Received: by mail-we0-f177.google.com with SMTP id o45so196997wer.36
- for <linux-mtd@lists.infradead.org>; Tue, 02 Apr 2013 03:24:55 -0700 (PDT)
-From: Richard Genoud <richard.genoud@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH] UBIFS: cosmetic: correct mount message
-Date: Tue,  2 Apr 2013 12:24:37 +0200
-Message-Id: <1364898277-30146-1-git-send-email-richard.genoud@gmail.com>
-Cc: Richard Genoud <richard.genoud@gmail.com>, linux-mtd@lists.infradead.org,
- Adrian Hunter <adrian.hunter@intel.com>
+ id 1UN2Ua-0001go-8V
+ for linux-mtd@lists.infradead.org; Tue, 02 Apr 2013 14:47:21 +0000
+Received: by mail-we0-f176.google.com with SMTP id s43so384406wey.7
+ for <linux-mtd@lists.infradead.org>; Tue, 02 Apr 2013 07:47:13 -0700 (PDT)
+MIME-Version: 1.0
+Date: Tue, 2 Apr 2013 22:47:13 +0800
+Message-ID: <CAHgCKdV=Y8KNy6OM6VmDwMDnx-geAyzxYG467GyPYoC_kGAzEA@mail.gmail.com>
+Subject: [PATCH] mtd: m25p80: add support for Macronix chips
+From: Jim-Ting Kuo <jimtingkuo@gmail.com>
+To: dwmw2@infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,29 +21,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When mounting an UBIFS R/W volume, we have the message:
-UBIFS: mounted UBI device 0, volume 1, name "rootfs"(null)
-With this patch, we'll have:
-UBIFS: mounted UBI device 0, volume 1, name "rootfs"
-Which is, I think, what was intended.
+I changed and added JEDEC id of Macronix SPI flash to "m25p_ids" array.
+This is used for the current Macronix's product. And I initialized Macronix
+chip's status register to 0 which is needed by some Macronix chips. Thanks!
 
-Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
+Signed-off-by: Jim Kuo <jimtingkuo@gmail.com>
 ---
- fs/ubifs/super.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ drivers/mtd/devices/m25p80.c |   47 ++++++++++++++++++++++++++++++------------
+ 1 file changed, 34 insertions(+), 13 deletions(-)
 
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index ac838b8..d03ead8 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -1412,7 +1412,7 @@ static int mount_ubifs(struct ubifs_info *c)
- 
- 	ubifs_msg("mounted UBI device %d, volume %d, name \"%s\"%s",
- 		  c->vi.ubi_num, c->vi.vol_id, c->vi.name,
--		  c->ro_mount ? ", R/O mode" : NULL);
-+		  c->ro_mount ? ", R/O mode" : "");
- 	x = (long long)c->main_lebs * c->leb_size;
- 	y = (long long)c->log_lebs * c->leb_size + c->max_bud_bytes;
- 	ubifs_msg("LEB size: %d bytes (%d KiB), min./max. I/O unit sizes: %d bytes/%d bytes",
--- 
-1.7.2.5
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 5b6b072..3120062 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -743,16 +743,36 @@ static const struct spi_device_id m25p_ids[] = {
+  { "n25q064",  INFO(0x20ba17, 0, 64 * 1024, 128, 0) },
+
+  /* Macronix */
+- { "mx25l2005a",  INFO(0xc22012, 0, 64 * 1024,   4, SECT_4K) },
+- { "mx25l4005a",  INFO(0xc22013, 0, 64 * 1024,   8, SECT_4K) },
+- { "mx25l8005",   INFO(0xc22014, 0, 64 * 1024,  16, 0) },
+- { "mx25l1606e",  INFO(0xc22015, 0, 64 * 1024,  32, SECT_4K) },
+- { "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, 0) },
+- { "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, 0) },
+- { "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
+- { "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
+- { "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
+- { "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
++ { "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,    1, SECT_4K) },
++ { "mx25l5121e",  INFO(0xc22210, 0, 64 * 1024,    1, SECT_4K) },
++ { "mx25l1006e",  INFO(0xc22011, 0, 64 * 1024,    2, SECT_4K) },
++ { "mx25l1021e",  INFO(0xc22211, 0, 64 * 1024,    2, SECT_4K) },
++ { "mx25l2006e",  INFO(0xc22012, 0, 64 * 1024,    4, SECT_4K) },
++ { "mx25l4006e",  INFO(0xc22013, 0, 64 * 1024,    8, SECT_4K) },
++ { "mx25u4035",   INFO(0xc22533, 0, 64 * 1024,    8, SECT_4K) },
++ { "mx25v4035",   INFO(0xc22553, 0, 64 * 1024,    8, SECT_4K) },
++ { "mx25l8006e",  INFO(0xc22014, 0, 64 * 1024,   16, 0) },
++ { "mx25u8035",   INFO(0xc22534, 0, 64 * 1024,   16, 0) },
++ { "mx25v8035",   INFO(0xc22554, 0, 64 * 1024,   16, 0) },
++ { "mx25l1606e",  INFO(0xc22015, 0, 64 * 1024,   32, 0) },
++ { "mx25l1633e",  INFO(0xc22415, 0, 64 * 1024,   32, 0) },
++ { "mx25l1635e",  INFO(0xc22515, 0, 64 * 1024,   32, 0) },
++ { "mx25u1635e",  INFO(0xc22535, 0, 64 * 1024,   32, 0) },
++ { "mx25l1655d",  INFO(0xc22615, 0, 64 * 1024,   32, 0) },
++ { "mx25l3206e",  INFO(0xc22016, 0, 64 * 1024,   64, 0) },
++ { "mx25l3239e",  INFO(0xc22536, 0, 64 * 1024,   64, 0) },
++ { "mx25l3225d",  INFO(0xc25e16, 0, 64 * 1024,   64, 0) },
++ { "mx25l3255d",  INFO(0xc29e16, 0, 64 * 1024,   64, 0) },
++ { "mx25l6406e",  INFO(0xc22017, 0, 64 * 1024,  128, 0) },
++ { "mx25l6439e",  INFO(0xc22537, 0, 64 * 1024,  128, 0) },
++ { "mx25l6455e",  INFO(0xc22617, 0, 64 * 1024,  128, 0) },
++ { "mx25l12806e", INFO(0xc22018, 0, 64 * 1024,  256, 0) },
++ { "mx25u12835f", INFO(0xc22538, 0, 64 * 1024,  256, 0) },
++ { "mx25l12855e", INFO(0xc22618, 0, 64 * 1024,  256, 0) },
++ { "mx25l25635e", INFO(0xc22019, 0, 64 * 1024,  512, 0) },
++ { "mx25u25635f", INFO(0xc22539, 0, 64 * 1024,  512, 0) },
++ { "mx25l25655e", INFO(0xc22619, 0, 64 * 1024,  512, 0) },
++ { "mx66l51235f", INFO(0xc2201a, 0, 64 * 1024, 1024, 0) },
+
+  /* Micron */
+  { "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024, 256, 0) },
+@@ -970,13 +990,14 @@ static int m25p_probe(struct spi_device *spi)
+  dev_set_drvdata(&spi->dev, flash);
+
+  /*
+- * Atmel, SST and Intel/Numonyx serial flash tend to power
+- * up with the software protection bits set
++ * Atmel, SST, Intel/Numonyx and Macronix serial flash tend
++ * to power up with the software protection bits set
+  */
+
+  if (JEDEC_MFR(info->jedec_id) == CFI_MFR_ATMEL ||
+     JEDEC_MFR(info->jedec_id) == CFI_MFR_INTEL ||
+-    JEDEC_MFR(info->jedec_id) == CFI_MFR_SST) {
++    JEDEC_MFR(info->jedec_id) == CFI_MFR_SST   ||
++    JEDEC_MFR(info->jedec_id) == CFI_MFR_MACRONIX) {
+  write_enable(flash);
+  write_sr(flash, 0);
+  }
