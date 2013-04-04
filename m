@@ -1,18 +1,17 @@
-Message-ID: <1365089017.626.14.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/4] mtd: merge mtdchar module with mtdcore
+Received: from mga11.intel.com ([192.55.52.93])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UNm7u-00025O-60
+ for linux-mtd@lists.infradead.org; Thu, 04 Apr 2013 15:30:59 +0000
+Message-ID: <1365089540.626.16.camel@sauron.fi.intel.com>
+Subject: [GIT PULL] UBIFS changes for 3.9-rc6
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Date: Thu, 04 Apr 2013 18:23:37 +0300
-In-Reply-To: <20130317215805.3246b0b5.shmulik.ladkani@gmail.com>
-References: <1363260463-10609-1-git-send-email-dedekind1@gmail.com>
- <20130317215805.3246b0b5.shmulik.ladkani@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 04 Apr 2013 18:32:20 +0300
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Russell King <linux@arm.linux.org.uk>, linux-cris-kernel@axis.com,
- Haojian Zhuang <haojian.zhuang@gmail.com>, Mikael Starvik <starvik@axis.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,22 +22,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2013-03-17 at 21:58 +0200, Shmulik Ladkani wrote:
-> On Thu, 14 Mar 2013 13:27:40 +0200 Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> > Indeed, mtdchar is a module that allows user-space making use of MTD devices
-> > via /dev/mtd* character devices. If users do not enable it, they simply cannot
-> > use MTD devices at all. The cannot read or write the flash contents. Is it a
-> 
-> s/ The cannot/ They cannot/
+Hi Linus,
 
-Fixed.
+please, pull a single UBIFS fix for v3.9.
 
-> What about the defconfig files?
+The following changes since commit f6161aa153581da4a3867a2d1a7caf4be19b6ec9:
 
-There are too many of them. I do not want to update them because it is
-not necessary and the non-existing symbol will just be ignored by
-Kbuild. People who support their defconfigs will eventually update them
-eventually.
+  Linux 3.9-rc2 (2013-03-10 16:54:19 -0700)
+
+are available in the git repository at:
+
+  git://git.infradead.org/linux-ubifs.git tags/upstream-3.9-rc6
+
+for you to fetch changes up to 67e753ca41782913d805ff4a8a2b0f60b26b7915:
+
+  UBIFS: make space fixup work in the remount case (2013-03-14 11:20:22 +0200)
+
+----------------------------------------------------------------
+Make the space fixup feature work in the case when the file-system is first
+mounted R/O and then remounted R/W.
+
+----------------------------------------------------------------
+Artem Bityutskiy (1):
+      UBIFS: make space fixup work in the remount case
+
+ fs/ubifs/super.c |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 -- 
 Best Regards,
