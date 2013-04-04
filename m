@@ -1,16 +1,20 @@
-Received: from smtp07.smtpout.orange.fr ([80.12.242.129]
- helo=smtp.smtpout.orange.fr)
+Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UNgfH-0000ig-EU
- for linux-mtd@lists.infradead.org; Thu, 04 Apr 2013 09:41:04 +0000
-Message-ID: <515D4AA7.9080307@wanadoo.fr>
-Date: Thu, 04 Apr 2013 11:40:55 +0200
-From: Michel Stempin <michel.stempin@wanadoo.fr>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: chips: Add support for PMC SPI Flash chips in m25p80.c
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+ id 1UNlsM-0003rN-GW
+ for linux-mtd@lists.infradead.org; Thu, 04 Apr 2013 15:14:55 +0000
+Message-ID: <1365088578.626.11.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: nand: subpage write support for hardware based ECC
+ schemes
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: "Gupta, Pekon" <pekon@ti.com>
+Date: Thu, 04 Apr 2013 18:16:18 +0300
+In-Reply-To: <1363352378-2825-1-git-send-email-pekon@ti.com>
+References: <1363352378-2825-1-git-send-email-pekon@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,53 +24,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add support for PMC (now Chingis, part of ISSI) Pm25LV512 (512 kBbit), Pm25LV010 (1 Mbit) (see datasheet http://www.geocities.jp/scottle556/pdf/Pm25LV512-010.pdf) and Pm25LQ032 (32 Mbit) (datasheet:http://www.chingistek.com/img/Product_Files/Pm25LQ032C%20datasheet%20v1.6.1.pdf) SPI Flash chips, used in various WiFi pocket routers.
+On Fri, 2013-03-15 at 18:29 +0530, Gupta, Pekon wrote:
+>  	int (*write_page)(struct mtd_info *mtd, struct nand_chip *chip,
+> -			const uint8_t *buf, int oob_required, int page,
+> -			int cached, int raw);
+> +			uint32_t offset, int data_len, const uint8_t *buf,
+> +			int oob_required, int page, int cached, int raw);
 
-Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
-Signed-off-by: Michel Stempin <michel.stempin@wanadoo.fr>
---
- b/drivers/mtd/devices/m25p80.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+You need to update cafe_nand.c accordingly. Aiaiai detected this:
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 5b6b072..5fd7500 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -45,6 +45,7 @@
- #define	OPCODE_BE_4K		0x20	/* Erase 4KiB block */
- #define	OPCODE_BE_32K		0x52	/* Erase 32KiB block */
- #define	OPCODE_CHIP_ERASE	0xc7	/* Erase whole flash chip */
-+#define	OPCODE_BE_4K_PMC	0xd7    /* Erase 4KiB block on PMC chips*/
- #define	OPCODE_SE		0xd8	/* Sector erase (usually 64KiB) */
- #define	OPCODE_RDID		0x9f	/* Read JEDEC ID */
- 
-@@ -681,6 +682,7 @@ struct flash_info {
- 	u16		flags;
- #define	SECT_4K		0x01		/* OPCODE_BE_4K works uniformly */
- #define	M25P_NO_ERASE	0x02		/* No erase command needed */
-+#define	SECT_4K_PMC	0x04            /* OPCODE_BE_4K_PMC works uniformly */
- };
- 
- #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
-@@ -759,6 +761,11 @@ static const struct spi_device_id m25p_ids[] = {
- 	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024, 256, 0) },
- 	{ "n25q256a", INFO(0x20ba19, 0, 64 * 1024, 512, SECT_4K) },
- 
-+	/* PMC -- pm25x "blocks" are 32K, sectors are 4K */
-+	{ "pm25lv512", INFO(0, 0, 32 * 1024, 2, SECT_4K_PMC) },
-+	{ "pm25lv010", INFO(0, 0, 32 * 1024, 4, SECT_4K_PMC) },
-+	{ "pm25lq032", INFO(0x7F9D46, 0, 64 * 1024,  64, SECT_4K) },
-+
- 	/* Spansion -- single (large) sector size only, at least
- 	 * for the chips listed here (without boot sectors).
- 	 */
-@@ -1009,6 +1016,9 @@ static int m25p_probe(struct spi_device *spi)
- 	if (info->flags & SECT_4K) {
- 		flash->erase_opcode = OPCODE_BE_4K;
- 		flash->mtd.erasesize = 4096;
-+	} else if (info->flags & SECT_4K_PMC) {
-+		flash->erase_opcode = OPCODE_BE_4K_PMC; 
-+		flash->mtd.erasesize = 4096;
- 	} else {
- 		flash->erase_opcode = OPCODE_SE;
- 		flash->mtd.erasesize = info->sector_size;
+--- before_patching.log
++++ after_patching.log
+@@ @@
++drivers/mtd/nand/cafe_nand.c: In function ‘cafe_nand_probe’:
++drivers/mtd/nand/cafe_nand.c:787:24: warning: assignment from
+incompatible pointer type [enabled by default]
+
+-- 
+Best Regards,
+Artem Bityutskiy
