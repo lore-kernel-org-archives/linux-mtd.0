@@ -1,18 +1,18 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UO5Lr-0004K4-S1
- for linux-mtd@lists.infradead.org; Fri, 05 Apr 2013 12:02:40 +0000
-Message-ID: <1365163454.626.51.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/4] mtd: denali_dt: Fix incorrect error check
+ id 1UO5MB-0004XN-Ou
+ for linux-mtd@lists.infradead.org; Fri, 05 Apr 2013 12:03:00 +0000
+Message-ID: <1365163475.626.52.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/2] mtd: bf5xx_nand: Use module_platform_driver()
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Sachin Kamat <sachin.kamat@linaro.org>
-Date: Fri, 05 Apr 2013 15:04:14 +0300
-In-Reply-To: <1363599674-26933-1-git-send-email-sachin.kamat@linaro.org>
-References: <1363599674-26933-1-git-send-email-sachin.kamat@linaro.org>
+Date: Fri, 05 Apr 2013 15:04:35 +0300
+In-Reply-To: <1363605410-4530-1-git-send-email-sachin.kamat@linaro.org>
+References: <1363605410-4530-1-git-send-email-sachin.kamat@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org, dinguyen@altera.com
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,13 +23,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2013-03-18 at 15:11 +0530, Sachin Kamat wrote:
-> The return value of devm_ioremap_nocache should be checked here instead
-> of res.
+On Mon, 2013-03-18 at 16:46 +0530, Sachin Kamat wrote:
+> module_platform_driver macro removes some boilerplate and makes
+> the code simpler.
 > 
 > Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 
-All look good, pushed the series to l2-mtd.git, thanks!
+Pushed these 2 to l2-mtd.git too, thanks!
 
 -- 
 Best Regards,
