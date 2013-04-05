@@ -1,23 +1,14 @@
-Received: from [2a01:4f8:101:2a4:0:bc28:b2d8:8] (helo=chuck.antcom.de)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UO6Bo-0005tk-IH
- for linux-mtd@lists.infradead.org; Fri, 05 Apr 2013 12:56:22 +0000
-Message-ID: <515EC9EC.5030200@antcom.de>
-Date: Fri, 05 Apr 2013 14:56:12 +0200
-From: Roland Stigge <stigge@antcom.de>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCH] mtd: nand: subpage write support for hardware based ECC
- schemes
-References: <1363352378-2825-1-git-send-email-pekon@ti.com>
- <1365088578.626.11.camel@sauron.fi.intel.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9A8CE8@DBDE01.ent.ti.com>
- <1365158617.626.29.camel@sauron.fi.intel.com>
-In-Reply-To: <1365158617.626.29.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
+Date: Fri, 05 Apr 2013 09:18:43 -0500 (CDT)
+From: Aaron Sierra <asierra@xes-inc.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH v2] mtd: ofpart: support partitions of 4 GB and larger
+Message-ID: <79ec730f-9ead-4fd4-a861-abdf4cde6489@zimbra>
+In-Reply-To: <1365161002.28127.101.camel@i7.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>
+MIME-Version: 1.0
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ Joe Schaack <jschaack@xes-inc.com>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,27 +18,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/05/2013 12:43 PM, Artem Bityutskiy wrote:
-> On Fri, 2013-04-05 at 09:07 +0000, Gupta, Pekon wrote:
->>  > You need to update cafe_nand.c accordingly. Aiaiai detected this:
->>>
->>> Artem Bityutskiy
->>
->> Thanks Aiaiai, Artem, 
+> From: "David Woodhouse" <dwmw2@infradead.org>
+> Sent: Friday, April 5, 2013 6:23:22 AM
+> Subject: Re: [PATCH v2] mtd: ofpart: support partitions of 4 GB and larger
 > 
-> Roland, heads up, I am going to apply this patch to the MTD tree. It
-> touches your driver.
+> On Thu, 2013-02-21 at 16:29 -0600, Aaron Sierra wrote:
+> > +       /* an 8 GB partition */
+> > +       partition@0 {
+> > +               label = "filesystem #1";
+> > +               reg = <0x0 0x00000000 0x2 0x00000000>;
+> > +       };
+> > +
+> > +       /* a 4 GB partition */
+> > +       partition@200000000 {
+> > +               label = "filesystem #2";
+> > +               reg = <0x2 0x00000000 0x1 0x00000000>;
+> > +       };
+> > +};
+> 
+> The comments here don't match the actual definitions. I fixed it to
+> read
+> as follows:
+> 
+> flash@2 {
+> 	#address-cells = <2>;
+> 	#size-cells = <2>;
+> 
+> 	/* an 8 GB partition */
+> 	partition@0 {
+> 		label = "filesystem #1";
+> 		reg = <0x0 0x00000000 0x1 0xdcd65000>;
+> 	};
+> 
+> 	/* a 4 GB partition */
+> 	partition@200000000 {
+> 		label = "filesystem #2";
+> 		reg = <0x1 0xdcd65000 0x0 0xee6b2800>;
+> 	};
+> };
 
-Tested-by: Roland Stigge <stigge@antcom.de>
+David,
+Blame this on my vague use of GB. I assume things would have been
+crystal clear if I'd used GiB. Is this already committed with your
+change? Your version doesn't seem like a realistic partitioning
+scheme based on likely device erase block sizes.
 
-Thanks for the note! (Sorry, haven't followed this issue.)
+Is is possible to just update the comments?
 
-Works fine so far. As far as I understand it, there is only an interface
-change regarding LPC32xx - subpage writing isn't officially supported by
-this controller hardware (with >=2k pages + ecc applied to 512 byte
-"subpages" - not the real subpages as reported by the flash chip).
+- 	/* an 8 GB partition */
++ 	/* an 8 GiB partition */
+...
+- 	/* a 4 GB partition */
++ 	/* a 4 GiB partition */
 
-So I guess it's ok to ignore the new "uint32_t offset, int data_len"
-arguments in lpc32xx_write_page.
-
-Roland
+-Aaron
