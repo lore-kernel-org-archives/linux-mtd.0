@@ -1,21 +1,20 @@
 Received: from mailout2.samsung.com ([203.254.224.25])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UOMoF-0006hT-Ql
- for linux-mtd@lists.infradead.org; Sat, 06 Apr 2013 06:41:09 +0000
-Received: from epcpsbgr5.samsung.com
- (u145.gpu120.samsung.co.kr [203.254.230.145])
+ id 1UOMog-0006iZ-GA
+ for linux-mtd@lists.infradead.org; Sat, 06 Apr 2013 06:41:34 +0000
+Received: from epcpsbgr4.samsung.com
+ (u144.gpu120.samsung.co.kr [203.254.230.144])
  by mailout2.samsung.com (Oracle Communications Messaging Server 7u4-24.01
  (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MKT006QFMKG0CD0@mailout2.samsung.com> for
- linux-mtd@lists.infradead.org; Sat, 06 Apr 2013 15:41:04 +0900 (KST)
+ with ESMTP id <0MKT008YOML90E00@mailout2.samsung.com> for
+ linux-mtd@lists.infradead.org; Sat, 06 Apr 2013 15:41:33 +0900 (KST)
 From: Jingoo Han <jg1.han@samsung.com>
 To: 'Artem Bityutskiy' <dedekind1@gmail.com>
 References: <001401ce3291$a1bdcba0$e53962e0$%han@samsung.com>
 In-reply-to: <001401ce3291$a1bdcba0$e53962e0$%han@samsung.com>
-Subject: [PATCH 2/3] mtd: dataflash: use spi_get_drvdata() and
- spi_set_drvdata()
-Date: Sat, 06 Apr 2013 15:41:03 +0900
-Message-id: <001501ce3291$b59fab70$20df0250$%han@samsung.com>
+Subject: [PATCH 3/3] mtd: m25p80: use spi_get_drvdata() and spi_set_drvdata()
+Date: Sat, 06 Apr 2013 15:41:32 +0900
+Message-id: <001601ce3291$c6d7a0f0$5486e2d0$%han@samsung.com>
 MIME-version: 1.0
 Content-type: text/plain; charset=us-ascii
 Content-transfer-encoding: 7bit
@@ -37,47 +36,30 @@ can directly pass a struct spi_device.
 
 Signed-off-by: Jingoo Han <jg1.han@samsung.com>
 ---
- drivers/mtd/devices/mtd_dataflash.c |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/mtd/devices/m25p80.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-index 28779b6..4a43664 100644
---- a/drivers/mtd/devices/mtd_dataflash.c
-+++ b/drivers/mtd/devices/mtd_dataflash.c
-@@ -661,7 +661,7 @@ static int add_dataflash_otp(struct spi_device *spi, char *name, int nr_pages,
- 	dev_info(&spi->dev, "%s (%lld KBytes) pagesize %d bytes%s\n",
- 			name, (long long)((device->size + 1023) >> 10),
- 			pagesize, otp_tag);
--	dev_set_drvdata(&spi->dev, priv);
-+	spi_set_drvdata(spi, priv);
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 2f3d2a5..d2232e7 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -972,7 +972,7 @@ static int m25p_probe(struct spi_device *spi)
  
- 	ppdata.of_node = spi->dev.of_node;
- 	err = mtd_device_parse_register(device, NULL, &ppdata,
-@@ -671,7 +671,7 @@ static int add_dataflash_otp(struct spi_device *spi, char *name, int nr_pages,
- 	if (!err)
- 		return 0;
+ 	flash->spi = spi;
+ 	mutex_init(&flash->lock);
+-	dev_set_drvdata(&spi->dev, flash);
++	spi_set_drvdata(spi, flash);
  
--	dev_set_drvdata(&spi->dev, NULL);
-+	spi_set_drvdata(spi, NULL);
- 	kfree(priv);
- 	return err;
- }
-@@ -895,14 +895,14 @@ static int dataflash_probe(struct spi_device *spi)
+ 	/*
+ 	 * Atmel, SST and Intel/Numonyx serial flash tend to power
+@@ -1080,7 +1080,7 @@ static int m25p_probe(struct spi_device *spi)
  
- static int dataflash_remove(struct spi_device *spi)
+ static int m25p_remove(struct spi_device *spi)
  {
--	struct dataflash	*flash = dev_get_drvdata(&spi->dev);
-+	struct dataflash	*flash = spi_get_drvdata(spi);
- 	int			status;
+-	struct m25p	*flash = dev_get_drvdata(&spi->dev);
++	struct m25p	*flash = spi_get_drvdata(spi);
+ 	int		status;
  
- 	pr_debug("%s: remove\n", dev_name(&spi->dev));
- 
- 	status = mtd_device_unregister(&flash->mtd);
- 	if (status == 0) {
--		dev_set_drvdata(&spi->dev, NULL);
-+		spi_set_drvdata(spi, NULL);
- 		kfree(flash);
- 	}
- 	return status;
+ 	/* Clean up MTD stuff. */
 -- 
 1.7.2.5
