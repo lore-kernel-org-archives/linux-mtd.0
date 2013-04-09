@@ -1,22 +1,17 @@
-Received: from webbox1416.server-home.net ([77.236.96.61])
+Received: from mail02.rohde-schwarz.com ([80.246.32.97])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UPSQC-0001HH-Im
- for linux-mtd@lists.infradead.org; Tue, 09 Apr 2013 06:52:49 +0000
-Received: from comm.systec-electronic.de (146-52-100-204-dynip.superkabel.de
- [146.52.100.204])
- by webbox1416.server-home.net (Postfix) with ESMTPA id 5E07727A657
- for <linux-mtd@lists.infradead.org>; Tue,  9 Apr 2013 08:37:56 +0200 (CEST)
-Received: from ws-stein.localnet (unknown [192.168.10.63])
- by comm.systec-electronic.de (Postfix) with ESMTP id B651097C275
- for <linux-mtd@lists.infradead.org>; Tue,  9 Apr 2013 08:52:43 +0200 (CEST)
-From: Alexander Stein <alexander.stein@systec-electronic.com>
-To: linux-mtd@lists.infradead.org
-Subject: serial Flash over SPI as rootdevice?
-Date: Tue, 09 Apr 2013 08:52:36 +0200
-Message-ID: <5322202.sSFaOpDNta@ws-stein>
+ id 1UPToS-0003Ih-Qv
+ for linux-mtd@lists.infradead.org; Tue, 09 Apr 2013 08:21:57 +0000
+In-Reply-To: <5322202.sSFaOpDNta@ws-stein>
+References: <5322202.sSFaOpDNta@ws-stein>
+To: Alexander Stein <alexander.stein@systec-electronic.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Subject: Re: serial Flash over SPI as rootdevice?
+From: Thomas.Betker@rohde-schwarz.com
+Message-ID: <OF633E5F6C.FD0B7251-ONC1257B48.002C663F-C1257B48.002DE886@rohde-schwarz.com>
+Date: Tue, 9 Apr 2013 10:21:26 +0200
+Content-Type: text/plain; charset="US-ASCII"
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,10 +21,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Hello Alexander:
 
-is it currently possible to use a serial Flash connected over SPI to use as a rootdevice?
-If not, would it be possible and which drivers need to be written for that then?
+> is it currently possible to use a serial Flash connected over SPI to
+> use as a rootdevice?
+> If not, would it be possible and which drivers need to be written 
+> for that then?
+
+Yes, it is certainly possible; we are doing it ourselves. No extra drivers 
+are required for this beyond those you need anyway (SPI driver, SPI flash 
+driver).
+
+The real problem, though, is that you cannot boot from standard SPI flash. 
+For this, you need memory which can be read directly by the CPU, such as 
+parallel NOR flash.
 
 Best regards,
-Alexander
+Thomas
