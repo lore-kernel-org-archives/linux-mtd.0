@@ -1,22 +1,23 @@
-Received: from va3ehsobe010.messaging.microsoft.com ([216.32.180.30]
- helo=va3outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UQDga-0002S6-LR
- for linux-mtd@lists.infradead.org; Thu, 11 Apr 2013 09:20:53 +0000
-Message-ID: <516680B7.4070407@freescale.com>
-Date: Thu, 11 Apr 2013 17:21:59 +0800
-From: Huang Shijie <b32955@freescale.com>
+Received: from mx7.zte.com.cn ([202.103.147.169] helo=zte.com.cn)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UQDk6-0002a6-Ja
+ for linux-mtd@lists.infradead.org; Thu, 11 Apr 2013 09:24:31 +0000
+Received: from mse02.zte.com.cn (unknown [10.30.3.21])
+ by Websense Email Security Gateway with ESMTPS id 4E4E3745199
+ for <linux-mtd@lists.infradead.org>; Thu, 11 Apr 2013 17:24:00 +0800 (CST)
+Received: from notes_smtp.zte.com.cn ([10.30.1.239])
+ by mse02.zte.com.cn with ESMTP id r3B9O4Rk006520
+ for <linux-mtd@lists.infradead.org>; Thu, 11 Apr 2013 17:24:04 +0800 (GMT-8)
+ (envelope-from wang.bo116@zte.com.cn)
+To: linux-mtd@lists.infradead.org
+Subject: ubi fastmap memory leak
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: cfi_cmdset_0002: do_write_buffer timeouts
-References: <CAN8TOE8dVYxBbb8MtozFio8dS-ypq14U8RuKTo38QcAtXM5Qrw@mail.gmail.com>
- <CAN8TOE8BRhgi_ep8xypA_OwF4qfJikztmUcc-+XDB7hjnopuUA@mail.gmail.com>
-In-Reply-To: <CAN8TOE8BRhgi_ep8xypA_OwF4qfJikztmUcc-+XDB7hjnopuUA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: David Woodhouse <dwmw2@infradead.org>, Kevin Cernekee <cernekee@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Message-ID: <OF132C4FA1.3FE4C814-ON48257B4A.00337A2A-48257B4A.0033A6D2@zte.com.cn>
+From: wang.bo116@zte.com.cn
+Date: Thu, 11 Apr 2013 17:23:44 +0800
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: base64
+Cc: cui.yunfeng@zte.com.cn
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,66 +27,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B404=E6=9C=8811=E6=97=A5 17:00, Brian Norris =E5=86=99=
-=E9=81=93:
-> [Sorry for the repeat email for some; Gmail switched me back to
-> HTML-mode, so my previous email couldn't be delivered to the MTD list]
->
-> Hi all,
->
-> I'm having some trouble where I am getting timeouts in cfi_cmdset_0002.=
-c:
->
-> MTD do_write_buffer(): software timeout
->
-> I'm using a 64Mbyte Spansion S29GL512 NOR flash:
->
-> physmap-flash.0: Found 1 x16 devices at 0x0 in 16-bit bank.
-> Manufacturer ID 0x000001 Chip ID 0x002301
->
-> I can reproduce the timeout approximately 0.5% of the time on a simple
-> reboot, mount UBI rootfs test. My system has CONFIG_HZ=3D250, and so th=
-e
-> timeout comes out to just 1 jiffy. I have to increase this timeout to
-> at least 3 ticks to avoid the timeouts. (I've been running reboot
-> tests successfully for several days with the timeout as 3 jiffies.)
->
-> So my question is: what is the "best" way to decide these timeouts?
-> I'm inclined to just increase the timeout (and to use the proper
-> msecs_to_jiffies() macro, as a cleanup). But according to the
-> datasheets (which agree with the comments in the code), the max time
-> should be less than a millisecond. So simply increasing the timeout
-> may in fact just be masking some other bug.
->
-> Huang,
->
-> I noticed you recently sent a patch that adjusts the timeout print
-> message in do_write_buffer(). Have you had problems with this code
-> recently?
->
-yes. I am fighting with the timeout out now. :(
-
-My chip is M29W256GL7AN6E.
-physmap-flash.0: Found 1 x16 devices at 0x0 in 16-bit bank. Manufacturer=20
-ID 0x000020 Chip ID 0x00227e
-
-
-When I run the bonnie++/ubifs on the NOR. I will get a timeout=20
-occasionally. Sometime it can passes the bonie++/ubifs test,
-while sometimes it can not.
-The timeout occurs at some fixed address, such as 0x4e0000, 0x520000. I=20
-tried to extend the 1ms to 10ms for the buffer-write in do_write_buffer()=
-.
-But the bug still occurs.
-
-
-
-(I also tested other Nor, such as Spansion S29GL256P10 and Micron=20
-JS28F256M29EWL.
-i do not meet the timeout issue with these two nor.)
-
-
-
-
-thanks
-Huang Shijie
+SGVsbG+jrA0KICAgICAgICBXaGVuIHVzZSB1YmkgZmFzdG1hcCxpIHRoaW5rIHRoZXJlIGlzIGEg
+bWVtb3J5IGxlYWsgaW4gDQoidWJpX2F0dGFjaCIgZnVuY3Rpb24uVGhpbmsgYWJvdXQgdGhpcyBz
+Y2VuZaO6DQogDQogICAgICAgIDEuIEluICJ1YmlfYXR0YWNoIiBmdW5jdGlvbiwgImFsbG9jX2Fp
+IiBmdW5jdGlvbiBjYWxsZWQgdG8gYWxsb2MgYSANCnNsYWIgY2FjaGUgbmFtZWQgInViaV9hZWJf
+c2xhYl9jYWNoZSIuDQogICAgICAgIFRoZW4gdXNlICJhaS0+YWViX3NsYWJfY2FjaGUiIHRvIHJl
+Y29yZCB0aGUgY2FjaGUuIA0KIA0KICAgICAgICAyLiB1YmlfYXR0YWNoIC0+IHNjYW5fZmFzdCAt
+PiB1Ymlfc2Nhbl9mYXN0bWFwIC0+IA0KdWJpX2F0dGFjaF9mYXN0bWFwLA0KICAgICAgICBpbiAi
+dWJpX2F0dGFjaF9mYXN0bWFwIiBmdW5jdGlvbiwgc2xhYiBjYWNoZSBuYW1lZCANCiJ1YmlfYWlu
+Zl9wZWJfc2xhYiIgd2lsbCBiZSBhbGxvY2VkLiANCiAgICAgICAgQmVjYXVzZSBvZiB0aGlzIHNs
+YWIgY2FjaGUgYWxzbyByZWNvcmRlZCBpbiAiYWktPmFlYl9zbGFiX2NhY2hlIiwgDQpzbywgaW4g
+ZmFjdCBpdCBvdmVyd3JpdGUgdGhlIHByZXZpb3VzbHkgb25lLg0KIA0KICAgICAgICAzLiBXaGVu
+ICJkZXN0cm95X2FpIiBjYWxsZWQgLCBpdCBvbmx5IGZyZWUgInViaV9haW5mX3BlYl9zbGFiIi4N
+Cg0KICAgICAgICBJIG1hZGUgYSBwYXRjaCBiYXNlIG9uIExpbnV4IDMuOS1yYzYsIGl0IGZpeCB0
+aGlzIHByb2JsZW0gdXNlIGEgDQp0ZW1wb3JhcnkgYWkgZm9yIGZhc3RtYXAgc2Nhbi4NCiAgICAg
+ICAgRHVyaW5nIG15IHRlc3QsIHRoaXMgcGF0Y2ggbGlrZSB3b3JrIGdvb2QuDQogDQogDQotLS0g
+YXR0YWNoLmMgICAgMjAxMy0wNC0wOCAwMzo0OTo1NC4wMDAwMDAwMDAgKzAwMDANCisrKyBhdHRh
+Y2gxLmMgICAyMDEzLTA0LTExIDExOjI5OjAwLjIzOTQxMjAwMCArMDAwMA0KQEAgLTkwLDYgKzkw
+LDcgQEANCiAjaW5jbHVkZSAidWJpLmgiDQogDQogc3RhdGljIGludCBzZWxmX2NoZWNrX2FpKHN0
+cnVjdCB1YmlfZGV2aWNlICp1YmksIHN0cnVjdCB1YmlfYXR0YWNoX2luZm8gDQoqYWkpOw0KK3N0
+YXRpYyBzdHJ1Y3QgdWJpX2F0dGFjaF9pbmZvICphbGxvY19haShjb25zdCBjaGFyICpzbGFiX25h
+bWUpOw0KIA0KIC8qIFRlbXBvcmFyeSB2YXJpYWJsZXMgdXNlZCBkdXJpbmcgc2Nhbm5pbmcgKi8N
+CiBzdGF0aWMgc3RydWN0IHViaV9lY19oZHIgKmVjaDsNCkBAIC0xMzE0LDkgKzEzMTUsMTQgQEAg
+c3RhdGljIGludCBzY2FuX2Zhc3Qoc3RydWN0IHViaV9kZXZpY2UgKg0KIHsNCiAgICAgICAgaW50
+IGVyciwgcG51bSwgZm1fYW5jaG9yID0gLTE7DQogICAgICAgIHVuc2lnbmVkIGxvbmcgbG9uZyBt
+YXhfc3FudW0gPSAwOw0KLQ0KKyAgICAgICBzdHJ1Y3QgdWJpX2F0dGFjaF9pbmZvICpmYXN0bWFw
+X3RlbXBfYWkgPSBOVUxMOw0KKyANCiAgICAgICAgZXJyID0gLUVOT01FTTsNCiANCisgICAgICAg
+ZmFzdG1hcF90ZW1wX2FpID0gYWxsb2NfYWkoInViaV9zY2FuX2Zhc3RtYXBfc2xhYl9jYWNoZSIp
+Ow0KKyAgICAgICBpZiAoIWZhc3RtYXBfdGVtcF9haSkNCisgICAgICAgICAgICAgICBnb3RvIG91
+dDsNCisNCiAgICAgICAgZWNoID0ga3phbGxvYyh1YmktPmVjX2hkcl9hbHNpemUsIEdGUF9LRVJO
+RUwpOw0KICAgICAgICBpZiAoIWVjaCkNCiAgICAgICAgICAgICAgICBnb3RvIG91dDsNCkBAIC0x
+MzMxLDcgKzEzMzcsNyBAQCBzdGF0aWMgaW50IHNjYW5fZmFzdChzdHJ1Y3QgdWJpX2RldmljZSAq
+DQogICAgICAgICAgICAgICAgY29uZF9yZXNjaGVkKCk7DQogDQogICAgICAgICAgICAgICAgZGJn
+X2dlbigicHJvY2VzcyBQRUIgJWQiLCBwbnVtKTsNCi0gICAgICAgICAgICAgICBlcnIgPSBzY2Fu
+X3BlYih1YmksIGFpLCBwbnVtLCAmdm9sX2lkLCAmc3FudW0pOw0KKyAgICAgICAgICAgICAgIGVy
+ciA9IHNjYW5fcGViKHViaSwgZmFzdG1hcF90ZW1wX2FpLCBwbnVtLCAmdm9sX2lkLCANCiZzcW51
+bSk7DQogICAgICAgICAgICAgICAgaWYgKGVyciA8IDApDQogICAgICAgICAgICAgICAgICAgICAg
+ICBnb3RvIG91dF92aWRoOw0KIA0KQEAgLTEzNDMsNiArMTM0OSw3IEBAIHN0YXRpYyBpbnQgc2Nh
+bl9mYXN0KHN0cnVjdCB1YmlfZGV2aWNlICoNCiANCiAgICAgICAgdWJpX2ZyZWVfdmlkX2hkcih1
+YmksIHZpZGgpOw0KICAgICAgICBrZnJlZShlY2gpOw0KKyAgICAgICBkZXN0cm95X2FpKGZhc3Rt
+YXBfdGVtcF9haSk7DQogDQogICAgICAgIGlmIChmbV9hbmNob3IgPCAwKQ0KICAgICAgICAgICAg
+ICAgIHJldHVybiBVQklfTk9fRkFTVE1BUDsNCkBAIC0xMzUxLDYgKzEzNTgsNyBAQCBzdGF0aWMg
+aW50IHNjYW5fZmFzdChzdHJ1Y3QgdWJpX2RldmljZSAqDQogDQogb3V0X3ZpZGg6DQogICAgICAg
+IHViaV9mcmVlX3ZpZF9oZHIodWJpLCB2aWRoKTsNCisgICAgICAgZGVzdHJveV9haShmYXN0bWFw
+X3RlbXBfYWkpOw0KIG91dF9lY2g6DQogICAgICAgIGtmcmVlKGVjaCk7DQogb3V0Og0KQEAgLTE0
+MTksNyArMTQyNyw3IEBAIGludCB1YmlfYXR0YWNoKHN0cnVjdCB1YmlfZGV2aWNlICp1YmksIGkN
+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gLUVOT01FTTsN
+CiAgICAgICAgICAgICAgICAgICAgICAgIH0NCiANCi0gICAgICAgICAgICAgICAgICAgICAgIGVy
+ciA9IHNjYW5fYWxsKHViaSwgYWksIFVCSV9GTV9NQVhfU1RBUlQpOw0KKyAgICAgICAgICAgICAg
+ICAgICAgICAgZXJyID0gc2Nhbl9hbGwodWJpLCBhaSwgMCk7DQogICAgICAgICAgICAgICAgfQ0K
+ICAgICAgICB9DQogI2Vsc2UNCg0KIA0KIA0KIA0KLS0tIGZhc3RtYXAuYyAgIDIwMTMtMDQtMDgg
+MDM6NDk6NTQuMDAwMDAwMDAwICswMDAwDQorKysgZmFzdG1hcDEuYyAgMjAxMy0wNC0xMSAwMzoy
+Mjo1NC40MzIwMDAwMDAgKzAwMDANCkBAIC01NTksNyArNTU5LDggQEAgc3RhdGljIGludCB1Ymlf
+YXR0YWNoX2Zhc3RtYXAoc3RydWN0IHViaQ0KICAgICAgICBhaS0+dm9sdW1lcyA9IFJCX1JPT1Q7
+DQogICAgICAgIGFpLT5taW5fZWMgPSBVQklfTUFYX0VSQVNFQ09VTlRFUjsNCiANCi0gICAgICAg
+YWktPmFlYl9zbGFiX2NhY2hlID0ga21lbV9jYWNoZV9jcmVhdGUoInViaV9haW5mX3BlYl9zbGFi
+IiwNCisgICAgICAgaWYoIWFpLT5hZWJfc2xhYl9jYWNoZSkNCisgICAgICAgICAgICAgICBhaS0+
+YWViX3NsYWJfY2FjaGUgPSANCmttZW1fY2FjaGVfY3JlYXRlKCJ1YmlfYWluZl9wZWJfc2xhYiIs
+DQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNpemVvZihz
+dHJ1Y3QgDQp1YmlfYWluZl9wZWIpLA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAwLCAwLCBOVUxMKTsNCiAgICAgICAgaWYgKCFhaS0+YWViX3NsYWJfY2Fj
+aGUpIHsNCg0K
