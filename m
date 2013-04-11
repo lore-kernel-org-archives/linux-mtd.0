@@ -1,20 +1,15 @@
-Received: from mail-wi0-x233.google.com ([2a00:1450:400c:c05::233])
+Received: from moutng.kundenserver.de ([212.227.17.8])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UQIsH-00037W-V4
- for linux-mtd@lists.infradead.org; Thu, 11 Apr 2013 14:53:18 +0000
-Received: by mail-wi0-f179.google.com with SMTP id hn17so649144wib.0
- for <linux-mtd@lists.infradead.org>; Thu, 11 Apr 2013 07:53:15 -0700 (PDT)
+ id 1UQKKw-0006B8-AH
+ for linux-mtd@lists.infradead.org; Thu, 11 Apr 2013 16:26:58 +0000
+Message-ID: <5166E4F8.5030107@ammonit.com>
+Date: Thu, 11 Apr 2013 18:29:44 +0200
+From: =?ISO-8859-1?Q?Steffen_K=FChn?= <sk@ammonit.com>
 MIME-Version: 1.0
-In-Reply-To: <OF132C4FA1.3FE4C814-ON48257B4A.00337A2A-48257B4A.0033A6D2@zte.com.cn>
-References: <OF132C4FA1.3FE4C814-ON48257B4A.00337A2A-48257B4A.0033A6D2@zte.com.cn>
-Date: Thu, 11 Apr 2013 16:53:15 +0200
-Message-ID: <CAFLxGvy_q+64W7SKUL3GtAt8dwdr1Hc_UigMk330CJanPvSJfw@mail.gmail.com>
-Subject: Re: ubi fastmap memory leak
-From: richard -rw- weinberger <richard.weinberger@gmail.com>
-To: wang.bo116@zte.com.cn
-Content-Type: text/plain; charset=GB2312
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, cui.yunfeng@zte.com.cn
+To: linux-mtd@lists.infradead.org
+Subject: Changing the ECC method for a running system (UBI seems to use OOB?)
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,40 +19,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+Hello everyone,
 
-On Thu, Apr 11, 2013 at 11:23 AM,  <wang.bo116@zte.com.cn> wrote:
-> Hello=A3=AC
->         When use ubi fastmap,i think there is a memory leak in
-> "ubi_attach" function.Think about this scene=A3=BA
->
->         1. In "ubi_attach" function, "alloc_ai" function called to alloc =
-a
-> slab cache named "ubi_aeb_slab_cache".
->         Then use "ai->aeb_slab_cache" to record the cache.
->
->         2. ubi_attach -> scan_fast -> ubi_scan_fastmap ->
-> ubi_attach_fastmap,
->         in "ubi_attach_fastmap" function, slab cache named
-> "ubi_ainf_peb_slab" will be alloced.
->         Because of this slab cache also recorded in "ai->aeb_slab_cache",
-> so, in fact it overwrite the previously one.
->
->         3. When "destroy_ai" called , it only free "ubi_ainf_peb_slab".
->
->         I made a patch base on Linux 3.9-rc6, it fix this problem use a
-> temporary ai for fastmap scan.
->         During my test, this patch like work good.
+the problem which I have to solve is to change the type of the used ECC
+procedure for a linux system with UBIFS >>after<< the installation. For
+this purpose I have modified the first-stage bootloader so, that it
+reads all blocks with the old ECC method (software ECC 1-bit) and
+re-writes these with the new one (on-die hardware ECC, Micron flash).
 
-So, we call ubi_scan_fastmap() with an ai where ->aeb_slab_cache
-points already to a
-slab cache?
-I think it would be best to remove the kmem_cache_create() from
-ubi_scan_fastmap()
-completely.
+The reason for that effort is, that the old method has to be proven as
+to bad (to much bit errors). Unfortunately it is not possible to install
+the system new with activated on-die ECC, because the hardware is
+scattered over the world.
 
-What do you think?
+The update procedure works in principle fine, that means, it is possible
+to update the blocks for kernel, u-boot, first-stage bootloader and
+environment variables. But the rootfs makes problems. Can it be, that
+UBIFS uses some bytes of the OOB structures, perhaps indirect?
 
---
-Thanks,
-//richard
+Have someone any hints for me?
+
+Best regards,
+Steffen
