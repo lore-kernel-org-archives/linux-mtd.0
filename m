@@ -1,14 +1,15 @@
-Received: from mail-pa0-f54.google.com ([209.85.220.54])
+Received: from mail-pa0-f42.google.com ([209.85.220.42])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UQCyP-0001Ap-Sn
+ id 1UQCyS-0001B5-26
  for linux-mtd@lists.infradead.org; Thu, 11 Apr 2013 08:35:16 +0000
-Received: by mail-pa0-f54.google.com with SMTP id fa11so787265pad.27
- for <linux-mtd@lists.infradead.org>; Thu, 11 Apr 2013 01:35:12 -0700 (PDT)
+Received: by mail-pa0-f42.google.com with SMTP id kq13so787027pab.15
+ for <linux-mtd@lists.infradead.org>; Thu, 11 Apr 2013 01:35:14 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 2/3] mtd: m25p80: correct EN4B/EX4B comment
-Date: Thu, 11 Apr 2013 01:34:58 -0700
-Message-Id: <1365669299-6830-2-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v2 3/3] mtd: nand: reword nand_chip bad block interface
+ comments
+Date: Thu, 11 Apr 2013 01:34:59 -0700
+Message-Id: <1365669299-6830-3-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1365669299-6830-1-git-send-email-computersforpeace@gmail.com>
 References: <1365669299-6830-1-git-send-email-computersforpeace@gmail.com>
 Cc: Brian Norris <computersforpeace@gmail.com>,
@@ -22,25 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This remedies a few problems:
+
+(1) The use of "the" vs. "a" is a little confusing, IMO.
+
+(2) nand_chip.block_bad is used exclusively for checking the OOB bad
+    block markers of a NAND. Any BBT functionality is handled in
+    nand_bbt.c, so this description should differentiate itself from
+    nand_bbt.c.
+
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
 v2: no change
 
- drivers/mtd/devices/m25p80.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/mtd/nand.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 74bf3ae..94b9b32 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -59,7 +59,7 @@
- #define	OPCODE_WRDI		0x04	/* Write disable */
- #define	OPCODE_AAI_WP		0xad	/* Auto address increment word program */
- 
--/* Used for Macronix flashes only. */
-+/* Used for Macronix and Winbond flashes. */
- #define	OPCODE_EN4B		0xb7	/* Enter 4-byte mode */
- #define	OPCODE_EX4B		0xe9	/* Exit 4-byte mode */
- 
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 6184cc0..2126837 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -392,8 +392,8 @@ struct nand_buffers {
+  * @write_buf:		[REPLACEABLE] write data from the buffer to the chip
+  * @read_buf:		[REPLACEABLE] read data from the chip into the buffer
+  * @select_chip:	[REPLACEABLE] select chip nr
+- * @block_bad:		[REPLACEABLE] check, if the block is bad
+- * @block_markbad:	[REPLACEABLE] mark the block bad
++ * @block_bad:		[REPLACEABLE] check if a block is bad, using OOB markers
++ * @block_markbad:	[REPLACEABLE] mark a block bad
+  * @cmd_ctrl:		[BOARDSPECIFIC] hardwarespecific function for controlling
+  *			ALE/CLE/nCE. Also used to write command and address
+  * @init_size:		[BOARDSPECIFIC] hardwarespecific function for setting
 -- 
 1.8.2
