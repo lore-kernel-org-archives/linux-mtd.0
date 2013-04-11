@@ -1,19 +1,20 @@
-Received: from mail-pa0-f42.google.com ([209.85.220.42])
+Received: from mail-ve0-f180.google.com ([209.85.128.180])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UQCyS-0001B5-26
- for linux-mtd@lists.infradead.org; Thu, 11 Apr 2013 08:35:16 +0000
-Received: by mail-pa0-f42.google.com with SMTP id kq13so787027pab.15
- for <linux-mtd@lists.infradead.org>; Thu, 11 Apr 2013 01:35:14 -0700 (PDT)
+ id 1UQDMu-0001cd-3C
+ for linux-mtd@lists.infradead.org; Thu, 11 Apr 2013 09:00:33 +0000
+Received: by mail-ve0-f180.google.com with SMTP id c13so1216381vea.11
+ for <linux-mtd@lists.infradead.org>; Thu, 11 Apr 2013 02:00:30 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <CAN8TOE8dVYxBbb8MtozFio8dS-ypq14U8RuKTo38QcAtXM5Qrw@mail.gmail.com>
+References: <CAN8TOE8dVYxBbb8MtozFio8dS-ypq14U8RuKTo38QcAtXM5Qrw@mail.gmail.com>
+Date: Thu, 11 Apr 2013 02:00:30 -0700
+Message-ID: <CAN8TOE8BRhgi_ep8xypA_OwF4qfJikztmUcc-+XDB7hjnopuUA@mail.gmail.com>
+Subject: Re: cfi_cmdset_0002: do_write_buffer timeouts
 From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 3/3] mtd: nand: reword nand_chip bad block interface
- comments
-Date: Thu, 11 Apr 2013 01:34:59 -0700
-Message-Id: <1365669299-6830-3-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1365669299-6830-1-git-send-email-computersforpeace@gmail.com>
-References: <1365669299-6830-1-git-send-email-computersforpeace@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Huang Shijie <b32955@freescale.com>, Kevin Cernekee <cernekee@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,36 +24,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This remedies a few problems:
+[Sorry for the repeat email for some; Gmail switched me back to
+HTML-mode, so my previous email couldn't be delivered to the MTD list]
 
-(1) The use of "the" vs. "a" is a little confusing, IMO.
+Hi all,
 
-(2) nand_chip.block_bad is used exclusively for checking the OOB bad
-    block markers of a NAND. Any BBT functionality is handled in
-    nand_bbt.c, so this description should differentiate itself from
-    nand_bbt.c.
+I'm having some trouble where I am getting timeouts in cfi_cmdset_0002.c:
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
-v2: no change
+MTD do_write_buffer(): software timeout
 
- include/linux/mtd/nand.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I'm using a 64Mbyte Spansion S29GL512 NOR flash:
 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 6184cc0..2126837 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -392,8 +392,8 @@ struct nand_buffers {
-  * @write_buf:		[REPLACEABLE] write data from the buffer to the chip
-  * @read_buf:		[REPLACEABLE] read data from the chip into the buffer
-  * @select_chip:	[REPLACEABLE] select chip nr
-- * @block_bad:		[REPLACEABLE] check, if the block is bad
-- * @block_markbad:	[REPLACEABLE] mark the block bad
-+ * @block_bad:		[REPLACEABLE] check if a block is bad, using OOB markers
-+ * @block_markbad:	[REPLACEABLE] mark a block bad
-  * @cmd_ctrl:		[BOARDSPECIFIC] hardwarespecific function for controlling
-  *			ALE/CLE/nCE. Also used to write command and address
-  * @init_size:		[BOARDSPECIFIC] hardwarespecific function for setting
--- 
-1.8.2
+physmap-flash.0: Found 1 x16 devices at 0x0 in 16-bit bank.
+Manufacturer ID 0x000001 Chip ID 0x002301
+
+I can reproduce the timeout approximately 0.5% of the time on a simple
+reboot, mount UBI rootfs test. My system has CONFIG_HZ=250, and so the
+timeout comes out to just 1 jiffy. I have to increase this timeout to
+at least 3 ticks to avoid the timeouts. (I've been running reboot
+tests successfully for several days with the timeout as 3 jiffies.)
+
+So my question is: what is the "best" way to decide these timeouts?
+I'm inclined to just increase the timeout (and to use the proper
+msecs_to_jiffies() macro, as a cleanup). But according to the
+datasheets (which agree with the comments in the code), the max time
+should be less than a millisecond. So simply increasing the timeout
+may in fact just be masking some other bug.
+
+Huang,
+
+I noticed you recently sent a patch that adjusts the timeout print
+message in do_write_buffer(). Have you had problems with this code
+recently?
+
+Any thoughts from any interested (or uninterested) party would be useful.
+
+Thanks,
+Brian
