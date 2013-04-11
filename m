@@ -1,23 +1,20 @@
-Received: from mx7.zte.com.cn ([202.103.147.169] helo=zte.com.cn)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UQDk6-0002a6-Ja
- for linux-mtd@lists.infradead.org; Thu, 11 Apr 2013 09:24:31 +0000
-Received: from mse02.zte.com.cn (unknown [10.30.3.21])
- by Websense Email Security Gateway with ESMTPS id 4E4E3745199
- for <linux-mtd@lists.infradead.org>; Thu, 11 Apr 2013 17:24:00 +0800 (CST)
-Received: from notes_smtp.zte.com.cn ([10.30.1.239])
- by mse02.zte.com.cn with ESMTP id r3B9O4Rk006520
- for <linux-mtd@lists.infradead.org>; Thu, 11 Apr 2013 17:24:04 +0800 (GMT-8)
- (envelope-from wang.bo116@zte.com.cn)
-To: linux-mtd@lists.infradead.org
-Subject: ubi fastmap memory leak
+Received: from mail-wi0-x233.google.com ([2a00:1450:400c:c05::233])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UQIsH-00037W-V4
+ for linux-mtd@lists.infradead.org; Thu, 11 Apr 2013 14:53:18 +0000
+Received: by mail-wi0-f179.google.com with SMTP id hn17so649144wib.0
+ for <linux-mtd@lists.infradead.org>; Thu, 11 Apr 2013 07:53:15 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <OF132C4FA1.3FE4C814-ON48257B4A.00337A2A-48257B4A.0033A6D2@zte.com.cn>
-From: wang.bo116@zte.com.cn
-Date: Thu, 11 Apr 2013 17:23:44 +0800
-Content-Type: text/plain; charset="GB2312"
-Content-Transfer-Encoding: base64
-Cc: cui.yunfeng@zte.com.cn
+In-Reply-To: <OF132C4FA1.3FE4C814-ON48257B4A.00337A2A-48257B4A.0033A6D2@zte.com.cn>
+References: <OF132C4FA1.3FE4C814-ON48257B4A.00337A2A-48257B4A.0033A6D2@zte.com.cn>
+Date: Thu, 11 Apr 2013 16:53:15 +0200
+Message-ID: <CAFLxGvy_q+64W7SKUL3GtAt8dwdr1Hc_UigMk330CJanPvSJfw@mail.gmail.com>
+Subject: Re: ubi fastmap memory leak
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
+To: wang.bo116@zte.com.cn
+Content-Type: text/plain; charset=GB2312
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, cui.yunfeng@zte.com.cn
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,64 +24,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG+jrA0KICAgICAgICBXaGVuIHVzZSB1YmkgZmFzdG1hcCxpIHRoaW5rIHRoZXJlIGlzIGEg
-bWVtb3J5IGxlYWsgaW4gDQoidWJpX2F0dGFjaCIgZnVuY3Rpb24uVGhpbmsgYWJvdXQgdGhpcyBz
-Y2VuZaO6DQogDQogICAgICAgIDEuIEluICJ1YmlfYXR0YWNoIiBmdW5jdGlvbiwgImFsbG9jX2Fp
-IiBmdW5jdGlvbiBjYWxsZWQgdG8gYWxsb2MgYSANCnNsYWIgY2FjaGUgbmFtZWQgInViaV9hZWJf
-c2xhYl9jYWNoZSIuDQogICAgICAgIFRoZW4gdXNlICJhaS0+YWViX3NsYWJfY2FjaGUiIHRvIHJl
-Y29yZCB0aGUgY2FjaGUuIA0KIA0KICAgICAgICAyLiB1YmlfYXR0YWNoIC0+IHNjYW5fZmFzdCAt
-PiB1Ymlfc2Nhbl9mYXN0bWFwIC0+IA0KdWJpX2F0dGFjaF9mYXN0bWFwLA0KICAgICAgICBpbiAi
-dWJpX2F0dGFjaF9mYXN0bWFwIiBmdW5jdGlvbiwgc2xhYiBjYWNoZSBuYW1lZCANCiJ1YmlfYWlu
-Zl9wZWJfc2xhYiIgd2lsbCBiZSBhbGxvY2VkLiANCiAgICAgICAgQmVjYXVzZSBvZiB0aGlzIHNs
-YWIgY2FjaGUgYWxzbyByZWNvcmRlZCBpbiAiYWktPmFlYl9zbGFiX2NhY2hlIiwgDQpzbywgaW4g
-ZmFjdCBpdCBvdmVyd3JpdGUgdGhlIHByZXZpb3VzbHkgb25lLg0KIA0KICAgICAgICAzLiBXaGVu
-ICJkZXN0cm95X2FpIiBjYWxsZWQgLCBpdCBvbmx5IGZyZWUgInViaV9haW5mX3BlYl9zbGFiIi4N
-Cg0KICAgICAgICBJIG1hZGUgYSBwYXRjaCBiYXNlIG9uIExpbnV4IDMuOS1yYzYsIGl0IGZpeCB0
-aGlzIHByb2JsZW0gdXNlIGEgDQp0ZW1wb3JhcnkgYWkgZm9yIGZhc3RtYXAgc2Nhbi4NCiAgICAg
-ICAgRHVyaW5nIG15IHRlc3QsIHRoaXMgcGF0Y2ggbGlrZSB3b3JrIGdvb2QuDQogDQogDQotLS0g
-YXR0YWNoLmMgICAgMjAxMy0wNC0wOCAwMzo0OTo1NC4wMDAwMDAwMDAgKzAwMDANCisrKyBhdHRh
-Y2gxLmMgICAyMDEzLTA0LTExIDExOjI5OjAwLjIzOTQxMjAwMCArMDAwMA0KQEAgLTkwLDYgKzkw
-LDcgQEANCiAjaW5jbHVkZSAidWJpLmgiDQogDQogc3RhdGljIGludCBzZWxmX2NoZWNrX2FpKHN0
-cnVjdCB1YmlfZGV2aWNlICp1YmksIHN0cnVjdCB1YmlfYXR0YWNoX2luZm8gDQoqYWkpOw0KK3N0
-YXRpYyBzdHJ1Y3QgdWJpX2F0dGFjaF9pbmZvICphbGxvY19haShjb25zdCBjaGFyICpzbGFiX25h
-bWUpOw0KIA0KIC8qIFRlbXBvcmFyeSB2YXJpYWJsZXMgdXNlZCBkdXJpbmcgc2Nhbm5pbmcgKi8N
-CiBzdGF0aWMgc3RydWN0IHViaV9lY19oZHIgKmVjaDsNCkBAIC0xMzE0LDkgKzEzMTUsMTQgQEAg
-c3RhdGljIGludCBzY2FuX2Zhc3Qoc3RydWN0IHViaV9kZXZpY2UgKg0KIHsNCiAgICAgICAgaW50
-IGVyciwgcG51bSwgZm1fYW5jaG9yID0gLTE7DQogICAgICAgIHVuc2lnbmVkIGxvbmcgbG9uZyBt
-YXhfc3FudW0gPSAwOw0KLQ0KKyAgICAgICBzdHJ1Y3QgdWJpX2F0dGFjaF9pbmZvICpmYXN0bWFw
-X3RlbXBfYWkgPSBOVUxMOw0KKyANCiAgICAgICAgZXJyID0gLUVOT01FTTsNCiANCisgICAgICAg
-ZmFzdG1hcF90ZW1wX2FpID0gYWxsb2NfYWkoInViaV9zY2FuX2Zhc3RtYXBfc2xhYl9jYWNoZSIp
-Ow0KKyAgICAgICBpZiAoIWZhc3RtYXBfdGVtcF9haSkNCisgICAgICAgICAgICAgICBnb3RvIG91
-dDsNCisNCiAgICAgICAgZWNoID0ga3phbGxvYyh1YmktPmVjX2hkcl9hbHNpemUsIEdGUF9LRVJO
-RUwpOw0KICAgICAgICBpZiAoIWVjaCkNCiAgICAgICAgICAgICAgICBnb3RvIG91dDsNCkBAIC0x
-MzMxLDcgKzEzMzcsNyBAQCBzdGF0aWMgaW50IHNjYW5fZmFzdChzdHJ1Y3QgdWJpX2RldmljZSAq
-DQogICAgICAgICAgICAgICAgY29uZF9yZXNjaGVkKCk7DQogDQogICAgICAgICAgICAgICAgZGJn
-X2dlbigicHJvY2VzcyBQRUIgJWQiLCBwbnVtKTsNCi0gICAgICAgICAgICAgICBlcnIgPSBzY2Fu
-X3BlYih1YmksIGFpLCBwbnVtLCAmdm9sX2lkLCAmc3FudW0pOw0KKyAgICAgICAgICAgICAgIGVy
-ciA9IHNjYW5fcGViKHViaSwgZmFzdG1hcF90ZW1wX2FpLCBwbnVtLCAmdm9sX2lkLCANCiZzcW51
-bSk7DQogICAgICAgICAgICAgICAgaWYgKGVyciA8IDApDQogICAgICAgICAgICAgICAgICAgICAg
-ICBnb3RvIG91dF92aWRoOw0KIA0KQEAgLTEzNDMsNiArMTM0OSw3IEBAIHN0YXRpYyBpbnQgc2Nh
-bl9mYXN0KHN0cnVjdCB1YmlfZGV2aWNlICoNCiANCiAgICAgICAgdWJpX2ZyZWVfdmlkX2hkcih1
-YmksIHZpZGgpOw0KICAgICAgICBrZnJlZShlY2gpOw0KKyAgICAgICBkZXN0cm95X2FpKGZhc3Rt
-YXBfdGVtcF9haSk7DQogDQogICAgICAgIGlmIChmbV9hbmNob3IgPCAwKQ0KICAgICAgICAgICAg
-ICAgIHJldHVybiBVQklfTk9fRkFTVE1BUDsNCkBAIC0xMzUxLDYgKzEzNTgsNyBAQCBzdGF0aWMg
-aW50IHNjYW5fZmFzdChzdHJ1Y3QgdWJpX2RldmljZSAqDQogDQogb3V0X3ZpZGg6DQogICAgICAg
-IHViaV9mcmVlX3ZpZF9oZHIodWJpLCB2aWRoKTsNCisgICAgICAgZGVzdHJveV9haShmYXN0bWFw
-X3RlbXBfYWkpOw0KIG91dF9lY2g6DQogICAgICAgIGtmcmVlKGVjaCk7DQogb3V0Og0KQEAgLTE0
-MTksNyArMTQyNyw3IEBAIGludCB1YmlfYXR0YWNoKHN0cnVjdCB1YmlfZGV2aWNlICp1YmksIGkN
-CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gLUVOT01FTTsN
-CiAgICAgICAgICAgICAgICAgICAgICAgIH0NCiANCi0gICAgICAgICAgICAgICAgICAgICAgIGVy
-ciA9IHNjYW5fYWxsKHViaSwgYWksIFVCSV9GTV9NQVhfU1RBUlQpOw0KKyAgICAgICAgICAgICAg
-ICAgICAgICAgZXJyID0gc2Nhbl9hbGwodWJpLCBhaSwgMCk7DQogICAgICAgICAgICAgICAgfQ0K
-ICAgICAgICB9DQogI2Vsc2UNCg0KIA0KIA0KIA0KLS0tIGZhc3RtYXAuYyAgIDIwMTMtMDQtMDgg
-MDM6NDk6NTQuMDAwMDAwMDAwICswMDAwDQorKysgZmFzdG1hcDEuYyAgMjAxMy0wNC0xMSAwMzoy
-Mjo1NC40MzIwMDAwMDAgKzAwMDANCkBAIC01NTksNyArNTU5LDggQEAgc3RhdGljIGludCB1Ymlf
-YXR0YWNoX2Zhc3RtYXAoc3RydWN0IHViaQ0KICAgICAgICBhaS0+dm9sdW1lcyA9IFJCX1JPT1Q7
-DQogICAgICAgIGFpLT5taW5fZWMgPSBVQklfTUFYX0VSQVNFQ09VTlRFUjsNCiANCi0gICAgICAg
-YWktPmFlYl9zbGFiX2NhY2hlID0ga21lbV9jYWNoZV9jcmVhdGUoInViaV9haW5mX3BlYl9zbGFi
-IiwNCisgICAgICAgaWYoIWFpLT5hZWJfc2xhYl9jYWNoZSkNCisgICAgICAgICAgICAgICBhaS0+
-YWViX3NsYWJfY2FjaGUgPSANCmttZW1fY2FjaGVfY3JlYXRlKCJ1YmlfYWluZl9wZWJfc2xhYiIs
-DQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNpemVvZihz
-dHJ1Y3QgDQp1YmlfYWluZl9wZWIpLA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAwLCAwLCBOVUxMKTsNCiAgICAgICAgaWYgKCFhaS0+YWViX3NsYWJfY2Fj
-aGUpIHsNCg0K
+Hi!
+
+On Thu, Apr 11, 2013 at 11:23 AM,  <wang.bo116@zte.com.cn> wrote:
+> Hello=A3=AC
+>         When use ubi fastmap,i think there is a memory leak in
+> "ubi_attach" function.Think about this scene=A3=BA
+>
+>         1. In "ubi_attach" function, "alloc_ai" function called to alloc =
+a
+> slab cache named "ubi_aeb_slab_cache".
+>         Then use "ai->aeb_slab_cache" to record the cache.
+>
+>         2. ubi_attach -> scan_fast -> ubi_scan_fastmap ->
+> ubi_attach_fastmap,
+>         in "ubi_attach_fastmap" function, slab cache named
+> "ubi_ainf_peb_slab" will be alloced.
+>         Because of this slab cache also recorded in "ai->aeb_slab_cache",
+> so, in fact it overwrite the previously one.
+>
+>         3. When "destroy_ai" called , it only free "ubi_ainf_peb_slab".
+>
+>         I made a patch base on Linux 3.9-rc6, it fix this problem use a
+> temporary ai for fastmap scan.
+>         During my test, this patch like work good.
+
+So, we call ubi_scan_fastmap() with an ai where ->aeb_slab_cache
+points already to a
+slab cache?
+I think it would be best to remove the kmem_cache_create() from
+ubi_scan_fastmap()
+completely.
+
+What do you think?
+
+--
+Thanks,
+//richard
