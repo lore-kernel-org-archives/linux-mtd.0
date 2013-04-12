@@ -1,17 +1,20 @@
-Received: from mx5.zte.com.cn ([63.217.80.70] helo=zte.com.cn)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UQXxd-0005Fu-45
- for linux-mtd@lists.infradead.org; Fri, 12 Apr 2013 06:59:50 +0000
-In-Reply-To: <CAFLxGvy_q+64W7SKUL3GtAt8dwdr1Hc_UigMk330CJanPvSJfw@mail.gmail.com>
-To: richard -rw- weinberger <richard.weinberger@gmail.com>
-Subject: =?GB2312?B?tPC4tDogUmU6IHViaSBmYXN0bWFwIG1lbW9yeSBsZWFr?=
+Received: from moutng.kundenserver.de ([212.227.17.8])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UQZzU-0007BC-2p
+ for linux-mtd@lists.infradead.org; Fri, 12 Apr 2013 09:09:53 +0000
+Message-ID: <5167D00A.1090006@ammonit.com>
+Date: Fri, 12 Apr 2013 11:12:42 +0200
+From: =?ISO-8859-1?Q?Steffen_K=FChn?= <sk@ammonit.com>
 MIME-Version: 1.0
-Message-ID: <OF09C7740C.509BCBA7-ON48257B4B.0023E769-48257B4B.002662D9@zte.com.cn>
-From: wang.bo116@zte.com.cn
-Date: Fri, 12 Apr 2013 14:58:51 +0800
-Content-Type: text/plain; charset="GB2312"
-Content-Transfer-Encoding: base64
-Cc: linux-mtd@lists.infradead.org, cui.yunfeng@zte.com.cn
+To: David Mosberger-Tang <dmosberger@gmail.com>
+Subject: Re: Changing the ECC method for a running system (UBI seems to use
+ OOB?)
+References: <5166E4F8.5030107@ammonit.com>
+ <CACwUX0PEfQfNa_Yg5JFEWFsFAC++Y1MgmPmckE5_2KZG8YuEOw@mail.gmail.com>
+In-Reply-To: <CACwUX0PEfQfNa_Yg5JFEWFsFAC++Y1MgmPmckE5_2KZG8YuEOw@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,46 +24,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGmjrA0KDQpyaWNoYXJkIC1ydy0gd2VpbmJlcmdlciA8cmljaGFyZC53ZWluYmVyZ2VyQGdtYWls
-LmNvbT4g0LTT2iAyMDEzLTA0LTExIA0KMjI6NTM6MTU6DQoNCj4gSGkhDQo+IA0KPiBPbiBUaHUs
-IEFwciAxMSwgMjAxMyBhdCAxMToyMyBBTSwgIDx3YW5nLmJvMTE2QHp0ZS5jb20uY24+IHdyb3Rl
-Og0KPiA+IEhlbGxvo6wNCj4gPiAgICAgICAgIFdoZW4gdXNlIHViaSBmYXN0bWFwLGkgdGhpbmsg
-dGhlcmUgaXMgYSBtZW1vcnkgbGVhayBpbg0KPiA+ICJ1YmlfYXR0YWNoIiBmdW5jdGlvbi5UaGlu
-ayBhYm91dCB0aGlzIHNjZW5lo7oNCj4gPg0KPiA+ICAgICAgICAgMS4gSW4gInViaV9hdHRhY2gi
-IGZ1bmN0aW9uLCAiYWxsb2NfYWkiIGZ1bmN0aW9uIGNhbGxlZCB0byANCmFsbG9jIGENCj4gPiBz
-bGFiIGNhY2hlIG5hbWVkICJ1YmlfYWViX3NsYWJfY2FjaGUiLg0KPiA+ICAgICAgICAgVGhlbiB1
-c2UgImFpLT5hZWJfc2xhYl9jYWNoZSIgdG8gcmVjb3JkIHRoZSBjYWNoZS4NCj4gPg0KPiA+ICAg
-ICAgICAgMi4gdWJpX2F0dGFjaCAtPiBzY2FuX2Zhc3QgLT4gdWJpX3NjYW5fZmFzdG1hcCAtPg0K
-PiA+IHViaV9hdHRhY2hfZmFzdG1hcCwNCj4gPiAgICAgICAgIGluICJ1YmlfYXR0YWNoX2Zhc3Rt
-YXAiIGZ1bmN0aW9uLCBzbGFiIGNhY2hlIG5hbWVkDQo+ID4gInViaV9haW5mX3BlYl9zbGFiIiB3
-aWxsIGJlIGFsbG9jZWQuDQo+ID4gICAgICAgICBCZWNhdXNlIG9mIHRoaXMgc2xhYiBjYWNoZSBh
-bHNvIHJlY29yZGVkIGluIA0KImFpLT5hZWJfc2xhYl9jYWNoZSIsDQo+ID4gc28sIGluIGZhY3Qg
-aXQgb3ZlcndyaXRlIHRoZSBwcmV2aW91c2x5IG9uZS4NCj4gPg0KPiA+ICAgICAgICAgMy4gV2hl
-biAiZGVzdHJveV9haSIgY2FsbGVkICwgaXQgb25seSBmcmVlIA0KInViaV9haW5mX3BlYl9zbGFi
-Ii4NCj4gPg0KPiA+ICAgICAgICAgSSBtYWRlIGEgcGF0Y2ggYmFzZSBvbiBMaW51eCAzLjktcmM2
-LCBpdCBmaXggdGhpcyBwcm9ibGVtIHVzZSANCmENCj4gPiB0ZW1wb3JhcnkgYWkgZm9yIGZhc3Rt
-YXAgc2Nhbi4NCj4gPiAgICAgICAgIER1cmluZyBteSB0ZXN0LCB0aGlzIHBhdGNoIGxpa2Ugd29y
-ayBnb29kLg0KPiANCj4gU28sIHdlIGNhbGwgdWJpX3NjYW5fZmFzdG1hcCgpIHdpdGggYW4gYWkg
-d2hlcmUgLT5hZWJfc2xhYl9jYWNoZQ0KPiBwb2ludHMgYWxyZWFkeSB0byBhDQo+IHNsYWIgY2Fj
-aGU/DQo+IEkgdGhpbmsgaXQgd291bGQgYmUgYmVzdCB0byByZW1vdmUgdGhlIGttZW1fY2FjaGVf
-Y3JlYXRlKCkgZnJvbQ0KPiB1Ymlfc2Nhbl9mYXN0bWFwKCkNCj4gY29tcGxldGVseS4NCj4gDQo+
-IFdoYXQgZG8geW91IHRoaW5rPw0KPiANCj4gLS0NCj4gVGhhbmtzLA0KPiAvL3JpY2hhcmQNCg0K
-DQoNClllc6OsaSB0aGluayB1YmlfYXR0YWNoX2Zhc3RtYXAoKSBubyBuZWVkIHRvIGFsbG9jIHNs
-YWIgY2FjaGUsIGl0IGFscmVhZHkgDQpiZSBhbGxvY2VkIGluICJ1YmlfYXR0YWNoIi4NCmkgdGhp
-bmsgdGhlIGZsbG93ZWQgY29kZSBpbiAidWJpX2F0dGFjaF9mYXN0bWFwIiBpcyBuZWVkbGVzcy4N
-Cg0KICAgICAgICBhaS0+YWViX3NsYWJfY2FjaGUgPSBrbWVtX2NhY2hlX2NyZWF0ZSgidWJpX2Fp
-bmZfcGViX3NsYWIiLA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICBzaXplb2Yoc3RydWN0IA0KdWJpX2FpbmZfcGViKSwNCiAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgMCwgMCwgTlVMTCk7DQogICAgICAgIGlmICghYWkt
-PmFlYl9zbGFiX2NhY2hlKSB7DQogICAgICAgICAgICAgICAgcmV0ID0gLUVOT01FTTsNCiAgICAg
-ICAgICAgICAgICBnb3RvIGZhaWw7DQogICAgICAgIH0NCg0KSSBub3RpY2UgdGhhdCAic2Nhbl9m
-YXN0IiBmdW5jdGlvbiB3aWxsIHNjYW4gUEVCIDAgdG8gVUJJX0ZNX01BWF9TVEFSVC0xIA0KdG8g
-ZmluZCBhIGZhc3RtYXAuDQpEdXJpbmcgdGhpcyBzY2FuLCBpdCB3aWxsIGNhbGwgImttZW1fY2Fj
-aGVfYWxsb2MiIHRvIGFsbG9jICJ1YmlfYWluZl9wZWIiIA0KZm9ybSBzbGFiLCBhbmQgYWRkIGl0
-IHRvIGEgbGlzdCBpbiBhaSwgDQpidXQgInViaV9hdHRhY2hfZmFzdG1hcCIgZXhwZWN0IHRoZSBs
-aXN0IGlzIGVtcHR5LCBzbyBpdCB3aWxsIHJlaW5pdCANCmFpLT5mcmVlIGxpc3QgYW5kIHNvIG9u
-Lg0KDQpJZiB1YmlfYXR0YWNoX2Zhc3RtYXAoKSB3YW50IHRvIHJldXNlIHRoZSBzbGFiIGNhY2hl
-LCB0aGUgYWxsb2NlZCBzbGFicyANCm11c3QgYmUgZnJlZWQgYmVmb3JlIHRoZSBsaXN0KGFpLT5m
-cmVlIGFuZCBzbyBvbikgYmUgaW5pdGVkLg0KDQpDb21wYXJlIHdpdGggZnJlZSBzbGFiIGJlZm9y
-ZSB1YmlfYXR0YWNoX2Zhc3RtYXAgZnVuY3Rpb24sIHVzZSBhIHRlbXBvcmFyeSANCmFpIGluIHNj
-YW5fZmFzdCBjYW4gdXNlICJkZXN0cm95X2FpIiBmdW5jdGlvbiBkaXJlY3RseS4NCg==
+Hello David,
+
+> We had exactly the same issue with our embedded systems (I'm really mad at
+> Micron that they released the 4-bit ECC chips without as much as putting a
+> warning message in the Linux kernel, but that's a separate topic...).
+> 
+> Anyhow, we modified the AT91bootstrap loader to convert the entire NAND
+> from 1-bit sw-ecc to on-die 4-bit ECC.  I'd be happy to send a patch to
+> this mailing list if you think this would be useful.
+
+Yes, this would be great! The patch is certainly also helpful for the
+next with the same problem ...
+
+> 
+> UBI fortunately does not use OOB at all, so there should be no issue from
+> there.
+I have read this too. I'm happy that I have not to deal with YAFFS2.
+
+> 
+> The subpage size has to match though.  In our case, UBI was built for 512B
+> subpage, but when turning on the on-die ECC support, it'd by default only
+> support 2048B pages.  The patch I sent earlier to this mailing list enables
+> 512B subpage writes with on-die ECC.
+
+That could be my problem. I have not considered this point. Thanks!
+
+Best regards,
+Steffen
