@@ -1,21 +1,17 @@
-Received: from mo6-p05-ob.rzone.de ([2a01:238:20a:202:5305::1])
+Received: from mx5.zte.com.cn ([63.217.80.70] helo=zte.com.cn)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UQXZ2-0004sQ-Bi
- for linux-mtd@lists.infradead.org; Fri, 12 Apr 2013 06:34:24 +0000
-Message-ID: <5167AAE3.3070202@gmail.com>
-Date: Fri, 12 Apr 2013 08:34:11 +0200
-From: Stefan Roese <stefan.roese@gmail.com>
+ id 1UQXxd-0005Fu-45
+ for linux-mtd@lists.infradead.org; Fri, 12 Apr 2013 06:59:50 +0000
+In-Reply-To: <CAFLxGvy_q+64W7SKUL3GtAt8dwdr1Hc_UigMk330CJanPvSJfw@mail.gmail.com>
+To: richard -rw- weinberger <richard.weinberger@gmail.com>
+Subject: =?GB2312?B?tPC4tDogUmU6IHViaSBmYXN0bWFwIG1lbW9yeSBsZWFr?=
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: cfi_cmdset_0002: do_write_buffer timeouts
-References: <CAN8TOE8dVYxBbb8MtozFio8dS-ypq14U8RuKTo38QcAtXM5Qrw@mail.gmail.com>
- <CAN8TOE8BRhgi_ep8xypA_OwF4qfJikztmUcc-+XDB7hjnopuUA@mail.gmail.com>
-In-Reply-To: <CAN8TOE8BRhgi_ep8xypA_OwF4qfJikztmUcc-+XDB7hjnopuUA@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Huang Shijie <b32955@freescale.com>, Kevin Cernekee <cernekee@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
+Message-ID: <OF09C7740C.509BCBA7-ON48257B4B.0023E769-48257B4B.002662D9@zte.com.cn>
+From: wang.bo116@zte.com.cn
+Date: Fri, 12 Apr 2013 14:58:51 +0800
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: base64
+Cc: linux-mtd@lists.infradead.org, cui.yunfeng@zte.com.cn
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,80 +21,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11.04.2013 11:00, Brian Norris wrote:
-> [Sorry for the repeat email for some; Gmail switched me back to
-> HTML-mode, so my previous email couldn't be delivered to the MTD list]
-> 
-> Hi all,
-> 
-> I'm having some trouble where I am getting timeouts in cfi_cmdset_0002.c:
-> 
-> MTD do_write_buffer(): software timeout
-> 
-> I'm using a 64Mbyte Spansion S29GL512 NOR flash:
-> 
-> physmap-flash.0: Found 1 x16 devices at 0x0 in 16-bit bank.
-> Manufacturer ID 0x000001 Chip ID 0x002301
-> 
-> I can reproduce the timeout approximately 0.5% of the time on a simple
-> reboot, mount UBI rootfs test. My system has CONFIG_HZ=250, and so the
-> timeout comes out to just 1 jiffy. I have to increase this timeout to
-> at least 3 ticks to avoid the timeouts. (I've been running reboot
-> tests successfully for several days with the timeout as 3 jiffies.)
-> 
-> So my question is: what is the "best" way to decide these timeouts?
-> I'm inclined to just increase the timeout (and to use the proper
-> msecs_to_jiffies() macro, as a cleanup). But according to the
-> datasheets (which agree with the comments in the code), the max time
-> should be less than a millisecond. So simply increasing the timeout
-> may in fact just be masking some other bug.
-> 
-> Huang,
-> 
-> I noticed you recently sent a patch that adjusts the timeout print
-> message in do_write_buffer(). Have you had problems with this code
-> recently?
-> 
-> Any thoughts from any interested (or uninterested) party would be useful.
-
-Without looking into the cmdset_0002 code, I remember fixing a
-similar issue for cmdset_0001 a few months ago:
-
-git id: 7be1f6b9a1ae3476a424380b52aad7c14c3273ab
-Author: Stefan Roese <sr@denx.de>  2012-08-28 11:34:13
-Committer: David Woodhouse <David.Woodhouse@intel.com>  2012-09-29 16:29:08
-Follows: v3.6-rc2
-Precedes: v3.7-rc1
-
-    mtd: cfi_cmdset_0001: Fix problem with unlocking timeout
-    
-    Unlocking may take up to 1.4 seconds on some Intel flashes. So
-    lets use a max. of 1.5 seconds (1500ms) as timeout.
-    
-    See "Clear Block Lock-Bits Time" on page 40 in
-    "3 Volt Intel StrataFlash Memory" 28F128J3,28F640J3,28F320J3 manual
-    from February 2003
-    
-    This patch also fixes some other problems with this timeout:
-    
-    - Don't use HZ in timeout "calculation"!
-      While testing we noticed that an unlocking timeout occured with
-      HZ=1000 and didn't occur with HZ=300. This was because the
-      timeout parameter was calculated differently depending on the
-      HZ value. Now a fixed value of 1500ms is used.
-    
-    - The last parameter of WAIT_TIMEOUT (defined to
-      inval_cache_and_wait_for_operation) has to be passed in
-      micro-seconds. So multiply the ms value with 1000 and not 100
-      to calculate this value.
-    
-    - Use variable name "mdelay" instead of misleading "udelay".
-    
-
-One main issue here was that the resulting timeout was HZ related
-resulting in different behavior depending on the HZ configuration.
-
-This current issue here might be related, not sure though.
-
-Thanks,
-Stefan
+SGmjrA0KDQpyaWNoYXJkIC1ydy0gd2VpbmJlcmdlciA8cmljaGFyZC53ZWluYmVyZ2VyQGdtYWls
+LmNvbT4g0LTT2iAyMDEzLTA0LTExIA0KMjI6NTM6MTU6DQoNCj4gSGkhDQo+IA0KPiBPbiBUaHUs
+IEFwciAxMSwgMjAxMyBhdCAxMToyMyBBTSwgIDx3YW5nLmJvMTE2QHp0ZS5jb20uY24+IHdyb3Rl
+Og0KPiA+IEhlbGxvo6wNCj4gPiAgICAgICAgIFdoZW4gdXNlIHViaSBmYXN0bWFwLGkgdGhpbmsg
+dGhlcmUgaXMgYSBtZW1vcnkgbGVhayBpbg0KPiA+ICJ1YmlfYXR0YWNoIiBmdW5jdGlvbi5UaGlu
+ayBhYm91dCB0aGlzIHNjZW5lo7oNCj4gPg0KPiA+ICAgICAgICAgMS4gSW4gInViaV9hdHRhY2gi
+IGZ1bmN0aW9uLCAiYWxsb2NfYWkiIGZ1bmN0aW9uIGNhbGxlZCB0byANCmFsbG9jIGENCj4gPiBz
+bGFiIGNhY2hlIG5hbWVkICJ1YmlfYWViX3NsYWJfY2FjaGUiLg0KPiA+ICAgICAgICAgVGhlbiB1
+c2UgImFpLT5hZWJfc2xhYl9jYWNoZSIgdG8gcmVjb3JkIHRoZSBjYWNoZS4NCj4gPg0KPiA+ICAg
+ICAgICAgMi4gdWJpX2F0dGFjaCAtPiBzY2FuX2Zhc3QgLT4gdWJpX3NjYW5fZmFzdG1hcCAtPg0K
+PiA+IHViaV9hdHRhY2hfZmFzdG1hcCwNCj4gPiAgICAgICAgIGluICJ1YmlfYXR0YWNoX2Zhc3Rt
+YXAiIGZ1bmN0aW9uLCBzbGFiIGNhY2hlIG5hbWVkDQo+ID4gInViaV9haW5mX3BlYl9zbGFiIiB3
+aWxsIGJlIGFsbG9jZWQuDQo+ID4gICAgICAgICBCZWNhdXNlIG9mIHRoaXMgc2xhYiBjYWNoZSBh
+bHNvIHJlY29yZGVkIGluIA0KImFpLT5hZWJfc2xhYl9jYWNoZSIsDQo+ID4gc28sIGluIGZhY3Qg
+aXQgb3ZlcndyaXRlIHRoZSBwcmV2aW91c2x5IG9uZS4NCj4gPg0KPiA+ICAgICAgICAgMy4gV2hl
+biAiZGVzdHJveV9haSIgY2FsbGVkICwgaXQgb25seSBmcmVlIA0KInViaV9haW5mX3BlYl9zbGFi
+Ii4NCj4gPg0KPiA+ICAgICAgICAgSSBtYWRlIGEgcGF0Y2ggYmFzZSBvbiBMaW51eCAzLjktcmM2
+LCBpdCBmaXggdGhpcyBwcm9ibGVtIHVzZSANCmENCj4gPiB0ZW1wb3JhcnkgYWkgZm9yIGZhc3Rt
+YXAgc2Nhbi4NCj4gPiAgICAgICAgIER1cmluZyBteSB0ZXN0LCB0aGlzIHBhdGNoIGxpa2Ugd29y
+ayBnb29kLg0KPiANCj4gU28sIHdlIGNhbGwgdWJpX3NjYW5fZmFzdG1hcCgpIHdpdGggYW4gYWkg
+d2hlcmUgLT5hZWJfc2xhYl9jYWNoZQ0KPiBwb2ludHMgYWxyZWFkeSB0byBhDQo+IHNsYWIgY2Fj
+aGU/DQo+IEkgdGhpbmsgaXQgd291bGQgYmUgYmVzdCB0byByZW1vdmUgdGhlIGttZW1fY2FjaGVf
+Y3JlYXRlKCkgZnJvbQ0KPiB1Ymlfc2Nhbl9mYXN0bWFwKCkNCj4gY29tcGxldGVseS4NCj4gDQo+
+IFdoYXQgZG8geW91IHRoaW5rPw0KPiANCj4gLS0NCj4gVGhhbmtzLA0KPiAvL3JpY2hhcmQNCg0K
+DQoNClllc6OsaSB0aGluayB1YmlfYXR0YWNoX2Zhc3RtYXAoKSBubyBuZWVkIHRvIGFsbG9jIHNs
+YWIgY2FjaGUsIGl0IGFscmVhZHkgDQpiZSBhbGxvY2VkIGluICJ1YmlfYXR0YWNoIi4NCmkgdGhp
+bmsgdGhlIGZsbG93ZWQgY29kZSBpbiAidWJpX2F0dGFjaF9mYXN0bWFwIiBpcyBuZWVkbGVzcy4N
+Cg0KICAgICAgICBhaS0+YWViX3NsYWJfY2FjaGUgPSBrbWVtX2NhY2hlX2NyZWF0ZSgidWJpX2Fp
+bmZfcGViX3NsYWIiLA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICBzaXplb2Yoc3RydWN0IA0KdWJpX2FpbmZfcGViKSwNCiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgMCwgMCwgTlVMTCk7DQogICAgICAgIGlmICghYWkt
+PmFlYl9zbGFiX2NhY2hlKSB7DQogICAgICAgICAgICAgICAgcmV0ID0gLUVOT01FTTsNCiAgICAg
+ICAgICAgICAgICBnb3RvIGZhaWw7DQogICAgICAgIH0NCg0KSSBub3RpY2UgdGhhdCAic2Nhbl9m
+YXN0IiBmdW5jdGlvbiB3aWxsIHNjYW4gUEVCIDAgdG8gVUJJX0ZNX01BWF9TVEFSVC0xIA0KdG8g
+ZmluZCBhIGZhc3RtYXAuDQpEdXJpbmcgdGhpcyBzY2FuLCBpdCB3aWxsIGNhbGwgImttZW1fY2Fj
+aGVfYWxsb2MiIHRvIGFsbG9jICJ1YmlfYWluZl9wZWIiIA0KZm9ybSBzbGFiLCBhbmQgYWRkIGl0
+IHRvIGEgbGlzdCBpbiBhaSwgDQpidXQgInViaV9hdHRhY2hfZmFzdG1hcCIgZXhwZWN0IHRoZSBs
+aXN0IGlzIGVtcHR5LCBzbyBpdCB3aWxsIHJlaW5pdCANCmFpLT5mcmVlIGxpc3QgYW5kIHNvIG9u
+Lg0KDQpJZiB1YmlfYXR0YWNoX2Zhc3RtYXAoKSB3YW50IHRvIHJldXNlIHRoZSBzbGFiIGNhY2hl
+LCB0aGUgYWxsb2NlZCBzbGFicyANCm11c3QgYmUgZnJlZWQgYmVmb3JlIHRoZSBsaXN0KGFpLT5m
+cmVlIGFuZCBzbyBvbikgYmUgaW5pdGVkLg0KDQpDb21wYXJlIHdpdGggZnJlZSBzbGFiIGJlZm9y
+ZSB1YmlfYXR0YWNoX2Zhc3RtYXAgZnVuY3Rpb24sIHVzZSBhIHRlbXBvcmFyeSANCmFpIGluIHNj
+YW5fZmFzdCBjYW4gdXNlICJkZXN0cm95X2FpIiBmdW5jdGlvbiBkaXJlY3RseS4NCg==
