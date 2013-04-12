@@ -1,13 +1,17 @@
-From: Arnd Bergmann <arnd@arndb.de>
-To: Kukjin Kim <kgene.kim@samsung.com>
-Subject: [PATCH v3 08/10] mtd: onenand/samsung: make regs-onenand.h file local
-Date: Thu, 11 Apr 2013 23:37:23 +0200
-Message-Id: <1365716245-99231-9-git-send-email-arnd@arndb.de>
-In-Reply-To: <1365716245-99231-1-git-send-email-arnd@arndb.de>
-References: <1365716245-99231-1-git-send-email-arnd@arndb.de>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-samsung-soc@vger.kernel.org,
- linux-mtd@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>,
- linux-arm-kernel@lists.infradead.org
+Message-ID: <5167A87A.3030002@aimvalley.nl>
+Date: Fri, 12 Apr 2013 08:23:54 +0200
+From: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
+MIME-Version: 1.0
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: cfi_cmdset_0002: do_write_buffer timeouts
+References: <CAN8TOE8dVYxBbb8MtozFio8dS-ypq14U8RuKTo38QcAtXM5Qrw@mail.gmail.com>
+ <CAN8TOE8BRhgi_ep8xypA_OwF4qfJikztmUcc-+XDB7hjnopuUA@mail.gmail.com>
+In-Reply-To: <CAN8TOE8BRhgi_ep8xypA_OwF4qfJikztmUcc-+XDB7hjnopuUA@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Huang Shijie <b32955@freescale.com>, Kevin Cernekee <cernekee@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,54 +21,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Nothing uses the NAND register definitions other than the
-actual driver, so we can move the header file into the
-same local directory, which lets us build it in a multiplatform
-configuration.
+On 04/11/13 11:00, Brian Norris wrote:
+> [Sorry for the repeat email for some; Gmail switched me back to
+> HTML-mode, so my previous email couldn't be delivered to the MTD list]
+>
+> Hi all,
+>
+> I'm having some trouble where I am getting timeouts in cfi_cmdset_0002.c:
+>
+> MTD do_write_buffer(): software timeout
+>
+> I'm using a 64Mbyte Spansion S29GL512 NOR flash:
+>
+> physmap-flash.0: Found 1 x16 devices at 0x0 in 16-bit bank.
+> Manufacturer ID 0x000001 Chip ID 0x002301
+>
+> I can reproduce the timeout approximately 0.5% of the time on a simple
+> reboot, mount UBI rootfs test. My system has CONFIG_HZ=250, and so the
+> timeout comes out to just 1 jiffy. I have to increase this timeout to
+> at least 3 ticks to avoid the timeouts. (I've been running reboot
+> tests successfully for several days with the timeout as 3 jiffies.)
+>
+> So my question is: what is the "best" way to decide these timeouts?
+> I'm inclined to just increase the timeout (and to use the proper
+> msecs_to_jiffies() macro, as a cleanup). But according to the
+> datasheets (which agree with the comments in the code), the max time
+> should be less than a millisecond. So simply increasing the timeout
+> may in fact just be masking some other bug.
+>
+> Huang,
+>
+> I noticed you recently sent a patch that adjusts the timeout print
+> message in do_write_buffer(). Have you had problems with this code
+> recently?
+>
+> Any thoughts from any interested (or uninterested) party would be useful.
+>
+> Thanks,
+> Brian
+>
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Kyungmin Park <kyungmin.park@samsung.com>
-Cc: linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>
+
+This:
+
+http://lkml.org/lkml/2009/9/3/84
+
+maybe your problem.
+
+Try disabling CONFIG_NO_HZ and you know for sure.
+
 ---
- drivers/mtd/onenand/samsung.c                                         | 4 ++--
- .../include/plat/regs-onenand.h => drivers/mtd/onenand/samsung.h      | 2 --
- 2 files changed, 2 insertions(+), 4 deletions(-)
- rename arch/arm/plat-samsung/include/plat/regs-onenand.h => drivers/mtd/onenand/samsung.h (98%)
-
-diff --git a/drivers/mtd/onenand/samsung.c b/drivers/mtd/onenand/samsung.c
-index 33f2a8f..2cf7408 100644
---- a/drivers/mtd/onenand/samsung.c
-+++ b/drivers/mtd/onenand/samsung.c
-@@ -23,11 +23,11 @@
- #include <linux/mtd/partitions.h>
- #include <linux/dma-mapping.h>
- #include <linux/interrupt.h>
-+#include <linux/io.h>
- 
- #include <asm/mach/flash.h>
--#include <plat/regs-onenand.h>
- 
--#include <linux/io.h>
-+#include "samsung.h"
- 
- enum soc_type {
- 	TYPE_S3C6400,
-diff --git a/arch/arm/plat-samsung/include/plat/regs-onenand.h b/drivers/mtd/onenand/samsung.h
-similarity index 98%
-rename from arch/arm/plat-samsung/include/plat/regs-onenand.h
-rename to drivers/mtd/onenand/samsung.h
-index 930ea8b..c4a80e6 100644
---- a/arch/arm/plat-samsung/include/plat/regs-onenand.h
-+++ b/drivers/mtd/onenand/samsung.h
-@@ -11,8 +11,6 @@
- #ifndef __SAMSUNG_ONENAND_H__
- #define __SAMSUNG_ONENAND_H__
- 
--#include <mach/hardware.h>
--
- /*
-  * OneNAND Controller
-  */
--- 
-1.8.1.2
+Norbert
