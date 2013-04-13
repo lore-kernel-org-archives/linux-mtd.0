@@ -1,22 +1,25 @@
-Received: from mail-vb0-x230.google.com ([2607:f8b0:400c:c02::230])
+Received: from f323.mail.ru ([128.140.169.186])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UQzfF-0003go-Oj
- for linux-mtd@lists.infradead.org; Sat, 13 Apr 2013 12:34:42 +0000
-Received: by mail-vb0-f48.google.com with SMTP id p13so2734006vbe.21
- for <linux-mtd@lists.infradead.org>; Sat, 13 Apr 2013 05:34:37 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1365836798-29035-2-git-send-email-shc_work@mail.ru>
+ id 1UQzn1-0003ll-7v
+ for linux-mtd@lists.infradead.org; Sat, 13 Apr 2013 12:42:45 +0000
+From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+To: =?UTF-8?B?RmFiaW8gRXN0ZXZhbQ==?= <festevam@gmail.com>
+Subject: =?UTF-8?B?UmVbMl06IFtQQVRDSCAyLzVdIG10ZDogbmFuZC1ncGlvOiBVc2luZyByZXNv?=
+ =?UTF-8?B?dXJjZS1tYW5hZ2VkIGZ1bmN0aW9ucw==?=
+Mime-Version: 1.0
+Date: Sat, 13 Apr 2013 16:42:37 +0400
+Message-ID: <1365856957.448835901@f323.mail.ru>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
+In-Reply-To: <CAOMZO5CVtOEUk9i7LuXU+Td7qeMHfwYBwk+NZW0S-PYXfYZWsg@mail.gmail.com>
 References: <1365836798-29035-1-git-send-email-shc_work@mail.ru>
  <1365836798-29035-2-git-send-email-shc_work@mail.ru>
-Date: Sat, 13 Apr 2013 09:34:37 -0300
-Message-ID: <CAOMZO5CVtOEUk9i7LuXU+Td7qeMHfwYBwk+NZW0S-PYXfYZWsg@mail.gmail.com>
-Subject: Re: [PATCH 2/5] mtd: nand-gpio: Using resource-managed functions
-From: Fabio Estevam <festevam@gmail.com>
-To: Alexander Shiyan <shc_work@mail.ru>
-Content-Type: text/plain; charset=UTF-8
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>
+ <CAOMZO5CVtOEUk9i7LuXU+Td7qeMHfwYBwk+NZW0S-PYXfYZWsg@mail.gmail.com>
+Cc: =?UTF-8?B?QXJ0ZW0gQml0eXV0c2tpeQ==?= <artem.bityutskiy@linux.intel.com>,
+ =?UTF-8?B?QnJpYW4gTm9ycmlz?= <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org,
+ =?UTF-8?B?RGF2aWQgV29vZGhvdXNl?= <dwmw2@infradead.org>
+Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,15 +29,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Apr 13, 2013 at 4:06 AM, Alexander Shiyan <shc_work@mail.ru> wrote:
-
-> -       res1 = gpio_nand_get_io_sync(dev);
-> -       if (res1) {
-> -               gpiomtd->io_sync = request_and_remap(res1, 4, "NAND sync", &ret);
-> +       res = gpio_nand_get_io_sync(pdev);
-> +       if (res) {
-> +               gpiomtd->io_sync = devm_request_and_ioremap(&pdev->dev, res);
-
-Documentation/driver-model/devres.txt says
-
-devm_request_and_ioremap() : obsoleted by devm_ioremap_resource()
+PiBPbiBTYXQsIEFwciAxMywgMjAxMyBhdCA0OjA2IEFNLCBBbGV4YW5kZXIgU2hpeWFuIDxzaGNf
+d29ya0BtYWlsLnJ1PiB3cm90ZToKPiAKPiA+IC0gICAgICAgcmVzMSA9IGdwaW9fbmFuZF9nZXRf
+aW9fc3luYyhkZXYpOwo+ID4gLSAgICAgICBpZiAocmVzMSkgewo+ID4gLSAgICAgICAgICAgICAg
+IGdwaW9tdGQtPmlvX3N5bmMgPSByZXF1ZXN0X2FuZF9yZW1hcChyZXMxLCA0LCAiTkFORCBzeW5j
+IiwgJnJldCk7Cj4gPiArICAgICAgIHJlcyA9IGdwaW9fbmFuZF9nZXRfaW9fc3luYyhwZGV2KTsK
+PiA+ICsgICAgICAgaWYgKHJlcykgewo+ID4gKyAgICAgICAgICAgICAgIGdwaW9tdGQtPmlvX3N5
+bmMgPSBkZXZtX3JlcXVlc3RfYW5kX2lvcmVtYXAoJnBkZXYtPmRldiwgcmVzKTsKPiAKPiBEb2N1
+bWVudGF0aW9uL2RyaXZlci1tb2RlbC9kZXZyZXMudHh0IHNheXMKPiAKPiBkZXZtX3JlcXVlc3Rf
+YW5kX2lvcmVtYXAoKSA6IG9ic29sZXRlZCBieSBkZXZtX2lvcmVtYXBfcmVzb3VyY2UoKQoKV2ls
+bCBrZWVwIHRoaXMgaW4gbWluZCBidXQgSSBjYW5ub3QgdGVzdCB0aGlzIHNpbmNlIEkgcGFzcyB0
+ZXN0cyB3aXRoIDMuOC4KVGhhbmtzLgoKLS0tCg==
