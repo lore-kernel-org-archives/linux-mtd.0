@@ -1,25 +1,20 @@
-Received: from f323.mail.ru ([128.140.169.186])
+Received: from mail-pb0-f47.google.com ([209.85.160.47])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UQzn1-0003ll-7v
- for linux-mtd@lists.infradead.org; Sat, 13 Apr 2013 12:42:45 +0000
-From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
-To: =?UTF-8?B?RmFiaW8gRXN0ZXZhbQ==?= <festevam@gmail.com>
-Subject: =?UTF-8?B?UmVbMl06IFtQQVRDSCAyLzVdIG10ZDogbmFuZC1ncGlvOiBVc2luZyByZXNv?=
- =?UTF-8?B?dXJjZS1tYW5hZ2VkIGZ1bmN0aW9ucw==?=
-Mime-Version: 1.0
-Date: Sat, 13 Apr 2013 16:42:37 +0400
-Message-ID: <1365856957.448835901@f323.mail.ru>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-In-Reply-To: <CAOMZO5CVtOEUk9i7LuXU+Td7qeMHfwYBwk+NZW0S-PYXfYZWsg@mail.gmail.com>
-References: <1365836798-29035-1-git-send-email-shc_work@mail.ru>
- <1365836798-29035-2-git-send-email-shc_work@mail.ru>
- <CAOMZO5CVtOEUk9i7LuXU+Td7qeMHfwYBwk+NZW0S-PYXfYZWsg@mail.gmail.com>
-Cc: =?UTF-8?B?QXJ0ZW0gQml0eXV0c2tpeQ==?= <artem.bityutskiy@linux.intel.com>,
- =?UTF-8?B?QnJpYW4gTm9ycmlz?= <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org,
- =?UTF-8?B?RGF2aWQgV29vZGhvdXNl?= <dwmw2@infradead.org>
-Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+ id 1UR0eg-0004SE-92
+ for linux-mtd@lists.infradead.org; Sat, 13 Apr 2013 13:38:11 +0000
+Received: by mail-pb0-f47.google.com with SMTP id rq13so1834351pbb.6
+ for <linux-mtd@lists.infradead.org>; Sat, 13 Apr 2013 06:38:08 -0700 (PDT)
+From: Namjae Jeon <linkinjeon@gmail.com>
+To: dwmw2@infradead.org, axboe@kernel.dk, shli@kernel.org,
+ Paul.Clements@steeleye.com, npiggin@kernel.dk, neilb@suse.de,
+ cjb@laptop.org, adrian.hunter@intel.com
+Subject: [PATCH 0/8] fix max discard sectors limit
+Date: Sat, 13 Apr 2013 22:37:29 +0900
+Message-Id: <1365860249-21193-1-git-send-email-linkinjeon@gmail.com>
+Cc: nbd-general@lists.sourceforge.net, Namjae Jeon <linkinjeon@gmail.com>,
+ Namjae Jeon <namjae.jeon@samsung.com>, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,14 +24,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiBPbiBTYXQsIEFwciAxMywgMjAxMyBhdCA0OjA2IEFNLCBBbGV4YW5kZXIgU2hpeWFuIDxzaGNf
-d29ya0BtYWlsLnJ1PiB3cm90ZToKPiAKPiA+IC0gICAgICAgcmVzMSA9IGdwaW9fbmFuZF9nZXRf
-aW9fc3luYyhkZXYpOwo+ID4gLSAgICAgICBpZiAocmVzMSkgewo+ID4gLSAgICAgICAgICAgICAg
-IGdwaW9tdGQtPmlvX3N5bmMgPSByZXF1ZXN0X2FuZF9yZW1hcChyZXMxLCA0LCAiTkFORCBzeW5j
-IiwgJnJldCk7Cj4gPiArICAgICAgIHJlcyA9IGdwaW9fbmFuZF9nZXRfaW9fc3luYyhwZGV2KTsK
-PiA+ICsgICAgICAgaWYgKHJlcykgewo+ID4gKyAgICAgICAgICAgICAgIGdwaW9tdGQtPmlvX3N5
-bmMgPSBkZXZtX3JlcXVlc3RfYW5kX2lvcmVtYXAoJnBkZXYtPmRldiwgcmVzKTsKPiAKPiBEb2N1
-bWVudGF0aW9uL2RyaXZlci1tb2RlbC9kZXZyZXMudHh0IHNheXMKPiAKPiBkZXZtX3JlcXVlc3Rf
-YW5kX2lvcmVtYXAoKSA6IG9ic29sZXRlZCBieSBkZXZtX2lvcmVtYXBfcmVzb3VyY2UoKQoKV2ls
-bCBrZWVwIHRoaXMgaW4gbWluZCBidXQgSSBjYW5ub3QgdGVzdCB0aGlzIHNpbmNlIEkgcGFzcyB0
-ZXN0cyB3aXRoIDMuOC4KVGhhbmtzLgoKLS0tCg==
+From: Namjae Jeon <namjae.jeon@samsung.com>
+
+linux-v3.8-rc1 and later support for plug for blkdev_issue_discard with
+commit 0cfbcafcae8b7364b5fa96c2b26ccde7a3a296a9 
+(block: add plug for blkdev_issue_discard )
+
+For example,
+1) DISCARD rq-1 with size size 4GB
+2) DISCARD rq-2 with size size 1GB
+
+If these 2 discard requests get merged, final request size will be 5GB.
+
+In this case, request's __data_len field may overflow as it can store
+max 4GB(unsigned int).
+
+This issue was observed while doing mkfs.f2fs on 5GB SD card:
+https://lkml.org/lkml/2013/4/1/292
+
+# mkfs.f2fs /dev/mmcblk0p3
+Info: sector size = 512
+Info: total sectors = 11370496 (in 512bytes)
+Info: zone aligned segment0 blkaddr: 512
+[  257.789764] blk_update_request: bio idx 0 >= vcnt 0
+
+mkfs process gets stuck in D state and I see the following in the dmesg:
+
+[  257.789733] __end_that: dev mmcblk0: type=1, flags=122c8081
+[  257.789764]   sector 4194304, nr/cnr 2981888/4294959104
+[  257.789764]   bio df3840c0, biotail df3848c0, buffer   (null), len 1526726656
+[  257.789764] blk_update_request: bio idx 0 >= vcnt 0
+[  257.794921] request botched: dev mmcblk0: type=1, flags=122c8081
+[  257.794921]   sector 4194304, nr/cnr 2981888/4294959104
+[  257.794921]   bio df3840c0, biotail df3848c0, buffer   (null), len 1526726656
+
+Few drivers(e.g. mmc, mtd..) set q->limits.max_discard_sectors
+more than UINT_MAX >> 9 sectors which is incorrect and it may lead to overflow
+of request's __data_len field if merged discard request's size exceeds 4GB.
+
+This patchset fixes this issue by updating helper function
+blk_queue_max_discard_sectors which is used to set max_discard_sectors limit.
+
+This patchset also replaces "q->limits.max_discard_sector = max_discard_sectors"
+with blk_queue_max_discard_sectors call in other drivers like mmc, mtd etc.
+
+Namjae Jeon (8):
+  block: fix max discard sectors limit
+  mmc: fix max_discard_sectors
+  mtd: use generic helper to set max_discard_sectors
+  loop: use generic helper to set max_discard_sectors
+  nbd: use generic helper to set max_discard_sectors
+  brd: use generic helper to set max_discard_sectors
+  dm thin: use generic helper to set max_discard_sectors
+  bcache: use generic helper to set max_discard_sectors
+-- 
+1.7.9.5
