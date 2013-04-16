@@ -1,16 +1,20 @@
-Received: from out1.zte.com.cn ([202.103.147.172] helo=zte.com.cn)
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1US1f4-0000HH-20
- for linux-mtd@lists.infradead.org; Tue, 16 Apr 2013 08:54:47 +0000
-To: artem.bityutskiy@linux.intel.com, richard.weinberger@gmail.com
-Subject: [PATCH] UBI: fix memory leak when use fastmap
-MIME-Version: 1.0
-Message-ID: <OFCF117D0B.61A9CA12-ON48257B4F.002F2292-48257B4F.0030E459@zte.com.cn>
-From: wang.bo116@zte.com.cn
-Date: Tue, 16 Apr 2013 16:53:55 +0800
-Content-Type: text/plain; charset="US-ASCII"
-Cc: liu.dong3@zte.com.cn, wang.bo116@zte.com.cn, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, cui.yunfeng@zte.com.cn
+ id 1US6KW-0006M6-Bh
+ for linux-mtd@lists.infradead.org; Tue, 16 Apr 2013 13:53:54 +0000
+Message-ID: <1366120517.2768.109.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 00/11] mtd: add datasheet's ECC information to nand_chip{}
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Date: Tue, 16 Apr 2013 16:55:17 +0300
+In-Reply-To: <1363605534-24776-1-git-send-email-b32955@freescale.com>
+References: <1363605534-24776-1-git-send-email-b32955@freescale.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
+ matthieu.castet@parrot.com
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,155 +24,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
-        Sorry, there is still something wrong with the previous patch's 
-format, try to submit it again. When use ubi fastmap, there is a memory 
-leak which will make destroy_ai() fail to free the slab alloced in 
-scan_fast(). The following patch fix this problem by use a temporary 
-"ubi_attach_info" variable in scan_fast().
+On Mon, 2013-03-18 at 19:18 +0800, Huang Shijie wrote:
+> 1.) Why add the ECC information to the nand_chip{} ?
+>    Each nand chip has its requirement for the ECC correctability, such as
+>    "4bit ECC for each 512Byte" or "40bit ECC for each 1024Byte".
+>    This ECC info is very important to the nand controller, such as gpmi.
 
+Unfortunately no-one reviewed your patches. Let me CC Brian.
 
-diff -uprN a/linux-3.9-rc6/drivers/mtd/ubi/attach.c 
-b/linux-3.9-rc6/drivers/mtd/ubi/attach.c
---- a/linux-3.9-rc6/drivers/mtd/ubi/attach.c    2013-04-08 
-03:49:54.000000000 +0000
-+++ b/linux-3.9-rc6/drivers/mtd/ubi/attach.c    2013-04-16 
-03:22:47.343750000 +0000
-@@ -1212,6 +1212,30 @@ static void destroy_ai(struct ubi_attach
-        kfree(ai);
- }
- 
-+static struct ubi_attach_info *alloc_ai(const char *slab_name)
-+{
-+       struct ubi_attach_info *ai;
-+
-+       ai = kzalloc(sizeof(struct ubi_attach_info), GFP_KERNEL);
-+       if (!ai)
-+               return ai;
-+
-+       INIT_LIST_HEAD(&ai->corr);
-+       INIT_LIST_HEAD(&ai->free);
-+       INIT_LIST_HEAD(&ai->erase);
-+       INIT_LIST_HEAD(&ai->alien);
-+       ai->volumes = RB_ROOT;
-+       ai->aeb_slab_cache = kmem_cache_create(slab_name,
-+                                          sizeof(struct ubi_ainf_peb),
-+                                              0, 0, NULL);
-+       if (!ai->aeb_slab_cache) {
-+               kfree(ai);
-+               ai = NULL;
-+       }
-+
-+       return ai;
-+}
-+
- /**
-  * scan_all - scan entire MTD device.
-  * @ubi: UBI device description object
-@@ -1315,8 +1339,13 @@ static int scan_fast(struct ubi_device *
-        int err, pnum, fm_anchor = -1;
-        unsigned long long max_sqnum = 0;
- 
-+       struct ubi_attach_info *fm_temp_ai = NULL;
-        err = -ENOMEM;
- 
-+       fm_temp_ai = alloc_ai("ubi_scan_fastmap_slab_cache");
-+       if (!fm_temp_ai)
-+               goto out;
-+
-        ech = kzalloc(ubi->ec_hdr_alsize, GFP_KERNEL);
-        if (!ech)
-                goto out;
-@@ -1331,7 +1360,7 @@ static int scan_fast(struct ubi_device *
-                cond_resched();
- 
-                dbg_gen("process PEB %d", pnum);
--               err = scan_peb(ubi, ai, pnum, &vol_id, &sqnum);
-+               err = scan_peb(ubi, fm_temp_ai, pnum, &vol_id, &sqnum);
-                if (err < 0)
-                        goto out_vidh;
- 
-@@ -1343,6 +1372,7 @@ static int scan_fast(struct ubi_device *
- 
-        ubi_free_vid_hdr(ubi, vidh);
-        kfree(ech);
-+       destroy_ai(fm_temp_ai);
- 
-        if (fm_anchor < 0)
-                return UBI_NO_FASTMAP;
-@@ -1351,6 +1381,7 @@ static int scan_fast(struct ubi_device *
- 
- out_vidh:
-        ubi_free_vid_hdr(ubi, vidh);
-+       destroy_ai(fm_temp_ai);
- out_ech:
-        kfree(ech);
- out:
-@@ -1359,29 +1390,6 @@ out:
- 
- #endif
- 
--static struct ubi_attach_info *alloc_ai(const char *slab_name)
--{
--       struct ubi_attach_info *ai;
--
--       ai = kzalloc(sizeof(struct ubi_attach_info), GFP_KERNEL);
--       if (!ai)
--               return ai;
--
--       INIT_LIST_HEAD(&ai->corr);
--       INIT_LIST_HEAD(&ai->free);
--       INIT_LIST_HEAD(&ai->erase);
--       INIT_LIST_HEAD(&ai->alien);
--       ai->volumes = RB_ROOT;
--       ai->aeb_slab_cache = kmem_cache_create(slab_name,
--                                          sizeof(struct ubi_ainf_peb),
--                                              0, 0, NULL);
--       if (!ai->aeb_slab_cache) {
--               kfree(ai);
--               ai = NULL;
--       }
--
--       return ai;
--}
- 
- /**
-  * ubi_attach - attach an MTD device.
-@@ -1419,7 +1427,7 @@ int ubi_attach(struct ubi_device *ubi, i
-                                        return -ENOMEM;
-                        }
- 
--                       err = scan_all(ubi, ai, UBI_FM_MAX_START);
-+                       err = scan_all(ubi, ai, 0);
-                }
-        }
- #else
- 
-diff -uprN a/linux-3.9-rc6/drivers/mtd/ubi/fastmap.c 
-b/linux-3.9-rc6/drivers/mtd/ubi/fastmap.c
---- a/linux-3.9-rc6/drivers/mtd/ubi/fastmap.c   2013-04-08 
-03:49:54.000000000 +0000
-+++ b/linux-3.9-rc6/drivers/mtd/ubi/fastmap.c   2013-04-16 
-03:22:17.468750000 +0000
-@@ -552,21 +552,8 @@ static int ubi_attach_fastmap(struct ubi
-        INIT_LIST_HEAD(&used);
-        INIT_LIST_HEAD(&free);
-        INIT_LIST_HEAD(&eba_orphans);
--       INIT_LIST_HEAD(&ai->corr);
--       INIT_LIST_HEAD(&ai->free);
--       INIT_LIST_HEAD(&ai->erase);
--       INIT_LIST_HEAD(&ai->alien);
--       ai->volumes = RB_ROOT;
-        ai->min_ec = UBI_MAX_ERASECOUNTER;
- 
--       ai->aeb_slab_cache = kmem_cache_create("ubi_ainf_peb_slab",
--                                          sizeof(struct ubi_ainf_peb),
--                                              0, 0, NULL);
--       if (!ai->aeb_slab_cache) {
--               ret = -ENOMEM;
--               goto fail;
--       }
--
-        fmsb = (struct ubi_fm_sb *)(fm_raw);
-        ai->max_sqnum = fmsb->sqnum;
-        fm_pos += sizeof(struct ubi_fm_sb);
+I've pushed patches 1-3 to l2-mtd.git so far.
+
+-- 
+Best Regards,
+Artem Bityutskiy
