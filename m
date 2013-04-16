@@ -1,13 +1,13 @@
 Received: from mx7.zte.com.cn ([202.103.147.169] helo=zte.com.cn)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1US0U4-0007Jn-6G
- for linux-mtd@lists.infradead.org; Tue, 16 Apr 2013 07:39:21 +0000
+ id 1US0YS-0007OB-TB
+ for linux-mtd@lists.infradead.org; Tue, 16 Apr 2013 07:43:54 +0000
 To: linux-mtd@lists.infradead.org
-Subject: 
+Subject: [PATCH] UBI: fix memory leak when use fastmap
 MIME-Version: 1.0
-Message-ID: <OF4A055B7D.2DBB5049-ON48257B4F.002965EA-48257B4F.002A02DB@zte.com.cn>
+Message-ID: <OF5B457772.5235C9A1-ON48257B4F.002A2C13-48257B4F.002A691B@zte.com.cn>
 From: wang.bo116@zte.com.cn
-Date: Tue, 16 Apr 2013 15:38:46 +0800
+Date: Tue, 16 Apr 2013 15:43:07 +0800
 Content-Type: text/plain; charset="US-ASCII"
 Cc: richard.weinberger@gmail.com, liu.dong3@zte.com.cn, wang.bo116@zte.com.cn,
  linux-kernel@vger.kernel.org, cui.yunfeng@zte.com.cn
@@ -20,11 +20,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-UBI: fix memory leak when use fastmap
-
-Sorry, there is something wrong with the previous patch's format, try to 
-submit it again.
-
+Hello,
+    Sorry, there is something wrong with the previous patch's format, try 
+to submit it again.
 When use ubi fastmap, there is a memory leak which will make destroy_ai() 
 fail to free the slab.
 The following patch base on linux-3.9-rc6 fix this problem.
