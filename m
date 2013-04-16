@@ -1,15 +1,15 @@
 Received: from mx7.zte.com.cn ([202.103.147.169] helo=zte.com.cn)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1URzR0-00066P-Of
- for linux-mtd@lists.infradead.org; Tue, 16 Apr 2013 06:32:09 +0000
-To: richard.weinberger@gmail.com, Artem.Bityutskiy@nokia.com
-Subject: [PATCH] UBI: fix memory leak when use fastmap
+ id 1US0U4-0007Jn-6G
+ for linux-mtd@lists.infradead.org; Tue, 16 Apr 2013 07:39:21 +0000
+To: linux-mtd@lists.infradead.org
+Subject: 
 MIME-Version: 1.0
-Message-ID: <OF977C9455.A4106C5F-ON48257B4F.0022FF01-48257B4F.0023D416@zte.com.cn>
+Message-ID: <OF4A055B7D.2DBB5049-ON48257B4F.002965EA-48257B4F.002A02DB@zte.com.cn>
 From: wang.bo116@zte.com.cn
-Date: Tue, 16 Apr 2013 14:31:14 +0800
+Date: Tue, 16 Apr 2013 15:38:46 +0800
 Content-Type: text/plain; charset="US-ASCII"
-Cc: liu.dong3@zte.com.cn, linux-mtd@lists.infradead.org,
+Cc: richard.weinberger@gmail.com, liu.dong3@zte.com.cn, wang.bo116@zte.com.cn,
  linux-kernel@vger.kernel.org, cui.yunfeng@zte.com.cn
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -22,8 +22,11 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 UBI: fix memory leak when use fastmap
 
+Sorry, there is something wrong with the previous patch's format, try to 
+submit it again.
+
 When use ubi fastmap, there is a memory leak which will make destroy_ai() 
-called in ubi_attach fail.
+fail to free the slab.
 The following patch base on linux-3.9-rc6 fix this problem.
 
 
@@ -48,8 +51,7 @@ diff -uprN old_ubi/attach.c new_ubi/attach.c
 +       INIT_LIST_HEAD(&ai->alien);
 +       ai->volumes = RB_ROOT;
 +       ai->aeb_slab_cache = kmem_cache_create(slab_name,
-+                                              sizeof(struct 
-ubi_ainf_peb),
++                                          sizeof(struct ubi_ainf_peb),
 +                                              0, 0, NULL);
 +       if (!ai->aeb_slab_cache) {
 +               kfree(ai);
@@ -66,11 +68,11 @@ ubi_ainf_peb),
         int err, pnum, fm_anchor = -1;
         unsigned long long max_sqnum = 0;
  
-+       struct ubi_attach_info *fastmap_temp_ai = NULL;
++       struct ubi_attach_info *fm_temp_ai = NULL;
         err = -ENOMEM;
  
-+       fastmap_temp_ai = alloc_ai("ubi_scan_fastmap_slab_cache");
-+       if (!fastmap_temp_ai)
++       fm_temp_ai = alloc_ai("ubi_scan_fastmap_slab_cache");
++       if (!fm_temp_ai)
 +               goto out;
 +
         ech = kzalloc(ubi->ec_hdr_alsize, GFP_KERNEL);
@@ -81,8 +83,7 @@ ubi_ainf_peb),
  
                 dbg_gen("process PEB %d", pnum);
 -               err = scan_peb(ubi, ai, pnum, &vol_id, &sqnum);
-+               err = scan_peb(ubi, fastmap_temp_ai, pnum, &vol_id, 
-&sqnum);
++               err = scan_peb(ubi, fm_temp_ai, pnum, &vol_id, &sqnum);
                 if (err < 0)
                         goto out_vidh;
  
@@ -90,7 +91,7 @@ ubi_ainf_peb),
  
         ubi_free_vid_hdr(ubi, vidh);
         kfree(ech);
-+       destroy_ai(fastmap_temp_ai);
++       destroy_ai(fm_temp_ai);
  
         if (fm_anchor < 0)
                 return UBI_NO_FASTMAP;
@@ -98,7 +99,7 @@ ubi_ainf_peb),
  
  out_vidh:
         ubi_free_vid_hdr(ubi, vidh);
-+       destroy_ai(fastmap_temp_ai);
++       destroy_ai(fm_temp_ai);
  out_ech:
         kfree(ech);
  out:
@@ -120,8 +121,7 @@ ubi_ainf_peb),
 -       INIT_LIST_HEAD(&ai->alien);
 -       ai->volumes = RB_ROOT;
 -       ai->aeb_slab_cache = kmem_cache_create(slab_name,
--                                              sizeof(struct 
-ubi_ainf_peb),
+-                                          sizeof(struct ubi_ainf_peb),
 -                                              0, 0, NULL);
 -       if (!ai->aeb_slab_cache) {
 -               kfree(ai);
@@ -159,8 +159,7 @@ diff -uprN old_ubi/fastmap.c new_ubi/fastmap.c
         ai->min_ec = UBI_MAX_ERASECOUNTER;
  
 -       ai->aeb_slab_cache = kmem_cache_create("ubi_ainf_peb_slab",
--                                              sizeof(struct 
-ubi_ainf_peb),
+-                                          sizeof(struct ubi_ainf_peb),
 -                                              0, 0, NULL);
 -       if (!ai->aeb_slab_cache) {
 -               ret = -ENOMEM;
