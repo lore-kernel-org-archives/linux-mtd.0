@@ -1,27 +1,16 @@
-Received: from mail-da0-x22d.google.com ([2607:f8b0:400e:c00::22d])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1URs02-0008JX-UE
- for linux-mtd@lists.infradead.org; Mon, 15 Apr 2013 22:35:47 +0000
-Received: by mail-da0-f45.google.com with SMTP id v40so2283774dad.4
- for <linux-mtd@lists.infradead.org>; Mon, 15 Apr 2013 15:35:42 -0700 (PDT)
-Date: Mon, 15 Apr 2013 15:35:32 -0700
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [ 10/11] mtdchar: fix offset overflow detection
-Message-ID: <20130415223532.GB10195@kroah.com>
-References: <20130415020614.067692418@linuxfoundation.org>
- <20130415020614.846683113@linuxfoundation.org>
- <1366059320.3072.65.camel@shinybook.infradead.org>
+Received: from mx7.zte.com.cn ([202.103.147.169] helo=zte.com.cn)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1URzR0-00066P-Of
+ for linux-mtd@lists.infradead.org; Tue, 16 Apr 2013 06:32:09 +0000
+To: richard.weinberger@gmail.com, Artem.Bityutskiy@nokia.com
+Subject: [PATCH] UBI: fix memory leak when use fastmap
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1366059320.3072.65.camel@shinybook.infradead.org>
-Cc: Brad Spengler <spender@grsecurity.net>,
- Suresh Siddha <suresh.b.siddha@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org, linux-mtd@lists.infradead.org,
- Ben Hutchings <ben@decadent.org.uk>
+Message-ID: <OF977C9455.A4106C5F-ON48257B4F.0022FF01-48257B4F.0023D416@zte.com.cn>
+From: wang.bo116@zte.com.cn
+Date: Tue, 16 Apr 2013 14:31:14 +0800
+Content-Type: text/plain; charset="US-ASCII"
+Cc: liu.dong3@zte.com.cn, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, cui.yunfeng@zte.com.cn
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,19 +20,159 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Apr 15, 2013 at 09:55:20PM +0100, David Woodhouse wrote:
-> On Sun, 2013-04-14 at 19:17 -0700, Greg Kroah-Hartman wrote:
-> > 3.0-stable review patch.  If anyone has any objections, please let me know.
-> 
-> Please use f5cf8f07423b2677cebebcebc863af77223a4972 instead (for 3.4
-> too).
+UBI: fix memory leak when use fastmap
 
-Really?  I love the comment in that commit, "disable it for now until it
-can be fixed properly in the next merge window."  Yet that was back in
-October of last year, no one has actually fixed this issue, is that
-because it can't be properly fixed, or just because no one got around to
-it?
+When use ubi fastmap, there is a memory leak which will make destroy_ai() 
+called in ubi_attach fail.
+The following patch base on linux-3.9-rc6 fix this problem.
 
-thanks,
 
-greg k-h
+diff -uprN old_ubi/attach.c new_ubi/attach.c
+--- old_ubi/attach.c    2013-04-08 03:49:54.000000000 +0000
++++ new_ubi/attach.c    2013-04-16 03:22:47.343750000 +0000
+@@ -1212,6 +1212,30 @@ static void destroy_ai(struct ubi_attach
+        kfree(ai);
+ }
+ 
++static struct ubi_attach_info *alloc_ai(const char *slab_name)
++{
++       struct ubi_attach_info *ai;
++
++       ai = kzalloc(sizeof(struct ubi_attach_info), GFP_KERNEL);
++       if (!ai)
++               return ai;
++
++       INIT_LIST_HEAD(&ai->corr);
++       INIT_LIST_HEAD(&ai->free);
++       INIT_LIST_HEAD(&ai->erase);
++       INIT_LIST_HEAD(&ai->alien);
++       ai->volumes = RB_ROOT;
++       ai->aeb_slab_cache = kmem_cache_create(slab_name,
++                                              sizeof(struct 
+ubi_ainf_peb),
++                                              0, 0, NULL);
++       if (!ai->aeb_slab_cache) {
++               kfree(ai);
++               ai = NULL;
++       }
++
++       return ai;
++}
++
+ /**
+  * scan_all - scan entire MTD device.
+  * @ubi: UBI device description object
+@@ -1315,8 +1339,13 @@ static int scan_fast(struct ubi_device *
+        int err, pnum, fm_anchor = -1;
+        unsigned long long max_sqnum = 0;
+ 
++       struct ubi_attach_info *fastmap_temp_ai = NULL;
+        err = -ENOMEM;
+ 
++       fastmap_temp_ai = alloc_ai("ubi_scan_fastmap_slab_cache");
++       if (!fastmap_temp_ai)
++               goto out;
++
+        ech = kzalloc(ubi->ec_hdr_alsize, GFP_KERNEL);
+        if (!ech)
+                goto out;
+@@ -1331,7 +1360,7 @@ static int scan_fast(struct ubi_device *
+                cond_resched();
+ 
+                dbg_gen("process PEB %d", pnum);
+-               err = scan_peb(ubi, ai, pnum, &vol_id, &sqnum);
++               err = scan_peb(ubi, fastmap_temp_ai, pnum, &vol_id, 
+&sqnum);
+                if (err < 0)
+                        goto out_vidh;
+ 
+@@ -1343,6 +1372,7 @@ static int scan_fast(struct ubi_device *
+ 
+        ubi_free_vid_hdr(ubi, vidh);
+        kfree(ech);
++       destroy_ai(fastmap_temp_ai);
+ 
+        if (fm_anchor < 0)
+                return UBI_NO_FASTMAP;
+@@ -1351,6 +1381,7 @@ static int scan_fast(struct ubi_device *
+ 
+ out_vidh:
+        ubi_free_vid_hdr(ubi, vidh);
++       destroy_ai(fastmap_temp_ai);
+ out_ech:
+        kfree(ech);
+ out:
+@@ -1359,29 +1390,6 @@ out:
+ 
+ #endif
+ 
+-static struct ubi_attach_info *alloc_ai(const char *slab_name)
+-{
+-       struct ubi_attach_info *ai;
+-
+-       ai = kzalloc(sizeof(struct ubi_attach_info), GFP_KERNEL);
+-       if (!ai)
+-               return ai;
+-
+-       INIT_LIST_HEAD(&ai->corr);
+-       INIT_LIST_HEAD(&ai->free);
+-       INIT_LIST_HEAD(&ai->erase);
+-       INIT_LIST_HEAD(&ai->alien);
+-       ai->volumes = RB_ROOT;
+-       ai->aeb_slab_cache = kmem_cache_create(slab_name,
+-                                              sizeof(struct 
+ubi_ainf_peb),
+-                                              0, 0, NULL);
+-       if (!ai->aeb_slab_cache) {
+-               kfree(ai);
+-               ai = NULL;
+-       }
+-
+-       return ai;
+-}
+ 
+ /**
+  * ubi_attach - attach an MTD device.
+@@ -1419,7 +1427,7 @@ int ubi_attach(struct ubi_device *ubi, i
+                                        return -ENOMEM;
+                        }
+ 
+-                       err = scan_all(ubi, ai, UBI_FM_MAX_START);
++                       err = scan_all(ubi, ai, 0);
+                }
+        }
+ #else
+ 
+ 
+diff -uprN old_ubi/fastmap.c new_ubi/fastmap.c
+--- old_ubi/fastmap.c   2013-04-08 03:49:54.000000000 +0000
++++ new_ubi/fastmap.c   2013-04-16 03:22:17.468750000 +0000
+@@ -552,21 +552,8 @@ static int ubi_attach_fastmap(struct ubi
+        INIT_LIST_HEAD(&used);
+        INIT_LIST_HEAD(&free);
+        INIT_LIST_HEAD(&eba_orphans);
+-       INIT_LIST_HEAD(&ai->corr);
+-       INIT_LIST_HEAD(&ai->free);
+-       INIT_LIST_HEAD(&ai->erase);
+-       INIT_LIST_HEAD(&ai->alien);
+-       ai->volumes = RB_ROOT;
+        ai->min_ec = UBI_MAX_ERASECOUNTER;
+ 
+-       ai->aeb_slab_cache = kmem_cache_create("ubi_ainf_peb_slab",
+-                                              sizeof(struct 
+ubi_ainf_peb),
+-                                              0, 0, NULL);
+-       if (!ai->aeb_slab_cache) {
+-               ret = -ENOMEM;
+-               goto fail;
+-       }
+-
+        fmsb = (struct ubi_fm_sb *)(fm_raw);
+        ai->max_sqnum = fmsb->sqnum;
+        fm_pos += sizeof(struct ubi_fm_sb);
+
+ 
+
+Signed-off-by: Wang bo <wang.bo116@zte.com.cn>
+Tested-by: Wang bo <wang.bo116@zte.com.cn>
+Reviewed-by: Cui Yunfeng <cui.yunfeng@zte.com.cn>
