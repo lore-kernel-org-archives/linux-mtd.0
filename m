@@ -1,12 +1,12 @@
 Received: from mail.free-electrons.com ([94.23.35.102])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1USVNF-0000wH-8R
- for linux-mtd@lists.infradead.org; Wed, 17 Apr 2013 16:38:22 +0000
+ id 1USVNI-0000wo-RV
+ for linux-mtd@lists.infradead.org; Wed, 17 Apr 2013 16:38:25 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 1/7] Documentation: clk.txt: Fix a very small typo
-Date: Wed, 17 Apr 2013 13:38:08 -0300
-Message-Id: <1366216694-2365-2-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH 2/7] mtd: nand: pxa3xx: Use devm_kzalloc
+Date: Wed, 17 Apr 2013 13:38:09 -0300
+Message-Id: <1366216694-2365-3-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1366216694-2365-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1366216694-2365-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Lior Amsalem <alior@marvell.com>,
@@ -25,23 +25,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Replace regular kzalloc with managed devm_kzalloc
+which simplifies the error path.
+
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- Documentation/clk.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/pxa3xx_nand.c | 14 ++++----------
+ 1 file changed, 4 insertions(+), 10 deletions(-)
 
-diff --git a/Documentation/clk.txt b/Documentation/clk.txt
-index 1943fae..2e1dcfe 100644
---- a/Documentation/clk.txt
-+++ b/Documentation/clk.txt
-@@ -133,7 +133,7 @@ representation.
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 37ee75c..2f698e7 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -1035,12 +1035,10 @@ static int alloc_nand_resource(struct platform_device *pdev)
+ 	int ret, irq, cs;
  
- 	Part 4 - supporting your own clk hardware
+ 	pdata = pdev->dev.platform_data;
+-	info = kzalloc(sizeof(*info) + (sizeof(*mtd) +
+-		       sizeof(*host)) * pdata->num_cs, GFP_KERNEL);
+-	if (!info) {
+-		dev_err(&pdev->dev, "failed to allocate memory\n");
++	info = devm_kzalloc(&pdev->dev, sizeof(*info) + (sizeof(*mtd) +
++			    sizeof(*host)) * pdata->num_cs, GFP_KERNEL);
++	if (!info)
+ 		return -ENOMEM;
+-	}
  
--When implementing support for a new type of clock it only necessary to
-+When implementing support for a new type of clock it's only necessary to
- include the following header:
+ 	info->pdev = pdev;
+ 	for (cs = 0; cs < pdata->num_cs; cs++) {
+@@ -1072,8 +1070,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
+ 	info->clk = clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(info->clk)) {
+ 		dev_err(&pdev->dev, "failed to get nand clock\n");
+-		ret = PTR_ERR(info->clk);
+-		goto fail_free_mtd;
++		return PTR_ERR(info->clk);
+ 	}
+ 	clk_enable(info->clk);
  
- #include <linux/clk-provider.h>
+@@ -1165,8 +1162,6 @@ fail_free_res:
+ fail_put_clk:
+ 	clk_disable(info->clk);
+ 	clk_put(info->clk);
+-fail_free_mtd:
+-	kfree(info);
+ 	return ret;
+ }
+ 
+@@ -1202,7 +1197,6 @@ static int pxa3xx_nand_remove(struct platform_device *pdev)
+ 
+ 	for (cs = 0; cs < pdata->num_cs; cs++)
+ 		nand_release(info->host[cs]->mtd);
+-	kfree(info);
+ 	return 0;
+ }
+ 
 -- 
 1.8.1.5
