@@ -1,13 +1,13 @@
 Received: from mail.free-electrons.com ([94.23.35.102])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1USVNS-0000yW-NE
- for linux-mtd@lists.infradead.org; Wed, 17 Apr 2013 16:38:35 +0000
+ id 1USVNW-0000zF-NE
+ for linux-mtd@lists.infradead.org; Wed, 17 Apr 2013 16:38:39 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 5/7] mtd: nand: pxa3xx: Use clk_prepare_enable and
- clk_disable_unprepare
-Date: Wed, 17 Apr 2013 13:38:12 -0300
-Message-Id: <1366216694-2365-6-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH 6/7] mtd: nand: pxa3xx: Check for clk_prepare_enable() return
+ value
+Date: Wed, 17 Apr 2013 13:38:13 -0300
+Message-Id: <1366216694-2365-7-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1366216694-2365-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1366216694-2365-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Lior Amsalem <alior@marvell.com>,
@@ -26,44 +26,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch converts the module to use clk_prepare_enable and
-clk_disable_unprepare variants as required by common clock framework.
+clk_prepare_enable() can fail due to unknown reason.
+Add a check for this and return the error code if it fails.
 
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/pxa3xx_nand.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index b8af7b4..c047943 100644
+index c047943..c1b8ec6 100644
 --- a/drivers/mtd/nand/pxa3xx_nand.c
 +++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -1072,7 +1072,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
+@@ -1072,7 +1072,9 @@ static int alloc_nand_resource(struct platform_device *pdev)
  		dev_err(&pdev->dev, "failed to get nand clock\n");
  		return PTR_ERR(info->clk);
  	}
--	clk_enable(info->clk);
-+	clk_prepare_enable(info->clk);
+-	clk_prepare_enable(info->clk);
++	ret = clk_prepare_enable(info->clk);
++	if (ret < 0)
++		return ret;
  
  	/*
  	 * This is a dirty hack to make this driver work from devicetree
-@@ -1142,7 +1142,7 @@ fail_free_buf:
- 	} else
- 		kfree(info->data_buff);
- fail_disable_clk:
--	clk_disable(info->clk);
-+	clk_disable_unprepare(info->clk);
- 	return ret;
- }
- 
-@@ -1168,7 +1168,7 @@ static int pxa3xx_nand_remove(struct platform_device *pdev)
- 	} else
- 		kfree(info->data_buff);
- 
--	clk_disable(info->clk);
-+	clk_disable_unprepare(info->clk);
- 
- 	for (cs = 0; cs < pdata->num_cs; cs++)
- 		nand_release(info->host[cs]->mtd);
 -- 
 1.8.1.5
