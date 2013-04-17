@@ -1,17 +1,19 @@
-Received: from youngberry.canonical.com ([91.189.89.112])
+Received: from mail.free-electrons.com ([94.23.35.102])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1USTaa-0006Uh-Cb
- for linux-mtd@lists.infradead.org; Wed, 17 Apr 2013 14:44:01 +0000
-From: Luis Henriques <luis.henriques@canonical.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [ 3.5.y.z extended stable ] Patch "mtdchar: fix offset overflow
- detection" has been added to staging queue
-Date: Wed, 17 Apr 2013 15:43:57 +0100
-Message-Id: <1366209837-16043-1-git-send-email-luis.henriques@canonical.com>
-Cc: Suresh Siddha <suresh.b.siddha@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Luis Henriques <luis.henriques@canonical.com>, kernel-team@lists.ubuntu.com,
- linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+ id 1USVNE-0000w5-RB
+ for linux-mtd@lists.infradead.org; Wed, 17 Apr 2013 16:38:22 +0000
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH 0/7] mtd: nand: pxa3xx cleanup
+Date: Wed, 17 Apr 2013 13:38:07 -0300
+Message-Id: <1366216694-2365-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: Lior Amsalem <alior@marvell.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Lei Wen <leiwen@marvell.com>,
+ Eric Miao <eric.miao@linaro.org>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Zhangfei Gao <zhangfei.gao@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,135 +23,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a note to let you know that I have just added a patch titled
+This is a small set of cleanups for pxa3xx. Tested by compilation only.
 
-    mtdchar: fix offset overflow detection
+Although the patches are somewhat simple, it would be wise to have some
+testing before applying them.
 
-to the linux-3.5.y-queue branch of the 3.5.y.z extended stable tree 
-which can be found at:
+Any feedback welcome!
 
- http://kernel.ubuntu.com/git?p=ubuntu/linux.git;a=shortlog;h=refs/heads/linux-3.5.y-queue
+Ezequiel Garcia (7):
+  Documentation: clk.txt: Fix a very small typo
+  mtd: nand: pxa3xx: Use devm_kzalloc
+  mtd: nand: pxa3xx: Use devm_ioremap_resource
+  mtd: nand: pxa3xx: Use devm_clk_get
+  mtd: nand: pxa3xx: Use clk_prepare_enable and clk_disable_unprepare
+  mtd: nand: pxa3xx: Check for clk_prepare_enable() return value
+  mtd: nand: pxa3xx: Move buffer release code to its own function
 
-If you, or anyone else, feels it should not be added to this tree, please 
-reply to this email.
+ Documentation/clk.txt          |  2 +-
+ drivers/mtd/nand/pxa3xx_nand.c | 93 +++++++++++++++---------------------------
+ 2 files changed, 34 insertions(+), 61 deletions(-)
 
-For more information about the 3.5.y.z tree, see
-https://wiki.ubuntu.com/Kernel/Dev/ExtendedStable
-
-Thanks.
--Luis
-
-------
-
->From 693f7129f88a52f757890803f2e954a26493e0af Mon Sep 17 00:00:00 2001
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sat, 8 Sep 2012 12:57:30 -0700
-Subject: [PATCH] mtdchar: fix offset overflow detection
-
-commit 9c603e53d380459fb62fec7cd085acb0b74ac18f upstream.
-
-Sasha Levin has been running trinity in a KVM tools guest, and was able
-to trigger the BUG_ON() at arch/x86/mm/pat.c:279 (verifying the range of
-the memory type).  The call trace showed that it was mtdchar_mmap() that
-created an invalid remap_pfn_range().
-
-The problem is that mtdchar_mmap() does various really odd and subtle
-things with the vma page offset etc, and uses the wrong types (and the
-wrong overflow) detection for it.
-
-For example, the page offset may well be 32-bit on a 32-bit
-architecture, but after shifting it up by PAGE_SHIFT, we need to use a
-potentially 64-bit resource_size_t to correctly hold the full value.
-
-Also, we need to check that the vma length plus offset doesn't overflow
-before we check that it is smaller than the length of the mtdmap region.
-
-This fixes things up and tries to make the code a bit easier to read.
-
-Reported-and-tested-by: Sasha Levin <levinsasha928@gmail.com>
-Acked-by: Suresh Siddha <suresh.b.siddha@intel.com>
-Acked-by: Artem Bityutskiy <dedekind1@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Luis Henriques <luis.henriques@canonical.com>
----
- drivers/mtd/mtdchar.c | 48 ++++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 42 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index f2f482b..a6e7451 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -1123,6 +1123,33 @@ static unsigned long mtdchar_get_unmapped_area(struct file *file,
- }
- #endif
-
-+static inline unsigned long get_vm_size(struct vm_area_struct *vma)
-+{
-+	return vma->vm_end - vma->vm_start;
-+}
-+
-+static inline resource_size_t get_vm_offset(struct vm_area_struct *vma)
-+{
-+	return (resource_size_t) vma->vm_pgoff << PAGE_SHIFT;
-+}
-+
-+/*
-+ * Set a new vm offset.
-+ *
-+ * Verify that the incoming offset really works as a page offset,
-+ * and that the offset and size fit in a resource_size_t.
-+ */
-+static inline int set_vm_offset(struct vm_area_struct *vma, resource_size_t off)
-+{
-+	pgoff_t pgoff = off >> PAGE_SHIFT;
-+	if (off != (resource_size_t) pgoff << PAGE_SHIFT)
-+		return -EINVAL;
-+	if (off + get_vm_size(vma) - 1 < off)
-+		return -EINVAL;
-+	vma->vm_pgoff = pgoff;
-+	return 0;
-+}
-+
- /*
-  * set up a mapping for shared memory segments
-  */
-@@ -1132,20 +1159,29 @@ static int mtdchar_mmap(struct file *file, struct vm_area_struct *vma)
- 	struct mtd_file_info *mfi = file->private_data;
- 	struct mtd_info *mtd = mfi->mtd;
- 	struct map_info *map = mtd->priv;
--	unsigned long start;
--	unsigned long off;
--	u32 len;
-+	resource_size_t start, off;
-+	unsigned long len, vma_len;
-
- 	if (mtd->type == MTD_RAM || mtd->type == MTD_ROM) {
--		off = vma->vm_pgoff << PAGE_SHIFT;
-+		off = get_vm_offset(vma);
- 		start = map->phys;
- 		len = PAGE_ALIGN((start & ~PAGE_MASK) + map->size);
- 		start &= PAGE_MASK;
--		if ((vma->vm_end - vma->vm_start + off) > len)
-+		vma_len = get_vm_size(vma);
-+
-+		/* Overflow in off+len? */
-+		if (vma_len + off < off)
-+			return -EINVAL;
-+		/* Does it fit in the mapping? */
-+		if (vma_len + off > len)
- 			return -EINVAL;
-
- 		off += start;
--		vma->vm_pgoff = off >> PAGE_SHIFT;
-+		/* Did that overflow? */
-+		if (off < start)
-+			return -EINVAL;
-+		if (set_vm_offset(vma, off) < 0)
-+			return -EINVAL;
- 		vma->vm_flags |= VM_IO | VM_RESERVED;
-
- #ifdef pgprot_noncached
---
-1.8.1.2
+-- 
+1.8.1.5
