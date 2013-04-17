@@ -1,12 +1,14 @@
 Received: from mail.free-electrons.com ([94.23.35.102])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1USVNE-0000w5-RB
+ id 1USVNF-0000wH-8R
  for linux-mtd@lists.infradead.org; Wed, 17 Apr 2013 16:38:22 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 0/7] mtd: nand: pxa3xx cleanup
-Date: Wed, 17 Apr 2013 13:38:07 -0300
-Message-Id: <1366216694-2365-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH 1/7] Documentation: clk.txt: Fix a very small typo
+Date: Wed, 17 Apr 2013 13:38:08 -0300
+Message-Id: <1366216694-2365-2-git-send-email-ezequiel.garcia@free-electrons.com>
+In-Reply-To: <1366216694-2365-1-git-send-email-ezequiel.garcia@free-electrons.com>
+References: <1366216694-2365-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Lior Amsalem <alior@marvell.com>,
  Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
  Artem Bityutskiy <dedekind1@gmail.com>, Lei Wen <leiwen@marvell.com>,
@@ -23,25 +25,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a small set of cleanups for pxa3xx. Tested by compilation only.
+Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+---
+ Documentation/clk.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Although the patches are somewhat simple, it would be wise to have some
-testing before applying them.
-
-Any feedback welcome!
-
-Ezequiel Garcia (7):
-  Documentation: clk.txt: Fix a very small typo
-  mtd: nand: pxa3xx: Use devm_kzalloc
-  mtd: nand: pxa3xx: Use devm_ioremap_resource
-  mtd: nand: pxa3xx: Use devm_clk_get
-  mtd: nand: pxa3xx: Use clk_prepare_enable and clk_disable_unprepare
-  mtd: nand: pxa3xx: Check for clk_prepare_enable() return value
-  mtd: nand: pxa3xx: Move buffer release code to its own function
-
- Documentation/clk.txt          |  2 +-
- drivers/mtd/nand/pxa3xx_nand.c | 93 +++++++++++++++---------------------------
- 2 files changed, 34 insertions(+), 61 deletions(-)
-
+diff --git a/Documentation/clk.txt b/Documentation/clk.txt
+index 1943fae..2e1dcfe 100644
+--- a/Documentation/clk.txt
++++ b/Documentation/clk.txt
+@@ -133,7 +133,7 @@ representation.
+ 
+ 	Part 4 - supporting your own clk hardware
+ 
+-When implementing support for a new type of clock it only necessary to
++When implementing support for a new type of clock it's only necessary to
+ include the following header:
+ 
+ #include <linux/clk-provider.h>
 -- 
 1.8.1.5
