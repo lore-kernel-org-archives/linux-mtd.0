@@ -1,12 +1,12 @@
 Received: from mail.free-electrons.com ([94.23.35.102])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1USVNM-0000xa-6E
- for linux-mtd@lists.infradead.org; Wed, 17 Apr 2013 16:38:29 +0000
+ id 1USVNP-0000y3-GQ
+ for linux-mtd@lists.infradead.org; Wed, 17 Apr 2013 16:38:32 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 3/7] mtd: nand: pxa3xx: Use devm_ioremap_resource
-Date: Wed, 17 Apr 2013 13:38:10 -0300
-Message-Id: <1366216694-2365-4-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH 4/7] mtd: nand: pxa3xx: Use devm_clk_get
+Date: Wed, 17 Apr 2013 13:38:11 -0300
+Message-Id: <1366216694-2365-5-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1366216694-2365-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1366216694-2365-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Lior Amsalem <alior@marvell.com>,
@@ -25,82 +25,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Using the new devm_ioremap_resource() we can greatly
-simplify resource handling.
+Replacing clk_get by managed devm_clk_get, the error path
+can be greatly simplified.
 
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c | 31 ++++---------------------------
- 1 file changed, 4 insertions(+), 27 deletions(-)
+ drivers/mtd/nand/pxa3xx_nand.c | 16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 2f698e7..37d7a8b 100644
+index 37d7a8b..b8af7b4 100644
 --- a/drivers/mtd/nand/pxa3xx_nand.c
 +++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -1108,30 +1108,16 @@ static int alloc_nand_resource(struct platform_device *pdev)
+@@ -1067,7 +1067,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
+ 
+ 	spin_lock_init(&chip->controller->lock);
+ 	init_waitqueue_head(&chip->controller->wq);
+-	info->clk = clk_get(&pdev->dev, NULL);
++	info->clk = devm_clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(info->clk)) {
+ 		dev_err(&pdev->dev, "failed to get nand clock\n");
+ 		return PTR_ERR(info->clk);
+@@ -1087,7 +1087,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
+ 		if (r == NULL) {
+ 			dev_err(&pdev->dev, "no resource defined for data DMA\n");
+ 			ret = -ENXIO;
+-			goto fail_put_clk;
++			goto fail_disable_clk;
+ 		}
+ 		info->drcmr_dat = r->start;
+ 
+@@ -1095,7 +1095,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
+ 		if (r == NULL) {
+ 			dev_err(&pdev->dev, "no resource defined for command DMA\n");
+ 			ret = -ENXIO;
+-			goto fail_put_clk;
++			goto fail_disable_clk;
+ 		}
+ 		info->drcmr_cmd = r->start;
+ 	}
+@@ -1104,20 +1104,20 @@ static int alloc_nand_resource(struct platform_device *pdev)
+ 	if (irq < 0) {
+ 		dev_err(&pdev->dev, "no IRQ resource defined\n");
+ 		ret = -ENXIO;
+-		goto fail_put_clk;
++		goto fail_disable_clk;
  	}
  
  	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (r == NULL) {
--		dev_err(&pdev->dev, "no IO memory resource defined\n");
--		ret = -ENODEV;
-+	info->mmio_base = devm_ioremap_resource(&pdev->dev, r);
-+	if (IS_ERR(info->mmio_base)) {
-+		ret = PTR_ERR(info->mmio_base);
- 		goto fail_put_clk;
- 	}
--
--	r = request_mem_region(r->start, resource_size(r), pdev->name);
--	if (r == NULL) {
--		dev_err(&pdev->dev, "failed to request memory resource\n");
--		ret = -EBUSY;
+ 	info->mmio_base = devm_ioremap_resource(&pdev->dev, r);
+ 	if (IS_ERR(info->mmio_base)) {
+ 		ret = PTR_ERR(info->mmio_base);
 -		goto fail_put_clk;
--	}
--
--	info->mmio_base = ioremap(r->start, resource_size(r));
--	if (info->mmio_base == NULL) {
--		dev_err(&pdev->dev, "ioremap() failed\n");
--		ret = -ENODEV;
--		goto fail_free_res;
--	}
++		goto fail_disable_clk;
+ 	}
  	info->mmio_phys = r->start;
  
  	ret = pxa3xx_nand_init_buff(info);
  	if (ret)
--		goto fail_free_io;
-+		goto fail_put_clk;
+-		goto fail_put_clk;
++		goto fail_disable_clk;
  
  	/* initialize all interrupts to be disabled */
  	disable_int(info, NDSR_MASK);
-@@ -1155,10 +1141,6 @@ fail_free_buf:
+@@ -1141,9 +1141,8 @@ fail_free_buf:
  			info->data_buff, info->data_buff_phys);
  	} else
  		kfree(info->data_buff);
--fail_free_io:
--	iounmap(info->mmio_base);
--fail_free_res:
--	release_mem_region(r->start, resource_size(r));
- fail_put_clk:
+-fail_put_clk:
++fail_disable_clk:
  	clk_disable(info->clk);
- 	clk_put(info->clk);
-@@ -1169,7 +1151,6 @@ static int pxa3xx_nand_remove(struct platform_device *pdev)
- {
- 	struct pxa3xx_nand_info *info = platform_get_drvdata(pdev);
- 	struct pxa3xx_nand_platform_data *pdata;
--	struct resource *r;
- 	int irq, cs;
+-	clk_put(info->clk);
+ 	return ret;
+ }
  
- 	if (!info)
-@@ -1188,10 +1169,6 @@ static int pxa3xx_nand_remove(struct platform_device *pdev)
- 	} else
+@@ -1170,7 +1169,6 @@ static int pxa3xx_nand_remove(struct platform_device *pdev)
  		kfree(info->data_buff);
  
--	iounmap(info->mmio_base);
--	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	release_mem_region(r->start, resource_size(r));
--
  	clk_disable(info->clk);
- 	clk_put(info->clk);
+-	clk_put(info->clk);
  
+ 	for (cs = 0; cs < pdata->num_cs; cs++)
+ 		nand_release(info->host[cs]->mtd);
 -- 
 1.8.1.5
