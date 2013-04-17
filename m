@@ -1,23 +1,23 @@
-Received: from co9ehsobe004.messaging.microsoft.com ([207.46.163.27]
- helo=co9outboundpool.messaging.microsoft.com)
+Received: from mail-ve0-f178.google.com ([209.85.128.178])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1USHpQ-00038s-4L
- for linux-mtd@lists.infradead.org; Wed, 17 Apr 2013 02:10:32 +0000
-Message-ID: <516E04EF.1020307@freescale.com>
-Date: Wed, 17 Apr 2013 10:11:59 +0800
-From: Huang Shijie <b32955@freescale.com>
+ id 1USJTw-00046k-2m
+ for linux-mtd@lists.infradead.org; Wed, 17 Apr 2013 03:56:29 +0000
+Received: by mail-ve0-f178.google.com with SMTP id c13so1068246vea.37
+ for <linux-mtd@lists.infradead.org>; Tue, 16 Apr 2013 20:56:26 -0700 (PDT)
 MIME-Version: 1.0
-To: <dedekind1@gmail.com>
-Subject: Re: [PATCH 08/11] mtd: add a new field for ecc info in the
- nand_flash_dev{}
-References: <1363605534-24776-1-git-send-email-b32955@freescale.com>	
- <1363605534-24776-9-git-send-email-b32955@freescale.com>
- <1366124195.23654.7.camel@sauron.fi.intel.com>
-In-Reply-To: <1366124195.23654.7.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+In-Reply-To: <516E04B0.7010508@freescale.com>
+References: <1363605534-24776-1-git-send-email-b32955@freescale.com>
+ <1366120517.2768.109.camel@sauron.fi.intel.com>
+ <516E04B0.7010508@freescale.com>
+Date: Tue, 16 Apr 2013 20:56:26 -0700
+Message-ID: <CAN8TOE_unte2BFxuXTyUg==7QUTwxXwPsTieaVAD74xixk65CA@mail.gmail.com>
+Subject: Re: [PATCH 00/11] mtd: add datasheet's ECC information to nand_chip{}
+From: Brian Norris <computersforpeace@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=GB2312
 Content-Transfer-Encoding: quoted-printable
-Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
- matthieu.castet@parrot.com
+Cc: linux-mtd@lists.infradead.org, matthieu.castet@parrot.com,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,19 +27,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B404=E6=9C=8816=E6=97=A5 22:56, Artem Bityutskiy =E5=
-=86=99=E9=81=93:
-> On Mon, 2013-03-18 at 19:18 +0800, Huang Shijie wrote:
->> +#define ECC_INFO(strength, size)	(((strength)<<  16) | (size))
->> +#define ECC_STRENGTH(x)			(((x)>>  16)&  0xffff)
->> +#define ECC_SIZE(x)			((x)&  0xffff)
->> +	uint32_t ecc_info;
->>   };
-> Could you please avoid putting macro definition in the middle of the
-> structure. Put it before the structure.
+On Tue, Apr 16, 2013 at 7:10 PM, Huang Shijie <b32955@freescale.com> wrote:
+> =D3=DA 2013=C4=EA04=D4=C216=C8=D5 21:55, Artem Bityutskiy =D0=B4=B5=C0:
 >
-> Also, probably prefixing with NAND_ would make sense?
-got it.
+>> Unfortunately no-one reviewed your patches. Let me CC Brian.
+>>
+> I CCed Brian already.
+> I also hope some one could reviews this patch set.
 
-thanks
-Huang Shijie
+Things go by the wayside at times... sigh. Sorry for the delay. I do
+plan to fully review this series.
+
+Initial comments:
+
+What are the semantics for these new ecc_strength and ecc_size fields
+for chips which aren't encoded in nand_ids.c (or aren't
+ONFI-compliant)? We can't necessarily say that '0' means "no data
+provided" - it is perfectly valid to have a value of 0, e.g., for EZ
+NAND (or something like that) which manages its own ECC on-die. I
+think there are even a few words in the ONFI spec about it. Basically,
+I'm trying to point out that there is a difference between those chips
+which we can't/don't detect their ecc_{strength,size} and those which
+need no ECC.
+
+Also, I might consider different names for these fields so that you
+don't just rely on the in-code comments to differentiate the nand_chip
+and nand_ecc_ctrl values. Perhaps min_ecc_strength and ecc_size?
+(can't think of a great distinguishing name for the second one)
+
+Finally, it's probably fine to increase NAND_MAX_OOBSIZE (and
+MTD_MAX_ECCPOS_ENTRIES_LARGE) yet again, but these really need to
+die... I have a (yet untested) patch series for killing
+NAND_MAX_OOBSIZE ready.
+
+I'll try to fully review the series within the week.
+
+Brian
