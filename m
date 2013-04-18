@@ -1,13 +1,15 @@
 Received: from smtp27.mail.ru ([94.100.176.180])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1USs3I-0003oN-5x
- for linux-mtd@lists.infradead.org; Thu, 18 Apr 2013 16:51:20 +0000
+ id 1USs3I-0003oW-63
+ for linux-mtd@lists.infradead.org; Thu, 18 Apr 2013 16:51:21 +0000
 From: Alexander Shiyan <shc_work@mail.ru>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH RESEND v2] mtd: nand_base: Use io{read,
- write}*_rep functions for transfer
-Date: Thu, 18 Apr 2013 20:50:41 +0400
-Message-Id: <1366303846-20384-1-git-send-email-shc_work@mail.ru>
+Subject: [PATCH RESEND 4/5] mtd: nand-gpio: Use default nand_base
+ {read/write}_buf functions
+Date: Thu, 18 Apr 2013 20:50:45 +0400
+Message-Id: <1366303846-20384-5-git-send-email-shc_work@mail.ru>
+In-Reply-To: <1366303846-20384-1-git-send-email-shc_work@mail.ru>
+References: <1366303846-20384-1-git-send-email-shc_work@mail.ru>
 Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>, Alexander Shiyan <shc_work@mail.ru>
@@ -20,74 +22,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch replaces the usage of loops in the nand_base code with
-io{read,write}{8,16}_rep calls instead.
 
 Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
 ---
- drivers/mtd/nand/nand_base.c | 19 ++++---------------
- 1 file changed, 4 insertions(+), 15 deletions(-)
+ drivers/mtd/nand/gpio.c | 55 -------------------------------------------------
+ 1 file changed, 55 deletions(-)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 0b6daaf..d99ab3d 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -255,11 +255,9 @@ static void nand_write_byte16(struct mtd_info *mtd, uint8_t byte)
-  */
- static void nand_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
- {
--	int i;
- 	struct nand_chip *chip = mtd->priv;
- 
--	for (i = 0; i < len; i++)
--		writeb(buf[i], chip->IO_ADDR_W);
-+	iowrite8_rep(chip->IO_ADDR_W, buf, len);
+diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
+index 49beecd..16b8eeb 100644
+--- a/drivers/mtd/nand/gpio.c
++++ b/drivers/mtd/nand/gpio.c
+@@ -86,51 +86,6 @@ static void gpio_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+ 	gpio_nand_dosync(gpiomtd);
  }
  
- /**
-@@ -272,11 +270,9 @@ static void nand_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
-  */
- static void nand_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
- {
--	int i;
- 	struct nand_chip *chip = mtd->priv;
- 
--	for (i = 0; i < len; i++)
--		buf[i] = readb(chip->IO_ADDR_R);
-+	ioread8_rep(chip->IO_ADDR_R, buf, len);
- }
- 
- /**
-@@ -289,14 +285,10 @@ static void nand_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
-  */
- static void nand_write_buf16(struct mtd_info *mtd, const uint8_t *buf, int len)
- {
--	int i;
- 	struct nand_chip *chip = mtd->priv;
- 	u16 *p = (u16 *) buf;
--	len >>= 1;
+-static void gpio_nand_writebuf(struct mtd_info *mtd, const u_char *buf, int len)
+-{
+-	struct nand_chip *this = mtd->priv;
 -
--	for (i = 0; i < len; i++)
--		writew(p[i], chip->IO_ADDR_W);
- 
-+	iowrite16_rep(chip->IO_ADDR_W, p, len >> 1);
- }
- 
- /**
-@@ -309,13 +301,10 @@ static void nand_write_buf16(struct mtd_info *mtd, const uint8_t *buf, int len)
-  */
- static void nand_read_buf16(struct mtd_info *mtd, uint8_t *buf, int len)
+-	iowrite8_rep(this->IO_ADDR_W, buf, len);
+-}
+-
+-static void gpio_nand_readbuf(struct mtd_info *mtd, u_char *buf, int len)
+-{
+-	struct nand_chip *this = mtd->priv;
+-
+-	ioread8_rep(this->IO_ADDR_R, buf, len);
+-}
+-
+-static void gpio_nand_writebuf16(struct mtd_info *mtd, const u_char *buf,
+-				 int len)
+-{
+-	struct nand_chip *this = mtd->priv;
+-
+-	if (IS_ALIGNED((unsigned long)buf, 2)) {
+-		iowrite16_rep(this->IO_ADDR_W, buf, len>>1);
+-	} else {
+-		int i;
+-		unsigned short *ptr = (unsigned short *)buf;
+-
+-		for (i = 0; i < len; i += 2, ptr++)
+-			writew(*ptr, this->IO_ADDR_W);
+-	}
+-}
+-
+-static void gpio_nand_readbuf16(struct mtd_info *mtd, u_char *buf, int len)
+-{
+-	struct nand_chip *this = mtd->priv;
+-
+-	if (IS_ALIGNED((unsigned long)buf, 2)) {
+-		ioread16_rep(this->IO_ADDR_R, buf, len>>1);
+-	} else {
+-		int i;
+-		unsigned short *ptr = (unsigned short *)buf;
+-
+-		for (i = 0; i < len; i += 2, ptr++)
+-			*ptr = readw(this->IO_ADDR_R);
+-	}
+-}
+-
+ static int gpio_nand_devready(struct mtd_info *mtd)
  {
--	int i;
- 	struct nand_chip *chip = mtd->priv;
- 	u16 *p = (u16 *) buf;
--	len >>= 1;
+ 	struct gpiomtd *gpiomtd = gpio_nand_getpriv(mtd);
+@@ -303,16 +258,6 @@ static int gpio_nand_probe(struct platform_device *pdev)
+ 	chip->options		= gpiomtd->plat.options;
+ 	chip->chip_delay	= gpiomtd->plat.chip_delay;
+ 	chip->cmd_ctrl		= gpio_nand_cmd_ctrl;
+-
+-	if (chip->options & NAND_BUSWIDTH_16) {
+-		chip->read_buf	= gpio_nand_readbuf16;
+-		chip->write_buf	= gpio_nand_writebuf16;
+-	} else {
+-		chip->read_buf	= gpio_nand_readbuf;
+-		chip->write_buf	= gpio_nand_writebuf;
+-	}
+-
+-	/* set the mtd private data for the nand driver */
+ 	gpiomtd->mtd_info.priv	= chip;
+ 	gpiomtd->mtd_info.owner	= THIS_MODULE;
  
--	for (i = 0; i < len; i++)
--		p[i] = readw(chip->IO_ADDR_R);
-+	ioread16_rep(chip->IO_ADDR_R, p, len >> 1);
- }
- 
- /**
 -- 
 1.8.1.5
