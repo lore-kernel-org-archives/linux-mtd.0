@@ -1,12 +1,13 @@
 Received: from smtp27.mail.ru ([94.100.176.180])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1USs3I-0003oP-63
- for linux-mtd@lists.infradead.org; Thu, 18 Apr 2013 16:51:17 +0000
+ id 1USs3I-0003oU-5v
+ for linux-mtd@lists.infradead.org; Thu, 18 Apr 2013 16:51:18 +0000
 From: Alexander Shiyan <shc_work@mail.ru>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH RESEND 1/5] mtd: nand-gpio: Unneeded dependency on ARM removed
-Date: Thu, 18 Apr 2013 20:50:42 +0400
-Message-Id: <1366303846-20384-2-git-send-email-shc_work@mail.ru>
+Subject: [PATCH RESEND 3/5] mtd: nand-gpio: Use default dev_ready function if
+ RDY-pin is missing in configuration
+Date: Thu, 18 Apr 2013 20:50:44 +0400
+Message-Id: <1366303846-20384-4-git-send-email-shc_work@mail.ru>
 In-Reply-To: <1366303846-20384-1-git-send-email-shc_work@mail.ru>
 References: <1366303846-20384-1-git-send-email-shc_work@mail.ru>
 Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
@@ -24,21 +25,40 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
 ---
- drivers/mtd/nand/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/gpio.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 1cca712..5d1856d 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -75,7 +75,7 @@ config MTD_NAND_DENALI_SCRATCH_REG_ADDR
+diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
+index 3f2cdae..49beecd 100644
+--- a/drivers/mtd/nand/gpio.c
++++ b/drivers/mtd/nand/gpio.c
+@@ -135,10 +135,7 @@ static int gpio_nand_devready(struct mtd_info *mtd)
+ {
+ 	struct gpiomtd *gpiomtd = gpio_nand_getpriv(mtd);
  
- config MTD_NAND_GPIO
- 	tristate "GPIO NAND Flash driver"
--	depends on GENERIC_GPIO && ARM
-+	depends on GENERIC_GPIO
- 	help
- 	  This enables a GPIO based NAND flash driver.
+-	if (gpio_is_valid(gpiomtd->plat.gpio_rdy))
+-		return gpio_get_value(gpiomtd->plat.gpio_rdy);
+-
+-	return 1;
++	return gpio_get_value(gpiomtd->plat.gpio_rdy);
+ }
  
+ #ifdef CONFIG_OF
+@@ -297,6 +294,7 @@ static int gpio_nand_probe(struct platform_device *pdev)
+ 		if (ret)
+ 			return ret;
+ 		gpio_direction_input(gpiomtd->plat.gpio_rdy);
++		chip->dev_ready = gpio_nand_devready;
+ 	}
+ 
+ 
+@@ -305,7 +303,6 @@ static int gpio_nand_probe(struct platform_device *pdev)
+ 	chip->options		= gpiomtd->plat.options;
+ 	chip->chip_delay	= gpiomtd->plat.chip_delay;
+ 	chip->cmd_ctrl		= gpio_nand_cmd_ctrl;
+-	chip->dev_ready		= gpio_nand_devready;
+ 
+ 	if (chip->options & NAND_BUSWIDTH_16) {
+ 		chip->read_buf	= gpio_nand_readbuf16;
 -- 
 1.8.1.5
