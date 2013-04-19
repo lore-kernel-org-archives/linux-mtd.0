@@ -1,26 +1,28 @@
-Received: from mail.free-electrons.com ([94.23.35.102])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UTAPj-0004ph-W1
- for linux-mtd@lists.infradead.org; Fri, 19 Apr 2013 12:27:40 +0000
-Date: Fri, 19 Apr 2013 09:27:43 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Mike Frysinger <vapier@gentoo.org>
+ id 1UTARN-0004sr-Ig
+ for linux-mtd@lists.infradead.org; Fri, 19 Apr 2013 12:29:23 +0000
+Message-ID: <1366374673.29520.125.camel@sauron.fi.intel.com>
 Subject: Re: [RFC/PATCH v2] ubi: Add ubiblock read-write driver
-Message-ID: <20130419122742.GA2459@localhost>
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Mike Frysinger <vapier@gentoo.org>
+Date: Fri, 19 Apr 2013 15:31:13 +0300
+In-Reply-To: <201304190757.13688.vapier@gentoo.org>
 References: <1355314912-9321-1-git-send-email-elezegarcia@gmail.com>
- <201304181630.58886.vapier@gentoo.org>
- <20130419001259.GA2259@localhost>
  <201304182128.19518.vapier@gentoo.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <201304182128.19518.vapier@gentoo.org>
+ <20980858CB6D3A4BAE95CA194937D5E73E9AEC45@DBDE01.ent.ti.com>
+ <201304190757.13688.vapier@gentoo.org>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
  Ezequiel Garcia <elezegarcia@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>, richard.weinberger@gmail.com,
+ "richard.weinberger@gmail.com" <richard.weinberger@gmail.com>,
  Michael Opdenacker <michael.opdenacker@free-electrons.com>,
- linux-mtd@lists.infradead.org, Tim Bird <tim.bird@am.sony.com>
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
+ Pekon" <pekon@ti.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Tim Bird <tim.bird@am.sony.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,31 +32,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Apr 18, 2013 at 09:28:16PM -0400, Mike Frysinger wrote:
-> On Thursday 18 April 2013 20:13:00 Ezequiel Garcia wrote:
-> > On Thu, Apr 18, 2013 at 04:30:55PM -0400, Mike Frysinger wrote:
-> > > i wonder if the write support should be put behind a CONFIG option.
-> > > personally, the write support is kind of neat and semi-useful for
-> > > development, but i don't plan on shipping anything on that :).  i just
-> > > want read-only support to load an ext2 fs on top of UBI.
-> > 
-> > Mmm... good input. Maybe putting write support behind a CONFIG and
-> > showing a big fat warning when the module loads will do?
-> > (something to prevent regular users from using this carelessly).
-> > 
-> > May I ask why would you want to put ext2 fs? Have you considered f2fs?
-> 
-> well, unless i misread things, f2fs is designed for consumer flash 
-> (mmc/cf/etc...) where the flash (e.g. NAND) is behind a FTL.  the device i'm 
-> interested isn't behind a FTL (the NAND is connected directly to the NAND 
-> controller in the SoC),
+On Fri, 2013-04-19 at 07:57 -0400, Mike Frysinger wrote:
+> the reason we're talking about not allowing write support at the
+> *block* layer 
+> is because it's questionable how many people actually want this, the 
+> performance isn't good (compared to native flash filesystems), and
+> because the 
+> write/wear characteristics are unknown.
 
-Indeed f2fs is designed for flash behind FTL. The thing is the ubi+ubiblock
-should act as a FTL, providing bad block management and wear leveling.
+My opinion that unless people demonstrate that they need this, e.g. in a
+product, etc, we should not merge this stuff.
 
-So that's why I've been wondering about using f2fs. Probably I should
-give it a try and post the results, instead of just wondering.
+We recently merged fastmap, which is a big chunk of code, and it looks
+like no one really needs it. There was a problem report, and Richard
+promised to look, but did not. I do not blame him, he is a busy guy. But
+this shoes that this feature is not really needed, while adds
+maintenance burden.
+
+To put it differently, I do recommend to merge more UBI-related code
+without a solid user-base.
+
 -- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Best Regards,
+Artem Bityutskiy
