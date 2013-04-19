@@ -1,28 +1,21 @@
-Received: from mail.free-electrons.com ([94.23.35.102])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UTCpL-0008Ha-1V
- for linux-mtd@lists.infradead.org; Fri, 19 Apr 2013 15:02:16 +0000
-Date: Fri, 19 Apr 2013 12:02:10 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [RFC/PATCH v2] ubi: Add ubiblock read-write driver
-Message-ID: <20130419150209.GA2555@localhost>
-References: <1355314912-9321-1-git-send-email-elezegarcia@gmail.com>
- <201304182128.19518.vapier@gentoo.org>
- <20980858CB6D3A4BAE95CA194937D5E73E9AEC45@DBDE01.ent.ti.com>
- <201304190757.13688.vapier@gentoo.org>
- <1366374673.29520.125.camel@sauron.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1366374673.29520.125.camel@sauron.fi.intel.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Ezequiel Garcia <elezegarcia@gmail.com>, Mike Frysinger <vapier@gentoo.org>,
- "richard.weinberger@gmail.com" <richard.weinberger@gmail.com>,
- Michael Opdenacker <michael.opdenacker@free-electrons.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>, Tim Bird <tim.bird@am.sony.com>
+Received: from mail-pd0-f180.google.com ([209.85.192.180])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UTEMF-00027i-Qr
+ for linux-mtd@lists.infradead.org; Fri, 19 Apr 2013 16:40:21 +0000
+Received: by mail-pd0-f180.google.com with SMTP id q11so2324821pdj.25
+ for <linux-mtd@lists.infradead.org>; Fri, 19 Apr 2013 09:40:17 -0700 (PDT)
+From: Namjae Jeon <linkinjeon@gmail.com>
+To: dwmw2@infradead.org, axboe@kernel.dk, shli@kernel.org,
+ Paul.Clements@steeleye.com, npiggin@kernel.dk, neilb@suse.de,
+ cjb@laptop.org, adrian.hunter@intel.com,
+ James.Bottomley@HansenPartnership.com, JBottomley@parallels.com
+Subject: [PATCH v2 0/9] fix max discard sectors limit
+Date: Sat, 20 Apr 2013 01:40:02 +0900
+Message-Id: <1366389602-19313-1-git-send-email-linkinjeon@gmail.com>
+Cc: nbd-general@lists.sourceforge.net, Namjae Jeon <linkinjeon@gmail.com>,
+ linux-scsi@vger.kernel.org, Namjae Jeon <namjae.jeon@samsung.com>,
+ linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-raid@vger.kernel.org, jcmvbkbc@gmail.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,45 +25,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
+From: Namjae Jeon <namjae.jeon@samsung.com>
 
-On Fri, Apr 19, 2013 at 03:31:13PM +0300, Artem Bityutskiy wrote:
-> On Fri, 2013-04-19 at 07:57 -0400, Mike Frysinger wrote:
-> > the reason we're talking about not allowing write support at the
-> > *block* layer 
-> > is because it's questionable how many people actually want this, the 
-> > performance isn't good (compared to native flash filesystems), and
-> > because the 
-> > write/wear characteristics are unknown.
-> 
-> My opinion that unless people demonstrate that they need this, e.g. in a
-> product, etc, we should not merge this stuff.
-> 
-> We recently merged fastmap, which is a big chunk of code, and it looks
-> like no one really needs it. There was a problem report, and Richard
-> promised to look, but did not. I do not blame him, he is a busy guy. But
-> this shoes that this feature is not really needed, while adds
-> maintenance burden.
-> 
-> To put it differently, I do recommend to merge more UBI-related code
-> without a solid user-base.
->
+linux-v3.8-rc1 and later support for plug for blkdev_issue_discard with
+commit 0cfbcafcae8b7364b5fa96c2b26ccde7a3a296a9 
+(block: add plug for blkdev_issue_discard )
 
-(I know you meant don't)
+For example,
+1) DISCARD rq-1 with size size 4GB
+2) DISCARD rq-2 with size size 1GB
 
-Of course, I agree that we shouldn't merge stuff just for the sake of it.
-I'm always against adding churn.
+If these 2 discard requests get merged, final request size will be 5GB.
 
-However, IMHO, fastmap and ubiblock are not comparable **at all**:
+In this case, request's __data_len field may overflow as it can store
+max 4GB(unsigned int).
 
-  1. Ubiblock is *extremely* simple and *completely* independent from mtd/ubi
-     stack.
+This issue was observed while doing mkfs.f2fs on 5GB SD card:
+https://lkml.org/lkml/2013/4/1/292
 
-  2. Fastmap is a cool UBI feature, that's pretty tightly integrated
-     with the UBI core and -at least to me- not very easy to understand
-     and follow.
+# mkfs.f2fs /dev/mmcblk0p3
+Info: sector size = 512
+Info: total sectors = 11370496 (in 512bytes)
+Info: zone aligned segment0 blkaddr: 512
+[  257.789764] blk_update_request: bio idx 0 >= vcnt 0
 
+mkfs process gets stuck in D state and I see the following in the dmesg:
+
+[  257.789733] __end_that: dev mmcblk0: type=1, flags=122c8081
+[  257.789764]   sector 4194304, nr/cnr 2981888/4294959104
+[  257.789764]   bio df3840c0, biotail df3848c0, buffer   (null), len 1526726656
+[  257.789764] blk_update_request: bio idx 0 >= vcnt 0
+[  257.794921] request botched: dev mmcblk0: type=1, flags=122c8081
+[  257.794921]   sector 4194304, nr/cnr 2981888/4294959104
+[  257.794921]   bio df3840c0, biotail df3848c0, buffer   (null), len 1526726656
+
+Few drivers(e.g. mmc, mtd..) set q->limits.max_discard_sectors
+more than UINT_MAX >> 9 sectors which is incorrect and it may lead to overflow
+of request's __data_len field if merged discard request's size exceeds 4GB.
+
+This patchset fixes this issue by updating helper function
+blk_queue_max_discard_sectors which is used to set max_discard_sectors limit.
+
+This patchset also replaces "q->limits.max_discard_sector = max_discard_sectors"
+with blk_queue_max_discard_sectors call in other drivers like mmc, mtd etc.
+
+Namjae Jeon (9):
+  block: fix max discard sectors limit
+  mmc: fix max_discard_sectors
+  sd: use generic helper to set max_discard_sectors
+  mtd: use generic helper to set max_discard_sectors
+  loop: use generic helper to set max_discard_sectors
+  nbd: use generic helper to set max_discard_sectors
+  brd: use generic helper to set max_discard_sectors
+  dm thin: use generic helper to set max_discard_sectors
+  bcache: use generic helper to set max_discard_sectors
 -- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+1.7.9.5
