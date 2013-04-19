@@ -1,28 +1,17 @@
-Received: from tx2ehsobe005.messaging.microsoft.com ([65.55.88.15]
- helo=tx2outboundpool.messaging.microsoft.com)
+Received: from perches-mx.perches.com ([206.117.179.246] helo=labridge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UTEgw-0002iK-I5
- for linux-mtd@lists.infradead.org; Fri, 19 Apr 2013 17:01:43 +0000
-Message-ID: <5171794F.8000501@am.sony.com>
-Date: Fri, 19 Apr 2013 10:05:19 -0700
-From: Tim Bird <tim.bird@am.sony.com>
-MIME-Version: 1.0
-To: <dedekind1@gmail.com>
-Subject: Re: [RFC/PATCH v2] ubi: Add ubiblock read-write driver
-References: <1355314912-9321-1-git-send-email-elezegarcia@gmail.com>
- <201304182128.19518.vapier@gentoo.org>
- <20980858CB6D3A4BAE95CA194937D5E73E9AEC45@DBDE01.ent.ti.com>
- <201304190757.13688.vapier@gentoo.org>
- <1366374673.29520.125.camel@sauron.fi.intel.com>
-In-Reply-To: <1366374673.29520.125.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+ id 1UTFb3-0003lT-9b
+ for linux-mtd@lists.infradead.org; Fri, 19 Apr 2013 17:59:42 +0000
+Message-ID: <1366394375.3901.36.camel@joe-AO722>
+Subject: [PATCH] mtd: Convert logging messages
+From: Joe Perches <joe@perches.com>
+To: Joern Engel <joern@lazybastard.org>
+Date: Fri, 19 Apr 2013 10:59:35 -0700
+Content-Type: text/plain; charset="ISO-8859-1"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Ezequiel Garcia <elezegarcia@gmail.com>, Mike Frysinger <vapier@gentoo.org>,
- "richard.weinberger@gmail.com" <richard.weinberger@gmail.com>,
- Michael Opdenacker <michael.opdenacker@free-electrons.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,32 +21,156 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/19/2013 05:31 AM, Artem Bityutskiy wrote:
-> We recently merged fastmap, which is a big chunk of code, and it looks
-> like no one really needs it. There was a problem report, and Richard
-> promised to look, but did not. I do not blame him, he is a busy guy. But
-> this shows that this feature is not really needed, while adds
-> maintenance burden.
+Use a more current logging style.
 
-Whoa there!  Just because it doesn't look like people are using fastmap
-right now, don't think it won't get used in the future.   Really,
-the people interested in fastmap are AFAIK mostly TV vendors, who are
-just now migrating to 3.0 or 3.4 kernels.  I can assure you that fastmap
-will get more attention when the major CE companies move to more
-recent kernels (probably in about 1 to 2 years).
+Convert homegrown ERROR/INFO macros to pr_<level>.
+Convert homegrown parse_err macros to pr_err and
+expand hidden flow control.
 
-Likely, anyone who needs fastmap today has backported it, or plans
-to backport it to their current product-facing kernel.  Unfortunately,
-that means that bug reports and fixes usually don't show up on
-public e-mail lists (due to version gap).
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ drivers/mtd/devices/block2mtd.c | 58 ++++++++++++++++++++++-------------------
+ 1 file changed, 31 insertions(+), 27 deletions(-)
 
-Richard (/Linutronix) was hired to do this work by the CE Workgroup.
-If money is needed to get fastmap bugfixes and maintenance on his
-priority list, please let us know and maybe we can do something.
- -- Tim
-
-=============================
-Tim Bird
-Architecture Group Chair, CE Workgroup of the Linux Foundation
-Senior Staff Engineer, Sony Network Entertainment
-=============================
+diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2mtd.c
+index e081bfe..5cb4c04 100644
+--- a/drivers/mtd/devices/block2mtd.c
++++ b/drivers/mtd/devices/block2mtd.c
+@@ -6,6 +6,9 @@
+  *
+  * Licence: GPL
+  */
++
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++
+ #include <linux/module.h>
+ #include <linux/fs.h>
+ #include <linux/blkdev.h>
+@@ -18,10 +21,6 @@
+ #include <linux/mount.h>
+ #include <linux/slab.h>
+ 
+-#define ERROR(fmt, args...) printk(KERN_ERR "block2mtd: " fmt "\n" , ## args)
+-#define INFO(fmt, args...) printk(KERN_INFO "block2mtd: " fmt "\n" , ## args)
+-
+-
+ /* Info for the block device */
+ struct block2mtd_dev {
+ 	struct list_head list;
+@@ -84,7 +83,7 @@ static int block2mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	err = _block2mtd_erase(dev, from, len);
+ 	mutex_unlock(&dev->write_mutex);
+ 	if (err) {
+-		ERROR("erase failed err = %d", err);
++		pr_err("erase failed err = %d\n", err);
+ 		instr->state = MTD_ERASE_FAILED;
+ 	} else
+ 		instr->state = MTD_ERASE_DONE;
+@@ -239,13 +238,13 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size)
+ #endif
+ 
+ 	if (IS_ERR(bdev)) {
+-		ERROR("error: cannot open device %s", devname);
++		pr_err("error: cannot open device %s\n", devname);
+ 		goto devinit_err;
+ 	}
+ 	dev->blkdev = bdev;
+ 
+ 	if (MAJOR(bdev->bd_dev) == MTD_BLOCK_MAJOR) {
+-		ERROR("attempting to use an MTD device as a block device");
++		pr_err("attempting to use an MTD device as a block device\n");
+ 		goto devinit_err;
+ 	}
+ 
+@@ -277,9 +276,10 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size)
+ 		goto devinit_err;
+ 	}
+ 	list_add(&dev->list, &blkmtd_device_list);
+-	INFO("mtd%d: [%s] erase_size = %dKiB [%d]", dev->mtd.index,
+-			dev->mtd.name + strlen("block2mtd: "),
+-			dev->mtd.erasesize >> 10, dev->mtd.erasesize);
++	pr_info("mtd%d: [%s] erase_size = %dKiB [%d]\n",
++		dev->mtd.index,
++		dev->mtd.name + strlen("block2mtd: "),
++		dev->mtd.erasesize >> 10, dev->mtd.erasesize);
+ 	return dev;
+ 
+ devinit_err:
+@@ -339,17 +339,11 @@ static inline void kill_final_newline(char *str)
+ }
+ 
+ 
+-#define parse_err(fmt, args...) do {	\
+-	ERROR(fmt, ## args);		\
+-	return 0;			\
+-} while (0)
+-
+ #ifndef MODULE
+ static int block2mtd_init_called = 0;
+ static char block2mtd_paramline[80 + 12]; /* 80 for device, 12 for erase size */
+ #endif
+ 
+-
+ static int block2mtd_setup2(const char *val)
+ {
+ 	char buf[80 + 12]; /* 80 for device, 12 for erase size */
+@@ -359,8 +353,10 @@ static int block2mtd_setup2(const char *val)
+ 	size_t erase_size = PAGE_SIZE;
+ 	int i, ret;
+ 
+-	if (strnlen(val, sizeof(buf)) >= sizeof(buf))
+-		parse_err("parameter too long");
++	if (strnlen(val, sizeof(buf)) >= sizeof(buf)) {
++		pr_err("parameter too long\n");
++		return 0;
++	}
+ 
+ 	strcpy(str, val);
+ 	kill_final_newline(str);
+@@ -368,20 +364,27 @@ static int block2mtd_setup2(const char *val)
+ 	for (i = 0; i < 2; i++)
+ 		token[i] = strsep(&str, ",");
+ 
+-	if (str)
+-		parse_err("too many arguments");
++	if (str) {
++		pr_err("too many arguments\n");
++		return 0;
++	}
+ 
+-	if (!token[0])
+-		parse_err("no argument");
++	if (!token[0]) {
++		pr_err("no argument\n");
++		return 0;
++	}
+ 
+ 	name = token[0];
+-	if (strlen(name) + 1 > 80)
+-		parse_err("device name too long");
++	if (strlen(name) + 1 > 80) {
++		pr_err("device name too long\n");
++		return 0;
++	}
+ 
+ 	if (token[1]) {
+ 		ret = parse_num(&erase_size, token[1]);
+ 		if (ret) {
+-			parse_err("illegal erase size");
++			pr_err("illegal erase size\n");
++			return 0;
+ 		}
+ 	}
+ 
+@@ -444,8 +447,9 @@ static void block2mtd_exit(void)
+ 		struct block2mtd_dev *dev = list_entry(pos, typeof(*dev), list);
+ 		block2mtd_sync(&dev->mtd);
+ 		mtd_device_unregister(&dev->mtd);
+-		INFO("mtd%d: [%s] removed", dev->mtd.index,
+-				dev->mtd.name + strlen("block2mtd: "));
++		pr_info("mtd%d: [%s] removed\n",
++			dev->mtd.index,
++			dev->mtd.name + strlen("block2mtd: "));
+ 		list_del(&dev->list);
+ 		block2mtd_free_device(dev);
+ 	}
