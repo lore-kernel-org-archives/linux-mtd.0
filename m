@@ -1,17 +1,17 @@
-Received: from mail-da0-x22b.google.com ([2607:f8b0:400e:c00::22b])
+Received: from mail-pa0-f41.google.com ([209.85.220.41])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UTEO7-0002I7-Io
- for linux-mtd@lists.infradead.org; Fri, 19 Apr 2013 16:42:16 +0000
-Received: by mail-da0-f43.google.com with SMTP id u36so2030958dak.2
- for <linux-mtd@lists.infradead.org>; Fri, 19 Apr 2013 09:42:14 -0700 (PDT)
+ id 1UTEON-0002Jx-4V
+ for linux-mtd@lists.infradead.org; Fri, 19 Apr 2013 16:42:32 +0000
+Received: by mail-pa0-f41.google.com with SMTP id kx10so520255pab.0
+ for <linux-mtd@lists.infradead.org>; Fri, 19 Apr 2013 09:42:28 -0700 (PDT)
 From: Namjae Jeon <linkinjeon@gmail.com>
 To: dwmw2@infradead.org, axboe@kernel.dk, shli@kernel.org,
  Paul.Clements@steeleye.com, npiggin@kernel.dk, neilb@suse.de,
  cjb@laptop.org, adrian.hunter@intel.com,
  James.Bottomley@HansenPartnership.com, JBottomley@parallels.com
-Subject: [PATCH v2 7/9] brd: use generic helper to set max_discard_sectors
-Date: Sat, 20 Apr 2013 01:42:06 +0900
-Message-Id: <1366389726-19553-1-git-send-email-linkinjeon@gmail.com>
+Subject: [PATCH v2 8/9] dm thin: use generic helper to set max_discard_sectors
+Date: Sat, 20 Apr 2013 01:42:20 +0900
+Message-Id: <1366389740-19587-1-git-send-email-linkinjeon@gmail.com>
 Cc: nbd-general@lists.sourceforge.net, Namjae Jeon <linkinjeon@gmail.com>,
  Vivek Trivedi <t.vivek@samsung.com>, linux-scsi@vger.kernel.org,
  Namjae Jeon <namjae.jeon@samsung.com>, linux-mmc@vger.kernel.org,
@@ -44,21 +44,22 @@ This patch fixes this issue.
 Signed-off-by: Namjae Jeon <namjae.jeon@samsung.com>
 Signed-off-by: Vivek Trivedi <t.vivek@samsung.com>
 ---
- drivers/block/brd.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/md/dm-thin.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/block/brd.c b/drivers/block/brd.c
-index f1a29f8..108646d 100644
---- a/drivers/block/brd.c
-+++ b/drivers/block/brd.c
-@@ -479,7 +479,7 @@ static struct brd_device *brd_alloc(int i)
- 	blk_queue_bounce_limit(brd->brd_queue, BLK_BOUNCE_ANY);
+diff --git a/drivers/md/dm-thin.c b/drivers/md/dm-thin.c
+index 905b75f..237295a 100644
+--- a/drivers/md/dm-thin.c
++++ b/drivers/md/dm-thin.c
+@@ -2513,7 +2513,8 @@ static void set_discard_limits(struct pool_c *pt, struct queue_limits *limits)
+ 	struct pool *pool = pt->pool;
+ 	struct queue_limits *data_limits;
  
- 	brd->brd_queue->limits.discard_granularity = PAGE_SIZE;
--	brd->brd_queue->limits.max_discard_sectors = UINT_MAX;
-+	blk_queue_max_discard_sectors(brd->brd_queue, UINT_MAX >> 9);
- 	brd->brd_queue->limits.discard_zeroes_data = 1;
- 	queue_flag_set_unlocked(QUEUE_FLAG_DISCARD, brd->brd_queue);
+-	limits->max_discard_sectors = pool->sectors_per_block;
++	blk_queue_max_discard_sectors(bdev_get_queue(pt->data_dev->bdev),
++					pool->sectors_per_block);
  
+ 	/*
+ 	 * discard_granularity is just a hint, and not enforced.
 -- 
 1.7.9.5
