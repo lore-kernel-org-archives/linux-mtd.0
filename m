@@ -1,25 +1,28 @@
-Received: from woodpecker.gentoo.org ([2001:470:ea4a:1:214:c2ff:fe64:b2d3]
- helo=smtp.gentoo.org)
+Received: from devils.ext.ti.com ([198.47.26.153])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UT05W-00030T-Sp
- for linux-mtd@lists.infradead.org; Fri, 19 Apr 2013 01:26:07 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [RFC/PATCH v2] ubi: Add ubiblock read-write driver
-Date: Thu, 18 Apr 2013 21:28:16 -0400
+ id 1UT5T0-0006p7-Jb
+ for linux-mtd@lists.infradead.org; Fri, 19 Apr 2013 07:10:43 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Mike Frysinger <vapier@gentoo.org>, Ezequiel Garcia
+ <ezequiel.garcia@free-electrons.com>
+Subject: RE: [RFC/PATCH v2] ubi: Add ubiblock read-write driver
+Date: Fri, 19 Apr 2013 07:10:23 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9AEC45@DBDE01.ent.ti.com>
 References: <1355314912-9321-1-git-send-email-elezegarcia@gmail.com>
  <201304181630.58886.vapier@gentoo.org> <20130419001259.GA2259@localhost>
-In-Reply-To: <20130419001259.GA2259@localhost>
+ <201304182128.19518.vapier@gentoo.org>
+In-Reply-To: <201304182128.19518.vapier@gentoo.org>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart2334869.BW6XQeHCiI";
- protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-Message-Id: <201304182128.19518.vapier@gentoo.org>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
  Ezequiel Garcia <elezegarcia@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>, richard.weinberger@gmail.com,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ "richard.weinberger@gmail.com" <richard.weinberger@gmail.com>,
  Michael Opdenacker <michael.opdenacker@free-electrons.com>,
- linux-mtd@lists.infradead.org, Tim Bird <tim.bird@am.sony.com>
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Tim Bird <tim.bird@am.sony.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,54 +32,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---nextPart2334869.BW6XQeHCiI
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Thursday 18 April 2013 20:13:00 Ezequiel Garcia wrote:
-> On Thu, Apr 18, 2013 at 04:30:55PM -0400, Mike Frysinger wrote:
-> > i wonder if the write support should be put behind a CONFIG option.
-> > personally, the write support is kind of neat and semi-useful for
-> > development, but i don't plan on shipping anything on that :).  i just
-> > want read-only support to load an ext2 fs on top of UBI.
->=20
-> Mmm... good input. Maybe putting write support behind a CONFIG and
-> showing a big fat warning when the module loads will do?
-> (something to prevent regular users from using this carelessly).
->=20
-> May I ask why would you want to put ext2 fs? Have you considered f2fs?
-
-well, unless i misread things, f2fs is designed for consumer flash=20
-(mmc/cf/etc...) where the flash (e.g. NAND) is behind a FTL.  the device i'=
-m=20
-interested isn't behind a FTL (the NAND is connected directly to the NAND=20
-controller in the SoC), so i want to run UBI on it to handle the bad blocks=
-=20
-and junk.  otherwise, the ext2 is always read-only, so the write=20
-characteristics don't matter.
-=2Dmike
-
---nextPart2334869.BW6XQeHCiI
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJRcJ2zAAoJEEFjO5/oN/WBiRgP/1bR1ijs3B01LAmPmgt9GZ6a
-YGo5gs7zyaH+5OJeMeV6+VmcIzV5LKPcnwGmNlBArmajufN4/Itk7X3IOo37gI7k
-lun0P4fBsTth+LogPXZ6FJUt2mNXG1W4u8p5K78R42kgCwGYBXhjklZERNMNpXq+
-Tx5z1Alll/s6ZVeS8T+VjUReW00arWQ9zd/aEVzh6frsRH4Opg2SsXyM9FjM/yJd
-RxiLA3gKOE04oGZS2923zwvieC9IZIfomcrMCqpiOhFoQUuzTjcK7FlZ5x4P6Q6W
-HfSjsCGKUEaMDtpmPsvwiAhOCQAuIPsK5u+JgKrlXv/BOVLT8G4xBXbgY6WWPLz5
-t4YBwt7Jzb8Ft3VrhZXIOtyXKst7f+33eI2HuXYJwNjlmdbBkTmeW6AqZ4R2EOwK
-mUZfyKElVMa/OhJjzgC3rTAJW8ygRKsV99/usV8zKav1sFAWGyvuOOBL34BfbLTH
-Z4hAV+sAXUVgaDQyuGOV6cRkvTIyPdoOBwiW42dbZWR0wQB8MjaR+nXGziW3pJqx
-9pFJcAO4tCIQ9+ipIoKvQ/3HFlfPbq+lzj2wAMBgY67t690eCYvx8DljN0E0cpNz
-0Pesq/w878dkA0YeNHw/qVZgg3AX3MV1hq0H+tr9wJ39CWh57wN0h/WylohRXp4u
-OES53s/a95MTYSbu7j8p
-=nJmN
------END PGP SIGNATURE-----
-
---nextPart2334869.BW6XQeHCiI--
+DQoNCj4gT24gVGh1cnNkYXkgMTggQXByaWwgMjAxMyAyMDoxMzowMCBFemVxdWllbCBHYXJjaWEg
+d3JvdGU6DQo+ID4gT24gVGh1LCBBcHIgMTgsIDIwMTMgYXQgMDQ6MzA6NTVQTSAtMDQwMCwgTWlr
+ZSBGcnlzaW5nZXIgd3JvdGU6DQo+ID4gPiBpIHdvbmRlciBpZiB0aGUgd3JpdGUgc3VwcG9ydCBz
+aG91bGQgYmUgcHV0IGJlaGluZCBhIENPTkZJRyBvcHRpb24uDQo+ID4gPiBwZXJzb25hbGx5LCB0
+aGUgd3JpdGUgc3VwcG9ydCBpcyBraW5kIG9mIG5lYXQgYW5kIHNlbWktdXNlZnVsIGZvcg0KPiA+
+ID4gZGV2ZWxvcG1lbnQsIGJ1dCBpIGRvbid0IHBsYW4gb24gc2hpcHBpbmcgYW55dGhpbmcgb24g
+dGhhdCA6KS4gIGkganVzdA0KPiA+ID4gd2FudCByZWFkLW9ubHkgc3VwcG9ydCB0byBsb2FkIGFu
+IGV4dDIgZnMgb24gdG9wIG9mIFVCSS4NCj4gPg0KPiA+IE1tbS4uLiBnb29kIGlucHV0LiBNYXli
+ZSBwdXR0aW5nIHdyaXRlIHN1cHBvcnQgYmVoaW5kIGEgQ09ORklHDQo+IGFuZA0KPiA+IHNob3dp
+bmcgYSBiaWcgZmF0IHdhcm5pbmcgd2hlbiB0aGUgbW9kdWxlIGxvYWRzIHdpbGwgZG8/DQo+ID4g
+KHNvbWV0aGluZyB0byBwcmV2ZW50IHJlZ3VsYXIgdXNlcnMgZnJvbSB1c2luZyB0aGlzIGNhcmVs
+ZXNzbHkpLg0KPiA+DQpbUGVrb25dOiBQZXJtYW5lbnQgZGlzYWJsaW5nIG9mIFdSSVRFKHMpIG1h
+eSBub3QgYmUgZ29vZCBhcHByb2FjaC4gDQpBcyBpdCBjb25zdHJhaW5zIHlvdSBmcm9tIHVwZGF0
+aW5nIG9uLWZpZWxkIGRldmljZSByZW1vdGVseSwgZXNwZWNpYWxseQ0Kd2hlbiB5b3VyIGJvb3Qt
+bG9hZGVycyBhcmUgbm90IGluIHlvdXIgY29udHJvbC4NCk9SIFVubGVzcyB5b3UgaGF2ZSBhIGJh
+Y2stZG9vciBtZWNoYW5pc20gb3IgbG9vcC1ob2xlLCB3aGljaCB5b3UgDQpjYW4gYWxzbyBzaGFy
+ZSB3aXRoIHlvdXIgY3VzdG9tZXJzICh1bmxpa2VseSkuIA0KDQpbUGVrb25dOiBPdGhlciBvcHRp
+b25zIGZvciBTL1cgZHJpdmVuIFdyaXRlLWFjY2Vzcy1jb250cm9sIGFyZToNCigxKSBVc2luZyBX
+cml0ZS1Qcm90ZWN0IHBpbiBvbiBOQU5EIGRldmljZSwgY29udHJvbGxlZCB2aWEgc2VjdXJlIEdQ
+SU8NCigyKSBVc2luZyBtdGRfbG9jayBhbmQgbXRkX3VubG9jayBtZWNoYW5pc20uDQoJKGEpIHlv
+dXIgZGV2aWNlIHNob3VsZCBzdXBwb3J0IHRoaXMgZmVhdHVyZSwNCgkoYikgSSB0aGluayB0aGlz
+IGlzIG5vdCBzdXBwb3J0ZWQgZm9yIE1UREJMT0NLIGRldmljZXMsIGFuZA0KCShjKSBuZWVkIHRv
+IHBvcHVsYXRlIGZvbGxvd2luZyBmdW5jdGlvbnMgYWNjb3JkaW5nbHkuDQoJZHJpdmVycy9tdGQv
+bmFuZC9uYW5kX2Jhc2UuYw0KCWludCBuYW5kX3NjYW5fdGFpbChzdHJ1Y3QgbXRkX2luZm8gKm10
+ZCkNCgktICAgICAgIG10ZC0+X2xvY2sgPSBOVUxMOw0KCS0gICAgICAgbXRkLT5fdW5sb2NrID0g
+TlVMTDsNCgkrICAgICAgIG10ZC0+X2xvY2sgPSBuYW5kX2xvY2s7DQoJKyAgICAgICBtdGQtPl91
+bmxvY2sgPSBuYW5kX3VubG9jazsNCg0KLS0gQml0IGF3YXkgZnJvbSB0b3BpYyBvZiBkaXNjdXNz
+aW9uIC0tDQpDdXJyZW50bHkgZm9yIE1UREJMT0NLIGRldmljZXMgdGhlIHJlYWRvbmx5IHNldHRp
+bmcgaXMgZGVjaWRlZA0KYXQgZGV2aWNlIGFkZGl0aW9uIHRpbWUuDQpkcml2ZXJzL210ZC9tdGRi
+bG9jay5jIDogbXRkYmxvY2tfYWRkX210ZCgpDQppZiAoIShtdGQtPmZsYWdzICYgTVREX1dSSVRF
+QUJMRSkpDQoJZGV2LT5tYmQucmVhZG9ubHkgPSAxOw0KDQpCdXQgSSB0aGluayBhIHNpbWlsYXIg
+d3JpdGUtcHJvdGVjdGlvbiBtZWNoYW5pc20gbWF5IGJlIGFkZGVkIA0KZm9yIE1UREJMT0NLIGRl
+dmljZXMgYWxzbywgdGhlcmVieSBnaXZpbmcgbG93LWxldmVsIGFjY2VzcyBjb250cm9sDQpFeGFt
+cGxlOg0KaWYgKG10ZC0+X2xvY2sgJiYgbXRkLT5fdW5sb2NrKQ0KCWRldi0+bWJkLnN1cHBvcnRz
+X3dyaXRlX3Byb3RlY3Rpb24gPSAxOw0KDQpEb2VzIGFueW9uZSBzZWUgYSBiZW5lZml0IGluIHRo
+aXM/DQoNCg0Kd2l0aCByZWdhcmRzLCBwZWtvbg0K
