@@ -1,23 +1,21 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UTATv-0004vH-4Y
- for linux-mtd@lists.infradead.org; Fri, 19 Apr 2013 12:32:00 +0000
-From: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
-To: Mike Frysinger <vapier@gentoo.org>
+Received: from woodpecker.gentoo.org ([2001:470:ea4a:1:214:c2ff:fe64:b2d3]
+ helo=smtp.gentoo.org)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UTAmu-0005DF-5N
+ for linux-mtd@lists.infradead.org; Fri, 19 Apr 2013 12:51:36 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+To: dedekind1@gmail.com
 Subject: Re: [RFC/PATCH v2] ubi: Add ubiblock read-write driver
-Date: Fri, 19 Apr 2013 12:31:49 +0000
-Message-ID: <1366374829.29520.127.camel@sauron.fi.intel.com>
+Date: Fri, 19 Apr 2013 08:53:50 -0400
 References: <1355314912-9321-1-git-send-email-elezegarcia@gmail.com>
- <201304182128.19518.vapier@gentoo.org>
- <20980858CB6D3A4BAE95CA194937D5E73E9AEC45@DBDE01.ent.ti.com>
  <201304190757.13688.vapier@gentoo.org>
  <1366374673.29520.125.camel@sauron.fi.intel.com>
 In-Reply-To: <1366374673.29520.125.camel@sauron.fi.intel.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <7BB0F10A7102BB4EAEEC8B22F7965FBE@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; boundary="nextPart3518644.8JrIyZN0I1";
+ protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+Message-Id: <201304190853.54402.vapier@gentoo.org>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
  Ezequiel Garcia <elezegarcia@gmail.com>,
  "richard.weinberger@gmail.com" <richard.weinberger@gmail.com>,
@@ -25,7 +23,6 @@ Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
  Pekon" <pekon@ti.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
  Tim Bird <tim.bird@am.sony.com>
-Reply-To: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,19 +32,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gRnJpLCAyMDEzLTA0LTE5IGF0IDE1OjMxICswMzAwLCBBcnRlbSBCaXR5dXRza2l5IHdyb3Rl
-Og0KPiBUbyBwdXQgaXQgZGlmZmVyZW50bHksIEkgZG8gcmVjb21tZW5kIHRvIG1lcmdlIG1vcmUg
-VUJJLXJlbGF0ZWQgY29kZQ0KPiB3aXRob3V0IGEgc29saWQgdXNlci1iYXNlLg0KDQpTb3JyeSwg
-bm90IG15IGRheS4gT2YgY291cnNlIEkgbWVhbnQgKmRvIG5vdCogcmVjb21tZW5kLg0KDQpXZSBy
-ZWFsbHkgaGF2ZSBlbm91Z2ggb2YgZGVhZCBNRFQtcmVsYXRlZCBzdHVmZi4gTG9vayBhdCBsb2dm
-cyAtIGEgbGFyZ2UNCmNvZGUgYmFzZSB3aGljaCBvb3BzZXMgaWYgeW91IHN0cmVzcy10ZXN0IGl0
-IGFuZCBoYXMgbm8gdXNlcnMuIFdlIGRvIG5vdA0KcmVhbGx5IG5lZWQgbW9yZSBvZiBzdHVmZiBs
-aWtlIHRoYXQuDQoNCi0tIA0KQmVzdCBSZWdhcmRzLA0KQXJ0ZW0gQml0eXV0c2tpeQ0KLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tCkludGVsIEZpbmxhbmQgT3kKUmVnaXN0ZXJlZCBBZGRyZXNzOiBQTCAyODEsIDAwMTgx
-IEhlbHNpbmtpIApCdXNpbmVzcyBJZGVudGl0eSBDb2RlOiAwMzU3NjA2IC0gNCAKRG9taWNpbGVk
-IGluIEhlbHNpbmtpIAoKVGhpcyBlLW1haWwgYW5kIGFueSBhdHRhY2htZW50cyBtYXkgY29udGFp
-biBjb25maWRlbnRpYWwgbWF0ZXJpYWwgZm9yCnRoZSBzb2xlIHVzZSBvZiB0aGUgaW50ZW5kZWQg
-cmVjaXBpZW50KHMpLiBBbnkgcmV2aWV3IG9yIGRpc3RyaWJ1dGlvbgpieSBvdGhlcnMgaXMgc3Ry
-aWN0bHkgcHJvaGliaXRlZC4gSWYgeW91IGFyZSBub3QgdGhlIGludGVuZGVkCnJlY2lwaWVudCwg
-cGxlYXNlIGNvbnRhY3QgdGhlIHNlbmRlciBhbmQgZGVsZXRlIGFsbCBjb3BpZXMuCg==
+--nextPart3518644.8JrIyZN0I1
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Friday 19 April 2013 08:31:13 Artem Bityutskiy wrote:
+> On Fri, 2013-04-19 at 07:57 -0400, Mike Frysinger wrote:
+> > the reason we're talking about not allowing write support at the
+> > *block* layer
+> > is because it's questionable how many people actually want this, the
+> > performance isn't good (compared to native flash filesystems), and
+> > because the
+> > write/wear characteristics are unknown.
+>=20
+> My opinion that unless people demonstrate that they need this, e.g. in a
+> product, etc, we should not merge this stuff.
+>=20
+> We recently merged fastmap, which is a big chunk of code, and it looks
+> like no one really needs it. There was a problem report, and Richard
+> promised to look, but did not. I do not blame him, he is a busy guy. But
+> this shoes that this feature is not really needed, while adds
+> maintenance burden.
+>=20
+> To put it differently, I do recommend to merge more UBI-related code
+> without a solid user-base.
+
+also to be clear, i plan on using UBI block in read-only mode, so i'd like =
+to=20
+see an ubiblock driver merged
+=2Dmike
+
+--nextPart3518644.8JrIyZN0I1
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
+
+iQIcBAABAgAGBQJRcT5iAAoJEEFjO5/oN/WB26wP/i6aTsFbJGoqchQwT17UbwNV
+c6csiC8XC72r/8XXfnG5tJU9ULPEk6rQJtqVOxkYPDFR3SeUdX0nc8YrhAJTJUOh
+RWvaQ1QqCqiFvAAVFiyUL6A8KQLWmt8T4B0+91gEbulf0G0Q6z27F9hy6YXl+08q
+efdV6XL5smBLltyS6ogew+RB3ZhzJvMXIRSJH1I71TqUTECgVH4oHs9IcRaMH52O
+IriJzQCzUPzi+aevFi5hyIQFNYiQlYaTLH8nhDlDt8Y34Yqu6q6L6Q17U6DCxhBN
+c4ve5WkPI/sb0y7gNXEivPr5yZwOYnAQxuoRBi6PhbDob90Sjiy8phIhSSSxkwhA
+FVJTAmqF187YdCuhySF+0iMZRbYrYsz73xq6eaDhhPfuYF5aPuKz83CadaBPE7t5
+BKoUTyvzCkbmHQsS7i+TQCO5ZUshTTMoHSFq4++J4y8iKllwzRDA5KleqYXpFTRe
+1HX/0oTIUGyDF/4VgxEXapRG8m03GPmjB56M93OuLMHcP6iDdVJimt53i3qw5IKJ
+58PQa8j3TUyqZVkYiJvMx+EDomZwJF6RLpgtzOC181CkumpEW999KSkbJtlHd+xY
+QbFpdzSMTfa8qzgwP6kDC1jGljBCwcvBd/o/azVCsv/lGcNGCuaiuaPC/Ljp2hKw
+BzW4oTXd9Nu0JRo0wlVZ
+=Zn/0
+-----END PGP SIGNATURE-----
+
+--nextPart3518644.8JrIyZN0I1--
