@@ -1,20 +1,13 @@
-Received: from mercuryimc.plus.com ([80.229.200.144]
- helo=centos1.newflow.co.uk)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UUDFd-0002PZ-SQ
- for linux-mtd@lists.infradead.org; Mon, 22 Apr 2013 09:41:34 +0000
-Message-ID: <517505CA.2050509@newflow.co.uk>
-Date: Mon, 22 Apr 2013 10:41:30 +0100
-From: Mark Jackson <mpfj-list@newflow.co.uk>
+From: Linus Walleij <linus.walleij@stericsson.com>
+To: <linux-arm-kernel@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>
+Subject: [PATCH 22/23] ARM: u300: add FSMC flash into the device tree
+Date: Mon, 22 Apr 2013 12:02:19 +0200
+Message-ID: <1366624939-7003-1-git-send-email-linus.walleij@stericsson.com>
 MIME-Version: 1.0
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: MTD : cannot reserve enough PEBs for bad PEB handling
-References: <51750526.70508@newflow.co.uk>
-In-Reply-To: <51750526.70508@newflow.co.uk>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- lkml <linux-kernel@vger.kernel.org>, dedekind1@gmail.com
+Content-Type: text/plain
+Cc: devicetree-discuss@lists.ozlabs.org,
+ Linus Walleij <linus.walleij@linaro.org>, Arnd Bergmann <arnd@arndb.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,49 +17,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 22/04/13 10:38, Mark Jackson wrote:
-> I'm trying to work out how to generate a "valid" UBI image, but I keep
-> getting a "cannot get enough PEBs" warning.
+From: Linus Walleij <linus.walleij@linaro.org>
 
-<snip>
+This registers the U300 FSMC flash controller from the
+device tree, and defines the three partitions. Skip the
+BBT scan as in the current platform data.
 
-> ...
-> [    0.792456] UBI: attaching mtd7 to ubi0
-> [    1.540858] UBI: scanning is finished
-> [    1.557578] UBI warning: print_rsvd_warning: cannot reserve enough
-> PEBs for bad PEB handling, reserved 4, need 40
-> [    1.561346] UBI: attached mtd7 (name "rootfs", size 64 MiB) to ubi0
-> [    1.561404] UBI: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
-> [    1.561434] UBI: min./max. I/O unit sizes: 2048/2048, sub-page size 512
-> [    1.561464] UBI: VID header offset: 2048 (aligned 2048), data offset:
-> 4096
-> [    1.561493] UBI: good PEBs: 512, bad PEBs: 0, corrupted PEBs: 0
-> [    1.561520] UBI: user volume: 1, internal volumes: 1, max. volumes
-> count: 128
-> [    1.561554] UBI: max/mean erase counter: 2/1, WL threshold: 4096,
-> image sequence number: 1434266085
-> [    1.561591] UBI: available PEBs: 0, total reserved PEBs: 512, PEBs
-> reserved for bad PEB handling: 4
-> [    1.562374] UBI: background thread "ubi_bgt0d" started, PID 598
-> ...
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ arch/arm/boot/dts/ste-u300.dts | 26 ++++++++++++++++++++++++++
+ arch/arm/mach-u300/core.c      |  2 ++
+ 2 files changed, 28 insertions(+)
 
-And some additional UBI messages I failed to copy in:-
-
-...
-[    1.728485] UBIFS: recovery needed
-[    1.824972] UBIFS: recovery deferred
-[    1.825553] UBIFS: mounted UBI device 0, volume 0, name "rootfs", R/O
-mode
-[    1.825595] UBIFS: LEB size: 126976 bytes (124 KiB), min./max. I/O
-unit sizes: 2048 bytes/2048 bytes
-[    1.825638] UBIFS: FS size: 60059648 bytes (57 MiB, 473 LEBs),
-journal size 7999488 bytes (7 MiB, 63 LEBs)
-[    1.825677] UBIFS: reserved for root: 0 bytes (0 KiB)
-[    1.825711] UBIFS: media format: w4/r0 (latest is w4/r0), UUID
-93286679-C044-4BC4-8FCB-6E5055E65825, small LPT model
-[    2.088284] UBIFS: completing deferred recovery
-[    2.204405] UBIFS: background thread "ubifs_bgt0_0" started, PID 613
-[    2.206118] UBIFS: deferred recovery completed
-
-Cheers
-Mark J.
+diff --git a/arch/arm/boot/dts/ste-u300.dts b/arch/arm/boot/dts/ste-u300.dts
+index 9a163e1..e4b8c7b 100644
+--- a/arch/arm/boot/dts/ste-u300.dts
++++ b/arch/arm/boot/dts/ste-u300.dts
+@@ -75,6 +75,32 @@
+ 		interrupts = <2>;
+ 	};
+ 
++	/* A NAND flash of 128 MiB */
++	fsmc: flash@40000000 {
++		compatible = "stericsson,fsmc-nand";
++		#address-cells = <1>;
++		#size-cells = <1>;
++		reg = <0x9f800000 0x1000>,	/* FSMC Register*/
++			<0x80000000 0x4000>,	/* NAND Base DATA */
++			<0x80020000 0x4000>,	/* NAND Base ADDR */
++			<0x80010000 0x4000>;	/* NAND Base CMD */
++		reg-names = "fsmc_regs", "nand_data", "nand_addr", "nand_cmd";
++		nand-skip-bbtscan;
++
++		partition@0 {
++		label = "boot records";
++			reg = <0x0 0x20000>;
++		};
++		partition@20000 {
++			label = "free";
++			reg = <0x20000 0x7e0000>;
++		};
++		partition@800000 {
++			label = "platform";
++			reg = <0x800000 0xf800000>;
++		};
++	};
++
+ 	i2c0: i2c@c0004000 {
+ 		compatible = "st,ddci2c";
+ 		reg = <0xc0004000 0x1000>;
+diff --git a/arch/arm/mach-u300/core.c b/arch/arm/mach-u300/core.c
+index 9467ffe..82f57f1 100644
+--- a/arch/arm/mach-u300/core.c
++++ b/arch/arm/mach-u300/core.c
+@@ -732,6 +732,8 @@ static struct of_dev_auxdata u300_auxdata_lookup[] __initdata = {
+ 		"rtc-coh901331", NULL),
+ 	OF_DEV_AUXDATA("stericsson,coh901318", U300_DMAC_BASE,
+ 		"coh901318", NULL),
++	OF_DEV_AUXDATA("stericsson,fsmc-nand", U300_NAND_IF_PHYS_BASE,
++		"fsmc-nand", NULL),
+ 	OF_DEV_AUXDATA("arm,primecell", U300_UART0_BASE,
+ 		"uart0", &uart0_plat_data),
+ 	OF_DEV_AUXDATA("arm,primecell", U300_UART1_BASE,
+-- 
+1.7.11.3
