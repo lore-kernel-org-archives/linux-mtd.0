@@ -1,19 +1,22 @@
-Received: from tx2ehsobe001.messaging.microsoft.com ([65.55.88.11]
- helo=tx2outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UUBz8-0000tk-5C
- for linux-mtd@lists.infradead.org; Mon, 22 Apr 2013 08:20:26 +0000
-From: Huang Shijie <b32955@freescale.com>
-To: <dwmw2@infradead.org>
-Subject: [PATCH v2] mtd: replace the hardcode with the onfi_feature()
-Date: Mon, 22 Apr 2013 16:09:31 +0800
-Message-ID: <1366618171-30698-1-git-send-email-b32955@freescale.com>
-In-Reply-To: <1366616878-29481-5-git-send-email-b32955@freescale.com>
-References: <1366616878-29481-5-git-send-email-b32955@freescale.com>
+Received: from youngberry.canonical.com ([91.189.89.112])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UUCTa-0001RW-Ax
+ for linux-mtd@lists.infradead.org; Mon, 22 Apr 2013 08:51:54 +0000
+Date: Mon, 22 Apr 2013 09:51:45 +0100
+From: Luis Henriques <luis.henriques@canonical.com>
+To: Ben Hutchings <ben@decadent.org.uk>
+Subject: Re: [PATCH 66/72] mtdchar: fix offset overflow detection
+Message-ID: <20130422085145.GC3222@hercules>
+References: <1366276617-3553-1-git-send-email-luis.henriques@canonical.com>
+ <1366276617-3553-67-git-send-email-luis.henriques@canonical.com>
+ <1366602998.3408.146.camel@deadeye.wl.decadent.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, dedekind1@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1366602998.3408.146.camel@deadeye.wl.decadent.org.uk>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org, kernel-team@lists.ubuntu.com,
+ linux-mtd@lists.infradead.org, Linus Torvalds <torvalds@linux-foundation.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,33 +26,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The current code uses the hardcode to detect the 16-bit bus width.
-Use the onfi_feature() to replace it.
+On Mon, Apr 22, 2013 at 04:56:38AM +0100, Ben Hutchings wrote:
+> On Thu, 2013-04-18 at 10:16 +0100, Luis Henriques wrote:
+> > 3.5.7.11 -stable review patch.  If anyone has any objections, please let me know.
+> > 
+> > ------------------
+> > 
+> > From: Linus Torvalds <torvalds@linux-foundation.org>
+> > 
+> > commit 9c603e53d380459fb62fec7cd085acb0b74ac18f upstream.
+> [...]
+> 
+> There are further problems with mtdchar_mmap(), and David recommended to
+> apply commit f5cf8f07423b 'mtd: Disable mtdchar mmap on MMU systems'
+> instead.
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
-I missed to rename to the onfi_feature(). This patch fixes it.
+Ok, I missed that.  I'll replace it by f5cf8f07423b.  Thanks.
 
----
- drivers/mtd/nand/nand_base.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 48ff097..ba87e43 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2957,9 +2957,9 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
- 	mtd->oobsize = le16_to_cpu(p->spare_bytes_per_page);
- 	chip->chipsize = le32_to_cpu(p->blocks_per_lun);
- 	chip->chipsize *= (uint64_t)mtd->erasesize * p->lun_count;
--	*busw = 0;
--	if (le16_to_cpu(p->features) & 1)
--		*busw = NAND_BUSWIDTH_16;
-+
-+	*busw = (onfi_feature(chip) & ONFI_FEATURE_16_BIT_BUS) ?
-+			NAND_BUSWIDTH_16 : 0;
- 
- 	if (p->ecc_bits != 0xff) {
- 		chip->ecc_strength = p->ecc_bits;
--- 
-1.7.1
+Cheers,
+--
+Luis
