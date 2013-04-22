@@ -1,20 +1,20 @@
-Received: from tx2ehsobe003.messaging.microsoft.com ([65.55.88.13]
+Received: from tx2ehsobe005.messaging.microsoft.com ([65.55.88.15]
  helo=tx2outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UUBeX-0000JI-S9
- for linux-mtd@lists.infradead.org; Mon, 22 Apr 2013 07:59:12 +0000
+ id 1UUBeZ-0000Mj-Rw
+ for linux-mtd@lists.infradead.org; Mon, 22 Apr 2013 07:59:18 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH v2 3/8] mtd: get the ECC info from the Extended Parameter Page
-Date: Mon, 22 Apr 2013 15:47:53 +0800
-Message-ID: <1366616878-29481-4-git-send-email-b32955@freescale.com>
+Subject: [PATCH v2 8/8] mtd: gpmi: set the BCH's geometry with the ecc info
+Date: Mon, 22 Apr 2013 15:47:58 +0800
+Message-ID: <1366616878-29481-9-git-send-email-b32955@freescale.com>
 In-Reply-To: <1366616878-29481-1-git-send-email-b32955@freescale.com>
 References: <1366616878-29481-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- dedekind1@gmail.com
+Cc: dedekind1@gmail.com, linux-kernel@vger.kernel.org,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ computersforpeace@gmail.com, Huang Shijie <shijie8@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,95 +24,164 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Since the ONFI 2.1, the onfi spec adds the Extended Parameter Page
-to store the ECC info.
+If the nand chip provides us the ECC info, we can use it firstly.
+The set_geometry_by_ecc_info() will use the ECC info, and
+calculate the parameters we need.
 
-The onfi spec tells us that if the nand chip's recommended ECC codeword
-size is not 512 bytes, then the @ecc_bits is 0xff. The host _SHOULD_ then
-read the Extended ECC information that is part of the extended parameter
-page to retrieve the ECC requirements for this device.
-
-This patch implement the reading of the Extended Parameter Page, and parses
-the sections for ECC type, and get the ECC info from the ECC section.
-
-Tested this patch with Micron MT29F64G08CBABAWP.
+Rename the old code to lagacy_set_geometry() which will takes effect
+when there is no ECC info from the nand chip or we fails in the ECC info case.
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
+Signed-off-by: Huang Shijie <shijie8@gmail.com>
 ---
- drivers/mtd/nand/nand_base.c |   54 ++++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 54 insertions(+), 0 deletions(-)
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |  128 +++++++++++++++++++++++++++++++-
+ 1 files changed, 127 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index beff911..48ff097 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2846,6 +2846,56 @@ static u16 onfi_crc16(u16 crc, u8 const *p, size_t len)
- 	return crc;
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 717881a..e085ade 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -113,7 +113,128 @@ static inline bool gpmi_check_ecc(struct gpmi_nand_data *this)
+ 	return true;
  }
  
-+/* Parse the Extended Parameter Page. */
-+static void nand_flash_detect_ext_param_page(struct mtd_info *mtd,
-+		struct nand_chip *chip, struct nand_onfi_params *p, int last)
+-int common_nfc_set_geometry(struct gpmi_nand_data *this)
++/*
++ * If we can get the ECC information from the nand chip, we do not
++ * need to calculate them ourselves.
++ *
++ * We may have available oob space in this case.
++ */
++static bool set_geometry_by_ecc_info(struct gpmi_nand_data *this)
 +{
-+	struct onfi_ext_param_page *ep;
-+	struct onfi_ext_section *s;
-+	struct onfi_ext_ecc_info *ecc;
-+	uint8_t *cursor;
-+	int len;
-+	int i;
++	struct bch_geometry *geo = &this->bch_geometry;
++	struct mtd_info *mtd = &this->mtd;
++	struct nand_chip *chip = mtd->priv;
++	struct nand_oobfree *of = gpmi_hw_ecclayout.oobfree;
++	unsigned int block_mark_bit_offset;
 +
-+	len = le16_to_cpu(p->ext_param_page_length) * 16;
-+	ep = kcalloc(1, max_t(int, len, sizeof(*p)), GFP_KERNEL);
-+	if (!ep)
-+		goto ext_out;
++	if (!(chip->ecc_strength > 0 && chip->ecc_size > 0))
++		return false;
++
++	switch (chip->ecc_size) {
++	case SZ_512:
++		geo->gf_len = 13;
++		break;
++	case SZ_1K:
++		geo->gf_len = 14;
++		break;
++	default:
++		dev_err(this->dev,
++			"unsupported nand chip. ecc bits : %d, ecc size : %d\n",
++			chip->ecc_strength, chip->ecc_size);
++		return false;
++	}
++	geo->ecc_chunk_size = chip->ecc_size;
++	geo->ecc_strength = round_up(chip->ecc_strength, 2);
++	if (!gpmi_check_ecc(this))
++		return false;
++
++	/* Keep the C >= O */
++	if (geo->ecc_chunk_size < mtd->oobsize) {
++		dev_err(this->dev,
++			"unsupported nand chip. ecc size: %d, oob size : %d\n",
++			chip->ecc_size, mtd->oobsize);
++		return false;
++	}
++
++	/* The default value, see comment in the lagacy_set_geometry(). */
++	geo->metadata_size = 10;
++
++	geo->ecc_chunk_count = mtd->writesize / geo->ecc_chunk_size;
 +
 +	/*
-+	 * Skip the ONFI Parameter Pages.
-+	 * The Change Read Columm command may does not works here.
++	 * Now, the NAND chip with 2K page(data chunk is 512byte) shows below:
++	 *
++	 *    |                          P                            |
++	 *    |<----------------------------------------------------->|
++	 *    |                                                       |
++	 *    |                                        (Block Mark)   |
++	 *    |                      P'                      |      | |     |
++	 *    |<-------------------------------------------->|  D   | |  O' |
++	 *    |                                              |<---->| |<--->|
++	 *    V                                              V      V V     V
++	 *    +---+----------+-+----------+-+----------+-+----------+-+-----+
++	 *    | M |   data   |E|   data   |E|   data   |E|   data   |E|     |
++	 *    +---+----------+-+----------+-+----------+-+----------+-+-----+
++	 *
++	 *	P : the page size for BCH module.
++	 *	E : The ECC strength.
++	 *	G : the length of Galois Field.
++	 *	N : The chunk count of per page.
++	 *	M : the metasize of per page.
++	 *	C : the ecc chunk size, aka the "data" above.
++	 *	P': the nand chip's page size.
++	 *	O : the nand chip's oob size.
++	 *	O': the free oob.
++	 *
++	 *	The formula for P is :
++	 *
++	 *	            E * G * N
++	 *	       P = ------------ + P' + M
++	 *                      8
++	 *
++	 * The position of block mark moves forward in the ECC-based view
++	 * of page, and the delta is:
++	 *
++	 *                   E * G * (N - 1)
++	 *             D = (---------------- + M)
++	 *                          8
++	 *
++	 * Please see the comment in lagacy_set_geometry().
++	 * With the condition C >= O , we still can get same result.
++	 * So the bit position of the physical block mark within the ECC-based
++	 * view of the page is :
++	 *             (P' - D) * 8
 +	 */
-+	for (i = last + 1; i < p->num_of_param_pages; i++)
-+		chip->read_buf(mtd, (uint8_t *)ep, sizeof(*p));
++	geo->page_size = mtd->writesize + geo->metadata_size +
++		(geo->gf_len * geo->ecc_strength * geo->ecc_chunk_count) / 8;
 +
-+	/* Read out the Extended Parameter Page. */
-+	chip->read_buf(mtd, (uint8_t *)ep, len);
-+	if ((onfi_crc16(ONFI_CRC_BASE, ((uint8_t *)ep) + 2, len - 2)
-+		!= le16_to_cpu(ep->crc)) || strncmp(ep->sig, "EPPS", 4))
-+		goto ext_out;
-+
-+	/* find the ECC section. */
-+	cursor = (uint8_t *)(ep + 1);
-+	for (i = 0; i < ONFI_EXT_SECTION_MAX; i++) {
-+		s = ep->sections + i;
-+		if (s->type == ONFI_SECTION_TYPE_2)
-+			break;
-+		cursor += s->length * 16;
++	/* The available oob size we have. */
++	if (geo->page_size < mtd->writesize + mtd->oobsize) {
++		of->offset = geo->page_size - mtd->writesize;
++		of->length = mtd->oobsize - of->offset;
++		mtd->oobavail = gpmi_hw_ecclayout.oobavail = of->length;
 +	}
-+	if (i == ONFI_EXT_SECTION_MAX)
-+		goto ext_out;
 +
-+	/* get the info we want. */
-+	ecc = (struct onfi_ext_ecc_info *)cursor;
-+	chip->ecc_strength = ecc->ecc_bits;
-+	chip->ecc_size = 1 << ecc->codeword_size;
++	geo->payload_size = mtd->writesize;
 +
-+	pr_info("ONFI extended param page detected.\n");
-+ext_out:
-+	kfree(ep);
++	geo->auxiliary_status_offset = ALIGN(geo->metadata_size, 4);
++	geo->auxiliary_size = ALIGN(geo->metadata_size, 4)
++				+ ALIGN(geo->ecc_chunk_count, 4);
++
++	if (!this->swap_block_mark)
++		return true;
++
++	/* For bit swap. */
++	block_mark_bit_offset = mtd->writesize * 8 -
++		(geo->ecc_strength * geo->gf_len * (geo->ecc_chunk_count - 1)
++				+ geo->metadata_size * 8);
++
++	geo->block_mark_byte_offset = block_mark_bit_offset / 8;
++	geo->block_mark_bit_offset  = block_mark_bit_offset % 8;
++	return true;
 +}
 +
- /*
-  * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0 otherwise.
-  */
-@@ -2914,6 +2964,10 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
- 	if (p->ecc_bits != 0xff) {
- 		chip->ecc_strength = p->ecc_bits;
- 		chip->ecc_size = 512;
-+	} else if (chip->onfi_version >= 21 &&
-+		(onfi_feature(chip) & ONFI_FEATURE_EXT_PARAM_PAGE)) {
-+		/* The Extended Parameter Page is supported since ONFI 2.1. */
-+		nand_flash_detect_ext_param_page(mtd, chip, p, i);
- 	}
++static int lagacy_set_geometry(struct gpmi_nand_data *this)
+ {
+ 	struct bch_geometry *geo = &this->bch_geometry;
+ 	struct mtd_info *mtd = &this->mtd;
+@@ -225,6 +346,11 @@ int common_nfc_set_geometry(struct gpmi_nand_data *this)
+ 	return 0;
+ }
  
- 	pr_info("ONFI flash detected\n");
++int common_nfc_set_geometry(struct gpmi_nand_data *this)
++{
++	return set_geometry_by_ecc_info(this) ? 0 : lagacy_set_geometry(this);
++}
++
+ struct dma_chan *get_dma_chan(struct gpmi_nand_data *this)
+ {
+ 	int chipnr = this->current_chip;
 -- 
 1.7.1
