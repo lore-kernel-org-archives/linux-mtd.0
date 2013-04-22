@@ -1,19 +1,24 @@
-Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
+Received: from mail-vb0-x236.google.com ([2607:f8b0:400c:c02::236])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UUOJP-0002U1-7s
- for linux-mtd@lists.infradead.org; Mon, 22 Apr 2013 21:30:11 +0000
-From: Marek Vasut <marex@denx.de>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 17/18] fs: Fix copyright symbol in printk()
-Date: Mon, 22 Apr 2013 23:30:08 +0200
-References: <1366665870-8998-1-git-send-email-marex@denx.de>
-In-Reply-To: <1366665870-8998-1-git-send-email-marex@denx.de>
+ id 1UUOP2-0002aY-CK
+ for linux-mtd@lists.infradead.org; Mon, 22 Apr 2013 21:36:02 +0000
+Received: by mail-vb0-f54.google.com with SMTP id w16so6335568vbf.41
+ for <linux-mtd@lists.infradead.org>; Mon, 22 Apr 2013 14:35:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
+In-Reply-To: <CAN8TOE_unte2BFxuXTyUg==7QUTwxXwPsTieaVAD74xixk65CA@mail.gmail.com>
+References: <1363605534-24776-1-git-send-email-b32955@freescale.com>
+ <1366120517.2768.109.camel@sauron.fi.intel.com>
+ <516E04B0.7010508@freescale.com>
+ <CAN8TOE_unte2BFxuXTyUg==7QUTwxXwPsTieaVAD74xixk65CA@mail.gmail.com>
+Date: Mon, 22 Apr 2013 14:35:58 -0700
+Message-ID: <CAN8TOE-Nt1HrWBN+HeeJAE0UDKBwCXiEEc5+kPtjBM5hXF4d+A@mail.gmail.com>
+Subject: Re: [PATCH 00/11] mtd: add datasheet's ECC information to nand_chip{}
+From: Brian Norris <computersforpeace@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=GB2312
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <201304222330.08876.marex@denx.de>
-Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org, matthieu.castet@parrot.com,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,40 +28,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Marek Vasut,
+Hi again Huang,
 
-you're such a moron, leaving that 17/18 stuff in the subject ... at least b=
-e=20
-sorry for confusing others! :-/
+I had some initial comments a week ago (below) which haven't been
+addressed. Can you please address them? I see that you are continuing
+to send out v2 patches based on l2-mtd, where Artem already pulled in
+your first 3 patches. But further work depends on the answer to my
+questions for the first 3 patches.
 
-> Use regular ASCII "(C)" string instead of UTF8 "=A9" string in
-> printk() as the later produces the following output on dmesg
-> instead of the expected one:
->=20
->   jffs2: version 2.2. (NAND) \xffffffc2\xffffffa9 2001-2006 Red Hat, Inc.
->=20
-> Signed-off-by: Marek Vasut <marex@denx.de>
-> Cc: David Woodhouse <dwmw2@infradead.org>
+On Tue, Apr 16, 2013 at 8:56 PM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> On Tue, Apr 16, 2013 at 7:10 PM, Huang Shijie <b32955@freescale.com> wrot=
+e:
+>> =D3=DA 2013=C4=EA04=D4=C216=C8=D5 21:55, Artem Bityutskiy =D0=B4=B5=C0:
+>>
+>>> Unfortunately no-one reviewed your patches. Let me CC Brian.
+>>>
+>> I CCed Brian already.
+>> I also hope some one could reviews this patch set.
+>
+> Things go by the wayside at times... sigh. Sorry for the delay. I do
+> plan to fully review this series.
+>
+> Initial comments:
+>
+> What are the semantics for these new ecc_strength and ecc_size fields
+> for chips which aren't encoded in nand_ids.c (or aren't
+> ONFI-compliant)? We can't necessarily say that '0' means "no data
+> provided" - it is perfectly valid to have a value of 0, e.g., for EZ
+> NAND (or something like that) which manages its own ECC on-die. I
+> think there are even a few words in the ONFI spec about it. Basically,
+> I'm trying to point out that there is a difference between those chips
+> which we can't/don't detect their ecc_{strength,size} and those which
+> need no ECC.
 
-=2E.. yes, I'm sorry :-(
+We need to straighten out these semantics now. Perhaps the fields in
+struct nand_chip can be signed, where -1 is "unknown" and 0 is "no ECC
+required."
 
-> ---
->  fs/jffs2/super.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-> index 0defb1c..8916eb8 100644
-> --- a/fs/jffs2/super.c
-> +++ b/fs/jffs2/super.c
-> @@ -381,7 +381,7 @@ static int __init init_jffs2_fs(void)
->  #ifdef CONFIG_JFFS2_SUMMARY
->  	       " (SUMMARY) "
->  #endif
-> -	       " =A9 2001-2006 Red Hat, Inc.\n");
-> +	       " (C) 2001-2006 Red Hat, Inc.\n");
->=20
->  	jffs2_inode_cachep =3D kmem_cache_create("jffs2_i",
->  					     sizeof(struct jffs2_inode_info),
+> Also, I might consider different names for these fields so that you
+> don't just rely on the in-code comments to differentiate the nand_chip
+> and nand_ecc_ctrl values. Perhaps min_ecc_strength and ecc_size?
+> (can't think of a great distinguishing name for the second one)
 
-Best regards,
-Marek Vasut
+The naming can be changed after your series, if it seems worth it.
+
+> Finally, it's probably fine to increase NAND_MAX_OOBSIZE (and
+> MTD_MAX_ECCPOS_ENTRIES_LARGE) yet again, but these really need to
+> die... I have a (yet untested) patch series for killing
+> NAND_MAX_OOBSIZE ready.
+>
+> I'll try to fully review the series within the week.
+>
+> Brian
