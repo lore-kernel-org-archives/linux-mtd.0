@@ -1,21 +1,21 @@
-Received: from shadbolt.e.decadent.org.uk ([88.96.1.126])
+Received: from mail-vc0-f180.google.com ([209.85.220.180])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UU7rw-0005Al-9A
- for linux-mtd@lists.infradead.org; Mon, 22 Apr 2013 03:56:45 +0000
-Message-ID: <1366602998.3408.146.camel@deadeye.wl.decadent.org.uk>
-Subject: Re: [PATCH 66/72] mtdchar: fix offset overflow detection
-From: Ben Hutchings <ben@decadent.org.uk>
-To: Luis Henriques <luis.henriques@canonical.com>
-Date: Mon, 22 Apr 2013 04:56:38 +0100
-In-Reply-To: <1366276617-3553-67-git-send-email-luis.henriques@canonical.com>
-References: <1366276617-3553-1-git-send-email-luis.henriques@canonical.com>
- <1366276617-3553-67-git-send-email-luis.henriques@canonical.com>
-Content-Type: multipart/signed; micalg="pgp-sha512";
- protocol="application/pgp-signature"; boundary="=-mz7T63a4EFg2LYpGV3Jh"
-Mime-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org, kernel-team@lists.ubuntu.com,
- linux-mtd@lists.infradead.org, Linus Torvalds <torvalds@linux-foundation.org>
+ id 1UU8Iq-0005U0-TL
+ for linux-mtd@lists.infradead.org; Mon, 22 Apr 2013 04:24:33 +0000
+Received: by mail-vc0-f180.google.com with SMTP id m16so5643502vca.39
+ for <linux-mtd@lists.infradead.org>; Sun, 21 Apr 2013 21:24:31 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1363605534-24776-5-git-send-email-b32955@freescale.com>
+References: <1363605534-24776-1-git-send-email-b32955@freescale.com>
+ <1363605534-24776-5-git-send-email-b32955@freescale.com>
+Date: Sun, 21 Apr 2013 21:24:30 -0700
+Message-ID: <CAN8TOE8k8gOWxTeBv3N41Jfsh1Zo-2GfUEAvq0vFsGMJ-rz2hA@mail.gmail.com>
+Subject: Re: [PATCH 04/11] mtd: add data structures for Extended Parameter Page
+From: Brian Norris <computersforpeace@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ matthieu.castet@parrot.com, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,54 +25,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, Mar 18, 2013 at 4:18 AM, Huang Shijie <b32955@freescale.com> wrote:
+> Since the ONFI 2.1, the onfi spec adds the Extended Parameter Page
+> to store the ECC info.
+>
+> The onfi spec tells us that if the nand chip's recommended ECC codeword
+> size is not 512 bytes, then the @ecc_bits is 0xff. The host _SHOULD_ then
+> read the Extended ECC information that is part of the extended parameter
+> page to retrieve the ECC requirements for this device.
+>
+> This patch adds
+>     [1] the neccessary fields for nand_onfi_params{},
+>     [2] and adds the ext_ecc_info{} for Extended ECC information,
+>     [3] adds ext_section{} for extended sections,
+>     [4] and adds ext_param_page{} for the Extended Parameter Page.
+>
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
+> ---
+>  include/linux/mtd/nand.h |   39 ++++++++++++++++++++++++++++++++++++++-
+>  1 files changed, 38 insertions(+), 1 deletions(-)
+>
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index 9779e3e..94ae957 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -217,7 +217,10 @@ struct nand_onfi_params {
+>         __le16 revision;
+>         __le16 features;
+>         __le16 opt_cmd;
+> -       u8 reserved[22];
+> +       u8 reserved0[2];
+> +       __le16 ext_param_page_length; /* since onfi 2.1 */
+> +       u8 num_of_param_pages;        /* since onfi 2.1 */
+> +       u8 reserved1[17];
+>
+>         /* manufacturer information block */
+>         char manufacturer[12];
+> @@ -274,6 +277,40 @@ struct nand_onfi_params {
+>
+>  #define ONFI_CRC_BASE  0x4F4E
+>
+> +/* Extended ECC information Block Definition (since onfi 2.1) */
+> +struct ext_ecc_info {
 
---=-mz7T63a4EFg2LYpGV3Jh
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Should include NAND and/or ONFI in the name (e.g., onfi_ext_ecc_info)
 
-On Thu, 2013-04-18 at 10:16 +0100, Luis Henriques wrote:
-> 3.5.7.11 -stable review patch.  If anyone has any objections, please let =
-me know.
->=20
-> ------------------
->=20
-> From: Linus Torvalds <torvalds@linux-foundation.org>
->=20
-> commit 9c603e53d380459fb62fec7cd085acb0b74ac18f upstream.
-[...]
+> +       u8 ecc_bits;
+> +       u8 codeword_size;
+> +       __le16 bb_per_lun;
+> +       __le16 block_endurance;
+> +       u8 reserved[2];
+> +} __attribute__((packed));
+> +
+> +#define SECTION_TYPE_0 0       /* Unused section. */
+> +#define SECTION_TYPE_1 1       /* for additional sections. */
+> +#define SECTION_TYPE_2 2       /* for ECC information. */
 
-There are further problems with mtdchar_mmap(), and David recommended to
-apply commit f5cf8f07423b 'mtd: Disable mtdchar mmap on MMU systems'
-instead.
+Should prefix these with ONFI_
 
-Ben.
+> +struct ext_section {
 
---=20
-Ben Hutchings
-Klipstein's 4th Law of Prototyping and Production:
-                                    A fail-safe circuit will destroy others=
-.
+Also needs an ONFI prefix, e.g., onfi_ext_section
 
---=-mz7T63a4EFg2LYpGV3Jh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
+> +       u8 type;
+> +       u8 length;
+> +} __attribute__((packed));
+> +
+> +#define EXT_SECTION_MAX 8
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+Also should be prefixed ONFI_
 
-iQIVAwUAUXS09ue/yOyVhhEJAQqKFg//bkUz7bcGEN7U4CZBE+Yh/2rqurV7mIZ3
-4CPfQaiShiEQWH6xExxGVHxo2hj5DeTmlOsgP92noeMkjoagJZUIasPYlRCcbFhR
-xIqYa8NUsmuBRtRznibAZ/N+ReJolk4C6AYEkVFb8DjiwpYTO71bw/bX/sbArCzm
-Q/0d2or3a+DOZI92KYJ4N2qd6shPyxdh0H/3DSsnMU6VZX88WQYLrXp2YYzYmzoG
-+klckd5YndH5B+WoQLuvLMj78dzSLxD6uI7MXgWOxFzVMxe1ALwZT7HJ4Ryp8y4q
-+oyezvDNJR+4WPe18yYGH/Gh0RkdkojoLg5Z4KHDu4/FzM6Vv3c5F9vSnxqLB+p9
-5FOtJJ22g42Gs9eLjCnCNt7OngUsDwC3WFVHhy5VUwKLaFlv5hcIuLHn79tkc8UA
-+g3Nev5xMr0FhULKQn2hODY9pVH7beRdMmFyX/4TyV7ODBdpIys/MQWr9ft0ZGdB
-Zi7T13mRi9GvSlasM1h/Y0Fm9MEP1sLJOebH1Sn4zazVvP/xMqU0LpaSS5wkej0F
-5jxpHq/8yQ8TodBIbjAwbj7R5+VcniRiWHuYVPifpTCgC/Qpx6hE/rfiN90hwYa0
-5DOxUhlHeUF0hIezOfj3NdcGIL7JPXGve6g3mhu+a6PjHPqFdhz1UmE/Q9ei5vMM
-QZZq3JFKBic=
-=Ww1M
------END PGP SIGNATURE-----
+> +
+> +/* Extended Parameter Page Definition (since onfi 2.1) */
+> +struct ext_param_page {
 
---=-mz7T63a4EFg2LYpGV3Jh--
+onfi_ext_param_page
+
+> +       __le16 crc;
+> +       u8 sig[4];             /* 'E' 'P' 'P' 'S' */
+> +       u8 reserved0[10];
+> +       struct ext_section sections[EXT_SECTION_MAX];
+> +
+> +       /*
+> +        * The actual size of the Extended Parameter Page is in
+> +        * @ext_param_page_length of nand_onfi_params{}.
+> +        * The followings are the unknown length sections.
+
+s/followings/following/
+s/unknown /variable-/
+
+> +        * So we do not add any fields below. Please see the onfi spec.
+
+s/onfi/ONFI/
+
+> +        */
+> +} __attribute__((packed));
+> +
+>  /**
+>   * struct nand_hw_control - Control structure for hardware controller (e.g ECC generator) shared among independent devices
+>   * @lock:               protection lock
+
+Brian
