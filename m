@@ -1,13 +1,21 @@
-From: Linus Walleij <linus.walleij@stericsson.com>
-To: <linux-arm-kernel@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH 22/23] ARM: u300: add FSMC flash into the device tree
-Date: Mon, 22 Apr 2013 12:02:19 +0200
-Message-ID: <1366624939-7003-1-git-send-email-linus.walleij@stericsson.com>
+Received: from mail.hai-o.com.my ([210.5.44.58])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UUGZa-0003e1-AB
+ for linux-mtd@lists.infradead.org; Mon, 22 Apr 2013 13:14:23 +0000
+Received: from drsmur.lnk.telstra.net ([203.45.117.233] helo=hai-o.com.my)
+ by mail.hai-o.com.my with esmtpsa (TLSv1:AES256-SHA:256) (Exim 4.72)
+ (envelope-from <tanly@hai-o.com.my>) id 1UUGYs-0002CS-HT
+ for linux-mtd@lists.infradead.org; Mon, 22 Apr 2013 21:13:39 +0800
+Message-ID: <31A0F5A4.4003ECFD@hai-o.com.my>
+Date: Mon, 22 Apr 2013 16:13:42 +0300
+From: "венуся" <tanly@hai-o.com.my>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: devicetree-discuss@lists.ozlabs.org,
- Linus Walleij <linus.walleij@linaro.org>, Arnd Bergmann <arnd@arndb.de>
+To: <linux-mtd@lists.infradead.org>
+Subject: =?windows-1251?B?0eDs4P8g6Ofz7Ojy5ev87eXp+OD/IOzu5OXr/CDj7uTg?=
+Content-Type: text/plain;
+	charset="windows-1251"
+Content-Transfer-Encoding: 7bit
+Reply-To: венура <tanly@hai-o.com.my>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,67 +25,4 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Linus Walleij <linus.walleij@linaro.org>
-
-This registers the U300 FSMC flash controller from the
-device tree, and defines the three partitions. Skip the
-BBT scan as in the current platform data.
-
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
- arch/arm/boot/dts/ste-u300.dts | 26 ++++++++++++++++++++++++++
- arch/arm/mach-u300/core.c      |  2 ++
- 2 files changed, 28 insertions(+)
-
-diff --git a/arch/arm/boot/dts/ste-u300.dts b/arch/arm/boot/dts/ste-u300.dts
-index 9a163e1..e4b8c7b 100644
---- a/arch/arm/boot/dts/ste-u300.dts
-+++ b/arch/arm/boot/dts/ste-u300.dts
-@@ -75,6 +75,32 @@
- 		interrupts = <2>;
- 	};
- 
-+	/* A NAND flash of 128 MiB */
-+	fsmc: flash@40000000 {
-+		compatible = "stericsson,fsmc-nand";
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		reg = <0x9f800000 0x1000>,	/* FSMC Register*/
-+			<0x80000000 0x4000>,	/* NAND Base DATA */
-+			<0x80020000 0x4000>,	/* NAND Base ADDR */
-+			<0x80010000 0x4000>;	/* NAND Base CMD */
-+		reg-names = "fsmc_regs", "nand_data", "nand_addr", "nand_cmd";
-+		nand-skip-bbtscan;
-+
-+		partition@0 {
-+		label = "boot records";
-+			reg = <0x0 0x20000>;
-+		};
-+		partition@20000 {
-+			label = "free";
-+			reg = <0x20000 0x7e0000>;
-+		};
-+		partition@800000 {
-+			label = "platform";
-+			reg = <0x800000 0xf800000>;
-+		};
-+	};
-+
- 	i2c0: i2c@c0004000 {
- 		compatible = "st,ddci2c";
- 		reg = <0xc0004000 0x1000>;
-diff --git a/arch/arm/mach-u300/core.c b/arch/arm/mach-u300/core.c
-index 9467ffe..82f57f1 100644
---- a/arch/arm/mach-u300/core.c
-+++ b/arch/arm/mach-u300/core.c
-@@ -732,6 +732,8 @@ static struct of_dev_auxdata u300_auxdata_lookup[] __initdata = {
- 		"rtc-coh901331", NULL),
- 	OF_DEV_AUXDATA("stericsson,coh901318", U300_DMAC_BASE,
- 		"coh901318", NULL),
-+	OF_DEV_AUXDATA("stericsson,fsmc-nand", U300_NAND_IF_PHYS_BASE,
-+		"fsmc-nand", NULL),
- 	OF_DEV_AUXDATA("arm,primecell", U300_UART0_BASE,
- 		"uart0", &uart0_plat_data),
- 	OF_DEV_AUXDATA("arm,primecell", U300_UART1_BASE,
--- 
-1.7.11.3
+Эта модель для дошкольника будет самой роднейшей http://sbinfo.ru/1366617868
