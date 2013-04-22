@@ -1,22 +1,18 @@
-Received: from youngberry.canonical.com ([91.189.89.112])
+Received: from mercuryimc.plus.com ([80.229.200.144]
+ helo=centos1.newflow.co.uk)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UUCTa-0001RW-Ax
- for linux-mtd@lists.infradead.org; Mon, 22 Apr 2013 08:51:54 +0000
-Date: Mon, 22 Apr 2013 09:51:45 +0100
-From: Luis Henriques <luis.henriques@canonical.com>
-To: Ben Hutchings <ben@decadent.org.uk>
-Subject: Re: [PATCH 66/72] mtdchar: fix offset overflow detection
-Message-ID: <20130422085145.GC3222@hercules>
-References: <1366276617-3553-1-git-send-email-luis.henriques@canonical.com>
- <1366276617-3553-67-git-send-email-luis.henriques@canonical.com>
- <1366602998.3408.146.camel@deadeye.wl.decadent.org.uk>
+ id 1UUDD1-0002M3-4O
+ for linux-mtd@lists.infradead.org; Mon, 22 Apr 2013 09:38:51 +0000
+Message-ID: <51750526.70508@newflow.co.uk>
+Date: Mon, 22 Apr 2013 10:38:46 +0100
+From: Mark Jackson <mpfj-list@newflow.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1366602998.3408.146.camel@deadeye.wl.decadent.org.uk>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org, kernel-team@lists.ubuntu.com,
- linux-mtd@lists.infradead.org, Linus Torvalds <torvalds@linux-foundation.org>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: MTD : cannot reserve enough PEBs for bad PEB handling
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ lkml <linux-kernel@vger.kernel.org>, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,23 +22,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Apr 22, 2013 at 04:56:38AM +0100, Ben Hutchings wrote:
-> On Thu, 2013-04-18 at 10:16 +0100, Luis Henriques wrote:
-> > 3.5.7.11 -stable review patch.  If anyone has any objections, please let me know.
-> > 
-> > ------------------
-> > 
-> > From: Linus Torvalds <torvalds@linux-foundation.org>
-> > 
-> > commit 9c603e53d380459fb62fec7cd085acb0b74ac18f upstream.
-> [...]
-> 
-> There are further problems with mtdchar_mmap(), and David recommended to
-> apply commit f5cf8f07423b 'mtd: Disable mtdchar mmap on MMU systems'
-> instead.
+I'm trying to work out how to generate a "valid" UBI image, but I keep
+getting a "cannot get enough PEBs" warning.
 
-Ok, I missed that.  I'll replace it by f5cf8f07423b.  Thanks.
+I generate my image (destined for a 64MB NAND partition) using:-
 
-Cheers,
---
-Luis
+$ mkfs.ubifs -d output/target -e 0x1f000 -c 483 -m 0x800 -x none -F -o
+output/images/rootfs.ubifs
+$ ubinize -o output/images/rootfs.ubi -m 0x800 -p 0x20000 -s 512 -O 2048
+ubinize.cfg
+
+My .cfg file is:-
+
+[ubifs]
+mode=ubi
+vol_id=0
+vol_type=dynamic
+vol_name=rootfs
+vol_alignment=1
+vol_flags=autoresize
+vol_size=61MiB
+image=output/images/rootfs.ubifs
+
+And the resulting image is:-
+
+-rw-rw-r-- 1 mpfj mpfj 9437184 Apr 16 10:19 rootfs.ubi
+
+This is then written to a freshly erased 64MB NAND partition, and
+appears to mount correctly, apart from the warning about not enough
+reserved PEBs, as follows:-
+
+...
+[    0.792456] UBI: attaching mtd7 to ubi0
+[    1.540858] UBI: scanning is finished
+[    1.557578] UBI warning: print_rsvd_warning: cannot reserve enough
+PEBs for bad PEB handling, reserved 4, need 40
+[    1.561346] UBI: attached mtd7 (name "rootfs", size 64 MiB) to ubi0
+[    1.561404] UBI: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
+[    1.561434] UBI: min./max. I/O unit sizes: 2048/2048, sub-page size 512
+[    1.561464] UBI: VID header offset: 2048 (aligned 2048), data offset:
+4096
+[    1.561493] UBI: good PEBs: 512, bad PEBs: 0, corrupted PEBs: 0
+[    1.561520] UBI: user volume: 1, internal volumes: 1, max. volumes
+count: 128
+[    1.561554] UBI: max/mean erase counter: 2/1, WL threshold: 4096,
+image sequence number: 1434266085
+[    1.561591] UBI: available PEBs: 0, total reserved PEBs: 512, PEBs
+reserved for bad PEB handling: 4
+[    1.562374] UBI: background thread "ubi_bgt0d" started, PID 598
+...
+
+I think I've calculated the various option values correctly for
+mkfs.ubifs and ubinize.
+
+But since I'm getting the warning, can anyone explain where I've gone
+wrong ?
+
+Thanks in advance
+Mark J.
