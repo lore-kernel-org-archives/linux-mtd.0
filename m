@@ -1,21 +1,19 @@
-Received: from perches-mx.perches.com ([206.117.179.246] helo=labridge.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UUhVa-0007fO-S0
- for linux-mtd@lists.infradead.org; Tue, 23 Apr 2013 18:00:03 +0000
-Message-ID: <1366739994.2036.1.camel@joe-AO722>
-Subject: Re: [PATCH] mtd: Convert logging messages
-From: Joe Perches <joe@perches.com>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
-Date: Tue, 23 Apr 2013 10:59:54 -0700
-In-Reply-To: <20130422143118.GA12908@logfs.org>
-References: <1366394375.3901.36.camel@joe-AO722>
- <20130419165516.GA19480@logfs.org> <1366396053.3901.40.camel@joe-AO722>
- <20130422143118.GA12908@logfs.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>, Joern Engel <joern@lazybastard.org>,
- LKML <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org
+Date: Tue, 23 Apr 2013 11:03:20 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 21/21] mtd: omap2: allow bulding as a module
+Message-ID: <20130423180320.GJ10155@atomide.com>
+References: <1366734653-488286-1-git-send-email-arnd@arndb.de>
+ <1366734653-488286-22-git-send-email-arnd@arndb.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1366734653-488286-22-git-send-email-arnd@arndb.de>
+Cc: Afzal Mohammed <afzal@ti.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Russell King <rmk+kernel@arm.linux.org.uk>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,34 +23,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2013-04-22 at 10:31 -0400, Jörn Engel wrote:
-> On Fri, 19 April 2013 11:27:33 -0700, Joe Perches wrote:
-> > On Fri, 2013-04-19 at 12:55 -0400, Jörn Engel wrote:
-> > > On Fri, 19 April 2013 10:59:35 -0700, Joe Perches wrote:
-> > > >  	}
-> > > >  	list_add(&dev->list, &blkmtd_device_list);
-> > > > -	INFO("mtd%d: [%s] erase_size = %dKiB [%d]", dev->mtd.index,
-> > > > -			dev->mtd.name + strlen("block2mtd: "),
-> > > > -			dev->mtd.erasesize >> 10, dev->mtd.erasesize);
-> > > > +	pr_info("mtd%d: [%s] erase_size = %dKiB [%d]\n",
-> > > > +		dev->mtd.index,
-> > > > +		dev->mtd.name + strlen("block2mtd: "),
-> > > > +		dev->mtd.erasesize >> 10, dev->mtd.erasesize);
-> > > 
-> > > I personally dislike the indent-to-braces style because it causes
-> > > unnecessary churn in patches like this.
-> > 
-> > It comes from an automated emacs conversion.
+* Arnd Bergmann <arnd@arndb.de> [130423 09:37]:
+> The omap2 nand device driver calls into the the elm code, which can
+> be a loadable module, and in that case it cannot be built-in itself.
+> I can see no reason why the omap2 driver cannot also be a module,
+> so let's make the option "tristate" in Kconfig to fix this allmodconfig
+> build error:
 > 
-> Then please teach your emacs to be a better tool.
+> ERROR: "elm_config" [drivers/mtd/nand/omap2.ko] undefined!
+> ERROR: "elm_decode_bch_error_page" [drivers/mtd/nand/omap2.ko] undefined!
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+> Cc: Tony Lindgren <tony@atomide.com>
+> Cc: Afzal Mohammed <afzal@ti.com>
+> Cc: Russell King <rmk+kernel@arm.linux.org.uk>
+> Cc: linux-mtd@lists.infradead.org
+> ---
+>  drivers/mtd/nand/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> index 81bf5e5..106b55e 100644
+> --- a/drivers/mtd/nand/Kconfig
+> +++ b/drivers/mtd/nand/Kconfig
+> @@ -109,7 +109,7 @@ config MTD_NAND_OMAP2
+>  
+>  config MTD_NAND_OMAP_BCH
+>  	depends on MTD_NAND && MTD_NAND_OMAP2 && ARCH_OMAP3
+> -	bool "Enable support for hardware BCH error correction"
+> +	tristate "Enable support for hardware BCH error correction"
+>  	default n
+>  	select BCH
+>  	select BCH_CONST_PARAMS
 
-Because you personally dislike something isn't
-enough of a reason for me to change my tools nor
-enough of a reason for me to add a special
-exception to my tools for your preferences.
+Acked-by: Tony Lindgren <tony@atomide.com>
 
-> I trust you are smart enough to do that.
+While at it, you could also drop the "default n" as that's
+the default anyways.
 
-Snide much?
+Regards,
 
-cheers, Joe
+Tony
