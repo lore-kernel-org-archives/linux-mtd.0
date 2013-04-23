@@ -1,14 +1,13 @@
-Received: from ch1ehsobe002.messaging.microsoft.com ([216.32.181.182]
- helo=ch1outboundpool.messaging.microsoft.com)
+Received: from co1ehsobe002.messaging.microsoft.com ([216.32.180.185]
+ helo=co1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UUZB8-0003Yj-MC
- for linux-mtd@lists.infradead.org; Tue, 23 Apr 2013 09:06:26 +0000
+ id 1UUZB8-0003Yd-Sw
+ for linux-mtd@lists.infradead.org; Tue, 23 Apr 2013 09:06:27 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH V3 6/9] mtd: add a new field for ecc info in the
- nand_flash_dev{}
-Date: Tue, 23 Apr 2013 16:54:54 +0800
-Message-ID: <1366707297-31309-7-git-send-email-b32955@freescale.com>
+Subject: [PATCH V3 5/9] mtd: replace the hardcode with the onfi_feature()
+Date: Tue, 23 Apr 2013 16:54:53 +0800
+Message-ID: <1366707297-31309-6-git-send-email-b32955@freescale.com>
 In-Reply-To: <1366707297-31309-1-git-send-email-b32955@freescale.com>
 References: <1366707297-31309-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
@@ -25,49 +24,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add the @ecc_info in the nand_flash_dev{}.
-The lower 16 bits are used to store the ECC bits, while the upper 16 bits
-are used to store the ECC data chunk size.
+The current code uses the hardcode to detect the 16-bit bus width.
+Use the onfi_feature() to replace it.
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- include/linux/mtd/nand.h |   10 ++++++++++
- 1 files changed, 10 insertions(+), 0 deletions(-)
+ drivers/mtd/nand/nand_base.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 063e517..f4c7777 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -624,6 +624,10 @@ struct nand_chip {
- 	{ .name = (nm), {{ .dev_id = (devid) }}, .chipsize = (chipsz), \
- 	  .options = (opts) }
- 
-+#define NAND_ECC_INFO(strength, size)	(((strength) << 16) | (size))
-+#define NAND_ECC_STRENGTH(x)		(((x) >> 16) & 0xffff)
-+#define NAND_ECC_SIZE(x)		((x) & 0xffff)
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 584cb0f..8b2a792 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2974,9 +2974,9 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+ 	mtd->oobsize = le16_to_cpu(p->spare_bytes_per_page);
+ 	chip->chipsize = le32_to_cpu(p->blocks_per_lun);
+ 	chip->chipsize *= (uint64_t)mtd->erasesize * p->lun_count;
+-	*busw = 0;
+-	if (le16_to_cpu(p->features) & 1)
+-		*busw = NAND_BUSWIDTH_16;
 +
- /**
-  * struct nand_flash_dev - NAND Flash Device ID Structure
-  * @name: a human-readable name of the NAND chip
-@@ -641,6 +645,11 @@ struct nand_chip {
-  * @options: stores various chip bit options
-  * @id_len: The valid length of the @id.
-  * @oobsize: OOB size
-+ * @ecc_info: The ECC information.
-+ *            lower 16 bits: store the ECC bits.
-+ *            upper 16 bits: store the ECC data chunk size.
-+ *            For example, the "4bit ECC for each 512Byte" can be set with
-+ *            NAND_ECC_INFO(4, 512) macro.
-  */
- struct nand_flash_dev {
- 	char *name;
-@@ -657,6 +666,7 @@ struct nand_flash_dev {
- 	unsigned int options;
- 	uint16_t id_len;
- 	uint16_t oobsize;
-+	uint32_t ecc_info;
- };
++	*busw = (onfi_feature(chip) & ONFI_FEATURE_16_BIT_BUS) ?
++			NAND_BUSWIDTH_16 : 0;
  
- /**
+ 	if (p->ecc_bits != 0xff) {
+ 		chip->ecc_strength = p->ecc_bits;
 -- 
 1.7.1
