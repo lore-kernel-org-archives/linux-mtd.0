@@ -1,20 +1,22 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from ch1ehsobe003.messaging.microsoft.com ([216.32.181.183]
+ helo=ch1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UUVkz-0007wv-4O
- for linux-mtd@lists.infradead.org; Tue, 23 Apr 2013 05:27:09 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Michal Przeplata <michal.przeplata@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: RE: corrupted empty space - again
-Date: Tue, 23 Apr 2013 05:27:03 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9BC9BB@DBDE04.ent.ti.com>
-References: <CADX2ZXMgE_Zfj157vgymj0K4MmHddCYqrj=qDUYLmcWj_kk7WQ@mail.gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9BB98F@DBDE04.ent.ti.com>
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9BB98F@DBDE04.ent.ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1UUWUm-00009c-4F
+ for linux-mtd@lists.infradead.org; Tue, 23 Apr 2013 06:14:29 +0000
+Message-ID: <5176271C.7030304@freescale.com>
+Date: Tue, 23 Apr 2013 14:15:56 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v2 3/8] mtd: get the ECC info from the Extended Parameter
+ Page
+References: <1366616878-29481-1-git-send-email-b32955@freescale.com>	<1366616878-29481-4-git-send-email-b32955@freescale.com>
+ <CAN8TOE_xOBTv7weAqYinFMmTStXgY93KanV-jDAqFnY=CEfkdQ@mail.gmail.com>
+In-Reply-To: <CAN8TOE_xOBTv7weAqYinFMmTStXgY93KanV-jDAqFnY=CEfkdQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ linux-kernel@vger.kernel.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,23 +26,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fixed a typo
-=20
-> > It seems that:
-> > a) error is of single bit-flip kind (read decay) (I don't suspect curre=
-ntly
-> >     unstable bits issue during erasing/writting)
-> > b) our NAND driver doesn't protect our empty space (no wonder, as 13
-> > bytes ECC used
-> >     per 512B subpage should be left 0xFF until written with real data)
->=20
-[Pekon]: This should not matter, suppose you wanted to write
-0x77 to a erase-page byte already having a bit-flip at bit-0.=20
-So in actual 0x76 would be written on the device. And corresponding=20
-calculated ECC gets stored in OOB/spare area.
+=E4=BA=8E 2013=E5=B9=B404=E6=9C=8823=E6=97=A5 05:22, Brian Norris =E5=86=99=
+=E9=81=93:
+> You never sent a command to the chip. How can you expect to read from i=
+t?
+>
+> It seems that you are writing this function with the assumption of a
+> particular calling context (a context in which the last command was
+> CMD_PARAM). IMO, it would make a lot more sense that this function
+> actually send its own CMD_PARAM followed by either X bytes of skipped
+> read_buf() or a change read column command. Then it doesn't need the
+> "last" argument, and its usage makes much more sense.
+>
+I finally find why i can not use the CHANGE READ COLUMN command:
 
-Now when you read the byte, it would read as 0x76, but ECC stored in
-spare/OOB area was calculated for 0x77, so nand-driver would detect a
-bit-flip and should correct it too.
-So whether bit-flips occur on erased-page or whether after writing,
-both can be detected and corrected by your driver.
+When we detect the ONFI nand, we actually use the nand_command() to=20
+issue the command which
+does not works with CHANGE READ COLUMN command.
+
+I use the nand_command_lp() to issue the CHANGE READ COLUMN command, it=20
+works fine.
+
+I can remove the "last" argument now.
+
+thanks Brian.
+
+Huang Shijie
