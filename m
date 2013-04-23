@@ -1,15 +1,19 @@
 From: Arnd Bergmann <arnd@arndb.de>
 To: linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 21/21] mtd: omap2: allow bulding as a module
-Date: Tue, 23 Apr 2013 18:30:53 +0200
-Message-Id: <1366734653-488286-22-git-send-email-arnd@arndb.de>
-In-Reply-To: <1366734653-488286-1-git-send-email-arnd@arndb.de>
-References: <1366734653-488286-1-git-send-email-arnd@arndb.de>
-Cc: Afzal Mohammed <afzal@ti.com>, Arnd Bergmann <arnd@arndb.de>,
- Tony Lindgren <tony@atomide.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Russell King <rmk+kernel@arm.linux.org.uk>,
+Subject: [PATCH 00/21] ARM build fixes for 3.10
+Date: Tue, 23 Apr 2013 18:30:32 +0200
+Message-Id: <1366734653-488286-1-git-send-email-arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org, Viresh Kumar <viresh.kumar@st.com>,
+ Russell King <linux@arm.linux.org.uk>, Samuel Ortiz <sameo@linux.intel.com>,
+ Arnd Bergmann <arnd@arndb.de>, Dave Airlie <airlied@linux.ie>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, linux-usb@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Felipe Balbi <balbi@ti.com>,
+ spi-devel-general@lists.sourceforge.net,
+ Grant Likely <grant.likely@secretlab.ca>, Tony Lindgren <tony@atomide.com>,
+ Mark Brown <broonie@kernel.org>, Alan Stern <stern@rowland.harvard.edu>,
+ dri-devel@lists.freedesktop.org, linux-mtd@lists.infradead.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Stephen Warren <swarren@nvidia.com>, Chris Ball <cjb@laptop.org>,
  David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -20,38 +24,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The omap2 nand device driver calls into the the elm code, which can
-be a loadable module, and in that case it cannot be built-in itself.
-I can see no reason why the omap2 driver cannot also be a module,
-so let's make the option "tristate" in Kconfig to fix this allmodconfig
-build error:
+Hi everyone,
 
-ERROR: "elm_config" [drivers/mtd/nand/omap2.ko] undefined!
-ERROR: "elm_decode_bch_error_page" [drivers/mtd/nand/omap2.ko] undefined!
+This is a set of bug fixes for build errors and warnings I am
+seeing in the various defconfigs and/or allmodconfig builds
+on linux-next. The majority of these showed up because we now
+include a lot more platforms in allmodconfig than we used to.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Cc: Tony Lindgren <tony@atomide.com>
-Cc: Afzal Mohammed <afzal@ti.com>
-Cc: Russell King <rmk+kernel@arm.linux.org.uk>
-Cc: linux-mtd@lists.infradead.org
----
- drivers/mtd/nand/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Please apply to appropriate maintainer trees or provide
+feedback, I can take care of the rest sending those through
+arm-soc that I get no feedback on.
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 81bf5e5..106b55e 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -109,7 +109,7 @@ config MTD_NAND_OMAP2
- 
- config MTD_NAND_OMAP_BCH
- 	depends on MTD_NAND && MTD_NAND_OMAP2 && ARCH_OMAP3
--	bool "Enable support for hardware BCH error correction"
-+	tristate "Enable support for hardware BCH error correction"
- 	default n
- 	select BCH
- 	select BCH_CONST_PARAMS
+	Arnd
+
+Arnd Bergmann (21):
+  Turn off -Wmaybe-uninitialized when building with -Os
+  ARM: compressed/head.S: work around new binutils warning
+  ARM: use optimized do_div only for EABI
+  ARM: kvm: define KVM_ARM_MAX_VCPUS unconditionally
+  ARM: OMAP2+: add dependencies on ARCH_MULTI_V6/V7
+  ARM: tegra: call cpu_do_idle from C code
+  ARM: tegra: unify tegra_idle_device definitions
+  ASoC: ux500: forward declare msp_i2s_platform_data
+  spi/sirf: fix MODULE_DEVICE_TABLE
+  ssb: fix alignment of struct bcma_device_id
+  drm/tilcdc: use only a single module device table
+  mmc: sdhci-tegra: fix MODULE_DEVICE_TABLE
+  misc: mark spear13xx-pcie-gadget as broken
+  staging: nvec: allow modular build
+  staging: comedi/dawboard2000: use mdelay for large delays
+  staging/zsmalloc: don't use pgtable-mapping from modules
+  tty/serial/sirf: fix MODULE_DEVICE_TABLE
+  usb: phy: tegra: don't call into tegra-ehci directly
+  usb: phy: don't mark usb_bind_phy as __init
+  MFD: ab8500: export ab8500_gpadc_sw_hw_convert properly
+  mtd: omap2: allow bulding as a module
+
+ Makefile                                      |  2 +-
+ arch/arm/boot/compressed/Makefile             |  2 +-
+ arch/arm/boot/compressed/head.S               | 12 ++++++++++++
+ arch/arm/include/asm/div64.h                  |  2 +-
+ arch/arm/kvm/Kconfig                          |  6 +++---
+ arch/arm/mach-omap2/Kconfig                   |  5 +++++
+ arch/arm/mach-tegra/cpuidle-tegra114.c        |  5 ++---
+ arch/arm/mach-tegra/cpuidle-tegra20.c         |  4 +---
+ arch/arm/mach-tegra/cpuidle-tegra30.c         |  4 +---
+ arch/arm/mach-tegra/cpuidle.c                 |  2 ++
+ arch/arm/mach-tegra/cpuidle.h                 |  4 ++++
+ arch/arm/mach-tegra/pm.c                      |  5 +++++
+ arch/arm/mach-tegra/sleep-tegra20.S           |  2 +-
+ drivers/gpu/drm/tilcdc/tilcdc_panel.c         |  1 -
+ drivers/gpu/drm/tilcdc/tilcdc_slave.c         |  1 -
+ drivers/gpu/drm/tilcdc/tilcdc_tfp410.c        |  1 -
+ drivers/mfd/ab8500-gpadc.c                    |  2 +-
+ drivers/misc/Kconfig                          |  2 +-
+ drivers/mmc/host/sdhci-tegra.c                |  2 +-
+ drivers/mtd/nand/Kconfig                      |  2 +-
+ drivers/spi/spi-sirf.c                        |  2 +-
+ drivers/staging/comedi/drivers/daqboard2000.c | 14 +++++++-------
+ drivers/staging/nvec/Kconfig                  | 10 +++++-----
+ drivers/staging/zsmalloc/zsmalloc-main.c      |  2 +-
+ drivers/tty/serial/sirfsoc_uart.c             |  2 +-
+ drivers/usb/host/ehci-tegra.c                 | 10 +++++-----
+ drivers/usb/otg/otg.c                         |  2 +-
+ drivers/usb/phy/tegra_usb_phy.c               | 13 +++++++++----
+ include/linux/mod_devicetable.h               |  5 +++--
+ include/linux/usb/tegra_usb_phy.h             | 10 +++++-----
+ sound/soc/ux500/ux500_msp_i2s.h               |  1 +
+ 31 files changed, 82 insertions(+), 55 deletions(-)
+
 -- 
 1.8.1.2
+
+Cc: Alan Stern <stern@rowland.harvard.edu>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Cc: Chris Ball <cjb@laptop.org>
+Cc: Dave Airlie <airlied@linux.ie>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Felipe Balbi <balbi@ti.com>
+Cc: Grant Likely <grant.likely@secretlab.ca>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Russell King <linux@arm.linux.org.uk>
+Cc: Samuel Ortiz <sameo@linux.intel.com>
+Cc: Stephen Warren <swarren@nvidia.com>
+Cc: Tony Lindgren <tony@atomide.com>
+Cc: Viresh Kumar <viresh.kumar@st.com>
+Cc: alsa-devel@alsa-project.org
+Cc: dri-devel@lists.freedesktop.org
+Cc: linux-mtd@lists.infradead.org
+Cc: linux-usb@vger.kernel.org
+Cc: spi-devel-general@lists.sourceforge.net
