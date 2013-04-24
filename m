@@ -1,23 +1,27 @@
-Received: from mail-da0-x22b.google.com ([2607:f8b0:400e:c00::22b])
+Received: from smtp.gentoo.org ([140.211.166.183])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UUxNU-0006I5-CO
- for linux-mtd@lists.infradead.org; Wed, 24 Apr 2013 10:56:45 +0000
-Received: by mail-da0-f43.google.com with SMTP id u36so836769dak.30
- for <linux-mtd@lists.infradead.org>; Wed, 24 Apr 2013 03:56:41 -0700 (PDT)
-Received: from [192.168.1.2] (softbank126015195200.bbtec.net. [126.15.195.200])
- by mx.google.com with ESMTPSA id be10sm2584996pbd.30.2013.04.24.03.49.54
- for <linux-mtd@lists.infradead.org>
- (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
- Wed, 24 Apr 2013 03:49:55 -0700 (PDT)
-Message-ID: <5177B8D0.8050202@gmail.com>
-Date: Wed, 24 Apr 2013 19:49:52 +0900
-From: Juha Lumme <juha.lumme@gmail.com>
+ id 1UV2Xw-0005ja-Of
+ for linux-mtd@lists.infradead.org; Wed, 24 Apr 2013 16:27:54 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+Subject: Re: [RFC/PATCH v2] ubi: Add ubiblock read-write driver
+Date: Wed, 24 Apr 2013 12:27:46 -0400
+References: <1355314912-9321-1-git-send-email-elezegarcia@gmail.com>
+ <201304190853.54402.vapier@gentoo.org> <51713EC3.6070808@parrot.com>
+In-Reply-To: <51713EC3.6070808@parrot.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: writing to JFFS2 filesystem makes it it unusable. Plenty of "Magic
- bitmask 0x1985" errors...
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: multipart/signed; boundary="nextPart1916118.tqK4jyUYxG";
+ protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
+Message-Id: <201304241227.50603.vapier@gentoo.org>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Ezequiel Garcia <elezegarcia@gmail.com>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ "richard.weinberger@gmail.com" <richard.weinberger@gmail.com>,
+ Michael Opdenacker <michael.opdenacker@free-electrons.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
+ Pekon" <pekon@ti.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Tim Bird <tim.bird@am.sony.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,88 +31,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+--nextPart1916118.tqK4jyUYxG
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-I have read the FAQ about JFFS2, but unfortunately I haven't been able 
-to solve this after several days of trying.. I hope I can get some help here
-I have a problem getting a jffs2 file system to work read-write. I can 
-mount it ok, and read it correctly, but writing to it results to 
-strangeness (fails).
-Some background:
-My flash chip is sst25vf064c (8MB SPI flash chip with erase block size 
-of 64KB, or also 32 is ok according to datasheet).
+On Friday 19 April 2013 08:55:31 Matthieu CASTET wrote:
+> Mike Frysinger a =C3=A9crit :
+> > On Friday 19 April 2013 08:31:13 Artem Bityutskiy wrote:
+> >> On Fri, 2013-04-19 at 07:57 -0400, Mike Frysinger wrote:
+> >>> the reason we're talking about not allowing write support at the
+> >>> *block* layer
+> >>> is because it's questionable how many people actually want this, the
+> >>> performance isn't good (compared to native flash filesystems), and
+> >>> because the
+> >>> write/wear characteristics are unknown.
+> >>=20
+> >> My opinion that unless people demonstrate that they need this, e.g. in=
+ a
+> >> product, etc, we should not merge this stuff.
+> >>=20
+> >> We recently merged fastmap, which is a big chunk of code, and it looks
+> >> like no one really needs it. There was a problem report, and Richard
+> >> promised to look, but did not. I do not blame him, he is a busy guy. B=
+ut
+> >> this shoes that this feature is not really needed, while adds
+> >> maintenance burden.
+> >>=20
+> >> To put it differently, I do recommend to merge more UBI-related code
+> >> without a solid user-base.
+> >=20
+> > also to be clear, i plan on using UBI block in read-only mode, so i'd
+> > like to see an ubiblock driver merged
+>=20
+> Why can't you use gluebi + mtdblock ?
+>=20
+> Too much overhead ?
 
-I'm on an ARM board, and working on a read-only rootfs created with 
-buildroot (squashfs). Now I would like to create overlays for /home and 
-/etc for writing purposes, and thought JFFS2 would be a good solution 
-for this.
+a poor man's read-only test on this one system shows ubiblock & mtdblock=20
+provide about the same read speeds.  but this was just reading the raw bloc=
+k=20
+device directly.
 
-For testing purposes, I have created a simple home structure:
-jlumme@simppa:~/projects/jffs2_home$ ls -la
-total 20
-drwxrwxr-x 4 jlumme jlumme 4096 Apr 21 16:21 .
-drwxrwxr-x 6 jlumme jlumme 4096 Apr 21 16:21 ..
-drwxrwxr-x 2 jlumme jlumme 4096 Apr 21 13:45 default
-drwxrwxr-x 2 jlumme jlumme 4096 Apr 21 13:45 ftp
--rw-rw-r-- 1 jlumme jlumme   24 Apr 21 15:34 test.txt
+the mtd faq suggests that gluebi is meant only for devices that actually wa=
+nt=20
+mtd behavior (read/write/erase/etc...) like jffs2 rather than for flash una=
+ware=20
+filesystems.  i'm not sure if gluebi will work if you want to run in read/w=
+rite=20
+mode w/a fs like ext2.
+=2Dmike
 
- From this I create an jffs2 image, with this command:
-mkfs.jffs2 -r jffs2_home/ -e 64 -p -o home.jffs2
-$ ls home.jffs2 -la
--rw-r--r-- 1 jlumme jlumme 65536 Apr 24 19:16 home.jffs2
+--nextPart1916118.tqK4jyUYxG
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-I'm writing my whole flash chip with flashrom, and my flash layout looks 
-like this:
-uboot/<0x00000000 0x40000>
-kernel/<0x00040000 0x3D9000>
-dtb/<0x00419000 0x10000>
-rootfs/<0x00429000 0x1F7000>
-home/<0x00620000 0x1E0000> //This is where I would like to put my jffs2, 
-the start is 64KB aligned
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
 
-With DD I create my 1.9MB home section content, so that all other data 
-is 0xFF, except what is inside home.jffs2. The flash section for home 
-looks now like this (I only show the relevant beginning here, rest is 
-just 0xFF until end of flash area):
-http://paste.ubuntu.com/5597974/
+iQIcBAABAgAGBQJReAgGAAoJEEFjO5/oN/WBmIgQAIeWwk0aHyZVVPdFllG+syUC
+49m9Fsle7VYnM/8ZIEzyp7/FsfT2ACwDFwXPAA6vKkmysvlAqD+jUlvXJBQQbEGR
+j9FWUifFfr4QcuOWe5+70nGF09lPO/V3fbG7zJ0heMZNRversUteE4QUU3wVIaSt
+Uo4pHvw5p+EvpjcqgVZfDjb1WzShUQgZex+suuljc16/jG0YHF8m+LOl8NggN+ma
+dgWv6o3+HE8vglFOUWc0UBQFRjd9cdKEdXLYmV7P1jagRF29H6aRabsVvuRP0WKY
+Of/iw5UO4qNgw7pDlfqoxaEvs4toDkQ0Lgbc5I7WwUzrZ0Qka4U60BOSmMe+lRkX
+NoA4UMYA/XUrO+LrH/jWroNy9IXGnWsvsRxW/6+9T3tekIfkJsjUw/pbXeZbJzv6
+1he30JRy7WAq4Q9qPCyZNTc/LehINj/yemgbjASTrmFx8pzztluWhE5RiuWV1ZPS
+ga2ugbijRGL0KaSyF8cZmHEwvoj/14O+c+Vj4qvoUFoTCEhAt4bM/pAw8OdeB3n1
+OHkUDi+Yy3NyGbKVjvJxLoJWA8Pk/5BtTjmP9p56cj1eIVljq1LNeIMQfbMYOk2N
+Zo/g3qKnKcioZ7dn4mzaZ3OHi8l84g6dZ+8LyOCrIwdlrM6TYpxAw5f+iR9U1KZP
+XA5NhsBCONbMMU0s3kQV
+=9Ezo
+-----END PGP SIGNATURE-----
 
-I can mount my mtdblock fine, and all the files look ok. Now if I modify 
-the test.txt, and save it, vi immediately spits out a warning:
-[   77.030000] jffs2: Node totlen on flash (0xffffffff) != totlen from 
-node ref (0x00000044)
-At this point I can still see "the modifications". However, if I 
-un-mount the drive, and remount it, I start getting new errors:
-# mount -t jffs2 /dev/mtdblock4 /home/
-[   99.740000] jffs2: jffs2_scan_eraseblock(): Magic bitmask 0x1985 not 
-found at 0x001d4070: 0xff0a instead
-[   99.760000] jffs2: Empty flash at 0x001d4074 ends at 0x001d412c
-[   99.770000] jffs2: jffs2_scan_eraseblock(): Magic bitmask 0x1985 not 
-found at 0x001d412c: 0xffff instead
-[   99.790000] jffs2: Empty flash at 0x001d4130 ends at 0x001d4194
-[   99.790000] jffs2: jffs2_scan_eraseblock(): Magic bitmask 0x1985 not 
-found at 0x001d4194: 0xff0a instead
-
-This is pretty much as far as I have gotten.
-My kernel is from freescale mainline "patches-3.8" branch, with newest 
-snapshot of drivers/mtd/devices folder (I saw some patches related to 
-the sst25vfXXX chips, so I thought I should try those).
-In my kernel I have following MTD flags enabled:
-http://paste.ubuntu.com/5597993/
-
-By default, cat /proc/mtd shows this:
-# cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 00040000 00001000 "uboot"
-mtd1: 003d9000 00001000 "kernel"
-mtd2: 00010000 00001000 "dtb"
-mtd3: 001f7000 00001000 "rootfs"
-mtd4: 001e0000 00001000 "home"
-
-I thought why this erase area is 4KB here (I can't create 4KB erase file 
-systems. 8KB is minimum mkfs.jffs2 accepts), and hacked the m25p80.c, so 
-that erasearea was 64KB, but this didn't help the case unfortunately. I 
-know there is probably a good reason why this has been set to 4KB 
-(sector size is 4KB), but it was confusing.
-I'm really stuck here, not sure what I could try next..
-
-I really appreciate any tips where I might have gone wrong...
+--nextPart1916118.tqK4jyUYxG--
