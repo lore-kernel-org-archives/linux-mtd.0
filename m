@@ -1,10 +1,10 @@
-Received: from co9ehsobe003.messaging.microsoft.com ([207.46.163.26]
+Received: from co9ehsobe002.messaging.microsoft.com ([207.46.163.25]
  helo=co9outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UVFoK-0001Pz-0B
- for linux-mtd@lists.infradead.org; Thu, 25 Apr 2013 06:37:40 +0000
-Message-ID: <5178CF94.8000601@freescale.com>
-Date: Thu, 25 Apr 2013 14:39:16 +0800
+ id 1UVFpo-0001Sg-QO
+ for linux-mtd@lists.infradead.org; Thu, 25 Apr 2013 06:39:13 +0000
+Message-ID: <5178CFF3.9020900@freescale.com>
+Date: Thu, 25 Apr 2013 14:40:51 +0800
 From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
 To: Brian Norris <computersforpeace@gmail.com>
@@ -27,10 +27,10 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 =E4=BA=8E 2013=E5=B9=B404=E6=9C=8825=E6=97=A5 14:32, Brian Norris =E5=86=99=
 =E9=81=93:
->>    * @numchips:          [INTERN] number of physical chips
->> >     * @chipsize:          [INTERN] the size of one chip for multichi=
-p arrays
->> >     * @pagemask:          [INTERN] page number mask =3D number of (p=
-ages / chip) - 1
-> Brian
+> How about just: "minimum number of bits correctability, if known; if
+> unknown, set to 0
 >
+ok. no problem.
+
+thanks
+Huang Shijie
