@@ -1,19 +1,18 @@
-Received: from co9ehsobe002.messaging.microsoft.com ([207.46.163.25]
- helo=co9outboundpool.messaging.microsoft.com)
+Received: from mail-vc0-f173.google.com ([209.85.220.173])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UVFpo-0001Sg-QO
- for linux-mtd@lists.infradead.org; Thu, 25 Apr 2013 06:39:13 +0000
-Message-ID: <5178CFF3.9020900@freescale.com>
-Date: Thu, 25 Apr 2013 14:40:51 +0800
-From: Huang Shijie <b32955@freescale.com>
+ id 1UVFqp-0001V4-R2
+ for linux-mtd@lists.infradead.org; Thu, 25 Apr 2013 06:40:16 +0000
+Received: by mail-vc0-f173.google.com with SMTP id ia10so1174995vcb.18
+ for <linux-mtd@lists.infradead.org>; Wed, 24 Apr 2013 23:40:14 -0700 (PDT)
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH V3 1/9] mtd: add more comment for ecc_strength/ecc_size
-References: <1366707297-31309-1-git-send-email-b32955@freescale.com>	<1366707297-31309-2-git-send-email-b32955@freescale.com>
- <CAN8TOE-oy=74kSKrnxG+Ve4qZfrwEYbvh6hGGquTyLu6T+UbSA@mail.gmail.com>
-In-Reply-To: <CAN8TOE-oy=74kSKrnxG+Ve4qZfrwEYbvh6hGGquTyLu6T+UbSA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1366707297-31309-1-git-send-email-b32955@freescale.com>
+References: <1366707297-31309-1-git-send-email-b32955@freescale.com>
+Date: Wed, 24 Apr 2013 23:40:14 -0700
+Message-ID: <CAN8TOE_5OZ7=hyLn-9hUy9b5ne4HGqra2uAurofB+8kOEuamsw@mail.gmail.com>
+Subject: Re: [PATCH V3 0/9] mtd: add datasheet's ECC information to nand_chip{}
+From: Brian Norris <computersforpeace@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
  linux-kernel@vger.kernel.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,12 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B404=E6=9C=8825=E6=97=A5 14:32, Brian Norris =E5=86=99=
-=E9=81=93:
-> How about just: "minimum number of bits correctability, if known; if
-> unknown, set to 0
->
-ok. no problem.
+Hi Huang,
 
-thanks
-Huang Shijie
+On Tue, Apr 23, 2013 at 1:54 AM, Huang Shijie <b32955@freescale.com> wrote:
+> v2 --> v3:
+>         [0] add a new patch to define the semantics of the two fields.
+>         [1] Use the Change Read Column command to remove the "last" argument.
+>         [2] simplify the onfi_feature().
+>         [3] Use kmalloc() to replace kcalloc().
+>         [4] others.
+
+Please see especially my comment on your usage of nand_command_lp. But
+other than that, I think that by the time we get to v4, this series
+should be good. Anyway, I'll try to reserve any more nitpick-y
+comments for minor things to my own follow-up patch(es). Thanks for
+the work.
+
+Brian
