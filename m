@@ -1,21 +1,18 @@
-Received: from ns.omicron.at ([212.183.10.25])
+Received: from smtp18.mail.ru ([94.100.176.155])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UVmt3-0001MS-3v
- for linux-mtd@lists.infradead.org; Fri, 26 Apr 2013 17:56:46 +0000
-Received: from counter.omicron.at ([212.183.10.29])
- by ns.omicron.at (8.13.1/8.13.1) with ESMTP id r3QHuJ06008798
- for <linux-mtd@lists.infradead.org>; Fri, 26 Apr 2013 19:56:24 +0200
-Received: from mary.at.omicron.at (mary.at.omicron.at [172.22.100.48])
- by counter.omicron.at (8.14.4/8.14.4) with ESMTP id r3QHuJpi016171
- for <linux-mtd@lists.infradead.org>; Fri, 26 Apr 2013 19:56:19 +0200
-From: Christian Riesch <christian.riesch@omicron.at>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: mtdchar: Exit write loop when hitting end of OTP memory
-Date: Fri, 26 Apr 2013 19:56:09 +0200
-MIME-Version: 1.0
-Content-Type: text/plain
-Message-ID: <29483dd6-387c-4b28-b689-88795e0bbbde@mary.at.omicron.at>
-Cc: Christian Riesch <christian.riesch@omicron.at>
+ id 1UVnq5-0002p6-ER
+ for linux-mtd@lists.infradead.org; Fri, 26 Apr 2013 18:57:46 +0000
+From: Alexander Shiyan <shc_work@mail.ru>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH v2 3/7] mtd: nand-gpio: Do not override GPIOs if driver uses
+ platform_data but OF is enabled in kernel config
+Date: Fri, 26 Apr 2013 22:57:24 +0400
+Message-Id: <1367002648-8269-3-git-send-email-shc_work@mail.ru>
+In-Reply-To: <1367002648-8269-1-git-send-email-shc_work@mail.ru>
+References: <1367002648-8269-1-git-send-email-shc_work@mail.ru>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Alexander Shiyan <shc_work@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,31 +22,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If a write to one time programmable memory (OTP) hits the end
-of this memory area, no more data can be written and count does not
-decrease anymore. We are trapped in the loop forever.
 
-Therefore drop the remaining data if retlen != len.
-
-Signed-off-by: Christian Riesch <christian.riesch@omicron.at>
+Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
 ---
- drivers/mtd/mtdchar.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/mtd/nand/gpio.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index e0e59bf..70c18c2 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -321,6 +321,10 @@ static ssize_t mtdchar_write(struct file *file, const char __user *buf, size_t c
- 		case MTD_FILE_MODE_OTP_USER:
- 			ret = mtd_write_user_prot_reg(mtd, *ppos, len,
- 						      &retlen, kbuf);
-+
-+			/* if we hit the end of otp memory, drop the rest */
-+			if (retlen != len)
-+				count -= len - retlen;
- 			break;
+diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
+index 8f102d1..0d26f8b 100644
+--- a/drivers/mtd/nand/gpio.c
++++ b/drivers/mtd/nand/gpio.c
+@@ -151,6 +151,9 @@ static int gpio_nand_get_config_of(const struct device *dev,
+ {
+ 	u32 val;
  
- 		case MTD_FILE_MODE_RAW:
++	if (!dev->of_node)
++		return -ENODEV;
++
+ 	if (!of_property_read_u32(dev->of_node, "bank-width", &val)) {
+ 		if (val == 2) {
+ 			plat->options |= NAND_BUSWIDTH_16;
 -- 
-1.7.9.5
+1.8.1.5
