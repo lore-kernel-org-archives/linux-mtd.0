@@ -1,20 +1,19 @@
-Received: from mail-ia0-x22b.google.com ([2607:f8b0:4001:c02::22b])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UVgfj-0000TT-3k
- for linux-mtd@lists.infradead.org; Fri, 26 Apr 2013 11:18:36 +0000
-Received: by mail-ia0-f171.google.com with SMTP id r13so3477511iar.30
- for <linux-mtd@lists.infradead.org>; Fri, 26 Apr 2013 04:18:34 -0700 (PDT)
+Received: from mail.free-electrons.com ([94.23.35.102])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UVh5J-00016S-99
+ for linux-mtd@lists.infradead.org; Fri, 26 Apr 2013 11:45:02 +0000
+Date: Fri, 26 Apr 2013 08:45:13 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Maarten Blomme <maartenblomme@gmail.com>
+Subject: Re: Question about mtdblock.c
+Message-ID: <20130426114512.GA10835@localhost>
+References: <CABLyGt_OCcOya7TFYhxWypj6x8s_pp7bjzdyMonHe8ZcgY36Bw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <517A5EA6.3010207@atmel.com>
-References: <CACQ1gAhY5TbH3JUYMtRk9ETOLn-ZFNbwKQ_5=j_hnPpZ-1fj_w@mail.gmail.com>
- <517A5EA6.3010207@atmel.com>
-From: Richard Genoud <richard.genoud@gmail.com>
-Date: Fri, 26 Apr 2013 13:18:14 +0200
-Message-ID: <CACQ1gAjM3kC8ROKPDv7uymNb9-v2gy0i--NCiSxq0w+GDGo2Bg@mail.gmail.com>
-Subject: Re: PMECC capability
-To: Josh Wu <josh.wu@atmel.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CABLyGt_OCcOya7TFYhxWypj6x8s_pp7bjzdyMonHe8ZcgY36Bw@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,75 +23,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2013/4/26 Josh Wu <josh.wu@atmel.com>:
-> Hi, Richard
->
->
-> On 4/26/2013 6:17 PM, Richard Genoud wrote:
->>
->> Hi,
->>
->> I've got a (dumb?) question about the error correct capability of atmel
->> PMECC:
->> Do we have to use the exact error capability required by the nand
->> chipset or we can use a bigger one ?
->
->
-> I think it is a very good question and I don't have answer yet.
-> And it bring up another question: Can the nand flash will got much error
-> bits than the ONFI minimum require?
-I checked on the datasheet I've got, and in this case, they call it a
-bad block :
-"An invalid block is one that contains at least
-one page that has more bad bits than can be corrected by the minimum
-required ECC."
-And I found also this sentence :
-"Under typical conditions, use the minimum required ECC"
-But it doesn't say that using a stronger ECC will kill kittens or not.
+On Fri, Apr 26, 2013 at 09:52:37AM +0200, Maarten Blomme wrote:
+> Hello,
+> 
+> I have a question about mtdblock.c, is this the right place to ask it?
+> 
+> My question is about the usage of the return value of
+> write_cached_data in mtdblock_flush and mtdblock_release. The return
+> value is not used in those functions. What could be the reason for
+> that?
+> 
+> I have a problem in my code where I flush the data, but the flush does
+> not fail if the flush did not work (because of a bad NAND flash
+> sector). As far as I understand the mtdblock.c code, this could be
+> fixed by using the return value of write_cached_data.
+> 
 
-> Or the filesystem will make sure this situation rarely happen?
->
->
->>
->> use case:
->> I'm working on at91sam9g35-cm board which require 1 bit per 512bytes
->> correction and also on a at91sam9g35-cm+phy which require 4bits per
->> 512bytes correction.
->>
->> If I use for both a 4b/512B correction, this won't hurt ?
->> There won't be any strange side effect ?
->
->
-> I think it will not hurt. And since PMECC is hardware calculation,
-> performance should have no big impaction (I am not test that)
->
->
->>
->> Moreover, as I don't use the OOB data, I could set a 8b/512B correction.
->> Will it be completely useless ?
->
->
-> I've seen one of mtd/nand driver (I don't remember the exact name), the ECC
-> capability is set as the max one base on the OOB valid size (exclude the
-> some used by filesystem).
->
-> Just in the moment, I think use the max error correct capability base on
-> valid OOB is safer for long time using.
->
-> Best Regards,
-> Josh Wu
->
->>
->>
->> Regards,
->>
->> Richard.
->>
->
-Thanks for your replies !
+Mmm... that seem to be the case. And adding the checks makes your use
+case work (i.e. detect the failure)?
 
-Richard.
-
-
+In that case you might try to send a patch fixing mtdblock to check
+for write_cached_data failure.
 -- 
-for me, ck means con kolivas and not calvin klein... does it mean I'm a geek ?
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
