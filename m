@@ -1,13 +1,12 @@
 Received: from smtp18.mail.ru ([94.100.176.155])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UVnq5-0002p4-EP
- for linux-mtd@lists.infradead.org; Fri, 26 Apr 2013 18:57:47 +0000
+ id 1UVnq6-0002pA-51
+ for linux-mtd@lists.infradead.org; Fri, 26 Apr 2013 18:57:48 +0000
 From: Alexander Shiyan <shc_work@mail.ru>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH v2 2/7] mtd: nand-gpio: Use default dev_ready function if RDY
- is missing in configuration
-Date: Fri, 26 Apr 2013 22:57:23 +0400
-Message-Id: <1367002648-8269-2-git-send-email-shc_work@mail.ru>
+Subject: [PATCH v2 5/7] mtd: nand-gpio: Unneeded dependency on ARM removed
+Date: Fri, 26 Apr 2013 22:57:26 +0400
+Message-Id: <1367002648-8269-5-git-send-email-shc_work@mail.ru>
 In-Reply-To: <1367002648-8269-1-git-send-email-shc_work@mail.ru>
 References: <1367002648-8269-1-git-send-email-shc_work@mail.ru>
 Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
@@ -25,40 +24,21 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
 ---
- drivers/mtd/nand/gpio.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
-index c35f46e..8f102d1 100644
---- a/drivers/mtd/nand/gpio.c
-+++ b/drivers/mtd/nand/gpio.c
-@@ -136,10 +136,7 @@ static int gpio_nand_devready(struct mtd_info *mtd)
- {
- 	struct gpiomtd *gpiomtd = gpio_nand_getpriv(mtd);
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index a60f6c1..3ae9105 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -75,7 +75,7 @@ config MTD_NAND_DENALI_SCRATCH_REG_ADDR
  
--	if (gpio_is_valid(gpiomtd->plat.gpio_rdy))
--		return gpio_get_value(gpiomtd->plat.gpio_rdy);
--
--	return 1;
-+	return gpio_get_value(gpiomtd->plat.gpio_rdy);
- }
+ config MTD_NAND_GPIO
+ 	tristate "GPIO NAND Flash driver"
+-	depends on GPIOLIB && ARM
++	depends on GPIOLIB
+ 	help
+ 	  This enables a GPIO based NAND flash driver.
  
- #ifdef CONFIG_OF
-@@ -307,6 +304,7 @@ static int gpio_nand_probe(struct platform_device *dev)
- 		if (ret)
- 			return ret;
- 		gpio_direction_input(gpiomtd->plat.gpio_rdy);
-+		this->dev_ready = gpio_nand_devready;
- 	}
- 
- 	this->IO_ADDR_W  = this->IO_ADDR_R;
-@@ -316,7 +314,6 @@ static int gpio_nand_probe(struct platform_device *dev)
- 
- 	/* install our routines */
- 	this->cmd_ctrl   = gpio_nand_cmd_ctrl;
--	this->dev_ready  = gpio_nand_devready;
- 
- 	if (this->options & NAND_BUSWIDTH_16) {
- 		this->read_buf   = gpio_nand_readbuf16;
 -- 
 1.8.1.5
