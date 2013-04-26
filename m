@@ -1,13 +1,13 @@
-Received: from va3ehsobe005.messaging.microsoft.com ([216.32.180.31]
- helo=va3outboundpool.messaging.microsoft.com)
+Received: from tx2ehsobe004.messaging.microsoft.com ([65.55.88.14]
+ helo=tx2outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UVepx-0005zq-Uy
- for linux-mtd@lists.infradead.org; Fri, 26 Apr 2013 09:21:06 +0000
+ id 1UVeq0-00061L-Kh
+ for linux-mtd@lists.infradead.org; Fri, 26 Apr 2013 09:21:08 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH V4 6/9] mtd: add ECC info for nand_flash_dev{}
-Date: Fri, 26 Apr 2013 17:08:54 +0800
-Message-ID: <1366967337-5534-7-git-send-email-b32955@freescale.com>
+Subject: [PATCH V4 8/9] mtd: add the ecc info for some full-id nand chips
+Date: Fri, 26 Apr 2013 17:08:56 +0800
+Message-ID: <1366967337-5534-9-git-send-email-b32955@freescale.com>
 In-Reply-To: <1366967337-5534-1-git-send-email-b32955@freescale.com>
 References: <1366967337-5534-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
@@ -24,57 +24,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add an instance of an anonymous struct to store the ECC infor for full id
-nand chips.
-	@ecc.strength: ECC correctability from the datasheet.
-	@ecc.size: ECC size required by the @ecc.strength,
+Add the ecc info for TC58NVG2S0F, TC58NVG3S0F, TC58NVG5D2 and TC58NVG6D2.
 
-Also add the necessary macros to make the code simple and clean.
+>From these chips' datasheets, we know that:
+   The TC58NVG2S0F and TC58NVG3S0F require 4bit ECC for per 512byte.
+   The TC58NVG5D2 and TC58NVG6D2 require 40bits ECC for per 1024byte.
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- include/linux/mtd/nand.h |   15 +++++++++++++++
- 1 files changed, 15 insertions(+), 0 deletions(-)
+ drivers/mtd/nand/nand_ids.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 9b28739..5f1c0d1 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -625,6 +625,11 @@ struct nand_chip {
- 	{ .name = (nm), {{ .dev_id = (devid) }}, .chipsize = (chipsz), \
- 	  .options = (opts) }
+diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
+index 683813a..a87b0a3 100644
+--- a/drivers/mtd/nand/nand_ids.c
++++ b/drivers/mtd/nand/nand_ids.c
+@@ -33,16 +33,16 @@ struct nand_flash_dev nand_flash_ids[] = {
+ 	 */
+ 	{"TC58NVG2S0F 4G 3.3V 8-bit",
+ 		{ .id = {0x98, 0xdc, 0x90, 0x26, 0x76, 0x15, 0x01, 0x08} },
+-		  SZ_4K, SZ_512, SZ_256K, 0, 8, 224},
++		  SZ_4K, SZ_512, SZ_256K, 0, 8, 224, NAND_ECC_INFO(4, SZ_512) },
+ 	{"TC58NVG3S0F 8G 3.3V 8-bit",
+ 		{ .id = {0x98, 0xd3, 0x90, 0x26, 0x76, 0x15, 0x02, 0x08} },
+-		  SZ_4K, SZ_1K, SZ_256K, 0, 8, 232},
++		  SZ_4K, SZ_1K, SZ_256K, 0, 8, 232, NAND_ECC_INFO(4, SZ_512) },
+ 	{"TC58NVG5D2 32G 3.3V 8-bit",
+ 		{ .id = {0x98, 0xd7, 0x94, 0x32, 0x76, 0x56, 0x09, 0x00} },
+-		  SZ_8K, SZ_4K, SZ_1M, 0, 8, 640},
++		  SZ_8K, SZ_4K, SZ_1M, 0, 8, 640, NAND_ECC_INFO(40, SZ_1K) },
+ 	{"TC58NVG6D2 64G 3.3V 8-bit",
+ 		{ .id = {0x98, 0xde, 0x94, 0x82, 0x76, 0x56, 0x04, 0x20} },
+-		  SZ_8K, SZ_8K, SZ_2M, 0, 8, 640},
++		  SZ_8K, SZ_8K, SZ_2M, 0, 8, 640, NAND_ECC_INFO(40, SZ_1K) },
  
-+#define NAND_ECC_INFO(_strength, _size)	\
-+			{ .strength = (_strength), .size = (_size) }
-+#define NAND_ECC_STRENGTH(type)		((type)->ecc.strength)
-+#define NAND_ECC_SIZE(type)		((type)->ecc.size)
-+
- /**
-  * struct nand_flash_dev - NAND Flash Device ID Structure
-  * @name: a human-readable name of the NAND chip
-@@ -642,6 +647,12 @@ struct nand_chip {
-  * @options: stores various chip bit options
-  * @id_len: The valid length of the @id.
-  * @oobsize: OOB size
-+ * @ecc.strength: The ECC correctability from the datasheet, same as the
-+ *                @ecc_strength in nand_chip{}.
-+ * @ecc.size: The ECC size required by the @ecc.strength, same as the
-+ *            @ecc_size in nand_chip{}.
-+ *            For example, the "4bit ECC for each 512Byte" can be set with
-+ *            NAND_ECC_INFO(4, 512).
-  */
- struct nand_flash_dev {
- 	char *name;
-@@ -658,6 +669,10 @@ struct nand_flash_dev {
- 	unsigned int options;
- 	uint16_t id_len;
- 	uint16_t oobsize;
-+	struct {
-+		uint16_t strength;
-+		uint16_t size;
-+	} ecc;
- };
- 
- /**
+ 	LEGACY_ID_NAND("NAND 4MiB 5V 8-bit",   0x6B, 4, SZ_8K, SP_OPTIONS),
+ 	LEGACY_ID_NAND("NAND 4MiB 3,3V 8-bit", 0xE3, 4, SZ_8K, SP_OPTIONS),
 -- 
 1.7.1
