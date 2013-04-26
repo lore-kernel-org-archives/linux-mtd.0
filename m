@@ -1,21 +1,20 @@
-Received: from va3ehsobe010.messaging.microsoft.com ([216.32.180.30]
- helo=va3outboundpool.messaging.microsoft.com)
+Received: from tx2ehsobe002.messaging.microsoft.com ([65.55.88.12]
+ helo=tx2outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UVept-0005yz-0d
- for linux-mtd@lists.infradead.org; Fri, 26 Apr 2013 09:20:59 +0000
+ id 1UVepx-0005zd-GU
+ for linux-mtd@lists.infradead.org; Fri, 26 Apr 2013 09:21:03 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH V4 3/9] mtd: add a helper to get the supported features for
- ONFI nand
-Date: Fri, 26 Apr 2013 17:08:51 +0800
-Message-ID: <1366967337-5534-4-git-send-email-b32955@freescale.com>
+Subject: [PATCH V4 7/9] mtd: parse out the ECC info for the full-id nand chips
+Date: Fri, 26 Apr 2013 17:08:55 +0800
+Message-ID: <1366967337-5534-8-git-send-email-b32955@freescale.com>
 In-Reply-To: <1366967337-5534-1-git-send-email-b32955@freescale.com>
 References: <1366967337-5534-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Cc: dedekind1@gmail.com, linux-kernel@vger.kernel.org,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- computersforpeace@gmail.com, Huang Shijie <shijie8@gmail.com>
+Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,43 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Huang Shijie <shijie8@gmail.com>
-
-add a helper to get the supported features for ONFI nand.
-Also add the neccessary macros.
+Parse out the ECC information for the full-id nand chips.
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- include/linux/mtd/nand.h |   10 ++++++++++
- 1 files changed, 10 insertions(+), 0 deletions(-)
+ drivers/mtd/nand/nand_base.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 9bad296..9b28739 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -202,6 +202,10 @@ typedef enum {
- /* Keep gcc happy */
- struct nand_chip;
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index bc3442a..5fe65ad 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3254,6 +3254,8 @@ static bool find_full_id_nand(struct mtd_info *mtd, struct nand_chip *chip,
+ 		chip->cellinfo = id_data[2];
+ 		chip->chipsize = (uint64_t)type->chipsize << 20;
+ 		chip->options |= type->options;
++		chip->ecc_strength = NAND_ECC_STRENGTH(type);
++		chip->ecc_size = NAND_ECC_SIZE(type);
  
-+/* ONFI features */
-+#define ONFI_FEATURE_16_BIT_BUS		(1 << 0)
-+#define ONFI_FEATURE_EXT_PARAM_PAGE	(1 << 7)
-+
- /* ONFI timing mode, used in both asynchronous and synchronous mode */
- #define ONFI_TIMING_MODE_0		(1 << 0)
- #define ONFI_TIMING_MODE_1		(1 << 1)
-@@ -753,6 +757,12 @@ struct platform_nand_chip *get_platform_nandchip(struct mtd_info *mtd)
- 	return chip->priv;
- }
+ 		*busw = type->options & NAND_BUSWIDTH_16;
  
-+/* return the supported features. */
-+static inline int onfi_feature(struct nand_chip *chip)
-+{
-+	return chip->onfi_version ? le16_to_cpu(chip->onfi_params.features) : 0;
-+}
-+
- /* return the supported asynchronous timing mode. */
- static inline int onfi_get_async_timing_mode(struct nand_chip *chip)
- {
 -- 
 1.7.1
