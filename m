@@ -1,20 +1,17 @@
-Received: from tx2ehsobe005.messaging.microsoft.com ([65.55.88.15]
- helo=tx2outboundpool.messaging.microsoft.com)
+Received: from mail-ia0-x232.google.com ([2607:f8b0:4001:c02::232])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UVeq1-00061U-HK
- for linux-mtd@lists.infradead.org; Fri, 26 Apr 2013 09:21:11 +0000
-From: Huang Shijie <b32955@freescale.com>
-To: <dwmw2@infradead.org>
-Subject: [PATCH V4 9/9] mtd: gpmi: set the BCH's geometry with the ecc info
-Date: Fri, 26 Apr 2013 17:08:57 +0800
-Message-ID: <1366967337-5534-10-git-send-email-b32955@freescale.com>
-In-Reply-To: <1366967337-5534-1-git-send-email-b32955@freescale.com>
-References: <1366967337-5534-1-git-send-email-b32955@freescale.com>
+ id 1UVfj1-0007Tp-KF
+ for linux-mtd@lists.infradead.org; Fri, 26 Apr 2013 10:17:56 +0000
+Received: by mail-ia0-f178.google.com with SMTP id j38so3481348iad.37
+ for <linux-mtd@lists.infradead.org>; Fri, 26 Apr 2013 03:17:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: dedekind1@gmail.com, linux-kernel@vger.kernel.org,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- computersforpeace@gmail.com, Huang Shijie <shijie8@gmail.com>
+From: Richard Genoud <richard.genoud@gmail.com>
+Date: Fri, 26 Apr 2013 12:17:34 +0200
+Message-ID: <CACQ1gAhY5TbH3JUYMtRk9ETOLn-ZFNbwKQ_5=j_hnPpZ-1fj_w@mail.gmail.com>
+Subject: PMECC capability
+To: Josh Wu <josh.wu@atmel.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,164 +21,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If the nand chip provides us the ECC info, we can use it firstly.
-The set_geometry_by_ecc_info() will use the ECC info, and
-calculate the parameters we need.
+Hi,
 
-Rename the old code to lagacy_set_geometry() which will takes effect
-when there is no ECC info from the nand chip or we fails in the ECC info case.
+I've got a (dumb?) question about the error correct capability of atmel PMECC:
+Do we have to use the exact error capability required by the nand
+chipset or we can use a bigger one ?
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
-Signed-off-by: Huang Shijie <shijie8@gmail.com>
----
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |  128 +++++++++++++++++++++++++++++++-
- 1 files changed, 127 insertions(+), 1 deletions(-)
+use case:
+I'm working on at91sam9g35-cm board which require 1 bit per 512bytes
+correction and also on a at91sam9g35-cm+phy which require 4bits per
+512bytes correction.
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 717881a..e085ade 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -113,7 +113,128 @@ static inline bool gpmi_check_ecc(struct gpmi_nand_data *this)
- 	return true;
- }
- 
--int common_nfc_set_geometry(struct gpmi_nand_data *this)
-+/*
-+ * If we can get the ECC information from the nand chip, we do not
-+ * need to calculate them ourselves.
-+ *
-+ * We may have available oob space in this case.
-+ */
-+static bool set_geometry_by_ecc_info(struct gpmi_nand_data *this)
-+{
-+	struct bch_geometry *geo = &this->bch_geometry;
-+	struct mtd_info *mtd = &this->mtd;
-+	struct nand_chip *chip = mtd->priv;
-+	struct nand_oobfree *of = gpmi_hw_ecclayout.oobfree;
-+	unsigned int block_mark_bit_offset;
-+
-+	if (!(chip->ecc_strength > 0 && chip->ecc_size > 0))
-+		return false;
-+
-+	switch (chip->ecc_size) {
-+	case SZ_512:
-+		geo->gf_len = 13;
-+		break;
-+	case SZ_1K:
-+		geo->gf_len = 14;
-+		break;
-+	default:
-+		dev_err(this->dev,
-+			"unsupported nand chip. ecc bits : %d, ecc size : %d\n",
-+			chip->ecc_strength, chip->ecc_size);
-+		return false;
-+	}
-+	geo->ecc_chunk_size = chip->ecc_size;
-+	geo->ecc_strength = round_up(chip->ecc_strength, 2);
-+	if (!gpmi_check_ecc(this))
-+		return false;
-+
-+	/* Keep the C >= O */
-+	if (geo->ecc_chunk_size < mtd->oobsize) {
-+		dev_err(this->dev,
-+			"unsupported nand chip. ecc size: %d, oob size : %d\n",
-+			chip->ecc_size, mtd->oobsize);
-+		return false;
-+	}
-+
-+	/* The default value, see comment in the lagacy_set_geometry(). */
-+	geo->metadata_size = 10;
-+
-+	geo->ecc_chunk_count = mtd->writesize / geo->ecc_chunk_size;
-+
-+	/*
-+	 * Now, the NAND chip with 2K page(data chunk is 512byte) shows below:
-+	 *
-+	 *    |                          P                            |
-+	 *    |<----------------------------------------------------->|
-+	 *    |                                                       |
-+	 *    |                                        (Block Mark)   |
-+	 *    |                      P'                      |      | |     |
-+	 *    |<-------------------------------------------->|  D   | |  O' |
-+	 *    |                                              |<---->| |<--->|
-+	 *    V                                              V      V V     V
-+	 *    +---+----------+-+----------+-+----------+-+----------+-+-----+
-+	 *    | M |   data   |E|   data   |E|   data   |E|   data   |E|     |
-+	 *    +---+----------+-+----------+-+----------+-+----------+-+-----+
-+	 *
-+	 *	P : the page size for BCH module.
-+	 *	E : The ECC strength.
-+	 *	G : the length of Galois Field.
-+	 *	N : The chunk count of per page.
-+	 *	M : the metasize of per page.
-+	 *	C : the ecc chunk size, aka the "data" above.
-+	 *	P': the nand chip's page size.
-+	 *	O : the nand chip's oob size.
-+	 *	O': the free oob.
-+	 *
-+	 *	The formula for P is :
-+	 *
-+	 *	            E * G * N
-+	 *	       P = ------------ + P' + M
-+	 *                      8
-+	 *
-+	 * The position of block mark moves forward in the ECC-based view
-+	 * of page, and the delta is:
-+	 *
-+	 *                   E * G * (N - 1)
-+	 *             D = (---------------- + M)
-+	 *                          8
-+	 *
-+	 * Please see the comment in lagacy_set_geometry().
-+	 * With the condition C >= O , we still can get same result.
-+	 * So the bit position of the physical block mark within the ECC-based
-+	 * view of the page is :
-+	 *             (P' - D) * 8
-+	 */
-+	geo->page_size = mtd->writesize + geo->metadata_size +
-+		(geo->gf_len * geo->ecc_strength * geo->ecc_chunk_count) / 8;
-+
-+	/* The available oob size we have. */
-+	if (geo->page_size < mtd->writesize + mtd->oobsize) {
-+		of->offset = geo->page_size - mtd->writesize;
-+		of->length = mtd->oobsize - of->offset;
-+		mtd->oobavail = gpmi_hw_ecclayout.oobavail = of->length;
-+	}
-+
-+	geo->payload_size = mtd->writesize;
-+
-+	geo->auxiliary_status_offset = ALIGN(geo->metadata_size, 4);
-+	geo->auxiliary_size = ALIGN(geo->metadata_size, 4)
-+				+ ALIGN(geo->ecc_chunk_count, 4);
-+
-+	if (!this->swap_block_mark)
-+		return true;
-+
-+	/* For bit swap. */
-+	block_mark_bit_offset = mtd->writesize * 8 -
-+		(geo->ecc_strength * geo->gf_len * (geo->ecc_chunk_count - 1)
-+				+ geo->metadata_size * 8);
-+
-+	geo->block_mark_byte_offset = block_mark_bit_offset / 8;
-+	geo->block_mark_bit_offset  = block_mark_bit_offset % 8;
-+	return true;
-+}
-+
-+static int lagacy_set_geometry(struct gpmi_nand_data *this)
- {
- 	struct bch_geometry *geo = &this->bch_geometry;
- 	struct mtd_info *mtd = &this->mtd;
-@@ -225,6 +346,11 @@ int common_nfc_set_geometry(struct gpmi_nand_data *this)
- 	return 0;
- }
- 
-+int common_nfc_set_geometry(struct gpmi_nand_data *this)
-+{
-+	return set_geometry_by_ecc_info(this) ? 0 : lagacy_set_geometry(this);
-+}
-+
- struct dma_chan *get_dma_chan(struct gpmi_nand_data *this)
- {
- 	int chipnr = this->current_chip;
+If I use for both a 4b/512B correction, this won't hurt ?
+There won't be any strange side effect ?
+
+Moreover, as I don't use the OOB data, I could set a 8b/512B correction.
+Will it be completely useless ?
+
+
+Regards,
+
+Richard.
+
 -- 
-1.7.1
+for me, ck means con kolivas and not calvin klein... does it mean I'm a geek ?
