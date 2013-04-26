@@ -1,16 +1,17 @@
-Received: from mail-ia0-x232.google.com ([2607:f8b0:4001:c02::232])
+Received: from eusmtp01.atmel.com ([212.144.249.243])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UVfj1-0007Tp-KF
- for linux-mtd@lists.infradead.org; Fri, 26 Apr 2013 10:17:56 +0000
-Received: by mail-ia0-f178.google.com with SMTP id j38so3481348iad.37
- for <linux-mtd@lists.infradead.org>; Fri, 26 Apr 2013 03:17:54 -0700 (PDT)
+ id 1UVgPr-00006X-M6
+ for linux-mtd@lists.infradead.org; Fri, 26 Apr 2013 11:02:12 +0000
+Message-ID: <517A5EA6.3010207@atmel.com>
+Date: Fri, 26 Apr 2013 19:01:58 +0800
+From: Josh Wu <josh.wu@atmel.com>
 MIME-Version: 1.0
-From: Richard Genoud <richard.genoud@gmail.com>
-Date: Fri, 26 Apr 2013 12:17:34 +0200
-Message-ID: <CACQ1gAhY5TbH3JUYMtRk9ETOLn-ZFNbwKQ_5=j_hnPpZ-1fj_w@mail.gmail.com>
-Subject: PMECC capability
-To: Josh Wu <josh.wu@atmel.com>
-Content-Type: text/plain; charset=UTF-8
+To: Richard Genoud <richard.genoud@gmail.com>
+Subject: Re: PMECC capability
+References: <CACQ1gAhY5TbH3JUYMtRk9ETOLn-ZFNbwKQ_5=j_hnPpZ-1fj_w@mail.gmail.com>
+In-Reply-To: <CACQ1gAhY5TbH3JUYMtRk9ETOLn-ZFNbwKQ_5=j_hnPpZ-1fj_w@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -21,27 +22,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi, Richard
 
-I've got a (dumb?) question about the error correct capability of atmel PMECC:
-Do we have to use the exact error capability required by the nand
-chipset or we can use a bigger one ?
+On 4/26/2013 6:17 PM, Richard Genoud wrote:
+> Hi,
+>
+> I've got a (dumb?) question about the error correct capability of atmel PMECC:
+> Do we have to use the exact error capability required by the nand
+> chipset or we can use a bigger one ?
 
-use case:
-I'm working on at91sam9g35-cm board which require 1 bit per 512bytes
-correction and also on a at91sam9g35-cm+phy which require 4bits per
-512bytes correction.
+I think it is a very good question and I don't have answer yet.
+And it bring up another question: Can the nand flash will got much error 
+bits than the ONFI minimum require?
+Or the filesystem will make sure this situation rarely happen?
 
-If I use for both a 4b/512B correction, this won't hurt ?
-There won't be any strange side effect ?
+>
+> use case:
+> I'm working on at91sam9g35-cm board which require 1 bit per 512bytes
+> correction and also on a at91sam9g35-cm+phy which require 4bits per
+> 512bytes correction.
+>
+> If I use for both a 4b/512B correction, this won't hurt ?
+> There won't be any strange side effect ?
 
-Moreover, as I don't use the OOB data, I could set a 8b/512B correction.
-Will it be completely useless ?
+I think it will not hurt. And since PMECC is hardware calculation, 
+performance should have no big impaction (I am not test that)
 
+>
+> Moreover, as I don't use the OOB data, I could set a 8b/512B correction.
+> Will it be completely useless ?
 
-Regards,
+I've seen one of mtd/nand driver (I don't remember the exact name), the 
+ECC capability is set as the max one base on the OOB valid size (exclude 
+the some used by filesystem).
 
-Richard.
+Just in the moment, I think use the max error correct capability base on 
+valid OOB is safer for long time using.
 
--- 
-for me, ck means con kolivas and not calvin klein... does it mean I'm a geek ?
+Best Regards,
+Josh Wu
+
+>
+>
+> Regards,
+>
+> Richard.
+>
