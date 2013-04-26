@@ -1,12 +1,13 @@
 Received: from smtp18.mail.ru ([94.100.176.155])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UVnq6-0002pA-51
+ id 1UVnq5-0002p8-Eg
  for linux-mtd@lists.infradead.org; Fri, 26 Apr 2013 18:57:48 +0000
 From: Alexander Shiyan <shc_work@mail.ru>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH v2 5/7] mtd: nand-gpio: Unneeded dependency on ARM removed
-Date: Fri, 26 Apr 2013 22:57:26 +0400
-Message-Id: <1367002648-8269-5-git-send-email-shc_work@mail.ru>
+Subject: [PATCH v2 4/7] mtd: nand-gpio: Use default nand_base {read/write}_buf
+ functions
+Date: Fri, 26 Apr 2013 22:57:25 +0400
+Message-Id: <1367002648-8269-4-git-send-email-shc_work@mail.ru>
 In-Reply-To: <1367002648-8269-1-git-send-email-shc_work@mail.ru>
 References: <1367002648-8269-1-git-send-email-shc_work@mail.ru>
 Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
@@ -24,21 +25,84 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
 ---
- drivers/mtd/nand/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/gpio.c | 56 -------------------------------------------------
+ 1 file changed, 56 deletions(-)
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index a60f6c1..3ae9105 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -75,7 +75,7 @@ config MTD_NAND_DENALI_SCRATCH_REG_ADDR
+diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
+index 0d26f8b..312c285 100644
+--- a/drivers/mtd/nand/gpio.c
++++ b/drivers/mtd/nand/gpio.c
+@@ -87,51 +87,6 @@ static void gpio_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+ 	gpio_nand_dosync(gpiomtd);
+ }
  
- config MTD_NAND_GPIO
- 	tristate "GPIO NAND Flash driver"
--	depends on GPIOLIB && ARM
-+	depends on GPIOLIB
- 	help
- 	  This enables a GPIO based NAND flash driver.
+-static void gpio_nand_writebuf(struct mtd_info *mtd, const u_char *buf, int len)
+-{
+-	struct nand_chip *this = mtd->priv;
+-
+-	iowrite8_rep(this->IO_ADDR_W, buf, len);
+-}
+-
+-static void gpio_nand_readbuf(struct mtd_info *mtd, u_char *buf, int len)
+-{
+-	struct nand_chip *this = mtd->priv;
+-
+-	ioread8_rep(this->IO_ADDR_R, buf, len);
+-}
+-
+-static void gpio_nand_writebuf16(struct mtd_info *mtd, const u_char *buf,
+-				 int len)
+-{
+-	struct nand_chip *this = mtd->priv;
+-
+-	if (IS_ALIGNED((unsigned long)buf, 2)) {
+-		iowrite16_rep(this->IO_ADDR_W, buf, len>>1);
+-	} else {
+-		int i;
+-		unsigned short *ptr = (unsigned short *)buf;
+-
+-		for (i = 0; i < len; i += 2, ptr++)
+-			writew(*ptr, this->IO_ADDR_W);
+-	}
+-}
+-
+-static void gpio_nand_readbuf16(struct mtd_info *mtd, u_char *buf, int len)
+-{
+-	struct nand_chip *this = mtd->priv;
+-
+-	if (IS_ALIGNED((unsigned long)buf, 2)) {
+-		ioread16_rep(this->IO_ADDR_R, buf, len>>1);
+-	} else {
+-		int i;
+-		unsigned short *ptr = (unsigned short *)buf;
+-
+-		for (i = 0; i < len; i += 2, ptr++)
+-			*ptr = readw(this->IO_ADDR_R);
+-	}
+-}
+-
+ static int gpio_nand_devready(struct mtd_info *mtd)
+ {
+ 	struct gpiomtd *gpiomtd = gpio_nand_getpriv(mtd);
+@@ -314,19 +269,8 @@ static int gpio_nand_probe(struct platform_device *dev)
+ 	this->ecc.mode   = NAND_ECC_SOFT;
+ 	this->options    = gpiomtd->plat.options;
+ 	this->chip_delay = gpiomtd->plat.chip_delay;
+-
+-	/* install our routines */
+ 	this->cmd_ctrl   = gpio_nand_cmd_ctrl;
+ 
+-	if (this->options & NAND_BUSWIDTH_16) {
+-		this->read_buf   = gpio_nand_readbuf16;
+-		this->write_buf  = gpio_nand_writebuf16;
+-	} else {
+-		this->read_buf   = gpio_nand_readbuf;
+-		this->write_buf  = gpio_nand_writebuf;
+-	}
+-
+-	/* set the mtd private data for the nand driver */
+ 	gpiomtd->mtd_info.priv = this;
+ 	gpiomtd->mtd_info.owner = THIS_MODULE;
  
 -- 
 1.8.1.5
