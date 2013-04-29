@@ -1,17 +1,18 @@
-From: "Gupta, Pekon" <pekon@ti.com>
-To: <linux-mtd@lists.infradead.org>, <b-cousson@ti.com>, <tony@atomide.com>,
- <linux@arm.linux.org.uk>
-Subject: [v2,
- 3/3] ARM: dts: AM33XX: Add NAND flash device tree data to am335x-evm
-Date: Mon, 29 Apr 2013 13:25:47 +0530
-Message-ID: <ebfab3e9123b3e50b9a9678c1480191addd86d59.1359007746.git.avinashphilip@ti.com>
-Content-Type: text/plain; charset="utf-8"
+Received: from eu1sys200aog113.obsmtp.com ([207.126.144.135])
+ by merlin.infradead.org with smtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UWmt3-00088h-HG
+ for linux-mtd@lists.infradead.org; Mon, 29 Apr 2013 12:08:55 +0000
+From: Linus Walleij <linus.walleij@stericsson.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>, <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: nand: fsmc: update of OF support
+Date: Mon, 29 Apr 2013 14:07:48 +0200
+Message-ID: <1367237268-21694-1-git-send-email-linus.walleij@stericsson.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: devicetree-discuss@lists.ozlabs.org, nsekhar@ti.com,
- linux-kernel@vger.kernel.org, hvaibhav@ti.com, gururaja.hebbar@ti.com,
- zonque@gmail.com, linux-omap@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain
+Cc: Anmar Oueja <anmar.oueja@linaro.org>, Vipin Kumar <vipin.kumar@st.com>,
+ Mian Yousaf Kaukab <mian.yousaf.kaukab@stericsson.com>,
+ Stefan Roese <sr@denx.de>, Linus Walleij <linus.walleij@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,139 +22,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: avinash philip <avinashphilip@ti.com>
+From: Mian Yousaf Kaukab <mian.yousaf.kaukab@stericsson.com>
 
-NAND flash connected in am335x-evm on GPMC controller. This patch adds
-device tree node in am3355-evm with GPMC contoller timing for NAND flash
-interface, NAND partition table, ECC scheme, elm handle id.
+Add nand bank selection and timings to the device tree bindings.
 
-Signed-off-by: Philip Avinash <avinashphilip@ti.com>
-Tested-by: Pekon Gupta <pekon@ti.com>
-
+Cc: Stefan Roese <sr@denx.de>
+Cc: Vipin Kumar <vipin.kumar@st.com>
+Signed-off-by: Mian Yousaf Kaukab <mian.yousaf.kaukab@stericsson.com>
+[Added some documentation]
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
-arch/arm/boot/dts/am335x-evm.dts |   98 +++++++++++++++++++++++++++++++++++++-
- 1 file changed, 97 insertions(+), 1 deletion(-)
+ .../devicetree/bindings/mtd/fsmc-nand.txt          | 25 +++++++++++++++++++++-
+ drivers/mtd/nand/fsmc_nand.c                       | 18 ++++++++++++++++
+ include/linux/mtd/fsmc.h                           |  1 +
+ 3 files changed, 43 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/am335x-evm.dts b/arch/arm/boot/dts/am335x-evm.dts
-index 0423298..1c2fd89 100644
---- a/arch/arm/boot/dts/am335x-evm.dts
-+++ b/arch/arm/boot/dts/am335x-evm.dts
-@@ -26,7 +26,8 @@
+diff --git a/Documentation/devicetree/bindings/mtd/fsmc-nand.txt b/Documentation/devicetree/bindings/mtd/fsmc-nand.txt
+index 2240ac0..ec42935 100644
+--- a/Documentation/devicetree/bindings/mtd/fsmc-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/fsmc-nand.txt
+@@ -1,4 +1,5 @@
+-* FSMC NAND
++ST Microelectronics Flexible Static Memory Controller (FSMC)
++NAND Interface
  
- 	am33xx_pinmux: pinmux@44e10800 {
- 		pinctrl-names = "default";
--		pinctrl-0 = <&matrix_keypad_s0 &volume_keys_s0>;
-+		pinctrl-0 = <&matrix_keypad_s0 &volume_keys_s0
-+			&nandflash_pins_s0>;
+ Required properties:
+ - compatible : "st,spear600-fsmc-nand", "stericsson,fsmc-nand"
+@@ -9,6 +10,26 @@ Optional properties:
+ - bank-width : Width (in bytes) of the device.  If not present, the width
+   defaults to 1 byte
+ - nand-skip-bbtscan: Indicates the the BBT scanning should be skipped
++- timings: array of 6 bytes for NAND timings. The meanings of these bytes
++  are:
++  byte 0 TCLR  : CLE to RE delay in number of AHB clock cycles, only 4 bits
++                 are valid. Zero means one clockcycle, 15 means 16 clock
++                 cycles.
++  byte 1 TAR   : ALE to RE delay, 4 bits are valid. Same format as TCLR.
++  byte 2 THIZ  : number of HCLK clock cycles during which the data bus is
++                 kept in Hi-Z (tristate) after the start of a write access.
++                 Only valid for write transactions. Zero means zero cycles,
++                 255 means 255 cycles.
++  byte 3 THOLD : number of HCLK clock cycles to hold the address (and data
++                 when writing) after the command deassertation. Zero means
++                 one cycle, 255 means 256 cycles.
++  byte 4 TWAIT : number of HCLK clock cycles to assert the command to the
++                 NAND flash in response to SMWAITn. Zero means 1 cycle,
++                 255 means 256 cycles.
++  byte 5 TSET  : number of HCLK clock cycles to assert the address before the
++                 command is asserted. Zero means one cycle, 255 means 256
++                 cycles.
++- bank: default NAND bank to use (0-3 are valid, 0 is the default).
  
- 		matrix_keypad_s0: matrix_keypad_s0 {
- 			pinctrl-single,pins = <
-@@ -44,6 +45,26 @@
- 				0x154 0x27	/* spi0_d0.gpio0_3, INPUT | MODE7 */
- 			>;
- 		};
-+
-+		nandflash_pins_s0: nandflash_pins_s0 {
-+			pinctrl-single,pins = <
-+				0x0 0x30	/* gpmc_ad0.gpmc_ad0, INPUT | PULLUP | MODE0 */
-+				0x4 0x30	/* gpmc_ad1.gpmc_ad1, INPUT | PULLUP | MODE0 */
-+				0x8 0x30	/* gpmc_ad2.gpmc_ad2, INPUT | PULLUP | MODE0 */
-+				0xc 0x30	/* gpmc_ad3.gpmc_ad3, INPUT | PULLUP | MODE0 */
-+				0x10 0x30	/* gpmc_ad4.gpmc_ad4, INPUT | PULLUP | MODE0 */
-+				0x14 0x30	/* gpmc_ad5.gpmc_ad5, INPUT | PULLUP | MODE0 */
-+				0x18 0x30	/* gpmc_ad6.gpmc_ad6, INPUT | PULLUP | MODE0 */
-+				0x1c 0x30	/* gpmc_ad7.gpmc_ad7, INPUT | PULLUP | MODE0 */
-+				0x70 0x30	/* gpmc_wait0.gpmc_wait0, INPUT | PULLUP | MODE0 */
-+				0x74 0x37	/* gpmc_wpn.gpio0_30, INPUT | PULLUP | MODE7 */
-+				0x7c 0x8	/* gpmc_csn0.gpmc_csn0,  PULL DISA */
-+				0x90 0x8	/* gpmc_advn_ale.gpmc_advn_ale, PULL DISA */
-+				0x94 0x8	/* gpmc_oen_ren.gpmc_oen_ren, PULL DISA */
-+				0x98 0x8	/* gpmc_wen.gpmc_wen, PULL DISA */
-+				0x9c 0x8	/* gpmc_be0n_cle.gpmc_be0n_cle, PULL DISA */
-+			>;
-+		};
- 	};
+ Example:
  
- 	ocp {
-@@ -102,6 +123,81 @@
- 				reg = <0x48>;
- 			};
- 		};
-+
-+		elm: elm@48080000 {
-+			status = "okay";
-+		};
-+
-+		gpmc: gpmc@50000000 {
-+			status = "okay";
-+			ranges = <0 0 0x08000000 0x10000000>;	/* CS0: NAND */
-+
-+			nand@0,0 {
-+				reg = <0 0 0>; /* CS0, offset 0 */
-+				nand-bus-width = <8>;
-+				ti,nand-ecc-opt = "bch8";
-+
-+				gpmc,sync-clk = <0>;
-+				gpmc,cs-on = <0>;
-+				gpmc,cs-rd-off = <44>;
-+				gpmc,cs-wr-off = <44>;
-+				gpmc,adv-on = <6>;
-+				gpmc,adv-rd-off = <34>;
-+				gpmc,adv-wr-off = <44>;
-+				gpmc,we-off = <40>;
-+				gpmc,oe-off = <54>;
-+				gpmc,access = <64>;
-+				gpmc,rd-cycle = <82>;
-+				gpmc,wr-cycle = <82>;
-+				gpmc,wr-access = <40>;
-+				gpmc,wr-data-mux-bus = <0>;
-+
-+				#address-cells = <1>;
-+				#size-cells = <1>;
-+				elm_id = <&elm>;
-+
-+				/* MTD partition table */
-+				partition@0 {
-+					label = "SPL1";
-+					reg = <0x00000000 0x000020000>;
-+				};
-+
-+				partition@1 {
-+					label = "SPL2";
-+					reg = <0x00020000 0x00020000>;
-+				};
-+
-+				partition@2 {
-+					label = "SPL3";
-+					reg = <0x00040000 0x00020000>;
-+				};
-+
-+				partition@3 {
-+					label = "SPL4";
-+					reg = <0x00060000 0x00020000>;
-+				};
-+
-+				partition@4 {
-+					label = "U-boot";
-+					reg = <0x00080000 0x001e0000>;
-+				};
-+
-+				partition@5 {
-+					label = "environment";
-+					reg = <0x00260000 0x00020000>;
-+				};
-+
-+				partition@6 {
-+					label = "Kernel";
-+					reg = <0x00280000 0x00500000>;
-+				};
-+
-+				partition@7 {
-+					label = "File-System";
-+					reg = <0x00780000 0x0F880000>;
-+				};
-+			};
-+		};
- 	};
+@@ -24,6 +45,8 @@ Example:
  
- 	vbat: fixedregulator@0 {
+ 		bank-width = <1>;
+ 		nand-skip-bbtscan;
++		timings = /bits/ 8 <0 0 0 2 3 0>;
++		bank = <1>;
+ 
+ 		partition@0 {
+ 			...
+diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
+index 05ba3f0..a4ca95c 100644
+--- a/drivers/mtd/nand/fsmc_nand.c
++++ b/drivers/mtd/nand/fsmc_nand.c
+@@ -889,6 +889,24 @@ static int fsmc_nand_probe_config_dt(struct platform_device *pdev,
+ 	if (of_get_property(np, "nand-skip-bbtscan", NULL))
+ 		pdata->options = NAND_SKIP_BBTSCAN;
+ 
++	pdata->nand_timings = devm_kzalloc(&pdev->dev,
++				sizeof(*pdata->nand_timings), GFP_KERNEL);
++	if (!pdata->nand_timings) {
++		dev_err(&pdev->dev, "no memory for nand_timing\n");
++		return -ENOMEM;
++	}
++	of_property_read_u8_array(np, "timings", (u8 *)pdata->nand_timings,
++						sizeof(*pdata->nand_timings));
++
++	/* Set default NAND bank to 0 */
++	pdata->bank = 0;
++	if (!of_property_read_u32(np, "bank", &val)) {
++		if (val > 3) {
++			dev_err(&pdev->dev, "invalid bank %u\n", val);
++			return -EINVAL;
++		}
++		pdata->bank = val;
++	}
+ 	return 0;
+ }
+ #else
+diff --git a/include/linux/mtd/fsmc.h b/include/linux/mtd/fsmc.h
+index d6ed61e..c8be32e 100644
+--- a/include/linux/mtd/fsmc.h
++++ b/include/linux/mtd/fsmc.h
+@@ -137,6 +137,7 @@ enum access_mode {
+ 
+ /**
+  * fsmc_nand_platform_data - platform specific NAND controller config
++ * @nand_timings: timing setup for the physical NAND interface
+  * @partitions: partition table for the platform, use a default fallback
+  * if this is NULL
+  * @nr_partitions: the number of partitions in the previous entry
+-- 
+1.7.11.3
