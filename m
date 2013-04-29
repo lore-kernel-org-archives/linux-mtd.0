@@ -1,23 +1,24 @@
-From: Arnd Bergmann <arnd@arndb.de>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [PATCH 21/21] mtd: omap2: allow bulding as a module
-Date: Mon, 29 Apr 2013 15:34:10 +0200
-References: <1366734653-488286-1-git-send-email-arnd@arndb.de>
- <20130423180320.GJ10155@atomide.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9BCFAE@DBDE04.ent.ti.com>
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9BCFAE@DBDE04.ent.ti.com>
+Received: from mail-we0-x234.google.com ([2a00:1450:400c:c03::234])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UWqt5-0004sE-8e
+ for linux-mtd@lists.infradead.org; Mon, 29 Apr 2013 16:25:12 +0000
+Received: by mail-we0-f180.google.com with SMTP id x43so5415433wey.25
+ for <linux-mtd@lists.infradead.org>; Mon, 29 Apr 2013 09:25:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201304291534.10539.arnd@arndb.de>
-Cc: "Mohammed, Afzal" <afzal@ti.com>, Tony Lindgren <tony@atomide.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+In-Reply-To: <4ece0e3662e670af6982baa43c1d3fd0.squirrel@webmail.iitg.ernet.in>
+References: <OFCF117D0B.61A9CA12-ON48257B4F.002F2292-48257B4F.0030E459@zte.com.cn>
+ <CAFLxGvxqwpc5fbyGpy9o4qzEfn0i3eocs36TrkX9=SfZ_oT-5w@mail.gmail.com>
+ <4ece0e3662e670af6982baa43c1d3fd0.squirrel@webmail.iitg.ernet.in>
+Date: Mon, 29 Apr 2013 18:25:06 +0200
+Message-ID: <CAFLxGvxMR-fGf2GgK+G5E3LOxQA73XRwqL3vyyPBhmZWyPWHBw@mail.gmail.com>
+Subject: Re: Placing ext3 journal on mtd device
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
+To: d.soumyajit@iitg.ernet.in
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: artem.bityutskiy@linux.intel.com, LKML <linux-kernel@vger.kernel.org>,
+ liu.dong3@zte.com.cn,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Russell King <rmk+kernel@arm.linux.org.uk>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+ cui.yunfeng@zte.com.cn, wang.bo116@zte.com.cn
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,33 +28,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 24 April 2013, Gupta, Pekon wrote:
-> [Pekon]: 
-> ELM module is required in for Hardware based ECC correction for 
-> NAND devices. And this driver has a very small foot-print.
-> 
-> The only cases this drives would not be used are:
-> (a) Using S/W based ECC scheme, which have vey high CPU utilization
-> (b) Using single bit ECC scheme, which are becoming obsolete due to
->  increasing NAND densities.
-> For most of the cases ELM module will be used with nand-driver. So
-> there should be no harm in having this module as built-in, if not used
-> in 10% of the use-cases.
-> 
-> Thus I think it's better to keep this module tied to GPMC module, 
-> rather than independent control via KConfig.
-> And user should just selects which ECC scheme he would like to
-> use via DT, without worrying about KConfig options.
+On Mon, Apr 29, 2013 at 6:08 PM,  <d.soumyajit@iitg.ernet.in> wrote:
+> Hi,
+>
+> In Ext3 performance can be improved by placing journal on SSD. I am able
+> to place ext3 journal on an external device. Can you please help me
+> placing ext3 journal on mtd device.
 
-Sorry, I'm lost here and have no idea what you are actually suggesting
-we do. Can you phrase that as a patch?
+*very* bad idea.
 
-Unless you come up with a better solution, I would still like to queue
-up my patch since it fixes an annoying bug and seems to have no downsides.
- 
-> I'm working in cleaning up omap2-nand driver to remove some 
-> redundancies. So would like to know your feedback on same..
-
-Sure, just Cc me on your patches.
-
-	Arnd
+--
+Thanks,
+//richard
