@@ -1,9 +1,9 @@
 From: "Gupta, Pekon" <pekon@ti.com>
 To: <linux-mtd@lists.infradead.org>, <b-cousson@ti.com>, <tony@atomide.com>,
  <linux@arm.linux.org.uk>
-Subject: [v2,1/3] ARM: dts: AM33XX: Add ELM node
-Date: Mon, 29 Apr 2013 13:23:59 +0530
-Message-ID: <7fa7438c9a7c5da575d762423815625d523c4689.1359007746.git.avinashphilip@ti.com>
+Subject: [v2,2/3] ARM: dts: AM33XX: Add GPMC node
+Date: Mon, 29 Apr 2013 13:25:36 +0530
+Message-ID: <2645efefa3d36388ff1d4b64255d880b6587770f.1359007746.git.avinashphilip@ti.com>
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -24,7 +24,7 @@ From: avinash philip <avinashphilip@ti.com>
 
 From: "Philip, Avinash" <avinashphilip@ti.com>
 
-Add ELM data node to AM33XX device tree file.
+Add GPMC data node to AM33XX device tree file.
 
 Signed-off-by: Philip Avinash <avinashphilip@ti.com>
 Acked-by: Peter Korsgaard <jacmet@sunsite.dk>
@@ -32,26 +32,29 @@ Tested-by: Pekon Gupta <pekon@ti.com>
 
 ---
 Changes since v2:
-	- Replace <xx> literals to 52
-	- remove tab
+	- Change number of chip select to 7
 
- arch/arm/boot/dts/am33xx.dtsi |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/arm/boot/dts/am33xx.dtsi |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
 diff --git a/arch/arm/boot/dts/am33xx.dtsi b/arch/arm/boot/dts/am33xx.dtsi
-index da79618..115bf28 100644
+index 115bf28..fbcb90b 100644
 --- a/arch/arm/boot/dts/am33xx.dtsi
 +++ b/arch/arm/boot/dts/am33xx.dtsi
-@@ -389,5 +389,13 @@
- 				mac-address = [ 00 00 00 00 00 00 ];
- 			};
+@@ -397,5 +397,17 @@
+ 			ti,hwmods = "elm";
+ 			status = "disabled";
  		};
 +
-+		elm: elm@48080000 {
-+			compatible = "ti,am3352-elm";
-+			reg = <0x48080000 0x2000>;
-+			interrupts = <4>;
-+			ti,hwmods = "elm";
++		gpmc: gpmc@50000000 {
++			compatible = "ti,am3352-gpmc";
++			ti,hwmods = "gpmc";
++			reg = <0x50000000 0x2000>;
++			interrupts = <100>;
++			num-cs = <7>;
++			num-waitpins = <2>;
++			#address-cells = <2>;
++			#size-cells = <1>;
 +			status = "disabled";
 +		};
  	};
