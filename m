@@ -1,19 +1,20 @@
-Message-ID: <517F5126.5000509@ti.com>
-Date: Tue, 30 Apr 2013 10:35:42 +0530
-From: Sekhar Nori <nsekhar@ti.com>
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: RE: [PATCH V4 5/9] mtd: replace the hardcode with the onfi_feature()
+Date: Tue, 30 Apr 2013 10:04:25 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9BF544@DBDE04.ent.ti.com>
+References: <1366967337-5534-1-git-send-email-b32955@freescale.com>
+ <1366967337-5534-6-git-send-email-b32955@freescale.com>
+In-Reply-To: <1366967337-5534-6-git-send-email-b32955@freescale.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [v2, 3/3] ARM: dts: AM33XX: Add NAND flash device tree data to
- am335x-evm
-References: <ebfab3e9123b3e50b9a9678c1480191addd86d59.1359007746.git.avinashphilip@ti.com>
-In-Reply-To: <ebfab3e9123b3e50b9a9678c1480191addd86d59.1359007746.git.avinashphilip@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Cc: linux@arm.linux.org.uk, b-cousson@ti.com, tony@atomide.com,
- devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org,
- hvaibhav@ti.com, gururaja.hebbar@ti.com, zonque@gmail.com,
- linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
+Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,36 +24,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+> -	*busw =3D 0;
+> -	if (le16_to_cpu(p->features) & 1)
+> -		*busw =3D NAND_BUSWIDTH_16;
+> +
+> +	*busw =3D (onfi_feature(chip) & ONFI_FEATURE_16_BIT_BUS) ?
+> +			NAND_BUSWIDTH_16 : 0;
 
-On 4/29/2013 1:25 PM, Gupta, Pekon wrote:
-> From: avinash philip <avinashphilip@ti.com>
-> 
-> NAND flash connected in am335x-evm on GPMC controller. This patch adds
-> device tree node in am3355-evm with GPMC contoller timing for NAND flash
-> interface, NAND partition table, ECC scheme, elm handle id.
-> 
-> Signed-off-by: Philip Avinash <avinashphilip@ti.com>
-> Tested-by: Pekon Gupta <pekon@ti.com>
-> 
-> ---
-> arch/arm/boot/dts/am335x-evm.dts |   98 +++++++++++++++++++++++++++++++++++++-
->  1 file changed, 97 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/boot/dts/am335x-evm.dts b/arch/arm/boot/dts/am335x-evm.dts
-> index 0423298..1c2fd89 100644
-> --- a/arch/arm/boot/dts/am335x-evm.dts
-> +++ b/arch/arm/boot/dts/am335x-evm.dts
-> @@ -26,7 +26,8 @@
->  
->  	am33xx_pinmux: pinmux@44e10800 {
->  		pinctrl-names = "default";
-> -		pinctrl-0 = <&matrix_keypad_s0 &volume_keys_s0>;
-> +		pinctrl-0 = <&matrix_keypad_s0 &volume_keys_s0
-> +			&nandflash_pins_s0>;
+Is this really needed ? you have already checked the 'onfi_version' above i=
+n
+nand_flash_detect_onfi() ..
+	if (!chip->onfi_version) {
+		pr_info("%s: unsupported ONFI version: %d\n", __func__, val);
+		return 0;
+	}
 
-Why add this to the board level fallback (called pinctrl hogs, I think)?
-This can be part of nand node you added below so that the pinctrl will
-take effect when nand gets probed instead of all the time.
-
-Thanks,
-Sekhar
+with regards, pekon
