@@ -1,18 +1,16 @@
-Received: from mail-wi0-x233.google.com ([2a00:1450:400c:c05::233])
+Received: from mail-we0-x22f.google.com ([2a00:1450:400c:c03::22f])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UXtsK-0000NW-36
- for linux-mtd@lists.infradead.org; Thu, 02 May 2013 13:48:44 +0000
-Received: by mail-wi0-f179.google.com with SMTP id l13so602842wie.6
- for <linux-mtd@lists.infradead.org>; Thu, 02 May 2013 06:48:20 -0700 (PDT)
+ id 1UXv0S-0001qh-Gy
+ for linux-mtd@lists.infradead.org; Thu, 02 May 2013 15:01:13 +0000
+Received: by mail-we0-f175.google.com with SMTP id s43so555567wey.20
+ for <linux-mtd@lists.infradead.org>; Thu, 02 May 2013 08:00:50 -0700 (PDT)
 From: Laurent Navet <laurent.navet@gmail.com>
 To: dwmw2@infradead.org
-Subject: [PATCH V2] drivers: mtd: nand: davinci: use devm_ioremap_resource()
-Date: Thu,  2 May 2013 15:56:10 +0200
-Message-Id: <1367502970-28642-1-git-send-email-laurent.navet@gmail.com>
-Cc: mturquette@linaro.org, sshtylyov@ru.mvista.com,
- artem.bityutskiy@linux.intel.com, linux-kernel@vger.kernel.org,
- m-karicheri2@ti.com, linux-mtd@lists.infradead.org,
- Laurent Navet <laurent.navet@gmail.com>
+Subject: [PATCH] drivers: mtd: devices: elm: use devm_ioremap_resource()
+Date: Thu,  2 May 2013 17:09:05 +0200
+Message-Id: <1367507346-29382-1-git-send-email-laurent.navet@gmail.com>
+Cc: artem.bityutskiy@linux.intel.com, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Laurent Navet <laurent.navet@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,32 +27,25 @@ Found with coccicheck and this semantic patch:
 
 Signed-off-by: Laurent Navet <laurent.navet@gmail.com>
 ---
- drivers/mtd/nand/davinci_nand.c |   13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ drivers/mtd/devices/elm.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-index 94e17af..941f69a 100644
---- a/drivers/mtd/nand/davinci_nand.c
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -623,11 +623,14 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
- 		goto err_nomem;
+diff --git a/drivers/mtd/devices/elm.c b/drivers/mtd/devices/elm.c
+index 2ec5da9..2bafb06 100644
+--- a/drivers/mtd/devices/elm.c
++++ b/drivers/mtd/devices/elm.c
+@@ -344,9 +344,9 @@ static int elm_probe(struct platform_device *pdev)
+ 		return -ENODEV;
  	}
  
--	vaddr = devm_request_and_ioremap(&pdev->dev, res1);
--	base = devm_request_and_ioremap(&pdev->dev, res2);
--	if (!vaddr || !base) {
--		dev_err(&pdev->dev, "ioremap failed\n");
--		ret = -EADDRNOTAVAIL;
-+	vaddr = devm_ioremap_resource(&pdev->dev, res1);
-+	if (IS_ERR(vaddr)) {
-+		ret = PTR_ERR(vaddr);
-+		goto err_ioremap;
-+	}
-+	base = devm_ioremap_resource(&pdev->dev, res2);
-+	if (IS_ERR(base)) {
-+		ret = PTR_ERR(base);
- 		goto err_ioremap;
- 	}
+-	info->elm_base = devm_request_and_ioremap(&pdev->dev, res);
+-	if (!info->elm_base)
+-		return -EADDRNOTAVAIL;
++	info->elm_base = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(info->elm_base))
++		return PTR_ERR(info->elm_base);
  
+ 	ret = devm_request_irq(&pdev->dev, irq->start, elm_isr, 0,
+ 			pdev->name, info);
 -- 
 1.7.10.4
