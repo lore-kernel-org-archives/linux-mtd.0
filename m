@@ -1,31 +1,23 @@
-Received: from mail-vc0-f174.google.com ([209.85.220.174])
+Received: from mail-ve0-x229.google.com ([2607:f8b0:400c:c01::229])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UY0zY-0002V1-MZ
- for linux-mtd@lists.infradead.org; Thu, 02 May 2013 21:24:41 +0000
-Received: by mail-vc0-f174.google.com with SMTP id hf12so941596vcb.33
- for <linux-mtd@lists.infradead.org>; Thu, 02 May 2013 14:24:17 -0700 (PDT)
+ id 1UY36Y-0004LV-AQ
+ for linux-mtd@lists.infradead.org; Thu, 02 May 2013 23:40:04 +0000
+Received: by mail-ve0-f169.google.com with SMTP id jz10so1063593veb.14
+ for <linux-mtd@lists.infradead.org>; Thu, 02 May 2013 16:39:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <51820C2C.1080404@freescale.com>
+In-Reply-To: <1366967337-5534-5-git-send-email-b32955@freescale.com>
 References: <1366967337-5534-1-git-send-email-b32955@freescale.com>
- <1366967337-5534-6-git-send-email-b32955@freescale.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9BF544@DBDE04.ent.ti.com>
- <5181CC19.8000904@freescale.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9C09FC@DBDE04.ent.ti.com>
- <51820127.5060003@freescale.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9C0A2F@DBDE04.ent.ti.com>
- <51820C2C.1080404@freescale.com>
-Date: Thu, 2 May 2013 14:24:17 -0700
-Message-ID: <CAN8TOE9P5Op-GK6U10g2b5MGvUQOPAS=5wRY0Hx55riW7OGHiQ@mail.gmail.com>
-Subject: Re: [PATCH V4 5/9] mtd: replace the hardcode with the onfi_feature()
+ <1366967337-5534-5-git-send-email-b32955@freescale.com>
+Date: Thu, 2 May 2013 16:39:40 -0700
+Message-ID: <CAN8TOE8NnbDTvLPyi5=dciLmLBP2EfSpvYN1GLscy+L0roP6jw@mail.gmail.com>
+Subject: Re: [PATCH V4 4/9] mtd: get the ECC info from the Extended Parameter
+ Page
 From: Brian Norris <computersforpeace@gmail.com>
 To: Huang Shijie <b32955@freescale.com>
-Content-Type: text/plain; charset=GB2312
-Content-Transfer-Encoding: quoted-printable
-Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ linux-kernel@vger.kernel.org, "Gupta, Pekon" <pekon@ti.com>,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,35 +27,134 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 1, 2013 at 11:48 PM, Huang Shijie <b32955@freescale.com> wrote:
-> =D3=DA 2013=C4=EA05=D4=C202=C8=D5 14:17, Gupta, Pekon =D0=B4=B5=C0:
->
->> [Pekon]: onfi_feature() is actually not useful unless someone re-scans t=
-he
->
-> I do not think so. :)
->
-> I think the onfi_feature() is useful in the future.
-> I only add the two feauture for this helper:
->   [1] 16-bit and
->   [2] extended parameter page
->
-> But in actually, we may add more feature to this helper, such as
-> _synchronous_.
-> For example, some driver may support the synchronous mode for the ONFI na=
-nd.
-> We can use this onfi_feature() in the driver to check if the onfi nand
-> supports this
-> synchronous feature.
->
-> Add this helper makes the code more readable, though we introduce a littl=
-e
-> redandancy.
+Hi Huang,
 
-I agree with the thoughts here. Readability and reusability are
-improved a bit by including the ONFI version check.
+On Fri, Apr 26, 2013 at 2:08 AM, Huang Shijie <b32955@freescale.com> wrote:
+> Since the ONFI 2.1, the onfi spec adds the Extended Parameter Page
+> to store the ECC info.
+>
+> The onfi spec tells us that if the nand chip's recommended ECC codeword
+> size is not 512 bytes, then the @ecc_bits is 0xff. The host _SHOULD_ then
+> read the Extended ECC information that is part of the extended parameter
+> page to retrieve the ECC requirements for this device.
+>
+> This patch implement the reading of the Extended Parameter Page, and parses
+> the sections for ECC type, and get the ECC info from the ECC section.
+>
+> Tested this patch with Micron MT29F64G08CBABAWP.
+>
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
+> ---
+>  drivers/mtd/nand/nand_base.c |   77 ++++++++++++++++++++++++++++++++++++++++++
+>  1 files changed, 77 insertions(+), 0 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index beff911..abec615 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -2846,6 +2846,68 @@ static u16 onfi_crc16(u16 crc, u8 const *p, size_t len)
+>         return crc;
+>  }
+>
+> +/* Parse the Extended Parameter Page. */
+> +static int nand_flash_detect_ext_param_page(struct mtd_info *mtd,
+> +               struct nand_chip *chip, struct nand_onfi_params *p)
+> +{
+> +       struct onfi_ext_param_page *ep;
+> +       struct onfi_ext_section *s;
+> +       struct onfi_ext_ecc_info *ecc;
+> +       uint8_t *cursor;
+> +       int len;
+> +       int ret;
+> +       int i;
+> +
+> +       len = le16_to_cpu(p->ext_param_page_length) * 16;
+> +       ep = kmalloc(len, GFP_KERNEL);
+> +       if (!ep) {
+> +               ret = -ENOMEM;
+> +               goto ext_out;
+> +       }
+> +
+> +       /* Send our own NAND_CMD_PARAM. */
+> +       chip->cmdfunc(mtd, NAND_CMD_PARAM, 0, -1);
+> +
+> +       /* Use the Change Read Column command to skip the ONFI param pages. */
+> +       chip->cmdfunc(mtd, NAND_CMD_RNDOUT,
+> +                       sizeof(*p) * p->num_of_param_pages , -1);
+> +
+> +       /* Read out the Extended Parameter Page. */
+> +       chip->read_buf(mtd, (uint8_t *)ep, len);
+> +       if ((onfi_crc16(ONFI_CRC_BASE, ((uint8_t *)ep) + 2, len - 2)
+> +               != le16_to_cpu(ep->crc)) || strncmp(ep->sig, "EPPS", 4)) {
+> +               pr_debug("fail in the CRC.\n");
+> +               ret = -EINVAL;
+> +               goto ext_out;
+> +       }
+> +
+> +       /* find the ECC section. */
+> +       cursor = (uint8_t *)(ep + 1);
+> +       for (i = 0; i < ONFI_EXT_SECTION_MAX; i++) {
+> +               s = ep->sections + i;
+> +               if (s->type == ONFI_SECTION_TYPE_2)
+> +                       break;
+> +               cursor += s->length * 16;
+> +       }
+> +       if (i == ONFI_EXT_SECTION_MAX) {
+> +               pr_debug("We can not find the ECC section.\n");
+> +               ret = -EINVAL;
+> +               goto ext_out;
+> +       }
+> +
+> +       /* get the info we want. */
+> +       ecc = (struct onfi_ext_ecc_info *)cursor;
+> +       chip->ecc_strength = ecc->ecc_bits;
+> +       chip->ecc_size = 1 << ecc->codeword_size;
+> +
+> +       pr_info("ONFI extended param page detected.\n");
+> +       return 0;
+> +
+> +ext_out:
+> +       kfree(ep);
+> +       return ret;
+> +}
+> +
+>  /*
+>   * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0 otherwise.
+>   */
+> @@ -2914,6 +2976,21 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+>         if (p->ecc_bits != 0xff) {
+>                 chip->ecc_strength = p->ecc_bits;
+>                 chip->ecc_size = 512;
+> +       } else if (chip->onfi_version >= 21 &&
+> +               (onfi_feature(chip) & ONFI_FEATURE_EXT_PARAM_PAGE)) {
+> +
+> +               /*
+> +                * The nand_flash_detect_ext_param_page() uses the
+> +                * Change Read Column command which maybe not supported
+> +                * by the chip->cmdfunc. So try to update the chip->cmdfunc
+> +                * now. We do not replace user supplied command function.
+> +                */
+> +               if (mtd->writesize > 512 && chip->cmdfunc == nand_command)
+> +                       chip->cmdfunc = nand_command_lp;
 
-(BTW, I haven't forgotten this series. I had some distractions here. I
-will fully test and provide my Reviewed-by/Tested-by eventually...)
+I don't think we want to assign chip->cmdfunc within the 'detect_onfi'
+function. We already have several places from which the default
+functions may be assigned. Rather, we should only code the above
+statement *once* (where it already is, in nand_get_flash_type()) and
+only run the extended parameter page function after that point.
+
+If that's too cumbersome, then maybe it's fine as-is. Or I'll take a
+crack at rewriting it myself.
+
+> +               /* The Extended Parameter Page is supported since ONFI 2.1. */
+> +               if (nand_flash_detect_ext_param_page(mtd, chip, p))
+> +                       pr_info("Failed to detect the extended param page.\n");
+>         }
+>
+>         pr_info("ONFI flash detected\n");
+> --
+> 1.7.1
+>
+>
 
 Brian
