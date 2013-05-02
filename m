@@ -1,23 +1,13 @@
-Received: from co9ehsobe002.messaging.microsoft.com ([207.46.163.25]
- helo=co9outboundpool.messaging.microsoft.com)
+Received: from smtp.gentoo.org ([140.211.166.183])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UXjR9-0008Tw-FT
- for linux-mtd@lists.infradead.org; Thu, 02 May 2013 02:39:59 +0000
-Message-ID: <5181D25C.2080001@freescale.com>
-Date: Thu, 2 May 2013 10:41:32 +0800
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: David Mosberger-Tang <dmosberger@gmail.com>
-Subject: Re: nand_base: fix for ONFI chips that do not support GET/SET FEATURES
-References: <CACwUX0NbKtBCFrjKBFd307D6=EbBZQbE4w25GSAzop0FsBM2LQ@mail.gmail.com>	<5181CF32.1090502@freescale.com>
- <CACwUX0M_CGStWih0qcR_8na-yMmvHrAaHxpYe4Y_Q5mx+jno+g@mail.gmail.com>
-In-Reply-To: <CACwUX0M_CGStWih0qcR_8na-yMmvHrAaHxpYe4Y_Q5mx+jno+g@mail.gmail.com>
-Content-Type: text/plain; charset="GB2312"
-Content-Transfer-Encoding: quoted-printable
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <David.Woodhouse@intel.com>
+ id 1UXkQF-0000bb-Ce
+ for linux-mtd@lists.infradead.org; Thu, 02 May 2013 03:43:07 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+To: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>
+Subject: [PATCH] UBI: document UBI_IOCVOLUP better in user header
+Date: Wed,  1 May 2013 23:42:47 -0400
+Message-Id: <1367466167-13087-1-git-send-email-vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,14 +17,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=D3=DA 2013=C4=EA05=D4=C202=C8=D5 10:34, David Mosberger-Tang =D0=B4=B5=C0=
-:
-> +	    !(le16_to_cpu(chip->onfi_params.opt_cmd) & 4))
-it's better to add a macro to replace the hardcore '4', such as
+The current ioctl define implies that this func expects to be passed a
+64bit number directly rather than a pointer to a 64bit.  The code that
+processes this ioctl shows that it clearly expects a pointer.
 
-#define ONFI_OPT_CMD_SET_GET_FEAT (1 << 2)
+It'd be best if we could change the type to "__s64*", but that would
+change the generated ioctl number thus breaking the userland ABI.  So
+just add a comment for intrepid developers.
 
-Just a suggestion. :)
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+---
+ include/uapi/mtd/ubi-user.h | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-thanks
-Huang Shijie
+diff --git a/include/uapi/mtd/ubi-user.h b/include/uapi/mtd/ubi-user.h
+index 53cae1e..723c324 100644
+--- a/include/uapi/mtd/ubi-user.h
++++ b/include/uapi/mtd/ubi-user.h
+@@ -173,7 +173,10 @@
+ 
+ #define UBI_VOL_IOC_MAGIC 'O'
+ 
+-/* Start UBI volume update */
++/* Start UBI volume update
++ * Note: This actually takes a pointer (__s64*), but we can't change
++ *       that without breaking the ABI on 32bit systems
++ */
+ #define UBI_IOCVOLUP _IOW(UBI_VOL_IOC_MAGIC, 0, __s64)
+ /* LEB erasure command, used for debugging, disabled by default */
+ #define UBI_IOCEBER _IOW(UBI_VOL_IOC_MAGIC, 1, __s32)
+-- 
+1.8.2.1
