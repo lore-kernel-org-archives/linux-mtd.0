@@ -1,13 +1,13 @@
 From: "Gupta, Pekon" <pekon@ti.com>
 To: Huang Shijie <b32955@freescale.com>, "dwmw2@infradead.org"
  <dwmw2@infradead.org>
-Subject: RE: [PATCH V4 2/9] mtd: add data structures for Extended Parameter
- Page
-Date: Thu, 2 May 2013 07:42:58 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9C0A84@DBDE04.ent.ti.com>
+Subject: RE: [PATCH V4 4/9] mtd: get the ECC info from the Extended
+ Parameter Page
+Date: Thu, 2 May 2013 07:43:29 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9C0A90@DBDE04.ent.ti.com>
 References: <1366967337-5534-1-git-send-email-b32955@freescale.com>
- <1366967337-5534-3-git-send-email-b32955@freescale.com>
-In-Reply-To: <1366967337-5534-3-git-send-email-b32955@freescale.com>
+ <1366967337-5534-5-git-send-email-b32955@freescale.com>
+In-Reply-To: <1366967337-5534-5-git-send-email-b32955@freescale.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -35,12 +35,11 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 > parameter
 > page to retrieve the ECC requirements for this device.
 >=20
-> This patch adds
->     [1] the neccessary fields for nand_onfi_params{},
->     [2] and adds the onfi_ext_ecc_info{} for Extended ECC information,
->     [3] adds onfi_ext_section{} for extended sections,
->     [4] and adds onfi_ext_param_page{} for the Extended Parameter
-> Page.
+> This patch implement the reading of the Extended Parameter Page, and
+> parses
+> the sections for ECC type, and get the ECC info from the ECC section.
+>=20
+> Tested this patch with Micron MT29F64G08CBABAWP.
 >=20
 > Signed-off-by: Huang Shijie <b32955@freescale.com>
 
