@@ -1,22 +1,19 @@
-Received: from ch1ehsobe002.messaging.microsoft.com ([216.32.181.182]
- helo=ch1outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UXmYM-0001Xz-3U
- for linux-mtd@lists.infradead.org; Thu, 02 May 2013 05:59:39 +0000
-Message-ID: <51820127.5060003@freescale.com>
-Date: Thu, 2 May 2013 14:01:11 +0800
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [PATCH V4 5/9] mtd: replace the hardcode with the onfi_feature()
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: RE: [PATCH V4 5/9] mtd: replace the hardcode with the onfi_feature()
+Date: Thu, 2 May 2013 06:17:27 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9C0A2F@DBDE04.ent.ti.com>
 References: <1366967337-5534-1-git-send-email-b32955@freescale.com>
  <1366967337-5534-6-git-send-email-b32955@freescale.com>
  <20980858CB6D3A4BAE95CA194937D5E73E9BF544@DBDE04.ent.ti.com>
  <5181CC19.8000904@freescale.com>
  <20980858CB6D3A4BAE95CA194937D5E73E9C09FC@DBDE04.ent.ti.com>
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9C09FC@DBDE04.ent.ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
+ <51820127.5060003@freescale.com>
+In-Reply-To: <51820127.5060003@freescale.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
  "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
@@ -31,45 +28,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B405=E6=9C=8802=E6=97=A5 13:42, Gupta, Pekon =E5=86=99=
-=E9=81=93:
->>>> -	*busw =3D 0;
->>>> -	if (le16_to_cpu(p->features)&   1)
->>>> -		*busw =3D NAND_BUSWIDTH_16;
->>>> +
->>>> +	*busw =3D (onfi_feature(chip)&   ONFI_FEATURE_16_BIT_BUS) ?
->>>> +			NAND_BUSWIDTH_16 : 0;
->>> Is this really needed ? you have already checked the 'onfi_version'
->> above in
->>> nand_flash_detect_onfi() ..
->>> 	if (!chip->onfi_version) {
->>> 		pr_info("%s: unsupported ONFI version: %d\n",
->> __func__, val);
->>> 		return 0;
->>> 	}
->>>
->>>
->> I think checking the onfi_version has no relationship with this patch.=
- :)
->> This patch is just replace the hardcode for 16-bit onfi nand check.
->>
-> [Pekon]: [Patch 3/9]: add a helper to get the supported features
-> I mean, do you really need this helper function ?
-> +static inline int onfi_feature(struct nand_chip *chip)
-> +{
-> +       return chip->onfi_version ? le16_to_cpu(chip->onfi_params.featu=
-res) : 0;
-> + }
->
-> Following change should have been enough..
-> *busw =3D (le16_to_cpu(p->features)&   ONFI_FEATURE_16_BIT_BUS) ?
-> 			NAND_BUSWIDTH_16 : 0;
-yes. for this function, it's enough.
-
-But we may use the onfi_feature() in other places, such as some drivers. =
-That's reason why i added this helper.
-
-
-
-thanks
-Huang Shijie
+PiDkuo4gMjAxM+W5tDA15pyIMDLml6UgMTM6NDIsIEd1cHRhLCBQZWtvbiDlhpnpgZM6DQo+ID4+
+Pj4gLQkqYnVzdyA9IDA7DQo+ID4+Pj4gLQlpZiAobGUxNl90b19jcHUocC0+ZmVhdHVyZXMpJiAg
+IDEpDQo+ID4+Pj4gLQkJKmJ1c3cgPSBOQU5EX0JVU1dJRFRIXzE2Ow0KPiA+Pj4+ICsNCj4gPj4+
+PiArCSpidXN3ID0gKG9uZmlfZmVhdHVyZShjaGlwKSYgICBPTkZJX0ZFQVRVUkVfMTZfQklUX0JV
+UykgPw0KPiA+Pj4+ICsJCQlOQU5EX0JVU1dJRFRIXzE2IDogMDsNCj4gPj4+IElzIHRoaXMgcmVh
+bGx5IG5lZWRlZCA/IHlvdSBoYXZlIGFscmVhZHkgY2hlY2tlZCB0aGUgJ29uZmlfdmVyc2lvbicN
+Cj4gPj4gYWJvdmUgaW4NCj4gPj4+IG5hbmRfZmxhc2hfZGV0ZWN0X29uZmkoKSAuLg0KPiA+Pj4g
+CWlmICghY2hpcC0+b25maV92ZXJzaW9uKSB7DQo+ID4+PiAJCXByX2luZm8oIiVzOiB1bnN1cHBv
+cnRlZCBPTkZJIHZlcnNpb246ICVkXG4iLA0KPiA+PiBfX2Z1bmNfXywgdmFsKTsNCj4gPj4+IAkJ
+cmV0dXJuIDA7DQo+ID4+PiAJfQ0KPiA+Pj4NCj4gPj4+DQo+ID4+IEkgdGhpbmsgY2hlY2tpbmcg
+dGhlIG9uZmlfdmVyc2lvbiBoYXMgbm8gcmVsYXRpb25zaGlwIHdpdGggdGhpcyBwYXRjaC4gOikN
+Cj4gPj4gVGhpcyBwYXRjaCBpcyBqdXN0IHJlcGxhY2UgdGhlIGhhcmRjb2RlIGZvciAxNi1iaXQg
+b25maSBuYW5kIGNoZWNrLg0KPiA+Pg0KPiA+IFtQZWtvbl06IFtQYXRjaCAzLzldOiBhZGQgYSBo
+ZWxwZXIgdG8gZ2V0IHRoZSBzdXBwb3J0ZWQgZmVhdHVyZXMNCj4gPiBJIG1lYW4sIGRvIHlvdSBy
+ZWFsbHkgbmVlZCB0aGlzIGhlbHBlciBmdW5jdGlvbiA/DQo+ID4gK3N0YXRpYyBpbmxpbmUgaW50
+IG9uZmlfZmVhdHVyZShzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwKQ0KPiA+ICt7DQo+ID4gKyAgICAg
+ICByZXR1cm4gY2hpcC0+b25maV92ZXJzaW9uID8gbGUxNl90b19jcHUoY2hpcC0NCj4gPm9uZmlf
+cGFyYW1zLmZlYXR1cmVzKSA6IDA7DQo+ID4gKyB9DQo+ID4NCj4gPiBGb2xsb3dpbmcgY2hhbmdl
+IHNob3VsZCBoYXZlIGJlZW4gZW5vdWdoLi4NCj4gPiAqYnVzdyA9IChsZTE2X3RvX2NwdShwLT5m
+ZWF0dXJlcykmICAgT05GSV9GRUFUVVJFXzE2X0JJVF9CVVMpID8NCj4gPiAJCQlOQU5EX0JVU1dJ
+RFRIXzE2IDogMDsNCj4geWVzLiBmb3IgdGhpcyBmdW5jdGlvbiwgaXQncyBlbm91Z2guDQo+IA0K
+PiBCdXQgd2UgbWF5IHVzZSB0aGUgb25maV9mZWF0dXJlKCkgaW4gb3RoZXIgcGxhY2VzLCBzdWNo
+IGFzIHNvbWUgZHJpdmVycy4NCj4gVGhhdCdzIHJlYXNvbiB3aHkgaSBhZGRlZCB0aGlzIGhlbHBl
+ci4NCj4gDQpbUGVrb25dOiBvbmZpX2ZlYXR1cmUoKSBpcyBhY3R1YWxseSBub3QgdXNlZnVsIHVu
+bGVzcyBzb21lb25lIHJlLXNjYW5zIHRoZQ0KcGFyYW0gcGFnZSBhZ2Fpbi4gQW5kIG9uY2UgdGhl
+IGRldmljZSBpcyBwcm9iZWQgZm9sbG93aW5nIHNob3VsZA0KYmUgdXNlZCB0byBjaGVjayBpZiBp
+dOKAmXMgYSB4MTYgZGV2aWNlLg0KSWYgKGNoaXAtPm9wdGlvbnMgJiBOQU5EX0JVU1dJRFRIXzE2
+KSANCk15IHZpZXctcG9pbnQgd2FzIHRoYXQgdGhlIGNvZGUgc2hvdWxkIGhhdmUgbGVzcyByZWR1
+bmRhbmN5IDotKQ0KDQpBbnl3YXlzLCBUaGFua3MgZm9yIHlvdXIgb3RoZXIgcGF0Y2ggZm9yIHJl
+YWRpbmcgZXh0ZW5kZWRfcGFyYW1fcGFnZS4NCkkgdG9vIHdhbnRlZCB0aGF0IGVjYy5jb2Rld29y
+ZCBhbmQgZWNjLnN0cmVuZ3RoIHNob3VsZCBjb21lIGZyb20gDQpkZXZpY2UncyBwYXJhbWV0ZXJz
+LiBJJ2xsIGFjayB0aGVtIG9uY2UsIEkgdGVzdCB1c2luZyBteSBkcml2ZXIuDQoNCg0Kd2l0aCBy
+ZWdhcmRzLCBwZWtvbg0K
