@@ -1,17 +1,22 @@
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: RE: [PATCH V4 5/9] mtd: replace the hardcode with the onfi_feature()
-Date: Thu, 2 May 2013 05:42:19 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9C09FC@DBDE04.ent.ti.com>
+Received: from ch1ehsobe002.messaging.microsoft.com ([216.32.181.182]
+ helo=ch1outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UXmYM-0001Xz-3U
+ for linux-mtd@lists.infradead.org; Thu, 02 May 2013 05:59:39 +0000
+Message-ID: <51820127.5060003@freescale.com>
+Date: Thu, 2 May 2013 14:01:11 +0800
+From: Huang Shijie <b32955@freescale.com>
+MIME-Version: 1.0
+To: "Gupta, Pekon" <pekon@ti.com>
+Subject: Re: [PATCH V4 5/9] mtd: replace the hardcode with the onfi_feature()
 References: <1366967337-5534-1-git-send-email-b32955@freescale.com>
  <1366967337-5534-6-git-send-email-b32955@freescale.com>
  <20980858CB6D3A4BAE95CA194937D5E73E9BF544@DBDE04.ent.ti.com>
  <5181CC19.8000904@freescale.com>
-In-Reply-To: <5181CC19.8000904@freescale.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+ <20980858CB6D3A4BAE95CA194937D5E73E9C09FC@DBDE04.ent.ti.com>
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9C09FC@DBDE04.ent.ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
  "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
@@ -26,22 +31,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiA+PiAtCSpidXN3ID0gMDsNCj4gPj4gLQlpZiAobGUxNl90b19jcHUocC0+ZmVhdHVyZXMpJiAg
-MSkNCj4gPj4gLQkJKmJ1c3cgPSBOQU5EX0JVU1dJRFRIXzE2Ow0KPiA+PiArDQo+ID4+ICsJKmJ1
-c3cgPSAob25maV9mZWF0dXJlKGNoaXApJiAgT05GSV9GRUFUVVJFXzE2X0JJVF9CVVMpID8NCj4g
-Pj4gKwkJCU5BTkRfQlVTV0lEVEhfMTYgOiAwOw0KPiA+IElzIHRoaXMgcmVhbGx5IG5lZWRlZCA/
-IHlvdSBoYXZlIGFscmVhZHkgY2hlY2tlZCB0aGUgJ29uZmlfdmVyc2lvbicNCj4gYWJvdmUgaW4N
-Cj4gPiBuYW5kX2ZsYXNoX2RldGVjdF9vbmZpKCkgLi4NCj4gPiAJaWYgKCFjaGlwLT5vbmZpX3Zl
-cnNpb24pIHsNCj4gPiAJCXByX2luZm8oIiVzOiB1bnN1cHBvcnRlZCBPTkZJIHZlcnNpb246ICVk
-XG4iLA0KPiBfX2Z1bmNfXywgdmFsKTsNCj4gPiAJCXJldHVybiAwOw0KPiA+IAl9DQo+ID4NCj4g
-Pg0KPiBJIHRoaW5rIGNoZWNraW5nIHRoZSBvbmZpX3ZlcnNpb24gaGFzIG5vIHJlbGF0aW9uc2hp
-cCB3aXRoIHRoaXMgcGF0Y2guIDopDQo+IFRoaXMgcGF0Y2ggaXMganVzdCByZXBsYWNlIHRoZSBo
-YXJkY29kZSBmb3IgMTYtYml0IG9uZmkgbmFuZCBjaGVjay4NCj4NCg0KW1Bla29uXTogW1BhdGNo
-IDMvOV06IGFkZCBhIGhlbHBlciB0byBnZXQgdGhlIHN1cHBvcnRlZCBmZWF0dXJlcw0KSSBtZWFu
-LCBkbyB5b3UgcmVhbGx5IG5lZWQgdGhpcyBoZWxwZXIgZnVuY3Rpb24gPw0KK3N0YXRpYyBpbmxp
-bmUgaW50IG9uZmlfZmVhdHVyZShzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwKQ0KK3sNCisgICAgICAg
-cmV0dXJuIGNoaXAtPm9uZmlfdmVyc2lvbiA/IGxlMTZfdG9fY3B1KGNoaXAtPm9uZmlfcGFyYW1z
-LmZlYXR1cmVzKSA6IDA7DQorIH0NCg0KRm9sbG93aW5nIGNoYW5nZSBzaG91bGQgaGF2ZSBiZWVu
-IGVub3VnaC4uDQoqYnVzdyA9IChsZTE2X3RvX2NwdShwLT5mZWF0dXJlcykgJiAgT05GSV9GRUFU
-VVJFXzE2X0JJVF9CVVMpID8NCgkJCU5BTkRfQlVTV0lEVEhfMTYgOiAwOw0KDQoNCndpdGggcmVn
-YXJkcywgcGVrb24NCg==
+=E4=BA=8E 2013=E5=B9=B405=E6=9C=8802=E6=97=A5 13:42, Gupta, Pekon =E5=86=99=
+=E9=81=93:
+>>>> -	*busw =3D 0;
+>>>> -	if (le16_to_cpu(p->features)&   1)
+>>>> -		*busw =3D NAND_BUSWIDTH_16;
+>>>> +
+>>>> +	*busw =3D (onfi_feature(chip)&   ONFI_FEATURE_16_BIT_BUS) ?
+>>>> +			NAND_BUSWIDTH_16 : 0;
+>>> Is this really needed ? you have already checked the 'onfi_version'
+>> above in
+>>> nand_flash_detect_onfi() ..
+>>> 	if (!chip->onfi_version) {
+>>> 		pr_info("%s: unsupported ONFI version: %d\n",
+>> __func__, val);
+>>> 		return 0;
+>>> 	}
+>>>
+>>>
+>> I think checking the onfi_version has no relationship with this patch.=
+ :)
+>> This patch is just replace the hardcode for 16-bit onfi nand check.
+>>
+> [Pekon]: [Patch 3/9]: add a helper to get the supported features
+> I mean, do you really need this helper function ?
+> +static inline int onfi_feature(struct nand_chip *chip)
+> +{
+> +       return chip->onfi_version ? le16_to_cpu(chip->onfi_params.featu=
+res) : 0;
+> + }
+>
+> Following change should have been enough..
+> *busw =3D (le16_to_cpu(p->features)&   ONFI_FEATURE_16_BIT_BUS) ?
+> 			NAND_BUSWIDTH_16 : 0;
+yes. for this function, it's enough.
+
+But we may use the onfi_feature() in other places, such as some drivers. =
+That's reason why i added this helper.
+
+
+
+thanks
+Huang Shijie
