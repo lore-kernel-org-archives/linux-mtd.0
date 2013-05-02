@@ -1,15 +1,21 @@
-Received: from smtp.gentoo.org ([140.211.166.183])
+Received: from mail-we0-x22e.google.com ([2a00:1450:400c:c03::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UXwS3-0004Iu-Hg
- for linux-mtd@lists.infradead.org; Thu, 02 May 2013 16:33:48 +0000
-Received: from localhost.localdomain (localhost [127.0.0.1])
- by smtp.gentoo.org (Postfix) with ESMTP id 30CD333DE0C
- for <linux-mtd@lists.infradead.org>; Thu,  2 May 2013 16:33:23 +0000 (UTC)
-From: Mike Frysinger <vapier@gentoo.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] flash_erase: use pwrite() rather than lseek() && write()
-Date: Thu,  2 May 2013 12:33:21 -0400
-Message-Id: <1367512401-14689-1-git-send-email-vapier@gentoo.org>
+ id 1UXyus-00005N-G5
+ for linux-mtd@lists.infradead.org; Thu, 02 May 2013 19:11:43 +0000
+Received: by mail-we0-f174.google.com with SMTP id z2so753794wey.19
+ for <linux-mtd@lists.infradead.org>; Thu, 02 May 2013 12:11:03 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1367453444-12988-1-git-send-email-bapper@gmail.com>
+References: <1367453444-12988-1-git-send-email-bapper@gmail.com>
+Date: Thu, 2 May 2013 21:11:03 +0200
+Message-ID: <CAFLxGvyt3G9gtKMvCECKUXoKA0t7JEg8-+aKywPoNrbeFW=edA@mail.gmail.com>
+Subject: Re: [PATCH] UBI: fastmap break out of used PEB search
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
+To: Brian Pomerantz <bapper@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Richard Weinberger <richard@nod.at>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,29 +25,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Saves a syscall.
+On Thu, May 2, 2013 at 2:10 AM, Brian Pomerantz <bapper@gmail.com> wrote:
+> While searching for PEB matches for each volume in the used PEB list,
+> the search fails to stop when the PEB is found.  This patch adds
+> a break in the inner loop to stop the search when it is matched.
+>
+> Signed-off-by: Brian Pomerantz <bapper@gmail.com>
+> ---
+>  drivers/mtd/ubi/fastmap.c |    4 +++-
+>  1 files changed, 3 insertions(+), 1 deletions(-)
+>
+> diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+> index 0648c69..1542751 100644
+> --- a/drivers/mtd/ubi/fastmap.c
+> +++ b/drivers/mtd/ubi/fastmap.c
+> @@ -727,8 +727,10 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
+>
+>                         aeb = NULL;
+>                         list_for_each_entry(tmp_aeb, &used, u.list) {
+> -                               if (tmp_aeb->pnum == pnum)
+> +                               if (tmp_aeb->pnum == pnum) {
+>                                         aeb = tmp_aeb;
+> +                                       break;
+> +                               }
+>                         }
+>
+>                         /* This can happen if a PEB is already in an EBA known
+> --
+> 1.7.0.1
 
-Signed-off-by: Mike Frysinger <vapier@gentoo.org>
----
- flash_erase.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+Acked-by: Richard Weinberger <richard@nod.at>
 
-diff --git a/flash_erase.c b/flash_erase.c
-index 326a299..1421cf9 100644
---- a/flash_erase.c
-+++ b/flash_erase.c
-@@ -277,11 +277,7 @@ int main(int argc, char *argv[])
- 				continue;
- 			}
- 		} else {
--			if (lseek(fd, offset, SEEK_SET) < 0) {
--				sys_errmsg("%s: MTD lseek failure", mtd_device);
--				continue;
--			}
--			if (write(fd, &cleanmarker, sizeof(cleanmarker)) != sizeof(cleanmarker)) {
-+			if (pwrite(fd, &cleanmarker, sizeof(cleanmarker), (loff_t)offset) != sizeof(cleanmarker)) {
- 				sys_errmsg("%s: MTD write failure", mtd_device);
- 				continue;
- 			}
--- 
-1.8.2.1
+--
+Thanks,
+//richard
