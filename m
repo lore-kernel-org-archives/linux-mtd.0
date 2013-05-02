@@ -1,21 +1,22 @@
-Received: from mail-qe0-f51.google.com ([209.85.128.51])
+Received: from mail-qe0-f44.google.com ([209.85.128.44])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UXkTJ-0000dv-9u
- for linux-mtd@lists.infradead.org; Thu, 02 May 2013 03:46:18 +0000
-Received: by mail-qe0-f51.google.com with SMTP id x7so107384qeu.24
- for <linux-mtd@lists.infradead.org>; Wed, 01 May 2013 20:45:55 -0700 (PDT)
+ id 1UXkWL-0000ev-Vt
+ for linux-mtd@lists.infradead.org; Thu, 02 May 2013 03:49:26 +0000
+Received: by mail-qe0-f44.google.com with SMTP id s14so109698qeb.3
+ for <linux-mtd@lists.infradead.org>; Wed, 01 May 2013 20:49:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <5181D25C.2080001@freescale.com>
+In-Reply-To: <CACwUX0ObapqNuV=D_8nMT6Pbr-PQhkC=ZfuVMWEOtGUcyzt8tg@mail.gmail.com>
 References: <CACwUX0NbKtBCFrjKBFd307D6=EbBZQbE4w25GSAzop0FsBM2LQ@mail.gmail.com>
  <5181CF32.1090502@freescale.com>
  <CACwUX0M_CGStWih0qcR_8na-yMmvHrAaHxpYe4Y_Q5mx+jno+g@mail.gmail.com>
  <5181D25C.2080001@freescale.com>
-Date: Wed, 1 May 2013 21:45:55 -0600
-Message-ID: <CACwUX0ObapqNuV=D_8nMT6Pbr-PQhkC=ZfuVMWEOtGUcyzt8tg@mail.gmail.com>
+ <CACwUX0ObapqNuV=D_8nMT6Pbr-PQhkC=ZfuVMWEOtGUcyzt8tg@mail.gmail.com>
+Date: Wed, 1 May 2013 21:49:03 -0600
+Message-ID: <CACwUX0N5dhEBU9S_g6ZUWjvoEWndU7L+4PrmiFRg5sZjmCG0DQ@mail.gmail.com>
 Subject: Re: nand_base: fix for ONFI chips that do not support GET/SET FEATURES
 From: David Mosberger-Tang <dmosberger@gmail.com>
 To: Huang Shijie <b32955@freescale.com>
-Content-Type: multipart/mixed; boundary=20cf3074d2d86271a504dbb4120d
+Content-Type: multipart/mixed; boundary=20cf3074d9ac96213604dbb41d65
 Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
  Brian Norris <computersforpeace@gmail.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
@@ -29,59 +30,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---20cf3074d2d86271a504dbb4120d
+--20cf3074d9ac96213604dbb41d65
 Content-Type: text/plain; charset=GB2312
 Content-Transfer-Encoding: quoted-printable
 
-Fine by me.
+Sorry, try this one instead.
 
   --david
 
-
-On Wed, May 1, 2013 at 8:41 PM, Huang Shijie <b32955@freescale.com> wrote:
-> =D3=DA 2013=C4=EA05=D4=C202=C8=D5 10:34, David Mosberger-Tang =D0=B4=B5=
+On Wed, May 1, 2013 at 9:45 PM, David Mosberger-Tang
+<dmosberger@gmail.com> wrote:
+> Fine by me.
+>
+>   --david
+>
+>
+> On Wed, May 1, 2013 at 8:41 PM, Huang Shijie <b32955@freescale.com> wrote=
+:
+>> =D3=DA 2013=C4=EA05=D4=C202=C8=D5 10:34, David Mosberger-Tang =D0=B4=B5=
 =C0:
->> +         !(le16_to_cpu(chip->onfi_params.opt_cmd) & 4))
-> it's better to add a macro to replace the hardcore '4', such as
->
-> #define ONFI_OPT_CMD_SET_GET_FEAT (1 << 2)
->
-> Just a suggestion. :)
->
-> thanks
-> Huang Shijie
->
+>>> +         !(le16_to_cpu(chip->onfi_params.opt_cmd) & 4))
+>> it's better to add a macro to replace the hardcore '4', such as
+>>
+>> #define ONFI_OPT_CMD_SET_GET_FEAT (1 << 2)
+>>
+>> Just a suggestion. :)
+>>
+>> thanks
+>> Huang Shijie
+>>
 
---20cf3074d2d86271a504dbb4120d
+--20cf3074d9ac96213604dbb41d65
 Content-Type: text/plain; charset=US-ASCII; name="nand_base-features-fix-v2.diff.txt"
 Content-Disposition: attachment;
 	filename="nand_base-features-fix-v2.diff.txt"
 Content-Transfer-Encoding: base64
-X-Attachment-Id: f_hg7e5qxi0
+X-Attachment-Id: f_hg7e9rup1
 
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvbmFuZF9iYXNlLmMgYi9kcml2ZXJzL210ZC9u
-YW5kL25hbmRfYmFzZS5jCmluZGV4IGRmY2QwYTUuLmRiMzEzNTcgMTAwNjQ0Ci0tLSBhL2RyaXZl
-cnMvbXRkL25hbmQvbmFuZF9iYXNlLmMKKysrIGIvZHJpdmVycy9tdGQvbmFuZC9uYW5kX2Jhc2Uu
-YwpAQCAtMjcyMCw3ICsyNzIwLDggQEAgc3RhdGljIGludCBuYW5kX29uZmlfc2V0X2ZlYXR1cmVz
-KHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLAogewogCWludCBz
-dGF0dXM7CiAKLQlpZiAoIWNoaXAtPm9uZmlfdmVyc2lvbikKKwlpZiAoIWNoaXAtPm9uZmlfdmVy
-c2lvbiB8fAorCSAgICAhKGxlMTZfdG9fY3B1KGNoaXAtPm9uZmlfcGFyYW1zLm9wdF9jbWQpICYg
-T05GSV9PUFRfQ01EX1NFVF9HRVRfRkVBVFVSRVMpKQogCQlyZXR1cm4gLUVJTlZBTDsKIAogCWNo
-aXAtPmNtZGZ1bmMobXRkLCBOQU5EX0NNRF9TRVRfRkVBVFVSRVMsIGFkZHIsIC0xKTsKQEAgLTI3
-NDEsNyArMjc0Miw4IEBAIHN0YXRpYyBpbnQgbmFuZF9vbmZpX3NldF9mZWF0dXJlcyhzdHJ1Y3Qg
-bXRkX2luZm8gKm10ZCwgc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwKIHN0YXRpYyBpbnQgbmFuZF9v
-bmZpX2dldF9mZWF0dXJlcyhzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgc3RydWN0IG5hbmRfY2hpcCAq
-Y2hpcCwKIAkJCWludCBhZGRyLCB1aW50OF90ICpzdWJmZWF0dXJlX3BhcmFtKQogewotCWlmICgh
-Y2hpcC0+b25maV92ZXJzaW9uKQorCWlmICghY2hpcC0+b25maV92ZXJzaW9uIHx8CisJICAgICEo
-bGUxNl90b19jcHUoY2hpcC0+b25maV9wYXJhbXMub3B0X2NtZCkgJiBPTkZJX09QVF9DTURfU0VU
-X0dFVF9GRUFUVVJFUykpCiAJCXJldHVybiAtRUlOVkFMOwogCiAJLyogY2xlYXIgdGhlIHN1YiBm
-ZWF0dXJlIHBhcmFtZXRlcnMgKi8KZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvbXRkL25hbmQu
-aCBiL2luY2x1ZGUvbGludXgvbXRkL25hbmQuaAppbmRleCBhYjYzNjM0Li45Yjk4YWY4IDEwMDY0
-NAotLS0gYS9pbmNsdWRlL2xpbnV4L210ZC9uYW5kLmgKKysrIGIvaW5jbHVkZS9saW51eC9tdGQv
-bmFuZC5oCkBAIC0yMTcsNiArMjE3LDkgQEAgc3RydWN0IG5hbmRfY2hpcDsKIC8qIE9ORkkgc3Vi
-ZmVhdHVyZSBwYXJhbWV0ZXJzIGxlbmd0aCAqLwogI2RlZmluZSBPTkZJX1NVQkZFQVRVUkVfUEFS
-QU1fTEVOCTQKIAorLyogT05GSSBvcHRpb25hbCBjb21tYW5kcyBTRVQvR0VUIEZFQVRVUkVTIHN1
-cHBvcnRlZD8gKi8KKyNkZWZpbmUgT05GSV9PUFRfQ01EX1NFVF9HRVRfRkVBVFVSRVMJKDEgPDwg
-MikKKwogc3RydWN0IG5hbmRfb25maV9wYXJhbXMgewogCS8qIHJldiBpbmZvIGFuZCBmZWF0dXJl
-cyBibG9jayAqLwogCS8qICdPJyAnTicgJ0YnICdJJyAgKi8K
---20cf3074d2d86271a504dbb4120d--
+bXRkOiBuYW5kX2Jhc2U6IE9ubHkgdXNlIEdFVC9TRVQgRkVBVFVSRVMgY29tbWFuZCBvbiBjaGlw
+cyB0aGF0IHN1cHBvcnQgdGhlbS4KClNwYW5zaW9uJ3MgUzM0TUx4IGNoaXBzIHN1cHBvcnQgT05G
+SSBidXQgbm90IHRoZSBHRVQvU0VUIEZFQVRVUkVTIGNhbGxzLgoKU2lnbmVkLW9mZi1ieTogRGF2
+aWQgTW9zYmVyZ2VyIDxkbW9zYmVyZ2VyQGdtYWlsLmNvbT4KCmRpZmYgLS1naXQgYS9kcml2ZXJz
+L210ZC9uYW5kL25hbmRfYmFzZS5jIGIvZHJpdmVycy9tdGQvbmFuZC9uYW5kX2Jhc2UuYwppbmRl
+eCBkZmNkMGE1Li4xM2JkYjk2IDEwMDY0NAotLS0gYS9kcml2ZXJzL210ZC9uYW5kL25hbmRfYmFz
+ZS5jCisrKyBiL2RyaXZlcnMvbXRkL25hbmQvbmFuZF9iYXNlLmMKQEAgLTI3MjAsNyArMjcyMCw5
+IEBAIHN0YXRpYyBpbnQgbmFuZF9vbmZpX3NldF9mZWF0dXJlcyhzdHJ1Y3QgbXRkX2luZm8gKm10
+ZCwgc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwKIHsKIAlpbnQgc3RhdHVzOwogCi0JaWYgKCFjaGlw
+LT5vbmZpX3ZlcnNpb24pCisJaWYgKCFjaGlwLT5vbmZpX3ZlcnNpb24gfHwKKwkgICAgIShsZTE2
+X3RvX2NwdShjaGlwLT5vbmZpX3BhcmFtcy5vcHRfY21kKQorCSAgICAgICYgT05GSV9PUFRfQ01E
+X1NFVF9HRVRfRkVBVFVSRVMpKQogCQlyZXR1cm4gLUVJTlZBTDsKIAogCWNoaXAtPmNtZGZ1bmMo
+bXRkLCBOQU5EX0NNRF9TRVRfRkVBVFVSRVMsIGFkZHIsIC0xKTsKQEAgLTI3NDEsNyArMjc0Myw5
+IEBAIHN0YXRpYyBpbnQgbmFuZF9vbmZpX3NldF9mZWF0dXJlcyhzdHJ1Y3QgbXRkX2luZm8gKm10
+ZCwgc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwKIHN0YXRpYyBpbnQgbmFuZF9vbmZpX2dldF9mZWF0
+dXJlcyhzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwKIAkJCWlu
+dCBhZGRyLCB1aW50OF90ICpzdWJmZWF0dXJlX3BhcmFtKQogewotCWlmICghY2hpcC0+b25maV92
+ZXJzaW9uKQorCWlmICghY2hpcC0+b25maV92ZXJzaW9uIHx8CisJICAgICEobGUxNl90b19jcHUo
+Y2hpcC0+b25maV9wYXJhbXMub3B0X2NtZCkKKwkgICAgICAmIE9ORklfT1BUX0NNRF9TRVRfR0VU
+X0ZFQVRVUkVTKSkKIAkJcmV0dXJuIC1FSU5WQUw7CiAKIAkvKiBjbGVhciB0aGUgc3ViIGZlYXR1
+cmUgcGFyYW1ldGVycyAqLwpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9tdGQvbmFuZC5oIGIv
+aW5jbHVkZS9saW51eC9tdGQvbmFuZC5oCmluZGV4IGFiNjM2MzQuLjliOThhZjggMTAwNjQ0Ci0t
+LSBhL2luY2x1ZGUvbGludXgvbXRkL25hbmQuaAorKysgYi9pbmNsdWRlL2xpbnV4L210ZC9uYW5k
+LmgKQEAgLTIxNyw2ICsyMTcsOSBAQCBzdHJ1Y3QgbmFuZF9jaGlwOwogLyogT05GSSBzdWJmZWF0
+dXJlIHBhcmFtZXRlcnMgbGVuZ3RoICovCiAjZGVmaW5lIE9ORklfU1VCRkVBVFVSRV9QQVJBTV9M
+RU4JNAogCisvKiBPTkZJIG9wdGlvbmFsIGNvbW1hbmRzIFNFVC9HRVQgRkVBVFVSRVMgc3VwcG9y
+dGVkPyAqLworI2RlZmluZSBPTkZJX09QVF9DTURfU0VUX0dFVF9GRUFUVVJFUwkoMSA8PCAyKQor
+CiBzdHJ1Y3QgbmFuZF9vbmZpX3BhcmFtcyB7CiAJLyogcmV2IGluZm8gYW5kIGZlYXR1cmVzIGJs
+b2NrICovCiAJLyogJ08nICdOJyAnRicgJ0knICAqLwo=
+--20cf3074d9ac96213604dbb41d65--
