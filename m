@@ -1,19 +1,19 @@
-Received: from co9ehsobe005.messaging.microsoft.com ([207.46.163.28]
- helo=co9outboundpool.messaging.microsoft.com)
+Received: from mail-pa0-f54.google.com ([209.85.220.54])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UY9ai-0000kE-Gw
- for linux-mtd@lists.infradead.org; Fri, 03 May 2013 06:35:45 +0000
-From: Huang Shijie <b32955@freescale.com>
-To: <dwmw2@infradead.org>
-Subject: [PATCH 2/4] mtd: add a new sys node to show the ecc step size
-Date: Fri, 3 May 2013 14:21:42 +0800
-Message-ID: <1367562104-8955-3-git-send-email-b32955@freescale.com>
-In-Reply-To: <1367562104-8955-1-git-send-email-b32955@freescale.com>
-References: <1367562104-8955-1-git-send-email-b32955@freescale.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ id 1UYEVz-0005ot-Ab
+ for linux-mtd@lists.infradead.org; Fri, 03 May 2013 11:51:04 +0000
+Received: by mail-pa0-f54.google.com with SMTP id kx1so887702pab.41
+ for <linux-mtd@lists.infradead.org>; Fri, 03 May 2013 04:50:41 -0700 (PDT)
+From: Sachin Kamat <sachin.kamat@linaro.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 2/3] mtd: onenand/omap2: Remove redundant
+ platform_set_drvdata()
+Date: Fri,  3 May 2013 17:07:42 +0530
+Message-Id: <1367581063-24295-2-git-send-email-sachin.kamat@linaro.org>
+In-Reply-To: <1367581063-24295-1-git-send-email-sachin.kamat@linaro.org>
+References: <1367581063-24295-1-git-send-email-sachin.kamat@linaro.org>
+Cc: artem.bityutskiy@linux.intel.com, kyungmin.park@samsung.com,
+ dwmw2@infradead.org, Jarkko Lavinen <jarkko.lavinen@nokia.com>,
  dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,43 +24,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add a new sys node to show the ecc step size.
-The application then can uses this node to get the ecc step
-size.
+Commit 0998d06310 (device-core: Ensure drvdata = NULL when no
+driver is bound) removes the need to set driver data field to
+NULL.
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
+Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+Cc: Jarkko Lavinen <jarkko.lavinen@nokia.com>
 ---
- drivers/mtd/mtdcore.c |   11 +++++++++++
- 1 files changed, 11 insertions(+), 0 deletions(-)
+ drivers/mtd/onenand/omap2.c |    1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index e513fc4..2ed2827 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -287,6 +287,16 @@ static DEVICE_ATTR(bitflip_threshold, S_IRUGO | S_IWUSR,
- 		   mtd_bitflip_threshold_show,
- 		   mtd_bitflip_threshold_store);
- 
-+static ssize_t mtd_ecc_size_show(struct device *dev,
-+		struct device_attribute *attr, char *buf)
-+{
-+	struct mtd_info *mtd = dev_get_drvdata(dev);
-+
-+	return snprintf(buf, PAGE_SIZE, "%lu\n", (unsigned long)mtd->ecc_size);
-+
-+}
-+static DEVICE_ATTR(ecc_size, S_IRUGO, mtd_ecc_size_show, NULL);
-+
- static struct attribute *mtd_attrs[] = {
- 	&dev_attr_type.attr,
- 	&dev_attr_flags.attr,
-@@ -298,6 +308,7 @@ static struct attribute *mtd_attrs[] = {
- 	&dev_attr_numeraseregions.attr,
- 	&dev_attr_name.attr,
- 	&dev_attr_ecc_strength.attr,
-+	&dev_attr_ecc_size.attr,
- 	&dev_attr_bitflip_threshold.attr,
- 	NULL,
- };
+diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
+index d98b198..cd43cea 100644
+--- a/drivers/mtd/onenand/omap2.c
++++ b/drivers/mtd/onenand/omap2.c
+@@ -810,7 +810,6 @@ static int omap2_onenand_remove(struct platform_device *pdev)
+ 	if (c->dma_channel != -1)
+ 		omap_free_dma(c->dma_channel);
+ 	omap2_onenand_shutdown(pdev);
+-	platform_set_drvdata(pdev, NULL);
+ 	if (c->gpio_irq) {
+ 		free_irq(gpio_to_irq(c->gpio_irq), c);
+ 		gpio_free(c->gpio_irq);
 -- 
-1.7.1
+1.7.9.5
