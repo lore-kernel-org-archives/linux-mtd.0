@@ -1,15 +1,17 @@
-Received: from mail-pb0-x22f.google.com ([2607:f8b0:400e:c01::22f])
+Received: from mail-pa0-f44.google.com ([209.85.220.44])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UYEVz-0005os-Aw
- for linux-mtd@lists.infradead.org; Fri, 03 May 2013 11:51:04 +0000
-Received: by mail-pb0-f47.google.com with SMTP id uo1so859097pbc.6
- for <linux-mtd@lists.infradead.org>; Fri, 03 May 2013 04:50:38 -0700 (PDT)
+ id 1UYEW4-0005pD-9m
+ for linux-mtd@lists.infradead.org; Fri, 03 May 2013 11:51:09 +0000
+Received: by mail-pa0-f44.google.com with SMTP id jh10so889256pab.31
+ for <linux-mtd@lists.infradead.org>; Fri, 03 May 2013 04:50:44 -0700 (PDT)
 From: Sachin Kamat <sachin.kamat@linaro.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 1/3] mtd: onenand/generic: Remove redundant
+Subject: [PATCH 3/3] mtd: onenand/samsung: Remove redundant
  platform_set_drvdata()
-Date: Fri,  3 May 2013 17:07:41 +0530
-Message-Id: <1367581063-24295-1-git-send-email-sachin.kamat@linaro.org>
+Date: Fri,  3 May 2013 17:07:43 +0530
+Message-Id: <1367581063-24295-3-git-send-email-sachin.kamat@linaro.org>
+In-Reply-To: <1367581063-24295-1-git-send-email-sachin.kamat@linaro.org>
+References: <1367581063-24295-1-git-send-email-sachin.kamat@linaro.org>
 Cc: artem.bityutskiy@linux.intel.com, kyungmin.park@samsung.com,
  dwmw2@infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,21 +30,20 @@ NULL.
 Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 Cc: Kyungmin Park <kyungmin.park@samsung.com>
 ---
- drivers/mtd/onenand/generic.c |    2 --
- 1 file changed, 2 deletions(-)
+ drivers/mtd/onenand/samsung.c |    1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/mtd/onenand/generic.c b/drivers/mtd/onenand/generic.c
-index 9f11562..42520a3 100644
---- a/drivers/mtd/onenand/generic.c
-+++ b/drivers/mtd/onenand/generic.c
-@@ -94,8 +94,6 @@ static int generic_onenand_remove(struct platform_device *pdev)
- 	struct resource *res = pdev->resource;
- 	unsigned long size = resource_size(res);
+diff --git a/drivers/mtd/onenand/samsung.c b/drivers/mtd/onenand/samsung.c
+index 2cf7408..cebc48d 100644
+--- a/drivers/mtd/onenand/samsung.c
++++ b/drivers/mtd/onenand/samsung.c
+@@ -1073,7 +1073,6 @@ static int s3c_onenand_remove(struct platform_device *pdev)
+ 	release_mem_region(onenand->base_res->start,
+ 			   resource_size(onenand->base_res));
  
 -	platform_set_drvdata(pdev, NULL);
--
- 	if (info) {
- 		onenand_release(&info->mtd);
- 		release_mem_region(res->start, size);
+ 	kfree(onenand->oob_buf);
+ 	kfree(onenand->page_buf);
+ 	kfree(onenand);
 -- 
 1.7.9.5
