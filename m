@@ -1,20 +1,17 @@
-Received: from mail-pa0-f54.google.com ([209.85.220.54])
+Received: from mail-pb0-x22f.google.com ([2607:f8b0:400e:c01::22f])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UYEVz-0005ot-Ab
+ id 1UYEVz-0005os-Aw
  for linux-mtd@lists.infradead.org; Fri, 03 May 2013 11:51:04 +0000
-Received: by mail-pa0-f54.google.com with SMTP id kx1so887702pab.41
- for <linux-mtd@lists.infradead.org>; Fri, 03 May 2013 04:50:41 -0700 (PDT)
+Received: by mail-pb0-f47.google.com with SMTP id uo1so859097pbc.6
+ for <linux-mtd@lists.infradead.org>; Fri, 03 May 2013 04:50:38 -0700 (PDT)
 From: Sachin Kamat <sachin.kamat@linaro.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/3] mtd: onenand/omap2: Remove redundant
+Subject: [PATCH 1/3] mtd: onenand/generic: Remove redundant
  platform_set_drvdata()
-Date: Fri,  3 May 2013 17:07:42 +0530
-Message-Id: <1367581063-24295-2-git-send-email-sachin.kamat@linaro.org>
-In-Reply-To: <1367581063-24295-1-git-send-email-sachin.kamat@linaro.org>
-References: <1367581063-24295-1-git-send-email-sachin.kamat@linaro.org>
+Date: Fri,  3 May 2013 17:07:41 +0530
+Message-Id: <1367581063-24295-1-git-send-email-sachin.kamat@linaro.org>
 Cc: artem.bityutskiy@linux.intel.com, kyungmin.park@samsung.com,
- dwmw2@infradead.org, Jarkko Lavinen <jarkko.lavinen@nokia.com>,
- dedekind1@gmail.com
+ dwmw2@infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,22 +26,23 @@ driver is bound) removes the need to set driver data field to
 NULL.
 
 Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
-Cc: Jarkko Lavinen <jarkko.lavinen@nokia.com>
+Cc: Kyungmin Park <kyungmin.park@samsung.com>
 ---
- drivers/mtd/onenand/omap2.c |    1 -
- 1 file changed, 1 deletion(-)
+ drivers/mtd/onenand/generic.c |    2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-index d98b198..cd43cea 100644
---- a/drivers/mtd/onenand/omap2.c
-+++ b/drivers/mtd/onenand/omap2.c
-@@ -810,7 +810,6 @@ static int omap2_onenand_remove(struct platform_device *pdev)
- 	if (c->dma_channel != -1)
- 		omap_free_dma(c->dma_channel);
- 	omap2_onenand_shutdown(pdev);
+diff --git a/drivers/mtd/onenand/generic.c b/drivers/mtd/onenand/generic.c
+index 9f11562..42520a3 100644
+--- a/drivers/mtd/onenand/generic.c
++++ b/drivers/mtd/onenand/generic.c
+@@ -94,8 +94,6 @@ static int generic_onenand_remove(struct platform_device *pdev)
+ 	struct resource *res = pdev->resource;
+ 	unsigned long size = resource_size(res);
+ 
 -	platform_set_drvdata(pdev, NULL);
- 	if (c->gpio_irq) {
- 		free_irq(gpio_to_irq(c->gpio_irq), c);
- 		gpio_free(c->gpio_irq);
+-
+ 	if (info) {
+ 		onenand_release(&info->mtd);
+ 		release_mem_region(res->start, size);
 -- 
 1.7.9.5
