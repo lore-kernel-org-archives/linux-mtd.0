@@ -1,13 +1,13 @@
 Received: from smtp41.i.mail.ru ([94.100.177.101])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UZLs8-0004ls-5s
+ id 1UZLs8-0004lo-5k
  for linux-mtd@lists.infradead.org; Mon, 06 May 2013 13:54:33 +0000
 From: Alexander Shiyan <shc_work@mail.ru>
 To: linux-mtd@lists.infradead.org
-Subject: [RESEND PATCH v2 5/7] mtd: nand-gpio: Unneeded dependency on ARM
- removed
-Date: Mon,  6 May 2013 17:53:52 +0400
-Message-Id: <1367848434-28493-5-git-send-email-shc_work@mail.ru>
+Subject: [RESEND PATCH v2 3/7] mtd: nand-gpio: Do not override GPIOs if driver
+ uses platform_data but OF is enabled in kernel config
+Date: Mon,  6 May 2013 17:53:50 +0400
+Message-Id: <1367848434-28493-3-git-send-email-shc_work@mail.ru>
 In-Reply-To: <1367848434-28493-1-git-send-email-shc_work@mail.ru>
 References: <1367848434-28493-1-git-send-email-shc_work@mail.ru>
 Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
@@ -25,21 +25,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
 ---
- drivers/mtd/nand/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/gpio.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index a60f6c1..3ae9105 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -75,7 +75,7 @@ config MTD_NAND_DENALI_SCRATCH_REG_ADDR
+diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
+index 8f102d1..0d26f8b 100644
+--- a/drivers/mtd/nand/gpio.c
++++ b/drivers/mtd/nand/gpio.c
+@@ -151,6 +151,9 @@ static int gpio_nand_get_config_of(const struct device *dev,
+ {
+ 	u32 val;
  
- config MTD_NAND_GPIO
- 	tristate "GPIO NAND Flash driver"
--	depends on GPIOLIB && ARM
-+	depends on GPIOLIB
- 	help
- 	  This enables a GPIO based NAND flash driver.
- 
++	if (!dev->of_node)
++		return -ENODEV;
++
+ 	if (!of_property_read_u32(dev->of_node, "bank-width", &val)) {
+ 		if (val == 2) {
+ 			plat->options |= NAND_BUSWIDTH_16;
 -- 
 1.8.1.5
