@@ -1,23 +1,20 @@
-Received: from mail-pb0-x233.google.com ([2607:f8b0:400e:c01::233])
+Received: from co9ehsobe002.messaging.microsoft.com ([207.46.163.25]
+ helo=co9outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UZNKq-0007G3-Nl
- for linux-mtd@lists.infradead.org; Mon, 06 May 2013 15:28:17 +0000
-Received: by mail-pb0-f51.google.com with SMTP id wy7so2041141pbc.38
- for <linux-mtd@lists.infradead.org>; Mon, 06 May 2013 08:27:54 -0700 (PDT)
-Content-Type: text/plain; charset=iso-8859-1
-Mime-Version: 1.0 (Mac OS X Mail 6.3 \(1503\))
-Subject: Re: [PATCH] UBI: fastmap convert used list to rb tree
-From: Brian Pomerantz <bapper@gmail.com>
-In-Reply-To: <CAFLxGvy2icxuGx9+VaiTgFxPwL3pHOEXo6S2UG-tJvoB+GdRCg@mail.gmail.com>
-Date: Mon, 6 May 2013 08:27:51 -0700
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <B5D1657C-FF53-431E-AF13-5EC929791B66@gmail.com>
-References: <1367801267-15659-1-git-send-email-bapper@gmail.com>
- <CAFLxGvzqysw2ABxA9Mz6b6LOdQdGS4y+fN=UeJ0tuk=KPYO55Q@mail.gmail.com>
- <1BB4A15D-C030-4CDC-B5C6-8C687572ACB7@gmail.com>
- <CAFLxGvy2icxuGx9+VaiTgFxPwL3pHOEXo6S2UG-tJvoB+GdRCg@mail.gmail.com>
-To: richard -rw- weinberger <richard.weinberger@gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+ id 1UZPoL-0001KP-CJ
+ for linux-mtd@lists.infradead.org; Mon, 06 May 2013 18:06:54 +0000
+From: Fabio Estevam <fabio.estevam@freescale.com>
+To: <shawn.guo@linaro.org>
+Subject: [PATCH 05/13] mtd: gpmi-nand : Let device core handle pinctrl
+Date: Mon, 6 May 2013 15:05:53 -0300
+Message-ID: <1367863561-11534-5-git-send-email-fabio.estevam@freescale.com>
+In-Reply-To: <1367863561-11534-1-git-send-email-fabio.estevam@freescale.com>
+References: <1367863561-11534-1-git-send-email-fabio.estevam@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-mtd@lists.infradead.org, festevam@gmail.com, kernel@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,34 +24,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Since commit ab78029 (drivers/pinctrl: grab default handles from device core),
+we can rely on device core for handling pinctrl.
 
-On May 6, 2013, at 8:17 AM, richard -rw- weinberger =
-<richard.weinberger@gmail.com> wrote:
+So remove devm_pinctrl_get_select_default() from the driver. 
 
-> On Mon, May 6, 2013 at 5:04 PM, Brian Pomerantz <bapper@gmail.com> =
-wrote:
->>=20
->> On May 6, 2013, at 6:45 AM, richard -rw- weinberger =
-<richard.weinberger@gmail.com> wrote:
->>=20
->> Using a Samsung 1GB NAND with 3958 PEBs and only 510 left available =
-(nearly full), without the patch I get around a 300ms attach time and =
-with the patch it is around 50ms attach time.  I made the same change in =
-u-boot, our kernel image is stored in UBI along with a backup image, and =
-saw the same speedup.  So I shaved off 500ms from my boot time with the =
-two changes.  The attach time should be much more constant using the =
-tree, not getting much longer as the volumes fill up.  There wasn't a =
-noticeable difference in how long it took to fill the tree verses =
-appending to a list, so with empty volumes there shouldn't be much =
-overhead.
->=20
-> Sounds good. :)
-> Did you port fastmap to u-boot?
->=20
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Cc: <linux-mtd@lists.infradead.org>
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    9 ---------
+ 1 file changed, 9 deletions(-)
 
-I didn't, though if it's not upstream then perhaps one of my colleagues =
-did.  =46rom what I can tell, it's nearly identical code to what is in =
-the kernel.
-
-
---Brian
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 717881a..e8adefa 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -26,7 +26,6 @@
+ #include <linux/interrupt.h>
+ #include <linux/module.h>
+ #include <linux/mtd/partitions.h>
+-#include <linux/pinctrl/consumer.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+ #include <linux/of_mtd.h>
+@@ -565,7 +564,6 @@ err_clock:
+ 
+ static int acquire_resources(struct gpmi_nand_data *this)
+ {
+-	struct pinctrl *pinctrl;
+ 	int ret;
+ 
+ 	ret = acquire_register_block(this, GPMI_NAND_GPMI_REGS_ADDR_RES_NAME);
+@@ -584,19 +582,12 @@ static int acquire_resources(struct gpmi_nand_data *this)
+ 	if (ret)
+ 		goto exit_dma_channels;
+ 
+-	pinctrl = devm_pinctrl_get_select_default(&this->pdev->dev);
+-	if (IS_ERR(pinctrl)) {
+-		ret = PTR_ERR(pinctrl);
+-		goto exit_pin;
+-	}
+-
+ 	ret = gpmi_get_clks(this);
+ 	if (ret)
+ 		goto exit_clock;
+ 	return 0;
+ 
+ exit_clock:
+-exit_pin:
+ 	release_dma_channels(this);
+ exit_dma_channels:
+ 	release_bch_irq(this);
+-- 
+1.7.9.5
