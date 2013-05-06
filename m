@@ -1,19 +1,18 @@
-Received: from mail-wg0-x230.google.com ([2a00:1450:400c:c00::230])
+Received: from smtp41.i.mail.ru ([94.100.177.101])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UZLjr-0004eY-TD
- for linux-mtd@lists.infradead.org; Mon, 06 May 2013 13:46:00 +0000
-Received: by mail-wg0-f48.google.com with SMTP id f11so3518742wgh.27
- for <linux-mtd@lists.infradead.org>; Mon, 06 May 2013 06:45:37 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1367801267-15659-1-git-send-email-bapper@gmail.com>
-References: <1367801267-15659-1-git-send-email-bapper@gmail.com>
-Date: Mon, 6 May 2013 15:45:37 +0200
-Message-ID: <CAFLxGvzqysw2ABxA9Mz6b6LOdQdGS4y+fN=UeJ0tuk=KPYO55Q@mail.gmail.com>
-Subject: Re: [PATCH] UBI: fastmap convert used list to rb tree
-From: richard -rw- weinberger <richard.weinberger@gmail.com>
-To: Brian Pomerantz <bapper@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+ id 1UZLs8-0004ls-5s
+ for linux-mtd@lists.infradead.org; Mon, 06 May 2013 13:54:33 +0000
+From: Alexander Shiyan <shc_work@mail.ru>
+To: linux-mtd@lists.infradead.org
+Subject: [RESEND PATCH v2 5/7] mtd: nand-gpio: Unneeded dependency on ARM
+ removed
+Date: Mon,  6 May 2013 17:53:52 +0400
+Message-Id: <1367848434-28493-5-git-send-email-shc_work@mail.ru>
+In-Reply-To: <1367848434-28493-1-git-send-email-shc_work@mail.ru>
+References: <1367848434-28493-1-git-send-email-shc_work@mail.ru>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Alexander Shiyan <shc_work@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,21 +22,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, May 6, 2013 at 2:47 AM, Brian Pomerantz <bapper@gmail.com> wrote:
-> After some profiling of the attach process, it was found that
-> a considerable amount of time was spent spinning through the list of
-> used PEBs in ubi_attach_fastmap().  This patch converts the list into
-> a RB tree saving considerable time when the volumes fill up.
->
-> Signed-off-by: Brian Pomerantz <bapper@gmail.com>
 
-Nice!
-Looks good so far, but this week I'm on the road.
-As soon as I the have time to test it, I'll ack your patch.
+Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+---
+ drivers/mtd/nand/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Do you have some numbers?
-I'm interested in how much faster the rbtree is compared to list in this case...
-
---
-Thanks,
-//richard
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index a60f6c1..3ae9105 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -75,7 +75,7 @@ config MTD_NAND_DENALI_SCRATCH_REG_ADDR
+ 
+ config MTD_NAND_GPIO
+ 	tristate "GPIO NAND Flash driver"
+-	depends on GPIOLIB && ARM
++	depends on GPIOLIB
+ 	help
+ 	  This enables a GPIO based NAND flash driver.
+ 
+-- 
+1.8.1.5
