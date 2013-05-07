@@ -1,26 +1,26 @@
-Received: from mailout4.samsung.com ([203.254.224.34])
+Received: from mailout2.samsung.com ([203.254.224.25])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UZbWs-0004Nr-U0
- for linux-mtd@lists.infradead.org; Tue, 07 May 2013 06:37:40 +0000
-Received: from epcpsbgr5.samsung.com
- (u145.gpu120.samsung.co.kr [203.254.230.145])
- by mailout4.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ id 1UZbY0-0004Pz-07
+ for linux-mtd@lists.infradead.org; Tue, 07 May 2013 06:38:49 +0000
+Received: from epcpsbgr3.samsung.com
+ (u143.gpu120.samsung.co.kr [203.254.230.143])
+ by mailout2.samsung.com (Oracle Communications Messaging Server 7u4-24.01
  (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MMF00MCZ11KLYJ0@mailout4.samsung.com> for
- linux-mtd@lists.infradead.org; Tue, 07 May 2013 15:37:16 +0900 (KST)
+ with ESMTP id <0MMF00J6U142Z8C0@mailout2.samsung.com> for
+ linux-mtd@lists.infradead.org; Tue, 07 May 2013 15:38:26 +0900 (KST)
 From: Jingoo Han <jg1.han@samsung.com>
 To: 'Artem Bityutskiy' <artem.bityutskiy@linux.intel.com>
-Subject: [PATCH 15/26] mtd: nand: gpmi-nand: remove unnecessary
+Subject: [PATCH 16/26] mtd: nand: jz4740_nand: remove unnecessary
  platform_set_drvdata()
-Date: Tue, 07 May 2013 15:37:16 +0900
-Message-id: <005301ce4aed$50cc3d70$f264b850$@samsung.com>
+Date: Tue, 07 May 2013 15:38:25 +0900
+Message-id: <005401ce4aed$7a3bff60$6eb3fe20$@samsung.com>
 MIME-version: 1.0
 Content-type: text/plain; charset=us-ascii
 Content-transfer-encoding: 7bit
 Content-language: ko
-Cc: linux-mtd@lists.infradead.org, Jingoo Han <jg1.han@samsung.com>,
- 'David Woodhouse' <dwmw2@infradead.org>, 'Huang Shijie' <b32955@freescale.com>,
- Shawn Guo <shawn.guo@linaro.org>
+Cc: 'Maarten ter Huurne' <maarten@treewalker.org>,
+ linux-mtd@lists.infradead.org, Jingoo Han <jg1.han@samsung.com>,
+ 'David Woodhouse' <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,28 +37,28 @@ Thus, it is not needed to manually clear the device driver data to NULL.
 
 Signed-off-by: Jingoo Han <jg1.han@samsung.com>
 ---
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    2 --
+ drivers/mtd/nand/jz4740_nand.c |    2 --
  1 files changed, 0 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 25ecfa1..7869210 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -1633,7 +1633,6 @@ static int gpmi_nand_probe(struct platform_device *pdev)
- exit_nfc_init:
- 	release_resources(this);
- exit_acquire_resources:
+diff --git a/drivers/mtd/nand/jz4740_nand.c b/drivers/mtd/nand/jz4740_nand.c
+index b76460e..698a4d1 100644
+--- a/drivers/mtd/nand/jz4740_nand.c
++++ b/drivers/mtd/nand/jz4740_nand.c
+@@ -538,7 +538,6 @@ err_unclaim_banks:
+ err_gpio_busy:
+ 	if (pdata && gpio_is_valid(pdata->busy_gpio))
+ 		gpio_free(pdata->busy_gpio);
 -	platform_set_drvdata(pdev, NULL);
- 	dev_err(this->dev, "driver registration failed: %d\n", ret);
- 	kfree(this);
+ err_iounmap_mmio:
+ 	jz_nand_iounmap_resource(nand->mem, nand->base);
+ err_free:
+@@ -570,7 +569,6 @@ static int jz_nand_remove(struct platform_device *pdev)
  
-@@ -1646,7 +1645,6 @@ static int gpmi_nand_remove(struct platform_device *pdev)
+ 	jz_nand_iounmap_resource(nand->mem, nand->base);
  
- 	gpmi_nfc_exit(this);
- 	release_resources(this);
 -	platform_set_drvdata(pdev, NULL);
- 	kfree(this);
+ 	kfree(nand);
+ 
  	return 0;
- }
 -- 
 1.7.2.5
