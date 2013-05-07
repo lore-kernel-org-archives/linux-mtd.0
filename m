@@ -1,21 +1,22 @@
-Received: from moutng.kundenserver.de ([212.227.17.10])
+Received: from ch1ehsobe006.messaging.microsoft.com ([216.32.181.186]
+ helo=ch1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UZbij-0004ig-F7
- for linux-mtd@lists.infradead.org; Tue, 07 May 2013 06:49:54 +0000
-Message-ID: <5188A3ED.4060609@blackshift.org>
-Date: Tue, 07 May 2013 08:49:17 +0200
-From: Marc Kleine-Budde <mkl@blackshift.org>
-MIME-Version: 1.0
+ id 1UZdHp-0006Jf-UW
+ for linux-mtd@lists.infradead.org; Tue, 07 May 2013 08:30:14 +0000
+Date: Tue, 7 May 2013 16:30:07 +0800
+From: Shawn Guo <shawn.guo@linaro.org>
 To: Jingoo Han <jg1.han@samsung.com>
-Subject: Re: [PATCH 08/26] mtd: maps: ixp4xx: remove unnecessary
+Subject: Re: [PATCH 15/26] mtd: nand: gpmi-nand: remove unnecessary
  platform_set_drvdata()
-References: <004c01ce4aec$822652d0$8672f870$@samsung.com>
-In-Reply-To: <004c01ce4aec$822652d0$8672f870$@samsung.com>
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="----enig2XRALSEKQCQFRQBBUGDPL"
+Message-ID: <20130507083005.GL1749@S2101-09.ap.freescale.net>
+References: <005301ce4aed$50cc3d70$f264b850$@samsung.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <005301ce4aed$50cc3d70$f264b850$@samsung.com>
 Cc: 'Artem Bityutskiy' <artem.bityutskiy@linux.intel.com>,
- 'David Woodhouse' <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+ 'David Woodhouse' <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ 'Huang Shijie' <b32955@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,45 +26,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
-------enig2XRALSEKQCQFRQBBUGDPL
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
-
-On 05/07/2013 08:31 AM, Jingoo Han wrote:
+On Tue, May 07, 2013 at 03:37:16PM +0900, Jingoo Han wrote:
 > The driver core clears the driver data to NULL after device_release
-> or on probe failure, since commit 0998d0631001288a5974afc0b2a5f568bcdec=
-b4d
-> (device-core: Ensure drvdata =3D NULL when no driver is bound).
-> Thus, it is not needed to manually clear the device driver data to NULL=
-=2E
->=20
+> or on probe failure, since commit 0998d0631001288a5974afc0b2a5f568bcdecb4d
+> (device-core: Ensure drvdata = NULL when no driver is bound).
+> Thus, it is not needed to manually clear the device driver data to NULL.
+> 
 > Signed-off-by: Jingoo Han <jg1.han@samsung.com>
-Acked-by: Marc Kleine-Budde <mkl@blackshift.org>
 
+Acked-by: Shawn Guo <shawn.guo@linaro.org>
 
-------enig2XRALSEKQCQFRQBBUGDPL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
-
-iQIcBAEBAgAGBQJRiKP0AAoJEF5D1i44JRMaL+YP/34ZdTSFOln8DQBskNB7azjh
-SzOUk1WK+C/USOZSzGKbvi7NoRc/NGRT/q25fJqa0aawaROP3yhcvXAASRzFxzQQ
-PkcSkpI6f5XGfzOV+cURlTF55WUfSe4auP+tQRK5pOyJCgnH2orogU3F/4JKUNyC
-FEJswX9HwDS4n1/ltvAJUWO/+Bvj24x5aowk1OQODHEjYUdelBZKgLky35Ga3XE4
-4zyhGOCtzdnrHNOgD8hyMhRV99iC3TvM9Wnm/EDUFX41fPbGB1ZYZ0inRczx8Ihy
-q+nAlIqtpNNZ/9BZUIgaAuEL3TxhZk+tayu3q+hoYsOLhLXmXYAK9jp/FCeCTCzq
-jG4E4WQ8w104Zx24V2kTi60QVexQ0jdWOodSKf1HzDHUVhm94WyRsYjAX3rJmuRl
-j1NuS3he7Kub/jZ1yfsbfNKOUQjZwCF8+E39MViK39pOAiwzkHNSfFpCiRVHWhoO
-1hEM16LwnxNuMyyj7HDuqOlCiH4giR3tDxTaM6K78E4kgPPXP/KXwwC4f/b13ss8
-4+torKLduGtfluN3gaZaTmZXheWpjhoUw/+cXnPQkz0DmX/QO6Kzhl/fyZRJg+Zk
-62TR1r/hSy3iSF6CHQNnMrtAEstK4fYHaZbco7keweHJkhTpSbiBfFdzUN4Z1FF3
-z9pWca5wiuBLHscyyM2A
-=Yv8y
------END PGP SIGNATURE-----
-
-------enig2XRALSEKQCQFRQBBUGDPL--
+> ---
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    2 --
+>  1 files changed, 0 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> index 25ecfa1..7869210 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -1633,7 +1633,6 @@ static int gpmi_nand_probe(struct platform_device *pdev)
+>  exit_nfc_init:
+>  	release_resources(this);
+>  exit_acquire_resources:
+> -	platform_set_drvdata(pdev, NULL);
+>  	dev_err(this->dev, "driver registration failed: %d\n", ret);
+>  	kfree(this);
+>  
+> @@ -1646,7 +1645,6 @@ static int gpmi_nand_remove(struct platform_device *pdev)
+>  
+>  	gpmi_nfc_exit(this);
+>  	release_resources(this);
+> -	platform_set_drvdata(pdev, NULL);
+>  	kfree(this);
+>  	return 0;
+>  }
+> -- 
+> 1.7.2.5
+> 
+> 
