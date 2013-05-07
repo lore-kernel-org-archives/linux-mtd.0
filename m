@@ -1,26 +1,25 @@
-Received: from mailout2.samsung.com ([203.254.224.25])
+Received: from mailout1.samsung.com ([203.254.224.24])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UZbRH-0004Cp-UF
- for linux-mtd@lists.infradead.org; Tue, 07 May 2013 06:31:53 +0000
-Received: from epcpsbgr1.samsung.com
- (u141.gpu120.samsung.co.kr [203.254.230.141])
- by mailout2.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ id 1UZbRq-0004EZ-9k
+ for linux-mtd@lists.infradead.org; Tue, 07 May 2013 06:32:27 +0000
+Received: from epcpsbgr5.samsung.com
+ (u145.gpu120.samsung.co.kr [203.254.230.145])
+ by mailout1.samsung.com (Oracle Communications Messaging Server 7u4-24.01
  (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MMF00JQW0RJ3BC0@mailout2.samsung.com> for
- linux-mtd@lists.infradead.org; Tue, 07 May 2013 15:31:29 +0900 (KST)
+ with ESMTP id <0MMF00BVV0T37RP0@mailout1.samsung.com> for
+ linux-mtd@lists.infradead.org; Tue, 07 May 2013 15:32:04 +0900 (KST)
 From: Jingoo Han <jg1.han@samsung.com>
 To: 'Artem Bityutskiy' <artem.bityutskiy@linux.intel.com>
-Subject: [PATCH 08/26] mtd: maps: ixp4xx: remove unnecessary
+Subject: [PATCH 09/26] mtd: maps: rbtx4939-flash: remove unnecessary
  platform_set_drvdata()
-Date: Tue, 07 May 2013 15:31:29 +0900
-Message-id: <004c01ce4aec$822652d0$8672f870$@samsung.com>
+Date: Tue, 07 May 2013 15:32:03 +0900
+Message-id: <004d01ce4aec$969b4ae0$c3d1e0a0$@samsung.com>
 MIME-version: 1.0
 Content-type: text/plain; charset=us-ascii
 Content-transfer-encoding: 7bit
 Content-language: ko
 Cc: linux-mtd@lists.infradead.org, Jingoo Han <jg1.han@samsung.com>,
- 'David Woodhouse' <dwmw2@infradead.org>,
- 'Marc Kleine-Budde' <mkl@blackshift.org>
+ 'David Woodhouse' <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,21 +36,20 @@ Thus, it is not needed to manually clear the device driver data to NULL.
 
 Signed-off-by: Jingoo Han <jg1.han@samsung.com>
 ---
- drivers/mtd/maps/ixp4xx.c |    2 --
- 1 files changed, 0 insertions(+), 2 deletions(-)
+ drivers/mtd/maps/rbtx4939-flash.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/maps/ixp4xx.c b/drivers/mtd/maps/ixp4xx.c
-index 52b3410..09c542b 100644
---- a/drivers/mtd/maps/ixp4xx.c
-+++ b/drivers/mtd/maps/ixp4xx.c
-@@ -155,8 +155,6 @@ static int ixp4xx_flash_remove(struct platform_device *dev)
- 	struct flash_platform_data *plat = dev->dev.platform_data;
- 	struct ixp4xx_flash_info *info = platform_get_drvdata(dev);
- 
--	platform_set_drvdata(dev, NULL);
--
- 	if(!info)
+diff --git a/drivers/mtd/maps/rbtx4939-flash.c b/drivers/mtd/maps/rbtx4939-flash.c
+index ac02fbf..ab4ec55 100644
+--- a/drivers/mtd/maps/rbtx4939-flash.c
++++ b/drivers/mtd/maps/rbtx4939-flash.c
+@@ -34,7 +34,6 @@ static int rbtx4939_flash_remove(struct platform_device *dev)
+ 	info = platform_get_drvdata(dev);
+ 	if (!info)
  		return 0;
+-	platform_set_drvdata(dev, NULL);
  
+ 	if (info->mtd) {
+ 		struct rbtx4939_flash_data *pdata = dev->dev.platform_data;
 -- 
 1.7.2.5
