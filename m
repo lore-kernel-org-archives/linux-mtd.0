@@ -1,25 +1,25 @@
-Received: from mailout4.samsung.com ([203.254.224.34])
+Received: from mailout2.samsung.com ([203.254.224.25])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UZbaG-0004TQ-Rj
- for linux-mtd@lists.infradead.org; Tue, 07 May 2013 06:41:09 +0000
-Received: from epcpsbgr5.samsung.com
- (u145.gpu120.samsung.co.kr [203.254.230.145])
- by mailout4.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ id 1UZbb6-0004Ut-Qj
+ for linux-mtd@lists.infradead.org; Tue, 07 May 2013 06:42:02 +0000
+Received: from epcpsbgr2.samsung.com
+ (u142.gpu120.samsung.co.kr [203.254.230.142])
+ by mailout2.samsung.com (Oracle Communications Messaging Server 7u4-24.01
  (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MMF001VX17ZTHH0@mailout4.samsung.com> for
- linux-mtd@lists.infradead.org; Tue, 07 May 2013 15:40:47 +0900 (KST)
+ with ESMTP id <0MMF00JBT19FZ8C0@mailout2.samsung.com> for
+ linux-mtd@lists.infradead.org; Tue, 07 May 2013 15:41:39 +0900 (KST)
 From: Jingoo Han <jg1.han@samsung.com>
 To: 'Artem Bityutskiy' <artem.bityutskiy@linux.intel.com>
-Subject: [PATCH 19/26] mtd: nand: nuc900_nand: remove unnecessary
+Subject: [PATCH 20/26] mtd: nand: omap2: remove unnecessary
  platform_set_drvdata()
-Date: Tue, 07 May 2013 15:40:47 +0900
-Message-id: <005701ce4aed$ce8859b0$6b990d10$@samsung.com>
+Date: Tue, 07 May 2013 15:41:39 +0900
+Message-id: <005801ce4aed$ed90d6c0$c8b28440$@samsung.com>
 MIME-version: 1.0
 Content-type: text/plain; charset=us-ascii
 Content-transfer-encoding: 7bit
 Content-language: ko
 Cc: linux-mtd@lists.infradead.org, Jingoo Han <jg1.han@samsung.com>,
- 'David Woodhouse' <dwmw2@infradead.org>
+ 'David Woodhouse' <dwmw2@infradead.org>, Daniel Mack <zonque@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,21 +36,20 @@ Thus, it is not needed to manually clear the device driver data to NULL.
 
 Signed-off-by: Jingoo Han <jg1.han@samsung.com>
 ---
- drivers/mtd/nand/nuc900_nand.c |    2 --
- 1 files changed, 0 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/omap2.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/nand/nuc900_nand.c b/drivers/mtd/nand/nuc900_nand.c
-index cd6be2e..5211515 100644
---- a/drivers/mtd/nand/nuc900_nand.c
-+++ b/drivers/mtd/nand/nuc900_nand.c
-@@ -324,8 +324,6 @@ static int nuc900_nand_remove(struct platform_device *pdev)
- 
- 	kfree(nuc900_nand);
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index 81b80af..daa3dfc 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -2087,7 +2087,6 @@ static int omap_nand_remove(struct platform_device *pdev)
+ 							mtd);
+ 	omap3_free_bch(&info->mtd);
  
 -	platform_set_drvdata(pdev, NULL);
--
- 	return 0;
- }
+ 	if (info->dma)
+ 		dma_release_channel(info->dma);
  
 -- 
 1.7.2.5
