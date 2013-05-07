@@ -1,20 +1,14 @@
-Received: from [2a01:4f8:101:2a4:0:bc28:b2d8:8] (helo=chuck.antcom.de)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UZkft-00085H-Qn
- for linux-mtd@lists.infradead.org; Tue, 07 May 2013 16:23:35 +0000
-Message-ID: <51892A67.1030602@antcom.de>
-Date: Tue, 07 May 2013 18:23:03 +0200
-From: Roland Stigge <stigge@antcom.de>
+Date: Tue, 7 May 2013 12:32:38 -0700
+From: Kees Cook <keescook@chromium.org>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: refactor call to request_module
+Message-ID: <20130507193238.GA2235@www.outflux.net>
 MIME-Version: 1.0
-To: Jingoo Han <jg1.han@samsung.com>
-Subject: Re: [PATCH 17/26] mtd: nand: lpc32xx: remove unnecessary
- platform_set_drvdata()
-References: <005501ce4aed$981487f0$c83d97d0$@samsung.com>
-In-Reply-To: <005501ce4aed$981487f0$c83d97d0$@samsung.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: 'Artem Bityutskiy' <artem.bityutskiy@linux.intel.com>,
- 'David Woodhouse' <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org, Rusty Russell <rusty@rustcorp.com.au>,
+ James Hogan <james.hogan@imgtec.com>, David Woodhouse <dwmw2@infradead.org>,
+ Kees Cook <keescook@chromium.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,60 +18,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 05/07/2013 08:39 AM, Jingoo Han wrote:
-> The driver core clears the driver data to NULL after device_release
-> or on probe failure, since commit 0998d0631001288a5974afc0b2a5f568bcdecb4d
-> (device-core: Ensure drvdata = NULL when no driver is bound).
-> Thus, it is not needed to manually clear the device driver data to NULL.
-> 
-> Signed-off-by: Jingoo Han <jg1.han@samsung.com>
+This reduces the size of the stack frame when calling request_module().
+Performing the sprintf before the call is not needed.
 
-Tested-by: Roland Stigge <stigge@antcom.de>
-Acked-by: Roland Stigge <stigge@antcom.de>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ drivers/mtd/chips/gen_probe.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/chips/gen_probe.c b/drivers/mtd/chips/gen_probe.c
+index 74dbb6b..ffb36ba 100644
+--- a/drivers/mtd/chips/gen_probe.c
++++ b/drivers/mtd/chips/gen_probe.c
+@@ -211,9 +211,7 @@ static inline struct mtd_info *cfi_cmdset_unknown(struct map_info *map,
+ 
+ 	probe_function = __symbol_get(probename);
+ 	if (!probe_function) {
+-		char modname[sizeof("cfi_cmdset_%4.4X")];
+-		sprintf(modname, "cfi_cmdset_%4.4X", type);
+-		request_module(modname);
++		request_module("cfi_cmdset_%4.4X", type);
+ 		probe_function = __symbol_get(probename);
+ 	}
+ 
+-- 
+1.7.9.5
 
 
-> ---
->  drivers/mtd/nand/lpc32xx_mlc.c |    2 --
->  drivers/mtd/nand/lpc32xx_slc.c |    2 --
->  2 files changed, 0 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/lpc32xx_mlc.c b/drivers/mtd/nand/lpc32xx_mlc.c
-> index a94facb..5a5cfbc 100644
-> --- a/drivers/mtd/nand/lpc32xx_mlc.c
-> +++ b/drivers/mtd/nand/lpc32xx_mlc.c
-> @@ -833,7 +833,6 @@ err_exit3:
->  err_exit2:
->  	clk_disable(host->clk);
->  	clk_put(host->clk);
-> -	platform_set_drvdata(pdev, NULL);
->  err_exit1:
->  	lpc32xx_wp_enable(host);
->  	gpio_free(host->ncfg->wp_gpio);
-> @@ -856,7 +855,6 @@ static int lpc32xx_nand_remove(struct platform_device *pdev)
->  
->  	clk_disable(host->clk);
->  	clk_put(host->clk);
-> -	platform_set_drvdata(pdev, NULL);
->  
->  	lpc32xx_wp_enable(host);
->  	gpio_free(host->ncfg->wp_gpio);
-> diff --git a/drivers/mtd/nand/lpc32xx_slc.c b/drivers/mtd/nand/lpc32xx_slc.c
-> index be94ed5..a66f33f 100644
-> --- a/drivers/mtd/nand/lpc32xx_slc.c
-> +++ b/drivers/mtd/nand/lpc32xx_slc.c
-> @@ -936,7 +936,6 @@ err_exit3:
->  err_exit2:
->  	clk_disable(host->clk);
->  	clk_put(host->clk);
-> -	platform_set_drvdata(pdev, NULL);
->  err_exit1:
->  	lpc32xx_wp_enable(host);
->  	gpio_free(host->ncfg->wp_gpio);
-> @@ -963,7 +962,6 @@ static int lpc32xx_nand_remove(struct platform_device *pdev)
->  
->  	clk_disable(host->clk);
->  	clk_put(host->clk);
-> -	platform_set_drvdata(pdev, NULL);
->  	lpc32xx_wp_enable(host);
->  	gpio_free(host->ncfg->wp_gpio);
->  
+-- 
+Kees Cook
+Chrome OS Security
