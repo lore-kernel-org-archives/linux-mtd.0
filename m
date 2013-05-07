@@ -1,25 +1,26 @@
-Received: from mailout1.samsung.com ([203.254.224.24])
+Received: from mailout4.samsung.com ([203.254.224.34])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UZbBq-0003jk-6c
- for linux-mtd@lists.infradead.org; Tue, 07 May 2013 06:15:55 +0000
-Received: from epcpsbgr5.samsung.com
- (u145.gpu120.samsung.co.kr [203.254.230.145])
- by mailout1.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ id 1UZbDs-0003nQ-RS
+ for linux-mtd@lists.infradead.org; Tue, 07 May 2013 06:18:01 +0000
+Received: from epcpsbgr3.samsung.com
+ (u143.gpu120.samsung.co.kr [203.254.230.143])
+ by mailout4.samsung.com (Oracle Communications Messaging Server 7u4-24.01
  (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MMF00BZB0177RO0@mailout1.samsung.com> for
- linux-mtd@lists.infradead.org; Tue, 07 May 2013 15:15:24 +0900 (KST)
+ with ESMTP id <0MMF002X604VD8G0@mailout4.samsung.com> for
+ linux-mtd@lists.infradead.org; Tue, 07 May 2013 15:17:37 +0900 (KST)
 From: Jingoo Han <jg1.han@samsung.com>
 To: 'Artem Bityutskiy' <dedekind1@gmail.com>
 Subject: [PATCH 01/26] mtd: devices: spear_smi: remove unnecessary
  platform_set_drvdata()
-Date: Tue, 07 May 2013 15:15:23 +0900
-Message-id: <003a01ce4aea$42846a60$c78d3f20$@samsung.com>
+Date: Tue, 07 May 2013 15:17:36 +0900
+Message-id: <004001ce4aea$91d214f0$b5763ed0$@samsung.com>
 MIME-version: 1.0
 Content-type: text/plain; charset=us-ascii
 Content-transfer-encoding: 7bit
 Content-language: ko
-Cc: linux-mtd@lists.infradead.org, 'Viresh Kumar' <viresh.kumar@st.com>,
- 'David Woodhouse' <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org, Jingoo Han <jg1.han@samsung.com>,
+ 'David Woodhouse' <dwmw2@infradead.org>,
+ Viresh Kumar <viresh.kumar@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
