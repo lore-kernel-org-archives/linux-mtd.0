@@ -1,19 +1,19 @@
-Received: from mailout1.samsung.com ([203.254.224.24])
+Received: from mailout2.samsung.com ([203.254.224.25])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UZbQA-0004As-Ul
- for linux-mtd@lists.infradead.org; Tue, 07 May 2013 06:30:43 +0000
-Received: from epcpsbgr1.samsung.com
- (u141.gpu120.samsung.co.kr [203.254.230.141])
- by mailout1.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ id 1UZbQY-0004BR-6B
+ for linux-mtd@lists.infradead.org; Tue, 07 May 2013 06:31:06 +0000
+Received: from epcpsbgr2.samsung.com
+ (u142.gpu120.samsung.co.kr [203.254.230.142])
+ by mailout2.samsung.com (Oracle Communications Messaging Server 7u4-24.01
  (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MMF00JLL0QGP210@mailout1.samsung.com> for
- linux-mtd@lists.infradead.org; Tue, 07 May 2013 15:30:16 +0900 (KST)
+ with ESMTP id <0MMF00EG40QVZIE0@mailout2.samsung.com> for
+ linux-mtd@lists.infradead.org; Tue, 07 May 2013 15:30:45 +0900 (KST)
 From: Jingoo Han <jg1.han@samsung.com>
 To: 'Artem Bityutskiy' <artem.bityutskiy@linux.intel.com>
-Subject: [PATCH 06/26] mtd: maps: pxa2xx-flash: remove unnecessary
+Subject: [PATCH 07/26] mtd: maps: physmap: remove unnecessary
  platform_set_drvdata()
-Date: Tue, 07 May 2013 15:30:15 +0900
-Message-id: <004a01ce4aec$560a5ca0$021f15e0$@samsung.com>
+Date: Tue, 07 May 2013 15:30:44 +0900
+Message-id: <004b01ce4aec$67395170$35abf450$@samsung.com>
 MIME-version: 1.0
 Content-type: text/plain; charset=us-ascii
 Content-transfer-encoding: 7bit
@@ -36,21 +36,20 @@ Thus, it is not needed to manually clear the device driver data to NULL.
 
 Signed-off-by: Jingoo Han <jg1.han@samsung.com>
 ---
- drivers/mtd/maps/pxa2xx-flash.c |    2 --
- 1 files changed, 0 insertions(+), 2 deletions(-)
+ drivers/mtd/maps/physmap.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/maps/pxa2xx-flash.c b/drivers/mtd/maps/pxa2xx-flash.c
-index acb1dbc..22c55cb 100644
---- a/drivers/mtd/maps/pxa2xx-flash.c
-+++ b/drivers/mtd/maps/pxa2xx-flash.c
-@@ -107,8 +107,6 @@ static int pxa2xx_flash_remove(struct platform_device *dev)
- {
- 	struct pxa2xx_flash_info *info = platform_get_drvdata(dev);
- 
+diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
+index e7a592c..9eb7ead9 100644
+--- a/drivers/mtd/maps/physmap.c
++++ b/drivers/mtd/maps/physmap.c
+@@ -40,7 +40,6 @@ static int physmap_flash_remove(struct platform_device *dev)
+ 	info = platform_get_drvdata(dev);
+ 	if (info == NULL)
+ 		return 0;
 -	platform_set_drvdata(dev, NULL);
--
- 	mtd_device_unregister(info->mtd);
  
- 	map_destroy(info->mtd);
+ 	physmap_data = dev->dev.platform_data;
+ 
 -- 
 1.7.2.5
