@@ -1,19 +1,19 @@
 Received: from mailout1.samsung.com ([203.254.224.24])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UZbRq-0004EZ-9k
- for linux-mtd@lists.infradead.org; Tue, 07 May 2013 06:32:27 +0000
-Received: from epcpsbgr5.samsung.com
- (u145.gpu120.samsung.co.kr [203.254.230.145])
+ id 1UZbSW-0004GB-S8
+ for linux-mtd@lists.infradead.org; Tue, 07 May 2013 06:33:09 +0000
+Received: from epcpsbgr3.samsung.com
+ (u143.gpu120.samsung.co.kr [203.254.230.143])
  by mailout1.samsung.com (Oracle Communications Messaging Server 7u4-24.01
  (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MMF00BVV0T37RP0@mailout1.samsung.com> for
- linux-mtd@lists.infradead.org; Tue, 07 May 2013 15:32:04 +0900 (KST)
+ with ESMTP id <0MMF003PF0RFN6Q0@mailout1.samsung.com> for
+ linux-mtd@lists.infradead.org; Tue, 07 May 2013 15:32:48 +0900 (KST)
 From: Jingoo Han <jg1.han@samsung.com>
 To: 'Artem Bityutskiy' <artem.bityutskiy@linux.intel.com>
-Subject: [PATCH 09/26] mtd: maps: rbtx4939-flash: remove unnecessary
+Subject: [PATCH 10/26] mtd: nand: ams-delta: remove unnecessary
  platform_set_drvdata()
-Date: Tue, 07 May 2013 15:32:03 +0900
-Message-id: <004d01ce4aec$969b4ae0$c3d1e0a0$@samsung.com>
+Date: Tue, 07 May 2013 15:32:47 +0900
+Message-id: <004e01ce4aec$b0911b00$11b35100$@samsung.com>
 MIME-version: 1.0
 Content-type: text/plain; charset=us-ascii
 Content-transfer-encoding: 7bit
@@ -36,20 +36,20 @@ Thus, it is not needed to manually clear the device driver data to NULL.
 
 Signed-off-by: Jingoo Han <jg1.han@samsung.com>
 ---
- drivers/mtd/maps/rbtx4939-flash.c |    1 -
+ drivers/mtd/nand/ams-delta.c |    1 -
  1 files changed, 0 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/maps/rbtx4939-flash.c b/drivers/mtd/maps/rbtx4939-flash.c
-index ac02fbf..ab4ec55 100644
---- a/drivers/mtd/maps/rbtx4939-flash.c
-+++ b/drivers/mtd/maps/rbtx4939-flash.c
-@@ -34,7 +34,6 @@ static int rbtx4939_flash_remove(struct platform_device *dev)
- 	info = platform_get_drvdata(dev);
- 	if (!info)
- 		return 0;
--	platform_set_drvdata(dev, NULL);
- 
- 	if (info->mtd) {
- 		struct rbtx4939_flash_data *pdata = dev->dev.platform_data;
+diff --git a/drivers/mtd/nand/ams-delta.c b/drivers/mtd/nand/ams-delta.c
+index f1d71cd..8611eb4 100644
+--- a/drivers/mtd/nand/ams-delta.c
++++ b/drivers/mtd/nand/ams-delta.c
+@@ -258,7 +258,6 @@ static int ams_delta_init(struct platform_device *pdev)
+  out_mtd:
+ 	gpio_free_array(_mandatory_gpio, ARRAY_SIZE(_mandatory_gpio));
+ out_gpio:
+-	platform_set_drvdata(pdev, NULL);
+ 	gpio_free(AMS_DELTA_GPIO_PIN_NAND_RB);
+ 	iounmap(io_base);
+ out_free:
 -- 
 1.7.2.5
