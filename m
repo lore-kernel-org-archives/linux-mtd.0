@@ -1,25 +1,25 @@
-Received: from mailout2.samsung.com ([203.254.224.25])
+Received: from mailout1.samsung.com ([203.254.224.24])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UZbTA-0004HU-KZ
- for linux-mtd@lists.infradead.org; Tue, 07 May 2013 06:33:49 +0000
-Received: from epcpsbgr1.samsung.com
- (u141.gpu120.samsung.co.kr [203.254.230.141])
- by mailout2.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ id 1UZbTq-0004JD-KZ
+ for linux-mtd@lists.infradead.org; Tue, 07 May 2013 06:34:31 +0000
+Received: from epcpsbgr3.samsung.com
+ (u143.gpu120.samsung.co.kr [203.254.230.143])
+ by mailout1.samsung.com (Oracle Communications Messaging Server 7u4-24.01
  (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MMF00JUL0UX3BC0@mailout2.samsung.com> for
- linux-mtd@lists.infradead.org; Tue, 07 May 2013 15:33:27 +0900 (KST)
+ with ESMTP id <0MMF003V70VRN6Q0@mailout1.samsung.com> for
+ linux-mtd@lists.infradead.org; Tue, 07 May 2013 15:34:08 +0900 (KST)
 From: Jingoo Han <jg1.han@samsung.com>
 To: 'Artem Bityutskiy' <artem.bityutskiy@linux.intel.com>
-Subject: [PATCH 11/26] mtd: nand: atmel_nand: remove unnecessary
+Subject: [PATCH 12/26] mtd: nand: bf5xx_nand: remove unnecessary
  platform_set_drvdata()
-Date: Tue, 07 May 2013 15:33:27 +0900
-Message-id: <004f01ce4aec$c841b610$58c52230$@samsung.com>
+Date: Tue, 07 May 2013 15:34:07 +0900
+Message-id: <005001ce4aec$e08f2d60$a1ad8820$@samsung.com>
 MIME-version: 1.0
 Content-type: text/plain; charset=us-ascii
 Content-transfer-encoding: 7bit
 Content-language: ko
 Cc: linux-mtd@lists.infradead.org, Jingoo Han <jg1.han@samsung.com>,
- 'David Woodhouse' <dwmw2@infradead.org>, 'Josh Wu' <josh.wu@atmel.com>
+ 'David Woodhouse' <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,20 +36,29 @@ Thus, it is not needed to manually clear the device driver data to NULL.
 
 Signed-off-by: Jingoo Han <jg1.han@samsung.com>
 ---
- drivers/mtd/nand/atmel_nand.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
+ drivers/mtd/nand/bf5xx_nand.c |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index 2d23d29..36c52f5 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -1665,7 +1665,6 @@ err_hw_ecc:
- err_scan_ident:
- err_no_card:
- 	atmel_nand_disable(host);
+diff --git a/drivers/mtd/nand/bf5xx_nand.c b/drivers/mtd/nand/bf5xx_nand.c
+index 776df36..809a63c 100644
+--- a/drivers/mtd/nand/bf5xx_nand.c
++++ b/drivers/mtd/nand/bf5xx_nand.c
+@@ -671,8 +671,6 @@ static int bf5xx_nand_remove(struct platform_device *pdev)
+ {
+ 	struct bf5xx_nand_info *info = to_nand_info(pdev);
+ 
 -	platform_set_drvdata(pdev, NULL);
- 	if (host->dma_chan)
- 		dma_release_channel(host->dma_chan);
- err_ecc_ioremap:
+-
+ 	/* first thing we need to do is release all our mtds
+ 	 * and their partitions, then go through freeing the
+ 	 * resources used
+@@ -832,7 +830,6 @@ static int bf5xx_nand_probe(struct platform_device *pdev)
+ out_err_nand_scan:
+ 	bf5xx_nand_dma_remove(info);
+ out_err_hw_init:
+-	platform_set_drvdata(pdev, NULL);
+ 	kfree(info);
+ out_err_kzalloc:
+ 	peripheral_free_list(bfin_nfc_pin_req);
 -- 
 1.7.2.5
