@@ -1,25 +1,26 @@
 Received: from mailout4.samsung.com ([203.254.224.34])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UZbVx-0004MN-FX
- for linux-mtd@lists.infradead.org; Tue, 07 May 2013 06:36:42 +0000
-Received: from epcpsbgr2.samsung.com
- (u142.gpu120.samsung.co.kr [203.254.230.142])
+ id 1UZbWs-0004Nr-U0
+ for linux-mtd@lists.infradead.org; Tue, 07 May 2013 06:37:40 +0000
+Received: from epcpsbgr5.samsung.com
+ (u145.gpu120.samsung.co.kr [203.254.230.145])
  by mailout4.samsung.com (Oracle Communications Messaging Server 7u4-24.01
  (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MMF006XZ10E1LE0@mailout4.samsung.com> for
- linux-mtd@lists.infradead.org; Tue, 07 May 2013 15:36:19 +0900 (KST)
+ with ESMTP id <0MMF00MCZ11KLYJ0@mailout4.samsung.com> for
+ linux-mtd@lists.infradead.org; Tue, 07 May 2013 15:37:16 +0900 (KST)
 From: Jingoo Han <jg1.han@samsung.com>
 To: 'Artem Bityutskiy' <artem.bityutskiy@linux.intel.com>
-Subject: [PATCH 14/26] mtd: nand: fsmc_nand: remove unnecessary
+Subject: [PATCH 15/26] mtd: nand: gpmi-nand: remove unnecessary
  platform_set_drvdata()
-Date: Tue, 07 May 2013 15:36:18 +0900
-Message-id: <005201ce4aed$2e797760$8b6c6620$@samsung.com>
+Date: Tue, 07 May 2013 15:37:16 +0900
+Message-id: <005301ce4aed$50cc3d70$f264b850$@samsung.com>
 MIME-version: 1.0
 Content-type: text/plain; charset=us-ascii
 Content-transfer-encoding: 7bit
 Content-language: ko
-Cc: 'Vipin Kumar' <vipin.kumar@st.com>, linux-mtd@lists.infradead.org,
- Jingoo Han <jg1.han@samsung.com>, 'David Woodhouse' <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org, Jingoo Han <jg1.han@samsung.com>,
+ 'David Woodhouse' <dwmw2@infradead.org>, 'Huang Shijie' <b32955@freescale.com>,
+ Shawn Guo <shawn.guo@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,21 +37,28 @@ Thus, it is not needed to manually clear the device driver data to NULL.
 
 Signed-off-by: Jingoo Han <jg1.han@samsung.com>
 ---
- drivers/mtd/nand/fsmc_nand.c |    2 --
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    2 --
  1 files changed, 0 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
-index 911e243..ca7fd0c 100644
---- a/drivers/mtd/nand/fsmc_nand.c
-+++ b/drivers/mtd/nand/fsmc_nand.c
-@@ -1174,8 +1174,6 @@ static int fsmc_nand_remove(struct platform_device *pdev)
- {
- 	struct fsmc_nand_data *host = platform_get_drvdata(pdev);
- 
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 25ecfa1..7869210 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -1633,7 +1633,6 @@ static int gpmi_nand_probe(struct platform_device *pdev)
+ exit_nfc_init:
+ 	release_resources(this);
+ exit_acquire_resources:
 -	platform_set_drvdata(pdev, NULL);
--
- 	if (host) {
- 		nand_release(&host->mtd);
+ 	dev_err(this->dev, "driver registration failed: %d\n", ret);
+ 	kfree(this);
  
+@@ -1646,7 +1645,6 @@ static int gpmi_nand_remove(struct platform_device *pdev)
+ 
+ 	gpmi_nfc_exit(this);
+ 	release_resources(this);
+-	platform_set_drvdata(pdev, NULL);
+ 	kfree(this);
+ 	return 0;
+ }
 -- 
 1.7.2.5
