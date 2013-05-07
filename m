@@ -1,19 +1,19 @@
-Received: from mailout1.samsung.com ([203.254.224.24])
+Received: from mailout2.samsung.com ([203.254.224.25])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UZbes-0004fF-6f
- for linux-mtd@lists.infradead.org; Tue, 07 May 2013 06:45:55 +0000
-Received: from epcpsbgr4.samsung.com
- (u144.gpu120.samsung.co.kr [203.254.230.144])
- by mailout1.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ id 1UZbfV-0004g6-Lj
+ for linux-mtd@lists.infradead.org; Tue, 07 May 2013 06:46:35 +0000
+Received: from epcpsbgr2.samsung.com
+ (u142.gpu120.samsung.co.kr [203.254.230.142])
+ by mailout2.samsung.com (Oracle Communications Messaging Server 7u4-24.01
  (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MMF003G71E1N6R0@mailout1.samsung.com> for
- linux-mtd@lists.infradead.org; Tue, 07 May 2013 15:45:32 +0900 (KST)
+ with ESMTP id <0MMF00JHY1GM3BD0@mailout2.samsung.com> for
+ linux-mtd@lists.infradead.org; Tue, 07 May 2013 15:46:11 +0900 (KST)
 From: Jingoo Han <jg1.han@samsung.com>
 To: 'Artem Bityutskiy' <artem.bityutskiy@linux.intel.com>
-Subject: [PATCH 25/26] mtd: nand: sharpsl: remove unnecessary
+Subject: [PATCH 26/26] mtd: nand: txx9ndfmc: remove unnecessary
  platform_set_drvdata()
-Date: Tue, 07 May 2013 15:45:32 +0900
-Message-id: <005d01ce4aee$78805030$6980f090$@samsung.com>
+Date: Tue, 07 May 2013 15:46:11 +0900
+Message-id: <005e01ce4aee$8fc223e0$af466ba0$@samsung.com>
 MIME-version: 1.0
 Content-type: text/plain; charset=us-ascii
 Content-transfer-encoding: 7bit
@@ -36,29 +36,20 @@ Thus, it is not needed to manually clear the device driver data to NULL.
 
 Signed-off-by: Jingoo Han <jg1.han@samsung.com>
 ---
- drivers/mtd/nand/sharpsl.c |    3 ---
- 1 files changed, 0 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/txx9ndfmc.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/nand/sharpsl.c b/drivers/mtd/nand/sharpsl.c
-index 127bc42..1d41578 100644
---- a/drivers/mtd/nand/sharpsl.c
-+++ b/drivers/mtd/nand/sharpsl.c
-@@ -194,7 +194,6 @@ err_add:
- 	nand_release(&sharpsl->mtd);
+diff --git a/drivers/mtd/nand/txx9ndfmc.c b/drivers/mtd/nand/txx9ndfmc.c
+index 7ed654c..0488dd5 100644
+--- a/drivers/mtd/nand/txx9ndfmc.c
++++ b/drivers/mtd/nand/txx9ndfmc.c
+@@ -387,7 +387,6 @@ static int __exit txx9ndfmc_remove(struct platform_device *dev)
+ 	struct txx9ndfmc_drvdata *drvdata = platform_get_drvdata(dev);
+ 	int i;
  
- err_scan:
--	platform_set_drvdata(pdev, NULL);
- 	iounmap(sharpsl->io);
- err_ioremap:
- err_get_res:
-@@ -212,8 +211,6 @@ static int sharpsl_nand_remove(struct platform_device *pdev)
- 	/* Release resources, unregister device */
- 	nand_release(&sharpsl->mtd);
- 
--	platform_set_drvdata(pdev, NULL);
--
- 	iounmap(sharpsl->io);
- 
- 	/* Free the MTD device structure */
+-	platform_set_drvdata(dev, NULL);
+ 	if (!drvdata)
+ 		return 0;
+ 	for (i = 0; i < MAX_TXX9NDFMC_DEV; i++) {
 -- 
 1.7.2.5
