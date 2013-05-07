@@ -1,20 +1,20 @@
-Received: from mail-qe0-f49.google.com ([209.85.128.49])
+Received: from [2a01:4f8:101:2a4:0:bc28:b2d8:8] (helo=chuck.antcom.de)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UZjVo-00064i-IU
- for linux-mtd@lists.infradead.org; Tue, 07 May 2013 15:09:05 +0000
-Received: by mail-qe0-f49.google.com with SMTP id 7so377147qeb.22
- for <linux-mtd@lists.infradead.org>; Tue, 07 May 2013 08:08:42 -0700 (PDT)
+ id 1UZkft-00085H-Qn
+ for linux-mtd@lists.infradead.org; Tue, 07 May 2013 16:23:35 +0000
+Message-ID: <51892A67.1030602@antcom.de>
+Date: Tue, 07 May 2013 18:23:03 +0200
+From: Roland Stigge <stigge@antcom.de>
 MIME-Version: 1.0
-Date: Tue, 7 May 2013 09:08:42 -0600
-Message-ID: <CACwUX0MqswPeSTis3woPfZufaW2kEdd7-zqe+5o8jLXt8VZnrw@mail.gmail.com>
-Subject: [PATCH] nand_base: fix for ONFI chips that do not support GET/SET
- FEATURES
-From: David Mosberger-Tang <dmosberger@gmail.com>
-To: David Woodhouse <David.Woodhouse@intel.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Brian Norris <computersforpeace@gmail.com>, Huang Shijie <b32955@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: multipart/mixed; boundary=089e0149c406665ca904dc22311f
+To: Jingoo Han <jg1.han@samsung.com>
+Subject: Re: [PATCH 17/26] mtd: nand: lpc32xx: remove unnecessary
+ platform_set_drvdata()
+References: <005501ce4aed$981487f0$c83d97d0$@samsung.com>
+In-Reply-To: <005501ce4aed$981487f0$c83d97d0$@samsung.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: 'Artem Bityutskiy' <artem.bityutskiy@linux.intel.com>,
+ 'David Woodhouse' <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,50 +24,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---089e0149c406665ca904dc22311f
-Content-Type: text/plain; charset=ISO-8859-1
+On 05/07/2013 08:39 AM, Jingoo Han wrote:
+> The driver core clears the driver data to NULL after device_release
+> or on probe failure, since commit 0998d0631001288a5974afc0b2a5f568bcdecb4d
+> (device-core: Ensure drvdata = NULL when no driver is bound).
+> Thus, it is not needed to manually clear the device driver data to NULL.
+> 
+> Signed-off-by: Jingoo Han <jg1.han@samsung.com>
 
-I not seen any ACK that this patch has been queued for merging, so I'm
-re-sending.  Please let me know what you intend to do with it.
+Tested-by: Roland Stigge <stigge@antcom.de>
+Acked-by: Roland Stigge <stigge@antcom.de>
 
-Thanks,
 
-  --david
-
---089e0149c406665ca904dc22311f
-Content-Type: text/plain; charset=US-ASCII; name="nand_base-features-fix-v2.diff.txt"
-Content-Disposition: attachment;
-	filename="nand_base-features-fix-v2.diff.txt"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_hgf7qmb00
-
-bXRkOiBuYW5kX2Jhc2U6IE9ubHkgdXNlIEdFVC9TRVQgRkVBVFVSRVMgY29tbWFuZCBvbiBjaGlw
-cyB0aGF0IHN1cHBvcnQgdGhlbS4KClNwYW5zaW9uJ3MgUzM0TUx4IGNoaXBzIHN1cHBvcnQgT05G
-SSBidXQgbm90IHRoZSBHRVQvU0VUIEZFQVRVUkVTIGNhbGxzLgoKU2lnbmVkLW9mZi1ieTogRGF2
-aWQgTW9zYmVyZ2VyIDxkbW9zYmVyZ2VyQGdtYWlsLmNvbT4KCmRpZmYgLS1naXQgYS9kcml2ZXJz
-L210ZC9uYW5kL25hbmRfYmFzZS5jIGIvZHJpdmVycy9tdGQvbmFuZC9uYW5kX2Jhc2UuYwppbmRl
-eCBkZmNkMGE1Li4xM2JkYjk2IDEwMDY0NAotLS0gYS9kcml2ZXJzL210ZC9uYW5kL25hbmRfYmFz
-ZS5jCisrKyBiL2RyaXZlcnMvbXRkL25hbmQvbmFuZF9iYXNlLmMKQEAgLTI3MjAsNyArMjcyMCw5
-IEBAIHN0YXRpYyBpbnQgbmFuZF9vbmZpX3NldF9mZWF0dXJlcyhzdHJ1Y3QgbXRkX2luZm8gKm10
-ZCwgc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwKIHsKIAlpbnQgc3RhdHVzOwogCi0JaWYgKCFjaGlw
-LT5vbmZpX3ZlcnNpb24pCisJaWYgKCFjaGlwLT5vbmZpX3ZlcnNpb24gfHwKKwkgICAgIShsZTE2
-X3RvX2NwdShjaGlwLT5vbmZpX3BhcmFtcy5vcHRfY21kKQorCSAgICAgICYgT05GSV9PUFRfQ01E
-X1NFVF9HRVRfRkVBVFVSRVMpKQogCQlyZXR1cm4gLUVJTlZBTDsKIAogCWNoaXAtPmNtZGZ1bmMo
-bXRkLCBOQU5EX0NNRF9TRVRfRkVBVFVSRVMsIGFkZHIsIC0xKTsKQEAgLTI3NDEsNyArMjc0Myw5
-IEBAIHN0YXRpYyBpbnQgbmFuZF9vbmZpX3NldF9mZWF0dXJlcyhzdHJ1Y3QgbXRkX2luZm8gKm10
-ZCwgc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwKIHN0YXRpYyBpbnQgbmFuZF9vbmZpX2dldF9mZWF0
-dXJlcyhzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwKIAkJCWlu
-dCBhZGRyLCB1aW50OF90ICpzdWJmZWF0dXJlX3BhcmFtKQogewotCWlmICghY2hpcC0+b25maV92
-ZXJzaW9uKQorCWlmICghY2hpcC0+b25maV92ZXJzaW9uIHx8CisJICAgICEobGUxNl90b19jcHUo
-Y2hpcC0+b25maV9wYXJhbXMub3B0X2NtZCkKKwkgICAgICAmIE9ORklfT1BUX0NNRF9TRVRfR0VU
-X0ZFQVRVUkVTKSkKIAkJcmV0dXJuIC1FSU5WQUw7CiAKIAkvKiBjbGVhciB0aGUgc3ViIGZlYXR1
-cmUgcGFyYW1ldGVycyAqLwpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9tdGQvbmFuZC5oIGIv
-aW5jbHVkZS9saW51eC9tdGQvbmFuZC5oCmluZGV4IGFiNjM2MzQuLjliOThhZjggMTAwNjQ0Ci0t
-LSBhL2luY2x1ZGUvbGludXgvbXRkL25hbmQuaAorKysgYi9pbmNsdWRlL2xpbnV4L210ZC9uYW5k
-LmgKQEAgLTIxNyw2ICsyMTcsOSBAQCBzdHJ1Y3QgbmFuZF9jaGlwOwogLyogT05GSSBzdWJmZWF0
-dXJlIHBhcmFtZXRlcnMgbGVuZ3RoICovCiAjZGVmaW5lIE9ORklfU1VCRkVBVFVSRV9QQVJBTV9M
-RU4JNAogCisvKiBPTkZJIG9wdGlvbmFsIGNvbW1hbmRzIFNFVC9HRVQgRkVBVFVSRVMgc3VwcG9y
-dGVkPyAqLworI2RlZmluZSBPTkZJX09QVF9DTURfU0VUX0dFVF9GRUFUVVJFUwkoMSA8PCAyKQor
-CiBzdHJ1Y3QgbmFuZF9vbmZpX3BhcmFtcyB7CiAJLyogcmV2IGluZm8gYW5kIGZlYXR1cmVzIGJs
-b2NrICovCiAJLyogJ08nICdOJyAnRicgJ0knICAqLwo=
---089e0149c406665ca904dc22311f--
+> ---
+>  drivers/mtd/nand/lpc32xx_mlc.c |    2 --
+>  drivers/mtd/nand/lpc32xx_slc.c |    2 --
+>  2 files changed, 0 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/lpc32xx_mlc.c b/drivers/mtd/nand/lpc32xx_mlc.c
+> index a94facb..5a5cfbc 100644
+> --- a/drivers/mtd/nand/lpc32xx_mlc.c
+> +++ b/drivers/mtd/nand/lpc32xx_mlc.c
+> @@ -833,7 +833,6 @@ err_exit3:
+>  err_exit2:
+>  	clk_disable(host->clk);
+>  	clk_put(host->clk);
+> -	platform_set_drvdata(pdev, NULL);
+>  err_exit1:
+>  	lpc32xx_wp_enable(host);
+>  	gpio_free(host->ncfg->wp_gpio);
+> @@ -856,7 +855,6 @@ static int lpc32xx_nand_remove(struct platform_device *pdev)
+>  
+>  	clk_disable(host->clk);
+>  	clk_put(host->clk);
+> -	platform_set_drvdata(pdev, NULL);
+>  
+>  	lpc32xx_wp_enable(host);
+>  	gpio_free(host->ncfg->wp_gpio);
+> diff --git a/drivers/mtd/nand/lpc32xx_slc.c b/drivers/mtd/nand/lpc32xx_slc.c
+> index be94ed5..a66f33f 100644
+> --- a/drivers/mtd/nand/lpc32xx_slc.c
+> +++ b/drivers/mtd/nand/lpc32xx_slc.c
+> @@ -936,7 +936,6 @@ err_exit3:
+>  err_exit2:
+>  	clk_disable(host->clk);
+>  	clk_put(host->clk);
+> -	platform_set_drvdata(pdev, NULL);
+>  err_exit1:
+>  	lpc32xx_wp_enable(host);
+>  	gpio_free(host->ncfg->wp_gpio);
+> @@ -963,7 +962,6 @@ static int lpc32xx_nand_remove(struct platform_device *pdev)
+>  
+>  	clk_disable(host->clk);
+>  	clk_put(host->clk);
+> -	platform_set_drvdata(pdev, NULL);
+>  	lpc32xx_wp_enable(host);
+>  	gpio_free(host->ncfg->wp_gpio);
+>  
