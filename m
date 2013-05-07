@@ -1,25 +1,25 @@
-Received: from mailout4.samsung.com ([203.254.224.34])
+Received: from mailout2.samsung.com ([203.254.224.25])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UZbF2-0003qa-J5
- for linux-mtd@lists.infradead.org; Tue, 07 May 2013 06:19:13 +0000
+ id 1UZbG2-0003tH-MX
+ for linux-mtd@lists.infradead.org; Tue, 07 May 2013 06:20:16 +0000
 Received: from epcpsbgr4.samsung.com
  (u144.gpu120.samsung.co.kr [203.254.230.144])
- by mailout4.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ by mailout2.samsung.com (Oracle Communications Messaging Server 7u4-24.01
  (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MMF001N307FTHG0@mailout4.samsung.com> for
- linux-mtd@lists.infradead.org; Tue, 07 May 2013 15:18:51 +0900 (KST)
+ with ESMTP id <0MMF00J3107O3BC0@mailout2.samsung.com> for
+ linux-mtd@lists.infradead.org; Tue, 07 May 2013 15:19:51 +0900 (KST)
 From: Jingoo Han <jg1.han@samsung.com>
 To: 'Artem Bityutskiy' <dedekind1@gmail.com>
-Subject: [PATCH 02/26] mtd: devices: elm: remove unnecessary
+Subject: [PATCH 03/26] mtd: maps: plat-ram: remove unnecessary
  platform_set_drvdata()
-Date: Tue, 07 May 2013 15:18:51 +0900
-Message-id: <004101ce4aea$be39ba20$3aad2e60$@samsung.com>
+Date: Tue, 07 May 2013 15:19:51 +0900
+Message-id: <004201ce4aea$e1d309f0$a5791dd0$@samsung.com>
 MIME-version: 1.0
 Content-type: text/plain; charset=us-ascii
 Content-transfer-encoding: 7bit
 Content-language: ko
 Cc: linux-mtd@lists.infradead.org, Jingoo Han <jg1.han@samsung.com>,
- 'David Woodhouse' <dwmw2@infradead.org>, Daniel Mack <zonque@gmail.com>
+ 'David Woodhouse' <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,20 +36,21 @@ Thus, it is not needed to manually clear the device driver data to NULL.
 
 Signed-off-by: Jingoo Han <jg1.han@samsung.com>
 ---
- drivers/mtd/devices/elm.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
+ drivers/mtd/maps/plat-ram.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/devices/elm.c b/drivers/mtd/devices/elm.c
-index dccef9f..721e1f7 100644
---- a/drivers/mtd/devices/elm.c
-+++ b/drivers/mtd/devices/elm.c
-@@ -381,7 +381,6 @@ static int elm_remove(struct platform_device *pdev)
+diff --git a/drivers/mtd/maps/plat-ram.c b/drivers/mtd/maps/plat-ram.c
+index 71fdda2..b0b85eb 100644
+--- a/drivers/mtd/maps/plat-ram.c
++++ b/drivers/mtd/maps/plat-ram.c
+@@ -84,8 +84,6 @@ static int platram_remove(struct platform_device *pdev)
  {
- 	pm_runtime_put_sync(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
--	platform_set_drvdata(pdev, NULL);
- 	return 0;
- }
+ 	struct platram_info *info = to_platram_info(pdev);
  
+-	platform_set_drvdata(pdev, NULL);
+-
+ 	dev_dbg(&pdev->dev, "removing device\n");
+ 
+ 	if (info == NULL)
 -- 
 1.7.2.5
