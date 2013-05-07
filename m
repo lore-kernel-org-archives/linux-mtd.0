@@ -1,23 +1,25 @@
-Received: from mo6-p05-ob.rzone.de ([2a01:238:20a:202:5305::1])
+Received: from mailout1.samsung.com ([203.254.224.24])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UZazl-0003bL-E0
- for linux-mtd@lists.infradead.org; Tue, 07 May 2013 06:03:28 +0000
-Message-ID: <51889901.4080505@denx.de>
-Date: Tue, 07 May 2013 08:02:41 +0200
-From: Stefan Roese <sr@denx.de>
-MIME-Version: 1.0
-To: Brian Pomerantz <bapper@gmail.com>
-Subject: Re: [PATCH] UBI: fastmap convert used list to rb tree
-References: <1367801267-15659-1-git-send-email-bapper@gmail.com>
- <CAFLxGvzqysw2ABxA9Mz6b6LOdQdGS4y+fN=UeJ0tuk=KPYO55Q@mail.gmail.com>
- <1BB4A15D-C030-4CDC-B5C6-8C687572ACB7@gmail.com>
- <CAFLxGvy2icxuGx9+VaiTgFxPwL3pHOEXo6S2UG-tJvoB+GdRCg@mail.gmail.com>
- <B5D1657C-FF53-431E-AF13-5EC929791B66@gmail.com>
-In-Reply-To: <B5D1657C-FF53-431E-AF13-5EC929791B66@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: richard -rw- weinberger <richard.weinberger@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+ id 1UZbBq-0003jk-6c
+ for linux-mtd@lists.infradead.org; Tue, 07 May 2013 06:15:55 +0000
+Received: from epcpsbgr5.samsung.com
+ (u145.gpu120.samsung.co.kr [203.254.230.145])
+ by mailout1.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ (7.0.4.24.0) 64bit (built Nov 17 2011))
+ with ESMTP id <0MMF00BZB0177RO0@mailout1.samsung.com> for
+ linux-mtd@lists.infradead.org; Tue, 07 May 2013 15:15:24 +0900 (KST)
+From: Jingoo Han <jg1.han@samsung.com>
+To: 'Artem Bityutskiy' <dedekind1@gmail.com>
+Subject: [PATCH 01/26] mtd: devices: spear_smi: remove unnecessary
+ platform_set_drvdata()
+Date: Tue, 07 May 2013 15:15:23 +0900
+Message-id: <003a01ce4aea$42846a60$c78d3f20$@samsung.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-transfer-encoding: 7bit
+Content-language: ko
+Cc: linux-mtd@lists.infradead.org, 'Viresh Kumar' <viresh.kumar@st.com>,
+ 'David Woodhouse' <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,20 +29,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 05/06/2013 05:27 PM, Brian Pomerantz wrote:
->> Did you port fastmap to u-boot?
->>
-> 
-> I didn't, though if it's not upstream then perhaps one of my colleagues
-> did.  From what I can tell, it's nearly identical code to what is in the
-> kernel.
+The driver core clears the driver data to NULL after device_release
+or on probe failure, since commit 0998d0631001288a5974afc0b2a5f568bcdecb4d
+(device-core: Ensure drvdata = NULL when no driver is bound).
+Thus, it is not needed to manually clear the device driver data to NULL.
 
-Yes, the UBI code in U-Boot is a slightly modified version of the Linux
-UBI code. But pretty old (from 2008). And mainline U-Boot UBI currently
-has no fastmap support.
+Signed-off-by: Jingoo Han <jg1.han@samsung.com>
+---
+ drivers/mtd/devices/spear_smi.c |    5 +----
+ 1 files changed, 1 insertions(+), 4 deletions(-)
 
-Brian, could you please let me know which U-Boot version you are using?
-It would be great to see this fastmap support merged back into mainline.
-
-Thanks,
-Stefan
+diff --git a/drivers/mtd/devices/spear_smi.c b/drivers/mtd/devices/spear_smi.c
+index 8a82b8b..e290ef8 100644
+--- a/drivers/mtd/devices/spear_smi.c
++++ b/drivers/mtd/devices/spear_smi.c
+@@ -995,14 +995,12 @@ static int spear_smi_probe(struct platform_device *pdev)
+ 		ret = spear_smi_setup_banks(pdev, i, pdata->np[i]);
+ 		if (ret) {
+ 			dev_err(&dev->pdev->dev, "bank setup failed\n");
+-			goto err_bank_setup;
++			goto err_irq;
+ 		}
+ 	}
+ 
+ 	return 0;
+ 
+-err_bank_setup:
+-	platform_set_drvdata(pdev, NULL);
+ err_irq:
+ 	clk_disable_unprepare(dev->clk);
+ err:
+@@ -1040,7 +1038,6 @@ static int spear_smi_remove(struct platform_device *pdev)
+ 	}
+ 
+ 	clk_disable_unprepare(dev->clk);
+-	platform_set_drvdata(pdev, NULL);
+ 
+ 	return 0;
+ }
+-- 
+1.7.2.5
