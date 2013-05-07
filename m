@@ -1,25 +1,26 @@
-Received: from mailout1.samsung.com ([203.254.224.24])
+Received: from mailout4.samsung.com ([203.254.224.34])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UZbbv-0004Ya-Gs
- for linux-mtd@lists.infradead.org; Tue, 07 May 2013 06:42:52 +0000
-Received: from epcpsbgr4.samsung.com
- (u144.gpu120.samsung.co.kr [203.254.230.144])
- by mailout1.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ id 1UZbdD-0004aq-Jz
+ for linux-mtd@lists.infradead.org; Tue, 07 May 2013 06:44:12 +0000
+Received: from epcpsbgr1.samsung.com
+ (u141.gpu120.samsung.co.kr [203.254.230.141])
+ by mailout4.samsung.com (Oracle Communications Messaging Server 7u4-24.01
  (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MMF00J7V19FP220@mailout1.samsung.com> for
- linux-mtd@lists.infradead.org; Tue, 07 May 2013 15:42:30 +0900 (KST)
+ with ESMTP id <0MMF006921BU1LF0@mailout4.samsung.com> for
+ linux-mtd@lists.infradead.org; Tue, 07 May 2013 15:43:35 +0900 (KST)
 From: Jingoo Han <jg1.han@samsung.com>
 To: 'Artem Bityutskiy' <artem.bityutskiy@linux.intel.com>
-Subject: [PATCH 21/26] mtd: nand: orion_nand: remove unnecessary
+Subject: [PATCH 22/26] mtd: nand: plat_nand: remove unnecessary
  platform_set_drvdata()
-Date: Tue, 07 May 2013 15:42:29 +0900
-Message-id: <005901ce4aee$0bac0da0$230428e0$@samsung.com>
+Date: Tue, 07 May 2013 15:43:34 +0900
+Message-id: <005a01ce4aee$32851f20$978f5d60$@samsung.com>
 MIME-version: 1.0
 Content-type: text/plain; charset=us-ascii
 Content-transfer-encoding: 7bit
 Content-language: ko
-Cc: linux-mtd@lists.infradead.org, Jingoo Han <jg1.han@samsung.com>,
- 'David Woodhouse' <dwmw2@infradead.org>, Andrew Lunn <andrew@lunn.ch>
+Cc: linux-mtd@lists.infradead.org,
+ Hartley Sweeten <hartleys@visionengravers.com>,
+ Jingoo Han <jg1.han@samsung.com>, 'David Woodhouse' <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,20 +37,20 @@ Thus, it is not needed to manually clear the device driver data to NULL.
 
 Signed-off-by: Jingoo Han <jg1.han@samsung.com>
 ---
- drivers/mtd/nand/orion_nand.c |    1 -
+ drivers/mtd/nand/plat_nand.c |    1 -
  1 files changed, 0 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
-index 8fbd002..46f308d 100644
---- a/drivers/mtd/nand/orion_nand.c
-+++ b/drivers/mtd/nand/orion_nand.c
-@@ -186,7 +186,6 @@ no_dev:
- 		clk_disable_unprepare(clk);
- 		clk_put(clk);
- 	}
+diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/plat_nand.c
+index c004566..d42700a 100644
+--- a/drivers/mtd/nand/plat_nand.c
++++ b/drivers/mtd/nand/plat_nand.c
+@@ -122,7 +122,6 @@ static int plat_nand_probe(struct platform_device *pdev)
+ out:
+ 	if (pdata->ctrl.remove)
+ 		pdata->ctrl.remove(pdev);
 -	platform_set_drvdata(pdev, NULL);
- 	iounmap(io_base);
- no_res:
- 	kfree(nc);
+ 	iounmap(data->io_base);
+ out_release_io:
+ 	release_mem_region(res->start, resource_size(res));
 -- 
 1.7.2.5
