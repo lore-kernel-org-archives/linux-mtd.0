@@ -1,23 +1,15 @@
-Received: from co1ehsobe001.messaging.microsoft.com ([216.32.180.184]
- helo=co1outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UZtp0-0008EO-Al
- for linux-mtd@lists.infradead.org; Wed, 08 May 2013 02:09:35 +0000
-Message-ID: <5189B446.7010101@freescale.com>
-Date: Wed, 8 May 2013 10:11:18 +0800
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: David Mosberger-Tang <dmosberger@gmail.com>
-Subject: Re: [PATCH] nand_base: fix for ONFI chips that do not support GET/SET
- FEATURES
-References: <CACwUX0MqswPeSTis3woPfZufaW2kEdd7-zqe+5o8jLXt8VZnrw@mail.gmail.com>
-In-Reply-To: <CACwUX0MqswPeSTis3woPfZufaW2kEdd7-zqe+5o8jLXt8VZnrw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <David.Woodhouse@intel.com>
+Received: from egauge.net ([108.168.136.98] helo=slt.egauge.net)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UZwao-00017G-Jw
+ for linux-mtd@lists.infradead.org; Wed, 08 May 2013 05:07:08 +0000
+From: David Mosberger <dmosberger@gmail.com>
+To: David.Woodhouse@intel.com, b32955@freescale.com,
+ linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: nand_base: Only use GET/SET FEATURES command on chips
+ that support them.
+Date: Tue,  7 May 2013 23:06:22 -0600
+Message-Id: <1367989582-6375-1-git-send-email-dmosberger@gmail.com>
+Cc: David Mosberger <davidm@egauge.net>, David Mosberger <dmosberger@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,18 +19,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B405=E6=9C=8807=E6=97=A5 23:08, David Mosberger-Tang=
- =E5=86=99=E9=81=93:
-> I not seen any ACK that this patch has been queued for merging, so I'm
-> re-sending.  Please let me know what you intend to do with it.
->
-I can not git-am your patch. I think you'd better create a patch with=20
-git-format-patch,
-and send it out with git-send-email.
+From: David Mosberger <davidm@egauge.net>
 
-You can add my
+Spansion's S34MLx chips support ONFI but not the GET/SET FEATURES calls.
+
+Signed-off-by: David Mosberger <dmosberger@gmail.com>
 Reviewed-by: Huang Shijie <b32955@freescale.com>
+---
+ drivers/mtd/nand/nand_base.c |    8 ++++++--
+ include/linux/mtd/nand.h     |    3 +++
+ 2 files changed, 9 insertions(+), 2 deletions(-)
 
-
-thanks
-Huang Shijie
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index dfcd0a5..13bdb96 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2720,7 +2720,9 @@ static int nand_onfi_set_features(struct mtd_info *mtd, struct nand_chip *chip,
+ {
+ 	int status;
+ 
+-	if (!chip->onfi_version)
++	if (!chip->onfi_version ||
++	    !(le16_to_cpu(chip->onfi_params.opt_cmd)
++	      & ONFI_OPT_CMD_SET_GET_FEATURES))
+ 		return -EINVAL;
+ 
+ 	chip->cmdfunc(mtd, NAND_CMD_SET_FEATURES, addr, -1);
+@@ -2741,7 +2743,9 @@ static int nand_onfi_set_features(struct mtd_info *mtd, struct nand_chip *chip,
+ static int nand_onfi_get_features(struct mtd_info *mtd, struct nand_chip *chip,
+ 			int addr, uint8_t *subfeature_param)
+ {
+-	if (!chip->onfi_version)
++	if (!chip->onfi_version ||
++	    !(le16_to_cpu(chip->onfi_params.opt_cmd)
++	      & ONFI_OPT_CMD_SET_GET_FEATURES))
+ 		return -EINVAL;
+ 
+ 	/* clear the sub feature parameters */
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index ab63634..9b98af8 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -217,6 +217,9 @@ struct nand_chip;
+ /* ONFI subfeature parameters length */
+ #define ONFI_SUBFEATURE_PARAM_LEN	4
+ 
++/* ONFI optional commands SET/GET FEATURES supported? */
++#define ONFI_OPT_CMD_SET_GET_FEATURES	(1 << 2)
++
+ struct nand_onfi_params {
+ 	/* rev info and features block */
+ 	/* 'O' 'N' 'F' 'I'  */
+-- 
+1.7.5.4
