@@ -1,16 +1,17 @@
-Received: from woodpecker.gentoo.org ([2001:470:ea4a:1:214:c2ff:fe64:b2d3]
+Received: from dev.gentoo.org ([2001:470:ea4a:1:214:c2ff:fe64:b2d3]
  helo=smtp.gentoo.org)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ua7DY-0006BV-ST
- for linux-mtd@lists.infradead.org; Wed, 08 May 2013 16:27:49 +0000
+ id 1Ua7DY-0006BU-SS
+ for linux-mtd@lists.infradead.org; Wed, 08 May 2013 16:27:50 +0000
 Received: from localhost.localdomain (localhost [127.0.0.1])
- by smtp.gentoo.org (Postfix) with ESMTP id 1628333DFE0
+ by smtp.gentoo.org (Postfix) with ESMTP id 83F7933DEEC
  for <linux-mtd@lists.infradead.org>; Wed,  8 May 2013 16:27:27 +0000 (UTC)
 From: Mike Frysinger <vapier@gentoo.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH [mtd-utils] 3/3] mkfs.ubifs: allow reformatting of devices
-Date: Wed,  8 May 2013 12:27:26 -0400
-Message-Id: <1368030446-343-3-git-send-email-vapier@gentoo.org>
+Subject: [PATCH [mtd-utils] 2/3] mtd-utils: new prompt() helper for talking to
+ the user
+Date: Wed,  8 May 2013 12:27:25 -0400
+Message-Id: <1368030446-343-2-git-send-email-vapier@gentoo.org>
 In-Reply-To: <1368030446-343-1-git-send-email-vapier@gentoo.org>
 References: <1368030446-343-1-git-send-email-vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,74 +23,203 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sometimes I want to re-initialize an existing ubifs, but the tool
-currently bails out if the volume is already formatted.  Prompt the
-user instead so they can decide.
+We've got a few tools that prompt the user for "yes/no" questions.
+Add a common helper to simplify the various implementations.
 
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
- mkfs.ubifs/mkfs.ubifs.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ flash_otp_lock.c      |  6 +++---
+ ftl_format.c          | 11 +++--------
+ include/common.h      | 39 ++++++++++++++++++++++++++++++++++++++-
+ ubi-utils/ubiformat.c | 39 +++++++--------------------------------
+ 4 files changed, 51 insertions(+), 44 deletions(-)
 
-diff --git a/mkfs.ubifs/mkfs.ubifs.c b/mkfs.ubifs/mkfs.ubifs.c
-index 2bb819e..427e37d 100644
---- a/mkfs.ubifs/mkfs.ubifs.c
-+++ b/mkfs.ubifs/mkfs.ubifs.c
-@@ -103,6 +103,7 @@ static libubi_t ubi;
- /* Debug levels are: 0 (none), 1 (statistics), 2 (files) ,3 (more details) */
- int debug_level;
- int verbose;
-+int yes;
+diff --git a/flash_otp_lock.c b/flash_otp_lock.c
+index cc8759e..3c39a2d 100644
+--- a/flash_otp_lock.c
++++ b/flash_otp_lock.c
+@@ -13,11 +13,12 @@
+ #include <sys/ioctl.h>
  
- static char *root;
- static int root_len;
-@@ -133,7 +134,7 @@ static struct inum_mapping **hash_table;
- /* Inode creation sequence number */
- static unsigned long long creat_sqnum;
+ #include <mtd/mtd-user.h>
++#include "common.h"
  
--static const char *optstring = "d:r:m:o:D:h?vVe:c:g:f:Fp:k:x:X:j:R:l:j:UQq";
-+static const char *optstring = "d:r:m:o:D:yh?vVe:c:g:f:Fp:k:x:X:j:R:l:j:UQq";
+ int main(int argc,char *argv[])
+ {
+ 	int fd, val, ret, offset, size;
+-	char *p, buf[8];
++	char *p;
  
- static const struct option longopts[] = {
- 	{"root",               1, NULL, 'r'},
-@@ -142,6 +143,7 @@ static const struct option longopts[] = {
- 	{"max-leb-cnt",        1, NULL, 'c'},
- 	{"output",             1, NULL, 'o'},
- 	{"devtable",           1, NULL, 'D'},
-+	{"yes",                0, NULL, 'y'},
- 	{"help",               0, NULL, 'h'},
- 	{"verbose",            0, NULL, 'v'},
- 	{"version",            0, NULL, 'V'},
-@@ -191,6 +193,7 @@ static const char *helptext =
- "-U, --squash-uids        squash owners making all files owned by root\n"
- "-l, --log-lebs=COUNT     count of erase blocks for the log (used only for\n"
- "                         debugging)\n"
-+"-y, --yes                assume the answer is \"yes\" for all questions\n"
- "-v, --verbose            verbose operation\n"
- "-V, --version            display version information\n"
- "-g, --debug=LEVEL        display debug information (0 - none, 1 - statistics,\n"
-@@ -539,6 +542,9 @@ static int get_options(int argc, char**argv)
- 				return sys_err_msg("bad device table file '%s'",
- 						   tbl_file);
- 			break;
-+		case 'y':
-+			yes = 1;
+ 	if (argc != 5 || strcmp(argv[1], "-u")) {
+ 		fprintf(stderr, "Usage: %s -u <device> <offset> <size>\n", PROGRAM_NAME);
+@@ -53,8 +54,7 @@ int main(int argc,char *argv[])
+ 
+ 	printf("About to lock OTP user data on %s from 0x%x to 0x%x\n",
+ 			argv[2], offset, offset + size);
+-	printf("Are you sure (yes|no)? ");
+-	if (fgets(buf, sizeof(buf), stdin) && strcmp(buf, "yes\n") == 0) {
++	if (prompt("Are you sure?", false)) {
+ 		struct otp_info info;
+ 		info.start = offset;
+ 		info.length = size;
+diff --git a/ftl_format.c b/ftl_format.c
+index 0f69b8f..b58677f 100644
+--- a/ftl_format.c
++++ b/ftl_format.c
+@@ -51,6 +51,7 @@
+ #include <mtd/mtd-user.h>
+ #include <mtd/ftl-user.h>
+ #include <mtd_swab.h>
++#include "common.h"
+ 
+ /*====================================================================*/
+ 
+@@ -164,15 +165,9 @@ static int format_partition(int fd, int quiet, int interrogate,
+ 		fflush(stdout);
+ 	}
+ 
+-	if (interrogate) {
+-		char str[3];
+-		printf("This will destroy all data on the target device.  "
+-				"Confirm (y/n): ");
+-		if (fgets(str, 3, stdin) == NULL)
++	if (interrogate)
++		if (!prompt("This will destroy all data on the target device. Confirm?", false))
+ 			return -1;
+-		if ((strcmp(str, "y\n") != 0) && (strcmp(str, "Y\n") != 0))
+-			return -1;
+-	}
+ 
+ 	/* Create basic block allocation table for control blocks */
+ 	nbam = ((mtd.erasesize >> hdr.BlockSize) * sizeof(u_int)
+diff --git a/include/common.h b/include/common.h
+index d0c4146..4ffccea 100644
+--- a/include/common.h
++++ b/include/common.h
+@@ -19,6 +19,7 @@
+ #ifndef __MTD_UTILS_COMMON_H__
+ #define __MTD_UTILS_COMMON_H__
+ 
++#include <stdbool.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <ctype.h>
+@@ -101,9 +102,45 @@ extern "C" {
+ 	fprintf(stderr, "%s: warning!: " fmt "\n", PROGRAM_NAME, ##__VA_ARGS__); \
+ } while(0)
+ 
++/**
++ * prompt the user for confirmation
++ */
++static inline bool prompt(const char *msg, bool def)
++{
++	char *line = NULL;
++	size_t len;
++	bool ret = def;
++
++	do {
++		normsg_cont("%s (%c/%c) ", msg, def ? 'Y' : 'y', def ? 'n' : 'N');
++		fflush(stdout);
++
++		while (getline(&line, &len, stdin) == -1) {
++			printf("failed to read prompt; assuming '%s'\n",
++				def ? "yes" : "no");
 +			break;
- 		case 'h':
- 		case '?':
- 			printf("%s", helptext);
-@@ -2098,8 +2104,10 @@ static int open_target(void)
- 		if (ubi_set_property(out_fd, UBI_VOL_PROP_DIRECT_WRITE, 1))
- 			return sys_err_msg("ubi_set_property failed");
- 
--		if (check_volume_empty())
--			return err_msg("UBI volume is not empty");
-+		if (!yes && check_volume_empty()) {
-+			if (!prompt("UBI volume is not empty.  Format anyways?", false))
-+				return err_msg("UBI volume is not empty");
 +		}
- 	} else {
- 		out_fd = open(output, O_CREAT | O_RDWR | O_TRUNC,
- 			      S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
++
++		if (strcmp("\n", line) != 0) {
++			switch (rpmatch(line)) {
++			case 0: ret = false; break;
++			case 1: ret = true; break;
++			case -1:
++				puts("unknown response; please try again");
++				continue;
++			}
++		}
++		break;
++	} while (1);
++
++	free(line);
++
++	return ret;
++}
++
+ static inline int is_power_of_2(unsigned long long n)
+ {
+-	        return (n != 0 && ((n & (n - 1)) == 0));
++	return (n != 0 && ((n & (n - 1)) == 0));
+ }
+ 
+ /**
+diff --git a/ubi-utils/ubiformat.c b/ubi-utils/ubiformat.c
+index 899f9fc..97a4eab 100644
+--- a/ubi-utils/ubiformat.c
++++ b/ubi-utils/ubiformat.c
+@@ -243,35 +243,12 @@ static int parse_opt(int argc, char * const argv[])
+ 
+ static int want_exit(void)
+ {
+-	char buf[4];
+-
+-	while (1) {
+-		normsg_cont("continue? (yes/no)  ");
+-		if (scanf("%3s", buf) == EOF) {
+-			sys_errmsg("scanf returned unexpected EOF, assume \"yes\"");
+-			return 1;
+-		}
+-		if (!strncmp(buf, "yes", 3) || !strncmp(buf, "y", 1))
+-			return 0;
+-		if (!strncmp(buf, "no", 2) || !strncmp(buf, "n", 1))
+-			return 1;
+-	}
++	return prompt("continue?", false) == true ? 0 : 1;
+ }
+ 
+-static int answer_is_yes(void)
++static int answer_is_yes(const char *msg)
+ {
+-	char buf[4];
+-
+-	while (1) {
+-		if (scanf("%3s", buf) == EOF) {
+-			sys_errmsg("scanf returned unexpected EOF, assume \"no\"");
+-			return 0;
+-		}
+-		if (!strncmp(buf, "yes", 3) || !strncmp(buf, "y", 1))
+-			return 1;
+-		if (!strncmp(buf, "no", 2) || !strncmp(buf, "n", 1))
+-			return 0;
+-	}
++	return prompt(msg ? : "continue?", false);
+ }
+ 
+ static void print_bad_eraseblocks(const struct mtd_dev_info *mtd,
+@@ -412,11 +389,9 @@ static int mark_bad(const struct mtd_dev_info *mtd, struct ubi_scan_info *si, in
+ {
+ 	int err;
+ 
+-	if (!args.yes) {
+-		normsg_cont("mark it as bad? Continue (yes/no) ");
+-		if (!answer_is_yes())
++	if (!args.yes)
++		if (!answer_is_yes("mark it as bad?"))
+ 			return -1;
+-	}
+ 
+ 	if (!args.quiet)
+ 		normsg_cont("marking block %d bad", eb);
+@@ -922,10 +897,10 @@ int main(int argc, char * const argv[])
+ 				"which is different to requested offsets %d and %d",
+ 				si->vid_hdr_offs, si->data_offs, ui.vid_hdr_offs,
+ 				ui.data_offs);
+-			normsg_cont("use new offsets %d and %d? (yes/no)  ",
++			normsg_cont("use new offsets %d and %d? ",
+ 				    ui.vid_hdr_offs, ui.data_offs);
+ 		}
+-		if (args.yes || answer_is_yes()) {
++		if (args.yes || answer_is_yes(NULL)) {
+ 			if (args.yes && !args.quiet)
+ 				printf("yes\n");
+ 		} else
 -- 
 1.8.2.1
