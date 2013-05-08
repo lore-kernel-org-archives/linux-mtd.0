@@ -1,16 +1,18 @@
-Received: from dev.gentoo.org ([2001:470:ea4a:1:214:c2ff:fe64:b2d3]
+Received: from woodpecker.gentoo.org ([2001:470:ea4a:1:214:c2ff:fe64:b2d3]
  helo=smtp.gentoo.org)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ua7CM-00068i-LY
- for linux-mtd@lists.infradead.org; Wed, 08 May 2013 16:26:35 +0000
+ id 1Ua7DY-0006BV-ST
+ for linux-mtd@lists.infradead.org; Wed, 08 May 2013 16:27:49 +0000
 Received: from localhost.localdomain (localhost [127.0.0.1])
- by smtp.gentoo.org (Postfix) with ESMTP id F2A2633DEEC
- for <linux-mtd@lists.infradead.org>; Wed,  8 May 2013 16:26:11 +0000 (UTC)
+ by smtp.gentoo.org (Postfix) with ESMTP id 1628333DFE0
+ for <linux-mtd@lists.infradead.org>; Wed,  8 May 2013 16:27:27 +0000 (UTC)
 From: Mike Frysinger <vapier@gentoo.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH [mtd-utils]] fix build errors w/newer kernel headers & glibc
-Date: Wed,  8 May 2013 12:26:13 -0400
-Message-Id: <1368030373-32584-1-git-send-email-vapier@gentoo.org>
+Subject: [PATCH [mtd-utils] 3/3] mkfs.ubifs: allow reformatting of devices
+Date: Wed,  8 May 2013 12:27:26 -0400
+Message-Id: <1368030446-343-3-git-send-email-vapier@gentoo.org>
+In-Reply-To: <1368030446-343-1-git-send-email-vapier@gentoo.org>
+References: <1368030446-343-1-git-send-email-vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,36 +22,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Building with linux-headers-3.9 and glibc-2.17 fails like so:
-In file included from summary.h:15:0,
-                 from jffs2dump.c:37:
-/usr/include/linux/uio.h:16:8: error: redefinition of 'struct iovec'
- struct iovec
-        ^
-In file included from /usr/include/bits/fcntl-linux.h:38:0,
-                 from /usr/include/bits/fcntl.h:61,
-                 from /usr/include/fcntl.h:35,
-                 from jffs2dump.c:25:
-/usr/include/bits/uio.h:43:8: note: originally defined here
- struct iovec
-        ^
+Sometimes I want to re-initialize an existing ubifs, but the tool
+currently bails out if the volume is already formatted.  Prompt the
+user instead so they can decide.
 
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
- summary.h | 1 -
- 1 file changed, 1 deletion(-)
+ mkfs.ubifs/mkfs.ubifs.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/summary.h b/summary.h
-index 95f25c6..e9d95a5 100644
---- a/summary.h
-+++ b/summary.h
-@@ -12,7 +12,6 @@
- #ifndef JFFS2_SUMMARY_H
- #define JFFS2_SUMMARY_H
+diff --git a/mkfs.ubifs/mkfs.ubifs.c b/mkfs.ubifs/mkfs.ubifs.c
+index 2bb819e..427e37d 100644
+--- a/mkfs.ubifs/mkfs.ubifs.c
++++ b/mkfs.ubifs/mkfs.ubifs.c
+@@ -103,6 +103,7 @@ static libubi_t ubi;
+ /* Debug levels are: 0 (none), 1 (statistics), 2 (files) ,3 (more details) */
+ int debug_level;
+ int verbose;
++int yes;
  
--#include <linux/uio.h>
- #include <linux/jffs2.h>
+ static char *root;
+ static int root_len;
+@@ -133,7 +134,7 @@ static struct inum_mapping **hash_table;
+ /* Inode creation sequence number */
+ static unsigned long long creat_sqnum;
  
- #define DIRTY_SPACE(x) do { typeof(x) _x = (x); \
+-static const char *optstring = "d:r:m:o:D:h?vVe:c:g:f:Fp:k:x:X:j:R:l:j:UQq";
++static const char *optstring = "d:r:m:o:D:yh?vVe:c:g:f:Fp:k:x:X:j:R:l:j:UQq";
+ 
+ static const struct option longopts[] = {
+ 	{"root",               1, NULL, 'r'},
+@@ -142,6 +143,7 @@ static const struct option longopts[] = {
+ 	{"max-leb-cnt",        1, NULL, 'c'},
+ 	{"output",             1, NULL, 'o'},
+ 	{"devtable",           1, NULL, 'D'},
++	{"yes",                0, NULL, 'y'},
+ 	{"help",               0, NULL, 'h'},
+ 	{"verbose",            0, NULL, 'v'},
+ 	{"version",            0, NULL, 'V'},
+@@ -191,6 +193,7 @@ static const char *helptext =
+ "-U, --squash-uids        squash owners making all files owned by root\n"
+ "-l, --log-lebs=COUNT     count of erase blocks for the log (used only for\n"
+ "                         debugging)\n"
++"-y, --yes                assume the answer is \"yes\" for all questions\n"
+ "-v, --verbose            verbose operation\n"
+ "-V, --version            display version information\n"
+ "-g, --debug=LEVEL        display debug information (0 - none, 1 - statistics,\n"
+@@ -539,6 +542,9 @@ static int get_options(int argc, char**argv)
+ 				return sys_err_msg("bad device table file '%s'",
+ 						   tbl_file);
+ 			break;
++		case 'y':
++			yes = 1;
++			break;
+ 		case 'h':
+ 		case '?':
+ 			printf("%s", helptext);
+@@ -2098,8 +2104,10 @@ static int open_target(void)
+ 		if (ubi_set_property(out_fd, UBI_VOL_PROP_DIRECT_WRITE, 1))
+ 			return sys_err_msg("ubi_set_property failed");
+ 
+-		if (check_volume_empty())
+-			return err_msg("UBI volume is not empty");
++		if (!yes && check_volume_empty()) {
++			if (!prompt("UBI volume is not empty.  Format anyways?", false))
++				return err_msg("UBI volume is not empty");
++		}
+ 	} else {
+ 		out_fd = open(output, O_CREAT | O_RDWR | O_TRUNC,
+ 			      S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
 -- 
 1.8.2.1
