@@ -1,21 +1,17 @@
-Received: from mail-qe0-f45.google.com ([209.85.128.45])
+Received: from dev.gentoo.org ([2001:470:ea4a:1:214:c2ff:fe64:b2d3]
+ helo=smtp.gentoo.org)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ua5ft-0002uc-1Q
- for linux-mtd@lists.infradead.org; Wed, 08 May 2013 14:48:58 +0000
-Received: by mail-qe0-f45.google.com with SMTP id a11so1139195qen.32
- for <linux-mtd@lists.infradead.org>; Wed, 08 May 2013 07:48:34 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <518A1FD8.7030106@youcom.nl>
-References: <518807C7.9000005@youcom.nl>
- <CACwUX0NVYE5xcdZgCqVL8F+4mT9mhw4m+sMuUDDnTRAMNu5iWA@mail.gmail.com>
- <518A1FD8.7030106@youcom.nl>
-Date: Wed, 8 May 2013 08:48:34 -0600
-Message-ID: <CACwUX0Ob7paNgQbxVag4Qp1+v9DYeF7Pdj-wA-ke5=drZYmE+w@mail.gmail.com>
-Subject: Re: [PATCH] nand_ecc_micron: added support for 4 bits on-die ECC
-From: David Mosberger-Tang <dmosberger@gmail.com>
-To: Jelle Martijn Kok <jmkok@youcom.nl>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+ id 1Ua77p-00061A-QF
+ for linux-mtd@lists.infradead.org; Wed, 08 May 2013 16:21:54 +0000
+Received: from localhost.localdomain (localhost [127.0.0.1])
+ by smtp.gentoo.org (Postfix) with ESMTP id 74A8C33DFE8
+ for <linux-mtd@lists.infradead.org>; Wed,  8 May 2013 16:21:22 +0000 (UTC)
+From: Mike Frysinger <vapier@gentoo.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH [mtd-utils]] ftl_check/ftl_format/nftldump: use existing
+ mtd_swab.h header
+Date: Wed,  8 May 2013 12:21:23 -0400
+Message-Id: <1368030083-28190-1-git-send-email-vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,428 +21,281 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jelle,
+We already have a helper header for swapping bytes as needed, so cut
+the ftl tools over to that rather than re-implement things.
 
-The patch was meant to provide working code, not for direct
-integration.  I am working on submitting the changes in nice, small,
-incremental steps.
+I don't actually have any devices with this kind of flash, so I can't
+runtime test it.  But things *look* ok to me :).
 
-  --david
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+---
+ ftl_check.c  | 44 +++++++++++++++----------------------------
+ ftl_format.c | 61 +++++++++++++++++++++++-------------------------------------
+ nftldump.c   |  9 ++-------
+ 3 files changed, 40 insertions(+), 74 deletions(-)
 
-On Wed, May 8, 2013 at 3:50 AM, Jelle Martijn Kok <jmkok@youcom.nl> wrote:
-> Hi David,
->
-> I looked at your code and I expect it to contain too many sub-patches to be
-> accepted.
-> - do not modify any code in "nand_base.c" as this likely will get the code
-> rejected
-> - adding "NAND_ECC_HW_ON_DIE" is a indeed good choice for the ecc.mode.
-> - do not add any onfi patches, do this in a separate patch
-> - do not add set_column(), do this in a separate patch
-> - set_on_die_ecc() should have 1us delay. So a raw read/write might not be
-> that straight forward.
->
-> Note: It will be a pleasure to make any changes to my code if one of the
-> maintainers would require this before it can be accepted.
->
-> Jelle Martijn
->
->
-> On 06-05-13 21:54, David Mosberger-Tang wrote:
->>
->> Have you considered my patch:
->>
->>    http://lists.infradead.org/pipermail/linux-mtd/2013-March/046358.html
->>
->> maybe we should try to consolidate?  I can make an updated patch if
->> there is interest.
->>
->> On Mon, May 6, 2013 at 1:43 PM, Jelle Martijn Kok <jmkok@youcom.nl> wrote:
->>>
->>> The patch below enables support for the 4-bits on-die ECC (aka internal
->>> ECC).
->>> Some notes:
->>> - it is detected and activate from nand_scan_tail().
->>> - when called from nand_scan_ident() it fails as at least "atmel_nand.c"
->>> overwrites some setup
->>> - if an 4-bits on-die capable Micron nand flash is detected it will kick
->>> in
->>> - UBI works like a charm and nicely moves the bit-flipped page/block
->>> - when performing "dd if=/dev/mtdblock1 of=/dev/null" and encountering
->>> such
->>> a bad page, it fails with an I/O error (is this correct ?)
->>> - raw reads likely do not work. When the on-die ECC is enabled it will
->>> automatically correct bitflips...
->>> - Tested on MT29F1G08ABBDAHC and MT29F2G08ABBEAH4
->>>
->>> Signed-off-by: Jelle Martijn Kok <jmkok@youcom.nl>
->>> ---
->>>   drivers/mtd/nand/Kconfig            |    7 +
->>>   drivers/mtd/nand/Makefile           |    1 +
->>>   drivers/mtd/nand/nand_base.c        |    9 ++
->>>   drivers/mtd/nand/nand_ecc_micron.c  |  238
->>> +++++++++++++++++++++++++++++++++++
->>>   include/linux/mtd/nand_ecc_micron.h |    9 ++
->>>   5 files changed, 264 insertions(+), 0 deletions(-)
->>>   create mode 100644 drivers/mtd/nand/nand_ecc_micron.c
->>>   create mode 100644 include/linux/mtd/nand_ecc_micron.h
->>>
->>> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
->>> index cce7b70..54afcaa 100644
->>> --- a/drivers/mtd/nand/Kconfig
->>> +++ b/drivers/mtd/nand/Kconfig
->>> @@ -46,6 +46,13 @@ config MTD_NAND_ECC_BCH
->>>         ECC codes. They are used with NAND devices requiring more than 1
->>> bit
->>>         of error correction.
->>>
->>> +config MTD_NAND_ECC_MICRON
->>> +    bool "Support Micron internal ECC"
->>> +    default n
->>> +    help
->>> +      This enables support for Micron 4-bits internal ECC
->>> +      Do not enable this if you will not be using it
->>> +
->>>   config MTD_SM_COMMON
->>>       tristate
->>>       default n
->>> diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
->>> index 618f4ba..4db54de 100644
->>> --- a/drivers/mtd/nand/Makefile
->>> +++ b/drivers/mtd/nand/Makefile
->>> @@ -49,5 +49,6 @@ obj-$(CONFIG_MTD_NAND_MPC5121_NFC)    += mpc5121_nfc.o
->>>   obj-$(CONFIG_MTD_NAND_RICOH)        += r852.o
->>>   obj-$(CONFIG_MTD_NAND_JZ4740)        += jz4740_nand.o
->>>   obj-$(CONFIG_MTD_NAND_GPMI_NAND)    += gpmi-nand/
->>> +obj-$(CONFIG_MTD_NAND_ECC_MICRON)    += nand_ecc_micron.o
->>>
->>>   nand-objs := nand_base.o nand_bbt.o
->>> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
->>> index daed698..70a2415 100644
->>> --- a/drivers/mtd/nand/nand_base.c
->>> +++ b/drivers/mtd/nand/nand_base.c
->>> @@ -42,6 +42,7 @@
->>>   #include <linux/mtd/mtd.h>
->>>   #include <linux/mtd/nand.h>
->>>   #include <linux/mtd/nand_ecc.h>
->>> +#include <linux/mtd/nand_ecc_micron.h>
->>>   #include <linux/mtd/nand_bch.h>
->>>   #include <linux/interrupt.h>
->>>   #include <linux/bitops.h>
->>> @@ -3234,6 +3235,14 @@ int nand_scan_tail(struct mtd_info *mtd)
->>>       int i;
->>>       struct nand_chip *chip = mtd->priv;
->>>
->>> +#ifdef CONFIG_MTD_NAND_ECC_MICRON
->>> +    /* Detect and enable Micron 4-bits internal ECC */
->>> +    if (nand_ecc_micron_present(mtd)) {
->>> +        pr_info("NAND device: Using micron 4-bit internal ECC\n");
->>> +        nand_ecc_micron_init(mtd);
->>> +    }
->>> +#endif
->>> +
->>>       if (!(chip->options & NAND_OWN_BUFFERS))
->>>           chip->buffers = kmalloc(sizeof(*chip->buffers), GFP_KERNEL);
->>>       if (!chip->buffers)
->>> diff --git a/drivers/mtd/nand/nand_ecc_micron.c
->>> b/drivers/mtd/nand/nand_ecc_micron.c
->>> new file mode 100644
->>> index 0000000..49afaaf
->>> --- /dev/null
->>> +++ b/drivers/mtd/nand/nand_ecc_micron.c
->>> @@ -0,0 +1,238 @@
->>> +#include <linux/delay.h>
->>> +#include <linux/mtd/mtd.h>
->>> +#include <linux/mtd/nand.h>
->>> +#include <linux/mtd/nand_ecc_micron.h>
->>> +
->>> +/* Define the oob placement for the micron internal ECC nand */
->>> +static struct nand_ecclayout nand_oob_micron_ecc_64 = {
->>> +    .eccbytes = 32,
->>> +    .eccpos = {
->>> +        8, 9, 10, 11, 12, 13, 14, 15,
->>> +        24, 25, 26, 27, 28, 29, 30, 31,
->>> +        40, 41, 42, 43, 44, 45, 46, 47,
->>> +        56, 57, 58, 59, 60, 61, 62, 63
->>> +    },
->>> +    .oobfree = {
->>> +        { .offset = 4, .length = 4 },
->>> +        { .offset = 20, .length = 4 },
->>> +        { .offset = 36, .length = 4 },
->>> +        { .offset = 52, .length = 4 },
->>> +    },
->>> +};
->>> +
->>> +/**
->>> + * nand_command_ecc_micron
->>> + * @mtd: MTD device structure
->>> + * @command: the command to be sent
->>> + * @column: the column address for this command, -1 if none
->>> + * @page_addr: the page address for this command, -1 if none
->>> + *
->>> + * Identical to nand_command_lp, but additionally checks the micron
->>> + * status after a NAND_CMD_READ0.
->>> + */
->>> +
->>> +static void nand_command_ecc_micron(struct mtd_info *mtd, unsigned int
->>> command,
->>> +                int column, int page_addr)
->>> +{
->>> +    register struct nand_chip *chip = mtd->priv;
->>> +
->>> +    /* Emulate NAND_CMD_READOOB */
->>> +    if (command == NAND_CMD_READOOB) {
->>> +        column += mtd->writesize;
->>> +        command = NAND_CMD_READ0;
->>> +    }
->>> +
->>> +    /* Command latch cycle */
->>> +    chip->cmd_ctrl(mtd, command & 0xff,
->>> +               NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE);
->>> +
->>> +    if (column != -1 || page_addr != -1) {
->>> +        int ctrl = NAND_CTRL_CHANGE | NAND_NCE | NAND_ALE;
->>> +
->>> +        /* Serially input address */
->>> +        if (column != -1) {
->>> +            /* Adjust columns for 16 bit buswidth */
->>> +            if (chip->options & NAND_BUSWIDTH_16)
->>> +                column >>= 1;
->>> +            chip->cmd_ctrl(mtd, column, ctrl);
->>> +            ctrl &= ~NAND_CTRL_CHANGE;
->>> +            chip->cmd_ctrl(mtd, column >> 8, ctrl);
->>> +        }
->>> +        if (page_addr != -1) {
->>> +            chip->cmd_ctrl(mtd, page_addr, ctrl);
->>> +            chip->cmd_ctrl(mtd, page_addr >> 8,
->>> +                       NAND_NCE | NAND_ALE);
->>> +            /* One more address cycle for devices > 128MiB */
->>> +            if (chip->chipsize > (128 << 20))
->>> +                chip->cmd_ctrl(mtd, page_addr >> 16,
->>> +                           NAND_NCE | NAND_ALE);
->>> +        }
->>> +    }
->>> +    chip->cmd_ctrl(mtd, NAND_CMD_NONE, NAND_NCE | NAND_CTRL_CHANGE);
->>> +
->>> +    /*
->>> +     * Program and erase have their own busy handlers status, sequential
->>> +     * in, and deplete1 need no delay.
->>> +     */
->>> +    switch (command) {
->>> +
->>> +    case NAND_CMD_CACHEDPROG:
->>> +    case NAND_CMD_PAGEPROG:
->>> +    case NAND_CMD_ERASE1:
->>> +    case NAND_CMD_ERASE2:
->>> +    case NAND_CMD_SEQIN:
->>> +    case NAND_CMD_RNDIN:
->>> +    case NAND_CMD_STATUS:
->>> +    case NAND_CMD_DEPLETE1:
->>> +        return;
->>> +
->>> +    case NAND_CMD_STATUS_ERROR:
->>> +    case NAND_CMD_STATUS_ERROR0:
->>> +    case NAND_CMD_STATUS_ERROR1:
->>> +    case NAND_CMD_STATUS_ERROR2:
->>> +    case NAND_CMD_STATUS_ERROR3:
->>> +        /* Read error status commands require only a short delay */
->>> +        udelay(chip->chip_delay);
->>> +        return;
->>> +
->>> +    case NAND_CMD_RESET:
->>> +        if (chip->dev_ready)
->>> +            break;
->>> +        udelay(chip->chip_delay);
->>> +        chip->cmd_ctrl(mtd, NAND_CMD_STATUS,
->>> +                   NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE);
->>> +        chip->cmd_ctrl(mtd, NAND_CMD_NONE,
->>> +                   NAND_NCE | NAND_CTRL_CHANGE);
->>> +        while (!(chip->read_byte(mtd) & NAND_STATUS_READY))
->>> +                ;
->>> +        return;
->>> +
->>> +    case NAND_CMD_RNDOUT:
->>> +        /* No ready / busy check necessary */
->>> +        chip->cmd_ctrl(mtd, NAND_CMD_RNDOUTSTART,
->>> +                   NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE);
->>> +        chip->cmd_ctrl(mtd, NAND_CMD_NONE,
->>> +                   NAND_NCE | NAND_CTRL_CHANGE);
->>> +        return;
->>> +
->>> +    case NAND_CMD_READ0:
->>> +        chip->cmd_ctrl(mtd, NAND_CMD_READSTART,
->>> +                   NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE);
->>> +        chip->cmd_ctrl(mtd, NAND_CMD_NONE,
->>> +                   NAND_NCE | NAND_CTRL_CHANGE);
->>> +
->>> +        /* This applies to read commands */
->>> +    default:
->>> +        /*
->>> +         * If we don't have access to the busy pin, we apply the given
->>> +         * command delay.
->>> +         */
->>> +        if (!chip->dev_ready) {
->>> +            udelay(chip->chip_delay);
->>> +            return;
->>> +        }
->>> +    }
->>> +
->>> +    /* Some additional things need to be done on read */
->>> +    if (command == NAND_CMD_READ0) {
->>> +        int status,cnt;
->>> +        /* Wait until nand flash is ready - tR_ECC max */
->>> +        for (cnt=0; cnt<70; cnt++) {
->>> +            ndelay(1000); /* 1 usec delay */
->>> +            chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
->>> +            status = chip->read_byte(mtd);
->>> +            if (status & NAND_STATUS_READY)
->>> +                break;
->>> +        }
->>> +        /* Check the status bits */
->>> +        if (status & NAND_STATUS_FAIL)
->>> +            mtd->ecc_stats.failed++;
->>> +        if (status & NAND_STATUS_REWRITE)
->>> +            mtd->ecc_stats.corrected++;
->>> +        /* Re-issue CMD0 after the status check */
->>> +        chip->cmd_ctrl(mtd, NAND_CMD_READ0,NAND_NCE | NAND_CLE |
->>> NAND_CTRL_CHANGE);
->>> +        chip->cmd_ctrl(mtd, NAND_CMD_NONE,NAND_NCE | NAND_CTRL_CHANGE);
->>> +    }
->>> +
->>> +    /*
->>> +     * Apply this short delay always to ensure that we do wait tWB in
->>> +     * any case on any machine.
->>> +     */
->>> +    ndelay(100);
->>> +
->>> +    nand_wait_ready(mtd);
->>> +}
->>> +
->>> +/**
->>> + * nand_read_page_ecc_micron - IDENTICAL to nand_read_page_raw
->>> + * @mtd: mtd info structure
->>> + * @chip: nand chip info structure
->>> + * @buf: buffer to store read data
->>> + * @page: page number to read
->>> + */
->>> +
->>> +static int nand_read_page_ecc_micron(struct mtd_info *mtd, struct
->>> nand_chip
->>> *chip, uint8_t *buf, int page) {
->>> +    chip->read_buf(mtd, buf, mtd->writesize);
->>> +    chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
->>> +    return 0;
->>> +}
->>> +
->>> +/**
->>> + * nand_write_page_ecc_micron - IDENTICAL to nand_write_page_raw
->>> + * @mtd: mtd info structure
->>> + * @chip: nand chip info structure
->>> + * @buf: data buffer
->>> + */
->>> +
->>> +static void nand_write_page_ecc_micron(struct mtd_info *mtd, struct
->>> nand_chip *chip, const uint8_t *buf) {
->>> +    chip->write_buf(mtd, buf, mtd->writesize);
->>> +    chip->write_buf(mtd, chip->oob_poi, mtd->oobsize);
->>> +}
->>> +
->>> +int nand_ecc_micron_present(struct mtd_info *mtd) {
->>> +    int i;
->>> +    u8 id_data[5];
->>> +    struct nand_chip *chip = mtd->priv;
->>> +
->>> +    /* Currently it seems it cannot be detected by onfi, but only via
->>> READID byte 4.
->>> +     * So see if byte 4 indicates internal ECC is present (we do not
->>> require it to
->>> +     * be already enabled. This might be the case if the kernel is
->>> loaded
->>> from another
->>> +     * source (NOR flash, SD card or network)
->>> +     * We ALWAYS enabled internal ECC if present, if you do not wish
->>> this,
->>> then do not
->>> +     * enable this feature in the kernel config
->>> +     */
->>> +    if (chip->onfi_params.jedec_id != NAND_MFR_MICRON)
->>> +        return 0;
->>> +    chip->cmdfunc(mtd, NAND_CMD_READID, 0x00, -1);
->>> +    for (i = 0; i < 5; i++)
->>> +        id_data[i] = chip->read_byte(mtd);
->>> +    if (id_data[0] == NAND_MFR_MICRON && (id_data[4] & 0x03) == 0x02)
->>> +        return 1;
->>> +    return 0;
->>> +}
->>> +
->>> +static char micron_enable_ecc[] = {0x08,0,0,0};
->>> +
->>> +void nand_ecc_micron_init(struct mtd_info *mtd) {
->>> +    struct nand_chip *chip = mtd->priv;
->>> +
->>> +    /* Setup the read/write functions
->>> +     * NOTE: we are required to do so, or we are not allowed to set the
->>> ecc.mode to NAND_ECC_HW */
->>> +    chip->ecc.read_page = nand_read_page_ecc_micron;
->>> +    chip->ecc.write_page = nand_write_page_ecc_micron;
->>> +
->>> +    /* We need to modify NAND_CMD_READ0, so hook into the cmdfunc */
->>> +    chip->cmdfunc = nand_command_ecc_micron;
->>> +
->>> +    /* Make sure the internel ECC engine of the nand is active */
->>> +    chip->cmd_ctrl(mtd, 0xEF, NAND_CTRL_CHANGE | NAND_NCE | NAND_CLE);
->>> /*
->>> SET FEATURES */
->>> +    chip->cmd_ctrl(mtd, 0x90, NAND_CTRL_CHANGE | NAND_NCE | NAND_ALE);
->>> /*
->>> Array operation mode */
->>> +    chip->write_buf(mtd, micron_enable_ecc, 4);
->>> +    ndelay(1000); /* tFEAT 1 usec delay */
->>> +
->>> +    /* Setup the ecc structure */
->>> +    chip->ecc.layout = &nand_oob_micron_ecc_64;
->>> +    chip->ecc.mode = NAND_ECC_HW;
->>> +    chip->ecc.size = 512;
->>> +    chip->ecc.bytes = 8;
->>> +}
->>> diff --git a/include/linux/mtd/nand_ecc_micron.h
->>> b/include/linux/mtd/nand_ecc_micron.h
->>> new file mode 100644
->>> index 0000000..c270ddc
->>> --- /dev/null
->>> +++ b/include/linux/mtd/nand_ecc_micron.h
->>> @@ -0,0 +1,9 @@
->>> +#ifndef __LINUX_MTD_NAND_ECC_MICRON_H
->>> +#define __LINUX_MTD_NAND_ECC_MICRON_H
->>> +
->>> +#define NAND_STATUS_REWRITE 0x08
->>> +
->>> +int nand_ecc_micron_present(struct mtd_info *mtd);
->>> +void nand_ecc_micron_init(struct mtd_info *mtd);
->>> +
->>> +#endif /* __LINUX_MTD_NAND_ECC_MICRON_H */
->>> --
->>> 1.7.0.4
->>>
->>>
->>>
->>> ______________________________________________________
->>> Linux MTD discussion mailing list
->>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->>
->> ______________________________________________________
->> Linux MTD discussion mailing list
->> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
->
-> --
-> ------------------------------------------------------------------------
-> You/Com Audiocommunicatie BV
-> Motorenweg 5k
-> 2623CR Delft
-> The Netherlands
-> tel. : (+31) 15 262 59 55
-> fax. : (+31) 15 257 15 95
-> mail : jmkok@youcom.nl
-> http : http://www.youcom.nl
-> ------------------------------------------------------------------------
+diff --git a/ftl_check.c b/ftl_check.c
+index 6d84785..0eada8f 100644
+--- a/ftl_check.c
++++ b/ftl_check.c
+@@ -50,24 +50,10 @@
+ 
+ #include <mtd/mtd-user.h>
+ #include <mtd/ftl-user.h>
++#include <mtd_swab.h>
+ 
+-#include <byteswap.h>
+-#include <endian.h>
+ #include "common.h"
+ 
+-#if __BYTE_ORDER == __LITTLE_ENDIAN
+-# define TO_LE32(x) (x)
+-# define TO_LE16(x) (x)
+-#elif __BYTE_ORDER == __BIG_ENDIAN
+-# define TO_LE32(x) (bswap_32(x))
+-# define TO_LE16(x) (bswap_16(x))
+-#else
+-# error cannot detect endianess
+-#endif
+-
+-#define FROM_LE32(x) TO_LE32(x)
+-#define FROM_LE16(x) TO_LE16(x)
+-
+ /*====================================================================*/
+ 
+ static void print_size(u_int s)
+@@ -109,10 +95,10 @@ static void check_partition(int fd)
+ 			break;
+ 		}
+ 		read(fd, &hdr, sizeof(hdr));
+-		if ((FROM_LE32(hdr.FormattedSize) > 0) &&
+-				(FROM_LE32(hdr.FormattedSize) <= mtd.size) &&
+-				(FROM_LE16(hdr.NumEraseUnits) > 0) &&
+-				(FROM_LE16(hdr.NumEraseUnits) <= mtd.size/mtd.erasesize))
++		if ((le32_to_cpu(hdr.FormattedSize) > 0) &&
++				(le32_to_cpu(hdr.FormattedSize) <= mtd.size) &&
++				(le16_to_cpu(hdr.NumEraseUnits) > 0) &&
++				(le16_to_cpu(hdr.NumEraseUnits) <= mtd.size/mtd.erasesize))
+ 			break;
+ 	}
+ 	if (i == mtd.size/mtd.erasesize) {
+@@ -122,9 +108,9 @@ static void check_partition(int fd)
+ 
+ 	printf("Partition header:\n");
+ 	printf("  Formatted size = ");
+-	print_size(FROM_LE32(hdr.FormattedSize));
++	print_size(le32_to_cpu(hdr.FormattedSize));
+ 	printf(", erase units = %d, transfer units = %d\n",
+-			FROM_LE16(hdr.NumEraseUnits), hdr.NumTransferUnits);
++			le16_to_cpu(hdr.NumEraseUnits), hdr.NumTransferUnits);
+ 	printf("  Erase unit size = ");
+ 	print_size(1 << hdr.EraseUnitSize);
+ 	printf(", virtual block size = ");
+@@ -135,7 +121,7 @@ static void check_partition(int fd)
+ 	nbam = (mtd.erasesize >> hdr.BlockSize);
+ 	bam = malloc(nbam * sizeof(u_int));
+ 
+-	for (i = 0; i < FROM_LE16(hdr.NumEraseUnits); i++) {
++	for (i = 0; i < le16_to_cpu(hdr.NumEraseUnits); i++) {
+ 		if (lseek(fd, (i << hdr.EraseUnitSize), SEEK_SET) == -1) {
+ 			perror("seek failed");
+ 			break;
+@@ -149,12 +135,12 @@ static void check_partition(int fd)
+ 				(hdr2.NumEraseUnits != hdr.NumEraseUnits) ||
+ 				(hdr2.SerialNumber != hdr.SerialNumber))
+ 			printf("  Erase unit header is corrupt.\n");
+-		else if (FROM_LE16(hdr2.LogicalEUN) == 0xffff)
+-			printf("  Transfer unit, erase count = %d\n", FROM_LE32(hdr2.EraseCount));
++		else if (le16_to_cpu(hdr2.LogicalEUN) == 0xffff)
++			printf("  Transfer unit, erase count = %d\n", le32_to_cpu(hdr2.EraseCount));
+ 		else {
+ 			printf("  Logical unit %d, erase count = %d\n",
+-					FROM_LE16(hdr2.LogicalEUN), FROM_LE32(hdr2.EraseCount));
+-			if (lseek(fd, (i << hdr.EraseUnitSize)+FROM_LE32(hdr.BAMOffset),
++					le16_to_cpu(hdr2.LogicalEUN), le32_to_cpu(hdr2.EraseCount));
++			if (lseek(fd, (i << hdr.EraseUnitSize)+le32_to_cpu(hdr.BAMOffset),
+ 						SEEK_SET) == -1) {
+ 				perror("seek failed");
+ 				break;
+@@ -165,11 +151,11 @@ static void check_partition(int fd)
+ 			}
+ 			free = deleted = control = data = 0;
+ 			for (j = 0; j < nbam; j++) {
+-				if (BLOCK_FREE(FROM_LE32(bam[j])))
++				if (BLOCK_FREE(le32_to_cpu(bam[j])))
+ 					free++;
+-				else if (BLOCK_DELETED(FROM_LE32(bam[j])))
++				else if (BLOCK_DELETED(le32_to_cpu(bam[j])))
+ 					deleted++;
+-				else switch (BLOCK_TYPE(FROM_LE32(bam[j]))) {
++				else switch (BLOCK_TYPE(le32_to_cpu(bam[j]))) {
+ 					case BLOCK_CONTROL: control++; break;
+ 					case BLOCK_DATA: data++; break;
+ 					default: break;
+diff --git a/ftl_format.c b/ftl_format.c
+index 0ce601b..0f69b8f 100644
+--- a/ftl_format.c
++++ b/ftl_format.c
+@@ -50,22 +50,7 @@
+ 
+ #include <mtd/mtd-user.h>
+ #include <mtd/ftl-user.h>
+-
+-#include <byteswap.h>
+-#include <endian.h>
+-
+-#if __BYTE_ORDER == __LITTLE_ENDIAN
+-# define TO_LE32(x) (x)
+-# define TO_LE16(x) (x)
+-#elif __BYTE_ORDER == __BIG_ENDIAN
+-# define TO_LE32(x) (bswap_32(x))
+-# define TO_LE16(x) (bswap_16(x))
+-#else
+-# error cannot detect endianess
+-#endif
+-
+-#define FROM_LE32(x) TO_LE32(x)
+-#define FROM_LE16(x) TO_LE16(x)
++#include <mtd_swab.h>
+ 
+ /*====================================================================*/
+ 
+@@ -107,28 +92,28 @@ static void build_header(erase_unit_header_t *hdr, u_int RegionSize,
+ 	hdr->EraseUnitSize = 0;
+ 	for (i = BlockSize; i > 1; i >>= 1)
+ 		hdr->EraseUnitSize++;
+-	hdr->EraseCount = TO_LE32(0);
+-	hdr->FirstPhysicalEUN = TO_LE16(BootUnits);
+-	hdr->NumEraseUnits = TO_LE16((RegionSize - BootSize) >> hdr->EraseUnitSize);
++	hdr->EraseCount = cpu_to_le32(0);
++	hdr->FirstPhysicalEUN = cpu_to_le16(BootUnits);
++	hdr->NumEraseUnits = cpu_to_le16((RegionSize - BootSize) >> hdr->EraseUnitSize);
+ 	hdr->NumTransferUnits = Spare;
+ 	__FormattedSize = RegionSize - ((Spare + BootUnits) << hdr->EraseUnitSize);
+ 	/* Leave a little bit of space between the CIS and BAM */
+-	hdr->BAMOffset = TO_LE32(0x80);
++	hdr->BAMOffset = cpu_to_le32(0x80);
+ 	/* Adjust size to account for BAM space */
+ 	nbam = ((1 << (hdr->EraseUnitSize - hdr->BlockSize)) * sizeof(u_int)
+-			+ FROM_LE32(hdr->BAMOffset) + (1 << hdr->BlockSize) - 1) >> hdr->BlockSize;
++			+ le32_to_cpu(hdr->BAMOffset) + (1 << hdr->BlockSize) - 1) >> hdr->BlockSize;
+ 
+ 	__FormattedSize -=
+-		(FROM_LE16(hdr->NumEraseUnits) - Spare) * (nbam << hdr->BlockSize);
++		(le16_to_cpu(hdr->NumEraseUnits) - Spare) * (nbam << hdr->BlockSize);
+ 	__FormattedSize -= ((__FormattedSize * Reserve / 100) & ~0xfff);
+ 
+-	hdr->FormattedSize = TO_LE32(__FormattedSize);
++	hdr->FormattedSize = cpu_to_le32(__FormattedSize);
+ 
+ 	/* hdr->FirstVMAddress defaults to erased state */
+-	hdr->NumVMPages = TO_LE16(0);
++	hdr->NumVMPages = cpu_to_le16(0);
+ 	hdr->Flags = 0;
+ 	/* hdr->Code defaults to erased state */
+-	hdr->SerialNumber = TO_LE32(time(NULL));
++	hdr->SerialNumber = cpu_to_le32(time(NULL));
+ 	/* hdr->AltEUHOffset defaults to erased state */
+ 
+ } /* build_header */
+@@ -170,11 +155,11 @@ static int format_partition(int fd, int quiet, int interrogate,
+ 		print_size(mtd.erasesize);
+ 		printf(", %d transfer units\n", spare);
+ 		if (bootsize != 0) {
+-			print_size(FROM_LE16(hdr.FirstPhysicalEUN) << hdr.EraseUnitSize);
++			print_size(le16_to_cpu(hdr.FirstPhysicalEUN) << hdr.EraseUnitSize);
+ 			printf(" allocated for boot image\n");
+ 		}
+ 		printf("Reserved %d%%, formatted size = ", reserve);
+-		print_size(FROM_LE32(hdr.FormattedSize));
++		print_size(le32_to_cpu(hdr.FormattedSize));
+ 		printf("\n");
+ 		fflush(stdout);
+ 	}
+@@ -191,10 +176,10 @@ static int format_partition(int fd, int quiet, int interrogate,
+ 
+ 	/* Create basic block allocation table for control blocks */
+ 	nbam = ((mtd.erasesize >> hdr.BlockSize) * sizeof(u_int)
+-			+ FROM_LE32(hdr.BAMOffset) + (1 << hdr.BlockSize) - 1) >> hdr.BlockSize;
++			+ le32_to_cpu(hdr.BAMOffset) + (1 << hdr.BlockSize) - 1) >> hdr.BlockSize;
+ 	bam = malloc(nbam * sizeof(u_int));
+ 	for (i = 0; i < nbam; i++)
+-		bam[i] = TO_LE32(BLOCK_CONTROL);
++		bam[i] = cpu_to_le32(BLOCK_CONTROL);
+ 
+ 	/* Erase partition */
+ 	if (!quiet) {
+@@ -202,8 +187,8 @@ static int format_partition(int fd, int quiet, int interrogate,
+ 		fflush(stdout);
+ 	}
+ 	erase.length = mtd.erasesize;
+-	erase.start = mtd.erasesize * FROM_LE16(hdr.FirstPhysicalEUN);
+-	for (i = 0; i < FROM_LE16(hdr.NumEraseUnits); i++) {
++	erase.start = mtd.erasesize * le16_to_cpu(hdr.FirstPhysicalEUN);
++	for (i = 0; i < le16_to_cpu(hdr.NumEraseUnits); i++) {
+ 		if (ioctl(fd, MEMERASE, &erase) < 0) {
+ 			if (!quiet) {
+ 				putchar('\n');
+@@ -238,25 +223,25 @@ static int format_partition(int fd, int quiet, int interrogate,
+ 	}
+ 	lun = 0;
+ 	/* Distribute transfer units over the entire region */
+-	step = (spare) ? (FROM_LE16(hdr.NumEraseUnits)/spare) : (FROM_LE16(hdr.NumEraseUnits)+1);
+-	for (i = 0; i < FROM_LE16(hdr.NumEraseUnits); i++) {
+-		off_t ofs = (off_t) (i + FROM_LE16(hdr.FirstPhysicalEUN)) << hdr.EraseUnitSize;
++	step = spare ? (le16_to_cpu(hdr.NumEraseUnits) / spare) : (le16_to_cpu(hdr.NumEraseUnits) + 1);
++	for (i = 0; i < le16_to_cpu(hdr.NumEraseUnits); i++) {
++		off_t ofs = (off_t) (i + le16_to_cpu(hdr.FirstPhysicalEUN)) << hdr.EraseUnitSize;
+ 		if (lseek(fd, ofs, SEEK_SET) == -1) {
+ 			perror("seek failed");
+ 			break;
+ 		}
+ 		/* Is this a transfer unit? */
+ 		if (((i+1) % step) == 0)
+-			hdr.LogicalEUN = TO_LE16(0xffff);
++			hdr.LogicalEUN = cpu_to_le16(0xffff);
+ 		else {
+-			hdr.LogicalEUN = TO_LE16(lun);
++			hdr.LogicalEUN = cpu_to_le16(lun);
+ 			lun++;
+ 		}
+ 		if (write(fd, &hdr, sizeof(hdr)) == -1) {
+ 			perror("write failed");
+ 			break;
+ 		}
+-		if (lseek(fd, ofs + FROM_LE32(hdr.BAMOffset), SEEK_SET) == -1) {
++		if (lseek(fd, ofs + le32_to_cpu(hdr.BAMOffset), SEEK_SET) == -1) {
+ 			perror("seek failed");
+ 			break;
+ 		}
+@@ -265,7 +250,7 @@ static int format_partition(int fd, int quiet, int interrogate,
+ 			break;
+ 		}
+ 	}
+-	if (i < FROM_LE16(hdr.NumEraseUnits))
++	if (i < le16_to_cpu(hdr.NumEraseUnits))
+ 		return -1;
+ 	else
+ 		return 0;
+diff --git a/nftldump.c b/nftldump.c
+index 90ea072..32f4f2f 100644
+--- a/nftldump.c
++++ b/nftldump.c
+@@ -50,13 +50,8 @@ static int NumMedHeads;
+ 
+ static unsigned char BadUnitTable[MAX_ERASE_ZONES];
+ 
+-#if __BYTE_ORDER == __LITTLE_ENDIAN
+-#define SWAP16(x) do { ; } while(0)
+-#define SWAP32(x) do { ; } while(0)
+-#else
+-#define SWAP16(x) do { x = swab16(x); } while(0)
+-#define SWAP32(x) do { x = swab32(x); } while(0)
+-#endif
++#define SWAP16(x) do { x = le16_to_cpu(x); } while(0)
++#define SWAP32(x) do { x = le32_to_cpu(x); } while(0)
+ 
+ /* VUCtable, store the Erase Unit Number of the first Erase Unit in the chain */
+ static unsigned short *VUCtable;
+-- 
+1.8.2.1
