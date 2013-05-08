@@ -1,19 +1,15 @@
-Received: from dev.gentoo.org ([2001:470:ea4a:1:214:c2ff:fe64:b2d3]
- helo=smtp.gentoo.org)
+Received: from smtp.gentoo.org ([140.211.166.183])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ua7DY-0006BU-SS
+ id 1Ua7DZ-0006BT-J0
  for linux-mtd@lists.infradead.org; Wed, 08 May 2013 16:27:50 +0000
 Received: from localhost.localdomain (localhost [127.0.0.1])
- by smtp.gentoo.org (Postfix) with ESMTP id 83F7933DEEC
- for <linux-mtd@lists.infradead.org>; Wed,  8 May 2013 16:27:27 +0000 (UTC)
+ by smtp.gentoo.org (Postfix) with ESMTP id F0E8833BE5C
+ for <linux-mtd@lists.infradead.org>; Wed,  8 May 2013 16:27:26 +0000 (UTC)
 From: Mike Frysinger <vapier@gentoo.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH [mtd-utils] 2/3] mtd-utils: new prompt() helper for talking to
- the user
-Date: Wed,  8 May 2013 12:27:25 -0400
-Message-Id: <1368030446-343-2-git-send-email-vapier@gentoo.org>
-In-Reply-To: <1368030446-343-1-git-send-email-vapier@gentoo.org>
-References: <1368030446-343-1-git-send-email-vapier@gentoo.org>
+Subject: [PATCH [mtd-utils] 1/3] move _GNU_SOURCE to the main makefile
+Date: Wed,  8 May 2013 12:27:24 -0400
+Message-Id: <1368030446-343-1-git-send-email-vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,203 +19,117 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We've got a few tools that prompt the user for "yes/no" questions.
-Add a common helper to simplify the various implementations.
+A bunch of utils are relying on _GNU_SOURCE already.  The new prompt code
+uses getline() which is now part of POSIX, but in older versions of glibc,
+it was behind _GNU_SOURCE as it was a GNU extension.
+
+This change doesn't actually tie us to glibc.  Only code that uses GNU
+extensions does that.  It just kills warning when using older versions of
+glibc.
 
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
- flash_otp_lock.c      |  6 +++---
- ftl_format.c          | 11 +++--------
- include/common.h      | 39 ++++++++++++++++++++++++++++++++++++++-
- ubi-utils/ubiformat.c | 39 +++++++--------------------------------
- 4 files changed, 51 insertions(+), 44 deletions(-)
+ Makefile                | 2 +-
+ include/xalloc.h        | 2 +-
+ mkfs.jffs2.c            | 1 -
+ mkfs.ubifs/mkfs.ubifs.h | 2 --
+ nanddump.c              | 1 -
+ nandtest.c              | 1 -
+ nandwrite.c             | 1 -
+ 7 files changed, 2 insertions(+), 8 deletions(-)
 
-diff --git a/flash_otp_lock.c b/flash_otp_lock.c
-index cc8759e..3c39a2d 100644
---- a/flash_otp_lock.c
-+++ b/flash_otp_lock.c
-@@ -13,11 +13,12 @@
- #include <sys/ioctl.h>
+diff --git a/Makefile b/Makefile
+index c8d25f2..bf57a13 100644
+--- a/Makefile
++++ b/Makefile
+@@ -3,7 +3,7 @@
  
- #include <mtd/mtd-user.h>
-+#include "common.h"
+ VERSION = 1.5.0
  
- int main(int argc,char *argv[])
- {
- 	int fd, val, ret, offset, size;
--	char *p, buf[8];
-+	char *p;
+-CPPFLAGS += -I./include -I$(BUILDDIR)/include -I./ubi-utils/include $(ZLIBCPPFLAGS) $(LZOCPPFLAGS)
++CPPFLAGS += -D_GNU_SOURCE -I./include -I$(BUILDDIR)/include -I./ubi-utils/include $(ZLIBCPPFLAGS) $(LZOCPPFLAGS)
  
- 	if (argc != 5 || strcmp(argv[1], "-u")) {
- 		fprintf(stderr, "Usage: %s -u <device> <offset> <size>\n", PROGRAM_NAME);
-@@ -53,8 +54,7 @@ int main(int argc,char *argv[])
+ ifeq ($(WITHOUT_XATTR), 1)
+   CPPFLAGS += -DWITHOUT_XATTR
+diff --git a/include/xalloc.h b/include/xalloc.h
+index f1cc8d4..532b80f 100644
+--- a/include/xalloc.h
++++ b/include/xalloc.h
+@@ -27,6 +27,7 @@
+ #ifndef __MTD_UTILS_XALLOC_H__
+ #define __MTD_UTILS_XALLOC_H__
  
- 	printf("About to lock OTP user data on %s from 0x%x to 0x%x\n",
- 			argv[2], offset, offset + size);
--	printf("Are you sure (yes|no)? ");
--	if (fgets(buf, sizeof(buf), stdin) && strcmp(buf, "yes\n") == 0) {
-+	if (prompt("Are you sure?", false)) {
- 		struct otp_info info;
- 		info.start = offset;
- 		info.length = size;
-diff --git a/ftl_format.c b/ftl_format.c
-index 0f69b8f..b58677f 100644
---- a/ftl_format.c
-+++ b/ftl_format.c
-@@ -51,6 +51,7 @@
- #include <mtd/mtd-user.h>
- #include <mtd/ftl-user.h>
- #include <mtd_swab.h>
-+#include "common.h"
- 
- /*====================================================================*/
- 
-@@ -164,15 +165,9 @@ static int format_partition(int fd, int quiet, int interrogate,
- 		fflush(stdout);
- 	}
- 
--	if (interrogate) {
--		char str[3];
--		printf("This will destroy all data on the target device.  "
--				"Confirm (y/n): ");
--		if (fgets(str, 3, stdin) == NULL)
-+	if (interrogate)
-+		if (!prompt("This will destroy all data on the target device. Confirm?", false))
- 			return -1;
--		if ((strcmp(str, "y\n") != 0) && (strcmp(str, "Y\n") != 0))
--			return -1;
--	}
- 
- 	/* Create basic block allocation table for control blocks */
- 	nbam = ((mtd.erasesize >> hdr.BlockSize) * sizeof(u_int)
-diff --git a/include/common.h b/include/common.h
-index d0c4146..4ffccea 100644
---- a/include/common.h
-+++ b/include/common.h
-@@ -19,6 +19,7 @@
- #ifndef __MTD_UTILS_COMMON_H__
- #define __MTD_UTILS_COMMON_H__
- 
-+#include <stdbool.h>
- #include <stdio.h>
++#include <stdarg.h>
  #include <stdlib.h>
+ #include <string.h>
+ 
+@@ -84,7 +85,6 @@ static char *xstrdup(const char *s)
+ }
+ 
+ #ifdef _GNU_SOURCE
+-#include <stdarg.h>
+ 
+ __attribute__((unused))
+ static int xasprintf(char **strp, const char *fmt, ...)
+diff --git a/mkfs.jffs2.c b/mkfs.jffs2.c
+index 7ade078..c1b0f0d 100644
+--- a/mkfs.jffs2.c
++++ b/mkfs.jffs2.c
+@@ -49,7 +49,6 @@
+ 
+ #define PROGRAM_NAME "mkfs.jffs2"
+ 
+-#define _GNU_SOURCE
+ #include <sys/types.h>
+ #include <stdio.h>
+ #include <sys/stat.h>
+diff --git a/mkfs.ubifs/mkfs.ubifs.h b/mkfs.ubifs/mkfs.ubifs.h
+index 01161ef..6030c48 100644
+--- a/mkfs.ubifs/mkfs.ubifs.h
++++ b/mkfs.ubifs/mkfs.ubifs.h
+@@ -23,8 +23,6 @@
+ #ifndef __MKFS_UBIFS_H__
+ #define __MKFS_UBIFS_H__
+ 
+-#define _GNU_SOURCE
+-#define _LARGEFILE64_SOURCE
+ #include <unistd.h>
+ #include <stdlib.h>
+ #include <stdio.h>
+diff --git a/nanddump.c b/nanddump.c
+index be458c6..85ccd5d 100644
+--- a/nanddump.c
++++ b/nanddump.c
+@@ -15,7 +15,6 @@
+ 
+ #define PROGRAM_NAME "nanddump"
+ 
+-#define _GNU_SOURCE
  #include <ctype.h>
-@@ -101,9 +102,45 @@ extern "C" {
- 	fprintf(stderr, "%s: warning!: " fmt "\n", PROGRAM_NAME, ##__VA_ARGS__); \
- } while(0)
+ #include <errno.h>
+ #include <fcntl.h>
+diff --git a/nandtest.c b/nandtest.c
+index 0187b87..3437b57 100644
+--- a/nandtest.c
++++ b/nandtest.c
+@@ -1,6 +1,5 @@
+ #define PROGRAM_NAME "nandtest"
  
-+/**
-+ * prompt the user for confirmation
-+ */
-+static inline bool prompt(const char *msg, bool def)
-+{
-+	char *line = NULL;
-+	size_t len;
-+	bool ret = def;
-+
-+	do {
-+		normsg_cont("%s (%c/%c) ", msg, def ? 'Y' : 'y', def ? 'n' : 'N');
-+		fflush(stdout);
-+
-+		while (getline(&line, &len, stdin) == -1) {
-+			printf("failed to read prompt; assuming '%s'\n",
-+				def ? "yes" : "no");
-+			break;
-+		}
-+
-+		if (strcmp("\n", line) != 0) {
-+			switch (rpmatch(line)) {
-+			case 0: ret = false; break;
-+			case 1: ret = true; break;
-+			case -1:
-+				puts("unknown response; please try again");
-+				continue;
-+			}
-+		}
-+		break;
-+	} while (1);
-+
-+	free(line);
-+
-+	return ret;
-+}
-+
- static inline int is_power_of_2(unsigned long long n)
- {
--	        return (n != 0 && ((n & (n - 1)) == 0));
-+	return (n != 0 && ((n & (n - 1)) == 0));
- }
+-#define _GNU_SOURCE
+ #include <ctype.h>
+ #include <errno.h>
+ #include <fcntl.h>
+diff --git a/nandwrite.c b/nandwrite.c
+index de8e7d2..a6b6581 100644
+--- a/nandwrite.c
++++ b/nandwrite.c
+@@ -21,7 +21,6 @@
  
- /**
-diff --git a/ubi-utils/ubiformat.c b/ubi-utils/ubiformat.c
-index 899f9fc..97a4eab 100644
---- a/ubi-utils/ubiformat.c
-+++ b/ubi-utils/ubiformat.c
-@@ -243,35 +243,12 @@ static int parse_opt(int argc, char * const argv[])
+ #define PROGRAM_NAME "nandwrite"
  
- static int want_exit(void)
- {
--	char buf[4];
--
--	while (1) {
--		normsg_cont("continue? (yes/no)  ");
--		if (scanf("%3s", buf) == EOF) {
--			sys_errmsg("scanf returned unexpected EOF, assume \"yes\"");
--			return 1;
--		}
--		if (!strncmp(buf, "yes", 3) || !strncmp(buf, "y", 1))
--			return 0;
--		if (!strncmp(buf, "no", 2) || !strncmp(buf, "n", 1))
--			return 1;
--	}
-+	return prompt("continue?", false) == true ? 0 : 1;
- }
- 
--static int answer_is_yes(void)
-+static int answer_is_yes(const char *msg)
- {
--	char buf[4];
--
--	while (1) {
--		if (scanf("%3s", buf) == EOF) {
--			sys_errmsg("scanf returned unexpected EOF, assume \"no\"");
--			return 0;
--		}
--		if (!strncmp(buf, "yes", 3) || !strncmp(buf, "y", 1))
--			return 1;
--		if (!strncmp(buf, "no", 2) || !strncmp(buf, "n", 1))
--			return 0;
--	}
-+	return prompt(msg ? : "continue?", false);
- }
- 
- static void print_bad_eraseblocks(const struct mtd_dev_info *mtd,
-@@ -412,11 +389,9 @@ static int mark_bad(const struct mtd_dev_info *mtd, struct ubi_scan_info *si, in
- {
- 	int err;
- 
--	if (!args.yes) {
--		normsg_cont("mark it as bad? Continue (yes/no) ");
--		if (!answer_is_yes())
-+	if (!args.yes)
-+		if (!answer_is_yes("mark it as bad?"))
- 			return -1;
--	}
- 
- 	if (!args.quiet)
- 		normsg_cont("marking block %d bad", eb);
-@@ -922,10 +897,10 @@ int main(int argc, char * const argv[])
- 				"which is different to requested offsets %d and %d",
- 				si->vid_hdr_offs, si->data_offs, ui.vid_hdr_offs,
- 				ui.data_offs);
--			normsg_cont("use new offsets %d and %d? (yes/no)  ",
-+			normsg_cont("use new offsets %d and %d? ",
- 				    ui.vid_hdr_offs, ui.data_offs);
- 		}
--		if (args.yes || answer_is_yes()) {
-+		if (args.yes || answer_is_yes(NULL)) {
- 			if (args.yes && !args.quiet)
- 				printf("yes\n");
- 		} else
+-#define _GNU_SOURCE
+ #include <ctype.h>
+ #include <errno.h>
+ #include <fcntl.h>
 -- 
 1.8.2.1
