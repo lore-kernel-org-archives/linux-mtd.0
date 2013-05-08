@@ -1,14 +1,23 @@
-Date: Tue, 7 May 2013 12:32:38 -0700
-From: Kees Cook <keescook@chromium.org>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: refactor call to request_module
-Message-ID: <20130507193238.GA2235@www.outflux.net>
+Received: from co1ehsobe001.messaging.microsoft.com ([216.32.180.184]
+ helo=co1outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UZtp0-0008EO-Al
+ for linux-mtd@lists.infradead.org; Wed, 08 May 2013 02:09:35 +0000
+Message-ID: <5189B446.7010101@freescale.com>
+Date: Wed, 8 May 2013 10:11:18 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org, Rusty Russell <rusty@rustcorp.com.au>,
- James Hogan <james.hogan@imgtec.com>, David Woodhouse <dwmw2@infradead.org>,
- Kees Cook <keescook@chromium.org>
+To: David Mosberger-Tang <dmosberger@gmail.com>
+Subject: Re: [PATCH] nand_base: fix for ONFI chips that do not support GET/SET
+ FEATURES
+References: <CACwUX0MqswPeSTis3woPfZufaW2kEdd7-zqe+5o8jLXt8VZnrw@mail.gmail.com>
+In-Reply-To: <CACwUX0MqswPeSTis3woPfZufaW2kEdd7-zqe+5o8jLXt8VZnrw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <David.Woodhouse@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,33 +27,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This reduces the size of the stack frame when calling request_module().
-Performing the sprintf before the call is not needed.
+=E4=BA=8E 2013=E5=B9=B405=E6=9C=8807=E6=97=A5 23:08, David Mosberger-Tang=
+ =E5=86=99=E9=81=93:
+> I not seen any ACK that this patch has been queued for merging, so I'm
+> re-sending.  Please let me know what you intend to do with it.
+>
+I can not git-am your patch. I think you'd better create a patch with=20
+git-format-patch,
+and send it out with git-send-email.
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- drivers/mtd/chips/gen_probe.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/chips/gen_probe.c b/drivers/mtd/chips/gen_probe.c
-index 74dbb6b..ffb36ba 100644
---- a/drivers/mtd/chips/gen_probe.c
-+++ b/drivers/mtd/chips/gen_probe.c
-@@ -211,9 +211,7 @@ static inline struct mtd_info *cfi_cmdset_unknown(struct map_info *map,
- 
- 	probe_function = __symbol_get(probename);
- 	if (!probe_function) {
--		char modname[sizeof("cfi_cmdset_%4.4X")];
--		sprintf(modname, "cfi_cmdset_%4.4X", type);
--		request_module(modname);
-+		request_module("cfi_cmdset_%4.4X", type);
- 		probe_function = __symbol_get(probename);
- 	}
- 
--- 
-1.7.9.5
+You can add my
+Reviewed-by: Huang Shijie <b32955@freescale.com>
 
 
--- 
-Kees Cook
-Chrome OS Security
+thanks
+Huang Shijie
