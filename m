@@ -1,21 +1,23 @@
-Received: from nasmtp01.atmel.com ([192.199.1.246]
- helo=DVREDG02.corp.atmel.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ua1lS-0006D0-1C
- for linux-mtd@lists.infradead.org; Wed, 08 May 2013 10:38:26 +0000
-Message-ID: <518A2B00.8030900@atmel.com>
-Date: Wed, 8 May 2013 18:37:52 +0800
-From: Josh Wu <josh.wu@atmel.com>
+Received: from mo6-p05-ob.rzone.de ([2a01:238:20a:202:5305::1])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Ua5R6-0002VL-U8
+ for linux-mtd@lists.infradead.org; Wed, 08 May 2013 14:33:42 +0000
+Message-ID: <518A6228.6050608@denx.de>
+Date: Wed, 08 May 2013 16:33:12 +0200
+From: Stefan Roese <sr@denx.de>
 MIME-Version: 1.0
-To: Jingoo Han <jg1.han@samsung.com>
-Subject: Re: [PATCH 11/26] mtd: nand: atmel_nand: remove unnecessary
- platform_set_drvdata()
-References: <004f01ce4aec$c841b610$58c52230$@samsung.com>
-In-Reply-To: <004f01ce4aec$c841b610$58c52230$@samsung.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: 'Artem Bityutskiy' <artem.bityutskiy@linux.intel.com>,
- 'David Woodhouse' <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+To: Vikram Narayanan <vikram186@gmail.com>
+Subject: Re: mtd_oobtest fails with GPMI-NAND
+References: <50F97DB5.7040801@gmail.com> <50FCA426.6030309@freescale.com>
+ <5105E4CE.1090800@gmail.com> <5105EE9B.9050405@freescale.com>
+ <5106AFAA.1020502@gmail.com> <51072EA4.7000201@freescale.com>
+ <51073373.4080006@gmail.com> <510735B3.1040509@freescale.com>
+ <5107F899.5090506@gmail.com> <5108852C.5040002@freescale.com>
+ <510CB507.4020105@gmail.com>
+In-Reply-To: <510CB507.4020105@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,32 +27,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 5/7/2013 2:33 PM, Jingoo Han wrote:
-> The driver core clears the driver data to NULL after device_release
-> or on probe failure, since commit 0998d0631001288a5974afc0b2a5f568bcdecb4d
-> (device-core: Ensure drvdata = NULL when no driver is bound).
-> Thus, it is not needed to manually clear the device driver data to NULL.
->
-> Signed-off-by: Jingoo Han <jg1.han@samsung.com>
+Hi Vikram,
 
-Acked-by: Josh Wu <josh.wu@atmel.com>
+I might be seeing something similar on my iMX6 board. Here
+mtd_subpagetest sometimes fails.
 
-Best Regards,
-Josh Wu
+What is the current status on your platform? Did you resolve this
+problem? If yes, what did you have to change/fix?
 
-> ---
->   drivers/mtd/nand/atmel_nand.c |    1 -
->   1 files changed, 0 insertions(+), 1 deletions(-)
->
-> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-> index 2d23d29..36c52f5 100644
-> --- a/drivers/mtd/nand/atmel_nand.c
-> +++ b/drivers/mtd/nand/atmel_nand.c
-> @@ -1665,7 +1665,6 @@ err_hw_ecc:
->   err_scan_ident:
->   err_no_card:
->   	atmel_nand_disable(host);
-> -	platform_set_drvdata(pdev, NULL);
->   	if (host->dma_chan)
->   		dma_release_channel(host->dma_chan);
->   err_ecc_ioremap:
+Thanks,
+Stefan
+
+On 02/02/2013 07:41 AM, Vikram Narayanan wrote:
+> On 1/30/2013 7:57 AM, Huang Shijie wrote:
+>> 于 2013年01月30日 00:28, Vikram Narayanan 写道:
+>>> On 1/29/2013 8:06 AM, Huang Shijie wrote:
+>>>>> May I know in what way the driver is restricted for using with other
+>>>>> boards?
+>>>> The devicetree. Please check the dts file in arch/arm/boot/dts/.
+>>>> If there is no dts file for your board, the gpmi will not works very
+>>>> well for your board.
+>>>> for example, there is arch/arm/boot/dts/imx6q-arm2.dts for the MX6Q-ARM2
+>>>> board.
+>>>
+>>> I've a valid dts file for my board which is good enough to probe the
+>>> Toshiba NAND on-board and mount a UBIFS filesystem.
+>> could you tell the dts file for your board?
+>> are you sure the pinmux settings are right?
+> 
+> I'm using the same pinumx settings mentioned in the file
+> "arch/arm/boot/dts/imx6q.dtsi". Hope that is right.
+> 
+>>>
+>>>>> You're right and we knew it earlier as the Kernel detects the OOB size
+>>>>> as 128 bytes. So, some remaining bytes become unused at the end of
+>>>>> each page. i.e., (224-128). Instead of supporting ecc strength as ECC9
+>>>>> we end up using ECC8. Should this be a cause for the -74 error?
+>>>> no. this is not the cause. even you get the wrong geometry of the nand
+>>>> chip. the gpmi still can works.
+>>>>
+>>>> I think the root cause is the devicetree issue as above.
+>>>
+>>> Something else is causing the issue. Can you give some other pointers
+>>> which can potentially cause this -74 error while mounting?
+>> the -74 error is the EBADMSG, it's caused by the uncorrectable ECC failure.
+>> There are many reasons can cause this error:
+>>     [1] the pinmux setting is not right, the gpmi does not works well.
+> 
+> As said above, my pinmux settings are right. GPMI detects my NAND, does 
+> read/write/erase/mount. At times I'm seeing this -74 issue. Sometimes 
+> this error goes off in the next reboot.
+> 
+>>     [2] the wrong setting of BCH. for example, the page size is 8K, you
+>> set 4k to BCH.
+>>         so you can set the correct nand geometry parameters for your
+>> nand chip firstly, and then do the debug.
+> 
+>  From the driver I understood that the geometry are determined according 
+> to the data from the read_id bytes. mtd layer detects my NAND as 4K 
+> page-sized. So, this shouldn't be a problem I guess.
+> 
+>>     [3] timings.
+> 
+> Should I tweak something specific according to the NAND device that I 
+> have? Can you give more hints please?
+> 
+> Thanks,
+> Vikram
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
