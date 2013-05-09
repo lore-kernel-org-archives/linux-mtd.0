@@ -1,18 +1,16 @@
-Date: Thu, 9 May 2013 20:12:40 +0200
-From: Hans-Christian Egtvedt <egtvedt@samfundet.no>
-To: Josh Wu <josh.wu@atmel.com>
-Subject: Re: [PATCH 1/2] atmel_nand: at91/avr32/: Replace
- cpu_is_at32ap7000() with a nand platform data
-Message-ID: <20130509181240.GA4260@samfundet.no>
-References: <1368084895-18266-1-git-send-email-josh.wu@atmel.com>
- <1368084895-18266-2-git-send-email-josh.wu@atmel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1368084895-18266-2-git-send-email-josh.wu@atmel.com>
-Cc: nicolas.ferre@atmel.com, plagnioj@jcrosoft.com,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- dedekind1@gmail.com
+Received: from gerard.telenet-ops.be ([195.130.132.48])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UaY1v-0003mE-PK
+ for linux-mtd@lists.infradead.org; Thu, 09 May 2013 21:05:39 +0000
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH 06/12] mtd: MTD_NAND_DENALI should depend on HAS_DMA
+Date: Thu,  9 May 2013 23:04:48 +0200
+Message-Id: <1368133494-22198-6-git-send-email-geert@linux-m68k.org>
+In-Reply-To: <1368133494-22198-1-git-send-email-geert@linux-m68k.org>
+References: <1368133494-22198-1-git-send-email-geert@linux-m68k.org>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,28 +20,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Around Thu 09 May 2013 15:34:54 +0800 or thereabout, Josh Wu wrote:
-> The nand driver use cpu_is_at32ap7000() macro for a workaround. For the
-> multi-platform support, we will remove this cpu_is_xxx() macro.
-> 
-> This patch adds a boolean variable need_reset_workaround in structure
-> atmel_nand_data. Using this variable we can remove cpu_is_at32ap7000() macro.
-> 
-> Signed-off-by: Josh Wu <josh.wu@atmel.com>
-> Cc: Hans-Christian Egtvedt <egtvedt@samfundet.no>
+If NO_DMA=y:
 
-Acked-by: Hans-Christian Egtvedt <egtvedt@samfundet.no>
+drivers/built-in.o: In function `denali_remove':
+drivers/mtd/nand/denali.c:1605: undefined reference to `dma_unmap_single'
+drivers/built-in.o: In function `denali_read_page_raw':
+drivers/mtd/nand/denali.c:1190: undefined reference to `dma_sync_single_for_cpu'
+drivers/built-in.o: In function `denali_read_page':
+drivers/mtd/nand/denali.c:1140: undefined reference to `dma_sync_single_for_cpu'
+drivers/built-in.o: In function `write_page':
+drivers/mtd/nand/denali.c:1051: undefined reference to `dma_sync_single_for_cpu'
+drivers/built-in.o: In function `denali_init':
+drivers/mtd/nand/denali.c:1433: undefined reference to `dma_set_mask'
+drivers/mtd/nand/denali.c:1438: undefined reference to `dma_map_single'
+drivers/mtd/nand/denali.c:1442: undefined reference to `dma_mapping_error'
 
-> ---
->  arch/avr32/mach-at32ap/at32ap700x.c |    3 +++
->  drivers/mtd/nand/atmel_nand.c       |   13 ++++++-------
->  include/linux/platform_data/atmel.h |    3 +++
->  3 files changed, 12 insertions(+), 7 deletions(-)
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+---
+ drivers/mtd/nand/Kconfig |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-Feel free to push this through the mtd tree, if they won't accept it I'm
-working on getting my workflow up on the linux-avr32.git tree.
-
-<snipp diff>
-
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 81bf5e5..ac06f79 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -51,6 +51,7 @@ config MTD_NAND_MUSEUM_IDS
+ 
+ config MTD_NAND_DENALI
+         tristate "Support Denali NAND controller"
++	depends on HAS_DMA
+         help
+ 	  Enable support for the Denali NAND controller.  This should be
+ 	  combined with either the PCI or platform drivers to provide device
 -- 
-HcE
+1.7.0.4
