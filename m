@@ -1,25 +1,12 @@
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Tony Lindgren <tony@atomide.com>, "Nori, Sekhar" <nsekhar@ti.com>
-Subject: RE: [v2, 3/3] ARM: dts: AM33XX: Add NAND flash device tree data to
- am335x-evm
-Date: Thu, 9 May 2013 04:12:10 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9C320D@DBDE04.ent.ti.com>
-References: <ebfab3e9123b3e50b9a9678c1480191addd86d59.1359007746.git.avinashphilip@ti.com>
- <517F5126.5000509@ti.com> <20130508235404.GX32546@atomide.com>
-In-Reply-To: <20130508235404.GX32546@atomide.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+From: Josh Wu <josh.wu@atmel.com>
+To: <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+ <dedekind1@gmail.com>
+Subject: [PATCH 0/2] atmel_nand: remove cpu_is_xxx() in nand driver
+Date: Thu, 9 May 2013 15:34:53 +0800
+Message-ID: <1368084895-18266-1-git-send-email-josh.wu@atmel.com>
 MIME-Version: 1.0
-Cc: "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>, "Cousson,
- Benoit" <b-cousson@ti.com>,
- "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Hiremath,
- Vaibhav" <hvaibhav@ti.com>, "Hebbar, Gururaja" <gururaja.hebbar@ti.com>,
- "zonque@gmail.com" <zonque@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain
+Cc: nicolas.ferre@atmel.com, plagnioj@jcrosoft.com, Josh Wu <josh.wu@atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,31 +16,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> > >
-> > >  	am33xx_pinmux: pinmux@44e10800 {
-> > >  		pinctrl-names =3D "default";
-> > > -		pinctrl-0 =3D <&matrix_keypad_s0 &volume_keys_s0>;
-> > > +		pinctrl-0 =3D <&matrix_keypad_s0 &volume_keys_s0
-> > > +			&nandflash_pins_s0>;
-> >
-> > Why add this to the board level fallback (called pinctrl hogs, I think)=
-?
-> > This can be part of nand node you added below so that the pinctrl will
-> > take effect when nand gets probed instead of all the time.
->=20
-> Yes we should have all the pinctrl entries under the related drivers.
-> This makes it easy remux pins during runtime if needed, and also
-> allows unloading pinctrl-single.ko for development.
->=20
-Yes, accepted. This has been already fixed in v3 of this patch set.
-If all fine, then please pull this for next merge..
+avoid to use cpu_is_xxx() macro in driver, we use platform data and dts
+for the different cpu.
 
-http://lists.infradead.org/pipermail/linux-mtd/2013-May/046712.html
+Josh Wu (2):
+  atmel_nand: at91/avr32/: Replace cpu_is_at32ap7000() with a nand
+    platform data
+  mtd: atmel_nand: add a new dt binding item for nand dma support
 
-http://lists.infradead.org/pipermail/linux-mtd/2013-May/046814.html (alread=
-y pulled)
+ .../devicetree/bindings/mtd/atmel-nand.txt         |    1 +
+ arch/avr32/mach-at32ap/at32ap700x.c                |    3 +++
+ drivers/mtd/nand/atmel_nand.c                      |   24 ++++++++------------
+ include/linux/platform_data/atmel.h                |    4 ++++
+ 4 files changed, 17 insertions(+), 15 deletions(-)
 
-http://lists.infradead.org/pipermail/linux-mtd/2013-May/046710.html
-
-
-with regards, pekon
+-- 
+1.7.9.5
