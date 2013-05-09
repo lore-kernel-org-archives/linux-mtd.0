@@ -1,18 +1,18 @@
-Received: from dev.gentoo.org ([2001:470:ea4a:1:214:c2ff:fe64:b2d3]
- helo=smtp.gentoo.org)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UaEKf-0004q0-49
- for linux-mtd@lists.infradead.org; Thu, 09 May 2013 00:03:38 +0000
-Received: from localhost.localdomain (localhost [127.0.0.1])
- by smtp.gentoo.org (Postfix) with ESMTP id E81D433BE5C
- for <linux-mtd@lists.infradead.org>; Thu,  9 May 2013 00:03:13 +0000 (UTC)
-From: Mike Frysinger <vapier@gentoo.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH [mtd-utils] 3/3] nandwrite: add --input-{skip,size} options
-Date: Wed,  8 May 2013 20:03:14 -0400
-Message-Id: <1368057794-32735-3-git-send-email-vapier@gentoo.org>
-In-Reply-To: <1368054125-32214-1-git-send-email-vapier@gentoo.org>
-References: <1368054125-32214-1-git-send-email-vapier@gentoo.org>
+Date: Wed, 8 May 2013 17:16:07 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: "Gupta, Pekon" <pekon@ti.com>
+Subject: Re: [PATCH v3,2/3] ARM: dts: AM33XX: Add GPMC node
+Message-ID: <20130509001606.GZ32546@atomide.com>
+References: <2645efefa3d36388ff1d4b64255d880b6587770f.1359007746.git.avinashphilip@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2645efefa3d36388ff1d4b64255d880b6587770f.1359007746.git.avinashphilip@ti.com>
+Cc: linux@arm.linux.org.uk, b-cousson@ti.com,
+ devicetree-discuss@lists.ozlabs.org, nsekhar@ti.com,
+ linux-kernel@vger.kernel.org, hvaibhav@ti.com, gururaja.hebbar@ti.com,
+ zonque@gmail.com, linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,117 +22,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If you have a file image and want to copy sub-portions out and into
-NAND, there's no easy way to do that.  You can use dd to extract it
-to a temp file, or pipe it to nandwrite 1 page at a time.  Both suck.
+* Gupta, Pekon <pekon@ti.com> [130502 02:49]:
+> From: "Philip, Avinash" <avinashphilip@ti.com>
+> 
+> Add GPMC data node to AM33XX device tree file.
+> 
+> Signed-off-by: Philip Avinash <avinashphilip@ti.com>
+> Acked-by: Peter Korsgaard <jacmet@sunsite.dk>
+> Signed-off-by: Pekon Gupta <pekon@ti.com>
 
-Add two new flags to explicitly set the size and offset of the input
-file.  Seeking stdin isn't currently supported as I'm not sure it's
-necessary.  It wouldn't be hard to add though...
+Thanks adding into omap-for-v3.10/dt-fixes.
 
-Signed-off-by: Mike Frysinger <vapier@gentoo.org>
----
- nandwrite.c | 54 ++++++++++++++++++++++++++++++++++--------------------
- 1 file changed, 34 insertions(+), 20 deletions(-)
-
-diff --git a/nandwrite.c b/nandwrite.c
-index 14414b6..70579a3 100644
---- a/nandwrite.c
-+++ b/nandwrite.c
-@@ -52,11 +52,13 @@ static void display_help(int status)
- "  -m, --markbad           Mark blocks bad if write fails\n"
- "  -n, --noecc             Write without ecc\n"
- "  -N, --noskipbad         Write without bad block skipping\n"
--"  -o, --oob               Image contains oob data\n"
--"  -O, --onlyoob           Image contains oob data and only write the oob part\n"
--"  -s addr, --start=addr   Set start address (default is 0)\n"
--"  -p, --pad               Pad to page size\n"
-+"  -o, --oob               Input contains oob data\n"
-+"  -O, --onlyoob           Input contains oob data and only write the oob part\n"
-+"  -s addr, --start=addr   Set output start address (default is 0)\n"
-+"  -p, --pad               Pad writes to page size\n"
- "  -b, --blockalign=1|2|4  Set multiple of eraseblocks to align to\n"
-+"      --input-skip=length Skip |length| bytes of the input file\n"
-+"      --input-size=length Only read |length| bytes of the input file\n"
- "  -q, --quiet             Don't display progress messages\n"
- "  -h, --help              Display this help and exit\n"
- "      --version           Output version information and exit\n"
-@@ -83,6 +85,8 @@ static void display_version(void)
- static const char	*standard_input = "-";
- static const char	*mtd_device, *img;
- static long long	mtdoffset = 0;
-+static long long	inputskip = 0;
-+static long long	inputsize = 0;
- static bool		quiet = false;
- static bool		writeoob = false;
- static bool		onlyoob = false;
-@@ -101,7 +105,10 @@ static void process_options(int argc, char * const argv[])
- 		int option_index = 0;
- 		static const char short_options[] = "hb:mnNoOpqs:a";
- 		static const struct option long_options[] = {
-+			/* Order of these args with val==0 matters; see option_index. */
- 			{"version", no_argument, 0, 0},
-+			{"input-skip", required_argument, 0, 0},
-+			{"input-size", required_argument, 0, 0},
- 			{"help", no_argument, 0, 'h'},
- 			{"blockalign", required_argument, 0, 'b'},
- 			{"markbad", no_argument, 0, 'm'},
-@@ -127,6 +134,12 @@ static void process_options(int argc, char * const argv[])
- 			case 0: /* --version */
- 				display_version();
- 				break;
-+			case 1: /* --input-skip */
-+				inputskip = simple_strtoll(optarg, &error);
-+				break;
-+			case 2: /* --input-size */
-+				inputsize = simple_strtoll(optarg, &error);
-+				break;
- 			}
- 			break;
- 		case 'q':
-@@ -299,26 +312,27 @@ int main(int argc, char * const argv[])
+Tony
  
- 	pagelen = mtd.min_io_size + ((writeoob) ? mtd.oob_size : 0);
- 
--	/*
--	 * For the standard input case, the input size is merely an
--	 * invariant placeholder and is set to the write page
--	 * size. Otherwise, just use the input file size.
--	 *
--	 * TODO: Add support for the -l,--length=length option (see
--	 * previous discussion by Tommi Airikka <tommi.airikka@ericsson.com> at
--	 * <http://lists.infradead.org/pipermail/linux-mtd/2008-September/
--	 * 022913.html>
--	 */
--
- 	if (ifd == STDIN_FILENO) {
--	    imglen = pagelen;
-+		imglen = inputsize ? : pagelen;
-+		if (inputskip) {
-+			errmsg("seeking stdin does not work");
-+			goto closeall;
-+		}
- 	} else {
--		struct stat st;
--		if (fstat(ifd, &st)) {
--			sys_errmsg("unable to stat input image");
-+		if (!inputsize) {
-+			struct stat st;
-+			if (fstat(ifd, &st)) {
-+				sys_errmsg("unable to stat input image");
-+				goto closeall;
-+			}
-+			imglen = st.st_size;
-+		} else
-+			imglen = inputsize;
-+
-+		if (inputskip && lseek(ifd, inputskip, SEEK_CUR) == -1) {
-+			sys_errmsg("lseek input by %lld failed", inputskip);
- 			goto closeall;
- 		}
--	    imglen = st.st_size;
- 	}
- 
- 	/* Check, if file is page-aligned */
--- 
-1.8.2.1
+> ---
+> Changes in v2:
+> 	- Change number of chip select to 7
+> 
+>  arch/arm/boot/dts/am33xx.dtsi |   12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/am33xx.dtsi b/arch/arm/boot/dts/am33xx.dtsi
+> index 24fc835..1048795 100644
+> --- a/arch/arm/boot/dts/am33xx.dtsi
+> +++ b/arch/arm/boot/dts/am33xx.dtsi
+> @@ -407,5 +407,17 @@
+>  			ti,hwmods = "elm";
+>  			status = "disabled";
+>  		};
+> +
+> +		gpmc: gpmc@50000000 {
+> +			compatible = "ti,am3352-gpmc";
+> +			ti,hwmods = "gpmc";
+> +			reg = <0x50000000 0x2000>;
+> +			interrupts = <100>;
+> +			num-cs = <7>;
+> +			num-waitpins = <2>;
+> +			#address-cells = <2>;
+> +			#size-cells = <1>;
+> +			status = "disabled";
+> +		};
+>  	};
+>  };
