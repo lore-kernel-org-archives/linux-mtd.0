@@ -1,15 +1,16 @@
-Received: from smtp.gentoo.org ([140.211.166.183])
+Received: from dev.gentoo.org ([2001:470:ea4a:1:214:c2ff:fe64:b2d3]
+ helo=smtp.gentoo.org)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UaV87-0000bB-Nd
+ id 1UaV87-0000b9-Nb
  for linux-mtd@lists.infradead.org; Thu, 09 May 2013 17:59:48 +0000
 Received: from localhost.localdomain (localhost [127.0.0.1])
- by smtp.gentoo.org (Postfix) with ESMTP id 8D2CE33DFFD
- for <linux-mtd@lists.infradead.org>; Thu,  9 May 2013 17:59:25 +0000 (UTC)
+ by smtp.gentoo.org (Postfix) with ESMTP id 87B7333DFFB
+ for <linux-mtd@lists.infradead.org>; Thu,  9 May 2013 17:59:24 +0000 (UTC)
 From: Mike Frysinger <vapier@gentoo.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH mtd-utils 4/4 v2] ubiupdatevol: add a --skip option
-Date: Thu,  9 May 2013 13:59:24 -0400
-Message-Id: <1368122364-9754-4-git-send-email-vapier@gentoo.org>
+Subject: [PATCH mtd-utils 2/4 v2] nandwrite: clean up length types
+Date: Thu,  9 May 2013 13:59:22 -0400
+Message-Id: <1368122364-9754-2-git-send-email-vapier@gentoo.org>
 In-Reply-To: <1368122364-9754-1-git-send-email-vapier@gentoo.org>
 References: <1368122364-9754-1-git-send-email-vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,134 +22,128 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This already has a --size option for controlling how many bytes to read
-from the input.  Add a --skip option to control the offset into the input
-too.  This way people don't have to do `dd | ubiupdatevol`.
-
-While we're here, I've fixed the types used with args.size and the read
-loop so that they can hold the right sizes (like setting a 32bit+ size).
+We use 'int' in many places to represent offsets/sizes.  That obviously
+does not play well with larger NAND devices on 32bit systems.  Instead,
+use the right type as needed:
+ - long long to represent the length of the image
+ - use fstat() rather than lseek();lseek(); to get the length of the image
+ - use size_t/ssize_t when working with read()
+ - tweak the printf formats as needed
 
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
 v2
-	- there was no v1!
+	- no changes from v1
 
- ubi-utils/ubiupdatevol.c | 45 +++++++++++++++++++++++++++++++++------------
- 1 file changed, 33 insertions(+), 12 deletions(-)
+ nandwrite.c | 37 +++++++++++++++++++++----------------
+ 1 file changed, 21 insertions(+), 16 deletions(-)
 
-diff --git a/ubi-utils/ubiupdatevol.c b/ubi-utils/ubiupdatevol.c
-index 7fedb3c..5096791 100644
---- a/ubi-utils/ubiupdatevol.c
-+++ b/ubi-utils/ubiupdatevol.c
-@@ -45,7 +45,8 @@ struct args {
- 	const char *img;
- 	/* For deprecated -d and -B options handling */
- 	char dev_name[256];
--	int size;
-+	long long size;
-+	long long skip;
- 	int use_stdin;
- };
- 
-@@ -56,7 +57,8 @@ static const char doc[] = PROGRAM_NAME " version " VERSION
- 
- static const char optionsstr[] =
- "-t, --truncate             truncate volume (wipe it out)\n"
--"-s, --size=<bytes>         bytes in input, if not reading from file\n"
-+"-s, --size=<bytes>         bytes to read from input\n"
-+"    --skip=<bytes>         leading bytes to skip from input\n"
- "-h, --help                 print help message\n"
- "-V, --version              print program version";
- 
-@@ -67,6 +69,8 @@ static const char usage[] =
- "Example 2: " PROGRAM_NAME " /dev/ubi0_1 -t - wipe out UBI volume /dev/ubi0_1";
- 
- static const struct option long_options[] = {
-+	/* Order matters for opts w/val=0; see option_index below. */
-+	{ .name = "skip",     .has_arg = 1, .flag = NULL, .val = 0 },
- 	{ .name = "truncate", .has_arg = 0, .flag = NULL, .val = 't' },
- 	{ .name = "help",     .has_arg = 0, .flag = NULL, .val = 'h' },
- 	{ .name = "version",  .has_arg = 0, .flag = NULL, .val = 'V' },
-@@ -77,19 +81,29 @@ static const struct option long_options[] = {
- static int parse_opt(int argc, char * const argv[])
+diff --git a/nandwrite.c b/nandwrite.c
+index edf9f83..14414b6 100644
+--- a/nandwrite.c
++++ b/nandwrite.c
+@@ -218,10 +218,10 @@ static void erase_buffer(void *buffer, size_t size)
+  */
+ int main(int argc, char * const argv[])
  {
- 	while (1) {
--		int key, error = 0;
-+		int option_index, key, error = 0;
- 
--		key = getopt_long(argc, argv, "ts:h?V", long_options, NULL);
-+		key = getopt_long(argc, argv, "ts:h?V", long_options, &option_index);
- 		if (key == -1)
- 			break;
- 
- 		switch (key) {
-+		case 0:
-+			switch (option_index) {
-+			case 0: /* --skip */
-+				args.skip = simple_strtoull(optarg, &error);
-+				if (error || args.skip < 0)
-+					return errmsg("bad skip: " "\"%s\"", optarg);
-+				break;
-+			}
-+			break;
-+
- 		case 't':
- 			args.truncate = 1;
- 			break;
- 
- 		case 's':
--			args.size = simple_strtoul(optarg, &error);
-+			args.size = simple_strtoull(optarg, &error);
- 			if (error || args.size < 0)
- 				return errmsg("bad size: " "\"%s\"", optarg);
- 			break;
-@@ -198,7 +212,7 @@ static int update_volume(libubi_t libubi, struct ubi_vol_info *vol_info)
- 			goto out_free;
- 		}
- 
--		bytes = st.st_size;
-+		bytes = st.st_size - args.skip;
- 	} else
- 		bytes = args.size;
- 
-@@ -214,14 +228,23 @@ static int update_volume(libubi_t libubi, struct ubi_vol_info *vol_info)
- 		goto out_free;
- 	}
- 
--	if (args.use_stdin)
-+	if (args.use_stdin) {
- 		ifd = STDIN_FILENO;
--	else {
-+		if (args.skip) {
-+			errmsg("seeking stdin not supported");
-+			goto out_close1;
+-	int cnt = 0;
+ 	int fd = -1;
+ 	int ifd = -1;
+-	int imglen = 0, pagelen;
++	int pagelen;
++	long long imglen = 0;
+ 	bool baderaseblock = false;
+ 	long long blockstart = -1;
+ 	struct mtd_dev_info mtd;
+@@ -313,8 +313,12 @@ int main(int argc, char * const argv[])
+ 	if (ifd == STDIN_FILENO) {
+ 	    imglen = pagelen;
+ 	} else {
+-	    imglen = lseek(ifd, 0, SEEK_END);
+-	    lseek(ifd, 0, SEEK_SET);
++		struct stat st;
++		if (fstat(ifd, &st)) {
++			sys_errmsg("unable to stat input image");
++			goto closeall;
 +		}
-+	} else {
- 		ifd = open(args.img, O_RDONLY);
- 		if (ifd == -1) {
- 			sys_errmsg("cannot open \"%s\"", args.img);
- 			goto out_close1;
- 		}
-+
-+		if (args.skip && lseek(ifd, args.skip, SEEK_CUR) == -1) {
-+			sys_errmsg("lseek input by %lld failed", args.skip);
-+			goto out_close;
-+		}
++	    imglen = st.st_size;
  	}
  
- 	err = ubi_update_start(libubi, fd, bytes);
-@@ -231,10 +254,8 @@ static int update_volume(libubi_t libubi, struct ubi_vol_info *vol_info)
- 	}
+ 	/* Check, if file is page-aligned */
+@@ -326,7 +330,7 @@ int main(int argc, char * const argv[])
  
- 	while (bytes) {
--		int ret, to_copy = vol_info->leb_size;
--
--		if (to_copy > bytes)
--			to_copy = bytes;
-+		ssize_t ret;
-+		int to_copy = min(vol_info->leb_size, bytes);
+ 	/* Check, if length fits into device */
+ 	if ((imglen / pagelen) * mtd.min_io_size > mtd.size - mtdoffset) {
+-		fprintf(stderr, "Image %d bytes, NAND page %d bytes, OOB area %d"
++		fprintf(stderr, "Image %lld bytes, NAND page %d bytes, OOB area %d"
+ 				" bytes, device size %lld bytes\n",
+ 				imglen, pagelen, mtd.oob_size, mtd.size);
+ 		sys_errmsg("Input file does not fit into device");
+@@ -412,9 +416,10 @@ int main(int argc, char * const argv[])
  
- 		ret = read(ifd, buf, to_copy);
- 		if (ret <= 0) {
+ 		/* Read more data from the input if there isn't enough in the buffer */
+ 		if (writebuf + mtd.min_io_size > filebuf + filebuf_len) {
+-			int readlen = mtd.min_io_size;
+-			int alreadyread = (filebuf + filebuf_len) - writebuf;
+-			int tinycnt = alreadyread;
++			size_t readlen = mtd.min_io_size;
++			size_t alreadyread = (filebuf + filebuf_len) - writebuf;
++			size_t tinycnt = alreadyread;
++			ssize_t cnt = 0;
+ 
+ 			while (tinycnt < readlen) {
+ 				cnt = read(ifd, writebuf + tinycnt, readlen - tinycnt);
+@@ -444,7 +449,7 @@ int main(int argc, char * const argv[])
+ 			if (tinycnt < readlen) {
+ 				if (!pad) {
+ 					fprintf(stderr, "Unexpected EOF. Expecting at least "
+-							"%d more bytes. Use the padding option.\n",
++							"%zu more bytes. Use the padding option.\n",
+ 							readlen - tinycnt);
+ 					goto closeall;
+ 				}
+@@ -465,9 +470,10 @@ int main(int argc, char * const argv[])
+ 
+ 			/* Read more data for the OOB from the input if there isn't enough in the buffer */
+ 			if (oobbuf + mtd.oob_size > filebuf + filebuf_len) {
+-				int readlen = mtd.oob_size;
+-				int alreadyread = (filebuf + filebuf_len) - oobbuf;
+-				int tinycnt = alreadyread;
++				size_t readlen = mtd.oob_size;
++				size_t alreadyread = (filebuf + filebuf_len) - oobbuf;
++				size_t tinycnt = alreadyread;
++				ssize_t cnt;
+ 
+ 				while (tinycnt < readlen) {
+ 					cnt = read(ifd, oobbuf + tinycnt, readlen - tinycnt);
+@@ -482,7 +488,7 @@ int main(int argc, char * const argv[])
+ 
+ 				if (tinycnt < readlen) {
+ 					fprintf(stderr, "Unexpected EOF. Expecting at least "
+-							"%d more bytes for OOB\n", readlen - tinycnt);
++							"%zu more bytes for OOB\n", readlen - tinycnt);
+ 					goto closeall;
+ 				}
+ 
+@@ -505,7 +511,7 @@ int main(int argc, char * const argv[])
+ 				writeoob ? mtd.oob_size : 0,
+ 				write_mode);
+ 		if (ret) {
+-			int i;
++			long long i;
+ 			if (errno != EIO) {
+ 				sys_errmsg("%s: MTD write failure", mtd_device);
+ 				goto closeall;
+@@ -520,9 +526,8 @@ int main(int argc, char * const argv[])
+ 				if (mtd_erase(mtd_desc, &mtd, fd, i / mtd.eb_size)) {
+ 					int errno_tmp = errno;
+ 					sys_errmsg("%s: MTD Erase failure", mtd_device);
+-					if (errno_tmp != EIO) {
++					if (errno_tmp != EIO)
+ 						goto closeall;
+-					}
+ 				}
+ 			}
+ 
 -- 
 1.8.2.1
