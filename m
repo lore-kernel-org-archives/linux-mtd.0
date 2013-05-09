@@ -1,17 +1,17 @@
-Received: from smtp.gentoo.org ([140.211.166.183])
+Received: from dev.gentoo.org ([2001:470:ea4a:1:214:c2ff:fe64:b2d3]
+ helo=smtp.gentoo.org)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UaV87-0000bA-Q6
- for linux-mtd@lists.infradead.org; Thu, 09 May 2013 17:59:49 +0000
+ id 1UaV8T-0000cA-31
+ for linux-mtd@lists.infradead.org; Thu, 09 May 2013 18:00:10 +0000
 Received: from localhost.localdomain (localhost [127.0.0.1])
- by smtp.gentoo.org (Postfix) with ESMTP id 0D31D33DFFC
- for <linux-mtd@lists.infradead.org>; Thu,  9 May 2013 17:59:24 +0000 (UTC)
+ by smtp.gentoo.org (Postfix) with ESMTP id F422033DFF1
+ for <linux-mtd@lists.infradead.org>; Thu,  9 May 2013 17:59:23 +0000 (UTC)
 From: Mike Frysinger <vapier@gentoo.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH mtd-utils 3/4 v2] nandwrite: add --input-{skip,size} options
-Date: Thu,  9 May 2013 13:59:23 -0400
-Message-Id: <1368122364-9754-3-git-send-email-vapier@gentoo.org>
-In-Reply-To: <1368122364-9754-1-git-send-email-vapier@gentoo.org>
-References: <1368122364-9754-1-git-send-email-vapier@gentoo.org>
+Subject: [PATCH mtd-utils 1/4 v2] nand{dump, test,
+ write}: clean up --help handling
+Date: Thu,  9 May 2013 13:59:21 -0400
+Message-Id: <1368122364-9754-1-git-send-email-vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,120 +21,240 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If you have a file image and want to copy sub-portions out and into
-NAND, there's no easy way to do that.  You can use dd to extract it
-to a temp file, or pipe it to nandwrite 1 page at a time.  Both suck.
-
-Add two new flags to explicitly set the size and offset of the input
-file.  Seeking stdin isn't currently supported as I'm not sure it's
-necessary.  It wouldn't be hard to add though...
+We should send the output to stdout when the user passes -h/--help
+and then exit(0), but otherwise the output should go to stderr and
+then exit(1).
 
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
 v2
-	- removed inputskip from imglen when getting size from stat()
+	- no changes from v1
 
- nandwrite.c | 54 ++++++++++++++++++++++++++++++++++--------------------
- 1 file changed, 34 insertions(+), 20 deletions(-)
+ nanddump.c  | 24 ++++++++++++------------
+ nandtest.c  | 16 ++++++++++------
+ nandwrite.c | 26 +++++++++++++-------------
+ 3 files changed, 35 insertions(+), 31 deletions(-)
 
+diff --git a/nanddump.c b/nanddump.c
+index 4b3e14d..4ee7ed4 100644
+--- a/nanddump.c
++++ b/nanddump.c
+@@ -33,13 +33,13 @@
+ #include "common.h"
+ #include <libmtd.h>
+ 
+-static void display_help(void)
++static void display_help(int status)
+ {
+-	printf(
++	fprintf(status == EXIT_SUCCESS ? stdout : stderr,
+ "Usage: %s [OPTIONS] MTD-device\n"
+ "Dumps the contents of a nand mtd partition.\n"
+ "\n"
+-"           --help               Display this help and exit\n"
++"-h         --help               Display this help and exit\n"
+ "           --version            Output version information and exit\n"
+ "           --bb=METHOD          Choose bad block handling method (see below).\n"
+ "-a         --forcebinary        Force printing of binary data to tty\n"
+@@ -58,7 +58,7 @@ static void display_help(void)
+ "    dumpbad: dump flash data, including any bad blocks\n"
+ "    skipbad: dump good data, completely skipping any bad blocks (default)\n",
+ 	PROGRAM_NAME);
+-	exit(EXIT_SUCCESS);
++	exit(status);
+ }
+ 
+ static void display_version(void)
+@@ -101,12 +101,12 @@ static void process_options(int argc, char * const argv[])
+ 
+ 	for (;;) {
+ 		int option_index = 0;
+-		static const char *short_options = "s:f:l:opqnca";
++		static const char short_options[] = "hs:f:l:opqnca";
+ 		static const struct option long_options[] = {
+-			{"help", no_argument, 0, 0},
+ 			{"version", no_argument, 0, 0},
+ 			{"bb", required_argument, 0, 0},
+ 			{"omitoob", no_argument, 0, 0},
++			{"help", no_argument, 0, 'h'},
+ 			{"forcebinary", no_argument, 0, 'a'},
+ 			{"canonicalprint", no_argument, 0, 'c'},
+ 			{"file", required_argument, 0, 'f'},
+@@ -129,12 +129,9 @@ static void process_options(int argc, char * const argv[])
+ 			case 0:
+ 				switch (option_index) {
+ 					case 0:
+-						display_help();
+-						break;
+-					case 1:
+ 						display_version();
+ 						break;
+-					case 2:
++					case 1:
+ 						/* Handle --bb=METHOD */
+ 						if (!strcmp(optarg, "padbad"))
+ 							bb_method = padbad;
+@@ -145,7 +142,7 @@ static void process_options(int argc, char * const argv[])
+ 						else
+ 							error++;
+ 						break;
+-					case 3: /* --omitoob */
++					case 2: /* --omitoob */
+ 						if (oob_default) {
+ 							oob_default = false;
+ 							omitoob = true;
+@@ -186,6 +183,9 @@ static void process_options(int argc, char * const argv[])
+ 			case 'n':
+ 				noecc = true;
+ 				break;
++			case 'h':
++				display_help(EXIT_SUCCESS);
++				break;
+ 			case '?':
+ 				error++;
+ 				break;
+@@ -213,7 +213,7 @@ static void process_options(int argc, char * const argv[])
+ 	}
+ 
+ 	if ((argc - optind) != 1 || error)
+-		display_help();
++		display_help(EXIT_FAILURE);
+ 
+ 	mtddev = argv[optind];
+ }
+diff --git a/nandtest.c b/nandtest.c
+index 3437b57..1876bb2 100644
+--- a/nandtest.c
++++ b/nandtest.c
+@@ -16,9 +16,10 @@
+ #include <asm/types.h>
+ #include "mtd/mtd-user.h"
+ 
+-void usage(void)
++void usage(int status)
+ {
+-	fprintf(stderr, "usage: %s [OPTIONS] <device>\n\n"
++	fprintf(status ? stderr : stdout,
++		"usage: %s [OPTIONS] <device>\n\n"
+ 		"  -h, --help           Display this help output\n"
+ 		"  -m, --markbad        Mark blocks bad if they appear so\n"
+ 		"  -s, --seed           Supply random seed\n"
+@@ -27,7 +28,7 @@ void usage(void)
+ 		"  -l, --length         Length of flash to test\n"
+ 		"  -k, --keep           Restore existing contents after test\n",
+ 		PROGRAM_NAME);
+-	exit(1);
++	exit(status);
+ }
+ 
+ struct mtd_info_user meminfo;
+@@ -142,7 +143,7 @@ int main(int argc, char **argv)
+ 	seed = time(NULL);
+ 
+ 	for (;;) {
+-		static const char *short_options="hkl:mo:p:s:";
++		static const char short_options[] = "hkl:mo:p:s:";
+ 		static const struct option long_options[] = {
+ 			{ "help", no_argument, 0, 'h' },
+ 			{ "markbad", no_argument, 0, 'm' },
+@@ -160,8 +161,11 @@ int main(int argc, char **argv)
+ 
+ 		switch (c) {
+ 		case 'h':
++			usage(0);
++			break;
++
+ 		case '?':
+-			usage();
++			usage(1);
+ 			break;
+ 
+ 		case 'm':
+@@ -191,7 +195,7 @@ int main(int argc, char **argv)
+ 		}
+ 	}
+ 	if (argc - optind != 1)
+-		usage();
++		usage(1);
+ 
+ 	fd = open(argv[optind], O_RDWR);
+ 	if (fd < 0) {
 diff --git a/nandwrite.c b/nandwrite.c
-index 14414b6..9c3fe8f 100644
+index a6b6581..edf9f83 100644
 --- a/nandwrite.c
 +++ b/nandwrite.c
-@@ -52,11 +52,13 @@ static void display_help(int status)
- "  -m, --markbad           Mark blocks bad if write fails\n"
- "  -n, --noecc             Write without ecc\n"
- "  -N, --noskipbad         Write without bad block skipping\n"
--"  -o, --oob               Image contains oob data\n"
--"  -O, --onlyoob           Image contains oob data and only write the oob part\n"
--"  -s addr, --start=addr   Set start address (default is 0)\n"
--"  -p, --pad               Pad to page size\n"
-+"  -o, --oob               Input contains oob data\n"
-+"  -O, --onlyoob           Input contains oob data and only write the oob part\n"
-+"  -s addr, --start=addr   Set output start address (default is 0)\n"
-+"  -p, --pad               Pad writes to page size\n"
+@@ -42,9 +42,9 @@
+ #include "common.h"
+ #include <libmtd.h>
+ 
+-static void display_help(void)
++static void display_help(int status)
+ {
+-	printf(
++	fprintf(status == EXIT_SUCCESS ? stdout : stderr,
+ "Usage: nandwrite [OPTION] MTD_DEVICE [INPUTFILE|-]\n"
+ "Writes to the specified MTD device.\n"
+ "\n"
+@@ -58,10 +58,10 @@ static void display_help(void)
+ "  -p, --pad               Pad to page size\n"
  "  -b, --blockalign=1|2|4  Set multiple of eraseblocks to align to\n"
-+"      --input-skip=length Skip |length| bytes of the input file\n"
-+"      --input-size=length Only read |length| bytes of the input file\n"
  "  -q, --quiet             Don't display progress messages\n"
- "  -h, --help              Display this help and exit\n"
+-"      --help              Display this help and exit\n"
++"  -h, --help              Display this help and exit\n"
  "      --version           Output version information and exit\n"
-@@ -83,6 +85,8 @@ static void display_version(void)
- static const char	*standard_input = "-";
- static const char	*mtd_device, *img;
- static long long	mtdoffset = 0;
-+static long long	inputskip = 0;
-+static long long	inputsize = 0;
- static bool		quiet = false;
- static bool		writeoob = false;
- static bool		onlyoob = false;
-@@ -101,7 +105,10 @@ static void process_options(int argc, char * const argv[])
+ 	);
+-	exit(EXIT_SUCCESS);
++	exit(status);
+ }
+ 
+ static void display_version(void)
+@@ -99,10 +99,10 @@ static void process_options(int argc, char * const argv[])
+ 
+ 	for (;;) {
  		int option_index = 0;
- 		static const char short_options[] = "hb:mnNoOpqs:a";
+-		static const char *short_options = "b:mnNoOpqs:a";
++		static const char short_options[] = "hb:mnNoOpqs:a";
  		static const struct option long_options[] = {
-+			/* Order of these args with val==0 matters; see option_index. */
+-			{"help", no_argument, 0, 0},
  			{"version", no_argument, 0, 0},
-+			{"input-skip", required_argument, 0, 0},
-+			{"input-size", required_argument, 0, 0},
- 			{"help", no_argument, 0, 'h'},
++			{"help", no_argument, 0, 'h'},
  			{"blockalign", required_argument, 0, 'b'},
  			{"markbad", no_argument, 0, 'm'},
-@@ -127,6 +134,12 @@ static void process_options(int argc, char * const argv[])
- 			case 0: /* --version */
- 				display_version();
- 				break;
-+			case 1: /* --input-skip */
-+				inputskip = simple_strtoll(optarg, &error);
-+				break;
-+			case 2: /* --input-size */
-+				inputsize = simple_strtoll(optarg, &error);
+ 			{"noecc", no_argument, 0, 'n'},
+@@ -124,12 +124,9 @@ static void process_options(int argc, char * const argv[])
+ 		switch (c) {
+ 		case 0:
+ 			switch (option_index) {
+-				case 0:
+-					display_help();
+-					break;
+-				case 1:
+-					display_version();
+-					break;
++			case 0: /* --version */
++				display_version();
 +				break;
  			}
  			break;
  		case 'q':
-@@ -299,26 +312,27 @@ int main(int argc, char * const argv[])
+@@ -163,6 +160,9 @@ static void process_options(int argc, char * const argv[])
+ 		case 'a':
+ 			autoplace = true;
+ 			break;
++		case 'h':
++			display_help(EXIT_SUCCESS);
++			break;
+ 		case '?':
+ 			error++;
+ 			break;
+@@ -192,7 +192,7 @@ static void process_options(int argc, char * const argv[])
+ 	 */
  
- 	pagelen = mtd.min_io_size + ((writeoob) ? mtd.oob_size : 0);
+ 	if (argc < 1 || argc > 2 || error)
+-		display_help();
++		display_help(EXIT_FAILURE);
  
--	/*
--	 * For the standard input case, the input size is merely an
--	 * invariant placeholder and is set to the write page
--	 * size. Otherwise, just use the input file size.
--	 *
--	 * TODO: Add support for the -l,--length=length option (see
--	 * previous discussion by Tommi Airikka <tommi.airikka@ericsson.com> at
--	 * <http://lists.infradead.org/pipermail/linux-mtd/2008-September/
--	 * 022913.html>
--	 */
--
- 	if (ifd == STDIN_FILENO) {
--	    imglen = pagelen;
-+		imglen = inputsize ? : pagelen;
-+		if (inputskip) {
-+			errmsg("seeking stdin not supported");
-+			goto closeall;
-+		}
- 	} else {
--		struct stat st;
--		if (fstat(ifd, &st)) {
--			sys_errmsg("unable to stat input image");
-+		if (!inputsize) {
-+			struct stat st;
-+			if (fstat(ifd, &st)) {
-+				sys_errmsg("unable to stat input image");
-+				goto closeall;
-+			}
-+			imglen = st.st_size - inputskip;
-+		} else
-+			imglen = inputsize;
-+
-+		if (inputskip && lseek(ifd, inputskip, SEEK_CUR) == -1) {
-+			sys_errmsg("lseek input by %lld failed", inputskip);
- 			goto closeall;
- 		}
--	    imglen = st.st_size;
- 	}
+ 	mtd_device = argv[0];
  
- 	/* Check, if file is page-aligned */
 -- 
 1.8.2.1
