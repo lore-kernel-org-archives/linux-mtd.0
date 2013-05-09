@@ -1,16 +1,15 @@
-Received: from dev.gentoo.org ([2001:470:ea4a:1:214:c2ff:fe64:b2d3]
- helo=smtp.gentoo.org)
+Received: from smtp.gentoo.org ([140.211.166.183])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UaV87-0000b9-Nb
- for linux-mtd@lists.infradead.org; Thu, 09 May 2013 17:59:48 +0000
+ id 1UaV87-0000bA-Q6
+ for linux-mtd@lists.infradead.org; Thu, 09 May 2013 17:59:49 +0000
 Received: from localhost.localdomain (localhost [127.0.0.1])
- by smtp.gentoo.org (Postfix) with ESMTP id 87B7333DFFB
+ by smtp.gentoo.org (Postfix) with ESMTP id 0D31D33DFFC
  for <linux-mtd@lists.infradead.org>; Thu,  9 May 2013 17:59:24 +0000 (UTC)
 From: Mike Frysinger <vapier@gentoo.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH mtd-utils 2/4 v2] nandwrite: clean up length types
-Date: Thu,  9 May 2013 13:59:22 -0400
-Message-Id: <1368122364-9754-2-git-send-email-vapier@gentoo.org>
+Subject: [PATCH mtd-utils 3/4 v2] nandwrite: add --input-{skip,size} options
+Date: Thu,  9 May 2013 13:59:23 -0400
+Message-Id: <1368122364-9754-3-git-send-email-vapier@gentoo.org>
 In-Reply-To: <1368122364-9754-1-git-send-email-vapier@gentoo.org>
 References: <1368122364-9754-1-git-send-email-vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,128 +21,120 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We use 'int' in many places to represent offsets/sizes.  That obviously
-does not play well with larger NAND devices on 32bit systems.  Instead,
-use the right type as needed:
- - long long to represent the length of the image
- - use fstat() rather than lseek();lseek(); to get the length of the image
- - use size_t/ssize_t when working with read()
- - tweak the printf formats as needed
+If you have a file image and want to copy sub-portions out and into
+NAND, there's no easy way to do that.  You can use dd to extract it
+to a temp file, or pipe it to nandwrite 1 page at a time.  Both suck.
+
+Add two new flags to explicitly set the size and offset of the input
+file.  Seeking stdin isn't currently supported as I'm not sure it's
+necessary.  It wouldn't be hard to add though...
 
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
 v2
-	- no changes from v1
+	- removed inputskip from imglen when getting size from stat()
 
- nandwrite.c | 37 +++++++++++++++++++++----------------
- 1 file changed, 21 insertions(+), 16 deletions(-)
+ nandwrite.c | 54 ++++++++++++++++++++++++++++++++++--------------------
+ 1 file changed, 34 insertions(+), 20 deletions(-)
 
 diff --git a/nandwrite.c b/nandwrite.c
-index edf9f83..14414b6 100644
+index 14414b6..9c3fe8f 100644
 --- a/nandwrite.c
 +++ b/nandwrite.c
-@@ -218,10 +218,10 @@ static void erase_buffer(void *buffer, size_t size)
-  */
- int main(int argc, char * const argv[])
- {
--	int cnt = 0;
- 	int fd = -1;
- 	int ifd = -1;
--	int imglen = 0, pagelen;
-+	int pagelen;
-+	long long imglen = 0;
- 	bool baderaseblock = false;
- 	long long blockstart = -1;
- 	struct mtd_dev_info mtd;
-@@ -313,8 +313,12 @@ int main(int argc, char * const argv[])
+@@ -52,11 +52,13 @@ static void display_help(int status)
+ "  -m, --markbad           Mark blocks bad if write fails\n"
+ "  -n, --noecc             Write without ecc\n"
+ "  -N, --noskipbad         Write without bad block skipping\n"
+-"  -o, --oob               Image contains oob data\n"
+-"  -O, --onlyoob           Image contains oob data and only write the oob part\n"
+-"  -s addr, --start=addr   Set start address (default is 0)\n"
+-"  -p, --pad               Pad to page size\n"
++"  -o, --oob               Input contains oob data\n"
++"  -O, --onlyoob           Input contains oob data and only write the oob part\n"
++"  -s addr, --start=addr   Set output start address (default is 0)\n"
++"  -p, --pad               Pad writes to page size\n"
+ "  -b, --blockalign=1|2|4  Set multiple of eraseblocks to align to\n"
++"      --input-skip=length Skip |length| bytes of the input file\n"
++"      --input-size=length Only read |length| bytes of the input file\n"
+ "  -q, --quiet             Don't display progress messages\n"
+ "  -h, --help              Display this help and exit\n"
+ "      --version           Output version information and exit\n"
+@@ -83,6 +85,8 @@ static void display_version(void)
+ static const char	*standard_input = "-";
+ static const char	*mtd_device, *img;
+ static long long	mtdoffset = 0;
++static long long	inputskip = 0;
++static long long	inputsize = 0;
+ static bool		quiet = false;
+ static bool		writeoob = false;
+ static bool		onlyoob = false;
+@@ -101,7 +105,10 @@ static void process_options(int argc, char * const argv[])
+ 		int option_index = 0;
+ 		static const char short_options[] = "hb:mnNoOpqs:a";
+ 		static const struct option long_options[] = {
++			/* Order of these args with val==0 matters; see option_index. */
+ 			{"version", no_argument, 0, 0},
++			{"input-skip", required_argument, 0, 0},
++			{"input-size", required_argument, 0, 0},
+ 			{"help", no_argument, 0, 'h'},
+ 			{"blockalign", required_argument, 0, 'b'},
+ 			{"markbad", no_argument, 0, 'm'},
+@@ -127,6 +134,12 @@ static void process_options(int argc, char * const argv[])
+ 			case 0: /* --version */
+ 				display_version();
+ 				break;
++			case 1: /* --input-skip */
++				inputskip = simple_strtoll(optarg, &error);
++				break;
++			case 2: /* --input-size */
++				inputsize = simple_strtoll(optarg, &error);
++				break;
+ 			}
+ 			break;
+ 		case 'q':
+@@ -299,26 +312,27 @@ int main(int argc, char * const argv[])
+ 
+ 	pagelen = mtd.min_io_size + ((writeoob) ? mtd.oob_size : 0);
+ 
+-	/*
+-	 * For the standard input case, the input size is merely an
+-	 * invariant placeholder and is set to the write page
+-	 * size. Otherwise, just use the input file size.
+-	 *
+-	 * TODO: Add support for the -l,--length=length option (see
+-	 * previous discussion by Tommi Airikka <tommi.airikka@ericsson.com> at
+-	 * <http://lists.infradead.org/pipermail/linux-mtd/2008-September/
+-	 * 022913.html>
+-	 */
+-
  	if (ifd == STDIN_FILENO) {
- 	    imglen = pagelen;
- 	} else {
--	    imglen = lseek(ifd, 0, SEEK_END);
--	    lseek(ifd, 0, SEEK_SET);
-+		struct stat st;
-+		if (fstat(ifd, &st)) {
-+			sys_errmsg("unable to stat input image");
+-	    imglen = pagelen;
++		imglen = inputsize ? : pagelen;
++		if (inputskip) {
++			errmsg("seeking stdin not supported");
 +			goto closeall;
 +		}
-+	    imglen = st.st_size;
+ 	} else {
+-		struct stat st;
+-		if (fstat(ifd, &st)) {
+-			sys_errmsg("unable to stat input image");
++		if (!inputsize) {
++			struct stat st;
++			if (fstat(ifd, &st)) {
++				sys_errmsg("unable to stat input image");
++				goto closeall;
++			}
++			imglen = st.st_size - inputskip;
++		} else
++			imglen = inputsize;
++
++		if (inputskip && lseek(ifd, inputskip, SEEK_CUR) == -1) {
++			sys_errmsg("lseek input by %lld failed", inputskip);
+ 			goto closeall;
+ 		}
+-	    imglen = st.st_size;
  	}
  
  	/* Check, if file is page-aligned */
-@@ -326,7 +330,7 @@ int main(int argc, char * const argv[])
- 
- 	/* Check, if length fits into device */
- 	if ((imglen / pagelen) * mtd.min_io_size > mtd.size - mtdoffset) {
--		fprintf(stderr, "Image %d bytes, NAND page %d bytes, OOB area %d"
-+		fprintf(stderr, "Image %lld bytes, NAND page %d bytes, OOB area %d"
- 				" bytes, device size %lld bytes\n",
- 				imglen, pagelen, mtd.oob_size, mtd.size);
- 		sys_errmsg("Input file does not fit into device");
-@@ -412,9 +416,10 @@ int main(int argc, char * const argv[])
- 
- 		/* Read more data from the input if there isn't enough in the buffer */
- 		if (writebuf + mtd.min_io_size > filebuf + filebuf_len) {
--			int readlen = mtd.min_io_size;
--			int alreadyread = (filebuf + filebuf_len) - writebuf;
--			int tinycnt = alreadyread;
-+			size_t readlen = mtd.min_io_size;
-+			size_t alreadyread = (filebuf + filebuf_len) - writebuf;
-+			size_t tinycnt = alreadyread;
-+			ssize_t cnt = 0;
- 
- 			while (tinycnt < readlen) {
- 				cnt = read(ifd, writebuf + tinycnt, readlen - tinycnt);
-@@ -444,7 +449,7 @@ int main(int argc, char * const argv[])
- 			if (tinycnt < readlen) {
- 				if (!pad) {
- 					fprintf(stderr, "Unexpected EOF. Expecting at least "
--							"%d more bytes. Use the padding option.\n",
-+							"%zu more bytes. Use the padding option.\n",
- 							readlen - tinycnt);
- 					goto closeall;
- 				}
-@@ -465,9 +470,10 @@ int main(int argc, char * const argv[])
- 
- 			/* Read more data for the OOB from the input if there isn't enough in the buffer */
- 			if (oobbuf + mtd.oob_size > filebuf + filebuf_len) {
--				int readlen = mtd.oob_size;
--				int alreadyread = (filebuf + filebuf_len) - oobbuf;
--				int tinycnt = alreadyread;
-+				size_t readlen = mtd.oob_size;
-+				size_t alreadyread = (filebuf + filebuf_len) - oobbuf;
-+				size_t tinycnt = alreadyread;
-+				ssize_t cnt;
- 
- 				while (tinycnt < readlen) {
- 					cnt = read(ifd, oobbuf + tinycnt, readlen - tinycnt);
-@@ -482,7 +488,7 @@ int main(int argc, char * const argv[])
- 
- 				if (tinycnt < readlen) {
- 					fprintf(stderr, "Unexpected EOF. Expecting at least "
--							"%d more bytes for OOB\n", readlen - tinycnt);
-+							"%zu more bytes for OOB\n", readlen - tinycnt);
- 					goto closeall;
- 				}
- 
-@@ -505,7 +511,7 @@ int main(int argc, char * const argv[])
- 				writeoob ? mtd.oob_size : 0,
- 				write_mode);
- 		if (ret) {
--			int i;
-+			long long i;
- 			if (errno != EIO) {
- 				sys_errmsg("%s: MTD write failure", mtd_device);
- 				goto closeall;
-@@ -520,9 +526,8 @@ int main(int argc, char * const argv[])
- 				if (mtd_erase(mtd_desc, &mtd, fd, i / mtd.eb_size)) {
- 					int errno_tmp = errno;
- 					sys_errmsg("%s: MTD Erase failure", mtd_device);
--					if (errno_tmp != EIO) {
-+					if (errno_tmp != EIO)
- 						goto closeall;
--					}
- 				}
- 			}
- 
 -- 
 1.8.2.1
