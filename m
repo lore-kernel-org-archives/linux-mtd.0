@@ -1,19 +1,53 @@
-Received: from ra.se.axis.com ([195.60.68.13])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UahRD-00014U-FC
- for linux-mtd@lists.infradead.org; Fri, 10 May 2013 07:08:20 +0000
-Date: Fri, 10 May 2013 09:07:53 +0200
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Mike Frysinger <vapier@gentoo.org>
-Subject: Re: [PATCH [mtd-utils] 3/3] mkfs.ubifs: allow reformatting of devices
-In-Reply-To: <1368030446-343-3-git-send-email-vapier@gentoo.org>
-Message-ID: <alpine.DEB.2.00.1305100902410.22700@lnxricardw.se.axis.com>
-References: <1368030446-343-1-git-send-email-vapier@gentoo.org>
- <1368030446-343-3-git-send-email-vapier@gentoo.org>
-MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="ISO-8859-15"
-Content-Transfer-Encoding: 8BIT
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+From: Wolfram Sang <wsa@the-dreams.de>
+To: linux-kernel@vger.kernel.org
+Subject: [RFC 00/42] devm improvement series, part #1
+Date: Fri, 10 May 2013 10:16:45 +0200
+Message-Id: <1368173847-5661-1-git-send-email-wsa@the-dreams.de>
+Cc: Wan ZongShun <mcuos.com@gmail.com>, linux-mips@linux-mips.org,
+ alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
+ Kevin Hilman <khilman@deeprootsystems.com>, Wolfram Sang <wsa@the-dreams.de>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Viresh Kumar <viresh.kumar@linaro.org>,
+ Linus Walleij <linus.walleij@linaro.org>, Matt Mackall <mpm@selenic.com>,
+ Sekhar Nori <nsekhar@ti.com>, linux-fbdev@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, Jaroslav Kysela <perex@perex.cz>,
+ linux-ide@vger.kernel.org, Wim Van Sebroeck <wim@iguana.be>,
+ netdev@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-i2c@vger.kernel.org, Evgeniy Polyakov <zbr@ioremap.net>,
+ Jiri Slaby <jslaby@suse.cz>, ac100@lists.launchpad.net,
+ devel@driverdev.osuosl.org, Kukjin Kim <kgene.kim@samsung.com>,
+ Russell King <linux@arm.linux.org.uk>,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ Florian Tobias Schandinat <FlorianSchandinat@gmx.de>,
+ Marc Dietrich <marvin24@gmx.de>, Stephen Warren <swarren@wwwdotorg.org>,
+ "Rafael J. Wysocki" <rjw@sisk.pl>, cpufreq@vger.kernel.org,
+ David Airlie <airlied@linux.ie>, Tony Lindgren <tony@atomide.com>,
+ Tomi Valkeinen <tomi.valkeinen@ti.com>, Alan Stern <stern@rowland.harvard.edu>,
+ linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
+ Grant Likely <grant.likely@linaro.org>, Zhang Rui <rui.zhang@intel.com>,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
+ Ohad Ben-Cohen <ohad@wizery.com>, spi-devel-general@lists.sourceforge.net,
+ Deepak Saxena <dsaxena@plexity.net>, linux-watchdog@vger.kernel.org,
+ Arnd Bergmann <arnd@arndb.de>, linux-pm@vger.kernel.org,
+ Julian Andres Klode <jak@jak-linux.org>, spear-devel@list.st.com,
+ Inki Dae <inki.dae@samsung.com>, linux-samsung-soc@vger.kernel.org,
+ Ben Dooks <ben-linux@fluff.org>, Barry Song <baohua.song@csr.com>,
+ linux-tegra@vger.kernel.org, rtc-linux@googlegroups.com,
+ linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Joonyoung Shim <jy0922.shim@samsung.com>,
+ Alessandro Zummo <a.zummo@towertech.it>,
+ davinci-linux-open-source@linux.davincidsp.com,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Ralf Baechle <ralf@linux-mips.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Seung-Woo Kim <sw0312.kim@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Felipe Balbi <balbi@ti.com>, Tony Prisk <linux@prisktech.co.nz>,
+ Vinod Koul <vinod.koul@intel.com>, Kyungmin Park <kyungmin.park@samsung.com>,
+ Mark Brown <broonie@kernel.org>, Viresh Kumar <viresh.linux@gmail.com>,
+ Takashi Iwai <tiwai@suse.de>, Dan Williams <djbw@fb.com>,
+ Tejun Heo <tj@kernel.org>, Samuel Ortiz <sameo@linux.intel.com>,
+ David Woodhouse <dwmw2@infradead.org>, Paul Zimmerman <paulz@synopsys.com>,
+ Thierry Reding <thierry.reding@avionic-design.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,45 +57,171 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Lately, I have been experimenting how to improve the devm interface to make
+writing device drivers easier and less error prone while also getting rid of
+its subtle issues. I think it has more potential but still needs work and
+definately conistency, especiall in its usage.
 
-On Wed, 8 May 2013, Mike Frysinger wrote:
+The first thing I come up with is a low hanging fruit regarding
+devm_ioremap_resouce(). This function already checks if the passed resource is
+valid and gives an error message if not. So, we can remove similar checks from
+the drivers and get rid of a bit of code and a number of inconsistent error
+strings.
 
-> Sometimes I want to re-initialize an existing ubifs, but the tool
-> currently bails out if the volume is already formatted.  Prompt the
-> user instead so they can decide.
->
-> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
-> ---
-> ...
-> 	{"root",               1, NULL, 'r'},
-> @@ -142,6 +143,7 @@ static const struct option longopts[] = {
-> 	{"max-leb-cnt",        1, NULL, 'c'},
-> 	{"output",             1, NULL, 'o'},
-> 	{"devtable",           1, NULL, 'D'},
-> +	{"yes",                0, NULL, 'y'},
-> 	{"help",               0, NULL, 'h'},
-> 	{"verbose",            0, NULL, 'v'},
-> 	{"version",            0, NULL, 'V'},
-> @@ -191,6 +193,7 @@ static const char *helptext =
-> "-U, --squash-uids        squash owners making all files owned by root\n"
-> "-l, --log-lebs=COUNT     count of erase blocks for the log (used only for\n"
-> "                         debugging)\n"
-> +"-y, --yes                assume the answer is \"yes\" for all questions\n"
-> ...
+If generally accepted, I'd suggest I rerun my scripts again when rc1 is out and
+ask Linus to pull this branch [1] directly? This series is merely to show what
+I am up to.
 
-Wouldn't it be better to have a specific option for this specific case, 
-rather than a general yes-to-everything option? The latter makes sense 
-with programs such as fsck where the only prompt basically is 'I found a 
-fault, shall I fix it?', but in this is case it can be difficult to 
-predict the outcome should the option start to cover more potential 
-questions in the future.
+Thanks,
 
--f and -F are already taken, but I was thinking something along the lines of:
+   Wolfram
 
-"-T, --reformat		format an existing ubifs even if already formatted"
+[1] git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git devm_no_resource_check
 
-/Ricard
+Wolfram Sang (42):
+  drivers/ata: don't check resource with devm_ioremap_resource
+  drivers/char/hw_random: don't check resource with
+    devm_ioremap_resource
+  drivers/cpufreq: don't check resource with devm_ioremap_resource
+  drivers/dma: don't check resource with devm_ioremap_resource
+  drivers/gpio: don't check resource with devm_ioremap_resource
+  drivers/gpu/drm/exynos: don't check resource with
+    devm_ioremap_resource
+  drivers/gpu/host1x: don't check resource with devm_ioremap_resource
+  drivers/gpu/host1x/drm: don't check resource with
+    devm_ioremap_resource
+  drivers/i2c/busses: don't check resource with devm_ioremap_resource
+  drivers/input/keyboard: don't check resource with
+    devm_ioremap_resource
+  drivers/input/serio: don't check resource with devm_ioremap_resource
+  drivers/memory: don't check resource with devm_ioremap_resource
+  drivers/mfd: don't check resource with devm_ioremap_resource
+  drivers/misc: don't check resource with devm_ioremap_resource
+  drivers/mtd/maps: don't check resource with devm_ioremap_resource
+  drivers/mtd/nand: don't check resource with devm_ioremap_resource
+  drivers/net/ethernet/renesas: don't check resource with
+    devm_ioremap_resource
+  drivers/pinctrl: don't check resource with devm_ioremap_resource
+  drivers/pinctrl/spear: don't check resource with
+    devm_ioremap_resource
+  drivers/pwm: don't check resource with devm_ioremap_resource
+  drivers/remoteproc: don't check resource with devm_ioremap_resource
+  drivers/rtc: don't check resource with devm_ioremap_resource
+  drivers/spi: don't check resource with devm_ioremap_resource
+  drivers/staging/dwc2: don't check resource with devm_ioremap_resource
+  drivers/staging/nvec: don't check resource with devm_ioremap_resource
+  drivers/thermal: don't check resource with devm_ioremap_resource
+  drivers/tty/serial: don't check resource with devm_ioremap_resource
+  drivers/usb/chipidea: don't check resource with devm_ioremap_resource
+  drivers/usb/gadget: don't check resource with devm_ioremap_resource
+  drivers/usb/host: don't check resource with devm_ioremap_resource
+  drivers/usb/phy: don't check resource with devm_ioremap_resource
+  drivers/video: don't check resource with devm_ioremap_resource
+  drivers/video/omap2: don't check resource with devm_ioremap_resource
+  drivers/video/omap2/dss: don't check resource with
+    devm_ioremap_resource
+  drivers/w1/masters: don't check resource with devm_ioremap_resource
+  drivers/watchdog: don't check resource with devm_ioremap_resource
+  arch/arm/mach-tegra: don't check resource with devm_ioremap_resource
+  arch/arm/plat-omap: don't check resource with devm_ioremap_resource
+  arch/arm/plat-samsung: don't check resource with
+    devm_ioremap_resource
+  arch/mips/lantiq/xway: don't check resource with
+    devm_ioremap_resource
+  sound/soc/fsl: don't check resource with devm_ioremap_resource
+  sound/soc/kirkwood: don't check resource with devm_ioremap_resource
+
+ arch/arm/mach-tegra/tegra2_emc.c            |    5 -----
+ arch/arm/plat-omap/dmtimer.c                |    7 +------
+ arch/arm/plat-samsung/adc.c                 |    5 -----
+ arch/mips/lantiq/xway/gptu.c                |    7 +------
+ drivers/ata/pata_ep93xx.c                   |    5 -----
+ drivers/char/hw_random/mxc-rnga.c           |    6 ------
+ drivers/char/hw_random/omap-rng.c           |    5 -----
+ drivers/cpufreq/kirkwood-cpufreq.c          |    4 ----
+ drivers/dma/tegra20-apb-dma.c               |    5 -----
+ drivers/gpio/gpio-mvebu.c                   |   12 +-----------
+ drivers/gpio/gpio-spear-spics.c             |    7 +------
+ drivers/gpio/gpio-tegra.c                   |    5 -----
+ drivers/gpu/drm/exynos/exynos_hdmi.c        |    5 -----
+ drivers/gpu/host1x/dev.c                    |    7 +------
+ drivers/gpu/host1x/drm/dc.c                 |    5 -----
+ drivers/i2c/busses/i2c-davinci.c            |    6 +-----
+ drivers/i2c/busses/i2c-designware-platdrv.c |    6 +-----
+ drivers/i2c/busses/i2c-imx.c                |    6 +-----
+ drivers/i2c/busses/i2c-omap.c               |    6 +-----
+ drivers/i2c/busses/i2c-rcar.c               |    7 +------
+ drivers/i2c/busses/i2c-s3c2410.c            |    5 -----
+ drivers/i2c/busses/i2c-sirf.c               |    6 ------
+ drivers/i2c/busses/i2c-tegra.c              |    5 -----
+ drivers/input/keyboard/imx_keypad.c         |    7 +------
+ drivers/input/keyboard/spear-keyboard.c     |    7 +------
+ drivers/input/keyboard/tegra-kbc.c          |    7 +------
+ drivers/input/serio/arc_ps2.c               |    7 +------
+ drivers/memory/emif.c                       |    6 ------
+ drivers/mfd/intel_msic.c                    |    6 +-----
+ drivers/misc/atmel-ssc.c                    |    5 -----
+ drivers/mtd/maps/autcpu12-nvram.c           |    7 +------
+ drivers/mtd/maps/lantiq-flash.c             |    8 +-------
+ drivers/mtd/nand/lpc32xx_mlc.c              |    5 -----
+ drivers/mtd/nand/lpc32xx_slc.c              |    7 +------
+ drivers/net/ethernet/renesas/sh_eth.c       |   14 +-------------
+ drivers/pinctrl/pinctrl-at91.c              |    7 +------
+ drivers/pinctrl/pinctrl-coh901.c            |    5 -----
+ drivers/pinctrl/pinctrl-exynos5440.c        |    5 -----
+ drivers/pinctrl/pinctrl-samsung.c           |    5 -----
+ drivers/pinctrl/pinctrl-xway.c              |    4 ----
+ drivers/pinctrl/spear/pinctrl-plgpio.c      |    7 +------
+ drivers/pwm/pwm-imx.c                       |    5 -----
+ drivers/pwm/pwm-puv3.c                      |    5 -----
+ drivers/pwm/pwm-pxa.c                       |    5 -----
+ drivers/pwm/pwm-spear.c                     |    7 +------
+ drivers/pwm/pwm-tegra.c                     |    5 -----
+ drivers/pwm/pwm-tiecap.c                    |    5 -----
+ drivers/pwm/pwm-tiehrpwm.c                  |    5 -----
+ drivers/pwm/pwm-tipwmss.c                   |    5 -----
+ drivers/pwm/pwm-vt8500.c                    |    5 -----
+ drivers/remoteproc/da8xx_remoteproc.c       |   14 +-------------
+ drivers/rtc/rtc-nuc900.c                    |    6 +-----
+ drivers/rtc/rtc-omap.c                      |    5 -----
+ drivers/rtc/rtc-s3c.c                       |    5 -----
+ drivers/rtc/rtc-spear.c                     |    7 +------
+ drivers/rtc/rtc-tegra.c                     |    6 ------
+ drivers/spi/spi-bcm63xx.c                   |    8 +-------
+ drivers/spi/spi-ep93xx.c                    |    8 +-------
+ drivers/spi/spi-omap2-mcspi.c               |    7 +------
+ drivers/spi/spi-s3c64xx.c                   |    7 +------
+ drivers/spi/spi-sirf.c                      |    7 +------
+ drivers/spi/spi-tegra114.c                  |    7 +------
+ drivers/spi/spi-tegra20-sflash.c            |    5 -----
+ drivers/spi/spi-tegra20-slink.c             |    7 +------
+ drivers/staging/dwc2/platform.c             |    5 -----
+ drivers/staging/nvec/nvec.c                 |    5 -----
+ drivers/thermal/dove_thermal.c              |   11 +----------
+ drivers/thermal/exynos_thermal.c            |    5 -----
+ drivers/thermal/kirkwood_thermal.c          |    7 +------
+ drivers/thermal/rcar_thermal.c              |    6 +-----
+ drivers/tty/serial/serial-tegra.c           |    6 +-----
+ drivers/usb/chipidea/core.c                 |    5 -----
+ drivers/usb/gadget/bcm63xx_udc.c            |   10 ----------
+ drivers/usb/host/ehci-atmel.c               |    9 +--------
+ drivers/usb/host/ehci-mxc.c                 |    8 +-------
+ drivers/usb/host/ehci-platform.c            |    6 +-----
+ drivers/usb/host/ehci-sh.c                  |   10 +---------
+ drivers/usb/host/ohci-nxp.c                 |    6 ------
+ drivers/usb/host/ohci-platform.c            |    7 +------
+ drivers/usb/phy/phy-mv-u3d-usb.c            |    5 -----
+ drivers/usb/phy/phy-mxs-usb.c               |    5 -----
+ drivers/usb/phy/phy-samsung-usb2.c          |    5 -----
+ drivers/usb/phy/phy-samsung-usb3.c          |    5 -----
+ drivers/video/mxsfb.c                       |    7 +------
+ drivers/video/omap2/dss/hdmi.c              |    7 +------
+ drivers/video/omap2/vrfb.c                  |    5 -----
+ drivers/w1/masters/omap_hdq.c               |    5 -----
+ drivers/watchdog/imx2_wdt.c                 |    5 -----
+ sound/soc/fsl/imx-ssi.c                     |    6 ------
+ sound/soc/kirkwood/kirkwood-i2s.c           |    5 -----
+ 90 files changed, 43 insertions(+), 525 deletions(-)
+
 -- 
-Ricard Wolf Wanderlöf                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+1.7.10.4
