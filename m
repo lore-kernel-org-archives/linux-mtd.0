@@ -1,16 +1,22 @@
-Received: from gerard.telenet-ops.be ([195.130.132.48])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UaY1v-0003mE-PK
- for linux-mtd@lists.infradead.org; Thu, 09 May 2013 21:05:39 +0000
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH 06/12] mtd: MTD_NAND_DENALI should depend on HAS_DMA
-Date: Thu,  9 May 2013 23:04:48 +0200
-Message-Id: <1368133494-22198-6-git-send-email-geert@linux-m68k.org>
-In-Reply-To: <1368133494-22198-1-git-send-email-geert@linux-m68k.org>
-References: <1368133494-22198-1-git-send-email-geert@linux-m68k.org>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>, linux-mtd@lists.infradead.org
+Received: from devils.ext.ti.com ([198.47.26.153])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UafKQ-0008H1-Vm
+ for linux-mtd@lists.infradead.org; Fri, 10 May 2013 04:53:11 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Mike Frysinger <vapier@gentoo.org>
+Subject: RE: [PATCH [mtd-utils] 3/3] nandwrite: add --input-{skip,size} options
+Date: Fri, 10 May 2013 04:52:40 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9C371E@DBDE04.ent.ti.com>
+References: <1368054125-32214-1-git-send-email-vapier@gentoo.org>
+ <1368057794-32735-3-git-send-email-vapier@gentoo.org>
+ <20980858CB6D3A4BAE95CA194937D5E73E9C32D8@DBDE04.ent.ti.com>
+ <201305091157.48673.vapier@gentoo.org>
+In-Reply-To: <201305091157.48673.vapier@gentoo.org>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,39 +26,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If NO_DMA=y:
+=20
+> On Thursday 09 May 2013 06:42:01 Gupta, Pekon wrote:
+> > >  	pagelen =3D mtd.min_io_size + ((writeoob) ? mtd.oob_size : 0);
+> > > +		imglen =3D inputsize ? : pagelen;
+> > > +		if (inputskip) {
+> > > +			errmsg("seeking stdin does not work");
+> > > +			goto closeall;
+> > > +		}
+> > >  	} else {
+> > > -		struct stat st;
+> > > -		if (fstat(ifd, &st)) {
+> > > -			sys_errmsg("unable to stat input image");
+> > > +		if (!inputsize) {
+> > > +			struct stat st;
+> > > +			if (fstat(ifd, &st)) {
+> > > +				sys_errmsg("unable to stat input
+> > > image");
+> > > +				goto closeall;
+> > > +			}
+> > > +			imglen =3D st.st_size;
+> > > +		} else
+> > > +			imglen =3D inputsize;
+> >
+> > [Pekon]: It would be good to check that both 'inputsize' & 'inputskip'
+> > are multiples of:
+> > -  mtd->writesize : if not using '-o' option, OR
+> > - (mtd->writesize + mtd->oobsize): is using '-o' option.
+> > Or Simply, both arguments should be aligned to 'pagelen' boundary.
+>=20
+> mmm, i don't think so.  the input alignment (inputskip) is entirely
+> irrelevant
+> to the output.
+>=20
+[Pekon]: I'm coming from the back-ground that most users 'dd' or=20
+'nanddump' to generate write-data for 'nandwrite'.=20
+Thus the write-data would be mostly 'pagelen' aligned.
+Example:
+If the write-data contains OOB data, and user forgets to take that=20
+into account while calculating 'inputskip' offset, then everything=20
+would be wrongly shifted by the offset.
+So you need not flag an Error, but a warning may do, so user is=20
+hinted at his mistake.
 
-drivers/built-in.o: In function `denali_remove':
-drivers/mtd/nand/denali.c:1605: undefined reference to `dma_unmap_single'
-drivers/built-in.o: In function `denali_read_page_raw':
-drivers/mtd/nand/denali.c:1190: undefined reference to `dma_sync_single_for_cpu'
-drivers/built-in.o: In function `denali_read_page':
-drivers/mtd/nand/denali.c:1140: undefined reference to `dma_sync_single_for_cpu'
-drivers/built-in.o: In function `write_page':
-drivers/mtd/nand/denali.c:1051: undefined reference to `dma_sync_single_for_cpu'
-drivers/built-in.o: In function `denali_init':
-drivers/mtd/nand/denali.c:1433: undefined reference to `dma_set_mask'
-drivers/mtd/nand/denali.c:1438: undefined reference to `dma_map_single'
-drivers/mtd/nand/denali.c:1442: undefined reference to `dma_mapping_error'
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
----
- drivers/mtd/nand/Kconfig |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+> as for inputsize, we already do that check.  if you read the code further
+> (like 5 lines below the diff here), you'll see the --pad flag handling.
+>=20
+[Pekon]: Ok.. yes, its there..
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 81bf5e5..ac06f79 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -51,6 +51,7 @@ config MTD_NAND_MUSEUM_IDS
- 
- config MTD_NAND_DENALI
-         tristate "Support Denali NAND controller"
-+	depends on HAS_DMA
-         help
- 	  Enable support for the Denali NAND controller.  This should be
- 	  combined with either the PCI or platform drivers to provide device
--- 
-1.7.0.4
+> -mike
+
+with regards, pekon
