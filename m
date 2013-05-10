@@ -1,20 +1,18 @@
-Received: from dev.gentoo.org ([2001:470:ea4a:1:214:c2ff:fe64:b2d3]
- helo=smtp.gentoo.org)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UasZe-0003QY-9D
- for linux-mtd@lists.infradead.org; Fri, 10 May 2013 19:01:46 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [mtd-utils] nanddump: print ecc.stat info after reading
-Date: Fri, 10 May 2013 15:01:24 -0400
-References: <20980858CB6D3A4BAE95CA194937D5E73E9C3862@DBDE04.ent.ti.com>
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9C3862@DBDE04.ent.ti.com>
+Received: from smtp07.smtpout.orange.fr ([80.12.242.129]
+ helo=smtp.smtpout.orange.fr)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UauWN-0004eO-Ui
+ for linux-mtd@lists.infradead.org; Fri, 10 May 2013 21:06:33 +0000
+Message-ID: <518D6138.2090009@wanadoo.fr>
+Date: Fri, 10 May 2013 23:06:00 +0200
+From: Michel Stempin <michel.stempin@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart13437116.IJ4mx2EAnB";
- protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-Message-Id: <201305101501.25854.vapier@gentoo.org>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: chips: Add support for PMC SPI Flash chips in m25p80.c
+References: <1368195520.26780.169.camel@sauron.fi.intel.com>
+In-Reply-To: <1368195520.26780.169.camel@sauron.fi.intel.com>
+Content-Type: multipart/mixed; boundary="------------090600030700070800060104"
+Cc: Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,48 +22,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---nextPart13437116.IJ4mx2EAnB
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+This is a multi-part message in MIME format.
+--------------090600030700070800060104
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-On Friday 10 May 2013 04:32:50 Gupta, Pekon wrote:
-> One more request..
-> Shouldn't the following ecc.stat info moved after actual mtd_read() ?
->=20
-> fprintf(stderr, "ECC failed: %d\n", stat1.failed);
-> fprintf(stderr, "ECC corrected: %d\n", stat1.corrected);
-> fprintf(stderr, "Number of bad blocks: %d\n", stat1.badblocks);
-> fprintf(stderr, "Number of bbt blocks: %d\n", stat1.bbtblocks);
->=20
-> Currently this info is printed, before the actual reads happen on
-> MTD device. I'm not sure if this was intended for some other purpose?
+    Add support for PMC (now Chingis, part of ISSI) Pm25LV512 (512 kBbit), Pm25LV010 (1 Mbit) (see datasheet http://www.geocities.jp/scottle556/pdf/Pm25LV512-010.pdf) and Pm25LQ032 (32 Mbit) (datasheet:http://www.
 
-i think the idea is that header/device info is shown first before we dump e=
-ach=20
-page.  so all that info should come first.
-=2Dmike
+    This patch is resent in order to take into account this upstream patch:
 
---nextPart13437116.IJ4mx2EAnB
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
+    commit e534ee4f9ca29fdb38eea4b0c53f2154fbd8c1ee
+    Author: Krzysztof Mazur <krzysiek@podlesie.net>
+    Date:   Fri Feb 22 15:51:05 2013 +0100
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
+        mtd: m25p80: introduce SST_WRITE flag for SST byte programming
 
-iQIcBAABAgAGBQJRjUQFAAoJEEFjO5/oN/WBOf8QANqNzE6zJGIhWeXWlG/2LIe6
-xSmZGsijkJZSLEgV2eYDt5IJ4pCvEgx1XHZVuF8JQ4j8Pd9oDTGr8gMQrB+z+uVS
-zLNHNwN5cfBZ7RAqy7dQ26YCGfc9r6E8MES7tu3Il7A9FZZcUUyTaBEEfzVBHUrd
-t5km08hcmxbJBvEUZU6aBUTMlyf1drnmgCGTbugMG372q+MpNABq5cJqo6S0R8bW
-moHcOk8wb7Z2k2Xf76mIQuEJ551RW9lLZDckCYJ1lxNImvWLsIfKSmw+Zaz4quhB
-PMR8o5n9vmR99pey09mTxUNpK/WUbVaRwGJLHQ+f5bSqoLUdUpCZTnLD/2+IBB1V
-r/h17PIJTsPiqpMMy3D6ZKTEq+OZMsCdqb9zbA3p9Cv0EW/IdDmgWs6I2KQ3RuLT
-7DZ2VoCgCMKdtcUCmU2P+PVS1RlKCmvPj34nqZJK+RH5/qDIx9bkRUFXiVOwcylB
-e+ZKPqYsVEyVQStIHVewhOxsxNcyPQJuZcHvOykcNSvZFdrMPiiP56aEq8lcn+P7
-uC9BiCkgsXU2hCL5zyt+vg5gr4oyXDePbVZEpqZG/PcBlU03SguHBgj8bjBEiPVs
-7xF68FqL4majm/CAf2z1gC9koQUWWyLWwcs5Ei5wNqqOjnhZHLV8RXiF81SJEfp2
-kIySMFoEz1i3g0IGrYFc
-=z6YW
------END PGP SIGNATURE-----
+        Not all SST devices implement the SST byte programming command.
+        Some devices (like SST25VF064C) implement only standard m25p80 page
+        write command.
 
---nextPart13437116.IJ4mx2EAnB--
+        Now SPI flash devices that need sst_write() are explicitly marked
+        with new SST_WRITE flag and the decision to use sst_write() is based
+        on this flag instead of manufacturer id.
+
+        Signed-off-by: Krzysztof Mazur <krzysiek@podlesie.net>
+        Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+
+    Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+    Signed-off-by: Michel Stempin <michel.stempin@wanadoo.fr>
+---
+ drivers/mtd/devices/m25p80.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 2f3d2a5..4d45ce4 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -45,6 +45,7 @@
+ #define	OPCODE_BE_4K		0x20	/* Erase 4KiB block */
+ #define	OPCODE_BE_32K		0x52	/* Erase 32KiB block */
+ #define	OPCODE_CHIP_ERASE	0xc7	/* Erase whole flash chip */
++#define	OPCODE_BE_4K_PMC	0xd7	/* Erase 4KiB block on PMC chips*/
+ #define	OPCODE_SE		0xd8	/* Sector erase (usually 64KiB) */
+ #define	OPCODE_RDID		0x9f	/* Read JEDEC ID */
+ 
+@@ -682,6 +683,7 @@ struct flash_info {
+ #define	SECT_4K		0x01		/* OPCODE_BE_4K works uniformly */
+ #define	M25P_NO_ERASE	0x02		/* No erase command needed */
+ #define	SST_WRITE	0x04		/* use SST byte programming */
++#define	SECT_4K_PMC	0x08		/* OPCODE_BE_4K_PMC works uniformly */
+ };
+ 
+ #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
+@@ -762,6 +764,11 @@ static const struct spi_device_id m25p_ids[] = {
+ 	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024, 256, 0) },
+ 	{ "n25q256a", INFO(0x20ba19, 0, 64 * 1024, 512, SECT_4K) },
+ 
++	/* PMC -- pm25x "blocks" are 32K, sectors are 4K */
++	{ "pm25lv512", INFO(0, 0, 32 * 1024, 2, SECT_4K_PMC) },
++	{ "pm25lv010", INFO(0, 0, 32 * 1024, 4, SECT_4K_PMC) },
++	{ "pm25lq032", INFO(0x7F9D46, 0, 64 * 1024,  64, SECT_4K) },
++
+ 	/* Spansion -- single (large) sector size only, at least
+ 	 * for the chips listed here (without boot sectors).
+ 	 */
+@@ -1014,6 +1021,9 @@ static int m25p_probe(struct spi_device *spi)
+ 	if (info->flags & SECT_4K) {
+ 		flash->erase_opcode = OPCODE_BE_4K;
+ 		flash->mtd.erasesize = 4096;
++	} else if (info->flags & SECT_4K_PMC) {
++		flash->erase_opcode = OPCODE_BE_4K_PMC;
++		flash->mtd.erasesize = 4096;
+ 	} else {
+ 		flash->erase_opcode = OPCODE_SE;
+ 		flash->mtd.erasesize = info->sector_size;
+-- 
+1.7.10.4
+
+
+--------------090600030700070800060104
+Content-Type: text/plain; charset=UTF-8;
+ name="Portion de message joint"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="Portion de message joint"
+
+
+--------------090600030700070800060104--
