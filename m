@@ -1,21 +1,20 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ubmfq-0005Yb-88
- for linux-mtd@lists.infradead.org; Mon, 13 May 2013 06:55:55 +0000
-Message-ID: <1368428287.5360.0.camel@sauron.fi.intel.com>
-Subject: Re: [RESEND PATCH v2 1/7] mtd: nand-gpio: Convert driver to using
- resource-managed functions
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Alexander Shiyan <shc_work@mail.ru>
-Date: Mon, 13 May 2013 09:58:07 +0300
-In-Reply-To: <1367848434-28493-1-git-send-email-shc_work@mail.ru>
-References: <1367848434-28493-1-git-send-email-shc_work@mail.ru>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Reply-To: artem.bityutskiy@linux.intel.com
+Received: from mail-bk0-x234.google.com ([2a00:1450:4008:c01::234])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UbmgA-0005Yp-9a
+ for linux-mtd@lists.infradead.org; Mon, 13 May 2013 06:56:16 +0000
+Received: by mail-bk0-f52.google.com with SMTP id mz1so33602bkb.25
+ for <linux-mtd@lists.infradead.org>; Sun, 12 May 2013 23:55:52 -0700 (PDT)
+MIME-Version: 1.0
+Date: Mon, 13 May 2013 14:55:52 +0800
+Message-ID: <CAPgLHd_ETnhT-YQgyPKJJ5meTF_mibYipShRO2GPGMhpdGOuyw@mail.gmail.com>
+Subject: [PATCH] mtd: fsmc_nand: fix error return code in fsmc_nand_probe()
+From: Wei Yongjun <weiyj.lk@gmail.com>
+To: dwmw2@infradead.org, grant.likely@linaro.org, rob.herring@calxeda.com,
+ artem.bityutskiy@linux.intel.com, linus.walleij@linaro.org,
+ viresh.kumar@linaro.org, vipin.kumar@st.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: yongjun_wei@trendmicro.com.cn, linux-mtd@lists.infradead.org,
+ devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,13 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2013-05-06 at 17:53 +0400, Alexander Shiyan wrote:
-> Patch converts driver to using resource-managed functions.
-> 
-> Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 
-Pushed the series to l2-mtd.git, thanks!
+Fix to return -ENODEV in the dma channel request error handling
+case instead of 0, as done elsewhere in this function.
 
--- 
-Best Regards,
-Artem Bityutskiy
+Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+---
+ drivers/mtd/nand/fsmc_nand.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
+index 911e243..6988fc8 100644
+--- a/drivers/mtd/nand/fsmc_nand.c
++++ b/drivers/mtd/nand/fsmc_nand.c
+@@ -1032,6 +1032,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 	case USE_DMA_ACCESS:
+ 		dma_cap_zero(mask);
+ 		dma_cap_set(DMA_MEMCPY, mask);
++		ret = -ENODEV;
+ 		host->read_dma_chan = dma_request_channel(mask, filter,
+ 				pdata->read_dma_priv);
+ 		if (!host->read_dma_chan) {
