@@ -1,19 +1,23 @@
-Received: from webmail.solarflare.com ([12.187.104.25])
+Received: from dev.gentoo.org ([2001:470:ea4a:1:214:c2ff:fe64:b2d3]
+ helo=smtp.gentoo.org)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ubv6E-0000AM-CF
- for linux-mtd@lists.infradead.org; Mon, 13 May 2013 15:55:43 +0000
-Message-ID: <1368460512.3305.13.camel@bwh-desktop.uk.solarflarecom.com>
-Subject: Re: MTD and EEPROM
-From: Ben Hutchings <bhutchings@solarflare.com>
-To: <dedekind1@gmail.com>
-Date: Mon, 13 May 2013 16:55:12 +0100
-In-Reply-To: <1368427043.3208.21.camel@sauron.fi.intel.com>
-References: <1366037284.2701.3.camel@bwh-desktop.uk.solarflarecom.com>
- <1368427043.3208.21.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+ id 1UbvKx-0000ci-V8
+ for linux-mtd@lists.infradead.org; Mon, 13 May 2013 16:10:56 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+To: dedekind1@gmail.com
+Subject: Re: [PATCH [mtd-utils] 3/3] mkfs.ubifs: allow reformatting of devices
+Date: Mon, 13 May 2013 12:10:28 -0400
+References: <1368030446-343-1-git-send-email-vapier@gentoo.org>
+ <201305101126.01644.vapier@gentoo.org>
+ <1368432848.5360.32.camel@sauron.fi.intel.com>
+In-Reply-To: <1368432848.5360.32.camel@sauron.fi.intel.com>
 MIME-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+Content-Type: multipart/signed; boundary="nextPart3042482.Q7Ki1PfZhQ";
+ protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+Message-Id: <201305131210.29677.vapier@gentoo.org>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Ricard Wanderlof <ricard.wanderlof@axis.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,51 +27,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2013-05-13 at 09:37 +0300, Artem Bityutskiy wrote:
-> On Mon, 2013-04-15 at 15:48 +0100, Ben Hutchings wrote:
-> > There is currently no MTD type defined for EEPROM - only RAM, ROM and
-> > various types of flash.
-> 
-> I do not really know why, may be no one needed it?
-> 
-> > Is there any particular reason for this?  Is it simply that EEPROMs tend
-> > to be rather small and not worth putting filesystems on?
-> 
-> One may want to have access to raw EEPROM without having any
-> file-system. So bare /dev/mtdX could be useful.
+--nextPart3042482.Q7Ki1PfZhQ
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-Indeed, and the EEPROM on SFC4000 boards is already exposed as MTD by
-the sfc driver.  It's labelled as type MTD_RAM.
+On Monday 13 May 2013 04:14:08 Artem Bityutskiy wrote:
+> On Fri, 2013-05-10 at 11:26 -0400, Mike Frysinger wrote:
+> > On Friday 10 May 2013 03:07:53 Ricard Wanderlof wrote:
+> > > On Wed, 8 May 2013, Mike Frysinger wrote:
+> > > > Sometimes I want to re-initialize an existing ubifs, but the tool
+> > > > currently bails out if the volume is already formatted.  Prompt the
+> > > > user instead so they can decide.
+> > > >=20
+> > > >     {"max-leb-cnt",        1, NULL, 'c'},
+> > > >     {"output",             1, NULL, 'o'},
+> > > >     {"devtable",           1, NULL, 'D'},
+> > > >=20
+> > > > +   {"yes",                0, NULL, 'y'},
+> > > >=20
+> > > >     {"help",               0, NULL, 'h'},
+> > > >     {"verbose",            0, NULL, 'v'},
+> > > >     {"version",            0, NULL, 'V'},
+> > > >=20
+> > > > @@ -191,6 +193,7 @@ static const char *helptext =3D
+> > > > "-U, --squash-uids        squash owners making all files owned by
+> > > > root\n" "-l, --log-lebs=3DCOUNT     count of erase blocks for the l=
+og
+> > > > (used only for\n" "                         debugging)\n"
+> > > > +"-y, --yes                assume the answer is \"yes\" for all
+> > > > questions\n" ...
+> > >=20
+> > > Wouldn't it be better to have a specific option for this specific cas=
+e,
+> > > rather than a general yes-to-everything option?
+> >=20
+> > this is the standard that the various mtd tools (including a bunch of U=
+BI
+> > ones) follow
+> >=20
+> > > The latter makes sense
+> > > with programs such as fsck where the only prompt basically is 'I found
+> > > a fault, shall I fix it?', but in this is case it can be difficult to
+> > > predict the outcome should the option start to cover more potential
+> > > questions in the future.
+> >=20
+> > if you want to compare to standard tools, then the check would be dropp=
+ed
+> > entirely.  when i run `mke2fs /dev/sda1`, it doesn't prompt me.
+>=20
+> I admit I was not careful enough with the options. Feel free to change
+> the tools in the more direction of being more consistent with mainstream
+> filesystems' tools.
 
-The reason I asked was that I had became aware of this change:
+i don't mind having it prompting first as long as there is a flag to overri=
+de=20
+it.  i'd say let's take a survey of the community, but i think we both know=
+=20
+that's doomed to go nowhere :).
+=2Dmike
 
-commit dd02b67d5e9e7896891fa27eb5db65f55a290998
-Author: Anatolij Gustschin <agust@denx.de>
-Date:   Tue Jun 15 09:30:15 2010 +0200
+--nextPart3042482.Q7Ki1PfZhQ
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-    mtd: mtdchar: fix mmap for MTD RAM/ROM char devices
-    
-mmap() of an EEPROM would then do something very nasty, as the code in
-mtdchar assumes that MTD_RAM indicates a device created by the mtdram
-driver and uses its 'private' field accordingly.  I thought that it must
-therefore be a bug for the sfc driver to use MTD_RAM.  (But I didn't
-want to say too much immediately as this could be a security issue.)
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
 
-I later realised that this code had more recently been disabled, so this
-was not a bug in sfc:
+iQIcBAABAgAGBQJRkRB1AAoJEEFjO5/oN/WB8+QP/0PwNIhJDTAgDQAsus/tm89t
+QdiKKVg0J0U57oqziZIY8KkOIKmINfhEDrSZ5qryyX0NttgmWRvGz83P8YYhhTZo
+OfJnaB/3J/RARVGQBSc9kNJCMU6JrBjJuk4fViJ8vJKyHcmd4coHpgi3BR9a6GjU
+itStsMnbCMYeP8HWyXoLHsEjVomqh4aA+kEgbrG5ks84suw4rySrVYJQATDhDgjE
+HsrFq2WCP2wdqr04or/6xTQiwL3s/CuXIWAcFb3uRa3a1mivEfC8HahhUG1SvGYD
++VEIwOS3JtrWZFq1zSkd6gfomxUYQpJmBFUdVsjZWGC67xy+Sv9i9ku/yt1u6R8C
++LFK+3LgHtYbvOqKOBk43Goe2F7cMvWfvMixdbEX/Ry/+PSCmPm4G/ErjzGJVq10
+Fl2FutHYlkTB6kKi9cl+4RiKdMBNdZRaP2TCnXedT9J/I+fJfmqp8/7jIVmP1+mv
+4bRicPsfgx0W1fdDBDmKmm/caw8qwwars/yQzGOaiOREUNaJ/NAjzOZjmbppy2dC
+neph4FXHoHgPV6aKNCKa6jNwAkaL+TgzWEU4odFq1V22vuBWnA1zAD9PK8tzL3KU
+vyXqY8/YPWn1KDf6Ech9m55WZjGyzWsJN7MBC0BmR+j5BCDcy05e6sHlCBfMu+YP
+r3I6PaEhhcNbHcPnaxYL
+=KxDU
+-----END PGP SIGNATURE-----
 
-commit f5cf8f07423b2677cebebcebc863af77223a4972
-Author: David Woodhouse <David.Woodhouse@intel.com>
-Date:   Tue Oct 9 15:08:10 2012 +0100
-
-    mtd: Disable mtdchar mmap on MMU systems
-
-I requested this be applied to the earlier stable branches, which was
-accepted, so this should all be cleared up now.
-
-Ben.
-
--- 
-Ben Hutchings, Staff Engineer, Solarflare
-Not speaking for my employer; that's the marketing department's job.
-They asked us to note that Solarflare product names are trademarked.
+--nextPart3042482.Q7Ki1PfZhQ--
