@@ -1,20 +1,23 @@
-Received: from mga03.intel.com ([143.182.124.21])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ubnde-0006og-F7
- for linux-mtd@lists.infradead.org; Mon, 13 May 2013 07:57:44 +0000
-Message-ID: <1368431995.5360.26.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: Convert logging messages
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Joe Perches <joe@perches.com>
-Date: Mon, 13 May 2013 10:59:55 +0300
-In-Reply-To: <1366394375.3901.36.camel@joe-AO722>
-References: <1366394375.3901.36.camel@joe-AO722>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>, Joern Engel <joern@lazybastard.org>,
- LKML <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mail-oa0-f54.google.com ([209.85.219.54])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Ubnew-0006pv-L1
+ for linux-mtd@lists.infradead.org; Mon, 13 May 2013 07:59:03 +0000
+Received: by mail-oa0-f54.google.com with SMTP id o17so2596653oag.27
+ for <linux-mtd@lists.infradead.org>; Mon, 13 May 2013 00:58:39 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <CAPgLHd_ETnhT-YQgyPKJJ5meTF_mibYipShRO2GPGMhpdGOuyw@mail.gmail.com>
+References: <CAPgLHd_ETnhT-YQgyPKJJ5meTF_mibYipShRO2GPGMhpdGOuyw@mail.gmail.com>
+Date: Mon, 13 May 2013 13:28:39 +0530
+Message-ID: <CAKohponMh0-L-LAYE7Rf3frULQ3WEwJCi+Hfe9qtE+zEWtncrQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: fsmc_nand: fix error return code in fsmc_nand_probe()
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: Wei Yongjun <weiyj.lk@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: artem.bityutskiy@linux.intel.com, linus.walleij@linaro.org,
+ linux-kernel@vger.kernel.org, rob.herring@calxeda.com, vipin.kumar@st.com,
+ yongjun_wei@trendmicro.com.cn, linux-mtd@lists.infradead.org,
+ grant.likely@linaro.org, dwmw2@infradead.org,
+ devicetree-discuss@lists.ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,17 +27,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2013-04-19 at 10:59 -0700, Joe Perches wrote:
-> Use a more current logging style.
-> 
-> Convert homegrown ERROR/INFO macros to pr_<level>.
-> Convert homegrown parse_err macros to pr_err and
-> expand hidden flow control.
-> 
-> Signed-off-by: Joe Perches <joe@perches.com>
+On 13 May 2013 12:25, Wei Yongjun <weiyj.lk@gmail.com> wrote:
+> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+>
+> Fix to return -ENODEV in the dma channel request error handling
+> case instead of 0, as done elsewhere in this function.
+>
+> Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+> ---
+>  drivers/mtd/nand/fsmc_nand.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
+> index 911e243..6988fc8 100644
+> --- a/drivers/mtd/nand/fsmc_nand.c
+> +++ b/drivers/mtd/nand/fsmc_nand.c
+> @@ -1032,6 +1032,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+>         case USE_DMA_ACCESS:
+>                 dma_cap_zero(mask);
+>                 dma_cap_set(DMA_MEMCPY, mask);
+> +               ret = -ENODEV;
+>                 host->read_dma_chan = dma_request_channel(mask, filter,
+>                                 pdata->read_dma_priv);
+>                 if (!host->read_dma_chan) {
+>
 
-Pushed to l2-mtd.git, thanks!
+Better do it for error cases only.. like:
 
--- 
-Best Regards,
-Artem Bityutskiy
+>                 if (!host->read_dma_chan) {
+                           ret = -ENODEV;
