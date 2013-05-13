@@ -1,22 +1,23 @@
-Received: from mail-wg0-x22f.google.com ([2a00:1450:400c:c00::22f])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UbnoX-00073t-Od
- for linux-mtd@lists.infradead.org; Mon, 13 May 2013 08:08:58 +0000
-Received: by mail-wg0-f47.google.com with SMTP id e11so5848588wgh.26
- for <linux-mtd@lists.infradead.org>; Mon, 13 May 2013 01:08:35 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <OFE7F9663A.1F3DE1BE-ON48257B60.00045684-48257B60.001360DF@zte.com.cn>
-References: <CAFLxGvxfzHudUMRc7VkgWMO9RJAkyh1iuouRAV-0s-5eaLqfEQ@mail.gmail.com>
- <OFE7F9663A.1F3DE1BE-ON48257B60.00045684-48257B60.001360DF@zte.com.cn>
-Date: Mon, 13 May 2013 10:08:35 +0200
-Message-ID: <CAFLxGvzKw1_L3Nm4J5GM_wr0sFe6umN0yLzDnK=DM_AJ7GpaaQ@mail.gmail.com>
-Subject: Re: Re: Re: [PATCH] UBI: fix memory leak when use fastmap
-From: richard -rw- weinberger <richard.weinberger@gmail.com>
-To: wang.bo116@zte.com.cn
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: liu.dong3@zte.com.cn, artem.bityutskiy@linux.intel.com,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- LKML <linux-kernel@vger.kernel.org>, cui.yunfeng@zte.com.cn
+Received: from mga01.intel.com ([192.55.52.88])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UbnrQ-00076v-7B
+ for linux-mtd@lists.infradead.org; Mon, 13 May 2013 08:11:56 +0000
+Message-ID: <1368432848.5360.32.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH [mtd-utils] 3/3] mkfs.ubifs: allow reformatting of devices
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Mike Frysinger <vapier@gentoo.org>
+Date: Mon, 13 May 2013 11:14:08 +0300
+In-Reply-To: <201305101126.01644.vapier@gentoo.org>
+References: <1368030446-343-1-git-send-email-vapier@gentoo.org>
+ <1368030446-343-3-git-send-email-vapier@gentoo.org>
+ <alpine.DEB.2.00.1305100902410.22700@lnxricardw.se.axis.com>
+ <201305101126.01644.vapier@gentoo.org>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Ricard Wanderlof <ricard.wanderlof@axis.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,98 +27,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, May 3, 2013 at 5:31 AM,  <wang.bo116@zte.com.cn> wrote:
-> richard -rw- weinberger <richard.weinberger@gmail.com> write 2013-05-03
-> 03:21:33:
->
->> On Thu, May 2, 2013 at 10:30 AM,  <wang.bo116@zte.com.cn> wrote:
->> >> Hi!
->> >>
->> >> On Tue, Apr 16, 2013 at 10:53 AM,  <wang.bo116@zte.com.cn> wrote:
->> >> > Hello,
->> >> >         Sorry, there is still something wrong with the previous
->> > patch's
->> >> > format, try to submit it again. When use ubi fastmap, there is a
->> > memory
->> >> > leak which will make destroy_ai() fail to free the slab alloced in
->> >> > scan_fast(). The following patch fix this problem by use a
-> temporary
->> >> > "ubi_attach_info" variable in scan_fast().
->> >>
->> >> Thanks a lot for your patch!
->> >>
->> >> Did you test it well?
->> >> We need to make sure that it does the right thing for the following
->> > cases:
->> >> 1. fastmap disabled, attaching a non-fastmap volume
->> >> 1. fastmap disabled, attaching a fastmap volume
->> >> 3. fastmap enabled, attaching a non-fastmap volume
->> >> 4. fastmap enablled, attaching a fastmap volume
->> >>
->> >> --
->> >> Thanks,
->> >> //richard
->> >
->> >
->> > Thanks for your advice. I consider this problem like this:
->> > 1: if fastmap not config, ubi_attach() just call scan_all(ubi, ai, 0),
->> > there is nothing changed, so there is all right.
->> >
->> > 2: if fastmap config, and force_scan is 0, ubi_attach() will call
->> > scan_fast(), when scan_fast() return, temp ai used in scan_fast() has
-> been
->> > free, and there will be two conditions:
->> > A: scan_fast() return UBI_NO_FASTMAP(may be flash is empty or
-> attaching a
->> > non-fastmap volume), all ubi_attach() need is to call scan_all(ubi,
-> ai, 0)
->> > to scan all blocks.
->> > B: scan_fast() return UBI_BAD_FASTMAP, ubi_attach() first free ai used
-> in
->> > ubi_scan_fastmap(), then alloc a clean ai, at last call scan_all(ubi,
-> ai,
->> > 0) to scan all blocks.
->> >
->> > 3: if fastmap config, and force_scan is 1, just call scan_all(ubi, ai,
-> 0).
->> >
->> > This patch pass the following cases(include attach and detach):
->> > 1. fastmap config, flash is empty,fm_autoconvert is 1.
->> > 2. fastmap config, flash is empty,fm_autoconvert is 0.
->> > 3. fastmap config, attaching a fastmap volume
->> > 4. fastmap config, attaching a bad fastmap volume
->> > 5. fastmap config, attaching a non-fastmap volume
->> > 6. fastmap not config, attaching a fastmap volume
->> > 7. fastmap not config, attaching a non-fastmap volume
->> > 8. fastmap not config, flash is empty.
->>
->> Good. :)
->>
->> > By the way, the problem may cause ubi_attach() fail after ubi detach
-> when
->> > CONFIG_DEBUG_VM config.
->> > The reason is that ubi_attach() will alloc a slab cache, but the
->> > kmem_cache_sanity_check() will find the slab cache is already
-> exist(not
->> > been free after last detach), so slab cache alloc fail, and
-> ubi_attach()
->> > fail, too.
->>
->> Doesn't your patch address this issue too?
->> If not, we should fix this.Th
->
-> The patch had already fix the above problem mentioned.
-> Now, all the slabs belong to the slab-cache named "ubi_aeb_slab_cache" can
-> be rightly freed, so the slab-cache can be rightly freed when ubi_attach()
-> return.
-> When ubi attach again after detach, ubi can alloc a slab-cache named "
-> ubi_aeb_slab_cache" again.
+On Fri, 2013-05-10 at 11:26 -0400, Mike Frysinger wrote:
+> On Friday 10 May 2013 03:07:53 Ricard Wanderlof wrote:
+> > On Wed, 8 May 2013, Mike Frysinger wrote:
+> > > Sometimes I want to re-initialize an existing ubifs, but the tool
+> > > currently bails out if the volume is already formatted.  Prompt the
+> > > user instead so they can decide.
+> > > 
+> > >     {"max-leb-cnt",        1, NULL, 'c'},
+> > >     {"output",             1, NULL, 'o'},
+> > >     {"devtable",           1, NULL, 'D'},
+> > > +   {"yes",                0, NULL, 'y'},
+> > >     {"help",               0, NULL, 'h'},
+> > >     {"verbose",            0, NULL, 'v'},
+> > >     {"version",            0, NULL, 'V'},
+> > > 
+> > > @@ -191,6 +193,7 @@ static const char *helptext =
+> > > "-U, --squash-uids        squash owners making all files owned by root\n"
+> > > "-l, --log-lebs=COUNT     count of erase blocks for the log (used only
+> > > for\n" "                         debugging)\n"
+> > > +"-y, --yes                assume the answer is \"yes\" for all
+> > > questions\n" ...
+> > 
+> > Wouldn't it be better to have a specific option for this specific case,
+> > rather than a general yes-to-everything option?
+> 
+> this is the standard that the various mtd tools (including a bunch of UBI 
+> ones) follow
+> 
+> > The latter makes sense
+> > with programs such as fsck where the only prompt basically is 'I found a
+> > fault, shall I fix it?', but in this is case it can be difficult to
+> > predict the outcome should the option start to cover more potential
+> > questions in the future.
+> 
+> if you want to compare to standard tools, then the check would be dropped 
+> entirely.  when i run `mke2fs /dev/sda1`, it doesn't prompt me.
 
-I tried to apply/test your patch.
-It has lots of white spaces damages.
-Can you please resend it using git send-email?
-And also run checkpatch.pl before sending.
+I admit I was not careful enough with the options. Feel free to change
+the tools in the more direction of being more consistent with mainstream
+filesystems' tools. 
 
---
-Thanks,
-//richard
+-- 
+Best Regards,
+Artem Bityutskiy
