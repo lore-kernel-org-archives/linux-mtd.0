@@ -1,17 +1,14 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ublzz-0004un-CT
- for linux-mtd@lists.infradead.org; Mon, 13 May 2013 06:12:41 +0000
-Message-ID: <1368425690.3208.14.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: chips: Add support for PMC SPI Flash chips in
- m25p80.c
+ id 1UbmLm-0005Eg-EH
+ for linux-mtd@lists.infradead.org; Mon, 13 May 2013 06:35:11 +0000
+Message-ID: <1368427043.3208.21.camel@sauron.fi.intel.com>
+Subject: Re: MTD and EEPROM
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Michel Stempin <michel.stempin@wanadoo.fr>, Brian Norris
- <computersforpeace@gmail.com>
-Date: Mon, 13 May 2013 09:14:50 +0300
-In-Reply-To: <518D6138.2090009@wanadoo.fr>
-References: <1368195520.26780.169.camel@sauron.fi.intel.com>
- <518D6138.2090009@wanadoo.fr>
+To: Ben Hutchings <bhutchings@solarflare.com>
+Date: Mon, 13 May 2013 09:37:23 +0300
+In-Reply-To: <1366037284.2701.3.camel@bwh-desktop.uk.solarflarecom.com>
+References: <1366037284.2701.3.camel@bwh-desktop.uk.solarflarecom.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -26,16 +23,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2013-05-10 at 23:06 +0200, Michel Stempin wrote:
->     Add support for PMC (now Chingis, part of ISSI) Pm25LV512 (512 kBbit), Pm25LV010 (1 Mbit) (see datasheet http://www.geocities.jp/scottle556/pdf/Pm25LV512-010.pdf) and Pm25LQ032 (32 Mbit) (datasheet:http://www.
-> 
->     This patch is resent in order to take into account this upstream patch:
-> 
->     commit e534ee4f9ca29fdb38eea4b0c53f2154fbd8c1ee
->     Author: Krzysztof Mazur <krzysiek@podlesie.net>
->     Date:   Fri Feb 22 15:51:05 2013 +0100
+On Mon, 2013-04-15 at 15:48 +0100, Ben Hutchings wrote:
+> There is currently no MTD type defined for EEPROM - only RAM, ROM and
+> various types of flash.
 
-I think it would make sense if Brien gook a glimpse on this patch.
+I do not really know why, may be no one needed it?
+
+> Is there any particular reason for this?  Is it simply that EEPROMs tend
+> to be rather small and not worth putting filesystems on?
+
+One may want to have access to raw EEPROM without having any
+file-system. So bare /dev/mtdX could be useful.
 
 -- 
 Best Regards,
