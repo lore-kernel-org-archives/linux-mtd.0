@@ -1,28 +1,28 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UbnP4-0006YT-E2
- for linux-mtd@lists.infradead.org; Mon, 13 May 2013 07:42:38 +0000
-Message-ID: <1368431079.5360.15.camel@sauron.fi.intel.com>
+ id 1UbnTE-0006cJ-Eh
+ for linux-mtd@lists.infradead.org; Mon, 13 May 2013 07:46:57 +0000
+Message-ID: <1368431347.5360.16.camel@sauron.fi.intel.com>
 Subject: Re: [RFC/PATCH v2] ubi: Add ubiblock read-write driver
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Tim Bird <tim.bird@am.sony.com>
-Date: Mon, 13 May 2013 10:44:39 +0300
-In-Reply-To: <5171794F.8000501@am.sony.com>
+To: richard -rw- weinberger <richard.weinberger@gmail.com>
+Date: Mon, 13 May 2013 10:49:07 +0300
+In-Reply-To: <CAFLxGvxDHQREp9HjWgpbN0XCh6k42qDMk2JKiVU9r7jHU4De9w@mail.gmail.com>
 References: <1355314912-9321-1-git-send-email-elezegarcia@gmail.com>
  <201304182128.19518.vapier@gentoo.org>
  <20980858CB6D3A4BAE95CA194937D5E73E9AEC45@DBDE01.ent.ti.com>
  <201304190757.13688.vapier@gentoo.org>
  <1366374673.29520.125.camel@sauron.fi.intel.com>
- <5171794F.8000501@am.sony.com>
+ <CAFLxGvxDHQREp9HjWgpbN0XCh6k42qDMk2JKiVU9r7jHU4De9w@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
  Ezequiel Garcia <elezegarcia@gmail.com>, Mike Frysinger <vapier@gentoo.org>,
- "richard.weinberger@gmail.com" <richard.weinberger@gmail.com>,
  Michael Opdenacker <michael.opdenacker@free-electrons.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+ Pekon" <pekon@ti.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Tim Bird <tim.bird@am.sony.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -33,22 +33,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2013-04-19 at 10:05 -0700, Tim Bird wrote:
-> On 04/19/2013 05:31 AM, Artem Bityutskiy wrote:
-> > We recently merged fastmap, which is a big chunk of code, and it looks
-> > like no one really needs it. There was a problem report, and Richard
-> > promised to look, but did not. I do not blame him, he is a busy guy. But
-> > this shows that this feature is not really needed, while adds
-> > maintenance burden.
-> 
-> Whoa there!  Just because it doesn't look like people are using fastmap
-> right now, don't think it won't get used in the future.   Really,
-> the people interested in fastmap are AFAIK mostly TV vendors, who are
-> just now migrating to 3.0 or 3.4 kernels.  I can assure you that fastmap
-> will get more attention when the major CE companies move to more
-> recent kernels (probably in about 1 to 2 years).
+On Sat, 2013-04-20 at 09:50 +0200, richard -rw- weinberger wrote:
+> You mean "ubi fastmap memory leak"? No need to worry, it is on my radar.
+> But as the issue is not a show-stopper I have to take care first of
+> problems with
+> higher priority.
 
-Fair enough!
+I actually meant this one:
+http://lists.infradead.org/pipermail/linux-mtd/2012-December/045184.html
+
 
 -- 
 Best Regards,
