@@ -1,23 +1,27 @@
-Received: from dev.gentoo.org ([2001:470:ea4a:1:214:c2ff:fe64:b2d3]
- helo=smtp.gentoo.org)
+Received: from mail-pd0-f176.google.com ([209.85.192.176])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UbvKx-0000ci-V8
- for linux-mtd@lists.infradead.org; Mon, 13 May 2013 16:10:56 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-To: dedekind1@gmail.com
-Subject: Re: [PATCH [mtd-utils] 3/3] mkfs.ubifs: allow reformatting of devices
-Date: Mon, 13 May 2013 12:10:28 -0400
-References: <1368030446-343-1-git-send-email-vapier@gentoo.org>
- <201305101126.01644.vapier@gentoo.org>
- <1368432848.5360.32.camel@sauron.fi.intel.com>
-In-Reply-To: <1368432848.5360.32.camel@sauron.fi.intel.com>
+ id 1Ubvlx-00017Z-L9
+ for linux-mtd@lists.infradead.org; Mon, 13 May 2013 16:38:50 +0000
+Received: by mail-pd0-f176.google.com with SMTP id x10so4553670pdj.35
+ for <linux-mtd@lists.infradead.org>; Mon, 13 May 2013 09:38:27 -0700 (PDT)
+Message-ID: <519116F8.1070902@gmail.com>
+Date: Mon, 13 May 2013 22:08:16 +0530
+From: Vikram Narayanan <vikram186@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart3042482.Q7Ki1PfZhQ";
- protocol="application/pgp-signature"; micalg=pgp-sha1
+To: Stefan Roese <sr@denx.de>
+Subject: Re: mtd_oobtest fails with GPMI-NAND
+References: <50F97DB5.7040801@gmail.com> <50FCA426.6030309@freescale.com>
+ <5105E4CE.1090800@gmail.com> <5105EE9B.9050405@freescale.com>
+ <5106AFAA.1020502@gmail.com> <51072EA4.7000201@freescale.com>
+ <51073373.4080006@gmail.com> <510735B3.1040509@freescale.com>
+ <5107F899.5090506@gmail.com> <5108852C.5040002@freescale.com>
+ <510CB507.4020105@gmail.com> <518A6228.6050608@denx.de>
+ <518B96FC.6000806@gmail.com> <518C91AA.8040107@denx.de>
+ <518F86CE.6060408@gmail.com> <518FB09D.3070101@denx.de>
+In-Reply-To: <518FB09D.3070101@denx.de>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <201305131210.29677.vapier@gentoo.org>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ricard Wanderlof <ricard.wanderlof@axis.com>
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,86 +31,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---nextPart3042482.Q7Ki1PfZhQ
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Hello Stefan,
 
-On Monday 13 May 2013 04:14:08 Artem Bityutskiy wrote:
-> On Fri, 2013-05-10 at 11:26 -0400, Mike Frysinger wrote:
-> > On Friday 10 May 2013 03:07:53 Ricard Wanderlof wrote:
-> > > On Wed, 8 May 2013, Mike Frysinger wrote:
-> > > > Sometimes I want to re-initialize an existing ubifs, but the tool
-> > > > currently bails out if the volume is already formatted.  Prompt the
-> > > > user instead so they can decide.
-> > > >=20
-> > > >     {"max-leb-cnt",        1, NULL, 'c'},
-> > > >     {"output",             1, NULL, 'o'},
-> > > >     {"devtable",           1, NULL, 'D'},
-> > > >=20
-> > > > +   {"yes",                0, NULL, 'y'},
-> > > >=20
-> > > >     {"help",               0, NULL, 'h'},
-> > > >     {"verbose",            0, NULL, 'v'},
-> > > >     {"version",            0, NULL, 'V'},
-> > > >=20
-> > > > @@ -191,6 +193,7 @@ static const char *helptext =3D
-> > > > "-U, --squash-uids        squash owners making all files owned by
-> > > > root\n" "-l, --log-lebs=3DCOUNT     count of erase blocks for the l=
-og
-> > > > (used only for\n" "                         debugging)\n"
-> > > > +"-y, --yes                assume the answer is \"yes\" for all
-> > > > questions\n" ...
-> > >=20
-> > > Wouldn't it be better to have a specific option for this specific cas=
-e,
-> > > rather than a general yes-to-everything option?
-> >=20
-> > this is the standard that the various mtd tools (including a bunch of U=
-BI
-> > ones) follow
-> >=20
-> > > The latter makes sense
-> > > with programs such as fsck where the only prompt basically is 'I found
-> > > a fault, shall I fix it?', but in this is case it can be difficult to
-> > > predict the outcome should the option start to cover more potential
-> > > questions in the future.
-> >=20
-> > if you want to compare to standard tools, then the check would be dropp=
-ed
-> > entirely.  when i run `mke2fs /dev/sda1`, it doesn't prompt me.
->=20
-> I admit I was not careful enough with the options. Feel free to change
-> the tools in the more direction of being more consistent with mainstream
-> filesystems' tools.
+On 5/12/2013 8:39 PM, Stefan Roese wrote:
+>> Looks like it is happening at random. Two different physical locations
+>> on two different runs.
+>
+> These locations (blocks) where the errors happen are not always
+> identical. But some blocks reoccur. And this Linux test stops
+> when one error is detected. The U-Boot reported multiple blocks,
+> where some blocks were most of the time defective.
+>
+> So its not really random.
 
-i don't mind having it prompting first as long as there is a flag to overri=
-de=20
-it.  i'd say let's take a survey of the community, but i think we both know=
-=20
-that's doomed to go nowhere :).
-=2Dmike
+Ok.
 
---nextPart3042482.Q7Ki1PfZhQ
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
+>> The only error I came across in u-boot is "fixable bit-flip" issue. My
+>> colleagues have reported it sometime back. But I couldn't reproduce it
+>> and neither could they.
+>
+> Could you please post a link to this thread?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
+http://lists.denx.de/pipermail/u-boot/2012-December/142476.html
 
-iQIcBAABAgAGBQJRkRB1AAoJEEFjO5/oN/WB8+QP/0PwNIhJDTAgDQAsus/tm89t
-QdiKKVg0J0U57oqziZIY8KkOIKmINfhEDrSZ5qryyX0NttgmWRvGz83P8YYhhTZo
-OfJnaB/3J/RARVGQBSc9kNJCMU6JrBjJuk4fViJ8vJKyHcmd4coHpgi3BR9a6GjU
-itStsMnbCMYeP8HWyXoLHsEjVomqh4aA+kEgbrG5ks84suw4rySrVYJQATDhDgjE
-HsrFq2WCP2wdqr04or/6xTQiwL3s/CuXIWAcFb3uRa3a1mivEfC8HahhUG1SvGYD
-+VEIwOS3JtrWZFq1zSkd6gfomxUYQpJmBFUdVsjZWGC67xy+Sv9i9ku/yt1u6R8C
-+LFK+3LgHtYbvOqKOBk43Goe2F7cMvWfvMixdbEX/Ry/+PSCmPm4G/ErjzGJVq10
-Fl2FutHYlkTB6kKi9cl+4RiKdMBNdZRaP2TCnXedT9J/I+fJfmqp8/7jIVmP1+mv
-4bRicPsfgx0W1fdDBDmKmm/caw8qwwars/yQzGOaiOREUNaJ/NAjzOZjmbppy2dC
-neph4FXHoHgPV6aKNCKa6jNwAkaL+TgzWEU4odFq1V22vuBWnA1zAD9PK8tzL3KU
-vyXqY8/YPWn1KDf6Ech9m55WZjGyzWsJN7MBC0BmR+j5BCDcy05e6sHlCBfMu+YP
-r3I6PaEhhcNbHcPnaxYL
-=KxDU
------END PGP SIGNATURE-----
+>> Can you please post the logs for the "uncorrectable errors" in u-boot?
+>> That might give some hints to Huang.
+>
+> Sure. Please note that I tracked the error (-74) back to the U-Boot
+> imx NAND driver (mxs_nand.c):
+>
+> 	/* Loop over status bytes, accumulating ECC status. */
+> 	status = nand_info->oob_buf + mxs_nand_aux_status_offset();
+> 	for (i = 0; i < mxs_nand_ecc_chunk_cnt(mtd->writesize); i++) {
+> 		if (status[i] == 0x00)
+> 			continue;
+>
+> 		if (status[i] == 0xff)
+> 			continue;
+>
+> 		if (status[i] == 0xfe) {
+> 			failed++;
+> 			continue;
+> 		}
+>
+> 		corrected += status[i];
+> 	}
+>
+> I could also add some code to the Linux driver to see, if the error
+> happens at the same place (status == 0xfe). I'm pretty sure that this
+> is the case though.
+>
+>
+> Here the logs from U-Boot:
+>
+> => nand erase.part ubi;
+> NAND erase.part: device 0 offset 0x1100000, size 0x1ef00000
+> Erasing at 0x1ffe0000 -- 100% complete.
+> OK
+> => ubi part ubi
+> UBI: mtd1 is detached from ubi0
+> UBI: attaching mtd1 to ubi0
+> UBI: physical eraseblock size:   131072 bytes (128 KiB)
+> UBI: logical eraseblock size:    126976 bytes
+> UBI: smallest flash I/O unit:    2048
+> UBI: VID header offset:          2048 (aligned 2048)
+> UBI: data offset:                4096
+> UBI error: ubi_io_read: error -74 while reading 64 bytes from PEB 3093:0, read 64 bytes
+> UBI error: ubi_io_read: error -74 while reading 64 bytes from PEB 3956:0, read 64 bytes
+> UBI error: ubi_read_volume_table: the layout volume was not found
+> UBI error: ubi_init: cannot attach mtd1
+> UBI error: ubi_init: UBI error: cannot initialize UBI, error -22
+> UBI init error 22
+>
+>
+> Another thing to mention is, that using this command (nand erase;
+> nand erase;ubi part) never triggers this problem. So an additional
+> erase somehow seems to fix this problem. Still not sure why this is
+> the case.
 
---nextPart3042482.Q7Ki1PfZhQ--
+I'll test this as well with the latest u-boot.
+
+>
+> Vikram, which NAND part/chip are you using again?
+
+I'm using "Toshiba, TC58NYG2S0FBAI4".
+
+Regards,
+Vikram
