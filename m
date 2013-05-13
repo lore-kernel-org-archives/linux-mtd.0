@@ -1,23 +1,26 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UbnrQ-00076v-7B
- for linux-mtd@lists.infradead.org; Mon, 13 May 2013 08:11:56 +0000
-Message-ID: <1368432848.5360.32.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH [mtd-utils] 3/3] mkfs.ubifs: allow reformatting of devices
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Frysinger <vapier@gentoo.org>
-Date: Mon, 13 May 2013 11:14:08 +0300
-In-Reply-To: <201305101126.01644.vapier@gentoo.org>
-References: <1368030446-343-1-git-send-email-vapier@gentoo.org>
- <1368030446-343-3-git-send-email-vapier@gentoo.org>
- <alpine.DEB.2.00.1305100902410.22700@lnxricardw.se.axis.com>
- <201305101126.01644.vapier@gentoo.org>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ricard Wanderlof <ricard.wanderlof@axis.com>
-Reply-To: dedekind1@gmail.com
+Received: from co1ehsobe004.messaging.microsoft.com ([216.32.180.187]
+ helo=co1outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Ubobg-00083G-P8
+ for linux-mtd@lists.infradead.org; Mon, 13 May 2013 08:59:46 +0000
+Message-ID: <5190ABF0.10501@freescale.com>
+Date: Mon, 13 May 2013 17:01:36 +0800
+From: Huang Shijie <b32955@freescale.com>
+MIME-Version: 1.0
+To: Stefan Roese <sr@denx.de>
+Subject: Re: mtd_oobtest fails with GPMI-NAND
+References: <50F97DB5.7040801@gmail.com> <50FCA426.6030309@freescale.com>
+ <5105E4CE.1090800@gmail.com> <5105EE9B.9050405@freescale.com>
+ <5106AFAA.1020502@gmail.com> <51072EA4.7000201@freescale.com>
+ <51073373.4080006@gmail.com> <510735B3.1040509@freescale.com>
+ <5107F899.5090506@gmail.com> <5108852C.5040002@freescale.com>
+ <510CB507.4020105@gmail.com> <518A6228.6050608@denx.de>
+ <518B96FC.6000806@gmail.com> <518C91AA.8040107@denx.de>
+ <5190551A.5010400@freescale.com> <51909DF1.4060201@denx.de>
+In-Reply-To: <51909DF1.4060201@denx.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: Vikram Narayanan <vikram186@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,47 +30,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2013-05-10 at 11:26 -0400, Mike Frysinger wrote:
-> On Friday 10 May 2013 03:07:53 Ricard Wanderlof wrote:
-> > On Wed, 8 May 2013, Mike Frysinger wrote:
-> > > Sometimes I want to re-initialize an existing ubifs, but the tool
-> > > currently bails out if the volume is already formatted.  Prompt the
-> > > user instead so they can decide.
-> > > 
-> > >     {"max-leb-cnt",        1, NULL, 'c'},
-> > >     {"output",             1, NULL, 'o'},
-> > >     {"devtable",           1, NULL, 'D'},
-> > > +   {"yes",                0, NULL, 'y'},
-> > >     {"help",               0, NULL, 'h'},
-> > >     {"verbose",            0, NULL, 'v'},
-> > >     {"version",            0, NULL, 'V'},
-> > > 
-> > > @@ -191,6 +193,7 @@ static const char *helptext =
-> > > "-U, --squash-uids        squash owners making all files owned by root\n"
-> > > "-l, --log-lebs=COUNT     count of erase blocks for the log (used only
-> > > for\n" "                         debugging)\n"
-> > > +"-y, --yes                assume the answer is \"yes\" for all
-> > > questions\n" ...
-> > 
-> > Wouldn't it be better to have a specific option for this specific case,
-> > rather than a general yes-to-everything option?
-> 
-> this is the standard that the various mtd tools (including a bunch of UBI 
-> ones) follow
-> 
-> > The latter makes sense
-> > with programs such as fsck where the only prompt basically is 'I found a
-> > fault, shall I fix it?', but in this is case it can be difficult to
-> > predict the outcome should the option start to cover more potential
-> > questions in the future.
-> 
-> if you want to compare to standard tools, then the check would be dropped 
-> entirely.  when i run `mke2fs /dev/sda1`, it doesn't prompt me.
+=E4=BA=8E 2013=E5=B9=B405=E6=9C=8813=E6=97=A5 16:01, Stefan Roese =E5=86=99=
+=E9=81=93:
+> On 05/13/2013 04:51 AM, Huang Shijie wrote:
+>>>> Also, I don't have enough spare boards to sacrifice it for mtd_tortu=
+re test.
+>>> Yes, I can understand this.
+>>>
+>>> Huang, do you have any idea on how to proceed here? What else
+>>> could/should we test? Any ideas/hints?
+>> Currently, the kernel supports three imx6 boards for the gpmi-nand:
+>>      imx6q-arm2, imx6q-sabreauto, imx6dl-sabareauto.
+>>
+>> I am afraid your board is none of them. I doubt your board is not
+>> correctly configrated with
+>> some timing or signals.
+> Correct, our board is a custom imx6 board. Basically NAND is working
+> just fine (UBI/UBIFS works basically). This board even boots from NAND.
+> So at least the pin muxing has to be correct.
+>
+> Please correct me if I'm wrong, but from my understanding the Linux GPM=
+I
+> NAND driver configures the timings. So this is not board platform code
+> related but NAND driver related.
+>
+> Do you have any hints where to "tune/change" some values (timing or
+> signal related) to fix this error?
+>
+Please check the schematic, is there some pin conflict with the gpmi-nand=
+?
+What's the pad value for these pins? You can take a reference with=20
+current dts file.
 
-I admit I was not careful enough with the options. Feel free to change
-the tools in the more direction of being more consistent with mainstream
-filesystems' tools. 
+>> The key issue (i want to emphosis ) is that the current gpmi-nand does
+>> not support the
+>> subpage operations.
+> Yes. And this is disabled via setting NAND_NO_SUBPAGE_WRITE in the
+> options variable in the GPMI NAND driver.
+>
+> BTW: I just tested with the "mtd_nandbiterrs" test. This fails directly=
+.
+> I would have expected the ECC to being able to at least correct the
+> errors for some loops:
+>
+> # insmod mtd_nandbiterrs.ko dev=3D3 mode=3D0
+> [  831.622694]
+> [  831.624198] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+> [  831.630071] mtd_nandbiterrs: MTD device: 3
+> [  831.634259] mtd_nandbiterrs: MTD device size 519045120,
+> eraseblock=3D131072, page=3D2048, oob=3D64
+> [  831.642796] mtd_nandbiterrs: Device uses 1 subpages of 2048 bytes
+> [  831.648920] mtd_nandbiterrs: Using page=3D0, offset=3D0, eraseblock=3D=
+0
+> [  831.655026] mtd_nandbiterrs: erase_block
+> [  831.659502] mtd_nandbiterrs: incremental biterrors test
+> [  831.664805] mtd_nandbiterrs: write_page
+> [  831.669028] mtd_nandbiterrs: rewrite page
+> [  831.673413] mtd_nandbiterrs: read_page
+> [  831.691729] mtd_nandbiterrs: error: read failed at 0x0
+> [  831.696887] mtd_nandbiterrs: After 0 biterrors per subpage, read
+> reported error -74
+> [  831.704546] mtd_nandbiterrs: erase_block
+> [  831.708997] mtd_nandbiterrs: finished successfully.
+> [  831.713880] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+> insmod: error inserting 'mtd_nandbiterrs.ko': -1 Input/output error
+>
+> Huang, is this to be expected? How does this look on one of your
+> officially "supported" imx6 boards with NAND support?
+>
+I suggest you do not use the mtd_nandbiterrs.ko. It will call the=20
+mtd_write_oob() which will definitely lead to the
+-EBADMSG (-74) error.
 
--- 
-Best Regards,
-Artem Bityutskiy
+The mtd_write_oob() in mtd_nandbiterrs.ko writes a whole page without=20
+enabling the BCH to do the hardware ECC.
+But mtd_read() in mtd_nandbiterrs.ko DOES do the hardware ECC by the BCH.
+It's normal that you meet -74.
+
+
+
+You can use the mtd_torturetest, such as:
+
+#insmod mtd_torturetest.ko dev=3D3 check=3D1 cycles_count=3D1 eb=3D0 ebcn=
+t=3D4 gran=3D1
+
+
+>
+> SLC. Why do you ask?
+For the MLC, if you write the OOB, it will impacts other part of the=20
+page. For some nands, you will meet a -74.
+that's another story.
+
+thanks
+Huang Shijie
