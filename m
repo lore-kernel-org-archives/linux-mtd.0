@@ -1,21 +1,22 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UbnkG-0006y7-I3
- for linux-mtd@lists.infradead.org; Mon, 13 May 2013 08:04:33 +0000
-Message-ID: <1368432405.5360.27.camel@sauron.fi.intel.com>
-Subject: Re: UBI, udev and systemd
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Date: Mon, 13 May 2013 11:06:45 +0300
-In-Reply-To: <alpine.DEB.2.00.1305130932340.22700@lnxricardw.se.axis.com>
-References: <alpine.DEB.2.00.1304081509460.10377@lnxricardw.se.axis.com>
- <1368196362.26780.170.camel@sauron.fi.intel.com>
- <alpine.DEB.2.00.1305130932340.22700@lnxricardw.se.axis.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Linux mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+Received: from mail-wg0-x22f.google.com ([2a00:1450:400c:c00::22f])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UbnoX-00073t-Od
+ for linux-mtd@lists.infradead.org; Mon, 13 May 2013 08:08:58 +0000
+Received: by mail-wg0-f47.google.com with SMTP id e11so5848588wgh.26
+ for <linux-mtd@lists.infradead.org>; Mon, 13 May 2013 01:08:35 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <OFE7F9663A.1F3DE1BE-ON48257B60.00045684-48257B60.001360DF@zte.com.cn>
+References: <CAFLxGvxfzHudUMRc7VkgWMO9RJAkyh1iuouRAV-0s-5eaLqfEQ@mail.gmail.com>
+ <OFE7F9663A.1F3DE1BE-ON48257B60.00045684-48257B60.001360DF@zte.com.cn>
+Date: Mon, 13 May 2013 10:08:35 +0200
+Message-ID: <CAFLxGvzKw1_L3Nm4J5GM_wr0sFe6umN0yLzDnK=DM_AJ7GpaaQ@mail.gmail.com>
+Subject: Re: Re: Re: [PATCH] UBI: fix memory leak when use fastmap
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
+To: wang.bo116@zte.com.cn
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: liu.dong3@zte.com.cn, artem.bityutskiy@linux.intel.com,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>, cui.yunfeng@zte.com.cn
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,37 +26,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2013-05-13 at 09:50 +0200, Ricard Wanderlof wrote:
-> On Fri, 10 May 2013, Artem Bityutskiy wrote:
-> 
-> > On Mon, 2013-04-08 at 15:17 +0200, Ricard Wanderlof wrote:
-> >> I know this might be a more systemd-related issue, however, it seems
-> >> that
-> >> there might be something about the way UBI reports device state
-> >> changes to
-> >> udev etc, or that just someone using UBI and systemd on their system
-> >> has
-> >> had a similar problem and solved it.
-> >
-> > I do not think UBI is doing anything special, it uses standard Linux
-> > infrastructure API for creating the devices, and deleting them.
-> 
-> I never followed this up on the list because there were no other responses 
-> so I figured there was no other interest.
-> 
-> You are right, there's nothing special about UBI, except that for udev it 
-> comes up as its own subsystem type "ubi". There are lots of default rules 
-> for disk devices which place them under systemd control, but nothing for 
-> UBI, at least not in the build I was working on. Adding the line
-> 
-> SUBSYSTEM=="ubi", GROUP="disk", TAG+="systemd"
-> 
-> to the appropriate rules file allowed systemd to receive UBI subsystem 
-> updates, and all was well.
+On Fri, May 3, 2013 at 5:31 AM,  <wang.bo116@zte.com.cn> wrote:
+> richard -rw- weinberger <richard.weinberger@gmail.com> write 2013-05-03
+> 03:21:33:
+>
+>> On Thu, May 2, 2013 at 10:30 AM,  <wang.bo116@zte.com.cn> wrote:
+>> >> Hi!
+>> >>
+>> >> On Tue, Apr 16, 2013 at 10:53 AM,  <wang.bo116@zte.com.cn> wrote:
+>> >> > Hello,
+>> >> >         Sorry, there is still something wrong with the previous
+>> > patch's
+>> >> > format, try to submit it again. When use ubi fastmap, there is a
+>> > memory
+>> >> > leak which will make destroy_ai() fail to free the slab alloced in
+>> >> > scan_fast(). The following patch fix this problem by use a
+> temporary
+>> >> > "ubi_attach_info" variable in scan_fast().
+>> >>
+>> >> Thanks a lot for your patch!
+>> >>
+>> >> Did you test it well?
+>> >> We need to make sure that it does the right thing for the following
+>> > cases:
+>> >> 1. fastmap disabled, attaching a non-fastmap volume
+>> >> 1. fastmap disabled, attaching a fastmap volume
+>> >> 3. fastmap enabled, attaching a non-fastmap volume
+>> >> 4. fastmap enablled, attaching a fastmap volume
+>> >>
+>> >> --
+>> >> Thanks,
+>> >> //richard
+>> >
+>> >
+>> > Thanks for your advice. I consider this problem like this:
+>> > 1: if fastmap not config, ubi_attach() just call scan_all(ubi, ai, 0),
+>> > there is nothing changed, so there is all right.
+>> >
+>> > 2: if fastmap config, and force_scan is 0, ubi_attach() will call
+>> > scan_fast(), when scan_fast() return, temp ai used in scan_fast() has
+> been
+>> > free, and there will be two conditions:
+>> > A: scan_fast() return UBI_NO_FASTMAP(may be flash is empty or
+> attaching a
+>> > non-fastmap volume), all ubi_attach() need is to call scan_all(ubi,
+> ai, 0)
+>> > to scan all blocks.
+>> > B: scan_fast() return UBI_BAD_FASTMAP, ubi_attach() first free ai used
+> in
+>> > ubi_scan_fastmap(), then alloc a clean ai, at last call scan_all(ubi,
+> ai,
+>> > 0) to scan all blocks.
+>> >
+>> > 3: if fastmap config, and force_scan is 1, just call scan_all(ubi, ai,
+> 0).
+>> >
+>> > This patch pass the following cases(include attach and detach):
+>> > 1. fastmap config, flash is empty,fm_autoconvert is 1.
+>> > 2. fastmap config, flash is empty,fm_autoconvert is 0.
+>> > 3. fastmap config, attaching a fastmap volume
+>> > 4. fastmap config, attaching a bad fastmap volume
+>> > 5. fastmap config, attaching a non-fastmap volume
+>> > 6. fastmap not config, attaching a fastmap volume
+>> > 7. fastmap not config, attaching a non-fastmap volume
+>> > 8. fastmap not config, flash is empty.
+>>
+>> Good. :)
+>>
+>> > By the way, the problem may cause ubi_attach() fail after ubi detach
+> when
+>> > CONFIG_DEBUG_VM config.
+>> > The reason is that ubi_attach() will alloc a slab cache, but the
+>> > kmem_cache_sanity_check() will find the slab cache is already
+> exist(not
+>> > been free after last detach), so slab cache alloc fail, and
+> ubi_attach()
+>> > fail, too.
+>>
+>> Doesn't your patch address this issue too?
+>> If not, we should fix this.Th
+>
+> The patch had already fix the above problem mentioned.
+> Now, all the slabs belong to the slab-cache named "ubi_aeb_slab_cache" can
+> be rightly freed, so the slab-cache can be rightly freed when ubi_attach()
+> return.
+> When ubi attach again after detach, ubi can alloc a slab-cache named "
+> ubi_aeb_slab_cache" again.
 
-Hi Ricard, thanks for the information, it is useful to know and
-appreciated. You could submit a patch to the systemd project, I guess.
+I tried to apply/test your patch.
+It has lots of white spaces damages.
+Can you please resend it using git send-email?
+And also run checkpatch.pl before sending.
 
--- 
-Best Regards,
-Artem Bityutskiy
+--
+Thanks,
+//richard
