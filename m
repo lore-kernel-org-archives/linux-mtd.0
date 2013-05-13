@@ -1,28 +1,21 @@
-Received: from mail-db8lp0189.outbound.messaging.microsoft.com
- ([213.199.154.189] helo=db8outboundpool.messaging.microsoft.com)
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ubp7l-0000KL-Hm
- for linux-mtd@lists.infradead.org; Mon, 13 May 2013 09:32:54 +0000
-Message-ID: <5190B3B5.8070805@freescale.com>
-Date: Mon, 13 May 2013 17:34:45 +0800
-From: Huang Shijie <b32955@freescale.com>
+ id 1Ubp8a-0000LX-O8
+ for linux-mtd@lists.infradead.org; Mon, 13 May 2013 09:33:45 +0000
+Message-ID: <5190B352.2070707@nod.at>
+Date: Mon, 13 May 2013 11:33:06 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-To: Stefan Roese <sr@denx.de>
-Subject: Re: mtd_oobtest fails with GPMI-NAND
-References: <50F97DB5.7040801@gmail.com> <50FCA426.6030309@freescale.com>
- <5105E4CE.1090800@gmail.com> <5105EE9B.9050405@freescale.com>
- <5106AFAA.1020502@gmail.com> <51072EA4.7000201@freescale.com>
- <51073373.4080006@gmail.com> <510735B3.1040509@freescale.com>
- <5107F899.5090506@gmail.com> <5108852C.5040002@freescale.com>
- <510CB507.4020105@gmail.com> <518A6228.6050608@denx.de>
- <518B96FC.6000806@gmail.com> <518C91AA.8040107@denx.de>
- <5190551A.5010400@freescale.com> <51909DF1.4060201@denx.de>
- <5190ABF0.10501@freescale.com> <5190B0C9.5000006@denx.de>
-In-Reply-To: <5190B0C9.5000006@denx.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: Vikram Narayanan <vikram186@gmail.com>, linux-mtd@lists.infradead.org,
- Huang Shijie <b32955@freescale.com>
+To: Philipp Zabel <p.zabel@pengutronix.de>
+Subject: Re: Kernel with MTD_UBI_FASTMAP=y, fm_autoconvert=0 fails to attach
+ and resize UBI image
+References: <1354543614.2437.59.camel@pizza.hi.pengutronix.de>
+ <20121203210108.48a5b769@spider.haslach.nod.at>
+ <1354607674.2744.3.camel@pizza.hi.pengutronix.de>
+In-Reply-To: <1354607674.2744.3.camel@pizza.hi.pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,31 +25,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B405=E6=9C=8813=E6=97=A5 17:22, Stefan Roese =E5=86=99=
-=E9=81=93:
-> Done. But no errors in this test though. Even with increasing the
-> cycles_count. I don't want to destroy this chip, so I'm not increasing
-> the cycles too much.
-If you can pass the bonnie++ stress test on the ubifs, it means the gpmi=20
-works fine.
+Philipp,
 
-> Which NAND devices did you test with on imx6? Did you also tests with a
-> "similar" Micron ONFI chip as this one (MT29F4G08ABADAH4)?
+Am 04.12.2012 08:54, schrieb Philipp Zabel:
+> Hi Richard,
 >
-For micron's chips, I tested more then 10 chips. some chips show followin=
-g :
-Micron MT29F4G08ABADAWP (2048 + 64)
+> Am Montag, den 03.12.2012, 21:01 +0100 schrieb Richard Weinberger:
+>> Philipp,
+>>
+>> Am Mon, 03 Dec 2012 15:06:54 +0100
+>> schrieb Philipp Zabel <p.zabel@pengutronix.de>:
+>>
+>>> Hi,
+>>>
+>>> on v3.7-rc7 with CONFIG_MTD_UBI_FASTMAP=y, I see the following error
+>>> when trying to attach an UBI image without fastmap information that
+>>> has to be resized because it is smaller than the mtd partition size:
+>>>
+>>>      $ cat /sys/module/ubi/parameters/fm_autoconvert
+>>>      N
+>>>
+>>>      $ ubiattach -p /dev/mtd3
+>>>      ubiattach: error!: cannot attach "/dev/mtd3"
+>>>                 error 28 (No space left on device)
+>>>
+>>> If I either disable MTD_UBI_FASTMAP in the kernel config or enable the
+>>> fm_autoconvert module parameter, attaching works just fine.
+>>>
+>>> Without fm_autoconvert, ubi_resize_volume fails with -ENOSPC, caused
+>>> by ubi_wl_get_peb due to pool->size == 0.
+>>> It gets to this point on an otherwise empty flash because ubi_scan_all
+>>> puts all PEBs into the erase list. erase_work doesn't seem to be
+>>> scheduled before ubi_wl_init returns with ubi->free.rb_node == NULL
+>>> and ubi->free_count == 0. Because of this, refill_wl_user_pool breaks
+>>> out of its loop immediately and never increases the pool->size
+>>> counter.
+>>>
+>>> If I force synchronous erase in ubi_wl_init, the ubiattach succeeds
+>>> the next time I try it as now all PEBs go in the free list:
+>>>
+>>> @@ -1899,7 +1907,7 @@ int ubi_wl_init(struct ubi_device *ubi, struct
+>>> ubi_attach_info *ai) e->ec = aeb->ec;
+>>>                  ubi_assert(!ubi_is_fm_block(ubi, e->pnum));
+>>>                  ubi->lookuptbl[e->pnum] = e;
+>>> -               if (schedule_erase(ubi, e, aeb->vol_id, aeb->lnum,
+>>> 0)) {
+>>> +               if (do_sync_erase(ubi, e, aeb->vol_id, aeb->lnum, 0))
+>>> { kmem_cache_free(ubi_wl_entry_slab, e);
+>>>                          goto out_free;
+>>>                  }
+>>>
+>>
+>> Thanks a lot for identifying this issue!
+>> But I'm not sure whether do_sync_erase() is the perfect solution
+>> for the issue. Tomorrow I'll try to reproduce it.
+>
+> Thank you, I'm sure it is not. Enabling fm_autoconvert works for me, so
+> I just wanted to put all information I've got out there before wasting
+> too much time trying to wrap my head around the issue myself.
 
-Micron MT29F8G08ABACAWP (4096 + 224)
+Sorry, for the (very) late reply. I completely forgot to take care of this.
 
-Micron MT29F4G08ABAEAWP (4096 + 224)
+I've tried to reproduce the issue, but ubiattach didn't fail.
+Most likely because I've used nandsim and you have seen the issue on a real (slow)
+NAND device. Is this correct?
 
-Micron MT29F32G08QAA (4096 + 218)
+Are you sure that ubi_resize_volume() failed because of ubi_wl_get_peb()?
+To me it looks more like it failed because ubi->avail_pebs is too low.
 
+Is my assumption correct that you've created an UBI image with ubinize where vol_size
+is smaller than your MTD partition?
+And, of course, where autoresize is set.
 
-But i do not test your chip. I do not have this chip, if i have, i can=20
-test it on arm2/ard boards.
-
-
-thanks
-Huang Shijie
+Thanks,
+//richard
