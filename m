@@ -1,23 +1,24 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ubmz9-00064E-C6
- for linux-mtd@lists.infradead.org; Mon, 13 May 2013 07:15:51 +0000
-Message-ID: <1368429484.5360.9.camel@sauron.fi.intel.com>
-Subject: Re: Re[2]: [RESEND PATCH v2 1/7] mtd: nand-gpio: Convert driver to
- using resource-managed functions
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Alexander Shiyan <shc_work@mail.ru>
-Date: Mon, 13 May 2013 10:18:04 +0300
-In-Reply-To: <1368428869.40956565@f27.mail.ru>
-References: <1367848434-28493-1-git-send-email-shc_work@mail.ru>
- <1368428287.5360.0.camel@sauron.fi.intel.com>
- <1368428869.40956565@f27.mail.ru>
+ id 1Ubn8n-0006EM-2k
+ for linux-mtd@lists.infradead.org; Mon, 13 May 2013 07:25:49 +0000
+Message-ID: <1368430080.5360.11.camel@sauron.fi.intel.com>
+Subject: Re: [RFC/PATCH v2] ubi: Add ubiblock read-write driver
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Mike Frysinger <vapier@gentoo.org>
+Date: Mon, 13 May 2013 10:28:00 +0300
+In-Reply-To: <201304181630.58886.vapier@gentoo.org>
+References: <1355314912-9321-1-git-send-email-elezegarcia@gmail.com>
+ <201304181630.58886.vapier@gentoo.org>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Reply-To: artem.bityutskiy@linux.intel.com
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Ezequiel Garcia <elezegarcia@gmail.com>, richard.weinberger@gmail.com,
+ Michael Opdenacker <michael.opdenacker@free-electrons.com>,
+ Ezequiel Garcia <ezequiel@free-electrons.com>, linux-mtd@lists.infradead.org,
+ Tim Bird <tim.bird@am.sony.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,23 +28,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2013-05-13 at 11:07 +0400, Alexander Shiyan wrote:
-> > On Mon, 2013-05-06 at 17:53 +0400, Alexander Shiyan wrote:
-> > > Patch converts driver to using resource-managed functions.
-> > > 
-> > > Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
-> > 
-> > Pushed the series to l2-mtd.git, thanks!
+On Thu, 2013-04-18 at 16:30 -0400, Mike Frysinger wrote:
 > 
-> This series should be applied with one more patch for nand_base:
-> http://comments.gmane.org/gmane.linux.drivers.mtd/46206 
+> imo, that support needs to be re-added.  it'd be great if we could do
+> it via 
+> the existing /dev/ubi_ctrl knob, but maybe that'll only work if ubi
+> +ubiblock 
+> are built into the kernel, or if ubiblock is merged with ubi ?
 
-Why is this one dependent on the series? To me it looked completely
-independent.
-
-> So, please, apply this one if it possible.
-
-In case of a dependency, why it was not a part of the series?
+Yeah, re-using the ubi_ctl device makes sense. And UBI can probably
+invoke 'request_module()' if needed, so that we avoid any of "work only
+if both built-in" conditions.
 
 -- 
 Best Regards,
