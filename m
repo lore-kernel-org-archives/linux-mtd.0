@@ -1,29 +1,19 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from ra.se.axis.com ([195.60.68.13])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UbnTE-0006cJ-Eh
- for linux-mtd@lists.infradead.org; Mon, 13 May 2013 07:46:57 +0000
-Message-ID: <1368431347.5360.16.camel@sauron.fi.intel.com>
-Subject: Re: [RFC/PATCH v2] ubi: Add ubiblock read-write driver
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: richard -rw- weinberger <richard.weinberger@gmail.com>
-Date: Mon, 13 May 2013 10:49:07 +0300
-In-Reply-To: <CAFLxGvxDHQREp9HjWgpbN0XCh6k42qDMk2JKiVU9r7jHU4De9w@mail.gmail.com>
-References: <1355314912-9321-1-git-send-email-elezegarcia@gmail.com>
- <201304182128.19518.vapier@gentoo.org>
- <20980858CB6D3A4BAE95CA194937D5E73E9AEC45@DBDE01.ent.ti.com>
- <201304190757.13688.vapier@gentoo.org>
- <1366374673.29520.125.camel@sauron.fi.intel.com>
- <CAFLxGvxDHQREp9HjWgpbN0XCh6k42qDMk2JKiVU9r7jHU4De9w@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Ezequiel Garcia <elezegarcia@gmail.com>, Mike Frysinger <vapier@gentoo.org>,
- Michael Opdenacker <michael.opdenacker@free-electrons.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Tim Bird <tim.bird@am.sony.com>
-Reply-To: dedekind1@gmail.com
+ id 1UbnXc-0006iV-Q2
+ for linux-mtd@lists.infradead.org; Mon, 13 May 2013 07:51:29 +0000
+Date: Mon, 13 May 2013 09:50:56 +0200
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: UBI, udev and systemd
+In-Reply-To: <1368196362.26780.170.camel@sauron.fi.intel.com>
+Message-ID: <alpine.DEB.2.00.1305130932340.22700@lnxricardw.se.axis.com>
+References: <alpine.DEB.2.00.1304081509460.10377@lnxricardw.se.axis.com>
+ <1368196362.26780.170.camel@sauron.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; format=flowed; charset="ISO-8859-15"
+Content-Transfer-Encoding: 8BIT
+Cc: Linux mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,16 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2013-04-20 at 09:50 +0200, richard -rw- weinberger wrote:
-> You mean "ubi fastmap memory leak"? No need to worry, it is on my radar.
-> But as the issue is not a show-stopper I have to take care first of
-> problems with
-> higher priority.
 
-I actually meant this one:
-http://lists.infradead.org/pipermail/linux-mtd/2012-December/045184.html
+On Fri, 10 May 2013, Artem Bityutskiy wrote:
 
+> On Mon, 2013-04-08 at 15:17 +0200, Ricard Wanderlof wrote:
+>> I know this might be a more systemd-related issue, however, it seems
+>> that
+>> there might be something about the way UBI reports device state
+>> changes to
+>> udev etc, or that just someone using UBI and systemd on their system
+>> has
+>> had a similar problem and solved it.
+>
+> I do not think UBI is doing anything special, it uses standard Linux
+> infrastructure API for creating the devices, and deleting them.
 
+I never followed this up on the list because there were no other responses 
+so I figured there was no other interest.
+
+You are right, there's nothing special about UBI, except that for udev it 
+comes up as its own subsystem type "ubi". There are lots of default rules 
+for disk devices which place them under systemd control, but nothing for 
+UBI, at least not in the build I was working on. Adding the line
+
+SUBSYSTEM=="ubi", GROUP="disk", TAG+="systemd"
+
+to the appropriate rules file allowed systemd to receive UBI subsystem 
+updates, and all was well.
+
+/Ricard
 -- 
-Best Regards,
-Artem Bityutskiy
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
