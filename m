@@ -1,16 +1,23 @@
-Message-ID: <1368429308.5360.6.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: devices: added the 16mb winbond device
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: girishks2000@gmail.com
-Date: Mon, 13 May 2013 10:15:08 +0300
-In-Reply-To: <516d0c68.e10b420a.287d.ffff894c@mx.google.com>
-References: <516d0c68.e10b420a.287d.ffff894c@mx.google.com>
+Received: from mga09.intel.com ([134.134.136.24])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Ubmz9-00064E-C6
+ for linux-mtd@lists.infradead.org; Mon, 13 May 2013 07:15:51 +0000
+Message-ID: <1368429484.5360.9.camel@sauron.fi.intel.com>
+Subject: Re: Re[2]: [RESEND PATCH v2 1/7] mtd: nand-gpio: Convert driver to
+ using resource-managed functions
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Alexander Shiyan <shc_work@mail.ru>
+Date: Mon, 13 May 2013 10:18:04 +0300
+In-Reply-To: <1368428869.40956565@f27.mail.ru>
+References: <1367848434-28493-1-git-send-email-shc_work@mail.ru>
+ <1368428287.5360.0.camel@sauron.fi.intel.com>
+ <1368428869.40956565@f27.mail.ru>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Girish K S <ks.giri@samsung.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,19 +27,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2013-04-16 at 14:01 +0530, girishks2000@gmail.com wrote:
-> From: Girish K S <ks.giri@samsung.com>
+On Mon, 2013-05-13 at 11:07 +0400, Alexander Shiyan wrote:
+> > On Mon, 2013-05-06 at 17:53 +0400, Alexander Shiyan wrote:
+> > > Patch converts driver to using resource-managed functions.
+> > > 
+> > > Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+> > 
+> > Pushed the series to l2-mtd.git, thanks!
 > 
-> added a 16mb winbond devce to the device list
-> erase size = 64k and number of blocks = 256
-> 
-> Signed-off-by: Girish K S <ks.giri@samsung.com>
+> This series should be applied with one more patch for nand_base:
+> http://comments.gmane.org/gmane.linux.drivers.mtd/46206 
 
-Pushed to l2-mtd.git, but please, remember to use better suffixes. E.g.,
-mb may mean mega bytes, or mega bits. 16MiB device, 64KiB block size is
-a lot less ambiguous way communicate the sizes.
+Why is this one dependent on the series? To me it looked completely
+independent.
 
-I've amended your commit message.
+> So, please, apply this one if it possible.
+
+In case of a dependency, why it was not a part of the series?
 
 -- 
 Best Regards,
