@@ -1,14 +1,14 @@
-Received: from mail-la0-x22e.google.com ([2a00:1450:4010:c03::22e])
+Received: from mail-lb0-f178.google.com ([209.85.217.178])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UcDDR-00033j-TR
- for linux-mtd@lists.infradead.org; Tue, 14 May 2013 11:16:22 +0000
-Received: by mail-la0-f46.google.com with SMTP id fk20so382659lab.5
- for <linux-mtd@lists.infradead.org>; Tue, 14 May 2013 04:15:59 -0700 (PDT)
+ id 1UcDDZ-00035A-0k
+ for linux-mtd@lists.infradead.org; Tue, 14 May 2013 11:16:29 +0000
+Received: by mail-lb0-f178.google.com with SMTP id p10so459716lbv.23
+ for <linux-mtd@lists.infradead.org>; Tue, 14 May 2013 04:16:06 -0700 (PDT)
 From: Ezequiel Garcia <elezegarcia@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 3/5] mtd: nand: pxa3xx: Fix MODULE_DEVICE_TABLE declaration
-Date: Tue, 14 May 2013 08:15:23 -0300
-Message-Id: <1368530125-12959-4-git-send-email-elezegarcia@gmail.com>
+Subject: [PATCH 4/5] mtd: nand: pxa3xx: Add address support for READID command
+Date: Tue, 14 May 2013 08:15:24 -0300
+Message-Id: <1368530125-12959-5-git-send-email-elezegarcia@gmail.com>
 In-Reply-To: <1368530125-12959-1-git-send-email-elezegarcia@gmail.com>
 References: <1368530125-12959-1-git-send-email-elezegarcia@gmail.com>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
@@ -29,26 +29,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 
-This module's device table is incorrectly declared using
-i2c_pxa_dt_ids, instead of pxa3xx_nand_dt_ids.
+This allows to support READID ONFI command which sends 0x20
+as address together with the 0x90 READID command.
+
+This is required to detect ONFI compliant devices.
 
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/pxa3xx_nand.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 8386e9a..e4e697f 100644
+index e4e697f..36780e2 100644
 --- a/drivers/mtd/nand/pxa3xx_nand.c
 +++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -1185,7 +1185,7 @@ static struct of_device_id pxa3xx_nand_dt_ids[] = {
- 	{ .compatible = "marvell,pxa3xx-nand" },
- 	{}
- };
--MODULE_DEVICE_TABLE(of, i2c_pxa_dt_ids);
-+MODULE_DEVICE_TABLE(of, pxa3xx_nand_dt_ids);
+@@ -596,6 +596,7 @@ static int prepare_command_pool(struct pxa3xx_nand_info *info, int command,
+ 		info->ndcb0 |= NDCB0_CMD_TYPE(3)
+ 				| NDCB0_ADDR_CYC(1)
+ 				| cmd;
++		info->ndcb1 = (column & 0xFF);
  
- static int pxa3xx_nand_probe_dt(struct platform_device *pdev)
- {
+ 		info->data_size = 8;
+ 		break;
 -- 
 1.8.1.5
