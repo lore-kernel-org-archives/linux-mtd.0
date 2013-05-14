@@ -1,14 +1,14 @@
-Received: from mail-la0-x232.google.com ([2a00:1450:4010:c03::232])
+Received: from mail-la0-x22f.google.com ([2a00:1450:4010:c03::22f])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UcDDF-00033f-5T
- for linux-mtd@lists.infradead.org; Tue, 14 May 2013 11:16:10 +0000
-Received: by mail-la0-f50.google.com with SMTP id ed20so379232lab.23
- for <linux-mtd@lists.infradead.org>; Tue, 14 May 2013 04:15:47 -0700 (PDT)
+ id 1UcDDM-00033i-8O
+ for linux-mtd@lists.infradead.org; Tue, 14 May 2013 11:16:16 +0000
+Received: by mail-la0-f47.google.com with SMTP id fq12so382179lab.6
+ for <linux-mtd@lists.infradead.org>; Tue, 14 May 2013 04:15:53 -0700 (PDT)
 From: Ezequiel Garcia <elezegarcia@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 1/5] mtd: nand: pxa3xx: Set info->use_dma properly
-Date: Tue, 14 May 2013 08:15:21 -0300
-Message-Id: <1368530125-12959-2-git-send-email-elezegarcia@gmail.com>
+Subject: [PATCH 2/5] mtd: nand: pxa3xx: Use of_machine_is_compatible()
+Date: Tue, 14 May 2013 08:15:22 -0300
+Message-Id: <1368530125-12959-3-git-send-email-elezegarcia@gmail.com>
 In-Reply-To: <1368530125-12959-1-git-send-email-elezegarcia@gmail.com>
 References: <1368530125-12959-1-git-send-email-elezegarcia@gmail.com>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
@@ -29,45 +29,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 
-Currently, the variable info->use_dma is never set and always
-zero-valued which means the driver never does DMA transfers.
-We fix this by simply setting info->use_dma to the module parameter,
-also named 'use_dma'. Note that the module parameter has the same name,
-but different semantics.
+This patch replaces cpu_is_pxa3xx() with of_machine_is_compatible()
+which allows to build this driver for other platforms than ARCH_PXA.
 
-This fixes a regression introduced by the below commit
-which removed the info->use_dma variable set.
-
-  commit 4eb2da8994042d68e84e31138788429a102da2ea
-  Author: Lei Wen <leiwen@marvell.com>
-  Date:   Mon Feb 28 10:32:13 2011 +0800
-
-      mtd: pxa3xx_nand: unify prepare command
-
-Before the above commit, the driver had use_dma=1 on all NAND commands
-except on CMD_STATUS. This behavior is long lost and we are not
-recovering in this patch, either.
-
-This was spotted and verified only by human inspection. No testing of
-any kind has been performed for lack of hardware.
-
-Cc: Lei Wen <leiwen@marvell.com>
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/nand/pxa3xx_nand.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 14d3db5..cef1eeb 100644
+index cef1eeb..8386e9a 100644
 --- a/drivers/mtd/nand/pxa3xx_nand.c
 +++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -506,6 +506,7 @@ static int prepare_command_pool(struct pxa3xx_nand_info *info, int command,
- 	info->buf_count		= 0;
- 	info->oob_size		= 0;
- 	info->use_ecc		= 0;
-+	info->use_dma		= (use_dma) ? 1 : 0;
- 	info->is_ready		= 0;
- 	info->retcode		= ERR_NONE;
- 	if (info->cs != 0)
+@@ -1094,7 +1094,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
+ 	 * bindings. It can be removed once we have a prober DMA controller
+ 	 * framework for DT.
+ 	 */
+-	if (pdev->dev.of_node && cpu_is_pxa3xx()) {
++	if (pdev->dev.of_node && of_machine_is_compatible("marvell,pxa3xx")) {
+ 		info->drcmr_dat = 97;
+ 		info->drcmr_cmd = 99;
+ 	} else {
 -- 
 1.8.1.5
