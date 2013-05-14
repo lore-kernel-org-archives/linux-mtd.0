@@ -1,10 +1,10 @@
-Received: from co9ehsobe003.messaging.microsoft.com ([207.46.163.26]
- helo=co9outboundpool.messaging.microsoft.com)
+Received: from mail-db8lp0184.outbound.messaging.microsoft.com
+ ([213.199.154.184] helo=db8outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Uc4eU-0002xJ-Ud
- for linux-mtd@lists.infradead.org; Tue, 14 May 2013 02:07:44 +0000
-Message-ID: <51919CDA.1080108@freescale.com>
-Date: Tue, 14 May 2013 10:09:30 +0800
+ id 1Uc4gk-0002zU-MG
+ for linux-mtd@lists.infradead.org; Tue, 14 May 2013 02:10:03 +0000
+Message-ID: <51919D6E.4070800@freescale.com>
+Date: Tue, 14 May 2013 10:11:58 +0800
 From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
 To: Stefan Roese <sr@denx.de>
@@ -35,8 +35,8 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 =E4=BA=8E 2013=E5=B9=B405=E6=9C=8813=E6=97=A5 18:02, Stefan Roese =E5=86=99=
 =E9=81=93:
 > Do you have any specific parameters that I should use for this test?
-i use:
-bonnie++ -d X -u 0 -s 10 -r 5
+I use:
+  bonnie++ -d tmp -u 0 -s 10 -r 5
 
 thanks
 Huang Shijie
