@@ -1,24 +1,21 @@
-Received: from mail-lb0-f173.google.com ([209.85.217.173])
+Received: from comal.ext.ti.com ([198.47.26.152])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UcDDe-00035j-EG
- for linux-mtd@lists.infradead.org; Tue, 14 May 2013 11:16:34 +0000
-Received: by mail-lb0-f173.google.com with SMTP id t10so465483lbi.4
- for <linux-mtd@lists.infradead.org>; Tue, 14 May 2013 04:16:12 -0700 (PDT)
-From: Ezequiel Garcia <elezegarcia@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 5/5] mtd: nand: pxa3xx: Add support for Read parameter page
- command
-Date: Tue, 14 May 2013 08:15:25 -0300
-Message-Id: <1368530125-12959-6-git-send-email-elezegarcia@gmail.com>
-In-Reply-To: <1368530125-12959-1-git-send-email-elezegarcia@gmail.com>
-References: <1368530125-12959-1-git-send-email-elezegarcia@gmail.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- Lei Wen <leiwen@marvell.com>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Maen Suleiman <maen@marvell.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Neil Zhang <zhangwm@marvell.com>, Chao Xie <cxie4@marvell.com>
+ id 1UcE77-0004Oa-AB
+ for linux-mtd@lists.infradead.org; Tue, 14 May 2013 12:13:54 +0000
+Message-ID: <51922A5A.9040501@ti.com>
+Date: Tue, 14 May 2013 17:43:14 +0530
+From: Sourav Poddar <sourav.poddar@ti.com>
+MIME-Version: 1.0
+To: <spi-devel-general@lists.sourceforge.net>
+Subject: Re: Qspi flash device  driver - framework to use?
+References: <518CD57E.2020705@ti.com>
+In-Reply-To: <518CD57E.2020705@ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Matt Porter <mporter@ti.com>, Felipe Balbi <balbi@ti.com>,
+ grant.likely@secretlab.ca, broonie@kernel.org,
+ Santosh Shilimkar <santosh.shilimkar@ti.com>, Pekon Gupta <pekon@ti.com>,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,35 +25,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-
-This command is required to identify ONFI-compliant devices.
-
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
----
- drivers/mtd/nand/pxa3xx_nand.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 36780e2..d63d378 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -590,6 +590,16 @@ static int prepare_command_pool(struct pxa3xx_nand_info *info, int command,
- 				| addr_cycle;
- 		break;
- 
-+	case NAND_CMD_PARAM:
-+		cmd = NAND_CMD_PARAM;
-+		info->buf_count = 256;
-+		info->ndcb0 |= NDCB0_CMD_TYPE(0)
-+				| NDCB0_ADDR_CYC(1)
-+				| cmd;
-+		info->ndcb1 = (column & 0xFF);
-+		info->data_size = 256;
-+		break;
-+
- 	case NAND_CMD_READID:
- 		cmd = host->cmdset->read_id;
- 		info->buf_count = host->read_id_bytes;
--- 
-1.8.1.5
++ linux-mtd list
+On Friday 10 May 2013 04:39 PM, Sourav Poddar wrote:
+> Hi,
+>
+> I am trying to work out a way to write a QSPI serial flash interface 
+> driver
+> for my IP. The idea is to have an execute in place usecase.
+>
+> We have a configuration port from which the spi core can be configured 
+> and a
+> memory mapped port from which the data can be read/write from/to serial
+> flash device.
+>
+> As far as I can understand, I dont think it will be correct/possible 
+> to write this
+> driver making use of the generice spi framework(drivers/spi/spi.c) as 
+> that
+> framework is more suited for generic spi use case, where in you can load
+> your Image from external SPI devices into DDR and then execute. ?
+>
+> But for cases, where qspi is connected to serial flash device (XIP is 
+> needed) what
+> we might need is some framework which just passes the buffers and its 
+> length to
+> our driver which in turn will configure the qspi to initiate the 
+> transfer.
+>
+> What can be the best framework to use for the above use case?
+>
+> I saw a device(m25p80) using mtd framework for some similar usecase.
+> Is it the mtd which should be used? OR will it be a
+> good idea to go for a generic qspi framework(drivers/qspi) which can be
+> used by qspi flash devices having a memory mapped interface. ?
+>
+> Thanks,
+> Sourav
