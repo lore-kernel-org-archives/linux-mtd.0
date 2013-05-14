@@ -1,28 +1,24 @@
-Received: from co9ehsobe002.messaging.microsoft.com ([207.46.163.25]
- helo=co9outboundpool.messaging.microsoft.com)
+Received: from mail-oa0-f44.google.com ([209.85.219.44])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Uc5FJ-0003io-OF
- for linux-mtd@lists.infradead.org; Tue, 14 May 2013 02:45:47 +0000
-Message-ID: <5191A5C8.1000308@freescale.com>
-Date: Tue, 14 May 2013 10:47:36 +0800
-From: Huang Shijie <b32955@freescale.com>
+ id 1Uc6Pk-0004Sm-LH
+ for linux-mtd@lists.infradead.org; Tue, 14 May 2013 04:00:38 +0000
+Received: by mail-oa0-f44.google.com with SMTP id n12so79600oag.3
+ for <linux-mtd@lists.infradead.org>; Mon, 13 May 2013 21:00:15 -0700 (PDT)
 MIME-Version: 1.0
-To: Vikram Narayanan <vikram186@gmail.com>
-Subject: Re: mtd_oobtest fails with GPMI-NAND
-References: <50F97DB5.7040801@gmail.com> <50FCA426.6030309@freescale.com>
- <5105E4CE.1090800@gmail.com> <5105EE9B.9050405@freescale.com>
- <5106AFAA.1020502@gmail.com> <51072EA4.7000201@freescale.com>
- <51073373.4080006@gmail.com> <510735B3.1040509@freescale.com>
- <5107F899.5090506@gmail.com> <5108852C.5040002@freescale.com>
- <510CB507.4020105@gmail.com> <518A6228.6050608@denx.de>
- <518B96FC.6000806@gmail.com> <518C91AA.8040107@denx.de>
- <5190551A.5010400@freescale.com> <51909DF1.4060201@denx.de>
- <5190ABF0.10501@freescale.com> <51911A2E.1060903@gmail.com>
- <5191A037.6060002@freescale.com> <5191A269.6040006@gmail.com>
-In-Reply-To: <5191A269.6040006@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: Stefan Roese <sr@denx.de>, linux-mtd@lists.infradead.org
+In-Reply-To: <CAPgLHd_DjX-Bfdf9p6k2t_fy+SjgQanuJjX_WxA1tqewwRe1HA@mail.gmail.com>
+References: <CAPgLHd_DjX-Bfdf9p6k2t_fy+SjgQanuJjX_WxA1tqewwRe1HA@mail.gmail.com>
+Date: Tue, 14 May 2013 09:30:14 +0530
+Message-ID: <CAKohponqCJ_FvAM-FKEnKP6E8hVr-pGOm1AKZWrrF7n=aOoYww@mail.gmail.com>
+Subject: Re: [PATCH v2] mtd: fsmc_nand: fix error return code in
+ fsmc_nand_probe()
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: Wei Yongjun <weiyj.lk@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: artem.bityutskiy@linux.intel.com, linus.walleij@linaro.org,
+ linux-kernel@vger.kernel.org, rob.herring@calxeda.com, vipin.kumar@st.com,
+ yongjun_wei@trendmicro.com.cn, linux-mtd@lists.infradead.org,
+ grant.likely@linaro.org, dwmw2@infradead.org,
+ devicetree-discuss@lists.ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,21 +28,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B405=E6=9C=8814=E6=97=A5 10:33, Vikram Narayanan =E5=
-=86=99=E9=81=93:
-> So, don't think that we are pointing that the GPMI-NAND driver is=20
-> buggy. My only concern is _mtdtests_ are there to reveal
-the mtd_tests may have bugs too. :)
-So do not depend on the mtd_tests too much.
-I don't think the mtd_tests can cover all the cases in the real world.
-
-
-> problems (if any) in the NAND related code, be it a driver or the mtd=20
-> layer. If one can make that run happily, it's easy to pin point the=20
-> source of these errors. (-74, fixable bit-flip etc).
+On 14 May 2013 08:00, Wei Yongjun <weiyj.lk@gmail.com> wrote:
+> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 >
-> Hope this clarifies my point.=20
-thanks. I know.
+> Fix to return -ENODEV in the dma channel request error handling
+> case instead of 0, as done elsewhere in this function.
+>
+> Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+> ---
+> v1 -> v2: set ret for error cases only
+> ---
+>  drivers/mtd/nand/fsmc_nand.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
+> index 0e5a1d9..95e1768 100644
+> --- a/drivers/mtd/nand/fsmc_nand.c
+> +++ b/drivers/mtd/nand/fsmc_nand.c
+> @@ -1035,12 +1035,14 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+>                 host->read_dma_chan = dma_request_channel(mask, filter,
+>                                 pdata->read_dma_priv);
+>                 if (!host->read_dma_chan) {
+> +                       ret = -ENODEV;
+>                         dev_err(&pdev->dev, "Unable to get read dma channel\n");
+>                         goto err_req_read_chnl;
+>                 }
+>                 host->write_dma_chan = dma_request_channel(mask, filter,
+>                                 pdata->write_dma_priv);
+>                 if (!host->write_dma_chan) {
+> +                       ret = -ENODEV;
+>                         dev_err(&pdev->dev, "Unable to get write dma channel\n");
+>                         goto err_req_write_chnl;
+>                 }
+>
 
-
-Huang Shijie
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
