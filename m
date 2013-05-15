@@ -1,18 +1,20 @@
-Received: from ch1ehsobe006.messaging.microsoft.com ([216.32.181.186]
- helo=ch1outboundpool.messaging.microsoft.com)
+Received: from co9ehsobe005.messaging.microsoft.com ([207.46.163.28]
+ helo=co9outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UcWaQ-0001Fe-7c
- for linux-mtd@lists.infradead.org; Wed, 15 May 2013 07:57:23 +0000
-Message-ID: <51934054.1080106@freescale.com>
-Date: Wed, 15 May 2013 15:59:16 +0800
+ id 1UcWe6-0001L8-Rn
+ for linux-mtd@lists.infradead.org; Wed, 15 May 2013 08:01:11 +0000
+Message-ID: <51934127.5090602@freescale.com>
+Date: Wed, 15 May 2013 16:02:47 +0800
 From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
 To: <dedekind1@gmail.com>
-Subject: Re: [PATCH 1/4] mtd: add a new field to mtd_info{}
-References: <1367562104-8955-1-git-send-email-b32955@freescale.com>	
- <1367562104-8955-2-git-send-email-b32955@freescale.com>
- <1368604064.13665.22.camel@sauron.fi.intel.com>
-In-Reply-To: <1368604064.13665.22.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH V4 1/9] mtd: add more comment for ecc_strength/ecc_size
+References: <1366967337-5534-1-git-send-email-b32955@freescale.com>		
+ <1366967337-5534-2-git-send-email-b32955@freescale.com>	
+ <1368602870.13665.7.camel@sauron.fi.intel.com>	
+ <51933B79.5000608@freescale.com>
+ <1368603747.13665.20.camel@sauron.fi.intel.com>
+In-Reply-To: <1368603747.13665.20.camel@sauron.fi.intel.com>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
@@ -26,48 +28,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B405=E6=9C=8815=E6=97=A5 15:47, Artem Bityutskiy =E5=
+=E4=BA=8E 2013=E5=B9=B405=E6=9C=8815=E6=97=A5 15:42, Artem Bityutskiy =E5=
 =86=99=E9=81=93:
-> On Fri, 2013-05-03 at 14:21 +0800, Huang Shijie wrote:
->> In order to implement the NAND boot for some Freescale's chips, such a=
-s
->> imx23/imx28/imx50/imx6, we use a tool (called kobs-ng) to burn the ubo=
-ot
->> and some metadata to nand chip. And the ROM code will use the metadata=
- to
->> configrate the BCH, and to find the uboot.
->>
->> The ECC information(ecc step size, ecc strength) which is used to conf=
-igrate
->> the BCH is part of the metadata. The kobs-ng can gets the ecc strength=
- from
->> the sys node /sys/*/ecc_strength now. But it can not gets the ecc step=
- size.
->>
->> This patch adds a new field to store the ecc step size in mtd_info{}, =
-and
->> it makes preparation for the next patches.
->>
->> Signed-off-by: Huang Shijie<b32955@freescale.com>
->> ---
->>   include/linux/mtd/mtd.h |    3 +++
->>   1 files changed, 3 insertions(+), 0 deletions(-)
->>
->> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
->> index 183a304..b93035f 100644
->> --- a/include/linux/mtd/mtd.h
->> +++ b/include/linux/mtd/mtd.h
->> @@ -173,6 +173,9 @@ struct mtd_info {
->>   	/* ECC layout structure pointer - read only! */
->>   	struct nand_ecclayout *ecclayout;
->>
->> +	/* the ecc step size. */
->> +	unsigned int ecc_size;
-> It would really be nice to harmonize the naming and probably stick to
-> ecc_step everywhere. To me things looks confusing, because ecc_size is
-> actually ECC step size, and not the size of ECC codes.
+> You did not send v4 thus far, is this because you are busy or you did
+> not have any requests to address?
 >
-ok. I will use ecc_step as the name.
+I am not busy.
+I just thought the v4 is enough.
+
+but now i will send out the v5.
 
 thanks
 Huang Shijie
