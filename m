@@ -1,14 +1,13 @@
 Received: from va3ehsobe004.messaging.microsoft.com ([216.32.180.14]
  helo=va3outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UcXW7-0002WV-OJ
- for linux-mtd@lists.infradead.org; Wed, 15 May 2013 08:57:09 +0000
+ id 1UcXWC-0002XA-OF
+ for linux-mtd@lists.infradead.org; Wed, 15 May 2013 08:57:10 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH v5 06/11] mtd: get the ECC info from the Extended Parameter
- Page
-Date: Wed, 15 May 2013 16:40:29 +0800
-Message-ID: <1368607232-2210-7-git-send-email-b32955@freescale.com>
+Subject: [PATCH v5 08/11] mtd: add ECC info for nand_flash_dev{}
+Date: Wed, 15 May 2013 16:40:31 +0800
+Message-ID: <1368607232-2210-9-git-send-email-b32955@freescale.com>
 In-Reply-To: <1368607232-2210-1-git-send-email-b32955@freescale.com>
 References: <1368607232-2210-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
@@ -25,119 +24,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Since the ONFI 2.1, the onfi spec adds the Extended Parameter Page
-to store the ECC info.
+Add an instance of an anonymous struct to store the ECC infor for full id
+nand chips.
+	@ecc.strength: ECC correctability from the datasheet.
+	@ecc.step: ECC size required by the @ecc.strength,
 
-The onfi spec tells us that if the nand chip's recommended ECC codeword
-size is not 512 bytes, then the @ecc_bits is 0xff. The host _SHOULD_ then
-read the Extended ECC information that is part of the extended parameter
-page to retrieve the ECC requirements for this device.
+Also add the necessary macros to make the code simple and clean.
 
-This patch implement the reading of the Extended Parameter Page, and parses
-the sections for ECC type, and get the ECC info from the ECC section.
-
-Tested this patch with Micron MT29F64G08CBABAWP.
-
-Acked-by: Pekon Gupta <pekon@ti.com>
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- drivers/mtd/nand/nand_base.c |   77 ++++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 77 insertions(+), 0 deletions(-)
+ include/linux/mtd/nand.h |   15 +++++++++++++++
+ 1 files changed, 15 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 15630ef..e98ea69 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2835,6 +2835,68 @@ static u16 onfi_crc16(u16 crc, u8 const *p, size_t len)
- 	return crc;
- }
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index c503850..718d2c5 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -625,6 +625,11 @@ struct nand_chip {
+ 	{ .name = (nm), {{ .dev_id = (devid) }}, .chipsize = (chipsz), \
+ 	  .options = (opts) }
  
-+/* Parse the Extended Parameter Page. */
-+static int nand_flash_detect_ext_param_page(struct mtd_info *mtd,
-+		struct nand_chip *chip, struct nand_onfi_params *p)
-+{
-+	struct onfi_ext_param_page *ep;
-+	struct onfi_ext_section *s;
-+	struct onfi_ext_ecc_info *ecc;
-+	uint8_t *cursor;
-+	int len;
-+	int ret;
-+	int i;
++#define NAND_ECC_INFO(_strength, _step)	\
++			{ .strength = (_strength), .step = (_step) }
++#define NAND_ECC_STRENGTH(type)		((type)->ecc.strength)
++#define NAND_ECC_STEP(type)		((type)->ecc.step)
 +
-+	len = le16_to_cpu(p->ext_param_page_length) * 16;
-+	ep = kmalloc(len, GFP_KERNEL);
-+	if (!ep) {
-+		ret = -ENOMEM;
-+		goto ext_out;
-+	}
-+
-+	/* Send our own NAND_CMD_PARAM. */
-+	chip->cmdfunc(mtd, NAND_CMD_PARAM, 0, -1);
-+
-+	/* Use the Change Read Column command to skip the ONFI param pages. */
-+	chip->cmdfunc(mtd, NAND_CMD_RNDOUT,
-+			sizeof(*p) * p->num_of_param_pages , -1);
-+
-+	/* Read out the Extended Parameter Page. */
-+	chip->read_buf(mtd, (uint8_t *)ep, len);
-+	if ((onfi_crc16(ONFI_CRC_BASE, ((uint8_t *)ep) + 2, len - 2)
-+		!= le16_to_cpu(ep->crc)) || strncmp(ep->sig, "EPPS", 4)) {
-+		pr_debug("fail in the CRC.\n");
-+		ret = -EINVAL;
-+		goto ext_out;
-+	}
-+
-+	/* find the ECC section. */
-+	cursor = (uint8_t *)(ep + 1);
-+	for (i = 0; i < ONFI_EXT_SECTION_MAX; i++) {
-+		s = ep->sections + i;
-+		if (s->type == ONFI_SECTION_TYPE_2)
-+			break;
-+		cursor += s->length * 16;
-+	}
-+	if (i == ONFI_EXT_SECTION_MAX) {
-+		pr_debug("We can not find the ECC section.\n");
-+		ret = -EINVAL;
-+		goto ext_out;
-+	}
-+
-+	/* get the info we want. */
-+	ecc = (struct onfi_ext_ecc_info *)cursor;
-+	chip->ecc_strength = ecc->ecc_bits;
-+	chip->ecc_step = 1 << ecc->codeword_size;
-+
-+	pr_info("ONFI extended param page detected.\n");
-+	return 0;
-+
-+ext_out:
-+	kfree(ep);
-+	return ret;
-+}
-+
- /*
-  * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0 otherwise.
+ /**
+  * struct nand_flash_dev - NAND Flash Device ID Structure
+  * @name: a human-readable name of the NAND chip
+@@ -642,6 +647,12 @@ struct nand_chip {
+  * @options: stores various chip bit options
+  * @id_len: The valid length of the @id.
+  * @oobsize: OOB size
++ * @ecc.strength: The ECC correctability from the datasheet, same as the
++ *                @ecc_strength in nand_chip{}.
++ * @ecc.step: The ECC step required by the @ecc.strength, same as the
++ *            @ecc_size in nand_chip{}, also from the datasheet.
++ *            For example, the "4bit ECC for each 512Byte" can be set with
++ *            NAND_ECC_INFO(4, 512).
   */
-@@ -2903,6 +2965,21 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
- 	if (p->ecc_bits != 0xff) {
- 		chip->ecc_strength = p->ecc_bits;
- 		chip->ecc_step = 512;
-+	} else if (chip->onfi_version >= 21 &&
-+		(onfi_feature(chip) & ONFI_FEATURE_EXT_PARAM_PAGE)) {
-+
-+		/*
-+		 * The nand_flash_detect_ext_param_page() uses the
-+		 * Change Read Column command which maybe not supported
-+		 * by the chip->cmdfunc. So try to update the chip->cmdfunc
-+		 * now. We do not replace user supplied command function.
-+		 */
-+		if (mtd->writesize > 512 && chip->cmdfunc == nand_command)
-+			chip->cmdfunc = nand_command_lp;
-+
-+		/* The Extended Parameter Page is supported since ONFI 2.1. */
-+		if (nand_flash_detect_ext_param_page(mtd, chip, p))
-+			pr_info("Failed to detect the extended param page.\n");
- 	}
+ struct nand_flash_dev {
+ 	char *name;
+@@ -658,6 +669,10 @@ struct nand_flash_dev {
+ 	unsigned int options;
+ 	uint16_t id_len;
+ 	uint16_t oobsize;
++	struct {
++		uint16_t strength;
++		uint16_t step;
++	} ecc;
+ };
  
- 	pr_info("ONFI flash detected\n");
+ /**
 -- 
 1.7.1
