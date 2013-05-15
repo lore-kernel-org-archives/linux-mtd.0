@@ -1,22 +1,21 @@
-Received: from mail-pb0-x232.google.com ([2607:f8b0:400e:c01::232])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ucf8Z-00061O-1Q
- for linux-mtd@lists.infradead.org; Wed, 15 May 2013 17:05:11 +0000
-Received: by mail-pb0-f50.google.com with SMTP id um15so1528079pbc.23
- for <linux-mtd@lists.infradead.org>; Wed, 15 May 2013 10:04:48 -0700 (PDT)
-Message-ID: <5193C029.5060104@gmail.com>
-Date: Wed, 15 May 2013 22:34:41 +0530
-From: Vikram Narayanan <vikram186@gmail.com>
+Received: from mailserver5.natinst.com ([130.164.80.5]
+ helo=spamkiller05.natinst.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UciZH-0001K1-JD
+ for linux-mtd@lists.infradead.org; Wed, 15 May 2013 20:45:01 +0000
+Received: from US-AUS-MAIL4.amer.corp.natinst.com (nb-chan1-1338.natinst.com
+ [130.164.19.134])
+ by spamkiller05.natinst.com (8.14.5/8.14.5) with ESMTP id r4FKiZ39015913
+ for <linux-mtd@lists.infradead.org>; Wed, 15 May 2013 15:44:35 -0500
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v5 03/11] mtd: get the ECC info from the parameter page
- for ONFI nand
-References: <1368607232-2210-1-git-send-email-b32955@freescale.com>
- <1368607232-2210-4-git-send-email-b32955@freescale.com>
-In-Reply-To: <1368607232-2210-4-git-send-email-b32955@freescale.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: nand: nand_bbt: scan for next free bbt block if writing
+ bbt fails
+From: Jeff Westfahl <jeff.westfahl@ni.com>
+Message-ID: <OF97DE13B9.4C0523A2-ON86257B6C.00717E04-86257B6C.0071F1E7@ni.com>
+Date: Wed, 15 May 2013 15:44:34 -0500
+Content-Type: text/plain; charset="US-ASCII"
+Cc: jeff.westfahl@ni.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,32 +25,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 5/15/2013 2:10 PM, Huang Shijie wrote:
->  From the ONFI spec, we can just get the ECC info from the @ecc_bits field of
-> the parameter page.
+If erasing or writing the BBT fails, we should mark the current BBT block
+as bad and use the BBT descriptor to scan for the next available unused
+block in the BBT. We should only return a failure if there isn't any space
+left.
 
-I wonder what do we do, if the chip is not ONFI compliant?
-which means when the legacy calculation in GPMI goes wrong?
+Signed-off-by: Jeff Westfahl <jeff.westfahl@ni.com>
+---
+ drivers/mtd/nand/nand_bbt.c |   21 +++++++++++++++++----
+ 1 file changed, 17 insertions(+), 4 deletions(-)
 
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
-> ---
->   drivers/mtd/nand/nand_base.c |    5 +++++
->   1 files changed, 5 insertions(+), 0 deletions(-)
->
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index edc7663..15630ef 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -2900,6 +2900,11 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
->   	if (le16_to_cpu(p->features) & 1)
->   		*busw = NAND_BUSWIDTH_16;
->
-> +	if (p->ecc_bits != 0xff) {
-> +		chip->ecc_strength = p->ecc_bits;
-> +		chip->ecc_step = 512;
-> +	}
-> +
->   	pr_info("ONFI flash detected\n");
->   	return 1;
->   }
->
+diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+index 2672643..900bda1 100644
+--- a/drivers/mtd/nand/nand_bbt.c
++++ b/drivers/mtd/nand/nand_bbt.c
+@@ -697,6 +697,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t 
+*buf,
+                                                 page = td->pages[chip];
+                                                 goto write;
+                                 }
++                next:
+ 
+                                 /*
+                                  * Automatic placement of the bad block 
+table. Search direction
+@@ -831,14 +832,26 @@ static int write_bbt(struct mtd_info *mtd, uint8_t 
+*buf,
+                                 einfo.addr = to;
+                                 einfo.len = 1 << this->bbt_erase_shift;
+                                 res = nand_erase_nand(mtd, &einfo, 1);
+-                                if (res < 0)
+-                                                goto outerr;
++                                if (res < 0) {
++                                                /* This block is bad. 
+Mark it as such and see if there's
++                                                   another available in 
+the BBT area. */
++                                                int block = page >>
++ (this->bbt_erase_shift - this->page_shift);
++                                                this->bbt[block >> 2] |= 
+0x01 << ((block & 0x03) << 1);
++                                                goto next;
++                                }
+ 
+                                 res = scan_write_bbt(mtd, to, len, buf,
+ td->options & NAND_BBT_NO_OOB ? NULL :
+ &buf[len]);
+-                                if (res < 0)
+-                                                goto outerr;
++                                if (res < 0) {
++                                                /* This block is bad. 
+Mark it as such and see if there's
++                                                   another available in 
+the BBT area. */
++                                                int block = page >>
++ (this->bbt_erase_shift - this->page_shift);
++                                                this->bbt[block >> 2] |= 
+0x01 << ((block & 0x03) << 1);
++                                                goto next;
++                                }
+ 
+                                 pr_info("Bad block table written to 
+0x%012llx, version 0x%02X\n",
+                                                  (unsigned long long)to, 
+td->version[chip]);
+-- 
+1.7.10
