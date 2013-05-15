@@ -1,14 +1,16 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UcaS7-0006yp-TI
- for linux-mtd@lists.infradead.org; Wed, 15 May 2013 12:05:07 +0000
-Message-ID: <1368619642.15764.96.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v2 0/4] Export the ecc step size to user applications
+ id 1UcaWX-00077X-Td
+ for linux-mtd@lists.infradead.org; Wed, 15 May 2013 12:09:38 +0000
+Message-ID: <1368619917.15764.99.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v5 01/11] mtd: add datasheet's ECC information to
+ nand_chip{}
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Huang Shijie <b32955@freescale.com>
-Date: Wed, 15 May 2013 15:07:22 +0300
-In-Reply-To: <1368607606-4344-1-git-send-email-b32955@freescale.com>
-References: <1368607606-4344-1-git-send-email-b32955@freescale.com>
+Date: Wed, 15 May 2013 15:11:57 +0300
+In-Reply-To: <1368607232-2210-2-git-send-email-b32955@freescale.com>
+References: <1368607232-2210-1-git-send-email-b32955@freescale.com>
+ <1368607232-2210-2-git-send-email-b32955@freescale.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -24,18 +26,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2013-05-15 at 16:46 +0800, Huang Shijie wrote:
-> In order to implement the NAND boot for some Freescale's chips, such as
-> imx23/imx28/imx50/imx6, we use a tool (called kobs-ng) to burn the uboot
-> and some metadata to nand chip. And the ROM code will use the metadata to
-> configrate the BCH, and to find the uboot.
-> 
-> The ECC information(ecc step size, ecc strength) which is used to configrate
-> the BCH is part of the metadata. The kobs-ng can gets the ecc strength from
-> the sys node /sys/*/mtdX/ecc_strength now. But it can't gets the ecc step size.
+On Wed, 2013-05-15 at 16:40 +0800, Huang Shijie wrote:
+> + * @ecc_strength:	[INTERN] ECC correctability from the datasheet.
+> + *			Minimum amount of bit errors per @ecc_step guaranteed to
+> + *			be correctable. If unknown, set to zero.
+> + * @ecc_step:		[INTERN] ECC step required by the @ecc_strength,
+> + *                      also from the datasheet. It is the recommended ECC step
+> + *			size, if known; if unknown, set to zero.
 
-Looks good to me. Would you please update
-Documentation/ABI/testing/sysfs-class-mtd as well?
+Here and in other places you talk about "datasheet". Do you assume that
+the real ECC strength/step used by NAND chips may be different? Or you
+assume it must be the same?
 
 -- 
 Best Regards,
