@@ -1,20 +1,19 @@
-Received: from am1ehsobe003.messaging.microsoft.com ([213.199.154.206]
+Received: from am1ehsobe002.messaging.microsoft.com ([213.199.154.205]
  helo=am1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UcXca-0002r7-64
- for linux-mtd@lists.infradead.org; Wed, 15 May 2013 09:03:40 +0000
+ id 1UcXiy-0003B5-T6
+ for linux-mtd@lists.infradead.org; Wed, 15 May 2013 09:10:17 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH v2 3/4] mtd: set the ecc step size for master/slave mtd_info
-Date: Wed, 15 May 2013 16:46:45 +0800
-Message-ID: <1368607606-4344-4-git-send-email-b32955@freescale.com>
-In-Reply-To: <1368607606-4344-1-git-send-email-b32955@freescale.com>
-References: <1368607606-4344-1-git-send-email-b32955@freescale.com>
+Subject: [PATCH v5 10/11] mtd: add the ecc info for some full-id nand chips
+Date: Wed, 15 May 2013 16:54:01 +0800
+Message-ID: <1368608042-9558-1-git-send-email-b32955@freescale.com>
+In-Reply-To: <1368607232-2210-1-git-send-email-b32955@freescale.com>
+References: <1368607232-2210-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- dedekind1@gmail.com
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,37 +23,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Set the ecc step size for master/slave mtd_info{}.
+Add the ecc info for TC58NVG2S0F, TC58NVG3S0F, TC58NVG5D2 and TC58NVG6D2.
+
+>From these chips' datasheets, we know that:
+   The TC58NVG2S0F and TC58NVG3S0F require 4bit ECC for per 512byte.
+   The TC58NVG5D2 and TC58NVG6D2 require 40bits ECC for per 1024byte.
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- drivers/mtd/mtdpart.c        |    1 +
- drivers/mtd/nand/nand_base.c |    1 +
- 2 files changed, 2 insertions(+), 0 deletions(-)
+ drivers/mtd/nand/nand_ids.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 3014933..63b42a6 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -516,6 +516,7 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
- 	}
+diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
+index 683813a..a87b0a3 100644
+--- a/drivers/mtd/nand/nand_ids.c
++++ b/drivers/mtd/nand/nand_ids.c
+@@ -33,16 +33,16 @@ struct nand_flash_dev nand_flash_ids[] = {
+ 	 */
+ 	{"TC58NVG2S0F 4G 3.3V 8-bit",
+ 		{ .id = {0x98, 0xdc, 0x90, 0x26, 0x76, 0x15, 0x01, 0x08} },
+-		  SZ_4K, SZ_512, SZ_256K, 0, 8, 224},
++		  SZ_4K, SZ_512, SZ_256K, 0, 8, 224, NAND_ECC_INFO(4, SZ_512) },
+ 	{"TC58NVG3S0F 8G 3.3V 8-bit",
+ 		{ .id = {0x98, 0xd3, 0x90, 0x26, 0x76, 0x15, 0x02, 0x08} },
+-		  SZ_4K, SZ_1K, SZ_256K, 0, 8, 232},
++		  SZ_4K, SZ_1K, SZ_256K, 0, 8, 232, NAND_ECC_INFO(4, SZ_512) },
+ 	{"TC58NVG5D2 32G 3.3V 8-bit",
+ 		{ .id = {0x98, 0xd7, 0x94, 0x32, 0x76, 0x56, 0x09, 0x00} },
+-		  SZ_8K, SZ_4K, SZ_1M, 0, 8, 640},
++		  SZ_8K, SZ_4K, SZ_1M, 0, 8, 640, NAND_ECC_INFO(40, SZ_1K) },
+ 	{"TC58NVG6D2 64G 3.3V 8-bit",
+ 		{ .id = {0x98, 0xde, 0x94, 0x82, 0x76, 0x56, 0x04, 0x20} },
+-		  SZ_8K, SZ_8K, SZ_2M, 0, 8, 640},
++		  SZ_8K, SZ_8K, SZ_2M, 0, 8, 640, NAND_ECC_INFO(40, SZ_1K) },
  
- 	slave->mtd.ecclayout = master->ecclayout;
-+	slave->mtd.ecc_step = master->ecc_step;
- 	slave->mtd.ecc_strength = master->ecc_strength;
- 	slave->mtd.bitflip_threshold = master->bitflip_threshold;
- 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 359e105..48dfab5 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -3747,6 +3747,7 @@ int nand_scan_tail(struct mtd_info *mtd)
- 	/* propagate ecc info to mtd_info */
- 	mtd->ecclayout = chip->ecc.layout;
- 	mtd->ecc_strength = chip->ecc.strength;
-+	mtd->ecc_step = chip->ecc.size;
- 	/*
- 	 * Initialize bitflip_threshold to its default prior scan_bbt() call.
- 	 * scan_bbt() might invoke mtd_read(), thus bitflip_threshold must be
+ 	LEGACY_ID_NAND("NAND 4MiB 5V 8-bit",   0x6B, 4, SZ_8K, SP_OPTIONS),
+ 	LEGACY_ID_NAND("NAND 4MiB 3,3V 8-bit", 0xE3, 4, SZ_8K, SP_OPTIONS),
 -- 
 1.7.1
