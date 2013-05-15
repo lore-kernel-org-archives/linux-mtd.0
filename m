@@ -1,20 +1,20 @@
-Received: from mga14.intel.com ([143.182.124.37])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UcWOx-00015g-Jz
- for linux-mtd@lists.infradead.org; Wed, 15 May 2013 07:45:32 +0000
-Message-ID: <1368604064.13665.22.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/4] mtd: add a new field to mtd_info{}
+ id 1UcWWV-0001Cs-9V
+ for linux-mtd@lists.infradead.org; Wed, 15 May 2013 07:53:20 +0000
+Message-ID: <1368604536.13665.25.camel@sauron.fi.intel.com>
+Subject: Re: MTD : cannot reserve enough PEBs for bad PEB handling
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Date: Wed, 15 May 2013 10:47:44 +0300
-In-Reply-To: <1367562104-8955-2-git-send-email-b32955@freescale.com>
-References: <1367562104-8955-1-git-send-email-b32955@freescale.com>
- <1367562104-8955-2-git-send-email-b32955@freescale.com>
+To: Mark Jackson <mpfj-list@newflow.co.uk>
+Date: Wed, 15 May 2013 10:55:36 +0300
+In-Reply-To: <51750526.70508@newflow.co.uk>
+References: <51750526.70508@newflow.co.uk>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ lkml <linux-kernel@vger.kernel.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,38 +25,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2013-05-03 at 14:21 +0800, Huang Shijie wrote:
-> In order to implement the NAND boot for some Freescale's chips, such as
-> imx23/imx28/imx50/imx6, we use a tool (called kobs-ng) to burn the uboot
-> and some metadata to nand chip. And the ROM code will use the metadata to
-> configrate the BCH, and to find the uboot.
+On Mon, 2013-04-22 at 10:38 +0100, Mark Jackson wrote:
+> I'm trying to work out how to generate a "valid" UBI image, but I keep
+> getting a "cannot get enough PEBs" warning.
 > 
-> The ECC information(ecc step size, ecc strength) which is used to configrate
-> the BCH is part of the metadata. The kobs-ng can gets the ecc strength from
-> the sys node /sys/*/ecc_strength now. But it can not gets the ecc step size.
+> I generate my image (destined for a 64MB NAND partition) using:-
 > 
-> This patch adds a new field to store the ecc step size in mtd_info{}, and
-> it makes preparation for the next patches.
+> $ mkfs.ubifs -d output/target -e 0x1f000 -c 483 -m 0x800 -x none -F -o
+> output/images/rootfs.ubifs
+> $ ubinize -o output/images/rootfs.ubi -m 0x800 -p 0x20000 -s 512 -O 2048
+> ubinize.cfg
 > 
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
-> ---
->  include/linux/mtd/mtd.h |    3 +++
->  1 files changed, 3 insertions(+), 0 deletions(-)
+> My .cfg file is:-
 > 
-> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-> index 183a304..b93035f 100644
-> --- a/include/linux/mtd/mtd.h
-> +++ b/include/linux/mtd/mtd.h
-> @@ -173,6 +173,9 @@ struct mtd_info {
->  	/* ECC layout structure pointer - read only! */
->  	struct nand_ecclayout *ecclayout;
->  
-> +	/* the ecc step size. */
-> +	unsigned int ecc_size;
+> [ubifs]
+> mode=ubi
+> vol_id=0
+> vol_type=dynamic
+> vol_name=rootfs
+> vol_alignment=1
+> vol_flags=autoresize
+> vol_size=61MiB
+> image=output/images/rootfs.ubifs
+> 
+> And the resulting image is:-
+> 
+> -rw-rw-r-- 1 mpfj mpfj 9437184 Apr 16 10:19 rootfs.ubi
+> 
+> This is then written to a freshly erased 64MB NAND partition, and
+> appears to mount correctly, apart from the warning about not enough
+> reserved PEBs, as follows:-
+> 
+> ...
+> [    0.792456] UBI: attaching mtd7 to ubi0
+> [    1.540858] UBI: scanning is finished
+> [    1.557578] UBI warning: print_rsvd_warning: cannot reserve enough
+> PEBs for bad PEB handling, reserved 4, need 40
+> [    1.561346] UBI: attached mtd7 (name "rootfs", size 64 MiB) to ubi0
+> [    1.561404] UBI: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
+> [    1.561434] UBI: min./max. I/O unit sizes: 2048/2048, sub-page size 512
+> [    1.561464] UBI: VID header offset: 2048 (aligned 2048), data offset:
+> 4096
+> [    1.561493] UBI: good PEBs: 512, bad PEBs: 0, corrupted PEBs: 0
+> [    1.561520] UBI: user volume: 1, internal volumes: 1, max. volumes
+> count: 128
+> [    1.561554] UBI: max/mean erase counter: 2/1, WL threshold: 4096,
+> image sequence number: 1434266085
+> [    1.561591] UBI: available PEBs: 0, total reserved PEBs: 512, PEBs
+> reserved for bad PEB handling: 4
+> [    1.562374] UBI: background thread "ubi_bgt0d" started, PID 598
+> ...
+> 
+> I think I've calculated the various option values correctly for
+> mkfs.ubifs and ubinize.
+> 
+> But since I'm getting the warning, can anyone explain where I've gone
+> wrong ?
 
-It would really be nice to harmonize the naming and probably stick to
-ecc_step everywhere. To me things looks confusing, because ecc_size is
-actually ECC step size, and not the size of ECC codes.
+This is because UBI is trying to reserve 40 PEBs for bad block handling.
+Why so much? See the explanations here:
+
+http://www.linux-mtd.infradead.org/doc/ubi.html#L_max_beb
+
+You may adjust this value, but the default for UBI is the most
+pessimistic scenario.
 
 -- 
 Best Regards,
