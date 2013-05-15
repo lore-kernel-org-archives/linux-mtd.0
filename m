@@ -1,13 +1,13 @@
-Received: from va3ehsobe002.messaging.microsoft.com ([216.32.180.12]
+Received: from va3ehsobe010.messaging.microsoft.com ([216.32.180.30]
  helo=va3outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UcXc1-0002n8-M9
- for linux-mtd@lists.infradead.org; Wed, 15 May 2013 09:03:07 +0000
+ id 1UcXc9-0002nV-Ci
+ for linux-mtd@lists.infradead.org; Wed, 15 May 2013 09:03:14 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH v2 2/4] mtd: add a new sys node to show the ecc step size
-Date: Wed, 15 May 2013 16:46:44 +0800
-Message-ID: <1368607606-4344-3-git-send-email-b32955@freescale.com>
+Subject: [PATCH v2 4/4] mtd: gpmi: update the ecc step size for mtd_info{}
+Date: Wed, 15 May 2013 16:46:46 +0800
+Message-ID: <1368607606-4344-5-git-send-email-b32955@freescale.com>
 In-Reply-To: <1368607606-4344-1-git-send-email-b32955@freescale.com>
 References: <1368607606-4344-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
@@ -24,43 +24,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add a new sys node to show the ecc step size.
-The application then can uses this node to get the ecc step
-size.
+update the ecc step size when we have already get the right value.
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- drivers/mtd/mtdcore.c |   11 +++++++++++
- 1 files changed, 11 insertions(+), 0 deletions(-)
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index c400c57..63903b9 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -285,6 +285,16 @@ static DEVICE_ATTR(bitflip_threshold, S_IRUGO | S_IWUSR,
- 		   mtd_bitflip_threshold_show,
- 		   mtd_bitflip_threshold_store);
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 53180da..bc598e6 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -1598,6 +1598,7 @@ static int gpmi_pre_bbt_scan(struct gpmi_nand_data  *this)
+ 	/* Adjust the ECC strength according to the chip. */
+ 	this->nand.ecc.strength = this->bch_geometry.ecc_strength;
+ 	this->mtd.ecc_strength = this->bch_geometry.ecc_strength;
++	this->mtd.ecc_step = this->bch_geometry.ecc_chunk_size;
+ 	this->mtd.bitflip_threshold = this->bch_geometry.ecc_strength;
  
-+static ssize_t mtd_ecc_step_show(struct device *dev,
-+		struct device_attribute *attr, char *buf)
-+{
-+	struct mtd_info *mtd = dev_get_drvdata(dev);
-+
-+	return snprintf(buf, PAGE_SIZE, "%lu\n", (unsigned long)mtd->ecc_step);
-+
-+}
-+static DEVICE_ATTR(ecc_step, S_IRUGO, mtd_ecc_step_show, NULL);
-+
- static struct attribute *mtd_attrs[] = {
- 	&dev_attr_type.attr,
- 	&dev_attr_flags.attr,
-@@ -296,6 +306,7 @@ static struct attribute *mtd_attrs[] = {
- 	&dev_attr_numeraseregions.attr,
- 	&dev_attr_name.attr,
- 	&dev_attr_ecc_strength.attr,
-+	&dev_attr_ecc_step.attr,
- 	&dev_attr_bitflip_threshold.attr,
- 	NULL,
- };
+ 	/* NAND boot init, depends on the gpmi_set_geometry(). */
 -- 
 1.7.1
