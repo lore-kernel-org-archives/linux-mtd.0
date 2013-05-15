@@ -1,15 +1,13 @@
-Received: from co9ehsobe003.messaging.microsoft.com ([207.46.163.26]
- helo=co9outboundpool.messaging.microsoft.com)
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UcXWu-000804-8j
- for linux-mtd@lists.infradead.org; Wed, 15 May 2013 08:57:51 +0000
+Received: from va3ehsobe006.messaging.microsoft.com ([216.32.180.16]
+ helo=va3outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UcXbx-0002n7-0U
+ for linux-mtd@lists.infradead.org; Wed, 15 May 2013 09:03:01 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH v5 07/11] mtd: replace the hardcode with the onfi_feature()
-Date: Wed, 15 May 2013 16:40:30 +0800
-Message-ID: <1368607232-2210-8-git-send-email-b32955@freescale.com>
-In-Reply-To: <1368607232-2210-1-git-send-email-b32955@freescale.com>
-References: <1368607232-2210-1-git-send-email-b32955@freescale.com>
+Subject: [PATCH v2 0/4] Export the ecc step size to user applications
+Date: Wed, 15 May 2013 16:46:42 +0800
+Message-ID: <1368607606-4344-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
@@ -24,30 +22,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The current code uses the hardcode to detect the 16-bit bus width.
-Use the onfi_feature() to replace it.
+In order to implement the NAND boot for some Freescale's chips, such as
+imx23/imx28/imx50/imx6, we use a tool (called kobs-ng) to burn the uboot
+and some metadata to nand chip. And the ROM code will use the metadata to
+configrate the BCH, and to find the uboot.
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
- drivers/mtd/nand/nand_base.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+The ECC information(ecc step size, ecc strength) which is used to configrate
+the BCH is part of the metadata. The kobs-ng can gets the ecc strength from
+the sys node /sys/*/mtdX/ecc_strength now. But it can't gets the ecc step size.
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index e98ea69..41e5c07 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2958,9 +2958,9 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
- 	mtd->oobsize = le16_to_cpu(p->spare_bytes_per_page);
- 	chip->chipsize = le32_to_cpu(p->blocks_per_lun);
- 	chip->chipsize *= (uint64_t)mtd->erasesize * p->lun_count;
--	*busw = 0;
--	if (le16_to_cpu(p->features) & 1)
--		*busw = NAND_BUSWIDTH_16;
-+
-+	*busw = (onfi_feature(chip) & ONFI_FEATURE_16_BIT_BUS) ?
-+			NAND_BUSWIDTH_16 : 0;
- 
- 	if (p->ecc_bits != 0xff) {
- 		chip->ecc_strength = p->ecc_bits;
--- 
-1.7.1
+This patch set is used to export the ecc step size to user applications.
+With this patch set, the kobs-ng can gets the ecc step size now.
+
+v1 --> v2:
+	[1] rename the ecc_size to ecc_step.
+	[2] rebase on the latest l2-mtd.
+
+Huang Shijie (4):
+  mtd: add a new field to mtd_info{}
+  mtd: add a new sys node to show the ecc step size
+  mtd: set the ecc step size for master/slave mtd_info
+  mtd: gpmi: update the ecc step size for mtd_info{}
+
+ drivers/mtd/mtdcore.c                  |   11 +++++++++++
+ drivers/mtd/mtdpart.c                  |    1 +
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    1 +
+ drivers/mtd/nand/nand_base.c           |    1 +
+ include/linux/mtd/mtd.h                |    3 +++
+ 5 files changed, 17 insertions(+), 0 deletions(-)
