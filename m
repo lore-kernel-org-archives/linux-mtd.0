@@ -1,16 +1,25 @@
-Message-ID: <1368696748.15764.184.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 0/4] mtd: atmel_nand: enable Nand Flash Controller (NFC)
- support
+Received: from mga09.intel.com ([134.134.136.24])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UcuZj-0006kE-Qg
+ for linux-mtd@lists.infradead.org; Thu, 16 May 2013 09:34:16 +0000
+Message-ID: <1368696992.15764.188.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v5 01/11] mtd: add datasheet's ECC information to
+ nand_chip{}
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Josh Wu <josh.wu@atmel.com>
-Date: Thu, 16 May 2013 12:32:28 +0300
-In-Reply-To: <1366712997-17639-1-git-send-email-josh.wu@atmel.com>
-References: <1366712997-17639-1-git-send-email-josh.wu@atmel.com>
+To: Huang Shijie <b32955@freescale.com>
+Date: Thu, 16 May 2013 12:36:32 +0300
+In-Reply-To: <51949378.6020005@freescale.com>
+References: <1368607232-2210-1-git-send-email-b32955@freescale.com>
+ <1368607232-2210-2-git-send-email-b32955@freescale.com>
+ <1368619917.15764.99.camel@sauron.fi.intel.com>
+ <51944184.7090107@freescale.com>
+ <1368688465.15764.172.camel@sauron.fi.intel.com>
+ <51949378.6020005@freescale.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: plagnioj@jcrosoft.com, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, nicolas.ferre@atmel.com
+Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -21,39 +30,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2013-04-23 at 18:29 +0800, Josh Wu wrote:
-> This patch series enable NFC support for SAMA5 soc. It can send command,
-> address cycles automaticly. Also when enable NFC sram, NFC will transfer
-> data to sram. Which can save lots of cpu time.
+On Thu, 2013-05-16 at 16:06 +0800, Huang Shijie wrote:
+> what's about add the "_datasheet" for these two fields?
+> such as
 > 
-> Josh Wu (4):
->   mtd: atmel_nand: replace pmecc enable code with one function.
->   mtd: atmel_nand: add Nand Flash Controller (NFC) support
->   mtd: atmel_nand: enable Nand Flash Controller (NFC) read data
->     via sram
->   mtd: atmel_nand: enable Nand Flash Controller (NFC) write via
->     sram
+> ecc_strength__datasheet;ecc_step__datasheet
 
-Please, re-base against the latest l2-mtd.git tree. The patches do not
-compile:
-
---------------------------------------------------------------------------------
-Failed to build the following commit for configuration "arm-at91cap9_defconfig" (architecture arm)":
-
-2bd4bff mtd: atmel_nand: enable Nand Flash Controller (NFC) write via sram
-
-drivers/mtd/nand/atmel_nand.c: In function 'nfc_nand_command':
-drivers/mtd/nand/atmel_nand.c:1848: error: 'NAND_CMD_DEPLETE1' undeclared (first use in this function)
-drivers/mtd/nand/atmel_nand.c:1848: error: (Each undeclared identifier is reported only once
-drivers/mtd/nand/atmel_nand.c:1848: error: for each function it appears in.)
-drivers/mtd/nand/atmel_nand.c:1854: error: 'NAND_CMD_STATUS_ERROR' undeclared (first use in this function)
-drivers/mtd/nand/atmel_nand.c:1855: error: 'NAND_CMD_STATUS_ERROR0' undeclared (first use in this function)
-drivers/mtd/nand/atmel_nand.c:1856: error: 'NAND_CMD_STATUS_ERROR1' undeclared (first use in this function)
-drivers/mtd/nand/atmel_nand.c:1857: error: 'NAND_CMD_STATUS_ERROR2' undeclared (first use in this function)
-drivers/mtd/nand/atmel_nand.c:1858: error: 'NAND_CMD_STATUS_ERROR3' undeclared (first use in this function)
-drivers/mtd/nand/atmel_nand.c: In function 'nfc_sram_init':
-drivers/mtd/nand/atmel_nand.c:1979: warning: assignment from incompatible pointer type
-make[4]: *** [drivers/mtd/nand/atmel_nand.o] Error 1
+May be, if these are not too long names. Or ecc_ds_strignth /
+ecc_ds_step, for example.
 
 -- 
 Best Regards,
