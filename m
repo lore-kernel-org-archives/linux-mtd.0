@@ -1,19 +1,19 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UcyNQ-0004ON-Fc
- for linux-mtd@lists.infradead.org; Thu, 16 May 2013 13:37:50 +0000
-From: Caizhiyong <caizhiyong@huawei.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: mounting ubifs read-only, is it really readonly, not any wirte/erase?
-Date: Thu, 16 May 2013 13:36:40 +0000
-Message-ID: <C3050A4DBA34F345975765E43127F10F1AE72A5E@szxeml525-mbx.china.huawei.com>
-Content-Language: zh-CN
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: Renxueliang <renxueliang@huawei.com>, Quyaxin <quyaxin@huawei.com>,
- Jiangzhonglin <jiangzhonglin@huawei.com>,
- "Wanglin \(Albert\)" <albert.wanglin@huawei.com>
+Received: from mailserver6.natinst.com ([130.164.80.6]
+ helo=spamkiller06.natinst.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Ucz0v-0005JR-Vl
+ for linux-mtd@lists.infradead.org; Thu, 16 May 2013 14:18:38 +0000
+Received: from mailserv58-us.natinst.com (nb-chan1-1338.natinst.com
+ [130.164.19.134])
+ by spamkiller06.natinst.com (8.14.5/8.14.5) with ESMTP id r4GEIHJV024760
+ for <linux-mtd@lists.infradead.org>; Thu, 16 May 2013 09:18:17 -0500
+From: Jeff Westfahl <jeff.westfahl@ni.com>
+To: linux-mtd@lists.infradead.org
+Subject: [RESEND PATCH] mtd: nand: nand_bbt: scan for next free bbt block if
+ writing bbt fails
+Date: Thu, 16 May 2013 09:18:10 -0500
+Message-Id: <1368713890-8327-1-git-send-email-jeff.westfahl@ni.com>
+Cc: Jeff Westfahl <jeff.westfahl@ni.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,56 +23,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ICAgIEknbSB1c2luZyB1YmlmcyBhcyByb290IGZpbGVzeXN0ZW0sIGFuZCBtb3VudGVkIHJlYWRv
-bmx5Lg0KDQogICAgYm9vdGFyZ3MgYXJlOg0KICAgICAgICBjb25zb2xlPXR0eUFNQTAsMTE1MjAw
-IHViaS5tdGQ9MyByb290PXViaTA6dWJpZnMgcm8gcm9vdGZzdHlwZT11Ymlmc210ZHBhcnRzPWhp
-X3NmYzotKHNwaSk7aGluYW5kOjEwTSgxME0pLDUwTSg1ME0pLDUwTSg1ME0pLC0oZGF0YSkNCiAg
-ICANCiAgICBJJ20gdXBkYXRlIHViaS5pbWcgaW4gdWJvb3QgdXNlZCBjb21tYW5kICJuYW5kIHdy
-aXRlIHh4eHgiLCBidXQgd2hlbiBrZXJuZWwgKGxpbnV4IDMuNCkgc3RhcnR1cCwgdGhlcmUgYXJl
-IHNvbWUgd3JpdGUvZXJhc2Ugb3BlcmF0aW9uLg0KDQogICAgSSdtIGFkZCBwcmludHMgdG8gdGhl
-IGZvbGxvd2luZyBmdW5jdGlvbnM6DQoNCiAgICAgICAgKiAlLUVJTyBpcyByZXR1cm5lZCwgdGhl
-IHBoeXNpY2FsIGVyYXNlYmxvY2sgbW9zdCBwcm9iYWJseSB3ZW50IGJhZC4NCiAgICAgICAgKi8N
-CiAgICAgICAgc3RhdGljIGludCBkb19zeW5jX2VyYXNlKHN0cnVjdCB1YmlfZGV2aWNlICp1Ymks
-IGludCBwbnVtKQ0KICAgICAgICB7DQogICAgICAgICAgICBpbnQgZXJyLCByZXRyaWVzID0gMDsN
-CiAgICAgICAgICAgIHN0cnVjdCBlcmFzZV9pbmZvIGVpOw0KICAgICAgICAgICAgd2FpdF9xdWV1
-ZV9oZWFkX3Qgd3E7DQoNCiAgICAgICAgICAgIGR1bXBfc3RhY2soKTsNCiAgICAgICAgICAgIHBy
-aW50aygiXG5cblxuIik7DQogICAgICAgICAgICByZXR1cm4gMDsNCg0KICAgIFRoZSBzdGFjayBk
-dW1wIHByaW50cyBhcyBmb2xsb3c6DQoNCiAgICAgICAgWzxjMDAxNGM2ND5dICh1bndpbmRfYmFj
-a3RyYWNlKzB4MC8weGZjKSBmcm9tIFs8YzAyYTJhMmM+XSAoZG9fc3luY19lcmFzZSsweDgvMHgx
-YykNCiAgICAgICAgWzxjMDJhMmEyYz5dIChkb19zeW5jX2VyYXNlKzB4OC8weDFjKSBmcm9tIFs8
-YzAyYTM4MTg+XSAodWJpX2lvX3N5bmNfZXJhc2UrMHgzMDQvMHg0MjQpDQogICAgICAgIFs8YzAy
-YTM4MTg+XSAodWJpX2lvX3N5bmNfZXJhc2UrMHgzMDQvMHg0MjQpIGZyb20gWzxjMDJhNDFlOD5d
-IChlcmFzZV93b3JrZXIrMHg1MC8weDUxMCkNCiAgICAgICAgWzxjMDJhNDFlOD5dIChlcmFzZV93
-b3JrZXIrMHg1MC8weDUxMCkgZnJvbSBbPGMwMmE0ZjgwPl0gKGRvX3dvcmsrMHg4NC8weGQ0KQ0K
-ICAgICAgICBbPGMwMmE0ZjgwPl0gKGRvX3dvcmsrMHg4NC8weGQ0KSBmcm9tIFs8YzAyYTUwYWM+
-XSAodWJpX3RocmVhZCsweGRjLzB4MTg4KQ0KICAgICAgICBbPGMwMmE1MGFjPl0gKHViaV90aHJl
-YWQrMHhkYy8weDE4OCkgZnJvbSBbPGMwMDM5NDY4Pl0gKGt0aHJlYWQrMHg5NC8weDk4KQ0KICAg
-ICAgICBbPGMwMDM5NDY4Pl0gKGt0aHJlYWQrMHg5NC8weDk4KSBmcm9tIFs8YzAwMGY5MmM+XSAo
-a2VybmVsX3RocmVhZF9leGl0KzB4MC8weDgpDQoNCiAgICBtdGRpbmZvIC1hDQoNCiAgICAgICAg
-bXRkMg0KICAgICAgICBOYW1lOiAgICAgICAgICAgICAgICAgICAgICAgICAgIDUwTQ0KICAgICAg
-ICBUeXBlOiAgICAgICAgICAgICAgICAgICAgICAgICAgIG5hbmQNCiAgICAgICAgRXJhc2VibG9j
-ayBzaXplOiAgICAgICAgICAgICAgICAxMzEwNzIgYnl0ZXMsIDEyOC4wIEtpQg0KICAgICAgICBB
-bW91bnQgb2YgZXJhc2VibG9ja3M6ICAgICAgICAgIDQwMCAoNTI0Mjg4MDAgYnl0ZXMsIDUwLjAg
-TWlCKQ0KICAgICAgICBNaW5pbXVtIGlucHV0L291dHB1dCB1bml0IHNpemU6IDIwNDggYnl0ZXMN
-CiAgICAgICAgU3ViLXBhZ2Ugc2l6ZTogICAgICAgICAgICAgICAgICAyMDQ4IGJ5dGVzDQogICAg
-ICAgIE9PQiBzaXplOiAgICAgICAgICAgICAgICAgICAgICAgNjQgYnl0ZXMNCiAgICAgICAgQ2hh
-cmFjdGVyIGRldmljZSBtYWpvci9taW5vcjogICA5MDo0DQogICAgICAgIEJhZCBibG9ja3MgYXJl
-IGFsbG93ZWQ6ICAgICAgICAgdHJ1ZQ0KICAgICAgICBEZXZpY2UgaXMgd3JpdGFibGU6ICAgICAg
-ICAgICAgIHRydWUNCg0KICAgIA0KICAgIEknbSBkaXJlY3RseSByZXRydW4gMCBpbiB0aGUgZnVu
-Y3Rpb24gZG9fc3luY19lcmFzZSwgaXMgdGhlcmUgYW55IHByb2JsZW1zID8NCiANCkxvb2tpbmcg
-Zm9yd2FyZCB0byB5b3VyIGZlZWRiYWNrLg0KQmVzdCByZWdhcmRzLA0KQ2FpIFpoaXlvbmcuDQoN
-Cmh0dHA6Ly93d3cuaHVhd2VpLmNvbQ0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCrG+08q8/rywxuS4vbz+uqzT0Luq
-zqq5q8u+tcSxo8Pc0MXPoqOsvfbP3tPat6LLzbj4yc/D5rXY1rfW0MHQs/a1xLj2yMu78si61+mh
-o737DQrWucjOus7G5Mv7yMvS1MjOus7Qzsq9yrnTw6OosPzAqLWrsrvP3tPayKuyv7vysr+31rXY
-0LnCtqGiuLTWxqGiu/LJoreio6mxvtPKvP7W0A0KtcTQxc+ioaPI57n7xPq07crVwcuxvtPKvP6j
-rMfrxPrBory0tee7sLvy08q8/s2o1qq3orz+yMuyosm+s/2xvtPKvP6joQ0KVGhpcyBlLW1haWwg
-YW5kIGl0cyBhdHRhY2htZW50cyBjb250YWluIGNvbmZpZGVudGlhbCBpbmZvcm1hdGlvbiBmcm9t
-IEhVQVdFSSwgd2hpY2gNCmlzIGludGVuZGVkIG9ubHkgZm9yIHRoZSBwZXJzb24gb3IgZW50aXR5
-IHdob3NlIGFkZHJlc3MgaXMgbGlzdGVkIGFib3ZlLiBBbnkgdXNlIG9mIHRoZQ0KaW5mb3JtYXRp
-b24gY29udGFpbmVkIGhlcmVpbiBpbiBhbnkgd2F5IChpbmNsdWRpbmcsIGJ1dCBub3QgbGltaXRl
-ZCB0bywgdG90YWwgb3IgcGFydGlhbA0KZGlzY2xvc3VyZSwgcmVwcm9kdWN0aW9uLCBvciBkaXNz
-ZW1pbmF0aW9uKSBieSBwZXJzb25zIG90aGVyIHRoYW4gdGhlIGludGVuZGVkDQpyZWNpcGllbnQo
-cykgaXMgcHJvaGliaXRlZC4gSWYgeW91IHJlY2VpdmUgdGhpcyBlLW1haWwgaW4gZXJyb3IsIHBs
-ZWFzZSBub3RpZnkgdGhlIHNlbmRlciBieQ0KcGhvbmUgb3IgZW1haWwgaW1tZWRpYXRlbHkgYW5k
-IGRlbGV0ZSBpdCENCg0K
+If erasing or writing the BBT fails, we should mark the current BBT block
+as bad and use the BBT descriptor to scan for the next available unused
+block in the BBT. We should only return a failure if there isn't any space
+left.
+
+Signed-off-by: Jeff Westfahl <jeff.westfahl@ni.com>
+---
+ drivers/mtd/nand/nand_bbt.c |   21 +++++++++++++++++----
+ 1 files changed, 17 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+index 2672643..900bda1 100644
+--- a/drivers/mtd/nand/nand_bbt.c
++++ b/drivers/mtd/nand/nand_bbt.c
+@@ -697,6 +697,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 			page = td->pages[chip];
+ 			goto write;
+ 		}
++	next:
+ 
+ 		/*
+ 		 * Automatic placement of the bad block table. Search direction
+@@ -831,14 +832,26 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 		einfo.addr = to;
+ 		einfo.len = 1 << this->bbt_erase_shift;
+ 		res = nand_erase_nand(mtd, &einfo, 1);
+-		if (res < 0)
+-			goto outerr;
++		if (res < 0) {
++			/* This block is bad. Mark it as such and see if there's
++			   another available in the BBT area. */
++			int block = page >>
++				(this->bbt_erase_shift - this->page_shift);
++			this->bbt[block >> 2] |= 0x01 << ((block & 0x03) << 1);
++			goto next;
++		}
+ 
+ 		res = scan_write_bbt(mtd, to, len, buf,
+ 				td->options & NAND_BBT_NO_OOB ? NULL :
+ 				&buf[len]);
+-		if (res < 0)
+-			goto outerr;
++		if (res < 0) {
++			/* This block is bad. Mark it as such and see if there's
++			   another available in the BBT area. */
++			int block = page >>
++				(this->bbt_erase_shift - this->page_shift);
++			this->bbt[block >> 2] |= 0x01 << ((block & 0x03) << 1);
++			goto next;
++		}
+ 
+ 		pr_info("Bad block table written to 0x%012llx, version 0x%02X\n",
+ 			 (unsigned long long)to, td->version[chip]);
+-- 
+1.7.1
