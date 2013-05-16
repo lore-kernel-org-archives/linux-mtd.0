@@ -1,18 +1,18 @@
-Received: from mailserver6.natinst.com ([130.164.80.6]
- helo=spamkiller06.natinst.com)
+Received: from mailserver5.natinst.com ([130.164.80.5]
+ helo=spamkiller05.natinst.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ucz0v-0005JR-Vl
- for linux-mtd@lists.infradead.org; Thu, 16 May 2013 14:18:38 +0000
+ id 1Ucz4V-0005Oj-IW
+ for linux-mtd@lists.infradead.org; Thu, 16 May 2013 14:22:20 +0000
 Received: from mailserv58-us.natinst.com (nb-chan1-1338.natinst.com
  [130.164.19.134])
- by spamkiller06.natinst.com (8.14.5/8.14.5) with ESMTP id r4GEIHJV024760
- for <linux-mtd@lists.infradead.org>; Thu, 16 May 2013 09:18:17 -0500
+ by spamkiller05.natinst.com (8.14.5/8.14.5) with ESMTP id r4GELwB8021206
+ for <linux-mtd@lists.infradead.org>; Thu, 16 May 2013 09:21:58 -0500
 From: Jeff Westfahl <jeff.westfahl@ni.com>
 To: linux-mtd@lists.infradead.org
-Subject: [RESEND PATCH] mtd: nand: nand_bbt: scan for next free bbt block if
- writing bbt fails
-Date: Thu, 16 May 2013 09:18:10 -0500
-Message-Id: <1368713890-8327-1-git-send-email-jeff.westfahl@ni.com>
+Subject: [RESEND v2 PATCH] mtd: nand: nand_bbt: scan for next free bbt block
+ if writing bbt fails
+Date: Thu, 16 May 2013 09:21:42 -0500
+Message-Id: <1368714102-8399-1-git-send-email-jeff.westfahl@ni.com>
 Cc: Jeff Westfahl <jeff.westfahl@ni.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
