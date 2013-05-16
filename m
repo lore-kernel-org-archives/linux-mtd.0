@@ -1,56 +1,21 @@
-Message-ID: <5194DC82.8050408@ti.com>
-Date: Thu, 16 May 2013 16:17:54 +0300
-From: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Received: from mailserver6.natinst.com ([130.164.80.6]
+ helo=spamkiller06.natinst.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UcyLk-0004Lw-KT
+ for linux-mtd@lists.infradead.org; Thu, 16 May 2013 13:36:05 +0000
+Received: from US-AUS-MAIL4.amer.corp.natinst.com (nb-chan1-1338.natinst.com
+ [130.164.19.134])
+ by spamkiller06.natinst.com (8.14.5/8.14.5) with ESMTP id r4GDZfH6002539
+ for <linux-mtd@lists.infradead.org>; Thu, 16 May 2013 08:35:41 -0500
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-To: <dedekind1@gmail.com>
-Subject: Re: [PATCH 00/33] devm improvement series, part 1, take 2
-References: <1368702961-4325-1-git-send-email-wsa@the-dreams.de>
- <1368705452.15764.217.camel@sauron.fi.intel.com>
- <CAKohpokUy7QfvKkzGH025Zs5VkUhr8zRLeo3caG3LAnLfptzww@mail.gmail.com>
- <1368709862.15764.224.camel@sauron.fi.intel.com>
-In-Reply-To: <1368709862.15764.224.camel@sauron.fi.intel.com>
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="----enig2EHULBAGEHLETABJNANUE"
-Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org,
- Alessandro Zummo <a.zummo@towertech.it>, Wolfram Sang <wsa@the-dreams.de>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Viresh Kumar <viresh.kumar@linaro.org>,
- Linus Walleij <linus.walleij@linaro.org>,
- Thierry Reding <thierry.reding@avionic-design.de>, linux-fbdev@vger.kernel.org,
- dri-devel@lists.freedesktop.org, Jaroslav Kysela <perex@perex.cz>,
- linux-ide@vger.kernel.org, Wim Van Sebroeck <wim@iguana.be>,
- linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
- Evgeniy Polyakov <zbr@ioremap.net>, ac100@lists.launchpad.net,
- devel@driverdev.osuosl.org, Kukjin Kim <kgene.kim@samsung.com>,
- Russell King <linux@arm.linux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
- Samuel Ortiz <sameo@linux.intel.com>,
- Florian Tobias Schandinat <FlorianSchandinat@gmx.de>,
- Vinod Koul <vinod.koul@intel.com>, linux-pm@vger.kernel.org,
- cpufreq@vger.kernel.org, Eduardo Valentin <eduardo.valentin@ti.com>,
- David Airlie <airlied@linux.ie>, linux-omap@vger.kernel.org,
- Alan Stern <stern@rowland.harvard.edu>, Felipe Balbi <balbi@ti.com>,
- Grant Likely <grant.likely@linaro.org>, Zhang Rui <rui.zhang@intel.com>,
- David Woodhouse <dwmw2@infradead.org>, Deepak Saxena <dsaxena@plexity.net>,
- linux-watchdog@vger.kernel.org, Wan ZongShun <mcuos.com@gmail.com>,
- Stephen Warren <swarren@wwwdotorg.org>,
- Julian Andres Klode <jak@jak-linux.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Dan Williams <djbw@fb.com>, "Rafael J.
- Wysocki" <rjw@sisk.pl>, linux-samsung-soc@vger.kernel.org,
- Ben Dooks <ben-linux@fluff.org>, Matt Mackall <mpm@selenic.com>,
- linux-tegra@vger.kernel.org, rtc-linux@googlegroups.com,
- Marc Dietrich <marvin24@gmx.de>, linux-arm-kernel@lists.infradead.org,
- Joonyoung Shim <jy0922.shim@samsung.com>, Inki Dae <inki.dae@samsung.com>,
- netdev@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
- linux-usb@vger.kernel.org, Seung-Woo Kim <sw0312.kim@samsung.com>,
- linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>,
- Tony Prisk <linux@prisktech.co.nz>, Herbert Xu <herbert@gondor.hengli.com.au>,
- Kyungmin Park <kyungmin.park@samsung.com>, Mark Brown <broonie@kernel.org>,
- Barry Song <baohua.song@csr.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Tejun Heo <tj@kernel.org>,
- spi-devel-general@lists.sourceforge.net,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Paul Zimmerman <paulz@synopsys.com>
+Subject: [RESEND PATCH] mtd: nand: nand_bbt: scan for next free bbt block if
+ writing bbt fails
+From: Jeff Westfahl <jeff.westfahl@ni.com>
+Message-ID: <OF488B7050.CCC82AE1-ON86257B6D.004A7953-86257B6D.004AAE09@ni.com>
+Date: Thu, 16 May 2013 08:35:41 -0500
+Content-Type: text/plain; charset="US-ASCII"
+Cc: jeff.westfahl@ni.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -60,78 +25,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-------enig2EHULBAGEHLETABJNANUE
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+If erasing or writing the BBT fails, we should mark the current BBT block
+as bad and use the BBT descriptor to scan for the next available unused
+block in the BBT. We should only return a failure if there isn't any space
+left.
 
-On 16/05/13 16:11, Artem Bityutskiy wrote:
-> On Thu, 2013-05-16 at 18:25 +0530, Viresh Kumar wrote:
->> On 16 May 2013 17:27, Artem Bityutskiy <dedekind1@gmail.com> wrote:
->>> On Thu, 2013-05-16 at 13:15 +0200, Wolfram Sang wrote:
->>>> Despite various architectures and platform dependencies, I managed t=
-o
->>>> compile
->>>> test 45 out of 57 modified files locally using heuristics and
->>>> defconfigs.
->>>> If somebody knows how to create a minimal .config with a certain
->>>> kconfig symbol
->>>> (and its dependencies) set, I'd love to hear about it.
->>>
->>> If you find this out, please, share!
->>
->> Are you guys looking for "make savedefconfig" ??
->=20
-> No. It is more like:
->=20
-> I have changed this strange driver.
->=20
-> I want to compile-test my changes.
->=20
-> I need a defconfig which would have this driver enabled. I also want to=
+Signed-off-by: Jeff Westfahl <jeff.westfahl@ni.com>
+---
+ drivers/mtd/nand/nand_bbt.c |   21 +++++++++++++++++----
+ 1 file changed, 17 insertions(+), 4 deletions(-)
 
-> know <arch> for my "make ARCH=3D<arch>" command.
-
-Not quite the same thing, but I sent this a while ago:
-
-http://lkml.indiana.edu/hypermail/linux/kernel/1304.3/02847.html
-
-My "softdepends" feature is probably not needed, as pointed out in the
-thread, as the behavior can be implemented with the current Kconfig
-language just fine.
-
-I had a quick look at fbdev drivers, and some of them compile fine on
-all (well, arm and x86) archs. But many do have real arch dependencies.
-
-I think it'd be a good long term goal to make drivers arch-independent,
-and add CONFIG_SHOW_ALL_DRIVERS or such, which would allow compiling
-drivers that are not used on your arch, but still compile fine.
-
- Tomi
-
-
-
-------enig2EHULBAGEHLETABJNANUE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
-
-iQIcBAEBAgAGBQJRlNyCAAoJEPo9qoy8lh71l58P/j0OTooy3PHnvOCCS7eRw6IP
-95MLCoZruiAk75I2dLxS1wQ2HAHGeLVJlk5gTYtbgMyhzqfZJSpMpEOHNwumYwi3
-s7cC2GQsH4d8Epuh9R2C1Jje+8+dMutMzQhkm/L4RZfsmUaBH6GhVBQqtI66eSYR
-bV4YTnGUG1ppR+l+ZqFmTT5TmFVprcKfqNg96P1BmutTSCGyEM3oHTSTOLEbdutq
-Ms1Ex0zXypQ2p14pCe91eDqnEDjVAclOUTzaVop4ADJ28mh4MnodSeNhb7Yz2nRT
-zGMUMu4D1WdUvLEzIawATE4pNh0xyvz0Sn2HVfkWfpWUlkA/3fINpBTIzEVEDL7G
-3q4pChhqHX3CTqUyCzVKF/zQ3VUJ9VGAgoTpfZJ8JAeqsPvy1LVgB6j8CtEc0pW2
-07K450ptCkRHuE+ziRRBzCK/XJQJySBGpIjWDNsTka2G/QydHZx21rGmURh7Cz7x
-+5tDMZzylVPrVipjdlX2aAm4iUXlPlppX1rwRNVpsQ6Uf/dGGQcyOK1bCLuUWiAY
-nz0Mzu95h71lYJ/lsr986v1om/GhMh8c9xLx77xQQgklWE6cqpzw7ifnhlqELEDz
-CijOLMhn9k3eEtiZqj6J8tz0yXI0HSUjm2GMft479ezmG6kJnyANTY/Jl9hH052s
-8XWRsSCRfCgeFVNVLYoN
-=mQ7r
------END PGP SIGNATURE-----
-
-------enig2EHULBAGEHLETABJNANUE--
+diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+index 2672643..900bda1 100644
+--- a/drivers/mtd/nand/nand_bbt.c
++++ b/drivers/mtd/nand/nand_bbt.c
+@@ -697,6 +697,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t 
+*buf,
+                        page = td->pages[chip];
+                        goto write;
+                }
++       next:
+ 
+                /*
+                 * Automatic placement of the bad block table. Search 
+direction
+@@ -831,14 +832,26 @@ static int write_bbt(struct mtd_info *mtd, uint8_t 
+*buf,
+                einfo.addr = to;
+                einfo.len = 1 << this->bbt_erase_shift;
+                res = nand_erase_nand(mtd, &einfo, 1);
+-               if (res < 0)
+-                       goto outerr;
++               if (res < 0) {
++                       /* This block is bad. Mark it as such and see if 
+there's
++                          another available in the BBT area. */
++                       int block = page >>
++                               (this->bbt_erase_shift - 
+this->page_shift);
++                       this->bbt[block >> 2] |= 0x01 << ((block & 0x03) 
+<< 1);
++                       goto next;
++               }
+ 
+                res = scan_write_bbt(mtd, to, len, buf,
+                                td->options & NAND_BBT_NO_OOB ? NULL :
+                                &buf[len]);
+-               if (res < 0)
+-                       goto outerr;
++               if (res < 0) {
++                       /* This block is bad. Mark it as such and see if 
+there's
++                          another available in the BBT area. */
++                       int block = page >>
++                               (this->bbt_erase_shift - 
+this->page_shift);
++                       this->bbt[block >> 2] |= 0x01 << ((block & 0x03) 
+<< 1);
++                       goto next;
++               }
+ 
+                pr_info("Bad block table written to 0x%012llx, version 
+0x%02X\n",
+                         (unsigned long long)to, td->version[chip]);
+-- 
+1.7.10
