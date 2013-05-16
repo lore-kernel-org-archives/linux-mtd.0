@@ -1,19 +1,54 @@
-Received: from mailserver5.natinst.com ([130.164.80.5]
- helo=spamkiller05.natinst.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ucz4V-0005Oj-IW
- for linux-mtd@lists.infradead.org; Thu, 16 May 2013 14:22:20 +0000
-Received: from mailserv58-us.natinst.com (nb-chan1-1338.natinst.com
- [130.164.19.134])
- by spamkiller05.natinst.com (8.14.5/8.14.5) with ESMTP id r4GELwB8021206
- for <linux-mtd@lists.infradead.org>; Thu, 16 May 2013 09:21:58 -0500
-From: Jeff Westfahl <jeff.westfahl@ni.com>
-To: linux-mtd@lists.infradead.org
-Subject: [RESEND v2 PATCH] mtd: nand: nand_bbt: scan for next free bbt block
- if writing bbt fails
-Date: Thu, 16 May 2013 09:21:42 -0500
-Message-Id: <1368714102-8399-1-git-send-email-jeff.westfahl@ni.com>
-Cc: Jeff Westfahl <jeff.westfahl@ni.com>
+Date: Thu, 16 May 2013 18:13:58 +0200
+From: Wolfram Sang <wsa@the-dreams.de>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH 00/33] devm improvement series, part 1, take 2
+Message-ID: <20130516161355.GA3032@katana>
+References: <1368702961-4325-1-git-send-email-wsa@the-dreams.de>
+ <1368705452.15764.217.camel@sauron.fi.intel.com>
+ <CAKohpokUy7QfvKkzGH025Zs5VkUhr8zRLeo3caG3LAnLfptzww@mail.gmail.com>
+ <1368709862.15764.224.camel@sauron.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1368709862.15764.224.camel@sauron.fi.intel.com>
+Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org,
+ Alessandro Zummo <a.zummo@towertech.it>, Liam Girdwood <lgirdwood@gmail.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Viresh Kumar <viresh.kumar@linaro.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Thierry Reding <thierry.reding@avionic-design.de>, linux-fbdev@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, Jaroslav Kysela <perex@perex.cz>,
+ linux-ide@vger.kernel.org, Wim Van Sebroeck <wim@iguana.be>,
+ linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
+ Evgeniy Polyakov <zbr@ioremap.net>, ac100@lists.launchpad.net,
+ devel@driverdev.osuosl.org, Kukjin Kim <kgene.kim@samsung.com>,
+ Russell King <linux@arm.linux.org.uk>,
+ Herbert Xu <herbert@gondor.apana.org.au>, Samuel Ortiz <sameo@linux.intel.com>,
+ Florian Tobias Schandinat <FlorianSchandinat@gmx.de>,
+ Vinod Koul <vinod.koul@intel.com>, linux-pm@vger.kernel.org,
+ cpufreq@vger.kernel.org, Eduardo Valentin <eduardo.valentin@ti.com>,
+ David Airlie <airlied@linux.ie>, linux-omap@vger.kernel.org,
+ Tomi Valkeinen <tomi.valkeinen@ti.com>, Alan Stern <stern@rowland.harvard.edu>,
+ Felipe Balbi <balbi@ti.com>, Grant Likely <grant.likely@linaro.org>,
+ Zhang Rui <rui.zhang@intel.com>, David Woodhouse <dwmw2@infradead.org>,
+ Deepak Saxena <dsaxena@plexity.net>, linux-watchdog@vger.kernel.org,
+ Wan ZongShun <mcuos.com@gmail.com>, Stephen Warren <swarren@wwwdotorg.org>,
+ Julian Andres Klode <jak@jak-linux.org>, Dan Williams <djbw@fb.com>,
+ "Rafael J. Wysocki" <rjw@sisk.pl>, linux-samsung-soc@vger.kernel.org,
+ Ben Dooks <ben-linux@fluff.org>, Matt Mackall <mpm@selenic.com>,
+ linux-tegra@vger.kernel.org, rtc-linux@googlegroups.com,
+ Marc Dietrich <marvin24@gmx.de>, linux-arm-kernel@lists.infradead.org,
+ Joonyoung Shim <jy0922.shim@samsung.com>, Inki Dae <inki.dae@samsung.com>,
+ netdev@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+ linux-usb@vger.kernel.org, Seung-Woo Kim <sw0312.kim@samsung.com>,
+ linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>,
+ Tony Prisk <linux@prisktech.co.nz>, Kyungmin Park <kyungmin.park@samsung.com>,
+ Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+ Barry Song <baohua.song@csr.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Tejun Heo <tj@kernel.org>,
+ spi-devel-general@lists.sourceforge.net,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Paul Zimmerman <paulz@synopsys.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,58 +58,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If erasing or writing the BBT fails, we should mark the current BBT block
-as bad and use the BBT descriptor to scan for the next available unused
-block in the BBT. We should only return a failure if there isn't any space
-left.
 
-Signed-off-by: Jeff Westfahl <jeff.westfahl@ni.com>
----
- drivers/mtd/nand/nand_bbt.c |   21 +++++++++++++++++----
- 1 files changed, 17 insertions(+), 4 deletions(-)
+> I need a defconfig which would have this driver enabled. 
 
-diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-index 2672643..900bda1 100644
---- a/drivers/mtd/nand/nand_bbt.c
-+++ b/drivers/mtd/nand/nand_bbt.c
-@@ -697,6 +697,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
- 			page = td->pages[chip];
- 			goto write;
- 		}
-+	next:
- 
- 		/*
- 		 * Automatic placement of the bad block table. Search direction
-@@ -831,14 +832,26 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
- 		einfo.addr = to;
- 		einfo.len = 1 << this->bbt_erase_shift;
- 		res = nand_erase_nand(mtd, &einfo, 1);
--		if (res < 0)
--			goto outerr;
-+		if (res < 0) {
-+			/* This block is bad. Mark it as such and see if there's
-+			   another available in the BBT area. */
-+			int block = page >>
-+				(this->bbt_erase_shift - this->page_shift);
-+			this->bbt[block >> 2] |= 0x01 << ((block & 0x03) << 1);
-+			goto next;
-+		}
- 
- 		res = scan_write_bbt(mtd, to, len, buf,
- 				td->options & NAND_BBT_NO_OOB ? NULL :
- 				&buf[len]);
--		if (res < 0)
--			goto outerr;
-+		if (res < 0) {
-+			/* This block is bad. Mark it as such and see if there's
-+			   another available in the BBT area. */
-+			int block = page >>
-+				(this->bbt_erase_shift - this->page_shift);
-+			this->bbt[block >> 2] |= 0x01 << ((block & 0x03) << 1);
-+			goto next;
-+		}
- 
- 		pr_info("Bad block table written to 0x%012llx, version 0x%02X\n",
- 			 (unsigned long long)to, td->version[chip]);
--- 
-1.7.1
+My wish would be a minimal config. Right now, I try to build the driver
+with the current config and when that fails I grep through the
+(uncompressed) defconfigs for the symbol needed. Gives me 45/57 success
+rate on this series. Not perfect, but the best I could come up with
+without writing a .config-generator myself.
