@@ -1,21 +1,23 @@
-Received: from mailserver5.natinst.com ([130.164.80.5]
- helo=spamkiller05.natinst.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UciZH-0001K1-JD
- for linux-mtd@lists.infradead.org; Wed, 15 May 2013 20:45:01 +0000
-Received: from US-AUS-MAIL4.amer.corp.natinst.com (nb-chan1-1338.natinst.com
- [130.164.19.134])
- by spamkiller05.natinst.com (8.14.5/8.14.5) with ESMTP id r4FKiZ39015913
- for <linux-mtd@lists.infradead.org>; Wed, 15 May 2013 15:44:35 -0500
-To: linux-mtd@lists.infradead.org
+Received: from am1ehsobe006.messaging.microsoft.com ([213.199.154.209]
+ helo=am1outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UcniN-0005RM-9D
+ for linux-mtd@lists.infradead.org; Thu, 16 May 2013 02:14:44 +0000
+Message-ID: <51944184.7090107@freescale.com>
+Date: Thu, 16 May 2013 10:16:36 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-Subject: [PATCH] mtd: nand: nand_bbt: scan for next free bbt block if writing
- bbt fails
-From: Jeff Westfahl <jeff.westfahl@ni.com>
-Message-ID: <OF97DE13B9.4C0523A2-ON86257B6C.00717E04-86257B6C.0071F1E7@ni.com>
-Date: Wed, 15 May 2013 15:44:34 -0500
-Content-Type: text/plain; charset="US-ASCII"
-Cc: jeff.westfahl@ni.com
+To: <dedekind1@gmail.com>
+Subject: Re: [PATCH v5 01/11] mtd: add datasheet's ECC information to
+ nand_chip{}
+References: <1368607232-2210-1-git-send-email-b32955@freescale.com>	
+ <1368607232-2210-2-git-send-email-b32955@freescale.com>
+ <1368619917.15764.99.camel@sauron.fi.intel.com>
+In-Reply-To: <1368619917.15764.99.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,69 +27,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If erasing or writing the BBT fails, we should mark the current BBT block
-as bad and use the BBT descriptor to scan for the next available unused
-block in the BBT. We should only return a failure if there isn't any space
-left.
+=E4=BA=8E 2013=E5=B9=B405=E6=9C=8815=E6=97=A5 20:11, Artem Bityutskiy =E5=
+=86=99=E9=81=93:
+> On Wed, 2013-05-15 at 16:40 +0800, Huang Shijie wrote:
+>> + * @ecc_strength:	[INTERN] ECC correctability from the datasheet.
+>> + *			Minimum amount of bit errors per @ecc_step guaranteed to
+>> + *			be correctable. If unknown, set to zero.
+>> + * @ecc_step:		[INTERN] ECC step required by the @ecc_strength,
+>> + *                      also from the datasheet. It is the recommende=
+d ECC step
+>> + *			size, if known; if unknown, set to zero.
+> Here and in other places you talk about "datasheet". Do you assume that
+> the real ECC strength/step used by NAND chips may be different? Or you
+> assume it must be the same?
+>
+The two fields are used to store the ecc info from the datasheet.
+The two fields are just for a reference.
 
-Signed-off-by: Jeff Westfahl <jeff.westfahl@ni.com>
----
- drivers/mtd/nand/nand_bbt.c |   21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+[1] The nand controller may do not use these two fields, it's ok;
+     For example, the datasheet requires "4bits per 512 bytes".
+     The nand controller can uses 8bits per 512 bytes.
 
-diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-index 2672643..900bda1 100644
---- a/drivers/mtd/nand/nand_bbt.c
-+++ b/drivers/mtd/nand/nand_bbt.c
-@@ -697,6 +697,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t 
-*buf,
-                                                 page = td->pages[chip];
-                                                 goto write;
-                                 }
-+                next:
- 
-                                 /*
-                                  * Automatic placement of the bad block 
-table. Search direction
-@@ -831,14 +832,26 @@ static int write_bbt(struct mtd_info *mtd, uint8_t 
-*buf,
-                                 einfo.addr = to;
-                                 einfo.len = 1 << this->bbt_erase_shift;
-                                 res = nand_erase_nand(mtd, &einfo, 1);
--                                if (res < 0)
--                                                goto outerr;
-+                                if (res < 0) {
-+                                                /* This block is bad. 
-Mark it as such and see if there's
-+                                                   another available in 
-the BBT area. */
-+                                                int block = page >>
-+ (this->bbt_erase_shift - this->page_shift);
-+                                                this->bbt[block >> 2] |= 
-0x01 << ((block & 0x03) << 1);
-+                                                goto next;
-+                                }
- 
-                                 res = scan_write_bbt(mtd, to, len, buf,
- td->options & NAND_BBT_NO_OOB ? NULL :
- &buf[len]);
--                                if (res < 0)
--                                                goto outerr;
-+                                if (res < 0) {
-+                                                /* This block is bad. 
-Mark it as such and see if there's
-+                                                   another available in 
-the BBT area. */
-+                                                int block = page >>
-+ (this->bbt_erase_shift - this->page_shift);
-+                                                this->bbt[block >> 2] |= 
-0x01 << ((block & 0x03) << 1);
-+                                                goto next;
-+                                }
- 
-                                 pr_info("Bad block table written to 
-0x%012llx, version 0x%02X\n",
-                                                  (unsigned long long)to, 
-td->version[chip]);
--- 
-1.7.10
+
+[2] but sometimes the nand controller must use these two fields.
+     For example, the datasheet requires "40bits per 1024 bytes".
+     For the hardware limit, the nand controller(BCH) may supports the=20
+40bits ecc in the maximum.
+     So the nand controller must use these two fields now.
+
+
+thanks
+Huang Shijie
