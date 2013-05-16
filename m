@@ -1,25 +1,28 @@
-Received: from mail-db8lp0185.outbound.messaging.microsoft.com
- ([213.199.154.185] helo=db8outboundpool.messaging.microsoft.com)
+Received: from mail-wg0-x233.google.com ([2a00:1450:400c:c00::233])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UctF5-0002mZ-Fu
- for linux-mtd@lists.infradead.org; Thu, 16 May 2013 08:08:51 +0000
-Message-ID: <51949484.2080907@freescale.com>
-Date: Thu, 16 May 2013 16:10:44 +0800
-From: Huang Shijie <b32955@freescale.com>
+ id 1UctZ0-0003A7-Jm
+ for linux-mtd@lists.infradead.org; Thu, 16 May 2013 08:29:28 +0000
+Received: by mail-wg0-f51.google.com with SMTP id b13so2319748wgh.18
+ for <linux-mtd@lists.infradead.org>; Thu, 16 May 2013 01:29:04 -0700 (PDT)
 MIME-Version: 1.0
-To: <dedekind1@gmail.com>
-Subject: Re: [PATCH v2 0/4] Export the ecc step size to user applications
-References: <1368607606-4344-1-git-send-email-b32955@freescale.com>	
- <1368619642.15764.96.camel@sauron.fi.intel.com>	
- <CAMiH66GygmwvfZrwys7RoeoY4Q_fFkfbiZF_pJN4RxQBPaz0fw@mail.gmail.com>
- <1368688777.15764.175.camel@sauron.fi.intel.com>
-In-Reply-To: <1368688777.15764.175.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Sender: jphilippe.francois@gmail.com
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9C4EC5@DBDE04.ent.ti.com>
+References: <1368684720-26763-1-git-send-email-pekon@ti.com>
+ <1368684720-26763-3-git-send-email-pekon@ti.com>
+ <CAGGh5h16kxdPRtPQ4vRzLA4iMxjTurPpdzBiEHaM9zb+y8fJBg@mail.gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9C4EC5@DBDE04.ent.ti.com>
+Date: Thu, 16 May 2013 10:29:04 +0200
+Message-ID: <CAGGh5h3WGGRcQgpns7EOso1yqvrzKmCAbQo9XZoMyhv0Q1KT4Q@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ARM: OMAP2+: cleaned-up DT support of various ECC
+ schemes
+From: jean-philippe francois <jp.francois@cynove.com>
+To: "Gupta, Pekon" <pekon@ti.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Huang Shijie <shijie8@gmail.com>,
- LKML <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: "arnd@arndb.de" <arnd@arndb.de>, Tony Lindgren <tony@atomide.com>, "Balbi,
+ Felipe" <balbi@ti.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,12 +32,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B405=E6=9C=8816=E6=97=A5 15:19, Artem Bityutskiy =E5=
-=86=99=E9=81=93:
-> Also, surely the things you expose are the real ECC step and ECC
-> strength? I think the datasheet ones in your other patch-set should be
-yes. I am sure of that.
-I need the _real_ ECC step and ECC strength.
+2013/5/16 Gupta, Pekon <pekon@ti.com>:
+>> >
+>>
+>> OMAP_ECC_BCH4_CODE_HW_DETECTION_SW and
+>> OMAP_ECC_BCH4_CODE_HW
+>> seems to exist in the code, but are not in the changelog, and not in
+>> the device tree binding documentation.
+>>
+>
+> Yes, I plan to omit them from code also, in next series as it does not
+> make sense to support both BCH4 and BCH8 at same time, when most
+> users would opt for BCH8.
+> Also, BCH4 was kept for legacy purposes, and was not tested on all device=
+s.
+> Therefore I have purposely omitted it from documentation.
+>
 
-thanks
-Huang Shijie
+We have shipped devices with BCH4 nand.  This would be a regression for us.
+
+Regards,
+Jean-Philippe Fran=C3=A7ois.
+
+> with regards, pekon
