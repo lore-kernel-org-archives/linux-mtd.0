@@ -1,17 +1,19 @@
-Message-ID: <5195FF58.4070909@atmel.com>
-Date: Fri, 17 May 2013 17:58:48 +0800
-From: Josh Wu <josh.wu@atmel.com>
+Received: from devils.ext.ti.com ([198.47.26.153])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UdJBt-0003Qr-JI
+ for linux-mtd@lists.infradead.org; Fri, 17 May 2013 11:51:19 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>
+Subject: [PATCH 4/4 v2] ARM: OMAP2+: updated ECC scheme attributes for
+ omap2-nand DT
+Date: Fri, 17 May 2013 17:20:18 +0530
+Message-ID: <1368791418-14330-5-git-send-email-pekon@ti.com>
+In-Reply-To: <1368791418-14330-1-git-send-email-pekon@ti.com>
+References: <1368791418-14330-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
-To: <dedekind1@gmail.com>
-Subject: Re: [PATCH 0/4] mtd: atmel_nand: enable Nand Flash Controller (NFC)
- support
-References: <1366712997-17639-1-git-send-email-josh.wu@atmel.com>
- <1368696748.15764.184.camel@sauron.fi.intel.com>
-In-Reply-To: <1368696748.15764.184.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: plagnioj@jcrosoft.com, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, nicolas.ferre@atmel.com
+Content-Type: text/plain
+Cc: arnd@arndb.de, tony@atomide.com, jp.francois@cynove.com, balbi@ti.com,
+ "Gupta, Pekon" <pekon@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,47 +23,125 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Artem
+From: "Gupta, Pekon" <pekon@ti.com>
 
-On 5/16/2013 5:32 PM, Artem Bityutskiy wrote:
-> On Tue, 2013-04-23 at 18:29 +0800, Josh Wu wrote:
->> This patch series enable NFC support for SAMA5 soc. It can send command,
->> address cycles automaticly. Also when enable NFC sram, NFC will transfer
->> data to sram. Which can save lots of cpu time.
->>
->> Josh Wu (4):
->>    mtd: atmel_nand: replace pmecc enable code with one function.
->>    mtd: atmel_nand: add Nand Flash Controller (NFC) support
->>    mtd: atmel_nand: enable Nand Flash Controller (NFC) read data
->>      via sram
->>    mtd: atmel_nand: enable Nand Flash Controller (NFC) write via
->>      sram
-> Please, re-base against the latest l2-mtd.git tree. The patches do not
-> compile:
+Updates ECC scheme selection string same to same as used in omap2-driver code.
+This makes the DT configurations easy to understand and map to actual code.
 
-I've sent out the v2 version which is rebased on the latest l2-mtd.git 
-tree. It fixed the compiler error and imcompatible parameters of the 
-write_page().
-Thanks for point out.
+Signed-off-by: Gupta, Pekon <pekon@ti.com>
+---
+ .../devicetree/bindings/mtd/gpmc-nand.txt          | 47 ++++++++++++++--------
+ arch/arm/boot/dts/am335x-evm.dts                   |  2 +-
+ arch/arm/mach-omap2/gpmc.c                         | 19 +++++----
+ 3 files changed, 43 insertions(+), 25 deletions(-)
 
-Best Regards,
-Josh Wu
-
-> --------------------------------------------------------------------------------
-> Failed to build the following commit for configuration "arm-at91cap9_defconfig" (architecture arm)":
->
-> 2bd4bff mtd: atmel_nand: enable Nand Flash Controller (NFC) write via sram
->
-> drivers/mtd/nand/atmel_nand.c: In function 'nfc_nand_command':
-> drivers/mtd/nand/atmel_nand.c:1848: error: 'NAND_CMD_DEPLETE1' undeclared (first use in this function)
-> drivers/mtd/nand/atmel_nand.c:1848: error: (Each undeclared identifier is reported only once
-> drivers/mtd/nand/atmel_nand.c:1848: error: for each function it appears in.)
-> drivers/mtd/nand/atmel_nand.c:1854: error: 'NAND_CMD_STATUS_ERROR' undeclared (first use in this function)
-> drivers/mtd/nand/atmel_nand.c:1855: error: 'NAND_CMD_STATUS_ERROR0' undeclared (first use in this function)
-> drivers/mtd/nand/atmel_nand.c:1856: error: 'NAND_CMD_STATUS_ERROR1' undeclared (first use in this function)
-> drivers/mtd/nand/atmel_nand.c:1857: error: 'NAND_CMD_STATUS_ERROR2' undeclared (first use in this function)
-> drivers/mtd/nand/atmel_nand.c:1858: error: 'NAND_CMD_STATUS_ERROR3' undeclared (first use in this function)
-> drivers/mtd/nand/atmel_nand.c: In function 'nfc_sram_init':
-> drivers/mtd/nand/atmel_nand.c:1979: warning: assignment from incompatible pointer type
-> make[4]: *** [drivers/mtd/nand/atmel_nand.o] Error 1
->
+diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+index de180be..c7a4add 100644
+--- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+@@ -25,22 +25,37 @@ Optional properties:
+  - ti,nand-ecc-opt:		Determines the ECC scheme used by driver.
+ 				It can be any of the following strings:
+ 
+-	"hamming_sw"          	1-bit Hamming ECC using software
+-
+-	"hamming_hw"          	1-bit Hamming ECC using hardware
+-
+-	"hamming_hw_romcode"  	1-bit Hamming ECC using hardware
+-				- ECC layout compatible to ROM code
+-
+-	"bch8_hw_detection_sw" 	8-bit BCH with ECC calculation in hardware
+-				and error detection in software
+-				- requires Kconfig CONFIG_MTD_NAND_ECC_BCH
+-
+-	"bch8_hw"             	8-bit BCH with ECC calculation in hardware
+-				and error detection in hardware
+-				- requires <elm_id> to be specified
+-				- requires Kconfig CONFIG_MTD_NAND_OMAP_BCH
+-
++				"OMAP_ECC_HAMMING_CODE_SW"
++					1-bit Hamming ECC using software.
++
++				"OMAP_ECC_HAMMING_CODE_HW"
++					1-bit Hamming ECC using hardware.
++
++				"OMAP_ECC_HAMMING_CODE_HW_ROMCODE"
++					1-bit Hamming ECC using hardware with
++					ECC layout compatible to ROM code.
++
++				"OMAP_ECC_BCH4_CODE_HW_DETECTION_SW"
++					4-bit BCH with ECC calculation in
++					hardware & error detection in software.
++					- requires CONFIG_MTD_NAND_ECC_BCH
++
++				"OMAP_ECC_BCH4_CODE_HW"
++					4-bit BCH with ECC calculation in
++					hardware & error detection in hardware.
++					- requires CONFIG_MTD_NAND_OMAP_BCH
++					- requires <elm_id> to be specified
++
++				"OMAP_ECC_BCH8_CODE_HW_DETECTION_SW"
++					8-bit BCH with ECC calculation in
++					hardware & error detection in software.
++					- requires CONFIG_MTD_NAND_ECC_BCH
++
++				"OMAP_ECC_BCH8_CODE_HW"
++					8-bit BCH with ECC calculation in
++					hardware & error detection in hardware.
++					- requires CONFIG_MTD_NAND_OMAP_BCH
++					- requires <elm_id> to be specified
+ 
+ 
+  - elm_id:			Specifies elm device node. This is required to
+diff --git a/arch/arm/boot/dts/am335x-evm.dts b/arch/arm/boot/dts/am335x-evm.dts
+index 60e8f59..1107761 100644
+--- a/arch/arm/boot/dts/am335x-evm.dts
++++ b/arch/arm/boot/dts/am335x-evm.dts
+@@ -135,7 +135,7 @@
+ 			nand@0,0 {
+ 				reg = <0 0 0>; /* CS0, offset 0 */
+ 				nand-bus-width = <8>;
+-				ti,nand-ecc-opt = "bch8_hw";
++				ti,nand-ecc-opt = "OMAP_ECC_BCH8_CODE_HW";
+ 
+ 				gpmc,sync-clk = <0>;
+ 				gpmc,cs-on = <0>;
+diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
+index 03b8027..e3146c3 100644
+--- a/arch/arm/mach-omap2/gpmc.c
++++ b/arch/arm/mach-omap2/gpmc.c
+@@ -1205,13 +1205,16 @@ static void __maybe_unused gpmc_read_timings_dt(struct device_node *np,
+ #ifdef CONFIG_MTD_NAND
+ 
+ static const char * const nand_ecc_opts[] = {
+-	[OMAP_ECC_HAMMING_CODE_DEFAULT]		= "hamming_sw",
+-	[OMAP_ECC_HAMMING_CODE_HW]		= "hamming_hw",
+-	[OMAP_ECC_HAMMING_CODE_HW_ROMCODE]	= "hamming_hw_romcode",
+-	[OMAP_ECC_BCH4_CODE_HW]			= "bch4_hw",
+-	[OMAP_ECC_BCH4_CODE_HW_DETECTION_SW]	= "bch4_hw_detection_sw",
+-	[OMAP_ECC_BCH8_CODE_HW]			= "bch8_hw",
+-	[OMAP_ECC_BCH8_CODE_HW_DETECTION_SW]	= "bch8_hw_detection_sw"
++	[OMAP_ECC_HAMMING_CODE_DEFAULT]		= "OMAP_ECC_HAMMING_CODE_SW",
++	[OMAP_ECC_HAMMING_CODE_HW]		= "OMAP_ECC_HAMMING_CODE_HW",
++	[OMAP_ECC_HAMMING_CODE_HW_ROMCODE]	=
++					"OMAP_ECC_HAMMING_CODE_HW_ROMCODE",
++	[OMAP_ECC_BCH4_CODE_HW_DETECTION_SW]	=
++					"OMAP_ECC_BCH4_CODE_HW_DETECTION_SW",
++	[OMAP_ECC_BCH4_CODE_HW]			= "OMAP_ECC_BCH4_CODE_HW",
++	[OMAP_ECC_BCH8_CODE_HW_DETECTION_SW]	=
++					"OMAP_ECC_BCH8_CODE_HW_DETECTION_SW",
++	[OMAP_ECC_BCH8_CODE_HW]			= "OMAP_ECC_BCH8_CODE_HW"
+ };
+ 
+ static int gpmc_probe_nand_child(struct platform_device *pdev,
+@@ -1238,7 +1241,7 @@ static int gpmc_probe_nand_child(struct platform_device *pdev,
+ 
+ 	if (!of_property_read_string(child, "ti,nand-ecc-opt", &s))
+ 		for (val = 0; val < ARRAY_SIZE(nand_ecc_opts); val++)
+-			if (!strcasecmp(s, nand_ecc_opts[val])) {
++			if (!strcmp(s, nand_ecc_opts[val])) {
+ 				gpmc_nand_data->ecc_opt = val;
+ 				break;
+ 			}
+-- 
+1.8.1
