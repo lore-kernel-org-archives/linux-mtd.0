@@ -1,18 +1,13 @@
-Received: from mail-bk0-x22a.google.com ([2a00:1450:4008:c01::22a])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UdG5h-00021t-Bl
- for linux-mtd@lists.infradead.org; Fri, 17 May 2013 08:32:42 +0000
-Received: by mail-bk0-f42.google.com with SMTP id na1so2194662bkb.29
- for <linux-mtd@lists.infradead.org>; Fri, 17 May 2013 01:32:18 -0700 (PDT)
+From: Josh Wu <josh.wu@atmel.com>
+To: <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+ <dedekind1@gmail.com>
+Subject: [PATCH v2 0/4] mtd: atmel_nand: enable Nand Flash Controller (NFC)
+ support
+Date: Fri, 17 May 2013 17:51:44 +0800
+Message-ID: <1368784308-7600-1-git-send-email-josh.wu@atmel.com>
 MIME-Version: 1.0
-Date: Fri, 17 May 2013 16:32:18 +0800
-Message-ID: <CAPgLHd8p=oOOvOsqSGFGp2DSjDg9g_manEpcNThK7Z7hirKztA@mail.gmail.com>
-Subject: [PATCH -next] UBI: fix error return code in ubi_init()
-From: Wei Yongjun <weiyj.lk@gmail.com>
-To: dedekind1@gmail.com, dwmw2@infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: yongjun_wei@trendmicro.com.cn, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain
+Cc: nicolas.ferre@atmel.com, plagnioj@jcrosoft.com, Josh Wu <josh.wu@atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,29 +17,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+This patch series enable NFC support for SAMA5 soc. It can send command,
+address cycles automaticly. Also when enable NFC sram, NFC will transfer
+data to sram. Which can save lots of cpu time.
 
-Fix to return -ENOMEM in the kmem_cache_create() error handling
-case instead of 0, as done elsewhere in this function.
+v1 --> v2:
+ 1) rebase it with latest l2-mtd git tree: 
+    - remove useless nand commands (NAND_CMD_DEPLETE1, NAND_CMD_STATUS_ERRORx).
+    - adopt to the new nand write function's parameters. Add error message when
+      handle subpage write via nfc sram.
+ 2) rewrite pmecc_enable function. Now I use exist NAND_ECC_READ/WRITE const
+    instead of using a new enum definition.
 
-Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
----
- drivers/mtd/ubi/build.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Josh Wu (4):
+  mtd: atmel_nand: replace pmecc enable code with one function.
+  mtd: atmel_nand: add Nand Flash Controller (NFC) support
+  mtd: atmel_nand: enable Nand Flash Controller (NFC) read data via
+    sram
+  mtd: atmel_nand: enable Nand Flash Controller (NFC) write via sram
 
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index 8ff08ec..a444d04 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -1243,8 +1243,10 @@ static int __init ubi_init(void)
- 	ubi_wl_entry_slab = kmem_cache_create("ubi_wl_entry_slab",
- 					      sizeof(struct ubi_wl_entry),
- 					      0, 0, NULL);
--	if (!ubi_wl_entry_slab)
-+	if (!ubi_wl_entry_slab) {
-+		err = -ENOMEM;
- 		goto out_dev_unreg;
-+	}
- 
- 	err = ubi_debugfs_init();
- 	if (err)
+ .../devicetree/bindings/mtd/atmel-nand.txt         |    4 +
+ drivers/mtd/nand/atmel_nand.c                      |  657 ++++++++++++++++++--
+ drivers/mtd/nand/atmel_nand_nfc.h                  |  106 ++++
+ 3 files changed, 718 insertions(+), 49 deletions(-)
+ create mode 100644 drivers/mtd/nand/atmel_nand_nfc.h
+
+-- 
+1.7.9.5
