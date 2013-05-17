@@ -1,19 +1,18 @@
-Received: from smtp.newsguy.com ([74.209.136.69])
+Received: from mail-db8lp0186.outbound.messaging.microsoft.com
+ ([213.199.154.186] helo=db8outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ud4Bj-0004Bt-JW
- for linux-mtd@lists.infradead.org; Thu, 16 May 2013 19:50:08 +0000
-Message-ID: <51953863.4080609@newsguy.com>
-Date: Thu, 16 May 2013 12:49:55 -0700
-From: Mike Dunn <mikedunn@newsguy.com>
+ id 1UdBR0-0005wY-Sr
+ for linux-mtd@lists.infradead.org; Fri, 17 May 2013 03:34:25 +0000
+From: Huang Shijie <b32955@freescale.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH v6 00/10] mtd: add datasheet's ECC information to nand_chip{}
+Date: Fri, 17 May 2013 11:17:24 +0800
+Message-ID: <1368760654-28754-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCH] mtd: nand: docg4: add udelay(1) to polling loop
-References: <1366654990-15392-1-git-send-email-mikedunn@newsguy.com>
- <1368690236.15764.178.camel@sauron.fi.intel.com>
-In-Reply-To: <1368690236.15764.178.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Cc: dedekind1@gmail.com, vikram186@gmail.com, linux-kernel@vger.kernel.org,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ computersforpeace@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,32 +22,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 05/16/2013 12:43 AM, Artem Bityutskiy wrote:
-> On Mon, 2013-04-22 at 11:23 -0700, Mike Dunn wrote:
->>  	timeo = 1000;
->>  	do {
->> +		udelay(1);
->>  		cpu_relax();
->>  		flash_status = readb(docptr + DOC_FLASHCONTROL);
->>  	} while (!(flash_status & DOC_CTRL_FLASHREADY) && --timeo);
-> 
-> How about using jiffies instead? Something like:
-> 
-> timeout = jiffies + msecs_to_jiffies(delay);
-> do {
-> } while (time_before(jiffies, timeout))
-> 
+1.) Why add the ECC information to the nand_chip{} ?
+   Each nand chip has its requirement for the ECC correctability, such as
+   "4bit ECC for each 512Byte" or "40bit ECC for each 1024Byte".
+   This ECC info is very important to the nand controller, such as gpmi.
 
+   Take the Micron MT29F64G08CBABA for example, its geometry is
+   8k page size, 744 bytes oob size and it requires 40bit ECC per 1K bytes.
+   If we do not provide the ECC info to the gpmi nand driver, it has to
+   calculate the ECC correctability itself. The gpmi driver will gets the 56bit
+   ECC for per 1K bytes which is beyond its BCH's 40bit ecc capibility.
+   The gpmi will quits in this case. But in actually, the gpmi can supports
+   this nand chip if it can get the right ECC info.
 
-This works too (just tested it).  But the reason I did not do this originally is
-because the timeout is very short.  With udelay(1) and timeo=1000, the timeout
-is 1ms (plus processing time), and I think this is well in excess of the actual
-time needed by the hardware.  Using jiffies and with HZ=100, my minimum timeout
-is 10ms.  But there's no harm in having an excessive timeout since it's a
-busy-wait loop, so your suggestion is probably fine.
+2.) About the patch set:
+   2.1) patch 1:
+   	      The keynote patch.
 
-Is use of udelay() frowned upon?  Will using jiffies cause a problem with a
-"tickless" configuration?  Hoping to learn something...
+   2.2) patch 2 ~ patch 6:
+               These patches are for ONFI nand.
+               Parse out the ecc info from the parameter page if we can, else
+	       parse out the ecc info from the extended parameter page.
+	       
+   2.2) patch 7 ~ patch 9:
+               Add the ECC info for full-id nand, and parse it out.
 
-Thanks Artem!
-Mike
+   2.3) patch 10 
+               The gpmi uses the ecc info to set the BCH module. and with this
+	       patch set, the gpmi can supports the MT29F64G08CBABA now.
+
+v5 --> v6:
+	[0] rename the ecc_strength/ecc_step to ecc_strength_ds/ecc_step_ds.
+	[1] fix a case when "the codeword is 0".
+	[2] fix typo.
+	[3] add the 'O' to the diagram in the gpmi patch.
+
+v4 --> v5:
+	[0] rebase the new l2-mtd(dropped the 3 merged patches).
+	[1] rename ecc_size to ecc_step.
+	[2] change the comment for the new fields.
+
+v3 --> v4:
+	[0] remove the printk for "out of memory".
+	[1] remove the hardcode nand_command_lp(). Update the chip->cmd_func
+	    before we call the nand_flash_detect_ext_param_page().
+	[2] split the ecc_info to two fields for full id nand.
+	[3] update the comments for ecc_strength/ecc_size (from Brian).
+	       
+v2 --> v3:
+	[0] add a new patch to define the semantics of the two fields.
+	[1] Use the Change Read Column command to remove the "last" argument.
+	[2] simplify the onfi_feature().
+	[3] Use kmalloc() to replace kcalloc().
+	[4] others.
+
+v1 --> v2:
+	[0] Since the first 3 patches are accepted, I do not send them in the
+	    version 2.
+	[1] add NAND_ prefix for macros used by the full-id nands.
+	[2] add onfi_ prefix for the extend parameter page data structures.
+	[3] rename the onfi_get_feature() to onfi_feature().
+	[4] I re-test this patch set again.
+
+Huang Shijie (10):
+  mtd: add datasheet's ECC information to nand_chip{}
+  mtd: get the ECC info from the parameter page for ONFI nand
+  mtd: add data structures for Extended Parameter Page
+  mtd: add a helper to get the supported features for ONFI nand
+  mtd: get the ECC info from the Extended Parameter Page
+  mtd: replace the hardcode with the onfi_feature()
+  mtd: add ECC info for nand_flash_dev{}
+  mtd: parse out the ECC info for the full-id nand chips
+  mtd: add the ecc info for some full-id nand chips
+  mtd: gpmi: set the BCH's geometry with the ecc info
+
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |  132 +++++++++++++++++++++++++++++++-
+ drivers/mtd/nand/nand_base.c           |   93 ++++++++++++++++++++++-
+ drivers/mtd/nand/nand_ids.c            |    8 +-
+ include/linux/mtd/nand.h               |   72 +++++++++++++++++-
+ 4 files changed, 296 insertions(+), 9 deletions(-)
