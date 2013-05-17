@@ -1,20 +1,18 @@
-Received: from mail-db8lp0189.outbound.messaging.microsoft.com
- ([213.199.154.189] helo=db8outboundpool.messaging.microsoft.com)
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UdBRL-0004EJ-OK
- for linux-mtd@lists.infradead.org; Fri, 17 May 2013 03:34:46 +0000
-From: Huang Shijie <b32955@freescale.com>
-To: <dwmw2@infradead.org>
-Subject: [PATCH v6 09/10] mtd: add the ecc info for some full-id nand chips
-Date: Fri, 17 May 2013 11:17:33 +0800
-Message-ID: <1368760654-28754-10-git-send-email-b32955@freescale.com>
-In-Reply-To: <1368760654-28754-1-git-send-email-b32955@freescale.com>
-References: <1368760654-28754-1-git-send-email-b32955@freescale.com>
+Received: from mail-bk0-x22a.google.com ([2a00:1450:4008:c01::22a])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UdG5h-00021t-Bl
+ for linux-mtd@lists.infradead.org; Fri, 17 May 2013 08:32:42 +0000
+Received: by mail-bk0-f42.google.com with SMTP id na1so2194662bkb.29
+ for <linux-mtd@lists.infradead.org>; Fri, 17 May 2013 01:32:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: dedekind1@gmail.com, vikram186@gmail.com, linux-kernel@vger.kernel.org,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- computersforpeace@gmail.com
+Date: Fri, 17 May 2013 16:32:18 +0800
+Message-ID: <CAPgLHd8p=oOOvOsqSGFGp2DSjDg9g_manEpcNThK7Z7hirKztA@mail.gmail.com>
+Subject: [PATCH -next] UBI: fix error return code in ubi_init()
+From: Wei Yongjun <weiyj.lk@gmail.com>
+To: dedekind1@gmail.com, dwmw2@infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: yongjun_wei@trendmicro.com.cn, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,41 +22,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add the ecc info for TC58NVG2S0F, TC58NVG3S0F, TC58NVG5D2 and TC58NVG6D2.
+From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 
->From these chips' datasheets, we know that:
-   The TC58NVG2S0F and TC58NVG3S0F require 4bit ECC for per 512byte.
-   The TC58NVG5D2 and TC58NVG6D2 require 40bits ECC for per 1024byte.
+Fix to return -ENOMEM in the kmem_cache_create() error handling
+case instead of 0, as done elsewhere in this function.
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
+Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 ---
- drivers/mtd/nand/nand_ids.c |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/mtd/ubi/build.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
-index 683813a..a87b0a3 100644
---- a/drivers/mtd/nand/nand_ids.c
-+++ b/drivers/mtd/nand/nand_ids.c
-@@ -33,16 +33,16 @@ struct nand_flash_dev nand_flash_ids[] = {
- 	 */
- 	{"TC58NVG2S0F 4G 3.3V 8-bit",
- 		{ .id = {0x98, 0xdc, 0x90, 0x26, 0x76, 0x15, 0x01, 0x08} },
--		  SZ_4K, SZ_512, SZ_256K, 0, 8, 224},
-+		  SZ_4K, SZ_512, SZ_256K, 0, 8, 224, NAND_ECC_INFO(4, SZ_512) },
- 	{"TC58NVG3S0F 8G 3.3V 8-bit",
- 		{ .id = {0x98, 0xd3, 0x90, 0x26, 0x76, 0x15, 0x02, 0x08} },
--		  SZ_4K, SZ_1K, SZ_256K, 0, 8, 232},
-+		  SZ_4K, SZ_1K, SZ_256K, 0, 8, 232, NAND_ECC_INFO(4, SZ_512) },
- 	{"TC58NVG5D2 32G 3.3V 8-bit",
- 		{ .id = {0x98, 0xd7, 0x94, 0x32, 0x76, 0x56, 0x09, 0x00} },
--		  SZ_8K, SZ_4K, SZ_1M, 0, 8, 640},
-+		  SZ_8K, SZ_4K, SZ_1M, 0, 8, 640, NAND_ECC_INFO(40, SZ_1K) },
- 	{"TC58NVG6D2 64G 3.3V 8-bit",
- 		{ .id = {0x98, 0xde, 0x94, 0x82, 0x76, 0x56, 0x04, 0x20} },
--		  SZ_8K, SZ_8K, SZ_2M, 0, 8, 640},
-+		  SZ_8K, SZ_8K, SZ_2M, 0, 8, 640, NAND_ECC_INFO(40, SZ_1K) },
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 8ff08ec..a444d04 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -1243,8 +1243,10 @@ static int __init ubi_init(void)
+ 	ubi_wl_entry_slab = kmem_cache_create("ubi_wl_entry_slab",
+ 					      sizeof(struct ubi_wl_entry),
+ 					      0, 0, NULL);
+-	if (!ubi_wl_entry_slab)
++	if (!ubi_wl_entry_slab) {
++		err = -ENOMEM;
+ 		goto out_dev_unreg;
++	}
  
- 	LEGACY_ID_NAND("NAND 4MiB 5V 8-bit",   0x6B, 4, SZ_8K, SP_OPTIONS),
- 	LEGACY_ID_NAND("NAND 4MiB 3,3V 8-bit", 0xE3, 4, SZ_8K, SP_OPTIONS),
--- 
-1.7.1
+ 	err = ubi_debugfs_init();
+ 	if (err)
