@@ -1,16 +1,21 @@
-Received: from mail-ee0-f46.google.com ([74.125.83.46])
+Received: from mail-bk0-x22d.google.com ([2a00:1450:4008:c01::22d])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Uf8KL-0007PT-BW
- for linux-mtd@lists.infradead.org; Wed, 22 May 2013 12:39:34 +0000
-Received: by mail-ee0-f46.google.com with SMTP id e49so1084377eek.5
- for <linux-mtd@lists.infradead.org>; Wed, 22 May 2013 05:39:11 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [RFC][PATCH] mtd: bcm47xxsflash: writing support
-Date: Wed, 22 May 2013 14:39:02 +0200
-Message-Id: <1369226342-20102-1-git-send-email-zajec5@gmail.com>
-Cc: Hauke Mehrtens <hauke@hauke-m.de>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+ id 1UfBD2-0004F3-Ql
+ for linux-mtd@lists.infradead.org; Wed, 22 May 2013 15:44:13 +0000
+Received: by mail-bk0-f45.google.com with SMTP id je9so585914bkc.4
+ for <linux-mtd@lists.infradead.org>; Wed, 22 May 2013 08:43:48 -0700 (PDT)
+Message-ID: <519CE7AF.9080103@gmail.com>
+Date: Wed, 22 May 2013 17:43:43 +0200
+From: Dirk Behme <dirk.behme@gmail.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH] UBIFS: add tolerance to use variable writesize
+References: <1369237284-3559-1-git-send-email-dirk.behme@gmail.com>
+In-Reply-To: <1369237284-3559-1-git-send-email-dirk.behme@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: Dirk Behme <dirk.behme@de.bosch.com>, Achim.Dahlhoff@de.bosch.com,
+ Dirk Behme <dirk.behme@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,163 +25,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
----
- drivers/mtd/devices/bcm47xxsflash.c |  130 +++++++++++++++++++++++++++++++++--
- 1 file changed, 126 insertions(+), 4 deletions(-)
+Am 15.05.2013 17:41, schrieb Dirk Behme:
+> From: Achim Dahlhoff <Achim.Dahlhoff@de.bosch.com>
+>
+> UBIfs adapts it‘s structures according to the minimum writeSize reported
+> by the MTD device. For NOR flash devices, this is normally 1. For NOR
+> devices with internal hardware-ECC it might be more, such as the S-Die
+> flash chips of Micron which can use an internal ECC if the chip is
+> accessed in 32 byte chunks.
+>
+> The UBIfs mount process checks and compares the writeSize set in the
+> image and the writeSize reported from the /dev/mtd . UBIfs will fail
+> to mount if the values differ. It should, though, not be a problem to
+> mount an image which was created with a writeSize larger than that of
+> the MTD, if it is larger by an integer factor.
+>
+> This commit changes the check in a way so it will allow the image
+> writeSize to be larger than that of the MTD by an integer factor.
+> It will allow to create images and deploy them on different devices
+> using different writeSizes. writeSize found using values of 1, 8 and 32.
+>
+> Signed-off-by: Achim Dahlhoff <Achim.Dahlhoff@de.bosch.com>
+> ---
+>   fs/ubifs/sb.c |   12 ++++++++++--
+>   1 file changed, 10 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
+> index 4c37607..69dd794 100644
+> --- a/fs/ubifs/sb.c
+> +++ b/fs/ubifs/sb.c
+> @@ -351,6 +351,7 @@ static int validate_sb(struct ubifs_info *c, struct ubifs_sb_node *sup)
+>   {
+>   	long long max_bytes;
+>   	int err = 1, min_leb_cnt;
+> +	int chk_tmp;
+>
+>   	if (!c->key_hash) {
+>   		err = 2;
+> @@ -362,9 +363,16 @@ static int validate_sb(struct ubifs_info *c, struct ubifs_sb_node *sup)
+>   		goto failed;
+>   	}
+>
+> -	if (le32_to_cpu(sup->min_io_size) != c->min_io_size) {
+> +	/*
+> +	 * Allow a min_io_size mismatch in the way that
+> +	 * the size in the superblock (the image) is larger by
+> +	 * an integer factor. If image-IOsize mod real-IOsize
+> +	 * is zero, it should be ok to mount this.
+> +	 */
+> +	chk_tmp = le32_to_cpu(sup->min_io_size);
+> +	if (chk_tmp != c->min_io_size && ((chk_tmp%c->min_io_size) != 0)) {
+>   		ubifs_err("min. I/O unit mismatch: %d in superblock, %d real",
+> -			  le32_to_cpu(sup->min_io_size), c->min_io_size);
+> +			  chk_tmp, c->min_io_size);
+>   		goto failed;
+>   	}
 
-diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
-index c485d96..effe624 100644
---- a/drivers/mtd/devices/bcm47xxsflash.c
-+++ b/drivers/mtd/devices/bcm47xxsflash.c
-@@ -116,6 +116,127 @@ static int bcm47xxsflash_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	return len;
- }
- 
-+static int bcm47xxsflash_write_st(struct mtd_info *mtd, u32 offset, size_t len,
-+				  const u_char *buf)
-+{
-+	struct bcm47xxsflash *b47s = mtd->priv;
-+	int written = 0;
-+
-+	/* Enable writes */
-+	bcm47xxsflash_cmd(b47s, OPCODE_ST_WREN);
-+
-+	/* Write first byte */
-+	b47s->cc_write(b47s, BCMA_CC_FLASHADDR, offset);
-+	b47s->cc_write(b47s, BCMA_CC_FLASHDATA, *buf++);
-+
-+	/* Program page */
-+	if (b47s->bcma_cc->core->id.rev < 20) {
-+		bcm47xxsflash_cmd(b47s, OPCODE_ST_PP);
-+		return 1; /* 1B written */
-+	}
-+
-+	/* Program page and set CSA (on newer chips we can continue writing) */
-+	bcm47xxsflash_cmd(b47s, OPCODE_ST_CSA | OPCODE_ST_PP);
-+	offset++;
-+	len--;
-+	written++;
-+
-+	while (len > 0) {
-+		/* Page boundary, another function call is needed */
-+		if ((offset & 0xFF) == 0)
-+			break;
-+
-+		bcm47xxsflash_cmd(b47s, OPCODE_ST_CSA | *buf++);
-+		offset++;
-+		len--;
-+		written++;
-+	}
-+
-+	/* All done, drop CSA & poll */
-+	b47s->cc_write(b47s, BCMA_CC_FLASHCTL, 0);
-+	udelay(1);
-+	if (bcm47xxsflash_poll(b47s, HZ / 10))
-+		pr_err("Flash rejected dropping CSA\n");
-+
-+	return written;
-+}
-+
-+static int bcm47xxsflash_write_at(struct mtd_info *mtd, u32 offset, size_t len,
-+				  const u_char *buf)
-+{
-+	struct bcm47xxsflash *b47s = mtd->priv;
-+	u32 mask = b47s->blocksize - 1;
-+	u32 page = (offset & ~mask) << 1;
-+	u32 byte = offset & mask;
-+	int written = 0;
-+
-+	/* If we don't overwrite whole page, read it to the buffer first */
-+	if (byte || (len < b47s->blocksize)) {
-+		int err;
-+
-+		b47s->cc_write(b47s, BCMA_CC_FLASHADDR, page);
-+		bcm47xxsflash_cmd(b47s, OPCODE_AT_BUF1_LOAD);
-+		/* 250 us for AT45DB321B */
-+		err = bcm47xxsflash_poll(b47s, HZ / 1000);
-+		if (err) {
-+			pr_err("Timeout reading page 0x%X info buffer\n", page);
-+			return err;
-+		}
-+	}
-+
-+	/* Change buffer content with our data */
-+	while (len > 0) {
-+		/* Page boundary, another function call is needed */
-+		if (byte == b47s->blocksize)
-+			break;
-+
-+		b47s->cc_write(b47s, BCMA_CC_FLASHADDR, byte++);
-+		b47s->cc_write(b47s, BCMA_CC_FLASHDATA, *buf++);
-+		bcm47xxsflash_cmd(b47s, OPCODE_AT_BUF1_WRITE);
-+		len--;
-+		written++;
-+	}
-+
-+	/* Program page with the buffer content */
-+	b47s->cc_write(b47s, BCMA_CC_FLASHADDR, page);
-+	bcm47xxsflash_cmd(b47s, OPCODE_AT_BUF1_PROGRAM);
-+
-+	return written;
-+}
-+
-+static int bcm47xxsflash_write(struct mtd_info *mtd, loff_t to, size_t len,
-+			       size_t *retlen, const u_char *buf)
-+{
-+	struct bcm47xxsflash *b47s = mtd->priv;
-+	int written;
-+
-+	/* Writing functions can return without writing all passed data, for
-+	 * example when the hardware is too old or when we git page boundary.
-+	 */
-+	while (len > 0) {
-+		switch (b47s->type) {
-+		case BCM47XXSFLASH_TYPE_ST:
-+			written = bcm47xxsflash_write_st(mtd, to, len, buf);
-+			break;
-+		case BCM47XXSFLASH_TYPE_ATMEL:
-+			written = bcm47xxsflash_write_at(mtd, to, len, buf);
-+			break;
-+		default:
-+			BUG_ON(1);
-+		}
-+		if (written < 0) {
-+			pr_err("Error writing at offset 0x%llX\n", to);
-+			return written;
-+		}
-+		to += (loff_t)written;
-+		len -= written;
-+		*retlen += written;
-+		buf += written;
-+	}
-+
-+	return 0;
-+}
-+
- static void bcm47xxsflash_fill_mtd(struct bcm47xxsflash *b47s)
- {
- 	struct mtd_info *mtd = &b47s->mtd;
-@@ -123,16 +244,17 @@ static void bcm47xxsflash_fill_mtd(struct bcm47xxsflash *b47s)
- 	mtd->priv = b47s;
- 	mtd->name = "bcm47xxsflash";
- 	mtd->owner = THIS_MODULE;
--	mtd->type = MTD_ROM;
- 
--	/* TODO: implement writing support and verify/change following code */
--	mtd->flags = MTD_CAP_ROM;
-+	mtd->type = MTD_NORFLASH;
-+	mtd->flags = MTD_CAP_NORFLASH;
- 	mtd->size = b47s->size;
- 	mtd->erasesize = b47s->blocksize;
--	mtd->writebufsize = mtd->writesize = 1;
-+	mtd->writesize = 1;
-+	mtd->writebufsize = 1;
- 
- 	mtd->_erase = bcm47xxsflash_erase;
- 	mtd->_read = bcm47xxsflash_read;
-+	mtd->_write = bcm47xxsflash_write;
- }
- 
- /**************************************************
--- 
-1.7.10.4
+Any comments on this?
+
+Many thanks
+
+Dirk
