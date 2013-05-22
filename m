@@ -1,20 +1,24 @@
-Received: from mail-ea0-f178.google.com ([209.85.215.178])
+Received: from va3ehsobe003.messaging.microsoft.com ([216.32.180.13]
+ helo=va3outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UerrA-0006P2-Fc
- for linux-mtd@lists.infradead.org; Tue, 21 May 2013 19:04:20 +0000
-Received: by mail-ea0-f178.google.com with SMTP id q16so651448ead.9
- for <linux-mtd@lists.infradead.org>; Tue, 21 May 2013 12:03:55 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
- David Woodhouse <David.Woodhouse@intel.com>
-Subject: [PATCH] mtd: bcm47xxsflash: implement erasing support
-Date: Tue, 21 May 2013 21:03:46 +0200
-Message-Id: <1369163026-22257-1-git-send-email-zajec5@gmail.com>
+ id 1UeyYI-000584-7l
+ for linux-mtd@lists.infradead.org; Wed, 22 May 2013 02:13:19 +0000
+Message-ID: <519C2A3C.20709@freescale.com>
+Date: Wed, 22 May 2013 10:15:24 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Hauke Mehrtens <hauke@hauke-m.de>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Vikram Narayanan <vikram186@gmail.com>
+Subject: Re: [PATCH v6 05/10 fix] mtd: get the ECC info from the Extended
+ Parameter Page
+References: <51966AA7.7050007@gmail.com>
+ <1369015705-4720-1-git-send-email-b32955@freescale.com>
+ <5199BD45.5090100@gmail.com> <5199C159.6020401@freescale.com>
+ <CAHwEkO2Wn_jLCS-4-1p6Mks-0q3Dy_kzR-j-xtX_oOAOive2VQ@mail.gmail.com>
+In-Reply-To: <CAHwEkO2Wn_jLCS-4-1p6Mks-0q3Dy_kzR-j-xtX_oOAOive2VQ@mail.gmail.com>
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ dwmw2@infradead.org, lkml <linux-kernel@vger.kernel.org>, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,77 +28,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
----
-This has been succesfully tested on BCM4706.
----
- drivers/mtd/devices/bcm47xxsflash.c |   43 +++++++++++++++++++++++++++++++++--
- 1 file changed, 41 insertions(+), 2 deletions(-)
+=D3=DA 2013=C4=EA05=D4=C222=C8=D5 00:35, Vikram Narayanan =D0=B4=B5=C0:
+> What if we do like this? Let's do a strict check for now. ("EPPS")
+> If some chip manufacturer had _strictly_ followed the spec, i.e., any
+> two bytes are valid.
+> Then make the code comply with the spec.
+> Any comments?
+Agreed.
 
-diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
-index 2060856..c485d96 100644
---- a/drivers/mtd/devices/bcm47xxsflash.c
-+++ b/drivers/mtd/devices/bcm47xxsflash.c
-@@ -64,6 +64,42 @@ static int bcm47xxsflash_poll(struct bcm47xxsflash *b47s, int timeout)
-  * MTD ops
-  **************************************************/
- 
-+static int bcm47xxsflash_erase(struct mtd_info *mtd, struct erase_info *erase)
-+{
-+	struct bcm47xxsflash *b47s = mtd->priv;
-+	int err;
-+
-+	switch (b47s->type) {
-+	case BCM47XXSFLASH_TYPE_ST:
-+		bcm47xxsflash_cmd(b47s, OPCODE_ST_WREN);
-+		b47s->cc_write(b47s, BCMA_CC_FLASHADDR, erase->addr);
-+		/* Newer flashes have "sub-sectors" which can be erased
-+		 * independently with a new command: ST_SSE. The ST_SE command
-+		 * erases 64KB just as before.
-+		 */
-+		if (b47s->blocksize < (64 * 1024))
-+			bcm47xxsflash_cmd(b47s, OPCODE_ST_SSE);
-+		else
-+			bcm47xxsflash_cmd(b47s, OPCODE_ST_SE);
-+		break;
-+	case BCM47XXSFLASH_TYPE_ATMEL:
-+		b47s->cc_write(b47s, BCMA_CC_FLASHADDR, erase->addr << 1);
-+		bcm47xxsflash_cmd(b47s, OPCODE_AT_PAGE_ERASE);
-+		break;
-+	}
-+
-+	err = bcm47xxsflash_poll(b47s, HZ);
-+	if (err)
-+		erase->state = MTD_ERASE_FAILED;
-+	else
-+		erase->state = MTD_ERASE_DONE;
-+
-+	if (erase->callback)
-+		erase->callback(erase);
-+
-+	return err;
-+}
-+
- static int bcm47xxsflash_read(struct mtd_info *mtd, loff_t from, size_t len,
- 			      size_t *retlen, u_char *buf)
- {
-@@ -88,12 +124,15 @@ static void bcm47xxsflash_fill_mtd(struct bcm47xxsflash *b47s)
- 	mtd->name = "bcm47xxsflash";
- 	mtd->owner = THIS_MODULE;
- 	mtd->type = MTD_ROM;
--	mtd->size = b47s->size;
--	mtd->_read = bcm47xxsflash_read;
- 
- 	/* TODO: implement writing support and verify/change following code */
- 	mtd->flags = MTD_CAP_ROM;
-+	mtd->size = b47s->size;
-+	mtd->erasesize = b47s->blocksize;
- 	mtd->writebufsize = mtd->writesize = 1;
-+
-+	mtd->_erase = bcm47xxsflash_erase;
-+	mtd->_read = bcm47xxsflash_read;
- }
- 
- /**************************************************
--- 
-1.7.10.4
+I will send a new patch for this.
+
+thanks for the comment.
+
+Huang Shijie
