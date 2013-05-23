@@ -1,24 +1,20 @@
-Received: from mailout2.samsung.com ([203.254.224.25])
+Received: from mx7.zte.com.cn ([202.103.147.169] helo=zte.com.cn)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UfSny-00080O-4S
- for linux-mtd@lists.infradead.org; Thu, 23 May 2013 10:31:32 +0000
-Received: from epcpsbgr3.samsung.com
- (u143.gpu120.samsung.co.kr [203.254.230.143])
- by mailout2.samsung.com (Oracle Communications Messaging Server 7u4-24.01
- (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MN800DVKYJDAFY0@mailout2.samsung.com> for
- linux-mtd@lists.infradead.org; Thu, 23 May 2013 19:31:07 +0900 (KST)
-From: Jingoo Han <jg1.han@samsung.com>
-To: 'Artem Bityutskiy' <dedekind1@gmail.com>
-Subject: [PATCH] mtd: nand: use platform_{get,set}_drvdata()
-Date: Thu, 23 May 2013 19:31:07 +0900
-Message-id: <002b01ce57a0$a29c4fe0$e7d4efa0$@samsung.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: 7bit
-Content-language: ko
-Cc: 'David Woodhouse' <dwmw2@infradead.org>, Jingoo Han <jg1.han@samsung.com>,
- linux-mtd@lists.infradead.org
+ id 1UfUDI-0002SK-Sb
+ for linux-mtd@lists.infradead.org; Thu, 23 May 2013 12:01:47 +0000
+In-Reply-To: <CAFLxGvzKw1_L3Nm4J5GM_wr0sFe6umN0yLzDnK=DM_AJ7GpaaQ@mail.gmail.com>
+References: <CAFLxGvxfzHudUMRc7VkgWMO9RJAkyh1iuouRAV-0s-5eaLqfEQ@mail.gmail.com>	<OFE7F9663A.1F3DE1BE-ON48257B60.00045684-48257B60.001360DF@zte.com.cn>
+ <CAFLxGvzKw1_L3Nm4J5GM_wr0sFe6umN0yLzDnK=DM_AJ7GpaaQ@mail.gmail.com>
+To: richard -rw- weinberger <richard.weinberger@gmail.com>
+Subject: Re: Re: Re: Re: [PATCH] UBI: fix memory leak when use fastmap
+MIME-Version: 1.0
+Message-ID: <OF6992CC88.316C799B-ON48257B74.0040CED8-48257B74.0041FF6F@zte.com.cn>
+From: wang.bo116@zte.com.cn
+Date: Thu, 23 May 2013 20:00:33 +0800
+Content-Type: text/plain; charset="US-ASCII"
+Cc: liu.dong3@zte.com.cn, wang.bo116@zte.com.cn,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>, cui.yunfeng@zte.com.cn
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,123 +24,182 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use the wrapper functions for getting and setting the driver data using
-platform_device instead of using dev_{get,set}_drvdata() with &pdev->dev,
-so we can directly pass a struct platform_device.
+richard -rw- weinberger <richard.weinberger@gmail.com>  2013-05-13 
+16:08:35:
 
-Signed-off-by: Jingoo Han <jg1.han@samsung.com>
+> 
+> I tried to apply/test your patch.
+> It has lots of white spaces damages.
+> Can you please resend it using git send-email?
+> And also run checkpatch.pl before sending.
+> 
+> --
+> Thanks,
+> //richard
+
+hello:
+        I use git to remake a patch, and pass the checkpatch.pl's test.
+But my email client is lotus notes, and the patch's format may be damage 
+by the client.
+
+
+
+Subject: [PATCH] Fix ubi fastmap memory leak
+Signed-off-by: wang bo <wang.bo116@zte.com.cn>
 ---
- drivers/mtd/nand/fsl_elbc_nand.c |    2 +-
- drivers/mtd/nand/fsl_ifc_nand.c  |    2 +-
- drivers/mtd/nand/fsl_upm.c       |    4 ++--
- drivers/mtd/nand/ndfc.c          |    4 ++--
- drivers/mtd/nand/socrates_nand.c |    6 ++----
- 5 files changed, 8 insertions(+), 10 deletions(-)
+ linux-3.9-rc6/drivers/mtd/ubi/attach.c  |   58 
++++++++++++++++++-------------
+ linux-3.9-rc6/drivers/mtd/ubi/fastmap.c |   13 -------
+ 2 files changed, 33 insertions(+), 38 deletions(-)
 
-diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
-index 2065720..44d2073 100644
---- a/drivers/mtd/nand/fsl_elbc_nand.c
-+++ b/drivers/mtd/nand/fsl_elbc_nand.c
-@@ -915,7 +915,7 @@ err:
- static int fsl_elbc_nand_remove(struct platform_device *pdev)
- {
- 	struct fsl_elbc_fcm_ctrl *elbc_fcm_ctrl = fsl_lbc_ctrl_dev->nand;
--	struct fsl_elbc_mtd *priv = dev_get_drvdata(&pdev->dev);
-+	struct fsl_elbc_mtd *priv = platform_get_drvdata(pdev);
+diff --git a/linux-3.9-rc6/drivers/mtd/ubi/attach.c 
+b/linux-3.9-rc6/drivers/mtd/ubi/attach.c
+index c071d41..e9f64bc
+--- a/linux-3.9-rc6/drivers/mtd/ubi/attach.c
++++ b/linux-3.9-rc6/drivers/mtd/ubi/attach.c
+@@ -1212,6 +1212,30 @@ static void destroy_ai(struct ubi_attach_info *ai)
+        kfree(ai);
+ }
  
- 	fsl_elbc_chip_remove(priv);
++static struct ubi_attach_info *alloc_ai(const char *slab_name)
++{
++       struct ubi_attach_info *ai;
++
++       ai = kzalloc(sizeof(struct ubi_attach_info), GFP_KERNEL);
++       if (!ai)
++               return ai;
++
++       INIT_LIST_HEAD(&ai->corr);
++       INIT_LIST_HEAD(&ai->free);
++       INIT_LIST_HEAD(&ai->erase);
++       INIT_LIST_HEAD(&ai->alien);
++       ai->volumes = RB_ROOT;
++       ai->aeb_slab_cache = kmem_cache_create(slab_name,
++                                              sizeof(struct 
+ubi_ainf_peb),
++                                              0, 0, NULL);
++       if (!ai->aeb_slab_cache) {
++               kfree(ai);
++               ai = NULL;
++       }
++
++       return ai;
++}
++
+ /**
+  * scan_all - scan entire MTD device.
+  * @ubi: UBI device description object
+@@ -1315,8 +1339,13 @@ static int scan_fast(struct ubi_device *ubi, struct 
+ubi_attach_info *ai)
+        int err, pnum, fm_anchor = -1;
+        unsigned long long max_sqnum = 0;
  
-diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
-index 317a771..f20986b 100644
---- a/drivers/mtd/nand/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/fsl_ifc_nand.c
-@@ -1050,7 +1050,7 @@ err:
++       struct ubi_attach_info *fm_temp_ai = NULL;
+        err = -ENOMEM;
  
- static int fsl_ifc_nand_remove(struct platform_device *dev)
- {
--	struct fsl_ifc_mtd *priv = dev_get_drvdata(&dev->dev);
-+	struct fsl_ifc_mtd *priv = platform_get_drvdata(dev);
++       fm_temp_ai = alloc_ai("ubi_scan_fastmap_slab_cache");
++       if (!fm_temp_ai)
++               goto out;
++
+        ech = kzalloc(ubi->ec_hdr_alsize, GFP_KERNEL);
+        if (!ech)
+                goto out;
+@@ -1331,7 +1360,7 @@ static int scan_fast(struct ubi_device *ubi, struct 
+ubi_attach_info *ai)
+                cond_resched();
  
- 	fsl_ifc_chip_remove(priv);
+                dbg_gen("process PEB %d", pnum);
+-               err = scan_peb(ubi, ai, pnum, &vol_id, &sqnum);
++               err = scan_peb(ubi, fm_temp_ai, pnum, &vol_id, &sqnum);
+                if (err < 0)
+                        goto out_vidh;
  
-diff --git a/drivers/mtd/nand/fsl_upm.c b/drivers/mtd/nand/fsl_upm.c
-index 04e0725..e5b7597 100644
---- a/drivers/mtd/nand/fsl_upm.c
-+++ b/drivers/mtd/nand/fsl_upm.c
-@@ -303,7 +303,7 @@ static int fun_probe(struct platform_device *ofdev)
- 	if (ret)
- 		goto err2;
+@@ -1343,6 +1372,7 @@ static int scan_fast(struct ubi_device *ubi, struct 
+ubi_attach_info *ai)
  
--	dev_set_drvdata(&ofdev->dev, fun);
-+	platform_set_drvdata(ofdev, fun);
+        ubi_free_vid_hdr(ubi, vidh);
+        kfree(ech);
++       destroy_ai(fm_temp_ai);
  
- 	return 0;
- err2:
-@@ -320,7 +320,7 @@ err1:
+        if (fm_anchor < 0)
+                return UBI_NO_FASTMAP;
+@@ -1351,6 +1381,7 @@ static int scan_fast(struct ubi_device *ubi, struct 
+ubi_attach_info *ai)
  
- static int fun_remove(struct platform_device *ofdev)
- {
--	struct fsl_upm_nand *fun = dev_get_drvdata(&ofdev->dev);
-+	struct fsl_upm_nand *fun = platform_get_drvdata(ofdev);
- 	int i;
- 
- 	nand_release(&fun->mtd);
-diff --git a/drivers/mtd/nand/ndfc.c b/drivers/mtd/nand/ndfc.c
-index 8e148f1..fa65c1b 100644
---- a/drivers/mtd/nand/ndfc.c
-+++ b/drivers/mtd/nand/ndfc.c
-@@ -223,7 +223,7 @@ static int ndfc_probe(struct platform_device *ofdev)
- 	spin_lock_init(&ndfc->ndfc_control.lock);
- 	init_waitqueue_head(&ndfc->ndfc_control.wq);
- 	ndfc->ofdev = ofdev;
--	dev_set_drvdata(&ofdev->dev, ndfc);
-+	platform_set_drvdata(ofdev, ndfc);
- 
- 	ndfc->ndfcbase = of_iomap(ofdev->dev.of_node, 0);
- 	if (!ndfc->ndfcbase) {
-@@ -258,7 +258,7 @@ static int ndfc_probe(struct platform_device *ofdev)
- 
- static int ndfc_remove(struct platform_device *ofdev)
- {
--	struct ndfc_controller *ndfc = dev_get_drvdata(&ofdev->dev);
-+	struct ndfc_controller *ndfc = platform_get_drvdata(ofdev);
- 
- 	nand_release(&ndfc->mtd);
- 	kfree(ndfc->mtd.name);
-diff --git a/drivers/mtd/nand/socrates_nand.c b/drivers/mtd/nand/socrates_nand.c
-index 09dde7d..5090c8c 100644
---- a/drivers/mtd/nand/socrates_nand.c
-+++ b/drivers/mtd/nand/socrates_nand.c
-@@ -190,7 +190,7 @@ static int socrates_nand_probe(struct platform_device *ofdev)
- 	/* TODO: I have no idea what real delay is. */
- 	nand_chip->chip_delay = 20;		/* 20us command delay time */
- 
--	dev_set_drvdata(&ofdev->dev, host);
-+	platform_set_drvdata(ofdev, host);
- 
- 	/* first scan to find the device and get the page size */
- 	if (nand_scan_ident(mtd, 1, NULL)) {
-@@ -211,7 +211,6 @@ static int socrates_nand_probe(struct platform_device *ofdev)
- 	nand_release(mtd);
- 
+ out_vidh:
+        ubi_free_vid_hdr(ubi, vidh);
++       destroy_ai(fm_temp_ai);
+ out_ech:
+        kfree(ech);
  out:
--	dev_set_drvdata(&ofdev->dev, NULL);
- 	iounmap(host->io_base);
- 	kfree(host);
- 	return res;
-@@ -222,12 +221,11 @@ out:
-  */
- static int socrates_nand_remove(struct platform_device *ofdev)
- {
--	struct socrates_nand_host *host = dev_get_drvdata(&ofdev->dev);
-+	struct socrates_nand_host *host = platform_get_drvdata(ofdev);
- 	struct mtd_info *mtd = &host->mtd;
+@@ -1359,29 +1390,6 @@ out:
  
- 	nand_release(mtd);
+ #endif
  
--	dev_set_drvdata(&ofdev->dev, NULL);
- 	iounmap(host->io_base);
- 	kfree(host);
+-static struct ubi_attach_info *alloc_ai(const char *slab_name)
+-{
+-       struct ubi_attach_info *ai;
+-
+-       ai = kzalloc(sizeof(struct ubi_attach_info), GFP_KERNEL);
+-       if (!ai)
+-               return ai;
+-
+-       INIT_LIST_HEAD(&ai->corr);
+-       INIT_LIST_HEAD(&ai->free);
+-       INIT_LIST_HEAD(&ai->erase);
+-       INIT_LIST_HEAD(&ai->alien);
+-       ai->volumes = RB_ROOT;
+-       ai->aeb_slab_cache = kmem_cache_create(slab_name,
+-                                              sizeof(struct 
+ubi_ainf_peb),
+-                                              0, 0, NULL);
+-       if (!ai->aeb_slab_cache) {
+-               kfree(ai);
+-               ai = NULL;
+-       }
+-
+-       return ai;
+-}
  
+ /**
+  * ubi_attach - attach an MTD device.
+@@ -1419,7 +1427,7 @@ int ubi_attach(struct ubi_device *ubi, int 
+force_scan)
+                                        return -ENOMEM;
+                        }
+ 
+-                       err = scan_all(ubi, ai, UBI_FM_MAX_START);
++                       err = scan_all(ubi, ai, 0);
+                }
+        }
+ #else
+diff --git a/linux-3.9-rc6/drivers/mtd/ubi/fastmap.c 
+b/linux-3.9-rc6/drivers/mtd/ubi/fastmap.c
+index 0648c69..7b73d23
+--- a/linux-3.9-rc6/drivers/mtd/ubi/fastmap.c
++++ b/linux-3.9-rc6/drivers/mtd/ubi/fastmap.c
+@@ -552,21 +552,8 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
+        INIT_LIST_HEAD(&used);
+        INIT_LIST_HEAD(&free);
+        INIT_LIST_HEAD(&eba_orphans);
+-       INIT_LIST_HEAD(&ai->corr);
+-       INIT_LIST_HEAD(&ai->free);
+-       INIT_LIST_HEAD(&ai->erase);
+-       INIT_LIST_HEAD(&ai->alien);
+-       ai->volumes = RB_ROOT;
+        ai->min_ec = UBI_MAX_ERASECOUNTER;
+ 
+-       ai->aeb_slab_cache = kmem_cache_create("ubi_ainf_peb_slab",
+-                                              sizeof(struct 
+ubi_ainf_peb),
+-                                              0, 0, NULL);
+-       if (!ai->aeb_slab_cache) {
+-               ret = -ENOMEM;
+-               goto fail;
+-       }
+-
+        fmsb = (struct ubi_fm_sb *)(fm_raw);
+        ai->max_sqnum = fmsb->sqnum;
+        fm_pos += sizeof(struct ubi_fm_sb);
 -- 
-1.7.10.4
+1.7.1
