@@ -1,18 +1,18 @@
-Received: from mailout1.samsung.com ([203.254.224.24])
+Received: from mailout2.samsung.com ([203.254.224.25])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UfSn6-0007wG-W8
- for linux-mtd@lists.infradead.org; Thu, 23 May 2013 10:30:40 +0000
-Received: from epcpsbgr4.samsung.com
- (u144.gpu120.samsung.co.kr [203.254.230.144])
- by mailout1.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ id 1UfSny-00080O-4S
+ for linux-mtd@lists.infradead.org; Thu, 23 May 2013 10:31:32 +0000
+Received: from epcpsbgr3.samsung.com
+ (u143.gpu120.samsung.co.kr [203.254.230.143])
+ by mailout2.samsung.com (Oracle Communications Messaging Server 7u4-24.01
  (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MN800MZ5YI8REL0@mailout1.samsung.com> for
- linux-mtd@lists.infradead.org; Thu, 23 May 2013 19:30:11 +0900 (KST)
+ with ESMTP id <0MN800DVKYJDAFY0@mailout2.samsung.com> for
+ linux-mtd@lists.infradead.org; Thu, 23 May 2013 19:31:07 +0900 (KST)
 From: Jingoo Han <jg1.han@samsung.com>
 To: 'Artem Bityutskiy' <dedekind1@gmail.com>
-Subject: [PATCH] mtd: maps: use platform_{get,set}_drvdata()
-Date: Thu, 23 May 2013 19:30:11 +0900
-Message-id: <002a01ce57a0$8135e5a0$83a1b0e0$@samsung.com>
+Subject: [PATCH] mtd: nand: use platform_{get,set}_drvdata()
+Date: Thu, 23 May 2013 19:31:07 +0900
+Message-id: <002b01ce57a0$a29c4fe0$e7d4efa0$@samsung.com>
 MIME-version: 1.0
 Content-type: text/plain; charset=us-ascii
 Content-transfer-encoding: 7bit
@@ -34,56 +34,117 @@ so we can directly pass a struct platform_device.
 
 Signed-off-by: Jingoo Han <jg1.han@samsung.com>
 ---
- drivers/mtd/maps/physmap_of.c |    5 ++---
- drivers/mtd/maps/sun_uflash.c |    4 ++--
- 2 files changed, 4 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/fsl_elbc_nand.c |    2 +-
+ drivers/mtd/nand/fsl_ifc_nand.c  |    2 +-
+ drivers/mtd/nand/fsl_upm.c       |    4 ++--
+ drivers/mtd/nand/ndfc.c          |    4 ++--
+ drivers/mtd/nand/socrates_nand.c |    6 ++----
+ 5 files changed, 8 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
-index d111097..d7deda9 100644
---- a/drivers/mtd/maps/physmap_of.c
-+++ b/drivers/mtd/maps/physmap_of.c
-@@ -43,10 +43,9 @@ static int of_flash_remove(struct platform_device *dev)
- 	struct of_flash *info;
- 	int i;
+diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
+index 2065720..44d2073 100644
+--- a/drivers/mtd/nand/fsl_elbc_nand.c
++++ b/drivers/mtd/nand/fsl_elbc_nand.c
+@@ -915,7 +915,7 @@ err:
+ static int fsl_elbc_nand_remove(struct platform_device *pdev)
+ {
+ 	struct fsl_elbc_fcm_ctrl *elbc_fcm_ctrl = fsl_lbc_ctrl_dev->nand;
+-	struct fsl_elbc_mtd *priv = dev_get_drvdata(&pdev->dev);
++	struct fsl_elbc_mtd *priv = platform_get_drvdata(pdev);
  
--	info = dev_get_drvdata(&dev->dev);
-+	info = platform_get_drvdata(dev);
- 	if (!info)
- 		return 0;
--	dev_set_drvdata(&dev->dev, NULL);
+ 	fsl_elbc_chip_remove(priv);
  
- 	if (info->cmtd != info->list[0].mtd) {
- 		mtd_device_unregister(info->cmtd);
-@@ -204,7 +203,7 @@ static int of_flash_probe(struct platform_device *dev)
- 	if (!info)
- 		goto err_flash_remove;
+diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
+index 317a771..f20986b 100644
+--- a/drivers/mtd/nand/fsl_ifc_nand.c
++++ b/drivers/mtd/nand/fsl_ifc_nand.c
+@@ -1050,7 +1050,7 @@ err:
  
--	dev_set_drvdata(&dev->dev, info);
-+	platform_set_drvdata(dev, info);
+ static int fsl_ifc_nand_remove(struct platform_device *dev)
+ {
+-	struct fsl_ifc_mtd *priv = dev_get_drvdata(&dev->dev);
++	struct fsl_ifc_mtd *priv = platform_get_drvdata(dev);
  
- 	mtd_list = kzalloc(sizeof(*mtd_list) * count, GFP_KERNEL);
- 	if (!mtd_list)
-diff --git a/drivers/mtd/maps/sun_uflash.c b/drivers/mtd/maps/sun_uflash.c
-index d467f3b..1cd4037 100644
---- a/drivers/mtd/maps/sun_uflash.c
-+++ b/drivers/mtd/maps/sun_uflash.c
-@@ -103,7 +103,7 @@ int uflash_devinit(struct platform_device *op, struct device_node *dp)
+ 	fsl_ifc_chip_remove(priv);
  
- 	mtd_device_register(up->mtd, NULL, 0);
+diff --git a/drivers/mtd/nand/fsl_upm.c b/drivers/mtd/nand/fsl_upm.c
+index 04e0725..e5b7597 100644
+--- a/drivers/mtd/nand/fsl_upm.c
++++ b/drivers/mtd/nand/fsl_upm.c
+@@ -303,7 +303,7 @@ static int fun_probe(struct platform_device *ofdev)
+ 	if (ret)
+ 		goto err2;
  
--	dev_set_drvdata(&op->dev, up);
-+	platform_set_drvdata(op, up);
+-	dev_set_drvdata(&ofdev->dev, fun);
++	platform_set_drvdata(ofdev, fun);
  
  	return 0;
- }
-@@ -123,7 +123,7 @@ static int uflash_probe(struct platform_device *op)
+ err2:
+@@ -320,7 +320,7 @@ err1:
  
- static int uflash_remove(struct platform_device *op)
+ static int fun_remove(struct platform_device *ofdev)
  {
--	struct uflash_dev *up = dev_get_drvdata(&op->dev);
-+	struct uflash_dev *up = platform_get_drvdata(op);
+-	struct fsl_upm_nand *fun = dev_get_drvdata(&ofdev->dev);
++	struct fsl_upm_nand *fun = platform_get_drvdata(ofdev);
+ 	int i;
  
- 	if (up->mtd) {
- 		mtd_device_unregister(up->mtd);
+ 	nand_release(&fun->mtd);
+diff --git a/drivers/mtd/nand/ndfc.c b/drivers/mtd/nand/ndfc.c
+index 8e148f1..fa65c1b 100644
+--- a/drivers/mtd/nand/ndfc.c
++++ b/drivers/mtd/nand/ndfc.c
+@@ -223,7 +223,7 @@ static int ndfc_probe(struct platform_device *ofdev)
+ 	spin_lock_init(&ndfc->ndfc_control.lock);
+ 	init_waitqueue_head(&ndfc->ndfc_control.wq);
+ 	ndfc->ofdev = ofdev;
+-	dev_set_drvdata(&ofdev->dev, ndfc);
++	platform_set_drvdata(ofdev, ndfc);
+ 
+ 	ndfc->ndfcbase = of_iomap(ofdev->dev.of_node, 0);
+ 	if (!ndfc->ndfcbase) {
+@@ -258,7 +258,7 @@ static int ndfc_probe(struct platform_device *ofdev)
+ 
+ static int ndfc_remove(struct platform_device *ofdev)
+ {
+-	struct ndfc_controller *ndfc = dev_get_drvdata(&ofdev->dev);
++	struct ndfc_controller *ndfc = platform_get_drvdata(ofdev);
+ 
+ 	nand_release(&ndfc->mtd);
+ 	kfree(ndfc->mtd.name);
+diff --git a/drivers/mtd/nand/socrates_nand.c b/drivers/mtd/nand/socrates_nand.c
+index 09dde7d..5090c8c 100644
+--- a/drivers/mtd/nand/socrates_nand.c
++++ b/drivers/mtd/nand/socrates_nand.c
+@@ -190,7 +190,7 @@ static int socrates_nand_probe(struct platform_device *ofdev)
+ 	/* TODO: I have no idea what real delay is. */
+ 	nand_chip->chip_delay = 20;		/* 20us command delay time */
+ 
+-	dev_set_drvdata(&ofdev->dev, host);
++	platform_set_drvdata(ofdev, host);
+ 
+ 	/* first scan to find the device and get the page size */
+ 	if (nand_scan_ident(mtd, 1, NULL)) {
+@@ -211,7 +211,6 @@ static int socrates_nand_probe(struct platform_device *ofdev)
+ 	nand_release(mtd);
+ 
+ out:
+-	dev_set_drvdata(&ofdev->dev, NULL);
+ 	iounmap(host->io_base);
+ 	kfree(host);
+ 	return res;
+@@ -222,12 +221,11 @@ out:
+  */
+ static int socrates_nand_remove(struct platform_device *ofdev)
+ {
+-	struct socrates_nand_host *host = dev_get_drvdata(&ofdev->dev);
++	struct socrates_nand_host *host = platform_get_drvdata(ofdev);
+ 	struct mtd_info *mtd = &host->mtd;
+ 
+ 	nand_release(mtd);
+ 
+-	dev_set_drvdata(&ofdev->dev, NULL);
+ 	iounmap(host->io_base);
+ 	kfree(host);
+ 
 -- 
 1.7.10.4
