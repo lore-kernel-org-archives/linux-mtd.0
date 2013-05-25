@@ -1,24 +1,16 @@
-Received: from kirsty.vergenet.net ([202.4.237.240])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ug3cD-0002zQ-Uh
- for linux-mtd@lists.infradead.org; Sat, 25 May 2013 01:49:51 +0000
-Date: Sat, 25 May 2013 10:49:26 +0900
-From: Simon Horman <horms@verge.net.au>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 02/17 v2] mtd: m25p80: add support for the Spansion
- s25fl008k chip
-Message-ID: <20130525014925.GB28458@verge.net.au>
-References: <87li7fwgk8.wl%kuninori.morimoto.gx@renesas.com>
- <87d2si4cdn.wl%kuninori.morimoto.gx@renesas.com>
- <87a9nm4cax.wl%kuninori.morimoto.gx@renesas.com>
+Received: from mail-qe0-f54.google.com ([209.85.128.54])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UgDqv-0000JE-2q
+ for linux-mtd@lists.infradead.org; Sat, 25 May 2013 12:45:41 +0000
+Received: by mail-qe0-f54.google.com with SMTP id i11so3121572qej.27
+ for <linux-mtd@lists.infradead.org>; Sat, 25 May 2013 05:45:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87a9nm4cax.wl%kuninori.morimoto.gx@renesas.com>
-Cc: Magnus <magnus.damm@gmail.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@gmail.com>,
- Linux-SH <linux-sh@vger.kernel.org>
+Date: Sat, 25 May 2013 08:45:18 -0400
+Message-ID: <CAP+RiCBTguOPuXOL8FU9e5ihvHN6OUhuNbixvBRQgQxdAV4B6g@mail.gmail.com>
+Subject: UBI Resize with second volume table copy corrupted
+From: Brent Taylor <motobud@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,42 +20,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 22, 2013 at 08:15:05PM -0700, Kuninori Morimoto wrote:
-> Signed-off-by: Yusuke Goda <yusuke.goda.sx@renesas.com>
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+I've created an ubifs filesystem image using ubinize.  The image is
+flashed to a NAND chip using U-Boot.  The image is successfully
+mounted on several hardware boards but one board contains a bad block
+within the MTD partition the image is written to.  U-Boot skips the
+bad block and continues writing.  When Linux starts to initialize the
+UBI subsystem, UBI reports:
 
-Reviewed-by: Simon Horman <horms+renesas@verge.net.au>
+UBI warning: process_lvol: volume table copy #2 is corrupted
+UBI: create volume table (copy #2)
+UBI: volume table restored
 
-I'm not quite sure of the history of this patch,
-but I have added David Woodhouse and linux-mtd
-to the recipients of this email. Davit, is it possible
-for you to pick this patch up?
+UBI continues to attach to the MTD partition, but the volume is never
+resized to expand to use the entire 128MB of the MTD partition and the
+volume is immeditaly "full" because there are no more free LEB's.
 
-> ---
-> v1 -> v2
-> 
->  - no change
-> 
->  drivers/mtd/devices/m25p80.c |    1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 2f3d2a5..1bad33a 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -780,6 +780,7 @@ static const struct spi_device_id m25p_ids[] = {
->  	{ "s25sl016a",  INFO(0x010214,      0,  64 * 1024,  32, 0) },
->  	{ "s25sl032a",  INFO(0x010215,      0,  64 * 1024,  64, 0) },
->  	{ "s25sl064a",  INFO(0x010216,      0,  64 * 1024, 128, 0) },
-> +	{ "s25fl008k",  INFO(0xef4014,      0,  64 * 1024,  16, SECT_4K) },
->  	{ "s25fl016k",  INFO(0xef4015,      0,  64 * 1024,  32, SECT_4K) },
->  	{ "s25fl064k",  INFO(0xef4017,      0,  64 * 1024, 128, SECT_4K) },
->  
-> -- 
-> 1.7.9.5
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-sh" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+On the other boards that successfully mount the UBIFS root partition,
+the UBI volume is resized correctly.
+
+I'm wondering if by re-creating the second volume table if the
+"resize" flag is being copied?
+
+Thanks for your time,
+Brent Taylor
