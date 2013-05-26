@@ -1,16 +1,21 @@
-Received: from mail-qe0-f54.google.com ([209.85.128.54])
+Received: from mail-vb0-x22b.google.com ([2607:f8b0:400c:c02::22b])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UgDqv-0000JE-2q
- for linux-mtd@lists.infradead.org; Sat, 25 May 2013 12:45:41 +0000
-Received: by mail-qe0-f54.google.com with SMTP id i11so3121572qej.27
- for <linux-mtd@lists.infradead.org>; Sat, 25 May 2013 05:45:19 -0700 (PDT)
+ id 1Ugi3X-0002C5-RB
+ for linux-mtd@lists.infradead.org; Sun, 26 May 2013 21:00:44 +0000
+Received: by mail-vb0-f43.google.com with SMTP id e12so1987852vbg.2
+ for <linux-mtd@lists.infradead.org>; Sun, 26 May 2013 14:00:20 -0700 (PDT)
 MIME-Version: 1.0
-Date: Sat, 25 May 2013 08:45:18 -0400
-Message-ID: <CAP+RiCBTguOPuXOL8FU9e5ihvHN6OUhuNbixvBRQgQxdAV4B6g@mail.gmail.com>
-Subject: UBI Resize with second volume table copy corrupted
-From: Brent Taylor <motobud@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+In-Reply-To: <1367863561-11534-5-git-send-email-fabio.estevam@freescale.com>
+References: <1367863561-11534-1-git-send-email-fabio.estevam@freescale.com>
+ <1367863561-11534-5-git-send-email-fabio.estevam@freescale.com>
+Date: Sun, 26 May 2013 18:00:20 -0300
+Message-ID: <CAOMZO5DLc+U+=Yq71QQG+ddYA0boPgMRY4HrJpcyL4=Qk9t=uQ@mail.gmail.com>
+Subject: Re: [PATCH 05/13] mtd: gpmi-nand : Let device core handle pinctrl
+From: Fabio Estevam <festevam@gmail.com>
+To: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Fabio Estevam <fabio.estevam@freescale.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: shawn.guo@linaro.org, linux-mtd@lists.infradead.org, kernel@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,26 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I've created an ubifs filesystem image using ubinize.  The image is
-flashed to a NAND chip using U-Boot.  The image is successfully
-mounted on several hardware boards but one board contains a bad block
-within the MTD partition the image is written to.  U-Boot skips the
-bad block and continues writing.  When Linux starts to initialize the
-UBI subsystem, UBI reports:
+Hi Artem,
 
-UBI warning: process_lvol: volume table copy #2 is corrupted
-UBI: create volume table (copy #2)
-UBI: volume table restored
+On Mon, May 6, 2013 at 3:05 PM, Fabio Estevam
+<fabio.estevam@freescale.com> wrote:
+> Since commit ab78029 (drivers/pinctrl: grab default handles from device core),
+> we can rely on device core for handling pinctrl.
+>
+> So remove devm_pinctrl_get_select_default() from the driver.
+>
+> Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+> Cc: <linux-mtd@lists.infradead.org>
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 
-UBI continues to attach to the MTD partition, but the volume is never
-resized to expand to use the entire 128MB of the MTD partition and the
-volume is immeditaly "full" because there are no more free LEB's.
-
-On the other boards that successfully mount the UBIFS root partition,
-the UBI volume is resized correctly.
-
-I'm wondering if by re-creating the second volume table if the
-"resize" flag is being copied?
-
-Thanks for your time,
-Brent Taylor
+Any comments on this one?
