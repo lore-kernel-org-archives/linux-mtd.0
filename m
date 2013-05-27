@@ -1,26 +1,19 @@
-Received: from imta21.fe.bosch.de ([139.15.243.226])
+Received: from mail-vb0-x234.google.com ([2607:f8b0:400c:c02::234])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UgxPU-00006m-8s
- for linux-mtd@lists.infradead.org; Mon, 27 May 2013 13:24:26 +0000
-Received: from smtp6-v.fe.bosch.de (imta23.fe.bosch.de [139.15.243.227])
- by imta21.fe.bosch.de (Postfix) with ESMTP id B2204C0342
- for <linux-mtd@lists.infradead.org>; Mon, 27 May 2013 15:14:54 +0200 (CEST)
-From: "Prins Anton (ST-CO/ENG1.1)" <Anton.Prins@nl.bosch.com>
-To: Jan Kara <jack@suse.cz>
-Date: Mon, 27 May 2013 15:13:49 +0200
-Subject: RE: UBIFS failure & stable page writes
-Message-ID: <85D877DD6EE67B4A9FCA9B9C3A4865670C3E8CBB8D@SI-MBX14.de.bosch.com>
-References: <85D877DD6EE67B4A9FCA9B9C3A4865670C3E8CB9B7@SI-MBX14.de.bosch.com>
- <4BE1E71893EF1E4F9E9DD99FB4EBF0032C02EA2D44@SI-MBX02.de.bosch.com>
- <85D877DD6EE67B4A9FCA9B9C3A4865670C3E8CBA85@SI-MBX14.de.bosch.com>
- <20130527121828.GA32625@quack.suse.cz>
-In-Reply-To: <20130527121828.GA32625@quack.suse.cz>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1Uh2pl-0006W3-9C
+ for linux-mtd@lists.infradead.org; Mon, 27 May 2013 19:11:54 +0000
+Received: by mail-vb0-f52.google.com with SMTP id p12so3899131vbe.39
+ for <linux-mtd@lists.infradead.org>; Mon, 27 May 2013 12:11:31 -0700 (PDT)
 MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Adrian Hunter <adrian.hunter@intel.com>,
+In-Reply-To: <002b01ce57a0$a29c4fe0$e7d4efa0$@samsung.com>
+References: <002b01ce57a0$a29c4fe0$e7d4efa0$@samsung.com>
+Date: Mon, 27 May 2013 12:11:31 -0700
+Message-ID: <CAN8TOE9VhtQZWGHtHp6kMpXE-0qWHLKRmA40y88OKwcWrCxSHw@mail.gmail.com>
+Subject: Re: [PATCH] mtd: nand: use platform_{get,set}_drvdata()
+From: Brian Norris <computersforpeace@gmail.com>
+To: Jingoo Han <jg1.han@samsung.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
  Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,125 +24,135 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem and/or Adrian,
+On Thu, May 23, 2013 at 3:31 AM, Jingoo Han <jg1.han@samsung.com> wrote:
+> Use the wrapper functions for getting and setting the driver data using
+> platform_device instead of using dev_{get,set}_drvdata() with &pdev->dev,
+> so we can directly pass a struct platform_device.
 
-As you see we ran into some issue looking at UBIFS.
-(We use a custom build Linux-2.6.37.6 kernel/distro)
+This patch also removes a "dev_set_drvdata(dev, NULL)". Is this no
+longer necessary during device removal? Otherwise:
 
-Here you see a part of our log-output
-UBIFS DBG (pid 767): ubifs_bg_thread: background thread "ubifs_bgt1_1" star=
-ted, PID 767
-UBIFS: recovery needed
-UBIFS: recovery completed
-UBIFS: mounted UBI device 1, volume 1, name "datafs"
-UBIFS: file system size:   640475136 bytes (625464 KiB, 610 MiB, 1241 LEBs)
-UBIFS: journal size:       10452992 bytes (10208 KiB, 9 MiB, 21 LEBs)
-UBIFS: media format:       w4/r0 (latest is w4/r0)
-UBIFS: default compressor: lzo
-UBIFS: reserved for root:  0 bytes (0 KiB)
-UBIFS DBG (pid 1): mount_ubifs: compiled on:         May 27 2013 at 13:08:2=
-4
-UBIFS DBG (pid 1): mount_ubifs: min. I/O unit size:  4096 bytes
-UBIFS DBG (pid 1): mount_ubifs: max. write size:     4096 bytes
-UBIFS DBG (pid 1): mount_ubifs: LEB size:            516096 bytes (504 KiB)
-UBIFS DBG (pid 1): mount_ubifs: data journal heads:  1
-UBIFS DBG (pid 1): mount_ubifs: UUID:                1D1AD726-53AB-4623-8D8=
-6-B7773B5EFA83
-UBIFS DBG (pid 1): mount_ubifs: big_lpt              0
-UBIFS DBG (pid 1): mount_ubifs: log LEBs:            4 (3 - 6)
-UBIFS DBG (pid 1): mount_ubifs: LPT area LEBs:       2 (7 - 8)
-UBIFS DBG (pid 1): mount_ubifs: orphan area LEBs:    1 (9 - 9)
-UBIFS DBG (pid 1): mount_ubifs: main area LEBs:      1241 (10 - 1250)
-UBIFS DBG (pid 1): mount_ubifs: index LEBs:          31
-UBIFS DBG (pid 1): mount_ubifs: total index bytes:   702944 (686 KiB, 0 MiB=
-)
-UBIFS DBG (pid 1): mount_ubifs: key hash type:       0
-UBIFS DBG (pid 1): mount_ubifs: tree fanout:         8
-UBIFS DBG (pid 1): mount_ubifs: reserved GC LEB:     166
-UBIFS DBG (pid 1): mount_ubifs: first main LEB:      10
-UBIFS DBG (pid 1): mount_ubifs: max. znode size      240
-UBIFS DBG (pid 1): mount_ubifs: max. index node size 192
-UBIFS DBG (pid 1): mount_ubifs: node sizes:          data 48, inode 160, de=
-ntry 56
-UBIFS DBG (pid 1): mount_ubifs: node sizes:          trun 56, sb 4096, mast=
-er 512
-UBIFS DBG (pid 1): mount_ubifs: node sizes:          ref 64, cmt. start 32,=
- orph 32
-UBIFS DBG (pid 1): mount_ubifs: max. node sizes:     data 4144, inode 4256 =
-dentry 312, idx 188
-UBIFS DBG (pid 1): mount_ubifs: dead watermark:      4096
-UBIFS DBG (pid 1): mount_ubifs: dark watermark:      8192
-UBIFS DBG (pid 1): mount_ubifs: LEB overhead:        2240
-UBIFS DBG (pid 1): mount_ubifs: max. dark space:     10166272 (9928 KiB, 9 =
-MiB)
-UBIFS DBG (pid 1): mount_ubifs: maximum bud bytes:   8388608 (8192 KiB, 8 M=
-iB)
-UBIFS DBG (pid 1): mount_ubifs: BG commit bud bytes: 6815744 (6656 KiB, 6 M=
-iB)
-UBIFS DBG (pid 1): mount_ubifs: current bud bytes    405504 (396 KiB, 0 MiB=
-)
-UBIFS DBG (pid 1): mount_ubifs: max. seq. number:    8295846
-UBIFS DBG (pid 1): mount_ubifs: commit number:       1434
-UBIFS error (pid 1): ubifs_iget: failed to read inode 1, error -2
-UBIFS DBG (pid 767): ubifs_bg_thread: background thread "ubifs_bgt1_1" stop=
-s
+Acked-by: Brian Norris <computersforpeace@gmail.com>
 
-Looking into the code I see the failed to read inode 1, error -2 is cause b=
-y:
-"ubifs_lookup_level0 -> -ENOENT" located in tnc.c
-
-Looking inside the ubifs_lookup_level0 function it flows out of the functio=
-n through:
-        if (exact || !is_hash_key(c, key) || *n !=3D -1) {
-                dbg_tnc("found %d, lvl %d, n %d", exact, znode->level, *n);
-                return exact;
-        }
-
-Where:=20
-	exact =3D 0
-	*n =3D -1
-	So: "!is_hash_key(c, key)" must be true.
-
-'exact' is in the calling functioned interpret as found (where !found gener=
-ates the error); this seems a littlebit curious to me.
-But on first sight its complex code and maybe you can give some glue?
-
-I suppose a piece of 'tree node cache' has been build-up during recovery...=
- could the problem be there?
-
-Thanks in advance,
-
-Anton
-
------Original Message-----
-From: Jan Kara [mailto:jack@suse.cz]=20
-Sent: maandag 27 mei 2013 14:18
-To: Prins Anton (ST-CO/ENG1.1)
-Cc: jack@suse.cz; Artem Bityutskiy; Adrian Hunter; linux-mtd@lists.infradea=
-d.org
-Subject: Re: UBIFS failure & stable page writes
-
-  Dear Prins,
-
-On Mon 27-05-13 13:17:42, Prins Anton (ST-CO/ENG1.1) wrote:
-> We are doing experiments with file systems on NAND flashes and experience
-> some problems with UBIFS.  If required; it recovers correct, but on a
-> certain moment (at boot) it seems it cannot find its root node anymore
-> (recovery succeeded)
->=20
-> While reading the logs on the kernel.org I came across your patch:
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/fs=
-/ubifs?id=3D182dcfd648aef0705fd04c42cbe507c09e00c25d
->=20
-> Do you have some information what you experience in case of failure? Is
-> it possible to lose (consequent) a root-node because unstable page
-> writes?
-  No, stable page write work shouldn't have any impact on this. NAND flash
-isn't the kind of storage that requires stable pages. I think it's the best
-if you ask ubifs maintainers directly - I've CCed them. BTW, you didn't
-mention which kernel version you are using.
-
-								Honza
---=20
-Jan Kara <jack@suse.cz>
-SUSE Labs, CR
+> Signed-off-by: Jingoo Han <jg1.han@samsung.com>
+> ---
+>  drivers/mtd/nand/fsl_elbc_nand.c |    2 +-
+>  drivers/mtd/nand/fsl_ifc_nand.c  |    2 +-
+>  drivers/mtd/nand/fsl_upm.c       |    4 ++--
+>  drivers/mtd/nand/ndfc.c          |    4 ++--
+>  drivers/mtd/nand/socrates_nand.c |    6 ++----
+>  5 files changed, 8 insertions(+), 10 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
+> index 2065720..44d2073 100644
+> --- a/drivers/mtd/nand/fsl_elbc_nand.c
+> +++ b/drivers/mtd/nand/fsl_elbc_nand.c
+> @@ -915,7 +915,7 @@ err:
+>  static int fsl_elbc_nand_remove(struct platform_device *pdev)
+>  {
+>         struct fsl_elbc_fcm_ctrl *elbc_fcm_ctrl = fsl_lbc_ctrl_dev->nand;
+> -       struct fsl_elbc_mtd *priv = dev_get_drvdata(&pdev->dev);
+> +       struct fsl_elbc_mtd *priv = platform_get_drvdata(pdev);
+>
+>         fsl_elbc_chip_remove(priv);
+>
+> diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
+> index 317a771..f20986b 100644
+> --- a/drivers/mtd/nand/fsl_ifc_nand.c
+> +++ b/drivers/mtd/nand/fsl_ifc_nand.c
+> @@ -1050,7 +1050,7 @@ err:
+>
+>  static int fsl_ifc_nand_remove(struct platform_device *dev)
+>  {
+> -       struct fsl_ifc_mtd *priv = dev_get_drvdata(&dev->dev);
+> +       struct fsl_ifc_mtd *priv = platform_get_drvdata(dev);
+>
+>         fsl_ifc_chip_remove(priv);
+>
+> diff --git a/drivers/mtd/nand/fsl_upm.c b/drivers/mtd/nand/fsl_upm.c
+> index 04e0725..e5b7597 100644
+> --- a/drivers/mtd/nand/fsl_upm.c
+> +++ b/drivers/mtd/nand/fsl_upm.c
+> @@ -303,7 +303,7 @@ static int fun_probe(struct platform_device *ofdev)
+>         if (ret)
+>                 goto err2;
+>
+> -       dev_set_drvdata(&ofdev->dev, fun);
+> +       platform_set_drvdata(ofdev, fun);
+>
+>         return 0;
+>  err2:
+> @@ -320,7 +320,7 @@ err1:
+>
+>  static int fun_remove(struct platform_device *ofdev)
+>  {
+> -       struct fsl_upm_nand *fun = dev_get_drvdata(&ofdev->dev);
+> +       struct fsl_upm_nand *fun = platform_get_drvdata(ofdev);
+>         int i;
+>
+>         nand_release(&fun->mtd);
+> diff --git a/drivers/mtd/nand/ndfc.c b/drivers/mtd/nand/ndfc.c
+> index 8e148f1..fa65c1b 100644
+> --- a/drivers/mtd/nand/ndfc.c
+> +++ b/drivers/mtd/nand/ndfc.c
+> @@ -223,7 +223,7 @@ static int ndfc_probe(struct platform_device *ofdev)
+>         spin_lock_init(&ndfc->ndfc_control.lock);
+>         init_waitqueue_head(&ndfc->ndfc_control.wq);
+>         ndfc->ofdev = ofdev;
+> -       dev_set_drvdata(&ofdev->dev, ndfc);
+> +       platform_set_drvdata(ofdev, ndfc);
+>
+>         ndfc->ndfcbase = of_iomap(ofdev->dev.of_node, 0);
+>         if (!ndfc->ndfcbase) {
+> @@ -258,7 +258,7 @@ static int ndfc_probe(struct platform_device *ofdev)
+>
+>  static int ndfc_remove(struct platform_device *ofdev)
+>  {
+> -       struct ndfc_controller *ndfc = dev_get_drvdata(&ofdev->dev);
+> +       struct ndfc_controller *ndfc = platform_get_drvdata(ofdev);
+>
+>         nand_release(&ndfc->mtd);
+>         kfree(ndfc->mtd.name);
+> diff --git a/drivers/mtd/nand/socrates_nand.c b/drivers/mtd/nand/socrates_nand.c
+> index 09dde7d..5090c8c 100644
+> --- a/drivers/mtd/nand/socrates_nand.c
+> +++ b/drivers/mtd/nand/socrates_nand.c
+> @@ -190,7 +190,7 @@ static int socrates_nand_probe(struct platform_device *ofdev)
+>         /* TODO: I have no idea what real delay is. */
+>         nand_chip->chip_delay = 20;             /* 20us command delay time */
+>
+> -       dev_set_drvdata(&ofdev->dev, host);
+> +       platform_set_drvdata(ofdev, host);
+>
+>         /* first scan to find the device and get the page size */
+>         if (nand_scan_ident(mtd, 1, NULL)) {
+> @@ -211,7 +211,6 @@ static int socrates_nand_probe(struct platform_device *ofdev)
+>         nand_release(mtd);
+>
+>  out:
+> -       dev_set_drvdata(&ofdev->dev, NULL);
+>         iounmap(host->io_base);
+>         kfree(host);
+>         return res;
+> @@ -222,12 +221,11 @@ out:
+>   */
+>  static int socrates_nand_remove(struct platform_device *ofdev)
+>  {
+> -       struct socrates_nand_host *host = dev_get_drvdata(&ofdev->dev);
+> +       struct socrates_nand_host *host = platform_get_drvdata(ofdev);
+>         struct mtd_info *mtd = &host->mtd;
+>
+>         nand_release(mtd);
+>
+> -       dev_set_drvdata(&ofdev->dev, NULL);
+>         iounmap(host->io_base);
+>         kfree(host);
+>
+> --
+> 1.7.10.4
+>
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
