@@ -1,24 +1,25 @@
-Received: from mga03.intel.com ([143.182.124.21])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UhA3L-0002Yo-7t
- for linux-mtd@lists.infradead.org; Tue, 28 May 2013 02:54:24 +0000
-Message-ID: <1369709828.5446.89.camel@sauron.fi.intel.com>
-Subject: Re: UBIFS failure & stable page writes
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Prins Anton (ST-CO/ENG1.1)" <Anton.Prins@nl.bosch.com>
-Date: Tue, 28 May 2013 05:57:08 +0300
-In-Reply-To: <85D877DD6EE67B4A9FCA9B9C3A4865670C3E8CBB8D@SI-MBX14.de.bosch.com>
+Received: from smtp6-v.fe.bosch.de ([2a03:cc00:ff0:100::2])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UhE0S-0005wu-EF
+ for linux-mtd@lists.infradead.org; Tue, 28 May 2013 07:07:42 +0000
+From: "Prins Anton (ST-CO/ENG1.1)" <Anton.Prins@nl.bosch.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>
+Date: Tue, 28 May 2013 09:07:09 +0200
+Subject: RE: UBIFS failure & stable page writes
+Message-ID: <85D877DD6EE67B4A9FCA9B9C3A4865670C3E8CBD81@SI-MBX14.de.bosch.com>
 References: <85D877DD6EE67B4A9FCA9B9C3A4865670C3E8CB9B7@SI-MBX14.de.bosch.com>
  <4BE1E71893EF1E4F9E9DD99FB4EBF0032C02EA2D44@SI-MBX02.de.bosch.com>
  <85D877DD6EE67B4A9FCA9B9C3A4865670C3E8CBA85@SI-MBX14.de.bosch.com>
  <20130527121828.GA32625@quack.suse.cz>
  <85D877DD6EE67B4A9FCA9B9C3A4865670C3E8CBB8D@SI-MBX14.de.bosch.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+ <1369709828.5446.89.camel@sauron.fi.intel.com>
+In-Reply-To: <1369709828.5446.89.camel@sauron.fi.intel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  Jan Kara <jack@suse.cz>, Adrian Hunter <adrian.hunter@intel.com>
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,104 +29,105 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2013-05-27 at 15:13 +0200, Prins Anton (ST-CO/ENG1.1) wrote:
-> Hi Artem and/or Adrian,
-> 
-> As you see we ran into some issue looking at UBIFS.
-> (We use a custom build Linux-2.6.37.6 kernel/distro)
-
-Oh, quite old. There might have been some fixes.
-
-> Here you see a part of our log-output
-> UBIFS DBG (pid 767): ubifs_bg_thread: background thread "ubifs_bgt1_1" started, PID 767
-> UBIFS: recovery needed
-> UBIFS: recovery completed
-> UBIFS: mounted UBI device 1, volume 1, name "datafs"
-> UBIFS: file system size:   640475136 bytes (625464 KiB, 610 MiB, 1241 LEBs)
-> UBIFS: journal size:       10452992 bytes (10208 KiB, 9 MiB, 21 LEBs)
-> UBIFS: media format:       w4/r0 (latest is w4/r0)
-> UBIFS: default compressor: lzo
-> UBIFS: reserved for root:  0 bytes (0 KiB)
-> UBIFS DBG (pid 1): mount_ubifs: compiled on:         May 27 2013 at 13:08:24
-> UBIFS DBG (pid 1): mount_ubifs: min. I/O unit size:  4096 bytes
-> UBIFS DBG (pid 1): mount_ubifs: max. write size:     4096 bytes
-> UBIFS DBG (pid 1): mount_ubifs: LEB size:            516096 bytes (504 KiB)
-> UBIFS DBG (pid 1): mount_ubifs: data journal heads:  1
-> UBIFS DBG (pid 1): mount_ubifs: UUID:                1D1AD726-53AB-4623-8D86-B7773B5EFA83
-> UBIFS DBG (pid 1): mount_ubifs: big_lpt              0
-> UBIFS DBG (pid 1): mount_ubifs: log LEBs:            4 (3 - 6)
-> UBIFS DBG (pid 1): mount_ubifs: LPT area LEBs:       2 (7 - 8)
-> UBIFS DBG (pid 1): mount_ubifs: orphan area LEBs:    1 (9 - 9)
-> UBIFS DBG (pid 1): mount_ubifs: main area LEBs:      1241 (10 - 1250)
-> UBIFS DBG (pid 1): mount_ubifs: index LEBs:          31
-> UBIFS DBG (pid 1): mount_ubifs: total index bytes:   702944 (686 KiB, 0 MiB)
-> UBIFS DBG (pid 1): mount_ubifs: key hash type:       0
-> UBIFS DBG (pid 1): mount_ubifs: tree fanout:         8
-> UBIFS DBG (pid 1): mount_ubifs: reserved GC LEB:     166
-> UBIFS DBG (pid 1): mount_ubifs: first main LEB:      10
-> UBIFS DBG (pid 1): mount_ubifs: max. znode size      240
-> UBIFS DBG (pid 1): mount_ubifs: max. index node size 192
-> UBIFS DBG (pid 1): mount_ubifs: node sizes:          data 48, inode 160, dentry 56
-> UBIFS DBG (pid 1): mount_ubifs: node sizes:          trun 56, sb 4096, master 512
-> UBIFS DBG (pid 1): mount_ubifs: node sizes:          ref 64, cmt. start 32, orph 32
-> UBIFS DBG (pid 1): mount_ubifs: max. node sizes:     data 4144, inode 4256 dentry 312, idx 188
-> UBIFS DBG (pid 1): mount_ubifs: dead watermark:      4096
-> UBIFS DBG (pid 1): mount_ubifs: dark watermark:      8192
-> UBIFS DBG (pid 1): mount_ubifs: LEB overhead:        2240
-> UBIFS DBG (pid 1): mount_ubifs: max. dark space:     10166272 (9928 KiB, 9 MiB)
-> UBIFS DBG (pid 1): mount_ubifs: maximum bud bytes:   8388608 (8192 KiB, 8 MiB)
-> UBIFS DBG (pid 1): mount_ubifs: BG commit bud bytes: 6815744 (6656 KiB, 6 MiB)
-> UBIFS DBG (pid 1): mount_ubifs: current bud bytes    405504 (396 KiB, 0 MiB)
-> UBIFS DBG (pid 1): mount_ubifs: max. seq. number:    8295846
-> UBIFS DBG (pid 1): mount_ubifs: commit number:       1434
-> UBIFS error (pid 1): ubifs_iget: failed to read inode 1, error -2
-> UBIFS DBG (pid 767): ubifs_bg_thread: background thread "ubifs_bgt1_1" stops
-> 
-> Looking into the code I see the failed to read inode 1, error -2 is cause by:
-> "ubifs_lookup_level0 -> -ENOENT" located in tnc.c
-> 
-> Looking inside the ubifs_lookup_level0 function it flows out of the function through:
->         if (exact || !is_hash_key(c, key) || *n != -1) {
->                 dbg_tnc("found %d, lvl %d, n %d", exact, znode->level, *n);
->                 return exact;
->         }
-> 
-> Where: 
-> 	exact = 0
-
-'exact = 0' means we did not find exactly the key
-
-> 	*n = -1
-
-'n = -1' means that if the key existed in this B-tree node, it would
-have been  placed before all the other keys there. IOW, the key is
-smaller than all the keys in the B-tree node we found.
-
-> 	So: "!is_hash_key(c, key)" must be true.
-
-The key does not have a hash, which means this is not a directory entry
-key. Direntry keys contain hash of the direntry name, so they may
-collide.
-
-Basically, the key you are looking up is not found.
-
-> 'exact' is in the calling functioned interpret as found (where !found generates the error); this seems a littlebit curious to me.
-> But on first sight its complex code and maybe you can give some glue?
-
-Yes, the code is not very easy, because this is basically the core code
-dealing with the main FS datastructure - the central B-tree. There are
-many complexities to solve.
-
-> I suppose a piece of 'tree node cache' has been build-up during recovery... could the problem be there?
-
-TNC is a cache of the on-flash index tree, so it is "built-up" every
-time it is traversed, which usually happens when something is being read
-(e.g., files).
-
-I think we did have bugs in recovery process which made nodes
-"disappear". But I do not remember anymore the details. Usually
-important fixes were CC-ed to -stable.
-
--- 
-Best Regards,
-Artem Bityutskiy
+V2UgdXNlIGEgYmFja3BvcnQgb2YgVUJJRlMtMi42IChqdW5lIDIwMTIpLCBhbmQgY2hlY2tlZCBm
+b3IgaW1wb3J0YW50IGZpeGVzIGluIHRoaXMgYXJlYS4NCg0KSXMgdGhlcmUgYSB3YXkgdG8gY2hl
+Y2svZmluZCBpZiBhICdyb290LW5vZGUnIGlzIGxvYWQgZnJvbSBmbGFzaCAoZS5nLiBkdXJpbmcg
+cmVjb3ZlcnkpPw0KDQpEb2VzIHJlY292ZXJ5IG5lZWQgdGhlICdyb290LW5vZGUnPw0KDQpNZXQg
+dnJpZW5kZWxpamtlIGdyb2V0ZW4gfCBCZXN0IFJlZ2FyZHMsIA0KQW50b24gUHJpbnMNCg0KQm9z
+Y2ggU2VjdXJpdHkgU3lzdGVtcyBCViwgDQpDb25mZXJlbmNlIFN5c3RlbXMgKFNULUNPL0VORzEu
+MSkgDQpUb3JlbmFsbGVlIDQ5DQo1NjE3IEJBICBFaW5kaG92ZW4NClRoZSBOZXRoZXJsYW5kcyAN
+Cnd3dy5ib3NjaHNlY3VyaXR5LmNvbSANClQuICszMSAoMCk0MCAyNTc3MDc3DQphbnRvbi5wcmlu
+c0BubC5ib3NjaC5jb20NCg0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogQXJ0
+ZW0gQml0eXV0c2tpeSBbbWFpbHRvOmRlZGVraW5kMUBnbWFpbC5jb21dIA0KU2VudDogZGluc2Rh
+ZyAyOCBtZWkgMjAxMyA0OjU3DQpUbzogUHJpbnMgQW50b24gKFNULUNPL0VORzEuMSkNCkNjOiBK
+YW4gS2FyYTsgQWRyaWFuIEh1bnRlcjsgbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNClN1
+YmplY3Q6IFJlOiBVQklGUyBmYWlsdXJlICYgc3RhYmxlIHBhZ2Ugd3JpdGVzDQoNCk9uIE1vbiwg
+MjAxMy0wNS0yNyBhdCAxNToxMyArMDIwMCwgUHJpbnMgQW50b24gKFNULUNPL0VORzEuMSkgd3Jv
+dGU6DQo+IEhpIEFydGVtIGFuZC9vciBBZHJpYW4sDQo+IA0KPiBBcyB5b3Ugc2VlIHdlIHJhbiBp
+bnRvIHNvbWUgaXNzdWUgbG9va2luZyBhdCBVQklGUy4NCj4gKFdlIHVzZSBhIGN1c3RvbSBidWls
+ZCBMaW51eC0yLjYuMzcuNiBrZXJuZWwvZGlzdHJvKQ0KDQpPaCwgcXVpdGUgb2xkLiBUaGVyZSBt
+aWdodCBoYXZlIGJlZW4gc29tZSBmaXhlcy4NCg0KPiBIZXJlIHlvdSBzZWUgYSBwYXJ0IG9mIG91
+ciBsb2ctb3V0cHV0DQo+IFVCSUZTIERCRyAocGlkIDc2Nyk6IHViaWZzX2JnX3RocmVhZDogYmFj
+a2dyb3VuZCB0aHJlYWQgInViaWZzX2JndDFfMSIgc3RhcnRlZCwgUElEIDc2Nw0KPiBVQklGUzog
+cmVjb3ZlcnkgbmVlZGVkDQo+IFVCSUZTOiByZWNvdmVyeSBjb21wbGV0ZWQNCj4gVUJJRlM6IG1v
+dW50ZWQgVUJJIGRldmljZSAxLCB2b2x1bWUgMSwgbmFtZSAiZGF0YWZzIg0KPiBVQklGUzogZmls
+ZSBzeXN0ZW0gc2l6ZTogICA2NDA0NzUxMzYgYnl0ZXMgKDYyNTQ2NCBLaUIsIDYxMCBNaUIsIDEy
+NDEgTEVCcykNCj4gVUJJRlM6IGpvdXJuYWwgc2l6ZTogICAgICAgMTA0NTI5OTIgYnl0ZXMgKDEw
+MjA4IEtpQiwgOSBNaUIsIDIxIExFQnMpDQo+IFVCSUZTOiBtZWRpYSBmb3JtYXQ6ICAgICAgIHc0
+L3IwIChsYXRlc3QgaXMgdzQvcjApDQo+IFVCSUZTOiBkZWZhdWx0IGNvbXByZXNzb3I6IGx6bw0K
+PiBVQklGUzogcmVzZXJ2ZWQgZm9yIHJvb3Q6ICAwIGJ5dGVzICgwIEtpQikNCj4gVUJJRlMgREJH
+IChwaWQgMSk6IG1vdW50X3ViaWZzOiBjb21waWxlZCBvbjogICAgICAgICBNYXkgMjcgMjAxMyBh
+dCAxMzowODoyNA0KPiBVQklGUyBEQkcgKHBpZCAxKTogbW91bnRfdWJpZnM6IG1pbi4gSS9PIHVu
+aXQgc2l6ZTogIDQwOTYgYnl0ZXMNCj4gVUJJRlMgREJHIChwaWQgMSk6IG1vdW50X3ViaWZzOiBt
+YXguIHdyaXRlIHNpemU6ICAgICA0MDk2IGJ5dGVzDQo+IFVCSUZTIERCRyAocGlkIDEpOiBtb3Vu
+dF91YmlmczogTEVCIHNpemU6ICAgICAgICAgICAgNTE2MDk2IGJ5dGVzICg1MDQgS2lCKQ0KPiBV
+QklGUyBEQkcgKHBpZCAxKTogbW91bnRfdWJpZnM6IGRhdGEgam91cm5hbCBoZWFkczogIDENCj4g
+VUJJRlMgREJHIChwaWQgMSk6IG1vdW50X3ViaWZzOiBVVUlEOiAgICAgICAgICAgICAgICAxRDFB
+RDcyNi01M0FCLTQ2MjMtOEQ4Ni1CNzc3M0I1RUZBODMNCj4gVUJJRlMgREJHIChwaWQgMSk6IG1v
+dW50X3ViaWZzOiBiaWdfbHB0ICAgICAgICAgICAgICAwDQo+IFVCSUZTIERCRyAocGlkIDEpOiBt
+b3VudF91YmlmczogbG9nIExFQnM6ICAgICAgICAgICAgNCAoMyAtIDYpDQo+IFVCSUZTIERCRyAo
+cGlkIDEpOiBtb3VudF91YmlmczogTFBUIGFyZWEgTEVCczogICAgICAgMiAoNyAtIDgpDQo+IFVC
+SUZTIERCRyAocGlkIDEpOiBtb3VudF91Ymlmczogb3JwaGFuIGFyZWEgTEVCczogICAgMSAoOSAt
+IDkpDQo+IFVCSUZTIERCRyAocGlkIDEpOiBtb3VudF91YmlmczogbWFpbiBhcmVhIExFQnM6ICAg
+ICAgMTI0MSAoMTAgLSAxMjUwKQ0KPiBVQklGUyBEQkcgKHBpZCAxKTogbW91bnRfdWJpZnM6IGlu
+ZGV4IExFQnM6ICAgICAgICAgIDMxDQo+IFVCSUZTIERCRyAocGlkIDEpOiBtb3VudF91Ymlmczog
+dG90YWwgaW5kZXggYnl0ZXM6ICAgNzAyOTQ0ICg2ODYgS2lCLCAwIE1pQikNCj4gVUJJRlMgREJH
+IChwaWQgMSk6IG1vdW50X3ViaWZzOiBrZXkgaGFzaCB0eXBlOiAgICAgICAwDQo+IFVCSUZTIERC
+RyAocGlkIDEpOiBtb3VudF91YmlmczogdHJlZSBmYW5vdXQ6ICAgICAgICAgOA0KPiBVQklGUyBE
+QkcgKHBpZCAxKTogbW91bnRfdWJpZnM6IHJlc2VydmVkIEdDIExFQjogICAgIDE2Ng0KPiBVQklG
+UyBEQkcgKHBpZCAxKTogbW91bnRfdWJpZnM6IGZpcnN0IG1haW4gTEVCOiAgICAgIDEwDQo+IFVC
+SUZTIERCRyAocGlkIDEpOiBtb3VudF91YmlmczogbWF4LiB6bm9kZSBzaXplICAgICAgMjQwDQo+
+IFVCSUZTIERCRyAocGlkIDEpOiBtb3VudF91YmlmczogbWF4LiBpbmRleCBub2RlIHNpemUgMTky
+DQo+IFVCSUZTIERCRyAocGlkIDEpOiBtb3VudF91Ymlmczogbm9kZSBzaXplczogICAgICAgICAg
+ZGF0YSA0OCwgaW5vZGUgMTYwLCBkZW50cnkgNTYNCj4gVUJJRlMgREJHIChwaWQgMSk6IG1vdW50
+X3ViaWZzOiBub2RlIHNpemVzOiAgICAgICAgICB0cnVuIDU2LCBzYiA0MDk2LCBtYXN0ZXIgNTEy
+DQo+IFVCSUZTIERCRyAocGlkIDEpOiBtb3VudF91Ymlmczogbm9kZSBzaXplczogICAgICAgICAg
+cmVmIDY0LCBjbXQuIHN0YXJ0IDMyLCBvcnBoIDMyDQo+IFVCSUZTIERCRyAocGlkIDEpOiBtb3Vu
+dF91YmlmczogbWF4LiBub2RlIHNpemVzOiAgICAgZGF0YSA0MTQ0LCBpbm9kZSA0MjU2IGRlbnRy
+eSAzMTIsIGlkeCAxODgNCj4gVUJJRlMgREJHIChwaWQgMSk6IG1vdW50X3ViaWZzOiBkZWFkIHdh
+dGVybWFyazogICAgICA0MDk2DQo+IFVCSUZTIERCRyAocGlkIDEpOiBtb3VudF91YmlmczogZGFy
+ayB3YXRlcm1hcms6ICAgICAgODE5Mg0KPiBVQklGUyBEQkcgKHBpZCAxKTogbW91bnRfdWJpZnM6
+IExFQiBvdmVyaGVhZDogICAgICAgIDIyNDANCj4gVUJJRlMgREJHIChwaWQgMSk6IG1vdW50X3Vi
+aWZzOiBtYXguIGRhcmsgc3BhY2U6ICAgICAxMDE2NjI3MiAoOTkyOCBLaUIsIDkgTWlCKQ0KPiBV
+QklGUyBEQkcgKHBpZCAxKTogbW91bnRfdWJpZnM6IG1heGltdW0gYnVkIGJ5dGVzOiAgIDgzODg2
+MDggKDgxOTIgS2lCLCA4IE1pQikNCj4gVUJJRlMgREJHIChwaWQgMSk6IG1vdW50X3ViaWZzOiBC
+RyBjb21taXQgYnVkIGJ5dGVzOiA2ODE1NzQ0ICg2NjU2IEtpQiwgNiBNaUIpDQo+IFVCSUZTIERC
+RyAocGlkIDEpOiBtb3VudF91YmlmczogY3VycmVudCBidWQgYnl0ZXMgICAgNDA1NTA0ICgzOTYg
+S2lCLCAwIE1pQikNCj4gVUJJRlMgREJHIChwaWQgMSk6IG1vdW50X3ViaWZzOiBtYXguIHNlcS4g
+bnVtYmVyOiAgICA4Mjk1ODQ2DQo+IFVCSUZTIERCRyAocGlkIDEpOiBtb3VudF91YmlmczogY29t
+bWl0IG51bWJlcjogICAgICAgMTQzNA0KPiBVQklGUyBlcnJvciAocGlkIDEpOiB1Ymlmc19pZ2V0
+OiBmYWlsZWQgdG8gcmVhZCBpbm9kZSAxLCBlcnJvciAtMg0KPiBVQklGUyBEQkcgKHBpZCA3Njcp
+OiB1Ymlmc19iZ190aHJlYWQ6IGJhY2tncm91bmQgdGhyZWFkICJ1Ymlmc19iZ3QxXzEiIHN0b3Bz
+DQo+IA0KPiBMb29raW5nIGludG8gdGhlIGNvZGUgSSBzZWUgdGhlIGZhaWxlZCB0byByZWFkIGlu
+b2RlIDEsIGVycm9yIC0yIGlzIGNhdXNlIGJ5Og0KPiAidWJpZnNfbG9va3VwX2xldmVsMCAtPiAt
+RU5PRU5UIiBsb2NhdGVkIGluIHRuYy5jDQo+IA0KPiBMb29raW5nIGluc2lkZSB0aGUgdWJpZnNf
+bG9va3VwX2xldmVsMCBmdW5jdGlvbiBpdCBmbG93cyBvdXQgb2YgdGhlIGZ1bmN0aW9uIHRocm91
+Z2g6DQo+ICAgICAgICAgaWYgKGV4YWN0IHx8ICFpc19oYXNoX2tleShjLCBrZXkpIHx8ICpuICE9
+IC0xKSB7DQo+ICAgICAgICAgICAgICAgICBkYmdfdG5jKCJmb3VuZCAlZCwgbHZsICVkLCBuICVk
+IiwgZXhhY3QsIHpub2RlLT5sZXZlbCwgKm4pOw0KPiAgICAgICAgICAgICAgICAgcmV0dXJuIGV4
+YWN0Ow0KPiAgICAgICAgIH0NCj4gDQo+IFdoZXJlOiANCj4gCWV4YWN0ID0gMA0KDQonZXhhY3Qg
+PSAwJyBtZWFucyB3ZSBkaWQgbm90IGZpbmQgZXhhY3RseSB0aGUga2V5DQoNCj4gCSpuID0gLTEN
+Cg0KJ24gPSAtMScgbWVhbnMgdGhhdCBpZiB0aGUga2V5IGV4aXN0ZWQgaW4gdGhpcyBCLXRyZWUg
+bm9kZSwgaXQgd291bGQNCmhhdmUgYmVlbiAgcGxhY2VkIGJlZm9yZSBhbGwgdGhlIG90aGVyIGtl
+eXMgdGhlcmUuIElPVywgdGhlIGtleSBpcw0Kc21hbGxlciB0aGFuIGFsbCB0aGUga2V5cyBpbiB0
+aGUgQi10cmVlIG5vZGUgd2UgZm91bmQuDQoNCj4gCVNvOiAiIWlzX2hhc2hfa2V5KGMsIGtleSki
+IG11c3QgYmUgdHJ1ZS4NCg0KVGhlIGtleSBkb2VzIG5vdCBoYXZlIGEgaGFzaCwgd2hpY2ggbWVh
+bnMgdGhpcyBpcyBub3QgYSBkaXJlY3RvcnkgZW50cnkNCmtleS4gRGlyZW50cnkga2V5cyBjb250
+YWluIGhhc2ggb2YgdGhlIGRpcmVudHJ5IG5hbWUsIHNvIHRoZXkgbWF5DQpjb2xsaWRlLg0KDQpC
+YXNpY2FsbHksIHRoZSBrZXkgeW91IGFyZSBsb29raW5nIHVwIGlzIG5vdCBmb3VuZC4NCg0KPiAn
+ZXhhY3QnIGlzIGluIHRoZSBjYWxsaW5nIGZ1bmN0aW9uZWQgaW50ZXJwcmV0IGFzIGZvdW5kICh3
+aGVyZSAhZm91bmQgZ2VuZXJhdGVzIHRoZSBlcnJvcik7IHRoaXMgc2VlbXMgYSBsaXR0bGViaXQg
+Y3VyaW91cyB0byBtZS4NCj4gQnV0IG9uIGZpcnN0IHNpZ2h0IGl0cyBjb21wbGV4IGNvZGUgYW5k
+IG1heWJlIHlvdSBjYW4gZ2l2ZSBzb21lIGdsdWU/DQoNClllcywgdGhlIGNvZGUgaXMgbm90IHZl
+cnkgZWFzeSwgYmVjYXVzZSB0aGlzIGlzIGJhc2ljYWxseSB0aGUgY29yZSBjb2RlDQpkZWFsaW5n
+IHdpdGggdGhlIG1haW4gRlMgZGF0YXN0cnVjdHVyZSAtIHRoZSBjZW50cmFsIEItdHJlZS4gVGhl
+cmUgYXJlDQptYW55IGNvbXBsZXhpdGllcyB0byBzb2x2ZS4NCg0KPiBJIHN1cHBvc2UgYSBwaWVj
+ZSBvZiAndHJlZSBub2RlIGNhY2hlJyBoYXMgYmVlbiBidWlsZC11cCBkdXJpbmcgcmVjb3Zlcnku
+Li4gY291bGQgdGhlIHByb2JsZW0gYmUgdGhlcmU/DQoNClROQyBpcyBhIGNhY2hlIG9mIHRoZSBv
+bi1mbGFzaCBpbmRleCB0cmVlLCBzbyBpdCBpcyAiYnVpbHQtdXAiIGV2ZXJ5DQp0aW1lIGl0IGlz
+IHRyYXZlcnNlZCwgd2hpY2ggdXN1YWxseSBoYXBwZW5zIHdoZW4gc29tZXRoaW5nIGlzIGJlaW5n
+IHJlYWQNCihlLmcuLCBmaWxlcykuDQoNCkkgdGhpbmsgd2UgZGlkIGhhdmUgYnVncyBpbiByZWNv
+dmVyeSBwcm9jZXNzIHdoaWNoIG1hZGUgbm9kZXMNCiJkaXNhcHBlYXIiLiBCdXQgSSBkbyBub3Qg
+cmVtZW1iZXIgYW55bW9yZSB0aGUgZGV0YWlscy4gVXN1YWxseQ0KaW1wb3J0YW50IGZpeGVzIHdl
+cmUgQ0MtZWQgdG8gLXN0YWJsZS4NCg0KLS0gDQpCZXN0IFJlZ2FyZHMsDQpBcnRlbSBCaXR5dXRz
+a2l5DQoNCg==
