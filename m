@@ -1,23 +1,24 @@
-Received: from szxga01-in.huawei.com ([119.145.14.64])
+Received: from mail-ob0-x234.google.com ([2607:f8b0:4003:c01::234])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UhJG7-0004lS-9A
- for linux-mtd@lists.infradead.org; Tue, 28 May 2013 12:44:12 +0000
-Message-ID: <51A4A5C9.1010909@huawei.com>
-Date: Tue, 28 May 2013 20:40:41 +0800
-From: Libo Chen <clbchenlibo.chen@huawei.com>
+ id 1UhJLN-0004rC-MB
+ for linux-mtd@lists.infradead.org; Tue, 28 May 2013 12:49:38 +0000
+Received: by mail-ob0-f180.google.com with SMTP id eh20so964654obb.25
+ for <linux-mtd@lists.infradead.org>; Tue, 28 May 2013 05:49:16 -0700 (PDT)
 MIME-Version: 1.0
-To: <dwmw2@infradead.org>
-Subject: Re: [PATCH RESEND] mtd: fix kfree bcm47xxsflash
+In-Reply-To: <51A4A5C9.1010909@huawei.com>
 References: <1367743225-3484-1-git-send-email-libo.chen@huawei.com>
- <519C40A8.1070506@huawei.com>
-In-Reply-To: <519C40A8.1070506@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+ <519C40A8.1070506@huawei.com> <51A4A5C9.1010909@huawei.com>
+Date: Tue, 28 May 2013 14:49:16 +0200
+Message-ID: <CACna6rx6t-ewq0Dt6i56JAdv_iueMoVKx_RujsXSLFJawkgGXw@mail.gmail.com>
+Subject: Re: [PATCH RESEND] mtd: fix kfree bcm47xxsflash
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: Libo Chen <clbchenlibo.chen@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Cc: Li Zefan <lizefan@huawei.com>, Greg KH <gregkh@linuxfoundation.org>,
- artem.bityutskiy@linux.intel.com, zajec5@gmail.com,
- LKML <linux-kernel@vger.kernel.org>, wfp5p@virginia.edu,
- linux-mtd@lists.infradead.org, hauke@hauke-m.de,
- Andrew Morton <akpm@linux-foundation.org>
+ artem.bityutskiy@linux.intel.com, LKML <linux-kernel@vger.kernel.org>,
+ wfp5p@virginia.edu, linux-mtd@lists.infradead.org, hauke@hauke-m.de,
+ Andrew Morton <akpm@linux-foundation.org>, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,32 +28,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ping...
+2013/5/28 Libo Chen <clbchenlibo.chen@huawei.com>:
+> ping...
 
-On 2013/5/22 11:51, Libo Chen wrote:
-> 
-> mtd is just member of bcm47xxsflash, so we should free bcm47xxsflash  not its member.
-> 
-> Signed-off-by: Libo Chen <libo.chen@huawei.com>
-> Acked-by: Rafał Miłecki <zajec5@gmail.com>
-> ---
->  drivers/mtd/devices/bcm47xxsflash.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> * add Acked-by: Rafał Miłecki <zajec5@gmail.com>
-> * change send list
-> 
-> diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
-> index 9526628..4aa9141 100644
-> --- a/drivers/mtd/devices/bcm47xxsflash.c
-> +++ b/drivers/mtd/devices/bcm47xxsflash.c
-> @@ -76,7 +76,7 @@ static int bcm47xxsflash_bcma_probe(struct platform_device *pdev)
->  	return 0;
-> 
->  err_dev_reg:
-> -	kfree(&b47s->mtd);
-> +	kfree(b47s);
->  out:
->  	return err;
->  }
-> 
+It takes a lot of time for someone to pick up mtd patches, just be patient =
+;)
+
+--=20
+Rafa=C5=82
