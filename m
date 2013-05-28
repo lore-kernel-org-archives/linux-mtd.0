@@ -1,25 +1,14 @@
-Received: from smtp6-v.fe.bosch.de ([2a03:cc00:ff0:100::2])
+Received: from smtp39.i.mail.ru ([94.100.177.99])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UhE0S-0005wu-EF
- for linux-mtd@lists.infradead.org; Tue, 28 May 2013 07:07:42 +0000
-From: "Prins Anton (ST-CO/ENG1.1)" <Anton.Prins@nl.bosch.com>
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Date: Tue, 28 May 2013 09:07:09 +0200
-Subject: RE: UBIFS failure & stable page writes
-Message-ID: <85D877DD6EE67B4A9FCA9B9C3A4865670C3E8CBD81@SI-MBX14.de.bosch.com>
-References: <85D877DD6EE67B4A9FCA9B9C3A4865670C3E8CB9B7@SI-MBX14.de.bosch.com>
- <4BE1E71893EF1E4F9E9DD99FB4EBF0032C02EA2D44@SI-MBX02.de.bosch.com>
- <85D877DD6EE67B4A9FCA9B9C3A4865670C3E8CBA85@SI-MBX14.de.bosch.com>
- <20130527121828.GA32625@quack.suse.cz>
- <85D877DD6EE67B4A9FCA9B9C3A4865670C3E8CBB8D@SI-MBX14.de.bosch.com>
- <1369709828.5446.89.camel@sauron.fi.intel.com>
-In-Reply-To: <1369709828.5446.89.camel@sauron.fi.intel.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Jan Kara <jack@suse.cz>, Adrian Hunter <adrian.hunter@intel.com>
+ id 1UhEVy-0006Z2-2K
+ for linux-mtd@lists.infradead.org; Tue, 28 May 2013 07:40:16 +0000
+From: Alexander Shiyan <shc_work@mail.ru>
+To: linux-mtd@lists.infradead.org
+Subject: [RFC] mtd: nand-gpio: Prepare driver to support multichip devices
+Date: Tue, 28 May 2013 11:39:28 +0400
+Message-Id: <1369726768-11945-1-git-send-email-shc_work@mail.ru>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ David Woodhouse <dwmw2@infradead.org>, Alexander Shiyan <shc_work@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,105 +18,220 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-V2UgdXNlIGEgYmFja3BvcnQgb2YgVUJJRlMtMi42IChqdW5lIDIwMTIpLCBhbmQgY2hlY2tlZCBm
-b3IgaW1wb3J0YW50IGZpeGVzIGluIHRoaXMgYXJlYS4NCg0KSXMgdGhlcmUgYSB3YXkgdG8gY2hl
-Y2svZmluZCBpZiBhICdyb290LW5vZGUnIGlzIGxvYWQgZnJvbSBmbGFzaCAoZS5nLiBkdXJpbmcg
-cmVjb3ZlcnkpPw0KDQpEb2VzIHJlY292ZXJ5IG5lZWQgdGhlICdyb290LW5vZGUnPw0KDQpNZXQg
-dnJpZW5kZWxpamtlIGdyb2V0ZW4gfCBCZXN0IFJlZ2FyZHMsIA0KQW50b24gUHJpbnMNCg0KQm9z
-Y2ggU2VjdXJpdHkgU3lzdGVtcyBCViwgDQpDb25mZXJlbmNlIFN5c3RlbXMgKFNULUNPL0VORzEu
-MSkgDQpUb3JlbmFsbGVlIDQ5DQo1NjE3IEJBICBFaW5kaG92ZW4NClRoZSBOZXRoZXJsYW5kcyAN
-Cnd3dy5ib3NjaHNlY3VyaXR5LmNvbSANClQuICszMSAoMCk0MCAyNTc3MDc3DQphbnRvbi5wcmlu
-c0BubC5ib3NjaC5jb20NCg0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogQXJ0
-ZW0gQml0eXV0c2tpeSBbbWFpbHRvOmRlZGVraW5kMUBnbWFpbC5jb21dIA0KU2VudDogZGluc2Rh
-ZyAyOCBtZWkgMjAxMyA0OjU3DQpUbzogUHJpbnMgQW50b24gKFNULUNPL0VORzEuMSkNCkNjOiBK
-YW4gS2FyYTsgQWRyaWFuIEh1bnRlcjsgbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNClN1
-YmplY3Q6IFJlOiBVQklGUyBmYWlsdXJlICYgc3RhYmxlIHBhZ2Ugd3JpdGVzDQoNCk9uIE1vbiwg
-MjAxMy0wNS0yNyBhdCAxNToxMyArMDIwMCwgUHJpbnMgQW50b24gKFNULUNPL0VORzEuMSkgd3Jv
-dGU6DQo+IEhpIEFydGVtIGFuZC9vciBBZHJpYW4sDQo+IA0KPiBBcyB5b3Ugc2VlIHdlIHJhbiBp
-bnRvIHNvbWUgaXNzdWUgbG9va2luZyBhdCBVQklGUy4NCj4gKFdlIHVzZSBhIGN1c3RvbSBidWls
-ZCBMaW51eC0yLjYuMzcuNiBrZXJuZWwvZGlzdHJvKQ0KDQpPaCwgcXVpdGUgb2xkLiBUaGVyZSBt
-aWdodCBoYXZlIGJlZW4gc29tZSBmaXhlcy4NCg0KPiBIZXJlIHlvdSBzZWUgYSBwYXJ0IG9mIG91
-ciBsb2ctb3V0cHV0DQo+IFVCSUZTIERCRyAocGlkIDc2Nyk6IHViaWZzX2JnX3RocmVhZDogYmFj
-a2dyb3VuZCB0aHJlYWQgInViaWZzX2JndDFfMSIgc3RhcnRlZCwgUElEIDc2Nw0KPiBVQklGUzog
-cmVjb3ZlcnkgbmVlZGVkDQo+IFVCSUZTOiByZWNvdmVyeSBjb21wbGV0ZWQNCj4gVUJJRlM6IG1v
-dW50ZWQgVUJJIGRldmljZSAxLCB2b2x1bWUgMSwgbmFtZSAiZGF0YWZzIg0KPiBVQklGUzogZmls
-ZSBzeXN0ZW0gc2l6ZTogICA2NDA0NzUxMzYgYnl0ZXMgKDYyNTQ2NCBLaUIsIDYxMCBNaUIsIDEy
-NDEgTEVCcykNCj4gVUJJRlM6IGpvdXJuYWwgc2l6ZTogICAgICAgMTA0NTI5OTIgYnl0ZXMgKDEw
-MjA4IEtpQiwgOSBNaUIsIDIxIExFQnMpDQo+IFVCSUZTOiBtZWRpYSBmb3JtYXQ6ICAgICAgIHc0
-L3IwIChsYXRlc3QgaXMgdzQvcjApDQo+IFVCSUZTOiBkZWZhdWx0IGNvbXByZXNzb3I6IGx6bw0K
-PiBVQklGUzogcmVzZXJ2ZWQgZm9yIHJvb3Q6ICAwIGJ5dGVzICgwIEtpQikNCj4gVUJJRlMgREJH
-IChwaWQgMSk6IG1vdW50X3ViaWZzOiBjb21waWxlZCBvbjogICAgICAgICBNYXkgMjcgMjAxMyBh
-dCAxMzowODoyNA0KPiBVQklGUyBEQkcgKHBpZCAxKTogbW91bnRfdWJpZnM6IG1pbi4gSS9PIHVu
-aXQgc2l6ZTogIDQwOTYgYnl0ZXMNCj4gVUJJRlMgREJHIChwaWQgMSk6IG1vdW50X3ViaWZzOiBt
-YXguIHdyaXRlIHNpemU6ICAgICA0MDk2IGJ5dGVzDQo+IFVCSUZTIERCRyAocGlkIDEpOiBtb3Vu
-dF91YmlmczogTEVCIHNpemU6ICAgICAgICAgICAgNTE2MDk2IGJ5dGVzICg1MDQgS2lCKQ0KPiBV
-QklGUyBEQkcgKHBpZCAxKTogbW91bnRfdWJpZnM6IGRhdGEgam91cm5hbCBoZWFkczogIDENCj4g
-VUJJRlMgREJHIChwaWQgMSk6IG1vdW50X3ViaWZzOiBVVUlEOiAgICAgICAgICAgICAgICAxRDFB
-RDcyNi01M0FCLTQ2MjMtOEQ4Ni1CNzc3M0I1RUZBODMNCj4gVUJJRlMgREJHIChwaWQgMSk6IG1v
-dW50X3ViaWZzOiBiaWdfbHB0ICAgICAgICAgICAgICAwDQo+IFVCSUZTIERCRyAocGlkIDEpOiBt
-b3VudF91YmlmczogbG9nIExFQnM6ICAgICAgICAgICAgNCAoMyAtIDYpDQo+IFVCSUZTIERCRyAo
-cGlkIDEpOiBtb3VudF91YmlmczogTFBUIGFyZWEgTEVCczogICAgICAgMiAoNyAtIDgpDQo+IFVC
-SUZTIERCRyAocGlkIDEpOiBtb3VudF91Ymlmczogb3JwaGFuIGFyZWEgTEVCczogICAgMSAoOSAt
-IDkpDQo+IFVCSUZTIERCRyAocGlkIDEpOiBtb3VudF91YmlmczogbWFpbiBhcmVhIExFQnM6ICAg
-ICAgMTI0MSAoMTAgLSAxMjUwKQ0KPiBVQklGUyBEQkcgKHBpZCAxKTogbW91bnRfdWJpZnM6IGlu
-ZGV4IExFQnM6ICAgICAgICAgIDMxDQo+IFVCSUZTIERCRyAocGlkIDEpOiBtb3VudF91Ymlmczog
-dG90YWwgaW5kZXggYnl0ZXM6ICAgNzAyOTQ0ICg2ODYgS2lCLCAwIE1pQikNCj4gVUJJRlMgREJH
-IChwaWQgMSk6IG1vdW50X3ViaWZzOiBrZXkgaGFzaCB0eXBlOiAgICAgICAwDQo+IFVCSUZTIERC
-RyAocGlkIDEpOiBtb3VudF91YmlmczogdHJlZSBmYW5vdXQ6ICAgICAgICAgOA0KPiBVQklGUyBE
-QkcgKHBpZCAxKTogbW91bnRfdWJpZnM6IHJlc2VydmVkIEdDIExFQjogICAgIDE2Ng0KPiBVQklG
-UyBEQkcgKHBpZCAxKTogbW91bnRfdWJpZnM6IGZpcnN0IG1haW4gTEVCOiAgICAgIDEwDQo+IFVC
-SUZTIERCRyAocGlkIDEpOiBtb3VudF91YmlmczogbWF4LiB6bm9kZSBzaXplICAgICAgMjQwDQo+
-IFVCSUZTIERCRyAocGlkIDEpOiBtb3VudF91YmlmczogbWF4LiBpbmRleCBub2RlIHNpemUgMTky
-DQo+IFVCSUZTIERCRyAocGlkIDEpOiBtb3VudF91Ymlmczogbm9kZSBzaXplczogICAgICAgICAg
-ZGF0YSA0OCwgaW5vZGUgMTYwLCBkZW50cnkgNTYNCj4gVUJJRlMgREJHIChwaWQgMSk6IG1vdW50
-X3ViaWZzOiBub2RlIHNpemVzOiAgICAgICAgICB0cnVuIDU2LCBzYiA0MDk2LCBtYXN0ZXIgNTEy
-DQo+IFVCSUZTIERCRyAocGlkIDEpOiBtb3VudF91Ymlmczogbm9kZSBzaXplczogICAgICAgICAg
-cmVmIDY0LCBjbXQuIHN0YXJ0IDMyLCBvcnBoIDMyDQo+IFVCSUZTIERCRyAocGlkIDEpOiBtb3Vu
-dF91YmlmczogbWF4LiBub2RlIHNpemVzOiAgICAgZGF0YSA0MTQ0LCBpbm9kZSA0MjU2IGRlbnRy
-eSAzMTIsIGlkeCAxODgNCj4gVUJJRlMgREJHIChwaWQgMSk6IG1vdW50X3ViaWZzOiBkZWFkIHdh
-dGVybWFyazogICAgICA0MDk2DQo+IFVCSUZTIERCRyAocGlkIDEpOiBtb3VudF91YmlmczogZGFy
-ayB3YXRlcm1hcms6ICAgICAgODE5Mg0KPiBVQklGUyBEQkcgKHBpZCAxKTogbW91bnRfdWJpZnM6
-IExFQiBvdmVyaGVhZDogICAgICAgIDIyNDANCj4gVUJJRlMgREJHIChwaWQgMSk6IG1vdW50X3Vi
-aWZzOiBtYXguIGRhcmsgc3BhY2U6ICAgICAxMDE2NjI3MiAoOTkyOCBLaUIsIDkgTWlCKQ0KPiBV
-QklGUyBEQkcgKHBpZCAxKTogbW91bnRfdWJpZnM6IG1heGltdW0gYnVkIGJ5dGVzOiAgIDgzODg2
-MDggKDgxOTIgS2lCLCA4IE1pQikNCj4gVUJJRlMgREJHIChwaWQgMSk6IG1vdW50X3ViaWZzOiBC
-RyBjb21taXQgYnVkIGJ5dGVzOiA2ODE1NzQ0ICg2NjU2IEtpQiwgNiBNaUIpDQo+IFVCSUZTIERC
-RyAocGlkIDEpOiBtb3VudF91YmlmczogY3VycmVudCBidWQgYnl0ZXMgICAgNDA1NTA0ICgzOTYg
-S2lCLCAwIE1pQikNCj4gVUJJRlMgREJHIChwaWQgMSk6IG1vdW50X3ViaWZzOiBtYXguIHNlcS4g
-bnVtYmVyOiAgICA4Mjk1ODQ2DQo+IFVCSUZTIERCRyAocGlkIDEpOiBtb3VudF91YmlmczogY29t
-bWl0IG51bWJlcjogICAgICAgMTQzNA0KPiBVQklGUyBlcnJvciAocGlkIDEpOiB1Ymlmc19pZ2V0
-OiBmYWlsZWQgdG8gcmVhZCBpbm9kZSAxLCBlcnJvciAtMg0KPiBVQklGUyBEQkcgKHBpZCA3Njcp
-OiB1Ymlmc19iZ190aHJlYWQ6IGJhY2tncm91bmQgdGhyZWFkICJ1Ymlmc19iZ3QxXzEiIHN0b3Bz
-DQo+IA0KPiBMb29raW5nIGludG8gdGhlIGNvZGUgSSBzZWUgdGhlIGZhaWxlZCB0byByZWFkIGlu
-b2RlIDEsIGVycm9yIC0yIGlzIGNhdXNlIGJ5Og0KPiAidWJpZnNfbG9va3VwX2xldmVsMCAtPiAt
-RU5PRU5UIiBsb2NhdGVkIGluIHRuYy5jDQo+IA0KPiBMb29raW5nIGluc2lkZSB0aGUgdWJpZnNf
-bG9va3VwX2xldmVsMCBmdW5jdGlvbiBpdCBmbG93cyBvdXQgb2YgdGhlIGZ1bmN0aW9uIHRocm91
-Z2g6DQo+ICAgICAgICAgaWYgKGV4YWN0IHx8ICFpc19oYXNoX2tleShjLCBrZXkpIHx8ICpuICE9
-IC0xKSB7DQo+ICAgICAgICAgICAgICAgICBkYmdfdG5jKCJmb3VuZCAlZCwgbHZsICVkLCBuICVk
-IiwgZXhhY3QsIHpub2RlLT5sZXZlbCwgKm4pOw0KPiAgICAgICAgICAgICAgICAgcmV0dXJuIGV4
-YWN0Ow0KPiAgICAgICAgIH0NCj4gDQo+IFdoZXJlOiANCj4gCWV4YWN0ID0gMA0KDQonZXhhY3Qg
-PSAwJyBtZWFucyB3ZSBkaWQgbm90IGZpbmQgZXhhY3RseSB0aGUga2V5DQoNCj4gCSpuID0gLTEN
-Cg0KJ24gPSAtMScgbWVhbnMgdGhhdCBpZiB0aGUga2V5IGV4aXN0ZWQgaW4gdGhpcyBCLXRyZWUg
-bm9kZSwgaXQgd291bGQNCmhhdmUgYmVlbiAgcGxhY2VkIGJlZm9yZSBhbGwgdGhlIG90aGVyIGtl
-eXMgdGhlcmUuIElPVywgdGhlIGtleSBpcw0Kc21hbGxlciB0aGFuIGFsbCB0aGUga2V5cyBpbiB0
-aGUgQi10cmVlIG5vZGUgd2UgZm91bmQuDQoNCj4gCVNvOiAiIWlzX2hhc2hfa2V5KGMsIGtleSki
-IG11c3QgYmUgdHJ1ZS4NCg0KVGhlIGtleSBkb2VzIG5vdCBoYXZlIGEgaGFzaCwgd2hpY2ggbWVh
-bnMgdGhpcyBpcyBub3QgYSBkaXJlY3RvcnkgZW50cnkNCmtleS4gRGlyZW50cnkga2V5cyBjb250
-YWluIGhhc2ggb2YgdGhlIGRpcmVudHJ5IG5hbWUsIHNvIHRoZXkgbWF5DQpjb2xsaWRlLg0KDQpC
-YXNpY2FsbHksIHRoZSBrZXkgeW91IGFyZSBsb29raW5nIHVwIGlzIG5vdCBmb3VuZC4NCg0KPiAn
-ZXhhY3QnIGlzIGluIHRoZSBjYWxsaW5nIGZ1bmN0aW9uZWQgaW50ZXJwcmV0IGFzIGZvdW5kICh3
-aGVyZSAhZm91bmQgZ2VuZXJhdGVzIHRoZSBlcnJvcik7IHRoaXMgc2VlbXMgYSBsaXR0bGViaXQg
-Y3VyaW91cyB0byBtZS4NCj4gQnV0IG9uIGZpcnN0IHNpZ2h0IGl0cyBjb21wbGV4IGNvZGUgYW5k
-IG1heWJlIHlvdSBjYW4gZ2l2ZSBzb21lIGdsdWU/DQoNClllcywgdGhlIGNvZGUgaXMgbm90IHZl
-cnkgZWFzeSwgYmVjYXVzZSB0aGlzIGlzIGJhc2ljYWxseSB0aGUgY29yZSBjb2RlDQpkZWFsaW5n
-IHdpdGggdGhlIG1haW4gRlMgZGF0YXN0cnVjdHVyZSAtIHRoZSBjZW50cmFsIEItdHJlZS4gVGhl
-cmUgYXJlDQptYW55IGNvbXBsZXhpdGllcyB0byBzb2x2ZS4NCg0KPiBJIHN1cHBvc2UgYSBwaWVj
-ZSBvZiAndHJlZSBub2RlIGNhY2hlJyBoYXMgYmVlbiBidWlsZC11cCBkdXJpbmcgcmVjb3Zlcnku
-Li4gY291bGQgdGhlIHByb2JsZW0gYmUgdGhlcmU/DQoNClROQyBpcyBhIGNhY2hlIG9mIHRoZSBv
-bi1mbGFzaCBpbmRleCB0cmVlLCBzbyBpdCBpcyAiYnVpbHQtdXAiIGV2ZXJ5DQp0aW1lIGl0IGlz
-IHRyYXZlcnNlZCwgd2hpY2ggdXN1YWxseSBoYXBwZW5zIHdoZW4gc29tZXRoaW5nIGlzIGJlaW5n
-IHJlYWQNCihlLmcuLCBmaWxlcykuDQoNCkkgdGhpbmsgd2UgZGlkIGhhdmUgYnVncyBpbiByZWNv
-dmVyeSBwcm9jZXNzIHdoaWNoIG1hZGUgbm9kZXMNCiJkaXNhcHBlYXIiLiBCdXQgSSBkbyBub3Qg
-cmVtZW1iZXIgYW55bW9yZSB0aGUgZGV0YWlscy4gVXN1YWxseQ0KaW1wb3J0YW50IGZpeGVzIHdl
-cmUgQ0MtZWQgdG8gLXN0YWJsZS4NCg0KLS0gDQpCZXN0IFJlZ2FyZHMsDQpBcnRlbSBCaXR5dXRz
-a2l5DQoNCg==
+
+Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+---
+ arch/arm/mach-clps711x/board-autcpu12.c |  4 +--
+ arch/arm/mach-clps711x/board-p720t.c    |  4 +--
+ arch/arm/mach-pxa/cm-x255.c             | 10 ++++----
+ drivers/mtd/nand/gpio.c                 | 45 +++++++++++++++------------------
+ include/linux/mtd/nand-gpio.h           | 12 +++++----
+ 5 files changed, 37 insertions(+), 38 deletions(-)
+
+diff --git a/arch/arm/mach-clps711x/board-autcpu12.c b/arch/arm/mach-clps711x/board-autcpu12.c
+index f385847..260a28a 100644
+--- a/arch/arm/mach-clps711x/board-autcpu12.c
++++ b/arch/arm/mach-clps711x/board-autcpu12.c
+@@ -107,11 +107,11 @@ static void __init autcpu12_adjust_parts(struct gpio_nand_platdata *pdata,
+ }
+ 
+ static struct gpio_nand_platdata autcpu12_nand_pdata __initdata = {
+-	.gpio_rdy	= AUTCPU12_SMC_RDY,
+-	.gpio_nce	= AUTCPU12_SMC_NCE,
+ 	.gpio_ale	= AUTCPU12_SMC_ALE,
+ 	.gpio_cle	= AUTCPU12_SMC_CLE,
+ 	.gpio_nwp	= -1,
++	.gpio_nce[0]	= AUTCPU12_SMC_NCE,
++	.gpio_rdy[0]	= AUTCPU12_SMC_RDY,
+ 	.chip_delay	= 20,
+ 	.parts		= autcpu12_nand_parts,
+ 	.num_parts	= ARRAY_SIZE(autcpu12_nand_parts),
+diff --git a/arch/arm/mach-clps711x/board-p720t.c b/arch/arm/mach-clps711x/board-p720t.c
+index 8d3ee67..82a81de 100644
+--- a/arch/arm/mach-clps711x/board-p720t.c
++++ b/arch/arm/mach-clps711x/board-p720t.c
+@@ -69,11 +69,11 @@ static struct mtd_partition p720t_nand_parts[] __initdata = {
+ };
+ 
+ static struct gpio_nand_platdata p720t_nand_pdata __initdata = {
+-	.gpio_rdy	= -1,
+-	.gpio_nce	= P720T_NAND_NCE,
+ 	.gpio_ale	= P720T_NAND_ALE,
+ 	.gpio_cle	= P720T_NAND_CLE,
+ 	.gpio_nwp	= -1,
++	.gpio_nce[0]	= P720T_NAND_NCE,
++	.gpio_rdy[0]	= -1,
+ 	.chip_delay	= 15,
+ 	.parts		= p720t_nand_parts,
+ 	.num_parts	= ARRAY_SIZE(p720t_nand_parts),
+diff --git a/arch/arm/mach-pxa/cm-x255.c b/arch/arm/mach-pxa/cm-x255.c
+index be75147..40ae03f 100644
+--- a/arch/arm/mach-pxa/cm-x255.c
++++ b/arch/arm/mach-pxa/cm-x255.c
+@@ -198,11 +198,11 @@ static struct mtd_partition cmx255_nand_parts[] = {
+ };
+ 
+ static struct gpio_nand_platdata cmx255_nand_platdata = {
+-	.gpio_nce = GPIO_NAND_CS,
+-	.gpio_cle = GPIO_NAND_CLE,
+-	.gpio_ale = GPIO_NAND_ALE,
+-	.gpio_rdy = GPIO_NAND_RB,
+-	.gpio_nwp = -1,
++	.gpio_ale	= GPIO_NAND_ALE,
++	.gpio_cle	= GPIO_NAND_CLE,
++	.gpio_nwp	= -1,
++	.gpio_nce[0]	= GPIO_NAND_CS,
++	.gpio_rdy[0]	= GPIO_NAND_RB,
+ 	.parts = cmx255_nand_parts,
+ 	.num_parts = ARRAY_SIZE(cmx255_nand_parts),
+ 	.chip_delay = 25,
+diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
+index 800a1cc..a7d661e 100644
+--- a/drivers/mtd/nand/gpio.c
++++ b/drivers/mtd/nand/gpio.c
+@@ -41,7 +41,6 @@ struct gpiomtd {
+ 
+ #define gpio_nand_getpriv(x) container_of(x, struct gpiomtd, mtd_info)
+ 
+-
+ #ifdef CONFIG_ARM
+ /* gpio_nand_dosync()
+  *
+@@ -75,7 +74,7 @@ static void gpio_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+ 	gpio_nand_dosync(gpiomtd);
+ 
+ 	if (ctrl & NAND_CTRL_CHANGE) {
+-		gpio_set_value(gpiomtd->plat.gpio_nce, !(ctrl & NAND_NCE));
++		gpio_set_value(gpiomtd->plat.gpio_nce[0], !(ctrl & NAND_NCE));
+ 		gpio_set_value(gpiomtd->plat.gpio_cle, !!(ctrl & NAND_CLE));
+ 		gpio_set_value(gpiomtd->plat.gpio_ale, !!(ctrl & NAND_ALE));
+ 		gpio_nand_dosync(gpiomtd);
+@@ -91,7 +90,7 @@ static int gpio_nand_devready(struct mtd_info *mtd)
+ {
+ 	struct gpiomtd *gpiomtd = gpio_nand_getpriv(mtd);
+ 
+-	return gpio_get_value(gpiomtd->plat.gpio_rdy);
++	return gpio_get_value(gpiomtd->plat.gpio_rdy[0]);
+ }
+ 
+ #ifdef CONFIG_OF
+@@ -118,8 +117,8 @@ static int gpio_nand_get_config_of(const struct device *dev,
+ 		}
+ 	}
+ 
+-	plat->gpio_rdy = of_get_gpio(dev->of_node, 0);
+-	plat->gpio_nce = of_get_gpio(dev->of_node, 1);
++	plat->gpio_rdy[0] = of_get_gpio(dev->of_node, 0);
++	plat->gpio_nce[0] = of_get_gpio(dev->of_node, 1);
+ 	plat->gpio_ale = of_get_gpio(dev->of_node, 2);
+ 	plat->gpio_cle = of_get_gpio(dev->of_node, 3);
+ 	plat->gpio_nwp = of_get_gpio(dev->of_node, 4);
+@@ -194,7 +193,7 @@ static int gpio_nand_remove(struct platform_device *pdev)
+ 
+ 	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
+ 		gpio_set_value(gpiomtd->plat.gpio_nwp, 0);
+-	gpio_set_value(gpiomtd->plat.gpio_nce, 1);
++	gpio_set_value(gpiomtd->plat.gpio_nce[0], 1);
+ 
+ 	return 0;
+ }
+@@ -234,34 +233,34 @@ static int gpio_nand_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nce, "NAND NCE");
++	ret = devm_gpio_request_one(&pdev->dev, gpiomtd->plat.gpio_ale,
++				    GPIOF_OUT_INIT_LOW, "NAND ALE");
++	if (ret)
++		return ret;
++
++	ret = devm_gpio_request_one(&pdev->dev, gpiomtd->plat.gpio_cle,
++				    GPIOF_OUT_INIT_LOW, "NAND CLE");
+ 	if (ret)
+ 		return ret;
+-	gpio_direction_output(gpiomtd->plat.gpio_nce, 1);
+ 
+ 	if (gpio_is_valid(gpiomtd->plat.gpio_nwp)) {
+-		ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nwp,
+-					"NAND NWP");
++		ret = devm_gpio_request_one(&pdev->dev, gpiomtd->plat.gpio_nwp,
++					    GPIOF_OUT_INIT_LOW, "NAND NWP");
+ 		if (ret)
+ 			return ret;
+ 	}
+ 
+-	ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_ale, "NAND ALE");
++	ret = devm_gpio_request_one(&pdev->dev, gpiomtd->plat.gpio_nce[0],
++				    GPIOF_OUT_INIT_HIGH, "NAND NCE");
+ 	if (ret)
+ 		return ret;
+-	gpio_direction_output(gpiomtd->plat.gpio_ale, 0);
+ 
+-	ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_cle, "NAND CLE");
+-	if (ret)
+-		return ret;
+-	gpio_direction_output(gpiomtd->plat.gpio_cle, 0);
+-
+-	if (gpio_is_valid(gpiomtd->plat.gpio_rdy)) {
+-		ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_rdy,
+-					"NAND RDY");
++	if (gpio_is_valid(gpiomtd->plat.gpio_rdy[0])) {
++		ret = devm_gpio_request_one(&pdev->dev,
++					    gpiomtd->plat.gpio_rdy[0], GPIOF_IN,
++					    "NAND RDY");
+ 		if (ret)
+ 			return ret;
+-		gpio_direction_input(gpiomtd->plat.gpio_rdy);
+ 		chip->dev_ready = gpio_nand_devready;
+ 	}
+ 
+@@ -270,14 +269,13 @@ static int gpio_nand_probe(struct platform_device *pdev)
+ 	chip->options		= gpiomtd->plat.options;
+ 	chip->chip_delay	= gpiomtd->plat.chip_delay;
+ 	chip->cmd_ctrl		= gpio_nand_cmd_ctrl;
+-
+ 	gpiomtd->mtd_info.priv	= chip;
+ 	gpiomtd->mtd_info.owner	= THIS_MODULE;
+ 
+ 	platform_set_drvdata(pdev, gpiomtd);
+ 
+ 	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
+-		gpio_direction_output(gpiomtd->plat.gpio_nwp, 1);
++		gpio_set_value(gpiomtd->plat.gpio_nwp, 1);
+ 
+ 	if (nand_scan(&gpiomtd->mtd_info, 1)) {
+ 		ret = -ENXIO;
+@@ -311,7 +309,6 @@ static struct platform_driver gpio_nand_driver = {
+ 		.of_match_table = of_match_ptr(gpio_nand_id_table),
+ 	},
+ };
+-
+ module_platform_driver(gpio_nand_driver);
+ 
+ MODULE_LICENSE("GPL");
+diff --git a/include/linux/mtd/nand-gpio.h b/include/linux/mtd/nand-gpio.h
+index 51534e5..0e66068 100644
+--- a/include/linux/mtd/nand-gpio.h
++++ b/include/linux/mtd/nand-gpio.h
+@@ -3,12 +3,14 @@
+ 
+ #include <linux/mtd/nand.h>
+ 
++#define MAX_NAND_PER_CHIP	1	
++
+ struct gpio_nand_platdata {
+-	int	gpio_nce;
+-	int	gpio_nwp;
+-	int	gpio_cle;
+-	int	gpio_ale;
+-	int	gpio_rdy;
++	int	gpio_ale;			/* ALE */
++	int	gpio_cle;			/* CLE */
++	int	gpio_nwp;			/* NWP (Optional) */
++	int	gpio_nce[MAX_NAND_PER_CHIP];	/* NCE */
++	int	gpio_rdy[MAX_NAND_PER_CHIP];	/* RDY (Optional) */
+ 	void	(*adjust_parts)(struct gpio_nand_platdata *, size_t);
+ 	struct mtd_partition *parts;
+ 	unsigned int num_parts;
+-- 
+1.8.1.5
