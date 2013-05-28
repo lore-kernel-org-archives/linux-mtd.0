@@ -1,25 +1,17 @@
-Received: from mail-la0-x22f.google.com ([2a00:1450:4010:c03::22f])
+Received: from va3ehsobe004.messaging.microsoft.com ([216.32.180.14]
+ helo=va3outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UhLqv-0000Wj-G1
- for linux-mtd@lists.infradead.org; Tue, 28 May 2013 15:30:22 +0000
-Received: by mail-la0-f47.google.com with SMTP id fq12so7620996lab.34
- for <linux-mtd@lists.infradead.org>; Tue, 28 May 2013 08:29:58 -0700 (PDT)
+ id 1UhTay-0000vz-O0
+ for linux-mtd@lists.infradead.org; Tue, 28 May 2013 23:46:25 +0000
+Date: Tue, 28 May 2013 18:45:34 -0500
+From: Scott Wood <scottwood@freescale.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] mtd: fsl_ifc_nand: fix eccstrength for ecc8
+Message-ID: <20130528234534.GA22340@home.buserror.net>
 MIME-Version: 1.0
-In-Reply-To: <519C40A8.1070506@huawei.com>
-References: <1367743225-3484-1-git-send-email-libo.chen@huawei.com>
- <519C40A8.1070506@huawei.com>
-Date: Tue, 28 May 2013 18:29:58 +0300
-Message-ID: <CAHp75VfXZMZvw_XmPKEWcBikbx7pk1oHoxa0ztoQ1ywhi5Ovew@mail.gmail.com>
-Subject: Re: [PATCH RESEND] mtd: fix kfree bcm47xxsflash
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-To: Libo Chen <clbchenlibo.chen@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Li Zefan <lizefan@huawei.com>, artem.bityutskiy@linux.intel.com,
- zajec5@gmail.com, LKML <linux-kernel@vger.kernel.org>,
- Bill Pemberton <wfp5p@virginia.edu>, linux-mtd@lists.infradead.org,
- hauke@hauke-m.de, Andrew Morton <akpm@linux-foundation.org>,
- dwmw2@infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org, prabhakar@freescale.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,45 +21,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is good fix, but I rather prefer not to see it in this shape.
-See comments below.
+Commit 44df4d11b8f573e9efcba94d63e6a1ad148c76d0 ("mtd: nand: fix
+incorrect ecc strength values") set eccstrength to 4 for IFC, but it is
+8 in one configuration.
 
-On Wed, May 22, 2013 at 6:51 AM, Libo Chen <clbchenlibo.chen@huawei.com> wr=
-ote:
->
-> mtd is just member of bcm47xxsflash, so we should free bcm47xxsflash  not=
- its member.
->
-> Signed-off-by: Libo Chen <libo.chen@huawei.com>
-> Acked-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
-> ---
->  drivers/mtd/devices/bcm47xxsflash.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> * add Acked-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
-> * change send list
->
-> diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bc=
-m47xxsflash.c
-> index 9526628..4aa9141 100644
-> --- a/drivers/mtd/devices/bcm47xxsflash.c
-> +++ b/drivers/mtd/devices/bcm47xxsflash.c
-> @@ -76,7 +76,7 @@ static int bcm47xxsflash_bcma_probe(struct platform_dev=
-ice *pdev)
->         return 0;
->
->  err_dev_reg:
-> -       kfree(&b47s->mtd);
-> +       kfree(b47s);
->  out:
->         return err;
->  }
+Signed-off-by: Scott Wood <scottwood@freescale.com>
+---
+ drivers/mtd/nand/fsl_ifc_nand.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-What about to switch to devm_* and remove those labels and kfrees at all?
-
-Additionally you can add another patch to use module_platform_driver()
-macro instead of module_init/exit.
-
---
-With Best Regards,
-Andy Shevchenko
+diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
+index f1f7f12..3469e5d 100644
+--- a/drivers/mtd/nand/fsl_ifc_nand.c
++++ b/drivers/mtd/nand/fsl_ifc_nand.c
+@@ -843,7 +843,6 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
+ 	/* Hardware generates ECC per 512 Bytes */
+ 	chip->ecc.size = 512;
+ 	chip->ecc.bytes = 8;
+-	chip->ecc.strength = 4;
+ 
+ 	switch (csor & CSOR_NAND_PGS_MASK) {
+ 	case CSOR_NAND_PGS_512:
+@@ -857,11 +856,13 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
+ 			bbt_mirror_descr.offs = 0;
+ 		}
+ 
++		chip->ecc.strength = 4;
+ 		priv->bufnum_mask = 15;
+ 		break;
+ 
+ 	case CSOR_NAND_PGS_2K:
+ 		layout = &oob_2048_ecc4;
++		chip->ecc.strength = 4;
+ 		priv->bufnum_mask = 3;
+ 		break;
+ 
+@@ -869,8 +870,10 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
+ 		if ((csor & CSOR_NAND_ECC_MODE_MASK) ==
+ 		    CSOR_NAND_ECC_MODE_4) {
+ 			layout = &oob_4096_ecc4;
++			chip->ecc.strength = 4;
+ 		} else {
+ 			layout = &oob_4096_ecc8;
++			chip->ecc.strength = 8;
+ 			chip->ecc.bytes = 16;
+ 		}
+ 
+-- 
+1.7.10.4
