@@ -1,18 +1,22 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UhfL2-0004Zl-H5
- for linux-mtd@lists.infradead.org; Wed, 29 May 2013 12:18:45 +0000
-Message-ID: <1369830093.24286.19.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] UBI: document UBI_IOCVOLUP better in user header
+ id 1UhfQk-0004hY-0W
+ for linux-mtd@lists.infradead.org; Wed, 29 May 2013 12:24:39 +0000
+Message-ID: <1369830446.24286.20.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] UBI: Fastmap: Fix memory leak
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Frysinger <vapier@gentoo.org>
-Date: Wed, 29 May 2013 15:21:33 +0300
-In-Reply-To: <1367466167-13087-1-git-send-email-vapier@gentoo.org>
-References: <1367466167-13087-1-git-send-email-vapier@gentoo.org>
+To: Richard Weinberger <richard@nod.at>
+Date: Wed, 29 May 2013 15:27:26 +0300
+In-Reply-To: <51A3150C.7080009@nod.at>
+References: <CAFLxGvw5gj-dfQeMKQVJpHPAXi4ZeNTaG3u3yXOAkshJRavXVA@mail.gmail.com>
+ <1369641744-13534-1-git-send-email-thomas@tomweber.eu>
+ <51A3150C.7080009@nod.at>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@intel.com>
+Cc: linux-mtd@lists.infradead.org, wang bo <wang.bo116@zte.com.cn>,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
+ Thomas Weber <thomas@tomweber.eu>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,18 +27,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2013-05-01 at 23:42 -0400, Mike Frysinger wrote:
-> The current ioctl define implies that this func expects to be passed a
-> 64bit number directly rather than a pointer to a 64bit.  The code that
-> processes this ioctl shows that it clearly expects a pointer.
+On Mon, 2013-05-27 at 10:10 +0200, Richard Weinberger wrote:
+> Hi!
 > 
-> It'd be best if we could change the type to "__s64*", but that would
-> change the generated ioctl number thus breaking the userland ABI.  So
-> just add a comment for intrepid developers.
+> Am 27.05.2013 10:02, schrieb Thomas Weber:
+> > Signed-off-by: wang bo <wang.bo116@zte.com.cn>
+> >
+> > [fix whitespace errors]
+> >
+> > Tested with linux-v3.10-rc3 on Devkit8000.
+> > Signed-off-by: Thomas Weber <thomas@tomweber.eu>
+> >
+> > The discussion about this patch can be found:
+> > https://lkml.org/lkml/2013/5/2/118
 > 
-> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+> Thanks a lot for fixing the whitespace issues!
+> Am I allowed to add a Tested-by: Thomas Weber <thomas@tomweber.eu>?
+> IOW did you test the patch? :D
 
-Pushed to linux-ubi.git, thanks!
+Did you intend to re-send the patch with all the tags at proper places?
 
 -- 
 Best Regards,
