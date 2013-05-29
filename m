@@ -1,27 +1,19 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UhfUv-0004nP-CH
- for linux-mtd@lists.infradead.org; Wed, 29 May 2013 12:28:57 +0000
-Message-ID: <1369830705.24286.22.camel@sauron.fi.intel.com>
-Subject: Re: nand_base: fix for ONFI chips that do not support GET/SET FEATURES
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: David Mosberger-Tang <dmosberger@gmail.com>
-Date: Wed, 29 May 2013 15:31:45 +0300
-In-Reply-To: <CACwUX0N5dhEBU9S_g6ZUWjvoEWndU7L+4PrmiFRg5sZjmCG0DQ@mail.gmail.com>
-References: <CACwUX0NbKtBCFrjKBFd307D6=EbBZQbE4w25GSAzop0FsBM2LQ@mail.gmail.com>
- <5181CF32.1090502@freescale.com>
- <CACwUX0M_CGStWih0qcR_8na-yMmvHrAaHxpYe4Y_Q5mx+jno+g@mail.gmail.com>
- <5181D25C.2080001@freescale.com>
- <CACwUX0ObapqNuV=D_8nMT6Pbr-PQhkC=ZfuVMWEOtGUcyzt8tg@mail.gmail.com>
- <CACwUX0N5dhEBU9S_g6ZUWjvoEWndU7L+4PrmiFRg5sZjmCG0DQ@mail.gmail.com>
+ id 1UhfZg-0004uy-9K
+ for linux-mtd@lists.infradead.org; Wed, 29 May 2013 12:33:52 +0000
+Message-ID: <1369830989.24286.23.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] flash_erase: use pwrite() rather than lseek() && write()
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Mike Frysinger <vapier@gentoo.org>
+Date: Wed, 29 May 2013 15:36:29 +0300
+In-Reply-To: <1367512401-14689-1-git-send-email-vapier@gentoo.org>
+References: <1367512401-14689-1-git-send-email-vapier@gentoo.org>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Huang Shijie <b32955@freescale.com>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <David.Woodhouse@intel.com>
-Reply-To: artem.bityutskiy@linux.intel.com
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,11 +23,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2013-05-01 at 21:49 -0600, David Mosberger-Tang wrote:
-> Sorry, try this one instead.
+On Thu, 2013-05-02 at 12:33 -0400, Mike Frysinger wrote:
+> Saves a syscall.
+> 
+> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 
-Pushed, thanks, but please, next time send patches in-line in a form
-which is consumable by 'git am'. Thanks!
+Pushed to mtd-utils.git, thanks!
 
 -- 
 Best Regards,
