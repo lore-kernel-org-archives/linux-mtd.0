@@ -1,24 +1,24 @@
-Received: from mail-bk0-x22c.google.com ([2a00:1450:4008:c01::22c])
+Received: from mail-bk0-x229.google.com ([2a00:1450:4008:c01::229])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UhhLf-00081A-Co
- for linux-mtd@lists.infradead.org; Wed, 29 May 2013 14:27:32 +0000
-Received: by mail-bk0-f44.google.com with SMTP id jc3so4946241bkc.3
- for <linux-mtd@lists.infradead.org>; Wed, 29 May 2013 07:27:09 -0700 (PDT)
+ id 1UhhUr-0008HH-DQ
+ for linux-mtd@lists.infradead.org; Wed, 29 May 2013 14:37:02 +0000
+Received: by mail-bk0-f41.google.com with SMTP id jc10so4977639bkc.28
+ for <linux-mtd@lists.infradead.org>; Wed, 29 May 2013 07:36:39 -0700 (PDT)
 Sender: Christian Riesch <christian.riesch@gmail.com>
-Message-ID: <51A6103B.7010201@omicron.at>
-Date: Wed, 29 May 2013 16:27:07 +0200
+Message-ID: <51A61274.70607@omicron.at>
+Date: Wed, 29 May 2013 16:36:36 +0200
 From: Christian Riesch <christian.riesch@omicron.at>
 MIME-Version: 1.0
 To: dedekind1@gmail.com
-Subject: Re: [PATCH] mtd: mtdchar: Exit write loop when hitting end of OTP
- memory
-References: <29483dd6-387c-4b28-b689-88795e0bbbde@mary.at.omicron.at>
- <1369811298.5446.215.camel@sauron.fi.intel.com> <51A60071.2060005@omicron.at>
- <1369835798.24286.34.camel@sauron.fi.intel.com>
-In-Reply-To: <1369835798.24286.34.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v2 1/4] mtd: cfi_cmdset_0002: Add support for reading OTP
+References: <1367003430-24584-1-git-send-email-christian.riesch@omicron.at>
+ <38c84e40-1171-4040-bc8b-ec51a0485819@mary.at.omicron.at>
+ <1369811482.5446.216.camel@sauron.fi.intel.com> <51A5FA84.8030906@omicron.at>
+ <1369835589.24286.31.camel@sauron.fi.intel.com>
+In-Reply-To: <1369835589.24286.31.camel@sauron.fi.intel.com>
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: kyungmin.park@samsung.com, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,45 +28,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-[cc'ed the author of onenand otp support]
-
-On 2013-05-29 15:56, Artem Bityutskiy wrote:
-> On Wed, 2013-05-29 at 15:19 +0200, Christian Riesch wrote:
->> The OTP code for the AMD command set in my recent patchset is modeled
->> after the existing code in drivers/mtd/chips/cfi_cmdset_0001.c.
->> Therefore it has a ...walk() function that walks from chip to chip and
->> tries to write as much data as possible into the OTP memories of these
->> chips. Until the last iteration of this loop it does not know how much
->> OTP memory is available. Therefore, a check for insufficient OTP memory
->> and returning an error before writing any data is not possible.
+On 2013-05-29 15:53, Artem Bityutskiy wrote:
+> On Wed, 2013-05-29 at 14:54 +0200, Christian Riesch wrote:
+>> Artem,
+>> Thank you very much for your comments!
 >>
->> Of course I could change my code to obtain the available OTP memory
->> before writing any data. But then the code in cfi_cmdset_0001.c would
->> still suffer from this issue.
+>> On 2013-05-29 09:11, Artem Bityutskiy wrote:
+>>> On Fri, 2013-04-26 at 21:10 +0200, Christian Riesch wrote:
+>>>> +static int cfi_amdstd_get_fact_prot_info(struct mtd_info *mtd,
+>>>> +                                          struct otp_info *buf,
+>>>> size_t len)
+>>>> +{
+>>>> +       size_t retlen;
+>>>> +       int ret;
+>>>> +
+>>>> +       ret = cfi_amdstd_otp_walk(mtd, 0, len, &retlen, (u_char *)buf,
+>>>> NULL, 0);
+>>>> +       return ret ? : retlen;
+>>>> +}
+>>>
+>>> Hmm, I thought we would return 0 in case of success and a negative error
+>>> code in case of error. Returning retlen looks wrong.
+>>>
+>>
+>> I don't think so. Somehow the caller of this function should be told how
+>> many bytes have been written into buf, there is no other way to return
+>> the data length than the return value. Anyway, I just stole this code
+>> from cfi_cmdset_0001.c (function cfi_intelext_get_fact_prot_info), it is
+>> done in the same way there.
 >
-> Could you please check OneNAND and other drivers which implement OTP and
-> see whether they check for space availability?
+> But retlen is where you return the amount of bytes you actually wrote.
+> The return code is either 0 or a negative error code number. This is
+> what we do in mtd_write() and I'd expect the OTP functions to be
+> consistent.
 
-mtd->_write_user_prot_reg is currently implemented by 
-drivers/mtd/chips/cfi_cmdset_0001.c, drivers/mtd/onenand/onenand_base.c, 
-and drivers/mtd/devices/mtd_dataflash.c.
-
-mtd_dataflash checks if the offset is larger than 64 and returns -EINVAL 
-in this case. If offset <= 64, but offset + len > 64, len is decreased 
-to fit into the OTP memory, the number of actually written bytes is 
-returned. It therefore suffers from the same issue in mtdchar.c as the 
-Intel command set.
-
-onenand seems to do some kind of length check (although I do not fully 
-understand why it does not include the offset in 'from' in this check if 
-the factory OTP is addressed), but if the data does not fit into the 
-memory it returns 0 instead of an error code, resulting in an infinite 
-loop as well.
+Unlike mtd_write, mtd->_get_fact_prot_info (which is a pointer to 
+cfi_amdstd_get_fact_prot_info here) does not have a retlen parameter. Do 
+you suggest to change this?
 
 Regards, Christian
-
->
-> On the first glance, I'd say that 0001 should be amended as well. But if
-> all OTP writers behave this way, then may be we can document this
-> clearly at least somewhere in a commentary.
->
