@@ -1,20 +1,20 @@
-Received: from mga14.intel.com ([143.182.124.37])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Uhfcu-0004zM-Uk
- for linux-mtd@lists.infradead.org; Wed, 29 May 2013 12:37:13 +0000
-Message-ID: <1369831224.24286.25.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] drivers: mtd: devices: elm: use devm_ioremap_resource()
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Laurent Navet <laurent.navet@gmail.com>
-Date: Wed, 29 May 2013 15:40:24 +0300
-In-Reply-To: <1367507346-29382-1-git-send-email-laurent.navet@gmail.com>
-References: <1367507346-29382-1-git-send-email-laurent.navet@gmail.com>
+ id 1UhffZ-00055i-2w
+ for linux-mtd@lists.infradead.org; Wed, 29 May 2013 12:39:57 +0000
+Message-ID: <1369831369.24286.26.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH RESEND] mtd: denali: fix error handling for
+ devm_ioremap_nocache()
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Xi Wang <xi.wang@gmail.com>
+Date: Wed, 29 May 2013 15:42:49 +0300
+In-Reply-To: <1367555839-12920-1-git-send-email-xi.wang@gmail.com>
+References: <1367555839-12920-1-git-send-email-xi.wang@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: dwmw2@infradead.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org
-Reply-To: artem.bityutskiy@linux.intel.com
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,28 +24,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2013-05-02 at 17:09 +0200, Laurent Navet wrote:
-> Replace a call to deprecated devm_request_and_ioremap by devm_ioremap_resource.
+On Fri, 2013-05-03 at 00:37 -0400, Xi Wang wrote:
+> It is incorrect to use `!res' for error handling since `res' must be
+> non-null.  Use the return value `ptr' instead.
 > 
-> Found with coccicheck and this semantic patch:
->  scripts/coccinelle/api/devm_request_and_ioremap.cocci.
-> 
-> Signed-off-by: Laurent Navet <laurent.navet@gmail.com>
+> Signed-off-by: Xi Wang <xi.wang@gmail.com>
+> ---
 
-We already have this changed in the l2-mtd.git tree:
+This is already fixed upstream:
 
-commit f7393098da2aadf535787c74abd147aabaca491a
-Author: Silviu-Mihai Popescu <silviupopescu1990@gmail.com>
-Date:   Thu Apr 11 00:01:51 2013 +0300
+commit 6c67050ab108bcce2576fa1d7a0557eb0376520a
+Author: Sachin Kamat <sachin.kamat@linaro.org>
+Date:   Mon Mar 18 15:11:11 2013 +0530
 
-    mtd: devices: convert to devm_ioremap_resource()
+    mtd: denali_dt: Fix incorrect error check
     
-    Convert all uses of devm_request_and_ioremap() to the newly introduced
-    devm_ioremap_resource() which provides more consistent error handling.
+    The return value of devm_ioremap_nocache should be checked here
+instead
+    of res.
     
-    Signed-off-by: Silviu-Mihai Popescu <silviupopescu1990@gmail.com>
+    Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
     Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-
+    Signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
 
 -- 
 Best Regards,
