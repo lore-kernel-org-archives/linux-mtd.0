@@ -1,20 +1,23 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UhffZ-00055i-2w
- for linux-mtd@lists.infradead.org; Wed, 29 May 2013 12:39:57 +0000
-Message-ID: <1369831369.24286.26.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH RESEND] mtd: denali: fix error handling for
- devm_ioremap_nocache()
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Xi Wang <xi.wang@gmail.com>
-Date: Wed, 29 May 2013 15:42:49 +0300
-In-Reply-To: <1367555839-12920-1-git-send-email-xi.wang@gmail.com>
-References: <1367555839-12920-1-git-send-email-xi.wang@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+Received: from mail-bk0-f48.google.com ([209.85.214.48])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Uhfu3-0005Og-Rn
+ for linux-mtd@lists.infradead.org; Wed, 29 May 2013 12:54:56 +0000
+Received: by mail-bk0-f48.google.com with SMTP id jf20so3410261bkc.21
+ for <linux-mtd@lists.infradead.org>; Wed, 29 May 2013 05:54:30 -0700 (PDT)
+Sender: Christian Riesch <christian.riesch@gmail.com>
+Message-ID: <51A5FA84.8030906@omicron.at>
+Date: Wed, 29 May 2013 14:54:28 +0200
+From: Christian Riesch <christian.riesch@omicron.at>
+MIME-Version: 1.0
+To: dedekind1@gmail.com
+Subject: Re: [PATCH v2 1/4] mtd: cfi_cmdset_0002: Add support for reading OTP
+References: <1367003430-24584-1-git-send-email-christian.riesch@omicron.at>
+ <38c84e40-1171-4040-bc8b-ec51a0485819@mary.at.omicron.at>
+ <1369811482.5446.216.camel@sauron.fi.intel.com>
+In-Reply-To: <1369811482.5446.216.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,29 +27,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2013-05-03 at 00:37 -0400, Xi Wang wrote:
-> It is incorrect to use `!res' for error handling since `res' must be
-> non-null.  Use the return value `ptr' instead.
-> 
-> Signed-off-by: Xi Wang <xi.wang@gmail.com>
-> ---
+Artem,
+Thank you very much for your comments!
 
-This is already fixed upstream:
+On 2013-05-29 09:11, Artem Bityutskiy wrote:
+> On Fri, 2013-04-26 at 21:10 +0200, Christian Riesch wrote:
+>> +static int cfi_amdstd_get_fact_prot_info(struct mtd_info *mtd,
+>> +                                          struct otp_info *buf,
+>> size_t len)
+>> +{
+>> +       size_t retlen;
+>> +       int ret;
+>> +
+>> +       ret = cfi_amdstd_otp_walk(mtd, 0, len, &retlen, (u_char *)buf,
+>> NULL, 0);
+>> +       return ret ? : retlen;
+>> +}
+>
+> Hmm, I thought we would return 0 in case of success and a negative error
+> code in case of error. Returning retlen looks wrong.
+>
 
-commit 6c67050ab108bcce2576fa1d7a0557eb0376520a
-Author: Sachin Kamat <sachin.kamat@linaro.org>
-Date:   Mon Mar 18 15:11:11 2013 +0530
+I don't think so. Somehow the caller of this function should be told how 
+many bytes have been written into buf, there is no other way to return 
+the data length than the return value. Anyway, I just stole this code 
+from cfi_cmdset_0001.c (function cfi_intelext_get_fact_prot_info), it is 
+done in the same way there.
 
-    mtd: denali_dt: Fix incorrect error check
-    
-    The return value of devm_ioremap_nocache should be checked here
-instead
-    of res.
-    
-    Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
-    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-    Signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
-
--- 
-Best Regards,
-Artem Bityutskiy
+Christian
