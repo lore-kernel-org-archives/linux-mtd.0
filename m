@@ -1,14 +1,14 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga14.intel.com ([143.182.124.37])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Uhgj6-0006jN-8k
- for linux-mtd@lists.infradead.org; Wed, 29 May 2013 13:47:41 +0000
-Message-ID: <1369835425.24286.28.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] UBI: fastmap break out of used PEB search
+ id 1Uhgjh-0006kG-Qf
+ for linux-mtd@lists.infradead.org; Wed, 29 May 2013 13:48:18 +0000
+Message-ID: <1369835469.24286.29.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: tests: don't print error messages when out-of-memory
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Pomerantz <bapper@gmail.com>
-Date: Wed, 29 May 2013 16:50:25 +0300
-In-Reply-To: <1367453444-12988-1-git-send-email-bapper@gmail.com>
-References: <y> <1367453444-12988-1-git-send-email-bapper@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Wed, 29 May 2013 16:51:09 +0300
+In-Reply-To: <1367529531-17254-1-git-send-email-computersforpeace@gmail.com>
+References: <1367529531-17254-1-git-send-email-computersforpeace@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -23,14 +23,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2013-05-01 at 17:10 -0700, Brian Pomerantz wrote:
-> While searching for PEB matches for each volume in the used PEB list,
-> the search fails to stop when the PEB is found.  This patch adds
-> a break in the inner loop to stop the search when it is matched.
+On Thu, 2013-05-02 at 14:18 -0700, Brian Norris wrote:
+> These strings are now unnecessary and discouraged in the kernel. The
+> kernel will have plenty of big scary messages if kmalloc fails. These
+> now only serve to bloat the module.
 > 
-> Signed-off-by: Brian Pomerantz <bapper@gmail.com>
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 
-Pushed to linux-ubi.git, thanks!
+Pushed to l2-mtd.git, thanks!
 
 -- 
 Best Regards,
