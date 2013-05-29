@@ -1,22 +1,20 @@
-Received: from mga14.intel.com ([143.182.124.37])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UhbOU-0007RG-Ai
- for linux-mtd@lists.infradead.org; Wed, 29 May 2013 08:06:05 +0000
-Message-ID: <1369814927.21070.0.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: nand: fsmc: update of OF support
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Linus Walleij <linus.walleij@stericsson.com>
-Date: Wed, 29 May 2013 11:08:47 +0300
-In-Reply-To: <1367237268-21694-1-git-send-email-linus.walleij@stericsson.com>
-References: <1367237268-21694-1-git-send-email-linus.walleij@stericsson.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Vipin Kumar <vipin.kumar@st.com>, Linus Walleij <linus.walleij@linaro.org>,
- Anmar Oueja <anmar.oueja@linaro.org>, linux-mtd@lists.infradead.org,
- Mian Yousaf Kaukab <mian.yousaf.kaukab@stericsson.com>,
- Stefan Roese <sr@denx.de>, David Woodhouse <dwmw2@infradead.org>
-Reply-To: dedekind1@gmail.com
+Received: from bear.ext.ti.com ([192.94.94.41])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Uhcs7-00014Y-Id
+ for linux-mtd@lists.infradead.org; Wed, 29 May 2013 09:40:44 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>
+Subject: RE: UBI: optimize erase-header read checks
+Date: Wed, 29 May 2013 09:40:15 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9C87DB@DBDE04.ent.ti.com>
+References: <1367092363-5249-1-git-send-email-pekon@ti.com>
+ <1369814085.5446.235.camel@sauron.fi.intel.com>
+In-Reply-To: <1369814085.5446.235.camel@sauron.fi.intel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,19 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2013-04-29 at 14:07 +0200, Linus Walleij wrote:
-> From: Mian Yousaf Kaukab <mian.yousaf.kaukab@stericsson.com>
-> 
-> Add nand bank selection and timings to the device tree bindings.
-> 
-> Cc: Stefan Roese <sr@denx.de>
-> Cc: Vipin Kumar <vipin.kumar@st.com>
-> Signed-off-by: Mian Yousaf Kaukab <mian.yousaf.kaukab@stericsson.com>
-> [Added some documentation]
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-
-Pushed to l2-mtd.git, thanks!
-
--- 
-Best Regards,
-Artem Bityutskiy
+SGkgQXJ0ZW0sDQoNCj4gDQo+IEhpIFBla29uLA0KPiANCj4gdGhhbmtzIGZvciB0aGUgcGF0Y2gu
+IEdlbmVyYWxseSwgSSBhbSBmaW5lIHRvIGNoYW5nZSB0aGUNCj4gcmVhZGluZy9zY2FubmluZyBw
+YXRoLCBidXQgY2FyZWZ1bGx5Lg0KPiANCltQZWtvbl06IFllcyBJIHVuZGVyc3RhbmQsIHRoYXQg
+dGhpcyBwYXRjaCBzaG91bGQgbm90IGJyZWFrIA0Kc29tZXRoaW5nIGFscmVhZHkgd29ya2luZy4g
+DQpUaG91Z2ggSSBoYXZlIHRlc3RlZCB0aGlzIHdpdGggdmFyaW91cyBzY2VuYXJpb3MgbWVudGlv
+biBpbiANCnByZXZpb3VzIG1haWwuIEJ1dCBzdGlsbCBJIHdhcyB3YWl0aW5nIGEgJ0FjaycgZnJv
+bSBCcmFpbi4NCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9saW51eC1tdGQv
+MjAxMy1NYXkvMDQ2NzM4Lmh0bWwNCkJ1dCBpZiBvdGhlcnMgY2FuIHRlc3QgaXQgYWxzbywgSXQg
+d291bGQgYmUgZ29vZC4NCg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogR3VwdGEsIFBla29uIDxw
+ZWtvbkB0aS5jb20+DQo+IA0KPiBTbyB0aGUgc3ViamVjdCBzYXlzIHRoaXMgaXMgYW4gb3B0aW1p
+emF0aW9uLCBidXQgSSBkbyBub3QgcmVhbGx5IHNlZQ0KPiB3aGF0IGRpZCB5b3Ugb3B0aW1pemU/
+IFNwZWVkPyBJZiB5ZXMsIHNvbWUgbnVtYmVycz8NCj4gDQo+IE9yIHRoaXMgaXMgYWJvdXQgaW1w
+cm92aW5nIHJvYnVzdG5lc3M/IE1heSBiZSBzb21lIGNsZWFyIGV4cGxhbmF0aW9ucw0KPiBhYm91
+dCB0aGF0Pw0KPiANCj4gT3IgdGhpcyBpcyBqdXN0IHNpbXBsaWZ5aW5nIHRoZSBjb2RlIGFuZCBt
+YWtpbmcgaXQgbW9yZSBjbGVhcj8NCj4gDQo+IEkgYW0gZmluZSB3aXRoIGFsbCBvZiB0aGF0LCBq
+dXN0IHdhbnQgdG8gY2xlYXJseSBzZWUgdGhpcyBleHBsYWluZWQgaW4NCj4gdGhlIGNvbW1pdCBt
+ZXNzYWdlLg0KPiANCltQZWtvbl06IEl0cyBtb3JlIG9mIHNpbXBsaWZ5aW5nIGNvZGUsIEknbGwg
+cmUtd29yZCB0aGUgY29tbWl0Lg0KSXQgc2hvdWxkIGFsc28gaW1wcm92ZSBzb21lIHNwZWVkLCBp
+biBzb21lIHNjZW5hcmlvcywgYXMgSSBoYXZlIA0KcmVtb3ZlZCBhbGwgMHhGRiBoZWFkZXIgY2hl
+Y2suIEknbGwgdHJ5IHRvIGdldCBudW1iZXJzIGZvciB0aGF0Lg0KDQoNCj4gQWxzbywgdGhlIHBh
+dGNoIGlzIGEgYml0IHRvbyBiaWcuIENhbiB5b3UgdHJ5IHRvIGZpZ3VyZSBvdXQgc21hbGxlcg0K
+PiBzdGVwcyBhbmQgc3BsaXQgaXQgb24gc21hbGxlciBwaWVjZXM/DQo+IA0KW1Bla29uXTogWWVz
+LCBJIHRyaWVkIHRoaXMsIGJ1dCBtYWpvcml0eSBjaHVuayBvZiBwYXRjaCBpcyBjaGFuZ2UgaW4N
+Cid1YmlfaW9fcmVhZF9lY19oZHIoKScsIHdoaWNoIHdhcyBjb21wbGV0ZWx5IHJlLXdyaXR0ZW4s
+IGluIG9yZGVyIHRvIA0Kc2ltcGxpZnkgY29kZS4gSSdsbCB0cnkgdG8gc3BsaXQgdGhlIHBhdGNo
+LCBidXQgdGhlbiBpdCBtaWdodCBub3QgYmUgbG9naWNhbCBzcGxpdCwNCmFuZCB0aGVyZSB3b3Vs
+ZCBiZSBkZXBlbmRlbmN5IGJldHdlZW4gcGF0Y2hlcy4NCg0KPiBUaGVyZSBhcmUgYWxzbyBtaW5v
+ciBjb3NtZXRpYyB0aGluZ3MsIGJ1dCBJIGRvIG5vdCB3YW50IHRvIHRvdWNoIHRoZW0NCj4gbm93
+Lg0KPiANCltQZWtvbl06IEknbGwgcmUtYmFzZSB0aGVtIG9uIDMuMTAtcmN4LiBTbyBpdHMgZWFz
+eSBmb3IgeW91IHRvIGNoZWNrLg0KQnV0IHJpZ2h0IG5vdyBJJ20gY2F1Z2h0IGluIG90aGVyIGNs
+ZWFuLXVwIHdvcmssIHNvIHJlLXN1Ym1pc3Npb24gd291bGQgDQpiZSBiaXQgZGVsYXllZC4uDQoN
+Cj4gTm90ZTogSSBhbSBwcm9jZXNzaW5nIHRoZSBtdGQgbWFpbGluZyBsaXN0IGZyb20gb2xkZXN0
+IGUtbWFpbHMgdG8NCj4gbmV3ZXN0LCB3aXRoIGZldyBleGNlcHRpb25zLiBCdXQgd2hlbiBJIGFu
+c3dlciBhbiBlLW1haWwsIGFuZCB0aGUNCj4gcGVyc29uDQo+IHJlLXNlbmRzIHBhdGNoZXMsIEkg
+dXN1YWxseSBqdW1wIHRvIHRoZSBuZXcgdmVyc2lvbiByaWdodCBhd2F5LiBTbyBpZg0KPiB5b3Ug
+cmVzZW5kLCBJIHNob3VsZCBsb29rIGF0IHRoZW0gd2l0aCBhIGxvdCBzbWFsbGVyIGRlbGF5IDot
+KQ0KPiANCltQZWtvbl06IE5vIGlzc3VlcyBmb3IgbWUuLg0KSSBkb24ndCBzZWUgdGhlc2UgcGF0
+Y2hlcyBhcyBlbWVyZ2VuY3ksIGJ1dCBnb29kIHRvIGhhdmUgZnJvbSBhIA0KbG9uZyB0ZXJtIHBy
+b3NwZWN0aXZlLiBBbmQgSSdtIG1vcmUgdGhhbiBoYXBweSB0byByZWNlaXZlIGZlZWRiYWNrcy4N
+Cg0KDQp3aXRoIHJlZ2FyZHMsIHBla29uDQo=
