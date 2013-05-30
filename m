@@ -1,17 +1,19 @@
-Message-ID: <51A6FEA8.5030704@ti.com>
-Date: Thu, 30 May 2013 09:24:24 +0200
-From: Benoit Cousson <b-cousson@ti.com>
-MIME-Version: 1.0
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [v2, 3/3] ARM: dts: AM33XX: Add NAND flash device tree data to
+From: "Gupta, Pekon" <pekon@ti.com>
+To: "Cousson, Benoit" <b-cousson@ti.com>
+Subject: RE: [v2, 3/3] ARM: dts: AM33XX: Add NAND flash device tree data to
  am335x-evm
+Date: Thu, 30 May 2013 07:31:51 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9C8BCD@DBDE04.ent.ti.com>
 References: <ebfab3e9123b3e50b9a9678c1480191addd86d59.1359007746.git.avinashphilip@ti.com>
  <517F5126.5000509@ti.com> <20130508235404.GX32546@atomide.com>
  <20980858CB6D3A4BAE95CA194937D5E73E9C320D@DBDE04.ent.ti.com>
  <20980858CB6D3A4BAE95CA194937D5E73E9C5629@DBDE04.ent.ti.com>
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9C5629@DBDE04.ent.ti.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
+ <51A6FEA8.5030704@ti.com>
+In-Reply-To: <51A6FEA8.5030704@ti.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 Cc: "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>,
  Tony Lindgren <tony@atomide.com>,
  "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>,
@@ -31,46 +33,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Pekon,
+=20
+> Sorry, I missed that series.
+>=20
+> I'm applying it right now.
+>=20
+No issues.. Please pick newer v4 versions of this series.
+Following are rebased, updated and tested on linux-3.10-rc3
 
-On 05/20/2013 06:44 AM, Gupta, Pekon wrote:
->  
->>>>>
->>>>>  	am33xx_pinmux: pinmux@44e10800 {
->>>>>  		pinctrl-names = "default";
->>>>> -		pinctrl-0 = <&matrix_keypad_s0 &volume_keys_s0>;
->>>>> +		pinctrl-0 = <&matrix_keypad_s0 &volume_keys_s0
->>>>> +			&nandflash_pins_s0>;
->>>>
->>>> Why add this to the board level fallback (called pinctrl hogs, I think)?
->>>> This can be part of nand node you added below so that the pinctrl will
->>>> take effect when nand gets probed instead of all the time.
->>>
->>> Yes we should have all the pinctrl entries under the related drivers.
->>> This makes it easy remux pins during runtime if needed, and also
->>> allows unloading pinctrl-single.ko for development.
->>>
->> Yes, accepted. This has been already fixed in v3 of this patch set.
->> If all fine, then please pull this for next merge..
->>
->> http://lists.infradead.org/pipermail/linux-mtd/2013-May/046712.html
->>
->> http://lists.infradead.org/pipermail/linux-mtd/2013-May/046814.html
->>
->> http://lists.infradead.org/pipermail/linux-mtd/2013-May/046710.html
->>
->>
->> with regards, pekon
-> 
-> Request you to please accept | provide feedbacks on this patch series.
-> These are waiting acceptance since Jan-2013, and are necessary for 
-> DT based configs for board having NAND support.
-> 
-> with regards, pekon
+[PATCH v4,0/3] http://www.spinics.net/lists/linux-omap/msg91165.html
 
-Sorry, I missed that series.
+[PATCH v4,1/3] http://www.spinics.net/lists/linux-omap/msg91166.html
 
-I'm applying it right now.
+[PATCH v4,2/3] (please skip this one)
+instead pick http://www.spinics.net/lists/linux-omap/msg91161.html
 
-Thanks,
-Benoit
+[PATCH v4,3/3] http://www.spinics.net/lists/linux-omap/msg91167.html
+
+
+Thanks..
+with regards, pekon
