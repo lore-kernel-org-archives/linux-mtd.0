@@ -1,19 +1,20 @@
-Received: from mail-vc0-f172.google.com ([209.85.220.172])
+Received: from szxga01-in.huawei.com ([119.145.14.64])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UhlbO-0005TT-DE
- for linux-mtd@lists.infradead.org; Wed, 29 May 2013 19:00:03 +0000
-Received: by mail-vc0-f172.google.com with SMTP id hf12so6816295vcb.3
- for <linux-mtd@lists.infradead.org>; Wed, 29 May 2013 11:59:40 -0700 (PDT)
+ id 1UhsXY-0004c5-O9
+ for linux-mtd@lists.infradead.org; Thu, 30 May 2013 02:24:34 +0000
+Message-ID: <51A6B7D8.8090600@huawei.com>
+Date: Thu, 30 May 2013 10:22:16 +0800
+From: Libo Chen <clbchenlibo.chen@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <CAASVbFFj2U3L95JbiUf+m6UgFN0nasiMh0wYdMr4rxcJjpvuXg@mail.gmail.com>
-References: <CAASVbFFj2U3L95JbiUf+m6UgFN0nasiMh0wYdMr4rxcJjpvuXg@mail.gmail.com>
-Date: Wed, 29 May 2013 11:59:39 -0700
-Message-ID: <CAN8TOE8JUR1O9XvOzVt6CTji5fWHmQAEArDqoWg=4G66iY6wRA@mail.gmail.com>
-Subject: Re: Updating JFFS2 port to eCos for NOR-ECC support
-From: Brian Norris <computersforpeace@gmail.com>
-To: Max Seidenstuecker <naturally-aligned@web.de>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org
+To: <dwmw2@infradead.org>, Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH RESEND 2/2] mtd: bcm47: convert to module_platform_driver
+ instead of init/exit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Cc: Li Zefan <lizefan@huawei.com>, artem.bityutskiy@linux.intel.com,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ LKML <linux-kernel@vger.kernel.org>, Bill Pemberton <wfp5p@virginia.edu>,
+ linux-mtd@lists.infradead.org, hauke@hauke-m.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,19 +24,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Max,
 
-On Fri, May 24, 2013 at 11:13 AM, Max Seidenstuecker
-<naturally-aligned@web.de> wrote:
-> I am in the process of bringing the current JFFS2 to eCos to support
-> NOR-ECC flash that is not supported in its current version.
-...
-> Any advice is greatly appreciated. Maybe thre are good reasons why
-> JFFS2 in eCos has not been updated in a while. Please let me know
-> anything you know about it.
+convert to module_platform_driver instead of init/exit
 
-JFFS2 is not actively supported in Linux. Most developers (and users?)
-have moved on to UBI(FS). This probably explains why no one has really
-worked on JFFS2 for eCos.
+Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Libo chen <libo.chen@huawei.com>
+---
+ drivers/mtd/devices/bcm47xxsflash.c |   20 +-------------------
+ 1 files changed, 1 insertions(+), 19 deletions(-)
 
-Brian
+diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
+index 2630d5c..54230cd 100644
+--- a/drivers/mtd/devices/bcm47xxsflash.c
++++ b/drivers/mtd/devices/bcm47xxsflash.c
+@@ -108,22 +108,4 @@ static struct platform_driver bcma_sflash_driver = {
+  * Init
+  **************************************************/
+
+-static int __init bcm47xxsflash_init(void)
+-{
+-	int err;
+-
+-	err = platform_driver_register(&bcma_sflash_driver);
+-	if (err)
+-		pr_err("Failed to register BCMA serial flash driver: %d\n",
+-		       err);
+-
+-	return err;
+-}
+-
+-static void __exit bcm47xxsflash_exit(void)
+-{
+-	platform_driver_unregister(&bcma_sflash_driver);
+-}
+-
+-module_init(bcm47xxsflash_init);
+-module_exit(bcm47xxsflash_exit);
++module_platform_driver(bcma_sflash_driver);
+-- 
+1.7.1
