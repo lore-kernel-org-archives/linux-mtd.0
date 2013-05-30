@@ -1,19 +1,17 @@
-Received: from f203.mail.ru ([217.69.128.142])
+Received: from mail-la0-x22a.google.com ([2a00:1450:4010:c03::22a])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ui1dm-00061l-7B
- for linux-mtd@lists.infradead.org; Thu, 30 May 2013 12:07:35 +0000
-Received: from mail by f203.mail.ru with local (envelope-from
- <shc_work@mail.ru>) id 1Ui1dM-00075C-Oy
- for linux-mtd@lists.infradead.org; Thu, 30 May 2013 16:07:08 +0400
-From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
-To: linux-mtd@lists.infradead.org
-Subject: =?UTF-8?B?TkFORCAxNmJpdCBPTkZJIHByb2JsZW0=?=
-Mime-Version: 1.0
-Date: Thu, 30 May 2013 16:07:08 +0400
-Message-ID: <1369915628.855972186@f203.mail.ru>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+ id 1Ui4Lz-00022G-Ca
+ for linux-mtd@lists.infradead.org; Thu, 30 May 2013 15:01:24 +0000
+Received: by mail-la0-f42.google.com with SMTP id fg20so361469lab.15
+ for <linux-mtd@lists.infradead.org>; Thu, 30 May 2013 08:01:00 -0700 (PDT)
+From: Emil Goode <emilgoode@gmail.com>
+To: dwmw2@infradead.org, artem.bityutskiy@linux.intel.com, wfp5p@virginia.edu,
+ gregkh@linuxfoundation.org, thierry.reding@avionic-design.de
+Subject: [PATCH] mtd: lantiq-flash: Convert to devm_kzalloc
+Date: Thu, 30 May 2013 17:00:36 +0200
+Message-Id: <1369926036-2416-1-git-send-email-emilgoode@gmail.com>
+Cc: kernel-janitors@vger.kernel.org, Emil Goode <emilgoode@gmail.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,54 +21,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-IEhlbGxvLgoKSSBoYXZlIGEgcHJvYmxlbSB3aXRoIGF0dGFjaCBOQU5EIFVCSSBpbiAxNiBiaXQg
-bW9kZS4KTkFORCB3b3JrcyBmaW5lIGlmIEkgc3BlY2lmeSBOQU5EX0JVU1dJRFRIXzE2IG9wdGlv
-biwgYnV0IG5vdAp3b3JraW5nIHdpdGggTkFORF9CVVNXSURUSF9BVVRPIG9wdGlvbi4gSW4gc2Vj
-b25kIGNhc2UgTkFORApjaGlwIGlzIGlkZW50aWZ5ZWQgd2l0aCBPTkZJLiBMb2dzIGJlbG93LgpD
-YW4gYW55b25lIGhlbHAgbWUgd2l0aCB0aGlzIGlzc3VlPyBJcyBpdCBhIGtub3duIHByb2JsZW0/
-ClRoYW5rcy4KUFM6IEtlcm5lbCAzLjkuMwoKTmV3IGNoaXAsIGZpcnN0IHN0YXJ0LCBOQU5EX0JV
-U1dJRFRIX0FVVE86CgpPTkZJIHBhcmFtIHBhZ2UgMCB2YWxpZApPTkZJIGZsYXNoIGRldGVjdGVk
-Ck5BTkQgZGV2aWNlOiBNYW51ZmFjdHVyZXIgSUQ6IDB4MmMsIENoaXAgSUQ6IDB4Y2EgKE1pY3Jv
-biBNVDI5RjJHMTZBQkFFQVdQKSwgMjU2TWlCLCBwYWdlIHNpemU6IDIwNDgsIE9PQiBzaXplOiA2
-NApTY2FubmluZyBkZXZpY2UgZm9yIGJhZCBibG9ja3MKQ3JlYXRpbmcgMSBNVEQgcGFydGl0aW9u
-cyBvbiAiTVQyOUYyRzE2QUJBRUFXUCI6CjB4MDAwMDAwMDAwMDAwLTB4MDAwMDEwMDAwMDAwIDog
-Im5hbmQtZ3BpbyIKVUJJOiBhdHRhY2hpbmcgbXRkNCB0byB1YmkwClVCSTogc2Nhbm5pbmcgaXMg
-ZmluaXNoZWQKVUJJOiBlbXB0eSBNVEQgZGV2aWNlIGRldGVjdGVkClVCSTogYXR0YWNoZWQgbXRk
-NCAobmFtZSAibmFuZC1ncGlvIiwgc2l6ZSAyNTYgTWlCKSB0byB1YmkwClVCSTogUEVCIHNpemU6
-IDEzMTA3MiBieXRlcyAoMTI4IEtpQiksIExFQiBzaXplOiAxMjkwMjQgYnl0ZXMKVUJJOiBtaW4u
-L21heC4gSS9PIHVuaXQgc2l6ZXM6IDIwNDgvMjA0OCwgc3ViLXBhZ2Ugc2l6ZSA1MTIKVUJJOiBW
-SUQgaGVhZGVyIG9mZnNldDogNTEyIChhbGlnbmVkIDUxMiksIGRhdGEgb2Zmc2V0OiAyMDQ4ClVC
-STogZ29vZCBQRUJzOiAyMDQ4LCBiYWQgUEVCczogMCwgY29ycnVwdGVkIFBFQnM6IDAKVUJJOiB1
-c2VyIHZvbHVtZTogMCwgaW50ZXJuYWwgdm9sdW1lczogMSwgbWF4LiB2b2x1bWVzIGNvdW50OiAx
-MjgKVUJJOiBtYXgvbWVhbiBlcmFzZSBjb3VudGVyOiAwLzAsIFdMIHRocmVzaG9sZDogNDA5Niwg
-aW1hZ2Ugc2VxdWVuY2UgbnVtYmVyOiAyOTIwNDc1NjUwClVCSTogYXZhaWxhYmxlIFBFQnM6IDIw
-MDQsIHRvdGFsIHJlc2VydmVkIFBFQnM6IDQ0LCBQRUJzIHJlc2VydmVkIGZvciBiYWQgUEVCIGhh
-bmRsaW5nOiA0MApVQkk6IGJhY2tncm91bmQgdGhyZWFkICJ1YmlfYmd0MGQiIHN0YXJ0ZWQsIFBJ
-RCAyMgoKCnN5bmMgJiYgcmVib290OgoKT05GSSBwYXJhbSBwYWdlIDAgdmFsaWQKT05GSSBmbGFz
-aCBkZXRlY3RlZApOQU5EIGRldmljZTogTWFudWZhY3R1cmVyIElEOiAweDJjLCBDaGlwIElEOiAw
-eGNhIChNaWNyb24gTVQyOUYyRzE2QUJBRUFXUCksIDI1Nk1pQiwgcGFnZSBzaXplOiAyMDQ4LCBP
-T0Igc2l6ZTogNjQKU2Nhbm5pbmcgZGV2aWNlIGZvciBiYWQgYmxvY2tzCkNyZWF0aW5nIDEgTVRE
-IHBhcnRpdGlvbnMgb24gIk1UMjlGMkcxNkFCQUVBV1AiOgoweDAwMDAwMDAwMDAwMC0weDAwMDAx
-MDAwMDAwMCA6ICJuYW5kLWdwaW8iClVCSTogYXR0YWNoaW5nIG10ZDQgdG8gdWJpMApVQkk6IGZp
-eGFibGUgYml0LWZsaXAgZGV0ZWN0ZWQgYXQgUEVCIDIKVUJJOiBmaXhhYmxlIGJpdC1mbGlwIGRl
-dGVjdGVkIGF0IFBFQiAzClVCSTogZml4YWJsZSBiaXQtZmxpcCBkZXRlY3RlZCBhdCBQRUIgNApV
-Qkk6IGZpeGFibGUgYml0LWZsaXAgZGV0ZWN0ZWQgYXQgUEVCIDUKVUJJOiBmaXhhYmxlIGJpdC1m
-bGlwIGRldGVjdGVkIGF0IFBFQiA2ClVCSTogZml4YWJsZSBiaXQtZmxpcCBkZXRlY3RlZCBhdCBQ
-RUIgNwouLi4KCgpOQU5EX0JVU1dJRFRIXzE2OgoKVHJ5aW5nIE9ORkkgcHJvYmUgaW4gMTYgYml0
-cyBtb2RlLCBhYm9ydGluZyAhCk5BTkQgZGV2aWNlOiBNYW51ZmFjdHVyZXIgSUQ6IDB4MmMsIENo
-aXAgSUQ6IDB4Y2EgKE1pY3JvbiBOQU5EIDI1Nk1pQiAzLDNWIDE2LWJpdCksIDI1Nk1pQiwgcGFn
-ZSBzaXplOiAyMDQ4LCBPT0Igc2l6ZTogNjQKU2Nhbm5pbmcgZGV2aWNlIGZvciBiYWQgYmxvY2tz
-CkNyZWF0aW5nIDEgTVREIHBhcnRpdGlvbnMgb24gIk5BTkQgMjU2TWlCIDMsM1YgMTYtYml0IjoK
-MHgwMDAwMDAwMDAwMDAtMHgwMDAwMTAwMDAwMDAgOiAibmFuZC1ncGlvIgpVQkk6IGF0dGFjaGlu
-ZyBtdGQ0IHRvIHViaTAKVUJJOiBzY2FubmluZyBpcyBmaW5pc2hlZApVQkk6IGVtcHR5IE1URCBk
-ZXZpY2UgZGV0ZWN0ZWQKVUJJOiBhdHRhY2hlZCBtdGQ0IChuYW1lICJuYW5kLWdwaW8iLCBzaXpl
-IDI1NiBNaUIpIHRvIHViaTAKVUJJOiBQRUIgc2l6ZTogMTMxMDcyIGJ5dGVzICgxMjggS2lCKSwg
-TEVCIHNpemU6IDEyOTAyNCBieXRlcwpVQkk6IG1pbi4vbWF4LiBJL08gdW5pdCBzaXplczogMjA0
-OC8yMDQ4LCBzdWItcGFnZSBzaXplIDUxMgpVQkk6IFZJRCBoZWFkZXIgb2Zmc2V0OiA1MTIgKGFs
-aWduZWQgNTEyKSwgZGF0YSBvZmZzZXQ6IDIwNDgKVUJJOiBnb29kIFBFQnM6IDIwNDgsIGJhZCBQ
-RUJzOiAwLCBjb3JydXB0ZWQgUEVCczogMApVQkk6IHVzZXIgdm9sdW1lOiAwLCBpbnRlcm5hbCB2
-b2x1bWVzOiAxLCBtYXguIHZvbHVtZXMgY291bnQ6IDEyOApVQkk6IG1heC9tZWFuIGVyYXNlIGNv
-dW50ZXI6IDAvMCwgV0wgdGhyZXNob2xkOiA0MDk2LCBpbWFnZSBzZXF1ZW5jZSBudW1iZXI6IDI1
-NzMxODIwMjQKVUJJOiBhdmFpbGFibGUgUEVCczogMjAwNCwgdG90YWwgcmVzZXJ2ZWQgUEVCczog
-NDQsIFBFQnMgcmVzZXJ2ZWQgZm9yIGJhZCBQRUIgaGFuZGxpbmc6IDQwClVCSTogYmFja2dyb3Vu
-ZCB0aHJlYWQgInViaV9iZ3QwZCIgc3RhcnRlZCwgUElEIDIzCgotLS0K
+The ltq_mtd_probe function is missing some error handling for
+memory allocation failure. This patch fixes that and simplifies
+the code by converting to devm_kzalloc.
+
+Signed-off-by: Emil Goode <emilgoode@gmail.com>
+---
+ drivers/mtd/maps/lantiq-flash.c |   31 +++++++++++++++----------------
+ 1 file changed, 15 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/mtd/maps/lantiq-flash.c b/drivers/mtd/maps/lantiq-flash.c
+index d7ac65d..de0ac1e 100644
+--- a/drivers/mtd/maps/lantiq-flash.c
++++ b/drivers/mtd/maps/lantiq-flash.c
+@@ -123,24 +123,28 @@ ltq_mtd_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 	}
+ 
+-	ltq_mtd = kzalloc(sizeof(struct ltq_mtd), GFP_KERNEL);
++	ltq_mtd = devm_kzalloc(&pdev->dev, sizeof(struct ltq_mtd), GFP_KERNEL);
++	if (!ltq_mtd)
++		return -ENOMEM;
++
+ 	platform_set_drvdata(pdev, ltq_mtd);
+ 
+ 	ltq_mtd->res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	if (!ltq_mtd->res) {
+ 		dev_err(&pdev->dev, "failed to get memory resource\n");
+-		err = -ENOENT;
+-		goto err_out;
++		return -ENOENT;
+ 	}
+ 
+-	ltq_mtd->map = kzalloc(sizeof(struct map_info), GFP_KERNEL);
++	ltq_mtd->map = devm_kzalloc(&pdev->dev, sizeof(struct map_info),
++				    GFP_KERNEL);
++	if (!ltq_mtd->map)
++		return -ENOMEM;
++
+ 	ltq_mtd->map->phys = ltq_mtd->res->start;
+ 	ltq_mtd->map->size = resource_size(ltq_mtd->res);
+ 	ltq_mtd->map->virt = devm_ioremap_resource(&pdev->dev, ltq_mtd->res);
+-	if (IS_ERR(ltq_mtd->map->virt)) {
+-		err = PTR_ERR(ltq_mtd->map->virt);
+-		goto err_out;
+-	}
++	if (IS_ERR(ltq_mtd->map->virt))
++		return PTR_ERR(ltq_mtd->map->virt);
+ 
+ 	ltq_mtd->map->name = ltq_map_name;
+ 	ltq_mtd->map->bankwidth = 2;
+@@ -155,8 +159,7 @@ ltq_mtd_probe(struct platform_device *pdev)
+ 
+ 	if (!ltq_mtd->mtd) {
+ 		dev_err(&pdev->dev, "probing failed\n");
+-		err = -ENXIO;
+-		goto err_free;
++		return -ENXIO;
+ 	}
+ 
+ 	ltq_mtd->mtd->owner = THIS_MODULE;
+@@ -177,10 +180,7 @@ ltq_mtd_probe(struct platform_device *pdev)
+ 
+ err_destroy:
+ 	map_destroy(ltq_mtd->mtd);
+-err_free:
+-	kfree(ltq_mtd->map);
+-err_out:
+-	kfree(ltq_mtd);
++
+ 	return err;
+ }
+ 
+@@ -194,9 +194,8 @@ ltq_mtd_remove(struct platform_device *pdev)
+ 			mtd_device_unregister(ltq_mtd->mtd);
+ 			map_destroy(ltq_mtd->mtd);
+ 		}
+-		kfree(ltq_mtd->map);
+-		kfree(ltq_mtd);
+ 	}
++
+ 	return 0;
+ }
+ 
+-- 
+1.7.10.4
