@@ -1,19 +1,27 @@
-Message-ID: <51A6EE46.6050701@atmel.com>
-Date: Thu, 30 May 2013 14:14:30 +0800
-From: Josh Wu <josh.wu@atmel.com>
+Message-ID: <51A6FEA8.5030704@ti.com>
+Date: Thu, 30 May 2013 09:24:24 +0200
+From: Benoit Cousson <b-cousson@ti.com>
 MIME-Version: 1.0
-To: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-Subject: Re: [PATCH v2 2/4] mtd: atmel_nand: add Nand Flash Controller (NFC)
- support
-References: <1368784308-7600-1-git-send-email-josh.wu@atmel.com>
- <1368784308-7600-3-git-send-email-josh.wu@atmel.com>
- <20130524200947.GM24476@game.jcrosoft.org> <51A32DD2.9040707@atmel.com>
- <20130527102603.GR24476@game.jcrosoft.org>
-In-Reply-To: <20130527102603.GR24476@game.jcrosoft.org>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: nicolas.ferre@atmel.com, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, dedekind1@gmail.com
+To: "Gupta, Pekon" <pekon@ti.com>
+Subject: Re: [v2, 3/3] ARM: dts: AM33XX: Add NAND flash device tree data to
+ am335x-evm
+References: <ebfab3e9123b3e50b9a9678c1480191addd86d59.1359007746.git.avinashphilip@ti.com>
+ <517F5126.5000509@ti.com> <20130508235404.GX32546@atomide.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9C320D@DBDE04.ent.ti.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9C5629@DBDE04.ent.ti.com>
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9C5629@DBDE04.ent.ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>,
+ Tony Lindgren <tony@atomide.com>,
+ "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>,
+ "Nori, Sekhar" <nsekhar@ti.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Hiremath,
+ Vaibhav" <hvaibhav@ti.com>, "Hebbar, Gururaja" <gururaja.hebbar@ti.com>,
+ "zonque@gmail.com" <zonque@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,137 +31,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, JC
+Hi Pekon,
 
-On 5/27/2013 6:26 PM, Jean-Christophe PLAGNIOL-VILLARD wrote:
-
-[snip]
-
->>> yes but you need to update the compatible or check the IP support it too
->>> as has-nfc will mean I have the nfs on the hardware but not enable it
+On 05/20/2013 06:44 AM, Gupta, Pekon wrote:
+>  
+>>>>>
+>>>>>  	am33xx_pinmux: pinmux@44e10800 {
+>>>>>  		pinctrl-names = "default";
+>>>>> -		pinctrl-0 = <&matrix_keypad_s0 &volume_keys_s0>;
+>>>>> +		pinctrl-0 = <&matrix_keypad_s0 &volume_keys_s0
+>>>>> +			&nandflash_pins_s0>;
+>>>>
+>>>> Why add this to the board level fallback (called pinctrl hogs, I think)?
+>>>> This can be part of nand node you added below so that the pinctrl will
+>>>> take effect when nand gets probed instead of all the time.
 >>>
->>> the SoC dtsi will describe you have it but the board will decide to enable it or
->>> not
->> I can add some code to check whether is NFC supported by read SMC IP
->> version. But I'm afraid
->> such code may not work for AVR arch.
+>>> Yes we should have all the pinctrl entries under the related drivers.
+>>> This makes it easy remux pins during runtime if needed, and also
+>>> allows unloading pinctrl-single.ko for development.
+>>>
+>> Yes, accepted. This has been already fixed in v3 of this patch set.
+>> If all fine, then please pull this for next merge..
 >>
->> Another way is just add a 'enable-nfc' compatible string. Which is
->> for board to enable the NFC feature.
+>> http://lists.infradead.org/pipermail/linux-mtd/2013-May/046712.html
 >>
->> I'm prefer to the later one. What do you think?
-> I do not like no 2
->
-> I like this
->
-> 		nand0: nand@60000000 {
-> 			compatible = "atmel,at91rm9200-nand";
-> 			#address-cells = <1>;
-> 			#size-cells = <1>;
-> 			reg = < 0x60000000 0x01000000   /* EBI CS3 */
-> 				0xffffc070 0x00000490   /* SMC PMECC regs */
-> 				0xffffc500 0x00000100   /* SMC PMECC Error Location regs */
-> 				0x00100000 0x00100000   /* ROM code */
-> 				>;
-> 			interrupts = <5 IRQ_TYPE_LEVEL_HIGH 6>;
-> 			atmel,nand-addr-offset = <21>;
-> 			atmel,nand-cmd-offset = <22>;
-> 			pinctrl-names = "default";
-> 			pinctrl-0 = <&pinctrl_nand0_ale_cle>;
-> 			atmel,pmecc-lookup-table-offset = <0x10000 0x18000>;
-> 			status = "disabled";
->
-> 			nfc@70000000 {
-> 				compatible = "atmel,sama5d3-nfc";
-> 				reg = < 0x70000000 0x10000000   /* NFC Command Registers */
-> 					0xffffc000 0x00000070   /* NFC HSMC regs */
-> 					0x00200000 0x00100000   /* NFC SRAM banks */
-> 				>;
-> 			}
-> 		};
->
-> so you can enable/disable it easly
-
-Since I am not use such dts definition before, following is my guest 
-implementation for above dts:
-So I need define an additional platform driver for "atmel,sama5d3-nfc" 
-with probe/remove function. right?
-if yes, then there are two question are rise out:
-1. which driver will be probed first? or it is depends? Since I think 
-the "atmel,sama5d3-nfc" can be probe first is good for me.
-2. how do these two drivers share data with others? I check at91 pinctrl 
-as a example, and it use a static pointer array store gpio data, and 
-pinctrl can access it. Seems that is enough for me.
-
->
->
->>>>   Examples:
->>>>   nand0: nand@40000000,0 {
->>>> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
->>>> index f747791..48d7ee6 100644
->>>> --- a/drivers/mtd/nand/atmel_nand.c
->>>> +++ b/drivers/mtd/nand/atmel_nand.c
->>>> @@ -18,6 +18,9 @@
->>>>    *  Add Programmable Multibit ECC support for various AT91 SoC
->>>>    *     © Copyright 2012 ATMEL, Hong Xu
->>>>    *
->>>> + *  Add Nand Flash Controller support for SAMA5 SoC
->>>> + *     © Copyright 2013 ATMEL, Josh Wu (josh.wu@atmel.com)
->>>> + *
->>>>    * This program is free software; you can redistribute it and/or modify
->>>>    * it under the terms of the GNU General Public License version 2 as
->>>>    * published by the Free Software Foundation.
->>>> @@ -37,9 +40,11 @@
->>>>   #include <linux/mtd/nand.h>
->>>>   #include <linux/mtd/partitions.h>
->>>> +#include <linux/delay.h>
->>>>   #include <linux/dmaengine.h>
->>>>   #include <linux/gpio.h>
->>>>   #include <linux/io.h>
->>>> +#include <linux/interrupt.h>
->>>>   #include <linux/platform_data/atmel.h>
->>>>   #include <linux/pinctrl/consumer.h>
->>>> @@ -58,6 +63,7 @@ module_param(on_flash_bbt, int, 0);
->>>>   	__raw_writel((value), add + ATMEL_ECC_##reg)
->>>>   #include "atmel_nand_ecc.h"	/* Hardware ECC registers */
->>>> +#include "atmel_nand_nfc.h"	/* Nand Flash Controller definition */
->>>>   /* oob layout for large page size
->>>>    * bad block info is on bytes 0 and 1
->>>> @@ -85,6 +91,13 @@ static struct nand_ecclayout atmel_oobinfo_small = {
->>>>   	},
->>>>   };
-> ....
->>>> +				dev_err(&pdev->dev,
->>>> +					"can't request input direction rdy gpio %d\n",
->>>> +					host->board.rdy_pin);
->>>> +				goto err_ecc_ioremap;
->>>> +			}
->>>> +
->>>> +			nand_chip->dev_ready = atmel_nand_device_ready;
->>>>   		}
->>>> -		res = gpio_direction_output(host->board.enable_pin, 1);
->>>> -		if (res < 0) {
->>>> -			dev_err(&pdev->dev,
->>>> -				"can't request output direction enable gpio %d\n",
->>>> -				host->board.enable_pin);
->>>> -			goto err_ecc_ioremap;
->>>> +		if (gpio_is_valid(host->board.enable_pin)) {
->>>> +			res = gpio_request(host->board.enable_pin,
->>> we need to use devm_ here too
->>> and everywhere we can in this driver
->> yes, but seems you already sent one patch to use devm_ for this driver.
->> https://patchwork.kernel.org/patch/1589071/
->> It is not merged in at91 tree yet.
+>> http://lists.infradead.org/pipermail/linux-mtd/2013-May/046814.html
 >>
->> So what do you think if I put that patch rebased and put it as one
->> of this NFC series patches?
-> yes do so
+>> http://lists.infradead.org/pipermail/linux-mtd/2013-May/046710.html
+>>
+>>
+>> with regards, pekon
+> 
+> Request you to please accept | provide feedbacks on this patch series.
+> These are waiting acceptance since Jan-2013, and are necessary for 
+> DT based configs for board having NAND support.
+> 
+> with regards, pekon
 
-ok. I will rebase the patch and including it with nfc patches.
+Sorry, I missed that series.
 
-Best Regards,
-Josh Wu
+I'm applying it right now.
 
->
-> Best Regards,
-> J.
+Thanks,
+Benoit
