@@ -1,17 +1,30 @@
-Received: from mail-la0-x22a.google.com ([2a00:1450:4010:c03::22a])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ui4Lz-00022G-Ca
- for linux-mtd@lists.infradead.org; Thu, 30 May 2013 15:01:24 +0000
-Received: by mail-la0-f42.google.com with SMTP id fg20so361469lab.15
- for <linux-mtd@lists.infradead.org>; Thu, 30 May 2013 08:01:00 -0700 (PDT)
-From: Emil Goode <emilgoode@gmail.com>
-To: dwmw2@infradead.org, artem.bityutskiy@linux.intel.com, wfp5p@virginia.edu,
- gregkh@linuxfoundation.org, thierry.reding@avionic-design.de
-Subject: [PATCH] mtd: lantiq-flash: Convert to devm_kzalloc
-Date: Thu, 30 May 2013 17:00:36 +0200
-Message-Id: <1369926036-2416-1-git-send-email-emilgoode@gmail.com>
-Cc: kernel-janitors@vger.kernel.org, Emil Goode <emilgoode@gmail.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Received: from 14.mo5.mail-out.ovh.net ([188.165.51.82]
+ helo=mo5.mail-out.ovh.net)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Ui6C9-00058F-J1
+ for linux-mtd@lists.infradead.org; Thu, 30 May 2013 16:59:23 +0000
+Received: from mail439.ha.ovh.net (b7.ovh.net [213.186.33.57])
+ by mo5.mail-out.ovh.net (Postfix) with SMTP id E17C7FFB150
+ for <linux-mtd@lists.infradead.org>; Thu, 30 May 2013 18:58:59 +0200 (CEST)
+Date: Thu, 30 May 2013 18:54:53 +0200
+From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+To: Josh Wu <josh.wu@atmel.com>
+Subject: Re: [PATCH v2 2/4] mtd: atmel_nand: add Nand Flash Controller
+ (NFC) support
+Message-ID: <20130530165453.GD23653@game.jcrosoft.org>
+References: <1368784308-7600-1-git-send-email-josh.wu@atmel.com>
+ <1368784308-7600-3-git-send-email-josh.wu@atmel.com>
+ <20130524200947.GM24476@game.jcrosoft.org>
+ <51A32DD2.9040707@atmel.com>
+ <20130527102603.GR24476@game.jcrosoft.org>
+ <51A6EE46.6050701@atmel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <51A6EE46.6050701@atmel.com>
+Cc: nicolas.ferre@atmel.com, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,88 +34,147 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The ltq_mtd_probe function is missing some error handling for
-memory allocation failure. This patch fixes that and simplifies
-the code by converting to devm_kzalloc.
+On 14:14 Thu 30 May     , Josh Wu wrote:
+> Hi, JC
+> 
+> On 5/27/2013 6:26 PM, Jean-Christophe PLAGNIOL-VILLARD wrote:
+> 
+> [snip]
+> 
+> >>>yes but you need to update the compatible or check the IP support it too
+> >>>as has-nfc will mean I have the nfs on the hardware but not enable it
+> >>>
+> >>>the SoC dtsi will describe you have it but the board will decide to enable it or
+> >>>not
+> >>I can add some code to check whether is NFC supported by read SMC IP
+> >>version. But I'm afraid
+> >>such code may not work for AVR arch.
+> >>
+> >>Another way is just add a 'enable-nfc' compatible string. Which is
+> >>for board to enable the NFC feature.
+> >>
+> >>I'm prefer to the later one. What do you think?
+> >I do not like no 2
+> >
+> >I like this
+> >
+> >		nand0: nand@60000000 {
+> >			compatible = "atmel,at91rm9200-nand";
+> >			#address-cells = <1>;
+> >			#size-cells = <1>;
+> >			reg = < 0x60000000 0x01000000   /* EBI CS3 */
+> >				0xffffc070 0x00000490   /* SMC PMECC regs */
+> >				0xffffc500 0x00000100   /* SMC PMECC Error Location regs */
+> >				0x00100000 0x00100000   /* ROM code */
+> >				>;
+> >			interrupts = <5 IRQ_TYPE_LEVEL_HIGH 6>;
+> >			atmel,nand-addr-offset = <21>;
+> >			atmel,nand-cmd-offset = <22>;
+> >			pinctrl-names = "default";
+> >			pinctrl-0 = <&pinctrl_nand0_ale_cle>;
+> >			atmel,pmecc-lookup-table-offset = <0x10000 0x18000>;
+> >			status = "disabled";
+> >
+> >			nfc@70000000 {
+> >				compatible = "atmel,sama5d3-nfc";
+> >				reg = < 0x70000000 0x10000000   /* NFC Command Registers */
+> >					0xffffc000 0x00000070   /* NFC HSMC regs */
+> >					0x00200000 0x00100000   /* NFC SRAM banks */
+> >				>;
+> >			}
+> >		};
+> >
+> >so you can enable/disable it easly
+> 
+> Since I am not use such dts definition before, following is my guest
+> implementation for above dts:
+> So I need define an additional platform driver for
+> "atmel,sama5d3-nfc" with probe/remove function. right?
 
-Signed-off-by: Emil Goode <emilgoode@gmail.com>
----
- drivers/mtd/maps/lantiq-flash.c |   31 +++++++++++++++----------------
- 1 file changed, 15 insertions(+), 16 deletions(-)
+give one day for thisI need to check something on the hardware features
+> if yes, then there are two question are rise out:
+> 1. which driver will be probed first? or it is depends? Since I
+> think the "atmel,sama5d3-nfc" can be probe first is good for me.
+> 2. how do these two drivers share data with others? I check at91
+> pinctrl as a example, and it use a static pointer array store gpio
+> data, and pinctrl can access it. Seems that is enough for me.
 
-diff --git a/drivers/mtd/maps/lantiq-flash.c b/drivers/mtd/maps/lantiq-flash.c
-index d7ac65d..de0ac1e 100644
---- a/drivers/mtd/maps/lantiq-flash.c
-+++ b/drivers/mtd/maps/lantiq-flash.c
-@@ -123,24 +123,28 @@ ltq_mtd_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
- 
--	ltq_mtd = kzalloc(sizeof(struct ltq_mtd), GFP_KERNEL);
-+	ltq_mtd = devm_kzalloc(&pdev->dev, sizeof(struct ltq_mtd), GFP_KERNEL);
-+	if (!ltq_mtd)
-+		return -ENOMEM;
-+
- 	platform_set_drvdata(pdev, ltq_mtd);
- 
- 	ltq_mtd->res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	if (!ltq_mtd->res) {
- 		dev_err(&pdev->dev, "failed to get memory resource\n");
--		err = -ENOENT;
--		goto err_out;
-+		return -ENOENT;
- 	}
- 
--	ltq_mtd->map = kzalloc(sizeof(struct map_info), GFP_KERNEL);
-+	ltq_mtd->map = devm_kzalloc(&pdev->dev, sizeof(struct map_info),
-+				    GFP_KERNEL);
-+	if (!ltq_mtd->map)
-+		return -ENOMEM;
-+
- 	ltq_mtd->map->phys = ltq_mtd->res->start;
- 	ltq_mtd->map->size = resource_size(ltq_mtd->res);
- 	ltq_mtd->map->virt = devm_ioremap_resource(&pdev->dev, ltq_mtd->res);
--	if (IS_ERR(ltq_mtd->map->virt)) {
--		err = PTR_ERR(ltq_mtd->map->virt);
--		goto err_out;
--	}
-+	if (IS_ERR(ltq_mtd->map->virt))
-+		return PTR_ERR(ltq_mtd->map->virt);
- 
- 	ltq_mtd->map->name = ltq_map_name;
- 	ltq_mtd->map->bankwidth = 2;
-@@ -155,8 +159,7 @@ ltq_mtd_probe(struct platform_device *pdev)
- 
- 	if (!ltq_mtd->mtd) {
- 		dev_err(&pdev->dev, "probing failed\n");
--		err = -ENXIO;
--		goto err_free;
-+		return -ENXIO;
- 	}
- 
- 	ltq_mtd->mtd->owner = THIS_MODULE;
-@@ -177,10 +180,7 @@ ltq_mtd_probe(struct platform_device *pdev)
- 
- err_destroy:
- 	map_destroy(ltq_mtd->mtd);
--err_free:
--	kfree(ltq_mtd->map);
--err_out:
--	kfree(ltq_mtd);
-+
- 	return err;
- }
- 
-@@ -194,9 +194,8 @@ ltq_mtd_remove(struct platform_device *pdev)
- 			mtd_device_unregister(ltq_mtd->mtd);
- 			map_destroy(ltq_mtd->mtd);
- 		}
--		kfree(ltq_mtd->map);
--		kfree(ltq_mtd);
- 	}
-+
- 	return 0;
- }
- 
--- 
-1.7.10.4
+no the pinctrl is a special case as both drivers use the same registers
+to handle the pinctrl and gpio
+
+Best Regards,
+J.
+> 
+> >
+> >
+> >>>>  Examples:
+> >>>>  nand0: nand@40000000,0 {
+> >>>>diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+> >>>>index f747791..48d7ee6 100644
+> >>>>--- a/drivers/mtd/nand/atmel_nand.c
+> >>>>+++ b/drivers/mtd/nand/atmel_nand.c
+> >>>>@@ -18,6 +18,9 @@
+> >>>>   *  Add Programmable Multibit ECC support for various AT91 SoC
+> >>>>   *     © Copyright 2012 ATMEL, Hong Xu
+> >>>>   *
+> >>>>+ *  Add Nand Flash Controller support for SAMA5 SoC
+> >>>>+ *     © Copyright 2013 ATMEL, Josh Wu (josh.wu@atmel.com)
+> >>>>+ *
+> >>>>   * This program is free software; you can redistribute it and/or modify
+> >>>>   * it under the terms of the GNU General Public License version 2 as
+> >>>>   * published by the Free Software Foundation.
+> >>>>@@ -37,9 +40,11 @@
+> >>>>  #include <linux/mtd/nand.h>
+> >>>>  #include <linux/mtd/partitions.h>
+> >>>>+#include <linux/delay.h>
+> >>>>  #include <linux/dmaengine.h>
+> >>>>  #include <linux/gpio.h>
+> >>>>  #include <linux/io.h>
+> >>>>+#include <linux/interrupt.h>
+> >>>>  #include <linux/platform_data/atmel.h>
+> >>>>  #include <linux/pinctrl/consumer.h>
+> >>>>@@ -58,6 +63,7 @@ module_param(on_flash_bbt, int, 0);
+> >>>>  	__raw_writel((value), add + ATMEL_ECC_##reg)
+> >>>>  #include "atmel_nand_ecc.h"	/* Hardware ECC registers */
+> >>>>+#include "atmel_nand_nfc.h"	/* Nand Flash Controller definition */
+> >>>>  /* oob layout for large page size
+> >>>>   * bad block info is on bytes 0 and 1
+> >>>>@@ -85,6 +91,13 @@ static struct nand_ecclayout atmel_oobinfo_small = {
+> >>>>  	},
+> >>>>  };
+> >....
+> >>>>+				dev_err(&pdev->dev,
+> >>>>+					"can't request input direction rdy gpio %d\n",
+> >>>>+					host->board.rdy_pin);
+> >>>>+				goto err_ecc_ioremap;
+> >>>>+			}
+> >>>>+
+> >>>>+			nand_chip->dev_ready = atmel_nand_device_ready;
+> >>>>  		}
+> >>>>-		res = gpio_direction_output(host->board.enable_pin, 1);
+> >>>>-		if (res < 0) {
+> >>>>-			dev_err(&pdev->dev,
+> >>>>-				"can't request output direction enable gpio %d\n",
+> >>>>-				host->board.enable_pin);
+> >>>>-			goto err_ecc_ioremap;
+> >>>>+		if (gpio_is_valid(host->board.enable_pin)) {
+> >>>>+			res = gpio_request(host->board.enable_pin,
+> >>>we need to use devm_ here too
+> >>>and everywhere we can in this driver
+> >>yes, but seems you already sent one patch to use devm_ for this driver.
+> >>https://patchwork.kernel.org/patch/1589071/
+> >>It is not merged in at91 tree yet.
+> >>
+> >>So what do you think if I put that patch rebased and put it as one
+> >>of this NFC series patches?
+> >yes do so
+> 
+> ok. I will rebase the patch and including it with nfc patches.
+> 
+> Best Regards,
+> Josh Wu
+> 
+> >
+> >Best Regards,
+> >J.
+> 
