@@ -1,16 +1,22 @@
-Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
+Received: from mail-ie0-x22f.google.com ([2607:f8b0:4001:c03::22f])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UiQPj-0003RH-1r
- for linux-mtd@lists.infradead.org; Fri, 31 May 2013 14:34:43 +0000
-Received: by mail-wi0-f176.google.com with SMTP id hr14so755769wib.9
- for <linux-mtd@lists.infradead.org>; Fri, 31 May 2013 07:34:21 -0700 (PDT)
+ id 1UiREy-0004r3-0o
+ for linux-mtd@lists.infradead.org; Fri, 31 May 2013 15:27:40 +0000
+Received: by mail-ie0-f175.google.com with SMTP id tp5so4300596ieb.20
+ for <linux-mtd@lists.infradead.org>; Fri, 31 May 2013 08:27:19 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <CAKGbVbtp4FBauCFNGSPTQSk_Dz4ELa7Gn31UByTMaFSk_vF1eg@mail.gmail.com>
+References: <CAKGbVbtp4FBauCFNGSPTQSk_Dz4ELa7Gn31UByTMaFSk_vF1eg@mail.gmail.com>
 From: Richard Genoud <richard.genoud@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] MTD: atmel_nand: using a stronger ECC is not dangerous
-Date: Fri, 31 May 2013 16:34:10 +0200
-Message-Id: <1370010850-20860-1-git-send-email-richard.genoud@gmail.com>
-Cc: Richard Genoud <richard.genoud@gmail.com>, Josh Wu <josh.wu@atmel.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Date: Fri, 31 May 2013 17:26:59 +0200
+Message-ID: <CACQ1gAis_qrt_7RTROw-Hbueiy0XKYwtyR56w2DkajVKvwwwHA@mail.gmail.com>
+Subject: Re: UBI torture_peb() bad block detection problem
+To: Qiang Yu <yuq825@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: Mike Dunn <mikedunn@newsguy.com>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Vipin Kumar <vipin.kumar@st.com>, linux-mtd@lists.infradead.org,
+ Ivan Djelic <ivan.djelic@parrot.com>,
+ Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,26 +26,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We don't have to issue a warning when a stronger error correting
-capability is chosen.
+2013/4/27 Qiang Yu <yuq825@gmail.com>:
+> Hi guys,
+>
+> I'm writing MTD driver for Allwinner A10 nand controller. Now there is
+> a problem with the UBI torture_peb() function. From the code and UBI
+> doc, a PEB will be treated as bad when read with bit-flip after erase.
+> But with SAMSUNG K9GBG08U0A flash chip, sometimes the bit-flip does
+> happen even after being erased.
+>
+> My question is why make this a rule to detect bad block in
+> torture_peb()? A PEB won't have bit-flip when just being erased?
 
-Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
----
- drivers/mtd/nand/atmel_nand.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi !
+As I have also a cubieboard, I would happily have a look at your
+driver and test it !
 
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index 2d23d29..2415cdc 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -1002,7 +1002,7 @@ static int __init atmel_pmecc_nand_init_params(struct platform_device *pdev,
- 		return err_no;
- 	}
- 
--	if (cap != host->pmecc_corr_cap ||
-+	if (cap > host->pmecc_corr_cap ||
- 			sector_size != host->pmecc_sector_size)
- 		dev_info(host->dev, "WARNING: Be Caution! Using different PMECC parameters from Nand ONFI ECC reqirement.\n");
- 
--- 
-1.7.10.4
+Richard.
