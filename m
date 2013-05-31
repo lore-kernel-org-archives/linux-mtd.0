@@ -1,22 +1,13 @@
-Received: from mail-ie0-x22f.google.com ([2607:f8b0:4001:c03::22f])
+Received: from smtp.newsguy.com ([74.209.136.69])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UiREy-0004r3-0o
- for linux-mtd@lists.infradead.org; Fri, 31 May 2013 15:27:40 +0000
-Received: by mail-ie0-f175.google.com with SMTP id tp5so4300596ieb.20
- for <linux-mtd@lists.infradead.org>; Fri, 31 May 2013 08:27:19 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CAKGbVbtp4FBauCFNGSPTQSk_Dz4ELa7Gn31UByTMaFSk_vF1eg@mail.gmail.com>
-References: <CAKGbVbtp4FBauCFNGSPTQSk_Dz4ELa7Gn31UByTMaFSk_vF1eg@mail.gmail.com>
-From: Richard Genoud <richard.genoud@gmail.com>
-Date: Fri, 31 May 2013 17:26:59 +0200
-Message-ID: <CACQ1gAis_qrt_7RTROw-Hbueiy0XKYwtyR56w2DkajVKvwwwHA@mail.gmail.com>
-Subject: Re: UBI torture_peb() bad block detection problem
-To: Qiang Yu <yuq825@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: Mike Dunn <mikedunn@newsguy.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- Vipin Kumar <vipin.kumar@st.com>, linux-mtd@lists.infradead.org,
- Ivan Djelic <ivan.djelic@parrot.com>,
- Brian Norris <computersforpeace@gmail.com>
+ id 1UiTeV-0008PV-Hv
+ for linux-mtd@lists.infradead.org; Fri, 31 May 2013 18:02:12 +0000
+From: Mike Dunn <mikedunn@newsguy.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: docg4: fix status polling loop
+Date: Fri, 31 May 2013 11:00:31 -0700
+Message-Id: <1370023231-8779-1-git-send-email-mikedunn@newsguy.com>
+Cc: Mike Dunn <mikedunn@newsguy.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,20 +17,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2013/4/27 Qiang Yu <yuq825@gmail.com>:
-> Hi guys,
->
-> I'm writing MTD driver for Allwinner A10 nand controller. Now there is
-> a problem with the UBI torture_peb() function. From the code and UBI
-> doc, a PEB will be treated as bad when read with bit-flip after erase.
-> But with SAMSUNG K9GBG08U0A flash chip, sometimes the bit-flip does
-> happen even after being erased.
->
-> My question is why make this a rule to detect bad block in
-> torture_peb()? A PEB won't have bit-flip when just being erased?
+The loop that polls the status register after a write or erase operation is a
+simple loop that is independent of the processor clock rate.  This bit of
+sloppiness came back to bite me when I increased the clock rate and timeouts
+started occurring.  This patch cleans this up by basing the timeout on jiffies.
 
-Hi !
-As I have also a cubieboard, I would happily have a look at your
-driver and test it !
+Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
+---
 
-Richard.
+This is a rework of an earlier patch, based on Artem's suggestion to use
+jiffies.  I did not call it 'v2' because the original description is no longer
+correct (udelay() is not used in this patch).  Thanks Artem.
+
+ drivers/mtd/nand/docg4.c |   15 ++++++---------
+ 1 files changed, 6 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/docg4.c
+index fa25e7a..6c3be21 100644
+--- a/drivers/mtd/nand/docg4.c
++++ b/drivers/mtd/nand/docg4.c
+@@ -44,6 +44,7 @@
+ #include <linux/mtd/nand.h>
+ #include <linux/bch.h>
+ #include <linux/bitrev.h>
++#include <linux/jiffies.h>
+ 
+ /*
+  * In "reliable mode" consecutive 2k pages are used in parallel (in some
+@@ -269,7 +270,7 @@ static int poll_status(struct docg4_priv *doc)
+ 	 */
+ 
+ 	uint16_t flash_status;
+-	unsigned int timeo;
++	unsigned long timeo;
+ 	void __iomem *docptr = doc->virtadr;
+ 
+ 	dev_dbg(doc->dev, "%s...\n", __func__);
+@@ -277,22 +278,18 @@ static int poll_status(struct docg4_priv *doc)
+ 	/* hardware quirk requires reading twice initially */
+ 	flash_status = readw(docptr + DOC_FLASHCONTROL);
+ 
+-	timeo = 1000;
++	timeo = jiffies + msecs_to_jiffies(200); /* generous timeout */
+ 	do {
+ 		cpu_relax();
+ 		flash_status = readb(docptr + DOC_FLASHCONTROL);
+-	} while (!(flash_status & DOC_CTRL_FLASHREADY) && --timeo);
++	} while (!(flash_status & DOC_CTRL_FLASHREADY) &&
++		 time_before(jiffies, timeo));
+ 
+-
+-	if (!timeo) {
++	if (unlikely(!(flash_status & DOC_CTRL_FLASHREADY))) {
+ 		dev_err(doc->dev, "%s: timed out!\n", __func__);
+ 		return NAND_STATUS_FAIL;
+ 	}
+ 
+-	if (unlikely(timeo < 50))
+-		dev_warn(doc->dev, "%s: nearly timed out; %d remaining\n",
+-			 __func__, timeo);
+-
+ 	return 0;
+ }
+ 
+-- 
+1.7.8.6
