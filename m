@@ -1,21 +1,25 @@
-Received: from tx2ehsobe004.messaging.microsoft.com ([65.55.88.14]
- helo=tx2outboundpool.messaging.microsoft.com)
+Received: from mail-we0-x22a.google.com ([2a00:1450:400c:c03::22a])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UjlEp-0003eZ-Gp
- for linux-mtd@lists.infradead.org; Tue, 04 Jun 2013 07:01:00 +0000
-Message-ID: <51AD9140.90500@freescale.com>
-Date: Tue, 4 Jun 2013 15:03:28 +0800
-From: Huang Shijie <b32955@freescale.com>
+ id 1UjpSQ-0001W1-PD
+ for linux-mtd@lists.infradead.org; Tue, 04 Jun 2013 11:31:20 +0000
+Received: by mail-we0-f170.google.com with SMTP id w57so84076wes.29
+ for <linux-mtd@lists.infradead.org>; Tue, 04 Jun 2013 04:30:51 -0700 (PDT)
+Sender: Christian Riesch <christian.riesch@gmail.com>
+Message-ID: <51ADCFEA.3060605@omicron.at>
+Date: Tue, 04 Jun 2013 13:30:50 +0200
+From: Christian Riesch <christian.riesch@omicron.at>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 3/3] mtd: cfi_cmdset_0002: increase do_write_buffer()
- timeout
-References: <1370310406-413-1-git-send-email-computersforpeace@gmail.com>
- <1370310406-413-3-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1370310406-413-3-git-send-email-computersforpeace@gmail.com>
-Content-Type: text/plain; charset="GB2312"
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+To: dedekind1@gmail.com
+Subject: Re: [PATCH v2 1/4] mtd: cfi_cmdset_0002: Add support for reading OTP
+References: <1367003430-24584-1-git-send-email-christian.riesch@omicron.at>
+ <38c84e40-1171-4040-bc8b-ec51a0485819@mary.at.omicron.at>
+ <1369811482.5446.216.camel@sauron.fi.intel.com> <51A5FA84.8030906@omicron.at>
+ <1369835589.24286.31.camel@sauron.fi.intel.com> <51A61274.70607@omicron.at>
+ <1370252414.21714.29.camel@sauron.fi.intel.com>
+In-Reply-To: <1370252414.21714.29.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,52 +29,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=D3=DA 2013=C4=EA06=D4=C204=C8=D5 09:46, Brian Norris =D0=B4=B5=C0:
-> After various tests, it seems simply that the timeout is not long enoug=
-h
-> for my system; increasing it by a few jiffies prevented all failures
-> (testing for 12+ hours). There is no harm in increasing the timeout, bu=
-t
-> there is harm in having it too short, as evidenced here.
+On 2013-06-03 11:40, Artem Bityutskiy wrote:
+> On Wed, 2013-05-29 at 16:36 +0200, Christian Riesch wrote:
+>>> But retlen is where you return the amount of bytes you actually
+>> wrote.
+>>> The return code is either 0 or a negative error code number. This is
+>>> what we do in mtd_write() and I'd expect the OTP functions to be
+>>> consistent.
+>>
+>> Unlike mtd_write, mtd->_get_fact_prot_info (which is a pointer to
+>> cfi_amdstd_get_fact_prot_info here) does not have a retlen parameter.
+>> Do
+>> you suggest to change this?
 >
-I like the patch1 and patch 2.
+> Yes, I would suggest this.
+>
 
-But extending the timeout from 1ms to 10ms is like a workaround. :)
-
->From the NOR's spec, even the maximum write-to-buffer only costs several
-hundreds us,
-such as 200us.
-
-I GUESS your problem is caused by the timer system, not the MTD code. I
-ever met this type of bug.
-The bug is in the kernel 3.5.7, but the latest kernel has fixed it with
-NO_HZ_IDLE/NO_HZ_COMMON features.
-I do not meet the issue the latest linux-next tree.
-
-I try to describe the jiffies bug with my poor english:
-
-[1] background:
-CONFIG_HZ=3D100, CONFIG_NO_HZ=3Dy
-
-[2] call nand_wait() when we write a nand page.
-
-[3] The jiffies was not updated at a _even_ speed.
-
-In the nand_wait(), you wait for 20ms(2 jiffies) for a page write,
-and the timeout occurs during the page write. Of course, you think that
-we have already waited for 20ms.
-But in actually, we only waited for 1ms or less!
-How do i know this? I use the gettimeofday to check the real time when
-the timeout occur.
-
-[4] if i disable the local timer, the bug disappears.
-
-
-So, could you check the real time when the timeout occurs?
-
-
-
-Btw: My NOR's timeout is proved to be a silicon bug by Micron.
-
-thanks
-Huang Shijie
+Ok, I will prepare a patch for this.
+Thanks, Christian
