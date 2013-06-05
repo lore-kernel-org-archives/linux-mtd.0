@@ -1,17 +1,26 @@
-Received: from zose-mta11.web4all.fr ([178.33.204.87])
+Received: from mail-vc0-f176.google.com ([209.85.220.176])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UkIge-0003lQ-1h
- for linux-mtd@lists.infradead.org; Wed, 05 Jun 2013 18:43:57 +0000
-Date: Wed, 5 Jun 2013 20:37:58 +0200 (CEST)
-From: =?utf-8?Q?Beno=C3=AEt_Th=C3=A9baudeau?= <benoit.thebaudeau@advansee.com>
-To: linux-mtd <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Message-ID: <2099899784.1693830.1370457478398.JavaMail.root@advansee.com>
-In-Reply-To: <1476912797.1693715.1370457082122.JavaMail.root@advansee.com>
-Subject: Re: Re: UBI fastmap updates
+ id 1UkKwh-0006wl-9G
+ for linux-mtd@lists.infradead.org; Wed, 05 Jun 2013 21:08:40 +0000
+Received: by mail-vc0-f176.google.com with SMTP id ha11so1463120vcb.7
+ for <linux-mtd@lists.infradead.org>; Wed, 05 Jun 2013 14:08:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAN8TOE9UDGuQd9AbE-4UVcAiqCFpqhY=fX+LbrDybdgr16THdQ@mail.gmail.com>
+References: <1370310406-413-1-git-send-email-computersforpeace@gmail.com>
+ <1370310406-413-3-git-send-email-computersforpeace@gmail.com>
+ <51AD9140.90500@freescale.com>
+ <CAN8TOE9UDGuQd9AbE-4UVcAiqCFpqhY=fX+LbrDybdgr16THdQ@mail.gmail.com>
+Date: Wed, 5 Jun 2013 14:08:17 -0700
+Message-ID: <CAN8TOE8FRtQupXwvAtrVSN-C-nQz-XgOW7OA5C=XRs9YmCwTkg@mail.gmail.com>
+Subject: Re: [PATCH 3/3] mtd: cfi_cmdset_0002: increase do_write_buffer()
+ timeout
+From: Brian Norris <computersforpeace@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=GB2312
 Content-Transfer-Encoding: quoted-printable
+Cc: Arnd Bergmann <arnd@arndb.de>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Imre Deak <imre.deak@intel.com>, Kevin Cernekee <cernekee@gmail.com>,
+ Linux Kernel <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,70 +30,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Artem Bityutskiy,
+Adding a few others
 
-On Fri Aug 3 04:47:17 EDT 2012, Artem Bityutskiy wrote:
-> On Mon, 2012-07-09 at 14:18 +0200, Richard Weinberger wrote:
-> > This is the next round of UBI fastmap updates.
-> > It fixes all issues pointed out by Shmulik. :-)
-> >=20
-> > If you want to test fastmap you can use my git repo:
-> > git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubi2.git ubi2/v17
->=20
-> Richard,
->=20
-> I've added 'stress-test.sh' script to the UBI tests. This script runs
-> UBI tests on nandsim of different geometry. I plan to extend it
-> further: add mtdram tests, test with bit-flips emulation enabled, may
-> be something else.
->=20
-> We need to make sure all the tests pass and fastmap does not introduce
-> regressions.
->=20
-> Feel free to send patches. I am going to extend the test today, so
-> 'git pull' from time to time.
->=20
-> The tests will run very long time, so for debugging you can always
-> comment out unneeded things.
->=20
-> ATM, I have only nandsim tests with different geometry: 64MiB to 1GiB
-> total size, 2KiB and 512 byte pages, 16-256KiB eraseblocks.
->=20
-> Currently I am running this to unpatched UBI to check if they really
-> pass.
->=20
-> I tried to run it on the patched UBI and hit this issue:
->=20
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> 16MiB nandsim with 16KiB PEB, 512KiB NAND pages, fastmap enabled
-> Loaded NAND simulator (16MiB, 16KiB eraseblock, 512 bytes NAND page)
-> Running mkvol_basic /dev/ubi0
-> Running mkvol_bad /dev/ubi0
-> Running mkvol_paral /dev/ubi0
-> Running rsvol /dev/ubi0
-> Running io_basic /dev/ubi0
-> [io_basic] test_basic():70: function write() failed with error 28 (No
-> space left on device)
-> [io_basic] test_basic():70: written =3D 15808000, ret =3D -1
-> Error: io_basic failed
-> FAILURE
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->=20
-> On non-patched UBI it works. I think it is exactly what I was talking
-> about yesterday - fastmap grows unexpectedly because you do not
-> reserve the space.
+For reference, this thread started with this patch:
 
-I am having the same issue on Ubuntu 13.04 with UBI on nandsim. See my bug
-report here:
-https://bugs.launchpad.net/bugs/1187885
+http://lists.infradead.org/pipermail/linux-mtd/2013-June/047164.html
 
-What is the status for this issue on your side as of now?
+On Wed, Jun 5, 2013 at 11:01 AM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> On Tue, Jun 4, 2013 at 12:03 AM, Huang Shijie <b32955@freescale.com> wrot=
+e:
+>> =D3=DA 2013=C4=EA06=D4=C204=C8=D5 09:46, Brian Norris =D0=B4=B5=C0:
+>>> After various tests, it seems simply that the timeout is not long enoug=
+h
+>>> for my system; increasing it by a few jiffies prevented all failures
+>>> (testing for 12+ hours). There is no harm in increasing the timeout, bu=
+t
+>>> there is harm in having it too short, as evidenced here.
+>>>
+>> I like the patch1 and patch 2.
+>>
+>> But extending the timeout from 1ms to 10ms is like a workaround. :)
+>
+> I was afraid you might say that; that's why I stuck the first two
+> patches first ;)
+...
+>> I GUESS your problem is caused by the timer system, not the MTD code. I
+>> ever met this type of bug.
+...
+>> I try to describe the jiffies bug with my poor english:
+>>
+>> [1] background:
+>> CONFIG_HZ=3D100, CONFIG_NO_HZ=3Dy
+>>
+>> [2] call nand_wait() when we write a nand page.
+>>
+>> [3] The jiffies was not updated at a _even_ speed.
+>>
+>> In the nand_wait(), you wait for 20ms(2 jiffies) for a page write,
+>> and the timeout occurs during the page write. Of course, you think that
+>> we have already waited for 20ms.
+>> But in actually, we only waited for 1ms or less!
+>> How do i know this? I use the gettimeofday to check the real time when
+>> the timeout occur.
+>
+> I suspected this very type of thing, since this has come up in a few
+> different contexts. And for some time, with a number of different
+> checks, it appeared that this *wasn't* the case. But while writing
+> this very email, I had the bright idea that my time checkpoint was in
+> slightly the wrong place; so sure enough, I found that I was timing
+> out after only 72519 ns! (That is, 72 us, or well below the max write
+> buffer time.)
 
-Thanks in advance for your help.
+So I can confirm that with the 1ms timeout, I actually am sometimes
+timing out at 40 to 70 microseconds. I think this may have multiple
+causes:
+(1) uneven timer interrupts, as suggested by Huang?
+(2) a jiffies timeout of 1 is two short (with HZ=3D1000, msecs_to_jiffies(1=
+) is 1)
 
-Best regards,
-Beno=C3=AEt
+Regarding reason (2):
+
+My thought (which matches with Imre's comments from his [1]) is that
+one problem here is that we do not know how long it will be until the
+*next* timer tick -- "waiting 1 jiffy" is really just waiting until
+the next timer tick, which very well might be in 40us! So the correct
+timeout calculation is something like:
+
+uWriteTimeout =3D msecs_to_jiffies(1) + 1;
+
+or with Imre's proposed methods (not merged upstream yet), just:
+
+uWriteTimeout =3D msecs_to_jiffies_timeout(1);
+
+Thoughts?
+
+Note that a 2-jiffy timeout does not, in fact, totally resolve my
+problems; with a timeout of 2 jiffies, I still get a timeout that
+(according to getnstimeofday()) occurs after only 56us. It does
+decrease its rate of occurrence, but Huang may still be right that
+reason (1) is involved.
+
+Brian
+
+[1] http://marc.info/?l=3Dlinux-kernel&m=3D136854294730957
