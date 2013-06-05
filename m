@@ -1,23 +1,20 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Uk7jQ-0007ax-42
- for linux-mtd@lists.infradead.org; Wed, 05 Jun 2013 07:02:04 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Jingoo Han <jg1.han@samsung.com>, "'Artem Bityutskiy'"
- <artem.bityutskiy@linux.intel.com>
-Subject: RE: [PATCH 20/26] mtd: nand: omap2: remove unnecessary
- platform_set_drvdata()
-Date: Wed, 5 Jun 2013 07:01:32 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9D978A@DBDE04.ent.ti.com>
-References: <005801ce4aed$ed90d6c0$c8b28440$@samsung.com>
-In-Reply-To: <005801ce4aed$ed90d6c0$c8b28440$@samsung.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: 'David Woodhouse' <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Daniel Mack <zonque@gmail.com>
+Received: from mga02.intel.com ([134.134.136.20])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UkFWs-0006x3-QJ
+ for linux-mtd@lists.infradead.org; Wed, 05 Jun 2013 15:21:40 +0000
+Message-ID: <1370445867.2938.1.camel@sauron.fi.intel.com>
+Subject: Re: UBIFS: Orphaned inode 1
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Mats =?ISO-8859-1?Q?K=E4rrman?= <Mats.Karrman@tritech.se>
+Date: Wed, 05 Jun 2013 18:24:27 +0300
+In-Reply-To: <ED3E0BCACD909541BA94A34C4A164D4C4FC8C034@post.tritech.se>
+References: <ED3E0BCACD909541BA94A34C4A164D4C4FC8BF32@post.tritech.se>
+ <ED3E0BCACD909541BA94A34C4A164D4C4FC8C034@post.tritech.se>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,40 +24,115 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> The driver core clears the driver data to NULL after device_release
-> or on probe failure, since commit
-> 0998d0631001288a5974afc0b2a5f568bcdecb4d
-> (device-core: Ensure drvdata =3D NULL when no driver is bound).
-> Thus, it is not needed to manually clear the device driver data to NULL.
->=20
-> Signed-off-by: Jingoo Han <jg1.han@samsung.com>
-Acked-by: Pekon Gupta <pekon@ti.com>
+On Mon, 2013-06-03 at 13:03 +0000, Mats Kärrman wrote:
+> Hi,
+> 
+> I'm facing a problem involving systems running in the field that suddenly cannot
+> boot anymore because the root UBIFS file system residing in a NOR flash
+> cannot be mounted. Error msg in kernel log is:
+> 
+> UBIFS error (pid 1): ubifs_iget: failed to read inode 1, error -2
+> 
+> I have managed to copy a failing FLASH image into a file on my PC, uploaded it
+> to an mtdram device and tried to mount it with all debug info turned on and
+> "general" checks enabled. The final error is the same:
+> 
+> < snip >
+> [ 5513.523872] UBIFS: mounted UBI device 0, volume 0, name "debug-rootfs"
+> [ 5513.523878] UBIFS: file system size:   57877248 bytes (56520 KiB, 55 MiB, 442 LEBs)
+> [ 5513.523882] UBIFS: journal size:       8773248 bytes (8567 KiB, 8 MiB, 67 LEBs)
+> [ 5513.523885] UBIFS: media format:       w4/r0 (latest is w4/r0)
+> [ 5513.523887] UBIFS: default compressor: lzo
+> [ 5513.523893] UBIFS: reserved for root:  261902 bytes (255 KiB)
+> [ 5513.523896] UBIFS DBG (pid 4659): mount_ubifs: compiled on:         May 31 2013 at 13:31:25
+> [ 5513.523900] UBIFS DBG (pid 4659): mount_ubifs: min. I/O unit size:  8 bytes
+> [ 5513.523903] UBIFS DBG (pid 4659): mount_ubifs: max. write size:     64 bytes
+> [ 5513.523905] UBIFS DBG (pid 4659): mount_ubifs: LEB size:            130944 bytes (127 KiB)
+> [ 5513.523908] UBIFS DBG (pid 4659): mount_ubifs: data journal heads:  1
+> [ 5513.523911] UBIFS DBG (pid 4659): mount_ubifs: UUID:                B43E1323-1747-41FB-9C11-F4C0E59C24B8
+> [ 5513.523914] UBIFS DBG (pid 4659): mount_ubifs: big_lpt              0
+> [ 5513.523916] UBIFS DBG (pid 4659): mount_ubifs: log LEBs:            4 (3 - 6)
+> [ 5513.523919] UBIFS DBG (pid 4659): mount_ubifs: LPT area LEBs:       2 (7 - 8)
+> [ 5513.523921] UBIFS DBG (pid 4659): mount_ubifs: orphan area LEBs:    1 (9 - 9)
+> [ 5513.523924] UBIFS DBG (pid 4659): mount_ubifs: main area LEBs:      442 (10 - 451)
+> [ 5513.523926] UBIFS DBG (pid 4659): mount_ubifs: index LEBs:          32
+> [ 5513.523935] UBIFS DBG (pid 4659): mount_ubifs: total index bytes:   622720 (608 KiB, 0 MiB)
+> [ 5513.523940] UBIFS DBG (pid 4659): mount_ubifs: key hash type:       0
+> [ 5513.523944] UBIFS DBG (pid 4659): mount_ubifs: tree fanout:         8
+> [ 5513.523949] UBIFS DBG (pid 4659): mount_ubifs: reserved GC LEB:     443
+> [ 5513.523953] UBIFS DBG (pid 4659): mount_ubifs: first main LEB:      10
+> [ 5513.523958] UBIFS DBG (pid 4659): mount_ubifs: max. znode size      320
+> [ 5513.523964] UBIFS DBG (pid 4659): mount_ubifs: max. index node size 192
+> [ 5513.523967] UBIFS DBG (pid 4659): mount_ubifs: node sizes:          data 48, inode 160, dentry 56
+> [ 5513.523970] UBIFS DBG (pid 4659): mount_ubifs: node sizes:          trun 56, sb 4096, master 512
+> [ 5513.523973] UBIFS DBG (pid 4659): mount_ubifs: node sizes:          ref 64, cmt. start 32, orph 32
+> [ 5513.523977] UBIFS DBG (pid 4659): mount_ubifs: max. node sizes:     data 4144, inode 4256 dentry 312, idx 188
+> [ 5513.523979] UBIFS DBG (pid 4659): mount_ubifs: dead watermark:      56
+> [ 5513.523982] UBIFS DBG (pid 4659): mount_ubifs: dark watermark:      4256
+> [ 5513.523984] UBIFS DBG (pid 4659): mount_ubifs: LEB overhead:        2480
+> [ 5513.523987] UBIFS DBG (pid 4659): mount_ubifs: max. dark space:     1881152 (1837 KiB, 1 MiB)
+> [ 5513.523989] UBIFS DBG (pid 4659): mount_ubifs: maximum bud bytes:   8249472 (8056 KiB, 7 MiB)
+> [ 5513.523992] UBIFS DBG (pid 4659): mount_ubifs: BG commit bud bytes: 6702696 (6545 KiB, 6 MiB)
+> [ 5513.523995] UBIFS DBG (pid 4659): mount_ubifs: current bud bytes    90112 (88 KiB, 0 MiB)
+> [ 5513.523998] UBIFS DBG (pid 4659): mount_ubifs: max. seq. number:    23851433
+> [ 5513.524000] UBIFS DBG (pid 4659): mount_ubifs: commit number:       1769
+> [ 5513.524003] ubifs_iget: UBIFS DBG gen: inode 1
+> [ 5513.524011] ubifs_lookup_level0: UBIFS DBG tnc: search key (1, inode)
+> [ 5513.524015] ubifs_lookup_level0: UBIFS DBG tnc: found 0, lvl 0, n -1
+> [ 5513.524018] UBIFS error (pid 4659): ubifs_iget: failed to read inode 1, error -2
+> [ 5513.524022] ubifs_evict_inode: UBIFS DBG gen: inode 1, mode 0x8000
+> [ 5513.524026] ubifs_umount: UBIFS DBG gen: un-mounting UBI device 0, volume 0
+> [ 5513.524049] UBIFS DBG (pid 4660): ubifs_bg_thread: background thread "ubifs_bgt0_0" stops
+> 
+> If i grep the log for recovery messages I get:
+> 
+> [ 5513.520324] UBIFS: recovery needed
+> [ 5513.520327] ubifs_recover_inl_heads: UBIFS DBG rcvry: checking index head at 449:109136
+> [ 5513.520343] ubifs_recover_inl_heads: UBIFS DBG rcvry: checking LPT head at 7:123208
+> [ 5513.520983] ubifs_recover_leb: UBIFS DBG rcvry: 219:93032, jhead 0, grouped 0
+> [ 5513.521039] ubifs_recover_leb: UBIFS DBG rcvry: found corruption - -1
+> [ 5513.521073] clean_buf: UBIFS DBG rcvry: cleaning corruption at 219:93032
+> [ 5513.521079] fix_unclean_leb: UBIFS DBG rcvry: fixing LEB 219 start 93032 endpt 93032
+> [ 5513.521396] ubifs_recover_leb: UBIFS DBG rcvry: 369:83568, jhead 1, grouped 1
+> [ 5513.521474] ubifs_recover_leb: UBIFS DBG rcvry: found corruption - -1
+> [ 5513.521548] clean_buf: UBIFS DBG rcvry: cleaning corruption at 369:83568
+> [ 5513.521557] fix_unclean_leb: UBIFS DBG rcvry: fixing LEB 369 start 83568 endpt 83568
+> [ 5513.521853] ubifs_recover_leb: UBIFS DBG rcvry: 444:126120, jhead 2, grouped 1
+> [ 5513.521919] ubifs_recover_leb: UBIFS DBG rcvry: found corruption - -1
+> [ 5513.521952] clean_buf: UBIFS DBG rcvry: cleaning corruption at 444:126120
+> [ 5513.521968] fix_unclean_leb: UBIFS DBG rcvry: fixing LEB 444 start 126120 endpt 126120
+> [ 5513.522770] kill_orphans: UBIFS DBG rcvry: LEB 9
+> [ 5513.522885] do_kill_orphans: UBIFS DBG rcvry: deleting orphaned inode 1208852
+> [ 5513.523313] do_kill_orphans: UBIFS DBG rcvry: deleting orphaned inode 1
+> [ 5513.523489] do_kill_orphans: UBIFS DBG rcvry: last orph node for commit 1700 at 9:0
+> [ 5513.523494] ubifs_rcvry_gc_commit: UBIFS DBG rcvry: GC head LEB 219, offs 93032
+> [ 5513.523512] ubifs_rcvry_gc_commit: UBIFS DBG rcvry: committing
+> [ 5513.523768] ubifs_rcvry_gc_commit: UBIFS DBG rcvry: GC'ing LEB 443
+> [ 5513.523840] ubifs_rcvry_gc_commit: UBIFS DBG rcvry: allocated LEB 443 for GC
+> [ 5513.523843] UBIFS: recovery completed
+> 
+> The message that caught my attention:
+> 
+> [ 5513.523313] do_kill_orphans: UBIFS DBG rcvry: deleting orphaned inode 1
+> 
+> How can inode 1 be an orphan, or rather shouldn't it be?
+> Is it possible for a user-space application to cause this error?
+> Should I also look in UBI and MTD layers for the cause?
+> I'm not sure where to go on from here, any suggestions are welcome!!
+> 
+> My target system runs a Freescale MPC5125 (PPC e300c4) with a Linux 2.6.35.14
+> kernel patched with all UBFS patches from Artem's 2.6.35 maintenance tree and
+> additional ones from later kernel versions.
+> My PC runs the latest LMDE (3.2.32) recompiled with dynamic debug turned on.
 
-Thanks for this ..=20
-With regards, pekon
+You are the second person reporting this for 2.6.35. Probably I
+introduced a bug while back-porting stuff.
 
-> ---
->  drivers/mtd/nand/omap2.c |    1 -
->  1 files changed, 0 insertions(+), 1 deletions(-)
->=20
-> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index 81b80af..daa3dfc 100644
-> --- a/drivers/mtd/nand/omap2.c
-> +++ b/drivers/mtd/nand/omap2.c
-> @@ -2087,7 +2087,6 @@ static int omap_nand_remove(struct
-> platform_device *pdev)
->  							mtd);
->  	omap3_free_bch(&info->mtd);
->=20
-> -	platform_set_drvdata(pdev, NULL);
->  	if (info->dma)
->  		dma_release_channel(info->dma);
->=20
-> --
-> 1.7.2.5
->=20
->=20
->=20
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Can you reproduce this or try to find a way to reproduce?
+
+Can you share your image?
+
+
+-- 
+Best Regards,
+Artem Bityutskiy
