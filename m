@@ -1,14 +1,26 @@
-Message-ID: <51B1A2B7.6090602@prisktech.co.nz>
-Date: Fri, 07 Jun 2013 21:07:03 +1200
-From: Tony Prisk <linux@prisktech.co.nz>
+Received: from mail-ie0-x236.google.com ([2607:f8b0:4001:c03::236])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UkxZO-00067t-EJ
+ for linux-mtd@lists.infradead.org; Fri, 07 Jun 2013 14:23:11 +0000
+Received: by mail-ie0-f182.google.com with SMTP id 9so10663553iec.41
+ for <linux-mtd@lists.infradead.org>; Fri, 07 Jun 2013 07:22:48 -0700 (PDT)
 MIME-Version: 1.0
-To: "Mailing List, Arm" <linux-arm-kernel@lists.infradead.org>
-Subject: Re: NAND buffer allocation fails
-References: <51B1A1DE.3020603@prisktech.co.nz>
-In-Reply-To: <51B1A1DE.3020603@prisktech.co.nz>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
+In-Reply-To: <20130520123733.GB2904@localhost>
+References: <1368530125-12959-1-git-send-email-elezegarcia@gmail.com>
+ <20130520123733.GB2904@localhost>
+Date: Fri, 7 Jun 2013 11:22:48 -0300
+Message-ID: <CALF0-+W+4NCLimsP1E+aGNLEuE9GtThsm6dNE-iyeju5ixx8Rg@mail.gmail.com>
+Subject: Re: [PATCH 0/5] mtd: nand: Fixes and improvements on pxa3xx
+From: Ezequiel Garcia <elezegarcia@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Lior Amsalem <alior@marvell.com>, Eric Miao <eric.y.miao@gmail.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Lei Wen <leiwen@marvell.com>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>, Maen Suleiman <maen@marvell.com>,
+ linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Neil Zhang <zhangwm@marvell.com>, Chao Xie <cxie4@marvell.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,53 +30,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, May 20, 2013 at 9:37 AM, Ezequiel Garcia
+<ezequiel.garcia@free-electrons.com> wrote:
+> Hi,
+>
+> (adding Eric Miao in Cc)
+>
+> On Tue, May 14, 2013 at 08:15:20AM -0300, Ezequiel Garcia wrote:
+>> The Armada 370 and Armada XP SoC include a NAND controller (NFCv2) that
+>> is similar to the one in PXA SoC. Therefore, it should be possible to support
+>> Armada NAND using pxa3xx-nand driver.
+>>
+>> While this effort is not ready yet, here is a set of patches that are needed
+>> for such work.
+>>
+>> A small summary of the patches:
+>>
+>>   * 1/5 is a fix for a 2-year regression that removed DMA support.
+>>
+>>   * 2/5 and 3/5 are needed to build the driver on platforms other PXA.
+>>
+>>   * 4/5 and 5/5 add ONFI-compliant device detection and are needed
+>>     to successfully probe newer flash devices.
+>>
+>
+> Since this patch affects directly the PXA hardware, I'd like to have some
+> response from PXA maintainers.
+>
+> Guys, could you take a look at this?
+>
 
-On 07/06/13 21:03, Tony Prisk wrote:
-> Could someone explain why the following situation might occur:
->
-> In drivers/mtd/nand/nand_base.c, we have:
->
-> int nand_scan_tail(struct mtd_info *mtd)
-> {
->     int i;
->     struct nand_chip *chip = mtd->priv;
->
->     /* New bad blocks should be marked in OOB, flash-based BBT, or 
-> both */
->     BUG_ON((chip->bbt_options & NAND_BBT_NO_OOB_BBM) &&
->             !(chip->bbt_options & NAND_BBT_USE_FLASH));
->
->     if (!(chip->options & NAND_OWN_BUFFERS))
->         chip->buffers = kmalloc(sizeof(*chip->buffers), GFP_KERNEL);
->     if (!chip->buffers)
->         return -ENOMEM;
-> ...
->
-> For some reason, the kmalloc always fails on my configuration/hardware 
-> (arch-vt8500: WonderMedia/VIA APC8750).
->
-> The strange thing is that if I add the NAND_OWN_BUFFERS option, and 
-> allocate my own buffers in the driver probe everything is fine.
-> Driver probe code below:
->
->     priv->nand.buffers = devm_kzalloc(priv->dev, 
-> sizeof(*priv->nand.buffers), GFP_KERNEL);
->     if (!priv->nand.buffers) {
->         dev_err(priv->dev, "failed to allocate NAND buffers\n");
->         return -ENOMEM;
->     }
->
-> The devm_kzalloc does occur earlier than the nand_scan_tail alloc 
-> would have, but there doesn't appear to be a shortage of memory on the 
-> platform so I don't think it's failing for a memory shortage.
->
-> Is there any real difference between using kmalloc and devm_kzalloc to 
-> allocate the buffer (other than the obvious 0'ing of the buffer)?
-> Why would one call fail and the other succeed?
->
-> Regards
-> Tony Prisk
+Ping?
 
-Resend to correct the linux-arm-kernel mailing list address.
-
-Tony P
+-- 
+    Ezequiel
