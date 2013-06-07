@@ -1,19 +1,16 @@
-Received: from mail-bk0-x22a.google.com ([2a00:1450:4008:c01::22a])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UkmFM-0008I4-1E
- for linux-mtd@lists.infradead.org; Fri, 07 Jun 2013 02:17:44 +0000
-Received: by mail-bk0-f42.google.com with SMTP id jk13so1996685bkc.29
- for <linux-mtd@lists.infradead.org>; Thu, 06 Jun 2013 19:17:22 -0700 (PDT)
+Received: from server.prisktech.co.nz ([115.188.14.127])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UksaD-0006Wh-Tj
+ for linux-mtd@lists.infradead.org; Fri, 07 Jun 2013 09:03:42 +0000
+Message-ID: <51B1A1DE.3020603@prisktech.co.nz>
+Date: Fri, 07 Jun 2013 21:03:26 +1200
+From: Tony Prisk <linux@prisktech.co.nz>
 MIME-Version: 1.0
-Date: Fri, 7 Jun 2013 10:17:22 +0800
-Message-ID: <CAPgLHd_=Y=YwCWSFjcacJ14yKUidmmJTHnKKibU6haoBUeNacA@mail.gmail.com>
-Subject: [PATCH] UBIFS: fix error return code in ubifs_remount_rw() and
- ubifs_fill_super()
-From: Wei Yongjun <weiyj.lk@gmail.com>
-To: dedekind1@gmail.com, adrian.hunter@intel.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: yongjun_wei@trendmicro.com.cn, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+To: linux--arm-kernel@lists.infradead.org
+Subject: NAND buffer allocation fails
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,41 +20,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+Could someone explain why the following situation might occur:
 
-Fix to return -ENOMEM in the kmalloc() and d_make_root() error handling
-case instead of 0, as done elsewhere in those functions.
+In drivers/mtd/nand/nand_base.c, we have:
 
-Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
----
- fs/ubifs/super.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+int nand_scan_tail(struct mtd_info *mtd)
+{
+     int i;
+     struct nand_chip *chip = mtd->priv;
 
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index f21acf0..673b4bc 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -1629,8 +1629,10 @@ static int ubifs_remount_rw(struct ubifs_info *c)
- 	}
- 
- 	c->write_reserve_buf = kmalloc(COMPRESSED_DATA_NODE_BUF_SZ, GFP_KERNEL);
--	if (!c->write_reserve_buf)
-+	if (!c->write_reserve_buf) {
-+		err = -ENOMEM;
- 		goto out;
-+	}
- 
- 	err = ubifs_lpt_init(c, 0, 1);
- 	if (err)
-@@ -2063,8 +2065,10 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
- 	}
- 
- 	sb->s_root = d_make_root(root);
--	if (!sb->s_root)
-+	if (!sb->s_root) {
-+		err = -ENOMEM;
- 		goto out_umount;
-+	}
- 
- 	mutex_unlock(&c->umount_mutex);
- 	return 0;
+     /* New bad blocks should be marked in OOB, flash-based BBT, or both */
+     BUG_ON((chip->bbt_options & NAND_BBT_NO_OOB_BBM) &&
+             !(chip->bbt_options & NAND_BBT_USE_FLASH));
+
+     if (!(chip->options & NAND_OWN_BUFFERS))
+         chip->buffers = kmalloc(sizeof(*chip->buffers), GFP_KERNEL);
+     if (!chip->buffers)
+         return -ENOMEM;
+...
+
+For some reason, the kmalloc always fails on my configuration/hardware 
+(arch-vt8500: WonderMedia/VIA APC8750).
+
+The strange thing is that if I add the NAND_OWN_BUFFERS option, and 
+allocate my own buffers in the driver probe everything is fine.
+Driver probe code below:
+
+     priv->nand.buffers = devm_kzalloc(priv->dev, 
+sizeof(*priv->nand.buffers), GFP_KERNEL);
+     if (!priv->nand.buffers) {
+         dev_err(priv->dev, "failed to allocate NAND buffers\n");
+         return -ENOMEM;
+     }
+
+The devm_kzalloc does occur earlier than the nand_scan_tail alloc would 
+have, but there doesn't appear to be a shortage of memory on the 
+platform so I don't think it's failing for a memory shortage.
+
+Is there any real difference between using kmalloc and devm_kzalloc to 
+allocate the buffer (other than the obvious 0'ing of the buffer)?
+Why would one call fail and the other succeed?
+
+Regards
+Tony Prisk
