@@ -1,17 +1,19 @@
-Received: from mercuryimc.plus.com ([80.229.200.144]
- helo=centos1.newflow.co.uk)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ukfhl-0000bv-8e
- for linux-mtd@lists.infradead.org; Thu, 06 Jun 2013 19:18:38 +0000
-Message-ID: <51B0E071.70909@newflow.co.uk>
-Date: Thu, 06 Jun 2013 20:18:09 +0100
-From: Mark Jackson <mpfj-list@newflow.co.uk>
+Received: from mail-bk0-x22a.google.com ([2a00:1450:4008:c01::22a])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UkmFM-0008I4-1E
+ for linux-mtd@lists.infradead.org; Fri, 07 Jun 2013 02:17:44 +0000
+Received: by mail-bk0-f42.google.com with SMTP id jk13so1996685bkc.29
+ for <linux-mtd@lists.infradead.org>; Thu, 06 Jun 2013 19:17:22 -0700 (PDT)
 MIME-Version: 1.0
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: General question regarding multiple partitions on a single NOR device
+Date: Fri, 7 Jun 2013 10:17:22 +0800
+Message-ID: <CAPgLHd_=Y=YwCWSFjcacJ14yKUidmmJTHnKKibU6haoBUeNacA@mail.gmail.com>
+Subject: [PATCH] UBIFS: fix error return code in ubifs_remount_rw() and
+ ubifs_fill_super()
+From: Wei Yongjun <weiyj.lk@gmail.com>
+To: dedekind1@gmail.com, adrian.hunter@intel.com
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: lkml <linux-kernel@vger.kernel.org>
+Cc: yongjun_wei@trendmicro.com.cn, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,47 +23,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On one of our products, we have 2 64Mbit NOR devices:- one to hold the
-kernel, filesystem, etc, and the other to store "user" data.
+From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 
-The gotcha is that the "user" data is stored using our own wear
-levelling code, with read / write / erase operations being carried out
-on the raw flash device.
+Fix to return -ENOMEM in the kmalloc() and d_make_root() error handling
+case instead of 0, as done elsewhere in those functions.
 
-We are now designing a new CPU board with a single 1Gbit Spansion NOR
-part on it, rather than the 2 separate devices.
+Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+---
+ fs/ubifs/super.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-I am planning to allocate 512Mbit to the "system" partitions (eg
-bootloader, kernel, filesystem) and have the other 512Mbit as the "data"
-partition.
-
-Currently our wear levelling code uses mmap() to gain direct access to
-the flash chip, which is not an issue, since all filesystem updates etc
-are all carried out on the completely separate chip (via jffs2).
-
-What I would like to know is, when the "system" and "user" partitions
-reside on the *same" flash device, if I read/write directly to the
-"user" partition, how do I maintain the jffs2 integrity on other
-"system" partitions that may be doing their own read/write/erase
-operations ?
-
-If I can't read/write directly, can the same be achieved using the mtd
-character device using something like:-
-
-fd = open("/dev/mtd4", ..);
-seek(fd, 1234);
-write(fd, buff, ...);
-...etc...
-
-If I need to "manually" erase a sector on our custom data partition, how
-can that be handled without disrupting any jffs2 flash access on the
-other "system" partitions ?
-
-Do the mtd ioctl() functions handle all the flash locking for me ?
-
-Or is this a bit hole I'm digging for myself ?
-
-Thanks for any help anyone can offer.
-
-Regards
-Mark J.
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index f21acf0..673b4bc 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1629,8 +1629,10 @@ static int ubifs_remount_rw(struct ubifs_info *c)
+ 	}
+ 
+ 	c->write_reserve_buf = kmalloc(COMPRESSED_DATA_NODE_BUF_SZ, GFP_KERNEL);
+-	if (!c->write_reserve_buf)
++	if (!c->write_reserve_buf) {
++		err = -ENOMEM;
+ 		goto out;
++	}
+ 
+ 	err = ubifs_lpt_init(c, 0, 1);
+ 	if (err)
+@@ -2063,8 +2065,10 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
+ 	}
+ 
+ 	sb->s_root = d_make_root(root);
+-	if (!sb->s_root)
++	if (!sb->s_root) {
++		err = -ENOMEM;
+ 		goto out_umount;
++	}
+ 
+ 	mutex_unlock(&c->umount_mutex);
+ 	return 0;
