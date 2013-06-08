@@ -1,23 +1,30 @@
-Received: from mail-ob0-x22d.google.com ([2607:f8b0:4003:c01::22d])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UlLQM-0007rG-AD
- for linux-mtd@lists.infradead.org; Sat, 08 Jun 2013 15:51:27 +0000
-Received: by mail-ob0-f173.google.com with SMTP id wc20so8100683obb.18
- for <linux-mtd@lists.infradead.org>; Sat, 08 Jun 2013 08:51:00 -0700 (PDT)
+Received: from mail.free-electrons.com ([94.23.35.102])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UlO4J-0001Lu-JJ
+ for linux-mtd@lists.infradead.org; Sat, 08 Jun 2013 18:40:52 +0000
+Date: Sat, 8 Jun 2013 15:40:22 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Haojian Zhuang <haojian.zhuang@gmail.com>
+Subject: Re: [PATCH 0/5] mtd: nand: Fixes and improvements on pxa3xx
+Message-ID: <20130608184021.GC2354@localhost>
+References: <1368530125-12959-1-git-send-email-elezegarcia@gmail.com>
+ <20130520123733.GB2904@localhost>
+ <CALF0-+W+4NCLimsP1E+aGNLEuE9GtThsm6dNE-iyeju5ixx8Rg@mail.gmail.com>
+ <CAN1soZxnG6oVpNT6dJ6WOAuLB5_JxTM6vrx-8j8qm-t1ZK8jFA@mail.gmail.com>
+ <CAN1soZwRqapXrT6REk_h3gy0Tus9pypUvrDYg=-eyv-FntOZUA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1370705783-2140-1-git-send-email-Julia.Lawall@lip6.fr>
-References: <1370705783-2140-1-git-send-email-Julia.Lawall@lip6.fr>
-Date: Sat, 8 Jun 2013 17:50:59 +0200
-Message-ID: <CACna6rwKDKriiw2Q+et02ZmhHU9U+7ni3ik=14XZDEnN54J3YQ@mail.gmail.com>
-Subject: Re: [PATCH] drivers/mtd/devices/bcm47xxsflash.c: correct argument to
- kfree
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Julia Lawall <Julia.Lawall@lip6.fr>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: kernel-janitors@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAN1soZwRqapXrT6REk_h3gy0Tus9pypUvrDYg=-eyv-FntOZUA@mail.gmail.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Lior Amsalem <alior@marvell.com>, Ezequiel Garcia <elezegarcia@gmail.com>,
+ Maen Suleiman <maen@marvell.com>, Eric Miao <eric.y.miao@gmail.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Lei Wen <leiwen@marvell.com>,
+ Daniel Mack <zonque@gmail.com>, Vasut Marek <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org, Igor Grinberg <grinberg@compulab.co.il>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Neil Zhang <zhangwm@marvell.com>, Chao Xie <cxie4@marvell.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,18 +34,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2013/6/8 Julia Lawall <Julia.Lawall@lip6.fr>:
-> From: Julia Lawall <Julia.Lawall@lip6.fr>
->
-> The argument to kfree should not be the address of a structure field.
-> The argument is adjusted to correspond to what is found in the subsequent
-> remove function.
+On Sat, Jun 08, 2013 at 05:00:41PM +0800, Haojian Zhuang wrote:
+> On Sat, Jun 8, 2013 at 3:22 PM, Haojian Zhuang <haojian.zhuang@gmail.com> wrote:
+> > On Fri, Jun 7, 2013 at 10:22 PM, Ezequiel Garcia <elezegarcia@gmail.com> wrote:
+> >> On Mon, May 20, 2013 at 9:37 AM, Ezequiel Garcia
+> >> <ezequiel.garcia@free-electrons.com> wrote:
+> >>> Hi,
+> >>>
+> >>> (adding Eric Miao in Cc)
+> >>>
+> >>> On Tue, May 14, 2013 at 08:15:20AM -0300, Ezequiel Garcia wrote:
+> >>>> The Armada 370 and Armada XP SoC include a NAND controller (NFCv2) that
+> >>>> is similar to the one in PXA SoC. Therefore, it should be possible to support
+> >>>> Armada NAND using pxa3xx-nand driver.
+> >>>>
+> >>>> While this effort is not ready yet, here is a set of patches that are needed
+> >>>> for such work.
+> >>>>
+> >>>> A small summary of the patches:
+> >>>>
+> >>>>   * 1/5 is a fix for a 2-year regression that removed DMA support.
+> >>>>
+> >>>>   * 2/5 and 3/5 are needed to build the driver on platforms other PXA.
+> >>>>
+> >>>>   * 4/5 and 5/5 add ONFI-compliant device detection and are needed
+> >>>>     to successfully probe newer flash devices.
+> >>>>
+> >>>
+> >>> Since this patch affects directly the PXA hardware, I'd like to have some
+> >>> response from PXA maintainers.
+> >>>
+> >>> Guys, could you take a look at this?
+> >>>
+> >>
+> >> Ping?
+> >>
+> >> --
+> >>     Ezequiel
+> >
+> > Hi Ezequiel,
+> >
+> > As I didn't have the test environment, I looped some Marvell guys. But
+> > they didn't
+> > have any time on test it.
+> >
+> > So let's loop Marek, Daniel & Igor. I hope that we could help us.
+> >
 
-This was already addressed in
-[PATCH RESEND 1/2] mtd: bcm47: convert kzalloc to avoid invalid access
+Great, thanks a lot! Let's hope they can give it a test...
 
-Artem: can you pick pointed patch, please? So people don't report it
-over and over ;)
+> 
+> I'm OK on these patches.
+> 
+> Reviewed-by: Haojian Zhuang <haojian.zhuang@gmail.com>
 
---=20
-Rafa=C5=82
+Great!
+
+Thanks a lot,
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
