@@ -1,29 +1,14 @@
-Received: from mail-oa0-x233.google.com ([2607:f8b0:4003:c02::233])
+Received: from gw02.mail.saunalahti.fi ([195.197.172.116])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ulmxk-0003xs-0D
- for linux-mtd@lists.infradead.org; Sun, 09 Jun 2013 21:15:44 +0000
-Received: by mail-oa0-f51.google.com with SMTP id i4so1003664oah.38
- for <linux-mtd@lists.infradead.org>; Sun, 09 Jun 2013 14:15:22 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20130609205747.GX23987@mwanda>
-References: <1370768902-20239-1-git-send-email-emilgoode@gmail.com>
- <CAHp75VftwuS4ZTFP5D90PhyzrAMoHVxDiSCg0jrMGp+r0eRfzA@mail.gmail.com>
- <20130609191732.GK28112@mwanda>
- <CAHp75VcOMUVtfgXOQ+cyVpJN-XS7=yO1H8+8Nnw+LCgYWp7RPw@mail.gmail.com>
- <20130609205747.GX23987@mwanda>
-Date: Mon, 10 Jun 2013 00:15:22 +0300
-Message-ID: <CAHp75VeDtfq3APDQsy2SP=wLrRPUJdVaBbfu4NcrWrC70wCebg@mail.gmail.com>
-Subject: Re: [PATCH] mtd: orion_nand: Improve error handling in
- orion_nand_probe
+ id 1UlmzX-00040Z-A2
+ for linux-mtd@lists.infradead.org; Sun, 09 Jun 2013 21:17:36 +0000
 From: Andy Shevchenko <andy.shevchenko@gmail.com>
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: andrew@lunn.ch, Bill Pemberton <wfp5p@virginia.edu>,
- artem.bityutskiy@linux.intel.com, Jingoo Han <jg1.han@samsung.com>,
- kernel-janitors@vger.kernel.org,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Emil Goode <emilgoode@gmail.com>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>
+To: linux-mtd@lists.infradead.org, Emil Goode <emilgoode@gmail.com>,
+ artem.bityutskiy@linux.intel.com, Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH] mtd: orion_nand: convert printk to dev_*
+Date: Mon, 10 Jun 2013 00:16:54 +0300
+Message-Id: <1370812614-5724-1-git-send-email-andy.shevchenko@gmail.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,34 +18,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Jun 9, 2013 at 11:57 PM, Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> On Sun, Jun 09, 2013 at 10:27:03PM +0300, Andy Shevchenko wrote:
->> On Sun, Jun 9, 2013 at 10:17 PM, Dan Carpenter <dan.carpenter@oracle.com> wrote:
->> > On Sun, Jun 09, 2013 at 08:15:20PM +0300, Andy Shevchenko wrote:
+It's better to use actual device name as a prefix in error messages.
 
->> >> What about another patch (that I guess should go first)  that converts
->> >> printk to dev_* or pr_*?
->>
->> > Huh, what?  Those are two totally unrelated things.  Emil's patch is
->> > a bug fix.
->>
->> To be precise his patch is bugfix and cleanup at once.
->> My proposal is to add a clean up patch.
->
-> The printk idea isn't a bad one, it's just totally unrelated to what
-> the patch is doing.
+Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+---
+ drivers/mtd/nand/orion_nand.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-I don't agree with word 'totally'. It touches probe function and
-shuffles code there.
-
->  You can't just randomly tell people to do a
-> bunch of work for no reason.  "Good bugfix, but before we apply it
-> you have to mow my lawn."
-
-In this particular case I didn't think it's a big deal to fix 3 printfs.
-Anyway, see patch in the next message.
-
-
---
-With Best Regards,
-Andy Shevchenko
+diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
+index 8fbd002..ba38853 100644
+--- a/drivers/mtd/nand/orion_nand.c
++++ b/drivers/mtd/nand/orion_nand.c
+@@ -87,7 +87,7 @@ static int __init orion_nand_probe(struct platform_device *pdev)
+ 
+ 	nc = kzalloc(sizeof(struct nand_chip) + sizeof(struct mtd_info), GFP_KERNEL);
+ 	if (!nc) {
+-		printk(KERN_ERR "orion_nand: failed to allocate device structure.\n");
++		dev_err(&pdev->dev, "failed to allocate device structure.\n");
+ 		ret = -ENOMEM;
+ 		goto no_res;
+ 	}
+@@ -101,7 +101,7 @@ static int __init orion_nand_probe(struct platform_device *pdev)
+ 
+ 	io_base = ioremap(res->start, resource_size(res));
+ 	if (!io_base) {
+-		printk(KERN_ERR "orion_nand: ioremap failed\n");
++		dev_err(&pdev->dev, "ioremap failed\n");
+ 		ret = -EIO;
+ 		goto no_res;
+ 	}
+@@ -110,7 +110,8 @@ static int __init orion_nand_probe(struct platform_device *pdev)
+ 		board = devm_kzalloc(&pdev->dev, sizeof(struct orion_nand_data),
+ 					GFP_KERNEL);
+ 		if (!board) {
+-			printk(KERN_ERR "orion_nand: failed to allocate board structure.\n");
++			dev_err(&pdev->dev,
++				"failed to allocate board structure.\n");
+ 			ret = -ENOMEM;
+ 			goto no_res;
+ 		}
+-- 
+1.8.3.101.g727a46b
