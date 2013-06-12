@@ -1,15 +1,13 @@
 Received: from bear.ext.ti.com ([192.94.94.41])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Uminx-0002hS-01
+ id 1Uminx-0002hT-02
  for linux-mtd@lists.infradead.org; Wed, 12 Jun 2013 11:01:29 +0000
 From: Pekon Gupta <pekon@ti.com>
 To: <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>,
  <tony@atomide.com>
-Subject: [PATCH v4 1/3] arm: gpmc: Converts GPMC driver to pm_runtime capable
-Date: Wed, 12 Jun 2013 16:30:56 +0530
-Message-ID: <1371034858-19984-2-git-send-email-pekon@ti.com>
-In-Reply-To: <1371034858-19984-1-git-send-email-pekon@ti.com>
-References: <1371034858-19984-1-git-send-email-pekon@ti.com>
+Subject: [PATCH v4 0/3] suspend/resume support for OMAP nand driver
+Date: Wed, 12 Jun 2013 16:30:55 +0530
+Message-ID: <1371034858-19984-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: Pekon Gupta <pekon@ti.com>
@@ -22,55 +20,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: avinash philip <avinashphilip@ti.com>
+This patch series adds low power transition support for OMAP NAND driver.
+[Patch 1/3]: Adds pm_runtime calls to handle GPMC module probe and remove
+[Patch 2/3]: Adds GPMC suspend/resume support.
+[Patch 3/3]: Adds ELM suspend/resume support.
 
-Support for pm_runtime add to GPMC driver.
+Tested on am335x-evm with NAND flash support, using following:
+	echo devices 	> /sys/power/pm_test
+	echo mem	> /sys/power/state
 
-Signed-off-by: Philip Avinash <avinashphilip@ti.com>
-Signed-off-by: Pekon Gupta <pekon@ti.com> 
----
- arch/arm/mach-omap2/gpmc.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+	echo core	> /sys/power/pm_test
+	echo mem	> /sys/power/state
 
-diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
-index fb6f241..1380cee 100644
---- a/arch/arm/mach-omap2/gpmc.c
-+++ b/arch/arm/mach-omap2/gpmc.c
-@@ -30,6 +30,7 @@
- #include <linux/of_mtd.h>
- #include <linux/of_device.h>
- #include <linux/mtd/nand.h>
-+#include <linux/pm_runtime.h>
- 
- #include <linux/platform_data/mtd-nand-omap2.h>
- 
-@@ -1594,7 +1595,8 @@ static int gpmc_probe(struct platform_device *pdev)
- 		return PTR_ERR(gpmc_l3_clk);
- 	}
- 
--	clk_prepare_enable(gpmc_l3_clk);
-+	pm_runtime_enable(&pdev->dev);
-+	pm_runtime_get_sync(&pdev->dev);
- 
- 	gpmc_dev = &pdev->dev;
- 
-@@ -1634,7 +1636,7 @@ static int gpmc_probe(struct platform_device *pdev)
- 
- 	rc = gpmc_probe_dt(pdev);
- 	if (rc < 0) {
--		clk_disable_unprepare(gpmc_l3_clk);
-+		pm_runtime_put_sync(&pdev->dev);
- 		clk_put(gpmc_l3_clk);
- 		dev_err(gpmc_dev, "failed to probe DT parameters\n");
- 		return rc;
-@@ -1647,6 +1649,8 @@ static int gpmc_remove(struct platform_device *pdev)
- {
- 	gpmc_free_irq();
- 	gpmc_mem_exit();
-+	pm_runtime_put_sync(&pdev->dev);
-+	pm_runtime_disable(&pdev->dev);
- 	gpmc_dev = NULL;
- 	return 0;
- }
+Changes Since v3:
+- CONFIG_PM -> CONFIG_PM_SLEEP
+- using struct dev_pm_ops via driver->pm, instead of struct platform_driver
+- rebased to 3.10-rc5
+
+Changes Since v2:
+- Remove calll back of nand_suspend from omap2 nand driver, as the same call
+  already done from suspend activity mtd class driver.
+
+[1] http://comments.gmane.org/gmane.linux.ports.arm.omap/91405
+
+
+avinash philip (3):
+  arm: gpmc: Converts GPMC driver to pm_runtime capable
+  arm: gpmc: Low power transition support
+  mtd: devices: elm: Low power transition support
+
+ arch/arm/mach-omap2/gpmc.c | 27 +++++++++++++++++++++++++--
+ drivers/mtd/devices/elm.c  | 19 +++++++++++++++++++
+ 2 files changed, 44 insertions(+), 2 deletions(-)
+
 -- 
 1.8.1
