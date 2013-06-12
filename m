@@ -1,18 +1,35 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from smtp6-v.fe.bosch.de ([2a03:cc00:ff0:100::2])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Uminx-0002hV-00
- for linux-mtd@lists.infradead.org; Wed, 12 Jun 2013 11:01:31 +0000
-From: Pekon Gupta <pekon@ti.com>
-To: <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>,
- <tony@atomide.com>
-Subject: [PATCH v4 3/3] mtd: devices: elm: Low power transition support
-Date: Wed, 12 Jun 2013 16:30:58 +0530
-Message-ID: <1371034858-19984-4-git-send-email-pekon@ti.com>
-In-Reply-To: <1371034858-19984-1-git-send-email-pekon@ti.com>
-References: <1371034858-19984-1-git-send-email-pekon@ti.com>
+ id 1Umizp-000300-Nk
+ for linux-mtd@lists.infradead.org; Wed, 12 Jun 2013 11:13:47 +0000
+From: "Prins Anton (ST-CO/ENG1.1)" <Anton.Prins@nl.bosch.com>
+To: Adrian Hunter <adrian.hunter@intel.com>
+Date: Wed, 12 Jun 2013 13:13:06 +0200
+Subject: RE: UBIFS failure & stable page writes
+Message-ID: <85D877DD6EE67B4A9FCA9B9C3A4865670C3F1A3508@SI-MBX14.de.bosch.com>
+References: <85D877DD6EE67B4A9FCA9B9C3A4865670C3E8CB9B7@SI-MBX14.de.bosch.com>
+ <4BE1E71893EF1E4F9E9DD99FB4EBF0032C02EA2D44@SI-MBX02.de.bosch.com>
+ <85D877DD6EE67B4A9FCA9B9C3A4865670C3E8CBA85@SI-MBX14.de.bosch.com>
+ <20130527121828.GA32625@quack.suse.cz>
+ <85D877DD6EE67B4A9FCA9B9C3A4865670C3E8CBB8D@SI-MBX14.de.bosch.com>
+ <1369709828.5446.89.camel@sauron.fi.intel.com>
+ <85D877DD6EE67B4A9FCA9B9C3A4865670C3E8CBD81@SI-MBX14.de.bosch.com>
+ <1369727042.5446.112.camel@sauron.fi.intel.com>
+ <85D877DD6EE67B4A9FCA9B9C3A4865670C3E8CBE33@SI-MBX14.de.bosch.com>
+ <1369732266.5446.117.camel@sauron.fi.intel.com>
+ <85D877DD6EE67B4A9FCA9B9C3A4865670C3E91DC9C@SI-MBX14.de.bosch.com>
+ <1369810158.5446.208.camel@sauron.fi.intel.com>
+ <85D877DD6EE67B4A9FCA9B9C3A4865670C3E91E697@SI-MBX14.de.bosch.com>
+ <1370239282.21714.21.camel@sauron.fi.intel.com>
+ <85D877DD6EE67B4A9FCA9B9C3A4865670C3EA0F38E@SI-MBX14.de.bosch.com>
+ <51B82A1D.30009@intel.com>
+In-Reply-To: <51B82A1D.30009@intel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Pekon Gupta <pekon@ti.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,60 +39,6 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: avinash philip <avinashphilip@ti.com>
-
-In low power modes of AM335X platforms, peripherals power is cut off.
-This patch supports low power sleep transition support for ELM driver.
-
-Signed-off-by: Philip Avinash <avinashphilip@ti.com>
-Signed-off-by: Pekon Gupta <pekon@ti.com>
----
- drivers/mtd/devices/elm.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
-
-diff --git a/drivers/mtd/devices/elm.c b/drivers/mtd/devices/elm.c
-index dccef9f..171efcd 100644
---- a/drivers/mtd/devices/elm.c
-+++ b/drivers/mtd/devices/elm.c
-@@ -20,6 +20,7 @@
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/of.h>
-+#include <linux/sched.h>
- #include <linux/pm_runtime.h>
- #include <linux/platform_data/elm.h>
- 
-@@ -385,6 +386,23 @@ static int elm_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static int elm_suspend(struct device *dev)
-+{
-+	pm_runtime_put_sync(dev);
-+	return 0;
-+}
-+
-+static int elm_resume(struct device *dev)
-+{
-+	struct elm_info *info = dev_get_drvdata(dev);
-+
-+	pm_runtime_get_sync(dev);
-+	elm_config(dev, info->bch_type);
-+	return 0;
-+}
-+
-+static SIMPLE_DEV_PM_OPS(elm_pm_ops, elm_suspend, elm_resume);
-+
- #ifdef CONFIG_OF
- static const struct of_device_id elm_of_match[] = {
- 	{ .compatible = "ti,am3352-elm" },
-@@ -398,6 +416,7 @@ static struct platform_driver elm_driver = {
- 		.name	= "elm",
- 		.owner	= THIS_MODULE,
- 		.of_match_table = of_match_ptr(elm_of_match),
-+		.pm	= &elm_pm_ops,
- 	},
- 	.probe	= elm_probe,
- 	.remove	= elm_remove,
--- 
-1.8.1
+RG9lcyBpdCBtYWtlIHNlbnNlIHRvIHVzZSBjaGtfb3JwaGFucz8NCg0KSSBzdXBwb3NlIEkgaGF2
+ZSB0byBkbzogJCBlY2hvICIxIiA+IGNoa19vcnBoYW5zDQoNCk9yIGFtIEkgd3Jvbmc/DQoNCk1l
+dCB2cmllbmRlbGlqa2UgZ3JvZXRlbiB8IEJlc3QgUmVnYXJkcywgDQpBbnRvbiBQcmlucw0KDQo=
