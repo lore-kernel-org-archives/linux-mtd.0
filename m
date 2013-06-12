@@ -1,25 +1,35 @@
-Received: from 12.mo3.mail-out.ovh.net ([188.165.41.191]
- helo=mo3.mail-out.ovh.net)
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UmjlD-0004t5-HG
- for linux-mtd@lists.infradead.org; Wed, 12 Jun 2013 12:02:45 +0000
-Received: from mail181.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo3.mail-out.ovh.net (Postfix) with SMTP id 1BA8CFF9B48
- for <linux-mtd@lists.infradead.org>; Wed, 12 Jun 2013 14:02:22 +0200 (CEST)
-Date: Wed, 12 Jun 2013 13:58:20 +0200
-From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-To: Josh Wu <josh.wu@atmel.com>
-Subject: Re: [PATCH 5/6] mtd: atmel_nand: enable Nand Flash Controller
- (NFC) write via sram
-Message-ID: <20130612115820.GS23653@game.jcrosoft.org>
-References: <1370860014-1770-1-git-send-email-josh.wu@atmel.com>
- <1370860014-1770-6-git-send-email-josh.wu@atmel.com>
+ id 1UmkjA-0006QV-JR
+ for linux-mtd@lists.infradead.org; Wed, 12 Jun 2013 13:04:41 +0000
+Message-ID: <51B87315.7090808@intel.com>
+Date: Wed, 12 Jun 2013 16:09:41 +0300
+From: Adrian Hunter <adrian.hunter@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1370860014-1770-6-git-send-email-josh.wu@atmel.com>
-Cc: nicolas.ferre@atmel.com, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, dedekind1@gmail.com
+To: "Prins Anton (ST-CO/ENG1.1)" <Anton.Prins@nl.bosch.com>
+Subject: Re: UBIFS failure & stable page writes
+References: <85D877DD6EE67B4A9FCA9B9C3A4865670C3E8CB9B7@SI-MBX14.de.bosch.com>
+ <20130527121828.GA32625@quack.suse.cz>
+ <85D877DD6EE67B4A9FCA9B9C3A4865670C3E8CBB8D@SI-MBX14.de.bosch.com>
+ <1369709828.5446.89.camel@sauron.fi.intel.com>
+ <85D877DD6EE67B4A9FCA9B9C3A4865670C3E8CBD81@SI-MBX14.de.bosch.com>
+ <1369727042.5446.112.camel@sauron.fi.intel.com>
+ <85D877DD6EE67B4A9FCA9B9C3A4865670C3E8CBE33@SI-MBX14.de.bosch.com>
+ <1369732266.5446.117.camel@sauron.fi.intel.com>
+ <85D877DD6EE67B4A9FCA9B9C3A4865670C3E91DC9C@SI-MBX14.de.bosch.com>
+ <1369810158.5446.208.camel@sauron.fi.intel.com>
+ <85D877DD6EE67B4A9FCA9B9C3A4865670C3E91E697@SI-MBX14.de.bosch.com>
+ <1370239282.21714.21.camel@sauron.fi.intel.com>
+ <85D877DD6EE67B4A9FCA9B9C3A4865670C3EA0F38E@SI-MBX14.de.bosch.com>
+ <51B82A1D.30009@intel.com>
+ <85D877DD6EE67B4A9FCA9B9C3A4865670C3F1A3508@SI-MBX14.de.bosch.com>
+ <51B862D6.2080807@intel.com>
+ <85D877DD6EE67B4A9FCA9B9C3A4865670C3F1A3590@SI-MBX14.de.bosch.com>
+In-Reply-To: <85D877DD6EE67B4A9FCA9B9C3A4865670C3F1A3590@SI-MBX14.de.bosch.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,245 +39,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 18:26 Mon 10 Jun     , Josh Wu wrote:
-> This patch enable writing nand flash via NFC SRAM. It will minimize the CPU
-> overhead. The SRAM write only support ECC_NONE and ECC_HW with PMECC.
-> 
-> To enable this NFC write by SRAM feature, you can add a string in dts under
-> NFC driver node.
-> 
-> This driver has been tested on SAMA5D3X-EK with JFFS2, YAFFS2, UBIFS and
-> mtd-utils.
-> 
-> Here is part of mtd_speedtest (writing test) result, compare with non-NFC
-> writing, it reduces %65 cpu load with loss %12 speed.
-> 
-> - commands use to test:
->   # insmod /mnt/mtd_speedtest.ko dev=2 &
->   # top -n 30 -d 1 | grep speedtest
-> 
-> - test result:
-> =================================================
-> mtd_speedtest: MTD device: 2
-> mtd_speedtest: MTD device size 41943040, eraseblock size 131072, page size 2048, count of eraseblocks 320, pages per eraseblock 64, OOB size 64
-> mtd_speedtest: testing eraseblock write speed
->   509   495 root     D     1164   0%   7% insmod /mnt/mtd_speedtest.ko dev=2
->   509   495 root     D     1164   0%   8% insmod /mnt/mtd_speedtest.ko dev=2
->   509   495 root     R     1164   0%   5% insmod /mnt/mtd_speedtest.ko dev=2
-> mtd_speedtest: eraseblock write speed is 5194 KiB/s
-> mtd_speedtest: testing page write speed
->   509   495 root     D     1164   0%  32% insmod /mnt/mtd_speedtest.ko dev=2
->   509   495 root     D     1164   0%  27% insmod /mnt/mtd_speedtest.ko dev=2
->   509   495 root     D     1164   0%  25% insmod /mnt/mtd_speedtest.ko dev=2
->   509   495 root     D     1164   0%  30% insmod /mnt/mtd_speedtest.ko dev=2
-> mtd_speedtest: page write speed is 5024 KiB/s
-> 
-> Signed-off-by: Josh Wu <josh.wu@atmel.com>
-Acked-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+Can you tar and send fs/ubifs directory?
 
-Best Regards,
-J.
-> ---
-> v2 --> v3:
->   - use a property of NFC node to enable/disable NFC write via sram.
-> 
->  .../devicetree/bindings/mtd/atmel-nand.txt         |    2 +
->  drivers/mtd/nand/atmel_nand.c                      |  107 ++++++++++++++++++--
->  2 files changed, 103 insertions(+), 6 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-> index 6a267cb..da78e22 100644
-> --- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-> @@ -35,6 +35,8 @@ Optional properties:
->      - reg : should specify the address and size used for NFC command registers,
->              NFC registers and NFC Sram. NFC Sram address and size can be absent
->              if don't want to use it.
-> +  - Optional properties:
-> +    - atmel,write-by-sram: boolean to enable NFC write by sram.
->  
->  Examples:
->  nand0: nand@40000000,0 {
-> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-> index c2ec740..e3e348b 100644
-> --- a/drivers/mtd/nand/atmel_nand.c
-> +++ b/drivers/mtd/nand/atmel_nand.c
-> @@ -97,12 +97,14 @@ struct atmel_nfc {
->  	void __iomem		*sram_bank0;
->  	dma_addr_t		sram_bank0_phys;
->  	bool			use_nfc_sram;
-> +	bool			write_by_sram;
->  
->  	bool			is_initialized;
->  	struct completion	comp_nfc;
->  
->  	/* Point to the sram bank which include readed data via NFC */
->  	void __iomem		*data_in_sram;
-> +	bool			will_write_sram;
->  };
->  static struct atmel_nfc	nand_nfc;
->  
-> @@ -269,6 +271,16 @@ static void memcpy32_fromio(void *trg, const void __iomem  *src, size_t size)
->  		*t++ = readl_relaxed(s++);
->  }
->  
-> +static void memcpy32_toio(void __iomem *trg, const void *src, int size)
-> +{
-> +	int i;
-> +	u32 __iomem *t = trg;
-> +	const u32 *s = src;
-> +
-> +	for (i = 0; i < (size >> 2); i++)
-> +		writel_relaxed(*s++, t++);
-> +}
-> +
->  /*
->   * Minimal-overhead PIO for data access.
->   */
-> @@ -390,7 +402,11 @@ static int atmel_nand_dma_op(struct mtd_info *mtd, void *buf, int len,
->  		dma_dst_addr = phys_addr;
->  	} else {
->  		dma_src_addr = phys_addr;
-> -		dma_dst_addr = host->io_phys;
-> +
-> +		if (nfc && nfc->write_by_sram)
-> +			dma_dst_addr = nfc_sram_phys(host);
-> +		else
-> +			dma_dst_addr = host->io_phys;
->  	}
->  
->  	tx = dma_dev->device_prep_dma_memcpy(host->dma_chan, dma_dst_addr,
-> @@ -961,9 +977,10 @@ static int atmel_nand_pmecc_write_page(struct mtd_info *mtd,
->  	int i, j;
->  	unsigned long end_time;
->  
-> -	pmecc_enable(host, NAND_ECC_WRITE);
-> -
-> -	chip->write_buf(mtd, (u8 *)buf, mtd->writesize);
-> +	if (!host->nfc || !host->nfc->write_by_sram) {
-> +		pmecc_enable(host, NAND_ECC_WRITE);
-> +		chip->write_buf(mtd, (u8 *)buf, mtd->writesize);
-> +	}
->  
->  	end_time = jiffies + msecs_to_jiffies(PMECC_MAX_TIMEOUT_MS);
->  	while ((pmecc_readl_relaxed(host->ecc, SR) & PMECC_SR_BUSY)) {
-> @@ -1802,6 +1819,8 @@ static void nfc_nand_command(struct mtd_info *mtd, unsigned int command,
->  	case NAND_CMD_SEQIN:
->  	case NAND_CMD_RNDIN:
->  		nfcwr = NFCADDR_CMD_NFCWR;
-> +		if (host->nfc->will_write_sram && command == NAND_CMD_SEQIN)
-> +			dataen = NFCADDR_CMD_DATAEN;
->  		break;
->  	default:
->  		break;
-> @@ -1846,6 +1865,68 @@ static void nfc_nand_command(struct mtd_info *mtd, unsigned int command,
->  	}
->  }
->  
-> +static int nfc_sram_write_page(struct mtd_info *mtd, struct nand_chip *chip,
-> +			uint32_t offset, int data_len, const uint8_t *buf,
-> +			int oob_required, int page, int cached, int raw)
-> +{
-> +	int cfg, len;
-> +	int status = 0;
-> +	struct atmel_nand_host *host = chip->priv;
-> +	void __iomem *sram = host->nfc->sram_bank0 + nfc_get_sram_off(host);
-> +
-> +	/* Subpage write is not supported */
-> +	if (offset || (data_len < mtd->writesize))
-> +		return -EINVAL;
-> +
-> +	cfg = nfc_readl(host->nfc->hsmc_regs, CFG);
-> +	len = mtd->writesize;
-> +
-> +	if (unlikely(raw)) {
-> +		len += mtd->oobsize;
-> +		nfc_writel(host->nfc->hsmc_regs, CFG, cfg | NFC_CFG_WSPARE);
-> +	} else
-> +		nfc_writel(host->nfc->hsmc_regs, CFG, cfg & ~NFC_CFG_WSPARE);
-> +
-> +	/* Copy page data to sram that will write to nand via NFC */
-> +	if (use_dma) {
-> +		if (atmel_nand_dma_op(mtd, (void *)buf, len, 0) != 0)
-> +			/* Fall back to use cpu copy */
-> +			memcpy32_toio(sram, buf, len);
-> +	} else {
-> +		memcpy32_toio(sram, buf, len);
-> +	}
-> +
-> +	if (chip->ecc.mode == NAND_ECC_HW && host->has_pmecc)
-> +		/*
-> +		 * When use NFC sram, need set up PMECC before send
-> +		 * NAND_CMD_SEQIN command. Since when the nand command
-> +		 * is sent, nfc will do transfer from sram and nand.
-> +		 */
-> +		pmecc_enable(host, NAND_ECC_WRITE);
-> +
-> +	host->nfc->will_write_sram = true;
-> +	chip->cmdfunc(mtd, NAND_CMD_SEQIN, 0x00, page);
-> +	host->nfc->will_write_sram = false;
-> +
-> +	if (likely(!raw))
-> +		/* Need to write ecc into oob */
-> +		status = chip->ecc.write_page(mtd, chip, buf, oob_required);
-> +
-> +	if (status < 0)
-> +		return status;
-> +
-> +	chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
-> +	status = chip->waitfunc(mtd, chip);
-> +
-> +	if ((status & NAND_STATUS_FAIL) && (chip->errstat))
-> +		status = chip->errstat(mtd, chip, FL_WRITING, status, page);
-> +
-> +	if (status & NAND_STATUS_FAIL)
-> +		return -EIO;
-> +
-> +	return 0;
-> +}
-> +
->  static int nfc_sram_init(struct mtd_info *mtd)
->  {
->  	struct nand_chip *chip = mtd->priv;
-> @@ -1887,10 +1968,20 @@ static int nfc_sram_init(struct mtd_info *mtd)
->  
->  	nfc_writel(host->nfc->hsmc_regs, CFG, cfg_nfc);
->  
-> +	host->nfc->will_write_sram = false;
->  	nfc_set_sram_bank(host, 0);
->  
-> -	dev_info(host->dev, "Using NFC Sram read\n");
-> +	/* Use Write page with NFC SRAM only for PMECC or ECC NONE. */
-> +	if (host->nfc->write_by_sram) {
-> +		if ((chip->ecc.mode == NAND_ECC_HW && host->has_pmecc) ||
-> +				chip->ecc.mode == NAND_ECC_NONE)
-> +			chip->write_page = nfc_sram_write_page;
-> +		else
-> +			host->nfc->write_by_sram = false;
-> +	}
->  
-> +	dev_info(host->dev, "Using NFC Sram read %s\n",
-> +			host->nfc->write_by_sram ? "and write" : "");
->  	return 0;
->  }
->  
-> @@ -2164,11 +2255,15 @@ static int atmel_nand_nfc_probe(struct platform_device *pdev)
->  		} else {
->  			nfc->use_nfc_sram = true;
->  			nfc->sram_bank0_phys = (dma_addr_t)nfc_sram->start;
-> +
-> +			if (pdev->dev.of_node)
-> +				nfc->write_by_sram = of_property_read_bool(
-> +						pdev->dev.of_node,
-> +						"atmel,write-by-sram");
->  		}
->  	}
->  
->  	nfc->is_initialized = true;
-> -
->  	dev_info(&pdev->dev, "NFC is probed.\n");
->  	return 0;
->  }
-> -- 
-> 1.7.9.5
-> 
+On 12/06/13 14:57, Prins Anton (ST-CO/ENG1.1) wrote:
+> Ok clear!
+>
+> Regarding mount debug: I suppose I only will see this on the 'first' boot after the problem is in the persistence storage?
+> (Up to now I'm not able to signal the point-of-failure... I'm only looking to an (possibly) after recovery situation).
+>
+> Or makes this sense to do this mount debug on the existing failing device?
+>
+> FYI: 
+> - with 100 devices power cycling every 5 minutes for a weekend we DON'T see a problem.
+> - with 100 devices powered on for a weekend and after that give a single power-cycle shows maybe 1 or 2 failing devices (but sometimes '0').
+>
+> So a main problem in analyzing is the 'moment of failure' and 'reproduction (rate)'.
+>
+> Met vriendelijke groeten | Best Regards, 
+> Anton Prins
+>
+> Met vriendelijke groeten | Best Regards, 
+> Anton Prins
+>
+>
+> -----Original Message-----
+> From: Adrian Hunter [mailto:adrian.hunter@intel.com] 
+> Sent: woensdag 12 juni 2013 14:00
+> To: Prins Anton (ST-CO/ENG1.1)
+> Cc: dedekind1@gmail.com; linux-mtd@lists.infradead.org
+> Subject: Re: UBIFS failure & stable page writes
+>
+> On 12/06/13 14:13, Prins Anton (ST-CO/ENG1.1) wrote:
+>> Does it make sense to use chk_orphans?
+> That checks for missing orphans but the problem is the opposite: the
+> presence of orphans that should not be there.
+>
+>> I suppose I have to do: $ echo "1" > chk_orphans
+>>
+>> Or am I wrong?
+>>
+>> Met vriendelijke groeten | Best Regards, 
+>> Anton Prins
+>>
