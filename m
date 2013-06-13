@@ -1,24 +1,34 @@
-Received: from mail-la0-x229.google.com ([2a00:1450:4010:c03::229])
+Received: from mx08.lb01.inode.at ([62.99.145.8] helo=mx.inode.at)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Un7Lw-0003zS-FH
- for linux-mtd@lists.infradead.org; Thu, 13 Jun 2013 13:14:13 +0000
-Received: by mail-la0-f41.google.com with SMTP id fn20so9009789lab.14
- for <linux-mtd@lists.infradead.org>; Thu, 13 Jun 2013 06:13:48 -0700 (PDT)
-Message-ID: <51B9C587.4020307@cogentembedded.com>
-Date: Thu, 13 Jun 2013 17:13:43 +0400
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+ id 1Un7bD-0004X2-HY
+ for linux-mtd@lists.infradead.org; Thu, 13 Jun 2013 13:30:00 +0000
+Received: from [83.64.51.210] (port=7857 helo=gateway1.hale)
+ by smartmx-08.inode.at with esmtps (TLS1.0:DHE_RSA_AES_256_CBC_SHA1:32)
+ (Exim 4.69) (envelope-from <helmut.raiger@hale.at>)
+ id 1Un7ap-0000Vy-OP
+ for linux-mtd@lists.infradead.org; Thu, 13 Jun 2013 15:29:35 +0200
+Received: from mail.hale (mail.hale [192.168.100.5])
+ by gateway1.hale (8.13.8/8.13.7) with ESMTP id r5DDTJiV014922
+ for <linux-mtd@lists.infradead.org>; Thu, 13 Jun 2013 15:29:19 +0200
+Received: from localhost (localhost.localdomain [127.0.0.1])
+ by mail.hale (Postfix) with ESMTP id A79FB6656C4
+ for <linux-mtd@lists.infradead.org>; Thu, 13 Jun 2013 15:29:24 +0200 (CEST)
+Received: from mail.hale ([127.0.0.1])
+ by localhost (mail.hale [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id d2JA0eYccvAu for <linux-mtd@lists.infradead.org>;
+ Thu, 13 Jun 2013 15:29:24 +0200 (CEST)
+Received: from mail.hale (mail.hale [192.168.100.5])
+ by mail.hale (Postfix) with ESMTP id 33FBD6656C1
+ for <linux-mtd@lists.infradead.org>; Thu, 13 Jun 2013 15:29:24 +0200 (CEST)
+Date: Thu, 13 Jun 2013 15:29:24 +0200 (CEST)
+From: Raiger Helmut <helmut.raiger@hale.at>
+To: linux-mtd@lists.infradead.org
+Message-ID: <1142745477.330790.1371130164128.JavaMail.root@mail.hale>
+In-Reply-To: <20130613135031.59037201@parrot.com>
+Subject: Re: UBIFS: How to reserve space to be used right before power cut
 MIME-Version: 1.0
-To: Josh Wu <josh.wu@atmel.com>
-Subject: Re: [PATCH 6/6] mtd: ofpart: add compatible check for child nodes
-References: <1370860014-1770-1-git-send-email-josh.wu@atmel.com>
- <1370860014-1770-7-git-send-email-josh.wu@atmel.com>
- <51B5C80D.2030303@cogentembedded.com> <51B93FA2.7040206@atmel.com>
-In-Reply-To: <51B93FA2.7040206@atmel.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Cc: nicolas.ferre@atmel.com, plagnioj@jcrosoft.com,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,36 +38,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello.
-
-On 13-06-2013 7:42, Josh Wu wrote:
-
->>> If the child node has compatible property then it is a driver not
->>> partition.
-
->>> Signed-off-by: Josh Wu <josh.wu@atmel.com>
->>> ---
->>>   drivers/mtd/ofpart.c |   14 +++++++++++++-
->>>   1 file changed, 13 insertions(+), 1 deletion(-)
 
 
->>> diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
->>> index 553d6d6..61ce1f8 100644
->>> --- a/drivers/mtd/ofpart.c
->>> +++ b/drivers/mtd/ofpart.c
->> [...]
->>> @@ -40,8 +44,13 @@ static int parse_ofpart_partitions(struct mtd_info
->>> *master,
->>>       /* First count the subnodes */
->>>       pp = NULL;
->>>       nr_parts = 0;
->>> -    while ((pp = of_get_next_child(node, pp)))
->>> +    while ((pp = of_get_next_child(node, pp))) {
+> ----- Original Message -----
+> From: "Matthieu CASTET" <matthieu.castet@parrot.com>
+> To: "Helmut Raiger" <helmut.raiger@hale.at>
+> Cc: linux-mtd@lists.infradead.org
+> Sent: Thursday, June 13, 2013 1:50:31 PM
+> Subject: Re: UBIFS: How to reserve space to be used right before power cut
+>
+> Hi,
+>
+> Why do you do this in ubifs ?
+>
+> If you do it in ubi/mtd this will be a lot's of easier.
+>
+> Matthieu
 
->>    Assignment in *while*? Is scripts/checkpatch.pl happy about that?
+I wasn't aware of an userspace interface for ubi/mtd, but just found out
+about gluebi. Is this the path you suggest?
 
-> yes, checkpatch.pl has no complain  ;-)
+Could you please elaborate a bit more on this, I'm still unsure if
+this will meet our timing constraints (background operation of ubi?)
 
-    It seems checkpatch.pl only complains about *if*. Not very consistent...
+Helmut
 
-WBR, Sergei
+--
+Scanned by MailScanner.
