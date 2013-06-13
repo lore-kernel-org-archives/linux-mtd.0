@@ -1,19 +1,18 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
+Received: from ec1-out-s134.net.comendo.com ([89.104.199.134])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Un8OY-00063g-HX
- for linux-mtd@lists.infradead.org; Thu, 13 Jun 2013 14:20:59 +0000
-Date: Thu, 13 Jun 2013 16:20:28 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
-To: Raiger Helmut <helmut.raiger@hale.at>
-Subject: Re: UBIFS: How to reserve space to be used right before power cut
-Message-ID: <20130613162028.3d17bac2@parrot.com>
-In-Reply-To: <1142745477.330790.1371130164128.JavaMail.root@mail.hale>
-References: <20130613135031.59037201@parrot.com>
- <1142745477.330790.1371130164128.JavaMail.root@mail.hale>
+ id 1Un9qM-0008NC-KA
+ for linux-mtd@lists.infradead.org; Thu, 13 Jun 2013 15:53:47 +0000
+Message-ID: <69me144f5w97$04ey535sw6$9298ti9w60@ardesait08>
+From: today@danbuy.dk
+To: <espanol@centralasia-travel.com>, <raural@k96.ru>, <hotelborneo@acorn.es>,
+ <linux-mtd@lists.infradead.org>, <suprarus@gmail.com>
+Subject: =?windows-1251?Q?=C7=E4=F0=E0=E2=F1=F2=E2=F3=E9=F2=E5?=
+Date: Thu, 13 Jun 2013 17:19:33 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-15"
+Content-Type: text/plain;
+	charset="windows-1251";
 Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: today@danbuy.dk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,47 +22,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le Thu, 13 Jun 2013 14:29:24 +0100,
-Raiger Helmut <helmut.raiger@hale.at> a =E9crit :
+=C2=FB =F1=EC=EE=F2=F0=E8=F2=E5 =F2=E5=EB=E5=E2=E8=E7=EE=F0 =F2=E0=EA =E6=
+=E5 =E2=E7=E0=EC=E5=ED =ED=E0=E7=EE=E9=EB=E8=E2=EE=E9 =F0=E5=EA=EB=E0=EC=FB=
+ =C2=FB =F4=EE=F0=EC=E8=F0=F3=E5=F2=E5 =F1=E5=E1=E5 =EF=F0=E8=FF=F2=ED=F3=
+=FE 10-=EC=E8=ED=F3=F2=ED=F3=FE =EF=E0=F3=E7=F3 =E4=EB=FF =E3=EB=E0=E7! h=
+ttp://goo.gl/0zdP2?/rwLHoWc =C7=ED=E0=ED=E8=E5
 
->=20
->=20
-> > ----- Original Message -----
-> > From: "Matthieu CASTET" <matthieu.castet@parrot.com>
-> > To: "Helmut Raiger" <helmut.raiger@hale.at>
-> > Cc: linux-mtd@lists.infradead.org
-> > Sent: Thursday, June 13, 2013 1:50:31 PM
-> > Subject: Re: UBIFS: How to reserve space to be used right before
-> > power cut
-> >
-> > Hi,
-> >
-> > Why do you do this in ubifs ?
-> >
-> > If you do it in ubi/mtd this will be a lot's of easier.
-> >
-> > Matthieu
->=20
-> I wasn't aware of an userspace interface for ubi/mtd, but just found
-> out about gluebi. Is this the path you suggest?
->=20
-> Could you please elaborate a bit more on this, I'm still unsure if
-> this will meet our timing constraints (background operation of ubi?)
->=20
-
-Not gluebi
-
-you have a userspace inferface to ubi : /usr/include/mtd/ubi-user.h
-
-
-You could create a small ubi volume (dynamic or static) of 1 LEB next to
-ubifs (on the same ubi device).
-When you start you make sure the LEB have enough space and that the LEB
-is mapped.
-
-on a power fail signal you write the LEB with your data. Because the
-LEB is already mapped, the write should be imediate.
-
-
-If the ubi volume is on the same ubi device than ubifs, the wear
-leveling will be shared with ubifs.
+=F2=EE=E2=E0=F0=EE=E2 =E7=E4=E5=F1=FC - =EC=EE=F0=E5, =F3=F1=EB=F3=E3 - =E1=
+=E5=E7 =E3=F0=E0=ED=E8=F6.
