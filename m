@@ -1,18 +1,29 @@
-Message-ID: <51B93FA2.7040206@atmel.com>
-Date: Thu, 13 Jun 2013 11:42:26 +0800
-From: Josh Wu <josh.wu@atmel.com>
+Received: from mga03.intel.com ([143.182.124.21])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Un25Q-0004IG-Mc
+ for linux-mtd@lists.infradead.org; Thu, 13 Jun 2013 07:36:49 +0000
+Message-ID: <51B977C1.4090200@intel.com>
+Date: Thu, 13 Jun 2013 10:41:53 +0300
+From: Adrian Hunter <adrian.hunter@intel.com>
 MIME-Version: 1.0
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: Re: [PATCH 6/6] mtd: ofpart: add compatible check for child nodes
-References: <1370860014-1770-1-git-send-email-josh.wu@atmel.com>
- <1370860014-1770-7-git-send-email-josh.wu@atmel.com>
- <51B5C80D.2030303@cogentembedded.com>
-In-Reply-To: <51B5C80D.2030303@cogentembedded.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+To: "Prins Anton (ST-CO/ENG1.1)" <Anton.Prins@nl.bosch.com>
+Subject: Re: UBIFS failure & stable page writes
+References: <85D877DD6EE67B4A9FCA9B9C3A4865670C3E8CB9B7@SI-MBX14.de.bosch.com>
+ <4BE1E71893EF1E4F9E9DD99FB4EBF0032C02EA2D44@SI-MBX02.de.bosch.com>
+ <85D877DD6EE67B4A9FCA9B9C3A4865670C3E8CBA85@SI-MBX14.de.bosch.com>
+ <20130527121828.GA32625@quack.suse.cz>
+ <85D877DD6EE67B4A9FCA9B9C3A4865670C3E8CBB8D@SI-MBX14.de.bosch.com>
+ <1369709828.5446.89.camel@sauron.fi.intel.com>
+ <85D877DD6EE67B4A9FCA9B9C3A4865670C3E8CBD81@SI-MBX14.de.bosch.com>
+ <1369727042.5446.112.camel@sauron.fi.intel.com>
+ <85D877DD6EE67B4A9FCA9B9C3A4865670C3E8CBE33@SI-MBX14.de.bosch.com>
+ <1369732266.5446.117.camel@sauron.fi.intel.com>
+ <85D877DD6EE67B4A9FCA9B9C3A4865670C3E91DD7F@SI-MBX14.de.bosch.com>
+In-Reply-To: <85D877DD6EE67B4A9FCA9B9C3A4865670C3E91DD7F@SI-MBX14.de.bosch.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Cc: nicolas.ferre@atmel.com, plagnioj@jcrosoft.com,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- dedekind1@gmail.com
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,60 +33,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Sergei
+On 28/05/13 16:00, Prins Anton (ST-CO/ENG1.1) wrote:
+> Could there be a relation between the issue and the following commits (freeing of orphans/cnext=NULL)?:
+>
+> http://git.infradead.org/ubifs-2.6.git/commit/8afd500cb52a5d00bab4525dd5a560d199f979b9
+> http://git.infradead.org/ubifs-2.6.git/commit/2928f0d0c5ebd6c9605c0d98207a44376387c298
 
-On 6/10/2013 8:35 PM, Sergei Shtylyov wrote:
-> hello.
->
-> On 10-06-2013 14:26, Josh Wu wrote:
->
->> If the child node has compatible property then it is a driver not 
->> partition.
->
->> Signed-off-by: Josh Wu <josh.wu@atmel.com>
->> ---
->>   drivers/mtd/ofpart.c |   14 +++++++++++++-
->>   1 file changed, 13 insertions(+), 1 deletion(-)
->
->
->> diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
->> index 553d6d6..61ce1f8 100644
->> --- a/drivers/mtd/ofpart.c
->> +++ b/drivers/mtd/ofpart.c
-> [...]
->> @@ -40,8 +44,13 @@ static int parse_ofpart_partitions(struct mtd_info 
->> *master,
->>       /* First count the subnodes */
->>       pp = NULL;
->>       nr_parts = 0;
->> -    while ((pp = of_get_next_child(node, pp)))
->> +    while ((pp = of_get_next_child(node, pp))) {
->
->    Assignment in *while*? Is scripts/checkpatch.pl happy about that?
-
-yes, checkpatch.pl has no complain  ;-)
+Yes you do have the problem that these patches fix.  Please try them.
 
 >
->> +        int len;
 >
->    Empty line wouldn't hurt here, after declaration.
-
-Ok, as Brian said, I will no need to use a 'int len' here. So I will 
-remove those declaration.
-
+> Met vriendelijke groeten | Best Regards, 
+> Anton Prins
 >
->> +        if (node_has_compatible(pp, &len))
->> +            continue;
->> +
->>           nr_parts++;
->> +    }
->>
->>       if (nr_parts == 0)
->>           return 0;
+> Bosch Security Systems BV, 
+> Conference Systems (ST-CO/ENG1.1) 
+> Torenallee 49
+> 5617 BA  Eindhoven
+> The Netherlands 
+> www.boschsecurity.com 
+> T. +31 (0)40 2577077
+> anton.prins@nl.bosch.com
 >
-> WBR, Sergei
 >
-
-Thanks.
-Best Regards,
-Josh Wu
+> -----Original Message-----
+> From: Artem Bityutskiy [mailto:dedekind1@gmail.com] 
+> Sent: dinsdag 28 mei 2013 11:11
+> To: Prins Anton (ST-CO/ENG1.1)
+> Cc: Jan Kara; Adrian Hunter; linux-mtd@lists.infradead.org
+> Subject: Re: UBIFS failure & stable page writes
+>
+> On Tue, 2013-05-28 at 10:18 +0200, Prins Anton (ST-CO/ENG1.1) wrote:
+>> Creation is of the problem is not that easy, but once you boot and this happens it is reproducible every boot.
+>> Even if I copy the image (nanddump) to another device the failure moves with the image.
+> Well, the latter is less interesting.
+>
