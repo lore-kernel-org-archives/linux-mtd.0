@@ -1,8 +1,10 @@
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH 0/4] mtd: gpmi: support two nand chips at most
-Date: Fri, 14 Jun 2013 16:06:21 +0800
-Message-ID: <1371197185-27491-1-git-send-email-b32955@freescale.com>
+Subject: [PATCH 2/4] mtd: gpmi: use DMA channel 0 for all the nand chips
+Date: Fri, 14 Jun 2013 16:06:23 +0800
+Message-ID: <1371197185-27491-3-git-send-email-b32955@freescale.com>
+In-Reply-To: <1371197185-27491-1-git-send-email-b32955@freescale.com>
+References: <1371197185-27491-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
@@ -16,34 +18,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Current gpmi-nand driver only supports one chips. But we may meet
-some embarrassing situation, such as Micron MT29F32G08QAA.
-This nand chip has two DIEs internally. Each die has its own chip select pin,
-so this chip acts as two nand chips.
+We only have one DMA channel : the channel 0.
+Use DMA channel 0 to access all the nand chips.
 
-If we only scan one chip, we may find that we only get 2G for this chip,
-but in actually, this chip's size is 4G.
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
 
-So scan two chips by default.
-
-In order to support two nand chips, we have to do the following:
-   1.) We only have one dma channel now, so decouple the chip select
-      from the DMA channel, We can use the dma 0 to access all the nand chips.
-
-   2.) fix the wrong method of checking the ready/busy status.
-      In the imx6, all the ready/busy pins are binding together, we
-      should check ready/busy status of chip 0 for the all the chips. 
-
-Tested this patch set with MT29F32G08QAA.
-
-
-Huang Shijie (4):
-  mtd: gpmi: decouple the chip select from the DMA channel
-  mtd: gpmi: use DMA channel 0 for all the nand chips
-  mtd: gpmi: scan two nand chips
-  mtd: gpmi: imx6: fix the wrong method for checking ready/busy
-
- drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |   14 ++++++++++++++
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    7 +++----
- drivers/mtd/nand/gpmi-nand/gpmi-regs.h |    3 +++
- 3 files changed, 20 insertions(+), 4 deletions(-)
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 25ecfa1..036e5e4 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -226,9 +226,8 @@ int common_nfc_set_geometry(struct gpmi_nand_data *this)
+ 
+ struct dma_chan *get_dma_chan(struct gpmi_nand_data *this)
+ {
+-	int chipnr = this->current_chip;
+-
+-	return this->dma_chans[chipnr];
++	/* We use the DMA channel 0 to access all the nand chips. */
++	return this->dma_chans[0];
+ }
+ 
+ /* Can we use the upper's buffer directly for DMA? */
+-- 
+1.7.1
