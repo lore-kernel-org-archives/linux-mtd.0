@@ -1,23 +1,23 @@
-Received: from softlayer.compulab.co.il ([50.23.254.55] helo=compulab.co.il)
+Received: from comal.ext.ti.com ([198.47.26.152])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UoSO0-0005M1-RQ
- for linux-mtd@lists.infradead.org; Mon, 17 Jun 2013 05:53:53 +0000
-Message-ID: <51BEA455.2020605@compulab.co.il>
-Date: Mon, 17 Jun 2013 08:53:25 +0300
-From: Igor Grinberg <grinberg@compulab.co.il>
+ id 1UoSip-0005d2-H6
+ for linux-mtd@lists.infradead.org; Mon, 17 Jun 2013 06:15:24 +0000
+Message-ID: <51BEA955.9080907@ti.com>
+Date: Mon, 17 Jun 2013 11:44:45 +0530
+From: Sourav Poddar <sourav.poddar@ti.com>
 MIME-Version: 1.0
-To: Ezequiel Garcia <elezegarcia@gmail.com>
-Subject: Re: [PATCH 0/5] mtd: nand: Fixes and improvements on pxa3xx
-References: <1368530125-12959-1-git-send-email-elezegarcia@gmail.com>
-In-Reply-To: <1368530125-12959-1-git-send-email-elezegarcia@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
+To: Jagan Teki <jagannadh.teki@gmail.com>
+Subject: Re: [U-Boot] U-boot: Erase/read/write issue with S25fl256S flash
+ device
+References: <51B82388.2000909@ti.com> <51BB29A5.3000100@ti.com>
+ <51BB2AE4.4020109@gmail.com> <51BB2C2B.1010404@ti.com>
+ <51BC93AF.5080808@gmail.com>
+In-Reply-To: <51BC93AF.5080808@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- Lei Wen <leiwen@marvell.com>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Maen Suleiman <maen@marvell.com>, linux-mtd@lists.infradead.org,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Neil Zhang <zhangwm@marvell.com>, Chao Xie <cxie4@marvell.com>
+Cc: Rajendra nayak <rnayak@ti.com>, jagannadha.sutradharudu-teki@xilinx.com,
+ Felipe Balbi <balbi@ti.com>, u-boot@lists.denx.de,
+ linux-mtd@lists.infradead.org, Tom Rini <trini@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,46 +27,214 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ezequiel,
+Hi Jagan,
+On Saturday 15 June 2013 09:47 PM, Jagan Teki wrote:
+> On 14-06-2013 20:13, Sourav Poddar wrote:
+>> Hi Jagan,
+>> On Friday 14 June 2013 08:08 PM, Jagan Teki wrote:
+>>> On 14-06-2013 20:03, Sourav Poddar wrote:
+>>>>
+>>>> Hi,
+>>>>
+>>>> On Wednesday 12 June 2013 01:00 PM, Sourav Poddar wrote:
+>>>>> Hi,
+>>>>>
+>>>>> I am working on qspi flash device S25FL256S at u-boot level. I am
+>>>>> trying to
+>>>>> make use of the existing spi_flash.c framework available at u-boot 
+>>>>> for
+>>>>> erasing/reading/writing
+>>>>> into the flash device.
+>>>>>
+>>>>> There are several issues(mentioned below), which I faced while using
+>>>>> S25FL256s flash device
+>>>>> with my dra7xx board which has a qspi controller to which the above
+>>>>> mentioned flash device is attached.
+>>>>>
+>>>>> 1. Erase (spi_flash_cmd_erase)
+>>>>>
+>>>>> Issuing a command something like this..
+>>>>>
+>>>>> sf erase 0x0 0x50000
+>>>>>  - erases only first 0x20000 bytes of flash device, anything above
+>>>>> that is not erase. I need to
+>>>>>    issue separate commands after 0x20000 for every 0x10000 bytes.
+>>>>>
+>>>>> Am i missing anything here?
+>>>>>
+>>>>> 2. read
+>>>>>
+>>>>> sf read 81000000 0 0x10000
+>>>>>
+>>>>> Read is not happening properly. The last few byte along the 4k
+>>>>> boundary always shows zero.
+>>>>> Above 4k bytes, read is not happening.
+>>>>>
+>>>>> For ex:
+>>>>>  DRA752 EVM # md 81000f00
+>>>>> 81000f00: ffffffff ffffffff ffffffff ffffffff    ................
+>>>>> 81000f10: ffffffff ffffffff ffffffff ffffffff    ................
+>>>>> 81000f20: ffffffff ffffffff ffffffff ffffffff    ................
+>>>>> 81000f30: ffffffff ffffffff ffffffff ffffffff    ................
+>>>>> 81000f40: ffffffff ffffffff ffffffff ffffffff    ................
+>>>>> 81000f50: ffffffff ffffffff ffffffff ffffffff    ................
+>>>>> 81000f60: ffffffff ffffffff ffffffff ffffffff    ................
+>>>>> 81000f70: ffffffff ffffffff ffffffff ffffffff    ................
+>>>>> 81000f80: ffffffff ffffffff ffffffff ffffffff    ................
+>>>>> 81000f90: ffffffff ffffffff ffffffff ffffffff    ................
+>>>>> 81000fa0: ffffffff ffffffff ffffffff ffffffff    ................
+>>>>> 81000fb0: ffffffff ffffffff ffffffff ffffffff    ................
+>>>>> 81000fc0: ffffffff ffffffff ffffffff ffffffff    ................
+>>>>> 81000fd0: ffffffff ffffffff ffffffff ffffffff    ................
+>>>>> 81000fe0: ffffffff ffffffff ffffffff ffffffff    ................
+>>>>> 81000ff0: ffffffff ffffffff 00ffffff 00000000    ................
+>>>>>
+>>>>> In this dump, if you see 81000ff0 the last column shows 000000 
+>>>>> which is
+>>>>> not expected. and it happens along every 4k bytes.
+>>>>>
+>>>>>
+>>>>> So, to get rid of the above issue, I switched to page read with the
+>>>>> below patch[1],
+>>>>> which is giving me the correct result.
+>>>>> [1]:
+>>>>> @@ -147,17 +153,40 @@ int spi_flash_read_common(struct spi_flash
+>>>>> *flash, const u8 *cmd,
+>>>>>  int spi_flash_cmd_read_fast(struct spi_flash *flash, u32 offset,
+>>>>>                 size_t len, void *data)
+>>>>>  {
+>>>>> -       u8 cmd[5];
+>>>>> +       unsigned long page_addr, byte_addr, page_size;
+>>>>> +       size_t chunk_len, actual;
+>>>>> +       int ret = 0;
+>>>>> +       u8 cmd[4];
+>>>>>
+>>>>>         /* Handle memory-mapped SPI */
+>>>>>         if (flash->memory_map)
+>>>>>                 memcpy(data, flash->memory_map + offset, len);
+>>>>> +       page_size = flash->page_size;
+>>>>> +       page_addr = offset / page_size;
+>>>>> +       byte_addr = offset % page_size;
+>>>>> +
+>>>>> +       cmd[0] = CMD_READ_ARRAY_SLOW;
+>>>>> +       for (actual = 0; actual < len; actual += chunk_len) {
+>>>>> +               chunk_len = min(len - actual, page_size - byte_addr);
+>>>>> +
+>>>>> +               cmd[1] = page_addr >> 8;
+>>>>> +               cmd[2] = page_addr;
+>>>>> +               cmd[3] = byte_addr;
+>>>>> +
+>>>>> +               ret = spi_flash_read_common(flash, cmd, sizeof(cmd),
+>>>>> data + actual, chunk_len);
+>>>>> +               if (ret < 0) {
+>>>>> +                       debug("SF: read failed");
+>>>>> +                       break;
+>>>>> +               }
+>>>>>
+>>>>> -       cmd[0] = CMD_READ_ARRAY_FAST;
+>>>>> -       spi_flash_addr(offset, cmd);
+>>>>> -       cmd[4] = 0x00;
+>>>>> +               byte_addr += chunk_len;
+>>>>> +               if (byte_addr == page_size) {
+>>>>> +                       page_addr++;
+>>>>> +                       byte_addr = 0;
+>>>>> +               }
+>>>>> +       }
+>>>>>
+>>>>> -       return spi_flash_read_common(flash, cmd, sizeof(cmd), data,
+>>>>> len);
+>>>>> +       return ret;
+>>>>>  }
+>>>>>
+>>>>> Any idea about this?
+>>>>>
+>>>>> 3.  write (spi_flash_cmd_write_multi)
+>>>>>   write not happening properly.
+>>>>>
+>>>>> observations: only able to write single page, anything after a 
+>>>>> page is
+>>>>> not getting
+>>>>>         written.
+>>>>> Workaround:
+>>>>> I did a write disable latch at the end of every write cycle(page
+>>>>> program) and enable it
+>>>>> again for the next loop. With this, I see I get rid of the above 
+>>>>> issue.
+>>>>>
+>>>>>  @@ -117,6 +117,12 @@ int spi_flash_cmd_write_multi(struct spi_flash
+>>>>> *flash, u32 offset,
+>>>>>                 if (ret)
+>>>>>                         break;
+>>>>>
+>>>>> +               ret = spi_flash_cmd_write_disable(flash);
+>>>>> +               if (ret < 0) {
+>>>>> +                       printf("SF: disabling write failed\n");
+>>>>> +                       break;
+>>>>> +               }
+>>>>> +
+>>>>>
+>>>>>
+>>>>> Have anyone seen the above mentioned issues regarding
+>>>>> read/write/erase? OR is there any
+>>>>> configurations that I might be missing ?
+>>>>>
+>>>> Any Input on this?
+>>>
+>>> Please wait, I am pushing some changes tonight or so.
+>>>
+>>> We will continue this thread, after testing your part with these new
+>>> changes.
+>>>
+>>> I will intimate you once the push done.
+>>>
+>>> -- 
+>>> Thanks,
+>>> Jagan.
+>>>
+>>>
+>> Thanks a lot for the reply.
+>> Sure, will wait for your changes to go in.
+>
+> Will take some time go these changes on master.
+>
+> Please checkout master-work branch in u-boot-spi repo
+> git://git.denx.de/u-boot-spi.git
+>
+> and try to test 256S parts, fyi: I tested the same part got the
+> +ve result.
+>
+Tested the above tree on my board.
+But, still the issues remain the same for me in all the three
+cases(erase/read/write).
 
-On 05/14/13 14:15, Ezequiel Garcia wrote:
-> The Armada 370 and Armada XP SoC include a NAND controller (NFCv2) that
-> is similar to the one in PXA SoC. Therefore, it should be possible to support
-> Armada NAND using pxa3xx-nand driver.
-> 
-> While this effort is not ready yet, here is a set of patches that are needed
-> for such work.
-> 
-> A small summary of the patches:
-> 
->   * 1/5 is a fix for a 2-year regression that removed DMA support.
-> 
->   * 2/5 and 3/5 are needed to build the driver on platforms other PXA.
-> 
->   * 4/5 and 5/5 add ONFI-compliant device detection and are needed
->     to successfully probe newer flash devices.
-> 
-> Applies cleanly on top of l2-mtd.git.
-> 
-> Thanks!
-> 
-> Ezequiel Garcia (5):
->   mtd: nand: pxa3xx: Set info->use_dma properly
->   mtd: nand: pxa3xx: Use of_machine_is_compatible()
->   mtd: nand: pxa3xx: Fix MODULE_DEVICE_TABLE declaration
->   mtd: nand: pxa3xx: Add address support for READID command
->   mtd: nand: pxa3xx: Add support for Read parameter page command
+Here is the short log of the read command..
+DRA752 EVM # sf probe 0
+SF: Detected S25FL256S_64K with page size 64 KiB, total 32 MiB
+SF: Warning - Only lower 16MiB accessible, Full access #define 
+CONFIG_SPI_FLASH_BAR
+DRA752 EVM # sf erase 0x0 0x10000
+SF: 65536 bytes @ 0x0 Erased: OK
+DRA752 EVM # mw.b 0x81000100 0xff 0x10000
+DRA752 EVM # sf read 0x81003000 0x0 0x10000
+SF: 65536 bytes @ 0x0 Read: OK
+DRA752 EVM # cmp.b 0x81003000  0x81000100  0x10000
+byte at 0x81003ffb (0x0) != byte at 0x810010fb (0xff)
+Total of 4091 byte(s) were the same
 
-tested on cm-x300, upstream 3.10-rc5 and no regressions seen.
 
-Tested-by: Nikita Kiryanov <nikita@compulab.co.il>
-Acked-by: Igor Grinberg <grinberg@compulab.co.il>
+Erase: not able to do with a single command, need to issue for every 
+0x10000 bytes.
 
-> 
->  drivers/mtd/nand/pxa3xx_nand.c | 16 ++++++++++++++--
->  1 file changed, 14 insertions(+), 2 deletions(-)
-> 
+Write: Need to disable latch after every write to make it properly work.
 
--- 
-Regards,
-Igor.
+Is it possible for you to  give me  basic commands which you might have 
+ran to confirm
+the read/write and erase ??
+
+
+Thanks,
+Sourav
+
+> -- 
+> Thanks,
+> Jagan.
