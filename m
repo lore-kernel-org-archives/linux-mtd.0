@@ -1,17 +1,42 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from smtp6-v.fe.bosch.de ([2a03:cc00:ff0:100::2])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UoeSa-0001Xp-M6
- for linux-mtd@lists.infradead.org; Mon, 17 Jun 2013 18:47:26 +0000
-From: Pekon Gupta <pekon@ti.com>
-To: <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>
-Subject: [PATCH v5 3/3] mtd: devices: elm: Low power transition support
-Date: Tue, 18 Jun 2013 00:16:39 +0530
-Message-ID: <1371494799-11876-4-git-send-email-pekon@ti.com>
-In-Reply-To: <1371494799-11876-1-git-send-email-pekon@ti.com>
-References: <1371494799-11876-1-git-send-email-pekon@ti.com>
+ id 1UopSZ-0005j0-JM
+ for linux-mtd@lists.infradead.org; Tue, 18 Jun 2013 06:32:09 +0000
+From: "Prins Anton (ST-CO/ENG1.1)" <Anton.Prins@nl.bosch.com>
+To: =?iso-8859-1?Q?Mats_K=E4rrman?= <Mats.Karrman@tritech.se>, Adrian Hunter
+ <adrian.hunter@intel.com>
+Date: Tue, 18 Jun 2013 08:31:30 +0200
+Subject: RE: UBIFS failure & stable page writes
+Message-ID: <85D877DD6EE67B4A9FCA9B9C3A4865670C3F4167DD@SI-MBX14.de.bosch.com>
+References: <85D877DD6EE67B4A9FCA9B9C3A4865670C3E8CB9B7@SI-MBX14.de.bosch.com>
+ <20130527121828.GA32625@quack.suse.cz>
+ <85D877DD6EE67B4A9FCA9B9C3A4865670C3E8CBB8D@SI-MBX14.de.bosch.com>
+ <1369709828.5446.89.camel@sauron.fi.intel.com>
+ <85D877DD6EE67B4A9FCA9B9C3A4865670C3E8CBD81@SI-MBX14.de.bosch.com>
+ <1369727042.5446.112.camel@sauron.fi.intel.com>
+ <85D877DD6EE67B4A9FCA9B9C3A4865670C3E8CBE33@SI-MBX14.de.bosch.com>
+ <1369732266.5446.117.camel@sauron.fi.intel.com>
+ <85D877DD6EE67B4A9FCA9B9C3A4865670C3E91DC9C@SI-MBX14.de.bosch.com>
+ <1369810158.5446.208.camel@sauron.fi.intel.com>
+ <85D877DD6EE67B4A9FCA9B9C3A4865670C3E91E697@SI-MBX14.de.bosch.com>
+ <1370239282.21714.21.camel@sauron.fi.intel.com>
+ <85D877DD6EE67B4A9FCA9B9C3A4865670C3EA0F38E@SI-MBX14.de.bosch.com>
+ <51B82A1D.30009@intel.com>
+ <85D877DD6EE67B4A9FCA9B9C3A4865670C3F1A3508@SI-MBX14.de.bosch.com>
+ <51B862D6.2080807@intel.com>
+ <85D877DD6EE67B4A9FCA9B9C3A4865670C3F1A3590@SI-MBX14.de.bosch.com>
+ <51B87315.7090808@intel.com>,
+ <85D877DD6EE67B4A9FCA9B9C3A4865670C3F1A36BC@SI-MBX14.de.bosch.com>
+ <ED3E0BCACD909541BA94A34C4A164D4C4FC8F091@post.tritech.se>,
+ <85D877DD6EE67B4A9FCA9B9C3A4865670C3F1A3D7F@SI-MBX14.de.bosch.com>
+ <ED3E0BCACD909541BA94A34C4A164D4C4FC8FD66@post.tritech.se>
+In-Reply-To: <ED3E0BCACD909541BA94A34C4A164D4C4FC8FD66@post.tritech.se>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: tony@atomide.com, khilman@linaro.org, Pekon Gupta <pekon@ti.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,181 +46,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: avinash philip <avinashphilip@ti.com>
+Last night I did do additional tests with create/remove of files in a while=
+ loop on a synchronous mounted UBIFS.
+I did NOT get any node 0 or 1 written over this night, but obvious enough I=
+ saw some strange node id in the orphan area: 0xdead4ead
 
-ELM is used for locating bit-flip errors in when using BCH ECC scheme.
-This patch adds suspend/resume support for leaf level ELM driver,
-And also provides ELM register context save & restore support, so that
-configurations are preserved across hardware power-off/on transitions.
-
-Signed-off-by: Philip Avinash <avinashphilip@ti.com>
-Signed-off-by: Pekon Gupta <pekon@ti.com>
----
- drivers/mtd/devices/elm.c | 117 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 117 insertions(+)
-
-diff --git a/drivers/mtd/devices/elm.c b/drivers/mtd/devices/elm.c
-index dccef9f..e6a7b89 100644
---- a/drivers/mtd/devices/elm.c
-+++ b/drivers/mtd/devices/elm.c
-@@ -20,14 +20,21 @@
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/of.h>
-+#include <linux/sched.h>
- #include <linux/pm_runtime.h>
- #include <linux/platform_data/elm.h>
- 
-+#define ELM_SYSCONFIG			0x010
- #define ELM_IRQSTATUS			0x018
- #define ELM_IRQENABLE			0x01c
- #define ELM_LOCATION_CONFIG		0x020
- #define ELM_PAGE_CTRL			0x080
- #define ELM_SYNDROME_FRAGMENT_0		0x400
-+#define ELM_SYNDROME_FRAGMENT_1		0x404
-+#define ELM_SYNDROME_FRAGMENT_2		0x408
-+#define ELM_SYNDROME_FRAGMENT_3		0x40c
-+#define ELM_SYNDROME_FRAGMENT_4		0x410
-+#define ELM_SYNDROME_FRAGMENT_5		0x414
- #define ELM_SYNDROME_FRAGMENT_6		0x418
- #define ELM_LOCATION_STATUS		0x800
- #define ELM_ERROR_LOCATION_0		0x880
-@@ -56,12 +63,27 @@
- #define SYNDROME_FRAGMENT_REG_SIZE	0x40
- #define ERROR_LOCATION_SIZE		0x100
- 
-+struct elm_registers {
-+	u32 elm_irqenable;
-+	u32 elm_sysconfig;
-+	u32 elm_location_config;
-+	u32 elm_page_ctrl;
-+	u32 elm_syndrome_fragment_6[ERROR_VECTOR_MAX];
-+	u32 elm_syndrome_fragment_5[ERROR_VECTOR_MAX];
-+	u32 elm_syndrome_fragment_4[ERROR_VECTOR_MAX];
-+	u32 elm_syndrome_fragment_3[ERROR_VECTOR_MAX];
-+	u32 elm_syndrome_fragment_2[ERROR_VECTOR_MAX];
-+	u32 elm_syndrome_fragment_1[ERROR_VECTOR_MAX];
-+	u32 elm_syndrome_fragment_0[ERROR_VECTOR_MAX];
-+};
-+
- struct elm_info {
- 	struct device *dev;
- 	void __iomem *elm_base;
- 	struct completion elm_completion;
- 	struct list_head list;
- 	enum bch_ecc bch_type;
-+	struct elm_registers elm_regs;
- };
- 
- static LIST_HEAD(elm_devices);
-@@ -385,6 +407,100 @@ static int elm_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+/**
-+ * elm_context_save
-+ * saves ELM configurations to preserve them across Hardware powered-down
-+ */
-+static int elm_context_save(struct elm_info *info)
-+{
-+	struct elm_registers *regs = &info->elm_regs;
-+	enum bch_ecc bch_type = info->bch_type;
-+	u32 offset = 0, i;
-+
-+	regs->elm_irqenable       = elm_read_reg(info, ELM_IRQENABLE);
-+	regs->elm_sysconfig       = elm_read_reg(info, ELM_SYSCONFIG);
-+	regs->elm_location_config = elm_read_reg(info, ELM_LOCATION_CONFIG);
-+	regs->elm_page_ctrl       = elm_read_reg(info, ELM_PAGE_CTRL);
-+	for (i = 0; i < ERROR_VECTOR_MAX; i++) {
-+		offset = i * SYNDROME_FRAGMENT_REG_SIZE;
-+		switch (bch_type) {
-+		case BCH8_ECC:
-+			regs->elm_syndrome_fragment_3[i] = elm_read_reg(info,
-+					ELM_SYNDROME_FRAGMENT_3 + offset);
-+			regs->elm_syndrome_fragment_2[i] = elm_read_reg(info,
-+					ELM_SYNDROME_FRAGMENT_2 + offset);
-+		case BCH4_ECC:
-+			regs->elm_syndrome_fragment_1[i] = elm_read_reg(info,
-+					ELM_SYNDROME_FRAGMENT_1 + offset);
-+			regs->elm_syndrome_fragment_0[i] = elm_read_reg(info,
-+					ELM_SYNDROME_FRAGMENT_0 + offset);
-+		default:
-+			return -EINVAL;
-+		}
-+		/* ELM SYNDROME_VALID bit in SYNDROME_FRAGMENT_6[] needs
-+		 * to be saved for all BCH schemes*/
-+		regs->elm_syndrome_fragment_6[i] = elm_read_reg(info,
-+					ELM_SYNDROME_FRAGMENT_6 + offset);
-+	}
-+	return 0;
-+}
-+
-+/**
-+ * elm_context_restore
-+ * writes configurations saved duing power-down back into ELM registers
-+ */
-+static int elm_context_restore(struct elm_info *info)
-+{
-+	struct elm_registers *regs = &info->elm_regs;
-+	enum bch_ecc bch_type = info->bch_type;
-+	u32 offset = 0, i;
-+
-+	elm_write_reg(info, ELM_IRQENABLE,	 regs->elm_irqenable);
-+	elm_write_reg(info, ELM_SYSCONFIG,	 regs->elm_sysconfig);
-+	elm_write_reg(info, ELM_LOCATION_CONFIG, regs->elm_location_config);
-+	elm_write_reg(info, ELM_PAGE_CTRL,	 regs->elm_page_ctrl);
-+	for (i = 0; i < ERROR_VECTOR_MAX; i++) {
-+		offset = i * SYNDROME_FRAGMENT_REG_SIZE;
-+		switch (bch_type) {
-+		case BCH8_ECC:
-+			elm_write_reg(info, ELM_SYNDROME_FRAGMENT_3 + offset,
-+					regs->elm_syndrome_fragment_3[i]);
-+			elm_write_reg(info, ELM_SYNDROME_FRAGMENT_2 + offset,
-+					regs->elm_syndrome_fragment_2[i]);
-+		case BCH4_ECC:
-+			elm_write_reg(info, ELM_SYNDROME_FRAGMENT_1 + offset,
-+					regs->elm_syndrome_fragment_1[i]);
-+			elm_write_reg(info, ELM_SYNDROME_FRAGMENT_0 + offset,
-+					regs->elm_syndrome_fragment_0[i]);
-+		default:
-+			return -EINVAL;
-+		}
-+		/* ELM_SYNDROME_VALID bit to be set in last to trigger FSM */
-+		elm_write_reg(info, ELM_SYNDROME_FRAGMENT_6 + offset,
-+					regs->elm_syndrome_fragment_6[i] &
-+							 ELM_SYNDROME_VALID);
-+	}
-+	return 0;
-+}
-+
-+static int elm_suspend(struct device *dev)
-+{
-+	struct elm_info *info = dev_get_drvdata(dev);
-+	elm_context_save(info);
-+	pm_runtime_put_sync(dev);
-+	return 0;
-+}
-+
-+static int elm_resume(struct device *dev)
-+{
-+	struct elm_info *info = dev_get_drvdata(dev);
-+	pm_runtime_get_sync(dev);
-+	elm_context_restore(info);
-+	return 0;
-+}
-+
-+static SIMPLE_DEV_PM_OPS(elm_pm_ops, elm_suspend, elm_resume);
-+
- #ifdef CONFIG_OF
- static const struct of_device_id elm_of_match[] = {
- 	{ .compatible = "ti,am3352-elm" },
-@@ -398,6 +514,7 @@ static struct platform_driver elm_driver = {
- 		.name	= "elm",
- 		.owner	= THIS_MODULE,
- 		.of_match_table = of_match_ptr(elm_of_match),
-+		.pm	= &elm_pm_ops,
- 	},
- 	.probe	= elm_probe,
- 	.remove	= elm_remove,
--- 
-1.8.1
+0xdead4ead Is known to me as SPINLOCK_MAGIC; but no glue why It is in the o=
+rphan area if node number...
+Is something known about 0xdead4ead?
