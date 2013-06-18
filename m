@@ -1,38 +1,20 @@
-Received: from smtp6-v.fe.bosch.de ([2a03:cc00:ff0:100::2])
+Received: from mho-02-ewr.mailhop.org ([204.13.248.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UoqBJ-0006hK-AY
- for linux-mtd@lists.infradead.org; Tue, 18 Jun 2013 07:18:22 +0000
-From: "Prins Anton (ST-CO/ENG1.1)" <Anton.Prins@nl.bosch.com>
-To: Adrian Hunter <adrian.hunter@intel.com>
-Date: Tue, 18 Jun 2013 09:17:53 +0200
-Subject: RE: UBIFS failure & stable page writes
-Message-ID: <85D877DD6EE67B4A9FCA9B9C3A4865670C3F41683D@SI-MBX14.de.bosch.com>
-References: <85D877DD6EE67B4A9FCA9B9C3A4865670C3E8CB9B7@SI-MBX14.de.bosch.com>
- <1369732266.5446.117.camel@sauron.fi.intel.com>
- <85D877DD6EE67B4A9FCA9B9C3A4865670C3E91DC9C@SI-MBX14.de.bosch.com>
- <1369810158.5446.208.camel@sauron.fi.intel.com>
- <85D877DD6EE67B4A9FCA9B9C3A4865670C3E91E697@SI-MBX14.de.bosch.com>
- <1370239282.21714.21.camel@sauron.fi.intel.com>
- <85D877DD6EE67B4A9FCA9B9C3A4865670C3EA0F38E@SI-MBX14.de.bosch.com>
- <51B82A1D.30009@intel.com>
- <85D877DD6EE67B4A9FCA9B9C3A4865670C3F1A3508@SI-MBX14.de.bosch.com>
- <51B862D6.2080807@intel.com>
- <85D877DD6EE67B4A9FCA9B9C3A4865670C3F1A3590@SI-MBX14.de.bosch.com>
- <51B87315.7090808@intel.com>,
- <85D877DD6EE67B4A9FCA9B9C3A4865670C3F1A36BC@SI-MBX14.de.bosch.com>
- <ED3E0BCACD909541BA94A34C4A164D4C4FC8F091@post.tritech.se>,
- <85D877DD6EE67B4A9FCA9B9C3A4865670C3F1A3D7F@SI-MBX14.de.bosch.com>
- <ED3E0BCACD909541BA94A34C4A164D4C4FC8FD66@post.tritech.se>
- <85D877DD6EE67B4A9FCA9B9C3A4865670C3F4167DD@SI-MBX14.de.bosch.com>
- <51C005B8.3000709@intel.com>
-In-Reply-To: <51C005B8.3000709@intel.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ id 1UotVT-0004kl-9m
+ for linux-mtd@lists.infradead.org; Tue, 18 Jun 2013 10:51:23 +0000
+Date: Tue, 18 Jun 2013 03:50:51 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: Pekon Gupta <pekon@ti.com>
+Subject: Re: [PATCH v5 2/3] arm: gpmc: Low power transition support
+Message-ID: <20130618105051.GM5523@atomide.com>
+References: <1371494799-11876-1-git-send-email-pekon@ti.com>
+ <1371494799-11876-3-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- =?iso-8859-1?Q?Mats_K=E4rrman?= <Mats.Karrman@tritech.se>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1371494799-11876-3-git-send-email-pekon@ti.com>
+Cc: linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
+ khilman@linaro.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,26 +24,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ok thanks, meanwhile we have applied the 'double free' patches in our night=
-ly build and coming week I hope to have more information on this.
+* Pekon Gupta <pekon@ti.com> [130617 11:52]:
+> From: avinash philip <avinashphilip@ti.com>
+> 
+> GPMC is hardware controller for external memory interfaces.
+> This patch adds suspend/resume support for GPMC driver.
+> It also preserves GPMC register configurations across device low-power states
+> in which GPMC hardware can be powered-off.
+> gpmc_suspend()/gpmc_resume() are called by default by core PM framework as part
+> of driver's runtime PM callbacks.
+> 
+> Signed-off-by: Philip Avinash <avinashphilip@ti.com>
+> Signed-off-by: Pekon Gupta <pekon@ti.com>
 
------Original Message-----
-From: Adrian Hunter [mailto:adrian.hunter@intel.com]=20
-Sent: dinsdag 18 juni 2013 9:01
-To: Prins Anton (ST-CO/ENG1.1)
-Cc: Mats K=E4rrman; linux-mtd@lists.infradead.org; dedekind1@gmail.com
-Subject: Re: UBIFS failure & stable page writes
+Thanks applying this into omap-for-v3.11/gpmc, patch 1/3 I already
+have applied and the MTD change should get merged along with other
+MTD patches.
 
-On 18/06/13 09:31, Prins Anton (ST-CO/ENG1.1) wrote:
-> Last night I did do additional tests with create/remove of files in a
-> while loop on a synchronous mounted UBIFS. I did NOT get any node 0 or 1
-> written over this night, but obvious enough I saw some strange node id in
-> the orphan area: 0xdead4ead
->=20
-> 0xdead4ead Is known to me as SPINLOCK_MAGIC; but no glue why It is in the
-> orphan area if node number... Is something known about 0xdead4ead?
+Regards,
 
-I am afraid I have not had time to analyze the effects of the double-free
-but it is reasonable to assume that UBIFS may be writing an orphan from a
-structure that has been freed and therefore re-used by, for example in this
-case, a spinlock.
+Tony
+
+> ---
+>  arch/arm/mach-omap2/gpmc.c | 21 +++++++++++++++++++--
+>  1 file changed, 19 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
+> index 1380cee..9b579d0 100644
+> --- a/arch/arm/mach-omap2/gpmc.c
+> +++ b/arch/arm/mach-omap2/gpmc.c
+> @@ -1655,6 +1655,24 @@ static int gpmc_remove(struct platform_device *pdev)
+>  	return 0;
+>  }
+>  
+> +#ifdef CONFIG_PM_SLEEP
+> +static int gpmc_suspend(struct device *dev)
+> +{
+> +	omap3_gpmc_save_context();
+> +	pm_runtime_put_sync(dev);
+> +	return 0;
+> +}
+> +
+> +static int gpmc_resume(struct device *dev)
+> +{
+> +	pm_runtime_get_sync(dev);
+> +	omap3_gpmc_restore_context();
+> +	return 0;
+> +}
+> +#endif
+> +
+> +static SIMPLE_DEV_PM_OPS(gpmc_pm_ops, gpmc_suspend, gpmc_resume);
+> +
+>  static struct platform_driver gpmc_driver = {
+>  	.probe		= gpmc_probe,
+>  	.remove		= gpmc_remove,
+> @@ -1662,6 +1680,7 @@ static struct platform_driver gpmc_driver = {
+>  		.name	= DEVICE_NAME,
+>  		.owner	= THIS_MODULE,
+>  		.of_match_table = of_match_ptr(gpmc_dt_ids),
+> +		.pm	= &gpmc_pm_ops,
+>  	},
+>  };
+>  
+> @@ -1724,7 +1743,6 @@ static irqreturn_t gpmc_handle_irq(int irq, void *dev)
+>  	return IRQ_HANDLED;
+>  }
+>  
+> -#ifdef CONFIG_ARCH_OMAP3
+>  static struct omap3_gpmc_regs gpmc_context;
+>  
+>  void omap3_gpmc_save_context(void)
+> @@ -1789,4 +1807,3 @@ void omap3_gpmc_restore_context(void)
+>  		}
+>  	}
+>  }
+> -#endif /* CONFIG_ARCH_OMAP3 */
+> -- 
+> 1.8.1
+> 
