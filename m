@@ -1,20 +1,24 @@
-Received: from antispam01.maxim-ic.com ([205.153.101.182]
- helo=antispam01.maximintegrated.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UpJAU-0004Rw-Ac
- for linux-mtd@lists.infradead.org; Wed, 19 Jun 2013 14:15:27 +0000
-Received: from maxdalex01.maxim-ic.internal (maxdalex01.maxim-ic.internal
- [10.16.15.101]) by antispam01.maximintegrated.com with ESMTP id
- n42GFq897qyimFTb for <linux-mtd@lists.infradead.org>;
- Wed, 19 Jun 2013 09:14:56 -0500 (CDT)
-From: Brian Foster <brian.foster@maximintegrated.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [Q] Using Micron 4-bit on-die ECC with v2.6.36 kernel?
-Date: Wed, 19 Jun 2013 16:14:53 +0200
-Message-ID: <17588192.75Agdljyqk@laclwks004>
+Received: from mail-la0-x22d.google.com ([2a00:1450:4010:c03::22d])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UpJB1-0004TA-JN
+ for linux-mtd@lists.infradead.org; Wed, 19 Jun 2013 14:16:00 +0000
+Received: by mail-la0-f45.google.com with SMTP id fr10so4669657lab.32
+ for <linux-mtd@lists.infradead.org>; Wed, 19 Jun 2013 07:15:36 -0700 (PDT)
+Message-ID: <51C1BD0C.2040008@cogentembedded.com>
+Date: Wed, 19 Jun 2013 18:15:40 +0400
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+To: Josh Wu <josh.wu@atmel.com>
+Subject: Re: [PATCH 2/6] mtd: atmel_nand: replace pmecc enable code with one
+ function.
+References: <1371622997-26303-1-git-send-email-josh.wu@atmel.com>
+ <1371622997-26303-3-git-send-email-josh.wu@atmel.com>
+In-Reply-To: <1371622997-26303-3-git-send-email-josh.wu@atmel.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: dedekind1@gmail.com, nicolas.ferre@atmel.com, linux-mtd@lists.infradead.org,
+ computersforpeace@gmail.com, plagnioj@jcrosoft.com,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,44 +28,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello.
 
- Our current reference Linux kernel for the MAX32590 (JIBE)
- is based on v2.6.36.  (Unfortunately, upgrading to a more
- recent version is not within the timeframe for solving the
- current problem.)  Our recent reference boards use one of
- those Micron NAND chips with an on-die 4-bit ECC, which we
- have basically ignored:  To-date, we have simply used the
- usual 1-bit ECC (i.e., living dangerously!).
+On 19-06-2013 10:23, Josh Wu wrote:
 
- This must change, and indeed we now have a case on my desk
- where, had we been using the on-die ECC, it would have saved
- us a ton of grief.  The problem is our kernel version is far
- too old to take advantage of any of the recent-ish work for
- on-die ECC.
+> Signed-off-by: Josh Wu <josh.wu@atmel.com>
+> Acked-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+> ---
+>   drivers/mtd/nand/atmel_nand.c |   40 +++++++++++++++++++++++++---------------
+>   1 file changed, 25 insertions(+), 15 deletions(-)
 
- Hence, I am looking into the possibility of adding on-die ECC
- support to our JIBE controller driver specifically for such
- NAND chips (or at least the specific Micron NAND chip on the
- reference boards).  Broadly, pretending JIBE's H/W directly
- supports on-die ECC, but actually doing the work in the driver.
- A similar trick we played in the past (bitwise-inverted ECC
- (now obsoleted and long-removed from the driver)) suggests
- this is not too difficult.
+> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+> index d39f364..cb8362e 100644
+> --- a/drivers/mtd/nand/atmel_nand.c
+> +++ b/drivers/mtd/nand/atmel_nand.c
+> @@ -754,6 +754,29 @@ normal_check:
+>   	return total_err;
+>   }
+>
+> +static void pmecc_enable(struct atmel_nand_host *host, int ecc_op)
+> +{
+> +	u32 val;
 
- I am looking for hints (suggestions), gotchas (warnings),
- and/or any examples of similar (or other plausible) approaches.
- Or for something I am overlooking in (or available for) kernels
- of approximately the vintage we are using.
+    Other functions have empty line after the declaration.
 
-Thanks & cheers!
-	-blf-
+> +	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_RST);
+> +	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_DISABLE);
+> +	val = pmecc_readl_relaxed(host->ecc, CFG);
+> +
+> +	if (ecc_op != NAND_ECC_READ && ecc_op != NAND_ECC_WRITE) {
+> +		dev_err(host->dev, "atmel_nand: wrong pmecc operation type!");
+> +		return;
+> +	}
+> +
+> +	if (ecc_op == NAND_ECC_READ)
+> +		pmecc_writel(host->ecc, CFG, (val & ~PMECC_CFG_WRITE_OP)
+> +			| PMECC_CFG_AUTO_ENABLE);
+> +	else
+> +		pmecc_writel(host->ecc, CFG, (val | PMECC_CFG_WRITE_OP)
+> +			& ~PMECC_CFG_AUTO_ENABLE);
+> +
+> +	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_ENABLE);
+> +	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_DATA);
+> +}
+> +
 
-p.s.  At the present time, I am not too interested in the
-     problem of converting existing boards.  This MAY change
-     as the scope and details of the solution become more
-     apparent.
-
--- 
-Brian Foster
-Principal MTS, Software        |  La Ciotat, France
-Maxim Integrated               |  http://www.maximintegrated.com/
+WBR, Sergei
