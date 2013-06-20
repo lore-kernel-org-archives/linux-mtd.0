@@ -1,19 +1,18 @@
-Received: from tritech.se ([46.59.120.190])
+Received: from mercuryimc.plus.com ([80.229.200.144]
+ helo=centos1.newflow.co.uk)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Updlj-0004uJ-B9
- for linux-mtd@lists.infradead.org; Thu, 20 Jun 2013 12:15:16 +0000
-Received: from post.tritech.se (post.tritech.se [10.75.60.100])
- by tritech.se (8.14.3/8.14.3) with ESMTP id r5KCEeFo020537
- for <linux-mtd@lists.infradead.org>; Thu, 20 Jun 2013 14:14:45 +0200
-From: =?iso-8859-1?Q?Mats_K=E4rrman?= <Mats.Karrman@tritech.se>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: UBIFS: integck and tst_recovery
-Date: Thu, 20 Jun 2013 12:14:40 +0000
-Message-ID: <ED3E0BCACD909541BA94A34C4A164D4C4FC93588@post.tritech.se>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ id 1UpeRW-00065N-9T
+ for linux-mtd@lists.infradead.org; Thu, 20 Jun 2013 12:58:27 +0000
+Message-ID: <51C2FC56.1070808@newflow.co.uk>
+Date: Thu, 20 Jun 2013 13:57:58 +0100
+From: Mark Jackson <mpfj-list@newflow.co.uk>
 MIME-Version: 1.0
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>
+Subject: 3.10.0-rc4: jffs2: Possible circular locking dependency detected
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: lkml <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,25 +22,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,=0A=
-=0A=
-I want to use the integck program from mtd-utils for power-cut emulation=0A=
-testing and I wonder how/if it is interrelated to to the debugfs=0A=
-tst_recovery file.=0A=
-=0A=
-I tried running integck with -p for a long time but got no errors.=0A=
-=0A=
-I then enabled the tst_recovery (echo 1 > ....) and started the test=0A=
-again. I immediately got a whole bunch of errors but as soon as the file=0A=
-system was remounted the errors stopped. Checking tst_recovery I found=0A=
-it was now disabled. Without stopping integck I then reenabled=0A=
-tst_recovery and the same thing happened again.=0A=
-=0A=
-If anyone could shed some light on how this is supposed to be used, I=0A=
-would be glad!=0A=
-=0A=
-I'm running the test on a separate "unused" UBIFS partition on a NOR=0A=
-flash. The kernel version is 2.6.35 with all relevant UBIFS patches=0A=
-from Linux stable.=0A=
-=0A=
-BR // Mats=
+Just mounted a JFFS2 partition (held in NOR flash on a custom AM335x
+CPU board), and I always get the following:-
+
+[    3.864244]
+[    3.865851] ======================================================
+[    3.872359] [ INFO: possible circular locking dependency detected ]
+[    3.878968] 3.10.0-rc4-00172-gf31c62e-dirty #249 Not tainted
+[    3.884926] -------------------------------------------------------
+[    3.891526] rcS/507 is trying to acquire lock:
+[    3.896206]  (&mm->mmap_sem){++++++}, at: [<c00b42c8>] might_fault+0x3c/0x94
+[    3.903684]
+[    3.903684] but task is already holding lock:
+[    3.909826]  (&f->sem){+.+.+.}, at: [<c016f208>] jffs2_readdir+0x40/0x1b0
+[    3.917021]
+[    3.917021] which lock already depends on the new lock.
+[    3.917021]
+[    3.925637]
+[    3.925637] the existing dependency chain (in reverse order) is:
+[    3.933516]
+-> #1 (&f->sem){+.+.+.}:
+[    3.937489]        [<c0079ad0>] lock_acquire+0x68/0x7c
+[    3.942918]        [<c041f290>] mutex_lock_nested+0x40/0x31c
+[    3.948893]        [<c0170b00>] jffs2_readpage+0x20/0x4c
+[    3.954500]        [<c009faf4>] __do_page_cache_readahead+0x28c/0x2b4
+[    3.961305]        [<c00a0028>] ra_submit+0x28/0x30
+[    3.966450]        [<c009686c>] filemap_fault+0x330/0x3e4
+[    3.972143]        [<c00b0308>] __do_fault+0x68/0x4a4
+[    3.977481]        [<c00b3214>] handle_pte_fault+0x70/0x6b4
+[    3.983361]        [<c00b38f0>] handle_mm_fault+0x98/0xcc
+[    3.989055]        [<c001d614>] do_page_fault+0x210/0x398
+[    3.994750]        [<c00084a4>] do_DataAbort+0x38/0x98
+[    4.000170]        [<c001315c>] __dabt_svc+0x3c/0x60
+[    4.005417]        [<c01df448>] __clear_user_std+0x1c/0x64
+[    4.011209]
+-> #0 (&mm->mmap_sem){++++++}:
+[    4.015729]        [<c0078f40>] __lock_acquire+0x1990/0x1d7c
+[    4.021699]        [<c0079ad0>] lock_acquire+0x68/0x7c
+[    4.027118]        [<c00b42f0>] might_fault+0x64/0x94
+[    4.032444]        [<c00d9bd0>] filldir+0x6c/0x174
+[    4.037507]        [<c016f28c>] jffs2_readdir+0xc4/0x1b0
+[    4.043110]        [<c00da020>] vfs_readdir+0x94/0xb8
+[    4.048438]        [<c00da118>] SyS_getdents+0x64/0xd4
+[    4.053859]        [<c00135c0>] ret_fast_syscall+0x0/0x48
+[    4.059556]
+[    4.059556] other info that might help us debug this:
+[    4.059556]
+[    4.067989]  Possible unsafe locking scenario:
+[    4.067989]
+[    4.074222]        CPU0                    CPU1
+[    4.078989]        ----                    ----
+[    4.083756]   lock(&f->sem);
+[    4.086799]                                lock(&mm->mmap_sem);
+[    4.093042]                                lock(&f->sem);
+[    4.098735]   lock(&mm->mmap_sem);
+[    4.102326]
+[    4.102326]  *** DEADLOCK ***
+[    4.102326]
+[    4.108567] 2 locks held by rcS/507:
+[    4.112328]  #0:  (&type->i_mutex_dir_key){+.+.+.}, at: [<c00d9fe0>] vfs_readdir+0x54/0xb8
+[    4.121070]  #1:  (&f->sem){+.+.+.}, at: [<c016f208>] jffs2_readdir+0x40/0x1b0
+[    4.128713]
+[    4.128713] stack backtrace:
+[    4.133312] CPU: 0 PID: 507 Comm: rcS Not tainted 3.10.0-rc4-00172-gf31c62e-dirty #249
+[    4.141676] [<c0018e70>] (unwind_backtrace+0x0/0xf4) from [<c0016d88>] (show_stack+0x10/0x14)
+[    4.150669] [<c0016d88>] (show_stack+0x10/0x14) from [<c041bc88>] (print_circular_bug+0x2e8/0x2f4)
+[    4.160118] [<c041bc88>] (print_circular_bug+0x2e8/0x2f4) from [<c0078f40>] (__lock_acquire+0x1990/0x1d7c)
+[    4.170297] [<c0078f40>] (__lock_acquire+0x1990/0x1d7c) from [<c0079ad0>] (lock_acquire+0x68/0x7c)
+[    4.179742] [<c0079ad0>] (lock_acquire+0x68/0x7c) from [<c00b42f0>] (might_fault+0x64/0x94)
+[    4.188549] [<c00b42f0>] (might_fault+0x64/0x94) from [<c00d9bd0>] (filldir+0x6c/0x174)
+[    4.196992] [<c00d9bd0>] (filldir+0x6c/0x174) from [<c016f28c>] (jffs2_readdir+0xc4/0x1b0)
+[    4.205708] [<c016f28c>] (jffs2_readdir+0xc4/0x1b0) from [<c00da020>] (vfs_readdir+0x94/0xb8)
+[    4.214698] [<c00da020>] (vfs_readdir+0x94/0xb8) from [<c00da118>] (SyS_getdents+0x64/0xd4)
+[    4.223507] [<c00da118>] (SyS_getdents+0x64/0xd4) from [<c00135c0>] (ret_fast_syscall+0x0/0x48)
