@@ -1,20 +1,24 @@
-Received: from mail-ee0-x22d.google.com ([2a00:1450:4013:c00::22d])
+Received: from woodpecker.gentoo.org ([2001:470:ea4a:1:214:c2ff:fe64:b2d3]
+ helo=smtp.gentoo.org)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Upksg-0008Tf-AU
- for linux-mtd@lists.infradead.org; Thu, 20 Jun 2013 19:50:57 +0000
-Received: by mail-ee0-f45.google.com with SMTP id c1so4164767eek.18
- for <linux-mtd@lists.infradead.org>; Thu, 20 Jun 2013 12:50:31 -0700 (PDT)
-Message-ID: <51C35D03.5020208@gmail.com>
-Date: Thu, 20 Jun 2013 21:50:27 +0200
-From: Vincenzo Aliberti <vincenzo.aliberti@gmail.com>
+ id 1UpqZw-000618-Ti
+ for linux-mtd@lists.infradead.org; Fri, 21 Jun 2013 01:55:57 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH v3 1/1] ubi: Introduce block devices for UBI volumes
+Date: Thu, 20 Jun 2013 21:55:35 -0400
+References: <1368887515-10536-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1368887515-10536-2-git-send-email-ezequiel.garcia@free-electrons.com>
+In-Reply-To: <1368887515-10536-2-git-send-email-ezequiel.garcia@free-electrons.com>
 MIME-Version: 1.0
-To: Vincenzo Aliberti <vincenzo.aliberti@gmail.com>
-Subject: Re: [PATCH] [MTD] MTD driver for LPDDR2-NVM PCM memories
-References: <1371753473-2343-1-git-send-email-vincenzo.aliberti@gmail.com>
-In-Reply-To: <1371753473-2343-1-git-send-email-vincenzo.aliberti@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
+Content-Type: multipart/signed; boundary="nextPart2010129.U7mRsQHq6d";
+ protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+Message-Id: <201306202155.37322.vapier@gentoo.org>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, richard.weinberger@gmail.com,
+ Michael Opdenacker <michael.opdenacker@free-electrons.com>,
+ linux-mtd@lists.infradead.org, Tim Bird <tim.bird@am.sony.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,738 +28,319 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I'm sending the new patch version according to your suggestion.
-Thanks for your help
+--nextPart2010129.U7mRsQHq6d
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-Below my feedback:
-On Mon, Nov 12, 2012 at 5:04 PM, Artem Bityutskiy <dedekind1@gmail.com> 
-wrote:
-On Tue, 2012-10-16 at 23:24 +0200, Vincenzo Aliberti wrote:
- > +/*
- > + * Internal Type Definitions
- > + * pcm_int_data contains memory controller details:
- > + * @reg_data : LPDDR2_MODE_REG_DATA register address after remapping
- > + * @reg_cfg  : LPDDR2_MODE_REG_CFG register address after remapping
- > + * &bus_width: memory bus-width (eg: x16 2 Bytes, x32 4 Bytes)  */
- > +struct pcm_int_data {
- > +     void __iomem *reg_data;
- > +     void __iomem *reg_cfg;
- > +     int bus_width;
- > +};
- > +
- > +static DEFINE_MUTEX(lpdd2_nvm_mutex);
-A global mutes? So if you have 2 independent PCM chips handled by this 
-driver, the access to them will be mutually excluded?
+On Saturday 18 May 2013 10:31:54 Ezequiel Garcia wrote:
 
-VA: based on my understanding systems today supporting PCM only manage 1 
-chip
+hmm, i've only written a gendisk driver once, and that was many years ago (=
+and=20
+it was pretty shitty, so let's pretend i didn't at all).  so i won't be abl=
+e=20
+to say too much on that front.
 
- > +
- > +static inline map_word build_map_word(u_long myword) {
- > +     map_word val = { {0} };
- > +     val.x[0] = myword;
- > +     return val;
- > +}
- > +
- > +static inline u_int build_mr_cfgmaks(u_int bus_width) {
- > +     u_int val = MR_CFGMASK;
- > +
- > +     if (bus_width == 0x0004)                /* x32 device */
- > +             val = val<<16;
- > +
- > +     return val;
- > +}
- > +
- > +static inline u_int build_sr_ok_datamask(u_int bus_width) {
- > +     u_int val = SR_OK_DATAMASK;
- > +
- > +     if (bus_width == 0x0004)                /* x32 device */
- > +             val = (val<<16)+val;
- > +
- > +     return val;
- > +}
-How about adding some comments about what the functions above do?
-
-VA: OK done
-
- > +
- > +/*
- > + * Enable lpddr2-nvm Overlay Window
- > + */
-How about a short comment explaining what is the Overlay Window?
-VA: OK done
-
-
- > +static int lpddr2_nvm_do_op(struct map_info *map, u_long cmd_code,
- > +     u_long cmd_data, u_long cmd_add, u_long cmd_mpr, u_char *buf) {
- > +     map_word add_l = { {0} }, add_h = { {0} }, mpr_l = { {0} },
- > +             mpr_h = { {0} }, data_l = { {0} }, cmd = { {0} },
- > +             exec_cmd = { {0} }, sr;
- > +     map_word data_h = { {0} };      /* only for 2x x16 devices
- > +stacked */
- > +     u_long i, status_reg, prg_buff_ofs;
- > +     struct pcm_int_data *pcm_data = map->fldrv_priv;
- > +     u_int sr_ok_datamask =
- > +build_sr_ok_datamask(pcm_data->bus_width);
- > +
- > +     /* Builds low and high words for OW Control Registers */
- > +     add_l.x[0]      = cmd_add&0x0000FFFF;
- > +     add_h.x[0]      = (cmd_add>>16)&0x0000FFFF;
- > +     mpr_l.x[0]      = cmd_mpr&0x0000FFFF;
- > +     mpr_h.x[0]      = (cmd_mpr>>16)&0x0000FFFF;
- > +     cmd.x[0]        = cmd_code&0x0000FFFF;
- > +     exec_cmd.x[0]   = 0x0001;
- > +     data_l.x[0]     = cmd_data&0x0000FFFF;
- > +     data_h.x[0]     = (cmd_data>>16)&0x0000FFFF; /* only for 2x x16
- > + */
- > +
- > +     /* Set Overlay Window Control Registers */
- > +     map_write(map, cmd,
- > + map->pfow_base+CMD_CODE_OFS*pcm_data->bus_width);
- > +     map_write(map, data_l,
- > + map->pfow_base+CMD_DATA_OFS*pcm_data->bus_width);
- > +     map_write(map, add_l,
- > + map->pfow_base+CMD_ADD_L_OFS*pcm_data->bus_width);
- > +     map_write(map, add_h,
- > + map->pfow_base+CMD_ADD_H_OFS*pcm_data->bus_width);
- > +     map_write(map, mpr_l,
- > + map->pfow_base+MPR_L_OFS*pcm_data->bus_width);
- > +     map_write(map, mpr_h,
- > + map->pfow_base+MPR_H_OFS*pcm_data->bus_width);
-How about introducing a small helper inline unction for
-map->pfow_base+ X * pcm_data->bus_width
-
-It is repeated everywhere and makes driver difficult to follow, no?
-
-Also, see the coding style about how to place spaces correctly. Make 
-sure checkpatch.pl is happy or almost happy (sometimes you should ignore 
-its complaints, they and not always correct).
-
-VA: OK done
-
-
-
---
-Best Regards,
-Artem Bityutskiy
-
-On 06/20/2013 08:37 PM, Vincenzo Aliberti wrote:
-> Added Support for PCM memories with LPDDR2-NVM interface
->
-> Signed-off-by: Vincenzo Aliberti <vincenzo.aliberti@gmail.com>
-> ---
->   drivers/mtd/lpddr/Kconfig      |   12 +-
->   drivers/mtd/lpddr/Makefile     |    1 +
->   drivers/mtd/lpddr/lpddr2_nvm.c |  556 ++++++++++++++++++++++++++++++++++++++++
->   include/uapi/mtd/mtd-abi.h     |    1 +
->   4 files changed, 568 insertions(+), 2 deletions(-)
->   create mode 100644 drivers/mtd/lpddr/lpddr2_nvm.c
->
-> diff --git a/drivers/mtd/lpddr/Kconfig b/drivers/mtd/lpddr/Kconfig
-> index 265f969..468f06d 100644
-> --- a/drivers/mtd/lpddr/Kconfig
-> +++ b/drivers/mtd/lpddr/Kconfig
-> @@ -1,5 +1,5 @@
-> -menu "LPDDR flash memory drivers"
-> -	depends on MTD!=n
-> +menu "LPDDR & LPDDR2 PCM memory drivers"
-> +	depends on MTD
->   
->   config MTD_LPDDR
->   	tristate "Support for LPDDR flash chips"
-> @@ -17,4 +17,12 @@ config MTD_QINFO_PROBE
->   	    Window QINFO interface, permits software to be used for entire
->   	    families of devices. This serves similar purpose of CFI on legacy
->   	    Flash products
-> +
-> +config MTD_LPDDR2_NVM
-> +	depends on MTD
-> +	tristate "Support for LPDDR2-NVM flash chips"
+> --- a/drivers/mtd/ubi/Kconfig
+> +++ b/drivers/mtd/ubi/Kconfig
+>=20
+> +config MTD_UBI_BLOCK
+> +	bool "Block device access to UBI volumes"
+> +	default n
 > +	help
-> +	  This option enables support of PCM memories with a LPDDR2-NVM
-> +	  (Low power double data rate 2) interface.
+> +	   Since UBI already takes care of eraseblock wear leveling
+> +	   and bad block handling, it's possible to implement a block
+> +	   device on top of it and therefore mount regular filesystems
+> +	   (i.e. not flash-oriented, as ext4).
 > +
->   endmenu
-> diff --git a/drivers/mtd/lpddr/Makefile b/drivers/mtd/lpddr/Makefile
-> index da48e46..881d440 100644
-> --- a/drivers/mtd/lpddr/Makefile
-> +++ b/drivers/mtd/lpddr/Makefile
-> @@ -4,3 +4,4 @@
->   
->   obj-$(CONFIG_MTD_QINFO_PROBE)	+= qinfo_probe.o
->   obj-$(CONFIG_MTD_LPDDR)	+= lpddr_cmds.o
-> +obj-$(CONFIG_MTD_LPDDR2_NVM) += lpddr2_nvm.o
-> diff --git a/drivers/mtd/lpddr/lpddr2_nvm.c b/drivers/mtd/lpddr/lpddr2_nvm.c
-> new file mode 100644
-> index 0000000..068f95d
+> +	   In other words, this is a software flash translation layer.
+> +
+> +	   If in doubt, say "N".
+
+might be useful to mention that this is built into the main ubi module, and=
+=20
+you can use `ubiblkvol` to manage volumes at runtime.
+
 > --- /dev/null
-> +++ b/drivers/mtd/lpddr/lpddr2_nvm.c
-> @@ -0,0 +1,556 @@
-> +/*
-> + * LPDDR2-NVM MTD driver. This module provides read, write, erase, lock/unlock
-> + * support for LPDDR2-NVM PCM memories
-> + *
-> + * Copyright © 2012 Micron Technology, Inc.
-> + *
-> + * Vincenzo Aliberti <vincenzo.aliberti@gmail.com>
-> + * Domenico Manna <domenico.manna@gmail.com>
-> + * Many thanks to Andrea Vigilante for initial enabling
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of the GNU General Public License
-> + * as published by the Free Software Foundation; either version 2
-> + * of the License, or (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, write to the Free Software
-> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-> + * 02110-1301, USA.
-> + */
-> +
-> +#include <linux/init.h>
-> +#include <linux/module.h>
-> +#include <linux/kernel.h>
-> +#include <linux/mtd/map.h>
-> +#include <linux/mtd/mtd.h>
-> +#include <linux/mtd/partitions.h>
-> +#include <linux/slab.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/ioport.h>
-> +#include <linux/sched.h>
-> +
-> +/* Parameters */
-> +#define ERASE_BLOCKSIZE			(0x00020000/2)	/* in Word */
-> +#define WRITE_BUFFSIZE			(0x00000400/2)	/* in Word */
-> +#define OW_BASE_ADDRESS			0x00000000	/* OW offset */
-> +
-> +/* PFOW symbols address offset */
-> +#define PFOW_QUERY_STRING_P		(0x0000/2)	/* in Word */
-> +#define PFOW_QUERY_STRING_F		(0x0002/2)	/* in Word */
-> +#define PFOW_QUERY_STRING_O		(0x0004/2)	/* in Word */
-> +#define PFOW_QUERY_STRING_W		(0x0006/2)	/* in Word */
-> +
-> +/* OW registers address */
-> +#define CMD_CODE_OFS			(0x0080/2)	/* in Word */
-> +#define CMD_DATA_OFS			(0x0084/2)	/* in Word */
-> +#define CMD_ADD_L_OFS			(0x0088/2)	/* in Word */
-> +#define CMD_ADD_H_OFS			(0x008A/2)	/* in Word */
-> +#define MPR_L_OFS			(0x0090/2)	/* in Word */
-> +#define MPR_H_OFS			(0x0092/2)	/* in Word */
-> +#define CMD_EXEC_OFS			(0x00C0/2)	/* in Word */
-> +#define STATUS_REG_OFS			(0x00CC/2)	/* in Word */
-> +#define PRG_BUFFER_OFS			(0x0010/2)	/* in Word */
-> +
-> +/* Datamask */
-> +#define MR_CFGMASK			0x8000
-> +#define SR_OK_DATAMASK			0x0080
-> +
-> +/* LPDDR2-NVM Commands */
-> +#define LPDDR2_NVM_LOCK			0x0061
-> +#define LPDDR2_NVM_UNLOCK		0x0062
-> +#define LPDDR2_NVM_SW_PROGRAM		0x0041
-> +#define LPDDR2_NVM_SW_OVERWRITE		0x0042
-> +#define LPDDR2_NVM_BUF_PROGRAM		0x00E9
-> +#define LPDDR2_NVM_BUF_OVERWRITE	0x00EA
-> +#define LPDDR2_NVM_ERASE		0x0020
-> +
-> +/*
-> + * Internal Type Definitions
-> + * pcm_int_data contains memory controller details:
-> + * @reg_data : LPDDR2_MODE_REG_DATA register address after remapping
-> + * @reg_cfg  : LPDDR2_MODE_REG_CFG register address after remapping
-> + * &bus_width: memory bus-width (eg: x16 2 Bytes, x32 4 Bytes)
-> + */
-> +struct pcm_int_data {
-> +	void __iomem *reg_data;
-> +	void __iomem *reg_cfg;
-> +	int bus_width;
-> +};
-> +
-> +static DEFINE_MUTEX(lpdd2_nvm_mutex);
-> +
-> +/*
-> + * Build a map_word starting from an u_long
-> + */
-> +static inline map_word build_map_word(u_long myword)
+> +++ b/drivers/mtd/ubi/block.c
+>
+> + * Copyright (c) 2012 Ezequiel Garcia
+> + * Copyright (c) 2011 Free Electrons
+
+it's now 2013 :)
+
+> +/* Maximum length of the 'block=3D' parameter */
+> +#define UBIBLOCK_PARAM_LEN 64
+
+not entirely true, but maybe doesn't matter.  max length is 63 as it includ=
+es=20
+\0 in the 64 byte count ;).
+
+> +static int __init ubiblock_set_param(const char *val,
+> +				     const struct kernel_param *kp)
 > +{
-> +	map_word val = { {0} };
-> +	val.x[0] = myword;
-> +	return val;
+> +	int len, i, ret;
+
+len should be size_t (since you assign strnlen() to it and that returns a=20
+size_t)
+
+> +	if (len =3D=3D 0) {
+> +		ubi_warn("block: empty 'blk=3D' parameter - ignored\n");
+
+i think this should be block=3D rather than blk=3D
+
+> +MODULE_PARM_DESC(block, "Attach block devices to UBI volumes.");
+
+add a short description to the block=3D format ?  you had a good snippet in=
+ the=20
+init func above in one of the comments.
+
+> +/*
+> + * A bunch of examples worth a thousand words.
+
+move to the top of the file ?  i personally find it more useful when they l=
+ive=20
+there, but maybe my expectations are off.
+
+> +static int ubiblock_fill_cache(struct ubiblock *dev, int leb_num,
+> +			       struct ubiblock_cache *cache,
+> +			       struct ubiblock_cache *aux_cache)
+> +{
+> ...
+> +		/*
+> +		 * Maybe it's possible to flip pointers instead of
+> +		 * memcpy'ing, but let's try to keep it simple for now.
+> +		 */
+> +		aux_cache->leb_num =3D -1;
+> +		aux_cache->state =3D STATE_EMPTY;
+> +		memcpy(cache->buffer, aux_cache->buffer, dev->leb_size);
+
+yeah, trying to see if we could eliminate some of these memcpy's would be a=
+=20
+nice future enhancement
+
+> +		/*
+> +		 * If leb is not on write cache, we flush current cached
+
+usually people say "in cache" rather than "on cache".  this comes up in a f=
+ew=20
+comments in this file.
+
+> +#else
+> +static int ubiblock_flush(struct ubiblock *dev, bool sync)
+> +{
+> +	return -EPERM;
 > +}
 > +
-> +/*
-> + * Build Mode Register Configuration DataMask based on device bus-width
-> + */
-> +static inline u_int build_mr_cfgmask(u_int bus_width)
+> +static int ubiblock_write(struct ubiblock *dev, const char *buffer,
+> +              int pos, int len)
 > +{
-> +	u_int val = MR_CFGMASK;
-> +
-> +	if (bus_width == 0x0004)		/* x32 device */
-> +		val = val<<16;
-> +
-> +	return val;
+> +	return -EPERM;
 > +}
-> +
-> +/*
-> + * Build Status Register OK DataMask based on device bus-width
-> + */
-> +static inline u_int build_sr_ok_datamask(u_int bus_width)
+> +#endif
+
+i think you can just do:
+# define ubiblock_flush NULL
+# define ubiblock_write NULL
+
+then the common layers will do the right thing when it sees these funcs don=
+'t=20
+exist for this device
+
+> +static int ubiblock_read(struct ubiblock *dev, char *buffer,
+> +			 int pos, int len)
 > +{
-> +	u_int val = SR_OK_DATAMASK;
+> +	int leb, offset, ret;
+> +	int bytes_left =3D len;
+> +	int to_read =3D len;
+> +	char *cache_buffer;
 > +
-> +	if (bus_width == 0x0004)		/* x32 device */
-> +		val = (val<<16)+val;
+> +	/* Get leb:offset address to read from */
+> +	leb =3D pos / dev->leb_size;
+> +	offset =3D pos % dev->leb_size;
 > +
-> +	return val;
-> +}
+> +	while (bytes_left) {
 > +
-> +/*
-> + * Evaluates Overlay Window Control Registers address
-> + */
-> +static inline u_long ow_reg_add(struct map_info *map, u_long offset)
-> +{
-> +	u_long val = 0;
-> +	struct pcm_int_data *pcm_data = map->fldrv_priv;
+> +		/*
+> +		 * We can only read one leb at a time.
+> +		 * Therefore if the read length is larger than
+> +		 * one leb size, we split the operation.
+> +		 */
+> +		if (offset + to_read > dev->leb_size)
+> +			to_read =3D dev->leb_size - offset;
 > +
-> +	val = map->pfow_base + offset*pcm_data->bus_width;
+> +		/*
+> +		 * 1) First try on read cache, if not there...
+> +		 * 2) then try on write cache, if not there...
+> +		 * 3) finally load this leb on read_cache
+> +		 *
+> +		 * Note that reading never flushes to disk!
+> +		 */
+> +		if (leb_on_cache(&dev->read_cache, leb)) {
+> +			cache_buffer =3D dev->read_cache.buffer;
 > +
-> +	return val;
-> +}
+> +#ifdef CONFIG_MTD_UBI_BLOCK_WRITE_SUPPORT
+> +		} else if (leb_on_cache(&dev->write_cache, leb)) {
+> +			cache_buffer =3D dev->write_cache.buffer;
+> +#endif
 > +
-> +/*
-> + * Enable lpddr2-nvm Overlay Window
-> + * Overlay Window is a memory mapped area containing all LPDDR2-NVM registers
-> + * used by device commands as well as uservisible resources like Device Status
-> + * Register, Device ID, etc
-> + */
-> +static inline void ow_enable(struct map_info *map)
-> +{
-> +	struct pcm_int_data *pcm_data = map->fldrv_priv;
-> +
-> +	writel_relaxed(build_mr_cfgmask(pcm_data->bus_width) | 0x18,
-> +		pcm_data->reg_cfg);
-> +	writel_relaxed(0x01, pcm_data->reg_data);
-> +}
-> +
-> +/*
-> + * Disable lpddr2-nvm Overlay Window
-> + * Overlay Window is a memory mapped area containing all LPDDR2-NVM registers
-> + * used by device commands as well as uservisible resources like Device Status
-> + * Register, Device ID, etc
-> + */
-> +static inline void ow_disable(struct map_info *map)
-> +{
-> +	struct pcm_int_data *pcm_data = map->fldrv_priv;
-> +
-> +	writel_relaxed(build_mr_cfgmask(pcm_data->bus_width) | 0x18,
-> +		pcm_data->reg_cfg);
-> +	writel_relaxed(0x02, pcm_data->reg_data);
-> +}
-> +
-> +/*
-> + * Execute lpddr2-nvm operations
-> + */
-> +static int lpddr2_nvm_do_op(struct map_info *map, u_long cmd_code,
-> +	u_long cmd_data, u_long cmd_add, u_long cmd_mpr, u_char *buf)
-> +{
-> +	map_word add_l = { {0} }, add_h = { {0} }, mpr_l = { {0} },
-> +		mpr_h = { {0} }, data_l = { {0} }, cmd = { {0} },
-> +		exec_cmd = { {0} }, sr;
-> +	map_word data_h = { {0} };	/* only for 2x x16 devices stacked */
-> +	u_long i, status_reg, prg_buff_ofs;
-> +	struct pcm_int_data *pcm_data = map->fldrv_priv;
-> +	u_int sr_ok_datamask = build_sr_ok_datamask(pcm_data->bus_width);
-> +
-> +	/* Builds low and high words for OW Control Registers */
-> +	add_l.x[0]	= cmd_add&0x0000FFFF;
-> +	add_h.x[0]	= (cmd_add>>16)&0x0000FFFF;
-> +	mpr_l.x[0]	= cmd_mpr&0x0000FFFF;
-> +	mpr_h.x[0]	= (cmd_mpr>>16)&0x0000FFFF;
-> +	cmd.x[0]	= cmd_code&0x0000FFFF;
-> +	exec_cmd.x[0]	= 0x0001;
-> +	data_l.x[0]	= cmd_data&0x0000FFFF;
-> +	data_h.x[0]	= (cmd_data>>16)&0x0000FFFF; /* only for 2x x16 */
-> +
-> +	/* Set Overlay Window Control Registers */
-> +	map_write(map, cmd, ow_reg_add(map, CMD_CODE_OFS));
-> +	map_write(map, data_l, ow_reg_add(map, CMD_DATA_OFS));
-> +	map_write(map, add_l, ow_reg_add(map, CMD_ADD_L_OFS));
-> +	map_write(map, add_h, ow_reg_add(map, CMD_ADD_H_OFS));
-> +	map_write(map, mpr_l, ow_reg_add(map, MPR_L_OFS));
-> +	map_write(map, mpr_h, ow_reg_add(map, MPR_H_OFS));
-> +	if (pcm_data->bus_width == 0x0004) {	/* 2x16 devices stacked */
-> +		map_write(map, cmd, ow_reg_add(map, CMD_CODE_OFS) + 2);
-> +		map_write(map, data_h, ow_reg_add(map, CMD_DATA_OFS) + 2);
-> +		map_write(map, add_l, ow_reg_add(map, CMD_ADD_L_OFS) + 2);
-> +		map_write(map, add_h, ow_reg_add(map, CMD_ADD_H_OFS) + 2);
-> +		map_write(map, mpr_l, ow_reg_add(map, MPR_L_OFS) + 2);
-> +		map_write(map, mpr_h, ow_reg_add(map, MPR_H_OFS) + 2);
-> +	}
-> +
-> +	/* Fill Program Buffer */
-> +	if ((cmd_code == LPDDR2_NVM_BUF_PROGRAM) ||
-> +		(cmd_code == LPDDR2_NVM_BUF_OVERWRITE)) {
-> +		prg_buff_ofs = (map_read(map,
-> +			ow_reg_add(map, PRG_BUFFER_OFS))).x[0];
-> +		for (i = 0; i < cmd_mpr; i++) {
-> +			map_write(map, build_map_word(buf[i]), map->pfow_base +
-> +			prg_buff_ofs + i);
-> +		}
-> +	}
-> +
-> +	/* Command Execute */
-> +	map_write(map, exec_cmd, ow_reg_add(map, CMD_EXEC_OFS));
-> +	if (pcm_data->bus_width == 0x0004)	/* 2x16 devices stacked */
-> +		map_write(map, exec_cmd, ow_reg_add(map, CMD_EXEC_OFS) + 2);
-> +
-> +	/* Status Register Check */
-> +	do {
-> +		sr = map_read(map, ow_reg_add(map, STATUS_REG_OFS));
-> +		status_reg = sr.x[0];
-> +		if (pcm_data->bus_width == 0x0004) {/* 2x16 devices stacked */
-> +			sr = map_read(map, ow_reg_add(map,
-> +				STATUS_REG_OFS) + 2);
-> +			status_reg += sr.x[0]<<16;
-> +		}
-> +	} while ((status_reg&sr_ok_datamask) != sr_ok_datamask);
-> +
-> +	return (((status_reg&sr_ok_datamask) == sr_ok_datamask) ? 0 : -EIO);
-> +}
-> +
-> +/*
-> + * Execute lpddr2-nvm operations @ block level
-> + */
-> +static int lpddr2_nvm_do_block_op(struct mtd_info *mtd, loff_t start_add,
-> +	uint64_t len, u_char block_op)
-> +{
-> +	struct map_info *map = mtd->priv;
-> +	u_long add, end_add;
-> +	int ret = 0;
-> +
-> +	mutex_lock(&lpdd2_nvm_mutex);
-> +
-> +	ow_enable(map);
-> +
-> +	add = start_add;
-> +	end_add = add + len;
-> +
-> +	if ((add > mtd->size) || (end_add > mtd->size)) {
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	do {
-> +		ret = lpddr2_nvm_do_op(map, block_op, 0x00, add, add, NULL);
-> +		if (ret)
-> +			goto out;
-> +		add += mtd->erasesize;
-> +	} while (add < end_add);
-> +
-> +out:
-> +	ow_disable(map);
-> +	mutex_unlock(&lpdd2_nvm_mutex);
-> +	return ret;
-> +}
-> +
-> +/*
-> + * verify presence of PFOW string
-> + */
-> +static int lpddr2_nvm_pfow_present(struct map_info *map)
-> +{
-> +	map_word pfow_val[4];
-> +	unsigned int found = 1;
-> +
-> +	mutex_lock(&lpdd2_nvm_mutex);
-> +
-> +	ow_enable(map);
-> +
-> +	/* Load string from array */
-> +	pfow_val[0] = map_read(map, ow_reg_add(map, PFOW_QUERY_STRING_P));
-> +	pfow_val[1] = map_read(map, ow_reg_add(map, PFOW_QUERY_STRING_F));
-> +	pfow_val[2] = map_read(map, ow_reg_add(map, PFOW_QUERY_STRING_O));
-> +	pfow_val[3] = map_read(map, ow_reg_add(map, PFOW_QUERY_STRING_W));
-> +
-> +	/* Verify the string loaded vs expected */
-> +	if (!map_word_equal(map, build_map_word('P'), pfow_val[0]))
-> +		found = 0;
-> +	if (!map_word_equal(map, build_map_word('F'), pfow_val[1]))
-> +		found = 0;
-> +	if (!map_word_equal(map, build_map_word('O'), pfow_val[2]))
-> +		found = 0;
-> +	if (!map_word_equal(map, build_map_word('W'), pfow_val[3]))
-> +		found = 0;
-> +
-> +	ow_disable(map);
-> +
-> +	mutex_unlock(&lpdd2_nvm_mutex);
-> +
-> +	return found;
-> +}
-> +
-> +/*
-> + * lpddr2_nvm driver read method
-> + */
-> +static int lpddr2_nvm_read(struct mtd_info *mtd, loff_t start_add,
-> +				size_t len, size_t *retlen, u_char *buf)
-> +{
-> +	struct map_info *map = mtd->priv;
-> +	int ret = 0;
-> +
-> +	mutex_lock(&lpdd2_nvm_mutex);
-> +
-> +	*retlen = len;
-> +
-> +	if ((start_add + len) > mtd->size) {
-> +		pr_alert("lpddr2_nvm: read out of memory range\n");
-> +		*retlen = 0;
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	map_copy_from(map, buf, start_add, *retlen);
-> +
-> +out:
-> +	mutex_unlock(&lpdd2_nvm_mutex);
-> +	return ret;
-> +}
-> +
-> +/*
-> + * lpddr2_nvm driver write method
-> + */
-> +static int lpddr2_nvm_write(struct mtd_info *mtd, loff_t start_add,
-> +				size_t len, size_t *retlen, const u_char *buf)
-> +{
-> +	struct map_info *map = mtd->priv;
-> +	struct pcm_int_data *pcm_data = map->fldrv_priv;
-> +	u_long add, current_len, tot_len, target_len, my_data;
-> +	u_char *write_buf = (u_char *)buf;
-> +	int ret = 0;
-> +
-> +	mutex_lock(&lpdd2_nvm_mutex);
-> +
-> +	ow_enable(map);
-> +
-> +	/* Set start value for the variables */
-> +	add = start_add;
-> +	target_len = len;
-> +	tot_len = 0;
-> +
-> +	if ((start_add + len) > mtd->size) {
-> +		pr_alert("lpddr2_nvm: write out of memory range\n");
-> +		*retlen = 0;
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	while (tot_len < target_len) {
-> +		if (!(IS_ALIGNED(add, mtd->writesize))) { /* do sw program */
-> +			my_data = write_buf[tot_len];
-> +			my_data += (write_buf[tot_len+1])<<8;
-> +			if (pcm_data->bus_width == 0x0004) {/* 2x16 devices */
-> +				my_data += (write_buf[tot_len+2])<<16;
-> +				my_data += (write_buf[tot_len+3])<<24;
-> +			}
-> +			ret = lpddr2_nvm_do_op(map, LPDDR2_NVM_SW_OVERWRITE,
-> +				my_data, add, 0x00, NULL);
+> +		} else {
+> +			/* Leb is not in any cache: fill read_cache */
+> +			ret =3D ubiblock_fill_cache(dev, leb,
+> +				&dev->read_cache, NULL);
 > +			if (ret)
-> +				goto out;
+> +				return ret;
+> +			cache_buffer =3D dev->read_cache.buffer;
+> +		}
+
+i've read this code a few times but haven't been able to convince myself th=
+at=20
+the coherency is correct.  in the write func, you check the write cache, bu=
+t=20
+not the read cache.  so what happens if you read from say block 0, then wri=
+te=20
+to it, then read from it ?  where does the read cache get synced to the wri=
+te=20
+cache ?  or would this scenario return stale data from the read cache ?
+
+> +static void ubiblock_do_work(struct work_struct *work)
+> +{
+> +	struct ubiblock *dev =3D
+> +		container_of(work, struct ubiblock, work);
+> +	struct request_queue *rq =3D dev->rq;
+> +	struct request *req;
+> +	int res;
 > +
-> +			add += pcm_data->bus_width;
-> +			tot_len += pcm_data->bus_width;
-> +		} else {		/* do buffer program */
-> +			current_len = min(target_len - tot_len,
-> +				(u_long) mtd->writesize);
-> +			ret = lpddr2_nvm_do_op(map, LPDDR2_NVM_BUF_OVERWRITE,
-> +				0x00, add, current_len, write_buf + tot_len);
-> +			if (ret)
-> +				goto out;
+> +	spin_lock_irq(rq->queue_lock);
+
+i thought work queues could sleep ?  so you could use a regular mutex here=
+=20
+rather than a spinlock ?
+
+> +static int ubiblock_open(struct block_device *bdev, fmode_t mode)
+> +{
+> +	struct ubiblock *dev =3D bdev->bd_disk->private_data;
+> +	int ubi_mode =3D UBI_READONLY;
+> +	int ret;
+> +#ifdef CONFIG_MTD_UBI_BLOCK_WRITE_SUPPORT
+> +	const bool allow_write =3D true;
+> +#else
+> +	const bool allow_write =3D false;
+> +#endif
 > +
-> +			add += current_len;
-> +			tot_len += current_len;
+> +	mutex_lock(&dev->vol_mutex);
+> +	if (dev->refcnt > 0) {
+> +		/*
+> +		 * The volume is already opened,
+> +		 * just increase the reference counter
+> +		 *
+> +		 * If the first user has oppened this as read-only,
+> +		 * we don't allow to open as read-write.
+> +		 * This is the simplest solution. A better one would
+> +		 * be to re-open the volume as writable and allocate
+> +		 * the write-cache.
+> +		 */
+> +		if ((mode & FMODE_WRITE) &&
+> +		    (dev->desc->mode !=3D UBI_READWRITE)) {
+> +			ret =3D -EBUSY;
+> +			goto out_unlock;
+> +		}
+> +		dev->refcnt++;
+> +		mutex_unlock(&dev->vol_mutex);
+> +		return 0;
+> +	}
+
+not a big deal, but this could probably just jump to the end (where you hav=
+e=20
+the same finishing code)
+
+> +	if (allow_write && ubi_mode =3D=3D UBI_READWRITE) {
+> +		ret =3D ubiblock_alloc_cache(&dev->write_cache, dev->leb_size);
+> +		if (ret) {
+> +			ubiblock_free_cache(&dev->read_cache);
+> +			goto out_free;
 > +		}
 > +	}
-> +
-> +out:
-> +	*retlen = tot_len;
-> +	ow_disable(map);
-> +	mutex_unlock(&lpdd2_nvm_mutex);
-> +	return ret;
-> +}
-> +
-> +/*
-> + * lpddr2_nvm driver erase method
-> + */
-> +static int lpddr2_nvm_erase(struct mtd_info *mtd, struct erase_info *instr)
+> ....
+> +static void ubiblock_release(struct gendisk *gd, fmode_t mode)
 > +{
-> +	int ret = lpddr2_nvm_do_block_op(mtd, instr->addr, instr->len,
-> +		LPDDR2_NVM_ERASE);
-> +	if (!ret) {
-> +		instr->state = MTD_ERASE_DONE;
-> +		mtd_erase_callback(instr);
+> +	struct ubiblock *dev =3D gd->private_data;
+> +
+> +	mutex_lock(&dev->vol_mutex);
+> +
+> +	dev->refcnt--;
+> +	if (dev->refcnt =3D=3D 0) {
+> +		ubiblock_flush(dev, true);
+> +
+> +		ubiblock_free_cache(&dev->read_cache);
+> +		ubiblock_free_cache(&dev->write_cache);
+
+hmm, in the open call, you only alloc the write cache when the device gets=
+=20
+opened read/write.  what if it gets opened r/o and then closed ?  won't thi=
+s=20
+free barf ?  similarly, if read/write support is compiled out ...
+
+> +	/*
+> +	 * Blocks devices needs to be attached to volumes explicitly
+
+Blocks -> Block
+
+> --- a/drivers/mtd/ubi/cdev.c
+> +++ b/drivers/mtd/ubi/cdev.c
+>=20
+> +	/* Attach a block device to an UBI volume */
+> +	case UBI_IOCVOLATTBLK:
+> +	{
+> +		struct ubi_volume_info vi;
+> +
+> +		ubi_get_volume_info(desc, &vi);
+> +		err =3D ubiblock_add(&vi);
+> +		break;
 > +	}
 > +
-> +	return ret;
-> +}
+> +	/* Dettach a block device from an UBI volume */
+> +	case UBI_IOCVOLDETBLK:
+> +	{
+> +		struct ubi_volume_info vi;
 > +
-> +/*
-> + * lpddr2_nvm driver unlock method
-> + */
-> +static int lpddr2_nvm_unlock(struct mtd_info *mtd, loff_t start_add,
-> +	uint64_t len)
-> +{
-> +	return lpddr2_nvm_do_block_op(mtd, start_add, len, LPDDR2_NVM_UNLOCK);
-> +}
-> +
-> +/*
-> + * lpddr2_nvm driver lock method
-> + */
-> +static int lpddr2_nvm_lock(struct mtd_info *mtd, loff_t start_add,
-> +	uint64_t len)
-> +{
-> +	return lpddr2_nvm_do_block_op(mtd, start_add, len, LPDDR2_NVM_LOCK);
-> +}
-> +
-> +/*
-> + * lpddr2_nvm driver probe method
-> + */
-> +static int lpddr2_nvm_probe(struct platform_device *pdev)
-> +{
-> +	int ret = 0;
-> +	struct map_info *lpddr2_nvm_map;
-> +	struct mtd_info *lpddr2_nvm_mtd;
-> +	struct resource *address_range = platform_get_resource(pdev,
-> +						IORESOURCE_MEM, 0);
-> +	struct resource *control_regs = platform_get_resource(pdev,
-> +						IORESOURCE_MEM, 1);
-> +	struct resource *buswidth = platform_get_resource(pdev,
-> +						IORESOURCE_BUS, 0);
-> +	struct pcm_int_data *pcm_data;
-> +
-> +	/* Allocate memory control_regs data structures */
-> +	pcm_data = kzalloc(sizeof(*pcm_data), GFP_KERNEL);
-> +	if (!control_regs) {
-> +		pr_alert("lpddr2_nvm_probe: Failed to allocate memory for int_data\n");
-> +		ret = 1;
-> +		goto out;
+> +		ubi_get_volume_info(desc, &vi);
+> +		ubiblock_del(&vi);
+> +		break;
 > +	}
-> +	pcm_data->reg_data =	(void *) control_regs->start;
-> +	pcm_data->reg_cfg =	(void *) control_regs->end;
-> +	pcm_data->bus_width =	(int) buswidth->start;
-> +
-> +	/* Allocate memory for map_info & mtd_info data structures */
-> +	lpddr2_nvm_map = kzalloc(sizeof(*lpddr2_nvm_map), GFP_KERNEL);
-> +	if (!lpddr2_nvm_map) {
-> +		pr_alert("lpddr2_nvm_probe: Failed to allocate memory for map\n");
-> +		ret = 1;
-> +		goto out;
-> +	}
-> +
-> +	lpddr2_nvm_mtd = kzalloc(sizeof(*lpddr2_nvm_mtd), GFP_KERNEL);
-> +	if (!lpddr2_nvm_mtd) {
-> +		pr_alert("lpddr2_nvm_probe: Failed to allocate memory for mtd\n");
-> +		ret = 1;
-> +		goto out;
-> +	}
-> +
-> +	/* Reserve lpddr2_nvm address range */
-> +	if (request_mem_region(address_range->start, (address_range->end -
-> +		address_range->start + 1), "lpddr2_nvm") == NULL) {
-> +		pr_alert("lpddr2_nvm_probe: Unable to reserve memory address %#010x\n",
-> +		address_range->start);
-> +		ret = -EBUSY;
-> +		goto out;
-> +	}
-> +
-> +	/* Populate map_info data structure */
-> +	*lpddr2_nvm_map = (struct map_info) {
-> +		.virt		= ioremap_nocache(address_range->start,
-> +				(address_range->end-address_range->start+1)),
-> +		.name		= pdev->dev.init_name,
-> +		.phys		= address_range->start,
-> +		.size		= address_range->end - address_range->start + 1,
-> +		.bankwidth	= pcm_data->bus_width/2,
-> +		.pfow_base	= OW_BASE_ADDRESS,
-> +		.fldrv_priv	= pcm_data,
-> +	};
-> +
-> +	simple_map_init(lpddr2_nvm_map);	/* fill with default methods */
-> +
-> +	/* Populate mtd_info data structure */
-> +	*lpddr2_nvm_mtd = (struct mtd_info) {
-> +		.name		= pdev->dev.init_name,
-> +		.type		= MTD_RAM,
-> +		.priv		= lpddr2_nvm_map,
-> +		.size		= address_range->end - address_range->start + 1,
-> +		.erasesize	= ERASE_BLOCKSIZE * pcm_data->bus_width,
-> +		.writesize	= 1,
-> +		.writebufsize	= WRITE_BUFFSIZE * pcm_data->bus_width,
-> +		.flags		= (MTD_CAP_PCM | MTD_POWERUP_LOCK),
-> +		._read		= lpddr2_nvm_read,
-> +		._read_oob	= NULL,
-> +		._write		= lpddr2_nvm_write,
-> +		._write_oob	= NULL,
-> +		._erase		= lpddr2_nvm_erase,
-> +		._unlock	= lpddr2_nvm_unlock,
-> +		._lock		= lpddr2_nvm_lock,
-> +		._sync		= NULL,
-> +		._suspend	= NULL,
-> +		._resume	= NULL,
-> +		._block_isbad	= NULL,
-> +		._block_markbad	= NULL,
-> +	};
-> +
-> +	/* Verify the presence of the device looking for PFOW string */
-> +	if (lpddr2_nvm_pfow_present(lpddr2_nvm_map)) {
-> +		pr_alert("lpddr2_nvm_probe: device recognized\n");
-> +		/* Register the mtd_partition structure */
-> +		if (mtd_add_partition(lpddr2_nvm_mtd, "my_pcm", 0x10000000,
-> +			0x00)){
-> +			pr_alert("lpddr2_nvm_probe: Failed to add mtd partition\n");
-> +			ret = 1;
-> +			goto out;
-> +		}
-> +		ret = 0;
-> +	} else {
-> +		pr_alert("%s: PFOW string not found at address %#010lx\n",
-> +			lpddr2_nvm_map->name, lpddr2_nvm_map->pfow_base);
-> +		ret = 1;
-> +	}
-> +
-> +out:
-> +	return ret;
-> +}
-> +
-> +/* Initialize platform_driver data structure for lpddr2_nvm */
-> +static struct platform_driver lpddr2_nvm_drv = {
-> +	.driver		= {
-> +		.name	= "lpddr2_nvm",
-> +	},
-> +	.probe		= lpddr2_nvm_probe,
-> +	.remove		= NULL,
-> +	.suspend	= NULL,
-> +	.resume		= NULL,
-> +};
-> +
-> +module_platform_driver(lpddr2_nvm_drv);
-> +
-> +MODULE_LICENSE("GPL");
-> +MODULE_AUTHOR("Vincenzo Aliberti <vincenzo.aliberti@gmail.com>");
-> +MODULE_DESCRIPTION("MTD driver for LPDDR2-NVM PCM memories");
-> +
-> diff --git a/include/uapi/mtd/mtd-abi.h b/include/uapi/mtd/mtd-abi.h
-> index 36eace0..33f3036 100644
-> --- a/include/uapi/mtd/mtd-abi.h
-> +++ b/include/uapi/mtd/mtd-abi.h
-> @@ -109,6 +109,7 @@ struct mtd_write_req {
->   #define MTD_CAP_RAM		(MTD_WRITEABLE | MTD_BIT_WRITEABLE | MTD_NO_ERASE)
->   #define MTD_CAP_NORFLASH	(MTD_WRITEABLE | MTD_BIT_WRITEABLE)
->   #define MTD_CAP_NANDFLASH	(MTD_WRITEABLE)
-> +#define MTD_CAP_PCM		(MTD_WRITEABLE | MTD_BIT_WRITEABLE | MTD_NO_ERASE)
->   
->   /* Obsolete ECC byte placement modes (used with obsolete MEMGETOOBSEL) */
->   #define MTD_NANDECC_OFF		0	// Switch off ECC (Not recommended)
+
+hmm, this always returns 0.  would be nice if ubiblock_del() returned a val=
+ue=20
+that this could pass back up to userspace.  i managed to confuse myself by=
+=20
+running a few times:
+	# ubiblkvol -d /dev/ubi0_0
+it never issued an error/warning, and returned 0 all the time.  might be=20
+problematic if you have code that wants to make sure it has detached all bl=
+ock=20
+devices already ...
+=2Dmike
+
+--nextPart2010129.U7mRsQHq6d
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.17 (GNU/Linux)
+
+iQIcBAABAgAGBQJRw7KZAAoJEEFjO5/oN/WBfIwQAM1dUGtM/CeFrv4+HPjVCbs/
+8WYCksEYP0ZVggQMZF1NYVMsid9QCOPLhUb+3omJEeW4ArQoSpNSWk1wRXGsp0pY
+r+hYNbJfmlErc7EW8DTWiUGIevW/FFgMhCgVTIcwIhieBZSnEnAC+k+JznKS+k3J
+XFTdaeUHk8oDCoT2HinyYYQguoYsqWipFrKUo+bWXW0Fu16hGBshIFrbx6u8VyLU
+Vk4oR3LFY7lKj0+a58rDLAMNjuCNX49+Wbklf6IRbpS5cNZAEVbzRX+KLhpLR6Vh
+4mrN/LHIhwj8YQV79k8J1WWMKsm194FEXBhC3zAB4exluSukB3RvxcKANOBM/C3p
+WdMiusrLoZHd+ZgOzQtcQs85exEIsa9vTh+5YHF+SHP1evQryE4Xr281OumjeAOr
+EpozTxOYKVowiYoYKOgKVicKcqhDJJHlRq13uH8P+7d/99NfaErikhzYUps+YGA4
+SeckbuxQM2VW1X04Pek2KQ2bGS7CKp0iz+RYmkyeJukF3Ne2vytlLUle8lZk2cfs
+X4cBeg3/KA0WL8tz9EOttKfF56dSOiVOZ0PkZjbnwvhKkVdPn17w3/30PSBvWywU
+VGsq1satMW5dsjcpfrQFvdw5i3zzTv4OzRLxyJosSje6H0NMOwaAGSkn+TqsPU18
+SjYMNgSlQYBYHGT6ds91
+=vpNw
+-----END PGP SIGNATURE-----
+
+--nextPart2010129.U7mRsQHq6d--
