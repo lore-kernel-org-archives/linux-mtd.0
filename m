@@ -1,20 +1,27 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from arroyo.ext.ti.com ([192.94.94.40])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UqoZr-0007cd-PT
- for linux-mtd@lists.infradead.org; Sun, 23 Jun 2013 17:59:52 +0000
-From: Pekon Gupta <pekon@ti.com>
-To: <tony@atomide.com>, <artem.bityutskiy@linux.intel.com>, <b-cousson@ti.com>
-Subject: [PATCH v3 4/4] ARM: dts: AM33xx: updated default ECC scheme in
- nand-ecc-opt
-Date: Sun, 23 Jun 2013 23:28:19 +0530
-Message-ID: <1372010299-30141-5-git-send-email-pekon@ti.com>
-In-Reply-To: <1372010299-30141-1-git-send-email-pekon@ti.com>
-References: <1372010299-30141-1-git-send-email-pekon@ti.com>
+ id 1UqohJ-0007kk-0t
+ for linux-mtd@lists.infradead.org; Sun, 23 Jun 2013 18:07:34 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: "Balbi, Felipe" <balbi@ti.com>
+Subject: RE: [PATCH v3 1/4] mtd:nand:omap2: clean-up BCHx_HW and BCHx_SW ECC
+ configurations in device_probe
+Date: Sun, 23 Jun 2013 18:06:51 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9DF3A8@DBDE04.ent.ti.com>
+References: <1371935030-20773-1-git-send-email-pekon@ti.com>
+ <1371935030-20773-2-git-send-email-pekon@ti.com>,
+ <20130622214717.GA1569@arwen.pp.htv.fi>
+In-Reply-To: <20130622214717.GA1569@arwen.pp.htv.fi>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: arnd@arndb.de, jp.francois@cynove.com, balbi@ti.com,
- linux-mtd@lists.infradead.org, Pekon Gupta <pekon@ti.com>,
- linux-omap@vger.kernel.org
+Cc: "Cousson, Benoit" <b-cousson@ti.com>, "arnd@arndb.de" <arnd@arndb.de>,
+ "tony@atomide.com" <tony@atomide.com>,
+ "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "jp.francois@cynove.com" <jp.francois@cynove.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,28 +31,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DT property values for OMAP based gpmc-nand have been updated
-to match changes in commit:
-	6faf096 ARM: OMAP2+: cleaned-up DT support of various ECC schemes
-Refer: Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+>> From: "Gupta, Pekon" <pekon@ti.com>
 
-Signed-off-by: Pekon Gupta <pekon@ti.com>
----
- arch/arm/boot/dts/am335x-evm.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Can you fix your From address ? I guess:
+> git config --global user.name "Pekon Gupta"
+> should do it, but you'll have to recommit those commits with:
+> git commit --amend --reset-author
+[Pekon]: Thanks for pointing it out. I had missed this.
+I updated my global config recently, But as this patch series was=20
+ported from my older branch, so older 'from' string continued.
+Fixed now and re-sent.
 
-diff --git a/arch/arm/boot/dts/am335x-evm.dts b/arch/arm/boot/dts/am335x-evm.dts
-index 7d2be9c..da64585 100644
---- a/arch/arm/boot/dts/am335x-evm.dts
-+++ b/arch/arm/boot/dts/am335x-evm.dts
-@@ -135,7 +135,7 @@
- 			nand@0,0 {
- 				reg = <0 0 0>; /* CS0, offset 0 */
- 				nand-bus-width = <8>;
--				ti,nand-ecc-opt = "bch8";
-+				ti,nand-ecc-opt = "bch8_code_hw";
- 				gpmc,device-nand = "true";
- 				gpmc,device-width = <1>;
- 				gpmc,sync-clk-ps = <0>;
--- 
-1.8.1
+with regards, pekon=
