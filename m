@@ -1,19 +1,19 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+Received: from mail-ve0-x232.google.com ([2607:f8b0:400c:c01::232])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ur5eS-0007ZJ-BT
- for linux-mtd@lists.infradead.org; Mon, 24 Jun 2013 12:13:45 +0000
-Message-ID: <51C837D9.5060007@pengutronix.de>
-Date: Mon, 24 Jun 2013 14:13:13 +0200
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+ id 1UrF0V-0006TS-Gf
+ for linux-mtd@lists.infradead.org; Mon, 24 Jun 2013 22:13:08 +0000
+Received: by mail-ve0-f178.google.com with SMTP id pb11so9320383veb.37
+ for <linux-mtd@lists.infradead.org>; Mon, 24 Jun 2013 15:12:45 -0700 (PDT)
 MIME-Version: 1.0
-To: =?ISO-8859-15?Q?Mats_K=E4rrman?= <Mats.Karrman@tritech.se>
-Subject: Re: xattr patches from feb?
-References: <ED3E0BCACD909541BA94A34C4A164D4C4FCA20D3@post.tritech.se>
-In-Reply-To: <ED3E0BCACD909541BA94A34C4A164D4C4FCA20D3@post.tritech.se>
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="----enig2JEJXKMICTOVVIDGKBMAH"
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+In-Reply-To: <1531E53627F1F749B4FE809BF2A4EB67043D97FA@wetmex10>
+References: <1531E53627F1F749B4FE809BF2A4EB67043D97FA@wetmex10>
+Date: Mon, 24 Jun 2013 15:12:44 -0700
+Message-ID: <CAN8TOE8m6VVDuNZwXqa7Rn9pBXoTXci_iyWN4nX-+S3cj422ew@mail.gmail.com>
+Subject: Re: CFC - RW - power-donw ?
+From: Brian Norris <computersforpeace@gmail.com>
+To: "Vellemans, Noel" <Noel.Vellemans@visionbms.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,54 +23,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
-------enig2JEJXKMICTOVVIDGKBMAH
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
+Hi Noel,
 
-On 06/24/2013 01:15 PM, Mats K=E4rrman wrote:
-> Sorry for contacting you directly.
+On Wed, Jun 19, 2013 at 11:55 PM, Vellemans, Noel
+<Noel.Vellemans@visionbms.com> wrote:
+> Hi all,
+>
+> I've a question regarding a PC that needs to boot from CFC (Compact
+> Flash card), hope this is the correct place to ask.
+>
+> I would need a PC to boot from a CFC-card that has R/W enabled.
+>
+> At this time I have been testing it with EXT2/EXT3 but when POWERING
+> down abruptly it seems that the CFC-ext2/ext3 file system gets
+> corrupted, finally resulting in a NON bootable system.
 
-I've added linux-mtd on Cc, maybe there are more people interested in
-the patches.
+That is somewhat expected. The FTLs for cards like Compact Flash are
+not documented and are likely unsafe w.r.t. power cuts.
 
-> I have been running integck on UBIFS and found some issues with
-> corrupt xattr nodes. I found your post on the linux-mtd mailing list
-> but nothing seem to have happened since February.
+> At this time I have partitioned the CFC into 2 partitions 1-FAT16 (to
+> store the kernel) and 1-ext2/ext3 partition that has the root-file
+> system.
+>
+> What would be the correct file-system (and/or mount /build options) to
+> put on a CFC ... so that it is able to survive abrupt-power downs ?
+>
+> Or is the somewhere a guide (URL) that explains me some more stuff
+> regarding this.
 
-Yes, unfortunately.
+The Linux MTD website has some information that is somewhat related,
+regarding FTL (Flash Translation Layers) and MTDs. Note that CF cards
+are not MTDs but are block devices with a simple built-in hardware
+FTL. With that in mind, you might read:
 
-> What has happened since? Were the patches rejected or just ignored?=20
-> Do you still believe in them?
+http://www.linux-mtd.infradead.org/faq/general.html#L_mtd_what
+http://www.linux-mtd.infradead.org/faq/general.html#L_mtd_vs_hdd
+http://www.linux-mtd.infradead.org/faq/jffs2.html#L_hdd_jffs2
+http://www.linux-mtd.infradead.org/faq/general.html#L_ext2_mtd
 
-Nothing happened, our $CUSTOMER shifted priorities. There is a locking
-issue with the patches. Which might be a false positive by the lockdep.
+I don't have much personal experience with Compact Flash, but my bet
+is that you are running into the perils of relying on cheap
+proprietary hardware FTL.
 
-I'll send you my current patches as PM, if someone else is interested,
-contact me.
+And Google will tell you:
 
-regards,
-Marc
+https://groups.google.com/forum/#!topic/comp.os.linux.embedded/0DYdL-PUZVY
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+The advice there seems reasonable and in line with my knowledge: that
+CF cards are inherently prone to power-cut data loss.
 
-
-------enig2JEJXKMICTOVVIDGKBMAH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
-
-iEYEARECAAYFAlHIN98ACgkQjTAFq1RaXHMnJwCZAXUiQln8zYuH7DddM9zsDb0g
-z5QAn28WjrX4j9lH9DlbplLAc2n1vR1h
-=5LRT
------END PGP SIGNATURE-----
-
-------enig2JEJXKMICTOVVIDGKBMAH--
+Brian
