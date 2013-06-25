@@ -1,21 +1,16 @@
-Received: from mail-ve0-x230.google.com ([2607:f8b0:400c:c01::230])
+Received: from mail-pa0-f50.google.com ([209.85.220.50])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UrZbH-0002Pj-CH
- for linux-mtd@lists.infradead.org; Tue, 25 Jun 2013 20:12:28 +0000
-Received: by mail-ve0-f176.google.com with SMTP id c13so10475914vea.21
- for <linux-mtd@lists.infradead.org>; Tue, 25 Jun 2013 13:12:03 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1368760654-28754-1-git-send-email-b32955@freescale.com>
-References: <1368760654-28754-1-git-send-email-b32955@freescale.com>
-Date: Tue, 25 Jun 2013 13:12:03 -0700
-Message-ID: <CAN8TOE-QvScbPUEPyrs-fYVQZmPu1h-wWX2hjz46KYtaWRckBw@mail.gmail.com>
-Subject: Re: [PATCH v6 00/10] mtd: add datasheet's ECC information to
- nand_chip{}
+ id 1UrZhK-0002a9-Rh
+ for linux-mtd@lists.infradead.org; Tue, 25 Jun 2013 20:18:43 +0000
+Received: by mail-pa0-f50.google.com with SMTP id fb1so13003142pad.23
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Jun 2013 13:18:18 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: vikram186@gmail.com, linux-mtd@lists.infradead.org, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org, dedekind1@gmail.com
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH] mtd: nand: detect OOB size for Toshiba 24nm raw SLC
+Date: Tue, 25 Jun 2013 13:17:59 -0700
+Message-Id: <1372191479-28470-1-git-send-email-computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,54 +20,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Huang and others,
+Toshiba NAND datasheets have not been very forthcoming on OOB size
+information; they do not provide any bitfields in the ID string for
+spare area. In their 24nm technology flash, however, Toshiba migrated
+their NAND to have 32 bytes spare per 512 bytes of page area (up from
+the traditional 16 bytes), as they now require 8-bit ECC or higher.
 
-On Thu, May 16, 2013 at 8:17 PM, Huang Shijie <b32955@freescale.com> wrote:
-> 1.) Why add the ECC information to the nand_chip{} ?
->    Each nand chip has its requirement for the ECC correctability, such as
->    "4bit ECC for each 512Byte" or "40bit ECC for each 1024Byte".
->    This ECC info is very important to the nand controller, such as gpmi.
->
->    Take the Micron MT29F64G08CBABA for example, its geometry is
->    8k page size, 744 bytes oob size and it requires 40bit ECC per 1K bytes.
->    If we do not provide the ECC info to the gpmi nand driver, it has to
->    calculate the ECC correctability itself. The gpmi driver will gets the 56bit
->    ECC for per 1K bytes which is beyond its BCH's 40bit ecc capibility.
->    The gpmi will quits in this case. But in actually, the gpmi can supports
->    this nand chip if it can get the right ECC info.
->
-> 2.) About the patch set:
->    2.1) patch 1:
->               The keynote patch.
->
->    2.2) patch 2 ~ patch 6:
->                These patches are for ONFI nand.
->                Parse out the ecc info from the parameter page if we can, else
->                parse out the ecc info from the extended parameter page.
->
->    2.2) patch 7 ~ patch 9:
->                Add the ECC info for full-id nand, and parse it out.
->
->    2.3) patch 10
->                The gpmi uses the ecc info to set the BCH module. and with this
->                patch set, the gpmi can supports the MT29F64G08CBABA now.
+I have discussed this issue directly with Toshiba representatives, and
+they acknowledge this problem. They recommend detecting these flash
+based on their technology node as follows:
 
-What's the status on this patch set? Surely by v6 we have some
-reasonable stable state on things like naming. Does anyone have any
-other objections? Unfortunately, I've been awfully distracted, and on
-top of that, I'm running into some bugs with my NAND controller
-sending the ONFI parameter read/change column commands. But any time
-my controller actually outputs a correct parameter page + extended
-parameter page, this series has worked for me.
+  For 24nm Toshiba SLC raw NAND (not BENAND -- Built-in Ecc NAND), there
+  are 32 bytes of spare area for every 512 bytes of in-band data area.
 
-I've put my 2 cents in on most of the issues I had, and I tested the
-whole series on my driver at around v5. The only issues I have with it
-are somewhat cosmetic and not worth bikeshedding. So for all the
-non-GPMI specific stuff I'll give my:
+We can implement this rule with the following snippet of a device ID
+decode table, which applies to all their 43nm, 32nm, and 24nm SLC NAND
+(this table is not fully in the NAND datasheets, but it was provided
+directly by Toshiba representatives):
 
-Reviewed-by: Brian Norris <computersforpeace@gmail.com>
-Tested-by: Brian Norris <computersforpeace@gmail.com>
+  - ID byte 5, bit[7]:
+          1    -> BENAND
+          0    -> raw SLC
 
-Thanks for the work Huang.
+  - ID byte 6, bits[2:0]:
+          100b -> 43nm
+          101b -> 32nm
+          110b -> 24nm
+          111b -> Reserved
 
-Brian
+I'm also working with Toshiba on including this bitfield description for
+their 5th and 6th ID bytes in their public data sheets.
+
+I will provide the 8-byte ID strings from the two 24nm Toshiba samples I
+have; their first 6 bytes match the documentation I received from
+Toshiba:
+
+  24nm SLC 1Gbit TC58NVG0S3HTA00
+  0x98 0xf1 0x80 0x15 0x72 0x16 0x08 0x00
+
+  24nm SLC 2Gbit TC58NVG1S3HTA00
+  0x98 0xda 0x90 0x15 0x76 0x16 0x08 0x00
+
+I have also tested for regressions with:
+
+  43nm SLC 4Gbit TC58NVG2S3ETA00
+  0x98 0xdc 0x90 0x15 0x76 0x14 0x03 0x10
+
+  32nm SLC 8Gbit TC58NVG3SOFA00
+  0x98 0xd3 0x90 0x26 0x76 0x15 0x02 0x08
+
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ drivers/mtd/nand/nand_base.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 1cbacff..3e56995 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3079,6 +3079,22 @@ static void nand_decode_ext_id(struct mtd_info *mtd, struct nand_chip *chip,
+ 		extid >>= 2;
+ 		/* Get buswidth information */
+ 		*busw = (extid & 0x01) ? NAND_BUSWIDTH_16 : 0;
++
++		/*
++		 * Toshiba 24nm raw SLC (i.e., not BENAND) have 32B OOB per
++		 * 512B page. For Toshiba SLC, we decode the 5th/6th byte as
++		 * follows:
++		 * - ID byte 6, bits[2:0]: 100b -> 43nm, 101b -> 32nm,
++		 *                         110b -> 24nm
++		 * - ID byte 5, bit[7]:    1 -> BENAND, 0 -> raw SLC
++		 */
++		if (id_len >= 6 && id_data[0] == NAND_MFR_TOSHIBA &&
++				!(chip->cellinfo & NAND_CI_CELLTYPE_MSK) &&
++				(id_data[5] & 0x7) == 0x6 /* 24nm */ &&
++				!(id_data[4] & 0x80) /* !BENAND */) {
++			mtd->oobsize = 32 * mtd->writesize >> 9;
++		}
++
+ 	}
+ }
+ 
+-- 
+1.8.3.1
