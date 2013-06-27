@@ -1,37 +1,24 @@
-Received: from mx09.lb01.inode.at ([62.99.145.9] helo=mx.inode.at)
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Urkic-00011z-5O
- for linux-mtd@lists.infradead.org; Wed, 26 Jun 2013 08:04:47 +0000
-Received: from [83.64.51.210] (port=16376 helo=gateway1.hale)
- by smartmx-09.inode.at with esmtps (TLS1.0:DHE_RSA_AES_256_CBC_SHA1:32)
- (Exim 4.69) (envelope-from <helmut.raiger@hale.at>)
- id 1Urkhw-0005qO-7W
- for linux-mtd@lists.infradead.org; Wed, 26 Jun 2013 10:04:04 +0200
-Received: from mail.hale (mail.hale [192.168.100.5])
- by gateway1.hale (8.13.8/8.13.7) with ESMTP id r5Q83gim001973
- for <linux-mtd@lists.infradead.org>; Wed, 26 Jun 2013 10:03:42 +0200
-Received: from localhost (localhost.localdomain [127.0.0.1])
- by mail.hale (Postfix) with ESMTP id 30A65662618
- for <linux-mtd@lists.infradead.org>; Wed, 26 Jun 2013 10:03:50 +0200 (CEST)
-Received: from mail.hale ([127.0.0.1])
- by localhost (mail.hale [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id HXKVtPed5mcb for <linux-mtd@lists.infradead.org>;
- Wed, 26 Jun 2013 10:03:40 +0200 (CEST)
-Received: from uni24.hale (uni24.hale [192.168.100.108])
- by mail.hale (Postfix) with ESMTPSA id D4B28662604
- for <linux-mtd@lists.infradead.org>; Wed, 26 Jun 2013 10:03:40 +0200 (CEST)
-Message-ID: <51CAA03C.4050000@hale.at>
-Date: Wed, 26 Jun 2013 10:03:08 +0200
-From: Helmut Raiger <helmut.raiger@hale.at>
+Received: from comal.ext.ti.com ([198.47.26.152])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Us4Bt-0005nd-AI
+ for linux-mtd@lists.infradead.org; Thu, 27 Jun 2013 04:52:17 +0000
+Message-ID: <51CBC4C9.7080809@ti.com>
+Date: Thu, 27 Jun 2013 10:21:21 +0530
+From: Sourav Poddar <sourav.poddar@ti.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: UBIFS: How to reserve space to be used right before power cut
-References: <20130613135031.59037201@parrot.com>
- <1142745477.330790.1371130164128.JavaMail.root@mail.hale>
- <20130613162028.3d17bac2@parrot.com> <51BED0BE.2090701@hale.at>
-In-Reply-To: <51BED0BE.2090701@hale.at>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+To: Kamlakant Patel <kamlakant.patel@broadcom.com>
+Subject: Re: [PATCH 1/3] drivers: mtd: spinand: Add generic spinand frameowrk
+ and micron driver.
+References: <1372232472-2641-1-git-send-email-sourav.poddar@ti.com>
+ <1372232472-2641-2-git-send-email-sourav.poddar@ti.com>
+ <20130626152243.GA9414@kpatel.netlogicmircro.com>
+In-Reply-To: <20130626152243.GA9414@kpatel.netlogicmircro.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
+Cc: rnayak@ti.com, linux-kernel@vger.kernel.org, balbi@ti.com,
+ broonie@kernel.org, linux-mtd@lists.infradead.org, tqnguyen@micron.com,
+ grant.likely@linaro.org, spi-devel-general@lists.sourceforge.net,
+ linux-omap@vger.kernel.org, dwmw2@infradead.org, manonuevo@micron.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,37 +28,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/17/2013 11:02 AM, Helmut Raiger wrote:
-> I digged the UBI sources and still have the feeling this won't work:
+Hi Kamlakant,
+On Wednesday 26 June 2013 08:52 PM, Kamlakant Patel wrote:
+> On Wed, Jun 26, 2013 at 01:11:10PM +0530, Sourav Poddar wrote:
+>> From: Mona Anonuevo<manonuevo@micron.com>
+>>
+>> This patch adds support for a generic spinand framework(spinand_mtd.c).
+>> This frameowrk can be used for other spi based flash devices also. The idea
+>> is to have a common model under drivers/mtd, as also present for other no spi
+>> devices(there is a generic framework and device part simply attaches itself to it.)
+>>
+>> The generic frework will be used later by me for a SPI based spansion S25FL256 device.
+>> The patch also contains a micron driver attaching itself to generic framework.
+>>
+>> Signed-off-by: Mona Anonuevo<manonuevo@micron.com>
+>> Signed-off-by: Tuan Nguyen<tqnguyen@micron.com>
+>> Signed-off-by: Sourav Poddar<sourav.poddar@ti.com>
+>> ----
+>> [I picked this as a standalone patch, can split it into generic and device part
+>> based on community feedback.]
+>>
+>>   drivers/mtd/Kconfig               |    2 +
+>>   drivers/mtd/Makefile              |    2 +
+>>   drivers/mtd/spinand/Kconfig       |   24 ++
+>>   drivers/mtd/spinand/Makefile      |   10 +
+>>   drivers/mtd/spinand/spinand_lld.c |  776 +++++++++++++++++++++++++++++++++++++
+>>   drivers/mtd/spinand/spinand_mtd.c |  690 +++++++++++++++++++++++++++++++++
+>>   include/linux/mtd/spinand.h       |  155 ++++++++
+>>   7 files changed, 1659 insertions(+), 0 deletions(-)
+>>   create mode 100644 drivers/mtd/spinand/Kconfig
+>>   create mode 100644 drivers/mtd/spinand/Makefile
+>>   create mode 100644 drivers/mtd/spinand/spinand_lld.c
+>>   create mode 100644 drivers/mtd/spinand/spinand_mtd.c
+>>   create mode 100644 include/linux/mtd/spinand.h
+>>
+> I am working on Micron SPINAND(Micron MT29F1G01ZACH). I tried this patch, but it's not working.
+> It is throwing following error message while mounting:
+> [  260.232000] jffs2: cannot read OOB for EB at 00000000, requested 8 bytes, read 0 bytes, error -22
+> mount: mounting /dev/mtdblock5 on /mnt/ failed: Input/output error
 >
-> 1) There seems to be no way to (long term) protect a PEB from being
-> moved by the wear leveling sub-system (even scrubbing on bit-flips,
-> which may be induced by read-disturbances (reads on nearby pages)).
+> I am working on it to fix into the driver, will send an updated patch with the fix.
 >
-> 2) Temporary protection of a PEB is not really time specific, but depends
-> on global PEB erase action (i.e. anything UBIFS does on the same device),
-> which is something I can't control.
+Thanks for replying on this.
+Since, this patch is already posted, I think it will be better if you post
+the delta fix on top of this patch.
+> Thanks,
+> Kamlakant Patel
 >
-> My impression is, that UBI simply does not support this sort of
-> application well. Unmoveable blocks will have a low erase count
-> (below average), which is exactly what the WL should avoid.
->
-> However I've never timed such a move operation:
-> a) move content to a new unused PEB
-> b) schedule original PEB for erasure
-> It might fit into my timing requirements, but will probably be heavily
-> influenced by system load and priorities.
->
-> Helmut
-
-Just an update to 'enlight the world'. We are moving to YAFFS2, it has a
-deterministic garbage collector which makes it a lot easier to implement
-the requested behaviour.
-It seems we can even take it off the shelf, currently we are perfomance
-testing the write timing.
-
-Helmut
-
-
---
-Scanned by MailScanner.
