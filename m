@@ -1,24 +1,16 @@
-Received: from mail-vc0-x229.google.com ([2607:f8b0:400c:c03::229])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Uskao-0002vk-AW
- for linux-mtd@lists.infradead.org; Sat, 29 Jun 2013 02:08:51 +0000
-Received: by mail-vc0-f169.google.com with SMTP id ia10so1097386vcb.0
- for <linux-mtd@lists.infradead.org>; Fri, 28 Jun 2013 19:08:26 -0700 (PDT)
+Received: from m15-65.126.com ([220.181.15.65])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Ustj1-0007Y1-SS
+ for linux-mtd@lists.infradead.org; Sat, 29 Jun 2013 11:53:59 +0000
+Date: Sat, 29 Jun 2013 19:53:14 +0800 (CST)
+From: zhengjun  <zhengun23@126.com>
+To: linux-mtd@lists.infradead.org
+Subject: [JFFS2] why use a very low-efficient method to check all the
+ uncheked inode in garbage_collect_pass
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=GBK
 MIME-Version: 1.0
-In-Reply-To: <51CD9168.7000902@bluewind.it>
-References: <51CBDF47.709@bluewind.it>
- <ED3E0BCACD909541BA94A34C4A164D4C4FCA81FE@post.tritech.se>
- <51CC3669.103@bluewind.it>
- <ED3E0BCACD909541BA94A34C4A164D4C4FCA8354@post.tritech.se>
- <51CD9168.7000902@bluewind.it>
-Date: Fri, 28 Jun 2013 19:08:25 -0700
-Message-ID: <CAN8TOE-+3tedAebiWMTAzEJfaBPs7pwWBuKkJpV9Cx1e402nnQ@mail.gmail.com>
-Subject: Re: UBIFS: power cut test on 2.6.35 + NOR
-From: Brian Norris <computersforpeace@gmail.com>
-To: enrico benetti <enrico.benetti@bluewind.it>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Huang Shijie <b32955@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Message-ID: <636196b6.8142.13f8fc7a9db.Coremail.zhengun23@126.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,31 +20,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-(Adding Huang, who has also debugged (different) problems with this NOR driver)
+I encountered a problem with my linux system=A3=A8uses jffs2 file system=A3=
+=A9
+After scan all inode on the flash, a background thread ( garbage_collect_th=
+read) is start=A1=A3 Before collecting,
+it begins with checking crc of all inodes in inode_cache_list. But unluckly=
+ the checking work cost all most 3
+minutes=A1=A3It costs the 98% of all cpu resource.
+I found that the time is wasted on finding out the valid inode_cache with s=
+pecified inode id (c->checked_ino)=A1=A3
+checked_ino is counted from zero to c->higest_ino=A1=A3=20
+In my system, there are 3000 files,but with higest_ino reached to 27262976=
+=A1=A3
+(Because the old file is replaced by new file, by first delete then copy)=
+=A1=A3
+So the most of time, jffs2_get_inode_cache can not find a valid inode with =
+c->checked_ino=A1=A3
+So the useless search works wastes a lot of time.
+why?
+why use a increased  index to find each indoe_cache in inode_cache_list=A3=
+=AC but you never know which index is the valide ino.
+The indode_cache_list is a hash table.
+why not use a deep-first-search method to get each inode in hash table?
+Just remember next valid ino in c->checked_ino.
 
-Hi Enrico,
+Now I designed a new search method=A1=A3 It works much more efficiently.
 
-On Fri, Jun 28, 2013 at 6:36 AM, enrico benetti
-<enrico.benetti@bluewind.it> wrote:
-> [   20.391279] MTD do_write_buffer(): software timeout
-> [   20.452081] UBI error: nor_erase_prepare: cannot invalidate PEB 25,
-> write returned -5 read returned 2
->
-> Digging the web, I've found several discussions on write-timeout with
-> NOR devices
-> (cfr.http://lists.infradead.org/pipermail/linux-mtd/2013-June/047177.html),
-> but this seems not to be the root cause.
+Could you optimize these code for better work?  Thanks!
 
-I'm curious: what makes you think this has a different root cause?
+jffs2_garbage_collect_pass()
+{
+   ....
+    if( c->unchecked_size )
+    {
+        ic =3D jffs2_get_inode_cache_next( c, & c->checked_ino );  // new s=
+earch method
 
-I'm still working on debugging the do_write_buffer timeout on my
-systems. I'd recommend trying to increase the timeout in
-do_write_buffer(), just to see if your kernel isn't waiting long
-enough. (In my case, I can pretty well show that while the code *says*
-it's waiting for a whole jiffy -- at least 1ms -- it is in fact
-waiting less than that.)
+       if( !ic )
+      {
+         BUG();
+      }
+   }
+....
+}
 
-I believe Huang's resolution for his problem was actually a problem
-with the flash part itself.
+struct jffs2_inode_cache * jffs2_get_inode_cache_next( struct jffs2_sb_info=
+ * c, uint32_t * ino )
+{
+    struct jffs2_inode_cache * ret;
+    uint32_t curIno;
+    uint32_t ihash;
 
-Brian
+    curIno =3D *ino;
+    ihash =3D curino % 128;
+
+    ret =3D c->inode_cache_list[ihash];
+
+    while( NULL !=3D ret )
+    {
+        if( ret->ino >=3D curInfo )
+        {
+             goto findinode;
+        }
+        ret =3D ret ->next;
+    }
+    for( ihash =3D ihash + 1; ihash < 128; ihash ++ )
+    {
+        if( NULL !=3D ( ret =3D c->inode_cache_list[ihash] ) )
+            goto findinode;
+    }
+    return NULL;
+findinode:
+    if( ret->next )
+    {
+        *ino =3D ret->next->ino;
+    } else
+    {
+        *ino =3D ihash + 1;
+    }
+   return ret; =20
+}
