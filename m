@@ -1,21 +1,22 @@
 Received: from mga14.intel.com ([143.182.124.37])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UtZ0a-0002CH-NQ
- for linux-mtd@lists.infradead.org; Mon, 01 Jul 2013 07:58:49 +0000
-Message-ID: <1372665751.22014.41.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v5 3/3] mtd: devices: elm: Low power transition support
-From: Artem Bityutskiy <dedekind1@gmail.com>
+ id 1UtZIp-0002g6-Uz
+ for linux-mtd@lists.infradead.org; Mon, 01 Jul 2013 08:17:40 +0000
+Message-ID: <1372666588.22014.43.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v3 1/4] mtd:nand:omap2: clean-up BCHx_HW and BCHx_SW ECC
+ configurations in device_probe
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 To: Pekon Gupta <pekon@ti.com>
-Date: Mon, 01 Jul 2013 11:02:31 +0300
-In-Reply-To: <1371494799-11876-4-git-send-email-pekon@ti.com>
-References: <1371494799-11876-1-git-send-email-pekon@ti.com>
- <1371494799-11876-4-git-send-email-pekon@ti.com>
+Date: Mon, 01 Jul 2013 11:16:28 +0300
+In-Reply-To: <1372010299-30141-2-git-send-email-pekon@ti.com>
+References: <1372010299-30141-1-git-send-email-pekon@ti.com>
+ <1372010299-30141-2-git-send-email-pekon@ti.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: tony@atomide.com, linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
- khilman@linaro.org
-Reply-To: dedekind1@gmail.com
+Cc: b-cousson@ti.com, arnd@arndb.de, tony@atomide.com, jp.francois@cynove.com,
+ balbi@ti.com, linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,18 +26,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2013-06-18 at 00:16 +0530, Pekon Gupta wrote:
-> From: avinash philip <avinashphilip@ti.com>
+Hi Pekon,
+
+On Sun, 2013-06-23 at 23:28 +0530, Pekon Gupta wrote:
+> +---------------------------------------+---------------+---------------+
+> | ECC scheme				|ECC calculation|Error detection|
+> +---------------------------------------+---------------+---------------+
+> |OMAP_ECC_HAMMING_CODE_DEFAULT		|S/W		|S/W		|
+> |OMAP_ECC_HAMMING_CODE_HW		|H/W (GPMC)	|S/W		|
+> |OMAP_ECC_HAMMING_CODE_HW_ROMCODE	|H/W (GPMC)	|S/W		|
+> +---------------------------------------+---------------+---------------+
+> |(requires CONFIG_MTD_NAND_ECC_BCH)	|		|		|
+> |OMAP_ECC_BCH8_CODE_HW_DETECTION_SW	|H/W (GPMC)	|S/W		|
+> +---------------------------------------+---------------+---------------+
+> |(requires CONFIG_MTD_NAND_OMAP_BCH)	|		|		|
+> |OMAP_ECC_BCH8_CODE_HW			|H/W (GPMC)	|H/W (ELM)	|
+> +---------------------------------------+---------------+---------------+
+
+This is a nice table, and you are doing very good job clearly
+classifying what is going on. I'd suggest to also put stuff like this to
+comments in the code.
+
+> This patch
+> - separates the configurations for various ECC schemes.
+> - fixes dependency issues based on Kconfig options.
+> - cleans up redundant code
 > 
-> ELM is used for locating bit-flip errors in when using BCH ECC scheme.
-> This patch adds suspend/resume support for leaf level ELM driver,
-> And also provides ELM register context save & restore support, so that
-> configurations are preserved across hardware power-off/on transitions.
-> 
-> Signed-off-by: Philip Avinash <avinashphilip@ti.com>
 > Signed-off-by: Pekon Gupta <pekon@ti.com>
 
-Pushed to l2-mtd.git, thanks!
+This does not apply to l2-mtd.git, could you please re-base?
 
 -- 
 Best Regards,
