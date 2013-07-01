@@ -1,21 +1,25 @@
-Received: from mga14.intel.com ([143.182.124.37])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UtYXl-0001SS-Cs
- for linux-mtd@lists.infradead.org; Mon, 01 Jul 2013 07:29:02 +0000
-Message-ID: <1372663671.22014.30.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 01/26] mtd: devices: spear_smi: remove unnecessary
- platform_set_drvdata()
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jingoo Han <jg1.han@samsung.com>
-Date: Mon, 01 Jul 2013 10:27:51 +0300
-In-Reply-To: <004001ce4aea$91d214f0$b5763ed0$@samsung.com>
-References: <004001ce4aea$91d214f0$b5763ed0$@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, 'David Woodhouse' <dwmw2@infradead.org>,
- Viresh Kumar <viresh.kumar@linaro.org>
-Reply-To: dedekind1@gmail.com
+Received: from comal.ext.ti.com ([198.47.26.152])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UtYez-0001en-Kx
+ for linux-mtd@lists.infradead.org; Mon, 01 Jul 2013 07:36:30 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: "Artem Bityutskiy (artem.bityutskiy@linux.intel.com)"
+ <artem.bityutskiy@linux.intel.com>
+Subject: RE: [PATCH v5 3/3] mtd: devices: elm: Low power transition support
+Date: Mon, 1 Jul 2013 07:35:57 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9E0CEC@DBDE04.ent.ti.com>
+References: <1371494799-11876-1-git-send-email-pekon@ti.com>
+ <1371494799-11876-4-git-send-email-pekon@ti.com>
+In-Reply-To: <1371494799-11876-4-git-send-email-pekon@ti.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: "khilman@linaro.org" <khilman@linaro.org>,
+ "tony@atomide.com" <tony@atomide.com>,
+ "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,16 +29,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2013-05-07 at 15:17 +0900, Jingoo Han wrote:
-> The driver core clears the driver data to NULL after device_release
-> or on probe failure, since commit 0998d0631001288a5974afc0b2a5f568bcdecb4d
-> (device-core: Ensure drvdata = NULL when no driver is bound).
-> Thus, it is not needed to manually clear the device driver data to NULL.
-> 
-> Signed-off-by: Jingoo Han <jg1.han@samsung.com>
+>=20
+> From: avinash philip <avinashphilip@ti.com>
+>=20
+> ELM is used for locating bit-flip errors in when using BCH ECC scheme.
+> This patch adds suspend/resume support for leaf level ELM driver,
+> And also provides ELM register context save & restore support, so that
+> configurations are preserved across hardware power-off/on transitions.
+>=20
+> Signed-off-by: Philip Avinash <avinashphilip@ti.com>
+> Signed-off-by: Pekon Gupta <pekon@ti.com>
+> ---
 
-Pushed the series to l2-mtd.git, thanks!
+Hi Artem,
 
--- 
-Best Regards,
-Artem Bityutskiy
+In following series [Patch 1/3] and [Patch 2/3] were picked up by  Tony (fo=
+r GPMC). But this last one is awaits your approval, as it touches ELM drive=
+r in driver/*mtd*/devices. If everything clean then please pull this one fo=
+r v3.11 merge.
+
+Also, request you to please look into=20
+"[PATCH v3 0/4] mtd:nand:omap2: clean-up of supported ECC schemes" series, =
+if it can be taken for 3.11 merge, as lot of further omap2-nand driver enha=
+ncements are based on this series.
+
+Thanks ...
+with regards, pekon
