@@ -1,25 +1,20 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UtYez-0001en-Kx
- for linux-mtd@lists.infradead.org; Mon, 01 Jul 2013 07:36:30 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: "Artem Bityutskiy (artem.bityutskiy@linux.intel.com)"
- <artem.bityutskiy@linux.intel.com>
-Subject: RE: [PATCH v5 3/3] mtd: devices: elm: Low power transition support
-Date: Mon, 1 Jul 2013 07:35:57 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9E0CEC@DBDE04.ent.ti.com>
-References: <1371494799-11876-1-git-send-email-pekon@ti.com>
- <1371494799-11876-4-git-send-email-pekon@ti.com>
-In-Reply-To: <1371494799-11876-4-git-send-email-pekon@ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: "khilman@linaro.org" <khilman@linaro.org>,
- "tony@atomide.com" <tony@atomide.com>,
- "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Received: from mga01.intel.com ([192.55.52.88])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UtYtK-0001wF-Lx
+ for linux-mtd@lists.infradead.org; Mon, 01 Jul 2013 07:51:19 +0000
+Message-ID: <1372665309.22014.40.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] UBIFS: add tolerance to use variable writesize
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Dirk Behme <dirk.behme@gmail.com>
+Date: Mon, 01 Jul 2013 10:55:09 +0300
+In-Reply-To: <1368634865-4186-1-git-send-email-dirk.behme@gmail.com>
+References: <1368634865-4186-1-git-send-email-dirk.behme@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: dirk.behme@de.bosch.com, linux-mtd@lists.infradead.org,
+ Achim Dahlhoff <Achim.Dahlhoff@de.bosch.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,29 +24,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->=20
-> From: avinash philip <avinashphilip@ti.com>
->=20
-> ELM is used for locating bit-flip errors in when using BCH ECC scheme.
-> This patch adds suspend/resume support for leaf level ELM driver,
-> And also provides ELM register context save & restore support, so that
-> configurations are preserved across hardware power-off/on transitions.
->=20
-> Signed-off-by: Philip Avinash <avinashphilip@ti.com>
-> Signed-off-by: Pekon Gupta <pekon@ti.com>
-> ---
+On Wed, 2013-05-15 at 18:21 +0200, Dirk Behme wrote:
+> From: Achim Dahlhoff <Achim.Dahlhoff@de.bosch.com>
+> 
+> UBIfs adapts it‘s structures according to the minimum writeSize reported
+> by the MTD device. For NOR flash devices, this is normally 1. For NOR
+> devices with internal hardware-ECC it might be more, such as the S-Die
+> flash chips of Micron which can use an internal ECC if the chip is
+> accessed in 32 byte chunks.
+> 
+> The UBIfs mount process checks and compares the writeSize set in the
+> image and the writeSize reported from the /dev/mtd . UBIfs will fail
+> to mount if the values differ. It should, though, not be a problem to
+> mount an image which was created with a writeSize larger than that of
+> the MTD, if it is larger by an integer factor.
+> 
+> This commit changes the check in a way so it will allow the image
+> writeSize to be larger than that of the MTD by an integer factor.
+> It will allow to create images and deploy them on different devices
+> using different writeSizes. writeSize found using values of 1, 8 and 32.
+> 
+> Signed-off-by: Achim Dahlhoff <Achim.Dahlhoff@de.bosch.com>
 
-Hi Artem,
+Hi Dirk,
 
-In following series [Patch 1/3] and [Patch 2/3] were picked up by  Tony (fo=
-r GPMC). But this last one is awaits your approval, as it touches ELM drive=
-r in driver/*mtd*/devices. If everything clean then please pull this one fo=
-r v3.11 merge.
+first of all, sorry for long delay.
 
-Also, request you to please look into=20
-"[PATCH v3 0/4] mtd:nand:omap2: clean-up of supported ECC schemes" series, =
-if it can be taken for 3.11 merge, as lot of further omap2-nand driver enha=
-ncements are based on this series.
+In UBIFS we have 2 flash parameters which are relevant to this
+discussion:
 
-Thanks ...
-with regards, pekon
+1. min_io_size - minimum size of the I/O buffer, comes from
+mtd->writesize
+2. max_write_size - optimzl size of the I/O buffer, comes from
+mtd->writebufsize
+
+Take a look at io.c.
+
+So it looks like what you actually want to do is to make sure you have
+the right max_write_size, in which case UBIFS will do most of its writes
+in max_wirte_size units. E.g., make it to be 32.
+
+This can be done by teaching your flash driver to export correct
+'mtd->writebufsize'. My guess is that you do not do this, and it
+defaults to 'mtd->writesize'.
+
+-- 
+Best Regards,
+Artem Bityutskiy
