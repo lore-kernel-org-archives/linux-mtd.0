@@ -1,21 +1,28 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mail.free-electrons.com ([94.23.35.102])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UtccZ-0003Mr-Kh
- for linux-mtd@lists.infradead.org; Mon, 01 Jul 2013 11:50:16 +0000
-Message-ID: <1372679342.22014.74.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 05/13] mtd: gpmi-nand : Let device core handle pinctrl
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Fabio Estevam <fabio.estevam@freescale.com>
-Date: Mon, 01 Jul 2013 14:49:02 +0300
-In-Reply-To: <1367863561-11534-5-git-send-email-fabio.estevam@freescale.com>
-References: <1367863561-11534-1-git-send-email-fabio.estevam@freescale.com>
- <1367863561-11534-5-git-send-email-fabio.estevam@freescale.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: festevam@gmail.com, shawn.guo@linaro.org, linux-mtd@lists.infradead.org,
- kernel@pengutronix.de
-Reply-To: artem.bityutskiy@linux.intel.com
+ id 1UteMX-0005yx-NA
+ for linux-mtd@lists.infradead.org; Mon, 01 Jul 2013 13:41:50 +0000
+Date: Mon, 1 Jul 2013 10:41:10 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH 0/5] mtd: nand: Fixes and improvements on pxa3xx
+Message-ID: <20130701134109.GA3652@localhost>
+References: <1368530125-12959-1-git-send-email-elezegarcia@gmail.com>
+ <20130520123733.GB2904@localhost>
+ <CALF0-+W+4NCLimsP1E+aGNLEuE9GtThsm6dNE-iyeju5ixx8Rg@mail.gmail.com>
+ <1372663276.22014.29.camel@sauron.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1372663276.22014.29.camel@sauron.fi.intel.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Lior Amsalem <alior@marvell.com>, Ezequiel Garcia <elezegarcia@gmail.com>,
+ Eric Miao <eric.y.miao@gmail.com>, Lei Wen <leiwen@marvell.com>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>, Maen Suleiman <maen@marvell.com>,
+ linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Neil Zhang <zhangwm@marvell.com>, Chao Xie <cxie4@marvell.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,14 +32,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2013-05-06 at 15:05 -0300, Fabio Estevam wrote:
-> Since commit ab78029 (drivers/pinctrl: grab default handles from device core),
-> we can rely on device core for handling pinctrl.
+On Mon, Jul 01, 2013 at 10:21:16AM +0300, Artem Bityutskiy wrote:
+> On Fri, 2013-06-07 at 11:22 -0300, Ezequiel Garcia wrote:
+> > > Since this patch affects directly the PXA hardware, I'd like to have some
+> > > response from PXA maintainers.
+> > >
+> > > Guys, could you take a look at this?
+> > >
+> > 
+> > Ping?
 > 
-> So remove devm_pinctrl_get_select_default() from the driver. 
+> 
+> sorry for long delay. I simply had no time to look an any of my
+> open-source things, too busy.
+> 
 
-Pushed to l2-mtd.git, thanks!
+No worries...
 
+> I've pushed this series to l2-mtd.git, thanks!
+> 
+
+Great, thanks!
 -- 
-Best Regards,
-Artem Bityutskiy
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
