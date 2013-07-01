@@ -1,23 +1,23 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UtZjt-0003Xm-7U
- for linux-mtd@lists.infradead.org; Mon, 01 Jul 2013 08:45:39 +0000
-From: Caizhiyong <caizhiyong@huawei.com>
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Subject: RE: mounting ubifs read-only, is it really readonly, not any
- wirte/erase?
-Date: Mon, 1 Jul 2013 08:44:35 +0000
-Message-ID: <C3050A4DBA34F345975765E43127F10F1C05E6FA@szxeml512-mbs.china.huawei.com>
-References: <C3050A4DBA34F345975765E43127F10F1AE72A5E@szxeml525-mbx.china.huawei.com>
- <1372667655.22014.50.camel@sauron.fi.intel.com>
-In-Reply-To: <1372667655.22014.50.camel@sauron.fi.intel.com>
-Content-Language: zh-CN
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: Jiangzhonglin <jiangzhonglin@huawei.com>, Quyaxin <quyaxin@huawei.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Wanglin
- \(Albert\)" <albert.wanglin@huawei.com>
+Received: from mga14.intel.com ([143.182.124.37])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UtaVC-0008GZ-1W
+ for linux-mtd@lists.infradead.org; Mon, 01 Jul 2013 09:34:30 +0000
+Message-ID: <1372671198.22014.58.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] UBIFS: add tolerance to use variable writesize
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: "Dahlhoff Achim (CM-AI/PJ-CF32)" <Achim.Dahlhoff@de.bosch.com>
+Date: Mon, 01 Jul 2013 12:33:18 +0300
+In-Reply-To: <F460390DA2C115469AFACD3583F41985032D2702E7@SI-MBX07.de.bosch.com>
+References: <1368634865-4186-1-git-send-email-dirk.behme@gmail.com>
+ <1372665309.22014.40.camel@sauron.fi.intel.com>
+ <F460390DA2C115469AFACD3583F41985032D2702E7@SI-MBX07.de.bosch.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: "Behme Dirk \(CM-AI/PJ-CF32\)" <Dirk.Behme@de.bosch.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Dirk Behme <dirk.behme@gmail.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,43 +27,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-RGVhciBBcnRlbSBCaXR5dXRza2l5Og0KCVRoYW5rIHlvdSBmb3IgeW91ciByZXBseS4NCiAgICBJ
-IGhhdmUgc29sdmVkIHRoaXMgcHJvYmxlbSwgVUJJIHdpbGwgaW1wbGVtZW50cyB3ZWFyLWxldmVs
-aW5nLCBldmVuIGlmIHViaWZzIGlzIG1vdW50ZWQgYXMgcmVhZCBvbmx5Lg0KICAgICAgICAgDQpM
-b29raW5nIGZvcndhcmQgdG8geW91ciBmZWVkYmFjay4NCkJlc3QgcmVnYXJkcywNCkNhaSBaaGl5
-b25nLg0KDQpodHRwOi8vd3d3Lmh1YXdlaS5jb20NCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQrmnKzpgq7ku7blj4rl
-hbbpmYTku7blkKvmnInljY7kuLrlhazlj7jnmoTkv53lr4bkv6Hmga/vvIzku4XpmZDkuo7lj5Hp
-gIHnu5nkuIrpnaLlnLDlnYDkuK3liJflh7rnmoTkuKrkurrmiJbnvqTnu4TjgILnpoENCuatouS7
-u+S9leWFtuS7luS6uuS7peS7u+S9leW9ouW8j+S9v+eUqO+8iOWMheaLrOS9huS4jemZkOS6juWF
-qOmDqOaIlumDqOWIhuWcsOazhOmcsuOAgeWkjeWItuOAgeaIluaVo+WPke+8ieacrOmCruS7tuS4
-rQ0K55qE5L+h5oGv44CC5aaC5p6c5oKo6ZSZ5pS25LqG5pys6YKu5Lu277yM6K+35oKo56uL5Y2z
-55S16K+d5oiW6YKu5Lu26YCa55+l5Y+R5Lu25Lq65bm25Yig6Zmk5pys6YKu5Lu277yBDQpUaGlz
-IGUtbWFpbCBhbmQgaXRzIGF0dGFjaG1lbnRzIGNvbnRhaW4gY29uZmlkZW50aWFsIGluZm9ybWF0
-aW9uIGZyb20gSFVBV0VJLCB3aGljaA0KaXMgaW50ZW5kZWQgb25seSBmb3IgdGhlIHBlcnNvbiBv
-ciBlbnRpdHkgd2hvc2UgYWRkcmVzcyBpcyBsaXN0ZWQgYWJvdmUuIEFueSB1c2Ugb2YgdGhlDQpp
-bmZvcm1hdGlvbiBjb250YWluZWQgaGVyZWluIGluIGFueSB3YXkgKGluY2x1ZGluZywgYnV0IG5v
-dCBsaW1pdGVkIHRvLCB0b3RhbCBvciBwYXJ0aWFsDQpkaXNjbG9zdXJlLCByZXByb2R1Y3Rpb24s
-IG9yIGRpc3NlbWluYXRpb24pIGJ5IHBlcnNvbnMgb3RoZXIgdGhhbiB0aGUgaW50ZW5kZWQNCnJl
-Y2lwaWVudChzKSBpcyBwcm9oaWJpdGVkLiBJZiB5b3UgcmVjZWl2ZSB0aGlzIGUtbWFpbCBpbiBl
-cnJvciwgcGxlYXNlIG5vdGlmeSB0aGUgc2VuZGVyIGJ5DQpwaG9uZSBvciBlbWFpbCBpbW1lZGlh
-dGVseSBhbmQgZGVsZXRlIGl0IQ0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9t
-OiBBcnRlbSBCaXR5dXRza2l5IFttYWlsdG86ZGVkZWtpbmQxQGdtYWlsLmNvbV0NCj4gU2VudDog
-TW9uZGF5LCBKdWx5IDAxLCAyMDEzIDQ6MzQgUE0NCj4gVG86IENhaXpoaXlvbmcNCj4gQ2M6IGxp
-bnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyBSZW54dWVsaWFuZzsgUXV5YXhpbjsgSmlhbmd6
-aG9uZ2xpbjsNCj4gV2FuZ2xpbiAoQWxiZXJ0KQ0KPiBTdWJqZWN0OiBSZTogbW91bnRpbmcgdWJp
-ZnMgcmVhZC1vbmx5LCBpcyBpdCByZWFsbHkgcmVhZG9ubHksIG5vdCBhbnkNCj4gd2lydGUvZXJh
-c2U/DQo+IA0KPiBPbiBUaHUsIDIwMTMtMDUtMTYgYXQgMTM6MzYgKzAwMDAsIENhaXpoaXlvbmcg
-d3JvdGU6DQo+ID4gICAgIEknbSB1c2luZyB1YmlmcyBhcyByb290IGZpbGVzeXN0ZW0sIGFuZCBt
-b3VudGVkIHJlYWRvbmx5Lg0KPiA+DQo+ID4gICAgIGJvb3RhcmdzIGFyZToNCj4gPiAgICAgICAg
-IGNvbnNvbGU9dHR5QU1BMCwxMTUyMDAgdWJpLm10ZD0zIHJvb3Q9dWJpMDp1YmlmcyBybw0KPiBy
-b290ZnN0eXBlPXViaWZzbXRkcGFydHM9aGlfc2ZjOi0oc3BpKTtoaW5hbmQ6MTBNKDEwTSksNTBN
-KDUwTSksNTBNKDUwTSksLQ0KPiAoZGF0YSkNCj4gPg0KPiA+ICAgICBJJ20gdXBkYXRlIHViaS5p
-bWcgaW4gdWJvb3QgdXNlZCBjb21tYW5kICJuYW5kIHdyaXRlIHh4eHgiLCBidXQgd2hlbg0KPiBr
-ZXJuZWwgKGxpbnV4IDMuNCkgc3RhcnR1cCwgdGhlcmUgYXJlIHNvbWUgd3JpdGUvZXJhc2Ugb3Bl
-cmF0aW9uLg0KPiA+DQo+ID4gICAgIEknbSBhZGQgcHJpbnRzIHRvIHRoZSBmb2xsb3dpbmcgZnVu
-Y3Rpb25zOg0KPiANCj4gSGksIEkgZG8gbm90IHRoaW5rIEkgZnVsbHkgdW5kZXJzdGFuZCB3aGF0
-IGlzIHRoZSBwcm9ibGVtLCBidXQgaXQgbG9va3MNCj4gbGlrZSB5b3UgbmVlZCB0byByZS1mb3Jt
-dWxhdGUgaXQgbW9yZSBjYXJlZnVsbHksIGFuZCByZS1zZW5kIHdpdGggdS1ib290DQo+IG1haWxp
-bmcgbGlzdCBpbiBDQy4NCj4gDQo+IC0tDQo+IEJlc3QgUmVnYXJkcywNCj4gQXJ0ZW0gQml0eXV0
-c2tpeQ0KDQo=
+On Mon, 2013-07-01 at 10:32 +0200, Dahlhoff Achim (CM-AI/PJ-CF32) wrote:
+> Hello.
+> 
+> No, I do not want to touch the max_write_size or writebufsize. The
+> max_write_size is the size which can be transferred in one piece to
+> the chip and does not modify the UBIfs data structures. 
+
+Not sure I understand what you mean. Max_write_size, which is the same
+as writebufsize, despite the name, is the _optimal_ I/O size. Sometimes
+UBI/UBIFS _will_ write in smaller chunks. But it will try to write in
+'max_write_size'.
+
+Sounds like what you need - you flash does allow 1-byte writes, but will
+be more efficient when writes are 32-bytes instead.
+
+> The min size is relevant and can cause images to become incompatible
+> with a specific NOR chip. If the NOR driver should accidentally choose
+> a writesize which is too small, this will not cause any compatibility
+> issues or data loss. It will only reduce write performance.
+
+Right, increasing min_io_size breaks compatibility. Although I believe
+this is fixable, and I already suggested people to fix this several
+times in the past.
+
+But increasing max_write_size should not lead to incompatibilites.
+> 
+> Without the tolerance patch, you cannot mount one UBSfs image on
+> different NOR devices with different writesize values of 1 or 32.
+
+I still think that you should just change writebufsize in your driver.
+May be you could find some other view-angle to show my why you think I
+am wrong?
+
+-- 
+Best Regards,
+Artem Bityutskiy
