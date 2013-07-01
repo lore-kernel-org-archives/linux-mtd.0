@@ -1,19 +1,21 @@
-Received: from mail-wg0-x229.google.com ([2a00:1450:400c:c00::229])
+Received: from mail-vc0-x22e.google.com ([2607:f8b0:400c:c03::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UtfRa-00086n-SI
- for linux-mtd@lists.infradead.org; Mon, 01 Jul 2013 14:51:07 +0000
-Received: by mail-wg0-f41.google.com with SMTP id y10so3672302wgg.0
- for <linux-mtd@lists.infradead.org>; Mon, 01 Jul 2013 07:50:45 -0700 (PDT)
+ id 1Uths3-00038W-8y
+ for linux-mtd@lists.infradead.org; Mon, 01 Jul 2013 17:26:36 +0000
+Received: by mail-vc0-f174.google.com with SMTP id kw10so2154354vcb.19
+ for <linux-mtd@lists.infradead.org>; Mon, 01 Jul 2013 10:26:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1372662331.22014.27.camel@sauron.fi.intel.com>
-References: <CAP+RiCCTo-_iH=bXuZMYY_BCMZjZzAkTB7Nm0_B0i2FErv+VAQ@mail.gmail.com>
- <1372662331.22014.27.camel@sauron.fi.intel.com>
-Date: Mon, 1 Jul 2013 09:50:44 -0500
-Message-ID: <CAP+RiCDA=WnWfja+qa25Va60Wjee9Pcq69B02yMsvtw4BcwcKQ@mail.gmail.com>
-Subject: Re: UBI leb_write_unlock NULL pointer Oops
-From: Brent Taylor <motobud@gmail.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+In-Reply-To: <518D6138.2090009@wanadoo.fr>
+References: <1368195520.26780.169.camel@sauron.fi.intel.com>
+ <518D6138.2090009@wanadoo.fr>
+Date: Mon, 1 Jul 2013 10:26:12 -0700
+Message-ID: <CAN8TOE-NfM4P5=+Q6yKOaUsQCAfBADncocP5a_a61mubXgBFoA@mail.gmail.com>
+Subject: Re: [PATCH] mtd: chips: Add support for PMC SPI Flash chips in
+ m25p80.c
+From: Brian Norris <computersforpeace@gmail.com>
+To: Michel Stempin <michel.stempin@wanadoo.fr>
 Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,39 +25,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have yet to reproduce the oops', but the two patches submitted by
-Atrem look like them may correct the issue.  I'll apply the patches
-and try to reproduce the issue again.
+Hi Michael,
 
-Thanks for your time,
-Brent
+I gook a glimpse at this and have a few comments ;)
 
-On Mon, Jul 1, 2013 at 2:05 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Mon, 2013-05-13 at 18:09 -0500, Brent Taylor wrote:
->> I'm working with an atmel at91sam9g20 evaluation board
->> (http://www.atmel.com/Images/doc6413.pdf) running the Linux kernel
->> version 3.6.9.  On two occasions I have had the following Oops
->> reported:
+On Fri, May 10, 2013 at 2:06 PM, Michel Stempin
+<michel.stempin@wanadoo.fr> wrote:
+>     Add support for PMC (now Chingis, part of ISSI) Pm25LV512 (512 kBbit), Pm25LV010 (1 Mbit) (see datasheet http://www.geocities.jp/scottle556/pdf/Pm25LV512-010.pdf) and Pm25LQ032 (32 Mbit) (datasheet:http://www.
+
+This line has no line breaks, and so it is hard to read. That may also
+explain why the sentence (and URL) is cut off. Please try to wrap it
+properly when you resend, so it is both complete and readable.
+
+Are there any manufacturer links for old datasheets? That would be
+preferable to random Geocities links, but it looks like the
+manufacturer website only has new stuff.
+
+A few other general notes:
+
+It's worth documenting the quirks of these flash that you are
+supporting, probably just in the patch description. As I read it, you
+are supporting two different generations of PMC flash here:
+
+Pm25LV512 and Pm25LV010: these have 4KB sectors and 32KB blocks. The
+4KB sector erase uses a non-standard opcode (0xd7). They do not
+support JEDEC RDID (0x9f), and so they can only be detected by
+matching their name string with pre-configured platform data.
+
+Pm25LQ032: a newer generation flash, with 4KB sectors and 32KB blocks.
+It uses the standard erase and JEDEC read-ID opcodes.
+...
+> ---
+>  drivers/mtd/devices/m25p80.c |   10 ++++++++++
+>  1 file changed, 10 insertions(+)
 >
-> Looks like some kind of memory corruption, or use after free. I do not
-> have other ideas.
+> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> index 2f3d2a5..4d45ce4 100644
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -45,6 +45,7 @@
+>  #define        OPCODE_BE_4K            0x20    /* Erase 4KiB block */
+>  #define        OPCODE_BE_32K           0x52    /* Erase 32KiB block */
+>  #define        OPCODE_CHIP_ERASE       0xc7    /* Erase whole flash chip */
+> +#define        OPCODE_BE_4K_PMC        0xd7    /* Erase 4KiB block on PMC chips*/
+
+Missing a space after chips. (i.e., should be "... PMC chips */")
+
+While you're at it, you might as well run scripts/checkpatch.pl on your patch.
+
+I would also group OPCODE_BE_4K_PMC along with OPCODE_BE_4K_PMC (that
+is, by function) rather than just sorting by opcode.
+
+>  #define        OPCODE_SE               0xd8    /* Sector erase (usually 64KiB) */
+>  #define        OPCODE_RDID             0x9f    /* Read JEDEC ID */
 >
-> Well, another comment I could give is that the LEB locking in UBI is
-> over-engineered, and could be simplified.
+> @@ -682,6 +683,7 @@ struct flash_info {
+>  #define        SECT_4K         0x01            /* OPCODE_BE_4K works uniformly */
+>  #define        M25P_NO_ERASE   0x02            /* No erase command needed */
+>  #define        SST_WRITE       0x04            /* use SST byte programming */
+> +#define        SECT_4K_PMC     0x08            /* OPCODE_BE_4K_PMC works uniformly */
+>  };
 >
->> I have found the ubifs-v3.6.git tree but since I'm using version
->> 3.6.9, how can I easily apply all the patches from 3.6 to the current
->> release since some of the patches seem to have already made it into
->> the 3.6.9 release.
+>  #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)     \
+> @@ -762,6 +764,11 @@ static const struct spi_device_id m25p_ids[] = {
+>         { "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024, 256, 0) },
+>         { "n25q256a", INFO(0x20ba19, 0, 64 * 1024, 512, SECT_4K) },
 >
-> We discovered a bug recently which may cause memory corruptions. I do
-> not know if it is accountable for this problem or not, but it is worth
-> having it. See these patches in the l2-mtd.git tree:
->
-> 605c912bb843c024b1ed173dc427cd5c08e5d54d UBIFS: fix a horrid bug
-> 33f1a63ae84dfd9ad298cf275b8f1887043ced36 UBIFS: prepare to fix a horrid bug
->
-> --
-> Best Regards,
-> Artem Bityutskiy
->
+> +       /* PMC -- pm25x "blocks" are 32K, sectors are 4K */
+
+Is this true for all PMC flash that you know of? If not, then I'd just
+let the table speak for itself. But it's fine as-is, if there are no
+known flash without a 4KB sector, for example.
+
+> +       { "pm25lv512", INFO(0, 0, 32 * 1024, 2, SECT_4K_PMC) },
+> +       { "pm25lv010", INFO(0, 0, 32 * 1024, 4, SECT_4K_PMC) },
+> +       { "pm25lq032", INFO(0x7F9D46, 0, 64 * 1024,  64, SECT_4K) },
+
+Use lower-case 0x7f9d46, to match the style of the rest of the table.
+
+> +
+>         /* Spansion -- single (large) sector size only, at least
+>          * for the chips listed here (without boot sectors).
+>          */
+> @@ -1014,6 +1021,9 @@ static int m25p_probe(struct spi_device *spi)
+>         if (info->flags & SECT_4K) {
+>                 flash->erase_opcode = OPCODE_BE_4K;
+>                 flash->mtd.erasesize = 4096;
+> +       } else if (info->flags & SECT_4K_PMC) {
+> +               flash->erase_opcode = OPCODE_BE_4K_PMC;
+> +               flash->mtd.erasesize = 4096;
+>         } else {
+>                 flash->erase_opcode = OPCODE_SE;
+>                 flash->mtd.erasesize = info->sector_size;
+
+Other than the suggestions for style and documentation improvements,
+it looks good to me. I gook forward to acking your revised patch.
+
+Brian
