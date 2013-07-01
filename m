@@ -1,26 +1,21 @@
-Received: from mail.free-electrons.com ([94.23.35.102])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Usvyn-0000TJ-0L
- for linux-mtd@lists.infradead.org; Sat, 29 Jun 2013 14:18:22 +0000
-Date: Sat, 29 Jun 2013 11:17:49 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH 0/5] mtd: nand: Fixes and improvements on pxa3xx
-Message-ID: <20130629141748.GA2524@localhost>
-References: <1368530125-12959-1-git-send-email-elezegarcia@gmail.com>
- <51BEA455.2020605@compulab.co.il> <20130617110304.GA2624@localhost>
+Received: from ch1ehsobe006.messaging.microsoft.com ([216.32.181.186]
+ helo=ch1outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UtTin-0005oE-OF
+ for linux-mtd@lists.infradead.org; Mon, 01 Jul 2013 02:20:06 +0000
+Message-ID: <51D0E815.8080300@freescale.com>
+Date: Mon, 1 Jul 2013 10:23:17 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20130617110304.GA2624@localhost>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, Ezequiel Garcia <elezegarcia@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>, Lei Wen <leiwen@marvell.com>,
- Haojian Zhuang <haojian.zhuang@gmail.com>, Maen Suleiman <maen@marvell.com>,
- linux-mtd@lists.infradead.org, Igor Grinberg <grinberg@compulab.co.il>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Neil Zhang <zhangwm@marvell.com>, Chao Xie <cxie4@marvell.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: UBIFS: power cut test on 2.6.35 + NOR
+References: <51CBDF47.709@bluewind.it>	<ED3E0BCACD909541BA94A34C4A164D4C4FCA81FE@post.tritech.se>	<51CC3669.103@bluewind.it>	<ED3E0BCACD909541BA94A34C4A164D4C4FCA8354@post.tritech.se>	<51CD9168.7000902@bluewind.it>
+ <CAN8TOE-+3tedAebiWMTAzEJfaBPs7pwWBuKkJpV9Cx1e402nnQ@mail.gmail.com>
+In-Reply-To: <CAN8TOE-+3tedAebiWMTAzEJfaBPs7pwWBuKkJpV9Cx1e402nnQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: enrico benetti <enrico.benetti@bluewind.it>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,59 +25,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
+=E4=BA=8E 2013=E5=B9=B406=E6=9C=8829=E6=97=A5 10:08, Brian Norris =E5=86=99=
+=E9=81=93:
+> (Adding Huang, who has also debugged (different) problems with this NOR=
+ driver)
+>
+> Hi Enrico,
+>
+> On Fri, Jun 28, 2013 at 6:36 AM, enrico benetti
+> <enrico.benetti@bluewind.it>  wrote:
+>> [   20.391279] MTD do_write_buffer(): software timeout
+>> [   20.452081] UBI error: nor_erase_prepare: cannot invalidate PEB 25,
+>> write returned -5 read returned 2
+>>
+>> Digging the web, I've found several discussions on write-timeout with
+>> NOR devices
+>> (cfr.http://lists.infradead.org/pipermail/linux-mtd/2013-June/047177.h=
+tml),
+>> but this seems not to be the root cause.
+> I'm curious: what makes you think this has a different root cause?
+>
+> I'm still working on debugging the do_write_buffer timeout on my
+> systems. I'd recommend trying to increase the timeout in
+> do_write_buffer(), just to see if your kernel isn't waiting long
+> enough. (In my case, I can pretty well show that while the code *says*
+> it's waiting for a whole jiffy -- at least 1ms -- it is in fact
+> waiting less than that.)
+>
+> I believe Huang's resolution for his problem was actually a problem
+> with the flash part itself.
+yes.
+For my timeout, Micron confirmed that there is a silicon bug in this=20
+type of NOR.
 
-On Mon, Jun 17, 2013 at 08:03:05AM -0300, Ezequiel Garcia wrote:
-> Nikita, Igor:
-> 
-> On Mon, Jun 17, 2013 at 08:53:25AM +0300, Igor Grinberg wrote:
-> > On 05/14/13 14:15, Ezequiel Garcia wrote:
-> > > The Armada 370 and Armada XP SoC include a NAND controller (NFCv2) that
-> > > is similar to the one in PXA SoC. Therefore, it should be possible to support
-> > > Armada NAND using pxa3xx-nand driver.
-> > > 
-> > > While this effort is not ready yet, here is a set of patches that are needed
-> > > for such work.
-> > > 
-> > > A small summary of the patches:
-> > > 
-> > >   * 1/5 is a fix for a 2-year regression that removed DMA support.
-> > > 
-> > >   * 2/5 and 3/5 are needed to build the driver on platforms other PXA.
-> > > 
-> > >   * 4/5 and 5/5 add ONFI-compliant device detection and are needed
-> > >     to successfully probe newer flash devices.
-> > > 
-> > > Applies cleanly on top of l2-mtd.git.
-> > > 
-> > > Thanks!
-> > > 
-> > > Ezequiel Garcia (5):
-> > >   mtd: nand: pxa3xx: Set info->use_dma properly
-> > >   mtd: nand: pxa3xx: Use of_machine_is_compatible()
-> > >   mtd: nand: pxa3xx: Fix MODULE_DEVICE_TABLE declaration
-> > >   mtd: nand: pxa3xx: Add address support for READID command
-> > >   mtd: nand: pxa3xx: Add support for Read parameter page command
-> > 
-> > tested on cm-x300, upstream 3.10-rc5 and no regressions seen.
-> > 
-> > Tested-by: Nikita Kiryanov <nikita@compulab.co.il>
-> > Acked-by: Igor Grinberg <grinberg@compulab.co.il>
-> > 
-> 
-> Thanks a lot for the review and the test!
-> 
-> Artem, do you think this could be queued for v3.11?
-> 
 
-I guess it's already too late to have this merged for v3.11, right?
-
-Given this has Tested-by, Acked-by and Reviewed-by, I think it should
-be ready to apply. If there's anything you want me to review,
-just let me know.
-
-Thanks!
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+thanks
+Huang Shijie
