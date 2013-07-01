@@ -1,23 +1,18 @@
-Received: from mga14.intel.com ([143.182.124.37])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UtaVC-0008GZ-1W
- for linux-mtd@lists.infradead.org; Mon, 01 Jul 2013 09:34:30 +0000
-Message-ID: <1372671198.22014.58.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] UBIFS: add tolerance to use variable writesize
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Dahlhoff Achim (CM-AI/PJ-CF32)" <Achim.Dahlhoff@de.bosch.com>
-Date: Mon, 01 Jul 2013 12:33:18 +0300
-In-Reply-To: <F460390DA2C115469AFACD3583F41985032D2702E7@SI-MBX07.de.bosch.com>
-References: <1368634865-4186-1-git-send-email-dirk.behme@gmail.com>
- <1372665309.22014.40.camel@sauron.fi.intel.com>
- <F460390DA2C115469AFACD3583F41985032D2702E7@SI-MBX07.de.bosch.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: "Behme Dirk \(CM-AI/PJ-CF32\)" <Dirk.Behme@de.bosch.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Dirk Behme <dirk.behme@gmail.com>
-Reply-To: dedekind1@gmail.com
+Received: from bear.ext.ti.com ([192.94.94.41])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Utami-0000HS-Ot
+ for linux-mtd@lists.infradead.org; Mon, 01 Jul 2013 09:52:37 +0000
+From: Pekon Gupta <pekon@ti.com>
+To: <tony@atomide.com>, <artem.bityutskiy@linux.intel.com>,
+ <benoit.cousson@linaro.org>
+Subject: [PATCH v4 0/4] mtd:nand:omap2: clean-up of supported ECC schemes
+Date: Mon, 1 Jul 2013 15:21:49 +0530
+Message-ID: <1372672313-4104-1-git-send-email-pekon@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: arnd@arndb.de, avinashphilipk@gmail.com, jp.francois@cynove.com,
+ balbi@ti.com, linux-mtd@lists.infradead.org, Pekon Gupta <pekon@ti.com>,
+ linux-omap@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,39 +22,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2013-07-01 at 10:32 +0200, Dahlhoff Achim (CM-AI/PJ-CF32) wrote:
-> Hello.
-> 
-> No, I do not want to touch the max_write_size or writebufsize. The
-> max_write_size is the size which can be transferred in one piece to
-> the chip and does not modify the UBIfs data structures. 
+Changes v3 -> v4
+- [Patch 1/3] removed MTD_NAND_OMAP_BCH8 & MTD_NAND_OMAP_BCH4 from nand/Kconfig
+	ECC scheme selectable via nand DT (nand-ecc-opt).
+= [*] rebased for l2-mtd.git
 
-Not sure I understand what you mean. Max_write_size, which is the same
-as writebufsize, despite the name, is the _optimal_ I/O size. Sometimes
-UBI/UBIFS _will_ write in smaller chunks. But it will try to write in
-'max_write_size'.
+(with Author Name fixed)
+Changes v2 -> v3
+- PATCH-1: re-arranged code to remove redundancy, added NAND_BUSWIDTH_AUTO
+- PATCH-2: updated nand-ecc-opt DT mapping and Documentation
+- PATCH-3: code-cleaning + changes to match PATCH-1
+- PATCH-4 <DROPPED> update DT attribute for ti,nand-ecc-opt 
+	- received feedback to keep DT mapping independent of linuxism
+- PATCH-4:<NEW> : ARM: dts: AM33xx: updated default ECC scheme in nand-ecc-opt
+	- independent patch for AM335x-evm.dts update based on PATCH-2
 
-Sounds like what you need - you flash does allow 1-byte writes, but will
-be more efficient when writes are 32-bytes instead.
+Changes v1 -> v2
+	added 	[PATCH 3/4] and [PATCH 4/4]
 
-> The min size is relevant and can cause images to become incompatible
-> with a specific NOR chip. If the NOR driver should accidentally choose
-> a writesize which is too small, this will not cause any compatibility
-> issues or data loss. It will only reduce write performance.
+Patches in this series:
+[PATCH 1/4]: clean-up and optimization for supported ECC schemes.
+[PATCH 2/4]: add separate DT options each supported ECC scheme.
+[PATCH 3/4]: update BCH4 ECC implementation (using ELM or using lib/bch.h)
+[PATCH 4/4]: ARM: dts: AM33xx: updated default ECC scheme in nand-ecc-opt
 
-Right, increasing min_io_size breaks compatibility. Although I believe
-this is fixable, and I already suggested people to fix this several
-times in the past.
+After this patch series, omap2-nand driver will supports following ECC schemes:
++---------------------------------------+---------------+---------------+
+| ECC scheme				|ECC calculation|Error detection|
++---------------------------------------+---------------+---------------+
+|OMAP_ECC_HAMMING_CODE_DEFAULT		|S/W		|S/W		|
+|OMAP_ECC_HAMMING_CODE_HW		|H/W (GPMC)	|S/W		|
+|OMAP_ECC_HAMMING_CODE_HW_ROMCODE	|H/W (GPMC)	|S/W		|
++---------------------------------------+---------------+---------------+
+|OMAP_ECC_BCH4_CODE_HW_DETECTION_SW	|H/W (GPMC)	|S/W (lib/bch.h)|
+|OMAP_ECC_BCH4_CODE_HW			|H/W (GPMC)	|H/W (ELM)	|
++---------------------------------------+---------------+---------------+
+|OMAP_ECC_BCH8_CODE_HW_DETECTION_SW	|H/W (GPMC)	|S/W (lib/bch.h)|
+|OMAP_ECC_BCH8_CODE_HW			|H/W (GPMC)	|H/W (ELM)	|
++---------------------------------------+---------------+---------------+
+- Selection of OMAP_ECC_BCHx_CODE_HW_DETECTION_SW requires,
+	Kconfig: CONFIG_MTD_NAND_ECC_BCH: enables S/W based BCH ECC algorithm.
 
-But increasing max_write_size should not lead to incompatibilites.
-> 
-> Without the tolerance patch, you cannot mount one UBSfs image on
-> different NOR devices with different writesize values of 1 or 32.
+- Selection of OMAP_ECC_BCHx_CODE_HW requires,
+	Kconfig: CONFIG_MTD_NAND_OMAP_BCH: enables ELM H/W module.
 
-I still think that you should just change writebufsize in your driver.
-May be you could find some other view-angle to show my why you think I
-am wrong?
+
+Pekon Gupta (4):
+  mtd:nand:omap2: clean-up BCHx_HW and BCHx_SW ECC configurations in
+    device_probe
+  ARM: OMAP2+: cleaned-up DT support of various ECC schemes
+  mtd:nand:omap2: updated support for BCH4 ECC scheme
+  ARM: dts: AM33xx: updated default ECC scheme in nand-ecc-opt
+
+ .../devicetree/bindings/mtd/gpmc-nand.txt          |  65 ++-
+ arch/arm/boot/dts/am335x-evm.dts                   |   2 +-
+ arch/arm/mach-omap2/gpmc.c                         |  14 +-
+ drivers/mtd/nand/Kconfig                           |  30 +-
+ drivers/mtd/nand/omap2.c                           | 481 ++++++++++-----------
+ include/linux/platform_data/elm.h                  |   4 +
+ include/linux/platform_data/mtd-nand-omap2.h       |  22 +-
+ 7 files changed, 308 insertions(+), 310 deletions(-)
 
 -- 
-Best Regards,
-Artem Bityutskiy
+1.8.1
