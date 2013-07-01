@@ -1,23 +1,25 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UtZVB-00031w-1S
- for linux-mtd@lists.infradead.org; Mon, 01 Jul 2013 08:30:25 +0000
-Message-ID: <1372667655.22014.50.camel@sauron.fi.intel.com>
-Subject: Re: mounting ubifs read-only, is it really readonly, not any
- wirte/erase?
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Caizhiyong <caizhiyong@huawei.com>
-Date: Mon, 01 Jul 2013 11:34:15 +0300
-In-Reply-To: <C3050A4DBA34F345975765E43127F10F1AE72A5E@szxeml525-mbx.china.huawei.com>
-References: <C3050A4DBA34F345975765E43127F10F1AE72A5E@szxeml525-mbx.china.huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Renxueliang <renxueliang@huawei.com>, Quyaxin <quyaxin@huawei.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Jiangzhonglin <jiangzhonglin@huawei.com>,
- "Wanglin \(Albert\)" <albert.wanglin@huawei.com>
-Reply-To: dedekind1@gmail.com
+Received: from imta22.fe.bosch.de ([139.15.243.26])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UtZiz-0003Wk-H2
+ for linux-mtd@lists.infradead.org; Mon, 01 Jul 2013 08:44:43 +0000
+Received: from smtp6-v.fe.bosch.de (imta24.fe.bosch.de [139.15.243.27])
+ by imta22.fe.bosch.de (Postfix) with ESMTP id 3B8E2840538
+ for <linux-mtd@lists.infradead.org>; Mon,  1 Jul 2013 10:33:32 +0200 (CEST)
+From: "Dahlhoff Achim (CM-AI/PJ-CF32)" <Achim.Dahlhoff@de.bosch.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>, Dirk Behme
+ <dirk.behme@gmail.com>
+Date: Mon, 1 Jul 2013 10:32:17 +0200
+Subject: RE: [PATCH] UBIFS: add tolerance to use variable writesize
+Message-ID: <F460390DA2C115469AFACD3583F41985032D2702E7@SI-MBX07.de.bosch.com>
+References: <1368634865-4186-1-git-send-email-dirk.behme@gmail.com>
+ <1372665309.22014.40.camel@sauron.fi.intel.com>
+In-Reply-To: <1372665309.22014.40.camel@sauron.fi.intel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Cc: "Behme Dirk \(CM-AI/PJ-CF32\)" <Dirk.Behme@de.bosch.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,20 +29,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2013-05-16 at 13:36 +0000, Caizhiyong wrote:
->     I'm using ubifs as root filesystem, and mounted readonly.
-> 
->     bootargs are:
->         console=ttyAMA0,115200 ubi.mtd=3 root=ubi0:ubifs ro rootfstype=ubifsmtdparts=hi_sfc:-(spi);hinand:10M(10M),50M(50M),50M(50M),-(data)
->     
->     I'm update ubi.img in uboot used command "nand write xxxx", but when kernel (linux 3.4) startup, there are some write/erase operation.
-> 
->     I'm add prints to the following functions:
-
-Hi, I do not think I fully understand what is the problem, but it looks
-like you need to re-formulate it more carefully, and re-send with u-boot
-mailing list in CC.
-
--- 
-Best Regards,
-Artem Bityutskiy
+SGVsbG8uDQoNCk5vLCBJIGRvIG5vdCB3YW50IHRvIHRvdWNoIHRoZSBtYXhfd3JpdGVfc2l6ZSBv
+ciB3cml0ZWJ1ZnNpemUuIFRoZSBtYXhfd3JpdGVfc2l6ZSBpcyB0aGUgc2l6ZSB3aGljaCBjYW4g
+YmUgdHJhbnNmZXJyZWQgaW4gb25lIHBpZWNlIHRvIHRoZSBjaGlwIGFuZCBkb2VzIG5vdCBtb2Rp
+ZnkgdGhlIFVCSWZzIGRhdGEgc3RydWN0dXJlcy4gVGhlIG1pbiBzaXplIGlzIHJlbGV2YW50IGFu
+ZCBjYW4gY2F1c2UgaW1hZ2VzIHRvIGJlY29tZSBpbmNvbXBhdGlibGUgd2l0aCBhIHNwZWNpZmlj
+IE5PUiBjaGlwLiBJZiB0aGUgTk9SIGRyaXZlciBzaG91bGQgYWNjaWRlbnRhbGx5IGNob29zZSBh
+IHdyaXRlc2l6ZSB3aGljaCBpcyB0b28gc21hbGwsIHRoaXMgd2lsbCBub3QgY2F1c2UgYW55IGNv
+bXBhdGliaWxpdHkgaXNzdWVzIG9yIGRhdGEgbG9zcy4gSXQgd2lsbCBvbmx5IHJlZHVjZSB3cml0
+ZSBwZXJmb3JtYW5jZS4NCg0KV2l0aG91dCB0aGUgdG9sZXJhbmNlIHBhdGNoLCB5b3UgY2Fubm90
+IG1vdW50IG9uZSBVQlNmcyBpbWFnZSBvbiBkaWZmZXJlbnQgTk9SIGRldmljZXMgd2l0aCBkaWZm
+ZXJlbnQgd3JpdGVzaXplIHZhbHVlcyBvZiAxIG9yIDMyLg0KDQoNCkFjaGltLg0KDQoNCi0tLS0t
+T3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBBcnRlbSBCaXR5dXRza2l5IFttYWlsdG86ZGVk
+ZWtpbmQxQGdtYWlsLmNvbV0gDQpTZW50OiBNb25kYXksIEp1bHkgMDEsIDIwMTMgOTo1NSBBTQ0K
+VG86IERpcmsgQmVobWUNCkNjOiBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgQmVobWUg
+RGlyayAoQ00tQUkvUEotQ0YzMik7IERhaGxob2ZmIEFjaGltIChDTS1BSS9QSi1DRjMyKQ0KU3Vi
+amVjdDogUmU6IFtQQVRDSF0gVUJJRlM6IGFkZCB0b2xlcmFuY2UgdG8gdXNlIHZhcmlhYmxlIHdy
+aXRlc2l6ZQ0KDQpPbiBXZWQsIDIwMTMtMDUtMTUgYXQgMTg6MjEgKzAyMDAsIERpcmsgQmVobWUg
+d3JvdGU6DQo+IEZyb206IEFjaGltIERhaGxob2ZmIDxBY2hpbS5EYWhsaG9mZkBkZS5ib3NjaC5j
+b20+DQo+IA0KPiBVQklmcyBhZGFwdHMgaXTigJhzIHN0cnVjdHVyZXMgYWNjb3JkaW5nIHRvIHRo
+ZSBtaW5pbXVtIHdyaXRlU2l6ZSByZXBvcnRlZA0KPiBieSB0aGUgTVREIGRldmljZS4gRm9yIE5P
+UiBmbGFzaCBkZXZpY2VzLCB0aGlzIGlzIG5vcm1hbGx5IDEuIEZvciBOT1INCj4gZGV2aWNlcyB3
+aXRoIGludGVybmFsIGhhcmR3YXJlLUVDQyBpdCBtaWdodCBiZSBtb3JlLCBzdWNoIGFzIHRoZSBT
+LURpZQ0KPiBmbGFzaCBjaGlwcyBvZiBNaWNyb24gd2hpY2ggY2FuIHVzZSBhbiBpbnRlcm5hbCBF
+Q0MgaWYgdGhlIGNoaXAgaXMNCj4gYWNjZXNzZWQgaW4gMzIgYnl0ZSBjaHVua3MuDQo+IA0KPiBU
+aGUgVUJJZnMgbW91bnQgcHJvY2VzcyBjaGVja3MgYW5kIGNvbXBhcmVzIHRoZSB3cml0ZVNpemUg
+c2V0IGluIHRoZQ0KPiBpbWFnZSBhbmQgdGhlIHdyaXRlU2l6ZSByZXBvcnRlZCBmcm9tIHRoZSAv
+ZGV2L210ZCAuIFVCSWZzIHdpbGwgZmFpbA0KPiB0byBtb3VudCBpZiB0aGUgdmFsdWVzIGRpZmZl
+ci4gSXQgc2hvdWxkLCB0aG91Z2gsIG5vdCBiZSBhIHByb2JsZW0gdG8NCj4gbW91bnQgYW4gaW1h
+Z2Ugd2hpY2ggd2FzIGNyZWF0ZWQgd2l0aCBhIHdyaXRlU2l6ZSBsYXJnZXIgdGhhbiB0aGF0IG9m
+DQo+IHRoZSBNVEQsIGlmIGl0IGlzIGxhcmdlciBieSBhbiBpbnRlZ2VyIGZhY3Rvci4NCj4gDQo+
+IFRoaXMgY29tbWl0IGNoYW5nZXMgdGhlIGNoZWNrIGluIGEgd2F5IHNvIGl0IHdpbGwgYWxsb3cg
+dGhlIGltYWdlDQo+IHdyaXRlU2l6ZSB0byBiZSBsYXJnZXIgdGhhbiB0aGF0IG9mIHRoZSBNVEQg
+YnkgYW4gaW50ZWdlciBmYWN0b3IuDQo+IEl0IHdpbGwgYWxsb3cgdG8gY3JlYXRlIGltYWdlcyBh
+bmQgZGVwbG95IHRoZW0gb24gZGlmZmVyZW50IGRldmljZXMNCj4gdXNpbmcgZGlmZmVyZW50IHdy
+aXRlU2l6ZXMuIHdyaXRlU2l6ZSBmb3VuZCB1c2luZyB2YWx1ZXMgb2YgMSwgOCBhbmQgMzIuDQo+
+IA0KPiBTaWduZWQtb2ZmLWJ5OiBBY2hpbSBEYWhsaG9mZiA8QWNoaW0uRGFobGhvZmZAZGUuYm9z
+Y2guY29tPg0KDQpIaSBEaXJrLA0KDQpmaXJzdCBvZiBhbGwsIHNvcnJ5IGZvciBsb25nIGRlbGF5
+Lg0KDQpJbiBVQklGUyB3ZSBoYXZlIDIgZmxhc2ggcGFyYW1ldGVycyB3aGljaCBhcmUgcmVsZXZh
+bnQgdG8gdGhpcw0KZGlzY3Vzc2lvbjoNCg0KMS4gbWluX2lvX3NpemUgLSBtaW5pbXVtIHNpemUg
+b2YgdGhlIEkvTyBidWZmZXIsIGNvbWVzIGZyb20NCm10ZC0+d3JpdGVzaXplDQoyLiBtYXhfd3Jp
+dGVfc2l6ZSAtIG9wdGltemwgc2l6ZSBvZiB0aGUgSS9PIGJ1ZmZlciwgY29tZXMgZnJvbQ0KbXRk
+LT53cml0ZWJ1ZnNpemUNCg0KVGFrZSBhIGxvb2sgYXQgaW8uYy4NCg0KU28gaXQgbG9va3MgbGlr
+ZSB3aGF0IHlvdSBhY3R1YWxseSB3YW50IHRvIGRvIGlzIHRvIG1ha2Ugc3VyZSB5b3UgaGF2ZQ0K
+dGhlIHJpZ2h0IG1heF93cml0ZV9zaXplLCBpbiB3aGljaCBjYXNlIFVCSUZTIHdpbGwgZG8gbW9z
+dCBvZiBpdHMgd3JpdGVzDQppbiBtYXhfd2lydGVfc2l6ZSB1bml0cy4gRS5nLiwgbWFrZSBpdCB0
+byBiZSAzMi4NCg0KVGhpcyBjYW4gYmUgZG9uZSBieSB0ZWFjaGluZyB5b3VyIGZsYXNoIGRyaXZl
+ciB0byBleHBvcnQgY29ycmVjdA0KJ210ZC0+d3JpdGVidWZzaXplJy4gTXkgZ3Vlc3MgaXMgdGhh
+dCB5b3UgZG8gbm90IGRvIHRoaXMsIGFuZCBpdA0KZGVmYXVsdHMgdG8gJ210ZC0+d3JpdGVzaXpl
+Jy4NCg0KLS0gDQpCZXN0IFJlZ2FyZHMsDQpBcnRlbSBCaXR5dXRza2l5DQoNCg==
