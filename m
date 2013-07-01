@@ -1,19 +1,15 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UtXNO-0000DE-6o
- for linux-mtd@lists.infradead.org; Mon, 01 Jul 2013 06:14:14 +0000
-Message-ID: <1372659484.22014.12.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH mtd-utils 1/4 v2] nand{dump, test, write}: clean up
- --help handling
+Message-ID: <1372659930.22014.15.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 0/2] atmel_nand: remove cpu_is_xxx() in nand driver
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Frysinger <vapier@gentoo.org>
-Date: Mon, 01 Jul 2013 09:18:04 +0300
-In-Reply-To: <1368122364-9754-1-git-send-email-vapier@gentoo.org>
-References: <1368122364-9754-1-git-send-email-vapier@gentoo.org>
+To: Josh Wu <josh.wu@atmel.com>
+Date: Mon, 01 Jul 2013 09:25:30 +0300
+In-Reply-To: <1368084895-18266-1-git-send-email-josh.wu@atmel.com>
+References: <1368084895-18266-1-git-send-email-josh.wu@atmel.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: plagnioj@jcrosoft.com, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, nicolas.ferre@atmel.com
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,18 +20,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2013-05-09 at 13:59 -0400, Mike Frysinger wrote:
-> We should send the output to stdout when the user passes -h/--help
-> and then exit(0), but otherwise the output should go to stderr and
-> then exit(1).
+On Thu, 2013-05-09 at 15:34 +0800, Josh Wu wrote:
+> avoid to use cpu_is_xxx() macro in driver, we use platform data and dts
+> for the different cpu.
 > 
-> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
-> ---
-> v2
+> Josh Wu (2):
+>   atmel_nand: at91/avr32/: Replace cpu_is_at32ap7000() with a nand
+>     platform data
+>   mtd: atmel_nand: add a new dt binding item for nand dma support
 
-Ok, I've committed a delta between v2 and v1 as well. And then also
-pushed the "[PATCH mtd-utils 4/4 v2] ubiupdatevol: add a --skip option"
-patch. So everything should be there.
+Pushed these 2 to l2-mtd.git, thanks!
 
 -- 
 Best Regards,
