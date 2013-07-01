@@ -1,21 +1,27 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from bear.ext.ti.com ([192.94.94.41])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Utamw-0000Hp-F6
- for linux-mtd@lists.infradead.org; Mon, 01 Jul 2013 09:52:51 +0000
-From: Pekon Gupta <pekon@ti.com>
-To: <tony@atomide.com>, <artem.bityutskiy@linux.intel.com>,
- <benoit.cousson@linaro.org>
-Subject: [PATCH v4 4/4] ARM: dts: AM33xx: updated default ECC scheme in
- nand-ecc-opt
-Date: Mon, 1 Jul 2013 15:21:53 +0530
-Message-ID: <1372672313-4104-5-git-send-email-pekon@ti.com>
-In-Reply-To: <1372672313-4104-1-git-send-email-pekon@ti.com>
-References: <1372672313-4104-1-git-send-email-pekon@ti.com>
+ id 1Utb24-0000r8-PX
+ for linux-mtd@lists.infradead.org; Mon, 01 Jul 2013 10:08:29 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>
+Subject: RE: [PATCH v3 1/4] mtd:nand:omap2: clean-up BCHx_HW and BCHx_SW ECC
+ configurations in device_probe
+Date: Mon, 1 Jul 2013 10:02:52 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9E29F6@DBDE04.ent.ti.com>
+References: <1372010299-30141-1-git-send-email-pekon@ti.com>
+ <1372010299-30141-2-git-send-email-pekon@ti.com>
+ <1372666588.22014.43.camel@sauron.fi.intel.com>
+In-Reply-To: <1372666588.22014.43.camel@sauron.fi.intel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: arnd@arndb.de, avinashphilipk@gmail.com, jp.francois@cynove.com,
- balbi@ti.com, linux-mtd@lists.infradead.org, Pekon Gupta <pekon@ti.com>,
- linux-omap@vger.kernel.org
+Cc: "arnd@arndb.de" <arnd@arndb.de>, "tony@atomide.com" <tony@atomide.com>,
+ "jp.francois@cynove.com" <jp.francois@cynove.com>, "Balbi,
+ Felipe" <balbi@ti.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "Benoit Cousson \(benoit.cousson@linaro.org\)" <benoit.cousson@linaro.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,28 +31,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DT property values for OMAP based gpmc-nand have been updated
-to match changes in commit:
-	6faf096 ARM: OMAP2+: cleaned-up DT support of various ECC schemes
-Refer: Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-
-Signed-off-by: Pekon Gupta <pekon@ti.com>
----
- arch/arm/boot/dts/am335x-evm.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm/boot/dts/am335x-evm.dts b/arch/arm/boot/dts/am335x-evm.dts
-index c71bb77..cc50fb8 100644
---- a/arch/arm/boot/dts/am335x-evm.dts
-+++ b/arch/arm/boot/dts/am335x-evm.dts
-@@ -135,7 +135,7 @@
- 			nand@0,0 {
- 				reg = <0 0 0>; /* CS0, offset 0 */
- 				nand-bus-width = <8>;
--				ti,nand-ecc-opt = "bch8";
-+				ti,nand-ecc-opt = "bch8_code_hw";
- 				gpmc,device-width = <1>;
- 				gpmc,sync-clk-ps = <0>;
- 				gpmc,cs-on-ns = <0>;
--- 
-1.8.1
+PiBIaSBQZWtvbiwNCj4gDQo+IE9uIFN1biwgMjAxMy0wNi0yMyBhdCAyMzoyOCArMDUzMCwgUGVr
+b24gR3VwdGEgd3JvdGU6DQo+ID4gKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLSstLS0tLS0tLS0tLS0tLS0rLS0tLS0tLS0tLS0tLS0tKw0KPiA+IHwgRUNDIHNjaGVtZQkJ
+CQl8RUNDIGNhbGN1bGF0aW9ufEVycm9yDQo+IGRldGVjdGlvbnwNCj4gPiArLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tKy0tLS0tLS0tLS0tLS0tLSstLS0tLS0tLS0tLS0t
+LS0rDQo+ID4gfE9NQVBfRUNDX0hBTU1JTkdfQ09ERV9ERUZBVUxUCQl8Uy9XCQl8Uy9XDQo+IAkJ
+fA0KPiA+IHxPTUFQX0VDQ19IQU1NSU5HX0NPREVfSFcJCXxIL1cgKEdQTUMpCXxTL1cNCj4gCXwN
+Cj4gPiB8T01BUF9FQ0NfSEFNTUlOR19DT0RFX0hXX1JPTUNPREUJfEgvVyAoR1BNQykJfFMvVw0K
+PiAJCXwNCj4gPiArLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tKy0tLS0t
+LS0tLS0tLS0tLSstLS0tLS0tLS0tLS0tLS0rDQo+ID4gfChyZXF1aXJlcyBDT05GSUdfTVREX05B
+TkRfRUNDX0JDSCkJfAkJfA0KPiAJfA0KPiA+IHxPTUFQX0VDQ19CQ0g4X0NPREVfSFdfREVURUNU
+SU9OX1NXCXxIL1cgKEdQTUMpCXxTL1cNCj4gCQl8DQo+ID4gKy0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLSstLS0tLS0tLS0tLS0tLS0rLS0tLS0tLS0tLS0tLS0tKw0KPiA+
+IHwocmVxdWlyZXMgQ09ORklHX01URF9OQU5EX09NQVBfQkNIKQl8CQl8DQo+IAkJfA0KPiA+IHxP
+TUFQX0VDQ19CQ0g4X0NPREVfSFcJCQl8SC9XIChHUE1DKQl8SC9XDQo+IChFTE0pCXwNCj4gPiAr
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tKy0tLS0tLS0tLS0tLS0tLSst
+LS0tLS0tLS0tLS0tLS0rDQo+IA0KPiBUaGlzIGlzIGEgbmljZSB0YWJsZSwgYW5kIHlvdSBhcmUg
+ZG9pbmcgdmVyeSBnb29kIGpvYiBjbGVhcmx5DQo+IGNsYXNzaWZ5aW5nIHdoYXQgaXMgZ29pbmcg
+b24uIEknZCBzdWdnZXN0IHRvIGFsc28gcHV0IHN0dWZmIGxpa2UgdGhpcyB0bw0KPiBjb21tZW50
+cyBpbiB0aGUgY29kZS4NCj4gDQpbUGVrb25dOiBUaGFua3MgZm9yIGVuY291cmFnZW1lbnQsIHdv
+dWxkIGluY2x1ZGUgbW9yZSBpbmxpbmUgY29tbWVudHMgaW4gZnV0dXJlLg0KDQo+ID4gVGhpcyBw
+YXRjaA0KPiA+IC0gc2VwYXJhdGVzIHRoZSBjb25maWd1cmF0aW9ucyBmb3IgdmFyaW91cyBFQ0Mg
+c2NoZW1lcy4NCj4gPiAtIGZpeGVzIGRlcGVuZGVuY3kgaXNzdWVzIGJhc2VkIG9uIEtjb25maWcg
+b3B0aW9ucy4NCj4gPiAtIGNsZWFucyB1cCByZWR1bmRhbnQgY29kZQ0KPiA+DQo+ID4gU2lnbmVk
+LW9mZi1ieTogUGVrb24gR3VwdGEgPHBla29uQHRpLmNvbT4NCj4gDQo+IFRoaXMgZG9lcyBub3Qg
+YXBwbHkgdG8gbDItbXRkLmdpdCwgY291bGQgeW91IHBsZWFzZSByZS1iYXNlPw0KPiANCltQZWtv
+bl06IHJlYmFzZWQgdG8gbDItbXRkLmdpdA0KLSB1cGRhdGVkIFtQYXRjaCAzLzRdIHdoaWNoIGNv
+bmZsaWN0ZWQgd2l0aCBjb21taXQgJzI2MzMxYzA0JyB3aGljaCB0b3VjaGVkIG9tYXAyLmMuDQot
+IFBsZWFzZSBpZ25vcmUgW1BhdGNoIDQvNF0gYXMgaXTigJlzIGEgRFQgdXBkYXRlLCB3aGljaCBh
+ZGRzIG9uIHRvcCBvZiBCZW5vaXQncyB0cmVlICh3aGljaCBoYXMgTkFORCBub2RlIGNvbW1pdHMg
+dG9vKS4NCg0KVGhhbmtzIGZvciBhY2NlcHRpbmcuLg0Kd2l0aCByZWdhcmRzLCBwZWtvbg0KDQo+
+IC0tDQo+IEJlc3QgUmVnYXJkcywNCj4gQXJ0ZW0gQml0eXV0c2tpeQ0KDQo=
