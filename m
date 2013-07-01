@@ -1,20 +1,20 @@
 Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UtWNG-0007Wl-KL
- for linux-mtd@lists.infradead.org; Mon, 01 Jul 2013 05:10:04 +0000
-Message-ID: <1372655627.22014.0.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/3] mtd: onenand/generic: Remove redundant
- platform_set_drvdata()
+ id 1UtWOp-0007ZJ-2A
+ for linux-mtd@lists.infradead.org; Mon, 01 Jul 2013 05:11:39 +0000
+Message-ID: <1372655729.22014.1.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mxs/gpmi-nand: fix error return from gpmi_get_clks()
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Sachin Kamat <sachin.kamat@linaro.org>
-Date: Mon, 01 Jul 2013 08:13:47 +0300
-In-Reply-To: <1367581063-24295-1-git-send-email-sachin.kamat@linaro.org>
-References: <1367581063-24295-1-git-send-email-sachin.kamat@linaro.org>
+To: =?UTF-8?Q?Micha=C5=82_Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
+Date: Mon, 01 Jul 2013 08:15:29 +0300
+In-Reply-To: <135ba9f94ed78b589a8576dc14f8b720d8425891.1367673436.git.mirq-linux@rere.qmqm.pl>
+References: <135ba9f94ed78b589a8576dc14f8b720d8425891.1367673436.git.mirq-linux@rere.qmqm.pl>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: dwmw2@infradead.org, kyungmin.park@samsung.com,
- linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+Cc: Huang Shijie <b32955@freescale.com>, Shawn Guo <shawn.guo@linaro.org>,
+ linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Bill Pemberton <wfp5p@virginia.edu>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,13 +25,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2013-05-03 at 17:07 +0530, Sachin Kamat wrote:
-> Commit 0998d06310 (device-core: Ensure drvdata = NULL when no
-> driver is bound) removes the need to set driver data field to
-> NULL.
-> 
-> Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
-> Cc: Kyungmin Park <kyungmin.park@samsung.com>
+On Sat, 2013-05-04 at 15:19 +0200, Michał Mirosław wrote:
+> Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 
 Pushed to l2-mtd.git, thanks!
 
