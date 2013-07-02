@@ -1,22 +1,21 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
+Received: from mail1.bemta8.messagelabs.com ([216.82.243.206])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UtyqN-0005YE-UT
- for linux-mtd@lists.infradead.org; Tue, 02 Jul 2013 11:34:01 +0000
-From: Pekon Gupta <pekon@ti.com>
-To: <tony@atomide.com>, <artem.bityutskiy@linux.intel.com>,
- <benoit.cousson@linaro.org>, <olof@lixom.net>
-Subject: [PATCH v4 2/4] ARM: OMAP2+: cleaned-up DT support of various ECC
- schemes
-Date: Tue, 2 Jul 2013 17:02:35 +0530
-Message-ID: <1372764757-29511-3-git-send-email-pekon@ti.com>
-In-Reply-To: <1372764757-29511-1-git-send-email-pekon@ti.com>
-References: <1372764757-29511-1-git-send-email-pekon@ti.com>
+ id 1Uu47f-0004Dd-U1
+ for linux-mtd@lists.infradead.org; Tue, 02 Jul 2013 17:12:13 +0000
+From: H Hartley Sweeten <hartleys@visionengravers.com>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: [PATCH v2 10/11] spi: spi-ep93xx: convert to the queued driver
+ infrastructure
+Date: Tue, 2 Jul 2013 10:10:58 -0700
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: sfr@canb.auug.org.au, arnd@arndb.de, avinashphilipk@gmail.com,
- devicetree-discuss@lists.ozlabs.org, jp.francois@cynove.com, balbi@ti.com,
- linux-mtd@lists.infradead.org, Pekon Gupta <pekon@ti.com>,
- linux-omap@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-ID: <201307021010.59345.hartleys@visionengravers.com>
+Cc: David Brownell <dbrownell@users.sourceforge.net>,
+ Ryan Mallon <rmallon@gmail.com>, mika.westerberg@iki.fi,
+ hsweeten@visionengravers.com, grant.likely@linaro.org,
+ spi-devel-general@lists.sourceforge.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,159 +25,292 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ECC scheme on NAND devices can be implemented in multiple ways.Some using
-Software algorithm, while others using in-build Hardware engines.
-omap2-nand driver currently supports following flavours of ECC schemes,
-selectable via DTB.
+The SPI core provides infrastructure for standard message queueing. Use
+that instead of handling it in the driver.
 
-+---------------------------------------+---------------+---------------+
-| ECC scheme				|ECC calculation|Error detection|
-+---------------------------------------+---------------+---------------+
-|OMAP_ECC_HAMMING_CODE_DEFAULT		|S/W		|S/W		|
-|OMAP_ECC_HAMMING_CODE_HW		|H/W (GPMC)	|S/W		|
-|OMAP_ECC_HAMMING_CODE_HW_ROMCODE	|H/W (GPMC)	|S/W		|
-+---------------------------------------+---------------+---------------+
-|(requires CONFIG_MTD_NAND_ECC_BCH)	|		|		|
-|OMAP_ECC_BCH8_CODE_HW_DETECTION_SW	|H/W (GPMC)	|S/W		|
-+---------------------------------------+---------------+---------------+
-|(requires CONFIG_MTD_NAND_OMAP_BCH)	|		|		|
-|OMAP_ECC_BCH8_CODE_HW			|H/W (GPMC)	|H/W (ELM)	|
-+---------------------------------------+---------------+---------------+
-
-Selection of some ECC schemes also require enabling following Kconfig options.
-This was done to optimize footprint of omap2-nand driver.
--Kconfig:CONFIG_MTD_NAND_ECC_BCH	enables S/W based BCH ECC algorithm
--Kconfig:CONFIG_MTD_NAND_OMAP_BCH	enables H/W based BCH ECC algorithm
-
-Signed-off-by: Pekon Gupta <pekon@ti.com>
+Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
+Acked-by: Mika Westerberg <mika.westerberg@iki.fi>
+Cc: Ryan Mallon <rmallon@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Grant Likely <grant.likely@linaro.org>
 ---
- .../devicetree/bindings/mtd/gpmc-nand.txt          | 44 ++++++++++++++++------
- arch/arm/mach-omap2/gpmc.c                         | 14 ++++---
- include/linux/platform_data/mtd-nand-omap2.h       | 22 +++++++----
- 3 files changed, 56 insertions(+), 24 deletions(-)
+ drivers/spi/spi-ep93xx.c | 165 ++++++-----------------------------------------
+ 1 file changed, 19 insertions(+), 146 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-index 6a983c1..690070e 100644
---- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-@@ -17,20 +17,42 @@ Required properties:
+diff --git a/drivers/spi/spi-ep93xx.c b/drivers/spi/spi-ep93xx.c
+index 2e64806..4c9a50c 100644
+--- a/drivers/spi/spi-ep93xx.c
++++ b/drivers/spi/spi-ep93xx.c
+@@ -26,7 +26,6 @@
+ #include <linux/interrupt.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+-#include <linux/workqueue.h>
+ #include <linux/sched.h>
+ #include <linux/scatterlist.h>
+ #include <linux/spi/spi.h>
+@@ -70,19 +69,13 @@
  
- Optional properties:
+ /**
+  * struct ep93xx_spi - EP93xx SPI controller structure
+- * @lock: spinlock that protects concurrent accesses to fields @running,
+- *        @current_msg and @msg_queue
+  * @pdev: pointer to platform device
+  * @clk: clock for the controller
+  * @regs_base: pointer to ioremap()'d registers
+  * @sspdr_phys: physical address of the SSPDR register
+  * @min_rate: minimum clock rate (in Hz) supported by the controller
+  * @max_rate: maximum clock rate (in Hz) supported by the controller
+- * @running: is the queue running
+- * @wq: workqueue used by the driver
+- * @msg_work: work that is queued for the driver
+  * @wait: wait here until given transfer is completed
+- * @msg_queue: queue for the messages
+  * @current_msg: message that is currently processed (or %NULL if none)
+  * @tx: current byte in transfer to transmit
+  * @rx: current byte in transfer to receive
+@@ -96,30 +89,15 @@
+  * @tx_sgt: sg table for TX transfers
+  * @zeropage: dummy page used as RX buffer when only TX buffer is passed in by
+  *            the client
+- *
+- * This structure holds EP93xx SPI controller specific information. When
+- * @running is %true, driver accepts transfer requests from protocol drivers.
+- * @current_msg is used to hold pointer to the message that is currently
+- * processed. If @current_msg is %NULL, it means that no processing is going
+- * on.
+- *
+- * Most of the fields are only written once and they can be accessed without
+- * taking the @lock. Fields that are accessed concurrently are: @current_msg,
+- * @running, and @msg_queue.
+  */
+ struct ep93xx_spi {
+-	spinlock_t			lock;
+ 	const struct platform_device	*pdev;
+ 	struct clk			*clk;
+ 	void __iomem			*regs_base;
+ 	unsigned long			sspdr_phys;
+ 	unsigned long			min_rate;
+ 	unsigned long			max_rate;
+-	bool				running;
+-	struct workqueue_struct		*wq;
+-	struct work_struct		msg_work;
+ 	struct completion		wait;
+-	struct list_head		msg_queue;
+ 	struct spi_message		*current_msg;
+ 	size_t				tx;
+ 	size_t				rx;
+@@ -230,7 +208,7 @@ static int ep93xx_spi_calc_divisors(const struct ep93xx_spi *espi,
+ 	/*
+ 	 * Make sure that max value is between values supported by the
+ 	 * controller. Note that minimum value is already checked in
+-	 * ep93xx_spi_transfer().
++	 * ep93xx_spi_transfer_one_message().
+ 	 */
+ 	rate = clamp(rate, espi->min_rate, espi->max_rate);
  
-- - nand-bus-width: 		Set this numeric value to 16 if the hardware
--				is wired that way. If not specified, a bus
--				width of 8 is assumed.
-+ - nand-bus-width: 		Determines data-width of the connected device
-+				x16 = "16"
-+				x8  = "8" (default)
+@@ -306,54 +284,6 @@ static int ep93xx_spi_setup(struct spi_device *spi)
+ }
  
-- - ti,nand-ecc-opt:		A string setting the ECC layout to use. One of:
+ /**
+- * ep93xx_spi_transfer() - queue message to be transferred
+- * @spi: target SPI device
+- * @msg: message to be transferred
+- *
+- * This function is called by SPI device drivers when they are going to transfer
+- * a new message. It simply puts the message in the queue and schedules
+- * workqueue to perform the actual transfer later on.
+- *
+- * Returns %0 on success and negative error in case of failure.
+- */
+-static int ep93xx_spi_transfer(struct spi_device *spi, struct spi_message *msg)
+-{
+-	struct ep93xx_spi *espi = spi_master_get_devdata(spi->master);
+-	struct spi_transfer *t;
+-	unsigned long flags;
+-
+-	if (!msg || !msg->complete)
+-		return -EINVAL;
+-
+-	/* first validate each transfer */
+-	list_for_each_entry(t, &msg->transfers, transfer_list) {
+-		if (t->speed_hz && t->speed_hz < espi->min_rate)
+-				return -EINVAL;
+-	}
+-
+-	/*
+-	 * Now that we own the message, let's initialize it so that it is
+-	 * suitable for us. We use @msg->status to signal whether there was
+-	 * error in transfer and @msg->state is used to hold pointer to the
+-	 * current transfer (or %NULL if no active current transfer).
+-	 */
+-	msg->state = NULL;
+-	msg->status = 0;
+-	msg->actual_length = 0;
+-
+-	spin_lock_irqsave(&espi->lock, flags);
+-	if (!espi->running) {
+-		spin_unlock_irqrestore(&espi->lock, flags);
+-		return -ESHUTDOWN;
+-	}
+-	list_add_tail(&msg->queue, &espi->msg_queue);
+-	queue_work(espi->wq, &espi->msg_work);
+-	spin_unlock_irqrestore(&espi->lock, flags);
+-
+-	return 0;
+-}
+-
+-/**
+  * ep93xx_spi_cleanup() - cleans up master controller specific state
+  * @spi: SPI device to cleanup
+  *
+@@ -801,50 +731,29 @@ static void ep93xx_spi_process_message(struct ep93xx_spi *espi,
+ 	ep93xx_spi_disable(espi);
+ }
  
--		"sw"		Software method (default)
--		"hw"		Hardware method
--		"hw-romcode"	gpmc hamming mode method & romcode layout
--		"bch4"		4-bit BCH ecc code
--		"bch8"		8-bit BCH ecc code
-+ - ti,nand-ecc-opt:		Determines the ECC scheme used by driver.
-+				It can be any of the following strings:
+-#define work_to_espi(work) (container_of((work), struct ep93xx_spi, msg_work))
+-
+-/**
+- * ep93xx_spi_work() - EP93xx SPI workqueue worker function
+- * @work: work struct
+- *
+- * Workqueue worker function. This function is called when there are new
+- * SPI messages to be processed. Message is taken out from the queue and then
+- * passed to ep93xx_spi_process_message().
+- *
+- * After message is transferred, protocol driver is notified by calling
+- * @msg->complete(). In case of error, @msg->status is set to negative error
+- * number, otherwise it contains zero (and @msg->actual_length is updated).
+- */
+-static void ep93xx_spi_work(struct work_struct *work)
++static int ep93xx_spi_transfer_one_message(struct spi_master *master,
++					   struct spi_message *msg)
+ {
+-	struct ep93xx_spi *espi = work_to_espi(work);
+-	struct spi_message *msg;
++	struct ep93xx_spi *espi = spi_master_get_devdata(master);
++	struct spi_transfer *t;
+ 
+-	spin_lock_irq(&espi->lock);
+-	if (!espi->running || espi->current_msg ||
+-		list_empty(&espi->msg_queue)) {
+-		spin_unlock_irq(&espi->lock);
+-		return;
++	/* first validate each transfer */
++	list_for_each_entry(t, &msg->transfers, transfer_list) {
++		if (t->speed_hz < espi->min_rate)
++			return -EINVAL;
+ 	}
+-	msg = list_first_entry(&espi->msg_queue, struct spi_message, queue);
+-	list_del_init(&msg->queue);
+-	espi->current_msg = msg;
+-	spin_unlock_irq(&espi->lock);
+ 
+-	ep93xx_spi_process_message(espi, msg);
++	msg->state = NULL;
++	msg->status = 0;
++	msg->actual_length = 0;
+ 
+-	/*
+-	 * Update the current message and re-schedule ourselves if there are
+-	 * more messages in the queue.
+-	 */
+-	spin_lock_irq(&espi->lock);
++	espi->current_msg = msg;
++	ep93xx_spi_process_message(espi, msg);
+ 	espi->current_msg = NULL;
+-	if (espi->running && !list_empty(&espi->msg_queue))
+-		queue_work(espi->wq, &espi->msg_work);
+-	spin_unlock_irq(&espi->lock);
+ 
+-	/* notify the protocol driver that we are done with this message */
+-	msg->complete(msg->context);
++	spi_finalize_current_message(master);
 +
-+	"hamming_code_sw"		1-bit Hamming ECC
-+					- ECC calculation in software
-+					- Error detection in software
-+
-+	"hamming_code_hw"		1-bit Hamming ECC
-+					- ECC calculation in hardware
-+					- Error detection in software
-+
-+	"hamming_code_hw_romcode"	1-bit Hamming ECC
-+					- ECC calculation in hardware
-+					- Error detection in software
-+					- ECC layout compatible to ROM code
-+
-+	"bch8_hw_code_detection_sw"	8-bit BCH ECC
-+					- ECC calculation in hardware
-+					- Error detection in software
-+					- depends on CONFIG_MTD_NAND_ECC_BCH
-+
-+	"bch8_code_hw"             	8-bit BCH ECC
-+					- ECC calculation in hardware
-+					- Error detection in hardware
-+					- depends on CONFIG_MTD_NAND_OMAP_BCH
-+					- requires <elm_id> to be specified
-+
-+
-+ - elm_id:			Specifies elm device node. This is required to
-+				support some BCH ECC schemes mentioned above.
++	return 0;
+ }
  
-- - elm_id:	Specifies elm device node. This is required to support BCH
-- 		error correction using ELM module.
+ static irqreturn_t ep93xx_spi_interrupt(int irq, void *dev_id)
+@@ -984,7 +893,7 @@ static int ep93xx_spi_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
  
- For inline partiton table parsing (optional):
+ 	master->setup = ep93xx_spi_setup;
+-	master->transfer = ep93xx_spi_transfer;
++	master->transfer_one_message = ep93xx_spi_transfer_one_message;
+ 	master->cleanup = ep93xx_spi_cleanup;
+ 	master->bus_num = pdev->id;
+ 	master->num_chipselect = info->num_chipselect;
+@@ -1002,7 +911,6 @@ static int ep93xx_spi_probe(struct platform_device *pdev)
+ 		goto fail_release_master;
+ 	}
  
-diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
-index fb6f241..2a6001e 100644
---- a/arch/arm/mach-omap2/gpmc.c
-+++ b/arch/arm/mach-omap2/gpmc.c
-@@ -1341,11 +1341,13 @@ static void __maybe_unused gpmc_read_timings_dt(struct device_node *np,
- #ifdef CONFIG_MTD_NAND
+-	spin_lock_init(&espi->lock);
+ 	init_completion(&espi->wait);
  
- static const char * const nand_ecc_opts[] = {
--	[OMAP_ECC_HAMMING_CODE_DEFAULT]		= "sw",
--	[OMAP_ECC_HAMMING_CODE_HW]		= "hw",
--	[OMAP_ECC_HAMMING_CODE_HW_ROMCODE]	= "hw-romcode",
--	[OMAP_ECC_BCH4_CODE_HW]			= "bch4",
--	[OMAP_ECC_BCH8_CODE_HW]			= "bch8",
-+	[OMAP_ECC_HAMMING_CODE_DEFAULT]		= "hamming_code_sw",
-+	[OMAP_ECC_HAMMING_CODE_HW]		= "hamming_code_hw",
-+	[OMAP_ECC_HAMMING_CODE_HW_ROMCODE]	= "hamming_code_hw_romcode",
-+	[OMAP_ECC_BCH4_CODE_HW]			= "bch4_code_hw",
-+	[OMAP_ECC_BCH4_CODE_HW_DETECTION_SW]	= "bch4_code_hw_detection_sw",
-+	[OMAP_ECC_BCH8_CODE_HW]			= "bch8_code_hw",
-+	[OMAP_ECC_BCH8_CODE_HW_DETECTION_SW]	= "bch8_code_hw_detection_sw"
- };
+ 	/*
+@@ -1031,23 +939,13 @@ static int ep93xx_spi_probe(struct platform_device *pdev)
+ 	if (info->use_dma && ep93xx_spi_setup_dma(espi))
+ 		dev_warn(&pdev->dev, "DMA setup failed. Falling back to PIO\n");
  
- static int gpmc_probe_nand_child(struct platform_device *pdev,
-@@ -1372,7 +1374,7 @@ static int gpmc_probe_nand_child(struct platform_device *pdev,
+-	espi->wq = create_singlethread_workqueue("ep93xx_spid");
+-	if (!espi->wq) {
+-		dev_err(&pdev->dev, "unable to create workqueue\n");
+-		error = -ENOMEM;
+-		goto fail_free_dma;
+-	}
+-	INIT_WORK(&espi->msg_work, ep93xx_spi_work);
+-	INIT_LIST_HEAD(&espi->msg_queue);
+-	espi->running = true;
+-
+ 	/* make sure that the hardware is disabled */
+ 	ep93xx_spi_write_u8(espi, SSPCR1, 0);
  
- 	if (!of_property_read_string(child, "ti,nand-ecc-opt", &s))
- 		for (val = 0; val < ARRAY_SIZE(nand_ecc_opts); val++)
--			if (!strcasecmp(s, nand_ecc_opts[val])) {
-+			if (!strcmp(s, nand_ecc_opts[val])) {
- 				gpmc_nand_data->ecc_opt = val;
- 				break;
- 			}
-diff --git a/include/linux/platform_data/mtd-nand-omap2.h b/include/linux/platform_data/mtd-nand-omap2.h
-index 6bf9ef4..ce74576 100644
---- a/include/linux/platform_data/mtd-nand-omap2.h
-+++ b/include/linux/platform_data/mtd-nand-omap2.h
-@@ -23,13 +23,21 @@ enum nand_io {
- };
+ 	error = spi_register_master(master);
+ 	if (error) {
+ 		dev_err(&pdev->dev, "failed to register SPI master\n");
+-		goto fail_free_queue;
++		goto fail_free_dma;
+ 	}
  
- enum omap_ecc {
--		/* 1-bit ecc: stored at end of spare area */
--	OMAP_ECC_HAMMING_CODE_DEFAULT = 0, /* Default, s/w method */
--	OMAP_ECC_HAMMING_CODE_HW, /* gpmc to detect the error */
--		/* 1-bit ecc: stored at beginning of spare area as romcode */
--	OMAP_ECC_HAMMING_CODE_HW_ROMCODE, /* gpmc method & romcode layout */
--	OMAP_ECC_BCH4_CODE_HW, /* 4-bit BCH ecc code */
--	OMAP_ECC_BCH8_CODE_HW, /* 8-bit BCH ecc code */
-+	/* 1-bit  ECC calculation by Software, Error detection by Software */
-+	OMAP_ECC_HAMMING_CODE_DEFAULT = 0,
-+	/* 1-bit  ECC calculation by GPMC, Error detection by Software */
-+	OMAP_ECC_HAMMING_CODE_HW,
-+	/* 1-bit  ECC calculation by GPMC, Error detection by Software */
-+	/* ECC layout compatible to legacy ROMCODE. */
-+	OMAP_ECC_HAMMING_CODE_HW_ROMCODE,
-+	/* 4-bit  ECC calculation by GPMC, Error detection by ELM */
-+	OMAP_ECC_BCH4_CODE_HW,
-+	/* 4-bit  ECC calculation by GPMC, Error detection by Software */
-+	OMAP_ECC_BCH4_CODE_HW_DETECTION_SW,
-+	/* 8-bit  ECC calculation by GPMC, Error detection by ELM */
-+	OMAP_ECC_BCH8_CODE_HW,
-+	/* 8-bit  ECC calculation by GPMC, Error detection by Software */
-+	OMAP_ECC_BCH8_CODE_HW_DETECTION_SW
- };
+ 	dev_info(&pdev->dev, "EP93xx SPI Controller at 0x%08lx irq %d\n",
+@@ -1055,8 +953,6 @@ static int ep93xx_spi_probe(struct platform_device *pdev)
  
- struct gpmc_nand_regs {
+ 	return 0;
+ 
+-fail_free_queue:
+-	destroy_workqueue(espi->wq);
+ fail_free_dma:
+ 	ep93xx_spi_release_dma(espi);
+ fail_release_master:
+@@ -1070,29 +966,6 @@ static int ep93xx_spi_remove(struct platform_device *pdev)
+ 	struct spi_master *master = platform_get_drvdata(pdev);
+ 	struct ep93xx_spi *espi = spi_master_get_devdata(master);
+ 
+-	spin_lock_irq(&espi->lock);
+-	espi->running = false;
+-	spin_unlock_irq(&espi->lock);
+-
+-	destroy_workqueue(espi->wq);
+-
+-	/*
+-	 * Complete remaining messages with %-ESHUTDOWN status.
+-	 */
+-	spin_lock_irq(&espi->lock);
+-	while (!list_empty(&espi->msg_queue)) {
+-		struct spi_message *msg;
+-
+-		msg = list_first_entry(&espi->msg_queue,
+-				       struct spi_message, queue);
+-		list_del_init(&msg->queue);
+-		msg->status = -ESHUTDOWN;
+-		spin_unlock_irq(&espi->lock);
+-		msg->complete(msg->context);
+-		spin_lock_irq(&espi->lock);
+-	}
+-	spin_unlock_irq(&espi->lock);
+-
+ 	ep93xx_spi_release_dma(espi);
+ 
+ 	spi_unregister_master(master);
 -- 
-1.8.1
+1.8.1.4
