@@ -1,30 +1,19 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from bear.ext.ti.com ([192.94.94.41])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Utunx-0008Sd-8s
- for linux-mtd@lists.infradead.org; Tue, 02 Jul 2013 07:15:13 +0000
-Message-ID: <51D27DE0.3000905@ti.com>
-Date: Tue, 2 Jul 2013 12:44:40 +0530
-From: Mugunthan V N <mugunthanvnm@ti.com>
+ id 1UtyqC-0005Xf-DP
+ for linux-mtd@lists.infradead.org; Tue, 02 Jul 2013 11:33:48 +0000
+From: Pekon Gupta <pekon@ti.com>
+To: <tony@atomide.com>, <artem.bityutskiy@linux.intel.com>,
+ <benoit.cousson@linaro.org>, <olof@lixom.net>
+Subject: [PATCH v4 0/4] mtd:nand:omap2: clean-up of supported ECC schemes
+Date: Tue, 2 Jul 2013 17:02:33 +0530
+Message-ID: <1372764757-29511-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [PATCH v3 1/4] mtd:nand:omap2: clean-up BCHx_HW and BCHx_SW ECC
- configurations in device_probe
-References: <1372010299-30141-1-git-send-email-pekon@ti.com>
- <1372010299-30141-2-git-send-email-pekon@ti.com>
- <1372666588.22014.43.camel@sauron.fi.intel.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9E29F6@DBDE04.ent.ti.com>
- <51D1BE59.4000203@ti.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9E3B5D@DBDE04.ent.ti.com>
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9E3B5D@DBDE04.ent.ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: "arnd@arndb.de" <arnd@arndb.de>, "tony@atomide.com" <tony@atomide.com>,
- "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
- "jp.francois@cynove.com" <jp.francois@cynove.com>, "Balbi,
- Felipe" <balbi@ti.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "Benoit Cousson \(benoit.cousson@linaro.org\)" <benoit.cousson@linaro.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Content-Type: text/plain
+Cc: sfr@canb.auug.org.au, arnd@arndb.de, avinashphilipk@gmail.com,
+ devicetree-discuss@lists.ozlabs.org, jp.francois@cynove.com, balbi@ti.com,
+ linux-mtd@lists.infradead.org, Pekon Gupta <pekon@ti.com>,
+ linux-omap@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,32 +23,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 7/2/2013 9:44 AM, Gupta, Pekon wrote:
->>>> This does not apply to l2-mtd.git, could you please re-base?
->>>>
->>> [Pekon]: rebased to l2-mtd.git
->>> - updated [Patch 3/4] which conflicted with commit '26331c04' which
->> touched omap2.c.
->>> - Please ignore [Patch 4/4] as it’s a DT update, which adds on top of Benoit's
->> tree (which has NAND node commits too).
->> If you need one patch (DT patch) in the series to be merged in another
->> repository (DT maintainer tree) then separate out that patch as separate
->> series and mention the dependency or need ack from the driver maintainer
->> so that both maintainer can apply the whole series into his repository
->> instead of applying partially here and there.
->>
-> Agree. Yes, I should have sent the DT patch separately.
-> But I posted all changes as part of single series, as its easy for users to
-> Test and Ack them.
-> Similarly patches for GPMC (Tony's tree) and NAND (Artem's tree) are
-> functionally coupled, So at times I have to send them as part of same series.
-> However, I'll clearly mention that in my cover-letter for future patches.
-> Thanks for feedback ..
->
->
-In that case you can publish your testing branch to a public repo and point to
-that repo in your cover letter so that someone who wants to test can test
-from your repo which has all dependent patches.
+(+ CC: devicetree-discuss@lists.ozlabs.org)
 
-Regards
-Mugunthan V N
+Changes v3 -> v4
+- [Patch 1/3] removed MTD_NAND_OMAP_BCH8 & MTD_NAND_OMAP_BCH4 from nand/Kconfig
+	ECC scheme selectable via nand DT (nand-ecc-opt).
+- [*] rebased for l2-mtd.git
+
+(with Author Name fixed)
+Changes v2 -> v3
+- PATCH-1: re-arranged code to remove redundancy, added NAND_BUSWIDTH_AUTO
+- PATCH-2: updated nand-ecc-opt DT mapping and Documentation
+- PATCH-3: code-cleaning + changes to match PATCH-1
+- PATCH-4 <DROPPED> update DT attribute for ti,nand-ecc-opt 
+	- received feedback to keep DT mapping independent of linuxism
+- PATCH-4:<NEW> : ARM: dts: AM33xx: updated default ECC scheme in nand-ecc-opt
+	- independent patch for AM335x-evm.dts update based on PATCH-2
+
+Changes v1 -> v2
+	added 	[PATCH 3/4] and [PATCH 4/4]
+
+Patches in this series:
+[PATCH 1/4]: clean-up and optimization for supported ECC schemes.
+[PATCH 2/4]: add separate DT options each supported ECC scheme.
+[PATCH 3/4]: update BCH4 ECC implementation (using ELM or using lib/bch.h)
+[PATCH 4/4]: ARM: dts: AM33xx: updated default ECC scheme in nand-ecc-opt
+
+After this patch series, omap2-nand driver will supports following ECC schemes:
++---------------------------------------+---------------+---------------+
+| ECC scheme				|ECC calculation|Error detection|
++---------------------------------------+---------------+---------------+
+|OMAP_ECC_HAMMING_CODE_DEFAULT		|S/W		|S/W		|
+|OMAP_ECC_HAMMING_CODE_HW		|H/W (GPMC)	|S/W		|
+|OMAP_ECC_HAMMING_CODE_HW_ROMCODE	|H/W (GPMC)	|S/W		|
++---------------------------------------+---------------+---------------+
+|OMAP_ECC_BCH4_CODE_HW_DETECTION_SW	|H/W (GPMC)	|S/W (lib/bch.h)|
+|OMAP_ECC_BCH4_CODE_HW			|H/W (GPMC)	|H/W (ELM)	|
++---------------------------------------+---------------+---------------+
+|OMAP_ECC_BCH8_CODE_HW_DETECTION_SW	|H/W (GPMC)	|S/W (lib/bch.h)|
+|OMAP_ECC_BCH8_CODE_HW			|H/W (GPMC)	|H/W (ELM)	|
++---------------------------------------+---------------+---------------+
+- Selection of OMAP_ECC_BCHx_CODE_HW_DETECTION_SW requires,
+	Kconfig: CONFIG_MTD_NAND_ECC_BCH: enables S/W based BCH ECC algorithm.
+
+- Selection of OMAP_ECC_BCHx_CODE_HW requires,
+	Kconfig: CONFIG_MTD_NAND_OMAP_BCH: enables ELM H/W module.
+
+
+Pekon Gupta (4):
+  mtd:nand:omap2: clean-up BCHx_HW and BCHx_SW ECC configurations in
+    device_probe
+  ARM: OMAP2+: cleaned-up DT support of various ECC schemes
+  mtd:nand:omap2: updated support for BCH4 ECC scheme
+  ARM: dts: AM33xx: updated default ECC scheme in nand-ecc-opt
+
+ .../devicetree/bindings/mtd/gpmc-nand.txt          |  65 ++-
+ arch/arm/boot/dts/am335x-evm.dts                   |   2 +-
+ arch/arm/mach-omap2/gpmc.c                         |  14 +-
+ drivers/mtd/nand/Kconfig                           |  30 +-
+ drivers/mtd/nand/omap2.c                           | 481 ++++++++++-----------
+ include/linux/platform_data/elm.h                  |   4 +
+ include/linux/platform_data/mtd-nand-omap2.h       |  22 +-
+ 7 files changed, 308 insertions(+), 310 deletions(-)
+
+-- 
+1.8.1
