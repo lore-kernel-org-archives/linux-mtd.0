@@ -1,20 +1,20 @@
-Received: from mail1.bemta12.messagelabs.com ([216.82.251.15])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Uu47q-0004Dn-SM
- for linux-mtd@lists.infradead.org; Tue, 02 Jul 2013 17:12:23 +0000
-From: H Hartley Sweeten <hartleys@visionengravers.com>
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 11/11] spi: spi-ep93xx: use master->cur_msg for in-flight
- message
-Date: Tue, 2 Jul 2013 10:11:33 -0700
+Received: from antispam02.maxim-ic.com ([205.153.101.183]
+ helo=antispam02.maximintegrated.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UuIky-0004vW-6K
+ for linux-mtd@lists.infradead.org; Wed, 03 Jul 2013 08:49:44 +0000
+From: Brian Foster <brian.foster@maximintegrated.com>
+To: David Mosberger-Tang <dmosberger@gmail.com>
+Subject: Re: [Q] Using Micron 4-bit on-die ECC with v2.6.36 kernel?
+Date: Wed, 3 Jul 2013 10:49:17 +0200
+Message-ID: <2540574.yn0MEqSsGa@laclwks004>
+In-Reply-To: <CACwUX0O37px3-cDAScXaFdQPahtnTayN0HKD_dz7U6dD69EURw@mail.gmail.com>
+References: <17588192.75Agdljyqk@laclwks004>
+ <CACwUX0O37px3-cDAScXaFdQPahtnTayN0HKD_dz7U6dD69EURw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-ID: <201307021011.34369.hartleys@visionengravers.com>
-Cc: Ryan Mallon <rmallon@gmail.com>, mika.westerberg@iki.fi,
- hsweeten@visionengravers.com, broonie@kernel.org, grant.likely@linaro.org,
- spi-devel-general@lists.sourceforge.net
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,318 +24,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Instead of carrying the in-flight message in the driver private
-data, use the cur_msg pointer that is already setup by the core.
+On Wednesday 19-June-2013 14:40:45 David Mosberger-Tang wrote:
+> Attached is a patch relative to 2.6.27.y.   We use it with a 16-bit
+> wide Micron part needing 4-bit ECC.  It works for us, YMMV.  I'm
+> pretty sure the raw access is broken badly but we are not using that
+> so it's not a problem from us.  The patch assumes that on-die ECC is
+> enabled in the bootstrap loader.
 
-Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
-Cc: Ryan Mallon <rmallon@gmail.com>
-Cc: Mika Westerberg <mika.westerberg@iki.fi>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Grant Likely <grant.likely@linaro.org>
----
- drivers/spi/spi-ep93xx.c | 88 ++++++++++++++++++++++++++----------------------
- 1 file changed, 48 insertions(+), 40 deletions(-)
+David,
 
-diff --git a/drivers/spi/spi-ep93xx.c b/drivers/spi/spi-ep93xx.c
-index 4c9a50c..e85834d 100644
---- a/drivers/spi/spi-ep93xx.c
-+++ b/drivers/spi/spi-ep93xx.c
-@@ -76,7 +76,6 @@
-  * @min_rate: minimum clock rate (in Hz) supported by the controller
-  * @max_rate: maximum clock rate (in Hz) supported by the controller
-  * @wait: wait here until given transfer is completed
-- * @current_msg: message that is currently processed (or %NULL if none)
-  * @tx: current byte in transfer to transmit
-  * @rx: current byte in transfer to receive
-  * @fifo_level: how full is FIFO (%0..%SPI_FIFO_SIZE - %1). Receiving one
-@@ -98,7 +97,6 @@ struct ep93xx_spi {
- 	unsigned long			min_rate;
- 	unsigned long			max_rate;
- 	struct completion		wait;
--	struct spi_message		*current_msg;
- 	size_t				tx;
- 	size_t				rx;
- 	size_t				fifo_level;
-@@ -378,7 +376,7 @@ static void ep93xx_do_read(struct ep93xx_spi *espi, struct spi_transfer *t)
- 
- /**
-  * ep93xx_spi_read_write() - perform next RX/TX transfer
-- * @espi: ep93xx SPI controller struct
-+ * @master: spi_master struct
-  *
-  * This function transfers next bytes (or half-words) to/from RX/TX FIFOs. If
-  * called several times, the whole transfer will be completed. Returns
-@@ -387,9 +385,10 @@ static void ep93xx_do_read(struct ep93xx_spi *espi, struct spi_transfer *t)
-  * When this function is finished, RX FIFO should be empty and TX FIFO should be
-  * full.
-  */
--static int ep93xx_spi_read_write(struct ep93xx_spi *espi)
-+static int ep93xx_spi_read_write(struct spi_master *master)
- {
--	struct spi_message *msg = espi->current_msg;
-+	struct ep93xx_spi *espi = spi_master_get_devdata(master);
-+	struct spi_message *msg = master->cur_msg;
- 	struct spi_transfer *t = msg->state;
- 
- 	/* read as long as RX FIFO has frames in it */
-@@ -410,13 +409,15 @@ static int ep93xx_spi_read_write(struct ep93xx_spi *espi)
- 	return -EINPROGRESS;
- }
- 
--static void ep93xx_spi_pio_transfer(struct ep93xx_spi *espi)
-+static void ep93xx_spi_pio_transfer(struct spi_master *master)
- {
-+	struct ep93xx_spi *espi = spi_master_get_devdata(master);
-+
- 	/*
- 	 * Now everything is set up for the current transfer. We prime the TX
- 	 * FIFO, enable interrupts, and wait for the transfer to complete.
- 	 */
--	if (ep93xx_spi_read_write(espi)) {
-+	if (ep93xx_spi_read_write(master)) {
- 		ep93xx_spi_enable_interrupts(espi);
- 		wait_for_completion(&espi->wait);
- 	}
-@@ -424,7 +425,7 @@ static void ep93xx_spi_pio_transfer(struct ep93xx_spi *espi)
- 
- /**
-  * ep93xx_spi_dma_prepare() - prepares a DMA transfer
-- * @espi: ep93xx SPI controller struct
-+ * @master: spi_master struct
-  * @dir: DMA transfer direction
-  *
-  * Function configures the DMA, maps the buffer and prepares the DMA
-@@ -432,9 +433,11 @@ static void ep93xx_spi_pio_transfer(struct ep93xx_spi *espi)
-  * in case of failure.
-  */
- static struct dma_async_tx_descriptor *
--ep93xx_spi_dma_prepare(struct ep93xx_spi *espi, enum dma_transfer_direction dir)
-+ep93xx_spi_dma_prepare(struct spi_master *master,
-+		       enum dma_transfer_direction dir)
- {
--	struct spi_transfer *t = espi->current_msg->state;
-+	struct ep93xx_spi *espi = spi_master_get_devdata(master);
-+	struct spi_transfer *t = master->cur_msg->state;
- 	struct dma_async_tx_descriptor *txd;
- 	enum dma_slave_buswidth buswidth;
- 	struct dma_slave_config conf;
-@@ -527,15 +530,16 @@ ep93xx_spi_dma_prepare(struct ep93xx_spi *espi, enum dma_transfer_direction dir)
- 
- /**
-  * ep93xx_spi_dma_finish() - finishes with a DMA transfer
-- * @espi: ep93xx SPI controller struct
-+ * @master: spi_master struct
-  * @dir: DMA transfer direction
-  *
-  * Function finishes with the DMA transfer. After this, the DMA buffer is
-  * unmapped.
-  */
--static void ep93xx_spi_dma_finish(struct ep93xx_spi *espi,
-+static void ep93xx_spi_dma_finish(struct spi_master *master,
- 				  enum dma_transfer_direction dir)
- {
-+	struct ep93xx_spi *espi = spi_master_get_devdata(master);
- 	struct dma_chan *chan;
- 	struct sg_table *sgt;
- 
-@@ -555,21 +559,22 @@ static void ep93xx_spi_dma_callback(void *callback_param)
- 	complete(callback_param);
- }
- 
--static void ep93xx_spi_dma_transfer(struct ep93xx_spi *espi)
-+static void ep93xx_spi_dma_transfer(struct spi_master *master)
- {
--	struct spi_message *msg = espi->current_msg;
-+	struct ep93xx_spi *espi = spi_master_get_devdata(master);
-+	struct spi_message *msg = master->cur_msg;
- 	struct dma_async_tx_descriptor *rxd, *txd;
- 
--	rxd = ep93xx_spi_dma_prepare(espi, DMA_DEV_TO_MEM);
-+	rxd = ep93xx_spi_dma_prepare(master, DMA_DEV_TO_MEM);
- 	if (IS_ERR(rxd)) {
- 		dev_err(&espi->pdev->dev, "DMA RX failed: %ld\n", PTR_ERR(rxd));
- 		msg->status = PTR_ERR(rxd);
- 		return;
- 	}
- 
--	txd = ep93xx_spi_dma_prepare(espi, DMA_MEM_TO_DEV);
-+	txd = ep93xx_spi_dma_prepare(master, DMA_MEM_TO_DEV);
- 	if (IS_ERR(txd)) {
--		ep93xx_spi_dma_finish(espi, DMA_DEV_TO_MEM);
-+		ep93xx_spi_dma_finish(master, DMA_DEV_TO_MEM);
- 		dev_err(&espi->pdev->dev, "DMA TX failed: %ld\n", PTR_ERR(rxd));
- 		msg->status = PTR_ERR(txd);
- 		return;
-@@ -588,13 +593,13 @@ static void ep93xx_spi_dma_transfer(struct ep93xx_spi *espi)
- 
- 	wait_for_completion(&espi->wait);
- 
--	ep93xx_spi_dma_finish(espi, DMA_MEM_TO_DEV);
--	ep93xx_spi_dma_finish(espi, DMA_DEV_TO_MEM);
-+	ep93xx_spi_dma_finish(master, DMA_MEM_TO_DEV);
-+	ep93xx_spi_dma_finish(master, DMA_DEV_TO_MEM);
- }
- 
- /**
-  * ep93xx_spi_process_transfer() - processes one SPI transfer
-- * @espi: ep93xx SPI controller struct
-+ * @master: spi_master struct
-  * @msg: current message
-  * @t: transfer to process
-  *
-@@ -602,10 +607,11 @@ static void ep93xx_spi_dma_transfer(struct ep93xx_spi *espi)
-  * transfer is complete (may sleep) and updates @msg->status based on whether
-  * transfer was successfully processed or not.
-  */
--static void ep93xx_spi_process_transfer(struct ep93xx_spi *espi,
-+static void ep93xx_spi_process_transfer(struct spi_master *master,
- 					struct spi_message *msg,
- 					struct spi_transfer *t)
- {
-+	struct ep93xx_spi *espi = spi_master_get_devdata(master);
- 	struct ep93xx_spi_chip *chip = spi_get_ctldata(msg->spi);
- 	int err;
- 
-@@ -628,9 +634,9 @@ static void ep93xx_spi_process_transfer(struct ep93xx_spi *espi,
- 	 * So in these cases we will be using PIO and don't bother for DMA.
- 	 */
- 	if (espi->dma_rx && t->len > SPI_FIFO_SIZE)
--		ep93xx_spi_dma_transfer(espi);
-+		ep93xx_spi_dma_transfer(master);
- 	else
--		ep93xx_spi_pio_transfer(espi);
-+		ep93xx_spi_pio_transfer(master);
- 
- 	/*
- 	 * In case of error during transmit, we bail out from processing
-@@ -665,7 +671,7 @@ static void ep93xx_spi_process_transfer(struct ep93xx_spi *espi,
- 
- /*
-  * ep93xx_spi_process_message() - process one SPI message
-- * @espi: ep93xx SPI controller struct
-+ * @master: spi_master struct
-  * @msg: message to process
-  *
-  * This function processes a single SPI message. We go through all transfers in
-@@ -675,9 +681,10 @@ static void ep93xx_spi_process_transfer(struct ep93xx_spi *espi,
-  * @msg->status contains %0 in case of success or negative error code in case of
-  * failure.
-  */
--static void ep93xx_spi_process_message(struct ep93xx_spi *espi,
-+static void ep93xx_spi_process_message(struct spi_master *master,
- 				       struct spi_message *msg)
- {
-+	struct ep93xx_spi *espi = spi_master_get_devdata(master);
- 	unsigned long timeout;
- 	struct spi_transfer *t;
- 	int err;
-@@ -718,7 +725,7 @@ static void ep93xx_spi_process_message(struct ep93xx_spi *espi,
- 	ep93xx_spi_cs_control(msg->spi, true);
- 
- 	list_for_each_entry(t, &msg->transfers, transfer_list) {
--		ep93xx_spi_process_transfer(espi, msg, t);
-+		ep93xx_spi_process_transfer(master, msg, t);
- 		if (msg->status)
- 			break;
- 	}
-@@ -747,9 +754,7 @@ static int ep93xx_spi_transfer_one_message(struct spi_master *master,
- 	msg->status = 0;
- 	msg->actual_length = 0;
- 
--	espi->current_msg = msg;
--	ep93xx_spi_process_message(espi, msg);
--	espi->current_msg = NULL;
-+	ep93xx_spi_process_message(master, msg);
- 
- 	spi_finalize_current_message(master);
- 
-@@ -758,7 +763,8 @@ static int ep93xx_spi_transfer_one_message(struct spi_master *master,
- 
- static irqreturn_t ep93xx_spi_interrupt(int irq, void *dev_id)
- {
--	struct ep93xx_spi *espi = dev_id;
-+	struct spi_master *master = dev_id;
-+	struct ep93xx_spi *espi = spi_master_get_devdata(master);
- 	u8 irq_status = ep93xx_spi_read_u8(espi, SSPIIR);
- 
- 	/*
-@@ -770,13 +776,13 @@ static irqreturn_t ep93xx_spi_interrupt(int irq, void *dev_id)
- 		ep93xx_spi_write_u8(espi, SSPICR, 0);
- 		dev_warn(&espi->pdev->dev,
- 			 "receive overrun, aborting the message\n");
--		espi->current_msg->status = -EIO;
-+		master->cur_msg->status = -EIO;
- 	} else {
- 		/*
- 		 * Interrupt is either RX (RIS) or TX (TIS). For both cases we
- 		 * simply execute next data transfer.
- 		 */
--		if (ep93xx_spi_read_write(espi)) {
-+		if (ep93xx_spi_read_write(master)) {
- 			/*
- 			 * In normal case, there still is some processing left
- 			 * for current transfer. Let's wait for the next
-@@ -805,8 +811,9 @@ static bool ep93xx_spi_dma_filter(struct dma_chan *chan, void *filter_param)
- 	return true;
- }
- 
--static int ep93xx_spi_setup_dma(struct ep93xx_spi *espi)
-+static int ep93xx_spi_setup_dma(struct spi_master *master)
- {
-+	struct ep93xx_spi *espi = spi_master_get_devdata(master);
- 	dma_cap_mask_t mask;
- 	int ret;
- 
-@@ -850,8 +857,10 @@ fail_free_page:
- 	return ret;
- }
- 
--static void ep93xx_spi_release_dma(struct ep93xx_spi *espi)
-+static void ep93xx_spi_release_dma(struct spi_master *master)
- {
-+	struct ep93xx_spi *espi = spi_master_get_devdata(master);
-+
- 	if (espi->dma_rx) {
- 		dma_release_channel(espi->dma_rx);
- 		sg_free_table(&espi->rx_sgt);
-@@ -930,13 +939,13 @@ static int ep93xx_spi_probe(struct platform_device *pdev)
- 	}
- 
- 	error = devm_request_irq(&pdev->dev, irq, ep93xx_spi_interrupt,
--				0, "ep93xx-spi", espi);
-+				0, "ep93xx-spi", master);
- 	if (error) {
- 		dev_err(&pdev->dev, "failed to request irq\n");
- 		goto fail_release_master;
- 	}
- 
--	if (info->use_dma && ep93xx_spi_setup_dma(espi))
-+	if (info->use_dma && ep93xx_spi_setup_dma(master))
- 		dev_warn(&pdev->dev, "DMA setup failed. Falling back to PIO\n");
- 
- 	/* make sure that the hardware is disabled */
-@@ -954,7 +963,7 @@ static int ep93xx_spi_probe(struct platform_device *pdev)
- 	return 0;
- 
- fail_free_dma:
--	ep93xx_spi_release_dma(espi);
-+	ep93xx_spi_release_dma(master);
- fail_release_master:
- 	spi_master_put(master);
- 
-@@ -964,11 +973,10 @@ fail_release_master:
- static int ep93xx_spi_remove(struct platform_device *pdev)
- {
- 	struct spi_master *master = platform_get_drvdata(pdev);
--	struct ep93xx_spi *espi = spi_master_get_devdata(master);
--
--	ep93xx_spi_release_dma(espi);
- 
-+	ep93xx_spi_release_dma(master);
- 	spi_unregister_master(master);
-+
- 	return 0;
- }
- 
+ Thanks!  I've been working on getting our kernel and Das U-Boot
+ up to a common baseline w.r.t. the NAND-handling (including a
+ on-die compatible BBT layout in the OOB and other details), so
+ I had not looked too closely at your Patch until now-ish....
+
+ In examining it, I may have spotted an oddity:  When counting
+ bit-flips, you only count them in the main-data area and in
+ the ECC-area (in the OOB).  What you do not count are any in
+ the on-die ECC-protected bits in the OOB (which, in fact,
+ happens to be all of .oobfree).
+
+ Whilst not necessarily wrong, it does mean you may under-count
+ the true number of ECC-detected bit-flips, under-reporting the
+ number of corrections, and hence (inadvertently?) fooling the
+ system into thinking the block is in better health than it
+ really is.
+
+ Or I may mis-understanding something here....
+
+cheers!
+	-blf-
 -- 
-1.8.1.4
+Brian Foster
+Principal MTS, Software        |  La Ciotat, France
+Maxim Integrated               |  http://www.maximintegrated.com/
