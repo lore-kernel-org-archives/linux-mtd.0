@@ -1,16 +1,30 @@
-Received: from mx.novero.com ([212.23.138.198])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UuLbl-0000Ci-Lz
- for linux-mtd@lists.infradead.org; Wed, 03 Jul 2013 11:52:26 +0000
-From: "Anna Fischer (novero/Bochum)" <Anna.Fischer@novero.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Wed, 3 Jul 2013 13:51:59 +0200
-Subject: XIP support
-Message-ID: <CBB26B88EF85F6489575628B28ECBE6D4326BAAE1E@ablexc01.internal.novero.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+Received: from mga02.intel.com ([134.134.136.20])
+ by casper.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UuN1Y-00061c-DS
+ for linux-mtd@lists.infradead.org; Wed, 03 Jul 2013 13:23:10 +0000
+Message-ID: <1372857987.9767.162.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v4 0/4] mtd:nand:omap2: clean-up of supported ECC schemes
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: "Gupta, Pekon" <pekon@ti.com>
+Date: Wed, 03 Jul 2013 16:26:27 +0300
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9E46CA@DBDE04.ent.ti.com>
+References: <1372764757-29511-1-git-send-email-pekon@ti.com>
+ <201307031503.50033.arnd@arndb.de>
+ <20980858CB6D3A4BAE95CA194937D5E73E9E46CA@DBDE04.ent.ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
+ Arnd Bergmann <arnd@arndb.de>, "tony@atomide.com" <tony@atomide.com>,
+ "jp.francois@cynove.com" <jp.francois@cynove.com>,
+ "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>,
+ "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>, "Balbi,
+ Felipe" <balbi@ti.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "olof@lixom.net" <olof@lixom.net>,
+ "benoit.cousson@linaro.org" <benoit.cousson@linaro.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,27 +34,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi everyone,
+On Wed, 2013-07-03 at 13:16 +0000, Gupta, Pekon wrote:
+> [Pekon]: Yes, I'm not seeing these build issues, as I'm cleanly
+> returning from probe with pr_err(), if the required libraries (/lib/bch.c) 
+> are not build-in the system.
+> -------------------
+> [Patch v4 1/4]: mtd:nand:omap2: clean-up BCHx_HW and BCHx_SW ECC..
+> @@static int omap_nand_probe(struct platform_device *pdev)
+> +	default:
+> +		pr_err("selected ECC scheme not supported or not enabled\n");
+> +		err = -EINVAL;
+> +		goto out_release_mem_region;
+> +	}
+> -------------------
+> However, if you are still seeing this, could you please send me your config?
 
-I'm looking for help on Linux XIP support on MTD devices.
+I compile tested your patches too, and did not see any issues with my
+omap2_defconfig.
 
-I'd like to create a system where I can use a single NOR as XIP device and =
-at the same time as data storage device. E.g. I can imagine that on my NOR =
-flash device I create two partitions: one as ROMFS supporting XIP which hol=
-ds kernel and application code, and one as standard data storage, for examp=
-le holding a read-write YAFFS2 file system which my applications can use to=
- store data.
-
-Can anyone clarify if this is supported with the current kernel infrastruct=
-ure, and if yes then what support do I need on the NOR flash device itself?=
- I assume that the device itself will need to support reading from one segm=
-ent in NOR (e.g. XIP partition) whilst writing to another one (data partiti=
-on). Many flash vendors call this read-while-erase support. On the other ha=
-nd I assume that if the software is capable, then it should also be suffici=
-ent that the NOR flash support partial erase functions, and suspend/resume =
-for those operations. Can anyone confirm that this can be handled in Linux =
-MTD drivers?
-
-Many thanks for any pointers.
-
-Anna
+-- 
+Best Regards,
+Artem Bityutskiy
