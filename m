@@ -1,15 +1,18 @@
-In-Reply-To: <20130704130017.GA25997@sig21.net>
+Date: Thu, 4 Jul 2013 16:49:27 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Thomas.Betker@rohde-schwarz.com
+Message-ID: <20130704154927.GE27646@sirena.org.uk>
 References: <CAHSAbzPNDSr_6N79fh0DTWSEg8buRRPyiw8SPodtKLPjzWXJsg@mail.gmail.com>
  <20130704130017.GA25997@sig21.net>
-To: Johannes Stezenbach <js@sig21.net>
+ <OFA0D5839D.0594EA10-ONC1257B9E.004A7347-C1257B9E.00524BA5@rohde-schwarz.com>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="u57qSRWxBnzOWp9B"
+Content-Disposition: inline
+In-Reply-To: <OFA0D5839D.0594EA10-ONC1257B9E.004A7347-C1257B9E.00524BA5@rohde-schwarz.com>
 Subject: Re: SPI: DUAL/QUAD support
-From: Thomas.Betker@rohde-schwarz.com
-Message-ID: <OFA0D5839D.0594EA10-ONC1257B9E.004A7347-C1257B9E.00524BA5@rohde-schwarz.com>
-Date: Thu, 4 Jul 2013 16:58:52 +0200
-Content-Type: text/plain; charset="US-ASCII"
 Cc: linux-mtd <linux-mtd-bounces@lists.infradead.org>,
- Grant Likely <grant.likely@secretlab.ca>, broonie@kernel.org,
+ Johannes Stezenbach <js@sig21.net>, Grant Likely <grant.likely@secretlab.ca>,
  linux-mtd@lists.infradead.org, spi-devel-general@lists.sourceforge.net,
  yuhang wang <wangyuhang2014@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,27 +24,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Johannes:
 
-> Doesn't m25p80 need to use different commands (OPCODEs)
-> for 2x and 4x speed?  It seems this change is incomplete.
+--u57qSRWxBnzOWp9B
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yes, there are usually different opcodes, and as far as I know, they are 
-not supported by the m25p80 driver. It seems we are missing some 
-background info here.
+On Thu, Jul 04, 2013 at 04:58:52PM +0200, Thomas.Betker@rohde-schwarz.com w=
+rote:
 
-My guess is that the flash chip in question is configured to treat single 
-mode opcodes as dual or quad mode commands (some chips support this), and 
-that the SPI controller needs to be told, for each transfer, which mode to 
-use.
+> This situation is certainly a bit special. To me, the patch looks like a=
+=20
+> short-time workaround; I would rather see the flash driver support actual=
+=20
+> dual or quad mode commands. Is there any work in progress?
 
-E.g., you would send a READ command with the command bytes in single mode 
-(t[0].bitwidth is missing in the patch) and the data bytes in dual or quad 
-mode. No dummy bytes are used -- the SPI is running at slower speed.
+Well, there's two bits here.  One is the support in the client drivers
+for using the extra data lines and the other is the support in the SPI
+core for telling controllers to do this.  We need that second bit in
+place before the first one can be implemented.
 
-This situation is certainly a bit special. To me, the patch looks like a 
-short-time workaround; I would rather see the flash driver support actual 
-dual or quad mode commands. Is there any work in progress?
+--u57qSRWxBnzOWp9B
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Best regards,
-Thomas
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR1ZmEAAoJELSic+t+oim9ZAAP/ja6QWkpO7xP1J8TDcBs18QW
+zh/jJUqo3PQJ6FifH8wsqYh+ONDN+RXUQ7QX/zKrqCzgoQ14o4SmchUPKwkuIbwc
+GZbAoXeVYbJE7yItR++r/mhNeVlxgMJ1o7aU4fM1U6jIrp6kBqjqumlLgGmxGJ7L
+4JBRmotC7gYy7970L5slpMmeYLEA+o1TaNi7SqRHIaAHbx0Wto2MhwDWzFQQyu8o
+F0Fc/uCYjzdYYRI9X4tHBc9pDUPe7PLFTYzqefqYHoYkmUD27cTe3OALhQlllKjF
+YHScPv83+tGnctZD9opURK1Z3Nj+t4O1WfZxV0golfpRmakndCjDCR/vQqpzDde2
+OtgKB93MQ5lOCINs6NJNqgkFa7+e/G8nerrg1ApX8Vz3pIw1yRAU6KETE0Uni7bJ
+xdjd3Np4iDHJl3sCytAEtauWEoSVyYnCHnAuICJoe/plfMlN6RTUF2k0mw0swYu6
+fsplKD1jLX0OGqr+ZgvzAjjDKsGK7KxlG+iPymFGFTI2x7OdHX8UEMXcd3/rMAC5
+ksymgjJuv5xeG5/xjyhWI1cB/zNhxyLu9knqYXvc8R792J/UvbfczpEPIW5Y4qF5
+cUVzvXYHkDzf2V//PLodtiuBPjQiGgpJCx56eyICs7gtNtjmikWjEET77QquB3eT
+109xV+u7yIRIeXvLTIgy
+=E6Yp
+-----END PGP SIGNATURE-----
+
+--u57qSRWxBnzOWp9B--
