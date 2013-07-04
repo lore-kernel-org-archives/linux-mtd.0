@@ -1,20 +1,16 @@
-Received: from antispam01.maxim-ic.com ([205.153.101.182]
- helo=antispam01.maximintegrated.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UuilV-0006jM-W9
- for linux-mtd@lists.infradead.org; Thu, 04 Jul 2013 12:36:02 +0000
-From: Brian Foster <brian.foster@maximintegrated.com>
-To: David Mosberger-Tang <dmosberger@gmail.com>
-Subject: Re: [Q] Using Micron 4-bit on-die ECC with v2.6.36 kernel?
-Date: Thu, 4 Jul 2013 14:35:34 +0200
-Message-ID: <2488729.MWQE1XjhTW@laclwks004>
-In-Reply-To: <CACwUX0NXgTC=uQ7CZoY=anBuMhfyN31GFuYAV5EhBUZT9Nm2_w@mail.gmail.com>
-References: <17588192.75Agdljyqk@laclwks004> <2540574.yn0MEqSsGa@laclwks004>
- <CACwUX0NXgTC=uQ7CZoY=anBuMhfyN31GFuYAV5EhBUZT9Nm2_w@mail.gmail.com>
+Date: Thu, 4 Jul 2013 15:00:17 +0200
+From: Johannes Stezenbach <js@sig21.net>
+To: yuhang wang <wangyuhang2014@gmail.com>
+Subject: Re: SPI: DUAL/QUAD support
+Message-ID: <20130704130017.GA25997@sig21.net>
+References: <CAHSAbzPNDSr_6N79fh0DTWSEg8buRRPyiw8SPodtKLPjzWXJsg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHSAbzPNDSr_6N79fh0DTWSEg8buRRPyiw8SPodtKLPjzWXJsg@mail.gmail.com>
+Cc: Grant Likely <grant.likely@secretlab.ca>,
+ spi-devel-general@lists.sourceforge.net, broonie@kernel.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,26 +20,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 03-July-2013 09:20:47 David Mosberger-Tang wrote:
-> I think you're right.  We use UBI which doesn't use oob at all
-> (apart from ECC bytes) so we're not worried about errors in the
-> OOB-areas that are ECC-protected.
+On Thu, Jul 04, 2013 at 07:36:48PM +0800, yuhang wang wrote:
+> 
+> I have added the kerneldoc into the patch below to explain the "DUAL"
+> and "QUAD" modes.
+> Hope for your suggestions.
+> 
+> Documentation/spi/spi-dual_quad |  102 +++++++++++++++++++++++++++++++++++++++
+>  drivers/mtd/devices/m25p80.c    |    2 +
+>  drivers/spi/spi.c               |    2 +
+>  include/linux/spi/spi.h         |    8 +++
 
-David,
+I think what Mark meant is to add new fields to the /** comments
+in include/linux/spi/spi.h, then documentation could be generated
+(but it seems only outdated copies are online, everyone prefers
+to look at the code):
+https://www.kernel.org/doc/htmldocs/device-drivers/
 
- Ok.  Pedantically, you are using the OOB in one very small
- sense:  The OOB is where the BBT marker and version is kept.
- So UBI does use OOB in, typically, just two (2) blocks.  ;-)
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -354,6 +354,7 @@ static int m25p80_read(struct mtd_info *mtd,
+> loff_t from, size_t len,
+> 
+>         t[1].rx_buf = buf;
+>         t[1].len = len;
+> +       t[1].bitwidth = flash->spi->rx_bitwidth;
+>         spi_message_add_tail(&t[1], &m);
+> 
+>         mutex_lock(&flash->lock);
+> @@ -409,6 +410,7 @@ static int m25p80_write(struct mtd_info *mtd,
+> loff_t to, size_t len,
+>         spi_message_add_tail(&t[0], &m);
+> 
+>         t[1].tx_buf = buf;
+> +       t[1].bitwidth = flash->spi->tx_bitwidth;
+>         spi_message_add_tail(&t[1], &m);
+> 
+>         mutex_lock(&flash->lock);
 
- In our case, whilst _we_ are like you on our reference boards,
- potentially some people may use JFFS2 or YAFFS, so I suspect
- I will include those EEC-checked bytes in the OOB in bit-flip
- counting.
+Doesn't m25p80 need to use different commands (OPCODEs)
+for 2x and 4x speed?  It seems this change is incomplete.
 
-cheers!
-	-blf-
-
--- 
-Brian Foster
-Principal MTS, Software        |  La Ciotat, France
-Maxim Integrated               |  http://www.maximintegrated.com/
+Thanks,
+Johannes
