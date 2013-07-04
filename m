@@ -1,12 +1,26 @@
+Received: from mail-ea0-x22f.google.com ([2a00:1450:4013:c01::22f])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Uudsx-0000QR-J9
+ for linux-mtd@lists.infradead.org; Thu, 04 Jul 2013 07:23:25 +0000
+Received: by mail-ea0-f175.google.com with SMTP id z7so563065eaf.34
+ for <linux-mtd@lists.infradead.org>; Thu, 04 Jul 2013 00:23:01 -0700 (PDT)
+Sender: Florian Fainelli <f.fainelli@gmail.com>
+From: Florian Fainelli <florian@openwrt.org>
+To: Sourav Poddar <sourav.poddar@ti.com>
+Subject: Re: [PATCHv2] drivers: mtd: spinand: Add generic spinand frameowrk.
+Date: Thu, 04 Jul 2013 08:21:59 +0100
+Message-ID: <1390226.n8Vjs1lthe@lenovo>
+In-Reply-To: <51D4FD7F.3020104@ti.com>
+References: <1372851110-580-1-git-send-email-sourav.poddar@ti.com>
+ <CAGVrzcbuK-xBeCVTsXhgEbX9CRqt8Dj7++ikoNZW8bY24Uz2Zg@mail.gmail.com>
+ <51D4FD7F.3020104@ti.com>
 MIME-Version: 1.0
-Date: Thu, 4 Jul 2013 15:07:31 +0800
-Message-ID: <CAHSAbzMGqQgCLL9ymQ6qSeJRybv2jJfm-sbzZVgayVyKYgufLQ@mail.gmail.com>
-Subject: SPI : DUAL/QUAD support
-From: =?GB2312?B?zfXT7rq9?= <wangyuhang2014@gmail.com>
-To: linux-mtd@lists.infradead.org, spi-devel-general@lists.sourceforge.net,
- linux-arm-kernel@lists.infradead.org, broonie@kernel.org,
- grant.likely@secretlab.ca
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Cc: artem.bityutskiy@linux.intel.com, rnayak@ti.com,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, balbi@ti.com,
+ linux-mtd@lists.infradead.org, tqnguyen@micron.com, linux-omap@vger.kernel.org,
+ David Woodhouse <dwmw2@infradead.org>, manonuevo@micron.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,105 +30,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi
+Hello,
 
-Now some SPI controllers and Slave Devices have supported
-DUAL and QUAD transfer mode. But SPI controller driver in kernel
-has no member to deliver this information from Slave to Master.
-So in my opinion, adding transfer mode members to deal with the problem.
+Le jeudi 4 juillet 2013 10:13:43 Sourav Poddar a =E9crit :
+> >=20
+> > Can this somehow be made a runtime thing?
+>=20
+> Ahh..I think we might opt for a device tree entry and based on that
+> check for ECC.
 
-In my SPI system, slave device is a Nor-Flash chip(s25fl129p) which
-use m25p80 driver. My patch below aims to make spi controller know
-the way that the slave want.
+Ok, sounds good too.
 
-Firstly user provides the SPI slave information into spi_board_info,
-including tx_bitwidth and rx_bitwidth. When the SPI slave is registered,
-information in spi_board_info is delivered to spi_device. Then SPI slave
-driver will add the transfer mode information into the spi_tranfer package
-and send it out to SPI controller driver. SPI controller driver will
-analyse the transfer package and set the certain transfer mode to
-its register.
+>=20
+> > [snip]
+> >=20
+> >> +               if (count<  oob_num&&  ops->oobbuf&&  chip->oobbuf=
+) {
+> >> +                       int size;
+> >> +                       int offset, len, temp;
+> >> +
+> >> +                       /* repack spare to oob */
+> >> +                       memset(chip->oobbuf, 0,
+> >> info->ecclayout->oobavail);
+> >> +
+> >> +                       temp =3D 0;
+> >> +                       offset =3D info->ecclayout->oobfree[0].off=
+set;
+> >> +                       len =3D info->ecclayout->oobfree[0].length=
+;
+> >> +                       memcpy(chip->oobbuf + temp,
+> >> +                               chip->buf + info->page_main_size +=
 
-This patch do not support device tree....
+> >> offset, len);>=20
+> > Sounds like a for look might be useful here
+>=20
+> I dont think so, there is a while loop above under which it happens.
+> We are increasing count at the bottom of the while loop. So, I think
+> this should work fine.
 
+What I meant here, is that you could use a for loop to repeat 4 times t=
+he same=20
+following pattern, such that it becomes:
 
-Signed-off-by: wangyuhang <wangyuhang2014@gmail.com>
----
- drivers/mtd/devices/m25p80.c |    2 ++
- drivers/spi/spi.c            |    2 ++
- include/linux/spi/spi.h      |    8 ++++++++
- 3 files changed, 12 insertions(+)
+for (j =3D 0; j < 4; j++0 {
+=09temp +=3D len;
+=09offset =3D info->ecclayout->oobfree[j].offset;
+=09len =3D info->ecclayout->oobfree[j].length;
+=09memcpy(chip->oobbuf + temp,
+=09=09chip->buf + info->page_main_size + offset, len);
+}
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 5b6b072..1411678 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -354,6 +354,7 @@ static int m25p80_read(struct mtd_info *mtd,
-loff_t from, size_t len,
-
-        t[1].rx_buf = buf;
-        t[1].len = len;
-+       t[1].bitwidth = flash->spi->rx_bitwidth;
-        spi_message_add_tail(&t[1], &m);
-
-        mutex_lock(&flash->lock);
-@@ -409,6 +410,7 @@ static int m25p80_write(struct mtd_info *mtd,
-loff_t to, size_t len,
-        spi_message_add_tail(&t[0], &m);
-
-        t[1].tx_buf = buf;
-+       t[1].bitwidth = flash->spi->tx_bitwidth;
-        spi_message_add_tail(&t[1], &m);
-
-        mutex_lock(&flash->lock);
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 004b10f..cd99022 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -452,6 +452,8 @@ struct spi_device *spi_new_device(struct spi_master *master,
-        proxy->irq = chip->irq;
-        strlcpy(proxy->modalias, chip->modalias, sizeof(proxy->modalias));
-        proxy->dev.platform_data = (void *) chip->platform_data;
-+       proxy->rx_bitwidth = chip->rx_bitwidth;
-+       proxy->tx_bitwidth = chip->tx_bitwidth;
-        proxy->controller_data = chip->controller_data;
-        proxy->controller_state = NULL;
-
-diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-index 38c2b92..ddcf308 100644
---- a/include/linux/spi/spi.h
-+++ b/include/linux/spi/spi.h
-@@ -93,6 +93,8 @@ struct spi_device {
-        void                    *controller_data;
-        char                    modalias[SPI_NAME_SIZE];
-        int                     cs_gpio;        /* chip select gpio */
-+       u8                      rx_bitwidth;
-+       u8                      tx_bitwidth;
-
-        /*
-         * likely need more hooks for more protocol options affecting how
-@@ -511,6 +513,10 @@ struct spi_transfer {
-        dma_addr_t      rx_dma;
-
-        unsigned        cs_change:1;
-+       u8              bitwidth;
-+#define        SPI_BITWIDTH_SINGLE     0x01; /* 1bit transfer */
-+#define        SPI_BITWIDTH_DUAL       0x02; /* 2bits transfer */
-+#define        SPI_BITWIDTH_QUAD       0x03; /* 4bits transfer */
-        u8              bits_per_word;
-        u16             delay_usecs;
-        u32             speed_hz;
-@@ -859,6 +865,8 @@ struct spi_board_info {
-         * where the default of SPI_CS_HIGH = 0 is wrong.
-         */
-        u8              mode;
-+       u8              rx_bitwidth;
-+       u8              tx_bitwidth;
-
-        /* ... may need additional spi_device chip config data here.
-         * avoid stuff protocol drivers can set; but include stuff
---
-1.7.9.5
-
-Best regards
-Jay
+Or even make it a helper function which is inlined if that is deemed mo=
+re=20
+elegant.
+--=20
+Florian
