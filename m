@@ -1,20 +1,17 @@
-Received: from antispam02.maxim-ic.com ([205.153.101.183]
- helo=antispam02.maximintegrated.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UujG4-0007jO-P1
- for linux-mtd@lists.infradead.org; Thu, 04 Jul 2013 13:07:37 +0000
-From: Brian Foster <brian.foster@maximintegrated.com>
-To: David Mosberger-Tang <dmosberger@gmail.com>
-Subject: Re: [Q] Using Micron 4-bit on-die ECC with v2.6.36 kernel?
-Date: Thu, 4 Jul 2013 15:07:10 +0200
-Message-ID: <2596872.0DU6ch1YoB@laclwks004>
-In-Reply-To: <CACwUX0PaXg+hAqjeB2AK+7FEzr506RTNfNSHQAW+BJ-AnAQxKA@mail.gmail.com>
-References: <17588192.75Agdljyqk@laclwks004> <2488729.MWQE1XjhTW@laclwks004>
- <CACwUX0PaXg+hAqjeB2AK+7FEzr506RTNfNSHQAW+BJ-AnAQxKA@mail.gmail.com>
+Date: Thu, 4 Jul 2013 15:36:45 +0100
+From: Mark Brown <broonie@kernel.org>
+To: yuhang wang <wangyuhang2014@gmail.com>
+Message-ID: <20130704143645.GA27646@sirena.org.uk>
+References: <CAHSAbzPNDSr_6N79fh0DTWSEg8buRRPyiw8SPodtKLPjzWXJsg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="VJJHO1/Syn9XC8G0"
+Content-Disposition: inline
+In-Reply-To: <CAHSAbzPNDSr_6N79fh0DTWSEg8buRRPyiw8SPodtKLPjzWXJsg@mail.gmail.com>
+Subject: Re: SPI: DUAL/QUAD support
+Cc: Grant Likely <grant.likely@secretlab.ca>,
+ spi-devel-general@lists.sourceforge.net, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,41 +21,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 04-July-2013 05:37:23 David Mosberger-Tang wrote:
-> BBT markers don't assume ECC correction (there are multiple copies).
 
- At least in v2.6.36, that is misleading albeit not
- incorrect.  There _is_ a duplicate BBT block (called
- the =E2=80=9Cmirror=E2=80=9D), but neither it nor the primary BBT bloc=
-k
- have multiple copies of the BBT marker (or the version).
- (And, as it happens, the markers differ between the two
- blocks (I'm not too sure why?).)
+--VJJHO1/Syn9XC8G0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- So, unless both BBT blocks fail, you _should_ always
- be able to find and use one.  What happens if both
- happen to fail (in v2.6.36) is not-clear (to me).
+On Thu, Jul 04, 2013 at 07:36:48PM +0800, yuhang wang wrote:
+> Hi Mark,
+>=20
+> Thanks for your reply.
+> I have added the kerneldoc into the patch below to explain the "DUAL"
+> and "QUAD" modes.
+> Hope for your suggestions.
 
- I have not checked to see what the situation is in the
- latest kernel.
+Please submit things in the form covered in SubmittingPatches -
+especially you need to sign off anything you're submitting to the
+standard kernel.
 
-> However, I certainly agree that it'd be better to check all bits
-> covered by ECC.  It just didn't even cross my mind when we wrote
-> the code in question.  Had much bigger fish to fry at the time,
-> like do we need to recall all the devices in the field...
+> +Description
+> +----------------------
+> +DUAL/QUAD means spi can transfer in 2bits/4bits at the same time.
+> +These spi controllers provide 8 data lines(4-tx and 4-rx). User can
+> +choose tranfer mode(SINGLE/DUAL/QUAD) by setting the certain register.
+> +Though SPI is a serial interface, some spi controllers can support
+> +transmitting and receiving in DUAL and QUAD modes aimed to improve
+> +the performance. Also as spi slave lots of flashes do support this attri=
+bute,
+> +such as serial-norflash in spansion company.
 
- I quite understand!  Fortunately for us, there's no reason
- to recall any of our devices, since they are reference
- boards that come with the full source, which can be updated
- from our GIT servers.  Hence, the users/developers can do
- what they like.  What it does mean is I have to be a bit
- careful not to break the existing (=E2=80=9Clegacy=E2=80=9D) situation=
-!
+OK, so all this is about is devices that have extra data lines.  Please
+don't invent terms like "DUAL" and "QUAD", it makes things much less
+clear.  Just describe it as support for multiple data lines.
 
-cheers!
-=09-blf-
+> +struct spi_transfer {
+> ++       u8     bitwidth;
+> ++#define        SPI_BITWIDTH_SINGLE     0x01; /* 1bit transfer */
+> ++#define        SPI_BITWIDTH_DUAL       0x02; /* 2bits transfer */
+> ++#define        SPI_BITWIDTH_QUAD       0x03; /* 4bits transfer */
 
---=20
-Brian Foster
-Principal MTS, Software        |  La Ciotat, France
-Maxim Integrated               |  http://www.maximintegrated.com/
+Calling this "bandwidth" is really unclear - I would expect a bandwidth
+to be expressed in bits per second or similar.  This would be much
+clearer if it was just the number of data signals.
+
+> +       t[0].rx_buf =3D buf;
+> +       t[0].len =3D len;
+> +       t[0].bitwidth =3D spi->rx_bitwidth/spi->tx_bitwidth;
+> +       spi_message_add_tail(&t[0], &m);
+
+This interface won't work for bidirectional transfers with asymmetric
+numbers of data lines - we need separate fields for rx and rx.
+
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -354,6 +354,7 @@ static int m25p80_read(struct mtd_info *mtd,
+> loff_t from, size_t len,
+>=20
+>         t[1].rx_buf =3D buf;
+>         t[1].len =3D len;
+> +       t[1].bitwidth =3D flash->spi->rx_bitwidth;
+>         spi_message_add_tail(&t[1], &m);
+>=20
+>         mutex_lock(&flash->lock);
+
+This is going to fail in cases where the extra data lines aren't
+available.
+
+--VJJHO1/Syn9XC8G0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR1Yh6AAoJELSic+t+oim9uugQAIm4QBks/OOBWBBTpvFDd2Bu
+3ObH+2yoTh6vuCDk14C8ECNZVs1abrKyez/UQ4gwFTblx6YgEDUFkaES/SBLV5II
+ohVZRlafN1dNOZ251sD/ye36zf9CLOU2CDG+mFDoaKgu0vOOlTU3uPTt7RuLmUdI
++uupE1NarWlWbKmoW/bpx/P6YgFRp3SEmkNbTlGN1AtxyDfkh3XdpAEgh0Yy2sGX
+247U7a2PT09kr8UPVQ5CD/TIlJEoddBmQtBUCjVBid4Ircq0Im6cit1y/JBjfaXW
+NauF/B1qeCiDpC7qNutdX98hHnpFPQNnvX5cVTTOlyi0Kp3EROJfpr+v/YdWNTNO
+ttCaAYz5yO6B+Nq782HdZR6CRdRLjl0qS8J4ESMLsXRjj9VnhmpGvHm06jhJiHmm
+8FezajKKGuORBtjlIi3JKywtQV8YZypwJQBmuiyjgdCB9kgGMvvm4vQWwJC7EJDN
+j7RZ+v51sEbe7LinZvOPUi3I3/R0Ph76c7BOWRolvq+c0WeukbJNTAGcEtVWuJS4
+n1DjBm0j6dY6guPGtkSMcHRFwns/GNUa26FWbWM7Gt+aCrqmDcCxSvTc6FXblYnr
+4Cf5gKv0UJXw1/ywWhqOtPxxon9QTkDWXxBU9SxyXEVy7fzcanZY98g4aoKBIs0T
+Uc4+3+I+tg5jgbYwxHof
+=ff09
+-----END PGP SIGNATURE-----
+
+--VJJHO1/Syn9XC8G0--
