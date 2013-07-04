@@ -1,16 +1,20 @@
-Date: Thu, 4 Jul 2013 15:00:17 +0200
-From: Johannes Stezenbach <js@sig21.net>
-To: yuhang wang <wangyuhang2014@gmail.com>
-Subject: Re: SPI: DUAL/QUAD support
-Message-ID: <20130704130017.GA25997@sig21.net>
-References: <CAHSAbzPNDSr_6N79fh0DTWSEg8buRRPyiw8SPodtKLPjzWXJsg@mail.gmail.com>
+Received: from antispam02.maxim-ic.com ([205.153.101.183]
+ helo=antispam02.maximintegrated.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UujG4-0007jO-P1
+ for linux-mtd@lists.infradead.org; Thu, 04 Jul 2013 13:07:37 +0000
+From: Brian Foster <brian.foster@maximintegrated.com>
+To: David Mosberger-Tang <dmosberger@gmail.com>
+Subject: Re: [Q] Using Micron 4-bit on-die ECC with v2.6.36 kernel?
+Date: Thu, 4 Jul 2013 15:07:10 +0200
+Message-ID: <2596872.0DU6ch1YoB@laclwks004>
+In-Reply-To: <CACwUX0PaXg+hAqjeB2AK+7FEzr506RTNfNSHQAW+BJ-AnAQxKA@mail.gmail.com>
+References: <17588192.75Agdljyqk@laclwks004> <2488729.MWQE1XjhTW@laclwks004>
+ <CACwUX0PaXg+hAqjeB2AK+7FEzr506RTNfNSHQAW+BJ-AnAQxKA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHSAbzPNDSr_6N79fh0DTWSEg8buRRPyiw8SPodtKLPjzWXJsg@mail.gmail.com>
-Cc: Grant Likely <grant.likely@secretlab.ca>,
- spi-devel-general@lists.sourceforge.net, broonie@kernel.org,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,46 +24,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jul 04, 2013 at 07:36:48PM +0800, yuhang wang wrote:
-> 
-> I have added the kerneldoc into the patch below to explain the "DUAL"
-> and "QUAD" modes.
-> Hope for your suggestions.
-> 
-> Documentation/spi/spi-dual_quad |  102 +++++++++++++++++++++++++++++++++++++++
->  drivers/mtd/devices/m25p80.c    |    2 +
->  drivers/spi/spi.c               |    2 +
->  include/linux/spi/spi.h         |    8 +++
+On Thursday 04-July-2013 05:37:23 David Mosberger-Tang wrote:
+> BBT markers don't assume ECC correction (there are multiple copies).
 
-I think what Mark meant is to add new fields to the /** comments
-in include/linux/spi/spi.h, then documentation could be generated
-(but it seems only outdated copies are online, everyone prefers
-to look at the code):
-https://www.kernel.org/doc/htmldocs/device-drivers/
+ At least in v2.6.36, that is misleading albeit not
+ incorrect.  There _is_ a duplicate BBT block (called
+ the =E2=80=9Cmirror=E2=80=9D), but neither it nor the primary BBT bloc=
+k
+ have multiple copies of the BBT marker (or the version).
+ (And, as it happens, the markers differ between the two
+ blocks (I'm not too sure why?).)
 
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -354,6 +354,7 @@ static int m25p80_read(struct mtd_info *mtd,
-> loff_t from, size_t len,
-> 
->         t[1].rx_buf = buf;
->         t[1].len = len;
-> +       t[1].bitwidth = flash->spi->rx_bitwidth;
->         spi_message_add_tail(&t[1], &m);
-> 
->         mutex_lock(&flash->lock);
-> @@ -409,6 +410,7 @@ static int m25p80_write(struct mtd_info *mtd,
-> loff_t to, size_t len,
->         spi_message_add_tail(&t[0], &m);
-> 
->         t[1].tx_buf = buf;
-> +       t[1].bitwidth = flash->spi->tx_bitwidth;
->         spi_message_add_tail(&t[1], &m);
-> 
->         mutex_lock(&flash->lock);
+ So, unless both BBT blocks fail, you _should_ always
+ be able to find and use one.  What happens if both
+ happen to fail (in v2.6.36) is not-clear (to me).
 
-Doesn't m25p80 need to use different commands (OPCODEs)
-for 2x and 4x speed?  It seems this change is incomplete.
+ I have not checked to see what the situation is in the
+ latest kernel.
 
-Thanks,
-Johannes
+> However, I certainly agree that it'd be better to check all bits
+> covered by ECC.  It just didn't even cross my mind when we wrote
+> the code in question.  Had much bigger fish to fry at the time,
+> like do we need to recall all the devices in the field...
+
+ I quite understand!  Fortunately for us, there's no reason
+ to recall any of our devices, since they are reference
+ boards that come with the full source, which can be updated
+ from our GIT servers.  Hence, the users/developers can do
+ what they like.  What it does mean is I have to be a bit
+ careful not to break the existing (=E2=80=9Clegacy=E2=80=9D) situation=
+!
+
+cheers!
+=09-blf-
+
+--=20
+Brian Foster
+Principal MTS, Software        |  La Ciotat, France
+Maxim Integrated               |  http://www.maximintegrated.com/
