@@ -1,26 +1,16 @@
-Received: from mail-ea0-x22f.google.com ([2a00:1450:4013:c01::22f])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Uudsx-0000QR-J9
- for linux-mtd@lists.infradead.org; Thu, 04 Jul 2013 07:23:25 +0000
-Received: by mail-ea0-f175.google.com with SMTP id z7so563065eaf.34
- for <linux-mtd@lists.infradead.org>; Thu, 04 Jul 2013 00:23:01 -0700 (PDT)
-Sender: Florian Fainelli <f.fainelli@gmail.com>
-From: Florian Fainelli <florian@openwrt.org>
-To: Sourav Poddar <sourav.poddar@ti.com>
-Subject: Re: [PATCHv2] drivers: mtd: spinand: Add generic spinand frameowrk.
-Date: Thu, 04 Jul 2013 08:21:59 +0100
-Message-ID: <1390226.n8Vjs1lthe@lenovo>
-In-Reply-To: <51D4FD7F.3020104@ti.com>
-References: <1372851110-580-1-git-send-email-sourav.poddar@ti.com>
- <CAGVrzcbuK-xBeCVTsXhgEbX9CRqt8Dj7++ikoNZW8bY24Uz2Zg@mail.gmail.com>
- <51D4FD7F.3020104@ti.com>
+Date: Thu, 4 Jul 2013 10:00:49 +0100
+From: Mark Brown <broonie@kernel.org>
+To: =?utf-8?B?546L5a6H6Iiq?= <wangyuhang2014@gmail.com>
+Message-ID: <20130704090049.GJ27646@sirena.org.uk>
+References: <CAHSAbzMGqQgCLL9ymQ6qSeJRybv2jJfm-sbzZVgayVyKYgufLQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-Cc: artem.bityutskiy@linux.intel.com, rnayak@ti.com,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, balbi@ti.com,
- linux-mtd@lists.infradead.org, tqnguyen@micron.com, linux-omap@vger.kernel.org,
- David Woodhouse <dwmw2@infradead.org>, manonuevo@micron.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="mqabeeRFEDQfpoIl"
+Content-Disposition: inline
+In-Reply-To: <CAHSAbzMGqQgCLL9ymQ6qSeJRybv2jJfm-sbzZVgayVyKYgufLQ@mail.gmail.com>
+Subject: Re: SPI : DUAL/QUAD support
+Cc: grant.likely@secretlab.ca, spi-devel-general@lists.sourceforge.net,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,58 +20,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
 
-Le jeudi 4 juillet 2013 10:13:43 Sourav Poddar a =E9crit :
-> >=20
-> > Can this somehow be made a runtime thing?
->=20
-> Ahh..I think we might opt for a device tree entry and based on that
-> check for ECC.
+--mqabeeRFEDQfpoIl
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Ok, sounds good too.
+On Thu, Jul 04, 2013 at 03:07:31PM +0800, =E7=8E=8B=E5=AE=87=E8=88=AA wrote:
 
->=20
-> > [snip]
-> >=20
-> >> +               if (count<  oob_num&&  ops->oobbuf&&  chip->oobbuf=
-) {
-> >> +                       int size;
-> >> +                       int offset, len, temp;
-> >> +
-> >> +                       /* repack spare to oob */
-> >> +                       memset(chip->oobbuf, 0,
-> >> info->ecclayout->oobavail);
-> >> +
-> >> +                       temp =3D 0;
-> >> +                       offset =3D info->ecclayout->oobfree[0].off=
-set;
-> >> +                       len =3D info->ecclayout->oobfree[0].length=
-;
-> >> +                       memcpy(chip->oobbuf + temp,
-> >> +                               chip->buf + info->page_main_size +=
+> Now some SPI controllers and Slave Devices have supported
+> DUAL and QUAD transfer mode. But SPI controller driver in kernel
+> has no member to deliver this information from Slave to Master.
+> So in my opinion, adding transfer mode members to deal with the problem.
 
-> >> offset, len);>=20
-> > Sounds like a for look might be useful here
->=20
-> I dont think so, there is a while loop above under which it happens.
-> We are increasing count at the bottom of the while loop. So, I think
-> this should work fine.
+You'll need to tell us what "DUAL" and "QUAD" modes are and provide some
+kerneldoc for the new fields.
 
-What I meant here, is that you could use a for loop to repeat 4 times t=
-he same=20
-following pattern, such that it becomes:
+--mqabeeRFEDQfpoIl
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-for (j =3D 0; j < 4; j++0 {
-=09temp +=3D len;
-=09offset =3D info->ecclayout->oobfree[j].offset;
-=09len =3D info->ecclayout->oobfree[j].length;
-=09memcpy(chip->oobbuf + temp,
-=09=09chip->buf + info->page_main_size + offset, len);
-}
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
 
-Or even make it a helper function which is inlined if that is deemed mo=
-re=20
-elegant.
---=20
-Florian
+iQIcBAEBAgAGBQJR1Tm+AAoJELSic+t+oim9owwQAJ14oNu1NoWmkr4tHLQOD/W9
+N3HcHzRkbomjk098ZqmyBaW1tYC5+sGOdDKrcgNMQbnX5jUhghxArw3LGJ5bRcr4
+5xK7sPdU1/PlXYEhb2WcwMYtxhlbz+WhDVCoerpDeuamF45FtjdSvkflViPC8phC
+1mrtFd09D2Yrtv94bmCIl2qbGlEg7fS+wZsUhtQmKM+xejw7jCPhPoxHGdsILCAN
+tAjxPOgTbobKw2lbkJJtDf7wthZ5e9JbroiwrqQjl71BBV5Ch9qHvCD8xx4h+FVA
+vrTHigBfZHs729TNbOmLLFuELRA64rBnRPH+/QTy4FcYKodzSqipjeHO+E1zGa4D
+TFL1P/bYlSFIW6HVmnBkHTXvADDvNSC90OQJ6KfG16/vjuFPum2ahqzLtwsLE8Dj
+/6qNrbtvQrSzhjTZNbrefF/eo2on44FftMpksSQwhKaU8As7wrxJCPl3poxusaB0
+e4NMLZssJ0RJ+tU1yGDYUUa05S1u6qxpeCddmZMJ6/s77UenaaTGsm4QJglbIbmP
+djxxyXJa9MQjraEEGBmz8imCabl4DomCQ9bfF85mx88APQo53q9IYJkDyB4+dDbo
+m49gGHfgVxIJRUHjEM5sY/lEyJhIyu7BN6o6JzvXePt76VAaF/Dg+V2zphrpNqXC
+nynWeNuYM9cpTDpoCEAr
+=CsKC
+-----END PGP SIGNATURE-----
+
+--mqabeeRFEDQfpoIl--
