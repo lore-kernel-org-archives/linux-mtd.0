@@ -1,13 +1,23 @@
+Received: from smtp6-v.fe.bosch.de ([2a03:cc00:ff0:100::2])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Uui3f-0005dC-Ug
+ for linux-mtd@lists.infradead.org; Thu, 04 Jul 2013 11:50:46 +0000
+Message-ID: <51D56173.1030402@de.bosch.com>
+Date: Thu, 4 Jul 2013 13:50:11 +0200
+From: Dirk Behme <dirk.behme@de.bosch.com>
 MIME-Version: 1.0
-Date: Thu, 4 Jul 2013 19:36:48 +0800
-Message-ID: <CAHSAbzPNDSr_6N79fh0DTWSEg8buRRPyiw8SPodtKLPjzWXJsg@mail.gmail.com>
-Subject: SPI: DUAL/QUAD support
-From: yuhang wang <wangyuhang2014@gmail.com>
-To: broonie@kernel.org
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Grant Likely <grant.likely@secretlab.ca>,
- spi-devel-general@lists.sourceforge.net, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>
+Subject: Re: [PATCH] UBIFS: add tolerance to use variable writesize
+References: <1368634865-4186-1-git-send-email-dirk.behme@gmail.com>
+ <1372665309.22014.40.camel@sauron.fi.intel.com>
+ <F460390DA2C115469AFACD3583F41985032D2702E7@SI-MBX07.de.bosch.com>
+ <1372671198.22014.58.camel@sauron.fi.intel.com>
+In-Reply-To: <1372671198.22014.58.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Dirk Behme <dirk.behme@gmail.com>,
+ "Dahlhoff Achim \(CM-AI/PJ-CF32\)" <Achim.Dahlhoff@de.bosch.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,190 +27,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Mark,
+On 01.07.2013 11:33, Artem Bityutskiy wrote:
+> On Mon, 2013-07-01 at 10:32 +0200, Dahlhoff Achim (CM-AI/PJ-CF32) wrote:
+>> Hello.
+>>
+>> No, I do not want to touch the max_write_size or writebufsize. The
+>> max_write_size is the size which can be transferred in one piece to
+>> the chip and does not modify the UBIfs data structures.
+>
+> Not sure I understand what you mean. Max_write_size, which is the same
+> as writebufsize, despite the name, is the _optimal_ I/O size. Sometimes
+> UBI/UBIFS _will_ write in smaller chunks. But it will try to write in
+> 'max_write_size'.
+>
+> Sounds like what you need - you flash does allow 1-byte writes, but will
+> be more efficient when writes are 32-bytes instead.
+>
+>> The min size is relevant and can cause images to become incompatible
+>> with a specific NOR chip. If the NOR driver should accidentally choose
+>> a writesize which is too small, this will not cause any compatibility
+>> issues or data loss. It will only reduce write performance.
+>
+> Right, increasing min_io_size breaks compatibility. Although I believe
+> this is fixable, and I already suggested people to fix this several
+> times in the past.
+>
+> But increasing max_write_size should not lead to incompatibilites.
+>>
+>> Without the tolerance patch, you cannot mount one UBSfs image on
+>> different NOR devices with different writesize values of 1 or 32.
+>
+> I still think that you should just change writebufsize in your driver.
+> May be you could find some other view-angle to show my why you think I
+> am wrong?
 
-Thanks for your reply.
-I have added the kerneldoc into the patch below to explain the "DUAL"
-and "QUAD" modes.
-Hope for your suggestions.
+I'm no expert on this, but let me try to explain what I've understood 
+from Achim:
 
-Documentation/spi/spi-dual_quad |  102 +++++++++++++++++++++++++++++++++++++++
- drivers/mtd/devices/m25p80.c    |    2 +
- drivers/spi/spi.c               |    2 +
- include/linux/spi/spi.h         |    8 +++
- 4 files changed, 114 insertions(+)
- create mode 100644 Documentation/spi/spi-dual_quad
+We are talking about UBIFS images which are created on the PC 
+("mkfs.ubifs" and "ubinize") and then written to real physical NOR 
+devices on the target hardware.
 
-diff --git a/Documentation/spi/spi-dual_quad b/Documentation/spi/spi-dual_quad
-new file mode 100644
-index 0000000..06a2f9e
---- /dev/null
-+++ b/Documentation/spi/spi-dual_quad
-@@ -0,0 +1,102 @@
-+spi-dual_quad: make spi support DUAL/QUAD
-+============================================
-+
-+Description
-+----------------------
-+DUAL/QUAD means spi can transfer in 2bits/4bits at the same time.
-+These spi controllers provide 8 data lines(4-tx and 4-rx). User can
-+choose tranfer mode(SINGLE/DUAL/QUAD) by setting the certain register.
-+Though SPI is a serial interface, some spi controllers can support
-+transmitting and receiving in DUAL and QUAD modes aimed to improve
-+the performance. Also as spi slave lots of flashes do support this attribute,
-+such as serial-norflash in spansion company.
-+
-+Serial-flash such as s25fl129p in spansion company.
-+In common way, the flash has two data pins(IO0,IO1) supporting SINGLE/DUAL.
-+The flash also can work in QUAD mode, there are still other two
-pins(HOLD,W#)which
-+in other usage will be regarded as data pins.
-+
-+The members added below is used to provide the transfer information from slave
-+to master. Thus spi controller driver can distinguish the transfer mode(SINGLE
-+/DUAL/QUAD) and set the certain controlling register.
-+
-+
-+Members added
-+----------------------
-+struct spi_device {
-++       u8     rx_bitwidth;
-++       u8     tx_bitwidth;
-+}
-+
-+struct spi_transfer {
-++       u8     bitwidth;
-++#define        SPI_BITWIDTH_SINGLE     0x01; /* 1bit transfer */
-++#define        SPI_BITWIDTH_DUAL       0x02; /* 2bits transfer */
-++#define        SPI_BITWIDTH_QUAD       0x03; /* 4bits transfer */
-+}
-+
-+struct spi_board_info {
-++       u8     rx_bitwidth;
-++       u8     tx_bitwidth;
-+}
-+
-+
-+How to use the added members
-+----------------------
-+
-+DECLARE SLAVE DEVICES
-+
-+Normally your arch/.../mach-*/board-*.c files would provide a small table
-+listing the SPI devices on each board.  Details refered to "spi-summary".
-+At the same time, if your slave device support DUAL/QUAD transfer, you can
-+set as below:
-+
-+       static struct spi_board_info spi_board_info[] __initdata = {
-+       {
-+               .modalias       = "xxxxx",
-+               .......
-+               .chip_select    = 0,
-+               .rx_bitwidth = SPI_BITWIDTH_DUAL,
-+               .tx_bitwidth = SPI_BITWIDTH_QUAD,
-+       },
-+       };
-+
-+ORGANISE SPI PACKAGE
-+
-+When your slave is registered by:
-+
-+       spi_register_board_info(spi_board_info, ARRAY_SIZE(spi_board_info));
-+
-+rx_bitwidth and tx_bitwidth members will be delivered into "struct spi_device".
-+Thus the flash driver can notice the tranfer mode that user has appointed.
-+Flash driver receives the data from the uplayer and organise the spi_transfer
-+package as below:
-+
-+       ......
-+       struct spi_transfer t[2];
-+       struct spi_message m;
-+       spi_message_init(&m);
-+       memset(t, 0, (sizeof t));
-+       ......
-+       t[0].rx_buf = buf;
-+       t[0].len = len;
-+       t[0].bitwidth = spi->rx_bitwidth/spi->tx_bitwidth;
-+       spi_message_add_tail(&t[0], &m);
-+       ......
-+       spi_sync(spi, &m);
-+       ......
-+
-+finally, spi controller driver will deal with the spi_tranfer package.
-+Controller driver will pick the bitwidth member out due to which set
-the transfer
-+mode register.
-+
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 5b6b072..1411678 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -354,6 +354,7 @@ static int m25p80_read(struct mtd_info *mtd,
-loff_t from, size_t len,
+Different NOR devices can have different writesize values of 1, 8 or 32. 
+On the target, this is reported from the physical NOR chip and used 
+there for the UBIFS image. But, if the UBIFS image is created on the PC, 
+the PC tools take the writesize as a parameter (--min-io-size) due to 
+the unknown hardware device. This writesize is recorded in the UBIFS 
+created on the PC, e.g. writesize == 1.
 
-        t[1].rx_buf = buf;
-        t[1].len = len;
-+       t[1].bitwidth = flash->spi->rx_bitwidth;
-        spi_message_add_tail(&t[1], &m);
+Now, this UBIFS image created on the PC should be written on the target 
+to a real physical NOR device. This reports e.g. a writesize == 32. 
+While writing the UBIFS image to the NOR device works, mounting it 
+fails. Due to the mismatch in the writesize: The UBIFS image has recored 
+1, while the physical NOR device reports 32.
 
-        mutex_lock(&flash->lock);
-@@ -409,6 +410,7 @@ static int m25p80_write(struct mtd_info *mtd,
-loff_t to, size_t len,
-        spi_message_add_tail(&t[0], &m);
+As technically there is no reason why this shouldn't work, the patch we 
+are discussing here tries to fix that.
 
-        t[1].tx_buf = buf;
-+       t[1].bitwidth = flash->spi->tx_bitwidth;
-        spi_message_add_tail(&t[1], &m);
-
-        mutex_lock(&flash->lock);
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 004b10f..cd99022 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -452,6 +452,8 @@ struct spi_device *spi_new_device(struct spi_master *master,
-        proxy->irq = chip->irq;
-        strlcpy(proxy->modalias, chip->modalias, sizeof(proxy->modalias));
-        proxy->dev.platform_data = (void *) chip->platform_data;
-+       proxy->rx_bitwidth = chip->rx_bitwidth;
-+       proxy->tx_bitwidth = chip->tx_bitwidth;
-        proxy->controller_data = chip->controller_data;
-        proxy->controller_state = NULL;
-
-diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-index 38c2b92..ddcf308 100644
---- a/include/linux/spi/spi.h
-+++ b/include/linux/spi/spi.h
-@@ -93,6 +93,8 @@ struct spi_device {
-        void                    *controller_data;
-        char                    modalias[SPI_NAME_SIZE];
-        int                     cs_gpio;        /* chip select gpio */
-+       u8                      rx_bitwidth;
-+       u8                      tx_bitwidth;
-
-        /*
-         * likely need more hooks for more protocol options affecting how
-@@ -511,6 +513,10 @@ struct spi_transfer {
-        dma_addr_t      rx_dma;
-
-        unsigned        cs_change:1;
-+       u8              bitwidth;
-+#define        SPI_BITWIDTH_SINGLE     0x01; /* 1bit transfer */
-+#define        SPI_BITWIDTH_DUAL       0x02; /* 2bits transfer */
-+#define        SPI_BITWIDTH_QUAD       0x03; /* 4bits transfer */
-        u8              bits_per_word;
-        u16             delay_usecs;
-        u32             speed_hz;
-@@ -859,6 +865,8 @@ struct spi_board_info {
-         * where the default of SPI_CS_HIGH = 0 is wrong.
-         */
-        u8              mode;
-+       u8              rx_bitwidth;
-+       u8              tx_bitwidth;
-
-        /* ... may need additional spi_device chip config data here.
-         * avoid stuff protocol drivers can set; but include stuff
-
---
-1.7.9.5
+I hope above is roughly correct ;)
 
 Best regards
+
+Dirk
