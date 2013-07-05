@@ -1,19 +1,34 @@
-Date: Thu, 4 Jul 2013 20:12:16 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Johannes Stezenbach <js@sig21.net>
-Message-ID: <20130704191216.GK27646@sirena.org.uk>
-References: <CAHSAbzPNDSr_6N79fh0DTWSEg8buRRPyiw8SPodtKLPjzWXJsg@mail.gmail.com>
- <20130704143645.GA27646@sirena.org.uk>
- <20130704180656.GA1974@sig21.net>
+Received: from comal.ext.ti.com ([198.47.26.152])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UuxOJ-0005pk-7K
+ for linux-mtd@lists.infradead.org; Fri, 05 Jul 2013 04:13:04 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: "N, Mugunthan V" <mugunthanvnm@ti.com>
+Subject: RE: [PATCH v4 0/4] mtd:nand:omap2: clean-up of supported ECC schemes
+Date: Fri, 5 Jul 2013 04:12:15 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9E4B15@DBDE04.ent.ti.com>
+References: <1372764757-29511-1-git-send-email-pekon@ti.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9E46CA@DBDE04.ent.ti.com>
+ <1372857987.9767.162.camel@sauron.fi.intel.com>
+ <201307031527.17219.arnd@arndb.de>
+ <20980858CB6D3A4BAE95CA194937D5E73E9E47B4@DBDE04.ent.ti.com>
+ <51D5A963.6020102@ti.com>
+In-Reply-To: <51D5A963.6020102@ti.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="l2oS3IZyNaLBAPfX"
-Content-Disposition: inline
-In-Reply-To: <20130704180656.GA1974@sig21.net>
-Subject: Re: SPI: DUAL/QUAD support
-Cc: Grant Likely <grant.likely@secretlab.ca>,
- spi-devel-general@lists.sourceforge.net, linux-mtd@lists.infradead.org,
- yuhang wang <wangyuhang2014@gmail.com>, linux-arm-kernel@lists.infradead.org
+Cc: "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
+ "jp.francois@cynove.com" <jp.francois@cynove.com>,
+ Arnd Bergmann <arnd@arndb.de>, "tony@atomide.com" <tony@atomide.com>,
+ "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>,
+ "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>, "Balbi,
+ Felipe" <balbi@ti.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "olof@lixom.net" <olof@lixom.net>,
+ "benoit.cousson@linaro.org" <benoit.cousson@linaro.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,79 +38,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
---l2oS3IZyNaLBAPfX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Jul 04, 2013 at 08:06:56PM +0200, Johannes Stezenbach wrote:
-> On Thu, Jul 04, 2013 at 03:36:45PM +0100, Mark Brown wrote:
-
-> > OK, so all this is about is devices that have extra data lines.  Please
-> > don't invent terms like "DUAL" and "QUAD", it makes things much less
-> > clear.  Just describe it as support for multiple data lines.
-
-> Flash data sheets use the terms Dual and Quad I/O Mode,
-> e.g. for MX25L25635E
-> http://www.macronix.com/QuickPlace/hq/PageLibrary4825740B00298A3B.nsf/h_Index/6F878CF760C559BD482576E00022E6CC/?OpenDocument&EPN=MX25L25635E
-
-OK, but this is not a flash specific feature but rather something at the
-SPI level and even with flash are they typically written in all caps?
-This really needs to be described at the SPI level for the SPI subsystem,
-not in terms of the specific application.
-
-> > Calling this "bandwidth" is really unclear - I would expect a bandwidth
-> > to be expressed in bits per second or similar.  This would be much
-> > clearer if it was just the number of data signals.
-
-> "bitwidth" != "bandwidth", but maybe the name could be improved,
-> how about xfer_width?  The mmc susbsysem has something similar
-> and calls it bus_width.
-
-Bus width is better but I think half the issue here is the use of
-"width" and the fact that this isn't being done separately for RX and
-TX, it's really not clear what's being talked about.  xfer_width sounds
-to me like it's something to do with the word size so I don't think
-that's a good idea.  n_mosi and n_miso perhaps?
-
-> > > +       t[0].rx_buf = buf;
-> > > +       t[0].len = len;
-> > > +       t[0].bitwidth = spi->rx_bitwidth/spi->tx_bitwidth;
-> > > +       spi_message_add_tail(&t[0], &m);
-
-> > This interface won't work for bidirectional transfers with asymmetric
-> > numbers of data lines - we need separate fields for rx and rx.
-
-> I'm not aware that bidirectional transfers are supported in
-> dual or quad IO mode.  I think only flash supports it and
-
-As far as I can tell this is just because you guys are only thinking in
-terms of flash chips here - I can't believe that only flash manufacturers
-came up with the idea of adding extra data signals to SPI, it's not that
-big a leap (and MMC obviously has some overlap here...).  If nothing
-else I'd expect some FPGAs would use this, and I wouldn't be surprised
-if there were DSPs that could use this.
-
---l2oS3IZyNaLBAPfX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR1ckNAAoJELSic+t+oim9DrsP/AiVNxUOZbByU1WHHlCv5ga+
-vrheagppDckfCflmliXBsOfHjER9eXQ7nUY+FnRoSVks6RNQn3/V0iT3dYiUrjMM
-YD9Be8Ea3O+iKqNw9mC5BaesjSMDljMMsvRTIeSpoMYfPAljLBd+rkMJFaKapK2B
-N3LA4bGTMlTYS8nF9tT/CB5NkG30f8NHQxVF7zpHO21EH0bmKbCGxpy4jodW5PnY
-Yf1uE8QUTmMiwbTZmVx7Lrmq1A5GXx+UGVQfhRvXthd/zSadTktCq1PTZdHXeXrW
-NIPDk47ygK0fh7w0wRvsGCppTGQ0kahNe6THUTv2cRIqtSY/EvMRkFUF4MVKryhM
-vyRkVItAbeSUW5Pb1CQMdw0YsXkQzdkRMvreLE8QKBGwYwGHaXoZ2tMlTgvfDn4O
-kh5JKahH9ZJyAL6P1GxFxK0AkAP5UrBMJ0V4Uni3swrjwKHjOI8fcZtGrVCetkwE
-K7Hz408z3fVyuvayoM7VWyvVgMcRbHPP1fXDNQ4+wVxNexv5qYODNFsFR/z8ujzh
-TU1C6toqJlhSpCdc5CR3jRezQjtYCcysGS9R9KAST4mioTRQNIfdZpTL4kAx48MH
-ZAcKA9I0NTqbHcbuJS2FYSSciU8z8A4dzBlZtbd7/oPSSYBRU2DJ+S26YgAeyDFV
-Dg9NSaRdIIRV4+voSJjd
-=M0XC
------END PGP SIGNATURE-----
-
---l2oS3IZyNaLBAPfX--
+PiANCj4gT24gNy8zLzIwMTMgMTE6MzQgUE0sIEd1cHRhLCBQZWtvbiB3cm90ZToNCj4gPj4gT24g
+V2VkbmVzZGF5IDAzIEp1bHkgMjAxMywgQXJ0ZW0gQml0eXV0c2tpeSB3cm90ZToNCj4gPj4+IE9u
+IFdlZCwgMjAxMy0wNy0wMyBhdCAxMzoxNiArMDAwMCwgR3VwdGEsIFBla29uIHdyb3RlOg0KPiA+
+Pj4+IFtQZWtvbl06IFllcywgSSdtIG5vdCBzZWVpbmcgdGhlc2UgYnVpbGQgaXNzdWVzLCBhcyBJ
+J20gY2xlYW5seQ0KPiA+Pj4+IHJldHVybmluZyBmcm9tIHByb2JlIHdpdGggcHJfZXJyKCksIGlm
+IHRoZSByZXF1aXJlZCBsaWJyYXJpZXMgKC9saWIvYmNoLmMpDQo+ID4+Pj4gYXJlIG5vdCBidWls
+ZC1pbiB0aGUgc3lzdGVtLg0KPiA+Pj4+IC0tLS0tLS0tLS0tLS0tLS0tLS0NCj4gPj4+PiBbUGF0
+Y2ggdjQgMS80XTogbXRkOm5hbmQ6b21hcDI6IGNsZWFuLXVwIEJDSHhfSFcgYW5kIEJDSHhfU1cN
+Cj4gRUNDLi4NCj4gPj4+PiBAQHN0YXRpYyBpbnQgb21hcF9uYW5kX3Byb2JlKHN0cnVjdCBwbGF0
+Zm9ybV9kZXZpY2UgKnBkZXYpDQo+ID4+Pj4gKwlkZWZhdWx0Og0KPiA+Pj4+ICsJCXByX2Vycigi
+c2VsZWN0ZWQgRUNDIHNjaGVtZSBub3Qgc3VwcG9ydGVkIG9yIG5vdA0KPiA+PiBlbmFibGVkXG4i
+KTsNCj4gPj4+PiArCQllcnIgPSAtRUlOVkFMOw0KPiA+Pj4+ICsJCWdvdG8gb3V0X3JlbGVhc2Vf
+bWVtX3JlZ2lvbjsNCj4gPj4+PiArCX0NCj4gPj4+PiAtLS0tLS0tLS0tLS0tLS0tLS0tDQo+ID4+
+Pj4gSG93ZXZlciwgaWYgeW91IGFyZSBzdGlsbCBzZWVpbmcgdGhpcywgY291bGQgeW91IHBsZWFz
+ZSBzZW5kIG1lIHlvdXINCj4gPj4gY29uZmlnPw0KPiA+Pj4gSSBjb21waWxlIHRlc3RlZCB5b3Vy
+IHBhdGNoZXMgdG9vLCBhbmQgZGlkIG5vdCBzZWUgYW55IGlzc3VlcyB3aXRoIG15DQo+ID4+PiBv
+bWFwMl9kZWZjb25maWcuDQo+ID4+DQo+ID4+IFRvIGNsYXJpZnk6IEknbSBnZXR0aW5nIHRoaXMg
+ZXJyb3Igd2l0aCByYW5kY29uZmlnIG9uIHRvZGF5J3MgbGludXgtbmV4dC4NCj4gPj4gSSB0aGlu
+ayBpdCBvbmx5IGhhcHBlbnMgd2l0aCBNVERfTkFORF9FQ0NfQkNIIGVuYWJsZWQsIHdoaWNoIGlz
+IG5vdA0KPiA+PiB0aGUgZGVmYXVsdCBpbiBvbWFwMl9kZWZjb25maWcuDQo+ID4+DQo+ID4+IAlB
+cm5kDQo+ID4gSGkgQXJuZCwgQXJ0ZW0sIFN0ZXBoZW4sDQo+ID4NCj4gPiBJIHNlZSB0aGUgaXNz
+dWUgaW4gbGludXgtbmV4dC9tYXN0ZXIgdHJlZS4uDQo+ID4gbGludXgtbmV4dC9tYXN0ZXIgaGFz
+IG9ubHkgdGhlIGZpcnN0IFtQYXRjaCB2NCAxLzRdIGZyb20gdGhlIHNlcmllcy4NCj4gPiBPdGhl
+ciBwYXRjaGVzIFtQYXRjaCB2NCAyLzQuLiA0LzRdIG9mIHRoaXMgc2VyaWVzIHdlcmUgZHJvcHBl
+ZCwNCj4gPiBhcyAnT2xvZiBKb2hhbnNzb24nIGhhZCBzb21lIGFwcHJlaGVuc2lvbnMgYWJvdXQg
+RFQgYmluZGluZ3MuDQo+ID4gaHR0cDovL3Blcm1hbGluay5nbWFuZS5vcmcvZ21hbmUubGludXgu
+cG9ydHMuYXJtLmtlcm5lbC8yNDk2NjINCj4gPg0KPiA+IEFzIHRoZXNlIHBhdGNoZXMgYXJlIGlu
+dGVyLWRlcGVuZGVudCwgc28gcGxlYXNlIGRyb3AgdGhlIHdob2xlIHNlcmllcw0KPiA+IGluY2x1
+ZGluZyB0aGUgY29tbWl0IGJlbG93Lg0KPiA+IGZiMTU4NWIgIFtQYXRjaCB2NCAxLzRdIG10ZDog
+bmFuZDogb21hcDI6IGNsZWFuLXVwIEJDSHhfSFcgYW5kDQo+IEJDSHhfU1cNCj4gPg0KPiA+IEkn
+bSBhd2FpdGluZyBmZWVkYmFja3MgZnJvbSAnT2xvZiBKb2hhbnNzb24nIG9yIG90aGVyIERUIG1h
+aW50YWluZXJzLA0KPiA+IG9uY2UgYXBwcm92ZWQsIEknbGwgcmVzZW5kIHRoZSB3aG9sZSBzZXJp
+ZXMuDQo+ID4NCj4gPiAiW1BBVENIIHY0IDIvNF0gQVJNOiBPTUFQMis6IGNsZWFuZWQtdXAgRFQg
+c3VwcG9ydCAiIGhhZCB0aGUNCj4gPiBkZWNsYXJhdGlvbnMgd2hpY2ggd2VyZSByZXF1aXJlZCBm
+b3IgYWJvdmUgYnVpbGQgZXJyb3JzLg0KPiA+IC0tLS0tLS0tLS0tLS0tLQ0KPiA+IGluY2x1ZGUv
+bGludXgvcGxhdGZvcm1fZGF0YS9tdGQtbmFuZC1vbWFwMi5oDQo+ID4gZW51bSBvbWFwX2VjYyB7
+DQo+ID4gKwkvKiA0LWJpdCAgRUNDIGNhbGN1bGF0aW9uIGJ5IEdQTUMsIEVycm9yIGRldGVjdGlv
+biBieSBTb2Z0d2FyZSAqLw0KPiA+ICsJT01BUF9FQ0NfQkNINF9DT0RFX0hXX0RFVEVDVElPTl9T
+VywNCj4gPiAuLi4NCj4gPiArCS8qIDgtYml0ICBFQ0MgY2FsY3VsYXRpb24gYnkgR1BNQywgRXJy
+b3IgZGV0ZWN0aW9uIGJ5IFNvZnR3YXJlICovDQo+ID4gKwlPTUFQX0VDQ19CQ0g4X0NPREVfSFdf
+REVURUNUSU9OX1NXDQo+ID4gLS0tLS0tLS0tLS0tLS0tDQo+ID4NCj4gQnV0IHBhdGNoZXMgc2hv
+dWxkIG5vdCBoYXZlIGludGVyIGRlcGVuZGVuY3kgZm9yIGNvbXBpbGF0aW9uLiBJdCB3aWxsIGFm
+ZmVjdA0KPiB0aGUgYmlzZWN0IHByb2Nlc3MuDQo+IA0KW1Bla29uXTogVGhleSBkb24ndCwgSWYg
+eW91IHJlYWQgdGhyb3VnaCB0aGUgZW1haWwsIHRoaXMgaXNzdWUgd2FzIGhpdA0Kd2l0aCByYW5k
+Y29uZmlnLCBhbmQgbm90IHdpdGggb21hcDJwbHVzX2RlZmNvbmZpZy4gU28geW91IHdvdWxkIG5v
+dCBzZWUNCmJ1aWxkIGlzc3VlIGlmIHlvdSBhcmUgYmlzZWN0aW5nIHVzaW5nIGNvcnJlY3QgY29u
+ZmlnIChvbWFwMnBsdXNfZGVmY29uZmlnKS4NCkFsc28gaWYgSSBtZXJnZSBhbGwgdGhlIHJlbGV2
+YW50IGNoYW5nZXMgaW4gc2luZ2xlIHBhdGNoLCB0aGVuIGlmIHdvdWxkDQpiZWNvbWUgZGlmZmlj
+dWx0IGZvciByZXZpZXcsIGFuZCBpdCB3b3VsZCBiZSBjb25mbGljdCB5b3VyIGVhcmxpZXIgZmVl
+ZGJhY2sNCm9mIGJyZWFraW5nIHRoZSBwYXRjaCBzZXRzLg0KDQpIb3dldmVyLCBJIGxlYXZlIGl0
+IHRvIEFybmQgYW5kIEFydGVtIGlmIHRoZXkgd2FudCBtZSB0byByZS1zaHVmZmxlIA0KY2hhbmdl
+cyBhbmQgcmUtc3VibWl0Lg0KDQoNCndpdGggcmVnYXJkcywgcGVrb24NCg==
