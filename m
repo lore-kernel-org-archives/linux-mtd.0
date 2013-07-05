@@ -1,20 +1,18 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Uv7N1-00015L-Jo
- for linux-mtd@lists.infradead.org; Fri, 05 Jul 2013 14:52:24 +0000
-From: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
+ id 1Uv7N5-00015N-9r
+ for linux-mtd@lists.infradead.org; Fri, 05 Jul 2013 14:52:28 +0000
+Message-ID: <1373036147.2711.60.camel@sauron.fi.intel.com>
+Subject: [GIT PULL] UBIFS changes for 3.11-rc1
+From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [GIT PULL] UBI changes for 3.11-rc1
-Date: Fri, 5 Jul 2013 14:51:53 +0000
-Message-ID: <1373036154.2711.61.camel@sauron.fi.intel.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <1B7ED4D71042C548AAFDF9756A8BB374@intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
+Date: Fri, 05 Jul 2013 17:55:47 +0300
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd <linux-mtd@lists.infradead.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Reply-To: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,33 +22,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG93IExpbnVzIQ0KDQpUaGUgZm9sbG93aW5nIGNoYW5nZXMgc2luY2UgY29tbWl0IGY3MjI0
-MDZmYWFlMmQwNzNjYzFkMDEwNjNkMTEyM2MzNTQyNTkzOWU6DQoNCiAgTGludXggMy4xMC1yYzEg
-KDIwMTMtMDUtMTEgMTc6MTQ6MDggLTA3MDApDQoNCmFyZSBhdmFpbGFibGUgaW4gdGhlIGdpdCBy
-ZXBvc2l0b3J5IGF0Og0KDQogIGdpdDovL2dpdC5pbmZyYWRlYWQub3JnL2xpbnV4LXViaS5naXQg
-dGFncy91cHN0cmVhbS0zLjExLXJjMQ0KDQpmb3IgeW91IHRvIGZldGNoIGNoYW5nZXMgdXAgdG8g
-ODNmZjU5YTA2NjYzN2E2YzI4ODQ0YmJmNDMwMDk0NTk0MDgyNDBmNDoNCg0KICBVQkk6IHN1cHBv
-cnQgdWJpX251bSBvbiBtdGQudWJpIGNvbW1hbmQgbGluZSAoMjAxMy0wNy0wMSAwODozMjo1NyAr
-MDMwMCkNCg0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLQ0KQSBjb3VwbGUgb2YgZml4ZXMgYW5kIGNsZWFuLXVwcywgYWxsb3cg
-Zm9yIGFzc2lnbmluZyB1c2VyLWRlZmluZWQNClVCSSBkZXZpY2UgbnVtYmVycyB3aGVuIGF0dGFj
-aGluZyBNVEQgZGV2aWNlcyBieSB1c2luZyB0aGUgIm10ZD0iDQptb2R1bGUgcGFyYW1ldGVyLg0K
-DQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tDQpCcmlhbiBQb21lcmFudHogKDEpOg0KICAgICAgVUJJOiBmYXN0bWFwIGJyZWFr
-IG91dCBvZiB1c2VkIFBFQiBzZWFyY2gNCg0KTWlrZSBGcnlzaW5nZXIgKDQpOg0KICAgICAgVUJJ
-OiBkcm9wIHJlZHVuZGFudCAiVUJJIGVycm9yIiBzdHJpbmcNCiAgICAgIFVCSTogZG8gbm90IGFi
-b3J0IGluaXQgd2hlbiB1YmkubXRkIGRldmljZXMgY2Fubm90IGJlIGZvdW5kDQogICAgICBVQkk6
-IGRvY3VtZW50IFVCSV9JT0NWT0xVUCBiZXR0ZXIgaW4gdXNlciBoZWFkZXINCiAgICAgIFVCSTog
-c3VwcG9ydCB1YmlfbnVtIG9uIG10ZC51YmkgY29tbWFuZCBsaW5lDQoNCiBkcml2ZXJzL210ZC91
-YmkvYnVpbGQuYyAgICAgfCA1OSArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrLS0tLS0tLS0tLS0tLS0tLS0tLQ0KIGRyaXZlcnMvbXRkL3ViaS9mYXN0bWFwLmMgICB8ICA0
-ICsrKy0NCiBpbmNsdWRlL3VhcGkvbXRkL3ViaS11c2VyLmggfCAgNSArKysrLQ0KDQotLSANCkJl
-c3QgUmVnYXJkcywNCkFydGVtIEJpdHl1dHNraXkNCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpJbnRlbCBGaW5sYW5k
-IE95ClJlZ2lzdGVyZWQgQWRkcmVzczogUEwgMjgxLCAwMDE4MSBIZWxzaW5raSAKQnVzaW5lc3Mg
-SWRlbnRpdHkgQ29kZTogMDM1NzYwNiAtIDQgCkRvbWljaWxlZCBpbiBIZWxzaW5raSAKClRoaXMg
-ZS1tYWlsIGFuZCBhbnkgYXR0YWNobWVudHMgbWF5IGNvbnRhaW4gY29uZmlkZW50aWFsIG1hdGVy
-aWFsIGZvcgp0aGUgc29sZSB1c2Ugb2YgdGhlIGludGVuZGVkIHJlY2lwaWVudChzKS4gQW55IHJl
-dmlldyBvciBkaXN0cmlidXRpb24KYnkgb3RoZXJzIGlzIHN0cmljdGx5IHByb2hpYml0ZWQuIElm
-IHlvdSBhcmUgbm90IHRoZSBpbnRlbmRlZApyZWNpcGllbnQsIHBsZWFzZSBjb250YWN0IHRoZSBz
-ZW5kZXIgYW5kIGRlbGV0ZSBhbGwgY29waWVzLgo=
+Hello Linus!
+
+The following changes since commit c1be5a5b1b355d40e6cf79cc979eb66dafa24ad1:
+
+  Linux 3.9 (2013-04-28 17:36:01 -0700)
+
+are available in the git repository at:
+
+  git://git.infradead.org/linux-ubifs.git tags/upstream-3.11-rc1
+
+for you to fetch changes up to beadadfa5467e09e36891f39cae1f5d8d3bbf17e:
+
+  UBIFS: correct mount message (2013-05-10 17:07:01 +0300)
+
+----------------------------------------------------------------
+Only a single patch which fixes a message.
+
+----------------------------------------------------------------
+Richard Genoud (1):
+      UBIFS: correct mount message
+
+ fs/ubifs/super.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+-- 
+Best Regards,
+Artem Bityutskiy
