@@ -1,34 +1,20 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UuxOJ-0005pk-7K
- for linux-mtd@lists.infradead.org; Fri, 05 Jul 2013 04:13:04 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: "N, Mugunthan V" <mugunthanvnm@ti.com>
-Subject: RE: [PATCH v4 0/4] mtd:nand:omap2: clean-up of supported ECC schemes
-Date: Fri, 5 Jul 2013 04:12:15 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9E4B15@DBDE04.ent.ti.com>
-References: <1372764757-29511-1-git-send-email-pekon@ti.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9E46CA@DBDE04.ent.ti.com>
- <1372857987.9767.162.camel@sauron.fi.intel.com>
- <201307031527.17219.arnd@arndb.de>
- <20980858CB6D3A4BAE95CA194937D5E73E9E47B4@DBDE04.ent.ti.com>
- <51D5A963.6020102@ti.com>
-In-Reply-To: <51D5A963.6020102@ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Cc: "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
- "jp.francois@cynove.com" <jp.francois@cynove.com>,
- Arnd Bergmann <arnd@arndb.de>, "tony@atomide.com" <tony@atomide.com>,
- "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
- "devicetree-discuss@lists.ozlabs.org" <devicetree-discuss@lists.ozlabs.org>,
- "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>, "Balbi,
- Felipe" <balbi@ti.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "olof@lixom.net" <olof@lixom.net>,
- "benoit.cousson@linaro.org" <benoit.cousson@linaro.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+In-Reply-To: <OFAD729A05.8C915625-ONC1257B9E.00576B25-C1257B9E.0058477D@rohde-schwarz.com>
+References: <CAHSAbzPNDSr_6N79fh0DTWSEg8buRRPyiw8SPodtKLPjzWXJsg@mail.gmail.com>
+ <20130704130017.GA25997@sig21.net>
+ <OFA0D5839D.0594EA10-ONC1257B9E.004A7347-C1257B9E.00524BA5@rohde-schwarz.com>
+ <20130704154927.GE27646@sirena.org.uk>
+ <OFAD729A05.8C915625-ONC1257B9E.00576B25-C1257B9E.0058477D@rohde-schwarz.com>
+Date: Fri, 5 Jul 2013 14:25:09 +0800
+Message-ID: <CAHSAbzOg+uHndydSC43moF7pijc67pqzB2rPnY69ynXHEzw79g@mail.gmail.com>
+Subject: Re: SPI: DUAL/QUAD support
+From: yuhang wang <wangyuhang2014@gmail.com>
+To: Thomas.Betker@rohde-schwarz.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd <linux-mtd-bounces@lists.infradead.org>,
+ Johannes Stezenbach <js@sig21.net>, Grant Likely <grant.likely@secretlab.ca>,
+ Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org,
+ spi-devel-general@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,55 +24,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiANCj4gT24gNy8zLzIwMTMgMTE6MzQgUE0sIEd1cHRhLCBQZWtvbiB3cm90ZToNCj4gPj4gT24g
-V2VkbmVzZGF5IDAzIEp1bHkgMjAxMywgQXJ0ZW0gQml0eXV0c2tpeSB3cm90ZToNCj4gPj4+IE9u
-IFdlZCwgMjAxMy0wNy0wMyBhdCAxMzoxNiArMDAwMCwgR3VwdGEsIFBla29uIHdyb3RlOg0KPiA+
-Pj4+IFtQZWtvbl06IFllcywgSSdtIG5vdCBzZWVpbmcgdGhlc2UgYnVpbGQgaXNzdWVzLCBhcyBJ
-J20gY2xlYW5seQ0KPiA+Pj4+IHJldHVybmluZyBmcm9tIHByb2JlIHdpdGggcHJfZXJyKCksIGlm
-IHRoZSByZXF1aXJlZCBsaWJyYXJpZXMgKC9saWIvYmNoLmMpDQo+ID4+Pj4gYXJlIG5vdCBidWls
-ZC1pbiB0aGUgc3lzdGVtLg0KPiA+Pj4+IC0tLS0tLS0tLS0tLS0tLS0tLS0NCj4gPj4+PiBbUGF0
-Y2ggdjQgMS80XTogbXRkOm5hbmQ6b21hcDI6IGNsZWFuLXVwIEJDSHhfSFcgYW5kIEJDSHhfU1cN
-Cj4gRUNDLi4NCj4gPj4+PiBAQHN0YXRpYyBpbnQgb21hcF9uYW5kX3Byb2JlKHN0cnVjdCBwbGF0
-Zm9ybV9kZXZpY2UgKnBkZXYpDQo+ID4+Pj4gKwlkZWZhdWx0Og0KPiA+Pj4+ICsJCXByX2Vycigi
-c2VsZWN0ZWQgRUNDIHNjaGVtZSBub3Qgc3VwcG9ydGVkIG9yIG5vdA0KPiA+PiBlbmFibGVkXG4i
-KTsNCj4gPj4+PiArCQllcnIgPSAtRUlOVkFMOw0KPiA+Pj4+ICsJCWdvdG8gb3V0X3JlbGVhc2Vf
-bWVtX3JlZ2lvbjsNCj4gPj4+PiArCX0NCj4gPj4+PiAtLS0tLS0tLS0tLS0tLS0tLS0tDQo+ID4+
-Pj4gSG93ZXZlciwgaWYgeW91IGFyZSBzdGlsbCBzZWVpbmcgdGhpcywgY291bGQgeW91IHBsZWFz
-ZSBzZW5kIG1lIHlvdXINCj4gPj4gY29uZmlnPw0KPiA+Pj4gSSBjb21waWxlIHRlc3RlZCB5b3Vy
-IHBhdGNoZXMgdG9vLCBhbmQgZGlkIG5vdCBzZWUgYW55IGlzc3VlcyB3aXRoIG15DQo+ID4+PiBv
-bWFwMl9kZWZjb25maWcuDQo+ID4+DQo+ID4+IFRvIGNsYXJpZnk6IEknbSBnZXR0aW5nIHRoaXMg
-ZXJyb3Igd2l0aCByYW5kY29uZmlnIG9uIHRvZGF5J3MgbGludXgtbmV4dC4NCj4gPj4gSSB0aGlu
-ayBpdCBvbmx5IGhhcHBlbnMgd2l0aCBNVERfTkFORF9FQ0NfQkNIIGVuYWJsZWQsIHdoaWNoIGlz
-IG5vdA0KPiA+PiB0aGUgZGVmYXVsdCBpbiBvbWFwMl9kZWZjb25maWcuDQo+ID4+DQo+ID4+IAlB
-cm5kDQo+ID4gSGkgQXJuZCwgQXJ0ZW0sIFN0ZXBoZW4sDQo+ID4NCj4gPiBJIHNlZSB0aGUgaXNz
-dWUgaW4gbGludXgtbmV4dC9tYXN0ZXIgdHJlZS4uDQo+ID4gbGludXgtbmV4dC9tYXN0ZXIgaGFz
-IG9ubHkgdGhlIGZpcnN0IFtQYXRjaCB2NCAxLzRdIGZyb20gdGhlIHNlcmllcy4NCj4gPiBPdGhl
-ciBwYXRjaGVzIFtQYXRjaCB2NCAyLzQuLiA0LzRdIG9mIHRoaXMgc2VyaWVzIHdlcmUgZHJvcHBl
-ZCwNCj4gPiBhcyAnT2xvZiBKb2hhbnNzb24nIGhhZCBzb21lIGFwcHJlaGVuc2lvbnMgYWJvdXQg
-RFQgYmluZGluZ3MuDQo+ID4gaHR0cDovL3Blcm1hbGluay5nbWFuZS5vcmcvZ21hbmUubGludXgu
-cG9ydHMuYXJtLmtlcm5lbC8yNDk2NjINCj4gPg0KPiA+IEFzIHRoZXNlIHBhdGNoZXMgYXJlIGlu
-dGVyLWRlcGVuZGVudCwgc28gcGxlYXNlIGRyb3AgdGhlIHdob2xlIHNlcmllcw0KPiA+IGluY2x1
-ZGluZyB0aGUgY29tbWl0IGJlbG93Lg0KPiA+IGZiMTU4NWIgIFtQYXRjaCB2NCAxLzRdIG10ZDog
-bmFuZDogb21hcDI6IGNsZWFuLXVwIEJDSHhfSFcgYW5kDQo+IEJDSHhfU1cNCj4gPg0KPiA+IEkn
-bSBhd2FpdGluZyBmZWVkYmFja3MgZnJvbSAnT2xvZiBKb2hhbnNzb24nIG9yIG90aGVyIERUIG1h
-aW50YWluZXJzLA0KPiA+IG9uY2UgYXBwcm92ZWQsIEknbGwgcmVzZW5kIHRoZSB3aG9sZSBzZXJp
-ZXMuDQo+ID4NCj4gPiAiW1BBVENIIHY0IDIvNF0gQVJNOiBPTUFQMis6IGNsZWFuZWQtdXAgRFQg
-c3VwcG9ydCAiIGhhZCB0aGUNCj4gPiBkZWNsYXJhdGlvbnMgd2hpY2ggd2VyZSByZXF1aXJlZCBm
-b3IgYWJvdmUgYnVpbGQgZXJyb3JzLg0KPiA+IC0tLS0tLS0tLS0tLS0tLQ0KPiA+IGluY2x1ZGUv
-bGludXgvcGxhdGZvcm1fZGF0YS9tdGQtbmFuZC1vbWFwMi5oDQo+ID4gZW51bSBvbWFwX2VjYyB7
-DQo+ID4gKwkvKiA0LWJpdCAgRUNDIGNhbGN1bGF0aW9uIGJ5IEdQTUMsIEVycm9yIGRldGVjdGlv
-biBieSBTb2Z0d2FyZSAqLw0KPiA+ICsJT01BUF9FQ0NfQkNINF9DT0RFX0hXX0RFVEVDVElPTl9T
-VywNCj4gPiAuLi4NCj4gPiArCS8qIDgtYml0ICBFQ0MgY2FsY3VsYXRpb24gYnkgR1BNQywgRXJy
-b3IgZGV0ZWN0aW9uIGJ5IFNvZnR3YXJlICovDQo+ID4gKwlPTUFQX0VDQ19CQ0g4X0NPREVfSFdf
-REVURUNUSU9OX1NXDQo+ID4gLS0tLS0tLS0tLS0tLS0tDQo+ID4NCj4gQnV0IHBhdGNoZXMgc2hv
-dWxkIG5vdCBoYXZlIGludGVyIGRlcGVuZGVuY3kgZm9yIGNvbXBpbGF0aW9uLiBJdCB3aWxsIGFm
-ZmVjdA0KPiB0aGUgYmlzZWN0IHByb2Nlc3MuDQo+IA0KW1Bla29uXTogVGhleSBkb24ndCwgSWYg
-eW91IHJlYWQgdGhyb3VnaCB0aGUgZW1haWwsIHRoaXMgaXNzdWUgd2FzIGhpdA0Kd2l0aCByYW5k
-Y29uZmlnLCBhbmQgbm90IHdpdGggb21hcDJwbHVzX2RlZmNvbmZpZy4gU28geW91IHdvdWxkIG5v
-dCBzZWUNCmJ1aWxkIGlzc3VlIGlmIHlvdSBhcmUgYmlzZWN0aW5nIHVzaW5nIGNvcnJlY3QgY29u
-ZmlnIChvbWFwMnBsdXNfZGVmY29uZmlnKS4NCkFsc28gaWYgSSBtZXJnZSBhbGwgdGhlIHJlbGV2
-YW50IGNoYW5nZXMgaW4gc2luZ2xlIHBhdGNoLCB0aGVuIGlmIHdvdWxkDQpiZWNvbWUgZGlmZmlj
-dWx0IGZvciByZXZpZXcsIGFuZCBpdCB3b3VsZCBiZSBjb25mbGljdCB5b3VyIGVhcmxpZXIgZmVl
-ZGJhY2sNCm9mIGJyZWFraW5nIHRoZSBwYXRjaCBzZXRzLg0KDQpIb3dldmVyLCBJIGxlYXZlIGl0
-IHRvIEFybmQgYW5kIEFydGVtIGlmIHRoZXkgd2FudCBtZSB0byByZS1zaHVmZmxlIA0KY2hhbmdl
-cyBhbmQgcmUtc3VibWl0Lg0KDQoNCndpdGggcmVnYXJkcywgcGVrb24NCg==
+Hi Thomas:
+
+>> Well, there's two bits here.  One is the support in the client drivers
+>> for using the extra data lines and the other is the support in the SPI
+>> core for telling controllers to do this.  We need that second bit in
+>> place before the first one can be implemented.
+>
+> I am not sure if we do. In the system I am working on, the QSPI controller
+> recognizes the quad mode commands from the Tx data and automatically
+> switches modes; no manual intervention by the flash driver is needed.
+>
+> I agree that this may not be the case for all SPI controllers. Yuhang, can
+> you tell us what your controller will do?
+
+OK, well my spi controller just sets the certain transfer mode in the register
+to make it in that mode(single,dual,quad). Then it will send and receive datas
+with the specific lines. As master, it should be told the transfer lines by the
+slave. Thus I need some members to deliver the information.
+
+But what you said "QSPI controller recognizes the quad mode commands
+from the Tx data and automatically switches modes;"  I can not figure out.
+The communication is launched by SPI master, so how can the controller
+recognizes the Tx data in the first transmission.
+
+>Yes, there are usually different opcodes, and as far as I know, they are
+>not supported by the m25p80 driver. It seems we are missing some
+>background info here.
+>My guess is that the flash chip in question is configured to treat single
+>mode opcodes as dual or quad mode commands (some chips support this), and
+>that the SPI controller needs to be told, for each transfer, which mode to
+>use.
+Just as Johannes said. In my patch m25p80's changes is incomplete.
+Because my inicial aim is to add the transfer width member to tell controller
+the mode flash in. And I will attach new patch about m25p80 later.
+Also you are right. There are really series of flashes do not support dual/quad
+transfer. So I don't know whether there are any standard for serial-flash just
+like the CFI for parallel-flash. Personally, to make a general standard and
+a general code for serial-flash is necessary. So that we do not need to add
+special function in m25p80.c.
+
+Thanks,
+yuhang
