@@ -1,21 +1,17 @@
-Received: from mail-vc0-x22d.google.com ([2607:f8b0:400c:c03::22d])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UvBQg-0003ro-W6
- for linux-mtd@lists.infradead.org; Fri, 05 Jul 2013 19:12:27 +0000
-Received: by mail-vc0-f173.google.com with SMTP id ht10so1880972vcb.18
- for <linux-mtd@lists.infradead.org>; Fri, 05 Jul 2013 12:12:03 -0700 (PDT)
+Date: Fri, 5 Jul 2013 22:11:18 +0200
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Arnd Bergmann <arnd@arndb.de>, David Woodhouse <dwmw2@infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
+Subject: MTD EEPROM support and driver integration
+Message-ID: <20130705201118.GM2959@lukather>
 MIME-Version: 1.0
-Sender: linus971@gmail.com
-In-Reply-To: <1373036223.2711.62.camel@sauron.fi.intel.com>
-References: <1373036223.2711.62.camel@sauron.fi.intel.com>
-Date: Fri, 5 Jul 2013 12:12:03 -0700
-Message-ID: <CA+55aFxv2A+4mfhuBUVJnPhDzvLw3ttg6BV3=FPDwRqGTfc2Xg@mail.gmail.com>
-Subject: Re: [GIT PULL] UBI changes for 3.11-rc1
-From: Linus Torvalds <torvalds@linux-foundation.org>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="Az4VpBrmI9+OyhK/"
+Content-Disposition: inline
+Cc: oliver@schinagl.nl, Shawn Guo <shawn.guo@linaro.org>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,21 +21,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jul 5, 2013 at 7:57 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
->
->  drivers/mtd/ubi/build.c     | 59 ++++++++++++++++++++++++++++++++++++++++-------------------
->  drivers/mtd/ubi/fastmap.c   |  4 +++-
->  include/uapi/mtd/ubi-user.h |  5 ++++-
 
-That's a very strange script you're using. It has somehow cut off the
-last line of the diffstat - the one that actually is the primary one
-to check the overally statistics:
+--Az4VpBrmI9+OyhK/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- 3 files changed, 47 insertions(+), 21 deletions(-)
+Hi everyone,
 
-Please double-check your pull script.
+In the last weeks, we've drivers coming up both about mostly some very
+simple drivers that expose to the userspace a few bytes of memory-mapped
+IO. Both will probably live under drivers/misc/eeprom, where there's
+support already for other kind of what could be assimilated as eeproms
+(AT24, AT25, etc.).
 
-Anyway, pulled, so you don't need to re-send, but please fix this for
-future pulls.
+Now, besides the code duplication every driver has to make to register
+the sysfs attributes, it wouldn't cause much of a problem.
 
-                Linus
+Except that these EEPROMs could store values useful for other drivers in
+Linux. For example:
+  - imx28 OCOTP (the latest of the two EEPROM drivers recently submitted)
+    use it most of the time to store its MAC addresses
+  - Allwinner SoCs SID (the other latest driver submitted) use it
+    sometime to store a MAC address, and also the SoC ID, which could be
+    useful to implement a SoC bus driver.
+  - Some Allwinner boards (and presumably others) use an AT24 to store
+    the MAC address in it.
+
+For now, everyone comes up with a different solution:
+  - imx28 has a hook in mach-mxs to patch the device tree at runtime and
+    add the values retrieved from the OCOTP to it.
+  - AT24 seem to have some function exported (at24_macc_(read|write)) so
+    that other part of the kernel can use them to retrieve values from
+    such an EEPROM.
+  - Allwinner SoCs have, well, basically nothing for now, which is why I
+    send this email.
+
+The current way of working has several flaws imho:
+  - The code is heavily duplicated: the sysfs registering is common to
+    every driver, and at the end of the day, every driver should only
+    give a read/write callback, and that's it.
+  - The "consumer" drivers should not have to worry at all about the
+    EEPROM type it should retrieve the needed value from, let alone
+    dealing with the number of instances of such an EEPROM.
+
+To solve this issues, I think I have some solution. Would merging this
+drivers into MTD make some sense? It seems like there is already some
+EEPROM drivers into drivers/mtd (such as an AT25 one, which also have a
+drivers under drivers/misc/eeprom), so I guess it does, but I'd like to
+have your opinion on this.
+
+If so, would some kind of MTD in-kernel API to retrieve values from MTD
+devices would be acceptable to you? I mostly have DT in mind, so I'm
+thinking of having DT bindings to that API such as
+
+  mac-storage =3D <&phandle 0xoffset 0xsize>
+
+to describe which device to get a value from, and where in that device.
+
+That would allow consumer drivers to only have to call a function like
+of_mtd_get_value and let the MTD subsystem do the hard work.
+
+What's your feeling on this?
+
+Thanks,
+Maxime
+
+--=20
+Maxime Ripard, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
+
+--Az4VpBrmI9+OyhK/
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR1yhmAAoJEBx+YmzsjxAglegP/04oesR+DOsS5M+uGusrOOo+
+i36UwpXrMvUWgsI1NERgI/PqlI6n5C9MX45FNM/d2Uhs3v6eQSWhYVlH+iyZe1FH
+tGtyFU+owHxJMUwzAZ2z8WzG3ffdltpeMHPFYqXHgYeO+pZkfUrPDhNFDR8uMy3Z
+8E7+l3QhgacXvFHgVPgNuxgFjGIhfZyFn8Ev6BgVcMoIiZXd1E3KsfLEwXVeQAPN
+bjc9tzZR47xCVAvQ4YmANPvBw80ALfvGsXWiRiuv13Fbe6lg9vneq/7wye3EZpnK
+/RiZuZi1lANGxuhddo7sZgM28uxywOEsdzk1+jqKwBpRGdbWJIu0ClbIxJZP+hgu
+szIWLJSJiu/TkBYEBI7Xd/RhK5JoCZvabZOpVGq3V4n9Wow5r6h4xvWOtHNMgxyI
+/49PgL9EmhWAxflN1RkGcIg+vyBVRMi/gmu1QBkYsbCtJWVxjDeNjKffraY4kmY7
+QE6bH/X7F5zndkx2QOqU0xko4gxtZ+MqeFmL6r5jSAqnZieqcmutyzgu+vxgFQTg
+EXx1gXRBeF5+VtetGz3rljRY3UfSmPJqmVSKuqwNHGICuu5+dI2U6aBDdsiEqVB/
+xmk8R0d7jiImHCjDBVpcN+HwXAGgNUXq608gjJl8w6sQt7lFSp7W9M9VG1m2FkkK
+hrT+slUGdP6hfR1iu68D
+=w64G
+-----END PGP SIGNATURE-----
+
+--Az4VpBrmI9+OyhK/--
