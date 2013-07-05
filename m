@@ -1,19 +1,18 @@
-Message-ID: <51D69197.7060802@ti.com>
-Date: Fri, 5 Jul 2013 14:57:51 +0530
-From: Sourav Poddar <sourav.poddar@ti.com>
 MIME-Version: 1.0
-To: yuhang wang <wangyuhang2014@gmail.com>
+In-Reply-To: <20130704191216.GK27646@sirena.org.uk>
+References: <CAHSAbzPNDSr_6N79fh0DTWSEg8buRRPyiw8SPodtKLPjzWXJsg@mail.gmail.com>
+ <20130704143645.GA27646@sirena.org.uk>
+ <20130704180656.GA1974@sig21.net>
+ <20130704191216.GK27646@sirena.org.uk>
+Date: Fri, 5 Jul 2013 17:41:57 +0800
+Message-ID: <CAHSAbzNBkZPFOfGHqFxZH_id=PFj=BmZ4Q302zGKeM-0yJBtHg@mail.gmail.com>
 Subject: Re: SPI: DUAL/QUAD support
-References: <CAHSAbzPNDSr_6N79fh0DTWSEg8buRRPyiw8SPodtKLPjzWXJsg@mail.gmail.com>	<20130704130017.GA25997@sig21.net>	<OFA0D5839D.0594EA10-ONC1257B9E.004A7347-C1257B9E.00524BA5@rohde-schwarz.com>	<20130704154927.GE27646@sirena.org.uk>	<OFAD729A05.8C915625-ONC1257B9E.00576B25-C1257B9E.0058477D@rohde-schwarz.com>	<CAHSAbzOg+uHndydSC43moF7pijc67pqzB2rPnY69ynXHEzw79g@mail.gmail.com>	<51D67851.8020402@ti.com>	<CAHSAbzNvMo_oeaqtzO8-xDm-L-f8wVccVqfuVqbR=OwqWJhVwg@mail.gmail.com>	<51D689F3.3070605@ti.com>	<CAHSAbzM1PGoMXFNOmB7guDsVWYnRoRy89-bufHYpPz5+odnd8w@mail.gmail.com>	<51D68D14.7090606@ti.com>
- <CAHSAbzMfvfdDtTh=3zeBni4fNMAHEMdTJLJU-Oc13HJUqCUj0A@mail.gmail.com>
-In-Reply-To: <CAHSAbzMfvfdDtTh=3zeBni4fNMAHEMdTJLJU-Oc13HJUqCUj0A@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd-bounces@lists.infradead.org>,
- Johannes Stezenbach <js@sig21.net>, Grant Likely <grant.likely@secretlab.ca>,
- Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org,
- Thomas.Betker@rohde-schwarz.com, spi-devel-general@lists.sourceforge.net,
- linux-arm-kernel@lists.infradead.org
+From: yuhang wang <wangyuhang2014@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Grant Likely <grant.likely@secretlab.ca>,
+ spi-devel-general@lists.sourceforge.net, Johannes Stezenbach <js@sig21.net>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,30 +22,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 05 July 2013 02:47 PM, yuhang wang wrote:
-> 2013/7/5 Sourav Poddar<sourav.poddar@ti.com>:
->> On Friday 05 July 2013 02:37 PM, yuhang wang wrote:
->>>>                       if (!quad_mode)
->>>>                               dra7xxx_writel(qspi, qspi->cmd |
->>>> QSPI_RD_SNGL,
->>>>                                               QSPI_SPI_CMD_REG);
->>>>                       else
->>>>                               dra7xxx_writel(qspi, qspi->cmd |
->>>> QSPI_RD_QUAD,
->>>>                                               QSPI_SPI_CMD_REG);
->>>>                    .......
->>>>                   }
->>> So what do you based on to set variable quad_mode.
->> Best way should be to check for flash device id and manufacture data. Based
->> on which you
->> can decide whether your flash supports quad bits or not.
-> Perhaps I did not said it clearly. Your flash supports quad and you
-> set it into quad
-> mode. But how can your controller driver notice that. In other word,
-> In which way
-> provide this information from flash to spi controller.
-Perhaps, I understood you initial patch wrong. :(
-Yes, this is little confusing, and I am trying to figure out that.
-As of now, I have tested it with some extern variable, though
-we need to see how it can be done cleanly.
-I am trying to see if your patch can be used in some way now.
+>> Flash data sheets use the terms Dual and Quad I/O Mode,
+>> e.g. for MX25L25635E
+>> http://www.macronix.com/QuickPlace/hq/PageLibrary4825740B00298A3B.nsf/h_Index/6F878CF760C559BD482576E00022E6CC/?OpenDocument&EPN=MX25L25635E
+>
+> OK, but this is not a flash specific feature but rather something at the
+> SPI level and even with flash are they typically written in all caps?
+> This really needs to be described at the SPI level for the SPI subsystem,
+> not in terms of the specific application.
+>
+
+Yes. I agree with you. This should be described in SPI level.
+So to SPI controller, if it has the ability to transfer in 2x or 4x, but
+what a pity no device can tell this info to it. No matter what the slave
+is and no matter whether they will use the spi transfer width member,
+firstly SPI controller should provide these members. If the slave do
+not set the member, that means the slave wants to communicate
+in 1 line traditionally.
