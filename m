@@ -1,23 +1,18 @@
-Received: from mail-ie0-x236.google.com ([2607:f8b0:4001:c03::236])
+Received: from [2001:19d0:2:6:c0de::] (helo=smtp.outflux.net)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UwAxA-0007Yr-Iw
- for linux-mtd@lists.infradead.org; Mon, 08 Jul 2013 12:54:05 +0000
-Received: by mail-ie0-f182.google.com with SMTP id s9so9867410iec.41
- for <linux-mtd@lists.infradead.org>; Mon, 08 Jul 2013 05:53:42 -0700 (PDT)
-MIME-Version: 1.0
-Sender: keescook@google.com
-In-Reply-To: <1373258360-22702-1-git-send-email-michael.opdenacker@free-electrons.com>
-References: <1373258360-22702-1-git-send-email-michael.opdenacker@free-electrons.com>
-Date: Mon, 8 Jul 2013 05:53:42 -0700
-Message-ID: <CAGXu5j+hwA7eT0p9y-ZSnYoYR5A1va9dXONTOGz0W-WT8Nr_Ew@mail.gmail.com>
-Subject: Re: [PATCH] mtd: diskonchip: remove unused entries in Kconfig
+ id 1UwB8j-0007yQ-Iw
+ for linux-mtd@lists.infradead.org; Mon, 08 Jul 2013 13:06:01 +0000
+Date: Mon, 8 Jul 2013 06:05:12 -0700
 From: Kees Cook <keescook@chromium.org>
-To: Michael Opdenacker <michael.opdenacker@free-electrons.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Arnd Bergmann <arnd@arndb.de>, artem.bityutskiy@linux.intel.com,
- Randy Dunlap <rdunlap@infradead.org>, LKML <linux-kernel@vger.kernel.org>,
- linux-mtd@lists.infradead.org, shijie8@gmail.com,
- Robert Jarzmik <robert.jarzmik@free.fr>, David Woodhouse <dwmw2@infradead.org>
+To: akpm@linux-foundation.org
+Subject: [RESEND][PATCH] mtd: refactor call to request_module
+Message-ID: <20130708130512.GA24315@www.outflux.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org, Rusty Russell <rusty@rustcorp.com.au>,
+ James Hogan <james.hogan@imgtec.com>, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,22 +22,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Jul 7, 2013 at 9:39 PM, Michael Opdenacker
-<michael.opdenacker@free-electrons.com> wrote:
-> This patch proposes to remove kernel configuration parameters
-> defined in drivers/mtd/devices/Kconfig, but used nowhere
-> in the makefiles and source code (except in comments).
->
-> Signed-off-by: Michael Opdenacker <michael.opdenacker@free-electrons.com>
+This reduces the size of the stack frame when calling request_module().
+Performing the sprintf before the call is not needed.
 
-This clean up looks good to me.
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ drivers/mtd/chips/gen_probe.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Acked-by: Kees Cook <keescook@chromium.org>
+diff --git a/drivers/mtd/chips/gen_probe.c b/drivers/mtd/chips/gen_probe.c
+index 74dbb6b..ffb36ba 100644
+--- a/drivers/mtd/chips/gen_probe.c
++++ b/drivers/mtd/chips/gen_probe.c
+@@ -211,9 +211,7 @@ static inline struct mtd_info *cfi_cmdset_unknown(struct map_info *map,
+ 
+ 	probe_function = __symbol_get(probename);
+ 	if (!probe_function) {
+-		char modname[sizeof("cfi_cmdset_%4.4X")];
+-		sprintf(modname, "cfi_cmdset_%4.4X", type);
+-		request_module(modname);
++		request_module("cfi_cmdset_%4.4X", type);
+ 		probe_function = __symbol_get(probename);
+ 	}
+ 
+-- 
+1.7.9.5
 
-Thanks,
 
--Kees
-
---
+-- 
 Kees Cook
 Chrome OS Security
