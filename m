@@ -1,21 +1,30 @@
-Date: Sun, 7 Jul 2013 09:15:01 +0200
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: MTD EEPROM support and driver integration
-Message-ID: <20130707071501.GD11243@lukather>
-References: <20130705201118.GM2959@lukather> <5811519.oHVuMujf0I@wuerfel>
- <20130706120112.GA11069@lukather> <8997501.Dchyii8uWX@wuerfel>
+Received: from devils.ext.ti.com ([198.47.26.153])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Uw3DU-0000S1-1X
+ for linux-mtd@lists.infradead.org; Mon, 08 Jul 2013 04:38:24 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: "olof@lixom.net" <olof@lixom.net>, "devicetree-discuss@lists.ozlabs.org"
+ <devicetree-discuss@lists.ozlabs.org>
+Subject: RE: [PATCH v4 2/4] ARM: OMAP2+: cleaned-up DT support of various
+ ECC schemes
+Date: Mon, 8 Jul 2013 04:37:36 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9E5014@DBDE04.ent.ti.com>
+References: <1372764757-29511-1-git-send-email-pekon@ti.com>
+ <1372764757-29511-3-git-send-email-pekon@ti.com>
+In-Reply-To: <1372764757-29511-3-git-send-email-pekon@ti.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="d9ADC0YsG2v16Js0"
-Content-Disposition: inline
-In-Reply-To: <8997501.Dchyii8uWX@wuerfel>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, oliver@schinagl.nl,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Wolfram Sang <wsa@the-dreams.de>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
- Jean Delvare <khali@linux-fr.org>, Shawn Guo <shawn.guo@linaro.org>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Cc: "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
+ "arnd@arndb.de" <arnd@arndb.de>, "tony@atomide.com" <tony@atomide.com>,
+ "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>,
+ "jp.francois@cynove.com" <jp.francois@cynove.com>, "Balbi,
+ Felipe" <balbi@ti.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "benoit.cousson@linaro.org" <benoit.cousson@linaro.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,77 +34,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
---d9ADC0YsG2v16Js0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sat, Jul 06, 2013 at 09:06:49PM +0200, Arnd Bergmann wrote:
-> On Saturday 06 July 2013 14:01:12 Maxime Ripard wrote:
-> > What other option would we have?
-> >=20
-> > I also thought about writing an EEPROM framework of its own, but the
-> > line is really thin between a large EEPROM and say a small SPI
-> > dataflash, which would make it pretty hard to choose between such a
-> > framework and MTD.
 >=20
-> Isn't flash by definition block based, while EEPROM can be written
-> in byte or word units? I think that is a significant difference, although
-> it doesn't necessarily mean that we can't use MTD for both.
+> diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+> b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+> index 6a983c1..690070e 100644
+> --- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+> @@ -17,20 +17,42 @@ Required properties:
+>=20
+>  Optional properties:
+>=20
+> - - nand-bus-width: 		Set this numeric value to 16 if the hardware
+> -				is wired that way. If not specified, a bus
+> -				width of 8 is assumed.
+> + - nand-bus-width: 		Determines data-width of the connected
+> device
+> +				x16 =3D "16"
+> +				x8  =3D "8" (default)
+>=20
+> - - ti,nand-ecc-opt:		A string setting the ECC layout to use. One of:
+>=20
+> -		"sw"		Software method (default)
+> -		"hw"		Hardware method
+> -		"hw-romcode"	gpmc hamming mode method & romcode
+> layout
+> -		"bch4"		4-bit BCH ecc code
+> -		"bch8"		8-bit BCH ecc code
+> + - ti,nand-ecc-opt:		Determines the ECC scheme used by driver.
+> +				It can be any of the following strings:
+> +
+> +	"hamming_code_sw"		1-bit Hamming ECC
+> +					- ECC calculation in software
+> +					- Error detection in software
+> +
+> +	"hamming_code_hw"		1-bit Hamming ECC
+> +					- ECC calculation in hardware
+> +					- Error detection in software
+> +
+> +	"hamming_code_hw_romcode"	1-bit Hamming ECC
+> +					- ECC calculation in hardware
+> +					- Error detection in software
+> +					- ECC layout compatible to ROM code
+> +
+> +	"bch8_hw_code_detection_sw"	8-bit BCH ECC
+> +					- ECC calculation in hardware
+> +					- Error detection in software
+> +					- depends on
+> CONFIG_MTD_NAND_ECC_BCH
+> +
+> +	"bch8_code_hw"             	8-bit BCH ECC
+> +					- ECC calculation in hardware
+> +					- Error detection in hardware
+> +					- depends on
+> CONFIG_MTD_NAND_OMAP_BCH
+> +					- requires <elm_id> to be specified
+> +
+> +
+> + - elm_id:			Specifies elm device node. This is required to
+> +				support some BCH ECC schemes mentioned
+> above.
+>=20
+> - - elm_id:	Specifies elm device node. This is required to support BCH
+> - 		error correction using ELM module.
+>=20
 
-Ah, right.
+[Pekon] Requesting DT maintainers to please review the above=20
+changes in values for 'nand-ecc-opt' property. And please ACK | NAK it.
 
-> We also have a bunch of OTP drivers spread around the kernel, it probably
-> makes sense to consolidate them at the same time, at least on the DT bind=
-ing
-> side if not the device drivers.
-
-=46rom a quick grep, the only one I've seen so far are:
-  - imx6q, that has a hook at machine start to poke into its OCOTP to
-    retrieve some frequency scaling parameters it seems. I'm not sure
-    how the current solution could improve the situation for this
-    use-case, but the DT bindings of the OCOTP is just a DT node, with
-    no clients, so we have nothing to worry about here.
-  - imx28, that has a hook at machine start to look up the MAC address
-    values and patch the ethernet controller nodes to add the right
-    local-mac-address property. This one could benefit from the new
-    bindings, but we already mentionned it, and I intended to develop
-    with an imx28 board anyway.
-  - picoxcell-pc3x3 DTSI has a node for a OTP device, but they don't
-    seem to be doing anything with it, nor do they seem to have a driver
-    for it. So I guess we don't care about migrating for this one
-    either.
-
-Did you have other cases in mind?
-
-Maxime
-
---=20
-Maxime Ripard, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
-
---d9ADC0YsG2v16Js0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR2RV1AAoJEBx+YmzsjxAg3MgP/28+VaY/douvBkwP4UzPleKc
-UKrWHu6PLr6C2IMnOP5b1w1JsGIdCuRRsyWuqxkjimtaglFHyYiLVxwRPjbddtVz
-+pwTqOCkjsGvRSEEC6Dru9d+hQjA9oTci7UouGisKXwf2GY4cBm39SfGeAXh7TDS
-ucj7v20gf26rtTt8ivIOko4LOWlBWrEZ/YwiIz2cIA8oXZn1peidVNdNzaQXm89x
-xQ1JC5CrgVqTjVORBUpUmzv8hGNrnl+1pRTIRAKXkGhnkH9kZ4sywAGzxrRXwvAl
-R+59C0CD3WhEncjFomXPB0aJlyPBPSJCHCOLdAYCmNJr0Gf4Nz6qkJagavXzqVHb
-SFGjwLs6QAsNB1eURtglquOS412jbmUuno+EZCWhHTgAFOG0wQIpbdLgSeEPzQ2Y
-TbOZVCNWy0HFDIgrPHRxrkx0De5dsMkY5QHNu/4tM1w3HQKUAqWY4ZXPFkMgmXo3
-/l2WhhCYxSlDPov00rUnTVKWhORdo2nwv0lr3wdw63YI7Acng59bXZX+Hc6+FnOc
-Y4kyA3p4g0+8XB72zgBBGB/QtV0CH8AqnNVD5MdTYWJm5KqLOk/ZJbYt9X/MNGns
-ca1uzM3Ws9+9/jVtKMBNGXHfPAWdQZzM0BDvoBMLdsXchfeAyBgwXF/4nq8Qhy6d
-bXEmpq86Y0S0fjipbyPC
-=ZbQ5
------END PGP SIGNATURE-----
-
---d9ADC0YsG2v16Js0--
+with regards, pekon
