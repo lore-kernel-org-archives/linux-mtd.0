@@ -1,17 +1,23 @@
-Received: from mail.free-electrons.com ([94.23.35.102])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Uw3Eo-0000TG-TC
- for linux-mtd@lists.infradead.org; Mon, 08 Jul 2013 04:39:47 +0000
-From: Michael Opdenacker <michael.opdenacker@free-electrons.com>
-To: dwmw2@infradead.org
-Subject: [PATCH] mtd: diskonchip: remove unused entries in Kconfig
-Date: Mon,  8 Jul 2013 06:39:20 +0200
-Message-Id: <1373258360-22702-1-git-send-email-michael.opdenacker@free-electrons.com>
-Cc: keescook@chromium.org, arnd@arndb.de, artem.bityutskiy@linux.intel.com,
- rdunlap@infradead.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, shijie8@gmail.com,
- Michael Opdenacker <michael.opdenacker@free-electrons.com>,
- robert.jarzmik@free.fr
+Date: Mon, 8 Jul 2013 09:34:26 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Message-ID: <20130708083426.GO27646@sirena.org.uk>
+References: <20130705201118.GM2959@lukather> <5811519.oHVuMujf0I@wuerfel>
+ <20130706120112.GA11069@lukather> <8997501.Dchyii8uWX@wuerfel>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="soiQS7xIQzTpkbBM"
+Content-Disposition: inline
+In-Reply-To: <8997501.Dchyii8uWX@wuerfel>
+Subject: Re: MTD EEPROM support and driver integration
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, oliver@schinagl.nl,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Wolfram Sang <wsa@the-dreams.de>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
+ Jean Delvare <khali@linux-fr.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Shawn Guo <shawn.guo@linaro.org>, David Woodhouse <dwmw2@infradead.org>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,99 +27,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch proposes to remove kernel configuration parameters
-defined in drivers/mtd/devices/Kconfig, but used nowhere
-in the makefiles and source code (except in comments).
 
-Signed-off-by: Michael Opdenacker <michael.opdenacker@free-electrons.com>
----
- drivers/mtd/devices/Kconfig   | 55 -------------------------------------------
- drivers/mtd/nand/diskonchip.c |  4 ++--
- 2 files changed, 2 insertions(+), 57 deletions(-)
+--soiQS7xIQzTpkbBM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
-index 2a4d55e..74ab4b7 100644
---- a/drivers/mtd/devices/Kconfig
-+++ b/drivers/mtd/devices/Kconfig
-@@ -224,59 +224,4 @@ config BCH_CONST_T
- 	default 4
- endif
- 
--config MTD_DOCPROBE
--	tristate
--	select MTD_DOCECC
--
--config MTD_DOCECC
--	tristate
--
--config MTD_DOCPROBE_ADVANCED
--	bool "Advanced detection options for DiskOnChip"
--	depends on MTD_DOCPROBE
--	help
--	  This option allows you to specify nonstandard address at which to
--	  probe for a DiskOnChip, or to change the detection options.  You
--	  are unlikely to need any of this unless you are using LinuxBIOS.
--	  Say 'N'.
--
--config MTD_DOCPROBE_ADDRESS
--	hex "Physical address of DiskOnChip" if MTD_DOCPROBE_ADVANCED
--	depends on MTD_DOCPROBE
--	default "0x0"
--	---help---
--	  By default, the probe for DiskOnChip devices will look for a
--	  DiskOnChip at every multiple of 0x2000 between 0xC8000 and 0xEE000.
--	  This option allows you to specify a single address at which to probe
--	  for the device, which is useful if you have other devices in that
--	  range which get upset when they are probed.
--
--	  (Note that on PowerPC, the normal probe will only check at
--	  0xE4000000.)
--
--	  Normally, you should leave this set to zero, to allow the probe at
--	  the normal addresses.
--
--config MTD_DOCPROBE_HIGH
--	bool "Probe high addresses"
--	depends on MTD_DOCPROBE_ADVANCED
--	help
--	  By default, the probe for DiskOnChip devices will look for a
--	  DiskOnChip at every multiple of 0x2000 between 0xC8000 and 0xEE000.
--	  This option changes to make it probe between 0xFFFC8000 and
--	  0xFFFEE000.  Unless you are using LinuxBIOS, this is unlikely to be
--	  useful to you.  Say 'N'.
--
--config MTD_DOCPROBE_55AA
--	bool "Probe for 0x55 0xAA BIOS Extension Signature"
--	depends on MTD_DOCPROBE_ADVANCED
--	help
--	  Check for the 0x55 0xAA signature of a DiskOnChip, and do not
--	  continue with probing if it is absent.  The signature will always be
--	  present for a DiskOnChip 2000 or a normal DiskOnChip Millennium.
--	  Only if you have overwritten the first block of a DiskOnChip
--	  Millennium will it be absent.  Enable this option if you are using
--	  LinuxBIOS or if you need to recover a DiskOnChip Millennium on which
--	  you have managed to wipe the first block.
--
- endmenu
-diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/diskonchip.c
-index 81fa578..eaa3c29 100644
---- a/drivers/mtd/nand/diskonchip.c
-+++ b/drivers/mtd/nand/diskonchip.c
-@@ -46,13 +46,13 @@ static unsigned long __initdata doc_locations[] = {
- 	0xfffd8000, 0xfffda000, 0xfffdc000, 0xfffde000,
- 	0xfffe0000, 0xfffe2000, 0xfffe4000, 0xfffe6000,
- 	0xfffe8000, 0xfffea000, 0xfffec000, 0xfffee000,
--#else /*  CONFIG_MTD_DOCPROBE_HIGH */
-+#else
- 	0xc8000, 0xca000, 0xcc000, 0xce000,
- 	0xd0000, 0xd2000, 0xd4000, 0xd6000,
- 	0xd8000, 0xda000, 0xdc000, 0xde000,
- 	0xe0000, 0xe2000, 0xe4000, 0xe6000,
- 	0xe8000, 0xea000, 0xec000, 0xee000,
--#endif /*  CONFIG_MTD_DOCPROBE_HIGH */
-+#endif
- #endif
- 	0xffffffff };
- 
--- 
-1.8.1.2
+On Sat, Jul 06, 2013 at 09:06:49PM +0200, Arnd Bergmann wrote:
+> On Saturday 06 July 2013 14:01:12 Maxime Ripard wrote:
+
+> > > > > a) like interrupts, regs, dmas, clocks, pinctrl, reset, pwm: fixe=
+d property names
+
+> > > > >       regmap =3D <&at25 0xstart 0xlen>;
+> > > > >       regmap-names =3D "mac-address";
+
+> > > > > b) like gpio, regulator: variable property names
+
+> > > > >       mac-storage =3D <&at25 0xstart 0xlen>;
+
+> > > > > It's unfortunate that we already have examples of both. They are =
+largely
+> > > > > equivalent, but the tendency is towards the first.
+
+> > > > I don't have a strong feeling for one against another, so whatever =
+works
+> > > > best. Both solutions will be a huge improvement anyway=20
+
+> > > > Just out of curiosity, is there any advantages besides having a fix=
+ed
+> > > > property name to the first solution?
+
+> > > I think it's mostly for consistency: trying to get most subsystems to
+> > > do it the same way to make it easier for people to write dts files.
+
+> > > A lesser point is that it simplifies the driver code if you don't
+> > > have to pass a name.
+
+On the other hand something with human readable names is much more
+legible if humans ever have to read or write the DT bindings.  This
+mostly applies when there are many instances of the property (for
+example, many devices have lots of power supplies) or when some
+instances of the property are optional (for example, many devices can
+use GPIOs for many different functions but usually not all of them are
+connected and there's no particular order in which they might get
+connected).
+
+> > So that leave us with mainly one path to achieve this goal:
+> >   - Add a regmap-mtd backend
+> >   - Add DT parsing code for regmap
+> >   - Move the EEPROM drivers from misc to mtd
+
+> Yes, I think that would be good. For the last step, we definitely need
+> buy-in from Wolfgand and Jean, as they are maintaining the current eeprom
+> drivers.
+
+I'd really like to see more discussion of this "DT parsing code for
+regmap" idea...  I've missed almost all the context here.
+
+> We also have a bunch of OTP drivers spread around the kernel, it probably
+> makes sense to consolidate them at the same time, at least on the DT bind=
+ing
+> side if not the device drivers.
+
+I'm not sure how viable this is, the OTP interfaces aren't that
+consistent and are frequently embedded in random PMICs or whatever.
+
+--soiQS7xIQzTpkbBM
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR2nmPAAoJELSic+t+oim9HGsP/2YDpBPCN8Y8VqMdYfhR53kB
+S1tdT+Lbj2Ml1eQT1L5gwbggvCz7lnaKDprvylhJCGu8zGihxKzsSeRrrVNgJi8O
+Wb9Dh4QV7OhdHJpgXco25jtCeElvnEU7Besyl2wn0uHgIlNsAaBexee663sNj3fT
+YsDVUqAIKQ1/yyTGjWlJJCTnUFut1tatUbHrYZpC237dOBbF3jEdDm+dEwgrUm/n
+yXPcix3KpJGD9HH/0+1OjqHsKVi7HKs5TfezIAnjwPKl5IMdyXQPxieyEd5J0G8x
+gIlu/ZEuEbA/GktSfUwgC56FMYROXQ6G2NYvTe+3Tzvo3jL9HtBjD9StIJFuzkgL
+HMJfRzr1ITD5ngnmZS9D0gFxCZmbkhNDC1K5j29Pkw+GRriYMSA+9JgogQipKncb
+7zUhmD3XbFOLTUqhLcOwlzFd8MwOnWtffQvLJo60xsZRZoKsQ6VdSOTynyCHbeDf
+rb220of9ZPUX+qb1gav0o3ql77j2k2qfqm7GX3QjPqnC0RkjLWK2KWhAEZ4OPTDr
+YRhe8Ea6imQnGLk1GbDDfHWwN5Ai39pDz2yp7GTW89mh+fMB2SWN2VODnIyz2Fbw
+bApL+Kbkxy0eERNjPIH/Of4HjQFRzP8GMSH9EU1a0Kor3Tv9r9RFE6BVDpil0oyA
+nZVTXqn+sVP+98fyOsLf
+=3+Js
+-----END PGP SIGNATURE-----
+
+--soiQS7xIQzTpkbBM--
