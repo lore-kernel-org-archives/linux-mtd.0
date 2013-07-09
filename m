@@ -1,20 +1,23 @@
-Received: from mail.arrisi.com ([216.234.147.109])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UwYVh-0000b4-Vo
- for linux-mtd@lists.infradead.org; Tue, 09 Jul 2013 14:03:19 +0000
-Received: from ATLOWA2.ARRS.ARRISI.com (webclient.arrisi.com [10.2.131.253])
- by mail1.arrisi.com (8.14.5/8.14.5) with ESMTP id r69E2puA008518
- (version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=NOT)
- for <linux-mtd@lists.infradead.org>; Tue, 9 Jul 2013 10:02:51 -0400
-From: "Sidorov, Andrei" <Andrei.Sidorov@arrisi.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: UBI: torture after scrub
-Date: Tue, 9 Jul 2013 14:02:50 +0000
-Message-ID: <C0F0BC787567C848B2C90989451123DA3D27CF9F@ATLEXMBX4.ARRS.ARRISI.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Date: Tue, 9 Jul 2013 15:55:10 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Maxime Ripard <maxime.ripard@free-electrons.com>
+Message-ID: <20130709145510.GZ27646@sirena.org.uk>
+References: <20130705201118.GM2959@lukather> <5811519.oHVuMujf0I@wuerfel>
+ <20130706120112.GA11069@lukather> <8997501.Dchyii8uWX@wuerfel>
+ <20130708083426.GO27646@sirena.org.uk>
+ <20130708202538.GK11243@lukather>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="3aDtFGIaURYlkDgg"
+Content-Disposition: inline
+In-Reply-To: <20130708202538.GK11243@lukather>
+Subject: Re: MTD EEPROM support and driver integration
+Cc: Arnd Bergmann <arnd@arndb.de>, Artem Bityutskiy <dedekind1@gmail.com>,
+ oliver@schinagl.nl, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Wolfram Sang <wsa@the-dreams.de>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
+ Jean Delvare <khali@linux-fr.org>, Shawn Guo <shawn.guo@linaro.org>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,124 +27,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,=0A=
-=0A=
-There is something a bit odd in UBI behaviour related to scrubbing.=0A=
-Throughout power cut test logs I see lots of=0A=
-=0A=
-bitflips detected in PEB 30=0A=
-PEB 30 gets scrubbed=0A=
-PEB 30 gets erased and later reused=0A=
-bitflips detected in PEB 30=0A=
-....=0A=
-=0A=
-Shouldn't UBI do torture test of source EB after scrubbing? Otherwise=0A=
-it looks meaningless to scrub this EB at all.=0A=
-=0A=
-Below change is based on linux 3.3, but it applies almost without changes=
-=0A=
-to 3.10 tree (however I'm not sure if sync erasure in wear_levelling_worker=
-=0A=
-adds up to write amplification).=0A=
-=0A=
-Does it look reasonable?=0A=
-=0A=
-=0A=
-Index: linux/drivers/mtd/ubi/eba.c=0A=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A=
---- linux.orig/drivers/mtd/ubi/eba.c=0A=
-+++ linux/drivers/mtd/ubi/eba.c=0A=
-@@ -986,6 +986,7 @@ int ubi_eba_copy_leb(struct ubi_device *=0A=
- 		     struct ubi_vid_hdr *vid_hdr)=0A=
- {=0A=
- 	int err, vol_id, lnum, data_size, aldata_size, idx;=0A=
-+	int err_bitflips =3D 0;=0A=
- 	struct ubi_volume *vol;=0A=
- 	uint32_t crc;=0A=
- =0A=
-@@ -1060,7 +1061,9 @@ int ubi_eba_copy_leb(struct ubi_device *=0A=
- 	mutex_lock(&ubi->buf_mutex);=0A=
- 	dbg_wl("read %d bytes of data", aldata_size);=0A=
- 	err =3D ubi_io_read_data(ubi, ubi->peb_buf1, from, 0, aldata_size);=0A=
--	if (err && err !=3D UBI_IO_BITFLIPS) {=0A=
-+	if (err =3D=3D UBI_IO_BITFLIPS)=0A=
-+		err_bitflips =3D MOVE_SOURCE_BITFLIPS;=0A=
-+	else if (err) {=0A=
- 		ubi_warn("error %d while reading data from PEB %d",=0A=
- 			 err, from);=0A=
- 		err =3D MOVE_SOURCE_RD_ERR;=0A=
-@@ -1164,7 +1167,7 @@ out_unlock_buf:=0A=
- 	mutex_unlock(&ubi->buf_mutex);=0A=
- out_unlock_leb:=0A=
- 	leb_write_unlock(ubi, vol_id, lnum);=0A=
--	return err;=0A=
-+	return err ? err : err_bitflips;=0A=
- }=0A=
- =0A=
- /**=0A=
-Index: linux/drivers/mtd/ubi/ubi.h=0A=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A=
---- linux.orig/drivers/mtd/ubi/ubi.h=0A=
-+++ linux/drivers/mtd/ubi/ubi.h=0A=
-@@ -112,6 +112,7 @@ enum {=0A=
-  *=0A=
-  * MOVE_CANCEL_RACE: canceled because the volume is being deleted, the sou=
-rce=0A=
-  *                   PEB was put meanwhile, or there is I/O on the source =
-PEB=0A=
-+ * MOVE_SOURCE_BITFLIPS: PEB moved, but there were bitflips in the source =
-PEB=0A=
-  * MOVE_SOURCE_RD_ERR: canceled because there was a read error from the so=
-urce=0A=
-  *                     PEB=0A=
-  * MOVE_TARGET_RD_ERR: canceled because there was a read error from the ta=
-rget=0A=
-@@ -124,6 +125,7 @@ enum {=0A=
-  */=0A=
- enum {=0A=
- 	MOVE_CANCEL_RACE =3D 1,=0A=
-+	MOVE_SOURCE_BITFLIPS,=0A=
- 	MOVE_SOURCE_RD_ERR,=0A=
- 	MOVE_TARGET_RD_ERR,=0A=
- 	MOVE_TARGET_WR_ERR,=0A=
-Index: linux/drivers/mtd/ubi/wl.c=0A=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A=
---- linux.orig/drivers/mtd/ubi/wl.c=0A=
-+++ linux/drivers/mtd/ubi/wl.c=0A=
-@@ -797,6 +797,10 @@ static int wear_leveling_worker(struct u=0A=
- 			scrubbing =3D 1;=0A=
- 			goto out_not_moved;=0A=
- 		}=0A=
-+		if (err =3D=3D MOVE_SOURCE_BITFLIPS) {=0A=
-+			scrubbing =3D 1;=0A=
-+			goto out_moved;=0A=
-+		}=0A=
- 		if (err =3D=3D MOVE_CANCEL_BITFLIPS || err =3D=3D MOVE_TARGET_WR_ERR ||=
-=0A=
- 		    err =3D=3D MOVE_TARGET_RD_ERR) {=0A=
- 			/*=0A=
-@@ -830,6 +834,7 @@ static int wear_leveling_worker(struct u=0A=
- 		ubi_assert(0);=0A=
- 	}=0A=
- =0A=
-+out_moved:=0A=
- 	/* The PEB has been successfully moved */=0A=
- 	if (scrubbing)=0A=
- 		ubi_msg("scrubbed PEB %d (LEB %d:%d), data moved to PEB %d",=0A=
-@@ -845,7 +850,7 @@ static int wear_leveling_worker(struct u=0A=
- 	ubi->move_to_put =3D ubi->wl_scheduled =3D 0;=0A=
- 	spin_unlock(&ubi->wl_lock);=0A=
- =0A=
--	err =3D schedule_erase(ubi, e1, 0);=0A=
-+	err =3D schedule_erase(ubi, e1, scrubbing);=0A=
- 	if (err) {=0A=
- 		kmem_cache_free(ubi_wl_entry_slab, e1);=0A=
- 		if (e2)=0A=
-=0A=
-=0A=
+
+--3aDtFGIaURYlkDgg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Jul 08, 2013 at 10:25:38PM +0200, Maxime Ripard wrote:
+> On Mon, Jul 08, 2013 at 09:34:26AM +0100, Mark Brown wrote:
+
+> > I'd really like to see more discussion of this "DT parsing code for
+> > regmap" idea...  I've missed almost all the context here.
+
+> The context was that I found we lack a way to simply express the need
+> for one driver to get a value from an EEPROM-like device, for example to
+> get a MAC Address, or a serial number, in a generic way, without having
+> to poke directly with some custom function that would be exported by the
+> EEPROM driver.
+
+This sort of information is often stored in places like flash partitions
+too.  Are we sure that regmap is a good place to be hooking in here?
+The use case is sane, and being able to use regmap to do some of it
+seems sensible (I've seen people use OTP in PMICs for similar purposes)
+but perhaps an additional layer of abstraction on top makes sense.
+
+> What we've been discussing so far is that:
+>   - To have a common framework we could base our work on, we could move
+>     the EEPROM drivers from drivers/misc/eeprom to MTD
+>   - To declare the ranges that needed to be used by a driver that was
+>     needing a value from one of those MTD drivers, we would use regmap
+>     with a MTD backend
+>   - And since we actually need to declare which ranges and in which
+>     device one driver would have to retrieve this value from, we were
+>     actually in need of DT bindings.
+
+> This is pretty much the only context involved, and we are at the early
+> stage of the discussion, so any comment is very welcome :)
+
+If this stuff is being represented in MTD doesn't MTD already have
+adequate abstractions for saying "this region in flash".  But otherwise
+this seems fine, it's not a generic regmap DT binding but instead rather
+more specific than that.
+
+--3aDtFGIaURYlkDgg
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR3CRLAAoJELSic+t+oim9/fkQAIfgoN5SRhyj8ZAbGa4b4Ulm
+JzOoeIMuSKHxri5+dpG4mpCtORIrDq+dThd+c6plhBVBLZlJ2UoCT7NatfGB6jqM
+PFmZQ43nOZVcWwR291arCyG8b6gpd2c1AzrO3Ofufw0dlm3GgPKs4EuEZszPunoy
+Mkad+y8z0iGOvHEzXm0fAs4zC5tjHEVkgLToHxogZ6McF9OrIMrLey2BeUwvQJIY
+GQppcVJagLrRAROKECWfmdjlJSmkr3QqyZMMG/uaQovSVuJOPyDOBysE5i8XsBWY
+7nnH14YXykmw6oUzH45E9ZBpI0R51VVhvMIdvIJMxqsclTd6M1y2JJxJV8AxhnJt
+odb7sMGEbEV2yUO7sSBFPLoAuPrT8GIO5IvNuJE0JP9b04O2Dvq/NDl8puhVw5Jo
+o+k3+y5WI3+PJDVrxKlp+w7Vuu6C0EOomQHYaEq8xhhkwwehIdtUMHXiPPU06ztm
+vXfzCVWWbaiEDHXX14tGP4Y+s14+3Tv/R6X+1+uyCyDflCJ+gIDq87uLLB9wnfpL
+V02xc/brP8Hu+cnedVgnzPx4NlzqHDhgNFifwpejx72zBJHDtW4w3TrxjaPvLw5a
+WVirvW65t8rHgxgA4Nw+p3ven3rEKfkW7Cn9mMVnJycFcrDO/NunI71tu1Oxr18A
+Q9Xq6ZRpziwfbvLdqhBj
+=OEHm
+-----END PGP SIGNATURE-----
+
+--3aDtFGIaURYlkDgg--
