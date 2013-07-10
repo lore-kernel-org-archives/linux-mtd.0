@@ -1,13 +1,19 @@
-MIME-Version: 1.0
-Date: Wed, 10 Jul 2013 16:34:24 +0800
-Message-ID: <CAHSAbzP0Nc1ahf_ra6yDuMvV998_+EGcUOGDv5ifKaagYf+NOg@mail.gmail.com>
-Subject: SPI: support DUAL and QUAD[patch v1]
-From: yuhang wang <wangyuhang2014@gmail.com>
-To: Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd <linux-mtd-bounces@lists.infradead.org>,
- Grant Likely <grant.likely@secretlab.ca>, Sourav Poddar <sourav.poddar@ti.com>,
- linux-mtd@lists.infradead.org, spi-devel-general@lists.sourceforge.net
+Received: from f159.i.mail.ru ([128.140.171.248])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Uwpvy-0005Y5-Lk
+ for linux-mtd@lists.infradead.org; Wed, 10 Jul 2013 08:39:35 +0000
+Received: from mail by f159.i.mail.ru with local (envelope-from
+ <shc_work@mail.ru>) id 1Uwpva-0000ir-K4
+ for linux-mtd@lists.infradead.org; Wed, 10 Jul 2013 12:39:10 +0400
+From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+To: linux-mtd@lists.infradead.org
+Subject: =?UTF-8?B?UmVzZW5kOiBOQU5EIDE2Yml0IE9ORkkgcHJvYmxlbQ==?=
+Mime-Version: 1.0
+Date: Wed, 10 Jul 2013 12:39:10 +0400
+Message-ID: <1373445550.346364381@f159.i.mail.ru>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
+Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,135 +23,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-The patch below is to make spi framework support dual(2x) and quad(4x).
-Bus the name of members may still look strange, so I need some suggestions.
-Thanks.
-
->From f33f5935776aa0b44b01a36f88e47ba0cfe8fd21 Mon Sep 17 00:00:00 2001
-From: wangyuhang <wangyuhang2014@gmail.com>
-Date: Wed, 10 Jul 2013 16:22:19 +0800
-Subject: [PATCH] spi final patch v2 Signed-off-by: wangyuhang
- <wangyuhang2014@gmail.com>
-
-Signed-off-by: wangyuhang <wangyuhang2014@gmail.com>
----
- drivers/spi/spi.c       |    6 ++++++
- include/linux/spi/spi.h |   31 +++++++++++++++++++++++++++++++
- 2 files changed, 37 insertions(+)
-
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 004b10f..af28a62 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -452,6 +452,8 @@ struct spi_device *spi_new_device(struct spi_master *master,
-  proxy->irq = chip->irq;
-  strlcpy(proxy->modalias, chip->modalias, sizeof(proxy->modalias));
-  proxy->dev.platform_data = (void *) chip->platform_data;
-+ proxy->tx_nbits = chip->tx_nbits ? chip->tx_nbits : SPI_NBITS_SINGLE;
-+ proxy->rx_nbits = chip->rx_nbits ? chip->rx_nbits : SPI_NBITS_SINGLE;
-  proxy->controller_data = chip->controller_data;
-  proxy->controller_state = NULL;
-
-@@ -1376,6 +1378,10 @@ static int __spi_async(struct spi_device *spi,
-struct spi_message *message)
-  xfer->bits_per_word = spi->bits_per_word;
-  if (!xfer->speed_hz)
-  xfer->speed_hz = spi->max_speed_hz;
-+ if (!xfer->tx_nbits)
-+ xfer->tx_nbits = SPI_NBITS_SINGLE;
-+ if (!xfer->rx_nbits)
-+ xfer->rx_nbits = SPI_NBITS_SINGLE;
-  }
-
-  message->spi = spi;
-diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-index 38c2b92..d9b3746 100644
---- a/include/linux/spi/spi.h
-+++ b/include/linux/spi/spi.h
-@@ -59,6 +59,10 @@ extern struct bus_type spi_bus_type;
-  * for driver coldplugging, and in uevents used for hotplugging
-  * @cs_gpio: gpio number of the chipselect line (optional, -EINVAL when
-  * when not using a GPIO line)
-+ * @tx_nbits: number of bits used in tx, get from @spi_board_info
-+ * (optional, 1bit as init value if not set in @spi_board_info)
-+ * @rx_nbits: number of bits used in rx, get from @spi_board_info
-+ * (optional, 1bit as init value if not set in @spi_board_info)
-  *
-  * A @spi_device is used to interchange data between an SPI slave
-  * (usually a discrete chip) and CPU memory.
-@@ -93,6 +97,8 @@ struct spi_device {
-  void *controller_data;
-  char modalias[SPI_NAME_SIZE];
-  int cs_gpio; /* chip select gpio */
-+ u8 tx_nbits; /* num of bits used in tx */
-+ u8 rx_nbits; /* num of bits used in rx */
-
-  /*
-  * likely need more hooks for more protocol options affecting how
-@@ -437,6 +443,10 @@ extern struct spi_master *spi_busnum_to_master(u16 busnum);
-  * @rx_buf: data to be read (dma-safe memory), or NULL
-  * @tx_dma: DMA address of tx_buf, if @spi_message.is_dma_mapped
-  * @rx_dma: DMA address of rx_buf, if @spi_message.is_dma_mapped
-+ * @tx_nbits: number of bits used for writting, if 0 default
-+ * (SPI_NBITS_SINGLE = 0x01) is used.
-+ * @rx_nbits: number of bits used for reading, if 0 default
-+ * (SPI_NBITS_SINGLE = 0x01) is used.
-  * @len: size of rx and tx buffers (in bytes)
-  * @speed_hz: Select a speed other than the device default for this
-  *      transfer. If 0 the default (from @spi_device) is used.
-@@ -491,6 +501,11 @@ extern struct spi_master *spi_busnum_to_master(u16 busnum);
-  * by the results of previous messages and where the whole transaction
-  * ends when the chipselect goes intactive.
-  *
-+ * When SPI can transfer in 1x,2x or 4x. It can get this tranfer information
-+ * from device through @tx_nbits and @rx_nbits. In Bi-direction, these
-+ * two should both be set. User can set transfer mode with SPI_NBITS_SINGLE(1x)
-+ * SPI_NBITS_DUAL(2x) and SPI_NBITS_QUAD(4x) to support these three transfer.
-+ *
-  * The code that submits an spi_message (and its spi_transfers)
-  * to the lower layers is responsible for managing its memory.
-  * Zero-initialize every field you don't set up explicitly, to
-@@ -510,6 +525,12 @@ struct spi_transfer {
-  dma_addr_t tx_dma;
-  dma_addr_t rx_dma;
-
-+ u8 tx_nbits;
-+ u8 rx_nbits;
-+#define SPI_NBITS_SINGLE 0x01; /* 1bit transfer */
-+#define SPI_NBITS_DUAL 0x02; /* 2bits transfer */
-+#define SPI_NBITS_QUAD 0x03; /* 4bits transfer */
-+
-  unsigned cs_change:1;
-  u8 bits_per_word;
-  u16 delay_usecs;
-@@ -815,6 +836,10 @@ static inline ssize_t spi_w8r16(struct spi_device
-*spi, u8 cmd)
-  * @mode: Initializes spi_device.mode; based on the chip datasheet, board
-  * wiring (some devices support both 3WIRE and standard modes), and
-  * possibly presence of an inverter in the chipselect path.
-+ * @tx_nbits: Initializes spi_device.tx_nbits; depends on the number of bits
-+ * the board used in tx.
-+ * @rx_nbits: Initializes spi_device.rx_nbits; depends on the number of bits
-+ * the board used in rx.
-  *
-  * When adding new SPI devices to the device tree, these structures serve
-  * as a partial device template.  They hold information which can't always
-@@ -859,6 +884,12 @@ struct spi_board_info {
-  * where the default of SPI_CS_HIGH = 0 is wrong.
-  */
-  u8 mode;
-+ /* tx_nbits initialized for spi_device.tx_nbits and
-+ * rx_nbits initialized for spi_device.rx_nbits. These members
-+ * used to describe the how many lines used in tx and rx.
-+ */
-+ u8 tx_nbits;
-+ u8 rx_nbits;
-
-  /* ... may need additional spi_device chip config data here.
-  * avoid stuff protocol drivers can set; but include stuff
---
-1.7.9.5
-
-Best Regards.
+SGVsbG8uCgpVcGRhdGVkOiBTYW1lIGVmZmVjdCBmb3IgMy4xMCBrZXJuZWwuCgotLS0tLS0tLQoK
+SSBoYXZlIGEgcHJvYmxlbSB3aXRoIGF0dGFjaCBOQU5EIFVCSSBpbiAxNiBiaXQgbW9kZS4KTkFO
+RCB3b3JrcyBmaW5lIGlmIEkgc3BlY2lmeSBOQU5EX0JVU1dJRFRIXzE2IG9wdGlvbiwgYnV0IG5v
+dAp3b3JraW5nIHdpdGggTkFORF9CVVNXSURUSF9BVVRPIG9wdGlvbi4gSW4gc2Vjb25kIGNhc2Ug
+TkFORApjaGlwIGlzIGlkZW50aWZ5ZWQgd2l0aCBPTkZJLiBMb2dzIGJlbG93LgpDYW4gYW55b25l
+IGhlbHAgbWUgd2l0aCB0aGlzIGlzc3VlPyBJcyBpdCBhIGtub3duIHByb2JsZW0/ClRoYW5rcy4K
+UFM6IEtlcm5lbCAzLjkuMwoKTmV3IGNoaXAsIGZpcnN0IHN0YXJ0LCBOQU5EX0JVU1dJRFRIX0FV
+VE86CgpPTkZJIHBhcmFtIHBhZ2UgMCB2YWxpZApPTkZJIGZsYXNoIGRldGVjdGVkCk5BTkQgZGV2
+aWNlOiBNYW51ZmFjdHVyZXIgSUQ6IDB4MmMsIENoaXAgSUQ6IDB4Y2EgKE1pY3JvbiBNVDI5RjJH
+MTZBQkFFQVdQKSwgMjU2TWlCLCBwYWdlIHNpemU6IDIwNDgsIE9PQiBzaXplOiA2NApTY2Fubmlu
+ZyBkZXZpY2UgZm9yIGJhZCBibG9ja3MKQ3JlYXRpbmcgMSBNVEQgcGFydGl0aW9ucyBvbiAiTVQy
+OUYyRzE2QUJBRUFXUCI6CjB4MDAwMDAwMDAwMDAwLTB4MDAwMDEwMDAwMDAwIDogIm5hbmQtZ3Bp
+byIKVUJJOiBhdHRhY2hpbmcgbXRkNCB0byB1YmkwClVCSTogc2Nhbm5pbmcgaXMgZmluaXNoZWQK
+VUJJOiBlbXB0eSBNVEQgZGV2aWNlIGRldGVjdGVkClVCSTogYXR0YWNoZWQgbXRkNCAobmFtZSAi
+bmFuZC1ncGlvIiwgc2l6ZSAyNTYgTWlCKSB0byB1YmkwClVCSTogUEVCIHNpemU6IDEzMTA3MiBi
+eXRlcyAoMTI4IEtpQiksIExFQiBzaXplOiAxMjkwMjQgYnl0ZXMKVUJJOiBtaW4uL21heC4gSS9P
+IHVuaXQgc2l6ZXM6IDIwNDgvMjA0OCwgc3ViLXBhZ2Ugc2l6ZSA1MTIKVUJJOiBWSUQgaGVhZGVy
+IG9mZnNldDogNTEyIChhbGlnbmVkIDUxMiksIGRhdGEgb2Zmc2V0OiAyMDQ4ClVCSTogZ29vZCBQ
+RUJzOiAyMDQ4LCBiYWQgUEVCczogMCwgY29ycnVwdGVkIFBFQnM6IDAKVUJJOiB1c2VyIHZvbHVt
+ZTogMCwgaW50ZXJuYWwgdm9sdW1lczogMSwgbWF4LiB2b2x1bWVzIGNvdW50OiAxMjgKVUJJOiBt
+YXgvbWVhbiBlcmFzZSBjb3VudGVyOiAwLzAsIFdMIHRocmVzaG9sZDogNDA5NiwgaW1hZ2Ugc2Vx
+dWVuY2UgbnVtYmVyOiAyOTIwNDc1NjUwClVCSTogYXZhaWxhYmxlIFBFQnM6IDIwMDQsIHRvdGFs
+IHJlc2VydmVkIFBFQnM6IDQ0LCBQRUJzIHJlc2VydmVkIGZvciBiYWQgUEVCIGhhbmRsaW5nOiA0
+MApVQkk6IGJhY2tncm91bmQgdGhyZWFkICJ1YmlfYmd0MGQiIHN0YXJ0ZWQsIFBJRCAyMgoKCnN5
+bmMgJiYgcmVib290OgoKT05GSSBwYXJhbSBwYWdlIDAgdmFsaWQKT05GSSBmbGFzaCBkZXRlY3Rl
+ZApOQU5EIGRldmljZTogTWFudWZhY3R1cmVyIElEOiAweDJjLCBDaGlwIElEOiAweGNhIChNaWNy
+b24gTVQyOUYyRzE2QUJBRUFXUCksIDI1Nk1pQiwgcGFnZSBzaXplOiAyMDQ4LCBPT0Igc2l6ZTog
+NjQKU2Nhbm5pbmcgZGV2aWNlIGZvciBiYWQgYmxvY2tzCkNyZWF0aW5nIDEgTVREIHBhcnRpdGlv
+bnMgb24gIk1UMjlGMkcxNkFCQUVBV1AiOgoweDAwMDAwMDAwMDAwMC0weDAwMDAxMDAwMDAwMCA6
+ICJuYW5kLWdwaW8iClVCSTogYXR0YWNoaW5nIG10ZDQgdG8gdWJpMApVQkk6IGZpeGFibGUgYml0
+LWZsaXAgZGV0ZWN0ZWQgYXQgUEVCIDIKVUJJOiBmaXhhYmxlIGJpdC1mbGlwIGRldGVjdGVkIGF0
+IFBFQiAzClVCSTogZml4YWJsZSBiaXQtZmxpcCBkZXRlY3RlZCBhdCBQRUIgNApVQkk6IGZpeGFi
+bGUgYml0LWZsaXAgZGV0ZWN0ZWQgYXQgUEVCIDUKVUJJOiBmaXhhYmxlIGJpdC1mbGlwIGRldGVj
+dGVkIGF0IFBFQiA2ClVCSTogZml4YWJsZSBiaXQtZmxpcCBkZXRlY3RlZCBhdCBQRUIgNwouLi4K
+CgpOQU5EX0JVU1dJRFRIXzE2OgoKVHJ5aW5nIE9ORkkgcHJvYmUgaW4gMTYgYml0cyBtb2RlLCBh
+Ym9ydGluZyAhCk5BTkQgZGV2aWNlOiBNYW51ZmFjdHVyZXIgSUQ6IDB4MmMsIENoaXAgSUQ6IDB4
+Y2EgKE1pY3JvbiBOQU5EIDI1Nk1pQiAzLDNWIDE2LWJpdCksIDI1Nk1pQiwgcGFnZSBzaXplOiAy
+MDQ4LCBPT0Igc2l6ZTogNjQKU2Nhbm5pbmcgZGV2aWNlIGZvciBiYWQgYmxvY2tzCkNyZWF0aW5n
+IDEgTVREIHBhcnRpdGlvbnMgb24gIk5BTkQgMjU2TWlCIDMsM1YgMTYtYml0IjoKMHgwMDAwMDAw
+MDAwMDAtMHgwMDAwMTAwMDAwMDAgOiAibmFuZC1ncGlvIgpVQkk6IGF0dGFjaGluZyBtdGQ0IHRv
+IHViaTAKVUJJOiBzY2FubmluZyBpcyBmaW5pc2hlZApVQkk6IGVtcHR5IE1URCBkZXZpY2UgZGV0
+ZWN0ZWQKVUJJOiBhdHRhY2hlZCBtdGQ0IChuYW1lICJuYW5kLWdwaW8iLCBzaXplIDI1NiBNaUIp
+IHRvIHViaTAKVUJJOiBQRUIgc2l6ZTogMTMxMDcyIGJ5dGVzICgxMjggS2lCKSwgTEVCIHNpemU6
+IDEyOTAyNCBieXRlcwpVQkk6IG1pbi4vbWF4LiBJL08gdW5pdCBzaXplczogMjA0OC8yMDQ4LCBz
+dWItcGFnZSBzaXplIDUxMgpVQkk6IFZJRCBoZWFkZXIgb2Zmc2V0OiA1MTIgKGFsaWduZWQgNTEy
+KSwgZGF0YSBvZmZzZXQ6IDIwNDgKVUJJOiBnb29kIFBFQnM6IDIwNDgsIGJhZCBQRUJzOiAwLCBj
+b3JydXB0ZWQgUEVCczogMApVQkk6IHVzZXIgdm9sdW1lOiAwLCBpbnRlcm5hbCB2b2x1bWVzOiAx
+LCBtYXguIHZvbHVtZXMgY291bnQ6IDEyOApVQkk6IG1heC9tZWFuIGVyYXNlIGNvdW50ZXI6IDAv
+MCwgV0wgdGhyZXNob2xkOiA0MDk2LCBpbWFnZSBzZXF1ZW5jZSBudW1iZXI6IDI1NzMxODIwMjQK
+VUJJOiBhdmFpbGFibGUgUEVCczogMjAwNCwgdG90YWwgcmVzZXJ2ZWQgUEVCczogNDQsIFBFQnMg
+cmVzZXJ2ZWQgZm9yIGJhZCBQRUIgaGFuZGxpbmc6IDQwClVCSTogYmFja2dyb3VuZCB0aHJlYWQg
+InViaV9iZ3QwZCIgc3RhcnRlZCwgUElEIDIzCgotLS0tLS0tLS0tLS0tLS0tCgotLS0K
