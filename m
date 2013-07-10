@@ -1,19 +1,21 @@
-Received: from f159.i.mail.ru ([128.140.171.248])
+Received: from multi.imgtec.com ([194.200.65.239])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Uwpvy-0005Y5-Lk
- for linux-mtd@lists.infradead.org; Wed, 10 Jul 2013 08:39:35 +0000
-Received: from mail by f159.i.mail.ru with local (envelope-from
- <shc_work@mail.ru>) id 1Uwpva-0000ir-K4
- for linux-mtd@lists.infradead.org; Wed, 10 Jul 2013 12:39:10 +0400
-From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
-To: linux-mtd@lists.infradead.org
-Subject: =?UTF-8?B?UmVzZW5kOiBOQU5EIDE2Yml0IE9ORkkgcHJvYmxlbQ==?=
-Mime-Version: 1.0
-Date: Wed, 10 Jul 2013 12:39:10 +0400
-Message-ID: <1373445550.346364381@f159.i.mail.ru>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+ id 1UwpyR-0005by-G5
+ for linux-mtd@lists.infradead.org; Wed, 10 Jul 2013 08:42:08 +0000
+Message-ID: <51DD1E0F.80101@imgtec.com>
+Date: Wed, 10 Jul 2013 09:40:47 +0100
+From: James Hogan <james.hogan@imgtec.com>
+MIME-Version: 1.0
+To: Rusty Russell <rusty@rustcorp.com.au>
+Subject: Re: [RESEND][PATCH] mtd: refactor call to request_module
+References: <20130708130512.GA24315@www.outflux.net>
+ <87hag3cdp0.fsf@rustcorp.com.au>
+In-Reply-To: <87hag3cdp0.fsf@rustcorp.com.au>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
+ David Woodhouse <dwmw2@infradead.org>, Kees Cook <keescook@chromium.org>,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,55 +25,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG8uCgpVcGRhdGVkOiBTYW1lIGVmZmVjdCBmb3IgMy4xMCBrZXJuZWwuCgotLS0tLS0tLQoK
-SSBoYXZlIGEgcHJvYmxlbSB3aXRoIGF0dGFjaCBOQU5EIFVCSSBpbiAxNiBiaXQgbW9kZS4KTkFO
-RCB3b3JrcyBmaW5lIGlmIEkgc3BlY2lmeSBOQU5EX0JVU1dJRFRIXzE2IG9wdGlvbiwgYnV0IG5v
-dAp3b3JraW5nIHdpdGggTkFORF9CVVNXSURUSF9BVVRPIG9wdGlvbi4gSW4gc2Vjb25kIGNhc2Ug
-TkFORApjaGlwIGlzIGlkZW50aWZ5ZWQgd2l0aCBPTkZJLiBMb2dzIGJlbG93LgpDYW4gYW55b25l
-IGhlbHAgbWUgd2l0aCB0aGlzIGlzc3VlPyBJcyBpdCBhIGtub3duIHByb2JsZW0/ClRoYW5rcy4K
-UFM6IEtlcm5lbCAzLjkuMwoKTmV3IGNoaXAsIGZpcnN0IHN0YXJ0LCBOQU5EX0JVU1dJRFRIX0FV
-VE86CgpPTkZJIHBhcmFtIHBhZ2UgMCB2YWxpZApPTkZJIGZsYXNoIGRldGVjdGVkCk5BTkQgZGV2
-aWNlOiBNYW51ZmFjdHVyZXIgSUQ6IDB4MmMsIENoaXAgSUQ6IDB4Y2EgKE1pY3JvbiBNVDI5RjJH
-MTZBQkFFQVdQKSwgMjU2TWlCLCBwYWdlIHNpemU6IDIwNDgsIE9PQiBzaXplOiA2NApTY2Fubmlu
-ZyBkZXZpY2UgZm9yIGJhZCBibG9ja3MKQ3JlYXRpbmcgMSBNVEQgcGFydGl0aW9ucyBvbiAiTVQy
-OUYyRzE2QUJBRUFXUCI6CjB4MDAwMDAwMDAwMDAwLTB4MDAwMDEwMDAwMDAwIDogIm5hbmQtZ3Bp
-byIKVUJJOiBhdHRhY2hpbmcgbXRkNCB0byB1YmkwClVCSTogc2Nhbm5pbmcgaXMgZmluaXNoZWQK
-VUJJOiBlbXB0eSBNVEQgZGV2aWNlIGRldGVjdGVkClVCSTogYXR0YWNoZWQgbXRkNCAobmFtZSAi
-bmFuZC1ncGlvIiwgc2l6ZSAyNTYgTWlCKSB0byB1YmkwClVCSTogUEVCIHNpemU6IDEzMTA3MiBi
-eXRlcyAoMTI4IEtpQiksIExFQiBzaXplOiAxMjkwMjQgYnl0ZXMKVUJJOiBtaW4uL21heC4gSS9P
-IHVuaXQgc2l6ZXM6IDIwNDgvMjA0OCwgc3ViLXBhZ2Ugc2l6ZSA1MTIKVUJJOiBWSUQgaGVhZGVy
-IG9mZnNldDogNTEyIChhbGlnbmVkIDUxMiksIGRhdGEgb2Zmc2V0OiAyMDQ4ClVCSTogZ29vZCBQ
-RUJzOiAyMDQ4LCBiYWQgUEVCczogMCwgY29ycnVwdGVkIFBFQnM6IDAKVUJJOiB1c2VyIHZvbHVt
-ZTogMCwgaW50ZXJuYWwgdm9sdW1lczogMSwgbWF4LiB2b2x1bWVzIGNvdW50OiAxMjgKVUJJOiBt
-YXgvbWVhbiBlcmFzZSBjb3VudGVyOiAwLzAsIFdMIHRocmVzaG9sZDogNDA5NiwgaW1hZ2Ugc2Vx
-dWVuY2UgbnVtYmVyOiAyOTIwNDc1NjUwClVCSTogYXZhaWxhYmxlIFBFQnM6IDIwMDQsIHRvdGFs
-IHJlc2VydmVkIFBFQnM6IDQ0LCBQRUJzIHJlc2VydmVkIGZvciBiYWQgUEVCIGhhbmRsaW5nOiA0
-MApVQkk6IGJhY2tncm91bmQgdGhyZWFkICJ1YmlfYmd0MGQiIHN0YXJ0ZWQsIFBJRCAyMgoKCnN5
-bmMgJiYgcmVib290OgoKT05GSSBwYXJhbSBwYWdlIDAgdmFsaWQKT05GSSBmbGFzaCBkZXRlY3Rl
-ZApOQU5EIGRldmljZTogTWFudWZhY3R1cmVyIElEOiAweDJjLCBDaGlwIElEOiAweGNhIChNaWNy
-b24gTVQyOUYyRzE2QUJBRUFXUCksIDI1Nk1pQiwgcGFnZSBzaXplOiAyMDQ4LCBPT0Igc2l6ZTog
-NjQKU2Nhbm5pbmcgZGV2aWNlIGZvciBiYWQgYmxvY2tzCkNyZWF0aW5nIDEgTVREIHBhcnRpdGlv
-bnMgb24gIk1UMjlGMkcxNkFCQUVBV1AiOgoweDAwMDAwMDAwMDAwMC0weDAwMDAxMDAwMDAwMCA6
-ICJuYW5kLWdwaW8iClVCSTogYXR0YWNoaW5nIG10ZDQgdG8gdWJpMApVQkk6IGZpeGFibGUgYml0
-LWZsaXAgZGV0ZWN0ZWQgYXQgUEVCIDIKVUJJOiBmaXhhYmxlIGJpdC1mbGlwIGRldGVjdGVkIGF0
-IFBFQiAzClVCSTogZml4YWJsZSBiaXQtZmxpcCBkZXRlY3RlZCBhdCBQRUIgNApVQkk6IGZpeGFi
-bGUgYml0LWZsaXAgZGV0ZWN0ZWQgYXQgUEVCIDUKVUJJOiBmaXhhYmxlIGJpdC1mbGlwIGRldGVj
-dGVkIGF0IFBFQiA2ClVCSTogZml4YWJsZSBiaXQtZmxpcCBkZXRlY3RlZCBhdCBQRUIgNwouLi4K
-CgpOQU5EX0JVU1dJRFRIXzE2OgoKVHJ5aW5nIE9ORkkgcHJvYmUgaW4gMTYgYml0cyBtb2RlLCBh
-Ym9ydGluZyAhCk5BTkQgZGV2aWNlOiBNYW51ZmFjdHVyZXIgSUQ6IDB4MmMsIENoaXAgSUQ6IDB4
-Y2EgKE1pY3JvbiBOQU5EIDI1Nk1pQiAzLDNWIDE2LWJpdCksIDI1Nk1pQiwgcGFnZSBzaXplOiAy
-MDQ4LCBPT0Igc2l6ZTogNjQKU2Nhbm5pbmcgZGV2aWNlIGZvciBiYWQgYmxvY2tzCkNyZWF0aW5n
-IDEgTVREIHBhcnRpdGlvbnMgb24gIk5BTkQgMjU2TWlCIDMsM1YgMTYtYml0IjoKMHgwMDAwMDAw
-MDAwMDAtMHgwMDAwMTAwMDAwMDAgOiAibmFuZC1ncGlvIgpVQkk6IGF0dGFjaGluZyBtdGQ0IHRv
-IHViaTAKVUJJOiBzY2FubmluZyBpcyBmaW5pc2hlZApVQkk6IGVtcHR5IE1URCBkZXZpY2UgZGV0
-ZWN0ZWQKVUJJOiBhdHRhY2hlZCBtdGQ0IChuYW1lICJuYW5kLWdwaW8iLCBzaXplIDI1NiBNaUIp
-IHRvIHViaTAKVUJJOiBQRUIgc2l6ZTogMTMxMDcyIGJ5dGVzICgxMjggS2lCKSwgTEVCIHNpemU6
-IDEyOTAyNCBieXRlcwpVQkk6IG1pbi4vbWF4LiBJL08gdW5pdCBzaXplczogMjA0OC8yMDQ4LCBz
-dWItcGFnZSBzaXplIDUxMgpVQkk6IFZJRCBoZWFkZXIgb2Zmc2V0OiA1MTIgKGFsaWduZWQgNTEy
-KSwgZGF0YSBvZmZzZXQ6IDIwNDgKVUJJOiBnb29kIFBFQnM6IDIwNDgsIGJhZCBQRUJzOiAwLCBj
-b3JydXB0ZWQgUEVCczogMApVQkk6IHVzZXIgdm9sdW1lOiAwLCBpbnRlcm5hbCB2b2x1bWVzOiAx
-LCBtYXguIHZvbHVtZXMgY291bnQ6IDEyOApVQkk6IG1heC9tZWFuIGVyYXNlIGNvdW50ZXI6IDAv
-MCwgV0wgdGhyZXNob2xkOiA0MDk2LCBpbWFnZSBzZXF1ZW5jZSBudW1iZXI6IDI1NzMxODIwMjQK
-VUJJOiBhdmFpbGFibGUgUEVCczogMjAwNCwgdG90YWwgcmVzZXJ2ZWQgUEVCczogNDQsIFBFQnMg
-cmVzZXJ2ZWQgZm9yIGJhZCBQRUIgaGFuZGxpbmc6IDQwClVCSTogYmFja2dyb3VuZCB0aHJlYWQg
-InViaV9iZ3QwZCIgc3RhcnRlZCwgUElEIDIzCgotLS0tLS0tLS0tLS0tLS0tCgotLS0K
+On 10/07/13 04:10, Rusty Russell wrote:
+> Kees Cook <keescook@chromium.org> writes:
+>> This reduces the size of the stack frame when calling request_module().
+>> Performing the sprintf before the call is not needed.
+>>
+>> Signed-off-by: Kees Cook <keescook@chromium.org>
+> 
+> Acked-by: Rusty Russell <rusty@rustcorp.com.au>
+
+I remember reviewing this before, so feel free to add my:
+
+Reviewed-by: James Hogan <james.hogan@imgtec.com>
+
+Cheers
+James
