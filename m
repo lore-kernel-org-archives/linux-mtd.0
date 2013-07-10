@@ -1,18 +1,13 @@
-Received: from ozlabs.org ([203.10.76.45])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UwlZ1-0001ae-TY
- for linux-mtd@lists.infradead.org; Wed, 10 Jul 2013 03:59:36 +0000
-From: Rusty Russell <rusty@rustcorp.com.au>
-To: Kees Cook <keescook@chromium.org>, akpm@linux-foundation.org
-Subject: Re: [RESEND][PATCH] mtd: refactor call to request_module
-In-Reply-To: <20130708130512.GA24315@www.outflux.net>
-References: <20130708130512.GA24315@www.outflux.net>
-Date: Wed, 10 Jul 2013 12:40:35 +0930
-Message-ID: <87hag3cdp0.fsf@rustcorp.com.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-mtd@lists.infradead.org, James Hogan <james.hogan@imgtec.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
+Date: Wed, 10 Jul 2013 16:34:24 +0800
+Message-ID: <CAHSAbzP0Nc1ahf_ra6yDuMvV998_+EGcUOGDv5ifKaagYf+NOg@mail.gmail.com>
+Subject: SPI: support DUAL and QUAD[patch v1]
+From: yuhang wang <wangyuhang2014@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd <linux-mtd-bounces@lists.infradead.org>,
+ Grant Likely <grant.likely@secretlab.ca>, Sourav Poddar <sourav.poddar@ti.com>,
+ linux-mtd@lists.infradead.org, spi-devel-general@lists.sourceforge.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,45 +17,135 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Kees Cook <keescook@chromium.org> writes:
-> This reduces the size of the stack frame when calling request_module().
-> Performing the sprintf before the call is not needed.
->
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+Hi,
 
-Acked-by: Rusty Russell <rusty@rustcorp.com.au>
+The patch below is to make spi framework support dual(2x) and quad(4x).
+Bus the name of members may still look strange, so I need some suggestions.
+Thanks.
 
-Thanks,
-Rusty.
+>From f33f5935776aa0b44b01a36f88e47ba0cfe8fd21 Mon Sep 17 00:00:00 2001
+From: wangyuhang <wangyuhang2014@gmail.com>
+Date: Wed, 10 Jul 2013 16:22:19 +0800
+Subject: [PATCH] spi final patch v2 Signed-off-by: wangyuhang
+ <wangyuhang2014@gmail.com>
 
-> ---
->  drivers/mtd/chips/gen_probe.c |    4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
->
-> diff --git a/drivers/mtd/chips/gen_probe.c b/drivers/mtd/chips/gen_probe.c
-> index 74dbb6b..ffb36ba 100644
-> --- a/drivers/mtd/chips/gen_probe.c
-> +++ b/drivers/mtd/chips/gen_probe.c
-> @@ -211,9 +211,7 @@ static inline struct mtd_info *cfi_cmdset_unknown(struct map_info *map,
->  
->  	probe_function = __symbol_get(probename);
->  	if (!probe_function) {
-> -		char modname[sizeof("cfi_cmdset_%4.4X")];
-> -		sprintf(modname, "cfi_cmdset_%4.4X", type);
-> -		request_module(modname);
-> +		request_module("cfi_cmdset_%4.4X", type);
->  		probe_function = __symbol_get(probename);
->  	}
->  
-> -- 
-> 1.7.9.5
->
->
-> -- 
-> Kees Cook
-> Chrome OS Security
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
+Signed-off-by: wangyuhang <wangyuhang2014@gmail.com>
+---
+ drivers/spi/spi.c       |    6 ++++++
+ include/linux/spi/spi.h |   31 +++++++++++++++++++++++++++++++
+ 2 files changed, 37 insertions(+)
+
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 004b10f..af28a62 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -452,6 +452,8 @@ struct spi_device *spi_new_device(struct spi_master *master,
+  proxy->irq = chip->irq;
+  strlcpy(proxy->modalias, chip->modalias, sizeof(proxy->modalias));
+  proxy->dev.platform_data = (void *) chip->platform_data;
++ proxy->tx_nbits = chip->tx_nbits ? chip->tx_nbits : SPI_NBITS_SINGLE;
++ proxy->rx_nbits = chip->rx_nbits ? chip->rx_nbits : SPI_NBITS_SINGLE;
+  proxy->controller_data = chip->controller_data;
+  proxy->controller_state = NULL;
+
+@@ -1376,6 +1378,10 @@ static int __spi_async(struct spi_device *spi,
+struct spi_message *message)
+  xfer->bits_per_word = spi->bits_per_word;
+  if (!xfer->speed_hz)
+  xfer->speed_hz = spi->max_speed_hz;
++ if (!xfer->tx_nbits)
++ xfer->tx_nbits = SPI_NBITS_SINGLE;
++ if (!xfer->rx_nbits)
++ xfer->rx_nbits = SPI_NBITS_SINGLE;
+  }
+
+  message->spi = spi;
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index 38c2b92..d9b3746 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -59,6 +59,10 @@ extern struct bus_type spi_bus_type;
+  * for driver coldplugging, and in uevents used for hotplugging
+  * @cs_gpio: gpio number of the chipselect line (optional, -EINVAL when
+  * when not using a GPIO line)
++ * @tx_nbits: number of bits used in tx, get from @spi_board_info
++ * (optional, 1bit as init value if not set in @spi_board_info)
++ * @rx_nbits: number of bits used in rx, get from @spi_board_info
++ * (optional, 1bit as init value if not set in @spi_board_info)
+  *
+  * A @spi_device is used to interchange data between an SPI slave
+  * (usually a discrete chip) and CPU memory.
+@@ -93,6 +97,8 @@ struct spi_device {
+  void *controller_data;
+  char modalias[SPI_NAME_SIZE];
+  int cs_gpio; /* chip select gpio */
++ u8 tx_nbits; /* num of bits used in tx */
++ u8 rx_nbits; /* num of bits used in rx */
+
+  /*
+  * likely need more hooks for more protocol options affecting how
+@@ -437,6 +443,10 @@ extern struct spi_master *spi_busnum_to_master(u16 busnum);
+  * @rx_buf: data to be read (dma-safe memory), or NULL
+  * @tx_dma: DMA address of tx_buf, if @spi_message.is_dma_mapped
+  * @rx_dma: DMA address of rx_buf, if @spi_message.is_dma_mapped
++ * @tx_nbits: number of bits used for writting, if 0 default
++ * (SPI_NBITS_SINGLE = 0x01) is used.
++ * @rx_nbits: number of bits used for reading, if 0 default
++ * (SPI_NBITS_SINGLE = 0x01) is used.
+  * @len: size of rx and tx buffers (in bytes)
+  * @speed_hz: Select a speed other than the device default for this
+  *      transfer. If 0 the default (from @spi_device) is used.
+@@ -491,6 +501,11 @@ extern struct spi_master *spi_busnum_to_master(u16 busnum);
+  * by the results of previous messages and where the whole transaction
+  * ends when the chipselect goes intactive.
+  *
++ * When SPI can transfer in 1x,2x or 4x. It can get this tranfer information
++ * from device through @tx_nbits and @rx_nbits. In Bi-direction, these
++ * two should both be set. User can set transfer mode with SPI_NBITS_SINGLE(1x)
++ * SPI_NBITS_DUAL(2x) and SPI_NBITS_QUAD(4x) to support these three transfer.
++ *
+  * The code that submits an spi_message (and its spi_transfers)
+  * to the lower layers is responsible for managing its memory.
+  * Zero-initialize every field you don't set up explicitly, to
+@@ -510,6 +525,12 @@ struct spi_transfer {
+  dma_addr_t tx_dma;
+  dma_addr_t rx_dma;
+
++ u8 tx_nbits;
++ u8 rx_nbits;
++#define SPI_NBITS_SINGLE 0x01; /* 1bit transfer */
++#define SPI_NBITS_DUAL 0x02; /* 2bits transfer */
++#define SPI_NBITS_QUAD 0x03; /* 4bits transfer */
++
+  unsigned cs_change:1;
+  u8 bits_per_word;
+  u16 delay_usecs;
+@@ -815,6 +836,10 @@ static inline ssize_t spi_w8r16(struct spi_device
+*spi, u8 cmd)
+  * @mode: Initializes spi_device.mode; based on the chip datasheet, board
+  * wiring (some devices support both 3WIRE and standard modes), and
+  * possibly presence of an inverter in the chipselect path.
++ * @tx_nbits: Initializes spi_device.tx_nbits; depends on the number of bits
++ * the board used in tx.
++ * @rx_nbits: Initializes spi_device.rx_nbits; depends on the number of bits
++ * the board used in rx.
+  *
+  * When adding new SPI devices to the device tree, these structures serve
+  * as a partial device template.  They hold information which can't always
+@@ -859,6 +884,12 @@ struct spi_board_info {
+  * where the default of SPI_CS_HIGH = 0 is wrong.
+  */
+  u8 mode;
++ /* tx_nbits initialized for spi_device.tx_nbits and
++ * rx_nbits initialized for spi_device.rx_nbits. These members
++ * used to describe the how many lines used in tx and rx.
++ */
++ u8 tx_nbits;
++ u8 rx_nbits;
+
+  /* ... may need additional spi_device chip config data here.
+  * avoid stuff protocol drivers can set; but include stuff
+--
+1.7.9.5
+
+Best Regards.
