@@ -1,24 +1,17 @@
-Date: Thu, 11 Jul 2013 19:05:06 +0200
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: MTD EEPROM support and driver integration
-Message-ID: <20130711170506.GZ11243@lukather>
-References: <20130705201118.GM2959@lukather> <5811519.oHVuMujf0I@wuerfel>
- <20130706120112.GA11069@lukather> <8997501.Dchyii8uWX@wuerfel>
- <20130708083426.GO27646@sirena.org.uk>
- <20130708202538.GK11243@lukather>
- <20130709145510.GZ27646@sirena.org.uk>
+Received: from mail-ob0-x22e.google.com ([2607:f8b0:4003:c01::22e])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UxSlM-0006NI-LY
+ for linux-mtd@lists.infradead.org; Fri, 12 Jul 2013 02:07:13 +0000
+Received: by mail-ob0-f174.google.com with SMTP id wd20so10709881obb.5
+ for <linux-mtd@lists.infradead.org>; Thu, 11 Jul 2013 19:06:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="hEarWVD7htqb1VxP"
-Content-Disposition: inline
-In-Reply-To: <20130709145510.GZ27646@sirena.org.uk>
-Cc: Arnd Bergmann <arnd@arndb.de>, Artem Bityutskiy <dedekind1@gmail.com>,
- oliver@schinagl.nl, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Wolfram Sang <wsa@the-dreams.de>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
- Jean Delvare <khali@linux-fr.org>, Shawn Guo <shawn.guo@linaro.org>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Date: Fri, 12 Jul 2013 10:06:50 +0800
+Message-ID: <CAHSAbzMWjDrB94Gp-3x4iUWpFewd81f8aeSg0+8pvsvMop0BQg@mail.gmail.com>
+Subject: M25p80 little bug
+From: yuhang wang <wangyuhang2014@gmail.com>
+To: artem.bityutskiy@linux.intel.com, marex@denx.de, wfp5p@virginia.edu,
+ swarren@nvidia.com, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,89 +21,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
---hEarWVD7htqb1VxP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+There seems two bugs in m25p80 driver.
+1: The position to kmalloc flash->command seems incorrect. Because
+flash->fast_read is not set.
+2: There is no place to free flash if error occur in probe.
 
-Hi Mark,
+>From 4c9c1fc03b5a953b0a95f543de1fbdfc62f28b42 Mon Sep 17 00:00:00 2001
+From: wangyuhang <wangyuhang2014@gmail.com>
+Date: Wed, 10 Jul 2013 16:58:17 +0800
+Subject: [PATCH] m25p80 bug Signed-off-by: wangyuhang
+ <wangyuhang2014@gmail.com>
 
-On Tue, Jul 09, 2013 at 03:55:10PM +0100, Mark Brown wrote:
-> On Mon, Jul 08, 2013 at 10:25:38PM +0200, Maxime Ripard wrote:
-> > On Mon, Jul 08, 2013 at 09:34:26AM +0100, Mark Brown wrote:
->=20
-> > > I'd really like to see more discussion of this "DT parsing code for
-> > > regmap" idea...  I've missed almost all the context here.
->=20
-> > The context was that I found we lack a way to simply express the need
-> > for one driver to get a value from an EEPROM-like device, for example to
-> > get a MAC Address, or a serial number, in a generic way, without having
-> > to poke directly with some custom function that would be exported by the
-> > EEPROM driver.
->=20
-> This sort of information is often stored in places like flash partitions
-> too.  Are we sure that regmap is a good place to be hooking in here?
-> The use case is sane, and being able to use regmap to do some of it
-> seems sensible (I've seen people use OTP in PMICs for similar purposes)
-> but perhaps an additional layer of abstraction on top makes sense.
+Signed-off-by: wangyuhang <wangyuhang2014@gmail.com>
+---
+ drivers/mtd/devices/m25p80.c |   24 ++++++++++++++----------
+ 1 file changed, 14 insertions(+), 10 deletions(-)
 
-Ah, I didn't thought it could be stored into a partition. Ok, so using
-an intermediate abstraction for this makes sense (probably using regmap
-for all the accesses that are relevant, like i2c, spi or mmio)
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 5b6b072..6bb9e2b 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -901,7 +901,7 @@ static int m25p_probe(struct spi_device *spi)
+  struct flash_platform_data *data;
+  struct m25p *flash;
+  struct flash_info *info;
+- unsigned i;
++ unsigned i,ret;
+  struct mtd_part_parser_data ppdata;
+  struct device_node __maybe_unused *np = spi->dev.of_node;
 
-> > What we've been discussing so far is that:
-> >   - To have a common framework we could base our work on, we could move
-> >     the EEPROM drivers from drivers/misc/eeprom to MTD
-> >   - To declare the ranges that needed to be used by a driver that was
-> >     needing a value from one of those MTD drivers, we would use regmap
-> >     with a MTD backend
-> >   - And since we actually need to declare which ranges and in which
-> >     device one driver would have to retrieve this value from, we were
-> >     actually in need of DT bindings.
->=20
-> > This is pretty much the only context involved, and we are at the early
-> > stage of the discussion, so any comment is very welcome :)
->=20
-> If this stuff is being represented in MTD doesn't MTD already have
-> adequate abstractions for saying "this region in flash".  But otherwise
-> this seems fine, it's not a generic regmap DT binding but instead rather
-> more specific than that.
+@@ -958,13 +958,7 @@ static int m25p_probe(struct spi_device *spi)
+  flash = kzalloc(sizeof *flash, GFP_KERNEL);
+  if (!flash)
+  return -ENOMEM;
+- flash->command = kmalloc(MAX_CMD_SIZE + (flash->fast_read ? 1 : 0),
+- GFP_KERNEL);
+- if (!flash->command) {
+- kfree(flash);
+- return -ENOMEM;
+- }
+-
++
+  flash->spi = spi;
+  mutex_init(&flash->lock);
+  dev_set_drvdata(&spi->dev, flash);
+@@ -1031,7 +1025,12 @@ static int m25p_probe(struct spi_device *spi)
+ #ifdef CONFIG_M25PXX_USE_FAST_READ
+  flash->fast_read = true;
+ #endif
+-
++ flash->command = kmalloc(MAX_CMD_SIZE + (flash->fast_read ? 1 : 0),
++ GFP_KERNEL);
++ if (!flash->command) {
++ kfree(flash);
++ return -ENOMEM;
++ }
+  if (info->addr_width)
+  flash->addr_width = info->addr_width;
+  else {
+@@ -1067,9 +1066,14 @@ static int m25p_probe(struct spi_device *spi)
+  /* partitions should match sector boundaries; and it may be good to
+  * use readonly partitions for writeprotected sectors (BP2..BP0).
+  */
+- return mtd_device_parse_register(&flash->mtd, NULL, &ppdata,
++ ret = mtd_device_parse_register(&flash->mtd, NULL, &ppdata,
+  data ? data->parts : NULL,
+  data ? data->nr_parts : 0);
++ if (ret) {
++ kfree(flash->command);
++ kfree(flash);
++ }
++ return ret;
+ }
 
-Yes, since we seem to be going to a point where regmap will be a
-convenience in this case, we probably won't need a generic regmap
-binding, but rather a generic way to define a range and offset into a
-referenced device.
 
-Arnd, the others, is this ok for you?
-
-Maxime
-
---=20
-Maxime Ripard, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
-
---hEarWVD7htqb1VxP
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR3uXCAAoJEBx+YmzsjxAgMugP/28QkZ0Yz7D+Xrk8UsJFiLh9
-jam5T1KOqga2lKB2N4uAnyQiWtuaZMX/ywELmxO7esx2055efI91r8oUj7PO0qJu
-vgW/0d1zDTmRLZ/KdaDj/xvpkiotx6dSQghMXFdAiscIZJEF3XccLg+D8rQd5Vig
-hagL31ateq28hM6GHeb6xE9HSX1uZRPFPrapWjwTAuWpYKNgt5TaEUpO9VIGk5LA
-GEHJJL+wijJoeEF0/9w6Ub06BlUpjt6b86H591oyOQqnhLmABgi7CMPH4qtfrCDS
-RAYahsSgkcKoVYCOD9YjULIgPS7Lh5EjbYoczkn9VDehN8YdSt0Jkhi5Z84ottuX
-6YTbDwtf0o4ijOGbI4My97QuLJ19tYWL0/ACx/yrVYIn+7WEFSxrEsIYgbFthIdn
-GyYjVmUixNFsB6JokjfmWDyak3LfvMfaH4PCZSuFrS+7u2XyEKQoc1hQBaDSCSTa
-8e9jCuvCrB0UaLmasTwflsD/HChv/m8Q4q5uJp0s3ASsg5II+T5eujqdl7EEKcBS
-fklMfHOhBLZ2HoXTRQenaNi/roVLtYqr2j55NHTwjFeZvZbRgMPi9VTPEZzKGM6N
-JFenmvWnrjS0iNuwdn8oqmlg8FHNZmeBaTaZEKholDUkqZTrRS0GujJ5H0wfArrh
-+U6CLMYZX1u3W26egsRW
-=rUP+
------END PGP SIGNATURE-----
-
---hEarWVD7htqb1VxP--
+--
+1.7.9.5
