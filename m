@@ -1,18 +1,17 @@
-Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UxWx3-0001JP-N7
- for linux-mtd@lists.infradead.org; Fri, 12 Jul 2013 06:35:34 +0000
-Received: by mail-pa0-f43.google.com with SMTP id hz11so8614998pad.30
- for <linux-mtd@lists.infradead.org>; Thu, 11 Jul 2013 23:35:08 -0700 (PDT)
-From: wangyuhang <wangyuhang2014@gmail.com>
-To: marex@denx.de
-Subject: [PATCH v2] M25p80 little bugs
-Date: Fri, 12 Jul 2013 14:33:54 +0800
-Message-Id: <1373610834-5240-1-git-send-email-wangyuhang2014@gmail.com>
-In-Reply-To: <wangyuhang2014@gmail.com>
-References: <wangyuhang2014@gmail.com>
-Cc: artem.bityutskiy@linux.intel.com, wfp5p@virginia.edu, swarren@nvidia.com,
- wangyuhang <wangyuhang2014@gmail.com>, linux-mtd@lists.infradead.org
+Received: from mms2.broadcom.com ([216.31.210.18])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UxX4L-0001Rv-7X
+ for linux-mtd@lists.infradead.org; Fri, 12 Jul 2013 06:43:05 +0000
+From: "Kamlakant Patel" <kamlakant.patel@broadcom.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 0/1] MTD: Micron SPINAND Driver support
+Date: Fri, 12 Jul 2013 12:21:06 +0530
+Message-ID: <1373611867-23700-1-git-send-email-kamlakant.patel@broadcom.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Cc: dwmw2@infradead.org, Kamlakant Patel <kamlakant.patel@broadcom.com>,
+ manonuevo@micron.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,50 +21,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Marek
 
-Really sorry for the previous deformed patch.
-And you are right, using devm_kzalloc looks better.
-I have resended the patch, please help me review.
-Thanks.
+This patch is an updated version of the patch http://lists.infradead.org/pipermail/linux-mtd/2010-May/031975.html posted by Mona Anonuevo <manonuevo@micron.com>. The driver has been cleaned up and updated for latest kernel.
 
-Signed-off-by: wangyuhang <wangyuhang2014@gmail.com>
----
- drivers/mtd/devices/m25p80.c |   13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+Summary of the changes to the original driver:
+ 1. The Micron driver used custom framework in spinand_mtd.c, this file is removed
+    and driver now uses standard NAND framework.
+ 2. Added Device tree support to the driver, flash partitions can be defined
+    through device tree.
+ 3. Removed spinand_get_info, and provide the device specific entries to nand_flash_ids(nand_ids.c).
+ 4. Added nand_scan to scan the NAND device, flash ID and setup the MTD fields accordingly.
+ 5. Updated coding style and fixed compilation errors and issues reported by checkpatch.
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 5b6b072..70f3c54 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -955,15 +955,9 @@ static int m25p_probe(struct spi_device *spi)
- 		}
- 	}
- 
--	flash = kzalloc(sizeof *flash, GFP_KERNEL);
-+	flash = devm_kzalloc(&spi->dev, sizeof *flash, GFP_KERNEL);
- 	if (!flash)
- 		return -ENOMEM;
--	flash->command = kmalloc(MAX_CMD_SIZE + (flash->fast_read ? 1 : 0),
--					GFP_KERNEL);
--	if (!flash->command) {
--		kfree(flash);
--		return -ENOMEM;
--	}
- 
- 	flash->spi = spi;
- 	mutex_init(&flash->lock);
-@@ -1032,6 +1026,11 @@ static int m25p_probe(struct spi_device *spi)
- 	flash->fast_read = true;
- #endif
- 
-+	flash->command = devm_kzalloc(&spi->dev,
-+		MAX_CMD_SIZE + (flash->fast_read ? 1 : 0), GFP_KERNEL);
-+	if (!flash->command)
-+		return -ENOMEM;
-+
- 	if (info->addr_width)
- 		flash->addr_width = info->addr_width;
- 	else {
+This driver is tested with Micron SPINAND MT29F1G01ZACH4 chip on kernel 3.10 on the Netlogic XLP platform.
+
+Mona Anonuevo: I have retained your sign-offs from the original patch, please review the patch and let me know if you have any issues with this.
+
+Kamlakant Patel (1):
+  MTD: Micron SPINAND Driver support
+
+ drivers/mtd/nand/Kconfig       |   16 +
+ drivers/mtd/nand/Makefile      |    1 +
+ drivers/mtd/nand/nand_ids.c    |    5 +
+ drivers/mtd/nand/spinand_lld.c |  915 ++++++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/spinand.h    |  109 +++++
+ 5 files changed, 1046 insertions(+)
+ create mode 100644 drivers/mtd/nand/spinand_lld.c
+ create mode 100644 include/linux/mtd/spinand.h
+
 -- 
 1.7.9.5
