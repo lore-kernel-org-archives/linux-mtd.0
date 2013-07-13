@@ -1,17 +1,19 @@
-Received: from mail.free-electrons.com ([94.23.35.102])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UxclJ-00005H-2i
- for linux-mtd@lists.infradead.org; Fri, 12 Jul 2013 12:47:49 +0000
-Date: Fri, 12 Jul 2013 09:47:29 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: linux-mtd@lists.infradead.org
-Subject: No pull for mtd?
-Message-ID: <20130712124728.GB31726@localhost>
+Received: from bear.ext.ti.com ([192.94.94.41])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Uy6qv-0002lc-28
+ for linux-mtd@lists.infradead.org; Sat, 13 Jul 2013 20:55:37 +0000
+From: Pekon Gupta <pekon@ti.com>
+To: <dedekind1@gmail.com>, <dwmw2@infradead.org>, <arnd@arndb.de>,
+ <olof@lixom.net>, <mugunthanvnm@ti.com>
+Subject: [PATCH v5 0/4] mtd:nand:omap2: clean-up of supported ECC schemes
+Date: Sun, 14 Jul 2013 02:24:47 +0530
+Message-ID: <1373748891-7779-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-Cc: dwmw2@infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain
+Cc: tony@atomide.com, devicetree-discuss@lists.ozlabs.org,
+ avinashphilipk@gmail.com, balbi@ti.com, linux-mtd@lists.infradead.org,
+ Pekon Gupta <pekon@ti.com>, benoit.cousson@linaro.org,
+ linux-omap@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,15 +23,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
 
-As the merge window close is just around the corner,
-I wonder if there will be a MTD git pull for 3.11.
+Changes v4 -> v5
+- Rebased to linux-next 
+IMPORTANT: Need to revert commit fb1585b, [PATCH 2/4] part of previous version
+	http://lists.infradead.org/pipermail/linux-mtd/2013-July/047441.html
 
-In particular, I'd like to see the pxa-nand patches, if at all possible.
+- Swapped PATCH-1 & PATCH-2 to maintain bisectibility & compilation dependency
+	http://lists.infradead.org/pipermail/linux-mtd/2013-July/047461.html
 
-Thanks a lot!
+- PATCH-2: re-ordered call to is_elm_present() for later updates ELM driver
+	- dropped changes in include/linux/platform_data/elm.h (not needed)
+- PATCH-3: re-ordered call to is_elm_present() for later updates ELM driver
+- Re-formated patch description (replaced tabs with white-spaces)
+
+
+Changes v3 -> v4
+(Resent with CC: devicetree-discuss@lists.ozlabs.org)
+- [Patch 1/3] removed MTD_NAND_OMAP_BCH8 & MTD_NAND_OMAP_BCH4 from nand/Kconfig
+	ECC scheme selectable via nand DT (nand-ecc-opt).
+- [*] rebased for l2-mtd.git
+
+
+Changes v2 -> v3
+(Resent with Author Name fixed)
+- PATCH-1: re-arranged code to remove redundancy, added NAND_BUSWIDTH_AUTO
+- PATCH-2: updated nand-ecc-opt DT mapping and Documentation
+- PATCH-3: code-cleaning + changes to match PATCH-1
+- PATCH-4 <DROPPED> update DT attribute for ti,nand-ecc-opt 
+	- received feedback to keep DT mapping independent of linuxism
+- PATCH-4:<NEW> : ARM: dts: AM33xx: updated default ECC scheme in nand-ecc-opt
+	- independent patch for AM335x-evm.dts update based on PATCH-2
+
+
+Changes v1 -> v2
+	added 	[PATCH 3/4] and [PATCH 4/4]
+
+
+Patches in this series:
+[PATCH 1/4]->[PATCH v5 2/4]: clean-up and optimization for supported ECC schemes.
+[PATCH 2/4]->[PATCH v5 1/4]: add separate DT options each supported ECC scheme.
+[PATCH 3/4]: update BCH4 ECC implementation (using ELM or using lib/bch.h)
+[PATCH 4/4]: ARM: dts: AM33xx: updated default ECC scheme in nand-ecc-opt
+
+After this patch series, omap2-nand driver will supports following ECC schemes:
++---------------------------------------+---------------+---------------+
+| ECC scheme                            |ECC calculation|Error detection|
++---------------------------------------+---------------+---------------+
+|OMAP_ECC_HAMMING_CODE_DEFAULT          |S/W            |S/W            |
+|OMAP_ECC_HAMMING_CODE_HW               |H/W (GPMC)     |S/W            |
+|OMAP_ECC_HAMMING_CODE_HW_ROMCODE       |H/W (GPMC)     |S/W            |
++---------------------------------------+---------------+---------------+
+|OMAP_ECC_BCH4_CODE_HW_DETECTION_SW     |H/W (GPMC)     |S/W (lib/bch.h)|
+|OMAP_ECC_BCH4_CODE_HW                  |H/W (GPMC)     |H/W (ELM)      |
++---------------------------------------+---------------+---------------+
+|OMAP_ECC_BCH8_CODE_HW_DETECTION_SW     |H/W (GPMC)     |S/W (lib/bch.h)|
+|OMAP_ECC_BCH8_CODE_HW                  |H/W (GPMC)     |H/W (ELM)      |
++---------------------------------------+---------------+---------------+
+- Selection of OMAP_ECC_BCHx_CODE_HW_DETECTION_SW requires,
+	Kconfig: CONFIG_MTD_NAND_ECC_BCH: enables S/W based BCH ECC algorithm.
+
+- Selection of OMAP_ECC_BCHx_CODE_HW requires,
+	Kconfig: CONFIG_MTD_NAND_OMAP_BCH: enables ELM H/W module.
+
+Pekon Gupta (4):
+  ARM: OMAP2+: cleaned-up DT support of various ECC schemes
+  mtd:nand:omap2: clean-up BCHx_HW and BCHx_SW ECC configurations in
+    device_probe
+  mtd:nand:omap2: updated support for BCH4 ECC scheme
+  ARM: dts: AM33xx: updated default ECC scheme in nand-ecc-opt
+
+ .../devicetree/bindings/mtd/gpmc-nand.txt          |  62 ++-
+ arch/arm/boot/dts/am335x-evm.dts                   |   2 +-
+ arch/arm/mach-omap2/gpmc.c                         |  14 +-
+ drivers/mtd/nand/Kconfig                           |  30 +-
+ drivers/mtd/nand/omap2.c                           | 483 ++++++++++-----------
+ include/linux/platform_data/mtd-nand-omap2.h       |  22 +-
+ 6 files changed, 304 insertions(+), 309 deletions(-)
+
 -- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+1.8.1
