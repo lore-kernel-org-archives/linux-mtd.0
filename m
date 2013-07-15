@@ -1,17 +1,18 @@
-Received: from mail.uplb.edu.ph ([202.92.144.18] helo=rimas.uplb.edu.ph)
+Received: from smtp04.smtpout.orange.fr ([80.12.242.126]
+ helo=smtp.smtpout.orange.fr)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UyebY-0006UF-Gn
- for linux-mtd@lists.infradead.org; Mon, 15 Jul 2013 08:58:02 +0000
-Content-Type: text/plain; charset="iso-8859-1"
+ id 1UyfnU-0007xA-UQ
+ for linux-mtd@lists.infradead.org; Mon, 15 Jul 2013 10:14:26 +0000
+Message-ID: <51E3CB64.4080107@wanadoo.fr>
+Date: Mon, 15 Jul 2013 12:13:56 +0200
+From: Michel Stempin <michel.stempin@wanadoo.fr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: administrator de sistem
-To: Recipients <icasl@uplb.edu.ph>
-From: "ADMIN" <icasl@uplb.edu.ph>
-Date: Mon, 15 Jul 2013 00:35:40 -0700
-Message-Id: <20130715073812.D84BB2786CB1@rimas.uplb.edu.ph>
-Reply-To: upgrade1@dgoh.org
+To: linux-mtd@lists.infradead.org
+Subject: [RESEND][PATCH] mtd: chips: Add support for PMC SPI Flash chips in
+ m25p80.c
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,18 +22,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Stimate utilizator
-e-mail a depasit 2 GB, care a fost creat de webmaster-ul nostru, se executa=
- =EEn prezent 2.30GB, nu puteti trimite sau primi mesaje noi p=E2na c=E2nd =
-confirmati Inbox. Completati formularul de mai jos pentru a verifica contul=
- tau.
+Add support for PMC (now Chingis, part of ISSI) Pm25LV512 (512 kBbit),
+Pm25LV010 (1 Mbit) and Pm25LQ032 (32 Mbit) SPI Flash chips.
 
-Completati formularul de mai jos pentru a confirma contul dvs. si e-mail:
+This patch addresses two generations of PMC SPI Flash chips:
 
-(1) E-mail:
-(2) Utilizator:
-(3) Parola:
-(4) Confirmati parola:
+ - Pm25LV512 and Pm25LV010: these have 4KB sectors and 32KB
+   blocks. The 4KB sector erase uses a non-standard opcode
+   (0xd7). They do not support JEDEC RDID (0x9f), and so they can only
+   be detected by matching their name string with pre-configured
+   platform data. Because of the cascaded acquisitions, the datasheet
+   is no longer available on the current manufacturer's website,
+   although it is still commonly used in some recent wireless routers
+   (<https://forum.openwrt.org/viewtopic.php?pid=186360#p186360>). The
+   only public datasheet available seems to be on GeoCities:
+   <http://www.geocities.jp/scottle556/pdf/Pm25LV512-010.pdf>
 
-multumesc
-administrator de sistem
+ - Pm25LQ032: a newer generation flash, with 4KB sectors and 32KB
+   blocks. It uses the standard erase and JEDEC read-ID
+   opcodes. Manufacturer's datasheet is here:
+   <http://www.chingistek.com/img/Product_Files/Pm25LQ032C%20datasheet%20v1.6.1.pdf>
+
+This patch is resent in order to take into account both Brian Norris
+remarks and this upstream patch:
+
+commit e534ee4f9ca29fdb38eea4b0c53f2154fbd8c1ee
+Author: Krzysztof Mazur <krzysiek@podlesie.net>
+Date:   Fri Feb 22 15:51:05 2013 +0100
+
+    mtd: m25p80: introduce SST_WRITE flag for SST byte programming
+
+    Not all SST devices implement the SST byte programming command.
+    Some devices (like SST25VF064C) implement only standard m25p80 page
+    write command.
+
+    Now SPI flash devices that need sst_write() are explicitly marked
+    with new SST_WRITE flag and the decision to use sst_write() is based
+    on this flag instead of manufacturer id.
+
+    Signed-off-by: Krzysztof Mazur <krzysiek@podlesie.net>
+    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+
+Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+Signed-off-by: Michel Stempin <michel.stempin@wanadoo.fr>
+---
+ drivers/mtd/devices/m25p80.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 2f3d2a5..55c8b5f 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -43,6 +43,7 @@
+ #define	OPCODE_FAST_READ	0x0b	/* Read data bytes (high frequency) */
+ #define	OPCODE_PP		0x02	/* Page program (up to 256 bytes) */
+ #define	OPCODE_BE_4K		0x20	/* Erase 4KiB block */
++#define	OPCODE_BE_4K_PMC	0xd7	/* Erase 4KiB block on PMC chips */
+ #define	OPCODE_BE_32K		0x52	/* Erase 32KiB block */
+ #define	OPCODE_CHIP_ERASE	0xc7	/* Erase whole flash chip */
+ #define	OPCODE_SE		0xd8	/* Sector erase (usually 64KiB) */
+@@ -682,6 +683,7 @@ struct flash_info {
+ #define	SECT_4K		0x01		/* OPCODE_BE_4K works uniformly */
+ #define	M25P_NO_ERASE	0x02		/* No erase command needed */
+ #define	SST_WRITE	0x04		/* use SST byte programming */
++#define	SECT_4K_PMC	0x08		/* OPCODE_BE_4K_PMC works uniformly */
+ };
+ 
+ #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
+@@ -762,6 +764,11 @@ static const struct spi_device_id m25p_ids[] = {
+ 	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024, 256, 0) },
+ 	{ "n25q256a", INFO(0x20ba19, 0, 64 * 1024, 512, SECT_4K) },
+ 
++	/* PMC */
++	{ "pm25lv512", INFO(0, 0, 32 * 1024, 2, SECT_4K_PMC) },
++	{ "pm25lv010", INFO(0, 0, 32 * 1024, 4, SECT_4K_PMC) },
++	{ "pm25lq032", INFO(0x7f9d46, 0, 64 * 1024,  64, SECT_4K) },
++
+ 	/* Spansion -- single (large) sector size only, at least
+ 	 * for the chips listed here (without boot sectors).
+ 	 */
+@@ -1014,6 +1021,9 @@ static int m25p_probe(struct spi_device *spi)
+ 	if (info->flags & SECT_4K) {
+ 		flash->erase_opcode = OPCODE_BE_4K;
+ 		flash->mtd.erasesize = 4096;
++	} else if (info->flags & SECT_4K_PMC) {
++		flash->erase_opcode = OPCODE_BE_4K_PMC;
++		flash->mtd.erasesize = 4096;
+ 	} else {
+ 		flash->erase_opcode = OPCODE_SE;
+ 		flash->mtd.erasesize = info->sector_size;
+-- 
+1.7.10.4
