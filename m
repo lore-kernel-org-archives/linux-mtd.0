@@ -1,20 +1,23 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-we0-f173.google.com ([74.125.82.173])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UyyiC-0001hk-Ee
- for linux-mtd@lists.infradead.org; Tue, 16 Jul 2013 06:26:12 +0000
-From: Marek Vasut <marex@denx.de>
-To: wangyuhang <wangyuhang2014@gmail.com>
-Subject: Re: [PATCH] m25p80: fix the malloc space without being freed when
- probe failed
-Date: Tue, 16 Jul 2013 08:25:48 +0200
-References: <1373955657-10363-1-git-send-email-wangyuhang2014@gmail.com>
-In-Reply-To: <1373955657-10363-1-git-send-email-wangyuhang2014@gmail.com>
+ id 1Uyz2Q-0002AN-93
+ for linux-mtd@lists.infradead.org; Tue, 16 Jul 2013 06:47:07 +0000
+Received: by mail-we0-f173.google.com with SMTP id x54so246876wes.4
+ for <linux-mtd@lists.infradead.org>; Mon, 15 Jul 2013 23:46:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201307160825.48782.marex@denx.de>
-Cc: artem.bityutskiy@linux.intel.com, linux-mtd@lists.infradead.org
+In-Reply-To: <1373900152-26885-2-git-send-email-pekon@ti.com>
+References: <1373900152-26885-1-git-send-email-pekon@ti.com>
+ <1373900152-26885-2-git-send-email-pekon@ti.com>
+Date: Tue, 16 Jul 2013 12:16:36 +0530
+Message-ID: <CAGBQFKSqcDmJcdgLWdtxZmgjmjMnLgJXUARSu0NgNVpUGSRa7g@mail.gmail.com>
+Subject: Re: [PATCH v1 1/5] mtd: nand: omap: optimized chip->ecc.correct() for
+ H/W ECC schemes
+From: avinash philip <avinashphilipk@gmail.com>
+To: Pekon Gupta <pekon@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: arnd@arndb.de, dedekind1@gmail.com, tony@atomide.com, balbi@ti.com,
+ linux-mtd@lists.infradead.org, benoit.cousson@linaro.org,
+ linux-omap@vger.kernel.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,55 +27,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear wangyuhang,
+Hi Pekon,
 
-> space allocated can not be freed when probe failed, So we use
-> devm_kzalloc() to instead of kzalloc().
-> flash->fast_read is used without being initialized, here
-> move it to the certain position.
-> 
-> Signed-off-by: wangyuhang <wangyuhang2014@gmail.com>
+On Mon, Jul 15, 2013 at 8:25 PM, Pekon Gupta <pekon@ti.com> wrote:
+> chip->ecc.correct() is used for detecting and correcting bit-flips during read
+> operations. In omap2-nand driver this is done usingt following functions:
+>
+> - omap_correct_data(): for H/W based HAM1_ECC schemes
+>         (Un-Touched in current patch)
+>
+> - omap_elm_correct_data(): for H/W based BCHx_ECC scheme
+>         Current implementation of this function is not scalable for newer ECC
+>         schemes because:
+>         - It depends on a specific byte-position in OOB area (reserved as 0x00)
+>           to differentiates between programmed-pages and erased-pages.
+>           This reserved byte-position cannot be accomodated in all ECC schemes.
+>         - Current code is not scalable for future ECC schemes due to tweaks for
+>           BCH4_ECC and BCH8_ECC at multiple places.
+>         - It checks for bit-flips in Erased-pages using check_erased_page().
+>           This is over-work, as sanity of Erased-page can be verified by just
+>           comparing them to a pre-defined ECC-syndrome for all_0xFF data.
 
-The commit message is a little unclear, but otherwise I agree with the patch. 
-The rest is I believe up to Artem.
+This is correct if the erased page read back didn't have any bit flips.
+If erased page result in bit flips, then this method will end up in
+un-correctable
+error. Can you please confirm you taken care erased page bit flips in this
+modification?
 
-> ---
->  drivers/mtd/devices/m25p80.c |   13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 5b6b072..70f3c54 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -955,15 +955,9 @@ static int m25p_probe(struct spi_device *spi)
->  		}
->  	}
-> 
-> -	flash = kzalloc(sizeof *flash, GFP_KERNEL);
-> +	flash = devm_kzalloc(&spi->dev, sizeof *flash, GFP_KERNEL);
->  	if (!flash)
->  		return -ENOMEM;
-> -	flash->command = kmalloc(MAX_CMD_SIZE + (flash->fast_read ? 1 : 0),
-> -					GFP_KERNEL);
-> -	if (!flash->command) {
-> -		kfree(flash);
-> -		return -ENOMEM;
-> -	}
-> 
->  	flash->spi = spi;
->  	mutex_init(&flash->lock);
-> @@ -1032,6 +1026,11 @@ static int m25p_probe(struct spi_device *spi)
->  	flash->fast_read = true;
->  #endif
-> 
-> +	flash->command = devm_kzalloc(&spi->dev,
-> +		MAX_CMD_SIZE + (flash->fast_read ? 1 : 0), GFP_KERNEL);
-> +	if (!flash->command)
-> +		return -ENOMEM;
-> +
->  	if (info->addr_width)
->  		flash->addr_width = info->addr_width;
->  	else {
+I think below discussion would help.
 
-Best regards,
-Marek Vasut
+https://lkml.org/lkml/2012/11/22/590
+
+Thanks
+Avinash
