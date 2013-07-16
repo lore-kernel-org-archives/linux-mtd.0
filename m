@@ -1,20 +1,19 @@
-From: "Gupta, Pekon" <pekon@ti.com>
-To: yuhang wang <wangyuhang2014@gmail.com>, Mark Brown <broonie@kernel.org>
-Subject: RE: support DUAL and QUAD[patch v1]
-Date: Tue, 16 Jul 2013 08:08:10 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9E84D2@DBDE04.ent.ti.com>
-References: <CAHSAbzP0Nc1ahf_ra6yDuMvV998_+EGcUOGDv5ifKaagYf+NOg@mail.gmail.com>
-In-Reply-To: <CAHSAbzP0Nc1ahf_ra6yDuMvV998_+EGcUOGDv5ifKaagYf+NOg@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9E84D2@DBDE04.ent.ti.com>
+References: <CAHSAbzP0Nc1ahf_ra6yDuMvV998_+EGcUOGDv5ifKaagYf+NOg@mail.gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9E84D2@DBDE04.ent.ti.com>
+Date: Tue, 16 Jul 2013 16:59:49 +0800
+Message-ID: <CAHSAbzMDOWo5oBqUHqMxybuDwUjFbczYwN+85gH+rxZ9z8u2Pw@mail.gmail.com>
+Subject: Re: support DUAL and QUAD[patch v1]
+From: yuhang wang <wangyuhang2014@gmail.com>
+To: "Gupta, Pekon" <pekon@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Cc: linux-mtd <linux-mtd-bounces@lists.infradead.org>,
- Grant Likely <grant.likely@secretlab.ca>, "Poddar,
- Sourav" <sourav.poddar@ti.com>,
+ Grant Likely <grant.likely@secretlab.ca>, Mark Brown <broonie@kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "spi-devel-general@lists.sourceforge.net"
- <spi-devel-general@lists.sourceforge.net>
+ <spi-devel-general@lists.sourceforge.net>, "Poddar,
+ Sourav" <sourav.poddar@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,173 +23,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Hi,
->=20
-> The patch below is to make spi framework support dual(2x) and quad(4x).
-> Bus the name of members may still look strange, so I need some
-> suggestions.
-> Thanks.
->=20
-> From f33f5935776aa0b44b01a36f88e47ba0cfe8fd21 Mon Sep 17 00:00:00 2001
-> From: wangyuhang <wangyuhang2014@gmail.com>
-> Date: Wed, 10 Jul 2013 16:22:19 +0800
-> Subject: [PATCH] spi final patch v2 Signed-off-by: wangyuhang
->  <wangyuhang2014@gmail.com>
->=20
-> Signed-off-by: wangyuhang <wangyuhang2014@gmail.com>
-> ---
->  drivers/spi/spi.c       |    6 ++++++
->  include/linux/spi/spi.h |   31 +++++++++++++++++++++++++++++++
->  2 files changed, 37 insertions(+)
->=20
-> diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-> index 004b10f..af28a62 100644
-> --- a/drivers/spi/spi.c
-> +++ b/drivers/spi/spi.c
-> @@ -452,6 +452,8 @@ struct spi_device *spi_new_device(struct spi_master
-> *master,
->   proxy->irq =3D chip->irq;
->   strlcpy(proxy->modalias, chip->modalias, sizeof(proxy->modalias));
->   proxy->dev.platform_data =3D (void *) chip->platform_data;
-> + proxy->tx_nbits =3D chip->tx_nbits ? chip->tx_nbits : SPI_NBITS_SINGLE;
-> + proxy->rx_nbits =3D chip->rx_nbits ? chip->rx_nbits : SPI_NBITS_SINGLE;
->   proxy->controller_data =3D chip->controller_data;
->   proxy->controller_state =3D NULL;
->=20
-[Pekon]: You can use existing 'mode_bits' field in struct spi_master to=20
-pass on the controller mode.
-If (master->mode & QSPI_MODE)
-	// configure for QSPI in prepare_transfer_hardware()
-else
-	// continue with normal SPI
+Hi, Gupta
 
 
-> @@ -1376,6 +1378,10 @@ static int __spi_async(struct spi_device *spi,
-> struct spi_message *message)
->   xfer->bits_per_word =3D spi->bits_per_word;
->   if (!xfer->speed_hz)
->   xfer->speed_hz =3D spi->max_speed_hz;
-> + if (!xfer->tx_nbits)
-> + xfer->tx_nbits =3D SPI_NBITS_SINGLE;
-> + if (!xfer->rx_nbits)
-> + xfer->rx_nbits =3D SPI_NBITS_SINGLE;
->   }
->=20
->   message->spi =3D spi;
-> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-> index 38c2b92..d9b3746 100644
-> --- a/include/linux/spi/spi.h
-> +++ b/include/linux/spi/spi.h
-> @@ -59,6 +59,10 @@ extern struct bus_type spi_bus_type;
->   * for driver coldplugging, and in uevents used for hotplugging
->   * @cs_gpio: gpio number of the chipselect line (optional, -EINVAL when
->   * when not using a GPIO line)
-> + * @tx_nbits: number of bits used in tx, get from @spi_board_info
-> + * (optional, 1bit as init value if not set in @spi_board_info)
-> + * @rx_nbits: number of bits used in rx, get from @spi_board_info
-> + * (optional, 1bit as init value if not set in @spi_board_info)
->   *
->   * A @spi_device is used to interchange data between an SPI slave
->   * (usually a discrete chip) and CPU memory.
-> @@ -93,6 +97,8 @@ struct spi_device {
->   void *controller_data;
->   char modalias[SPI_NAME_SIZE];
->   int cs_gpio; /* chip select gpio */
-> + u8 tx_nbits; /* num of bits used in tx */
-> + u8 rx_nbits; /* num of bits used in rx */
->=20
-[Pekon]: Instead of add new fields, You can extend existing  'u8 mode'
- field in struct spi_device to  'u32 mode' and then use it for identifying
- command OPCODES. Like below..
-If (device->mode & QSPI_MODE)
-	// send QSPI specific OPCODE before transfer
-else
-	// continue with normal SPI
+> [Pekon]: Instead of adding new fields you can use existing 'mode' field to
+> pass on the platform specific configurations. And if 'u8 mode' does not
+> suffice you can increase it to 'u32'.
+> #define QSPI_MODE       1 << 5; // just check which bit-fields are un-used
+> spi_board_info->mode |= QSPI_MODE;
+>
 
-
->   /*
->   * likely need more hooks for more protocol options affecting how
-> @@ -437,6 +443,10 @@ extern struct spi_master
-> *spi_busnum_to_master(u16 busnum);
->   * @rx_buf: data to be read (dma-safe memory), or NULL
->   * @tx_dma: DMA address of tx_buf, if @spi_message.is_dma_mapped
->   * @rx_dma: DMA address of rx_buf, if @spi_message.is_dma_mapped
-> + * @tx_nbits: number of bits used for writting, if 0 default
-> + * (SPI_NBITS_SINGLE =3D 0x01) is used.
-> + * @rx_nbits: number of bits used for reading, if 0 default
-> + * (SPI_NBITS_SINGLE =3D 0x01) is used.
->   * @len: size of rx and tx buffers (in bytes)
->   * @speed_hz: Select a speed other than the device default for this
->   *      transfer. If 0 the default (from @spi_device) is used.
-> @@ -491,6 +501,11 @@ extern struct spi_master
-> *spi_busnum_to_master(u16 busnum);
->   * by the results of previous messages and where the whole transaction
->   * ends when the chipselect goes intactive.
->   *
-> + * When SPI can transfer in 1x,2x or 4x. It can get this tranfer informa=
-tion
-> + * from device through @tx_nbits and @rx_nbits. In Bi-direction, these
-> + * two should both be set. User can set transfer mode with
-> SPI_NBITS_SINGLE(1x)
-> + * SPI_NBITS_DUAL(2x) and SPI_NBITS_QUAD(4x) to support these three
-> transfer.
-> + *
->   * The code that submits an spi_message (and its spi_transfers)
->   * to the lower layers is responsible for managing its memory.
->   * Zero-initialize every field you don't set up explicitly, to
-> @@ -510,6 +525,12 @@ struct spi_transfer {
->   dma_addr_t tx_dma;
->   dma_addr_t rx_dma;
->=20
-> + u8 tx_nbits;
-> + u8 rx_nbits;
-> +#define SPI_NBITS_SINGLE 0x01; /* 1bit transfer */
-> +#define SPI_NBITS_DUAL 0x02; /* 2bits transfer */
-> +#define SPI_NBITS_QUAD 0x03; /* 4bits transfer */
-> +
->   unsigned cs_change:1;
->   u8 bits_per_word;
->   u16 delay_usecs;
-> @@ -815,6 +836,10 @@ static inline ssize_t spi_w8r16(struct spi_device
-> *spi, u8 cmd)
->   * @mode: Initializes spi_device.mode; based on the chip datasheet, boar=
-d
->   * wiring (some devices support both 3WIRE and standard modes), and
->   * possibly presence of an inverter in the chipselect path.
-> + * @tx_nbits: Initializes spi_device.tx_nbits; depends on the number of =
-bits
-> + * the board used in tx.
-> + * @rx_nbits: Initializes spi_device.rx_nbits; depends on the number of =
-bits
-> + * the board used in rx.
->   *
->   * When adding new SPI devices to the device tree, these structures serv=
-e
->   * as a partial device template.  They hold information which can't alwa=
-ys
-> @@ -859,6 +884,12 @@ struct spi_board_info {
->   * where the default of SPI_CS_HIGH =3D 0 is wrong.
->   */
->   u8 mode;
-> + /* tx_nbits initialized for spi_device.tx_nbits and
-> + * rx_nbits initialized for spi_device.rx_nbits. These members
-> + * used to describe the how many lines used in tx and rx.
-> + */
-> + u8 tx_nbits;
-> + u8 rx_nbits;
->=20
-[Pekon]: Instead of adding new fields you can use existing 'mode' field to
-pass on the platform specific configurations. And if 'u8 mode' does not=20
-suffice you can increase it to 'u32'.
-#define QSPI_MODE 	1 << 5; // just check which bit-fields are un-used
-spi_board_info->mode |=3D QSPI_MODE;
-
-Same way you can pass the configuration to spi_master and spi_device.
-
->   /* ... may need additional spi_device chip config data here.
->   * avoid stuff protocol drivers can set; but include stuff
-> --
-> 1.7.9.5
->=20
-
-with regards, pekon
+well, can dual and quad be regarded as a spi mode? if so, your comment seems
+to be right.
