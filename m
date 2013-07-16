@@ -1,28 +1,20 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UyzzK-0003mw-5t
- for linux-mtd@lists.infradead.org; Tue, 16 Jul 2013 07:47:58 +0000
 From: "Gupta, Pekon" <pekon@ti.com>
-To: avinash philip <avinashphilipk@gmail.com>
-Subject: RE: [PATCH v1 1/5] mtd: nand: omap: optimized chip->ecc.correct()
- for H/W ECC schemes
-Date: Tue, 16 Jul 2013 07:47:04 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9E84B4@DBDE04.ent.ti.com>
-References: <1373900152-26885-1-git-send-email-pekon@ti.com>
- <1373900152-26885-2-git-send-email-pekon@ti.com>
- <CAGBQFKSqcDmJcdgLWdtxZmgjmjMnLgJXUARSu0NgNVpUGSRa7g@mail.gmail.com>
-In-Reply-To: <CAGBQFKSqcDmJcdgLWdtxZmgjmjMnLgJXUARSu0NgNVpUGSRa7g@mail.gmail.com>
+To: yuhang wang <wangyuhang2014@gmail.com>, Mark Brown <broonie@kernel.org>
+Subject: RE: support DUAL and QUAD[patch v1]
+Date: Tue, 16 Jul 2013 08:08:10 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9E84D2@DBDE04.ent.ti.com>
+References: <CAHSAbzP0Nc1ahf_ra6yDuMvV998_+EGcUOGDv5ifKaagYf+NOg@mail.gmail.com>
+In-Reply-To: <CAHSAbzP0Nc1ahf_ra6yDuMvV998_+EGcUOGDv5ifKaagYf+NOg@mail.gmail.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Cc: "arnd@arndb.de" <arnd@arndb.de>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "tony@atomide.com" <tony@atomide.com>, "Balbi, Felipe" <balbi@ti.com>,
+Cc: linux-mtd <linux-mtd-bounces@lists.infradead.org>,
+ Grant Likely <grant.likely@secretlab.ca>, "Poddar,
+ Sourav" <sourav.poddar@ti.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "benoit.cousson@linaro.org" <benoit.cousson@linaro.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+ "spi-devel-general@lists.sourceforge.net"
+ <spi-devel-general@lists.sourceforge.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,82 +24,173 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+> Hi,
 >=20
-> Hi Pekon,
+> The patch below is to make spi framework support dual(2x) and quad(4x).
+> Bus the name of members may still look strange, so I need some
+> suggestions.
+> Thanks.
 >=20
-> On Mon, Jul 15, 2013 at 8:25 PM, Pekon Gupta <pekon@ti.com> wrote:
-> > chip->ecc.correct() is used for detecting and correcting bit-flips duri=
-ng read
-> > operations. In omap2-nand driver this is done usingt following function=
-s:
-> >
-> > - omap_correct_data(): for H/W based HAM1_ECC schemes
-> >         (Un-Touched in current patch)
-> >
-> > - omap_elm_correct_data(): for H/W based BCHx_ECC scheme
-> >         Current implementation of this function is not scalable for new=
-er ECC
-> >         schemes because:
-> >         - It depends on a specific byte-position in OOB area (reserved =
-as 0x00)
-> >           to differentiates between programmed-pages and erased-pages.
-> >           This reserved byte-position cannot be accomodated in all ECC
-> schemes.
-> >         - Current code is not scalable for future ECC schemes due to tw=
-eaks for
-> >           BCH4_ECC and BCH8_ECC at multiple places.
-> >         - It checks for bit-flips in Erased-pages using check_erased_pa=
-ge().
-> >           This is over-work, as sanity of Erased-page can be verified b=
-y just
-> >           comparing them to a pre-defined ECC-syndrome for all_0xFF dat=
-a.
+> From f33f5935776aa0b44b01a36f88e47ba0cfe8fd21 Mon Sep 17 00:00:00 2001
+> From: wangyuhang <wangyuhang2014@gmail.com>
+> Date: Wed, 10 Jul 2013 16:22:19 +0800
+> Subject: [PATCH] spi final patch v2 Signed-off-by: wangyuhang
+>  <wangyuhang2014@gmail.com>
 >=20
-> This is correct if the erased page read back didn't have any bit flips.
-> If erased page result in bit flips, then this method will end up in
-> un-correctable
-> error. Can you please confirm you taken care erased page bit flips in thi=
-s
-> modification?
+> Signed-off-by: wangyuhang <wangyuhang2014@gmail.com>
+> ---
+>  drivers/spi/spi.c       |    6 ++++++
+>  include/linux/spi/spi.h |   31 +++++++++++++++++++++++++++++++
+>  2 files changed, 37 insertions(+)
 >=20
-> I think below discussion would help.
+> diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+> index 004b10f..af28a62 100644
+> --- a/drivers/spi/spi.c
+> +++ b/drivers/spi/spi.c
+> @@ -452,6 +452,8 @@ struct spi_device *spi_new_device(struct spi_master
+> *master,
+>   proxy->irq =3D chip->irq;
+>   strlcpy(proxy->modalias, chip->modalias, sizeof(proxy->modalias));
+>   proxy->dev.platform_data =3D (void *) chip->platform_data;
+> + proxy->tx_nbits =3D chip->tx_nbits ? chip->tx_nbits : SPI_NBITS_SINGLE;
+> + proxy->rx_nbits =3D chip->rx_nbits ? chip->rx_nbits : SPI_NBITS_SINGLE;
+>   proxy->controller_data =3D chip->controller_data;
+>   proxy->controller_state =3D NULL;
 >=20
-> https://lkml.org/lkml/2012/11/22/590
+[Pekon]: You can use existing 'mode_bits' field in struct spi_master to=20
+pass on the controller mode.
+If (master->mode & QSPI_MODE)
+	// configure for QSPI in prepare_transfer_hardware()
+else
+	// continue with normal SPI
+
+
+> @@ -1376,6 +1378,10 @@ static int __spi_async(struct spi_device *spi,
+> struct spi_message *message)
+>   xfer->bits_per_word =3D spi->bits_per_word;
+>   if (!xfer->speed_hz)
+>   xfer->speed_hz =3D spi->max_speed_hz;
+> + if (!xfer->tx_nbits)
+> + xfer->tx_nbits =3D SPI_NBITS_SINGLE;
+> + if (!xfer->rx_nbits)
+> + xfer->rx_nbits =3D SPI_NBITS_SINGLE;
+>   }
 >=20
+>   message->spi =3D spi;
+> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+> index 38c2b92..d9b3746 100644
+> --- a/include/linux/spi/spi.h
+> +++ b/include/linux/spi/spi.h
+> @@ -59,6 +59,10 @@ extern struct bus_type spi_bus_type;
+>   * for driver coldplugging, and in uevents used for hotplugging
+>   * @cs_gpio: gpio number of the chipselect line (optional, -EINVAL when
+>   * when not using a GPIO line)
+> + * @tx_nbits: number of bits used in tx, get from @spi_board_info
+> + * (optional, 1bit as init value if not set in @spi_board_info)
+> + * @rx_nbits: number of bits used in rx, get from @spi_board_info
+> + * (optional, 1bit as init value if not set in @spi_board_info)
+>   *
+>   * A @spi_device is used to interchange data between an SPI slave
+>   * (usually a discrete chip) and CPU memory.
+> @@ -93,6 +97,8 @@ struct spi_device {
+>   void *controller_data;
+>   char modalias[SPI_NAME_SIZE];
+>   int cs_gpio; /* chip select gpio */
+> + u8 tx_nbits; /* num of bits used in tx */
+> + u8 rx_nbits; /* num of bits used in rx */
+>=20
+[Pekon]: Instead of add new fields, You can extend existing  'u8 mode'
+ field in struct spi_device to  'u32 mode' and then use it for identifying
+ command OPCODES. Like below..
+If (device->mode & QSPI_MODE)
+	// send QSPI specific OPCODE before transfer
+else
+	// continue with normal SPI
 
-Yes, that is correct.. Please refer to latest discussion on this topic.
-http://permalink.gmane.org/gmane.linux.drivers.mtd/46821
 
-So, if a erased-page has any bit-flips, nand_read() would return it as
- EBADMSG (uncorrectable errors). I understand this is an over-cautious
- approach, but there are reasons for this:
-(1) I din't wanted to burden the Read data-path with extra checks for=20
-finding and correcting bit-flips on erased-pages.
+>   /*
+>   * likely need more hooks for more protocol options affecting how
+> @@ -437,6 +443,10 @@ extern struct spi_master
+> *spi_busnum_to_master(u16 busnum);
+>   * @rx_buf: data to be read (dma-safe memory), or NULL
+>   * @tx_dma: DMA address of tx_buf, if @spi_message.is_dma_mapped
+>   * @rx_dma: DMA address of rx_buf, if @spi_message.is_dma_mapped
+> + * @tx_nbits: number of bits used for writting, if 0 default
+> + * (SPI_NBITS_SINGLE =3D 0x01) is used.
+> + * @rx_nbits: number of bits used for reading, if 0 default
+> + * (SPI_NBITS_SINGLE =3D 0x01) is used.
+>   * @len: size of rx and tx buffers (in bytes)
+>   * @speed_hz: Select a speed other than the device default for this
+>   *      transfer. If 0 the default (from @spi_device) is used.
+> @@ -491,6 +501,11 @@ extern struct spi_master
+> *spi_busnum_to_master(u16 busnum);
+>   * by the results of previous messages and where the whole transaction
+>   * ends when the chipselect goes intactive.
+>   *
+> + * When SPI can transfer in 1x,2x or 4x. It can get this tranfer informa=
+tion
+> + * from device through @tx_nbits and @rx_nbits. In Bi-direction, these
+> + * two should both be set. User can set transfer mode with
+> SPI_NBITS_SINGLE(1x)
+> + * SPI_NBITS_DUAL(2x) and SPI_NBITS_QUAD(4x) to support these three
+> transfer.
+> + *
+>   * The code that submits an spi_message (and its spi_transfers)
+>   * to the lower layers is responsible for managing its memory.
+>   * Zero-initialize every field you don't set up explicitly, to
+> @@ -510,6 +525,12 @@ struct spi_transfer {
+>   dma_addr_t tx_dma;
+>   dma_addr_t rx_dma;
+>=20
+> + u8 tx_nbits;
+> + u8 rx_nbits;
+> +#define SPI_NBITS_SINGLE 0x01; /* 1bit transfer */
+> +#define SPI_NBITS_DUAL 0x02; /* 2bits transfer */
+> +#define SPI_NBITS_QUAD 0x03; /* 4bits transfer */
+> +
+>   unsigned cs_change:1;
+>   u8 bits_per_word;
+>   u16 delay_usecs;
+> @@ -815,6 +836,10 @@ static inline ssize_t spi_w8r16(struct spi_device
+> *spi, u8 cmd)
+>   * @mode: Initializes spi_device.mode; based on the chip datasheet, boar=
+d
+>   * wiring (some devices support both 3WIRE and standard modes), and
+>   * possibly presence of an inverter in the chipselect path.
+> + * @tx_nbits: Initializes spi_device.tx_nbits; depends on the number of =
+bits
+> + * the board used in tx.
+> + * @rx_nbits: Initializes spi_device.rx_nbits; depends on the number of =
+bits
+> + * the board used in rx.
+>   *
+>   * When adding new SPI devices to the device tree, these structures serv=
+e
+>   * as a partial device template.  They hold information which can't alwa=
+ys
+> @@ -859,6 +884,12 @@ struct spi_board_info {
+>   * where the default of SPI_CS_HIGH =3D 0 is wrong.
+>   */
+>   u8 mode;
+> + /* tx_nbits initialized for spi_device.tx_nbits and
+> + * rx_nbits initialized for spi_device.rx_nbits. These members
+> + * used to describe the how many lines used in tx and rx.
+> + */
+> + u8 tx_nbits;
+> + u8 rx_nbits;
+>=20
+[Pekon]: Instead of adding new fields you can use existing 'mode' field to
+pass on the platform specific configurations. And if 'u8 mode' does not=20
+suffice you can increase it to 'u32'.
+#define QSPI_MODE 	1 << 5; // just check which bit-fields are un-used
+spi_board_info->mode |=3D QSPI_MODE;
 
-(2) Most File-Systems, if find un-correctable errors in erased-page=20
-would first torture_peb() by iteratively erasing and  checking for all(0xFF=
-).
- So if the bit-flips were temporary they would go-away. And block would
- not be marked bad.
+Same way you can pass the configuration to spi_master and spi_device.
 
-(3) Using erased-page with 'correctable bit-flips' for storing data makes
-data on flash more vulnerable to early failures. Suppose using BCH8=20
-ECC scheme which has capability of correcting 8-bits per ecc.size.=20
-if my File-System uses an erased-page which already had 3-bit-flips=20
-before even it was written. So this leaves me with only 8-3 =3D 5 bit-flips
-possibility before my data is rendered un-correctable and corrupt.
-So, why not to use a erased-page which is not having any bit-flips at all ?
-(And frequency of having bit-flips in erased-page would increase as
-device ages)
-
-I think from a user's point-of-view it would be better to get..
-(a) more tolerance of bit-flips  + better read performance
-v/s
-(b) saving some blocks from getting re-erased.
-
-Comments ?
+>   /* ... may need additional spi_device chip config data here.
+>   * avoid stuff protocol drivers can set; but include stuff
+> --
+> 1.7.9.5
+>=20
 
 with regards, pekon
-
-> Thanks
-> Avinash
