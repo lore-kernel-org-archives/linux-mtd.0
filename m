@@ -1,22 +1,17 @@
-Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
+Received: from comal.ext.ti.com ([198.47.26.152])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UzOiE-0006DA-66
- for linux-mtd@lists.infradead.org; Wed, 17 Jul 2013 10:11:58 +0000
-Date: Wed, 17 Jul 2013 11:11:33 +0100
-From: Mark Brown <broonie@kernel.org>
-To: H Hartley Sweeten <hartleys@visionengravers.com>
-Message-ID: <20130717101133.GM22506@sirena.org.uk>
-References: <201307080912.37827.hartleys@visionengravers.com>
+ id 1UzXnq-0006SR-GO
+ for linux-mtd@lists.infradead.org; Wed, 17 Jul 2013 19:54:23 +0000
+From: Pekon Gupta <pekon@ti.com>
+To: <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>
+Subject: [PATCH v1 0/4] mtd: nand: omap: add support for BCH16_ECC
+Date: Thu, 18 Jul 2013 01:22:02 +0530
+Message-ID: <1374090726-9393-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="j1TzbQBGf+ftliiX"
-Content-Disposition: inline
-In-Reply-To: <201307080912.37827.hartleys@visionengravers.com>
-Subject: Re: [PATCH v2 10/11] spi: spi-ep93xx: convert to the queued driver
- infrastructure
-Cc: Ryan Mallon <rmallon@gmail.com>, mika.westerberg@iki.fi,
- hsweeten@visionengravers.com, linux-mtd <linux-mtd@lists.infradead.org>,
- grant.likely@linaro.org, spi-devel-general@lists.sourceforge.net
+Content-Type: text/plain
+Cc: dedekind1@gmail.com, tony@atomide.com, devicetree-discuss@lists.ozlabs.org,
+ avinashphilipk@gmail.com, balbi@ti.com, Pekon Gupta <pekon@ti.com>,
+ benoit.cousson@linaro.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,37 +21,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This patch series add support of BCH16_ECC scheme.
+As BCH16_ECC scheme generates 26bytes of ECC syndrome per 512B data,
+hence this scheme is usable only for NAND devices having 4K or above
+page-size, as their OOB/spare area has enough space to accomodate ECC.
 
---j1TzbQBGf+ftliiX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This patch series is applicable over an above following series:
+[1] [Patch] mtd:nand:omap2: clean-up of supported ECC schemes 
+ http://lists.infradead.org/pipermail/linux-mtd/2013-July/047530.html
+[2] [Patch] optimize and clean-up of OMAP NAND and ELM driver
+ http://lists.infradead.org/pipermail/linux-mtd/2013-July/047538.html
 
-On Mon, Jul 08, 2013 at 09:12:37AM -0700, H Hartley Sweeten wrote:
-> The SPI core provides infrastructure for standard message queueing. Use
-> that instead of handling it in the driver.
+Also this BCH16_ECC patch series is sparsely tested, due to limited
+availability of boards with 4K/224NAND, so request the users to test
+the mentioned series, and provide Tested-by.
 
-Applied, thanks.
 
---j1TzbQBGf+ftliiX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Pekon Gupta (4):
+  mtd: nand: omap: add support for BCH16_ECC - DT updates
+  mtd: nand: omap: add support for BCH16_ECC - ELM driver updates
+  mtd: nand: omap: add support for BCH16_ECC - GPMC driver updates
+  mtd: nand: omap: add support for BCH16_ECC - NAND driver updates
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
+ .../devicetree/bindings/mtd/gpmc-nand.txt          |   7 ++
+ arch/arm/mach-omap2/gpmc.c                         |  22 +++--
+ drivers/mtd/devices/elm.c                          |  29 ++++++
+ drivers/mtd/nand/omap2.c                           | 104 +++++++++++++++++++--
+ include/linux/platform_data/elm.h                  |   8 +-
+ include/linux/platform_data/mtd-nand-omap2.h       |   7 +-
+ 6 files changed, 155 insertions(+), 22 deletions(-)
 
-iQIcBAEBAgAGBQJR5m3SAAoJELSic+t+oim9rnMP/24Ro6tH3tw/bPmLtvD4D3Wk
-nkg1EzatWi9fm43k/TA/GfAbsKgPDGVP7SghshiXfbyAsBvjjiJhfhJ7W+8WJv0w
-iSYosrTUl6C0/ZAunw8x6MTk0hDHxmNa+cj9eKLOI3sqHF49ODu3SmKj6Eh5MKV3
-jy6v5vKotE37UELbsEEpo4tThT+UHWuIMYa/gitfb9JNlvSjl04d9I80HBpIeEj7
-WOe1q3oBk0JxNO/yczs4oUlRQYWF8n/rv6yZKd3Z1PyBB5iCBVa7RCnYupPg3HwY
-o9KVA6b1Kx4I5S+y7Uk08IHDMp717X8tPZe5ANryrrFkiOJ4+YPmH0jD1UALQspv
-2AGl2Anox9Aingnw7E5uVX6MGg3KsAqI8PQt5lKQX2V0FbPcWCGLlA6AB9KJbT7E
-iitQ1kLTdg6u8JN4pakTw+vmKiog7Lut+zPUtV3RLIqkTYWPZzzxzjlw1r+LYBC5
-0ekd4zeDMgJ9I/wlFiO3i13uDz1W5FW8pQHdQ2/9OaVd0a4DKUfypI6Se+2rQLj4
-GpT9CT14MgzAJycPyFg+Ii2L3dt0TKbFkMYkTGTY+6z4aNMkVbbfMoXetvfbejR3
-jcr7R/mi7F7MSjSlpUUW+MBVVEvtk5Hzk4GkKT9GLuihdxY/M6Q4G19F4dFQXkAE
-pxNak2Q/ljj2at1kdnoU
-=9bhF
------END PGP SIGNATURE-----
-
---j1TzbQBGf+ftliiX--
+-- 
+1.8.1
