@@ -1,13 +1,13 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from bear.ext.ti.com ([192.94.94.41])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UzXnt-0006Sy-0m
- for linux-mtd@lists.infradead.org; Wed, 17 Jul 2013 19:54:26 +0000
+ id 1UzXnv-0006T0-TB
+ for linux-mtd@lists.infradead.org; Wed, 17 Jul 2013 19:54:29 +0000
 From: Pekon Gupta <pekon@ti.com>
 To: <linux-mtd@lists.infradead.org>, <linux-omap@vger.kernel.org>
-Subject: [PATCH v1 2/4] mtd: nand: omap: add support for BCH16_ECC - ELM
+Subject: [PATCH v1 3/4] mtd: nand: omap: add support for BCH16_ECC - GPMC
  driver updates
-Date: Thu, 18 Jul 2013 01:22:04 +0530
-Message-ID: <1374090726-9393-3-git-send-email-pekon@ti.com>
+Date: Thu, 18 Jul 2013 01:22:05 +0530
+Message-ID: <1374090726-9393-4-git-send-email-pekon@ti.com>
 In-Reply-To: <1374090726-9393-1-git-send-email-pekon@ti.com>
 References: <1374090726-9393-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
@@ -38,74 +38,65 @@ OOBsize per page >= 26 * (page-size / 512)
 
 Signed-off-by: Pekon Gupta <pekon@ti.com>
 ---
- drivers/mtd/devices/elm.c         | 29 +++++++++++++++++++++++++++++
- include/linux/platform_data/elm.h |  8 +-------
- 2 files changed, 30 insertions(+), 7 deletions(-)
+ arch/arm/mach-omap2/gpmc.c | 22 ++++++++++++++++------
+ 1 file changed, 16 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/devices/elm.c b/drivers/mtd/devices/elm.c
-index fca436e..f50f36b 100644
---- a/drivers/mtd/devices/elm.c
-+++ b/drivers/mtd/devices/elm.c
-@@ -217,6 +217,35 @@ static void elm_load_syndrome(struct elm_info *info,
- 				elm_write_reg(info, (ELM_SYNDROME_FRAGMENT_3 +
- 						 offset), cpu_to_le32(val));
- 				break;
-+			case BCH16_ECC:
-+				val =	*(ecc + 25) << 0  | *(ecc + 24) <<  8 |
-+					*(ecc + 23) << 16 | *(ecc + 22) << 24;
-+				elm_write_reg(info, (ELM_SYNDROME_FRAGMENT_0 +
-+						 offset), cpu_to_le32(val));
-+				val =	*(ecc + 21) <<  0 | *(ecc + 20) <<  8 |
-+					*(ecc + 19) << 16 | *(ecc + 18) << 24;
-+				elm_write_reg(info, (ELM_SYNDROME_FRAGMENT_1 +
-+						 offset), cpu_to_le32(val));
-+				val =	*(ecc + 17) <<  0 | *(ecc + 16) <<  8 |
-+					*(ecc + 15) << 16 | *(ecc + 14) << 24;
-+				elm_write_reg(info, (ELM_SYNDROME_FRAGMENT_2 +
-+						 offset), cpu_to_le32(val));
-+				val =	*(ecc + 13) <<  0 | *(ecc + 12) <<  8 |
-+					*(ecc + 11) << 16 | *(ecc + 10) << 24;
-+				elm_write_reg(info, (ELM_SYNDROME_FRAGMENT_3 +
-+						 offset), cpu_to_le32(val));
-+				val =	*(ecc +  9) <<  0 | *(ecc +  8) <<  8 |
-+					*(ecc +  7) << 16 | *(ecc +  6) << 24;
-+				elm_write_reg(info, (ELM_SYNDROME_FRAGMENT_4 +
-+						 offset), cpu_to_le32(val));
-+				val =	*(ecc +  5) <<  0 | *(ecc +  4) <<  8 |
-+					*(ecc +  3) << 16 | *(ecc +  2) << 24;
-+				elm_write_reg(info, (ELM_SYNDROME_FRAGMENT_5 +
-+						 offset), cpu_to_le32(val));
-+				val =	*(ecc +  1) <<  0 | *(ecc +  0) <<  8;
-+				elm_write_reg(info, (ELM_SYNDROME_FRAGMENT_6 +
-+						 offset), cpu_to_le32(val));
-+				break;
- 			}
- 		}
+diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
+index e19de21..0d5639e 100644
+--- a/arch/arm/mach-omap2/gpmc.c
++++ b/arch/arm/mach-omap2/gpmc.c
+@@ -68,6 +68,9 @@
+ #define	GPMC_ECC_BCH_RESULT_1	0x244	/* not available on OMAP2 */
+ #define	GPMC_ECC_BCH_RESULT_2	0x248	/* not available on OMAP2 */
+ #define	GPMC_ECC_BCH_RESULT_3	0x24c	/* not available on OMAP2 */
++#define	GPMC_ECC_BCH_RESULT_4	0x300	/* not available on OMAP2 */
++#define	GPMC_ECC_BCH_RESULT_5	0x304	/* not available on OMAP2 */
++#define	GPMC_ECC_BCH_RESULT_6	0x308	/* not available on OMAP2 */
+ 
+ /* GPMC ECC control settings */
+ #define GPMC_ECC_CTRL_ECCCLEAR		0x100
+@@ -659,13 +662,19 @@ void gpmc_update_nand_reg(struct gpmc_nand_regs *reg, int cs)
+ 
+ 	for (i = 0; i < GPMC_BCH_NUM_REMAINDER; i++) {
+ 		reg->gpmc_bch_result0[i] = gpmc_base + GPMC_ECC_BCH_RESULT_0 +
+-					   GPMC_BCH_SIZE * i;
++					   (GPMC_BCH_SIZE * i);
+ 		reg->gpmc_bch_result1[i] = gpmc_base + GPMC_ECC_BCH_RESULT_1 +
+-					   GPMC_BCH_SIZE * i;
++					   (GPMC_BCH_SIZE * i);
+ 		reg->gpmc_bch_result2[i] = gpmc_base + GPMC_ECC_BCH_RESULT_2 +
+-					   GPMC_BCH_SIZE * i;
++					   (GPMC_BCH_SIZE * i);
+ 		reg->gpmc_bch_result3[i] = gpmc_base + GPMC_ECC_BCH_RESULT_3 +
+-					   GPMC_BCH_SIZE * i;
++					   (GPMC_BCH_SIZE * i);
++		reg->gpmc_bch_result4[i] = gpmc_base + GPMC_ECC_BCH_RESULT_4 +
++					   (GPMC_BCH_SIZE * i);
++		reg->gpmc_bch_result5[i] = gpmc_base + GPMC_ECC_BCH_RESULT_5 +
++					   (GPMC_BCH_SIZE * i);
++		reg->gpmc_bch_result6[i] = gpmc_base + GPMC_ECC_BCH_RESULT_6 +
++					   (GPMC_BCH_SIZE * i);
  	}
-diff --git a/include/linux/platform_data/elm.h b/include/linux/platform_data/elm.h
-index d16465b..18b37d8 100644
---- a/include/linux/platform_data/elm.h
-+++ b/include/linux/platform_data/elm.h
-@@ -21,19 +21,13 @@
- enum bch_ecc {
- 	BCH4_ECC = 0,
- 	BCH8_ECC,
-+	BCH16_ECC
+ }
+ 
+@@ -1348,7 +1357,8 @@ static const char * const nand_ecc_opts[] = {
+ 	[OMAP_ECC_BCH4_CODE_HW]			= "bch4_code_hw",
+ 	[OMAP_ECC_BCH4_CODE_HW_DETECTION_SW]	= "bch4_code_hw_detection_sw",
+ 	[OMAP_ECC_BCH8_CODE_HW]			= "bch8_code_hw",
+-	[OMAP_ECC_BCH8_CODE_HW_DETECTION_SW]	= "bch8_code_hw_detection_sw"
++	[OMAP_ECC_BCH8_CODE_HW_DETECTION_SW]	= "bch8_code_hw_detection_sw",
++	[OMAP_ECC_BCH16_CODE_HW]		= "bch16_code_hw"
  };
  
- /* ELM support 8 error syndrome process */
- #define ERROR_VECTOR_MAX		8
- #define ELM_MAX_DETECTABLE_ERRORS	16
+ static const char * const nand_xfer_types[] = {
+@@ -1389,7 +1399,7 @@ static int gpmc_probe_nand_child(struct platform_device *pdev,
  
--#define BCH8_ECC_OOB_BYTES		13
--#define BCH4_ECC_OOB_BYTES		7
--/* RBL requires 14 byte even though BCH8 uses only 13 byte */
--#define BCH8_SIZE			(BCH8_ECC_OOB_BYTES + 1)
--/* Uses 1 extra byte to handle erased pages */
--#define BCH4_SIZE			(BCH4_ECC_OOB_BYTES + 1)
--
- /**
-  * struct elm_errorvec - error vector for elm
-  * @error_reported:		set true for vectors error is reported
+ 	if (!of_property_read_string(child, "ti,nand-xfer-type", &s))
+ 		for (val = 0; val < ARRAY_SIZE(nand_xfer_types); val++)
+-			if (!strcasecmp(s, nand_xfer_types[val])) {
++			if (!strcmp(s, nand_xfer_types[val])) {
+ 				gpmc_nand_data->xfer_type = val;
+ 				break;
+ 			}
 -- 
 1.8.1
