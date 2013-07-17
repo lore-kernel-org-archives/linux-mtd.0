@@ -1,20 +1,23 @@
-Received: from mail-bk0-x231.google.com ([2a00:1450:4008:c01::231])
+Received: from mail-db9lp0251.outbound.messaging.microsoft.com
+ ([213.199.154.251] helo=db9outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UzHBP-0005iT-Ow
- for linux-mtd@lists.infradead.org; Wed, 17 Jul 2013 02:09:38 +0000
-Received: by mail-bk0-f49.google.com with SMTP id mz10so515350bkb.36
- for <linux-mtd@lists.infradead.org>; Tue, 16 Jul 2013 19:09:11 -0700 (PDT)
+ id 1UzMLT-0002A4-DK
+ for linux-mtd@lists.infradead.org; Wed, 17 Jul 2013 07:40:19 +0000
+Message-ID: <51E64B40.1030408@freescale.com>
+Date: Wed, 17 Jul 2013 15:44:00 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-Date: Wed, 17 Jul 2013 10:09:10 +0800
-Message-ID: <CAPgLHd8upcmfnQqHAWnqP7YBVYDVyoYKQ3WCh3c5+uY-EKr1jg@mail.gmail.com>
-Subject: [PATCH -next] mtd: orion_nand: convert to use devm_* APIs
-From: Wei Yongjun <weiyj.lk@gmail.com>
-To: dwmw2@infradead.org, grant.likely@linaro.org, rob.herring@calxeda.com,
- artem.bityutskiy@linux.intel.com, jg1.han@samsung.com, andrew@lunn.ch,
- wfp5p@virginia.edu
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: yongjun_wei@trendmicro.com.cn, linux-mtd@lists.infradead.org,
- devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: No pull for mtd?
+References: <20130712124728.GB31726@localhost>
+ <CAN8TOE-y0HvZYWqwoPEZhReVVP_iY6t5p1N0ZMJXPQqwuK5ozQ@mail.gmail.com>
+In-Reply-To: <CAN8TOE-y0HvZYWqwoPEZhReVVP_iY6t5p1N0ZMJXPQqwuK5ozQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, dwmw2@infradead.org,
+ linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Andrew Morton <akpm@linux-foundation.org>, torvalds@linux-foundation.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,82 +27,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+=E4=BA=8E 2013=E5=B9=B407=E6=9C=8816=E6=97=A5 10:58, Brian Norris =E5=86=99=
+=E9=81=93:
+> On Fri, Jul 12, 2013 at 5:47 AM, Ezequiel Garcia
+> <ezequiel.garcia@free-electrons.com>  wrote:
+>> As the merge window close is just around the corner,
+>> I wonder if there will be a MTD git pull for 3.11.
+> Time has given the (disappointing) answer: apparently no.
+>
+> Artem/David,
+>
+> Any reason for this miss? Can we get a guarantee a pull for 3.12 at lea=
+st?
+Add more people to this thread.
 
-Convert to use devm_* APIs to avoid resources leak on error handling case.
+there are many patches pending in the maillist.
 
-Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
----
- drivers/mtd/nand/orion_nand.c | 29 +++++++++--------------------
- 1 file changed, 9 insertions(+), 20 deletions(-)
+So If Artem/David are too busy to maintain this MTD code, i volunteer to=20
+maintain it.
 
-diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
-index 46f308d..ce711b4 100644
---- a/drivers/mtd/nand/orion_nand.c
-+++ b/drivers/mtd/nand/orion_nand.c
-@@ -85,25 +85,23 @@ static int __init orion_nand_probe(struct platform_device *pdev)
- 	int ret = 0;
- 	u32 val = 0;
- 
--	nc = kzalloc(sizeof(struct nand_chip) + sizeof(struct mtd_info), GFP_KERNEL);
-+	nc = devm_kzalloc(&pdev->dev,
-+			  sizeof(struct nand_chip) + sizeof(struct mtd_info),
-+			  GFP_KERNEL);
- 	if (!nc) {
- 		printk(KERN_ERR "orion_nand: failed to allocate device structure.\n");
--		ret = -ENOMEM;
--		goto no_res;
-+		return -ENOMEM;
- 	}
- 	mtd = (struct mtd_info *)(nc + 1);
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!res) {
--		ret = -ENODEV;
--		goto no_res;
--	}
-+	if (!res)
-+		return -ENODEV;
- 
--	io_base = ioremap(res->start, resource_size(res));
-+	io_base = devm_ioremap(&pdev->dev, res->start, resource_size(res));
- 	if (!io_base) {
- 		printk(KERN_ERR "orion_nand: ioremap failed\n");
--		ret = -EIO;
--		goto no_res;
-+		return -EIO;
- 	}
- 
- 	if (pdev->dev.of_node) {
-@@ -111,8 +109,7 @@ static int __init orion_nand_probe(struct platform_device *pdev)
- 					GFP_KERNEL);
- 		if (!board) {
- 			printk(KERN_ERR "orion_nand: failed to allocate board structure.\n");
--			ret = -ENOMEM;
--			goto no_res;
-+			return -ENOMEM;
- 		}
- 		if (!of_property_read_u32(pdev->dev.of_node, "cle", &val))
- 			board->cle = (u8)val;
-@@ -186,10 +183,6 @@ no_dev:
- 		clk_disable_unprepare(clk);
- 		clk_put(clk);
- 	}
--	iounmap(io_base);
--no_res:
--	kfree(nc);
--
- 	return ret;
- }
- 
-@@ -201,10 +194,6 @@ static int orion_nand_remove(struct platform_device *pdev)
- 
- 	nand_release(mtd);
- 
--	iounmap(nc->IO_ADDR_W);
--
--	kfree(nc);
--
- 	clk = clk_get(&pdev->dev, NULL);
- 	if (!IS_ERR(clk)) {
- 		clk_disable_unprepare(clk);
+
+thanks
+Huang Shijie
