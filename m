@@ -1,23 +1,22 @@
-Received: from mail-db9lp0251.outbound.messaging.microsoft.com
- ([213.199.154.251] helo=db9outboundpool.messaging.microsoft.com)
+Received: from [2a02:418:6110:10::2] (helo=vps0.lunn.ch)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UzMLT-0002A4-DK
- for linux-mtd@lists.infradead.org; Wed, 17 Jul 2013 07:40:19 +0000
-Message-ID: <51E64B40.1030408@freescale.com>
-Date: Wed, 17 Jul 2013 15:44:00 +0800
-From: Huang Shijie <b32955@freescale.com>
+ id 1UzMST-0002Fu-KU
+ for linux-mtd@lists.infradead.org; Wed, 17 Jul 2013 07:47:34 +0000
+Date: Wed, 17 Jul 2013 09:45:33 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Wei Yongjun <weiyj.lk@gmail.com>
+Subject: Re: [PATCH -next] mtd: orion_nand: convert to use devm_* APIs
+Message-ID: <20130717074533.GA1026@lunn.ch>
+References: <CAPgLHd8upcmfnQqHAWnqP7YBVYDVyoYKQ3WCh3c5+uY-EKr1jg@mail.gmail.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: No pull for mtd?
-References: <20130712124728.GB31726@localhost>
- <CAN8TOE-y0HvZYWqwoPEZhReVVP_iY6t5p1N0ZMJXPQqwuK5ozQ@mail.gmail.com>
-In-Reply-To: <CAN8TOE-y0HvZYWqwoPEZhReVVP_iY6t5p1N0ZMJXPQqwuK5ozQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, dwmw2@infradead.org,
- linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Andrew Morton <akpm@linux-foundation.org>, torvalds@linux-foundation.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPgLHd8upcmfnQqHAWnqP7YBVYDVyoYKQ3WCh3c5+uY-EKr1jg@mail.gmail.com>
+Cc: andrew@lunn.ch, artem.bityutskiy@linux.intel.com,
+ devicetree-discuss@lists.ozlabs.org, jg1.han@samsung.com,
+ linux-kernel@vger.kernel.org, rob.herring@calxeda.com,
+ yongjun_wei@trendmicro.com.cn, wfp5p@virginia.edu,
+ linux-mtd@lists.infradead.org, grant.likely@linaro.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,25 +26,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B407=E6=9C=8816=E6=97=A5 10:58, Brian Norris =E5=86=99=
-=E9=81=93:
-> On Fri, Jul 12, 2013 at 5:47 AM, Ezequiel Garcia
-> <ezequiel.garcia@free-electrons.com>  wrote:
->> As the merge window close is just around the corner,
->> I wonder if there will be a MTD git pull for 3.11.
-> Time has given the (disappointing) answer: apparently no.
->
-> Artem/David,
->
-> Any reason for this miss? Can we get a guarantee a pull for 3.12 at lea=
-st?
-Add more people to this thread.
+On Wed, Jul 17, 2013 at 10:09:10AM +0800, Wei Yongjun wrote:
+> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+> 
+> Convert to use devm_* APIs to avoid resources leak on error handling case.
+> 
+> Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+> ---
+>  drivers/mtd/nand/orion_nand.c | 29 +++++++++--------------------
+>  1 file changed, 9 insertions(+), 20 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
+> index 46f308d..ce711b4 100644
+> --- a/drivers/mtd/nand/orion_nand.c
+> +++ b/drivers/mtd/nand/orion_nand.c
+> @@ -85,25 +85,23 @@ static int __init orion_nand_probe(struct platform_device *pdev)
+>  	int ret = 0;
+>  	u32 val = 0;
+>  
+> -	nc = kzalloc(sizeof(struct nand_chip) + sizeof(struct mtd_info), GFP_KERNEL);
+> +	nc = devm_kzalloc(&pdev->dev,
+> +			  sizeof(struct nand_chip) + sizeof(struct mtd_info),
+> +			  GFP_KERNEL);
+>  	if (!nc) {
+>  		printk(KERN_ERR "orion_nand: failed to allocate device structure.\n");
+> -		ret = -ENOMEM;
+> -		goto no_res;
+> +		return -ENOMEM;
+>  	}
+>  	mtd = (struct mtd_info *)(nc + 1);
+>  
+>  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -	if (!res) {
+> -		ret = -ENODEV;
+> -		goto no_res;
+> -	}
+> +	if (!res)
+> +		return -ENODEV;
+>  
+> -	io_base = ioremap(res->start, resource_size(res));
+> +	io_base = devm_ioremap(&pdev->dev, res->start, resource_size(res));
+>  	if (!io_base) {
+>  		printk(KERN_ERR "orion_nand: ioremap failed\n");
+> -		ret = -EIO;
+> -		goto no_res;
+> +		return -EIO;
 
-there are many patches pending in the maillist.
+Hi Wei
 
-So If Artem/David are too busy to maintain this MTD code, i volunteer to=20
-maintain it.
+Thanks for working on this.
+
+The above code can be further simplified:
+
+        res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+        io_base = devm_ioremap_resource(&pdev->dev, res);
+        if (IS_ERR(io_base))
+                return PTR_ERR(io_base); 
 
 
-thanks
-Huang Shijie
+While you are editing this file, it would be nice to replace all the
+printk() statements with dev_err(), dev_info() etc. Please do that as
+a separate patch.
+
+Thanks
+	Andrew
