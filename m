@@ -1,16 +1,21 @@
-MIME-Version: 1.0
-In-Reply-To: <1372845034-5579-7-git-send-email-josh.wu@atmel.com>
-References: <1372845034-5579-1-git-send-email-josh.wu@atmel.com>
- <1372845034-5579-7-git-send-email-josh.wu@atmel.com>
-Date: Thu, 18 Jul 2013 00:14:15 -0700
-Message-ID: <CAN8TOE_YfnQ5hK=xO28tH2h39Fb3KcVBFGM=XAFLHnRb0DFO3A@mail.gmail.com>
-Subject: Re: [PATCH 6/6] mtd: ofpart: add compatible check for child nodes
-From: Brian Norris <computersforpeace@gmail.com>
-To: Josh Wu <josh.wu@atmel.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: sergei.shtylyov@cogentembedded.com, dedekind1@gmail.com,
- devicetree-discuss@lists.ozlabs.org, linux-mtd@lists.infradead.org,
- plagnioj@jcrosoft.com, linux-arm-kernel@lists.infradead.org
+Received: from f125.mail.ru ([94.100.178.188] helo=f125.i.mail.ru)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Uzirw-0003C3-N1
+ for linux-mtd@lists.infradead.org; Thu, 18 Jul 2013 07:43:22 +0000
+From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+To: =?UTF-8?B?QnJpYW4gTm9ycmlz?= <computersforpeace@gmail.com>
+Subject: =?UTF-8?B?UmU6IFJlc2VuZDogTkFORCAxNmJpdCBPTkZJIHByb2JsZW0=?=
+Mime-Version: 1.0
+Date: Thu, 18 Jul 2013 11:42:55 +0400
+Message-ID: <1374133375.366186011@f125.i.mail.ru>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
+In-Reply-To: <CAN8TOE_oOj9yVPMjTOKwgfWvNoVPTUm4jAOE-Z0Mfko+bjnzng@mail.gmail.com>
+References: <1373445550.346364381@f159.i.mail.ru>
+ <CAN8TOE_oOj9yVPMjTOKwgfWvNoVPTUm4jAOE-Z0Mfko+bjnzng@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org,
+ =?UTF-8?B?TWF0dGhpZXUgQ0FTVEVU?= <matthieu.castet@parrot.com>
+Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,91 +25,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Adding device tree list, keeping patch context
-
-On Wed, Jul 3, 2013 at 2:50 AM, Josh Wu <josh.wu@atmel.com> wrote:
-> In case that the nand device will support some features like Nand Flash
-> Controller, we want to make the sub feature as a sub node of nand device.
->
-> Use such organization it is easy to enable/disable feature, also it is back
-> compatible and more readable.
->
-> If the sub-node has a compatible property then it is a driver not partition.
->
-> Signed-off-by: Josh Wu <josh.wu@atmel.com>
-
-I just came back to this patch series. I think this patch might be
-deserving of a review by the device-tree mailing list. (It also
-doesn't deserve to die in MTD purgatory.)
-
-BTW, it looks good to me, so:
-
-Acked-by: Brian Norris <computersforpeace@gmail.com>
-
-Thanks,
-Brian
-
-> ---
-> v3 --> v4:
->   - remove the 'len' parameter, just use NULL.
->   - refine the commit message.
->   - also add a NOTE in devicetree/bindings/mtd/partition.txt.
->
->  .../devicetree/bindings/mtd/partition.txt          |    1 +
->  drivers/mtd/ofpart.c                               |   13 ++++++++++++-
->  2 files changed, 13 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Documentation/devicetree/bindings/mtd/partition.txt
-> index 9315ac9..8e5557d 100644
-> --- a/Documentation/devicetree/bindings/mtd/partition.txt
-> +++ b/Documentation/devicetree/bindings/mtd/partition.txt
-> @@ -4,6 +4,7 @@ Partitions can be represented by sub-nodes of an mtd device. This can be used
->  on platforms which have strong conventions about which portions of a flash are
->  used for what purposes, but which don't use an on-flash partition table such
->  as RedBoot.
-> +NOTE: if the sub-node has a compatible string, then it is not a partition.
->
->  #address-cells & #size-cells must both be present in the mtd device. There are
->  two valid values for both:
-> diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
-> index 553d6d6..30fcea1 100644
-> --- a/drivers/mtd/ofpart.c
-> +++ b/drivers/mtd/ofpart.c
-> @@ -20,6 +20,10 @@
->  #include <linux/slab.h>
->  #include <linux/mtd/partitions.h>
->
-> +static bool node_has_compatible(struct device_node *pp)
-> +{
-> +       return of_get_property(pp, "compatible", NULL);
-> +}
->  static int parse_ofpart_partitions(struct mtd_info *master,
->                                    struct mtd_partition **pparts,
->                                    struct mtd_part_parser_data *data)
-> @@ -40,8 +44,12 @@ static int parse_ofpart_partitions(struct mtd_info *master,
->         /* First count the subnodes */
->         pp = NULL;
->         nr_parts = 0;
-> -       while ((pp = of_get_next_child(node, pp)))
-> +       while ((pp = of_get_next_child(node, pp))) {
-> +               if (node_has_compatible(pp))
-> +                       continue;
-> +
->                 nr_parts++;
-> +       }
->
->         if (nr_parts == 0)
->                 return 0;
-> @@ -57,6 +65,9 @@ static int parse_ofpart_partitions(struct mtd_info *master,
->                 int len;
->                 int a_cells, s_cells;
->
-> +               if (node_has_compatible(pp))
-> +                       continue;
-> +
->                 reg = of_get_property(pp, "reg", &len);
->                 if (!reg) {
->                         nr_parts--;
-> --
-> 1.7.9.5
->
+PiBBZGRpbmcgTWF0dGhpZXUsIHNpbmNlIGhlIGludHJvZHVjZWQgTkFORF9CVVNXSURUSC4gTGVh
+dmluZyBmdWxsIGNvbnRleHQgaW50YWN0Lgo+IAo+IE9uIFdlZCwgSnVsIDEwLCAyMDEzIGF0IDE6
+MzkgQU0sIEFsZXhhbmRlciBTaGl5YW4gPHNoY193b3JrQG1haWwucnU+IHdyb3RlOgo+ID4gSGVs
+bG8uCj4gPgo+ID4gVXBkYXRlZDogU2FtZSBlZmZlY3QgZm9yIDMuMTAga2VybmVsLgo+ID4KPiA+
+IC0tLS0tLS0tCj4gPgo+ID4gSSBoYXZlIGEgcHJvYmxlbSB3aXRoIGF0dGFjaCBOQU5EIFVCSSBp
+biAxNiBiaXQgbW9kZS4KPiA+IE5BTkQgd29ya3MgZmluZSBpZiBJIHNwZWNpZnkgTkFORF9CVVNX
+SURUSF8xNiBvcHRpb24sIGJ1dCBub3QKPiA+IHdvcmtpbmcgd2l0aCBOQU5EX0JVU1dJRFRIX0FV
+VE8gb3B0aW9uLiBJbiBzZWNvbmQgY2FzZSBOQU5ECj4gPiBjaGlwIGlzIGlkZW50aWZ5ZWQgd2l0
+aCBPTkZJLiBMb2dzIGJlbG93Lgo+ID4gQ2FuIGFueW9uZSBoZWxwIG1lIHdpdGggdGhpcyBpc3N1
+ZT8gSXMgaXQgYSBrbm93biBwcm9ibGVtPwo+ID4gVGhhbmtzLgo+ID4gUFM6IEtlcm5lbCAzLjku
+Mwo+IAo+IEknbSBpbnNwZWN0aW5nIHRoZSBOQU5EX0JVU1dJRFRIX0FVVE8gY29kZSBhbmQgaXQg
+bG9va3MgcmF0aGVyIGJyb2tlbi4KPiBGb3IgY2hpcHMgd2l0aCBOQU5EX0JVU1dJRFRIX0FVVE8s
+IGl0IGNhbGxzIG5hbmRfc2V0X2RlZmF1bHRzKCkgdHdpY2UuCj4gVGhlIHNlY29uZCBjYWxsIHdp
+bGwgZG8gZXhhY3RseSBub3RoaW5nLiBUbyBkbyB0aGlzIHJpZ2h0LCB5b3UnbGwKPiBwcm9iYWJs
+eSBoYXZlIHRvIGhhY2sgdXAgbmFuZF9zZXRfZGVmYXVsdHMoKSBzbyB0aGF0IGl0IHdpbGwgY2hl
+Y2sgaWYKPiB0aGUgZnVuY3Rpb24gcG9pbnRlciBpcyBvbmUgb2YgdHdvIG9wdGlvbnM6Cj4gCj4g
+MS4gTlVMTAo+IDIuIHRoZSA4LWJpdCB2ZXJzaW9uCj4gCj4gTXkgKHVudGVzdGVkLCBub3QgY29t
+cGlsZWQsIGFuZCBwb3NzaWJseSBsaW5lLXdyYXBwZWQpIHBhdGNoOgo+IAo+IGRpZmYgLS1naXQg
+YS9kcml2ZXJzL210ZC9uYW5kL25hbmRfYmFzZS5jIGIvZHJpdmVycy9tdGQvbmFuZC9uYW5kX2Jh
+c2UuYwo+IGluZGV4IGFjZDJmYzkuLjI2YWFkNTYgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQv
+bmFuZC9uYW5kX2Jhc2UuYwo+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvbmFuZF9iYXNlLmMKPiBA
+QCAtMjc4Niw3ICsyNzg2LDcgQEAgc3RhdGljIHZvaWQgbmFuZF9zZXRfZGVmYXVsdHMoc3RydWN0
+IG5hbmRfY2hpcAo+ICpjaGlwLCBpbnQgYnVzdykKPiAKPiAgCWlmICghY2hpcC0+c2VsZWN0X2No
+aXApCj4gIAkJY2hpcC0+c2VsZWN0X2NoaXAgPSBuYW5kX3NlbGVjdF9jaGlwOwo+IC0JaWYgKCFj
+aGlwLT5yZWFkX2J5dGUpCj4gKwlpZiAoIWNoaXAtPnJlYWRfYnl0ZSB8fCBjaGlwLT5yZWFkX2J5
+dGUgPT0gbmFuZF9yZWFkX2J5dGUpCj4gIAkJY2hpcC0+cmVhZF9ieXRlID0gYnVzdyA/IG5hbmRf
+cmVhZF9ieXRlMTYgOiBuYW5kX3JlYWRfYnl0ZTsKPiAgCWlmICghY2hpcC0+cmVhZF93b3JkKQo+
+ICAJCWNoaXAtPnJlYWRfd29yZCA9IG5hbmRfcmVhZF93b3JkOwo+IEBAIC0yNzk0LDkgKzI3OTQs
+OSBAQCBzdGF0aWMgdm9pZCBuYW5kX3NldF9kZWZhdWx0cyhzdHJ1Y3QgbmFuZF9jaGlwCj4gKmNo
+aXAsIGludCBidXN3KQo+ICAJCWNoaXAtPmJsb2NrX2JhZCA9IG5hbmRfYmxvY2tfYmFkOwo+ICAJ
+aWYgKCFjaGlwLT5ibG9ja19tYXJrYmFkKQo+ICAJCWNoaXAtPmJsb2NrX21hcmtiYWQgPSBuYW5k
+X2RlZmF1bHRfYmxvY2tfbWFya2JhZDsKPiAtCWlmICghY2hpcC0+d3JpdGVfYnVmKQo+ICsJaWYg
+KCFjaGlwLT53cml0ZV9idWYgfHwgY2hpcC0+d3JpdGVfYnVmID09IG5hbmRfd3JpdGVfYnVmKQo+
+ICAJCWNoaXAtPndyaXRlX2J1ZiA9IGJ1c3cgPyBuYW5kX3dyaXRlX2J1ZjE2IDogbmFuZF93cml0
+ZV9idWY7Cj4gLQlpZiAoIWNoaXAtPnJlYWRfYnVmKQo+ICsJaWYgKCFjaGlwLT5yZWFkX2J1ZiB8
+fCBjaGlwLT5yZWFkX2J1ZiA9PSBuYW5kX3JlYWRfYnVmKQo+ICAJCWNoaXAtPnJlYWRfYnVmID0g
+YnVzdyA/IG5hbmRfcmVhZF9idWYxNiA6IG5hbmRfcmVhZF9idWY7Cj4gIAlpZiAoIWNoaXAtPnNj
+YW5fYmJ0KQo+ICAJCWNoaXAtPnNjYW5fYmJ0ID0gbmFuZF9kZWZhdWx0X2JidDsKPiAKClRoYW5r
+cyBCcmlhbiEgVGVzdGVkIGJ5IG1lIGFuZCBpdCB3b3JrcyBub3cgYXMgZXhwZWN0ZWQuCgpPTkZJ
+IHBhcmFtIHBhZ2UgMCB2YWxpZApPTkZJIGZsYXNoIGRldGVjdGVkCk5BTkQgZGV2aWNlOiBNYW51
+ZmFjdHVyZXIgSUQ6IDB4MmMsIENoaXAgSUQ6IDB4Y2EgKE1pY3JvbiBNVDI5RjJHMTZBQkFFQVdQ
+KSwgMjU2TWlCLCBwYWdlIHNpemU6IDIwNDgsIE9PQiBzaXplOiA2NApTY2FubmluZyBkZXZpY2Ug
+Zm9yIGJhZCBibG9ja3MKQ3JlYXRpbmcgMSBNVEQgcGFydGl0aW9ucyBvbiAiTVQyOUYyRzE2QUJB
+RUFXUCI6CjB4MDAwMDAwMDAwMDAwLTB4MDAwMDEwMDAwMDAwIDogIm5hbmQtZ3BpbyIKVUJJOiBh
+dHRhY2hpbmcgbXRkNCB0byB1YmkwClVCSTogc2Nhbm5pbmcgaXMgZmluaXNoZWQKVUJJOiBhdHRh
+Y2hlZCBtdGQ0IChuYW1lICJuYW5kLWdwaW8iLCBzaXplIDI1NiBNaUIpIHRvIHViaTAKVUJJOiBQ
+RUIgc2l6ZTogMTMxMDcyIGJ5dGVzICgxMjggS2lCKSwgTEVCIHNpemU6IDEyOTAyNCBieXRlcwpV
+Qkk6IG1pbi4vbWF4LiBJL08gdW5pdCBzaXplczogMjA0OC8yMDQ4LCBzdWItcGFnZSBzaXplIDUx
+MgpVQkk6IFZJRCBoZWFkZXIgb2Zmc2V0OiA1MTIgKGFsaWduZWQgNTEyKSwgZGF0YSBvZmZzZXQ6
+IDIwNDgKVUJJOiBnb29kIFBFQnM6IDIwNDgsIGJhZCBQRUJzOiAwLCBjb3JydXB0ZWQgUEVCczog
+MApVQkk6IHVzZXIgdm9sdW1lOiAxLCBpbnRlcm5hbCB2b2x1bWVzOiAxLCBtYXguIHZvbHVtZXMg
+Y291bnQ6IDEyOApVQkk6IG1heC9tZWFuIGVyYXNlIGNvdW50ZXI6IDIvMSwgV0wgdGhyZXNob2xk
+OiA0MDk2LCBpbWFnZSBzZXF1ZW5jZSBudW1iZXI6IDM0ODMzNDczNjAKVUJJOiBhdmFpbGFibGUg
+UEVCczogMCwgdG90YWwgcmVzZXJ2ZWQgUEVCczogMjA0OCwgUEVCcyByZXNlcnZlZCBmb3IgYmFk
+IFBFQiBoYW5kbGluZzogNDAKVUJJOiBiYWNrZ3JvdW5kIHRocmVhZCAidWJpX2JndDBkIiBzdGFy
+dGVkLCBQSUQgMjgKLi4uClVCSUZTOiBkZWZhdWx0IGZpbGUtc3lzdGVtIGNyZWF0ZWQKVUJJRlM6
+IGJhY2tncm91bmQgdGhyZWFkICJ1Ymlmc19iZ3QwXzAiIHN0YXJ0ZWQsIFBJRCA0NQpVQklGUzog
+bW91bnRlZCBVQkkgZGV2aWNlIDAsIHZvbHVtZSAwLCBuYW1lICJiYm94IihudWxsKQpVQklGUzog
+TEVCIHNpemU6IDEyOTAyNCBieXRlcyAoMTI2IEtpQiksIG1pbi4vbWF4LiBJL08gdW5pdCBzaXpl
+czogMjA0OCBieXRlcy8yMDQ4IGJ5dGVzClVCSUZTOiBGUyBzaXplOiAyNTY4ODY3ODQgYnl0ZXMg
+KDI0NCBNaUIsIDE5OTEgTEVCcyksIGpvdXJuYWwgc2l6ZSAxMjkwMjQwMCBieXRlcyAoMTIgTWlC
+LCAxMDAgTEVCcykKVUJJRlM6IHJlc2VydmVkIGZvciByb290OiA0OTUyNjgzIGJ5dGVzICg0ODM2
+IEtpQikKVUJJRlM6IG1lZGlhIGZvcm1hdDogdzQvcjAgKGxhdGVzdCBpcyB3NC9yMCksIFVVSUQg
+MzlEODYxREEtNkM0Mi00QTI3LTk3RjItRjExRkE0QTVCMzM0LCBzbWFsbCBMUFQgbW9kZWwKCkNh
+biB5b3UgbWFrZSBhIHBhdGNoIGZvciBzdGFibGU/ClRoYW5rcyBhZ2Fpbi4KCi0tLQo=
