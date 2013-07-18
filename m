@@ -1,30 +1,19 @@
-Received: from mail-ie0-x231.google.com ([2607:f8b0:4001:c03::231])
+Received: from mail-vc0-x235.google.com ([2607:f8b0:400c:c03::235])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Uzdv6-0006U4-K8
- for linux-mtd@lists.infradead.org; Thu, 18 Jul 2013 02:26:17 +0000
-Received: by mail-ie0-f177.google.com with SMTP id aq17so5704668iec.22
- for <linux-mtd@lists.infradead.org>; Wed, 17 Jul 2013 19:25:55 -0700 (PDT)
+ id 1UziEo-0002I4-VP
+ for linux-mtd@lists.infradead.org; Thu, 18 Jul 2013 07:02:56 +0000
+Received: by mail-vc0-f181.google.com with SMTP id lf11so2013450vcb.26
+ for <linux-mtd@lists.infradead.org>; Thu, 18 Jul 2013 00:02:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAHSAbzP5jqHwCm0qhu=DiNzpP0swqWHsQ0=MnF+EKaSN22E5hg@mail.gmail.com>
-References: <CAHSAbzP0Nc1ahf_ra6yDuMvV998_+EGcUOGDv5ifKaagYf+NOg@mail.gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9E84D2@DBDE04.ent.ti.com>
- <CAHSAbzMDOWo5oBqUHqMxybuDwUjFbczYwN+85gH+rxZ9z8u2Pw@mail.gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9E851E@DBDE04.ent.ti.com>
- <593AEF6C47F46446852B067021A273D6D93B49E1@MUCSE039.lantiq.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9E85D0@DBDE04.ent.ti.com>
- <CAHSAbzP5jqHwCm0qhu=DiNzpP0swqWHsQ0=MnF+EKaSN22E5hg@mail.gmail.com>
-Date: Wed, 17 Jul 2013 19:25:55 -0700
-Message-ID: <CA+7tXihoZZhpoyvxj58c+Zi-Zy631kK5s-kDoSxPKq=ej0qyvA@mail.gmail.com>
-Subject: Re: support DUAL and QUAD[patch v1]
-From: Trent Piepho <tpiepho@gmail.com>
-To: yuhang wang <wangyuhang2014@gmail.com>
+In-Reply-To: <1373445550.346364381@f159.i.mail.ru>
+References: <1373445550.346364381@f159.i.mail.ru>
+Date: Thu, 18 Jul 2013 00:02:32 -0700
+Message-ID: <CAN8TOE_oOj9yVPMjTOKwgfWvNoVPTUm4jAOE-Z0Mfko+bjnzng@mail.gmail.com>
+Subject: Re: Resend: NAND 16bit ONFI problem
+From: Brian Norris <computersforpeace@gmail.com>
+To: Alexander Shiyan <shc_work@mail.ru>
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: "thomas.langer@lantiq.com" <thomas.langer@lantiq.com>,
- "broonie@kernel.org" <broonie@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>, "spi-devel-general@lists.sourceforge.net"
- <spi-devel-general@lists.sourceforge.net>, "Poddar,
- Sourav" <sourav.poddar@ti.com>
+Cc: linux-mtd@lists.infradead.org, Matthieu CASTET <matthieu.castet@parrot.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,69 +23,123 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jul 17, 2013 at 6:58 PM, yuhang wang <wangyuhang2014@gmail.com> wrote:
-> >> > >
-> >> > > > [Pekon]: Instead of adding new fields you can use existing 'mode'
-> >> > > > field
-> >> to
-> >> > > > pass on the platform specific configurations. And if 'u8 mode'
-> >> > > > does not
-> >> > > > suffice you can increase it to 'u32'.
+Adding Matthieu, since he introduced NAND_BUSWIDTH. Leaving full context intact.
 
-But what about spidev?
-
-> diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-> index 004b10f..36d2451 100644
-> --- a/drivers/spi/spi.c
-> +++ b/drivers/spi/spi.c
-> @@ -868,6 +868,14 @@ static void of_register_spi_devices(struct
-> spi_master *master)
->   spi->mode |= SPI_CS_HIGH;
->   if (of_find_property(nc, "spi-3wire", NULL))
->   spi->mode |= SPI_3WIRE;
-> + if (of_find_property(nc, "spi-tx-dual", NULL))
-> + spi->mode |= SPI_TX_DUAL;
-> + if (of_find_property(nc, "spi-tx-quad", NULL))
-> + spi->mode |= SPI_TX_QUAD;
-> + if (of_find_property(nc, "spi-rx-dual", NULL))
-> + spi->mode |= SPI_RX_DUAL;
-> + if (of_find_property(nc, "spi-rx-quad", NULL))
-> + spi->mode |= SPI_RX_QUAD;
+On Wed, Jul 10, 2013 at 1:39 AM, Alexander Shiyan <shc_work@mail.ru> wrote:
+> Hello.
 >
->   /* Device speed */
->   prop = of_get_property(nc, "spi-max-frequency", &len);
-> @@ -1316,6 +1324,12 @@ int spi_setup(struct spi_device *spi)
->   /* help drivers fail *cleanly* when they need options
->   * that aren't supported with their current master
->   */
-> + if (((spi->mode >> 8) & 0x03) == 0x03 ||
-> + ((spi->mode >> 10) & 0x03) == 0x03) {
-> + dev_err(&spi->dev,
-> + "setup: can not select dual and quad at the same time\n");
-> + return -EINVAL;
-> + }
+> Updated: Same effect for 3.10 kernel.
+>
+> --------
+>
+> I have a problem with attach NAND UBI in 16 bit mode.
+> NAND works fine if I specify NAND_BUSWIDTH_16 option, but not
+> working with NAND_BUSWIDTH_AUTO option. In second case NAND
+> chip is identifyed with ONFI. Logs below.
+> Can anyone help me with this issue? Is it a known problem?
+> Thanks.
+> PS: Kernel 3.9.3
 
-Maybe it would make more sense to have a spi-rx-width and spi-tx-width
-than can be set to 1, 2, 4, etc. bits instead of a bunch of properties
-that are mutually exclusive?  Sooner or later someone is going to want
-8 bits.
+I'm inspecting the NAND_BUSWIDTH_AUTO code and it looks rather broken.
+For chips with NAND_BUSWIDTH_AUTO, it calls nand_set_defaults() twice.
+The second call will do exactly nothing. To do this right, you'll
+probably have to hack up nand_set_defaults() so that it will check if
+the function pointer is one of two options:
 
-> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-> index 38c2b92..e9ba1cf 100644
-> --- a/include/linux/spi/spi.h
-> +++ b/include/linux/spi/spi.h
-> @@ -74,7 +74,7 @@ struct spi_device {
->   struct spi_master *master;
->   u32 max_speed_hz;
->   u8 chip_select;
-> - u8 mode;
-> + u16 mode;
+1. NULL
+2. the 8-bit version
 
-What about this, from include/uapi/linux/spi/spidev.h:
+My (untested, not compiled, and possibly line-wrapped) patch:
 
-/* Read / Write of SPI mode (SPI_MODE_0..SPI_MODE_3) */
-#define SPI_IOC_RD_MODE                 _IOR(SPI_IOC_MAGIC, 1, __u8)
-#define SPI_IOC_WR_MODE                 _IOW(SPI_IOC_MAGIC, 1, __u8)
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index acd2fc9..26aad56 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2786,7 +2786,7 @@ static void nand_set_defaults(struct nand_chip
+*chip, int busw)
 
-Note that you can't just change the type in the ioctl define, as it
-won't be backward compatible.
+ 	if (!chip->select_chip)
+ 		chip->select_chip = nand_select_chip;
+-	if (!chip->read_byte)
++	if (!chip->read_byte || chip->read_byte == nand_read_byte)
+ 		chip->read_byte = busw ? nand_read_byte16 : nand_read_byte;
+ 	if (!chip->read_word)
+ 		chip->read_word = nand_read_word;
+@@ -2794,9 +2794,9 @@ static void nand_set_defaults(struct nand_chip
+*chip, int busw)
+ 		chip->block_bad = nand_block_bad;
+ 	if (!chip->block_markbad)
+ 		chip->block_markbad = nand_default_block_markbad;
+-	if (!chip->write_buf)
++	if (!chip->write_buf || chip->write_buf == nand_write_buf)
+ 		chip->write_buf = busw ? nand_write_buf16 : nand_write_buf;
+-	if (!chip->read_buf)
++	if (!chip->read_buf || chip->read_buf == nand_read_buf)
+ 		chip->read_buf = busw ? nand_read_buf16 : nand_read_buf;
+ 	if (!chip->scan_bbt)
+ 		chip->scan_bbt = nand_default_bbt;
+
+> New chip, first start, NAND_BUSWIDTH_AUTO:
+>
+> ONFI param page 0 valid
+> ONFI flash detected
+> NAND device: Manufacturer ID: 0x2c, Chip ID: 0xca (Micron MT29F2G16ABAEAWP), 256MiB, page size: 2048, OOB size: 64
+> Scanning device for bad blocks
+> Creating 1 MTD partitions on "MT29F2G16ABAEAWP":
+> 0x000000000000-0x000010000000 : "nand-gpio"
+> UBI: attaching mtd4 to ubi0
+> UBI: scanning is finished
+> UBI: empty MTD device detected
+> UBI: attached mtd4 (name "nand-gpio", size 256 MiB) to ubi0
+> UBI: PEB size: 131072 bytes (128 KiB), LEB size: 129024 bytes
+> UBI: min./max. I/O unit sizes: 2048/2048, sub-page size 512
+> UBI: VID header offset: 512 (aligned 512), data offset: 2048
+> UBI: good PEBs: 2048, bad PEBs: 0, corrupted PEBs: 0
+> UBI: user volume: 0, internal volumes: 1, max. volumes count: 128
+> UBI: max/mean erase counter: 0/0, WL threshold: 4096, image sequence number: 2920475650
+> UBI: available PEBs: 2004, total reserved PEBs: 44, PEBs reserved for bad PEB handling: 40
+> UBI: background thread "ubi_bgt0d" started, PID 22
+>
+>
+> sync && reboot:
+>
+> ONFI param page 0 valid
+> ONFI flash detected
+> NAND device: Manufacturer ID: 0x2c, Chip ID: 0xca (Micron MT29F2G16ABAEAWP), 256MiB, page size: 2048, OOB size: 64
+> Scanning device for bad blocks
+> Creating 1 MTD partitions on "MT29F2G16ABAEAWP":
+> 0x000000000000-0x000010000000 : "nand-gpio"
+> UBI: attaching mtd4 to ubi0
+> UBI: fixable bit-flip detected at PEB 2
+> UBI: fixable bit-flip detected at PEB 3
+> UBI: fixable bit-flip detected at PEB 4
+> UBI: fixable bit-flip detected at PEB 5
+> UBI: fixable bit-flip detected at PEB 6
+> UBI: fixable bit-flip detected at PEB 7
+> ...
+>
+>
+> NAND_BUSWIDTH_16:
+>
+> Trying ONFI probe in 16 bits mode, aborting !
+> NAND device: Manufacturer ID: 0x2c, Chip ID: 0xca (Micron NAND 256MiB 3,3V 16-bit), 256MiB, page size: 2048, OOB size: 64
+> Scanning device for bad blocks
+> Creating 1 MTD partitions on "NAND 256MiB 3,3V 16-bit":
+> 0x000000000000-0x000010000000 : "nand-gpio"
+> UBI: attaching mtd4 to ubi0
+> UBI: scanning is finished
+> UBI: empty MTD device detected
+> UBI: attached mtd4 (name "nand-gpio", size 256 MiB) to ubi0
+> UBI: PEB size: 131072 bytes (128 KiB), LEB size: 129024 bytes
+> UBI: min./max. I/O unit sizes: 2048/2048, sub-page size 512
+> UBI: VID header offset: 512 (aligned 512), data offset: 2048
+> UBI: good PEBs: 2048, bad PEBs: 0, corrupted PEBs: 0
+> UBI: user volume: 0, internal volumes: 1, max. volumes count: 128
+> UBI: max/mean erase counter: 0/0, WL threshold: 4096, image sequence number: 2573182024
+> UBI: available PEBs: 2004, total reserved PEBs: 44, PEBs reserved for bad PEB handling: 40
+> UBI: background thread "ubi_bgt0d" started, PID 23
+>
+> ----------------
+>
+
+Brian
