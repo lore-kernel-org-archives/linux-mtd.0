@@ -1,19 +1,20 @@
-Received: from mail-vc0-x235.google.com ([2607:f8b0:400c:c03::235])
+Received: from mail-oa0-x22b.google.com ([2607:f8b0:4003:c02::22b])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UziEo-0002I4-VP
- for linux-mtd@lists.infradead.org; Thu, 18 Jul 2013 07:02:56 +0000
-Received: by mail-vc0-f181.google.com with SMTP id lf11so2013450vcb.26
- for <linux-mtd@lists.infradead.org>; Thu, 18 Jul 2013 00:02:33 -0700 (PDT)
+ id 1UziN2-0002Sq-VY
+ for linux-mtd@lists.infradead.org; Thu, 18 Jul 2013 07:11:25 +0000
+Received: by mail-oa0-f43.google.com with SMTP id i7so3758214oag.2
+ for <linux-mtd@lists.infradead.org>; Thu, 18 Jul 2013 00:11:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1373445550.346364381@f159.i.mail.ru>
-References: <1373445550.346364381@f159.i.mail.ru>
-Date: Thu, 18 Jul 2013 00:02:32 -0700
-Message-ID: <CAN8TOE_oOj9yVPMjTOKwgfWvNoVPTUm4jAOE-Z0Mfko+bjnzng@mail.gmail.com>
-Subject: Re: Resend: NAND 16bit ONFI problem
-From: Brian Norris <computersforpeace@gmail.com>
-To: Alexander Shiyan <shc_work@mail.ru>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org, Matthieu CASTET <matthieu.castet@parrot.com>
+In-Reply-To: <7f412749.1fc36.13f8b41f860.Coremail.zhengun23@126.com>
+References: <7f412749.1fc36.13f8b41f860.Coremail.zhengun23@126.com>
+Date: Thu, 18 Jul 2013 12:41:02 +0530
+Message-ID: <CAGhJ=78J+jHtChQbC5ShmjxJxRUjC+fgMK94jLEAkdZKNWm_QA@mail.gmail.com>
+Subject: Re: why use a very low-efficient method to check all the uncheked
+ inode in garbage_collect_pass
+From: Abhijit Lamsoge <avlamsox@gmail.com>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,123 +24,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Adding Matthieu, since he introduced NAND_BUSWIDTH. Leaving full context intact.
+unsubscribe linux-mtd
 
-On Wed, Jul 10, 2013 at 1:39 AM, Alexander Shiyan <shc_work@mail.ru> wrote:
-> Hello.
+On Fri, Jun 28, 2013 at 8:18 PM, zhengjun <zhengun23@126.com> wrote:
+> I encountered a problem with my linux system=EF=BC=88uses jffs2 file syst=
+em=EF=BC=89
+> After scan all inode on the flash, a background thread ( garbage_collect_=
+thread) is start=E3=80=82 Before collecting,
+> it begins with checking crc of all inodes in inode_cache_list. But unluck=
+ly the checking work cost all most 3
+> minutes=E3=80=82It costs the 98% of all cpu resource.
+> I found that the time is wasted on finding out the valid inode_cache with=
+ specified inode id (c->checked_ino)=E3=80=82
+> checked_ino is counted from zero to c->higest_ino=E3=80=82
+> In my system, there are 3000 files,but with higest_ino reached to 2726297=
+6=E3=80=82
+> (Because the old file is replaced by new file, by first delete then copy)=
+=E3=80=82
+> So the most of time, jffs2_get_inode_cache can not find a valid inode wit=
+h c->checked_ino=E3=80=82
+> So the useless search works wastes a lot of time.
+> why?
+> why use a increased  index to find each indoe_cache in inode_cache_list=
+=EF=BC=8C but you never know which index is the valide ino.
+> The indode_cache_list is a hash table.
+> why not use a deep-first-search method to get each inode in hash table?
+> Just remember next valid ino in c->checked_ino.
 >
-> Updated: Same effect for 3.10 kernel.
+> Now I designed a new search method=E3=80=82 It works much more efficientl=
+y.
 >
-> --------
+> Could you optimize these code for better work?  Thanks!
 >
-> I have a problem with attach NAND UBI in 16 bit mode.
-> NAND works fine if I specify NAND_BUSWIDTH_16 option, but not
-> working with NAND_BUSWIDTH_AUTO option. In second case NAND
-> chip is identifyed with ONFI. Logs below.
-> Can anyone help me with this issue? Is it a known problem?
-> Thanks.
-> PS: Kernel 3.9.3
-
-I'm inspecting the NAND_BUSWIDTH_AUTO code and it looks rather broken.
-For chips with NAND_BUSWIDTH_AUTO, it calls nand_set_defaults() twice.
-The second call will do exactly nothing. To do this right, you'll
-probably have to hack up nand_set_defaults() so that it will check if
-the function pointer is one of two options:
-
-1. NULL
-2. the 8-bit version
-
-My (untested, not compiled, and possibly line-wrapped) patch:
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index acd2fc9..26aad56 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2786,7 +2786,7 @@ static void nand_set_defaults(struct nand_chip
-*chip, int busw)
-
- 	if (!chip->select_chip)
- 		chip->select_chip = nand_select_chip;
--	if (!chip->read_byte)
-+	if (!chip->read_byte || chip->read_byte == nand_read_byte)
- 		chip->read_byte = busw ? nand_read_byte16 : nand_read_byte;
- 	if (!chip->read_word)
- 		chip->read_word = nand_read_word;
-@@ -2794,9 +2794,9 @@ static void nand_set_defaults(struct nand_chip
-*chip, int busw)
- 		chip->block_bad = nand_block_bad;
- 	if (!chip->block_markbad)
- 		chip->block_markbad = nand_default_block_markbad;
--	if (!chip->write_buf)
-+	if (!chip->write_buf || chip->write_buf == nand_write_buf)
- 		chip->write_buf = busw ? nand_write_buf16 : nand_write_buf;
--	if (!chip->read_buf)
-+	if (!chip->read_buf || chip->read_buf == nand_read_buf)
- 		chip->read_buf = busw ? nand_read_buf16 : nand_read_buf;
- 	if (!chip->scan_bbt)
- 		chip->scan_bbt = nand_default_bbt;
-
-> New chip, first start, NAND_BUSWIDTH_AUTO:
+> jffs2_garbage_collect_pass()
+> {
+>    ....
+>     if( c->unchecked_size )
+>     {
+>         ic =3D jffs2_get_inode_cache_next( c, & c->checked_ino );  // new=
+ search method
 >
-> ONFI param page 0 valid
-> ONFI flash detected
-> NAND device: Manufacturer ID: 0x2c, Chip ID: 0xca (Micron MT29F2G16ABAEAWP), 256MiB, page size: 2048, OOB size: 64
-> Scanning device for bad blocks
-> Creating 1 MTD partitions on "MT29F2G16ABAEAWP":
-> 0x000000000000-0x000010000000 : "nand-gpio"
-> UBI: attaching mtd4 to ubi0
-> UBI: scanning is finished
-> UBI: empty MTD device detected
-> UBI: attached mtd4 (name "nand-gpio", size 256 MiB) to ubi0
-> UBI: PEB size: 131072 bytes (128 KiB), LEB size: 129024 bytes
-> UBI: min./max. I/O unit sizes: 2048/2048, sub-page size 512
-> UBI: VID header offset: 512 (aligned 512), data offset: 2048
-> UBI: good PEBs: 2048, bad PEBs: 0, corrupted PEBs: 0
-> UBI: user volume: 0, internal volumes: 1, max. volumes count: 128
-> UBI: max/mean erase counter: 0/0, WL threshold: 4096, image sequence number: 2920475650
-> UBI: available PEBs: 2004, total reserved PEBs: 44, PEBs reserved for bad PEB handling: 40
-> UBI: background thread "ubi_bgt0d" started, PID 22
+>        if( !ic )
+>       {
+>          BUG();
+>       }
+>    }
+> ....
+> }
 >
+> struct jffs2_inode_cache * jffs2_get_inode_cache_next( struct jffs2_sb_in=
+fo * c, uint32_t * ino )
+> {
+>     struct jffs2_inode_cache * ret;
+>     uint32_t curIno;
+>     uint32_t ihash;
 >
-> sync && reboot:
+>     curIno =3D *ino;
+>     ihash =3D curino % 128;
 >
-> ONFI param page 0 valid
-> ONFI flash detected
-> NAND device: Manufacturer ID: 0x2c, Chip ID: 0xca (Micron MT29F2G16ABAEAWP), 256MiB, page size: 2048, OOB size: 64
-> Scanning device for bad blocks
-> Creating 1 MTD partitions on "MT29F2G16ABAEAWP":
-> 0x000000000000-0x000010000000 : "nand-gpio"
-> UBI: attaching mtd4 to ubi0
-> UBI: fixable bit-flip detected at PEB 2
-> UBI: fixable bit-flip detected at PEB 3
-> UBI: fixable bit-flip detected at PEB 4
-> UBI: fixable bit-flip detected at PEB 5
-> UBI: fixable bit-flip detected at PEB 6
-> UBI: fixable bit-flip detected at PEB 7
-> ...
+>     ret =3D c->inode_cache_list[ihash];
+>
+>     while( NULL !=3D ret )
+>     {
+>         if( ret->ino >=3D curInfo )
+>         {
+>              goto findinode;
+>         }
+>         ret =3D ret ->next;
+>     }
+>     for( ihash =3D ihash + 1; ihash < 128; ihash ++ )
+>     {
+>         if( NULL !=3D ( ret =3D c->inode_cache_list[ihash] ) )
+>             goto findinode;
+>     }
+>     return NULL;
+> findinode:
+>     if( ret->next )
+>     {
+>         *ino =3D ret->next->ino;
+>     } else
+>     {
+>         *ino =3D ihash + 1;
+>     }
+>    return ret;
+> }
 >
 >
-> NAND_BUSWIDTH_16:
 >
-> Trying ONFI probe in 16 bits mode, aborting !
-> NAND device: Manufacturer ID: 0x2c, Chip ID: 0xca (Micron NAND 256MiB 3,3V 16-bit), 256MiB, page size: 2048, OOB size: 64
-> Scanning device for bad blocks
-> Creating 1 MTD partitions on "NAND 256MiB 3,3V 16-bit":
-> 0x000000000000-0x000010000000 : "nand-gpio"
-> UBI: attaching mtd4 to ubi0
-> UBI: scanning is finished
-> UBI: empty MTD device detected
-> UBI: attached mtd4 (name "nand-gpio", size 256 MiB) to ubi0
-> UBI: PEB size: 131072 bytes (128 KiB), LEB size: 129024 bytes
-> UBI: min./max. I/O unit sizes: 2048/2048, sub-page size 512
-> UBI: VID header offset: 512 (aligned 512), data offset: 2048
-> UBI: good PEBs: 2048, bad PEBs: 0, corrupted PEBs: 0
-> UBI: user volume: 0, internal volumes: 1, max. volumes count: 128
-> UBI: max/mean erase counter: 0/0, WL threshold: 4096, image sequence number: 2573182024
-> UBI: available PEBs: 2004, total reserved PEBs: 44, PEBs reserved for bad PEB handling: 40
-> UBI: background thread "ubi_bgt0d" started, PID 23
->
-> ----------------
->
-
-Brian
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
