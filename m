@@ -1,20 +1,16 @@
-Received: from mail-oa0-x22b.google.com ([2607:f8b0:4003:c02::22b])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UziN2-0002Sq-VY
- for linux-mtd@lists.infradead.org; Thu, 18 Jul 2013 07:11:25 +0000
-Received: by mail-oa0-f43.google.com with SMTP id i7so3758214oag.2
- for <linux-mtd@lists.infradead.org>; Thu, 18 Jul 2013 00:11:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <7f412749.1fc36.13f8b41f860.Coremail.zhengun23@126.com>
-References: <7f412749.1fc36.13f8b41f860.Coremail.zhengun23@126.com>
-Date: Thu, 18 Jul 2013 12:41:02 +0530
-Message-ID: <CAGhJ=78J+jHtChQbC5ShmjxJxRUjC+fgMK94jLEAkdZKNWm_QA@mail.gmail.com>
-Subject: Re: why use a very low-efficient method to check all the uncheked
- inode in garbage_collect_pass
-From: Abhijit Lamsoge <avlamsox@gmail.com>
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1372845034-5579-7-git-send-email-josh.wu@atmel.com>
+References: <1372845034-5579-1-git-send-email-josh.wu@atmel.com>
+ <1372845034-5579-7-git-send-email-josh.wu@atmel.com>
+Date: Thu, 18 Jul 2013 00:14:15 -0700
+Message-ID: <CAN8TOE_YfnQ5hK=xO28tH2h39Fb3KcVBFGM=XAFLHnRb0DFO3A@mail.gmail.com>
+Subject: Re: [PATCH 6/6] mtd: ofpart: add compatible check for child nodes
+From: Brian Norris <computersforpeace@gmail.com>
+To: Josh Wu <josh.wu@atmel.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: sergei.shtylyov@cogentembedded.com, dedekind1@gmail.com,
+ devicetree-discuss@lists.ozlabs.org, linux-mtd@lists.infradead.org,
+ plagnioj@jcrosoft.com, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,93 +20,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-unsubscribe linux-mtd
+Adding device tree list, keeping patch context
 
-On Fri, Jun 28, 2013 at 8:18 PM, zhengjun <zhengun23@126.com> wrote:
-> I encountered a problem with my linux system=EF=BC=88uses jffs2 file syst=
-em=EF=BC=89
-> After scan all inode on the flash, a background thread ( garbage_collect_=
-thread) is start=E3=80=82 Before collecting,
-> it begins with checking crc of all inodes in inode_cache_list. But unluck=
-ly the checking work cost all most 3
-> minutes=E3=80=82It costs the 98% of all cpu resource.
-> I found that the time is wasted on finding out the valid inode_cache with=
- specified inode id (c->checked_ino)=E3=80=82
-> checked_ino is counted from zero to c->higest_ino=E3=80=82
-> In my system, there are 3000 files,but with higest_ino reached to 2726297=
-6=E3=80=82
-> (Because the old file is replaced by new file, by first delete then copy)=
-=E3=80=82
-> So the most of time, jffs2_get_inode_cache can not find a valid inode wit=
-h c->checked_ino=E3=80=82
-> So the useless search works wastes a lot of time.
-> why?
-> why use a increased  index to find each indoe_cache in inode_cache_list=
-=EF=BC=8C but you never know which index is the valide ino.
-> The indode_cache_list is a hash table.
-> why not use a deep-first-search method to get each inode in hash table?
-> Just remember next valid ino in c->checked_ino.
+On Wed, Jul 3, 2013 at 2:50 AM, Josh Wu <josh.wu@atmel.com> wrote:
+> In case that the nand device will support some features like Nand Flash
+> Controller, we want to make the sub feature as a sub node of nand device.
 >
-> Now I designed a new search method=E3=80=82 It works much more efficientl=
-y.
+> Use such organization it is easy to enable/disable feature, also it is back
+> compatible and more readable.
 >
-> Could you optimize these code for better work?  Thanks!
+> If the sub-node has a compatible property then it is a driver not partition.
 >
-> jffs2_garbage_collect_pass()
-> {
->    ....
->     if( c->unchecked_size )
->     {
->         ic =3D jffs2_get_inode_cache_next( c, & c->checked_ino );  // new=
- search method
+> Signed-off-by: Josh Wu <josh.wu@atmel.com>
+
+I just came back to this patch series. I think this patch might be
+deserving of a review by the device-tree mailing list. (It also
+doesn't deserve to die in MTD purgatory.)
+
+BTW, it looks good to me, so:
+
+Acked-by: Brian Norris <computersforpeace@gmail.com>
+
+Thanks,
+Brian
+
+> ---
+> v3 --> v4:
+>   - remove the 'len' parameter, just use NULL.
+>   - refine the commit message.
+>   - also add a NOTE in devicetree/bindings/mtd/partition.txt.
 >
->        if( !ic )
->       {
->          BUG();
->       }
->    }
-> ....
-> }
+>  .../devicetree/bindings/mtd/partition.txt          |    1 +
+>  drivers/mtd/ofpart.c                               |   13 ++++++++++++-
+>  2 files changed, 13 insertions(+), 1 deletion(-)
 >
-> struct jffs2_inode_cache * jffs2_get_inode_cache_next( struct jffs2_sb_in=
-fo * c, uint32_t * ino )
-> {
->     struct jffs2_inode_cache * ret;
->     uint32_t curIno;
->     uint32_t ihash;
+> diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Documentation/devicetree/bindings/mtd/partition.txt
+> index 9315ac9..8e5557d 100644
+> --- a/Documentation/devicetree/bindings/mtd/partition.txt
+> +++ b/Documentation/devicetree/bindings/mtd/partition.txt
+> @@ -4,6 +4,7 @@ Partitions can be represented by sub-nodes of an mtd device. This can be used
+>  on platforms which have strong conventions about which portions of a flash are
+>  used for what purposes, but which don't use an on-flash partition table such
+>  as RedBoot.
+> +NOTE: if the sub-node has a compatible string, then it is not a partition.
 >
->     curIno =3D *ino;
->     ihash =3D curino % 128;
+>  #address-cells & #size-cells must both be present in the mtd device. There are
+>  two valid values for both:
+> diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
+> index 553d6d6..30fcea1 100644
+> --- a/drivers/mtd/ofpart.c
+> +++ b/drivers/mtd/ofpart.c
+> @@ -20,6 +20,10 @@
+>  #include <linux/slab.h>
+>  #include <linux/mtd/partitions.h>
 >
->     ret =3D c->inode_cache_list[ihash];
+> +static bool node_has_compatible(struct device_node *pp)
+> +{
+> +       return of_get_property(pp, "compatible", NULL);
+> +}
+>  static int parse_ofpart_partitions(struct mtd_info *master,
+>                                    struct mtd_partition **pparts,
+>                                    struct mtd_part_parser_data *data)
+> @@ -40,8 +44,12 @@ static int parse_ofpart_partitions(struct mtd_info *master,
+>         /* First count the subnodes */
+>         pp = NULL;
+>         nr_parts = 0;
+> -       while ((pp = of_get_next_child(node, pp)))
+> +       while ((pp = of_get_next_child(node, pp))) {
+> +               if (node_has_compatible(pp))
+> +                       continue;
+> +
+>                 nr_parts++;
+> +       }
 >
->     while( NULL !=3D ret )
->     {
->         if( ret->ino >=3D curInfo )
->         {
->              goto findinode;
->         }
->         ret =3D ret ->next;
->     }
->     for( ihash =3D ihash + 1; ihash < 128; ihash ++ )
->     {
->         if( NULL !=3D ( ret =3D c->inode_cache_list[ihash] ) )
->             goto findinode;
->     }
->     return NULL;
-> findinode:
->     if( ret->next )
->     {
->         *ino =3D ret->next->ino;
->     } else
->     {
->         *ino =3D ihash + 1;
->     }
->    return ret;
-> }
+>         if (nr_parts == 0)
+>                 return 0;
+> @@ -57,6 +65,9 @@ static int parse_ofpart_partitions(struct mtd_info *master,
+>                 int len;
+>                 int a_cells, s_cells;
 >
+> +               if (node_has_compatible(pp))
+> +                       continue;
+> +
+>                 reg = of_get_property(pp, "reg", &len);
+>                 if (!reg) {
+>                         nr_parts--;
+> --
+> 1.7.9.5
 >
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
