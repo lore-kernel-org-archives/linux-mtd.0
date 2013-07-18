@@ -1,17 +1,21 @@
-Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
+Received: from mail-vb0-x22f.google.com ([2607:f8b0:400c:c02::22f])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UzjP8-000446-MX
- for linux-mtd@lists.infradead.org; Thu, 18 Jul 2013 08:17:40 +0000
-Received: by mail-pa0-f48.google.com with SMTP id kp12so2902117pab.7
- for <linux-mtd@lists.infradead.org>; Thu, 18 Jul 2013 01:17:16 -0700 (PDT)
+ id 1UzjSI-0004CF-N3
+ for linux-mtd@lists.infradead.org; Thu, 18 Jul 2013 08:20:55 +0000
+Received: by mail-vb0-f47.google.com with SMTP id x14so2085795vbb.20
+ for <linux-mtd@lists.infradead.org>; Thu, 18 Jul 2013 01:20:28 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1374133375.366186011@f125.i.mail.ru>
+References: <1373445550.346364381@f159.i.mail.ru>
+ <CAN8TOE_oOj9yVPMjTOKwgfWvNoVPTUm4jAOE-Z0Mfko+bjnzng@mail.gmail.com>
+ <1374133375.366186011@f125.i.mail.ru>
+Date: Thu, 18 Jul 2013 01:20:28 -0700
+Message-ID: <CAN8TOE9PKdg3V4Wmp-RvTEjxMqDmUH-Xfm2-hkHCBZk8tKKfVg@mail.gmail.com>
+Subject: Re: Resend: NAND 16bit ONFI problem
 From: Brian Norris <computersforpeace@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] mtd: nand: fix NAND_BUSWIDTH_AUTO for x16 devices
-Date: Thu, 18 Jul 2013 01:17:02 -0700
-Message-Id: <1374135422-8975-1-git-send-email-computersforpeace@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Matthieu Castet <matthieu.castet@parrot.com>,
- Alexander Shiyan <shc_work@mail.ru>, Artem Bityutskiy <dedekind1@gmail.com>
+To: Alexander Shiyan <shc_work@mail.ru>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org, Matthieu CASTET <matthieu.castet@parrot.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,67 +25,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The code for NAND_BUSWIDTH_AUTO is broken. According to Alexander:
+On Thu, Jul 18, 2013 at 12:42 AM, Alexander Shiyan <shc_work@mail.ru> wrote:
+>> My (untested, not compiled, and possibly line-wrapped) patch:
+...
+> Thanks Brian! Tested by me and it works now as expected.
 
-  "I have a problem with attach NAND UBI in 16 bit mode.
-   NAND works fine if I specify NAND_BUSWIDTH_16 option, but not
-   working with NAND_BUSWIDTH_AUTO option. In second case NAND
-   chip is identifyed with ONFI."
+Great, glad to hear.
 
-See his report for the rest of the details:
+...
 
-  http://lists.infradead.org/pipermail/linux-mtd/2013-July/047515.html
+> Can you make a patch for stable?
 
-Anyway, the problem is that nand_set_defaults() is called twice, we
-intend it to reset the chip functions to their x16 buswidth verions
-if the buswidth changed from x8 to x16; however, nand_set_defaults()
-does exactly nothing if called a second time.
+Sent.
 
-Fix this by hacking nand_set_defaults() to reset the buswidth-dependent
-functions if they were set to the x8 version the first time. Note that
-this does not do anything to reset from x16 to x8, but that's not the
-supported use case for NAND_BUSWIDTH_AUTO anyway.
+> Thanks again.
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Reported-by: Alexander Shiyan <shc_work@mail.ru>
-Tested-by: Alexander Shiyan <shc_work@mail.ru>
-Cc: Matthieu Castet <matthieu.castet@parrot.com>
-Cc: <stable@vger.kernel.org> # v3.8+
----
-I have compile-tested only.
+You're welcome.
 
-David, since this is a bugfix (and likely stable material), any chance we can
-get this in 3.11? ;)
-
- drivers/mtd/nand/nand_base.c |    8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index acd2fc9..4e4f090 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2786,7 +2786,9 @@ static void nand_set_defaults(struct nand_chip *chip, int busw)
- 
- 	if (!chip->select_chip)
- 		chip->select_chip = nand_select_chip;
--	if (!chip->read_byte)
-+
-+	/* If called twice, pointers that depend on busw may need to be reset */
-+	if (!chip->read_byte || chip->read_byte == nand_read_byte)
- 		chip->read_byte = busw ? nand_read_byte16 : nand_read_byte;
- 	if (!chip->read_word)
- 		chip->read_word = nand_read_word;
-@@ -2794,9 +2796,9 @@ static void nand_set_defaults(struct nand_chip *chip, int busw)
- 		chip->block_bad = nand_block_bad;
- 	if (!chip->block_markbad)
- 		chip->block_markbad = nand_default_block_markbad;
--	if (!chip->write_buf)
-+	if (!chip->write_buf || chip->write_buf == nand_write_buf)
- 		chip->write_buf = busw ? nand_write_buf16 : nand_write_buf;
--	if (!chip->read_buf)
-+	if (!chip->read_buf || chip->read_buf == nand_read_buf)
- 		chip->read_buf = busw ? nand_read_buf16 : nand_read_buf;
- 	if (!chip->scan_bbt)
- 		chip->scan_bbt = nand_default_bbt;
--- 
-1.7.9.5
+Brian
