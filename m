@@ -1,24 +1,28 @@
-Message-ID: <1374109439.21468.67.camel@shinybook.infradead.org>
-Subject: Re: No pull for mtd?
-From: David Woodhouse <dwmw2@infradead.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Thu, 18 Jul 2013 02:03:59 +0100
-In-Reply-To: <CAN8TOE9CX7fcDRQzee=Xg5TYkYYOs3__vWzy3r0Ofg0aCsgxSg@mail.gmail.com>
-References: <20130712124728.GB31726@localhost>
- <CAN8TOE-y0HvZYWqwoPEZhReVVP_iY6t5p1N0ZMJXPQqwuK5ozQ@mail.gmail.com>
- <51E64B40.1030408@freescale.com>
- <CAF4G-tLsOO_F-Mhn=+5vS2kkJuoeLJwrTdCR90DVuQQ+xn40aw@mail.gmail.com>
- <CAN8TOE_osCKY86W2O5mLxSSahyiW2peFwDhCFuSQ+ewGHeXNKw@mail.gmail.com>
- <1374102799.21468.3.camel@shinybook.infradead.org>
- <CAN8TOE9CX7fcDRQzee=Xg5TYkYYOs3__vWzy3r0Ofg0aCsgxSg@mail.gmail.com>
-Content-Type: multipart/signed; micalg="sha-1";
- protocol="application/x-pkcs7-signature";
- boundary="=-fqCo0nHr8ygm3cwG4xOr"
-Mime-Version: 1.0
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Andrew Morton <akpm@linux-foundation.org>, torvalds@linux-foundation.org
+Received: from mail-ob0-x235.google.com ([2607:f8b0:4003:c01::235])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UzdUL-00065S-Ov
+ for linux-mtd@lists.infradead.org; Thu, 18 Jul 2013 01:58:38 +0000
+Received: by mail-ob0-f181.google.com with SMTP id 16so3169420obc.12
+ for <linux-mtd@lists.infradead.org>; Wed, 17 Jul 2013 18:58:16 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9E85D0@DBDE04.ent.ti.com>
+References: <CAHSAbzP0Nc1ahf_ra6yDuMvV998_+EGcUOGDv5ifKaagYf+NOg@mail.gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9E84D2@DBDE04.ent.ti.com>
+ <CAHSAbzMDOWo5oBqUHqMxybuDwUjFbczYwN+85gH+rxZ9z8u2Pw@mail.gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9E851E@DBDE04.ent.ti.com>
+ <593AEF6C47F46446852B067021A273D6D93B49E1@MUCSE039.lantiq.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9E85D0@DBDE04.ent.ti.com>
+Date: Thu, 18 Jul 2013 09:58:16 +0800
+Message-ID: <CAHSAbzP5jqHwCm0qhu=DiNzpP0swqWHsQ0=MnF+EKaSN22E5hg@mail.gmail.com>
+Subject: Re: support DUAL and QUAD[patch v1]
+From: yuhang wang <wangyuhang2014@gmail.com>
+To: "Gupta, Pekon" <pekon@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: "thomas.langer@lantiq.com" <thomas.langer@lantiq.com>, "Poddar,
+ Sourav" <sourav.poddar@ti.com>, "broonie@kernel.org" <broonie@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "spi-devel-general@lists.sourceforge.net"
+ <spi-devel-general@lists.sourceforge.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,185 +32,230 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
---=-fqCo0nHr8ygm3cwG4xOr
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, 2013-07-17 at 16:26 -0700, Brian Norris wrote:
-> Is there any hassling the rest of us can do in the future to avoid
-> this situation?=20
-
-Certainly can't hurt :)
-
-> Ezequiel gave a timely reminder via email (2 or 3 days
-> left in the merge window). We can shout louder and earlier, but it's
-> hard to tell if we're shouting into an empty forest sometimes.
-
-Earlier is better. If I haven't got a tree lined up in good time
-*before* the merge window opens, Linus isn't going to want to know.
-So if the merge window is already open and I'm slacking and/or changing
-nappies, that's a bit late already.
-
-Occasionally when I've failed to get things together in time for the
-merge window, I have handled that by just looking at Artem's "l2-mtd"
-tree and submitting what's in there as-is, without making any changes.
-Or submitting a strict subset of it, up to the *important* part but
-leaving out some of the more dubious later commits which I want to
-change or reject.
-
-Normally though, I use Artem's l2-mtd tree a bit like patchwork. He
-hoovers up most things from the list and even does some preliminary
-fixes on them =E2=80=94 so it's *much* more convenient for me than raw patc=
-hwork
-would be. And it's close *enough* to what I'm actually going to accept,
-that it's reasonable for it to be in linux-next as it is.
-
-Artem has historically expressed a reticence to have direct commit
-access to the main MTD tree (I think he does actually *have* it, in
-fact, but he's never used it). I think he prefers that I continue to
-have the final say after he does the first pass, and I think that model
-generally works out OK as a division of labour.
-
-So... other than putting a few more hours in my day (and ringfencing
-them so they don't get used up by all the *other* things I need a few
-more hours each day for, like sleeping as I should be doing right now),
-what can we do?
-
-Brian, Huang, thanks for volunteering to help. It's much appreciated.
-
-I think the way forward, if Artem is willing, might be the following:
-
-Turn the l2-mtd tree into a group-access repository, so all of us can
-push to it (or rebase/reorder/etc). Try to keep it (as Artem already
-does to a certain extent) in order of "good" and then "staging" patches.
-
-It's that sorting that's important; I should be able to just pull the
-'good' ones directly into the main tree as a stable commit which *will*
-to go Linus. And then after a while, once we're all happy that I never
-actually end up rejecting or even tweaking patches in the "good" pile,
-we'll just start using the main linux-mtd.git tree as the "good" pile
-and you can push there directly. I'll try to be more explicit about what
-I change and why, in cases where I would previously have silently fixed
-things up.
-
-I'll probably still keep doing a final pass on it for a while even after
-that, and constructing the pull request. But I'm not averse to letting
-others do that too, once we've reached the point where I'm sure it'd be
-as I want it.
-
-How does that sound?
-
---=20
-dwmw2
+Hi,
 
 
---=-fqCo0nHr8ygm3cwG4xOr
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIISxDCCBjQw
-ggQcoAMCAQICAR4wDQYJKoZIhvcNAQEFBQAwfTELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0
-Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxKTAn
-BgNVBAMTIFN0YXJ0Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MB4XDTA3MTAyNDIxMDE1NVoX
-DTE3MTAyNDIxMDE1NVowgYwxCzAJBgNVBAYTAklMMRYwFAYDVQQKEw1TdGFydENvbSBMdGQuMSsw
-KQYDVQQLEyJTZWN1cmUgRGlnaXRhbCBDZXJ0aWZpY2F0ZSBTaWduaW5nMTgwNgYDVQQDEy9TdGFy
-dENvbSBDbGFzcyAxIFByaW1hcnkgSW50ZXJtZWRpYXRlIENsaWVudCBDQTCCASIwDQYJKoZIhvcN
-AQEBBQADggEPADCCAQoCggEBAMcJg8zOLdgasSmkLhOrlr6KMoOMpohBllVHrdRvEg/q6r8jR+EK
-75xCGhR8ToREoqe7zM9/UnC6TS2y9UKTpT1v7RSMzR0t6ndl0TWBuUr/UXBhPk+Kmy7bI4yW4urC
-+y7P3/1/X7U8ocb8VpH/Clt+4iq7nirMcNh6qJR+xjOhV+VHzQMALuGYn5KZmc1NbJQYclsGkDxD
-z2UbFqE2+6vIZoL+jb9x4Pa5gNf1TwSDkOkikZB1xtB4ZqtXThaABSONdfmv/Z1pua3FYxnCFmdr
-/+N2JLKutIxMYqQOJebr/f/h5t95m4JgrM3Y/w7YX9d7YAL9jvN4SydHsU6n65cCAwEAAaOCAa0w
-ggGpMA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0PAQH/BAQDAgEGMB0GA1UdDgQWBBRTcu2SnODaywFc
-fH6WNU7y1LhRgjAfBgNVHSMEGDAWgBROC+8apEBbpRdphzDKNGhD0EGu8jBmBggrBgEFBQcBAQRa
-MFgwJwYIKwYBBQUHMAGGG2h0dHA6Ly9vY3NwLnN0YXJ0c3NsLmNvbS9jYTAtBggrBgEFBQcwAoYh
-aHR0cDovL3d3dy5zdGFydHNzbC5jb20vc2ZzY2EuY3J0MFsGA1UdHwRUMFIwJ6AloCOGIWh0dHA6
-Ly93d3cuc3RhcnRzc2wuY29tL3Nmc2NhLmNybDAnoCWgI4YhaHR0cDovL2NybC5zdGFydHNzbC5j
-b20vc2ZzY2EuY3JsMIGABgNVHSAEeTB3MHUGCysGAQQBgbU3AQIBMGYwLgYIKwYBBQUHAgEWImh0
-dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwNAYIKwYBBQUHAgEWKGh0dHA6Ly93d3cu
-c3RhcnRzc2wuY29tL2ludGVybWVkaWF0ZS5wZGYwDQYJKoZIhvcNAQEFBQADggIBAAqDCH14qywG
-XLhjjF6uHLkjd02hcdh9hrw+VUsv+q1eeQWB21jWj3kJ96AUlPCoEGZ/ynJNScWy6QMVQjbbMXlt
-UfO4n4bGGdKo3awPWp61tjAFgraLJgDk+DsSvUD6EowjMTNx25GQgyYJ5RPIzKKR9tQW8gGK+2+R
-HxkUCTbYFnL6kl8Ch507rUdPPipJ9CgJFws3kDS3gOS5WFMxcjO5DwKfKSETEPrHh7p5shuuNktv
-sv6hxHTLhiMKX893gxdT3XLS9OKmCv87vkINQcNEcIIoFWbP9HORz9v3vQwR4e3ksLc2JZOAFK+s
-sS5XMEoznzpihEP0PLc4dCBYjbvSD7kxgDwZ+Aj8Q9PkbvE9sIPP7ON0fz095HdThKjiVJe6vofq
-+n6b1NBc8XdrQvBmunwxD5nvtTW4vtN6VY7mUCmxsCieuoBJ9OlqmsVWQvifIYf40dJPZkk9YgGT
-zWLpXDSfLSplbY2LL9C9U0ptvjcDjefLTvqSFc7tw1sEhF0n/qpA2r0GpvkLRDmcSwVyPvmjFBGq
-Up/pNy8ZuPGQmHwFi2/14+xeSUDG2bwnsYJQG2EdJCB6luQ57GEnTA/yKZSTKI8dDQa8Sd3zfXb1
-9mOgSF0bBdXbuKhEpuP9wirslFe6fQ1t5j5R0xi72MZ8ikMu1RQZKCyDbMwazlHiMIIGQjCCBSqg
-AwIBAgIDBoXOMA0GCSqGSIb3DQEBBQUAMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRD
-b20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYG
-A1UEAxMvU3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0EwHhcN
-MTMwNTAyMDYyMDQ2WhcNMTQwNTAzMTIxNDAyWjBdMRkwFwYDVQQNExBNd0k3ODIxNTRpV21lZVkw
-MRwwGgYDVQQDDBNkd213MkBpbmZyYWRlYWQub3JnMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZy
-YWRlYWQub3JnMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvWGuRDHiXVpOgaFkBaz8
-c3jQTfiEw7j0iKZnktCQi0xjY29QJ7GwL+fgQlbofXgYTm8E9fWERvw2tAy2BxHzAPguBzziS7JN
-hsGP9lf3L8hFJBvmdyyyj8b9A6Oi7s3JLtMRWIvyvE+DbuTkP+htuT4+XuTJr8Y5yIqd1WXr2gJk
-ANr77vTyjeNxceevP58Tqr0f+4v5g6+vNARO3bk3SaVQPDUTwGrpoPtLh3d+mQzZ4iiW3MwQS7Wr
-UVT3l2aTVHCpgtAaBs3zHWarvmIqhbWj8zdcnELNzwqTrOjaoWxuWY4k05GGfzmdjOBUiL7FDNvI
-ZwweJEPwJAQI72YhUwIDAQABo4IC2TCCAtUwCQYDVR0TBAIwADALBgNVHQ8EBAMCBLAwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMB0GA1UdDgQWBBSs0hZhUgQwqGVXzLuH6pJH0hMZwTAf
-BgNVHSMEGDAWgBRTcu2SnODaywFcfH6WNU7y1LhRgjAeBgNVHREEFzAVgRNkd213MkBpbmZyYWRl
-YWQub3JnMIIBTAYDVR0gBIIBQzCCAT8wggE7BgsrBgEEAYG1NwECAzCCASowLgYIKwYBBQUHAgEW
-Imh0dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwgfcGCCsGAQUFBwICMIHqMCcWIFN0
-YXJ0Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MAMCAQEagb5UaGlzIGNlcnRpZmljYXRlIHdh
-cyBpc3N1ZWQgYWNjb3JkaW5nIHRvIHRoZSBDbGFzcyAxIFZhbGlkYXRpb24gcmVxdWlyZW1lbnRz
-IG9mIHRoZSBTdGFydENvbSBDQSBwb2xpY3ksIHJlbGlhbmNlIG9ubHkgZm9yIHRoZSBpbnRlbmRl
-ZCBwdXJwb3NlIGluIGNvbXBsaWFuY2Ugb2YgdGhlIHJlbHlpbmcgcGFydHkgb2JsaWdhdGlvbnMu
-MDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwuc3RhcnRzc2wuY29tL2NydHUxLWNybC5jcmww
-gY4GCCsGAQUFBwEBBIGBMH8wOQYIKwYBBQUHMAGGLWh0dHA6Ly9vY3NwLnN0YXJ0c3NsLmNvbS9z
-dWIvY2xhc3MxL2NsaWVudC9jYTBCBggrBgEFBQcwAoY2aHR0cDovL2FpYS5zdGFydHNzbC5jb20v
-Y2VydHMvc3ViLmNsYXNzMS5jbGllbnQuY2EuY3J0MCMGA1UdEgQcMBqGGGh0dHA6Ly93d3cuc3Rh
-cnRzc2wuY29tLzANBgkqhkiG9w0BAQUFAAOCAQEACFLDQnyO8+XA/TiTltjJ/ZAvM+qmBEKN43Vd
-+Wio2lM/Wq/scJpkupXGHrl9CueobkDxMAogXbMxqLZYO13PvgjMh+PHxDPnQv8EGxOig+k/Hqvc
-qEdTlm9YEHcbXbWS6XB+zRO7VVIpGMYQ1f1qCOcukxmwIm6iMSHXbOr/7paQm4bO0ULptjBotfiO
-Zo6q8No6SroQlOSyc6v8FYSxTNIAXMaM2FYkjqrxgdnJmSIAfr11gROuF69WuOICxP0zTEjJle+7
-aO9lUWNaWMWPMyFSNCxF6kkRuvUCami7vlhLOTRC1kb+OMhx7keN9At3tdTI3rtuFeSB1Pa3VXVs
-0DCCBkIwggUqoAMCAQICAwaFzjANBgkqhkiG9w0BAQUFADCBjDELMAkGA1UEBhMCSUwxFjAUBgNV
-BAoTDVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNp
-Z25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xp
-ZW50IENBMB4XDTEzMDUwMjA2MjA0NloXDTE0MDUwMzEyMTQwMlowXTEZMBcGA1UEDRMQTXdJNzgy
-MTU0aVdtZWVZMDEcMBoGA1UEAwwTZHdtdzJAaW5mcmFkZWFkLm9yZzEiMCAGCSqGSIb3DQEJARYT
-ZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL1hrkQx
-4l1aToGhZAWs/HN40E34hMO49IimZ5LQkItMY2NvUCexsC/n4EJW6H14GE5vBPX1hEb8NrQMtgcR
-8wD4Lgc84kuyTYbBj/ZX9y/IRSQb5ncsso/G/QOjou7NyS7TEViL8rxPg27k5D/obbk+Pl7kya/G
-OciKndVl69oCZADa++708o3jcXHnrz+fE6q9H/uL+YOvrzQETt25N0mlUDw1E8Bq6aD7S4d3fpkM
-2eIoltzMEEu1q1FU95dmk1RwqYLQGgbN8x1mq75iKoW1o/M3XJxCzc8Kk6zo2qFsblmOJNORhn85
-nYzgVIi+xQzbyGcMHiRD8CQECO9mIVMCAwEAAaOCAtkwggLVMAkGA1UdEwQCMAAwCwYDVR0PBAQD
-AgSwMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDBDAdBgNVHQ4EFgQUrNIWYVIEMKhlV8y7
-h+qSR9ITGcEwHwYDVR0jBBgwFoAUU3Ltkpzg2ssBXHx+ljVO8tS4UYIwHgYDVR0RBBcwFYETZHdt
-dzJAaW5mcmFkZWFkLm9yZzCCAUwGA1UdIASCAUMwggE/MIIBOwYLKwYBBAGBtTcBAgMwggEqMC4G
-CCsGAQUFBwIBFiJodHRwOi8vd3d3LnN0YXJ0c3NsLmNvbS9wb2xpY3kucGRmMIH3BggrBgEFBQcC
-AjCB6jAnFiBTdGFydENvbSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTADAgEBGoG+VGhpcyBjZXJ0
-aWZpY2F0ZSB3YXMgaXNzdWVkIGFjY29yZGluZyB0byB0aGUgQ2xhc3MgMSBWYWxpZGF0aW9uIHJl
-cXVpcmVtZW50cyBvZiB0aGUgU3RhcnRDb20gQ0EgcG9saWN5LCByZWxpYW5jZSBvbmx5IGZvciB0
-aGUgaW50ZW5kZWQgcHVycG9zZSBpbiBjb21wbGlhbmNlIG9mIHRoZSByZWx5aW5nIHBhcnR5IG9i
-bGlnYXRpb25zLjA2BgNVHR8ELzAtMCugKaAnhiVodHRwOi8vY3JsLnN0YXJ0c3NsLmNvbS9jcnR1
-MS1jcmwuY3JsMIGOBggrBgEFBQcBAQSBgTB/MDkGCCsGAQUFBzABhi1odHRwOi8vb2NzcC5zdGFy
-dHNzbC5jb20vc3ViL2NsYXNzMS9jbGllbnQvY2EwQgYIKwYBBQUHMAKGNmh0dHA6Ly9haWEuc3Rh
-cnRzc2wuY29tL2NlcnRzL3N1Yi5jbGFzczEuY2xpZW50LmNhLmNydDAjBgNVHRIEHDAahhhodHRw
-Oi8vd3d3LnN0YXJ0c3NsLmNvbS8wDQYJKoZIhvcNAQEFBQADggEBAAhSw0J8jvPlwP04k5bYyf2Q
-LzPqpgRCjeN1XfloqNpTP1qv7HCaZLqVxh65fQrnqG5A8TAKIF2zMai2WDtdz74IzIfjx8Qz50L/
-BBsTooPpPx6r3KhHU5ZvWBB3G121kulwfs0Tu1VSKRjGENX9agjnLpMZsCJuojEh12zq/+6WkJuG
-ztFC6bYwaLX4jmaOqvDaOkq6EJTksnOr/BWEsUzSAFzGjNhWJI6q8YHZyZkiAH69dYETrhevVrji
-AsT9M0xIyZXvu2jvZVFjWljFjzMhUjQsRepJEbr1Ampou75YSzk0QtZG/jjIce5HjfQLd7XUyN67
-bhXkgdT2t1V1bNAxggNvMIIDawIBATCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0
-Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2
-BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMG
-hc4wCQYFKw4DAhoFAKCCAa8wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUx
-DxcNMTMwNzE4MDEwMzU5WjAjBgkqhkiG9w0BCQQxFgQUmbJTTQWaY2i3dutWGTj+C6OaEBAwgaUG
-CSsGAQQBgjcQBDGBlzCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4x
-KzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0
-YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMGhc4wgacGCyqG
-SIb3DQEJEAILMYGXoIGUMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjEr
-MCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYGA1UEAxMvU3Rh
-cnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0ECAwaFzjANBgkqhkiG
-9w0BAQEFAASCAQAC0CGtN7qfr4v+1mN1jiJE40sUPWMkK/H73NIEKdCjm0DWAY61QPLo4geaOovw
-E080QXcwzTibHjBXEOwnCGGun/6syX9EudUATNayJRTU2OC91cruGmL+hdyaK7OucRTF/YkhAwD9
-koyUDvXrXa4fmZh4I2FvIq5P34aAK5cqgnFt1t0Fhi1QNXLbrBDteEnllWNNvWA8FTZIFUwbKGNL
-dpOTbdCkaAajCfEmSyQtqac8QUhlJXx/6fZVmoPjzXyfztoo7XQtWqkrFuzT68PN1+3w4sIyjazR
-8A8WWYE++lP7fAriILrvybPKUnnqK7T17oQLpW+D5u6zUMRG+4R2AAAAAAAA
+2013/7/16 Gupta, Pekon <pekon@ti.com>:
+>>
+>> Hello Pekon,
+>>
+>> Gupta, Pekon wrote on 2013-07-16:
+>> > >
+>> > > Hi, Gupta
+>> > >
+>> > >
+>> > > > [Pekon]: Instead of adding new fields you can use existing 'mode' field
+>> to
+>> > > > pass on the platform specific configurations. And if 'u8 mode' does not
+>> > > > suffice you can increase it to 'u32'.
+>> > > > #define QSPI_MODE       1 << 5; // just check which bit-fields are un-
+>> used
+>> > > > spi_board_info->mode |= QSPI_MODE;
+>> > > >
+>> > >
+>> > > well, can dual and quad be regarded as a spi mode? if so, your comment
+>> > > seems
+>> > > to be right.
+>> >
+>> > Yes, Quad and Dual modes should be regarded as extension of SPI
+>> protocol.
+>> > - They follow the same basic principle of synchronous data transfer. Right ?
+>> > - These modes are not adding any extra side-band | In-band signaling or
+>> > controls to modify the protocol. They are just increasing the width of
+>> >  data-channel for better throughput.
+>> >
+>> > with regards, pekon
+>> >
+>>
+>> In general, yes. But I think, for the interface we have to take care of more
+>> details.
+>>
+>> For example, what happens in the following situation:
+>> We have a spi-controller, which supports the QSPI mode, and a spi-flash,
+>> which fulfils
+>> the requirements, but the board has not connected all signals?
+>>
+> [Pekon]: So, actual implementation should set QSPI_MODE based on both
+> (1) device capabilities (detected in probe)
+> (2) board-DT properties (this would take care of your other constrains)
+>
+>> And the interface for the slave-driver (like m25p80) should allow to specify
+>> the transfer mode
+>> for each spi_message.
+>> This will be necessary, because it depends on the flash and mode, how each
+>> phase of "cmd",
+>> "address", and "data" will be transferred.
+>>
+> [Pekon]: Are you saying that same controller can send interleaved
+> Quad-SPI and Single-SPI spi_messages to same device (here flash device)?
+>
+> Is it due to flash-device constrain that it accepts some flash-commands
+> (like erase, etc) only on Single-wire-SPI, whereas  data transfers can be
+> Performed on Quad-SPI mode ?
+> In such case you need to add 'mode' field in struct spi_message, so that
+> this information moves along with the spi_message in queue. And then
+> when that message reaches spi_pump_message() and
+> transfer_one_message() is called, then you can do needful configs.
+>
+> However, I still don't think you need to control 'QSPI_MODE' at granularity
+> of spi_transfer level, because m25p80 flash-driver use spi_write() API to
+> pass data to SPI driver, which internally creates a spi_message in each call.
+>
+> Following best explains use of spi_message in /include/linux/spi.h
+> ---------------------------------------------------
+> * A @spi_message is used to execute an atomic sequence of data transfers,
+>  * each represented by a struct spi_transfer.  The sequence is "atomic"
+>  * in the sense that no other spi_message may use that SPI bus until that
+>  * sequence completes.  On some systems, many such sequences can execute as
+>  * as single programmed DMA transfer.  On all systems, these messages are
+>  * queued, and might complete after transactions to other devices.  Messages
+>  * sent to a given spi_device are alway executed in FIFO order.
+> ---------------------------------------------------
+>
+>
+But in some cases, slave will use different mode(single,dual,quad) for
+different spi_transfer in one spi_message. So I don't think that a
+mode in spi_message can describe all the mode in one spi_message.I
+have corrected the patch as below. @spi_master->mode_bit is the mode
+master supports, @spi_device->mode is the slave work in, but the spi
+slave still need to set the mode for the spi_transfer based on the
+mode in @spi_device.
+example:
+if
+@spi_device->mode = QUAD
+then
+cmd@spi_transfer->tx_nbits = SINGLE
+addr@spi_transfer->tx_nbits = SINGLE
+data@spi_transfer->tx_nbits = QUAD
+our spi controller driver will deal with that in transfer_one_message().
 
 
---=-fqCo0nHr8ygm3cwG4xOr--
+>From 9ed7028f278ff744c301f11ea3ad6298d14b91e4 Mon Sep 17 00:00:00 2001
+From: wangyuhang <wangyuhang2014@gmail.com>
+Date: Thu, 18 Jul 2013 09:23:44 +0800
+Subject: [PATCH] spi: DUAL and QUAD support Signed-off-by: wangyuhang
+ <wangyuhang2014@gmail.com>
+
+Signed-off-by: wangyuhang <wangyuhang2014@gmail.com>
+---
+ drivers/spi/spi.c       |   18 ++++++++++++++++++
+ include/linux/spi/spi.h |   23 +++++++++++++++++++++--
+ 2 files changed, 39 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 004b10f..36d2451 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -868,6 +868,14 @@ static void of_register_spi_devices(struct
+spi_master *master)
+  spi->mode |= SPI_CS_HIGH;
+  if (of_find_property(nc, "spi-3wire", NULL))
+  spi->mode |= SPI_3WIRE;
++ if (of_find_property(nc, "spi-tx-dual", NULL))
++ spi->mode |= SPI_TX_DUAL;
++ if (of_find_property(nc, "spi-tx-quad", NULL))
++ spi->mode |= SPI_TX_QUAD;
++ if (of_find_property(nc, "spi-rx-dual", NULL))
++ spi->mode |= SPI_RX_DUAL;
++ if (of_find_property(nc, "spi-rx-quad", NULL))
++ spi->mode |= SPI_RX_QUAD;
+
+  /* Device speed */
+  prop = of_get_property(nc, "spi-max-frequency", &len);
+@@ -1316,6 +1324,12 @@ int spi_setup(struct spi_device *spi)
+  /* help drivers fail *cleanly* when they need options
+  * that aren't supported with their current master
+  */
++ if (((spi->mode >> 8) & 0x03) == 0x03 ||
++ ((spi->mode >> 10) & 0x03) == 0x03) {
++ dev_err(&spi->dev,
++ "setup: can not select dual and quad at the same time\n");
++ return -EINVAL;
++ }
+  bad_bits = spi->mode & ~spi->master->mode_bits;
+  if (bad_bits) {
+  dev_err(&spi->dev, "setup: unsupported mode bits %x\n",
+@@ -1376,6 +1390,10 @@ static int __spi_async(struct spi_device *spi,
+struct spi_message *message)
+  xfer->bits_per_word = spi->bits_per_word;
+  if (!xfer->speed_hz)
+  xfer->speed_hz = spi->max_speed_hz;
++ if (!xfer->tx_nbits)
++ xfer->tx_nbits = SPI_NBITS_SINGLE;
++ if (!xfer->rx_nbits)
++ xfer->rx_nbits = SPI_NBITS_SINGLE;
+  }
+
+  message->spi = spi;
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index 38c2b92..e9ba1cf 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -74,7 +74,7 @@ struct spi_device {
+  struct spi_master *master;
+  u32 max_speed_hz;
+  u8 chip_select;
+- u8 mode;
++ u16 mode;
+ #define SPI_CPHA 0x01 /* clock phase */
+ #define SPI_CPOL 0x02 /* clock polarity */
+ #define SPI_MODE_0 (0|0) /* (original MicroWire) */
+@@ -87,6 +87,10 @@ struct spi_device {
+ #define SPI_LOOP 0x20 /* loopback mode */
+ #define SPI_NO_CS 0x40 /* 1 dev/bus, no chipselect */
+ #define SPI_READY 0x80 /* slave pulls low to pause */
++#define SPI_TX_DUAL 0x100 /* transmit with 2 wires */
++#define SPI_TX_QUAD 0x200 /* transmit with 4 wires */
++#define SPI_RX_DUAL 0x400 /* receive with 2 wires */
++#define SPI_RX_QUAD 0x800 /* receive with 4 wires */
+  u8 bits_per_word;
+  int irq;
+  void *controller_state;
+@@ -437,6 +441,10 @@ extern struct spi_master *spi_busnum_to_master(u16 busnum);
+  * @rx_buf: data to be read (dma-safe memory), or NULL
+  * @tx_dma: DMA address of tx_buf, if @spi_message.is_dma_mapped
+  * @rx_dma: DMA address of rx_buf, if @spi_message.is_dma_mapped
++ * @tx_nbits: number of bits used for writting, if 0 default
++ * (SPI_NBITS_SINGLE = 0x01) is used.
++ * @rx_nbits: number of bits used for reading, if 0 default
++ * (SPI_NBITS_SINGLE = 0x01) is used.
+  * @len: size of rx and tx buffers (in bytes)
+  * @speed_hz: Select a speed other than the device default for this
+  *      transfer. If 0 the default (from @spi_device) is used.
+@@ -491,6 +499,11 @@ extern struct spi_master *spi_busnum_to_master(u16 busnum);
+  * by the results of previous messages and where the whole transaction
+  * ends when the chipselect goes intactive.
+  *
++ * When SPI can transfer in 1x,2x or 4x. It can get this tranfer information
++ * from device through @tx_nbits and @rx_nbits. In Bi-direction, these
++ * two should both be set. User can set transfer mode with SPI_NBITS_SINGLE(1x)
++ * SPI_NBITS_DUAL(2x) and SPI_NBITS_QUAD(4x) to support these three transfer.
++ *
+  * The code that submits an spi_message (and its spi_transfers)
+  * to the lower layers is responsible for managing its memory.
+  * Zero-initialize every field you don't set up explicitly, to
+@@ -511,6 +524,12 @@ struct spi_transfer {
+  dma_addr_t rx_dma;
+
+  unsigned cs_change:1;
++ u8 bitwidth;
++ u8 tx_nbits;
++ u8 rx_nbits;
++#define SPI_NBITS_SINGLE 0x01; /* 1bit transfer */
++#define SPI_NBITS_DUAL 0x02; /* 2bits transfer */
++#define SPI_NBITS_QUAD 0x03; /* 4bits transfer */
+  u8 bits_per_word;
+  u16 delay_usecs;
+  u32 speed_hz;
+@@ -858,7 +877,7 @@ struct spi_board_info {
+  /* mode becomes spi_device.mode, and is essential for chips
+  * where the default of SPI_CS_HIGH = 0 is wrong.
+  */
+- u8 mode;
++ u16 mode;
+
+  /* ... may need additional spi_device chip config data here.
+  * avoid stuff protocol drivers can set; but include stuff
+--
+1.7.9.5
