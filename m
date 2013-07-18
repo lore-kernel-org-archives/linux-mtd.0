@@ -1,21 +1,17 @@
-Received: from f125.mail.ru ([94.100.178.188] helo=f125.i.mail.ru)
+Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Uzirw-0003C3-N1
- for linux-mtd@lists.infradead.org; Thu, 18 Jul 2013 07:43:22 +0000
-From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
-To: =?UTF-8?B?QnJpYW4gTm9ycmlz?= <computersforpeace@gmail.com>
-Subject: =?UTF-8?B?UmU6IFJlc2VuZDogTkFORCAxNmJpdCBPTkZJIHByb2JsZW0=?=
-Mime-Version: 1.0
-Date: Thu, 18 Jul 2013 11:42:55 +0400
-Message-ID: <1374133375.366186011@f125.i.mail.ru>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-In-Reply-To: <CAN8TOE_oOj9yVPMjTOKwgfWvNoVPTUm4jAOE-Z0Mfko+bjnzng@mail.gmail.com>
-References: <1373445550.346364381@f159.i.mail.ru>
- <CAN8TOE_oOj9yVPMjTOKwgfWvNoVPTUm4jAOE-Z0Mfko+bjnzng@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org,
- =?UTF-8?B?TWF0dGhpZXUgQ0FTVEVU?= <matthieu.castet@parrot.com>
-Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+ id 1UzjP8-000446-MX
+ for linux-mtd@lists.infradead.org; Thu, 18 Jul 2013 08:17:40 +0000
+Received: by mail-pa0-f48.google.com with SMTP id kp12so2902117pab.7
+ for <linux-mtd@lists.infradead.org>; Thu, 18 Jul 2013 01:17:16 -0700 (PDT)
+From: Brian Norris <computersforpeace@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] mtd: nand: fix NAND_BUSWIDTH_AUTO for x16 devices
+Date: Thu, 18 Jul 2013 01:17:02 -0700
+Message-Id: <1374135422-8975-1-git-send-email-computersforpeace@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Matthieu Castet <matthieu.castet@parrot.com>,
+ Alexander Shiyan <shc_work@mail.ru>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,68 +21,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiBBZGRpbmcgTWF0dGhpZXUsIHNpbmNlIGhlIGludHJvZHVjZWQgTkFORF9CVVNXSURUSC4gTGVh
-dmluZyBmdWxsIGNvbnRleHQgaW50YWN0Lgo+IAo+IE9uIFdlZCwgSnVsIDEwLCAyMDEzIGF0IDE6
-MzkgQU0sIEFsZXhhbmRlciBTaGl5YW4gPHNoY193b3JrQG1haWwucnU+IHdyb3RlOgo+ID4gSGVs
-bG8uCj4gPgo+ID4gVXBkYXRlZDogU2FtZSBlZmZlY3QgZm9yIDMuMTAga2VybmVsLgo+ID4KPiA+
-IC0tLS0tLS0tCj4gPgo+ID4gSSBoYXZlIGEgcHJvYmxlbSB3aXRoIGF0dGFjaCBOQU5EIFVCSSBp
-biAxNiBiaXQgbW9kZS4KPiA+IE5BTkQgd29ya3MgZmluZSBpZiBJIHNwZWNpZnkgTkFORF9CVVNX
-SURUSF8xNiBvcHRpb24sIGJ1dCBub3QKPiA+IHdvcmtpbmcgd2l0aCBOQU5EX0JVU1dJRFRIX0FV
-VE8gb3B0aW9uLiBJbiBzZWNvbmQgY2FzZSBOQU5ECj4gPiBjaGlwIGlzIGlkZW50aWZ5ZWQgd2l0
-aCBPTkZJLiBMb2dzIGJlbG93Lgo+ID4gQ2FuIGFueW9uZSBoZWxwIG1lIHdpdGggdGhpcyBpc3N1
-ZT8gSXMgaXQgYSBrbm93biBwcm9ibGVtPwo+ID4gVGhhbmtzLgo+ID4gUFM6IEtlcm5lbCAzLjku
-Mwo+IAo+IEknbSBpbnNwZWN0aW5nIHRoZSBOQU5EX0JVU1dJRFRIX0FVVE8gY29kZSBhbmQgaXQg
-bG9va3MgcmF0aGVyIGJyb2tlbi4KPiBGb3IgY2hpcHMgd2l0aCBOQU5EX0JVU1dJRFRIX0FVVE8s
-IGl0IGNhbGxzIG5hbmRfc2V0X2RlZmF1bHRzKCkgdHdpY2UuCj4gVGhlIHNlY29uZCBjYWxsIHdp
-bGwgZG8gZXhhY3RseSBub3RoaW5nLiBUbyBkbyB0aGlzIHJpZ2h0LCB5b3UnbGwKPiBwcm9iYWJs
-eSBoYXZlIHRvIGhhY2sgdXAgbmFuZF9zZXRfZGVmYXVsdHMoKSBzbyB0aGF0IGl0IHdpbGwgY2hl
-Y2sgaWYKPiB0aGUgZnVuY3Rpb24gcG9pbnRlciBpcyBvbmUgb2YgdHdvIG9wdGlvbnM6Cj4gCj4g
-MS4gTlVMTAo+IDIuIHRoZSA4LWJpdCB2ZXJzaW9uCj4gCj4gTXkgKHVudGVzdGVkLCBub3QgY29t
-cGlsZWQsIGFuZCBwb3NzaWJseSBsaW5lLXdyYXBwZWQpIHBhdGNoOgo+IAo+IGRpZmYgLS1naXQg
-YS9kcml2ZXJzL210ZC9uYW5kL25hbmRfYmFzZS5jIGIvZHJpdmVycy9tdGQvbmFuZC9uYW5kX2Jh
-c2UuYwo+IGluZGV4IGFjZDJmYzkuLjI2YWFkNTYgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQv
-bmFuZC9uYW5kX2Jhc2UuYwo+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvbmFuZF9iYXNlLmMKPiBA
-QCAtMjc4Niw3ICsyNzg2LDcgQEAgc3RhdGljIHZvaWQgbmFuZF9zZXRfZGVmYXVsdHMoc3RydWN0
-IG5hbmRfY2hpcAo+ICpjaGlwLCBpbnQgYnVzdykKPiAKPiAgCWlmICghY2hpcC0+c2VsZWN0X2No
-aXApCj4gIAkJY2hpcC0+c2VsZWN0X2NoaXAgPSBuYW5kX3NlbGVjdF9jaGlwOwo+IC0JaWYgKCFj
-aGlwLT5yZWFkX2J5dGUpCj4gKwlpZiAoIWNoaXAtPnJlYWRfYnl0ZSB8fCBjaGlwLT5yZWFkX2J5
-dGUgPT0gbmFuZF9yZWFkX2J5dGUpCj4gIAkJY2hpcC0+cmVhZF9ieXRlID0gYnVzdyA/IG5hbmRf
-cmVhZF9ieXRlMTYgOiBuYW5kX3JlYWRfYnl0ZTsKPiAgCWlmICghY2hpcC0+cmVhZF93b3JkKQo+
-ICAJCWNoaXAtPnJlYWRfd29yZCA9IG5hbmRfcmVhZF93b3JkOwo+IEBAIC0yNzk0LDkgKzI3OTQs
-OSBAQCBzdGF0aWMgdm9pZCBuYW5kX3NldF9kZWZhdWx0cyhzdHJ1Y3QgbmFuZF9jaGlwCj4gKmNo
-aXAsIGludCBidXN3KQo+ICAJCWNoaXAtPmJsb2NrX2JhZCA9IG5hbmRfYmxvY2tfYmFkOwo+ICAJ
-aWYgKCFjaGlwLT5ibG9ja19tYXJrYmFkKQo+ICAJCWNoaXAtPmJsb2NrX21hcmtiYWQgPSBuYW5k
-X2RlZmF1bHRfYmxvY2tfbWFya2JhZDsKPiAtCWlmICghY2hpcC0+d3JpdGVfYnVmKQo+ICsJaWYg
-KCFjaGlwLT53cml0ZV9idWYgfHwgY2hpcC0+d3JpdGVfYnVmID09IG5hbmRfd3JpdGVfYnVmKQo+
-ICAJCWNoaXAtPndyaXRlX2J1ZiA9IGJ1c3cgPyBuYW5kX3dyaXRlX2J1ZjE2IDogbmFuZF93cml0
-ZV9idWY7Cj4gLQlpZiAoIWNoaXAtPnJlYWRfYnVmKQo+ICsJaWYgKCFjaGlwLT5yZWFkX2J1ZiB8
-fCBjaGlwLT5yZWFkX2J1ZiA9PSBuYW5kX3JlYWRfYnVmKQo+ICAJCWNoaXAtPnJlYWRfYnVmID0g
-YnVzdyA/IG5hbmRfcmVhZF9idWYxNiA6IG5hbmRfcmVhZF9idWY7Cj4gIAlpZiAoIWNoaXAtPnNj
-YW5fYmJ0KQo+ICAJCWNoaXAtPnNjYW5fYmJ0ID0gbmFuZF9kZWZhdWx0X2JidDsKPiAKClRoYW5r
-cyBCcmlhbiEgVGVzdGVkIGJ5IG1lIGFuZCBpdCB3b3JrcyBub3cgYXMgZXhwZWN0ZWQuCgpPTkZJ
-IHBhcmFtIHBhZ2UgMCB2YWxpZApPTkZJIGZsYXNoIGRldGVjdGVkCk5BTkQgZGV2aWNlOiBNYW51
-ZmFjdHVyZXIgSUQ6IDB4MmMsIENoaXAgSUQ6IDB4Y2EgKE1pY3JvbiBNVDI5RjJHMTZBQkFFQVdQ
-KSwgMjU2TWlCLCBwYWdlIHNpemU6IDIwNDgsIE9PQiBzaXplOiA2NApTY2FubmluZyBkZXZpY2Ug
-Zm9yIGJhZCBibG9ja3MKQ3JlYXRpbmcgMSBNVEQgcGFydGl0aW9ucyBvbiAiTVQyOUYyRzE2QUJB
-RUFXUCI6CjB4MDAwMDAwMDAwMDAwLTB4MDAwMDEwMDAwMDAwIDogIm5hbmQtZ3BpbyIKVUJJOiBh
-dHRhY2hpbmcgbXRkNCB0byB1YmkwClVCSTogc2Nhbm5pbmcgaXMgZmluaXNoZWQKVUJJOiBhdHRh
-Y2hlZCBtdGQ0IChuYW1lICJuYW5kLWdwaW8iLCBzaXplIDI1NiBNaUIpIHRvIHViaTAKVUJJOiBQ
-RUIgc2l6ZTogMTMxMDcyIGJ5dGVzICgxMjggS2lCKSwgTEVCIHNpemU6IDEyOTAyNCBieXRlcwpV
-Qkk6IG1pbi4vbWF4LiBJL08gdW5pdCBzaXplczogMjA0OC8yMDQ4LCBzdWItcGFnZSBzaXplIDUx
-MgpVQkk6IFZJRCBoZWFkZXIgb2Zmc2V0OiA1MTIgKGFsaWduZWQgNTEyKSwgZGF0YSBvZmZzZXQ6
-IDIwNDgKVUJJOiBnb29kIFBFQnM6IDIwNDgsIGJhZCBQRUJzOiAwLCBjb3JydXB0ZWQgUEVCczog
-MApVQkk6IHVzZXIgdm9sdW1lOiAxLCBpbnRlcm5hbCB2b2x1bWVzOiAxLCBtYXguIHZvbHVtZXMg
-Y291bnQ6IDEyOApVQkk6IG1heC9tZWFuIGVyYXNlIGNvdW50ZXI6IDIvMSwgV0wgdGhyZXNob2xk
-OiA0MDk2LCBpbWFnZSBzZXF1ZW5jZSBudW1iZXI6IDM0ODMzNDczNjAKVUJJOiBhdmFpbGFibGUg
-UEVCczogMCwgdG90YWwgcmVzZXJ2ZWQgUEVCczogMjA0OCwgUEVCcyByZXNlcnZlZCBmb3IgYmFk
-IFBFQiBoYW5kbGluZzogNDAKVUJJOiBiYWNrZ3JvdW5kIHRocmVhZCAidWJpX2JndDBkIiBzdGFy
-dGVkLCBQSUQgMjgKLi4uClVCSUZTOiBkZWZhdWx0IGZpbGUtc3lzdGVtIGNyZWF0ZWQKVUJJRlM6
-IGJhY2tncm91bmQgdGhyZWFkICJ1Ymlmc19iZ3QwXzAiIHN0YXJ0ZWQsIFBJRCA0NQpVQklGUzog
-bW91bnRlZCBVQkkgZGV2aWNlIDAsIHZvbHVtZSAwLCBuYW1lICJiYm94IihudWxsKQpVQklGUzog
-TEVCIHNpemU6IDEyOTAyNCBieXRlcyAoMTI2IEtpQiksIG1pbi4vbWF4LiBJL08gdW5pdCBzaXpl
-czogMjA0OCBieXRlcy8yMDQ4IGJ5dGVzClVCSUZTOiBGUyBzaXplOiAyNTY4ODY3ODQgYnl0ZXMg
-KDI0NCBNaUIsIDE5OTEgTEVCcyksIGpvdXJuYWwgc2l6ZSAxMjkwMjQwMCBieXRlcyAoMTIgTWlC
-LCAxMDAgTEVCcykKVUJJRlM6IHJlc2VydmVkIGZvciByb290OiA0OTUyNjgzIGJ5dGVzICg0ODM2
-IEtpQikKVUJJRlM6IG1lZGlhIGZvcm1hdDogdzQvcjAgKGxhdGVzdCBpcyB3NC9yMCksIFVVSUQg
-MzlEODYxREEtNkM0Mi00QTI3LTk3RjItRjExRkE0QTVCMzM0LCBzbWFsbCBMUFQgbW9kZWwKCkNh
-biB5b3UgbWFrZSBhIHBhdGNoIGZvciBzdGFibGU/ClRoYW5rcyBhZ2Fpbi4KCi0tLQo=
+The code for NAND_BUSWIDTH_AUTO is broken. According to Alexander:
+
+  "I have a problem with attach NAND UBI in 16 bit mode.
+   NAND works fine if I specify NAND_BUSWIDTH_16 option, but not
+   working with NAND_BUSWIDTH_AUTO option. In second case NAND
+   chip is identifyed with ONFI."
+
+See his report for the rest of the details:
+
+  http://lists.infradead.org/pipermail/linux-mtd/2013-July/047515.html
+
+Anyway, the problem is that nand_set_defaults() is called twice, we
+intend it to reset the chip functions to their x16 buswidth verions
+if the buswidth changed from x8 to x16; however, nand_set_defaults()
+does exactly nothing if called a second time.
+
+Fix this by hacking nand_set_defaults() to reset the buswidth-dependent
+functions if they were set to the x8 version the first time. Note that
+this does not do anything to reset from x16 to x8, but that's not the
+supported use case for NAND_BUSWIDTH_AUTO anyway.
+
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Reported-by: Alexander Shiyan <shc_work@mail.ru>
+Tested-by: Alexander Shiyan <shc_work@mail.ru>
+Cc: Matthieu Castet <matthieu.castet@parrot.com>
+Cc: <stable@vger.kernel.org> # v3.8+
+---
+I have compile-tested only.
+
+David, since this is a bugfix (and likely stable material), any chance we can
+get this in 3.11? ;)
+
+ drivers/mtd/nand/nand_base.c |    8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index acd2fc9..4e4f090 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2786,7 +2786,9 @@ static void nand_set_defaults(struct nand_chip *chip, int busw)
+ 
+ 	if (!chip->select_chip)
+ 		chip->select_chip = nand_select_chip;
+-	if (!chip->read_byte)
++
++	/* If called twice, pointers that depend on busw may need to be reset */
++	if (!chip->read_byte || chip->read_byte == nand_read_byte)
+ 		chip->read_byte = busw ? nand_read_byte16 : nand_read_byte;
+ 	if (!chip->read_word)
+ 		chip->read_word = nand_read_word;
+@@ -2794,9 +2796,9 @@ static void nand_set_defaults(struct nand_chip *chip, int busw)
+ 		chip->block_bad = nand_block_bad;
+ 	if (!chip->block_markbad)
+ 		chip->block_markbad = nand_default_block_markbad;
+-	if (!chip->write_buf)
++	if (!chip->write_buf || chip->write_buf == nand_write_buf)
+ 		chip->write_buf = busw ? nand_write_buf16 : nand_write_buf;
+-	if (!chip->read_buf)
++	if (!chip->read_buf || chip->read_buf == nand_read_buf)
+ 		chip->read_buf = busw ? nand_read_buf16 : nand_read_buf;
+ 	if (!chip->scan_bbt)
+ 		chip->scan_bbt = nand_default_bbt;
+-- 
+1.7.9.5
