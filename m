@@ -1,25 +1,18 @@
-Received: from mailout4.samsung.com ([203.254.224.34])
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V04aS-0007Lq-Px
- for linux-mtd@lists.infradead.org; Fri, 19 Jul 2013 06:54:46 +0000
-Received: from epcpsbgr4.samsung.com
- (u144.gpu120.samsung.co.kr [203.254.230.144])
- by mailout4.samsung.com (Oracle Communications Messaging Server 7u4-24.01
- (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MQ600HL48IC6HS0@mailout4.samsung.com> for
- linux-mtd@lists.infradead.org; Fri, 19 Jul 2013 15:54:12 +0900 (KST)
-From: Jingoo Han <jg1.han@samsung.com>
-To: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Subject: [PATCH] mtd: mtdswap: replace strict_strtoul() with kstrtoul()
-Date: Fri, 19 Jul 2013 15:54:11 +0900
-Message-id: <000701ce844c$c63f4820$52bdd860$@samsung.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: 7bit
-Content-language: ko
-Cc: linux-mtd@lists.infradead.org, 'Jingoo Han' <jg1.han@samsung.com>,
- 'David Woodhouse' <dwmw2@infradead.org>,
- 'Artem Bityutskiy' <dedekind1@gmail.com>
+ id 1V05h9-0000QO-PQ
+ for linux-mtd@lists.infradead.org; Fri, 19 Jul 2013 08:05:44 +0000
+Message-ID: <51E8F258.7020102@cn.fujitsu.com>
+Date: Fri, 19 Jul 2013 16:01:28 +0800
+From: Gu Zheng <guz.fnst@cn.fujitsu.com>
+MIME-Version: 1.0
+To: dwmw2@infradead.org
+Subject: [PATCH RESEND] fs/jffs2: remove the unused paramters of function
+ jffs2_{compress,decompress}
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,27 +22,112 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The usage of strict_strtoul() is not preferred, because
-strict_strtoul() is obsolete. Thus, kstrtoul() should be
-used.
+Remove the unused paramters of function jffs2_{compress,decompress}.
 
-Signed-off-by: Jingoo Han <jg1.han@samsung.com>
+
+Signed-off-by: Gu Zheng <guz.fnst@cn.fujitsu.com>
 ---
- drivers/mtd/mtdswap.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/jffs2/compr.c |   12 ++++++------
+ fs/jffs2/compr.h |   12 ++++++------
+ fs/jffs2/gc.c    |    2 +-
+ fs/jffs2/read.c  |    4 +++-
+ fs/jffs2/write.c |    2 +-
+ 5 files changed, 17 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/mtd/mtdswap.c b/drivers/mtd/mtdswap.c
-index c92f0f6..8b33b26 100644
---- a/drivers/mtd/mtdswap.c
-+++ b/drivers/mtd/mtdswap.c
-@@ -1425,7 +1425,7 @@ static void mtdswap_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
- 		return;
+diff --git a/fs/jffs2/compr.c b/fs/jffs2/compr.c
+index 4849a4c..6fcb426 100644
+--- a/fs/jffs2/compr.c
++++ b/fs/jffs2/compr.c
+@@ -145,9 +145,9 @@ static int jffs2_selected_compress(u8 compr, unsigned char *data_in,
+  * jffs2_compress should compress as much as will fit, and should set
+  * *datalen accordingly to show the amount of data which were compressed.
+  */
+-uint16_t jffs2_compress(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
+-			unsigned char *data_in, unsigned char **cpage_out,
+-			uint32_t *datalen, uint32_t *cdatalen)
++uint16_t jffs2_compress(struct jffs2_sb_info *c, unsigned char *data_in,
++			unsigned char **cpage_out, uint32_t *datalen,
++			uint32_t *cdatalen)
+ {
+ 	int ret = JFFS2_COMPR_NONE;
+ 	int mode, compr_ret;
+@@ -250,9 +250,9 @@ uint16_t jffs2_compress(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
+ 	return ret;
+ }
  
- 	while ((this_opt = strsep(&parts, ",")) != NULL) {
--		if (strict_strtoul(this_opt, 0, &part) < 0)
-+		if (kstrtoul(this_opt, 0, &part) < 0)
- 			return;
+-int jffs2_decompress(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
+-		     uint16_t comprtype, unsigned char *cdata_in,
+-		     unsigned char *data_out, uint32_t cdatalen, uint32_t datalen)
++int jffs2_decompress(uint16_t comprtype, unsigned char *cdata_in,
++		     unsigned char *data_out, uint32_t cdatalen,
++		     uint32_t datalen)
+ {
+ 	struct jffs2_compressor *this;
+ 	int ret;
+diff --git a/fs/jffs2/compr.h b/fs/jffs2/compr.h
+index 5e91d57..092089a 100644
+--- a/fs/jffs2/compr.h
++++ b/fs/jffs2/compr.h
+@@ -70,13 +70,13 @@ int jffs2_unregister_compressor(struct jffs2_compressor *comp);
+ int jffs2_compressors_init(void);
+ int jffs2_compressors_exit(void);
  
- 		if (mtd->index == part)
+-uint16_t jffs2_compress(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
+-			unsigned char *data_in, unsigned char **cpage_out,
+-			uint32_t *datalen, uint32_t *cdatalen);
++uint16_t jffs2_compress(struct jffs2_sb_info *c, unsigned char *data_in,
++			unsigned char **cpage_out, uint32_t *datalen,
++			uint32_t *cdatalen);
+ 
+-int jffs2_decompress(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
+-		     uint16_t comprtype, unsigned char *cdata_in,
+-		     unsigned char *data_out, uint32_t cdatalen, uint32_t datalen);
++int jffs2_decompress(uint16_t comprtype, unsigned char *cdata_in,
++		     unsigned char *data_out, uint32_t cdatalen,
++		     uint32_t datalen);
+ 
+ void jffs2_free_comprbuf(unsigned char *comprbuf, unsigned char *orig);
+ 
+diff --git a/fs/jffs2/gc.c b/fs/jffs2/gc.c
+index 5a2dec2..8dc85aa 100644
+--- a/fs/jffs2/gc.c
++++ b/fs/jffs2/gc.c
+@@ -1330,7 +1330,7 @@ static int jffs2_garbage_collect_dnode(struct jffs2_sb_info *c, struct jffs2_era
+ 
+ 		writebuf = pg_ptr + (offset & (PAGE_CACHE_SIZE -1));
+ 
+-		comprtype = jffs2_compress(c, f, writebuf, &comprbuf, &datalen, &cdatalen);
++		comprtype = jffs2_compress(c, writebuf, &comprbuf, &datalen, &cdatalen);
+ 
+ 		ri.magic = cpu_to_je16(JFFS2_MAGIC_BITMASK);
+ 		ri.nodetype = cpu_to_je16(JFFS2_NODETYPE_INODE);
+diff --git a/fs/jffs2/read.c b/fs/jffs2/read.c
+index 0b042b1..aed9183 100644
+--- a/fs/jffs2/read.c
++++ b/fs/jffs2/read.c
+@@ -132,7 +132,9 @@ int jffs2_read_dnode(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
+ 		jffs2_dbg(2, "Decompress %d bytes from %p to %d bytes at %p\n",
+ 			  je32_to_cpu(ri->csize), readbuf,
+ 			  je32_to_cpu(ri->dsize), decomprbuf);
+-		ret = jffs2_decompress(c, f, ri->compr | (ri->usercompr << 8), readbuf, decomprbuf, je32_to_cpu(ri->csize), je32_to_cpu(ri->dsize));
++		ret = jffs2_decompress(ri->compr | (ri->usercompr << 8),
++				readbuf, decomprbuf, je32_to_cpu(ri->csize),
++				je32_to_cpu(ri->dsize));
+ 		if (ret) {
+ 			pr_warn("Error: jffs2_decompress returned %d\n", ret);
+ 			goto out_decomprbuf;
+diff --git a/fs/jffs2/write.c b/fs/jffs2/write.c
+index b634de4..dbc26de 100644
+--- a/fs/jffs2/write.c
++++ b/fs/jffs2/write.c
+@@ -369,7 +369,7 @@ int jffs2_write_inode_range(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
+ 		datalen = min_t(uint32_t, writelen, PAGE_CACHE_SIZE - (offset & (PAGE_CACHE_SIZE-1)));
+ 		cdatalen = min_t(uint32_t, alloclen - sizeof(*ri), datalen);
+ 
+-		comprtype = jffs2_compress(c, f, buf, &comprbuf, &datalen, &cdatalen);
++		comprtype = jffs2_compress(c, buf, &comprbuf, &datalen, &cdatalen);
+ 
+ 		ri->magic = cpu_to_je16(JFFS2_MAGIC_BITMASK);
+ 		ri->nodetype = cpu_to_je16(JFFS2_NODETYPE_INODE);
 -- 
-1.7.10.4
+1.7.7
