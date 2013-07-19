@@ -1,18 +1,25 @@
-Received: from aserp1040.oracle.com ([141.146.126.69])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V03aQ-0005uq-2D
- for linux-mtd@lists.infradead.org; Fri, 19 Jul 2013 05:50:39 +0000
-Date: Fri, 19 Jul 2013 08:49:38 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [patch] mtd: use correct error codes in debugfs_create()
-Message-ID: <20130719054938.GC9729@elgon.mountain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- kernel-janitors@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org, Akinobu Mita <akinobu.mita@gmail.com>
+Received: from mailout4.samsung.com ([203.254.224.34])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V04aS-0007Lq-Px
+ for linux-mtd@lists.infradead.org; Fri, 19 Jul 2013 06:54:46 +0000
+Received: from epcpsbgr4.samsung.com
+ (u144.gpu120.samsung.co.kr [203.254.230.144])
+ by mailout4.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ (7.0.4.24.0) 64bit (built Nov 17 2011))
+ with ESMTP id <0MQ600HL48IC6HS0@mailout4.samsung.com> for
+ linux-mtd@lists.infradead.org; Fri, 19 Jul 2013 15:54:12 +0900 (KST)
+From: Jingoo Han <jg1.han@samsung.com>
+To: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Subject: [PATCH] mtd: mtdswap: replace strict_strtoul() with kstrtoul()
+Date: Fri, 19 Jul 2013 15:54:11 +0900
+Message-id: <000701ce844c$c63f4820$52bdd860$@samsung.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-transfer-encoding: 7bit
+Content-language: ko
+Cc: linux-mtd@lists.infradead.org, 'Jingoo Han' <jg1.han@samsung.com>,
+ 'David Woodhouse' <dwmw2@infradead.org>,
+ 'Artem Bityutskiy' <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,34 +29,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The test here is reversed.  It should be that if "dent" is a valid error
-code then we use it, otherwise if it is NULL then use -ENODEV.
+The usage of strict_strtoul() is not preferred, because
+strict_strtoul() is obsolete. Thus, kstrtoul() should be
+used.
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Jingoo Han <jg1.han@samsung.com>
+---
+ drivers/mtd/mtdswap.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
-index 63cb1d7..3916782 100644
---- a/drivers/mtd/ubi/debug.c
-+++ b/drivers/mtd/ubi/debug.c
-@@ -236,7 +236,7 @@ int ubi_debugfs_init(void)
+diff --git a/drivers/mtd/mtdswap.c b/drivers/mtd/mtdswap.c
+index c92f0f6..8b33b26 100644
+--- a/drivers/mtd/mtdswap.c
++++ b/drivers/mtd/mtdswap.c
+@@ -1425,7 +1425,7 @@ static void mtdswap_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
+ 		return;
  
- 	dfs_rootdir = debugfs_create_dir("ubi", NULL);
- 	if (IS_ERR_OR_NULL(dfs_rootdir)) {
--		int err = dfs_rootdir ? -ENODEV : PTR_ERR(dfs_rootdir);
-+		int err = dfs_rootdir ? PTR_ERR(dfs_rootdir) : -ENODEV;
+ 	while ((this_opt = strsep(&parts, ",")) != NULL) {
+-		if (strict_strtoul(this_opt, 0, &part) < 0)
++		if (kstrtoul(this_opt, 0, &part) < 0)
+ 			return;
  
- 		ubi_err("cannot create \"ubi\" debugfs directory, error %d\n",
- 			err);
-diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index cb38f3d..f06863a 100644
---- a/drivers/mtd/nand/nandsim.c
-+++ b/drivers/mtd/nand/nandsim.c
-@@ -530,7 +530,7 @@ static int nandsim_debugfs_create(struct nandsim *dev)
- 
- 	dent = debugfs_create_dir("nandsim", NULL);
- 	if (IS_ERR_OR_NULL(dent)) {
--		int err = dent ? -ENODEV : PTR_ERR(dent);
-+		int err = dent ? PTR_ERR(dent) : -ENODEV;
- 
- 		NS_ERR("cannot create \"nandsim\" debugfs directory, err %d\n",
- 			err);
+ 		if (mtd->index == part)
+-- 
+1.7.10.4
