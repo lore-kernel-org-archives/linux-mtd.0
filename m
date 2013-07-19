@@ -1,31 +1,30 @@
-Received: from mail-ob0-x235.google.com ([2607:f8b0:4003:c01::235])
+Received: from mail-vb0-x229.google.com ([2607:f8b0:400c:c02::229])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V00Ni-0002gP-65
- for linux-mtd@lists.infradead.org; Fri, 19 Jul 2013 02:25:18 +0000
-Received: by mail-ob0-f181.google.com with SMTP id 16so4540704obc.26
- for <linux-mtd@lists.infradead.org>; Thu, 18 Jul 2013 19:24:56 -0700 (PDT)
+ id 1V03Jr-0005Lr-0v
+ for linux-mtd@lists.infradead.org; Fri, 19 Jul 2013 05:33:32 +0000
+Received: by mail-vb0-f41.google.com with SMTP id p13so2972694vbe.0
+ for <linux-mtd@lists.infradead.org>; Thu, 18 Jul 2013 22:33:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CA+7tXihoZZhpoyvxj58c+Zi-Zy631kK5s-kDoSxPKq=ej0qyvA@mail.gmail.com>
-References: <CAHSAbzP0Nc1ahf_ra6yDuMvV998_+EGcUOGDv5ifKaagYf+NOg@mail.gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9E84D2@DBDE04.ent.ti.com>
- <CAHSAbzMDOWo5oBqUHqMxybuDwUjFbczYwN+85gH+rxZ9z8u2Pw@mail.gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9E851E@DBDE04.ent.ti.com>
- <593AEF6C47F46446852B067021A273D6D93B49E1@MUCSE039.lantiq.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9E85D0@DBDE04.ent.ti.com>
- <CAHSAbzP5jqHwCm0qhu=DiNzpP0swqWHsQ0=MnF+EKaSN22E5hg@mail.gmail.com>
- <CA+7tXihoZZhpoyvxj58c+Zi-Zy631kK5s-kDoSxPKq=ej0qyvA@mail.gmail.com>
-Date: Fri, 19 Jul 2013 10:24:56 +0800
-Message-ID: <CAHSAbzNNLbfot_j1rBUsd+1NUJcWeGkCReD+iTMsV-CoprOb=w@mail.gmail.com>
-Subject: Re: support DUAL and QUAD[patch v1]
-From: yuhang wang <wangyuhang2014@gmail.com>
-To: Trent Piepho <tpiepho@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "thomas.langer@lantiq.com" <thomas.langer@lantiq.com>,
- "broonie@kernel.org" <broonie@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>, "spi-devel-general@lists.sourceforge.net"
- <spi-devel-general@lists.sourceforge.net>, "Poddar,
- Sourav" <sourav.poddar@ti.com>
+In-Reply-To: <1374109439.21468.67.camel@shinybook.infradead.org>
+References: <20130712124728.GB31726@localhost>
+ <CAN8TOE-y0HvZYWqwoPEZhReVVP_iY6t5p1N0ZMJXPQqwuK5ozQ@mail.gmail.com>
+ <51E64B40.1030408@freescale.com>
+ <CAF4G-tLsOO_F-Mhn=+5vS2kkJuoeLJwrTdCR90DVuQQ+xn40aw@mail.gmail.com>
+ <CAN8TOE_osCKY86W2O5mLxSSahyiW2peFwDhCFuSQ+ewGHeXNKw@mail.gmail.com>
+ <1374102799.21468.3.camel@shinybook.infradead.org>
+ <CAN8TOE9CX7fcDRQzee=Xg5TYkYYOs3__vWzy3r0Ofg0aCsgxSg@mail.gmail.com>
+ <1374109439.21468.67.camel@shinybook.infradead.org>
+Date: Thu, 18 Jul 2013 22:33:09 -0700
+Message-ID: <CAN8TOE_y=mDY4frFB9kmedhGnNhf4pQwqH1q+fAcDAE_RNwO+A@mail.gmail.com>
+Subject: Re: No pull for mtd?
+From: Brian Norris <computersforpeace@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, Huang Shijie <b32955@freescale.com>,
+ linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Andrew Morton <akpm@linux-foundation.org>, torvalds@linux-foundation.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,73 +34,117 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Trent,
+On Wed, Jul 17, 2013 at 6:03 PM, David Woodhouse <dwmw2@infradead.org> wrot=
+e:
+> On Wed, 2013-07-17 at 16:26 -0700, Brian Norris wrote:
+>> Is there any hassling the rest of us can do in the future to avoid
+>> this situation?
+>
+> Certainly can't hurt :)
 
-2013/7/18 Trent Piepho <tpiepho@gmail.com>:
-> On Wed, Jul 17, 2013 at 6:58 PM, yuhang wang <wangyuhang2014@gmail.com> wrote:
->> >> > >
->> >> > > > [Pekon]: Instead of adding new fields you can use existing 'mode'
->> >> > > > field
->> >> to
->> >> > > > pass on the platform specific configurations. And if 'u8 mode'
->> >> > > > does not
->> >> > > > suffice you can increase it to 'u32'.
+I was kinda wondering about specifics :) Like more email? More capital
+letters in our emails? Track down your phone number and call you in
+the middle of the night?
+
+>> Ezequiel gave a timely reminder via email (2 or 3 days
+>> left in the merge window). We can shout louder and earlier, but it's
+>> hard to tell if we're shouting into an empty forest sometimes.
 >
-> But what about spidev?
+> Earlier is better. If I haven't got a tree lined up in good time
+> *before* the merge window opens, Linus isn't going to want to know.
+> So if the merge window is already open and I'm slacking and/or changing
+> nappies, that's a bit late already.
+
+Yeah, I realize now that 3 days is a bit late. And I didn't really
+notice our missing the merge window myself until it was nearly too
+late :)
+
+> Occasionally when I've failed to get things together in time for the
+> merge window, I have handled that by just looking at Artem's "l2-mtd"
+> tree and submitting what's in there as-is, without making any changes.
+> Or submitting a strict subset of it, up to the *important* part but
+> leaving out some of the more dubious later commits which I want to
+> change or reject.
 >
->> diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
->> index 004b10f..36d2451 100644
->> --- a/drivers/spi/spi.c
->> +++ b/drivers/spi/spi.c
->> @@ -868,6 +868,14 @@ static void of_register_spi_devices(struct
->> spi_master *master)
->>   spi->mode |= SPI_CS_HIGH;
->>   if (of_find_property(nc, "spi-3wire", NULL))
->>   spi->mode |= SPI_3WIRE;
->> + if (of_find_property(nc, "spi-tx-dual", NULL))
->> + spi->mode |= SPI_TX_DUAL;
->> + if (of_find_property(nc, "spi-tx-quad", NULL))
->> + spi->mode |= SPI_TX_QUAD;
->> + if (of_find_property(nc, "spi-rx-dual", NULL))
->> + spi->mode |= SPI_RX_DUAL;
->> + if (of_find_property(nc, "spi-rx-quad", NULL))
->> + spi->mode |= SPI_RX_QUAD;
->>
->>   /* Device speed */
->>   prop = of_get_property(nc, "spi-max-frequency", &len);
->> @@ -1316,6 +1324,12 @@ int spi_setup(struct spi_device *spi)
->>   /* help drivers fail *cleanly* when they need options
->>   * that aren't supported with their current master
->>   */
->> + if (((spi->mode >> 8) & 0x03) == 0x03 ||
->> + ((spi->mode >> 10) & 0x03) == 0x03) {
->> + dev_err(&spi->dev,
->> + "setup: can not select dual and quad at the same time\n");
->> + return -EINVAL;
->> + }
+> Normally though, I use Artem's l2-mtd tree a bit like patchwork. He
+> hoovers up most things from the list and even does some preliminary
+> fixes on them =97 so it's *much* more convenient for me than raw patchwor=
+k
+> would be. And it's close *enough* to what I'm actually going to accept,
+> that it's reasonable for it to be in linux-next as it is.
+
+I guess I didn't fully grasp the relation between you and Artem. It
+seemed to me like Artem's tree was practically the pull request tree,
+that his status as "not the maintainer" simply gave him the luxury to
+rebase more freely, and that your sign-off (or sometimes pull request
+w/o adding sign-offs) was mostly just a rubber stamp. But I was
+slightly off, I suppose. Anyway, I do appreciate the editorial
+control, whether it's Artem or you, and I would not be hasty to
+discard that.
+
+> Artem has historically expressed a reticence to have direct commit
+> access to the main MTD tree (I think he does actually *have* it, in
+> fact, but he's never used it). I think he prefers that I continue to
+> have the final say after he does the first pass, and I think that model
+> generally works out OK as a division of labour.
 >
-> Maybe it would make more sense to have a spi-rx-width and spi-tx-width
-> than can be set to 1, 2, 4, etc. bits instead of a bunch of properties
-> that are mutually exclusive?  Sooner or later someone is going to want
-> 8 bits.
+> So... other than putting a few more hours in my day (and ringfencing
+> them so they don't get used up by all the *other* things I need a few
+> more hours each day for, like sleeping as I should be doing right now),
+> what can we do?
+
+Lengthen your day? Maybe a time machine? Hire a body double to go to
+your "real" job?
+
+> Brian, Huang, thanks for volunteering to help. It's much appreciated.
 >
->> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
->> index 38c2b92..e9ba1cf 100644
->> --- a/include/linux/spi/spi.h
->> +++ b/include/linux/spi/spi.h
->> @@ -74,7 +74,7 @@ struct spi_device {
->>   struct spi_master *master;
->>   u32 max_speed_hz;
->>   u8 chip_select;
->> - u8 mode;
->> + u16 mode;
+> I think the way forward, if Artem is willing, might be the following:
 >
-> What about this, from include/uapi/linux/spi/spidev.h:
+> Turn the l2-mtd tree into a group-access repository, so all of us can
+> push to it (or rebase/reorder/etc). Try to keep it (as Artem already
+> does to a certain extent) in order of "good" and then "staging" patches.
+
+I did not realize that there was an order other than chronological in
+which Artem kept l2-mtd. This might be a little harder to manage if
+the distinction between "good" and "staging" are unclear, and there
+are up to 3 people rebasing and pushing. We'll definitely need Artem's
+agreement for anything of this sort.
+
+> It's that sorting that's important; I should be able to just pull the
+> 'good' ones directly into the main tree as a stable commit which *will*
+> to go Linus.
+
+My suggestion, to resolve some of the potential conflicts of too many
+writing to the same branch and to make the sorting clear: perhaps a
+separate branch that will hold the "good" stuff (named 'for-3.12' for
+example) with minimal rebasing. Then l2-mtd's 'master' will rebase on
+top of that to include "staging" fixes that are more likely to be
+fixed-up, dropped, or delayed.
+
+> And then after a while, once we're all happy that I never
+> actually end up rejecting or even tweaking patches in the "good" pile,
+> we'll just start using the main linux-mtd.git tree as the "good" pile
+> and you can push there directly. I'll try to be more explicit about what
+> I change and why, in cases where I would previously have silently fixed
+> things up.
 >
-> /* Read / Write of SPI mode (SPI_MODE_0..SPI_MODE_3) */
-> #define SPI_IOC_RD_MODE                 _IOR(SPI_IOC_MAGIC, 1, __u8)
-> #define SPI_IOC_WR_MODE                 _IOW(SPI_IOC_MAGIC, 1, __u8)
+> I'll probably still keep doing a final pass on it for a while even after
+> that, and constructing the pull request. But I'm not averse to letting
+> others do that too, once we've reached the point where I'm sure it'd be
+> as I want it.
 >
-> Note that you can't just change the type in the ioctl define, as it
-> won't be backward compatible.
-well, got it.Still need to be considered. Thanks
+> How does that sound?
+
+I think that mostly sounds OK. I can't speak for everyone, but it
+seems that for some of us, the process just needs to be able to adapt
+to changes in job situations (where at least you and Artem aren't even
+employed in MTD-related work anymore), vacations, babies, absences, or
+any of the other reasons that MTD participation ebbs and flows. So
+bringing others into the process should help.
+
+I guess we'll see what Artem thinks when he's back from vacation and
+what Huang thinks. But I'm game to try this out.
+
+Thanks for sacrificing sleep for the response.
+
+Brian
