@@ -1,17 +1,30 @@
-Received: from mail.phycore.de ([217.6.246.34] helo=root.phytec.de)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V06l2-0001r8-CE
- for linux-mtd@lists.infradead.org; Fri, 19 Jul 2013 09:13:49 +0000
-From: =?UTF-8?q?Teresa=20G=C3=A1mez?= <t.gamez@phytec.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: nand: omap2: Fix oobfree offset
-Date: Fri, 19 Jul 2013 11:13:22 +0200
-Message-Id: <1374225202-26518-1-git-send-email-t.gamez@phytec.de>
-MIME-Version: 1.0
+Received: from bear.ext.ti.com ([192.94.94.41])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V0GSd-0001TX-FL
+ for linux-mtd@lists.infradead.org; Fri, 19 Jul 2013 19:35:28 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Trent Piepho <tpiepho@gmail.com>, yuhang wang <wangyuhang2014@gmail.com>
+Subject: RE: support DUAL and QUAD[patch v1]
+Date: Fri, 19 Jul 2013 19:34:45 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9E967D@DBDE04.ent.ti.com>
+References: <CAHSAbzP0Nc1ahf_ra6yDuMvV998_+EGcUOGDv5ifKaagYf+NOg@mail.gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9E84D2@DBDE04.ent.ti.com>
+ <CAHSAbzMDOWo5oBqUHqMxybuDwUjFbczYwN+85gH+rxZ9z8u2Pw@mail.gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9E851E@DBDE04.ent.ti.com>
+ <593AEF6C47F46446852B067021A273D6D93B49E1@MUCSE039.lantiq.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9E85D0@DBDE04.ent.ti.com>
+ <CAHSAbzP5jqHwCm0qhu=DiNzpP0swqWHsQ0=MnF+EKaSN22E5hg@mail.gmail.com>
+ <CA+7tXihoZZhpoyvxj58c+Zi-Zy631kK5s-kDoSxPKq=ej0qyvA@mail.gmail.com>
+In-Reply-To: <CA+7tXihoZZhpoyvxj58c+Zi-Zy631kK5s-kDoSxPKq=ej0qyvA@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Cc: tony@atomide.com, artem.bityutskiy@linux.intel.com, afzal@ti.com,
- linux-omap@vger.kernel.org, dwmw2@infradead.org
+MIME-Version: 1.0
+Cc: "thomas.langer@lantiq.com" <thomas.langer@lantiq.com>, "Poddar,
+ Sourav" <sourav.poddar@ti.com>, "broonie@kernel.org" <broonie@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "spi-devel-general@lists.sourceforge.net"
+ <spi-devel-general@lists.sourceforge.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,33 +34,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The calculation of the oobfree[0].offset is wrong when using BCH8
-and elm.
+>=20
+> On Wed, Jul 17, 2013 at 6:58 PM, yuhang wang
+> <wangyuhang2014@gmail.com> wrote:
+> > >> > >
+> > >> > > > [Pekon]: Instead of adding new fields you can use existing 'mo=
+de'
+> > >> > > > field
+> > >> to
+> > >> > > > pass on the platform specific configurations. And if 'u8 mode'
+> > >> > > > does not
+> > >> > > > suffice you can increase it to 'u32'.
+>=20
+> But what about spidev?
+>=20
+> > diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+> > index 004b10f..36d2451 100644
+> > --- a/drivers/spi/spi.c
+> > +++ b/drivers/spi/spi.c
+> > @@ -868,6 +868,14 @@ static void of_register_spi_devices(struct
+> > spi_master *master)
+> >   spi->mode |=3D SPI_CS_HIGH;
+> >   if (of_find_property(nc, "spi-3wire", NULL))
+> >   spi->mode |=3D SPI_3WIRE;
+> > + if (of_find_property(nc, "spi-tx-dual", NULL))
+> > + spi->mode |=3D SPI_TX_DUAL;
+> > + if (of_find_property(nc, "spi-tx-quad", NULL))
+> > + spi->mode |=3D SPI_TX_QUAD;
+> > + if (of_find_property(nc, "spi-rx-dual", NULL))
+> > + spi->mode |=3D SPI_RX_DUAL;
+> > + if (of_find_property(nc, "spi-rx-quad", NULL))
+> > + spi->mode |=3D SPI_RX_QUAD;
+> >
+> >   /* Device speed */
+> >   prop =3D of_get_property(nc, "spi-max-frequency", &len);
+> > @@ -1316,6 +1324,12 @@ int spi_setup(struct spi_device *spi)
+> >   /* help drivers fail *cleanly* when they need options
+> >   * that aren't supported with their current master
+> >   */
+> > + if (((spi->mode >> 8) & 0x03) =3D=3D 0x03 ||
+> > + ((spi->mode >> 10) & 0x03) =3D=3D 0x03) {
+> > + dev_err(&spi->dev,
+> > + "setup: can not select dual and quad at the same time\n");
+> > + return -EINVAL;
+> > + }
+>=20
+> Maybe it would make more sense to have a spi-rx-width and spi-tx-width
+> than can be set to 1, 2, 4, etc. bits instead of a bunch of properties
+> that are mutually exclusive?  Sooner or later someone is going to want
+> 8 bits.
+>=20
+Then it would not remain a serial interface (Serial Peripheral Interface),
+rather it would be more of parallel memory like interface.
+And you would not like to use SPI controller for it, instead you would use
+On-chip General Purpose External Interface controllers (like GPMC)
+because it gives you more options to tweak and configure.
 
-The layout->eccbytes is already steps*info->nand.ecc.bytes. The second
-multiplication with steps is too much and will create a value
-larger than the oob area.
+In general, If the place-holders are already there (like 'mode' field in=20
+struct spi_device), I would prefer to re-use them.
+But if you are adding new ones just ensure its scalability and usage.
+Names don't matter much there then, except for good readability.
 
-Fixed the calculation.
+> > diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+> > index 38c2b92..e9ba1cf 100644
+> > --- a/include/linux/spi/spi.h
+> > +++ b/include/linux/spi/spi.h
+> > @@ -74,7 +74,7 @@ struct spi_device {
+> >   struct spi_master *master;
+> >   u32 max_speed_hz;
+> >   u8 chip_select;
+> > - u8 mode;
+> > + u16 mode;
+>=20
+> What about this, from include/uapi/linux/spi/spidev.h:
+>=20
+> /* Read / Write of SPI mode (SPI_MODE_0..SPI_MODE_3) */
+> #define SPI_IOC_RD_MODE                 _IOR(SPI_IOC_MAGIC, 1, __u8)
+> #define SPI_IOC_WR_MODE                 _IOW(SPI_IOC_MAGIC, 1, __u8)
+>=20
+> Note that you can't just change the type in the ioctl define, as it
+> won't be backward compatible.
+>=20
+Thanks, for pointing this out. Yes this is a constrain, if we change the
+existing type. But I don't think u8 -> u32 is really required, it was just
+a thought, not deep-dived.
 
-Signed-off-by: Teresa G=C3=A1mez <t.gamez@phytec.de>
----
- drivers/mtd/nand/omap2.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 81b80af..922706b 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -1790,7 +1790,7 @@ static int omap3_init_bch_tail(struct mtd_info *mtd=
-)
- 		layout->eccpos[i] =3D offset + i;
-=20
- 	if (info->is_elm_used && (info->nand.ecc.bytes =3D=3D BCH8_SIZE))
--		layout->oobfree[0].offset =3D 2 + layout->eccbytes * steps;
-+		layout->oobfree[0].offset =3D 2 + layout->eccbytes;
- 	else
- 		layout->oobfree[0].offset =3D 2;
-=20
---=20
-1.7.0.4
+with regards, pekon
