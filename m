@@ -1,28 +1,26 @@
-Received: from mail.free-electrons.com ([94.23.35.102])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V0YHP-0005zd-7W
- for linux-mtd@lists.infradead.org; Sat, 20 Jul 2013 14:37:04 +0000
-Date: Sat, 20 Jul 2013 11:36:44 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH 0/5] mtd: nand: Fixes and improvements on pxa3xx
-Message-ID: <20130720143643.GB24504@localhost>
-References: <1368530125-12959-1-git-send-email-elezegarcia@gmail.com>
- <20130520123733.GB2904@localhost>
- <CALF0-+W+4NCLimsP1E+aGNLEuE9GtThsm6dNE-iyeju5ixx8Rg@mail.gmail.com>
- <1372663276.22014.29.camel@sauron.fi.intel.com>
+Received: from mail-ob0-f170.google.com ([209.85.214.170])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V0bGY-00083d-Ex
+ for linux-mtd@lists.infradead.org; Sat, 20 Jul 2013 17:48:22 +0000
+Received: by mail-ob0-f170.google.com with SMTP id ef5so6679823obb.1
+ for <linux-mtd@lists.infradead.org>; Sat, 20 Jul 2013 10:48:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1372663276.22014.29.camel@sauron.fi.intel.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, Ezequiel Garcia <elezegarcia@gmail.com>,
- Eric Miao <eric.y.miao@gmail.com>, Lei Wen <leiwen@marvell.com>,
- Haojian Zhuang <haojian.zhuang@gmail.com>, Maen Suleiman <maen@marvell.com>,
- linux-mtd@lists.infradead.org,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Neil Zhang <zhangwm@marvell.com>, Chao Xie <cxie4@marvell.com>
+In-Reply-To: <1373471889-18107-6-git-send-email-wsa@the-dreams.de>
+References: <1373471889-18107-1-git-send-email-wsa@the-dreams.de>
+ <1373471889-18107-6-git-send-email-wsa@the-dreams.de>
+Date: Sat, 20 Jul 2013 19:48:00 +0200
+Message-ID: <CACRpkdbBYuPE6ZaiuWgEze0JuuqvhDFS7VLhVTJBopiLMBNJpw@mail.gmail.com>
+Subject: Re: [PATCH 06/12] drivers/mtd/nand/gpmi-nand: don't use
+ devm_pinctrl_get_select_default() in probe
+From: Linus Walleij <linus.walleij@linaro.org>
+To: Wolfram Sang <wsa@the-dreams.de>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Huang Shijie <b32955@freescale.com>, Bill Pemberton <wfp5p@virginia.edu>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,31 +30,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
+On Wed, Jul 10, 2013 at 5:57 PM, Wolfram Sang <wsa@the-dreams.de> wrote:
 
-On Mon, Jul 01, 2013 at 10:21:16AM +0300, Artem Bityutskiy wrote:
-> On Fri, 2013-06-07 at 11:22 -0300, Ezequiel Garcia wrote:
-> > > Since this patch affects directly the PXA hardware, I'd like to have some
-> > > response from PXA maintainers.
-> > >
-> > > Guys, could you take a look at this?
-> > >
-> > 
-> > Ping?
-> 
-> 
-> sorry for long delay. I simply had no time to look an any of my
-> open-source things, too busy.
-> 
-> I've pushed this series to l2-mtd.git, thanks!
-> 
+> Since commit ab78029 (drivers/pinctrl: grab default handles from device core),
+> we can rely on device core for setting the default pins. Compile tested only.
+>
+> Acked-by: Linus Walleij <linus.walleij@linaro.org> (personally at LCE13)
+> Signed-off-by: Wolfram Sang <wsa@the-dreams.de>
 
-Thanks!
+Artem  if you're OK with this please carry it in the MTD tree.
 
-Any chance you can push this to some branch that's included in linux-next?
-(when you get back to work, of course)
-
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Yours,
+Linus Walleij
