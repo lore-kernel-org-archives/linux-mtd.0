@@ -1,29 +1,20 @@
-Received: from mail-vb0-x22f.google.com ([2607:f8b0:400c:c02::22f])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V19tB-0007Py-Tx
- for linux-mtd@lists.infradead.org; Mon, 22 Jul 2013 06:46:34 +0000
-Received: by mail-vb0-f47.google.com with SMTP id x14so4457435vbb.20
- for <linux-mtd@lists.infradead.org>; Sun, 21 Jul 2013 23:46:11 -0700 (PDT)
+Received: from mx01-sz.bfs.de ([194.94.69.67])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V1Aui-0000MA-Ll
+ for linux-mtd@lists.infradead.org; Mon, 22 Jul 2013 07:52:13 +0000
+Message-ID: <51ECE488.1050307@bfs.de>
+Date: Mon, 22 Jul 2013 09:51:36 +0200
+From: walter harms <wharms@bfs.de>
 MIME-Version: 1.0
-In-Reply-To: <20130720143643.GB24504@localhost>
-References: <1368530125-12959-1-git-send-email-elezegarcia@gmail.com>
- <20130520123733.GB2904@localhost>
- <CALF0-+W+4NCLimsP1E+aGNLEuE9GtThsm6dNE-iyeju5ixx8Rg@mail.gmail.com>
- <1372663276.22014.29.camel@sauron.fi.intel.com>
- <20130720143643.GB24504@localhost>
-Date: Sun, 21 Jul 2013 23:39:49 -0700
-Message-ID: <CAN8TOE9n6e1FnR2hZ3ntWkwPBTtBNvLYyMn+GN8DMY3pROdhgA@mail.gmail.com>
-Subject: Re: [PATCH 0/5] mtd: nand: Fixes and improvements on pxa3xx
-From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [patch] mtd: use correct error codes in debugfs_create()
+References: <20130719054938.GC9729@elgon.mountain>
+ <20130722055607.GF5636@mwanda>
+In-Reply-To: <20130722055607.GF5636@mwanda>
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, Ezequiel Garcia <elezegarcia@gmail.com>,
- Eric Miao <eric.y.miao@gmail.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- Lei Wen <leiwen@marvell.com>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Maen Suleiman <maen@marvell.com>, linux-mtd@lists.infradead.org,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Neil Zhang <zhangwm@marvell.com>, Chao Xie <cxie4@marvell.com>
+Content-Transfer-Encoding: 7bit
+Cc: kernel-janitors@vger.kernel.org, linux-mtd@lists.infradead.org
+Reply-To: wharms@bfs.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,43 +24,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ezequiel,
 
-On Sat, Jul 20, 2013 at 7:36 AM, Ezequiel Garcia
-<ezequiel.garcia@free-electrons.com> wrote:
-> Hi Artem,
->
-> On Mon, Jul 01, 2013 at 10:21:16AM +0300, Artem Bityutskiy wrote:
->> On Fri, 2013-06-07 at 11:22 -0300, Ezequiel Garcia wrote:
->> > > Since this patch affects directly the PXA hardware, I'd like to have some
->> > > response from PXA maintainers.
->> > >
->> > > Guys, could you take a look at this?
->> > >
->> >
->> > Ping?
+
+Am 22.07.2013 07:56, schrieb Dan Carpenter:
+> On Fri, Jul 19, 2013 at 08:49:38AM +0300, Dan Carpenter wrote:
+>> The test here is reversed.  It should be that if "dent" is a valid error
+>> code then we use it, otherwise if it is NULL then use -ENODEV.
 >>
->>
->> sorry for long delay. I simply had no time to look an any of my
->> open-source things, too busy.
->>
->> I've pushed this series to l2-mtd.git, thanks!
->>
->
-> Thanks!
->
-> Any chance you can push this to some branch that's included in linux-next?
-> (when you get back to work, of course)
+> 
+> People have explained the debugfs_create API to me better and now
+> I'm not sure what to do here...  debugfs_create_dir() returns a
+> NULL on error and if debugfs is not enabled then it returns -ENODEV.
+> We test for if (!IS_ENABLED(CONFIG_DEBUG_FS)) earlier in the
+> function so it can only return NULL.
+> 
+> Probably I should just change the test to only test for NULL?
+> 
+> Otherwise I think my patch is correct.  The original code will
+> return success on error (NULL return) and that was not intended.
+> 
 
-Artem's l2-mtd.git 'master' branch is already included in linux-next.
-Your patch series appears to be included as the following commit (and
-its parents):
+Hi Dan,
+i have a simple question, what to do in case of error ?
 
-commit 3f81a731d931cc66abec2d0c205c4a6ecda7dac9
-Author: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Date:   Tue May 14 08:15:25 2013 -0300
+Situation 1: debugfs_create_dir returns NULL
+something went wrong dir not created
+if all other debugfs_ function will check for NULL someone could even ignore the check
+and let the others handle that.
 
-    mtd: nand: pxa3xx: Add support for Read parameter page command
+Situation 2: debugfs_create_dir returns ENODOV
+The man page says: please ignore
+I only use i could come up with is to inform the user that no debugfs is available.
+But the returning pointer would now point to an error an not the expected dentry.
+So have to you make sure that it becomes NULL otherwise the other debugfs function will go crasy.
+(Can this happen actually ?)
+Did i miss something ?
 
-Regards,
-Brian
+In Summa:
+may it is better for debugfs_ to return NULL instead of an error ?
+
+re,
+ wh
