@@ -1,37 +1,30 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V1FfD-0001Ww-S3
- for linux-mtd@lists.infradead.org; Mon, 22 Jul 2013 12:56:32 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: "thomas.langer@lantiq.com" <thomas.langer@lantiq.com>,
- "b32955@freescale.com" <b32955@freescale.com>
-Subject: RE: support DUAL and QUAD[patch v1]
-Date: Mon, 22 Jul 2013 12:55:53 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9ECAFC@DBDE04.ent.ti.com>
-References: <CAHSAbzP0Nc1ahf_ra6yDuMvV998_+EGcUOGDv5ifKaagYf+NOg@mail.gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9E84D2@DBDE04.ent.ti.com>
- <CAHSAbzMDOWo5oBqUHqMxybuDwUjFbczYwN+85gH+rxZ9z8u2Pw@mail.gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9E851E@DBDE04.ent.ti.com>
- <593AEF6C47F46446852B067021A273D6D93B49E1@MUCSE039.lantiq.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9E85D0@DBDE04.ent.ti.com>
- <CAHSAbzP5jqHwCm0qhu=DiNzpP0swqWHsQ0=MnF+EKaSN22E5hg@mail.gmail.com>
- <CA+7tXihoZZhpoyvxj58c+Zi-Zy631kK5s-kDoSxPKq=ej0qyvA@mail.gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9E967D@DBDE04.ent.ti.com>
- <20130722093342.GJ9858@sirena.org.uk>
- <20980858CB6D3A4BAE95CA194937D5E73E9EC9B1@DBDE04.ent.ti.com>
- <51ED0A57.4060105@freescale.com>
- <593AEF6C47F46446852B067021A273D6D97E2ED4@MUCSE039.lantiq.com>
-In-Reply-To: <593AEF6C47F46446852B067021A273D6D97E2ED4@MUCSE039.lantiq.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from mail.free-electrons.com ([94.23.35.102])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V1Goy-0003uq-PY
+ for linux-mtd@lists.infradead.org; Mon, 22 Jul 2013 14:10:42 +0000
+Date: Mon, 22 Jul 2013 11:10:07 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 0/5] mtd: nand: Fixes and improvements on pxa3xx
+Message-ID: <20130722141006.GA2387@localhost>
+References: <1368530125-12959-1-git-send-email-elezegarcia@gmail.com>
+ <20130520123733.GB2904@localhost>
+ <CALF0-+W+4NCLimsP1E+aGNLEuE9GtThsm6dNE-iyeju5ixx8Rg@mail.gmail.com>
+ <1372663276.22014.29.camel@sauron.fi.intel.com>
+ <20130720143643.GB24504@localhost>
+ <CAN8TOE9n6e1FnR2hZ3ntWkwPBTtBNvLYyMn+GN8DMY3pROdhgA@mail.gmail.com>
 MIME-Version: 1.0
-Cc: "broonie@kernel.org" <broonie@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "spi-devel-general@lists.sourceforge.net"
- <spi-devel-general@lists.sourceforge.net>, "Poddar,
- Sourav" <sourav.poddar@ti.com>, "tpiepho@gmail.com" <tpiepho@gmail.com>,
- "wangyuhang2014@gmail.com" <wangyuhang2014@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAN8TOE9n6e1FnR2hZ3ntWkwPBTtBNvLYyMn+GN8DMY3pROdhgA@mail.gmail.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Lior Amsalem <alior@marvell.com>, Ezequiel Garcia <elezegarcia@gmail.com>,
+ Eric Miao <eric.y.miao@gmail.com>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Lei Wen <leiwen@marvell.com>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Maen Suleiman <maen@marvell.com>, linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Neil Zhang <zhangwm@marvell.com>, Chao Xie <cxie4@marvell.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,36 +34,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgU2hpamllLA0KPiANCj4gSGVsbG8gSHVhbmcsDQo+IA0KPiBIdWFuZyBTaGlqaWUgd3JvdGUg
-b27CoDIwMTMtMDctMjI6DQo+ID4g5LqOIDIwMTPlubQwN+aciDIy5pelIDE3OjU2LCBHdXB0YSwg
-UGVrb24g5YaZ6YGTOg0KPiA+PiAoYikgc3RydWN0IHNwaV90cmFuc2ZlcjogaWYgZWFjaCB0cmFu
-c2ZlciBvZiBzYW1lIG1lc3NhZ2UgbmVlZCB0byBiZQ0KPiA+PiB0cmFuc2ZlcnJlZCBhdCBkaWZm
-ZXJlbnQgd2lkdGguIAlFeGFtcGxlOiBDb21tYW5kIEAgU2luZ2xlLVNQSQ0KPiA+PiAgIGZvbGxv
-d2VkIGJ5IERhdGEgQCBRdWFkLVNQSQ0KPiA+IEkgYW0gY29kaW5nIHRoZSBRdWFkU3BpIGRyaXZl
-ciBmb3IgRnJlZXNjYWxlJ3MgVnlicmlkIG5vdy4NCj4gPg0KPiA+IEkgdGhpbmsgd2UgZG90IG5l
-ZWQgdG8gY2hhbmdlIHRoZSBzcGkgY29kZS4gdGhlIHNwaSBsYXllciBzaG91bGQgbm90DQo+ID4g
-a25vdyB0aGUgZGlmZmVyZW50IHdpZHRoIG9mIHRoZSBjb21tYW5kIGFuZCB0aGUgZGF0YSwgbGV0
-IHRoZSBxc3BpDQo+ID4gZHJpdmVyIGRvZXMgaXQuDQo+IE5PIQ0KPiA+DQo+ID4gSW4gdGhlIG0y
-NXBfcHJvYmUoKSwgYWZ0ZXIgd2Uga25vd3MgdGhhdCB0aGUgcXNwaSBkcml2ZXIgYW5kIGZsYXNo
-DQo+ID4gc3VwcG9ydCB0aGUgUXVhZCByZWFkLCBzbyB3ZSBjYW4gc2V0IHRoZQ0KPiA+IG0yNXAt
-PnJlYWRfb3Bjb2RlIHRvIDB4ZWIgb3IgMHhlYy4gSW4gdGhlIHFzcGkgZHJpdmVyLCBpdCBjYW4g
-ZG8gdGhlDQo+ID4gcmVhbCBqb2IuDQo+IE5vLCB0aGUgcXNwaSBkcml2ZXIgKGFzIGV4YW1wbGUg
-aGVyZSkgc2hvdWxkIHByb3ZpZGUgYSB0cmFuc3BhcmVudCBpbnRlcmZhY2UNCj4gb25seSwNCj4g
-YW5kIHRoZSBtcDI1cDgwIGRyaXZlciwgd2hpY2gga25vd3MgdGhlIGRldGFpbHMgb2YgdGhlIGZs
-YXNoLCBoYXMgdG8gcHJvdmlkZQ0KPiB0aGUgaW5mb3JtYXRpb24NCj4gd2hpY2ggcGFydHMgb2Yg
-YSB0cmFuc2ZlciBoYXMgdG8gYmUgZG9uZSBpbiBzaW5nbGUtL2R1YWwtIG9yIHF1YWQtbW9kZS4N
-Cj4gT3RoZXJ3aXNlIHlvdSBhbHdheXMgbmVlZCB0byBleHRlbmQgdGhlIHFzcGkgZHJpdmVyIGZv
-ciBuZXcgZmxhc2hlcy4NCj4gDQpBIFFTUEkgaW50ZXJmYWNlIGNhbiBiZSBjb25uZWN0ZWQgdG8g
-ZXh0ZXJuYWwtRmxhc2ggYW5kIHRvIENhbWVyYSBhbHNvLg0KDQotIEEgY2FtZXJhIGludGVyZmFj
-ZSBtYXkgb25seSByZXF1aXJlIHN0YXRpYyBjb25maWcgb2YgUXVhZC1tb2RlLg0KDQotIEEgRmxh
-c2ggbWF5IHJlcXVpcmUgZHluYW1pYyBzd2l0Y2hpbmcgYmV0d2VlbiBTaW5nbGUtU1BJIG9yIFF1
-YWQtU1BJDQpiYXNlZCBvbiB0eXBlIG9mIG1lc3NhZ2UsIGxpa2UgRmxhc2ggZXJhc2UgY29tbWFu
-ZCBuZWVkIHRvIGJlIHNlbnQgDQpvbmx5IFNpbmdsZS1TUEkgbW9kZSwgd2hlcmUgYXMgUmVhZC9X
-cml0ZSBEYXRhIGNhbiBiZSBkb25lIG9uDQpRdWFkLVNQSSBtb2RlIHRvIGluY3JlYXNlIHRocm91
-Z2hwdXQuIEhlcmUgb25seSB0aGUgZmxhc2ggZHJpdmVyIHdvdWxkIA0Ka25vdywgd2hpY2ggY29t
-bWFuZHMgdG8gc2VuZCBvbiBTaW5nbGUtU1BJIGFuZCB3aGljaCBvbiBRdWFkLVNQSS4gDQoNClRo
-dXMsIGl0cyBiZXR0ZXIgdGhhdCBjaGFubmVsLXdpZHRoIGluZm9ybWF0aW9uIGlzIHBhc3NlZCBi
-eSB1cHBlciBsYXllcg0KZHJpdmVyIGFsb25nIHdpdGggc3BpX21lc3NhZ2UsIHNvIHRoYXQgUVNQ
-SS1jb250cm9sbGVyIGRyaXZlciBjYW4NCmR5bmFtaWNhbGx5IHN3aXRjaCBiZXR3ZWVuIHRoZSBt
-b2Rlcy4NClRoaXMgYWxzbyBrZWVwcyBRU1BJIGRyaXZlciBnZW5lcmljIGlycmVzcGVjdGl2ZSBv
-ZiBkZXZpY2VzIGNvbm5lY3RlZCB0byBpdC4NCg0KDQp3aXRoIHJlZ2FyZHMsIHBla29uDQo=
+On Sun, Jul 21, 2013 at 11:39:49PM -0700, Brian Norris wrote:
+> Hi Ezequiel,
+> 
+> On Sat, Jul 20, 2013 at 7:36 AM, Ezequiel Garcia
+> <ezequiel.garcia@free-electrons.com> wrote:
+> > Hi Artem,
+> >
+> > On Mon, Jul 01, 2013 at 10:21:16AM +0300, Artem Bityutskiy wrote:
+> >> On Fri, 2013-06-07 at 11:22 -0300, Ezequiel Garcia wrote:
+> >> > > Since this patch affects directly the PXA hardware, I'd like to have some
+> >> > > response from PXA maintainers.
+> >> > >
+> >> > > Guys, could you take a look at this?
+> >> > >
+> >> >
+> >> > Ping?
+> >>
+> >>
+> >> sorry for long delay. I simply had no time to look an any of my
+> >> open-source things, too busy.
+> >>
+> >> I've pushed this series to l2-mtd.git, thanks!
+> >>
+> >
+> > Thanks!
+> >
+> > Any chance you can push this to some branch that's included in linux-next?
+> > (when you get back to work, of course)
+> 
+> Artem's l2-mtd.git 'master' branch is already included in linux-next.
+
+Indeed.
+
+I checked before asking but somehow thought it wasn't...
+
+Sorry for the noise and thanks!
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
