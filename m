@@ -1,19 +1,37 @@
-Received: from aserp1040.oracle.com ([141.146.126.69])
+Received: from comal.ext.ti.com ([198.47.26.152])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V1FWi-0001Kf-W6
- for linux-mtd@lists.infradead.org; Mon, 22 Jul 2013 12:47:45 +0000
-Date: Mon, 22 Jul 2013 15:47:12 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: walter harms <wharms@bfs.de>
-Subject: Re: [patch] mtd: use correct error codes in debugfs_create()
-Message-ID: <20130722124712.GG5636@mwanda>
-References: <20130719054938.GC9729@elgon.mountain>
- <20130722055607.GF5636@mwanda> <51ECE488.1050307@bfs.de>
+ id 1V1FfD-0001Ww-S3
+ for linux-mtd@lists.infradead.org; Mon, 22 Jul 2013 12:56:32 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: "thomas.langer@lantiq.com" <thomas.langer@lantiq.com>,
+ "b32955@freescale.com" <b32955@freescale.com>
+Subject: RE: support DUAL and QUAD[patch v1]
+Date: Mon, 22 Jul 2013 12:55:53 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9ECAFC@DBDE04.ent.ti.com>
+References: <CAHSAbzP0Nc1ahf_ra6yDuMvV998_+EGcUOGDv5ifKaagYf+NOg@mail.gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9E84D2@DBDE04.ent.ti.com>
+ <CAHSAbzMDOWo5oBqUHqMxybuDwUjFbczYwN+85gH+rxZ9z8u2Pw@mail.gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9E851E@DBDE04.ent.ti.com>
+ <593AEF6C47F46446852B067021A273D6D93B49E1@MUCSE039.lantiq.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9E85D0@DBDE04.ent.ti.com>
+ <CAHSAbzP5jqHwCm0qhu=DiNzpP0swqWHsQ0=MnF+EKaSN22E5hg@mail.gmail.com>
+ <CA+7tXihoZZhpoyvxj58c+Zi-Zy631kK5s-kDoSxPKq=ej0qyvA@mail.gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9E967D@DBDE04.ent.ti.com>
+ <20130722093342.GJ9858@sirena.org.uk>
+ <20980858CB6D3A4BAE95CA194937D5E73E9EC9B1@DBDE04.ent.ti.com>
+ <51ED0A57.4060105@freescale.com>
+ <593AEF6C47F46446852B067021A273D6D97E2ED4@MUCSE039.lantiq.com>
+In-Reply-To: <593AEF6C47F46446852B067021A273D6D97E2ED4@MUCSE039.lantiq.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <51ECE488.1050307@bfs.de>
-Cc: kernel-janitors@vger.kernel.org, linux-mtd@lists.infradead.org
+Cc: "broonie@kernel.org" <broonie@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "spi-devel-general@lists.sourceforge.net"
+ <spi-devel-general@lists.sourceforge.net>, "Poddar,
+ Sourav" <sourav.poddar@ti.com>, "tpiepho@gmail.com" <tpiepho@gmail.com>,
+ "wangyuhang2014@gmail.com" <wangyuhang2014@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,24 +41,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The debugfs API is a bit confusing initialy but it's straight
-foward to use.  You call:
-
-	dfs_rootdir = debugfs_create_dir(...);
-
-If it returns NULL then you return an error code.  If debugfs is
-not enabled then it returns ERR_PTR(-ENODEV) but you don't normally
-need to test for it.  After all later when you call:
-
-	debugfs_create_file("wear_report", S_IRUSR,
-			    dfs_rootdir, dev, &dfs_fops);
-
-That function is just a no-op because debugfs is disabled.
-
-The problem here is that we test for IS_ERR_OR_NULL() instead of
-just if (!dfs_rootdir) which is wrong.  Also if we do hit an error
-we return success because the true false bit are reversed.
-
-regards,
-dan carpenter
-> 
+SGkgU2hpamllLA0KPiANCj4gSGVsbG8gSHVhbmcsDQo+IA0KPiBIdWFuZyBTaGlqaWUgd3JvdGUg
+b27CoDIwMTMtMDctMjI6DQo+ID4g5LqOIDIwMTPlubQwN+aciDIy5pelIDE3OjU2LCBHdXB0YSwg
+UGVrb24g5YaZ6YGTOg0KPiA+PiAoYikgc3RydWN0IHNwaV90cmFuc2ZlcjogaWYgZWFjaCB0cmFu
+c2ZlciBvZiBzYW1lIG1lc3NhZ2UgbmVlZCB0byBiZQ0KPiA+PiB0cmFuc2ZlcnJlZCBhdCBkaWZm
+ZXJlbnQgd2lkdGguIAlFeGFtcGxlOiBDb21tYW5kIEAgU2luZ2xlLVNQSQ0KPiA+PiAgIGZvbGxv
+d2VkIGJ5IERhdGEgQCBRdWFkLVNQSQ0KPiA+IEkgYW0gY29kaW5nIHRoZSBRdWFkU3BpIGRyaXZl
+ciBmb3IgRnJlZXNjYWxlJ3MgVnlicmlkIG5vdy4NCj4gPg0KPiA+IEkgdGhpbmsgd2UgZG90IG5l
+ZWQgdG8gY2hhbmdlIHRoZSBzcGkgY29kZS4gdGhlIHNwaSBsYXllciBzaG91bGQgbm90DQo+ID4g
+a25vdyB0aGUgZGlmZmVyZW50IHdpZHRoIG9mIHRoZSBjb21tYW5kIGFuZCB0aGUgZGF0YSwgbGV0
+IHRoZSBxc3BpDQo+ID4gZHJpdmVyIGRvZXMgaXQuDQo+IE5PIQ0KPiA+DQo+ID4gSW4gdGhlIG0y
+NXBfcHJvYmUoKSwgYWZ0ZXIgd2Uga25vd3MgdGhhdCB0aGUgcXNwaSBkcml2ZXIgYW5kIGZsYXNo
+DQo+ID4gc3VwcG9ydCB0aGUgUXVhZCByZWFkLCBzbyB3ZSBjYW4gc2V0IHRoZQ0KPiA+IG0yNXAt
+PnJlYWRfb3Bjb2RlIHRvIDB4ZWIgb3IgMHhlYy4gSW4gdGhlIHFzcGkgZHJpdmVyLCBpdCBjYW4g
+ZG8gdGhlDQo+ID4gcmVhbCBqb2IuDQo+IE5vLCB0aGUgcXNwaSBkcml2ZXIgKGFzIGV4YW1wbGUg
+aGVyZSkgc2hvdWxkIHByb3ZpZGUgYSB0cmFuc3BhcmVudCBpbnRlcmZhY2UNCj4gb25seSwNCj4g
+YW5kIHRoZSBtcDI1cDgwIGRyaXZlciwgd2hpY2gga25vd3MgdGhlIGRldGFpbHMgb2YgdGhlIGZs
+YXNoLCBoYXMgdG8gcHJvdmlkZQ0KPiB0aGUgaW5mb3JtYXRpb24NCj4gd2hpY2ggcGFydHMgb2Yg
+YSB0cmFuc2ZlciBoYXMgdG8gYmUgZG9uZSBpbiBzaW5nbGUtL2R1YWwtIG9yIHF1YWQtbW9kZS4N
+Cj4gT3RoZXJ3aXNlIHlvdSBhbHdheXMgbmVlZCB0byBleHRlbmQgdGhlIHFzcGkgZHJpdmVyIGZv
+ciBuZXcgZmxhc2hlcy4NCj4gDQpBIFFTUEkgaW50ZXJmYWNlIGNhbiBiZSBjb25uZWN0ZWQgdG8g
+ZXh0ZXJuYWwtRmxhc2ggYW5kIHRvIENhbWVyYSBhbHNvLg0KDQotIEEgY2FtZXJhIGludGVyZmFj
+ZSBtYXkgb25seSByZXF1aXJlIHN0YXRpYyBjb25maWcgb2YgUXVhZC1tb2RlLg0KDQotIEEgRmxh
+c2ggbWF5IHJlcXVpcmUgZHluYW1pYyBzd2l0Y2hpbmcgYmV0d2VlbiBTaW5nbGUtU1BJIG9yIFF1
+YWQtU1BJDQpiYXNlZCBvbiB0eXBlIG9mIG1lc3NhZ2UsIGxpa2UgRmxhc2ggZXJhc2UgY29tbWFu
+ZCBuZWVkIHRvIGJlIHNlbnQgDQpvbmx5IFNpbmdsZS1TUEkgbW9kZSwgd2hlcmUgYXMgUmVhZC9X
+cml0ZSBEYXRhIGNhbiBiZSBkb25lIG9uDQpRdWFkLVNQSSBtb2RlIHRvIGluY3JlYXNlIHRocm91
+Z2hwdXQuIEhlcmUgb25seSB0aGUgZmxhc2ggZHJpdmVyIHdvdWxkIA0Ka25vdywgd2hpY2ggY29t
+bWFuZHMgdG8gc2VuZCBvbiBTaW5nbGUtU1BJIGFuZCB3aGljaCBvbiBRdWFkLVNQSS4gDQoNClRo
+dXMsIGl0cyBiZXR0ZXIgdGhhdCBjaGFubmVsLXdpZHRoIGluZm9ybWF0aW9uIGlzIHBhc3NlZCBi
+eSB1cHBlciBsYXllcg0KZHJpdmVyIGFsb25nIHdpdGggc3BpX21lc3NhZ2UsIHNvIHRoYXQgUVNQ
+SS1jb250cm9sbGVyIGRyaXZlciBjYW4NCmR5bmFtaWNhbGx5IHN3aXRjaCBiZXR3ZWVuIHRoZSBt
+b2Rlcy4NClRoaXMgYWxzbyBrZWVwcyBRU1BJIGRyaXZlciBnZW5lcmljIGlycmVzcGVjdGl2ZSBv
+ZiBkZXZpY2VzIGNvbm5lY3RlZCB0byBpdC4NCg0KDQp3aXRoIHJlZ2FyZHMsIHBla29uDQo=
