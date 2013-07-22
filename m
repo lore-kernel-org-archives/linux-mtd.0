@@ -1,11 +1,12 @@
-Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
+Received: from arroyo.ext.ti.com ([192.94.94.40])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V1CVa-0002sJ-FB
- for linux-mtd@lists.infradead.org; Mon, 22 Jul 2013 09:34:24 +0000
-Date: Mon, 22 Jul 2013 10:33:42 +0100
-From: Mark Brown <broonie@kernel.org>
-To: "Gupta, Pekon" <pekon@ti.com>
-Message-ID: <20130722093342.GJ9858@sirena.org.uk>
+ id 1V1CrQ-0003X6-2O
+ for linux-mtd@lists.infradead.org; Mon, 22 Jul 2013 09:56:56 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: RE: support DUAL and QUAD[patch v1]
+Date: Mon, 22 Jul 2013 09:56:24 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9EC9B1@DBDE04.ent.ti.com>
 References: <CAHSAbzP0Nc1ahf_ra6yDuMvV998_+EGcUOGDv5ifKaagYf+NOg@mail.gmail.com>
  <20980858CB6D3A4BAE95CA194937D5E73E9E84D2@DBDE04.ent.ti.com>
  <CAHSAbzMDOWo5oBqUHqMxybuDwUjFbczYwN+85gH+rxZ9z8u2Pw@mail.gmail.com>
@@ -15,12 +16,12 @@ References: <CAHSAbzP0Nc1ahf_ra6yDuMvV998_+EGcUOGDv5ifKaagYf+NOg@mail.gmail.com>
  <CAHSAbzP5jqHwCm0qhu=DiNzpP0swqWHsQ0=MnF+EKaSN22E5hg@mail.gmail.com>
  <CA+7tXihoZZhpoyvxj58c+Zi-Zy631kK5s-kDoSxPKq=ej0qyvA@mail.gmail.com>
  <20980858CB6D3A4BAE95CA194937D5E73E9E967D@DBDE04.ent.ti.com>
+ <20130722093342.GJ9858@sirena.org.uk>
+In-Reply-To: <20130722093342.GJ9858@sirena.org.uk>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="QPZaqi6af6gbSrAE"
-Content-Disposition: inline
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9E967D@DBDE04.ent.ti.com>
-Subject: Re: support DUAL and QUAD[patch v1]
 Cc: "thomas.langer@lantiq.com" <thomas.langer@lantiq.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "spi-devel-general@lists.sourceforge.net"
@@ -36,50 +37,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+>=20
+> > > Maybe it would make more sense to have a spi-rx-width and spi-tx-widt=
+h
+> > > than can be set to 1, 2, 4, etc. bits instead of a bunch of propertie=
+s
+> > > that are mutually exclusive?  Sooner or later someone is going to wan=
+t
+> > > 8 bits.
+>=20
+> > Then it would not remain a serial interface (Serial Peripheral Interfac=
+e),
+> > rather it would be more of parallel memory like interface.
+> > And you would not like to use SPI controller for it, instead you would =
+use
+> > On-chip General Purpose External Interface controllers (like GPMC)
+> > because it gives you more options to tweak and configure.
+>=20
+> It's still not beyoond the bounds of possibility, and of course some
+> bright spark might decide to use 3 wires.  Unless it's expensive to do
+> so in some way it seems better to keep the interface as generic as
+> possible even if we've no expectation that some of the flexibility will
+> be used.
+>=20
+Ok.. Agreed,  I don't have any preference here between
+"rx-width , tx-width" v/s "mode".
+But please make sure that whichever implementation is chosen,
+it should allow dynamic changing of channel-width.
 
---QPZaqi6af6gbSrAE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Granularity should be based on following decisions:
+(a) struct spi_message: if all transfers of same message follow same
+ channel width. Example: All spi_messages from MTD layer would
+use Qual-SPI only (both flash-commands and data).
 
-On Fri, Jul 19, 2013 at 07:34:45PM +0000, Gupta, Pekon wrote:
+(b) struct spi_transfer: if each transfer of same message need to be=20
+transferred at different width. 	Example: Command @ Single-SPI
+ followed by Data @ Quad-SPI
 
-> > Maybe it would make more sense to have a spi-rx-width and spi-tx-width
-> > than can be set to 1, 2, 4, etc. bits instead of a bunch of properties
-> > that are mutually exclusive?  Sooner or later someone is going to want
-> > 8 bits.
 
-> Then it would not remain a serial interface (Serial Peripheral Interface),
-> rather it would be more of parallel memory like interface.
-> And you would not like to use SPI controller for it, instead you would use
-> On-chip General Purpose External Interface controllers (like GPMC)
-> because it gives you more options to tweak and configure.
-
-It's still not beyoond the bounds of possibility, and of course some
-bright spark might decide to use 3 wires.  Unless it's expensive to do
-so in some way it seems better to keep the interface as generic as
-possible even if we've no expectation that some of the flexibility will
-be used.
-
---QPZaqi6af6gbSrAE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR7PxzAAoJELSic+t+oim93zMP/iaSGf2AwMeCLjtodncJwdlT
-2J1tksjA4Cssv6Mdr1IZZTnP/5pbnP3WzTzJImHl9HrNAz7RDSBRm0VowUmZu0Ss
-kB5wKwEfuKTz0Xb8Oc65hEKG6rVWQDf9DY4/7sp92NDvke7BwjWW8NtP50W58bj9
-UN4uQFe/EwjaS4WjcIQ5tqLYXdHAXMo19U3JDR44QyhVuvsThDAoxRhGu02v21cE
-QkTF6zvOP6SO9T8TN2NIoD8JUrMX+QMzRqJbYMkvjp9es/74gyYJU+vRNUf3sBwL
-AliYZut7XQG+33CBqShlGsD6Y/ELBJ5LIyCDbKMf1FZkW/+kVu+WstRjmyvjvdKI
-Tyfl9Uz1drmqsCBIrOIabwVboMsvwY3zjWZx4Fg3CLGUnGt8KpMX2vb8m6CVtHHj
-a55KCZ8XG1J7pziwG+pYPOy3vwJB/caa1Bcublp5VE7Pxt4OB5TteptxH9NXG/F7
-EdjBxzK4giv5dSj8OR4SWm8bGuAoXzp+rJYVCPR9Bxywloo7mhyEChGNgkrW9Orl
-0Xch5SCAqe7isHDICEhEGNn0m7QuvbHOAVhE5HrnAhJZlUIJBIu/2ZSBH3tz1bR6
-W1+myS7DFQ8xFjUNVxjAtnFcBeAM/YV12/x+chP7CuDvauuWfLD48NDL+MJgQijd
-/oToHw/iqMJ7K+0rfmXs
-=sv+M
------END PGP SIGNATURE-----
-
---QPZaqi6af6gbSrAE--
+with regards, pekon
