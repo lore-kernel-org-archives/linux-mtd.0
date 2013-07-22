@@ -1,30 +1,14 @@
-Received: from mail.free-electrons.com ([94.23.35.102])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V1Goy-0003uq-PY
- for linux-mtd@lists.infradead.org; Mon, 22 Jul 2013 14:10:42 +0000
-Date: Mon, 22 Jul 2013 11:10:07 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 0/5] mtd: nand: Fixes and improvements on pxa3xx
-Message-ID: <20130722141006.GA2387@localhost>
-References: <1368530125-12959-1-git-send-email-elezegarcia@gmail.com>
- <20130520123733.GB2904@localhost>
- <CALF0-+W+4NCLimsP1E+aGNLEuE9GtThsm6dNE-iyeju5ixx8Rg@mail.gmail.com>
- <1372663276.22014.29.camel@sauron.fi.intel.com>
- <20130720143643.GB24504@localhost>
- <CAN8TOE9n6e1FnR2hZ3ntWkwPBTtBNvLYyMn+GN8DMY3pROdhgA@mail.gmail.com>
+Date: Mon, 22 Jul 2013 23:43:40 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [patch v2] mtd: tiny debugfs related fixes
+Message-ID: <20130722204340.GC22020@elgon.mountain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAN8TOE9n6e1FnR2hZ3ntWkwPBTtBNvLYyMn+GN8DMY3pROdhgA@mail.gmail.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, Ezequiel Garcia <elezegarcia@gmail.com>,
- Eric Miao <eric.y.miao@gmail.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- Lei Wen <leiwen@marvell.com>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Maen Suleiman <maen@marvell.com>, linux-mtd@lists.infradead.org,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Neil Zhang <zhangwm@marvell.com>, Chao Xie <cxie4@marvell.com>
+In-Reply-To: <20130719054938.GC9729@elgon.mountain>
+Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,43 +18,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Jul 21, 2013 at 11:39:49PM -0700, Brian Norris wrote:
-> Hi Ezequiel,
-> 
-> On Sat, Jul 20, 2013 at 7:36 AM, Ezequiel Garcia
-> <ezequiel.garcia@free-electrons.com> wrote:
-> > Hi Artem,
-> >
-> > On Mon, Jul 01, 2013 at 10:21:16AM +0300, Artem Bityutskiy wrote:
-> >> On Fri, 2013-06-07 at 11:22 -0300, Ezequiel Garcia wrote:
-> >> > > Since this patch affects directly the PXA hardware, I'd like to have some
-> >> > > response from PXA maintainers.
-> >> > >
-> >> > > Guys, could you take a look at this?
-> >> > >
-> >> >
-> >> > Ping?
-> >>
-> >>
-> >> sorry for long delay. I simply had no time to look an any of my
-> >> open-source things, too busy.
-> >>
-> >> I've pushed this series to l2-mtd.git, thanks!
-> >>
-> >
-> > Thanks!
-> >
-> > Any chance you can push this to some branch that's included in linux-next?
-> > (when you get back to work, of course)
-> 
-> Artem's l2-mtd.git 'master' branch is already included in linux-next.
+debugfs_create_dir() can't return an error pointer because we tested for
+IS_ENABLED(CONFIG_DEBUG_FS) earlier so we don't need to test for that.
+Also the way debugfs is designed, callers should not normally care about
+error pointer returns.
 
-Indeed.
+The current code is a little buggy because it return success if
+debugfs_create_dir() fails instead of -ENODEV which was intended.
 
-I checked before asking but somehow thought it wasn't...
+I have also changed the error message slightly.
 
-Sorry for the noise and thanks!
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+v2: completely different
+
+diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
+index 63cb1d7..d3c99a6 100644
+--- a/drivers/mtd/ubi/debug.c
++++ b/drivers/mtd/ubi/debug.c
+@@ -235,12 +235,9 @@ int ubi_debugfs_init(void)
+ 		return 0;
+ 
+ 	dfs_rootdir = debugfs_create_dir("ubi", NULL);
+-	if (IS_ERR_OR_NULL(dfs_rootdir)) {
+-		int err = dfs_rootdir ? -ENODEV : PTR_ERR(dfs_rootdir);
+-
+-		ubi_err("cannot create \"ubi\" debugfs directory, error %d\n",
+-			err);
+-		return err;
++	if (!dfs_rootdir) {
++		ubi_err("cannot create \"ubi\" debugfs directory.\n");
++		return -ENODEV;
+ 	}
+ 
+ 	return 0;
+diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+index cb38f3d..3971465 100644
+--- a/drivers/mtd/nand/nandsim.c
++++ b/drivers/mtd/nand/nandsim.c
+@@ -523,24 +523,20 @@ static int nandsim_debugfs_create(struct nandsim *dev)
+ {
+ 	struct nandsim_debug_info *dbg = &dev->dbg;
+ 	struct dentry *dent;
+-	int err;
+ 
+ 	if (!IS_ENABLED(CONFIG_DEBUG_FS))
+ 		return 0;
+ 
+ 	dent = debugfs_create_dir("nandsim", NULL);
+-	if (IS_ERR_OR_NULL(dent)) {
+-		int err = dent ? -ENODEV : PTR_ERR(dent);
+-
+-		NS_ERR("cannot create \"nandsim\" debugfs directory, err %d\n",
+-			err);
+-		return err;
++	if (!dent) {
++		NS_ERR("cannot create \"nandsim\" debugfs directory.");
++		return -ENODEV;
+ 	}
+ 	dbg->dfs_root = dent;
+ 
+ 	dent = debugfs_create_file("wear_report", S_IRUSR,
+ 				   dbg->dfs_root, dev, &dfs_fops);
+-	if (IS_ERR_OR_NULL(dent))
++	if (!dent)
+ 		goto out_remove;
+ 	dbg->dfs_wear_report = dent;
+ 
+@@ -548,8 +544,7 @@ static int nandsim_debugfs_create(struct nandsim *dev)
+ 
+ out_remove:
+ 	debugfs_remove_recursive(dbg->dfs_root);
+-	err = dent ? PTR_ERR(dent) : -ENODEV;
+-	return err;
++	return -ENODEV;
+ }
+ 
+ /**
