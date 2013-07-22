@@ -1,32 +1,19 @@
-Received: from smtp2.lantiq.com ([195.219.66.201])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V1EC5-00060h-LJ
- for linux-mtd@lists.infradead.org; Mon, 22 Jul 2013 11:22:23 +0000
-From: <thomas.langer@lantiq.com>
-To: <b32955@freescale.com>, <pekon@ti.com>
-Subject: RE: support DUAL and QUAD[patch v1]
-Date: Mon, 22 Jul 2013 11:21:58 +0000
-Message-ID: <593AEF6C47F46446852B067021A273D6D97E2ED4@MUCSE039.lantiq.com>
-References: <CAHSAbzP0Nc1ahf_ra6yDuMvV998_+EGcUOGDv5ifKaagYf+NOg@mail.gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9E84D2@DBDE04.ent.ti.com>
- <CAHSAbzMDOWo5oBqUHqMxybuDwUjFbczYwN+85gH+rxZ9z8u2Pw@mail.gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9E851E@DBDE04.ent.ti.com>
- <593AEF6C47F46446852B067021A273D6D93B49E1@MUCSE039.lantiq.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9E85D0@DBDE04.ent.ti.com>
- <CAHSAbzP5jqHwCm0qhu=DiNzpP0swqWHsQ0=MnF+EKaSN22E5hg@mail.gmail.com>
- <CA+7tXihoZZhpoyvxj58c+Zi-Zy631kK5s-kDoSxPKq=ej0qyvA@mail.gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9E967D@DBDE04.ent.ti.com>
- <20130722093342.GJ9858@sirena.org.uk>
- <20980858CB6D3A4BAE95CA194937D5E73E9EC9B1@DBDE04.ent.ti.com>
- <51ED0A57.4060105@freescale.com>
-In-Reply-To: <51ED0A57.4060105@freescale.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from aserp1040.oracle.com ([141.146.126.69])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V1FWi-0001Kf-W6
+ for linux-mtd@lists.infradead.org; Mon, 22 Jul 2013 12:47:45 +0000
+Date: Mon, 22 Jul 2013 15:47:12 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: walter harms <wharms@bfs.de>
+Subject: Re: [patch] mtd: use correct error codes in debugfs_create()
+Message-ID: <20130722124712.GG5636@mwanda>
+References: <20130719054938.GC9729@elgon.mountain>
+ <20130722055607.GF5636@mwanda> <51ECE488.1050307@bfs.de>
 MIME-Version: 1.0
-Cc: broonie@kernel.org, linux-mtd@lists.infradead.org,
- spi-devel-general@lists.sourceforge.net, sourav.poddar@ti.com,
- tpiepho@gmail.com, wangyuhang2014@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <51ECE488.1050307@bfs.de>
+Cc: kernel-janitors@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,23 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG8gSHVhbmcsDQoNCkh1YW5nIFNoaWppZSB3cm90ZSBvbsKgMjAxMy0wNy0yMjoNCj4g5LqO
-IDIwMTPlubQwN+aciDIy5pelIDE3OjU2LCBHdXB0YSwgUGVrb24g5YaZ6YGTOg0KPj4gKGIpIHN0
-cnVjdCBzcGlfdHJhbnNmZXI6IGlmIGVhY2ggdHJhbnNmZXIgb2Ygc2FtZSBtZXNzYWdlIG5lZWQg
-dG8gYmUNCj4+IHRyYW5zZmVycmVkIGF0IGRpZmZlcmVudCB3aWR0aC4gCUV4YW1wbGU6IENvbW1h
-bmQgQCBTaW5nbGUtU1BJDQo+PiAgIGZvbGxvd2VkIGJ5IERhdGEgQCBRdWFkLVNQSQ0KPiBJIGFt
-IGNvZGluZyB0aGUgUXVhZFNwaSBkcml2ZXIgZm9yIEZyZWVzY2FsZSdzIFZ5YnJpZCBub3cuDQo+
-IA0KPiBJIHRoaW5rIHdlIGRvdCBuZWVkIHRvIGNoYW5nZSB0aGUgc3BpIGNvZGUuIHRoZSBzcGkg
-bGF5ZXIgc2hvdWxkIG5vdA0KPiBrbm93IHRoZSBkaWZmZXJlbnQgd2lkdGggb2YgdGhlIGNvbW1h
-bmQgYW5kIHRoZSBkYXRhLCBsZXQgdGhlIHFzcGkNCj4gZHJpdmVyIGRvZXMgaXQuDQpOTyENCj4g
-DQo+IEluIHRoZSBtMjVwX3Byb2JlKCksIGFmdGVyIHdlIGtub3dzIHRoYXQgdGhlIHFzcGkgZHJp
-dmVyIGFuZCBmbGFzaA0KPiBzdXBwb3J0IHRoZSBRdWFkIHJlYWQsIHNvIHdlIGNhbiBzZXQgdGhl
-DQo+IG0yNXAtPnJlYWRfb3Bjb2RlIHRvIDB4ZWIgb3IgMHhlYy4gSW4gdGhlIHFzcGkgZHJpdmVy
-LCBpdCBjYW4gZG8gdGhlDQo+IHJlYWwgam9iLg0KTm8sIHRoZSBxc3BpIGRyaXZlciAoYXMgZXhh
-bXBsZSBoZXJlKSBzaG91bGQgcHJvdmlkZSBhIHRyYW5zcGFyZW50IGludGVyZmFjZSBvbmx5LA0K
-YW5kIHRoZSBtcDI1cDgwIGRyaXZlciwgd2hpY2gga25vd3MgdGhlIGRldGFpbHMgb2YgdGhlIGZs
-YXNoLCBoYXMgdG8gcHJvdmlkZSB0aGUgaW5mb3JtYXRpb24NCndoaWNoIHBhcnRzIG9mIGEgdHJh
-bnNmZXIgaGFzIHRvIGJlIGRvbmUgaW4gc2luZ2xlLS9kdWFsLSBvciBxdWFkLW1vZGUuDQpPdGhl
-cndpc2UgeW91IGFsd2F5cyBuZWVkIHRvIGV4dGVuZCB0aGUgcXNwaSBkcml2ZXIgZm9yIG5ldyBm
-bGFzaGVzLg0KDQo+IA0KPiB0aGFua3MNCj4gSHVhbmcgU2hpamllDQo+IA0KQmVzdCBSZWdhcmRz
-LA0KVGhvbWFzDQoNCg==
+The debugfs API is a bit confusing initialy but it's straight
+foward to use.  You call:
+
+	dfs_rootdir = debugfs_create_dir(...);
+
+If it returns NULL then you return an error code.  If debugfs is
+not enabled then it returns ERR_PTR(-ENODEV) but you don't normally
+need to test for it.  After all later when you call:
+
+	debugfs_create_file("wear_report", S_IRUSR,
+			    dfs_rootdir, dev, &dfs_fops);
+
+That function is just a no-op because debugfs is disabled.
+
+The problem here is that we test for IS_ERR_OR_NULL() instead of
+just if (!dfs_rootdir) which is wrong.  Also if we do hit an error
+we return success because the true false bit are reversed.
+
+regards,
+dan carpenter
+> 
