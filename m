@@ -1,20 +1,32 @@
-Received: from mail-vb0-x229.google.com ([2607:f8b0:400c:c02::229])
+Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V1BVu-0001AH-UN
- for linux-mtd@lists.infradead.org; Mon, 22 Jul 2013 08:30:39 +0000
-Received: by mail-vb0-f41.google.com with SMTP id p13so4630898vbe.0
- for <linux-mtd@lists.infradead.org>; Mon, 22 Jul 2013 01:30:15 -0700 (PDT)
+ id 1V1CVa-0002sJ-FB
+ for linux-mtd@lists.infradead.org; Mon, 22 Jul 2013 09:34:24 +0000
+Date: Mon, 22 Jul 2013 10:33:42 +0100
+From: Mark Brown <broonie@kernel.org>
+To: "Gupta, Pekon" <pekon@ti.com>
+Message-ID: <20130722093342.GJ9858@sirena.org.uk>
+References: <CAHSAbzP0Nc1ahf_ra6yDuMvV998_+EGcUOGDv5ifKaagYf+NOg@mail.gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9E84D2@DBDE04.ent.ti.com>
+ <CAHSAbzMDOWo5oBqUHqMxybuDwUjFbczYwN+85gH+rxZ9z8u2Pw@mail.gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9E851E@DBDE04.ent.ti.com>
+ <593AEF6C47F46446852B067021A273D6D93B49E1@MUCSE039.lantiq.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9E85D0@DBDE04.ent.ti.com>
+ <CAHSAbzP5jqHwCm0qhu=DiNzpP0swqWHsQ0=MnF+EKaSN22E5hg@mail.gmail.com>
+ <CA+7tXihoZZhpoyvxj58c+Zi-Zy631kK5s-kDoSxPKq=ej0qyvA@mail.gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9E967D@DBDE04.ent.ti.com>
 MIME-Version: 1.0
-In-Reply-To: <OF488B7050.CCC82AE1-ON86257B6D.004A7953-86257B6D.004AAE09@ni.com>
-References: <OF488B7050.CCC82AE1-ON86257B6D.004A7953-86257B6D.004AAE09@ni.com>
-Date: Mon, 22 Jul 2013 01:30:15 -0700
-Message-ID: <CAN8TOE_O_9yasnPv=E+FzL_QugfbJMvp=sqZAbGUY_JAf=ufqQ@mail.gmail.com>
-Subject: Re: [RESEND PATCH] mtd: nand: nand_bbt: scan for next free bbt block
- if writing bbt fails
-From: Brian Norris <computersforpeace@gmail.com>
-To: Jeff Westfahl <jeff.westfahl@ni.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="QPZaqi6af6gbSrAE"
+Content-Disposition: inline
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9E967D@DBDE04.ent.ti.com>
+Subject: Re: support DUAL and QUAD[patch v1]
+Cc: "thomas.langer@lantiq.com" <thomas.langer@lantiq.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "spi-devel-general@lists.sourceforge.net"
+ <spi-devel-general@lists.sourceforge.net>, "Poddar,
+ Sourav" <sourav.poddar@ti.com>, Trent Piepho <tpiepho@gmail.com>,
+ yuhang wang <wangyuhang2014@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,123 +36,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Jeff,
 
-Sorry this has sat a while. I have a few comments now, and I expect to
-take an even closer look in the near future.
+--QPZaqi6af6gbSrAE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Thu, May 16, 2013 at 6:35 AM, Jeff Westfahl <jeff.westfahl@ni.com> wrote:
-> If erasing or writing the BBT fails, we should mark the current BBT block
-> as bad and use the BBT descriptor to scan for the next available unused
-> block in the BBT. We should only return a failure if there isn't any space
-> left.
+On Fri, Jul 19, 2013 at 07:34:45PM +0000, Gupta, Pekon wrote:
 
-This idea looks good. We can of course run into a worn-out BBT block,
-especially since we're pretty dumb at write-erase cycles (every new
-bad block causes a full erasure/reprogram). So we should mark failing
-BBT blocks as bad and move to the next one.
+> > Maybe it would make more sense to have a spi-rx-width and spi-tx-width
+> > than can be set to 1, 2, 4, etc. bits instead of a bunch of properties
+> > that are mutually exclusive?  Sooner or later someone is going to want
+> > 8 bits.
 
-A general comment: it looks like you take care of updating the BBT
-with the new bad block you're marking, but we expect that any
-newly-marked bad block should be marked in both the BBT and in the OOB
-area of the block itself (just in case we ever have to fall back to
-using the bad block markers in each block again). See
-nand_default_block_markbad() in nand_base.c.
+> Then it would not remain a serial interface (Serial Peripheral Interface),
+> rather it would be more of parallel memory like interface.
+> And you would not like to use SPI controller for it, instead you would use
+> On-chip General Purpose External Interface controllers (like GPMC)
+> because it gives you more options to tweak and configure.
 
-> Signed-off-by: Jeff Westfahl <jeff.westfahl@ni.com>
-> ---
->  drivers/mtd/nand/nand_bbt.c |   21 +++++++++++++++++----
->  1 file changed, 17 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-> index 2672643..900bda1 100644
-> --- a/drivers/mtd/nand/nand_bbt.c
-> +++ b/drivers/mtd/nand/nand_bbt.c
-> @@ -697,6 +697,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t
-> *buf,
->                         page = td->pages[chip];
->                         goto write;
->                 }
-> +       next:
->
->                 /*
->                  * Automatic placement of the bad block table. Search
-> direction
-> @@ -831,14 +832,26 @@ static int write_bbt(struct mtd_info *mtd, uint8_t
-> *buf,
->                 einfo.addr = to;
->                 einfo.len = 1 << this->bbt_erase_shift;
->                 res = nand_erase_nand(mtd, &einfo, 1);
-> -               if (res < 0)
-> -                       goto outerr;
-> +               if (res < 0) {
-> +                       /* This block is bad. Mark it as such and see if
-> there's
+It's still not beyoond the bounds of possibility, and of course some
+bright spark might decide to use 3 wires.  Unless it's expensive to do
+so in some way it seems better to keep the interface as generic as
+possible even if we've no expectation that some of the flexibility will
+be used.
 
-You probably don't want to turn *all* errors into new bad blocks. You
-probably should only mark a block bad for some combination of -EIO (a
-failed IO operation) and/or einfo.state == MTD_ERASE_FAILED, and not
-for things like a read-only MTD (?), an out-of-bounds flash address
-(shouldn't happen at this point?), or anything else that theoretically
-could happen.
+--QPZaqi6af6gbSrAE
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-> +                          another available in the BBT area. */
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
 
-You also may want to take a glance at Documentation/CodingStyle and/or
-run scripts/checkpatch.pl on your patch. The comment closure doesn't
-follow the CodingStyle.
+iQIcBAEBAgAGBQJR7PxzAAoJELSic+t+oim93zMP/iaSGf2AwMeCLjtodncJwdlT
+2J1tksjA4Cssv6Mdr1IZZTnP/5pbnP3WzTzJImHl9HrNAz7RDSBRm0VowUmZu0Ss
+kB5wKwEfuKTz0Xb8Oc65hEKG6rVWQDf9DY4/7sp92NDvke7BwjWW8NtP50W58bj9
+UN4uQFe/EwjaS4WjcIQ5tqLYXdHAXMo19U3JDR44QyhVuvsThDAoxRhGu02v21cE
+QkTF6zvOP6SO9T8TN2NIoD8JUrMX+QMzRqJbYMkvjp9es/74gyYJU+vRNUf3sBwL
+AliYZut7XQG+33CBqShlGsD6Y/ELBJ5LIyCDbKMf1FZkW/+kVu+WstRjmyvjvdKI
+Tyfl9Uz1drmqsCBIrOIabwVboMsvwY3zjWZx4Fg3CLGUnGt8KpMX2vb8m6CVtHHj
+a55KCZ8XG1J7pziwG+pYPOy3vwJB/caa1Bcublp5VE7Pxt4OB5TteptxH9NXG/F7
+EdjBxzK4giv5dSj8OR4SWm8bGuAoXzp+rJYVCPR9Bxywloo7mhyEChGNgkrW9Orl
+0Xch5SCAqe7isHDICEhEGNn0m7QuvbHOAVhE5HrnAhJZlUIJBIu/2ZSBH3tz1bR6
+W1+myS7DFQ8xFjUNVxjAtnFcBeAM/YV12/x+chP7CuDvauuWfLD48NDL+MJgQijd
+/oToHw/iqMJ7K+0rfmXs
+=sv+M
+-----END PGP SIGNATURE-----
 
-> +                       int block = page >>
-> +                               (this->bbt_erase_shift -
-> this->page_shift);
-> +                       this->bbt[block >> 2] |= 0x01 << ((block & 0x03)
-> << 1);
-
-It's been a while since I really looked at the nand_bbt.c coding
-details... This is kinda ugly! (Note that this not particularly a
-criticism of this part of your patch; this line follows the (IMO bad)
-style of the rest of nand_bbt.c). I mean, we could at least use a nice
-macro or something... I may look into whether this file deserves some
-new cleanup macros, but that would be independent of this patch.
-
-> +                       goto next;
-> +               }
->
->                 res = scan_write_bbt(mtd, to, len, buf,
->                                 td->options & NAND_BBT_NO_OOB ? NULL :
->                                 &buf[len]);
-> -               if (res < 0)
-> -                       goto outerr;
-> +               if (res < 0) {
-> +                       /* This block is bad. Mark it as such and see if
-> there's
-> +                          another available in the BBT area. */
-
-Similar comment here: you don't want to turn *all* errors into new bad
-blocks, only -EIO.
-
-> +                       int block = page >>
-> +                               (this->bbt_erase_shift -
-> this->page_shift);
-> +                       this->bbt[block >> 2] |= 0x01 << ((block & 0x03)
-> << 1);
-> +                       goto next;
-> +               }
->
->                 pr_info("Bad block table written to 0x%012llx, version
-> 0x%02X\n",
->                          (unsigned long long)to, td->version[chip]);
-
-(Comment to myself mostly:) write_bbt() is a monstrous function; 203
-lines before this patch! And that's after cheating with lines like
-this:
-
-                case 1: sft = 3; sftmsk = 0x07; msk[0] = 0x00; msk[1] = 0x01;
-
-But in light of this observation, it may be time to consider some refactoring...
-
-Brian
-
-[NOTE: I just crafted this reply and realized I actually received 3
-copies of this patch via the mailing list, and I'm replying to the
-only one that is line-wrapped. Sorry.]
+--QPZaqi6af6gbSrAE--
