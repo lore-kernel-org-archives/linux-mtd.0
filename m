@@ -1,18 +1,20 @@
-Received: from mail-ye0-x236.google.com ([2607:f8b0:4002:c04::236])
+Received: from aserp1040.oracle.com ([141.146.126.69])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V0xoC-0005Gj-Qc
- for linux-mtd@lists.infradead.org; Sun, 21 Jul 2013 17:52:37 +0000
-Received: by mail-ye0-f182.google.com with SMTP id m12so1888900yen.41
- for <linux-mtd@lists.infradead.org>; Sun, 21 Jul 2013 10:52:13 -0700 (PDT)
-From: Fabio Estevam <festevam@gmail.com>
-To: dwmw2@infradead.org
-Subject: [PATCH] nand: mxc_nand: Remove unneeded check for
- platform_get_resource()
-Date: Sun, 21 Jul 2013 14:52:02 -0300
-Message-Id: <1374429122-15514-1-git-send-email-festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- artem.bityutskiy@linux.intel.com, s.hauer@pengutronix.de,
- linux-mtd@lists.infradead.org
+ id 1V1975-0006Qk-P8
+ for linux-mtd@lists.infradead.org; Mon, 22 Jul 2013 05:56:52 +0000
+Date: Mon, 22 Jul 2013 08:56:07 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [patch] mtd: use correct error codes in debugfs_create()
+Message-ID: <20130722055607.GF5636@mwanda>
+References: <20130719054938.GC9729@elgon.mountain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20130719054938.GC9729@elgon.mountain>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ kernel-janitors@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org, Akinobu Mita <akinobu.mita@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,38 +24,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
+On Fri, Jul 19, 2013 at 08:49:38AM +0300, Dan Carpenter wrote:
+> The test here is reversed.  It should be that if "dent" is a valid error
+> code then we use it, otherwise if it is NULL then use -ENODEV.
+> 
 
-devm_ioremap_resource() checks its arguments, so there is no need for
-explicitly checking the return value from platform_get_resource().
+People have explained the debugfs_create API to me better and now
+I'm not sure what to do here...  debugfs_create_dir() returns a
+NULL on error and if debugfs is not enabled then it returns -ENODEV.
+We test for if (!IS_ENABLED(CONFIG_DEBUG_FS)) earlier in the
+function so it can only return NULL.
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- drivers/mtd/nand/mxc_nand.c | 5 -----
- 1 file changed, 5 deletions(-)
+Probably I should just change the test to only test for NULL?
 
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index 18855ad..0581bd3 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -1446,8 +1446,6 @@ static int mxcnd_probe(struct platform_device *pdev)
- 
- 	if (host->devtype_data->needs_ip) {
- 		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--		if (!res)
--			return -ENODEV;
- 		host->regs_ip = devm_ioremap_resource(&pdev->dev, res);
- 		if (IS_ERR(host->regs_ip))
- 			return PTR_ERR(host->regs_ip);
-@@ -1457,9 +1455,6 @@ static int mxcnd_probe(struct platform_device *pdev)
- 		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	}
- 
--	if (!res)
--		return -ENODEV;
--
- 	host->base = devm_ioremap_resource(&pdev->dev, res);
- 	if (IS_ERR(host->base))
- 		return PTR_ERR(host->base);
--- 
-1.8.1.2
+Otherwise I think my patch is correct.  The original code will
+return success on error (NULL return) and that was not intended.
+
+regards,
+dan carpenter
