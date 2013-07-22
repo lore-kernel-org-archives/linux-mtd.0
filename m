@@ -1,14 +1,12 @@
-Received: from tx2ehsobe004.messaging.microsoft.com ([65.55.88.14]
- helo=tx2outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V1DMY-0004Sd-8o
- for linux-mtd@lists.infradead.org; Mon, 22 Jul 2013 10:29:06 +0000
-Message-ID: <51ED0A57.4060105@freescale.com>
-Date: Mon, 22 Jul 2013 18:32:55 +0800
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: support DUAL and QUAD[patch v1]
+Received: from smtp2.lantiq.com ([195.219.66.201])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V1EC5-00060h-LJ
+ for linux-mtd@lists.infradead.org; Mon, 22 Jul 2013 11:22:23 +0000
+From: <thomas.langer@lantiq.com>
+To: <b32955@freescale.com>, <pekon@ti.com>
+Subject: RE: support DUAL and QUAD[patch v1]
+Date: Mon, 22 Jul 2013 11:21:58 +0000
+Message-ID: <593AEF6C47F46446852B067021A273D6D97E2ED4@MUCSE039.lantiq.com>
 References: <CAHSAbzP0Nc1ahf_ra6yDuMvV998_+EGcUOGDv5ifKaagYf+NOg@mail.gmail.com>
  <20980858CB6D3A4BAE95CA194937D5E73E9E84D2@DBDE04.ent.ti.com>
  <CAHSAbzMDOWo5oBqUHqMxybuDwUjFbczYwN+85gH+rxZ9z8u2Pw@mail.gmail.com>
@@ -20,16 +18,15 @@ References: <CAHSAbzP0Nc1ahf_ra6yDuMvV998_+EGcUOGDv5ifKaagYf+NOg@mail.gmail.com>
  <20980858CB6D3A4BAE95CA194937D5E73E9E967D@DBDE04.ent.ti.com>
  <20130722093342.GJ9858@sirena.org.uk>
  <20980858CB6D3A4BAE95CA194937D5E73E9EC9B1@DBDE04.ent.ti.com>
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9EC9B1@DBDE04.ent.ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: "thomas.langer@lantiq.com" <thomas.langer@lantiq.com>,
- Mark Brown <broonie@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "spi-devel-general@lists.sourceforge.net"
- <spi-devel-general@lists.sourceforge.net>, "Poddar,
- Sourav" <sourav.poddar@ti.com>, Trent Piepho <tpiepho@gmail.com>,
- yuhang wang <wangyuhang2014@gmail.com>
+ <51ED0A57.4060105@freescale.com>
+In-Reply-To: <51ED0A57.4060105@freescale.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Cc: broonie@kernel.org, linux-mtd@lists.infradead.org,
+ spi-devel-general@lists.sourceforge.net, sourav.poddar@ti.com,
+ tpiepho@gmail.com, wangyuhang2014@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,24 +36,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B407=E6=9C=8822=E6=97=A5 17:56, Gupta, Pekon =E5=86=99=
-=E9=81=93:
-> (b) struct spi_transfer: if each transfer of same message need to be
-> transferred at different width. 	Example: Command @ Single-SPI
->   followed by Data @ Quad-SPI
->
-I am coding the QuadSpi driver for Freescale's Vybrid now.
-
-I think we dot need to change the spi code.
-the spi layer should not know the different width of the command and the=20
-data,
-let the qspi driver does it.
-
-In the m25p_probe(), after we knows that the qspi driver and flash=20
-support the Quad read, so we can set the
-m25p->read_opcode to 0xeb or 0xec. In the qspi driver, it can do the=20
-real job.
-
-
-thanks
-Huang Shijie
+SGVsbG8gSHVhbmcsDQoNCkh1YW5nIFNoaWppZSB3cm90ZSBvbsKgMjAxMy0wNy0yMjoNCj4g5LqO
+IDIwMTPlubQwN+aciDIy5pelIDE3OjU2LCBHdXB0YSwgUGVrb24g5YaZ6YGTOg0KPj4gKGIpIHN0
+cnVjdCBzcGlfdHJhbnNmZXI6IGlmIGVhY2ggdHJhbnNmZXIgb2Ygc2FtZSBtZXNzYWdlIG5lZWQg
+dG8gYmUNCj4+IHRyYW5zZmVycmVkIGF0IGRpZmZlcmVudCB3aWR0aC4gCUV4YW1wbGU6IENvbW1h
+bmQgQCBTaW5nbGUtU1BJDQo+PiAgIGZvbGxvd2VkIGJ5IERhdGEgQCBRdWFkLVNQSQ0KPiBJIGFt
+IGNvZGluZyB0aGUgUXVhZFNwaSBkcml2ZXIgZm9yIEZyZWVzY2FsZSdzIFZ5YnJpZCBub3cuDQo+
+IA0KPiBJIHRoaW5rIHdlIGRvdCBuZWVkIHRvIGNoYW5nZSB0aGUgc3BpIGNvZGUuIHRoZSBzcGkg
+bGF5ZXIgc2hvdWxkIG5vdA0KPiBrbm93IHRoZSBkaWZmZXJlbnQgd2lkdGggb2YgdGhlIGNvbW1h
+bmQgYW5kIHRoZSBkYXRhLCBsZXQgdGhlIHFzcGkNCj4gZHJpdmVyIGRvZXMgaXQuDQpOTyENCj4g
+DQo+IEluIHRoZSBtMjVwX3Byb2JlKCksIGFmdGVyIHdlIGtub3dzIHRoYXQgdGhlIHFzcGkgZHJp
+dmVyIGFuZCBmbGFzaA0KPiBzdXBwb3J0IHRoZSBRdWFkIHJlYWQsIHNvIHdlIGNhbiBzZXQgdGhl
+DQo+IG0yNXAtPnJlYWRfb3Bjb2RlIHRvIDB4ZWIgb3IgMHhlYy4gSW4gdGhlIHFzcGkgZHJpdmVy
+LCBpdCBjYW4gZG8gdGhlDQo+IHJlYWwgam9iLg0KTm8sIHRoZSBxc3BpIGRyaXZlciAoYXMgZXhh
+bXBsZSBoZXJlKSBzaG91bGQgcHJvdmlkZSBhIHRyYW5zcGFyZW50IGludGVyZmFjZSBvbmx5LA0K
+YW5kIHRoZSBtcDI1cDgwIGRyaXZlciwgd2hpY2gga25vd3MgdGhlIGRldGFpbHMgb2YgdGhlIGZs
+YXNoLCBoYXMgdG8gcHJvdmlkZSB0aGUgaW5mb3JtYXRpb24NCndoaWNoIHBhcnRzIG9mIGEgdHJh
+bnNmZXIgaGFzIHRvIGJlIGRvbmUgaW4gc2luZ2xlLS9kdWFsLSBvciBxdWFkLW1vZGUuDQpPdGhl
+cndpc2UgeW91IGFsd2F5cyBuZWVkIHRvIGV4dGVuZCB0aGUgcXNwaSBkcml2ZXIgZm9yIG5ldyBm
+bGFzaGVzLg0KDQo+IA0KPiB0aGFua3MNCj4gSHVhbmcgU2hpamllDQo+IA0KQmVzdCBSZWdhcmRz
+LA0KVGhvbWFzDQoNCg==
