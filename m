@@ -1,12 +1,14 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from tx2ehsobe004.messaging.microsoft.com ([65.55.88.14]
+ helo=tx2outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V1CrQ-0003X6-2O
- for linux-mtd@lists.infradead.org; Mon, 22 Jul 2013 09:56:56 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: RE: support DUAL and QUAD[patch v1]
-Date: Mon, 22 Jul 2013 09:56:24 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9EC9B1@DBDE04.ent.ti.com>
+ id 1V1DMY-0004Sd-8o
+ for linux-mtd@lists.infradead.org; Mon, 22 Jul 2013 10:29:06 +0000
+Message-ID: <51ED0A57.4060105@freescale.com>
+Date: Mon, 22 Jul 2013 18:32:55 +0800
+From: Huang Shijie <b32955@freescale.com>
+MIME-Version: 1.0
+To: "Gupta, Pekon" <pekon@ti.com>
+Subject: Re: support DUAL and QUAD[patch v1]
 References: <CAHSAbzP0Nc1ahf_ra6yDuMvV998_+EGcUOGDv5ifKaagYf+NOg@mail.gmail.com>
  <20980858CB6D3A4BAE95CA194937D5E73E9E84D2@DBDE04.ent.ti.com>
  <CAHSAbzMDOWo5oBqUHqMxybuDwUjFbczYwN+85gH+rxZ9z8u2Pw@mail.gmail.com>
@@ -17,12 +19,12 @@ References: <CAHSAbzP0Nc1ahf_ra6yDuMvV998_+EGcUOGDv5ifKaagYf+NOg@mail.gmail.com>
  <CA+7tXihoZZhpoyvxj58c+Zi-Zy631kK5s-kDoSxPKq=ej0qyvA@mail.gmail.com>
  <20980858CB6D3A4BAE95CA194937D5E73E9E967D@DBDE04.ent.ti.com>
  <20130722093342.GJ9858@sirena.org.uk>
-In-Reply-To: <20130722093342.GJ9858@sirena.org.uk>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
+ <20980858CB6D3A4BAE95CA194937D5E73E9EC9B1@DBDE04.ent.ti.com>
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9EC9B1@DBDE04.ent.ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
 Cc: "thomas.langer@lantiq.com" <thomas.langer@lantiq.com>,
+ Mark Brown <broonie@kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "spi-devel-general@lists.sourceforge.net"
  <spi-devel-general@lists.sourceforge.net>, "Poddar,
@@ -37,42 +39,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->=20
-> > > Maybe it would make more sense to have a spi-rx-width and spi-tx-widt=
-h
-> > > than can be set to 1, 2, 4, etc. bits instead of a bunch of propertie=
-s
-> > > that are mutually exclusive?  Sooner or later someone is going to wan=
-t
-> > > 8 bits.
->=20
-> > Then it would not remain a serial interface (Serial Peripheral Interfac=
-e),
-> > rather it would be more of parallel memory like interface.
-> > And you would not like to use SPI controller for it, instead you would =
-use
-> > On-chip General Purpose External Interface controllers (like GPMC)
-> > because it gives you more options to tweak and configure.
->=20
-> It's still not beyoond the bounds of possibility, and of course some
-> bright spark might decide to use 3 wires.  Unless it's expensive to do
-> so in some way it seems better to keep the interface as generic as
-> possible even if we've no expectation that some of the flexibility will
-> be used.
->=20
-Ok.. Agreed,  I don't have any preference here between
-"rx-width , tx-width" v/s "mode".
-But please make sure that whichever implementation is chosen,
-it should allow dynamic changing of channel-width.
+=E4=BA=8E 2013=E5=B9=B407=E6=9C=8822=E6=97=A5 17:56, Gupta, Pekon =E5=86=99=
+=E9=81=93:
+> (b) struct spi_transfer: if each transfer of same message need to be
+> transferred at different width. 	Example: Command @ Single-SPI
+>   followed by Data @ Quad-SPI
+>
+I am coding the QuadSpi driver for Freescale's Vybrid now.
 
-Granularity should be based on following decisions:
-(a) struct spi_message: if all transfers of same message follow same
- channel width. Example: All spi_messages from MTD layer would
-use Qual-SPI only (both flash-commands and data).
+I think we dot need to change the spi code.
+the spi layer should not know the different width of the command and the=20
+data,
+let the qspi driver does it.
 
-(b) struct spi_transfer: if each transfer of same message need to be=20
-transferred at different width. 	Example: Command @ Single-SPI
- followed by Data @ Quad-SPI
+In the m25p_probe(), after we knows that the qspi driver and flash=20
+support the Quad read, so we can set the
+m25p->read_opcode to 0xeb or 0xec. In the qspi driver, it can do the=20
+real job.
 
 
-with regards, pekon
+thanks
+Huang Shijie
