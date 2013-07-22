@@ -1,20 +1,20 @@
-Received: from mx01-sz.bfs.de ([194.94.69.67])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V1Aui-0000MA-Ll
- for linux-mtd@lists.infradead.org; Mon, 22 Jul 2013 07:52:13 +0000
-Message-ID: <51ECE488.1050307@bfs.de>
-Date: Mon, 22 Jul 2013 09:51:36 +0200
-From: walter harms <wharms@bfs.de>
+Received: from mail-vb0-x229.google.com ([2607:f8b0:400c:c02::229])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V1BVu-0001AH-UN
+ for linux-mtd@lists.infradead.org; Mon, 22 Jul 2013 08:30:39 +0000
+Received: by mail-vb0-f41.google.com with SMTP id p13so4630898vbe.0
+ for <linux-mtd@lists.infradead.org>; Mon, 22 Jul 2013 01:30:15 -0700 (PDT)
 MIME-Version: 1.0
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [patch] mtd: use correct error codes in debugfs_create()
-References: <20130719054938.GC9729@elgon.mountain>
- <20130722055607.GF5636@mwanda>
-In-Reply-To: <20130722055607.GF5636@mwanda>
+In-Reply-To: <OF488B7050.CCC82AE1-ON86257B6D.004A7953-86257B6D.004AAE09@ni.com>
+References: <OF488B7050.CCC82AE1-ON86257B6D.004A7953-86257B6D.004AAE09@ni.com>
+Date: Mon, 22 Jul 2013 01:30:15 -0700
+Message-ID: <CAN8TOE_O_9yasnPv=E+FzL_QugfbJMvp=sqZAbGUY_JAf=ufqQ@mail.gmail.com>
+Subject: Re: [RESEND PATCH] mtd: nand: nand_bbt: scan for next free bbt block
+ if writing bbt fails
+From: Brian Norris <computersforpeace@gmail.com>
+To: Jeff Westfahl <jeff.westfahl@ni.com>
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: kernel-janitors@vger.kernel.org, linux-mtd@lists.infradead.org
-Reply-To: wharms@bfs.de
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,44 +24,123 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Jeff,
 
+Sorry this has sat a while. I have a few comments now, and I expect to
+take an even closer look in the near future.
 
-Am 22.07.2013 07:56, schrieb Dan Carpenter:
-> On Fri, Jul 19, 2013 at 08:49:38AM +0300, Dan Carpenter wrote:
->> The test here is reversed.  It should be that if "dent" is a valid error
->> code then we use it, otherwise if it is NULL then use -ENODEV.
->>
-> 
-> People have explained the debugfs_create API to me better and now
-> I'm not sure what to do here...  debugfs_create_dir() returns a
-> NULL on error and if debugfs is not enabled then it returns -ENODEV.
-> We test for if (!IS_ENABLED(CONFIG_DEBUG_FS)) earlier in the
-> function so it can only return NULL.
-> 
-> Probably I should just change the test to only test for NULL?
-> 
-> Otherwise I think my patch is correct.  The original code will
-> return success on error (NULL return) and that was not intended.
-> 
+On Thu, May 16, 2013 at 6:35 AM, Jeff Westfahl <jeff.westfahl@ni.com> wrote:
+> If erasing or writing the BBT fails, we should mark the current BBT block
+> as bad and use the BBT descriptor to scan for the next available unused
+> block in the BBT. We should only return a failure if there isn't any space
+> left.
 
-Hi Dan,
-i have a simple question, what to do in case of error ?
+This idea looks good. We can of course run into a worn-out BBT block,
+especially since we're pretty dumb at write-erase cycles (every new
+bad block causes a full erasure/reprogram). So we should mark failing
+BBT blocks as bad and move to the next one.
 
-Situation 1: debugfs_create_dir returns NULL
-something went wrong dir not created
-if all other debugfs_ function will check for NULL someone could even ignore the check
-and let the others handle that.
+A general comment: it looks like you take care of updating the BBT
+with the new bad block you're marking, but we expect that any
+newly-marked bad block should be marked in both the BBT and in the OOB
+area of the block itself (just in case we ever have to fall back to
+using the bad block markers in each block again). See
+nand_default_block_markbad() in nand_base.c.
 
-Situation 2: debugfs_create_dir returns ENODOV
-The man page says: please ignore
-I only use i could come up with is to inform the user that no debugfs is available.
-But the returning pointer would now point to an error an not the expected dentry.
-So have to you make sure that it becomes NULL otherwise the other debugfs function will go crasy.
-(Can this happen actually ?)
-Did i miss something ?
+> Signed-off-by: Jeff Westfahl <jeff.westfahl@ni.com>
+> ---
+>  drivers/mtd/nand/nand_bbt.c |   21 +++++++++++++++++----
+>  1 file changed, 17 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+> index 2672643..900bda1 100644
+> --- a/drivers/mtd/nand/nand_bbt.c
+> +++ b/drivers/mtd/nand/nand_bbt.c
+> @@ -697,6 +697,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t
+> *buf,
+>                         page = td->pages[chip];
+>                         goto write;
+>                 }
+> +       next:
+>
+>                 /*
+>                  * Automatic placement of the bad block table. Search
+> direction
+> @@ -831,14 +832,26 @@ static int write_bbt(struct mtd_info *mtd, uint8_t
+> *buf,
+>                 einfo.addr = to;
+>                 einfo.len = 1 << this->bbt_erase_shift;
+>                 res = nand_erase_nand(mtd, &einfo, 1);
+> -               if (res < 0)
+> -                       goto outerr;
+> +               if (res < 0) {
+> +                       /* This block is bad. Mark it as such and see if
+> there's
 
-In Summa:
-may it is better for debugfs_ to return NULL instead of an error ?
+You probably don't want to turn *all* errors into new bad blocks. You
+probably should only mark a block bad for some combination of -EIO (a
+failed IO operation) and/or einfo.state == MTD_ERASE_FAILED, and not
+for things like a read-only MTD (?), an out-of-bounds flash address
+(shouldn't happen at this point?), or anything else that theoretically
+could happen.
 
-re,
- wh
+> +                          another available in the BBT area. */
+
+You also may want to take a glance at Documentation/CodingStyle and/or
+run scripts/checkpatch.pl on your patch. The comment closure doesn't
+follow the CodingStyle.
+
+> +                       int block = page >>
+> +                               (this->bbt_erase_shift -
+> this->page_shift);
+> +                       this->bbt[block >> 2] |= 0x01 << ((block & 0x03)
+> << 1);
+
+It's been a while since I really looked at the nand_bbt.c coding
+details... This is kinda ugly! (Note that this not particularly a
+criticism of this part of your patch; this line follows the (IMO bad)
+style of the rest of nand_bbt.c). I mean, we could at least use a nice
+macro or something... I may look into whether this file deserves some
+new cleanup macros, but that would be independent of this patch.
+
+> +                       goto next;
+> +               }
+>
+>                 res = scan_write_bbt(mtd, to, len, buf,
+>                                 td->options & NAND_BBT_NO_OOB ? NULL :
+>                                 &buf[len]);
+> -               if (res < 0)
+> -                       goto outerr;
+> +               if (res < 0) {
+> +                       /* This block is bad. Mark it as such and see if
+> there's
+> +                          another available in the BBT area. */
+
+Similar comment here: you don't want to turn *all* errors into new bad
+blocks, only -EIO.
+
+> +                       int block = page >>
+> +                               (this->bbt_erase_shift -
+> this->page_shift);
+> +                       this->bbt[block >> 2] |= 0x01 << ((block & 0x03)
+> << 1);
+> +                       goto next;
+> +               }
+>
+>                 pr_info("Bad block table written to 0x%012llx, version
+> 0x%02X\n",
+>                          (unsigned long long)to, td->version[chip]);
+
+(Comment to myself mostly:) write_bbt() is a monstrous function; 203
+lines before this patch! And that's after cheating with lines like
+this:
+
+                case 1: sft = 3; sftmsk = 0x07; msk[0] = 0x00; msk[1] = 0x01;
+
+But in light of this observation, it may be time to consider some refactoring...
+
+Brian
+
+[NOTE: I just crafted this reply and realized I actually received 3
+copies of this patch via the mailing list, and I'm replying to the
+only one that is line-wrapped. Sorry.]
