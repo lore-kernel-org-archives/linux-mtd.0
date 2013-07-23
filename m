@@ -1,38 +1,16 @@
-Received: from mail-db9lp0253.outbound.messaging.microsoft.com
- ([213.199.154.253] helo=db9outboundpool.messaging.microsoft.com)
+Received: from smtp46.i.mail.ru ([94.100.177.106])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V1SDB-0004MO-Sn
- for linux-mtd@lists.infradead.org; Tue, 23 Jul 2013 02:20:26 +0000
-Message-ID: <51EDE950.3050806@freescale.com>
-Date: Tue, 23 Jul 2013 10:24:16 +0800
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: support DUAL and QUAD[patch v1]
-References: <CAHSAbzP0Nc1ahf_ra6yDuMvV998_+EGcUOGDv5ifKaagYf+NOg@mail.gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9E84D2@DBDE04.ent.ti.com>
- <CAHSAbzMDOWo5oBqUHqMxybuDwUjFbczYwN+85gH+rxZ9z8u2Pw@mail.gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9E851E@DBDE04.ent.ti.com>
- <593AEF6C47F46446852B067021A273D6D93B49E1@MUCSE039.lantiq.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9E85D0@DBDE04.ent.ti.com>
- <CAHSAbzP5jqHwCm0qhu=DiNzpP0swqWHsQ0=MnF+EKaSN22E5hg@mail.gmail.com>
- <CA+7tXihoZZhpoyvxj58c+Zi-Zy631kK5s-kDoSxPKq=ej0qyvA@mail.gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9E967D@DBDE04.ent.ti.com>
- <20130722093342.GJ9858@sirena.org.uk>
- <20980858CB6D3A4BAE95CA194937D5E73E9EC9B1@DBDE04.ent.ti.com>
- <51ED0A57.4060105@freescale.com>
- <593AEF6C47F46446852B067021A273D6D97E2ED4@MUCSE039.lantiq.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9ECAFC@DBDE04.ent.ti.com>
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9ECAFC@DBDE04.ent.ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: "thomas.langer@lantiq.com" <thomas.langer@lantiq.com>,
- "broonie@kernel.org" <broonie@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "spi-devel-general@lists.sourceforge.net"
- <spi-devel-general@lists.sourceforge.net>, "Poddar,
- Sourav" <sourav.poddar@ti.com>, "tpiepho@gmail.com" <tpiepho@gmail.com>,
- "wangyuhang2014@gmail.com" <wangyuhang2014@gmail.com>
+ id 1V1ZB7-0004eX-Km
+ for linux-mtd@lists.infradead.org; Tue, 23 Jul 2013 09:46:47 +0000
+From: Alexander Shiyan <shc_work@mail.ru>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: nand: diskonchip: Request memory region prior ioremap()
+Date: Tue, 23 Jul 2013 13:46:14 +0400
+Message-Id: <1374572774-9989-1-git-send-email-shc_work@mail.ru>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Alexander Shiyan <shc_work@mail.ru>,
+ Arnd Bergmann <arnd@arndb.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,13 +20,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B407=E6=9C=8822=E6=97=A5 20:55, Gupta, Pekon =E5=86=99=
-=E9=81=93:
-> A QSPI interface can be connected to external-Flash and to Camera also.
->
-> - A camera interface may only require static config of Quad-mode.
-I missed this case.
+This patch adds request_mem_region() prior ioremap() for diskonchip
+driver. This will allow to check if memory region is occupied by any
+other device, for example in case if we have memory region for several
+optional devices and only one device can be used at once.
 
+Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+---
+ drivers/mtd/nand/diskonchip.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-thanks
-Huang Shijie
+diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/diskonchip.c
+index 81fa578..b16f1dd 100644
+--- a/drivers/mtd/nand/diskonchip.c
++++ b/drivers/mtd/nand/diskonchip.c
+@@ -1440,8 +1440,11 @@ static int __init doc_probe(unsigned long physadr)
+ 	int reg, len, numchips;
+ 	int ret = 0;
+ 
++	if (!request_mem_region(physadr, DOC_IOREMAP_LEN, NULL))
++		return -EBUSY;
+ 	virtadr = ioremap(physadr, DOC_IOREMAP_LEN);
+ 	if (!virtadr) {
++		release_mem_region(physadr, DOC_IOREMAP_LEN);
+ 		printk(KERN_ERR "Diskonchip ioremap failed: 0x%x bytes at 0x%lx\n", DOC_IOREMAP_LEN, physadr);
+ 		return -EIO;
+ 	}
+@@ -1629,6 +1632,7 @@ static int __init doc_probe(unsigned long physadr)
+ 	WriteDOC(save_control, virtadr, DOCControl);
+  fail:
+ 	iounmap(virtadr);
++	release_mem_region(physadr, DOC_IOREMAP_LEN);
+ 	return ret;
+ }
+ 
+@@ -1645,6 +1649,7 @@ static void release_nanddoc(void)
+ 		nextmtd = doc->nextdoc;
+ 		nand_release(mtd);
+ 		iounmap(doc->virtadr);
++		release_mem_region(doc->physadr, DOC_IOREMAP_LEN);
+ 		kfree(mtd);
+ 	}
+ }
+-- 
+1.8.1.5
