@@ -1,16 +1,18 @@
-Received: from smtp46.i.mail.ru ([94.100.177.106])
+Received: from smtp39.i.mail.ru ([94.100.177.99])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V1ZB7-0004eX-Km
- for linux-mtd@lists.infradead.org; Tue, 23 Jul 2013 09:46:47 +0000
+ id 1V1bi8-0000Rj-Nz
+ for linux-mtd@lists.infradead.org; Tue, 23 Jul 2013 12:29:02 +0000
 From: Alexander Shiyan <shc_work@mail.ru>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: nand: diskonchip: Request memory region prior ioremap()
-Date: Tue, 23 Jul 2013 13:46:14 +0400
-Message-Id: <1374572774-9989-1-git-send-email-shc_work@mail.ru>
+Subject: [PATCH 3/4] mtd: nand: gpio: Return real nand_scan() error code on
+ fail and simplify error path
+Date: Tue, 23 Jul 2013 16:28:18 +0400
+Message-Id: <1374582499-31823-3-git-send-email-shc_work@mail.ru>
+In-Reply-To: <1374582499-31823-1-git-send-email-shc_work@mail.ru>
+References: <1374582499-31823-1-git-send-email-shc_work@mail.ru>
 Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Alexander Shiyan <shc_work@mail.ru>,
- Arnd Bergmann <arnd@arndb.de>
+ David Woodhouse <dwmw2@infradead.org>, Alexander Shiyan <shc_work@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,47 +22,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds request_mem_region() prior ioremap() for diskonchip
-driver. This will allow to check if memory region is occupied by any
-other device, for example in case if we have memory region for several
-optional devices and only one device can be used at once.
 
 Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
 ---
- drivers/mtd/nand/diskonchip.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/mtd/nand/gpio.c | 29 +++++++++++++----------------
+ 1 file changed, 13 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/diskonchip.c
-index 81fa578..b16f1dd 100644
---- a/drivers/mtd/nand/diskonchip.c
-+++ b/drivers/mtd/nand/diskonchip.c
-@@ -1440,8 +1440,11 @@ static int __init doc_probe(unsigned long physadr)
- 	int reg, len, numchips;
- 	int ret = 0;
+diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
+index 7f16962..7b1dbd3 100644
+--- a/drivers/mtd/nand/gpio.c
++++ b/drivers/mtd/nand/gpio.c
+@@ -206,7 +206,7 @@ static int gpio_nand_probe(struct platform_device *pdev)
+ 	struct nand_chip *chip;
+ 	struct resource *res;
+ 	struct mtd_part_parser_data ppdata = {};
+-	int ret = 0;
++	int ret;
  
-+	if (!request_mem_region(physadr, DOC_IOREMAP_LEN, NULL))
-+		return -EBUSY;
- 	virtadr = ioremap(physadr, DOC_IOREMAP_LEN);
- 	if (!virtadr) {
-+		release_mem_region(physadr, DOC_IOREMAP_LEN);
- 		printk(KERN_ERR "Diskonchip ioremap failed: 0x%x bytes at 0x%lx\n", DOC_IOREMAP_LEN, physadr);
- 		return -EIO;
+ 	if (!pdev->dev.of_node && !pdev->dev.platform_data)
+ 		return -EINVAL;
+@@ -282,23 +282,20 @@ static int gpio_nand_probe(struct platform_device *pdev)
+ 
+ 	gpio_nand_set_wp(gpiomtd, 1);
+ 
+-	if (nand_scan(&gpiomtd->mtd_info, 1)) {
+-		ret = -ENXIO;
+-		goto err_wp;
++	ret = nand_scan(&gpiomtd->mtd_info, 1);
++	if (!ret) {
++		if (gpiomtd->plat.adjust_parts)
++			gpiomtd->plat.adjust_parts(&gpiomtd->plat,
++						   gpiomtd->mtd_info.size);
++
++		ppdata.of_node = pdev->dev.of_node;
++		ret = mtd_device_parse_register(&gpiomtd->mtd_info, NULL,
++						&ppdata, gpiomtd->plat.parts,
++						gpiomtd->plat.num_parts);
++		if (!ret)
++			return 0;
  	}
-@@ -1629,6 +1632,7 @@ static int __init doc_probe(unsigned long physadr)
- 	WriteDOC(save_control, virtadr, DOCControl);
-  fail:
- 	iounmap(virtadr);
-+	release_mem_region(physadr, DOC_IOREMAP_LEN);
+ 
+-	if (gpiomtd->plat.adjust_parts)
+-		gpiomtd->plat.adjust_parts(&gpiomtd->plat,
+-					   gpiomtd->mtd_info.size);
+-
+-	ppdata.of_node = pdev->dev.of_node;
+-	ret = mtd_device_parse_register(&gpiomtd->mtd_info, NULL, &ppdata,
+-					gpiomtd->plat.parts,
+-					gpiomtd->plat.num_parts);
+-	if (!ret)
+-		return 0;
+-
+-err_wp:
+ 	gpio_nand_set_wp(gpiomtd, 0);
+ 
  	return ret;
- }
- 
-@@ -1645,6 +1649,7 @@ static void release_nanddoc(void)
- 		nextmtd = doc->nextdoc;
- 		nand_release(mtd);
- 		iounmap(doc->virtadr);
-+		release_mem_region(doc->physadr, DOC_IOREMAP_LEN);
- 		kfree(mtd);
- 	}
- }
 -- 
 1.8.1.5
