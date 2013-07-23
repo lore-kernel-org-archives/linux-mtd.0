@@ -1,13 +1,13 @@
 Received: from smtp39.i.mail.ru ([94.100.177.99])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V1bi8-0000Rj-Nz
- for linux-mtd@lists.infradead.org; Tue, 23 Jul 2013 12:29:02 +0000
+ id 1V1bi8-0000RU-O1
+ for linux-mtd@lists.infradead.org; Tue, 23 Jul 2013 12:29:06 +0000
 From: Alexander Shiyan <shc_work@mail.ru>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 3/4] mtd: nand: gpio: Return real nand_scan() error code on
- fail and simplify error path
-Date: Tue, 23 Jul 2013 16:28:18 +0400
-Message-Id: <1374582499-31823-3-git-send-email-shc_work@mail.ru>
+Subject: [PATCH 2/4] mtd: nand: gpio: Use devm_gpio_request_one() where
+ possible
+Date: Tue, 23 Jul 2013 16:28:17 +0400
+Message-Id: <1374582499-31823-2-git-send-email-shc_work@mail.ru>
 In-Reply-To: <1374582499-31823-1-git-send-email-shc_work@mail.ru>
 References: <1374582499-31823-1-git-send-email-shc_work@mail.ru>
 Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
@@ -25,57 +25,100 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
 ---
- drivers/mtd/nand/gpio.c | 29 +++++++++++++----------------
- 1 file changed, 13 insertions(+), 16 deletions(-)
+ drivers/mtd/nand/gpio.c | 37 ++++++++++++++++++++-----------------
+ 1 file changed, 20 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
-index 7f16962..7b1dbd3 100644
+index f144b80..7f16962 100644
 --- a/drivers/mtd/nand/gpio.c
 +++ b/drivers/mtd/nand/gpio.c
-@@ -206,7 +206,7 @@ static int gpio_nand_probe(struct platform_device *pdev)
- 	struct nand_chip *chip;
- 	struct resource *res;
- 	struct mtd_part_parser_data ppdata = {};
--	int ret = 0;
-+	int ret;
+@@ -181,14 +181,20 @@ gpio_nand_get_io_sync(struct platform_device *pdev)
+ 	return platform_get_resource(pdev, IORESOURCE_MEM, 1);
+ }
  
- 	if (!pdev->dev.of_node && !pdev->dev.platform_data)
- 		return -EINVAL;
-@@ -282,23 +282,20 @@ static int gpio_nand_probe(struct platform_device *pdev)
- 
- 	gpio_nand_set_wp(gpiomtd, 1);
- 
--	if (nand_scan(&gpiomtd->mtd_info, 1)) {
--		ret = -ENXIO;
--		goto err_wp;
-+	ret = nand_scan(&gpiomtd->mtd_info, 1);
-+	if (!ret) {
-+		if (gpiomtd->plat.adjust_parts)
-+			gpiomtd->plat.adjust_parts(&gpiomtd->plat,
-+						   gpiomtd->mtd_info.size);
++static void gpio_nand_set_wp(struct gpiomtd *gpiomtd, int val)
++{
++	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
++		gpio_set_value(gpiomtd->plat.gpio_nwp, val);
++}
 +
-+		ppdata.of_node = pdev->dev.of_node;
-+		ret = mtd_device_parse_register(&gpiomtd->mtd_info, NULL,
-+						&ppdata, gpiomtd->plat.parts,
-+						gpiomtd->plat.num_parts);
-+		if (!ret)
-+			return 0;
+ static int gpio_nand_remove(struct platform_device *pdev)
+ {
+ 	struct gpiomtd *gpiomtd = platform_get_drvdata(pdev);
+ 
+ 	nand_release(&gpiomtd->mtd_info);
+ 
+-	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
+-		gpio_set_value(gpiomtd->plat.gpio_nwp, 0);
++	gpio_nand_set_wp(gpiomtd, 0);
++
+ 	gpio_set_value(gpiomtd->plat.gpio_nce, 1);
+ 
+ 	return 0;
+@@ -233,34 +239,33 @@ static int gpio_nand_probe(struct platform_device *pdev)
+ 			return PTR_ERR(gpiomtd->io_sync);
  	}
  
--	if (gpiomtd->plat.adjust_parts)
--		gpiomtd->plat.adjust_parts(&gpiomtd->plat,
--					   gpiomtd->mtd_info.size);
--
--	ppdata.of_node = pdev->dev.of_node;
--	ret = mtd_device_parse_register(&gpiomtd->mtd_info, NULL, &ppdata,
--					gpiomtd->plat.parts,
--					gpiomtd->plat.num_parts);
--	if (!ret)
--		return 0;
--
--err_wp:
- 	gpio_nand_set_wp(gpiomtd, 0);
+-	ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nce, "NAND NCE");
++	ret = devm_gpio_request_one(&pdev->dev, gpiomtd->plat.gpio_nce,
++				    GPIOF_OUT_INIT_HIGH, "NAND NCE");
+ 	if (ret)
+ 		return ret;
+-	gpio_direction_output(gpiomtd->plat.gpio_nce, 1);
+ 
+ 	if (gpio_is_valid(gpiomtd->plat.gpio_nwp)) {
+-		ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nwp,
+-					"NAND NWP");
++		ret = devm_gpio_request_one(&pdev->dev, gpiomtd->plat.gpio_nwp,
++					    GPIOF_OUT_INIT_LOW, "NAND NWP");
+ 		if (ret)
+ 			return ret;
+ 	}
+ 
+-	ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_ale, "NAND ALE");
++	ret = devm_gpio_request_one(&pdev->dev, gpiomtd->plat.gpio_ale,
++				    GPIOF_OUT_INIT_LOW, "NAND ALE");
+ 	if (ret)
+ 		return ret;
+-	gpio_direction_output(gpiomtd->plat.gpio_ale, 0);
+ 
+-	ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_cle, "NAND CLE");
++	ret = devm_gpio_request_one(&pdev->dev, gpiomtd->plat.gpio_cle,
++				    GPIOF_OUT_INIT_LOW, "NAND CLE");
+ 	if (ret)
+ 		return ret;
+-	gpio_direction_output(gpiomtd->plat.gpio_cle, 0);
+ 
+ 	if (gpio_is_valid(gpiomtd->plat.gpio_rdy)) {
+-		ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_rdy,
+-					"NAND RDY");
++		ret = devm_gpio_request_one(&pdev->dev, gpiomtd->plat.gpio_rdy,
++					    GPIOF_IN, "NAND RDY");
+ 		if (ret)
+ 			return ret;
+-		gpio_direction_input(gpiomtd->plat.gpio_rdy);
+ 		chip->dev_ready = gpio_nand_devready;
+ 	}
+ 
+@@ -275,8 +280,7 @@ static int gpio_nand_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, gpiomtd);
+ 
+-	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
+-		gpio_direction_output(gpiomtd->plat.gpio_nwp, 1);
++	gpio_nand_set_wp(gpiomtd, 1);
+ 
+ 	if (nand_scan(&gpiomtd->mtd_info, 1)) {
+ 		ret = -ENXIO;
+@@ -295,8 +299,7 @@ static int gpio_nand_probe(struct platform_device *pdev)
+ 		return 0;
+ 
+ err_wp:
+-	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
+-		gpio_set_value(gpiomtd->plat.gpio_nwp, 0);
++	gpio_nand_set_wp(gpiomtd, 0);
  
  	return ret;
+ }
 -- 
 1.8.1.5
