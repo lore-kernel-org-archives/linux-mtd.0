@@ -1,14 +1,19 @@
-Date: Mon, 22 Jul 2013 23:43:40 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [patch v2] mtd: tiny debugfs related fixes
-Message-ID: <20130722204340.GC22020@elgon.mountain>
+Received: from mx5.zte.com.cn ([63.217.80.70] helo=zte.com.cn)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V1R8q-00030u-JL
+ for linux-mtd@lists.infradead.org; Tue, 23 Jul 2013 01:11:55 +0000
+Message-ID: <000301ce8741$b96b15f0$1c214a0a@ztedengchao>
+From: "Deng Chao" <deng.chao1@zte.com.cn>
+To: <linux-mtd@lists.infradead.org>
+Subject: [JFFS2]The patch "jffs2: Fix lock acquisition order bug in
+ jffs2_write_begin" introduces another dead lock bug.
+Date: Tue, 23 Jul 2013 09:12:34 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20130719054938.GC9729@elgon.mountain>
-Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
- David Woodhouse <dwmw2@infradead.org>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain;
+	charset="gb2312"
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, wang.bo116@zte.com.cn,
+ Thomas Betker <thomas.betker@freenet.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,80 +23,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-debugfs_create_dir() can't return an error pointer because we tested for
-IS_ENABLED(CONFIG_DEBUG_FS) earlier so we don't need to test for that.
-Also the way debugfs is designed, callers should not normally care about
-error pointer returns.
-
-The current code is a little buggy because it return success if
-debugfs_create_dir() fails instead of -ENODEV which was intended.
-
-I have also changed the error message slightly.
-
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
-v2: completely different
-
-diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
-index 63cb1d7..d3c99a6 100644
---- a/drivers/mtd/ubi/debug.c
-+++ b/drivers/mtd/ubi/debug.c
-@@ -235,12 +235,9 @@ int ubi_debugfs_init(void)
- 		return 0;
- 
- 	dfs_rootdir = debugfs_create_dir("ubi", NULL);
--	if (IS_ERR_OR_NULL(dfs_rootdir)) {
--		int err = dfs_rootdir ? -ENODEV : PTR_ERR(dfs_rootdir);
--
--		ubi_err("cannot create \"ubi\" debugfs directory, error %d\n",
--			err);
--		return err;
-+	if (!dfs_rootdir) {
-+		ubi_err("cannot create \"ubi\" debugfs directory.\n");
-+		return -ENODEV;
- 	}
- 
- 	return 0;
-diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index cb38f3d..3971465 100644
---- a/drivers/mtd/nand/nandsim.c
-+++ b/drivers/mtd/nand/nandsim.c
-@@ -523,24 +523,20 @@ static int nandsim_debugfs_create(struct nandsim *dev)
- {
- 	struct nandsim_debug_info *dbg = &dev->dbg;
- 	struct dentry *dent;
--	int err;
- 
- 	if (!IS_ENABLED(CONFIG_DEBUG_FS))
- 		return 0;
- 
- 	dent = debugfs_create_dir("nandsim", NULL);
--	if (IS_ERR_OR_NULL(dent)) {
--		int err = dent ? -ENODEV : PTR_ERR(dent);
--
--		NS_ERR("cannot create \"nandsim\" debugfs directory, err %d\n",
--			err);
--		return err;
-+	if (!dent) {
-+		NS_ERR("cannot create \"nandsim\" debugfs directory.");
-+		return -ENODEV;
- 	}
- 	dbg->dfs_root = dent;
- 
- 	dent = debugfs_create_file("wear_report", S_IRUSR,
- 				   dbg->dfs_root, dev, &dfs_fops);
--	if (IS_ERR_OR_NULL(dent))
-+	if (!dent)
- 		goto out_remove;
- 	dbg->dfs_wear_report = dent;
- 
-@@ -548,8 +544,7 @@ static int nandsim_debugfs_create(struct nandsim *dev)
- 
- out_remove:
- 	debugfs_remove_recursive(dbg->dfs_root);
--	err = dent ? PTR_ERR(dent) : -ENODEV;
--	return err;
-+	return -ENODEV;
- }
- 
- /**
+VGhlIGZ1bGwgaGVhZGVyIG9mIHRoZSBwYXRjaCBpcyBiZWxvdzoNCmF1dGhvciBUaG9tYXMgQmV0
+a2VyIDx0aG9tYXMuYmV0a2VyQGZyZWVuZXQuZGU+IDIwMTItMTAtMTcgMjA6NTk6MzAgKEdNVCkN
+CmNvbW1pdHRlciBBcnRlbSBCaXR5dXRza2l5IDxhcnRlbS5iaXR5dXRza2l5QGxpbnV4LmludGVs
+LmNvbT4gMjAxMi0xMS0wOSAxNTowMjo1MCAoR01UKQ0KY29tbWl0IDVmZmQzNDEyYWU1NTM2YTRj
+NTc0NjljYjhlYTMxODg3MTIxZGNiMmU/KHBhdGNoKQ0KdHJlZSAzM2M5ZDg5ZWFiZjcwYzQ5ZTY4
+M2EzNmJlODAwYmUzYjQ1ODJhMzU4Py9mcy9qZmZzMg0KcGFyZW50IDAxMzE5NTBlYmQxNDZiNWUz
+MTUwODIzMzM1MmQ2ZjQ2MjVhZjI1YjE/KGRpZmYpDQoNCmpmZnMyOiBGaXggbG9jayBhY3F1aXNp
+dGlvbiBvcmRlciBidWcgaW4gamZmczJfd3JpdGVfYmVnaW4uDQoNCmpmZnMyX3dyaXRlX2JlZ2lu
+IGZpcnN0IGFjcXVpcmVzIHRoZSBjLT5hbGxvY19zZW0sIHRoZW4gdGhlIHBhZ2UgbG9jay4gVGhp
+cyBjYXVzZXMgYW4gQUJCQSBkZWFkIGxvY2sgd2l0aCBqZmZzMl93cml0ZV9lbmQsIHdoaWNoIGFs
+cmVhZHkgaGF2ZSBob2xkIHRoZSBwYWdlIGxvY2ssIHRoZW4gdGhlIGMtPmFsbG9jX3NlbToNClRI
+UkVBRCBPTkU6DQpqZmZzMl93cml0ZV9iZWdpbg0KIGpmZnMyX3Jlc2VydmVfc3BhY2UNCiAgbXV0
+ZXhfbG9jaygmYy0+YWxsb2Nfc2VtKSBBDQogZ3JhYl9jYWNoZV9wYWdlX3dyaXRlX2JlZ2luIA0K
+ICBmaW5kX2xvY2tfcGFnZQ0KICAgbG9ja19wYWdlKHBhZ2UpIEINClRIRVJBRCBUV086DQpqZmZz
+Ml93cml0ZV9lbmQgIEIoYWxyZWFkeSBoYXMgdGFrZW4gdGhlIHBhZ2UgbG9jayBiZWNhdXNlIHRo
+ZSBwcmVjZWRpbmcgamZmczJfd3JpdGVfYmVnaW4pDQogamZmczJfd3JpdGVfaW5vZGVfcmFuZ2UN
+CiAgamZmczJfcmVzZXJ2ZV9zcGFjZQ0KICAgbXV0ZXhfbG9jaygmYy0+YWxsb2Nfc2VtKSBBDQog
+DQpJdCBzZWVtcyBoYXJkIHRvIGZpeCB0aGUgZGVhZCBsb2NrIHdoaWNoIGRlY3JpYmVkIGluIHRo
+ZSBwYXRjaCBhYm92ZSBieSBvbmx5IGNoYW5naW5nIHRoZSBsb2NrIG9yZGVyIGluIEpGRlMyLg0K
+VGhlcmUgaXMgYW5vdGhlciBpZGVhIHRvIGZpeCB0aGlzLg0KRmlyc3QsIGxldCB1cyB0YWtlIGEg
+bG9vayBhdCB0aGUgZGVhZCBsb2NrIHdoaWNoIHRoZSBwYXRjaCB0cnkgdG8gZml4Lg0KamZmczJf
+Z2FyYmFnZV9jb2xsZWN0X2xpdmUgDQogbXV0ZXhfbG9jaygmZi0+c2VtKSAoQSkgDQogamZmczJf
+Z2FyYmFnZV9jb2xsZWN0X2Rub2RlIA0KICBqZmZzMl9nY19mZXRjaF9wYWdlIA0KICAgcmVhZF9j
+YWNoZV9wYWdlX2FzeW5jIA0KICAgIGRvX3JlYWRfY2FjaGVfcGFnZSANCiAgICAgbG9ja19wYWdl
+KHBhZ2UpIChCKSANCmpmZnMyX3dyaXRlX2JlZ2luIA0KIGdyYWJfY2FjaGVfcGFnZV93cml0ZV9i
+ZWdpbiANCiAgZmluZF9sb2NrX3BhZ2UgDQogICBsb2NrX3BhZ2UocGFnZSkgKEIpIA0KIG11dGV4
+X2xvY2soJmYtPnNlbSkgKEEpIA0KDQpJbiBqZmZzMl9nYXJiYWdlX2NvbGxlY3RfbGl2ZSwgd2Ug
+Y2FuIGNoYW5nZSByZWFkX2NhY2hlX3BhZ2VfYXN5bmMocGFnZSl0byBzb21ldGhpbmcgbGlrZSBy
+ZWFkX2NhY2hlX3BhZ2VfYXN5bmNfdHJ5bG9jayhwYWdlKSwgaXQgb25seSB0YWtlcyB0aGUgcGFn
+ZSBsb2NrIHdoZW4gdGhlIGxvY2sgaXMgbm90IGJlaW5nIHRha2VuLCBvdGhlcndpc2UganVzdCBy
+ZXR1cm5zIHJlc3VsdCB0byB1cHBlci4gT25jZSBqZmZzMl9nYXJiYWdlX2NvbGxlY3RfcGFzdCBr
+bm93cyB0aGUgbG9jayBjb250ZW50aW9ucyB0aHJvdWdoIHRoZSByZXR1cm4gdmFsdWUgb2YgamZm
+czJfZ2FyYmFnZV9jb2xsZWN0X2xpdmUsIGl0IGNhbiBqdXN0IHJldHVybiBhbmQgd2FpdCB0aGUg
+bmV4dCBnYXJiYWdlIGNvbGxlY3Qgb3BlcmF0aW9uIHRvIGNvbnRpbnVlIHRoZSBqZmZzMl9nY19m
+ZXRjaF9wYWdlIG9wZWF0aW9uLCBrZWVwcyBtYWtpbmcgYW5vdGhlciB0cnkgdG8gYWNjcXVpcmUg
+dGhlIHBhZ2UgbG9jayB1bnRpbCB0aGUgbG9jayBpcyBhdmFpbGFibGUuDQpUaGVyZSBpcyBubyBy
+ZWFkX2NhY2hlX3BhZ2VfYXN5bmNfdHJ5bG9jayBmdW5jdGlvbiBpbiBrZXJuZWwgeWV0LCB0byBh
+Y2hpZXZlIHRoZSBmdW5jdGlvbiBpcyBub3QgaGFyZCwgQnV0IHdlIG5lZWQgdG8gYWRkIGl0IHRv
+IGxpbnV4L21tIGZpcnN0IDooLg==
