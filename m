@@ -1,18 +1,17 @@
-Received: from mail-pd0-x231.google.com ([2607:f8b0:400e:c02::231])
+Received: from mail-pb0-x234.google.com ([2607:f8b0:400e:c01::234])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V1sZ7-0001xy-BQ
- for linux-mtd@lists.infradead.org; Wed, 24 Jul 2013 06:28:58 +0000
-Received: by mail-pd0-f177.google.com with SMTP id u11so12493pdi.36
- for <linux-mtd@lists.infradead.org>; Tue, 23 Jul 2013 23:28:28 -0700 (PDT)
+ id 1V1sZ8-0001y0-R8
+ for linux-mtd@lists.infradead.org; Wed, 24 Jul 2013 06:29:01 +0000
+Received: by mail-pb0-f52.google.com with SMTP id xa12so9281763pbc.25
+ for <linux-mtd@lists.infradead.org>; Tue, 23 Jul 2013 23:28:29 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 2/4] mtd: nand: refactor chip->block_markbad interface
-Date: Tue, 23 Jul 2013 23:27:57 -0700
-Message-Id: <1374647279-14083-3-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 3/4] mtd: nand: hide in-memory BBT implementation details
+Date: Tue, 23 Jul 2013 23:27:58 -0700
+Message-Id: <1374647279-14083-4-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1374647279-14083-1-git-send-email-computersforpeace@gmail.com>
 References: <1374647279-14083-1-git-send-email-computersforpeace@gmail.com>
-Cc: Huang Shijie <b32955@freescale.com>,
- Brian Norris <computersforpeace@gmail.com>,
+Cc: Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,294 +22,156 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The chip->block_markbad pointer should really only be responsible for
-writing a bad block marker for new bad blocks. It should not take care
-of BBT-related functionality, nor should it handle bookkeeping of bad
-block stats.
+nand_base.c shouldn't have to know the implementation details of
+nand_bbt's in-memory BBT. Specifically, nand_base shouldn't perform the
+bit masking and shifting to isolate a BBT entry.
 
-This patch refactors the 3 users of the block_markbad interface (plus
-the default nand_base implementation) so that the common code is kept in
-nand_block_markbad_lowlevel(). It removes some inconsistencies between
-the various implementations and should allow for more centralized
-improvements in the future.
-
-Because gpmi-nand no longer needs the nand_update_bbt() function, let's
-stop exporting it as well.
+Instead, just move some of the BBT code into a new nand_markbad_bbt()
+interface. This interface allows external users (i.e., nand_base) to
+mark a single block as bad in the BBT. Then nand_bbt will take care of
+modifying the in-memory BBT and updating the flash-based BBT (if
+applicable).
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Cc: Huang Shijie <b32955@freescale.com>
 ---
- drivers/mtd/nand/docg4.c               |  6 ---
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 44 +++++++----------
- drivers/mtd/nand/nand_base.c           | 87 ++++++++++++++++++++--------------
- drivers/mtd/nand/nand_bbt.c            |  1 -
- drivers/mtd/nand/sm_common.c           |  9 ++--
- 5 files changed, 72 insertions(+), 75 deletions(-)
+ drivers/mtd/nand/nand_base.c | 32 +++++++++++---------------------
+ drivers/mtd/nand/nand_bbt.c  | 28 ++++++++++++++++++++++++++--
+ include/linux/mtd/nand.h     |  2 +-
+ 3 files changed, 38 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/docg4.c
-index dc86d4a..548db23 100644
---- a/drivers/mtd/nand/docg4.c
-+++ b/drivers/mtd/nand/docg4.c
-@@ -1093,7 +1093,6 @@ static int docg4_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 	struct nand_chip *nand = mtd->priv;
- 	struct docg4_priv *doc = nand->priv;
- 	struct nand_bbt_descr *bbtd = nand->badblock_pattern;
--	int block = (int)(ofs >> nand->bbt_erase_shift);
- 	int page = (int)(ofs >> nand->page_shift);
- 	uint32_t g4_addr = mtd_to_docg4_address(page, 0);
- 
-@@ -1108,9 +1107,6 @@ static int docg4_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 	if (buf == NULL)
- 		return -ENOMEM;
- 
--	/* update bbt in memory */
--	nand->bbt[block / 4] |= 0x01 << ((block & 0x03) * 2);
--
- 	/* write bit-wise negation of pattern to oob buffer */
- 	memset(nand->oob_poi, 0xff, mtd->oobsize);
- 	for (i = 0; i < bbtd->len; i++)
-@@ -1120,8 +1116,6 @@ static int docg4_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 	write_page_prologue(mtd, g4_addr);
- 	docg4_write_page(mtd, nand, buf, 1);
- 	ret = pageprog(mtd);
--	if (!ret)
--		mtd->ecc_stats.badblocks++;
- 
- 	kfree(buf);
- 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index b741a6c..5947575 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -1157,43 +1157,31 @@ static int gpmi_block_markbad(struct mtd_info *mtd, loff_t ofs)
- {
- 	struct nand_chip *chip = mtd->priv;
- 	struct gpmi_nand_data *this = chip->priv;
--	int block, ret = 0;
-+	int ret = 0;
- 	uint8_t *block_mark;
- 	int column, page, status, chipnr;
- 
--	/* Get block number */
--	block = (int)(ofs >> chip->bbt_erase_shift);
--	if (chip->bbt)
--		chip->bbt[block >> 2] |= 0x01 << ((block & 0x03) << 1);
-+	chipnr = (int)(ofs >> chip->chip_shift);
-+	chip->select_chip(mtd, chipnr);
- 
--	/* Do we have a flash based bad block table ? */
--	if (chip->bbt_options & NAND_BBT_USE_FLASH)
--		ret = nand_update_bbt(mtd, ofs);
--	else {
--		chipnr = (int)(ofs >> chip->chip_shift);
--		chip->select_chip(mtd, chipnr);
-+	column = this->swap_block_mark ? mtd->writesize : 0;
- 
--		column = this->swap_block_mark ? mtd->writesize : 0;
-+	/* Write the block mark. */
-+	block_mark = this->data_buffer_dma;
-+	block_mark[0] = 0; /* bad block marker */
- 
--		/* Write the block mark. */
--		block_mark = this->data_buffer_dma;
--		block_mark[0] = 0; /* bad block marker */
-+	/* Shift to get page */
-+	page = (int)(ofs >> chip->page_shift);
- 
--		/* Shift to get page */
--		page = (int)(ofs >> chip->page_shift);
-+	chip->cmdfunc(mtd, NAND_CMD_SEQIN, column, page);
-+	chip->write_buf(mtd, block_mark, 1);
-+	chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
- 
--		chip->cmdfunc(mtd, NAND_CMD_SEQIN, column, page);
--		chip->write_buf(mtd, block_mark, 1);
--		chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
-+	status = chip->waitfunc(mtd, chip);
-+	if (status & NAND_STATUS_FAIL)
-+		ret = -EIO;
- 
--		status = chip->waitfunc(mtd, chip);
--		if (status & NAND_STATUS_FAIL)
--			ret = -EIO;
--
--		chip->select_chip(mtd, -1);
--	}
--	if (!ret)
--		mtd->ecc_stats.badblocks++;
-+	chip->select_chip(mtd, -1);
- 
- 	return ret;
- }
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 1cbacff..a9119f7 100644
+index a9119f7..da3ba77 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -324,13 +324,58 @@ static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
+@@ -374,22 +374,20 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
+  * block table(s) and/or marker(s)). We only allow the hardware driver to
+  * specify how to write bad block markers to OOB (chip->block_markbad).
+  *
+- * We try operations in the following order, according to our bbt_options
+- * (NAND_BBT_NO_OOB_BBM and NAND_BBT_USE_FLASH):
++ * We try operations in the following order:
+  *  (1) erase the affected block, to allow OOB marker to be written cleanly
+- *  (2) update in-memory BBT
+- *  (3) write bad block marker to OOB area of affected block
+- *  (4) update flash-based BBT
+- * Note that we retain the first error encountered in (3) or (4), finish the
++ *  (2) write bad block marker to OOB area of affected block (unless flag
++ *      NAND_BBT_NO_OOB_BBM is present)
++ *  (3) update the BBT
++ * Note that we retain the first error encountered in (2) or (3), finish the
+  * procedures, and dump the error in the end.
+ */
+ static int nand_block_markbad_lowlevel(struct mtd_info *mtd, loff_t ofs)
+ {
+ 	struct nand_chip *chip = mtd->priv;
+-	int block, res, ret = 0;
+-	int write_oob = !(chip->bbt_options & NAND_BBT_NO_OOB_BBM);
++	int res, ret = 0;
+ 
+-	if (write_oob) {
++	if (!(chip->bbt_options & NAND_BBT_NO_OOB_BBM)) {
+ 		struct erase_info einfo;
+ 
+ 		/* Attempt erase before marking OOB */
+@@ -398,24 +396,16 @@ static int nand_block_markbad_lowlevel(struct mtd_info *mtd, loff_t ofs)
+ 		einfo.addr = ofs;
+ 		einfo.len = 1 << chip->phys_erase_shift;
+ 		nand_erase_nand(mtd, &einfo, 0);
+-	}
+-
+-	/* Get block number */
+-	block = (int)(ofs >> chip->bbt_erase_shift);
+-	/* Mark block bad in memory-based BBT */
+-	if (chip->bbt)
+-		chip->bbt[block >> 2] |= 0x01 << ((block & 0x03) << 1);
+ 
+-	/* Write bad block marker to OOB */
+-	if (write_oob) {
++		/* Write bad block marker to OOB */
+ 		nand_get_device(mtd, FL_WRITING);
+ 		ret = chip->block_markbad(mtd, ofs);
+ 		nand_release_device(mtd);
+ 	}
+ 
+-	/* Update flash-based bad block table */
+-	if (chip->bbt_options & NAND_BBT_USE_FLASH) {
+-		res = nand_update_bbt(mtd, ofs);
++	/* Mark block bad in BBT */
++	if (chip->bbt) {
++		res = nand_markbad_bbt(mtd, ofs);
+ 		if (!ret)
+ 			ret = res;
+ 	}
+diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+index bac481a..ae3fb58 100644
+--- a/drivers/mtd/nand/nand_bbt.c
++++ b/drivers/mtd/nand/nand_bbt.c
+@@ -79,6 +79,8 @@
+ #define BBT_ENTRY_MASK		0x03
+ #define BBT_ENTRY_SHIFT		2
+ 
++static int nand_update_bbt(struct mtd_info *mtd, loff_t offs);
++
+ static inline uint8_t bbt_get_entry(struct nand_chip *chip, int block)
+ {
+ 	uint8_t entry = chip->bbt[block >> BBT_ENTRY_SHIFT];
+@@ -1194,13 +1196,13 @@ int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd)
  }
  
  /**
-- * nand_default_block_markbad - [DEFAULT] mark a block bad
-+ * nand_default_block_markbad - [DEFAULT] mark a block bad via bad block marker
+- * nand_update_bbt - [NAND Interface] update bad block table(s)
++ * nand_update_bbt - update bad block table(s)
   * @mtd: MTD device structure
-  * @ofs: offset from device start
+  * @offs: the offset of the newly marked block
   *
-  * This is the default implementation, which can be overridden by a hardware
-- * specific driver. We try operations in the following order, according to our
-- * bbt_options (NAND_BBT_NO_OOB_BBM and NAND_BBT_USE_FLASH):
-+ * specific driver. It provides the details for writing a bad block marker to a
-+ * block.
+  * The function updates the bad block table(s).
+  */
+-int nand_update_bbt(struct mtd_info *mtd, loff_t offs)
++static int nand_update_bbt(struct mtd_info *mtd, loff_t offs)
+ {
+ 	struct nand_chip *this = mtd->priv;
+ 	int len, res = 0;
+@@ -1390,5 +1392,27 @@ int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt)
+ 	return 1;
+ }
+ 
++/**
++ * nand_markbad_bbt - [NAND Interface] Mark a block bad in the BBT
++ * @mtd: MTD device structure
++ * @offs: offset of the bad block
 + */
-+static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
++int nand_markbad_bbt(struct mtd_info *mtd, loff_t offs)
 +{
-+	struct nand_chip *chip = mtd->priv;
-+	struct mtd_oob_ops ops;
-+	uint8_t buf[2] = { 0, 0 };
-+	int ret = 0, res, i = 0;
++	struct nand_chip *this = mtd->priv;
++	int block, ret = 0;
 +
-+	ops.datbuf = NULL;
-+	ops.oobbuf = buf;
-+	ops.ooboffs = chip->badblockpos;
-+	if (chip->options & NAND_BUSWIDTH_16) {
-+		ops.ooboffs &= ~0x01;
-+		ops.len = ops.ooblen = 2;
-+	} else {
-+		ops.len = ops.ooblen = 1;
-+	}
-+	ops.mode = MTD_OPS_PLACE_OOB;
++	block = (int)(offs >> this->bbt_erase_shift);
 +
-+	/* Write to first/last page(s) if necessary */
-+	if (chip->bbt_options & NAND_BBT_SCANLASTPAGE)
-+		ofs += mtd->erasesize - mtd->writesize;
-+	do {
-+		res = nand_do_write_oob(mtd, ofs, &ops);
-+		if (!ret)
-+			ret = res;
++	/* Mark bad block in memory */
++	bbt_mark_entry(this, block, BBT_BLOCK_WORN);
 +
-+		i++;
-+		ofs += mtd->writesize;
-+	} while ((chip->bbt_options & NAND_BBT_SCAN2NDPAGE) && i < 2);
++	/* Update flash-based bad block table */
++	if (this->bbt_options & NAND_BBT_USE_FLASH)
++		ret = nand_update_bbt(mtd, offs);
 +
 +	return ret;
 +}
 +
-+/**
-+ * nand_block_markbad_lowlevel - mark a block bad
-+ * @mtd: MTD device structure
-+ * @ofs: offset from device start
-+ *
-+ * This function performs the generic NAND bad block marking steps (i.e., bad
-+ * block table(s) and/or marker(s)). We only allow the hardware driver to
-+ * specify how to write bad block markers to OOB (chip->block_markbad).
-+ *
-+ * We try operations in the following order, according to our bbt_options
-+ * (NAND_BBT_NO_OOB_BBM and NAND_BBT_USE_FLASH):
-  *  (1) erase the affected block, to allow OOB marker to be written cleanly
-  *  (2) update in-memory BBT
-  *  (3) write bad block marker to OOB area of affected block
-@@ -338,11 +383,10 @@ static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
-  * Note that we retain the first error encountered in (3) or (4), finish the
-  * procedures, and dump the error in the end.
- */
--static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
-+static int nand_block_markbad_lowlevel(struct mtd_info *mtd, loff_t ofs)
- {
- 	struct nand_chip *chip = mtd->priv;
--	uint8_t buf[2] = { 0, 0 };
--	int block, res, ret = 0, i = 0;
-+	int block, res, ret = 0;
- 	int write_oob = !(chip->bbt_options & NAND_BBT_NO_OOB_BBM);
- 
- 	if (write_oob) {
-@@ -364,34 +408,8 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 
- 	/* Write bad block marker to OOB */
- 	if (write_oob) {
--		struct mtd_oob_ops ops;
--		loff_t wr_ofs = ofs;
--
- 		nand_get_device(mtd, FL_WRITING);
--
--		ops.datbuf = NULL;
--		ops.oobbuf = buf;
--		ops.ooboffs = chip->badblockpos;
--		if (chip->options & NAND_BUSWIDTH_16) {
--			ops.ooboffs &= ~0x01;
--			ops.len = ops.ooblen = 2;
--		} else {
--			ops.len = ops.ooblen = 1;
--		}
--		ops.mode = MTD_OPS_PLACE_OOB;
--
--		/* Write to first/last page(s) if necessary */
--		if (chip->bbt_options & NAND_BBT_SCANLASTPAGE)
--			wr_ofs += mtd->erasesize - mtd->writesize;
--		do {
--			res = nand_do_write_oob(mtd, wr_ofs, &ops);
--			if (!ret)
--				ret = res;
--
--			i++;
--			wr_ofs += mtd->writesize;
--		} while ((chip->bbt_options & NAND_BBT_SCAN2NDPAGE) && i < 2);
--
-+		ret = chip->block_markbad(mtd, ofs);
- 		nand_release_device(mtd);
- 	}
- 
-@@ -2683,7 +2701,6 @@ static int nand_block_isbad(struct mtd_info *mtd, loff_t offs)
-  */
- static int nand_block_markbad(struct mtd_info *mtd, loff_t ofs)
- {
--	struct nand_chip *chip = mtd->priv;
- 	int ret;
- 
- 	ret = nand_block_isbad(mtd, ofs);
-@@ -2694,7 +2711,7 @@ static int nand_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 		return ret;
- 	}
- 
--	return chip->block_markbad(mtd, ofs);
-+	return nand_block_markbad_lowlevel(mtd, ofs);
- }
- 
- /**
-diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-index 3f18776..bac481a 100644
---- a/drivers/mtd/nand/nand_bbt.c
-+++ b/drivers/mtd/nand/nand_bbt.c
-@@ -1392,4 +1392,3 @@ int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt)
- 
  EXPORT_SYMBOL(nand_scan_bbt);
  EXPORT_SYMBOL(nand_default_bbt);
--EXPORT_SYMBOL_GPL(nand_update_bbt);
-diff --git a/drivers/mtd/nand/sm_common.c b/drivers/mtd/nand/sm_common.c
-index e8181ed..e06b5e5 100644
---- a/drivers/mtd/nand/sm_common.c
-+++ b/drivers/mtd/nand/sm_common.c
-@@ -42,7 +42,7 @@ static int sm_block_markbad(struct mtd_info *mtd, loff_t ofs)
- {
- 	struct mtd_oob_ops ops;
- 	struct sm_oob oob;
--	int ret, error = 0;
-+	int ret;
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 0745a42..9f7b248 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -628,8 +628,8 @@ extern struct nand_flash_dev nand_flash_ids[];
+ extern struct nand_manufacturers nand_manuf_ids[];
  
- 	memset(&oob, -1, SM_OOB_SIZE);
- 	oob.block_status = 0x0F;
-@@ -61,11 +61,10 @@ static int sm_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 		printk(KERN_NOTICE
- 			"sm_common: can't mark sector at %i as bad\n",
- 								(int)ofs);
--		error = -EIO;
--	} else
--		mtd->ecc_stats.badblocks++;
-+		return -EIO;
-+	}
- 
--	return error;
-+	return 0;
- }
- 
- static struct nand_flash_dev nand_smartmedia_flash_ids[] = {
+ extern int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd);
+-extern int nand_update_bbt(struct mtd_info *mtd, loff_t offs);
+ extern int nand_default_bbt(struct mtd_info *mtd);
++extern int nand_markbad_bbt(struct mtd_info *mtd, loff_t offs);
+ extern int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt);
+ extern int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
+ 			   int allowbbt);
 -- 
 1.8.3.2
