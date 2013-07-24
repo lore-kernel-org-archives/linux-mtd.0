@@ -1,21 +1,23 @@
-Received: from co1ehsobe002.messaging.microsoft.com ([216.32.180.185]
- helo=co1outboundpool.messaging.microsoft.com)
+Received: from mail-vb0-x22e.google.com ([2607:f8b0:400c:c02::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V1syu-0002SP-Hs
- for linux-mtd@lists.infradead.org; Wed, 24 Jul 2013 06:55:29 +0000
-Message-ID: <51EF7B4E.5090100@freescale.com>
-Date: Wed, 24 Jul 2013 14:59:26 +0800
-From: Huang Shijie <b32955@freescale.com>
+ id 1V1t6K-0002mK-FR
+ for linux-mtd@lists.infradead.org; Wed, 24 Jul 2013 07:03:09 +0000
+Received: by mail-vb0-f46.google.com with SMTP id w8so1234846vbf.33
+ for <linux-mtd@lists.infradead.org>; Wed, 24 Jul 2013 00:02:47 -0700 (PDT)
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 2/4] mtd: nand: refactor chip->block_markbad interface
-References: <1374647279-14083-1-git-send-email-computersforpeace@gmail.com>
- <1374647279-14083-3-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1374647279-14083-3-git-send-email-computersforpeace@gmail.com>
-Content-Type: text/plain; charset="GB2312"
-Content-Transfer-Encoding: quoted-printable
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Artem Bityutskiy <dedekind1@gmail.com>
+In-Reply-To: <CAN8TOE99_FszeOo_sJMf-SXAjKkhjQzxfthjC+grZjbSMttiAQ@mail.gmail.com>
+References: <1374582499-31823-1-git-send-email-shc_work@mail.ru>
+ <CAN8TOE8_K3rT5gLFBGOnghK-ajFcjQK22mm0qYmF+hSvkT27aA@mail.gmail.com>
+ <CAN8TOE99_FszeOo_sJMf-SXAjKkhjQzxfthjC+grZjbSMttiAQ@mail.gmail.com>
+Date: Wed, 24 Jul 2013 00:02:47 -0700
+Message-ID: <CAN8TOE9GMS1r5fAzefBBi-JU2Z83rOzX0X_U63geiY3xJVmUSA@mail.gmail.com>
+Subject: Re: [PATCH 1/4] mtd: nand: gpio: Determine bus width automatically
+From: Brian Norris <computersforpeace@gmail.com>
+To: Alexander Shiyan <shc_work@mail.ru>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: David Woodhouse <dwmw2@infradead.org>, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,25 +27,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=D3=DA 2013=C4=EA07=D4=C224=C8=D5 14:27, Brian Norris =D0=B4=B5=C0:
-> The chip->block_markbad pointer should really only be responsible for
-> writing a bad block marker for new bad blocks. It should not take care
-> of BBT-related functionality, nor should it handle bookkeeping of bad
-> block stats.
-yes.
-the gpmi driver should not do the BBT-related jobs.
+On Tue, Jul 23, 2013 at 11:52 PM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> and your MAINTAINERS patch hasn't been applied to Linus'
+> tree yet
 
-> This patch refactors the 3 users of the block_markbad interface (plus
-> the default nand_base implementation) so that the common code is kept i=
-n
-> nand_block_markbad_lowlevel(). It removes some inconsistencies between
-> the various implementations and should allow for more centralized
-> improvements in the future.
->
-> Because gpmi-nand no longer needs the nand_update_bbt() function, let's
-> stop exporting it as well.
-for the gpmi-nand part:
-Acked-by: Huang Shijie <b32955@freescale.com>
+I stand corrected on this point. It was applied a few hours ago.
 
-thanks
-Huang Shijie
+Regards,
+Brian
