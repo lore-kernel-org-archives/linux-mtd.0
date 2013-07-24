@@ -1,15 +1,18 @@
-Received: from mail-pb0-x22b.google.com ([2607:f8b0:400e:c01::22b])
+Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V1sZ5-0001xp-NJ
- for linux-mtd@lists.infradead.org; Wed, 24 Jul 2013 06:28:48 +0000
-Received: by mail-pb0-f43.google.com with SMTP id md12so9276889pbc.30
- for <linux-mtd@lists.infradead.org>; Tue, 23 Jul 2013 23:28:25 -0700 (PDT)
+ id 1V1sZ6-0001y3-5w
+ for linux-mtd@lists.infradead.org; Wed, 24 Jul 2013 06:28:49 +0000
+Received: by mail-pa0-f50.google.com with SMTP id fb1so272354pad.23
+ for <linux-mtd@lists.infradead.org>; Tue, 23 Jul 2013 23:28:30 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 0/4] mtd: nand: cleanups to BBT
-Date: Tue, 23 Jul 2013 23:27:55 -0700
-Message-Id: <1374647279-14083-1-git-send-email-computersforpeace@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
+Subject: [PATCH 4/4] mtd: nand: remove NAND_BBT_SCANEMPTY
+Date: Tue, 23 Jul 2013 23:27:59 -0700
+Message-Id: <1374647279-14083-5-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1374647279-14083-1-git-send-email-computersforpeace@gmail.com>
+References: <1374647279-14083-1-git-send-email-computersforpeace@gmail.com>
+Cc: Ivan Djelic <ivan.djelic@parrot.com>,
+ Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -20,26 +23,144 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-A few random BBT cleanups, some of which I've had sitting around for a
-while. There will probably be some more in the near future.
+NAND_BBT_SCANEMPTY is a strange, badly-supported option with omap as its
+single remaining user.
 
-Brian Norris (4):
-  mtd: nand: add accessors, macros for in-memory BBT
-  mtd: nand: refactor chip->block_markbad interface
-  mtd: nand: hide in-memory BBT implementation details
-  mtd: nand: remove NAND_BBT_SCANEMPTY
+NAND_BBT_SCANEMPTY was likely used by accident in omap2[1]. And anyway,
+omap2 doesn't scan the chip for bad blocks (courtesy of
+NAND_SKIP_BBTSCAN), and so its use of this option is irrelevant.
 
- Documentation/DocBook/mtdnand.tmpl     |   2 -
- drivers/mtd/nand/docg4.c               |   6 -
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |  44 +++-----
- drivers/mtd/nand/nand_base.c           | 113 ++++++++++---------
- drivers/mtd/nand/nand_bbt.c            | 194 +++++++++++++++++----------------
- drivers/mtd/nand/omap2.c               |   2 +-
- drivers/mtd/nand/sm_common.c           |   9 +-
- drivers/mtd/onenand/onenand_bbt.c      |   1 -
- include/linux/mtd/bbm.h                |   2 -
- include/linux/mtd/nand.h               |   2 +-
- 10 files changed, 185 insertions(+), 190 deletions(-)
+This patch drops the NAND_BBT_SCANEMPTY option.
 
+[1] http://lists.infradead.org/pipermail/linux-mtd/2012-July/042902.html
+
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: Ivan Djelic <ivan.djelic@parrot.com>
+---
+ Documentation/DocBook/mtdnand.tmpl |  2 --
+ drivers/mtd/nand/nand_bbt.c        | 33 +++++----------------------------
+ drivers/mtd/nand/omap2.c           |  2 +-
+ drivers/mtd/onenand/onenand_bbt.c  |  1 -
+ include/linux/mtd/bbm.h            |  2 --
+ 5 files changed, 6 insertions(+), 34 deletions(-)
+
+diff --git a/Documentation/DocBook/mtdnand.tmpl b/Documentation/DocBook/mtdnand.tmpl
+index fe122d6..a248f42 100644
+--- a/Documentation/DocBook/mtdnand.tmpl
++++ b/Documentation/DocBook/mtdnand.tmpl
+@@ -1224,8 +1224,6 @@ in this page</entry>
+ #define NAND_BBT_CREATE		0x00000200
+ /* Search good / bad pattern through all pages of a block */
+ #define NAND_BBT_SCANALLPAGES	0x00000400
+-/* Scan block empty during good / bad block scan */
+-#define NAND_BBT_SCANEMPTY	0x00000800
+ /* Write bbt if neccecary */
+ #define NAND_BBT_WRITE		0x00001000
+ /* Read and write back block contents when writing bbt */
+diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+index ae3fb58..bc06196 100644
+--- a/drivers/mtd/nand/nand_bbt.c
++++ b/drivers/mtd/nand/nand_bbt.c
+@@ -110,33 +110,17 @@ static int check_pattern_no_oob(uint8_t *buf, struct nand_bbt_descr *td)
+  * @td: search pattern descriptor
+  *
+  * Check for a pattern at the given place. Used to search bad block tables and
+- * good / bad block identifiers. If the SCAN_EMPTY option is set then check, if
+- * all bytes except the pattern area contain 0xff.
++ * good / bad block identifiers.
+  */
+ static int check_pattern(uint8_t *buf, int len, int paglen, struct nand_bbt_descr *td)
+ {
+-	int end = 0;
+-	uint8_t *p = buf;
+-
+ 	if (td->options & NAND_BBT_NO_OOB)
+ 		return check_pattern_no_oob(buf, td);
+ 
+-	end = paglen + td->offs;
+-	if (td->options & NAND_BBT_SCANEMPTY)
+-		if (memchr_inv(p, 0xff, end))
+-			return -1;
+-	p += end;
+-
+ 	/* Compare the pattern */
+-	if (memcmp(p, td->pattern, td->len))
++	if (memcmp(buf + paglen + td->offs, td->pattern, td->len))
+ 		return -1;
+ 
+-	if (td->options & NAND_BBT_SCANEMPTY) {
+-		p += td->len;
+-		end += td->len;
+-		if (memchr_inv(p, 0xff, len - end))
+-			return -1;
+-	}
+ 	return 0;
+ }
+ 
+@@ -507,15 +491,9 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 	else
+ 		numpages = 1;
+ 
+-	if (!(bd->options & NAND_BBT_SCANEMPTY)) {
+-		/* We need only read few bytes from the OOB area */
+-		scanlen = 0;
+-		readlen = bd->len;
+-	} else {
+-		/* Full page content should be read */
+-		scanlen = mtd->writesize + mtd->oobsize;
+-		readlen = numpages * mtd->writesize;
+-	}
++	/* We need only read few bytes from the OOB area */
++	scanlen = 0;
++	readlen = bd->len;
+ 
+ 	if (chip == -1) {
+ 		numblocks = mtd->size >> this->bbt_erase_shift;
+@@ -882,7 +860,6 @@ static inline int nand_memory_bbt(struct mtd_info *mtd, struct nand_bbt_descr *b
+ {
+ 	struct nand_chip *this = mtd->priv;
+ 
+-	bd->options &= ~NAND_BBT_SCANEMPTY;
+ 	return create_bbt(mtd, this->buffers->databuf, bd, -1);
+ }
+ 
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index c4c7e0d..d6b9cc1 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -159,7 +159,7 @@ static struct nand_ecclayout omap_oobinfo;
+  */
+ static uint8_t scan_ff_pattern[] = { 0xff };
+ static struct nand_bbt_descr bb_descrip_flashbased = {
+-	.options = NAND_BBT_SCANEMPTY | NAND_BBT_SCANALLPAGES,
++	.options = NAND_BBT_SCANALLPAGES,
+ 	.offs = 0,
+ 	.len = 1,
+ 	.pattern = scan_ff_pattern,
+diff --git a/drivers/mtd/onenand/onenand_bbt.c b/drivers/mtd/onenand/onenand_bbt.c
+index 66fe3b7..08d0085 100644
+--- a/drivers/mtd/onenand/onenand_bbt.c
++++ b/drivers/mtd/onenand/onenand_bbt.c
+@@ -133,7 +133,6 @@ static inline int onenand_memory_bbt (struct mtd_info *mtd, struct nand_bbt_desc
+ {
+ 	struct onenand_chip *this = mtd->priv;
+ 
+-        bd->options &= ~NAND_BBT_SCANEMPTY;
+ 	return create_bbt(mtd, this->page_buf, bd, -1);
+ }
+ 
+diff --git a/include/linux/mtd/bbm.h b/include/linux/mtd/bbm.h
+index 211ff67..95fc482 100644
+--- a/include/linux/mtd/bbm.h
++++ b/include/linux/mtd/bbm.h
+@@ -93,8 +93,6 @@ struct nand_bbt_descr {
+ #define NAND_BBT_CREATE_EMPTY	0x00000400
+ /* Search good / bad pattern through all pages of a block */
+ #define NAND_BBT_SCANALLPAGES	0x00000800
+-/* Scan block empty during good / bad block scan */
+-#define NAND_BBT_SCANEMPTY	0x00001000
+ /* Write bbt if neccecary */
+ #define NAND_BBT_WRITE		0x00002000
+ /* Read and write back block contents when writing bbt */
 -- 
 1.8.3.2
