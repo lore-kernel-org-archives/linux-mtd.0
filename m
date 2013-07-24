@@ -1,22 +1,21 @@
-Received: from mail-ve0-x22a.google.com ([2607:f8b0:400c:c01::22a])
+Received: from co1ehsobe002.messaging.microsoft.com ([216.32.180.185]
+ helo=co1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V1swV-0002PY-6v
- for linux-mtd@lists.infradead.org; Wed, 24 Jul 2013 06:53:00 +0000
-Received: by mail-ve0-f170.google.com with SMTP id 14so6772809vea.29
- for <linux-mtd@lists.infradead.org>; Tue, 23 Jul 2013 23:52:37 -0700 (PDT)
+ id 1V1syu-0002SP-Hs
+ for linux-mtd@lists.infradead.org; Wed, 24 Jul 2013 06:55:29 +0000
+Message-ID: <51EF7B4E.5090100@freescale.com>
+Date: Wed, 24 Jul 2013 14:59:26 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <CAN8TOE8_K3rT5gLFBGOnghK-ajFcjQK22mm0qYmF+hSvkT27aA@mail.gmail.com>
-References: <1374582499-31823-1-git-send-email-shc_work@mail.ru>
- <CAN8TOE8_K3rT5gLFBGOnghK-ajFcjQK22mm0qYmF+hSvkT27aA@mail.gmail.com>
-Date: Tue, 23 Jul 2013 23:52:37 -0700
-Message-ID: <CAN8TOE99_FszeOo_sJMf-SXAjKkhjQzxfthjC+grZjbSMttiAQ@mail.gmail.com>
-Subject: Re: [PATCH 1/4] mtd: nand: gpio: Determine bus width automatically
-From: Brian Norris <computersforpeace@gmail.com>
-To: Alexander Shiyan <shc_work@mail.ru>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: David Woodhouse <dwmw2@infradead.org>, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 2/4] mtd: nand: refactor chip->block_markbad interface
+References: <1374647279-14083-1-git-send-email-computersforpeace@gmail.com>
+ <1374647279-14083-3-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1374647279-14083-3-git-send-email-computersforpeace@gmail.com>
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: quoted-printable
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,115 +25,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Resending to the new DT mailing list. (Guys, this isn't advertised
-very well, and your MAINTAINERS patch hasn't been applied to Linus'
-tree yet. Why the rapid transition?)
+=D3=DA 2013=C4=EA07=D4=C224=C8=D5 14:27, Brian Norris =D0=B4=B5=C0:
+> The chip->block_markbad pointer should really only be responsible for
+> writing a bad block marker for new bad blocks. It should not take care
+> of BBT-related functionality, nor should it handle bookkeeping of bad
+> block stats.
+yes.
+the gpmi driver should not do the BBT-related jobs.
 
-On Tue, Jul 23, 2013 at 11:42 PM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> On Tue, Jul 23, 2013 at 5:28 AM, Alexander Shiyan <shc_work@mail.ru> wrote:
->> This patch provide automatically determine of bus width. If resource size,
->> supplied to the driver more than 1 byte, the NAND_BUSWIDTH_AUTO option
->> will be used in the MTD core.
+> This patch refactors the 3 users of the block_markbad interface (plus
+> the default nand_base implementation) so that the common code is kept i=
+n
+> nand_block_markbad_lowlevel(). It removes some inconsistencies between
+> the various implementations and should allow for more centralized
+> improvements in the future.
 >
-> I presume this depends on the bugfix I sent for NAND_BUSWIDTH_AUTO /
-> nand_set_defaults()? That's worth noting (as I am right now), for
-> whenever someone gets around to merging this.
->
->> Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
->> ---
->>  .../devicetree/bindings/mtd/gpio-control-nand.txt  |  5 ++---
->
-> Considering the changes in device-tree bindings, it's good to CC the
-> device-tree list, I believe.
->
->>  drivers/mtd/nand/gpio.c                            | 23 +++++++++++-----------
->>  2 files changed, 13 insertions(+), 15 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
->> index 36ef07d..287b8b8 100644
->> --- a/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
->> +++ b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
->> @@ -8,15 +8,14 @@ Required properties:
->>  - compatible : "gpio-control-nand"
->>  - reg : should specify localbus chip select and size used for the chip.  The
->>    resource describes the data bus connected to the NAND flash and all accesses
->> -  are made in native endianness.
->> +  are made in native endianness. Bus width of the device is determined
->> +  automatically if size > 1. If size = 1, 8 bit bus width will be used.
->>  - #address-cells, #size-cells : Must be present if the device has sub-nodes
->>    representing partitions.
->>  - gpios : specifies the gpio pins to control the NAND device.  nwp is an
->>    optional gpio and may be set to 0 if not present.
->>
->>  Optional properties:
->> -- bank-width : Width (in bytes) of the device.  If not present, the width
->> -  defaults to 1 byte.
->
-> Do you really want to remove this property entirely? I'm not sure what
-> the policy is on this. And it may still be useful to leave in the
-> documentation, since older drivers (and potentially non-Linux OS?) may
-> still need the property. Maybe you can mark it as optional, and that
-> it may be ignored entirely.
->
->>  - chip-delay : chip dependent delay for transferring data from array to
->>    read registers (tR).  If not present then a default of 20us is used.
->>  - gpio-control-nand,io-sync-reg : A 64-bit physical address for a read
->> diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
->> index 800a1cc..f144b80 100644
->> --- a/drivers/mtd/nand/gpio.c
->> +++ b/drivers/mtd/nand/gpio.c
->> @@ -109,14 +109,9 @@ static int gpio_nand_get_config_of(const struct device *dev,
->>         if (!dev->of_node)
->>                 return -ENODEV;
->>
->> -       if (!of_property_read_u32(dev->of_node, "bank-width", &val)) {
->> -               if (val == 2) {
->> -                       plat->options |= NAND_BUSWIDTH_16;
->> -               } else if (val != 1) {
->> -                       dev_err(dev, "invalid bank-width %u\n", val);
->> -                       return -EINVAL;
->> -               }
->> -       }
->> +       /* Deprecated since 3.11-rc2 */
->
-> I doubt this patch will be included in 3.11-rc2 :) This is material
-> for the next merge window.
->
->> +       if (of_find_property(dev->of_node, "bank-width", NULL))
->> +               dev_notice(dev, "Property \"bank-width\" is deprecated");
->
-> If you don't totally kill this property (per my comments above), then
-> you probably don't want this message either. It's probably safe to
-> just ignore the property, if we can reliably auto-detect it instead.
->
->>         plat->gpio_rdy = of_get_gpio(dev->of_node, 0);
->>         plat->gpio_nce = of_get_gpio(dev->of_node, 1);
->> @@ -223,6 +218,14 @@ static int gpio_nand_probe(struct platform_device *pdev)
->>         if (IS_ERR(chip->IO_ADDR_R))
->>                 return PTR_ERR(chip->IO_ADDR_R);
->>
->> +       ret = gpio_nand_get_config(&pdev->dev, &gpiomtd->plat);
->> +       if (ret)
->> +               return ret;
->> +
->> +       gpiomtd->plat.options &= ~(NAND_BUSWIDTH_16 | NAND_BUSWIDTH_AUTO);
->> +       if (resource_size(res) > 1)
->> +               gpiomtd->plat.options |= NAND_BUSWIDTH_AUTO;
->> +
->>         res = gpio_nand_get_io_sync(pdev);
->>         if (res) {
->>                 gpiomtd->io_sync = devm_ioremap_resource(&pdev->dev, res);
->> @@ -230,10 +233,6 @@ static int gpio_nand_probe(struct platform_device *pdev)
->>                         return PTR_ERR(gpiomtd->io_sync);
->>         }
->>
->> -       ret = gpio_nand_get_config(&pdev->dev, &gpiomtd->plat);
->> -       if (ret)
->> -               return ret;
->> -
->>         ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nce, "NAND NCE");
->>         if (ret)
->>                 return ret;
->
-> Brian
+> Because gpmi-nand no longer needs the nand_update_bbt() function, let's
+> stop exporting it as well.
+for the gpmi-nand part:
+Acked-by: Huang Shijie <b32955@freescale.com>
+
+thanks
+Huang Shijie
