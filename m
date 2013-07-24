@@ -1,18 +1,21 @@
-Received: from mail-pb0-x234.google.com ([2607:f8b0:400e:c01::234])
+Received: from mail-vc0-x231.google.com ([2607:f8b0:400c:c03::231])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V1sZ8-0001y0-R8
- for linux-mtd@lists.infradead.org; Wed, 24 Jul 2013 06:29:01 +0000
-Received: by mail-pb0-f52.google.com with SMTP id xa12so9281763pbc.25
- for <linux-mtd@lists.infradead.org>; Tue, 23 Jul 2013 23:28:29 -0700 (PDT)
+ id 1V1smM-0002FX-Ik
+ for linux-mtd@lists.infradead.org; Wed, 24 Jul 2013 06:42:31 +0000
+Received: by mail-vc0-f177.google.com with SMTP id ia10so4218050vcb.36
+ for <linux-mtd@lists.infradead.org>; Tue, 23 Jul 2013 23:42:08 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1374582499-31823-1-git-send-email-shc_work@mail.ru>
+References: <1374582499-31823-1-git-send-email-shc_work@mail.ru>
+Date: Tue, 23 Jul 2013 23:42:08 -0700
+Message-ID: <CAN8TOE8_K3rT5gLFBGOnghK-ajFcjQK22mm0qYmF+hSvkT27aA@mail.gmail.com>
+Subject: Re: [PATCH 1/4] mtd: nand: gpio: Determine bus width automatically
 From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 3/4] mtd: nand: hide in-memory BBT implementation details
-Date: Tue, 23 Jul 2013 23:27:58 -0700
-Message-Id: <1374647279-14083-4-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1374647279-14083-1-git-send-email-computersforpeace@gmail.com>
-References: <1374647279-14083-1-git-send-email-computersforpeace@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
+To: Alexander Shiyan <shc_work@mail.ru>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: David Woodhouse <dwmw2@infradead.org>, devicetree-discuss@lists.ozlabs.org,
+ linux-mtd@lists.infradead.org,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,156 +25,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-nand_base.c shouldn't have to know the implementation details of
-nand_bbt's in-memory BBT. Specifically, nand_base shouldn't perform the
-bit masking and shifting to isolate a BBT entry.
+On Tue, Jul 23, 2013 at 5:28 AM, Alexander Shiyan <shc_work@mail.ru> wrote:
+> This patch provide automatically determine of bus width. If resource size,
+> supplied to the driver more than 1 byte, the NAND_BUSWIDTH_AUTO option
+> will be used in the MTD core.
 
-Instead, just move some of the BBT code into a new nand_markbad_bbt()
-interface. This interface allows external users (i.e., nand_base) to
-mark a single block as bad in the BBT. Then nand_bbt will take care of
-modifying the in-memory BBT and updating the flash-based BBT (if
-applicable).
+I presume this depends on the bugfix I sent for NAND_BUSWIDTH_AUTO /
+nand_set_defaults()? That's worth noting (as I am right now), for
+whenever someone gets around to merging this.
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- drivers/mtd/nand/nand_base.c | 32 +++++++++++---------------------
- drivers/mtd/nand/nand_bbt.c  | 28 ++++++++++++++++++++++++++--
- include/linux/mtd/nand.h     |  2 +-
- 3 files changed, 38 insertions(+), 24 deletions(-)
+> Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+> ---
+>  .../devicetree/bindings/mtd/gpio-control-nand.txt  |  5 ++---
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index a9119f7..da3ba77 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -374,22 +374,20 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
-  * block table(s) and/or marker(s)). We only allow the hardware driver to
-  * specify how to write bad block markers to OOB (chip->block_markbad).
-  *
-- * We try operations in the following order, according to our bbt_options
-- * (NAND_BBT_NO_OOB_BBM and NAND_BBT_USE_FLASH):
-+ * We try operations in the following order:
-  *  (1) erase the affected block, to allow OOB marker to be written cleanly
-- *  (2) update in-memory BBT
-- *  (3) write bad block marker to OOB area of affected block
-- *  (4) update flash-based BBT
-- * Note that we retain the first error encountered in (3) or (4), finish the
-+ *  (2) write bad block marker to OOB area of affected block (unless flag
-+ *      NAND_BBT_NO_OOB_BBM is present)
-+ *  (3) update the BBT
-+ * Note that we retain the first error encountered in (2) or (3), finish the
-  * procedures, and dump the error in the end.
- */
- static int nand_block_markbad_lowlevel(struct mtd_info *mtd, loff_t ofs)
- {
- 	struct nand_chip *chip = mtd->priv;
--	int block, res, ret = 0;
--	int write_oob = !(chip->bbt_options & NAND_BBT_NO_OOB_BBM);
-+	int res, ret = 0;
- 
--	if (write_oob) {
-+	if (!(chip->bbt_options & NAND_BBT_NO_OOB_BBM)) {
- 		struct erase_info einfo;
- 
- 		/* Attempt erase before marking OOB */
-@@ -398,24 +396,16 @@ static int nand_block_markbad_lowlevel(struct mtd_info *mtd, loff_t ofs)
- 		einfo.addr = ofs;
- 		einfo.len = 1 << chip->phys_erase_shift;
- 		nand_erase_nand(mtd, &einfo, 0);
--	}
--
--	/* Get block number */
--	block = (int)(ofs >> chip->bbt_erase_shift);
--	/* Mark block bad in memory-based BBT */
--	if (chip->bbt)
--		chip->bbt[block >> 2] |= 0x01 << ((block & 0x03) << 1);
- 
--	/* Write bad block marker to OOB */
--	if (write_oob) {
-+		/* Write bad block marker to OOB */
- 		nand_get_device(mtd, FL_WRITING);
- 		ret = chip->block_markbad(mtd, ofs);
- 		nand_release_device(mtd);
- 	}
- 
--	/* Update flash-based bad block table */
--	if (chip->bbt_options & NAND_BBT_USE_FLASH) {
--		res = nand_update_bbt(mtd, ofs);
-+	/* Mark block bad in BBT */
-+	if (chip->bbt) {
-+		res = nand_markbad_bbt(mtd, ofs);
- 		if (!ret)
- 			ret = res;
- 	}
-diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-index bac481a..ae3fb58 100644
---- a/drivers/mtd/nand/nand_bbt.c
-+++ b/drivers/mtd/nand/nand_bbt.c
-@@ -79,6 +79,8 @@
- #define BBT_ENTRY_MASK		0x03
- #define BBT_ENTRY_SHIFT		2
- 
-+static int nand_update_bbt(struct mtd_info *mtd, loff_t offs);
-+
- static inline uint8_t bbt_get_entry(struct nand_chip *chip, int block)
- {
- 	uint8_t entry = chip->bbt[block >> BBT_ENTRY_SHIFT];
-@@ -1194,13 +1196,13 @@ int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd)
- }
- 
- /**
-- * nand_update_bbt - [NAND Interface] update bad block table(s)
-+ * nand_update_bbt - update bad block table(s)
-  * @mtd: MTD device structure
-  * @offs: the offset of the newly marked block
-  *
-  * The function updates the bad block table(s).
-  */
--int nand_update_bbt(struct mtd_info *mtd, loff_t offs)
-+static int nand_update_bbt(struct mtd_info *mtd, loff_t offs)
- {
- 	struct nand_chip *this = mtd->priv;
- 	int len, res = 0;
-@@ -1390,5 +1392,27 @@ int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt)
- 	return 1;
- }
- 
-+/**
-+ * nand_markbad_bbt - [NAND Interface] Mark a block bad in the BBT
-+ * @mtd: MTD device structure
-+ * @offs: offset of the bad block
-+ */
-+int nand_markbad_bbt(struct mtd_info *mtd, loff_t offs)
-+{
-+	struct nand_chip *this = mtd->priv;
-+	int block, ret = 0;
-+
-+	block = (int)(offs >> this->bbt_erase_shift);
-+
-+	/* Mark bad block in memory */
-+	bbt_mark_entry(this, block, BBT_BLOCK_WORN);
-+
-+	/* Update flash-based bad block table */
-+	if (this->bbt_options & NAND_BBT_USE_FLASH)
-+		ret = nand_update_bbt(mtd, offs);
-+
-+	return ret;
-+}
-+
- EXPORT_SYMBOL(nand_scan_bbt);
- EXPORT_SYMBOL(nand_default_bbt);
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 0745a42..9f7b248 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -628,8 +628,8 @@ extern struct nand_flash_dev nand_flash_ids[];
- extern struct nand_manufacturers nand_manuf_ids[];
- 
- extern int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd);
--extern int nand_update_bbt(struct mtd_info *mtd, loff_t offs);
- extern int nand_default_bbt(struct mtd_info *mtd);
-+extern int nand_markbad_bbt(struct mtd_info *mtd, loff_t offs);
- extern int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt);
- extern int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
- 			   int allowbbt);
--- 
-1.8.3.2
+Considering the changes in device-tree bindings, it's good to CC the
+device-tree list, I believe.
+
+>  drivers/mtd/nand/gpio.c                            | 23 +++++++++++-----------
+>  2 files changed, 13 insertions(+), 15 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
+> index 36ef07d..287b8b8 100644
+> --- a/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
+> @@ -8,15 +8,14 @@ Required properties:
+>  - compatible : "gpio-control-nand"
+>  - reg : should specify localbus chip select and size used for the chip.  The
+>    resource describes the data bus connected to the NAND flash and all accesses
+> -  are made in native endianness.
+> +  are made in native endianness. Bus width of the device is determined
+> +  automatically if size > 1. If size = 1, 8 bit bus width will be used.
+>  - #address-cells, #size-cells : Must be present if the device has sub-nodes
+>    representing partitions.
+>  - gpios : specifies the gpio pins to control the NAND device.  nwp is an
+>    optional gpio and may be set to 0 if not present.
+>
+>  Optional properties:
+> -- bank-width : Width (in bytes) of the device.  If not present, the width
+> -  defaults to 1 byte.
+
+Do you really want to remove this property entirely? I'm not sure what
+the policy is on this. And it may still be useful to leave in the
+documentation, since older drivers (and potentially non-Linux OS?) may
+still need the property. Maybe you can mark it as optional, and that
+it may be ignored entirely.
+
+>  - chip-delay : chip dependent delay for transferring data from array to
+>    read registers (tR).  If not present then a default of 20us is used.
+>  - gpio-control-nand,io-sync-reg : A 64-bit physical address for a read
+> diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
+> index 800a1cc..f144b80 100644
+> --- a/drivers/mtd/nand/gpio.c
+> +++ b/drivers/mtd/nand/gpio.c
+> @@ -109,14 +109,9 @@ static int gpio_nand_get_config_of(const struct device *dev,
+>         if (!dev->of_node)
+>                 return -ENODEV;
+>
+> -       if (!of_property_read_u32(dev->of_node, "bank-width", &val)) {
+> -               if (val == 2) {
+> -                       plat->options |= NAND_BUSWIDTH_16;
+> -               } else if (val != 1) {
+> -                       dev_err(dev, "invalid bank-width %u\n", val);
+> -                       return -EINVAL;
+> -               }
+> -       }
+> +       /* Deprecated since 3.11-rc2 */
+
+I doubt this patch will be included in 3.11-rc2 :) This is material
+for the next merge window.
+
+> +       if (of_find_property(dev->of_node, "bank-width", NULL))
+> +               dev_notice(dev, "Property \"bank-width\" is deprecated");
+
+If you don't totally kill this property (per my comments above), then
+you probably don't want this message either. It's probably safe to
+just ignore the property, if we can reliably auto-detect it instead.
+
+>         plat->gpio_rdy = of_get_gpio(dev->of_node, 0);
+>         plat->gpio_nce = of_get_gpio(dev->of_node, 1);
+> @@ -223,6 +218,14 @@ static int gpio_nand_probe(struct platform_device *pdev)
+>         if (IS_ERR(chip->IO_ADDR_R))
+>                 return PTR_ERR(chip->IO_ADDR_R);
+>
+> +       ret = gpio_nand_get_config(&pdev->dev, &gpiomtd->plat);
+> +       if (ret)
+> +               return ret;
+> +
+> +       gpiomtd->plat.options &= ~(NAND_BUSWIDTH_16 | NAND_BUSWIDTH_AUTO);
+> +       if (resource_size(res) > 1)
+> +               gpiomtd->plat.options |= NAND_BUSWIDTH_AUTO;
+> +
+>         res = gpio_nand_get_io_sync(pdev);
+>         if (res) {
+>                 gpiomtd->io_sync = devm_ioremap_resource(&pdev->dev, res);
+> @@ -230,10 +233,6 @@ static int gpio_nand_probe(struct platform_device *pdev)
+>                         return PTR_ERR(gpiomtd->io_sync);
+>         }
+>
+> -       ret = gpio_nand_get_config(&pdev->dev, &gpiomtd->plat);
+> -       if (ret)
+> -               return ret;
+> -
+>         ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nce, "NAND NCE");
+>         if (ret)
+>                 return ret;
+
+Brian
