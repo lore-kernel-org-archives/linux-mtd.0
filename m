@@ -1,23 +1,21 @@
-Received: from tritech.se ([46.59.120.190])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V1yJp-0001lF-FM
- for linux-mtd@lists.infradead.org; Wed, 24 Jul 2013 12:37:26 +0000
-From: =?iso-8859-1?Q?Mats_K=E4rrman?= <Mats.Karrman@tritech.se>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: RE: xattr patches from feb?
-Date: Wed, 24 Jul 2013 12:36:50 +0000
-Message-ID: <ED3E0BCACD909541BA94A34C4A164D4C4FCC0C48@post.tritech.se>
-References: <ED3E0BCACD909541BA94A34C4A164D4C4FCA20D3@post.tritech.se>,
- <51C837D9.5060007@pengutronix.de>
- <ED3E0BCACD909541BA94A34C4A164D4C4FCA8176@post.tritech.se>,
- <51CC0B15.8080804@pengutronix.de>,
- <ED3E0BCACD909541BA94A34C4A164D4C4FCA820E@post.tritech.se>
-In-Reply-To: <ED3E0BCACD909541BA94A34C4A164D4C4FCA820E@post.tritech.se>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Received: from smtp45.i.mail.ru ([94.100.177.105])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V1z80-0003O2-GX
+ for linux-mtd@lists.infradead.org; Wed, 24 Jul 2013 13:29:18 +0000
+Date: Wed, 24 Jul 2013 17:28:04 +0400
+From: Alexander Shiyan <shc_work@mail.ru>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 1/4] mtd: nand: gpio: Determine bus width automatically
+Message-Id: <20130724172804.373309617f46b6e66a1085c0@mail.ru>
+In-Reply-To: <CAN8TOE8_K3rT5gLFBGOnghK-ajFcjQK22mm0qYmF+hSvkT27aA@mail.gmail.com>
+References: <1374582499-31823-1-git-send-email-shc_work@mail.ru>
+ <CAN8TOE8_K3rT5gLFBGOnghK-ajFcjQK22mm0qYmF+hSvkT27aA@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, devicetree-discuss@lists.ozlabs.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,45 +25,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Marc,=0A=
-=0A=
-I have now run your patches both on the bench using the integck test progra=
-m and=0A=
-in live systems for an extended period of time. The xattr node related erro=
-rs I saw=0A=
-before has not appeared any more.=0A=
-All tests run on a MPC5125 based system using NOR FLASH.=0A=
-=0A=
-Tested-by: Mats Karrman <mats.karrman@tritech.se>=0A=
-=0A=
-BR // Mats=0A=
-________________________________________=0A=
-From: linux-mtd [linux-mtd-bounces@lists.infradead.org] on behalf of Mats K=
-=E4rrman [Mats.Karrman@tritech.se]=0A=
-Sent: Thursday, June 27, 2013 12:59 PM=0A=
-To: Marc Kleine-Budde=0A=
-Cc: linux-mtd=0A=
-Subject: RE: xattr patches from feb?=0A=
-=0A=
-On Thu, June 27, 2013 11:51 AM, Marc Kleine-Budde [mkl@pengutronix.de] wrot=
-e:=0A=
-> Can you please (re)check if these patches are still the ones on my=0A=
-> server?=0A=
-=0A=
-Yes, my patch is equivalent to your committs=0A=
-1a5ef9e82c7c76a90de94190df6d0ad9cfad2452=0A=
-and=0A=
-88dfd5c021b6a628a3b51e8f9f34e4d26a01f4f4=0A=
-=0A=
-> Can I have your Tested-by? Do they fix your problems?=0A=
-=0A=
-I'm still testing but so far it looks promising.=0A=
-=0A=
-> If so, we should try to get them mainline.=0A=
-=0A=
-Sounds like a great idea!=0A=
-=0A=
-// Mats=0A=
-______________________________________________________=0A=
-Linux MTD discussion mailing list=0A=
-http://lists.infradead.org/mailman/listinfo/linux-mtd/=0A=
+On Tue, 23 Jul 2013 23:42:08 -0700
+Brian Norris <computersforpeace@gmail.com> wrote:
+
+> On Tue, Jul 23, 2013 at 5:28 AM, Alexander Shiyan <shc_work@mail.ru> wrote:
+> > This patch provide automatically determine of bus width. If resource size,
+> > supplied to the driver more than 1 byte, the NAND_BUSWIDTH_AUTO option
+> > will be used in the MTD core.
+> 
+> I presume this depends on the bugfix I sent for NAND_BUSWIDTH_AUTO /
+> nand_set_defaults()? That's worth noting (as I am right now), for
+> whenever someone gets around to merging this.
+
+OK.
+
+[...]
+> > diff --git a/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
+> > index 36ef07d..287b8b8 100644
+> > --- a/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
+> > +++ b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
+> > @@ -8,15 +8,14 @@ Required properties:
+> >  - compatible : "gpio-control-nand"
+> >  - reg : should specify localbus chip select and size used for the chip.  The
+> >    resource describes the data bus connected to the NAND flash and all accesses
+> > -  are made in native endianness.
+> > +  are made in native endianness. Bus width of the device is determined
+> > +  automatically if size > 1. If size = 1, 8 bit bus width will be used.
+> >  - #address-cells, #size-cells : Must be present if the device has sub-nodes
+> >    representing partitions.
+> >  - gpios : specifies the gpio pins to control the NAND device.  nwp is an
+> >    optional gpio and may be set to 0 if not present.
+> >
+> >  Optional properties:
+> > -- bank-width : Width (in bytes) of the device.  If not present, the width
+> > -  defaults to 1 byte.
+> 
+> Do you really want to remove this property entirely? I'm not sure what
+> the policy is on this. And it may still be useful to leave in the
+> documentation, since older drivers (and potentially non-Linux OS?) may
+> still need the property. Maybe you can mark it as optional, and that
+> it may be ignored entirely.
+
+I redid it, I'll do option "bank-width" optional.
+
+[...]
+> > +       if (of_find_property(dev->of_node, "bank-width", NULL))
+> > +               dev_notice(dev, "Property \"bank-width\" is deprecated");
+> 
+> If you don't totally kill this property (per my comments above), then
+> you probably don't want this message either. It's probably safe to
+> just ignore the property, if we can reliably auto-detect it instead.
+
+What do you say about such changes in the patch 4/4?
+Thanks.
+
+[...]
+
+-- 
+Alexander Shiyan <shc_work@mail.ru>
