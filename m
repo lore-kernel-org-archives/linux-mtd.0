@@ -1,20 +1,16 @@
-Received: from shadbolt.e.decadent.org.uk ([88.96.1.126])
+Received: from mail-pb0-x22b.google.com ([2607:f8b0:400e:c01::22b])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V1pFI-0007RQ-GE
- for linux-mtd@lists.infradead.org; Wed, 24 Jul 2013 02:56:09 +0000
-Message-ID: <1374634527.5581.14.camel@deadeye.wl.decadent.org.uk>
-Subject: Re: Add "UBIFS: fix a horrid bug" to 3.2 branch?
-From: Ben Hutchings <ben@decadent.org.uk>
-To: Christoph Fritz <chf.fritz@googlemail.com>
-Date: Wed, 24 Jul 2013 03:55:27 +0100
-In-Reply-To: <1373274954.4186.38.camel@mars>
-References: <1373274954.4186.38.camel@mars>
-Content-Type: multipart/signed; micalg="pgp-sha512";
- protocol="application/pgp-signature"; boundary="=-pCBeYmrLoqb0Ldskm4JM"
-Mime-Version: 1.0
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-mtd@lists.infradead.org, Al Viro <viro@zeniv.linux.org.uk>,
- stable@vger.kernel.org
+ id 1V1sZ5-0001xp-NJ
+ for linux-mtd@lists.infradead.org; Wed, 24 Jul 2013 06:28:48 +0000
+Received: by mail-pb0-f43.google.com with SMTP id md12so9276889pbc.30
+ for <linux-mtd@lists.infradead.org>; Tue, 23 Jul 2013 23:28:25 -0700 (PDT)
+From: Brian Norris <computersforpeace@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH 0/4] mtd: nand: cleanups to BBT
+Date: Tue, 23 Jul 2013 23:27:55 -0700
+Message-Id: <1374647279-14083-1-git-send-email-computersforpeace@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,52 +20,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+A few random BBT cleanups, some of which I've had sitting around for a
+while. There will probably be some more in the near future.
 
---=-pCBeYmrLoqb0Ldskm4JM
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Brian Norris (4):
+  mtd: nand: add accessors, macros for in-memory BBT
+  mtd: nand: refactor chip->block_markbad interface
+  mtd: nand: hide in-memory BBT implementation details
+  mtd: nand: remove NAND_BBT_SCANEMPTY
 
-On Mon, 2013-07-08 at 11:15 +0200, Christoph Fritz wrote:
-> Hi Ben,
->=20
->  I can't find an incarnation of commit "UBIFS: fix a horrid
-> bug" (605c912) in current stable branch 3.2 but 3.0, 3.4, 3.9 and
-> current.
->=20
-> Are there any concerns adding these commits:
->=20
->     UBIFS: prepare to fix a horrid bug
->     UBIFS: fix a horrid bug
+ Documentation/DocBook/mtdnand.tmpl     |   2 -
+ drivers/mtd/nand/docg4.c               |   6 -
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |  44 +++-----
+ drivers/mtd/nand/nand_base.c           | 113 ++++++++++---------
+ drivers/mtd/nand/nand_bbt.c            | 194 +++++++++++++++++----------------
+ drivers/mtd/nand/omap2.c               |   2 +-
+ drivers/mtd/nand/sm_common.c           |   9 +-
+ drivers/mtd/onenand/onenand_bbt.c      |   1 -
+ include/linux/mtd/bbm.h                |   2 -
+ include/linux/mtd/nand.h               |   2 +-
+ 10 files changed, 185 insertions(+), 190 deletions(-)
 
-I've just gone through all the commits tagged for stable up to
-v3.11-rc1.  These are now in my patch queue for the next 3.2 update.
-
-Ben.
-
---=20
-Ben Hutchings
-Once a job is fouled up, anything done to improve it makes it worse.
-
---=-pCBeYmrLoqb0Ldskm4JM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIVAwUAUe9CH+e/yOyVhhEJAQqLQg//UTVcF4nN59CVBCRfnBcA5Qi5rKqvnIER
-HiyDiC2It3QpB555Z/SW0Jlg0DJQJDs7hVrvb89ZsTlVISgQdcds9HNUb5+wzgyq
-6t2zbDjjIPUMpLYnm/WpR2E92qSMwp6hQgLp7oNDszU3cnB0P/UOjWTyLc73pBUL
-cGJ5sp9zJGVhCT7E7rXkc9Jeo9o5Rjc2pWipigdzG4uhYfHld9EIDF0QHIWSb+xJ
-/+qhKrJe7VB6gPmI96avSeH87YBZzbAsknw/5pISI6Usb18+1vvjy+/LC+5fH4AQ
-rNyqUYj5qGHTeh6Bs+YUcpkj7gSyWLQNdgJdGjFBsFoCk6TTFXMuAKlfe9GkahDd
-5DjmIWONK4CQTr8BfpLSyVCpRwN/k1VInLNEb9jpxOLW6rdBg4hdYffXZ9IWE+eM
-RLPipvTQC54UQ3d63QRf3rw1F2VPhpLcVaOMFmqLk0A33i9q2VnLNd/qcvn8f6C7
-KSoyGR3Fq62DDxYBNErMzSMe0J8GemFZ0v2x6mJRadsx2cR19SrUutYdeh6YOZ+i
-+K/DRDlvNTUjMpfn7OhDDFlSDRoHQsymafsiLGRT3bUy0v2OvSrCLqSsACEdlcRZ
-0h+Mcp1LSWUk1u5PcqwLEJJ+SGUE9t/4qYslmnvXEIur2QS6gzTRU0wS8RN7F2cY
-89WqaJ8Sv+0=
-=NSSQ
------END PGP SIGNATURE-----
-
---=-pCBeYmrLoqb0Ldskm4JM--
+-- 
+1.8.3.2
