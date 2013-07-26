@@ -1,20 +1,21 @@
-Received: from userp1040.oracle.com ([156.151.31.81])
+Received: from post.merula.co.uk ([217.146.97.9])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V2Pi7-0000RF-QO
- for linux-mtd@lists.infradead.org; Thu, 25 Jul 2013 17:52:20 +0000
-From: Dave Kleikamp <dave.kleikamp@oracle.com>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH V8 32/33] ubifs: convert file ops from aio_read/write to
- read/write_iter
-Date: Thu, 25 Jul 2013 12:50:58 -0500
-Message-Id: <1374774659-13121-33-git-send-email-dave.kleikamp@oracle.com>
-In-Reply-To: <1374774659-13121-1-git-send-email-dave.kleikamp@oracle.com>
-References: <1374774659-13121-1-git-send-email-dave.kleikamp@oracle.com>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Dave Kleikamp <dave.kleikamp@oracle.com>, linux-mtd@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
- Zach Brown <zab@zabbo.net>, "Maxim V. Patlasov" <mpatlasov@parallels.com>
+ id 1V2gCY-0005rJ-0i
+ for linux-mtd@lists.infradead.org; Fri, 26 Jul 2013 11:28:51 +0000
+Received: from remote.lucyautomation.co.uk ([62.6.155.233])
+ (authenticated bits=0)
+ by post.merula.co.uk (8.13.8/8.13.8) with ESMTP id r6QBSR3S023917
+ (version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
+ for <linux-mtd@lists.infradead.org>; Fri, 26 Jul 2013 12:28:28 +0100
+From: John Parker <John.Parker@lucyautomation.co.uk>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Fri, 26 Jul 2013 12:28:25 +0100
+Subject: ubifs on SPI NOR Flash with uniform 4k erase block size
+Message-ID: <EAF1F21DA385DA4797F21C5DCAEF6BAC45856DEF1C@AUTOSERVER1.auto.local>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,57 +25,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: linux-mtd@lists.infradead.org
----
- fs/ubifs/file.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Hi all
 
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index 123c79b..22924e0 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -44,7 +44,7 @@
-  * 'ubifs_writepage()' we are only guaranteed that the page is locked.
-  *
-  * Similarly, @i_mutex is not always locked in 'ubifs_readpage()', e.g., the
-- * read-ahead path does not lock it ("sys_read -> generic_file_aio_read ->
-+ * read-ahead path does not lock it ("sys_read -> generic_file_read_iter ->
-  * ondemand_readahead -> readpage"). In case of readahead, @I_SYNC flag is not
-  * set as well. However, UBIFS disables readahead.
-  */
-@@ -1396,8 +1396,8 @@ static int update_mctime(struct ubifs_info *c, struct inode *inode)
- 	return 0;
- }
- 
--static ssize_t ubifs_aio_write(struct kiocb *iocb, const struct iovec *iov,
--			       unsigned long nr_segs, loff_t pos)
-+static ssize_t ubifs_write_iter(struct kiocb *iocb, struct iov_iter *iter,
-+				loff_t pos)
- {
- 	int err;
- 	struct inode *inode = iocb->ki_filp->f_mapping->host;
-@@ -1407,7 +1407,7 @@ static ssize_t ubifs_aio_write(struct kiocb *iocb, const struct iovec *iov,
- 	if (err)
- 		return err;
- 
--	return generic_file_aio_write(iocb, iov, nr_segs, pos);
-+	return generic_file_write_iter(iocb, iter, pos);
- }
- 
- static int ubifs_set_page_dirty(struct page *page)
-@@ -1583,8 +1583,8 @@ const struct file_operations ubifs_file_operations = {
- 	.llseek         = generic_file_llseek,
- 	.read           = do_sync_read,
- 	.write          = do_sync_write,
--	.aio_read       = generic_file_aio_read,
--	.aio_write      = ubifs_aio_write,
-+	.read_iter       = generic_file_read_iter,
-+	.write_iter      = ubifs_write_iter,
- 	.mmap           = ubifs_file_mmap,
- 	.fsync          = ubifs_fsync,
- 	.unlocked_ioctl = ubifs_ioctl,
--- 
-1.8.3.4
+I'm trying to get ubifs to work optimally on an 2M SPI NOR flash which has =
+a 4k erase block size. The device is correctly recognised by the m25p80 dri=
+ver which specifies that it supports 4k sectors.
+
+Mtd-utils is 1.5.0. Kernel is 2.6.31 but with a newer m25p80 driver to supp=
+ort the specific write commands for this particular flash device.
+
+Mtdinfo reports it correctly
+Ubiformat, ubiattach, and ubimkvol all work as expected and ubinfo reports =
+that the device has a PEB of 4096 and LEB of 3968.
+
+However, when I use mkfs.ubifs -v /dev/ubi0_0 it complains that the LEB is =
+too small and should be a minimum of 15360 (UBIFS_MIN_LEB_SZ).
+
+	Error: too small LEB sixe 3968, minimum is 15360
+
+(note there is an error in mkfs.ubifs.c in that the validate_options() func=
+tion reports c->min_io_size instead of c->leb_size if c->leb_size is less t=
+han UBIFS_MIN_LEB_SZ - confusing but easy to fix)
+
+Where does the 15*1024 value for UBIFS_MIN_LEB_SZ come from in terms of the=
+ ubifs design? I know it's defined in ubifs-media.h - what I mean is why is=
+ it 15k?
+
+Is it really a problem? If I take out the 4k sector capability from the dev=
+ice spec in the m25p80 driver and let it use the 64k block size I only get =
+32 PEBs but the mkfs.ubifs works and I can mount and use the filesystem.
+
+There are a large number of these 4k uniform erase block devices out there =
+so others must have hit this problem.
+
+Any ideas?
+
+Kind regards
+
+John
