@@ -1,18 +1,25 @@
-Received: from mail-pd0-x22a.google.com ([2607:f8b0:400e:c02::22a])
+Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V3Ge6-0006pB-3U
- for linux-mtd@lists.infradead.org; Sun, 28 Jul 2013 02:23:44 +0000
-Received: by mail-pd0-f170.google.com with SMTP id x11so4254239pdj.1
- for <linux-mtd@lists.infradead.org>; Sat, 27 Jul 2013 19:23:19 -0700 (PDT)
-From: Akinobu Mita <akinobu.mita@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 6/6] mtd: nandsim: remove unused ns->geom.oobshift
-Date: Sun, 28 Jul 2013 11:21:58 +0900
-Message-Id: <1374978118-11418-6-git-send-email-akinobu.mita@gmail.com>
-In-Reply-To: <1374978118-11418-1-git-send-email-akinobu.mita@gmail.com>
-References: <1374978118-11418-1-git-send-email-akinobu.mita@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Akinobu Mita <akinobu.mita@gmail.com>,
+ id 1V3Ilc-0002kM-43
+ for linux-mtd@lists.infradead.org; Sun, 28 Jul 2013 04:39:36 +0000
+Received: by mail-pa0-f43.google.com with SMTP id hz10so3681088pad.16
+ for <linux-mtd@lists.infradead.org>; Sat, 27 Jul 2013 21:39:13 -0700 (PDT)
+Message-ID: <51F4A069.7020902@gmail.com>
+Date: Sun, 28 Jul 2013 10:09:05 +0530
+From: Vikram Narayanan <vikram186@gmail.com>
+MIME-Version: 1.0
+To: Akinobu Mita <akinobu.mita@gmail.com>
+Subject: Re: [PATCH -next 1/7] mtd: tests: introduce mtd_test module
+References: <1374891256-20248-1-git-send-email-akinobu.mita@gmail.com>
+ <1374891256-20248-2-git-send-email-akinobu.mita@gmail.com>
+ <CAN8TOE987JxGfj-O5NxVCOCVkjsiFy2pRuNMaY3m6+mHdvqtnA@mail.gmail.com>
+ <CAC5umyhmumvmVuQDSMUjWnhh79Kn3AqfBWa5ZuCbyjspVtL-CQ@mail.gmail.com>
+In-Reply-To: <CAC5umyhmumvmVuQDSMUjWnhh79Kn3AqfBWa5ZuCbyjspVtL-CQ@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Adrian Hunter <adrian.hunter@intel.com>,
  Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,47 +30,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ns->geom.oobshift holds bits number in OOB size, but OOB size is not
-always power of two.  So it is useless and it actually isn't used in
-this driver except for just printing the value at module loading.
+On 28/Jul/2013 7:51 AM, Akinobu Mita wrote:
+> 2013/7/28 Brian Norris <computersforpeace@gmail.com>:
+>> I like this idea. There is definitely too much code duplication.
+>>
+>> However, there is an important tradeoff here: now to run these (very
+>> simple) tests, we have a two-step process*:
+>>
+>> insmod mtd_test.ko
+>> insmod mtd_<actualtest>.ko dev=<MTD>
+>>
+>> [* modprobe would solve this problem, but these tests are often
+>> compiled and run by hand, sometimes on systems without the convenience
+>> of modprobe ]
+>>
+>> We could still accomplish the reduction in (source) code duplication
+>> by simply including these simple routines in a header, then the code
+>> would be compiled into each test module. I realize this isn't
+>> typically the "best" way to share code, but since these are just test
+>> modules and really don't need to be optimized for code size, I think
+>> it is worth avoiding the extra step of inserting another module.
+>
+> I understand your concern and I'm going to change this series to move
+> all these functions into a header file.  But I'll wait other opinion
+> for a while.
 
-Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
----
- drivers/mtd/nand/nandsim.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+You can refer this.
+<http://thread.gmane.org/gmane.linux.drivers.mtd/43932/focus=43941>
 
-diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index ce90990..9e04de0 100644
---- a/drivers/mtd/nand/nandsim.c
-+++ b/drivers/mtd/nand/nandsim.c
-@@ -336,7 +336,6 @@ struct nandsim {
- 		uint pgsec;         /* number of pages per sector */
- 		uint secshift;      /* bits number in sector size */
- 		uint pgshift;       /* bits number in page size */
--		uint oobshift;      /* bits number in OOB size */
- 		uint pgaddrbytes;   /* bytes per page address */
- 		uint secaddrbytes;  /* bytes per sector address */
- 		uint idbytes;       /* the number ID bytes that this chip outputs */
-@@ -689,7 +688,6 @@ static int init_nandsim(struct mtd_info *mtd)
- 	ns->geom.totszoob = ns->geom.totsz + (uint64_t)ns->geom.pgnum * ns->geom.oobsz;
- 	ns->geom.secshift = ffs(ns->geom.secsz) - 1;
- 	ns->geom.pgshift  = chip->page_shift;
--	ns->geom.oobshift = ffs(ns->geom.oobsz) - 1;
- 	ns->geom.pgsec    = ns->geom.secsz / ns->geom.pgsz;
- 	ns->geom.secszoob = ns->geom.secsz + ns->geom.oobsz * ns->geom.pgsec;
- 	ns->options = 0;
-@@ -773,7 +771,7 @@ static int init_nandsim(struct mtd_info *mtd)
- 	printk("bus width: %u\n",               ns->busw);
- 	printk("bits in sector size: %u\n",     ns->geom.secshift);
- 	printk("bits in page size: %u\n",       ns->geom.pgshift);
--	printk("bits in OOB size: %u\n",	ns->geom.oobshift);
-+	printk("bits in OOB size: %u\n",	ffs(ns->geom.oobsz) - 1);
- 	printk("flash size with OOB: %llu KiB\n",
- 			(unsigned long long)ns->geom.totszoob >> 10);
- 	printk("page address bytes: %u\n",      ns->geom.pgaddrbytes);
--- 
-1.8.3.1
+And also Artem's feedback here
+<http://thread.gmane.org/gmane.linux.drivers.mtd/43932/focus=43941>
+
+However, I didn't get much time to make this patch better as Artem 
+suggested.
+
+~Vikram
