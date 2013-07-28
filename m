@@ -1,27 +1,22 @@
-Received: from mail-pb0-x230.google.com ([2607:f8b0:400e:c01::230])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V3Inz-0002q4-Fg
- for linux-mtd@lists.infradead.org; Sun, 28 Jul 2013 04:42:04 +0000
-Received: by mail-pb0-f48.google.com with SMTP id md4so3439092pbc.35
- for <linux-mtd@lists.infradead.org>; Sat, 27 Jul 2013 21:41:41 -0700 (PDT)
-Message-ID: <51F4A0FE.1020007@gmail.com>
-Date: Sun, 28 Jul 2013 10:11:34 +0530
-From: Vikram Narayanan <vikram186@gmail.com>
+Received: from [94.23.35.102] (helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V3Zq3-0003ie-2Z
+ for linux-mtd@lists.infradead.org; Sun, 28 Jul 2013 22:53:19 +0000
+Date: Sun, 28 Jul 2013 19:53:00 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 1/4] mtd: nand: gpio: Determine bus width automatically
+Message-ID: <20130728225259.GA4215@localhost>
+References: <1374582499-31823-1-git-send-email-shc_work@mail.ru>
+ <CAN8TOE8_K3rT5gLFBGOnghK-ajFcjQK22mm0qYmF+hSvkT27aA@mail.gmail.com>
 MIME-Version: 1.0
-To: Akinobu Mita <akinobu.mita@gmail.com>
-Subject: Re: [PATCH -next 1/7] mtd: tests: introduce mtd_test module
-References: <1374891256-20248-1-git-send-email-akinobu.mita@gmail.com>
- <1374891256-20248-2-git-send-email-akinobu.mita@gmail.com>
- <CAN8TOE987JxGfj-O5NxVCOCVkjsiFy2pRuNMaY3m6+mHdvqtnA@mail.gmail.com>
- <CAC5umyhmumvmVuQDSMUjWnhh79Kn3AqfBWa5ZuCbyjspVtL-CQ@mail.gmail.com>
- <51F4A069.7020902@gmail.com>
-In-Reply-To: <51F4A069.7020902@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Adrian Hunter <adrian.hunter@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAN8TOE8_K3rT5gLFBGOnghK-ajFcjQK22mm0qYmF+hSvkT27aA@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ David Woodhouse <dwmw2@infradead.org>, Alexander Shiyan <shc_work@mail.ru>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,48 +26,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 28/Jul/2013 10:09 AM, Vikram Narayanan wrote:
-> On 28/Jul/2013 7:51 AM, Akinobu Mita wrote:
->> 2013/7/28 Brian Norris <computersforpeace@gmail.com>:
->>> I like this idea. There is definitely too much code duplication.
->>>
->>> However, there is an important tradeoff here: now to run these (very
->>> simple) tests, we have a two-step process*:
->>>
->>> insmod mtd_test.ko
->>> insmod mtd_<actualtest>.ko dev=<MTD>
->>>
->>> [* modprobe would solve this problem, but these tests are often
->>> compiled and run by hand, sometimes on systems without the convenience
->>> of modprobe ]
->>>
->>> We could still accomplish the reduction in (source) code duplication
->>> by simply including these simple routines in a header, then the code
->>> would be compiled into each test module. I realize this isn't
->>> typically the "best" way to share code, but since these are just test
->>> modules and really don't need to be optimized for code size, I think
->>> it is worth avoiding the extra step of inserting another module.
->>
->> I understand your concern and I'm going to change this series to move
->> all these functions into a header file.  But I'll wait other opinion
->> for a while.
->
-> You can refer this.
-> <http://thread.gmane.org/gmane.linux.drivers.mtd/43932/focus=43941>
+On Tue, Jul 23, 2013 at 11:42:08PM -0700, Brian Norris wrote:
+> On Tue, Jul 23, 2013 at 5:28 AM, Alexander Shiyan <shc_work@mail.ru> wrote:
+> > This patch provide automatically determine of bus width. If resource size,
+> > supplied to the driver more than 1 byte, the NAND_BUSWIDTH_AUTO option
+> > will be used in the MTD core.
+> 
+> I presume this depends on the bugfix I sent for NAND_BUSWIDTH_AUTO /
+> nand_set_defaults()? That's worth noting (as I am right now), for
+> whenever someone gets around to merging this.
+> 
+> > Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+> > ---
+> >  .../devicetree/bindings/mtd/gpio-control-nand.txt  |  5 ++---
+> 
+> Considering the changes in device-tree bindings, it's good to CC the
+> device-tree list, I believe.
+> 
 
-http://article.gmane.org/gmane.linux.drivers.mtd/43933
+Adding the new devicetree list in Cc.
 
-> And also Artem's feedback here
-> <http://thread.gmane.org/gmane.linux.drivers.mtd/43932/focus=43941>
+Keep in mind you might want to split the DT binding part of the patch
+into a separate patch. For small patches like this one, it's probably
+not a big deal.
 
-http://article.gmane.org/gmane.linux.drivers.mtd/44007
-
->
-> However, I didn't get much time to make this patch better as Artem
-> suggested.
->
-> ~Vikram
-
-Sorry, Now updated the thread with correct links.
-
-~Vikram
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
