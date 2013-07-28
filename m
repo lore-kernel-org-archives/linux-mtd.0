@@ -1,24 +1,24 @@
-Received: from mail-vb0-x22f.google.com ([2607:f8b0:400c:c02::22f])
+Received: from mail-ea0-x22c.google.com ([2a00:1450:4013:c01::22c])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V3BZo-0004Ix-3K
- for linux-mtd@lists.infradead.org; Sat, 27 Jul 2013 20:58:56 +0000
-Received: by mail-vb0-f47.google.com with SMTP id h10so1983341vbh.34
- for <linux-mtd@lists.infradead.org>; Sat, 27 Jul 2013 13:58:34 -0700 (PDT)
+ id 1V3GcC-0006k7-0n
+ for linux-mtd@lists.infradead.org; Sun, 28 Jul 2013 02:21:44 +0000
+Received: by mail-ea0-f172.google.com with SMTP id q10so2246903eaj.17
+ for <linux-mtd@lists.infradead.org>; Sat, 27 Jul 2013 19:21:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAN8TOE82MqJ0WRtLftbfp0D9d94yXsUH7-vF3M6fooDTFjFvsw@mail.gmail.com>
-References: <1374582499-31823-1-git-send-email-shc_work@mail.ru>
- <CAN8TOE8_K3rT5gLFBGOnghK-ajFcjQK22mm0qYmF+hSvkT27aA@mail.gmail.com>
- <20130724172804.373309617f46b6e66a1085c0@mail.ru>
- <CAN8TOE82MqJ0WRtLftbfp0D9d94yXsUH7-vF3M6fooDTFjFvsw@mail.gmail.com>
-Date: Sat, 27 Jul 2013 13:58:34 -0700
-Message-ID: <CAN8TOE9ZEJY5bXRhY+mEc2iFSY90zJFNUnjp50R+an_viQokMw@mail.gmail.com>
-Subject: Re: [PATCH 1/4] mtd: nand: gpio: Determine bus width automatically
-From: Brian Norris <computersforpeace@gmail.com>
-To: Alexander Shiyan <shc_work@mail.ru>
+In-Reply-To: <CAN8TOE987JxGfj-O5NxVCOCVkjsiFy2pRuNMaY3m6+mHdvqtnA@mail.gmail.com>
+References: <1374891256-20248-1-git-send-email-akinobu.mita@gmail.com>
+ <1374891256-20248-2-git-send-email-akinobu.mita@gmail.com>
+ <CAN8TOE987JxGfj-O5NxVCOCVkjsiFy2pRuNMaY3m6+mHdvqtnA@mail.gmail.com>
+Date: Sun, 28 Jul 2013 11:21:20 +0900
+Message-ID: <CAC5umyhmumvmVuQDSMUjWnhh79Kn3AqfBWa5ZuCbyjspVtL-CQ@mail.gmail.com>
+Subject: Re: [PATCH -next 1/7] mtd: tests: introduce mtd_test module
+From: Akinobu Mita <akinobu.mita@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: devicetree@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
- linux-mtd@lists.infradead.org,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,13 +28,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-(snip conversation)
+2013/7/28 Brian Norris <computersforpeace@gmail.com>:
+> I like this idea. There is definitely too much code duplication.
+>
+> However, there is an important tradeoff here: now to run these (very
+> simple) tests, we have a two-step process*:
+>
+> insmod mtd_test.ko
+> insmod mtd_<actualtest>.ko dev=<MTD>
+>
+> [* modprobe would solve this problem, but these tests are often
+> compiled and run by hand, sometimes on systems without the convenience
+> of modprobe ]
+>
+> We could still accomplish the reduction in (source) code duplication
+> by simply including these simple routines in a header, then the code
+> would be compiled into each test module. I realize this isn't
+> typically the "best" way to share code, but since these are just test
+> modules and really don't need to be optimized for code size, I think
+> it is worth avoiding the extra step of inserting another module.
 
-BTW Alexander, please be sure to CC the appropriate list
-(devicetree@vger.kernel.org) for the resend of your DT-related patches
-(I initially used the wrong list). They should have better input on
-the process of adding/removing/deprecating device properties. And if
-they don't have any opinion, then it's probably fine to do this
-whatever way you/we see fit :)
-
-Brian
+I understand your concern and I'm going to change this series to move
+all these functions into a header file.  But I'll wait other opinion
+for a while.
