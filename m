@@ -1,22 +1,20 @@
-Received: from [94.23.35.102] (helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V3Zq3-0003ie-2Z
- for linux-mtd@lists.infradead.org; Sun, 28 Jul 2013 22:53:19 +0000
-Date: Sun, 28 Jul 2013 19:53:00 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 1/4] mtd: nand: gpio: Determine bus width automatically
-Message-ID: <20130728225259.GA4215@localhost>
-References: <1374582499-31823-1-git-send-email-shc_work@mail.ru>
- <CAN8TOE8_K3rT5gLFBGOnghK-ajFcjQK22mm0qYmF+hSvkT27aA@mail.gmail.com>
+Received: from mail-oa0-x232.google.com ([2607:f8b0:4003:c02::232])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V3bOA-0006kK-N5
+ for linux-mtd@lists.infradead.org; Mon, 29 Jul 2013 00:32:39 +0000
+Received: by mail-oa0-f50.google.com with SMTP id k7so11516838oag.23
+ for <linux-mtd@lists.infradead.org>; Sun, 28 Jul 2013 17:32:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAN8TOE8_K3rT5gLFBGOnghK-ajFcjQK22mm0qYmF+hSvkT27aA@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- David Woodhouse <dwmw2@infradead.org>, Alexander Shiyan <shc_work@mail.ru>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+In-Reply-To: <1374917973-7083-1-git-send-email-wangyuhang2014@gmail.com>
+References: <1374917973-7083-1-git-send-email-wangyuhang2014@gmail.com>
+Date: Sun, 28 Jul 2013 17:32:16 -0700
+Message-ID: <CA+7tXihU+JODQec-h2joUYiVY=otuSOu8BwADn+mtgELCFHPng@mail.gmail.com>
+Subject: Re: [PATCH V2] SPI: DUAL and QUAD support
+From: Trent Piepho <tpiepho@gmail.com>
+To: wangyuhang <wangyuhang2014@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: spi-devel-general@lists.sourceforge.net, sourav.poddar@ti.com,
+ broonie@kernel.org, linux-mtd@lists.infradead.org, pekon@ti.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,31 +24,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jul 23, 2013 at 11:42:08PM -0700, Brian Norris wrote:
-> On Tue, Jul 23, 2013 at 5:28 AM, Alexander Shiyan <shc_work@mail.ru> wrote:
-> > This patch provide automatically determine of bus width. If resource size,
-> > supplied to the driver more than 1 byte, the NAND_BUSWIDTH_AUTO option
-> > will be used in the MTD core.
-> 
-> I presume this depends on the bugfix I sent for NAND_BUSWIDTH_AUTO /
-> nand_set_defaults()? That's worth noting (as I am right now), for
-> whenever someone gets around to merging this.
-> 
-> > Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
-> > ---
-> >  .../devicetree/bindings/mtd/gpio-control-nand.txt  |  5 ++---
-> 
-> Considering the changes in device-tree bindings, it's good to CC the
-> device-tree list, I believe.
-> 
+On Sat, Jul 27, 2013 at 2:39 AM, wangyuhang <wangyuhang2014@gmail.com> wrote:
+> 2:To spidev, in order to backward compatible, still use
+>  SPI_IOC_RD_MODE to deal with user who use <u8 mode>. Add
+>  SPI_IOC_EXTRD_MODE to fix the <u16 mode>. And SPI_IOC_RD_LSB_FIRST
+>  seems a little redundant, so del it.
 
-Adding the new devicetree list in Cc.
+Your changes to spidev are not backward compatible at all.  You can
+not change the data types in the ioctl and maintain backward
+compatibility.  You can also not delete ioctls!
 
-Keep in mind you might want to split the DT binding part of the patch
-into a separate patch. For small patches like this one, it's probably
-not a big deal.
 
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+> @@ -1316,6 +1324,12 @@ int spi_setup(struct spi_device *spi)
+>         /* help drivers fail *cleanly* when they need options
+>          * that aren't supported with their current master
+>          */
+> +       if (((spi->mode >> 8) & 0x03) == 0x03 ||
+> +               ((spi->mode >> 10) & 0x03) == 0x03) {
+> +               dev_err(&spi->dev,
+> +               "setup: can not select dual and quad at the same time\n");
+> +               return -EINVAL;
+> +       }
+
+This code won't work if the constants you added for mode flags change
+value.  More importantly, anyone searching the code for SPI_TX_DUAL,
+etc. won't find this code.
