@@ -1,12 +1,15 @@
 Received: from [94.23.35.102] (helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V3wnw-00037f-OV
- for linux-mtd@lists.infradead.org; Mon, 29 Jul 2013 23:24:42 +0000
+ id 1V3wo5-00037p-Vl
+ for linux-mtd@lists.infradead.org; Mon, 29 Jul 2013 23:24:54 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 00/13] pxa3xx patches to support mvebu builds
-Date: Mon, 29 Jul 2013 20:24:10 -0300
-Message-Id: <1375140263-2028-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH 02/13] mtd: nand: pxa3xx: Allow to set/clear the 'spare
+ enable' field
+Date: Mon, 29 Jul 2013 20:24:12 -0300
+Message-Id: <1375140263-2028-3-git-send-email-ezequiel.garcia@free-electrons.com>
+In-Reply-To: <1375140263-2028-1-git-send-email-ezequiel.garcia@free-electrons.com>
+References: <1375140263-2028-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
  Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
  Artem Bityutskiy <dedekind1@gmail.com>, leiwen@marvell.com,
@@ -24,52 +27,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello everyone!
+Some commands (such as the ONFI parameter page read) need to
+clear the 'spare enable' bit. This commit allows to set/clear
+depending on the prepared command, instead of having it always
+set.
 
-This patchset is part of the work I'm doing to enable the pxa3xx-nand
-driver to support the NAND controller in Armada 370/XP. While this
-work in progress, here's a subet of patches I consider good enough
-for mainline.
+Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+---
+ drivers/mtd/nand/pxa3xx_nand.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-It's worth noting that using these patches and adding appropriate
-DT nodes, the NAND controller in Armada 370/XP SoC can detect
-devices that are ONFI-compliant.
-
-It's also worth noting that since pxa3xx has a mach-specific
-DMA API, I'm including a few patches to ifdef such pxa-specific
-code in non PXA/MMP platforms. This ugly workaround should be
-removed once the specific DMA API is replaced by dmaengine.
-
-Since there's no current schedule on when should that move happen,
-for now we have no choice but to implement some ifdefs workaround.
-
-Other than that, the rest of the patchset is just assorted cleanups
-and minor fixes.
-
-I'm Ccing some past pxa3xx-nand testers and reviewers, with the hope
-they can take a look at this new patchset.
-
-Any feedback and testing will be highly appreciated!
-
-Ezequiel Garcia (13):
-  mtd: nand: pxa3xx: Handle ECC and DMA enable/disable properly
-  mtd: nand: pxa3xx: Allow to set/clear the 'spare enable' field
-  mtd: nand: pxa3xx: Support command buffer #3
-  mtd: nand: pxa3xx: Use 'length override' in ONFI paramater page read
-  mtd: nand: pxa3xx: Add a local loop variable
-  mtd: nand: pxa3xx: Remove hardcoded mtd name
-  mtd: nand: pxa3xx: Remove uneeded internal cmdset
-  mtd: nand: pxa3xx: Move cached registers to info structure
-  mtd: nand: pxa3xx: Make dma code dependent on dma capable platforms
-  mtd: nand: pxa3xx: Add inline keyword to function enable_int()
-  mtd: nand: pxa3xx: Allow devices with no dma resources
-  mtd: nand: pxa3xx-nand: Increase data buffer size
-  mtd: nand: Allow to build pxa3xx_nand on Orion platforms
-
- drivers/mtd/nand/Kconfig                      |   2 +-
- drivers/mtd/nand/pxa3xx_nand.c                | 229 +++++++++++++++-----------
- include/linux/platform_data/mtd-nand-pxa3xx.h |  13 --
- 3 files changed, 132 insertions(+), 112 deletions(-)
-
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 6f4b62d..b4d097f 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -174,6 +174,7 @@ struct pxa3xx_nand_info {
+ 	int			cs;
+ 	int			use_ecc;	/* use HW ECC ? */
+ 	int			use_dma;	/* use DMA ? */
++	int			use_spare;	/* use spare ? */
+ 	int			is_ready;
+ 
+ 	unsigned int		page_size;	/* page size of attached chip */
+@@ -314,6 +315,11 @@ static void pxa3xx_nand_start(struct pxa3xx_nand_info *info)
+ 	else
+ 		ndcr &= ~NDCR_DMA_EN;
+ 
++	if (info->use_spare)
++		ndcr |= NDCR_SPARE_EN;
++	else
++		ndcr &= ~NDCR_SPARE_EN;
++
+ 	ndcr |= NDCR_ND_RUN;
+ 
+ 	/* clear status bits and run */
+@@ -515,6 +521,7 @@ static int prepare_command_pool(struct pxa3xx_nand_info *info, int command,
+ 	info->buf_count		= 0;
+ 	info->oob_size		= 0;
+ 	info->use_ecc		= 0;
++	info->use_spare		= 1;
+ 	info->use_dma		= (use_dma) ? 1 : 0;
+ 	info->is_ready		= 0;
+ 	info->retcode		= ERR_NONE;
 -- 
 1.8.1.5
