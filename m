@@ -1,20 +1,24 @@
-Received: from post.merula.co.uk ([217.146.97.9])
+Received: from bear.ext.ti.com ([192.94.94.41])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V3lyj-00061t-HZ
- for linux-mtd@lists.infradead.org; Mon, 29 Jul 2013 11:51:07 +0000
-From: John Parker <John.Parker@lucyautomation.co.uk>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Mon, 29 Jul 2013 12:50:38 +0100
-Subject: RE: ubifs on SPI NOR Flash with uniform 4k erase block size
-Message-ID: <EAF1F21DA385DA4797F21C5DCAEF6BAC45856DEF59@AUTOSERVER1.auto.local>
-References: <EAF1F21DA385DA4797F21C5DCAEF6BAC45856DEF1C@AUTOSERVER1.auto.local>
- <CAN8TOE_khPJN0-4+6fWyNZvqSmYeF2ju1kb-cLV_KmpLE-Rw3g@mail.gmail.com>
+ id 1V3moO-0008I7-Rj
+ for linux-mtd@lists.infradead.org; Mon, 29 Jul 2013 12:44:29 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: wangyuhang <wangyuhang2014@gmail.com>
+Subject: RE: [PATCH] SPI: DUAL and QUAD support
+Date: Mon, 29 Jul 2013 12:43:57 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9EE267@DBDE04.ent.ti.com>
+References: <20130729064234.GS9858@sirena.org.uk>
+ <1375095194-7093-1-git-send-email-wangyuhang2014@gmail.com>
+In-Reply-To: <1375095194-7093-1-git-send-email-wangyuhang2014@gmail.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Cc: "spi-devel-general@lists.sourceforge.net"
+ <spi-devel-general@lists.sourceforge.net>, "Poddar,
+ Sourav" <sourav.poddar@ti.com>, "tpiepho@gmail.com" <tpiepho@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "broonie@kernel.org" <broonie@kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,113 +28,265 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> -----Original Message-----
-> From: John Parker
-> Sent: 29 July 2013 08:36
-> To: 'Brian Norris'
-> Cc: linux-mtd@lists.infradead.org; Artem Bityutskiy
-> Subject: RE: ubifs on SPI NOR Flash with uniform 4k erase block size
+Hello,
+
 >=20
-> > -----Original Message-----
-> > From: Brian Norris [mailto:computersforpeace@gmail.com]
-> > Sent: 27 July 2013 20:50
-> > To: John Parker
-> > Cc: linux-mtd@lists.infradead.org; Artem Bityutskiy
-> > Subject: Re: ubifs on SPI NOR Flash with uniform 4k erase block size
-> >
-> > Hi John,
-> >
-> > On Fri, Jul 26, 2013 at 4:28 AM, John Parker
-> > <John.Parker@lucyautomation.co.uk> wrote:
-> > > I'm trying to get ubifs to work optimally on an 2M SPI NOR flash
-> > > which has a
-> > 4k erase block size. The device is correctly recognised by the m25p80
-> > driver which specifies that it supports 4k sectors.
-> > >
-> > > Mtd-utils is 1.5.0. Kernel is 2.6.31 but with a newer m25p80 driver
-> > > to
-> > support the specific write commands for this particular flash device.
-> > >
-> > > Mtdinfo reports it correctly
-> > > Ubiformat, ubiattach, and ubimkvol all work as expected and ubinfo
-> > reports that the device has a PEB of 4096 and LEB of 3968.
-> > >
-> > > However, when I use mkfs.ubifs -v /dev/ubi0_0 it complains that the
-> > > LEB is
-> > too small and should be a minimum of 15360 (UBIFS_MIN_LEB_SZ).
-> > >
-> > >         Error: too small LEB sixe 3968, minimum is 15360
-> > >
-> > > (note there is an error in mkfs.ubifs.c in that the
-> > > validate_options() function reports c->min_io_size instead of
-> > > c->leb_size if c->leb_size is less than UBIFS_MIN_LEB_SZ - confusing
-> > > but easy to fix)
-> > >
-> > > Where does the 15*1024 value for UBIFS_MIN_LEB_SZ come from in
-> terms
-> > of the ubifs design? I know it's defined in ubifs-media.h - what I
-> > mean is why is it 15k?
-> > >
-> > > Is it really a problem? If I take out the 4k sector capability from
-> > > the device
-> > spec in the m25p80 driver and let it use the 64k block size I only get
-> > 32 PEBs but the mkfs.ubifs works and I can mount and use the filesystem=
-.
-> > >
-> > > There are a large number of these 4k uniform erase block devices out
-> > > there
-> > so others must have hit this problem.
-> > >
-> > > Any ideas?
-> >
-> > I'm not an expert on the design of UBIFS, but it seems like
-> > UBIFS_MIN_LEB_SZ (15KiB) and UBIFS_MAX_LEB_SZ (2MiB) are rather
-> > arbitrary. And we may run into this same problem on the MAX size,
-> > since I hear there are some 4MiB eraseblock MLC NAND just around the
-> corner.
-> >
-> > In fact, these MAX and MIN are not used in mkfs.ubifs other than to
-> > "validate" the input parameters. Perhaps they can be dropped entirely,
-> > and the user is left at their own risk if they have "too large" or
-> > "too small" LEB size. But it's important to understand if there are
-> > real design reasons for limiting the LEB size. So I'll leave the final
-> > answer to this question to Artem, since he is much more familiar with t=
-he
-> internals of UBIFS.
-> >
-> > Brian
+> Hi,
 >=20
-> Hi Brian
+> modify two things.
+Hope you are tracking the Patch versions ?  Good to include it in mail-subj=
+ect.
+
+> 1:
+> >> @@ -1316,6 +1324,12 @@ int spi_setup(struct spi_device *spi)
+> >>         /* help drivers fail *cleanly* when they need options
+> >>          * that aren't supported with their current master
+> >>          */
+> >> +       if (((spi->mode >> 8) & 0x03) =3D=3D 0x03 ||
+> >> +               ((spi->mode >> 10) & 0x03) =3D=3D 0x03) {
+> >> +               dev_err(&spi->dev,
+> >> +               "setup: can not select dual and quad at the same time\=
+n")
+> >> +               return -EINVAL;
+> >> +       }
+> >> +               return -EINVAL;
+> >> +       }
 >=20
-> While the Max and Min are only used to validate - c->leb_size is used all=
- over
-> the place. If I comment out the min size check, I get a Segmentation viol=
-ation
-> when I run the mkfs.ubifs which strikes me as being odd but fair if there=
- is an
-> internal limitation on the minimum LEB size.
+> >This code won't work if the constants you added for mode flags change
+> >value.  More importantly, anyone searching the code for SPI_TX_DUAL,
+> >etc. won't find this code.
 >=20
-> I'll see if I can find where the segv is happening.
+> so use the certain macro to replace.
 >=20
-> Regards
+> 2:
+> >You need to make sure that existing userspace binaries can run
+> >unmodified, changing the types will change the layout of the ioctl
+> >arguments.  This may mean that you need to add new ioctls if you need to
+> >change types.
 >=20
-> John
+> I recovered the SPI_IOC_RD_LSB_FIRST ioctl.
+> Add new ioctl to fit u16 mode.
+> In addition,may SPI_IOC_RD_LSB_FIRST should be del in a better way.
+>=20
+> Signed-off-by: wangyuhang <wangyuhang2014@gmail.com>
+> ---
+>  drivers/spi/spi.c               |   14 ++++++++++++++
+>  drivers/spi/spidev.c            |   29 ++++++++++++++++++++++++++++-
+>  include/linux/spi/spi.h         |   20 ++++++++++++++++++--
+>  include/uapi/linux/spi/spidev.h |   17 ++++++++++++++++-
+>  4 files changed, 76 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+> index 004b10f..3f6dc93 100644
+> --- a/drivers/spi/spi.c
+> +++ b/drivers/spi/spi.c
+> @@ -868,6 +868,14 @@ static void of_register_spi_devices(struct spi_maste=
+r
+> *master)
+>  			spi->mode |=3D SPI_CS_HIGH;
+>  		if (of_find_property(nc, "spi-3wire", NULL))
+>  			spi->mode |=3D SPI_3WIRE;
+> +		if (of_find_property(nc, "spi-tx-dual", NULL))
+> +			spi->mode |=3D SPI_TX_DUAL;
+> +		if (of_find_property(nc, "spi-tx-quad", NULL))
+> +			spi->mode |=3D SPI_TX_QUAD;
+> +		if (of_find_property(nc, "spi-rx-dual", NULL))
+> +			spi->mode |=3D SPI_RX_DUAL;
+> +		if (of_find_property(nc, "spi-rx-quad", NULL))
+> +			spi->mode |=3D SPI_RX_QUAD;
+>=20
+ [Pekon] I think its cleaner to use similar parameters for channel-width
+ info everywhere. Like you have added separate fields  'tx_nbits' and
+ 'rx_nbits' in spi_transfer, Why not do similar here for 'spi_master' ?
+And also in 'spi_device'. This can be like below:
 
-The SEGV occurs in write_leb() because c->leb_size - len =3D 3968 - 4096 =
-=3D -128 which means memset is given a negative number of bytes to set!
+- SPI_3WIRE : tx_nbit =3D 0, rx_nbit =3D 0 (single wire for MISO & MOSI)
+- SPI_4WIRE :  tx_nbit =3D 1, rx_nbit =3D 1 (separate wire for MISO & MOSI)
+- DUAL_SPI :   tx_nbit =3D 2, rx_nbit =3D 2
+- QUAD_SPI : tx_nbit =3D 2 or 4, rx_nbit =3D 4
+This way 'mode' field can be explicitly left for other purposes like CPHA, =
+CPOL.
+OR custom modes (like modified SPI mode in Freescale controllers).
 
-The superblock struct is padded to be 4096 bytes which is never going to fi=
-t in a 3968 byte LEB.
+But if you are touching any existing configuration (like SPI_3WIRE as
+proposed  above), Then please send it as independent patch/proposal,
+which can be Acked by individual SPI driver maintainers.
 
-This means that any device with the SECT_4K flag in m25p80.c will fail to w=
-ork with UBIFS out of the box.
+[Pekon]: I think it is correct to assume all these SPI modes as mutually
+exclusive from of_property() point of view?=20
+Instead of defining separate of_properties(), you can define a single
+of_property() , something like 'max-tx-nbits' and 'max-rx-nbits'
+which can represent various modes like (DUAL, QUAD, 3WIRE, 4WIRE).
 
-Does the superblock have to be 4096 bytes? Could it be smaller? What else w=
-ould break?
+>  		/* Device speed */
+>  		prop =3D of_get_property(nc, "spi-max-frequency", &len);
+> @@ -1316,6 +1324,12 @@ int spi_setup(struct spi_device *spi)
+>  	/* help drivers fail *cleanly* when they need options
+>  	 * that aren't supported with their current master
+>  	 */
+> +	if (((spi->mode & SPI_TX_DUAL) && (spi->mode & SPI_TX_QUAD))
+> ||
+> +		((spi->mode & SPI_RX_DUAL) && (spi->mode &
+> SPI_RX_QUAD))) {
+> +		dev_err(&spi->dev,
+> +		"setup: can not select dual and quad at the same time\n");
+> +		return -EINVAL;
+> +	}
+[Pekon]: this check would be not be required if you have single
+ of_property() for all modes.
 
 
-Any ideas?
+>  	bad_bits =3D spi->mode & ~spi->master->mode_bits;
+>  	if (bad_bits) {
+>  		dev_err(&spi->dev, "setup: unsupported mode bits %x\n",
+> diff --git a/drivers/spi/spidev.c b/drivers/spi/spidev.c
+> index 2e0655d..0b776de 100644
+> --- a/drivers/spi/spidev.c
+> +++ b/drivers/spi/spidev.c
+> @@ -75,6 +75,9 @@ static DECLARE_BITMAP(minors, N_SPI_MINORS);
+>  				| SPI_LSB_FIRST | SPI_3WIRE | SPI_LOOP \
+>  				| SPI_NO_CS | SPI_READY)
+>=20
+> +#define SPI_EXTMODE_MASK	(SPI_MODE_MASK | SPI_TX_DUAL \
+> +				| SPI_TX_QUAD | SPI_RX_DUAL |
+> SPI_RX_QUAD)
+> +
+>  struct spidev_data {
+>  	dev_t			devt;
+>  	spinlock_t		spi_lock;
+> @@ -268,6 +271,8 @@ static int spidev_message(struct spidev_data *spidev,
+>  		k_tmp->bits_per_word =3D u_tmp->bits_per_word;
+>  		k_tmp->delay_usecs =3D u_tmp->delay_usecs;
+>  		k_tmp->speed_hz =3D u_tmp->speed_hz;
+> +		k_tmp->tx_nbits =3D u_tmp->tx_nbits;
+> +		k_tmp->rx_nbits =3D u_tmp->rx_nbits;
+>  #ifdef VERBOSE
+>  		dev_dbg(&spidev->spi->dev,
+>  			"  xfer len %zd %s%s%s%dbits %u usec %uHz\n",
+> @@ -369,7 +374,10 @@ spidev_ioctl(struct file *filp, unsigned int cmd,
+> unsigned long arg)
+>  	case SPI_IOC_RD_MAX_SPEED_HZ:
+>  		retval =3D __put_user(spi->max_speed_hz, (__u32 __user
+> *)arg);
+>  		break;
+> -
+> +	case SPI_IOC_EXTRD_MODE:
+> +		retval =3D __put_user(spi->mode & SPI_EXTMODE_MASK,
+> +					(__u16 __user *)arg);
+> +		break;
+>  	/* write requests */
+>  	case SPI_IOC_WR_MODE:
+>  		retval =3D __get_user(tmp, (u8 __user *)arg);
+> @@ -433,6 +441,25 @@ spidev_ioctl(struct file *filp, unsigned int cmd,
+> unsigned long arg)
+>  				dev_dbg(&spi->dev, "%d Hz (max)\n", tmp);
+>  		}
+>  		break;
+> +	case SPI_IOC_EXTWR_MODE:
+> +		retval =3D __get_user(tmp, (u16 __user *)arg);
+> +		if (retval =3D=3D 0) {
+> +			u16	save =3D spi->mode;
+> +
+> +			if (tmp & ~SPI_EXTMODE_MASK) {
+> +				retval =3D -EINVAL;
+> +				break;
+> +			}
+> +
+> +			tmp |=3D spi->mode & ~SPI_EXTMODE_MASK;
+> +			spi->mode =3D (u16)tmp;
+> +			retval =3D spi_setup(spi);
+> +			if (retval < 0)
+> +				spi->mode =3D save;
+> +			else
+> +				dev_dbg(&spi->dev, "spi mode %02x\n",
+> tmp);
+> +		}
+> +		break;
+>=20
+>  	default:
+>  		/* segmented and/or full-duplex I/O request */
+> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+> index 38c2b92..222e49e 100644
+> --- a/include/linux/spi/spi.h
+> +++ b/include/linux/spi/spi.h
+> @@ -74,7 +74,7 @@ struct spi_device {
+>  	struct spi_master	*master;
+>  	u32			max_speed_hz;
+>  	u8			chip_select;
+> -	u8			mode;
+> +	u16			mode;
+>  #define	SPI_CPHA	0x01			/* clock phase */
+>  #define	SPI_CPOL	0x02			/* clock polarity */
+>  #define	SPI_MODE_0	(0|0)			/* (original
+> MicroWire) */
+> @@ -87,6 +87,10 @@ struct spi_device {
+>  #define	SPI_LOOP	0x20			/* loopback mode */
+>  #define	SPI_NO_CS	0x40			/* 1 dev/bus, no
+> chipselect */
+>  #define	SPI_READY	0x80			/* slave pulls low to
+> pause */
+> +#define	SPI_TX_DUAL	0x100			/* transmit with 2
+> wires */
+> +#define	SPI_TX_QUAD	0x200			/* transmit with 4
+> wires */
+> +#define	SPI_RX_DUAL	0x400			/* receive with 2
+> wires */
+> +#define	SPI_RX_QUAD	0x800			/* receive with 4
+> wires */
+>  	u8			bits_per_word;
+>  	int			irq;
+>  	void			*controller_state;
+> @@ -437,6 +441,8 @@ extern struct spi_master
+> *spi_busnum_to_master(u16 busnum);
+>   * @rx_buf: data to be read (dma-safe memory), or NULL
+>   * @tx_dma: DMA address of tx_buf, if @spi_message.is_dma_mapped
+>   * @rx_dma: DMA address of rx_buf, if @spi_message.is_dma_mapped
+> + * @tx_nbits: number of bits used for writting
+> + * @rx_nbits: number of bits used for reading
+>   * @len: size of rx and tx buffers (in bytes)
+>   * @speed_hz: Select a speed other than the device default for this
+>   *      transfer. If 0 the default (from @spi_device) is used.
+> @@ -491,6 +497,11 @@ extern struct spi_master
+> *spi_busnum_to_master(u16 busnum);
+>   * by the results of previous messages and where the whole transaction
+>   * ends when the chipselect goes intactive.
+>   *
+> + * When SPI can transfer in 1x,2x or 4x. It can get this tranfer informa=
+tion
+> + * from device through @tx_nbits and @rx_nbits. In Bi-direction, these
+> + * two should both be set. User can set transfer mode with
+> SPI_NBITS_SINGLE(1x)
+> + * SPI_NBITS_DUAL(2x) and SPI_NBITS_QUAD(4x) to support these three
+> transfer.
+> + *
+>   * The code that submits an spi_message (and its spi_transfers)
+>   * to the lower layers is responsible for managing its memory.
+>   * Zero-initialize every field you don't set up explicitly, to
+> @@ -511,6 +522,11 @@ struct spi_transfer {
+>  	dma_addr_t	rx_dma;
+>=20
+>  	unsigned	cs_change:1;
+> +	u8		tx_nbits;
+> +	u8		rx_nbits;
+> +#define	SPI_NBITS_SINGLE	0x0; /* 1bit transfer */
+> +#define	SPI_NBITS_DUAL		0x01; /* 2bits transfer */
+> +#define	SPI_NBITS_QUAD		0x02; /* 4bits transfer */
 
-Regards
+[Pekon]: I don't think it's a good place for #defines.  Plz keep it out of =
+struct body.
 
-John
+>  	u8		bits_per_word;
+>  	u16		delay_usecs;
+>  	u32		speed_hz;
+> @@ -858,7 +874,7 @@ struct spi_board_info {
+>  	/* mode becomes spi_device.mode, and is essential for chips
+>  	 * where the default of SPI_CS_HIGH =3D 0 is wrong.
+>  	 */
+> -	u8		mode;
+> +	u16		mode;
+>=20
+>  	/* ... may need additional spi_device chip config data here.
+>  	 * avoid stuff protocol drivers can set; but include stuff
+
+
+With regards, pekon
