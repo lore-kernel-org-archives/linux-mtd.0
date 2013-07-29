@@ -1,12 +1,13 @@
 Received: from [94.23.35.102] (helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V3woA-00037t-Vs
- for linux-mtd@lists.infradead.org; Mon, 29 Jul 2013 23:24:56 +0000
+ id 1V3woF-00037v-Vu
+ for linux-mtd@lists.infradead.org; Mon, 29 Jul 2013 23:25:02 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 03/13] mtd: nand: pxa3xx: Support command buffer #3
-Date: Mon, 29 Jul 2013 20:24:13 -0300
-Message-Id: <1375140263-2028-4-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH 04/13] mtd: nand: pxa3xx: Use 'length override' in ONFI
+ paramater page read
+Date: Mon, 29 Jul 2013 20:24:14 -0300
+Message-Id: <1375140263-2028-5-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1375140263-2028-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1375140263-2028-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
@@ -26,45 +27,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some newer controllers support a fourth command buffer. This additional
-command buffer allows to set an arbitrary length count, using the
-NDCB3.NDLENCNT field, to perform non-standard length operations
-such as the ONFI parameter page read.
+The ONFI command 'parameter page read' needs a non-standard length.
+Therefore, we enable the 'length override' field in NDCB0 and set
+a non-zero 'length count' in NDCB3.
 
-In controllers without this register, the operation has no effect.
+Additionally, the 'spare enable' bit must be disabled for any command
+that sets a non-zero 'length count' in NDCB3.
 
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/mtd/nand/pxa3xx_nand.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index b4d097f..23864ff 100644
+index 23864ff..0b73a58 100644
 --- a/drivers/mtd/nand/pxa3xx_nand.c
 +++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -186,6 +186,7 @@ struct pxa3xx_nand_info {
- 	uint32_t		ndcb0;
- 	uint32_t		ndcb1;
- 	uint32_t		ndcb2;
-+	uint32_t		ndcb3;
- };
+@@ -80,6 +80,7 @@
+ #define NDSR_RDDREQ		(0x1 << 1)
+ #define NDSR_WRCMDREQ		(0x1)
  
- static bool use_dma = 1;
-@@ -485,6 +486,7 @@ static irqreturn_t pxa3xx_nand_irq(int irq, void *devid)
- 		nand_writel(info, NDCB0, info->ndcb0);
- 		nand_writel(info, NDCB0, info->ndcb1);
- 		nand_writel(info, NDCB0, info->ndcb2);
-+		nand_writel(info, NDCB0, info->ndcb3);
- 	}
- 
- 	/* clear NDSR to let the controller exit the IRQ */
-@@ -543,6 +545,7 @@ static int prepare_command_pool(struct pxa3xx_nand_info *info, int command,
- 	default:
- 		info->ndcb1 = 0;
- 		info->ndcb2 = 0;
-+		info->ndcb3 = 0;
++#define NDCB0_LEN_OVRD		(0x1 << 28)
+ #define NDCB0_ST_ROW_EN         (0x1 << 26)
+ #define NDCB0_AUTO_RS		(0x1 << 25)
+ #define NDCB0_CSEL		(0x1 << 24)
+@@ -539,6 +540,9 @@ static int prepare_command_pool(struct pxa3xx_nand_info *info, int command,
+ 	case NAND_CMD_READOOB:
+ 		pxa3xx_set_datasize(info);
  		break;
- 	}
++	case NAND_CMD_PARAM:
++		info->use_spare = 0;
++		break;
+ 	case NAND_CMD_SEQIN:
+ 		exec_cmd = 0;
+ 		break;
+@@ -614,8 +618,10 @@ static int prepare_command_pool(struct pxa3xx_nand_info *info, int command,
+ 		info->buf_count = 256;
+ 		info->ndcb0 |= NDCB0_CMD_TYPE(0)
+ 				| NDCB0_ADDR_CYC(1)
++				| NDCB0_LEN_OVRD
+ 				| cmd;
+ 		info->ndcb1 = (column & 0xFF);
++		info->ndcb3 = 256;
+ 		info->data_size = 256;
+ 		break;
  
 -- 
 1.8.1.5
