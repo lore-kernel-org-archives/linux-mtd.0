@@ -1,25 +1,21 @@
-Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
+Received: from post.merula.co.uk ([217.146.97.9])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V3hAk-0000tu-B8
- for linux-mtd@lists.infradead.org; Mon, 29 Jul 2013 06:43:10 +0000
-Date: Mon, 29 Jul 2013 07:42:34 +0100
-From: Mark Brown <broonie@kernel.org>
-To: yuhang wang <wangyuhang2014@gmail.com>
-Message-ID: <20130729064234.GS9858@sirena.org.uk>
-References: <1374917973-7083-1-git-send-email-wangyuhang2014@gmail.com>
- <CA+7tXihU+JODQec-h2joUYiVY=otuSOu8BwADn+mtgELCFHPng@mail.gmail.com>
- <CAHSAbzNTUpsftZ1-fpv7UefuSdUvUidg9-SLOUXCTmSBhM0ZJQ@mail.gmail.com>
+ id 1V3i24-0002vP-KT
+ for linux-mtd@lists.infradead.org; Mon, 29 Jul 2013 07:38:18 +0000
+From: John Parker <John.Parker@lucyautomation.co.uk>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Mon, 29 Jul 2013 08:35:43 +0100
+Subject: RE: ubifs on SPI NOR Flash with uniform 4k erase block size
+Message-ID: <EAF1F21DA385DA4797F21C5DCAEF6BAC45856DEF36@AUTOSERVER1.auto.local>
+References: <EAF1F21DA385DA4797F21C5DCAEF6BAC45856DEF1C@AUTOSERVER1.auto.local>
+ <CAN8TOE_khPJN0-4+6fWyNZvqSmYeF2ju1kb-cLV_KmpLE-Rw3g@mail.gmail.com>
+In-Reply-To: <CAN8TOE_khPJN0-4+6fWyNZvqSmYeF2ju1kb-cLV_KmpLE-Rw3g@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="BHAjPJTFBOjGMyr2"
-Content-Disposition: inline
-In-Reply-To: <CAHSAbzNTUpsftZ1-fpv7UefuSdUvUidg9-SLOUXCTmSBhM0ZJQ@mail.gmail.com>
-Subject: Re: [PATCH V2] SPI: DUAL and QUAD support
-Cc: "spi-devel-general@lists.sourceforge.net"
- <spi-devel-general@lists.sourceforge.net>,
- Sourav Poddar <sourav.poddar@ti.com>, Trent Piepho <tpiepho@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,48 +25,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+> -----Original Message-----
+> From: Brian Norris [mailto:computersforpeace@gmail.com]
+> Sent: 27 July 2013 20:50
+> To: John Parker
+> Cc: linux-mtd@lists.infradead.org; Artem Bityutskiy
+> Subject: Re: ubifs on SPI NOR Flash with uniform 4k erase block size
+>=20
+> Hi John,
+>=20
+> On Fri, Jul 26, 2013 at 4:28 AM, John Parker
+> <John.Parker@lucyautomation.co.uk> wrote:
+> > I'm trying to get ubifs to work optimally on an 2M SPI NOR flash which =
+has a
+> 4k erase block size. The device is correctly recognised by the m25p80 dri=
+ver
+> which specifies that it supports 4k sectors.
+> >
+> > Mtd-utils is 1.5.0. Kernel is 2.6.31 but with a newer m25p80 driver to
+> support the specific write commands for this particular flash device.
+> >
+> > Mtdinfo reports it correctly
+> > Ubiformat, ubiattach, and ubimkvol all work as expected and ubinfo
+> reports that the device has a PEB of 4096 and LEB of 3968.
+> >
+> > However, when I use mkfs.ubifs -v /dev/ubi0_0 it complains that the LEB=
+ is
+> too small and should be a minimum of 15360 (UBIFS_MIN_LEB_SZ).
+> >
+> >         Error: too small LEB sixe 3968, minimum is 15360
+> >
+> > (note there is an error in mkfs.ubifs.c in that the validate_options()
+> > function reports c->min_io_size instead of c->leb_size if c->leb_size
+> > is less than UBIFS_MIN_LEB_SZ - confusing but easy to fix)
+> >
+> > Where does the 15*1024 value for UBIFS_MIN_LEB_SZ come from in terms
+> of the ubifs design? I know it's defined in ubifs-media.h - what I mean i=
+s why
+> is it 15k?
+> >
+> > Is it really a problem? If I take out the 4k sector capability from the=
+ device
+> spec in the m25p80 driver and let it use the 64k block size I only get 32=
+ PEBs
+> but the mkfs.ubifs works and I can mount and use the filesystem.
+> >
+> > There are a large number of these 4k uniform erase block devices out th=
+ere
+> so others must have hit this problem.
+> >
+> > Any ideas?
+>=20
+> I'm not an expert on the design of UBIFS, but it seems like
+> UBIFS_MIN_LEB_SZ (15KiB) and UBIFS_MAX_LEB_SZ (2MiB) are rather
+> arbitrary. And we may run into this same problem on the MAX size, since I
+> hear there are some 4MiB eraseblock MLC NAND just around the corner.
+>=20
+> In fact, these MAX and MIN are not used in mkfs.ubifs other than to
+> "validate" the input parameters. Perhaps they can be dropped entirely, an=
+d
+> the user is left at their own risk if they have "too large" or "too small=
+" LEB
+> size. But it's important to understand if there are real design reasons f=
+or
+> limiting the LEB size. So I'll leave the final answer to this question to=
+ Artem,
+> since he is much more familiar with the internals of UBIFS.
+>=20
+> Brian
 
---BHAjPJTFBOjGMyr2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Hi Brian
 
-On Mon, Jul 29, 2013 at 10:44:43AM +0800, yuhang wang wrote:
+While the Max and Min are only used to validate - c->leb_size is used all o=
+ver the place. If I comment out the min size check, I get a Segmentation vi=
+olation when I run the mkfs.ubifs which strikes me as being odd but fair if=
+ there is an internal limitation on the minimum LEB size.
 
-> > Your changes to spidev are not backward compatible at all.  You can
-> > not change the data types in the ioctl and maintain backward
-> > compatibility.  You can also not delete ioctls!
+I'll see if I can find where the segv is happening.
 
-> well, please give me some details or specific situations. Why ioctl
-> can not be changed. The operation that SPI_IOC_RD_LSB_FIRST do can be
-> done in SPI_IOC_RD_MODE, so I dont think there is any necessary using
-> SPI_IOC_RD_LSB_FIRST. What you worry about is the user already used
-> SPI_IOC_RD_LSB_FIRST?
+Regards
 
-You need to make sure that existing userspace binaries can run
-unmodified, changing the types will change the layout of the ioctl
-arguments.  This may mean that you need to add new ioctls if you need to
-change types.
-
---BHAjPJTFBOjGMyr2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJR9g7XAAoJELSic+t+oim97XkP/35ldbY8ckpgh16STPv3AtCi
-vdftc2y7jmkF5RqPCEGZYAxryXIZCxRCkWKIoFSAC34geQ0mNMYpVUstDUL3pne4
-/6RE3uO00x4TnVXgKyNrt9Mcd7j2FsV3ym0kTy6Q66mfUzQlUCOrQwgpuak2FR+P
-JNmLGxA/mzan19UIxKfQKldXis9esBnGYJyUCDwwvVOBe0gShPagw7Ps7uNkuWGP
-gEv1HL7UAINVXtQX6nLUuq+eoUAepSCIRwTjaXB93sVvXySTAk5T8Ez1h6Os1DiQ
-qynKiK+hksyFtwPoba5WNWjkd3qmpYq/oeSIlb4B/kDTCI1Cf28473gTekoDLJIT
-3ipnmrcvwOEyeouwgkPdoPP7WdOTx6r4nbuZsgtvFEW8qHQEK1YqG1EMWkEqH2Fo
-fw8i43UFuOcjHx8u2EP0CG20eckJd4Vat6WDZ9Z1/k1sOrJR4cTv9NvXeFbM6jkD
-/7zmmdvpEIQHqyW3w+m+HxJ/dky4zf1m1/gFDfJ9R1tFn1oEfVRynTDU1q1+HhFm
-yBeEDJ3mXRApc1fNaTebf0b/SFiLTPOsowdQW7Xpxo8gZr4ZCmFJnH8lXOHugLsx
-xZX+3AGY9D1TP5YFqNYoxNkwwj4xhUPOrwyoDVdp6Z0bBy69WAg1yreC+4G0UTe0
-mdiUUCJosjQpct1oO9oE
-=WGQ3
------END PGP SIGNATURE-----
-
---BHAjPJTFBOjGMyr2--
+John
