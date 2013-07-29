@@ -1,26 +1,25 @@
-Received: from mail-oa0-x22e.google.com ([2607:f8b0:4003:c02::22e])
+Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V3dve-00038Y-M1
- for linux-mtd@lists.infradead.org; Mon, 29 Jul 2013 03:15:23 +0000
-Received: by mail-oa0-f46.google.com with SMTP id h1so11939033oag.33
- for <linux-mtd@lists.infradead.org>; Sun, 28 Jul 2013 20:15:01 -0700 (PDT)
+ id 1V3hAk-0000tu-B8
+ for linux-mtd@lists.infradead.org; Mon, 29 Jul 2013 06:43:10 +0000
+Date: Mon, 29 Jul 2013 07:42:34 +0100
+From: Mark Brown <broonie@kernel.org>
+To: yuhang wang <wangyuhang2014@gmail.com>
+Message-ID: <20130729064234.GS9858@sirena.org.uk>
+References: <1374917973-7083-1-git-send-email-wangyuhang2014@gmail.com>
+ <CA+7tXihU+JODQec-h2joUYiVY=otuSOu8BwADn+mtgELCFHPng@mail.gmail.com>
+ <CAHSAbzNTUpsftZ1-fpv7UefuSdUvUidg9-SLOUXCTmSBhM0ZJQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <51F4A0FE.1020007@gmail.com>
-References: <1374891256-20248-1-git-send-email-akinobu.mita@gmail.com>
- <1374891256-20248-2-git-send-email-akinobu.mita@gmail.com>
- <CAN8TOE987JxGfj-O5NxVCOCVkjsiFy2pRuNMaY3m6+mHdvqtnA@mail.gmail.com>
- <CAC5umyhmumvmVuQDSMUjWnhh79Kn3AqfBWa5ZuCbyjspVtL-CQ@mail.gmail.com>
- <51F4A069.7020902@gmail.com> <51F4A0FE.1020007@gmail.com>
-Date: Mon, 29 Jul 2013 12:15:01 +0900
-Message-ID: <CAC5umygKFqhEND36eJyQOKxFafHMLBSsGGAZOXWAagLy4aqQiA@mail.gmail.com>
-Subject: Re: [PATCH -next 1/7] mtd: tests: introduce mtd_test module
-From: Akinobu Mita <akinobu.mita@gmail.com>
-To: Vikram Narayanan <vikram186@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Adrian Hunter <adrian.hunter@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="BHAjPJTFBOjGMyr2"
+Content-Disposition: inline
+In-Reply-To: <CAHSAbzNTUpsftZ1-fpv7UefuSdUvUidg9-SLOUXCTmSBhM0ZJQ@mail.gmail.com>
+Subject: Re: [PATCH V2] SPI: DUAL and QUAD support
+Cc: "spi-devel-general@lists.sourceforge.net"
+ <spi-devel-general@lists.sourceforge.net>,
+ Sourav Poddar <sourav.poddar@ti.com>, Trent Piepho <tpiepho@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
+ Pekon" <pekon@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,56 +29,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2013/7/28 Vikram Narayanan <vikram186@gmail.com>:
-> On 28/Jul/2013 10:09 AM, Vikram Narayanan wrote:
->>
->> On 28/Jul/2013 7:51 AM, Akinobu Mita wrote:
->>>
->>> 2013/7/28 Brian Norris <computersforpeace@gmail.com>:
->>>>
->>>> I like this idea. There is definitely too much code duplication.
->>>>
->>>> However, there is an important tradeoff here: now to run these (very
->>>> simple) tests, we have a two-step process*:
->>>>
->>>> insmod mtd_test.ko
->>>> insmod mtd_<actualtest>.ko dev=<MTD>
->>>>
->>>> [* modprobe would solve this problem, but these tests are often
->>>> compiled and run by hand, sometimes on systems without the convenience
->>>> of modprobe ]
->>>>
->>>> We could still accomplish the reduction in (source) code duplication
->>>> by simply including these simple routines in a header, then the code
->>>> would be compiled into each test module. I realize this isn't
->>>> typically the "best" way to share code, but since these are just test
->>>> modules and really don't need to be optimized for code size, I think
->>>> it is worth avoiding the extra step of inserting another module.
->>>
->>>
->>> I understand your concern and I'm going to change this series to move
->>> all these functions into a header file.  But I'll wait other opinion
->>> for a while.
->>
->>
->> You can refer this.
->> <http://thread.gmane.org/gmane.linux.drivers.mtd/43932/focus=43941>
->
->
-> http://article.gmane.org/gmane.linux.drivers.mtd/43933
 
-Thanks.  I noticed that there were a few more places where erase_eraseblock()
-could be used in mtd/tests modules.  I'll include these in next version
-of this patch set.
+--BHAjPJTFBOjGMyr2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->> And also Artem's feedback here
->> <http://thread.gmane.org/gmane.linux.drivers.mtd/43932/focus=43941>
->
->
-> http://article.gmane.org/gmane.linux.drivers.mtd/44007
+On Mon, Jul 29, 2013 at 10:44:43AM +0800, yuhang wang wrote:
 
-I checked all callsites of mtd_erase() in the tree, but there is no places where
-we can simply use erase_eraseblock().  If erase_eraseblock() can take
-additional arguments (callback and priv), there are only a few places
-(in mtdswap.c and ubi/io.c) where we can use it.  So I think we don't
-need to extend mtdcore.c for now.
+> > Your changes to spidev are not backward compatible at all.  You can
+> > not change the data types in the ioctl and maintain backward
+> > compatibility.  You can also not delete ioctls!
+
+> well, please give me some details or specific situations. Why ioctl
+> can not be changed. The operation that SPI_IOC_RD_LSB_FIRST do can be
+> done in SPI_IOC_RD_MODE, so I dont think there is any necessary using
+> SPI_IOC_RD_LSB_FIRST. What you worry about is the user already used
+> SPI_IOC_RD_LSB_FIRST?
+
+You need to make sure that existing userspace binaries can run
+unmodified, changing the types will change the layout of the ioctl
+arguments.  This may mean that you need to add new ioctls if you need to
+change types.
+
+--BHAjPJTFBOjGMyr2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJR9g7XAAoJELSic+t+oim97XkP/35ldbY8ckpgh16STPv3AtCi
+vdftc2y7jmkF5RqPCEGZYAxryXIZCxRCkWKIoFSAC34geQ0mNMYpVUstDUL3pne4
+/6RE3uO00x4TnVXgKyNrt9Mcd7j2FsV3ym0kTy6Q66mfUzQlUCOrQwgpuak2FR+P
+JNmLGxA/mzan19UIxKfQKldXis9esBnGYJyUCDwwvVOBe0gShPagw7Ps7uNkuWGP
+gEv1HL7UAINVXtQX6nLUuq+eoUAepSCIRwTjaXB93sVvXySTAk5T8Ez1h6Os1DiQ
+qynKiK+hksyFtwPoba5WNWjkd3qmpYq/oeSIlb4B/kDTCI1Cf28473gTekoDLJIT
+3ipnmrcvwOEyeouwgkPdoPP7WdOTx6r4nbuZsgtvFEW8qHQEK1YqG1EMWkEqH2Fo
+fw8i43UFuOcjHx8u2EP0CG20eckJd4Vat6WDZ9Z1/k1sOrJR4cTv9NvXeFbM6jkD
+/7zmmdvpEIQHqyW3w+m+HxJ/dky4zf1m1/gFDfJ9R1tFn1oEfVRynTDU1q1+HhFm
+yBeEDJ3mXRApc1fNaTebf0b/SFiLTPOsowdQW7Xpxo8gZr4ZCmFJnH8lXOHugLsx
+xZX+3AGY9D1TP5YFqNYoxNkwwj4xhUPOrwyoDVdp6Z0bBy69WAg1yreC+4G0UTe0
+mdiUUCJosjQpct1oO9oE
+=WGQ3
+-----END PGP SIGNATURE-----
+
+--BHAjPJTFBOjGMyr2--
