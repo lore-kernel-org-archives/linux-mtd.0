@@ -1,24 +1,26 @@
-Received: from mail-oa0-x233.google.com ([2607:f8b0:4003:c02::233])
+Received: from mail-oa0-x22e.google.com ([2607:f8b0:4003:c02::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V3dSM-0002AR-LI
- for linux-mtd@lists.infradead.org; Mon, 29 Jul 2013 02:45:07 +0000
-Received: by mail-oa0-f51.google.com with SMTP id i4so11520026oah.24
- for <linux-mtd@lists.infradead.org>; Sun, 28 Jul 2013 19:44:43 -0700 (PDT)
+ id 1V3dve-00038Y-M1
+ for linux-mtd@lists.infradead.org; Mon, 29 Jul 2013 03:15:23 +0000
+Received: by mail-oa0-f46.google.com with SMTP id h1so11939033oag.33
+ for <linux-mtd@lists.infradead.org>; Sun, 28 Jul 2013 20:15:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CA+7tXihU+JODQec-h2joUYiVY=otuSOu8BwADn+mtgELCFHPng@mail.gmail.com>
-References: <1374917973-7083-1-git-send-email-wangyuhang2014@gmail.com>
- <CA+7tXihU+JODQec-h2joUYiVY=otuSOu8BwADn+mtgELCFHPng@mail.gmail.com>
-Date: Mon, 29 Jul 2013 10:44:43 +0800
-Message-ID: <CAHSAbzNTUpsftZ1-fpv7UefuSdUvUidg9-SLOUXCTmSBhM0ZJQ@mail.gmail.com>
-Subject: Re: [PATCH V2] SPI: DUAL and QUAD support
-From: yuhang wang <wangyuhang2014@gmail.com>
-To: Trent Piepho <tpiepho@gmail.com>
+In-Reply-To: <51F4A0FE.1020007@gmail.com>
+References: <1374891256-20248-1-git-send-email-akinobu.mita@gmail.com>
+ <1374891256-20248-2-git-send-email-akinobu.mita@gmail.com>
+ <CAN8TOE987JxGfj-O5NxVCOCVkjsiFy2pRuNMaY3m6+mHdvqtnA@mail.gmail.com>
+ <CAC5umyhmumvmVuQDSMUjWnhh79Kn3AqfBWa5ZuCbyjspVtL-CQ@mail.gmail.com>
+ <51F4A069.7020902@gmail.com> <51F4A0FE.1020007@gmail.com>
+Date: Mon, 29 Jul 2013 12:15:01 +0900
+Message-ID: <CAC5umygKFqhEND36eJyQOKxFafHMLBSsGGAZOXWAagLy4aqQiA@mail.gmail.com>
+Subject: Re: [PATCH -next 1/7] mtd: tests: introduce mtd_test module
+From: Akinobu Mita <akinobu.mita@gmail.com>
+To: Vikram Narayanan <vikram186@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: "spi-devel-general@lists.sourceforge.net"
- <spi-devel-general@lists.sourceforge.net>,
- Sourav Poddar <sourav.poddar@ti.com>, Mark Brown <broonie@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Adrian Hunter <adrian.hunter@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,38 +30,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi
-
-
-2013/7/29 Trent Piepho <tpiepho@gmail.com>:
-> On Sat, Jul 27, 2013 at 2:39 AM, wangyuhang <wangyuhang2014@gmail.com> wrote:
->> 2:To spidev, in order to backward compatible, still use
->>  SPI_IOC_RD_MODE to deal with user who use <u8 mode>. Add
->>  SPI_IOC_EXTRD_MODE to fix the <u16 mode>. And SPI_IOC_RD_LSB_FIRST
->>  seems a little redundant, so del it.
+2013/7/28 Vikram Narayanan <vikram186@gmail.com>:
+> On 28/Jul/2013 10:09 AM, Vikram Narayanan wrote:
+>>
+>> On 28/Jul/2013 7:51 AM, Akinobu Mita wrote:
+>>>
+>>> 2013/7/28 Brian Norris <computersforpeace@gmail.com>:
+>>>>
+>>>> I like this idea. There is definitely too much code duplication.
+>>>>
+>>>> However, there is an important tradeoff here: now to run these (very
+>>>> simple) tests, we have a two-step process*:
+>>>>
+>>>> insmod mtd_test.ko
+>>>> insmod mtd_<actualtest>.ko dev=<MTD>
+>>>>
+>>>> [* modprobe would solve this problem, but these tests are often
+>>>> compiled and run by hand, sometimes on systems without the convenience
+>>>> of modprobe ]
+>>>>
+>>>> We could still accomplish the reduction in (source) code duplication
+>>>> by simply including these simple routines in a header, then the code
+>>>> would be compiled into each test module. I realize this isn't
+>>>> typically the "best" way to share code, but since these are just test
+>>>> modules and really don't need to be optimized for code size, I think
+>>>> it is worth avoiding the extra step of inserting another module.
+>>>
+>>>
+>>> I understand your concern and I'm going to change this series to move
+>>> all these functions into a header file.  But I'll wait other opinion
+>>> for a while.
+>>
+>>
+>> You can refer this.
+>> <http://thread.gmane.org/gmane.linux.drivers.mtd/43932/focus=43941>
 >
-> Your changes to spidev are not backward compatible at all.  You can
-> not change the data types in the ioctl and maintain backward
-> compatibility.  You can also not delete ioctls!
 >
-well, please give me some details or specific situations. Why ioctl
-can not be changed. The operation that SPI_IOC_RD_LSB_FIRST do can be
-done in SPI_IOC_RD_MODE, so I dont think there is any necessary using
-SPI_IOC_RD_LSB_FIRST. What you worry about is the user already used
-SPI_IOC_RD_LSB_FIRST?
+> http://article.gmane.org/gmane.linux.drivers.mtd/43933
 
->> @@ -1316,6 +1324,12 @@ int spi_setup(struct spi_device *spi)
->>         /* help drivers fail *cleanly* when they need options
->>          * that aren't supported with their current master
->>          */
->> +       if (((spi->mode >> 8) & 0x03) == 0x03 ||
->> +               ((spi->mode >> 10) & 0x03) == 0x03) {
->> +               dev_err(&spi->dev,
->> +               "setup: can not select dual and quad at the same time\n");
->> +               return -EINVAL;
->> +       }
+Thanks.  I noticed that there were a few more places where erase_eraseblock()
+could be used in mtd/tests modules.  I'll include these in next version
+of this patch set.
+
+>> And also Artem's feedback here
+>> <http://thread.gmane.org/gmane.linux.drivers.mtd/43932/focus=43941>
 >
-> This code won't work if the constants you added for mode flags change
-> value.  More importantly, anyone searching the code for SPI_TX_DUAL,
-> etc. won't find this code.
-agree, thanks.
+>
+> http://article.gmane.org/gmane.linux.drivers.mtd/44007
+
+I checked all callsites of mtd_erase() in the tree, but there is no places where
+we can simply use erase_eraseblock().  If erase_eraseblock() can take
+additional arguments (callback and priv), there are only a few places
+(in mtdswap.c and ubi/io.c) where we can use it.  So I think we don't
+need to extend mtdcore.c for now.
