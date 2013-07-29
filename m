@@ -1,12 +1,12 @@
 Received: from [94.23.35.102] (helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V3wot-0003Gc-W8
- for linux-mtd@lists.infradead.org; Mon, 29 Jul 2013 23:25:40 +0000
+ id 1V3woy-0003Hl-WF
+ for linux-mtd@lists.infradead.org; Mon, 29 Jul 2013 23:25:45 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 12/13] mtd: nand: pxa3xx-nand: Increase data buffer size
-Date: Mon, 29 Jul 2013 20:24:22 -0300
-Message-Id: <1375140263-2028-13-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH 13/13] mtd: nand: Allow to build pxa3xx_nand on Orion platforms
+Date: Mon, 29 Jul 2013 20:24:23 -0300
+Message-Id: <1375140263-2028-14-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1375140263-2028-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1375140263-2028-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
@@ -26,28 +26,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Devices with 4 KiB pages (plus OOB data) can be detected, so we increase
-the data buffer size. A better solution would be to allocate a buffer
-depending on the detected page size, but that's not possible given
-we need the buffer prior to the device detection.
+The Armada 370 and Armada XP SoC families, selected by PLAT_ORION,
+have a Nand Flash Controller (NFC) IP very similar to the one present
+in PXA platforms. Therefore, we want to build this driver on PLAT_ORION.
 
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c | 2 +-
+ drivers/mtd/nand/Kconfig | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index ccb8636..ed47f14 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -892,7 +892,7 @@ static int pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
-  * is: 2048 + 64 = 2112 bytes, allocate a page here for both the
-  * data buffer and the DMA descriptor
-  */
--#define MAX_BUFF_SIZE	PAGE_SIZE
-+#define MAX_BUFF_SIZE	(PAGE_SIZE*2)
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 50543f1..8633f32a 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -354,7 +354,7 @@ config MTD_NAND_ATMEL
  
- #ifdef ARCH_HAS_DMA
- static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
+ config MTD_NAND_PXA3xx
+ 	tristate "Support for NAND flash devices on PXA3xx"
+-	depends on PXA3xx || ARCH_MMP
++	depends on PXA3xx || ARCH_MMP || PLAT_ORION
+ 	help
+ 	  This enables the driver for the NAND flash device found on
+ 	  PXA3xx processors
 -- 
 1.8.1.5
