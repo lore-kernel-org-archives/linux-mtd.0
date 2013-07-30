@@ -1,26 +1,22 @@
-Received: from mail-pd0-f182.google.com ([209.85.192.182])
+Received: from mail-ve0-x236.google.com ([2607:f8b0:400c:c01::236])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V4Csy-00048Z-Vm
- for linux-mtd@lists.infradead.org; Tue, 30 Jul 2013 16:34:58 +0000
-Received: by mail-pd0-f182.google.com with SMTP id r10so939367pdi.41
- for <linux-mtd@lists.infradead.org>; Tue, 30 Jul 2013 09:34:35 -0700 (PDT)
-Date: Tue, 30 Jul 2013 09:34:41 -0700
-From: Olof Johansson <olof@lixom.net>
-To: Alexander Shiyan <shc_work@mail.ru>
-Subject: Re: [PATCH v2 1/4] mtd: nand: gpio: Determine bus width automatically
-Message-ID: <20130730163441.GB13634@quad.lixom.net>
-References: <1375182325-30003-1-git-send-email-shc_work@mail.ru>
+ id 1V4GKe-0001G7-Pt
+ for linux-mtd@lists.infradead.org; Tue, 30 Jul 2013 20:15:45 +0000
+Received: by mail-ve0-f182.google.com with SMTP id m1so4133479ves.41
+ for <linux-mtd@lists.infradead.org>; Tue, 30 Jul 2013 13:15:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1375182325-30003-1-git-send-email-shc_work@mail.ru>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Ian Campbell <ian.campbell@citrix.com>, Pawel Moll <pawel.moll@arm.com>,
- Stephen Warren <swarren@wwwdotorg.org>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Rob Herring <rob.herring@calxeda.com>, linux-mtd@lists.infradead.org,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1375182376-30043-2-git-send-email-shc_work@mail.ru>
+References: <1375182376-30043-1-git-send-email-shc_work@mail.ru>
+ <1375182376-30043-2-git-send-email-shc_work@mail.ru>
+Date: Tue, 30 Jul 2013 13:15:23 -0700
+Message-ID: <CAN8TOE8aMV9kdPp-2SWK82Yvh7D6iF2tLaD8QDXVdrjdjH4XJA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] mtd: nand: gpio: Return real nand_scan() error
+ code on fail and simplify error path
+From: Brian Norris <computersforpeace@gmail.com>
+To: Alexander Shiyan <shc_work@mail.ru>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,39 +26,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jul 30, 2013 at 03:05:24PM +0400, Alexander Shiyan wrote:
-> This patch provide automatically determine of NAND bus width if
-> "bank-width" parameter is ommited.
-> Patch depends on "mtd: nand: fix NAND_BUSWIDTH_AUTO for x16 devices".
-> 
+On Tue, Jul 30, 2013 at 4:06 AM, Alexander Shiyan <shc_work@mail.ru> wrote:
+>
 > Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
 > ---
->  .../devicetree/bindings/mtd/gpio-control-nand.txt         |  4 ++--
->  drivers/mtd/nand/gpio.c                                   | 15 ++++++++++-----
->  2 files changed, 12 insertions(+), 7 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
-> index 36ef07d..2ac14d8 100644
-> --- a/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
-> @@ -15,8 +15,8 @@ Required properties:
->    optional gpio and may be set to 0 if not present.
->  
->  Optional properties:
-> -- bank-width : Width (in bytes) of the device.  If not present, the width
-> -  defaults to 1 byte.
-> +- bank-width : Width (in bytes) of the device. If not present, the bus width
-> +  of the device is determined automatically.
->  - chip-delay : chip dependent delay for transferring data from array to
->    read registers (tR).  If not present then a default of 20us is used.
->  - gpio-control-nand,io-sync-reg : A 64-bit physical address for a read
+>  drivers/mtd/nand/gpio.c | 29 +++++++++++++----------------
+>  1 file changed, 13 insertions(+), 16 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
+> index e432f1d..5eabd19 100644
+> --- a/drivers/mtd/nand/gpio.c
+> +++ b/drivers/mtd/nand/gpio.c
+> @@ -212,7 +212,7 @@ static int gpio_nand_probe(struct platform_device *pdev)
+>         struct nand_chip *chip;
+>         struct resource *res;
+>         struct mtd_part_parser_data ppdata = {};
+> -       int ret = 0;
+> +       int ret;
+>
+>         if (!pdev->dev.of_node && !pdev->dev.platform_data)
+>                 return -EINVAL;
+> @@ -288,23 +288,20 @@ static int gpio_nand_probe(struct platform_device *pdev)
+>
+>         gpio_nand_set_wp(gpiomtd, 1);
+>
+> -       if (nand_scan(&gpiomtd->mtd_info, 1)) {
+> -               ret = -ENXIO;
+> -               goto err_wp;
+> +       ret = nand_scan(&gpiomtd->mtd_info, 1);
+> +       if (!ret) {
+> +               if (gpiomtd->plat.adjust_parts)
+> +                       gpiomtd->plat.adjust_parts(&gpiomtd->plat,
+> +                                                  gpiomtd->mtd_info.size);
+> +
+> +               ppdata.of_node = pdev->dev.of_node;
+> +               ret = mtd_device_parse_register(&gpiomtd->mtd_info, NULL,
+> +                                               &ppdata, gpiomtd->plat.parts,
+> +                                               gpiomtd->plat.num_parts);
+> +               if (!ret)
+> +                       return 0;
+>         }
+>
+> -       if (gpiomtd->plat.adjust_parts)
+> -               gpiomtd->plat.adjust_parts(&gpiomtd->plat,
+> -                                          gpiomtd->mtd_info.size);
+> -
+> -       ppdata.of_node = pdev->dev.of_node;
+> -       ret = mtd_device_parse_register(&gpiomtd->mtd_info, NULL, &ppdata,
+> -                                       gpiomtd->plat.parts,
+> -                                       gpiomtd->plat.num_parts);
+> -       if (!ret)
+> -               return 0;
+> -
+> -err_wp:
+>         gpio_nand_set_wp(gpiomtd, 0);
+>
+>         return ret;
 
-This would break backwards compatibility, something we're now starting to push
-back at.
+Does this really simplify the error path? It removes the 'goto', but
+it increases indentation and makes this less scalable (i.e.,
+currently, the average indentation level remains constant; under your
+change, any additional initialization steps may require modifying the
+indentation of unrelated steps). Plus, this doesn't really follow the
+style of most other drivers.
 
-Instead what you can do is add a bank-width-auto property that, if present and
-bank-width being absent, will result in the automatic determination of bank
-width.
+This patch could be very simple; just something like this (with proper
+whitespace, of course):
 
+--- a/drivers/mtd/nand/gpio.c
++++ b/drivers/mtd/nand/gpio.c
+@@ -279,10 +279,9 @@ static int gpio_nand_probe(struct platform_device *pdev)
+        if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
+                gpio_direction_output(gpiomtd->plat.gpio_nwp, 1);
 
--Olof
+-       if (nand_scan(&gpiomtd->mtd_info, 1)) {
+-               ret = -ENXIO;
++       ret = nand_scan(&gpiomtd->mtd_info, 1);
++       if (ret)
+                goto err_wp;
+-       }
+
+        if (gpiomtd->plat.adjust_parts)
+                gpiomtd->plat.adjust_parts(&gpiomtd->plat,
+
+BTW, if you think it makes more sense to return the error code from
+nand_scan directly, could you change this for all other NAND drivers?
+My reading shows there's approx a 50/50 split between those that
+choose -ENXIO and those that just return the NAND error code.
+Uniformity is good in this case, and nand_base.c gives sane error
+codes, I believe.
+
+Brian
