@@ -1,17 +1,19 @@
-Received: from [94.23.35.102] (helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V44kT-0003fc-Mo
- for linux-mtd@lists.infradead.org; Tue, 30 Jul 2013 07:53:38 +0000
-Date: Tue, 30 Jul 2013 09:53:10 +0200
-From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-To: Daniel Mack <zonque@gmail.com>
+Received: from mail-ee0-x22b.google.com ([2a00:1450:4013:c00::22b])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V44t3-0003ph-Cg
+ for linux-mtd@lists.infradead.org; Tue, 30 Jul 2013 08:02:29 +0000
+Received: by mail-ee0-f43.google.com with SMTP id e52so1622179eek.30
+ for <linux-mtd@lists.infradead.org>; Tue, 30 Jul 2013 01:02:07 -0700 (PDT)
+Message-ID: <51F772FC.90404@gmail.com>
+Date: Tue, 30 Jul 2013 10:02:04 +0200
+From: Daniel Mack <zonque@gmail.com>
+MIME-Version: 1.0
+To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
 Subject: Re: [PATCH 00/13] pxa3xx patches to support mvebu builds
-Message-ID: <20130730095310.38400ca6@skate>
-In-Reply-To: <51F76EBA.1020504@gmail.com>
 References: <1375140263-2028-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <51F76EBA.1020504@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+ <51F76EBA.1020504@gmail.com> <20130730095310.38400ca6@skate>
+In-Reply-To: <20130730095310.38400ca6@skate>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Cc: Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
  Artem Bityutskiy <dedekind1@gmail.com>, leiwen@marvell.com,
@@ -29,40 +31,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Daniel Mack,
-
-On Tue, 30 Jul 2013 09:43:54 +0200, Daniel Mack wrote:
-
-> On 30.07.2013 01:24, Ezequiel Garcia wrote:
-> > It's also worth noting that since pxa3xx has a mach-specific
-> > DMA API, I'm including a few patches to ifdef such pxa-specific
-> > code in non PXA/MMP platforms. This ugly workaround should be
-> > removed once the specific DMA API is replaced by dmaengine.
+On 30.07.2013 09:53, Thomas Petazzoni wrote:
+> On Tue, 30 Jul 2013 09:43:54 +0200, Daniel Mack wrote:
+>> Interesting, because I'm working on a dmaengine implementation for PXA
+>> right now. I'm not even half through, but I'm making progress, and I'm
+>> not sure yet how to merge it. Because there won't be any migration path,
+>> it'll be a bigger set that has to go in in one in order to prevent build
+>> breakage.
 > 
-> Interesting, because I'm working on a dmaengine implementation for PXA
-> right now. I'm not even half through, but I'm making progress, and I'm
-> not sure yet how to merge it. Because there won't be any migration path,
-> it'll be a bigger set that has to go in in one in order to prevent build
-> breakage.
+> Aren't drivers/dma/mmp_pdma.c and drivers/dma/mmp_tdma.c already
+> dmaengine drivers for PXA ?
 
-Aren't drivers/dma/mmp_pdma.c and drivers/dma/mmp_tdma.c already
-dmaengine drivers for PXA ?
+Yes, I saw the pdma driver as well, after I started my own
+implementation. However, the tree is full of users of the proprietary
+API, and moving them over won't be gap-less.
 
-> Your patches will cause merge conflicts against mine, so I'm not sure
-> whether I should rebase my work on top of yours or if you should wait
-> until I'm finished.
+> Considering the amount of time it will take for PXA to migrate over to
+> the dmaengine API, I think we'd want those clean up patches to go in
+> first, so that in parallel to the work you're doing on PXA dmaengine
+> usage, we can move forward with improving the pxa3xx_nand driver to
+> make it usable on Armada 370/XP.
 
-Considering the amount of time it will take for PXA to migrate over to
-the dmaengine API, I think we'd want those clean up patches to go in
-first, so that in parallel to the work you're doing on PXA dmaengine
-usage, we can move forward with improving the pxa3xx_nand driver to
-make it usable on Armada 370/XP.
+Ok, fine. I'll rework my set on top of Ezequiel's then.
 
-Thanks!
 
-Thomas
--- 
-Thomas Petazzoni, Free Electrons
-Kernel, drivers, real-time and embedded Linux
-development, consulting, training and support.
-http://free-electrons.com
+
+Thanks,
+Daniel
