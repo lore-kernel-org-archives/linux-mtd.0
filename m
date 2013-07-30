@@ -1,35 +1,21 @@
-Received: from mail-ve0-x22a.google.com ([2607:f8b0:400c:c01::22a])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V4H20-0002by-MZ
- for linux-mtd@lists.infradead.org; Tue, 30 Jul 2013 21:00:33 +0000
-Received: by mail-ve0-f170.google.com with SMTP id 15so2023928vea.1
- for <linux-mtd@lists.infradead.org>; Tue, 30 Jul 2013 14:00:11 -0700 (PDT)
+Received: from [94.23.35.102] (helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V4I0q-00045e-E4
+ for linux-mtd@lists.infradead.org; Tue, 30 Jul 2013 22:03:25 +0000
+Date: Tue, 30 Jul 2013 19:02:56 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 1/4] mtd: nand: add accessors, macros for in-memory BBT
+Message-ID: <20130730220254.GB2404@localhost>
+References: <1374647279-14083-1-git-send-email-computersforpeace@gmail.com>
+ <1374647279-14083-2-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1375198006.14869.165.camel@sauron.fi.intel.com>
-References: <CAN8TOE-y0HvZYWqwoPEZhReVVP_iY6t5p1N0ZMJXPQqwuK5ozQ@mail.gmail.com>
- <51E64B40.1030408@freescale.com>
- <CAF4G-tLsOO_F-Mhn=+5vS2kkJuoeLJwrTdCR90DVuQQ+xn40aw@mail.gmail.com>
- <CAN8TOE_osCKY86W2O5mLxSSahyiW2peFwDhCFuSQ+ewGHeXNKw@mail.gmail.com>
- <1374102799.21468.3.camel@shinybook.infradead.org>
- <CAN8TOE9CX7fcDRQzee=Xg5TYkYYOs3__vWzy3r0Ofg0aCsgxSg@mail.gmail.com>
- <1374109439.21468.67.camel@shinybook.infradead.org>
- <CAN8TOE_y=mDY4frFB9kmedhGnNhf4pQwqH1q+fAcDAE_RNwO+A@mail.gmail.com>
- <20130720122231.GB4410@gmail.com>
- <1375182248.14869.127.camel@sauron.fi.intel.com>
- <20130731015329.GA2133@gmail.com>
- <1375193034.14869.158.camel@sauron.fi.intel.com>
- <1375198006.14869.165.camel@sauron.fi.intel.com>
-Date: Tue, 30 Jul 2013 14:00:11 -0700
-Message-ID: <CAN8TOE-1-oizhmN+E3yoBupvAs3cRN=gvjruTb85hyQPApws6w@mail.gmail.com>
-Subject: Re: No pull for mtd?
-From: Brian Norris <computersforpeace@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Huang Shijie <shijie8@gmail.com>, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Andrew Morton <akpm@linux-foundation.org>, torvalds@linux-foundation.org,
- David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1374647279-14083-2-git-send-email-computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,27 +25,114 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jul 30, 2013 at 8:26 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Tue, 2013-07-30 at 17:03 +0300, Artem Bityutskiy wrote:
->> I am fine with giving Brian Norris write rights to the. I trust his
->> expertise and I like the way communicates and works in the MTD mailing
->> list.
->
-> Sorry, I was typing while being in a meeting. Here is the corrected
-> version.
->
-> I am fine with giving Brian Norris write access rights to the l2 tree. I
-> trust his expertise and I like the way he communicates and works on the
-> MTD mailing list.
+Hi Brian,
 
-Thanks for the confidence. I am willing to accept responsibility for
-NAND and am open to assisting on other parts of MTD as well. I'll need
-an infradead account, of course.
+Here's my attempt at reviewing this patchset, given the recent
+discussion about needing more MTD reviewing.
 
-There may still be kinks to work out; e.g., how do we coordinate
-rebasing and patch ordering of l2-mtd -- I commented on this earlier,
-in response to David. I would prefer to minimize rebasing, but mainly,
-I just want to be on the same page as you, Artem, so that we don't
-duplicate or conflict in our patch integration efforts.
+I don't have enough experience with the NAND core to say anything about this,
+but I noticed you're doing a bunch of related but not necessarily tied changes.
 
-Brian
+IMHO, splitting this patch further might make reviewing a lot easier, see below.
+
+On Tue, Jul 23, 2013 at 11:27:56PM -0700, Brian Norris wrote:
+> There is an abundance of magic numbers and complicated shifting/masking
+> logic in the in-memory BBT code, and due to the complicated
+> shifting/masking, we often store the block number multiplied by 2.
+> Together, these features make the code unnecessary complex and hard to
+> read.
+> 
+> This patch adds macros to represent the 00b, 01b, 10b, and 11b
+> memory-BBT magic numbers, as well as two accessor functions for reading
+> and marking the memory-BBT bitfield for a given block.
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> ---
+>  drivers/mtd/nand/nand_bbt.c | 132 ++++++++++++++++++++++++--------------------
+>  1 file changed, 72 insertions(+), 60 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+> index 2672643..3f18776 100644
+> --- a/drivers/mtd/nand/nand_bbt.c
+> +++ b/drivers/mtd/nand/nand_bbt.c
+> @@ -71,6 +71,28 @@
+>  #include <linux/export.h>
+>  #include <linux/string.h>
+>  
+> +#define BBT_BLOCK_GOOD		0x00
+> +#define BBT_BLOCK_WORN		0x01
+> +#define BBT_BLOCK_RESERVED	0x02
+> +#define BBT_BLOCK_FACTORY_BAD	0x03
+> +
+> +#define BBT_ENTRY_MASK		0x03
+> +#define BBT_ENTRY_SHIFT		2
+> +
+
+You can have one patch to change all the magic numbers into this nice
+macros.
+
+[...]
+> -			for (j = 0; j < 8; j += bits, act += 2) {
+> +			for (j = 0; j < 8; j += bits, act++) {
+>  				uint8_t tmp = (dat >> j) & msk;
+>  				if (tmp == msk)
+>  					continue;
+>  				if (reserved_block_code && (tmp == reserved_block_code)) {
+>  					pr_info("nand_read_bbt: reserved block at 0x%012llx\n",
+> -						 (loff_t)((offs << 2) + (act >> 1)) << this->bbt_erase_shift);
+> -					this->bbt[offs + (act >> 3)] |= 0x2 << (act & 0x06);
+> +						 (loff_t)(offs + act) <<
+> +						 this->bbt_erase_shift);
+> +					bbt_mark_entry(this, offs + act,
+> +							BBT_BLOCK_RESERVED);
+
+And then another patch to use the new accesors.
+
+[...]
+>  int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt)
+>  {
+>  	struct nand_chip *this = mtd->priv;
+> -	int block;
+> -	uint8_t res;
+> +	int block, res;
+>  
+> -	/* Get block number * 2 */
+
+And then a third patch to make the block * 2 -> block change.
+
+> -	block = (int)(offs >> (this->bbt_erase_shift - 1));
+> -	res = (this->bbt[block >> 3] >> (block & 0x06)) & 0x03;
+> +	block = (int)(offs >> this->bbt_erase_shift);
+> +	res = bbt_get_entry(this, block);
+>  
+>  	pr_debug("nand_isbad_bbt(): bbt info for offs 0x%08x: "
+>  			"(block %d) 0x%02x\n",
+> -			(unsigned int)offs, block >> 1, res);
+> +			(unsigned int)offs, block, res);
+>  
+> -	switch ((int)res) {
+> -	case 0x00:
+> +	switch (res) {
+
+Mmm.. and then if you are really paranoid (like me) you can
+make the uint8_t -> int type change in another patch.
+
+> +	case BBT_BLOCK_GOOD:
+>  		return 0;
+> -	case 0x01:
+> +	case BBT_BLOCK_WORN:
+>  		return 1;
+> -	case 0x02:
+> +	case BBT_BLOCK_RESERVED:
+>  		return allowbbt ? 0 : 1;
+>  	}
+>  	return 1;
+> -- 
+> 1.8.3.2
+> 
+
+Hope this is of any help!
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
