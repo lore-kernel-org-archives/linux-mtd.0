@@ -1,17 +1,34 @@
-Received: from mail-wg0-x230.google.com ([2a00:1450:400c:c00::230])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V4Bge-000234-0o
- for linux-mtd@lists.infradead.org; Tue, 30 Jul 2013 15:18:08 +0000
-Received: by mail-wg0-f48.google.com with SMTP id f12so5537047wgh.27
- for <linux-mtd@lists.infradead.org>; Tue, 30 Jul 2013 08:17:44 -0700 (PDT)
-From: Richard Genoud <richard.genoud@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Subject: [PATCH resend] MTD: atmel_nand: using a stronger ECC is not dangerous
-Date: Tue, 30 Jul 2013 17:17:29 +0200
-Message-Id: <1375197449-32370-1-git-send-email-richard.genoud@gmail.com>
-Cc: Richard Genoud <richard.genoud@gmail.com>, Josh Wu <josh.wu@atmel.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Received: from mga14.intel.com ([143.182.124.37])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V4BkT-0002Cu-JE
+ for linux-mtd@lists.infradead.org; Tue, 30 Jul 2013 15:22:06 +0000
+Message-ID: <1375198006.14869.165.camel@sauron.fi.intel.com>
+Subject: Re: No pull for mtd?
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Huang Shijie <shijie8@gmail.com>
+Date: Tue, 30 Jul 2013 18:26:46 +0300
+In-Reply-To: <1375193034.14869.158.camel@sauron.fi.intel.com>
+References: <CAN8TOE-y0HvZYWqwoPEZhReVVP_iY6t5p1N0ZMJXPQqwuK5ozQ@mail.gmail.com>
+ <51E64B40.1030408@freescale.com>
+ <CAF4G-tLsOO_F-Mhn=+5vS2kkJuoeLJwrTdCR90DVuQQ+xn40aw@mail.gmail.com>
+ <CAN8TOE_osCKY86W2O5mLxSSahyiW2peFwDhCFuSQ+ewGHeXNKw@mail.gmail.com>
+ <1374102799.21468.3.camel@shinybook.infradead.org>
+ <CAN8TOE9CX7fcDRQzee=Xg5TYkYYOs3__vWzy3r0Ofg0aCsgxSg@mail.gmail.com>
+ <1374109439.21468.67.camel@shinybook.infradead.org>
+ <CAN8TOE_y=mDY4frFB9kmedhGnNhf4pQwqH1q+fAcDAE_RNwO+A@mail.gmail.com>
+ <20130720122231.GB4410@gmail.com>
+ <1375182248.14869.127.camel@sauron.fi.intel.com>
+ <20130731015329.GA2133@gmail.com>
+ <1375193034.14869.158.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: David Woodhouse <dwmw2@infradead.org>, Huang Shijie <b32955@freescale.com>,
+ linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Brian Norris <computersforpeace@gmail.com>, torvalds@linux-foundation.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,32 +38,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We don't have to issue a warning when a stronger error correting
-capability is chosen.
+On Tue, 2013-07-30 at 17:03 +0300, Artem Bityutskiy wrote:
+> I am fine with giving Brian Norris write rights to the. I trust his
+> expertise and I like the way communicates and works in the MTD mailing
+> list.
 
-Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
-Acked-by: Josh Wu <josh.wu@atmel.com>
----
-It seems that this patch has been forgotten (even by me)
-for some months. (was already acked by Josh then)
-Reference of the discussion leading to this patch:
-http://comments.gmane.org/gmane.linux.drivers.mtd/46342
+Sorry, I was typing while being in a meeting. Here is the corrected
+version.
 
- drivers/mtd/nand/atmel_nand.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I am fine with giving Brian Norris write access rights to the l2 tree. I
+trust his expertise and I like the way he communicates and works on the
+MTD mailing list.
 
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index 2d23d29..2415cdc 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -1002,7 +1002,7 @@ static int __init atmel_pmecc_nand_init_params(struct platform_device *pdev,
- 		return err_no;
- 	}
- 
--	if (cap != host->pmecc_corr_cap ||
-+	if (cap > host->pmecc_corr_cap ||
- 			sector_size != host->pmecc_sector_size)
- 		dev_info(host->dev, "WARNING: Be Caution! Using different PMECC parameters from Nand ONFI ECC reqirement.\n");
- 
 -- 
-1.7.10.4
+Best Regards,
+Artem Bityutskiy
