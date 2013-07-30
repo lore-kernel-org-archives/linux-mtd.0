@@ -1,33 +1,19 @@
-Received: from mga03.intel.com ([143.182.124.21])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V47eJ-0002Ap-Np
- for linux-mtd@lists.infradead.org; Tue, 30 Jul 2013 10:59:29 +0000
-Message-ID: <1375182248.14869.127.camel@sauron.fi.intel.com>
-Subject: Re: No pull for mtd?
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Huang Shijie <shijie8@gmail.com>
-Date: Tue, 30 Jul 2013 14:04:08 +0300
-In-Reply-To: <20130720122231.GB4410@gmail.com>
-References: <20130712124728.GB31726@localhost>
- <CAN8TOE-y0HvZYWqwoPEZhReVVP_iY6t5p1N0ZMJXPQqwuK5ozQ@mail.gmail.com>
- <51E64B40.1030408@freescale.com>
- <CAF4G-tLsOO_F-Mhn=+5vS2kkJuoeLJwrTdCR90DVuQQ+xn40aw@mail.gmail.com>
- <CAN8TOE_osCKY86W2O5mLxSSahyiW2peFwDhCFuSQ+ewGHeXNKw@mail.gmail.com>
- <1374102799.21468.3.camel@shinybook.infradead.org>
- <CAN8TOE9CX7fcDRQzee=Xg5TYkYYOs3__vWzy3r0Ofg0aCsgxSg@mail.gmail.com>
- <1374109439.21468.67.camel@shinybook.infradead.org>
- <CAN8TOE_y=mDY4frFB9kmedhGnNhf4pQwqH1q+fAcDAE_RNwO+A@mail.gmail.com>
- <20130720122231.GB4410@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: torvalds@linux-foundation.org, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Andrew Morton <akpm@linux-foundation.org>,
+Received: from smtp46.i.mail.ru ([94.100.177.106])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V47kq-0002Oc-F5
+ for linux-mtd@lists.infradead.org; Tue, 30 Jul 2013 11:06:13 +0000
+From: Alexander Shiyan <shc_work@mail.ru>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH v2 1/4] mtd: nand: gpio: Determine bus width automatically
+Date: Tue, 30 Jul 2013 15:05:24 +0400
+Message-Id: <1375182325-30003-1-git-send-email-shc_work@mail.ru>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ Ian Campbell <ian.campbell@citrix.com>, Pawel Moll <pawel.moll@arm.com>,
+ Stephen Warren <swarren@wwwdotorg.org>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Rob Herring <rob.herring@calxeda.com>, Alexander Shiyan <shc_work@mail.ru>,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,62 +23,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2013-07-20 at 08:22 -0400, Huang Shijie wrote:
-> > I think that mostly sounds OK. I can't speak for everyone, but it
-> > seems that for some of us, the process just needs to be able to
-> adapt
-> > to changes in job situations (where at least you and Artem aren't
-> even
-> > employed in MTD-related work anymore), vacations, babies, absences,
-> or
-> > any of the other reasons that MTD participation ebbs and flows. So
-> > bringing others into the process should help.
-> yes.
-> 
-> If more people can ack and merge the patches, we can speed up the mtd.
+This patch provide automatically determine of NAND bus width if
+"bank-width" parameter is ommited.
+Patch depends on "mtd: nand: fix NAND_BUSWIDTH_AUTO for x16 devices".
 
-Sure. Go ahead and review things which are outside of your gpmi driver.
-Ack them, nack them, review them, etc. This will be a real help.
-> 
-> I really envy the other maillist, you can get response in several
-> days.
+Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+---
+ .../devicetree/bindings/mtd/gpio-control-nand.txt         |  4 ++--
+ drivers/mtd/nand/gpio.c                                   | 15 ++++++++++-----
+ 2 files changed, 12 insertions(+), 7 deletions(-)
 
-Well, yes. MTD is a small and (IMHO) a veeery slowly dying subsystem.
-People mostly care about their own little things. Few people are
-interested in improving it in general. Such is life.
-
-Brian was one of those who did great job in MTD overall, especially in
-the NAND framework. He reviewed others patches. But even Brian got
-silent lately.
-
-Shmulik comes to mind - he reviewed things all over MTD.
-
-You mostly contribute to your own driver. And I think there were times
-when I had to ask you to do an infrastructure rework instead of working
-around MTD infrastructure problems with in-driver hacks. No one is
-perfect :-)
-
-So there is simply not enough people, thus the slowness.
-
-> > 
-> > I guess we'll see what Artem thinks when he's back from vacation and
-> Waiting for Artem's solution too. He becomes much busy this year, and
-> can not review the patches as he did last year.
-
-Well, just go ahead and help.
-
-This is also how the l2 tree appeared. I noticed that dwmw2 is becoming
-slow, and I just went ahead and created this tree without asking him,
-and told him that now he does not have to go through the mailing list -
-all the "sane" (from my POW) patches are in the l2 tree.
-
-But please, do not create another tree now :-) Either start reviewing
-others' patches, or declare ownership for some part of MTD and let's
-create a corresponding branch in my tree for you. E.g., gpmi.
-
-In case of Brian, I'd fully trust the entire NAND subsystem to him, he
-demonstrated that he is capable of taking care of it.
-
+diff --git a/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
+index 36ef07d..2ac14d8 100644
+--- a/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
+@@ -15,8 +15,8 @@ Required properties:
+   optional gpio and may be set to 0 if not present.
+ 
+ Optional properties:
+-- bank-width : Width (in bytes) of the device.  If not present, the width
+-  defaults to 1 byte.
++- bank-width : Width (in bytes) of the device. If not present, the bus width
++  of the device is determined automatically.
+ - chip-delay : chip dependent delay for transferring data from array to
+   read registers (tR).  If not present then a default of 20us is used.
+ - gpio-control-nand,io-sync-reg : A 64-bit physical address for a read
+diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
+index 800a1cc..674a790 100644
+--- a/drivers/mtd/nand/gpio.c
++++ b/drivers/mtd/nand/gpio.c
+@@ -116,7 +116,8 @@ static int gpio_nand_get_config_of(const struct device *dev,
+ 			dev_err(dev, "invalid bank-width %u\n", val);
+ 			return -EINVAL;
+ 		}
+-	}
++	} else
++		plat->options |= NAND_BUSWIDTH_AUTO;
+ 
+ 	plat->gpio_rdy = of_get_gpio(dev->of_node, 0);
+ 	plat->gpio_nce = of_get_gpio(dev->of_node, 1);
+@@ -223,6 +224,14 @@ static int gpio_nand_probe(struct platform_device *pdev)
+ 	if (IS_ERR(chip->IO_ADDR_R))
+ 		return PTR_ERR(chip->IO_ADDR_R);
+ 
++	ret = gpio_nand_get_config(&pdev->dev, &gpiomtd->plat);
++	if (ret)
++		return ret;
++
++	if (resource_size(res) < 2)
++		gpiomtd->plat.options &= ~(NAND_BUSWIDTH_16 |
++					   NAND_BUSWIDTH_AUTO);
++
+ 	res = gpio_nand_get_io_sync(pdev);
+ 	if (res) {
+ 		gpiomtd->io_sync = devm_ioremap_resource(&pdev->dev, res);
+@@ -230,10 +239,6 @@ static int gpio_nand_probe(struct platform_device *pdev)
+ 			return PTR_ERR(gpiomtd->io_sync);
+ 	}
+ 
+-	ret = gpio_nand_get_config(&pdev->dev, &gpiomtd->plat);
+-	if (ret)
+-		return ret;
+-
+ 	ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nce, "NAND NCE");
+ 	if (ret)
+ 		return ret;
 -- 
-Best Regards,
-Artem Bityutskiy
+1.8.1.5
