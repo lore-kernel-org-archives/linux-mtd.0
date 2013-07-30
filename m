@@ -1,14 +1,12 @@
-Received: from mail-ve0-x22e.google.com ([2607:f8b0:400c:c01::22e])
+Received: from mail-ve0-x234.google.com ([2607:f8b0:400c:c01::234])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V4GcO-0001lX-49
- for linux-mtd@lists.infradead.org; Tue, 30 Jul 2013 20:34:05 +0000
-Received: by mail-ve0-f174.google.com with SMTP id d10so191549vea.5
- for <linux-mtd@lists.infradead.org>; Tue, 30 Jul 2013 13:33:42 -0700 (PDT)
+ id 1V4Gnr-000235-Rn
+ for linux-mtd@lists.infradead.org; Tue, 30 Jul 2013 20:45:56 +0000
+Received: by mail-ve0-f180.google.com with SMTP id pb11so3347098veb.11
+ for <linux-mtd@lists.infradead.org>; Tue, 30 Jul 2013 13:45:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20130731015329.GA2133@gmail.com>
-References: <CAN8TOE-y0HvZYWqwoPEZhReVVP_iY6t5p1N0ZMJXPQqwuK5ozQ@mail.gmail.com>
- <51E64B40.1030408@freescale.com>
- <CAF4G-tLsOO_F-Mhn=+5vS2kkJuoeLJwrTdCR90DVuQQ+xn40aw@mail.gmail.com>
+In-Reply-To: <20130731022357.GA6910@gmail.com>
+References: <CAF4G-tLsOO_F-Mhn=+5vS2kkJuoeLJwrTdCR90DVuQQ+xn40aw@mail.gmail.com>
  <CAN8TOE_osCKY86W2O5mLxSSahyiW2peFwDhCFuSQ+ewGHeXNKw@mail.gmail.com>
  <1374102799.21468.3.camel@shinybook.infradead.org>
  <CAN8TOE9CX7fcDRQzee=Xg5TYkYYOs3__vWzy3r0Ofg0aCsgxSg@mail.gmail.com>
@@ -17,8 +15,10 @@ References: <CAN8TOE-y0HvZYWqwoPEZhReVVP_iY6t5p1N0ZMJXPQqwuK5ozQ@mail.gmail.com>
  <20130720122231.GB4410@gmail.com>
  <1375182248.14869.127.camel@sauron.fi.intel.com>
  <20130731015329.GA2133@gmail.com>
-Date: Tue, 30 Jul 2013 13:33:42 -0700
-Message-ID: <CAN8TOE8KUrSznErsvNRLAw2YswtB=L+idUG4TbYZEWZM8F2ubg@mail.gmail.com>
+ <1375193034.14869.158.camel@sauron.fi.intel.com>
+ <20130731022357.GA6910@gmail.com>
+Date: Tue, 30 Jul 2013 13:45:34 -0700
+Message-ID: <CAN8TOE8cXsLJoRT-bEmRaKzEGA3rFxHsfE_cs3KA+FBrCDTY=Q@mail.gmail.com>
 Subject: Re: No pull for mtd?
 From: Brian Norris <computersforpeace@gmail.com>
 To: Huang Shijie <shijie8@gmail.com>
@@ -37,30 +37,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jul 30, 2013 at 6:53 PM, Huang Shijie <shijie8@gmail.com> wrote:
-> On Tue, Jul 30, 2013 at 02:04:08PM +0300, Artem Bityutskiy wrote:
->> On Sat, 2013-07-20 at 08:22 -0400, Huang Shijie wrote:
->> > I really envy the other maillist, you can get response in several
->> > days.
+Hi Huang,
+
+On Tue, Jul 30, 2013 at 7:24 PM, Huang Shijie <shijie8@gmail.com> wrote:
+> On Tue, Jul 30, 2013 at 05:03:54PM +0300, Artem Bityutskiy wrote:
+>> I'll change my practice and will start processing patches which have
+>> acks from others first.
 >>
->> Well, yes. MTD is a small and (IMHO) a veeery slowly dying subsystem.
-> I am not sure it is dying, but there are still so many patches pending
-> in the maillist.
+> For the common code, such as mtd/bbt code, we can give the acks.
+> But for the specific drivers, it's better that you merge them yourself.
 
-Dying or not (it certainly doesn't have its youthful vigor ATM), I
-agree with Huang that the current response time is not sufficient for
-the current level of contribution.
+I have the same issue sometimes (regarding "specific drivers"); it's
+actually easier for me (and more rewarding) to review work on the
+common subsystem portions than it is to understand (and review) the
+exact behavior of a particular driver/hardware. But then again, I
+don't expect that Artem has much more hands-on experience with, say, a
+pxa3xx or a TI OMAP NAND than you or I do. So we can give general
+design and code quality recommendations/reviews even for drivers that
+are not "our own."
 
->> Brian was one of those who did great job in MTD overall, especially in
->> the NAND framework. He reviewed others patches. But even Brian got
->> silent lately.
-> I think he feels frastrated too. :)
-
-Slowness certainly helps divert my attention to other things (for
-instance, I'll send a patch series, then forget about it for a while,
-due to no review/response). But on the flipside, I will admit that I
-have not always been proactive on reviewing others' work. But that can
-change, especially if there's an incentive that my review will
-actually mean quicker acceptance and progress.
+(At the same time, it's possible I will do some work to get myself
+more variety of test boards so I can test a broader range of the
+MTD/NAND subsystem.)
 
 Brian
