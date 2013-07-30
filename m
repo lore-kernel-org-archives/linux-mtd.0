@@ -1,22 +1,29 @@
-Received: from [94.23.35.102] (helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V3wth-0003TY-Ou
- for linux-mtd@lists.infradead.org; Mon, 29 Jul 2013 23:30:38 +0000
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 06/13] mtd: nand: pxa3xx: Remove hardcoded mtd name
-Date: Mon, 29 Jul 2013 20:24:16 -0300
-Message-Id: <1375140263-2028-7-git-send-email-ezequiel.garcia@free-electrons.com>
-In-Reply-To: <1375140263-2028-1-git-send-email-ezequiel.garcia@free-electrons.com>
-References: <1375140263-2028-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
- Artem Bityutskiy <dedekind1@gmail.com>, leiwen@marvell.com,
- haojian.zhuang@gmail.com, zonque@gmail.com, eric.miao@marvell.com,
- grinberg@compulab.co.il, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- computersforpeace@gmail.com, David Woodhouse <dwmw2@infradead.org>,
- Willy Tarreau <w@1wt.eu>, nikita@compulab.co.il
+Received: from mail-ob0-x229.google.com ([2607:f8b0:4003:c01::229])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V3yVn-0005as-6T
+ for linux-mtd@lists.infradead.org; Tue, 30 Jul 2013 01:14:04 +0000
+Received: by mail-ob0-f169.google.com with SMTP id wc20so4609339obb.28
+ for <linux-mtd@lists.infradead.org>; Mon, 29 Jul 2013 18:13:41 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20130729173511.65caa07d@parrot.com>
+References: <20130729064234.GS9858@sirena.org.uk>
+ <1375095194-7093-1-git-send-email-wangyuhang2014@gmail.com>
+ <20130729145626.6c227aa0@parrot.com>
+ <CAHSAbzOPfpbPHohG7-EzftiPr5T2m19qgrKg7KS2jSKD-B=goA@mail.gmail.com>
+ <20130729173511.65caa07d@parrot.com>
+Date: Tue, 30 Jul 2013 09:13:41 +0800
+Message-ID: <CAHSAbzO9GRSSTkO23E-Ay6oZapk3qQRjy4ifxeYNLk=Lb-V4xg@mail.gmail.com>
+Subject: Re: [PATCH] SPI: DUAL and QUAD support
+From: yuhang wang <wangyuhang2014@gmail.com>
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: "broonie@kernel.org" <broonie@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "pekon@ti.com" <pekon@ti.com>, "spi-devel-general@lists.sourceforge.net"
+ <spi-devel-general@lists.sourceforge.net>,
+ "sourav.poddar@ti.com" <sourav.poddar@ti.com>,
+ "tpiepho@gmail.com" <tpiepho@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,44 +33,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There's no advantage in using a hardcoded name for the mtd device.
-Instead use the provided by the platform_device.
+Hi,
 
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
----
- drivers/mtd/nand/pxa3xx_nand.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+Yes, you are right. I will correct it.
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 7c14fc2..1aa7aea 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -233,8 +233,6 @@ static struct pxa3xx_nand_flash builtin_flash_types[] = {
- /* Define a default flash type setting serve as flash detecting only */
- #define DEFAULT_FLASH_TYPE (&builtin_flash_types[0])
- 
--const char *mtd_names[] = {"pxa3xx_nand-0", "pxa3xx_nand-1", NULL};
--
- #define NDTR0_tCH(c)	(min((c), 7) << 19)
- #define NDTR0_tCS(c)	(min((c), 7) << 16)
- #define NDTR0_tWH(c)	(min((c), 7) << 11)
-@@ -1068,8 +1066,6 @@ KEEP_CONFIG:
- 		host->row_addr_cycles = 3;
- 	else
- 		host->row_addr_cycles = 2;
--
--	mtd->name = mtd_names[0];
- 	return nand_scan_tail(mtd);
- }
- 
-@@ -1280,6 +1276,8 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
- 	probe_success = 0;
- 	for (cs = 0; cs < pdata->num_cs; cs++) {
- 		struct mtd_info *mtd = info->host[cs]->mtd;
-+
-+		mtd->name = pdev->name;
- 		info->cs = cs;
- 		ret = pxa3xx_nand_scan(mtd);
- 		if (ret) {
--- 
-1.8.1.5
+Thanks
+
+2013/7/29 Matthieu CASTET <matthieu.castet@parrot.com>:
+> Le Mon, 29 Jul 2013 15:25:51 +0100,
+> yuhang wang <wangyuhang2014@gmail.com> a =E9crit :
+>
+>> Hi,
+>>
+>> 2013/7/29 Matthieu CASTET <matthieu.castet@parrot.com>:
+>> > Le Mon, 29 Jul 2013 11:53:14 +0100,
+>> > wangyuhang <wangyuhang2014@gmail.com> a =E9crit :
+>> >
+>> >> Hi,
+>> >>
+>> >> modify two things.
+>> >> 1:
+>> >> >> @@ -1316,6 +1324,12 @@ int spi_setup(struct spi_device *spi)
+>> >> >>         /* help drivers fail *cleanly* when they need options
+>> >> >>          * that aren't supported with their current master
+>> >> >>          */
+>> >> >> +       if (((spi->mode >> 8) & 0x03) =3D=3D 0x03 ||
+>> >> >> +               ((spi->mode >> 10) & 0x03) =3D=3D 0x03) {
+>> >> >> +               dev_err(&spi->dev,
+>> >> >> +               "setup: can not select dual and quad at the same
+>> >> >> time\n")
+>> >> >> +               return -EINVAL;
+>> >> >> +       }
+>> >> >> +               return -EINVAL;
+>> >> >> +       }
+>> >>
+>> >> >This code won't work if the constants you added for mode flags
+>> >> >change value.  More importantly, anyone searching the code for
+>> >> >SPI_TX_DUAL, etc. won't find this code.
+>> >>
+>> >> so use the certain macro to replace.
+>> >>
+>> >> 2:
+>> >> >You need to make sure that existing userspace binaries can run
+>> >> >unmodified, changing the types will change the layout of the ioctl
+>> >> >arguments.  This may mean that you need to add new ioctls if you
+>> >> >need to change types.
+>> >>
+>> >> I recovered the SPI_IOC_RD_LSB_FIRST ioctl.
+>> >> Add new ioctl to fit u16 mode.
+>> >> In addition,may SPI_IOC_RD_LSB_FIRST should be del in a better way.
+>> >>
+>> >> Signed-off-by: wangyuhang <wangyuhang2014@gmail.com>
+>> >> ---
+>> >
+>> >>  /* IOCTL commands */
+>> >> @@ -54,6 +61,8 @@
+>> >>   * @tx_buf: Holds pointer to userspace buffer with transmit data,
+>> >> or null.
+>> >>   *     If no data is provided, zeroes are shifted out.
+>> >>   * @rx_buf: Holds pointer to userspace buffer for receive data, or
+>> >> null.
+>> >> + * @tx_nbits: number of bits used for writting.
+>> >> + * @rx_nbits: number of bits used for reading.
+>> >>   * @len: Length of tx and rx buffers, in bytes.
+>> >>   * @speed_hz: Temporary override of the device's bitrate.
+>> >>   * @bits_per_word: Temporary override of the device's wordsize.
+>> >> @@ -85,6 +94,8 @@
+>> >>  struct spi_ioc_transfer {
+>> >>         __u64           tx_buf;
+>> >>         __u64           rx_buf;
+>> >> +       __u8            tx_nbits;
+>> >> +       __u8            rx_nbits;
+>> >>
+>> >>         __u32           len;
+>> >>         __u32           speed_hz;
+>> > You still break old userspace ABI.
+>> >
+>> > You need to create a new structure, if you need to add fields.
+>> >
+>> I dont think adding the members will cause the program in userspace
+>> any errors. User do not have to set these members.
+> Did you try to run on your patch kernel a program build without the
+> patch ?
+>
+>
+> if I build my program with :
+>
+>> >>  struct spi_ioc_transfer {
+>> >>         __u64           tx_buf;
+>> >>         __u64           rx_buf;
+>> >>
+>> >>         __u32           len;
+>> >>         __u32           speed_hz;
+>
+> Now I run it on a new kernel.
+> The kernel won't parse correctly my structure : len will go in
+> tx_nbits, rx_nbits and len.
+>
+> Keep in mind that it is binary interface, not source interface. You
+> should not have to rebuild your binary.
+>
+> Matthieu
