@@ -1,18 +1,19 @@
-Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
+Received: from mail-pb0-x22d.google.com ([2607:f8b0:400e:c01::22d])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V4Kfj-0007eV-U6
- for linux-mtd@lists.infradead.org; Wed, 31 Jul 2013 00:53:59 +0000
-Received: by mail-pa0-f42.google.com with SMTP id lj1so206190pab.15
- for <linux-mtd@lists.infradead.org>; Tue, 30 Jul 2013 17:53:28 -0700 (PDT)
+ id 1V4Kfm-0007eW-Sa
+ for linux-mtd@lists.infradead.org; Wed, 31 Jul 2013 00:54:05 +0000
+Received: by mail-pb0-f45.google.com with SMTP id mc8so98013pbc.4
+ for <linux-mtd@lists.infradead.org>; Tue, 30 Jul 2013 17:53:29 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 5/6] mtd: nand: hide in-memory BBT implementation details
-Date: Tue, 30 Jul 2013 17:52:59 -0700
-Message-Id: <1375231980-13721-6-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v2 6/6] mtd: nand: remove NAND_BBT_SCANEMPTY
+Date: Tue, 30 Jul 2013 17:53:00 -0700
+Message-Id: <1375231980-13721-7-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1375231980-13721-1-git-send-email-computersforpeace@gmail.com>
 References: <1374647279-14083-1-git-send-email-computersforpeace@gmail.com>
  <1375231980-13721-1-git-send-email-computersforpeace@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
+Cc: Ivan Djelic <ivan.djelic@parrot.com>,
+ Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,156 +24,144 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-nand_base.c shouldn't have to know the implementation details of
-nand_bbt's in-memory BBT. Specifically, nand_base shouldn't perform the
-bit masking and shifting to isolate a BBT entry.
+NAND_BBT_SCANEMPTY is a strange, badly-supported option with omap as its
+single remaining user.
 
-Instead, just move some of the BBT code into a new nand_markbad_bbt()
-interface. This interface allows external users (i.e., nand_base) to
-mark a single block as bad in the BBT. Then nand_bbt will take care of
-modifying the in-memory BBT and updating the flash-based BBT (if
-applicable).
+NAND_BBT_SCANEMPTY was likely used by accident in omap2[1]. And anyway,
+omap2 doesn't scan the chip for bad blocks (courtesy of
+NAND_SKIP_BBTSCAN), and so its use of this option is irrelevant.
+
+This patch drops the NAND_BBT_SCANEMPTY option.
+
+[1] http://lists.infradead.org/pipermail/linux-mtd/2012-July/042902.html
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: Ivan Djelic <ivan.djelic@parrot.com>
 ---
- drivers/mtd/nand/nand_base.c |   32 +++++++++++---------------------
- drivers/mtd/nand/nand_bbt.c  |   28 ++++++++++++++++++++++++++--
- include/linux/mtd/nand.h     |    2 +-
- 3 files changed, 38 insertions(+), 24 deletions(-)
+ Documentation/DocBook/mtdnand.tmpl |    2 --
+ drivers/mtd/nand/nand_bbt.c        |   33 +++++----------------------------
+ drivers/mtd/nand/omap2.c           |    2 +-
+ drivers/mtd/onenand/onenand_bbt.c  |    1 -
+ include/linux/mtd/bbm.h            |    2 --
+ 5 files changed, 6 insertions(+), 34 deletions(-)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index a9119f7..da3ba77 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -374,22 +374,20 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
-  * block table(s) and/or marker(s)). We only allow the hardware driver to
-  * specify how to write bad block markers to OOB (chip->block_markbad).
-  *
-- * We try operations in the following order, according to our bbt_options
-- * (NAND_BBT_NO_OOB_BBM and NAND_BBT_USE_FLASH):
-+ * We try operations in the following order:
-  *  (1) erase the affected block, to allow OOB marker to be written cleanly
-- *  (2) update in-memory BBT
-- *  (3) write bad block marker to OOB area of affected block
-- *  (4) update flash-based BBT
-- * Note that we retain the first error encountered in (3) or (4), finish the
-+ *  (2) write bad block marker to OOB area of affected block (unless flag
-+ *      NAND_BBT_NO_OOB_BBM is present)
-+ *  (3) update the BBT
-+ * Note that we retain the first error encountered in (2) or (3), finish the
-  * procedures, and dump the error in the end.
- */
- static int nand_block_markbad_lowlevel(struct mtd_info *mtd, loff_t ofs)
- {
- 	struct nand_chip *chip = mtd->priv;
--	int block, res, ret = 0;
--	int write_oob = !(chip->bbt_options & NAND_BBT_NO_OOB_BBM);
-+	int res, ret = 0;
- 
--	if (write_oob) {
-+	if (!(chip->bbt_options & NAND_BBT_NO_OOB_BBM)) {
- 		struct erase_info einfo;
- 
- 		/* Attempt erase before marking OOB */
-@@ -398,24 +396,16 @@ static int nand_block_markbad_lowlevel(struct mtd_info *mtd, loff_t ofs)
- 		einfo.addr = ofs;
- 		einfo.len = 1 << chip->phys_erase_shift;
- 		nand_erase_nand(mtd, &einfo, 0);
--	}
--
--	/* Get block number */
--	block = (int)(ofs >> chip->bbt_erase_shift);
--	/* Mark block bad in memory-based BBT */
--	if (chip->bbt)
--		chip->bbt[block >> 2] |= 0x01 << ((block & 0x03) << 1);
- 
--	/* Write bad block marker to OOB */
--	if (write_oob) {
-+		/* Write bad block marker to OOB */
- 		nand_get_device(mtd, FL_WRITING);
- 		ret = chip->block_markbad(mtd, ofs);
- 		nand_release_device(mtd);
- 	}
- 
--	/* Update flash-based bad block table */
--	if (chip->bbt_options & NAND_BBT_USE_FLASH) {
--		res = nand_update_bbt(mtd, ofs);
-+	/* Mark block bad in BBT */
-+	if (chip->bbt) {
-+		res = nand_markbad_bbt(mtd, ofs);
- 		if (!ret)
- 			ret = res;
- 	}
+diff --git a/Documentation/DocBook/mtdnand.tmpl b/Documentation/DocBook/mtdnand.tmpl
+index fe122d6..a248f42 100644
+--- a/Documentation/DocBook/mtdnand.tmpl
++++ b/Documentation/DocBook/mtdnand.tmpl
+@@ -1224,8 +1224,6 @@ in this page</entry>
+ #define NAND_BBT_CREATE		0x00000200
+ /* Search good / bad pattern through all pages of a block */
+ #define NAND_BBT_SCANALLPAGES	0x00000400
+-/* Scan block empty during good / bad block scan */
+-#define NAND_BBT_SCANEMPTY	0x00000800
+ /* Write bbt if neccecary */
+ #define NAND_BBT_WRITE		0x00001000
+ /* Read and write back block contents when writing bbt */
 diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-index bac481a..ae3fb58 100644
+index ae3fb58..bc06196 100644
 --- a/drivers/mtd/nand/nand_bbt.c
 +++ b/drivers/mtd/nand/nand_bbt.c
-@@ -79,6 +79,8 @@
- #define BBT_ENTRY_MASK		0x03
- #define BBT_ENTRY_SHIFT		2
- 
-+static int nand_update_bbt(struct mtd_info *mtd, loff_t offs);
-+
- static inline uint8_t bbt_get_entry(struct nand_chip *chip, int block)
+@@ -110,33 +110,17 @@ static int check_pattern_no_oob(uint8_t *buf, struct nand_bbt_descr *td)
+  * @td: search pattern descriptor
+  *
+  * Check for a pattern at the given place. Used to search bad block tables and
+- * good / bad block identifiers. If the SCAN_EMPTY option is set then check, if
+- * all bytes except the pattern area contain 0xff.
++ * good / bad block identifiers.
+  */
+ static int check_pattern(uint8_t *buf, int len, int paglen, struct nand_bbt_descr *td)
  {
- 	uint8_t entry = chip->bbt[block >> BBT_ENTRY_SHIFT];
-@@ -1194,13 +1196,13 @@ int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd)
+-	int end = 0;
+-	uint8_t *p = buf;
+-
+ 	if (td->options & NAND_BBT_NO_OOB)
+ 		return check_pattern_no_oob(buf, td);
+ 
+-	end = paglen + td->offs;
+-	if (td->options & NAND_BBT_SCANEMPTY)
+-		if (memchr_inv(p, 0xff, end))
+-			return -1;
+-	p += end;
+-
+ 	/* Compare the pattern */
+-	if (memcmp(p, td->pattern, td->len))
++	if (memcmp(buf + paglen + td->offs, td->pattern, td->len))
+ 		return -1;
+ 
+-	if (td->options & NAND_BBT_SCANEMPTY) {
+-		p += td->len;
+-		end += td->len;
+-		if (memchr_inv(p, 0xff, len - end))
+-			return -1;
+-	}
+ 	return 0;
  }
  
- /**
-- * nand_update_bbt - [NAND Interface] update bad block table(s)
-+ * nand_update_bbt - update bad block table(s)
-  * @mtd: MTD device structure
-  * @offs: the offset of the newly marked block
-  *
-  * The function updates the bad block table(s).
-  */
--int nand_update_bbt(struct mtd_info *mtd, loff_t offs)
-+static int nand_update_bbt(struct mtd_info *mtd, loff_t offs)
+@@ -507,15 +491,9 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 	else
+ 		numpages = 1;
+ 
+-	if (!(bd->options & NAND_BBT_SCANEMPTY)) {
+-		/* We need only read few bytes from the OOB area */
+-		scanlen = 0;
+-		readlen = bd->len;
+-	} else {
+-		/* Full page content should be read */
+-		scanlen = mtd->writesize + mtd->oobsize;
+-		readlen = numpages * mtd->writesize;
+-	}
++	/* We need only read few bytes from the OOB area */
++	scanlen = 0;
++	readlen = bd->len;
+ 
+ 	if (chip == -1) {
+ 		numblocks = mtd->size >> this->bbt_erase_shift;
+@@ -882,7 +860,6 @@ static inline int nand_memory_bbt(struct mtd_info *mtd, struct nand_bbt_descr *b
  {
  	struct nand_chip *this = mtd->priv;
- 	int len, res = 0;
-@@ -1390,5 +1392,27 @@ int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt)
- 	return 1;
+ 
+-	bd->options &= ~NAND_BBT_SCANEMPTY;
+ 	return create_bbt(mtd, this->buffers->databuf, bd, -1);
  }
  
-+/**
-+ * nand_markbad_bbt - [NAND Interface] Mark a block bad in the BBT
-+ * @mtd: MTD device structure
-+ * @offs: offset of the bad block
-+ */
-+int nand_markbad_bbt(struct mtd_info *mtd, loff_t offs)
-+{
-+	struct nand_chip *this = mtd->priv;
-+	int block, ret = 0;
-+
-+	block = (int)(offs >> this->bbt_erase_shift);
-+
-+	/* Mark bad block in memory */
-+	bbt_mark_entry(this, block, BBT_BLOCK_WORN);
-+
-+	/* Update flash-based bad block table */
-+	if (this->bbt_options & NAND_BBT_USE_FLASH)
-+		ret = nand_update_bbt(mtd, offs);
-+
-+	return ret;
-+}
-+
- EXPORT_SYMBOL(nand_scan_bbt);
- EXPORT_SYMBOL(nand_default_bbt);
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 0745a42..9f7b248 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -628,8 +628,8 @@ extern struct nand_flash_dev nand_flash_ids[];
- extern struct nand_manufacturers nand_manuf_ids[];
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index c4c7e0d..d6b9cc1 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -159,7 +159,7 @@ static struct nand_ecclayout omap_oobinfo;
+  */
+ static uint8_t scan_ff_pattern[] = { 0xff };
+ static struct nand_bbt_descr bb_descrip_flashbased = {
+-	.options = NAND_BBT_SCANEMPTY | NAND_BBT_SCANALLPAGES,
++	.options = NAND_BBT_SCANALLPAGES,
+ 	.offs = 0,
+ 	.len = 1,
+ 	.pattern = scan_ff_pattern,
+diff --git a/drivers/mtd/onenand/onenand_bbt.c b/drivers/mtd/onenand/onenand_bbt.c
+index 66fe3b7..08d0085 100644
+--- a/drivers/mtd/onenand/onenand_bbt.c
++++ b/drivers/mtd/onenand/onenand_bbt.c
+@@ -133,7 +133,6 @@ static inline int onenand_memory_bbt (struct mtd_info *mtd, struct nand_bbt_desc
+ {
+ 	struct onenand_chip *this = mtd->priv;
  
- extern int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd);
--extern int nand_update_bbt(struct mtd_info *mtd, loff_t offs);
- extern int nand_default_bbt(struct mtd_info *mtd);
-+extern int nand_markbad_bbt(struct mtd_info *mtd, loff_t offs);
- extern int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt);
- extern int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
- 			   int allowbbt);
+-        bd->options &= ~NAND_BBT_SCANEMPTY;
+ 	return create_bbt(mtd, this->page_buf, bd, -1);
+ }
+ 
+diff --git a/include/linux/mtd/bbm.h b/include/linux/mtd/bbm.h
+index 211ff67..95fc482 100644
+--- a/include/linux/mtd/bbm.h
++++ b/include/linux/mtd/bbm.h
+@@ -93,8 +93,6 @@ struct nand_bbt_descr {
+ #define NAND_BBT_CREATE_EMPTY	0x00000400
+ /* Search good / bad pattern through all pages of a block */
+ #define NAND_BBT_SCANALLPAGES	0x00000800
+-/* Scan block empty during good / bad block scan */
+-#define NAND_BBT_SCANEMPTY	0x00001000
+ /* Write bbt if neccecary */
+ #define NAND_BBT_WRITE		0x00002000
+ /* Read and write back block contents when writing bbt */
 -- 
 1.7.9.5
