@@ -1,19 +1,18 @@
-Received: from a9-74.smtp-out.amazonses.com ([54.240.9.74])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V4WwK-0008A4-2Q
- for linux-mtd@lists.infradead.org; Wed, 31 Jul 2013 13:59:44 +0000
-Date: Wed, 31 Jul 2013 13:59:18 +0000
-From: Christoph Lameter <cl@gentwo.org>
-To: Wladislav Wiebe <wladislav.kw@gmail.com>
-Subject: Re: mm/slab: ppc: ubi: kmalloc_slab WARNING / PPC + UBI driver
-In-Reply-To: <51F8F827.6020108@gmail.com>
-Message-ID: <000001403506934c-ce0f08c9-240a-4464-84aa-f31664b86a74-000000@email.amazonses.com>
-References: <51F8F827.6020108@gmail.com>
+Received: from mail1.efacec.com ([213.58.212.93])
+ by merlin.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V4XKg-0000Uz-AH
+ for linux-mtd@lists.infradead.org; Wed, 31 Jul 2013 14:24:55 +0000
+Message-ID: <51F91E08.7030409@efacec.com>
+Date: Wed, 31 Jul 2013 15:24:08 +0100
+From: =?ISO-8859-1?Q?An=EDbal_Almeida_Pinto?= <anibal.pinto@efacec.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: dedekind1@gmail.com, dwmw2@infradead.org, penberg@kernel.org,
- linux-mm@kvack.org, linux-mtd@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org
+To: <linux-mtd@lists.infradead.org>,
+ "davinci-linux-open-source@linux.davincidsp.com"
+ <Davinci-linux-open-source@linux.davincidsp.com>
+Subject: JFFS2 impact when don't have sub page access
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: Fernando Gomes <fernando.gomes@efacec.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +22,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 31 Jul 2013, Wladislav Wiebe wrote:
 
-> on a PPC 32-Bit board with a Linux Kernel v3.10.0 I see trouble with kmalloc_slab.
-> Basically at system startup, something request a size of 8388608 b,
-> but KMALLOC_MAX_SIZE has 4194304 b in our case. It points a WARNING at:
+Hi,
 
-> ..
-> NIP [c0099fec] kmalloc_slab+0x60/0xe8
-> LR [c0099fd4] kmalloc_slab+0x48/0xe8
-> Call Trace:
-> [ccd3be60] [c0099fd4] kmalloc_slab+0x48/0xe8 (unreliable)
-> [ccd3be70] [c00ae650] __kmalloc+0x20/0x1b4
-> [ccd3be90] [c00d46f4] seq_read+0x2a4/0x540
-> [ccd3bee0] [c00fe09c] proc_reg_read+0x5c/0x90
-> [ccd3bef0] [c00b4e1c] vfs_read+0xa4/0x150
-> [ccd3bf10] [c00b500c] SyS_read+0x4c/0x84
-> [ccd3bf40] [c000be80] ret_from_syscall+0x0/0x3c
-> ..
->
-> Do you have any idea how I can analyze where these 8388608 b coming from?
+I' am using an OMAP L138 with a NAND SLC (MT29F4G08)
 
-It comes from the kmalloc in seq_read(). And 8M read from the proc
-filesystem? Wow. Maybe switch the kmalloc to vmalloc()?
+I was making some tests with Ubifs but found some errors due to OMAP=20
+don't support sub pages access:
+
+[  128.344667] UBI error: ubi_io_read: error -74 (ECC error) while=20
+reading 512 bytes from PEB 2:512, read 512 bytes
+[  128.883945] UBI error: ubi_io_read: error -74 (ECC error) while=20
+reading 512 bytes from PEB 1766:512, read 512 bytes
+[  128.884072] UBI: run torture test for PEB 1766
+
+The error will continue on loop.
+
+The mtd_tests failed on mtd_supgatetest:
+
+[ 63.870866] mtd_subpagetest: MTD device: 0
+[ 63.870929] mtd_subpagetest: MTD device size 262144, eraseblock size=20
+131072, page size 2048, subpage size 512, count of eraseblocks 2, pages=20
+per eraseblock 64, OOB size 64
+[ 63.871052] mtd_subpagetest: scanning for bad eraseblocks
+[ 63.871097] mtd_subpagetest: scanned 2 eraseblocks, 0 are bad
+[ 63.871126] mtd_subpagetest: erasing whole device
+[ 63.872731] mtd_subpagetest: erased 2 eraseblocks
+[ 63.872756] mtd_subpagetest: writing whole device
+[ 63.873873] mtd_subpagetest: written up to eraseblock 0
+[ 63.874943] mtd_subpagetest: written 2 eraseblocks
+[ 63.874969] mtd_subpagetest: verifying all eraseblocks
+[ 63.875620] mtd_subpagetest: error: read failed at 0x0
+[ 63.875667] mtd_subpagetest: error -74 occurred
+
+and disabling the sub page access enable the use of UBIFS [1].
+
+Is there any impact on jffs2 partitions if sub page write are enable on=20
+OMAP L138?
+
+Thanks.
+
+[1] -=20
+http://davinci-linux-open-source.1494791.n2.nabble.com/UBI-crashes-fixing-N=
+AND-subpage-writes-td5485828.html=20
+(message from 2010/09/29)
+
+Regards,
+An=EDbal
