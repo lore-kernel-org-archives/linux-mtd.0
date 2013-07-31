@@ -1,23 +1,20 @@
-Received: from a9-46.smtp-out.amazonses.com ([54.240.9.46])
+Received: from filtteri6.pp.htv.fi ([213.243.153.189])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V4Zpr-00050T-GK
- for linux-mtd@lists.infradead.org; Wed, 31 Jul 2013 17:05:15 +0000
-Date: Wed, 31 Jul 2013 17:04:49 +0000
-From: Christoph Lameter <cl@gentwo.org>
+ id 1V4aIk-0005j9-16
+ for linux-mtd@lists.infradead.org; Wed, 31 Jul 2013 17:35:06 +0000
+Date: Wed, 31 Jul 2013 20:34:34 +0300
+From: Aaro Koskinen <aaro.koskinen@iki.fi>
 To: Wladislav Wiebe <wladislav.kw@gmail.com>
 Subject: Re: mm/slab: ppc: ubi: kmalloc_slab WARNING / PPC + UBI driver
-In-Reply-To: <51F93C64.4090601@gmail.com>
-Message-ID: <0000014035b06a9d-e8b10680-e321-4d3b-95a8-0833fa3fb7c9-000000@email.amazonses.com>
+Message-ID: <20130731173434.GA27470@blackmetal.musicnaut.iki.fi>
 References: <51F8F827.6020108@gmail.com>
- <alpine.DEB.2.02.1307310858150.30572@gentwo.org>
- <alpine.DEB.2.02.1307311015320.30997@gentwo.org>
- <000001403567762a-60a27288-f0b2-4855-b88c-6a6f21ec537c-000000@email.amazonses.com>
- <51F93C64.4090601@gmail.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: dedekind1@gmail.com, Mel Gorman <mel@csn.ul.ie>, dwmw2@infradead.org,
- Pekka Enberg <penberg@kernel.org>, linux-mm@kvack.org,
- linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <51F8F827.6020108@gmail.com>
+Cc: dedekind1@gmail.com, dwmw2@infradead.org, penberg@kernel.org,
+ linux-mm@kvack.org, linux-mtd@lists.infradead.org, cl@linux.com,
+ linuxppc-dev@lists.ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,15 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 31 Jul 2013, Wladislav Wiebe wrote:
+Hi,
 
-> Thanks for the point, do you plan to make kmalloc_large available for extern access in a separate mainline patch?
-> Since kmalloc_large is statically defined in slub_def.h and when including it to seq_file.c
-> we have a lot of conflicting types:
+On Wed, Jul 31, 2013 at 01:42:31PM +0200, Wladislav Wiebe wrote:
+> DEBUG: xxx kmalloc_slab, requested 'size' = 8388608, KMALLOC_MAX_SIZE = 4194304
+[...]
+> [ccd3be60] [c0099fd4] kmalloc_slab+0x48/0xe8 (unreliable)
+> [ccd3be70] [c00ae650] __kmalloc+0x20/0x1b4
+> [ccd3be90] [c00d46f4] seq_read+0x2a4/0x540
+> [ccd3bee0] [c00fe09c] proc_reg_read+0x5c/0x90
+> [ccd3bef0] [c00b4e1c] vfs_read+0xa4/0x150
+> [ccd3bf10] [c00b500c] SyS_read+0x4c/0x84
+> [ccd3bf40] [c000be80] ret_from_syscall+0x0/0x3c
 
-You cannot separatly include slub_def.h. slab.h includes slub_def.h for
-you. What problem did you try to fix by doing so?
+It seems some procfs file is trying to dump 8 MB at a single go. You
+need to fix that to return data in smaller chunks. What file is it?
 
-There is a patch pending that moves kmalloc_large to slab.h. So maybe we
-have to wait a merge period in order to be able to use it with other
-allocators than slub.
+A.
