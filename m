@@ -1,18 +1,28 @@
-Received: from mail1.efacec.com ([213.58.212.93])
- by merlin.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V4XKg-0000Uz-AH
- for linux-mtd@lists.infradead.org; Wed, 31 Jul 2013 14:24:55 +0000
-Message-ID: <51F91E08.7030409@efacec.com>
-Date: Wed, 31 Jul 2013 15:24:08 +0100
-From: =?ISO-8859-1?Q?An=EDbal_Almeida_Pinto?= <anibal.pinto@efacec.com>
+Received: from up.free-electrons.com ([94.23.35.102]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V4Y9d-0002LQ-78
+ for linux-mtd@lists.infradead.org; Wed, 31 Jul 2013 15:17:33 +0000
+Date: Wed, 31 Jul 2013 12:17:01 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Daniel Mack <zonque@gmail.com>
+Subject: Re: [PATCH 00/13] pxa3xx patches to support mvebu builds
+Message-ID: <20130731151700.GA2347@localhost>
+References: <1375140263-2028-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <51F8FA24.9060904@gmail.com>
 MIME-Version: 1.0
-To: <linux-mtd@lists.infradead.org>,
- "davinci-linux-open-source@linux.davincidsp.com"
- <Davinci-linux-open-source@linux.davincidsp.com>
-Subject: JFFS2 impact when don't have sub page access
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: Fernando Gomes <fernando.gomes@efacec.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <51F8FA24.9060904@gmail.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
+ Artem Bityutskiy <dedekind1@gmail.com>, leiwen@marvell.com,
+ haojian.zhuang@gmail.com, linux-mtd@lists.infradead.org,
+ grinberg@compulab.co.il, Gregory Clement <gregory.clement@free-electrons.com>,
+ eric.miao@marvell.com, computersforpeace@gmail.com,
+ David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>,
+ nikita@compulab.co.il
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,50 +32,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, Jul 31, 2013 at 01:51:00PM +0200, Daniel Mack wrote:
+> On 30.07.2013 01:24, Ezequiel Garcia wrote:
+> > This patchset is part of the work I'm doing to enable the pxa3xx-nand
+> > driver to support the NAND controller in Armada 370/XP. While this
+> > work in progress, here's a subet of patches I consider good enough
+> > for mainline.
+> 
+> What tree did you make this patch set against? I fail to apply it on top
+> of 3.11-rc3. Any particular patches I need before applying yours? Did
+> you push them to any public git repository maybe?
+> 
 
-Hi,
+Mmm.. sorry about that, I should have been more explicit.
 
-I' am using an OMAP L138 with a NAND SLC (MT29F4G08)
+This patchset applies cleanly on top of a recent (yesterday or today)
+linux-next and also on top Artem's l2-mtd:
 
-I was making some tests with Ubifs but found some errors due to OMAP=20
-don't support sub pages access:
+git://git.infradead.org/users/dedekind/l2-mtd.git
 
-[  128.344667] UBI error: ubi_io_read: error -74 (ECC error) while=20
-reading 512 bytes from PEB 2:512, read 512 bytes
-[  128.883945] UBI error: ubi_io_read: error -74 (ECC error) while=20
-reading 512 bytes from PEB 1766:512, read 512 bytes
-[  128.884072] UBI: run torture test for PEB 1766
+(the above usually has the latest accepted mtd changes).
 
-The error will continue on loop.
-
-The mtd_tests failed on mtd_supgatetest:
-
-[ 63.870866] mtd_subpagetest: MTD device: 0
-[ 63.870929] mtd_subpagetest: MTD device size 262144, eraseblock size=20
-131072, page size 2048, subpage size 512, count of eraseblocks 2, pages=20
-per eraseblock 64, OOB size 64
-[ 63.871052] mtd_subpagetest: scanning for bad eraseblocks
-[ 63.871097] mtd_subpagetest: scanned 2 eraseblocks, 0 are bad
-[ 63.871126] mtd_subpagetest: erasing whole device
-[ 63.872731] mtd_subpagetest: erased 2 eraseblocks
-[ 63.872756] mtd_subpagetest: writing whole device
-[ 63.873873] mtd_subpagetest: written up to eraseblock 0
-[ 63.874943] mtd_subpagetest: written 2 eraseblocks
-[ 63.874969] mtd_subpagetest: verifying all eraseblocks
-[ 63.875620] mtd_subpagetest: error: read failed at 0x0
-[ 63.875667] mtd_subpagetest: error -74 occurred
-
-and disabling the sub page access enable the use of UBIFS [1].
-
-Is there any impact on jffs2 partitions if sub page write are enable on=20
-OMAP L138?
-
-Thanks.
-
-[1] -=20
-http://davinci-linux-open-source.1494791.n2.nabble.com/UBI-crashes-fixing-N=
-AND-subpage-writes-td5485828.html=20
-(message from 2010/09/29)
-
-Regards,
-An=EDbal
+Thanks!
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
