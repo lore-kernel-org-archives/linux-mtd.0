@@ -1,27 +1,19 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
+Received: from a9-74.smtp-out.amazonses.com ([54.240.9.74])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V4V3p-0004YX-HV
- for linux-mtd@lists.infradead.org; Wed, 31 Jul 2013 11:59:22 +0000
-Received: from localhost (localhost [127.0.0.1])
- by co202.xi-lite.net (Postfix) with ESMTP id 1A977481AD2
- for <linux-mtd@lists.infradead.org>; Wed, 31 Jul 2013 13:58:57 +0200 (CEST)
-Received: from co202.xi-lite.net ([127.0.0.1])
- by localhost (fw.aswsp.net [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id IBDIJtho0hqJ for <linux-mtd@lists.infradead.org>;
- Wed, 31 Jul 2013 13:58:57 +0200 (CEST)
-Received: from ONYX.xi-lite.lan (unknown [193.34.35.244])
- by co202.xi-lite.net (Postfix) with ESMTPS id 080C548093A
- for <linux-mtd@lists.infradead.org>; Wed, 31 Jul 2013 13:58:57 +0200 (CEST)
-Date: Wed, 31 Jul 2013 13:58:53 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
-To: <linux-mtd@lists.infradead.org>
+ id 1V4WwK-0008A4-2Q
+ for linux-mtd@lists.infradead.org; Wed, 31 Jul 2013 13:59:44 +0000
+Date: Wed, 31 Jul 2013 13:59:18 +0000
+From: Christoph Lameter <cl@gentwo.org>
+To: Wladislav Wiebe <wladislav.kw@gmail.com>
 Subject: Re: mm/slab: ppc: ubi: kmalloc_slab WARNING / PPC + UBI driver
-Message-ID: <20130731135853.1c210083@parrot.com>
 In-Reply-To: <51F8F827.6020108@gmail.com>
+Message-ID: <000001403506934c-ce0f08c9-240a-4464-84aa-f31664b86a74-000000@email.amazonses.com>
 References: <51F8F827.6020108@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: dedekind1@gmail.com, dwmw2@infradead.org, penberg@kernel.org,
+ linux-mm@kvack.org, linux-mtd@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,28 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le Wed, 31 Jul 2013 12:42:31 +0100,
-Wladislav Wiebe <wladislav.kw@gmail.com> a =E9crit :
+On Wed, 31 Jul 2013, Wladislav Wiebe wrote:
 
-> CPU: 0 PID: 900 Comm: hexdump Tainted: G           O
-> 3.10.0-0-sampleversion-fcmd #40 task: cf3e7280 ti: ccd3a000 task.ti:
-> ccd3a000 NIP: c0099fec LR: c0099fd4 CTR: c018b0dc
-> REGS: ccd3bdb0 TRAP: 0700   Tainted: G           O
-> (3.10.0-0-sampleversion-fcmd) MSR: 00029000 <CE,EE,ME>  CR: 22000442
-> XER: 20000000
->=20
-> GPR00: c0099fd4 ccd3be60 cf3e7280 00000000 d100e501 00000005 00000000
-> c0372ac0 GPR08: 00000004 00000001 00000000 ccd3be20 22000444 100a24dc
-> 00000000 00000000 GPR16: 10076b54 00000000 fffff000 00000000 ccd3bea0
-> 00000000 00000001 00000400 GPR24: 00000000 00000000 4801c000 c00d46f4
-> ccd3bf18 000000d0 00800000 000000d0 NIP [c0099fec]
-> kmalloc_slab+0x60/0xe8 LR [c0099fd4] kmalloc_slab+0x48/0xe8
+> on a PPC 32-Bit board with a Linux Kernel v3.10.0 I see trouble with kmalloc_slab.
+> Basically at system startup, something request a size of 8388608 b,
+> but KMALLOC_MAX_SIZE has 4194304 b in our case. It points a WARNING at:
+
+> ..
+> NIP [c0099fec] kmalloc_slab+0x60/0xe8
+> LR [c0099fd4] kmalloc_slab+0x48/0xe8
 > Call Trace:
 > [ccd3be60] [c0099fd4] kmalloc_slab+0x48/0xe8 (unreliable)
 > [ccd3be70] [c00ae650] __kmalloc+0x20/0x1b4
 > [ccd3be90] [c00d46f4] seq_read+0x2a4/0x540
 > [ccd3bee0] [c00fe09c] proc_reg_read+0x5c/0x90
-Aren't you doing a hexdump on a proc file ?
+> [ccd3bef0] [c00b4e1c] vfs_read+0xa4/0x150
+> [ccd3bf10] [c00b500c] SyS_read+0x4c/0x84
+> [ccd3bf40] [c000be80] ret_from_syscall+0x0/0x3c
+> ..
+>
+> Do you have any idea how I can analyze where these 8388608 b coming from?
 
-
-Matthieu
+It comes from the kmalloc in seq_read(). And 8M read from the proc
+filesystem? Wow. Maybe switch the kmalloc to vmalloc()?
