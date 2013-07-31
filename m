@@ -1,27 +1,27 @@
-Received: from mail-bk0-f42.google.com ([209.85.214.42])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V4UwD-0004I9-Ud
- for linux-mtd@lists.infradead.org; Wed, 31 Jul 2013 11:51:30 +0000
-Received: by mail-bk0-f42.google.com with SMTP id jk14so210170bkc.1
- for <linux-mtd@lists.infradead.org>; Wed, 31 Jul 2013 04:51:02 -0700 (PDT)
-Message-ID: <51F8FA24.9060904@gmail.com>
-Date: Wed, 31 Jul 2013 13:51:00 +0200
-From: Daniel Mack <zonque@gmail.com>
+Received: from co202.xi-lite.net ([149.6.83.202])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V4V3p-0004YX-HV
+ for linux-mtd@lists.infradead.org; Wed, 31 Jul 2013 11:59:22 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by co202.xi-lite.net (Postfix) with ESMTP id 1A977481AD2
+ for <linux-mtd@lists.infradead.org>; Wed, 31 Jul 2013 13:58:57 +0200 (CEST)
+Received: from co202.xi-lite.net ([127.0.0.1])
+ by localhost (fw.aswsp.net [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id IBDIJtho0hqJ for <linux-mtd@lists.infradead.org>;
+ Wed, 31 Jul 2013 13:58:57 +0200 (CEST)
+Received: from ONYX.xi-lite.lan (unknown [193.34.35.244])
+ by co202.xi-lite.net (Postfix) with ESMTPS id 080C548093A
+ for <linux-mtd@lists.infradead.org>; Wed, 31 Jul 2013 13:58:57 +0200 (CEST)
+Date: Wed, 31 Jul 2013 13:58:53 +0200
+From: Matthieu CASTET <matthieu.castet@parrot.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Re: mm/slab: ppc: ubi: kmalloc_slab WARNING / PPC + UBI driver
+Message-ID: <20130731135853.1c210083@parrot.com>
+In-Reply-To: <51F8F827.6020108@gmail.com>
+References: <51F8F827.6020108@gmail.com>
 MIME-Version: 1.0
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH 00/13] pxa3xx patches to support mvebu builds
-References: <1375140263-2028-1-git-send-email-ezequiel.garcia@free-electrons.com>
-In-Reply-To: <1375140263-2028-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
- Artem Bityutskiy <dedekind1@gmail.com>, leiwen@marvell.com,
- haojian.zhuang@gmail.com, linux-mtd@lists.infradead.org,
- grinberg@compulab.co.il, Gregory Clement <gregory.clement@free-electrons.com>,
- eric.miao@marvell.com, computersforpeace@gmail.com,
- David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>,
- nikita@compulab.co.il
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,16 +31,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 30.07.2013 01:24, Ezequiel Garcia wrote:
-> This patchset is part of the work I'm doing to enable the pxa3xx-nand
-> driver to support the NAND controller in Armada 370/XP. While this
-> work in progress, here's a subet of patches I consider good enough
-> for mainline.
+Le Wed, 31 Jul 2013 12:42:31 +0100,
+Wladislav Wiebe <wladislav.kw@gmail.com> a =E9crit :
 
-What tree did you make this patch set against? I fail to apply it on top
-of 3.11-rc3. Any particular patches I need before applying yours? Did
-you push them to any public git repository maybe?
+> CPU: 0 PID: 900 Comm: hexdump Tainted: G           O
+> 3.10.0-0-sampleversion-fcmd #40 task: cf3e7280 ti: ccd3a000 task.ti:
+> ccd3a000 NIP: c0099fec LR: c0099fd4 CTR: c018b0dc
+> REGS: ccd3bdb0 TRAP: 0700   Tainted: G           O
+> (3.10.0-0-sampleversion-fcmd) MSR: 00029000 <CE,EE,ME>  CR: 22000442
+> XER: 20000000
+>=20
+> GPR00: c0099fd4 ccd3be60 cf3e7280 00000000 d100e501 00000005 00000000
+> c0372ac0 GPR08: 00000004 00000001 00000000 ccd3be20 22000444 100a24dc
+> 00000000 00000000 GPR16: 10076b54 00000000 fffff000 00000000 ccd3bea0
+> 00000000 00000001 00000400 GPR24: 00000000 00000000 4801c000 c00d46f4
+> ccd3bf18 000000d0 00800000 000000d0 NIP [c0099fec]
+> kmalloc_slab+0x60/0xe8 LR [c0099fd4] kmalloc_slab+0x48/0xe8
+> Call Trace:
+> [ccd3be60] [c0099fd4] kmalloc_slab+0x48/0xe8 (unreliable)
+> [ccd3be70] [c00ae650] __kmalloc+0x20/0x1b4
+> [ccd3be90] [c00d46f4] seq_read+0x2a4/0x540
+> [ccd3bee0] [c00fe09c] proc_reg_read+0x5c/0x90
+Aren't you doing a hexdump on a proc file ?
 
 
-Thanks,
-Daniel
+Matthieu
