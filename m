@@ -1,23 +1,21 @@
-Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
+Received: from mail-pd0-x22b.google.com ([2607:f8b0:400e:c02::22b])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V4KSz-0007S5-Q3
- for linux-mtd@lists.infradead.org; Wed, 31 Jul 2013 00:40:38 +0000
-Received: by mail-pa0-f41.google.com with SMTP id bj1so196659pad.14
- for <linux-mtd@lists.infradead.org>; Tue, 30 Jul 2013 17:40:15 -0700 (PDT)
-Message-ID: <51F85CED.3060807@gmail.com>
-Date: Tue, 30 Jul 2013 17:40:13 -0700
+ id 1V4Kfe-0007e4-25
+ for linux-mtd@lists.infradead.org; Wed, 31 Jul 2013 00:53:42 +0000
+Received: by mail-pd0-f171.google.com with SMTP id y14so94244pdi.16
+ for <linux-mtd@lists.infradead.org>; Tue, 30 Jul 2013 17:53:20 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
-MIME-Version: 1.0
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH 1/4] mtd: nand: add accessors, macros for in-memory BBT
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH v2 0/6] mtd: nand: cleanups to BBT
+Date: Tue, 30 Jul 2013 17:52:54 -0700
+Message-Id: <1375231980-13721-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1374647279-14083-1-git-send-email-computersforpeace@gmail.com>
 References: <1374647279-14083-1-git-send-email-computersforpeace@gmail.com>
- <1374647279-14083-2-git-send-email-computersforpeace@gmail.com>
- <20130730220254.GB2404@localhost>
-In-Reply-To: <20130730220254.GB2404@localhost>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, Huang Shijie <b32955@freescale.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Ivan Djelic <ivan.djelic@parrot.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,118 +25,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ezequiel,
+Hi all,
 
-On 07/30/2013 03:02 PM, Ezequiel Garcia wrote:
-> Hi Brian,
->
-> Here's my attempt at reviewing this patchset, given the recent
-> discussion about needing more MTD reviewing.
->
-> I don't have enough experience with the NAND core to say anything about this,
-> but I noticed you're doing a bunch of related but not necessarily tied changes.
->
-> IMHO, splitting this patch further might make reviewing a lot easier, see below.
+This is v2 of my NAND BBT cleanup. The net diff is exactly the same as v1, but
+it splits up a few logical changes.
 
-At first I disagreed, but after re-reading my work, I agree in part. The 
-original code was quite ugly, but that doesn't excuse me for not making 
-a little effort to make it easier to review.
+v1 -> v2:
+  Split up first patch into 3 patches, according to Ezequiel's comments.
+  Hopefully this makes it easier to read and review.
 
-> On Tue, Jul 23, 2013 at 11:27:56PM -0700, Brian Norris wrote:
->> diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
->> index 2672643..3f18776 100644
->> --- a/drivers/mtd/nand/nand_bbt.c
->> +++ b/drivers/mtd/nand/nand_bbt.c
->> @@ -71,6 +71,28 @@
->>   #include <linux/export.h>
->>   #include <linux/string.h>
->>
->> +#define BBT_BLOCK_GOOD		0x00
->> +#define BBT_BLOCK_WORN		0x01
->> +#define BBT_BLOCK_RESERVED	0x02
->> +#define BBT_BLOCK_FACTORY_BAD	0x03
->> +
->> +#define BBT_ENTRY_MASK		0x03
->> +#define BBT_ENTRY_SHIFT		2
->> +
->
-> You can have one patch to change all the magic numbers into this nice
-> macros.
->
-> [...]
->
-> And then another patch to use the new accesors.
+Brian Norris (6):
+  mtd: nand: add accessors, macros for in-memory BBT
+  mtd: nand: remove multiplied-by-2 block logic
+  mtd: nand: eliminate cast
+  mtd: nand: refactor chip->block_markbad interface
+  mtd: nand: hide in-memory BBT implementation details
+  mtd: nand: remove NAND_BBT_SCANEMPTY
 
-I plan to still lump the macros + accessors together, since most of the 
-shifting and masking ugliness is very intertwined. It's easier (IMO) to 
-just reason about a hunk like this:
+ Documentation/DocBook/mtdnand.tmpl     |    2 -
+ drivers/mtd/nand/docg4.c               |    6 -
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   44 +++-----
+ drivers/mtd/nand/nand_base.c           |  113 ++++++++++---------
+ drivers/mtd/nand/nand_bbt.c            |  194 +++++++++++++++++---------------
+ drivers/mtd/nand/omap2.c               |    2 +-
+ drivers/mtd/nand/sm_common.c           |    9 +-
+ drivers/mtd/onenand/onenand_bbt.c      |    1 -
+ include/linux/mtd/bbm.h                |    2 -
+ include/linux/mtd/nand.h               |    2 +-
+ 10 files changed, 185 insertions(+), 190 deletions(-)
 
-[combined hunk]
--   this->bbt[offs + (act >> 3)] |= 0x2 << (act & 0x06);
-+   bbt_mark_entry(this, (offs << 2) + (act >> 1), BBT_BLOCK_RESERVED);
-
-Than the next two (as if they are split to 2 patches):
-
-[hunk for patch 1]
--   this->bbt[offs + (act >> 3)] |= 0x2 << (act & 0x06);
-+   this->bbt[offs + ((act >> 1) >> BBT_ENTRY_SHIFT)] |=
-+              BBT_BLOCK_RESERVED << ((act >> 1) & BBT_ENTRY_MASK);
-
-[hunk for patch 2]
--   this->bbt[offs + ((act >> 1) >> BBT_ENTRY_SHIFT)] |=
--              BBT_BLOCK_RESERVED << ((act >> 1) & BBT_ENTRY_MASK);
-+   bbt_mark_entry(this, (offs << 2) + (act >> 1), BBT_BLOCK_RESERVED);
-
-But I can split again, if the next series is still hard to review.
-
-> [...]
->>   int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt)
->>   {
->>   	struct nand_chip *this = mtd->priv;
->> -	int block;
->> -	uint8_t res;
->> +	int block, res;
->>
->> -	/* Get block number * 2 */
->
-> And then a third patch to make the block * 2 -> block change.
-
-Yes, this one can be kept pretty separate, and it makes the intermediate 
-changes easier to read.
-
->> -	block = (int)(offs >> (this->bbt_erase_shift - 1));
->> -	res = (this->bbt[block >> 3] >> (block & 0x06)) & 0x03;
->> +	block = (int)(offs >> this->bbt_erase_shift);
->> +	res = bbt_get_entry(this, block);
->>
->>   	pr_debug("nand_isbad_bbt(): bbt info for offs 0x%08x: "
->>   			"(block %d) 0x%02x\n",
->> -			(unsigned int)offs, block >> 1, res);
->> +			(unsigned int)offs, block, res);
->>
->> -	switch ((int)res) {
->> -	case 0x00:
->> +	switch (res) {
->
-> Mmm.. and then if you are really paranoid (like me) you can
-> make the uint8_t -> int type change in another patch.
-
-I'll consider it, but I don't consider myself quite that paranoid ;)
-
->> +	case BBT_BLOCK_GOOD:
->>   		return 0;
->> -	case 0x01:
->> +	case BBT_BLOCK_WORN:
->>   		return 1;
->> -	case 0x02:
->> +	case BBT_BLOCK_RESERVED:
->>   		return allowbbt ? 0 : 1;
->>   	}
->>   	return 1;
->
-> Hope this is of any help!
-
-Yes, thanks for the review! I'll send a split v2 series, and I hope it 
-will be more reviewable.
-
-Brian
+-- 
+1.7.9.5
