@@ -1,20 +1,34 @@
-Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V4Kfj-0007eT-U1
- for linux-mtd@lists.infradead.org; Wed, 31 Jul 2013 00:54:05 +0000
-Received: by mail-pa0-f42.google.com with SMTP id lj1so206169pab.15
- for <linux-mtd@lists.infradead.org>; Tue, 30 Jul 2013 17:53:26 -0700 (PDT)
-From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 4/6] mtd: nand: refactor chip->block_markbad interface
-Date: Tue, 30 Jul 2013 17:52:58 -0700
-Message-Id: <1375231980-13721-5-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1375231980-13721-1-git-send-email-computersforpeace@gmail.com>
-References: <1374647279-14083-1-git-send-email-computersforpeace@gmail.com>
- <1375231980-13721-1-git-send-email-computersforpeace@gmail.com>
-Cc: Huang Shijie <b32955@freescale.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
+Received: from na3sys009aog102.obsmtp.com ([74.125.149.69])
+ by merlin.infradead.org with smtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V4KlS-0007sG-BB
+ for linux-mtd@lists.infradead.org; Wed, 31 Jul 2013 00:59:43 +0000
+From: Chao Xie <cxie4@marvell.com>
+To: Daniel Mack <zonque@gmail.com>, Ezequiel Garcia
+ <ezequiel.garcia@free-electrons.com>
+Date: Tue, 30 Jul 2013 17:58:26 -0700
+Subject: RE: [PATCH 00/13] pxa3xx patches to support mvebu builds
+Message-ID: <AAD1C6EB06EE3649B35B7E026785068D258198C32F@SC-VEXCH2.marvell.com>
+References: <1375140263-2028-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <51F76EBA.1020504@gmail.com> <20130730095310.38400ca6@skate>
+ <51F772FC.90404@gmail.com> <20130730101809.7c28525c@skate>
+ <20130730131538.GB2375@localhost> <51F7BE11.2020101@gmail.com>
+In-Reply-To: <51F7BE11.2020101@gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Cc: Lior Amsalem <alior@marvell.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Jason Cooper <jason@lakedaemon.net>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Lei Wen <leiwen@marvell.com>,
+ "haojian.zhuang@gmail.com" <haojian.zhuang@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "grinberg@compulab.co.il" <grinberg@compulab.co.il>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ "eric.miao@marvell.com" <eric.miao@marvell.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>,
+ "nikita@compulab.co.il" <nikita@compulab.co.il>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,294 +38,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The chip->block_markbad pointer should really only be responsible for
-writing a bad block marker for new bad blocks. It should not take care
-of BBT-related functionality, nor should it handle bookkeeping of bad
-block stats.
-
-This patch refactors the 3 users of the block_markbad interface (plus
-the default nand_base implementation) so that the common code is kept in
-nand_block_markbad_lowlevel(). It removes some inconsistencies between
-the various implementations and should allow for more centralized
-improvements in the future.
-
-Because gpmi-nand no longer needs the nand_update_bbt() function, let's
-stop exporting it as well.
-
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Acked-by: Huang Shijie <b32955@freescale.com> (for gpmi-nand parts)
----
- drivers/mtd/nand/docg4.c               |    6 ---
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   44 ++++++----------
- drivers/mtd/nand/nand_base.c           |   87 +++++++++++++++++++-------------
- drivers/mtd/nand/nand_bbt.c            |    1 -
- drivers/mtd/nand/sm_common.c           |    9 ++--
- 5 files changed, 72 insertions(+), 75 deletions(-)
-
-diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/docg4.c
-index dc86d4a..548db23 100644
---- a/drivers/mtd/nand/docg4.c
-+++ b/drivers/mtd/nand/docg4.c
-@@ -1093,7 +1093,6 @@ static int docg4_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 	struct nand_chip *nand = mtd->priv;
- 	struct docg4_priv *doc = nand->priv;
- 	struct nand_bbt_descr *bbtd = nand->badblock_pattern;
--	int block = (int)(ofs >> nand->bbt_erase_shift);
- 	int page = (int)(ofs >> nand->page_shift);
- 	uint32_t g4_addr = mtd_to_docg4_address(page, 0);
- 
-@@ -1108,9 +1107,6 @@ static int docg4_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 	if (buf == NULL)
- 		return -ENOMEM;
- 
--	/* update bbt in memory */
--	nand->bbt[block / 4] |= 0x01 << ((block & 0x03) * 2);
--
- 	/* write bit-wise negation of pattern to oob buffer */
- 	memset(nand->oob_poi, 0xff, mtd->oobsize);
- 	for (i = 0; i < bbtd->len; i++)
-@@ -1120,8 +1116,6 @@ static int docg4_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 	write_page_prologue(mtd, g4_addr);
- 	docg4_write_page(mtd, nand, buf, 1);
- 	ret = pageprog(mtd);
--	if (!ret)
--		mtd->ecc_stats.badblocks++;
- 
- 	kfree(buf);
- 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index b741a6c..5947575 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -1157,43 +1157,31 @@ static int gpmi_block_markbad(struct mtd_info *mtd, loff_t ofs)
- {
- 	struct nand_chip *chip = mtd->priv;
- 	struct gpmi_nand_data *this = chip->priv;
--	int block, ret = 0;
-+	int ret = 0;
- 	uint8_t *block_mark;
- 	int column, page, status, chipnr;
- 
--	/* Get block number */
--	block = (int)(ofs >> chip->bbt_erase_shift);
--	if (chip->bbt)
--		chip->bbt[block >> 2] |= 0x01 << ((block & 0x03) << 1);
-+	chipnr = (int)(ofs >> chip->chip_shift);
-+	chip->select_chip(mtd, chipnr);
- 
--	/* Do we have a flash based bad block table ? */
--	if (chip->bbt_options & NAND_BBT_USE_FLASH)
--		ret = nand_update_bbt(mtd, ofs);
--	else {
--		chipnr = (int)(ofs >> chip->chip_shift);
--		chip->select_chip(mtd, chipnr);
-+	column = this->swap_block_mark ? mtd->writesize : 0;
- 
--		column = this->swap_block_mark ? mtd->writesize : 0;
-+	/* Write the block mark. */
-+	block_mark = this->data_buffer_dma;
-+	block_mark[0] = 0; /* bad block marker */
- 
--		/* Write the block mark. */
--		block_mark = this->data_buffer_dma;
--		block_mark[0] = 0; /* bad block marker */
-+	/* Shift to get page */
-+	page = (int)(ofs >> chip->page_shift);
- 
--		/* Shift to get page */
--		page = (int)(ofs >> chip->page_shift);
-+	chip->cmdfunc(mtd, NAND_CMD_SEQIN, column, page);
-+	chip->write_buf(mtd, block_mark, 1);
-+	chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
- 
--		chip->cmdfunc(mtd, NAND_CMD_SEQIN, column, page);
--		chip->write_buf(mtd, block_mark, 1);
--		chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
-+	status = chip->waitfunc(mtd, chip);
-+	if (status & NAND_STATUS_FAIL)
-+		ret = -EIO;
- 
--		status = chip->waitfunc(mtd, chip);
--		if (status & NAND_STATUS_FAIL)
--			ret = -EIO;
--
--		chip->select_chip(mtd, -1);
--	}
--	if (!ret)
--		mtd->ecc_stats.badblocks++;
-+	chip->select_chip(mtd, -1);
- 
- 	return ret;
- }
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 1cbacff..a9119f7 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -324,13 +324,58 @@ static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
- }
- 
- /**
-- * nand_default_block_markbad - [DEFAULT] mark a block bad
-+ * nand_default_block_markbad - [DEFAULT] mark a block bad via bad block marker
-  * @mtd: MTD device structure
-  * @ofs: offset from device start
-  *
-  * This is the default implementation, which can be overridden by a hardware
-- * specific driver. We try operations in the following order, according to our
-- * bbt_options (NAND_BBT_NO_OOB_BBM and NAND_BBT_USE_FLASH):
-+ * specific driver. It provides the details for writing a bad block marker to a
-+ * block.
-+ */
-+static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
-+{
-+	struct nand_chip *chip = mtd->priv;
-+	struct mtd_oob_ops ops;
-+	uint8_t buf[2] = { 0, 0 };
-+	int ret = 0, res, i = 0;
-+
-+	ops.datbuf = NULL;
-+	ops.oobbuf = buf;
-+	ops.ooboffs = chip->badblockpos;
-+	if (chip->options & NAND_BUSWIDTH_16) {
-+		ops.ooboffs &= ~0x01;
-+		ops.len = ops.ooblen = 2;
-+	} else {
-+		ops.len = ops.ooblen = 1;
-+	}
-+	ops.mode = MTD_OPS_PLACE_OOB;
-+
-+	/* Write to first/last page(s) if necessary */
-+	if (chip->bbt_options & NAND_BBT_SCANLASTPAGE)
-+		ofs += mtd->erasesize - mtd->writesize;
-+	do {
-+		res = nand_do_write_oob(mtd, ofs, &ops);
-+		if (!ret)
-+			ret = res;
-+
-+		i++;
-+		ofs += mtd->writesize;
-+	} while ((chip->bbt_options & NAND_BBT_SCAN2NDPAGE) && i < 2);
-+
-+	return ret;
-+}
-+
-+/**
-+ * nand_block_markbad_lowlevel - mark a block bad
-+ * @mtd: MTD device structure
-+ * @ofs: offset from device start
-+ *
-+ * This function performs the generic NAND bad block marking steps (i.e., bad
-+ * block table(s) and/or marker(s)). We only allow the hardware driver to
-+ * specify how to write bad block markers to OOB (chip->block_markbad).
-+ *
-+ * We try operations in the following order, according to our bbt_options
-+ * (NAND_BBT_NO_OOB_BBM and NAND_BBT_USE_FLASH):
-  *  (1) erase the affected block, to allow OOB marker to be written cleanly
-  *  (2) update in-memory BBT
-  *  (3) write bad block marker to OOB area of affected block
-@@ -338,11 +383,10 @@ static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
-  * Note that we retain the first error encountered in (3) or (4), finish the
-  * procedures, and dump the error in the end.
- */
--static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
-+static int nand_block_markbad_lowlevel(struct mtd_info *mtd, loff_t ofs)
- {
- 	struct nand_chip *chip = mtd->priv;
--	uint8_t buf[2] = { 0, 0 };
--	int block, res, ret = 0, i = 0;
-+	int block, res, ret = 0;
- 	int write_oob = !(chip->bbt_options & NAND_BBT_NO_OOB_BBM);
- 
- 	if (write_oob) {
-@@ -364,34 +408,8 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 
- 	/* Write bad block marker to OOB */
- 	if (write_oob) {
--		struct mtd_oob_ops ops;
--		loff_t wr_ofs = ofs;
--
- 		nand_get_device(mtd, FL_WRITING);
--
--		ops.datbuf = NULL;
--		ops.oobbuf = buf;
--		ops.ooboffs = chip->badblockpos;
--		if (chip->options & NAND_BUSWIDTH_16) {
--			ops.ooboffs &= ~0x01;
--			ops.len = ops.ooblen = 2;
--		} else {
--			ops.len = ops.ooblen = 1;
--		}
--		ops.mode = MTD_OPS_PLACE_OOB;
--
--		/* Write to first/last page(s) if necessary */
--		if (chip->bbt_options & NAND_BBT_SCANLASTPAGE)
--			wr_ofs += mtd->erasesize - mtd->writesize;
--		do {
--			res = nand_do_write_oob(mtd, wr_ofs, &ops);
--			if (!ret)
--				ret = res;
--
--			i++;
--			wr_ofs += mtd->writesize;
--		} while ((chip->bbt_options & NAND_BBT_SCAN2NDPAGE) && i < 2);
--
-+		ret = chip->block_markbad(mtd, ofs);
- 		nand_release_device(mtd);
- 	}
- 
-@@ -2683,7 +2701,6 @@ static int nand_block_isbad(struct mtd_info *mtd, loff_t offs)
-  */
- static int nand_block_markbad(struct mtd_info *mtd, loff_t ofs)
- {
--	struct nand_chip *chip = mtd->priv;
- 	int ret;
- 
- 	ret = nand_block_isbad(mtd, ofs);
-@@ -2694,7 +2711,7 @@ static int nand_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 		return ret;
- 	}
- 
--	return chip->block_markbad(mtd, ofs);
-+	return nand_block_markbad_lowlevel(mtd, ofs);
- }
- 
- /**
-diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-index 3f18776..bac481a 100644
---- a/drivers/mtd/nand/nand_bbt.c
-+++ b/drivers/mtd/nand/nand_bbt.c
-@@ -1392,4 +1392,3 @@ int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt)
- 
- EXPORT_SYMBOL(nand_scan_bbt);
- EXPORT_SYMBOL(nand_default_bbt);
--EXPORT_SYMBOL_GPL(nand_update_bbt);
-diff --git a/drivers/mtd/nand/sm_common.c b/drivers/mtd/nand/sm_common.c
-index e8181ed..e06b5e5 100644
---- a/drivers/mtd/nand/sm_common.c
-+++ b/drivers/mtd/nand/sm_common.c
-@@ -42,7 +42,7 @@ static int sm_block_markbad(struct mtd_info *mtd, loff_t ofs)
- {
- 	struct mtd_oob_ops ops;
- 	struct sm_oob oob;
--	int ret, error = 0;
-+	int ret;
- 
- 	memset(&oob, -1, SM_OOB_SIZE);
- 	oob.block_status = 0x0F;
-@@ -61,11 +61,10 @@ static int sm_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 		printk(KERN_NOTICE
- 			"sm_common: can't mark sector at %i as bad\n",
- 								(int)ofs);
--		error = -EIO;
--	} else
--		mtd->ecc_stats.badblocks++;
-+		return -EIO;
-+	}
- 
--	return error;
-+	return 0;
- }
- 
- static struct nand_flash_dev nand_smartmedia_flash_ids[] = {
--- 
-1.7.9.5
+PiBPbiAzMC4wNy4yMDEzIDE1OjE1LCBFemVxdWllbCBHYXJjaWEgd3JvdGU6DQo+IEhlbGxvIERh
+bmllbCwNCj4gDQo+IE9uIFR1ZSwgSnVsIDMwLCAyMDEzIGF0IDEwOjE4OjA5QU0gKzAyMDAsIFRo
+b21hcyBQZXRhenpvbmkgd3JvdGU6DQo+PiBPbiBUdWUsIDMwIEp1bCAyMDEzIDEwOjAyOjA0ICsw
+MjAwLCBEYW5pZWwgTWFjayB3cm90ZToNCj4+PiBPbiAzMC4wNy4yMDEzIDA5OjUzLCBUaG9tYXMg
+UGV0YXp6b25pIHdyb3RlOg0KPj4+PiBPbiBUdWUsIDMwIEp1bCAyMDEzIDA5OjQzOjU0ICswMjAw
+LCBEYW5pZWwgTWFjayB3cm90ZToNCj4+Pj4+IEludGVyZXN0aW5nLCBiZWNhdXNlIEknbSB3b3Jr
+aW5nIG9uIGEgZG1hZW5naW5lIGltcGxlbWVudGF0aW9uIGZvcg0KPj4+Pj4gUFhBIHJpZ2h0IG5v
+dy4gSSdtIG5vdCBldmVuIGhhbGYgdGhyb3VnaCwgYnV0IEknbSBtYWtpbmcgcHJvZ3Jlc3MsDQo+
+Pj4+PiBhbmQgSSdtIG5vdCBzdXJlIHlldCBob3cgdG8gbWVyZ2UgaXQuIEJlY2F1c2UgdGhlcmUg
+d29uJ3QgYmUgYW55DQo+Pj4+PiBtaWdyYXRpb24gcGF0aCwgaXQnbGwgYmUgYSBiaWdnZXIgc2V0
+IHRoYXQgaGFzIHRvIGdvIGluIGluIG9uZSBpbg0KPj4+Pj4gb3JkZXIgdG8gcHJldmVudCBidWls
+ZCBicmVha2FnZS4NCj4+Pj4NCj4+Pj4gQXJlbid0IGRyaXZlcnMvZG1hL21tcF9wZG1hLmMgYW5k
+IGRyaXZlcnMvZG1hL21tcF90ZG1hLmMgYWxyZWFkeQ0KPj4+PiBkbWFlbmdpbmUgZHJpdmVycyBm
+b3IgUFhBID8NCj4+Pg0KPj4+IFllcywgSSBzYXcgdGhlIHBkbWEgZHJpdmVyIGFzIHdlbGwsIGFm
+dGVyIEkgc3RhcnRlZCBteSBvd24NCj4+PiBpbXBsZW1lbnRhdGlvbi4gSG93ZXZlciwgdGhlIHRy
+ZWUgaXMgZnVsbCBvZiB1c2VycyBvZiB0aGUgcHJvcHJpZXRhcnkNCj4+PiBBUEksIGFuZCBtb3Zp
+bmcgdGhlbSBvdmVyIHdvbid0IGJlIGdhcC1sZXNzLg0KPj4NCj4gDQo+IE1tbW0uLiBJJ20gYSBi
+aXQgY29uZnVzZWQgYnkgdGhpczogaXMgeW91ciBkbWFlbmdpbmUgZHJpdmVyIGFueQ0KPiBkaWZm
+ZXJlbnQvYmV0dGVyIGZyb20gdGhlIGFscmVhZHkgZXhpc3RlbnQgbW1wX3twLHR9ZG1hLmMgPw0K
+PiANCj4gQXMgSSBzYWlkLCBJIHNhdyB0aGlzIGFmdGVyIEkgc3RhcnRlZCBteSBvd24gaW1wbGVt
+ZW50YXRpb24sIHdoaWNoIGlzbid0DQo+IGEgYmlnIGRlYWwuIEF0IGxlYXN0LCBJIG5vdyB1bmRl
+cnN0YW5kIHRoZSBpbnRlcm5hbHMgb2YgZG1hZW5naW5lDQo+IGRyaXZlcnMgOikgVGhlIG1tcF9w
+ZG1hIGxvb2tzIHN1aXRhYmxlIGZvciBQWEEyeHggY2hpcHMsIGJ1dCBpdCBkb2Vzbid0DQo+IHdv
+cmsgeWV0IGZvciBtZS4gSSdsbCB0cnkgYW5kIGZpeCB0aGlzIGZpcnN0LCBhbmQgdGhlbiBwb3J0
+IG92ZXIgYWxsIHRoZQ0KPiBkcml2ZXJzLg0KPg0KSWYgeW91IGFyZSBzZW5kaW5nIHRoZSBwYXRj
+aCBmb3IgcGRtYSBhbmQgdGRtYSwgcGxlYXNlIGluY2x1ZGUgbWUgYXMgd2VsbC4NCk5vdyB3ZSBh
+cmUgdHJ5aW5nIHRvIG1ha2UgYXVkaW8gdG8gdXNlIERNQSBpbmRlcGVuZGVudCBvZiBwZG1hIGFu
+ZA0KdGRtYShjdXJyZW50IGRyaXZlciBhcmUgYm91bmQgdG8gdGRtYSksIGFuZCB0aGVyZSBhcmUg
+c29tZSBtb2RpZmljYXRpb24gZm9yIHBkbWEgdG9vLg0KDQo+IEhlcmUncyBhIHBhdGNoIHBvc3Rl
+ZCBpbiBKdWx5IDIwMTIgY29udmVydGluZyBweGEzeHgtbmFuZCB0byBkbWFlbmdpbmUuDQo+DQo+
+IFdoZXJlPw0KPg0KPiBUaGF0IHBhdGNoIHdhcyBuZXZlciBtZXJnZWQgYmVjYXVzZSAoanVzdCBh
+cyBUaG9tYXMgc2F5cykgYm90aA0KPiBkbWEgZHJpdmVycyAobW1wIGRtYWVuZ2luZSBvbiBvbmUg
+c2lkZSwgbWFjaC1weGEgZG1hIG9uIHRoZSBvdGhlcikgZG9uJ3QNCj4gd29yayB0b2dldGhlci4g
+SW4gb3RoZXIgd29yZHMsIHlvdSBoYXZlIHRvIGNvbnZlcnQgKmFsbCogZHJpdmVycyBhdCB0aGUN
+Cj4gc2FtZSB0aW1lLg0KPiANCj4gVGhvbWFzIHByb3Bvc2VkIGFuIGlkZWEgZm9yIHRoaXMgY29u
+dmVyc2lvbiBhIGZldyBtb250aHMgYWdvOiAocXVvdGluZw0KPiBoaW0gZnJvbSBJUkMpDQo+IA0K
+PiAiIiINCj4gRmlyc3QgaGF2ZSBhIHBhdGNoIHRoYXQgcmVpbXBsZW1lbnRzIHRoZSBleGlzdGlu
+ZyBwbGF0LXB4YS9kbWEuYyBBUEkgb24NCj4gdG9wIG9mIGRtYWVuZ2luZSwgc28gdGhhdCB5b3Ug
+ZG9uJ3QgaGF2ZSB0byBjaGFuZ2UgYW55IGRyaXZlci4NCj4gVGhlbiwgZ28gdGhyb3VnaCBlYWNo
+IGRyaXZlciwgb25lIHBlciBwYXRjaCB0byBzd2l0Y2ggdG8gdGhlIGRtYWVuZ2luZSBBUEkuDQo+
+IEFuZCBmaW5hbGx5IGdldCByaWQgb2YgdGhlIGNvbXBhdGliaWxpdHkgbGF5ZXIgY3JlYXRlZCBp
+biB0aGUgZmlyc3QNCj4gcGF0Y2guDQo+ICIiIg0KPiANCj4gRG9lcyB0aGlzIHNvdW5kIHNhbmU/
+DQo+IA0KPiBVbmZvcnR1bmF0ZWx5LCBuby4gSSB0aG91Z2h0IHNvIHRvbywgYnV0IHRoZSBwcm9i
+bGVtIGlzIHRoYXQgYWxsIHVzZXJzDQo+IG9mIHRoZSBwcm9wcmlldGFyeSBQWEEgRE1BIGltcGxl
+bWVudGF0aW9uIGFjY2VzcyB0aGUgcmVnaXN0ZXJzIGRpcmVjdGx5LA0KPiBhbmQgYWxzbyBhbGxv
+Y2F0ZSB0aGVpciBvd24gRE1BIGNvaGVyZW50IHJlZ2lzdGVyIHNwYWNlLCB3aGljaCBpcw0KPiB1
+bm5lZWRlZCB3aXRoIGEgcHJvcGVyIGRtYWVuZ2luZSBpbXBsZW1lbnRhdGlvbi4NCj4gDQo+IFNv
+IHRoZXJlJ3Mgbm90aGluZyBlbHNlIHdlIGNhbiBkbyB0aGFuIHJlYWxseSBjaGFuZ2UgYWxsIHRo
+ZSBkcml2ZXJzLA0KPiB3aGljaCBpcyB3aGF0IEknbSBjdXJyZW50bHkgZG9pbmcuIEknbGwgcHV0
+IHlvdSBvbiBDYzogb25jZSBJIHBvc3QgcGF0Y2hlcy4NCj4NCkl0IG5lZWQgbWFueSBlZmZvcnRz
+LiBUaGVyZSBhcmUgc29tZSBkcml2ZXJzIG1ha2UgdXNlIG9mIG9sZCBweGEgRE1BIGRyaXZlciwN
+CmZvciBleGFtcGxlIGNhbWVyYS9zbWMgRXRoZXJuZXQuDQpUaGUgZGlmZmljdWx0IGlzIHNvbWUg
+cGxhdGZvcm0gd2FzIHByb2R1Y2VkIGFsbW9zdCAxMCB5ZWFycyBhZ28sIGFuZCBJIGRvIG5vdCAN
+CmhhdmUgc3VjaCBwbGF0Zm9ybSBpbiBteSBoYW5kLiBTbyB3aWxsIHlvdSB0ZXN0IHRoZW0gb3Ig
+anVzdCBwYXNzIGNvbXBpbGF0aW9uPw0KPg0KPiBUaGFua3MsDQo+IERhbmllbA0KDQo=
