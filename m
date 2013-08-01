@@ -1,23 +1,27 @@
-Received: from mail-we0-x229.google.com ([2a00:1450:400c:c03::229])
+Received: from mail-we0-x234.google.com ([2a00:1450:400c:c03::234])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V4obu-0002rR-21
- for linux-mtd@lists.infradead.org; Thu, 01 Aug 2013 08:51:51 +0000
-Received: by mail-we0-f169.google.com with SMTP id n5so1471875wev.0
- for <linux-mtd@lists.infradead.org>; Thu, 01 Aug 2013 01:51:27 -0700 (PDT)
-Message-ID: <51FA2167.7060305@gmail.com>
-Date: Thu, 01 Aug 2013 10:50:47 +0200
-From: Wladislav Wiebe <wladislav.kw@gmail.com>
+ id 1V4pwO-00038W-3n
+ for linux-mtd@lists.infradead.org; Thu, 01 Aug 2013 10:17:04 +0000
+Received: by mail-we0-f180.google.com with SMTP id p61so1527161wes.39
+ for <linux-mtd@lists.infradead.org>; Thu, 01 Aug 2013 03:16:42 -0700 (PDT)
+Message-ID: <51FA357B.9000804@gmail.com>
+Date: Thu, 01 Aug 2013 12:16:27 +0200
+From: Daniel Mack <zonque@gmail.com>
 MIME-Version: 1.0
-To: Aaro Koskinen <aaro.koskinen@iki.fi>
-Subject: Re: mm/slab: ppc: ubi: kmalloc_slab WARNING / PPC + UBI driver
-References: <51F8F827.6020108@gmail.com>
- <20130731173434.GA27470@blackmetal.musicnaut.iki.fi>
-In-Reply-To: <20130731173434.GA27470@blackmetal.musicnaut.iki.fi>
-Content-Type: text/plain; charset=ISO-8859-1
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH 00/13] pxa3xx patches to support mvebu builds
+References: <1375140263-2028-1-git-send-email-ezequiel.garcia@free-electrons.com>
+In-Reply-To: <1375140263-2028-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Cc: dedekind1@gmail.com, dwmw2@infradead.org, penberg@kernel.org,
- linux-mm@kvack.org, linux-mtd@lists.infradead.org, cl@linux.com,
- linuxppc-dev@lists.ozlabs.org
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
+ Artem Bityutskiy <dedekind1@gmail.com>, leiwen@marvell.com,
+ haojian.zhuang@gmail.com, linux-mtd@lists.infradead.org,
+ grinberg@compulab.co.il, Gregory Clement <gregory.clement@free-electrons.com>,
+ eric.miao@marvell.com, computersforpeace@gmail.com,
+ David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>,
+ nikita@compulab.co.il
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +31,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On 31/07/13 19:34, Aaro Koskinen wrote:
-> Hi,
+On 30.07.2013 01:24, Ezequiel Garcia wrote:
+> I'm Ccing some past pxa3xx-nand testers and reviewers, with the hope
+> they can take a look at this new patchset.
 > 
-> On Wed, Jul 31, 2013 at 01:42:31PM +0200, Wladislav Wiebe wrote:
->> DEBUG: xxx kmalloc_slab, requested 'size' = 8388608, KMALLOC_MAX_SIZE = 4194304
-> [...]
-> 
-> It seems some procfs file is trying to dump 8 MB at a single go. You
-> need to fix that to return data in smaller chunks. What file is it?
+> Any feedback and testing will be highly appreciated!
 
-seems it's coming from DT:
-..
-DEBUG: xxx seq_path: file path = /proc/device-tree/localbus@5000/flash@0/partition@1/reg
-------------[ cut here ]------------
-..
+I take it that you use this driver without DMA on your Armada 370/XP?
 
-need to check if and how it's possible divide it in smaller chunks.
-If somebody has suggestions, feel free to comment-)
+Before implementing the dmaengine bits, I wanted to make sure that the
+driver still works on a PXA3xx in PIO mode with your latest patch set.
+But unfortunately, it doesn't (ARCH_HAS_DMA is made undefined for this
+test):
 
-Thanks & BR
-Wladislav Wiebe
+[    2.534138] pxa3xx-nand pxa3xx-nand: This platform can't do DMA on
+this device
+[    2.733782] pxa3xx-nand pxa3xx-nand: Wait time out!!!
+[    2.933807] pxa3xx-nand pxa3xx-nand: Wait time out!!!
+[    3.133806] pxa3xx-nand pxa3xx-nand: Wait time out!!!
+[    3.138908] No NAND device found
+[    3.142216] pxa3xx-nand pxa3xx-nand: failed to scan nand at cs 0
+
+Any idea?
+
+
+Thanks,
+Daniel
