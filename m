@@ -1,22 +1,23 @@
-Received: from tx2ehsobe004.messaging.microsoft.com ([65.55.88.14]
- helo=tx2outboundpool.messaging.microsoft.com)
+Received: from mail-we0-x229.google.com ([2a00:1450:400c:c03::229])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V4m5S-0006u7-7x
- for linux-mtd@lists.infradead.org; Thu, 01 Aug 2013 06:10:13 +0000
-Message-ID: <51F9FCBB.6050909@freescale.com>
-Date: Thu, 1 Aug 2013 14:14:19 +0800
-From: Huang Shijie <b32955@freescale.com>
+ id 1V4obu-0002rR-21
+ for linux-mtd@lists.infradead.org; Thu, 01 Aug 2013 08:51:51 +0000
+Received: by mail-we0-f169.google.com with SMTP id n5so1471875wev.0
+ for <linux-mtd@lists.infradead.org>; Thu, 01 Aug 2013 01:51:27 -0700 (PDT)
+Message-ID: <51FA2167.7060305@gmail.com>
+Date: Thu, 01 Aug 2013 10:50:47 +0200
+From: Wladislav Wiebe <wladislav.kw@gmail.com>
 MIME-Version: 1.0
-To: =?UTF-8?B?TG90aGFyIFdhw59tYW5u?= <LW@KARO-electronics.de>
-Subject: Re: [PATCH 04/25] mtd: nand: gpmi-nand: janitorial cleanup: (commas
- after last element of struct initializer)
-References: <1375279887-17928-1-git-send-email-LW@KARO-electronics.de>	<1375279887-17928-2-git-send-email-LW@KARO-electronics.de>	<51F9C4C2.8040403@freescale.com>
- <20985.63269.929367.546435@ipc1.ka-ro>
-In-Reply-To: <20985.63269.929367.546435@ipc1.ka-ro>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+To: Aaro Koskinen <aaro.koskinen@iki.fi>
+Subject: Re: mm/slab: ppc: ubi: kmalloc_slab WARNING / PPC + UBI driver
+References: <51F8F827.6020108@gmail.com>
+ <20130731173434.GA27470@blackmetal.musicnaut.iki.fi>
+In-Reply-To: <20130731173434.GA27470@blackmetal.musicnaut.iki.fi>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: dedekind1@gmail.com, dwmw2@infradead.org, penberg@kernel.org,
+ linux-mm@kvack.org, linux-mtd@lists.infradead.org, cl@linux.com,
+ linuxppc-dev@lists.ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,55 +27,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B408=E6=9C=8801=E6=97=A5 13:50, Lothar Wa=C3=9Fmann =
-=E5=86=99=E9=81=93:
-> Hi,
->
-> Huang Shijie writes:
->> =E4=BA=8E 2013=E5=B9=B407=E6=9C=8831=E6=97=A5 22:11, Lothar Wa=C3=9Fma=
-nn =E5=86=99=E9=81=93:
->>> Signed-off-by: Lothar Wa=C3=9Fmann<LW@KARO-electronics.de>
->>> ---
->>>    drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    8 ++++----
->>>    1 files changed, 4 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nan=
-d/gpmi-nand/gpmi-nand.c
->>> index f557a1d..4f7ec59 100644
->>> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
->>> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
->>> @@ -1569,19 +1569,19 @@ static const struct platform_device_id gpmi_i=
-ds[] =3D {
->>>    	{ .name =3D "imx23-gpmi-nand", .driver_data =3D IS_MX23, },
->>>    	{ .name =3D "imx28-gpmi-nand", .driver_data =3D IS_MX28, },
->>>    	{ .name =3D "imx6q-gpmi-nand", .driver_data =3D IS_MX6Q, },
->>> -	{},
->>> +	{}
->>>    };
->>>
->>>    static const struct of_device_id gpmi_nand_id_table[] =3D {
->>>    	{
->>>    		.compatible =3D "fsl,imx23-gpmi-nand",
->>> -		.data =3D (void *)&gpmi_ids[IS_MX23]
->>> +		.data =3D (void *)&gpmi_ids[IS_MX23],
->>>    	}, {
->>>    		.compatible =3D "fsl,imx28-gpmi-nand",
->>> -		.data =3D (void *)&gpmi_ids[IS_MX28]
->>> +		.data =3D (void *)&gpmi_ids[IS_MX28],
->>>    	}, {
->>>    		.compatible =3D "fsl,imx6q-gpmi-nand",
->>> -		.data =3D (void *)&gpmi_ids[IS_MX6Q]
->>> +		.data =3D (void *)&gpmi_ids[IS_MX6Q],
->>>    	}, {}
->>>    };
->>>    MODULE_DEVICE_TABLE(of, gpmi_nand_id_table);
->> is it any bad influence if we do not apply this patch?
->>
->> I am not clear what we can benefit from this patch.
->>
-> less eye sore when looking at the code and eventual copies of it in
-> other places.
->
-ok. thanks for fix this.
+Hi,
 
-Acked-by: Huang Shijie <b32955@freescale.com>
+On 31/07/13 19:34, Aaro Koskinen wrote:
+> Hi,
+> 
+> On Wed, Jul 31, 2013 at 01:42:31PM +0200, Wladislav Wiebe wrote:
+>> DEBUG: xxx kmalloc_slab, requested 'size' = 8388608, KMALLOC_MAX_SIZE = 4194304
+> [...]
+> 
+> It seems some procfs file is trying to dump 8 MB at a single go. You
+> need to fix that to return data in smaller chunks. What file is it?
+
+seems it's coming from DT:
+..
+DEBUG: xxx seq_path: file path = /proc/device-tree/localbus@5000/flash@0/partition@1/reg
+------------[ cut here ]------------
+..
+
+need to check if and how it's possible divide it in smaller chunks.
+If somebody has suggestions, feel free to comment-)
+
+Thanks & BR
+Wladislav Wiebe
