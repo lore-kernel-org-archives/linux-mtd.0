@@ -1,20 +1,20 @@
-Received: from up.free-electrons.com ([94.23.35.102]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V4q0z-0003Fu-UJ
- for linux-mtd@lists.infradead.org; Thu, 01 Aug 2013 10:21:50 +0000
-Date: Thu, 1 Aug 2013 07:21:20 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH 00/13] pxa3xx patches to support mvebu builds
-Message-ID: <20130801102119.GA2410@localhost>
-References: <1375140263-2028-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <51FA357B.9000804@gmail.com>
+Received: from mail-wg0-x229.google.com ([2a00:1450:400c:c00::229])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V4qQg-0003dF-Rg
+ for linux-mtd@lists.infradead.org; Thu, 01 Aug 2013 10:48:23 +0000
+Received: by mail-wg0-f41.google.com with SMTP id n11so5732071wgh.2
+ for <linux-mtd@lists.infradead.org>; Thu, 01 Aug 2013 03:47:59 -0700 (PDT)
+Message-ID: <51FA3CDC.7040408@gmail.com>
+Date: Thu, 01 Aug 2013 12:47:56 +0200
+From: Daniel Mack <zonque@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <51FA357B.9000804@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH 00/13] pxa3xx patches to support mvebu builds
+References: <1375140263-2028-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <51FA357B.9000804@gmail.com> <20130801102119.GA2410@localhost>
+In-Reply-To: <20130801102119.GA2410@localhost>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
  Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
  Artem Bityutskiy <dedekind1@gmail.com>, leiwen@marvell.com,
@@ -32,35 +32,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Aug 01, 2013 at 12:16:27PM +0200, Daniel Mack wrote:
-> On 30.07.2013 01:24, Ezequiel Garcia wrote:
-> > I'm Ccing some past pxa3xx-nand testers and reviewers, with the hope
-> > they can take a look at this new patchset.
-> > 
-> > Any feedback and testing will be highly appreciated!
-> 
-> I take it that you use this driver without DMA on your Armada 370/XP?
-> 
-> Before implementing the dmaengine bits, I wanted to make sure that the
-> driver still works on a PXA3xx in PIO mode with your latest patch set.
-> But unfortunately, it doesn't (ARCH_HAS_DMA is made undefined for this
-> test):
-> 
-> [    2.534138] pxa3xx-nand pxa3xx-nand: This platform can't do DMA on
-> this device
-> [    2.733782] pxa3xx-nand pxa3xx-nand: Wait time out!!!
-> [    2.933807] pxa3xx-nand pxa3xx-nand: Wait time out!!!
-> [    3.133806] pxa3xx-nand pxa3xx-nand: Wait time out!!!
-> [    3.138908] No NAND device found
-> [    3.142216] pxa3xx-nand pxa3xx-nand: failed to scan nand at cs 0
-> 
-> Any idea?
-> 
-> 
+On 01.08.2013 12:21, Ezequiel Garcia wrote:
+> Probably one of the patches is wrong. Could you do a git-bisect?
 
-Probably one of the patches is wrong. Could you do a git-bisect?
+Sure:
 
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+fbd70cb71103051699c7c49b08d5e107736e3a75 is the first bad commit
+commit fbd70cb71103051699c7c49b08d5e107736e3a75
+Author: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Date:   Mon Jul 29 20:24:13 2013 -0300
+
+    mtd: nand: pxa3xx: Support command buffer #3
+
+    Some newer controllers support a fourth command buffer. This additional
+    command buffer allows to set an arbitrary length count, using the
+    NDCB3.NDLENCNT field, to perform non-standard length operations
+    such as the ONFI parameter page read.
+
+    In controllers without this register, the operation has no effect.
+
+    Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+
+
+With this patch reverted, things are fine again on PXA3xx.
+
+
+Daniel
