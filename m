@@ -1,25 +1,17 @@
 Received: from arroyo.ext.ti.com ([192.94.94.40])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V58o5-00077u-Om
- for linux-mtd@lists.infradead.org; Fri, 02 Aug 2013 06:25:46 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: "Nori, Sekhar" <nsekhar@ti.com>, =?iso-8859-1?Q?An=EDbal_Almeida_Pinto?=
- <anibal.pinto@efacec.com>
-Subject: RE: JFFS2 impact when don't have sub page access
-Date: Fri, 2 Aug 2013 06:25:02 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9F00EA@DBDE04.ent.ti.com>
-References: <51F91E08.7030409@efacec.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9F0091@DBDE04.ent.ti.com>
- <51FB43F3.7020909@ti.com>
-In-Reply-To: <51FB43F3.7020909@ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ id 1V59BY-0007Xo-Ev
+ for linux-mtd@lists.infradead.org; Fri, 02 Aug 2013 06:50:00 +0000
+From: Sourav Poddar <sourav.poddar@ti.com>
+To: <dwmw2@infradead.org>, <artem.bityutskiy@linux.intel.com>,
+ <linux-mtd@lists.infradead.org>, <devicetree-discuss@lists.ozlabs.org>
+Subject: [PATCH] drivers: mtd: devices: make m25p80 dt adapted.
+Date: Fri, 2 Aug 2013 12:19:30 +0530
+Message-ID: <1375426170-31609-1-git-send-email-sourav.poddar@ti.com>
 MIME-Version: 1.0
-Cc: Fernando Gomes <fernando.gomes@efacec.com>,
- "davinci-linux-open-source@linux.davincidsp.com"
- <Davinci-linux-open-source@linux.davincidsp.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain
+Cc: Sourav Poddar <sourav.poddar@ti.com>, linux-omap@vger.kernel.org,
+ pekon@ti.com, balbi@ti.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,124 +21,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
->=20
-> On Friday 02 August 2013 10:27 AM, Gupta, Pekon wrote:
-> > Hello,
-> >
-> >> Hi,
-> >>
-> >> I' am using an OMAP L138 with a NAND SLC (MT29F4G08)
-> >>
-> >> I was making some tests with Ubifs but found some errors due to OMAP
-> >> don't support sub pages access:
-> >>
-> > TI OMAP2-NAND supports sub-pages for SLC NAND.
-> >  http://lists.infradead.org/pipermail/linux-
-> mtd/attachments/20130405/a146567f/attachment.obj
-> >
-> > This patch was accepted in mainline linux-3.10,
-> > And tested on AM335x with 2K/64 NAND.
-> >
-> > You can follow this patch details here..
-> > http://lists.infradead.org/pipermail/linux-mtd/2013-March/046285.html
->=20
-> Yes, but An=EDbal is talking about OMAP-L138 which is actually a DaVinci
-> part and uses drivers/mtd/nand/davinci_nand.c
->=20
-The patch adds support for subpage-write in generic NAND driver,
-So it should work directly for davinci_nand.c
+This patch helps gettimg m25p80 probed through dt.
+To get the id of the exact flash type supported for dt case,
+data->type is getting parsed from dt entry.
 
-> May be you can clarify whether absence of subpage support will lead to
-> the kind of errors An=EDbal reported?
->=20
-I suspect there is some mis-match in options passed while creating
-UBI image for sub-pages. With subpages the LEB size (-e) passed to
- mkfs.ubifs has different calculation. It should be '(n-1) * page size'
-where 'n' is number of pages in the erase-block.
-This is because when using sub-pages both EraseHeader and
-VolumeHeader are packed in same page.
-I use some personal script to keep that handy, refer [1]
-You can also refer to=20
-http://processors.wiki.ti.com/index.php/UBIFS_Support
+Signed-off-by: Sourav Poddar <sourav.poddar@ti.com>
+---
+ drivers/mtd/devices/m25p80.c |   22 +++++++++++++++++++++-
+ 1 files changed, 21 insertions(+), 1 deletions(-)
 
-
-> Also, the subject talks about JFFS2. There is no known affect of absence
-> of subpage support on JFFS2, right?
->=20
-There should not be any problem in using either UBIFS or JFFS2.
-
-
-
-[1] create_ubi_image.sh=20
-(this script used fixed folder name 'rootfs' as -r option)
-
-#!/bin/sh
-#----------------------------------------------------------------------=20
-# Description: generic script to create UBI image for NAND devices
-#		with different page sizes.
-#
-# Author: 	Pekon Gupta (pekon@ti.com)
-# Usage:	create_ubi_image.sh <PAGE_SIZE> <SUBPAGE_SIZE> \
-#						<PARTITION_SIZE>
-# History:
-# version 1.1	pekon
-#		added calculation of LEB_SIZE while using subpages
-#
-#----------------------------------------------------------------------=20
-#-- remove old files --
-rm -v ubi.ubifs  ubi.img ubinize.cfg
-
-#-- user inputs --
-PAGE_SIZE=3D$1
-SUBPAGE_SIZE=3D$2
-PARTITION_SIZE=3D$3
-
-if test -z $1 || test -z $2  || test -z $3
-then
-echo "Error: incomplete inputs"
-echo "Usage: create_ubi_image.sh <PAGE_SIZE> <SUBPAGE_SIZE> <PARTITION_SIZE=
->"
-exit
-fi
-
-
-#-- calculate UBI parameter --
-PEB_SIZE=3D$(( 64 * $PAGE_SIZE ))
-
-# LEB size =3D	PEB_SIZE - number_of_pages_used_for_UBI_headers * PAGE_SIZE
-#		number_of_pages_used_for_UBI_header =3D 1 if using sub-pages
-#		number_of_pages_used_for_UBI_header =3D 2 if not using sub-pages
-if test $PAGE_SIZE -ne $SUBPAGE_SIZE
-then
-	LEB_SIZE=3D$(( $PEB_SIZE - ( 1 * $PAGE_SIZE )))
-else
-	LEB_SIZE=3D$(( $PEB_SIZE - ( 2 * $PAGE_SIZE )))
-fi
-
-LEB_COUNT=3D$(( $PARTITION_SIZE / $LEB_SIZE ))
-
-echo "LOG: PAGE_SIZE	=3D	$PAGE_SIZE"
-echo "LOG: SUBPAGE_SIZE	=3D	$SUBPAGE_SIZE"
-echo "LOG: PEB_SIZE	=3D	$PEB_SIZE"
-echo "LOG: LEB_SIZE	=3D	$LEB_SIZE"
-echo "LOG: LEB_COUNT	=3D	$LEB_COUNT"
-
-
-#-- generate ubinize.cfg --
-echo "[ubifs]"                	>> ubinize.cfg=20
-echo "mode=3Dubi"               	>> ubinize.cfg=20
-echo "image=3Dubi.ubifs"        	>> ubinize.cfg=20
-echo "vol_id=3D0"               	>> ubinize.cfg=20
-echo "vol_size=3D$PARTITION_SIZE"	>> ubinize.cfg=20
-echo "vol_type=3Ddynamic"       	>> ubinize.cfg=20
-echo "vol_name=3Dtest"         	>> ubinize.cfg=20
-echo "vol_flags=3D'autoresize'" 	>> ubinize.cfg=20
-echo "vol_alignment=3D1"        	>> ubinize.cfg=20
-
-#-- generate UBI image --
-mkfs.ubifs  -o ubi.ubifs  -m $PAGE_SIZE  -e $LEB_SIZE  -c $LEB_COUNT  -r ro=
-otfs
-ubinize     -o ubi.img    -m $PAGE_SIZE  -p $PEB_SIZE  -s $SUBPAGE_SIZE  -O=
- $SUBPAGE_SIZE  -v  ubinize.cfg
-# ---------------------------------------------
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 33098bf..cbfb9b3 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -855,6 +855,13 @@ static const struct spi_device_id m25p_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(spi, m25p_ids);
+ 
++#ifdef CONFIG_OF
++static const struct of_device_id m25p_dt_ids[] = {
++	{ .compatible = "m25p80", },
++	{ /* sentinel */ }
++};
++#endif
++
+ static const struct spi_device_id *jedec_probe(struct spi_device *spi)
+ {
+ 	int			tmp;
+@@ -909,6 +916,7 @@ static int m25p_probe(struct spi_device *spi)
+ 	unsigned			i;
+ 	struct mtd_part_parser_data	ppdata;
+ 	struct device_node __maybe_unused *np = spi->dev.of_node;
++	int len;
+ 
+ #ifdef CONFIG_MTD_OF_PARTS
+ 	if (!of_device_is_available(np))
+@@ -920,7 +928,18 @@ static int m25p_probe(struct spi_device *spi)
+ 	 * a chip ID, try the JEDEC id commands; they'll work for most
+ 	 * newer chips, even if we don't recognize the particular chip.
+ 	 */
+-	data = spi->dev.platform_data;
++	if (!np) {
++		data = spi->dev.platform_data;
++	} else {
++		data = devm_kzalloc(&spi->dev, sizeof(*data), GFP_KERNEL);
++		if (!data)
++			return -ENOMEM;
++
++		data->type = (char *) of_get_property(np, "type", &len);
++		if (!data->type || strlen(data->type) > len)
++			return -ENODEV;
++	}
++
+ 	if (data && data->type) {
+ 		const struct spi_device_id *plat_id;
+ 
+@@ -1098,6 +1117,7 @@ static struct spi_driver m25p80_driver = {
+ 	.driver = {
+ 		.name	= "m25p80",
+ 		.owner	= THIS_MODULE,
++		.of_match_table = of_match_ptr(m25p_dt_ids),
+ 	},
+ 	.id_table	= m25p_ids,
+ 	.probe	= m25p_probe,
+-- 
+1.7.1
