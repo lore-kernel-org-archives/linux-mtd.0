@@ -1,24 +1,21 @@
 Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V5HYo-0006W3-BK
- for linux-mtd@lists.infradead.org; Fri, 02 Aug 2013 15:46:35 +0000
-Message-ID: <1375458661.14869.349.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 05/12] drivers/mtd/nand: don't use
- devm_pinctrl_get_select_default() in probe
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Wolfram Sang <wsa@the-dreams.de>
-Date: Fri, 02 Aug 2013 18:51:01 +0300
-In-Reply-To: <1373471889-18107-5-git-send-email-wsa@the-dreams.de>
-References: <1373471889-18107-1-git-send-email-wsa@the-dreams.de>
- <1373471889-18107-5-git-send-email-wsa@the-dreams.de>
+ id 1V5Hap-0006bZ-OJ
+ for linux-mtd@lists.infradead.org; Fri, 02 Aug 2013 15:48:40 +0000
+Message-ID: <1375458812.14869.350.camel@sauron.fi.intel.com>
+Subject: Re: [RESEND][PATCH] mtd: refactor call to request_module
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Kees Cook <keescook@chromium.org>
+Date: Fri, 02 Aug 2013 18:53:32 +0300
+In-Reply-To: <20130708130512.GA24315@www.outflux.net>
+References: <20130708130512.GA24315@www.outflux.net>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Linus Walleij <linus.walleij@linaro.org>, linux-kernel@vger.kernel.org,
- Josh Wu <josh.wu@atmel.com>, linux-mtd@lists.infradead.org,
- Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-Reply-To: artem.bityutskiy@linux.intel.com
+Cc: James Hogan <james.hogan@imgtec.com>, Rusty Russell <rusty@rustcorp.com.au>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ akpm@linux-foundation.org, David Woodhouse <dwmw2@infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,12 +25,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2013-07-10 at 16:57 +0100, Wolfram Sang wrote:
-> Since commit ab78029 (drivers/pinctrl: grab default handles from device core),
-> we can rely on device core for setting the default pins. Compile tested only.
+On Mon, 2013-07-08 at 06:05 -0700, Kees Cook wrote:
+> This reduces the size of the stack frame when calling request_module().
+> Performing the sprintf before the call is not needed.
 > 
-> Acked-by: Linus Walleij <linus.walleij@linaro.org> (personally at LCE13)
-> Signed-off-by: Wolfram Sang <wsa@the-dreams.de>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
 Pushed to l2-mtd.git, thanks!
 
