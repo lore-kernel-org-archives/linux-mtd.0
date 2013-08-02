@@ -1,29 +1,23 @@
-Received: from mail-wg0-x22a.google.com ([2a00:1450:400c:c00::22a])
+Received: from comal.ext.ti.com ([198.47.26.152])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V4qjH-0003zy-42
- for linux-mtd@lists.infradead.org; Thu, 01 Aug 2013 11:07:36 +0000
-Received: by mail-wg0-f42.google.com with SMTP id j13so5747478wgh.1
- for <linux-mtd@lists.infradead.org>; Thu, 01 Aug 2013 04:07:12 -0700 (PDT)
-Message-ID: <51FA4158.60200@gmail.com>
-Date: Thu, 01 Aug 2013 13:07:04 +0200
-From: Daniel Mack <zonque@gmail.com>
+ id 1V57RR-0005XF-9f
+ for linux-mtd@lists.infradead.org; Fri, 02 Aug 2013 04:58:18 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: =?iso-8859-1?Q?An=EDbal_Almeida_Pinto?= <anibal.pinto@efacec.com>
+Subject: RE: JFFS2 impact when don't have sub page access
+Date: Fri, 2 Aug 2013 04:57:32 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9F0091@DBDE04.ent.ti.com>
+References: <51F91E08.7030409@efacec.com>
+In-Reply-To: <51F91E08.7030409@efacec.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH 00/13] pxa3xx patches to support mvebu builds
-References: <1375140263-2028-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <51FA357B.9000804@gmail.com> <20130801102119.GA2410@localhost>
- <51FA3CDC.7040408@gmail.com> <20130801105921.GB2410@localhost>
-In-Reply-To: <20130801105921.GB2410@localhost>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
- Artem Bityutskiy <dedekind1@gmail.com>, leiwen@marvell.com,
- haojian.zhuang@gmail.com, linux-mtd@lists.infradead.org,
- grinberg@compulab.co.il, Gregory Clement <gregory.clement@free-electrons.com>,
- eric.miao@marvell.com, computersforpeace@gmail.com,
- David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>,
- nikita@compulab.co.il
+Cc: Fernando Gomes <fernando.gomes@efacec.com>,
+ "davinci-linux-open-source@linux.davincidsp.com"
+ <Davinci-linux-open-source@linux.davincidsp.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Nori,
+ Sekhar" <nsekhar@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,16 +27,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01.08.2013 12:59, Ezequiel Garcia wrote:
-> Given this shows a significant distinction between PXA NAND controller
-> (what we could call NFCv1) and Armada 370/XP NAND controller (NFCv2)
-> I see no way but to introduce a new compatible string for this driver.
-> 
-> Following the convention of choosing the first SoC that introduces the
-> controller, the new compatible would be "marvell,armada370-nand".
+Hello,
 
-Sure, that sounds about right. That's what compatibility string are for,
-after all :)
+> Hi,
+>=20
+> I' am using an OMAP L138 with a NAND SLC (MT29F4G08)
+>=20
+> I was making some tests with Ubifs but found some errors due to OMAP
+> don't support sub pages access:
+>=20
+TI OMAP2-NAND supports sub-pages for SLC NAND.
+ http://lists.infradead.org/pipermail/linux-mtd/attachments/20130405/a14656=
+7f/attachment.obj
+
+This patch was accepted in mainline linux-3.10,
+And tested on AM335x with 2K/64 NAND.
+
+You can follow this patch details here..
+http://lists.infradead.org/pipermail/linux-mtd/2013-March/046285.html
 
 
-Daniel
+with regards, pekon
