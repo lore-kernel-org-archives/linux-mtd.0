@@ -1,21 +1,21 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V5Gd5-0004ze-EX
- for linux-mtd@lists.infradead.org; Fri, 02 Aug 2013 14:46:56 +0000
-Message-ID: <1375455107.14869.326.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH resend] MTD: atmel_nand: using a stronger ECC is not
- dangerous
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Richard Genoud <richard.genoud@gmail.com>
-Date: Fri, 02 Aug 2013 17:51:47 +0300
-In-Reply-To: <1375197449-32370-1-git-send-email-richard.genoud@gmail.com>
-References: <1375197449-32370-1-git-send-email-richard.genoud@gmail.com>
+ id 1V5H0x-0005ae-0t
+ for linux-mtd@lists.infradead.org; Fri, 02 Aug 2013 15:11:35 +0000
+Message-ID: <1375456553.14869.340.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: remove obsolete JEDEC mapping drivers
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Paul Bolle <pebolle@tiscali.nl>
+Date: Fri, 02 Aug 2013 18:15:53 +0300
+In-Reply-To: <1374749192.29835.48.camel@x61.thuisdomein>
+References: <1368456039.1350.53.camel@x61.thuisdomein>
+ <1374749192.29835.48.camel@x61.thuisdomein>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Josh Wu <josh.wu@atmel.com>, David Woodhouse <dwmw2@infradead.org>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Reply-To: artem.bityutskiy@linux.intel.com
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,12 +25,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2013-07-30 at 17:17 +0200, Richard Genoud wrote:
-> We don't have to issue a warning when a stronger error correting
-> capability is chosen.
+On Thu, 2013-07-25 at 12:46 +0200, Paul Bolle wrote:
+> On Mon, 2013-05-13 at 16:40 +0200, Paul Bolle wrote:
+> > JEDEC device support was removed in v2.6.22. (It had been marked as
+> > BROKEN (indirectly) since at least v2.6.12.)
+> > 
+> > When it was removed the two JEDEC mapping drivers that depended on it
+> > should have been removed too. Do so now.
+> > 
+> > Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
+> > ---
+> > 0) Untested.
+> > 
+> > 1) These two [seem] to have been missed in Artem's recent cleaning up
+> > effort. Or is a comparable patch queued somewhere?
 > 
-> Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
-> Acked-by: Josh Wu <josh.wu@atmel.com>
+> Did anyone had a chance to look at this patch? Or has this code already
+> been removed?
 
 Pushed to l2-mtd.git, thanks!
 
