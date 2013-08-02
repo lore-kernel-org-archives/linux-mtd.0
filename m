@@ -1,22 +1,20 @@
-Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V5GC3-0004AI-1a
- for linux-mtd@lists.infradead.org; Fri, 02 Aug 2013 14:19:00 +0000
-Received: by mail-pa0-f50.google.com with SMTP id fb10so728823pad.9
- for <linux-mtd@lists.infradead.org>; Fri, 02 Aug 2013 07:18:36 -0700 (PDT)
-Date: Fri, 2 Aug 2013 22:22:17 -0400
-From: Huang Shijie <shijie8@gmail.com>
-To: Sourav Poddar <sourav.poddar@ti.com>
-Subject: Re: [PATCH] drivers: mtd: devices: make m25p80 dt adapted.
-Message-ID: <20130803022215.GA7627@gmail.com>
-References: <1375426170-31609-1-git-send-email-sourav.poddar@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1375426170-31609-1-git-send-email-sourav.poddar@ti.com>
-Cc: artem.bityutskiy@linux.intel.com, devicetree-discuss@lists.ozlabs.org,
- balbi@ti.com, linux-mtd@lists.infradead.org, pekon@ti.com,
- linux-omap@vger.kernel.org, dwmw2@infradead.org
+Received: from mga09.intel.com ([134.134.136.24])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V5GQT-0004cV-SK
+ for linux-mtd@lists.infradead.org; Fri, 02 Aug 2013 14:33:54 +0000
+Message-ID: <1375454326.14869.325.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/6] mtd: nandsim: convert pages_written[] to bitmap
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Akinobu Mita <akinobu.mita@gmail.com>
+Date: Fri, 02 Aug 2013 17:38:46 +0300
+In-Reply-To: <1374978118-11418-1-git-send-email-akinobu.mita@gmail.com>
+References: <1374978118-11418-1-git-send-email-akinobu.mita@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,83 +24,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Aug 02, 2013 at 12:19:30PM +0530, Sourav Poddar wrote:
-> This patch helps gettimg m25p80 probed through dt.
-without this patch, we also can get the right SPI NOR type from the
-dt entry.
+On Sun, 2013-07-28 at 11:21 +0900, Akinobu Mita wrote:
+> nandsim.pages_written[] is the array of unsigned char which is indexed
+> by the page number and used for identifying which pages have been written
+> when cache_file is used.  Each entry holds 0 (not written) or 1 (written),
+> so it can be converted to bitmap.  This reduces the allocation size of
+> pages_written[] by 1/8.
 
-Could you explain why we should get the m25p80 probed though the DT?
-or give an example.
+Did you test this patch-set, if yes, how?
 
-
-thanks
-Huang Shijie
-> To get the id of the exact flash type supported for dt case,
-> data->type is getting parsed from dt entry.
-> 
-> Signed-off-by: Sourav Poddar <sourav.poddar@ti.com>
-> ---
->  drivers/mtd/devices/m25p80.c |   22 +++++++++++++++++++++-
->  1 files changed, 21 insertions(+), 1 deletions(-)
-> 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 33098bf..cbfb9b3 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -855,6 +855,13 @@ static const struct spi_device_id m25p_ids[] = {
->  };
->  MODULE_DEVICE_TABLE(spi, m25p_ids);
->  
-> +#ifdef CONFIG_OF
-> +static const struct of_device_id m25p_dt_ids[] = {
-> +	{ .compatible = "m25p80", },
-> +	{ /* sentinel */ }
-> +};
-> +#endif
-> +
->  static const struct spi_device_id *jedec_probe(struct spi_device *spi)
->  {
->  	int			tmp;
-> @@ -909,6 +916,7 @@ static int m25p_probe(struct spi_device *spi)
->  	unsigned			i;
->  	struct mtd_part_parser_data	ppdata;
->  	struct device_node __maybe_unused *np = spi->dev.of_node;
-> +	int len;
->  
->  #ifdef CONFIG_MTD_OF_PARTS
->  	if (!of_device_is_available(np))
-> @@ -920,7 +928,18 @@ static int m25p_probe(struct spi_device *spi)
->  	 * a chip ID, try the JEDEC id commands; they'll work for most
->  	 * newer chips, even if we don't recognize the particular chip.
->  	 */
-> -	data = spi->dev.platform_data;
-> +	if (!np) {
-> +		data = spi->dev.platform_data;
-> +	} else {
-> +		data = devm_kzalloc(&spi->dev, sizeof(*data), GFP_KERNEL);
-> +		if (!data)
-> +			return -ENOMEM;
-> +
-> +		data->type = (char *) of_get_property(np, "type", &len);
-> +		if (!data->type || strlen(data->type) > len)
-> +			return -ENODEV;
-> +	}
-> +
->  	if (data && data->type) {
->  		const struct spi_device_id *plat_id;
->  
-> @@ -1098,6 +1117,7 @@ static struct spi_driver m25p80_driver = {
->  	.driver = {
->  		.name	= "m25p80",
->  		.owner	= THIS_MODULE,
-> +		.of_match_table = of_match_ptr(m25p_dt_ids),
->  	},
->  	.id_table	= m25p_ids,
->  	.probe	= m25p_probe,
-> -- 
-> 1.7.1
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+-- 
+Best Regards,
+Artem Bityutskiy
