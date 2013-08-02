@@ -1,41 +1,25 @@
-Message-ID: <51FB6E7F.2050506@asianux.com>
-Date: Fri, 02 Aug 2013 16:31:59 +0800
-From: Chen Gang <gang.chen@asianux.com>
+Received: from mail1.efacec.com ([213.58.212.93])
+ by merlin.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V5CuX-0006Km-KE
+ for linux-mtd@lists.infradead.org; Fri, 02 Aug 2013 10:48:43 +0000
+Message-ID: <51FB8E49.9010305@efacec.com>
+Date: Fri, 2 Aug 2013 11:47:37 +0100
+From: =?ISO-8859-1?Q?An=EDbal_Almeida_Pinto?= <anibal.pinto@efacec.com>
 MIME-Version: 1.0
-To: "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: Re: [PATCH trivial] include: uapi: standard all files' macro prefix
- and suffix, excluding "linux/" sub-directory
-References: <51FB6216.6010008@asianux.com> <51FB634F.5070401@asianux.com>
- <87iozoqzm9.fsf@tw-ebiederman.twitter.com>
-In-Reply-To: <87iozoqzm9.fsf@tw-ebiederman.twitter.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: xen-devel@lists.xensource.com, jeremy@goop.org, airlied@linux.ie,
- daniel.vetter@ffwll.ch, alsa-devel@alsa-project.org,
- dri-devel@lists.freedesktop.org, perex@perex.cz,
- "dhowells@redhat.com" <dhowells@redhat.com>, thierry.reding@gmail.com,
- linux-mtd@lists.infradead.org, sean.hefty@intel.com,
- virtualization@lists.linux-foundation.org,
- Linux-Arch <linux-arch@vger.kernel.org>,
- "kgene.kim@samsung.com" <kgene.kim@samsung.com>, tbergstrom@nvidia.com,
- jy0922.shim@samsung.com, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
- roland@purestorage.com, Takashi Iwai <tiwai@suse.de>,
- Tomi Valkeinen <tomi.valkeinen@ti.com>, mtk.manpages@gmail.com,
- fcoe-devel@open-fcoe.org, Paul McKenney <paulmck@linux.vnet.ibm.com>,
- "plagnioj@jcrosoft.com" <plagnioj@jcrosoft.com>, Arnd Bergmann <arnd@arndb.de>,
- swarren@wwwdotorg.org, intel-gfx@lists.freedesktop.org, inki.dae@samsung.com,
- "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>,
- Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
- linux-tegra@vger.kernel.org, davej@redhat.com,
- Thomas Gleixner <tglx@linutronix.de>, robert.w.love@intel.com,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- 'Jiri Kosina' <trivial@kernel.org>, dedekind1@gmail.com,
- sw0312.kim@samsung.com,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- JBottomley@parallels.com,
- "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>,
- Andrew Morton <akpm@linux-foundation.org>, dwmw2@infradead.org,
- David Miller <davem@davemloft.net>, shanim@mellanox.com
+To: "Gupta, Pekon" <pekon@ti.com>
+Subject: Re: JFFS2 impact when don't have sub page access
+References: <51F91E08.7030409@efacec.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9F0091@DBDE04.ent.ti.com>
+ <51FB43F3.7020909@ti.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9F00EA@DBDE04.ent.ti.com>
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9F00EA@DBDE04.ent.ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: Fernando Gomes <fernando.gomes@efacec.com>,
+ "davinci-linux-open-source@linux.davincidsp.com"
+ <Davinci-linux-open-source@linux.davincidsp.com>, "Nori,
+ Sekhar" <nsekhar@ti.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -45,136 +29,145 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/02/2013 04:13 PM, Eric W. Biederman wrote:
-> Chen Gang <gang.chen@asianux.com> writes:
-> 
->> It is a trivial patch for "include/uapi", exclude "linux" sub-directory.
+Em 02-08-2013 07:25, Gupta, Pekon escreveu:
+> Hi,
 >>
->> If it is useful, I will send another patch for "linux" sub-directory.
+>> On Friday 02 August 2013 10:27 AM, Gupta, Pekon wrote:
+>>> Hello,
+>>>
+>>>> Hi,
+>>>>
+>>>> I' am using an OMAP L138 with a NAND SLC (MT29F4G08)
+>>>>
+>>>> I was making some tests with Ubifs but found some errors due to OMAP
+>>>> don't support sub pages access:
+>>>>
+>>> TI OMAP2-NAND supports sub-pages for SLC NAND.
+>>>   http://lists.infradead.org/pipermail/linux-
+>> mtd/attachments/20130405/a146567f/attachment.obj
+>>>
+>>> This patch was accepted in mainline linux-3.10,
+>>> And tested on AM335x with 2K/64 NAND.
+>>>
+>>> You can follow this patch details here..
+>>> http://lists.infradead.org/pipermail/linux-mtd/2013-March/046285.html
 >>
->> BTW: it is really big mail addresses from
->> "./scripts/get_maintainers.pl"
-> 
-> What is the point?  Is there a bug that this fixes?
-> 
-
-It is a trivial patch, it is not for bug fix.
-
-> These files are not used with api in their path in userspace so I
-> suspect your change just makes things strange and confusing.
-> 
-
-Hmm... they are in "include/uapi" which means they may be shared with
-user space, is it correct ? (or Universal API ? ... excuse me, I don't
-know the definition of "include/uapi").
-
-If some of them are really never shared with user space (or not
-'Universal' enough to multiple OS), I recommend to move them from
-"include/uapi/" to another more suitable places.
-
-
-Thanks.
-
-> Eric
-> 
->> Thanks.
+>> Yes, but An=EDbal is talking about OMAP-L138 which is actually a DaVinci
+>> part and uses drivers/mtd/nand/davinci_nand.c
 >>
->> On 08/02/2013 03:39 PM, Chen Gang wrote:
->>> For "include/uapi/*", excluding "linux/" sub-directory, let all files'
->>> macro prefix match the standard format, and give related stand comments
->>> for their macro suffix.
->>>
->>> The related standard format is:
->>>
->>>   "_SUBDIRNAME_SUBDIRNAME[_SUBDIRNAME]_FILENAME" (1st _SUBDIRNAME is _UAPI), and use '_' instead of '.' and '-'.
->>>
->>>
->>> Signed-off-by: Chen Gang <gang.chen@asianux.com>
->>> ---
->>>  include/uapi/asm-generic/auxvec.h      |    6 +++---
->>>  include/uapi/asm-generic/bitsperlong.h |    6 +++---
->>>  include/uapi/asm-generic/errno-base.h  |    6 +++---
->>>  include/uapi/asm-generic/errno.h       |    6 +++---
->>>  include/uapi/asm-generic/fcntl.h       |    6 +++---
->>>  include/uapi/asm-generic/ioctls.h      |    6 +++---
->>>  include/uapi/asm-generic/ipcbuf.h      |    6 +++---
->>>  include/uapi/asm-generic/kvm_para.h    |    5 +++++
->>>  include/uapi/asm-generic/mman-common.h |    6 +++---
->>>  include/uapi/asm-generic/mman.h        |    6 +++---
->>>  include/uapi/asm-generic/msgbuf.h      |    6 +++---
->>>  include/uapi/asm-generic/param.h       |    6 +++---
->>>  include/uapi/asm-generic/poll.h        |    6 +++---
->>>  include/uapi/asm-generic/posix_types.h |    6 +++---
->>>  include/uapi/asm-generic/sembuf.h      |    6 +++---
->>>  include/uapi/asm-generic/setup.h       |    6 +++---
->>>  include/uapi/asm-generic/shmbuf.h      |    6 +++---
->>>  include/uapi/asm-generic/shmparam.h    |    6 +++---
->>>  include/uapi/asm-generic/signal-defs.h |    6 +++---
->>>  include/uapi/asm-generic/signal.h      |    6 +++---
->>>  include/uapi/asm-generic/socket.h      |    6 +++---
->>>  include/uapi/asm-generic/sockios.h     |    6 +++---
->>>  include/uapi/asm-generic/stat.h        |    6 +++---
->>>  include/uapi/asm-generic/statfs.h      |    6 +++---
->>>  include/uapi/asm-generic/swab.h        |    6 +++---
->>>  include/uapi/asm-generic/termbits.h    |    6 +++---
->>>  include/uapi/asm-generic/types.h       |    6 +++---
->>>  include/uapi/asm-generic/ucontext.h    |    6 +++---
->>>  include/uapi/asm-generic/unistd.h      |    5 +++++
->>>  include/uapi/drm/drm.h                 |    6 +++---
->>>  include/uapi/drm/drm_fourcc.h          |    6 +++---
->>>  include/uapi/drm/drm_mode.h            |    6 +++---
->>>  include/uapi/drm/drm_sarea.h           |    6 +++---
->>>  include/uapi/drm/exynos_drm.h          |    6 +++---
->>>  include/uapi/drm/i810_drm.h            |    6 +++---
->>>  include/uapi/drm/i915_drm.h            |    6 +++---
->>>  include/uapi/drm/mga_drm.h             |    6 +++---
->>>  include/uapi/drm/nouveau_drm.h         |    6 +++---
->>>  include/uapi/drm/omap_drm.h            |    6 +++---
->>>  include/uapi/drm/qxl_drm.h             |    6 +++---
->>>  include/uapi/drm/r128_drm.h            |    6 +++---
->>>  include/uapi/drm/radeon_drm.h          |    6 +++---
->>>  include/uapi/drm/savage_drm.h          |    6 +++---
->>>  include/uapi/drm/sis_drm.h             |    6 +++---
->>>  include/uapi/drm/tegra_drm.h           |    6 +++---
->>>  include/uapi/drm/via_drm.h             |    6 +++---
->>>  include/uapi/drm/vmwgfx_drm.h          |    6 +++---
->>>  include/uapi/mtd/inftl-user.h          |    6 +++---
->>>  include/uapi/mtd/mtd-abi.h             |    6 +++---
->>>  include/uapi/mtd/mtd-user.h            |    6 +++---
->>>  include/uapi/mtd/nftl-user.h           |    6 +++---
->>>  include/uapi/mtd/ubi-user.h            |    6 +++---
->>>  include/uapi/rdma/ib_user_cm.h         |    6 +++---
->>>  include/uapi/rdma/ib_user_mad.h        |    6 +++---
->>>  include/uapi/rdma/ib_user_sa.h         |    6 +++---
->>>  include/uapi/rdma/ib_user_verbs.h      |    6 +++---
->>>  include/uapi/rdma/rdma_netlink.h       |    6 +++---
->>>  include/uapi/rdma/rdma_user_cm.h       |    6 +++---
->>>  include/uapi/scsi/fc/fc_els.h          |    6 +++---
->>>  include/uapi/scsi/fc/fc_fs.h           |    6 +++---
->>>  include/uapi/scsi/fc/fc_gs.h           |    6 +++---
->>>  include/uapi/scsi/fc/fc_ns.h           |    6 +++---
->>>  include/uapi/scsi/scsi_bsg_fc.h        |    7 +++----
->>>  include/uapi/scsi/scsi_netlink.h       |    7 +++----
->>>  include/uapi/scsi/scsi_netlink_fc.h    |    7 +++----
->>>  include/uapi/sound/asequencer.h        |    6 +++---
->>>  include/uapi/sound/asound.h            |    6 +++---
->>>  include/uapi/sound/asound_fm.h         |    6 +++---
->>>  include/uapi/sound/compress_offload.h  |    6 +++---
->>>  include/uapi/sound/compress_params.h   |    6 +++---
->>>  include/uapi/sound/emu10k1.h           |    6 +++---
->>>  include/uapi/sound/hdsp.h              |    6 +++---
->>>  include/uapi/sound/hdspm.h             |    6 +++---
->>>  include/uapi/sound/sb16_csp.h          |    6 +++---
->>>  include/uapi/sound/sfnt_info.h         |    6 +++---
->>>  include/uapi/video/edid.h              |    6 +++---
->>>  include/uapi/video/sisfb.h             |    6 +++---
->>>  include/uapi/video/uvesafb.h           |    6 +++---
->>>  include/uapi/xen/evtchn.h              |    6 +++---
->>>  include/uapi/xen/privcmd.h             |    6 +++---
->>>  80 files changed, 244 insertions(+), 237 deletions(-)
-> 
-> 
+> The patch adds support for subpage-write in generic NAND driver,
+> So it should work directly for davinci_nand.c
+>
+>> May be you can clarify whether absence of subpage support will lead to
+>> the kind of errors An=EDbal reported?
+>>
+> I suspect there is some mis-match in options passed while creating
+> UBI image for sub-pages. With subpages the LEB size (-e) passed to
+>   mkfs.ubifs has different calculation. It should be '(n-1) * page size'
+> where 'n' is number of pages in the erase-block.
+> This is because when using sub-pages both EraseHeader and
+> VolumeHeader are packed in same page.
+> I use some personal script to keep that handy, refer [1]
+> You can also refer to
+> http://processors.wiki.ti.com/index.php/UBIFS_Support
+>
+>
+>> Also, the subject talks about JFFS2. There is no known affect of absence
+>> of subpage support on JFFS2, right?
+>>
+> There should not be any problem in using either UBIFS or JFFS2.
+
+Please, clarify me with the last statement.
+
+There should be no problem using JFFS2 or UBIFS with the patch that you=20
+mention applied or even without the patch ?
+
+With OMAP L138 are some complains about using the ubifs and subpage=20
+access, even on uboot [1] so it don't appear to be only a linux [2] problem=
+.
+
+And if the problems appear on ubifs it should affect the jffs2.
+
+[1] - http://lists.denx.de/pipermail/u-boot/2011-April/090072.html
+[2] - http://comments.gmane.org/gmane.linux.davinci/23836
 
 
--- 
-Chen Gang
+
+Sem o patch h=E1 problemas manifestados por v=E1rias pessoas ...
+
+>
+>
+> [1] create_ubi_image.sh
+> (this script used fixed folder name 'rootfs' as -r option)
+>
+> #!/bin/sh
+> #----------------------------------------------------------------------
+> # Description: generic script to create UBI image for NAND devices
+> #		with different page sizes.
+> #
+> # Author: 	Pekon Gupta (pekon@ti.com)
+> # Usage:	create_ubi_image.sh <PAGE_SIZE> <SUBPAGE_SIZE> \
+> #						<PARTITION_SIZE>
+> # History:
+> # version 1.1	pekon
+> #		added calculation of LEB_SIZE while using subpages
+> #
+> #----------------------------------------------------------------------
+> #-- remove old files --
+> rm -v ubi.ubifs  ubi.img ubinize.cfg
+>
+> #-- user inputs --
+> PAGE_SIZE=3D$1
+> SUBPAGE_SIZE=3D$2
+> PARTITION_SIZE=3D$3
+>
+> if test -z $1 || test -z $2  || test -z $3
+> then
+> echo "Error: incomplete inputs"
+> echo "Usage: create_ubi_image.sh <PAGE_SIZE> <SUBPAGE_SIZE> <PARTITION_SI=
+ZE>"
+> exit
+> fi
+>
+>
+> #-- calculate UBI parameter --
+> PEB_SIZE=3D$(( 64 * $PAGE_SIZE ))
+>
+> # LEB size =3D	PEB_SIZE - number_of_pages_used_for_UBI_headers * PAGE_SIZ=
+E
+> #		number_of_pages_used_for_UBI_header =3D 1 if using sub-pages
+> #		number_of_pages_used_for_UBI_header =3D 2 if not using sub-pages
+> if test $PAGE_SIZE -ne $SUBPAGE_SIZE
+> then
+> 	LEB_SIZE=3D$(( $PEB_SIZE - ( 1 * $PAGE_SIZE )))
+> else
+> 	LEB_SIZE=3D$(( $PEB_SIZE - ( 2 * $PAGE_SIZE )))
+> fi
+>
+> LEB_COUNT=3D$(( $PARTITION_SIZE / $LEB_SIZE ))
+>
+> echo "LOG: PAGE_SIZE	=3D	$PAGE_SIZE"
+> echo "LOG: SUBPAGE_SIZE	=3D	$SUBPAGE_SIZE"
+> echo "LOG: PEB_SIZE	=3D	$PEB_SIZE"
+> echo "LOG: LEB_SIZE	=3D	$LEB_SIZE"
+> echo "LOG: LEB_COUNT	=3D	$LEB_COUNT"
+>
+>
+> #-- generate ubinize.cfg --
+> echo "[ubifs]"                	>> ubinize.cfg
+> echo "mode=3Dubi"               	>> ubinize.cfg
+> echo "image=3Dubi.ubifs"        	>> ubinize.cfg
+> echo "vol_id=3D0"               	>> ubinize.cfg
+> echo "vol_size=3D$PARTITION_SIZE"	>> ubinize.cfg
+> echo "vol_type=3Ddynamic"       	>> ubinize.cfg
+> echo "vol_name=3Dtest"         	>> ubinize.cfg
+> echo "vol_flags=3D'autoresize'" 	>> ubinize.cfg
+> echo "vol_alignment=3D1"        	>> ubinize.cfg
+>
+> #-- generate UBI image --
+> mkfs.ubifs  -o ubi.ubifs  -m $PAGE_SIZE  -e $LEB_SIZE  -c $LEB_COUNT  -r =
+rootfs
+> ubinize     -o ubi.img    -m $PAGE_SIZE  -p $PEB_SIZE  -s $SUBPAGE_SIZE  =
+-O $SUBPAGE_SIZE  -v  ubinize.cfg
+> # ---------------------------------------------
+>
