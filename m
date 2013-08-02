@@ -1,20 +1,22 @@
-Received: from mail1.efacec.com ([213.58.212.93])
- by merlin.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V5CuX-0006Km-KE
- for linux-mtd@lists.infradead.org; Fri, 02 Aug 2013 10:48:43 +0000
-Message-ID: <51FB8E49.9010305@efacec.com>
-Date: Fri, 2 Aug 2013 11:47:37 +0100
-From: =?ISO-8859-1?Q?An=EDbal_Almeida_Pinto?= <anibal.pinto@efacec.com>
-MIME-Version: 1.0
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: JFFS2 impact when don't have sub page access
+Received: from bear.ext.ti.com ([192.94.94.41])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V5DvI-0000F1-Ol
+ for linux-mtd@lists.infradead.org; Fri, 02 Aug 2013 11:53:33 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: =?iso-8859-1?Q?An=EDbal_Almeida_Pinto?= <anibal.pinto@efacec.com>
+Subject: RE: JFFS2 impact when don't have sub page access
+Date: Fri, 2 Aug 2013 11:52:47 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9F028B@DBDE04.ent.ti.com>
 References: <51F91E08.7030409@efacec.com>
  <20980858CB6D3A4BAE95CA194937D5E73E9F0091@DBDE04.ent.ti.com>
  <51FB43F3.7020909@ti.com>
  <20980858CB6D3A4BAE95CA194937D5E73E9F00EA@DBDE04.ent.ti.com>
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9F00EA@DBDE04.ent.ti.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+ <51FB8E49.9010305@efacec.com>
+In-Reply-To: <51FB8E49.9010305@efacec.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 Cc: Fernando Gomes <fernando.gomes@efacec.com>,
  "davinci-linux-open-source@linux.davincidsp.com"
  <Davinci-linux-open-source@linux.davincidsp.com>, "Nori,
@@ -29,145 +31,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Em 02-08-2013 07:25, Gupta, Pekon escreveu:
-> Hi,
->>
->> On Friday 02 August 2013 10:27 AM, Gupta, Pekon wrote:
->>> Hello,
->>>
->>>> Hi,
->>>>
->>>> I' am using an OMAP L138 with a NAND SLC (MT29F4G08)
->>>>
->>>> I was making some tests with Ubifs but found some errors due to OMAP
->>>> don't support sub pages access:
->>>>
->>> TI OMAP2-NAND supports sub-pages for SLC NAND.
->>>   http://lists.infradead.org/pipermail/linux-
->> mtd/attachments/20130405/a146567f/attachment.obj
->>>
->>> This patch was accepted in mainline linux-3.10,
->>> And tested on AM335x with 2K/64 NAND.
->>>
->>> You can follow this patch details here..
->>> http://lists.infradead.org/pipermail/linux-mtd/2013-March/046285.html
->>
->> Yes, but An=EDbal is talking about OMAP-L138 which is actually a DaVinci
->> part and uses drivers/mtd/nand/davinci_nand.c
->>
-> The patch adds support for subpage-write in generic NAND driver,
-> So it should work directly for davinci_nand.c
->
->> May be you can clarify whether absence of subpage support will lead to
->> the kind of errors An=EDbal reported?
->>
-> I suspect there is some mis-match in options passed while creating
-> UBI image for sub-pages. With subpages the LEB size (-e) passed to
->   mkfs.ubifs has different calculation. It should be '(n-1) * page size'
-> where 'n' is number of pages in the erase-block.
-> This is because when using sub-pages both EraseHeader and
-> VolumeHeader are packed in same page.
-> I use some personal script to keep that handy, refer [1]
-> You can also refer to
-> http://processors.wiki.ti.com/index.php/UBIFS_Support
->
->
->> Also, the subject talks about JFFS2. There is no known affect of absence
->> of subpage support on JFFS2, right?
->>
-> There should not be any problem in using either UBIFS or JFFS2.
+Hi,
 
-Please, clarify me with the last statement.
+> >
+> >> Also, the subject talks about JFFS2. There is no known affect of absen=
+ce
+> >> of subpage support on JFFS2, right?
+> >>
+> > There should not be any problem in using either UBIFS or JFFS2.
+>=20
+> Please, clarify me with the last statement.
+>=20
+> There should be no problem using JFFS2 or UBIFS with the patch that you
+> mention applied or even without the patch ?
+>=20
 
-There should be no problem using JFFS2 or UBIFS with the patch that you=20
-mention applied or even without the patch ?
+For UBIFS to work,=20
+(1) please check following options passed for mkfs.ubifs
+- with this patch
+mkfs.ubifs -s 512  -m 2048
 
-With OMAP L138 are some complains about using the ubifs and subpage=20
-access, even on uboot [1] so it don't appear to be only a linux [2] problem=
-.
+- without this patch
+mkfs.ubifs -s 2048  -m 2048
 
-And if the problems appear on ubifs it should affect the jffs2.
-
-[1] - http://lists.denx.de/pipermail/u-boot/2011-April/090072.html
-[2] - http://comments.gmane.org/gmane.linux.davinci/23836
+(2) Also please check for  'chip->options & NAND_NO_SUBPAGE_WRITE'.
+This flag is used for explicitely _disabling_ sub-pages in NAND driver.
 
 
+> With OMAP L138 are some complains about using the ubifs and subpage
+> access, even on uboot [1] so it don't appear to be only a linux [2] probl=
+em.
+>=20
+> And if the problems appear on ubifs it should affect the jffs2.
+>=20
+> [1] - http://lists.denx.de/pipermail/u-boot/2011-April/090072.html
+Yes, there is no subpage support in U-Boot.
+Also I hope you are using 'ubiformat' to format the NAND partition with
+UBI.img in kernel ? If that isn't the case, then I'm not sure what can be t=
+he
+problem here.
+I have tested omap2-nand with subpage enabled and=20
+using ubiformat. And it works fine.
 
-Sem o patch h=E1 problemas manifestados por v=E1rias pessoas ...
 
+> [2] - http://comments.gmane.org/gmane.linux.davinci/23836
 >
->
-> [1] create_ubi_image.sh
-> (this script used fixed folder name 'rootfs' as -r option)
->
-> #!/bin/sh
-> #----------------------------------------------------------------------
-> # Description: generic script to create UBI image for NAND devices
-> #		with different page sizes.
-> #
-> # Author: 	Pekon Gupta (pekon@ti.com)
-> # Usage:	create_ubi_image.sh <PAGE_SIZE> <SUBPAGE_SIZE> \
-> #						<PARTITION_SIZE>
-> # History:
-> # version 1.1	pekon
-> #		added calculation of LEB_SIZE while using subpages
-> #
-> #----------------------------------------------------------------------
-> #-- remove old files --
-> rm -v ubi.ubifs  ubi.img ubinize.cfg
->
-> #-- user inputs --
-> PAGE_SIZE=3D$1
-> SUBPAGE_SIZE=3D$2
-> PARTITION_SIZE=3D$3
->
-> if test -z $1 || test -z $2  || test -z $3
-> then
-> echo "Error: incomplete inputs"
-> echo "Usage: create_ubi_image.sh <PAGE_SIZE> <SUBPAGE_SIZE> <PARTITION_SI=
-ZE>"
-> exit
-> fi
->
->
-> #-- calculate UBI parameter --
-> PEB_SIZE=3D$(( 64 * $PAGE_SIZE ))
->
-> # LEB size =3D	PEB_SIZE - number_of_pages_used_for_UBI_headers * PAGE_SIZ=
-E
-> #		number_of_pages_used_for_UBI_header =3D 1 if using sub-pages
-> #		number_of_pages_used_for_UBI_header =3D 2 if not using sub-pages
-> if test $PAGE_SIZE -ne $SUBPAGE_SIZE
-> then
-> 	LEB_SIZE=3D$(( $PEB_SIZE - ( 1 * $PAGE_SIZE )))
-> else
-> 	LEB_SIZE=3D$(( $PEB_SIZE - ( 2 * $PAGE_SIZE )))
-> fi
->
-> LEB_COUNT=3D$(( $PARTITION_SIZE / $LEB_SIZE ))
->
-> echo "LOG: PAGE_SIZE	=3D	$PAGE_SIZE"
-> echo "LOG: SUBPAGE_SIZE	=3D	$SUBPAGE_SIZE"
-> echo "LOG: PEB_SIZE	=3D	$PEB_SIZE"
-> echo "LOG: LEB_SIZE	=3D	$LEB_SIZE"
-> echo "LOG: LEB_COUNT	=3D	$LEB_COUNT"
->
->
-> #-- generate ubinize.cfg --
-> echo "[ubifs]"                	>> ubinize.cfg
-> echo "mode=3Dubi"               	>> ubinize.cfg
-> echo "image=3Dubi.ubifs"        	>> ubinize.cfg
-> echo "vol_id=3D0"               	>> ubinize.cfg
-> echo "vol_size=3D$PARTITION_SIZE"	>> ubinize.cfg
-> echo "vol_type=3Ddynamic"       	>> ubinize.cfg
-> echo "vol_name=3Dtest"         	>> ubinize.cfg
-> echo "vol_flags=3D'autoresize'" 	>> ubinize.cfg
-> echo "vol_alignment=3D1"        	>> ubinize.cfg
->
-> #-- generate UBI image --
-> mkfs.ubifs  -o ubi.ubifs  -m $PAGE_SIZE  -e $LEB_SIZE  -c $LEB_COUNT  -r =
-rootfs
-> ubinize     -o ubi.img    -m $PAGE_SIZE  -p $PEB_SIZE  -s $SUBPAGE_SIZE  =
--O $SUBPAGE_SIZE  -v  ubinize.cfg
-> # ---------------------------------------------
->
+Also from [2] last post, there seemed to be an issue with mis-match in=20
+ECC scheme used between U-Boot and ECC-scheme used in Kernel.
+(But this has nothing todo with sub-pages)..
+Your logs also show ECC errors, so I suggest please make sure you are
+using same ECC scheme in kernel, as the one with which you flashed=20
+the image.
+----------------------------------------
+>> [  128.344667] UBI error: ubi_io_read: error -74 (ECC error) while=20
+>> reading 512 bytes from PEB 2:512, read 512 bytes
+>> [  128.883945] UBI error: ubi_io_read: error -74 (ECC error) while=20
+>> reading 512 bytes from PEB 1766:512, read 512 bytes
+>> [  128.884072] UBI: run torture test for PEB 1766
+----------------------------------------
+
+
+with regards, pekon
