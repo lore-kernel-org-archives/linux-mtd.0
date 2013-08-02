@@ -1,21 +1,21 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V5H0x-0005ae-0t
- for linux-mtd@lists.infradead.org; Fri, 02 Aug 2013 15:11:35 +0000
-Message-ID: <1375456553.14869.340.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: remove obsolete JEDEC mapping drivers
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Paul Bolle <pebolle@tiscali.nl>
-Date: Fri, 02 Aug 2013 18:15:53 +0300
-In-Reply-To: <1374749192.29835.48.camel@x61.thuisdomein>
-References: <1368456039.1350.53.camel@x61.thuisdomein>
- <1374749192.29835.48.camel@x61.thuisdomein>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+Received: from devils.ext.ti.com ([198.47.26.153])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V5H14-0005ah-ME
+ for linux-mtd@lists.infradead.org; Fri, 02 Aug 2013 15:11:43 +0000
+Message-ID: <51FBCC10.2050206@ti.com>
+Date: Fri, 2 Aug 2013 20:41:12 +0530
+From: Sourav Poddar <sourav.poddar@ti.com>
+MIME-Version: 1.0
+To: Huang Shijie <shijie8@gmail.com>
+Subject: Re: [PATCH] drivers: mtd: devices: make m25p80 dt adapted.
+References: <1375426170-31609-1-git-send-email-sourav.poddar@ti.com>
+ <20130803022215.GA7627@gmail.com>
+In-Reply-To: <20130803022215.GA7627@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- linux-kernel@vger.kernel.org
-Reply-To: dedekind1@gmail.com
+Cc: artem.bityutskiy@linux.intel.com, devicetree-discuss@lists.ozlabs.org,
+ balbi@ti.com, linux-mtd@lists.infradead.org, pekon@ti.com,
+ linux-omap@vger.kernel.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +25,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2013-07-25 at 12:46 +0200, Paul Bolle wrote:
-> On Mon, 2013-05-13 at 16:40 +0200, Paul Bolle wrote:
-> > JEDEC device support was removed in v2.6.22. (It had been marked as
-> > BROKEN (indirectly) since at least v2.6.12.)
-> > 
-> > When it was removed the two JEDEC mapping drivers that depended on it
-> > should have been removed too. Do so now.
-> > 
-> > Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
-> > ---
-> > 0) Untested.
-> > 
-> > 1) These two [seem] to have been missed in Artem's recent cleaning up
-> > effort. Or is a comparable patch queued somewhere?
-> 
-> Did anyone had a chance to look at this patch? Or has this code already
-> been removed?
+Hi Huang,
+On Saturday 03 August 2013 07:52 AM, Huang Shijie wrote:
+> On Fri, Aug 02, 2013 at 12:19:30PM +0530, Sourav Poddar wrote:
+>> This patch helps gettimg m25p80 probed through dt.
+> without this patch, we also can get the right SPI NOR type from the
+> dt entry.
+>
+> Could you explain why we should get the m25p80 probed though the DT?
+> or give an example.
+>
+Actually Yes, I misunderstood the dt bindings to be used for this driver
+completely. With the following, I was able to work properly without this
+patch.
++        m25p80@0 {
++                compatible = "s25fl256s1";
+                  spi-max-frequency = <48000000>;
+                  s25fl,three-byte;
+                  reg = <0x00>;
 
-Pushed to l2-mtd.git, thanks!
+Sorry for the noise. Patch can be discarded.
 
--- 
-Best Regards,
-Artem Bityutskiy
+> thanks
+> Huang Shijie
+>> To get the id of the exact flash type supported for dt case,
+>> data->type is getting parsed from dt entry.
+>>
+>> Signed-off-by: Sourav Poddar<sourav.poddar@ti.com>
+>> ---
+>>   drivers/mtd/devices/m25p80.c |   22 +++++++++++++++++++++-
+>>   1 files changed, 21 insertions(+), 1 deletions(-)
+>>
+>> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+>> index 33098bf..cbfb9b3 100644
+>> --- a/drivers/mtd/devices/m25p80.c
+>> +++ b/drivers/mtd/devices/m25p80.c
+>> @@ -855,6 +855,13 @@ static const struct spi_device_id m25p_ids[] = {
+>>   };
+>>   MODULE_DEVICE_TABLE(spi, m25p_ids);
+>>
+>> +#ifdef CONFIG_OF
+>> +static const struct of_device_id m25p_dt_ids[] = {
+>> +	{ .compatible = "m25p80", },
+>> +	{ /* sentinel */ }
+>> +};
+>> +#endif
+>> +
+>>   static const struct spi_device_id *jedec_probe(struct spi_device *spi)
+>>   {
+>>   	int			tmp;
+>> @@ -909,6 +916,7 @@ static int m25p_probe(struct spi_device *spi)
+>>   	unsigned			i;
+>>   	struct mtd_part_parser_data	ppdata;
+>>   	struct device_node __maybe_unused *np = spi->dev.of_node;
+>> +	int len;
+>>
+>>   #ifdef CONFIG_MTD_OF_PARTS
+>>   	if (!of_device_is_available(np))
+>> @@ -920,7 +928,18 @@ static int m25p_probe(struct spi_device *spi)
+>>   	 * a chip ID, try the JEDEC id commands; they'll work for most
+>>   	 * newer chips, even if we don't recognize the particular chip.
+>>   	 */
+>> -	data = spi->dev.platform_data;
+>> +	if (!np) {
+>> +		data = spi->dev.platform_data;
+>> +	} else {
+>> +		data = devm_kzalloc(&spi->dev, sizeof(*data), GFP_KERNEL);
+>> +		if (!data)
+>> +			return -ENOMEM;
+>> +
+>> +		data->type = (char *) of_get_property(np, "type",&len);
+>> +		if (!data->type || strlen(data->type)>  len)
+>> +			return -ENODEV;
+>> +	}
+>> +
+>>   	if (data&&  data->type) {
+>>   		const struct spi_device_id *plat_id;
+>>
+>> @@ -1098,6 +1117,7 @@ static struct spi_driver m25p80_driver = {
+>>   	.driver = {
+>>   		.name	= "m25p80",
+>>   		.owner	= THIS_MODULE,
+>> +		.of_match_table = of_match_ptr(m25p_dt_ids),
+>>   	},
+>>   	.id_table	= m25p_ids,
+>>   	.probe	= m25p_probe,
+>> -- 
+>> 1.7.1
+>>
+>>
+>> ______________________________________________________
+>> Linux MTD discussion mailing list
+>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
