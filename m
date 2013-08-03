@@ -1,14 +1,14 @@
-Received: from mail-pd0-x230.google.com ([2607:f8b0:400e:c02::230])
+Received: from mail-pd0-x22a.google.com ([2607:f8b0:400e:c02::22a])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V5YWm-0006Y6-Ed
- for linux-mtd@lists.infradead.org; Sat, 03 Aug 2013 09:53:52 +0000
-Received: by mail-pd0-f176.google.com with SMTP id q10so1498430pdj.21
- for <linux-mtd@lists.infradead.org>; Sat, 03 Aug 2013 02:53:15 -0700 (PDT)
+ id 1V5YWo-0006Y7-LS
+ for linux-mtd@lists.infradead.org; Sat, 03 Aug 2013 09:53:58 +0000
+Received: by mail-pd0-f170.google.com with SMTP id x10so1510452pdj.1
+ for <linux-mtd@lists.infradead.org>; Sat, 03 Aug 2013 02:53:17 -0700 (PDT)
 From: Akinobu Mita <akinobu.mita@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH -next v2 06/10] mtd: mtd_speedtest: use mtd_test helpers
-Date: Sat,  3 Aug 2013 18:52:12 +0900
-Message-Id: <1375523536-32671-7-git-send-email-akinobu.mita@gmail.com>
+Subject: [PATCH -next v2 07/10] mtd: mtd_stresstest: use mtd_test helpers
+Date: Sat,  3 Aug 2013 18:52:13 +0900
+Message-Id: <1375523536-32671-8-git-send-email-akinobu.mita@gmail.com>
 In-Reply-To: <1375523536-32671-1-git-send-email-akinobu.mita@gmail.com>
 References: <1375523536-32671-1-git-send-email-akinobu.mita@gmail.com>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>,
@@ -25,8 +25,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use mtdtest_write(), mtdtest_read(), mtdtest_scan_for_bad_eraseblocks(),
-mtdtest_erase_good_eraseblocks() in mtd_test helpers.
+Use mtdtest_read(), mtdtest_write(), mtdtest_erase_eraseblock(), and
+mtdtest_scan_for_bad_eraseblocks() in mtd_test helpers.
 
 Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
 Cc: Brian Norris <computersforpeace@gmail.com>
@@ -39,15 +39,15 @@ Cc: linux-mtd@lists.infradead.org
 * Changes from v1
 - follow the changes of helper functions
 
- drivers/mtd/tests/speedtest.c | 180 +++++++++---------------------------------
- 1 file changed, 36 insertions(+), 144 deletions(-)
+ drivers/mtd/tests/stresstest.c | 86 ++++++------------------------------------
+ 1 file changed, 12 insertions(+), 74 deletions(-)
 
-diff --git a/drivers/mtd/tests/speedtest.c b/drivers/mtd/tests/speedtest.c
-index 20b63d1..457c45c 100644
---- a/drivers/mtd/tests/speedtest.c
-+++ b/drivers/mtd/tests/speedtest.c
-@@ -30,6 +30,8 @@
- #include <linux/sched.h>
+diff --git a/drivers/mtd/tests/stresstest.c b/drivers/mtd/tests/stresstest.c
+index 3a95e61..1695248 100644
+--- a/drivers/mtd/tests/stresstest.c
++++ b/drivers/mtd/tests/stresstest.c
+@@ -31,6 +31,8 @@
+ #include <linux/vmalloc.h>
  #include <linux/random.h>
  
 +#include "mtd_test.h"
@@ -55,11 +55,10 @@ index 20b63d1..457c45c 100644
  static int dev = -EINVAL;
  module_param(dev, int, S_IRUGO);
  MODULE_PARM_DESC(dev, "MTD device number to use");
-@@ -49,33 +51,6 @@ static int pgcnt;
- static int goodebcnt;
- static struct timeval start, finish;
+@@ -81,46 +83,8 @@ static int rand_len(int offs)
+ 	return len;
+ }
  
--
 -static int erase_eraseblock(int ebnum)
 -{
 -	int err;
@@ -72,12 +71,12 @@ index 20b63d1..457c45c 100644
 -	ei.len  = mtd->erasesize;
 -
 -	err = mtd_erase(mtd, &ei);
--	if (err) {
+-	if (unlikely(err)) {
 -		pr_err("error %d while erasing EB %d\n", err, ebnum);
 -		return err;
 -	}
 -
--	if (ei.state == MTD_ERASE_FAILED) {
+-	if (unlikely(ei.state == MTD_ERASE_FAILED)) {
 -		pr_err("some erase error occurred at EB %d\n",
 -		       ebnum);
 -		return -EIO;
@@ -86,194 +85,6 @@ index 20b63d1..457c45c 100644
 -	return 0;
 -}
 -
- static int multiblock_erase(int ebnum, int blocks)
- {
- 	int err;
-@@ -103,52 +78,29 @@ static int multiblock_erase(int ebnum, int blocks)
- 	return 0;
- }
- 
--static int erase_whole_device(void)
--{
--	int err;
--	unsigned int i;
--
--	for (i = 0; i < ebcnt; ++i) {
--		if (bbt[i])
--			continue;
--		err = erase_eraseblock(i);
--		if (err)
--			return err;
--		cond_resched();
--	}
--	return 0;
--}
--
- static int write_eraseblock(int ebnum)
- {
--	size_t written;
--	int err = 0;
-+	int err;
- 	loff_t addr = ebnum * mtd->erasesize;
- 
--	err = mtd_write(mtd, addr, mtd->erasesize, &written, iobuf);
--	if (err || written != mtd->erasesize) {
-+	err = mtdtest_write(mtd, addr, mtd->erasesize, iobuf);
-+	if (err)
- 		pr_err("error: write failed at %#llx\n", addr);
--		if (!err)
--			err = -EINVAL;
--	}
- 
- 	return err;
- }
- 
- static int write_eraseblock_by_page(int ebnum)
- {
--	size_t written;
- 	int i, err = 0;
- 	loff_t addr = ebnum * mtd->erasesize;
- 	void *buf = iobuf;
- 
- 	for (i = 0; i < pgcnt; i++) {
--		err = mtd_write(mtd, addr, pgsize, &written, buf);
--		if (err || written != pgsize) {
-+		err = mtdtest_write(mtd, addr, pgsize, buf);
-+		if (err) {
- 			pr_err("error: write failed at %#llx\n",
- 			       addr);
--			if (!err)
--				err = -EINVAL;
- 			break;
- 		}
- 		addr += pgsize;
-@@ -160,30 +112,26 @@ static int write_eraseblock_by_page(int ebnum)
- 
- static int write_eraseblock_by_2pages(int ebnum)
- {
--	size_t written, sz = pgsize * 2;
-+	size_t sz = pgsize * 2;
- 	int i, n = pgcnt / 2, err = 0;
- 	loff_t addr = ebnum * mtd->erasesize;
- 	void *buf = iobuf;
- 
- 	for (i = 0; i < n; i++) {
--		err = mtd_write(mtd, addr, sz, &written, buf);
--		if (err || written != sz) {
-+		err = mtdtest_write(mtd, addr, sz, buf);
-+		if (err) {
- 			pr_err("error: write failed at %#llx\n",
- 			       addr);
--			if (!err)
--				err = -EINVAL;
- 			return err;
- 		}
- 		addr += sz;
- 		buf += sz;
- 	}
- 	if (pgcnt % 2) {
--		err = mtd_write(mtd, addr, pgsize, &written, buf);
--		if (err || written != pgsize) {
-+		err = mtdtest_write(mtd, addr, pgsize, buf);
-+		if (err) {
- 			pr_err("error: write failed at %#llx\n",
- 			       addr);
--			if (!err)
--				err = -EINVAL;
- 		}
- 	}
- 
-@@ -192,40 +140,27 @@ static int write_eraseblock_by_2pages(int ebnum)
- 
- static int read_eraseblock(int ebnum)
- {
--	size_t read;
--	int err = 0;
-+	int err;
- 	loff_t addr = ebnum * mtd->erasesize;
- 
--	err = mtd_read(mtd, addr, mtd->erasesize, &read, iobuf);
--	/* Ignore corrected ECC errors */
--	if (mtd_is_bitflip(err))
--		err = 0;
--	if (err || read != mtd->erasesize) {
-+	err = mtdtest_read(mtd, addr, mtd->erasesize, iobuf);
-+	if (err)
- 		pr_err("error: read failed at %#llx\n", addr);
--		if (!err)
--			err = -EINVAL;
--	}
- 
- 	return err;
- }
- 
- static int read_eraseblock_by_page(int ebnum)
- {
--	size_t read;
- 	int i, err = 0;
- 	loff_t addr = ebnum * mtd->erasesize;
- 	void *buf = iobuf;
- 
- 	for (i = 0; i < pgcnt; i++) {
--		err = mtd_read(mtd, addr, pgsize, &read, buf);
--		/* Ignore corrected ECC errors */
--		if (mtd_is_bitflip(err))
--			err = 0;
--		if (err || read != pgsize) {
-+		err = mtdtest_read(mtd, addr, pgsize, buf);
-+		if (err) {
- 			pr_err("error: read failed at %#llx\n",
- 			       addr);
--			if (!err)
--				err = -EINVAL;
- 			break;
- 		}
- 		addr += pgsize;
-@@ -237,53 +172,32 @@ static int read_eraseblock_by_page(int ebnum)
- 
- static int read_eraseblock_by_2pages(int ebnum)
- {
--	size_t read, sz = pgsize * 2;
-+	size_t sz = pgsize * 2;
- 	int i, n = pgcnt / 2, err = 0;
- 	loff_t addr = ebnum * mtd->erasesize;
- 	void *buf = iobuf;
- 
- 	for (i = 0; i < n; i++) {
--		err = mtd_read(mtd, addr, sz, &read, buf);
--		/* Ignore corrected ECC errors */
--		if (mtd_is_bitflip(err))
--			err = 0;
--		if (err || read != sz) {
-+		err = mtdtest_read(mtd, addr, sz, buf);
-+		if (err) {
- 			pr_err("error: read failed at %#llx\n",
- 			       addr);
--			if (!err)
--				err = -EINVAL;
- 			return err;
- 		}
- 		addr += sz;
- 		buf += sz;
- 	}
- 	if (pgcnt % 2) {
--		err = mtd_read(mtd, addr, pgsize, &read, buf);
--		/* Ignore corrected ECC errors */
--		if (mtd_is_bitflip(err))
--			err = 0;
--		if (err || read != pgsize) {
-+		err = mtdtest_read(mtd, addr, pgsize, buf);
-+		if (err) {
- 			pr_err("error: read failed at %#llx\n",
- 			       addr);
--			if (!err)
--				err = -EINVAL;
- 		}
- 	}
- 
- 	return err;
- }
- 
 -static int is_block_bad(int ebnum)
 -{
 -	loff_t addr = ebnum * mtd->erasesize;
@@ -285,11 +96,68 @@ index 20b63d1..457c45c 100644
 -	return ret;
 -}
 -
- static inline void start_timing(void)
+ static int do_read(void)
  {
- 	do_gettimeofday(&start);
-@@ -308,30 +222,6 @@ static long calc_speed(void)
- 	return k;
+-	size_t read;
+ 	int eb = rand_eb();
+ 	int offs = rand_offs();
+ 	int len = rand_len(offs), err;
+@@ -133,14 +97,10 @@ static int do_read(void)
+ 			len = mtd->erasesize - offs;
+ 	}
+ 	addr = eb * mtd->erasesize + offs;
+-	err = mtd_read(mtd, addr, len, &read, readbuf);
+-	if (mtd_is_bitflip(err))
+-		err = 0;
+-	if (unlikely(err || read != len)) {
++	err = mtdtest_read(mtd, addr, len, readbuf);
++	if (unlikely(err)) {
+ 		pr_err("error: read failed at 0x%llx\n",
+ 		       (long long)addr);
+-		if (!err)
+-			err = -EINVAL;
+ 		return err;
+ 	}
+ 	return 0;
+@@ -149,12 +109,11 @@ static int do_read(void)
+ static int do_write(void)
+ {
+ 	int eb = rand_eb(), offs, err, len;
+-	size_t written;
+ 	loff_t addr;
+ 
+ 	offs = offsets[eb];
+ 	if (offs >= mtd->erasesize) {
+-		err = erase_eraseblock(eb);
++		err = mtdtest_erase_eraseblock(mtd, eb);
+ 		if (err)
+ 			return err;
+ 		offs = offsets[eb] = 0;
+@@ -165,19 +124,17 @@ static int do_write(void)
+ 		if (bbt[eb + 1])
+ 			len = mtd->erasesize - offs;
+ 		else {
+-			err = erase_eraseblock(eb + 1);
++			err = mtdtest_erase_eraseblock(mtd, eb + 1);
+ 			if (err)
+ 				return err;
+ 			offsets[eb + 1] = 0;
+ 		}
+ 	}
+ 	addr = eb * mtd->erasesize + offs;
+-	err = mtd_write(mtd, addr, len, &written, writebuf);
+-	if (unlikely(err || written != len)) {
++	err = mtdtest_write(mtd, addr, len, writebuf);
++	if (unlikely(err)) {
+ 		pr_err("error: write failed at 0x%llx\n",
+ 		       (long long)addr);
+-		if (!err)
+-			err = -EINVAL;
+ 		return err;
+ 	}
+ 	offs += len;
+@@ -197,28 +154,6 @@ static int do_operation(void)
+ 		return do_write();
  }
  
 -static int scan_for_bad_eraseblocks(void)
@@ -301,7 +169,7 @@ index 20b63d1..457c45c 100644
 -		return -ENOMEM;
 -
 -	if (!mtd_can_have_bb(mtd))
--		goto out;
+-		return 0;
 -
 -	pr_info("scanning for bad eraseblocks\n");
 -	for (i = 0; i < ebcnt; ++i) {
@@ -311,17 +179,15 @@ index 20b63d1..457c45c 100644
 -		cond_resched();
 -	}
 -	pr_info("scanned %d eraseblocks, %d are bad\n", i, bad);
--out:
--	goodebcnt = ebcnt - bad;
 -	return 0;
 -}
 -
- static int __init mtd_speedtest_init(void)
+ static int __init mtd_stresstest_init(void)
  {
- 	int err, i, blocks, j, k;
-@@ -387,11 +277,18 @@ static int __init mtd_speedtest_init(void)
- 
- 	prandom_bytes(iobuf, mtd->erasesize);
+ 	int err;
+@@ -280,7 +215,10 @@ static int __init mtd_stresstest_init(void)
+ 		offsets[i] = mtd->erasesize;
+ 	prandom_bytes(writebuf, bufsize);
  
 -	err = scan_for_bad_eraseblocks();
 +	bbt = kzalloc(ebcnt, GFP_KERNEL);
@@ -330,51 +196,6 @@ index 20b63d1..457c45c 100644
 +	err = mtdtest_scan_for_bad_eraseblocks(mtd, bbt, 0, ebcnt);
  	if (err)
  		goto out;
-+	for (i = 0; i < ebcnt; i++) {
-+		if (!bbt[i])
-+			goodebcnt++;
-+	}
  
--	err = erase_whole_device();
-+	err = mtdtest_erase_good_eraseblocks(mtd, bbt, 0, ebcnt);
- 	if (err)
- 		goto out;
- 
-@@ -425,7 +322,7 @@ static int __init mtd_speedtest_init(void)
- 	speed = calc_speed();
- 	pr_info("eraseblock read speed is %ld KiB/s\n", speed);
- 
--	err = erase_whole_device();
-+	err = mtdtest_erase_good_eraseblocks(mtd, bbt, 0, ebcnt);
- 	if (err)
- 		goto out;
- 
-@@ -459,7 +356,7 @@ static int __init mtd_speedtest_init(void)
- 	speed = calc_speed();
- 	pr_info("page read speed is %ld KiB/s\n", speed);
- 
--	err = erase_whole_device();
-+	err = mtdtest_erase_good_eraseblocks(mtd, bbt, 0, ebcnt);
- 	if (err)
- 		goto out;
- 
-@@ -496,14 +393,9 @@ static int __init mtd_speedtest_init(void)
- 	/* Erase all eraseblocks */
- 	pr_info("Testing erase speed\n");
- 	start_timing();
--	for (i = 0; i < ebcnt; ++i) {
--		if (bbt[i])
--			continue;
--		err = erase_eraseblock(i);
--		if (err)
--			goto out;
--		cond_resched();
--	}
-+	err = mtdtest_erase_good_eraseblocks(mtd, bbt, 0, ebcnt);
-+	if (err)
-+		goto out;
- 	stop_timing();
- 	speed = calc_speed();
- 	pr_info("erase speed is %ld KiB/s\n", speed);
 -- 
 1.8.3.1
