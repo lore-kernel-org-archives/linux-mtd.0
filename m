@@ -1,19 +1,20 @@
-Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V5YWr-0006Y9-7s
- for linux-mtd@lists.infradead.org; Sat, 03 Aug 2013 09:53:59 +0000
-Received: by mail-pa0-f46.google.com with SMTP id fa1so1528898pad.19
- for <linux-mtd@lists.infradead.org>; Sat, 03 Aug 2013 02:53:19 -0700 (PDT)
+Received: from mail-pd0-x22c.google.com ([2607:f8b0:400e:c02::22c])
+ by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V5YWx-0002af-9A
+ for linux-mtd@lists.infradead.org; Sat, 03 Aug 2013 09:53:48 +0000
+Received: by mail-pd0-f172.google.com with SMTP id z11so1501297pdj.3
+ for <linux-mtd@lists.infradead.org>; Sat, 03 Aug 2013 02:53:23 -0700 (PDT)
 From: Akinobu Mita <akinobu.mita@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH -next v2 08/10] mtd: mtd_subpagetest: use mtd_test helpers
-Date: Sat,  3 Aug 2013 18:52:14 +0900
-Message-Id: <1375523536-32671-9-git-send-email-akinobu.mita@gmail.com>
+Subject: [PATCH -next v2 10/10] mtd: mtd_nandbiterrs: use mtd_test helpers
+Date: Sat,  3 Aug 2013 18:52:16 +0900
+Message-Id: <1375523536-32671-11-git-send-email-akinobu.mita@gmail.com>
 In-Reply-To: <1375523536-32671-1-git-send-email-akinobu.mita@gmail.com>
 References: <1375523536-32671-1-git-send-email-akinobu.mita@gmail.com>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>,
- Vikram Narayanan <vikram186@gmail.com>, Akinobu Mita <akinobu.mita@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
+ Iwo Mergler <Iwo.Mergler@netcommwireless.com.au>,
+ Adrian Hunter <adrian.hunter@intel.com>, Akinobu Mita <akinobu.mita@gmail.com>,
+ Vikram Narayanan <vikram186@gmail.com>,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,10 +26,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use mtdtest_scan_for_bad_eraseblocks() and mtdtest_erase_good_eraseblocks()
-in mtd_test helpers.
+Use mtdtest_write() and mtdtest_erase_eraseblock() in mtd_test helpers.
 
 Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
+Cc: Iwo Mergler <Iwo.Mergler@netcommwireless.com.au>
 Cc: Brian Norris <computersforpeace@gmail.com>
 Cc: Vikram Narayanan <vikram186@gmail.com>
 Cc: Adrian Hunter <adrian.hunter@intel.com>
@@ -36,34 +37,34 @@ Cc: Artem Bityutskiy <dedekind1@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: linux-mtd@lists.infradead.org
 ---
-* Changes from v1
-- follow the changes of helper functions
+* Newly added patch from v2
 
- drivers/mtd/tests/subpagetest.c | 87 +++++------------------------------------
- 1 file changed, 9 insertions(+), 78 deletions(-)
+ drivers/mtd/tests/nandbiterrs.c | 39 ++++++---------------------------------
+ 1 file changed, 6 insertions(+), 33 deletions(-)
 
-diff --git a/drivers/mtd/tests/subpagetest.c b/drivers/mtd/tests/subpagetest.c
-index e41a04f..e2c0adf 100644
---- a/drivers/mtd/tests/subpagetest.c
-+++ b/drivers/mtd/tests/subpagetest.c
-@@ -30,6 +30,8 @@
- #include <linux/sched.h>
- #include <linux/random.h>
- 
+diff --git a/drivers/mtd/tests/nandbiterrs.c b/drivers/mtd/tests/nandbiterrs.c
+index 207bf9a..5a8c858 100644
+--- a/drivers/mtd/tests/nandbiterrs.c
++++ b/drivers/mtd/tests/nandbiterrs.c
+@@ -49,6 +49,7 @@
+ #include <linux/err.h>
+ #include <linux/mtd/nand.h>
+ #include <linux/slab.h>
 +#include "mtd_test.h"
-+
- static int dev = -EINVAL;
+ 
+ static int dev;
  module_param(dev, int, S_IRUGO);
- MODULE_PARM_DESC(dev, "MTD device number to use");
-@@ -51,50 +53,6 @@ static inline void clear_data(unsigned char *buf, size_t len)
- 	memset(buf, 0, len);
+@@ -98,45 +99,17 @@ static uint8_t hash(unsigned offset)
+ 	return c;
  }
  
--static int erase_eraseblock(int ebnum)
+-static int erase_block(void)
 -{
 -	int err;
 -	struct erase_info ei;
--	loff_t addr = ebnum * mtd->erasesize;
+-	loff_t addr = eraseblock * mtd->erasesize;
+-
+-	pr_info("erase_block\n");
 -
 -	memset(&ei, 0, sizeof(struct erase_info));
 -	ei.mtd  = mtd;
@@ -71,113 +72,54 @@ index e41a04f..e2c0adf 100644
 -	ei.len  = mtd->erasesize;
 -
 -	err = mtd_erase(mtd, &ei);
--	if (err) {
--		pr_err("error %d while erasing EB %d\n", err, ebnum);
+-	if (err || ei.state == MTD_ERASE_FAILED) {
+-		pr_err("error %d while erasing\n", err);
+-		if (!err)
+-			err = -EIO;
 -		return err;
 -	}
 -
--	if (ei.state == MTD_ERASE_FAILED) {
--		pr_err("some erase error occurred at EB %d\n",
--		       ebnum);
--		return -EIO;
--	}
--
 -	return 0;
 -}
 -
--static int erase_whole_device(void)
--{
--	int err;
--	unsigned int i;
--
--	pr_info("erasing whole device\n");
--	for (i = 0; i < ebcnt; ++i) {
--		if (bbt[i])
--			continue;
--		err = erase_eraseblock(i);
--		if (err)
--			return err;
--		cond_resched();
--	}
--	pr_info("erased %u eraseblocks\n", i);
--	return 0;
--}
--
- static int write_eraseblock(int ebnum)
+ /* Writes wbuffer to page */
+ static int write_page(int log)
  {
- 	size_t written;
-@@ -317,36 +275,6 @@ static int verify_all_eraseblocks_ff(void)
- 	return 0;
+-	int err = 0;
+-	size_t written;
++	int err;
+ 
+ 	if (log)
+ 		pr_info("write_page\n");
+ 
+-	err = mtd_write(mtd, offset, mtd->writesize, &written, wbuffer);
+-	if (err || written != mtd->writesize) {
++	err = mtdtest_write(mtd, offset, mtd->writesize, wbuffer);
++	if (err)
+ 		pr_err("error: write failed at %#llx\n", (long long)offset);
+-		if (!err)
+-			err = -EIO;
+-	}
+ 
+ 	return err;
  }
- 
--static int is_block_bad(int ebnum)
--{
--	loff_t addr = ebnum * mtd->erasesize;
--	int ret;
--
--	ret = mtd_block_isbad(mtd, addr);
--	if (ret)
--		pr_info("block %d is bad\n", ebnum);
--	return ret;
--}
--
--static int scan_for_bad_eraseblocks(void)
--{
--	int i, bad = 0;
--
--	bbt = kzalloc(ebcnt, GFP_KERNEL);
--	if (!bbt)
--		return -ENOMEM;
--
--	pr_info("scanning for bad eraseblocks\n");
--	for (i = 0; i < ebcnt; ++i) {
--		bbt[i] = is_block_bad(i) ? 1 : 0;
--		if (bbt[i])
--			bad += 1;
--		cond_resched();
--	}
--	pr_info("scanned %d eraseblocks, %d are bad\n", i, bad);
--	return 0;
--}
--
- static int __init mtd_subpagetest_init(void)
- {
- 	int err = 0;
-@@ -396,12 +324,15 @@ static int __init mtd_subpagetest_init(void)
- 	readbuf = kmalloc(bufsize, GFP_KERNEL);
- 	if (!readbuf)
- 		goto out;
-+	bbt = kzalloc(ebcnt, GFP_KERNEL);
-+	if (!bbt)
-+		goto out;
- 
--	err = scan_for_bad_eraseblocks();
-+	err = mtdtest_scan_for_bad_eraseblocks(mtd, bbt, 0, ebcnt);
- 	if (err)
- 		goto out;
- 
--	err = erase_whole_device();
-+	err = mtdtest_erase_good_eraseblocks(mtd, bbt, 0, ebcnt);
- 	if (err)
- 		goto out;
- 
-@@ -433,7 +364,7 @@ static int __init mtd_subpagetest_init(void)
+@@ -415,7 +388,7 @@ static int __init mtd_nandbiterrs_init(void)
+ 		goto exit_rbuffer;
  	}
- 	pr_info("verified %u eraseblocks\n", i);
  
--	err = erase_whole_device();
-+	err = mtdtest_erase_good_eraseblocks(mtd, bbt, 0, ebcnt);
+-	err = erase_block();
++	err = mtdtest_erase_eraseblock(mtd, eraseblock);
  	if (err)
- 		goto out;
+ 		goto exit_error;
  
-@@ -471,7 +402,7 @@ static int __init mtd_subpagetest_init(void)
- 	}
- 	pr_info("verified %u eraseblocks\n", i);
+@@ -428,7 +401,7 @@ static int __init mtd_nandbiterrs_init(void)
+ 		goto exit_error;
  
--	err = erase_whole_device();
-+	err = mtdtest_erase_good_eraseblocks(mtd, bbt, 0, ebcnt);
+ 	/* We leave the block un-erased in case of test failure. */
+-	err = erase_block();
++	err = mtdtest_erase_eraseblock(mtd, eraseblock);
  	if (err)
- 		goto out;
+ 		goto exit_error;
  
 -- 
 1.8.3.1
