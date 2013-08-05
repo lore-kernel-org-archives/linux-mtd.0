@@ -1,19 +1,20 @@
-Message-ID: <51FF8D90.2060308@atmel.com>
-Date: Mon, 5 Aug 2013 19:33:36 +0800
-From: Josh Wu <josh.wu@atmel.com>
-MIME-Version: 1.0
-To: Josh Wu <josh.wu@atmel.com>
-Subject: Re: [PATCH 6/6] mtd: ofpart: add compatible check for child nodes
-References: <1375701279-11495-1-git-send-email-josh.wu@atmel.com>
- <1375701279-11495-7-git-send-email-josh.wu@atmel.com>
-In-Reply-To: <1375701279-11495-7-git-send-email-josh.wu@atmel.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Received: from mga02.intel.com ([134.134.136.20])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V6KMF-00020M-UC
+ for linux-mtd@lists.infradead.org; Mon, 05 Aug 2013 12:57:56 +0000
+Message-ID: <1375707773.14869.452.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/6] mtd: nandsim: convert pages_written[] to bitmap
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Akinobu Mita <akinobu.mita@gmail.com>
+Date: Mon, 05 Aug 2013 16:02:53 +0300
+In-Reply-To: <1374978118-11418-1-git-send-email-akinobu.mita@gmail.com>
+References: <1374978118-11418-1-git-send-email-akinobu.mita@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: devicetree@vger.kernel.org, sergei.shtylyov@cogentembedded.com,
- dedekind1@gmail.com, devicetree-discuss@lists.ozlabs.org,
- nicolas.ferre@atmel.com, linux-mtd@lists.infradead.org,
- computersforpeace@gmail.com, plagnioj@jcrosoft.com,
- linux-arm-kernel@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,78 +24,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add device tree mail list to CC.
+On Sun, 2013-07-28 at 11:21 +0900, Akinobu Mita wrote:
+> nandsim.pages_written[] is the array of unsigned char which is indexed
+> by the page number and used for identifying which pages have been written
+> when cache_file is used.  Each entry holds 0 (not written) or 1 (written),
+> so it can be converted to bitmap.  This reduces the allocation size of
+> pages_written[] by 1/8.
 
-On 8/5/2013 7:14 PM, Josh Wu wrote:
-> In case that the nand device will support some features like Nand Flash
-> Controller, we want to make the sub feature as a sub node of nand device.
->
-> Use such organization it is easy to enable/disable feature, also it is back
-> compatible and more readable.
->
-> If the sub-node has a compatible property then it is a driver not partition.
->
-> Signed-off-by: Josh Wu <josh.wu@atmel.com>
-> Acked-by: Brian Norris <computersforpeace@gmail.com>
-> Acked-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-> ---
-> v3 --> v4:
->    - remove the 'len' parameter, just use NULL.
->    - refine the commit message.
->    - also add a NOTE in devicetree/bindings/mtd/partition.txt.
->
->   .../devicetree/bindings/mtd/partition.txt          |    1 +
->   drivers/mtd/ofpart.c                               |   13 ++++++++++++-
->   2 files changed, 13 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Documentation/devicetree/bindings/mtd/partition.txt
-> index 9315ac9..8e5557d 100644
-> --- a/Documentation/devicetree/bindings/mtd/partition.txt
-> +++ b/Documentation/devicetree/bindings/mtd/partition.txt
-> @@ -4,6 +4,7 @@ Partitions can be represented by sub-nodes of an mtd device. This can be used
->   on platforms which have strong conventions about which portions of a flash are
->   used for what purposes, but which don't use an on-flash partition table such
->   as RedBoot.
-> +NOTE: if the sub-node has a compatible string, then it is not a partition.
->   
->   #address-cells & #size-cells must both be present in the mtd device. There are
->   two valid values for both:
-> diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
-> index 553d6d6..30fcea1 100644
-> --- a/drivers/mtd/ofpart.c
-> +++ b/drivers/mtd/ofpart.c
-> @@ -20,6 +20,10 @@
->   #include <linux/slab.h>
->   #include <linux/mtd/partitions.h>
->   
-> +static bool node_has_compatible(struct device_node *pp)
-> +{
-> +	return of_get_property(pp, "compatible", NULL);
-> +}
->   static int parse_ofpart_partitions(struct mtd_info *master,
->   				   struct mtd_partition **pparts,
->   				   struct mtd_part_parser_data *data)
-> @@ -40,8 +44,12 @@ static int parse_ofpart_partitions(struct mtd_info *master,
->   	/* First count the subnodes */
->   	pp = NULL;
->   	nr_parts = 0;
-> -	while ((pp = of_get_next_child(node, pp)))
-> +	while ((pp = of_get_next_child(node, pp))) {
-> +		if (node_has_compatible(pp))
-> +			continue;
-> +
->   		nr_parts++;
-> +	}
->   
->   	if (nr_parts == 0)
->   		return 0;
-> @@ -57,6 +65,9 @@ static int parse_ofpart_partitions(struct mtd_info *master,
->   		int len;
->   		int a_cells, s_cells;
->   
-> +		if (node_has_compatible(pp))
-> +			continue;
-> +
->   		reg = of_get_property(pp, "reg", &len);
->   		if (!reg) {
->   			nr_parts--;
+Pushed all to l2-mtd.git, thanks.
+
+I wonder, what is your motivation for doing this? Did you just notice
+the imperfection and decided to fix it, or you really suffer from too
+much memory allocated?
+
+Thanks!
+
+-- 
+Best Regards,
+Artem Bityutskiy
