@@ -1,21 +1,17 @@
-Received: from mga14.intel.com ([143.182.124.37])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V6HBb-0008CO-LE
- for linux-mtd@lists.infradead.org; Mon, 05 Aug 2013 09:34:44 +0000
-Message-ID: <1375695573.14869.417.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] Init ONFI get/set features in a more logical place
+Message-ID: <1375696558.14869.420.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v5 0/6] mtd: atmel_nand: enable Nand Flash Controller
+ (NFC) support
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Foster <brian.foster@maximintegrated.com>
-Date: Mon, 05 Aug 2013 12:39:33 +0300
-In-Reply-To: <196135732.t1bWnDcIrg@laclwks004>
-References: <17588192.75Agdljyqk@laclwks004> <2540574.yn0MEqSsGa@laclwks004>
- <CACwUX0NXgTC=uQ7CZoY=anBuMhfyN31GFuYAV5EhBUZT9Nm2_w@mail.gmail.com>
- <196135732.t1bWnDcIrg@laclwks004>
+To: Josh Wu <josh.wu@atmel.com>
+Date: Mon, 05 Aug 2013 12:55:58 +0300
+In-Reply-To: <1372845034-5579-1-git-send-email-josh.wu@atmel.com>
+References: <1372845034-5579-1-git-send-email-josh.wu@atmel.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Florian Fainelli <ffainelli@freebox.fr>
+Cc: plagnioj@jcrosoft.com, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, sergei.shtylyov@cogentembedded.com,
+ linux-arm-kernel@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,14 +22,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2013-07-04 at 14:05 +0200, Brian Foster wrote:
->  Attached (SORRY! see below) is a Patch based on some
->  work being done on a v2.6.36-based kernel (with parts
->  of more recent MTD/NAND support backported), to add
->  support for Micron on-die ECC to Maxim Integrated's
->  MAX32590 (JIBE) reference boards.
+On Wed, 2013-07-03 at 17:50 +0800, Josh Wu wrote:
+> This patch series enable NFC support for SAMA5 soc. It can send command,
+> address cycles automaticly. Also when enable NFC sram, NFC will transfer
+> data to sram. Which can save lots of cpu time.
+> 
+> The mtd speed test results (non-NFC vs NFC), run in sama5d3x-ek with DMA
+> enable, is in the end of this patch.
 
-Would you please resend it in-line?
+Hi,
+
+would you please update this patch-set against the tip of the l2-mtd.git
+tree, and re-send? It does not apply with many conflicts.
 
 -- 
 Best Regards,
