@@ -1,17 +1,22 @@
+Received: from mail-oa0-x232.google.com ([2607:f8b0:4003:c02::232])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V6Tnq-0004ho-Og
+ for linux-mtd@lists.infradead.org; Mon, 05 Aug 2013 23:03:03 +0000
+Received: by mail-oa0-f50.google.com with SMTP id i4so7806215oah.9
+ for <linux-mtd@lists.infradead.org>; Mon, 05 Aug 2013 16:02:41 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <51FF8D90.2060308@atmel.com>
-References: <1375701279-11495-1-git-send-email-josh.wu@atmel.com>
- <1375701279-11495-7-git-send-email-josh.wu@atmel.com>
- <51FF8D90.2060308@atmel.com>
-Date: Mon, 5 Aug 2013 11:56:14 -0700
-Message-ID: <CAN8TOE_QBpGNQsdxXNPEHN7L_xhQHJE30px3PeE-vFxJOVyaRA@mail.gmail.com>
-Subject: Re: [PATCH 6/6] mtd: ofpart: add compatible check for child nodes
-From: Brian Norris <computersforpeace@gmail.com>
-To: Josh Wu <josh.wu@atmel.com>
+In-Reply-To: <1375707773.14869.452.camel@sauron.fi.intel.com>
+References: <1374978118-11418-1-git-send-email-akinobu.mita@gmail.com>
+ <1375707773.14869.452.camel@sauron.fi.intel.com>
+Date: Tue, 6 Aug 2013 08:02:40 +0900
+Message-ID: <CAC5umyh8_NuHi9OK2qy=b8SEwY0mXc_vGjkNug1JizJz8apUUA@mail.gmail.com>
+Subject: Re: [PATCH 1/6] mtd: nandsim: convert pages_written[] to bitmap
+From: Akinobu Mita <akinobu.mita@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: devicetree@vger.kernel.org, sergei.shtylyov@cogentembedded.com,
- dedekind1@gmail.com, nicolas.ferre@atmel.com, linux-mtd@lists.infradead.org,
- plagnioj@jcrosoft.com, linux-arm-kernel@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,57 +26,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It seems Artem applied this to l2-mtd.git. One comment below.
-
-On Mon, Aug 5, 2013 at 4:33 AM, Josh Wu <josh.wu@atmel.com> wrote:
-> Add device tree mail list to CC.
+2013/8/5 Artem Bityutskiy <dedekind1@gmail.com>:
+> On Sun, 2013-07-28 at 11:21 +0900, Akinobu Mita wrote:
+>> nandsim.pages_written[] is the array of unsigned char which is indexed
+>> by the page number and used for identifying which pages have been written
+>> when cache_file is used.  Each entry holds 0 (not written) or 1 (written),
+>> so it can be converted to bitmap.  This reduces the allocation size of
+>> pages_written[] by 1/8.
 >
->
-> On 8/5/2013 7:14 PM, Josh Wu wrote:
->>
->> In case that the nand device will support some features like Nand Flash
->> Controller, we want to make the sub feature as a sub node of nand device.
->>
->> Use such organization it is easy to enable/disable feature, also it is
->> back
->> compatible and more readable.
->>
->> If the sub-node has a compatible property then it is a driver not
->> partition.
->>
->> Signed-off-by: Josh Wu <josh.wu@atmel.com>
->> Acked-by: Brian Norris <computersforpeace@gmail.com>
->> Acked-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
->> ---
->> v3 --> v4:
->>    - remove the 'len' parameter, just use NULL.
->>    - refine the commit message.
->>    - also add a NOTE in devicetree/bindings/mtd/partition.txt.
->>
->>   .../devicetree/bindings/mtd/partition.txt          |    1 +
->>   drivers/mtd/ofpart.c                               |   13 ++++++++++++-
->>   2 files changed, 13 insertions(+), 1 deletion(-)
->>
-...
+> Pushed all to l2-mtd.git, thanks.
 
->> diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
->> index 553d6d6..30fcea1 100644
->> --- a/drivers/mtd/ofpart.c
->> +++ b/drivers/mtd/ofpart.c
->> @@ -20,6 +20,10 @@
->>   #include <linux/slab.h>
->>   #include <linux/mtd/partitions.h>
->>   +static bool node_has_compatible(struct device_node *pp)
->> +{
->> +       return of_get_property(pp, "compatible", NULL);
->> +}
+Thanks.
 
-Missing a trivial additional newline here. I amended the patch in l2-mtd.git.
+> I wonder, what is your motivation for doing this? Did you just notice
+> the imperfection and decided to fix it, or you really suffer from too
+> much memory allocated?
 
->>   static int parse_ofpart_partitions(struct mtd_info *master,
->>                                    struct mtd_partition **pparts,
->>                                    struct mtd_part_parser_data *data)
-
-...
-
-Brian
+I found all in this patch set when I was reading nandsim.c.  So I did
+not suffer any real problems.
