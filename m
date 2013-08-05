@@ -1,18 +1,19 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V6Hfp-0000lm-6x
- for linux-mtd@lists.infradead.org; Mon, 05 Aug 2013 10:05:57 +0000
-Message-ID: <1375697454.14869.423.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mtd: nand: detect OOB size for Toshiba 24nm raw SLC
+ id 1V6Hg2-0000mI-Uu
+ for linux-mtd@lists.infradead.org; Mon, 05 Aug 2013 10:06:11 +0000
+Message-ID: <1375697471.14869.424.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] mtd: jedec_probe: fix LH28F640BF definition
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Mon, 05 Aug 2013 13:10:54 +0300
-In-Reply-To: <1372191479-28470-1-git-send-email-computersforpeace@gmail.com>
-References: <1372191479-28470-1-git-send-email-computersforpeace@gmail.com>
+To: Andrea Adami <andrea.adami@gmail.com>
+Date: Mon, 05 Aug 2013 13:11:11 +0300
+In-Reply-To: <1374361653-3004-1-git-send-email-andrea.adami@gmail.com>
+References: <1374361653-3004-1-git-send-email-andrea.adami@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Russell King <linux@arm.linux.org.uk>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,12 +24,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2013-06-25 at 13:17 -0700, Brian Norris wrote:
-> Toshiba NAND datasheets have not been very forthcoming on OOB size
-> information; they do not provide any bitfields in the ID string for
-> spare area. In their 24nm technology flash, however, Toshiba migrated
-> their NAND to have 32 bytes spare per 512 bytes of page area (up from
-> the traditional 16 bytes), as they now require 8-bit ECC or higher.
+On Sun, 2013-07-21 at 01:07 +0200, Andrea Adami wrote:
+> Zaurus 5500 contains 2 LH28F640BFHE-PTTL90 (64M 4Mx16) and
+> the LH28F640BFHE-PTTL90.pdf datasheet available on the net shows
+> the exact erasesize and the OTP support.
+> At the moment only jedec_probe can discover the chip and
+> the NOR is mounted read only probably because of wrong vpp.
+> 
+> Signed-off-by: Andrea Adami <andrea.adami@gmail.com>
 
 Pushed to l2-mtd.git, thanks!
 
