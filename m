@@ -1,19 +1,13 @@
-Message-ID: <1375707846.14869.453.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/6] MTD: atmel_nand: use devm_xxx gpio kzalloc, gpio
- and ioremap
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Josh Wu <josh.wu@atmel.com>
-Date: Mon, 05 Aug 2013 16:04:06 +0300
-In-Reply-To: <1375701279-11495-2-git-send-email-josh.wu@atmel.com>
-References: <1375701279-11495-1-git-send-email-josh.wu@atmel.com>
- <1375701279-11495-2-git-send-email-josh.wu@atmel.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: sergei.shtylyov@cogentembedded.com, nicolas.ferre@atmel.com,
- linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- plagnioj@jcrosoft.com, linux-arm-kernel@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from smtp.newsguy.com ([74.209.136.69])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V6P1p-0003qi-EW
+ for linux-mtd@lists.infradead.org; Mon, 05 Aug 2013 17:57:10 +0000
+From: Mike Dunn <mikedunn@newsguy.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] [RESEND] mtd: docg4: fix status polling loop
+Date: Mon,  5 Aug 2013 10:55:53 -0700
+Message-Id: <1375725353-2217-1-git-send-email-mikedunn@newsguy.com>
+Cc: Mike Dunn <mikedunn@newsguy.co>, Mike Dunn <mikedunn@newsguy.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,21 +17,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2013-08-05 at 19:14 +0800, Josh Wu wrote:
-> From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-> 
-> this will allow to simply the error and remove path
-> 
-> Cc: linux-mtd@lists.infradead.org
-> Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
-> Signed-off-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-> [josh.wu@atmel.com: fix checkpatch warnings and rebase to latest mtd git tree]
-> [josh.wu@atmel.com: replace devm_request_and_ioremap with devm_ioremap_resource]
-> Signed-off-by: Josh Wu <josh.wu@atmel.com>
+The loop that polls the status register waiting for an operation to complete
+foolishly bases the timeout simply on the number of loop iterations that have
+ocurred.  When I increased the processor clock speed, timeouts started to appear
+for long block erasure operations.  This patch measures the timeout using
+jiffies.
 
-Pushed to l2-mtd.git. I did not review it much, though, so extra eyes
-would not hurt. But it generally looks good.
+Signed-off-by: Mike Dunn <mikedunn@newsguy.co>
+---
 
+This is a rework of an earlier patch, based on Artem's recommendation to use
+jiffies, not udelay() (thanks Artem).  I didn't mark it 'v2' because the rework
+makes the original name of the patch inaccurate, so now it has a different name.
+
+This was originally sent a couple months ago... was probably a bad time.
+
+ drivers/mtd/nand/docg4.c | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/docg4.c
+index fa25e7a..6c3be21 100644
+--- a/drivers/mtd/nand/docg4.c
++++ b/drivers/mtd/nand/docg4.c
+@@ -44,6 +44,7 @@
+ #include <linux/mtd/nand.h>
+ #include <linux/bch.h>
+ #include <linux/bitrev.h>
++#include <linux/jiffies.h>
+ 
+ /*
+  * In "reliable mode" consecutive 2k pages are used in parallel (in some
+@@ -269,7 +270,7 @@ static int poll_status(struct docg4_priv *doc)
+ 	 */
+ 
+ 	uint16_t flash_status;
+-	unsigned int timeo;
++	unsigned long timeo;
+ 	void __iomem *docptr = doc->virtadr;
+ 
+ 	dev_dbg(doc->dev, "%s...\n", __func__);
+@@ -277,22 +278,18 @@ static int poll_status(struct docg4_priv *doc)
+ 	/* hardware quirk requires reading twice initially */
+ 	flash_status = readw(docptr + DOC_FLASHCONTROL);
+ 
+-	timeo = 1000;
++	timeo = jiffies + msecs_to_jiffies(200); /* generous timeout */
+ 	do {
+ 		cpu_relax();
+ 		flash_status = readb(docptr + DOC_FLASHCONTROL);
+-	} while (!(flash_status & DOC_CTRL_FLASHREADY) && --timeo);
++	} while (!(flash_status & DOC_CTRL_FLASHREADY) &&
++		 time_before(jiffies, timeo));
+ 
+-
+-	if (!timeo) {
++	if (unlikely(!(flash_status & DOC_CTRL_FLASHREADY))) {
+ 		dev_err(doc->dev, "%s: timed out!\n", __func__);
+ 		return NAND_STATUS_FAIL;
+ 	}
+ 
+-	if (unlikely(timeo < 50))
+-		dev_warn(doc->dev, "%s: nearly timed out; %d remaining\n",
+-			 __func__, timeo);
+-
+ 	return 0;
+ }
+ 
 -- 
-Best Regards,
-Artem Bityutskiy
+1.8.1.5
