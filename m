@@ -1,13 +1,17 @@
-Received: from smtp.newsguy.com ([74.209.136.69])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V6P1p-0003qi-EW
- for linux-mtd@lists.infradead.org; Mon, 05 Aug 2013 17:57:10 +0000
-From: Mike Dunn <mikedunn@newsguy.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] [RESEND] mtd: docg4: fix status polling loop
-Date: Mon,  5 Aug 2013 10:55:53 -0700
-Message-Id: <1375725353-2217-1-git-send-email-mikedunn@newsguy.com>
-Cc: Mike Dunn <mikedunn@newsguy.co>, Mike Dunn <mikedunn@newsguy.com>
+MIME-Version: 1.0
+In-Reply-To: <51FF8D90.2060308@atmel.com>
+References: <1375701279-11495-1-git-send-email-josh.wu@atmel.com>
+ <1375701279-11495-7-git-send-email-josh.wu@atmel.com>
+ <51FF8D90.2060308@atmel.com>
+Date: Mon, 5 Aug 2013 11:56:14 -0700
+Message-ID: <CAN8TOE_QBpGNQsdxXNPEHN7L_xhQHJE30px3PeE-vFxJOVyaRA@mail.gmail.com>
+Subject: Re: [PATCH 6/6] mtd: ofpart: add compatible check for child nodes
+From: Brian Norris <computersforpeace@gmail.com>
+To: Josh Wu <josh.wu@atmel.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: devicetree@vger.kernel.org, sergei.shtylyov@cogentembedded.com,
+ dedekind1@gmail.com, nicolas.ferre@atmel.com, linux-mtd@lists.infradead.org,
+ plagnioj@jcrosoft.com, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,71 +21,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The loop that polls the status register waiting for an operation to complete
-foolishly bases the timeout simply on the number of loop iterations that have
-ocurred.  When I increased the processor clock speed, timeouts started to appear
-for long block erasure operations.  This patch measures the timeout using
-jiffies.
+It seems Artem applied this to l2-mtd.git. One comment below.
 
-Signed-off-by: Mike Dunn <mikedunn@newsguy.co>
----
+On Mon, Aug 5, 2013 at 4:33 AM, Josh Wu <josh.wu@atmel.com> wrote:
+> Add device tree mail list to CC.
+>
+>
+> On 8/5/2013 7:14 PM, Josh Wu wrote:
+>>
+>> In case that the nand device will support some features like Nand Flash
+>> Controller, we want to make the sub feature as a sub node of nand device.
+>>
+>> Use such organization it is easy to enable/disable feature, also it is
+>> back
+>> compatible and more readable.
+>>
+>> If the sub-node has a compatible property then it is a driver not
+>> partition.
+>>
+>> Signed-off-by: Josh Wu <josh.wu@atmel.com>
+>> Acked-by: Brian Norris <computersforpeace@gmail.com>
+>> Acked-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+>> ---
+>> v3 --> v4:
+>>    - remove the 'len' parameter, just use NULL.
+>>    - refine the commit message.
+>>    - also add a NOTE in devicetree/bindings/mtd/partition.txt.
+>>
+>>   .../devicetree/bindings/mtd/partition.txt          |    1 +
+>>   drivers/mtd/ofpart.c                               |   13 ++++++++++++-
+>>   2 files changed, 13 insertions(+), 1 deletion(-)
+>>
+...
 
-This is a rework of an earlier patch, based on Artem's recommendation to use
-jiffies, not udelay() (thanks Artem).  I didn't mark it 'v2' because the rework
-makes the original name of the patch inaccurate, so now it has a different name.
+>> diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
+>> index 553d6d6..30fcea1 100644
+>> --- a/drivers/mtd/ofpart.c
+>> +++ b/drivers/mtd/ofpart.c
+>> @@ -20,6 +20,10 @@
+>>   #include <linux/slab.h>
+>>   #include <linux/mtd/partitions.h>
+>>   +static bool node_has_compatible(struct device_node *pp)
+>> +{
+>> +       return of_get_property(pp, "compatible", NULL);
+>> +}
 
-This was originally sent a couple months ago... was probably a bad time.
+Missing a trivial additional newline here. I amended the patch in l2-mtd.git.
 
- drivers/mtd/nand/docg4.c | 15 ++++++---------
- 1 file changed, 6 insertions(+), 9 deletions(-)
+>>   static int parse_ofpart_partitions(struct mtd_info *master,
+>>                                    struct mtd_partition **pparts,
+>>                                    struct mtd_part_parser_data *data)
 
-diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/docg4.c
-index fa25e7a..6c3be21 100644
---- a/drivers/mtd/nand/docg4.c
-+++ b/drivers/mtd/nand/docg4.c
-@@ -44,6 +44,7 @@
- #include <linux/mtd/nand.h>
- #include <linux/bch.h>
- #include <linux/bitrev.h>
-+#include <linux/jiffies.h>
- 
- /*
-  * In "reliable mode" consecutive 2k pages are used in parallel (in some
-@@ -269,7 +270,7 @@ static int poll_status(struct docg4_priv *doc)
- 	 */
- 
- 	uint16_t flash_status;
--	unsigned int timeo;
-+	unsigned long timeo;
- 	void __iomem *docptr = doc->virtadr;
- 
- 	dev_dbg(doc->dev, "%s...\n", __func__);
-@@ -277,22 +278,18 @@ static int poll_status(struct docg4_priv *doc)
- 	/* hardware quirk requires reading twice initially */
- 	flash_status = readw(docptr + DOC_FLASHCONTROL);
- 
--	timeo = 1000;
-+	timeo = jiffies + msecs_to_jiffies(200); /* generous timeout */
- 	do {
- 		cpu_relax();
- 		flash_status = readb(docptr + DOC_FLASHCONTROL);
--	} while (!(flash_status & DOC_CTRL_FLASHREADY) && --timeo);
-+	} while (!(flash_status & DOC_CTRL_FLASHREADY) &&
-+		 time_before(jiffies, timeo));
- 
--
--	if (!timeo) {
-+	if (unlikely(!(flash_status & DOC_CTRL_FLASHREADY))) {
- 		dev_err(doc->dev, "%s: timed out!\n", __func__);
- 		return NAND_STATUS_FAIL;
- 	}
- 
--	if (unlikely(timeo < 50))
--		dev_warn(doc->dev, "%s: nearly timed out; %d remaining\n",
--			 __func__, timeo);
--
- 	return 0;
- }
- 
--- 
-1.8.1.5
+...
+
+Brian
