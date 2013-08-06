@@ -1,27 +1,18 @@
-Received: from mail-ea0-x229.google.com ([2a00:1450:4013:c01::229])
+Received: from smtp31.i.mail.ru ([94.100.177.91])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V6bWQ-0003c5-Cc
- for linux-mtd@lists.infradead.org; Tue, 06 Aug 2013 07:17:35 +0000
-Received: by mail-ea0-f169.google.com with SMTP id z7so19501eaf.0
- for <linux-mtd@lists.infradead.org>; Tue, 06 Aug 2013 00:17:12 -0700 (PDT)
-Message-ID: <5200A29C.9060702@gmail.com>
-Date: Tue, 06 Aug 2013 09:15:40 +0200
-From: Wladislav Wiebe <wladislav.kw@gmail.com>
-MIME-Version: 1.0
-To: Christoph Lameter <cl@gentwo.org>
-Subject: Re: mm/slab: ppc: ubi: kmalloc_slab WARNING / PPC + UBI driver
-References: <51F8F827.6020108@gmail.com>
- <alpine.DEB.2.02.1307310858150.30572@gentwo.org>
- <alpine.DEB.2.02.1307311015320.30997@gentwo.org>
- <000001403567762a-60a27288-f0b2-4855-b88c-6a6f21ec537c-000000@email.amazonses.com>
- <51F93C64.4090601@gmail.com>
- <0000014035b06a9d-e8b10680-e321-4d3b-95a8-0833fa3fb7c9-000000@email.amazonses.com>
-In-Reply-To: <0000014035b06a9d-e8b10680-e321-4d3b-95a8-0833fa3fb7c9-000000@email.amazonses.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: dedekind1@gmail.com, Mel Gorman <mel@csn.ul.ie>, dwmw2@infradead.org,
- Pekka Enberg <penberg@kernel.org>, linux-mm@kvack.org,
- linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
+ id 1V6d7B-0006oR-Mo
+ for linux-mtd@lists.infradead.org; Tue, 06 Aug 2013 08:59:40 +0000
+From: Alexander Shiyan <shc_work@mail.ru>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH v3 2/4] mtd: nand: gpio: Use devm_gpio_request_one() where
+ possible
+Date: Tue,  6 Aug 2013 12:59:03 +0400
+Message-Id: <1375779544-510-2-git-send-email-shc_work@mail.ru>
+In-Reply-To: <1375779544-510-1-git-send-email-shc_work@mail.ru>
+References: <1375779544-510-1-git-send-email-shc_work@mail.ru>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Alexander Shiyan <shc_work@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,40 +22,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
 
-On 31/07/13 19:04, Christoph Lameter wrote:
-> On Wed, 31 Jul 2013, Wladislav Wiebe wrote:
-> 
->> Thanks for the point, do you plan to make kmalloc_large available for extern access in a separate mainline patch?
->> Since kmalloc_large is statically defined in slub_def.h and when including it to seq_file.c
->> we have a lot of conflicting types:
-> 
-> You cannot separatly include slub_def.h. slab.h includes slub_def.h for
-> you. What problem did you try to fix by doing so?
-> 
-> There is a patch pending that moves kmalloc_large to slab.h. So maybe we
-> have to wait a merge period in order to be able to use it with other
-> allocators than slub.
-> 
-> 
+Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+---
+ drivers/mtd/nand/gpio.c | 37 ++++++++++++++++++++-----------------
+ 1 file changed, 20 insertions(+), 17 deletions(-)
 
-ok, just saw in slab/for-linus branch that those stuff is reverted again..
-
-commit 4932163637fbb9aaa654ca0703c5a624b7809da2
-Author: Pekka Enberg <penberg@kernel.org>
-Date:   Wed Jul 10 10:16:01 2013 +0300
-
-    Revert "mm/sl[aou]b: Move kmalloc_node functions to common code"
-
-..
-
-commit 35be03cafb8f5ddcc1236e90144b6ec76296b789
-Author: Pekka Enberg <penberg@kernel.org>
-Date:   Wed Jul 10 09:56:49 2013 +0300
-
-    Revert "mm/sl[aou]b: Move kmalloc definitions to slab.h"
-
-
---
-WBR, WLadislav Wiebe
+diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
+index c75f92e..203db72 100644
+--- a/drivers/mtd/nand/gpio.c
++++ b/drivers/mtd/nand/gpio.c
+@@ -190,14 +190,20 @@ gpio_nand_get_io_sync(struct platform_device *pdev)
+ 	return platform_get_resource(pdev, IORESOURCE_MEM, 1);
+ }
+ 
++static void gpio_nand_set_wp(struct gpiomtd *gpiomtd, int val)
++{
++	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
++		gpio_set_value(gpiomtd->plat.gpio_nwp, val);
++}
++
+ static int gpio_nand_remove(struct platform_device *pdev)
+ {
+ 	struct gpiomtd *gpiomtd = platform_get_drvdata(pdev);
+ 
+ 	nand_release(&gpiomtd->mtd_info);
+ 
+-	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
+-		gpio_set_value(gpiomtd->plat.gpio_nwp, 0);
++	gpio_nand_set_wp(gpiomtd, 0);
++
+ 	gpio_set_value(gpiomtd->plat.gpio_nce, 1);
+ 
+ 	return 0;
+@@ -242,34 +248,33 @@ static int gpio_nand_probe(struct platform_device *pdev)
+ 			return PTR_ERR(gpiomtd->io_sync);
+ 	}
+ 
+-	ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nce, "NAND NCE");
++	ret = devm_gpio_request_one(&pdev->dev, gpiomtd->plat.gpio_nce,
++				    GPIOF_OUT_INIT_HIGH, "NAND NCE");
+ 	if (ret)
+ 		return ret;
+-	gpio_direction_output(gpiomtd->plat.gpio_nce, 1);
+ 
+ 	if (gpio_is_valid(gpiomtd->plat.gpio_nwp)) {
+-		ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nwp,
+-					"NAND NWP");
++		ret = devm_gpio_request_one(&pdev->dev, gpiomtd->plat.gpio_nwp,
++					    GPIOF_OUT_INIT_LOW, "NAND NWP");
+ 		if (ret)
+ 			return ret;
+ 	}
+ 
+-	ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_ale, "NAND ALE");
++	ret = devm_gpio_request_one(&pdev->dev, gpiomtd->plat.gpio_ale,
++				    GPIOF_OUT_INIT_LOW, "NAND ALE");
+ 	if (ret)
+ 		return ret;
+-	gpio_direction_output(gpiomtd->plat.gpio_ale, 0);
+ 
+-	ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_cle, "NAND CLE");
++	ret = devm_gpio_request_one(&pdev->dev, gpiomtd->plat.gpio_cle,
++				    GPIOF_OUT_INIT_LOW, "NAND CLE");
+ 	if (ret)
+ 		return ret;
+-	gpio_direction_output(gpiomtd->plat.gpio_cle, 0);
+ 
+ 	if (gpio_is_valid(gpiomtd->plat.gpio_rdy)) {
+-		ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_rdy,
+-					"NAND RDY");
++		ret = devm_gpio_request_one(&pdev->dev, gpiomtd->plat.gpio_rdy,
++					    GPIOF_IN, "NAND RDY");
+ 		if (ret)
+ 			return ret;
+-		gpio_direction_input(gpiomtd->plat.gpio_rdy);
+ 		chip->dev_ready = gpio_nand_devready;
+ 	}
+ 
+@@ -284,8 +289,7 @@ static int gpio_nand_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, gpiomtd);
+ 
+-	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
+-		gpio_direction_output(gpiomtd->plat.gpio_nwp, 1);
++	gpio_nand_set_wp(gpiomtd, 1);
+ 
+ 	if (nand_scan(&gpiomtd->mtd_info, 1)) {
+ 		ret = -ENXIO;
+@@ -304,8 +308,7 @@ static int gpio_nand_probe(struct platform_device *pdev)
+ 		return 0;
+ 
+ err_wp:
+-	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
+-		gpio_set_value(gpiomtd->plat.gpio_nwp, 0);
++	gpio_nand_set_wp(gpiomtd, 0);
+ 
+ 	return ret;
+ }
+-- 
+1.8.1.5
