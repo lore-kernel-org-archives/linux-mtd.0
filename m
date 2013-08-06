@@ -1,23 +1,22 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V6hqi-00078i-99
- for linux-mtd@lists.infradead.org; Tue, 06 Aug 2013 14:02:56 +0000
-Message-ID: <1375798078.30770.145.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH -next v2 00/10] mtd: tests: reduce duplication among mtd
- tests modules
+ id 1V6hr9-00079q-AO
+ for linux-mtd@lists.infradead.org; Tue, 06 Aug 2013 14:03:23 +0000
+Message-ID: <1375798106.30770.146.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v2 0/6] mtd: nand: cleanups to BBT
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Akinobu Mita <akinobu.mita@gmail.com>
-Date: Tue, 06 Aug 2013 17:07:58 +0300
-In-Reply-To: <1375523536-32671-1-git-send-email-akinobu.mita@gmail.com>
-References: <1375523536-32671-1-git-send-email-akinobu.mita@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Tue, 06 Aug 2013 17:08:26 +0300
+In-Reply-To: <1375231980-13721-1-git-send-email-computersforpeace@gmail.com>
+References: <1374647279-14083-1-git-send-email-computersforpeace@gmail.com>
+ <1375231980-13721-1-git-send-email-computersforpeace@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Iwo Mergler <Iwo.Mergler@netcommwireless.com.au>,
- Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
- Vikram Narayanan <vikram186@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: David Woodhouse <dwmw2@infradead.org>, Ivan Djelic <ivan.djelic@parrot.com>,
+ linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Huang Shijie <b32955@freescale.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,16 +27,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2013-08-03 at 18:52 +0900, Akinobu Mita wrote:
-> This patch set reduces code duplication among mtd/tests modules by
-> moving common helper functions into mtd_test.c. 
+On Tue, 2013-07-30 at 17:52 -0700, Brian Norris wrote:
+> Hi all,
 > 
+> This is v2 of my NAND BBT cleanup. The net diff is exactly the same as v1, but
+> it splits up a few logical changes.
+> 
+> v1 -> v2:
+>   Split up first patch into 3 patches, according to Ezequiel's comments.
+>   Hopefully this makes it easier to read and review.
 
-You could make this nicer by incorporating the error messages to the
-common handlers, and removing them from tests - they are almost the same
-everywhere.
-
-But this is anyway a good clean-up, so pushed to l2-mtd.git, thanks!
+Pushed to l2-mtd.git, thanks!
 
 -- 
 Best Regards,
