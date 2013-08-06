@@ -1,22 +1,27 @@
-Received: from mail-oa0-x232.google.com ([2607:f8b0:4003:c02::232])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V6Tnq-0004ho-Og
- for linux-mtd@lists.infradead.org; Mon, 05 Aug 2013 23:03:03 +0000
-Received: by mail-oa0-f50.google.com with SMTP id i4so7806215oah.9
- for <linux-mtd@lists.infradead.org>; Mon, 05 Aug 2013 16:02:41 -0700 (PDT)
+Received: from mx5.zte.com.cn ([63.217.80.70] helo=zte.com.cn)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V6VgO-0006pn-Mm
+ for linux-mtd@lists.infradead.org; Tue, 06 Aug 2013 01:03:30 +0000
+Received: from mse02.zte.com.cn (unknown [10.30.3.21])
+ by Websense Email Security Gateway with ESMTPS id 8AE09125785A
+ for <linux-mtd@lists.infradead.org>; Tue,  6 Aug 2013 09:02:40 +0800 (CST)
+Received: from notes_smtp.zte.com.cn ([10.30.1.239])
+ by mse02.zte.com.cn with ESMTP id r7612Uv6067261
+ for <linux-mtd@lists.infradead.org>; Tue, 6 Aug 2013 09:02:35 +0800 (GMT-8)
+ (envelope-from deng.chao1@zte.com.cn)
+In-Reply-To: <OFABB2B31E.4049B701-ONC1257BB7.0037E246-C1257BB7.0039FCB5@rohde-schwarz.com>
+References: <000301ce8741$b96b15f0$1c214a0a@ztedengchao>
+ <OFABB2B31E.4049B701-ONC1257BB7.0037E246-C1257BB7.0039FCB5@rohde-schwarz.com>
+Subject: =?GB2312?B?tPC4tDogUmU6IFtKRkZTMl1UaGUgcGF0Y2ggImpmZnMyOiBGaXggbG9jaw==?=
+ =?GB2312?B?IGFjcXVpc2l0aW9uIG9yZGVyIGJ1ZyBpbiBqZmZzMl93cml0ZV9iZWdpbiIg?=
+ =?GB2312?B?aW50cm9kdWNlcyBhbm90aGVyIGRlYWQgbG9jayBidWcu?=
+To: linux-mtd@lists.infradead.org
+Message-ID: <OF0276ED1A.C24B5FDC-ON48257BBF.0005A68C-48257BBF.0005EA46@zte.com.cn>
+From: deng.chao1@zte.com.cn
+Date: Tue, 6 Aug 2013 09:02:37 +0800
 MIME-Version: 1.0
-In-Reply-To: <1375707773.14869.452.camel@sauron.fi.intel.com>
-References: <1374978118-11418-1-git-send-email-akinobu.mita@gmail.com>
- <1375707773.14869.452.camel@sauron.fi.intel.com>
-Date: Tue, 6 Aug 2013 08:02:40 +0900
-Message-ID: <CAC5umyh8_NuHi9OK2qy=b8SEwY0mXc_vGjkNug1JizJz8apUUA@mail.gmail.com>
-Subject: Re: [PATCH 1/6] mtd: nandsim: convert pages_written[] to bitmap
-From: Akinobu Mita <akinobu.mita@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-type: text/plain; charset=UTF-8
+Content-transfer-encoding: base64
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,21 +31,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2013/8/5 Artem Bityutskiy <dedekind1@gmail.com>:
-> On Sun, 2013-07-28 at 11:21 +0900, Akinobu Mita wrote:
->> nandsim.pages_written[] is the array of unsigned char which is indexed
->> by the page number and used for identifying which pages have been written
->> when cache_file is used.  Each entry holds 0 (not written) or 1 (written),
->> so it can be converted to bitmap.  This reduces the allocation size of
->> pages_written[] by 1/8.
->
-> Pushed all to l2-mtd.git, thanks.
-
-Thanks.
-
-> I wonder, what is your motivation for doing this? Did you just notice
-> the imperfection and decided to fix it, or you really suffer from too
-> much memory allocated?
-
-I found all in this patch set when I was reading nandsim.c.  So I did
-not suffer any real problems.
+WWVz77yMbXkga2VybmVsIGFjdHVhbGx5IGhhZCBoaXQgdGhpcyBkZWFkIGxvY2suDQoNCk15IGtl
+cm5lbCdzIHZlcnNpb24gaXMgMi42LjMyLiBBZnRlciBpIG1lcmdlZCB0aGUgcGF0Y2ggaW50byBt
+eSBrZXJuZWwsIGkNCnJ1biBteSBvd24gZmlsZXN5c3RlbSB0ZXN0IHN1aXRlICJmc3Rlc3MiIG9u
+IHRoZSBrZXJuZWwuIEFib3V0IDkgaG91cnMNCmxhdGVyLCBpIGZvdW5kIHRoYXQgdGhlIGtlcm5l
+bCBkaWRuJ3QgcmVwb25zZSBhbnkgZmlsZSBvcGVyYXRpb24gYXQgYWxsLiBTbw0KaSB1c2VkIG1h
+Z2ljIFN5c1JxIGtleSB0byBzaG93IHN0YXRlIG9mIGFsbCB0YXNrcy4gRmluYWxseSBpIGZvdW5k
+IHRoaXMgdHdvDQp0aHJlYWRzJyBzdGFja3RyYWNlcyBpbiB0aGUgU3lzUnEgb3V0cHV0IGFzIGJl
+bG93IHdoaWNoIGNvdWxkIHByb3ZlIHRoZQ0KZGVhZCBsb2NrOg0KDQpbNTgwNjIuMTA0OTE5XSBm
+c3RyZXNzwqDCoMKgwqDCoMKgIEQgMTAwMTJkYjDCoMKgwqDCoCAwwqDCoCA5NDfCoMKgwqAgNzc1
+IDB4MDAwMDAwMDANCls1ODA2Mi4xNzg5MDddIENhbGwgVHJhY2U6DQpbNTgwNjIuMjA4MDg3XSBb
+YzgwMjNhNTBdIFtjMDRiZmZhNF0gcnRfbXV0ZXhfdW5sb2NrKzB4MjQvMHgzYyAodW5yZWxpYWJs
+ZSkNCls1ODA2Mi4yODgzMzFdIFtjODAyM2IxMF0gW2MwMDBhMzgwXSBfX3N3aXRjaF90bysweDY0
+LzB4ZDQNCls1ODA2Mi4zNTA4NTddIFtjODAyM2IzMF0gW2MwNGJkMGYwXSBzY2hlZHVsZSsweDVj
+OC8weDEwMjANCls1ODA2Mi40MTMzODNdIFtjODAyM2JhMF0gW2MwNGJkYmMwXSBpb19zY2hlZHVs
+ZSsweDc4LzB4ZDgNCls1ODA2Mi40NzU5MDhdIFtjODAyM2JjMF0gW2MwMGQyMDI0XSBzeW5jX3Bh
+Z2UrMHg3NC8weDkwDQpbNTgwNjIuNTM2MzUzXSBbYzgwMjNiZDBdIFtjMDRiZWI5Y10gX193YWl0
+X29uX2JpdF9sb2NrKzB4YTQvMHgxMjQNCls1ODA2Mi42MDcyMDJdIFtjODAyM2MwMF0gW2MwMGQx
+ZjU4XSBfX2xvY2tfcGFnZSsweGEwLzB4YjgNCls1ODA2Mi42Njk3MTZdIFtjODAyM2MzMF0gW2Mw
+MGQyMjkwXSBmaW5kX2xvY2tfcGFnZSsweDk4LzB4YjgNCls1ODA2Mi43MzUzNjddIFtjODAyM2M1
+MF0gW2MwMGQyODk0XSBncmFiX2NhY2hlX3BhZ2Vfd3JpdGVfYmVnaW4rMHg1MC8weDExMA0KWzU4
+MDYyLjgxNTU5MV0gW2M4MDIzYzgwXSBbYzAyMzU0NTRdIGpmZnMyX3dyaXRlX2JlZ2luKzB4ODAv
+MHgyZjANCls1ODA2Mi44ODU0MDldIFtjODAyM2QwMF0gW2MwMGQzYjAwXSBnZW5lcmljX2ZpbGVf
+YnVmZmVyZWRfd3JpdGUNCisweDFjYy8weDMwOA0KWzU4MDYyLjk2NjY4MV0gW2M4MDIzZDkwXSBb
+YzAwZDQwODRdIF9fZ2VuZXJpY19maWxlX2Fpb193cml0ZSsweDIwMC8weDRlMA0KWzU4MDYzLjA0
+NDgyOV0gW2M4MDIzZTAwXSBbYzAwZDQzZjRdIGdlbmVyaWNfZmlsZV9haW9fd3JpdGUrMHg5MC8w
+eDExOA0KWzU4MDYzLjExOTg1M10gW2M4MDIzZTMwXSBbYzAxMTVkMjBdIGRvX3N5bmNfd3JpdGUr
+MHhkNC8weDEzYw0KWzU4MDYzLjE4NTUwNF0gW2M4MDIzZWYwXSBbYzAxMTY3MDhdIHZmc193cml0
+ZSsweGMwLzB4MWVjDQpbNTgwNjMuMjQ2OTg4XSBbYzgwMjNmMTBdIFtjMDExNmIyNF0gc3lzX3dy
+aXRlKzB4NWMvMHhhOA0KWzU4MDYzLjMwNzQyNl0gW2M4MDIzZjQwXSBbYzAwMTk5YjhdIHJldF9m
+cm9tX3N5c2NhbGwrMHgwLzB4MzgNCls1ODA2My4zNzQxMTddIC0tLSBFeGNlcHRpb246IGMwMSBh
+dCAweDEwMDEyZGIwDQpbNTgwNjMuMzc0MTI0XcKgwqDCoMKgIExSID0gMHgxMDAxMmQ5OA0KWzU4
+MDYzLjQ2MjY2OV0gZnN0cmVzc8KgwqDCoMKgwqDCoCBEIDEwMDEyZGIwwqDCoMKgwqAgMMKgwqAg
+OTQ4wqDCoMKgIDc3NSAweDAwMDAwMDAwDQpbNTgwNjMuNTM2NjU3XSBDYWxsIFRyYWNlOg0KWzU4
+MDYzLjU2NTgzNV0gW2M4MDI1OWIwXSBbY2VkNTUxOThdIDB4Y2VkNTUxOTggKHVucmVsaWFibGUp
+DQpbNTgwNjMuNjMwNDUzXSBbYzgwMjVhNzBdIFtjMDAwYTM4MF0gX19zd2l0Y2hfdG8rMHg2NC8w
+eGQ0DQpbNTgwNjMuNjkyOTczXSBbYzgwMjVhOTBdIFtjMDRiZDBmMF0gc2NoZWR1bGUrMHg1Yzgv
+MHgxMDIwDQpbNTgwNjMuNzU1NDk5XSBbYzgwMjViMDBdIFtjMDRiZmE3OF0gX19ydF9tdXRleF9z
+bG93bG9jaysweDhjLzB4MTcwDQpbNTgwNjMuODI3MzkyXSBbYzgwMjViMzBdIFtjMDRjMDBjMF0g
+cnRfbXV0ZXhfc2xvd2xvY2srMHgxMDQvMHgzMzANCls1ODA2My44OTgyNDNdIFtjODAyNWJjMF0g
+W2MwNGMwM2EwXSBydF9tdXRleF9sb2NrKzB4NGMvMHg2NA0KWzU4MDYzLjk2Mjg1MF0gW2M4MDI1
+YmQwXSBbYzA0YzA5NDhdIF9tdXRleF9sb2NrKzB4MjQvMHgzYw0KWzU4MDY0LjAyNTM2Nl0gW2M4
+MDI1YmUwXSBbYzAyMzg1NTBdIGpmZnMyX3Jlc2VydmVfc3BhY2UrMHgxMmMvMHgzMjgNCls1ODA2
+NC4wOTgzMDZdIFtjODAyNWM1MF0gW2MwMjNiNGUwXSBqZmZzMl93cml0ZV9pbm9kZV9yYW5nZSsw
+eDIzOC8weDJlOA0KWzU4MDY0LjE3NTQxMl0gW2M4MDI1Y2MwXSBbYzAyMzUxMjhdIGpmZnMyX3dy
+aXRlX2VuZCsweGZjLzB4Mjg0DQpbNTgwNjQuMjQzMTQ2XSBbYzgwMjVkMDBdIFtjMDBkM2E0OF0g
+Z2VuZXJpY19maWxlX2J1ZmZlcmVkX3dyaXRlDQorMHgxMTQvMHgzMDgNCls1ODA2NC4zMjQ0MThd
+IFtjODAyNWQ5MF0gW2MwMGQ0MDg0XSBfX2dlbmVyaWNfZmlsZV9haW9fd3JpdGUrMHgyMDAvMHg0
+ZTANCls1ODA2NC40MDI1NjZdIFtjODAyNWUwMF0gW2MwMGQ0M2Y0XSBnZW5lcmljX2ZpbGVfYWlv
+X3dyaXRlKzB4OTAvMHgxMTgNCls1ODA2NC40Nzc1OTFdIFtjODAyNWUzMF0gW2MwMTE1ZDIwXSBk
+b19zeW5jX3dyaXRlKzB4ZDQvMHgxM2MNCls1ODA2NC41NDMyNDFdIFtjODAyNWVmMF0gW2MwMTE2
+NzA4XSB2ZnNfd3JpdGUrMHhjMC8weDFlYw0KWzU4MDY0LjYwNDcyNl0gW2M4MDI1ZjEwXSBbYzAx
+MTZiMjRdIHN5c193cml0ZSsweDVjLzB4YTgNCls1ODA2NC42NjUxNjNdIFtjODAyNWY0MF0gW2Mw
+MDE5OWI4XSByZXRfZnJvbV9zeXNjYWxsKzB4MC8weDM4DQpbNTgwNjQuNzMxODQ4XSAtLS0gRXhj
+ZXB0aW9uOiBjMDEgYXQgMHgxMDAxMmRiMA0KWzU4MDY0LjczMTg1NV3CoMKgwqDCoCBMUiA9IDB4
+MTAwMTJkOTgNCg0KQmVzdCBSZWdhcmRzLA0KRGVuZyBDaGFv
