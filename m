@@ -1,23 +1,25 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from a193-30.smtp-out.amazonses.com ([199.255.193.30])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V6hr9-00079q-AO
- for linux-mtd@lists.infradead.org; Tue, 06 Aug 2013 14:03:23 +0000
-Message-ID: <1375798106.30770.146.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v2 0/6] mtd: nand: cleanups to BBT
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Tue, 06 Aug 2013 17:08:26 +0300
-In-Reply-To: <1375231980-13721-1-git-send-email-computersforpeace@gmail.com>
-References: <1374647279-14083-1-git-send-email-computersforpeace@gmail.com>
- <1375231980-13721-1-git-send-email-computersforpeace@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>, Ivan Djelic <ivan.djelic@parrot.com>,
- linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Huang Shijie <b32955@freescale.com>
-Reply-To: dedekind1@gmail.com
+ id 1V6ihX-00009S-1d
+ for linux-mtd@lists.infradead.org; Tue, 06 Aug 2013 14:57:31 +0000
+Date: Tue, 6 Aug 2013 14:57:08 +0000
+From: Christoph Lameter <cl@gentwo.org>
+To: Wladislav Wiebe <wladislav.kw@gmail.com>
+Subject: Re: mm/slab: ppc: ubi: kmalloc_slab WARNING / PPC + UBI driver
+In-Reply-To: <5200A29C.9060702@gmail.com>
+Message-ID: <000001405421b036-0b2994fa-3dd8-4ce7-995c-81660d804803-000000@email.amazonses.com>
+References: <51F8F827.6020108@gmail.com>
+ <alpine.DEB.2.02.1307310858150.30572@gentwo.org>
+ <alpine.DEB.2.02.1307311015320.30997@gentwo.org>
+ <000001403567762a-60a27288-f0b2-4855-b88c-6a6f21ec537c-000000@email.amazonses.com>
+ <51F93C64.4090601@gmail.com>
+ <0000014035b06a9d-e8b10680-e321-4d3b-95a8-0833fa3fb7c9-000000@email.amazonses.com>
+ <5200A29C.9060702@gmail.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: dedekind1@gmail.com, Mel Gorman <mel@csn.ul.ie>, dwmw2@infradead.org,
+ Pekka Enberg <penberg@kernel.org>, linux-mm@kvack.org,
+ linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,18 +29,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2013-07-30 at 17:52 -0700, Brian Norris wrote:
-> Hi all,
-> 
-> This is v2 of my NAND BBT cleanup. The net diff is exactly the same as v1, but
-> it splits up a few logical changes.
-> 
-> v1 -> v2:
->   Split up first patch into 3 patches, according to Ezequiel's comments.
->   Hopefully this makes it easier to read and review.
+On Tue, 6 Aug 2013, Wladislav Wiebe wrote:
 
-Pushed to l2-mtd.git, thanks!
+> ok, just saw in slab/for-linus branch that those stuff is reverted again..
 
--- 
-Best Regards,
-Artem Bityutskiy
+No that was only for the 3.11 merge by Linus. The 3.12 patches have not
+been put into pekkas tree.
