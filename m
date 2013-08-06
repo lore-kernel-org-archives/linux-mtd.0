@@ -1,23 +1,20 @@
-Received: from mga14.intel.com ([143.182.124.37])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V6isZ-0000Tu-VM
- for linux-mtd@lists.infradead.org; Tue, 06 Aug 2013 15:08:56 +0000
-Message-ID: <1375802039.30770.153.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 04/25] mtd: nand: gpmi-nand: janitorial cleanup: (commas
- after last element of struct initializer)
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: Lothar =?ISO-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
-Date: Tue, 06 Aug 2013 18:13:59 +0300
-In-Reply-To: <20985.63269.929367.546435@ipc1.ka-ro>
-References: <1375279887-17928-1-git-send-email-LW@KARO-electronics.de>
- <1375279887-17928-2-git-send-email-LW@KARO-electronics.de>
- <51F9C4C2.8040403@freescale.com> <20985.63269.929367.546435@ipc1.ka-ro>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+Received: from longford.logfs.org ([213.229.74.203])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V6ltf-0005of-EO
+ for linux-mtd@lists.infradead.org; Tue, 06 Aug 2013 18:22:16 +0000
+Date: Tue, 6 Aug 2013 12:49:13 -0400
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Jussi Kivilinna <jussi.kivilinna@iki.fi>
+Subject: Re: [PATCH] alauda: do not use stack for URB transfer_buffers
+Message-ID: <20130806164913.GD10535@logfs.org>
+References: <20130806120329.8864.36301.stgit@localhost6.localdomain6>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>
-Reply-To: artem.bityutskiy@linux.intel.com
+In-Reply-To: <20130806120329.8864.36301.stgit@localhost6.localdomain6>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-usb@vger.kernel.org,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,54 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2013-08-01 at 07:50 +0200, Lothar Waßmann wrote:
-> Hi,
+On Tue, 6 August 2013 15:03:29 +0300, Jussi Kivilinna wrote:
 > 
-> Huang Shijie writes:
-> > 于 2013年07月31日 22:11, Lothar Waßmann 写道:
-> > > Signed-off-by: Lothar Waßmann<LW@KARO-electronics.de>
-> > > ---
-> > >   drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    8 ++++----
-> > >   1 files changed, 4 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> > > index f557a1d..4f7ec59 100644
-> > > --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> > > +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> > > @@ -1569,19 +1569,19 @@ static const struct platform_device_id gpmi_ids[] = {
-> > >   	{ .name = "imx23-gpmi-nand", .driver_data = IS_MX23, },
-> > >   	{ .name = "imx28-gpmi-nand", .driver_data = IS_MX28, },
-> > >   	{ .name = "imx6q-gpmi-nand", .driver_data = IS_MX6Q, },
-> > > -	{},
-> > > +	{}
-> > >   };
-> > >
-> > >   static const struct of_device_id gpmi_nand_id_table[] = {
-> > >   	{
-> > >   		.compatible = "fsl,imx23-gpmi-nand",
-> > > -		.data = (void *)&gpmi_ids[IS_MX23]
-> > > +		.data = (void *)&gpmi_ids[IS_MX23],
-> > >   	}, {
-> > >   		.compatible = "fsl,imx28-gpmi-nand",
-> > > -		.data = (void *)&gpmi_ids[IS_MX28]
-> > > +		.data = (void *)&gpmi_ids[IS_MX28],
-> > >   	}, {
-> > >   		.compatible = "fsl,imx6q-gpmi-nand",
-> > > -		.data = (void *)&gpmi_ids[IS_MX6Q]
-> > > +		.data = (void *)&gpmi_ids[IS_MX6Q],
-> > >   	}, {}
-> > >   };
-> > >   MODULE_DEVICE_TABLE(of, gpmi_nand_id_table);
-> > is it any bad influence if we do not apply this patch?
-> > 
-> > I am not clear what we can benefit from this patch.
-> > 
-> less eye sore when looking at the code and eventual copies of it in
-> other places.
+> Patch fixes alauda not to use stack as URB transfer_buffer. URB buffers need to
+> be DMA-able, which stack is not.
+> 
+> Patch is only compile tested.
 
-For some reasons I do not have these patches in my mailbox. Would you
-please re-send them, and add the acks there too?
+I have tested the driver back when I wrote it.  Not sure why it worked
+then, maybe the chip in my notebook back then didn't care about
+alignment or I just got lucky with the memory allocations.
 
--- 
-Best Regards,
-Artem Bityutskiy
+My old test hardware was likely thrown out in the last move, about two
+years back.  Performance sucked anyway, 400kB/s was the limit.  Maybe
+we should just remove the driver and not spend any more time on it?
+
+Jörn
+
+--
+Victory in war is not repetitious.
+-- Sun Tzu
