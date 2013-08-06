@@ -1,27 +1,23 @@
-Received: from cam-admin0.cambridge.arm.com ([217.140.96.50])
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V6fc2-00031r-Ed
- for linux-mtd@lists.infradead.org; Tue, 06 Aug 2013 11:39:39 +0000
-Date: Tue, 6 Aug 2013 12:38:39 +0100
-From: Mark Rutland <mark.rutland@arm.com>
-To: Alexander Shiyan <shc_work@mail.ru>
-Subject: Re: [PATCH v3 4/4] mtd: nand: gpio: Add support for multichip devices
-Message-ID: <20130806113839.GB25383@e106331-lin.cambridge.arm.com>
-References: <1375779459-32549-1-git-send-email-shc_work@mail.ru>
- <1375779459-32549-2-git-send-email-shc_work@mail.ru>
+ id 1V6fvJ-0003en-7I
+ for linux-mtd@lists.infradead.org; Tue, 06 Aug 2013 11:59:34 +0000
+Date: Tue, 6 Aug 2013 08:59:13 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: "Jens Renner (EFE)" <renner@efe-gmbh.de>
+Subject: Re: [PATCH v2] mtd: Add LED trigger support "mtd-disk" to indicate
+ activity
+Message-ID: <20130806115912.GA2862@localhost>
+References: <51AB6A69.9080004@efe-gmbh.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1375779459-32549-2-git-send-email-shc_work@mail.ru>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Ian Campbell <ian.campbell@citrix.com>, Pawel Moll <Pawel.Moll@arm.com>,
- Stephen Warren <swarren@wwwdotorg.org>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- "rob.herring@calxeda.com" <rob.herring@calxeda.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "grant.likely@linaro.org" <grant.likely@linaro.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <51AB6A69.9080004@efe-gmbh.de>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,72 +27,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Aug 06, 2013 at 09:57:39AM +0100, Alexander Shiyan wrote:
-> This patch adds support for multichip NAND devices controlled through GPIOs.
-> To implement this, the properties of tree have been renamed. All current
-> boards and DTS files converted to use an updated driver. Also driver
-> temporarily keep support for DTS files which use the previous names scheme.
+Hi Jens,
+
+On Sun, Jun 02, 2013 at 05:53:13PM +0200, Jens Renner (EFE) wrote:
+> Register a MTD LED trigger called "mtd-disk" (similar to the "ide-disk" and
+> "nand-disk" triggers) to indicate read / write / erase acitivity. Panic writes
+> and OOB reads / writes are not covered as of now. The trigger is global as it
+> does not discriminate between individual devices or partitions.
+> The patch uses the generic LED trigger interface which can be configured via
+> SYSFS (/sys/class/leds/<name>/trigger) or DTS file entry for "gpio-leds"
+> (linux,default-trigger = "mtd-disk").
 > 
-> Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
-> ---
->  .../devicetree/bindings/mtd/gpio-control-nand.txt  |  16 +--
->  arch/arm/boot/dts/picoxcell-pc7302-pc3x2.dts       |  10 +-
->  arch/arm/boot/dts/picoxcell-pc7302-pc3x3.dts       |  10 +-
->  arch/arm/mach-clps711x/board-autcpu12.c            |   4 +-
->  arch/arm/mach-clps711x/board-p720t.c               |   4 +-
->  arch/arm/mach-pxa/cm-x255.c                        |  10 +-
->  drivers/mtd/nand/gpio.c                            | 108 +++++++++++++++------
->  include/linux/mtd/nand-gpio.h                      |  12 ++-
->  8 files changed, 112 insertions(+), 62 deletions(-)
+> Since the MTD framework is independant of the memory devices, driver-specific
+> LED triggers like "nand-disk" will indicate a subset of all MTD activity.
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
-> index 91070d0..c58210a 100644
-> --- a/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
-> @@ -11,8 +11,11 @@ Required properties:
->    are made in native endianness.
-
-Unrelated, but the above like sounds mighty suspicious and possibly
-meaningless...
-
->  - #address-cells, #size-cells : Must be present if the device has sub-nodes
->    representing partitions.
-> -- gpios : specifies the gpio pins to control the NAND device.  nwp is an
-> -  optional gpio and may be set to 0 if not present.
-
-I'm not against deprecating this property, as the new mechanism is far
-more flexible, and gets rid of the odd nwp case. However I think the
-documentation for the old property should be kept (though marked as
-deprecated). I'd be happy with a "Deprecated properties" section as with
-the regulator bindings.
-
-I'm not sure about changing the dts immediately as this prevents using
-them with an old kernel, and creates a lot of churn, given the existing
-binding will be supported for the transitionary period...
-
-> +- ale-gpios : specifies the ALE gpio pin.
-> +- cle-gpios : specifies the CLE gpio pin.
-> +- nwp-gpios : specifies the NWP gpio pin (Optional).
-> +- nce-gpios : specifies the NCE gpio pin or several NCE GPIOs for multichip NAND.
-> +- rdy-gpios : specifies the RDY gpio pin or several RDY GPIOs for multichip NAND.
+> Tested on Microblaze architecture with Micron N25Q256A serial flash.
+> Added a bit of documentation (including other new LED triggers).
 > 
->  Optional properties:
->  - bank-width : Width (in bytes) of the device.  If not present, the width
-> @@ -37,11 +40,10 @@ gpio-nand@1,0 {
->         reg = <1 0x0000 0x2>;
->         #address-cells = <1>;
->         #size-cells = <1>;
-> -       gpios = <&banka 1 0     /* rdy */
-> -                &banka 2 0     /* nce */
-> -                &banka 3 0     /* ale */
-> -                &banka 4 0     /* cle */
-> -                0              /* nwp */>;
-> +       ale-gpios = <&banka 3 0>;
-> +       cle-gpios = <&banka 4 0>;
-> +       nce-gpios = <&banka 2 0>;
-> +       rdy-gpios = <&banka 1 0>;
 
-It would be nice to have a multichip NAND example, also.
+Thanks for doing this and sorry for such late feedback.
+For some reason I thought this would be already merged,
+and now looking at it in detail I have some comments about it.
 
-Thanks,
-Mark.
+I'm Ccing Brian, David and Artem just to make sure I don't say something
+foolish.
+
+I think you should re-work this entirely and add this trigger as a
+selectable module just as the rest of the led triggers do it.
+See drivers/led/trigger/ for examples.
+
+In addition you could move nand-disk over there as well.
+
+Having all related code in a single location is always better than
+spreading all over the place: you get to hide implementation details
+easier, and you can spot common code or bugs by comparison.
+
+What do you think?
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
