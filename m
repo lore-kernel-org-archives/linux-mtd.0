@@ -1,27 +1,15 @@
-Received: from mx5.zte.com.cn ([63.217.80.70] helo=zte.com.cn)
+Received: from mail.sigma-star.at ([95.130.255.111])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V6VgO-0006pn-Mm
- for linux-mtd@lists.infradead.org; Tue, 06 Aug 2013 01:03:30 +0000
-Received: from mse02.zte.com.cn (unknown [10.30.3.21])
- by Websense Email Security Gateway with ESMTPS id 8AE09125785A
- for <linux-mtd@lists.infradead.org>; Tue,  6 Aug 2013 09:02:40 +0800 (CST)
-Received: from notes_smtp.zte.com.cn ([10.30.1.239])
- by mse02.zte.com.cn with ESMTP id r7612Uv6067261
- for <linux-mtd@lists.infradead.org>; Tue, 6 Aug 2013 09:02:35 +0800 (GMT-8)
- (envelope-from deng.chao1@zte.com.cn)
-In-Reply-To: <OFABB2B31E.4049B701-ONC1257BB7.0037E246-C1257BB7.0039FCB5@rohde-schwarz.com>
-References: <000301ce8741$b96b15f0$1c214a0a@ztedengchao>
- <OFABB2B31E.4049B701-ONC1257BB7.0037E246-C1257BB7.0039FCB5@rohde-schwarz.com>
-Subject: =?GB2312?B?tPC4tDogUmU6IFtKRkZTMl1UaGUgcGF0Y2ggImpmZnMyOiBGaXggbG9jaw==?=
- =?GB2312?B?IGFjcXVpc2l0aW9uIG9yZGVyIGJ1ZyBpbiBqZmZzMl93cml0ZV9iZWdpbiIg?=
- =?GB2312?B?aW50cm9kdWNlcyBhbm90aGVyIGRlYWQgbG9jayBidWcu?=
+ id 1V6ajo-0002fJ-Au
+ for linux-mtd@lists.infradead.org; Tue, 06 Aug 2013 06:27:21 +0000
+From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
-Message-ID: <OF0276ED1A.C24B5FDC-ON48257BBF.0005A68C-48257BBF.0005EA46@zte.com.cn>
-From: deng.chao1@zte.com.cn
-Date: Tue, 6 Aug 2013 09:02:37 +0800
-MIME-Version: 1.0
-Content-type: text/plain; charset=UTF-8
-Content-transfer-encoding: base64
+Subject: [PATCH] UBI: Fastmap: Fix memory leak
+Date: Tue,  6 Aug 2013 08:26:43 +0200
+Message-Id: <1375770403-32762-1-git-send-email-richard@nod.at>
+Cc: dedekind1@gmail.com, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, wang bo <wang.bo116@zte.com.cn>,
+ dwmw2@infradead.org, Thomas Weber <thomas@tomweber.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,58 +19,181 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-WWVz77yMbXkga2VybmVsIGFjdHVhbGx5IGhhZCBoaXQgdGhpcyBkZWFkIGxvY2suDQoNCk15IGtl
-cm5lbCdzIHZlcnNpb24gaXMgMi42LjMyLiBBZnRlciBpIG1lcmdlZCB0aGUgcGF0Y2ggaW50byBt
-eSBrZXJuZWwsIGkNCnJ1biBteSBvd24gZmlsZXN5c3RlbSB0ZXN0IHN1aXRlICJmc3Rlc3MiIG9u
-IHRoZSBrZXJuZWwuIEFib3V0IDkgaG91cnMNCmxhdGVyLCBpIGZvdW5kIHRoYXQgdGhlIGtlcm5l
-bCBkaWRuJ3QgcmVwb25zZSBhbnkgZmlsZSBvcGVyYXRpb24gYXQgYWxsLiBTbw0KaSB1c2VkIG1h
-Z2ljIFN5c1JxIGtleSB0byBzaG93IHN0YXRlIG9mIGFsbCB0YXNrcy4gRmluYWxseSBpIGZvdW5k
-IHRoaXMgdHdvDQp0aHJlYWRzJyBzdGFja3RyYWNlcyBpbiB0aGUgU3lzUnEgb3V0cHV0IGFzIGJl
-bG93IHdoaWNoIGNvdWxkIHByb3ZlIHRoZQ0KZGVhZCBsb2NrOg0KDQpbNTgwNjIuMTA0OTE5XSBm
-c3RyZXNzwqDCoMKgwqDCoMKgIEQgMTAwMTJkYjDCoMKgwqDCoCAwwqDCoCA5NDfCoMKgwqAgNzc1
-IDB4MDAwMDAwMDANCls1ODA2Mi4xNzg5MDddIENhbGwgVHJhY2U6DQpbNTgwNjIuMjA4MDg3XSBb
-YzgwMjNhNTBdIFtjMDRiZmZhNF0gcnRfbXV0ZXhfdW5sb2NrKzB4MjQvMHgzYyAodW5yZWxpYWJs
-ZSkNCls1ODA2Mi4yODgzMzFdIFtjODAyM2IxMF0gW2MwMDBhMzgwXSBfX3N3aXRjaF90bysweDY0
-LzB4ZDQNCls1ODA2Mi4zNTA4NTddIFtjODAyM2IzMF0gW2MwNGJkMGYwXSBzY2hlZHVsZSsweDVj
-OC8weDEwMjANCls1ODA2Mi40MTMzODNdIFtjODAyM2JhMF0gW2MwNGJkYmMwXSBpb19zY2hlZHVs
-ZSsweDc4LzB4ZDgNCls1ODA2Mi40NzU5MDhdIFtjODAyM2JjMF0gW2MwMGQyMDI0XSBzeW5jX3Bh
-Z2UrMHg3NC8weDkwDQpbNTgwNjIuNTM2MzUzXSBbYzgwMjNiZDBdIFtjMDRiZWI5Y10gX193YWl0
-X29uX2JpdF9sb2NrKzB4YTQvMHgxMjQNCls1ODA2Mi42MDcyMDJdIFtjODAyM2MwMF0gW2MwMGQx
-ZjU4XSBfX2xvY2tfcGFnZSsweGEwLzB4YjgNCls1ODA2Mi42Njk3MTZdIFtjODAyM2MzMF0gW2Mw
-MGQyMjkwXSBmaW5kX2xvY2tfcGFnZSsweDk4LzB4YjgNCls1ODA2Mi43MzUzNjddIFtjODAyM2M1
-MF0gW2MwMGQyODk0XSBncmFiX2NhY2hlX3BhZ2Vfd3JpdGVfYmVnaW4rMHg1MC8weDExMA0KWzU4
-MDYyLjgxNTU5MV0gW2M4MDIzYzgwXSBbYzAyMzU0NTRdIGpmZnMyX3dyaXRlX2JlZ2luKzB4ODAv
-MHgyZjANCls1ODA2Mi44ODU0MDldIFtjODAyM2QwMF0gW2MwMGQzYjAwXSBnZW5lcmljX2ZpbGVf
-YnVmZmVyZWRfd3JpdGUNCisweDFjYy8weDMwOA0KWzU4MDYyLjk2NjY4MV0gW2M4MDIzZDkwXSBb
-YzAwZDQwODRdIF9fZ2VuZXJpY19maWxlX2Fpb193cml0ZSsweDIwMC8weDRlMA0KWzU4MDYzLjA0
-NDgyOV0gW2M4MDIzZTAwXSBbYzAwZDQzZjRdIGdlbmVyaWNfZmlsZV9haW9fd3JpdGUrMHg5MC8w
-eDExOA0KWzU4MDYzLjExOTg1M10gW2M4MDIzZTMwXSBbYzAxMTVkMjBdIGRvX3N5bmNfd3JpdGUr
-MHhkNC8weDEzYw0KWzU4MDYzLjE4NTUwNF0gW2M4MDIzZWYwXSBbYzAxMTY3MDhdIHZmc193cml0
-ZSsweGMwLzB4MWVjDQpbNTgwNjMuMjQ2OTg4XSBbYzgwMjNmMTBdIFtjMDExNmIyNF0gc3lzX3dy
-aXRlKzB4NWMvMHhhOA0KWzU4MDYzLjMwNzQyNl0gW2M4MDIzZjQwXSBbYzAwMTk5YjhdIHJldF9m
-cm9tX3N5c2NhbGwrMHgwLzB4MzgNCls1ODA2My4zNzQxMTddIC0tLSBFeGNlcHRpb246IGMwMSBh
-dCAweDEwMDEyZGIwDQpbNTgwNjMuMzc0MTI0XcKgwqDCoMKgIExSID0gMHgxMDAxMmQ5OA0KWzU4
-MDYzLjQ2MjY2OV0gZnN0cmVzc8KgwqDCoMKgwqDCoCBEIDEwMDEyZGIwwqDCoMKgwqAgMMKgwqAg
-OTQ4wqDCoMKgIDc3NSAweDAwMDAwMDAwDQpbNTgwNjMuNTM2NjU3XSBDYWxsIFRyYWNlOg0KWzU4
-MDYzLjU2NTgzNV0gW2M4MDI1OWIwXSBbY2VkNTUxOThdIDB4Y2VkNTUxOTggKHVucmVsaWFibGUp
-DQpbNTgwNjMuNjMwNDUzXSBbYzgwMjVhNzBdIFtjMDAwYTM4MF0gX19zd2l0Y2hfdG8rMHg2NC8w
-eGQ0DQpbNTgwNjMuNjkyOTczXSBbYzgwMjVhOTBdIFtjMDRiZDBmMF0gc2NoZWR1bGUrMHg1Yzgv
-MHgxMDIwDQpbNTgwNjMuNzU1NDk5XSBbYzgwMjViMDBdIFtjMDRiZmE3OF0gX19ydF9tdXRleF9z
-bG93bG9jaysweDhjLzB4MTcwDQpbNTgwNjMuODI3MzkyXSBbYzgwMjViMzBdIFtjMDRjMDBjMF0g
-cnRfbXV0ZXhfc2xvd2xvY2srMHgxMDQvMHgzMzANCls1ODA2My44OTgyNDNdIFtjODAyNWJjMF0g
-W2MwNGMwM2EwXSBydF9tdXRleF9sb2NrKzB4NGMvMHg2NA0KWzU4MDYzLjk2Mjg1MF0gW2M4MDI1
-YmQwXSBbYzA0YzA5NDhdIF9tdXRleF9sb2NrKzB4MjQvMHgzYw0KWzU4MDY0LjAyNTM2Nl0gW2M4
-MDI1YmUwXSBbYzAyMzg1NTBdIGpmZnMyX3Jlc2VydmVfc3BhY2UrMHgxMmMvMHgzMjgNCls1ODA2
-NC4wOTgzMDZdIFtjODAyNWM1MF0gW2MwMjNiNGUwXSBqZmZzMl93cml0ZV9pbm9kZV9yYW5nZSsw
-eDIzOC8weDJlOA0KWzU4MDY0LjE3NTQxMl0gW2M4MDI1Y2MwXSBbYzAyMzUxMjhdIGpmZnMyX3dy
-aXRlX2VuZCsweGZjLzB4Mjg0DQpbNTgwNjQuMjQzMTQ2XSBbYzgwMjVkMDBdIFtjMDBkM2E0OF0g
-Z2VuZXJpY19maWxlX2J1ZmZlcmVkX3dyaXRlDQorMHgxMTQvMHgzMDgNCls1ODA2NC4zMjQ0MThd
-IFtjODAyNWQ5MF0gW2MwMGQ0MDg0XSBfX2dlbmVyaWNfZmlsZV9haW9fd3JpdGUrMHgyMDAvMHg0
-ZTANCls1ODA2NC40MDI1NjZdIFtjODAyNWUwMF0gW2MwMGQ0M2Y0XSBnZW5lcmljX2ZpbGVfYWlv
-X3dyaXRlKzB4OTAvMHgxMTgNCls1ODA2NC40Nzc1OTFdIFtjODAyNWUzMF0gW2MwMTE1ZDIwXSBk
-b19zeW5jX3dyaXRlKzB4ZDQvMHgxM2MNCls1ODA2NC41NDMyNDFdIFtjODAyNWVmMF0gW2MwMTE2
-NzA4XSB2ZnNfd3JpdGUrMHhjMC8weDFlYw0KWzU4MDY0LjYwNDcyNl0gW2M4MDI1ZjEwXSBbYzAx
-MTZiMjRdIHN5c193cml0ZSsweDVjLzB4YTgNCls1ODA2NC42NjUxNjNdIFtjODAyNWY0MF0gW2Mw
-MDE5OWI4XSByZXRfZnJvbV9zeXNjYWxsKzB4MC8weDM4DQpbNTgwNjQuNzMxODQ4XSAtLS0gRXhj
-ZXB0aW9uOiBjMDEgYXQgMHgxMDAxMmRiMA0KWzU4MDY0LjczMTg1NV3CoMKgwqDCoCBMUiA9IDB4
-MTAwMTJkOTgNCg0KQmVzdCBSZWdhcmRzLA0KRGVuZyBDaGFv
+From: Thomas Weber <thomas@tomweber.eu>
+
+Tested with linux-v3.10-rc3 on Devkit8000.
+
+The discussion about this patch can be found:
+https://lkml.org/lkml/2013/5/2/118
+
+This patches fixes the following bug for me:
+When CONFIG_DEBUG_VM is active and making
+ubiattach ... ; ubidetach...; ubiattach ...
+the second ubiattach stops with:
+
+[   37.918304] UBI: default fastmap pool size: 95
+[   37.923004] UBI: default fastmap WL pool size: 25
+[   37.928741] UBI: attaching mtd4 to ubi0
+[   37.933197] kmem_cache_sanity_check (ubi_aeb_slab_cache): Cache name already exists.
+[   37.941864] CPU: 0 PID: 757 Comm: ubiattach Not tainted 3.10.0-rc3 #66
+[   37.949066] [<c0013d90>] (unwind_backtrace+0x0/0xec) from [<c0011660>] (show_stack+0x20/0x24)
+[   37.958343] [<c0011660>] (show_stack+0x20/0x24) from [<c041527c>] (dump_stack+0x20/0x28)
+[   37.967163] [<c041527c>] (dump_stack+0x20/0x28) from [<c00d70b4>] (kmem_cache_create_memcg+0x120/0x2a4)
+[   37.977478] [<c00d70b4>] (kmem_cache_create_memcg+0x120/0x2a4) from [<c00d7280>] (kmem_cache_create+0x48/0x50)
+[   37.988281] [<c00d7280>] (kmem_cache_create+0x48/0x50) from [<c02fa090>] (alloc_ai+0x84/0xb0)
+[   37.997528] [<c02fa090>] (alloc_ai+0x84/0xb0) from [<c02fbde4>] (ubi_attach+0x28/0x34c)
+[   38.006225] [<c02fbde4>] (ubi_attach+0x28/0x34c) from [<c02f07c8>] (ubi_attach_mtd_dev+0x69c/0xca4)
+[   38.016021] [<c02f07c8>] (ubi_attach_mtd_dev+0x69c/0xca4) from [<c02f1078>] (ctrl_cdev_ioctl+0xe4/0x190)
+[   38.026275] [<c02f1078>] (ctrl_cdev_ioctl+0xe4/0x190) from [<c00fee00>] (do_vfs_ioctl+0x554/0x5c4)
+[   38.035980] [<c00fee00>] (do_vfs_ioctl+0x554/0x5c4) from [<c00feebc>] (SyS_ioctl+0x4c/0x6c)
+[   38.045043] [<c00feebc>] (SyS_ioctl+0x4c/0x6c) from [<c000dca0>] (ret_fast_syscall+0x0/0x48)
+[   38.054168] UBI error: ubi_attach_mtd_dev: failed to attach mtd4, error -12
+ubiattach: error!: cannot attach "/dev/mtd4"
+           error 12 (Cannot allocate memory)
+
+Signed-off-by: wang bo <wang.bo116@zte.com.cn>
+Signed-off-by: Thomas Weber <thomas@tomweber.eu>
+[Thomas: fix whitespace errors]
+Signed-off-by: Richard Weinberger <richard@nod.at>
+
+diff --git a/drivers/mtd/ubi/attach.c b/drivers/mtd/ubi/attach.c
+index c071d41..e9f64bc 100644
+--- a/drivers/mtd/ubi/attach.c
++++ b/drivers/mtd/ubi/attach.c
+@@ -1212,6 +1212,30 @@ static void destroy_ai(struct ubi_attach_info *ai)
+ 	kfree(ai);
+ }
+ 
++static struct ubi_attach_info *alloc_ai(const char *slab_name)
++{
++	struct ubi_attach_info *ai;
++
++	ai = kzalloc(sizeof(struct ubi_attach_info), GFP_KERNEL);
++	if (!ai)
++		return ai;
++
++	INIT_LIST_HEAD(&ai->corr);
++	INIT_LIST_HEAD(&ai->free);
++	INIT_LIST_HEAD(&ai->erase);
++	INIT_LIST_HEAD(&ai->alien);
++	ai->volumes = RB_ROOT;
++	ai->aeb_slab_cache = kmem_cache_create(slab_name,
++					       sizeof(struct ubi_ainf_peb),
++					       0, 0, NULL);
++	if (!ai->aeb_slab_cache) {
++		kfree(ai);
++		ai = NULL;
++	}
++
++	return ai;
++}
++
+ /**
+  * scan_all - scan entire MTD device.
+  * @ubi: UBI device description object
+@@ -1315,8 +1339,13 @@ static int scan_fast(struct ubi_device *ubi, struct ubi_attach_info *ai)
+ 	int err, pnum, fm_anchor = -1;
+ 	unsigned long long max_sqnum = 0;
+ 
++	struct ubi_attach_info *fm_temp_ai = NULL;
+ 	err = -ENOMEM;
+ 
++	fm_temp_ai = alloc_ai("ubi_scan_fastmap_slab_cache");
++	if (!fm_temp_ai)
++		goto out;
++
+ 	ech = kzalloc(ubi->ec_hdr_alsize, GFP_KERNEL);
+ 	if (!ech)
+ 		goto out;
+@@ -1331,7 +1360,7 @@ static int scan_fast(struct ubi_device *ubi, struct ubi_attach_info *ai)
+ 		cond_resched();
+ 
+ 		dbg_gen("process PEB %d", pnum);
+-		err = scan_peb(ubi, ai, pnum, &vol_id, &sqnum);
++		err = scan_peb(ubi, fm_temp_ai, pnum, &vol_id, &sqnum);
+ 		if (err < 0)
+ 			goto out_vidh;
+ 
+@@ -1343,6 +1372,7 @@ static int scan_fast(struct ubi_device *ubi, struct ubi_attach_info *ai)
+ 
+ 	ubi_free_vid_hdr(ubi, vidh);
+ 	kfree(ech);
++	destroy_ai(fm_temp_ai);
+ 
+ 	if (fm_anchor < 0)
+ 		return UBI_NO_FASTMAP;
+@@ -1351,6 +1381,7 @@ static int scan_fast(struct ubi_device *ubi, struct ubi_attach_info *ai)
+ 
+ out_vidh:
+ 	ubi_free_vid_hdr(ubi, vidh);
++	destroy_ai(fm_temp_ai);
+ out_ech:
+ 	kfree(ech);
+ out:
+@@ -1359,29 +1390,6 @@ out:
+ 
+ #endif
+ 
+-static struct ubi_attach_info *alloc_ai(const char *slab_name)
+-{
+-	struct ubi_attach_info *ai;
+-
+-	ai = kzalloc(sizeof(struct ubi_attach_info), GFP_KERNEL);
+-	if (!ai)
+-		return ai;
+-
+-	INIT_LIST_HEAD(&ai->corr);
+-	INIT_LIST_HEAD(&ai->free);
+-	INIT_LIST_HEAD(&ai->erase);
+-	INIT_LIST_HEAD(&ai->alien);
+-	ai->volumes = RB_ROOT;
+-	ai->aeb_slab_cache = kmem_cache_create(slab_name,
+-					       sizeof(struct ubi_ainf_peb),
+-					       0, 0, NULL);
+-	if (!ai->aeb_slab_cache) {
+-		kfree(ai);
+-		ai = NULL;
+-	}
+-
+-	return ai;
+-}
+ 
+ /**
+  * ubi_attach - attach an MTD device.
+@@ -1419,7 +1427,7 @@ int ubi_attach(struct ubi_device *ubi, int force_scan)
+ 					return -ENOMEM;
+ 			}
+ 
+-			err = scan_all(ubi, ai, UBI_FM_MAX_START);
++			err = scan_all(ubi, ai, 0);
+ 		}
+ 	}
+ #else
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+index 1542751..6935f0c 100644
+--- a/drivers/mtd/ubi/fastmap.c
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -552,21 +552,8 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
+ 	INIT_LIST_HEAD(&used);
+ 	INIT_LIST_HEAD(&free);
+ 	INIT_LIST_HEAD(&eba_orphans);
+-	INIT_LIST_HEAD(&ai->corr);
+-	INIT_LIST_HEAD(&ai->free);
+-	INIT_LIST_HEAD(&ai->erase);
+-	INIT_LIST_HEAD(&ai->alien);
+-	ai->volumes = RB_ROOT;
+ 	ai->min_ec = UBI_MAX_ERASECOUNTER;
+ 
+-	ai->aeb_slab_cache = kmem_cache_create("ubi_ainf_peb_slab",
+-					       sizeof(struct ubi_ainf_peb),
+-					       0, 0, NULL);
+-	if (!ai->aeb_slab_cache) {
+-		ret = -ENOMEM;
+-		goto fail;
+-	}
+-
+ 	fmsb = (struct ubi_fm_sb *)(fm_raw);
+ 	ai->max_sqnum = fmsb->sqnum;
+ 	fm_pos += sizeof(struct ubi_fm_sb);
+-- 
+1.8.3.1
