@@ -1,15 +1,16 @@
-Date: Wed, 7 Aug 2013 17:06:06 +0100
+Date: Wed, 7 Aug 2013 17:07:43 +0100
 From: Mark Brown <broonie@kernel.org>
 To: Daniel Mack <zonque@gmail.com>
-Message-ID: <20130807160606.GH6427@sirena.org.uk>
+Message-ID: <20130807160743.GI6427@sirena.org.uk>
 References: <1375889649-14638-1-git-send-email-zonque@gmail.com>
- <1375889649-14638-17-git-send-email-zonque@gmail.com>
+ <1375889649-14638-18-git-send-email-zonque@gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="jOtImjXIA9XXnHrK"
+ protocol="application/pgp-signature"; boundary="b2u6xDyV6U2OU5E0"
 Content-Disposition: inline
-In-Reply-To: <1375889649-14638-17-git-send-email-zonque@gmail.com>
-Subject: Re: [PATCH 16/20] ASoC: pxa: add DT bindings for pxa2xx-pcm
+In-Reply-To: <1375889649-14638-18-git-send-email-zonque@gmail.com>
+Subject: Re: [PATCH 17/20] ASoC: pxa: pxa-pcm-lib: switch over to
+ snd-soc-dmaengine-pcm
 Cc: mark.rutland@arm.com, s.neumann@raumfeld.com, linux-mtd@lists.infradead.org,
  haojian.zhuang@linaro.org, cxie4@marvell.com, lars@metafoo.de, nico@linaro.org,
  vinod.koul@intel.com, marek.vasut@gmail.com,
@@ -29,39 +30,41 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---jOtImjXIA9XXnHrK
+--b2u6xDyV6U2OU5E0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 07, 2013 at 05:34:05PM +0200, Daniel Mack wrote:
-> The bindings do not carry any resources, as the module only registers
-> the ASoC platform driver.
+On Wed, Aug 07, 2013 at 05:34:06PM +0200, Daniel Mack wrote:
+> This patch removes the old PXA DMA API usage and switches over to
+> generic functions provided by snd-soc-dmaengine-pcm.
+>=20
+> More cleanups may be done on top of this, and some function stubs can
+> now be removed completetly. However, the intention here was to keep
+> the transition as small as possible.
 
-This should be done by the device for the DAI (as with other DT
-platforms that have a similar thing where the DMA device is just a
-wrapper around dmaengine).  This is slightly funky here, I'll follow up
-on the first patch about that.
+Has this been tested with the standalone non-ASoC PXA AC'97 driver?
 
---jOtImjXIA9XXnHrK
+--b2u6xDyV6U2OU5E0
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSAnBrAAoJELSic+t+oim95HgP/12l7T64WABazIb+rwN7U+w/
-5+8DiOShviLFFmkJCcxX7zApw384QehnZk3tCC/bF1jitSHAiFO8SSKXZWW48P5G
-Mbpvux5s2cyGXJhBIsNV/N+Pb7l7p9HKFNDuEKXeEOXOAlPcXaqg4K4i4lhx5N41
-1QmHEnR4ge+l6mkLMjCF+dbroXunyE+0b47RF5YlFkO+mK9pTLp46hNeNU9S0oV4
-g10YV7xo74pqfjrkK9Y+l0NbddqNoRvMRmiS5xtBMI0XWkSaH7/jpcOdpIcFaTEx
-eIV8ccMOinjGZYZ7JFCuUwbbcRKPnqBKeTWz2Xvx92SeIhx7HldJm8n33Tf07TBO
-MQW2ntX0nlkHiXZIl+KtxWggIUsOFnpT+TAknTNpshH7WXttk+gfpHn/fURE2ZTg
-i90sp8CFEi4dlQp3bJ+NhYAv2I34NZwZ6o5OIMKq1RYIFngo7+w8EdKqzd0IQFT7
-ewtQXi+6wbodD/WbrEDknvkBNSA/d1gCSadsvRNVboDti8DGCUPY9d67LsEG5bHj
-jaGql/KcRLXweSKDFyAzLzZQQvuD0c+CwwlpmmtjMRQq21FxsMvEPtMzE9r7L76M
-t9+hqndlujUk6Wo+k/mSN+U+GUrLmH6XQ5rUoE+K2cVt0/NNoklOF7bcUVzcMc0+
-SMagGK9kPUqqzbV+DWne
-=Hp6J
+iQIcBAEBAgAGBQJSAnDMAAoJELSic+t+oim9fWsP/2PaPG4kqVq8yiLTlxsr6G6t
+2cjquMBQsY0rBpeWAIBklWjPfY9bFfvJMD4ShNsSk6ZXx6X1uvFB51yvYdsMWJS9
+xUHj0K3KLZCAyV/1H9OxjuqVzdDSPagDnlDq7YLC+RTY5kGl4kG9TlHpqkGWiwfD
+5x2ir8zypr5jyvcoK88UZMToM4rQU7dxEBqjqha/pHBjbEZeroTWuTqXWuRPUN1T
+z8+lSkdWQnwqtvb/i5+mrWwd+ZfrqGhWRao+x1l3JDz3ZdT/iGS0n8vk9E73jR14
+Nr1NzUOpyBY2Qcytlel35W8okn/6ibvAbzc3reRz/1NKTr/WeOjm6csdvwtOVO9p
+xZj+Z1MZgnzoe9E1kQlQMYT/KIZbjeemHqOAJQ97Dy8nO2zz1H5tfDAe7C+xozhg
+ii7ZKmHhzXo1g7yIO118Pb18FyOWP/olU5xl2WslTHg7zkyho0E3uZeftyWqLOEh
+0Ss+WZK2oCHDpmVe0hawFP0vzqufh+kcnAM/0V6Baj4uo96PHZGmucSrDwpdaIhq
++YWcKWX4rrEheTru6F6sl5ZAkQYy8atwKvmku38A0XrZ1v+XkcoOMiM8V8UVDVuZ
+q9pKKQEjYI8rA+lUtuKqpt+flSlgP0NrkKzsDfL1pEcOqnGcH2psbmbbA1aKWSsZ
+WyhyWSu1OyQ7xjV7HO/5
+=pXE3
 -----END PGP SIGNATURE-----
 
---jOtImjXIA9XXnHrK--
+--b2u6xDyV6U2OU5E0--
