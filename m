@@ -1,20 +1,13 @@
-Received: from longford.logfs.org ([213.229.74.203])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V6ltf-0005of-EO
- for linux-mtd@lists.infradead.org; Tue, 06 Aug 2013 18:22:16 +0000
-Date: Tue, 6 Aug 2013 12:49:13 -0400
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Jussi Kivilinna <jussi.kivilinna@iki.fi>
-Subject: Re: [PATCH] alauda: do not use stack for URB transfer_buffers
-Message-ID: <20130806164913.GD10535@logfs.org>
-References: <20130806120329.8864.36301.stgit@localhost6.localdomain6>
+From: Josh Wu <josh.wu@atmel.com>
+To: <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+ <dedekind1@gmail.com>
+Subject: [PATCH] mtd: atmel_nand: fix the warning when CONFIG_OF is not defined
+Date: Wed, 7 Aug 2013 11:36:09 +0800
+Message-ID: <1375846569-9499-1-git-send-email-josh.wu@atmel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20130806120329.8864.36301.stgit@localhost6.localdomain6>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-usb@vger.kernel.org,
- linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Cc: nicolas.ferre@atmel.com, computersforpeace@gmail.com, plagnioj@jcrosoft.com,
+ Josh Wu <josh.wu@atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,23 +17,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 6 August 2013 15:03:29 +0300, Jussi Kivilinna wrote:
-> 
-> Patch fixes alauda not to use stack as URB transfer_buffer. URB buffers need to
-> be DMA-able, which stack is not.
-> 
-> Patch is only compile tested.
+This patch fix following warning:
 
-I have tested the driver back when I wrote it.  Not sure why it worked
-then, maybe the chip in my notebook back then didn't care about
-alignment or I just got lucky with the memory allocations.
+drivers/mtd/nand/atmel_nand.c:2007: warning: 'atmel_nand_nfc_match' defined but not used
 
-My old test hardware was likely thrown out in the last move, about two
-years back.  Performance sucked anyway, 400kB/s was the limit.  Maybe
-we should just remove the driver and not spend any more time on it?
+This patch add '#if defined(CONFIG_OF)' block to guard around the definition of
+atmel_nand_nfc_match, in order to avoid the warning when kernel is configurated
+as non-dt supported.
 
-Jörn
+Signed-off-by: Josh Wu <josh.wu@atmel.com>
+---
+ drivers/mtd/nand/atmel_nand.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---
-Victory in war is not repetitious.
--- Sun Tzu
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index 65b302c..ddcd575 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -2251,10 +2251,12 @@ static int atmel_nand_nfc_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++#if defined(CONFIG_OF)
+ static struct of_device_id atmel_nand_nfc_match[] = {
+ 	{ .compatible = "atmel,sama5d3-nfc" },
+ 	{ /* sentinel */ }
+ };
++#endif
+ 
+ static struct platform_driver atmel_nand_nfc_driver = {
+ 	.driver = {
+-- 
+1.7.9.5
