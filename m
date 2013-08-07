@@ -1,20 +1,21 @@
-Received: from tulikuusama.dnainternet.net ([83.102.40.132])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V6wea-0004KW-Am
- for linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 05:51:25 +0000
-Message-ID: <5201E03D.30306@iki.fi>
-Date: Wed, 07 Aug 2013 08:50:53 +0300
-From: Jussi Kivilinna <jussi.kivilinna@iki.fi>
+Received: from mail.karo-electronics.de ([81.173.242.67])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V6wwN-0004cX-Ma
+ for linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 06:09:48 +0000
+From: =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH 03/25] mtd: nand: gpmi-nand: let the driver core handle pinctrl
+Date: Wed,  7 Aug 2013 08:09:13 +0200
+Message-Id: <1375855754-24876-1-git-send-email-LW@KARO-electronics.de>
+In-Reply-To: <1375802039.30770.153.camel@sauron.fi.intel.com>
+References: <1375802039.30770.153.camel@sauron.fi.intel.com>
+To: <linux-mtd@lists.infradead.org>
 MIME-Version: 1.0
-To: =?UTF-8?B?SsO2cm4gRW5nZWw=?= <joern@logfs.org>
-Subject: Re: [PATCH] alauda: do not use stack for URB transfer_buffers
-References: <20130806120329.8864.36301.stgit@localhost6.localdomain6>
- <20130806164913.GD10535@logfs.org>
-In-Reply-To: <20130806164913.GD10535@logfs.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-usb@vger.kernel.org,
- linux-mtd@lists.infradead.org
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Huang Shijie <b32955@freescale.com>, David Woodhouse <dwmw2@infradead.org>,
+ =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +25,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06.08.2013 19:49, Jörn Engel wrote:
-> On Tue, 6 August 2013 15:03:29 +0300, Jussi Kivilinna wrote:
->>
->> Patch fixes alauda not to use stack as URB transfer_buffer. URB buffers need to
->> be DMA-able, which stack is not.
->>
->> Patch is only compile tested.
-> 
-> I have tested the driver back when I wrote it.  Not sure why it worked
-> then, maybe the chip in my notebook back then didn't care about
-> alignment or I just got lucky with the memory allocations.
+without this patch the driver fails to load with -EBUSY.
 
-You might not see problems with your hardware/architecture.
+Signed-off-by: Lothar Waßmann <LW@KARO-electronics.de>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    8 --------
+ 1 files changed, 0 insertions(+), 8 deletions(-)
 
-"Documentation/DMA-API-HOWTO.txt" discusses about "What memory is DMA'able?".
-
-> 
-> My old test hardware was likely thrown out in the last move, about two
-> years back.  Performance sucked anyway, 400kB/s was the limit.  Maybe
-> we should just remove the driver and not spend any more time on it?
-> 
-> Jörn
-> 
-> --
-> Victory in war is not repetitious.
-> -- Sun Tzu
-> 
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index b741a6c..f557a1d 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -520,7 +520,6 @@ err_clock:
+ 
+ static int acquire_resources(struct gpmi_nand_data *this)
+ {
+-	struct pinctrl *pinctrl;
+ 	int ret;
+ 
+ 	ret = acquire_register_block(this, GPMI_NAND_GPMI_REGS_ADDR_RES_NAME);
+@@ -539,19 +538,12 @@ static int acquire_resources(struct gpmi_nand_data *this)
+ 	if (ret)
+ 		goto exit_dma_channels;
+ 
+-	pinctrl = devm_pinctrl_get_select_default(&this->pdev->dev);
+-	if (IS_ERR(pinctrl)) {
+-		ret = PTR_ERR(pinctrl);
+-		goto exit_pin;
+-	}
+-
+ 	ret = gpmi_get_clks(this);
+ 	if (ret)
+ 		goto exit_clock;
+ 	return 0;
+ 
+ exit_clock:
+-exit_pin:
+ 	release_dma_channels(this);
+ exit_dma_channels:
+ 	release_bch_irq(this);
+-- 
+1.7.2.5
