@@ -1,22 +1,19 @@
-Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V6zMZ-00006R-N3
- for linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 08:45:00 +0000
-Received: by mail-pa0-f46.google.com with SMTP id fa1so1913942pad.33
- for <linux-mtd@lists.infradead.org>; Wed, 07 Aug 2013 01:44:38 -0700 (PDT)
-Date: Wed, 7 Aug 2013 01:44:34 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Jingoo Han <jg1.han@samsung.com>
-Subject: Re: [PATCH 29/35] mtd: devices: use dev_get_platdata()
-Message-ID: <20130807084434.GB6438@norris.computersforpeace.net>
-References: <005801ce8cfd$44518210$ccf48630$@samsung.com>
+Message-ID: <52021150.1090707@atmel.com>
+Date: Wed, 7 Aug 2013 17:20:16 +0800
+From: Josh Wu <josh.wu@atmel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <005801ce8cfd$44518210$ccf48630$@samsung.com>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-mtd@lists.infradead.org, 'David Woodhouse' <dwmw2@infradead.org>,
- 'Artem Bityutskiy' <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 2/6] mtd: atmel_nand: replace pmecc enable code with one
+ function.
+References: <1375701279-11495-1-git-send-email-josh.wu@atmel.com>
+ <1375701279-11495-3-git-send-email-josh.wu@atmel.com>
+ <20130807072055.GA26025@norris.computersforpeace.net>
+In-Reply-To: <20130807072055.GA26025@norris.computersforpeace.net>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: sergei.shtylyov@cogentembedded.com, dedekind1@gmail.com,
+ nicolas.ferre@atmel.com, linux-mtd@lists.infradead.org, plagnioj@jcrosoft.com,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,13 +23,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jul 30, 2013 at 05:17:44PM +0900, Jingoo Han wrote:
-> Use the wrapper function for retrieving the platform data instead of
-> accessing dev->platform_data directly.
-> 
-> Signed-off-by: Jingoo Han <jg1.han@samsung.com>
+Hi, Brian
 
-Applied this and the next three to l2-mtd.git, with a slight amendment
-for some atmel_nand.c changes. Thanks!
+On 8/7/2013 3:20 PM, Brian Norris wrote:
+> Hi Josh,
+>
+> On Mon, Aug 05, 2013 at 07:14:34PM +0800, Josh Wu wrote:
+>> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+>> index 3d7db95..28d159a 100644
+>> --- a/drivers/mtd/nand/atmel_nand.c
+>> +++ b/drivers/mtd/nand/atmel_nand.c
+>> @@ -746,6 +746,30 @@ normal_check:
+>>   	return total_err;
+>>   }
+>>   
+>> +static void pmecc_enable(struct atmel_nand_host *host, int ecc_op)
+>> +{
+>> +	u32 val;
+>> +
+>> +	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_RST);
+>> +	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_DISABLE);
+>> +	val = pmecc_readl_relaxed(host->ecc, CFG);
+>> +
+>> +	if (ecc_op != NAND_ECC_READ && ecc_op != NAND_ECC_WRITE) {
+>> +		dev_err(host->dev, "atmel_nand: wrong pmecc operation type!");
+>> +		return;
+>> +	}
+> Why is this check after the reset and disable? Shouldn't it be placed at
+> the beginning of the function? But this is a somewhat strange check
+> anyway, since this function is private to the driver (static).
 
-Brian
+yes, you are right, this check code should put in the beginning of the 
+function.
+
+I will send out a patch in the top of the l2-mtd.git soon. thanks
+
+>
+>> +
+>> +	if (ecc_op == NAND_ECC_READ)
+>> +		pmecc_writel(host->ecc, CFG, (val & ~PMECC_CFG_WRITE_OP)
+>> +			| PMECC_CFG_AUTO_ENABLE);
+>> +	else
+>> +		pmecc_writel(host->ecc, CFG, (val | PMECC_CFG_WRITE_OP)
+>> +			& ~PMECC_CFG_AUTO_ENABLE);
+>> +
+>> +	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_ENABLE);
+>> +	pmecc_writel(host->ecc, CTRL, PMECC_CTRL_DATA);
+>> +}
+>> +
+>>   static int atmel_nand_pmecc_read_page(struct mtd_info *mtd,
+>>   	struct nand_chip *chip, uint8_t *buf, int oob_required, int page)
+>>   {
+> Brian
+Best Regards,
+Josh Wu
