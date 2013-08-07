@@ -1,25 +1,25 @@
 Received: from mailout3.samsung.com ([203.254.224.33])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V6xvC-000643-3u
- for linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 07:12:39 +0000
+ id 1V6xwP-000662-UY
+ for linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 07:13:54 +0000
 Received: from epcpsbgr4.samsung.com
  (u144.gpu120.samsung.co.kr [203.254.230.144])
  by mailout3.samsung.com (Oracle Communications Messaging Server 7u4-24.01
  (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MR500DNVG00VLE0@mailout3.samsung.com> for
- linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 16:12:14 +0900 (KST)
+ with ESMTP id <0MR500I55G2351C0@mailout3.samsung.com> for
+ linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 16:13:33 +0900 (KST)
 From: Jingoo Han <jg1.han@samsung.com>
 To: 'Artem Bityutskiy' <artem.bityutskiy@linux.intel.com>
-Subject: [PATCH 2/7] mtd: impa7: add missing __iomem annotation
-Date: Wed, 07 Aug 2013 16:12:14 +0900
-Message-id: <004101ce933d$713c7a00$53b56e00$@samsung.com>
+Subject: [PATCH 3/7] mtd: nandsim: Staticize local symbols
+Date: Wed, 07 Aug 2013 16:13:32 +0900
+Message-id: <004201ce933d$a0019730$e004c590$@samsung.com>
 MIME-version: 1.0
 Content-type: text/plain; charset=us-ascii
 Content-transfer-encoding: 7bit
 Content-language: ko
-Cc: 'Dmitry Eremin-Solenikov' <dmitry_eremin@mentor.com>,
- linux-mtd@lists.infradead.org, Jingoo Han <jg1.han@samsung.com>,
+Cc: linux-mtd@lists.infradead.org, Jingoo Han <jg1.han@samsung.com>,
  'David Woodhouse' <dwmw2@infradead.org>,
+ 'Akinobu Mita' <akinobu.mita@gmail.com>,
  'Artem Bityutskiy' <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,60 +30,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Added missing __iomem annotation and used NULL instead of 0
-in order to fix the following sparse warnings:
+These local symbols are used only in this file.
+Fix the following sparse warnings:
 
-drivers/mtd/maps/impa7.c:82:32: warning: Using plain integer as NULL pointer
-drivers/mtd/maps/impa7.c:96:34: warning: cast removes address space of expression
-drivers/mtd/maps/impa7.c:96:34: warning: incorrect type in argument 1 (different address spaces)
-drivers/mtd/maps/impa7.c:96:34:    expected void volatile [noderef] <asn:2>*addr
-drivers/mtd/maps/impa7.c:96:34:    got void *<noident>
-drivers/mtd/maps/impa7.c:108:34: warning: cast removes address space of expression
-drivers/mtd/maps/impa7.c:108:34: warning: incorrect type in argument 1 (different address spaces)
-drivers/mtd/maps/impa7.c:108:34:    expected void volatile [noderef] <asn:2>*addr
-drivers/mtd/maps/impa7.c:108:34:    got void *<noident>
-drivers/mtd/maps/impa7.c:109:45: warning: Using plain integer as NULL pointer
+drivers/mtd/nand/nandsim.c:1436:5: warning: symbol 'do_read_error' was not declared. Should it be static?
+drivers/mtd/nand/nandsim.c:1448:6: warning: symbol 'do_bit_flips' was not declared. Should it be static?
 
 Signed-off-by: Jingoo Han <jg1.han@samsung.com>
 ---
- drivers/mtd/maps/impa7.c |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/nandsim.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/maps/impa7.c b/drivers/mtd/maps/impa7.c
-index 4968674..15bbda0 100644
---- a/drivers/mtd/maps/impa7.c
-+++ b/drivers/mtd/maps/impa7.c
-@@ -79,7 +79,7 @@ static int __init init_impa7(void)
- 		}
- 		simple_map_init(&impa7_map[i]);
+diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+index 9e04de0..bdc1d15 100644
+--- a/drivers/mtd/nand/nandsim.c
++++ b/drivers/mtd/nand/nandsim.c
+@@ -1433,7 +1433,7 @@ static inline u_char *NS_PAGE_BYTE_OFF(struct nandsim *ns)
+ 	return NS_GET_PAGE(ns)->byte + ns->regs.column + ns->regs.off;
+ }
  
--		impa7_mtd[i] = 0;
-+		impa7_mtd[i] = NULL;
- 		type = rom_probe_types;
- 		for(; !impa7_mtd[i] && *type; type++) {
- 			impa7_mtd[i] = do_map_probe(*type, &impa7_map[i]);
-@@ -91,9 +91,9 @@ static int __init init_impa7(void)
- 			mtd_device_parse_register(impa7_mtd[i], NULL, NULL,
- 						  partitions,
- 						  ARRAY_SIZE(partitions));
-+		} else {
-+			iounmap((void __iomem *)impa7_map[i].virt);
- 		}
--		else
--			iounmap((void *)impa7_map[i].virt);
- 	}
- 	return devicesfound == 0 ? -ENXIO : 0;
+-int do_read_error(struct nandsim *ns, int num)
++static int do_read_error(struct nandsim *ns, int num)
+ {
+ 	unsigned int page_no = ns->regs.row;
+ 
+@@ -1445,7 +1445,7 @@ int do_read_error(struct nandsim *ns, int num)
+ 	return 0;
  }
-@@ -105,8 +105,8 @@ static void __exit cleanup_impa7(void)
- 		if (impa7_mtd[i]) {
- 			mtd_device_unregister(impa7_mtd[i]);
- 			map_destroy(impa7_mtd[i]);
--			iounmap((void *)impa7_map[i].virt);
--			impa7_map[i].virt = 0;
-+			iounmap((void __iomem *)impa7_map[i].virt);
-+			impa7_map[i].virt = NULL;
- 		}
- 	}
- }
+ 
+-void do_bit_flips(struct nandsim *ns, int num)
++static void do_bit_flips(struct nandsim *ns, int num)
+ {
+ 	if (bitflips && prandom_u32() < (1 << 22)) {
+ 		int flips = 1;
 -- 
 1.7.10.4
