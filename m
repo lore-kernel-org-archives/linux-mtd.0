@@ -1,9 +1,9 @@
 From: Daniel Mack <zonque@gmail.com>
 To: haojian.zhuang@linaro.org, eric.y.miao@gmail.com,
  linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 09/20] ata: pdata_pxa: migrate over to dmaengine usage
-Date: Wed,  7 Aug 2013 17:33:58 +0200
-Message-Id: <1375889649-14638-10-git-send-email-zonque@gmail.com>
+Subject: [PATCH 08/20] mmc: host: pxamci: switch over to dmaengine use
+Date: Wed,  7 Aug 2013 17:33:57 +0200
+Message-Id: <1375889649-14638-9-git-send-email-zonque@gmail.com>
 In-Reply-To: <1375889649-14638-1-git-send-email-zonque@gmail.com>
 References: <1375889649-14638-1-git-send-email-zonque@gmail.com>
 Cc: mark.rutland@arm.com, s.neumann@raumfeld.com, linux-mtd@lists.infradead.org,
@@ -24,299 +24,353 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch is compile-tested only, but the migration was actually
-straight-forward.
+Successfully testes on a PXA3xx board.
 
 Signed-off-by: Daniel Mack <zonque@gmail.com>
 ---
- drivers/ata/pata_pxa.c | 172 ++++++++++++++++++++-----------------------------
- 1 file changed, 70 insertions(+), 102 deletions(-)
+ drivers/mmc/host/pxamci.c | 188 +++++++++++++++++++++++++---------------------
+ 1 file changed, 102 insertions(+), 86 deletions(-)
 
-diff --git a/drivers/ata/pata_pxa.c b/drivers/ata/pata_pxa.c
-index 942ef94..906c0b5 100644
---- a/drivers/ata/pata_pxa.c
-+++ b/drivers/ata/pata_pxa.c
-@@ -28,76 +28,43 @@
- #include <linux/gpio.h>
- #include <linux/slab.h>
- #include <linux/completion.h>
+diff --git a/drivers/mmc/host/pxamci.c b/drivers/mmc/host/pxamci.c
+index 2c5a91b..7aa97eb 100644
+--- a/drivers/mmc/host/pxamci.c
++++ b/drivers/mmc/host/pxamci.c
+@@ -22,7 +22,9 @@
+ #include <linux/platform_device.h>
+ #include <linux/delay.h>
+ #include <linux/interrupt.h>
 +#include <linux/dmaengine.h>
-+#include <linux/dma-mapping.h>
+ #include <linux/dma-mapping.h>
 +#include <linux/dma/mmp-pdma.h>
+ #include <linux/clk.h>
+ #include <linux/err.h>
+ #include <linux/mmc/host.h>
+@@ -37,7 +39,6 @@
+ #include <asm/sizes.h>
  
- #include <scsi/scsi_host.h>
- 
- #include <mach/pxa2xx-regs.h>
- #include <linux/platform_data/ata-pxa.h>
+ #include <mach/hardware.h>
 -#include <mach/dma.h>
+ #include <linux/platform_data/mmc-pxamci.h>
  
- #define DRV_NAME	"pata_pxa"
- #define DRV_VERSION	"0.1"
+ #include "pxamci.h"
+@@ -58,7 +59,6 @@ struct pxamci_host {
+ 	struct clk		*clk;
+ 	unsigned long		clkrate;
+ 	int			irq;
+-	int			dma;
+ 	unsigned int		clkrt;
+ 	unsigned int		cmdat;
+ 	unsigned int		imask;
+@@ -69,8 +69,10 @@ struct pxamci_host {
+ 	struct mmc_command	*cmd;
+ 	struct mmc_data		*data;
  
- struct pata_pxa_data {
--	uint32_t		dma_channel;
--	struct pxa_dma_desc	*dma_desc;
--	dma_addr_t		dma_desc_addr;
--	uint32_t		dma_desc_id;
-+	struct dma_chan		*dma_channel;
-+	unsigned int		dma_dir;
-+	unsigned int		dma_len;
++	struct dma_chan		*dma_chan_rx;
++	struct dma_chan		*dma_chan_tx;
 +	dma_cookie_t		dma_cookie;
+ 	dma_addr_t		sg_dma;
+-	struct pxa_dma_desc	*sg_cpu;
+ 	unsigned int		dma_len;
  
- 	/* DMA IO physical address */
- 	uint32_t		dma_io_addr;
--	/* PXA DREQ<0:2> pin selector */
--	uint32_t		dma_dreq;
--	/* DMA DCSR register value */
--	uint32_t		dma_dcsr;
- 
-+	struct ata_port		*ap;
- 	struct completion	dma_done;
- };
- 
- /*
-- * Setup the DMA descriptors. The size is transfer capped at 4k per descriptor,
-- * if the transfer is longer, it is split into multiple chained descriptors.
-+ * DMA interrupt handler.
-  */
--static void pxa_load_dmac(struct scatterlist *sg, struct ata_queued_cmd *qc)
-+static void pxa_ata_dma_irq(void *param)
- {
-+	struct ata_queued_cmd *qc = param;
- 	struct pata_pxa_data *pd = qc->ap->private_data;
- 
--	uint32_t cpu_len, seg_len;
--	dma_addr_t cpu_addr;
--
--	cpu_addr = sg_dma_address(sg);
--	cpu_len = sg_dma_len(sg);
--
--	do {
--		seg_len = (cpu_len > 0x1000) ? 0x1000 : cpu_len;
--
--		pd->dma_desc[pd->dma_desc_id].ddadr = pd->dma_desc_addr +
--			((pd->dma_desc_id + 1) * sizeof(struct pxa_dma_desc));
--
--		pd->dma_desc[pd->dma_desc_id].dcmd = DCMD_BURST32 |
--					DCMD_WIDTH2 | (DCMD_LENGTH & seg_len);
--
--		if (qc->tf.flags & ATA_TFLAG_WRITE) {
--			pd->dma_desc[pd->dma_desc_id].dsadr = cpu_addr;
--			pd->dma_desc[pd->dma_desc_id].dtadr = pd->dma_io_addr;
--			pd->dma_desc[pd->dma_desc_id].dcmd |= DCMD_INCSRCADDR |
--						DCMD_FLOWTRG;
--		} else {
--			pd->dma_desc[pd->dma_desc_id].dsadr = pd->dma_io_addr;
--			pd->dma_desc[pd->dma_desc_id].dtadr = cpu_addr;
--			pd->dma_desc[pd->dma_desc_id].dcmd |= DCMD_INCTRGADDR |
--						DCMD_FLOWSRC;
--		}
--
--		cpu_len -= seg_len;
--		cpu_addr += seg_len;
--		pd->dma_desc_id++;
--
--	} while (cpu_len);
-+	dma_unmap_sg(pd->dma_channel->device->dev,
-+		     qc->sg, pd->dma_len, pd->dma_dir);
- 
--	/* Should not happen */
--	if (seg_len & 0x1f)
--		DALGN |= (1 << pd->dma_dreq);
-+	complete(&pd->dma_done);
+ 	unsigned int		dma_dir;
+@@ -173,14 +175,18 @@ static void pxamci_disable_irq(struct pxamci_host *host, unsigned int mask)
+ 	spin_unlock_irqrestore(&host->lock, flags);
  }
  
- /*
-@@ -106,28 +73,51 @@ static void pxa_load_dmac(struct scatterlist *sg, struct ata_queued_cmd *qc)
- static void pxa_qc_prep(struct ata_queued_cmd *qc)
++static void pxamci_dma_irq(void *param);
++
+ static void pxamci_setup_data(struct pxamci_host *host, struct mmc_data *data)
  {
- 	struct pata_pxa_data *pd = qc->ap->private_data;
--	int si = 0;
--	struct scatterlist *sg;
-+	struct dma_slave_config	config;
 +	struct dma_async_tx_descriptor *tx;
-+	struct dma_chan *chan = pd->dma_channel;
++	enum dma_data_direction direction;
++	struct dma_slave_config	config;
++	struct dma_chan *chan;
+ 	unsigned int nob = data->blocks;
+ 	unsigned long long clks;
+ 	unsigned int timeout;
+-	bool dalgn = 0;
+-	u32 dcmd;
+-	int i;
 +	int ret;
  
- 	if (!(qc->flags & ATA_QCFLAG_DMAMAP))
- 		return;
+ 	host->data = data;
  
--	pd->dma_desc_id = 0;
--
--	DCSR(pd->dma_channel) = 0;
--	DALGN &= ~(1 << pd->dma_dreq);
+@@ -195,54 +201,46 @@ static void pxamci_setup_data(struct pxamci_host *host, struct mmc_data *data)
+ 	timeout = (unsigned int)clks + (data->timeout_clks << host->clkrt);
+ 	writel((timeout + 255) / 256, host->base + MMC_RDTO);
+ 
 +	memset(&config, 0, sizeof(config));
++	config.src_addr_width = DMA_SLAVE_BUSWIDTH_1_BYTE;
++	config.dst_addr_width = DMA_SLAVE_BUSWIDTH_1_BYTE;
++	config.src_addr = host->res->start + MMC_RXFIFO;
++	config.dst_addr = host->res->start + MMC_TXFIFO;
++	config.src_maxburst = 32;
++	config.dst_maxburst = 32;
 +
-+	if (qc->tf.flags & ATA_TFLAG_WRITE) {
-+		config.dst_maxburst = 32;
-+		config.dst_addr = pd->dma_io_addr;
-+		config.dst_addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
-+		config.direction = DMA_MEM_TO_DEV;
-+		pd->dma_dir = DMA_TO_DEVICE;
-+	} else {
-+		config.src_maxburst = 32;
-+		config.src_addr = pd->dma_io_addr;
-+		config.src_addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
-+		config.direction = DMA_DEV_TO_MEM;
-+		pd->dma_dir = DMA_FROM_DEVICE;
-+	}
+ 	if (data->flags & MMC_DATA_READ) {
+ 		host->dma_dir = DMA_FROM_DEVICE;
+-		dcmd = DCMD_INCTRGADDR | DCMD_FLOWSRC;
+-		DRCMR(host->dma_drcmrtx) = 0;
+-		DRCMR(host->dma_drcmrrx) = host->dma | DRCMR_MAPVLD;
++		direction = DMA_DEV_TO_MEM;
++		chan = host->dma_chan_rx;
+ 	} else {
+ 		host->dma_dir = DMA_TO_DEVICE;
+-		dcmd = DCMD_INCSRCADDR | DCMD_FLOWTRG;
+-		DRCMR(host->dma_drcmrrx) = 0;
+-		DRCMR(host->dma_drcmrtx) = host->dma | DRCMR_MAPVLD;
++		direction = DMA_MEM_TO_DEV;
++		chan = host->dma_chan_tx;
+ 	}
  
--	for_each_sg(qc->sg, sg, qc->n_elem, si)
--		pxa_load_dmac(sg, qc);
+-	dcmd |= DCMD_BURST32 | DCMD_WIDTH1;
++	config.direction = direction;
++
 +	ret = dmaengine_slave_config(chan, &config);
 +	if (ret < 0) {
-+		pr_err("dmaengine_slave_config() failed\n");
++		dev_err(mmc_dev(host->mmc), "dma slave config failed\n");
 +		return;
 +	}
  
--	pd->dma_desc[pd->dma_desc_id - 1].ddadr = DDADR_STOP;
-+	pd->dma_len = dma_map_sg(chan->device->dev, qc->sg, qc->n_elem,
-+				 pd->dma_dir);
+-	host->dma_len = dma_map_sg(mmc_dev(host->mmc), data->sg, data->sg_len,
++	host->dma_len = dma_map_sg(chan->device->dev, data->sg, data->sg_len,
+ 				   host->dma_dir);
  
--	/* Fire IRQ only at the end of last block */
--	pd->dma_desc[pd->dma_desc_id - 1].dcmd |= DCMD_ENDIRQEN;
-+	tx = dmaengine_prep_slave_sg(chan, qc->sg, pd->dma_len,
-+				     config.direction,
+-	for (i = 0; i < host->dma_len; i++) {
+-		unsigned int length = sg_dma_len(&data->sg[i]);
+-		host->sg_cpu[i].dcmd = dcmd | length;
+-		if (length & 31 && !(data->flags & MMC_DATA_READ))
+-			host->sg_cpu[i].dcmd |= DCMD_ENDIRQEN;
+-		/* Not aligned to 8-byte boundary? */
+-		if (sg_dma_address(&data->sg[i]) & 0x7)
+-			dalgn = 1;
+-		if (data->flags & MMC_DATA_READ) {
+-			host->sg_cpu[i].dsadr = host->res->start + MMC_RXFIFO;
+-			host->sg_cpu[i].dtadr = sg_dma_address(&data->sg[i]);
+-		} else {
+-			host->sg_cpu[i].dsadr = sg_dma_address(&data->sg[i]);
+-			host->sg_cpu[i].dtadr = host->res->start + MMC_TXFIFO;
+-		}
+-		host->sg_cpu[i].ddadr = host->sg_dma + (i + 1) *
+-					sizeof(struct pxa_dma_desc);
++	tx = dmaengine_prep_slave_sg(chan, data->sg, host->dma_len, direction,
 +				     DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
-+	if (tx == NULL) {
-+		pr_err("dmaengine_prep_slave_sg() failed\n");
++	if (!tx) {
++		dev_err(mmc_dev(host->mmc), "prep_slave_sg() failed\n");
 +		return;
-+	}
+ 	}
+-	host->sg_cpu[host->dma_len - 1].ddadr = DDADR_STOP;
+-	wmb();
  
--	DDADR(pd->dma_channel) = pd->dma_desc_addr;
--	DRCMR(pd->dma_dreq) = DRCMR_MAPVLD | pd->dma_channel;
-+	tx->callback = pxa_ata_dma_irq;
-+	tx->callback_param = pd->ap;
+-	/*
+-	 * The PXA27x DMA controller encounters overhead when working with
+-	 * unaligned (to 8-byte boundaries) data, so switch on byte alignment
+-	 * mode only if we have unaligned data.
+-	 */
+-	if (dalgn)
+-		DALGN |= (1 << host->dma);
+-	else
+-		DALGN &= ~(1 << host->dma);
+-	DDADR(host->dma) = host->sg_dma;
++	tx->callback = pxamci_dma_irq;
++	tx->callback_param = host;
++
++	host->dma_cookie = dmaengine_submit(tx);
  
-+	pd->dma_cookie = dmaengine_submit(tx);
+ 	/*
+ 	 * workaround for erratum #91:
+@@ -251,7 +249,7 @@ static void pxamci_setup_data(struct pxamci_host *host, struct mmc_data *data)
+ 	 * before starting DMA.
+ 	 */
+ 	if (!cpu_is_pxa27x() || data->flags & MMC_DATA_READ)
+-		DCSR(host->dma) = DCSR_RUN;
++		dma_async_issue_pending(chan);
  }
  
- /*
-@@ -146,7 +136,7 @@ static void pxa_bmdma_start(struct ata_queued_cmd *qc)
- {
- 	struct pata_pxa_data *pd = qc->ap->private_data;
- 	init_completion(&pd->dma_done);
--	DCSR(pd->dma_channel) = DCSR_RUN;
-+	dma_async_issue_pending(pd->dma_channel);
- }
+ static void pxamci_start_cmd(struct pxamci_host *host, struct mmc_command *cmd, unsigned int cmdat)
+@@ -343,7 +341,7 @@ static int pxamci_cmd_done(struct pxamci_host *host, unsigned int stat)
+ 		 * enable DMA late
+ 		 */
+ 		if (cpu_is_pxa27x() && host->data->flags & MMC_DATA_WRITE)
+-			DCSR(host->dma) = DCSR_RUN;
++			dma_async_issue_pending(host->dma_chan_tx);
+ 	} else {
+ 		pxamci_finish_request(host, host->mrq);
+ 	}
+@@ -358,9 +356,8 @@ static int pxamci_data_done(struct pxamci_host *host, unsigned int stat)
+ 	if (!data)
+ 		return 0;
  
- /*
-@@ -155,12 +145,7 @@ static void pxa_bmdma_start(struct ata_queued_cmd *qc)
- static void pxa_bmdma_stop(struct ata_queued_cmd *qc)
- {
- 	struct pata_pxa_data *pd = qc->ap->private_data;
--
--	if ((DCSR(pd->dma_channel) & DCSR_RUN) &&
--		wait_for_completion_timeout(&pd->dma_done, HZ))
--		dev_err(qc->ap->dev, "Timeout waiting for DMA completion!");
--
--	DCSR(pd->dma_channel) = 0;
-+	dmaengine_terminate_all(pd->dma_channel);
- }
+-	DCSR(host->dma) = 0;
+-	dma_unmap_sg(mmc_dev(host->mmc), data->sg, data->sg_len,
+-		     host->dma_dir);
++	dma_unmap_sg(host->dma_chan_rx->device->dev,
++		     data->sg, data->sg_len, host->dma_dir);
  
- /*
-@@ -171,8 +156,12 @@ static unsigned char pxa_bmdma_status(struct ata_port *ap)
- {
- 	struct pata_pxa_data *pd = ap->private_data;
- 	unsigned char ret = ATA_DMA_INTR;
-+	struct dma_tx_state tx_state;
-+	enum dma_status status;
- 
--	if (pd->dma_dcsr & DCSR_BUSERR)
-+	status = dmaengine_tx_status(pd->dma_channel, pd->dma_cookie,
-+				     &tx_state);
-+	if (status == DMA_ERROR)
- 		ret |= ATA_DMA_ERR;
- 
- 	return ret;
-@@ -214,21 +203,6 @@ static struct ata_port_operations pxa_ata_port_ops = {
- 	.qc_prep		= pxa_qc_prep,
+ 	if (stat & STAT_READ_TIME_OUT)
+ 		data->error = -ETIMEDOUT;
+@@ -552,17 +549,25 @@ static const struct mmc_host_ops pxamci_ops = {
+ 	.enable_sdio_irq	= pxamci_enable_sdio_irq,
  };
  
--/*
-- * DMA interrupt handler.
-- */
--static void pxa_ata_dma_irq(int dma, void *port)
--{
--	struct ata_port *ap = port;
--	struct pata_pxa_data *pd = ap->private_data;
--
--	pd->dma_dcsr = DCSR(dma);
--	DCSR(dma) = pd->dma_dcsr;
--
--	if (pd->dma_dcsr & DCSR_STOPSTATE)
--		complete(&pd->dma_done);
--}
--
- static int pxa_ata_probe(struct platform_device *pdev)
+-static void pxamci_dma_irq(int dma, void *devid)
++static void pxamci_dma_irq(void *param)
  {
- 	struct ata_host *host;
-@@ -239,6 +213,7 @@ static int pxa_ata_probe(struct platform_device *pdev)
- 	struct resource *dma_res;
- 	struct resource *irq_res;
- 	struct pata_pxa_pdata *pdata = pdev->dev.platform_data;
+-	struct pxamci_host *host = devid;
+-	int dcsr = DCSR(dma);
+-	DCSR(dma) = dcsr & ~DCSR_STOPIRQEN;
++	struct pxamci_host *host = param;
++	struct dma_tx_state state;
++	enum dma_status status;
++	struct dma_chan *chan;
+ 
+-	if (dcsr & DCSR_ENDINTR) {
++	if (host->data->flags & MMC_DATA_READ)
++		chan = host->dma_chan_rx;
++	else
++		chan = host->dma_chan_tx;
++
++	status = dmaengine_tx_status(chan, host->dma_cookie, &state);
++
++	if (likely(status == DMA_SUCCESS)) {
+ 		writel(BUF_PART_FULL, host->base + MMC_PRTBUF);
+ 	} else {
+-		pr_err("%s: DMA error on channel %d (DCSR=%#x)\n",
+-		       mmc_hostname(host->mmc), dma, dcsr);
++		pr_err("%s: DMA error on %s channel\n", mmc_hostname(host->mmc),
++			host->data->flags & MMC_DATA_READ ? "rx" : "tx");
+ 		host->data->error = -EIO;
+ 		pxamci_data_done(host, 0);
+ 	}
+@@ -626,6 +631,7 @@ static int pxamci_probe(struct platform_device *pdev)
+ 	struct pxamci_host *host = NULL;
+ 	struct resource *r, *dmarx, *dmatx;
+ 	int ret, irq, gpio_cd = -1, gpio_ro = -1, gpio_power = -1;
 +	dma_cap_mask_t mask;
- 	int ret = 0;
  
- 	/*
-@@ -333,38 +308,30 @@ static int pxa_ata_probe(struct platform_device *pdev)
- 	if (!data)
- 		return -ENOMEM;
+ 	ret = pxamci_of_init(pdev);
+ 	if (ret)
+@@ -671,7 +677,6 @@ static int pxamci_probe(struct platform_device *pdev)
  
-+	data->ap = ap;
- 	ap->private_data = data;
--	data->dma_dreq = pdata->dma_dreq;
- 	data->dma_io_addr = dma_res->start;
+ 	host = mmc_priv(mmc);
+ 	host->mmc = mmc;
+-	host->dma = -1;
+ 	host->pdata = pdev->dev.platform_data;
+ 	host->clkrt = CLKRT_OFF;
  
- 	/*
--	 * Allocate space for the DMA descriptors
--	 */
--	data->dma_desc = dmam_alloc_coherent(&pdev->dev, PAGE_SIZE,
--					&data->dma_desc_addr, GFP_KERNEL);
--	if (!data->dma_desc)
--		return -EINVAL;
+@@ -702,12 +707,6 @@ static int pxamci_probe(struct platform_device *pdev)
+ 				     MMC_CAP_SD_HIGHSPEED;
+ 	}
+ 
+-	host->sg_cpu = dma_alloc_coherent(&pdev->dev, PAGE_SIZE, &host->sg_dma, GFP_KERNEL);
+-	if (!host->sg_cpu) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
 -
--	/*
- 	 * Request the DMA channel
- 	 */
--	data->dma_channel = pxa_request_dma(DRV_NAME, DMA_PRIO_LOW,
--						pxa_ata_dma_irq, ap);
--	if (data->dma_channel < 0)
+ 	spin_lock_init(&host->lock);
+ 	host->res = r;
+ 	host->irq = irq;
+@@ -728,32 +727,50 @@ static int pxamci_probe(struct platform_device *pdev)
+ 	writel(64, host->base + MMC_RESTO);
+ 	writel(host->imask, host->base + MMC_I_MASK);
+ 
+-	host->dma = pxa_request_dma(DRIVER_NAME, DMA_PRIO_LOW,
+-				    pxamci_dma_irq, host);
+-	if (host->dma < 0) {
+-		ret = -EBUSY;
+-		goto out;
+-	}
+-
+ 	ret = request_irq(host->irq, pxamci_irq, 0, DRIVER_NAME, host);
+ 	if (ret)
+ 		goto out;
+ 
+ 	platform_set_drvdata(pdev, mmc);
+ 
+-	dmarx = platform_get_resource(pdev, IORESOURCE_DMA, 0);
+-	if (!dmarx) {
+-		ret = -ENXIO;
++	if (!pdev->dev.of_node) {
++		dmarx = platform_get_resource(pdev, IORESOURCE_DMA, 0);
++		if (!dmarx) {
++			ret = -ENXIO;
++			goto out;
++		}
++		host->dma_drcmrrx = dmarx->start;
++
++		dmatx = platform_get_resource(pdev, IORESOURCE_DMA, 1);
++		if (!dmatx) {
++			ret = -ENXIO;
++			goto out;
++		}
++		host->dma_drcmrtx = dmatx->start;
++	}
++
 +	dma_cap_zero(mask);
 +	dma_cap_set(DMA_SLAVE, mask);
 +
-+	data->dma_channel =
++	host->dma_chan_rx =
 +		dma_request_slave_channel_compat(mask, mmp_pdma_filter_fn,
-+						 &pdata->dma_dreq, &pdev->dev,
-+						 "data");
-+	if (data->dma_channel == NULL)
- 		return -EBUSY;
++						 &host->dma_drcmrrx,
++						 &pdev->dev, "rx");
++	if (host->dma_chan_rx == NULL) {
++		dev_err(&pdev->dev, "unable to request rx dma channel\n");
++		ret = -ENODEV;
+ 		goto out;
+ 	}
+-	host->dma_drcmrrx = dmarx->start;
  
- 	/*
--	 * Stop and clear the DMA channel
--	 */
--	DCSR(data->dma_channel) = 0;
+-	dmatx = platform_get_resource(pdev, IORESOURCE_DMA, 1);
+-	if (!dmatx) {
+-		ret = -ENXIO;
++	host->dma_chan_tx =
++		dma_request_slave_channel_compat(mask, mmp_pdma_filter_fn,
++						 &host->dma_drcmrtx,
++						 &pdev->dev, "tx");
++	if (host->dma_chan_tx == NULL) {
++		dev_err(&pdev->dev, "unable to request tx dma channel\n");
++		ret = -ENODEV;
+ 		goto out;
+ 	}
+-	host->dma_drcmrtx = dmatx->start;
+ 
+ 	if (host->pdata) {
+ 		gpio_cd = host->pdata->gpio_card_detect;
+@@ -814,12 +831,12 @@ err_gpio_ro:
+ 	gpio_free(gpio_power);
+  out:
+ 	if (host) {
+-		if (host->dma >= 0)
+-			pxa_free_dma(host->dma);
++		if (host->dma_chan_rx)
++			dma_release_channel(host->dma_chan_rx);
++		if (host->dma_chan_tx)
++			dma_release_channel(host->dma_chan_tx);
+ 		if (host->base)
+ 			iounmap(host->base);
+-		if (host->sg_cpu)
+-			dma_free_coherent(&pdev->dev, PAGE_SIZE, host->sg_cpu, host->sg_dma);
+ 		if (host->clk)
+ 			clk_put(host->clk);
+ 	}
+@@ -863,13 +880,12 @@ static int pxamci_remove(struct platform_device *pdev)
+ 		       END_CMD_RES|PRG_DONE|DATA_TRAN_DONE,
+ 		       host->base + MMC_I_MASK);
+ 
+-		DRCMR(host->dma_drcmrrx) = 0;
+-		DRCMR(host->dma_drcmrtx) = 0;
 -
--	/*
- 	 * Activate the ATA host
- 	 */
- 	ret = ata_host_activate(host, irq_res->start, ata_sff_interrupt,
- 				pdata->irq_flags, &pxa_ata_sht);
- 	if (ret)
--		pxa_free_dma(data->dma_channel);
-+		dma_release_channel(data->dma_channel);
+ 		free_irq(host->irq, host);
+-		pxa_free_dma(host->dma);
++		dmaengine_terminate_all(host->dma_chan_rx);
++		dmaengine_terminate_all(host->dma_chan_tx);
++		dma_release_channel(host->dma_chan_rx);
++		dma_release_channel(host->dma_chan_tx);
+ 		iounmap(host->base);
+-		dma_free_coherent(&pdev->dev, PAGE_SIZE, host->sg_cpu, host->sg_dma);
  
- 	return ret;
- }
-@@ -374,7 +341,8 @@ static int pxa_ata_remove(struct platform_device *pdev)
- 	struct ata_host *host = platform_get_drvdata(pdev);
- 	struct pata_pxa_data *data = host->ports[0]->private_data;
- 
--	pxa_free_dma(data->dma_channel);
-+	dmaengine_terminate_all(data->dma_channel);
-+	dma_release_channel(data->dma_channel);
- 
- 	ata_host_detach(host);
+ 		clk_put(host->clk);
  
 -- 
 1.8.3.1
