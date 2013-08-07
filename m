@@ -1,14 +1,13 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V72uS-0006mY-ER
- for linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 12:32:13 +0000
+ id 1V72uX-0006nI-Ep
+ for linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 12:32:18 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 05/14] mtd: nand: pxa3xx: Use 'length override' in ONFI
- paramater page read
-Date: Wed,  7 Aug 2013 09:31:10 -0300
-Message-Id: <1375878679-18098-6-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH v2 06/14] mtd: nand: pxa3xx: Add a local loop variable
+Date: Wed,  7 Aug 2013 09:31:11 -0300
+Message-Id: <1375878679-18098-7-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1375878679-18098-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1375878679-18098-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Lior Amsalem <alior@marvell.com>,
@@ -28,50 +27,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The ONFI command 'parameter page read' needs a non-standard length.
-Therefore, we enable the 'length override' field in NDCB0 and set
-a non-zero 'length count' in NDCB3.
-
-Additionally, the 'spare enable' bit must be disabled for any command
-that sets a non-zero 'length count' in NDCB3.
+This is just a cosmetic change, to make the code more readable.
 
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/mtd/nand/pxa3xx_nand.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 65e3ee9..d1e8ddb3 100644
+index d1e8ddb3..f5626c3 100644
 --- a/drivers/mtd/nand/pxa3xx_nand.c
 +++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -80,6 +80,7 @@
- #define NDSR_RDDREQ		(0x1 << 1)
- #define NDSR_WRCMDREQ		(0x1)
+@@ -1318,8 +1318,9 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
+ 	info->variant = pxa3xx_nand_get_variant(pdev);
+ 	probe_success = 0;
+ 	for (cs = 0; cs < pdata->num_cs; cs++) {
++		struct mtd_info *mtd = info->host[cs]->mtd;
+ 		info->cs = cs;
+-		ret = pxa3xx_nand_scan(info->host[cs]->mtd);
++		ret = pxa3xx_nand_scan(mtd);
+ 		if (ret) {
+ 			dev_warn(&pdev->dev, "failed to scan nand at cs %d\n",
+ 				cs);
+@@ -1327,7 +1328,7 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
+ 		}
  
-+#define NDCB0_LEN_OVRD		(0x1 << 28)
- #define NDCB0_ST_ROW_EN         (0x1 << 26)
- #define NDCB0_AUTO_RS		(0x1 << 25)
- #define NDCB0_CSEL		(0x1 << 24)
-@@ -553,6 +554,9 @@ static int prepare_command_pool(struct pxa3xx_nand_info *info, int command,
- 	case NAND_CMD_READOOB:
- 		pxa3xx_set_datasize(info);
- 		break;
-+	case NAND_CMD_PARAM:
-+		info->use_spare = 0;
-+		break;
- 	case NAND_CMD_SEQIN:
- 		exec_cmd = 0;
- 		break;
-@@ -628,8 +632,10 @@ static int prepare_command_pool(struct pxa3xx_nand_info *info, int command,
- 		info->buf_count = 256;
- 		info->ndcb0 |= NDCB0_CMD_TYPE(0)
- 				| NDCB0_ADDR_CYC(1)
-+				| NDCB0_LEN_OVRD
- 				| cmd;
- 		info->ndcb1 = (column & 0xFF);
-+		info->ndcb3 = 256;
- 		info->data_size = 256;
- 		break;
- 
+ 		ppdata.of_node = pdev->dev.of_node;
+-		ret = mtd_device_parse_register(info->host[cs]->mtd, NULL,
++		ret = mtd_device_parse_register(mtd, NULL,
+ 						&ppdata, pdata->parts[cs],
+ 						pdata->nr_parts[cs]);
+ 		if (!ret)
 -- 
 1.8.1.5
