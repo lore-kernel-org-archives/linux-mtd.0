@@ -1,26 +1,23 @@
-Received: from mailout2.samsung.com ([203.254.224.25])
+Received: from mailout3.samsung.com ([203.254.224.33])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V6xzP-0006Bi-Gz
- for linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 07:17:01 +0000
-Received: from epcpsbgr3.samsung.com
- (u143.gpu120.samsung.co.kr [203.254.230.143])
- by mailout2.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ id 1V6y0G-0006E4-83
+ for linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 07:17:53 +0000
+Received: from epcpsbgr4.samsung.com
+ (u144.gpu120.samsung.co.kr [203.254.230.144])
+ by mailout3.samsung.com (Oracle Communications Messaging Server 7u4-24.01
  (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MR5002I6G7OCKA0@mailout2.samsung.com> for
- linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 16:16:36 +0900 (KST)
+ with ESMTP id <0MR5001PGG8RX890@mailout3.samsung.com> for
+ linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 16:17:30 +0900 (KST)
 From: Jingoo Han <jg1.han@samsung.com>
 To: 'Artem Bityutskiy' <artem.bityutskiy@linux.intel.com>
-References: 
-In-reply-to: 
-Subject: [PATCH 5/7] mtd: spear_smi: add missing __iomem annotation
-Date: Wed, 07 Aug 2013 16:16:36 +0900
-Message-id: <004501ce933e$0d7267e0$285737a0$@samsung.com>
+Subject: [PATCH 6/7] mtd: maps: cfi_flagadm: add missing __iomem annotation
+Date: Wed, 07 Aug 2013 16:17:29 +0900
+Message-id: <004601ce933e$2d73eaf0$885bc0d0$@samsung.com>
 MIME-version: 1.0
 Content-type: text/plain; charset=us-ascii
 Content-transfer-encoding: 7bit
 Content-language: ko
-Cc: Jingoo Han <jg1.han@samsung.com>, linux-mtd@lists.infradead.org,
- Srinivas Kandagatla <srinivas.kandagatla@st.com>,
+Cc: linux-mtd@lists.infradead.org, Jingoo Han <jg1.han@samsung.com>,
  'David Woodhouse' <dwmw2@infradead.org>,
  'Artem Bityutskiy' <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,72 +29,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Added missing __iomem annotation in order to fix the following
-sparse warnings:
+Added missing __iomem annotation and staticized local symbols
+in order to fix the following sparse warnings:
 
-drivers/mtd/devices/spear_smi.c:566:13: warning: incorrect type in assignment (different address spaces)
-drivers/mtd/devices/spear_smi.c:566:13:    expected void *src
-drivers/mtd/devices/spear_smi.c:566:13:    got void [noderef] <asn:2>*
-drivers/mtd/devices/spear_smi.c:586:9: warning: incorrect type in argument 2 (different address spaces)
-drivers/mtd/devices/spear_smi.c:586:9:    expected void const volatile [noderef] <asn:2>*<noident>
-drivers/mtd/devices/spear_smi.c:586:9:    got unsigned char [usertype] *<noident>
-drivers/mtd/devices/spear_smi.c:659:14: warning: incorrect type in assignment (different address spaces)
-drivers/mtd/devices/spear_smi.c:659:14:    expected void *dest
-drivers/mtd/devices/spear_smi.c:659:14:    got void [noderef] <asn:2>*
-drivers/mtd/devices/spear_smi.c:620:9: warning: incorrect type in argument 1 (different address spaces)
-drivers/mtd/devices/spear_smi.c:620:9:    expected void volatile [noderef] <asn:2>*<noident>
-drivers/mtd/devices/spear_smi.c:620:9:    got void *dest
-drivers/mtd/devices/spear_smi.c:620:9: warning: incorrect type in argument 1 (different address spaces)
-drivers/mtd/devices/spear_smi.c:620:9:    expected void volatile [noderef] <asn:2>*<noident>
-drivers/mtd/devices/spear_smi.c:620:9:    got void *dest
-drivers/mtd/devices/spear_smi.c:620:9: warning: incorrect type in argument 1 (different address spaces)
-drivers/mtd/devices/spear_smi.c:620:9:    expected void volatile [noderef] <asn:2>*<noident>
-drivers/mtd/devices/spear_smi.c:620:9:    got void *dest
+drivers/mtd/maps/cfi_flagadm.c:58:17: warning: symbol 'flagadm_map' was not declared. Should it be static?
+drivers/mtd/maps/cfi_flagadm.c:64:22: warning: symbol 'flagadm_parts' was not declared. Should it be static?
+drivers/mtd/maps/cfi_flagadm.c:115:18: warning: cast removes address space of expression
+drivers/mtd/maps/cfi_flagadm.c:115:18: warning: incorrect type in argument 1 (different address spaces)
+drivers/mtd/maps/cfi_flagadm.c:115:18:    expected void volatile [noderef] <asn:2>*addr
+drivers/mtd/maps/cfi_flagadm.c:115:18:    got void *<noident>
+drivers/mtd/maps/cfi_flagadm.c:126:26: warning: cast removes address space of expression
+drivers/mtd/maps/cfi_flagadm.c:126:26: warning: incorrect type in argument 1 (different address spaces)
+drivers/mtd/maps/cfi_flagadm.c:126:26:    expected void volatile [noderef] <asn:2>*addr
+drivers/mtd/maps/cfi_flagadm.c:126:26:    got void *<noident>
+drivers/mtd/maps/cfi_flagadm.c:127:36: warning: Using plain integer as NULL pointer
 
 Signed-off-by: Jingoo Han <jg1.han@samsung.com>
 ---
- drivers/mtd/devices/spear_smi.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/mtd/maps/cfi_flagadm.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/devices/spear_smi.c b/drivers/mtd/devices/spear_smi.c
-index 092bb68..4238214 100644
---- a/drivers/mtd/devices/spear_smi.c
-+++ b/drivers/mtd/devices/spear_smi.c
-@@ -550,7 +550,7 @@ static int spear_mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
- {
- 	struct spear_snor_flash *flash = get_flash_data(mtd);
- 	struct spear_smi *dev = mtd->priv;
--	void *src;
-+	void __iomem *src;
- 	u32 ctrlreg1, val;
- 	int ret;
+diff --git a/drivers/mtd/maps/cfi_flagadm.c b/drivers/mtd/maps/cfi_flagadm.c
+index d16fc9d..d504b3d 100644
+--- a/drivers/mtd/maps/cfi_flagadm.c
++++ b/drivers/mtd/maps/cfi_flagadm.c
+@@ -55,13 +55,13 @@
+ #define FLASH_PARTITION3_SIZE 0x001C0000
  
-@@ -583,7 +583,7 @@ static int spear_mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
  
- 	writel(val, dev->io_base + SMI_CR1);
+-struct map_info flagadm_map = {
++static struct map_info flagadm_map = {
+ 		.name =		"FlagaDM flash device",
+ 		.size =		FLASH_SIZE,
+ 		.bankwidth =	2,
+ };
  
--	memcpy_fromio(buf, (u8 *)src, len);
-+	memcpy_fromio(buf, src, len);
+-struct mtd_partition flagadm_parts[] = {
++static struct mtd_partition flagadm_parts[] = {
+ 	{
+ 		.name =		"Bootloader",
+ 		.offset	=	FLASH_PARTITION0_ADDR,
+@@ -112,7 +112,7 @@ static int __init init_flagadm(void)
+ 		return 0;
+ 	}
  
- 	/* restore ctrl reg1 */
- 	writel(ctrlreg1, dev->io_base + SMI_CR1);
-@@ -596,7 +596,7 @@ static int spear_mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
+-	iounmap((void *)flagadm_map.virt);
++	iounmap((void __iomem *)flagadm_map.virt);
+ 	return -ENXIO;
  }
  
- static inline int spear_smi_cpy_toio(struct spear_smi *dev, u32 bank,
--		void *dest, const void *src, size_t len)
-+		void __iomem *dest, const void *src, size_t len)
- {
- 	int ret;
- 	u32 ctrlreg1;
-@@ -643,7 +643,7 @@ static int spear_mtd_write(struct mtd_info *mtd, loff_t to, size_t len,
- {
- 	struct spear_snor_flash *flash = get_flash_data(mtd);
- 	struct spear_smi *dev = mtd->priv;
--	void *dest;
-+	void __iomem *dest;
- 	u32 page_offset, page_size;
- 	int ret;
+@@ -123,8 +123,8 @@ static void __exit cleanup_flagadm(void)
+ 		map_destroy(mymtd);
+ 	}
+ 	if (flagadm_map.virt) {
+-		iounmap((void *)flagadm_map.virt);
+-		flagadm_map.virt = 0;
++		iounmap((void __iomem *)flagadm_map.virt);
++		flagadm_map.virt = NULL;
+ 	}
+ }
  
 -- 
 1.7.10.4
