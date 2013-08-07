@@ -1,13 +1,13 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V72uX-0006nI-Ep
- for linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 12:32:18 +0000
+ id 1V72uc-0006oF-EU
+ for linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 12:32:24 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 06/14] mtd: nand: pxa3xx: Add a local loop variable
-Date: Wed,  7 Aug 2013 09:31:11 -0300
-Message-Id: <1375878679-18098-7-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH v2 07/14] mtd: nand: pxa3xx: Remove hardcoded mtd name
+Date: Wed,  7 Aug 2013 09:31:12 -0300
+Message-Id: <1375878679-18098-8-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1375878679-18098-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1375878679-18098-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Lior Amsalem <alior@marvell.com>,
@@ -27,36 +27,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is just a cosmetic change, to make the code more readable.
+There's no advantage in using a hardcoded name for the mtd device.
+Instead use the provided by the platform_device.
 
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/pxa3xx_nand.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index d1e8ddb3..f5626c3 100644
+index f5626c3..122e77c 100644
 --- a/drivers/mtd/nand/pxa3xx_nand.c
 +++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -1318,8 +1318,9 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
- 	info->variant = pxa3xx_nand_get_variant(pdev);
+@@ -244,8 +244,6 @@ static struct pxa3xx_nand_flash builtin_flash_types[] = {
+ /* Define a default flash type setting serve as flash detecting only */
+ #define DEFAULT_FLASH_TYPE (&builtin_flash_types[0])
+ 
+-const char *mtd_names[] = {"pxa3xx_nand-0", "pxa3xx_nand-1", NULL};
+-
+ #define NDTR0_tCH(c)	(min((c), 7) << 19)
+ #define NDTR0_tCS(c)	(min((c), 7) << 16)
+ #define NDTR0_tWH(c)	(min((c), 7) << 11)
+@@ -1082,8 +1080,6 @@ KEEP_CONFIG:
+ 		host->row_addr_cycles = 3;
+ 	else
+ 		host->row_addr_cycles = 2;
+-
+-	mtd->name = mtd_names[0];
+ 	return nand_scan_tail(mtd);
+ }
+ 
+@@ -1319,6 +1315,8 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
  	probe_success = 0;
  	for (cs = 0; cs < pdata->num_cs; cs++) {
-+		struct mtd_info *mtd = info->host[cs]->mtd;
+ 		struct mtd_info *mtd = info->host[cs]->mtd;
++
++		mtd->name = pdev->name;
  		info->cs = cs;
--		ret = pxa3xx_nand_scan(info->host[cs]->mtd);
-+		ret = pxa3xx_nand_scan(mtd);
+ 		ret = pxa3xx_nand_scan(mtd);
  		if (ret) {
- 			dev_warn(&pdev->dev, "failed to scan nand at cs %d\n",
- 				cs);
-@@ -1327,7 +1328,7 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
- 		}
- 
- 		ppdata.of_node = pdev->dev.of_node;
--		ret = mtd_device_parse_register(info->host[cs]->mtd, NULL,
-+		ret = mtd_device_parse_register(mtd, NULL,
- 						&ppdata, pdata->parts[cs],
- 						pdata->nr_parts[cs]);
- 		if (!ret)
 -- 
 1.8.1.5
