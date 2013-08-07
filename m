@@ -1,14 +1,13 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V72ue-0006oG-H5
- for linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 12:32:27 +0000
+ id 1V72ui-0006oF-Km
+ for linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 12:32:31 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 12/14] mtd: nand: pxa3xx: Allow devices with no dma
- resources
-Date: Wed,  7 Aug 2013 09:31:17 -0300
-Message-Id: <1375878679-18098-13-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH v2 13/14] mtd: nand: pxa3xx: Increase data buffer size
+Date: Wed,  7 Aug 2013 09:31:18 -0300
+Message-Id: <1375878679-18098-14-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1375878679-18098-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1375878679-18098-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Lior Amsalem <alior@marvell.com>,
@@ -28,77 +27,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When use_dma=0 there's no point in requesting resources for dma,
-since they won't be used anyway. Therefore we remove that requirement,
-therefore allowing devices without dma to pass the driver probe.
+Devices with 4 KiB pages (plus OOB data) can be detected, so we increase
+the data buffer size. A better solution would be to allocate a buffer
+depending on the detected page size, but that's not possible given
+we need the buffer prior to the device detection.
 
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c | 51 +++++++++++++++++++++++-------------------
- 1 file changed, 28 insertions(+), 23 deletions(-)
+ drivers/mtd/nand/pxa3xx_nand.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 3952680..5994b88 100644
+index 5994b88..e3eb961 100644
 --- a/drivers/mtd/nand/pxa3xx_nand.c
 +++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -1131,30 +1131,35 @@ static int alloc_nand_resource(struct platform_device *pdev)
- 	if (ret < 0)
- 		return ret;
+@@ -906,7 +906,7 @@ static int pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
+  * is: 2048 + 64 = 2112 bytes, allocate a page here for both the
+  * data buffer and the DMA descriptor
+  */
+-#define MAX_BUFF_SIZE	PAGE_SIZE
++#define MAX_BUFF_SIZE	(PAGE_SIZE*2)
  
--	/*
--	 * This is a dirty hack to make this driver work from devicetree
--	 * bindings. It can be removed once we have a prober DMA controller
--	 * framework for DT.
--	 */
--	if (pdev->dev.of_node && of_machine_is_compatible("marvell,pxa3xx")) {
--		info->drcmr_dat = 97;
--		info->drcmr_cmd = 99;
--	} else {
--		r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
--		if (r == NULL) {
--			dev_err(&pdev->dev, "no resource defined for data DMA\n");
--			ret = -ENXIO;
--			goto fail_disable_clk;
--		}
--		info->drcmr_dat = r->start;
--
--		r = platform_get_resource(pdev, IORESOURCE_DMA, 1);
--		if (r == NULL) {
--			dev_err(&pdev->dev, "no resource defined for command DMA\n");
--			ret = -ENXIO;
--			goto fail_disable_clk;
-+	if (use_dma) {
-+		/*
-+		 * This is a dirty hack to make this driver work from
-+		 * devicetree bindings. It can be removed once we have
-+		 * a prober DMA controller framework for DT.
-+		 */
-+		if (pdev->dev.of_node &&
-+		    of_machine_is_compatible("marvell,pxa3xx")) {
-+			info->drcmr_dat = 97;
-+			info->drcmr_cmd = 99;
-+		} else {
-+			r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
-+			if (r == NULL) {
-+				dev_err(&pdev->dev,
-+					"no resource defined for data DMA\n");
-+				ret = -ENXIO;
-+				goto fail_disable_clk;
-+			}
-+			info->drcmr_dat = r->start;
-+
-+			r = platform_get_resource(pdev, IORESOURCE_DMA, 1);
-+			if (r == NULL) {
-+				dev_err(&pdev->dev,
-+					"no resource defined for cmd DMA\n");
-+				ret = -ENXIO;
-+				goto fail_disable_clk;
-+			}
-+			info->drcmr_cmd = r->start;
- 		}
--		info->drcmr_cmd = r->start;
- 	}
- 
- 	irq = platform_get_irq(pdev, 0);
+ #ifdef ARCH_HAS_DMA
+ static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
 -- 
 1.8.1.5
