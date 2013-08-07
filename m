@@ -1,17 +1,15 @@
-Date: Wed, 7 Aug 2013 17:32:58 +0100
+Date: Wed, 7 Aug 2013 17:40:39 +0100
 From: Mark Brown <broonie@kernel.org>
 To: Daniel Mack <zonque@gmail.com>
-Message-ID: <20130807163258.GL6427@sirena.org.uk>
+Message-ID: <20130807164039.GM6427@sirena.org.uk>
 References: <1375889649-14638-1-git-send-email-zonque@gmail.com>
- <1375889649-14638-18-git-send-email-zonque@gmail.com>
- <20130807160743.GI6427@sirena.org.uk> <5202718F.2050507@gmail.com>
+ <1375889649-14638-14-git-send-email-zonque@gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="SUaMdvPJwViBZG9r"
+ protocol="application/pgp-signature"; boundary="TlDjLAx2PuPdVSSH"
 Content-Disposition: inline
-In-Reply-To: <5202718F.2050507@gmail.com>
-Subject: Re: [PATCH 17/20] ASoC: pxa: pxa-pcm-lib: switch over to
- snd-soc-dmaengine-pcm
+In-Reply-To: <1375889649-14638-14-git-send-email-zonque@gmail.com>
+Subject: Re: [PATCH 13/20] ASoC: pxa: pxa-ssp: add DT bindings
 Cc: mark.rutland@arm.com, s.neumann@raumfeld.com, linux-mtd@lists.infradead.org,
  haojian.zhuang@linaro.org, cxie4@marvell.com, lars@metafoo.de, nico@linaro.org,
  vinod.koul@intel.com, marek.vasut@gmail.com,
@@ -31,41 +29,55 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---SUaMdvPJwViBZG9r
+--TlDjLAx2PuPdVSSH
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 07, 2013 at 06:10:55PM +0200, Daniel Mack wrote:
-> On 07.08.2013 18:07, Mark Brown wrote:
+On Wed, Aug 07, 2013 at 05:34:02PM +0200, Daniel Mack wrote:
+> This patch contains a cruel hack for looking up the the DMA request
+> number. The problem here is that the implementation as it stands will
+> allocate the DMA channel from the user of the ssp port, and hence we
+> cannot allocate a real channel here.
+>=20
+> Signed-off-by: Daniel Mack <zonque@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/sound/mrvl,pxa-ssp.txt |  7 +++++++
+>  sound/soc/pxa/pxa-ssp.c                                  | 12 ++++++++++=
+--
+>  2 files changed, 17 insertions(+), 2 deletions(-)
 
-> > Has this been tested with the standalone non-ASoC PXA AC'97 driver?
+So, really this should be part of a generic binding for the SSP device
+but obviously this is just a virtual device that binds to a generic bit
+of hardware that can be used for other applications like SPI.  For the
+ASoC case we could instantiate the DAI from the machine driver but that
+isn't going to work for things like SPI.  I'm not 100% sure what the
+best way to deal with that is.
 
-> Nope. I have no such device.
+One way of doing this is to have two compatible strings for the same bit
+of hardware describing the application.  I'm not sure that's nice but it
+works...
 
-I guess the main test there will be making sure that it builds with ASoC
-disabled.  I'm not sure anything later than PXA3xx ever actually used
-AC'97.
-
---SUaMdvPJwViBZG9r
+--TlDjLAx2PuPdVSSH
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSAna2AAoJELSic+t+oim9btEP+wU2Sp2D2zJ1xk5lnzfx5X+p
-M8HupPL7/qXM5KHxn4NTaW29gdGiD7pY0RgmaZM2uY2UrJ3qnJiW2ZlcuURh5G50
-7ucusaZnBqy+aWzSpCEeOJ0MqarD5HMd98GOzkPEi+RC9wiGRxsveE1Tl2zdrvmv
-VMBVsU/AxBJ0NoiTU7EtBx/low4IeUJtqFfqbHnVLcb9in1zSWqMU8Gsf19wGyrq
-RpQfOLqZTkSoZYvKlh6MagGl7IQWqYbYwuR1Rxb95j4MZSfAsceKS07P3FyuqSVm
-Fj6WAwIZDISVJ4w/25ysUPsVADowSJ4GILNR4xGOjImyjlGh1YC8vpkj1abliyz2
-jJB3SkC2ckLix5hoshuzwA+0l/FgBmHOM/b8YUx+MSQwIiAUYWgnYFH3HffwzRUU
-D0JqJUxsAuds1E4ain+EELb4RuTwaT9hKCSPrp7UQmVnu2a8efLr7ug1AQwLo96S
-iHhyX6cEsKp9Bd+q81zN8mKx3b02V0mzXQyX16kHXj4Zo0IFuEtL5n6ISS/Xc1Hx
-e+rnw77CRZYOpfNfKrNQrjDwYOMLPJQtYXJtAWSHh6jfCtgHlqOg/LE10ks5OPFv
-DUKEu/EMKJLI6MnWixKVTTNi4AP+WCD72GrgRYelu7OtrIPSwXR7fgAbQlokBme/
-Nn/uaTmMQ2HPWJDSmFL+
-=vlQ4
+iQIcBAEBAgAGBQJSAniDAAoJELSic+t+oim9TMYP/i45oaGePHmIANMuc+uuyZ/+
+1jS9C9YSJYhtUFb7FgBgYH1IWq3I/PBINUs8k1zhZfH0pv34WQ3jqf/9Kl/vkYlp
+jKBLdLqk7R333Xfjn8QtuSClbggeGddGFCH18pgIP1eSpZ9/NkmMVzkow1rkj1Bn
+mCgqWf2OQmsfXo4mOdjz3BZXg7LzuvgDImj24AkVSE5E8jxsiSjDh7Nau0zILIHz
+vnPfkJJpQXWQA9n77RRpKDyvKVIaCGyqmGTK0Ed6gTXJWQfUTCMbWN+ae+uebqiL
+CFrsYniOiZio/UcUNYXQkcktQORxCT0+mBeHie6dOuENCDNRmcWFXl8EOJS0Bjhu
+Y+4VGM5Lq3OriJG8x8flSWw7pO5uLjsMBFhg+VAsUfqXUMF1MpwMPoBD1R27deQw
+KkTWC4yBiFObWCbvKB5aci+dyWFfQEAHhbklGNhFbotlfGbMTYjbDDEM+ZYWafo7
+WVN2EieXBvYqmdAyTzVdd9k9dldNdmFiMN48PF5K/XaQ5brXSx2Lmd14y3c3tF2a
++vZDsQ2tWCofmjd1csE6qXL8a9VF1et19NuwUiY43etlykI7rcxlH157rnxfo29d
+/IdmtaUd1ckWXPNkTul0b1Q1LMExm7J+KPyjgc0pfj0Z1qULuCAPCcujnq7gVRPh
+l3waKsapqSptYMC3SaWz
+=Y6tn
 -----END PGP SIGNATURE-----
 
---SUaMdvPJwViBZG9r--
+--TlDjLAx2PuPdVSSH--
