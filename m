@@ -1,30 +1,21 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V72iA-0006YU-AH
- for linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 12:19:30 +0000
-Date: Wed, 7 Aug 2013 09:18:59 -0300
+ id 1V72u8-0006l5-Jc
+ for linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 12:31:53 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH 00/13] pxa3xx patches to support mvebu builds
-Message-ID: <20130807121858.GA2383@localhost>
-References: <1375140263-2028-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <51FA357B.9000804@gmail.com> <20130801102119.GA2410@localhost>
- <51FA3CDC.7040408@gmail.com> <20130801105921.GB2410@localhost>
- <520237E3.4020805@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <520237E3.4020805@gmail.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
- Artem Bityutskiy <dedekind1@gmail.com>, leiwen@marvell.com,
- haojian.zhuang@gmail.com, linux-mtd@lists.infradead.org,
- grinberg@compulab.co.il, Gregory Clement <gregory.clement@free-electrons.com>,
- eric.miao@marvell.com, computersforpeace@gmail.com,
- David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>,
- nikita@compulab.co.il
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH v2 00/14] pxa3xx-nand patches to support mvebu builds
+Date: Wed,  7 Aug 2013 09:31:05 -0300
+Message-Id: <1375878679-18098-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: Lior Amsalem <alior@marvell.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Jason Cooper <jason@lakedaemon.net>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Daniel Mack <zonque@gmail.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,47 +25,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Aug 07, 2013 at 02:04:51PM +0200, Daniel Mack wrote:
-> Hi Ezequiel,
-> 
-> On 01.08.2013 12:59, Ezequiel Garcia wrote:
-> > On Thu, Aug 01, 2013 at 12:47:56PM +0200, Daniel Mack wrote:
-> 
-> >> fbd70cb71103051699c7c49b08d5e107736e3a75 is the first bad commit
-> >> commit fbd70cb71103051699c7c49b08d5e107736e3a75
-> >> Author: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> >> Date:   Mon Jul 29 20:24:13 2013 -0300
-> >>
-> >>     mtd: nand: pxa3xx: Support command buffer #3
-> >>
-> >>     Some newer controllers support a fourth command buffer. This additional
-> >>     command buffer allows to set an arbitrary length count, using the
-> >>     NDCB3.NDLENCNT field, to perform non-standard length operations
-> >>     such as the ONFI parameter page read.
-> >>
-> >>     In controllers without this register, the operation has no effect.
-> > 
-> > ^^^
-> > So the above does not hold :-(
-> > 
-> > Given this shows a significant distinction between PXA NAND controller
-> > (what we could call NFCv1) and Armada 370/XP NAND controller (NFCv2)
-> > I see no way but to introduce a new compatible string for this driver.
-> > 
-> > Following the convention of choosing the first SoC that introduces the
-> > controller, the new compatible would be "marvell,armada370-nand".
-> > 
-> > How does this sound?
-> > 
-> 
-> Are you planning a new version of this series? I'd like to base my
-> pxa-dma patches on top of yours ...
-> 
-> 
+Hello everyone!
 
-Yes, I was just about to send it.
+This patchset is part of the work I'm doing to enable the pxa3xx-nand
+driver to support the NAND controller in Armada 370/XP. While this is
+work in progress, here's a subset of patches I consider good enough
+for mainline.
+
+Since pxa3xx has a mach-specific DMA API, I'm including a few patches to
+ifdef such pxa-specific code in non PXA/MMP platforms.
+This is only an ugly workaround and should be removed once the specific
+DMA API is replaced by dmaengine.
+
+Daniel Mack is already working on that, so it's expected this removal
+will happen soon.
+
+Other than that, the rest of the patchset is just assorted cleanups
+and minor fixes.
+
+This patchset is based in Artem's l2-mtd master branch.
+
+If at all possible and if no regressions are reported I'd like to see
+this queued for v3.12.
+
+Changes from v1:
+
+  * Use __maybe_unused instead of inline keyword for a symbol
+    that's maybe unused. Suggested by Brian Norris.
+
+  * As Daniel Mack reported, the PXA nand controller (NFCv1)
+    lacks an NDBC3 register and it's access is undefined.
+    This means we need a way to distinguish between the two
+    controllers (NFCv1 and NFCv2).
+
+    We introduce a new 'marvell,armada370-nand' compatible
+    string to distinguish the newer controller (NFCv2).
+
+Ezequiel Garcia (14):
+  mtd: nand: pxa3xx: Introduce 'marvell,armada370-nand' compatible
+    string
+  mtd: nand: pxa3xx: Handle ECC and DMA enable/disable properly
+  mtd: nand: pxa3xx: Allow to set/clear the 'spare enable' field
+  mtd: nand: pxa3xx: Support command buffer #3
+  mtd: nand: pxa3xx: Use 'length override' in ONFI paramater page read
+  mtd: nand: pxa3xx: Add a local loop variable
+  mtd: nand: pxa3xx: Remove hardcoded mtd name
+  mtd: nand: pxa3xx: Remove uneeded internal cmdset
+  mtd: nand: pxa3xx: Move cached registers to info structure
+  mtd: nand: pxa3xx: Make dma code dependent on dma capable platforms
+  mtd: nand: pxa3xx: Add __maybe_unused keyword to enable_int()
+  mtd: nand: pxa3xx: Allow devices with no dma resources
+  mtd: nand: pxa3xx: Increase data buffer size
+  mtd: nand: Allow to build pxa3xx_nand on Orion platforms
+
+ drivers/mtd/nand/Kconfig                      |   2 +-
+ drivers/mtd/nand/pxa3xx_nand.c                | 269 ++++++++++++++++----------
+ include/linux/platform_data/mtd-nand-pxa3xx.h |  13 --
+ 3 files changed, 171 insertions(+), 113 deletions(-)
 
 -- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+1.8.1.5
