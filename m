@@ -1,14 +1,14 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V72um-0006oF-Jq
- for linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 12:32:34 +0000
+ id 1V72um-0006qV-Em
+ for linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 12:32:40 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 14/14] mtd: nand: Allow to build pxa3xx_nand on Orion
- platforms
-Date: Wed,  7 Aug 2013 09:31:19 -0300
-Message-Id: <1375878679-18098-15-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH v2 10/14] mtd: nand: pxa3xx: Make dma code dependent on dma
+ capable platforms
+Date: Wed,  7 Aug 2013 09:31:15 -0300
+Message-Id: <1375878679-18098-11-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1375878679-18098-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1375878679-18098-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Lior Amsalem <alior@marvell.com>,
@@ -28,27 +28,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The Armada 370 and Armada XP SoC families, selected by PLAT_ORION,
-have a Nand Flash Controller (NFC) IP very similar to the one present
-in PXA platforms. Therefore, we want to build this driver on PLAT_ORION.
+This patch adds a macro ARCH_HAS_DMA to compile-out arch specific
+dma code, namely pxa_request_dma() and pxa_free_dma(). These symbols
+are available only in pxa, which makes impossible to build the driver in
+other platforms than ARCH_PXA.
+
+In order to handle non-dma capable platforms, we implement a fallbacks that
+allocate buffers as if 'use_dma=false', putting the dma related code
+under the ARCH_HAS_DMA conditional.
+
+Please note that the correct way to handle this is to migrate the
+dma code to use of the mmp_pdma dmaengine driver. However, currently
+this is not possible because the two dmaengine drivers can't work together.
 
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- drivers/mtd/nand/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/pxa3xx_nand.c | 34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 5ef8f5e..86c135b 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -354,7 +354,7 @@ config MTD_NAND_ATMEL
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 1498fd6..523dd35 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -25,7 +25,14 @@
+ #include <linux/of.h>
+ #include <linux/of_device.h>
  
- config MTD_NAND_PXA3xx
- 	tristate "Support for NAND flash devices on PXA3xx"
--	depends on PXA3xx || ARCH_MMP
-+	depends on PXA3xx || ARCH_MMP || PLAT_ORION
- 	help
- 	  This enables the driver for the NAND flash device found on
- 	  PXA3xx processors
++#if defined(CONFIG_ARCH_PXA) || defined(CONFIG_ARCH_MMP)
++#define ARCH_HAS_DMA
++#endif
++
++#ifdef ARCH_HAS_DMA
+ #include <mach/dma.h>
++#endif
++
+ #include <linux/platform_data/mtd-nand-pxa3xx.h>
+ 
+ #define	CHIP_DELAY_TIMEOUT	(2 * HZ/10)
+@@ -381,6 +388,7 @@ static void handle_data_pio(struct pxa3xx_nand_info *info)
+ 	}
+ }
+ 
++#ifdef ARCH_HAS_DMA
+ static void start_data_dma(struct pxa3xx_nand_info *info)
+ {
+ 	struct pxa_dma_desc *desc = info->data_desc;
+@@ -427,6 +435,10 @@ static void pxa3xx_nand_data_dma_irq(int channel, void *data)
+ 	enable_int(info, NDCR_INT_MASK);
+ 	nand_writel(info, NDSR, NDSR_WRDREQ | NDSR_RDDREQ);
+ }
++#else
++static void start_data_dma(struct pxa3xx_nand_info *info)
++{}
++#endif
+ 
+ static irqreturn_t pxa3xx_nand_irq(int irq, void *devid)
+ {
+@@ -896,6 +908,7 @@ static int pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
+  */
+ #define MAX_BUFF_SIZE	PAGE_SIZE
+ 
++#ifdef ARCH_HAS_DMA
+ static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
+ {
+ 	struct platform_device *pdev = info->pdev;
+@@ -941,6 +954,20 @@ static void pxa3xx_nand_free_buff(struct pxa3xx_nand_info *info)
+ 		kfree(info->data_buff);
+ 	}
+ }
++#else
++static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
++{
++	info->data_buff = kmalloc(MAX_BUFF_SIZE, GFP_KERNEL);
++	if (info->data_buff == NULL)
++		return -ENOMEM;
++	return 0;
++}
++
++static void pxa3xx_nand_free_buff(struct pxa3xx_nand_info *info)
++{
++	kfree(info->data_buff);
++}
++#endif
+ 
+ static int pxa3xx_nand_sensing(struct pxa3xx_nand_info *info)
+ {
+@@ -1263,6 +1290,13 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
+ 	struct pxa3xx_nand_info *info;
+ 	int ret, cs, probe_success;
+ 
++#ifndef ARCH_HAS_DMA
++	if (use_dma) {
++		use_dma = 0;
++		dev_warn(&pdev->dev,
++			 "This platform can't do DMA on this device\n");
++	}
++#endif
+ 	ret = pxa3xx_nand_probe_dt(pdev);
+ 	if (ret)
+ 		return ret;
 -- 
 1.8.1.5
