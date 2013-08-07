@@ -1,13 +1,13 @@
 Received: from mail.karo-electronics.de ([81.173.242.67])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V6x2V-0004oQ-RO
- for linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 06:16:08 +0000
+ id 1V6x2V-0004oP-RM
+ for linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 06:16:09 +0000
 From: =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH/RESEND 1/2] mtd: nand: gpmi-nand: janitorial cleanup: (commas
- after last element of struct initializer)
-Date: Wed,  7 Aug 2013 08:15:37 +0200
-Message-Id: <1375856138-3698-2-git-send-email-LW@KARO-electronics.de>
+Subject: [PATCH/RESEND 2/2] mtd: nand: gpmi-nand: use more sensible error
+ codes at various places
+Date: Wed,  7 Aug 2013 08:15:38 +0200
+Message-Id: <1375856138-3698-3-git-send-email-LW@KARO-electronics.de>
 In-Reply-To: <1375802039.30770.153.camel@sauron.fi.intel.com>
 References: <1375802039.30770.153.camel@sauron.fi.intel.com>
 MIME-Version: 1.0
@@ -29,36 +29,39 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Acked-by: Huang Shijie <b32955@freescale.com>
 Signed-off-by: Lothar Waßmann <LW@KARO-electronics.de>
 ---
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index f557a1d..4f7ec59 100644
+index 4f7ec59..9a47189 100644
 --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
 +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -1569,19 +1569,19 @@ static const struct platform_device_id gpmi_ids[] = {
- 	{ .name = "imx23-gpmi-nand", .driver_data = IS_MX23, },
- 	{ .name = "imx28-gpmi-nand", .driver_data = IS_MX28, },
- 	{ .name = "imx6q-gpmi-nand", .driver_data = IS_MX6Q, },
--	{},
-+	{}
- };
+@@ -355,7 +355,7 @@ static int acquire_register_block(struct gpmi_nand_data *this,
+ 	r = platform_get_resource_byname(pdev, IORESOURCE_MEM, res_name);
+ 	if (!r) {
+ 		pr_err("Can't get resource for %s\n", res_name);
+-		return -ENXIO;
++		return -ENODEV;
+ 	}
  
- static const struct of_device_id gpmi_nand_id_table[] = {
- 	{
- 		.compatible = "fsl,imx23-gpmi-nand",
--		.data = (void *)&gpmi_ids[IS_MX23]
-+		.data = (void *)&gpmi_ids[IS_MX23],
- 	}, {
- 		.compatible = "fsl,imx28-gpmi-nand",
--		.data = (void *)&gpmi_ids[IS_MX28]
-+		.data = (void *)&gpmi_ids[IS_MX28],
- 	}, {
- 		.compatible = "fsl,imx6q-gpmi-nand",
--		.data = (void *)&gpmi_ids[IS_MX6Q]
-+		.data = (void *)&gpmi_ids[IS_MX6Q],
- 	}, {}
- };
- MODULE_DEVICE_TABLE(of, gpmi_nand_id_table);
+ 	p = ioremap(r->start, resource_size(r));
+@@ -396,7 +396,7 @@ static int acquire_bch_irq(struct gpmi_nand_data *this, irq_handler_t irq_h)
+ 	r = platform_get_resource_byname(pdev, IORESOURCE_IRQ, res_name);
+ 	if (!r) {
+ 		pr_err("Can't get resource for %s\n", res_name);
+-		return -ENXIO;
++		return -ENODEV;
+ 	}
+ 
+ 	err = request_irq(r->start, irq_h, 0, res_name, this);
+@@ -1597,7 +1597,7 @@ static int gpmi_nand_probe(struct platform_device *pdev)
+ 		pdev->id_entry = of_id->data;
+ 	} else {
+ 		pr_err("Failed to find the right device id.\n");
+-		return -ENOMEM;
++		return -ENODEV;
+ 	}
+ 
+ 	this = kzalloc(sizeof(*this), GFP_KERNEL);
 -- 
 1.7.2.5
