@@ -1,27 +1,26 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V73OU-0007d9-7n
- for linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 13:03:15 +0000
-Date: Wed, 7 Aug 2013 10:02:45 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH v2 00/14] pxa3xx-nand patches to support mvebu builds
-Message-ID: <20130807130244.GA18270@localhost>
-References: <1375878679-18098-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <52024167.9090208@gmail.com>
+Received: from mail-oa0-x22b.google.com ([2607:f8b0:4003:c02::22b])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V74SY-0000x3-LO
+ for linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 14:11:31 +0000
+Received: by mail-oa0-f43.google.com with SMTP id i10so3507607oag.30
+ for <linux-mtd@lists.infradead.org>; Wed, 07 Aug 2013 07:11:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <52024167.9090208@gmail.com>
-Cc: Lior Amsalem <alior@marvell.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Jason Cooper <jason@lakedaemon.net>, Artem Bityutskiy <dedekind1@gmail.com>,
- linux-mtd@lists.infradead.org,
- Gregory Clement <gregory.clement@free-electrons.com>,
+In-Reply-To: <1375798078.30770.145.camel@sauron.fi.intel.com>
+References: <1375523536-32671-1-git-send-email-akinobu.mita@gmail.com>
+ <1375798078.30770.145.camel@sauron.fi.intel.com>
+Date: Wed, 7 Aug 2013 23:11:07 +0900
+Message-ID: <CAC5umyj=7Eug0Eaqacps1y_2zfzQrU93Z+Ukxgvh=AeXgHRPRA@mail.gmail.com>
+Subject: Re: [PATCH -next v2 00/10] mtd: tests: reduce duplication among mtd
+ tests modules
+From: Akinobu Mita <akinobu.mita@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Iwo Mergler <Iwo.Mergler@netcommwireless.com.au>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Vikram Narayanan <vikram186@gmail.com>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,30 +30,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Aug 07, 2013 at 02:45:27PM +0200, Daniel Mack wrote:
-> On 07.08.2013 14:31, Ezequiel Garcia wrote:
-> > Hello everyone!
-> > 
-> > This patchset is part of the work I'm doing to enable the pxa3xx-nand
-> > driver to support the NAND controller in Armada 370/XP. While this is
-> > work in progress, here's a subset of patches I consider good enough
-> > for mainline.
-> 
-> Nice. For the whole series:
-> 
->   Tested-by: Daniel Mack <zonque@gmail.com>
-> 
+2013/8/6 Artem Bityutskiy <dedekind1@gmail.com>:
+> On Sat, 2013-08-03 at 18:52 +0900, Akinobu Mita wrote:
+>> This patch set reduces code duplication among mtd/tests modules by
+>> moving common helper functions into mtd_test.c.
+>>
+>
+> You could make this nicer by incorporating the error messages to the
+> common handlers, and removing them from tests - they are almost the same
+> everywhere.
 
-Thanks Daniel!
+Sounds good.  Especially incorporating the error messages to mtdtest_read()
+and mtdtest_write() enables to convert some of remaining usages of
+mtd_read() and mtd_write in the test modules.
 
-FWIW, there's room for another bunch of cleanups.
+> But this is anyway a good clean-up, so pushed to l2-mtd.git, thanks!
 
-For instance, the driver does its own device detection which should be
-handled by the NAND core instead. I have a few patches to take care of this
-but they far more intrusive changes. Therefore I'm postponing them until
-I carefully review them to prevent regressions.
-
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Thanks.
