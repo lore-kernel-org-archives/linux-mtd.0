@@ -1,26 +1,21 @@
-Received: from mail-oa0-x22b.google.com ([2607:f8b0:4003:c02::22b])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V74SY-0000x3-LO
- for linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 14:11:31 +0000
-Received: by mail-oa0-f43.google.com with SMTP id i10so3507607oag.30
- for <linux-mtd@lists.infradead.org>; Wed, 07 Aug 2013 07:11:07 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1375798078.30770.145.camel@sauron.fi.intel.com>
-References: <1375523536-32671-1-git-send-email-akinobu.mita@gmail.com>
- <1375798078.30770.145.camel@sauron.fi.intel.com>
-Date: Wed, 7 Aug 2013 23:11:07 +0900
-Message-ID: <CAC5umyj=7Eug0Eaqacps1y_2zfzQrU93Z+Ukxgvh=AeXgHRPRA@mail.gmail.com>
-Subject: Re: [PATCH -next v2 00/10] mtd: tests: reduce duplication among mtd
- tests modules
-From: Akinobu Mita <akinobu.mita@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Iwo Mergler <Iwo.Mergler@netcommwireless.com.au>,
- Adrian Hunter <adrian.hunter@intel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Vikram Narayanan <vikram186@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+From: Daniel Mack <zonque@gmail.com>
+To: haojian.zhuang@linaro.org, eric.y.miao@gmail.com,
+ linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 02/20] mtd: pxa3xx-nand: use mmp_pdma_filter_fn and
+ dma_request_slave_channel_compat
+Date: Wed,  7 Aug 2013 17:33:51 +0200
+Message-Id: <1375889649-14638-3-git-send-email-zonque@gmail.com>
+In-Reply-To: <1375889649-14638-1-git-send-email-zonque@gmail.com>
+References: <1375889649-14638-1-git-send-email-zonque@gmail.com>
+Cc: mark.rutland@arm.com, s.neumann@raumfeld.com, linux-mtd@lists.infradead.org,
+ Daniel Mack <zonque@gmail.com>, cxie4@marvell.com, lars@metafoo.de,
+ nico@linaro.org, vinod.koul@intel.com, marek.vasut@gmail.com,
+ ezequiel.garcia@free-electrons.com, rmk+kernel@arm.linux.org.uk,
+ devicetree@vger.kernel.org, samuel@sortiz.org, arnd@arndb.de,
+ broonie@kernel.org, mika.westerberg@linux.intel.com,
+ thomas.petazzoni@free-electrons.com, gregkh@linuxfoundation.org,
+ g.liakhovetski@gmx.de, sachin.kamat@linaro.org, kernel@pengutronix.de,
+ djbw@fb.com, davem@davemloft.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,20 +25,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2013/8/6 Artem Bityutskiy <dedekind1@gmail.com>:
-> On Sat, 2013-08-03 at 18:52 +0900, Akinobu Mita wrote:
->> This patch set reduces code duplication among mtd/tests modules by
->> moving common helper functions into mtd_test.c.
->>
->
-> You could make this nicer by incorporating the error messages to the
-> common handlers, and removing them from tests - they are almost the same
-> everywhere.
+Signed-off-by: Daniel Mack <zonque@gmail.com>
+---
+ drivers/mtd/nand/pxa3xx_nand.c | 19 +++++++------------
+ 1 file changed, 7 insertions(+), 12 deletions(-)
 
-Sounds good.  Especially incorporating the error messages to mtdtest_read()
-and mtdtest_write() enables to convert some of remaining usages of
-mtd_read() and mtd_write in the test modules.
-
-> But this is anyway a good clean-up, so pushed to l2-mtd.git, thanks!
-
-Thanks.
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 736673a..99f56c3 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -25,6 +25,7 @@
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+ #include <linux/dmaengine.h>
++#include <linux/dma/mmp-pdma.h>
+ 
+ #include <linux/platform_data/mtd-nand-pxa3xx.h>
+ 
+@@ -396,6 +397,7 @@ static void start_data_dma(struct pxa3xx_nand_info *info)
+ 	int dma_len = ALIGN(info->data_size + info->oob_size, 32);
+ 	struct dma_slave_config conf;
+ 
++	memset(&conf, 0, sizeof(conf));
+ 	dma_dev = info->data_dma_ch->device;
+ 
+ 	switch (info->state) {
+@@ -419,7 +421,6 @@ static void start_data_dma(struct pxa3xx_nand_info *info)
+ 		BUG();
+ 	}
+ 
+-	conf.slave_id = info->drcmr_dat;
+ 	dmaengine_slave_config(info->data_dma_ch, &conf);
+ 	tx = dma_dev->device_prep_dma_memcpy(info->data_dma_ch, dma_dst_addr,
+ 					     dma_src_addr, dma_len, 0);
+@@ -940,7 +941,10 @@ static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
+ 
+ 	dma_cap_zero(mask);
+ 	dma_cap_set(DMA_MEMCPY, mask);
+-	info->data_dma_ch = dma_request_channel(mask, NULL, NULL);
++	info->data_dma_ch =
++		dma_request_slave_channel_compat(mask, mmp_pdma_filter_fn,
++						 &info->drcmr_dat,
++						 &pdev->dev, "data");
+ 	if (!info->data_dma_ch) {
+ 		dev_info(&pdev->dev, "Failed to request DMA channel\n");
+ 		goto dma_request_fail;
+@@ -1143,16 +1147,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
+ 		return ret;
+ 
+ 	if (use_dma) {
+-		/*
+-		 * This is a dirty hack to make this driver work from
+-		 * devicetree bindings. It can be removed once we have
+-		 * a prober DMA controller framework for DT.
+-		 */
+-		if (pdev->dev.of_node &&
+-		    of_machine_is_compatible("marvell,pxa3xx")) {
+-			info->drcmr_dat = 97;
+-			info->drcmr_cmd = 99;
+-		} else {
++		if (!pdev->dev.of_node) {
+ 			r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
+ 			if (r == NULL) {
+ 				dev_err(&pdev->dev,
+-- 
+1.8.3.1
