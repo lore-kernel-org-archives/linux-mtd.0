@@ -1,25 +1,29 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from mail-bk0-x233.google.com ([2a00:1450:4008:c01::233])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V72N0-0005zL-1o
- for linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 11:57:38 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: wangyuhang <wangyuhang2014@gmail.com>
-Subject: RE: [PATCH] SPI: DUAL and QUAD support
-Date: Wed, 7 Aug 2013 11:57:04 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9F1993@DBDE04.ent.ti.com>
-References: <20130729064234.GS9858@sirena.org.uk>
- <1375095194-7093-1-git-send-email-wangyuhang2014@gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9EE267@DBDE04.ent.ti.com>
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9EE267@DBDE04.ent.ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1V72UP-0006HN-6K
+ for linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 12:05:17 +0000
+Received: by mail-bk0-f51.google.com with SMTP id mx10so221168bkb.10
+ for <linux-mtd@lists.infradead.org>; Wed, 07 Aug 2013 05:04:55 -0700 (PDT)
+Message-ID: <520237E3.4020805@gmail.com>
+Date: Wed, 07 Aug 2013 14:04:51 +0200
+From: Daniel Mack <zonque@gmail.com>
 MIME-Version: 1.0
-Cc: "spi-devel-general@lists.sourceforge.net"
- <spi-devel-general@lists.sourceforge.net>, "Poddar,
- Sourav" <sourav.poddar@ti.com>, "tpiepho@gmail.com" <tpiepho@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "broonie@kernel.org" <broonie@kernel.org>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH 00/13] pxa3xx patches to support mvebu builds
+References: <1375140263-2028-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <51FA357B.9000804@gmail.com> <20130801102119.GA2410@localhost>
+ <51FA3CDC.7040408@gmail.com> <20130801105921.GB2410@localhost>
+In-Reply-To: <20130801105921.GB2410@localhost>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
+ Artem Bityutskiy <dedekind1@gmail.com>, leiwen@marvell.com,
+ haojian.zhuang@gmail.com, linux-mtd@lists.infradead.org,
+ grinberg@compulab.co.il, Gregory Clement <gregory.clement@free-electrons.com>,
+ eric.miao@marvell.com, computersforpeace@gmail.com,
+ David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>,
+ nikita@compulab.co.il
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,57 +33,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->=20
-> Hello,
-> > diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-> > index 38c2b92..222e49e 100644
-> > --- a/include/linux/spi/spi.h
-> > +++ b/include/linux/spi/spi.h
-> > @@ -437,6 +441,8 @@ extern struct spi_master
-> > *spi_busnum_to_master(u16 busnum);
-> >   * @rx_buf: data to be read (dma-safe memory), or NULL
-> >   * @tx_dma: DMA address of tx_buf, if @spi_message.is_dma_mapped
-> >   * @rx_dma: DMA address of rx_buf, if @spi_message.is_dma_mapped
-> > + * @tx_nbits: number of bits used for writting
-> > + * @rx_nbits: number of bits used for reading
-> >   * @len: size of rx and tx buffers (in bytes)
-> >   * @speed_hz: Select a speed other than the device default for this
-> >   *      transfer. If 0 the default (from @spi_device) is used.
-> > @@ -491,6 +497,11 @@ extern struct spi_master
-> > *spi_busnum_to_master(u16 busnum);
-> >   * by the results of previous messages and where the whole transaction
-> >   * ends when the chipselect goes intactive.
-> >   *
-> > + * When SPI can transfer in 1x,2x or 4x. It can get this tranfer infor=
-mation
-> > + * from device through @tx_nbits and @rx_nbits. In Bi-direction, these
-> > + * two should both be set. User can set transfer mode with
-> > SPI_NBITS_SINGLE(1x)
-> > + * SPI_NBITS_DUAL(2x) and SPI_NBITS_QUAD(4x) to support these three
-> > transfer.
-> > + *
-> >   * The code that submits an spi_message (and its spi_transfers)
-> >   * to the lower layers is responsible for managing its memory.
-> >   * Zero-initialize every field you don't set up explicitly, to
-> > @@ -511,6 +522,11 @@ struct spi_transfer {
-> >  	dma_addr_t	rx_dma;
-> >
-> >  	unsigned	cs_change:1;
-> > +	u8		tx_nbits;
-> > +	u8		rx_nbits;
-> > +#define	SPI_NBITS_SINGLE	0x0; /* 1bit transfer */
-> > +#define	SPI_NBITS_DUAL		0x01; /* 2bits transfer */
-> > +#define	SPI_NBITS_QUAD		0x02; /* 4bits transfer */
->=20
-> [Pekon]: I don't think it's a good place for #defines.  Plz keep it out o=
-f struct
-> body.
-One more feedback, Its better you define SPI_NBITS_xx matching
-the actual number of wires used. This would leave places for some
-micro-wire and 3-wire SPI, and would be more readable.
-+#define	SPI_NBITS_SINGLE_HALF_DUPLEX	0x0; /* 1bit transfer  microwire*/
-+#define	SPI_NBITS_SINGLE_FULL_DUPLEX	0x01; /* 1bit transfer  normal SPI*/
-+#define	SPI_NBITS_DUAL	2; /* 2bits transfer */
-+#define	SPI_NBITS_QUAD	4; /* 4bits transfer */
+Hi Ezequiel,
 
-with regards, pekon
+On 01.08.2013 12:59, Ezequiel Garcia wrote:
+> On Thu, Aug 01, 2013 at 12:47:56PM +0200, Daniel Mack wrote:
+
+>> fbd70cb71103051699c7c49b08d5e107736e3a75 is the first bad commit
+>> commit fbd70cb71103051699c7c49b08d5e107736e3a75
+>> Author: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+>> Date:   Mon Jul 29 20:24:13 2013 -0300
+>>
+>>     mtd: nand: pxa3xx: Support command buffer #3
+>>
+>>     Some newer controllers support a fourth command buffer. This additional
+>>     command buffer allows to set an arbitrary length count, using the
+>>     NDCB3.NDLENCNT field, to perform non-standard length operations
+>>     such as the ONFI parameter page read.
+>>
+>>     In controllers without this register, the operation has no effect.
+> 
+> ^^^
+> So the above does not hold :-(
+> 
+> Given this shows a significant distinction between PXA NAND controller
+> (what we could call NFCv1) and Armada 370/XP NAND controller (NFCv2)
+> I see no way but to introduce a new compatible string for this driver.
+> 
+> Following the convention of choosing the first SoC that introduces the
+> controller, the new compatible would be "marvell,armada370-nand".
+> 
+> How does this sound?
+> 
+
+Are you planning a new version of this series? I'd like to base my
+pxa-dma patches on top of yours ...
+
+
+Thanks,
+Daniel
