@@ -1,19 +1,20 @@
-Received: from mail-bk0-x232.google.com ([2a00:1450:4008:c01::232])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V737f-0007Mv-DV
- for linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 12:45:52 +0000
-Received: by mail-bk0-f50.google.com with SMTP id mz11so236469bkb.9
- for <linux-mtd@lists.infradead.org>; Wed, 07 Aug 2013 05:45:29 -0700 (PDT)
-Message-ID: <52024167.9090208@gmail.com>
-Date: Wed, 07 Aug 2013 14:45:27 +0200
-From: Daniel Mack <zonque@gmail.com>
-MIME-Version: 1.0
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V73OU-0007d9-7n
+ for linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 13:03:15 +0000
+Date: Wed, 7 Aug 2013 10:02:45 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Daniel Mack <zonque@gmail.com>
 Subject: Re: [PATCH v2 00/14] pxa3xx-nand patches to support mvebu builds
+Message-ID: <20130807130244.GA18270@localhost>
 References: <1375878679-18098-1-git-send-email-ezequiel.garcia@free-electrons.com>
-In-Reply-To: <1375878679-18098-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+ <52024167.9090208@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <52024167.9090208@gmail.com>
 Cc: Lior Amsalem <alior@marvell.com>,
  Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
  Jason Cooper <jason@lakedaemon.net>, Artem Bityutskiy <dedekind1@gmail.com>,
@@ -30,18 +31,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07.08.2013 14:31, Ezequiel Garcia wrote:
-> Hello everyone!
+On Wed, Aug 07, 2013 at 02:45:27PM +0200, Daniel Mack wrote:
+> On 07.08.2013 14:31, Ezequiel Garcia wrote:
+> > Hello everyone!
+> > 
+> > This patchset is part of the work I'm doing to enable the pxa3xx-nand
+> > driver to support the NAND controller in Armada 370/XP. While this is
+> > work in progress, here's a subset of patches I consider good enough
+> > for mainline.
 > 
-> This patchset is part of the work I'm doing to enable the pxa3xx-nand
-> driver to support the NAND controller in Armada 370/XP. While this is
-> work in progress, here's a subset of patches I consider good enough
-> for mainline.
+> Nice. For the whole series:
+> 
+>   Tested-by: Daniel Mack <zonque@gmail.com>
+> 
 
-Nice. For the whole series:
+Thanks Daniel!
 
-  Tested-by: Daniel Mack <zonque@gmail.com>
+FWIW, there's room for another bunch of cleanups.
 
+For instance, the driver does its own device detection which should be
+handled by the NAND core instead. I have a few patches to take care of this
+but they far more intrusive changes. Therefore I'm postponing them until
+I carefully review them to prevent regressions.
 
-Thanks,
-Daniel
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
