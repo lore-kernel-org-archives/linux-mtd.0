@@ -1,15 +1,15 @@
-Date: Wed, 7 Aug 2013 16:57:37 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Daniel Mack <zonque@gmail.com>
-Message-ID: <20130807155737.GF6427@sirena.org.uk>
-References: <1375889649-14638-1-git-send-email-zonque@gmail.com>
- <1375889649-14638-15-git-send-email-zonque@gmail.com>
+Message-ID: <52026EE1.6000606@gmail.com>
+Date: Wed, 07 Aug 2013 17:59:29 +0200
+From: Daniel Mack <zonque@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="gnQ/OOKD4CRsnGw/"
-Content-Disposition: inline
-In-Reply-To: <1375889649-14638-15-git-send-email-zonque@gmail.com>
-Subject: Re: [PATCH 14/20] ASoC: pxa: use snd_dmaengine_dai_dma_data
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 07/20] spi: spi-pxa2xx: remove legacy PXA DMA bits
+References: <1375889649-14638-1-git-send-email-zonque@gmail.com>
+ <1375889649-14638-8-git-send-email-zonque@gmail.com>
+ <20130807155549.GE6427@sirena.org.uk>
+In-Reply-To: <20130807155549.GE6427@sirena.org.uk>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 Cc: mark.rutland@arm.com, s.neumann@raumfeld.com, linux-mtd@lists.infradead.org,
  haojian.zhuang@linaro.org, cxie4@marvell.com, lars@metafoo.de, nico@linaro.org,
  vinod.koul@intel.com, marek.vasut@gmail.com,
@@ -28,42 +28,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 07.08.2013 17:55, Mark Brown wrote:
+> On Wed, Aug 07, 2013 at 05:33:56PM +0200, Daniel Mack wrote:
+>> Generic DMA support was already implemented by commit cd7bed00
+>> ("spi/pxa2xx: break out the private DMA API usage into a separate
+>> file") which moved all the legacy PXA DMA implementation code into
+>> its own file.
+> 
+> Acked-by: Mark Brown <broonie@linaro.org>
 
---gnQ/OOKD4CRsnGw/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks.
 
-On Wed, Aug 07, 2013 at 05:34:03PM +0200, Daniel Mack wrote:
-> Use snd_dmaengine_dai_dma_data for passing the dma parameters from
-> clients to the pxa pcm lib. This does no functional change, it's just an
-> intermedia step to migrate the pxa bits over to dmaengine.
->=20
-> The calculation of dcmd is a transition hack which will be removed again
-> in a later patch. It's just there to make the transition more readable.
+> though this will have some trivial merge issues until the merge window
+> they shouldn't be a problem.
 
-Acked-by: Mark Brown <broonie@linaro.org>
+Given the number of patches that need testing, I doubt this will hit the
+3.12 window. But let's see :)
 
---gnQ/OOKD4CRsnGw/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSAm5uAAoJELSic+t+oim9dMQP/RVA+4bdvOuKE9pG5dnuvd7g
-6wCnaNI8O8nT9dK9v6nn0jrLcjcPZxpUJeOO2cWo0O8cKigqLTmyQBsGizXq2pht
-yuJI9r3G9DhhrYEcDzzQkanNXoHL5xLjkvM+bjrckS7S82P8k9954s0q4TVvqv0r
-sWY1wWQ16uglI3j30liwICazdTrPHrPUmOYCULKzrf2bcbf2RzfKUnHkpCbhmUSj
-8g4LTm+gUY4aKl72hAviE17vbK3U1ktiz2LmYljb8cvQfkbGwwrX/Klra2XoKFI3
-FlQox01dy4ItX8MYtKQdGb7E48lYXLrxWYUippuM/h1Isy60XkoHCHyqFxRmKyne
-aQtp98XmoFSe3QetbG9YbZOjHclsoa7PGWO9gRUmEIbVtQRWeNliBmocmYxYSKuY
-Tltnb78kVcLd9Ed3maHklrXQpHfrANckwOEZZf2mIEJ5uTxMmXkNXcRARIAVcEeu
-FVTOUOVnjPM6sRHwoZF9Ic26IQk8/+j0HkQgSFg3fnNqU/hQJhZrRHjMmZXis3ju
-5QM5NFyMLk/h9WX7C+kI3Z5x6vBJw+iVrvtlIGe7EHjb5K4id4xBT3J9lglzP2aH
-9uBtPzx21HrIivE5vdPuEL7CAdQkoL4QpE+AMtJdYOCbBOttkZLbj0kBRHzf2eM/
-a5yaWO3gWeFR1m+FJXH0
-=Vn6t
------END PGP SIGNATURE-----
-
---gnQ/OOKD4CRsnGw/--
+Daniel
