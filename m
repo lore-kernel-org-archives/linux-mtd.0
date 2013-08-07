@@ -1,25 +1,21 @@
-Date: Wed, 7 Aug 2013 17:41:57 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Daniel Mack <zonque@gmail.com>
-Message-ID: <20130807164157.GN6427@sirena.org.uk>
-References: <1375889649-14638-1-git-send-email-zonque@gmail.com>
- <1375889649-14638-8-git-send-email-zonque@gmail.com>
- <20130807155549.GE6427@sirena.org.uk> <52026EE1.6000606@gmail.com>
+Received: from longford.logfs.org ([213.229.74.203])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V76vH-0006sG-0k
+ for linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 16:49:20 +0000
+Date: Wed, 7 Aug 2013 11:16:12 -0400
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Jussi Kivilinna <jussi.kivilinna@iki.fi>
+Subject: Re: [PATCH] alauda: do not use stack for URB transfer_buffers
+Message-ID: <20130807151612.GA18545@logfs.org>
+References: <20130806120329.8864.36301.stgit@localhost6.localdomain6>
+ <20130806164913.GD10535@logfs.org> <5201E03D.30306@iki.fi>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="m8RPluiNA7RIyL8J"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <52026EE1.6000606@gmail.com>
-Subject: Re: [PATCH 07/20] spi: spi-pxa2xx: remove legacy PXA DMA bits
-Cc: mark.rutland@arm.com, s.neumann@raumfeld.com, linux-mtd@lists.infradead.org,
- haojian.zhuang@linaro.org, cxie4@marvell.com, lars@metafoo.de, nico@linaro.org,
- vinod.koul@intel.com, marek.vasut@gmail.com,
- ezequiel.garcia@free-electrons.com, rmk+kernel@arm.linux.org.uk,
- devicetree@vger.kernel.org, samuel@sortiz.org, arnd@arndb.de,
- mika.westerberg@linux.intel.com, linux-arm-kernel@lists.infradead.org,
- thomas.petazzoni@free-electrons.com, eric.y.miao@gmail.com,
- gregkh@linuxfoundation.org, g.liakhovetski@gmx.de, sachin.kamat@linaro.org,
- kernel@pengutronix.de, djbw@fb.com, davem@davemloft.net
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5201E03D.30306@iki.fi>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-usb@vger.kernel.org,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,42 +25,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, 7 August 2013 08:50:53 +0300, Jussi Kivilinna wrote:
+> On 06.08.2013 19:49, Jörn Engel wrote:
+> > On Tue, 6 August 2013 15:03:29 +0300, Jussi Kivilinna wrote:
+> >>
+> >> Patch fixes alauda not to use stack as URB transfer_buffer. URB buffers need to
+> >> be DMA-able, which stack is not.
+> >>
+> >> Patch is only compile tested.
+> > 
+> > I have tested the driver back when I wrote it.  Not sure why it worked
+> > then, maybe the chip in my notebook back then didn't care about
+> > alignment or I just got lucky with the memory allocations.
+> 
+> You might not see problems with your hardware/architecture.
+> 
+> "Documentation/DMA-API-HOWTO.txt" discusses about "What memory is DMA'able?".
 
---m8RPluiNA7RIyL8J
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Makes sense.  I've read your patch over and it also makes sense.
+Acked-by: Joern Engel <joern@logfs.org>
 
-On Wed, Aug 07, 2013 at 05:59:29PM +0200, Daniel Mack wrote:
-> On 07.08.2013 17:55, Mark Brown wrote:
+Jörn
 
-> > though this will have some trivial merge issues until the merge window
-> > they shouldn't be a problem.
-
-> Given the number of patches that need testing, I doubt this will hit the
-> 3.12 window. But let's see :)
-
-Pessimist!
-
---m8RPluiNA7RIyL8J
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSAnjRAAoJELSic+t+oim93qYP/RYv0TbIwCs0Qjf98EozMoKz
-ASQu/v5R6e6GgNjKw4FdjzKcYgzVsVDwn3Xo3STaMrjFfRCVbeqXr4APTCO1xciA
-lFbuv0WSFA0SRbvSfuKEDAQLvXTdr41UiC/lLvppHyUKGEAgmaQlMiYzLTW/vmzw
-55ZRQN/+fonlli0xStTSgHfD84+qFTiqh0UNQtcM1qYsHYfBJjoGICC7ZwNtXErf
-m2a7UTtHFxi9chKmebGYHkMzTiaueoqkLY7NPuadMzE2ymb8UrVNUT8b76lJy8qy
-nLo00Rcfpfz5DJOEYMMpyi6IgrjmQ7LGriJPaHU/yK1xy6xPWsUxJDHcEX6NO/Il
-bzh4sAb/30SJ+asA5m+nfQtzLtGACkI0Ld2sN85Dk3oWilmDgkpeF4RtsS/LS+kM
-7KufWcV0LnTgaEalUu+/g21c+VvjuDAwJuEUqMD0o3Sb65Iso6UnNN2iSLqs4q+b
-3CppKR7UC9PSPW/wC5miYKZNquaWVW1kuq8BgUvHC2i7bjL1eh5eYcVYvHVWvoaW
-w6Wz+A3jqbQETaMqyyoZ/3FRzpEOo9Rvs7dv815hKP26lrSqbUN/8HF49XzI2uOt
-A38R8RfvjOIt57jPjBJmwQQn9+IkvTq3Y7apkp3JWVZJNQ+Ji89ULN4/8/aIpT4D
-pu3IPN+RRKcL7aRa20aQ
-=3RGH
------END PGP SIGNATURE-----
-
---m8RPluiNA7RIyL8J--
+--
+It's just what we asked for, but not what we want!
+-- anonymous
