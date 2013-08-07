@@ -1,13 +1,16 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V72u8-0006l5-Jc
- for linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 12:31:53 +0000
+ id 1V72uD-0006l8-EV
+ for linux-mtd@lists.infradead.org; Wed, 07 Aug 2013 12:31:58 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 00/14] pxa3xx-nand patches to support mvebu builds
-Date: Wed,  7 Aug 2013 09:31:05 -0300
-Message-Id: <1375878679-18098-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH v2 01/14] mtd: nand: pxa3xx: Introduce 'marvell,
+ armada370-nand' compatible string
+Date: Wed,  7 Aug 2013 09:31:06 -0300
+Message-Id: <1375878679-18098-2-git-send-email-ezequiel.garcia@free-electrons.com>
+In-Reply-To: <1375878679-18098-1-git-send-email-ezequiel.garcia@free-electrons.com>
+References: <1375878679-18098-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Lior Amsalem <alior@marvell.com>,
  Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
  Jason Cooper <jason@lakedaemon.net>, Artem Bityutskiy <dedekind1@gmail.com>,
@@ -25,63 +28,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello everyone!
+This driver supports NFCv1 (as found in PXA SoC) and NFCv2 (as found in
+Armada 370/XP SoC). As both controller has a few differences, a way of
+distinguishing between the two is needed.
 
-This patchset is part of the work I'm doing to enable the pxa3xx-nand
-driver to support the NAND controller in Armada 370/XP. While this is
-work in progress, here's a subset of patches I consider good enough
-for mainline.
+This commit introduces a new compatible string 'marvell,armada370-nand'
+and assigns a compatible data of type enum pxa3xx_nand_variant to allow
+such distinction.
 
-Since pxa3xx has a mach-specific DMA API, I'm including a few patches to
-ifdef such pxa-specific code in non PXA/MMP platforms.
-This is only an ugly workaround and should be removed once the specific
-DMA API is replaced by dmaengine.
+Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+---
+ drivers/mtd/nand/pxa3xx_nand.c | 38 +++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 37 insertions(+), 1 deletion(-)
 
-Daniel Mack is already working on that, so it's expected this removal
-will happen soon.
-
-Other than that, the rest of the patchset is just assorted cleanups
-and minor fixes.
-
-This patchset is based in Artem's l2-mtd master branch.
-
-If at all possible and if no regressions are reported I'd like to see
-this queued for v3.12.
-
-Changes from v1:
-
-  * Use __maybe_unused instead of inline keyword for a symbol
-    that's maybe unused. Suggested by Brian Norris.
-
-  * As Daniel Mack reported, the PXA nand controller (NFCv1)
-    lacks an NDBC3 register and it's access is undefined.
-    This means we need a way to distinguish between the two
-    controllers (NFCv1 and NFCv2).
-
-    We introduce a new 'marvell,armada370-nand' compatible
-    string to distinguish the newer controller (NFCv2).
-
-Ezequiel Garcia (14):
-  mtd: nand: pxa3xx: Introduce 'marvell,armada370-nand' compatible
-    string
-  mtd: nand: pxa3xx: Handle ECC and DMA enable/disable properly
-  mtd: nand: pxa3xx: Allow to set/clear the 'spare enable' field
-  mtd: nand: pxa3xx: Support command buffer #3
-  mtd: nand: pxa3xx: Use 'length override' in ONFI paramater page read
-  mtd: nand: pxa3xx: Add a local loop variable
-  mtd: nand: pxa3xx: Remove hardcoded mtd name
-  mtd: nand: pxa3xx: Remove uneeded internal cmdset
-  mtd: nand: pxa3xx: Move cached registers to info structure
-  mtd: nand: pxa3xx: Make dma code dependent on dma capable platforms
-  mtd: nand: pxa3xx: Add __maybe_unused keyword to enable_int()
-  mtd: nand: pxa3xx: Allow devices with no dma resources
-  mtd: nand: pxa3xx: Increase data buffer size
-  mtd: nand: Allow to build pxa3xx_nand on Orion platforms
-
- drivers/mtd/nand/Kconfig                      |   2 +-
- drivers/mtd/nand/pxa3xx_nand.c                | 269 ++++++++++++++++----------
- include/linux/platform_data/mtd-nand-pxa3xx.h |  13 --
- 3 files changed, 171 insertions(+), 113 deletions(-)
-
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 501e380..2582e1f 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -123,6 +123,11 @@ enum {
+ 	STATE_READY,
+ };
+ 
++enum pxa3xx_nand_variant {
++	PXA3XX_NAND_VARIANT_PXA,
++	PXA3XX_NAND_VARIANT_ARMADA370,
++};
++
+ struct pxa3xx_nand_host {
+ 	struct nand_chip	chip;
+ 	struct pxa3xx_nand_cmdset *cmdset;
+@@ -171,6 +176,12 @@ struct pxa3xx_nand_info {
+ 	struct pxa3xx_nand_host *host[NUM_CHIP_SELECT];
+ 	unsigned int		state;
+ 
++	/*
++	 * This driver supports NFCv1 (as found in PXA SoC)
++	 * and NFCv2 (as found in Armada 370/XP SoC).
++	 */
++	enum pxa3xx_nand_variant variant;
++
+ 	int			cs;
+ 	int			use_ecc;	/* use HW ECC ? */
+ 	int			use_dma;	/* use DMA ? */
+@@ -1192,7 +1203,14 @@ static int pxa3xx_nand_remove(struct platform_device *pdev)
+ 
+ #ifdef CONFIG_OF
+ static struct of_device_id pxa3xx_nand_dt_ids[] = {
+-	{ .compatible = "marvell,pxa3xx-nand" },
++	{
++		.compatible = "marvell,pxa3xx-nand",
++		.data       = (void *) PXA3XX_NAND_VARIANT_PXA,
++	},
++	{
++		.compatible = "marvell,armada370-nand",
++		.data       = (void *) PXA3XX_NAND_VARIANT_ARMADA370,
++	},
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, pxa3xx_nand_dt_ids);
+@@ -1221,11 +1239,28 @@ static int pxa3xx_nand_probe_dt(struct platform_device *pdev)
+ 
+ 	return 0;
+ }
++
++static enum pxa3xx_nand_variant
++pxa3xx_nand_get_variant(struct platform_device *pdev)
++{
++	const struct of_device_id *of_id =
++			of_match_device(pxa3xx_nand_dt_ids, &pdev->dev);
++	if (!of_id)
++		return PXA3XX_NAND_VARIANT_PXA;
++	return (enum pxa3xx_nand_variant) of_id->data;
++}
+ #else
+ static inline int pxa3xx_nand_probe_dt(struct platform_device *pdev)
+ {
+ 	return 0;
+ }
++
++static enum pxa3xx_nand_variant
++pxa3xx_nand_get_variant(struct platform_device *pdev)
++{
++	/* Default lefacy (non-DT) variant */
++	return PXA3XX_NAND_VARIANT_PXA;
++}
+ #endif
+ 
+ static int pxa3xx_nand_probe(struct platform_device *pdev)
+@@ -1252,6 +1287,7 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	info = platform_get_drvdata(pdev);
++	info->variant = pxa3xx_nand_get_variant(pdev);
+ 	probe_success = 0;
+ 	for (cs = 0; cs < pdata->num_cs; cs++) {
+ 		info->cs = cs;
 -- 
 1.8.1.5
