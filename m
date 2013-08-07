@@ -1,15 +1,16 @@
-Date: Wed, 7 Aug 2013 16:55:49 +0100
+Date: Wed, 7 Aug 2013 16:58:05 +0100
 From: Mark Brown <broonie@kernel.org>
 To: Daniel Mack <zonque@gmail.com>
-Message-ID: <20130807155549.GE6427@sirena.org.uk>
+Message-ID: <20130807155805.GG6427@sirena.org.uk>
 References: <1375889649-14638-1-git-send-email-zonque@gmail.com>
- <1375889649-14638-8-git-send-email-zonque@gmail.com>
+ <1375889649-14638-16-git-send-email-zonque@gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="p//XFgTqeVWI1epd"
+ protocol="application/pgp-signature"; boundary="cV8yfgwCnzpki16T"
 Content-Disposition: inline
-In-Reply-To: <1375889649-14638-8-git-send-email-zonque@gmail.com>
-Subject: Re: [PATCH 07/20] spi: spi-pxa2xx: remove legacy PXA DMA bits
+In-Reply-To: <1375889649-14638-16-git-send-email-zonque@gmail.com>
+Subject: Re: [PATCH 15/20] ASoC: pxa: pxa-ssp: set dma filter data from
+ startup hook
 Cc: mark.rutland@arm.com, s.neumann@raumfeld.com, linux-mtd@lists.infradead.org,
  haojian.zhuang@linaro.org, cxie4@marvell.com, lars@metafoo.de, nico@linaro.org,
  vinod.koul@intel.com, marek.vasut@gmail.com,
@@ -29,41 +30,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---p//XFgTqeVWI1epd
+--cV8yfgwCnzpki16T
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Aug 07, 2013 at 05:33:56PM +0200, Daniel Mack wrote:
-> Generic DMA support was already implemented by commit cd7bed00
-> ("spi/pxa2xx: break out the private DMA API usage into a separate
-> file") which moved all the legacy PXA DMA implementation code into
-> its own file.
+On Wed, Aug 07, 2013 at 05:34:04PM +0200, Daniel Mack wrote:
+> With the new dmaengine implementation, the filter_data parameter has
+> to be set earlier, from pxa_ssp_startup().
 
 Acked-by: Mark Brown <broonie@linaro.org>
 
-though this will have some trivial merge issues until the merge window
-they shouldn't be a problem.
-
---p//XFgTqeVWI1epd
+--cV8yfgwCnzpki16T
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSAm4CAAoJELSic+t+oim96jwQAJ5qidUTivpoobMbt0y+wyku
-CTHza3wsj9KtXNrVTLoQ6LBTPCXGyCKmE5IzBduH3F5QukPK4zZHVtsGpcO0aKR4
-KajobpsHNdPuD07fqMlo1keR4axlVL8vcCwAu/U3xQ2PSA/ev032fT53K8ikSVHh
-znMS8lzfRyvldIIrgvUyFRXe9vqez6ns3LT/Epz36Z43KBDi9z08frzzrSzTtb3t
-5npgbJO31ynaGtdjWbIvdGdyLaR7K5aGRkYNzUp9cyRjj+JYYsWPLGr4rls3k/OY
-VwFQcy+Fb3v/GkTfqQ3EL+bjsRVpOiTtyN0M78PE0m3e4WCzJW5NDxXLWDzozs1N
-snrtKDjtF1W4k7gwppawZgBVI4yd/nf8hgLHU0aDFax+uC1PZ4SyYWT35EXd7mAA
-HLLrqVeIrnCe5d1KiJ9OtlpNOh7IAg1weimS/Nf364cMQoljtpNbGNGVt/pPQ01g
-KFjC+1A0DQVFCJqJF8h2VMnANP9WZLYc6u04yedHGi624xdfkTU0FG/pxCCCcnAV
-SfoEgFIoFvHFsxMGomNqaLcBDE5Kg5dCcrwkiqGisEL93zsXUIFpWKFAtdiY3ike
-5ditvu61/SQShxzdueTxaLoSWDorI/tLKz/CM4v6Ruc1rqCtpDI2stpwqqckpBpR
-EANI+fEMZg7RO8T5dbbe
-=2ef7
+iQIcBAEBAgAGBQJSAm6KAAoJELSic+t+oim9YJwP/0QgiooUDXRH02abCBiVpzIi
+9TqJDxvSNkBdbtbMXucuPSrsneaeeAynEmA3khgDdiPhraJJxyaXbv1BKqWVSWdC
+9K+ILxnn7mQuz0P2W5l1sZYLs/+LsB12aPQCfroDVEO3SZ2uV+4kRjqBhm20rrmp
+hnlslmmDoIzOXqP3kmanteQS7Jcn7V1/K1cYXE9Yul/6TQ6tIKlZjII6fFrvhU+W
+DM7nb07nt6nwA46lo3LtkM1b3pUoniHH7pLfm3ue84k9voB1nh5OONTR6SllGzvr
+U6dgP0C5u+Uzxu0f2n8HhyAiGq0O7uv62qrieqm8+kAr3WeDYZLKccX18uJLVhk8
+QpFWDXErxDgW6T3bflqP+eJe4TQCWDtW7bLdDRizY11BCWTsyEMr2VkaNDSmrazw
+YNBue52hxSxHFI6J2eJa1e35PBMjzU0wUqtyOlESO6BH4JOJnm7efMZXaPr0iMtq
+sy6yotpdYtzpawqUQzJj4s4fTtjca/8/xDuD2MC/WsBj9adGNaebzjGoKwlSok0n
+WcyUl0yDMRSdNbIqh7UdFfnjsdtxtoJZQscX1tU7rhthbtlLgn9xCTeLEufcRIeO
+NMe3NUx/1WpJg4yk010Bk/8BN5MSrQIcHz6ixT2lUlr+ih0q2K3IKqA831nRx5+c
+oSCx4iQS6ezHQTocM503
+=rlzF
 -----END PGP SIGNATURE-----
 
---p//XFgTqeVWI1epd--
+--cV8yfgwCnzpki16T--
