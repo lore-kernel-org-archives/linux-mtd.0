@@ -1,27 +1,28 @@
-Message-ID: <52035A81.6090903@metafoo.de>
-Date: Thu, 08 Aug 2013 10:44:49 +0200
-From: Lars-Peter Clausen <lars@metafoo.de>
+Received: from comal.ext.ti.com ([198.47.26.152])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V7M2b-0003fR-7p
+ for linux-mtd@lists.infradead.org; Thu, 08 Aug 2013 08:57:54 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: yuhang wang <wangyuhang2014@gmail.com>, Trent Piepho <tpiepho@gmail.com>
+Subject: RE: [PATCH] SPI: DUAL and QUAD support
+Date: Thu, 8 Aug 2013 08:57:23 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9F1E1B@DBDE04.ent.ti.com>
+References: <20130729064234.GS9858@sirena.org.uk>
+ <1375095194-7093-1-git-send-email-wangyuhang2014@gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9EE267@DBDE04.ent.ti.com>
+ <CAHSAbzNdvgTSPqDPHT2n3zXFwe7HBqTfyk4fB_-GsW1WSUXqRA@mail.gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9EE356@DBDE04.ent.ti.com>
+ <CA+7tXijduVqFdao3L3oJcFBYw_cffdyo-fwyAS2cBASfEMExpA@mail.gmail.com>
+ <CAHSAbzPjk1M9RzMahYOUkFDJiU8pRWXO2-np0HgQefxEC+WXeA@mail.gmail.com>
+In-Reply-To: <CAHSAbzPjk1M9RzMahYOUkFDJiU8pRWXO2-np0HgQefxEC+WXeA@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-To: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH 17/20] ASoC: pxa: pxa-pcm-lib: switch over to
- snd-soc-dmaengine-pcm
-References: <1375889649-14638-1-git-send-email-zonque@gmail.com>
- <1375889649-14638-18-git-send-email-zonque@gmail.com>
- <20130807160743.GI6427@sirena.org.uk> <5202718F.2050507@gmail.com>
- <20130807163258.GL6427@sirena.org.uk> <52035463.1030909@gmail.com>
-In-Reply-To: <52035463.1030909@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: mark.rutland@arm.com, s.neumann@raumfeld.com, linux-mtd@lists.infradead.org,
- haojian.zhuang@linaro.org, cxie4@marvell.com, nico@linaro.org,
- vinod.koul@intel.com, marek.vasut@gmail.com,
- ezequiel.garcia@free-electrons.com, rmk+kernel@arm.linux.org.uk,
- devicetree@vger.kernel.org, samuel@sortiz.org, arnd@arndb.de,
- Mark Brown <broonie@kernel.org>, mika.westerberg@linux.intel.com,
- linux-arm-kernel@lists.infradead.org, thomas.petazzoni@free-electrons.com,
- eric.y.miao@gmail.com, gregkh@linuxfoundation.org, g.liakhovetski@gmx.de,
- sachin.kamat@linaro.org, kernel@pengutronix.de, djbw@fb.com,
- davem@davemloft.net
+Cc: "spi-devel-general@lists.sourceforge.net"
+ <spi-devel-general@lists.sourceforge.net>, "Poddar,
+ Sourav" <sourav.poddar@ti.com>, "broonie@kernel.org" <broonie@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,31 +32,169 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/08/2013 10:18 AM, Daniel Mack wrote:
-> On 07.08.2013 18:32, Mark Brown wrote:
->> On Wed, Aug 07, 2013 at 06:10:55PM +0200, Daniel Mack wrote:
->>> On 07.08.2013 18:07, Mark Brown wrote:
->>
->>>> Has this been tested with the standalone non-ASoC PXA AC'97 driver?
->>
->>> Nope. I have no such device.
->>
->> I guess the main test there will be making sure that it builds with ASoC
->> disabled.  I'm not sure anything later than PXA3xx ever actually used
->> AC'97.
->>
+>=20
+> Hi,Trent
+>=20
+> Thanks for so many details.
+> 2013/7/30 Trent Piepho <tpiepho@gmail.com>:
+> > On Mon, Jul 29, 2013 at 7:21 AM, Gupta, Pekon <pekon@ti.com> wrote:
+> >>> >>                       spi->mode |=3D SPI_CS_HIGH;
+> >>> >>               if (of_find_property(nc, "spi-3wire", NULL))
+> >>> >>                       spi->mode |=3D SPI_3WIRE;
+> >>> >> +             if (of_find_property(nc, "spi-tx-dual", NULL))
+> >>> >> +                     spi->mode |=3D SPI_TX_DUAL;
+> >>> >> +             if (of_find_property(nc, "spi-tx-quad", NULL))
+> >>> >> +                     spi->mode |=3D SPI_TX_QUAD;
+> >>> >> +             if (of_find_property(nc, "spi-rx-dual", NULL))
+> >>> >> +                     spi->mode |=3D SPI_RX_DUAL;
+> >>> >> +             if (of_find_property(nc, "spi-rx-quad", NULL))
+> >>> >> +                     spi->mode |=3D SPI_RX_QUAD;
+> >>> >>
+> >>> >  [Pekon] I think its cleaner to use similar parameters for channel-=
+width
+> >>> >  info everywhere. Like you have added separate fields  'tx_nbits' a=
+nd
+> >>> >  'rx_nbits' in spi_transfer, Why not do similar here for 'spi_maste=
+r' ?
+> >
+> > There are I think a total of five places that channel width can be
+> > used in the Linux SPI stack.
+> >
+> > a) In the master driver (spi_master)
+> > b) In a slave driver (spi_device)
+> > c) In a spi_message
+> > d) In a spi_transfer
+> > e) In the OF device tree, for DT nodes of a and/or b, as they appear in=
+ the
+> dt.
+> >
+[Pekon]: Just to be aligned here..=20
+(a) master_driver (spi_master) =3D=3D like spi/spi-omap2-mcspi.c .. correct=
+ ?
+(b) slave_driver (spi_device) =3D=3D  like mtd/devices/m25p80.c .. correct =
+?
+
+> > For a, all the widths supported would be specified.  In b, c, and d,
+> > only the width to be used would be specified.  So, there is some
+> > difference here, as we need a method that allows multiple modes to be
+> > specified for a but not for the others.
+> >
+> > Since some slaves will want to send a single spi message with multiple
+> > transfers of different widths (e.g., single bit read command followed
+> > by quad bit data xfer) it's necessary to specify the width in d.  With
+> > the widths specified at the lowest level, it is not actually necessary
+> > to supply the width for C or B.
+> >
+[Pekon]: Agreed.. This proposal is better of having..
+(b) spi_device->mode =3D SPI_RX_QUAD | SPI_TX_SINGLE;
+(c) spi_transfer.tx_nbits =3D 4; spi_transfer.rx_nbits =3D 4;
+
+> > While it's not necessary to specify the width for B, doing so would be
+> > consistent with other fields that can be specified in the spi_transfer
+> > and in the spi_device, like bits_per_word and speed_hz.  It's worth
+> > pointing out that none of the mode bits from the spi_device can be
+> > specified in in a spi_transfer.  Currently, if you want to change
+> > anything in mode you must call spi_setup() on the device.  Since width
+> > can be changed on a transfer by transfer basis, maybe that is a good
+> > reason to say it doesn't belong in mode.
+> >
+> what you said is ok. But b) and d) are not the same. d) will be set
+> based on b), but not equal to d)=3Db)(bits_per_word and speed_hz). So
+> don't you think that b) is more like a transfer mode and d) is the
+> detailed functions related to the mode. Also b) should be set in
+> spi_setup(), only d) width can be changed by transfer, but b) should
+> not be modifyed. But none of the mode bits from the spi_device can be
+> specified in in a spi_transfer, that is a point. Is that necessary to
+> add members like "transfer_mode" in spi_master and spi_device which do
+> the similar operation to "mode"?
+>=20
+[Pekon]: I did not fully understand your comments, But following
+ is my understanding of DT parsing.
+ There should two level of DT binding
+(a) For SPI controller:=20
+- describes the capabilities of H/W engine on SoC
+- goes into spi_master->mode
+(b) For SPI devices:
+- describes capabilities of each device on board (includes board
+   wire connections. (single controller can be connected to many SPI device=
+s)
+- goes into spi_device->mode, by matching common compatibilities
+ between spi_master and spi_device_n
+
+This is important for where multiple SPI devices are connected to=20
+one controller which supports all modes (SINGLE, DUAL, QUAD) But;
+-  /dev/spi0 can have all 4 data-outputs connected on board=20
+   so can support QUAD mode
+- /dev/spi1 has only 2 data-outputs connected on board
+   so can support only SINGLE | DUAL
+
+So, you have defined DT bindings for (b) only.
+You need to add DT binding for (a) also.
+
+> > If the default width is in the spi_device, then a spi_transfer needs a
+> > width state to mean "unspecified".  I.e., the read width can be one,
+> > two, four, (eight), or unspecified bits.  Unspecified gets changed to
+> > the default from the spi_device, whereas one bit wide means one bit
+> > wide.
+> >
+> what do you mean by default, is that without init value? Do you want
+> to use bit by bit in spi_transfer?
 >
-> Ah, I see it now.
->
-> I guess we have two options: either duplicate code from
-> soc-dmaengine-pcm, or move soc-dmaengine-pcm out of the ASoC context. I
-> actually see no dependecy to ASoC from there anyway.
+[Pekon]: So default here means common basic capability which all=20
+devices are expected to meet at-least.
+And I think this is SPI_SINGLE_FULL_DUPLEX mode.
+=20
+> > Allowing the spi_device to have a width means the width can be checked
+> > against the master's supported widths at spi_setup() time, like the
+> > other mode bits.  But, since width can be set on a transfer by
+> > transfer basis and each transfer is not checked in the spi core, this
+> > doesn't really do the master driver much good.  The master driver
+> > still needs to check each transfer to see if the width is allowed.
+> >
+> agree. so do it in __spi_async() and to make sure that spi_transfer <=3D
+> spi_device.
+>=20
+> > I don't see the point of putting the width in C.  Current a
+> > spi_message can't change any of the settings from the spi_device or
+> > supply a default for the the settings in a spi_transfer, and I don't
+> > see why width is any different here.
+> >
+[Pekon]: Agreed.. if you are already adding tx_nbits & rx_nbits in=20
+spi_transfer, then you don't need to add same in spi_message.
+(at-least not for now).
 
-There is intentionally no dependency on ASoC for the soc-dmaengine-pcm code, 
-though since I wasn't sure whether there was ever going to be a userside 
-outside of ASoC the coded ended up in ASoC folder. It shouldn't be a problem to 
-make it available to all of ALSA.
+> > For the OF device tree, I don't think the master's node should have
+> > anything about the widths supported.  There is nothing about any of
+> > the other spi master capabilities in the DT.  The master driver
+> > supplies this information.
+> >
+[Pekon]: Nope not correct. See example above of having multiple
+SPI devices connected to same controller.
 
-Not that the soc-generic-dmaengine-pcm code has a dependency on ASoC though.
+> > For the OF slave device node, it's not clear it needs to be there
+> > either.  The current existing use cases are for memories that only use
+> > dual and quad for certain parts of certain commands.  Setting the
+> > width for the slave overall doesn't make sense.
+> >
+> > But, the memory might have four data lines connected on the board or
+> > it might just have one.  That does seem like information about board
+> > layout that belongs in the device tree.  So there does need to be done
+> > "enable quad mode" property.  However, is this a SPI property or a
+> > property of the memory device's driver?  Turning on quad mode support
+> > isn't the same that as setting the clock polarity.  Clock polarity it
+> > a SPI property supplied to spi_setup.  Quad mode means the driver
+> > should use the quad read command and the appropriate spi_transfers for
+> > using it.
+> How to set DT depend on whether to seperate the dual and quad from
+> mode.
+>=20
+[Pekon] you need separate DT binding for controller and child devices.
+And then separate for Tx and Rx in each of them.
+Also, I suggest you add devicetree-discuss maillist when you update the=20
+Device-tree documentation for same.
 
-- Lars
+I havn't seen any traffic on next version of this patch?
+ Did I miss, or you are working on it?
+
+
+with regards, pekon
