@@ -1,22 +1,20 @@
-Received: from va3ehsobe004.messaging.microsoft.com ([216.32.180.14]
- helo=va3outboundpool.messaging.microsoft.com)
+Received: from co1ehsobe004.messaging.microsoft.com ([216.32.180.187]
+ helo=co1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V7Lf1-0002UZ-V6
- for linux-mtd@lists.infradead.org; Thu, 08 Aug 2013 08:33:32 +0000
-Message-ID: <520357DF.3030403@freescale.com>
-Date: Thu, 8 Aug 2013 16:33:35 +0800
+ id 1V7Lj3-0002hT-Lg
+ for linux-mtd@lists.infradead.org; Thu, 08 Aug 2013 08:37:42 +0000
+Message-ID: <520358BD.6000808@freescale.com>
+Date: Thu, 8 Aug 2013 16:37:17 +0800
 From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v6 00/10] mtd: add datasheet's ECC information to
- nand_chip{}
-References: <1368760654-28754-1-git-send-email-b32955@freescale.com>
- <CAN8TOE-QvScbPUEPyrs-fYVQZmPu1h-wWX2hjz46KYtaWRckBw@mail.gmail.com>
-In-Reply-To: <CAN8TOE-QvScbPUEPyrs-fYVQZmPu1h-wWX2hjz46KYtaWRckBw@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH v2 0/4] Export the ecc step size to user applications
+References: <1368607606-4344-1-git-send-email-b32955@freescale.com>
+In-Reply-To: <1368607606-4344-1-git-send-email-b32955@freescale.com>
+Content-Type: text/plain; charset="GB2312"
 Content-Transfer-Encoding: 7bit
-Cc: vikram186@gmail.com, linux-mtd@lists.infradead.org, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org, dedekind1@gmail.com
+Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,60 +25,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Hi Artem & Brian:
-> Hi Huang and others,
+> In order to implement the NAND boot for some Freescale's chips, such as
+> imx23/imx28/imx50/imx6, we use a tool (called kobs-ng) to burn the uboot
+> and some metadata to nand chip. And the ROM code will use the metadata to
+> configrate the BCH, and to find the uboot.
 >
-> On Thu, May 16, 2013 at 8:17 PM, Huang Shijie<b32955@freescale.com>  wrote:
->> 1.) Why add the ECC information to the nand_chip{} ?
->>     Each nand chip has its requirement for the ECC correctability, such as
->>     "4bit ECC for each 512Byte" or "40bit ECC for each 1024Byte".
->>     This ECC info is very important to the nand controller, such as gpmi.
->>
->>     Take the Micron MT29F64G08CBABA for example, its geometry is
->>     8k page size, 744 bytes oob size and it requires 40bit ECC per 1K bytes.
->>     If we do not provide the ECC info to the gpmi nand driver, it has to
->>     calculate the ECC correctability itself. The gpmi driver will gets the 56bit
->>     ECC for per 1K bytes which is beyond its BCH's 40bit ecc capibility.
->>     The gpmi will quits in this case. But in actually, the gpmi can supports
->>     this nand chip if it can get the right ECC info.
->>
->> 2.) About the patch set:
->>     2.1) patch 1:
->>                The keynote patch.
->>
->>     2.2) patch 2 ~ patch 6:
->>                 These patches are for ONFI nand.
->>                 Parse out the ecc info from the parameter page if we can, else
->>                 parse out the ecc info from the extended parameter page.
->>
->>     2.2) patch 7 ~ patch 9:
->>                 Add the ECC info for full-id nand, and parse it out.
->>
->>     2.3) patch 10
->>                 The gpmi uses the ecc info to set the BCH module. and with this
->>                 patch set, the gpmi can supports the MT29F64G08CBABA now.
-> What's the status on this patch set? Surely by v6 we have some
-> reasonable stable state on things like naming. Does anyone have any
-> other objections? Unfortunately, I've been awfully distracted, and on
-> top of that, I'm running into some bugs with my NAND controller
-> sending the ONFI parameter read/change column commands. But any time
-> my controller actually outputs a correct parameter page + extended
-> parameter page, this series has worked for me.
+> The ECC information(ecc step size, ecc strength) which is used to configrate
+> the BCH is part of the metadata. The kobs-ng can gets the ecc strength from
+> the sys node /sys/*/mtdX/ecc_strength now. But it can't gets the ecc step size.
 >
-> I've put my 2 cents in on most of the issues I had, and I tested the
-> whole series on my driver at around v5. The only issues I have with it
-> are somewhat cosmetic and not worth bikeshedding. So for all the
-> non-GPMI specific stuff I'll give my:
+> This patch set is used to export the ecc step size to user applications.
+> With this patch set, the kobs-ng can gets the ecc step size now.
 >
-> Reviewed-by: Brian Norris<computersforpeace@gmail.com>
-> Tested-by: Brian Norris<computersforpeace@gmail.com>
+> v1 --> v2:
+> 	[1] rename the ecc_size to ecc_step.
+> 	[2] rebase on the latest l2-mtd.
 >
-> Thanks for the work Huang.
+> Huang Shijie (4):
+>   mtd: add a new field to mtd_info{}
+>   mtd: add a new sys node to show the ecc step size
+>   mtd: set the ecc step size for master/slave mtd_info
+>   mtd: gpmi: update the ecc step size for mtd_info{}
 >
-> Brian
+>  drivers/mtd/mtdcore.c                  |   11 +++++++++++
+>  drivers/mtd/mtdpart.c                  |    1 +
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    1 +
+>  drivers/mtd/nand/nand_base.c           |    1 +
+>  include/linux/mtd/mtd.h                |    3 +++
+>  5 files changed, 17 insertions(+), 0 deletions(-)
 >
-Could you please merge this patch set?
-
+Could you merge this patch set ?
 
 thanks
-
 Huang Shijie
