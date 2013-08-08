@@ -1,20 +1,27 @@
-Received: from co1ehsobe004.messaging.microsoft.com ([216.32.180.187]
- helo=co1outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V7Lj3-0002hT-Lg
- for linux-mtd@lists.infradead.org; Thu, 08 Aug 2013 08:37:42 +0000
-Message-ID: <520358BD.6000808@freescale.com>
-Date: Thu, 8 Aug 2013 16:37:17 +0800
-From: Huang Shijie <b32955@freescale.com>
+Message-ID: <52035A81.6090903@metafoo.de>
+Date: Thu, 08 Aug 2013 10:44:49 +0200
+From: Lars-Peter Clausen <lars@metafoo.de>
 MIME-Version: 1.0
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v2 0/4] Export the ecc step size to user applications
-References: <1368607606-4344-1-git-send-email-b32955@freescale.com>
-In-Reply-To: <1368607606-4344-1-git-send-email-b32955@freescale.com>
-Content-Type: text/plain; charset="GB2312"
+To: Daniel Mack <zonque@gmail.com>
+Subject: Re: [PATCH 17/20] ASoC: pxa: pxa-pcm-lib: switch over to
+ snd-soc-dmaengine-pcm
+References: <1375889649-14638-1-git-send-email-zonque@gmail.com>
+ <1375889649-14638-18-git-send-email-zonque@gmail.com>
+ <20130807160743.GI6427@sirena.org.uk> <5202718F.2050507@gmail.com>
+ <20130807163258.GL6427@sirena.org.uk> <52035463.1030909@gmail.com>
+In-Reply-To: <52035463.1030909@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org, dedekind1@gmail.com
+Cc: mark.rutland@arm.com, s.neumann@raumfeld.com, linux-mtd@lists.infradead.org,
+ haojian.zhuang@linaro.org, cxie4@marvell.com, nico@linaro.org,
+ vinod.koul@intel.com, marek.vasut@gmail.com,
+ ezequiel.garcia@free-electrons.com, rmk+kernel@arm.linux.org.uk,
+ devicetree@vger.kernel.org, samuel@sortiz.org, arnd@arndb.de,
+ Mark Brown <broonie@kernel.org>, mika.westerberg@linux.intel.com,
+ linux-arm-kernel@lists.infradead.org, thomas.petazzoni@free-electrons.com,
+ eric.y.miao@gmail.com, gregkh@linuxfoundation.org, g.liakhovetski@gmx.de,
+ sachin.kamat@linaro.org, kernel@pengutronix.de, djbw@fb.com,
+ davem@davemloft.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,37 +31,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem & Brian:
-> In order to implement the NAND boot for some Freescale's chips, such as
-> imx23/imx28/imx50/imx6, we use a tool (called kobs-ng) to burn the uboot
-> and some metadata to nand chip. And the ROM code will use the metadata to
-> configrate the BCH, and to find the uboot.
+On 08/08/2013 10:18 AM, Daniel Mack wrote:
+> On 07.08.2013 18:32, Mark Brown wrote:
+>> On Wed, Aug 07, 2013 at 06:10:55PM +0200, Daniel Mack wrote:
+>>> On 07.08.2013 18:07, Mark Brown wrote:
+>>
+>>>> Has this been tested with the standalone non-ASoC PXA AC'97 driver?
+>>
+>>> Nope. I have no such device.
+>>
+>> I guess the main test there will be making sure that it builds with ASoC
+>> disabled.  I'm not sure anything later than PXA3xx ever actually used
+>> AC'97.
+>>
 >
-> The ECC information(ecc step size, ecc strength) which is used to configrate
-> the BCH is part of the metadata. The kobs-ng can gets the ecc strength from
-> the sys node /sys/*/mtdX/ecc_strength now. But it can't gets the ecc step size.
+> Ah, I see it now.
 >
-> This patch set is used to export the ecc step size to user applications.
-> With this patch set, the kobs-ng can gets the ecc step size now.
->
-> v1 --> v2:
-> 	[1] rename the ecc_size to ecc_step.
-> 	[2] rebase on the latest l2-mtd.
->
-> Huang Shijie (4):
->   mtd: add a new field to mtd_info{}
->   mtd: add a new sys node to show the ecc step size
->   mtd: set the ecc step size for master/slave mtd_info
->   mtd: gpmi: update the ecc step size for mtd_info{}
->
->  drivers/mtd/mtdcore.c                  |   11 +++++++++++
->  drivers/mtd/mtdpart.c                  |    1 +
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    1 +
->  drivers/mtd/nand/nand_base.c           |    1 +
->  include/linux/mtd/mtd.h                |    3 +++
->  5 files changed, 17 insertions(+), 0 deletions(-)
->
-Could you merge this patch set ?
+> I guess we have two options: either duplicate code from
+> soc-dmaengine-pcm, or move soc-dmaengine-pcm out of the ASoC context. I
+> actually see no dependecy to ASoC from there anyway.
 
-thanks
-Huang Shijie
+There is intentionally no dependency on ASoC for the soc-dmaengine-pcm code, 
+though since I wasn't sure whether there was ever going to be a userside 
+outside of ASoC the coded ended up in ASoC folder. It shouldn't be a problem to 
+make it available to all of ALSA.
+
+Not that the soc-generic-dmaengine-pcm code has a dependency on ASoC though.
+
+- Lars
