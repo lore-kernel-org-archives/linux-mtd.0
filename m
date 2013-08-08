@@ -1,26 +1,26 @@
-Message-ID: <52035463.1030909@gmail.com>
-Date: Thu, 08 Aug 2013 10:18:43 +0200
+Message-ID: <520354E9.10407@gmail.com>
+Date: Thu, 08 Aug 2013 10:20:57 +0200
 From: Daniel Mack <zonque@gmail.com>
 MIME-Version: 1.0
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 17/20] ASoC: pxa: pxa-pcm-lib: switch over to
- snd-soc-dmaengine-pcm
+To: dedekind1@gmail.com
+Subject: Re: [PATCH 03/20] ARM: pxa: ssp: add shortcut for &pdev->dev
 References: <1375889649-14638-1-git-send-email-zonque@gmail.com>
- <1375889649-14638-18-git-send-email-zonque@gmail.com>
- <20130807160743.GI6427@sirena.org.uk> <5202718F.2050507@gmail.com>
- <20130807163258.GL6427@sirena.org.uk>
-In-Reply-To: <20130807163258.GL6427@sirena.org.uk>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
+ <1375889649-14638-4-git-send-email-zonque@gmail.com>
+ <20130808073253.GA17106@norris.computersforpeace.net>
+ <1375948365.2219.21.camel@sauron.fi.intel.com>
+In-Reply-To: <1375948365.2219.21.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Cc: mark.rutland@arm.com, s.neumann@raumfeld.com, linux-mtd@lists.infradead.org,
  haojian.zhuang@linaro.org, cxie4@marvell.com, lars@metafoo.de, nico@linaro.org,
  vinod.koul@intel.com, marek.vasut@gmail.com,
  ezequiel.garcia@free-electrons.com, rmk+kernel@arm.linux.org.uk,
  devicetree@vger.kernel.org, samuel@sortiz.org, arnd@arndb.de,
- mika.westerberg@linux.intel.com, linux-arm-kernel@lists.infradead.org,
- thomas.petazzoni@free-electrons.com, eric.y.miao@gmail.com,
- gregkh@linuxfoundation.org, g.liakhovetski@gmx.de, sachin.kamat@linaro.org,
- kernel@pengutronix.de, djbw@fb.com, davem@davemloft.net
+ broonie@kernel.org, mika.westerberg@linux.intel.com,
+ linux-arm-kernel@lists.infradead.org, thomas.petazzoni@free-electrons.com,
+ eric.y.miao@gmail.com, gregkh@linuxfoundation.org, g.liakhovetski@gmx.de,
+ sachin.kamat@linaro.org, kernel@pengutronix.de, djbw@fb.com,
+ Brian Norris <computersforpeace@gmail.com>, davem@davemloft.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,24 +30,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07.08.2013 18:32, Mark Brown wrote:
-> On Wed, Aug 07, 2013 at 06:10:55PM +0200, Daniel Mack wrote:
->> On 07.08.2013 18:07, Mark Brown wrote:
+On 08.08.2013 09:52, Artem Bityutskiy wrote:
+> On Thu, 2013-08-08 at 00:32 -0700, Brian Norris wrote:
+>> On Wed, Aug 07, 2013 at 05:33:52PM +0200, Daniel Mack wrote:
+>>> No functional change, just a cosmetic cleanup.
+>>>
+>>> Signed-off-by: Daniel Mack <zonque@gmail.com>
+>>> ---
+>>> --- a/arch/arm/plat-pxa/ssp.c
+>>> +++ b/arch/arm/plat-pxa/ssp.c
+>>> @@ -77,16 +77,17 @@ static int pxa_ssp_probe(struct platform_device *pdev)
+>>>  	const struct platform_device_id *id = platform_get_device_id(pdev);
+>>>  	struct resource *res;
+>>>  	struct ssp_device *ssp;
+>>> +	struct device *dev = &pdev->dev;
+>>>  	int ret = 0;
+>>>  
+>>>  	ssp = kzalloc(sizeof(struct ssp_device), GFP_KERNEL);
+>>>  	if (ssp == NULL) {
+>>> -		dev_err(&pdev->dev, "failed to allocate memory");
+>>> +		dev_err(dev, "failed to allocate memory");
+>>
+>> Two options here: either remove the message entirely (I believe kzalloc
+>> will complain loudly if the allocation fails) or at least add a newline
+>> at the end of it!
 > 
->>> Has this been tested with the standalone non-ASoC PXA AC'97 driver?
-> 
->> Nope. I have no such device.
-> 
-> I guess the main test there will be making sure that it builds with ASoC
-> disabled.  I'm not sure anything later than PXA3xx ever actually used
-> AC'97.
+> I think only to former is the right option.
 > 
 
-Ah, I see it now.
+Ok, I've added a patch for this to my series.
 
-I guess we have two options: either duplicate code from
-soc-dmaengine-pcm, or move soc-dmaengine-pcm out of the ASoC context. I
-actually see no dependecy to ASoC from there anyway.
 
+Thanks!
 
 Daniel
