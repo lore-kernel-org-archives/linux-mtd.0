@@ -1,27 +1,26 @@
-Received: from mail-oa0-x231.google.com ([2607:f8b0:4003:c02::231])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V7L7Y-0001L2-Rg
- for linux-mtd@lists.infradead.org; Thu, 08 Aug 2013 07:58:57 +0000
-Received: by mail-oa0-f49.google.com with SMTP id n10so2756241oag.36
- for <linux-mtd@lists.infradead.org>; Thu, 08 Aug 2013 00:58:34 -0700 (PDT)
+Message-ID: <52035463.1030909@gmail.com>
+Date: Thu, 08 Aug 2013 10:18:43 +0200
+From: Daniel Mack <zonque@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1375878679-18098-2-git-send-email-ezequiel.garcia@free-electrons.com>
-References: <1375878679-18098-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1375878679-18098-2-git-send-email-ezequiel.garcia@free-electrons.com>
-Date: Thu, 8 Aug 2013 00:58:34 -0700
-Message-ID: <CAN8TOE_ZjikTe-+vPrM8HKmJAu_HuiDBhoh8TTJGXKsrTo+Odw@mail.gmail.com>
-Subject: Re: [PATCH v2 01/14] mtd: nand: pxa3xx: Introduce 'marvell,
- armada370-nand' compatible string
-From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 17/20] ASoC: pxa: pxa-pcm-lib: switch over to
+ snd-soc-dmaengine-pcm
+References: <1375889649-14638-1-git-send-email-zonque@gmail.com>
+ <1375889649-14638-18-git-send-email-zonque@gmail.com>
+ <20130807160743.GI6427@sirena.org.uk> <5202718F.2050507@gmail.com>
+ <20130807163258.GL6427@sirena.org.uk>
+In-Reply-To: <20130807163258.GL6427@sirena.org.uk>
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: Lior Amsalem <alior@marvell.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Jason Cooper <jason@lakedaemon.net>, Artem Bityutskiy <dedekind1@gmail.com>,
- Daniel Mack <zonque@gmail.com>, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org,
- Gregory Clement <gregory.clement@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
+Content-Transfer-Encoding: 8bit
+Cc: mark.rutland@arm.com, s.neumann@raumfeld.com, linux-mtd@lists.infradead.org,
+ haojian.zhuang@linaro.org, cxie4@marvell.com, lars@metafoo.de, nico@linaro.org,
+ vinod.koul@intel.com, marek.vasut@gmail.com,
+ ezequiel.garcia@free-electrons.com, rmk+kernel@arm.linux.org.uk,
+ devicetree@vger.kernel.org, samuel@sortiz.org, arnd@arndb.de,
+ mika.westerberg@linux.intel.com, linux-arm-kernel@lists.infradead.org,
+ thomas.petazzoni@free-electrons.com, eric.y.miao@gmail.com,
+ gregkh@linuxfoundation.org, g.liakhovetski@gmx.de, sachin.kamat@linaro.org,
+ kernel@pengutronix.de, djbw@fb.com, davem@davemloft.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,105 +30,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ devicetree list
+On 07.08.2013 18:32, Mark Brown wrote:
+> On Wed, Aug 07, 2013 at 06:10:55PM +0200, Daniel Mack wrote:
+>> On 07.08.2013 18:07, Mark Brown wrote:
+> 
+>>> Has this been tested with the standalone non-ASoC PXA AC'97 driver?
+> 
+>> Nope. I have no such device.
+> 
+> I guess the main test there will be making sure that it builds with ASoC
+> disabled.  I'm not sure anything later than PXA3xx ever actually used
+> AC'97.
+> 
 
-On Wed, Aug 7, 2013 at 5:31 AM, Ezequiel Garcia
-<ezequiel.garcia@free-electrons.com> wrote:
-> This driver supports NFCv1 (as found in PXA SoC) and NFCv2 (as found in
-> Armada 370/XP SoC). As both controller has a few differences, a way of
-> distinguishing between the two is needed.
->
-> This commit introduces a new compatible string 'marvell,armada370-nand'
-> and assigns a compatible data of type enum pxa3xx_nand_variant to allow
-> such distinction.
->
-> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> ---
->  drivers/mtd/nand/pxa3xx_nand.c | 38 +++++++++++++++++++++++++++++++++++++-
->  1 file changed, 37 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-> index 501e380..2582e1f 100644
-> --- a/drivers/mtd/nand/pxa3xx_nand.c
-> +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> @@ -123,6 +123,11 @@ enum {
->         STATE_READY,
->  };
->
-> +enum pxa3xx_nand_variant {
-> +       PXA3XX_NAND_VARIANT_PXA,
-> +       PXA3XX_NAND_VARIANT_ARMADA370,
-> +};
-> +
->  struct pxa3xx_nand_host {
->         struct nand_chip        chip;
->         struct pxa3xx_nand_cmdset *cmdset;
-> @@ -171,6 +176,12 @@ struct pxa3xx_nand_info {
->         struct pxa3xx_nand_host *host[NUM_CHIP_SELECT];
->         unsigned int            state;
->
-> +       /*
-> +        * This driver supports NFCv1 (as found in PXA SoC)
-> +        * and NFCv2 (as found in Armada 370/XP SoC).
-> +        */
-> +       enum pxa3xx_nand_variant variant;
-> +
->         int                     cs;
->         int                     use_ecc;        /* use HW ECC ? */
->         int                     use_dma;        /* use DMA ? */
-> @@ -1192,7 +1203,14 @@ static int pxa3xx_nand_remove(struct platform_device *pdev)
->
->  #ifdef CONFIG_OF
->  static struct of_device_id pxa3xx_nand_dt_ids[] = {
-> -       { .compatible = "marvell,pxa3xx-nand" },
-> +       {
-> +               .compatible = "marvell,pxa3xx-nand",
-> +               .data       = (void *) PXA3XX_NAND_VARIANT_PXA,
-> +       },
-> +       {
-> +               .compatible = "marvell,armada370-nand",
-> +               .data       = (void *) PXA3XX_NAND_VARIANT_ARMADA370,
-> +       },
->         {}
->  };
->  MODULE_DEVICE_TABLE(of, pxa3xx_nand_dt_ids);
-> @@ -1221,11 +1239,28 @@ static int pxa3xx_nand_probe_dt(struct platform_device *pdev)
->
->         return 0;
->  }
-> +
-> +static enum pxa3xx_nand_variant
-> +pxa3xx_nand_get_variant(struct platform_device *pdev)
-> +{
-> +       const struct of_device_id *of_id =
-> +                       of_match_device(pxa3xx_nand_dt_ids, &pdev->dev);
-> +       if (!of_id)
-> +               return PXA3XX_NAND_VARIANT_PXA;
-> +       return (enum pxa3xx_nand_variant) of_id->data;
-> +}
->  #else
->  static inline int pxa3xx_nand_probe_dt(struct platform_device *pdev)
->  {
->         return 0;
->  }
-> +
-> +static enum pxa3xx_nand_variant
-> +pxa3xx_nand_get_variant(struct platform_device *pdev)
-> +{
-> +       /* Default lefacy (non-DT) variant */
-> +       return PXA3XX_NAND_VARIANT_PXA;
-> +}
->  #endif
->
->  static int pxa3xx_nand_probe(struct platform_device *pdev)
-> @@ -1252,6 +1287,7 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
->         }
->
->         info = platform_get_drvdata(pdev);
-> +       info->variant = pxa3xx_nand_get_variant(pdev);
->         probe_success = 0;
->         for (cs = 0; cs < pdata->num_cs; cs++) {
->                 info->cs = cs;
-> --
-> 1.8.1.5
->
+Ah, I see it now.
+
+I guess we have two options: either duplicate code from
+soc-dmaengine-pcm, or move soc-dmaengine-pcm out of the ASoC context. I
+actually see no dependecy to ASoC from there anyway.
+
+
+Daniel
