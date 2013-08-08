@@ -1,29 +1,26 @@
-Message-ID: <5203683C.2000904@gmail.com>
-Date: Thu, 08 Aug 2013 11:43:24 +0200
-From: Daniel Mack <zonque@gmail.com>
-MIME-Version: 1.0
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 17/20] ASoC: pxa: pxa-pcm-lib: switch over to
- snd-soc-dmaengine-pcm
+Date: Thu, 8 Aug 2013 07:12:23 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Daniel Mack <zonque@gmail.com>
+Subject: Re: [PATCH 01/20] mtd: pxa3xx-nand: replace pxa_request_dma with
+ dmaengine
+Message-ID: <20130808101221.GC2295@localhost>
 References: <1375889649-14638-1-git-send-email-zonque@gmail.com>
- <1375889649-14638-18-git-send-email-zonque@gmail.com>
- <20130807160743.GI6427@sirena.org.uk> <5202718F.2050507@gmail.com>
- <20130807163258.GL6427@sirena.org.uk> <52035463.1030909@gmail.com>
- <52035A81.6090903@metafoo.de> <52035EF0.1030208@gmail.com>
- <20130808093628.GS6427@sirena.org.uk>
-In-Reply-To: <20130808093628.GS6427@sirena.org.uk>
-Content-Type: text/plain; charset=ISO-8859-1
+ <1375889649-14638-2-git-send-email-zonque@gmail.com>
+ <20130807174612.GB18567@localhost> <52033DE1.5050700@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <52033DE1.5050700@gmail.com>
 Cc: mark.rutland@arm.com, s.neumann@raumfeld.com, linux-mtd@lists.infradead.org,
- haojian.zhuang@linaro.org, cxie4@marvell.com,
- Lars-Peter Clausen <lars@metafoo.de>, nico@linaro.org, vinod.koul@intel.com,
- marek.vasut@gmail.com, ezequiel.garcia@free-electrons.com,
- rmk+kernel@arm.linux.org.uk, devicetree@vger.kernel.org, samuel@sortiz.org,
- arnd@arndb.de, mika.westerberg@linux.intel.com,
- linux-arm-kernel@lists.infradead.org, thomas.petazzoni@free-electrons.com,
- eric.y.miao@gmail.com, gregkh@linuxfoundation.org, g.liakhovetski@gmx.de,
- sachin.kamat@linaro.org, kernel@pengutronix.de, djbw@fb.com,
- davem@davemloft.net
+ haojian.zhuang@linaro.org, cxie4@marvell.com, lars@metafoo.de, nico@linaro.org,
+ vinod.koul@intel.com, marek.vasut@gmail.com, rmk+kernel@arm.linux.org.uk,
+ devicetree@vger.kernel.org, samuel@sortiz.org, arnd@arndb.de,
+ broonie@kernel.org, Zhangfei Gao <zhangfei.gao@marvell.com>,
+ mika.westerberg@linux.intel.com, linux-arm-kernel@lists.infradead.org,
+ thomas.petazzoni@free-electrons.com, eric.y.miao@gmail.com,
+ gregkh@linuxfoundation.org, g.liakhovetski@gmx.de, sachin.kamat@linaro.org,
+ kernel@pengutronix.de, djbw@fb.com, davem@davemloft.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,28 +30,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08.08.2013 11:36, Mark Brown wrote:
-> On Thu, Aug 08, 2013 at 11:03:44AM +0200, Daniel Mack wrote:
->> On 08.08.2013 10:44, Lars-Peter Clausen wrote:
+On Thu, Aug 08, 2013 at 08:42:41AM +0200, Daniel Mack wrote:
+> On 07.08.2013 19:46, Ezequiel Garcia wrote:
+> > Hi Daniel,
+> > 
+> > On Wed, Aug 07, 2013 at 05:33:50PM +0200, Daniel Mack wrote:
+> >> From: Zhangfei Gao <zhangfei.gao@marvell.com>
+> >>
+> >> [zonque@gmail.com: rebased in top of l2-mtd.git. The newly introduced
+> >> ARCH_HAS_DMA hack was changed into a check for CONFIG_HAS_DMA]
+> >>
+> > 
+> > Are you sure you need to introduce the CONFIG_HAS_DMA ifdef?
+> > 
+> > The reason I introduced the ARCH_HAS_DMA macro was to avoid including
+> > the "mach/dma.h" header. Now that you've removed it, I don't think
+> > this driver can be used in any platform where CONFIG_HAS_DMA=n.
 > 
->>> There is intentionally no dependency on ASoC for the soc-dmaengine-pcm code, 
->>> though since I wasn't sure whether there was ever going to be a userside 
->>> outside of ASoC the coded ended up in ASoC folder. It shouldn't be a problem to 
->>> make it available to all of ALSA.
+> Well, yes it can, or at least you could decide to use it without DMA on
+> PXA/MMP. The idea of CONFIG_HAS_DMA is to save binary size.
 > 
->> Ok, great. I queued a patch for that. Will be part of my next spin, or,
->> in case the series doesn't make it in time, I'll re-post all the patches
->> that can be applied independently up front.
-> 
-> You probably don't need to move it, just adding a select (which should
-> ignore Kconfig dependencies) from the non-ASoC PXA stuff ought to do the
-> trick.
 
-Hmm. We have this big "if SND_SOC" in sound/soc/Kconfig which prevent
-that symbol to be selected. In fact, SND_PXA2XX_LIB already selected
-SND_SOC_DMAENGINE_PCM, but that didn't help.
+Ok, I see.
 
-And code that is not ASoC specific should live outside of sound/soc, no?
+I think maybe we will have to add something to force use_dma=0
+when "armada370-nand" is used. AFAIK, the dmaengine does not support
+the kind of DMA operations this driver needs.
 
+I can take care of that if this patchset hits mainline before
+we have something really usable for Armada 370/XP NAND.
 
-Daniel
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
