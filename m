@@ -1,26 +1,22 @@
-Message-ID: <520354E9.10407@gmail.com>
-Date: Thu, 08 Aug 2013 10:20:57 +0200
-From: Daniel Mack <zonque@gmail.com>
+Received: from va3ehsobe004.messaging.microsoft.com ([216.32.180.14]
+ helo=va3outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V7Lf1-0002UZ-V6
+ for linux-mtd@lists.infradead.org; Thu, 08 Aug 2013 08:33:32 +0000
+Message-ID: <520357DF.3030403@freescale.com>
+Date: Thu, 8 Aug 2013 16:33:35 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCH 03/20] ARM: pxa: ssp: add shortcut for &pdev->dev
-References: <1375889649-14638-1-git-send-email-zonque@gmail.com>
- <1375889649-14638-4-git-send-email-zonque@gmail.com>
- <20130808073253.GA17106@norris.computersforpeace.net>
- <1375948365.2219.21.camel@sauron.fi.intel.com>
-In-Reply-To: <1375948365.2219.21.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v6 00/10] mtd: add datasheet's ECC information to
+ nand_chip{}
+References: <1368760654-28754-1-git-send-email-b32955@freescale.com>
+ <CAN8TOE-QvScbPUEPyrs-fYVQZmPu1h-wWX2hjz46KYtaWRckBw@mail.gmail.com>
+In-Reply-To: <CAN8TOE-QvScbPUEPyrs-fYVQZmPu1h-wWX2hjz46KYtaWRckBw@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: mark.rutland@arm.com, s.neumann@raumfeld.com, linux-mtd@lists.infradead.org,
- haojian.zhuang@linaro.org, cxie4@marvell.com, lars@metafoo.de, nico@linaro.org,
- vinod.koul@intel.com, marek.vasut@gmail.com,
- ezequiel.garcia@free-electrons.com, rmk+kernel@arm.linux.org.uk,
- devicetree@vger.kernel.org, samuel@sortiz.org, arnd@arndb.de,
- broonie@kernel.org, mika.westerberg@linux.intel.com,
- linux-arm-kernel@lists.infradead.org, thomas.petazzoni@free-electrons.com,
- eric.y.miao@gmail.com, gregkh@linuxfoundation.org, g.liakhovetski@gmx.de,
- sachin.kamat@linaro.org, kernel@pengutronix.de, djbw@fb.com,
- Brian Norris <computersforpeace@gmail.com>, davem@davemloft.net
+Cc: vikram186@gmail.com, linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ linux-kernel@vger.kernel.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,37 +26,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08.08.2013 09:52, Artem Bityutskiy wrote:
-> On Thu, 2013-08-08 at 00:32 -0700, Brian Norris wrote:
->> On Wed, Aug 07, 2013 at 05:33:52PM +0200, Daniel Mack wrote:
->>> No functional change, just a cosmetic cleanup.
->>>
->>> Signed-off-by: Daniel Mack <zonque@gmail.com>
->>> ---
->>> --- a/arch/arm/plat-pxa/ssp.c
->>> +++ b/arch/arm/plat-pxa/ssp.c
->>> @@ -77,16 +77,17 @@ static int pxa_ssp_probe(struct platform_device *pdev)
->>>  	const struct platform_device_id *id = platform_get_device_id(pdev);
->>>  	struct resource *res;
->>>  	struct ssp_device *ssp;
->>> +	struct device *dev = &pdev->dev;
->>>  	int ret = 0;
->>>  
->>>  	ssp = kzalloc(sizeof(struct ssp_device), GFP_KERNEL);
->>>  	if (ssp == NULL) {
->>> -		dev_err(&pdev->dev, "failed to allocate memory");
->>> +		dev_err(dev, "failed to allocate memory");
+Hi Artem & Brian:
+> Hi Huang and others,
+>
+> On Thu, May 16, 2013 at 8:17 PM, Huang Shijie<b32955@freescale.com>  wrote:
+>> 1.) Why add the ECC information to the nand_chip{} ?
+>>     Each nand chip has its requirement for the ECC correctability, such as
+>>     "4bit ECC for each 512Byte" or "40bit ECC for each 1024Byte".
+>>     This ECC info is very important to the nand controller, such as gpmi.
 >>
->> Two options here: either remove the message entirely (I believe kzalloc
->> will complain loudly if the allocation fails) or at least add a newline
->> at the end of it!
-> 
-> I think only to former is the right option.
-> 
+>>     Take the Micron MT29F64G08CBABA for example, its geometry is
+>>     8k page size, 744 bytes oob size and it requires 40bit ECC per 1K bytes.
+>>     If we do not provide the ECC info to the gpmi nand driver, it has to
+>>     calculate the ECC correctability itself. The gpmi driver will gets the 56bit
+>>     ECC for per 1K bytes which is beyond its BCH's 40bit ecc capibility.
+>>     The gpmi will quits in this case. But in actually, the gpmi can supports
+>>     this nand chip if it can get the right ECC info.
+>>
+>> 2.) About the patch set:
+>>     2.1) patch 1:
+>>                The keynote patch.
+>>
+>>     2.2) patch 2 ~ patch 6:
+>>                 These patches are for ONFI nand.
+>>                 Parse out the ecc info from the parameter page if we can, else
+>>                 parse out the ecc info from the extended parameter page.
+>>
+>>     2.2) patch 7 ~ patch 9:
+>>                 Add the ECC info for full-id nand, and parse it out.
+>>
+>>     2.3) patch 10
+>>                 The gpmi uses the ecc info to set the BCH module. and with this
+>>                 patch set, the gpmi can supports the MT29F64G08CBABA now.
+> What's the status on this patch set? Surely by v6 we have some
+> reasonable stable state on things like naming. Does anyone have any
+> other objections? Unfortunately, I've been awfully distracted, and on
+> top of that, I'm running into some bugs with my NAND controller
+> sending the ONFI parameter read/change column commands. But any time
+> my controller actually outputs a correct parameter page + extended
+> parameter page, this series has worked for me.
+>
+> I've put my 2 cents in on most of the issues I had, and I tested the
+> whole series on my driver at around v5. The only issues I have with it
+> are somewhat cosmetic and not worth bikeshedding. So for all the
+> non-GPMI specific stuff I'll give my:
+>
+> Reviewed-by: Brian Norris<computersforpeace@gmail.com>
+> Tested-by: Brian Norris<computersforpeace@gmail.com>
+>
+> Thanks for the work Huang.
+>
+> Brian
+>
+Could you please merge this patch set?
 
-Ok, I've added a patch for this to my series.
 
+thanks
 
-Thanks!
-
-Daniel
+Huang Shijie
