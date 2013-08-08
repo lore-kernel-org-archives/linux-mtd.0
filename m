@@ -1,29 +1,24 @@
-Date: Thu, 8 Aug 2013 10:36:28 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Daniel Mack <zonque@gmail.com>
-Message-ID: <20130808093628.GS6427@sirena.org.uk>
-References: <1375889649-14638-1-git-send-email-zonque@gmail.com>
- <1375889649-14638-18-git-send-email-zonque@gmail.com>
- <20130807160743.GI6427@sirena.org.uk> <5202718F.2050507@gmail.com>
- <20130807163258.GL6427@sirena.org.uk> <52035463.1030909@gmail.com>
- <52035A81.6090903@metafoo.de> <52035EF0.1030208@gmail.com>
+Message-ID: <5203676F.6090708@gmail.com>
+Date: Thu, 08 Aug 2013 11:39:59 +0200
+From: Daniel Mack <zonque@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="8bIXokQePRfDuBGo"
-Content-Disposition: inline
-In-Reply-To: <52035EF0.1030208@gmail.com>
-Subject: Re: [PATCH 17/20] ASoC: pxa: pxa-pcm-lib: switch over to
- snd-soc-dmaengine-pcm
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 13/20] ASoC: pxa: pxa-ssp: add DT bindings
+References: <1375889649-14638-1-git-send-email-zonque@gmail.com>
+ <1375889649-14638-14-git-send-email-zonque@gmail.com>
+ <20130807164039.GM6427@sirena.org.uk>
+In-Reply-To: <20130807164039.GM6427@sirena.org.uk>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 Cc: mark.rutland@arm.com, s.neumann@raumfeld.com, linux-mtd@lists.infradead.org,
- haojian.zhuang@linaro.org, cxie4@marvell.com,
- Lars-Peter Clausen <lars@metafoo.de>, nico@linaro.org, vinod.koul@intel.com,
- marek.vasut@gmail.com, ezequiel.garcia@free-electrons.com,
- rmk+kernel@arm.linux.org.uk, devicetree@vger.kernel.org, samuel@sortiz.org,
- arnd@arndb.de, mika.westerberg@linux.intel.com,
- linux-arm-kernel@lists.infradead.org, thomas.petazzoni@free-electrons.com,
- eric.y.miao@gmail.com, gregkh@linuxfoundation.org, g.liakhovetski@gmx.de,
- sachin.kamat@linaro.org, kernel@pengutronix.de, djbw@fb.com,
- davem@davemloft.net
+ haojian.zhuang@linaro.org, cxie4@marvell.com, lars@metafoo.de, nico@linaro.org,
+ vinod.koul@intel.com, marek.vasut@gmail.com,
+ ezequiel.garcia@free-electrons.com, rmk+kernel@arm.linux.org.uk,
+ devicetree@vger.kernel.org, samuel@sortiz.org, arnd@arndb.de,
+ mika.westerberg@linux.intel.com, linux-arm-kernel@lists.infradead.org,
+ thomas.petazzoni@free-electrons.com, eric.y.miao@gmail.com,
+ gregkh@linuxfoundation.org, g.liakhovetski@gmx.de, sachin.kamat@linaro.org,
+ kernel@pengutronix.de, djbw@fb.com, davem@davemloft.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,51 +28,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 07.08.2013 18:40, Mark Brown wrote:
+> On Wed, Aug 07, 2013 at 05:34:02PM +0200, Daniel Mack wrote:
+>> This patch contains a cruel hack for looking up the the DMA request
+>> number. The problem here is that the implementation as it stands will
+>> allocate the DMA channel from the user of the ssp port, and hence we
+>> cannot allocate a real channel here.
+>>
+>> Signed-off-by: Daniel Mack <zonque@gmail.com>
+>> ---
+>>  Documentation/devicetree/bindings/sound/mrvl,pxa-ssp.txt |  7 +++++++
+>>  sound/soc/pxa/pxa-ssp.c                                  | 12 ++++++++++--
+>>  2 files changed, 17 insertions(+), 2 deletions(-)
+> 
+> So, really this should be part of a generic binding for the SSP device
+> but obviously this is just a virtual device that binds to a generic bit
+> of hardware that can be used for other applications like SPI.  For the
+> ASoC case we could instantiate the DAI from the machine driver but that
+> isn't going to work for things like SPI.  I'm not 100% sure what the
+> best way to deal with that is.
 
---8bIXokQePRfDuBGo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes, I pondered over this for a while as well. I thought about having
+the ssp port instantiated as real device just like we have it now, and
+then just add a phandle reference in DT from the DAI to the upstream device.
 
-On Thu, Aug 08, 2013 at 11:03:44AM +0200, Daniel Mack wrote:
-> On 08.08.2013 10:44, Lars-Peter Clausen wrote:
+Then, we should also allocate the DMA channel from the upstream device
+and pass it down to the DAI. But then again, the pxa-pcm-lib needs some
+rework, as it's currently in charge of obtaining and releasing the channel.
 
-> > There is intentionally no dependency on ASoC for the soc-dmaengine-pcm =
-code,=20
-> > though since I wasn't sure whether there was ever going to be a usersid=
-e=20
-> > outside of ASoC the coded ended up in ASoC folder. It shouldn't be a pr=
-oblem to=20
-> > make it available to all of ALSA.
+I wanted to postpone that issue until the rest of the series has settled
+and limit changes to the bare minimum for now. Does that sound feasible?
 
-> Ok, great. I queued a patch for that. Will be part of my next spin, or,
-> in case the series doesn't make it in time, I'll re-post all the patches
-> that can be applied independently up front.
 
-You probably don't need to move it, just adding a select (which should
-ignore Kconfig dependencies) from the non-ASoC PXA stuff ought to do the
-trick.
-
---8bIXokQePRfDuBGo
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSA2aYAAoJELSic+t+oim9THAP/AsldXD/bmk+5ZLXe45Tguql
-dczij5jRPOdECgemwzFXGdOkFdSELrBflyhopxv8UBtORspoYlSK1Iow+2kjr0Wb
-2KJGam7lgOpNNr4FqQgCHQQE+/zABxH1gxXK7DN8MFYZ+zjy3tKMbuJekwueyygm
-QnLdtZs82Ih8/I9MuwoO25b1SIp637w/YAgZGH5xJpr6Ffp1G9H0l4u1IPgheRjZ
-TvPivKyDcKMRuIcvFX6joIVy8zWDqKAM+Dw2V4P4VTnAO1npxTLbubNawNpcSq3T
-6XgeASziL8ED8sNSAeeEMs3LnUbmcW86volhx/xQZNIgpqIAvIZ4nq3VRMroAYtw
-r/kTJgQQV7gnwPnIPS2jpA4bU2mSMScMMHuqNMGgWeecMZcgIfQX3Yn1MVzo/M7n
-gq2zBO7tXbIShzDEFhZiXvFeST0FWY2M1xy8sPCskHQ+q6Uc1NsO+XXZJs5VBY16
-kZBVrv9Qkcvxi24a+yGF3hrD+b/pdw/uTksxax7Qs7yQYv/43oMF2HNHEUsaxfFG
-MjiNTDYPch3GsNwGdCouXEsoKQI907P9pfDkSHH7fPxCVFcAojWSszInFipHxFGw
-L9/gxifTwQmLoc2PMqBu1o8B1xTVeGLXNSQXoGqPl807tH2JUxgS/xTa1DX72zdk
-50BkhudG+Vm1wlwXZlE6
-=QXMz
------END PGP SIGNATURE-----
-
---8bIXokQePRfDuBGo--
+Daniel
