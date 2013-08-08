@@ -1,28 +1,16 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from mail-qe0-x22b.google.com ([2607:f8b0:400d:c02::22b])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V7M2b-0003fR-7p
- for linux-mtd@lists.infradead.org; Thu, 08 Aug 2013 08:57:54 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: yuhang wang <wangyuhang2014@gmail.com>, Trent Piepho <tpiepho@gmail.com>
-Subject: RE: [PATCH] SPI: DUAL and QUAD support
-Date: Thu, 8 Aug 2013 08:57:23 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9F1E1B@DBDE04.ent.ti.com>
-References: <20130729064234.GS9858@sirena.org.uk>
- <1375095194-7093-1-git-send-email-wangyuhang2014@gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9EE267@DBDE04.ent.ti.com>
- <CAHSAbzNdvgTSPqDPHT2n3zXFwe7HBqTfyk4fB_-GsW1WSUXqRA@mail.gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9EE356@DBDE04.ent.ti.com>
- <CA+7tXijduVqFdao3L3oJcFBYw_cffdyo-fwyAS2cBASfEMExpA@mail.gmail.com>
- <CAHSAbzPjk1M9RzMahYOUkFDJiU8pRWXO2-np0HgQefxEC+WXeA@mail.gmail.com>
-In-Reply-To: <CAHSAbzPjk1M9RzMahYOUkFDJiU8pRWXO2-np0HgQefxEC+WXeA@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1V7M5n-0003nC-1P
+ for linux-mtd@lists.infradead.org; Thu, 08 Aug 2013 09:01:14 +0000
+Received: by mail-qe0-f43.google.com with SMTP id k5so1569584qej.30
+ for <linux-mtd@lists.infradead.org>; Thu, 08 Aug 2013 02:00:49 -0700 (PDT)
 MIME-Version: 1.0
-Cc: "spi-devel-general@lists.sourceforge.net"
- <spi-devel-general@lists.sourceforge.net>, "Poddar,
- Sourav" <sourav.poddar@ti.com>, "broonie@kernel.org" <broonie@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Thu, 8 Aug 2013 17:00:49 +0800
+Message-ID: <CAKGbVbv-wnd_XZ0brh-s8pgLiY2H=wVt5FP6OcURYAYeXsJFXA@mail.gmail.com>
+Subject: UBIFS power down recovery problem
+From: Qiang Yu <yuq825@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,169 +20,748 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->=20
-> Hi,Trent
->=20
-> Thanks for so many details.
-> 2013/7/30 Trent Piepho <tpiepho@gmail.com>:
-> > On Mon, Jul 29, 2013 at 7:21 AM, Gupta, Pekon <pekon@ti.com> wrote:
-> >>> >>                       spi->mode |=3D SPI_CS_HIGH;
-> >>> >>               if (of_find_property(nc, "spi-3wire", NULL))
-> >>> >>                       spi->mode |=3D SPI_3WIRE;
-> >>> >> +             if (of_find_property(nc, "spi-tx-dual", NULL))
-> >>> >> +                     spi->mode |=3D SPI_TX_DUAL;
-> >>> >> +             if (of_find_property(nc, "spi-tx-quad", NULL))
-> >>> >> +                     spi->mode |=3D SPI_TX_QUAD;
-> >>> >> +             if (of_find_property(nc, "spi-rx-dual", NULL))
-> >>> >> +                     spi->mode |=3D SPI_RX_DUAL;
-> >>> >> +             if (of_find_property(nc, "spi-rx-quad", NULL))
-> >>> >> +                     spi->mode |=3D SPI_RX_QUAD;
-> >>> >>
-> >>> >  [Pekon] I think its cleaner to use similar parameters for channel-=
-width
-> >>> >  info everywhere. Like you have added separate fields  'tx_nbits' a=
-nd
-> >>> >  'rx_nbits' in spi_transfer, Why not do similar here for 'spi_maste=
-r' ?
-> >
-> > There are I think a total of five places that channel width can be
-> > used in the Linux SPI stack.
-> >
-> > a) In the master driver (spi_master)
-> > b) In a slave driver (spi_device)
-> > c) In a spi_message
-> > d) In a spi_transfer
-> > e) In the OF device tree, for DT nodes of a and/or b, as they appear in=
- the
-> dt.
-> >
-[Pekon]: Just to be aligned here..=20
-(a) master_driver (spi_master) =3D=3D like spi/spi-omap2-mcspi.c .. correct=
- ?
-(b) slave_driver (spi_device) =3D=3D  like mtd/devices/m25p80.c .. correct =
-?
+Hi lists,
 
-> > For a, all the widths supported would be specified.  In b, c, and d,
-> > only the width to be used would be specified.  So, there is some
-> > difference here, as we need a method that allows multiple modes to be
-> > specified for a but not for the others.
-> >
-> > Since some slaves will want to send a single spi message with multiple
-> > transfers of different widths (e.g., single bit read command followed
-> > by quad bit data xfer) it's necessary to specify the width in d.  With
-> > the widths specified at the lowest level, it is not actually necessary
-> > to supply the width for C or B.
-> >
-[Pekon]: Agreed.. This proposal is better of having..
-(b) spi_device->mode =3D SPI_RX_QUAD | SPI_TX_SINGLE;
-(c) spi_transfer.tx_nbits =3D 4; spi_transfer.rx_nbits =3D 4;
+I'm now testing if UBIFS can survive after power down. After tens of
+thousands of boot->power cut->boot test circle, the system finally
+can't boot up.
 
-> > While it's not necessary to specify the width for B, doing so would be
-> > consistent with other fields that can be specified in the spi_transfer
-> > and in the spi_device, like bits_per_word and speed_hz.  It's worth
-> > pointing out that none of the mode bits from the spi_device can be
-> > specified in in a spi_transfer.  Currently, if you want to change
-> > anything in mode you must call spi_setup() on the device.  Since width
-> > can be changed on a transfer by transfer basis, maybe that is a good
-> > reason to say it doesn't belong in mode.
-> >
-> what you said is ok. But b) and d) are not the same. d) will be set
-> based on b), but not equal to d)=3Db)(bits_per_word and speed_hz). So
-> don't you think that b) is more like a transfer mode and d) is the
-> detailed functions related to the mode. Also b) should be set in
-> spi_setup(), only d) width can be changed by transfer, but b) should
-> not be modifyed. But none of the mode bits from the spi_device can be
-> specified in in a spi_transfer, that is a point. Is that necessary to
-> add members like "transfer_mode" in spi_master and spi_device which do
-> the similar operation to "mode"?
->=20
-[Pekon]: I did not fully understand your comments, But following
- is my understanding of DT parsing.
- There should two level of DT binding
-(a) For SPI controller:=20
-- describes the capabilities of H/W engine on SoC
-- goes into spi_master->mode
-(b) For SPI devices:
-- describes capabilities of each device on board (includes board
-   wire connections. (single controller can be connected to many SPI device=
-s)
-- goes into spi_device->mode, by matching common compatibilities
- between spi_master and spi_device_n
+I can't understand:
 
-This is important for where multiple SPI devices are connected to=20
-one controller which supports all modes (SINGLE, DUAL, QUAD) But;
--  /dev/spi0 can have all 4 data-outputs connected on board=20
-   so can support QUAD mode
-- /dev/spi1 has only 2 data-outputs connected on board
-   so can support only SINGLE | DUAL
+1. How do some ECC uncorrectable pages appear? According to UBI doc,
+it will be wrapped to other PEB when one LEB read report UNCLEAN.
+2. How does the "0xef" appear? I dumped out the page, it seems it is
+protected by the ECC.
 
-So, you have defined DT bindings for (b) only.
-You need to add DT binding for (a) also.
+I find UBIFS has the unstable bit problem:
+http://www.linux-mtd.infradead.org/doc/ubifs.html#L_unstable_bits
+Does this cause the problem?
 
-> > If the default width is in the spi_device, then a spi_transfer needs a
-> > width state to mean "unspecified".  I.e., the read width can be one,
-> > two, four, (eight), or unspecified bits.  Unspecified gets changed to
-> > the default from the spi_device, whereas one bit wide means one bit
-> > wide.
-> >
-> what do you mean by default, is that without init value? Do you want
-> to use bit by bit in spi_transfer?
->
-[Pekon]: So default here means common basic capability which all=20
-devices are expected to meet at-least.
-And I think this is SPI_SINGLE_FULL_DUPLEX mode.
-=20
-> > Allowing the spi_device to have a width means the width can be checked
-> > against the master's supported widths at spi_setup() time, like the
-> > other mode bits.  But, since width can be set on a transfer by
-> > transfer basis and each transfer is not checked in the spi core, this
-> > doesn't really do the master driver much good.  The master driver
-> > still needs to check each transfer to see if the width is allowed.
-> >
-> agree. so do it in __spi_async() and to make sure that spi_transfer <=3D
-> spi_device.
->=20
-> > I don't see the point of putting the width in C.  Current a
-> > spi_message can't change any of the settings from the spi_device or
-> > supply a default for the the settings in a spi_transfer, and I don't
-> > see why width is any different here.
-> >
-[Pekon]: Agreed.. if you are already adding tx_nbits & rx_nbits in=20
-spi_transfer, then you don't need to add same in spi_message.
-(at-least not for now).
+Regards,
+Qiang
 
-> > For the OF device tree, I don't think the master's node should have
-> > anything about the widths supported.  There is nothing about any of
-> > the other spi master capabilities in the DT.  The master driver
-> > supplies this information.
-> >
-[Pekon]: Nope not correct. See example above of having multiple
-SPI devices connected to same controller.
+My hardware:
+Allwinner A10 NAND flash controller with NAND flash chip SAMSUNG K9F1G08U0D
 
-> > For the OF slave device node, it's not clear it needs to be there
-> > either.  The current existing use cases are for memories that only use
-> > dual and quad for certain parts of certain commands.  Setting the
-> > width for the slave overall doesn't make sense.
-> >
-> > But, the memory might have four data lines connected on the board or
-> > it might just have one.  That does seem like information about board
-> > layout that belongs in the device tree.  So there does need to be done
-> > "enable quad mode" property.  However, is this a SPI property or a
-> > property of the memory device's driver?  Turning on quad mode support
-> > isn't the same that as setting the clock polarity.  Clock polarity it
-> > a SPI property supplied to spi_setup.  Quad mode means the driver
-> > should use the quad read command and the appropriate spi_transfers for
-> > using it.
-> How to set DT depend on whether to seperate the dual and quad from
-> mode.
->=20
-[Pekon] you need separate DT binding for controller and child devices.
-And then separate for Tx and Rx in each of them.
-Also, I suggest you add devicetree-discuss maillist when you update the=20
-Device-tree documentation for same.
-
-I havn't seen any traffic on next version of this patch?
- Did I miss, or you are working on it?
-
-
-with regards, pekon
+Error log (start from UBI):
+UBI: attaching mtd3 to ubi0
+UBI: scanning is finished
+UBI warning: print_rsvd_warning: cannot reserve enough PEBs for bad
+PEB handling, reserved 7, need 15
+UBI: attached mtd3 (name "rootfs", size 92 MiB) to ubi0
+UBI: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
+UBI: min./max. I/O unit sizes: 2048/2048, sub-page size 2048
+UBI: VID header offset: 2048 (aligned 2048), data offset: 4096
+UBI: good PEBs: 733, bad PEBs: 5, corrupted PEBs: 0
+UBI: user volume: 2, internal volumes: 1, max. volumes count: 128
+UBI: max/mean erase counter: 1155/345, WL threshold: 4096, image
+sequence number: 0
+UBI: available PEBs: 0, total reserved PEBs: 733, PEBs reserved for
+bad PEB handling: 7
+UBI: background thread "ubi_bgt0d" started, PID 28
+UBIFS: background thread "ubifs_bgt0_0" started, PID 29
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+UBI warning: ubi_io_read: error -74 (ECC error) while reading 126976
+bytes from PEB 210:4096, read only 126976 bytes, retry
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+UBI warning: ubi_io_read: error -74 (ECC error) while reading 126976
+bytes from PEB 210:4096, read only 126976 bytes, retry
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+UBI warning: ubi_io_read: error -74 (ECC error) while reading 126976
+bytes from PEB 210:4096, read only 126976 bytes, retry
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+UBI error: ubi_io_read: error -74 (ECC error) while reading 126976
+bytes from PEB 210:4096, read 126976 bytes
+Backtrace:
+[<c0010f9c>] (dump_backtrace+0x0/0x110) from [<c028bfb4>] (dump_stack+0x18/0x1c)
+ r6:0001f000 r5:ffffffb6 r4:d99c9000 r3:c03968c0
+[<c028bf9c>] (dump_stack+0x0/0x1c) from [<c01c7c34>] (ubi_io_read+0x1f0/0x2cc)
+[<c01c7a44>] (ubi_io_read+0x0/0x2cc) from [<c01c5c24>]
+(ubi_eba_read_leb+0x274/0x370)
+[<c01c59b0>] (ubi_eba_read_leb+0x0/0x370) from [<c01c50e4>]
+(ubi_leb_read+0xec/0x140)
+[<c01c4ff8>] (ubi_leb_read+0x0/0x140) from [<c0100500>]
+(ubifs_leb_read+0x30/0x90)
+ r8:00000001 r7:0001f000 r6:00000001 r5:00000000 r4:d99ddec0
+[<c01004d0>] (ubifs_leb_read+0x0/0x90) from [<c0107578>]
+(ubifs_start_scan+0x84/0x104)
+ r7:d99cd000 r6:00000000 r5:dc9bf000 r4:d99ddec0
+[<c01074f4>] (ubifs_start_scan+0x0/0x104) from [<c0107874>]
+(ubifs_scan+0x28/0x2ec)
+ r8:d99cd000 r7:d99dd880 r6:dc9bf000 r5:0001f000 r4:00000000
+[<c010784c>] (ubifs_scan+0x0/0x2ec) from [<c01069f4>]
+(ubifs_read_master+0x4c/0x8bc)
+[<c01069a8>] (ubifs_read_master+0x0/0x8bc) from [<c00fe7e4>]
+(ubifs_mount+0xd68/0x1504)
+[<c00fda7c>] (ubifs_mount+0x0/0x1504) from [<c008ca00>] (mount_fs+0x1c/0xc0)
+[<c008c9e4>] (mount_fs+0x0/0xc0) from [<c00a0a88>] (vfs_kern_mount+0x54/0xbc)
+ r6:00008000 r5:d99dd800 r4:d9969300
+[<c00a0a34>] (vfs_kern_mount+0x0/0xbc) from [<c00a0dbc>]
+(do_kern_mount+0x3c/0xd8)
+ r8:00008000 r7:d99dd800 r6:00000000 r5:d99dd7c0 r4:c039f508
+r3:00000000
+[<c00a0d80>] (do_kern_mount+0x0/0xd8) from [<c00a26d0>] (do_mount+0x610/0x68c)
+ r8:00000000 r7:00008000 r6:00008000 r5:d99dd800 r4:00000020
+r3:00000000
+[<c00a20c0>] (do_mount+0x0/0x68c) from [<c00a27f8>] (sys_mount+0x8c/0xcc)
+[<c00a276c>] (sys_mount+0x0/0xcc) from [<c0369cf4>]
+(mount_block_root+0xf0/0x154)
+ r7:c038283c r6:00008000 r5:d99cb000 r4:d99cb000
+[<c0369c04>] (mount_block_root+0x0/0x154) from [<c036a304>]
+(prepare_namespace+0x3b4/0x508)
+[<c0369f50>] (prepare_namespace+0x0/0x508) from [<c03698f0>]
+(kernel_init+0x16c/0x1a8)
+ r7:c03bca80 r6:c0382814 r5:c0382834 r4:00000007
+[<c0369784>] (kernel_init+0x0/0x1a8) from [<c002d528>] (do_exit+0x0/0x660)
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+UBI warning: ubi_io_read: error -74 (ECC error) while reading 126976
+bytes from PEB 211:4096, read only 126976 bytes, retry
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+UBI warning: ubi_io_read: error -74 (ECC error) while reading 126976
+bytes from PEB 211:4096, read only 126976 bytes, retry
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+UBI warning: ubi_io_read: error -74 (ECC error) while reading 126976
+bytes from PEB 211:4096, read only 126976 bytes, retry
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+[MTD][NAND][SUNXI]: ECC too many error at 0
+UBI error: ubi_io_read: error -74 (ECC error) while reading 126976
+bytes from PEB 211:4096, read 126976 bytes
+Backtrace:
+[<c0010f9c>] (dump_backtrace+0x0/0x110) from [<c028bfb4>] (dump_stack+0x18/0x1c)
+ r6:0001f000 r5:ffffffb6 r4:d99c9000 r3:c03968c0
+[<c028bf9c>] (dump_stack+0x0/0x1c) from [<c01c7c34>] (ubi_io_read+0x1f0/0x2cc)
+[<c01c7a44>] (ubi_io_read+0x0/0x2cc) from [<c01c5c24>]
+(ubi_eba_read_leb+0x274/0x370)
+[<c01c59b0>] (ubi_eba_read_leb+0x0/0x370) from [<c01c50e4>]
+(ubi_leb_read+0xec/0x140)
+[<c01c4ff8>] (ubi_leb_read+0x0/0x140) from [<c0100500>]
+(ubifs_leb_read+0x30/0x90)
+ r8:00000002 r7:0001f000 r6:00000002 r5:00000000 r4:d9a247c0
+[<c01004d0>] (ubifs_leb_read+0x0/0x90) from [<c0107578>]
+(ubifs_start_scan+0x84/0x104)
+ r7:d99cd000 r6:00000000 r5:dc9bf000 r4:d9a247c0
+[<c01074f4>] (ubifs_start_scan+0x0/0x104) from [<c0107874>]
+(ubifs_scan+0x28/0x2ec)
+ r8:d99cd000 r7:d9a247c0 r6:dc9bf000 r5:0001f000 r4:00000000
+[<c010784c>] (ubifs_scan+0x0/0x2ec) from [<c0106a5c>]
+(ubifs_read_master+0xb4/0x8bc)
+[<c01069a8>] (ubifs_read_master+0x0/0x8bc) from [<c00fe7e4>]
+(ubifs_mount+0xd68/0x1504)
+[<c00fda7c>] (ubifs_mount+0x0/0x1504) from [<c008ca00>] (mount_fs+0x1c/0xc0)
+[<c008c9e4>] (mount_fs+0x0/0xc0) from [<c00a0a88>] (vfs_kern_mount+0x54/0xbc)
+ r6:00008000 r5:d99dd800 r4:d9969300
+[<c00a0a34>] (vfs_kern_mount+0x0/0xbc) from [<c00a0dbc>]
+(do_kern_mount+0x3c/0xd8)
+ r8:00008000 r7:d99dd800 r6:00000000 r5:d99dd7c0 r4:c039f508
+r3:00000000
+[<c00a0d80>] (do_kern_mount+0x0/0xd8) from [<c00a26d0>] (do_mount+0x610/0x68c)
+ r8:00000000 r7:00008000 r6:00008000 r5:d99dd800 r4:00000020
+r3:00000000
+[<c00a20c0>] (do_mount+0x0/0x68c) from [<c00a27f8>] (sys_mount+0x8c/0xcc)
+[<c00a276c>] (sys_mount+0x0/0xcc) from [<c0369cf4>]
+(mount_block_root+0xf0/0x154)
+ r7:c038283c r6:00008000 r5:d99cb000 r4:d99cb000
+[<c0369c04>] (mount_block_root+0x0/0x154) from [<c036a304>]
+(prepare_namespace+0x3b4/0x508)
+[<c0369f50>] (prepare_namespace+0x0/0x508) from [<c03698f0>]
+(kernel_init+0x16c/0x1a8)
+ r7:c03bca80 r6:c0382814 r5:c0382834 r4:00000007
+[<c0369784>] (kernel_init+0x0/0x1a8) from [<c002d528>] (do_exit+0x0/0x660)
+UBIFS: recovery needed
+UBIFS error (pid 1): ubifs_recover_leb: corrupt empty space LEB
+264:12288, corruption starts at 11
+UBIFS error (pid 1): ubifs_scanned_corruption: corruption at LEB 264:12299
+UBIFS error (pid 1): ubifs_scanned_corruption: first 8192 bytes from
+LEB 264:12299
+00000000: ffffffef ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000020: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000040: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000060: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000080: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000000a0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000000c0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000000e0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000100: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000120: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000140: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000160: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000180: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000001a0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000001c0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000001e0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000200: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000220: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000240: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000260: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000280: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000002a0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000002c0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000002e0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000300: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000320: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000340: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000360: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000380: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000003a0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000003c0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000003e0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000400: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000420: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000440: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000460: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000480: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000004a0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000004c0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000004e0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000500: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000520: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000540: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000560: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000580: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000005a0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000005c0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000005e0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000600: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000620: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000640: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000660: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000680: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000006a0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000006c0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000006e0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000700: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000720: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000740: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000760: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000780: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000007a0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000007c0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000007e0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000800: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000820: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000840: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000860: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000880: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000008a0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000008c0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000008e0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000900: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000920: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000940: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000960: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000980: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000009a0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000009c0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000009e0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000a00: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000a20: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000a40: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000a60: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000a80: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000aa0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000ac0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000ae0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000b00: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000b20: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000b40: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000b60: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000b80: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000ba0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000bc0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000be0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000c00: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000c20: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000c40: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000c60: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000c80: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000ca0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000cc0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000ce0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000d00: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000d20: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000d40: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000d60: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000d80: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000da0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000dc0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000de0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000e00: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000e20: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000e40: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000e60: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000e80: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000ea0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000ec0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000ee0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000f00: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000f20: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000f40: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000f60: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000f80: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000fa0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000fc0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00000fe0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001000: ffffffef ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001020: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001040: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001060: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001080: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000010a0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000010c0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000010e0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001100: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001120: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001140: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001160: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001180: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000011a0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000011c0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000011e0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001200: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001220: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001240: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001260: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001280: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000012a0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000012c0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000012e0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001300: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001320: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001340: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001360: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001380: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000013a0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000013c0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000013e0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001400: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001420: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001440: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001460: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001480: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000014a0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000014c0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000014e0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001500: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001520: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001540: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001560: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001580: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000015a0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000015c0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000015e0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001600: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001620: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001640: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001660: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001680: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000016a0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000016c0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000016e0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001700: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001720: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001740: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001760: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001780: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000017a0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000017c0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000017e0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001800: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001820: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001840: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001860: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001880: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000018a0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000018c0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000018e0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001900: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001920: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001940: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001960: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001980: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000019a0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000019c0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+000019e0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001a00: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001a20: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001a40: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001a60: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001a80: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001aa0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001ac0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001ae0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001b00: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001b20: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001b40: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001b60: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001b80: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001ba0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001bc0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001be0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001c00: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001c20: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001c40: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001c60: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001c80: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001ca0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001cc0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001ce0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001d00: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001d20: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001d40: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001d60: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001d80: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001da0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001dc0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001de0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001e00: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001e20: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001e40: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001e60: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001e80: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001ea0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001ec0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001ee0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001f00: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001f20: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001f40: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001f60: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001f80: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001fa0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001fc0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+00001fe0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+ffffffff ffffffff  ................................
+UBIFS error (pid 1): ubifs_recover_leb: LEB 264 scanning failed
+UBIFS: background thread "ubifs_bgt0_0" stops
+devtmpfs: mounted
+Freeing init memory: 124K
+Failed to execute /linuxrc.  Attempting defaults...
+Kernel panic - not syncing: No init found.  Try passing init= option
+to kernel. See Linux Documentation/init.txt for guidance.
+Backtrace:
+[<c0010f9c>] (dump_backtrace+0x0/0x110) from [<c028bfb4>] (dump_stack+0x18/0x1c)
+ r6:c0382814 r5:c0382834 r4:c03bca80 r3:00000001
+[<c028bf9c>] (dump_stack+0x0/0x1c) from [<c028c184>] (panic+0x7c/0x1b4)
+[<c028c108>] (panic+0x0/0x1b4) from [<c028bf78>] (init_post+0xa8/0xcc)
+ r3:d9836000 r2:d9853d00 r1:c071da60 r0:c0310d7e
+ r7:c03bca80
+[<c028bed0>] (init_post+0x0/0xcc) from [<c03698f4>] (kernel_init+0x170/0x1a8)
+ r4:00000007 r3:d9401080
+[<c0369784>] (kernel_init+0x0/0x1a8) from [<c002d528>] (do_exit+0x0/0x660)
