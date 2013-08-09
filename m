@@ -1,19 +1,25 @@
-Received: from userp1040.oracle.com ([156.151.31.81])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V7jKQ-0008A3-JZ
- for linux-mtd@lists.infradead.org; Fri, 09 Aug 2013 09:49:51 +0000
-Date: Fri, 9 Aug 2013 12:49:05 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [patch] mtd: nand: silence some shift wrap warnings
-Message-ID: <20130809094904.GC29282@elgon.mountain>
+Message-ID: <5204E8B3.5060605@gmail.com>
+Date: Fri, 09 Aug 2013 15:03:47 +0200
+From: Daniel Mack <zonque@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- kernel-janitors@vger.kernel.org, Matthieu CASTET <matthieu.castet@parrot.com>,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- Brian Norris <computersforpeace@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 13/20] ASoC: pxa: pxa-ssp: add DT bindings
+References: <1375889649-14638-1-git-send-email-zonque@gmail.com>
+ <1375889649-14638-14-git-send-email-zonque@gmail.com>
+ <20130807164039.GM6427@sirena.org.uk> <5203676F.6090708@gmail.com>
+ <20130808132000.GD6427@sirena.org.uk>
+In-Reply-To: <20130808132000.GD6427@sirena.org.uk>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Cc: mark.rutland@arm.com, s.neumann@raumfeld.com, linux-mtd@lists.infradead.org,
+ haojian.zhuang@linaro.org, cxie4@marvell.com, lars@metafoo.de, nico@linaro.org,
+ vinod.koul@intel.com, marek.vasut@gmail.com,
+ ezequiel.garcia@free-electrons.com, rmk+kernel@arm.linux.org.uk,
+ devicetree@vger.kernel.org, samuel@sortiz.org, arnd@arndb.de,
+ mika.westerberg@linux.intel.com, linux-arm-kernel@lists.infradead.org,
+ thomas.petazzoni@free-electrons.com, eric.y.miao@gmail.com,
+ gregkh@linuxfoundation.org, g.liakhovetski@gmx.de, sachin.kamat@linaro.org,
+ kernel@pengutronix.de, djbw@fb.com, davem@davemloft.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,48 +29,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There are static checkers which complain when we declare variables as
-64 bit bitfields but only use the lower 32 bits because of shift
-wrapping.  In this case "len" is declared as u64 as opposed to unsigned
-long or something which might be 32 bits.
+On 08.08.2013 15:20, Mark Brown wrote:
+> On Thu, Aug 08, 2013 at 11:39:59AM +0200, Daniel Mack wrote:
+> 
+>> Then, we should also allocate the DMA channel from the upstream device
+>> and pass it down to the DAI. But then again, the pxa-pcm-lib needs some
+>> rework, as it's currently in charge of obtaining and releasing the channel.
+> 
+>> I wanted to postpone that issue until the rest of the series has settled
+>> and limit changes to the bare minimum for now. Does that sound feasible?
+> 
+> Yup, the big problem here is the whole DT as ABI thing - what happens in
+> the code isn't so important but the DT is supposed to be stable.  Or we
+> could decide that this is one of the cases that's unstable in which case
+> we should probably flag it up in the DT binding document if nothing else.
+> 
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Alright, I agreee. It's not much code that was needed to add support for
+what I proposed, so I added a patch for that to my queue. Thanks for the
+heads-up.
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 9a48758..3eddd04 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -108,13 +108,13 @@ static int check_offs_len(struct mtd_info *mtd,
- 	int ret = 0;
- 
- 	/* Start address must align on block boundary */
--	if (ofs & ((1 << chip->phys_erase_shift) - 1)) {
-+	if (ofs & ((1ULL << chip->phys_erase_shift) - 1)) {
- 		pr_debug("%s: unaligned address\n", __func__);
- 		ret = -EINVAL;
- 	}
- 
- 	/* Length must align on block boundary */
--	if (len & ((1 << chip->phys_erase_shift) - 1)) {
-+	if (len & ((1ULL << chip->phys_erase_shift) - 1)) {
- 		pr_debug("%s: length not block aligned\n", __func__);
- 		ret = -EINVAL;
- 	}
-@@ -394,7 +394,7 @@ static int nand_block_markbad_lowlevel(struct mtd_info *mtd, loff_t ofs)
- 		memset(&einfo, 0, sizeof(einfo));
- 		einfo.mtd = mtd;
- 		einfo.addr = ofs;
--		einfo.len = 1 << chip->phys_erase_shift;
-+		einfo.len = 1ULL << chip->phys_erase_shift;
- 		nand_erase_nand(mtd, &einfo, 0);
- 
- 		/* Write bad block marker to OOB */
-@@ -2630,7 +2630,7 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
- 		}
- 
- 		/* Increment page address and decrement length */
--		len -= (1 << chip->phys_erase_shift);
-+		len -= (1ULL << chip->phys_erase_shift);
- 		page += pages_per_block;
- 
- 		/* Check, if we cross a chip boundary */
+
+Daniel
