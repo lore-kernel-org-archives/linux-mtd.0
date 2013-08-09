@@ -1,14 +1,32 @@
-From: Josh Wu <josh.wu@atmel.com>
-To: <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
- <dedekind1@gmail.com>
-Subject: [PATCH] mtd: atmel_nand: use the new ONFI parameters,
- ecc_strength_ds & ecc_step_ds
-Date: Fri, 9 Aug 2013 16:56:45 +0800
-Message-ID: <1376038605-11157-1-git-send-email-josh.wu@atmel.com>
+Received: from mail-ie0-x22f.google.com ([2607:f8b0:4001:c03::22f])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V7imV-00075r-VZ
+ for linux-mtd@lists.infradead.org; Fri, 09 Aug 2013 09:14:48 +0000
+Received: by mail-ie0-f175.google.com with SMTP id s9so3768603iec.34
+ for <linux-mtd@lists.infradead.org>; Fri, 09 Aug 2013 02:14:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: nicolas.ferre@atmel.com, computersforpeace@gmail.com, plagnioj@jcrosoft.com,
- Josh Wu <josh.wu@atmel.com>
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9F22F0@DBDE04.ent.ti.com>
+References: <20130729064234.GS9858@sirena.org.uk>
+ <1375095194-7093-1-git-send-email-wangyuhang2014@gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9EE267@DBDE04.ent.ti.com>
+ <CAHSAbzNdvgTSPqDPHT2n3zXFwe7HBqTfyk4fB_-GsW1WSUXqRA@mail.gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9EE356@DBDE04.ent.ti.com>
+ <CA+7tXijduVqFdao3L3oJcFBYw_cffdyo-fwyAS2cBASfEMExpA@mail.gmail.com>
+ <CAHSAbzPjk1M9RzMahYOUkFDJiU8pRWXO2-np0HgQefxEC+WXeA@mail.gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9F1E1B@DBDE04.ent.ti.com>
+ <CAHSAbzMOTk-xKDRx-1Ew67OZYbgWQnFCzfjEvu75Wyz6Yb-omA@mail.gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9F22F0@DBDE04.ent.ti.com>
+Date: Fri, 9 Aug 2013 17:14:25 +0800
+Message-ID: <CAHSAbzO-dJSboJX-4g9mUcjRicoT_XwD=h1h-=MD5tvRGv72Wg@mail.gmail.com>
+Subject: Re: [PATCH] SPI: DUAL and QUAD support
+From: yuhang wang <wangyuhang2014@gmail.com>
+To: "Gupta, Pekon" <pekon@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: "spi-devel-general@lists.sourceforge.net"
+ <spi-devel-general@lists.sourceforge.net>, "Poddar,
+ Sourav" <sourav.poddar@ti.com>, Trent Piepho <tpiepho@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "broonie@kernel.org" <broonie@kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,73 +36,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-commit d99650181 (mtd: get the ECC info from the parameter page for ONFI nand)
-will get ecc_strength_ds and ecc_step_ds during ONFI detecting.
-So we can use them directly and remove our own get_onfi_ecc_param function.
+Hi, Pekon
 
-Signed-off-by: Josh Wu <josh.wu@atmel.com>
----
- drivers/mtd/nand/atmel_nand.c |   36 ++++--------------------------------
- 1 file changed, 4 insertions(+), 32 deletions(-)
+2013/8/9 Gupta, Pekon <pekon@ti.com>:
+>> 2. I don't think that  SPI_NBITS_SINGLE_HALF_DUPLEX is necessary.
+>> tx_nbits and rx_nbits in @spi_transfer should be passed to spi master
+>> driver and the master driver will set the certain mode depend on the
+>> info in @spi_transfer. So there is no need to let the master driver
+>> know SPI_NBITS_SINGLE_HALF_DUPLEX, also master can get the 3-wire SPI
+>> info from spi_device->mode.
+> I should have been more explicit here.. it would be good it you replace
+> 'spi_device->mode & SPI_3_WIRE' with your above mode & tx_nbit, rx_nbits
+> so that the channel width information becomes consistent for all modes.
+> All mode bit flags in same octet look better.
+>
+If still use mode in spi_master and spi_device, I don't think it is
+possible to del SPI_3_WIRE. But we should make sure if SPI_3_WIRE is
+selected by slave, then dual and quad should not be set again.
 
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index 0e365da..162161b 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -1062,30 +1062,6 @@ static void atmel_pmecc_core_init(struct mtd_info *mtd)
- }
- 
- /*
-- * Get ECC requirement in ONFI parameters, returns -1 if ONFI
-- * parameters is not supported.
-- * return 0 if success to get the ECC requirement.
-- */
--static int get_onfi_ecc_param(struct nand_chip *chip,
--		int *ecc_bits, int *sector_size)
--{
--	*ecc_bits = *sector_size = 0;
--
--	if (chip->onfi_params.ecc_bits == 0xff)
--		/* TODO: the sector_size and ecc_bits need to be find in
--		 * extended ecc parameter, currently we don't support it.
--		 */
--		return -1;
--
--	*ecc_bits = chip->onfi_params.ecc_bits;
--
--	/* The default sector size (ecc codeword size) is 512 */
--	*sector_size = 512;
--
--	return 0;
--}
--
--/*
-  * Get ecc requirement from ONFI parameters ecc requirement.
-  * If pmecc-cap, pmecc-sector-size in DTS are not specified, this function
-  * will set them according to ONFI ecc requirement. Otherwise, use the
-@@ -1096,19 +1072,15 @@ static int pmecc_choose_ecc(struct atmel_nand_host *host,
- 		int *cap, int *sector_size)
- {
- 	/* Get ECC requirement from ONFI parameters */
--	*cap = *sector_size = 0;
- 	if (host->nand_chip.onfi_version) {
--		if (!get_onfi_ecc_param(&host->nand_chip, cap, sector_size))
--			dev_info(host->dev, "ONFI params, minimum required ECC: %d bits in %d bytes\n",
-+		*cap = host->nand_chip.ecc_strength_ds;
-+		*sector_size = host->nand_chip.ecc_step_ds;
-+		dev_info(host->dev, "ONFI params, minimum required ECC: %d bits in %d bytes\n",
- 				*cap, *sector_size);
--		else
--			dev_info(host->dev, "NAND chip ECC reqirement is in Extended ONFI parameter, we don't support yet.\n");
- 	} else {
--		dev_info(host->dev, "NAND chip is not ONFI compliant, assume ecc_bits is 2 in 512 bytes");
--	}
--	if (*cap == 0 && *sector_size == 0) {
- 		*cap = 2;
- 		*sector_size = 512;
-+		dev_info(host->dev, "NAND chip is not ONFI compliant, assume ecc_bits is 2 in 512 bytes");
- 	}
- 
- 	/* If dts file doesn't specify then use the one in ONFI parameters */
--- 
-1.7.9.5
+2013/8/9 Gupta, Pekon <pekon@ti.com>:
+>> > [Pekon] you need separate DT binding for controller and child devices.
+>> > And then separate for Tx and Rx in each of them.
+>> > Also, I suggest you add devicetree-discuss maillist when you update the
+>> > Device-tree documentation for same.
+>> >
+>> Just as you said above, master node describe the total data wires on
+>> SOC, slave node describe the detailed capability selected, which is
+>> logically right. But to master, the drivers have already supplied this
+>> infomation in probe, so do we still need to add in device tree and
+>> provide another method in master driver to get the info from device
+>> tree?
+>>
+> [Pekon]: Yes, for controller the controller_driver should parse or fill in
+> this info in the spi_master->mode.
+> But, still you need to add check while probing spi_device DT that
+> only common supported compatibilities get into spi_device.
+> Example: if spi_master->mode == SPI_TX_DUAL only
+> and of_spi_device() returns SPI_TX_QUAD, then you should return
+> back with error showing mis-match in controller and device capabilities.
+> So, spi_device capabilites should always be sub-set of spi_master capabilities.
+>
+Yes, it is necessary to check. But I don't think it is a good way to
+fill in spi_master->mode from master node of DT. Master driver
+developer should set dual or quad mode in spi_master->mode directly
+just like SPI_CPHA and SPI_CPOL. To keep consistent, dual and quad
+should also not appear in master node.
+
+>> > I havn't seen any traffic on next version of this patch?
+>> >  Did I miss, or you are working on it?
+>> >
+>> No, because of other jobs so didn't fix the patch in time, sorry for
+>> that. Even now I still in puzzled that whether to make quad in mode or
+>> add a new member in all the related struct. My trend is the previous
+>> scheme. However they both have strong and weak points.
+>
+>> If add in mode:
+>> [strong points]:
+>> The existed operation such as compare master mode and device mode, DT
+>> interface, mode set in master driver and so on which will be a benifit
+>> to make the quad code clear and smooth.
+>> [weak points]
+>> But to expand mode will make spidev not back compatible and the
+>> modified spidev code to fix the compatible problems looks a little
+>> wierd.
+>> Also another point from Trent, to make it consistent between
+>> spi_transfer and spi_device. just like:
+>> spi_transfer->speed_hz depend on spi_device->speed_hz;
+>> spi_transfer->bits_per_word depends on spi_device->bits_per_word;
+>> So is that add the similar member as below looks better?
+>> spi_transfer->tx_nbits depends on spi_device->tx_nbits not spi_device->mode.
+>
+>> if add new member:
+>> The previous strong points and weak points will become exchanged.
+>
+>> I still hope some suggestions to make one scheme extremely powerful
+>> and I will provide the patch this week.
+>
+> [Pekon]: I'm also inclined to your suggestion of previous scheme,
+> but we don't break the binary compatibility with userspace applications.
+> (as Matt pointed out earlier). But I think its more of an upgrade|extension of
+> of IOCTL than re-defining it. And as SPI is evolving we need to make these
+> upgrades in our interface to adapt to newer SPI.
+> But its upto maintainers to accept that. So, I suggest you send the spidev
+> related patch separately, so that there could be more discussion on that.
+>
+>
+OK, I will separate the patch. Thanks.
+
+Best regards
