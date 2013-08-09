@@ -1,24 +1,16 @@
-Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
+Received: from mail-ob0-x230.google.com ([2607:f8b0:4003:c01::230])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V7ZIK-0005Zb-Kq
- for linux-mtd@lists.infradead.org; Thu, 08 Aug 2013 23:07:01 +0000
-Received: by mail-pa0-f54.google.com with SMTP id kx1so4210585pab.41
- for <linux-mtd@lists.infradead.org>; Thu, 08 Aug 2013 16:06:37 -0700 (PDT)
-Date: Thu, 8 Aug 2013 16:06:31 -0700
+ id 1V7aU2-0006ty-4O
+ for linux-mtd@lists.infradead.org; Fri, 09 Aug 2013 00:23:10 +0000
+Received: by mail-ob0-f176.google.com with SMTP id uz19so5695496obc.7
+ for <linux-mtd@lists.infradead.org>; Thu, 08 Aug 2013 17:22:48 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v6 00/10] mtd: add datasheet's ECC information to
- nand_chip{}
-Message-ID: <20130808230630.GA14434@norris.computersforpeace.net>
-References: <1368760654-28754-1-git-send-email-b32955@freescale.com>
- <CAN8TOE-QvScbPUEPyrs-fYVQZmPu1h-wWX2hjz46KYtaWRckBw@mail.gmail.com>
- <520357DF.3030403@freescale.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <520357DF.3030403@freescale.com>
-Cc: vikram186@gmail.com, linux-mtd@lists.infradead.org, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org, dedekind1@gmail.com
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: nand: fixup kerneldoc, rename parameter
+Date: Thu,  8 Aug 2013 17:22:22 -0700
+Message-Id: <1376007742-19392-1-git-send-email-computersforpeace@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>, "Gupta, Pekon" <pekon@ti.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,26 +20,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Aug 08, 2013 at 04:33:35PM +0800, Huang Shijie wrote:
-> Hi Artem & Brian:
-> >Hi Huang and others,
-> >
-> >On Thu, May 16, 2013 at 8:17 PM, Huang Shijie<b32955@freescale.com>  wrote:
-> >>1.) Why add the ECC information to the nand_chip{} ?
-...
-> >Reviewed-by: Brian Norris<computersforpeace@gmail.com>
-> >Tested-by: Brian Norris<computersforpeace@gmail.com>
-> >
-> >Thanks for the work Huang.
-> >
-> Could you please merge this patch set?
+First, the function argument is 'offset' not 'column'.
 
-Thanks for the reminder. I haven't sorted through all the piles of
-backed up stuff yet!
+Second, the 'data_buf' name is inconsistent with the rest of this file.
+Just use 'buf'.
 
-I made a few minor changes (for checkpatch.pl, regarding
-__attribute__((packed)), and to make the style a little more
-easily-read) and tested the generic stuff on my platform. I've pushed
-the series to l2-mtd.git. Thanks for the patience!
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: Gupta, Pekon <pekon@ti.com>
+---
+ drivers/mtd/nand/nand_base.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-Brian
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 8f04fb0..49ca737 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -1980,13 +1980,14 @@ static int nand_write_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
+  * nand_write_subpage_hwecc - [REPLACABLE] hardware ECC based subpage write
+  * @mtd:	mtd info structure
+  * @chip:	nand chip info structure
+- * @column:	column address of subpage within the page
++ * @offset:	column address of subpage within the page
+  * @data_len:	data length
++ * @buf:	data buffer
+  * @oob_required: must write chip->oob_poi to OOB
+  */
+ static int nand_write_subpage_hwecc(struct mtd_info *mtd,
+ 				struct nand_chip *chip, uint32_t offset,
+-				uint32_t data_len, const uint8_t *data_buf,
++				uint32_t data_len, const uint8_t *buf,
+ 				int oob_required)
+ {
+ 	uint8_t *oob_buf  = chip->oob_poi;
+@@ -2005,20 +2006,20 @@ static int nand_write_subpage_hwecc(struct mtd_info *mtd,
+ 		chip->ecc.hwctl(mtd, NAND_ECC_WRITE);
+ 
+ 		/* write data (untouched subpages already masked by 0xFF) */
+-		chip->write_buf(mtd, data_buf, ecc_size);
++		chip->write_buf(mtd, buf, ecc_size);
+ 
+ 		/* mask ECC of un-touched subpages by padding 0xFF */
+ 		if ((step < start_step) || (step > end_step))
+ 			memset(ecc_calc, 0xff, ecc_bytes);
+ 		else
+-			chip->ecc.calculate(mtd, data_buf, ecc_calc);
++			chip->ecc.calculate(mtd, buf, ecc_calc);
+ 
+ 		/* mask OOB of un-touched subpages by padding 0xFF */
+ 		/* if oob_required, preserve OOB metadata of written subpage */
+ 		if (!oob_required || (step < start_step) || (step > end_step))
+ 			memset(oob_buf, 0xff, oob_bytes);
+ 
+-		data_buf += ecc_size;
++		buf += ecc_size;
+ 		ecc_calc += ecc_bytes;
+ 		oob_buf  += oob_bytes;
+ 	}
+-- 
+1.8.1.2
