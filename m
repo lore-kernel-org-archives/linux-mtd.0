@@ -1,16 +1,21 @@
-Received: from mail-pd0-x233.google.com ([2607:f8b0:400e:c02::233])
+Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V8Spv-0001WH-5P
- for linux-mtd@lists.infradead.org; Sun, 11 Aug 2013 10:25:24 +0000
-Received: by mail-pd0-f179.google.com with SMTP id v10so2236674pde.24
- for <linux-mtd@lists.infradead.org>; Sun, 11 Aug 2013 03:25:01 -0700 (PDT)
-From: wangyuhang <wangyuhang2014@gmail.com>
-To: broonie@kernel.org, sourav.poddar@ti.com, pekon@ti.com, tpiepho@gmail.com,
- spi-devel-general@lists.sourceforge.net, linux-mtd@lists.infradead.org
-Subject: [PATCH v3 2/2]spi: DUAL and QUAD support
-Date: Sun, 11 Aug 2013 18:23:50 +0800
-Message-Id: <1376216630-5915-1-git-send-email-wangyuhang2014@gmail.com>
-Cc: wangyuhang2014@gmail.com
+ id 1V8ZT9-0006C8-4k
+ for linux-mtd@lists.infradead.org; Sun, 11 Aug 2013 17:30:21 +0000
+From: Marek Vasut <marex@denx.de>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: m25p80: Micron SPI uses Macronix-style 4-byte
+ addressing
+Date: Fri, 9 Aug 2013 20:46:53 +0200
+References: <1376072646-26089-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1376072646-26089-1-git-send-email-computersforpeace@gmail.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201308092046.53352.marex@denx.de>
+Cc: Brian Norris <computersforpeace@gmail.com>, stable@vger.kernel.org,
+ Vivien Didelot <vivien.didelot@savoirfairelinux.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,154 +25,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-fix two things in previous patch
-1. Change the value of transfer bit macro(SPI_NBITS_SINGLE, SPI_NBITS_DUAL
-   SPI_NBITS_QUAD) to 0x01, 0x02 and 0x04 to match the actual wires in
-   spidev.h.
-2. To keep tx_nbits and rx_nbits in @spi_ioc_transfer compatible to existed
-   binary in userspace, add SPI_SPIDEV_TRPBIT in Kconfig to make user select
-   appropriate spi_ioc_transfer.
+Dear Brian Norris,
 
-Signed-off-by: wangyuhang <wangyuhang2014@gmail.com>
----
- drivers/spi/Kconfig             |   10 ++++++++++
- drivers/spi/spidev.c            |   30 ++++++++++++++++++++++++++++++
- include/uapi/linux/spi/spidev.h |   19 ++++++++++++++++++-
- 3 files changed, 58 insertions(+), 1 deletion(-)
+> For SPI NOR flash that are larger than 128Mbit (16MiB), we need 4 bytes
+> of address space to reach the entire flash; however, the original SPI
+> flash protocol used only 3 bytes for the address. So far, the practice
+> for handling this has been either to use new command opcodes that are
+> defined to use 4 bytes for their address, or to use special
+> mode-switching command to configure all traditionally-3-byte-address
+> commands to take 4 bytes instead.
+> 
+> Macronix and Spansion developed two incompatible methods for
+> entering/exiting "4-byte address mode." Micron flash uses the Macronix
+> method (OPCODE_{EN4B,EX4B}), not the Spansion method.
+> 
+> This patch solves addressing issues on Micron n25q256a and provides the
+> ability to support other future Micron SPI flash >16MiB.
+> 
+> Quoting a Micron representative:
+> 
+>   "Majority of our NOR that needs 4-byte addressing (256Mb or 32MB and
+>    higher) enter and exit 4byte through B7h and E9h commands. The
+>    N25Q256A7xxx and N25Q512A7xxx parts do not support 4-byte addressing
+>    mode via B7h or E9h command."
+> 
+> They further clarified that those that don't support the enter/exit
+> opcodes (B7h/E9h) are manufactured specifically to come up by default in
+> 4-byte mode. We don't need to treat those parts any diffently, as they
+> will discard the EN4B opcode as a no-op.
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Cc: Vivien Didelot <vivien.didelot@savoirfairelinux.com>
+> Cc: Marek Vasut <marex@denx.de>
+> Cc: <stable@vger.kernel.org> # 3.10+
+> ---
+>  drivers/mtd/devices/m25p80.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> index b5190c4..a759c1f 100644
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -169,6 +169,7 @@ static inline int set_4byte(struct m25p *flash, u32
+> jedec_id, int enable) {
+>  	switch (JEDEC_MFR(jedec_id)) {
+>  	case CFI_MFR_MACRONIX:
+> +	case CFI_MFR_ST: /* Micron, actually */
+>  	case 0xEF /* winbond */:
+>  		flash->command[0] = enable ? OPCODE_EN4B : OPCODE_EX4B;
+>  		return spi_write(flash->spi, flash->command, 1);
 
-diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index 2be0de9..55ad87c 100644
---- a/drivers/spi/Kconfig
-+++ b/drivers/spi/Kconfig
-@@ -496,6 +496,16 @@ config SPI_SPIDEV
- 	  Note that this application programming interface is EXPERIMENTAL
- 	  and hence SUBJECT TO CHANGE WITHOUT NOTICE while it stabilizes.
- 
-+config SPI_SPIDEV_TRPBIT
-+	bool "Spidev support set transfer bit in user space"
-+	depends on SPI_SPIDEV
-+	default n
-+	help
-+	  This supports user set transfer bit(SINGLE,DUAL,QUAD).
-+	  this will expand the struct spi_ioc_transfer with tx_nbits and
-+	  rx_nbits. Then you should set that with SPI_NBITS_SINGLE/
-+	  SPI_NBITS_DUAL/SPI_NBITS_QUAD depend on your demand.
-+
- config SPI_TLE62X0
- 	tristate "Infineon TLE62X0 (for power switching)"
- 	depends on SYSFS
-diff --git a/drivers/spi/spidev.c b/drivers/spi/spidev.c
-index 2e0655d..33d7d24 100644
---- a/drivers/spi/spidev.c
-+++ b/drivers/spi/spidev.c
-@@ -75,6 +75,9 @@ static DECLARE_BITMAP(minors, N_SPI_MINORS);
- 				| SPI_LSB_FIRST | SPI_3WIRE | SPI_LOOP \
- 				| SPI_NO_CS | SPI_READY)
- 
-+#define SPI_EXTMODE_MASK	(SPI_MODE_MASK | SPI_TX_DUAL \
-+				| SPI_TX_QUAD | SPI_RX_DUAL | SPI_RX_QUAD)
-+
- struct spidev_data {
- 	dev_t			devt;
- 	spinlock_t		spi_lock;
-@@ -268,6 +271,10 @@ static int spidev_message(struct spidev_data *spidev,
- 		k_tmp->bits_per_word = u_tmp->bits_per_word;
- 		k_tmp->delay_usecs = u_tmp->delay_usecs;
- 		k_tmp->speed_hz = u_tmp->speed_hz;
-+#ifdef CONFIG_SPI_SPIDEV_TRPBIT
-+		k_tmp->tx_nbits = u_tmp->tx_nbits;
-+		k_tmp->rx_nbits = u_tmp->rx_nbits;
-+#endif
- #ifdef VERBOSE
- 		dev_dbg(&spidev->spi->dev,
- 			"  xfer len %zd %s%s%s%dbits %u usec %uHz\n",
-@@ -369,6 +376,10 @@ spidev_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- 	case SPI_IOC_RD_MAX_SPEED_HZ:
- 		retval = __put_user(spi->max_speed_hz, (__u32 __user *)arg);
- 		break;
-+	case SPI_IOC_EXTRD_MODE:
-+		retval = __put_user(spi->mode & SPI_EXTMODE_MASK,
-+					(__u16 __user *)arg);
-+		break;
- 
- 	/* write requests */
- 	case SPI_IOC_WR_MODE:
-@@ -433,6 +444,25 @@ spidev_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- 				dev_dbg(&spi->dev, "%d Hz (max)\n", tmp);
- 		}
- 		break;
-+	case SPI_IOC_EXTWR_MODE:
-+		retval = __get_user(tmp, (u16 __user *)arg);
-+		if (retval == 0) {
-+			u16	save = spi->mode;
-+
-+			if (tmp & ~SPI_EXTMODE_MASK) {
-+				retval = -EINVAL;
-+				break;
-+			}
-+
-+			tmp |= spi->mode & ~SPI_EXTMODE_MASK;
-+			spi->mode = (u16)tmp;
-+			retval = spi_setup(spi);
-+			if (retval < 0)
-+				spi->mode = save;
-+			else
-+				dev_dbg(&spi->dev, "spi mode %02x\n", tmp);
-+		}
-+		break;
- 
- 	default:
- 		/* segmented and/or full-duplex I/O request */
-diff --git a/include/uapi/linux/spi/spidev.h b/include/uapi/linux/spi/spidev.h
-index 52d9ed0..c3a0244 100644
---- a/include/uapi/linux/spi/spidev.h
-+++ b/include/uapi/linux/spi/spidev.h
-@@ -42,7 +42,14 @@
- #define SPI_LOOP		0x20
- #define SPI_NO_CS		0x40
- #define SPI_READY		0x80
--
-+#define	SPI_TX_DUAL		0x100
-+#define	SPI_TX_QUAD		0x200
-+#define	SPI_RX_DUAL		0x400
-+#define	SPI_RX_QUAD		0x800
-+
-+#define	SPI_NBITS_SINGLE	0x01 /* 1bit transfer */
-+#define	SPI_NBITS_DUAL		0x02 /* 2bits transfer */
-+#define	SPI_NBITS_QUAD		0x04 /* 4bits transfer */
- /*---------------------------------------------------------------------------*/
- 
- /* IOCTL commands */
-@@ -54,6 +61,8 @@
-  * @tx_buf: Holds pointer to userspace buffer with transmit data, or null.
-  *	If no data is provided, zeroes are shifted out.
-  * @rx_buf: Holds pointer to userspace buffer for receive data, or null.
-+ * @tx_nbits: number of bits used for writting.
-+ * @rx_nbits: number of bits used for reading.
-  * @len: Length of tx and rx buffers, in bytes.
-  * @speed_hz: Temporary override of the device's bitrate.
-  * @bits_per_word: Temporary override of the device's wordsize.
-@@ -86,6 +95,10 @@ struct spi_ioc_transfer {
- 	__u64		tx_buf;
- 	__u64		rx_buf;
- 
-+#ifdef CONFIG_SPI_SPIDEV_TRPBIT
-+	__u8		tx_nbits;
-+	__u8		rx_nbits;
-+#endif
- 	__u32		len;
- 	__u32		speed_hz;
- 
-@@ -126,6 +139,10 @@ struct spi_ioc_transfer {
- #define SPI_IOC_RD_MAX_SPEED_HZ		_IOR(SPI_IOC_MAGIC, 4, __u32)
- #define SPI_IOC_WR_MAX_SPEED_HZ		_IOW(SPI_IOC_MAGIC, 4, __u32)
- 
-+/* Read / Write of SPI mode (including SPI DUAL/QUAD) */
-+#define SPI_IOC_EXTRD_MODE		_IOR(SPI_IOC_MAGIC, 5, __u16)
-+#define SPI_IOC_EXTWR_MODE		_IOW(SPI_IOC_MAGIC, 5, __u16)
-+
- 
- 
- #endif /* SPIDEV_H */
--- 
-1.7.9.5
+The situation with the 4b addressing is a horrible mess :(
+
+Acked-by: Marek Vasut <marex@denx.de>
+
+Best regards,
+Marek Vasut
