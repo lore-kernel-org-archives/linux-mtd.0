@@ -1,28 +1,14 @@
-Received: from mail-vc0-x22d.google.com ([2607:f8b0:400c:c03::22d])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V7h8F-0004fZ-GT
- for linux-mtd@lists.infradead.org; Fri, 09 Aug 2013 07:29:08 +0000
-Received: by mail-vc0-f173.google.com with SMTP id id13so805796vcb.32
- for <linux-mtd@lists.infradead.org>; Fri, 09 Aug 2013 00:28:46 -0700 (PDT)
+From: Josh Wu <josh.wu@atmel.com>
+To: <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+ <dedekind1@gmail.com>
+Subject: [PATCH] mtd: atmel_nand: use the new ONFI parameters,
+ ecc_strength_ds & ecc_step_ds
+Date: Fri, 9 Aug 2013 16:56:45 +0800
+Message-ID: <1376038605-11157-1-git-send-email-josh.wu@atmel.com>
 MIME-Version: 1.0
-In-Reply-To: <1376032991.2219.122.camel@sauron.fi.intel.com>
-References: <1368760654-28754-1-git-send-email-b32955@freescale.com>
- <CAN8TOE-QvScbPUEPyrs-fYVQZmPu1h-wWX2hjz46KYtaWRckBw@mail.gmail.com>
- <520357DF.3030403@freescale.com>
- <20130808230630.GA14434@norris.computersforpeace.net>
- <1376020723.2219.105.camel@sauron.fi.intel.com>
- <52048565.1030707@gmail.com>
- <1376032991.2219.122.camel@sauron.fi.intel.com>
-Date: Fri, 9 Aug 2013 00:28:44 -0700
-Message-ID: <CAN8TOE_GzzXcsifQOiD1WbgXKJmXkJjBbUfgv88Oit95oaY18g@mail.gmail.com>
-Subject: Re: [PATCH v6 00/10] mtd: add datasheet's ECC information to
- nand_chip{}
-From: Brian Norris <computersforpeace@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Huang Shijie <b32955@freescale.com>, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- vikram186@gmail.com
+Content-Type: text/plain
+Cc: nicolas.ferre@atmel.com, computersforpeace@gmail.com, plagnioj@jcrosoft.com,
+ Josh Wu <josh.wu@atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,30 +18,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Aug 9, 2013 at 12:23 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Thu, 2013-08-08 at 23:00 -0700, Brian Norris wrote:
->> On 08/08/2013 08:58 PM, Artem Bityutskiy wrote:
->> > There are few minor issues in aiaiai, which I can fix if you hit them
->> > and complain. Also, I did not invest much time in making the user
->> > interface and experience very nice. But this can also be improved.
->>
->> One issue (possibly related to the above question?) was that aiaia
->> complained (via checkpatch.pl) about no sign-offs when I processed using
->> the input redirection method on a multi-message mbox.
->
-> Yes, aiaiai runs checkpatch.pl for individual patches, and then to a
-> concatenated patch, and the latter does not have a signed-off-by. Fixing
-> is about adding --no-signoff to the right place.
+commit d99650181 (mtd: get the ECC info from the parameter page for ONFI nand)
+will get ecc_strength_ds and ecc_step_ds during ONFI detecting.
+So we can use them directly and remove our own get_onfi_ecc_param function.
 
-I can look at that if I run into it again and have the time to fix it.
+Signed-off-by: Josh Wu <josh.wu@atmel.com>
+---
+ drivers/mtd/nand/atmel_nand.c |   36 ++++--------------------------------
+ 1 file changed, 4 insertions(+), 32 deletions(-)
 
-> I am a bit worried that at some point we may screw each other's work by
-> pushing things out at the same time. We should be very careful with
-> --force.
-
-I think by limiting our use of rebase and exercising care with
---force, we should be fine. And if we do a 'fetch' just before, then
-the probability of a collision should be pretty low. Famous last
-words.
-
-Brian
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index 0e365da..162161b 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -1062,30 +1062,6 @@ static void atmel_pmecc_core_init(struct mtd_info *mtd)
+ }
+ 
+ /*
+- * Get ECC requirement in ONFI parameters, returns -1 if ONFI
+- * parameters is not supported.
+- * return 0 if success to get the ECC requirement.
+- */
+-static int get_onfi_ecc_param(struct nand_chip *chip,
+-		int *ecc_bits, int *sector_size)
+-{
+-	*ecc_bits = *sector_size = 0;
+-
+-	if (chip->onfi_params.ecc_bits == 0xff)
+-		/* TODO: the sector_size and ecc_bits need to be find in
+-		 * extended ecc parameter, currently we don't support it.
+-		 */
+-		return -1;
+-
+-	*ecc_bits = chip->onfi_params.ecc_bits;
+-
+-	/* The default sector size (ecc codeword size) is 512 */
+-	*sector_size = 512;
+-
+-	return 0;
+-}
+-
+-/*
+  * Get ecc requirement from ONFI parameters ecc requirement.
+  * If pmecc-cap, pmecc-sector-size in DTS are not specified, this function
+  * will set them according to ONFI ecc requirement. Otherwise, use the
+@@ -1096,19 +1072,15 @@ static int pmecc_choose_ecc(struct atmel_nand_host *host,
+ 		int *cap, int *sector_size)
+ {
+ 	/* Get ECC requirement from ONFI parameters */
+-	*cap = *sector_size = 0;
+ 	if (host->nand_chip.onfi_version) {
+-		if (!get_onfi_ecc_param(&host->nand_chip, cap, sector_size))
+-			dev_info(host->dev, "ONFI params, minimum required ECC: %d bits in %d bytes\n",
++		*cap = host->nand_chip.ecc_strength_ds;
++		*sector_size = host->nand_chip.ecc_step_ds;
++		dev_info(host->dev, "ONFI params, minimum required ECC: %d bits in %d bytes\n",
+ 				*cap, *sector_size);
+-		else
+-			dev_info(host->dev, "NAND chip ECC reqirement is in Extended ONFI parameter, we don't support yet.\n");
+ 	} else {
+-		dev_info(host->dev, "NAND chip is not ONFI compliant, assume ecc_bits is 2 in 512 bytes");
+-	}
+-	if (*cap == 0 && *sector_size == 0) {
+ 		*cap = 2;
+ 		*sector_size = 512;
++		dev_info(host->dev, "NAND chip is not ONFI compliant, assume ecc_bits is 2 in 512 bytes");
+ 	}
+ 
+ 	/* If dts file doesn't specify then use the one in ONFI parameters */
+-- 
+1.7.9.5
