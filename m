@@ -1,20 +1,25 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V7dLG-0001Gb-1q
- for linux-mtd@lists.infradead.org; Fri, 09 Aug 2013 03:26:18 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: RE: [PATCH] mtd: nand: fixup kerneldoc, rename parameter
-Date: Fri, 9 Aug 2013 03:25:51 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9F22DA@DBDE04.ent.ti.com>
-References: <1376007742-19392-1-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1376007742-19392-1-git-send-email-computersforpeace@gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: Artem Bityutskiy <dedekind1@gmail.com>
+Received: from mga09.intel.com ([134.134.136.24])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V7dlf-0001aI-MI
+ for linux-mtd@lists.infradead.org; Fri, 09 Aug 2013 03:53:36 +0000
+Message-ID: <1376020723.2219.105.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v6 00/10] mtd: add datasheet's ECC information to
+ nand_chip{}
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Fri, 09 Aug 2013 06:58:43 +0300
+In-Reply-To: <20130808230630.GA14434@norris.computersforpeace.net>
+References: <1368760654-28754-1-git-send-email-b32955@freescale.com>
+ <CAN8TOE-QvScbPUEPyrs-fYVQZmPu1h-wWX2hjz46KYtaWRckBw@mail.gmail.com>
+ <520357DF.3030403@freescale.com>
+ <20130808230630.GA14434@norris.computersforpeace.net>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Huang Shijie <b32955@freescale.com>, dwmw2@infradead.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ vikram186@gmail.com
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,107 +29,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+On Thu, 2013-08-08 at 16:06 -0700, Brian Norris wrote:
+> On Thu, Aug 08, 2013 at 04:33:35PM +0800, Huang Shijie wrote:
+> > Hi Artem & Brian:
+> > >Hi Huang and others,
+> > >
+> > >On Thu, May 16, 2013 at 8:17 PM, Huang Shijie<b32955@freescale.com>  wrote:
+> > >>1.) Why add the ECC information to the nand_chip{} ?
+> ...
+> > >Reviewed-by: Brian Norris<computersforpeace@gmail.com>
+> > >Tested-by: Brian Norris<computersforpeace@gmail.com>
+> > >
+> > >Thanks for the work Huang.
+> > >
+> > Could you please merge this patch set?
+> 
+> Thanks for the reminder. I haven't sorted through all the piles of
+> backed up stuff yet!
+> 
+> I made a few minor changes (for checkpatch.pl, regarding
+> __attribute__((packed)), and to make the style a little more
+> easily-read) and tested the generic stuff on my platform. I've pushed
+> the series to l2-mtd.git. Thanks for the patience!
 
-Thanks for review.. And few more thoughts and queries which came to my mind
-while writing down subpage-write support. I think its time to address those=
- also.
+I guess you can try aiaiai, I run it for all the patches I take to
+l2-mtd.git. It uses also coccinelle/smatch/sparse and other tools to
+verify the patches, not only checkpatch. And this git tree contains
+scripts and various defconfigs for various MTD drivers - the scripts run
+aiaiai.
 
-> First, the function argument is 'offset' not 'column'.
->=20
-> Second, the 'data_buf' name is inconsistent with the rest of this file.
-> Just use 'buf'.
->=20
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Gupta, Pekon <pekon@ti.com>
-> ---
->  drivers/mtd/nand/nand_base.c | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
->=20
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 8f04fb0..49ca737 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -1980,13 +1980,14 @@ static int nand_write_page_hwecc(struct mtd_info =
-*mtd, struct nand_chip *chip,
->   * nand_write_subpage_hwecc - [REPLACABLE] hardware ECC based subpage wr=
-ite
->   * @mtd:       mtd info structure
->   * @chip:      nand chip info structure
-> - * @column:    column address of subpage within the page
-> + * @offset:    column address of subpage within the page
->   * @data_len:  data length
-> + * @buf:       data buffer
->   * @oob_required: must write chip->oob_poi to OOB
->   */
->  static int nand_write_subpage_hwecc(struct mtd_info *mtd,
->                                 struct nand_chip *chip, uint32_t offset,
-> -                               uint32_t data_len, const uint8_t *data_bu=
-f,
-> +                               uint32_t data_len, const uint8_t *buf,
->                                 int oob_required)
->  {
->         uint8_t *oob_buf  =3D chip->oob_poi;
-> @@ -2005,20 +2006,20 @@ static int nand_write_subpage_hwecc(struct mtd_in=
-fo *mtd,
->                 chip->ecc.hwctl(mtd, NAND_ECC_WRITE);
->=20
->                 /* write data (untouched subpages already masked by 0xFF)=
- */
-> -               chip->write_buf(mtd, data_buf, ecc_size);
-> +               chip->write_buf(mtd, buf, ecc_size);
->=20
->                 /* mask ECC of un-touched subpages by padding 0xFF */
->                 if ((step < start_step) || (step > end_step))
->                         memset(ecc_calc, 0xff, ecc_bytes);
+For example, to check Huang's patches, I run something like:
 
-[Pekon]: In above implementation ..
-even though only single subpage data needs to be written, still whole
-page is programmed with other 'untouched' subpage data masked with 0xFF.
-This is not the efficient way, as it does not give any performance benefit.
-Is it possible tht specific sub-pages inside a page can be addressed, read =
-& written
-independently?
-I have not found any NAND devices supporting subpages (partial pages),
-and having a separate command 'SUBPAGE_PROGRAM' in addition to PAGE_PROGRAM=
-.
+aiaiai-concat-mboxes ~/tmp/huang*.mbox | ./verify ../l2-mtd/ gpmi-nand
 
-If indepedent subpage programming was allowed (as per actual subpage defini=
-tion),
-and there was a independent NAND command SUBPAGE_PROGRAM then,
-we could just just change mtd->writesize =3D=3D subpage_size (partial-page-=
-size),
-and then eveything should work seemlessly.. correct ?
+where "huang*.mbox" is Huang's patch set.
 
->                 else
-> -                       chip->ecc.calculate(mtd, data_buf, ecc_calc);
-> +                       chip->ecc.calculate(mtd, buf, ecc_calc);
->=20
->                 /* mask OOB of un-touched subpages by padding 0xFF */
->                 /* if oob_required, preserve OOB metadata of written subp=
-age */
->                 if (!oob_required || (step < start_step) || (step > end_s=
-tep))
->                         memset(oob_buf, 0xff, oob_bytes);
->=20
-[Pekon]: same it the case for OOB data, untouched OOB bits are masked with =
-0xFF.
-Also File-systems storing their metadata in OOB area might have some proble=
-m with using=20
-subpages, because currently our ECC layouts are not uniformly distributed a=
-cross subpage
-boundaries. Though this is also the problem with ECC also.
-Hence going forward, I would suggest to have at-least _ecc_bytes_ eqully di=
-stributed
-and aligned to subpage boundaries .. thoughts ??
+There are aliases for verious drivers. There is a 'gen' alias which I
+use for general changes like changes in nand_base.c.
 
-> -               data_buf +=3D ecc_size;
-> +               buf +=3D ecc_size;
->                 ecc_calc +=3D ecc_bytes;
->                 oob_buf  +=3D oob_bytes;
->         }
-> --
-> 1.8.1.2
->=20
+Read about the tool here:
+http://git.infradead.org/users/dedekind/aiaiai.git/blob/HEAD:/doc/README.announcement
+http://git.infradead.org/users/dedekind/aiaiai.git/blob/HEAD:/doc/README
 
-with regards, pekon=
+The mtd maintenance helpers:
+http://git.infradead.org/users/dedekind/maintaining.git
+
+There are few minor issues in aiaiai, which I can fix if you hit them
+and complain. Also, I did not invest much time in making the user
+interface and experience very nice. But this can also be improved.
+
+-- 
+Best Regards,
+Artem Bityutskiy
