@@ -1,25 +1,31 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V7dlf-0001aI-MI
- for linux-mtd@lists.infradead.org; Fri, 09 Aug 2013 03:53:36 +0000
-Message-ID: <1376020723.2219.105.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v6 00/10] mtd: add datasheet's ECC information to
- nand_chip{}
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Fri, 09 Aug 2013 06:58:43 +0300
-In-Reply-To: <20130808230630.GA14434@norris.computersforpeace.net>
-References: <1368760654-28754-1-git-send-email-b32955@freescale.com>
- <CAN8TOE-QvScbPUEPyrs-fYVQZmPu1h-wWX2hjz46KYtaWRckBw@mail.gmail.com>
- <520357DF.3030403@freescale.com>
- <20130808230630.GA14434@norris.computersforpeace.net>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Huang Shijie <b32955@freescale.com>, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- vikram186@gmail.com
-Reply-To: dedekind1@gmail.com
+Received: from comal.ext.ti.com ([198.47.26.152])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V7eH7-00024N-9V
+ for linux-mtd@lists.infradead.org; Fri, 09 Aug 2013 04:26:06 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: yuhang wang <wangyuhang2014@gmail.com>
+Subject: RE: [PATCH] SPI: DUAL and QUAD support
+Date: Fri, 9 Aug 2013 04:25:36 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9F22F0@DBDE04.ent.ti.com>
+References: <20130729064234.GS9858@sirena.org.uk>
+ <1375095194-7093-1-git-send-email-wangyuhang2014@gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9EE267@DBDE04.ent.ti.com>
+ <CAHSAbzNdvgTSPqDPHT2n3zXFwe7HBqTfyk4fB_-GsW1WSUXqRA@mail.gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9EE356@DBDE04.ent.ti.com>
+ <CA+7tXijduVqFdao3L3oJcFBYw_cffdyo-fwyAS2cBASfEMExpA@mail.gmail.com>
+ <CAHSAbzPjk1M9RzMahYOUkFDJiU8pRWXO2-np0HgQefxEC+WXeA@mail.gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9F1E1B@DBDE04.ent.ti.com>,
+ <CAHSAbzMOTk-xKDRx-1Ew67OZYbgWQnFCzfjEvu75Wyz6Yb-omA@mail.gmail.com>
+In-Reply-To: <CAHSAbzMOTk-xKDRx-1Ew67OZYbgWQnFCzfjEvu75Wyz6Yb-omA@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: "spi-devel-general@lists.sourceforge.net"
+ <spi-devel-general@lists.sourceforge.net>, "Poddar,
+ Sourav" <sourav.poddar@ti.com>, Trent Piepho <tpiepho@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "broonie@kernel.org" <broonie@kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,55 +35,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2013-08-08 at 16:06 -0700, Brian Norris wrote:
-> On Thu, Aug 08, 2013 at 04:33:35PM +0800, Huang Shijie wrote:
-> > Hi Artem & Brian:
-> > >Hi Huang and others,
-> > >
-> > >On Thu, May 16, 2013 at 8:17 PM, Huang Shijie<b32955@freescale.com>  wrote:
-> > >>1.) Why add the ECC information to the nand_chip{} ?
-> ...
-> > >Reviewed-by: Brian Norris<computersforpeace@gmail.com>
-> > >Tested-by: Brian Norris<computersforpeace@gmail.com>
-> > >
-> > >Thanks for the work Huang.
-> > >
-> > Could you please merge this patch set?
-> 
-> Thanks for the reminder. I haven't sorted through all the piles of
-> backed up stuff yet!
-> 
-> I made a few minor changes (for checkpatch.pl, regarding
-> __attribute__((packed)), and to make the style a little more
-> easily-read) and tested the generic stuff on my platform. I've pushed
-> the series to l2-mtd.git. Thanks for the patience!
+> > [Pekon] you need separate DT binding for controller and child devices.
+> > And then separate for Tx and Rx in each of them.
+> > Also, I suggest you add devicetree-discuss maillist when you update the
+> > Device-tree documentation for same.
+> >
+> Just as you said above, master node describe the total data wires on
+> SOC, slave node describe the detailed capability selected, which is
+> logically right. But to master, the drivers have already supplied this
+> infomation in probe, so do we still need to add in device tree and
+> provide another method in master driver to get the info from device
+> tree?
+>=20
+[Pekon]: Yes, for controller the controller_driver should parse or fill in
+this info in the spi_master->mode.
+But, still you need to add check while probing spi_device DT that
+only common supported compatibilities get into spi_device.
+Example: if spi_master->mode =3D=3D SPI_TX_DUAL only
+and of_spi_device() returns SPI_TX_QUAD, then you should return
+back with error showing mis-match in controller and device capabilities.
+So, spi_device capabilites should always be sub-set of spi_master capabilit=
+ies.
 
-I guess you can try aiaiai, I run it for all the patches I take to
-l2-mtd.git. It uses also coccinelle/smatch/sparse and other tools to
-verify the patches, not only checkpatch. And this git tree contains
-scripts and various defconfigs for various MTD drivers - the scripts run
-aiaiai.
 
-For example, to check Huang's patches, I run something like:
+> > I havn't seen any traffic on next version of this patch?
+> >  Did I miss, or you are working on it?
+> >
+> No, because of other jobs so didn't fix the patch in time, sorry for
+> that. Even now I still in puzzled that whether to make quad in mode or
+> add a new member in all the related struct. My trend is the previous
+> scheme. However they both have strong and weak points.
 
-aiaiai-concat-mboxes ~/tmp/huang*.mbox | ./verify ../l2-mtd/ gpmi-nand
+> If add in mode:
+> [strong points]:
+> The existed operation such as compare master mode and device mode, DT
+> interface, mode set in master driver and so on which will be a benifit
+> to make the quad code clear and smooth.
+> [weak points]
+> But to expand mode will make spidev not back compatible and the
+> modified spidev code to fix the compatible problems looks a little
+> wierd.
+> Also another point from Trent, to make it consistent between
+> spi_transfer and spi_device. just like:
+> spi_transfer->speed_hz depend on spi_device->speed_hz;
+> spi_transfer->bits_per_word depends on spi_device->bits_per_word;
+> So is that add the similar member as below looks better?
+> spi_transfer->tx_nbits depends on spi_device->tx_nbits not spi_device->mo=
+de.
 
-where "huang*.mbox" is Huang's patch set.
+> if add new member:
+> The previous strong points and weak points will become exchanged.
 
-There are aliases for verious drivers. There is a 'gen' alias which I
-use for general changes like changes in nand_base.c.
+> I still hope some suggestions to make one scheme extremely powerful
+> and I will provide the patch this week.
 
-Read about the tool here:
-http://git.infradead.org/users/dedekind/aiaiai.git/blob/HEAD:/doc/README.announcement
-http://git.infradead.org/users/dedekind/aiaiai.git/blob/HEAD:/doc/README
+[Pekon]: I'm also inclined to your suggestion of previous scheme,
+but we don't break the binary compatibility with userspace applications.
+(as Matt pointed out earlier). But I think its more of an upgrade|extension=
+ of
+of IOCTL than re-defining it. And as SPI is evolving we need to make these
+upgrades in our interface to adapt to newer SPI.
+But its upto maintainers to accept that. So, I suggest you send the spidev
+related patch separately, so that there could be more discussion on that.
 
-The mtd maintenance helpers:
-http://git.infradead.org/users/dedekind/maintaining.git
 
-There are few minor issues in aiaiai, which I can fix if you hit them
-and complain. Also, I did not invest much time in making the user
-interface and experience very nice. But this can also be improved.
-
--- 
-Best Regards,
-Artem Bityutskiy
+with regards, pekon=
