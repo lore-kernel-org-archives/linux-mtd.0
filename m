@@ -1,14 +1,14 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V8ExE-0002Yp-8Z
- for linux-mtd@lists.infradead.org; Sat, 10 Aug 2013 19:36:01 +0000
+ id 1V8ExJ-0002Yr-8m
+ for linux-mtd@lists.infradead.org; Sat, 10 Aug 2013 19:36:06 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v3 03/15] mtd: nand: pxa3xx: Handle ECC and DMA enable/disable
- properly
-Date: Sat, 10 Aug 2013 16:34:53 -0300
-Message-Id: <1376163305-5591-4-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH v3 04/15] mtd: nand: pxa3xx: Allow to set/clear the 'spare
+ enable' field
+Date: Sat, 10 Aug 2013 16:34:54 -0300
+Message-Id: <1376163305-5591-5-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1376163305-5591-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1376163305-5591-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
@@ -27,38 +27,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When ECC is not selected, the ECC enable bit must be cleared
-in the NAND control register. Same applies to DMA.
+Some commands (such as the ONFI parameter page read) need to
+clear the 'spare enable' bit. This commit allows to set/clear
+depending on the prepared command, instead of having it always
+set.
 
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 Tested-by: Daniel Mack <zonque@gmail.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/pxa3xx_nand.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 55eb153..dfff327 100644
+index dfff327..3a3e042 100644
 --- a/drivers/mtd/nand/pxa3xx_nand.c
 +++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -314,8 +314,17 @@ static void pxa3xx_nand_start(struct pxa3xx_nand_info *info)
- 	uint32_t ndcr;
+@@ -185,6 +185,7 @@ struct pxa3xx_nand_info {
+ 	int			cs;
+ 	int			use_ecc;	/* use HW ECC ? */
+ 	int			use_dma;	/* use DMA ? */
++	int			use_spare;	/* use spare ? */
+ 	int			is_ready;
  
- 	ndcr = host->reg_ndcr;
--	ndcr |= info->use_ecc ? NDCR_ECC_EN : 0;
--	ndcr |= info->use_dma ? NDCR_DMA_EN : 0;
-+
-+	if (info->use_ecc)
-+		ndcr |= NDCR_ECC_EN;
+ 	unsigned int		page_size;	/* page size of attached chip */
+@@ -325,6 +326,11 @@ static void pxa3xx_nand_start(struct pxa3xx_nand_info *info)
+ 	else
+ 		ndcr &= ~NDCR_DMA_EN;
+ 
++	if (info->use_spare)
++		ndcr |= NDCR_SPARE_EN;
 +	else
-+		ndcr &= ~NDCR_ECC_EN;
-+
-+	if (info->use_dma)
-+		ndcr |= NDCR_DMA_EN;
-+	else
-+		ndcr &= ~NDCR_DMA_EN;
++		ndcr &= ~NDCR_SPARE_EN;
 +
  	ndcr |= NDCR_ND_RUN;
  
  	/* clear status bits and run */
+@@ -526,6 +532,7 @@ static int prepare_command_pool(struct pxa3xx_nand_info *info, int command,
+ 	info->buf_count		= 0;
+ 	info->oob_size		= 0;
+ 	info->use_ecc		= 0;
++	info->use_spare		= 1;
+ 	info->use_dma		= (use_dma) ? 1 : 0;
+ 	info->is_ready		= 0;
+ 	info->retcode		= ERR_NONE;
 -- 
 1.8.1.5
