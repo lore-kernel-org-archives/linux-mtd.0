@@ -1,30 +1,26 @@
-Received: from mail-pd0-f176.google.com ([209.85.192.176])
+Received: from mail-pb0-x236.google.com ([2607:f8b0:400e:c01::236])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V8Fro-0003Zw-F5
- for linux-mtd@lists.infradead.org; Sat, 10 Aug 2013 20:34:29 +0000
-Received: by mail-pd0-f176.google.com with SMTP id q10so1858448pdj.35
- for <linux-mtd@lists.infradead.org>; Sat, 10 Aug 2013 13:33:59 -0700 (PDT)
-Date: Sat, 10 Aug 2013 13:33:49 -0700
+ id 1V8GAV-0003mL-03
+ for linux-mtd@lists.infradead.org; Sat, 10 Aug 2013 20:53:48 +0000
+Received: by mail-pb0-f54.google.com with SMTP id ro12so5575894pbb.13
+ for <linux-mtd@lists.infradead.org>; Sat, 10 Aug 2013 13:53:25 -0700 (PDT)
+Date: Sat, 10 Aug 2013 13:53:13 -0700
 From: Brian Norris <computersforpeace@gmail.com>
 To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH v2 01/14] mtd: nand: pxa3xx: Introduce
- 'marvell,armada370-nand' compatible string
-Message-ID: <20130810203347.GA14331@norris.computersforpeace.net>
-References: <1375878679-18098-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1375878679-18098-2-git-send-email-ezequiel.garcia@free-electrons.com>
- <20130810182854.GA10830@norris.computersforpeace.net>
- <20130810184116.GA2756@localhost>
+Subject: Re: [PATCH v3 05/15] mtd: nand: pxa3xx: Support command buffer #3
+Message-ID: <20130810205312.GB14331@norris.computersforpeace.net>
+References: <1376163305-5591-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1376163305-5591-6-git-send-email-ezequiel.garcia@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20130810184116.GA2756@localhost>
-Cc: Lior Amsalem <alior@marvell.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Jason Cooper <jason@lakedaemon.net>, Artem Bityutskiy <dedekind1@gmail.com>,
- Daniel Mack <zonque@gmail.com>, devicetree@vger.kernel.org,
+In-Reply-To: <1376163305-5591-6-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Daniel Mack <zonque@gmail.com>,
  linux-mtd@lists.infradead.org,
  Gregory Clement <gregory.clement@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>
+ David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,80 +30,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Aug 10, 2013 at 03:41:17PM -0300, Ezequiel Garcia wrote:
-> On Sat, Aug 10, 2013 at 11:28:57AM -0700, Brian Norris wrote:
-> > On Wed, Aug 07, 2013 at 09:31:06AM -0300, Ezequiel Garcia wrote:
-> > > @@ -1221,11 +1239,28 @@ static int pxa3xx_nand_probe_dt(struct platform_device *pdev)
-> > >  
-> > >  	return 0;
-> > >  }
-> > > +
-> > > +static enum pxa3xx_nand_variant
-> > > +pxa3xx_nand_get_variant(struct platform_device *pdev)
-> > > +{
-> > > +	const struct of_device_id *of_id =
-> > > +			of_match_device(pxa3xx_nand_dt_ids, &pdev->dev);
-> > > +	if (!of_id)
-> > > +		return PXA3XX_NAND_VARIANT_PXA;
-> > > +	return (enum pxa3xx_nand_variant) of_id->data;
-> > > +}
-> > >  #else
-> > >  static inline int pxa3xx_nand_probe_dt(struct platform_device *pdev)
-> > >  {
-> > >  	return 0;
-> > >  }
-> > 
-> > It looks like before this patch, you don't actually need the whole
-> > #ifdef/#else CONFIG_OF block. All the of_* helpers have default inline
-> > implementations that allow things to compile even without CONFIG_OF. So
-> > without CONFIG_OF, of_match_device() will just return NULL and the
-> > compiler can easiliy figure out that pxa3xx_nand_probe_dt() always
-> > should return 0.
-> > 
-> > IOW, you only need a single pxa3xx_nand_probe_dt() implementation.
-> > 
-> > And directly related to this patch: you don't need two
-> > pxa3xx_nand_get_variant() implementations either. Again,
-> > of_match_device() returns NULL in the !defined(CONFIG_OF) case.
-> > 
-> > > +
-> > > +static enum pxa3xx_nand_variant
-> > > +pxa3xx_nand_get_variant(struct platform_device *pdev)
-> > > +{
-> > > +	/* Default lefacy (non-DT) variant */
-> > 
-> > s/lefacy/legacy/
-> > 
-> > > +	return PXA3XX_NAND_VARIANT_PXA;
-> > > +}
-> > 
-> > Given the above comments, you won't need this version of
-> > pxa3xx_nand_get_variant().
-> > 
-> > >  #endif
-> > >  
-> > >  static int pxa3xx_nand_probe(struct platform_device *pdev)
-> > > @@ -1252,6 +1287,7 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
-> > >  	}
-> > >  
-> > >  	info = platform_get_drvdata(pdev);
-> > > +	info->variant = pxa3xx_nand_get_variant(pdev);
-> > >  	probe_success = 0;
-> > >  	for (cs = 0; cs < pdata->num_cs; cs++) {
-> > >  		info->cs = cs;
-> > 
-> > I would recommend rewriting this patch to remove the #ifdef CONFIG_OF.
-> > 
+On Sat, Aug 10, 2013 at 04:34:55PM -0300, Ezequiel Garcia wrote:
+> Some newer controllers support a fourth command buffer. This additional
+> command buffer allows to set an arbitrary length count, using the
+> NDCB3.NDLENCNT field, to perform non-standard length operations
+> such as the ONFI parameter page read.
 > 
-> Good to hear this! It was my intention in the first place, but refrained
-> from doing so for I thought someone might complain about the CONFIG_OF removal.
+> In controllers without this register, the operation has no effect.
+> 
+> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> Tested-by: Daniel Mack <zonque@gmail.com>
+> ---
+>  drivers/mtd/nand/pxa3xx_nand.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+> index 3a3e042..83a7187 100644
+> --- a/drivers/mtd/nand/pxa3xx_nand.c
+> +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> @@ -197,6 +197,7 @@ struct pxa3xx_nand_info {
+>  	uint32_t		ndcb0;
+>  	uint32_t		ndcb1;
+>  	uint32_t		ndcb2;
+> +	uint32_t		ndcb3;
+>  };
+>  
+>  static bool use_dma = 1;
+> @@ -496,6 +497,10 @@ static irqreturn_t pxa3xx_nand_irq(int irq, void *devid)
+>  		nand_writel(info, NDCB0, info->ndcb0);
+>  		nand_writel(info, NDCB0, info->ndcb1);
+>  		nand_writel(info, NDCB0, info->ndcb2);
+> +
+> +		/* NDCB3 register is available in NFCv2 (Armada 370/XP SoC) */
+> +		if (info->variant == PXA3XX_NAND_VARIANT_ARMADA370)
+> +			nand_writel(info, NDCB0, info->ndcb3);
 
-As a general rule: the fewer #ifdef's the better. And in this case, the
-emitted code should be identical (but I Am Not A Compiler).
+Pardon my unfamiliarity with your hardware, but why do you have the
+following three register definitions if you're only using NDCB0?
 
-> So if I remember correct, I'd say this means a patch split (right?):
-> one patch to remove CONFIG_OF, one patch to introduce the SoC variant.
+#define NDCB0           (0x48) /* Command Buffer0 */
+#define NDCB1           (0x4C) /* Command Buffer1 */
+#define NDCB2           (0x50) /* Command Buffer2 */
 
-Sure. I presume you did that in v3, which I will now look at...
+>  	}
+>  
+>  	/* clear NDSR to let the controller exit the IRQ */
+> @@ -554,6 +559,7 @@ static int prepare_command_pool(struct pxa3xx_nand_info *info, int command,
+>  	default:
+>  		info->ndcb1 = 0;
+>  		info->ndcb2 = 0;
+> +		info->ndcb3 = 0;
+>  		break;
+>  	}
+>  
 
 Brian
