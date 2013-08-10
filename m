@@ -1,14 +1,14 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V8Exi-0002eF-8o
- for linux-mtd@lists.infradead.org; Sat, 10 Aug 2013 19:36:33 +0000
+ id 1V8Exn-0002ff-97
+ for linux-mtd@lists.infradead.org; Sat, 10 Aug 2013 19:36:37 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v3 10/15] mtd: nand: pxa3xx: Move cached registers to info
- structure
-Date: Sat, 10 Aug 2013 16:35:00 -0300
-Message-Id: <1376163305-5591-11-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH v3 12/15] mtd: nand: pxa3xx: Add __maybe_unused keyword to
+ enable_int()
+Date: Sat, 10 Aug 2013 16:35:02 -0300
+Message-Id: <1376163305-5591-13-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1376163305-5591-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1376163305-5591-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
@@ -27,126 +27,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This registers are not per-chip (aka host) but controller-wise,
-so it's better to store them in the global 'info' structure.
+Now that we have added ARCH_HAS_DMA conditional the function
+enable_int() may be unused. Declare it as __maybe_unused,
+in order to remove the following warning, when the function is not used:
+
+drivers/mtd/nand//pxa3xx_nand.c:343:24: warning: 'enable_int' defined
+but not used [-Wunused-function]
 
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 Tested-by: Daniel Mack <zonque@gmail.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c | 36 +++++++++++++++++-------------------
- 1 file changed, 17 insertions(+), 19 deletions(-)
+ drivers/mtd/nand/pxa3xx_nand.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 47a8641..ae441ff 100644
+index d8c133e..dca1747 100644
 --- a/drivers/mtd/nand/pxa3xx_nand.c
 +++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -144,10 +144,6 @@ struct pxa3xx_nand_host {
- 	unsigned int		row_addr_cycles;
- 	size_t			read_id_bytes;
- 
--	/* cached register value */
--	uint32_t		reg_ndcr;
--	uint32_t		ndtr0cs0;
--	uint32_t		ndtr1cs0;
- };
- 
- struct pxa3xx_nand_info {
-@@ -193,6 +189,11 @@ struct pxa3xx_nand_info {
- 	unsigned int		oob_size;
- 	int 			retcode;
- 
-+	/* cached register value */
-+	uint32_t		reg_ndcr;
-+	uint32_t		ndtr0cs0;
-+	uint32_t		ndtr1cs0;
-+
- 	/* generated NDCBx register values */
- 	uint32_t		ndcb0;
- 	uint32_t		ndcb1;
-@@ -258,8 +259,8 @@ static void pxa3xx_nand_set_timing(struct pxa3xx_nand_host *host,
- 		NDTR1_tWHR(ns2cycle(t->tWHR, nand_clk)) |
- 		NDTR1_tAR(ns2cycle(t->tAR, nand_clk));
- 
--	host->ndtr0cs0 = ndtr0;
--	host->ndtr1cs0 = ndtr1;
-+	info->ndtr0cs0 = ndtr0;
-+	info->ndtr1cs0 = ndtr1;
- 	nand_writel(info, NDTR0CS0, ndtr0);
- 	nand_writel(info, NDTR1CS0, ndtr1);
+@@ -348,7 +348,8 @@ static void pxa3xx_nand_stop(struct pxa3xx_nand_info *info)
+ 	nand_writel(info, NDSR, NDSR_MASK);
  }
-@@ -267,7 +268,7 @@ static void pxa3xx_nand_set_timing(struct pxa3xx_nand_host *host,
- static void pxa3xx_set_datasize(struct pxa3xx_nand_info *info)
- {
- 	struct pxa3xx_nand_host *host = info->host[info->cs];
--	int oob_enable = host->reg_ndcr & NDCR_SPARE_EN;
-+	int oob_enable = info->reg_ndcr & NDCR_SPARE_EN;
  
- 	info->data_size = host->page_size;
- 	if (!oob_enable) {
-@@ -293,10 +294,9 @@ static void pxa3xx_set_datasize(struct pxa3xx_nand_info *info)
-  */
- static void pxa3xx_nand_start(struct pxa3xx_nand_info *info)
+-static void enable_int(struct pxa3xx_nand_info *info, uint32_t int_mask)
++static void __maybe_unused
++enable_int(struct pxa3xx_nand_info *info, uint32_t int_mask)
  {
--	struct pxa3xx_nand_host *host = info->host[info->cs];
  	uint32_t ndcr;
  
--	ndcr = host->reg_ndcr;
-+	ndcr = info->reg_ndcr;
- 
- 	if (info->use_ecc)
- 		ndcr |= NDCR_ECC_EN;
-@@ -674,7 +674,7 @@ static void pxa3xx_nand_cmdfunc(struct mtd_info *mtd, unsigned command,
- 	 * "byte" address into a "word" address appropriate
- 	 * for indexing a word-oriented device
- 	 */
--	if (host->reg_ndcr & NDCR_DWIDTH_M)
-+	if (info->reg_ndcr & NDCR_DWIDTH_M)
- 		column /= 2;
- 
- 	/*
-@@ -684,8 +684,8 @@ static void pxa3xx_nand_cmdfunc(struct mtd_info *mtd, unsigned command,
- 	 */
- 	if (info->cs != host->cs) {
- 		info->cs = host->cs;
--		nand_writel(info, NDTR0CS0, host->ndtr0cs0);
--		nand_writel(info, NDTR1CS0, host->ndtr1cs0);
-+		nand_writel(info, NDTR0CS0, info->ndtr0cs0);
-+		nand_writel(info, NDTR1CS0, info->ndtr1cs0);
- 	}
- 
- 	info->state = STATE_PREPARED;
-@@ -861,7 +861,7 @@ static int pxa3xx_nand_config_flash(struct pxa3xx_nand_info *info,
- 	ndcr |= NDCR_RD_ID_CNT(host->read_id_bytes);
- 	ndcr |= NDCR_SPARE_EN; /* enable spare by default */
- 
--	host->reg_ndcr = ndcr;
-+	info->reg_ndcr = ndcr;
- 
- 	pxa3xx_nand_set_timing(host, f->timing);
- 	return 0;
-@@ -884,11 +884,9 @@ static int pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
- 		host->read_id_bytes = 2;
- 	}
- 
--	host->reg_ndcr = ndcr & ~NDCR_INT_MASK;
--
--	host->ndtr0cs0 = nand_readl(info, NDTR0CS0);
--	host->ndtr1cs0 = nand_readl(info, NDTR1CS0);
--
-+	info->reg_ndcr = ndcr & ~NDCR_INT_MASK;
-+	info->ndtr0cs0 = nand_readl(info, NDTR0CS0);
-+	info->ndtr1cs0 = nand_readl(info, NDTR1CS0);
- 	return 0;
- }
- 
-@@ -1035,7 +1033,7 @@ KEEP_CONFIG:
- 	chip->ecc.size = host->page_size;
- 	chip->ecc.strength = 1;
- 
--	if (host->reg_ndcr & NDCR_DWIDTH_M)
-+	if (info->reg_ndcr & NDCR_DWIDTH_M)
- 		chip->options |= NAND_BUSWIDTH_16;
- 
- 	if (nand_scan_ident(mtd, 1, def))
 -- 
 1.8.1.5
