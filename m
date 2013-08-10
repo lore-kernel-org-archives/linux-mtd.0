@@ -1,13 +1,14 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V8ExY-0002cN-8i
- for linux-mtd@lists.infradead.org; Sat, 10 Aug 2013 19:36:21 +0000
+ id 1V8Exb-0002cM-C0
+ for linux-mtd@lists.infradead.org; Sat, 10 Aug 2013 19:36:25 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v3 08/15] mtd: nand: pxa3xx: Remove hardcoded mtd name
-Date: Sat, 10 Aug 2013 16:34:58 -0300
-Message-Id: <1376163305-5591-9-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH v3 13/15] mtd: nand: pxa3xx: Allow devices with no dma
+ resources
+Date: Sat, 10 Aug 2013 16:35:03 -0300
+Message-Id: <1376163305-5591-14-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1376163305-5591-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1376163305-5591-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
@@ -26,45 +27,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There's no advantage in using a hardcoded name for the mtd device.
-Instead use the provided by the platform_device.
+When use_dma=0 there's no point in requesting resources for dma,
+since they won't be used anyway. Therefore we remove that requirement,
+therefore allowing devices without dma to pass the driver probe.
 
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 Tested-by: Daniel Mack <zonque@gmail.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/pxa3xx_nand.c | 51 +++++++++++++++++++++++-------------------
+ 1 file changed, 28 insertions(+), 23 deletions(-)
 
 diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index b34fa25..f59c687 100644
+index 0f94c81..3c1d061 100644
 --- a/drivers/mtd/nand/pxa3xx_nand.c
 +++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -244,8 +244,6 @@ static struct pxa3xx_nand_flash builtin_flash_types[] = {
- /* Define a default flash type setting serve as flash detecting only */
- #define DEFAULT_FLASH_TYPE (&builtin_flash_types[0])
+@@ -1131,30 +1131,35 @@ static int alloc_nand_resource(struct platform_device *pdev)
+ 	if (ret < 0)
+ 		return ret;
  
--const char *mtd_names[] = {"pxa3xx_nand-0", "pxa3xx_nand-1", NULL};
+-	/*
+-	 * This is a dirty hack to make this driver work from devicetree
+-	 * bindings. It can be removed once we have a prober DMA controller
+-	 * framework for DT.
+-	 */
+-	if (pdev->dev.of_node && of_machine_is_compatible("marvell,pxa3xx")) {
+-		info->drcmr_dat = 97;
+-		info->drcmr_cmd = 99;
+-	} else {
+-		r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
+-		if (r == NULL) {
+-			dev_err(&pdev->dev, "no resource defined for data DMA\n");
+-			ret = -ENXIO;
+-			goto fail_disable_clk;
+-		}
+-		info->drcmr_dat = r->start;
 -
- #define NDTR0_tCH(c)	(min((c), 7) << 19)
- #define NDTR0_tCS(c)	(min((c), 7) << 16)
- #define NDTR0_tWH(c)	(min((c), 7) << 11)
-@@ -1082,8 +1080,6 @@ KEEP_CONFIG:
- 		host->row_addr_cycles = 3;
- 	else
- 		host->row_addr_cycles = 2;
--
--	mtd->name = mtd_names[0];
- 	return nand_scan_tail(mtd);
- }
- 
-@@ -1305,6 +1301,8 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
- 	probe_success = 0;
- 	for (cs = 0; cs < pdata->num_cs; cs++) {
- 		struct mtd_info *mtd = info->host[cs]->mtd;
+-		r = platform_get_resource(pdev, IORESOURCE_DMA, 1);
+-		if (r == NULL) {
+-			dev_err(&pdev->dev, "no resource defined for command DMA\n");
+-			ret = -ENXIO;
+-			goto fail_disable_clk;
++	if (use_dma) {
++		/*
++		 * This is a dirty hack to make this driver work from
++		 * devicetree bindings. It can be removed once we have
++		 * a prober DMA controller framework for DT.
++		 */
++		if (pdev->dev.of_node &&
++		    of_machine_is_compatible("marvell,pxa3xx")) {
++			info->drcmr_dat = 97;
++			info->drcmr_cmd = 99;
++		} else {
++			r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
++			if (r == NULL) {
++				dev_err(&pdev->dev,
++					"no resource defined for data DMA\n");
++				ret = -ENXIO;
++				goto fail_disable_clk;
++			}
++			info->drcmr_dat = r->start;
 +
-+		mtd->name = pdev->name;
- 		info->cs = cs;
- 		ret = pxa3xx_nand_scan(mtd);
- 		if (ret) {
++			r = platform_get_resource(pdev, IORESOURCE_DMA, 1);
++			if (r == NULL) {
++				dev_err(&pdev->dev,
++					"no resource defined for cmd DMA\n");
++				ret = -ENXIO;
++				goto fail_disable_clk;
++			}
++			info->drcmr_cmd = r->start;
+ 		}
+-		info->drcmr_cmd = r->start;
+ 	}
+ 
+ 	irq = platform_get_irq(pdev, 0);
 -- 
 1.8.1.5
