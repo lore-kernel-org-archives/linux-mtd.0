@@ -1,21 +1,27 @@
-Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V8ZT9-0006C8-4k
- for linux-mtd@lists.infradead.org; Sun, 11 Aug 2013 17:30:21 +0000
-From: Marek Vasut <marex@denx.de>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: m25p80: Micron SPI uses Macronix-style 4-byte
- addressing
-Date: Fri, 9 Aug 2013 20:46:53 +0200
-References: <1376072646-26089-1-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1376072646-26089-1-git-send-email-computersforpeace@gmail.com>
+Received: from smtp09.smtpout.orange.fr ([80.12.242.131]
+ helo=smtp.smtpout.orange.fr)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V8btZ-0008Oz-Jh
+ for linux-mtd@lists.infradead.org; Sun, 11 Aug 2013 20:05:47 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Daniel Mack <zonque@gmail.com>
+Subject: Re: [PATCH 00/20] ARM: pxa: move core and drivers to dmaengine
+References: <1375889649-14638-1-git-send-email-zonque@gmail.com>
+ <87zjsqzdg8.fsf@free.fr> <52061C53.4050905@gmail.com>
+Date: Sun, 11 Aug 2013 22:05:04 +0200
+Message-ID: <874nawyowf.fsf@free.fr>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201308092046.53352.marex@denx.de>
-Cc: Brian Norris <computersforpeace@gmail.com>, stable@vger.kernel.org,
- Vivien Didelot <vivien.didelot@savoirfairelinux.com>
+Content-Type: text/plain; charset=us-ascii
+Cc: mark.rutland@arm.com, s.neumann@raumfeld.com, linux-mtd@lists.infradead.org,
+ haojian.zhuang@linaro.org, cxie4@marvell.com, lars@metafoo.de, nico@linaro.org,
+ vinod.koul@intel.com, marek.vasut@gmail.com,
+ ezequiel.garcia@free-electrons.com, rmk+kernel@arm.linux.org.uk,
+ devicetree@vger.kernel.org, samuel@sortiz.org, arnd@arndb.de,
+ broonie@kernel.org, mika.westerberg@linux.intel.com,
+ linux-arm-kernel@lists.infradead.org, thomas.petazzoni@free-electrons.com,
+ eric.y.miao@gmail.com, gregkh@linuxfoundation.org, davem@davemloft.net,
+ sachin.kamat@linaro.org, kernel@pengutronix.de, djbw@fb.com,
+ g.liakhovetski@gmx.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,59 +31,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Brian Norris,
+Daniel Mack <zonque@gmail.com> writes:
+> Hi Robert,
 
-> For SPI NOR flash that are larger than 128Mbit (16MiB), we need 4 bytes
-> of address space to reach the entire flash; however, the original SPI
-> flash protocol used only 3 bytes for the address. So far, the practice
-> for handling this has been either to use new command opcodes that are
-> defined to use 4 bytes for their address, or to use special
-> mode-switching command to configure all traditionally-3-byte-address
-> commands to take 4 bytes instead.
-> 
-> Macronix and Spansion developed two incompatible methods for
-> entering/exiting "4-byte address mode." Micron flash uses the Macronix
-> method (OPCODE_{EN4B,EX4B}), not the Spansion method.
-> 
-> This patch solves addressing issues on Micron n25q256a and provides the
-> ability to support other future Micron SPI flash >16MiB.
-> 
-> Quoting a Micron representative:
-> 
->   "Majority of our NOR that needs 4-byte addressing (256Mb or 32MB and
->    higher) enter and exit 4byte through B7h and E9h commands. The
->    N25Q256A7xxx and N25Q512A7xxx parts do not support 4-byte addressing
->    mode via B7h or E9h command."
-> 
-> They further clarified that those that don't support the enter/exit
-> opcodes (B7h/E9h) are manufactured specifically to come up by default in
-> 4-byte mode. We don't need to treat those parts any diffently, as they
-> will discard the EN4B opcode as a no-op.
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Vivien Didelot <vivien.didelot@savoirfairelinux.com>
-> Cc: Marek Vasut <marex@denx.de>
-> Cc: <stable@vger.kernel.org> # 3.10+
-> ---
->  drivers/mtd/devices/m25p80.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index b5190c4..a759c1f 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -169,6 +169,7 @@ static inline int set_4byte(struct m25p *flash, u32
-> jedec_id, int enable) {
->  	switch (JEDEC_MFR(jedec_id)) {
->  	case CFI_MFR_MACRONIX:
-> +	case CFI_MFR_ST: /* Micron, actually */
->  	case 0xEF /* winbond */:
->  		flash->command[0] = enable ? OPCODE_EN4B : OPCODE_EX4B;
->  		return spi_write(flash->spi, flash->command, 1);
+We might reduce the thread broadcast, I don't think these many people care about
+pxa camera specifics, and its DMA constraints.
 
-The situation with the 4b addressing is a horrible mess :(
 
-Acked-by: Marek Vasut <marex@denx.de>
+>> All that is described in there :
+>>   Documentation/video4linux/pxa_camera.txt
+>
+> Yes, I've seen that, and while the documentation about all that is
+> excellent, I lack an explanation why things are so complicated for this
+> application, and why a simple cyclic DMA approach does not suffice here.
+> I'm sure there's a reason though.
+Well, I think there is a good one.
+The current video4linux flow, for video capture, is :
+ 1) userland prepares buffers (ie. dma transfers are prepared, one sg list for
+ each "image" or "frame")
+ 2) userland queues buffers (no hardware operation)
+ 3) userland starts the capture
+ 4) userland poll for each frame end
+   a) When a frame is finished, userland unqueues it
+      => no overwrite of this frame is possible anymore
+   b) Userland treats is (might be sent to storage, or compressed, ...)
+   c) Userland requeues it (while other frame is being DMAed)
 
-Best regards,
-Marek Vasut
+Moreover, it should be assumed that waiting for a "end of DMA transfer" before
+requeuing the next one (ie. "cold queuing" instead of "hot queueing") will imply
+the miss of the next frame start, and one frame will be missed.
+
+With a cyclic DMA, if I understand dmaengine correctly, step 4a. is not
+posssible (ie. if userland is slow enough, the frame will be overwritten without
+userland knowing it, and while userland is handling it).
+
+> There might be need to teach the dmaengine core more functionality, but
+> in order to do that, we first need to understand the exact requirements.
+The first one that comes to my mind is :
+ - enable to submit a transfer to a running channel, the same one that served a
+ previous transfer :
+   => this will guarantee ordering of DMA transfers
+   => this will guarantee no DMA stops if 2 or more buffers are queued
+   => this will try to chain this transfer to the last one queued on the channel
+   => if by bad luck the "miss window is hit", ie. the DMA finishes while the
+   chaining was being done, restart the DMA on its stop
+
+>> Another point I'd like to know, is what is the performance penalty in using
+>> dmaengine, and do you have any figures ?
+> The DMA transfers themselves certainly perform equally well, and the
+> framework is just a thin layer. Where would you expect performance penalty?
+
+Well, last time I had a look (in [1]), I think I remember having a 3% penalty
+on SD card transfers (pxamci driver, mioa701 board, transcend 16Go SD card). 
+
+It's been a while and my memory is a bit fuzzy about it. The loss I had at the
+time was in queuing/unqueuing the DMA requests IIRC.
+
+>> Lastly, they was debug information to debug descriptors chaining, channel
+>> statuses, requestors. I didn't see where these had gone, could you point me to
+>> the right file ?
+>
+> Such a debug interface is not part of the mmp-pdma implementation at
+> this point, and the core doesn't have a generic debugfs feature either.
+> If you need that, we'd have to add it back.
+Well, I use that. It's not vital for DMA to work of course, but it's very nice
+to have when you mess with DMA transfers :)
+
+> FWIW, I attached my work-in-progress patch for this driver which just
+> does some basic dmaengine preparations. Be aware that this does not even
+> compile, it's really just a snapshot.
+OK, cool. Once the dmaengine stuff is clearer in my mind, and if "hot
+submitting" is already possible in dmaengine, it shouldn't be that hard to
+convert.
+
+Cheers.
+
+-- 
+Robert
+
+[1]
+http://archive.arm.linux.org.uk/lurker/message/20090517.194809.b18c79c8.en.html
