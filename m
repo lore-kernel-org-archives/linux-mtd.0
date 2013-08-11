@@ -1,27 +1,25 @@
-Received: from mail-pd0-x22d.google.com ([2607:f8b0:400e:c02::22d])
+Received: from mail-pa0-x233.google.com ([2607:f8b0:400e:c03::233])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V8LTa-0006CM-WC
- for linux-mtd@lists.infradead.org; Sun, 11 Aug 2013 02:33:51 +0000
-Received: by mail-pd0-f173.google.com with SMTP id p10so2028668pdj.32
- for <linux-mtd@lists.infradead.org>; Sat, 10 Aug 2013 19:33:29 -0700 (PDT)
-Date: Sat, 10 Aug 2013 19:33:18 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Subject: Re: [PATCH v3 05/15] mtd: nand: pxa3xx: Support command buffer #3
-Message-ID: <20130811023317.GA15447@norris.computersforpeace.net>
-References: <1376163305-5591-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1376163305-5591-6-git-send-email-ezequiel.garcia@free-electrons.com>
- <20130810234814.62395380@skate>
+ id 1V8LwK-0006am-Vx
+ for linux-mtd@lists.infradead.org; Sun, 11 Aug 2013 03:03:34 +0000
+Received: by mail-pa0-f51.google.com with SMTP id lf1so3444674pab.38
+ for <linux-mtd@lists.infradead.org>; Sat, 10 Aug 2013 20:03:10 -0700 (PDT)
+Message-ID: <5207A8C7.4050101@gmail.com>
+Date: Sun, 11 Aug 2013 11:07:51 -0400
+From: Huang Shijie <shijie8@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20130810234814.62395380@skate>
-Cc: Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
- Artem Bityutskiy <dedekind1@gmail.com>, Daniel Mack <zonque@gmail.com>,
- linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v2 4/4] mtd: gpmi: update the ecc step size for mtd_info{}
+References: <1368607606-4344-1-git-send-email-b32955@freescale.com>
+ <1368607606-4344-5-git-send-email-b32955@freescale.com>
+ <20130810074156.GB3467@norris.computersforpeace.net>
+ <CAN8TOE8NhcYBP_x26=KC2yBUSS3xzVjMg+PHnxNNRNJWWLeSeg@mail.gmail.com>
+In-Reply-To: <CAN8TOE8NhcYBP_x26=KC2yBUSS3xzVjMg+PHnxNNRNJWWLeSeg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: Huang Shijie <b32955@freescale.com>, dedekind1@gmail.com,
+ linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,34 +29,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Aug 10, 2013 at 11:48:14PM +0200, Thomas Petazzoni wrote:
-> On Sat, 10 Aug 2013 16:34:55 -0300, Ezequiel Garcia wrote:
-> > Some newer controllers support a fourth command buffer. This additional
-> > command buffer allows to set an arbitrary length count, using the
-> > NDCB3.NDLENCNT field, to perform non-standard length operations
-> > such as the ONFI parameter page read.
-> > 
-> > In controllers without this register, the operation has no effect.
-> 
-> Are you sure this is true? I thought you had this statement in earlier
-> revisions of your patch set, but one of the comment was precisely that
-> this patch was breaking platforms that did not have this register, and
-> this lead you to introduce the separate compatible string.
+于 2013年08月10日 03:53, Brian Norris 写道:
+> The right way seems to be to avoid nand_scan() directly but instead to
+> >  use nand_scan_ident() and nand_scan_tail() separately (that's what
+> >  they're exported for) so that you can initialize any geometry-related
+> >  options before nand_scan_tail() does the last steps.
+i agree with you.
+I will create a v3 version tomorrow when i back to office.
 
-It appears as if he didn't change the commit message properly. He does
-now protect the fourth command buffer (?) with this:
-
-+		/* NDCB3 register is available in NFCv2 (Armada 370/XP SoC) */
-+		if (info->variant == PXA3XX_NAND_VARIANT_ARMADA370)
-+			nand_writel(info, NDCB0, info->ndcb3);
-
-> I must admit, I'm also a bit confused by the existing code:
-> 
->  		nand_writel(info, NDCB0, info->ndcb0);
->  		nand_writel(info, NDCB0, info->ndcb1);
->  		nand_writel(info, NDCB0, info->ndcb2);
-> 
-> but it's probably because I don't know much about NAND and the
-> registers of this controller.
-
-Brian
+thanks for the review.
+Huang Shijie
