@@ -1,26 +1,15 @@
-Received: from mail-pd0-x229.google.com ([2607:f8b0:400e:c02::229])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V8MNC-0006mV-AD
- for linux-mtd@lists.infradead.org; Sun, 11 Aug 2013 03:31:19 +0000
-Received: by mail-pd0-f169.google.com with SMTP id r10so2079140pdi.28
- for <linux-mtd@lists.infradead.org>; Sat, 10 Aug 2013 20:30:53 -0700 (PDT)
-Date: Sat, 10 Aug 2013 20:30:45 -0700
+Date: Sat, 10 Aug 2013 23:09:21 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH v3 14/15] mtd: nand: pxa3xx: Increase data buffer size
-Message-ID: <20130811033045.GA16906@norris.computersforpeace.net>
-References: <1376163305-5591-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1376163305-5591-15-git-send-email-ezequiel.garcia@free-electrons.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH 0/4] mtd: gpmi: support two nand chips at most
+Message-ID: <20130811060921.GB16906@norris.computersforpeace.net>
+References: <1371197185-27491-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1376163305-5591-15-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
- Artem Bityutskiy <dedekind1@gmail.com>, Daniel Mack <zonque@gmail.com>,
- linux-mtd@lists.infradead.org,
- Gregory Clement <gregory.clement@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
+In-Reply-To: <1371197185-27491-1-git-send-email-b32955@freescale.com>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,22 +19,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Aug 10, 2013 at 04:35:04PM -0300, Ezequiel Garcia wrote:
-> Devices with 4 KiB pages (plus OOB data) can be detected, so we increase
-> the data buffer size. A better solution would be to allocate a buffer
-> depending on the detected page size, but that's not possible given
-> we need the buffer prior to the device detection.
+On Fri, Jun 14, 2013 at 04:06:21PM +0800, Huang Shijie wrote:
+> Current gpmi-nand driver only supports one chips. But we may meet
+> some embarrassing situation, such as Micron MT29F32G08QAA.
+> This nand chip has two DIEs internally. Each die has its own chip select pin,
+> so this chip acts as two nand chips.
+> 
+> If we only scan one chip, we may find that we only get 2G for this chip,
+> but in actually, this chip's size is 4G.
+> 
+> So scan two chips by default.
+> 
+> In order to support two nand chips, we have to do the following:
+>    1.) We only have one dma channel now, so decouple the chip select
+>       from the DMA channel, We can use the dma 0 to access all the nand chips.
+> 
+>    2.) fix the wrong method of checking the ready/busy status.
+>       In the imx6, all the ready/busy pins are binding together, we
+>       should check ready/busy status of chip 0 for the all the chips. 
+> 
+> Tested this patch set with MT29F32G08QAA.
+> 
+> 
+> Huang Shijie (4):
+>   mtd: gpmi: decouple the chip select from the DMA channel
+>   mtd: gpmi: use DMA channel 0 for all the nand chips
+>   mtd: gpmi: scan two nand chips
+>   mtd: gpmi: imx6: fix the wrong method for checking ready/busy
+> 
+>  drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |   14 ++++++++++++++
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    7 +++----
+>  drivers/mtd/nand/gpmi-nand/gpmi-regs.h |    3 +++
+>  3 files changed, 20 insertions(+), 4 deletions(-)
 
-Another possibility (for future work, maybe) is that you allocate a
-smaller buffer that fits what you need for "device detection" (I presume
-it's just for ONFI parameter page commands?), then reallocate the buffer
-between nand_scan_ident() and nand_scan_tail() according to page size.
-There are some other similar buffers throughout NAND that use a fixed
-NAND_MAX_OOBSIZE and NAND_MAX_PAGESIZE.
-
-> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> Tested-by: Daniel Mack <zonque@gmail.com>
-
-...
+What's the status on this patch set? It doesn't look like it got merged.
+Do you have any testing for this? It looks sane enough to me.
 
 Brian
