@@ -1,27 +1,18 @@
-Received: from smtp09.smtpout.orange.fr ([80.12.242.131]
- helo=smtp.smtpout.orange.fr)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V8btZ-0008Oz-Jh
- for linux-mtd@lists.infradead.org; Sun, 11 Aug 2013 20:05:47 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH 00/20] ARM: pxa: move core and drivers to dmaengine
-References: <1375889649-14638-1-git-send-email-zonque@gmail.com>
- <87zjsqzdg8.fsf@free.fr> <52061C53.4050905@gmail.com>
-Date: Sun, 11 Aug 2013 22:05:04 +0200
-Message-ID: <874nawyowf.fsf@free.fr>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: mark.rutland@arm.com, s.neumann@raumfeld.com, linux-mtd@lists.infradead.org,
- haojian.zhuang@linaro.org, cxie4@marvell.com, lars@metafoo.de, nico@linaro.org,
- vinod.koul@intel.com, marek.vasut@gmail.com,
- ezequiel.garcia@free-electrons.com, rmk+kernel@arm.linux.org.uk,
- devicetree@vger.kernel.org, samuel@sortiz.org, arnd@arndb.de,
- broonie@kernel.org, mika.westerberg@linux.intel.com,
- linux-arm-kernel@lists.infradead.org, thomas.petazzoni@free-electrons.com,
- eric.y.miao@gmail.com, gregkh@linuxfoundation.org, davem@davemloft.net,
- sachin.kamat@linaro.org, kernel@pengutronix.de, djbw@fb.com,
- g.liakhovetski@gmx.de
+Received: from mail-pb0-f44.google.com ([209.85.160.44])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V8c0q-0008Vg-8s
+ for linux-mtd@lists.infradead.org; Sun, 11 Aug 2013 20:13:17 +0000
+Received: by mail-pb0-f44.google.com with SMTP id xa7so6115750pbc.31
+ for <linux-mtd@lists.infradead.org>; Sun, 11 Aug 2013 13:12:51 -0700 (PDT)
+From: Nilanjan Roychowdhury <nilanjan.roychowdhury@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH 1/1] mtd: mtdoops: fix for a potential memory leak in
+ mtdoops_notify_remove
+Date: Sun, 11 Aug 2013 13:11:48 -0700
+Message-Id: <1376251908-7451-1-git-send-email-nilanjan.roychowdhury@gmail.com>
+Cc: linux-kernel@vger.kernel.org,
+ Nilanjan Roychowdhury <nilanjan.roychowdhury@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,83 +22,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Daniel Mack <zonque@gmail.com> writes:
-> Hi Robert,
+we are allocating cxt->oops_page_used using vmalloc in mtdoops_notify_add for
+every mtd_info addition but not freeing it in mtdoops_notify_remove
 
-We might reduce the thread broadcast, I don't think these many people care about
-pxa camera specifics, and its DMA constraints.
+Signed-off-by: Nilanjan Roychowdhury <nilanjan.roychowdhury@gmail.com>
+---
+ drivers/mtd/mtdoops.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-
->> All that is described in there :
->>   Documentation/video4linux/pxa_camera.txt
->
-> Yes, I've seen that, and while the documentation about all that is
-> excellent, I lack an explanation why things are so complicated for this
-> application, and why a simple cyclic DMA approach does not suffice here.
-> I'm sure there's a reason though.
-Well, I think there is a good one.
-The current video4linux flow, for video capture, is :
- 1) userland prepares buffers (ie. dma transfers are prepared, one sg list for
- each "image" or "frame")
- 2) userland queues buffers (no hardware operation)
- 3) userland starts the capture
- 4) userland poll for each frame end
-   a) When a frame is finished, userland unqueues it
-      => no overwrite of this frame is possible anymore
-   b) Userland treats is (might be sent to storage, or compressed, ...)
-   c) Userland requeues it (while other frame is being DMAed)
-
-Moreover, it should be assumed that waiting for a "end of DMA transfer" before
-requeuing the next one (ie. "cold queuing" instead of "hot queueing") will imply
-the miss of the next frame start, and one frame will be missed.
-
-With a cyclic DMA, if I understand dmaengine correctly, step 4a. is not
-posssible (ie. if userland is slow enough, the frame will be overwritten without
-userland knowing it, and while userland is handling it).
-
-> There might be need to teach the dmaengine core more functionality, but
-> in order to do that, we first need to understand the exact requirements.
-The first one that comes to my mind is :
- - enable to submit a transfer to a running channel, the same one that served a
- previous transfer :
-   => this will guarantee ordering of DMA transfers
-   => this will guarantee no DMA stops if 2 or more buffers are queued
-   => this will try to chain this transfer to the last one queued on the channel
-   => if by bad luck the "miss window is hit", ie. the DMA finishes while the
-   chaining was being done, restart the DMA on its stop
-
->> Another point I'd like to know, is what is the performance penalty in using
->> dmaengine, and do you have any figures ?
-> The DMA transfers themselves certainly perform equally well, and the
-> framework is just a thin layer. Where would you expect performance penalty?
-
-Well, last time I had a look (in [1]), I think I remember having a 3% penalty
-on SD card transfers (pxamci driver, mioa701 board, transcend 16Go SD card). 
-
-It's been a while and my memory is a bit fuzzy about it. The loss I had at the
-time was in queuing/unqueuing the DMA requests IIRC.
-
->> Lastly, they was debug information to debug descriptors chaining, channel
->> statuses, requestors. I didn't see where these had gone, could you point me to
->> the right file ?
->
-> Such a debug interface is not part of the mmp-pdma implementation at
-> this point, and the core doesn't have a generic debugfs feature either.
-> If you need that, we'd have to add it back.
-Well, I use that. It's not vital for DMA to work of course, but it's very nice
-to have when you mess with DMA transfers :)
-
-> FWIW, I attached my work-in-progress patch for this driver which just
-> does some basic dmaengine preparations. Be aware that this does not even
-> compile, it's really just a snapshot.
-OK, cool. Once the dmaengine stuff is clearer in my mind, and if "hot
-submitting" is already possible in dmaengine, it shouldn't be that hard to
-convert.
-
-Cheers.
-
+diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
+index 97bb8f6..02f49aa 100644
+--- a/drivers/mtd/mtdoops.c
++++ b/drivers/mtd/mtdoops.c
+@@ -386,6 +386,7 @@ static void mtdoops_notify_remove(struct mtd_info *mtd)
+ 	cxt->mtd = NULL;
+ 	flush_work(&cxt->work_erase);
+ 	flush_work(&cxt->work_write);
++	vfree(cxt->oops_page_used);
+ }
+ 
+ 
 -- 
-Robert
-
-[1]
-http://archive.arm.linux.org.uk/lurker/message/20090517.194809.b18c79c8.en.html
+1.7.9.5
