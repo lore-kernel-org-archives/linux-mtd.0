@@ -1,25 +1,26 @@
-Received: from mail-pa0-x233.google.com ([2607:f8b0:400e:c03::233])
+Received: from mail-pd0-x229.google.com ([2607:f8b0:400e:c02::229])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V8LwK-0006am-Vx
- for linux-mtd@lists.infradead.org; Sun, 11 Aug 2013 03:03:34 +0000
-Received: by mail-pa0-f51.google.com with SMTP id lf1so3444674pab.38
- for <linux-mtd@lists.infradead.org>; Sat, 10 Aug 2013 20:03:10 -0700 (PDT)
-Message-ID: <5207A8C7.4050101@gmail.com>
-Date: Sun, 11 Aug 2013 11:07:51 -0400
-From: Huang Shijie <shijie8@gmail.com>
+ id 1V8MNC-0006mV-AD
+ for linux-mtd@lists.infradead.org; Sun, 11 Aug 2013 03:31:19 +0000
+Received: by mail-pd0-f169.google.com with SMTP id r10so2079140pdi.28
+ for <linux-mtd@lists.infradead.org>; Sat, 10 Aug 2013 20:30:53 -0700 (PDT)
+Date: Sat, 10 Aug 2013 20:30:45 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH v3 14/15] mtd: nand: pxa3xx: Increase data buffer size
+Message-ID: <20130811033045.GA16906@norris.computersforpeace.net>
+References: <1376163305-5591-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1376163305-5591-15-git-send-email-ezequiel.garcia@free-electrons.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v2 4/4] mtd: gpmi: update the ecc step size for mtd_info{}
-References: <1368607606-4344-1-git-send-email-b32955@freescale.com>
- <1368607606-4344-5-git-send-email-b32955@freescale.com>
- <20130810074156.GB3467@norris.computersforpeace.net>
- <CAN8TOE8NhcYBP_x26=KC2yBUSS3xzVjMg+PHnxNNRNJWWLeSeg@mail.gmail.com>
-In-Reply-To: <CAN8TOE8NhcYBP_x26=KC2yBUSS3xzVjMg+PHnxNNRNJWWLeSeg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: Huang Shijie <b32955@freescale.com>, dedekind1@gmail.com,
- linux-mtd@lists.infradead.org, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1376163305-5591-15-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Daniel Mack <zonque@gmail.com>,
+ linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,13 +30,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-于 2013年08月10日 03:53, Brian Norris 写道:
-> The right way seems to be to avoid nand_scan() directly but instead to
-> >  use nand_scan_ident() and nand_scan_tail() separately (that's what
-> >  they're exported for) so that you can initialize any geometry-related
-> >  options before nand_scan_tail() does the last steps.
-i agree with you.
-I will create a v3 version tomorrow when i back to office.
+On Sat, Aug 10, 2013 at 04:35:04PM -0300, Ezequiel Garcia wrote:
+> Devices with 4 KiB pages (plus OOB data) can be detected, so we increase
+> the data buffer size. A better solution would be to allocate a buffer
+> depending on the detected page size, but that's not possible given
+> we need the buffer prior to the device detection.
 
-thanks for the review.
-Huang Shijie
+Another possibility (for future work, maybe) is that you allocate a
+smaller buffer that fits what you need for "device detection" (I presume
+it's just for ONFI parameter page commands?), then reallocate the buffer
+between nand_scan_ident() and nand_scan_tail() according to page size.
+There are some other similar buffers throughout NAND that use a fixed
+NAND_MAX_OOBSIZE and NAND_MAX_PAGESIZE.
+
+> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> Tested-by: Daniel Mack <zonque@gmail.com>
+
+...
+
+Brian
