@@ -1,22 +1,19 @@
-Received: from mail-vb0-x233.google.com ([2607:f8b0:400c:c02::233])
+Received: from mail-db9lp0253.outbound.messaging.microsoft.com
+ ([213.199.154.253] helo=db9outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V8i7p-0004ho-Qd
- for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 02:44:54 +0000
-Received: by mail-vb0-f51.google.com with SMTP id x16so5341675vbf.24
- for <linux-mtd@lists.infradead.org>; Sun, 11 Aug 2013 19:44:32 -0700 (PDT)
+ id 1V8kes-0006fN-5L
+ for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 05:27:10 +0000
+From: Huang Shijie <b32955@freescale.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH v3 1/6] mtd: add a new field to mtd_info{}
+Date: Mon, 12 Aug 2013 13:24:47 +0800
+Message-ID: <1376285092-19683-2-git-send-email-b32955@freescale.com>
+In-Reply-To: <1376285092-19683-1-git-send-email-b32955@freescale.com>
+References: <1376285092-19683-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <201308092046.53352.marex@denx.de>
-References: <1376072646-26089-1-git-send-email-computersforpeace@gmail.com>
- <201308092046.53352.marex@denx.de>
-Date: Sun, 11 Aug 2013 19:44:31 -0700
-Message-ID: <CAN8TOE8Gc=ftDxZFXD8g+tJDOP+hi74NX2NMNLtnzEdUuAut-A@mail.gmail.com>
-Subject: Re: [PATCH] mtd: m25p80: Micron SPI uses Macronix-style 4-byte
- addressing
-From: Brian Norris <computersforpeace@gmail.com>
-To: Marek Vasut <marex@denx.de>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org, stable@vger.kernel.org,
- Vivien Didelot <vivien.didelot@savoirfairelinux.com>
+Content-Type: text/plain
+Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,26 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Aug 9, 2013 at 11:46 AM, Marek Vasut <marex@denx.de> wrote:
-> Dear Brian Norris,
->
->> For SPI NOR flash that are larger than 128Mbit (16MiB), we need 4 bytes
->> of address space to reach the entire flash; however, the original SPI
->> flash protocol used only 3 bytes for the address. So far, the practice
->> for handling this has been either to use new command opcodes that are
->> defined to use 4 bytes for their address, or to use special
->> mode-switching command to configure all traditionally-3-byte-address
->> commands to take 4 bytes instead.
+In order to implement the NAND boot for some Freescale's chips, such as
+imx23/imx28/imx50/imx6, we use a tool (called kobs-ng) to burn the uboot
+and some metadata to nand chip. And the ROM code will use the metadata to
+configrate the BCH, and to find the uboot.
 
-[snip long description of a mess]
+The ECC information(ecc step size, ecc strength) which is used to configrate
+the BCH is part of the metadata. The kobs-ng can gets the ecc strength from
+the sys node /sys/*/ecc_strength now. But it can not gets the ecc step size.
 
-> The situation with the 4b addressing is a horrible mess :(
+This patch adds a new field to store the ecc step size in mtd_info{}, and
+it makes preparation for the next patches.
 
-Agreed. It took me a while to figure out that this was the root of my
-problems last week.
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+ include/linux/mtd/mtd.h |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
 
-> Acked-by: Marek Vasut <marex@denx.de>
-
-Thanks.
-
-Brian
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index a5cf4e8..effdd41 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -173,6 +173,9 @@ struct mtd_info {
+ 	/* ECC layout structure pointer - read only! */
+ 	struct nand_ecclayout *ecclayout;
+ 
++	/* the ecc step size. */
++	unsigned int ecc_step;
++
+ 	/* max number of correctible bit errors per ecc step */
+ 	unsigned int ecc_strength;
+ 
+-- 
+1.7.1
