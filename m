@@ -1,19 +1,28 @@
-Received: from mail.savoirfairelinux.com ([209.172.62.77])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V8sms-0008Do-G2
- for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 14:07:59 +0000
-Date: Mon, 12 Aug 2013 10:06:51 -0400 (EDT)
-From: Vivien Didelot <vivien.didelot@savoirfairelinux.com>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V8uCg-0004Kc-G8
+ for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 15:38:43 +0000
+Date: Mon, 12 Aug 2013 12:38:20 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Message-ID: <1639305882.172123.1376316411000.JavaMail.root@mail>
-In-Reply-To: <CAN8TOE8Gc=ftDxZFXD8g+tJDOP+hi74NX2NMNLtnzEdUuAut-A@mail.gmail.com>
-Subject: Re: [PATCH] mtd: m25p80: Micron SPI uses Macronix-style 4-byte
- addressing
+Subject: Re: [PATCH v3 05/15] mtd: nand: pxa3xx: Support command buffer #3
+Message-ID: <20130812153819.GB2413@localhost>
+References: <1376163305-5591-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1376163305-5591-6-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20130810234814.62395380@skate>
+ <20130811023317.GA15447@norris.computersforpeace.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Marek Vasut <marex@denx.de>, kernel@savoirfairelinux.com,
- linux-mtd@lists.infradead.org, stable@vger.kernel.org
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20130811023317.GA15447@norris.computersforpeace.net>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Daniel Mack <zonque@gmail.com>,
+ linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,48 +32,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+On Sat, Aug 10, 2013 at 07:33:18PM -0700, Brian Norris wrote:
+> On Sat, Aug 10, 2013 at 11:48:14PM +0200, Thomas Petazzoni wrote:
+> > On Sat, 10 Aug 2013 16:34:55 -0300, Ezequiel Garcia wrote:
+> > > Some newer controllers support a fourth command buffer. This additional
+> > > command buffer allows to set an arbitrary length count, using the
+> > > NDCB3.NDLENCNT field, to perform non-standard length operations
+> > > such as the ONFI parameter page read.
+> > > 
+> > > In controllers without this register, the operation has no effect.
+> > 
+> > Are you sure this is true? I thought you had this statement in earlier
+> > revisions of your patch set, but one of the comment was precisely that
+> > this patch was breaking platforms that did not have this register, and
+> > this lead you to introduce the separate compatible string.
+> 
+> It appears as if he didn't change the commit message properly. He does
+> now protect the fourth command buffer (?) with this:
+> 
+> +		/* NDCB3 register is available in NFCv2 (Armada 370/XP SoC) */
+> +		if (info->variant == PXA3XX_NAND_VARIANT_ARMADA370)
+> +			nand_writel(info, NDCB0, info->ndcb3);
+> 
 
------ Mail original -----
-> De: "Brian Norris" <computersforpeace@gmail.com>
-> =C3=80: "Marek Vasut" <marex@denx.de>
-> Cc: linux-mtd@lists.infradead.org, stable@vger.kernel.org, "Vivien Didelo=
-t" <vivien.didelot@savoirfairelinux.com>
-> Envoy=C3=A9: Dimanche 11 Ao=C3=BBt 2013 22:44:31
-> Objet: Re: [PATCH] mtd: m25p80: Micron SPI uses Macronix-style 4-byte add=
-ressing
->=20
-> On Fri, Aug 9, 2013 at 11:46 AM, Marek Vasut <marex@denx.de> wrote:
-> > Dear Brian Norris,
-> >
-> >> For SPI NOR flash that are larger than 128Mbit (16MiB), we need 4
-> >> bytes
-> >> of address space to reach the entire flash; however, the original
-> >> SPI
-> >> flash protocol used only 3 bytes for the address. So far, the
-> >> practice
-> >> for handling this has been either to use new command opcodes that
-> >> are
-> >> defined to use 4 bytes for their address, or to use special
-> >> mode-switching command to configure all
-> >> traditionally-3-byte-address
-> >> commands to take 4 bytes instead.
->=20
-> [snip long description of a mess]
->=20
-> > The situation with the 4b addressing is a horrible mess :(
->=20
-> Agreed. It took me a while to figure out that this was the root of my
-> problems last week.
->=20
-> > Acked-by: Marek Vasut <marex@denx.de>
->=20
-> Thanks.
->=20
-> Brian
->=20
+Indeed, I just forgot to update the commit message.
 
-I'm just adding kernel@savoirfairelinux.com in the loop.
+I'll prepare a new version to fix this.
 
-Thanks,
-Vivien.
+> > I must admit, I'm also a bit confused by the existing code:
+> > 
+> >  		nand_writel(info, NDCB0, info->ndcb0);
+> >  		nand_writel(info, NDCB0, info->ndcb1);
+> >  		nand_writel(info, NDCB0, info->ndcb2);
+> > 
+
+In fact, I got confused as well when I first saw it.
+
+However this behavior is specified in the Armada 370 (I can't find it in the public
+PXA specs), which says that software must write either 12 or 16 bytes directly to
+NDCB0, four bytes at a time to load the commands in NDCB0, NDCB1, NDCB2, (and optionally
+NDCB3).
+
+Writes to NDCB1, NDCB2 and NDCB3 are ignored but each NDCBx register can be read.
+
+I'll add this information as a comment to the above confusing sequence
+in the next soon to come version.
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
