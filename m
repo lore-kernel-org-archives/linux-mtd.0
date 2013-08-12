@@ -1,18 +1,23 @@
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: RE: [PATCH v3 3/6] mtd: set the ecc step size for master/slave
+Received: from tx2ehsobe005.messaging.microsoft.com ([65.55.88.15]
+ helo=tx2outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V8oft-0003uk-Sv
+ for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 09:44:30 +0000
+Message-ID: <5208AE99.6020508@freescale.com>
+Date: Mon, 12 Aug 2013 17:44:57 +0800
+From: Huang Shijie <b32955@freescale.com>
+MIME-Version: 1.0
+To: "Gupta, Pekon" <pekon@ti.com>
+Subject: Re: [PATCH v3 3/6] mtd: set the ecc step size for master/slave
  mtd_info
-Date: Mon, 12 Aug 2013 09:24:24 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9F2B57@DBDE04.ent.ti.com>
 References: <1376285092-19683-1-git-send-email-b32955@freescale.com>
  <1376285092-19683-4-git-send-email-b32955@freescale.com>
  <20980858CB6D3A4BAE95CA194937D5E73E9F2A32@DBDE04.ent.ti.com>
  <52089C91.4090903@freescale.com>
-In-Reply-To: <52089C91.4090903@freescale.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+ <20980858CB6D3A4BAE95CA194937D5E73E9F2B57@DBDE04.ent.ti.com>
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9F2B57@DBDE04.ent.ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
  "dwmw2@infradead.org" <dwmw2@infradead.org>,
@@ -26,49 +31,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiANCj4g5LqOIDIwMTPlubQwOOaciDEy5pelIDE1OjAwLCBHdXB0YSwgUGVrb24g5YaZ6YGTOg0K
-PiA+PiBTZXQgdGhlIGVjYyBzdGVwIHNpemUgZm9yIG1hc3Rlci9zbGF2ZSBtdGRfaW5mb3t9Lg0K
-PiA+Pg0KPiA+PiBTaWduZWQtb2ZmLWJ5OiBIdWFuZyBTaGlqaWU8YjMyOTU1QGZyZWVzY2FsZS5j
-b20+DQo+ID4+IC0tLQ0KPiA+PiAgIGRyaXZlcnMvbXRkL210ZHBhcnQuYyAgICAgICAgfCAgICAx
-ICsNCj4gPj4gICBkcml2ZXJzL210ZC9uYW5kL25hbmRfYmFzZS5jIHwgICAgMSArDQo+ID4+ICAg
-MiBmaWxlcyBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDAgZGVsZXRpb25zKC0pDQo+ID4+DQo+
-ID4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9tdGRwYXJ0LmMgYi9kcml2ZXJzL210ZC9tdGRw
-YXJ0LmMNCj4gPj4gaW5kZXggMzAxNDkzMy4uNjNiNDJhNiAxMDA2NDQNCj4gPj4gLS0tIGEvZHJp
-dmVycy9tdGQvbXRkcGFydC5jDQo+ID4+ICsrKyBiL2RyaXZlcnMvbXRkL210ZHBhcnQuYw0KPiA+
-PiBAQCAtNTE2LDYgKzUxNiw3IEBAIHN0YXRpYyBzdHJ1Y3QgbXRkX3BhcnQgKmFsbG9jYXRlX3Bh
-cnRpdGlvbihzdHJ1Y3QNCj4gPj4gbXRkX2luZm8gKm1hc3RlciwNCj4gPj4gICAJfQ0KPiA+Pg0K
-PiA+PiAgIAlzbGF2ZS0+bXRkLmVjY2xheW91dCA9IG1hc3Rlci0+ZWNjbGF5b3V0Ow0KPiA+PiAr
-CXNsYXZlLT5tdGQuZWNjX3N0ZXAgPSBtYXN0ZXItPmVjY19zdGVwOw0KPiA+PiAgIAlzbGF2ZS0+
-bXRkLmVjY19zdHJlbmd0aCA9IG1hc3Rlci0+ZWNjX3N0cmVuZ3RoOw0KPiA+PiAgIAlzbGF2ZS0+
-bXRkLmJpdGZsaXBfdGhyZXNob2xkID0gbWFzdGVyLT5iaXRmbGlwX3RocmVzaG9sZDsNCj4gPj4N
-Cj4gPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvbmFuZF9iYXNlLmMNCj4gYi9kcml2
-ZXJzL210ZC9uYW5kL25hbmRfYmFzZS5jDQo+ID4+IGluZGV4IDhmMDRmYjAuLjZlNDA5NWQgMTAw
-NjQ0DQo+ID4+IC0tLSBhL2RyaXZlcnMvbXRkL25hbmQvbmFuZF9iYXNlLmMNCj4gPj4gKysrIGIv
-ZHJpdmVycy9tdGQvbmFuZC9uYW5kX2Jhc2UuYw0KPiA+PiBAQCAtMzc4OCw2ICszNzg4LDcgQEAg
-aW50IG5hbmRfc2Nhbl90YWlsKHN0cnVjdCBtdGRfaW5mbyAqbXRkKQ0KPiA+PiAgIAkvKiBwcm9w
-YWdhdGUgZWNjIGluZm8gdG8gbXRkX2luZm8gKi8NCj4gPj4gICAJbXRkLT5lY2NsYXlvdXQgPSBj
-aGlwLT5lY2MubGF5b3V0Ow0KPiA+PiAgIAltdGQtPmVjY19zdHJlbmd0aCA9IGNoaXAtPmVjYy5z
-dHJlbmd0aDsNCj4gPj4gKwltdGQtPmVjY19zdGVwID0gY2hpcC0+ZWNjLnNpemU7DQo+ID4gW1Bl
-a29uXTogU29ycnkgZm9yIG5vdGljaW5nIHRoaXMgbGF0ZWx5Li4NCj4gPiBCdXQgZG8geW91IHJl
-YWxseSB3YW50IHRvIG5hbWUgZWNjLipzaXplKiBhcyAqZWNjX3N0ZXAqID8NCj4gUGxlYXNlIHNl
-ZSA6DQo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9saW51eC1tdGQvMjAx
-My1NYXkvMDQ2OTI4Lmh0bWwNCj4gDQo+IEFydGVtIHRob3VnaHQgdGhlIGVjY19zdGVwIGlzIG1v
-cmUgcHJvcGVyLg0KPiANCltQZWtvbl06IEZvbGxvd2luZyBBcnRlbSdzIHJlY29tbWVuZGF0aW9u
-cy4uIENhbiB0aGlzIGJlIG5hbWVkIGFzDQpjaGlwLT5lY2Muc2l6ZSA9IGVjY19zdGVwX3NpemUu
-DQp0aGVuIGNoaXAtPmVjYy5ieXRlcyAgPSBlY2Nfc3luZHJvbWVfc2l6ZSAob3IgZWNjX2NvZGVf
-c2l6ZSkNCg0KSW4gYWRkaXRpb24sIGNoaXAtPmVjYy5ieXRlcyBzaG91bGQgYWxzbyBiZSBoZWxw
-ZnVsIGZvciB1c2Vyc3BhY2UNCnV0aWxpdHkgdG8gZGV0ZXJtaW5lIGhvdyBtdWNoIGJ5dGVzIHRv
-IHJlc2VydmUgaW4gc3BhcmUtYXJlYSBmb3IgRUNDLg0KU28gZXhwb3NpbmcgdGhhdCBhcyBzeXNm
-cyBlbnRyeSBpcyBhbHNvIGdvb2QuDQoNCj4gDQo+ID4gV291bGRuJ3QgaXQgYmUgYmV0dGVyIHRv
-IGZvbGxvdyBzYW1lIG5vbWVuY2xhdHVyZSBldmVyeXdoZXJlID8NCj4gPiBMaWtlICcgbXRkLT5l
-Y2Nfc2l6ZSA9IGNoaXAuZWNjLnNpemU7Jw0KPiA+DQo+ID4gQmVjYXVzZSB3ZSBhbHNvIGhhdmUg
-ZWNjLnN0ZXBzIGFzIGFub3RoZXIgcGFyYW1ldGVyIGhlcmUuDQo+IHRoZXJlIGlzIG5vIG5lZWQg
-dG8gZXhwb3NlIHRoZSBlY2Muc3RlcHMgdG8gdXNlIHNwYWNlLg0KPiANCj4gU2luY2UgdGhlIHVz
-ZXIgY2FuIGdldCB0aGUgZWNjX3N0ZXAsIGFuZCBwYWdlc2l6ZSwgdGhleSBjYW4gZ2V0IHRoZQ0K
-PiBlY2Muc3RlcHMgYnk6DQo+IChwYWdlc2l6ZSAvIGVjY19zdGVwKS4NCj4gDQpbUGVrb25dOiBB
-Z3JlZWQsIGNoaXAtPmVjYy5zdGVwcyBuZWVkIG5vdCBiZSBleHBvc2VkIHRvIHVzZXItc3BhY2Uu
-DQpJdCB3YXMgbWVudGlvbmVkIGJjb3ogZWNjX3N0ZXAgYW5kIGNoaXAtPmVjYy5zdGVwcyBsb29r
-IHNpbWlsYXIuDQoNCg0Kd2l0aCByZWdhcmRzLCBwZWtvbg0KDQo+IHRoYW5rcw0KPiBIdWFuZyBT
-aGlqaWUNCj4gPiBBbmQgc29tZW9uZSBtaWdodCB3YW50IHRvIGV4cG9zZSBpdCBpbiB1c2VyLXNw
-YWNlIGxhdGVyLg0KPiA+IChKdXN0IGEgbmFtaW5nIGNoYW5nZSByZXF1ZXN0ZWQgaGVyZSB0byBr
-ZWVwIHRoaW5ncyBpbiBzeW5jLi4pDQoNCg==
+=E4=BA=8E 2013=E5=B9=B408=E6=9C=8812=E6=97=A5 17:24, Gupta, Pekon =E5=86=99=
+=E9=81=93:
+> [Pekon]: Following Artem's recommendations.. Can this be named as
+> chip->ecc.size =3D ecc_step_size.
+> then chip->ecc.bytes  =3D ecc_syndrome_size (or ecc_code_size)
+yes, we can rename these fields in the future with another patch set.
+
+
+> In addition, chip->ecc.bytes should also be helpful for userspace
+> utility to determine how much bytes to reserve in spare-area for ECC.
+> So exposing that as sysfs entry is also good.
+>
+I do not need the chip->ecc.bytes. :)
+For me, export the chip->ecc.size is enough.
+
+So you can submit a patch if you need this field.
+
+thanks
+Huang Shijie
