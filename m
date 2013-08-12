@@ -1,13 +1,14 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V8viv-0007w7-Pg
- for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 17:16:08 +0000
+ id 1V8vj0-0007wO-Pb
+ for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 17:16:13 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v4 09/14] mtd: nand: pxa3xx: Remove uneeded internal cmdset
-Date: Mon, 12 Aug 2013 14:14:54 -0300
-Message-Id: <1376327699-7973-10-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH v4 10/14] mtd: nand: pxa3xx: Move cached registers to info
+ structure
+Date: Mon, 12 Aug 2013 14:14:55 -0300
+Message-Id: <1376327699-7973-11-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1376327699-7973-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1376327699-7973-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
@@ -26,202 +27,126 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use the defined macros for NAND command instead of using a constant
-internal structure. This commit is only a cleanup, there's no
-functionality modification.
+This registers are not per-chip (aka host) but controller-wise,
+so it's better to store them in the global 'info' structure.
 
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 Tested-by: Daniel Mack <zonque@gmail.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c                | 63 ++++++++-------------------
- include/linux/platform_data/mtd-nand-pxa3xx.h | 13 ------
- 2 files changed, 17 insertions(+), 59 deletions(-)
+ drivers/mtd/nand/pxa3xx_nand.c | 36 +++++++++++++++++-------------------
+ 1 file changed, 17 insertions(+), 19 deletions(-)
 
 diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 5bbb8b8..5bb0d4b 100644
+index 5bb0d4b..ea8e048 100644
 --- a/drivers/mtd/nand/pxa3xx_nand.c
 +++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -131,7 +131,6 @@ enum pxa3xx_nand_variant {
+@@ -144,10 +144,6 @@ struct pxa3xx_nand_host {
+ 	unsigned int		row_addr_cycles;
+ 	size_t			read_id_bytes;
  
- struct pxa3xx_nand_host {
- 	struct nand_chip	chip;
--	struct pxa3xx_nand_cmdset *cmdset;
- 	struct mtd_info         *mtd;
- 	void			*info_data;
- 
-@@ -205,23 +204,6 @@ static bool use_dma = 1;
- module_param(use_dma, bool, 0444);
- MODULE_PARM_DESC(use_dma, "enable DMA for data transferring to/from NAND HW");
- 
--/*
-- * Default NAND flash controller configuration setup by the
-- * bootloader. This configuration is used only when pdata->keep_config is set
-- */
--static struct pxa3xx_nand_cmdset default_cmdset = {
--	.read1		= 0x3000,
--	.read2		= 0x0050,
--	.program	= 0x1080,
--	.read_status	= 0x0070,
--	.read_id	= 0x0090,
--	.erase		= 0xD060,
--	.reset		= 0x00FF,
--	.lock		= 0x002A,
--	.unlock		= 0x2423,
--	.lock_status	= 0x007A,
--};
--
- static struct pxa3xx_nand_timing timing[] = {
- 	{ 40, 80, 60, 100, 80, 100, 90000, 400, 40, },
- 	{ 10,  0, 20,  40, 30,  40, 11123, 110, 10, },
-@@ -530,7 +512,6 @@ static inline int is_buf_blank(uint8_t *buf, size_t len)
- static int prepare_command_pool(struct pxa3xx_nand_info *info, int command,
- 		uint16_t column, int page_addr)
- {
--	uint16_t cmd;
- 	int addr_cycle, exec_cmd;
- 	struct pxa3xx_nand_host *host;
- 	struct mtd_info *mtd;
-@@ -580,21 +561,17 @@ static int prepare_command_pool(struct pxa3xx_nand_info *info, int command,
- 	switch (command) {
- 	case NAND_CMD_READOOB:
- 	case NAND_CMD_READ0:
--		cmd = host->cmdset->read1;
-+		info->buf_start = column;
-+		info->ndcb0 |= NDCB0_CMD_TYPE(0)
-+				| addr_cycle
-+				| NAND_CMD_READ0;
-+
- 		if (command == NAND_CMD_READOOB)
--			info->buf_start = mtd->writesize + column;
--		else
--			info->buf_start = column;
-+			info->buf_start += mtd->writesize;
- 
--		if (unlikely(host->page_size < PAGE_CHUNK_SIZE))
--			info->ndcb0 |= NDCB0_CMD_TYPE(0)
--					| addr_cycle
--					| (cmd & NDCB0_CMD1_MASK);
--		else
--			info->ndcb0 |= NDCB0_CMD_TYPE(0)
--					| NDCB0_DBC
--					| addr_cycle
--					| cmd;
-+		/* Second command setting for large pages */
-+		if (host->page_size >= PAGE_CHUNK_SIZE)
-+			info->ndcb0 |= NDCB0_DBC | (NAND_CMD_READSTART << 8);
- 
- 	case NAND_CMD_SEQIN:
- 		/* small page addr setting */
-@@ -625,62 +602,58 @@ static int prepare_command_pool(struct pxa3xx_nand_info *info, int command,
- 			break;
- 		}
- 
--		cmd = host->cmdset->program;
- 		info->ndcb0 |= NDCB0_CMD_TYPE(0x1)
- 				| NDCB0_AUTO_RS
- 				| NDCB0_ST_ROW_EN
- 				| NDCB0_DBC
--				| cmd
-+				| (NAND_CMD_PAGEPROG << 8)
-+				| NAND_CMD_SEQIN
- 				| addr_cycle;
- 		break;
- 
- 	case NAND_CMD_PARAM:
--		cmd = NAND_CMD_PARAM;
- 		info->buf_count = 256;
- 		info->ndcb0 |= NDCB0_CMD_TYPE(0)
- 				| NDCB0_ADDR_CYC(1)
- 				| NDCB0_LEN_OVRD
--				| cmd;
-+				| command;
- 		info->ndcb1 = (column & 0xFF);
- 		info->ndcb3 = 256;
- 		info->data_size = 256;
- 		break;
- 
- 	case NAND_CMD_READID:
--		cmd = host->cmdset->read_id;
- 		info->buf_count = host->read_id_bytes;
- 		info->ndcb0 |= NDCB0_CMD_TYPE(3)
- 				| NDCB0_ADDR_CYC(1)
--				| cmd;
-+				| command;
- 		info->ndcb1 = (column & 0xFF);
- 
- 		info->data_size = 8;
- 		break;
- 	case NAND_CMD_STATUS:
--		cmd = host->cmdset->read_status;
- 		info->buf_count = 1;
- 		info->ndcb0 |= NDCB0_CMD_TYPE(4)
- 				| NDCB0_ADDR_CYC(1)
--				| cmd;
-+				| command;
- 
- 		info->data_size = 8;
- 		break;
- 
- 	case NAND_CMD_ERASE1:
--		cmd = host->cmdset->erase;
- 		info->ndcb0 |= NDCB0_CMD_TYPE(2)
- 				| NDCB0_AUTO_RS
- 				| NDCB0_ADDR_CYC(3)
- 				| NDCB0_DBC
--				| cmd;
-+				| (NAND_CMD_ERASE2 << 8)
-+				| NAND_CMD_ERASE1;
- 		info->ndcb1 = page_addr;
- 		info->ndcb2 = 0;
- 
- 		break;
- 	case NAND_CMD_RESET:
--		cmd = host->cmdset->reset;
- 		info->ndcb0 |= NDCB0_CMD_TYPE(5)
--				| cmd;
-+				| command;
- 
- 		break;
- 
-@@ -876,7 +849,6 @@ static int pxa3xx_nand_config_flash(struct pxa3xx_nand_info *info,
- 	}
- 
- 	/* calculate flash information */
--	host->cmdset = &default_cmdset;
- 	host->page_size = f->page_size;
- 	host->read_id_bytes = (f->page_size == 2048) ? 4 : 2;
- 
-@@ -922,7 +894,6 @@ static int pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
- 	}
- 
- 	host->reg_ndcr = ndcr & ~NDCR_INT_MASK;
--	host->cmdset = &default_cmdset;
- 
- 	host->ndtr0cs0 = nand_readl(info, NDTR0CS0);
- 	host->ndtr1cs0 = nand_readl(info, NDTR1CS0);
-diff --git a/include/linux/platform_data/mtd-nand-pxa3xx.h b/include/linux/platform_data/mtd-nand-pxa3xx.h
-index c42f39f..ffb8019 100644
---- a/include/linux/platform_data/mtd-nand-pxa3xx.h
-+++ b/include/linux/platform_data/mtd-nand-pxa3xx.h
-@@ -16,19 +16,6 @@ struct pxa3xx_nand_timing {
- 	unsigned int	tAR;  /* ND_ALE low to ND_nRE low delay */
+-	/* cached register value */
+-	uint32_t		reg_ndcr;
+-	uint32_t		ndtr0cs0;
+-	uint32_t		ndtr1cs0;
  };
  
--struct pxa3xx_nand_cmdset {
--	uint16_t	read1;
--	uint16_t	read2;
--	uint16_t	program;
--	uint16_t	read_status;
--	uint16_t	read_id;
--	uint16_t	erase;
--	uint16_t	reset;
--	uint16_t	lock;
--	uint16_t	unlock;
--	uint16_t	lock_status;
--};
+ struct pxa3xx_nand_info {
+@@ -193,6 +189,11 @@ struct pxa3xx_nand_info {
+ 	unsigned int		oob_size;
+ 	int 			retcode;
+ 
++	/* cached register value */
++	uint32_t		reg_ndcr;
++	uint32_t		ndtr0cs0;
++	uint32_t		ndtr1cs0;
++
+ 	/* generated NDCBx register values */
+ 	uint32_t		ndcb0;
+ 	uint32_t		ndcb1;
+@@ -258,8 +259,8 @@ static void pxa3xx_nand_set_timing(struct pxa3xx_nand_host *host,
+ 		NDTR1_tWHR(ns2cycle(t->tWHR, nand_clk)) |
+ 		NDTR1_tAR(ns2cycle(t->tAR, nand_clk));
+ 
+-	host->ndtr0cs0 = ndtr0;
+-	host->ndtr1cs0 = ndtr1;
++	info->ndtr0cs0 = ndtr0;
++	info->ndtr1cs0 = ndtr1;
+ 	nand_writel(info, NDTR0CS0, ndtr0);
+ 	nand_writel(info, NDTR1CS0, ndtr1);
+ }
+@@ -267,7 +268,7 @@ static void pxa3xx_nand_set_timing(struct pxa3xx_nand_host *host,
+ static void pxa3xx_set_datasize(struct pxa3xx_nand_info *info)
+ {
+ 	struct pxa3xx_nand_host *host = info->host[info->cs];
+-	int oob_enable = host->reg_ndcr & NDCR_SPARE_EN;
++	int oob_enable = info->reg_ndcr & NDCR_SPARE_EN;
+ 
+ 	info->data_size = host->page_size;
+ 	if (!oob_enable) {
+@@ -293,10 +294,9 @@ static void pxa3xx_set_datasize(struct pxa3xx_nand_info *info)
+  */
+ static void pxa3xx_nand_start(struct pxa3xx_nand_info *info)
+ {
+-	struct pxa3xx_nand_host *host = info->host[info->cs];
+ 	uint32_t ndcr;
+ 
+-	ndcr = host->reg_ndcr;
++	ndcr = info->reg_ndcr;
+ 
+ 	if (info->use_ecc)
+ 		ndcr |= NDCR_ECC_EN;
+@@ -683,7 +683,7 @@ static void pxa3xx_nand_cmdfunc(struct mtd_info *mtd, unsigned command,
+ 	 * "byte" address into a "word" address appropriate
+ 	 * for indexing a word-oriented device
+ 	 */
+-	if (host->reg_ndcr & NDCR_DWIDTH_M)
++	if (info->reg_ndcr & NDCR_DWIDTH_M)
+ 		column /= 2;
+ 
+ 	/*
+@@ -693,8 +693,8 @@ static void pxa3xx_nand_cmdfunc(struct mtd_info *mtd, unsigned command,
+ 	 */
+ 	if (info->cs != host->cs) {
+ 		info->cs = host->cs;
+-		nand_writel(info, NDTR0CS0, host->ndtr0cs0);
+-		nand_writel(info, NDTR1CS0, host->ndtr1cs0);
++		nand_writel(info, NDTR0CS0, info->ndtr0cs0);
++		nand_writel(info, NDTR1CS0, info->ndtr1cs0);
+ 	}
+ 
+ 	info->state = STATE_PREPARED;
+@@ -870,7 +870,7 @@ static int pxa3xx_nand_config_flash(struct pxa3xx_nand_info *info,
+ 	ndcr |= NDCR_RD_ID_CNT(host->read_id_bytes);
+ 	ndcr |= NDCR_SPARE_EN; /* enable spare by default */
+ 
+-	host->reg_ndcr = ndcr;
++	info->reg_ndcr = ndcr;
+ 
+ 	pxa3xx_nand_set_timing(host, f->timing);
+ 	return 0;
+@@ -893,11 +893,9 @@ static int pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
+ 		host->read_id_bytes = 2;
+ 	}
+ 
+-	host->reg_ndcr = ndcr & ~NDCR_INT_MASK;
 -
- struct pxa3xx_nand_flash {
- 	char		*name;
- 	uint32_t	chip_id;
+-	host->ndtr0cs0 = nand_readl(info, NDTR0CS0);
+-	host->ndtr1cs0 = nand_readl(info, NDTR1CS0);
+-
++	info->reg_ndcr = ndcr & ~NDCR_INT_MASK;
++	info->ndtr0cs0 = nand_readl(info, NDTR0CS0);
++	info->ndtr1cs0 = nand_readl(info, NDTR1CS0);
+ 	return 0;
+ }
+ 
+@@ -1044,7 +1042,7 @@ KEEP_CONFIG:
+ 	chip->ecc.size = host->page_size;
+ 	chip->ecc.strength = 1;
+ 
+-	if (host->reg_ndcr & NDCR_DWIDTH_M)
++	if (info->reg_ndcr & NDCR_DWIDTH_M)
+ 		chip->options |= NAND_BUSWIDTH_16;
+ 
+ 	if (nand_scan_ident(mtd, 1, def))
 -- 
 1.8.1.5
