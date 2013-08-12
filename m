@@ -1,14 +1,13 @@
 Received: from tx2ehsobe002.messaging.microsoft.com ([65.55.88.12]
  helo=tx2outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V8kwR-0006zD-5e
- for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 05:45:23 +0000
+ id 1V8kwV-0006zD-Dj
+ for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 05:45:24 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH 04/10] mtd: gpmi: rewrite the gpmi_ecc_write_oob() to support
- the jffs2
-Date: Mon, 12 Aug 2013 13:42:47 +0800
-Message-ID: <1376286173-12581-5-git-send-email-b32955@freescale.com>
+Subject: [PATCH 09/10] mtd: add more information for the MTD_NANDFLASH case
+Date: Mon, 12 Aug 2013 13:42:52 +0800
+Message-ID: <1376286173-12581-10-git-send-email-b32955@freescale.com>
 In-Reply-To: <1376286173-12581-1-git-send-email-b32955@freescale.com>
 References: <1376286173-12581-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
@@ -24,67 +23,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When we use the ECC info which is get from the nand chip's datasheet,
-we may have some freed oob area now.
+In mtd_type_show(), the MTD_NANDFLASH case shows "nand".
+In actually, the printed information is not accurate enough.
+The MTD_NANDFLASH stands for SLC nand now.
 
-This patch rewrites the gpmi_ecc_write_oob() to implement the ecc.write_oob().
-We also update the comment for gpmi_hw_ecclayout.
-
-Yes! We can support the JFFS2 for the SLC nand now.
+This patch adds the SLC information for the MTD_NANDFLASH case.
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   31 ++++++++++++++++++++++---------
- 1 files changed, 22 insertions(+), 9 deletions(-)
+ drivers/mtd/mtdcore.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 9c89e80..cc0306b 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -45,7 +45,10 @@ static struct nand_bbt_descr gpmi_bbt_descr = {
- 	.pattern	= scan_ff_pattern
- };
- 
--/*  We will use all the (page + OOB). */
-+/*
-+ * We may change the layout if we can get the ECC info from the datasheet,
-+ * else we will use all the (page + OOB).
-+ */
- static struct nand_ecclayout gpmi_hw_ecclayout = {
- 	.eccbytes = 0,
- 	.eccpos = { 0, },
-@@ -1263,14 +1266,24 @@ static int gpmi_ecc_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
- static int
- gpmi_ecc_write_oob(struct mtd_info *mtd, struct nand_chip *chip, int page)
- {
--	/*
--	 * The BCH will use all the (page + oob).
--	 * Our gpmi_hw_ecclayout can only prohibit the JFFS2 to write the oob.
--	 * But it can not stop some ioctls such MEMWRITEOOB which uses
--	 * MTD_OPS_PLACE_OOB. So We have to implement this function to prohibit
--	 * these ioctls too.
--	 */
--	return -EPERM;
-+	struct nand_oobfree *of = gpmi_hw_ecclayout.oobfree;
-+	int status = 0;
-+
-+	/* Do we have available oob area? */
-+	if (!of->length)
-+		return -EPERM;
-+
-+	if (!nand_is_slc(chip))
-+		return -EPERM;
-+
-+	pr_debug("page number is %d\n", page);
-+
-+	chip->cmdfunc(mtd, NAND_CMD_SEQIN, mtd->writesize + of->offset, page);
-+	chip->write_buf(mtd, chip->oob_poi + of->offset, of->length);
-+	chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
-+
-+	status = chip->waitfunc(mtd, chip);
-+	return status & NAND_STATUS_FAIL ? -EIO : 0;
- }
- 
- static int gpmi_block_markbad(struct mtd_info *mtd, loff_t ofs)
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index c7cee29..78b8f2e 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -149,7 +149,7 @@ static ssize_t mtd_type_show(struct device *dev,
+ 		type = "nor";
+ 		break;
+ 	case MTD_NANDFLASH:
+-		type = "nand";
++		type = "SLC nand";
+ 		break;
+ 	case MTD_DATAFLASH:
+ 		type = "dataflash";
 -- 
 1.7.1
