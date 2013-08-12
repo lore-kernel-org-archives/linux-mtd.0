@@ -1,25 +1,22 @@
-Received: from mail-pb0-x229.google.com ([2607:f8b0:400e:c01::229])
+Received: from gate.crashing.org ([63.228.1.57])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V91PG-0000YF-Qs
- for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 23:20:11 +0000
-Received: by mail-pb0-f41.google.com with SMTP id rp2so7310345pbb.14
- for <linux-mtd@lists.infradead.org>; Mon, 12 Aug 2013 16:19:49 -0700 (PDT)
-Date: Mon, 12 Aug 2013 16:19:46 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH v4 00/14] pxa3xx-nand patches to support mvebu builds
-Message-ID: <20130812231946.GB7267@brian-ubuntu>
-References: <1376327699-7973-1-git-send-email-ezequiel.garcia@free-electrons.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1376327699-7973-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
- Artem Bityutskiy <dedekind1@gmail.com>, Daniel Mack <zonque@gmail.com>,
- linux-mtd@lists.infradead.org,
- Gregory Clement <gregory.clement@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
+ id 1V91UI-0000ez-SD
+ for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 23:25:23 +0000
+Message-ID: <1376349843.3978.1.camel@pasglop>
+Subject: Re: mm/slab: ppc: ubi: kmalloc_slab WARNING / PPC + UBI driver
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+To: Wladislav Wiebe <wladislav.kw@gmail.com>
+Date: Tue, 13 Aug 2013 09:24:03 +1000
+In-Reply-To: <5208C1CD.3040601@gmail.com>
+References: <51F8F827.6020108@gmail.com>
+ <20130731173434.GA27470@blackmetal.musicnaut.iki.fi>
+ <5208C1CD.3040601@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: dedekind1@gmail.com, linuxppc-dev@lists.ozlabs.org,
+ Aaro Koskinen <aaro.koskinen@iki.fi>, penberg@kernel.org, linux-mm@kvack.org,
+ linux-mtd@lists.infradead.org, cl@linux.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,74 +26,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 12, 2013 at 02:14:45PM -0300, Ezequiel Garcia wrote:
-> This patchset is part of the work I'm doing to enable the pxa3xx-nand
-> driver to support the NAND controller in Armada 370/XP. While this is
-> work in progress, here's a subset of patches I consider good enough
-> for mainline.
+On Mon, 2013-08-12 at 13:06 +0200, Wladislav Wiebe wrote:
+> Hi guys,
+> 
+> we got the real root cause of the allocation issue:
+> 
+> Subject: [PATCH 1/1] of: fdt: fix memory initialization for expanded DT
+> 
+> Already existing property flags are filled wrong for properties created from
+> initial FDT. This could cause problems if this DYNAMIC device-tree functions
+> are used later, i.e. properties are attached/detached/replaced. Simply dumping
+> flags from the running system show, that some initial static (not allocated via
+> kzmalloc()) nodes are marked as dynamic.
 
-[snip]
+This should go into stable as well...
 
-> If at all possible and if no regressions are reported I'd like to see
-> this queued for v3.12.
+> I putted some debug extensions to property_proc_show(..) :
+> ..
+> +       if (OF_IS_DYNAMIC(pp))
+> +               pr_err("DEBUG: xxx : OF_IS_DYNAMIC\n");
+> +       if (OF_IS_DETACHED(pp))
+> +               pr_err("DEBUG: xxx : OF_IS_DETACHED\n");
 > 
-> Changes from v3:
->   This new version has some very minor differences from the previous one:
->   * Dropped patch "mtd: nand: pxa3xx: Increase data buffer size".
->     This will be re-worked following a suggestion from Brian.
+> when you operate on the nodes (e.g.: ~$ cat /proc/device-tree/*some_node*) you
+> will see that those flags are filled wrong, basically in most cases it will dump
+> a DYNAMIC or DETACHED status, which is in not true.
+> (BTW. this OF_IS_DETACHED is a own define for debug purposes which which just
+> make a test_bit(OF_DETACHED, &x->_flags)
 > 
->   * Fix commit message for patch "mtd: nand: pxa3xx: Support command buffer #3"
->     and add some comments to clarify the command buffer loading behavior.
+> If nodes are dynamic kernel is allowed to kfree() them. But it will crash
+> attempting to do so on the nodes from FDT -- they are not allocated via
+> kzmalloc().
 > 
-> Changes from v2:
+> Signed-off-by: Wladislav Wiebe <wladislav.kw@gmail.com>
+> ---
+>  drivers/of/fdt.c |    2 ++
+>  1 files changed, 2 insertions(+), 0 deletions(-)
 > 
->   * Remove ifdef CONFIG_OF from the driver as suggested by Brian Norris.
+> diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+> index 6bb7cf2..b10ba00 100644
+> --- a/drivers/of/fdt.c
+> +++ b/drivers/of/fdt.c
+> @@ -392,6 +392,8 @@ static void __unflatten_device_tree(struct boot_param_header *blob,
+>  	mem = (unsigned long)
+>  		dt_alloc(size + 4, __alignof__(struct device_node));
 > 
->   * Rework patch 01/15: "mtd: nand: pxa3xx: Introduce 'marvell,armada370...",
->     according to the above change.
+> +	memset((void *)mem, 0, size);
+> +
+>  	((__be32 *)mem)[size / 4] = cpu_to_be32(0xdeadbeef);
 > 
-> Changes from v1:
+>  	pr_debug("  unflattening %lx...\n", mem);
+> -- 1.7.1
 > 
->   * Use __maybe_unused instead of inline keyword for a symbol
->     that's maybe unused. Suggested by Brian Norris.
+> This is committed to the mainline - hope it comes in soon.
 > 
->   * As Daniel Mack reported, the PXA nand controller (NFCv1)
->     lacks an NDBC3 register and it's access is undefined.
->     This means we need a way to distinguish between the two
->     controllers (NFCv1 and NFCv2).
-> 
->     We introduce a new 'marvell,armada370-nand' compatible
->     string to distinguish the newer controller (NFCv2).
+> Thanks & BR,
+> Wladislav Wiebe
 > 
 > 
-> Ezequiel Garcia (14):
->   mtd: nand: pxa3xx: Remove unneeded ifdef CONFIG_OF
->   mtd: nand: pxa3xx: Introduce 'marvell,armada370-nand' compatible
->     string
-
-This series includes an older version of the above patch, without the
-Tested-by and with a trivial change in the spacing. I just pulled in the
-v3 patch.
-
->   mtd: nand: pxa3xx: Handle ECC and DMA enable/disable properly
->   mtd: nand: pxa3xx: Allow to set/clear the 'spare enable' field
->   mtd: nand: pxa3xx: Support command buffer #3
->   mtd: nand: pxa3xx: Use 'length override' in ONFI paramater page read
->   mtd: nand: pxa3xx: Add a local loop variable
->   mtd: nand: pxa3xx: Remove hardcoded mtd name
->   mtd: nand: pxa3xx: Remove uneeded internal cmdset
->   mtd: nand: pxa3xx: Move cached registers to info structure
->   mtd: nand: pxa3xx: Make dma code dependent on dma capable platforms
->   mtd: nand: pxa3xx: Add __maybe_unused keyword to enable_int()
->   mtd: nand: pxa3xx: Allow devices with no dma resources
->   mtd: nand: Allow to build pxa3xx_nand on Orion platforms
+> On 31/07/13 19:34, Aaro Koskinen wrote:
+> > Hi,
+> > 
+> > On Wed, Jul 31, 2013 at 01:42:31PM +0200, Wladislav Wiebe wrote:
+> >> DEBUG: xxx kmalloc_slab, requested 'size' = 8388608, KMALLOC_MAX_SIZE = 4194304
+> > [...]
+> >> [ccd3be60] [c0099fd4] kmalloc_slab+0x48/0xe8 (unreliable)
+> >> [ccd3be70] [c00ae650] __kmalloc+0x20/0x1b4
+> >> [ccd3be90] [c00d46f4] seq_read+0x2a4/0x540
+> >> [ccd3bee0] [c00fe09c] proc_reg_read+0x5c/0x90
+> >> [ccd3bef0] [c00b4e1c] vfs_read+0xa4/0x150
+> >> [ccd3bf10] [c00b500c] SyS_read+0x4c/0x84
+> >> [ccd3bf40] [c000be80] ret_from_syscall+0x0/0x3c
+> > 
+> > It seems some procfs file is trying to dump 8 MB at a single go. You
+> > need to fix that to return data in smaller chunks. What file is it?
+> > 
+> > A.
+> > 
 > 
->  drivers/mtd/nand/Kconfig                      |   2 +-
->  drivers/mtd/nand/pxa3xx_nand.c                | 277 ++++++++++++++++----------
->  include/linux/platform_data/mtd-nand-pxa3xx.h |  13 --
->  3 files changed, 173 insertions(+), 119 deletions(-)
-
-Pushed the whole series to l2-mtd.git, although I noted one comment in
-patch 8. Thanks!
-
-Brian
+> _______________________________________________
+> Linuxppc-dev mailing list
+> Linuxppc-dev@lists.ozlabs.org
+> https://lists.ozlabs.org/listinfo/linuxppc-dev
