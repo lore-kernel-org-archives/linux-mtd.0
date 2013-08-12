@@ -1,14 +1,13 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V8vib-0007rt-PW
- for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 17:15:47 +0000
+ id 1V8vig-0007sp-PX
+ for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 17:15:55 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v4 04/14] mtd: nand: pxa3xx: Allow to set/clear the 'spare
- enable' field
-Date: Mon, 12 Aug 2013 14:14:49 -0300
-Message-Id: <1376327699-7973-5-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH v4 05/14] mtd: nand: pxa3xx: Support command buffer #3
+Date: Mon, 12 Aug 2013 14:14:50 -0300
+Message-Id: <1376327699-7973-6-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1376327699-7973-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1376327699-7973-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
@@ -27,48 +26,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some commands (such as the ONFI parameter page read) need to
-clear the 'spare enable' bit. This commit allows to set/clear
-depending on the prepared command, instead of having it always
-set.
+Some newer controllers support a fourth command buffer. This additional
+command buffer allows to set an arbitrary length count, using the
+NDCB3.NDLENCNT field, to perform non-standard length operations
+such as the ONFI parameter page read.
 
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 Tested-by: Daniel Mack <zonque@gmail.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/mtd/nand/pxa3xx_nand.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
 diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index dfff327..3a3e042 100644
+index 3a3e042..d46adb1 100644
 --- a/drivers/mtd/nand/pxa3xx_nand.c
 +++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -185,6 +185,7 @@ struct pxa3xx_nand_info {
- 	int			cs;
- 	int			use_ecc;	/* use HW ECC ? */
- 	int			use_dma;	/* use DMA ? */
-+	int			use_spare;	/* use spare ? */
- 	int			is_ready;
+@@ -197,6 +197,7 @@ struct pxa3xx_nand_info {
+ 	uint32_t		ndcb0;
+ 	uint32_t		ndcb1;
+ 	uint32_t		ndcb2;
++	uint32_t		ndcb3;
+ };
  
- 	unsigned int		page_size;	/* page size of attached chip */
-@@ -325,6 +326,11 @@ static void pxa3xx_nand_start(struct pxa3xx_nand_info *info)
- 	else
- 		ndcr &= ~NDCR_DMA_EN;
- 
-+	if (info->use_spare)
-+		ndcr |= NDCR_SPARE_EN;
-+	else
-+		ndcr &= ~NDCR_SPARE_EN;
+ static bool use_dma = 1;
+@@ -493,9 +494,22 @@ static irqreturn_t pxa3xx_nand_irq(int irq, void *devid)
+ 		nand_writel(info, NDSR, NDSR_WRCMDREQ);
+ 		status &= ~NDSR_WRCMDREQ;
+ 		info->state = STATE_CMD_HANDLE;
 +
- 	ndcr |= NDCR_ND_RUN;
++		/*
++		 * Command buffer registers NDCB{0-2} (and optionally NDCB3)
++		 * must be loaded by writing directly either 12 or 16
++		 * bytes directly to NDCB0, four bytes at a time.
++		 *
++		 * Direct write access to NDCB1, NDCB2 and NDCB3 is ignored
++		 * but each NDCBx register can be read.
++		 */
+ 		nand_writel(info, NDCB0, info->ndcb0);
+ 		nand_writel(info, NDCB0, info->ndcb1);
+ 		nand_writel(info, NDCB0, info->ndcb2);
++
++		/* NDCB3 register is available in NFCv2 (Armada 370/XP SoC) */
++		if (info->variant == PXA3XX_NAND_VARIANT_ARMADA370)
++			nand_writel(info, NDCB0, info->ndcb3);
+ 	}
  
- 	/* clear status bits and run */
-@@ -526,6 +532,7 @@ static int prepare_command_pool(struct pxa3xx_nand_info *info, int command,
- 	info->buf_count		= 0;
- 	info->oob_size		= 0;
- 	info->use_ecc		= 0;
-+	info->use_spare		= 1;
- 	info->use_dma		= (use_dma) ? 1 : 0;
- 	info->is_ready		= 0;
- 	info->retcode		= ERR_NONE;
+ 	/* clear NDSR to let the controller exit the IRQ */
+@@ -554,6 +568,7 @@ static int prepare_command_pool(struct pxa3xx_nand_info *info, int command,
+ 	default:
+ 		info->ndcb1 = 0;
+ 		info->ndcb2 = 0;
++		info->ndcb3 = 0;
+ 		break;
+ 	}
+ 
 -- 
 1.8.1.5
