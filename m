@@ -1,13 +1,13 @@
-Received: from va3ehsobe006.messaging.microsoft.com ([216.32.180.16]
- helo=va3outboundpool.messaging.microsoft.com)
+Received: from tx2ehsobe003.messaging.microsoft.com ([65.55.88.13]
+ helo=tx2outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V8kev-0006fd-Rq
- for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 05:27:16 +0000
+ id 1V8kez-0006fj-I3
+ for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 05:27:18 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH v3 3/6] mtd: set the ecc step size for master/slave mtd_info
-Date: Mon, 12 Aug 2013 13:24:49 +0800
-Message-ID: <1376285092-19683-4-git-send-email-b32955@freescale.com>
+Subject: [PATCH v3 2/6] mtd: add a new sys node to show the ecc step size
+Date: Mon, 12 Aug 2013 13:24:48 +0800
+Message-ID: <1376285092-19683-3-git-send-email-b32955@freescale.com>
 In-Reply-To: <1376285092-19683-1-git-send-email-b32955@freescale.com>
 References: <1376285092-19683-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
@@ -23,37 +23,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Set the ecc step size for master/slave mtd_info{}.
+Add a new sys node to show the ecc step size.
+The application then can uses this node to get the ecc step
+size.
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- drivers/mtd/mtdpart.c        |    1 +
- drivers/mtd/nand/nand_base.c |    1 +
- 2 files changed, 2 insertions(+), 0 deletions(-)
+ drivers/mtd/mtdcore.c |   11 +++++++++++
+ 1 files changed, 11 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 3014933..63b42a6 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -516,6 +516,7 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
- 	}
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 048c823..6aa952b 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -285,6 +285,16 @@ static DEVICE_ATTR(bitflip_threshold, S_IRUGO | S_IWUSR,
+ 		   mtd_bitflip_threshold_show,
+ 		   mtd_bitflip_threshold_store);
  
- 	slave->mtd.ecclayout = master->ecclayout;
-+	slave->mtd.ecc_step = master->ecc_step;
- 	slave->mtd.ecc_strength = master->ecc_strength;
- 	slave->mtd.bitflip_threshold = master->bitflip_threshold;
- 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 8f04fb0..6e4095d 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -3788,6 +3788,7 @@ int nand_scan_tail(struct mtd_info *mtd)
- 	/* propagate ecc info to mtd_info */
- 	mtd->ecclayout = chip->ecc.layout;
- 	mtd->ecc_strength = chip->ecc.strength;
-+	mtd->ecc_step = chip->ecc.size;
- 	/*
- 	 * Initialize bitflip_threshold to its default prior scan_bbt() call.
- 	 * scan_bbt() might invoke mtd_read(), thus bitflip_threshold must be
++static ssize_t mtd_ecc_step_show(struct device *dev,
++		struct device_attribute *attr, char *buf)
++{
++	struct mtd_info *mtd = dev_get_drvdata(dev);
++
++	return snprintf(buf, PAGE_SIZE, "%u\n", mtd->ecc_step);
++
++}
++static DEVICE_ATTR(ecc_step, S_IRUGO, mtd_ecc_step_show, NULL);
++
+ static struct attribute *mtd_attrs[] = {
+ 	&dev_attr_type.attr,
+ 	&dev_attr_flags.attr,
+@@ -296,6 +306,7 @@ static struct attribute *mtd_attrs[] = {
+ 	&dev_attr_numeraseregions.attr,
+ 	&dev_attr_name.attr,
+ 	&dev_attr_ecc_strength.attr,
++	&dev_attr_ecc_step.attr,
+ 	&dev_attr_bitflip_threshold.attr,
+ 	NULL,
+ };
 -- 
 1.7.1
