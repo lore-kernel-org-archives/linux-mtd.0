@@ -1,23 +1,22 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V8vjF-000804-Po
- for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 17:16:28 +0000
+ id 1V8vti-0000AT-Fg
+ for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 17:27:15 +0000
+Date: Mon, 12 Aug 2013 14:26:50 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v4 14/14] mtd: nand: Allow to build pxa3xx_nand on Orion
- platforms
-Date: Mon, 12 Aug 2013 14:14:59 -0300
-Message-Id: <1376327699-7973-15-git-send-email-ezequiel.garcia@free-electrons.com>
-In-Reply-To: <1376327699-7973-1-git-send-email-ezequiel.garcia@free-electrons.com>
-References: <1376327699-7973-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
- Artem Bityutskiy <dedekind1@gmail.com>, Daniel Mack <zonque@gmail.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
+To: Nilanjan Roychowdhury <nilanjan.roychowdhury@gmail.com>
+Subject: Re: [PATCH 1/1] mtd: mtdoops: fix for a potential memory leak in
+ mtdoops_notify_remove
+Message-ID: <20130812172649.GB7198@localhost>
+References: <1376251908-7451-1-git-send-email-nilanjan.roychowdhury@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1376251908-7451-1-git-send-email-nilanjan.roychowdhury@gmail.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,28 +26,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The Armada 370 and Armada XP SoC families, selected by PLAT_ORION,
-have a Nand Flash Controller (NFC) IP very similar to the one present
-in PXA platforms. Therefore, we want to build this driver on PLAT_ORION.
+On Sun, Aug 11, 2013 at 01:11:48PM -0700, Nilanjan Roychowdhury wrote:
+> we are allocating cxt->oops_page_used using vmalloc in mtdoops_notify_add for
+> every mtd_info addition but not freeing it in mtdoops_notify_remove
+> 
+> Signed-off-by: Nilanjan Roychowdhury <nilanjan.roychowdhury@gmail.com>
+> ---
+>  drivers/mtd/mtdoops.c |    1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
+> index 97bb8f6..02f49aa 100644
+> --- a/drivers/mtd/mtdoops.c
+> +++ b/drivers/mtd/mtdoops.c
+> @@ -386,6 +386,7 @@ static void mtdoops_notify_remove(struct mtd_info *mtd)
+>  	cxt->mtd = NULL;
+>  	flush_work(&cxt->work_erase);
+>  	flush_work(&cxt->work_write);
+> +	vfree(cxt->oops_page_used);
+>  }
+>  
+> -- 
+> 1.7.9.5
+> 
 
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Tested-by: Daniel Mack <zonque@gmail.com>
----
- drivers/mtd/nand/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Have you tested this patch doing an unregister/module remove cycle?
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 5ef8f5e..86c135b 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -354,7 +354,7 @@ config MTD_NAND_ATMEL
- 
- config MTD_NAND_PXA3xx
- 	tristate "Support for NAND flash devices on PXA3xx"
--	depends on PXA3xx || ARCH_MMP
-+	depends on PXA3xx || ARCH_MMP || PLAT_ORION
- 	help
- 	  This enables the driver for the NAND flash device found on
- 	  PXA3xx processors
+I'm not entirely sure, but I *think* you must also remove the
+vfree(cxt->oops_page_used); at mtdoops_exit(). Otherwise,
+you might call vfree() twice, the second time on a garbage pointer.
+
+The reason for this is that the unregister_mtd_user(&mtdoops_notifier);
+call in mtdoops_exit() will call the .remove callback (causing the first
+vfree() with this patch) and then call vfree() for the second time, explicitly.
 -- 
-1.8.1.5
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
