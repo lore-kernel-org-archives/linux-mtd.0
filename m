@@ -1,13 +1,13 @@
-Received: from ch1ehsobe004.messaging.microsoft.com ([216.32.181.184]
- helo=ch1outboundpool.messaging.microsoft.com)
+Received: from tx2ehsobe003.messaging.microsoft.com ([65.55.88.13]
+ helo=tx2outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V8kwM-0006yZ-FL
- for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 05:45:21 +0000
+ id 1V8kwN-0006yb-M9
+ for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 05:45:22 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH 07/10] jffs2: init the ret with -EINVAL
-Date: Mon, 12 Aug 2013 13:42:50 +0800
-Message-ID: <1376286173-12581-8-git-send-email-b32955@freescale.com>
+Subject: [PATCH 05/10] mtd: add more comment for MTD_NANDFLASH/MTD_MLCNANDFLASH
+Date: Mon, 12 Aug 2013 13:42:48 +0800
+Message-ID: <1376286173-12581-6-git-send-email-b32955@freescale.com>
 In-Reply-To: <1376286173-12581-1-git-send-email-b32955@freescale.com>
 References: <1376286173-12581-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
@@ -23,29 +23,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If the media is not SLC nand, dataflash, Sibley flash or a
-ubi volume, we should return -EINVAL to the caller.
-The caller should exit in this case.
+In current code, the MTD_NANDFLASH is used to represent both the SLC and
+MLC. It is confusing to us.
 
-Current code returns 0 in this case which is not proper.
+By adding an explict comment about these two macros, this patch makes it
+clear that:
+	MTD_NANDFLASH    : stands for SLC nand,
+	MTD_MLCNANDFLASH : stands for MLC nand(including TLC).
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- fs/jffs2/fs.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ include/uapi/mtd/mtd-abi.h |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
-index fe3c052..0452445 100644
---- a/fs/jffs2/fs.c
-+++ b/fs/jffs2/fs.c
-@@ -702,7 +702,7 @@ void jffs2_gc_release_page(struct jffs2_sb_info *c,
- }
+diff --git a/include/uapi/mtd/mtd-abi.h b/include/uapi/mtd/mtd-abi.h
+index 36eace0..16a9406 100644
+--- a/include/uapi/mtd/mtd-abi.h
++++ b/include/uapi/mtd/mtd-abi.h
+@@ -94,10 +94,10 @@ struct mtd_write_req {
+ #define MTD_RAM			1
+ #define MTD_ROM			2
+ #define MTD_NORFLASH		3
+-#define MTD_NANDFLASH		4
++#define MTD_NANDFLASH		4	/* stand for SLC nand */
+ #define MTD_DATAFLASH		6
+ #define MTD_UBIVOLUME		7
+-#define MTD_MLCNANDFLASH	8
++#define MTD_MLCNANDFLASH	8	/* stand for MLC nand(including TLC) */
  
- static int jffs2_flash_setup(struct jffs2_sb_info *c) {
--	int ret = 0;
-+	int ret = -EINVAL;
- 
- 	if (jffs2_cleanmarker_oob(c)) {
- 		/* NAND flash... do setup accordingly */
+ #define MTD_WRITEABLE		0x400	/* Device is writeable */
+ #define MTD_BIT_WRITEABLE	0x800	/* Single bits can be flipped */
 -- 
 1.7.1
