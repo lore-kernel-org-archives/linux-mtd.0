@@ -1,15 +1,13 @@
-Received: from am1ehsobe003.messaging.microsoft.com ([213.199.154.206]
- helo=am1outboundpool.messaging.microsoft.com)
+Received: from va3ehsobe005.messaging.microsoft.com ([216.32.180.31]
+ helo=va3outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V8kf4-0006fn-Mr
- for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 05:27:24 +0000
+ id 1V8kw8-0006y8-9q
+ for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 05:45:00 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH v3 6/6] mtd: update the ABI document about the ecc step
-Date: Mon, 12 Aug 2013 13:24:52 +0800
-Message-ID: <1376285092-19683-7-git-send-email-b32955@freescale.com>
-In-Reply-To: <1376285092-19683-1-git-send-email-b32955@freescale.com>
-References: <1376285092-19683-1-git-send-email-b32955@freescale.com>
+Subject: [PATCH 00/10] About the SLC/MLC
+Date: Mon, 12 Aug 2013 13:42:43 +0800
+Message-ID: <1376286173-12581-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
@@ -23,30 +21,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We add a new sys node for ecc step. So update the ABI document about it.
+In current mtd code, the MTD_NANDFLASH is used to represent both the
+SLC nand MLC(including the TLC). But we already have the MTD_MLCNANDFLASH
+to stand for the MLC. What is worse is that the JFFS2 may run on the MLC
+nand with current code. For the reason of READ/WRITE disturbance, the JFFS2
+should runs on the SLC only,
+       
+This patch set tries to make clear what is the SLC/MLC by adding the macros,
+adding helpers, adding the comments. ..
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
- Documentation/ABI/testing/sysfs-class-mtd |   10 ++++++++++
- 1 files changed, 10 insertions(+), 0 deletions(-)
+After this patch set, the gpmi can support the JFFS2 for some SLC NAND now 
+(only when the left oob area is big enough).
 
-diff --git a/Documentation/ABI/testing/sysfs-class-mtd b/Documentation/ABI/testing/sysfs-class-mtd
-index 3105644..038686d 100644
---- a/Documentation/ABI/testing/sysfs-class-mtd
-+++ b/Documentation/ABI/testing/sysfs-class-mtd
-@@ -173,3 +173,13 @@ Description:
- 		This is generally applicable only to NAND flash devices with ECC
- 		capability.  It is ignored on devices lacking ECC capability;
- 		i.e., devices for which ecc_strength is zero.
-+
-+What:		/sys/class/mtd/mtdX/ecc_step
-+Date:		May 2013
-+KernelVersion:	3.10
-+Contact:	linux-mtd@lists.infradead.org
-+Description:
-+		The size of ECC step which is used for ECC.
-+		Note that some devices will have multiple ecc steps within each
-+		writesize region. See more in the ecc_strength above. This will
-+		always be a non-negative integer.
--- 
-1.7.1
+Huang Shijie (10):
+  mtd: set the cell information for ONFI nand
+  mtd: add a helper to check the SLC/MLC nand chip
+  mtd: print out the cell information for nand chip
+  mtd: gpmi: rewrite the gpmi_ecc_write_oob() to support the jffs2
+  mtd: add more comment for MTD_NANDFLASH/MTD_MLCNANDFLASH
+  mtd: fix the wrong mtd->type for nand chip
+  jffs2: init the ret with -EINVAL
+  mtd: add MTD_MLCNANDFLASH case for mtd_type_show()
+  mtd: add more information for the MTD_NANDFLASH case
+  mtd: add a helper to detect the nand type
+
+ drivers/mtd/inftlcore.c                |    2 +-
+ drivers/mtd/mtdcore.c                  |    5 ++++-
+ drivers/mtd/nand/denali.c              |    2 +-
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   31 ++++++++++++++++++++++---------
+ drivers/mtd/nand/nand_base.c           |   24 +++++++++++++-----------
+ drivers/mtd/nftlcore.c                 |    2 +-
+ drivers/mtd/ssfdc.c                    |    2 +-
+ drivers/mtd/tests/nandbiterrs.c        |    2 +-
+ drivers/mtd/tests/oobtest.c            |    2 +-
+ drivers/mtd/tests/pagetest.c           |    2 +-
+ drivers/mtd/tests/subpagetest.c        |    2 +-
+ fs/jffs2/fs.c                          |    2 +-
+ include/linux/mtd/mtd.h                |    5 +++++
+ include/linux/mtd/nand.h               |   10 ++++++++++
+ include/uapi/mtd/mtd-abi.h             |    4 ++--
+ 15 files changed, 65 insertions(+), 32 deletions(-)
