@@ -1,15 +1,13 @@
-Received: from mail-db9lp0253.outbound.messaging.microsoft.com
- ([213.199.154.253] helo=db9outboundpool.messaging.microsoft.com)
+Received: from mail-db9lp0251.outbound.messaging.microsoft.com
+ ([213.199.154.251] helo=db9outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V8kes-0006fN-5L
- for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 05:27:10 +0000
+ id 1V8keu-0006fQ-MU
+ for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 05:27:14 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH v3 1/6] mtd: add a new field to mtd_info{}
-Date: Mon, 12 Aug 2013 13:24:47 +0800
-Message-ID: <1376285092-19683-2-git-send-email-b32955@freescale.com>
-In-Reply-To: <1376285092-19683-1-git-send-email-b32955@freescale.com>
-References: <1376285092-19683-1-git-send-email-b32955@freescale.com>
+Subject: [PATCH v3 0/6] Export the ECC step size to user applications
+Date: Mon, 12 Aug 2013 13:24:46 +0800
+Message-ID: <1376285092-19683-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
@@ -30,29 +28,35 @@ configrate the BCH, and to find the uboot.
 
 The ECC information(ecc step size, ecc strength) which is used to configrate
 the BCH is part of the metadata. The kobs-ng can gets the ecc strength from
-the sys node /sys/*/ecc_strength now. But it can not gets the ecc step size.
+the sys node /sys/*/mtdX/ecc_strength now. But it can't gets the ecc step size.
 
-This patch adds a new field to store the ecc step size in mtd_info{}, and
-it makes preparation for the next patches.
+This patch set is used to export the ecc step size to user applications.
+With this patch set, the kobs-ng can gets the ecc step size now.
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
- include/linux/mtd/mtd.h |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
+v2 --> v3:
+	[1] replace the nand_scan() with nand_scan_ident()/nand_scan_tail(),
+	    Let the MTD layer to do the initialization for the ECC info.
+	    removed some hack code.
+	[2] move the ONFI nand's hooks in nand_set_defaults().
+	[3] change the comments.
+	[4] misc	
+v1 --> v2:
+	[1] rename the ecc_size to ecc_step.
+	[2] rebase on the latest l2-mtd.
 
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index a5cf4e8..effdd41 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -173,6 +173,9 @@ struct mtd_info {
- 	/* ECC layout structure pointer - read only! */
- 	struct nand_ecclayout *ecclayout;
- 
-+	/* the ecc step size. */
-+	unsigned int ecc_step;
-+
- 	/* max number of correctible bit errors per ecc step */
- 	unsigned int ecc_strength;
- 
--- 
-1.7.1
+
+Huang Shijie (6):
+  mtd: add a new field to mtd_info{}
+  mtd: add a new sys node to show the ecc step size
+  mtd: set the ecc step size for master/slave mtd_info
+  mtd: set ONFI nand's default hooks in nand_set_defaults()
+  mtd: gpmi: remove the nand_scan()
+  mtd: update the ABI document about the ecc step
+
+ Documentation/ABI/testing/sysfs-class-mtd |   10 ++++
+ drivers/mtd/mtdcore.c                     |   11 +++++
+ drivers/mtd/mtdpart.c                     |    1 +
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c    |   65 +++++++++++++++-------------
+ drivers/mtd/nand/nand_base.c              |   13 +++---
+ include/linux/mtd/mtd.h                   |    3 +
+ 6 files changed, 67 insertions(+), 36 deletions(-)
