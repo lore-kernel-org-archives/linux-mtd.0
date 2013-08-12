@@ -1,20 +1,19 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V8viR-0007rn-PK
- for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 17:15:38 +0000
+ id 1V8viW-0007rq-PN
+ for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 17:15:42 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v4 02/14] mtd: nand: pxa3xx: Introduce 'marvell,
- armada370-nand' compatible string
-Date: Mon, 12 Aug 2013 14:14:47 -0300
-Message-Id: <1376327699-7973-3-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH v4 03/14] mtd: nand: pxa3xx: Handle ECC and DMA enable/disable
+ properly
+Date: Mon, 12 Aug 2013 14:14:48 -0300
+Message-Id: <1376327699-7973-4-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1376327699-7973-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1376327699-7973-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
  Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
  Artem Bityutskiy <dedekind1@gmail.com>, Daniel Mack <zonque@gmail.com>,
- devicetree@vger.kernel.org,
  Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
  Gregory Clement <gregory.clement@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -28,86 +27,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This driver supports NFCv1 (as found in PXA SoC) and NFCv2 (as found in
-Armada 370/XP SoC). As both controller has a few differences, a way of
-distinguishing between the two is needed.
+When ECC is not selected, the ECC enable bit must be cleared
+in the NAND control register. Same applies to DMA.
 
-This commit introduces a new compatible string 'marvell,armada370-nand'
-and assigns a compatible data of type enum pxa3xx_nand_variant to allow
-such distinction.
-
-Cc: devicetree@vger.kernel.org
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Tested-by: Daniel Mack <zonque@gmail.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c | 31 ++++++++++++++++++++++++++++++-
- 1 file changed, 30 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/pxa3xx_nand.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 02f214d..55eb153 100644
+index 55eb153..dfff327 100644
 --- a/drivers/mtd/nand/pxa3xx_nand.c
 +++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -123,6 +123,11 @@ enum {
- 	STATE_READY,
- };
+@@ -314,8 +314,17 @@ static void pxa3xx_nand_start(struct pxa3xx_nand_info *info)
+ 	uint32_t ndcr;
  
-+enum pxa3xx_nand_variant {
-+	PXA3XX_NAND_VARIANT_PXA,
-+	PXA3XX_NAND_VARIANT_ARMADA370,
-+};
+ 	ndcr = host->reg_ndcr;
+-	ndcr |= info->use_ecc ? NDCR_ECC_EN : 0;
+-	ndcr |= info->use_dma ? NDCR_DMA_EN : 0;
 +
- struct pxa3xx_nand_host {
- 	struct nand_chip	chip;
- 	struct pxa3xx_nand_cmdset *cmdset;
-@@ -171,6 +176,12 @@ struct pxa3xx_nand_info {
- 	struct pxa3xx_nand_host *host[NUM_CHIP_SELECT];
- 	unsigned int		state;
- 
-+	/*
-+	 * This driver supports NFCv1 (as found in PXA SoC)
-+	 * and NFCv2 (as found in Armada 370/XP SoC).
-+	 */
-+	enum pxa3xx_nand_variant variant;
++	if (info->use_ecc)
++		ndcr |= NDCR_ECC_EN;
++	else
++		ndcr &= ~NDCR_ECC_EN;
 +
- 	int			cs;
- 	int			use_ecc;	/* use HW ECC ? */
- 	int			use_dma;	/* use DMA ? */
-@@ -1191,11 +1202,28 @@ static int pxa3xx_nand_remove(struct platform_device *pdev)
- }
- 
- static struct of_device_id pxa3xx_nand_dt_ids[] = {
--	{ .compatible = "marvell,pxa3xx-nand" },
-+	{
-+		.compatible = "marvell,pxa3xx-nand",
-+		.data       = (void *) PXA3XX_NAND_VARIANT_PXA,
-+	},
-+	{
-+		.compatible = "marvell,armada370-nand",
-+		.data       = (void *) PXA3XX_NAND_VARIANT_ARMADA370,
-+	},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, pxa3xx_nand_dt_ids);
- 
-+static enum pxa3xx_nand_variant
-+pxa3xx_nand_get_variant(struct platform_device *pdev)
-+{
-+	const struct of_device_id *of_id =
-+			of_match_device(pxa3xx_nand_dt_ids, &pdev->dev);
-+	if (!of_id)
-+		return PXA3XX_NAND_VARIANT_PXA;
-+	return (enum pxa3xx_nand_variant) of_id->data;
-+}
++	if (info->use_dma)
++		ndcr |= NDCR_DMA_EN;
++	else
++		ndcr &= ~NDCR_DMA_EN;
 +
- static int pxa3xx_nand_probe_dt(struct platform_device *pdev)
- {
- 	struct pxa3xx_nand_platform_data *pdata;
-@@ -1245,6 +1273,7 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
- 	}
+ 	ndcr |= NDCR_ND_RUN;
  
- 	info = platform_get_drvdata(pdev);
-+	info->variant = pxa3xx_nand_get_variant(pdev);
- 	probe_success = 0;
- 	for (cs = 0; cs < pdata->num_cs; cs++) {
- 		info->cs = cs;
+ 	/* clear status bits and run */
 -- 
 1.8.1.5
