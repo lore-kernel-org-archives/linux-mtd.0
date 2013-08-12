@@ -1,13 +1,13 @@
-Received: from ch1ehsobe006.messaging.microsoft.com ([216.32.181.186]
- helo=ch1outboundpool.messaging.microsoft.com)
+Received: from tx2ehsobe004.messaging.microsoft.com ([65.55.88.14]
+ helo=tx2outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V8kwG-0006yP-3D
+ id 1V8kwH-0006yT-FX
  for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 05:45:10 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH 01/10] mtd: set the cell information for ONFI nand
-Date: Mon, 12 Aug 2013 13:42:44 +0800
-Message-ID: <1376286173-12581-2-git-send-email-b32955@freescale.com>
+Subject: [PATCH 03/10] mtd: print out the cell information for nand chip
+Date: Mon, 12 Aug 2013 13:42:46 +0800
+Message-ID: <1376286173-12581-4-git-send-email-b32955@freescale.com>
 In-Reply-To: <1376286173-12581-1-git-send-email-b32955@freescale.com>
 References: <1376286173-12581-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
@@ -23,45 +23,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The current code does not set the SLC/MLC information for onfi nand.
-(This makes that the kernel treats all the onfi nand as SLC nand.)
-
-This patch fills the chip->cellinfo when the onfi nand is a MLC(or TLC) nand
-(p->bits_per_cell > 1).
-
-The macro NAND_CI_CELLTYPE_SHIFT is added to avoid the hardcode.
+Print out the cell information for nand chip.
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- drivers/mtd/nand/nand_base.c |    3 +++
- include/linux/mtd/nand.h     |    1 +
- 2 files changed, 4 insertions(+), 0 deletions(-)
+ drivers/mtd/nand/nand_base.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index ff605c8..ee1aa52 100644
+index fd5117d..9bd7f04 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -2988,6 +2988,9 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
- 	chip->chipsize = le32_to_cpu(p->blocks_per_lun);
- 	chip->chipsize *= (uint64_t)mtd->erasesize * p->lun_count;
+@@ -3445,10 +3445,11 @@ ident_done:
+ 		chip->cmdfunc = nand_command_lp;
  
-+	/* @bits_per_cell equals 1 means this is a SLC nand. */
-+	chip->cellinfo = (p->bits_per_cell - 1) << NAND_CI_CELLTYPE_SHIFT;
-+
- 	if (onfi_feature(chip) & ONFI_FEATURE_16_BIT_BUS)
- 		*busw = NAND_BUSWIDTH_16;
- 	else
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index ac8e89d..bf743ba 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -198,6 +198,7 @@ typedef enum {
- /* Cell info constants */
- #define NAND_CI_CHIPNR_MSK	0x03
- #define NAND_CI_CELLTYPE_MSK	0x0C
-+#define NAND_CI_CELLTYPE_SHIFT	2
+ 	pr_info("NAND device: Manufacturer ID: 0x%02x, Chip ID: 0x%02x (%s %s),"
+-		" %dMiB, page size: %d, OOB size: %d\n",
++		" %dMiB, %s, page size: %d, OOB size: %d\n",
+ 		*maf_id, *dev_id, nand_manuf_ids[maf_idx].name,
+ 		chip->onfi_version ? chip->onfi_params.model : type->name,
+-		(int)(chip->chipsize >> 20), mtd->writesize, mtd->oobsize);
++		(int)(chip->chipsize >> 20), nand_is_slc(chip) ? "SLC" : "MLC",
++		mtd->writesize, mtd->oobsize);
  
- /* Keep gcc happy */
- struct nand_chip;
+ 	return type;
+ }
 -- 
 1.7.1
