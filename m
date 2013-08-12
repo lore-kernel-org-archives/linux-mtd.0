@@ -1,27 +1,16 @@
-Received: from tx2ehsobe005.messaging.microsoft.com ([65.55.88.15]
- helo=tx2outboundpool.messaging.microsoft.com)
+Received: from mail-pd0-f182.google.com ([209.85.192.182])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V8oft-0003uk-Sv
- for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 09:44:30 +0000
-Message-ID: <5208AE99.6020508@freescale.com>
-Date: Mon, 12 Aug 2013 17:44:57 +0800
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [PATCH v3 3/6] mtd: set the ecc step size for master/slave
- mtd_info
-References: <1376285092-19683-1-git-send-email-b32955@freescale.com>
- <1376285092-19683-4-git-send-email-b32955@freescale.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9F2A32@DBDE04.ent.ti.com>
- <52089C91.4090903@freescale.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9F2B57@DBDE04.ent.ti.com>
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9F2B57@DBDE04.ent.ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>
+ id 1V8ot2-0004MD-Ve
+ for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 09:58:06 +0000
+Received: by mail-pd0-f182.google.com with SMTP id r10so2578459pdi.27
+ for <linux-mtd@lists.infradead.org>; Mon, 12 Aug 2013 02:57:43 -0700 (PDT)
+From: Sachin Kamat <sachin.kamat@linaro.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 1/1] mtd: diskonchip: Fix incorrect placement of __initdata
+Date: Mon, 12 Aug 2013 15:10:47 +0530
+Message-Id: <1376300447-7126-1-git-send-email-sachin.kamat@linaro.org>
+Cc: sachin.kamat@linaro.org, artem.bityutskiy@linux.intel.com,
+ dwmw2@infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,22 +20,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B408=E6=9C=8812=E6=97=A5 17:24, Gupta, Pekon =E5=86=99=
-=E9=81=93:
-> [Pekon]: Following Artem's recommendations.. Can this be named as
-> chip->ecc.size =3D ecc_step_size.
-> then chip->ecc.bytes  =3D ecc_syndrome_size (or ecc_code_size)
-yes, we can rename these fields in the future with another patch set.
+__initdata should be placed between the variable name and equal
+sign for the variable to be placed in the intended section.
 
+Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+---
+ drivers/mtd/nand/diskonchip.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> In addition, chip->ecc.bytes should also be helpful for userspace
-> utility to determine how much bytes to reserve in spare-area for ECC.
-> So exposing that as sysfs entry is also good.
->
-I do not need the chip->ecc.bytes. :)
-For me, export the chip->ecc.size is enough.
-
-So you can submit a patch if you need this field.
-
-thanks
-Huang Shijie
+diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/diskonchip.c
+index eaa3c29..b68a495 100644
+--- a/drivers/mtd/nand/diskonchip.c
++++ b/drivers/mtd/nand/diskonchip.c
+@@ -38,7 +38,7 @@
+ #define CONFIG_MTD_NAND_DISKONCHIP_PROBE_ADDRESS 0
+ #endif
+ 
+-static unsigned long __initdata doc_locations[] = {
++static unsigned long doc_locations[] __initdata = {
+ #if defined (__alpha__) || defined(__i386__) || defined(__x86_64__)
+ #ifdef CONFIG_MTD_NAND_DISKONCHIP_PROBE_HIGH
+ 	0xfffc8000, 0xfffca000, 0xfffcc000, 0xfffce000,
+-- 
+1.7.9.5
