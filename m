@@ -1,23 +1,16 @@
-Received: from mail-we0-x232.google.com ([2a00:1450:400c:c03::232])
+Received: from [195.131.132.186] (helo=shelob.oktetlabs.ru)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V8pzW-0006Yt-MB
- for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 11:08:51 +0000
-Received: by mail-we0-f178.google.com with SMTP id u57so5226420wes.23
- for <linux-mtd@lists.infradead.org>; Mon, 12 Aug 2013 04:08:28 -0700 (PDT)
-Message-ID: <5208C1CD.3040601@gmail.com>
-Date: Mon, 12 Aug 2013 13:06:53 +0200
-From: Wladislav Wiebe <wladislav.kw@gmail.com>
-MIME-Version: 1.0
-To: Aaro Koskinen <aaro.koskinen@iki.fi>
-Subject: Re: mm/slab: ppc: ubi: kmalloc_slab WARNING / PPC + UBI driver
-References: <51F8F827.6020108@gmail.com>
- <20130731173434.GA27470@blackmetal.musicnaut.iki.fi>
-In-Reply-To: <20130731173434.GA27470@blackmetal.musicnaut.iki.fi>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: dedekind1@gmail.com, dwmw2@infradead.org, penberg@kernel.org,
- linux-mm@kvack.org, linux-mtd@lists.infradead.org, cl@linux.com,
- linuxppc-dev@lists.ozlabs.org
+ id 1V8qIX-0006yM-1v
+ for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 11:28:30 +0000
+From: Andrew Rybchenko <Andrew.Rybchenko@oktetlabs.ru>
+To: Artem Bityutskiy <dedekind1@gmail.com>,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH 1/1] ubi: remove and create MTD device back when UBI volume is
+ resized
+Date: Mon, 12 Aug 2013 15:17:45 +0400
+Message-Id: <1376306265-8671-1-git-send-email-Andrew.Rybchenko@oktetlabs.ru>
+Cc: linux-kernel@vger.kernel.org,
+ Andrew Rybchenko <Andrew.Rybchenko@oktetlabs.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,77 +20,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi guys,
+If underlying MTD device size is simply corrected (as it was before),
+MTD block device is not notified about MTD device size change. As the
+result, for example, mount fails after create with zero size, resize,
+write file system image.
 
-we got the real root cause of the allocation issue:
+Side effect of the patch is change of MTD device number on resize/update.
 
-Subject: [PATCH 1/1] of: fdt: fix memory initialization for expanded DT
-
-Already existing property flags are filled wrong for properties created from
-initial FDT. This could cause problems if this DYNAMIC device-tree functions
-are used later, i.e. properties are attached/detached/replaced. Simply dumping
-flags from the running system show, that some initial static (not allocated via
-kzmalloc()) nodes are marked as dynamic.
-
-I putted some debug extensions to property_proc_show(..) :
-..
-+       if (OF_IS_DYNAMIC(pp))
-+               pr_err("DEBUG: xxx : OF_IS_DYNAMIC\n");
-+       if (OF_IS_DETACHED(pp))
-+               pr_err("DEBUG: xxx : OF_IS_DETACHED\n");
-
-when you operate on the nodes (e.g.: ~$ cat /proc/device-tree/*some_node*) you
-will see that those flags are filled wrong, basically in most cases it will dump
-a DYNAMIC or DETACHED status, which is in not true.
-(BTW. this OF_IS_DETACHED is a own define for debug purposes which which just
-make a test_bit(OF_DETACHED, &x->_flags)
-
-If nodes are dynamic kernel is allowed to kfree() them. But it will crash
-attempting to do so on the nodes from FDT -- they are not allocated via
-kzmalloc().
-
-Signed-off-by: Wladislav Wiebe <wladislav.kw@gmail.com>
+Signed-off-by: Andrew Rybchenko <Andrew.Rybchenko@oktetlabs.ru>
 ---
- drivers/of/fdt.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+ drivers/mtd/ubi/gluebi.c |   64 +++++-----------------------------------------
+ 1 file changed, 7 insertions(+), 57 deletions(-)
 
-diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-index 6bb7cf2..b10ba00 100644
---- a/drivers/of/fdt.c
-+++ b/drivers/of/fdt.c
-@@ -392,6 +392,8 @@ static void __unflatten_device_tree(struct boot_param_header *blob,
- 	mem = (unsigned long)
- 		dt_alloc(size + 4, __alignof__(struct device_node));
-
-+	memset((void *)mem, 0, size);
-+
- 	((__be32 *)mem)[size / 4] = cpu_to_be32(0xdeadbeef);
-
- 	pr_debug("  unflattening %lx...\n", mem);
--- 1.7.1
-
-This is committed to the mainline - hope it comes in soon.
-
-Thanks & BR,
-Wladislav Wiebe
-
-
-On 31/07/13 19:34, Aaro Koskinen wrote:
-> Hi,
-> 
-> On Wed, Jul 31, 2013 at 01:42:31PM +0200, Wladislav Wiebe wrote:
->> DEBUG: xxx kmalloc_slab, requested 'size' = 8388608, KMALLOC_MAX_SIZE = 4194304
-> [...]
->> [ccd3be60] [c0099fd4] kmalloc_slab+0x48/0xe8 (unreliable)
->> [ccd3be70] [c00ae650] __kmalloc+0x20/0x1b4
->> [ccd3be90] [c00d46f4] seq_read+0x2a4/0x540
->> [ccd3bee0] [c00fe09c] proc_reg_read+0x5c/0x90
->> [ccd3bef0] [c00b4e1c] vfs_read+0xa4/0x150
->> [ccd3bf10] [c00b500c] SyS_read+0x4c/0x84
->> [ccd3bf40] [c000be80] ret_from_syscall+0x0/0x3c
-> 
-> It seems some procfs file is trying to dump 8 MB at a single go. You
-> need to fix that to return data in smaller chunks. What file is it?
-> 
-> A.
-> 
+diff --git a/drivers/mtd/ubi/gluebi.c b/drivers/mtd/ubi/gluebi.c
+index b93807b..fa4f764 100644
+--- a/drivers/mtd/ubi/gluebi.c
++++ b/drivers/mtd/ubi/gluebi.c
+@@ -403,60 +403,6 @@ static int gluebi_remove(struct ubi_volume_info *vi)
+ }
+ 
+ /**
+- * gluebi_updated - UBI volume was updated notifier.
+- * @vi: volume info structure
+- *
+- * This function is called every time an UBI volume is updated. It does nothing
+- * if te volume @vol is dynamic, and changes MTD device size if the
+- * volume is static. This is needed because static volumes cannot be read past
+- * data they contain. This function returns zero in case of success and a
+- * negative error code in case of error.
+- */
+-static int gluebi_updated(struct ubi_volume_info *vi)
+-{
+-	struct gluebi_device *gluebi;
+-
+-	mutex_lock(&devices_mutex);
+-	gluebi = find_gluebi_nolock(vi->ubi_num, vi->vol_id);
+-	if (!gluebi) {
+-		mutex_unlock(&devices_mutex);
+-		err_msg("got update notification for unknown UBI device %d volume %d",
+-			vi->ubi_num, vi->vol_id);
+-		return -ENOENT;
+-	}
+-
+-	if (vi->vol_type == UBI_STATIC_VOLUME)
+-		gluebi->mtd.size = vi->used_bytes;
+-	mutex_unlock(&devices_mutex);
+-	return 0;
+-}
+-
+-/**
+- * gluebi_resized - UBI volume was re-sized notifier.
+- * @vi: volume info structure
+- *
+- * This function is called every time an UBI volume is re-size. It changes the
+- * corresponding fake MTD device size. This function returns zero in case of
+- * success and a negative error code in case of error.
+- */
+-static int gluebi_resized(struct ubi_volume_info *vi)
+-{
+-	struct gluebi_device *gluebi;
+-
+-	mutex_lock(&devices_mutex);
+-	gluebi = find_gluebi_nolock(vi->ubi_num, vi->vol_id);
+-	if (!gluebi) {
+-		mutex_unlock(&devices_mutex);
+-		err_msg("got update notification for unknown UBI device %d volume %d",
+-			vi->ubi_num, vi->vol_id);
+-		return -ENOENT;
+-	}
+-	gluebi->mtd.size = vi->used_bytes;
+-	mutex_unlock(&devices_mutex);
+-	return 0;
+-}
+-
+-/**
+  * gluebi_notify - UBI notification handler.
+  * @nb: registered notifier block
+  * @l: notification type
+@@ -475,10 +421,14 @@ static int gluebi_notify(struct notifier_block *nb, unsigned long l,
+ 		gluebi_remove(&nt->vi);
+ 		break;
+ 	case UBI_VOLUME_RESIZED:
+-		gluebi_resized(&nt->vi);
+-		break;
+ 	case UBI_VOLUME_UPDATED:
+-		gluebi_updated(&nt->vi);
++		/*
++		 * In theory it could be possible to simply change MTD device
++		 * size, but it would require a way to notify
++		 * corresponding block device as well.
++		 */
++		gluebi_remove(&nt->vi);
++		gluebi_create(&nt->di, &nt->vi);
+ 		break;
+ 	default:
+ 		break;
+-- 
+1.7.10.4
