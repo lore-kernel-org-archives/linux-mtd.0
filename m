@@ -1,18 +1,15 @@
 Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V8pHF-0005Fp-OI
- for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 10:23:06 +0000
+ id 1V8pHK-0005GD-OU
+ for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 10:23:11 +0000
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 4/4] mtd: m25p80: remove unnecessary ifdef
-Date: Mon, 12 Aug 2013 12:22:26 +0200
-Message-Id: <1376302946-11534-5-git-send-email-s.hauer@pengutronix.de>
-In-Reply-To: <1376302946-11534-1-git-send-email-s.hauer@pengutronix.de>
-References: <1376302946-11534-1-git-send-email-s.hauer@pengutronix.de>
+Subject: [PATCH] m25p80 / fast read
+Date: Mon, 12 Aug 2013 12:22:22 +0200
+Message-Id: <1376302946-11534-1-git-send-email-s.hauer@pengutronix.de>
 Cc: Marek Vasut <marex@denx.de>,
  Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Sascha Hauer <s.hauer@pengutronix.de>, linux-kernel@vger.kernel.org,
- kernel@pengutronix.de
+ linux-kernel@vger.kernel.org, kernel@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,28 +19,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-of_property_read_bool properly compiles away, no need to ifdef this
-for non DT builds.
+The following adds support for the mr25h10 chip to to the m25p80
+driver.
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
- drivers/mtd/devices/m25p80.c | 2 --
- 1 file changed, 2 deletions(-)
+This driver currently has the problem that it unconditionally uses
+the fast_read command once it's enabled in Kconfig which of course
+leads to problems with multiboard kernels. This series adds a flag
+to the chip specific data to solve this. Also some unnecessary ifdefs
+are removed.
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index d179188..f21af0e 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -1030,10 +1030,8 @@ static int m25p_probe(struct spi_device *spi)
- 	flash->mtd.writebufsize = flash->page_size;
- 
- 	flash->fast_read = false;
--#ifdef CONFIG_OF
- 	if (np && of_property_read_bool(np, "m25p,fast-read"))
- 		flash->fast_read = true;
--#endif
- 
- #ifdef CONFIG_M25PXX_USE_FAST_READ
- 	flash->fast_read = true;
--- 
-1.8.4.rc1
+Sascha
+
+----------------------------------------------------------------
+Markus Niebel (1):
+      mtd: m25p80: add support for mr25h10
+
+Sascha Hauer (3):
+      mtd: m25p80: Pass flags through CAT25_INFO macro
+      mtd: m25p80: make CONFIG_M25PXX_USE_FAST_READ safe to enable
+      mtd: m25p80: remove unnecessary ifdef
+
+ drivers/mtd/devices/m25p80.c | 23 +++++++++++++----------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
