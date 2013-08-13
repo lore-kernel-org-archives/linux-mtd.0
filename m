@@ -1,28 +1,24 @@
-Received: from mail-pd0-x22d.google.com ([2607:f8b0:400e:c02::22d])
+Received: from mail-pb0-x22d.google.com ([2607:f8b0:400e:c01::22d])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V92Qe-0001as-MO
- for linux-mtd@lists.infradead.org; Tue, 13 Aug 2013 00:25:41 +0000
-Received: by mail-pd0-f173.google.com with SMTP id p10so4130204pdj.32
- for <linux-mtd@lists.infradead.org>; Mon, 12 Aug 2013 17:25:16 -0700 (PDT)
-Date: Mon, 12 Aug 2013 17:25:12 -0700
+ id 1V92oF-0001tI-W4
+ for linux-mtd@lists.infradead.org; Tue, 13 Aug 2013 00:50:05 +0000
+Received: by mail-pb0-f45.google.com with SMTP id mc17so7327678pbc.32
+ for <linux-mtd@lists.infradead.org>; Mon, 12 Aug 2013 17:49:42 -0700 (PDT)
+Date: Mon, 12 Aug 2013 17:49:38 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v3 3/6] mtd: set the ecc step size for master/slave
- mtd_info
-Message-ID: <20130813002512.GC7267@brian-ubuntu>
-References: <1376285092-19683-1-git-send-email-b32955@freescale.com>
- <1376285092-19683-4-git-send-email-b32955@freescale.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9F2A32@DBDE04.ent.ti.com>
- <52089C91.4090903@freescale.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9F2B57@DBDE04.ent.ti.com>
- <5208AE99.6020508@freescale.com>
+To: "Gupta, Pekon" <pekon@ti.com>
+Subject: Re: [PATCH 01/10] mtd: set the cell information for ONFI nand
+Message-ID: <20130813004938.GD7267@brian-ubuntu>
+References: <1376286173-12581-1-git-send-email-b32955@freescale.com>
+ <1376286173-12581-2-git-send-email-b32955@freescale.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9F2A6B@DBDE04.ent.ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5208AE99.6020508@freescale.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>, "Gupta, Pekon" <pekon@ti.com>,
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9F2A6B@DBDE04.ent.ti.com>
+Cc: Huang Shijie <b32955@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
  "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -33,74 +29,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 12, 2013 at 05:44:57PM +0800, Huang Shijie wrote:
-> 于 2013年08月12日 17:24, Gupta, Pekon 写道:
-> >[Pekon]: Following Artem's recommendations.. Can this be named as
-> >chip->ecc.size = ecc_step_size.
-> >then chip->ecc.bytes  = ecc_syndrome_size (or ecc_code_size)
-> yes, we can rename these fields in the future with another patch set.
+On Mon, Aug 12, 2013 at 07:22:38AM +0000, Gupta, Pekon wrote:
+> > The current code does not set the SLC/MLC information for onfi nand.
+> > (This makes that the kernel treats all the onfi nand as SLC nand.)
+> > 
+> > This patch fills the chip->cellinfo when the onfi nand is a MLC(or TLC) nand
+> > (p->bits_per_cell > 1).
+> > 
+> > The macro NAND_CI_CELLTYPE_SHIFT is added to avoid the hardcode.
+> > 
+> > Signed-off-by: Huang Shijie <b32955@freescale.com>
+> > ---
+> >  drivers/mtd/nand/nand_base.c |    3 +++
+> >  include/linux/mtd/nand.h     |    1 +
+> >  2 files changed, 4 insertions(+), 0 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> > index ff605c8..ee1aa52 100644
+> > --- a/drivers/mtd/nand/nand_base.c
+> > +++ b/drivers/mtd/nand/nand_base.c
+> > @@ -2988,6 +2988,9 @@ static int nand_flash_detect_onfi(struct mtd_info
+> > *mtd, struct nand_chip *chip,
+> >  	chip->chipsize = le32_to_cpu(p->blocks_per_lun);
+> >  	chip->chipsize *= (uint64_t)mtd->erasesize * p->lun_count;
+> > 
+> > +	/* @bits_per_cell equals 1 means this is a SLC nand. */
+> > +	chip->cellinfo = (p->bits_per_cell - 1) << NAND_CI_CELLTYPE_SHIFT;
+> > +
+> [Pekon]: For future scalability, good to update only MLC related bit-fields
+> So ORing instead of assigning..
+> chip->cellinfo |= (p->bits_per_cell - 1) << NAND_CI_CELLTYPE_SHIFT;
 
-Internal naming can be changed in the future if needed, but we really
-need to get a good sysfs name now, since that becomes ABI. And it would
-also be good to get this to be clearly consistent internally too.
+I was thinking of an alternate approach: since nand_chip.cellinfo is
+only used for checking SLC vs. MLC (and it is admittedly bad at that,
+currently), we should modify it so that is a reliable source of *only* 1
+piece of information -- the number of bits per cell. Currently, it
+contains unused (and potentially unmaintainable) information for some
+chips about number of simultaneously-programmed pages, write caching,
+internal chip numbering, etc.
 
-So the main decision to be made here: what to name the sysfs field? It
-currently stands as ecc_step, but for clarity to users (and for avoiding
-internal confusion with nand_chip.ecc.steps), I think ecc_step_size is
-just as good or better.
+So personally, I would rename cellinfo to bits_per_cell and make sure
+it is set properly. That is, for the legacy chips, make sure we
+initialize it 1 (SLC); for extended-ID chips, make sure the third ID
+byte has the correct info (you can refer to [1]) and set it with
+something like this:
 
-Then, we might as well have the mtd_info field be
-mtd_info.ecc_step_size. So we would have the following names.
+  chip->bits_per_cell = id_data[2] & NAND_CI_CELLTYPE_MSK
+  chip->bits_per_cell >>= NAND_CI_CELLTYPE_SHIFT;
+  chip->bits_per_cell += 1;
 
-For ECC step size:
+for chips listed by full-ID, add an appropriate flag/field; and for ONFI
+chips, just use p->bits_per_cell.
 
-  /sys/class/mtd/mtdX/ecc_step_size
-  mtd_info.ecc_step_size
-  nand_chip.ecc.size    <--- candidate for renaming to ...ecc.step_size
+If you really need the other cellinfo fields in the future, we can add
+more fields to nand_chip.
 
-For ECC strength:
+> 
+> >  	if (onfi_feature(chip) & ONFI_FEATURE_16_BIT_BUS)
+> >  		*busw = NAND_BUSWIDTH_16;
+> >  	else
 
-  /sys/class/mtd/mtdX/ecc_strength
-  mtd_info.ecc_strength
-  nand_chip.ecc.strength
-
-Other fields to consider for internal naming:
-
-  # Number of ECC steps per page
-  nand_chip.ecc.steps
-
-  # Number of ECC bytes per ECC step
-  nand_chip.ecc.bytes
-
-Please, let's get an agreement on one of these, so we hopefully only
-need at most a v4 patch series:
-
-(1) Huang's current patch set (v3)
-(2) My proposed naming above
-(3) A third option? (AFAICT, (1) or (2) should be satisfactory)
-
-If we go with (2), the v4 patch series only needs to take care of the
-new sysfs naming (plus documentation) and the new mtd_info field naming.
-Any internal consistency patches (e.g., for nand_ecc_ctrl) can come as
-follow-ups.
-
-> >In addition, chip->ecc.bytes should also be helpful for userspace
-> >utility to determine how much bytes to reserve in spare-area for ECC.
-> >So exposing that as sysfs entry is also good.
-> >
-> I do not need the chip->ecc.bytes. :)
-> For me, export the chip->ecc.size is enough.
-
-A better argument against this is that ecc.bytes does not necessarily
-have utility across many types of NAND drivers by itself, since ECC
-layouts differ. And at that point, we're trying to duplicate the
-behavior of ioctl(ECCGETLAYOUT) (which notably has run out of room and
-isn't 100% informative anymore).
-
-> So you can submit a patch if you need this field.
-
-Yes, if you have good reason for exporting it, send a patch and a good
-argument. And it would need to explain why we can't just use
-ECCGETLAYOUT.
-
+Thanks,
 Brian
+
+[1] An incomplete NAND ID table:
+
+  http://www.linux-mtd.infradead.org/nand-data/nanddata.html
