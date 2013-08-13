@@ -1,22 +1,29 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from co9ehsobe002.messaging.microsoft.com ([207.46.163.25]
+ helo=co9outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V96tO-0005SR-VG
- for linux-mtd@lists.infradead.org; Tue, 13 Aug 2013 05:11:39 +0000
-From: Marek Vasut <marex@denx.de>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH 1/4] mtd: m25p80: Pass flags through CAT25_INFO macro
-Date: Mon, 12 Aug 2013 22:07:03 +0200
-References: <1376302946-11534-1-git-send-email-s.hauer@pengutronix.de>
- <1376302946-11534-2-git-send-email-s.hauer@pengutronix.de>
-In-Reply-To: <1376302946-11534-2-git-send-email-s.hauer@pengutronix.de>
+ id 1V97rO-0006bw-Ll
+ for linux-mtd@lists.infradead.org; Tue, 13 Aug 2013 06:13:39 +0000
+Message-ID: <5209CEA8.9070504@freescale.com>
+Date: Tue, 13 Aug 2013 14:14:00 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201308122207.04080.marex@denx.de>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- kernel@pengutronix.de
+To: "Gupta, Pekon" <pekon@ti.com>
+Subject: Re: [PATCH v3 3/6] mtd: set the ecc step size for master/slave
+ mtd_info
+References: <1376285092-19683-1-git-send-email-b32955@freescale.com>
+ <1376285092-19683-4-git-send-email-b32955@freescale.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9F2A32@DBDE04.ent.ti.com>
+ <52089C91.4090903@freescale.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9F2B57@DBDE04.ent.ti.com>
+ <5208AE99.6020508@freescale.com> <20130813002512.GC7267@brian-ubuntu>
+ <20980858CB6D3A4BAE95CA194937D5E73E9F4173@DBDE04.ent.ti.com>
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9F4173@DBDE04.ent.ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,69 +33,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Sascha Hauer,
+=E4=BA=8E 2013=E5=B9=B408=E6=9C=8813=E6=97=A5 12:29, Gupta, Pekon =E5=86=99=
+=E9=81=93:
+> (1) Huang's current patch set (v3)
+> >  (2) My proposed naming above
+> >  (3) A third option? (AFAICT, (1) or (2) should be satisfactory)
+> > =20
+> >  If we go with (2), the v4 patch series only needs to take care of th=
+e
+> >  new sysfs naming (plus documentation) and the new mtd_info field nam=
+ing.
+I agree with the renaming, i will wait for several days, and send out=20
+the v4.
 
-> The flags may have to be overwritten, so add them to the CAT25_INFO
-> macro.
-> 
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> ---
->  drivers/mtd/devices/m25p80.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 2f3d2a5..75d4391 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -694,13 +694,13 @@ struct flash_info {
->  		.flags = (_flags),					\
->  	})
-> 
-> -#define CAT25_INFO(_sector_size, _n_sectors, _page_size, _addr_width)	
-\
-> +#define CAT25_INFO(_sector_size, _n_sectors, _page_size, _addr_width,
-> _flags)	\ ((kernel_ulong_t)&(struct flash_info) {				
-\
->  		.sector_size = (_sector_size),				\
->  		.n_sectors = (_n_sectors),				\
->  		.page_size = (_page_size),				\
->  		.addr_width = (_addr_width),				\
-> -		.flags = M25P_NO_ERASE,					\
-> +		.flags = (_flags),					\
->  	})
-> 
->  /* NOTE: double check command sets and memory organization when you add
-> @@ -732,7 +732,7 @@ static const struct spi_device_id m25p_ids[] = {
->  	{ "en25qh256", INFO(0x1c7019, 0, 64 * 1024, 512, 0) },
-> 
->  	/* Everspin */
-> -	{ "mr25h256", CAT25_INFO(  32 * 1024, 1, 256, 2) },
-> +	{ "mr25h256", CAT25_INFO(  32 * 1024, 1, 256, 2, M25P_NO_ERASE) },
-> 
->  	/* GigaDevice */
->  	{ "gd25q32", INFO(0xc84016, 0, 64 * 1024,  64, SECT_4K) },
-> @@ -846,11 +846,11 @@ static const struct spi_device_id m25p_ids[] = {
->  	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512, SECT_4K) },
-> 
->  	/* Catalyst / On Semiconductor -- non-JEDEC */
-> -	{ "cat25c11", CAT25_INFO(  16, 8, 16, 1) },
-> -	{ "cat25c03", CAT25_INFO(  32, 8, 16, 2) },
-> -	{ "cat25c09", CAT25_INFO( 128, 8, 32, 2) },
-> -	{ "cat25c17", CAT25_INFO( 256, 8, 32, 2) },
-> -	{ "cat25128", CAT25_INFO(2048, 8, 64, 2) },
-> +	{ "cat25c11", CAT25_INFO(  16, 8, 16, 1, M25P_NO_ERASE) },
-> +	{ "cat25c03", CAT25_INFO(  32, 8, 16, 2, M25P_NO_ERASE) },
-> +	{ "cat25c09", CAT25_INFO( 128, 8, 32, 2, M25P_NO_ERASE) },
-> +	{ "cat25c17", CAT25_INFO( 256, 8, 32, 2, M25P_NO_ERASE) },
-> +	{ "cat25128", CAT25_INFO(2048, 8, 64, 2, M25P_NO_ERASE) },
->  	{ },
->  };
->  MODULE_DEVICE_TABLE(spi, m25p_ids);
-
-I can't say I like the growing macro magic (voodoo?) in this file, but your 
-patch doesn't break anything and I don't feel like reworking this, so:
-
-Acked-by: Marek Vasut <marex@denx.de>
-
-Best regards,
-Marek Vasut
+thanks
+Huang Shijie
