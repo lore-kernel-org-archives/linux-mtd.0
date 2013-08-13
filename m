@@ -1,24 +1,17 @@
-Received: from mail-pd0-x22d.google.com ([2607:f8b0:400e:c02::22d])
+Received: from tx2ehsobe005.messaging.microsoft.com ([65.55.88.15]
+ helo=tx2outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V9957-0008Ju-Bm
- for linux-mtd@lists.infradead.org; Tue, 13 Aug 2013 07:31:54 +0000
-Received: by mail-pd0-f173.google.com with SMTP id p10so4508527pdj.4
- for <linux-mtd@lists.infradead.org>; Tue, 13 Aug 2013 00:31:31 -0700 (PDT)
-Message-ID: <5209E0D1.6000501@gmail.com>
-Date: Tue, 13 Aug 2013 00:31:29 -0700
-From: Brian Norris <computersforpeace@gmail.com>
+ id 1V9Adt-0001Xp-12
+ for linux-mtd@lists.infradead.org; Tue, 13 Aug 2013 09:11:54 +0000
+From: Huang Shijie <b32955@freescale.com>
+To: <computersforpeace@gmail.com>
+Subject: [mtd-www: ] nand-data: add four Toshiba nand chips
+Date: Tue, 13 Aug 2013 17:09:24 +0800
+Message-ID: <1376384964-740-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [patch] mtd: nand: silence some shift wrap warnings
-References: <20130809094904.GC29282@elgon.mountain>
- <5209D0C6.5070307@freescale.com> <20130813063533.GP5502@mwanda>
-In-Reply-To: <20130813063533.GP5502@mwanda>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- kernel-janitors@vger.kernel.org, Matthieu CASTET <matthieu.castet@parrot.com>,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain
+Cc: artem.bityutskiy@linux.intel.com, linux-mtd@lists.infradead.org,
+ dwmw2@infradead.org, Huang Shijie <b32955@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,31 +21,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/12/2013 11:35 PM, Dan Carpenter wrote:
-> On Tue, Aug 13, 2013 at 02:23:02PM +0800, Huang Shijie wrote:
->> 于 2013年08月09日 17:49, Dan Carpenter 写道:
->>> There are static checkers which complain when we declare variables as
->>
->> could you tell me which "checker" and how do you test it?
->>
->> you'd better post the warning message here.
->>
->
-> It's some stuff I'm working on but haven't released yet.  But "len"
+Add the items for four Toshiba nand chips.
+All the four nand chips are supported by the kernel now.
 
-Which static checker isn't all that important, so no worries. The patch 
-can stand on its own merits.
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+ nand-data/nanddata.csv |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
 
-> and "ofs" are declared as u64 and loff_t.  If they were declared as
-> unsigned long then maybe the current code would be fine because the
-> code would be correct-ish on 32 bit arches.
-
-IIUC, it's still correct, since we surely will never have an eraseblock 
-size near 4GB (i.e., if the shift is ever larger than 31, we have a bug 
-somewhere else).
-
-> So this is definitely the right thing to do.
-
-As far as types are concerned, yes, this is still the right thing to do.
-
-Brian
+diff --git a/nand-data/nanddata.csv b/nand-data/nanddata.csv
+index 20a6f86..408f0df 100644
+--- a/nand-data/nanddata.csv
++++ b/nand-data/nanddata.csv
+@@ -192,6 +192,10 @@
+ "Toshiba","TC58NVG0S3E","0x98","0xD1","0x98D1...",128,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte","1?",5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,,TRUE,TRUE,TRUE,1,1,1,"Single",,"Datasheet doesn't list full ID, only shows ID decoder table"
+ "Toshiba","TC58NVG1S3E","0x98","0xDA","0x98DA...",256,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte","1?",5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,,TRUE,TRUE,TRUE,1,1,1,"Single",,"Datasheet doesn't list full ID, only shows ID decoder table"
+ "Toshiba","TC58NVG2S3E","0x98","0xDC","0x98DC...",512,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte","1?",5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,,TRUE,TRUE,TRUE,1,1,1,"Single",,"Datasheet doesn't list full ID, only shows ID decoder table"
++"Toshiba","TC58NVG2S0F","0x98","0xDC","0x98dc902676150108",512,4096,224,"256 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"4-bit/512-byte","1",8,"Full ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,,TRUE,TRUE,TRUE,1,1,1,"Single",,"Datasheet doesn't list full ID, only shows ID decoder table, get the full ID by testing"
++"Toshiba","TC58NVG3S0F","0x98","0xD3","0x98d3902676150208",1024,4096,232,"256 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"4-bit/512-byte","1",8,"Full ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,,TRUE,TRUE,TRUE,1,1,1,"Single",,"Datasheet doesn't list full ID, only shows ID decoder table, get the full ID by testing"
++"Toshiba","TC58NVG5D2","0x98","0xD7","0x98d7943276560900",4096,8192,640,"1 MB","x8","N/A","1st or last page (1st byte in OOB = non FFh)",TRUE,FALSE,TRUE,FALSE,TRUE,FALSE,"40-bit/1024-byte","2",8,"Full ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,,TRUE,TRUE,TRUE,1,1,1,"Single",,"Datasheet doesn't list full ID, only shows ID decoder table, get the full ID by testing"
++"Toshiba","TC58NVG6D2","0x98","0xDE","0x98de948276560420",8192,8192,640,"2 MB","x8","N/A","1st or last page (1st byte in OOB = non FFh)",TRUE,FALSE,TRUE,FALSE,TRUE,FALSE,"40-bit/1024-byte","2",8,"Full ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,,TRUE,TRUE,TRUE,1,1,1,"Single",,"Datasheet doesn't list full ID, only shows ID decoder table, get the full ID by testing"
+ "Hynix","H27UAG8T2M","0xAD","0xD5","0xADD514B644",2048,4096,128,"512 KB","x8","N/A","Last or (last-2)th page (1st byte in OOB = non FFh)",FALSE,FALSE,TRUE,TRUE,TRUE,FALSE,"4-bit/528-byte",2,5,"Extended ID decode",FALSE,FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,1,1,1,"Single",,
+ "Samsung","K9GAG08U0E","0xEC","0xD5","0xECD584725042",2048,8192,436,"1024 KB","x8","N/A","1st or last page (1st byte in OOB = non FFh)",TRUE,FALSE,TRUE,FALSE,TRUE,FALSE,"24-bit/1078.5-byte",2,6,"Extended ID decode (Samsung)",FALSE,FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,1,1,1,"Single",,"Weird 1st AND last page scan?"
+ "Samsung","K9LBG08U0E","0xEC","0xD7","0xECD7C5725442",4096,8192,436,"1024 KB","x8","N/A","1st or last page (1st byte in OOB = non FFh)",TRUE,FALSE,TRUE,FALSE,TRUE,FALSE,"24-bit/1078.5-byte",2,6,"Extended ID decode (Samsung)",FALSE,FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,1,2,1,"Single","K9GAG08U0E","Weird 1st AND last page scan?"
+-- 
+1.7.3.2
