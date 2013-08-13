@@ -1,24 +1,18 @@
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Brian Norris <computersforpeace@gmail.com>, Huang Shijie
- <b32955@freescale.com>
-Subject: RE: [PATCH v3 3/6] mtd: set the ecc step size for master/slave
- mtd_info
-Date: Tue, 13 Aug 2013 04:29:46 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9F4173@DBDE04.ent.ti.com>
-References: <1376285092-19683-1-git-send-email-b32955@freescale.com>
- <1376285092-19683-4-git-send-email-b32955@freescale.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9F2A32@DBDE04.ent.ti.com>
- <52089C91.4090903@freescale.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9F2B57@DBDE04.ent.ti.com>
- <5208AE99.6020508@freescale.com> <20130813002512.GC7267@brian-ubuntu>
-In-Reply-To: <20130813002512.GC7267@brian-ubuntu>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>
+Received: from mail-pb0-x235.google.com ([2607:f8b0:400e:c01::235])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V96YN-00059K-Cc
+ for linux-mtd@lists.infradead.org; Tue, 13 Aug 2013 04:49:56 +0000
+Received: by mail-pb0-f53.google.com with SMTP id up15so7576499pbc.12
+ for <linux-mtd@lists.infradead.org>; Mon, 12 Aug 2013 21:49:33 -0700 (PDT)
+From: Nilanjan Roychowdhury <nilanjan.roychowdhury@gmail.com>
+To: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: [PATCH 1/1] Resubmit mtd: mtdoops: fix for a potential memory leak in
+ mtdoops_notify_remove
+Date: Mon, 12 Aug 2013 21:48:35 -0700
+Message-Id: <1376369315-5170-1-git-send-email-nilanjan.roychowdhury@gmail.com>
+Cc: linux-kernel@vger.kernel.org,
+ Nilanjan Roychowdhury <nilanjan.roychowdhury@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,59 +22,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiANCj4gT24gTW9uLCBBdWcgMTIsIDIwMTMgYXQgMDU6NDQ6NTdQTSArMDgwMCwgSHVhbmcgU2hp
-amllIHdyb3RlOg0KPiA+IOS6jiAyMDEz5bm0MDjmnIgxMuaXpSAxNzoyNCwgR3VwdGEsIFBla29u
-IOWGmemBkzoNCj4gPiA+W1Bla29uXTogRm9sbG93aW5nIEFydGVtJ3MgcmVjb21tZW5kYXRpb25z
-Li4gQ2FuIHRoaXMgYmUgbmFtZWQgYXMNCj4gPiA+Y2hpcC0+ZWNjLnNpemUgPSBlY2Nfc3RlcF9z
-aXplLg0KPiA+ID50aGVuIGNoaXAtPmVjYy5ieXRlcyAgPSBlY2Nfc3luZHJvbWVfc2l6ZSAob3Ig
-ZWNjX2NvZGVfc2l6ZSkNCj4gPiB5ZXMsIHdlIGNhbiByZW5hbWUgdGhlc2UgZmllbGRzIGluIHRo
-ZSBmdXR1cmUgd2l0aCBhbm90aGVyIHBhdGNoIHNldC4NCj4gDQo+IEludGVybmFsIG5hbWluZyBj
-YW4gYmUgY2hhbmdlZCBpbiB0aGUgZnV0dXJlIGlmIG5lZWRlZCwgYnV0IHdlIHJlYWxseQ0KPiBu
-ZWVkIHRvIGdldCBhIGdvb2Qgc3lzZnMgbmFtZSBub3csIHNpbmNlIHRoYXQgYmVjb21lcyBBQkku
-IEFuZCBpdCB3b3VsZA0KPiBhbHNvIGJlIGdvb2QgdG8gZ2V0IHRoaXMgdG8gYmUgY2xlYXJseSBj
-b25zaXN0ZW50IGludGVybmFsbHkgdG9vLg0KPiANCj4gU28gdGhlIG1haW4gZGVjaXNpb24gdG8g
-YmUgbWFkZSBoZXJlOiB3aGF0IHRvIG5hbWUgdGhlIHN5c2ZzIGZpZWxkPyBJdA0KPiBjdXJyZW50
-bHkgc3RhbmRzIGFzIGVjY19zdGVwLCBidXQgZm9yIGNsYXJpdHkgdG8gdXNlcnMgKGFuZCBmb3Ig
-YXZvaWRpbmcNCj4gaW50ZXJuYWwgY29uZnVzaW9uIHdpdGggbmFuZF9jaGlwLmVjYy5zdGVwcyks
-IEkgdGhpbmsgZWNjX3N0ZXBfc2l6ZSBpcw0KPiBqdXN0IGFzIGdvb2Qgb3IgYmV0dGVyLg0KPiAN
-Cj4gVGhlbiwgd2UgbWlnaHQgYXMgd2VsbCBoYXZlIHRoZSBtdGRfaW5mbyBmaWVsZCBiZQ0KPiBt
-dGRfaW5mby5lY2Nfc3RlcF9zaXplLiBTbyB3ZSB3b3VsZCBoYXZlIHRoZSBmb2xsb3dpbmcgbmFt
-ZXMuDQo+IA0KPiBGb3IgRUNDIHN0ZXAgc2l6ZToNCj4gDQo+ICAgL3N5cy9jbGFzcy9tdGQvbXRk
-WC9lY2Nfc3RlcF9zaXplDQo+ICAgbXRkX2luZm8uZWNjX3N0ZXBfc2l6ZQ0KPiAgIG5hbmRfY2hp
-cC5lY2Muc2l6ZSAgICA8LS0tIGNhbmRpZGF0ZSBmb3IgcmVuYW1pbmcgdG8gLi4uZWNjLnN0ZXBf
-c2l6ZQ0KPiANCkFncmVlLg0KDQo+IEZvciBFQ0Mgc3RyZW5ndGg6DQo+IA0KPiAgIC9zeXMvY2xh
-c3MvbXRkL210ZFgvZWNjX3N0cmVuZ3RoDQo+ICAgbXRkX2luZm8uZWNjX3N0cmVuZ3RoDQo+ICAg
-bmFuZF9jaGlwLmVjYy5zdHJlbmd0aA0KPiANCkFncmVlLg0KDQo+IE90aGVyIGZpZWxkcyB0byBj
-b25zaWRlciBmb3IgaW50ZXJuYWwgbmFtaW5nOg0KPiANCj4gICAjIE51bWJlciBvZiBFQ0Mgc3Rl
-cHMgcGVyIHBhZ2UNCj4gICBuYW5kX2NoaXAuZWNjLnN0ZXBzDQptdGRfaW5mby5lY2Nfc3RlcHMg
-IChpZiBuZWVkZWQgaW4gbXRkX2luZm8pDQoNCj4gDQo+ICAgIyBOdW1iZXIgb2YgRUNDIGJ5dGVz
-IHBlciBFQ0Mgc3RlcA0KPiAgIG5hbmRfY2hpcC5lY2MuYnl0ZXMNCm10ZF9pbmZvLmVjY19jb2Rl
-X3NpemUNCm5hbmRfY2hpcC5lY2MuYnl0ZXMgICAgPC0tLSBjYW5kaWRhdGUgZm9yIHJlbmFtaW5n
-IHRvIC4uLmVjYy5jb2RlX3NpemUNCg0KPiBQbGVhc2UsIGxldCdzIGdldCBhbiBhZ3JlZW1lbnQg
-b24gb25lIG9mIHRoZXNlLCBzbyB3ZSBob3BlZnVsbHkgb25seQ0KPiBuZWVkIGF0IG1vc3QgYSB2
-NCBwYXRjaCBzZXJpZXM6DQo+IA0KPiAoMSkgSHVhbmcncyBjdXJyZW50IHBhdGNoIHNldCAodjMp
-DQo+ICgyKSBNeSBwcm9wb3NlZCBuYW1pbmcgYWJvdmUNCj4gKDMpIEEgdGhpcmQgb3B0aW9uPyAo
-QUZBSUNULCAoMSkgb3IgKDIpIHNob3VsZCBiZSBzYXRpc2ZhY3RvcnkpDQo+IA0KPiBJZiB3ZSBn
-byB3aXRoICgyKSwgdGhlIHY0IHBhdGNoIHNlcmllcyBvbmx5IG5lZWRzIHRvIHRha2UgY2FyZSBv
-ZiB0aGUNCj4gbmV3IHN5c2ZzIG5hbWluZyAocGx1cyBkb2N1bWVudGF0aW9uKSBhbmQgdGhlIG5l
-dyBtdGRfaW5mbyBmaWVsZCBuYW1pbmcuDQo+IEFueSBpbnRlcm5hbCBjb25zaXN0ZW5jeSBwYXRj
-aGVzIChlLmcuLCBmb3IgbmFuZF9lY2NfY3RybCkgY2FuIGNvbWUgYXMNCj4gZm9sbG93LXVwcy4N
-Cj4gDQo+ID4gPkluIGFkZGl0aW9uLCBjaGlwLT5lY2MuYnl0ZXMgc2hvdWxkIGFsc28gYmUgaGVs
-cGZ1bCBmb3IgdXNlcnNwYWNlDQo+ID4gPnV0aWxpdHkgdG8gZGV0ZXJtaW5lIGhvdyBtdWNoIGJ5
-dGVzIHRvIHJlc2VydmUgaW4gc3BhcmUtYXJlYSBmb3IgRUNDLg0KPiA+ID5TbyBleHBvc2luZyB0
-aGF0IGFzIHN5c2ZzIGVudHJ5IGlzIGFsc28gZ29vZC4NCj4gPiA+DQo+ID4gSSBkbyBub3QgbmVl
-ZCB0aGUgY2hpcC0+ZWNjLmJ5dGVzLiA6KQ0KPiA+IEZvciBtZSwgZXhwb3J0IHRoZSBjaGlwLT5l
-Y2Muc2l6ZSBpcyBlbm91Z2guDQo+IA0KPiBBIGJldHRlciBhcmd1bWVudCBhZ2FpbnN0IHRoaXMg
-aXMgdGhhdCBlY2MuYnl0ZXMgZG9lcyBub3QgbmVjZXNzYXJpbHkNCj4gaGF2ZSB1dGlsaXR5IGFj
-cm9zcyBtYW55IHR5cGVzIG9mIE5BTkQgZHJpdmVycyBieSBpdHNlbGYsIHNpbmNlIEVDQw0KPiBs
-YXlvdXRzIGRpZmZlci4gQW5kIGF0IHRoYXQgcG9pbnQsIHdlJ3JlIHRyeWluZyB0byBkdXBsaWNh
-dGUgdGhlDQo+IGJlaGF2aW9yIG9mIGlvY3RsKEVDQ0dFVExBWU9VVCkgKHdoaWNoIG5vdGFibHkg
-aGFzIHJ1biBvdXQgb2Ygcm9vbSBhbmQNCj4gaXNuJ3QgMTAwJSBpbmZvcm1hdGl2ZSBhbnltb3Jl
-KS4NCj4gDQo+ID4gU28geW91IGNhbiBzdWJtaXQgYSBwYXRjaCBpZiB5b3UgbmVlZCB0aGlzIGZp
-ZWxkLg0KPiANCj4gWWVzLCBpZiB5b3UgaGF2ZSBnb29kIHJlYXNvbiBmb3IgZXhwb3J0aW5nIGl0
-LCBzZW5kIGEgcGF0Y2ggYW5kIGEgZ29vZA0KPiBhcmd1bWVudC4gQW5kIGl0IHdvdWxkIG5lZWQg
-dG8gZXhwbGFpbiB3aHkgd2UgY2FuJ3QganVzdCB1c2UNCj4gRUNDR0VUTEFZT1VULg0KPiANClRo
-YW5rcyBmb3IgdGhlIGluZm8uLg0KSSB3YXNuJ3QgZnVsbHkgYXdhcmUgb2YgaW9jdGwoRUNDR0VU
-TEFZT1VUKSwgSSdsbCBleHBsb3JlIGl0IGZ1cnRoZXIuDQoNCkFsc28sIGlzIHRoZXJlIGFueSBk
-b2N1bWVudGF0aW9uIG9yIFVSTCBleHBsYWluaW5nIGFsbCBpb2N0bCBmb3IgTVREPw0KDQp3aXRo
-IHJlZ2FyZHMsIHBla29uDQoNCj4gQnJpYW4NCg==
+we are allocating cxt->oops_page_used using vmalloc in mtdoops_notify_add for
+every mtd_info addition but not freeing it in mtdoops_notify_remove. Also care is
+taken so that we do not free the same pointer again in module remove.
+
+Signed-off-by: Nilanjan Roychowdhury <nilanjan.roychowdhury@gmail.com>
+---
+ drivers/mtd/mtdoops.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
+index 97bb8f6..4b8b621 100644
+--- a/drivers/mtd/mtdoops.c
++++ b/drivers/mtd/mtdoops.c
+@@ -386,6 +386,8 @@ static void mtdoops_notify_remove(struct mtd_info *mtd)
+ 	cxt->mtd = NULL;
+ 	flush_work(&cxt->work_erase);
+ 	flush_work(&cxt->work_write);
++	vfree(cxt->oops_page_used);
++	cxt->oops_page_used = NULL;
+ }
+ 
+ 
+@@ -439,7 +441,8 @@ static void __exit mtdoops_exit(void)
+ 
+ 	unregister_mtd_user(&mtdoops_notifier);
+ 	vfree(cxt->oops_buf);
+-	vfree(cxt->oops_page_used);
++	if (cxt->oops_page_used)
++		vfree(cxt->oops_page_used);
+ }
+ 
+ 
+-- 
+1.7.9.5
