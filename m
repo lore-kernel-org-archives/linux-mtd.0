@@ -1,22 +1,29 @@
-Received: from gate.crashing.org ([63.228.1.57])
+Received: from mail-pd0-x22d.google.com ([2607:f8b0:400e:c02::22d])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V91UI-0000ez-SD
- for linux-mtd@lists.infradead.org; Mon, 12 Aug 2013 23:25:23 +0000
-Message-ID: <1376349843.3978.1.camel@pasglop>
-Subject: Re: mm/slab: ppc: ubi: kmalloc_slab WARNING / PPC + UBI driver
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-To: Wladislav Wiebe <wladislav.kw@gmail.com>
-Date: Tue, 13 Aug 2013 09:24:03 +1000
-In-Reply-To: <5208C1CD.3040601@gmail.com>
-References: <51F8F827.6020108@gmail.com>
- <20130731173434.GA27470@blackmetal.musicnaut.iki.fi>
- <5208C1CD.3040601@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: dedekind1@gmail.com, linuxppc-dev@lists.ozlabs.org,
- Aaro Koskinen <aaro.koskinen@iki.fi>, penberg@kernel.org, linux-mm@kvack.org,
- linux-mtd@lists.infradead.org, cl@linux.com, dwmw2@infradead.org
+ id 1V92Qe-0001as-MO
+ for linux-mtd@lists.infradead.org; Tue, 13 Aug 2013 00:25:41 +0000
+Received: by mail-pd0-f173.google.com with SMTP id p10so4130204pdj.32
+ for <linux-mtd@lists.infradead.org>; Mon, 12 Aug 2013 17:25:16 -0700 (PDT)
+Date: Mon, 12 Aug 2013 17:25:12 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH v3 3/6] mtd: set the ecc step size for master/slave
+ mtd_info
+Message-ID: <20130813002512.GC7267@brian-ubuntu>
+References: <1376285092-19683-1-git-send-email-b32955@freescale.com>
+ <1376285092-19683-4-git-send-email-b32955@freescale.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9F2A32@DBDE04.ent.ti.com>
+ <52089C91.4090903@freescale.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9F2B57@DBDE04.ent.ti.com>
+ <5208AE99.6020508@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5208AE99.6020508@freescale.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "Gupta, Pekon" <pekon@ti.com>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,85 +33,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2013-08-12 at 13:06 +0200, Wladislav Wiebe wrote:
-> Hi guys,
-> 
-> we got the real root cause of the allocation issue:
-> 
-> Subject: [PATCH 1/1] of: fdt: fix memory initialization for expanded DT
-> 
-> Already existing property flags are filled wrong for properties created from
-> initial FDT. This could cause problems if this DYNAMIC device-tree functions
-> are used later, i.e. properties are attached/detached/replaced. Simply dumping
-> flags from the running system show, that some initial static (not allocated via
-> kzmalloc()) nodes are marked as dynamic.
+On Mon, Aug 12, 2013 at 05:44:57PM +0800, Huang Shijie wrote:
+> 于 2013年08月12日 17:24, Gupta, Pekon 写道:
+> >[Pekon]: Following Artem's recommendations.. Can this be named as
+> >chip->ecc.size = ecc_step_size.
+> >then chip->ecc.bytes  = ecc_syndrome_size (or ecc_code_size)
+> yes, we can rename these fields in the future with another patch set.
 
-This should go into stable as well...
+Internal naming can be changed in the future if needed, but we really
+need to get a good sysfs name now, since that becomes ABI. And it would
+also be good to get this to be clearly consistent internally too.
 
-> I putted some debug extensions to property_proc_show(..) :
-> ..
-> +       if (OF_IS_DYNAMIC(pp))
-> +               pr_err("DEBUG: xxx : OF_IS_DYNAMIC\n");
-> +       if (OF_IS_DETACHED(pp))
-> +               pr_err("DEBUG: xxx : OF_IS_DETACHED\n");
-> 
-> when you operate on the nodes (e.g.: ~$ cat /proc/device-tree/*some_node*) you
-> will see that those flags are filled wrong, basically in most cases it will dump
-> a DYNAMIC or DETACHED status, which is in not true.
-> (BTW. this OF_IS_DETACHED is a own define for debug purposes which which just
-> make a test_bit(OF_DETACHED, &x->_flags)
-> 
-> If nodes are dynamic kernel is allowed to kfree() them. But it will crash
-> attempting to do so on the nodes from FDT -- they are not allocated via
-> kzmalloc().
-> 
-> Signed-off-by: Wladislav Wiebe <wladislav.kw@gmail.com>
-> ---
->  drivers/of/fdt.c |    2 ++
->  1 files changed, 2 insertions(+), 0 deletions(-)
-> 
-> diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-> index 6bb7cf2..b10ba00 100644
-> --- a/drivers/of/fdt.c
-> +++ b/drivers/of/fdt.c
-> @@ -392,6 +392,8 @@ static void __unflatten_device_tree(struct boot_param_header *blob,
->  	mem = (unsigned long)
->  		dt_alloc(size + 4, __alignof__(struct device_node));
-> 
-> +	memset((void *)mem, 0, size);
-> +
->  	((__be32 *)mem)[size / 4] = cpu_to_be32(0xdeadbeef);
-> 
->  	pr_debug("  unflattening %lx...\n", mem);
-> -- 1.7.1
-> 
-> This is committed to the mainline - hope it comes in soon.
-> 
-> Thanks & BR,
-> Wladislav Wiebe
-> 
-> 
-> On 31/07/13 19:34, Aaro Koskinen wrote:
-> > Hi,
-> > 
-> > On Wed, Jul 31, 2013 at 01:42:31PM +0200, Wladislav Wiebe wrote:
-> >> DEBUG: xxx kmalloc_slab, requested 'size' = 8388608, KMALLOC_MAX_SIZE = 4194304
-> > [...]
-> >> [ccd3be60] [c0099fd4] kmalloc_slab+0x48/0xe8 (unreliable)
-> >> [ccd3be70] [c00ae650] __kmalloc+0x20/0x1b4
-> >> [ccd3be90] [c00d46f4] seq_read+0x2a4/0x540
-> >> [ccd3bee0] [c00fe09c] proc_reg_read+0x5c/0x90
-> >> [ccd3bef0] [c00b4e1c] vfs_read+0xa4/0x150
-> >> [ccd3bf10] [c00b500c] SyS_read+0x4c/0x84
-> >> [ccd3bf40] [c000be80] ret_from_syscall+0x0/0x3c
-> > 
-> > It seems some procfs file is trying to dump 8 MB at a single go. You
-> > need to fix that to return data in smaller chunks. What file is it?
-> > 
-> > A.
-> > 
-> 
-> _______________________________________________
-> Linuxppc-dev mailing list
-> Linuxppc-dev@lists.ozlabs.org
-> https://lists.ozlabs.org/listinfo/linuxppc-dev
+So the main decision to be made here: what to name the sysfs field? It
+currently stands as ecc_step, but for clarity to users (and for avoiding
+internal confusion with nand_chip.ecc.steps), I think ecc_step_size is
+just as good or better.
+
+Then, we might as well have the mtd_info field be
+mtd_info.ecc_step_size. So we would have the following names.
+
+For ECC step size:
+
+  /sys/class/mtd/mtdX/ecc_step_size
+  mtd_info.ecc_step_size
+  nand_chip.ecc.size    <--- candidate for renaming to ...ecc.step_size
+
+For ECC strength:
+
+  /sys/class/mtd/mtdX/ecc_strength
+  mtd_info.ecc_strength
+  nand_chip.ecc.strength
+
+Other fields to consider for internal naming:
+
+  # Number of ECC steps per page
+  nand_chip.ecc.steps
+
+  # Number of ECC bytes per ECC step
+  nand_chip.ecc.bytes
+
+Please, let's get an agreement on one of these, so we hopefully only
+need at most a v4 patch series:
+
+(1) Huang's current patch set (v3)
+(2) My proposed naming above
+(3) A third option? (AFAICT, (1) or (2) should be satisfactory)
+
+If we go with (2), the v4 patch series only needs to take care of the
+new sysfs naming (plus documentation) and the new mtd_info field naming.
+Any internal consistency patches (e.g., for nand_ecc_ctrl) can come as
+follow-ups.
+
+> >In addition, chip->ecc.bytes should also be helpful for userspace
+> >utility to determine how much bytes to reserve in spare-area for ECC.
+> >So exposing that as sysfs entry is also good.
+> >
+> I do not need the chip->ecc.bytes. :)
+> For me, export the chip->ecc.size is enough.
+
+A better argument against this is that ecc.bytes does not necessarily
+have utility across many types of NAND drivers by itself, since ECC
+layouts differ. And at that point, we're trying to duplicate the
+behavior of ioctl(ECCGETLAYOUT) (which notably has run out of room and
+isn't 100% informative anymore).
+
+> So you can submit a patch if you need this field.
+
+Yes, if you have good reason for exporting it, send a patch and a good
+argument. And it would need to explain why we can't just use
+ECCGETLAYOUT.
+
+Brian
