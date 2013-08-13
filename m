@@ -1,22 +1,24 @@
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Brian Norris <computersforpeace@gmail.com>, Huang Shijie
- <b32955@freescale.com>
-Subject: RE: [PATCH 01/10] mtd: set the cell information for ONFI nand
-Date: Tue, 13 Aug 2013 04:10:59 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9F4137@DBDE04.ent.ti.com>
-References: <1376286173-12581-1-git-send-email-b32955@freescale.com>
- <1376286173-12581-2-git-send-email-b32955@freescale.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9F2A6B@DBDE04.ent.ti.com>
- <20130813004938.GD7267@brian-ubuntu> <5209A1F2.80600@freescale.com>
- <20130813031702.GI7267@brian-ubuntu>
-In-Reply-To: <20130813031702.GI7267@brian-ubuntu>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from mail-vc0-x230.google.com ([2607:f8b0:400c:c03::230])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V95xV-0004WU-B1
+ for linux-mtd@lists.infradead.org; Tue, 13 Aug 2013 04:11:50 +0000
+Received: by mail-vc0-f176.google.com with SMTP id ha11so3429860vcb.21
+ for <linux-mtd@lists.infradead.org>; Mon, 12 Aug 2013 21:11:28 -0700 (PDT)
 MIME-Version: 1.0
-Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>
+In-Reply-To: <20130812172649.GB7198@localhost>
+References: <1376251908-7451-1-git-send-email-nilanjan.roychowdhury@gmail.com>
+ <20130812172649.GB7198@localhost>
+Date: Tue, 13 Aug 2013 09:41:28 +0530
+Message-ID: <CAGq6Fke=DYbK=KO6RdTD2at9NPMKcmxzOQ2TL6fBfM2UgSOfRQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mtd: mtdoops: fix for a potential memory leak in
+ mtdoops_notify_remove
+From: Nilanjan Roychowdhury <nilanjan.roychowdhury@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,21 +28,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiANCj4gT24gVHVlLCBBdWcgMTMsIDIwMTMgYXQgMTE6MDM6MTRBTSArMDgwMCwgSHVhbmcgU2hp
-amllIHdyb3RlOg0KPiA+IOS6jiAyMDEz5bm0MDjmnIgxM+aXpSAwODo0OSwgQnJpYW4gTm9ycmlz
-IOWGmemBkzoNCj4gPiAgICAgIGN1cnJlbnRseSksIHdlIHNob3VsZCBtb2RpZnkgaXQgc28gdGhh
-dCBpcyBhIHJlbGlhYmxlIHNvdXJjZSBvZg0KPiA+ICAgICAgKm9ubHkqIDENCj4gPiAgICAgIHBp
-ZWNlIG9mIGluZm9ybWF0aW9uIC0tIHRoZSBudW1iZXIgb2YgYml0cyBwZXIgY2VsbC4gQ3VycmVu
-dGx5LCBpdA0KPiA+IGRvIHlvdSBuZWVkIHRvIHJlbmFtZSB0aGUgY2VsbGluZm8gdG8gYml0c19w
-ZXJfY2VsbCwgb3IgYWRkIGEgbmV3IGZpZWxkIDoNCj4gPiBiaXRzX3Blcl9jZWxsPw0KPiANCj4g
-V2VsbCwgbXkgd2hvbGUgcG9pbnQgd2FzIHRoYXQgJ2NlbGxpbmZvJyBpcyByZWFsbHkgbm90IHZl
-cnkgdXNlZnVsIGZvcg0KPiB1cy4gV2UganVzdCBtYXNrIGl0IG9mZiBhbGwgdGhlIHRpbWUsIGFu
-ZCBpdCBtYWtlcyBsaWZlIG1vcmUNCj4gY29tcGxpY2F0ZWQuDQo+IA0KPiBTbyBJJ2QganVzdCBy
-ZW5hbWUgY2VsbGluZm8gdG8gYml0c19wZXJfY2VsbCBhbmQgY2hhbmdlIGl0cw0KPiBhc3NpZ25t
-ZW50L3VzYWdlIGFwcHJvcHJpYXRlbHkuDQo+IA0KW1Bla29uXTogSG93IGFib3V0IG1vdmluZyAn
-Yml0X3Blcl9jZWxsJyBpbmZvIHRvIGNoaXAtPm9wdGlvbnMgPw0KQ29uc2lkZXJpbmcgJ2JpdF9w
-ZXJfY2VsbCcgaW5mbyBpcyBzaW1pbGFyIHRvIE5BTkRfQlVTV0lEVEhfMTYuLg0KLSBJdCBjYW4g
-YmUgZGV0ZXJtaW5lZCBieSByZWFkaW5nIE9ORkkgcGFyYW1ldGVycy4gT1INCi0gSXQgY2FuIGJl
-IHRha2VuIGZyb20gJ25hbmRfZmxhc2hfaWQnIHRhYmxlLiBPUg0KLSBBbmQgaXQgY2FuIGJlIHBy
-b3ZpZGVkIGFsb25nIHdpdGggYm9hcmQtZGF0YSAod2hpY2ggbm93IGlzIG9ic29sZXRlKS4NCg0K
-d2l0aCByZWdhcmRzLCBwZWtvbg0K
+On Mon, Aug 12, 2013 at 10:56 PM, Ezequiel Garcia
+<ezequiel.garcia@free-electrons.com> wrote:
+>
+> On Sun, Aug 11, 2013 at 01:11:48PM -0700, Nilanjan Roychowdhury wrote:
+> > we are allocating cxt->oops_page_used using vmalloc in mtdoops_notify_a=
+dd for
+> > every mtd_info addition but not freeing it in mtdoops_notify_remove
+> >
+> > Signed-off-by: Nilanjan Roychowdhury <nilanjan.roychowdhury@gmail.com>
+> > ---
+> >  drivers/mtd/mtdoops.c |    1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
+> > index 97bb8f6..02f49aa 100644
+> > --- a/drivers/mtd/mtdoops.c
+> > +++ b/drivers/mtd/mtdoops.c
+> > @@ -386,6 +386,7 @@ static void mtdoops_notify_remove(struct mtd_info *=
+mtd)
+> >       cxt->mtd =3D NULL;
+> >       flush_work(&cxt->work_erase);
+> >       flush_work(&cxt->work_write);
+> > +     vfree(cxt->oops_page_used);
+> >  }
+> >
+> > --
+> > 1.7.9.5
+> >
+>
+> Have you tested this patch doing an unregister/module remove cycle?
+>
+> I'm not entirely sure, but I *think* you must also remove the
+> vfree(cxt->oops_page_used); at mtdoops_exit(). Otherwise,
+> you might call vfree() twice, the second time on a garbage pointer.
+>
+> The reason for this is that the unregister_mtd_user(&mtdoops_notifier);
+> call in mtdoops_exit() will call the .remove callback (causing the first
+> vfree() with this patch) and then call vfree() for the second time, expli=
+citly.
+> --
+> Ezequiel Garc=EDa, Free Electrons
+> Embedded Linux, Kernel and Android Engineering
+> http://free-electrons.com
+i did not do a module remove. I agree with your observation. I will
+resubmit the patch.
