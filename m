@@ -1,18 +1,19 @@
-Received: from tx2ehsobe003.messaging.microsoft.com ([65.55.88.13]
- helo=tx2outboundpool.messaging.microsoft.com)
+Received: from aserp1040.oracle.com ([141.146.126.69])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V9819-0006m0-76
- for linux-mtd@lists.infradead.org; Tue, 13 Aug 2013 06:23:43 +0000
-Message-ID: <5209D0C6.5070307@freescale.com>
-Date: Tue, 13 Aug 2013 14:23:02 +0800
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: Dan Carpenter <dan.carpenter@oracle.com>
+ id 1V98DL-00071W-1Y
+ for linux-mtd@lists.infradead.org; Tue, 13 Aug 2013 06:36:19 +0000
+Date: Tue, 13 Aug 2013 09:35:33 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: Huang Shijie <b32955@freescale.com>
 Subject: Re: [patch] mtd: nand: silence some shift wrap warnings
+Message-ID: <20130813063533.GP5502@mwanda>
 References: <20130809094904.GC29282@elgon.mountain>
-In-Reply-To: <20130809094904.GC29282@elgon.mountain>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
+ <5209D0C6.5070307@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5209D0C6.5070307@freescale.com>
 Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
  kernel-janitors@vger.kernel.org, Matthieu CASTET <matthieu.castet@parrot.com>,
  linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
@@ -26,61 +27,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B408=E6=9C=8809=E6=97=A5 17:49, Dan Carpenter =E5=86=
-=99=E9=81=93:
-> There are static checkers which complain when we declare variables as
+On Tue, Aug 13, 2013 at 02:23:02PM +0800, Huang Shijie wrote:
+> 于 2013年08月09日 17:49, Dan Carpenter 写道:
+> >There are static checkers which complain when we declare variables as
+> 
+> could you tell me which "checker" and how do you test it?
+> 
+> you'd better post the warning message here.
+> 
 
-could you tell me which "checker" and how do you test it?
+It's some stuff I'm working on but haven't released yet.  But "len"
+and "ofs" are declared as u64 and loff_t.  If they were declared as
+unsigned long then maybe the current code would be fine because the
+code would be correct-ish on 32 bit arches.
 
-you'd better post the warning message here.
+So this is definitely the right thing to do.
 
-thanks
-Huang Shijie
-> 64 bit bitfields but only use the lower 32 bits because of shift
-> wrapping.  In this case "len" is declared as u64 as opposed to unsigned
-> long or something which might be 32 bits.
->
-> Signed-off-by: Dan Carpenter<dan.carpenter@oracle.com>
->
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.=
-c
-> index 9a48758..3eddd04 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -108,13 +108,13 @@ static int check_offs_len(struct mtd_info *mtd,
->   	int ret =3D 0;
->
->   	/* Start address must align on block boundary */
-> -	if (ofs&  ((1<<  chip->phys_erase_shift) - 1)) {
-> +	if (ofs&  ((1ULL<<  chip->phys_erase_shift) - 1)) {
->   		pr_debug("%s: unaligned address\n", __func__);
->   		ret =3D -EINVAL;
->   	}
->
->   	/* Length must align on block boundary */
-> -	if (len&  ((1<<  chip->phys_erase_shift) - 1)) {
-> +	if (len&  ((1ULL<<  chip->phys_erase_shift) - 1)) {
->   		pr_debug("%s: length not block aligned\n", __func__);
->   		ret =3D -EINVAL;
->   	}
-> @@ -394,7 +394,7 @@ static int nand_block_markbad_lowlevel(struct mtd_i=
-nfo *mtd, loff_t ofs)
->   		memset(&einfo, 0, sizeof(einfo));
->   		einfo.mtd =3D mtd;
->   		einfo.addr =3D ofs;
-> -		einfo.len =3D 1<<  chip->phys_erase_shift;
-> +		einfo.len =3D 1ULL<<  chip->phys_erase_shift;
->   		nand_erase_nand(mtd,&einfo, 0);
->
->   		/* Write bad block marker to OOB */
-> @@ -2630,7 +2630,7 @@ int nand_erase_nand(struct mtd_info *mtd, struct =
-erase_info *instr,
->   		}
->
->   		/* Increment page address and decrement length */
-> -		len -=3D (1<<  chip->phys_erase_shift);
-> +		len -=3D (1ULL<<  chip->phys_erase_shift);
->   		page +=3D pages_per_block;
->
->   		/* Check, if we cross a chip boundary */
->
+regards,
+dan carpenter
