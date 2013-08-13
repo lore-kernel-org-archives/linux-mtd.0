@@ -1,17 +1,26 @@
-Received: from tx2ehsobe005.messaging.microsoft.com ([65.55.88.15]
- helo=tx2outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V9Adt-0001Xp-12
- for linux-mtd@lists.infradead.org; Tue, 13 Aug 2013 09:11:54 +0000
-From: Huang Shijie <b32955@freescale.com>
-To: <computersforpeace@gmail.com>
-Subject: [mtd-www: ] nand-data: add four Toshiba nand chips
-Date: Tue, 13 Aug 2013 17:09:24 +0800
-Message-ID: <1376384964-740-1-git-send-email-b32955@freescale.com>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V9Cv3-0004nx-Dw
+ for linux-mtd@lists.infradead.org; Tue, 13 Aug 2013 11:37:47 +0000
+Date: Tue, 13 Aug 2013 08:37:22 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v4 00/14] pxa3xx-nand patches to support mvebu builds
+Message-ID: <20130813113721.GA2393@localhost>
+References: <1376327699-7973-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20130812231946.GB7267@brian-ubuntu>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: artem.bityutskiy@linux.intel.com, linux-mtd@lists.infradead.org,
- dwmw2@infradead.org, Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20130812231946.GB7267@brian-ubuntu>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Daniel Mack <zonque@gmail.com>,
+ linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,28 +30,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add the items for four Toshiba nand chips.
-All the four nand chips are supported by the kernel now.
+Brian,
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
- nand-data/nanddata.csv |    4 ++++
- 1 files changed, 4 insertions(+), 0 deletions(-)
+On Mon, Aug 12, 2013 at 04:19:46PM -0700, Brian Norris wrote:
+> On Mon, Aug 12, 2013 at 02:14:45PM -0300, Ezequiel Garcia wrote:
+> > This patchset is part of the work I'm doing to enable the pxa3xx-nand
+> > driver to support the NAND controller in Armada 370/XP. While this is
+> > work in progress, here's a subset of patches I consider good enough
+> > for mainline.
+> 
+[..]
 
-diff --git a/nand-data/nanddata.csv b/nand-data/nanddata.csv
-index 20a6f86..408f0df 100644
---- a/nand-data/nanddata.csv
-+++ b/nand-data/nanddata.csv
-@@ -192,6 +192,10 @@
- "Toshiba","TC58NVG0S3E","0x98","0xD1","0x98D1...",128,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte","1?",5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,,TRUE,TRUE,TRUE,1,1,1,"Single",,"Datasheet doesn't list full ID, only shows ID decoder table"
- "Toshiba","TC58NVG1S3E","0x98","0xDA","0x98DA...",256,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte","1?",5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,,TRUE,TRUE,TRUE,1,1,1,"Single",,"Datasheet doesn't list full ID, only shows ID decoder table"
- "Toshiba","TC58NVG2S3E","0x98","0xDC","0x98DC...",512,2048,64,"128 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"1-bit/512-byte","1?",5,"Extended ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,,TRUE,TRUE,TRUE,1,1,1,"Single",,"Datasheet doesn't list full ID, only shows ID decoder table"
-+"Toshiba","TC58NVG2S0F","0x98","0xDC","0x98dc902676150108",512,4096,224,"256 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"4-bit/512-byte","1",8,"Full ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,,TRUE,TRUE,TRUE,1,1,1,"Single",,"Datasheet doesn't list full ID, only shows ID decoder table, get the full ID by testing"
-+"Toshiba","TC58NVG3S0F","0x98","0xD3","0x98d3902676150208",1024,4096,232,"256 KB","x8","N/A","1st or 2nd page (1st byte in OOB = non FFh)",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"4-bit/512-byte","1",8,"Full ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,,TRUE,TRUE,TRUE,1,1,1,"Single",,"Datasheet doesn't list full ID, only shows ID decoder table, get the full ID by testing"
-+"Toshiba","TC58NVG5D2","0x98","0xD7","0x98d7943276560900",4096,8192,640,"1 MB","x8","N/A","1st or last page (1st byte in OOB = non FFh)",TRUE,FALSE,TRUE,FALSE,TRUE,FALSE,"40-bit/1024-byte","2",8,"Full ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,,TRUE,TRUE,TRUE,1,1,1,"Single",,"Datasheet doesn't list full ID, only shows ID decoder table, get the full ID by testing"
-+"Toshiba","TC58NVG6D2","0x98","0xDE","0x98de948276560420",8192,8192,640,"2 MB","x8","N/A","1st or last page (1st byte in OOB = non FFh)",TRUE,FALSE,TRUE,FALSE,TRUE,FALSE,"40-bit/1024-byte","2",8,"Full ID decode",TRUE,FALSE,TRUE,TRUE,TRUE,,TRUE,TRUE,TRUE,1,1,1,"Single",,"Datasheet doesn't list full ID, only shows ID decoder table, get the full ID by testing"
- "Hynix","H27UAG8T2M","0xAD","0xD5","0xADD514B644",2048,4096,128,"512 KB","x8","N/A","Last or (last-2)th page (1st byte in OOB = non FFh)",FALSE,FALSE,TRUE,TRUE,TRUE,FALSE,"4-bit/528-byte",2,5,"Extended ID decode",FALSE,FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,1,1,1,"Single",,
- "Samsung","K9GAG08U0E","0xEC","0xD5","0xECD584725042",2048,8192,436,"1024 KB","x8","N/A","1st or last page (1st byte in OOB = non FFh)",TRUE,FALSE,TRUE,FALSE,TRUE,FALSE,"24-bit/1078.5-byte",2,6,"Extended ID decode (Samsung)",FALSE,FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,1,1,1,"Single",,"Weird 1st AND last page scan?"
- "Samsung","K9LBG08U0E","0xEC","0xD7","0xECD7C5725442",4096,8192,436,"1024 KB","x8","N/A","1st or last page (1st byte in OOB = non FFh)",TRUE,FALSE,TRUE,FALSE,TRUE,FALSE,"24-bit/1078.5-byte",2,6,"Extended ID decode (Samsung)",FALSE,FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,1,2,1,"Single","K9GAG08U0E","Weird 1st AND last page scan?"
+> > 
+> > Ezequiel Garcia (14):
+> >   mtd: nand: pxa3xx: Remove unneeded ifdef CONFIG_OF
+> >   mtd: nand: pxa3xx: Introduce 'marvell,armada370-nand' compatible
+> >     string
+> 
+> This series includes an older version of the above patch, without the
+> Tested-by and with a trivial change in the spacing. I just pulled in the
+> v3 patch.
+> 
+
+Oh, I forgot to fix the cast spacing. Thanks for noticing.
+
+BTW, I dropped the Tested-by on purpose, because as per the ifdef
+CONFIG_OF removal I'm not sure Daniel tested that code.
+
+Although he probably did, so it's fine to pick the Tested-by.
+
+> >   mtd: nand: pxa3xx: Handle ECC and DMA enable/disable properly
+> >   mtd: nand: pxa3xx: Allow to set/clear the 'spare enable' field
+> >   mtd: nand: pxa3xx: Support command buffer #3
+> >   mtd: nand: pxa3xx: Use 'length override' in ONFI paramater page read
+> >   mtd: nand: pxa3xx: Add a local loop variable
+> >   mtd: nand: pxa3xx: Remove hardcoded mtd name
+> >   mtd: nand: pxa3xx: Remove uneeded internal cmdset
+> >   mtd: nand: pxa3xx: Move cached registers to info structure
+> >   mtd: nand: pxa3xx: Make dma code dependent on dma capable platforms
+> >   mtd: nand: pxa3xx: Add __maybe_unused keyword to enable_int()
+> >   mtd: nand: pxa3xx: Allow devices with no dma resources
+> >   mtd: nand: Allow to build pxa3xx_nand on Orion platforms
+> > 
+> >  drivers/mtd/nand/Kconfig                      |   2 +-
+> >  drivers/mtd/nand/pxa3xx_nand.c                | 277 ++++++++++++++++----------
+> >  include/linux/platform_data/mtd-nand-pxa3xx.h |  13 --
+> >  3 files changed, 173 insertions(+), 119 deletions(-)
+> 
+> Pushed the whole series to l2-mtd.git, although I noted one comment in
+> patch 8. Thanks!
+> 
+
+Thanks a lot!
 -- 
-1.7.3.2
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
