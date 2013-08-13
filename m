@@ -1,26 +1,20 @@
-Received: from mail-pd0-x235.google.com ([2607:f8b0:400e:c02::235])
+Received: from mail-db9lp0252.outbound.messaging.microsoft.com
+ ([213.199.154.252] helo=db9outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V956t-0003qu-Uq
- for linux-mtd@lists.infradead.org; Tue, 13 Aug 2013 03:17:28 +0000
-Received: by mail-pd0-f181.google.com with SMTP id g10so4246821pdj.40
- for <linux-mtd@lists.infradead.org>; Mon, 12 Aug 2013 20:17:05 -0700 (PDT)
-Date: Mon, 12 Aug 2013 20:17:02 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH 01/10] mtd: set the cell information for ONFI nand
-Message-ID: <20130813031702.GI7267@brian-ubuntu>
-References: <1376286173-12581-1-git-send-email-b32955@freescale.com>
- <1376286173-12581-2-git-send-email-b32955@freescale.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9F2A6B@DBDE04.ent.ti.com>
- <20130813004938.GD7267@brian-ubuntu> <5209A1F2.80600@freescale.com>
+ id 1V957D-0003r0-Rg
+ for linux-mtd@lists.infradead.org; Tue, 13 Aug 2013 03:17:49 +0000
+Message-ID: <5209A573.6060807@freescale.com>
+Date: Tue, 13 Aug 2013 11:18:11 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5209A1F2.80600@freescale.com>
-Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>, "dedekind1@gmail.com" <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 08/10] mtd: add MTD_MLCNANDFLASH case for mtd_type_show()
+References: <1376286173-12581-1-git-send-email-b32955@freescale.com>	<1376286173-12581-9-git-send-email-b32955@freescale.com>	<20130813010502.GF7267@brian-ubuntu>	<520997F3.4010202@freescale.com>
+ <CAN8TOE91kY+adwv_zVYikPx_sT1OyOPe+NH9Ddw4cznBMTaRiQ@mail.gmail.com>
+In-Reply-To: <CAN8TOE91kY+adwv_zVYikPx_sT1OyOPe+NH9Ddw4cznBMTaRiQ@mail.gmail.com>
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: quoted-printable
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,25 +24,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-(You used HTML again, so this might not have gotten through the list)
+=D3=DA 2013=C4=EA08=D4=C213=C8=D5 11:10, Brian Norris =D0=B4=B5=C0:
+> I think the "nand" to "SLC nand" patch should be dropped, but this
+> patch is a different story. Without this patch, MLC NAND will be
+> exported as "unknown". So you need a new patch which will combine the
+> 'switch (mtd->type)' cases for MTD_NANDFLASH and MTD_MLCNANDFLASH.
+> Otherwise, your patch set leaves MLC exported as "unknown" (a
+ok, I will keep this patch, and update the document.
 
-On Tue, Aug 13, 2013 at 11:03:14AM +0800, Huang Shijie wrote:
-> 于 2013年08月13日 08:49, Brian Norris 写道:
->      currently), we should modify it so that is a reliable source of
->      *only* 1
->      piece of information -- the number of bits per cell. Currently, it
-> do you need to rename the cellinfo to bits_per_cell, or add a new field :
-> bits_per_cell?
-
-Well, my whole point was that 'cellinfo' is really not very useful for
-us. We just mask it off all the time, and it makes life more
-complicated.
-
-So I'd just rename cellinfo to bits_per_cell and change its
-assignment/usage appropriately.
-
-But we can also wait a few days, considering that you asked for others'
-thoughts, although I doubt many others will speak up (I'd be glad to be
-proven wrong). Then you can send v2 at your leisure.
-
-Brian
+thanks
+Huang Shijie
