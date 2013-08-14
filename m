@@ -1,17 +1,22 @@
-Received: from tritech.se ([46.59.120.190])
+Received: from mail.linuxfoundation.org ([140.211.169.12])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V9bj1-00025o-I9
- for linux-mtd@lists.infradead.org; Wed, 14 Aug 2013 14:07:00 +0000
-From: =?iso-8859-1?Q?Mats_K=E4rrman?= <Mats.Karrman@tritech.se>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: [PATCH] ubifs: remove invalid warn msg with tst_recovery enabled
-Date: Wed, 14 Aug 2013 14:06:24 +0000
-Message-ID: <ED3E0BCACD909541BA94A34C4A164D4C4FCDB069@post.tritech.se>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: Artem Bityutskiy <dedekind1@gmail.com>
+ id 1V9k0u-0000oM-MC
+ for linux-mtd@lists.infradead.org; Wed, 14 Aug 2013 22:58:01 +0000
+Date: Wed, 14 Aug 2013 15:57:42 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Caizhiyong <caizhiyong@huawei.com>
+Subject: Re: [PATCH] block: add command line partition parser
+Message-Id: <20130814155742.d3cd651e40e552696667e4f2@linux-foundation.org>
+In-Reply-To: <C3050A4DBA34F345975765E43127F10F1C06237C@szxeml512-mbs.china.huawei.com>
+References: <C3050A4DBA34F345975765E43127F10F1C061D75@szxeml512-mbs.china.huawei.com>
+ <20130805152206.76462cc4a42e51b16a0532f1@linux-foundation.org>
+ <C3050A4DBA34F345975765E43127F10F1C06237C@szxeml512-mbs.china.huawei.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Karel Zak <kzak@redhat.com>, linux-mtd@lists.infradead.org,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "Wanglin \(Albert\)" <albert.wanglin@huawei.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,27 +26,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Mats Karrman <mats.karrman@tritech.se>=0A=
-=0A=
-diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c=0A=
-index 7f60e90..6e025e0 100644=0A=
---- a/fs/ubifs/debug.c=0A=
-+++ b/fs/ubifs/debug.c=0A=
-@@ -2587,10 +2587,11 @@ int dbg_leb_write(struct ubifs_info *c, int lnum, c=
-onst void *buf,=0A=
- 		return -EROFS;=0A=
- =0A=
- 	failing =3D power_cut_emulated(c, lnum, 1);=0A=
--	if (failing)=0A=
-+	if (failing) {=0A=
- 		len =3D corrupt_data(c, buf, len);=0A=
--	ubifs_warn("actually write %d bytes to LEB %d:%d (the buffer was corrupte=
-d)",=0A=
--		   len, lnum, offs);=0A=
-+		ubifs_warn("actually write %d bytes to LEB %d:%d (the buffer was corrupt=
-ed)",=0A=
-+			   len, lnum, offs);=0A=
-+	}=0A=
- 	err =3D ubi_leb_write(c->ubi, lnum, buf, offs, len);=0A=
- 	if (err)=0A=
- 		return err;=
+On Tue, 13 Aug 2013 06:02:17 +0000 Caizhiyong <caizhiyong@huawei.com> wrote:
+
+> move the command line parser to a separate module, and change it into
+> library-style code.
+> 
+> reference: https://lkml.org/lkml/2013/8/6/550
+
+Well OK.  But to prove the library's usefulness and to generally clean
+up the kernel, someone needs to sign up to the task of converting
+drivers/mtd/cmdlinepart.c to use this code.
+
+I've been hopefully cc'ing various MTD people but am not being
+overwhelmed with waves of enthusiasm ;)
