@@ -1,21 +1,15 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V9FwK-0001qx-Se
- for linux-mtd@lists.infradead.org; Tue, 13 Aug 2013 14:51:18 +0000
-Date: Tue, 13 Aug 2013 11:50:43 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Nilanjan Roychowdhury <nilanjan.roychowdhury@gmail.com>
-Subject: Re: [PATCH 1/1] Resubmit mtd: mtdoops: fix for a potential memory
- leak in mtdoops_notify_remove
-Message-ID: <20130813145041.GB2359@localhost>
-References: <1376369315-5170-1-git-send-email-nilanjan.roychowdhury@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1376369315-5170-1-git-send-email-nilanjan.roychowdhury@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V9X7f-0001b0-SE
+ for linux-mtd@lists.infradead.org; Wed, 14 Aug 2013 09:12:08 +0000
+From: Julia Lawall <Julia.Lawall@lip6.fr>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH 4/29] mtd: simplify use of devm_ioremap_resource
+Date: Wed, 14 Aug 2013 11:11:08 +0200
+Message-Id: <1376471493-22215-5-git-send-email-Julia.Lawall@lip6.fr>
+In-Reply-To: <1376471493-22215-1-git-send-email-Julia.Lawall@lip6.fr>
+References: <1376471493-22215-1-git-send-email-Julia.Lawall@lip6.fr>
+Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
  linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,73 +20,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Nilanjan,
+From: Julia Lawall <Julia.Lawall@lip6.fr>
 
-On Mon, Aug 12, 2013 at 09:48:35PM -0700, Nilanjan Roychowdhury wrote:
-> we are allocating cxt->oops_page_used using vmalloc in mtdoops_notify_add for
-> every mtd_info addition but not freeing it in mtdoops_notify_remove. Also care is
-> taken so that we do not free the same pointer again in module remove.
-> 
+Remove unneeded error handling on the result of a call to
+platform_get_resource when the value is passed to devm_ioremap_resource.
 
-Could you re-send this with a better commit message?
+Move the call to platform_get_resource adjacent to the call to
+devm_ioremap_resource to make the connection between them more clear.
 
-In particular we'd like to see why you're doing this, explaining
-how the current implementation implies a possible leak, explaining under
-what circumstance this leak.
+A simplified version of the semantic patch that makes this change is as
+follows: (http://coccinelle.lip6.fr/)
 
-I think it would be great if you could test the patch and also add
-some information about the testing scenario.
+// <smpl>
+@@
+expression pdev,res,n,e,e1;
+expression ret != 0;
+identifier l;
+@@
 
-Please note the subject should be "[PATCH v2] mtd: ...", with a
-proper patch version number. The next patch will be v3 (and so on) which
-should be stated in the subject.
+- res = platform_get_resource(pdev, IORESOURCE_MEM, n);
+  ... when != res
+- if (res == NULL) { ... \(goto l;\|return ret;\) }
+  ... when != res
++ res = platform_get_resource(pdev, IORESOURCE_MEM, n);
+  e = devm_ioremap_resource(e1, res);
+// </smpl>
 
-Also...
+Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 
-> Signed-off-by: Nilanjan Roychowdhury <nilanjan.roychowdhury@gmail.com>
-> ---
+---
+ drivers/mtd/devices/elm.c    |    5 -----
+ drivers/mtd/nand/txx9ndfmc.c |    4 +---
+ 2 files changed, 1 insertion(+), 8 deletions(-)
 
-In this place (between the "---" and the diffstat) you can put some
-changelog information, like this:
-
-Changes from v2:
- * Did this and that.
-
-Changes from v1:
- * Added check to vfree() in remove function as suggested by Ezequiel.
-
->  drivers/mtd/mtdoops.c |    5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
-> index 97bb8f6..4b8b621 100644
-> --- a/drivers/mtd/mtdoops.c
-> +++ b/drivers/mtd/mtdoops.c
-> @@ -386,6 +386,8 @@ static void mtdoops_notify_remove(struct mtd_info *mtd)
->  	cxt->mtd = NULL;
->  	flush_work(&cxt->work_erase);
->  	flush_work(&cxt->work_write);
-> +	vfree(cxt->oops_page_used);
-> +	cxt->oops_page_used = NULL;
->  }
->  
->  
-> @@ -439,7 +441,8 @@ static void __exit mtdoops_exit(void)
->  
->  	unregister_mtd_user(&mtdoops_notifier);
->  	vfree(cxt->oops_buf);
-> -	vfree(cxt->oops_page_used);
-> +	if (cxt->oops_page_used)
-> +		vfree(cxt->oops_page_used);
->  }
->  
->  
-> -- 
-> 1.7.9.5
-> 
-
-Thanks!
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+diff --git a/drivers/mtd/devices/elm.c b/drivers/mtd/devices/elm.c
+index 4f683d2..d1dd6a3 100644
+--- a/drivers/mtd/devices/elm.c
++++ b/drivers/mtd/devices/elm.c
+@@ -368,11 +368,6 @@ static int elm_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	if (!res) {
+-		dev_err(&pdev->dev, "no memory resource defined\n");
+-		return -ENODEV;
+-	}
+-
+ 	info->elm_base = devm_ioremap_resource(&pdev->dev, res);
+ 	if (IS_ERR(info->elm_base))
+ 		return PTR_ERR(info->elm_base);
+diff --git a/drivers/mtd/nand/txx9ndfmc.c b/drivers/mtd/nand/txx9ndfmc.c
+index 440b570..235714a 100644
+--- a/drivers/mtd/nand/txx9ndfmc.c
++++ b/drivers/mtd/nand/txx9ndfmc.c
+@@ -281,12 +281,10 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
+ 	unsigned long gbusclk = plat->gbus_clock;
+ 	struct resource *res;
+ 
+-	res = platform_get_resource(dev, IORESOURCE_MEM, 0);
+-	if (!res)
+-		return -ENODEV;
+ 	drvdata = devm_kzalloc(&dev->dev, sizeof(*drvdata), GFP_KERNEL);
+ 	if (!drvdata)
+ 		return -ENOMEM;
++	res = platform_get_resource(dev, IORESOURCE_MEM, 0);
+ 	drvdata->base = devm_ioremap_resource(&dev->dev, res);
+ 	if (IS_ERR(drvdata->base))
+ 		return PTR_ERR(drvdata->base);
