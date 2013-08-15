@@ -1,22 +1,27 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V9k0u-0000oM-MC
- for linux-mtd@lists.infradead.org; Wed, 14 Aug 2013 22:58:01 +0000
-Date: Wed, 14 Aug 2013 15:57:42 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Caizhiyong <caizhiyong@huawei.com>
-Subject: Re: [PATCH] block: add command line partition parser
-Message-Id: <20130814155742.d3cd651e40e552696667e4f2@linux-foundation.org>
-In-Reply-To: <C3050A4DBA34F345975765E43127F10F1C06237C@szxeml512-mbs.china.huawei.com>
+Received: from mail-vb0-x229.google.com ([2607:f8b0:400c:c02::229])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V9lAl-0002Sk-Sa
+ for linux-mtd@lists.infradead.org; Thu, 15 Aug 2013 00:12:16 +0000
+Received: by mail-vb0-f41.google.com with SMTP id g17so105072vbg.28
+ for <linux-mtd@lists.infradead.org>; Wed, 14 Aug 2013 17:11:52 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20130814155742.d3cd651e40e552696667e4f2@linux-foundation.org>
 References: <C3050A4DBA34F345975765E43127F10F1C061D75@szxeml512-mbs.china.huawei.com>
  <20130805152206.76462cc4a42e51b16a0532f1@linux-foundation.org>
  <C3050A4DBA34F345975765E43127F10F1C06237C@szxeml512-mbs.china.huawei.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Karel Zak <kzak@redhat.com>, linux-mtd@lists.infradead.org,
+ <20130814155742.d3cd651e40e552696667e4f2@linux-foundation.org>
+Date: Wed, 14 Aug 2013 17:11:51 -0700
+Message-ID: <CAN8TOE-aGcKQNayzEVQaS1wJ_Uqp3RAZ5pTuVEhaaY9f487-xA@mail.gmail.com>
+Subject: Re: [PATCH] block: add command line partition parser
+From: Brian Norris <computersforpeace@gmail.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: "Wanglin \(Albert\)" <albert.wanglin@huawei.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "Wanglin \(Albert\)" <albert.wanglin@huawei.com>
+ Huang Shijie <b32955@freescale.com>, Karel Zak <kzak@redhat.com>,
+ linux-mtd@lists.infradead.org, Shmulik Ladkani <shmulik.ladkani@gmail.com>,
+ Caizhiyong <caizhiyong@huawei.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,16 +31,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 13 Aug 2013 06:02:17 +0000 Caizhiyong <caizhiyong@huawei.com> wrote:
+On Wed, Aug 14, 2013 at 3:57 PM, Andrew Morton
+<akpm@linux-foundation.org> wrote:
+> On Tue, 13 Aug 2013 06:02:17 +0000 Caizhiyong <caizhiyong@huawei.com> wrote:
+>
+>> move the command line parser to a separate module, and change it into
+>> library-style code.
+>>
+>> reference: https://lkml.org/lkml/2013/8/6/550
 
-> move the command line parser to a separate module, and change it into
-> library-style code.
-> 
-> reference: https://lkml.org/lkml/2013/8/6/550
+The most recent patch is an addendum to this linked patch then?
 
-Well OK.  But to prove the library's usefulness and to generally clean
-up the kernel, someone needs to sign up to the task of converting
-drivers/mtd/cmdlinepart.c to use this code.
+> Well OK.  But to prove the library's usefulness and to generally clean
+> up the kernel, someone needs to sign up to the task of converting
+> drivers/mtd/cmdlinepart.c to use this code.
+>
+> I've been hopefully cc'ing various MTD people but am not being
+> overwhelmed with waves of enthusiasm ;)
 
-I've been hopefully cc'ing various MTD people but am not being
-overwhelmed with waves of enthusiasm ;)
+"I've been" implies that you have done so prior to this email. And
+"people" implies more than one person. I see that you CC'd David
+Woodhouse over a week ago, but he's fairly silent these days on MTD
+things. It's Artem or me who handle most of the day-to-day of MTD. And
+this is the first time I've seen this! (BTW, please include
+linux-mtd@lists.infradead.org for anything involving MTD.)
+
+This seems reasonable, and I'd be willing to work with this proposal.
+
+Caizhiyong, can you submit a clear single patch (or series of
+patches), CC'd to linux-mtd at least? Then we can see about supporting
+it in MTD. It doesn't look too difficult, but I need to check that it
+faithfully mimics the capability we currently rely on. There have been
+previous discussions on changing it, but this was rejected in favor of
+allowing more flexibility. Here's part of one such conversation:
+
+http://lists.infradead.org/pipermail/linux-mtd/2012-August/043599.html
+http://lists.infradead.org/pipermail/linux-mtd/2012-September/043825.html
+http://lists.infradead.org/pipermail/linux-mtd/2012-December/045322.html
+
+So I would recommend:
+(1) consider carefully the implications of your command-line format
+now, rather than later
+(2) if you want MTD to use it, it needs to support the features we use now
+
+Some particular cases to consider: overlapping partitions (how do
+block devices handle overlapping partitions?), out-of-order
+specification, zero sized partitions, mixed syntax (some specified
+with an offset, some not), multiple '-' partitions.
+
+Anyway, if you resend, we can review.
+
+Thanks,
+Brian
