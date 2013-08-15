@@ -1,22 +1,28 @@
-Received: from mail-pa0-x22c.google.com ([2607:f8b0:400e:c03::22c])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V9y2P-0006w9-J8
- for linux-mtd@lists.infradead.org; Thu, 15 Aug 2013 13:56:38 +0000
-Received: by mail-pa0-f44.google.com with SMTP id fz6so776738pac.17
- for <linux-mtd@lists.infradead.org>; Thu, 15 Aug 2013 06:56:08 -0700 (PDT)
-From: Akinobu Mita <akinobu.mita@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH -next 4/4] mtd: tests: incorporate error message for
- mtdtest_write()
-Date: Thu, 15 Aug 2013 22:55:09 +0900
-Message-Id: <1376574909-7507-5-git-send-email-akinobu.mita@gmail.com>
-In-Reply-To: <1376574909-7507-1-git-send-email-akinobu.mita@gmail.com>
-References: <1376574909-7507-1-git-send-email-akinobu.mita@gmail.com>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
- Vikram Narayanan <vikram186@gmail.com>, Akinobu Mita <akinobu.mita@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Received: from smtp10.smtpout.orange.fr ([80.12.242.132]
+ helo=smtp.smtpout.orange.fr)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V9zO0-0000zX-LF
+ for linux-mtd@lists.infradead.org; Thu, 15 Aug 2013 15:22:54 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 00/20] ARM: pxa: move core and drivers to dmaengine
+References: <1375889649-14638-1-git-send-email-zonque@gmail.com>
+ <87zjsqzdg8.fsf@free.fr> <52061C53.4050905@gmail.com>
+ <20130814100010.GO32147@intel.com>
+Date: Thu, 15 Aug 2013 17:22:14 +0200
+Message-ID: <8761v7nfmh.fsf@free.fr>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: mark.rutland@arm.com, s.neumann@raumfeld.com, davem@davemloft.net,
+ linux-mtd@lists.infradead.org, haojian.zhuang@linaro.org, cxie4@marvell.com,
+ lars@metafoo.de, nico@linaro.org, sachin.kamat@linaro.org,
+ marek.vasut@gmail.com, ezequiel.garcia@free-electrons.com,
+ rmk+kernel@arm.linux.org.uk, devicetree@vger.kernel.org, samuel@sortiz.org,
+ arnd@arndb.de, broonie@kernel.org, linux-arm-kernel@lists.infradead.org,
+ thomas.petazzoni@free-electrons.com, eric.y.miao@gmail.com,
+ mika.westerberg@linux.jf.intel.com, gregkh@linuxfoundation.org,
+ Daniel Mack <zonque@gmail.com>, kernel@pengutronix.de, djbw@fb.com,
+ g.liakhovetski@gmx.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,195 +32,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-All callers of mtdtest_write() print the same error message on failure.
-This incorporates the error message to mtdtest_write() and removes them
-from the callers.
+Vinod Koul <vinod.koul@intel.com> writes:
+>> Yes, Vinod and and Dan are certainly the best ones to comment on that I
+>> think.
+> I read the file esp the "DMA flow" and "DMA hot chaining timeslice issue". I can
+> say with "properly" implemented dmaengine driver this is very much doable.
+Great.
+>
+>
+> Have you guys read: Documentation/dmaengine.txt?
+Yes. I had not understood the "hot chaining" was implied in it, but now I
+understand it is part of it, and at the discretion of the slave engine driver.
 
-Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: Vikram Narayanan <vikram186@gmail.com>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
----
- drivers/mtd/tests/mtd_test.c    |  2 ++
- drivers/mtd/tests/nandbiterrs.c |  8 +-------
- drivers/mtd/tests/pagetest.c    | 23 ++++-------------------
- drivers/mtd/tests/speedtest.c   | 24 ++++--------------------
- drivers/mtd/tests/stresstest.c  |  5 +----
- 5 files changed, 12 insertions(+), 50 deletions(-)
+> So for "hot chaning" it would work as follows:
+>
+> Client, allocates and channel and prepares the descriptors A B & C
+> Client (video), submits buffer A, Buffer B. Both are queued by dma driver
+> Client calls dma_async_issue_pending
+> DMA driver will start Buffer A. It gets the completetion for A and then Starts
+> B. It will invoke callbakc for A.
+>
+> If you submit C, and invoke dma_async_issue_pending(), C is queued
+> On B completetion, the DMA driver will start C and invoke callback for B.
+>
+> If B completes before C is submitted, after submit and invoking
+> dma_async_issue_pending(), the C buffer will be queued and started.
+OK, that settles it then. The API allows hot chaining, and if I understand
+Daniel's driver properly, he already thought about it (in
+append_pending_queue()).
 
-diff --git a/drivers/mtd/tests/mtd_test.c b/drivers/mtd/tests/mtd_test.c
-index 4c2e3f0..c818a63 100644
---- a/drivers/mtd/tests/mtd_test.c
-+++ b/drivers/mtd/tests/mtd_test.c
-@@ -107,6 +107,8 @@ int mtdtest_write(struct mtd_info *mtd, loff_t addr, size_t size,
- 	err = mtd_write(mtd, addr, size, &written, buf);
- 	if (!err && written != size)
- 		err = -EIO;
-+	if (err)
-+		pr_err("error: write failed at %#llx\n", addr);
- 
- 	return err;
- }
-diff --git a/drivers/mtd/tests/nandbiterrs.c b/drivers/mtd/tests/nandbiterrs.c
-index 5a8c858..3cd3aab 100644
---- a/drivers/mtd/tests/nandbiterrs.c
-+++ b/drivers/mtd/tests/nandbiterrs.c
-@@ -102,16 +102,10 @@ static uint8_t hash(unsigned offset)
- /* Writes wbuffer to page */
- static int write_page(int log)
- {
--	int err;
--
- 	if (log)
- 		pr_info("write_page\n");
- 
--	err = mtdtest_write(mtd, offset, mtd->writesize, wbuffer);
--	if (err)
--		pr_err("error: write failed at %#llx\n", (long long)offset);
--
--	return err;
-+	return mtdtest_write(mtd, offset, mtd->writesize, wbuffer);
- }
- 
- /* Re-writes the data area while leaving the OOB alone. */
-diff --git a/drivers/mtd/tests/pagetest.c b/drivers/mtd/tests/pagetest.c
-index 9e8329c..44b96e9 100644
---- a/drivers/mtd/tests/pagetest.c
-+++ b/drivers/mtd/tests/pagetest.c
-@@ -52,17 +52,11 @@ static struct rnd_state rnd_state;
- 
- static int write_eraseblock(int ebnum)
- {
--	int err;
- 	loff_t addr = ebnum * mtd->erasesize;
- 
- 	prandom_bytes_state(&rnd_state, writebuf, mtd->erasesize);
- 	cond_resched();
--	err = mtdtest_write(mtd, addr, mtd->erasesize, writebuf);
--	if (err)
--		pr_err("error: write failed at %#llx\n",
--		       (long long)addr);
--
--	return err;
-+	return mtdtest_write(mtd, addr, mtd->erasesize, writebuf);
- }
- 
- static int verify_eraseblock(int ebnum)
-@@ -232,11 +226,8 @@ static int erasecrosstest(void)
- 	prandom_bytes_state(&rnd_state, writebuf, pgsize);
- 	strcpy(writebuf, "There is no data like this!");
- 	err = mtdtest_write(mtd, addr0, pgsize, writebuf);
--	if (err) {
--		pr_info("error: write failed at %#llx\n",
--		       (long long)addr0);
-+	if (err)
- 		return err;
--	}
- 
- 	pr_info("reading 1st page of block %d\n", ebnum);
- 	memset(readbuf, 0, pgsize);
-@@ -260,11 +251,8 @@ static int erasecrosstest(void)
- 	prandom_bytes_state(&rnd_state, writebuf, pgsize);
- 	strcpy(writebuf, "There is no data like this!");
- 	err = mtdtest_write(mtd, addr0, pgsize, writebuf);
--	if (err) {
--		pr_err("error: write failed at %#llx\n",
--		       (long long)addr0);
-+	if (err)
- 		return err;
--	}
- 
- 	pr_info("erasing block %d\n", ebnum2);
- 	err = mtdtest_erase_eraseblock(mtd, ebnum2);
-@@ -311,11 +299,8 @@ static int erasetest(void)
- 	pr_info("writing 1st page of block %d\n", ebnum);
- 	prandom_bytes_state(&rnd_state, writebuf, pgsize);
- 	err = mtdtest_write(mtd, addr0, pgsize, writebuf);
--	if (err) {
--		pr_err("error: write failed at %#llx\n",
--		       (long long)addr0);
-+	if (err)
- 		return err;
--	}
- 
- 	pr_info("erasing block %d\n", ebnum);
- 	err = mtdtest_erase_eraseblock(mtd, ebnum);
-diff --git a/drivers/mtd/tests/speedtest.c b/drivers/mtd/tests/speedtest.c
-index d1a3853..87ff6a2 100644
---- a/drivers/mtd/tests/speedtest.c
-+++ b/drivers/mtd/tests/speedtest.c
-@@ -80,14 +80,9 @@ static int multiblock_erase(int ebnum, int blocks)
- 
- static int write_eraseblock(int ebnum)
- {
--	int err;
- 	loff_t addr = ebnum * mtd->erasesize;
- 
--	err = mtdtest_write(mtd, addr, mtd->erasesize, iobuf);
--	if (err)
--		pr_err("error: write failed at %#llx\n", addr);
--
--	return err;
-+	return mtdtest_write(mtd, addr, mtd->erasesize, iobuf);
- }
- 
- static int write_eraseblock_by_page(int ebnum)
-@@ -98,11 +93,8 @@ static int write_eraseblock_by_page(int ebnum)
- 
- 	for (i = 0; i < pgcnt; i++) {
- 		err = mtdtest_write(mtd, addr, pgsize, buf);
--		if (err) {
--			pr_err("error: write failed at %#llx\n",
--			       addr);
-+		if (err)
- 			break;
--		}
- 		addr += pgsize;
- 		buf += pgsize;
- 	}
-@@ -119,21 +111,13 @@ static int write_eraseblock_by_2pages(int ebnum)
- 
- 	for (i = 0; i < n; i++) {
- 		err = mtdtest_write(mtd, addr, sz, buf);
--		if (err) {
--			pr_err("error: write failed at %#llx\n",
--			       addr);
-+		if (err)
- 			return err;
--		}
- 		addr += sz;
- 		buf += sz;
- 	}
--	if (pgcnt % 2) {
-+	if (pgcnt % 2)
- 		err = mtdtest_write(mtd, addr, pgsize, buf);
--		if (err) {
--			pr_err("error: write failed at %#llx\n",
--			       addr);
--		}
--	}
- 
- 	return err;
- }
-diff --git a/drivers/mtd/tests/stresstest.c b/drivers/mtd/tests/stresstest.c
-index 6c9e23f..c9d42cc 100644
---- a/drivers/mtd/tests/stresstest.c
-+++ b/drivers/mtd/tests/stresstest.c
-@@ -126,11 +126,8 @@ static int do_write(void)
- 	}
- 	addr = eb * mtd->erasesize + offs;
- 	err = mtdtest_write(mtd, addr, len, writebuf);
--	if (unlikely(err)) {
--		pr_err("error: write failed at 0x%llx\n",
--		       (long long)addr);
-+	if (unlikely(err))
- 		return err;
--	}
- 	offs += len;
- 	while (offs > mtd->erasesize) {
- 		offsets[eb++] = mtd->erasesize;
+I have some homework now Daniel, I'll send you my work to include into your
+patch serie for the review, and my tests of your patches.
+
+I need a bit of time (1 or 2 weeks), because of holidays, for my patch.
+
+Cheers.
+
 -- 
-1.8.3.1
+Robert
