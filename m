@@ -1,14 +1,15 @@
-Received: from mail-pd0-x22e.google.com ([2607:f8b0:400e:c02::22e])
+Received: from mail-pb0-x22a.google.com ([2607:f8b0:400e:c01::22a])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V9y2K-0006w0-DU
- for linux-mtd@lists.infradead.org; Thu, 15 Aug 2013 13:56:25 +0000
-Received: by mail-pd0-f174.google.com with SMTP id y13so873615pdi.19
- for <linux-mtd@lists.infradead.org>; Thu, 15 Aug 2013 06:56:02 -0700 (PDT)
+ id 1V9y2M-0006w2-DZ
+ for linux-mtd@lists.infradead.org; Thu, 15 Aug 2013 13:56:27 +0000
+Received: by mail-pb0-f42.google.com with SMTP id un15so745384pbc.15
+ for <linux-mtd@lists.infradead.org>; Thu, 15 Aug 2013 06:56:04 -0700 (PDT)
 From: Akinobu Mita <akinobu.mita@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH -next 1/4] mtd: pagetest: remove always true condition
-Date: Thu, 15 Aug 2013 22:55:06 +0900
-Message-Id: <1376574909-7507-2-git-send-email-akinobu.mita@gmail.com>
+Subject: [PATCH -next 2/4] mtd: tests: return -EIO when mtdtest_read() failed
+ to read requested bytes
+Date: Thu, 15 Aug 2013 22:55:07 +0900
+Message-Id: <1376574909-7507-3-git-send-email-akinobu.mita@gmail.com>
 In-Reply-To: <1376574909-7507-1-git-send-email-akinobu.mita@gmail.com>
 References: <1376574909-7507-1-git-send-email-akinobu.mita@gmail.com>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>,
@@ -25,8 +26,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Remove useless checks just after checking 'err' is not zero.  These
-checks should have been removed when converting to use mtdtest_read().
+mtdtest_read() returns -EINVAL if the number of bytes actually read
+is smaller than the number of bytes requested.  But mtdtest_write()
+returns -EIO in the similar error condition and returning -EIO seems
+more appropriate than -EINVAL in this case.
 
 Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
 Cc: Brian Norris <computersforpeace@gmail.com>
@@ -36,39 +39,21 @@ Cc: Artem Bityutskiy <dedekind1@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: linux-mtd@lists.infradead.org
 ---
- drivers/mtd/tests/pagetest.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/mtd/tests/mtd_test.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/tests/pagetest.c b/drivers/mtd/tests/pagetest.c
-index 22cc38c..8318976 100644
---- a/drivers/mtd/tests/pagetest.c
-+++ b/drivers/mtd/tests/pagetest.c
-@@ -272,7 +272,7 @@ static int erasecrosstest(void)
- 	if (err) {
- 		pr_err("error: read failed at %#llx\n",
- 		       (long long)addr0);
--		return err ? err : -1;
-+		return err;
- 	}
+diff --git a/drivers/mtd/tests/mtd_test.c b/drivers/mtd/tests/mtd_test.c
+index 9e63896..bda8c4d 100644
+--- a/drivers/mtd/tests/mtd_test.c
++++ b/drivers/mtd/tests/mtd_test.c
+@@ -91,7 +91,7 @@ int mtdtest_read(struct mtd_info *mtd, loff_t addr, size_t size, void *buf)
+ 	if (mtd_is_bitflip(err))
+ 		err = 0;
+ 	if (!err && read != size)
+-		err = -EINVAL;
++		err = -EIO;
  
- 	pr_info("verifying 1st page of block %d\n", ebnum);
-@@ -308,7 +308,7 @@ static int erasecrosstest(void)
- 	if (err) {
- 		pr_err("error: read failed at %#llx\n",
- 		       (long long)addr0);
--		return err ? err : -1;
-+		return err;
- 	}
- 
- 	pr_info("verifying 1st page of block %d\n", ebnum);
-@@ -361,7 +361,7 @@ static int erasetest(void)
- 	if (err) {
- 		pr_err("error: read failed at %#llx\n",
- 		       (long long)addr0);
--		return err ? err : -1;
-+		return err;
- 	}
- 
- 	pr_info("verifying 1st page of block %d is all 0xff\n",
+ 	return err;
+ }
 -- 
 1.8.3.1
