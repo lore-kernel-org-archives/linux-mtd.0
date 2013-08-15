@@ -1,23 +1,18 @@
-Received: from szxga01-in.huawei.com ([119.145.14.64])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V9vbQ-0005WB-KC
- for linux-mtd@lists.infradead.org; Thu, 15 Aug 2013 11:20:32 +0000
-From: Caizhiyong <caizhiyong@huawei.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH] mtd: cmdlinepart: use cmdline partition parser lib
-Date: Thu, 15 Aug 2013 11:19:36 +0000
-Message-ID: <C3050A4DBA34F345975765E43127F10F1C0643B8@szxeml512-mbx.china.huawei.com>
-Content-Language: zh-CN
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from 71-19-161-253.dedicated.allstream.net ([71.19.161.253]
+ helo=nsa.nbspaymentsolutions.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1V9xfO-0006GK-Db
+ for linux-mtd@lists.infradead.org; Thu, 15 Aug 2013 13:32:43 +0000
+Received: from DeadDuck (unknown [172.20.177.82])
+ by nsa.nbspaymentsolutions.com (Postfix) with ESMTP id D9E683FC47D
+ for <linux-mtd@lists.infradead.org>; Thu, 15 Aug 2013 09:34:06 -0400 (EDT)
+From: Bill Pringlemeir <bpringlemeir@nbsps.com>
+To: linux-mtd@lists.infradead.org
+Subject: Fail to mount cloned disk image with fastmap.
+Date: Thu, 15 Aug 2013 09:29:54 -0400
+Message-ID: <87a9kjt73h.fsf@nbsps.com>
 MIME-Version: 1.0
-Cc: "Wanglin
- \(Albert\)" <albert.wanglin@huawei.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Karel Zak <kzak@redhat.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>,
- Caizhiyong <caizhiyong@huawei.com>, Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset=us-ascii
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,663 +22,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Cai Zhiyong <caizhiyong@huawei.com>
 
-MTD cmdline partition use cmdline partition parser lib
+I have back-ported the fastmap code from the 3.0 series to a 2.6.36
+kernel on an ARM cpu.  It has been running for some time without issue
+and the boot time is reduced by 1/2 second.  I just ran a test over
+night with 'pppd' capturing packets and likely filled up the disk.
 
-reference: https://lkml.org/lkml/2013/8/6/550
+It appears that my kernel does not boot, so I made a clone of the disk
+and then attempt to mount it on my Ubuntu machine with the following,
 
-Signed-off-by: Cai ZhiYong <caizhiyong@huawei.com>
----
- Documentation/block/cmdline-partition.txt |  93 +++++---
- block/cmdline-parser.c                    |  16 +-
- drivers/mtd/Kconfig                       |   1 +
- drivers/mtd/cmdlinepart.c                 | 361 ++++----------------------=
-----
- include/linux/cmdline-parser.h            |   8 +-
- 5 files changed, 111 insertions(+), 368 deletions(-)
+  modprobe nandsim first_id_byte=0x2c second_id_byte=0xda \
+    third_id_byte=0x90 fourth_id_byte=0x95 parts=2,64,64
+  flash_erase /dev/mtd3 0 0
+  ubiformat /dev/mtd3 -f rootfs.ubi
+  modprobe ubi mtd=3 fm_autoconvert=0
 
-diff --git a/Documentation/block/cmdline-partition.txt b/Documentation/bloc=
-k/cmdline-partition.txt
-index 651863d..adc5f7a 100644
---- a/Documentation/block/cmdline-partition.txt
-+++ b/Documentation/block/cmdline-partition.txt
-@@ -1,40 +1,59 @@
- Embedded device command line partition
--=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
--
--Read block device partition table from command line.
--The partition used for fixed block device (eMMC) embedded device.
--It is no MBR, save storage space. Bootloader can be easily accessed
--by absolute address of data on the block device.
--Users can easily change the partition.
--
--The format for the command line is just like mtdparts:
--
--blkdevparts=3D<blkdev-def>[;<blkdev-def>]
-+Authors: Cai Zhiyong <caizhiyong@huawei.com>
-+
-+The format for the command line is as follows,
-+it is used by MTD device (reference drivers/mtd/cmdlinepart.c) and
-+block device (reference block/partitions/cmdline.c)
-+
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
-+For MTD device:
-+  mtdparts=3D<mtddef>[;<mtddef]
-+  <mtddef>  :=3D <mtd-id>:<partdef>[,<partdef>]
-+  <partdef> :=3D <size>[@<offset>][<name>][ro][lk]
-+  <mtd-id>  :=3D unique name used in mapping driver/device (mtd->name)
-+  <size>    :=3D standard linux memsize OR "-" to denote all remaining spa=
-ce
-+               size is automatically truncated at end of device
-+               if specified or trucated size is 0 the part is skipped
-+  <offset>  :=3D standard linux memsize
-+               if omitted the part will immediately follow the previous pa=
-rt
-+               or 0 if the first part
-+  <name>    :=3D '(' NAME ')'
-+               NAME will appear in /proc/mtd
-+
-+  <size> and <offset> can be specified such that the parts are out of orde=
-r
-+  in physical memory and may even overlap.
-+
-+  The parts are assigned MTD numbers in the order they are specified in th=
-e
-+  command line regardless of their order in physical memory.
-+
-+  Examples:
-+
-+  1 NOR Flash, with 1 single writable partition:
-+  edb7312-nor:-
-+
-+  1 NOR Flash with 2 partitions, 1 NAND with one
-+  edb7312-nor:256k(ARMboot)ro,-(root);edb7312-nand:-(home)
-+
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
-+For block device:
-+  blkdevparts=3D<blkdev-def>[;<blkdev-def>]
-   <blkdev-def> :=3D <blkdev-id>:<partdef>[,<partdef>]
--    <partdef> :=3D <size>[@<offset>](part-name)
--
--<blkdev-id>
--    block device disk name, embedded device used fixed block device,
--    it's disk name also fixed. such as: mmcblk0, mmcblk1, mmcblk0boot0.
--
--<size>
--    partition size, in bytes, such as: 512, 1m, 1G.
--
--<offset>
--    partition start address, in bytes.
--
--(part-name)
--    partition name, kernel send uevent with "PARTNAME". application can cr=
-eate
--    a link to block device partition with the name "PARTNAME".
--    user space application can access partition by partition name.
--
--Example:
--    eMMC disk name is "mmcblk0" and "mmcblk0boot0"
--
--  bootargs:
-+  <partdef> :=3D <size>[@<offset>][<name>]
-+  <blkdev-id>
-+       block device disk name, embedded device used fixed block device,
-+       it's disk name also fixed. such as: mmcblk0, mmcblk1, mmcblk0boot0.
-+  <size>    :=3D standard linux memsize OR "-" to denote all remaining spa=
-ce
-+               size is automatically truncated at end of device
-+               if specified or trucated size is 0 the part is skipped
-+  <offset>  :=3D standard linux memsize
-+               if omitted the part will immediately follow the previous pa=
-rt
-+               or 0 if the first part
-+  <name>    :=3D '(' NAME ')'
-+        partition name, kernel send uevent with "PARTNAME". application co=
-uld
-+        create a link to block device partition with the name "PARTNAME".
-+        user space application can access partition by partition name.
-+
-+  Example:
-+
-+    eMMC disk name is "mmcblk0" and "mmcblk0boot0", bootargs:
-     'blkdevparts=3Dmmcblk0:1G(data0),1G(data1),-;mmcblk0boot0:1m(boot),-(k=
-ernel)'
--
--  dmesg:
--    mmcblk0: p1(data0) p2(data1) p3()
--    mmcblk0boot0: p1(boot) p2(kernel)
--
-diff --git a/block/cmdline-parser.c b/block/cmdline-parser.c
-index 18fb435..8c09db3 100644
---- a/block/cmdline-parser.c
-+++ b/block/cmdline-parser.c
-@@ -4,8 +4,6 @@
-  * Written by Cai Zhiyong <caizhiyong@huawei.com>
-  *
-  */
--#include <linux/buffer_head.h>
--#include <linux/module.h>
- #include <linux/cmdline-parser.h>
-=20
- static int parse_subpart(struct cmdline_subpart **subpart, char *partdef)
-@@ -158,6 +156,7 @@ void cmdline_parts_free(struct cmdline_parts **parts)
- 		*parts =3D next_parts;
- 	}
- }
-+EXPORT_SYMBOL(cmdline_parts_free);
-=20
- int cmdline_parts_parse(struct cmdline_parts **parts, const char *cmdline)
- {
-@@ -205,6 +204,7 @@ fail:
- 	cmdline_parts_free(parts);
- 	goto done;
- }
-+EXPORT_SYMBOL(cmdline_parts_parse);
-=20
- struct cmdline_parts *cmdline_parts_find(struct cmdline_parts *parts,
- 					 const char *bdev)
-@@ -213,16 +213,17 @@ struct cmdline_parts *cmdline_parts_find(struct cmdli=
-ne_parts *parts,
- 		parts =3D parts->next_parts;
- 	return parts;
- }
-+EXPORT_SYMBOL(cmdline_parts_find);
-=20
- /*
-  *  add_part()
-  *    0 success.
-  *    1 can not add so many partitions.
-  */
--void cmdline_parts_set(struct cmdline_parts *parts, sector_t disk_size,
--		       int slot,
--		       int (*add_part)(int, struct cmdline_subpart *, void *),
--		       void *param)
-+int cmdline_parts_set(struct cmdline_parts *parts, sector_t disk_size,
-+		      int slot,
-+		      int (*add_part)(int, struct cmdline_subpart *, void *),
-+		      void *param)
-=20
- {
- 	sector_t from =3D 0;
-@@ -246,4 +247,7 @@ void cmdline_parts_set(struct cmdline_parts *parts, sec=
-tor_t disk_size,
- 		if (add_part(slot, subpart, param))
- 			break;
- 	}
-+
-+	return slot;
- }
-+EXPORT_SYMBOL(cmdline_parts_set);
-diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index 5fab4e6e..6f7f9ca 100644
---- a/drivers/mtd/Kconfig
-+++ b/drivers/mtd/Kconfig
-@@ -75,6 +75,7 @@ endif # MTD_REDBOOT_PARTS
-=20
- config MTD_CMDLINE_PARTS
- 	tristate "Command line partition table parsing"
-+	select CMDLINE_PARSER
- 	depends on MTD
- 	---help---
- 	  Allow generic configuration of the MTD partition tables via the kernel
-diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
-index 721caeb..79bd584 100644
---- a/drivers/mtd/cmdlinepart.c
-+++ b/drivers/mtd/cmdlinepart.c
-@@ -18,34 +18,8 @@
-  * along with this program; if not, write to the Free Software
-  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  =
-USA
-  *
-- * The format for the command line is as follows:
-+ * Verbose please reference "Documentation/block/cmdline-partition.txt"
-  *
-- * mtdparts=3D<mtddef>[;<mtddef]
-- * <mtddef>  :=3D <mtd-id>:<partdef>[,<partdef>]
-- * <partdef> :=3D <size>[@<offset>][<name>][ro][lk]
-- * <mtd-id>  :=3D unique name used in mapping driver/device (mtd->name)
-- * <size>    :=3D standard linux memsize OR "-" to denote all remaining sp=
-ace
-- *              size is automatically truncated at end of device
-- *              if specified or trucated size is 0 the part is skipped
-- * <offset>  :=3D standard linux memsize
-- *              if omitted the part will immediately follow the previous p=
-art
-- *              or 0 if the first part
-- * <name>    :=3D '(' NAME ')'
-- *              NAME will appear in /proc/mtd
-- *
-- * <size> and <offset> can be specified such that the parts are out of ord=
-er
-- * in physical memory and may even overlap.
-- *
-- * The parts are assigned MTD numbers in the order they are specified in t=
-he
-- * command line regardless of their order in physical memory.
-- *
-- * Examples:
-- *
-- * 1 NOR Flash, with 1 single writable partition:
-- * edb7312-nor:-
-- *
-- * 1 NOR Flash with 2 partitions, 1 NAND with one
-- * edb7312-nor:256k(ARMboot)ro,-(root);edb7312-nand:-(home)
-  */
-=20
- #include <linux/kernel.h>
-@@ -54,249 +28,43 @@
- #include <linux/mtd/partitions.h>
- #include <linux/module.h>
- #include <linux/err.h>
-+#include <linux/cmdline-parser.h>
-=20
--/* error message prefix */
--#define ERRP "mtd: "
--
--/* debug macro */
--#if 0
--#define dbg(x) do { printk("DEBUG-CMDLINE-PART: "); printk x; } while(0)
--#else
--#define dbg(x)
--#endif
--
--
--/* special size referring to all the remaining space in a partition */
--#define SIZE_REMAINING ULLONG_MAX
--#define OFFSET_CONTINUOUS ULLONG_MAX
--
--struct cmdline_mtd_partition {
--	struct cmdline_mtd_partition *next;
--	char *mtd_id;
--	int num_parts;
--	struct mtd_partition *parts;
--};
--
--/* mtdpart_setup() parses into here */
--static struct cmdline_mtd_partition *partitions;
--
--/* the command line passed to mtdpart_setup() */
- static char *mtdparts;
--static char *cmdline;
--static int cmdline_parsed;
-+static struct cmdline_parts *mtd_cmdline_parts;
-=20
--/*
-- * Parse one partition definition for an MTD. Since there can be many
-- * comma separated partition definitions, this function calls itself
-- * recursively until no more partition definitions are found. Nice side
-- * effect: the memory to keep the mtd_partition structs and the names
-- * is allocated upon the last definition being found. At that point the
-- * syntax has been verified ok.
-- */
--static struct mtd_partition * newpart(char *s,
--				      char **retptr,
--				      int *num_parts,
--				      int this_part,
--				      unsigned char **extra_mem_ptr,
--				      int extra_mem_size)
-+static int add_part(int slot, struct cmdline_subpart *subpart, void *param=
-)
- {
--	struct mtd_partition *parts;
--	unsigned long long size, offset =3D OFFSET_CONTINUOUS;
--	char *name;
--	int name_len;
--	unsigned char *extra_mem;
--	char delim;
--	unsigned int mask_flags;
--
--	/* fetch the partition size */
--	if (*s =3D=3D '-') {
--		/* assign all remaining space to this partition */
--		size =3D SIZE_REMAINING;
--		s++;
--	} else {
--		size =3D memparse(s, &s);
--		if (size < PAGE_SIZE) {
--			printk(KERN_ERR ERRP "partition size too small (%llx)\n",
--			       size);
--			return ERR_PTR(-EINVAL);
--		}
--	}
-+	struct mtd_partition *mtdpart =3D &((struct mtd_partition *)param)[slot];
-=20
--	/* fetch partition name and flags */
--	mask_flags =3D 0; /* this is going to be a regular partition */
--	delim =3D 0;
-+	mtdpart->offset =3D subpart->from;
-+	mtdpart->size =3D subpart->size;
-+	mtdpart->name =3D subpart->name;
-+	mtdpart->mask_flags =3D 0;
-=20
--	/* check for offset */
--	if (*s =3D=3D '@') {
--		s++;
--		offset =3D memparse(s, &s);
--	}
--
--	/* now look for name */
--	if (*s =3D=3D '(')
--		delim =3D ')';
--
--	if (delim) {
--		char *p;
--
--		name =3D ++s;
--		p =3D strchr(name, delim);
--		if (!p) {
--			printk(KERN_ERR ERRP "no closing %c found in partition name\n", delim);
--			return ERR_PTR(-EINVAL);
--		}
--		name_len =3D p - name;
--		s =3D p + 1;
--	} else {
--		name =3D NULL;
--		name_len =3D 13; /* Partition_000 */
--	}
--
--	/* record name length for memory allocation later */
--	extra_mem_size +=3D name_len + 1;
--
--	/* test for options */
--	if (strncmp(s, "ro", 2) =3D=3D 0) {
--		mask_flags |=3D MTD_WRITEABLE;
--		s +=3D 2;
--	}
-+	if (subpart->flags & PF_RDONLY)
-+		mtdpart->mask_flags |=3D MTD_WRITEABLE;
-=20
- 	/* if lk is found do NOT unlock the MTD partition*/
--	if (strncmp(s, "lk", 2) =3D=3D 0) {
--		mask_flags |=3D MTD_POWERUP_LOCK;
--		s +=3D 2;
--	}
--
--	/* test if more partitions are following */
--	if (*s =3D=3D ',') {
--		if (size =3D=3D SIZE_REMAINING) {
--			printk(KERN_ERR ERRP "no partitions allowed after a fill-up partition\n=
-");
--			return ERR_PTR(-EINVAL);
--		}
--		/* more partitions follow, parse them */
--		parts =3D newpart(s + 1, &s, num_parts, this_part + 1,
--				&extra_mem, extra_mem_size);
--		if (IS_ERR(parts))
--			return parts;
--	} else {
--		/* this is the last partition: allocate space for all */
--		int alloc_size;
--
--		*num_parts =3D this_part + 1;
--		alloc_size =3D *num_parts * sizeof(struct mtd_partition) +
--			     extra_mem_size;
--
--		parts =3D kzalloc(alloc_size, GFP_KERNEL);
--		if (!parts)
--			return ERR_PTR(-ENOMEM);
--		extra_mem =3D (unsigned char *)(parts + *num_parts);
--	}
--
--	/* enter this partition (offset will be calculated later if it is zero at=
- this point) */
--	parts[this_part].size =3D size;
--	parts[this_part].offset =3D offset;
--	parts[this_part].mask_flags =3D mask_flags;
--	if (name)
--		strlcpy(extra_mem, name, name_len + 1);
--	else
--		sprintf(extra_mem, "Partition_%03d", this_part);
--	parts[this_part].name =3D extra_mem;
--	extra_mem +=3D name_len + 1;
--
--	dbg(("partition %d: name <%s>, offset %llx, size %llx, mask flags %x\n",
--	     this_part, parts[this_part].name, parts[this_part].offset,
--	     parts[this_part].size, parts[this_part].mask_flags));
-+	if (subpart->flags & PF_POWERUP_LOCK)
-+		mtdpart->mask_flags |=3D MTD_POWERUP_LOCK;
-=20
--	/* return (updated) pointer to extra_mem memory */
--	if (extra_mem_ptr)
--		*extra_mem_ptr =3D extra_mem;
--
--	/* return (updated) pointer command line string */
--	*retptr =3D s;
--
--	/* return partition table */
--	return parts;
-+	return 0;
- }
-=20
- /*
-- * Parse the command line.
-+ * This is the handler for our kernel parameter, called from
-+ * main.c::checksetup(). Note that we can not yet kmalloc() anything,
-+ * so we only save the commandline for later processing.
-+ *
-+ * This function needs to be visible for bootloaders.
-  */
--static int mtdpart_setup_real(char *s)
-+static int __init mtdpart_setup(char *s)
- {
--	cmdline_parsed =3D 1;
--
--	for( ; s !=3D NULL; )
--	{
--		struct cmdline_mtd_partition *this_mtd;
--		struct mtd_partition *parts;
--		int mtd_id_len, num_parts;
--		char *p, *mtd_id;
--
--		mtd_id =3D s;
--
--		/* fetch <mtd-id> */
--		p =3D strchr(s, ':');
--		if (!p) {
--			printk(KERN_ERR ERRP "no mtd-id\n");
--			return -EINVAL;
--		}
--		mtd_id_len =3D p - mtd_id;
--
--		dbg(("parsing <%s>\n", p+1));
--
--		/*
--		 * parse one mtd. have it reserve memory for the
--		 * struct cmdline_mtd_partition and the mtd-id string.
--		 */
--		parts =3D newpart(p + 1,		/* cmdline */
--				&s,		/* out: updated cmdline ptr */
--				&num_parts,	/* out: number of parts */
--				0,		/* first partition */
--				(unsigned char**)&this_mtd, /* out: extra mem */
--				mtd_id_len + 1 + sizeof(*this_mtd) +
--				sizeof(void*)-1 /*alignment*/);
--		if (IS_ERR(parts)) {
--			/*
--			 * An error occurred. We're either:
--			 * a) out of memory, or
--			 * b) in the middle of the partition spec
--			 * Either way, this mtd is hosed and we're
--			 * unlikely to succeed in parsing any more
--			 */
--			 return PTR_ERR(parts);
--		 }
--
--		/* align this_mtd */
--		this_mtd =3D (struct cmdline_mtd_partition *)
--				ALIGN((unsigned long)this_mtd, sizeof(void *));
--		/* enter results */
--		this_mtd->parts =3D parts;
--		this_mtd->num_parts =3D num_parts;
--		this_mtd->mtd_id =3D (char*)(this_mtd + 1);
--		strlcpy(this_mtd->mtd_id, mtd_id, mtd_id_len + 1);
--
--		/* link into chain */
--		this_mtd->next =3D partitions;
--		partitions =3D this_mtd;
--
--		dbg(("mtdid=3D<%s> num_parts=3D<%d>\n",
--		     this_mtd->mtd_id, this_mtd->num_parts));
--
--
--		/* EOS - we're done */
--		if (*s =3D=3D 0)
--			break;
--
--		/* does another spec follow? */
--		if (*s !=3D ';') {
--			printk(KERN_ERR ERRP "bad character after partition (%c)\n", *s);
--			return -EINVAL;
--		}
--		s++;
--	}
--
--	return 0;
-+	mtdparts =3D s;
-+	return 1;
- }
-+__setup("mtdparts=3D", mtdpart_setup);
-=20
- /*
-  * Main function to be called from the MTD mapping driver/device to
-@@ -309,82 +77,35 @@ static int parse_cmdline_partitions(struct mtd_info *m=
-aster,
- 				    struct mtd_partition **pparts,
- 				    struct mtd_part_parser_data *data)
- {
--	unsigned long long offset;
--	int i, err;
--	struct cmdline_mtd_partition *part;
--	const char *mtd_id =3D master->name;
-+	struct cmdline_parts *parts;
-=20
--	/* parse command line */
--	if (!cmdline_parsed) {
--		err =3D mtdpart_setup_real(cmdline);
--		if (err)
--			return err;
--	}
-+	if (mtdparts) {
-+		if (mtd_cmdline_parts)
-+			cmdline_parts_free(&mtd_cmdline_parts);
-+
-+		if (cmdline_parts_parse(&mtd_cmdline_parts, mtdparts)) {
-+			mtdparts =3D NULL;
-+			return -EINVAL;
-+		}
-=20
--	/*
--	 * Search for the partition definition matching master->name.
--	 * If master->name is not set, stop at first partition definition.
--	 */
--	for (part =3D partitions; part; part =3D part->next) {
--		if ((!mtd_id) || (!strcmp(part->mtd_id, mtd_id)))
--			break;
-+		mtdparts =3D NULL;
- 	}
-=20
--	if (!part)
-+	if (!mtd_cmdline_parts)
- 		return 0;
-=20
--	for (i =3D 0, offset =3D 0; i < part->num_parts; i++) {
--		if (part->parts[i].offset =3D=3D OFFSET_CONTINUOUS)
--			part->parts[i].offset =3D offset;
--		else
--			offset =3D part->parts[i].offset;
--
--		if (part->parts[i].size =3D=3D SIZE_REMAINING)
--			part->parts[i].size =3D master->size - offset;
--
--		if (offset + part->parts[i].size > master->size) {
--			printk(KERN_WARNING ERRP
--			       "%s: partitioning exceeds flash size, truncating\n",
--			       part->mtd_id);
--			part->parts[i].size =3D master->size - offset;
--		}
--		offset +=3D part->parts[i].size;
--
--		if (part->parts[i].size =3D=3D 0) {
--			printk(KERN_WARNING ERRP
--			       "%s: skipping zero sized partition\n",
--			       part->mtd_id);
--			part->num_parts--;
--			memmove(&part->parts[i], &part->parts[i + 1],
--				sizeof(*part->parts) * (part->num_parts - i));
--			i--;
--		}
--	}
-+	parts =3D cmdline_parts_find(mtd_cmdline_parts, master->name);
-+	if (!parts)
-+		return 0;
-=20
--	*pparts =3D kmemdup(part->parts, sizeof(*part->parts) * part->num_parts,
--			  GFP_KERNEL);
-+	*pparts =3D kzalloc(sizeof(**pparts) * parts->nr_subparts, GFP_KERNEL);
- 	if (!*pparts)
- 		return -ENOMEM;
-=20
--	return part->num_parts;
--}
--
--
--/*
-- * This is the handler for our kernel parameter, called from
-- * main.c::checksetup(). Note that we can not yet kmalloc() anything,
-- * so we only save the commandline for later processing.
-- *
-- * This function needs to be visible for bootloaders.
-- */
--static int __init mtdpart_setup(char *s)
--{
--	cmdline =3D s;
--	return 1;
-+	return cmdline_parts_set(parts, master->size, 0, add_part,
-+				 (void *)*pparts);
- }
-=20
--__setup("mtdparts=3D", mtdpart_setup);
--
- static struct mtd_part_parser cmdline_parser =3D {
- 	.owner =3D THIS_MODULE,
- 	.parse_fn =3D parse_cmdline_partitions,
-@@ -393,8 +114,6 @@ static struct mtd_part_parser cmdline_parser =3D {
-=20
- static int __init cmdline_parser_init(void)
- {
--	if (mtdparts)
--		mtdpart_setup(mtdparts);
- 	return register_mtd_parser(&cmdline_parser);
- }
-=20
-diff --git a/include/linux/cmdline-parser.h b/include/linux/cmdline-parser.=
-h
-index 98e892e..43b65a9 100644
---- a/include/linux/cmdline-parser.h
-+++ b/include/linux/cmdline-parser.h
-@@ -35,9 +35,9 @@ int cmdline_parts_parse(struct cmdline_parts **parts, con=
-st char *cmdline);
- struct cmdline_parts *cmdline_parts_find(struct cmdline_parts *parts,
- 					 const char *bdev);
-=20
--void cmdline_parts_set(struct cmdline_parts *parts, sector_t disk_size,
--		       int slot,
--		       int (*add_part)(int, struct cmdline_subpart *, void *),
--		       void *param);
-+int cmdline_parts_set(struct cmdline_parts *parts, sector_t disk_size,
-+		      int slot,
-+		      int (*add_part)(int, struct cmdline_subpart *, void *),
-+		      void *param);
-=20
- #endif /* CMDLINEPARSEH */
---=20
-1.8.1.5
+Actually at first, I did not specify the 'fm_autoconvert'.  In both
+case, the 'modprobe' of the UBI fails with the 3.8 Ubuntu kernel.  I
+though that if I specify 'fm_autoconvert=0', none of the 'fastmap' code
+should be active?  Should I re-compile without MTD_UBI_FASTMAP to see if
+I can mount the file system?  I would like to be able to look at the
+file system, even in read-only mode.  The kernel logs are below from the
+'ubi' modprobe.  Is there actually an issue here with UBI?  When I try
+to mount the 'ubi' partition with,
+
+ mount -t ubifs -o ro /dev/ubi0_3 /mnt/ubifs
+
+additional issues are encountered.  But I think that some of the UBI
+issues might be a problem?  Can I use some other flash with a bigger
+size so that 'PEBs' can be reserved?
+
+Of course, I have the disk image and can send additional information.
+
+Thanks,
+Bill Pringlemeir.
+
+[1232060.158586] ubi: `0' invalid for parameter `ubi.fm_autoconvert'
+[1232069.536856] ubi: `0' invalid for parameter `fm_autoconvert_bla'
+[1232073.333755] UBI: default fastmap pool size: 95
+[1232073.333761] UBI: default fastmap WL pool size: 25
+[1232073.333765] UBI: attaching mtd3 to ubi0
+[1232073.339804] ------------[ cut here ]------------
+[1232073.339814] WARNING: at /build/buildd/linux-3.8.0/drivers/mtd/ubi/fastmap.c:827 ubi_attach_fastmap+0x9b9/0xb50 [ubi]()
+[1232073.339815] Hardware name: 421511U
+[1232073.339816] Modules linked in: ubi(+) deflate(F) zlib_deflate(F) mtdchar nandsim nand nand_ecc nand_bch bch(F) nand_ids mtd romfs nfnetlink(F) arc4(F) md4(F) nls_utf8 cif
+s(F) fscache(F) parport_pc(F) ppdev(F) rfcomm bnep bluetooth binfmt_misc(F) dm_crypt(F) coretemp kvm cdc_subset cdc_eem usbnet snd_hda_codec_realtek snd_hda_intel snd_hda_code
+c snd_hwdep(F) snd_pcm(F) snd_page_alloc(F) snd_seq_midi(F) snd_seq_midi_event(F) snd_rawmidi(F) snd_seq(F) gpio_ich snd_seq_device(F) snd_timer(F) mac_hid snd(F) nvidia(POF) wmi soundcore(F) psmouse(F) lpc_ich mei serio_raw(F) lp(F) microcode(F) parport(F) hid_generic ghash_clmulni_intel(F) aesni_intel(F) aes_x86_64(F) xts(F) lrw(F) gf128mul(F) ablk_helper(F) cryptd(F) usbhid hid firewire_ohci 3c59x firewire_core crc_itu_t(F) e1000e(F) [last unloaded: ubi]
+[1232073.339854] Pid: 9420, comm: modprobe Tainted: PF       W  O 3.8.0-27-generic #40-Ubuntu
+[1232073.339855] Call Trace:
+[1232073.339860]  [<ffffffff810587ef>] warn_slowpath_common+0x7f/0xc0
+[1232073.339862]  [<ffffffff8105884a>] warn_slowpath_null+0x1a/0x20
+[1232073.339866]  [<ffffffffa0f271e9>] ubi_attach_fastmap+0x9b9/0xb50 [ubi]
+[1232073.339870]  [<ffffffffa0f27801>] ubi_scan_fastmap+0x441/0x7b0 [ubi]
+[1232073.339874]  [<ffffffffa0f24102>] scan_fast+0x192/0x1b0 [ubi]
+[1232073.339878]  [<ffffffffa0f248b0>] ubi_attach+0x120/0x240 [ubi]
+[1232073.339882]  [<ffffffffa0f17886>] ubi_attach_mtd_dev+0x766/0xe90 [ubi]
+[1232073.339886]  [<ffffffffa0e386cd>] ? __get_mtd_device+0x1d/0x80 [mtd]
+[1232073.339889]  [<ffffffffa0f3744c>] ubi_init+0x226/0xdda [ubi]
+[1232073.339893]  [<ffffffffa0f37226>] ? ubi_mtd_param_parse+0x226/0x226 [ubi]
+[1232073.339896]  [<ffffffff8100215a>] do_one_initcall+0x12a/0x180
+[1232073.339900]  [<ffffffff810c0127>] load_module+0x10c7/0x1520
+[1232073.339902]  [<ffffffff810bba20>] ? unset_module_init_ro_nx+0x80/0x80
+[1232073.339904]  [<ffffffff810c0645>] sys_init_module+0xc5/0xf0
+[1232073.339907]  [<ffffffff816d521d>] system_call_fastpath+0x1a/0x1f
+[1232073.339908] ---[ end trace f20e309ad7ab2d28 ]---
+[1232073.339909] UBI error: ubi_scan_fastmap: Attach by fastmap failed, doing a full scan!
+[1232073.344416] UBI: scanning is finished
+[1232073.344751] UBI assert failed in ubi_wl_init at 1968 (pid 9420)
+[1232073.344753] Pid: 9420, comm: modprobe Tainted: PF       W  O 3.8.0-27-generic #40-Ubuntu
+[1232073.344754] Call Trace:
+[1232073.344764]  [<ffffffffa0f2231e>] ubi_wl_init+0x62e/0x660 [ubi]
+[1232073.344768]  [<ffffffffa0f2490b>] ubi_attach+0x17b/0x240 [ubi]
+[1232073.344772]  [<ffffffffa0f17886>] ubi_attach_mtd_dev+0x766/0xe90 [ubi]
+[1232073.344777]  [<ffffffffa0e386cd>] ? __get_mtd_device+0x1d/0x80 [mtd]
+[1232073.344780]  [<ffffffffa0f3744c>] ubi_init+0x226/0xdda [ubi]
+[1232073.344783]  [<ffffffffa0f37226>] ? ubi_mtd_param_parse+0x226/0x226 [ubi]
+[1232073.344787]  [<ffffffff8100215a>] do_one_initcall+0x12a/0x180
+[1232073.344792]  [<ffffffff810c0127>] load_module+0x10c7/0x1520
+[1232073.344794]  [<ffffffff810bba20>] ? unset_module_init_ro_nx+0x80/0x80
+[1232073.344796]  [<ffffffff810c0645>] sys_init_module+0xc5/0xf0
+[1232073.344799]  [<ffffffff816d521d>] system_call_fastpath+0x1a/0x1f
+[1232073.344818] UBI warning: print_rsvd_warning: cannot reserve enough PEBs for bad PEB handling, reserved 21, need 40
+[1232073.345224] UBI: attached mtd3 (name "NAND simulator partition 3", size 239 MiB) to ubi0
+[1232073.345228] UBI: PEB size: 131072 bytes (128 KiB), LEB size: 129024 bytes
+[1232073.345231] UBI: min./max. I/O unit sizes: 2048/2048, sub-page size 512
