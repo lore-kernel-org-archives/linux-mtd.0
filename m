@@ -1,21 +1,33 @@
-Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
+Received: from mail-pd0-x229.google.com ([2607:f8b0:400e:c02::229])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V9rdm-0008Ei-Jf
- for linux-mtd@lists.infradead.org; Thu, 15 Aug 2013 07:06:40 +0000
-Received: by mail-pa0-f53.google.com with SMTP id lb1so470147pab.40
- for <linux-mtd@lists.infradead.org>; Thu, 15 Aug 2013 00:06:16 -0700 (PDT)
-Date: Thu, 15 Aug 2013 00:06:06 -0700
+ id 1V9rh6-0008KB-MF
+ for linux-mtd@lists.infradead.org; Thu, 15 Aug 2013 07:10:05 +0000
+Received: by mail-pd0-f169.google.com with SMTP id r10so487942pdi.28
+ for <linux-mtd@lists.infradead.org>; Thu, 15 Aug 2013 00:09:41 -0700 (PDT)
+Date: Thu, 15 Aug 2013 00:09:38 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Vincenzo Aliberti <vincenzo.aliberti@gmail.com>
-Subject: Re: [PATCH] [MTD] MTD driver for LPDDR2-NVM PCM memories
-Message-ID: <20130815070347.GA24007@brian-ubuntu>
-References: <1371753473-2343-1-git-send-email-vincenzo.aliberti@gmail.com>
+To: Caizhiyong <caizhiyong@huawei.com>
+Subject: Re: [PATCH] block: add command line partition parser
+Message-ID: <20130815070938.GB24007@brian-ubuntu>
+References: <C3050A4DBA34F345975765E43127F10F1C061D75@szxeml512-mbs.china.huawei.com>
+ <20130805152206.76462cc4a42e51b16a0532f1@linux-foundation.org>
+ <C3050A4DBA34F345975765E43127F10F1C06237C@szxeml512-mbs.china.huawei.com>
+ <20130814155742.d3cd651e40e552696667e4f2@linux-foundation.org>
+ <CAN8TOE-aGcKQNayzEVQaS1wJ_Uqp3RAZ5pTuVEhaaY9f487-xA@mail.gmail.com>
+ <C3050A4DBA34F345975765E43127F10F1C063B36@szxeml512-mbx.china.huawei.com>
+ <20130815050007.GA23474@brian-ubuntu>
+ <C3050A4DBA34F345975765E43127F10F1C064357@szxeml512-mbx.china.huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1371753473-2343-1-git-send-email-vincenzo.aliberti@gmail.com>
-Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
+In-Reply-To: <C3050A4DBA34F345975765E43127F10F1C064357@szxeml512-mbx.china.huawei.com>
+Cc: "Wanglin \(Albert\)" <albert.wanglin@huawei.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Huang Shijie <b32955@freescale.com>, Karel Zak <kzak@redhat.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>,
+ Andrew Morton <akpm@linux-foundation.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,754 +37,139 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Vincenzo,
-
-My review is below.
-
-BTW, can you prefix your patch subject with a good subsystem prefix?
-Like "mtd: lpddr: add driver for LPDDR2-NVM PCM memories".
-
-On Thu, Jun 20, 2013 at 08:37:53PM +0200, Vincenzo Aliberti wrote:
-> Added Support for PCM memories with LPDDR2-NVM interface
+On Thu, Aug 15, 2013 at 06:16:04AM +0000, Caizhiyong wrote:
+> > -----Original Message-----
+> > From: Brian Norris [mailto:computersforpeace@gmail.com]
+> > Sent: Thursday, August 15, 2013 1:00 PM
+> > To: Caizhiyong
+> > Cc: Andrew Morton; Karel Zak; linux-mtd@lists.infradead.org;
+> > linux-kernel@vger.kernel.org; Wanglin (Albert); Artem Bityutskiy; Shmulik Ladkani;
+> > Huang Shijie
+> > Subject: Re: [PATCH] block: add command line partition parser
+> > 
+> > On Thu, Aug 15, 2013 at 03:38:47AM +0000, Caizhiyong wrote:
+> > > > -----Original Message-----
+> > > > From: Brian Norris [mailto:computersforpeace@gmail.com]
+> > > > Sent: Thursday, August 15, 2013 8:12 AM
+> > > > To: Andrew Morton
+> > > > Cc: Caizhiyong; Karel Zak; linux-mtd@lists.infradead.org;
+> > > > linux-kernel@vger.kernel.org; Wanglin (Albert); Artem Bityutskiy; Shmulik
+> > Ladkani;
+> > > > Huang Shijie
+> > > > Subject: Re: [PATCH] block: add command line partition parser
+> > > >
+> > > > On Wed, Aug 14, 2013 at 3:57 PM, Andrew Morton
+> > > > <akpm@linux-foundation.org> wrote:
+> > > > > On Tue, 13 Aug 2013 06:02:17 +0000 Caizhiyong <caizhiyong@huawei.com> wrote:
+> > > > >
+> > > > >> move the command line parser to a separate module, and change it into
+> > > > >> library-style code.
+> > > > >>
+> > > > >> reference: https://lkml.org/lkml/2013/8/6/550
+> > > >
+> > > > The most recent patch is an addendum to this linked patch then?
+> > > >
+> > > > > Well OK.  But to prove the library's usefulness and to generally clean
+> > > > > up the kernel, someone needs to sign up to the task of converting
+> > > > > drivers/mtd/cmdlinepart.c to use this code.
+> > > > >
+> > > > > I've been hopefully cc'ing various MTD people but am not being
+> > > > > overwhelmed with waves of enthusiasm ;)
+> > > >
+> > > > "I've been" implies that you have done so prior to this email. And
+> > > > "people" implies more than one person. I see that you CC'd David
+> > > > Woodhouse over a week ago, but he's fairly silent these days on MTD
+> > > > things. It's Artem or me who handle most of the day-to-day of MTD. And
+> > > > this is the first time I've seen this! (BTW, please include
+> > > > linux-mtd@lists.infradead.org for anything involving MTD.)
+> > > >
+> > > > This seems reasonable, and I'd be willing to work with this proposal.
+> > > >
+> > > > Caizhiyong, can you submit a clear single patch (or series of
+> > > > patches), CC'd to linux-mtd at least? Then we can see about supporting
+> > > > it in MTD. It doesn't look too difficult, but I need to check that it
+> > > > faithfully mimics the capability we currently rely on. There have been
+> > > > previous discussions on changing it, but this was rejected in favor of
+> > > > allowing more flexibility. Here's part of one such conversation:
+> > > >
+> > > > http://lists.infradead.org/pipermail/linux-mtd/2012-August/043599.html
+> > > > http://lists.infradead.org/pipermail/linux-mtd/2012-September/043825.html
+> > > > http://lists.infradead.org/pipermail/linux-mtd/2012-December/045322.html
+> > > >
+> > > > So I would recommend:
+> > > > (1) consider carefully the implications of your command-line format
+> > > > now, rather than later
+> > > > (2) if you want MTD to use it, it needs to support the features we use now
+> > >
+> > > It is fully functional reference MTD, :-).
+> > 
+> > I realize that. I just want to be clear that we have to reconcile (1)
+> > and (2). IOW, if block device requirements stray too far from MTD
+> > requirements, then we might as well drop the idea of integration now.
+> > But if they agree, then we can move forward.
+> > 
+> > > > Some particular cases to consider: overlapping partitions (how do
+> > > > block devices handle overlapping partitions?), out-of-order
+> > > > specification, zero sized partitions, mixed syntax (some specified
+> > > > with an offset, some not), multiple '-' partitions.
+> > >
+> > > I think the 'offset' just is used to hide some MTD space.
+> > 
+> > No, it specifies offset as a distance from the beginning of the flash,
+> > so partitions can be numbered out of order. This is intentionally
+> > utilized by some users, for example, to ensure that a particular
+> > partition is always /dev/mtd0, even if it is not the first partition
+> > physically.
+> > 
+> > > There are two way:
+> > > 1) redefine the 'offset' as a gap between forward partition and next partition.
+> > > 2) add code forbid command line partitions overlapping and out-of-order.
+> > >
+> > > I recommend 1), it seems to solve those problem(overlapping and out-of-order),
+> > but it will affect habit.
+> > 
+> > The linked discussion is where MTD settled on retaining old practice. I
+> > brought it up not so that we change it here, but so that you would
+> > understand what you are agreeing to if you adopt a common MTD and block
+> > device parsing infrastructure.
+> > 
+> > [Note that I am much less familiar with block device mechanics than with
+> > MTD.] Are any of the problem areas I mentioned actually forbidden on
+> > block devices? I know, for instance, that an MBR partition table can
+> > specify partitions out of order. And I've googled around and seen some
+> > posts about people (unintentionally) ending up with overlapping hard
+> > disk partitions.
+> > 
+> > So from my primitive knowledge, it sounds like a block devices parser
+> > could agree with the same principle put forward by Shmulik in that
+> > second URL:
+> > 
+> >  "So far, mtdparts commandline parsing has been very lenient and liberal.
+> >   I think we should keep this approach; give the user the flexibility,
+> >   he'll be responsible to provide meaningful cmdline parts for his
+> >   system."
+> > 
+> > Brian
 > 
-> Signed-off-by: Vincenzo Aliberti <vincenzo.aliberti@gmail.com>
-> ---
->  drivers/mtd/lpddr/Kconfig      |   12 +-
->  drivers/mtd/lpddr/Makefile     |    1 +
->  drivers/mtd/lpddr/lpddr2_nvm.c |  556 ++++++++++++++++++++++++++++++++++++++++
->  include/uapi/mtd/mtd-abi.h     |    1 +
->  4 files changed, 568 insertions(+), 2 deletions(-)
->  create mode 100644 drivers/mtd/lpddr/lpddr2_nvm.c
-> 
-> diff --git a/drivers/mtd/lpddr/Kconfig b/drivers/mtd/lpddr/Kconfig
-> index 265f969..468f06d 100644
-> --- a/drivers/mtd/lpddr/Kconfig
-> +++ b/drivers/mtd/lpddr/Kconfig
-> @@ -1,5 +1,5 @@
-> -menu "LPDDR flash memory drivers"
-> -	depends on MTD!=n
-> +menu "LPDDR & LPDDR2 PCM memory drivers"
-> +	depends on MTD
->  
->  config MTD_LPDDR
->  	tristate "Support for LPDDR flash chips"
-> @@ -17,4 +17,12 @@ config MTD_QINFO_PROBE
->  	    Window QINFO interface, permits software to be used for entire
->  	    families of devices. This serves similar purpose of CFI on legacy
->  	    Flash products
-> +
-> +config MTD_LPDDR2_NVM
-> +	depends on MTD
-> +	tristate "Support for LPDDR2-NVM flash chips"
-> +	help
-> +	  This option enables support of PCM memories with a LPDDR2-NVM
-> +	  (Low power double data rate 2) interface.
-> +
->  endmenu
-> diff --git a/drivers/mtd/lpddr/Makefile b/drivers/mtd/lpddr/Makefile
-> index da48e46..881d440 100644
-> --- a/drivers/mtd/lpddr/Makefile
-> +++ b/drivers/mtd/lpddr/Makefile
-> @@ -4,3 +4,4 @@
->  
->  obj-$(CONFIG_MTD_QINFO_PROBE)	+= qinfo_probe.o
->  obj-$(CONFIG_MTD_LPDDR)	+= lpddr_cmds.o
-> +obj-$(CONFIG_MTD_LPDDR2_NVM) += lpddr2_nvm.o
-> diff --git a/drivers/mtd/lpddr/lpddr2_nvm.c b/drivers/mtd/lpddr/lpddr2_nvm.c
-> new file mode 100644
-> index 0000000..068f95d
-> --- /dev/null
-> +++ b/drivers/mtd/lpddr/lpddr2_nvm.c
-> @@ -0,0 +1,556 @@
-> +/*
-> + * LPDDR2-NVM MTD driver. This module provides read, write, erase, lock/unlock
-> + * support for LPDDR2-NVM PCM memories
-> + *
-> + * Copyright © 2012 Micron Technology, Inc.
+> I want to use the MTD command line partition method on block devices (eMMC).
+> It is very suitable for embedded systems. I think, in embedded system partition method,
+> if somebody need some feature on MTD device, he may be also need it on block device.
+> so I fully functional reference MTD command line partition.
 
-2013 maybe? But I won't insist, if this was really authored and used out
-of tree last year.
+I agree.
 
-> + *
-> + * Vincenzo Aliberti <vincenzo.aliberti@gmail.com>
-> + * Domenico Manna <domenico.manna@gmail.com>
-> + * Many thanks to Andrea Vigilante for initial enabling
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of the GNU General Public License
-> + * as published by the Free Software Foundation; either version 2
-> + * of the License, or (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, write to the Free Software
-> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-> + * 02110-1301, USA.
-> + */
-> +
-> +#include <linux/init.h>
-> +#include <linux/module.h>
-> +#include <linux/kernel.h>
-> +#include <linux/mtd/map.h>
-> +#include <linux/mtd/mtd.h>
-> +#include <linux/mtd/partitions.h>
-> +#include <linux/slab.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/ioport.h>
-> +#include <linux/sched.h>
-> +
-> +/* Parameters */
-> +#define ERASE_BLOCKSIZE			(0x00020000/2)	/* in Word */
-> +#define WRITE_BUFFSIZE			(0x00000400/2)	/* in Word */
-> +#define OW_BASE_ADDRESS			0x00000000	/* OW offset */
-> +
-> +/* PFOW symbols address offset */
-> +#define PFOW_QUERY_STRING_P		(0x0000/2)	/* in Word */
-> +#define PFOW_QUERY_STRING_F		(0x0002/2)	/* in Word */
-> +#define PFOW_QUERY_STRING_O		(0x0004/2)	/* in Word */
-> +#define PFOW_QUERY_STRING_W		(0x0006/2)	/* in Word */
-> +
-> +/* OW registers address */
-> +#define CMD_CODE_OFS			(0x0080/2)	/* in Word */
-> +#define CMD_DATA_OFS			(0x0084/2)	/* in Word */
-> +#define CMD_ADD_L_OFS			(0x0088/2)	/* in Word */
-> +#define CMD_ADD_H_OFS			(0x008A/2)	/* in Word */
-> +#define MPR_L_OFS			(0x0090/2)	/* in Word */
-> +#define MPR_H_OFS			(0x0092/2)	/* in Word */
-> +#define CMD_EXEC_OFS			(0x00C0/2)	/* in Word */
-> +#define STATUS_REG_OFS			(0x00CC/2)	/* in Word */
-> +#define PRG_BUFFER_OFS			(0x0010/2)	/* in Word */
-> +
-> +/* Datamask */
-> +#define MR_CFGMASK			0x8000
-> +#define SR_OK_DATAMASK			0x0080
-> +
-> +/* LPDDR2-NVM Commands */
-> +#define LPDDR2_NVM_LOCK			0x0061
-> +#define LPDDR2_NVM_UNLOCK		0x0062
-> +#define LPDDR2_NVM_SW_PROGRAM		0x0041
-> +#define LPDDR2_NVM_SW_OVERWRITE		0x0042
-> +#define LPDDR2_NVM_BUF_PROGRAM		0x00E9
-> +#define LPDDR2_NVM_BUF_OVERWRITE	0x00EA
-> +#define LPDDR2_NVM_ERASE		0x0020
-> +
-> +/*
-> + * Internal Type Definitions
-> + * pcm_int_data contains memory controller details:
-> + * @reg_data : LPDDR2_MODE_REG_DATA register address after remapping
-> + * @reg_cfg  : LPDDR2_MODE_REG_CFG register address after remapping
-> + * &bus_width: memory bus-width (eg: x16 2 Bytes, x32 4 Bytes)
-> + */
-> +struct pcm_int_data {
-> +	void __iomem *reg_data;
-> +	void __iomem *reg_cfg;
-> +	int bus_width;
-> +};
-> +
-> +static DEFINE_MUTEX(lpdd2_nvm_mutex);
-> +
-> +/*
-> + * Build a map_word starting from an u_long
-> + */
-> +static inline map_word build_map_word(u_long myword)
-> +{
-> +	map_word val = { {0} };
-> +	val.x[0] = myword;
-> +	return val;
-> +}
-> +
-> +/*
-> + * Build Mode Register Configuration DataMask based on device bus-width
-> + */
-> +static inline u_int build_mr_cfgmask(u_int bus_width)
-> +{
-> +	u_int val = MR_CFGMASK;
-> +
-> +	if (bus_width == 0x0004)		/* x32 device */
-> +		val = val<<16;
+I'm curious: have you seen any need for a similar arrangement via
+device-tree? See, for example, drivers/mtd/ofpart.c.
 
-Add space around the shift operator.
+> I tested the out-of-order and overlapping on my system, used command line partition, It is work ok.
+> The block device code is not make any restrictions on partition out-of-order and overlapping.
 
-> +
-> +	return val;
-> +}
-> +
-> +/*
-> + * Build Status Register OK DataMask based on device bus-width
-> + */
-> +static inline u_int build_sr_ok_datamask(u_int bus_width)
-> +{
-> +	u_int val = SR_OK_DATAMASK;
-> +
-> +	if (bus_width == 0x0004)		/* x32 device */
-> +		val = (val<<16)+val;
+OK, good. Thanks for checking.
 
-Ditto.
+> I hope extend the flexibility to block device.
 
-> +
-> +	return val;
-> +}
-> +
-> +/*
-> + * Evaluates Overlay Window Control Registers address
-> + */
-> +static inline u_long ow_reg_add(struct map_info *map, u_long offset)
-> +{
-> +	u_long val = 0;
-> +	struct pcm_int_data *pcm_data = map->fldrv_priv;
-> +
-> +	val = map->pfow_base + offset*pcm_data->bus_width;
-> +
-> +	return val;
-> +}
-> +
-> +/*
-> + * Enable lpddr2-nvm Overlay Window
-> + * Overlay Window is a memory mapped area containing all LPDDR2-NVM registers
-> + * used by device commands as well as uservisible resources like Device Status
-> + * Register, Device ID, etc
-> + */
-> +static inline void ow_enable(struct map_info *map)
-> +{
-> +	struct pcm_int_data *pcm_data = map->fldrv_priv;
-> +
-> +	writel_relaxed(build_mr_cfgmask(pcm_data->bus_width) | 0x18,
-> +		pcm_data->reg_cfg);
-> +	writel_relaxed(0x01, pcm_data->reg_data);
+Sure. I'll try to review the full patch soon and test out integrating
+it with MTD.
 
-Unfortunately, writel_relaxed() is still not available on all
-architectures (notably x86). So this driver either should switch to a
-supported IO accessor or change its Kconfig so it depends on the
-supported architectures.
-
-> +}
-> +
-> +/*
-> + * Disable lpddr2-nvm Overlay Window
-> + * Overlay Window is a memory mapped area containing all LPDDR2-NVM registers
-> + * used by device commands as well as uservisible resources like Device Status
-> + * Register, Device ID, etc
-> + */
-> +static inline void ow_disable(struct map_info *map)
-> +{
-> +	struct pcm_int_data *pcm_data = map->fldrv_priv;
-> +
-> +	writel_relaxed(build_mr_cfgmask(pcm_data->bus_width) | 0x18,
-> +		pcm_data->reg_cfg);
-> +	writel_relaxed(0x02, pcm_data->reg_data);
-> +}
-> +
-> +/*
-> + * Execute lpddr2-nvm operations
-> + */
-> +static int lpddr2_nvm_do_op(struct map_info *map, u_long cmd_code,
-> +	u_long cmd_data, u_long cmd_add, u_long cmd_mpr, u_char *buf)
-> +{
-> +	map_word add_l = { {0} }, add_h = { {0} }, mpr_l = { {0} },
-> +		mpr_h = { {0} }, data_l = { {0} }, cmd = { {0} },
-> +		exec_cmd = { {0} }, sr;
-> +	map_word data_h = { {0} };	/* only for 2x x16 devices stacked */
-> +	u_long i, status_reg, prg_buff_ofs;
-> +	struct pcm_int_data *pcm_data = map->fldrv_priv;
-> +	u_int sr_ok_datamask = build_sr_ok_datamask(pcm_data->bus_width);
-> +
-> +	/* Builds low and high words for OW Control Registers */
-> +	add_l.x[0]	= cmd_add&0x0000FFFF;
-> +	add_h.x[0]	= (cmd_add>>16)&0x0000FFFF;
-
-Spacing around the shift and the mask operator (&). Same applies
-elsewhere.
-
-> +	mpr_l.x[0]	= cmd_mpr&0x0000FFFF;
-> +	mpr_h.x[0]	= (cmd_mpr>>16)&0x0000FFFF;
-> +	cmd.x[0]	= cmd_code&0x0000FFFF;
-> +	exec_cmd.x[0]	= 0x0001;
-> +	data_l.x[0]	= cmd_data&0x0000FFFF;
-> +	data_h.x[0]	= (cmd_data>>16)&0x0000FFFF; /* only for 2x x16 */
-> +
-> +	/* Set Overlay Window Control Registers */
-> +	map_write(map, cmd, ow_reg_add(map, CMD_CODE_OFS));
-> +	map_write(map, data_l, ow_reg_add(map, CMD_DATA_OFS));
-> +	map_write(map, add_l, ow_reg_add(map, CMD_ADD_L_OFS));
-> +	map_write(map, add_h, ow_reg_add(map, CMD_ADD_H_OFS));
-> +	map_write(map, mpr_l, ow_reg_add(map, MPR_L_OFS));
-> +	map_write(map, mpr_h, ow_reg_add(map, MPR_H_OFS));
-> +	if (pcm_data->bus_width == 0x0004) {	/* 2x16 devices stacked */
-> +		map_write(map, cmd, ow_reg_add(map, CMD_CODE_OFS) + 2);
-> +		map_write(map, data_h, ow_reg_add(map, CMD_DATA_OFS) + 2);
-> +		map_write(map, add_l, ow_reg_add(map, CMD_ADD_L_OFS) + 2);
-> +		map_write(map, add_h, ow_reg_add(map, CMD_ADD_H_OFS) + 2);
-> +		map_write(map, mpr_l, ow_reg_add(map, MPR_L_OFS) + 2);
-> +		map_write(map, mpr_h, ow_reg_add(map, MPR_H_OFS) + 2);
-> +	}
-> +
-> +	/* Fill Program Buffer */
-> +	if ((cmd_code == LPDDR2_NVM_BUF_PROGRAM) ||
-> +		(cmd_code == LPDDR2_NVM_BUF_OVERWRITE)) {
-> +		prg_buff_ofs = (map_read(map,
-> +			ow_reg_add(map, PRG_BUFFER_OFS))).x[0];
-> +		for (i = 0; i < cmd_mpr; i++) {
-> +			map_write(map, build_map_word(buf[i]), map->pfow_base +
-> +			prg_buff_ofs + i);
-> +		}
-> +	}
-> +
-> +	/* Command Execute */
-> +	map_write(map, exec_cmd, ow_reg_add(map, CMD_EXEC_OFS));
-> +	if (pcm_data->bus_width == 0x0004)	/* 2x16 devices stacked */
-> +		map_write(map, exec_cmd, ow_reg_add(map, CMD_EXEC_OFS) + 2);
-> +
-> +	/* Status Register Check */
-> +	do {
-> +		sr = map_read(map, ow_reg_add(map, STATUS_REG_OFS));
-> +		status_reg = sr.x[0];
-> +		if (pcm_data->bus_width == 0x0004) {/* 2x16 devices stacked */
-> +			sr = map_read(map, ow_reg_add(map,
-> +				STATUS_REG_OFS) + 2);
-> +			status_reg += sr.x[0]<<16;
-> +		}
-> +	} while ((status_reg&sr_ok_datamask) != sr_ok_datamask);
-> +
-> +	return (((status_reg&sr_ok_datamask) == sr_ok_datamask) ? 0 : -EIO);
-> +}
-> +
-> +/*
-> + * Execute lpddr2-nvm operations @ block level
-> + */
-> +static int lpddr2_nvm_do_block_op(struct mtd_info *mtd, loff_t start_add,
-> +	uint64_t len, u_char block_op)
-> +{
-> +	struct map_info *map = mtd->priv;
-> +	u_long add, end_add;
-> +	int ret = 0;
-> +
-> +	mutex_lock(&lpdd2_nvm_mutex);
-> +
-> +	ow_enable(map);
-> +
-> +	add = start_add;
-> +	end_add = add + len;
-> +
-> +	if ((add > mtd->size) || (end_add > mtd->size)) {
-
-I don't think these checks are required, since mtd_unlock(), mtd_lock(),
-and mtd_erase() do this check for you. Plus, your checks are not
-exhaustive (what about add < 0, end_add < 0?).
-
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	do {
-> +		ret = lpddr2_nvm_do_op(map, block_op, 0x00, add, add, NULL);
-> +		if (ret)
-> +			goto out;
-> +		add += mtd->erasesize;
-> +	} while (add < end_add);
-> +
-> +out:
-> +	ow_disable(map);
-> +	mutex_unlock(&lpdd2_nvm_mutex);
-> +	return ret;
-> +}
-> +
-> +/*
-> + * verify presence of PFOW string
-> + */
-> +static int lpddr2_nvm_pfow_present(struct map_info *map)
-> +{
-> +	map_word pfow_val[4];
-> +	unsigned int found = 1;
-> +
-> +	mutex_lock(&lpdd2_nvm_mutex);
-> +
-> +	ow_enable(map);
-> +
-> +	/* Load string from array */
-> +	pfow_val[0] = map_read(map, ow_reg_add(map, PFOW_QUERY_STRING_P));
-> +	pfow_val[1] = map_read(map, ow_reg_add(map, PFOW_QUERY_STRING_F));
-> +	pfow_val[2] = map_read(map, ow_reg_add(map, PFOW_QUERY_STRING_O));
-> +	pfow_val[3] = map_read(map, ow_reg_add(map, PFOW_QUERY_STRING_W));
-> +
-> +	/* Verify the string loaded vs expected */
-> +	if (!map_word_equal(map, build_map_word('P'), pfow_val[0]))
-> +		found = 0;
-> +	if (!map_word_equal(map, build_map_word('F'), pfow_val[1]))
-> +		found = 0;
-> +	if (!map_word_equal(map, build_map_word('O'), pfow_val[2]))
-> +		found = 0;
-> +	if (!map_word_equal(map, build_map_word('W'), pfow_val[3]))
-> +		found = 0;
-> +
-> +	ow_disable(map);
-> +
-> +	mutex_unlock(&lpdd2_nvm_mutex);
-> +
-> +	return found;
-> +}
-> +
-> +/*
-> + * lpddr2_nvm driver read method
-> + */
-> +static int lpddr2_nvm_read(struct mtd_info *mtd, loff_t start_add,
-> +				size_t len, size_t *retlen, u_char *buf)
-> +{
-> +	struct map_info *map = mtd->priv;
-> +	int ret = 0;
-> +
-> +	mutex_lock(&lpdd2_nvm_mutex);
-> +
-> +	*retlen = len;
-> +
-> +	if ((start_add + len) > mtd->size) {
-
-This check is covered by mtd_read(). (And again, your checks are not
-exhaustive.)
-
-> +		pr_alert("lpddr2_nvm: read out of memory range\n");
-> +		*retlen = 0;
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	map_copy_from(map, buf, start_add, *retlen);
-> +
-> +out:
-> +	mutex_unlock(&lpdd2_nvm_mutex);
-> +	return ret;
-> +}
-> +
-> +/*
-> + * lpddr2_nvm driver write method
-> + */
-> +static int lpddr2_nvm_write(struct mtd_info *mtd, loff_t start_add,
-> +				size_t len, size_t *retlen, const u_char *buf)
-> +{
-> +	struct map_info *map = mtd->priv;
-> +	struct pcm_int_data *pcm_data = map->fldrv_priv;
-> +	u_long add, current_len, tot_len, target_len, my_data;
-> +	u_char *write_buf = (u_char *)buf;
-> +	int ret = 0;
-> +
-> +	mutex_lock(&lpdd2_nvm_mutex);
-> +
-> +	ow_enable(map);
-> +
-> +	/* Set start value for the variables */
-> +	add = start_add;
-> +	target_len = len;
-> +	tot_len = 0;
-> +
-> +	if ((start_add + len) > mtd->size) {
-
-Ditto about the range check. You don't need it.
-
-> +		pr_alert("lpddr2_nvm: write out of memory range\n");
-> +		*retlen = 0;
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	while (tot_len < target_len) {
-> +		if (!(IS_ALIGNED(add, mtd->writesize))) { /* do sw program */
-> +			my_data = write_buf[tot_len];
-> +			my_data += (write_buf[tot_len+1])<<8;
-> +			if (pcm_data->bus_width == 0x0004) {/* 2x16 devices */
-> +				my_data += (write_buf[tot_len+2])<<16;
-> +				my_data += (write_buf[tot_len+3])<<24;
-> +			}
-> +			ret = lpddr2_nvm_do_op(map, LPDDR2_NVM_SW_OVERWRITE,
-> +				my_data, add, 0x00, NULL);
-> +			if (ret)
-> +				goto out;
-> +
-> +			add += pcm_data->bus_width;
-> +			tot_len += pcm_data->bus_width;
-> +		} else {		/* do buffer program */
-> +			current_len = min(target_len - tot_len,
-> +				(u_long) mtd->writesize);
-> +			ret = lpddr2_nvm_do_op(map, LPDDR2_NVM_BUF_OVERWRITE,
-> +				0x00, add, current_len, write_buf + tot_len);
-> +			if (ret)
-> +				goto out;
-> +
-> +			add += current_len;
-> +			tot_len += current_len;
-> +		}
-> +	}
-> +
-> +out:
-> +	*retlen = tot_len;
-> +	ow_disable(map);
-> +	mutex_unlock(&lpdd2_nvm_mutex);
-> +	return ret;
-> +}
-> +
-> +/*
-> + * lpddr2_nvm driver erase method
-> + */
-> +static int lpddr2_nvm_erase(struct mtd_info *mtd, struct erase_info *instr)
-> +{
-> +	int ret = lpddr2_nvm_do_block_op(mtd, instr->addr, instr->len,
-> +		LPDDR2_NVM_ERASE);
-> +	if (!ret) {
-> +		instr->state = MTD_ERASE_DONE;
-> +		mtd_erase_callback(instr);
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +/*
-> + * lpddr2_nvm driver unlock method
-> + */
-> +static int lpddr2_nvm_unlock(struct mtd_info *mtd, loff_t start_add,
-> +	uint64_t len)
-> +{
-> +	return lpddr2_nvm_do_block_op(mtd, start_add, len, LPDDR2_NVM_UNLOCK);
-> +}
-> +
-> +/*
-> + * lpddr2_nvm driver lock method
-> + */
-> +static int lpddr2_nvm_lock(struct mtd_info *mtd, loff_t start_add,
-> +	uint64_t len)
-> +{
-> +	return lpddr2_nvm_do_block_op(mtd, start_add, len, LPDDR2_NVM_LOCK);
-> +}
-> +
-> +/*
-> + * lpddr2_nvm driver probe method
-> + */
-> +static int lpddr2_nvm_probe(struct platform_device *pdev)
-> +{
-> +	int ret = 0;
-> +	struct map_info *lpddr2_nvm_map;
-> +	struct mtd_info *lpddr2_nvm_mtd;
-
-Can you drop the prefixes for the local variables (i.e., make these
-'map' and 'mtd')? They don't fit the style of other MTD drivers.
-
-> +	struct resource *address_range = platform_get_resource(pdev,
-> +						IORESOURCE_MEM, 0);
-> +	struct resource *control_regs = platform_get_resource(pdev,
-> +						IORESOURCE_MEM, 1);
-> +	struct resource *buswidth = platform_get_resource(pdev,
-> +						IORESOURCE_BUS, 0);
-> +	struct pcm_int_data *pcm_data;
-> +
-> +	/* Allocate memory control_regs data structures */
-> +	pcm_data = kzalloc(sizeof(*pcm_data), GFP_KERNEL);
-> +	if (!control_regs) {
-> +		pr_alert("lpddr2_nvm_probe: Failed to allocate memory for int_data\n");
-
-These failure messages are unnecessary; k[mz]alloc should complain.
-
-Also, can't you use the devm_* function? e.g., devm_kzalloc(). Then you
-don't have to clean up memory after yourself (fortunately, cause you
-don't do any proper error handling now!). Take a look at
-Documentation/driver-model/devres.txt. There are a few methods that can
-help you.
-
-> +		ret = 1;
-
-'ret' needs to be a real error code: -ENOMEM.
-
-> +		goto out;
-
-Just 'return -ENOMEM'.
-
-> +	}
-> +	pcm_data->reg_data =	(void *) control_regs->start;
-> +	pcm_data->reg_cfg =	(void *) control_regs->end;
-> +	pcm_data->bus_width =	(int) buswidth->start;
-> +
-> +	/* Allocate memory for map_info & mtd_info data structures */
-> +	lpddr2_nvm_map = kzalloc(sizeof(*lpddr2_nvm_map), GFP_KERNEL);
-> +	if (!lpddr2_nvm_map) {
-> +		pr_alert("lpddr2_nvm_probe: Failed to allocate memory for map\n");
-> +		ret = 1;
-> +		goto out;
-> +	}
-
-Same here. And other places.
-
-> +	lpddr2_nvm_mtd = kzalloc(sizeof(*lpddr2_nvm_mtd), GFP_KERNEL);
-> +	if (!lpddr2_nvm_mtd) {
-> +		pr_alert("lpddr2_nvm_probe: Failed to allocate memory for mtd\n");
-> +		ret = 1;
-> +		goto out;
-
-return -ENOMEM
-
-> +	}
-> +
-> +	/* Reserve lpddr2_nvm address range */
-> +	if (request_mem_region(address_range->start, (address_range->end -
-> +		address_range->start + 1), "lpddr2_nvm") == NULL) {
-
-devm_request_mem_region()
-
-> +		pr_alert("lpddr2_nvm_probe: Unable to reserve memory address %#010x\n",
-> +		address_range->start);
-
-This gives me a warning:
-
-  drivers/mtd/lpddr/lpddr2_nvm.c:479:3: warning: format ‘%x’ expects argument of type ‘unsigned int’, but argument 2 has type ‘resource_size_t’ [-Wformat]
-
-And for the remaining error messages, you should probably tone down your
-pr_alert()'s to just pr_err().
-
-You might also look at defining pr_fmt for your driver, so you can drop
-the "lpddr2_...:" prefixes to every print message. You can use it to
-automatically add __func__ or KBUILD_MODNAME or some fixed prefix (e.g.,
-"lpddr2_nvm: "). But manually coding the function name isn't great
-practice.
-
-> +		ret = -EBUSY;
-> +		goto out;
-
-return -EBUSY;
-
-> +	}
-> +
-> +	/* Populate map_info data structure */
-> +	*lpddr2_nvm_map = (struct map_info) {
-> +		.virt		= ioremap_nocache(address_range->start,
-> +				(address_range->end-address_range->start+1)),
-
-devm_ioremap_nocache()
-
-> +		.name		= pdev->dev.init_name,
-> +		.phys		= address_range->start,
-> +		.size		= address_range->end - address_range->start + 1,
-> +		.bankwidth	= pcm_data->bus_width/2,
-> +		.pfow_base	= OW_BASE_ADDRESS,
-> +		.fldrv_priv	= pcm_data,
-> +	};
-> +
-> +	simple_map_init(lpddr2_nvm_map);	/* fill with default methods */
-> +
-> +	/* Populate mtd_info data structure */
-> +	*lpddr2_nvm_mtd = (struct mtd_info) {
-
-I'm a little torn on this struct-style initialization. It certainly
-doesn't match the rest of MTD drivers.
-
-> +		.name		= pdev->dev.init_name,
-> +		.type		= MTD_RAM,
-> +		.priv		= lpddr2_nvm_map,
-> +		.size		= address_range->end - address_range->start + 1,
-> +		.erasesize	= ERASE_BLOCKSIZE * pcm_data->bus_width,
-> +		.writesize	= 1,
-> +		.writebufsize	= WRITE_BUFFSIZE * pcm_data->bus_width,
-> +		.flags		= (MTD_CAP_PCM | MTD_POWERUP_LOCK),
-> +		._read		= lpddr2_nvm_read,
-> +		._read_oob	= NULL,
-
-You don't need any of these NULL assignments, since you allocate with
-kzalloc().
-
-> +		._write		= lpddr2_nvm_write,
-> +		._write_oob	= NULL,
-
-Ditto. (And more below)
-
-> +		._erase		= lpddr2_nvm_erase,
-> +		._unlock	= lpddr2_nvm_unlock,
-> +		._lock		= lpddr2_nvm_lock,
-> +		._sync		= NULL,
-> +		._suspend	= NULL,
-> +		._resume	= NULL,
-> +		._block_isbad	= NULL,
-> +		._block_markbad	= NULL,
-> +	};
-> +
-> +	/* Verify the presence of the device looking for PFOW string */
-> +	if (lpddr2_nvm_pfow_present(lpddr2_nvm_map)) {
-> +		pr_alert("lpddr2_nvm_probe: device recognized\n");
-> +		/* Register the mtd_partition structure */
-> +		if (mtd_add_partition(lpddr2_nvm_mtd, "my_pcm", 0x10000000,
-> +			0x00)){
-> +			pr_alert("lpddr2_nvm_probe: Failed to add mtd partition\n");
-> +			ret = 1;
-> +			goto out;
-> +		}
-> +		ret = 0;
-> +	} else {
-> +		pr_alert("%s: PFOW string not found at address %#010lx\n",
-> +			lpddr2_nvm_map->name, lpddr2_nvm_map->pfow_base);
-> +		ret = 1;
-> +	}
-
-This error block is strange. It doesn't need the whole if/else, and you
-need to pick a real return value, not 1. I'd do:
-
-	if (!lpddr2_nvm_pfow_present(...)) {
-		pr_err(...);
-		return -EINVAL;
-	}
-	return mtd_add_partition(...);
-
-> +
-> +out:
-> +	return ret;
-
-This 'out' clause doesn't do anything. (Right now, this is incorrect,
-since you will leak a bunch of memory, but with devm_*(), you still
-won't need anything here.) So it makes a better probe routine if you
-just return directly from the errors instead of using 'goto out'. And be
-sure to use the appropriate codes, as mentioned above.
-
-> +}
-> +
-> +/* Initialize platform_driver data structure for lpddr2_nvm */
-> +static struct platform_driver lpddr2_nvm_drv = {
-> +	.driver		= {
-> +		.name	= "lpddr2_nvm",
-> +	},
-> +	.probe		= lpddr2_nvm_probe,
-> +	.remove		= NULL,
-> +	.suspend	= NULL,
-> +	.resume		= NULL,
-
-I don't think you need to specify NULL pointers for the unused
-functions, since the static struct will be automatically zeroed out.
-
-Also, this driver is non-removable? Can you provide a .remove function?
-
-> +};
-> +
-> +module_platform_driver(lpddr2_nvm_drv);
-> +
-> +MODULE_LICENSE("GPL");
-> +MODULE_AUTHOR("Vincenzo Aliberti <vincenzo.aliberti@gmail.com>");
-> +MODULE_DESCRIPTION("MTD driver for LPDDR2-NVM PCM memories");
-> +
-
-Get rid of the extra newline.
-
-> diff --git a/include/uapi/mtd/mtd-abi.h b/include/uapi/mtd/mtd-abi.h
-> index 36eace0..33f3036 100644
-> --- a/include/uapi/mtd/mtd-abi.h
-> +++ b/include/uapi/mtd/mtd-abi.h
-> @@ -109,6 +109,7 @@ struct mtd_write_req {
->  #define MTD_CAP_RAM		(MTD_WRITEABLE | MTD_BIT_WRITEABLE | MTD_NO_ERASE)
->  #define MTD_CAP_NORFLASH	(MTD_WRITEABLE | MTD_BIT_WRITEABLE)
->  #define MTD_CAP_NANDFLASH	(MTD_WRITEABLE)
-> +#define MTD_CAP_PCM		(MTD_WRITEABLE | MTD_BIT_WRITEABLE | MTD_NO_ERASE)
-
-Is PCM a generally-useful class type? Or perhaps it could more generally
-be called NVRAM? Or should it really just use MTD_CAP_RAM, since it has
-the same capabilities? I'm OK with any of these options, just checking
-what the rationale is.
-
->  
->  /* Obsolete ECC byte placement modes (used with obsolete MEMGETOOBSEL) */
->  #define MTD_NANDECC_OFF		0	// Switch off ECC (Not recommended)
-
+Thanks,
 Brian
