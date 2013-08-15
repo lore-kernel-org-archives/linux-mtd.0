@@ -1,12 +1,12 @@
 Received: from szxga01-in.huawei.com ([119.145.14.64])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V9vIy-0004xc-P3
- for linux-mtd@lists.infradead.org; Thu, 15 Aug 2013 11:01:27 +0000
+ id 1V9vbQ-0005WB-KC
+ for linux-mtd@lists.infradead.org; Thu, 15 Aug 2013 11:20:32 +0000
 From: Caizhiyong <caizhiyong@huawei.com>
 To: Brian Norris <computersforpeace@gmail.com>
 Subject: [PATCH] mtd: cmdlinepart: use cmdline partition parser lib
-Date: Thu, 15 Aug 2013 11:00:27 +0000
-Message-ID: <C3050A4DBA34F345975765E43127F10F1C0643A1@szxeml512-mbx.china.huawei.com>
+Date: Thu, 15 Aug 2013 11:19:36 +0000
+Message-ID: <C3050A4DBA34F345975765E43127F10F1C0643B8@szxeml512-mbx.china.huawei.com>
 Content-Language: zh-CN
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -17,7 +17,7 @@ Cc: "Wanglin
  Karel Zak <kzak@redhat.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  Shmulik Ladkani <shmulik.ladkani@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>
+ Caizhiyong <caizhiyong@huawei.com>, Andrew Morton <akpm@linux-foundation.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,11 +36,12 @@ reference: https://lkml.org/lkml/2013/8/6/550
 Signed-off-by: Cai ZhiYong <caizhiyong@huawei.com>
 ---
  Documentation/block/cmdline-partition.txt |  93 +++++---
- block/cmdline-parser.c                    |   6 +-
+ block/cmdline-parser.c                    |  16 +-
  drivers/mtd/Kconfig                       |   1 +
- drivers/mtd/cmdlinepart.c                 | 360 ++++----------------------=
+ drivers/mtd/cmdlinepart.c                 | 361 ++++----------------------=
 ----
- 4 files changed, 101 insertions(+), 359 deletions(-)
+ include/linux/cmdline-parser.h            |   8 +-
+ 5 files changed, 111 insertions(+), 368 deletions(-)
 
 diff --git a/Documentation/block/cmdline-partition.txt b/Documentation/bloc=
 k/cmdline-partition.txt
@@ -162,7 +163,7 @@ ernel)'
 -    mmcblk0boot0: p1(boot) p2(kernel)
 -
 diff --git a/block/cmdline-parser.c b/block/cmdline-parser.c
-index 18fb435..7ad2bc2 100644
+index 18fb435..8c09db3 100644
 --- a/block/cmdline-parser.c
 +++ b/block/cmdline-parser.c
 @@ -4,8 +4,6 @@
@@ -190,8 +191,8 @@ index 18fb435..7ad2bc2 100644
 =20
  struct cmdline_parts *cmdline_parts_find(struct cmdline_parts *parts,
  					 const char *bdev)
-@@ -213,6 +213,7 @@ struct cmdline_parts *cmdline_parts_find(struct cmdline=
-_parts *parts,
+@@ -213,16 +213,17 @@ struct cmdline_parts *cmdline_parts_find(struct cmdli=
+ne_parts *parts,
  		parts =3D parts->next_parts;
  	return parts;
  }
@@ -199,10 +200,27 @@ _parts *parts,
 =20
  /*
   *  add_part()
-@@ -247,3 +248,4 @@ void cmdline_parts_set(struct cmdline_parts *parts, sec=
+  *    0 success.
+  *    1 can not add so many partitions.
+  */
+-void cmdline_parts_set(struct cmdline_parts *parts, sector_t disk_size,
+-		       int slot,
+-		       int (*add_part)(int, struct cmdline_subpart *, void *),
+-		       void *param)
++int cmdline_parts_set(struct cmdline_parts *parts, sector_t disk_size,
++		      int slot,
++		      int (*add_part)(int, struct cmdline_subpart *, void *),
++		      void *param)
+=20
+ {
+ 	sector_t from =3D 0;
+@@ -246,4 +247,7 @@ void cmdline_parts_set(struct cmdline_parts *parts, sec=
 tor_t disk_size,
+ 		if (add_part(slot, subpart, param))
  			break;
  	}
++
++	return slot;
  }
 +EXPORT_SYMBOL(cmdline_parts_set);
 diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
@@ -218,7 +236,7 @@ index 5fab4e6e..6f7f9ca 100644
  	---help---
  	  Allow generic configuration of the MTD partition tables via the kernel
 diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
-index 721caeb..240b4ac 100644
+index 721caeb..79bd584 100644
 --- a/drivers/mtd/cmdlinepart.c
 +++ b/drivers/mtd/cmdlinepart.c
 @@ -18,34 +18,8 @@
@@ -337,11 +355,16 @@ he
 -			return ERR_PTR(-EINVAL);
 -		}
 -	}
--
++	struct mtd_partition *mtdpart =3D &((struct mtd_partition *)param)[slot];
+=20
 -	/* fetch partition name and flags */
 -	mask_flags =3D 0; /* this is going to be a regular partition */
 -	delim =3D 0;
--
++	mtdpart->offset =3D subpart->from;
++	mtdpart->size =3D subpart->size;
++	mtdpart->name =3D subpart->name;
++	mtdpart->mask_flags =3D 0;
+=20
 -	/* check for offset */
 -	if (*s =3D=3D '@') {
 -		s++;
@@ -354,8 +377,7 @@ he
 -
 -	if (delim) {
 -		char *p;
-+	struct mtd_partition *mtdpart =3D &((struct mtd_partition *)param)[slot];
-=20
+-
 -		name =3D ++s;
 -		p =3D strchr(name, delim);
 -		if (!p) {
@@ -371,11 +393,7 @@ he
 -
 -	/* record name length for memory allocation later */
 -	extra_mem_size +=3D name_len + 1;
-+	mtdpart->offset =3D subpart->from;
-+	mtdpart->size =3D subpart->size;
-+	mtdpart->name =3D subpart->name;
-+	mtdpart->mask_flags =3D 0;
-=20
+-
 -	/* test for options */
 -	if (strncmp(s, "ro", 2) =3D=3D 0) {
 -		mask_flags |=3D MTD_WRITEABLE;
@@ -427,13 +445,13 @@ he
 -		sprintf(extra_mem, "Partition_%03d", this_part);
 -	parts[this_part].name =3D extra_mem;
 -	extra_mem +=3D name_len + 1;
-+	if (subpart->flags & PF_POWERUP_LOCK)
-+		mtdpart->mask_flags |=3D MTD_POWERUP_LOCK;
-=20
+-
 -	dbg(("partition %d: name <%s>, offset %llx, size %llx, mask flags %x\n",
 -	     this_part, parts[this_part].name, parts[this_part].offset,
 -	     parts[this_part].size, parts[this_part].mask_flags));
--
++	if (subpart->flags & PF_POWERUP_LOCK)
++		mtdpart->mask_flags |=3D MTD_POWERUP_LOCK;
+=20
 -	/* return (updated) pointer to extra_mem memory */
 -	if (extra_mem_ptr)
 -		*extra_mem_ptr =3D extra_mem;
@@ -537,7 +555,7 @@ he
 =20
  /*
   * Main function to be called from the MTD mapping driver/device to
-@@ -309,82 +77,36 @@ static int parse_cmdline_partitions(struct mtd_info *m=
+@@ -309,82 +77,35 @@ static int parse_cmdline_partitions(struct mtd_info *m=
 aster,
  				    struct mtd_partition **pparts,
  				    struct mtd_part_parser_data *data)
@@ -616,8 +634,7 @@ aster,
 =20
 -	return part->num_parts;
 -}
-+	cmdline_parts_set(parts, master->size, 0, add_part, (void *)*pparts);
-=20
+-
 -
 -/*
 - * This is the handler for our kernel parameter, called from
@@ -630,7 +647,8 @@ aster,
 -{
 -	cmdline =3D s;
 -	return 1;
-+	return parts->nr_subparts;
++	return cmdline_parts_set(parts, master->size, 0, add_part,
++				 (void *)*pparts);
  }
 =20
 -__setup("mtdparts=3D", mtdpart_setup);
@@ -638,7 +656,7 @@ aster,
  static struct mtd_part_parser cmdline_parser =3D {
  	.owner =3D THIS_MODULE,
  	.parse_fn =3D parse_cmdline_partitions,
-@@ -393,8 +115,6 @@ static struct mtd_part_parser cmdline_parser =3D {
+@@ -393,8 +114,6 @@ static struct mtd_part_parser cmdline_parser =3D {
 =20
  static int __init cmdline_parser_init(void)
  {
@@ -647,5 +665,25 @@ aster,
  	return register_mtd_parser(&cmdline_parser);
  }
 =20
+diff --git a/include/linux/cmdline-parser.h b/include/linux/cmdline-parser.=
+h
+index 98e892e..43b65a9 100644
+--- a/include/linux/cmdline-parser.h
++++ b/include/linux/cmdline-parser.h
+@@ -35,9 +35,9 @@ int cmdline_parts_parse(struct cmdline_parts **parts, con=
+st char *cmdline);
+ struct cmdline_parts *cmdline_parts_find(struct cmdline_parts *parts,
+ 					 const char *bdev);
+=20
+-void cmdline_parts_set(struct cmdline_parts *parts, sector_t disk_size,
+-		       int slot,
+-		       int (*add_part)(int, struct cmdline_subpart *, void *),
+-		       void *param);
++int cmdline_parts_set(struct cmdline_parts *parts, sector_t disk_size,
++		      int slot,
++		      int (*add_part)(int, struct cmdline_subpart *, void *),
++		      void *param);
+=20
+ #endif /* CMDLINEPARSEH */
 --=20
 1.8.1.5
