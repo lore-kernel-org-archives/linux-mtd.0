@@ -1,16 +1,21 @@
-Received: from smtp30.i.mail.ru ([94.100.177.90])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VAELI-0002Lp-95
- for linux-mtd@lists.infradead.org; Fri, 16 Aug 2013 07:21:06 +0000
-From: Alexander Shiyan <shc_work@mail.ru>
+Received: from mx7.zte.com.cn ([202.103.147.169] helo=zte.com.cn)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VAEi5-0002iE-S1
+ for linux-mtd@lists.infradead.org; Fri, 16 Aug 2013 07:44:39 +0000
+Received: from mse02.zte.com.cn (unknown [10.30.3.21])
+ by Websense Email Security Gateway with ESMTPS id 4D377747BA8
+ for <linux-mtd@lists.infradead.org>; Fri, 16 Aug 2013 15:43:46 +0800 (CST)
+Received: from notes_smtp.zte.com.cn ([10.30.1.239])
+ by mse02.zte.com.cn with ESMTP id r7G7hgo8056785
+ for <linux-mtd@lists.infradead.org>; Fri, 16 Aug 2013 15:43:42 +0800 (GMT-8)
+ (envelope-from wang.bo116@zte.com.cn)
+Subject: [PATCH] UBIFS: remove unnecessary code in ubifs_garbage_collect
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH v4 2/4] mtd: nand: gpio: Use devm_gpio_request_one() where
- possible
-Date: Fri, 16 Aug 2013 11:20:32 +0400
-Message-Id: <1376637633-12540-1-git-send-email-shc_work@mail.ru>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Alexander Shiyan <shc_work@mail.ru>
+Message-ID: <OF476A1E1E.10D82F3D-ON48257BC9.002911AE-48257BC9.002A75A8@zte.com.cn>
+From: wang.bo116@zte.com.cn
+Date: Fri, 16 Aug 2013 15:43:36 +0800
+MIME-Version: 1.0
+Content-type: text/plain; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,102 +26,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
----
- drivers/mtd/nand/gpio.c | 37 ++++++++++++++++++++-----------------
- 1 file changed, 20 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
-index 8eea181..98cc714 100644
---- a/drivers/mtd/nand/gpio.c
-+++ b/drivers/mtd/nand/gpio.c
-@@ -190,14 +190,20 @@ gpio_nand_get_io_sync(struct platform_device *pdev)
- 	return platform_get_resource(pdev, IORESOURCE_MEM, 1);
- }
- 
-+static void gpio_nand_set_wp(struct gpiomtd *gpiomtd, int val)
-+{
-+	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
-+		gpio_set_value(gpiomtd->plat.gpio_nwp, val);
-+}
-+
- static int gpio_nand_remove(struct platform_device *pdev)
- {
- 	struct gpiomtd *gpiomtd = platform_get_drvdata(pdev);
- 
- 	nand_release(&gpiomtd->mtd_info);
- 
--	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
--		gpio_set_value(gpiomtd->plat.gpio_nwp, 0);
-+	gpio_nand_set_wp(gpiomtd, 0);
-+
- 	gpio_set_value(gpiomtd->plat.gpio_nce, 1);
- 
- 	return 0;
-@@ -242,34 +248,33 @@ static int gpio_nand_probe(struct platform_device *pdev)
- 			return PTR_ERR(gpiomtd->io_sync);
- 	}
- 
--	ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nce, "NAND NCE");
-+	ret = devm_gpio_request_one(&pdev->dev, gpiomtd->plat.gpio_nce,
-+				    GPIOF_OUT_INIT_HIGH, "NAND NCE");
- 	if (ret)
- 		return ret;
--	gpio_direction_output(gpiomtd->plat.gpio_nce, 1);
- 
- 	if (gpio_is_valid(gpiomtd->plat.gpio_nwp)) {
--		ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nwp,
--					"NAND NWP");
-+		ret = devm_gpio_request_one(&pdev->dev, gpiomtd->plat.gpio_nwp,
-+					    GPIOF_OUT_INIT_LOW, "NAND NWP");
- 		if (ret)
- 			return ret;
- 	}
- 
--	ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_ale, "NAND ALE");
-+	ret = devm_gpio_request_one(&pdev->dev, gpiomtd->plat.gpio_ale,
-+				    GPIOF_OUT_INIT_LOW, "NAND ALE");
- 	if (ret)
- 		return ret;
--	gpio_direction_output(gpiomtd->plat.gpio_ale, 0);
- 
--	ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_cle, "NAND CLE");
-+	ret = devm_gpio_request_one(&pdev->dev, gpiomtd->plat.gpio_cle,
-+				    GPIOF_OUT_INIT_LOW, "NAND CLE");
- 	if (ret)
- 		return ret;
--	gpio_direction_output(gpiomtd->plat.gpio_cle, 0);
- 
- 	if (gpio_is_valid(gpiomtd->plat.gpio_rdy)) {
--		ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_rdy,
--					"NAND RDY");
-+		ret = devm_gpio_request_one(&pdev->dev, gpiomtd->plat.gpio_rdy,
-+					    GPIOF_IN, "NAND RDY");
- 		if (ret)
- 			return ret;
--		gpio_direction_input(gpiomtd->plat.gpio_rdy);
- 		chip->dev_ready = gpio_nand_devready;
- 	}
- 
-@@ -284,8 +289,7 @@ static int gpio_nand_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, gpiomtd);
- 
--	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
--		gpio_direction_output(gpiomtd->plat.gpio_nwp, 1);
-+	gpio_nand_set_wp(gpiomtd, 1);
- 
- 	if (nand_scan(&gpiomtd->mtd_info, 1)) {
- 		ret = -ENXIO;
-@@ -304,8 +308,7 @@ static int gpio_nand_probe(struct platform_device *pdev)
- 		return 0;
- 
- err_wp:
--	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
--		gpio_set_value(gpiomtd->plat.gpio_nwp, 0);
-+	gpio_nand_set_wp(gpiomtd, 0);
- 
- 	return ret;
- }
--- 
-1.8.1.5
+Hi,
+	In ubifs_garbage_collect,local variable "space_before" calculate twice. In fact, at the
+beginning of the loop, there is no need to calculate this variable. Calculate it before call
+"ubifs_garbage_collect_leb" is enough. This patch just remove the unnecessary calculate code.
+
+
+
+Signed-off-by: wang bo <wang.bo116@zte.com.cn>
+diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
+index 76ca53c..38dc67d 100755
+--- a/fs/ubifs/gc.c
++++ b/fs/ubifs/gc.c
+@@ -668,7 +668,7 @@ int ubifs_garbage_collect(struct ubifs_info *c, int anyway)
+ 	ubifs_assert(!wbuf->used);
+
+ 	for (i = 0; ; i++) {
+-		int space_before = c->leb_size - wbuf->offs - wbuf->used;
++		int space_before;
+ 		int space_after;
+
+ 		cond_resched();
