@@ -1,25 +1,22 @@
-Received: from f364.i.mail.ru ([217.69.141.6])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VAIsH-000050-Id
- for linux-mtd@lists.infradead.org; Fri, 16 Aug 2013 12:11:27 +0000
-From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
-To: =?UTF-8?B?RmFiaW8gRXN0ZXZhbQ==?= <festevam@gmail.com>
-Subject: =?UTF-8?B?UmU6IFtQQVRDSCB2NCAyLzRdIG10ZDogbmFuZDogZ3BpbzogVXNlIGRldm1f?=
- =?UTF-8?B?Z3Bpb19yZXF1ZXN0X29uZSgpIHdoZXJlIHBvc3NpYmxl?=
+Received: from mga09.intel.com ([134.134.136.24])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VAKGs-0002Rr-Rr
+ for linux-mtd@lists.infradead.org; Fri, 16 Aug 2013 13:40:55 +0000
+Message-ID: <1376660759.2089.358.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v4 6/6] mtd: update the ABI document about the ecc step
+ size
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Date: Fri, 16 Aug 2013 16:45:59 +0300
+In-Reply-To: <1376619009-8622-7-git-send-email-b32955@freescale.com>
+References: <1376619009-8622-1-git-send-email-b32955@freescale.com>
+ <1376619009-8622-7-git-send-email-b32955@freescale.com>
+Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
-Date: Fri, 16 Aug 2013 16:11:01 +0400
-Message-ID: <1376655061.504420734@f364.i.mail.ru>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-In-Reply-To: <CAOMZO5Cr7t3YE_H4N9RWhJDz3GOnkGXDw_dPJ5Hhxs427AsHAg@mail.gmail.com>
-References: <1376637633-12540-1-git-send-email-shc_work@mail.ru>
- <CAOMZO5Cr7t3YE_H4N9RWhJDz3GOnkGXDw_dPJ5Hhxs427AsHAg@mail.gmail.com>
-Cc: =?UTF-8?B?QXJ0ZW0gQml0eXV0c2tpeQ==?= <artem.bityutskiy@linux.intel.com>,
- =?UTF-8?B?QnJpYW4gTm9ycmlz?= <computersforpeace@gmail.com>,
- =?UTF-8?B?bGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc=?=
- <linux-mtd@lists.infradead.org>,
- =?UTF-8?B?RGF2aWQgV29vZGhvdXNl?= <dwmw2@infradead.org>
-Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, pekon@ti.com
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,10 +26,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiBPbiBGcmksIEF1ZyAxNiwgMjAxMyBhdCA0OjIwIEFNLCBBbGV4YW5kZXIgU2hpeWFuIDxzaGNf
-d29ya0BtYWlsLnJ1PiB3cm90ZToKPiA+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBBbGV4YW5kZXIgU2hp
-eWFuIDxzaGNfd29ya0BtYWlsLnJ1Pgo+IAo+IFlvdSBhcmUgbm90IGRvaW5nIG9ubHkgd2hhdCB5
-b3UgZGVzY3JpYmUgaW4gdGhlIFN1YmplY3QgbGluZS4KPiAKPiBJdCB3b3VsZCBiZSBuaWNlIHRv
-IHByb3ZpZGUgYSBjb21taXQgbG9nLgoKSXMgaXQgd29ydGggaXQgdG8gbWFrZSB0aGUgbmV4dCB2
-ZXJzaW9uIG9mIHRoZSBwYXRjaD8KT24gbXkgb3BpbmlvbiwgZXZlcnl0aGluZyBpcyBvYnZpb3Vz
-IGZyb20gdGhlIG5hbWUuCgotLS0K
+On Fri, 2013-08-16 at 10:10 +0800, Huang Shijie wrote:
+> +
+> +What:          /sys/class/mtd/mtdX/ecc_step_size
+> +Date:          May 2013
+> +KernelVersion: 3.10
+> +Contact:       linux-mtd@lists.infradead.org
+> +Description:
+> +               The size of each ECC step which is used for ECC.
+> +               Note that some devices will have multiple ecc steps within each
+> +               writesize region.
+
+Actually this phrase is a bit confusing because it may be interpreted as
+that one write-size may have ECC steps of multiple sizes. Would you
+re-phrase, may be?
+
+Otherwise the patch-set looks good, thanks, but I am not merging the
+patches to let Brian review.
+
+Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+
+-- 
+Best Regards,
+Artem Bityutskiy
