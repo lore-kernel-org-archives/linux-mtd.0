@@ -1,21 +1,20 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VAL8K-0003jc-G5
- for linux-mtd@lists.infradead.org; Fri, 16 Aug 2013 14:36:09 +0000
-Message-ID: <1376664042.2089.378.camel@sauron.fi.intel.com>
-Subject: Re: [patch] mtd: create_freezable_workqueue() doesn't return an
- ERR_PTR
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Date: Fri, 16 Aug 2013 17:40:42 +0300
-In-Reply-To: <20130815075628.GC19280@elgon.mountain>
-References: <20130815075628.GC19280@elgon.mountain>
+ id 1VAL8q-0003l8-TZ
+ for linux-mtd@lists.infradead.org; Fri, 16 Aug 2013 14:36:41 +0000
+Message-ID: <1376664111.2089.379.camel@sauron.fi.intel.com>
+Subject: Re: [mtd-www: ] nand-data: add four Toshiba nand chips
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Huang Shijie <b32955@freescale.com>
+Date: Fri, 16 Aug 2013 17:41:51 +0300
+In-Reply-To: <1376384964-740-1-git-send-email-b32955@freescale.com>
+References: <1376384964-740-1-git-send-email-b32955@freescale.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: kernel-janitors@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
  linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,15 +24,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2013-08-15 at 10:56 +0300, Dan Carpenter wrote:
-> The create_freezable_workqueue() returns a NULL on error, it doesn't
-> return an ERR_PTR.
+On Tue, 2013-08-13 at 17:09 +0800, Huang Shijie wrote:
+> Add the items for four Toshiba nand chips.
+> All the four nand chips are supported by the kernel now.
 > 
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> 
-> diff --git a/drivers/mtd/sm_ftl.c b/drivers/mtd/sm_ftl.c
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
 
-Pushed to l2-mtd.git, thanks!
+I can take it if Brian is OK with this, thanks! I guess he can ask dwmw2
+for mtd-www rights too.
 
 -- 
 Best Regards,
