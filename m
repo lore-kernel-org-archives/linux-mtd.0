@@ -1,19 +1,20 @@
-Received: from mga14.intel.com ([143.182.124.37])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VAKJF-0002Y1-An
- for linux-mtd@lists.infradead.org; Fri, 16 Aug 2013 13:43:22 +0000
-Message-ID: <1376660909.2089.360.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] ubifs: remove invalid warn msg with tst_recovery enabled
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mats =?ISO-8859-1?Q?K=E4rrman?= <Mats.Karrman@tritech.se>
-Date: Fri, 16 Aug 2013 16:48:29 +0300
-In-Reply-To: <ED3E0BCACD909541BA94A34C4A164D4C4FCDB069@post.tritech.se>
-References: <ED3E0BCACD909541BA94A34C4A164D4C4FCDB069@post.tritech.se>
+ id 1VAKPN-0002k3-FH
+ for linux-mtd@lists.infradead.org; Fri, 16 Aug 2013 13:49:43 +0000
+Message-ID: <1376661291.2089.361.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] m25p80 / fast read
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Date: Fri, 16 Aug 2013 16:54:51 +0300
+In-Reply-To: <1376302946-11534-1-git-send-email-s.hauer@pengutronix.de>
+References: <1376302946-11534-1-git-send-email-s.hauer@pengutronix.de>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+Content-Transfer-Encoding: 7bit
+Cc: Marek Vasut <marex@denx.de>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, kernel@pengutronix.de
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,13 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2013-08-14 at 14:06 +0000, Mats Kärrman wrote:
-> Signed-off-by: Mats Karrman <mats.karrman@tritech.se>
+On Mon, 2013-08-12 at 12:22 +0200, Sascha Hauer wrote:
+> The following adds support for the mr25h10 chip to to the m25p80
+> driver.
 > 
-> diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
+> This driver currently has the problem that it unconditionally uses
+> the fast_read command once it's enabled in Kconfig which of course
+> leads to problems with multiboard kernels. This series adds a flag
+> to the chip specific data to solve this. Also some unnecessary ifdefs
+> are removed.
 
-Pushed to linux-ubifs.git, thanks!
+Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
+I'll let Biran take a look, and tomorrow apply, unless he applies
+himself or has objections.
 
 -- 
 Best Regards,
