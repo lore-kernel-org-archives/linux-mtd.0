@@ -1,19 +1,20 @@
 Received: from mga03.intel.com ([143.182.124.21])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VAKbf-00030m-V0
- for linux-mtd@lists.infradead.org; Fri, 16 Aug 2013 14:02:25 +0000
-Message-ID: <1376662051.2089.371.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/1] ubi: remove and create MTD device back when UBI
- volume is resized
+ id 1VAL8K-0003jc-G5
+ for linux-mtd@lists.infradead.org; Fri, 16 Aug 2013 14:36:09 +0000
+Message-ID: <1376664042.2089.378.camel@sauron.fi.intel.com>
+Subject: Re: [patch] mtd: create_freezable_workqueue() doesn't return an
+ ERR_PTR
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Andrew Rybchenko <Andrew.Rybchenko@oktetlabs.ru>
-Date: Fri, 16 Aug 2013 17:07:31 +0300
-In-Reply-To: <1376306265-8671-1-git-send-email-Andrew.Rybchenko@oktetlabs.ru>
-References: <1376306265-8671-1-git-send-email-Andrew.Rybchenko@oktetlabs.ru>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Date: Fri, 16 Aug 2013 17:40:42 +0300
+In-Reply-To: <20130815075628.GC19280@elgon.mountain>
+References: <20130815075628.GC19280@elgon.mountain>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,50 +25,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2013-08-12 at 15:17 +0400, Andrew Rybchenko wrote:
-> If underlying MTD device size is simply corrected (as it was before),
-> MTD block device is not notified about MTD device size change. As the
-> result, for example, mount fails after create with zero size, resize,
-> write file system image.
+On Thu, 2013-08-15 at 10:56 +0300, Dan Carpenter wrote:
+> The create_freezable_workqueue() returns a NULL on error, it doesn't
+> return an ERR_PTR.
 > 
-> Side effect of the patch is change of MTD device number on resize/update.
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 > 
-> Signed-off-by: Andrew Rybchenko <Andrew.Rybchenko@oktetlabs.ru>
+> diff --git a/drivers/mtd/sm_ftl.c b/drivers/mtd/sm_ftl.c
 
-Usually MTD devices never change their size, and the whole MTD subsystem
-is implemented with this assumption, and the users of the MTD interface
-have the same assumption - MTD devices do not size change their size.
-
-So this change is fixing one problem by introducing another problem -
-now not only the size may change, but the device number may change, and
-even more ...
-
-> +		gluebi_remove(&nt->vi);
-
-... the device may just disappear for a while (not, the mtd mutex is
-dropped here).
-
-> +		gluebi_create(&nt->di, &nt->vi);
-
-... then appear again in a different form :-)
-
-When you remove the device, you also remove its sysfs files. And then
-re-creates it. What an app keeps it open? Not big deal, it'll just get a
-read error next time it reads it.
-
-Anyway, this patch is not ideal.
-
-I guess the right way to solve the problem would be to just prohibit
-re-sizing a UBI volumes if we use gluebi.
-
-Or just put the entire emulated MTD device to some "invalid" state if
-the underlying UBI volume was resized. May be not always, but only if it
-became smaller.
-
-Or something else.
-
-Anyway, I do acknowledge this is a problem, but I am not sure this is a
-good solution...
+Pushed to l2-mtd.git, thanks!
 
 -- 
 Best Regards,
