@@ -1,19 +1,23 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+Received: from mail-vc0-f174.google.com ([209.85.220.174])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VAGip-0005YK-CN
- for linux-mtd@lists.infradead.org; Fri, 16 Aug 2013 09:53:32 +0000
-Date: Fri, 16 Aug 2013 11:53:02 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Subject: Re: [PATCH] m25p80 / fast read
-Message-ID: <20130816095302.GA1380@pengutronix.de>
-References: <1376302946-11534-1-git-send-email-s.hauer@pengutronix.de>
+ id 1VAHrp-0006vL-T3
+ for linux-mtd@lists.infradead.org; Fri, 16 Aug 2013 11:06:54 +0000
+Received: by mail-vc0-f174.google.com with SMTP id gd11so1318942vcb.5
+ for <linux-mtd@lists.infradead.org>; Fri, 16 Aug 2013 04:06:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1376302946-11534-1-git-send-email-s.hauer@pengutronix.de>
-Cc: Marek Vasut <marex@denx.de>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, kernel@pengutronix.de
+In-Reply-To: <1376637633-12540-1-git-send-email-shc_work@mail.ru>
+References: <1376637633-12540-1-git-send-email-shc_work@mail.ru>
+Date: Fri, 16 Aug 2013 08:06:29 -0300
+Message-ID: <CAOMZO5Cr7t3YE_H4N9RWhJDz3GOnkGXDw_dPJ5Hhxs427AsHAg@mail.gmail.com>
+Subject: Re: [PATCH v4 2/4] mtd: nand: gpio: Use devm_gpio_request_one() where
+ possible
+From: Fabio Estevam <festevam@gmail.com>
+To: Alexander Shiyan <shc_work@mail.ru>
+Content-Type: text/plain; charset=UTF-8
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,44 +27,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem,
+On Fri, Aug 16, 2013 at 4:20 AM, Alexander Shiyan <shc_work@mail.ru> wrote:
+>
+> Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
 
-Any chance you take this for the next merge window?
+You are not doing only what you describe in the Subject line.
 
-Thanks
- Sascha
-
-On Mon, Aug 12, 2013 at 12:22:22PM +0200, Sascha Hauer wrote:
-> The following adds support for the mr25h10 chip to to the m25p80
-> driver.
-> 
-> This driver currently has the problem that it unconditionally uses
-> the fast_read command once it's enabled in Kconfig which of course
-> leads to problems with multiboard kernels. This series adds a flag
-> to the chip specific data to solve this. Also some unnecessary ifdefs
-> are removed.
-> 
-> Sascha
-> 
-> ----------------------------------------------------------------
-> Markus Niebel (1):
->       mtd: m25p80: add support for mr25h10
-> 
-> Sascha Hauer (3):
->       mtd: m25p80: Pass flags through CAT25_INFO macro
->       mtd: m25p80: make CONFIG_M25PXX_USE_FAST_READ safe to enable
->       mtd: m25p80: remove unnecessary ifdef
-> 
->  drivers/mtd/devices/m25p80.c | 23 +++++++++++++----------
->  1 file changed, 13 insertions(+), 10 deletions(-)
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
-
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+It would be nice to provide a commit log.
