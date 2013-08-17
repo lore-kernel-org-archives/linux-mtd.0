@@ -1,22 +1,25 @@
-Received: from mail-pd0-x236.google.com ([2607:f8b0:400e:c02::236])
+Received: from mail-pb0-f45.google.com ([209.85.160.45])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VAmDh-0001ZN-6A
- for linux-mtd@lists.infradead.org; Sat, 17 Aug 2013 19:31:30 +0000
-Received: by mail-pd0-f182.google.com with SMTP id r10so3463562pdi.41
- for <linux-mtd@lists.infradead.org>; Sat, 17 Aug 2013 12:31:07 -0700 (PDT)
-Date: Sat, 17 Aug 2013 12:31:03 -0700
+ id 1VAmwG-0002L9-IT
+ for linux-mtd@lists.infradead.org; Sat, 17 Aug 2013 20:17:33 +0000
+Received: by mail-pb0-f45.google.com with SMTP id mc17so3337110pbc.32
+ for <linux-mtd@lists.infradead.org>; Sat, 17 Aug 2013 13:17:07 -0700 (PDT)
+Date: Sat, 17 Aug 2013 13:17:02 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: m25p80: Micron SPI uses Macronix-style 4-byte
- addressing
-Message-ID: <20130817193103.GC11210@norris.computersforpeace.net>
-References: <1376072646-26089-1-git-send-email-computersforpeace@gmail.com>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH 2/4] mtd: m25p80: make CONFIG_M25PXX_USE_FAST_READ safe
+ to enable
+Message-ID: <20130817201702.GD11210@norris.computersforpeace.net>
+References: <1376302946-11534-1-git-send-email-s.hauer@pengutronix.de>
+ <1376302946-11534-3-git-send-email-s.hauer@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1376072646-26089-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1376302946-11534-3-git-send-email-s.hauer@pengutronix.de>
 Cc: Marek Vasut <marex@denx.de>,
- Vivien Didelot <vivien.didelot@savoirfairelinux.com>
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ kernel@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,40 +29,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Aug 09, 2013 at 11:24:06AM -0700, Brian Norris wrote:
-> For SPI NOR flash that are larger than 128Mbit (16MiB), we need 4 bytes
-> of address space to reach the entire flash; however, the original SPI
-> flash protocol used only 3 bytes for the address. So far, the practice
-> for handling this has been either to use new command opcodes that are
-> defined to use 4 bytes for their address, or to use special
-> mode-switching command to configure all traditionally-3-byte-address
-> commands to take 4 bytes instead.
+On Mon, Aug 12, 2013 at 12:22:24PM +0200, Sascha Hauer wrote:
+> This patch adds a flag to struct flash_info indicating that
+> fast_read is not supported. This now gives the following logic
+> when determing whether to enable fastread:
 > 
-> Macronix and Spansion developed two incompatible methods for
-> entering/exiting "4-byte address mode." Micron flash uses the Macronix
-> method (OPCODE_{EN4B,EX4B}), not the Spansion method.
-> 
-> This patch solves addressing issues on Micron n25q256a and provides the
-> ability to support other future Micron SPI flash >16MiB.
-> 
-> Quoting a Micron representative:
-> 
->   "Majority of our NOR that needs 4-byte addressing (256Mb or 32MB and
->    higher) enter and exit 4byte through B7h and E9h commands. The
->    N25Q256A7xxx and N25Q512A7xxx parts do not support 4-byte addressing
->    mode via B7h or E9h command."
-> 
-> They further clarified that those that don't support the enter/exit
-> opcodes (B7h/E9h) are manufactured specifically to come up by default in
-> 4-byte mode. We don't need to treat those parts any diffently, as they
-> will discard the EN4B opcode as a no-op.
+> 1) enable fast_read if device node contains m25p,fast-read
+> 2) enable fast_read unconditionally if forced in Kconfig
+> 3) Disable fast_read if the chip does not support it
 
-Just as a final clarification: Micron corrected themselves back to this
-original statement. So some parts will come up in 4-byte mode and will
-ignore the EN4B/EX4B commands.
+This logic is either unclear or incorrect.
 
-With that, I just pushed this patch to l2-mtd.git with the original
-comment, as that was the correct one.
+> This makes enabling CONFIG_M25PXX_USE_FAST_READ a safe option
+> since we no longer enable the fast_read option unconditionally.
 
-Thanks,
+This statement seems to contradict 2 above, depending on the reading
+(how can 2 enable "unconditionally", yet CONFIG_..._FAST_READ "no longer
+enable[s] ... unconditionally"?).
+
+The problem I have with this description is that it is assuming that
+1, 2, and 3 are applied sequentially, so that later items in the
+sequence have higher precedence. So it's describing code ordering, not
+really logic. And statement 3 weakens the "unconditionally" of 2.
+
+And to avoid simply complaining, I propose an alternative explanation:
+
+  If the flash chip does not support fast_read, then disable it.
+  Otherwise:
+  1) enable fast_read if device node contains m25p,fast-read
+  2) enable fast_read if forced in Kconfig
+
+If we correct this description, then:
+
+  Acked-by: Brian Norris <computersforpeace@gmail.com>
+
+I can edit the patch and push the whole thing if this is acceptable.
+
+One related question (not required for this series): do we even need
+Kconfig M25PXX_USE_FAST_READ any more? Are there any SPI controllers
+that can't use FAST_READ? Or perhaps if they have a slow clock, it's
+preferable to use normal read?
+
+If there are no restrictions from the controller side, I think this
+NO_FR flag gives enough information to determine everything at runtime,
+not compile-time.
+
 Brian
