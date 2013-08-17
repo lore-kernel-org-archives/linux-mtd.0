@@ -1,30 +1,16 @@
-Received: from f169.i.mail.ru ([94.100.178.88])
+Received: from arrakis.dune.hu ([78.24.191.176])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VAo2Q-00033Q-CX
- for linux-mtd@lists.infradead.org; Sat, 17 Aug 2013 21:27:59 +0000
-From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
-To: =?UTF-8?B?QnJpYW4gTm9ycmlz?= <computersforpeace@gmail.com>
-Subject: =?UTF-8?B?UmU6IFtQQVRDSCB2NCAxLzRdIG10ZDogbmFuZDogZ3BpbzogQWRkIERUIHBy?=
- =?UTF-8?B?b3BlcnR5IHRvIGF1dG9tYXRpY2FsbHkgZGV0ZXJtaW5lIGJ1cyB3aWR0aA==?=
-Mime-Version: 1.0
-Date: Sun, 18 Aug 2013 01:27:30 +0400
-Message-ID: <1376774850.432505683@f169.i.mail.ru>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-In-Reply-To: <20130817211423.GF11210@norris.computersforpeace.net>
-References: <1376637583-12485-1-git-send-email-shc_work@mail.ru>
- <20130817211423.GF11210@norris.computersforpeace.net>
-Cc: =?UTF-8?B?TWFyayBSdXRsYW5k?= <mark.rutland@arm.com>,
- devicetree@vger.kernel.org,
- =?UTF-8?B?SWFuIENhbXBiZWxs?= <ian.campbell@citrix.com>,
- =?UTF-8?B?UGF3ZWwgTW9sbA==?= <pawel.moll@arm.com>,
- =?UTF-8?B?U3RlcGhlbiBXYXJyZW4=?= <swarren@wwwdotorg.org>,
- =?UTF-8?B?QXJ0ZW0gQml0eXV0c2tpeQ==?= <artem.bityutskiy@linux.intel.com>,
- =?UTF-8?B?Um9iIEhlcnJpbmc=?= <rob.herring@calxeda.com>,
- linux-mtd@lists.infradead.org,
- =?UTF-8?B?R3JhbnQgTGlrZWx5?= <grant.likely@linaro.org>,
- =?UTF-8?B?RGF2aWQgV29vZGhvdXNl?= <dwmw2@infradead.org>
-Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+ id 1VAqBW-0004Js-5Q
+ for linux-mtd@lists.infradead.org; Sat, 17 Aug 2013 23:45:31 +0000
+From: Luka Perkov <luka@openwrt.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH v2] mtd: m25p80: add support for PMC SPI flash
+Date: Sun, 18 Aug 2013 01:44:15 +0200
+Message-Id: <1376783055-18370-1-git-send-email-luka@openwrt.org>
+Cc: Luka Perkov <luka@openwrt.org>, Gabor Juhos <juhosg@openwrt.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Michel Stempin <michel.stempin@wanadoo.fr>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,21 +20,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiBPbiBGcmksIEF1ZyAxNiwgMjAxMyBhdCAxMToxOTo0MkFNICswNDAwLCBBbGV4YW5kZXIgU2hp
-eWFuIHdyb3RlOgo+ID4gVGhpcyBwYXRjaCBhZGRzIGEgcHJvcGVydHkgdG8gYXV0b21hdGljYWxs
-eSBkZXRlcm1pbmUgdGhlIE5BTkQKPiA+IGJ1cyB3aWR0aC4gVGhpcyBwcm9wZXJ0eSB3b3JrcyBp
-ZiB0aGUgYnVzIHdpZHRoIGlzIG5vdCBzcGVjaWZpZWQKPiA+IGV4cGxpY2l0bHkuCj4gPiAKPiA+
-IFNpZ25lZC1vZmYtYnk6IEFsZXhhbmRlciBTaGl5YW4gPHNoY193b3JrQG1haWwucnU+ClsuLi5d
-Cj4gPiArCWlmIChyZXNvdXJjZV9zaXplKHJlcykgPCAyKQo+ID4gKwkJZ3Bpb210ZC0+cGxhdC5v
-cHRpb25zICY9IH4oTkFORF9CVVNXSURUSF8xNiB8Cj4gPiArCQkJCQkgICBOQU5EX0JVU1dJRFRI
-X0FVVE8pOwo+IAo+IEkgY2FuJ3QgcXVpdGUgZmlndXJlIG91dCB3aGF0IHRoZSBzaWduaWZpY2Fu
-Y2Ugb2YgcmVzb3VyY2Vfc2l6ZShyZXMpIDwgMgo+IGlzLiBJdCBkb2Vzbid0IHF1aXRlIG1hdGNo
-IG15IHJlYWRpbmcgb2YgdGhlIGRldmljZS10cmVlIGRvY3VtZW50YXRpb24uCj4gTWF5YmUgSSdt
-IGJlaW5nIGRlbnNlLiBJcyB0aGUgcmVzb3VyY2UgcHJvdmlkZWQgYXMgZWl0aGVyIGFuIDgtYml0
-IElPCj4gYWRkcmVzcyAobGVuZ3RoPTEpIG9yIDE2LWJpdCBJTyBhZGRyZXNzIChsZW5ndGg9Mik/
-CgpTaXplIGluIGJ5dGVzLCBzbyB0aGlzIGlzIGp1c3QgYSBmYXVsdCBwcm90ZWN0IGZvciBsZW5n
-dGg9PTEgJiYgKGJ1c3c9PTE2IHx8IGJ1c3c9PWF1dG8pLgpEbyB5b3UgdGhpbmsgaXQncyBub3Qg
-bmVjZXNzYXJ5PwoKWy4uLl0KPiBJIGNhbiBmaXh1cCB0aGUgZmlyc3QgMiB3aXRob3V0IGEgcmVz
-ZW5kLiBEZXBlbmRpbmcgb24geW91ciByZXNwb25zZSB0bwo+IHRoZSB0aGlyZCBjb21tZW50LCBJ
-J2xsIGFwcGx5IHRoaXMuCgpJJ2xsIHByZWZlciB0byByZXNlbmQgYWxsIGluIG5leHQgZmV3IGRh
-eXMuClRoYW5rcy4KCi0tLQo=
+From: Michel Stempin <michel.stempin@wanadoo.fr>
+
+This patch adds support for PMC (now Chingis, part of ISSI) Pm25LV512 (512
+kBbit), Pm25LV010 (1 Mbit) and Pm25LQ032 (32 Mbit) SPI flash.
+
+Two generations of PMC SPI flash chips are addressed:
+
+1) Pm25LV512 and Pm25LV010 - These have 4KB sectors and 32KB blocks. The 4KB
+sector erase uses a non-standard opcode (0xd7). They do not support JEDEC RDID
+(0x9f), and so they can only be detected by matching their name string with
+pre-configured platform data. Because of the cascaded acquisitions, the
+datasheet is no longer available on the current manufacturer's website,
+although it is still commonly used in some recent wireless routers [1]. Only
+public datasheet available seems to be on GeoCities [2].
+
+2) Pm25LQ032 - A newer generation flash, with 4KB sectors and 32KB blocks. It
+uses the standard erase and JEDEC read-ID opcodes. Manufacturer's datasheet is
+available [3].
+
+[1] https://forum.openwrt.org/viewtopic.php?pid=186360#p186360
+[2] http://www.geocities.jp/scottle556/pdf/Pm25LV512-010.pdf
+[3] http://www.chingistek.com/img/Product_Files/Pm25LQ032C%20datasheet%20v1.6.1.pdf
+
+Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+Signed-off-by: Michel Stempin <michel.stempin@wanadoo.fr>
+CC: Brian Norris <computersforpeace@gmail.com>
+CC: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+---
+
+Changes in v2:
+ - style and documentation improvements
+
+ drivers/mtd/devices/m25p80.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 2f3d2a5..4d45ce4 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -45,6 +45,7 @@
+ #define	OPCODE_BE_4K		0x20	/* Erase 4KiB block */
+ #define	OPCODE_BE_32K		0x52	/* Erase 32KiB block */
+ #define	OPCODE_CHIP_ERASE	0xc7	/* Erase whole flash chip */
++#define	OPCODE_BE_4K_PMC	0xd7	/* Erase 4KiB block on PMC chips*/
+ #define	OPCODE_SE		0xd8	/* Sector erase (usually 64KiB) */
+ #define	OPCODE_RDID		0x9f	/* Read JEDEC ID */
+ 
+@@ -682,6 +683,7 @@ struct flash_info {
+ #define	SECT_4K		0x01		/* OPCODE_BE_4K works uniformly */
+ #define	M25P_NO_ERASE	0x02		/* No erase command needed */
+ #define	SST_WRITE	0x04		/* use SST byte programming */
++#define	SECT_4K_PMC	0x08		/* OPCODE_BE_4K_PMC works uniformly */
+ };
+ 
+ #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
+@@ -762,6 +764,11 @@ static const struct spi_device_id m25p_ids[] = {
+ 	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024, 256, 0) },
+ 	{ "n25q256a", INFO(0x20ba19, 0, 64 * 1024, 512, SECT_4K) },
+ 
++	/* PMC -- pm25x "blocks" are 32K, sectors are 4K */
++	{ "pm25lv512", INFO(0, 0, 32 * 1024, 2, SECT_4K_PMC) },
++	{ "pm25lv010", INFO(0, 0, 32 * 1024, 4, SECT_4K_PMC) },
++	{ "pm25lq032", INFO(0x7F9D46, 0, 64 * 1024,  64, SECT_4K) },
++
+ 	/* Spansion -- single (large) sector size only, at least
+ 	 * for the chips listed here (without boot sectors).
+ 	 */
+@@ -1014,6 +1021,9 @@ static int m25p_probe(struct spi_device *spi)
+ 	if (info->flags & SECT_4K) {
+ 		flash->erase_opcode = OPCODE_BE_4K;
+ 		flash->mtd.erasesize = 4096;
++	} else if (info->flags & SECT_4K_PMC) {
++		flash->erase_opcode = OPCODE_BE_4K_PMC;
++		flash->mtd.erasesize = 4096;
+ 	} else {
+ 		flash->erase_opcode = OPCODE_SE;
+ 		flash->mtd.erasesize = info->sector_size;
+-- 
+1.8.3.4
