@@ -1,14 +1,20 @@
-From: Josh Wu <josh.wu@atmel.com>
-To: <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
- <dedekind1@gmail.com>
-Subject: [PATCH] mtd: atmel_nand: pmecc: fix bug fail to correct bit error in
- 1024-bytes sector
-Date: Mon, 19 Aug 2013 18:05:44 +0800
-Message-ID: <1376906744-4711-1-git-send-email-josh.wu@atmel.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: nicolas.ferre@atmel.com, computersforpeace@gmail.com, plagnioj@jcrosoft.com,
- Josh Wu <josh.wu@atmel.com>
+Received: from mga02.intel.com ([134.134.136.20])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VBPYQ-0005v0-FZ
+ for linux-mtd@lists.infradead.org; Mon, 19 Aug 2013 13:31:31 +0000
+Message-ID: <1376919409.2089.463.camel@sauron.fi.intel.com>
+Subject: Re: [RFC] mtd-utils: integck: add support for volume specific
+ power-cut test
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Mats =?ISO-8859-1?Q?K=E4rrman?= <Mats.Karrman@tritech.se>
+Date: Mon, 19 Aug 2013 16:36:49 +0300
+In-Reply-To: <ED3E0BCACD909541BA94A34C4A164D4C4FCDC571@post.tritech.se>
+References: <ED3E0BCACD909541BA94A34C4A164D4C4FCDC571@post.tritech.se>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,36 +24,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The PMECC use BCH algorithm to correct error. In BCH algorithm, the primitive
-polynomial value is GF(2^13) for 512-bytes sector size. And it is GF(2^14) for
-1024-bytes sector size.
+On Mon, 2013-08-19 at 08:50 +0000, Mats Kärrman wrote:
+> Problem:
+> The current power-cut test requires power-cut emulation to be enabled globally
+> (e.g. for all UBIFS volumes) but this may lead to some practical problems when
+> the root fs of the tested machine is also of the same type.
 
-This patch will choose correct degree of the remainders(13 or 14) for
-different sector size.
-Tested in AT91SAM9X5-EK with MLC nand flash.
+Hi, sorry, I do not understand the problem. First of all, I never ran
+this on a device which uses an UBIFS file-system as rootfs. I only ran
+it on a PC where UBIFS has only been on top of a nandsim.
 
-More detail can be refered to section 5.4.1 of:
-  AT91SAM ARM-based Embedded MPU Application Note
-  <http://www.atmel.com/Images/doc11127.pdf>
+So, AFAICS, power cut emulation is per-mountpoint. So you should enable
+it only for the the file-system under test. Power-cut should switch only
+the file-system under test to R/O mode, not the rootfs.
 
-Signed-off-by: Josh Wu <josh.wu@atmel.com>
----
- drivers/mtd/nand/atmel_nand.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+What are the practical problems you mention?
 
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index 0e365da..8b2eb3e 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -1204,7 +1204,8 @@ static int __init atmel_pmecc_nand_init_params(struct platform_device *pdev,
- 	/* set ECC page size and oob layout */
- 	switch (mtd->writesize) {
- 	case 2048:
--		host->pmecc_degree = PMECC_GF_DIMENSION_13;
-+		host->pmecc_degree = (sector_size == 512) ?
-+			PMECC_GF_DIMENSION_13 : PMECC_GF_DIMENSION_14;
- 		host->pmecc_cw_len = (1 << host->pmecc_degree) - 1;
- 		host->pmecc_sector_number = mtd->writesize / sector_size;
- 		host->pmecc_bytes_per_sector = pmecc_get_ecc_bytes(
 -- 
-1.7.9.5
+Best Regards,
+Artem Bityutskiy
