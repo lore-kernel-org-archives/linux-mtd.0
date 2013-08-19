@@ -1,20 +1,15 @@
-Received: from co9ehsobe005.messaging.microsoft.com ([207.46.163.28]
- helo=co9outboundpool.messaging.microsoft.com)
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VBFJh-0004R9-Os
- for linux-mtd@lists.infradead.org; Mon, 19 Aug 2013 02:35:39 +0000
 From: Huang Shijie <b32955@freescale.com>
-To: <dwmw2@infradead.org>
-Subject: [PATCH v2 9/9] mtd: add a helper to detect the nand type
-Date: Mon, 19 Aug 2013 10:31:18 +0800
-Message-ID: <1376879478-22128-10-git-send-email-b32955@freescale.com>
-In-Reply-To: <1376879478-22128-1-git-send-email-b32955@freescale.com>
-References: <1376879478-22128-1-git-send-email-b32955@freescale.com>
+To: <broonie@kernel.org>
+Subject: [PATCH V1 0/5] Add the Quadspi driver for vf610-twr
+Date: Mon, 19 Aug 2013 12:09:58 +0800
+Message-ID: <1376885403-12156-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Cc: dedekind1@gmail.com, akinobu.mita@gmail.com, matthieu.castet@parrot.com,
+Cc: shawn.guo@linaro.org, b44548@freescale.com, dedekind1@gmail.com,
+ b18965@freescale.com, linux-spi@vger.kernel.org,
  Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- computersforpeace@gmail.com
+ kernel@pengutronix.de, computersforpeace@gmail.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,130 +19,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This helper detects that whether the mtd's type is nand type.
+The patch set is based on Li Xiaochun's init version.
+http://marc.info/?l=linux-arm-kernel&m=137181252311126&w=2
 
-Now, it's clear that the MTD_NANDFLASH stands for SLC nand only.
-So use the mtd_type_is_nand() to replace the old check method
-to do the nand type (include the SLC and MLC) check.
+(0) What is the Quadspi controller?
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
- drivers/mtd/inftlcore.c         |    2 +-
- drivers/mtd/nftlcore.c          |    2 +-
- drivers/mtd/ssfdc.c             |    2 +-
- drivers/mtd/tests/nandbiterrs.c |    2 +-
- drivers/mtd/tests/oobtest.c     |    2 +-
- drivers/mtd/tests/pagetest.c    |    2 +-
- drivers/mtd/tests/subpagetest.c |    2 +-
- include/linux/mtd/mtd.h         |    5 +++++
- 8 files changed, 12 insertions(+), 7 deletions(-)
+    The Quadspi(Quad Serial Peripheral Interface) acts as an interface to
+    one single or two external serial flash devices, each with up to 4
+    bidirectional data lines.
 
-diff --git a/drivers/mtd/inftlcore.c b/drivers/mtd/inftlcore.c
-index 3af3514..b66b541 100644
---- a/drivers/mtd/inftlcore.c
-+++ b/drivers/mtd/inftlcore.c
-@@ -50,7 +50,7 @@ static void inftl_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
- 	struct INFTLrecord *inftl;
- 	unsigned long temp;
- 
--	if (mtd->type != MTD_NANDFLASH || mtd->size > UINT_MAX)
-+	if (!mtd_type_is_nand(mtd) || mtd->size > UINT_MAX)
- 		return;
- 	/* OK, this is moderately ugly.  But probably safe.  Alternatives? */
- 	if (memcmp(mtd->name, "DiskOnChip", 10))
-diff --git a/drivers/mtd/nftlcore.c b/drivers/mtd/nftlcore.c
-index c5f4ebf..46f27de 100644
---- a/drivers/mtd/nftlcore.c
-+++ b/drivers/mtd/nftlcore.c
-@@ -50,7 +50,7 @@ static void nftl_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
- 	struct NFTLrecord *nftl;
- 	unsigned long temp;
- 
--	if (mtd->type != MTD_NANDFLASH || mtd->size > UINT_MAX)
-+	if (!mtd_type_is_nand(mtd) || mtd->size > UINT_MAX)
- 		return;
- 	/* OK, this is moderately ugly.  But probably safe.  Alternatives? */
- 	if (memcmp(mtd->name, "DiskOnChip", 10))
-diff --git a/drivers/mtd/ssfdc.c b/drivers/mtd/ssfdc.c
-index ab2a52a..daf82ba 100644
---- a/drivers/mtd/ssfdc.c
-+++ b/drivers/mtd/ssfdc.c
-@@ -290,7 +290,7 @@ static void ssfdcr_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
- 	int cis_sector;
- 
- 	/* Check for small page NAND flash */
--	if (mtd->type != MTD_NANDFLASH || mtd->oobsize != OOB_SIZE ||
-+	if (!mtd_type_is_nand(mtd) || mtd->oobsize != OOB_SIZE ||
- 	    mtd->size > UINT_MAX)
- 		return;
- 
-diff --git a/drivers/mtd/tests/nandbiterrs.c b/drivers/mtd/tests/nandbiterrs.c
-index 3cd3aab..6f97615 100644
---- a/drivers/mtd/tests/nandbiterrs.c
-+++ b/drivers/mtd/tests/nandbiterrs.c
-@@ -349,7 +349,7 @@ static int __init mtd_nandbiterrs_init(void)
- 		goto exit_mtddev;
- 	}
- 
--	if (mtd->type != MTD_NANDFLASH) {
-+	if (!mtd_type_is_nand(mtd)) {
- 		pr_info("this test requires NAND flash\n");
- 		err = -ENODEV;
- 		goto exit_nand;
-diff --git a/drivers/mtd/tests/oobtest.c b/drivers/mtd/tests/oobtest.c
-index ff35c46..2e9e2d1 100644
---- a/drivers/mtd/tests/oobtest.c
-+++ b/drivers/mtd/tests/oobtest.c
-@@ -289,7 +289,7 @@ static int __init mtd_oobtest_init(void)
- 		return err;
- 	}
- 
--	if (mtd->type != MTD_NANDFLASH) {
-+	if (!mtd_type_is_nand(mtd)) {
- 		pr_info("this test requires NAND flash\n");
- 		goto out;
- 	}
-diff --git a/drivers/mtd/tests/pagetest.c b/drivers/mtd/tests/pagetest.c
-index 44b96e9..ed2d3f6 100644
---- a/drivers/mtd/tests/pagetest.c
-+++ b/drivers/mtd/tests/pagetest.c
-@@ -353,7 +353,7 @@ static int __init mtd_pagetest_init(void)
- 		return err;
- 	}
- 
--	if (mtd->type != MTD_NANDFLASH) {
-+	if (!mtd_type_is_nand(mtd)) {
- 		pr_info("this test requires NAND flash\n");
- 		goto out;
- 	}
-diff --git a/drivers/mtd/tests/subpagetest.c b/drivers/mtd/tests/subpagetest.c
-index e2c0adf..a876371 100644
---- a/drivers/mtd/tests/subpagetest.c
-+++ b/drivers/mtd/tests/subpagetest.c
-@@ -299,7 +299,7 @@ static int __init mtd_subpagetest_init(void)
- 		return err;
- 	}
- 
--	if (mtd->type != MTD_NANDFLASH) {
-+	if (!mtd_type_is_nand(mtd)) {
- 		pr_info("this test requires NAND flash\n");
- 		goto out;
- 	}
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index f9bfe52..88409b8 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -354,6 +354,11 @@ static inline int mtd_has_oob(const struct mtd_info *mtd)
- 	return mtd->_read_oob && mtd->_write_oob;
- }
- 
-+static inline int mtd_type_is_nand(const struct mtd_info *mtd)
-+{
-+	return mtd->type == MTD_NANDFLASH || mtd->type == MTD_MLCNANDFLASH;
-+}
-+
- static inline int mtd_can_have_bb(const struct mtd_info *mtd)
- {
- 	return !!mtd->_block_isbad;
--- 
-1.7.1
+(1) The Quadspi controller is driven by the LUT(Look-up Table) registers.
+    The LUT registers are a look-up-table for sequences of instructions.
+    A valid sequence consists of four LUT registers.
+
+(2) The definition of the LUT register shows below:
+
+    ---------------------------------------------------
+    | INSTR1 | PAD1 | OPRND1 | INSTR0 | PAD0 | OPRND0 |
+    ---------------------------------------------------
+
+    There are several types of INSTRx, such as:
+    	CMD	: the SPI NOR command.
+	ADDR	: the address for the SPI NOR command.
+	DUMMY	: the dummy cycles needed by the SPI NOR command.
+	....
+
+(3) We connect the NOR the QuadSPI now. I am not sure, but i think the
+    QuadSPI will be only used for the NOR. We may connect other devices
+    to it. But, for the reason of (2), we have to parse out the SPI NOR
+    command for the QuadSPI.
+
+(4) Test this driver with the JFFS2 and UBIFS with the Spansion s25fl128s :
+
+    For jffs2:
+         #flash_eraseall /dev/mtd0
+         #mount -t jffs2 /dev/mtdblock0 tmp
+         #bonnie++ -d tmp -u 0 -s 10 -r 5
+
+    For ubifs:
+         #flash_eraseall /dev/mtd0
+    	 #ubiattach /dev/ubi_ctrl -m 0
+    	 #ubimkvol /dev/ubi0 -N test -m
+         #mount -t ubifs ubi0:test tmp
+         #bonnie++ -d tmp -u 0 -s 10 -r 5
+
+ (5) TODO:
+     1.) add DDR QUAD read. 
+     2.) support two nor chips
+
+changelog:
+
+init --> v1:
+ 	[1] since the ic bug in the IPS read,
+            abandon the IPS read, use the AHB read.
+	[2] change the mtd code, add the quad read support.
+	[3] add the quad read support the QuadSpi driver.
+	[4] misc.
+
+
+Huang Shijie (5):
+  mtd: m25p80: move the spi-nor commands to a header
+  mtd: m25p80: add support for Spansion s25fl128s chip
+  mtd: m25p80: add the quad-read support
+  spi: Add Freescale QuadSpi driver
+  ARM: dts: vf610-twr: Add SPI NOR support
+
+ Documentation/devicetree/bindings/mtd/m25p80.txt   |    5 +
+ .../devicetree/bindings/spi/fsl-quadspi.txt        |   27 +
+ arch/arm/boot/dts/vf610-twr.dts                    |   22 +
+ drivers/mtd/devices/m25p80.c                       |   93 ++-
+ drivers/spi/Kconfig                                |    7 +
+ drivers/spi/Makefile                               |    1 +
+ drivers/spi/spi-fsl-quadspi.c                      |  930 ++++++++++++++++++++
+ include/linux/mtd/spi-nor.h                        |   58 ++
+ 8 files changed, 1103 insertions(+), 40 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/spi/fsl-quadspi.txt
+ create mode 100644 drivers/spi/spi-fsl-quadspi.c
+ create mode 100644 include/linux/mtd/spi-nor.h
