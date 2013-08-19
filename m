@@ -1,13 +1,13 @@
-Received: from co9ehsobe002.messaging.microsoft.com ([207.46.163.25]
- helo=co9outboundpool.messaging.microsoft.com)
+Received: from mail-db9lp0251.outbound.messaging.microsoft.com
+ ([213.199.154.251] helo=db9outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VBFJN-0004fb-Ji
- for linux-mtd@lists.infradead.org; Mon, 19 Aug 2013 02:35:32 +0000
+ id 1VBFJT-0004fl-HF
+ for linux-mtd@lists.infradead.org; Mon, 19 Aug 2013 02:35:37 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH v2 8/9] mtd: add MTD_MLCNANDFLASH case for mtd_type_show()
-Date: Mon, 19 Aug 2013 10:31:17 +0800
-Message-ID: <1376879478-22128-9-git-send-email-b32955@freescale.com>
+Subject: [PATCH v2 6/9] mtd: fix the wrong mtd->type for nand chip
+Date: Mon, 19 Aug 2013 10:31:15 +0800
+Message-ID: <1376879478-22128-7-git-send-email-b32955@freescale.com>
 In-Reply-To: <1376879478-22128-1-git-send-email-b32955@freescale.com>
 References: <1376879478-22128-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
@@ -24,41 +24,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The current mtd_type_show() misses the MTD_MLCNANDFLASH case.
-This patch adds the case for it, and also updates the ABI.
+Current code sets the mtd->type with MTD_NANDFLASH for both
+SLC and MLC. So the jffs2 may supports the MLC nand, but in actually,
+the jffs2 should not support the MLC.
+
+This patch uses the nand_is_slc() to check the nand cell type,
+and set the mtd->type with the right nand type.
+
+After this patch, the jffs2 only can support the SLC nand.
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- Documentation/ABI/testing/sysfs-class-mtd |    2 +-
- drivers/mtd/mtdcore.c                     |    3 +++
- 2 files changed, 4 insertions(+), 1 deletions(-)
+ drivers/mtd/nand/nand_base.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-class-mtd b/Documentation/ABI/testing/sysfs-class-mtd
-index a795582..8104410 100644
---- a/Documentation/ABI/testing/sysfs-class-mtd
-+++ b/Documentation/ABI/testing/sysfs-class-mtd
-@@ -104,7 +104,7 @@ Description:
- 		One of the following ASCII strings, representing the device
- 		type:
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 8b487d5..f2bb925 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3776,7 +3776,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 		chip->options |= NAND_SUBPAGE_READ;
  
--		absent, ram, rom, nor, nand, dataflash, ubi, unknown
-+		absent, ram, rom, nor, nand, mlc-nand, dataflash, ubi, unknown
- 
- What:		/sys/class/mtd/mtdX/writesize
- Date:		April 2009
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 5e14d54..92311a5 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -157,6 +157,9 @@ static ssize_t mtd_type_show(struct device *dev,
- 	case MTD_UBIVOLUME:
- 		type = "ubi";
- 		break;
-+	case MTD_MLCNANDFLASH:
-+		type = "mlc-nand";
-+		break;
- 	default:
- 		type = "unknown";
- 	}
+ 	/* Fill in remaining MTD driver data */
+-	mtd->type = MTD_NANDFLASH;
++	mtd->type = nand_is_slc(chip) ? MTD_NANDFLASH : MTD_MLCNANDFLASH;
+ 	mtd->flags = (chip->options & NAND_ROM) ? MTD_CAP_ROM :
+ 						MTD_CAP_NANDFLASH;
+ 	mtd->_erase = nand_erase;
 -- 
 1.7.1
