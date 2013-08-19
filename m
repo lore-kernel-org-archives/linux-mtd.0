@@ -1,26 +1,24 @@
-Received: from antispam01.maxim-ic.com ([205.153.101.182]
- helo=antispam01.maximintegrated.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VBKTx-0006uO-BK
- for linux-mtd@lists.infradead.org; Mon, 19 Aug 2013 08:06:38 +0000
-From: Brian Foster <brian.foster@maximintegrated.com>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VBL3G-0007au-No
+ for linux-mtd@lists.infradead.org; Mon, 19 Aug 2013 08:43:08 +0000
+Date: Mon, 19 Aug 2013 10:42:26 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v4 4/6] mtd: set ONFI nand's default hooks in
- nand_set_defaults()
-Date: Mon, 19 Aug 2013 10:06:01 +0200
-Message-ID: <5381361.fmCO4JOXvv@laclwks004>
-In-Reply-To: <20130817175507.GA5034@norris.computersforpeace.net>
-References: <1376619009-8622-1-git-send-email-b32955@freescale.com>
- <1376619009-8622-5-git-send-email-b32955@freescale.com>
- <20130817175507.GA5034@norris.computersforpeace.net>
+Subject: Re: [PATCH 2/4] mtd: m25p80: make CONFIG_M25PXX_USE_FAST_READ safe
+ to enable
+Message-ID: <20130819084226.GB31036@pengutronix.de>
+References: <1376302946-11534-1-git-send-email-s.hauer@pengutronix.de>
+ <1376302946-11534-3-git-send-email-s.hauer@pengutronix.de>
+ <20130817201702.GD11210@norris.computersforpeace.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
-Cc: "dedekind1@gmail.com" <dedekind1@gmail.com>,
- Huang Shijie <b32955@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "pekon@ti.com" <pekon@ti.com>, Florian Fainelli <ffainelli@freebox.fr>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20130817201702.GD11210@norris.computersforpeace.net>
+Cc: Marek Vasut <marex@denx.de>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ kernel@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,28 +28,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Saturday 17-August-2013 10:55:07 Brian Norris wrote:
-> On Fri, Aug 16, 2013 at 10:10:07AM +0800, Huang Shijie wrote:
-> > We may do some ONFI get/set features operations before we call the
-> > nand_scan_tail().
-> >=20
-> > So move the default ONFI nand hooks into nand_set_defaults().
-> >=20
-> > Signed-off-by: Huang Shijie <b32955@freescale.com>
->=20
-> This patch looks similar to a one forwarded by Brian Foster/Florian
-> Fainelli a while back. But since I don't have a good copy of the othe=
-r
-> one, I'll take this.
+On Sat, Aug 17, 2013 at 01:17:02PM -0700, Brian Norris wrote:
+> On Mon, Aug 12, 2013 at 12:22:24PM +0200, Sascha Hauer wrote:
+> > This patch adds a flag to struct flash_info indicating that
+> > fast_read is not supported. This now gives the following logic
+> > when determing whether to enable fastread:
+> > 
+> > 1) enable fast_read if device node contains m25p,fast-read
+> > 2) enable fast_read unconditionally if forced in Kconfig
+> > 3) Disable fast_read if the chip does not support it
+> 
+> This logic is either unclear or incorrect.
+> 
+> > This makes enabling CONFIG_M25PXX_USE_FAST_READ a safe option
+> > since we no longer enable the fast_read option unconditionally.
+> 
+> This statement seems to contradict 2 above, depending on the reading
+> (how can 2 enable "unconditionally", yet CONFIG_..._FAST_READ "no longer
+> enable[s] ... unconditionally"?).
+> 
+> The problem I have with this description is that it is assuming that
+> 1, 2, and 3 are applied sequentially, so that later items in the
+> sequence have higher precedence. So it's describing code ordering, not
+> really logic. And statement 3 weakens the "unconditionally" of 2.
+> 
+> And to avoid simply complaining, I propose an alternative explanation:
+> 
+>   If the flash chip does not support fast_read, then disable it.
+>   Otherwise:
+>   1) enable fast_read if device node contains m25p,fast-read
+>   2) enable fast_read if forced in Kconfig
+> 
+> If we correct this description, then:
+> 
+>   Acked-by: Brian Norris <computersforpeace@gmail.com>
+> 
+> I can edit the patch and push the whole thing if this is acceptable.
 
- This looks Ok to me.
- Apologies for not sending a =E2=80=9Cgood copy=E2=80=9D
- of the earlier one.  Sorry!
+Yes, that would be great. Your explanation sounds better than mine.
 
-cheers!
-=09-blf-
+> 
+> One related question (not required for this series): do we even need
+> Kconfig M25PXX_USE_FAST_READ any more? Are there any SPI controllers
+> that can't use FAST_READ? Or perhaps if they have a slow clock, it's
+> preferable to use normal read?
+> 
+> If there are no restrictions from the controller side, I think this
+> NO_FR flag gives enough information to determine everything at runtime,
+> not compile-time.
 
---=20
-Brian Foster
-Principal MTS, Software        |  La Ciotat, France
-Maxim Integrated               |  http://www.maximintegrated.com/
+This M25PXX_USE_FAST_READ is a no-go for multiplatform Kernels and
+should be removed. I have no idea though how we can do this without
+risking regressions since we have no idea who intentionally disabled
+this option. Maybe we just have to find out by removing it and waiting
+for people to complain^B^B^Bsend patches.
+
+Sascha
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
