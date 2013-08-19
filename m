@@ -1,17 +1,19 @@
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83])
+Received: from am1ehsobe004.messaging.microsoft.com ([213.199.154.207]
+ helo=am1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VBLCQ-0007o6-R7
- for linux-mtd@lists.infradead.org; Mon, 19 Aug 2013 08:52:35 +0000
-From: Julia Lawall <Julia.Lawall@lip6.fr>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 3/6] mtd: fsmc_nand: simplify
- platform_get_resource_byname/devm_ioremap_resource
-Date: Mon, 19 Aug 2013 10:51:53 +0200
-Message-Id: <1376902316-18520-4-git-send-email-Julia.Lawall@lip6.fr>
-In-Reply-To: <1376902316-18520-1-git-send-email-Julia.Lawall@lip6.fr>
-References: <1376902316-18520-1-git-send-email-Julia.Lawall@lip6.fr>
-Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org
+ id 1VBLN8-00085C-9u
+ for linux-mtd@lists.infradead.org; Mon, 19 Aug 2013 09:03:38 +0000
+From: Huang Shijie <b32955@freescale.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH v2 append] mtd: mtd-abi: add a helper to detect the nand type
+Date: Mon, 19 Aug 2013 16:59:37 +0800
+Message-ID: <1376902777-24583-1-git-send-email-b32955@freescale.com>
+In-Reply-To: <1376879478-22128-1-git-send-email-b32955@freescale.com>
+References: <1376879478-22128-1-git-send-email-b32955@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,69 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Julia Lawall <Julia.Lawall@lip6.fr>
+The helper is for user applications, and it is just a copy of
+the kernel helper: mtd_type_is_nand();
 
-Remove unneeded error handling on the result of a call to
-platform_get_resource_byname when the value is passed to devm_ioremap_resource.
-
-A simplified version of the semantic patch that makes this change is as
-follows: (http://coccinelle.lip6.fr/)
-
-// <smpl>
-@@
-expression pdev,res,e,e1;
-expression ret != 0;
-identifier l;
-@@
-
-  res = platform_get_resource_byname(...);
-- if (res == NULL) { ... \(goto l;\|return ret;\) }
-  e = devm_ioremap_resource(e1, res);
-// </smpl>
-
-Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
-
+Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- drivers/mtd/nand/fsmc_nand.c |   12 ------------
- 1 file changed, 12 deletions(-)
+ include/uapi/mtd/mtd-abi.h |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
-index 2a3b1b9..3dc1a75 100644
---- a/drivers/mtd/nand/fsmc_nand.c
-+++ b/drivers/mtd/nand/fsmc_nand.c
-@@ -958,9 +958,6 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 	}
+diff --git a/include/uapi/mtd/mtd-abi.h b/include/uapi/mtd/mtd-abi.h
+index 16a9406..ad8e867 100644
+--- a/include/uapi/mtd/mtd-abi.h
++++ b/include/uapi/mtd/mtd-abi.h
+@@ -275,4 +275,9 @@ enum mtd_file_modes {
+ 	MTD_FILE_MODE_RAW,
+ };
  
- 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "nand_data");
--	if (!res)
--		return -EINVAL;
--
- 	host->data_va = devm_ioremap_resource(&pdev->dev, res);
- 	if (IS_ERR(host->data_va))
- 		return PTR_ERR(host->data_va);
-@@ -968,25 +965,16 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 	host->data_pa = (dma_addr_t)res->start;
- 
- 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "nand_addr");
--	if (!res)
--		return -EINVAL;
--
- 	host->addr_va = devm_ioremap_resource(&pdev->dev, res);
- 	if (IS_ERR(host->addr_va))
- 		return PTR_ERR(host->addr_va);
- 
- 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "nand_cmd");
--	if (!res)
--		return -EINVAL;
--
- 	host->cmd_va = devm_ioremap_resource(&pdev->dev, res);
- 	if (IS_ERR(host->cmd_va))
- 		return PTR_ERR(host->cmd_va);
- 
- 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "fsmc_regs");
--	if (!res)
--		return -EINVAL;
--
- 	host->regs_va = devm_ioremap_resource(&pdev->dev, res);
- 	if (IS_ERR(host->regs_va))
- 		return PTR_ERR(host->regs_va);
++static inline bool mtd_type_is_nand_user(const struct mtd_info_user *mtd)
++{
++	return mtd->type == MTD_NANDFLASH || mtd->type == MTD_MLCNANDFLASH;
++}
++
+ #endif /* __MTD_ABI_H__ */
+-- 
+1.7.1
