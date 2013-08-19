@@ -1,19 +1,14 @@
-Received: from am1ehsobe004.messaging.microsoft.com ([213.199.154.207]
- helo=am1outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VBLN8-00085C-9u
- for linux-mtd@lists.infradead.org; Mon, 19 Aug 2013 09:03:38 +0000
-From: Huang Shijie <b32955@freescale.com>
-To: <dwmw2@infradead.org>
-Subject: [PATCH v2 append] mtd: mtd-abi: add a helper to detect the nand type
-Date: Mon, 19 Aug 2013 16:59:37 +0800
-Message-ID: <1376902777-24583-1-git-send-email-b32955@freescale.com>
-In-Reply-To: <1376879478-22128-1-git-send-email-b32955@freescale.com>
-References: <1376879478-22128-1-git-send-email-b32955@freescale.com>
+From: Josh Wu <josh.wu@atmel.com>
+To: <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+ <dedekind1@gmail.com>
+Subject: [PATCH] mtd: atmel_nand: pmecc: fix bug fail to correct bit error in
+ 1024-bytes sector
+Date: Mon, 19 Aug 2013 18:05:44 +0800
+Message-ID: <1376906744-4711-1-git-send-email-josh.wu@atmel.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, dedekind1@gmail.com
+Cc: nicolas.ferre@atmel.com, computersforpeace@gmail.com, plagnioj@jcrosoft.com,
+ Josh Wu <josh.wu@atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,27 +18,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The helper is for user applications, and it is just a copy of
-the kernel helper: mtd_type_is_nand();
+The PMECC use BCH algorithm to correct error. In BCH algorithm, the primitive
+polynomial value is GF(2^13) for 512-bytes sector size. And it is GF(2^14) for
+1024-bytes sector size.
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
+This patch will choose correct degree of the remainders(13 or 14) for
+different sector size.
+Tested in AT91SAM9X5-EK with MLC nand flash.
+
+More detail can be refered to section 5.4.1 of:
+  AT91SAM ARM-based Embedded MPU Application Note
+  <http://www.atmel.com/Images/doc11127.pdf>
+
+Signed-off-by: Josh Wu <josh.wu@atmel.com>
 ---
- include/uapi/mtd/mtd-abi.h |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
+ drivers/mtd/nand/atmel_nand.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/include/uapi/mtd/mtd-abi.h b/include/uapi/mtd/mtd-abi.h
-index 16a9406..ad8e867 100644
---- a/include/uapi/mtd/mtd-abi.h
-+++ b/include/uapi/mtd/mtd-abi.h
-@@ -275,4 +275,9 @@ enum mtd_file_modes {
- 	MTD_FILE_MODE_RAW,
- };
- 
-+static inline bool mtd_type_is_nand_user(const struct mtd_info_user *mtd)
-+{
-+	return mtd->type == MTD_NANDFLASH || mtd->type == MTD_MLCNANDFLASH;
-+}
-+
- #endif /* __MTD_ABI_H__ */
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index 0e365da..8b2eb3e 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -1204,7 +1204,8 @@ static int __init atmel_pmecc_nand_init_params(struct platform_device *pdev,
+ 	/* set ECC page size and oob layout */
+ 	switch (mtd->writesize) {
+ 	case 2048:
+-		host->pmecc_degree = PMECC_GF_DIMENSION_13;
++		host->pmecc_degree = (sector_size == 512) ?
++			PMECC_GF_DIMENSION_13 : PMECC_GF_DIMENSION_14;
+ 		host->pmecc_cw_len = (1 << host->pmecc_degree) - 1;
+ 		host->pmecc_sector_number = mtd->writesize / sector_size;
+ 		host->pmecc_bytes_per_sector = pmecc_get_ecc_bytes(
 -- 
-1.7.1
+1.7.9.5
