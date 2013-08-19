@@ -1,15 +1,26 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VBJGk-0005LP-3r
- for linux-mtd@lists.infradead.org; Mon, 19 Aug 2013 06:48:51 +0000
-From: Richard Weinberger <richard@nod.at>
-To: dedekind1@gmail.com
-Subject: [PATCH] UBI: Fix PEB leak in wear_leveling_worker()
-Date: Mon, 19 Aug 2013 08:48:12 +0200
-Message-Id: <1376894892-31519-1-git-send-email-richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org,
- Richard Weinberger <richard@nod.at>
+Received: from antispam01.maxim-ic.com ([205.153.101.182]
+ helo=antispam01.maximintegrated.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VBKTx-0006uO-BK
+ for linux-mtd@lists.infradead.org; Mon, 19 Aug 2013 08:06:38 +0000
+From: Brian Foster <brian.foster@maximintegrated.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v4 4/6] mtd: set ONFI nand's default hooks in
+ nand_set_defaults()
+Date: Mon, 19 Aug 2013 10:06:01 +0200
+Message-ID: <5381361.fmCO4JOXvv@laclwks004>
+In-Reply-To: <20130817175507.GA5034@norris.computersforpeace.net>
+References: <1376619009-8622-1-git-send-email-b32955@freescale.com>
+ <1376619009-8622-5-git-send-email-b32955@freescale.com>
+ <20130817175507.GA5034@norris.computersforpeace.net>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Cc: "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ Huang Shijie <b32955@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "pekon@ti.com" <pekon@ti.com>, Florian Fainelli <ffainelli@freebox.fr>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,33 +30,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-get_peb_for_wl() removes the PEB from the free list.
-If the WL subsystem detects that no wear leveling is needed
-it cancels the operation and drops the gained PEB.
-In this case we have to put the PEB back into the free list.
+On Saturday 17-August-2013 10:55:07 Brian Norris wrote:
+> On Fri, Aug 16, 2013 at 10:10:07AM +0800, Huang Shijie wrote:
+> > We may do some ONFI get/set features operations before we call the
+> > nand_scan_tail().
+> >=20
+> > So move the default ONFI nand hooks into nand_set_defaults().
+> >=20
+> > Signed-off-by: Huang Shijie <b32955@freescale.com>
+>=20
+> This patch looks similar to a one forwarded by Brian Foster/Florian
+> Fainelli a while back. But since I don't have a good copy of the othe=
+r
+> one, I'll take this.
 
-This issue was introduced with commit ed4b7021c
-(UBI: remove PEB from free tree in get_peb_for_wl()).
+ This looks Ok to me.
+ Apologies for not sending a =E2=80=9Cgood copy=E2=80=9D
+ of the earlier one.  Sorry!
 
-Cc: <stable@vger.kernel.org> # 3.7.x
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- drivers/mtd/ubi/wl.c | 3 +++
- 1 file changed, 3 insertions(+)
+cheers!
+=09-blf-
 
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index 5df49d3..c95bfb1 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -1069,6 +1069,9 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
- 		if (!(e2->ec - e1->ec >= UBI_WL_THRESHOLD)) {
- 			dbg_wl("no WL needed: min used EC %d, max free EC %d",
- 			       e1->ec, e2->ec);
-+
-+			/* Give the unused PEB back */
-+			wl_tree_add(e2, &ubi->free);
- 			goto out_cancel;
- 		}
- 		self_check_in_wl_tree(ubi, e1, &ubi->used);
--- 
-1.8.1.4
+--=20
+Brian Foster
+Principal MTS, Software        |  La Ciotat, France
+Maxim Integrated               |  http://www.maximintegrated.com/
