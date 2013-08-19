@@ -1,13 +1,13 @@
-Received: from ch1ehsobe001.messaging.microsoft.com ([216.32.181.181]
- helo=ch1outboundpool.messaging.microsoft.com)
+Received: from co9ehsobe002.messaging.microsoft.com ([207.46.163.25]
+ helo=co9outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VBFJK-0004fF-Kb
- for linux-mtd@lists.infradead.org; Mon, 19 Aug 2013 02:35:15 +0000
+ id 1VBFJN-0004fT-Ji
+ for linux-mtd@lists.infradead.org; Mon, 19 Aug 2013 02:35:30 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH v2 3/9] mtd: print out the cell information for nand chip
-Date: Mon, 19 Aug 2013 10:31:12 +0800
-Message-ID: <1376879478-22128-4-git-send-email-b32955@freescale.com>
+Subject: [PATCH v2 7/9] jffs2: init the ret with -EINVAL
+Date: Mon, 19 Aug 2013 10:31:16 +0800
+Message-ID: <1376879478-22128-8-git-send-email-b32955@freescale.com>
 In-Reply-To: <1376879478-22128-1-git-send-email-b32955@freescale.com>
 References: <1376879478-22128-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
@@ -24,30 +24,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Print out the cell information for nand chip.
+If the media is not SLC nand, dataflash, Sibley flash or a
+ubi volume, we should return -EINVAL to the caller.
+The caller should exit in this case.
+
+Current code returns 0 in this case which is not proper.
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- drivers/mtd/nand/nand_base.c |    5 +++--
- 1 files changed, 3 insertions(+), 2 deletions(-)
+ fs/jffs2/fs.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 69c4b25..8b487d5 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -3454,10 +3454,11 @@ ident_done:
- 		chip->cmdfunc = nand_command_lp;
- 
- 	pr_info("NAND device: Manufacturer ID: 0x%02x, Chip ID: 0x%02x (%s %s),"
--		" %dMiB, page size: %d, OOB size: %d\n",
-+		" %dMiB, %s, page size: %d, OOB size: %d\n",
- 		*maf_id, *dev_id, nand_manuf_ids[maf_idx].name,
- 		chip->onfi_version ? chip->onfi_params.model : type->name,
--		(int)(chip->chipsize >> 20), mtd->writesize, mtd->oobsize);
-+		(int)(chip->chipsize >> 20), nand_is_slc(chip) ? "SLC" : "MLC",
-+		mtd->writesize, mtd->oobsize);
- 
- 	return type;
+diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
+index fe3c052..0452445 100644
+--- a/fs/jffs2/fs.c
++++ b/fs/jffs2/fs.c
+@@ -702,7 +702,7 @@ void jffs2_gc_release_page(struct jffs2_sb_info *c,
  }
+ 
+ static int jffs2_flash_setup(struct jffs2_sb_info *c) {
+-	int ret = 0;
++	int ret = -EINVAL;
+ 
+ 	if (jffs2_cleanmarker_oob(c)) {
+ 		/* NAND flash... do setup accordingly */
 -- 
 1.7.1
