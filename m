@@ -1,14 +1,13 @@
-Received: from co1ehsobe003.messaging.microsoft.com ([216.32.180.186]
- helo=co1outboundpool.messaging.microsoft.com)
+Received: from va3ehsobe001.messaging.microsoft.com ([216.32.180.11]
+ helo=va3outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VBf1X-0002FM-Mi
- for linux-mtd@lists.infradead.org; Tue, 20 Aug 2013 06:02:37 +0000
+ id 1VBf1Z-0002FR-AL
+ for linux-mtd@lists.infradead.org; Tue, 20 Aug 2013 06:02:38 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH for mtd-utils 2/4] mtd: mtd-abi: add a helper to detect the
- nand type
-Date: Tue, 20 Aug 2013 13:58:35 +0800
-Message-ID: <1376978317-28010-3-git-send-email-b32955@freescale.com>
+Subject: [PATCH for mtd-utils 4/4] check the MLC nand type
+Date: Tue, 20 Aug 2013 13:58:37 +0800
+Message-ID: <1376978317-28010-5-git-send-email-b32955@freescale.com>
 In-Reply-To: <1376978317-28010-1-git-send-email-b32955@freescale.com>
 References: <1376978317-28010-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
@@ -24,27 +23,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The helper is for user applications, and it is just a copy of
-the kernel helper: mtd_type_is_nand();
+In the current code, the MTD_NANDFLASH stands for both the SLC and MLC.
+
+In the kernel, the MTD_NANDFLASH only stands for the SLC now,
+so in order to keep the logic unchanged, we should also check the MLC nand
+by MTD_MLCNANDFLASH.
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- include/mtd/mtd-abi.h |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
+ lib/libmtd.c        |    3 ++-
+ ubi-utils/mtdinfo.c |    2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/include/mtd/mtd-abi.h b/include/mtd/mtd-abi.h
-index 4de167b..bcd7496 100644
---- a/include/mtd/mtd-abi.h
-+++ b/include/mtd/mtd-abi.h
-@@ -274,4 +274,9 @@ enum mtd_file_modes {
- 	MTD_FILE_MODE_RAW,
- };
+diff --git a/lib/libmtd.c b/lib/libmtd.c
+index 3e8109a..2089373 100644
+--- a/lib/libmtd.c
++++ b/lib/libmtd.c
+@@ -776,7 +776,8 @@ int mtd_get_dev_info1(libmtd_t desc, int mtd_num, struct mtd_dev_info *mtd)
  
-+static inline int mtd_type_is_nand_user(const struct mtd_info_user *mtd)
-+{
-+	return mtd->type == MTD_NANDFLASH || mtd->type == MTD_MLCNANDFLASH;
-+}
-+
- #endif /* __MTD_ABI_H__ */
+ 	mtd->eb_cnt = mtd->size / mtd->eb_size;
+ 	mtd->type = type_str2int(mtd->type_str);
+-	mtd->bb_allowed = !!(mtd->type == MTD_NANDFLASH);
++	mtd->bb_allowed = !!(mtd->type == MTD_NANDFLASH ||
++				mtd->type == MTD_MLCNANDFLASH);
+ 
+ 	return 0;
+ }
+diff --git a/ubi-utils/mtdinfo.c b/ubi-utils/mtdinfo.c
+index a9dc675..5ac95aa 100644
+--- a/ubi-utils/mtdinfo.c
++++ b/ubi-utils/mtdinfo.c
+@@ -315,7 +315,7 @@ static int print_dev_info(libmtd_t libmtd, const struct mtd_info *mtd_info, int
+ 		printf("Sub-page size:                  %d %s\n",
+ 		       mtd.subpage_size,
+ 		       mtd.subpage_size > 1 ? "bytes" : "byte");
+-	else if (mtd.type == MTD_NANDFLASH)
++	else if (mtd.type == MTD_NANDFLASH || mtd.type == MTD_MLCNANDFLASH)
+ 		printf("Sub-page size:                  unknown\n");
+ 
+ 	if (mtd.oob_size > 0)
 -- 
 1.7.1
