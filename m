@@ -1,25 +1,27 @@
-Received: from avon.wwwdotorg.org ([2001:470:1f0f:bd7::2])
+Received: from mail-vc0-x229.google.com ([2607:f8b0:400c:c03::229])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VBWjn-0001g9-8r
- for linux-mtd@lists.infradead.org; Mon, 19 Aug 2013 21:11:43 +0000
-Message-ID: <521289F7.8090503@wwwdotorg.org>
-Date: Mon, 19 Aug 2013 15:11:19 -0600
-From: Stephen Warren <swarren@wwwdotorg.org>
+ id 1VBa10-00063K-Fz
+ for linux-mtd@lists.infradead.org; Tue, 20 Aug 2013 00:41:43 +0000
+Received: by mail-vc0-f169.google.com with SMTP id ib11so3628967vcb.0
+ for <linux-mtd@lists.infradead.org>; Mon, 19 Aug 2013 17:41:18 -0700 (PDT)
 MIME-Version: 1.0
-To: Alexander Shiyan <shc_work@mail.ru>
-Subject: Re: [PATCH v4 4/4] mtd: nand: gpio: Add support for multichip devices
-References: <1376637583-12485-1-git-send-email-shc_work@mail.ru>
- <1376637583-12485-2-git-send-email-shc_work@mail.ru>
-In-Reply-To: <1376637583-12485-2-git-send-email-shc_work@mail.ru>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Ian Campbell <ian.campbell@citrix.com>, Pawel Moll <pawel.moll@arm.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Rob Herring <rob.herring@calxeda.com>, linux-mtd@lists.infradead.org,
- Grant Likely <grant.likely@linaro.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <5381361.fmCO4JOXvv@laclwks004>
+References: <1376619009-8622-1-git-send-email-b32955@freescale.com>
+ <1376619009-8622-5-git-send-email-b32955@freescale.com>
+ <20130817175507.GA5034@norris.computersforpeace.net>
+ <5381361.fmCO4JOXvv@laclwks004>
+Date: Mon, 19 Aug 2013 17:41:17 -0700
+Message-ID: <CAN8TOE-LC+p6Vt9GB7kiT-ytqnD2aMJ7sKMwZMEa3QHiKCwhhw@mail.gmail.com>
+Subject: Re: [PATCH v4 4/6] mtd: set ONFI nand's default hooks in
+ nand_set_defaults()
+From: Brian Norris <computersforpeace@gmail.com>
+To: Brian Foster <brian.foster@maximintegrated.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
+Cc: f.fainelli@gmail.com, "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ Huang Shijie <b32955@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "pekon@ti.com" <pekon@ti.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,23 +31,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/16/2013 01:19 AM, Alexander Shiyan wrote:
-> This patch adds support for multichip NAND devices controlled through GPIOs.
-> To implement this, the properties of tree have been renamed. All current
-> boards and DTS files converted to use an updated driver. Also driver
-> temporarily keep support for DTS files which use the previous names scheme.
+On Mon, Aug 19, 2013 at 1:06 AM, Brian Foster
+<brian.foster@maximintegrated.com> wrote:
+> On Saturday 17-August-2013 10:55:07 Brian Norris wrote:
+>> On Fri, Aug 16, 2013 at 10:10:07AM +0800, Huang Shijie wrote:
+>> > We may do some ONFI get/set features operations before we call the
+>> > nand_scan_tail().
+>> >
+>> > So move the default ONFI nand hooks into nand_set_defaults().
+>> >
+>> > Signed-off-by: Huang Shijie <b32955@freescale.com>
+>>
+>> This patch looks similar to a one forwarded by Brian Foster/Florian
+>> Fainelli a while back. But since I don't have a good copy of the other
+>> one, I'll take this.
+>
+>  This looks Ok to me.
+>  Apologies for not sending a =93good copy=94
+>  of the earlier one.  Sorry!
 
-> diff --git a/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
+No problem. Artem had replied about resending it inline (that is the
+typical way to review patches), but I was going to get around to
+applying it anyway.
 
-> -- gpios : specifies the gpio pins to control the NAND device.  nwp is an
-> -  optional gpio and may be set to 0 if not present.
-> +- ale-gpios : specifies the ALE gpio pin.
-> +- cle-gpios : specifies the CLE gpio pin.
-> +- nwp-gpios : specifies the NWP gpio pin (Optional).
-> +- nce-gpios : specifies the NCE gpio pin or several NCE GPIOs for multichip NAND.
-> +- rdy-gpios : specifies the RDY gpio pin or several RDY GPIOs for multichip NAND.
-
-Why not put the nwp-gpios into the "Optional properties" section of the
-document?
-
-Documenting the deprecated properties is good; thanks!
+Regards,
+Brian
