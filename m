@@ -1,20 +1,26 @@
-Received: from mail-pa0-f43.google.com ([209.85.220.43])
+Received: from mail-pb0-x232.google.com ([2607:f8b0:400e:c01::232])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VBd2V-0000of-4R
- for linux-mtd@lists.infradead.org; Tue, 20 Aug 2013 03:55:27 +0000
-Received: by mail-pa0-f43.google.com with SMTP id hz10so199330pad.30
- for <linux-mtd@lists.infradead.org>; Mon, 19 Aug 2013 20:55:02 -0700 (PDT)
-Date: Mon, 19 Aug 2013 20:54:58 -0700
+ id 1VBd5x-0000sP-FK
+ for linux-mtd@lists.infradead.org; Tue, 20 Aug 2013 03:59:02 +0000
+Received: by mail-pb0-f50.google.com with SMTP id uo5so5724169pbc.23
+ for <linux-mtd@lists.infradead.org>; Mon, 19 Aug 2013 20:58:40 -0700 (PDT)
+Date: Mon, 19 Aug 2013 20:58:36 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <shijie8@gmail.com>
-Subject: Re: Does this patch set affect your driver(drivers/mtd/nand/alauda.c)?
-Message-ID: <20130820035458.GC28421@norris.computersforpeace.net>
-References: <5210F132.8030306@gmail.com>
+To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
+Subject: Re: [PATCH v2] mtd: remove alauda driver
+Message-ID: <20130820035836.GD28421@norris.computersforpeace.net>
+References: <20130819145234.GB24136@logfs.org>
+ <CAFLxGvzbQH5v38NRinsphoyFHZMA5g680B2zWwd4YCYDVi715g@mail.gmail.com>
+ <20130819152831.GC24136@logfs.org>
+ <20130819153011.GD24136@logfs.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <5210F132.8030306@gmail.com>
-Cc: joern@logfs.org, linux-mtd@lists.infradead.org, dedekind1@gmail.com
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20130819153011.GD24136@logfs.org>
+Cc: richard -rw- weinberger <richard.weinberger@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Huang Shijie <shijie8@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,25 +30,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Aug 18, 2013 at 12:07:14PM -0400, Huang Shijie wrote:
-> Hi Joern:
+On Mon, Aug 19, 2013 at 11:30:12AM -0400, Jörn Engel wrote:
+> The driver has very low utility.  Devices in question are limited to
+> about 400kB/s and the only known user (me) discarded the hardware
+> several years back.
 > 
-> I have submitted a patch set to expose the ecc step size to the user space.
-> 
-> see:
-> http://lists.infradead.org/pipermail/linux-mtd/2013-August/048114.html
-> 
-> Since your driver does not set the ecc.size, nor calls the
-> nand_scan/nand_scan_ident/nand_scan_tail.
+> Signed-off-by: Joern Engel <joern@logfs.org>
 
-The real problem was that by default, we would expose ecc_step_size = 0
-for alauda.
-
-> I am not sure if this patch set affect your driver or not.
-> Please let me know if it does affect your driver.
-
-I see Joern submitted a patch for this driver's removal, so this
-point is now moot.
+Pushed to l2-mtd.git.
 
 Thanks,
 Brian
