@@ -1,18 +1,27 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VBgmm-0004j3-Fl
- for linux-mtd@lists.infradead.org; Tue, 20 Aug 2013 07:55:30 +0000
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 2/3] mtd: m25p80: make CONFIG_M25PXX_USE_FAST_READ safe to
- enable
-Date: Tue, 20 Aug 2013 09:54:40 +0200
-Message-Id: <1376985281-16293-3-git-send-email-s.hauer@pengutronix.de>
-In-Reply-To: <1376985281-16293-1-git-send-email-s.hauer@pengutronix.de>
-References: <1376985281-16293-1-git-send-email-s.hauer@pengutronix.de>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, kernel@pengutronix.de
+Received: from mga02.intel.com ([134.134.136.20])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VBksX-0002Vs-3c
+ for linux-mtd@lists.infradead.org; Tue, 20 Aug 2013 12:17:42 +0000
+Message-ID: <1377001384.2089.541.camel@sauron.fi.intel.com>
+Subject: Re: [RFC] mtd-utils: integck: add support for volume specific
+ power-cut test
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Mats =?ISO-8859-1?Q?K=E4rrman?= <Mats.Karrman@tritech.se>
+Date: Tue, 20 Aug 2013 15:23:04 +0300
+In-Reply-To: <ED3E0BCACD909541BA94A34C4A164D4C4FCDC77F@post.tritech.se>
+References: <ED3E0BCACD909541BA94A34C4A164D4C4FCDC571@post.tritech.se>
+ ,<1376919409.2089.463.camel@sauron.fi.intel.com>
+ <ED3E0BCACD909541BA94A34C4A164D4C4FCDC6D3@post.tritech.se>
+ <1376923842.2089.480.camel@sauron.fi.intel.com>
+ ,<1376924118.2089.482.camel@sauron.fi.intel.com>
+ <ED3E0BCACD909541BA94A34C4A164D4C4FCDC729@post.tritech.se>
+ ,<1376925394.2089.491.camel@sauron.fi.intel.com>
+ <ED3E0BCACD909541BA94A34C4A164D4C4FCDC77F@post.tritech.se>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,72 +31,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds a flag to struct flash_info indicating that
-fast_read is not supported. This now gives the following logic
-when determing whether to enable fastread:
+On Mon, 2013-08-19 at 15:37 +0000, Mats Kärrman wrote:
+> On Mon, 2013-08-19 at 15:16 +0000, Artem Bityutskiy wrote:
+> > OK, but there is also an "fstype" field, could you use and do the trick
+> > only for UBIFS?
+> 
+> I guess so, but there is also an alternative mounting syntax:
+> 
+> # mount -t ubifs ubi0:integ_chk /mnt/ubifs
+> 
+> resulting in a /proc/mounts line of:
+> 
+> ubi0:integ_chk /mnt/ubifs ubifs rw,relatime 0 0
 
-If the flash chip does not support fast_read, then disable it.
-Otherwise:
-1) enable fast_read if device node contains m25p,fast-read
-2) enable fast_read if forced in Kconfig
+OK, you are right. Here are all the possible ways to refer an UBI
+volume, from comments in the 'open_ubi()' function:
 
-This makes enabling CONFIG_M25PXX_USE_FAST_READ a safe option
-since we no longer enable the fast_read option unconditionally.
+ * o ubiX_Y    - mount UBI device number X, volume Y;
+ * o ubiY      - mount UBI device number 0, volume Y;
+ * o ubiX:NAME - mount UBI device X, volume with name NAME;
+ * o ubi:NAME  - mount UBI device 0, volume with name NAME.
 
-For now fast_read is disabled for the everspin mr25h256 and the
-catalyst devices. Others may need the flag aswell.
+> Do you see an easy way to resolve this into ubi0_0 or should this case
+> also be ignored?
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
- drivers/mtd/devices/m25p80.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+Not sure about the easy part, but, there is libubi in mtd-utils, and
+integck actually already uses it.
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 0b8672b..6f93d32 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -691,6 +691,7 @@ struct flash_info {
- #define	SECT_4K		0x01		/* OPCODE_BE_4K works uniformly */
- #define	M25P_NO_ERASE	0x02		/* No erase command needed */
- #define	SST_WRITE	0x04		/* use SST byte programming */
-+#define	M25P_NO_FR	0x08		/* Can't do fastread */
- };
- 
- #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
-@@ -741,7 +742,7 @@ static const struct spi_device_id m25p_ids[] = {
- 	{ "en25qh256", INFO(0x1c7019, 0, 64 * 1024, 512, 0) },
- 
- 	/* Everspin */
--	{ "mr25h256", CAT25_INFO(  32 * 1024, 1, 256, 2, M25P_NO_ERASE) },
-+	{ "mr25h256", CAT25_INFO(  32 * 1024, 1, 256, 2, M25P_NO_ERASE | M25P_NO_FR) },
- 
- 	/* GigaDevice */
- 	{ "gd25q32", INFO(0xc84016, 0, 64 * 1024,  64, SECT_4K) },
-@@ -856,11 +857,11 @@ static const struct spi_device_id m25p_ids[] = {
- 	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512, SECT_4K) },
- 
- 	/* Catalyst / On Semiconductor -- non-JEDEC */
--	{ "cat25c11", CAT25_INFO(  16, 8, 16, 1, M25P_NO_ERASE) },
--	{ "cat25c03", CAT25_INFO(  32, 8, 16, 2, M25P_NO_ERASE) },
--	{ "cat25c09", CAT25_INFO( 128, 8, 32, 2, M25P_NO_ERASE) },
--	{ "cat25c17", CAT25_INFO( 256, 8, 32, 2, M25P_NO_ERASE) },
--	{ "cat25128", CAT25_INFO(2048, 8, 64, 2, M25P_NO_ERASE) },
-+	{ "cat25c11", CAT25_INFO(  16, 8, 16, 1, M25P_NO_ERASE | M25P_NO_FR) },
-+	{ "cat25c03", CAT25_INFO(  32, 8, 16, 2, M25P_NO_ERASE | M25P_NO_FR) },
-+	{ "cat25c09", CAT25_INFO( 128, 8, 32, 2, M25P_NO_ERASE | M25P_NO_FR) },
-+	{ "cat25c17", CAT25_INFO( 256, 8, 32, 2, M25P_NO_ERASE | M25P_NO_FR) },
-+	{ "cat25128", CAT25_INFO(2048, 8, 64, 2, M25P_NO_ERASE | M25P_NO_FR) },
- 	{ },
- };
- MODULE_DEVICE_TABLE(spi, m25p_ids);
-@@ -1044,6 +1045,8 @@ static int m25p_probe(struct spi_device *spi)
- #ifdef CONFIG_M25PXX_USE_FAST_READ
- 	flash->fast_read = true;
- #endif
-+	if (info->flags & M25P_NO_FR)
-+		flash->fast_read = false;
- 
- 	/* Default commands */
- 	if (flash->fast_read)
+In libubi there are many useful helper functions which parse the ubi
+sysfs directory and fetch various kind of info from it.
+
+And you can use libubi for finding X_Y by NAME.
+
+And it is actually easy now, when I think about this. First, you find
+out the UBI device number, it is either X or 0 (let's call it 'ubinum').
+
+Then if you have name instead of the volume number (Y), you use libubi
+and resolve it like this:
+
+libubi_t libubi; 
+struct ubi_vol_info vol_info;
+
+libubi = libubi_open();
+if (!libubi) { blah-blah }
+
+err = ubi_get_vol_info1_nm(libubi, ubinum,  name, &vol_info);
+if (err) { blah-blah }
+
+And now you have volume ID (Y) in "vol_info.vol_id".
+
+And you construct the debugfs path.
+
+Hmm?
+
+> Personally I have never seen the use of multiple ubi volumes inside of
+> one mtd partition so "0" could be assumed but someone else might
+> disagree.
+
+Well... I'd be happier to see something like I proposed above, if you
+can submit such a patch.
+
 -- 
-1.8.4.rc3
+Best Regards,
+Artem Bityutskiy
