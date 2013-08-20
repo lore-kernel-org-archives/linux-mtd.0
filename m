@@ -1,28 +1,19 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VBlrw-0003zc-VQ
- for linux-mtd@lists.infradead.org; Tue, 20 Aug 2013 13:21:10 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>
-Subject: RE: [PATCH v5 0/4] mtd:nand:omap2: clean-up of supported ECC schemes
-Date: Tue, 20 Aug 2013 13:20:22 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9F781B@DBDE04.ent.ti.com>
-References: <1373748891-7779-1-git-send-email-pekon@ti.com>
-In-Reply-To: <1373748891-7779-1-git-send-email-pekon@ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: "arnd@arndb.de" <arnd@arndb.de>, "tony@atomide.com" <tony@atomide.com>,
- "devicetree-discuss@lists.ozlabs.org"
- <devicetree-discuss@lists.ozlabs.org>,
- "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>, "Balbi,
- Felipe" <balbi@ti.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "olof@lixom.net" <olof@lixom.net>,
- "benoit.cousson@linaro.org" <benoit.cousson@linaro.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Received: from mga03.intel.com ([143.182.124.21])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VBmFv-0004dB-Ek
+ for linux-mtd@lists.infradead.org; Tue, 20 Aug 2013 13:45:56 +0000
+Message-ID: <1377006661.2089.560.camel@sauron.fi.intel.com>
+Subject: Re: temporary files on mtd file systems
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Date: Tue, 20 Aug 2013 16:51:01 +0300
+In-Reply-To: <alpine.DEB.2.00.1308191539170.3183@lnxricardw.se.axis.com>
+References: <alpine.DEB.2.00.1308191539170.3183@lnxricardw.se.axis.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Linux mtd <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,66 +23,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgQXJ0ZW0sIEJyaWFuLA0KDQo+IA0KPiBDaGFuZ2VzIHY0IC0+IHY1DQo+IC0gUmViYXNlZCB0
-byBsaW51eC1uZXh0DQo+IElNUE9SVEFOVDogTmVlZCB0byByZXZlcnQgY29tbWl0IGZiMTU4NWIs
-IFtQQVRDSCAyLzRdIHBhcnQgb2YgcHJldmlvdXMNCj4gdmVyc2lvbg0KPiAJaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2xpbnV4LW10ZC8yMDEzLUp1bHkvMDQ3NDQxLmh0bWwN
-Cj4gDQo+IC0gU3dhcHBlZCBQQVRDSC0xICYgUEFUQ0gtMiB0byBtYWludGFpbiBiaXNlY3RpYmls
-aXR5ICYgY29tcGlsYXRpb24NCj4gZGVwZW5kZW5jeQ0KPiAJaHR0cDovL2xpc3RzLmluZnJhZGVh
-ZC5vcmcvcGlwZXJtYWlsL2xpbnV4LW10ZC8yMDEzLUp1bHkvMDQ3NDYxLmh0bWwNCj4gDQo+IC0g
-UEFUQ0gtMjogcmUtb3JkZXJlZCBjYWxsIHRvIGlzX2VsbV9wcmVzZW50KCkgZm9yIGxhdGVyIHVw
-ZGF0ZXMgRUxNIGRyaXZlcg0KPiAJLSBkcm9wcGVkIGNoYW5nZXMgaW4gaW5jbHVkZS9saW51eC9w
-bGF0Zm9ybV9kYXRhL2VsbS5oIChub3QNCj4gbmVlZGVkKQ0KPiAtIFBBVENILTM6IHJlLW9yZGVy
-ZWQgY2FsbCB0byBpc19lbG1fcHJlc2VudCgpIGZvciBsYXRlciB1cGRhdGVzIEVMTSBkcml2ZXIN
-Cj4gLSBSZS1mb3JtYXRlZCBwYXRjaCBkZXNjcmlwdGlvbiAocmVwbGFjZWQgdGFicyB3aXRoIHdo
-aXRlLXNwYWNlcykNCj4gDQo+IA0KPiBDaGFuZ2VzIHYzIC0+IHY0DQo+IChSZXNlbnQgd2l0aCBD
-QzogZGV2aWNldHJlZS1kaXNjdXNzQGxpc3RzLm96bGFicy5vcmcpDQo+IC0gW1BhdGNoIDEvM10g
-cmVtb3ZlZCBNVERfTkFORF9PTUFQX0JDSDggJg0KPiBNVERfTkFORF9PTUFQX0JDSDQgZnJvbSBu
-YW5kL0tjb25maWcNCj4gCUVDQyBzY2hlbWUgc2VsZWN0YWJsZSB2aWEgbmFuZCBEVCAobmFuZC1l
-Y2Mtb3B0KS4NCj4gLSBbKl0gcmViYXNlZCBmb3IgbDItbXRkLmdpdA0KPiANCj4gDQo+IENoYW5n
-ZXMgdjIgLT4gdjMNCj4gKFJlc2VudCB3aXRoIEF1dGhvciBOYW1lIGZpeGVkKQ0KPiAtIFBBVENI
-LTE6IHJlLWFycmFuZ2VkIGNvZGUgdG8gcmVtb3ZlIHJlZHVuZGFuY3ksIGFkZGVkDQo+IE5BTkRf
-QlVTV0lEVEhfQVVUTw0KPiAtIFBBVENILTI6IHVwZGF0ZWQgbmFuZC1lY2Mtb3B0IERUIG1hcHBp
-bmcgYW5kIERvY3VtZW50YXRpb24NCj4gLSBQQVRDSC0zOiBjb2RlLWNsZWFuaW5nICsgY2hhbmdl
-cyB0byBtYXRjaCBQQVRDSC0xDQo+IC0gUEFUQ0gtNCA8RFJPUFBFRD4gdXBkYXRlIERUIGF0dHJp
-YnV0ZSBmb3IgdGksbmFuZC1lY2Mtb3B0DQo+IAktIHJlY2VpdmVkIGZlZWRiYWNrIHRvIGtlZXAg
-RFQgbWFwcGluZyBpbmRlcGVuZGVudCBvZiBsaW51eGlzbQ0KPiAtIFBBVENILTQ6PE5FVz4gOiBB
-Uk06IGR0czogQU0zM3h4OiB1cGRhdGVkIGRlZmF1bHQgRUNDIHNjaGVtZSBpbiBuYW5kLQ0KPiBl
-Y2Mtb3B0DQo+IAktIGluZGVwZW5kZW50IHBhdGNoIGZvciBBTTMzNXgtZXZtLmR0cyB1cGRhdGUg
-YmFzZWQgb24gUEFUQ0gtMg0KPiANCj4gDQo+IENoYW5nZXMgdjEgLT4gdjINCj4gCWFkZGVkIAlb
-UEFUQ0ggMy80XSBhbmQgW1BBVENIIDQvNF0NCj4gDQo+IA0KPiBQYXRjaGVzIGluIHRoaXMgc2Vy
-aWVzOg0KPiBbUEFUQ0ggMS80XS0+W1BBVENIIHY1IDIvNF06IGNsZWFuLXVwIGFuZCBvcHRpbWl6
-YXRpb24gZm9yIHN1cHBvcnRlZCBFQ0MNCj4gc2NoZW1lcy4NCj4gW1BBVENIIDIvNF0tPltQQVRD
-SCB2NSAxLzRdOiBhZGQgc2VwYXJhdGUgRFQgb3B0aW9ucyBlYWNoIHN1cHBvcnRlZCBFQ0MNCj4g
-c2NoZW1lLg0KPiBbUEFUQ0ggMy80XTogdXBkYXRlIEJDSDQgRUNDIGltcGxlbWVudGF0aW9uICh1
-c2luZyBFTE0gb3IgdXNpbmcgbGliL2JjaC5oKQ0KPiBbUEFUQ0ggNC80XTogQVJNOiBkdHM6IEFN
-MzN4eDogdXBkYXRlZCBkZWZhdWx0IEVDQyBzY2hlbWUgaW4gbmFuZC1lY2MtDQo+IG9wdA0KPiAN
-Cj4gQWZ0ZXIgdGhpcyBwYXRjaCBzZXJpZXMsIG9tYXAyLW5hbmQgZHJpdmVyIHdpbGwgc3VwcG9y
-dHMgZm9sbG93aW5nIEVDQw0KPiBzY2hlbWVzOg0KPiArLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tKy0tLS0tLS0tLS0tLS0tLSstLS0tLS0tLS0tLS0tLS0rDQo+IHwgRUND
-IHNjaGVtZSAgICAgICAgICAgICAgICAgICAgICAgICAgICB8RUNDIGNhbGN1bGF0aW9ufEVycm9y
-IGRldGVjdGlvbnwNCj4gKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSst
-LS0tLS0tLS0tLS0tLS0rLS0tLS0tLS0tLS0tLS0tKw0KPiB8T01BUF9FQ0NfSEFNTUlOR19DT0RF
-X0RFRkFVTFQgICAgICAgICAgfFMvVyAgICAgICAgICAgIHxTL1cgICAgICAgICAgICB8DQo+IHxP
-TUFQX0VDQ19IQU1NSU5HX0NPREVfSFcgICAgICAgICAgICAgICB8SC9XIChHUE1DKSAgICAgfFMv
-VyAgICAgICAgICAgIHwNCj4gfE9NQVBfRUNDX0hBTU1JTkdfQ09ERV9IV19ST01DT0RFICAgICAg
-IHxIL1cgKEdQTUMpICAgICB8Uy9XDQo+IHwNCj4gKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLSstLS0tLS0tLS0tLS0tLS0rLS0tLS0tLS0tLS0tLS0tKw0KPiB8T01BUF9F
-Q0NfQkNINF9DT0RFX0hXX0RFVEVDVElPTl9TVyAgICAgfEgvVyAoR1BNQykgICAgIHxTL1cNCj4g
-KGxpYi9iY2guaCl8DQo+IHxPTUFQX0VDQ19CQ0g0X0NPREVfSFcgICAgICAgICAgICAgICAgICB8
-SC9XIChHUE1DKSAgICAgfEgvVyAoRUxNKSAgICAgIHwNCj4gKy0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLSstLS0tLS0tLS0tLS0tLS0rLS0tLS0tLS0tLS0tLS0tKw0KPiB8
-T01BUF9FQ0NfQkNIOF9DT0RFX0hXX0RFVEVDVElPTl9TVyAgICAgfEgvVyAoR1BNQykgICAgIHxT
-L1cNCj4gKGxpYi9iY2guaCl8DQo+IHxPTUFQX0VDQ19CQ0g4X0NPREVfSFcgICAgICAgICAgICAg
-ICAgICB8SC9XIChHUE1DKSAgICAgfEgvVyAoRUxNKSAgICAgIHwNCj4gKy0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSstLS0tLS0tLS0tLS0tLS0rLS0tLS0tLS0tLS0tLS0t
-Kw0KPiAtIFNlbGVjdGlvbiBvZiBPTUFQX0VDQ19CQ0h4X0NPREVfSFdfREVURUNUSU9OX1NXIHJl
-cXVpcmVzLA0KPiAJS2NvbmZpZzogQ09ORklHX01URF9OQU5EX0VDQ19CQ0g6IGVuYWJsZXMgUy9X
-IGJhc2VkIEJDSA0KPiBFQ0MgYWxnb3JpdGhtLg0KPiANCj4gLSBTZWxlY3Rpb24gb2YgT01BUF9F
-Q0NfQkNIeF9DT0RFX0hXIHJlcXVpcmVzLA0KPiAJS2NvbmZpZzogQ09ORklHX01URF9OQU5EX09N
-QVBfQkNIOiBlbmFibGVzIEVMTSBIL1cNCj4gbW9kdWxlLg0KPiANCg0KUmVxdWVzdCB0byBwbGVh
-c2UgcGljay11cCB0aGlzIHBhdGNoIHNlcmllcywgYXMgZm9sbG93aW5nIHR3byBtb3JlDQpwYXRj
-aCBzZXJpZXMgcXVldWVkIHVwIGRlcGVuZGluZyBvbiB0aGlzLg0KDQpodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9waXBlcm1haWwvbGludXgtbXRkLzIwMTMtSnVseS8wNDc1MzguaHRtbA0KDQpo
-dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9waXBlcm1haWwvbGludXgtbXRkLzIwMTMtSnVseS8w
-NDc1NjIuaHRtbA0KDQoNCndpdGggcmVnYXJkcywgcGVrb24NCg==
+On Mon, 2013-08-19 at 15:55 +0200, Ricard Wanderlof wrote:
+> Am I missing something here, or is there a "good" way to deal with this? 
+> Of course there are several cleanup scenarios that could be imagened, such 
+> as cleaning out all 'foo.*' files during boot for instance.
+> 
+> For applications that are not multi threaded, i.e. there may only be one 
+> process updating foo, one way is to use the same temporary file name each 
+> time, e.g. foo.temp. But things get awkward when using for instance glib, 
+> which has a nice g_file_set_contents() call, complete with temporary file 
+> handling and all, but which uses mkstemp as above to create the temporary 
+> file, so there is no easy way of telling glib what filename to use, short 
+> of rewriting a local function which indeed uses a constant temporary file 
+> name.
+
+Good question, the only thing which comes to my mind is that one could
+try to use extended attributes or 'standard' (chattr(1)) attributes.
+
+Something like having a special chattr which would indicate that the
+file is up-to-date. When you need to update the file atomically, you
+start with removing the attribute, syncing the file, then updating the
+file, then syncing it, then creating the attribute, and probably syncing
+too.
+
+-- 
+Best Regards,
+Artem Bityutskiy
