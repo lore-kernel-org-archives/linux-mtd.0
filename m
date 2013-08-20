@@ -1,14 +1,14 @@
-Received: from va3ehsobe004.messaging.microsoft.com ([216.32.180.14]
- helo=va3outboundpool.messaging.microsoft.com)
+Received: from co1ehsobe003.messaging.microsoft.com ([216.32.180.186]
+ helo=co1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VBf1U-0002FH-5q
- for linux-mtd@lists.infradead.org; Tue, 20 Aug 2013 06:02:34 +0000
+ id 1VBf1X-0002FM-Mi
+ for linux-mtd@lists.infradead.org; Tue, 20 Aug 2013 06:02:37 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH for mtd-utils 3/4] Use the mtd_type_is_nand_user() to check
- the nand
-Date: Tue, 20 Aug 2013 13:58:36 +0800
-Message-ID: <1376978317-28010-4-git-send-email-b32955@freescale.com>
+Subject: [PATCH for mtd-utils 2/4] mtd: mtd-abi: add a helper to detect the
+ nand type
+Date: Tue, 20 Aug 2013 13:58:35 +0800
+Message-ID: <1376978317-28010-3-git-send-email-b32955@freescale.com>
 In-Reply-To: <1376978317-28010-1-git-send-email-b32955@freescale.com>
 References: <1376978317-28010-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
@@ -24,34 +24,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use this helper to check if it is a nand (including the SLC/MLC).
+The helper is for user applications, and it is just a copy of
+the kernel helper: mtd_type_is_nand();
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- flash_otp_write.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ include/mtd/mtd-abi.h |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
 
-diff --git a/flash_otp_write.c b/flash_otp_write.c
-index eaca5e1..111318d 100644
---- a/flash_otp_write.c
-+++ b/flash_otp_write.c
-@@ -78,7 +78,7 @@ int main(int argc,char *argv[])
+diff --git a/include/mtd/mtd-abi.h b/include/mtd/mtd-abi.h
+index 4de167b..bcd7496 100644
+--- a/include/mtd/mtd-abi.h
++++ b/include/mtd/mtd-abi.h
+@@ -274,4 +274,9 @@ enum mtd_file_modes {
+ 	MTD_FILE_MODE_RAW,
+ };
  
- 	printf("Writing OTP user data on %s at offset 0x%"PRIxoff_t"\n", argv[2], offset);
- 
--	if (mtdInfo.type == MTD_NANDFLASH)
-+	if (mtd_type_is_nand_user(&mtdInfo))
- 		len = mtdInfo.writesize;
- 	else
- 		len = 256;
-@@ -97,7 +97,7 @@ int main(int argc,char *argv[])
- 		}
- 		p = buf;
- 		while (size > 0) {
--			if (mtdInfo.type == MTD_NANDFLASH) {
-+			if (mtd_type_is_nand_user(&mtdInfo)) {
- 				/* Fill remain buffers with 0xff */
- 				memset(buf + size, 0xff, mtdInfo.writesize - size);
- 				size = mtdInfo.writesize;
++static inline int mtd_type_is_nand_user(const struct mtd_info_user *mtd)
++{
++	return mtd->type == MTD_NANDFLASH || mtd->type == MTD_MLCNANDFLASH;
++}
++
+ #endif /* __MTD_ABI_H__ */
 -- 
 1.7.1
