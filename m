@@ -1,13 +1,13 @@
-Received: from mail-db9lp0249.outbound.messaging.microsoft.com
- ([213.199.154.249] helo=db9outboundpool.messaging.microsoft.com)
+Received: from va3ehsobe004.messaging.microsoft.com ([216.32.180.14]
+ helo=va3outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VBet3-00028g-8Y
- for linux-mtd@lists.infradead.org; Tue, 20 Aug 2013 05:53:50 +0000
+ id 1VBf1R-0002FH-BI
+ for linux-mtd@lists.infradead.org; Tue, 20 Aug 2013 06:02:30 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [mtd-utils 0/4] about the SLC/MLC
-Date: Tue, 20 Aug 2013 13:48:30 +0800
-Message-ID: <1376977714-21767-1-git-send-email-b32955@freescale.com>
+Subject: [PATCH for mtd-utils 0/4] about the SLC/MLC
+Date: Tue, 20 Aug 2013 13:58:33 +0800
+Message-ID: <1376978317-28010-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
@@ -27,6 +27,10 @@ Please see:
 
 This patch set tries to make the mtd-utils still runs in the _old_ logic
 after we changed the code in kernel.
+
+(The maillist blocks my email for the suspicious header, so i changed the
+ title and resend it.)
+
 
 Huang Shijie (4):
   add the MTD_MLCNANDFLASH case
