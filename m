@@ -1,23 +1,21 @@
-Received: from arrakis.dune.hu ([78.24.191.176])
+Received: from mail-out.m-online.net ([212.18.0.10])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VC5Gp-0005rC-1Z
- for linux-mtd@lists.infradead.org; Wed, 21 Aug 2013 10:04:07 +0000
-Date: Wed, 21 Aug 2013 12:03:22 +0200
-From: Luka Perkov <luka@openwrt.org>
+ id 1VC8Ba-00020u-BJ
+ for linux-mtd@lists.infradead.org; Wed, 21 Aug 2013 13:11:01 +0000
+From: Marek Vasut <marex@denx.de>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v2] mtd: m25p80: add support for PMC SPI flash
-Message-ID: <20130821100322-1880@mutt-kz>
-References: <1376783055-18370-1-git-send-email-luka@openwrt.org>
- <CAN8TOE9PreuyaDHHPeHaB0906c6T=-Vz76By-PmX2whAdMWjgA@mail.gmail.com>
+Subject: Re: [RESEND][PATCH] mtd: chips: Add support for PMC SPI Flash chips
+ in m25p80.c
+Date: Wed, 21 Aug 2013 15:10:08 +0200
+References: <51E3CB64.4080107@wanadoo.fr> <201308211007.18051.marex@denx.de>
+ <20130821083000.GD31788@brian-ubuntu>
+In-Reply-To: <20130821083000.GD31788@brian-ubuntu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAN8TOE9PreuyaDHHPeHaB0906c6T=-Vz76By-PmX2whAdMWjgA@mail.gmail.com>
-Cc: Marek =?utf-8?B?VmHFoXV0?= <marex@denx.de>,
- Michel Stempin <michel.stempin@wanadoo.fr>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Gabor Juhos <juhosg@openwrt.org>
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201308211510.08341.marex@denx.de>
+Cc: linux-mtd@lists.infradead.org, Michel Stempin <michel.stempin@wanadoo.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,16 +27,40 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Brian,
 
-On Wed, Aug 21, 2013 at 02:12:42AM -0700, Brian Norris wrote:
-> I just noticed this version of Michel's patch (it was filtered to my
-> spam for some reason). I pushed Michel's version,
+> On Wed, Aug 21, 2013 at 10:07:17AM +0200, Marek Vasut wrote:
+> > > On Wed, Aug 21, 2013 at 09:41:38AM +0200, Marek Vasut wrote:
+> > > > > + Marek, since he's been reviewing (with dismay?) the increase in
+> > > > > macro flags in this driver. If there are any objections, I can
+> > > > > amend/drop the patch.
+> > > > 
+> > > > Hmmm ... this SECT_4K_PMC seems too combined to me. Why don't we use
+> > > > the SECT_4K flag and another flag to indicate it's a PMC part? Even
+> > > > better, I recall you can
+> > > 
+> > > Separating manufacturer from SECT_4K sounds good, but it really doesn't
+> > > buy us much. See my next comments.
+> > 
+> > I see, that's really bad news. Thanks for the explanation!
+> > 
+> > I guess there really is nothing much we can do about such parts. But then
+> > if we take device tree probe into consideration, we might actually want
+> > to match the part name to discern the PMS device. Or am I talking
+> > complete nonsense?
+> 
+> I don't think the device tree probe really gives us anything different
+> than the platform_device probe (a non-JEDEC device can be matched via
+> device-tree "compatible" property or via platform_device "name"
+> property, I think?). So in either case, are you suggesting a string
+> comparison for "pm25" on the spi_device_id.name field? Seems a bit
+> like nonsense :)
 
-Ok, I have only changed commit message.
+Yeah, you're right.
 
-> but Marek and we are still discussing it. If it comes down to changing
-> anything, perhaps i can update with your minor changes. But I will leave them
-> out for now.
+> Additionally, this still doesn't solve the problem that the old PMC
+> chips need the special opcode, but the newer one doesn't.
 
-Let me know if you need anything.
+One would have to match the full part name, but that's already happening. Please 
+ignore me, I had my coffee only now.
 
-Luka
+Best regards,
+Marek Vasut
