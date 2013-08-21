@@ -1,18 +1,22 @@
-From: =?utf-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] alauda: do not use stack for URB transfer_buffers
-References: <20130806120329.8864.36301.stgit@localhost6.localdomain6>
- <20130821073028.GB31788@brian-ubuntu>
-Date: Wed, 21 Aug 2013 09:59:27 +0200
-In-Reply-To: <20130821073028.GB31788@brian-ubuntu> (Brian Norris's message of
- "Wed, 21 Aug 2013 00:30:28 -0700")
-Message-ID: <87li3v79uo.fsf@nemi.mork.no>
+Received: from mx7.zte.com.cn ([202.103.147.169] helo=zte.com.cn)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VC3QM-0002Wn-Q5
+ for linux-mtd@lists.infradead.org; Wed, 21 Aug 2013 08:05:52 +0000
+Received: from mse02.zte.com.cn (unknown [10.30.3.21])
+ by Websense Email Security Gateway with ESMTPS id A8746725FF1
+ for <linux-mtd@lists.infradead.org>; Wed, 21 Aug 2013 16:04:58 +0800 (CST)
+Received: from notes_smtp.zte.com.cn ([10.30.1.239])
+ by mse02.zte.com.cn with ESMTP id r7L84si9079218
+ for <linux-mtd@lists.infradead.org>; Wed, 21 Aug 2013 16:04:54 +0800 (GMT-8)
+ (envelope-from wang.bo116@zte.com.cn)
+Subject: UBIFS mount fail after power off
+To: linux-mtd@lists.infradead.org
+Message-ID: <OF495369FB.DE378F84-ON48257BCE.000CDA34-48257BCE.002C6696@zte.com.cn>
+From: wang.bo116@zte.com.cn
+Date: Wed, 21 Aug 2013 16:04:57 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Jussi Kivilinna <jussi.kivilinna@iki.fi>, Joern Engel <joern@logfs.org>,
- linux-usb@vger.kernel.org, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>
+Content-type: text/plain; charset=GB2312
+Content-transfer-encoding: base64
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,28 +26,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Brian Norris <computersforpeace@gmail.com> writes:
-> On Tue, Aug 06, 2013 at 03:03:29PM +0300, Jussi Kivilinna wrote:
->> Patch fixes alauda not to use stack as URB transfer_buffer. URB buffers =
-need to
->> be DMA-able, which stack is not.
->>=20
->> Patch is only compile tested.
->>=20
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Jussi Kivilinna <jussi.kivilinna@iki.fi>
->> ---
->>  drivers/mtd/nand/alauda.c |   74 ++++++++++++++++++++++++++++++++++----=
--------
->>  1 file changed, 56 insertions(+), 18 deletions(-)
->
-> Just FYI, this driver is being removed, so I'm obviously not taking this
-> patch :)
-
-I think you should apply it anyway. The driver is still in v3.11 AFAICS,
-and the patch should also go to the maintained stable kernels. You
-cannot remove the driver from them, and I don't see a later driver
-removal as a valid reason not to fix a known bug with a patch.
-
-
-Bj=C3=B8rn
+DQpIaSwNCglBZnRlciByZWJvb3QgZHVyaW5nIGRvIHdyaXRlIHRlc3QgaW4gVUJJRlOjrHdoZW4g
+bW91bnQgVUJJRlMgYWdhaW4sIHViaWZzIG1vdW50IGZhaWwuDQpUaGUga2VybmVsIHZlcnNpb24g
+aXMgMi42LjMyLCBhbmQgVUJJRlMgaGFzIGFscmVhZHkgbWVyZ2UgcmVjZW50IHBhdGNocy4gVW5m
+b3J0dW5hdGUgdGhlIGZsYXNoIGltYWdlIGlzIGxvc2UuDQoNClRoZSBrZXJuZWwgbG9ncyBhcmUg
+YmVsb3c6DQoNCiAwOjw1PlVCSTogYXR0YWNoaW5nIG10ZDAgdG8gdWJpMA0KICAwOjw3PlVCSSBE
+QkcgKHBpZCA4MDApOiB1YmlfYXR0YWNoX210ZF9kZXY6IHNpemVvZihzdHJ1Y3QgdWJpX2FpbmZf
+cGViKSA1Ng0KICAwOjw3PlVCSSBEQkcgKHBpZCA4MDApOiB1YmlfYXR0YWNoX210ZF9kZXY6IHNp
+emVvZihzdHJ1Y3QgdWJpX3dsX2VudHJ5KSAzMg0KICAwOjw3PlVCSSBEQkcgKHBpZCA4MDApOiBp
+b19pbml0OiBtaW5faW9fc2l6ZSAgICAgIDENCiAgMDo8Nz5VQkkgREJHIChwaWQgODAwKTogaW9f
+aW5pdDogaGRyc19taW5faW9fc2l6ZSAxDQogIDA6PDc+VUJJIERCRyAocGlkIDgwMCk6IGlvX2lu
+aXQ6IGVjX2hkcl9hbHNpemUgICAgNjQNCiAgMDo8Nz5VQkkgREJHIChwaWQgODAwKTogaW9faW5p
+dDogdmlkX2hkcl9hbHNpemUgICA2NA0KICAwOjw3PlVCSSBEQkcgKHBpZCA4MDApOiBpb19pbml0
+OiB2aWRfaGRyX29mZnNldCAgIDY0DQogIDA6PDc+VUJJIERCRyAocGlkIDgwMCk6IGlvX2luaXQ6
+IHZpZF9oZHJfYWxvZmZzZXQgNjQNCiAgMDo8Nz5VQkkgREJHIChwaWQgODAwKTogaW9faW5pdDog
+dmlkX2hkcl9zaGlmdCAgICAwDQogIDA6PDc+VUJJIERCRyAocGlkIDgwMCk6IGlvX2luaXQ6IGxl
+Yl9zdGFydCAgICAgICAgMTI4DQogIDA6PDc+VUJJIERCRyAocGlkIDgwMCk6IGlvX2luaXQ6IG1h
+eF9lcnJvbmVvdXMgICAgMzcxDQogIDA6PDU+VUJJOiBwaHlzaWNhbCBlcmFzZWJsb2NrIHNpemU6
+ICAgMTMxMDcyIGJ5dGVzICgxMjggS2lCKQ0KICAwOjw1PlVCSTogbG9naWNhbCBlcmFzZWJsb2Nr
+IHNpemU6ICAgIDEzMDk0NCBieXRlcw0KICAwOjw1PlVCSTogc21hbGxlc3QgZmxhc2ggSS9PIHVu
+aXQ6ICAgIDENCiAgMDo8NT5VQkk6IFZJRCBoZWFkZXIgb2Zmc2V0OiAgICAgICAgICA2NCAoYWxp
+Z25lZCA2NCkNCiAgMDo8NT5VQkk6IGRhdGEgb2Zmc2V0OiAgICAgICAgICAgICAgICAxMjgNCiAg
+MDo8Nz5VQkkgREJHIChwaWQgODAwKTogc2Nhbl9hbGw6IHNjYW5uaW5nIGlzIGZpbmlzaGVkDQog
+IDA6PDU+VUJJOiBtYXguIHNlcXVlbmNlIG51bWJlcjogICAgICAgNDM4MDEyDQogIDA6PDQ+VUJJ
+IHdhcm5pbmc6IHByb2Nlc3NfbHZvbDogdm9sdW1lIHRhYmxlIGNvcHkgIzEgaXMgY29ycnVwdGVk
+DQogIDA6PDU+VUJJOiBjcmVhdGUgdm9sdW1lIHRhYmxlIChjb3B5ICMxKQ0KICAwOjw1PlVCSTog
+dm9sdW1lIHRhYmxlIHdhcyByZXN0b3JlZA0KICAwOjw1PlVCSTogYXR0YWNoZWQgbXRkMCB0byB1
+YmkwDQogIDA6PDU+VUJJOiBNVEQgZGV2aWNlIG5hbWU6ICAgICAgICAgICAgIlVCSSINCiAgMDo8
+NT5VQkk6IE1URCBkZXZpY2Ugc2l6ZTogICAgICAgICAgICA0NjQgTWlCDQogIDA6PDU+VUJJOiBu
+dW1iZXIgb2YgZ29vZCBQRUJzOiAgICAgICAgMzcxMg0KICAwOjw1PlVCSTogbnVtYmVyIG9mIGJh
+ZCBQRUJzOiAgICAgICAgIDANCiAgMDo8NT5VQkk6IG51bWJlciBvZiBjb3JydXB0ZWQgUEVCczog
+ICAwDQogIDA6PDU+VUJJOiBtYXguIGFsbG93ZWQgdm9sdW1lczogICAgICAgMTI4DQogIDA6PDU+
+VUJJOiB3ZWFyLWxldmVsaW5nIHRocmVzaG9sZDogICAgNDA5Ng0KICAwOjw1PlVCSTogbnVtYmVy
+IG9mIGludGVybmFsIHZvbHVtZXM6IDENCiAgMDo8NT5VQkk6IG51bWJlciBvZiB1c2VyIHZvbHVt
+ZXM6ICAgICAxDQogIDA6PDU+VUJJOiBhdmFpbGFibGUgUEVCczogICAgICAgICAgICAgMTAyNQ0K
+ICAwOjw1PlVCSTogdG90YWwgbnVtYmVyIG9mIHJlc2VydmVkIFBFQnM6IDI2ODcNCiAgMDo8NT5V
+Qkk6IG51bWJlciBvZiBQRUJzIHJlc2VydmVkIGZvciBiYWQgUEVCIGhhbmRsaW5nOiAwDQogIDA6
+PDU+VUJJOiBtYXgvbWVhbiBlcmFzZSBjb3VudGVyOiAxMDU2LzIyOA0KICAwOjw1PlVCSTogaW1h
+Z2Ugc2VxdWVuY2UgbnVtYmVyOiAgMA0KICAwOjw1PlVCSTogYmFja2dyb3VuZCB0aHJlYWQgInVi
+aV9iZ3QwZCIgc3RhcnRlZCwgUElEIDgxNA0KVUJJIGRldmljZSBudW1iZXIgMCwgdG90YWwgMzcx
+MiBMRUJzICg0ODYwNjQxMjggYnl0ZXMsIDQ2My41IE1pQiksIGF2YWlsYWJsZSAxMDI1IExFQnMg
+KDEzNDIxNzYwICAwOjw3PlVCSUZTIERCRyAocGlkIDgxNik6IHViaWZzX2JnX3RocmVhZDogYmFj
+a2dyb3VuZCB0aHJlYWQgInViaWZzX2JndDBfMCIgc3RhcnRlZCwgUElEIDgxNg0KMCBieXRlcywg
+MTI4LjAgTWlCKSwgTEVCIHNpemUgMTMwOTQ0IGJ5dGVzICgxMjcuOSBLaUIpDQpbQk9BUkRfQ1RS
+THxJTkZPIF0gdm9sdW1lICJ1YmkwXzAiIGlzIGFscmVhZHkgZXhpc3RlZCEuDQogIDA6PDU+VUJJ
+RlM6IHJlY292ZXJ5IG5lZWRlZA0KICAwOjwzPlVCSUZTIGVycm9yIChwaWQgODAwKTogdWJpZnNf
+cmVhZF9ub2RlOiBiYWQgbm9kZSB0eXBlICgyNTUgYnV0IGV4cGVjdGVkIDkpDQogIDA6PDM+VUJJ
+RlMgZXJyb3IgKHBpZCA4MDApOiB1Ymlmc19yZWFkX25vZGU6IGJhZCBub2RlIGF0IExFQiA0NDc6
+MTAyOTQ0LCBMRUIgbWFwcGluZyBzdGF0dXMgMA0KICAwOjwzPk5vdCBhIG5vZGUsIGZpcnN0IDI0
+IGJ5dGVzOiAgMDo8Mz4wMDAwMDAwMDogZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYg
+ZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgICAgICAgICAgICAgICAgICAg
+ICAgICAgIC4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLg0KICAwOkNhbGwgVHJhY2U6DQogIDA6Wzxm
+ZmZmZmZmZmMxNDZkMjE4Pl0gZHVtcF9zdGFjaysweDFjLzB4NTANCiAgMDpbPGZmZmZmZmZmYzEx
+ZjE5ZjA+XSB1Ymlmc19yZWFkX25vZGUrMHgxZjgvMHgzMTgNCiAgMDpbPGZmZmZmZmZmYzEyMTU5
+NmM+XSB1Ymlmc19sb2FkX3pub2RlKzB4YWMvMHg2YjANCiAgMDpbPGZmZmZmZmZmYzExZjM5MWM+
+XSBsb29rdXBfbGV2ZWwwX2RpcnR5KzB4MTg0LzB4MmI4DQogIDA6WzxmZmZmZmZmZmMxMWY2YjVj
+Pl0gdWJpZnNfdG5jX2FkZCsweDZjLzB4MTU4DQogIDA6WzxmZmZmZmZmZmMxMWZiMDg0Pl0gdWJp
+ZnNfcmVwbGF5X2pvdXJuYWwrMHhkZGMvMHgxNjc4DQogIDA6WzxmZmZmZmZmZmMxMWVjZTRjPl0g
+dWJpZnNfZ2V0X3NiKzB4ZjY0LzB4MWI0OA0KICAwOls8ZmZmZmZmZmZjMTEyNGVmYz5dIHZmc19r
+ZXJuX21vdW50KzB4NjQvMHgxMDANCiAgMDpbPGZmZmZmZmZmYzExMjUwMjg+XSBkb19rZXJuX21v
+dW50KzB4NTgvMHgxNTANCiAgMDpbPGZmZmZmZmZmYzExNDc1M2M+XSBkb19tb3VudCsweDFmNC8w
+eDg0MA0KICAwOls8ZmZmZmZmZmZjMTE3YTZiYz5dIGNvbXBhdF9zeXNfbW91bnQrMHhhYy8weDI5
+OA0KICAwOls8ZmZmZmZmZmZjMTAyZWIyND5dIGhhbmRsZV9zeXNuMzIrMHg0NC8weDg4DQogIDA6
+DQogIDA6PDc+VUJJRlMgREJHIChwaWQgODE2KTogdWJpZnNfYmdfdGhyZWFkOiBiYWNrZ3JvdW5k
+IHRocmVhZCAidWJpZnNfYmd0MF8wIiBzdG9wcw0KDQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0NCg0KSSB0aGluayBhIHBvc3NpYmxlIHJlYXNvbiBpcyBvbmUgaW5k
+ZXgtTEVCKDQ0NykgaXMgYmVlbiBpbmNvcnJlY3QgdW5tYXBlZChMRUIgbWFwcGluZyBzdGF0dXMg
+MCkuIEJ1dCBpIGRvbiBub3Qga25vdyBob3cgdGhpcyBjYW4gaGFwcGVuLg0KVUJJRlMgYWx3YXlz
+IHJlc2VydmUgb2xkIGluZGV4IG5vZGVzIGZvciByZWNvdmVyeSwgdW50aWwgdGhlIGNvbW1pdCBp
+cyBzdWNjZXNzLCBzbyB3aGVuIGFuIHVuY2xlYW4gcmVib290IGhhcHBlbiBkdXJpbmdjb21taXQg
+LA0KaSB0aGluayB0aGUgb2xkIGluZGV4IGFsd2F5cyBjYW4gYmUgZmluZCBpbiB0aGUgbmV4dCBt
+b3VudC4NCg0KSW4gYWRkaXRvbiwgdGhlIGxvZyBzaG93IHRoYXQgdGhlIFVCSSdzIHZvbHVtZSB0
+YWJsZSAxIGlzIGJlZW4gZGVzdHJveSwgaWYgdGhlIHVuY2xlYW4gcmVib290IGhhcHBlbiBpbiB3
+cml0ZSB2b2x1bWUgdGFibGUsDQppcyB0aGVyZSBzb21lIHJlYXNvbiBjYW4gbWFrZSB0aGUgVUJJ
+RlMncyBpbmRleC1MRUIgbG9zZT8NCg0KDQoNCg0K
