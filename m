@@ -1,23 +1,21 @@
-Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
+Received: from mail-ve0-f169.google.com ([209.85.128.169])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VBxIX-0004SZ-0D
- for linux-mtd@lists.infradead.org; Wed, 21 Aug 2013 01:33:22 +0000
-Received: by mail-pa0-f48.google.com with SMTP id kp13so177062pab.7
- for <linux-mtd@lists.infradead.org>; Tue, 20 Aug 2013 18:32:59 -0700 (PDT)
-Date: Tue, 20 Aug 2013 18:32:55 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Pekon Gupta <pekon@ti.com>
-Subject: Re: [PATCH v5 0/4] mtd:nand:omap2: clean-up of supported ECC schemes
-Message-ID: <20130821013255.GD28382@ld-irv-0074.broadcom.com>
-References: <1373748891-7779-1-git-send-email-pekon@ti.com>
+ id 1VBy72-0005Hc-1x
+ for linux-mtd@lists.infradead.org; Wed, 21 Aug 2013 02:25:32 +0000
+Received: by mail-ve0-f169.google.com with SMTP id db10so995489veb.28
+ for <linux-mtd@lists.infradead.org>; Tue, 20 Aug 2013 19:25:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1373748891-7779-1-git-send-email-pekon@ti.com>
-Cc: mugunthanvnm@ti.com, arnd@arndb.de, dedekind1@gmail.com, tony@atomide.com,
- avinashphilipk@gmail.com, balbi@ti.com, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org, olof@lixom.net, benoit.cousson@linaro.org,
- linux-omap@vger.kernel.org, dwmw2@infradead.org
+Date: Tue, 20 Aug 2013 19:25:06 -0700
+Message-ID: <CAN8TOE_8f_vhCAhRaBGXk9=F8=-2YtY5eSNgypSuxiL5z-B-=Q@mail.gmail.com>
+Subject: [Device-tree] mailing list responsiveness and discoverability
+From: Brian Norris <computersforpeace@gmail.com>
+To: Rob Herring <rob.herring@calxeda.com>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>, Stephen Warren <swarren@wwwdotorg.org>,
+ Ian Campbell <ian.campbell@citrix.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: devicetree@vger.kernel.org,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Linux Kernel <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,55 +25,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Pekon,
+Hello device tree maintainers,
 
-I don't think I will take this series (at least not yet), because of the
-device-tree ABI breakage.
+I (sub)maintain the Linux MTD subsystem and hang out on the
+linux-mtd@infradead.org mailing list. I have been seeing an increasing
+number of submissions that involve device-tree changes. Many of these
+changes are ill thought out and may even cause ABI breakage.
 
-On Sun, Jul 14, 2013 at 02:24:47AM +0530, Pekon Gupta wrote:
-> 
-> Changes v4 -> v5
-> - Rebased to linux-next 
-> IMPORTANT: Need to revert commit fb1585b, [PATCH 2/4] part of previous version
-> 	http://lists.infradead.org/pipermail/linux-mtd/2013-July/047441.html
-> 
-> - Swapped PATCH-1 & PATCH-2 to maintain bisectibility & compilation dependency
-> 	http://lists.infradead.org/pipermail/linux-mtd/2013-July/047461.html
-> 
-> - PATCH-2: re-ordered call to is_elm_present() for later updates ELM driver
-> 	- dropped changes in include/linux/platform_data/elm.h (not needed)
-> - PATCH-3: re-ordered call to is_elm_present() for later updates ELM driver
-> - Re-formated patch description (replaced tabs with white-spaces)
-> 
-> 
-> Changes v3 -> v4
-> (Resent with CC: devicetree-discuss@lists.ozlabs.org)
+According to discussions I've seen on LKML, you want to see better
+bindings merged into the kernel, and you want to maintain more control
+over the acceptance of bindings in general. However, I see a few
+problems that have inhibited this.
 
-Make sure to use devicetree@vger.kernel.org for future series.
+(1) Mailing list change: it just so happens that you recently moved
+your mailing list to @vger.kernel.org. Some people are still CC'ing
+the old one (if they CC any DT list at all). I'm not sure what can be
+done about this, exactly. Perhaps a forwarding rule + a warning
+response would have been better for a transition period, rather than
+just shutting down and rejecting from the old one.
 
-> - [Patch 1/3] removed MTD_NAND_OMAP_BCH8 & MTD_NAND_OMAP_BCH4 from nand/Kconfig
-> 	ECC scheme selectable via nand DT (nand-ecc-opt).
-> - [*] rebased for l2-mtd.git
-> 
-> 
-> Changes v2 -> v3
-> (Resent with Author Name fixed)
-> - PATCH-1: re-arranged code to remove redundancy, added NAND_BUSWIDTH_AUTO
-> - PATCH-2: updated nand-ecc-opt DT mapping and Documentation
-> - PATCH-3: code-cleaning + changes to match PATCH-1
-> - PATCH-4 <DROPPED> update DT attribute for ti,nand-ecc-opt 
-> 	- received feedback to keep DT mapping independent of linuxism
-> - PATCH-4:<NEW> : ARM: dts: AM33xx: updated default ECC scheme in nand-ecc-opt
-> 	- independent patch for AM335x-evm.dts update based on PATCH-2
-> 
-> 
-> Changes v1 -> v2
-> 	added 	[PATCH 3/4] and [PATCH 4/4]
+(2) Responsiveness: when we finally do CC devicetree@vger.kernel.org,
+I don't see much feedback, even for those which (when I get around to
+reviewing them myself) look like they have obvious issues that
+device-tree maintainers should care about.
 
-[...]
+(3) Archives: Archives for devicetree@vger.kernel.org are not easy to
+find. I recently subscribed to the mailing list, so general
+device-tree activity doesn't get lost in oblivion (to me). But if no
+one has done so yet, I'd like to see this mailing list archived on at
+least one of gmane (gmane has the old devicetree list and not the new
+one.), marc.info (I "devicetree" is this the new one?), etc. and
+linked at:
 
-You might also consider a future patch for utilizing devm_* functions
-for the probe/remove routines in drivers/mtd/nand/omap2.c. That could
-improve some of the stuff I looked at in this series.
+http://vger.kernel.org/vger-lists.html#devicetree
 
+(there are no listed archives as of this email)
+
+Admittedly, (2) is exacerbated by (1) when submitters send to the
+wrong address and don't bother correcting and resending, so maybe
+discoverability ((1) and (3)) is the only real issue.
+
+Thanks for considering my complaints.
+
+Regards,
 Brian
