@@ -1,25 +1,25 @@
-Received: from mail-pd0-x22d.google.com ([2607:f8b0:400e:c02::22d])
+Received: from mail-pb0-x22e.google.com ([2607:f8b0:400e:c01::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VBxC0-0004M6-Am
- for linux-mtd@lists.infradead.org; Wed, 21 Aug 2013 01:26:37 +0000
-Received: by mail-pd0-f173.google.com with SMTP id p10so1145377pdj.18
- for <linux-mtd@lists.infradead.org>; Tue, 20 Aug 2013 18:26:14 -0700 (PDT)
-Date: Tue, 20 Aug 2013 18:26:10 -0700
+ id 1VBxCV-0004N7-QV
+ for linux-mtd@lists.infradead.org; Wed, 21 Aug 2013 01:27:08 +0000
+Received: by mail-pb0-f46.google.com with SMTP id rq2so1088408pbb.33
+ for <linux-mtd@lists.infradead.org>; Tue, 20 Aug 2013 18:26:46 -0700 (PDT)
+Date: Tue, 20 Aug 2013 18:26:42 -0700
 From: Brian Norris <computersforpeace@gmail.com>
 To: Pekon Gupta <pekon@ti.com>
-Subject: Re: [PATCH v5 1/4] ARM: OMAP2+: cleaned-up DT support of various
- ECC schemes
-Message-ID: <20130821012610.GB28382@ld-irv-0074.broadcom.com>
+Subject: Re: [PATCH v5 2/4] mtd:nand:omap2: clean-up BCHx_HW and BCHx_SW
+ ECC configurations in device_probe
+Message-ID: <20130821012642.GC28382@ld-irv-0074.broadcom.com>
 References: <1373748891-7779-1-git-send-email-pekon@ti.com>
- <1373748891-7779-2-git-send-email-pekon@ti.com>
+ <1373748891-7779-3-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1373748891-7779-2-git-send-email-pekon@ti.com>
+In-Reply-To: <1373748891-7779-3-git-send-email-pekon@ti.com>
 Cc: mugunthanvnm@ti.com, arnd@arndb.de, dedekind1@gmail.com, tony@atomide.com,
- avinashphilipk@gmail.com, balbi@ti.com, devicetree@vger.kernel.org,
+ devicetree-discuss@lists.ozlabs.org, avinashphilipk@gmail.com, balbi@ti.com,
  linux-mtd@lists.infradead.org, olof@lixom.net, benoit.cousson@linaro.org,
- dwmw2@infradead.org
+ linux-omap@vger.kernel.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,13 +29,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Including the correct device-tree list.
-
-On Sun, Jul 14, 2013 at 02:24:48AM +0530, Pekon Gupta wrote:
+On Sun, Jul 14, 2013 at 02:24:49AM +0530, Pekon Gupta wrote:
 > ECC scheme on NAND devices can be implemented in multiple ways.Some using
 > Software algorithm, while others using in-build Hardware engines.
-> omap2-nand driver currently supports following flavours of ECC schemes,
-> selectable via DTB.
+> omap2-nand driver currently supports following flavours of ECC schemes.
 > 
 > +---------------------------------------+---------------+---------------+
 > | ECC scheme                            |ECC calculation|Error detection|
@@ -51,152 +48,39 @@ On Sun, Jul 14, 2013 at 02:24:48AM +0530, Pekon Gupta wrote:
 > |OMAP_ECC_BCH8_CODE_HW                  |H/W (GPMC)     |H/W (ELM)      |
 > +---------------------------------------+---------------+---------------+
 > 
-> Selection of some ECC schemes also require enabling following Kconfig options.
-> This was done to optimize footprint of omap2-nand driver.
-> -Kconfig:CONFIG_MTD_NAND_ECC_BCH	enables S/W based BCH ECC algorithm
-> -Kconfig:CONFIG_MTD_NAND_OMAP_BCH	enables H/W based BCH ECC algorithm
+> This patch
+> - separates the configurations for various ECC schemes.
+> - fixes dependency issues based on Kconfig options.
+> - cleans up redundant code
 > 
 > Signed-off-by: Pekon Gupta <pekon@ti.com>
 > ---
->  .../devicetree/bindings/mtd/gpmc-nand.txt          | 45 ++++++++++++++++------
->  arch/arm/mach-omap2/gpmc.c                         | 14 ++++---
->  include/linux/platform_data/mtd-nand-omap2.h       | 22 +++++++----
->  3 files changed, 57 insertions(+), 24 deletions(-)
+>  drivers/mtd/nand/omap2.c | 505 +++++++++++++++++++++++------------------------
+>  1 file changed, 249 insertions(+), 256 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-> index df338cb..c6551b6 100644
-> --- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-> @@ -17,17 +17,42 @@ Required properties:
->  
->  Optional properties:
->  
-> - - nand-bus-width: 		Set this numeric value to 16 if the hardware
-> -				is wired that way. If not specified, a bus
-> -				width of 8 is assumed.
-> + - nand-bus-width: 		Determines data-width of the connected device
-> +				x16 = "16"
-> +				x8  = "8" (default)
->  
-> - - ti,nand-ecc-opt:		A string setting the ECC layout to use. One of:
->  
-> -		"sw"		Software method (default)
-> -		"hw"		Hardware method
-> -		"hw-romcode"	gpmc hamming mode method & romcode layout
-> -		"bch4"		4-bit BCH ecc code
-> -		"bch8"		8-bit BCH ecc code
-> + - ti,nand-ecc-opt:		Determines the ECC scheme used by driver.
-> +				It can be any of the following strings:
-> +
-> +	"hamming_code_sw"		1-bit Hamming ECC
-> +					- ECC calculation in software
-> +					- Error detection in software
-> +
-> +	"hamming_code_hw"		1-bit Hamming ECC
-> +					- ECC calculation in hardware
-> +					- Error detection in software
-> +
-> +	"hamming_code_hw_romcode"	1-bit Hamming ECC
-> +					- ECC calculation in hardware
-> +					- Error detection in software
-> +					- ECC layout compatible to ROM code
-> +
-> +	"bch8_hw_code_detection_sw"	8-bit BCH ECC
-> +					- ECC calculation in hardware
-> +					- Error detection in software
-> +					- depends on CONFIG_MTD_NAND_ECC_BCH
-> +
-> +	"bch8_code_hw"             	8-bit BCH ECC
-> +					- ECC calculation in hardware
-> +					- Error detection in hardware
-> +					- depends on CONFIG_MTD_NAND_OMAP_BCH
-> +					- requires <elm_id> to be specified
+> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+> index daa3dfc..ea857cc 100644
+> --- a/drivers/mtd/nand/omap2.c
+> +++ b/drivers/mtd/nand/omap2.c
 
-I'm pretty sure this is an ABI breakage, which is now considered
-unacceptable. AFAIK, you can support new ECC types (or new aliases for
-old ones), but you can't remove/rename old ones.
+[...]
 
+> @@ -2075,11 +2066,13 @@ out_release_mem_region:
+>  		free_irq(info->gpmc_irq_fifo, info);
+>  	release_mem_region(info->phys_base, info->mem_size);
+>  out_free_info:
+> +	omap3_free_bch(&info->mtd);
+>  	kfree(info);
+>  
+>  	return err;
+>  }
+>  
 > +
-> +
-> + - elm_id:			Specifies elm device node. This is required to
-> +				support some BCH ECC schemes mentioned above.
-> +
->  
->   - ti,nand-xfer-type:		A string setting the data transfer type. One of:
->  
-> @@ -36,8 +61,6 @@ Optional properties:
->  		"prefetch-dma"		Prefetch enabled sDMA mode
->  		"prefetch-irq"		Prefetch enabled irq mode
->  
-> - - elm_id:	Specifies elm device node. This is required to support BCH
-> - 		error correction using ELM module.
->  
->  For inline partiton table parsing (optional):
->  
-> diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
-> index 1c7969e..e19de21 100644
-> --- a/arch/arm/mach-omap2/gpmc.c
-> +++ b/arch/arm/mach-omap2/gpmc.c
-> @@ -1342,11 +1342,13 @@ static void __maybe_unused gpmc_read_timings_dt(struct device_node *np,
->  #ifdef CONFIG_MTD_NAND
->  
->  static const char * const nand_ecc_opts[] = {
-> -	[OMAP_ECC_HAMMING_CODE_DEFAULT]		= "sw",
-> -	[OMAP_ECC_HAMMING_CODE_HW]		= "hw",
-> -	[OMAP_ECC_HAMMING_CODE_HW_ROMCODE]	= "hw-romcode",
-> -	[OMAP_ECC_BCH4_CODE_HW]			= "bch4",
-> -	[OMAP_ECC_BCH8_CODE_HW]			= "bch8",
-> +	[OMAP_ECC_HAMMING_CODE_DEFAULT]		= "hamming_code_sw",
-> +	[OMAP_ECC_HAMMING_CODE_HW]		= "hamming_code_hw",
-> +	[OMAP_ECC_HAMMING_CODE_HW_ROMCODE]	= "hamming_code_hw_romcode",
-> +	[OMAP_ECC_BCH4_CODE_HW]			= "bch4_code_hw",
-> +	[OMAP_ECC_BCH4_CODE_HW_DETECTION_SW]	= "bch4_code_hw_detection_sw",
-> +	[OMAP_ECC_BCH8_CODE_HW]			= "bch8_code_hw",
-> +	[OMAP_ECC_BCH8_CODE_HW_DETECTION_SW]	= "bch8_code_hw_detection_sw"
->  };
->  
->  static const char * const nand_xfer_types[] = {
-> @@ -1380,7 +1382,7 @@ static int gpmc_probe_nand_child(struct platform_device *pdev,
->  
->  	if (!of_property_read_string(child, "ti,nand-ecc-opt", &s))
->  		for (val = 0; val < ARRAY_SIZE(nand_ecc_opts); val++)
-> -			if (!strcasecmp(s, nand_ecc_opts[val])) {
-> +			if (!strcmp(s, nand_ecc_opts[val])) {
->  				gpmc_nand_data->ecc_opt = val;
->  				break;
->  			}
-> diff --git a/include/linux/platform_data/mtd-nand-omap2.h b/include/linux/platform_data/mtd-nand-omap2.h
-> index 6bf9ef4..ce74576 100644
-> --- a/include/linux/platform_data/mtd-nand-omap2.h
-> +++ b/include/linux/platform_data/mtd-nand-omap2.h
-> @@ -23,13 +23,21 @@ enum nand_io {
->  };
->  
->  enum omap_ecc {
-> -		/* 1-bit ecc: stored at end of spare area */
-> -	OMAP_ECC_HAMMING_CODE_DEFAULT = 0, /* Default, s/w method */
-> -	OMAP_ECC_HAMMING_CODE_HW, /* gpmc to detect the error */
-> -		/* 1-bit ecc: stored at beginning of spare area as romcode */
-> -	OMAP_ECC_HAMMING_CODE_HW_ROMCODE, /* gpmc method & romcode layout */
-> -	OMAP_ECC_BCH4_CODE_HW, /* 4-bit BCH ecc code */
-> -	OMAP_ECC_BCH8_CODE_HW, /* 8-bit BCH ecc code */
-> +	/* 1-bit  ECC calculation by Software, Error detection by Software */
-> +	OMAP_ECC_HAMMING_CODE_DEFAULT = 0,
-> +	/* 1-bit  ECC calculation by GPMC, Error detection by Software */
-> +	OMAP_ECC_HAMMING_CODE_HW,
-> +	/* 1-bit  ECC calculation by GPMC, Error detection by Software */
-> +	/* ECC layout compatible to legacy ROMCODE. */
-> +	OMAP_ECC_HAMMING_CODE_HW_ROMCODE,
-> +	/* 4-bit  ECC calculation by GPMC, Error detection by ELM */
-> +	OMAP_ECC_BCH4_CODE_HW,
-> +	/* 4-bit  ECC calculation by GPMC, Error detection by Software */
-> +	OMAP_ECC_BCH4_CODE_HW_DETECTION_SW,
-> +	/* 8-bit  ECC calculation by GPMC, Error detection by ELM */
-> +	OMAP_ECC_BCH8_CODE_HW,
-> +	/* 8-bit  ECC calculation by GPMC, Error detection by Software */
-> +	OMAP_ECC_BCH8_CODE_HW_DETECTION_SW
->  };
->  
->  struct gpmc_nand_regs {
+
+Extra blank line?
+
+>  static int omap_nand_remove(struct platform_device *pdev)
+>  {
+>  	struct mtd_info *mtd = platform_get_drvdata(pdev);
 
 Brian
