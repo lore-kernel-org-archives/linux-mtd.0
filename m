@@ -1,21 +1,17 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VC8Ba-00020u-BJ
- for linux-mtd@lists.infradead.org; Wed, 21 Aug 2013 13:11:01 +0000
-From: Marek Vasut <marex@denx.de>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [RESEND][PATCH] mtd: chips: Add support for PMC SPI Flash chips
- in m25p80.c
-Date: Wed, 21 Aug 2013 15:10:08 +0200
-References: <51E3CB64.4080107@wanadoo.fr> <201308211007.18051.marex@denx.de>
- <20130821083000.GD31788@brian-ubuntu>
-In-Reply-To: <20130821083000.GD31788@brian-ubuntu>
+Received: from tritech.se ([46.59.120.190])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VC8PW-0002T5-T0
+ for linux-mtd@lists.infradead.org; Wed, 21 Aug 2013 13:25:23 +0000
+From: =?iso-8859-1?Q?Mats_K=E4rrman?= <Mats.Karrman@tritech.se>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: [PATCH] ubifs: Correct data corruption range
+Date: Wed, 21 Aug 2013 13:24:49 +0000
+Message-ID: <ED3E0BCACD909541BA94A34C4A164D4C4FCDE5DF@post.tritech.se>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201308211510.08341.marex@denx.de>
-Cc: linux-mtd@lists.infradead.org, Michel Stempin <michel.stempin@wanadoo.fr>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,42 +21,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
-
-> On Wed, Aug 21, 2013 at 10:07:17AM +0200, Marek Vasut wrote:
-> > > On Wed, Aug 21, 2013 at 09:41:38AM +0200, Marek Vasut wrote:
-> > > > > + Marek, since he's been reviewing (with dismay?) the increase in
-> > > > > macro flags in this driver. If there are any objections, I can
-> > > > > amend/drop the patch.
-> > > > 
-> > > > Hmmm ... this SECT_4K_PMC seems too combined to me. Why don't we use
-> > > > the SECT_4K flag and another flag to indicate it's a PMC part? Even
-> > > > better, I recall you can
-> > > 
-> > > Separating manufacturer from SECT_4K sounds good, but it really doesn't
-> > > buy us much. See my next comments.
-> > 
-> > I see, that's really bad news. Thanks for the explanation!
-> > 
-> > I guess there really is nothing much we can do about such parts. But then
-> > if we take device tree probe into consideration, we might actually want
-> > to match the part name to discern the PMS device. Or am I talking
-> > complete nonsense?
-> 
-> I don't think the device tree probe really gives us anything different
-> than the platform_device probe (a non-JEDEC device can be matched via
-> device-tree "compatible" property or via platform_device "name"
-> property, I think?). So in either case, are you suggesting a string
-> comparison for "pm25" on the spi_device_id.name field? Seems a bit
-> like nonsense :)
-
-Yeah, you're right.
-
-> Additionally, this still doesn't solve the problem that the old PMC
-> chips need the special opcode, but the newer one doesn't.
-
-One would have to match the full part name, but that's already happening. Please 
-ignore me, I had my coffee only now.
-
-Best regards,
-Marek Vasut
+With power-cut emulation, it is possible that sometimes no data at all is=
+=0A=
+corrupted and that confusing messages are printed due to errors in the=0A=
+computation of data corruption range.=0A=
+=0A=
+[1] The start of the range should be [0..len-1], not [0..len].=0A=
+[2] The end of the range should always be at least 1 greater than the start=
+.=0A=
+=0A=
+Signed-off-by: Mats Karrman <mats.karrman@tritech.se>=0A=
+=0A=
+diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c=0A=
+index 6e025e0..cc1febd 100644=0A=
+--- a/fs/ubifs/debug.c=0A=
++++ b/fs/ubifs/debug.c=0A=
+@@ -2563,9 +2563,9 @@ static int corrupt_data(const struct ubifs_info *c, c=
+onst void *buf,=0A=
+ 	unsigned int from, to, ffs =3D chance(1, 2);=0A=
+ 	unsigned char *p =3D (void *)buf;=0A=
+ =0A=
+-	from =3D prandom_u32() % (len + 1);=0A=
+-	/* Corruption may only span one max. write unit */=0A=
+-	to =3D min(len, ALIGN(from, c->max_write_size));=0A=
++	from =3D prandom_u32() % len;=0A=
++	/* Corruption span max to end of write unit */=0A=
++	to =3D min(len, ALIGN(from + 1, c->max_write_size));=0A=
+ =0A=
+ 	ubifs_warn("filled bytes %u-%u with %s", from, to - 1,=0A=
+ 		   ffs ? "0xFFs" : "random data");=
