@@ -1,25 +1,21 @@
-Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
+Received: from mail-pd0-x235.google.com ([2607:f8b0:400e:c02::235])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VCajz-0000Pv-AO
- for linux-mtd@lists.infradead.org; Thu, 22 Aug 2013 19:40:20 +0000
-Received: by mail-pa0-f52.google.com with SMTP id kq13so2561974pab.11
- for <linux-mtd@lists.infradead.org>; Thu, 22 Aug 2013 12:39:57 -0700 (PDT)
-Date: Thu, 22 Aug 2013 12:39:49 -0700
+ id 1VCani-0000Y2-Pz
+ for linux-mtd@lists.infradead.org; Thu, 22 Aug 2013 19:44:11 +0000
+Received: by mail-pd0-f181.google.com with SMTP id g10so2287110pdj.40
+ for <linux-mtd@lists.infradead.org>; Thu, 22 Aug 2013 12:43:49 -0700 (PDT)
+Date: Thu, 22 Aug 2013 12:43:45 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Libo Chen <clbchenlibo.chen@huawei.com>
-Subject: Re: [PATCH RESEND 1/2] mtd: bcm47: convert kzalloc to avoid
- invalid access
-Message-ID: <20130822193949.GA14837@ld-irv-0074.broadcom.com>
-References: <51A6B7D4.7040202@huawei.com>
+To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Subject: Re: [RFC][PATCH] mtd: bcm47xxsflash: writing support
+Message-ID: <20130822194345.GB14837@ld-irv-0074.broadcom.com>
+References: <1369226342-20102-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <51A6B7D4.7040202@huawei.com>
-Cc: Bill Pemberton <wfp5p@virginia.edu>, artem.bityutskiy@linux.intel.com,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- LKML <linux-kernel@vger.kernel.org>,
- Andy Shevchenko <andy.shevchenko@gmail.com>, Li Zefan <lizefan@huawei.com>,
- linux-mtd@lists.infradead.org, hauke@hauke-m.de, dwmw2@infradead.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1369226342-20102-1-git-send-email-zajec5@gmail.com>
+Cc: Hauke Mehrtens <hauke@hauke-m.de>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,17 +25,169 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, May 30, 2013 at 10:22:12AM +0800, Libo Chen wrote:
-> 
-> mtd is just member of bcm47xxsflash, so we should free bcm47xxsflash not its member.
-> So I use devm_kazlloc instead of kazlloc to avoid it.
-> 
-> * Changelog:
->    convert to devm_kzalloc
-> 
-> Signed-off-by: Libo chen <libo.chen@huawei.com>
-> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Hi Rafal,
 
-Resolved a conflict and pushed to l2-mtd.git. Thanks!
+On Wed, May 22, 2013 at 02:39:02PM +0200, Rafał Miłecki wrote:
+> ---
+>  drivers/mtd/devices/bcm47xxsflash.c |  130 +++++++++++++++++++++++++++++++++--
+>  1 file changed, 126 insertions(+), 4 deletions(-)
+
+Can I get a 'Signed-off-by'? Otherwise, is this patch good to go?
+
+> 
+> diff --git a/drivers/mtd/devices/bcm47xxsflash.c b/drivers/mtd/devices/bcm47xxsflash.c
+> index c485d96..effe624 100644
+> --- a/drivers/mtd/devices/bcm47xxsflash.c
+> +++ b/drivers/mtd/devices/bcm47xxsflash.c
+> @@ -116,6 +116,127 @@ static int bcm47xxsflash_read(struct mtd_info *mtd, loff_t from, size_t len,
+>  	return len;
+>  }
+>  
+> +static int bcm47xxsflash_write_st(struct mtd_info *mtd, u32 offset, size_t len,
+> +				  const u_char *buf)
+> +{
+> +	struct bcm47xxsflash *b47s = mtd->priv;
+> +	int written = 0;
+> +
+> +	/* Enable writes */
+> +	bcm47xxsflash_cmd(b47s, OPCODE_ST_WREN);
+> +
+> +	/* Write first byte */
+> +	b47s->cc_write(b47s, BCMA_CC_FLASHADDR, offset);
+> +	b47s->cc_write(b47s, BCMA_CC_FLASHDATA, *buf++);
+> +
+> +	/* Program page */
+> +	if (b47s->bcma_cc->core->id.rev < 20) {
+> +		bcm47xxsflash_cmd(b47s, OPCODE_ST_PP);
+> +		return 1; /* 1B written */
+> +	}
+> +
+> +	/* Program page and set CSA (on newer chips we can continue writing) */
+> +	bcm47xxsflash_cmd(b47s, OPCODE_ST_CSA | OPCODE_ST_PP);
+> +	offset++;
+> +	len--;
+> +	written++;
+> +
+> +	while (len > 0) {
+> +		/* Page boundary, another function call is needed */
+> +		if ((offset & 0xFF) == 0)
+> +			break;
+> +
+> +		bcm47xxsflash_cmd(b47s, OPCODE_ST_CSA | *buf++);
+> +		offset++;
+> +		len--;
+> +		written++;
+> +	}
+> +
+> +	/* All done, drop CSA & poll */
+> +	b47s->cc_write(b47s, BCMA_CC_FLASHCTL, 0);
+> +	udelay(1);
+> +	if (bcm47xxsflash_poll(b47s, HZ / 10))
+> +		pr_err("Flash rejected dropping CSA\n");
+> +
+> +	return written;
+> +}
+> +
+> +static int bcm47xxsflash_write_at(struct mtd_info *mtd, u32 offset, size_t len,
+> +				  const u_char *buf)
+> +{
+> +	struct bcm47xxsflash *b47s = mtd->priv;
+> +	u32 mask = b47s->blocksize - 1;
+> +	u32 page = (offset & ~mask) << 1;
+> +	u32 byte = offset & mask;
+> +	int written = 0;
+> +
+> +	/* If we don't overwrite whole page, read it to the buffer first */
+> +	if (byte || (len < b47s->blocksize)) {
+> +		int err;
+> +
+> +		b47s->cc_write(b47s, BCMA_CC_FLASHADDR, page);
+> +		bcm47xxsflash_cmd(b47s, OPCODE_AT_BUF1_LOAD);
+> +		/* 250 us for AT45DB321B */
+> +		err = bcm47xxsflash_poll(b47s, HZ / 1000);
+> +		if (err) {
+> +			pr_err("Timeout reading page 0x%X info buffer\n", page);
+> +			return err;
+> +		}
+> +	}
+> +
+> +	/* Change buffer content with our data */
+> +	while (len > 0) {
+> +		/* Page boundary, another function call is needed */
+> +		if (byte == b47s->blocksize)
+> +			break;
+> +
+> +		b47s->cc_write(b47s, BCMA_CC_FLASHADDR, byte++);
+> +		b47s->cc_write(b47s, BCMA_CC_FLASHDATA, *buf++);
+> +		bcm47xxsflash_cmd(b47s, OPCODE_AT_BUF1_WRITE);
+> +		len--;
+> +		written++;
+> +	}
+> +
+> +	/* Program page with the buffer content */
+> +	b47s->cc_write(b47s, BCMA_CC_FLASHADDR, page);
+> +	bcm47xxsflash_cmd(b47s, OPCODE_AT_BUF1_PROGRAM);
+> +
+> +	return written;
+> +}
+> +
+> +static int bcm47xxsflash_write(struct mtd_info *mtd, loff_t to, size_t len,
+> +			       size_t *retlen, const u_char *buf)
+> +{
+> +	struct bcm47xxsflash *b47s = mtd->priv;
+> +	int written;
+> +
+> +	/* Writing functions can return without writing all passed data, for
+> +	 * example when the hardware is too old or when we git page boundary.
+> +	 */
+> +	while (len > 0) {
+> +		switch (b47s->type) {
+> +		case BCM47XXSFLASH_TYPE_ST:
+> +			written = bcm47xxsflash_write_st(mtd, to, len, buf);
+> +			break;
+> +		case BCM47XXSFLASH_TYPE_ATMEL:
+> +			written = bcm47xxsflash_write_at(mtd, to, len, buf);
+> +			break;
+> +		default:
+> +			BUG_ON(1);
+> +		}
+> +		if (written < 0) {
+> +			pr_err("Error writing at offset 0x%llX\n", to);
+> +			return written;
+> +		}
+> +		to += (loff_t)written;
+> +		len -= written;
+> +		*retlen += written;
+> +		buf += written;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static void bcm47xxsflash_fill_mtd(struct bcm47xxsflash *b47s)
+>  {
+>  	struct mtd_info *mtd = &b47s->mtd;
+> @@ -123,16 +244,17 @@ static void bcm47xxsflash_fill_mtd(struct bcm47xxsflash *b47s)
+>  	mtd->priv = b47s;
+>  	mtd->name = "bcm47xxsflash";
+>  	mtd->owner = THIS_MODULE;
+> -	mtd->type = MTD_ROM;
+>  
+> -	/* TODO: implement writing support and verify/change following code */
+> -	mtd->flags = MTD_CAP_ROM;
+> +	mtd->type = MTD_NORFLASH;
+> +	mtd->flags = MTD_CAP_NORFLASH;
+>  	mtd->size = b47s->size;
+>  	mtd->erasesize = b47s->blocksize;
+> -	mtd->writebufsize = mtd->writesize = 1;
+> +	mtd->writesize = 1;
+> +	mtd->writebufsize = 1;
+>  
+>  	mtd->_erase = bcm47xxsflash_erase;
+>  	mtd->_read = bcm47xxsflash_read;
+> +	mtd->_write = bcm47xxsflash_write;
+>  }
+>  
+>  /**************************************************
 
 Brian
