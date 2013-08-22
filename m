@@ -1,21 +1,22 @@
 Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VCULY-0007G2-8l
- for linux-mtd@lists.infradead.org; Thu, 22 Aug 2013 12:50:41 +0000
-Date: Thu, 22 Aug 2013 13:50:13 +0100
+ id 1VCUpq-000891-82
+ for linux-mtd@lists.infradead.org; Thu, 22 Aug 2013 13:22:01 +0000
+Date: Thu, 22 Aug 2013 14:21:22 +0100
 From: Mark Brown <broonie@kernel.org>
-To: wangyuhang <wangyuhang2014@gmail.com>
-Message-ID: <20130822125013.GH26118@sirena.org.uk>
-References: <1376216630-5915-1-git-send-email-wangyuhang2014@gmail.com>
+To: Sourav Poddar <sourav.poddar@ti.com>
+Message-ID: <20130822132122.GK26118@sirena.org.uk>
+References: <1376216117-5864-1-git-send-email-wangyuhang2014@gmail.com>
+ <5216057F.4010900@ti.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="2+N3zU4ZlskbnZaJ"
+ protocol="application/pgp-signature"; boundary="M9YpAf2t6OxtMGzg"
 Content-Disposition: inline
-In-Reply-To: <1376216630-5915-1-git-send-email-wangyuhang2014@gmail.com>
-Subject: Re: [PATCH v3 2/2]spi: DUAL and QUAD support
-Cc: linux-abi@vger.kernel.org, linux-spi@vger.kernel.org,
- linux-mtd@lists.infradead.org, pekon@ti.com, sourav.poddar@ti.com,
- tpiepho@gmail.com
+In-Reply-To: <5216057F.4010900@ti.com>
+Subject: Re: [PATCH v3 1/2]spi: DUAL and QUAD support
+Cc: spi-devel-general@lists.sourceforge.net, tpiepho@gmail.com,
+ linux-mtd@lists.infradead.org, wangyuhang <wangyuhang2014@gmail.com>,
+ pekon@ti.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,66 +27,45 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---2+N3zU4ZlskbnZaJ
+--M9YpAf2t6OxtMGzg
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Aug 11, 2013 at 06:23:50PM +0800, wangyuhang wrote:
-> fix two things in previous patch
-> 1. Change the value of transfer bit macro(SPI_NBITS_SINGLE, SPI_NBITS_DUAL
->    SPI_NBITS_QUAD) to 0x01, 0x02 and 0x04 to match the actual wires in
->    spidev.h.
-> 2. To keep tx_nbits and rx_nbits in @spi_ioc_transfer compatible to exist=
-ed
->    binary in userspace, add SPI_SPIDEV_TRPBIT in Kconfig to make user sel=
-ect
->    appropriate spi_ioc_transfer.
+On Thu, Aug 22, 2013 at 06:05:11PM +0530, Sourav Poddar wrote:
+> On Sunday 11 August 2013 03:45 PM, wangyuhang wrote:
 
-This isn't really a good solution for the ABI - it's OK to remove
-support for features but it's not good to have the ABI vary depending on
-the kernel config.
+> >+		/* check transfer tx/rx_nbits:
+> >+		 * 1. keep the value is not out of single, dual and quad
+> >+		 * 2. keep tx/rx_nbits is contained by mode in spi_device
+> >+		 * 3. if SPI_3WIRE, tx/rx_nbits should be in single
+> >+		 */
 
-> @@ -86,6 +95,10 @@ struct spi_ioc_transfer {
->  	__u64		tx_buf;
->  	__u64		rx_buf;
-> =20
-> +#ifdef CONFIG_SPI_SPIDEV_TRPBIT
-> +	__u8		tx_nbits;
-> +	__u8		rx_nbits;
-> +#endif
+> Sorry for pitchin in a bit late on this.
+> I was trying to use this for my use case today. I realise this check
+> should be under...
 
-Instead of doing this I'd define a new structure like this:
+Can you send a patch for this please?
 
-	struct spi_ioc_ext_transfer {
-		struct spi_ioc_transfer core;
-		__u8		tx_nbits;
-		__u8		rx_nbits;
-	};
-
-(though this is going to get messy if we get more additions...).  I'm
-not sure there's a nice way of doing this though.
-
---2+N3zU4ZlskbnZaJ
+--M9YpAf2t6OxtMGzg
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.20 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSFgkBAAoJELSic+t+oim9O3oQAJ0oEPj0urEhkpjTdApfMFFA
-P8XVgEDmljxZ7uUO4c4TePkEZ2ttQX8YBNFe+F1JoHxQoxMLkFwwS0DZ+sBsynhy
-sH2mgwzI6NQvzvXkGuKRcBSdQx+b4MpSuKREC4B/xuuxEl25xE8nb2F8iwmnb3nu
-D9w7RYVt+LJOCVbGiRWwLD71NetT8M81A4lssvhbISIfVZtS9fMijyl/imTmQlMS
-5sj9stXSdBXe4LM/ZZ+qRjYs9kGm4XCjgAakCio6E44y0o6pGrMOyfmUZB1KIHgm
-pieyh4e6reNKG+tq/l3Je0QkqwT8REZcekIBKTcHhmqCoXsnTWaok45+7yZNmxzg
-MLoDXj1GWuCrAkPYsGAw4O7HaW241c1yU8og3TahBpRiN3d9Klv6GDL7DNC6zjqN
-FhmGo5e2b8bREKdOB+DKPC7HHdrcjIvqF44ZjCka6OVLJ2qjDo6RQE9Xp1N0jrLD
-ev53BI7fAbW+rxK+GHXbzjQuWnssqc0XerHXtXDk4ekhY7dzFtjKDKMeYW/mgQCl
-nTIBjuvUuJ31PdpErSC+uXFoVOr4ZJeOfAWgqNq1hf2JCbs6j2i5BbcYekwt9g0j
-riv25mPEXog1EQ+BBO0LnVQq/u3foucRuRAF/kZfk4nlulZPfIuoRc5wJC3osS7t
-dWsOu4WP1p3btBWWouHK
-=BKJY
+iQIcBAEBAgAGBQJSFhBPAAoJELSic+t+oim9bN8QAJgt6UCqMhttRR+GLj2aHBhW
+aVYW9LDa5mPMEi3HVCa5Snd8EuUGPwBkCw6xgTK/TU855HOZ8R5mOsQp2k1wLgxs
+ppM/w47opU2AaNGbjXO5aqcwMCQw90UqiFsCp+lkS5LPOhzG6CmQVwYaAfjYb6BO
+vT7jRUcUFElhefccLMMLJ/6rDuFceVA5p3lP7JJsyyW81m9n7y/TLhc47wHViYmX
+ZqfbsTmW0JF55AvdGXidz/aiJyUlZx8fLUQ6fF5xh4NBSWZvNIPcjABXnoswyALm
+IYtLs4ii8xMigxIW+jr13UkZ/t5v1BDI78t+2tUtzMATcZY8gFiQQN/BnmM55S5b
+41hde07h3npq9xlkJSxQrq5z6wAnGs7IANyqNtp+rintyYzQHtfsLcbQvrzjtPmF
+K+zM59t31cYDmK0i28ZDPWAfk/6e/0gNRM3Ee53AcuzGJEdqfxscpIYjQuKqpG+Q
+TfI7Zy0gTkImImt+odh7AHglMUvnO5821hZeNzBcDQ5S43uuNNhgzf/B1Ml7ru1G
+zMNI0BFv0w5ItJw5tU30AbddwV8AA9G7uK2kecyTS0zseyNJ2Sepi6ams9mg3jK5
+IbUklun4Ok+YE2JX/99oiQAD8+mxxa787PBchZtgMCB8feAGwPeEqYUKHIH+aO/C
+UEsr0NwNCmmCfb8l1VAr
+=v0k7
 -----END PGP SIGNATURE-----
 
---2+N3zU4ZlskbnZaJ--
+--M9YpAf2t6OxtMGzg--
