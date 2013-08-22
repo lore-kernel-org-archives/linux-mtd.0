@@ -1,17 +1,19 @@
-Received: from ikel.inah.gob.mx ([201.148.81.60])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VCQvq-0003I7-HF
- for linux-mtd@lists.infradead.org; Thu, 22 Aug 2013 09:11:55 +0000
-Content-Type: text/plain; charset="iso-8859-1"
+Received: from mail-pd0-f178.google.com ([209.85.192.178])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VCSvT-0004zw-HI
+ for linux-mtd@lists.infradead.org; Thu, 22 Aug 2013 11:19:40 +0000
+Received: by mail-pd0-f178.google.com with SMTP id w10so1750415pde.37
+ for <linux-mtd@lists.infradead.org>; Thu, 22 Aug 2013 04:19:06 -0700 (PDT)
+Message-ID: <5215F3A3.3010708@gmail.com>
+Date: Thu, 22 Aug 2013 19:18:59 +0800
+From: Ming Liu <liu.ming50@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: administrator de sistem
-To: Recipients <elba_esta@inah.gob.mx>
-From: "ADMIN" <elba_esta@inah.gob.mx>
-Date: Thu, 22 Aug 2013 10:04:47 +0100
-Message-Id: <20130822090525.0018519A00A0@tonali.inah.gob.mx>
-Reply-To: 1497179306@qq.com
+To: linux-mtd@lists.infradead.org, deng.chao1@zte.com.cn,
+ thomas.betker@freenet.de
+Subject: [JFFS2] Commit "jffs2: Fix lock acquisition order bug in
+ jffs2_write_begin" introduces another dead lock.
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,17 +23,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Stimate utilizator
-E-mail are 2GB, care este creat de webmaster-ul nostru, =EEn prezent ruleaz=
-a la 2.30GB depa?it, nu pute?i trimite sau primi mesaje noi p=E2na c=E2nd v=
-a verifica?i contul. Completati formularul pentru a verifica contul tau.
+Hi, all:
 
-Completa?i formularul de mai jos pentru a confirma adresa de e-mail:
+I've been working with 2.6.34 stable kernel and recently encountered a 
+AB-BA dead lock issue with jffs2, the scenario is:
 
-(1) E-mail:
-(2) Nume:
-(3) Parola:
-(4) Confirma?i parola:
+Run two scripts at the same time:
 
-mul?umiri
-administrator de sistem
+Script 1:
+
+#!/bin/bash
+
+while [ 1 ]
+
+do
+
+cp /mnt/mtd-folder/region_a/xxx.tar.gz /mnt/mtd-folder/region_b
+
+usleep 10
+
+done
+
+
+Script 2:
+
+#!/bin/bash
+
+while [ 1 ]
+
+do
+
+tar -zxvf /mnt/mtd-folder/region_b/.tar.gz -C /dev/shm
+
+done
+
+In several hours, the processes "cp", "tar" and "jffs2_gcd_mtd" all turn 
+to "D" state. After some investigation, I found that it's introduced by 
+commit "jffs2: Fix lock acquisition order bug in jffs2_write_begin", 
+which tried to fix a AB-BA dead lock as:
+
+jffs2_garbage_collect_live
+
+mutex_lock(&f->sem) (A)
+
+jffs2_garbage_collect_dnode
+
+     jffs2_gc_fetch_page
+
+         read_cache_page_async
+
+             do_read_cache_page
+
+lock_page(page)             (B)
+
+jffs2_write_begin
+
+grab_cache_page_write_begin
+
+     find_lock_page
+
+lock_page(page)                     (B)
+
+mutex_lock(&f->sem) (A)
+
+
+But for do_generic_file_read()  first acquires the page lock, then 
+f->sem,causes another AB-BA deadlock with jffs2_write_begin(), which 
+firstacquires f->sem, then the page lock:
+
+jffs2_write_begin
+
+mutex_lock(&f->sem) (A)
+
+grab_cache_page_write_begin
+
+     find_lock_page
+
+lock_page(page)                     (B)
+
+do_generic_file_read
+
+lock_page_killable(page) (B)
+
+     jffs2_readpage
+
+mutex_lock(&f->sem)                     (A)
+
+
+I also noticed there was another thread discussed a similar deadlock 
+also related to the same commit, with the title: "[JFFS2]The patch 
+"jffs2: Fix lock acquisition order bug in jffs2_write_begin" introduces 
+another dead lock bug.", posted by Deng Chao. And Deng had proposed a 
+idea that involving in a function "read_cache_page_async_trylock" 
+instead of "read_cache_page_async", is there anybody has implement that?
+
+the best,
+thank you
