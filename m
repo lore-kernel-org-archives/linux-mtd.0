@@ -1,22 +1,21 @@
-Date: Thu, 22 Aug 2013 20:55:59 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Message-ID: <20130822195559.GU26118@sirena.org.uk>
-References: <1376885403-12156-1-git-send-email-b32955@freescale.com>
- <1376885403-12156-4-git-send-email-b32955@freescale.com>
- <20130822193453.GB10038@ld-irv-0074.broadcom.com>
+Received: from mail-ob0-x22d.google.com ([2607:f8b0:4003:c01::22d])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VCb6f-0000w9-3C
+ for linux-mtd@lists.infradead.org; Thu, 22 Aug 2013 20:03:46 +0000
+Received: by mail-ob0-f173.google.com with SMTP id ta17so4579323obb.32
+ for <linux-mtd@lists.infradead.org>; Thu, 22 Aug 2013 13:03:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="Z5Iw6G/4V9lVaptU"
-Content-Disposition: inline
-In-Reply-To: <20130822193453.GB10038@ld-irv-0074.broadcom.com>
-Subject: Re: [PATCH V1 3/5] mtd: m25p80: add the quad-read support
-Cc: Marek Vasut <marex@denx.de>, devicetree@vger.kernel.org,
- b44548@freescale.com, dedekind1@gmail.com, b18965@freescale.com,
- linux-spi@vger.kernel.org, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org, kernel@pengutronix.de, shawn.guo@linaro.org,
- dwmw2@infradead.org, wangyuhang <wangyuhang2014@gmail.com>,
- linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20130822194345.GB14837@ld-irv-0074.broadcom.com>
+References: <1369226342-20102-1-git-send-email-zajec5@gmail.com>
+ <20130822194345.GB14837@ld-irv-0074.broadcom.com>
+Date: Thu, 22 Aug 2013 22:03:22 +0200
+Message-ID: <CACna6rwbARGHmD=CkvR_vRBLfkTamOrEXEyJhqBesXX5gS0csg@mail.gmail.com>
+Subject: Re: [RFC][PATCH] mtd: bcm47xxsflash: writing support
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Hauke Mehrtens <hauke@hauke-m.de>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,76 +25,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+2013/8/22 Brian Norris <computersforpeace@gmail.com>:
+> Hi Rafal,
+>
+> On Wed, May 22, 2013 at 02:39:02PM +0200, Rafa=C5=82 Mi=C5=82ecki wrote:
+>> ---
+>>  drivers/mtd/devices/bcm47xxsflash.c |  130 ++++++++++++++++++++++++++++=
++++++--
+>>  1 file changed, 126 insertions(+), 4 deletions(-)
+>
+> Can I get a 'Signed-off-by'? Otherwise, is this patch good to go?
 
---Z5Iw6G/4V9lVaptU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Of course! I posted it as RFC, so didn't add S-o-b, but no-one
+objected and this patch seems to be fine. I use it daily for half a
+year, it was recently picked up by OpenWrt and I didn't get any bug
+reports. So I think it's totally fine to push it :)
 
-On Thu, Aug 22, 2013 at 12:34:53PM -0700, Brian Norris wrote:
-> On Mon, Aug 19, 2013 at 12:10:01PM +0800, Huang Shijie wrote:
-
-> > +- m25p,quad-read : Use the "quad read" opcode to read data from the chip instead
-> > +                   of the usual "read" opcode. This opcode is not supported by
-> > +                   all chips and support for it can not be detected at runtime.
-> > +                   Refer to your chips' datasheet to check if this is supported
-> > +                   by your chip.
-
-> Why can't this be detected at runtime? We added a "no fast read" flag to
-> the device table, so why not "dual/quad mode supported"? And believe it
-> or not, not all m25p80 users have device tree. So it isn't very logical
-> to tie this support to device-tree only.
-
-There needs to be some way of saying if the additional data lines are
-actually wired up or not; it could be a negative property (flagging if
-the lines are not present) but that runs the risk of breaking systems
-if a driver acquires the ability to support extra data lines but a
-system doesn't have it.
-
-This should be a generic property for all quad devices to use, though,
-since the same thing applies everywhere.
-
-> This is not correct. You are assuming that the SPI master knows to read
-> with 4 IO lines, instead of the traditional 1 line; IOW, you are
-> assuming that:
-> (1) if the slave DT node has "quad-read", then the whole system supports
->     it (bad design; you're putting assumptions about the "parent" node
->     in the child)
-
-This is fine, the device tree is for the board as a whole not for the
-individual chips - if the board doesn't support quad read the device
-tree shouldn't configure the chip for quad mode.  It really needs to be
-a slave property since a system could opt to connect some devices with
-extra data lines and some without on the same SPI bus.
-
-> What you're really missing from device-tree (and the SPI subystem in
-> general) is how to detect those SPI controllers which support dual and
-> quad mode transfers, and how to communicate that a particular SPI
-> transaction should be performed on 1 or 4 IO lines. We shouldn't have
-> this just hacked in via assumptions.
-
-That bit does need to be fixed in this driver, yes.  The SPI core now
-has quad mode support.
-
---Z5Iw6G/4V9lVaptU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSFmzMAAoJELSic+t+oim90+YP/0xD2p5VpHkSLB1233pnZR+v
-x5QecEYVr5pT66V/k7WCxSXB9W/hXhz9mZK0B4vuQMZg+gPeluDuZZ97wEQchHRY
-KCiUUVj/yIAt4kB07INe/gtGmoTJ4H86ud/TBy/6AiKAlY/cA3E7YzoRqiAPxTg6
-i9woyocieJfWX5rHe7TuIuUrfVcVp8rkOy8r7Pqtya/AWFAJNN8xWtYjMK6ZqTO6
-aVcsVhyHHJAtk9gx8pAL1itYcWoQ3HICbGVqphElPIGmf+9jMuLNgbojfmbeGaXy
-RFaxvhhAgpTeUPE0szbddX8aRzZHgZKMCurtrvW/9n45ruxkPACm9tFjcHEVNdCa
-8sNeglR9SBuh5AUwkMka2Rx3soM8ftTOgzFRO4+gmC5jyZ/6UX0N5hm0qTlSm4pe
-COEqJ60SvFUrNTIJoOm31Peq9WgdHranFUU77P0nnws7lagUIfPwDz8AR4gEIK2+
-InywOX5E/lFYnnWWlUAIGpCajvlkB1yjlQpPSdfutpLyb4kdtWoTeUQ3DmwUS22K
-U6LKSoc/0MeAAEeS0+3FCByvLZ+e6XYtA0uZJwxwi3QOKjeWrCXiyeIre9ylOMFq
-4mSYZgkOC0T3F2eAqaRf37b0xJ7SevIEToulMgqwGLhRZQIU/LPDiU2Ukddho8cI
-SpcxvjmLTvEmUFsZaaXJ
-=zgeE
------END PGP SIGNATURE-----
-
---Z5Iw6G/4V9lVaptU--
+Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
