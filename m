@@ -1,23 +1,23 @@
-Received: from mail-pd0-f178.google.com ([209.85.192.178])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VCbz0-0002S8-S4
- for linux-mtd@lists.infradead.org; Thu, 22 Aug 2013 20:59:56 +0000
-Received: by mail-pd0-f178.google.com with SMTP id w10so2391842pde.37
- for <linux-mtd@lists.infradead.org>; Thu, 22 Aug 2013 13:59:30 -0700 (PDT)
-Date: Thu, 22 Aug 2013 13:59:26 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: Re: [RFC][PATCH] mtd: bcm47xxsflash: writing support
-Message-ID: <20130822205926.GD14837@ld-irv-0074.broadcom.com>
-References: <1369226342-20102-1-git-send-email-zajec5@gmail.com>
- <20130822194345.GB14837@ld-irv-0074.broadcom.com>
- <CACna6rwbARGHmD=CkvR_vRBLfkTamOrEXEyJhqBesXX5gS0csg@mail.gmail.com>
+Date: Fri, 23 Aug 2013 00:36:11 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Marek Vasut <marex@denx.de>
+Message-ID: <20130822233611.GA25263@sirena.org.uk>
+References: <1376885403-12156-1-git-send-email-b32955@freescale.com>
+ <20130822193453.GB10038@ld-irv-0074.broadcom.com>
+ <20130822195559.GU26118@sirena.org.uk>
+ <201308222229.01778.marex@denx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="7AUc2qLy4jB3hD7Z"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACna6rwbARGHmD=CkvR_vRBLfkTamOrEXEyJhqBesXX5gS0csg@mail.gmail.com>
-Cc: Hauke Mehrtens <hauke@hauke-m.de>, linux-mtd@lists.infradead.org
+In-Reply-To: <201308222229.01778.marex@denx.de>
+Subject: Re: [PATCH V1 3/5] mtd: m25p80: add the quad-read support
+Cc: devicetree@vger.kernel.org, shawn.guo@linaro.org, b44548@freescale.com,
+ dedekind1@gmail.com, b18965@freescale.com, linux-spi@vger.kernel.org,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ kernel@pengutronix.de, Brian Norris <computersforpeace@gmail.com>,
+ dwmw2@infradead.org, wangyuhang <wangyuhang2014@gmail.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,24 +27,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Aug 22, 2013 at 10:03:22PM +0200, Rafał Miłecki wrote:
-> 2013/8/22 Brian Norris <computersforpeace@gmail.com>:
-> > Hi Rafal,
-> >
-> > On Wed, May 22, 2013 at 02:39:02PM +0200, Rafał Miłecki wrote:
-> >> ---
-> >>  drivers/mtd/devices/bcm47xxsflash.c |  130 +++++++++++++++++++++++++++++++++--
-> >>  1 file changed, 126 insertions(+), 4 deletions(-)
-> >
-> > Can I get a 'Signed-off-by'? Otherwise, is this patch good to go?
-> 
-> Of course! I posted it as RFC, so didn't add S-o-b, but no-one
-> objected and this patch seems to be fine. I use it daily for half a
-> year, it was recently picked up by OpenWrt and I didn't get any bug
-> reports. So I think it's totally fine to push it :)
-> 
-> Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
 
-Applied to l2-mtd.git.
+--7AUc2qLy4jB3hD7Z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Brian
+On Thu, Aug 22, 2013 at 10:29:01PM +0200, Marek Vasut wrote:
+> > On Thu, Aug 22, 2013 at 12:34:53PM -0700, Brian Norris wrote:
+
+> > This should be a generic property for all quad devices to use, though,
+> > since the same thing applies everywhere.
+
+> Full ACK, "m25p,dual-read" and "m25p,quad-read" sound like a good prop names?
+
+I was actually thinking something more generic than that - putting the
+property at the SPI generic bindings level.  Though if all flashes with
+this dual/quad read functionality have the prefix m25p the above would
+work also, at the minute this does seem to be mostly used by flash (I
+bet someone's got some DSPs or something though).
+
+--7AUc2qLy4jB3hD7Z
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSFqBoAAoJELSic+t+oim9RAYP/il4+prvyn3nlnxK8vhnNWnt
+dVcsfMe9AuLey+5FT3Y98ZuChxo99umlfLZyaB0VZtdiruba6vGhF17ZTpk0rR/k
+y59uhRHZyRycrUTuoCXdblEiBW2NhWZt+2pc3mhs21h4Uwji8OsY8N60ViAIhhsC
+vaWdWhAgn0Dd55K6jIjGSI62qUjioTkQ3aVP+XLMcGRrA+8kFy3nxDzH75aUEc30
+H8Ud3w9P2l/3nWx/sdjpz23FvOnMjG+CuJvRMbl8BtMinvOH6/Fus4q2na6oaxSD
+pH7kicCpMljNu/alawUzxdJnqO8RVAChfL2GAZq6v31k1CnNxzDXfg0yM1ry+NLH
+0URGYZjDXj9Um6i22SdIy7Tw6Vg35p3sg5KQ/zqClqpWiFywQVAZq6FAJZUVFYrM
+g6QLrPV22jORdOwQGoRnal6EURLhovel1Gmz+YUfReUWqeNUwqebil7Mvn6jbPca
+39RXztERrG8XamzQoIB6isBp95y+mi8ImJSEMCiEkEhVVRL+y3++LE9+wPmF+gn9
+Ym+hR4Frqwean6o9+6PmkBpUnxThL1sIZybXgTDaFal0GfWQwgHiJRXqPGugoJu7
+Uf6hyHlIziSruJ5/t9BHBhcruoJOloNLjUsVnyMpIoaKe7Hr5TbxRwYE9KQq+Grb
+5/w8ZtqWc/FsYMaeSLWY
+=9RD7
+-----END PGP SIGNATURE-----
+
+--7AUc2qLy4jB3hD7Z--
