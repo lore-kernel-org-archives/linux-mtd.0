@@ -1,25 +1,25 @@
-Received: from longford.logfs.org ([213.229.74.203])
+Received: from mail-pd0-f170.google.com ([209.85.192.170])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VCFCA-0004ji-UI
- for linux-mtd@lists.infradead.org; Wed, 21 Aug 2013 20:39:59 +0000
-Date: Wed, 21 Aug 2013 15:06:05 -0400
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] alauda: do not use stack for URB transfer_buffers
-Message-ID: <20130821190604.GA14552@logfs.org>
-References: <20130806120329.8864.36301.stgit@localhost6.localdomain6>
- <20130821073028.GB31788@brian-ubuntu> <87li3v79uo.fsf@nemi.mork.no>
- <20130821084154.GE31788@brian-ubuntu> <52148F7B.7090409@iki.fi>
- <CAN8TOE9Ed=2YgV7L7gHB7FZC8OyE9=vr=6rVUQDPoK54NHh3ZA@mail.gmail.com>
+ id 1VCMw9-0004Sx-B4
+ for linux-mtd@lists.infradead.org; Thu, 22 Aug 2013 04:55:58 +0000
+Received: by mail-pd0-f170.google.com with SMTP id x10so1387006pdj.29
+ for <linux-mtd@lists.infradead.org>; Wed, 21 Aug 2013 21:55:34 -0700 (PDT)
+Date: Wed, 21 Aug 2013 21:54:52 -0700
+From: Olof Johansson <olof@lixom.net>
+To: Pekon Gupta <pekon@ti.com>
+Subject: Re: [PATCH v5 1/4] ARM: OMAP2+: cleaned-up DT support of various ECC
+ schemes
+Message-ID: <20130822045452.GA5151@quad.lixom.net>
+References: <1373748891-7779-1-git-send-email-pekon@ti.com>
+ <1373748891-7779-2-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAN8TOE9Ed=2YgV7L7gHB7FZC8OyE9=vr=6rVUQDPoK54NHh3ZA@mail.gmail.com>
-Cc: Jussi Kivilinna <jussi.kivilinna@iki.fi>, linux-usb@vger.kernel.org,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>,
- =?utf-8?B?QmrDuHJu?= Mork <bjorn@mork.no>
+In-Reply-To: <1373748891-7779-2-git-send-email-pekon@ti.com>
+Cc: mugunthanvnm@ti.com, arnd@arndb.de, dedekind1@gmail.com, tony@atomide.com,
+ avinashphilipk@gmail.com, balbi@ti.com, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org, benoit.cousson@linaro.org,
+ linux-omap@vger.kernel.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,25 +29,116 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 21 August 2013 13:00:15 -0700, Brian Norris wrote:
+On Sun, Jul 14, 2013 at 02:24:48AM +0530, Pekon Gupta wrote:
+> ECC scheme on NAND devices can be implemented in multiple ways.Some using
+> Software algorithm, while others using in-build Hardware engines.
+> omap2-nand driver currently supports following flavours of ECC schemes,
+> selectable via DTB.
 > 
-> Yes, that's a good point. Quoting Documentation/stable_kernel_rules.txt:
+> +---------------------------------------+---------------+---------------+
+> | ECC scheme                            |ECC calculation|Error detection|
+> +---------------------------------------+---------------+---------------+
+> |OMAP_ECC_HAMMING_CODE_DEFAULT          |S/W            |S/W            |
+> |OMAP_ECC_HAMMING_CODE_HW               |H/W (GPMC)     |S/W            |
+> |OMAP_ECC_HAMMING_CODE_HW_ROMCODE       |H/W (GPMC)     |S/W            |
+> +---------------------------------------+---------------+---------------+
+> |(requires CONFIG_MTD_NAND_ECC_BCH)     |               |               |
+> |OMAP_ECC_BCH8_CODE_HW_DETECTION_SW     |H/W (GPMC)     |S/W            |
+> +---------------------------------------+---------------+---------------+
+> |(requires CONFIG_MTD_NAND_OMAP_BCH)    |               |               |
+> |OMAP_ECC_BCH8_CODE_HW                  |H/W (GPMC)     |H/W (ELM)      |
+> +---------------------------------------+---------------+---------------+
 > 
-> "It must be obviously correct and tested."
+> Selection of some ECC schemes also require enabling following Kconfig options.
+> This was done to optimize footprint of omap2-nand driver.
+> -Kconfig:CONFIG_MTD_NAND_ECC_BCH	enables S/W based BCH ECC algorithm
+> -Kconfig:CONFIG_MTD_NAND_OMAP_BCH	enables H/W based BCH ECC algorithm
 > 
-> Seeing as it was not tested, I am dropping the patch entirely (it is
-> not stable material, and there is no point including it along with the
-> driver removal).
+> Signed-off-by: Pekon Gupta <pekon@ti.com>
+> ---
+>  .../devicetree/bindings/mtd/gpmc-nand.txt          | 45 ++++++++++++++++------
+>  arch/arm/mach-omap2/gpmc.c                         | 14 ++++---
+>  include/linux/platform_data/mtd-nand-omap2.h       | 22 +++++++----
+>  3 files changed, 57 insertions(+), 24 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+> index df338cb..c6551b6 100644
+> --- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+> @@ -17,17 +17,42 @@ Required properties:
+>  
+>  Optional properties:
+>  
+> - - nand-bus-width: 		Set this numeric value to 16 if the hardware
+> -				is wired that way. If not specified, a bus
+> -				width of 8 is assumed.
+> + - nand-bus-width: 		Determines data-width of the connected device
+> +				x16 = "16"
+> +				x8  = "8" (default)
 
-Thank you!  Without quoting rules, this also fails the common sense
-test.  For a stable patch, one might assume a non-empty group of
-people that would benefit from said patch and care enough to install
-the patch.
+This change doesn't look like an improvement to me.
 
-Jörn
+> - - ti,nand-ecc-opt:		A string setting the ECC layout to use. One of:
+>  
+> -		"sw"		Software method (default)
+> -		"hw"		Hardware method
+> -		"hw-romcode"	gpmc hamming mode method & romcode layout
+> -		"bch4"		4-bit BCH ecc code
+> -		"bch8"		8-bit BCH ecc code
+> + - ti,nand-ecc-opt:		Determines the ECC scheme used by driver.
+> +				It can be any of the following strings:
 
---
-I have always found the word "Europe" in the mouth of those politicians
-that were demanding something from other powers they did not dare demand
-in their own name.
--- Otto von Bismarck
+The device tree should define the hardware, not configure the software.
+
+Also, if it defines the scheme then you should probably call it something like
+"ti,nand-ecc-scheme" instead.
+
+> +
+> +	"hamming_code_sw"		1-bit Hamming ECC
+> +					- ECC calculation in software
+> +					- Error detection in software
+> +
+> +	"hamming_code_hw"		1-bit Hamming ECC
+> +					- ECC calculation in hardware
+> +					- Error detection in software
+
+Bzzt. Same here. It really doesn't matter to the hardware if the ECC is
+calculated in HW or SW, and it doesn't belong in the device tree.
+> +
+> +	"hamming_code_hw_romcode"	1-bit Hamming ECC
+> +					- ECC calculation in hardware
+> +					- Error detection in software
+> +					- ECC layout compatible to ROM code
+> +
+> +	"bch8_hw_code_detection_sw"	8-bit BCH ECC
+> +					- ECC calculation in hardware
+> +					- Error detection in software
+> +					- depends on CONFIG_MTD_NAND_ECC_BCH
+
+Configuration options don't belong in here either.
+
+> +
+> +	"bch8_code_hw"             	8-bit BCH ECC
+> +					- ECC calculation in hardware
+> +					- Error detection in hardware
+> +					- depends on CONFIG_MTD_NAND_OMAP_BCH
+> +					- requires <elm_id> to be specified
+
+Some of the above clearly shouldn't be described in the device tree at all, but
+it's also not very convenient to describe them as strings. Since you have
+a binding, it's probably easier to give them integer values and just define
+what those mean.
+
+> +
+> +
+> + - elm_id:			Specifies elm device node. This is required to
+> +				support some BCH ECC schemes mentioned above.
+
+Use dashes instead of underscores for properties. if all other properties are
+prepended with "ti,", then so should this.
+
+What's an ELM device node? How is it specified? A phandle?
+
+
+
+-Olof
