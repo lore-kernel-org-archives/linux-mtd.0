@@ -1,21 +1,19 @@
-Received: from mail-db8lp0185.outbound.messaging.microsoft.com
- ([213.199.154.185] helo=db8outboundpool.messaging.microsoft.com)
+Received: from mail-pd0-x22e.google.com ([2607:f8b0:400e:c02::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VCm0n-0003Gp-R1
- for linux-mtd@lists.infradead.org; Fri, 23 Aug 2013 07:42:30 +0000
-Message-ID: <5217127C.3050602@freescale.com>
-Date: Fri, 23 Aug 2013 15:42:52 +0800
-From: Huang Shijie <b32955@freescale.com>
+ id 1VCnIK-0005R8-2w
+ for linux-mtd@lists.infradead.org; Fri, 23 Aug 2013 09:04:36 +0000
+Received: by mail-pd0-f174.google.com with SMTP id y13so433470pdi.5
+ for <linux-mtd@lists.infradead.org>; Fri, 23 Aug 2013 02:04:12 -0700 (PDT)
+Message-ID: <52172581.6060101@gmail.com>
+Date: Fri, 23 Aug 2013 17:04:01 +0800
+From: Ming Liu <liu.ming50@gmail.com>
 MIME-Version: 1.0
-To: Wei Yongjun <weiyj.lk@gmail.com>
-Subject: Re: [PATCH -next] mtd: ofpart: use for_each_child_of_node() macro
-References: <CAPgLHd_zSXzRWGgQUzsmsM4beiTFKoWtcic6QmJdxhfBvNEZYg@mail.gmail.com>
-In-Reply-To: <CAPgLHd_zSXzRWGgQUzsmsM4beiTFKoWtcic6QmJdxhfBvNEZYg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: devicetree@vger.kernel.org, rob.herring@calxeda.com,
- yongjun_wei@trendmicro.com.cn, linux-mtd@lists.infradead.org,
- grant.likely@linaro.org, dwmw2@infradead.org
+To: linux-mtd@lists.infradead.org
+Subject: [JFFS2] Revision "jffs2: Fix lock acquisition order bug in
+ jffs2_write_begin" introduces another dead lock.
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: deng.chao1@zte.com.cn, thomas.betker@freenet.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,43 +23,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B408=E6=9C=8823=E6=97=A5 11:04, Wei Yongjun =E5=86=99=
-=E9=81=93:
-> From: Wei Yongjun<yongjun_wei@trendmicro.com.cn>
->
-> Use for_each_child_of_node() macro instead of open coding it.
->
-> Signed-off-by: Wei Yongjun<yongjun_wei@trendmicro.com.cn>
-> ---
->   drivers/mtd/ofpart.c | 6 ++----
->   1 file changed, 2 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
-> index 7843a44..d64f8c3 100644
-> --- a/drivers/mtd/ofpart.c
-> +++ b/drivers/mtd/ofpart.c
-> @@ -43,9 +43,8 @@ static int parse_ofpart_partitions(struct mtd_info *m=
-aster,
->   		return 0;
->
->   	/* First count the subnodes */
-> -	pp =3D NULL;
->   	nr_parts =3D 0;
-> -	while ((pp =3D of_get_next_child(node, pp))) {
-> +	for_each_child_of_node(node,  pp) {
->   		if (node_has_compatible(pp))
->   			continue;
->
-> @@ -59,9 +58,8 @@ static int parse_ofpart_partitions(struct mtd_info *m=
-aster,
->   	if (!*pparts)
->   		return -ENOMEM;
->
-> -	pp =3D NULL;
->   	i =3D 0;
-> -	while ((pp =3D of_get_next_child(node, pp))) {
-> +	for_each_child_of_node(node,  pp) {
->   		const __be32 *reg;
->   		int len;
->   		int a_cells, s_cells;
-Acked-by: Huang Shijie <b32955@freescale.com>
+Hi, all:
+
+I've been working with 2.6.34 stable kernel and recently encountered a 
+AB-BA dead lock issue with jffs2, the scenario is:
+
+Run two scripts at the same time:
+
+Script 1:
+
+#!/bin/bash
+
+while [ 1 ]
+
+do
+
+cp /mnt/mtd-folder/region_a/xxx.tar.gz /mnt/mtd-folder/region_b
+
+usleep 10
+
+done
+
+
+Script 2:
+
+#!/bin/bash
+
+while [ 1 ]
+
+do
+
+tar -zxvf /mnt/mtd-folder/region_b/.tar.gz -C /dev/shm
+
+done
+
+In several hours, the processes "cp", "tar" and "jffs2_gcd_mtd" all turn 
+to "D" state. After some investigation, I found that it's introduced by 
+commit "jffs2: Fix lock acquisition order bug in jffs2_write_begin", 
+which tried to fix a AB-BA dead lock as:
+
+jffs2_garbage_collect_live
+
+mutex_lock(&f->sem) (A)
+
+jffs2_garbage_collect_dnode
+
+     jffs2_gc_fetch_page
+
+         read_cache_page_async
+
+             do_read_cache_page
+
+lock_page(page)             (B)
+
+
+
+jffs2_write_begin
+
+grab_cache_page_write_begin
+
+     find_lock_page
+
+lock_page(page)                     (B)
+
+mutex_lock(&f->sem) (A)
+
+
+But for do_generic_file_read()  first acquires the page lock, then 
+f->sem,causes another AB-BA deadlock with jffs2_write_begin(), which 
+firstacquires f->sem, then the page lock:
+
+jffs2_write_begin
+
+mutex_lock(&f->sem) (A)
+
+grab_cache_page_write_begin
+
+     find_lock_page
+
+lock_page(page)                     (B)
+
+do_generic_file_read
+
+lock_page_killable(page) (B)
+
+     jffs2_readpage
+
+mutex_lock(&f->sem)                     (A)
+
+
+I also noticed there was another thread discussed a similar deadlock 
+also related to the same commit, with the title: "[JFFS2]The patch 
+"jffs2: Fix lock acquisition order bug in jffs2_write_begin" introduces 
+another dead lock bug.", posted by Deng Chao. And Deng had proposed a 
+idea that involving in a function "read_cache_page_async_trylock" 
+instead of "read_cache_page_async", is there anybody has implement that?
+
+the best,
+thank you
