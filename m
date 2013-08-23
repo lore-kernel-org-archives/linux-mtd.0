@@ -1,9 +1,9 @@
-Received: from nasmtp02.atmel.com ([204.2.163.16])
+Received: from eusmtp01.atmel.com ([212.144.249.242])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VCiRX-0008TB-6D
- for linux-mtd@lists.infradead.org; Fri, 23 Aug 2013 03:53:51 +0000
-Message-ID: <5216DCB0.7050909@atmel.com>
-Date: Fri, 23 Aug 2013 11:53:20 +0800
+ id 1VCiST-0008VF-Ar
+ for linux-mtd@lists.infradead.org; Fri, 23 Aug 2013 03:54:49 +0000
+Message-ID: <5216DCE6.60109@atmel.com>
+Date: Fri, 23 Aug 2013 11:54:14 +0800
 From: Josh Wu <josh.wu@atmel.com>
 MIME-Version: 1.0
 To: Wei Yongjun <weiyj.lk@gmail.com>
@@ -26,6 +26,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi, Wei Yongjun
+
 On 8/23/2013 10:50 AM, Wei Yongjun wrote:
 > From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 >
@@ -34,7 +36,7 @@ On 8/23/2013 10:50 AM, Wei Yongjun wrote:
 >
 > Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 
-Thank you for catch this. And
+Thank you for catch this and
 Acked-by: Josh Wu <josh.wu@atmel.com>
 
 > ---
@@ -54,3 +56,6 @@ Acked-by: Josh Wu <josh.wu@atmel.com>
 >   		}
 >   
 >
+
+Best Regards,
+Josh Wu
