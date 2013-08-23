@@ -1,19 +1,21 @@
-Message-ID: <52170834.1060003@freescale.com>
-Date: Fri, 23 Aug 2013 14:59:00 +0800
+Received: from mail-db8lp0185.outbound.messaging.microsoft.com
+ ([213.199.154.185] helo=db8outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VCm0n-0003Gp-R1
+ for linux-mtd@lists.infradead.org; Fri, 23 Aug 2013 07:42:30 +0000
+Message-ID: <5217127C.3050602@freescale.com>
+Date: Fri, 23 Aug 2013 15:42:52 +0800
 From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH V1 4/5] spi: Add Freescale QuadSpi driver
-References: <1376885403-12156-1-git-send-email-b32955@freescale.com>
- <1376885403-12156-5-git-send-email-b32955@freescale.com>
- <20130822192158.GA10038@ld-irv-0074.broadcom.com>
-In-Reply-To: <20130822192158.GA10038@ld-irv-0074.broadcom.com>
+To: Wei Yongjun <weiyj.lk@gmail.com>
+Subject: Re: [PATCH -next] mtd: ofpart: use for_each_child_of_node() macro
+References: <CAPgLHd_zSXzRWGgQUzsmsM4beiTFKoWtcic6QmJdxhfBvNEZYg@mail.gmail.com>
+In-Reply-To: <CAPgLHd_zSXzRWGgQUzsmsM4beiTFKoWtcic6QmJdxhfBvNEZYg@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: quoted-printable
-Cc: devicetree@vger.kernel.org, b44548@freescale.com, dedekind1@gmail.com,
- b18965@freescale.com, linux-spi@vger.kernel.org, broonie@kernel.org,
- linux-mtd@lists.infradead.org, kernel@pengutronix.de, shawn.guo@linaro.org,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+Cc: devicetree@vger.kernel.org, rob.herring@calxeda.com,
+ yongjun_wei@trendmicro.com.cn, linux-mtd@lists.infradead.org,
+ grant.likely@linaro.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,20 +25,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B408=E6=9C=8823=E6=97=A5 03:21, Brian Norris =E5=86=99=
+=E4=BA=8E 2013=E5=B9=B408=E6=9C=8823=E6=97=A5 11:04, Wei Yongjun =E5=86=99=
 =E9=81=93:
-> Why does the size of the NOR flash need to be in the controller's devic=
-e
-> node? Shouldn't this be detected at run-time if possible? Or at least
-> included as a property of m25p80, if absolutely required?
+> From: Wei Yongjun<yongjun_wei@trendmicro.com.cn>
 >
-I suddenly realize that i need this property.
-
-Since we may connect other devices, not NOR flash, to the Quadspi.
-
-So this property shows us we connect a NOR to the Quadspi.
-
-
-
-thanks
-Huang Shijie
+> Use for_each_child_of_node() macro instead of open coding it.
+>
+> Signed-off-by: Wei Yongjun<yongjun_wei@trendmicro.com.cn>
+> ---
+>   drivers/mtd/ofpart.c | 6 ++----
+>   1 file changed, 2 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
+> index 7843a44..d64f8c3 100644
+> --- a/drivers/mtd/ofpart.c
+> +++ b/drivers/mtd/ofpart.c
+> @@ -43,9 +43,8 @@ static int parse_ofpart_partitions(struct mtd_info *m=
+aster,
+>   		return 0;
+>
+>   	/* First count the subnodes */
+> -	pp =3D NULL;
+>   	nr_parts =3D 0;
+> -	while ((pp =3D of_get_next_child(node, pp))) {
+> +	for_each_child_of_node(node,  pp) {
+>   		if (node_has_compatible(pp))
+>   			continue;
+>
+> @@ -59,9 +58,8 @@ static int parse_ofpart_partitions(struct mtd_info *m=
+aster,
+>   	if (!*pparts)
+>   		return -ENOMEM;
+>
+> -	pp =3D NULL;
+>   	i =3D 0;
+> -	while ((pp =3D of_get_next_child(node, pp))) {
+> +	for_each_child_of_node(node,  pp) {
+>   		const __be32 *reg;
+>   		int len;
+>   		int a_cells, s_cells;
+Acked-by: Huang Shijie <b32955@freescale.com>
