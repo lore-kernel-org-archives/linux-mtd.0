@@ -1,21 +1,27 @@
-From: Marek Vasut <marex@denx.de>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V1 3/5] mtd: m25p80: add the quad-read support
-Date: Fri, 23 Aug 2013 01:58:05 +0200
-References: <1376885403-12156-1-git-send-email-b32955@freescale.com>
- <201308222229.01778.marex@denx.de> <20130822233611.GA25263@sirena.org.uk>
-In-Reply-To: <20130822233611.GA25263@sirena.org.uk>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201308230158.05909.marex@denx.de>
-Cc: devicetree@vger.kernel.org, shawn.guo@linaro.org, b44548@freescale.com,
- dedekind1@gmail.com, b18965@freescale.com, linux-spi@vger.kernel.org,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- kernel@pengutronix.de, Brian Norris <computersforpeace@gmail.com>,
- dwmw2@infradead.org, wangyuhang <wangyuhang2014@gmail.com>,
- linux-arm-kernel@lists.infradead.org
+Received: from mailout1.samsung.com ([203.254.224.24])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VCfEu-0005vt-Rn
+ for linux-mtd@lists.infradead.org; Fri, 23 Aug 2013 00:28:35 +0000
+Received: from epcpsbgr2.samsung.com
+ (u142.gpu120.samsung.co.kr [203.254.230.142])
+ by mailout1.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ (7.0.4.24.0) 64bit (built Nov 17 2011))
+ with ESMTP id <0MRY00KDRJYT7CD0@mailout1.samsung.com> for
+ linux-mtd@lists.infradead.org; Fri, 23 Aug 2013 09:28:05 +0900 (KST)
+From: Jingoo Han <jg1.han@samsung.com>
+To: 'Brian Norris' <computersforpeace@gmail.com>
+References: <000701ce844c$c63f4820$52bdd860$@samsung.com>
+In-reply-to: <000701ce844c$c63f4820$52bdd860$@samsung.com>
+Subject: Re: [PATCH] mtd: mtdswap: replace strict_strtoul() with kstrtoul()
+Date: Fri, 23 Aug 2013 09:28:05 +0900
+Message-id: <001c01ce9f97$a249b2a0$e6dd17e0$%han@samsung.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-transfer-encoding: 7bit
+Content-language: ko
+Cc: 'Artem Bityutskiy' <artem.bityutskiy@linux.intel.com>,
+ 'Jingoo Han' <jg1.han@samsung.com>, 'David Woodhouse' <dwmw2@infradead.org>,
+ linux-mtd@lists.infradead.org, 'Artem Bityutskiy' <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +31,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Mark Brown,
+On Friday, July 19, 2013 3:54 PM, Jingoo Han wrote:
 
-> On Thu, Aug 22, 2013 at 10:29:01PM +0200, Marek Vasut wrote:
-> > > On Thu, Aug 22, 2013 at 12:34:53PM -0700, Brian Norris wrote:
-> > > 
-> > > This should be a generic property for all quad devices to use, though,
-> > > since the same thing applies everywhere.
-> > 
-> > Full ACK, "m25p,dual-read" and "m25p,quad-read" sound like a good prop
-> > names?
-> 
-> I was actually thinking something more generic than that - putting the
-> property at the SPI generic bindings level.  Though if all flashes with
-> this dual/quad read functionality have the prefix m25p the above would
-> work also, at the minute this does seem to be mostly used by flash (I
-> bet someone's got some DSPs or something though).
+Hi Brian,
 
-Ah! So you mean the SPI controller would provide information that it can do 
-dual/quad transfers? But then, the additional pins can only be wired to certain 
-chips (controller by certain CS lines).
+Would you apply this patch to l2-mtd.git?
+I hope that it is not late. :)
+Thank you.
 
 Best regards,
-Marek Vasut
+Jingoo Han
+
+> 
+> The usage of strict_strtoul() is not preferred, because
+> strict_strtoul() is obsolete. Thus, kstrtoul() should be
+> used.
+> 
+> Signed-off-by: Jingoo Han <jg1.han@samsung.com>
+> ---
+>  drivers/mtd/mtdswap.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/mtdswap.c b/drivers/mtd/mtdswap.c
+> index c92f0f6..8b33b26 100644
+> --- a/drivers/mtd/mtdswap.c
+> +++ b/drivers/mtd/mtdswap.c
+> @@ -1425,7 +1425,7 @@ static void mtdswap_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
+>  		return;
+> 
+>  	while ((this_opt = strsep(&parts, ",")) != NULL) {
+> -		if (strict_strtoul(this_opt, 0, &part) < 0)
+> +		if (kstrtoul(this_opt, 0, &part) < 0)
+>  			return;
+> 
+>  		if (mtd->index == part)
+> --
+> 1.7.10.4
