@@ -1,9 +1,9 @@
 Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VCudl-0000KA-1E
- for linux-mtd@lists.infradead.org; Fri, 23 Aug 2013 16:55:16 +0000
-Message-ID: <521793D5.20805@nod.at>
-Date: Fri, 23 Aug 2013 18:54:45 +0200
+ id 1VCwaA-0003HF-Af
+ for linux-mtd@lists.infradead.org; Fri, 23 Aug 2013 18:59:39 +0000
+Message-ID: <5217B101.3040306@nod.at>
+Date: Fri, 23 Aug 2013 20:59:13 +0200
 From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
 To: Richard Genoud <richard.genoud@gmail.com>
@@ -11,8 +11,7 @@ Subject: Re: Fastmap and Atmel sam-ba
 References: <CACQ1gAgOS5kpykb1jxnRJUNCmdC1jwmmWr5cQ7aazKVvMjBPWQ@mail.gmail.com>
  <CACQ1gAj2bNOnnCqLjALW0LiXYiDw_CTYUTgsE4Jd5pH9DkWadA@mail.gmail.com>
 In-Reply-To: <CACQ1gAj2bNOnnCqLjALW0LiXYiDw_CTYUTgsE4Jd5pH9DkWadA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------070100060203050707090909"
 Cc: linux-mtd <linux-mtd@lists.infradead.org>,
  Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,8 +23,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+This is a multi-part message in MIME format.
+--------------070100060203050707090909
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
+Hi again,
 Am 23.08.2013 15:55, schrieb Richard Genoud:
 > [arg ! I forgot to cc the mtd list. This new gmail interface is a pain !]
 > 
@@ -187,18 +190,46 @@ Am 23.08.2013 15:55, schrieb Richard Genoud:
 >> [   76.867187] UBI DBG gen (pid 1): close device 0, volume 0, mode 1
 >> [   76.875000] VFS: Cannot open root device "ubi0:rootfs" or
 >> unknown-block(0,0): error -28
-
--28 is ENOSPC. Looks like UBIFS did not get an empty LEB.
-
+>>
 >> NB: sam-ba flashes with the trimffs method. If I disable trimffs in
 >> sam-ba and use mkfs.ubifs with -F, I've got the same error.
 >>
->> NB2: If, instead of booting on the ubi partition, I boot on NFS, and
->> then use ubiattach + mount, it's working ok with fastmap.
 
-Do you see this issue every time or only the first time after flashing
-the image?
-Does adding rootdelay=10 (or more) help?
+I have an idea what's going on. As you are using a real (and rather slow) NAND device
+erasing PEBs takes some time.
+If you attach the very first time from an image created by ubinize UBI has to erase
+all PEBs, parallel to that UBIFS requests one PEB but does not get one.
+In this case UBI has to erase one PEB in sync-mode.
+
+I have only nandsim, which is far to fast to hit that bug.
+Who wants to donate me a board with NAND memory? ;-)
+
+Anyway, can you please test the attached patch?
 
 Thanks,
 //richard
+
+--------------070100060203050707090909
+Content-Type: text/x-patch;
+ name="refill_wl_user_pool.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="refill_wl_user_pool.diff"
+
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 5df49d3..7ba3e6d 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -599,10 +599,6 @@ static void refill_wl_user_pool(struct ubi_device *ubi)
+ 	return_unused_pool_pebs(ubi, pool);
+ 
+ 	for (pool->size = 0; pool->size < pool->max_size; pool->size++) {
+-		if (!ubi->free.rb_node ||
+-		   (ubi->free_count - ubi->beb_rsvd_pebs < 1))
+-			break;
+-
+ 		pool->pebs[pool->size] = __wl_get_peb(ubi);
+ 		if (pool->pebs[pool->size] < 0)
+ 			break;
+
+--------------070100060203050707090909--
