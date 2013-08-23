@@ -1,19 +1,21 @@
-Received: from aserp1040.oracle.com ([141.146.126.69])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VCo2Z-0006l7-V2
- for linux-mtd@lists.infradead.org; Fri, 23 Aug 2013 09:52:24 +0000
-Date: Fri, 23 Aug 2013 12:51:45 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [patch] mtd cs553x_nand: use kzalloc() instead of memset
-Message-ID: <20130823095145.GQ31293@elgon.mountain>
+Message-ID: <52173217.70505@ti.com>
+Date: Fri, 23 Aug 2013 15:27:43 +0530
+From: Sourav Poddar <sourav.poddar@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: Mike Dunn <mikedunn@newsguy.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- kernel-janitors@vger.kernel.org, Nathan Williams <nathan@traverse.com.au>,
- linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH V1 3/5] mtd: m25p80: add the quad-read support
+References: <1376885403-12156-1-git-send-email-b32955@freescale.com>	<1376885403-12156-4-git-send-email-b32955@freescale.com>
+ <CAHSAbzN166J=DFi+1koPUpnFpJVHwtbC1AP21ywhAAissQxPxg@mail.gmail.com>
+ <52172A81.5090501@freescale.com>
+In-Reply-To: <52172A81.5090501@freescale.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: computersforpeace@gmail.com, b44548@freescale.com, dedekind1@gmail.com,
+ b18965@freescale.com, linux-spi@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ kernel@pengutronix.de, shawn.guo@linaro.org, dwmw2@infradead.org,
+ yuhang wang <wangyuhang2014@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,32 +25,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It's cleaner to use kzalloc() instead of zeroing out in a separate call
-to memset().
-
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-
-diff --git a/drivers/mtd/nand/cs553x_nand.c b/drivers/mtd/nand/cs553x_nand.c
-index 2cdeab8..d469a9a 100644
---- a/drivers/mtd/nand/cs553x_nand.c
-+++ b/drivers/mtd/nand/cs553x_nand.c
-@@ -197,7 +197,7 @@ static int __init cs553x_init_one(int cs, int mmio, unsigned long adr)
- 	}
- 
- 	/* Allocate memory for MTD device structure and private data */
--	new_mtd = kmalloc(sizeof(struct mtd_info) + sizeof(struct nand_chip), GFP_KERNEL);
-+	new_mtd = kzalloc(sizeof(struct mtd_info) + sizeof(struct nand_chip), GFP_KERNEL);
- 	if (!new_mtd) {
- 		printk(KERN_WARNING "Unable to allocate CS553X NAND MTD device structure.\n");
- 		err = -ENOMEM;
-@@ -207,10 +207,6 @@ static int __init cs553x_init_one(int cs, int mmio, unsigned long adr)
- 	/* Get pointer to private data */
- 	this = (struct nand_chip *)(&new_mtd[1]);
- 
--	/* Initialize structures */
--	memset(new_mtd, 0, sizeof(struct mtd_info));
--	memset(this, 0, sizeof(struct nand_chip));
--
- 	/* Link the private data with the MTD structure */
- 	new_mtd->priv = this;
- 	new_mtd->owner = THIS_MODULE;
+On Friday 23 August 2013 02:55 PM, Huang Shijie wrote:
+> 于 2013年08月23日 17:05, yuhang wang 写道:
+>>> +       u16 sr_cr;
+>>> >  +       int ret;
+>>> >
+>>> >    #ifdef CONFIG_MTD_OF_PARTS
+>>> >           if (!of_device_is_available(np))
+>>> >  @@ -1014,6 +1050,21 @@ static int m25p_probe(struct spi_device *spi)
+>>> >           else
+>>> >                   flash->read_opcode = OPCODE_NORM_READ;
+>>> >
+>>> >  +       /* Try to enable the Quad Read */
+>>> >  +       if (np&&  of_property_read_bool(np, "m25p,quad-read")) {
+>>> >  +               /* The configuration register is set by the 
+>>> second byte. */
+>>> >  +               sr_cr = CR_QUAD<<  8;
+>>> >  +
+>>> >  +               /* Write the QUAD bit to the Configuration 
+>>> Register. */
+>>> >  +               write_enable(flash);
+>>> >  +               if (write_sr_cr(flash, sr_cr) == 0) {
+>>> >  +                       /* read back and check it */
+>>> >  +                       ret = read_cr(flash);
+>>> >  +                       if (ret>  0&&  (ret&  CR_QUAD))
+>>> >  +                               flash->read_opcode = OPCODE_QIOR;
+>>> >  +               }
+>>> >  +       }
+>>> >  +
+>> Well, M25p80.c support lots of flash devices, so driver should be as
+>> general as possible. Firstly not all the devices m25p80 supports set
+>> quad mode as your sequence, perhaps write_sr_cr can not match all the
+> It does not matter the NOR flash supports the write_sr_cr() or not,
+> If the NOR flash does not support the write_sr_cr(), it may fails, and 
+> you will not set the OPCODE_QIOR for the
+> m25p80_read.
+>
+>> m25p80 flash. Secondly, why you only support QIOR(high performance)
+>> not QOR or DOR. Maybe QIOR seems too special, so what if user want to
+>> use QOR if he set quad mode in DTS.
+>>
+> Frankly speaking, i am reluctant to support the QIOR, it is a little 
+> slow. :)
+>
+You should add QOR opcodes also in your patch, so we have the complete set.
+> So the the QIOR is lowest speed for QUADSPI controller, and i do not 
+> want to support the DOR.
+>
+> In my new version, i add the support for DDR QIOR read which is the 
+> double rate of the QIOR.
+>
+> The user should knows if the NOR flash supports the quad-read or not, 
+> and set the proper DT.
+>
+>> Another point, if command changed to OPCODE_QIOR, there should also
+>> should be some correct in m25p_read. such as the number of dummy data.
+> I only need to change the read opcode.
+>> QIOR can support read without read command if set the certain bit in
+>> transfer, these aspects did not reflect in your patch.
+>>
+> For the Quadspi, it will handle the dummy by the LUT sequence, such as 
+> DDR QUAD read, the LUT sequence will
+> set proper dummy (6 cycles for S25FL128S). I do not need the m25p_read 
+> to set the dummy.
+>
+>
+> thanks
+> Huang Shijie
+>
+>
+>
+>
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
