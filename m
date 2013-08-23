@@ -1,20 +1,21 @@
-Received: from aserp1040.oracle.com ([141.146.126.69])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VCoCl-00072p-59
- for linux-mtd@lists.infradead.org; Fri, 23 Aug 2013 10:02:56 +0000
-Date: Fri, 23 Aug 2013 13:02:06 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: mtd: ndfc: silence an underflow static checker warning
-Message-ID: <20130823100206.GS31293@elgon.mountain>
+From: Marek Vasut <marex@denx.de>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH V1 3/5] mtd: m25p80: add the quad-read support
+Date: Fri, 23 Aug 2013 12:42:12 +0200
+References: <1376885403-12156-1-git-send-email-b32955@freescale.com>
+ <201308230158.05909.marex@denx.de> <20130823094141.GE25263@sirena.org.uk>
+In-Reply-To: <20130823094141.GE25263@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: devicetree@vger.kernel.org,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- kernel-janitors@vger.kernel.org, Rob Herring <rob.herring@calxeda.com>,
- Bill Pemberton <wfp5p@virginia.edu>, linux-mtd@lists.infradead.org,
- Grant Likely <grant.likely@linaro.org>, Huang Shijie <shijie8@gmail.com>
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201308231242.12784.marex@denx.de>
+Cc: devicetree@vger.kernel.org, shawn.guo@linaro.org, b44548@freescale.com,
+ dedekind1@gmail.com, b18965@freescale.com, linux-spi@vger.kernel.org,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ kernel@pengutronix.de, Brian Norris <computersforpeace@gmail.com>,
+ dwmw2@infradead.org, wangyuhang <wangyuhang2014@gmail.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,27 +25,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-"cs" is an index into the ndfc_ctrl[].  There is a sanity check which
-does:
+Dear Mark Brown,
 
-	if (cs >= NDFC_MAX_CS) {
+> On Fri, Aug 23, 2013 at 01:58:05AM +0200, Marek Vasut wrote:
+> > > I was actually thinking something more generic than that - putting the
+> > > property at the SPI generic bindings level.  Though if all flashes with
+> > > this dual/quad read functionality have the prefix m25p the above would
+> > > work also, at the minute this does seem to be mostly used by flash (I
+> > > bet someone's got some DSPs or something though).
+> > 
+> > Ah! So you mean the SPI controller would provide information that it can
+> > do dual/quad transfers? But then, the additional pins can only be wired
+> > to certain chips (controller by certain CS lines).
+> 
+> No, not exactly - I just meant that the property on the child node
+> should be one that's consistent over all chips and could hopefully be
+> implemented in the SPI core as part of instantiating the device in DT.
+> Which probably just means stripping or changing the vendor prefix.
 
-It doesn't check for underflows and that upsets my static checker.
+Ah right, got you now. Thanks!
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-
-diff --git a/drivers/mtd/nand/ndfc.c b/drivers/mtd/nand/ndfc.c
-index 8e148f1..cd78b81 100644
---- a/drivers/mtd/nand/ndfc.c
-+++ b/drivers/mtd/nand/ndfc.c
-@@ -201,8 +201,9 @@ static int ndfc_probe(struct platform_device *ofdev)
- {
- 	struct ndfc_controller *ndfc;
- 	const __be32 *reg;
-+	unsigned int cs;
- 	u32 ccr;
--	int err, len, cs;
-+	int err, len;
- 
- 	/* Read the reg property to get the chip select */
- 	reg = of_get_property(ofdev->dev.of_node, "reg", &len);
+Best regards,
+Marek Vasut
