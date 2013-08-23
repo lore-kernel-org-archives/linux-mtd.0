@@ -1,19 +1,19 @@
-Received: from mail-pd0-x22e.google.com ([2607:f8b0:400e:c02::22e])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VCnIK-0005R8-2w
- for linux-mtd@lists.infradead.org; Fri, 23 Aug 2013 09:04:36 +0000
-Received: by mail-pd0-f174.google.com with SMTP id y13so433470pdi.5
- for <linux-mtd@lists.infradead.org>; Fri, 23 Aug 2013 02:04:12 -0700 (PDT)
-Message-ID: <52172581.6060101@gmail.com>
-Date: Fri, 23 Aug 2013 17:04:01 +0800
-From: Ming Liu <liu.ming50@gmail.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: [JFFS2] Revision "jffs2: Fix lock acquisition order bug in
- jffs2_write_begin" introduces another dead lock.
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: deng.chao1@zte.com.cn, thomas.betker@freenet.de
+In-Reply-To: <1376885403-12156-4-git-send-email-b32955@freescale.com>
+References: <1376885403-12156-1-git-send-email-b32955@freescale.com>
+ <1376885403-12156-4-git-send-email-b32955@freescale.com>
+Date: Fri, 23 Aug 2013 17:05:10 +0800
+Message-ID: <CAHSAbzN166J=DFi+1koPUpnFpJVHwtbC1AP21ywhAAissQxPxg@mail.gmail.com>
+Subject: Re: [PATCH V1 3/5] mtd: m25p80: add the quad-read support
+From: yuhang wang <wangyuhang2014@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: shawn.guo@linaro.org, b44548@freescale.com, dedekind1@gmail.com,
+ b18965@freescale.com, linux-spi@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ kernel@pengutronix.de, computersforpeace@gmail.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,101 +23,160 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, all:
+Hi, Shijie
 
-I've been working with 2.6.34 stable kernel and recently encountered a 
-AB-BA dead lock issue with jffs2, the scenario is:
+2013/8/19 Huang Shijie <b32955@freescale.com>:
+> This patch adds the quad read support:
+>
+> (1) Add the relative commands:
+>       OPCODE_QIOR, OPCODE_4QIOR, OPCODE_RDCR,
+>
+>     also add the relative macro for the Configuartion Register.
+>
+> (2) add the "m25p,quad-read" property for the m25p80 driver
+>     If the dts has the "m25p,quad-read" property, the kernel will
+>     set the Quad bit of the configuration register, and when the
+>     setting is suceeded, we set the read opcode with OPCODE_QIOR.
+>
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
+> ---
+>  Documentation/devicetree/bindings/mtd/m25p80.txt |    5 ++
+>  drivers/mtd/devices/m25p80.c                     |   51 ++++++++++++++++++++++
+>  include/linux/mtd/spi-nor.h                      |    6 +++
+>  3 files changed, 62 insertions(+), 0 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/mtd/m25p80.txt b/Documentation/devicetree/bindings/mtd/m25p80.txt
+> index 6d3d576..b33313f 100644
+> --- a/Documentation/devicetree/bindings/mtd/m25p80.txt
+> +++ b/Documentation/devicetree/bindings/mtd/m25p80.txt
+> @@ -17,6 +17,11 @@ Optional properties:
+>                     Refer to your chips' datasheet to check if this is supported
+>                     by your chip.
+>
+> +- m25p,quad-read : Use the "quad read" opcode to read data from the chip instead
+> +                   of the usual "read" opcode. This opcode is not supported by
+> +                   all chips and support for it can not be detected at runtime.
+> +                   Refer to your chips' datasheet to check if this is supported
+> +                   by your chip.
+>  Example:
+>
+>         flash: m25p80@0 {
+> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> index f3598c1..4bc9b1b 100644
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -103,6 +103,40 @@ static int write_sr(struct m25p *flash, u8 val)
+>  }
+>
+>  /*
+> + * Read the configuration register, returning its value in the location
+> + * Return the configuration register value.
+> + * Returns negative if error occurred.
+> + */
+> +static int read_cr(struct m25p *flash)
+> +{
+> +       u8 code = OPCODE_RDCR;
+> +       int ret;
+> +       u8 val;
+> +
+> +       ret = spi_write_then_read(flash->spi, &code, 1, &val, 1);
+> +       if (ret < 0) {
+> +               dev_err(&flash->spi->dev, "error %d reading CR\n", ret);
+> +               return ret;
+> +       }
+> +       return val;
+> +}
+> +
+> +/*
+> + * Write status register and configuration register with 2 bytes
+> + * The first byte will be written to the status register, while the second byte
+> + * will be written to the configuration register.
+> + * Returns negative if error occurred.
+> + */
+> +static int write_sr_cr(struct m25p *flash, u16 val)
+> +{
+> +       flash->command[0] = OPCODE_WRSR;
+> +       flash->command[1] = 0;
+> +       flash->command[2] = (val >> 8);
+> +
+> +       return spi_write(flash->spi, flash->command, 3);
+> +}
+> +
+> +/*
+>   * Set write enable latch with Write Enable command.
+>   * Returns negative if error occurred.
+>   */
+> @@ -880,6 +914,8 @@ static int m25p_probe(struct spi_device *spi)
+>         unsigned                        i;
+>         struct mtd_part_parser_data     ppdata;
+>         struct device_node __maybe_unused *np = spi->dev.of_node;
+> +       u16 sr_cr;
+> +       int ret;
+>
+>  #ifdef CONFIG_MTD_OF_PARTS
+>         if (!of_device_is_available(np))
+> @@ -1014,6 +1050,21 @@ static int m25p_probe(struct spi_device *spi)
+>         else
+>                 flash->read_opcode = OPCODE_NORM_READ;
+>
+> +       /* Try to enable the Quad Read */
+> +       if (np && of_property_read_bool(np, "m25p,quad-read")) {
+> +               /* The configuration register is set by the second byte. */
+> +               sr_cr = CR_QUAD << 8;
+> +
+> +               /* Write the QUAD bit to the Configuration Register. */
+> +               write_enable(flash);
+> +               if (write_sr_cr(flash, sr_cr) == 0) {
+> +                       /* read back and check it */
+> +                       ret = read_cr(flash);
+> +                       if (ret > 0 && (ret & CR_QUAD))
+> +                               flash->read_opcode = OPCODE_QIOR;
+> +               }
+> +       }
+> +
 
-Run two scripts at the same time:
+Well, M25p80.c support lots of flash devices, so driver should be as
+general as possible. Firstly not all the devices m25p80 supports set
+quad mode as your sequence, perhaps write_sr_cr can not match all the
+m25p80 flash. Secondly, why you only support QIOR(high performance)
+not QOR or DOR. Maybe QIOR seems too special, so what if user want to
+use QOR if he set quad mode in DTS.
 
-Script 1:
+Another point, if command changed to OPCODE_QIOR, there should also
+should be some correct in m25p_read. such as the number of dummy data.
+QIOR can support read without read command if set the certain bit in
+transfer, these aspects did not reflect in your patch.
 
-#!/bin/bash
-
-while [ 1 ]
-
-do
-
-cp /mnt/mtd-folder/region_a/xxx.tar.gz /mnt/mtd-folder/region_b
-
-usleep 10
-
-done
-
-
-Script 2:
-
-#!/bin/bash
-
-while [ 1 ]
-
-do
-
-tar -zxvf /mnt/mtd-folder/region_b/.tar.gz -C /dev/shm
-
-done
-
-In several hours, the processes "cp", "tar" and "jffs2_gcd_mtd" all turn 
-to "D" state. After some investigation, I found that it's introduced by 
-commit "jffs2: Fix lock acquisition order bug in jffs2_write_begin", 
-which tried to fix a AB-BA dead lock as:
-
-jffs2_garbage_collect_live
-
-mutex_lock(&f->sem) (A)
-
-jffs2_garbage_collect_dnode
-
-     jffs2_gc_fetch_page
-
-         read_cache_page_async
-
-             do_read_cache_page
-
-lock_page(page)             (B)
-
-
-
-jffs2_write_begin
-
-grab_cache_page_write_begin
-
-     find_lock_page
-
-lock_page(page)                     (B)
-
-mutex_lock(&f->sem) (A)
-
-
-But for do_generic_file_read()  first acquires the page lock, then 
-f->sem,causes another AB-BA deadlock with jffs2_write_begin(), which 
-firstacquires f->sem, then the page lock:
-
-jffs2_write_begin
-
-mutex_lock(&f->sem) (A)
-
-grab_cache_page_write_begin
-
-     find_lock_page
-
-lock_page(page)                     (B)
-
-do_generic_file_read
-
-lock_page_killable(page) (B)
-
-     jffs2_readpage
-
-mutex_lock(&f->sem)                     (A)
-
-
-I also noticed there was another thread discussed a similar deadlock 
-also related to the same commit, with the title: "[JFFS2]The patch 
-"jffs2: Fix lock acquisition order bug in jffs2_write_begin" introduces 
-another dead lock bug.", posted by Deng Chao. And Deng had proposed a 
-idea that involving in a function "read_cache_page_async_trylock" 
-instead of "read_cache_page_async", is there anybody has implement that?
-
-the best,
-thank you
+>         flash->program_opcode = OPCODE_PP;
+>
+>         if (info->addr_width)
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index b420a5b..d5b189d 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -39,6 +39,9 @@
+>
+>  /* Used for Spansion flashes only. */
+>  #define        OPCODE_BRWR             0x17    /* Bank register write */
+> +#define OPCODE_QIOR            0xeb    /* Quad read */
+> +#define OPCODE_4QIOR           0xec    /* Quad read */
+> +#define        OPCODE_RDCR             0x35    /* Read configuration register */
+>
+>  /* Status Register bits. */
+>  #define        SR_WIP                  1       /* Write in progress */
+> @@ -49,4 +52,7 @@
+>  #define        SR_BP2                  0x10    /* Block protect 2 */
+>  #define        SR_SRWD                 0x80    /* SR write protect */
+>
+> +/* Configuration Register bits. */
+> +#define CR_QUAD                        0x2     /* Quad I/O */
+> +
+>  #endif /* __LINUX_MTD_SPI_NOR_H */
+> --
+> 1.7.1
+>
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-spi" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
