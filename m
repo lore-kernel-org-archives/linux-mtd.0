@@ -1,17 +1,15 @@
-Date: Fri, 23 Aug 2013 12:30:58 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Message-ID: <20130823113058.GA23465@sirena.org.uk>
-References: <1376885403-12156-1-git-send-email-b32955@freescale.com>
- <1376885403-12156-4-git-send-email-b32955@freescale.com>
- <20130822193453.GB10038@ld-irv-0074.broadcom.com>
- <20130822195559.GU26118@sirena.org.uk> <52174640.701@gmail.com>
+Message-ID: <52174BAC.3070901@gmail.com>
+Date: Fri, 23 Aug 2013 04:46:52 -0700
+From: Brian Norris <computersforpeace@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="X1bOJ3K7DJ5YkBrT"
-Content-Disposition: inline
-In-Reply-To: <52174640.701@gmail.com>
+To: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH V1 3/5] mtd: m25p80: add the quad-read support
+References: <1376885403-12156-1-git-send-email-b32955@freescale.com>
+ <201308222229.01778.marex@denx.de> <20130822233611.GA25263@sirena.org.uk>
+ <201308230158.05909.marex@denx.de> <20130823094141.GE25263@sirena.org.uk>
+In-Reply-To: <20130823094141.GE25263@sirena.org.uk>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Cc: Marek Vasut <marex@denx.de>, devicetree@vger.kernel.org,
  b44548@freescale.com, dedekind1@gmail.com, b18965@freescale.com,
  linux-spi@vger.kernel.org, Huang Shijie <b32955@freescale.com>,
@@ -27,46 +25,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 08/23/2013 02:41 AM, Mark Brown wrote:
+> On Fri, Aug 23, 2013 at 01:58:05AM +0200, Marek Vasut wrote:
+>>> I was actually thinking something more generic than that - putting the
+>>> property at the SPI generic bindings level.  Though if all flashes with
+>>> this dual/quad read functionality have the prefix m25p the above would
+>>> work also, at the minute this does seem to be mostly used by flash (I
+>>> bet someone's got some DSPs or something though).
+> 
+>> Ah! So you mean the SPI controller would provide information that it can do
+>> dual/quad transfers? But then, the additional pins can only be wired to certain
+>> chips (controller by certain CS lines).
+> 
+> No, not exactly - I just meant that the property on the child node
+> should be one that's consistent over all chips and could hopefully be
+> implemented in the SPI core as part of instantiating the device in DT.
+> Which probably just means stripping or changing the vendor prefix.
 
---X1bOJ3K7DJ5YkBrT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+(Now that I've been pointed to the support merged into the SPI tree...)
 
-On Fri, Aug 23, 2013 at 04:23:44AM -0700, Brian Norris wrote:
-> On 08/22/2013 12:55 PM, Mark Brown wrote:
+Aren't the following new DT properties (for the SPI slave) sufficient?
 
-> >That bit does need to be fixed in this driver, yes.  The SPI core now
-> >has quad mode support.
+spi-rx-nbits
+spi-tx-nbits
 
-> Where? Perhaps I'm missing the obvious, but I don't see SPI core
-> quad support in linux-next or in Linus' tree.
+We can leave the detection of which flash chips support which modes to 
+software (m25p80.c) where it belongs, IMO.
 
-It went in yesterday, -next doesn't seem to have been updated today (I
-suspect Stephen may be on vacation, I'd need to check his announcement
-mail from yesterday to confirm).  The SPI tree is:
+They're already in the following commit:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+commit f477b7fb13df2b843997559ff34e87d054ba6538
+Author: wangyuhang <wangyuhang2014@gmail.com>
+Date:   Sun Aug 11 18:15:17 2013 +0800
 
---X1bOJ3K7DJ5YkBrT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+    spi: DUAL and QUAD support
+    
+    fix the previous patch some mistake below:
+    1. DT in slave node, use "spi-tx-nbits = <1/2/4>" in place of using
+       "spi-tx-dual, spi-tx-quad" directly, same to rx. So correct the
+       previous way to get the property in @of_register_spi_devices().
+    2. Change the value of transfer bit macro(SPI_NBITS_SINGLE, SPI_NBITS_DUAL
+       SPI_NBITS_QUAD) to 0x01, 0x02 and 0x04 to match the actual wires.
+    3. Add the following check
+       (1)keep the tx_nbits and rx_nbits in spi_transfer is not beyond the
+          single, dual and quad.
+       (2)keep tx_nbits and rx_nbits are contained by @spi_device->mode
+          example: if @spi_device->mode = DUAL, then tx/rx_nbits can not be set
+                   to QUAD(SPI_NBITS_QUAD)
+       (3)if "@spi_device->mode & SPI_3WIRE", then tx/rx_nbits should be in
+          single(SPI_NBITS_SINGLE)
+    
+    Signed-off-by: wangyuhang <wangyuhang2014@gmail.com>
+    Signed-off-by: Mark Brown <broonie@linaro.org>
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.20 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSF0fvAAoJELSic+t+oim90g0P/i14e7u8toHBkOI7t5/+y0B9
-nYEQT6X2ASMtBCm8B57CNROEqCQktqM8O5q+UwoVRFISlM484P+FR4W13GtkchRG
-h7Xtbvr1ymjrdpxW8X/f3CVAykIceYKCz4y+Y8qpFWtz8UK3zKL3ZkJOi91UOLqD
-hww72xAd6hltvWFC1NKI3dKF8fjpqDi3OyK/Yrcdbgx/wypGJ58WJWK1TNecMfw7
-9hjbuv9UGoI1PVe0czNOhHjOxtWRJ3OQLZf9k1+hE7p5GZ50zZi93zq7Sul1nCqb
-4ur3dmKnvwwcWd8gFdXikGgQ9qwVbrSmdFalbHwWKIvJ5eQ43JnvrCm+NmKlHFGq
-DZo9yBXE6bHnxR473OGKi2lMd56O0IAA9EyC57lya9rl8Z/oUUs5YlIkx0ajdqT1
-OEGx1ePq17Kue0EMSoIGc+26XV+rR6HoxnccLmLPL6hhM9I/Hmn8L1Y1OOA62DnH
-gbD85wrUWKMlzJct/UlndVB4vnCERMDMimNQjD9CnVIcTlWPua4ScGoLp2VFCPgE
-fumdp9f87yUoNi49AfeIEb3QU2YZvSpofDenPjwgVzPYhcS8NQwOu13HFTTmGaNU
-BT/5AWAz5MKbzsNg5vNKKHQB9ulhUqNvSYwACgozK+rj+Hxsa5TRkhqR6g3Bo8y+
-ETX0sQVQdytoRPPHP6HH
-=ITpv
------END PGP SIGNATURE-----
-
---X1bOJ3K7DJ5YkBrT--
+Brian
