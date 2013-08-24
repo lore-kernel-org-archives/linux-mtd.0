@@ -1,20 +1,24 @@
-Date: Sat, 24 Aug 2013 09:42:03 -0400
-From: Huang Shijie <shijie8@gmail.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V1 4/5] spi: Add Freescale QuadSpi driver
-Message-ID: <20130824134201.GA7572@gmail.com>
-References: <1376885403-12156-1-git-send-email-b32955@freescale.com>
- <1376885403-12156-5-git-send-email-b32955@freescale.com>
- <20130823164442.GA30359@sirena.org.uk>
+Received: from mail-pd0-f169.google.com ([209.85.192.169])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VD5iN-00048M-V5
+ for linux-mtd@lists.infradead.org; Sat, 24 Aug 2013 04:44:46 +0000
+Received: by mail-pd0-f169.google.com with SMTP id r10so1428989pdi.14
+ for <linux-mtd@lists.infradead.org>; Fri, 23 Aug 2013 21:44:19 -0700 (PDT)
+Date: Fri, 23 Aug 2013 21:44:10 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Wei Yongjun <weiyj.lk@gmail.com>
+Subject: Re: [PATCH -next] mtd: atmel_nand: fix error return code in
+ atmel_nand_probe()
+Message-ID: <20130824044410.GA19575@brian-ubuntu>
+References: <CAPgLHd8an7_iEV1eTNGFmQ8B4CM=FGu0jrov_A=L9JRJ8AFKPA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20130823164442.GA30359@sirena.org.uk>
-Cc: computersforpeace@gmail.com, b44548@freescale.com, dedekind1@gmail.com,
- b18965@freescale.com, linux-spi@vger.kernel.org,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- kernel@pengutronix.de, shawn.guo@linaro.org, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+In-Reply-To: <CAPgLHd8an7_iEV1eTNGFmQ8B4CM=FGu0jrov_A=L9JRJ8AFKPA@mail.gmail.com>
+Cc: devicetree@vger.kernel.org, artem.bityutskiy@linux.intel.com,
+ jg1.han@samsung.com, rob.herring@calxeda.com, josh.wu@atmel.com,
+ yongjun_wei@trendmicro.com.cn, linux-mtd@lists.infradead.org,
+ grant.likely@linaro.org, plagnioj@jcrosoft.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,43 +28,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Aug 23, 2013 at 05:44:42PM +0100, Mark Brown wrote:
-> On Mon, Aug 19, 2013 at 12:10:02PM +0800, Huang Shijie wrote:
+On Fri, Aug 23, 2013 at 10:50:36AM +0800, Wei Yongjun wrote:
+> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 > 
-> > +static int fsl_qspi_nor_do_one_msg(struct spi_master *master,
-> > +		struct spi_message *m)
-> > +{
-> > +	struct fsl_qspi *q = spi_master_get_devdata(master);
-> > +	struct spi_transfer *t;
-> > +	int ret = 0;
-> > +
-> > +	list_for_each_entry(t, &m->transfers, transfer_list) {
-> > +		if (t->rx_buf && t->tx_buf) {
-> > +			dev_err(q->dev,
-> > +				"Can't send and receive simultaneously\n");
-> > +			ret = -EINVAL;
-> > +			break;
-> > +		}
-> > +
-> > +		if (t->tx_buf) {
-> > +			ret = fsl_qspi_nor_tx(q, t);
-> > +			if (!ret)
-> > +				m->actual_length += t->len;
-> > +			continue;
-> > +		}
-> > +
-> > +		if (t->rx_buf) {
-> > +			ret = fsl_qspi_nor_rx(q, t);
-> > +			if (!ret)
-> > +				m->actual_length += t->len;
-> > +		}
-> > +	}
+> Fix to return a negative error code from the error handling
+> case instead of 0, as done elsewhere in this function.
 > 
-> The driver should flag SPI_HALF_DUPLEX since it doesn't support
-> simultaneous RX and TX.
-> 
-okay, i will add the flag in the next version.
+> Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 
+Pushed to l2-mtd.git. Thanks!
 
-thanks
-Huang Shijie
+Brian
