@@ -1,19 +1,25 @@
-Message-ID: <52185C8C.3090605@gmail.com>
-Date: Sat, 24 Aug 2013 00:11:08 -0700
-From: Brian Norris <computersforpeace@gmail.com>
+Received: from mail-pb0-x232.google.com ([2607:f8b0:400e:c01::232])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VD82i-0005Bp-Sm
+ for linux-mtd@lists.infradead.org; Sat, 24 Aug 2013 07:13:53 +0000
+Received: by mail-pb0-f50.google.com with SMTP id uo5so1496443pbc.23
+ for <linux-mtd@lists.infradead.org>; Sat, 24 Aug 2013 00:13:31 -0700 (PDT)
+Date: Sat, 24 Aug 2013 15:18:13 -0400
+From: Huang Shijie <shijie8@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v2 4/9] mtd: gpmi: rewrite the gpmi_ecc_write_oob() to
+ support the jffs2
+Message-ID: <20130824191757.GA23955@gmail.com>
+References: <1376879478-22128-1-git-send-email-b32955@freescale.com>
+ <1376879478-22128-5-git-send-email-b32955@freescale.com>
+ <20130824061916.GC32074@brian-ubuntu>
 MIME-Version: 1.0
-To: Mark Brown <broonie@kernel.org>, Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH V1 4/5] spi: Add Freescale QuadSpi driver
-References: <1376885403-12156-1-git-send-email-b32955@freescale.com>
- <1376885403-12156-5-git-send-email-b32955@freescale.com>
- <20130823164442.GA30359@sirena.org.uk>
-In-Reply-To: <20130823164442.GA30359@sirena.org.uk>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: b44548@freescale.com, dedekind1@gmail.com, b18965@freescale.com,
- linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
- kernel@pengutronix.de, shawn.guo@linaro.org, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20130824061916.GC32074@brian-ubuntu>
+Cc: dedekind1@gmail.com, akinobu.mita@gmail.com, matthieu.castet@parrot.com,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,38 +29,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/23/2013 09:44 AM, Mark Brown wrote:
-> On Mon, Aug 19, 2013 at 12:10:02PM +0800, Huang Shijie wrote:
->> +static int fsl_qspi_wait_till_ready(struct fsl_qspi *q)
->> +{
->> +	unsigned long deadline;
->> +	u32 sr;
->> +
->> +	deadline = jiffies + msecs_to_jiffies(40000);
->> +
->> +	do {
->> +		if ((sr = fsl_qspi_read_sr(q)) < 0)
->> +			break;
->> +		else if (!(sr & SR_WIP))
->> +			return 0;
->> +
->> +		cond_resched();
->> +
->> +	} while (!time_after_eq(jiffies, deadline));
->> +
->> +	return 1;
->> +}
->
-> Return an error code if we time out?
+On Fri, Aug 23, 2013 at 11:19:16PM -0700, Brian Norris wrote:
+> On Mon, Aug 19, 2013 at 10:31:13AM +0800, Huang Shijie wrote:
+> > -	 */
+> > -	return -EPERM;
+> > +	struct nand_oobfree *of = gpmi_hw_ecclayout.oobfree;
+> 
+> Why do you directly access your static layout? I think you should use
+> the proper indirection, through chip->ecc.layout. (There's a similar
+		
+yes, it is better to use the chip->ecc.layout.
 
-You also need to check that you didn't complete between your last 
-fsl_qspi_read_sr() and the time_arter_eq() check. Theoretically, there 
-could be a lot of time between them (due to cond_resched(), for 
-instance). 40000 milliseconds is also a lot of time, but still...
+> issue with set_geometry_by_ecc_info() currently.)
 
-IOW, add a check before the "return -ESOMETHING", something like this:
+Not a same issue.  The set_geometry_by_ecc_info() is called before we
+call the nand_scan_tail(). so it should not changed.
 
-if (!(fsl_qspi_read_sr(q) & SR_WIP))
-	return 0;
+> 
+> [BTW, I was about to recommend nand_chip.ecclayout, but it looks like
+> that is just a dead field. It's not initialized anywhere, AFAICT, and if
+The jffs2 write may also uses the ecclayout. 
 
-Brian
+thanks
+Huang Shijie
