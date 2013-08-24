@@ -1,16 +1,20 @@
-In-Reply-To: <000a01ce8ccc$8ae14840$1c214a0a@ztedengchao>
-References: <000a01ce8ccc$8ae14840$1c214a0a@ztedengchao>
-To: deng.chao1@zte.com.cn
+Date: Sat, 24 Aug 2013 09:42:03 -0400
+From: Huang Shijie <shijie8@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH V1 4/5] spi: Add Freescale QuadSpi driver
+Message-ID: <20130824134201.GA7572@gmail.com>
+References: <1376885403-12156-1-git-send-email-b32955@freescale.com>
+ <1376885403-12156-5-git-send-email-b32955@freescale.com>
+ <20130823164442.GA30359@sirena.org.uk>
 MIME-Version: 1.0
-Subject: Re: [JFFS2]The patch "jffs2: Fix lock acquisition order bug in
- jffs2_write_begin" introduces another dead lock bug.
-From: Thomas.Betker@rohde-schwarz.com
-Message-ID: <OF039421E5.05D3267C-ONC1257BD0.0071BBE2-C1257BD0.007746F1@rohde-schwarz.com>
-Date: Fri, 23 Aug 2013 23:42:49 +0200
-Content-Type: text/plain; charset="ISO-2022-JP"
-Cc: "\"linux-mtd\"" <linux-mtd-bounces@lists.infradead.org>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, wang.bo116@zte.com.cn,
- linux-mtd@lists.infradead.org, Thomas Betker <thomas.betker@freenet.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20130823164442.GA30359@sirena.org.uk>
+Cc: computersforpeace@gmail.com, b44548@freescale.com, dedekind1@gmail.com,
+ b18965@freescale.com, linux-spi@vger.kernel.org,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ kernel@pengutronix.de, shawn.guo@linaro.org, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,37 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Chao:
-
-> Yes，my kernel actually had hit this dead lock.
+On Fri, Aug 23, 2013 at 05:44:42PM +0100, Mark Brown wrote:
+> On Mon, Aug 19, 2013 at 12:10:02PM +0800, Huang Shijie wrote:
 > 
-> My kernel's version is 2.6.32. After i merged the patch into my 
-> kernel, i run my own filesystem test suite "fstess" on the kernel. 
-> About 9 hours later, i found that the kernel didn't reponse any file
-> operation at all. So i used magic SysRq key to show state of all 
-> tasks. Finally i found this two threads' stacktraces in the SysRq 
-> output as below which could prove the dead lock:
+> > +static int fsl_qspi_nor_do_one_msg(struct spi_master *master,
+> > +		struct spi_message *m)
+> > +{
+> > +	struct fsl_qspi *q = spi_master_get_devdata(master);
+> > +	struct spi_transfer *t;
+> > +	int ret = 0;
+> > +
+> > +	list_for_each_entry(t, &m->transfers, transfer_list) {
+> > +		if (t->rx_buf && t->tx_buf) {
+> > +			dev_err(q->dev,
+> > +				"Can't send and receive simultaneously\n");
+> > +			ret = -EINVAL;
+> > +			break;
+> > +		}
+> > +
+> > +		if (t->tx_buf) {
+> > +			ret = fsl_qspi_nor_tx(q, t);
+> > +			if (!ret)
+> > +				m->actual_length += t->len;
+> > +			continue;
+> > +		}
+> > +
+> > +		if (t->rx_buf) {
+> > +			ret = fsl_qspi_nor_rx(q, t);
+> > +			if (!ret)
+> > +				m->actual_length += t->len;
+> > +		}
+> > +	}
+> 
+> The driver should flag SPI_HALF_DUPLEX since it doesn't support
+> simultaneous RX and TX.
+> 
+okay, i will add the flag in the next version.
 
-When creating the patch, I was assuming that jffs2_write_begin() and 
-jffs2_write_end() could not be called at the same time (for the same 
-page). Obviously, I was wrong.
 
-Taking also into account the report by Ming Liu, I have come to the 
-conclusion that page_lock() must be called _before_ c->alloc_sem or f->sem 
-is acquired. In other words, my patch was a mistake; it's not 
-jffs2_write_begin() that should be fixed, but 
-jffs2_garbage_collect_live().
-
-The short way out is to revert my patch, which is fine by me. However, 
-this still leaves us with the original issue, i.e., the deadlock between 
-jffs2_garbage_collect_live() and jffs2_write_begin(). Unfortunately, 
-jffs2_garbage_collect_live() grabs f->sem right at the beginning, while 
-page_lock() or __set_page_locked() is called several layers deep within 
-the code. So I don't think this is an easy job.
-
-Unfortunately, I won't be at the office in the next three weeks, so there 
-isn't much I can do at the moment. If you are going to provide a fix, I 
-will gladly test it when I am back.
-
-Best regards,
-Thomas
+thanks
+Huang Shijie
