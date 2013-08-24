@@ -1,20 +1,23 @@
-Received: from mail-lb0-x22e.google.com ([2a00:1450:4010:c04::22e])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VCsBT-00050N-1A
- for linux-mtd@lists.infradead.org; Fri, 23 Aug 2013 14:17:51 +0000
-Received: by mail-lb0-f174.google.com with SMTP id w20so518743lbh.19
- for <linux-mtd@lists.infradead.org>; Fri, 23 Aug 2013 07:17:26 -0700 (PDT)
+Date: Fri, 23 Aug 2013 22:45:15 -0400
+From: Huang Shijie <shijie8@gmail.com>
+To: Sourav Poddar <sourav.poddar@ti.com>
+Subject: Re: [PATCH V1 3/5] mtd: m25p80: add the quad-read support
+Message-ID: <20130824024512.GA2528@gmail.com>
+References: <1376885403-12156-1-git-send-email-b32955@freescale.com>
+ <1376885403-12156-4-git-send-email-b32955@freescale.com>
+ <CAHSAbzN166J=DFi+1koPUpnFpJVHwtbC1AP21ywhAAissQxPxg@mail.gmail.com>
+ <52172A81.5090501@freescale.com> <52173217.70505@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <CACQ1gAj2bNOnnCqLjALW0LiXYiDw_CTYUTgsE4Jd5pH9DkWadA@mail.gmail.com>
-References: <CACQ1gAgOS5kpykb1jxnRJUNCmdC1jwmmWr5cQ7aazKVvMjBPWQ@mail.gmail.com>
- <CACQ1gAj2bNOnnCqLjALW0LiXYiDw_CTYUTgsE4Jd5pH9DkWadA@mail.gmail.com>
-From: Richard Genoud <richard.genoud@gmail.com>
-Date: Fri, 23 Aug 2013 16:17:06 +0200
-Message-ID: <CACQ1gAiRZx1QdSUzmHpKtj_oHzdHB3cZLptE1h8UtUWs4UMiuA@mail.gmail.com>
-Subject: Re: Fastmap and Atmel sam-ba
-To: Richard Weinberger <richard@nod.at>, Artem Bityutskiy <dedekind1@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <52173217.70505@ti.com>
+Cc: shawn.guo@linaro.org, b44548@freescale.com, dedekind1@gmail.com,
+ b18965@freescale.com, linux-spi@vger.kernel.org,
+ Huang Shijie <b32955@freescale.com>, Mark Brown <broonie@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ kernel@pengutronix.de, computersforpeace@gmail.com, dwmw2@infradead.org,
+ yuhang wang <wangyuhang2014@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,15 +27,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-For the record, if I use uboot instead of sam-ba to flash :
-usb start
-fatload usb 0 0x20008000 /userspace.ubi
-nand device ubi
-nand erase.part ubi
-nand write.trimffs 0x20008000 ubi 32e0000
+On Fri, Aug 23, 2013 at 03:27:43PM +0530, Sourav Poddar wrote:
+> On Friday 23 August 2013 02:55 PM, Huang Shijie wrote:
+> >于 2013年08月23日 17:05, yuhang wang 写道:
+> >
+> You should add QOR opcodes also in your patch, so we have the complete set.
 
-I've got the same error.
+yes, i have already supported the QIOR opcode in my driver.
 
-(And of course, no error when I use ubiformat !)
-
-Richard.
+thanks
+Huang Shijie
