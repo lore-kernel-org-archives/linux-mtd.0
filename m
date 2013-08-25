@@ -1,22 +1,25 @@
-Received: from smtp.gentoo.org ([140.211.166.183])
+Received: from mail-pd0-x22a.google.com ([2607:f8b0:400e:c02::22a])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VDN7i-0005x7-NF
- for linux-mtd@lists.infradead.org; Sat, 24 Aug 2013 23:20:03 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH [mtd-utils] 2/3] mtd-utils: new prompt() helper for
- talking to the user
-Date: Sat, 24 Aug 2013 19:19:42 -0400
-References: <1368030446-343-1-git-send-email-vapier@gentoo.org>
- <1368030446-343-2-git-send-email-vapier@gentoo.org>
- <CAN8TOE8zAiSxxB5X_wVJ+=Fi8tSDoFEDatRRY-qQy9805J5H=Q@mail.gmail.com>
-In-Reply-To: <CAN8TOE8zAiSxxB5X_wVJ+=Fi8tSDoFEDatRRY-qQy9805J5H=Q@mail.gmail.com>
+ id 1VDRUa-0007jS-IP
+ for linux-mtd@lists.infradead.org; Sun, 25 Aug 2013 03:59:57 +0000
+Received: by mail-pd0-f170.google.com with SMTP id x10so2173259pdj.29
+ for <linux-mtd@lists.infradead.org>; Sat, 24 Aug 2013 20:59:31 -0700 (PDT)
+Date: Sun, 25 Aug 2013 12:04:15 -0400
+From: Huang Shijie <shijie8@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH v2 3/9] mtd: print out the cell information for nand chip
+Message-ID: <20130825160412.GA2391@gmail.com>
+References: <1376879478-22128-1-git-send-email-b32955@freescale.com>
+ <1376879478-22128-4-git-send-email-b32955@freescale.com>
+ <20130824055821.GB32074@brian-ubuntu>
+ <20130824210215.GB9456@localhost>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart2795729.KHBhcX3Opo";
- protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-Message-Id: <201308241919.43159.vapier@gentoo.org>
-Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20130824210215.GB9456@localhost>
+Cc: dedekind1@gmail.com, akinobu.mita@gmail.com, matthieu.castet@parrot.com,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,45 +29,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---nextPart2795729.KHBhcX3Opo
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+On Sat, Aug 24, 2013 at 06:02:16PM -0300, Ezequiel Garcia wrote:
+> On Fri, Aug 23, 2013 at 10:58:21PM -0700, Brian Norris wrote:
+> > On Mon, Aug 19, 2013 at 10:31:12AM +0800, Huang Shijie wrote:
+> > > Print out the cell information for nand chip.
+> > > 
+> > > Signed-off-by: Huang Shijie <b32955@freescale.com>
+> > > ---
+> > >  drivers/mtd/nand/nand_base.c |    5 +++--
+> > >  1 files changed, 3 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> > > index 69c4b25..8b487d5 100644
+> > > --- a/drivers/mtd/nand/nand_base.c
+> > > +++ b/drivers/mtd/nand/nand_base.c
+> > > @@ -3454,10 +3454,11 @@ ident_done:
+> > >  		chip->cmdfunc = nand_command_lp;
+> > >  
+> > >  	pr_info("NAND device: Manufacturer ID: 0x%02x, Chip ID: 0x%02x (%s %s),"
+> > > -		" %dMiB, page size: %d, OOB size: %d\n",
+> > > +		" %dMiB, %s, page size: %d, OOB size: %d\n",
+> > >  		*maf_id, *dev_id, nand_manuf_ids[maf_idx].name,
+> > >  		chip->onfi_version ? chip->onfi_params.model : type->name,
+> > > -		(int)(chip->chipsize >> 20), mtd->writesize, mtd->oobsize);
+> > > +		(int)(chip->chipsize >> 20), nand_is_slc(chip) ? "SLC" : "MLC",
+> > > +		mtd->writesize, mtd->oobsize);
+> > 
+> > This message is getting mighty long (approx. 120 characters when
+> > printed). Are you sure we need all this? Maybe split into two separate
+> > pr_info's sometime. But I'm OK with merging this for now.
+> > 
+> 
+> Hm.. well, although it's still a two-line message, I also don't like
+> to see this growing.
+> 
+> I think we should try to answer: why would anyone want to see any of
+> this when the kernel boots?
+> 
+> So maybe we should pr_info only the most important information,
 
-On Wednesday 03 July 2013 22:01:52 Brian Norris wrote:
-> On Wed, May 8, 2013 at 9:27 AM, Mike Frysinger <vapier@gentoo.org> wrote:
-> > --- a/include/common.h
-> > +++ b/include/common.h
-> >=20
-> > +               if (strcmp("\n", line) !=3D 0) {
-> > +                       switch (rpmatch(line)) {
->=20
-> rpmatch() is not POSIX-compliant and is not available on my uclibc, so
-> this breaks my compile.
+But what information can be regarded as the most important?
 
-i added this to uClibc already :)
-=2Dmike
+if you think the cell type information is not so important, i can
+abandon this patch.
 
---nextPart2795729.KHBhcX3Opo
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJSGT+PAAoJEEFjO5/oN/WB/PIQALwCCycXFbPCVyKEEnODDzAt
-UwwSspY7e151efczyBiFWaC67zKtyqfAtrhdIwGIuC3DIz1630zVrZIpvbiAdsUS
-cTg8wapU9JEvGBtogV/dd/uK6FC8DYWYs/3qmT0cdhNGhWhFd3aDpM6ABczo193V
-RIEGMfwW/Bfx1mNGVMuniYzrd2t4tfi3yXozhBWQ4dV+bt9lhLawsu2nQ/HcdPBv
-OchUJ8mUZ3tIEoSVTzjl31OQ3sQjTE51VdkZzIknWc7Zq1MWaIaWR18pxCcVt7Hm
-boimRUikMFxqEpzpg3rQ6ESff/zoUxTra+1rKoaIeFW0X2Vp0Yh8QPLjWHGAeV6y
-JCMd2BFU1CoK45JS37sXHUy4BbKC0CdCVoBmwIbfVWuuvRSfYFKYY68BytD7Rccl
-Ir0UU7SBsheX9lLic/81jiWKyf+BSmdOTDbuLP65kd+KbpCWmkwywRXxcS6cy+0Z
-BpgrYJqTZtKRJfaKD6PizlxbPeOjbayV8NRq+o96TpgcDhPkQKKVgYjEzJbBCeZG
-/kwqRQ/k+8x+0UAelL2cBBXAUksWekTf+u8h2StVJzUs4iJokcxnH9hDtjV6zvyZ
-ZLBPVnCs4r1FkebBBmsJOilYMGe+uGz6GIL7w6MG7KZaxi2go/NVdoQGmeJGqLz7
-2iK3WewZ5MRsyKdplhK6
-=v49A
------END PGP SIGNATURE-----
-
---nextPart2795729.KHBhcX3Opo--
+thanks
+Huang Shijie
