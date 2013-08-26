@@ -1,20 +1,24 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VDw7m-00068c-Aq
- for linux-mtd@lists.infradead.org; Mon, 26 Aug 2013 12:42:26 +0000
-Date: Mon, 26 Aug 2013 14:41:53 +0200
-From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v3 00/10] About the SLC/MLC
-Message-ID: <20130826144153.568f2b1c@skate>
-In-Reply-To: <1377509808-29363-1-git-send-email-b32955@freescale.com>
-References: <1377509808-29363-1-git-send-email-b32955@freescale.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, dedekind1@gmail.com
+Received: from devils.ext.ti.com ([198.47.26.153])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VDwG0-0006HV-4d
+ for linux-mtd@lists.infradead.org; Mon, 26 Aug 2013 12:50:57 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: wangyuhang <wangyuhang2014@gmail.com>
+Subject: RE: [PATCH 2/2] spi: dual and quad support(device tree)
+Date: Mon, 26 Aug 2013 12:50:25 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9FAC0C@DBDE04.ent.ti.com>
+References: <1377496080-14356-1-git-send-email-wangyuhang2014@gmail.com>
+ <1377496080-14356-2-git-send-email-wangyuhang2014@gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9FA932@DBDE04.ent.ti.com>
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9FA932@DBDE04.ent.ti.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Poddar,
+ Sourav" <sourav.poddar@ti.com>, "broonie@kernel.org" <broonie@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,25 +28,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Huang Shijie,
-
-On Mon, 26 Aug 2013 17:36:38 +0800, Huang Shijie wrote:
-> In current mtd code, the MTD_NANDFLASH is used to represent both the
-> SLC nand MLC(including the TLC). But we already have the MTD_MLCNANDFLASH
-> to stand for the MLC. What is worse is that the JFFS2 may run on the MLC
-> nand with current code. For the reason of READ/WRITE disturbance, the JFFS2
-> should runs on the SLC only,
-
-Pardon the probably very silly question, but would you mind giving more
-details about why JFFS2 is not appropriate on MLC flashes? Is there
-anything that UBI/UBIFS does that JFFS2 isn't doing to take into
-account read/write disturbance?
-
-Thanks,
-
-Thomas
--- 
-Thomas Petazzoni, Free Electrons
-Kernel, drivers, real-time and embedded Linux
-development, consulting, training and support.
-http://free-electrons.com
+PiANCj4gPg0KPiA+IGZpeCBvbmUgdGhpbmcgaW4gcGF0Y2g6DQo+ID4gY29tbWl0IGlkOmY0Nzdi
+N2ZiMTNkZjJiODQzOTk3NTU5ZmYzNGU4N2QwNTRiYTY1MzgNCj4gPg0KPiA+IGNoYW5nZSBwcm9w
+ZXJ0eSBzcGktdHgtbmJpdHMgYW5kIHNwaS1yeC1uYml0cyB0byBvcHRpb25hbC4NCj4gPiBJZiBV
+c2VyIGRvbid0IHNldCBzcGktdHgtbmJpdHMgb3Igc3BpLXJ4LW5iaXRzLCBzcGkgZGV2aWNlIG1v
+ZGUNCj4gPiBzaG91bGQgYmUgcmVnYXJkZWQgYXMgU0lOR0xFLCBub3QgcmV0dXJuIGFuIGVycm9y
+Lg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogd2FuZ3l1aGFuZyA8d2FuZ3l1aGFuZzIwMTRAZ21h
+aWwuY29tPg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL3NwaS9zcGkuYyB8ICAgNjggKysrKysrKysr
+KysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KPiAtLQ0KPiA+IC0tDQo+
+ID4gIDEgZmlsZSBjaGFuZ2VkLCAzMiBpbnNlcnRpb25zKCspLCAzNiBkZWxldGlvbnMoLSkNCj4g
+Pg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3NwaS9zcGkuYyBiL2RyaXZlcnMvc3BpL3NwaS5j
+DQo+ID4gaW5kZXggNTBmN2ZjMy4uNDZhNTVmMCAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL3Nw
+aS9zcGkuYw0KPiA+ICsrKyBiL2RyaXZlcnMvc3BpL3NwaS5jDQo+ID4gQEAgLTg3Miw0NiArODcy
+LDQyIEBAIHN0YXRpYyB2b2lkIG9mX3JlZ2lzdGVyX3NwaV9kZXZpY2VzKHN0cnVjdA0KPiA+IHNw
+aV9tYXN0ZXIgKm1hc3RlcikNCj4gPiAgCQkvKiBEZXZpY2UgRFVBTC9RVUFEIG1vZGUgKi8NCj4g
+PiAgCQlwcm9wID0gb2ZfZ2V0X3Byb3BlcnR5KG5jLCAic3BpLXR4LW5iaXRzIiwgJmxlbik7DQo+
+ID4gIAkJaWYgKCFwcm9wIHx8IGxlbiA8IHNpemVvZigqcHJvcCkpIHsNCj4gPiAtCQkJZGV2X2Vy
+cigmbWFzdGVyLT5kZXYsICIlcyBoYXMgbm8gJ3NwaS10eC1uYml0cycNCj4gPiBwcm9wZXJ0eVxu
+IiwNCj4gPiAtCQkJCW5jLT5mdWxsX25hbWUpOw0KPiA+IC0JCQlzcGlfZGV2X3B1dChzcGkpOw0K
+PiA+IC0JCQljb250aW51ZTsNCj4gPiAtCQl9DQo+ID4gLQkJc3dpdGNoIChiZTMyX3RvX2NwdXAo
+cHJvcCkpIHsNCj4gPiAtCQljYXNlIFNQSV9OQklUU19TSU5HTEU6DQo+ID4gLQkJCWJyZWFrOw0K
+PiA+IC0JCWNhc2UgU1BJX05CSVRTX0RVQUw6DQo+ID4gLQkJCXNwaS0+bW9kZSB8PSBTUElfVFhf
+RFVBTDsNCj4gPiAtCQkJYnJlYWs7DQo+ID4gLQkJY2FzZSBTUElfTkJJVFNfUVVBRDoNCj4gPiAt
+CQkJc3BpLT5tb2RlIHw9IFNQSV9UWF9RVUFEOw0KPiA+IC0JCQlicmVhazsNCj4gPiAtCQlkZWZh
+dWx0Og0KPiA+IC0JCQlkZXZfZXJyKCZtYXN0ZXItPmRldiwgInNwaS10eC1uYml0cyB2YWx1ZSBp
+cyBub3QNCj4gPiBzdXBwb3J0ZWRcbiIpOw0KPiA+IC0JCQlzcGlfZGV2X3B1dChzcGkpOw0KPiA+
+IC0JCQljb250aW51ZTsNCj4gPiArCQkJLyogc2V0IHR4IG1vZGUgaW4gU0lOR0xFIGFzIGRlZmF1
+bHQgKi8NCltQZWtvbl06IEkgdGhpbmsgeW91IHNob3VsZCBleHBsaWNpdGx5IHNldCwgYW5kIG5v
+dCB0cnVzdCBzcGktPm1vZGUgZGVmYXVsdHMuDQoJc3BpLT5tb2RlIHw9IFNQSV9UWF9TSU5HTEU7
+DQo+IA0KPiA+ICsJCX0gZWxzZSB7DQo+ID4gKwkJCXN3aXRjaCAoYmUzMl90b19jcHVwKHByb3Ap
+KSB7DQo+ID4gKwkJCWNhc2UgU1BJX05CSVRTX1NJTkdMRToNCj4gPiArCQkJCWJyZWFrOw0KPiA+
+ICsJCQljYXNlIFNQSV9OQklUU19EVUFMOg0KPiA+ICsJCQkJc3BpLT5tb2RlIHw9IFNQSV9UWF9E
+VUFMOw0KPiA+ICsJCQkJYnJlYWs7DQo+ID4gKwkJCWNhc2UgU1BJX05CSVRTX1FVQUQ6DQo+ID4g
+KwkJCQlzcGktPm1vZGUgfD0gU1BJX1RYX1FVQUQ7DQo+ID4gKwkJCQlicmVhazsNCj4gDQpbUGVr
+b25dOiBBbmQgdGhlcmUgcGxlYXNlIGNoZWNrIGZvciBzcGlfbWFzdGVyLT5tb2RlX2JpdHMNCmJl
+Zm9yZSBzZXR0aW5nIHNwaV9kZXZpY2UtPm1vZGUuDQpzcGlfZGV2aWNlLT5tb2RlIHNob3VsZCBi
+ZSBzdWItc2V0IG9mIHNwaV9tYXN0ZXItPm1vZGVfYml0cy4NCkV4YW1wbGU6IA0Kc3dpdGNoIChi
+ZTMyX3RvX2NwdXAocHJvcCkpIHsNCgljYXNlIFNQSV9OQklUU19TSU5HTEU6DQoJCWlmIChzcGlf
+bWFzdGVyLT5tb2RlX2JpdHMgJiBTUElfVFhfU0lOR0xFKQ0KCQkJc3BpLW1vZGUgfD0gU1BJX1RY
+X1NJTkdMRTsNCgkJZWxzZQ0KCQkJcHJfZXJyKCJTUEkgY29udHJvbGxlciBkb2VzIG5vdCBzdXBw
+b3J0IFNQSV9UWF9TSU5HTEVcbiIpOw0KCWJyZWFrOw0KCWNhc2UgU1BJX05CSVRTX0RVQUw6DQoJ
+CWlmIChzcGlfbWFzdGVyLT5tb2RlX2JpdHMgJiBTUElfVFhfRFVBTCkNCgkJCXNwaS1tb2RlIHw9
+IFNQSV9UWF9EVUFMOw0KCQllbHNlDQoJCQlwcl9lcnIoIlNQSSBjb250cm9sbGVyIGRvZXMgbm90
+IHN1cHBvcnQgU1BJX1RYX0RVQUxcbiIpOw0KCWJyZWFrOw0KCWNhc2UgU1BJX05CSVRTX1FVQUQ6
+DQoJCWlmIChzcGlfbWFzdGVyLT5tb2RlX2JpdHMgJiBTUElfVFhfUVVBRCkNCgkJCXNwaS1tb2Rl
+IHw9IFNQSV9UWF9RVUFEOw0KCQllbHNlDQoJCQlwcl9lcnIoIlNQSSBjb250cm9sbGVyIGRvZXMg
+bm90IHN1cHBvcnQgU1BJX1RYX1FVQURcbiIpOw0KCWJyZWFrOw0KfQ0KVGhpcyB3YXkgeW91IHdp
+bGwgZG8gaW5pdGlhbCBjb21wYXRpYmlsaXR5IGNoZWNrIGJldHdlZW4gdGhlDQpkZXZpY2UgYW5k
+IGNvbnRyb2xsZXIgcmlnaHQgYXQgdGhlIHByb2JlLCBhbmQgeW91IGRvbid0IGhhdmUNCnRvIHdv
+cnJ5IGFib3V0IGl0IGxhdGVyLg0KDQoNCj4gCXNwaS0+bW9kZSB8PSBTUElfVFhfUVVBRDsNCj4g
+b3INCj4gCXNwaS0+bW9kZSB8PSBTUElfVFhfUVVBRCB8IFNQSV9UWF9EVUFMOw0KPiANCj4gDQo+
+ID4gKwkJCWRlZmF1bHQ6DQo+ID4gKwkJCQlkZXZfZXJyKCZtYXN0ZXItPmRldiwNCj4gPiArCQkJ
+CQkic3BpLXR4LW5iaXRzIHZhbHVlIGlzIG5vdA0KPiA+IHN1cHBvcnRlZFxuIik7DQo+ID4gKwkJ
+CQlzcGlfZGV2X3B1dChzcGkpOw0KPiA+ICsJCQkJY29udGludWU7DQo+ID4gIAkJfQ0KPiA+DQo+
+ID4gIAkJcHJvcCA9IG9mX2dldF9wcm9wZXJ0eShuYywgInNwaS1yeC1uYml0cyIsICZsZW4pOw0K
+PiA+ICAJCWlmICghcHJvcCB8fCBsZW4gPCBzaXplb2YoKnByb3ApKSB7DQo+ID4gLQkJCWRldl9l
+cnIoJm1hc3Rlci0+ZGV2LCAiJXMgaGFzIG5vICdzcGktcngtbmJpdHMnDQo+ID4gcHJvcGVydHlc
+biIsDQo+ID4gLQkJCQluYy0+ZnVsbF9uYW1lKTsNCj4gPiAtCQkJc3BpX2Rldl9wdXQoc3BpKTsN
+Cj4gPiAtCQkJY29udGludWU7DQo+ID4gLQkJfQ0KPiA+IC0JCXN3aXRjaCAoYmUzMl90b19jcHVw
+KHByb3ApKSB7DQo+ID4gLQkJY2FzZSBTUElfTkJJVFNfU0lOR0xFOg0KPiA+IC0JCQlicmVhazsN
+Cj4gPiAtCQljYXNlIFNQSV9OQklUU19EVUFMOg0KPiA+IC0JCQlzcGktPm1vZGUgfD0gU1BJX1JY
+X0RVQUw7DQo+ID4gLQkJCWJyZWFrOw0KPiA+IC0JCWNhc2UgU1BJX05CSVRTX1FVQUQ6DQo+ID4g
+LQkJCXNwaS0+bW9kZSB8PSBTUElfUlhfUVVBRDsNCj4gPiAtCQkJYnJlYWs7DQo+ID4gLQkJZGVm
+YXVsdDoNCj4gPiAtCQkJZGV2X2VycigmbWFzdGVyLT5kZXYsICJzcGktcngtbmJpdHMgdmFsdWUg
+aXMgbm90DQo+ID4gc3VwcG9ydGVkXG4iKTsNCj4gPiAtCQkJc3BpX2Rldl9wdXQoc3BpKTsNCj4g
+PiAtCQkJY29udGludWU7DQo+ID4gKwkJCS8qIHNldCByeCBtb2RlIGluIFNJTkdMRSBhcyBkZWZh
+dWx0ICovDQo+ID4gKwkJfSBlbHNlIHsNCj4gPiArCQkJc3dpdGNoIChiZTMyX3RvX2NwdXAocHJv
+cCkpIHsNCj4gPiArCQkJY2FzZSBTUElfTkJJVFNfU0lOR0xFOg0KPiA+ICsJCQkJYnJlYWs7DQo+
+ID4gKwkJCWNhc2UgU1BJX05CSVRTX0RVQUw6DQo+ID4gKwkJCQlzcGktPm1vZGUgfD0gU1BJX1JY
+X0RVQUw7DQo+ID4gKwkJCQlicmVhazsNCj4gPiArCQkJY2FzZSBTUElfTkJJVFNfUVVBRDoNCj4g
+PiArCQkJCXNwaS0+bW9kZSB8PSBTUElfUlhfUVVBRDsNCj4gPiArCQkJCWJyZWFrOw0KPiA+ICsJ
+CQlkZWZhdWx0Og0KPiA+ICsJCQkJZGV2X2VycigmbWFzdGVyLT5kZXYsDQo+ID4gKwkJCQkJInNw
+aS1yeC1uYml0cyB2YWx1ZSBpcyBub3QNCj4gPiBzdXBwb3J0ZWRcbiIpOw0KPiA+ICsJCQkJc3Bp
+X2Rldl9wdXQoc3BpKTsNCj4gPiArCQkJCWNvbnRpbnVlOw0KPiA+ICAJCX0NCj4gPg0KPiA+ICAJ
+CS8qIERldmljZSBzcGVlZCAqLw0KPiA+IC0tDQo+ID4gMS43LjkuNQ0KPiANCg0Kd2l0aCByZWdh
+cmRzLCBwZWtvbg0K
