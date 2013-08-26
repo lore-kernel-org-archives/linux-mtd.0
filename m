@@ -1,13 +1,14 @@
-Received: from mail-db8lp0188.outbound.messaging.microsoft.com
- ([213.199.154.188] helo=db8outboundpool.messaging.microsoft.com)
+Received: from tx2ehsobe004.messaging.microsoft.com ([65.55.88.14]
+ helo=tx2outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VDtJG-0001eT-4Q
- for linux-mtd@lists.infradead.org; Mon, 26 Aug 2013 09:42:06 +0000
+ id 1VDtJJ-0001ec-PY
+ for linux-mtd@lists.infradead.org; Mon, 26 Aug 2013 09:42:11 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH v3 02/10] mtd: set the cell information for ONFI nand
-Date: Mon, 26 Aug 2013 17:36:40 +0800
-Message-ID: <1377509808-29363-3-git-send-email-b32955@freescale.com>
+Subject: [PATCH v3 05/10] mtd: add more comment for
+ MTD_NANDFLASH/MTD_MLCNANDFLASH
+Date: Mon, 26 Aug 2013 17:36:43 +0800
+Message-ID: <1377509808-29363-6-git-send-email-b32955@freescale.com>
 In-Reply-To: <1377509808-29363-1-git-send-email-b32955@freescale.com>
 References: <1377509808-29363-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
@@ -23,27 +24,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The current code does not set the SLC/MLC information for onfi nand.
-(This makes that the kernel treats all the onfi nand as SLC nand.)
+In current code, the MTD_NANDFLASH is used to represent both the SLC and
+MLC. It is confusing to us.
 
-This patch fills the cell type information for ONFI nands.
+By adding an explicit comment about these two macros, this patch makes it
+clear that:
+	MTD_NANDFLASH    : stands for SLC nand,
+	MTD_MLCNANDFLASH : stands for MLC nand(including TLC).
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- drivers/mtd/nand/nand_base.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+ include/uapi/mtd/mtd-abi.h |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 7e29ea5..0177ea5 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2988,6 +2988,7 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
- 	mtd->oobsize = le16_to_cpu(p->spare_bytes_per_page);
- 	chip->chipsize = le32_to_cpu(p->blocks_per_lun);
- 	chip->chipsize *= (uint64_t)mtd->erasesize * p->lun_count;
-+	chip->bits_per_cell = p->bits_per_cell;
+diff --git a/include/uapi/mtd/mtd-abi.h b/include/uapi/mtd/mtd-abi.h
+index 36eace0..16a9406 100644
+--- a/include/uapi/mtd/mtd-abi.h
++++ b/include/uapi/mtd/mtd-abi.h
+@@ -94,10 +94,10 @@ struct mtd_write_req {
+ #define MTD_RAM			1
+ #define MTD_ROM			2
+ #define MTD_NORFLASH		3
+-#define MTD_NANDFLASH		4
++#define MTD_NANDFLASH		4	/* stand for SLC nand */
+ #define MTD_DATAFLASH		6
+ #define MTD_UBIVOLUME		7
+-#define MTD_MLCNANDFLASH	8
++#define MTD_MLCNANDFLASH	8	/* stand for MLC nand(including TLC) */
  
- 	if (onfi_feature(chip) & ONFI_FEATURE_16_BIT_BUS)
- 		*busw = NAND_BUSWIDTH_16;
+ #define MTD_WRITEABLE		0x400	/* Device is writeable */
+ #define MTD_BIT_WRITEABLE	0x800	/* Single bits can be flipped */
 -- 
 1.7.1
