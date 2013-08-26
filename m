@@ -1,23 +1,17 @@
-Received: from mail-pd0-f182.google.com ([209.85.192.182])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VDrsF-0007xB-Tg
- for linux-mtd@lists.infradead.org; Mon, 26 Aug 2013 08:10:09 +0000
-Received: by mail-pd0-f182.google.com with SMTP id r10so3170669pdi.27
- for <linux-mtd@lists.infradead.org>; Mon, 26 Aug 2013 01:09:41 -0700 (PDT)
+In-Reply-To: <OF039421E5.05D3267C-ONC1257BD0.0071BBE2-C1257BD0.007746F1@rohde-schwarz.com>
+References: <000a01ce8ccc$8ae14840$1c214a0a@ztedengchao>
+ <OF039421E5.05D3267C-ONC1257BD0.0071BBE2-C1257BD0.007746F1@rohde-schwarz.com>
+Subject: Re: [JFFS2]The patch "jffs2: Fix lock acquisition order bug in
+ jffs2_write_begin" introduces another dead lock bug.
+To: Thomas.Betker@rohde-schwarz.com, linux-mtd@lists.infradead.org,
+ "\"linux-mtd\"" <linux-mtd-bounces@lists.infradead.org>
+Message-ID: <OFD828A6E5.209922BA-ON48257BD3.002B0216-48257BD3.002E9985@zte.com.cn>
+From: deng.chao1@zte.com.cn
+Date: Mon, 26 Aug 2013 16:26:21 +0800
 MIME-Version: 1.0
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9FA914@DBDE04.ent.ti.com>
-References: <1377496080-14356-1-git-send-email-wangyuhang2014@gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9FA914@DBDE04.ent.ti.com>
-Date: Mon, 26 Aug 2013 16:09:41 +0800
-Message-ID: <CAHSAbzPBTAs=A4SMMojNFG969hukaf=+iAv0xLoQ13Mo0W=J+g@mail.gmail.com>
-Subject: Re: [PATCH 1/2] spi: dual and quad support(device tree)
-From: yuhang wang <wangyuhang2014@gmail.com>
-To: "Gupta, Pekon" <pekon@ti.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Poddar,
- Sourav" <sourav.poddar@ti.com>, "broonie@kernel.org" <broonie@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
+Content-type: text/plain; charset=US-ASCII
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, wang.bo116@zte.com.cn,
+ Ming Liu <liu.ming50@gmail.com>, Thomas Betker <thomas.betker@freenet.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,80 +21,239 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Pekon
+Hi Thomas:
 
-2013/8/26 Gupta, Pekon <pekon@ti.com>:
->>
->> Signed-off-by: wangyuhang <wangyuhang2014@gmail.com>
->> ---
->>  Documentation/devicetree/bindings/spi/spi-bus.txt |   14 ++++++++++++++
->>  1 file changed, 14 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/spi/spi-bus.txt
->> b/Documentation/devicetree/bindings/spi/spi-bus.txt
->> index 296015e..145ba96 100644
->> --- a/Documentation/devicetree/bindings/spi/spi-bus.txt
->> +++ b/Documentation/devicetree/bindings/spi/spi-bus.txt
->> @@ -55,6 +55,20 @@ contain the following properties.
->>               chip select active high
->>  - spi-3wire       - (optional) Empty property indicating device requires
->>                   3-wire mode.
->> +- spi-tx-nbits    - (optional) Number of bits used for MOSI(writting)
->> +- spi-rx-nbits    - (optional) Number of bits used for MISO(reading)
->> +
->> +So if for example the slave has 4 wires for writting and 2 wires for reading,
->> +and the spi-tx/rx-nbits property should be set as follows:
->> +
->> +spi-tx-nbits = <4>;
->> +spi-rx-nbits = <2>;
->
-> [Pekon]: there is a problem here...
-> spi-tx-nbit = <4> suggests that SPI device support QUAD writes, but it does
-> not indicate whether DUAL writes are supported by device or not.
-> So, In my view having either of the following implementation could help
-> in specifying capabilities independently and clearly.
-> *Implementation-1 Boolean*
-> spi-tx-quad = <true | false>
-> spi-tx-dual = <true | false>
-> spi-tx-single = <true | false>
-> Same way for Rx..
-> spi-rx-quad = <true | false>
-> spi-rx-dual = <true | false>
-> spi-rx-single = <true | false>
->
-> *Implementation-2 Multi-option*
-> spi-quad = <tx-only | rx-only | duplex>
-> spi-dual = <tx-only | rx-only | duplex>
-> spi-single = <tx-only | rx-only | full-duplex | half-duplex>
->
-Not exactly,  spi-tx-nbit = <4> suggests that SPI device will use QUAD
-writes, not support QUAD writes. There is no need to set what mode
-slave supports, user just set the certain mode slave will work in.
+The patch is below.
+I just revert your patch, and add my fix:
+In jffs2_garbage_collect_live, I change read_cache_page_async(page) to read_cache_page_async_trylock(page),
+it only takes the page lock when the lock is not being taken, otherwise just returns result to upper.
+Once jffs2_garbage_collect_past knows the lock contentions through the return value of jffs2_garbage_collect_live,
+it can just return and wait the next garbage collect operation to continue the jffs2_gc_fetch_page opeation,
+keeps making another try to accquire the page lock until the lock is available.
 
->> +
->> +Now the value that spi-tx-nbits and spi-rx-nbits can receive is only
->> +1(single), 2(dual) and 4(quad). If you don't set spi-tx-nbits or spi-rx-nbits,
->> +spi_device mode will be set in single(1 wire) as default. Another point, if
->> +property:spi-3wire is set, spi-tx/rx-nbits is forbidden to set to <2 or 4>,
->> +otherwise, an errro will return.
->>
-> [Pekon]: Also, instead of having separate binding for 'spi-3wire', it can be
-> moved under as spi-single = <half-duplex>.
-> Full-duplex = Tx and Rx operate on independent channels and concurrently.
-> Half-duplex = Tx and Rx use same bi-directional channel for transmission
->         one by one
->
-Actually, spi-3wire can be regarded as a part of spi-single, but
-corrected as what you said, there will be some inconvenient.
-1,the driver that has already used spi-3wire need a big change.
-2,there have to be a complexed check in spi framework if set like:
- spi-quad = <tx-only | rx-only | duplex>
- spi-dual = <tx-only | rx-only | duplex>
- spi-single = <tx-only | rx-only | full-duplex | half-duplex>
+Thanks
+Deng chao
 
->>  If a gpio chipselect is used for the SPI slave the gpio number will be passed
->>  via the cs_gpio
->> --
->> 1.7.9.5
->
-> with regards, pekon
+diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
+index 1506673..60ef3fb 100755
+--- a/fs/jffs2/file.c
++++ b/fs/jffs2/file.c
+@@ -138,39 +138,33 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
+ 	struct page *pg;
+ 	struct inode *inode = mapping->host;
+ 	struct jffs2_inode_info *f = JFFS2_INODE_INFO(inode);
+-	struct jffs2_sb_info *c = JFFS2_SB_INFO(inode->i_sb);
+-	struct jffs2_raw_inode ri;
+-	uint32_t alloc_len = 0;
+ 	pgoff_t index = pos >> PAGE_CACHE_SHIFT;
+ 	uint32_t pageofs = index << PAGE_CACHE_SHIFT;
+ 	int ret = 0;
+
+-	jffs2_dbg(1, "%s()\n", __func__);
+-
+-	if (pageofs > inode->i_size) {
+-		ret = jffs2_reserve_space(c, sizeof(ri), &alloc_len,
+-					  ALLOC_NORMAL, JFFS2_SUMMARY_INODE_SIZE);
+-		if (ret)
+-			return ret;
+-	}
+-
+-	mutex_lock(&f->sem);
+ 	pg = grab_cache_page_write_begin(mapping, index, flags);
+-	if (!pg) {
+-		if (alloc_len)
+-			jffs2_complete_reservation(c);
+-		mutex_unlock(&f->sem);
++	if (!pg)
+ 		return -ENOMEM;
+-	}
+ 	*pagep = pg;
+
+-	if (alloc_len) {
++	jffs2_dbg(1, "%s()\n", __func__);
++
++	if (pageofs > inode->i_size) {
+ 		/* Make new hole frag from old EOF to new page */
++		struct jffs2_sb_info *c = JFFS2_SB_INFO(inode->i_sb);
++		struct jffs2_raw_inode ri;
+ 		struct jffs2_full_dnode *fn;
++		uint32_t alloc_len;
+
+ 		jffs2_dbg(1, "Writing new hole frag 0x%x-0x%x between current EOF and new page\n",
+ 			  (unsigned int)inode->i_size, pageofs);
+
++		ret = jffs2_reserve_space(c, sizeof(ri), &alloc_len,
++					  ALLOC_NORMAL, JFFS2_SUMMARY_INODE_SIZE);
++		if (ret)
++			goto out_page;
++
++		mutex_lock(&f->sem);
+ 		memset(&ri, 0, sizeof(ri));
+
+ 		ri.magic = cpu_to_je16(JFFS2_MAGIC_BITMASK);
+@@ -197,6 +191,7 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
+ 		if (IS_ERR(fn)) {
+ 			ret = PTR_ERR(fn);
+ 			jffs2_complete_reservation(c);
++			mutex_unlock(&f->sem);
+ 			goto out_page;
+ 		}
+ 		ret = jffs2_add_full_dnode_to_inode(c, f, fn);
+@@ -211,10 +206,12 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
+ 			jffs2_mark_node_obsolete(c, fn->raw);
+ 			jffs2_free_full_dnode(fn);
+ 			jffs2_complete_reservation(c);
++			mutex_unlock(&f->sem);
+ 			goto out_page;
+ 		}
+ 		jffs2_complete_reservation(c);
+ 		inode->i_size = pageofs;
++		mutex_unlock(&f->sem);
+ 	}
+
+ 	/*
+@@ -223,18 +220,18 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
+ 	 * case of a short-copy.
+ 	 */
+ 	if (!PageUptodate(pg)) {
++		mutex_lock(&f->sem);
+ 		ret = jffs2_do_readpage_nolock(inode, pg);
++		mutex_unlock(&f->sem);
+ 		if (ret)
+ 			goto out_page;
+ 	}
+-	mutex_unlock(&f->sem);
+ 	jffs2_dbg(1, "end write_begin(). pg->flags %lx\n", pg->flags);
+ 	return ret;
+
+ out_page:
+ 	unlock_page(pg);
+ 	page_cache_release(pg);
+-	mutex_unlock(&f->sem);
+ 	return ret;
+ }
+
+diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
+index fe3c052..7c875d2 100755
+--- a/fs/jffs2/fs.c
++++ b/fs/jffs2/fs.c
+@@ -682,8 +682,16 @@ unsigned char *jffs2_gc_fetch_page(struct jffs2_sb_info *c,
+ 	struct inode *inode = OFNI_EDONI_2SFFJ(f);
+ 	struct page *pg;
+
+-	pg = read_cache_page_async(inode->i_mapping, offset >> PAGE_CACHE_SHIFT,
+-			     (void *)jffs2_do_readpage_unlock, inode);
++	/* read_cache_page_async_trylock will return -EBUSY
++	if it is not possible to lock the cache page. If we
++	get -EBUSY, then avoid a deadlock between
++	cache page locks and f->sem.
++	*/
++	pg = read_cache_page_async_trylock(inode->i_mapping,
++				offset >> PAGE_CACHE_SHIFT,
++				(void *)jffs2_do_readpage_unlock,
++				inode);
++
+ 	if (IS_ERR(pg))
+ 		return (void *)pg;
+
+diff --git a/fs/jffs2/gc.c b/fs/jffs2/gc.c
+index 5a2dec2..76a4eb0 100755
+--- a/fs/jffs2/gc.c
++++ b/fs/jffs2/gc.c
+@@ -445,6 +445,9 @@ int jffs2_garbage_collect_pass(struct jffs2_sb_info *c)
+
+ 	jffs2_gc_release_inode(c, f);
+
++	if (!ret)
++		goto release_sem;
++
+  test_gcnode:
+ 	if (jeb->dirty_size == gcblock_dirty && !ref_obsolete(jeb->gc_node)) {
+ 		/* Eep. This really should never happen. GC is broken */
+@@ -1306,9 +1309,15 @@ static int jffs2_garbage_collect_dnode(struct jffs2_sb_info *c, struct jffs2_era
+ 	pg_ptr = jffs2_gc_fetch_page(c, f, start, &pg);
+
+ 	if (IS_ERR(pg_ptr)) {
+-		pr_warn("read_cache_page() returned error: %ld\n",
+-			PTR_ERR(pg_ptr));
+-		return PTR_ERR(pg_ptr);
++		if (PTR_ERR(pg_ptr) == -EBUSY) {
++			pr_warn("jffs2_gc_fetch_page() returned -EBUSY. Deadlock avoided.\n");
++			return 0;
++
++		} else {
++			pr_warn("read_cache_page() returned error: %ld\n",
++				PTR_ERR(pg_ptr));
++			return PTR_ERR(pg_ptr);
++		}
+ 	}
+
+ 	offset = start;
+diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+index e3dea75..a0bf9c9 100755
+--- a/include/linux/pagemap.h
++++ b/include/linux/pagemap.h
+@@ -272,6 +272,9 @@ extern struct page * grab_cache_page_nowait(struct address_space *mapping,
+ 				pgoff_t index);
+ extern struct page * read_cache_page_async(struct address_space *mapping,
+ 				pgoff_t index, filler_t *filler, void *data);
++extern struct page *read_cache_page_async_trylock(
++				struct address_space *mapping,
++				pgoff_t index, filler_t *filler, void *data);
+ extern struct page * read_cache_page(struct address_space *mapping,
+ 				pgoff_t index, filler_t *filler, void *data);
+ extern struct page * read_cache_page_gfp(struct address_space *mapping,
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 4b51ac1..81259b7 100755
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -1887,6 +1887,49 @@ struct page *read_cache_page_async(struct address_space *mapping,
+ }
+ EXPORT_SYMBOL(read_cache_page_async);
+
++/*
++* Same as read_cache_page, but abort if the page is locked.
++*/
++struct page *read_cache_page_async_trylock(struct address_space *mapping,
++					pgoff_t index,
++					int (*filler)(void *, struct page *),
++					void *data)
++{
++	struct page *page;
++	int err;
++
++retry:
++	page = __read_cache_page(mapping, index, filler, data, mapping_gfp_mask(mapping));
++	if (IS_ERR(page))
++		return page;
++	if (PageUptodate(page))
++		goto out;
++
++	if (!trylock_page(page)) {
++		page_cache_release(page);
++		return ERR_PTR(-EBUSY);
++	}
++
++	if (!page->mapping) {
++		unlock_page(page);
++		page_cache_release(page);
++		goto retry;
++	}
++	if (PageUptodate(page)) {
++		unlock_page(page);
++		goto out;
++	}
++	err = filler(data, page);
++	if (err < 0) {
++		page_cache_release(page);
++		return ERR_PTR(err);
++	}
++ out:
++	mark_page_accessed(page);
++	return page;
++}
++EXPORT_SYMBOL(read_cache_page_async_trylock);
++
+ static struct page *wait_on_page_read(struct page *page)
+ {
+ 	if (!IS_ERR(page)) {
