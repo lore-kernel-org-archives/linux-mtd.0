@@ -1,24 +1,22 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from mail-lb0-x229.google.com ([2a00:1450:4010:c04::229])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VDt7x-0001NR-QJ
- for linux-mtd@lists.infradead.org; Mon, 26 Aug 2013 09:30:27 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: yuhang wang <wangyuhang2014@gmail.com>
-Subject: RE: [PATCH 1/2] spi: dual and quad support(device tree)
-Date: Mon, 26 Aug 2013 09:29:55 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9FAA82@DBDE04.ent.ti.com>
-References: <1377496080-14356-1-git-send-email-wangyuhang2014@gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9FA914@DBDE04.ent.ti.com>
- <CAHSAbzPBTAs=A4SMMojNFG969hukaf=+iAv0xLoQ13Mo0W=J+g@mail.gmail.com>
-In-Reply-To: <CAHSAbzPBTAs=A4SMMojNFG969hukaf=+iAv0xLoQ13Mo0W=J+g@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1VDt9p-0001Q4-8v
+ for linux-mtd@lists.infradead.org; Mon, 26 Aug 2013 09:32:23 +0000
+Received: by mail-lb0-f169.google.com with SMTP id u10so2234319lbi.28
+ for <linux-mtd@lists.infradead.org>; Mon, 26 Aug 2013 02:31:56 -0700 (PDT)
 MIME-Version: 1.0
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Poddar,
- Sourav" <sourav.poddar@ti.com>, "broonie@kernel.org" <broonie@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
+In-Reply-To: <5217B101.3040306@nod.at>
+References: <CACQ1gAgOS5kpykb1jxnRJUNCmdC1jwmmWr5cQ7aazKVvMjBPWQ@mail.gmail.com>
+ <CACQ1gAj2bNOnnCqLjALW0LiXYiDw_CTYUTgsE4Jd5pH9DkWadA@mail.gmail.com>
+ <5217B101.3040306@nod.at>
+From: Richard Genoud <richard.genoud@gmail.com>
+Date: Mon, 26 Aug 2013 11:31:34 +0200
+Message-ID: <CACQ1gAjAV-5PX_-YD7JR5uSeaXaUEu1KofLsoeZq+j=64DyifA@mail.gmail.com>
+Subject: Re: Fastmap and Atmel sam-ba
+To: Richard Weinberger <richard@nod.at>
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,85 +26,123 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiBIaSwgUGVrb24NCj4gDQo+IDIwMTMvOC8yNiBHdXB0YSwgUGVrb24gPHBla29uQHRpLmNvbT46
-DQo+ID4+DQo+ID4+IFNpZ25lZC1vZmYtYnk6IHdhbmd5dWhhbmcgPHdhbmd5dWhhbmcyMDE0QGdt
-YWlsLmNvbT4NCj4gPj4gLS0tDQo+ID4+ICBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGlu
-Z3Mvc3BpL3NwaS1idXMudHh0IHwgICAxNA0KPiArKysrKysrKysrKysrKw0KPiA+PiAgMSBmaWxl
-IGNoYW5nZWQsIDE0IGluc2VydGlvbnMoKykNCj4gPj4NCj4gPj4gZGlmZiAtLWdpdCBhL0RvY3Vt
-ZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zcGkvc3BpLWJ1cy50eHQNCj4gPj4gYi9Eb2N1
-bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc3BpL3NwaS1idXMudHh0DQo+ID4+IGluZGV4
-IDI5NjAxNWUuLjE0NWJhOTYgMTAwNjQ0DQo+ID4+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNl
-dHJlZS9iaW5kaW5ncy9zcGkvc3BpLWJ1cy50eHQNCj4gPj4gKysrIGIvRG9jdW1lbnRhdGlvbi9k
-ZXZpY2V0cmVlL2JpbmRpbmdzL3NwaS9zcGktYnVzLnR4dA0KPiA+PiBAQCAtNTUsNiArNTUsMjAg
-QEAgY29udGFpbiB0aGUgZm9sbG93aW5nIHByb3BlcnRpZXMuDQo+ID4+ICAgICAgICAgICAgICAg
-Y2hpcCBzZWxlY3QgYWN0aXZlIGhpZ2gNCj4gPj4gIC0gc3BpLTN3aXJlICAgICAgIC0gKG9wdGlv
-bmFsKSBFbXB0eSBwcm9wZXJ0eSBpbmRpY2F0aW5nIGRldmljZSByZXF1aXJlcw0KPiA+PiAgICAg
-ICAgICAgICAgICAgICAzLXdpcmUgbW9kZS4NCj4gPj4gKy0gc3BpLXR4LW5iaXRzICAgIC0gKG9w
-dGlvbmFsKSBOdW1iZXIgb2YgYml0cyB1c2VkIGZvciBNT1NJKHdyaXR0aW5nKQ0KPiA+PiArLSBz
-cGktcngtbmJpdHMgICAgLSAob3B0aW9uYWwpIE51bWJlciBvZiBiaXRzIHVzZWQgZm9yIE1JU08o
-cmVhZGluZykNCj4gPj4gKw0KPiA+PiArU28gaWYgZm9yIGV4YW1wbGUgdGhlIHNsYXZlIGhhcyA0
-IHdpcmVzIGZvciB3cml0dGluZyBhbmQgMiB3aXJlcyBmb3INCj4gcmVhZGluZywNCj4gPj4gK2Fu
-ZCB0aGUgc3BpLXR4L3J4LW5iaXRzIHByb3BlcnR5IHNob3VsZCBiZSBzZXQgYXMgZm9sbG93czoN
-Cj4gPj4gKw0KPiA+PiArc3BpLXR4LW5iaXRzID0gPDQ+Ow0KPiA+PiArc3BpLXJ4LW5iaXRzID0g
-PDI+Ow0KPiA+DQo+ID4gW1Bla29uXTogdGhlcmUgaXMgYSBwcm9ibGVtIGhlcmUuLi4NCj4gPiBz
-cGktdHgtbmJpdCA9IDw0PiBzdWdnZXN0cyB0aGF0IFNQSSBkZXZpY2Ugc3VwcG9ydCBRVUFEIHdy
-aXRlcywgYnV0IGl0IGRvZXMNCj4gPiBub3QgaW5kaWNhdGUgd2hldGhlciBEVUFMIHdyaXRlcyBh
-cmUgc3VwcG9ydGVkIGJ5IGRldmljZSBvciBub3QuDQo+ID4gU28sIEluIG15IHZpZXcgaGF2aW5n
-IGVpdGhlciBvZiB0aGUgZm9sbG93aW5nIGltcGxlbWVudGF0aW9uIGNvdWxkIGhlbHANCj4gPiBp
-biBzcGVjaWZ5aW5nIGNhcGFiaWxpdGllcyBpbmRlcGVuZGVudGx5IGFuZCBjbGVhcmx5Lg0KPiA+
-ICpJbXBsZW1lbnRhdGlvbi0xIEJvb2xlYW4qDQo+ID4gc3BpLXR4LXF1YWQgPSA8dHJ1ZSB8IGZh
-bHNlPg0KPiA+IHNwaS10eC1kdWFsID0gPHRydWUgfCBmYWxzZT4NCj4gPiBzcGktdHgtc2luZ2xl
-ID0gPHRydWUgfCBmYWxzZT4NCj4gPiBTYW1lIHdheSBmb3IgUnguLg0KPiA+IHNwaS1yeC1xdWFk
-ID0gPHRydWUgfCBmYWxzZT4NCj4gPiBzcGktcngtZHVhbCA9IDx0cnVlIHwgZmFsc2U+DQo+ID4g
-c3BpLXJ4LXNpbmdsZSA9IDx0cnVlIHwgZmFsc2U+DQo+ID4NCj4gPiAqSW1wbGVtZW50YXRpb24t
-MiBNdWx0aS1vcHRpb24qDQo+ID4gc3BpLXF1YWQgPSA8dHgtb25seSB8IHJ4LW9ubHkgfCBkdXBs
-ZXg+DQo+ID4gc3BpLWR1YWwgPSA8dHgtb25seSB8IHJ4LW9ubHkgfCBkdXBsZXg+DQo+ID4gc3Bp
-LXNpbmdsZSA9IDx0eC1vbmx5IHwgcngtb25seSB8IGZ1bGwtZHVwbGV4IHwgaGFsZi1kdXBsZXg+
-DQo+ID4NCj4gTm90IGV4YWN0bHksICBzcGktdHgtbmJpdCA9IDw0PiBzdWdnZXN0cyB0aGF0IFNQ
-SSBkZXZpY2Ugd2lsbCB1c2UgUVVBRA0KPiB3cml0ZXMsIG5vdCBzdXBwb3J0IFFVQUQgd3JpdGVz
-LiBUaGVyZSBpcyBubyBuZWVkIHRvIHNldCB3aGF0IG1vZGUNCj4gc2xhdmUgc3VwcG9ydHMsIHVz
-ZXIganVzdCBzZXQgdGhlIGNlcnRhaW4gbW9kZSBzbGF2ZSB3aWxsIHdvcmsgaW4uDQo+IA0KW1Bl
-a29uXTogV2FpdC4uIEkgdGhpbmsgdGhlcmUgaXMgc29tZSBtaXMtbWF0Y2ggaW4gb3VyIHVuZGVy
-c3RhbmRpbmdzLi4gDQooYSkgc3RydWN0IHNwaV9kZXZpY2UtPm1vZGUgZGV0ZXJtaW5lcyBjYXBh
-YmlsaXRpZXMgc3BpX2RldmljZSBjYW4gc3VwcG9ydA0KKGIpIEFuZCwgd2hlbiB1c2VyIChoZXJl
-IG0yNXA4MCBsaWtlIGZsYXNoIGRyaXZlcikgcHV0cyBhIHNwaV90cmFuc2ZlciwgdGhlbg0KaXQg
-c3BlY2lmaWVzIHdoZXRoZXIgdG8gdXNlIHNwaV90cmFuc2Zlci0+dHhfbmJpdHMgPSA0IG9yIG5v
-dC4uIA0KQW5kIHlvdSBhcmUgdXNpbmcgRFQgYmluZGluZyB0byBzcGVjaWZ5IChhKSBjb3JyZWN0
-ID8NCg0KTm93LCBob3cgd291bGQgeW91IHNwZWNpZnkgZm9sbG93aW5nIGNvbmZpZ3VyYXRpb24s
-IHVzaW5nIERUID8NCglzcGlfZGV2aWNlLT5tb2RlID0gU1BJX1RYX1NJTkdMRSB8IFNQSV9UWF9R
-VUFELiAoYnV0IG5vdCBkdWFsKQ0Kc28gdGhhdCBkcml2ZXINCi0gZHJpdmVyIGdpdmUgZXJyb3Is
-DQoJd2hlbiBtMjVwODAgZHJpdmVyIHVzZXMgc3BpX3RyYW5zZmVyLT50eC1uYml0cyA9IDINCi0g
-QnV0IGFsbG93LCANCgl3aGVuIG0yNXA4MCBkcml2ZXIgdXNlcyBzcGlfdHJhbnNmZXItPnR4LW5i
-aXRzID0gMSBvcg0KCXdoZW4gbTI1cDgwIGRyaXZlciB1c2VzIHNwaV90cmFuc2Zlci0+dHgtbmJp
-dHMgPSA0DQoNCj4gPj4gKw0KPiA+PiArTm93IHRoZSB2YWx1ZSB0aGF0IHNwaS10eC1uYml0cyBh
-bmQgc3BpLXJ4LW5iaXRzIGNhbiByZWNlaXZlIGlzIG9ubHkNCj4gPj4gKzEoc2luZ2xlKSwgMihk
-dWFsKSBhbmQgNChxdWFkKS4gSWYgeW91IGRvbid0IHNldCBzcGktdHgtbmJpdHMgb3Igc3BpLXJ4
-LW5iaXRzLA0KPiA+PiArc3BpX2RldmljZSBtb2RlIHdpbGwgYmUgc2V0IGluIHNpbmdsZSgxIHdp
-cmUpIGFzIGRlZmF1bHQuIEFub3RoZXIgcG9pbnQsIGlmDQo+ID4+ICtwcm9wZXJ0eTpzcGktM3dp
-cmUgaXMgc2V0LCBzcGktdHgvcngtbmJpdHMgaXMgZm9yYmlkZGVuIHRvIHNldCB0byA8MiBvciA0
-PiwNCj4gPj4gK290aGVyd2lzZSwgYW4gZXJycm8gd2lsbCByZXR1cm4uDQo+ID4+DQo+ID4gW1Bl
-a29uXTogQWxzbywgaW5zdGVhZCBvZiBoYXZpbmcgc2VwYXJhdGUgYmluZGluZyBmb3IgJ3NwaS0z
-d2lyZScsIGl0IGNhbiBiZQ0KPiA+IG1vdmVkIHVuZGVyIGFzIHNwaS1zaW5nbGUgPSA8aGFsZi1k
-dXBsZXg+Lg0KPiA+IEZ1bGwtZHVwbGV4ID0gVHggYW5kIFJ4IG9wZXJhdGUgb24gaW5kZXBlbmRl
-bnQgY2hhbm5lbHMgYW5kDQo+IGNvbmN1cnJlbnRseS4NCj4gPiBIYWxmLWR1cGxleCA9IFR4IGFu
-ZCBSeCB1c2Ugc2FtZSBiaS1kaXJlY3Rpb25hbCBjaGFubmVsIGZvciB0cmFuc21pc3Npb24NCj4g
-PiAgICAgICAgIG9uZSBieSBvbmUNCj4gPg0KPiBBY3R1YWxseSwgc3BpLTN3aXJlIGNhbiBiZSBy
-ZWdhcmRlZCBhcyBhIHBhcnQgb2Ygc3BpLXNpbmdsZSwgYnV0DQo+IGNvcnJlY3RlZCBhcyB3aGF0
-IHlvdSBzYWlkLCB0aGVyZSB3aWxsIGJlIHNvbWUgaW5jb252ZW5pZW50Lg0KPiAxLHRoZSBkcml2
-ZXIgdGhhdCBoYXMgYWxyZWFkeSB1c2VkIHNwaS0zd2lyZSBuZWVkIGEgYmlnIGNoYW5nZS4NCj4g
-Mix0aGVyZSBoYXZlIHRvIGJlIGEgY29tcGxleGVkIGNoZWNrIGluIHNwaSBmcmFtZXdvcmsgaWYg
-c2V0IGxpa2U6DQo+ICBzcGktcXVhZCA9IDx0eC1vbmx5IHwgcngtb25seSB8IGR1cGxleD4NCj4g
-IHNwaS1kdWFsID0gPHR4LW9ubHkgfCByeC1vbmx5IHwgZHVwbGV4Pg0KPiAgc3BpLXNpbmdsZSA9
-IDx0eC1vbmx5IHwgcngtb25seSB8IGZ1bGwtZHVwbGV4IHwgaGFsZi1kdXBsZXg+DQo+IA0KW1Bl
-a29uXTogTm8sIEknbSBub3QgYXNraW5nIHlvdSB0byB1cGRhdGUgbG9naWMgaW4gYWxsIGRyaXZl
-cnMsDQpqdXN0IHRoZSBEVCBiaW5kaW5ncy4gU29tZXRoaW5nIGxpa2UgdGhpcy4uDQpAQCAtODcy
-LDQ2ICs4NzIsNDIgQEAgc3RhdGljIHZvaWQgb2ZfcmVnaXN0ZXJfc3BpX2RldmljZXMoc3RydWN0
-IHNwaV9tYXN0ZXIgKm1hc3RlcikNCiAJCS8qIERldmljZSBEVUFML1FVQUQgbW9kZSAqLw0KIAkJ
-cHJvcCA9IG9mX2dldF9wcm9wZXJ0eShuYywgInNwaS1zaW5nbGUiLCAmbGVuKTsNCgkJaWYgKHBy
-b3AgPT0gSEFMRl9EVVBMRVgpDQoJCQlzcGktPm1vZGUgfD0gU1BJXzNXSVJFOw0KDQpTbywgeW91
-IHNldCB0aGUgc2FtZSBzcGktPm1vZGVbU1BJXzNXSVJFXSBiaXQsIHRodXMgb3RoZXIgZHJpdmVy
-cyBhcmUgbm90DQppbXBhY3RlZC4gQW5kIHlvdSBjYW4gZGVwcmVjYXRlIHRoZSBvbGRlciAic3Bp
-LTN3aXJlIiBiaW5kaW5nLg0KDQp3aXRoIHJlZ2FyZHMsIHBla29uDQoNCj4gPj4gIElmIGEgZ3Bp
-byBjaGlwc2VsZWN0IGlzIHVzZWQgZm9yIHRoZSBTUEkgc2xhdmUgdGhlIGdwaW8gbnVtYmVyIHdp
-bGwgYmUNCj4gcGFzc2VkDQo+ID4+ICB2aWEgdGhlIGNzX2dwaW8NCj4gPj4gLS0NCj4gPj4gMS43
-LjkuNQ0KPiA+DQo+ID4gd2l0aCByZWdhcmRzLCBwZWtvbg0K
+2013/8/23 Richard Weinberger <richard@nod.at>:
+> Hi again,
+>
+> I have an idea what's going on. As you are using a real (and rather slow) NAND device
+> erasing PEBs takes some time.
+> If you attach the very first time from an image created by ubinize UBI has to erase
+> all PEBs, parallel to that UBIFS requests one PEB but does not get one.
+> In this case UBI has to erase one PEB in sync-mode.
+>
+> I have only nandsim, which is far to fast to hit that bug.
+> Who wants to donate me a board with NAND memory? ;-)
+>
+> Anyway, can you please test the attached patch?
+To answer your previous question, yes, I see the issue every time
+(i.e. I can never boot)
+
+I tried your patch, and it worked ! Good catch !
+
+Tried it with ubi.fm_autoconvert=0, every thing works fine.
+
+With ubi.fm_autoconvert=1, I see this at the 1st boot (It boots fine):
+[    0.812500] UBI: default fastmap pool size: 95
+[    0.820312] UBI: default fastmap WL pool size: 25
+[    0.820312] UBI: attaching mtd2 to ubi0
+[    1.273437] UBI: scanning is finished
+[    1.296875] UBI: attached mtd2 (name "UBI", size 245 MiB) to ubi0
+[    1.304687] UBI: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
+[    1.304687] UBI: min./max. I/O unit sizes: 2048/2048, sub-page size 2048
+[    1.312500] UBI: VID header offset: 2048 (aligned 2048), data offset: 4096
+[    1.320312] UBI: good PEBs: 1964, bad PEBs: 0, corrupted PEBs: 0
+[    1.328125] UBI: user volume: 3, internal volumes: 1, max. volumes count: 128
+[    1.328125] UBI: max/mean erase counter: 0/0, WL threshold: 4096,
+image sequence number: 1933127782
+[    1.335937] UBI: available PEBs: 306, total reserved PEBs: 1658,
+PEBs reserved for bad PEB handling: 40
+[    1.343750] UBI: background thread "ubi_bgt0d" started, PID 352
+[    1.421875] UBI error: ubi_update_fastmap: could not find any anchor PEB
+[    1.429687] UBI warning: ubi_update_fastmap: Unable to write new
+fastmap, err=-28
+[    1.437500] UBIFS: background thread "ubifs_bgt0_0" started, PID 354
+[    1.515625] UBIFS: mounted UBI device 0, volume 0, name "rootfs"
+[    1.515625] UBIFS: LEB size: 126976 bytes (124 KiB), min./max. I/O
+unit sizes: 2048 bytes/2048 bytes
+[    1.523437] UBIFS: FS size: 61583360 bytes (58 MiB, 485 LEBs),
+journal size 8634368 bytes (8 MiB, 68 LEBs)
+[    1.531250] UBIFS: reserved for root: 0 bytes (0 KiB)
+[    1.539062] UBIFS: media format: w4/r0 (latest is w4/r0), UUID
+5CA89910-239E-4C4B-9494-94E5C2990E6F, small LPT model
+[    1.554687] VFS: Mounted root (ubifs filesystem) on device 0:11.
+[    1.554687] devtmpfs: mounted
+[    1.562500] Freeing unused kernel memory: 112K (c0335000 - c0351000)
+[    2.195312] UBI error: ubi_update_fastmap: could not find any anchor PEB
+[    2.195312] UBI warning: ubi_update_fastmap: Unable to write new
+fastmap, err=-28
+
+
+and at the 2nd boot, no more fastmap error and scanning is slow:
+[    0.804687] UBI: default fastmap pool size: 95
+[    0.804687] UBI: default fastmap WL pool size: 25
+[    0.812500] UBI: attaching mtd2 to ubi0
+[    1.562500] UBI: scanning is finished
+[    1.585937] UBI: attached mtd2 (name "UBI", size 245 MiB) to ubi0
+[    1.585937] UBI: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
+[    1.593750] UBI: min./max. I/O unit sizes: 2048/2048, sub-page size 2048
+[    1.601562] UBI: VID header offset: 2048 (aligned 2048), data offset: 4096
+[    1.609375] UBI: good PEBs: 1964, bad PEBs: 0, corrupted PEBs: 0
+[    1.609375] UBI: user volume: 3, internal volumes: 1, max. volumes count: 128
+[    1.617187] UBI: max/mean erase counter: 2/0, WL threshold: 4096,
+image sequence number: 1933127782
+[    1.625000] UBI: available PEBs: 306, total reserved PEBs: 1658,
+PEBs reserved for bad PEB handling: 40
+[    1.640625] UBI: background thread "ubi_bgt0d" started, PID 352
+[    1.656250] UBIFS: background thread "ubifs_bgt0_0" started, PID 354
+[    1.718750] UBIFS: mounted UBI device 0, volume 0, name "rootfs"
+[    1.726562] UBIFS: LEB size: 126976 bytes (124 KiB), min./max. I/O
+unit sizes: 2048 bytes/2048 bytes
+[    1.734375] UBIFS: FS size: 61583360 bytes (58 MiB, 485 LEBs),
+journal size 8634368 bytes (8 MiB, 68 LEBs)
+[    1.742187] UBIFS: reserved for root: 0 bytes (0 KiB)
+[    1.750000] UBIFS: media format: w4/r0 (latest is w4/r0), UUID
+5CA89910-239E-4C4B-9494-94E5C2990E6F, small LPT model
+[    1.757812] VFS: Mounted root (ubifs filesystem) on device 0:11.
+[    1.765625] devtmpfs: mounted
+[    1.765625] Freeing unused kernel memory: 112K (c0335000 - c0351000)
+
+and at the 3rd boot, every thing is normal (and fast !) \o/ :
+[    0.820312] UBI: default fastmap pool size: 95
+[    0.828125] UBI: default fastmap WL pool size: 25
+[    0.828125] UBI: attaching mtd2 to ubi0
+[    0.937500] UBI: attached by fastmap
+[    0.937500] UBI: fastmap pool size: 95
+[    0.945312] UBI: fastmap WL pool size: 25
+[    0.960937] UBI: attached mtd2 (name "UBI", size 245 MiB) to ubi0
+[    0.968750] UBI: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
+[    0.976562] UBI: min./max. I/O unit sizes: 2048/2048, sub-page size 2048
+[    0.984375] UBI: VID header offset: 2048 (aligned 2048), data offset: 4096
+[    0.992187] UBI: good PEBs: 1964, bad PEBs: 0, corrupted PEBs: 0
+[    0.992187] UBI: user volume: 3, internal volumes: 1, max. volumes count: 128
+[    1.000000] UBI: max/mean erase counter: 2/0, WL threshold: 4096,
+image sequence number: 1933127782
+[    1.007812] UBI: available PEBs: 306, total reserved PEBs: 1658,
+PEBs reserved for bad PEB handling: 40
+[    1.015625] UBI: background thread "ubi_bgt0d" started, PID 352
+[    1.039062] UBIFS: background thread "ubifs_bgt0_0" started, PID 354
+[    1.085937] UBIFS: mounted UBI device 0, volume 0, name "rootfs"
+[    1.093750] UBIFS: LEB size: 126976 bytes (124 KiB), min./max. I/O
+unit sizes: 2048 bytes/2048 bytes
+[    1.101562] UBIFS: FS size: 61583360 bytes (58 MiB, 485 LEBs),
+journal size 8634368 bytes (8 MiB, 68 LEBs)
+[    1.109375] UBIFS: reserved for root: 0 bytes (0 KiB)
+[    1.117187] UBIFS: media format: w4/r0 (latest is w4/r0), UUID
+5CA89910-239E-4C4B-9494-94E5C2990E6F, small LPT model
+[    1.125000] VFS: Mounted root (ubifs filesystem) on device 0:11.
+[    1.132812] devtmpfs: mounted
+[    1.140625] Freeing unused kernel memory: 112K (c0335000 - c0351000)
+
+Thanks !
+
+-- 
+for me, ck means con kolivas and not calvin klein... does it mean I'm a geek ?
