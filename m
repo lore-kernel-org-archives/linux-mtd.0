@@ -1,18 +1,16 @@
-From: Huang Shijie <b32955@freescale.com>
-To: <broonie@kernel.org>
-Subject: [PATCH v2 8/8] ARM: dts: vf610-twr: Add SPI NOR support
-Date: Mon, 26 Aug 2013 12:41:42 +0800
-Message-ID: <1377492102-23543-9-git-send-email-b32955@freescale.com>
-In-Reply-To: <1377492102-23543-1-git-send-email-b32955@freescale.com>
-References: <1377492102-23543-1-git-send-email-b32955@freescale.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: B20596@freescale.com, computersforpeace@gmail.com, b44548@freescale.com,
- dedekind1@gmail.com, linux-doc@vger.kernel.org, b18965@freescale.com,
- linux-spi@vger.kernel.org, Huang Shijie <b32955@freescale.com>,
- devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
- kernel@pengutronix.de, shawn.guo@linaro.org, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+Received: from mail-pd0-x234.google.com ([2607:f8b0:400e:c02::234])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VDpgF-0005XJ-W5
+ for linux-mtd@lists.infradead.org; Mon, 26 Aug 2013 05:49:36 +0000
+Received: by mail-pd0-f180.google.com with SMTP id y10so2992272pdj.39
+ for <linux-mtd@lists.infradead.org>; Sun, 25 Aug 2013 22:49:11 -0700 (PDT)
+From: wangyuhang <wangyuhang2014@gmail.com>
+To: broonie@kernel.org, linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Subject: [PATCH 1/2] spi: dual and quad support(device tree)
+Date: Mon, 26 Aug 2013 13:47:59 +0800
+Message-Id: <1377496080-14356-1-git-send-email-wangyuhang2014@gmail.com>
+Cc: sourav.poddar@ti.com, pekon@ti.com, wangyuhang <wangyuhang2014@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,60 +20,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-vf610-twr has two s25fl128s SPI NOR flashs connected to QuadSpi0.
-Add support for them.
+Add spi-tx-nbits and spi-rx-nbits for spi slave node.
+ spi-tx-nbits:Number of bits used for MOSI(writting)
+ spi-rx-nbits:Number of bits used for MISO(reading)
+Support for spi-tx/rx-nbits in SPI framework has been picked[1].
+[1]: http://comments.gmane.org/gmane.linux.kernel.spi.devel/14420
+Commit Id:f477b7fb13df2b843997559ff34e87d054ba6538
 
-Note: we enable the DDR Quad read for the two NOR flashs which runs
-in 66MHz.
-
-Signed-off-by: Huang Shijie <b32955@freescale.com>
+Signed-off-by: wangyuhang <wangyuhang2014@gmail.com>
 ---
- arch/arm/boot/dts/vf610-twr.dts |   36 ++++++++++++++++++++++++++++++++++++
- 1 files changed, 36 insertions(+), 0 deletions(-)
+ Documentation/devicetree/bindings/spi/spi-bus.txt |   14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/arch/arm/boot/dts/vf610-twr.dts b/arch/arm/boot/dts/vf610-twr.dts
-index 1a58678..e9149de 100644
---- a/arch/arm/boot/dts/vf610-twr.dts
-+++ b/arch/arm/boot/dts/vf610-twr.dts
-@@ -62,3 +62,39 @@
- 	pinctrl-0 = <&pinctrl_uart1_1>;
- 	status = "okay";
- };
+diff --git a/Documentation/devicetree/bindings/spi/spi-bus.txt b/Documentation/devicetree/bindings/spi/spi-bus.txt
+index 296015e..145ba96 100644
+--- a/Documentation/devicetree/bindings/spi/spi-bus.txt
++++ b/Documentation/devicetree/bindings/spi/spi-bus.txt
+@@ -55,6 +55,20 @@ contain the following properties.
+     		chip select active high
+ - spi-3wire       - (optional) Empty property indicating device requires
+     		    3-wire mode.
++- spi-tx-nbits    - (optional) Number of bits used for MOSI(writting)
++- spi-rx-nbits    - (optional) Number of bits used for MISO(reading)
 +
-+&qspi0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_qspi0_1>;
-+	fsl,nor-size = <0x1000000>;
-+	fsl,spi-num-chipselects = <2>;
-+	status = "okay";
++So if for example the slave has 4 wires for writting and 2 wires for reading,
++and the spi-tx/rx-nbits property should be set as follows:
 +
-+	flash0: s25fl128s@0 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "spansion,s25fl128s";
-+		spi-max-frequency = <66000000>;
-+		m25p,ddr-quad-read = <1>;
-+		reg = <0>;
++spi-tx-nbits = <4>;
++spi-rx-nbits = <2>;
 +
-+		partition@0 {
-+			label = "s25fl128s-0";
-+			reg = <0x0 0x1000000>;
-+		};
-+	};
-+
-+	flash1: s25fl128s@1 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "spansion,s25fl128s";
-+		spi-max-frequency = <66000000>;
-+		m25p,ddr-quad-read = <1>;
-+		reg = <1>;
-+
-+		partition@0x0 {
-+			label = "s25fl128s-1";
-+			reg = <0x0 0x1000000>;
-+		};
-+	};
-+};
++Now the value that spi-tx-nbits and spi-rx-nbits can receive is only
++1(single), 2(dual) and 4(quad). If you don't set spi-tx-nbits or spi-rx-nbits,
++spi_device mode will be set in single(1 wire) as default. Another point, if
++property:spi-3wire is set, spi-tx/rx-nbits is forbidden to set to <2 or 4>,
++otherwise, an errro will return.
+ 
+ If a gpio chipselect is used for the SPI slave the gpio number will be passed
+ via the cs_gpio
 -- 
-1.7.1
+1.7.9.5
