@@ -1,25 +1,15 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VDtMk-0001su-Lv
- for linux-mtd@lists.infradead.org; Mon, 26 Aug 2013 09:45:43 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: yuhang wang <wangyuhang2014@gmail.com>
-Subject: RE: [PATCH 1/2] spi: dual and quad support(device tree)
-Date: Mon, 26 Aug 2013 09:45:13 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9FAACE@DBDE04.ent.ti.com>
-References: <1377496080-14356-1-git-send-email-wangyuhang2014@gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9FA914@DBDE04.ent.ti.com>
- <CAHSAbzPBTAs=A4SMMojNFG969hukaf=+iAv0xLoQ13Mo0W=J+g@mail.gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9FAA82@DBDE04.ent.ti.com>
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9FAA82@DBDE04.ent.ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Poddar,
- Sourav" <sourav.poddar@ti.com>, "broonie@kernel.org" <broonie@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
+ id 1VDtje-0002TV-1H
+ for linux-mtd@lists.infradead.org; Mon, 26 Aug 2013 10:09:23 +0000
+From: Richard Weinberger <richard@nod.at>
+To: dedekind1@gmail.com
+Subject: [PATCH] UBI: fix refill_wl_user_pool()
+Date: Mon, 26 Aug 2013 12:08:50 +0200
+Message-Id: <1377511730-14834-1-git-send-email-richard@nod.at>
+Cc: richard.genoud@gmail.com, linux-mtd@lists.infradead.org,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org,
+ Richard Weinberger <richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,94 +19,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiANCj4gPiBIaSwgUGVrb24NCj4gPg0KPiA+IDIwMTMvOC8yNiBHdXB0YSwgUGVrb24gPHBla29u
-QHRpLmNvbT46DQo+ID4gPj4NCj4gPiA+PiBTaWduZWQtb2ZmLWJ5OiB3YW5neXVoYW5nIDx3YW5n
-eXVoYW5nMjAxNEBnbWFpbC5jb20+DQo+ID4gPj4gLS0tDQo+ID4gPj4gIERvY3VtZW50YXRpb24v
-ZGV2aWNldHJlZS9iaW5kaW5ncy9zcGkvc3BpLWJ1cy50eHQgfCAgIDE0DQo+ID4gKysrKysrKysr
-KysrKysNCj4gPiA+PiAgMSBmaWxlIGNoYW5nZWQsIDE0IGluc2VydGlvbnMoKykNCj4gPiA+Pg0K
-PiA+ID4+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc3Bp
-L3NwaS1idXMudHh0DQo+ID4gPj4gYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
-c3BpL3NwaS1idXMudHh0DQo+ID4gPj4gaW5kZXggMjk2MDE1ZS4uMTQ1YmE5NiAxMDA2NDQNCj4g
-PiA+PiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc3BpL3NwaS1idXMu
-dHh0DQo+ID4gPj4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NwaS9z
-cGktYnVzLnR4dA0KPiA+ID4+IEBAIC01NSw2ICs1NSwyMCBAQCBjb250YWluIHRoZSBmb2xsb3dp
-bmcgcHJvcGVydGllcy4NCj4gPiA+PiAgICAgICAgICAgICAgIGNoaXAgc2VsZWN0IGFjdGl2ZSBo
-aWdoDQo+ID4gPj4gIC0gc3BpLTN3aXJlICAgICAgIC0gKG9wdGlvbmFsKSBFbXB0eSBwcm9wZXJ0
-eSBpbmRpY2F0aW5nIGRldmljZSByZXF1aXJlcw0KPiA+ID4+ICAgICAgICAgICAgICAgICAgIDMt
-d2lyZSBtb2RlLg0KPiA+ID4+ICstIHNwaS10eC1uYml0cyAgICAtIChvcHRpb25hbCkgTnVtYmVy
-IG9mIGJpdHMgdXNlZCBmb3IgTU9TSSh3cml0dGluZykNCj4gPiA+PiArLSBzcGktcngtbmJpdHMg
-ICAgLSAob3B0aW9uYWwpIE51bWJlciBvZiBiaXRzIHVzZWQgZm9yIE1JU08ocmVhZGluZykNCj4g
-PiA+PiArDQo+ID4gPj4gK1NvIGlmIGZvciBleGFtcGxlIHRoZSBzbGF2ZSBoYXMgNCB3aXJlcyBm
-b3Igd3JpdHRpbmcgYW5kIDIgd2lyZXMgZm9yDQo+ID4gcmVhZGluZywNCj4gPiA+PiArYW5kIHRo
-ZSBzcGktdHgvcngtbmJpdHMgcHJvcGVydHkgc2hvdWxkIGJlIHNldCBhcyBmb2xsb3dzOg0KPiA+
-ID4+ICsNCj4gPiA+PiArc3BpLXR4LW5iaXRzID0gPDQ+Ow0KPiA+ID4+ICtzcGktcngtbmJpdHMg
-PSA8Mj47DQo+ID4gPg0KW1Bla29uXTogT2guLiBTb3JyeS4uIEkgbWlzLXVuZGVyc3Rvb2QgeW91
-ciBwYXRjaCBoZXJlLi4gDQpTbyBoZXJlICdzcGktdHgtbmJpdHMnIGFuZCAnc3BpLXJ4LW5iaXRz
-JyBzcGVjaWZ5IGhvdyBtYW55IGRhdGEtY2hhbm5lbHMNCmFyZSBhY3R1YWxseSBjb25uZWN0ZWQg
-b24gYm9hcmQgdG8gYSBzcGlfZGV2aWNlLi4gY29ycmVjdCA/DQoNCkFuZCwgbTI1cDMwIGRyaXZl
-ciB3aWxsIGRldGVybWluZSB3aGF0IHRvIHB1dCBpbiBzcGlfdHJhbnNmZXItPnR4X25iaXRzDQpi
-YXNlZCBvbiBkaWZmZXJlbnQgZmxhc2ggY29tbWFuZHMgLi4gQ29ycmVjdCA/DQoNCkluIHRoYXQg
-c2Vuc2UuLiBpdHMgeW91ciBhcHByb2FjaCBpcyBjb3JyZWN0Li4NCkJ1dCB0aGVuIHBsZWFzZSB1
-c2UgZGlmZmVyZW50IGJpbmRpbmcgbmFtZXMsIHNvbWV0aGluZyBsaWtlIGJlbG93Li4NCglzL3Nw
-aS10eC1uYml0cy9zcGktdHgtbWF4LXdpZHRoDQoJcy9zcGktcngtbmJpdHMvc3BpLXJ4LW1heC13
-aWR0aA0KDQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0K
-PiA+ID4gW1Bla29uXTogdGhlcmUgaXMgYSBwcm9ibGVtIGhlcmUuLi4NCj4gPiA+IHNwaS10eC1u
-Yml0ID0gPDQ+IHN1Z2dlc3RzIHRoYXQgU1BJIGRldmljZSBzdXBwb3J0IFFVQUQgd3JpdGVzLCBi
-dXQgaXQNCj4gZG9lcw0KPiA+ID4gbm90IGluZGljYXRlIHdoZXRoZXIgRFVBTCB3cml0ZXMgYXJl
-IHN1cHBvcnRlZCBieSBkZXZpY2Ugb3Igbm90Lg0KPiA+ID4gU28sIEluIG15IHZpZXcgaGF2aW5n
-IGVpdGhlciBvZiB0aGUgZm9sbG93aW5nIGltcGxlbWVudGF0aW9uIGNvdWxkIGhlbHANCj4gPiA+
-IGluIHNwZWNpZnlpbmcgY2FwYWJpbGl0aWVzIGluZGVwZW5kZW50bHkgYW5kIGNsZWFybHkuDQo+
-ID4gPiAqSW1wbGVtZW50YXRpb24tMSBCb29sZWFuKg0KPiA+ID4gc3BpLXR4LXF1YWQgPSA8dHJ1
-ZSB8IGZhbHNlPg0KPiA+ID4gc3BpLXR4LWR1YWwgPSA8dHJ1ZSB8IGZhbHNlPg0KPiA+ID4gc3Bp
-LXR4LXNpbmdsZSA9IDx0cnVlIHwgZmFsc2U+DQo+ID4gPiBTYW1lIHdheSBmb3IgUnguLg0KPiA+
-ID4gc3BpLXJ4LXF1YWQgPSA8dHJ1ZSB8IGZhbHNlPg0KPiA+ID4gc3BpLXJ4LWR1YWwgPSA8dHJ1
-ZSB8IGZhbHNlPg0KPiA+ID4gc3BpLXJ4LXNpbmdsZSA9IDx0cnVlIHwgZmFsc2U+DQo+ID4gPg0K
-PiA+ID4gKkltcGxlbWVudGF0aW9uLTIgTXVsdGktb3B0aW9uKg0KPiA+ID4gc3BpLXF1YWQgPSA8
-dHgtb25seSB8IHJ4LW9ubHkgfCBkdXBsZXg+DQo+ID4gPiBzcGktZHVhbCA9IDx0eC1vbmx5IHwg
-cngtb25seSB8IGR1cGxleD4NCj4gPiA+IHNwaS1zaW5nbGUgPSA8dHgtb25seSB8IHJ4LW9ubHkg
-fCBmdWxsLWR1cGxleCB8IGhhbGYtZHVwbGV4Pg0KPiA+ID4NCj4gPiBOb3QgZXhhY3RseSwgIHNw
-aS10eC1uYml0ID0gPDQ+IHN1Z2dlc3RzIHRoYXQgU1BJIGRldmljZSB3aWxsIHVzZSBRVUFEDQo+
-ID4gd3JpdGVzLCBub3Qgc3VwcG9ydCBRVUFEIHdyaXRlcy4gVGhlcmUgaXMgbm8gbmVlZCB0byBz
-ZXQgd2hhdCBtb2RlDQo+ID4gc2xhdmUgc3VwcG9ydHMsIHVzZXIganVzdCBzZXQgdGhlIGNlcnRh
-aW4gbW9kZSBzbGF2ZSB3aWxsIHdvcmsgaW4uDQo+ID4NCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQpNeSBhYm92ZSBjb21tZW50IGlzIG1vcmUgZm9yIERU
-IGJpbmRpbmcgZm9yIHNwaV9tYXN0ZXIgKG1hc3RlciBEVCBub2RlKQ0KcHJvYmVkIGJ5IGNvbnRy
-b2xsZXIgZHJpdmVyLCB3aGljaCBjYW4gaGF2ZSBtdWx0aXBsZSBjYXBhYmlsaXRpZXMuDQoNCkkg
-dGhpbmsgeW91IGhhdm4ndCBhZGRlZCBhbnl0aGluZyBmb3IgdGhhdCAuLiBuZWl0aGVyIGNoZWNr
-cyBmb3IgdGhhdC4uDQpEbyB5b3UgcGxhbiB0byBoYXZlIGEgcGF0Y2ggZm9yIHRoYXQgdG9vID8N
-Cg0KDQo+ID4gPj4gKw0KPiA+ID4+ICtOb3cgdGhlIHZhbHVlIHRoYXQgc3BpLXR4LW5iaXRzIGFu
-ZCBzcGktcngtbmJpdHMgY2FuIHJlY2VpdmUgaXMgb25seQ0KPiA+ID4+ICsxKHNpbmdsZSksIDIo
-ZHVhbCkgYW5kIDQocXVhZCkuIElmIHlvdSBkb24ndCBzZXQgc3BpLXR4LW5iaXRzIG9yIHNwaS1y
-eC0NCj4gbmJpdHMsDQo+ID4gPj4gK3NwaV9kZXZpY2UgbW9kZSB3aWxsIGJlIHNldCBpbiBzaW5n
-bGUoMSB3aXJlKSBhcyBkZWZhdWx0LiBBbm90aGVyIHBvaW50LA0KPiBpZg0KPiA+ID4+ICtwcm9w
-ZXJ0eTpzcGktM3dpcmUgaXMgc2V0LCBzcGktdHgvcngtbmJpdHMgaXMgZm9yYmlkZGVuIHRvIHNl
-dCB0byA8MiBvciA0PiwNCj4gPiA+PiArb3RoZXJ3aXNlLCBhbiBlcnJybyB3aWxsIHJldHVybi4N
-Cj4gPiA+Pg0KPiA+ID4gW1Bla29uXTogQWxzbywgaW5zdGVhZCBvZiBoYXZpbmcgc2VwYXJhdGUg
-YmluZGluZyBmb3IgJ3NwaS0zd2lyZScsIGl0IGNhbiBiZQ0KPiA+ID4gbW92ZWQgdW5kZXIgYXMg
-c3BpLXNpbmdsZSA9IDxoYWxmLWR1cGxleD4uDQo+ID4gPiBGdWxsLWR1cGxleCA9IFR4IGFuZCBS
-eCBvcGVyYXRlIG9uIGluZGVwZW5kZW50IGNoYW5uZWxzIGFuZA0KPiA+IGNvbmN1cnJlbnRseS4N
-Cj4gPiA+IEhhbGYtZHVwbGV4ID0gVHggYW5kIFJ4IHVzZSBzYW1lIGJpLWRpcmVjdGlvbmFsIGNo
-YW5uZWwgZm9yIHRyYW5zbWlzc2lvbg0KPiA+ID4gICAgICAgICBvbmUgYnkgb25lDQo+ID4gPg0K
-PiA+IEFjdHVhbGx5LCBzcGktM3dpcmUgY2FuIGJlIHJlZ2FyZGVkIGFzIGEgcGFydCBvZiBzcGkt
-c2luZ2xlLCBidXQNCj4gPiBjb3JyZWN0ZWQgYXMgd2hhdCB5b3Ugc2FpZCwgdGhlcmUgd2lsbCBi
-ZSBzb21lIGluY29udmVuaWVudC4NCj4gPiAxLHRoZSBkcml2ZXIgdGhhdCBoYXMgYWxyZWFkeSB1
-c2VkIHNwaS0zd2lyZSBuZWVkIGEgYmlnIGNoYW5nZS4NCj4gPiAyLHRoZXJlIGhhdmUgdG8gYmUg
-YSBjb21wbGV4ZWQgY2hlY2sgaW4gc3BpIGZyYW1ld29yayBpZiBzZXQgbGlrZToNCj4gPiAgc3Bp
-LXF1YWQgPSA8dHgtb25seSB8IHJ4LW9ubHkgfCBkdXBsZXg+DQo+ID4gIHNwaS1kdWFsID0gPHR4
-LW9ubHkgfCByeC1vbmx5IHwgZHVwbGV4Pg0KPiA+ICBzcGktc2luZ2xlID0gPHR4LW9ubHkgfCBy
-eC1vbmx5IHwgZnVsbC1kdXBsZXggfCBoYWxmLWR1cGxleD4NCj4gPg0KPiBbUGVrb25dOiBObywg
-SSdtIG5vdCBhc2tpbmcgeW91IHRvIHVwZGF0ZSBsb2dpYyBpbiBhbGwgZHJpdmVycywNCj4ganVz
-dCB0aGUgRFQgYmluZGluZ3MuIFNvbWV0aGluZyBsaWtlIHRoaXMuLg0KPiBAQCAtODcyLDQ2ICs4
-NzIsNDIgQEAgc3RhdGljIHZvaWQgb2ZfcmVnaXN0ZXJfc3BpX2RldmljZXMoc3RydWN0DQo+IHNw
-aV9tYXN0ZXIgKm1hc3RlcikNCj4gIAkJLyogRGV2aWNlIERVQUwvUVVBRCBtb2RlICovDQo+ICAJ
-CXByb3AgPSBvZl9nZXRfcHJvcGVydHkobmMsICJzcGktc2luZ2xlIiwgJmxlbik7DQo+IAkJaWYg
-KHByb3AgPT0gSEFMRl9EVVBMRVgpDQo+IAkJCXNwaS0+bW9kZSB8PSBTUElfM1dJUkU7DQo+IA0K
-PiBTbywgeW91IHNldCB0aGUgc2FtZSBzcGktPm1vZGVbU1BJXzNXSVJFXSBiaXQsIHRodXMgb3Ro
-ZXIgZHJpdmVycyBhcmUgbm90DQo+IGltcGFjdGVkLiBBbmQgeW91IGNhbiBkZXByZWNhdGUgdGhl
-IG9sZGVyICJzcGktM3dpcmUiIGJpbmRpbmcuDQo+IA0KPiB3aXRoIHJlZ2FyZHMsIHBla29uDQo+
-IA0KPiA+ID4+ICBJZiBhIGdwaW8gY2hpcHNlbGVjdCBpcyB1c2VkIGZvciB0aGUgU1BJIHNsYXZl
-IHRoZSBncGlvIG51bWJlciB3aWxsIGJlDQo+ID4gcGFzc2VkDQo+ID4gPj4gIHZpYSB0aGUgY3Nf
-Z3Bpbw0KPiA+ID4+IC0tDQo+ID4gPj4gMS43LjkuNQ0KPiA+ID4NCj4gPiA+IHdpdGggcmVnYXJk
-cywgcGVrb24NCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fDQo+IExpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdA0KPiBodHRwOi8v
-bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8NCg==
+If no free PEBs are available refill_wl_user_pool() must not
+return with -ENOSPC immediately.
+It has to block till produce_free_peb() produced a free PEB.
+
+Reported-and-Tested-by: Richard Genoud <richard.genoud@gmail.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ drivers/mtd/ubi/wl.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index c95bfb1..02317c1 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -599,10 +599,6 @@ static void refill_wl_user_pool(struct ubi_device *ubi)
+ 	return_unused_pool_pebs(ubi, pool);
+ 
+ 	for (pool->size = 0; pool->size < pool->max_size; pool->size++) {
+-		if (!ubi->free.rb_node ||
+-		   (ubi->free_count - ubi->beb_rsvd_pebs < 1))
+-			break;
+-
+ 		pool->pebs[pool->size] = __wl_get_peb(ubi);
+ 		if (pool->pebs[pool->size] < 0)
+ 			break;
+-- 
+1.8.1.4
