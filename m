@@ -1,21 +1,23 @@
-Received: from mail-pd0-x233.google.com ([2607:f8b0:400e:c02::233])
+Received: from comal.ext.ti.com ([198.47.26.152])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VDujj-0003yi-IG
- for linux-mtd@lists.infradead.org; Mon, 26 Aug 2013 11:13:32 +0000
-Received: by mail-pd0-f179.google.com with SMTP id v10so3313895pde.24
- for <linux-mtd@lists.infradead.org>; Mon, 26 Aug 2013 04:13:07 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9FAA82@DBDE04.ent.ti.com>
+ id 1VDvnD-0005dz-Rk
+ for linux-mtd@lists.infradead.org; Mon, 26 Aug 2013 12:21:12 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: yuhang wang <wangyuhang2014@gmail.com>
+Subject: RE: [PATCH 1/2] spi: dual and quad support(device tree)
+Date: Mon, 26 Aug 2013 12:20:41 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9FABB9@DBDE04.ent.ti.com>
 References: <1377496080-14356-1-git-send-email-wangyuhang2014@gmail.com>
  <20980858CB6D3A4BAE95CA194937D5E73E9FA914@DBDE04.ent.ti.com>
  <CAHSAbzPBTAs=A4SMMojNFG969hukaf=+iAv0xLoQ13Mo0W=J+g@mail.gmail.com>
  <20980858CB6D3A4BAE95CA194937D5E73E9FAA82@DBDE04.ent.ti.com>
-Date: Mon, 26 Aug 2013 19:13:07 +0800
-Message-ID: <CAHSAbzPh9H=Yz5J8UykLqx==k1RaHB7UVuZ23c7pQ0W9MUwXng@mail.gmail.com>
-Subject: Re: [PATCH 1/2] spi: dual and quad support(device tree)
-From: yuhang wang <wangyuhang2014@gmail.com>
-To: "Gupta, Pekon" <pekon@ti.com>
-Content-Type: text/plain; charset=ISO-8859-1
+ <20980858CB6D3A4BAE95CA194937D5E73E9FAACE@DBDE04.ent.ti.com>
+ <CAHSAbzNAbq_FxK886zfFLtYpshgdHsTiKWGESMpKH2T3boBEmg@mail.gmail.com>
+In-Reply-To: <CAHSAbzNAbq_FxK886zfFLtYpshgdHsTiKWGESMpKH2T3boBEmg@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Poddar,
  Sourav" <sourav.poddar@ti.com>, "broonie@kernel.org" <broonie@kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
@@ -29,133 +31,131 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Pekon
-
-2013/8/26 Gupta, Pekon <pekon@ti.com>:
->> Hi, Pekon
->>
->> 2013/8/26 Gupta, Pekon <pekon@ti.com>:
->> >>
->> >> Signed-off-by: wangyuhang <wangyuhang2014@gmail.com>
->> >> ---
->> >>  Documentation/devicetree/bindings/spi/spi-bus.txt |   14
->> ++++++++++++++
->> >>  1 file changed, 14 insertions(+)
->> >>
->> >> diff --git a/Documentation/devicetree/bindings/spi/spi-bus.txt
->> >> b/Documentation/devicetree/bindings/spi/spi-bus.txt
->> >> index 296015e..145ba96 100644
->> >> --- a/Documentation/devicetree/bindings/spi/spi-bus.txt
->> >> +++ b/Documentation/devicetree/bindings/spi/spi-bus.txt
->> >> @@ -55,6 +55,20 @@ contain the following properties.
->> >>               chip select active high
->> >>  - spi-3wire       - (optional) Empty property indicating device requires
->> >>                   3-wire mode.
->> >> +- spi-tx-nbits    - (optional) Number of bits used for MOSI(writting)
->> >> +- spi-rx-nbits    - (optional) Number of bits used for MISO(reading)
->> >> +
->> >> +So if for example the slave has 4 wires for writting and 2 wires for
->> reading,
->> >> +and the spi-tx/rx-nbits property should be set as follows:
->> >> +
->> >> +spi-tx-nbits = <4>;
->> >> +spi-rx-nbits = <2>;
->> >
->> > [Pekon]: there is a problem here...
->> > spi-tx-nbit = <4> suggests that SPI device support QUAD writes, but it does
->> > not indicate whether DUAL writes are supported by device or not.
->> > So, In my view having either of the following implementation could help
->> > in specifying capabilities independently and clearly.
->> > *Implementation-1 Boolean*
->> > spi-tx-quad = <true | false>
->> > spi-tx-dual = <true | false>
->> > spi-tx-single = <true | false>
->> > Same way for Rx..
->> > spi-rx-quad = <true | false>
->> > spi-rx-dual = <true | false>
->> > spi-rx-single = <true | false>
->> >
->> > *Implementation-2 Multi-option*
->> > spi-quad = <tx-only | rx-only | duplex>
->> > spi-dual = <tx-only | rx-only | duplex>
->> > spi-single = <tx-only | rx-only | full-duplex | half-duplex>
->> >
->> Not exactly,  spi-tx-nbit = <4> suggests that SPI device will use QUAD
->> writes, not support QUAD writes. There is no need to set what mode
->> slave supports, user just set the certain mode slave will work in.
->>
-> [Pekon]: Wait.. I think there is some mis-match in our understandings..
-> (a) struct spi_device->mode determines capabilities spi_device can support
-> (b) And, when user (here m25p80 like flash driver) puts a spi_transfer, then
-> it specifies whether to use spi_transfer->tx_nbits = 4 or not..
-> And you are using DT binding to specify (a) correct ?
->
-> Now, how would you specify following configuration, using DT ?
->         spi_device->mode = SPI_TX_SINGLE | SPI_TX_QUAD. (but not dual)
-> so that driver
-> - driver give error,
->         when m25p80 driver uses spi_transfer->tx-nbits = 2
-> - But allow,
->         when m25p80 driver uses spi_transfer->tx-nbits = 1 or
->         when m25p80 driver uses spi_transfer->tx-nbits = 4
->
->> >> +
->> >> +Now the value that spi-tx-nbits and spi-rx-nbits can receive is only
->> >> +1(single), 2(dual) and 4(quad). If you don't set spi-tx-nbits or spi-rx-nbits,
->> >> +spi_device mode will be set in single(1 wire) as default. Another point, if
->> >> +property:spi-3wire is set, spi-tx/rx-nbits is forbidden to set to <2 or 4>,
->> >> +otherwise, an errro will return.
->> >>
->> > [Pekon]: Also, instead of having separate binding for 'spi-3wire', it can be
->> > moved under as spi-single = <half-duplex>.
->> > Full-duplex = Tx and Rx operate on independent channels and
->> concurrently.
->> > Half-duplex = Tx and Rx use same bi-directional channel for transmission
->> >         one by one
->> >
->> Actually, spi-3wire can be regarded as a part of spi-single, but
->> corrected as what you said, there will be some inconvenient.
->> 1,the driver that has already used spi-3wire need a big change.
->> 2,there have to be a complexed check in spi framework if set like:
->>  spi-quad = <tx-only | rx-only | duplex>
->>  spi-dual = <tx-only | rx-only | duplex>
->>  spi-single = <tx-only | rx-only | full-duplex | half-duplex>
->>
-> [Pekon]: No, I'm not asking you to update logic in all drivers,
-> just the DT bindings. Something like this..
-> @@ -872,46 +872,42 @@ static void of_register_spi_devices(struct spi_master *master)
->                 /* Device DUAL/QUAD mode */
->                 prop = of_get_property(nc, "spi-single", &len);
->                 if (prop == HALF_DUPLEX)
->                         spi->mode |= SPI_3WIRE;
->
-> So, you set the same spi->mode[SPI_3WIRE] bit, thus other drivers are not
-> impacted. And you can deprecate the older "spi-3wire" binding.
->
-
-OK, I got it. Logically it is better. But there are some difficulties
-in Implementation.
-1. The property (spi-quad spi-dual spi-single) should be optional,
-user can don't set any of these three properties. Then spi-3wire can
-not be specified. Or if you want to set these properties as required,
-all the spi slave (at least DT) should be changed.
-2. Add property like (spi-quad spi-dual spi-single) will make the
-check in spi framework a little complicated.
-  example:
-  1)if one of these three is duplex, the other can not be set.
-  2)there can not be the same value in either of the three.
-  3)all three can not be set at the same time.
-  .....
-If in the future, more wires transfer is supported, you have to add
-properties, then the check will be more complex.
-So I still need some good aproaches to specify spi-3wire.
-
-> with regards, pekon
->
->> >>  If a gpio chipselect is used for the SPI slave the gpio number will be
->> passed
->> >>  via the cs_gpio
->> >> --
->> >> 1.7.9.5
->> >
->> > with regards, pekon
+PiANCj4gSGksIFBla29uDQo+IA0KPiAyMDEzLzgvMjYgR3VwdGEsIFBla29uIDxwZWtvbkB0aS5j
+b20+Og0KPiA+Pg0KPiA+PiA+IEhpLCBQZWtvbg0KPiA+PiA+DQo+ID4+ID4gMjAxMy84LzI2IEd1
+cHRhLCBQZWtvbiA8cGVrb25AdGkuY29tPjoNCj4gPj4gPiA+Pg0KPiA+PiA+ID4+IFNpZ25lZC1v
+ZmYtYnk6IHdhbmd5dWhhbmcgPHdhbmd5dWhhbmcyMDE0QGdtYWlsLmNvbT4NCj4gPj4gPiA+PiAt
+LS0NCj4gPj4gPiA+PiAgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NwaS9zcGkt
+YnVzLnR4dCB8ICAgMTQNCj4gPj4gPiArKysrKysrKysrKysrKw0KPiA+PiA+ID4+ICAxIGZpbGUg
+Y2hhbmdlZCwgMTQgaW5zZXJ0aW9ucygrKQ0KPiA+PiA+ID4+DQo+ID4+ID4gPj4gZGlmZiAtLWdp
+dCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zcGkvc3BpLWJ1cy50eHQNCj4g
+Pj4gPiA+PiBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zcGkvc3BpLWJ1cy50
+eHQNCj4gPj4gPiA+PiBpbmRleCAyOTYwMTVlLi4xNDViYTk2IDEwMDY0NA0KPiA+PiA+ID4+IC0t
+LSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zcGkvc3BpLWJ1cy50eHQNCj4g
+Pj4gPiA+PiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc3BpL3NwaS1i
+dXMudHh0DQo+ID4+ID4gPj4gQEAgLTU1LDYgKzU1LDIwIEBAIGNvbnRhaW4gdGhlIGZvbGxvd2lu
+ZyBwcm9wZXJ0aWVzLg0KPiA+PiA+ID4+ICAgICAgICAgICAgICAgY2hpcCBzZWxlY3QgYWN0aXZl
+IGhpZ2gNCj4gPj4gPiA+PiAgLSBzcGktM3dpcmUgICAgICAgLSAob3B0aW9uYWwpIEVtcHR5IHBy
+b3BlcnR5IGluZGljYXRpbmcgZGV2aWNlIHJlcXVpcmVzDQo+ID4+ID4gPj4gICAgICAgICAgICAg
+ICAgICAgMy13aXJlIG1vZGUuDQo+ID4+ID4gPj4gKy0gc3BpLXR4LW5iaXRzICAgIC0gKG9wdGlv
+bmFsKSBOdW1iZXIgb2YgYml0cyB1c2VkIGZvciBNT1NJKHdyaXR0aW5nKQ0KPiA+PiA+ID4+ICst
+IHNwaS1yeC1uYml0cyAgICAtIChvcHRpb25hbCkgTnVtYmVyIG9mIGJpdHMgdXNlZCBmb3IgTUlT
+TyhyZWFkaW5nKQ0KPiA+PiA+ID4+ICsNCj4gPj4gPiA+PiArU28gaWYgZm9yIGV4YW1wbGUgdGhl
+IHNsYXZlIGhhcyA0IHdpcmVzIGZvciB3cml0dGluZyBhbmQgMiB3aXJlcyBmb3INCj4gPj4gPiBy
+ZWFkaW5nLA0KPiA+PiA+ID4+ICthbmQgdGhlIHNwaS10eC9yeC1uYml0cyBwcm9wZXJ0eSBzaG91
+bGQgYmUgc2V0IGFzIGZvbGxvd3M6DQo+ID4+ID4gPj4gKw0KPiA+PiA+ID4+ICtzcGktdHgtbmJp
+dHMgPSA8ND47DQo+ID4+ID4gPj4gK3NwaS1yeC1uYml0cyA9IDwyPjsNCj4gPj4gPiA+DQo+ID4g
+W1Bla29uXTogT2guLiBTb3JyeS4uIEkgbWlzLXVuZGVyc3Rvb2QgeW91ciBwYXRjaCBoZXJlLi4N
+Cj4gPiBTbyBoZXJlICdzcGktdHgtbmJpdHMnIGFuZCAnc3BpLXJ4LW5iaXRzJyBzcGVjaWZ5IGhv
+dyBtYW55IGRhdGEtY2hhbm5lbHMNCj4gPiBhcmUgYWN0dWFsbHkgY29ubmVjdGVkIG9uIGJvYXJk
+IHRvIGEgc3BpX2RldmljZS4uIGNvcnJlY3QgPw0KPiA+DQo+ID4gQW5kLCBtMjVwMzAgZHJpdmVy
+IHdpbGwgZGV0ZXJtaW5lIHdoYXQgdG8gcHV0IGluIHNwaV90cmFuc2Zlci0+dHhfbmJpdHMNCj4g
+PiBiYXNlZCBvbiBkaWZmZXJlbnQgZmxhc2ggY29tbWFuZHMgLi4gQ29ycmVjdCA/DQo+ID4NCj4g
+WWVzLCB0aGF0J3MgaXQuDQo+IA0KPiA+IEluIHRoYXQgc2Vuc2UuLiBpdHMgeW91ciBhcHByb2Fj
+aCBpcyBjb3JyZWN0Li4NCj4gPiBCdXQgdGhlbiBwbGVhc2UgdXNlIGRpZmZlcmVudCBiaW5kaW5n
+IG5hbWVzLCBzb21ldGhpbmcgbGlrZSBiZWxvdy4uDQo+ID4gICAgICAgICBzL3NwaS10eC1uYml0
+cy9zcGktdHgtbWF4LXdpZHRoDQo+ID4gICAgICAgICBzL3NwaS1yeC1uYml0cy9zcGktcngtbWF4
+LXdpZHRoDQo+ID4NCj4gPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLQ0KPiBTb3JyeSwgd2hhdCBkbyB5b3UgbWVhbiBieSB1c2luZyBzcGktdHgvcngtbWF4
+LXdpZHRoLCBJIGRpZCBub3QgZ2V0IGl0IGNsZWFybHkuDQo+IA0KW1Bla29uXTogSnVzdCBhIGNo
+YW5nZSBpbiBuYW1lIG9mIGJpbmRpbmcuLiANCkxpa2UgdXNpbmcgc3BpLW1heC1yeC1uYml0cyBh
+bmQgc3BpLW1heC10eC1uYml0cyBpbnN0ZWFkLg0KDQo+ID4+ID4gPiBbUGVrb25dOiB0aGVyZSBp
+cyBhIHByb2JsZW0gaGVyZS4uLg0KPiA+PiA+ID4gc3BpLXR4LW5iaXQgPSA8ND4gc3VnZ2VzdHMg
+dGhhdCBTUEkgZGV2aWNlIHN1cHBvcnQgUVVBRCB3cml0ZXMsIGJ1dCBpdA0KPiA+PiBkb2VzDQo+
+ID4+ID4gPiBub3QgaW5kaWNhdGUgd2hldGhlciBEVUFMIHdyaXRlcyBhcmUgc3VwcG9ydGVkIGJ5
+IGRldmljZSBvciBub3QuDQo+ID4+ID4gPiBTbywgSW4gbXkgdmlldyBoYXZpbmcgZWl0aGVyIG9m
+IHRoZSBmb2xsb3dpbmcgaW1wbGVtZW50YXRpb24gY291bGQNCj4gaGVscA0KPiA+PiA+ID4gaW4g
+c3BlY2lmeWluZyBjYXBhYmlsaXRpZXMgaW5kZXBlbmRlbnRseSBhbmQgY2xlYXJseS4NCj4gPj4g
+PiA+ICpJbXBsZW1lbnRhdGlvbi0xIEJvb2xlYW4qDQo+ID4+ID4gPiBzcGktdHgtcXVhZCA9IDx0
+cnVlIHwgZmFsc2U+DQo+ID4+ID4gPiBzcGktdHgtZHVhbCA9IDx0cnVlIHwgZmFsc2U+DQo+ID4+
+ID4gPiBzcGktdHgtc2luZ2xlID0gPHRydWUgfCBmYWxzZT4NCj4gPj4gPiA+IFNhbWUgd2F5IGZv
+ciBSeC4uDQo+ID4+ID4gPiBzcGktcngtcXVhZCA9IDx0cnVlIHwgZmFsc2U+DQo+ID4+ID4gPiBz
+cGktcngtZHVhbCA9IDx0cnVlIHwgZmFsc2U+DQo+ID4+ID4gPiBzcGktcngtc2luZ2xlID0gPHRy
+dWUgfCBmYWxzZT4NCj4gPj4gPiA+DQo+ID4+ID4gPiAqSW1wbGVtZW50YXRpb24tMiBNdWx0aS1v
+cHRpb24qDQo+ID4+ID4gPiBzcGktcXVhZCA9IDx0eC1vbmx5IHwgcngtb25seSB8IGR1cGxleD4N
+Cj4gPj4gPiA+IHNwaS1kdWFsID0gPHR4LW9ubHkgfCByeC1vbmx5IHwgZHVwbGV4Pg0KPiA+PiA+
+ID4gc3BpLXNpbmdsZSA9IDx0eC1vbmx5IHwgcngtb25seSB8IGZ1bGwtZHVwbGV4IHwgaGFsZi1k
+dXBsZXg+DQo+ID4+ID4gPg0KPiA+PiA+IE5vdCBleGFjdGx5LCAgc3BpLXR4LW5iaXQgPSA8ND4g
+c3VnZ2VzdHMgdGhhdCBTUEkgZGV2aWNlIHdpbGwgdXNlIFFVQUQNCj4gPj4gPiB3cml0ZXMsIG5v
+dCBzdXBwb3J0IFFVQUQgd3JpdGVzLiBUaGVyZSBpcyBubyBuZWVkIHRvIHNldCB3aGF0IG1vZGUN
+Cj4gPj4gPiBzbGF2ZSBzdXBwb3J0cywgdXNlciBqdXN0IHNldCB0aGUgY2VydGFpbiBtb2RlIHNs
+YXZlIHdpbGwgd29yayBpbi4NCj4gPj4gPg0KPiA+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+ID4gTXkgYWJvdmUgY29tbWVudCBpcyBtb3JlIGZvciBE
+VCBiaW5kaW5nIGZvciBzcGlfbWFzdGVyIChtYXN0ZXIgRFQNCj4gbm9kZSkNCj4gPiBwcm9iZWQg
+YnkgY29udHJvbGxlciBkcml2ZXIsIHdoaWNoIGNhbiBoYXZlIG11bHRpcGxlIGNhcGFiaWxpdGll
+cy4NCj4gPg0KPiA+IEkgdGhpbmsgeW91IGhhdm4ndCBhZGRlZCBhbnl0aGluZyBmb3IgdGhhdCAu
+LiBuZWl0aGVyIGNoZWNrcyBmb3IgdGhhdC4uDQo+ID4gRG8geW91IHBsYW4gdG8gaGF2ZSBhIHBh
+dGNoIGZvciB0aGF0IHRvbyA/DQo+ID4NCj4gPg0KPiBXZWxsLCBJIGFtIHN0aWxsIG5vdCBzdXJl
+IHdoZXRoZXIgdG8gYWRkIERUIGJpbmRpbmcgZm9yIHNwaV9tYXN0ZXIuDQo+IE5vdyB0aGUgbXVs
+dGlwbGUgY2FwYWJpbGl0aWVzIGFyZSBzZXQgZGlyZWN0bHkgaW4gcHJvYmUgb2Ygc3BpDQo+IGNv
+bnRyb2xsZXIuIEJ1dCBJIHRoaW5rIHRoZXJlIGlzIG5vIG5lZWQgdG8gY2hlY2sgdGhlIGNhcGFi
+aWxpdGllcw0KPiBmcm9tIERULiBCZWNhdXNlIG5vIG1hdHRlciBpdCBpcyBpbiBwcm9iZSBvciBE
+VCwgaXQncyBhbGwgY29udHJvbGxlcg0KPiBkcml2ZXIgZGVzaWduZXJzJyBqb2IuDQo+IFRha2Ug
+YSBleGFtcGxlOg0KPiAxLiBJIHNldCB0aGUgcHJvcGVydHkgaW4gbWFzdGVyIG5vZGUgYXMgZm9s
+bG93czoNCj4gICAgIHNwaS10eC1zdXBwb3J0ID0gPHNpbmdsZSB8IGR1YWwgfCBxdWFkPjsNCj4g
+ICAgIHNwaS1yeC1zdXBwb3J0ID0gPHNpbmdsZSB8IGR1YWw+Ow0KPiAyLiBJIHNldCB0aGUgbWFz
+dGVyIG1vZGUgaW4gcHJvYmUgb2Ygc3BpIGNvbnRyb2xsZXIgZHJpdmVyDQo+ICAgICBtYXN0ZXIt
+Pm1vZGVfYml0cyA9IFNQSV9UWF9EVUFMIHwgU1BJX1RYX1FVQUQgfCBTUElfUlhfRFVBTDsNCj4g
+DQo+IFNvIGRvIHlvdSB0aGluayB0aGF0IHRoZXJlJ3MgYW55IG5lZWQgdG8gY2hlY2sgdGhlIHN1
+cHBvcnRlZCBtb2RlIGluIDENCj4gYW5kIDI/IEhvd2V2ZXIsIHVzaW5nIDEgdG8gc2V0IDIgc2Vl
+bXMgT0suDQo+IFdoYXQgZG8geW91IHRoaW5rIG9mIHRoYXQ/DQoNCltQZWtvbl06IFllcywgKDEp
+IHNob3VsZCBiZSB1c2VkIHRvIHNldCAoMikuDQpPayBmaW5lLi4gaWYgc29tZSBzcGlfbWFzdGVy
+IG5lZWRzIERULCB0aGV5IGNhbiBhZGQgaXQgbGF0ZXIuLg0KQnV0IGJ5IGNoZWNraW5nIEkgbWVh
+bnQgZm9sbG93aW5nIChzYW1lIGNvbW1lbnRzIGFzIG9uIHlvdSBWMSBwYXRjaCBzZXQpDQotLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+IFtQZWtvbl06IFllcywgZm9yIGNvbnRyb2xsZXIgdGhl
+IGNvbnRyb2xsZXJfZHJpdmVyIHNob3VsZCBwYXJzZSBvciBmaWxsIGluDQo+IHRoaXMgaW5mbyBp
+biB0aGUgc3BpX21hc3Rlci0+bW9kZS4NCj4gQnV0LCBzdGlsbCB5b3UgbmVlZCB0byBhZGQgY2hl
+Y2sgd2hpbGUgcHJvYmluZyBzcGlfZGV2aWNlIERUIHRoYXQNCj4gb25seSBjb21tb24gc3VwcG9y
+dGVkIGNvbXBhdGliaWxpdGllcyBnZXQgaW50byBzcGlfZGV2aWNlLg0KPiBFeGFtcGxlOiBpZiBz
+cGlfbWFzdGVyLT5tb2RlID09IFNQSV9UWF9EVUFMIG9ubHkNCj4gYW5kIG9mX3NwaV9kZXZpY2Uo
+KSByZXR1cm5zIFNQSV9UWF9RVUFELCB0aGVuIHlvdSBzaG91bGQgcmV0dXJuDQo+IGJhY2sgd2l0
+aCBlcnJvciBzaG93aW5nIG1pcy1tYXRjaCBpbiBjb250cm9sbGVyIGFuZCBkZXZpY2UgY2FwYWJp
+bGl0aWVzLg0KPiBTbywgc3BpX2RldmljZSBjYXBhYmlsaXRlcyBzaG91bGQgYWx3YXlzIGJlIHN1
+Yi1zZXQgb2Ygc3BpX21hc3RlciBjYXBhYmlsaXRpZXMuDQo+DQotLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tDQoNCj4gPj4gPiA+PiArDQo+ID4+ID4gPj4gK05vdyB0aGUgdmFsdWUgdGhhdCBzcGkt
+dHgtbmJpdHMgYW5kIHNwaS1yeC1uYml0cyBjYW4gcmVjZWl2ZSBpcyBvbmx5DQo+ID4+ID4gPj4g
+KzEoc2luZ2xlKSwgMihkdWFsKSBhbmQgNChxdWFkKS4gSWYgeW91IGRvbid0IHNldCBzcGktdHgt
+bmJpdHMgb3Igc3BpLXJ4LQ0KPiA+PiBuYml0cywNCj4gPj4gPiA+PiArc3BpX2RldmljZSBtb2Rl
+IHdpbGwgYmUgc2V0IGluIHNpbmdsZSgxIHdpcmUpIGFzIGRlZmF1bHQuIEFub3RoZXINCj4gcG9p
+bnQsDQo+ID4+IGlmDQo+ID4+ID4gPj4gK3Byb3BlcnR5OnNwaS0zd2lyZSBpcyBzZXQsIHNwaS10
+eC9yeC1uYml0cyBpcyBmb3JiaWRkZW4gdG8gc2V0IHRvIDwyIG9yDQo+IDQ+LA0KPiA+PiA+ID4+
+ICtvdGhlcndpc2UsIGFuIGVycnJvIHdpbGwgcmV0dXJuLg0KPiA+PiA+ID4+DQo+ID4+ID4gPiBb
+UGVrb25dOiBBbHNvLCBpbnN0ZWFkIG9mIGhhdmluZyBzZXBhcmF0ZSBiaW5kaW5nIGZvciAnc3Bp
+LTN3aXJlJywgaXQgY2FuDQo+IGJlDQo+ID4+ID4gPiBtb3ZlZCB1bmRlciBhcyBzcGktc2luZ2xl
+ID0gPGhhbGYtZHVwbGV4Pi4NCj4gPj4gPiA+IEZ1bGwtZHVwbGV4ID0gVHggYW5kIFJ4IG9wZXJh
+dGUgb24gaW5kZXBlbmRlbnQgY2hhbm5lbHMgYW5kDQo+ID4+ID4gY29uY3VycmVudGx5Lg0KPiA+
+PiA+ID4gSGFsZi1kdXBsZXggPSBUeCBhbmQgUnggdXNlIHNhbWUgYmktZGlyZWN0aW9uYWwgY2hh
+bm5lbCBmb3INCj4gdHJhbnNtaXNzaW9uDQo+ID4+ID4gPiAgICAgICAgIG9uZSBieSBvbmUNCj4g
+Pj4gPiA+DQo+ID4+ID4gQWN0dWFsbHksIHNwaS0zd2lyZSBjYW4gYmUgcmVnYXJkZWQgYXMgYSBw
+YXJ0IG9mIHNwaS1zaW5nbGUsIGJ1dA0KPiA+PiA+IGNvcnJlY3RlZCBhcyB3aGF0IHlvdSBzYWlk
+LCB0aGVyZSB3aWxsIGJlIHNvbWUgaW5jb252ZW5pZW50Lg0KPiA+PiA+IDEsdGhlIGRyaXZlciB0
+aGF0IGhhcyBhbHJlYWR5IHVzZWQgc3BpLTN3aXJlIG5lZWQgYSBiaWcgY2hhbmdlLg0KPiA+PiA+
+IDIsdGhlcmUgaGF2ZSB0byBiZSBhIGNvbXBsZXhlZCBjaGVjayBpbiBzcGkgZnJhbWV3b3JrIGlm
+IHNldCBsaWtlOg0KPiA+PiA+ICBzcGktcXVhZCA9IDx0eC1vbmx5IHwgcngtb25seSB8IGR1cGxl
+eD4NCj4gPj4gPiAgc3BpLWR1YWwgPSA8dHgtb25seSB8IHJ4LW9ubHkgfCBkdXBsZXg+DQo+ID4+
+ID4gIHNwaS1zaW5nbGUgPSA8dHgtb25seSB8IHJ4LW9ubHkgfCBmdWxsLWR1cGxleCB8IGhhbGYt
+ZHVwbGV4Pg0KPiA+PiA+DQo+ID4+IFtQZWtvbl06IE5vLCBJJ20gbm90IGFza2luZyB5b3UgdG8g
+dXBkYXRlIGxvZ2ljIGluIGFsbCBkcml2ZXJzLA0KPiA+PiBqdXN0IHRoZSBEVCBiaW5kaW5ncy4g
+U29tZXRoaW5nIGxpa2UgdGhpcy4uDQo+ID4+IEBAIC04NzIsNDYgKzg3Miw0MiBAQCBzdGF0aWMg
+dm9pZCBvZl9yZWdpc3Rlcl9zcGlfZGV2aWNlcyhzdHJ1Y3QNCj4gPj4gc3BpX21hc3RlciAqbWFz
+dGVyKQ0KPiA+PiAgICAgICAgICAgICAgIC8qIERldmljZSBEVUFML1FVQUQgbW9kZSAqLw0KPiA+
+PiAgICAgICAgICAgICAgIHByb3AgPSBvZl9nZXRfcHJvcGVydHkobmMsICJzcGktc2luZ2xlIiwg
+Jmxlbik7DQo+ID4+ICAgICAgICAgICAgICAgaWYgKHByb3AgPT0gSEFMRl9EVVBMRVgpDQo+ID4+
+ICAgICAgICAgICAgICAgICAgICAgICBzcGktPm1vZGUgfD0gU1BJXzNXSVJFOw0KPiA+Pg0KPiA+
+PiBTbywgeW91IHNldCB0aGUgc2FtZSBzcGktPm1vZGVbU1BJXzNXSVJFXSBiaXQsIHRodXMgb3Ro
+ZXIgZHJpdmVycyBhcmUNCj4gbm90DQo+ID4+IGltcGFjdGVkLiBBbmQgeW91IGNhbiBkZXByZWNh
+dGUgdGhlIG9sZGVyICJzcGktM3dpcmUiIGJpbmRpbmcuDQo+ID4+DQo+ID4+IHdpdGggcmVnYXJk
+cywgcGVrb24NCj4gPj4NCj4gPj4gPiA+PiAgSWYgYSBncGlvIGNoaXBzZWxlY3QgaXMgdXNlZCBm
+b3IgdGhlIFNQSSBzbGF2ZSB0aGUgZ3BpbyBudW1iZXIgd2lsbCBiZQ0KPiA+PiA+IHBhc3NlZA0K
+PiA+PiA+ID4+ICB2aWEgdGhlIGNzX2dwaW8NCj4gPj4gPiA+PiAtLQ0KPiA+PiA+ID4+IDEuNy45
+LjUNCj4gPj4gPiA+DQoNCndpdGggcmVnYXJkcywgcGVrb24NCg==
