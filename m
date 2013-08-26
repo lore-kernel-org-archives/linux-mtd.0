@@ -1,14 +1,13 @@
-Received: from tx2ehsobe004.messaging.microsoft.com ([65.55.88.14]
- helo=tx2outboundpool.messaging.microsoft.com)
+Received: from ch1ehsobe003.messaging.microsoft.com ([216.32.181.183]
+ helo=ch1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VDtJJ-0001ec-PY
- for linux-mtd@lists.infradead.org; Mon, 26 Aug 2013 09:42:11 +0000
+ id 1VDtJI-0001et-Is
+ for linux-mtd@lists.infradead.org; Mon, 26 Aug 2013 09:42:15 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH v3 05/10] mtd: add more comment for
- MTD_NANDFLASH/MTD_MLCNANDFLASH
-Date: Mon, 26 Aug 2013 17:36:43 +0800
-Message-ID: <1377509808-29363-6-git-send-email-b32955@freescale.com>
+Subject: [PATCH v3 03/10] mtd: print out the cell information for nand chip
+Date: Mon, 26 Aug 2013 17:36:41 +0800
+Message-ID: <1377509808-29363-4-git-send-email-b32955@freescale.com>
 In-Reply-To: <1377509808-29363-1-git-send-email-b32955@freescale.com>
 References: <1377509808-29363-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
@@ -24,35 +23,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In current code, the MTD_NANDFLASH is used to represent both the SLC and
-MLC. It is confusing to us.
+Print out the cell information for nand chip.
 
-By adding an explicit comment about these two macros, this patch makes it
-clear that:
-	MTD_NANDFLASH    : stands for SLC nand,
-	MTD_MLCNANDFLASH : stands for MLC nand(including TLC).
+(Since the message is too long, this patch also splits the log
+with two separate pr_info())
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- include/uapi/mtd/mtd-abi.h |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/nand_base.c |   11 +++++++----
+ 1 files changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/include/uapi/mtd/mtd-abi.h b/include/uapi/mtd/mtd-abi.h
-index 36eace0..16a9406 100644
---- a/include/uapi/mtd/mtd-abi.h
-+++ b/include/uapi/mtd/mtd-abi.h
-@@ -94,10 +94,10 @@ struct mtd_write_req {
- #define MTD_RAM			1
- #define MTD_ROM			2
- #define MTD_NORFLASH		3
--#define MTD_NANDFLASH		4
-+#define MTD_NANDFLASH		4	/* stand for SLC nand */
- #define MTD_DATAFLASH		6
- #define MTD_UBIVOLUME		7
--#define MTD_MLCNANDFLASH	8
-+#define MTD_MLCNANDFLASH	8	/* stand for MLC nand(including TLC) */
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 0177ea5..8755a74 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3456,11 +3456,14 @@ ident_done:
+ 	if (mtd->writesize > 512 && chip->cmdfunc == nand_command)
+ 		chip->cmdfunc = nand_command_lp;
  
- #define MTD_WRITEABLE		0x400	/* Device is writeable */
- #define MTD_BIT_WRITEABLE	0x800	/* Single bits can be flipped */
+-	pr_info("NAND device: Manufacturer ID: 0x%02x, Chip ID: 0x%02x (%s %s),"
+-		" %dMiB, page size: %d, OOB size: %d\n",
++	pr_info("NAND device: Manufacturer ID: 0x%02x,"
++			"Chip ID: 0x%02x (%s %s) \n",
+ 		*maf_id, *dev_id, nand_manuf_ids[maf_idx].name,
+-		chip->onfi_version ? chip->onfi_params.model : type->name,
+-		(int)(chip->chipsize >> 20), mtd->writesize, mtd->oobsize);
++		chip->onfi_version ? chip->onfi_params.model : type->name);
++
++	pr_info("NAND device: %dMiB, %s, page size: %d, OOB size: %d\n",
++		(int)(chip->chipsize >> 20), nand_is_slc(chip) ? "SLC" : "MLC",
++		mtd->writesize, mtd->oobsize);
+ 
+ 	return type;
+ }
 -- 
 1.7.1
