@@ -1,20 +1,24 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
+Received: from mail-pd0-x22a.google.com ([2607:f8b0:400e:c02::22a])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VDwG0-0006HV-4d
- for linux-mtd@lists.infradead.org; Mon, 26 Aug 2013 12:50:57 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: wangyuhang <wangyuhang2014@gmail.com>
-Subject: RE: [PATCH 2/2] spi: dual and quad support(device tree)
-Date: Mon, 26 Aug 2013 12:50:25 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9FAC0C@DBDE04.ent.ti.com>
-References: <1377496080-14356-1-git-send-email-wangyuhang2014@gmail.com>
- <1377496080-14356-2-git-send-email-wangyuhang2014@gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9FA932@DBDE04.ent.ti.com>
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9FA932@DBDE04.ent.ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1VDwmB-0007Ab-6q
+ for linux-mtd@lists.infradead.org; Mon, 26 Aug 2013 13:24:12 +0000
+Received: by mail-pd0-f170.google.com with SMTP id x10so3457815pdj.29
+ for <linux-mtd@lists.infradead.org>; Mon, 26 Aug 2013 06:23:47 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9FABB9@DBDE04.ent.ti.com>
+References: <1377496080-14356-1-git-send-email-wangyuhang2014@gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9FA914@DBDE04.ent.ti.com>
+ <CAHSAbzPBTAs=A4SMMojNFG969hukaf=+iAv0xLoQ13Mo0W=J+g@mail.gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9FAA82@DBDE04.ent.ti.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9FAACE@DBDE04.ent.ti.com>
+ <CAHSAbzNAbq_FxK886zfFLtYpshgdHsTiKWGESMpKH2T3boBEmg@mail.gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9FABB9@DBDE04.ent.ti.com>
+Date: Mon, 26 Aug 2013 21:23:47 +0800
+Message-ID: <CAHSAbzNg-pZi0dV70zjYiXonhv-G8H0RgaQXXCdzQRQY_cACGw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] spi: dual and quad support(device tree)
+From: yuhang wang <wangyuhang2014@gmail.com>
+To: "Gupta, Pekon" <pekon@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Poddar,
  Sourav" <sourav.poddar@ti.com>, "broonie@kernel.org" <broonie@kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
@@ -28,78 +32,192 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiANCj4gPg0KPiA+IGZpeCBvbmUgdGhpbmcgaW4gcGF0Y2g6DQo+ID4gY29tbWl0IGlkOmY0Nzdi
-N2ZiMTNkZjJiODQzOTk3NTU5ZmYzNGU4N2QwNTRiYTY1MzgNCj4gPg0KPiA+IGNoYW5nZSBwcm9w
-ZXJ0eSBzcGktdHgtbmJpdHMgYW5kIHNwaS1yeC1uYml0cyB0byBvcHRpb25hbC4NCj4gPiBJZiBV
-c2VyIGRvbid0IHNldCBzcGktdHgtbmJpdHMgb3Igc3BpLXJ4LW5iaXRzLCBzcGkgZGV2aWNlIG1v
-ZGUNCj4gPiBzaG91bGQgYmUgcmVnYXJkZWQgYXMgU0lOR0xFLCBub3QgcmV0dXJuIGFuIGVycm9y
-Lg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogd2FuZ3l1aGFuZyA8d2FuZ3l1aGFuZzIwMTRAZ21h
-aWwuY29tPg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL3NwaS9zcGkuYyB8ICAgNjggKysrKysrKysr
-KysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KPiAtLQ0KPiA+IC0tDQo+
-ID4gIDEgZmlsZSBjaGFuZ2VkLCAzMiBpbnNlcnRpb25zKCspLCAzNiBkZWxldGlvbnMoLSkNCj4g
-Pg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3NwaS9zcGkuYyBiL2RyaXZlcnMvc3BpL3NwaS5j
-DQo+ID4gaW5kZXggNTBmN2ZjMy4uNDZhNTVmMCAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL3Nw
-aS9zcGkuYw0KPiA+ICsrKyBiL2RyaXZlcnMvc3BpL3NwaS5jDQo+ID4gQEAgLTg3Miw0NiArODcy
-LDQyIEBAIHN0YXRpYyB2b2lkIG9mX3JlZ2lzdGVyX3NwaV9kZXZpY2VzKHN0cnVjdA0KPiA+IHNw
-aV9tYXN0ZXIgKm1hc3RlcikNCj4gPiAgCQkvKiBEZXZpY2UgRFVBTC9RVUFEIG1vZGUgKi8NCj4g
-PiAgCQlwcm9wID0gb2ZfZ2V0X3Byb3BlcnR5KG5jLCAic3BpLXR4LW5iaXRzIiwgJmxlbik7DQo+
-ID4gIAkJaWYgKCFwcm9wIHx8IGxlbiA8IHNpemVvZigqcHJvcCkpIHsNCj4gPiAtCQkJZGV2X2Vy
-cigmbWFzdGVyLT5kZXYsICIlcyBoYXMgbm8gJ3NwaS10eC1uYml0cycNCj4gPiBwcm9wZXJ0eVxu
-IiwNCj4gPiAtCQkJCW5jLT5mdWxsX25hbWUpOw0KPiA+IC0JCQlzcGlfZGV2X3B1dChzcGkpOw0K
-PiA+IC0JCQljb250aW51ZTsNCj4gPiAtCQl9DQo+ID4gLQkJc3dpdGNoIChiZTMyX3RvX2NwdXAo
-cHJvcCkpIHsNCj4gPiAtCQljYXNlIFNQSV9OQklUU19TSU5HTEU6DQo+ID4gLQkJCWJyZWFrOw0K
-PiA+IC0JCWNhc2UgU1BJX05CSVRTX0RVQUw6DQo+ID4gLQkJCXNwaS0+bW9kZSB8PSBTUElfVFhf
-RFVBTDsNCj4gPiAtCQkJYnJlYWs7DQo+ID4gLQkJY2FzZSBTUElfTkJJVFNfUVVBRDoNCj4gPiAt
-CQkJc3BpLT5tb2RlIHw9IFNQSV9UWF9RVUFEOw0KPiA+IC0JCQlicmVhazsNCj4gPiAtCQlkZWZh
-dWx0Og0KPiA+IC0JCQlkZXZfZXJyKCZtYXN0ZXItPmRldiwgInNwaS10eC1uYml0cyB2YWx1ZSBp
-cyBub3QNCj4gPiBzdXBwb3J0ZWRcbiIpOw0KPiA+IC0JCQlzcGlfZGV2X3B1dChzcGkpOw0KPiA+
-IC0JCQljb250aW51ZTsNCj4gPiArCQkJLyogc2V0IHR4IG1vZGUgaW4gU0lOR0xFIGFzIGRlZmF1
-bHQgKi8NCltQZWtvbl06IEkgdGhpbmsgeW91IHNob3VsZCBleHBsaWNpdGx5IHNldCwgYW5kIG5v
-dCB0cnVzdCBzcGktPm1vZGUgZGVmYXVsdHMuDQoJc3BpLT5tb2RlIHw9IFNQSV9UWF9TSU5HTEU7
-DQo+IA0KPiA+ICsJCX0gZWxzZSB7DQo+ID4gKwkJCXN3aXRjaCAoYmUzMl90b19jcHVwKHByb3Ap
-KSB7DQo+ID4gKwkJCWNhc2UgU1BJX05CSVRTX1NJTkdMRToNCj4gPiArCQkJCWJyZWFrOw0KPiA+
-ICsJCQljYXNlIFNQSV9OQklUU19EVUFMOg0KPiA+ICsJCQkJc3BpLT5tb2RlIHw9IFNQSV9UWF9E
-VUFMOw0KPiA+ICsJCQkJYnJlYWs7DQo+ID4gKwkJCWNhc2UgU1BJX05CSVRTX1FVQUQ6DQo+ID4g
-KwkJCQlzcGktPm1vZGUgfD0gU1BJX1RYX1FVQUQ7DQo+ID4gKwkJCQlicmVhazsNCj4gDQpbUGVr
-b25dOiBBbmQgdGhlcmUgcGxlYXNlIGNoZWNrIGZvciBzcGlfbWFzdGVyLT5tb2RlX2JpdHMNCmJl
-Zm9yZSBzZXR0aW5nIHNwaV9kZXZpY2UtPm1vZGUuDQpzcGlfZGV2aWNlLT5tb2RlIHNob3VsZCBi
-ZSBzdWItc2V0IG9mIHNwaV9tYXN0ZXItPm1vZGVfYml0cy4NCkV4YW1wbGU6IA0Kc3dpdGNoIChi
-ZTMyX3RvX2NwdXAocHJvcCkpIHsNCgljYXNlIFNQSV9OQklUU19TSU5HTEU6DQoJCWlmIChzcGlf
-bWFzdGVyLT5tb2RlX2JpdHMgJiBTUElfVFhfU0lOR0xFKQ0KCQkJc3BpLW1vZGUgfD0gU1BJX1RY
-X1NJTkdMRTsNCgkJZWxzZQ0KCQkJcHJfZXJyKCJTUEkgY29udHJvbGxlciBkb2VzIG5vdCBzdXBw
-b3J0IFNQSV9UWF9TSU5HTEVcbiIpOw0KCWJyZWFrOw0KCWNhc2UgU1BJX05CSVRTX0RVQUw6DQoJ
-CWlmIChzcGlfbWFzdGVyLT5tb2RlX2JpdHMgJiBTUElfVFhfRFVBTCkNCgkJCXNwaS1tb2RlIHw9
-IFNQSV9UWF9EVUFMOw0KCQllbHNlDQoJCQlwcl9lcnIoIlNQSSBjb250cm9sbGVyIGRvZXMgbm90
-IHN1cHBvcnQgU1BJX1RYX0RVQUxcbiIpOw0KCWJyZWFrOw0KCWNhc2UgU1BJX05CSVRTX1FVQUQ6
-DQoJCWlmIChzcGlfbWFzdGVyLT5tb2RlX2JpdHMgJiBTUElfVFhfUVVBRCkNCgkJCXNwaS1tb2Rl
-IHw9IFNQSV9UWF9RVUFEOw0KCQllbHNlDQoJCQlwcl9lcnIoIlNQSSBjb250cm9sbGVyIGRvZXMg
-bm90IHN1cHBvcnQgU1BJX1RYX1FVQURcbiIpOw0KCWJyZWFrOw0KfQ0KVGhpcyB3YXkgeW91IHdp
-bGwgZG8gaW5pdGlhbCBjb21wYXRpYmlsaXR5IGNoZWNrIGJldHdlZW4gdGhlDQpkZXZpY2UgYW5k
-IGNvbnRyb2xsZXIgcmlnaHQgYXQgdGhlIHByb2JlLCBhbmQgeW91IGRvbid0IGhhdmUNCnRvIHdv
-cnJ5IGFib3V0IGl0IGxhdGVyLg0KDQoNCj4gCXNwaS0+bW9kZSB8PSBTUElfVFhfUVVBRDsNCj4g
-b3INCj4gCXNwaS0+bW9kZSB8PSBTUElfVFhfUVVBRCB8IFNQSV9UWF9EVUFMOw0KPiANCj4gDQo+
-ID4gKwkJCWRlZmF1bHQ6DQo+ID4gKwkJCQlkZXZfZXJyKCZtYXN0ZXItPmRldiwNCj4gPiArCQkJ
-CQkic3BpLXR4LW5iaXRzIHZhbHVlIGlzIG5vdA0KPiA+IHN1cHBvcnRlZFxuIik7DQo+ID4gKwkJ
-CQlzcGlfZGV2X3B1dChzcGkpOw0KPiA+ICsJCQkJY29udGludWU7DQo+ID4gIAkJfQ0KPiA+DQo+
-ID4gIAkJcHJvcCA9IG9mX2dldF9wcm9wZXJ0eShuYywgInNwaS1yeC1uYml0cyIsICZsZW4pOw0K
-PiA+ICAJCWlmICghcHJvcCB8fCBsZW4gPCBzaXplb2YoKnByb3ApKSB7DQo+ID4gLQkJCWRldl9l
-cnIoJm1hc3Rlci0+ZGV2LCAiJXMgaGFzIG5vICdzcGktcngtbmJpdHMnDQo+ID4gcHJvcGVydHlc
-biIsDQo+ID4gLQkJCQluYy0+ZnVsbF9uYW1lKTsNCj4gPiAtCQkJc3BpX2Rldl9wdXQoc3BpKTsN
-Cj4gPiAtCQkJY29udGludWU7DQo+ID4gLQkJfQ0KPiA+IC0JCXN3aXRjaCAoYmUzMl90b19jcHVw
-KHByb3ApKSB7DQo+ID4gLQkJY2FzZSBTUElfTkJJVFNfU0lOR0xFOg0KPiA+IC0JCQlicmVhazsN
-Cj4gPiAtCQljYXNlIFNQSV9OQklUU19EVUFMOg0KPiA+IC0JCQlzcGktPm1vZGUgfD0gU1BJX1JY
-X0RVQUw7DQo+ID4gLQkJCWJyZWFrOw0KPiA+IC0JCWNhc2UgU1BJX05CSVRTX1FVQUQ6DQo+ID4g
-LQkJCXNwaS0+bW9kZSB8PSBTUElfUlhfUVVBRDsNCj4gPiAtCQkJYnJlYWs7DQo+ID4gLQkJZGVm
-YXVsdDoNCj4gPiAtCQkJZGV2X2VycigmbWFzdGVyLT5kZXYsICJzcGktcngtbmJpdHMgdmFsdWUg
-aXMgbm90DQo+ID4gc3VwcG9ydGVkXG4iKTsNCj4gPiAtCQkJc3BpX2Rldl9wdXQoc3BpKTsNCj4g
-PiAtCQkJY29udGludWU7DQo+ID4gKwkJCS8qIHNldCByeCBtb2RlIGluIFNJTkdMRSBhcyBkZWZh
-dWx0ICovDQo+ID4gKwkJfSBlbHNlIHsNCj4gPiArCQkJc3dpdGNoIChiZTMyX3RvX2NwdXAocHJv
-cCkpIHsNCj4gPiArCQkJY2FzZSBTUElfTkJJVFNfU0lOR0xFOg0KPiA+ICsJCQkJYnJlYWs7DQo+
-ID4gKwkJCWNhc2UgU1BJX05CSVRTX0RVQUw6DQo+ID4gKwkJCQlzcGktPm1vZGUgfD0gU1BJX1JY
-X0RVQUw7DQo+ID4gKwkJCQlicmVhazsNCj4gPiArCQkJY2FzZSBTUElfTkJJVFNfUVVBRDoNCj4g
-PiArCQkJCXNwaS0+bW9kZSB8PSBTUElfUlhfUVVBRDsNCj4gPiArCQkJCWJyZWFrOw0KPiA+ICsJ
-CQlkZWZhdWx0Og0KPiA+ICsJCQkJZGV2X2VycigmbWFzdGVyLT5kZXYsDQo+ID4gKwkJCQkJInNw
-aS1yeC1uYml0cyB2YWx1ZSBpcyBub3QNCj4gPiBzdXBwb3J0ZWRcbiIpOw0KPiA+ICsJCQkJc3Bp
-X2Rldl9wdXQoc3BpKTsNCj4gPiArCQkJCWNvbnRpbnVlOw0KPiA+ICAJCX0NCj4gPg0KPiA+ICAJ
-CS8qIERldmljZSBzcGVlZCAqLw0KPiA+IC0tDQo+ID4gMS43LjkuNQ0KPiANCg0Kd2l0aCByZWdh
-cmRzLCBwZWtvbg0K
+Hi, Pekon
+
+2013/8/26 Gupta, Pekon <pekon@ti.com>:
+>>
+>> Hi, Pekon
+>>
+>> 2013/8/26 Gupta, Pekon <pekon@ti.com>:
+>> >>
+>> >> > Hi, Pekon
+>> >> >
+>> >> > 2013/8/26 Gupta, Pekon <pekon@ti.com>:
+>> >> > >>
+>> >> > >> Signed-off-by: wangyuhang <wangyuhang2014@gmail.com>
+>> >> > >> ---
+>> >> > >>  Documentation/devicetree/bindings/spi/spi-bus.txt |   14
+>> >> > ++++++++++++++
+>> >> > >>  1 file changed, 14 insertions(+)
+>> >> > >>
+>> >> > >> diff --git a/Documentation/devicetree/bindings/spi/spi-bus.txt
+>> >> > >> b/Documentation/devicetree/bindings/spi/spi-bus.txt
+>> >> > >> index 296015e..145ba96 100644
+>> >> > >> --- a/Documentation/devicetree/bindings/spi/spi-bus.txt
+>> >> > >> +++ b/Documentation/devicetree/bindings/spi/spi-bus.txt
+>> >> > >> @@ -55,6 +55,20 @@ contain the following properties.
+>> >> > >>               chip select active high
+>> >> > >>  - spi-3wire       - (optional) Empty property indicating device requires
+>> >> > >>                   3-wire mode.
+>> >> > >> +- spi-tx-nbits    - (optional) Number of bits used for MOSI(writting)
+>> >> > >> +- spi-rx-nbits    - (optional) Number of bits used for MISO(reading)
+>> >> > >> +
+>> >> > >> +So if for example the slave has 4 wires for writting and 2 wires for
+>> >> > reading,
+>> >> > >> +and the spi-tx/rx-nbits property should be set as follows:
+>> >> > >> +
+>> >> > >> +spi-tx-nbits = <4>;
+>> >> > >> +spi-rx-nbits = <2>;
+>> >> > >
+>> > [Pekon]: Oh.. Sorry.. I mis-understood your patch here..
+>> > So here 'spi-tx-nbits' and 'spi-rx-nbits' specify how many data-channels
+>> > are actually connected on board to a spi_device.. correct ?
+>> >
+>> > And, m25p30 driver will determine what to put in spi_transfer->tx_nbits
+>> > based on different flash commands .. Correct ?
+>> >
+>> Yes, that's it.
+>>
+>> > In that sense.. its your approach is correct..
+>> > But then please use different binding names, something like below..
+>> >         s/spi-tx-nbits/spi-tx-max-width
+>> >         s/spi-rx-nbits/spi-rx-max-width
+>> >
+>> > -----------------------------------------------
+>> Sorry, what do you mean by using spi-tx/rx-max-width, I did not get it clearly.
+>>
+> [Pekon]: Just a change in name of binding..
+> Like using spi-max-rx-nbits and spi-max-tx-nbits instead.
+>
+So do you mean that the name in DT should look different from
+spi_transfer->tx_nbits/rx_nbits. OK, I will correct it. Thanks.
+
+>> >> > > [Pekon]: there is a problem here...
+>> >> > > spi-tx-nbit = <4> suggests that SPI device support QUAD writes, but it
+>> >> does
+>> >> > > not indicate whether DUAL writes are supported by device or not.
+>> >> > > So, In my view having either of the following implementation could
+>> help
+>> >> > > in specifying capabilities independently and clearly.
+>> >> > > *Implementation-1 Boolean*
+>> >> > > spi-tx-quad = <true | false>
+>> >> > > spi-tx-dual = <true | false>
+>> >> > > spi-tx-single = <true | false>
+>> >> > > Same way for Rx..
+>> >> > > spi-rx-quad = <true | false>
+>> >> > > spi-rx-dual = <true | false>
+>> >> > > spi-rx-single = <true | false>
+>> >> > >
+>> >> > > *Implementation-2 Multi-option*
+>> >> > > spi-quad = <tx-only | rx-only | duplex>
+>> >> > > spi-dual = <tx-only | rx-only | duplex>
+>> >> > > spi-single = <tx-only | rx-only | full-duplex | half-duplex>
+>> >> > >
+>> >> > Not exactly,  spi-tx-nbit = <4> suggests that SPI device will use QUAD
+>> >> > writes, not support QUAD writes. There is no need to set what mode
+>> >> > slave supports, user just set the certain mode slave will work in.
+>> >> >
+>> > -----------------------------------------------
+>> > My above comment is more for DT binding for spi_master (master DT
+>> node)
+>> > probed by controller driver, which can have multiple capabilities.
+>> >
+>> > I think you havn't added anything for that .. neither checks for that..
+>> > Do you plan to have a patch for that too ?
+>> >
+>> >
+>> Well, I am still not sure whether to add DT binding for spi_master.
+>> Now the multiple capabilities are set directly in probe of spi
+>> controller. But I think there is no need to check the capabilities
+>> from DT. Because no matter it is in probe or DT, it's all controller
+>> driver designers' job.
+>> Take a example:
+>> 1. I set the property in master node as follows:
+>>     spi-tx-support = <single | dual | quad>;
+>>     spi-rx-support = <single | dual>;
+>> 2. I set the master mode in probe of spi controller driver
+>>     master->mode_bits = SPI_TX_DUAL | SPI_TX_QUAD | SPI_RX_DUAL;
+>>
+>> So do you think that there's any need to check the supported mode in 1
+>> and 2? However, using 1 to set 2 seems OK.
+>> What do you think of that?
+>
+> [Pekon]: Yes, (1) should be used to set (2).
+> Ok fine.. if some spi_master needs DT, they can add it later..
+> But by checking I meant following (same comments as on you V1 patch set)
+> -------------------------
+
+
+>> [Pekon]: Yes, for controller the controller_driver should parse or fill in
+>> this info in the spi_master->mode.
+>> But, still you need to add check while probing spi_device DT that
+>> only common supported compatibilities get into spi_device.
+>> Example: if spi_master->mode == SPI_TX_DUAL only
+>> and of_spi_device() returns SPI_TX_QUAD, then you should return
+>> back with error showing mis-match in controller and device capabilities.
+>> So, spi_device capabilites should always be sub-set of spi_master capabilities.
+>>
+> -------------------------
+>
+Yes, I have got your comment and added that check in my previous
+applied V3 patch. just as below
+
++ if ((xfer->tx_nbits == SPI_NBITS_DUAL) &&
++ !(spi->mode & (SPI_TX_DUAL | SPI_TX_QUAD)))
++ return -EINVAL;
++ if ((xfer->tx_nbits == SPI_NBITS_QUAD) &&
++ !(spi->mode & SPI_TX_QUAD))
++ return -EINVAL;
+
+
+>> >> > >> +
+>> >> > >> +Now the value that spi-tx-nbits and spi-rx-nbits can receive is only
+>> >> > >> +1(single), 2(dual) and 4(quad). If you don't set spi-tx-nbits or spi-rx-
+>> >> nbits,
+>> >> > >> +spi_device mode will be set in single(1 wire) as default. Another
+>> point,
+>> >> if
+>> >> > >> +property:spi-3wire is set, spi-tx/rx-nbits is forbidden to set to <2 or
+>> 4>,
+>> >> > >> +otherwise, an errro will return.
+>> >> > >>
+>> >> > > [Pekon]: Also, instead of having separate binding for 'spi-3wire', it can
+>> be
+>> >> > > moved under as spi-single = <half-duplex>.
+>> >> > > Full-duplex = Tx and Rx operate on independent channels and
+>> >> > concurrently.
+>> >> > > Half-duplex = Tx and Rx use same bi-directional channel for
+>> transmission
+>> >> > >         one by one
+>> >> > >
+>> >> > Actually, spi-3wire can be regarded as a part of spi-single, but
+>> >> > corrected as what you said, there will be some inconvenient.
+>> >> > 1,the driver that has already used spi-3wire need a big change.
+>> >> > 2,there have to be a complexed check in spi framework if set like:
+>> >> >  spi-quad = <tx-only | rx-only | duplex>
+>> >> >  spi-dual = <tx-only | rx-only | duplex>
+>> >> >  spi-single = <tx-only | rx-only | full-duplex | half-duplex>
+>> >> >
+>> >> [Pekon]: No, I'm not asking you to update logic in all drivers,
+>> >> just the DT bindings. Something like this..
+>> >> @@ -872,46 +872,42 @@ static void of_register_spi_devices(struct
+>> >> spi_master *master)
+>> >>               /* Device DUAL/QUAD mode */
+>> >>               prop = of_get_property(nc, "spi-single", &len);
+>> >>               if (prop == HALF_DUPLEX)
+>> >>                       spi->mode |= SPI_3WIRE;
+>> >>
+>> >> So, you set the same spi->mode[SPI_3WIRE] bit, thus other drivers are
+>> not
+>> >> impacted. And you can deprecate the older "spi-3wire" binding.
+>> >>
+>> >> with regards, pekon
+>> >>
+>> >> > >>  If a gpio chipselect is used for the SPI slave the gpio number will be
+>> >> > passed
+>> >> > >>  via the cs_gpio
+>> >> > >> --
+>> >> > >> 1.7.9.5
+>> >> > >
+>
+> with regards, pekon
