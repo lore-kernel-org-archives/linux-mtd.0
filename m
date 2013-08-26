@@ -1,20 +1,22 @@
-Message-ID: <521AF411.8000107@ti.com>
-Date: Mon, 26 Aug 2013 11:52:09 +0530
-From: Sourav Poddar <sourav.poddar@ti.com>
+Received: from bear.ext.ti.com ([192.94.94.41])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VDqm5-0006pr-1i
+ for linux-mtd@lists.infradead.org; Mon, 26 Aug 2013 06:59:41 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: wangyuhang <wangyuhang2014@gmail.com>
+Subject: RE: [PATCH 1/2] spi: dual and quad support(device tree)
+Date: Mon, 26 Aug 2013 06:59:12 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9FA914@DBDE04.ent.ti.com>
+References: <1377496080-14356-1-git-send-email-wangyuhang2014@gmail.com>
+In-Reply-To: <1377496080-14356-1-git-send-email-wangyuhang2014@gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v2 4/8] mtd: m25p80: add the DDR quad-read support
-References: <1377492102-23543-1-git-send-email-b32955@freescale.com>
- <1377492102-23543-5-git-send-email-b32955@freescale.com>
-In-Reply-To: <1377492102-23543-5-git-send-email-b32955@freescale.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: B20596@freescale.com, shawn.guo@linaro.org, b44548@freescale.com,
- linux-doc@vger.kernel.org, dedekind1@gmail.com, b18965@freescale.com,
- linux-spi@vger.kernel.org, devicetree@vger.kernel.org, broonie@kernel.org,
- linux-mtd@lists.infradead.org, kernel@pengutronix.de,
- computersforpeace@gmail.com, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Poddar,
+ Sourav" <sourav.poddar@ti.com>, "broonie@kernel.org" <broonie@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,94 +26,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-On Monday 26 August 2013 10:11 AM, Huang Shijie wrote:
-> This patch adds the DDR quad read support by:
->
-> (1) Add the relative commands:
->        OPCODE_DDRQIOR, OPCODE_4DDRQIOR
->
-> (2) add the "m25p,ddr-quad-read" property for the m25p80 driver
->      If the dts has the "m25p,ddr-quad-read" property, the kernel will
->      set the Quad bit of the configuration register, and when the
->      setting suceedes, we will set the read opcode with the right
->      spi nor command.
->
-> Signed-off-by: Huang Shijie<b32955@freescale.com>
-> ---
->   Documentation/devicetree/bindings/mtd/m25p80.txt |    5 +++++
->   drivers/mtd/devices/m25p80.c                     |   21 ++++++++++++++++-----
->   include/linux/mtd/spi-nor.h                      |    2 ++
->   3 files changed, 23 insertions(+), 5 deletions(-)
->
-> diff --git a/Documentation/devicetree/bindings/mtd/m25p80.txt b/Documentation/devicetree/bindings/mtd/m25p80.txt
-> index b33313f..a01c6b7 100644
-> --- a/Documentation/devicetree/bindings/mtd/m25p80.txt
-> +++ b/Documentation/devicetree/bindings/mtd/m25p80.txt
-> @@ -22,6 +22,11 @@ Optional properties:
->                      all chips and support for it can not be detected at runtime.
->                      Refer to your chips' datasheet to check if this is supported
->                      by your chip.
-> +- m25p,ddr-quad-read : Use the "ddr quad read" opcode to read data from the chip
-> +                   instead of the usual "read" opcode. This opcode is not
-> +                   supported by all chips and support for it can not be detected
-> +                   at runtime. Refer to your chips' datasheet to check if this
-> +                   is supported by your chip.
->   Example:
->
->   	flash: m25p80@0 {
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 0645c9f..32ccdc7 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -913,7 +913,8 @@ static void m25p80_check_quad_read(struct m25p *flash, struct device_node *np)
->   	int ret;
->   	int sr_cr;
->
-> -	if (of_property_read_bool(np, "m25p,quad-read")) {
-> +	if (of_property_read_bool(np, "m25p,quad-read")
-> +		|| of_property_read_bool(np, "m25p,ddr-quad-read")) {
->   		/* The configuration register is set by the second byte. */
->   		sr_cr = CR_QUAD<<  8;
->
-> @@ -927,10 +928,20 @@ static void m25p80_check_quad_read(struct m25p *flash, struct device_node *np)
->   		if (!(ret>  0&&  (ret&  CR_QUAD)))
->   			return;
->
-> -		if (flash->mtd.size<= SZ_16M)
-> -			flash->read_opcode = OPCODE_QIOR;
-> -		else
-> -			flash->read_opcode = OPCODE_4QIOR;
-> +		if (of_property_read_bool(np, "m25p,quad-read")) {
-> +			if (flash->mtd.size<= SZ_16M)
-> +				flash->read_opcode = OPCODE_QIOR;
-> +			else
-> +				flash->read_opcode = OPCODE_4QIOR;
-> +			return;
-> +		}
-> +
-> +		if (of_property_read_bool(np, "m25p,ddr-quad-read")) {
-> +			if (flash->mtd.size<= SZ_16M)
-> +				flash->read_opcode = OPCODE_DDRQIOR;
-> +			else
-> +				flash->read_opcode = OPCODE_4DDRQIOR;
-> +		}
-I remember this getting asked in some other thread also...
-Quad read need dummy bits before reading out the data, what happens
-when the controller does not have LUT feature.  ?
->   	}
->   }
->
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index e6c3309..a985336 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -42,6 +42,8 @@
->   #define	OPCODE_BRWR		0x17	/* Bank register write */
->   #define	OPCODE_QIOR		0xeb	/* Quad read */
->   #define	OPCODE_4QIOR		0xec	/* Quad read (4-byte)*/
-> +#define	OPCODE_DDRQIOR		0xed	/* DDR Quad read */
-> +#define	OPCODE_4DDRQIOR		0xee	/* DDR Quad read (4-byte)*/
->   #define	OPCODE_RDCR		0x35	/* Read configuration register */
->
->   /* Status Register bits. */
+PiANCj4gU2lnbmVkLW9mZi1ieTogd2FuZ3l1aGFuZyA8d2FuZ3l1aGFuZzIwMTRAZ21haWwuY29t
+Pg0KPiAtLS0NCj4gIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zcGkvc3BpLWJ1
+cy50eHQgfCAgIDE0ICsrKysrKysrKysrKysrDQo+ICAxIGZpbGUgY2hhbmdlZCwgMTQgaW5zZXJ0
+aW9ucygrKQ0KPiANCj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
+aW5ncy9zcGkvc3BpLWJ1cy50eHQNCj4gYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGlu
+Z3Mvc3BpL3NwaS1idXMudHh0DQo+IGluZGV4IDI5NjAxNWUuLjE0NWJhOTYgMTAwNjQ0DQo+IC0t
+LSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zcGkvc3BpLWJ1cy50eHQNCj4g
+KysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NwaS9zcGktYnVzLnR4dA0K
+PiBAQCAtNTUsNiArNTUsMjAgQEAgY29udGFpbiB0aGUgZm9sbG93aW5nIHByb3BlcnRpZXMuDQo+
+ICAgICAgCQljaGlwIHNlbGVjdCBhY3RpdmUgaGlnaA0KPiAgLSBzcGktM3dpcmUgICAgICAgLSAo
+b3B0aW9uYWwpIEVtcHR5IHByb3BlcnR5IGluZGljYXRpbmcgZGV2aWNlIHJlcXVpcmVzDQo+ICAg
+ICAgCQkgICAgMy13aXJlIG1vZGUuDQo+ICstIHNwaS10eC1uYml0cyAgICAtIChvcHRpb25hbCkg
+TnVtYmVyIG9mIGJpdHMgdXNlZCBmb3IgTU9TSSh3cml0dGluZykNCj4gKy0gc3BpLXJ4LW5iaXRz
+ICAgIC0gKG9wdGlvbmFsKSBOdW1iZXIgb2YgYml0cyB1c2VkIGZvciBNSVNPKHJlYWRpbmcpDQo+
+ICsNCj4gK1NvIGlmIGZvciBleGFtcGxlIHRoZSBzbGF2ZSBoYXMgNCB3aXJlcyBmb3Igd3JpdHRp
+bmcgYW5kIDIgd2lyZXMgZm9yIHJlYWRpbmcsDQo+ICthbmQgdGhlIHNwaS10eC9yeC1uYml0cyBw
+cm9wZXJ0eSBzaG91bGQgYmUgc2V0IGFzIGZvbGxvd3M6DQo+ICsNCj4gK3NwaS10eC1uYml0cyA9
+IDw0PjsNCj4gK3NwaS1yeC1uYml0cyA9IDwyPjsNCg0KW1Bla29uXTogdGhlcmUgaXMgYSBwcm9i
+bGVtIGhlcmUuLi4NCnNwaS10eC1uYml0ID0gPDQ+IHN1Z2dlc3RzIHRoYXQgU1BJIGRldmljZSBz
+dXBwb3J0IFFVQUQgd3JpdGVzLCBidXQgaXQgZG9lcw0Kbm90IGluZGljYXRlIHdoZXRoZXIgRFVB
+TCB3cml0ZXMgYXJlIHN1cHBvcnRlZCBieSBkZXZpY2Ugb3Igbm90Lg0KU28sIEluIG15IHZpZXcg
+aGF2aW5nIGVpdGhlciBvZiB0aGUgZm9sbG93aW5nIGltcGxlbWVudGF0aW9uIGNvdWxkIGhlbHAN
+CmluIHNwZWNpZnlpbmcgY2FwYWJpbGl0aWVzIGluZGVwZW5kZW50bHkgYW5kIGNsZWFybHkuDQoq
+SW1wbGVtZW50YXRpb24tMSBCb29sZWFuKg0Kc3BpLXR4LXF1YWQgPSA8dHJ1ZSB8IGZhbHNlPg0K
+c3BpLXR4LWR1YWwgPSA8dHJ1ZSB8IGZhbHNlPg0Kc3BpLXR4LXNpbmdsZSA9IDx0cnVlIHwgZmFs
+c2U+DQpTYW1lIHdheSBmb3IgUnguLg0Kc3BpLXJ4LXF1YWQgPSA8dHJ1ZSB8IGZhbHNlPg0Kc3Bp
+LXJ4LWR1YWwgPSA8dHJ1ZSB8IGZhbHNlPg0Kc3BpLXJ4LXNpbmdsZSA9IDx0cnVlIHwgZmFsc2U+
+DQoNCipJbXBsZW1lbnRhdGlvbi0yIE11bHRpLW9wdGlvbioNCnNwaS1xdWFkID0gPHR4LW9ubHkg
+fCByeC1vbmx5IHwgZHVwbGV4Pg0Kc3BpLWR1YWwgPSA8dHgtb25seSB8IHJ4LW9ubHkgfCBkdXBs
+ZXg+DQpzcGktc2luZ2xlID0gPHR4LW9ubHkgfCByeC1vbmx5IHwgZnVsbC1kdXBsZXggfCBoYWxm
+LWR1cGxleD4NCg0KPiArDQo+ICtOb3cgdGhlIHZhbHVlIHRoYXQgc3BpLXR4LW5iaXRzIGFuZCBz
+cGktcngtbmJpdHMgY2FuIHJlY2VpdmUgaXMgb25seQ0KPiArMShzaW5nbGUpLCAyKGR1YWwpIGFu
+ZCA0KHF1YWQpLiBJZiB5b3UgZG9uJ3Qgc2V0IHNwaS10eC1uYml0cyBvciBzcGktcngtbmJpdHMs
+DQo+ICtzcGlfZGV2aWNlIG1vZGUgd2lsbCBiZSBzZXQgaW4gc2luZ2xlKDEgd2lyZSkgYXMgZGVm
+YXVsdC4gQW5vdGhlciBwb2ludCwgaWYNCj4gK3Byb3BlcnR5OnNwaS0zd2lyZSBpcyBzZXQsIHNw
+aS10eC9yeC1uYml0cyBpcyBmb3JiaWRkZW4gdG8gc2V0IHRvIDwyIG9yIDQ+LA0KPiArb3RoZXJ3
+aXNlLCBhbiBlcnJybyB3aWxsIHJldHVybi4NCj4gDQpbUGVrb25dOiBBbHNvLCBpbnN0ZWFkIG9m
+IGhhdmluZyBzZXBhcmF0ZSBiaW5kaW5nIGZvciAnc3BpLTN3aXJlJywgaXQgY2FuIGJlDQptb3Zl
+ZCB1bmRlciBhcyBzcGktc2luZ2xlID0gPGhhbGYtZHVwbGV4Pi4NCkZ1bGwtZHVwbGV4ID0gVHgg
+YW5kIFJ4IG9wZXJhdGUgb24gaW5kZXBlbmRlbnQgY2hhbm5lbHMgYW5kIGNvbmN1cnJlbnRseS4N
+CkhhbGYtZHVwbGV4ID0gVHggYW5kIFJ4IHVzZSBzYW1lIGJpLWRpcmVjdGlvbmFsIGNoYW5uZWwg
+Zm9yIHRyYW5zbWlzc2lvbg0KCW9uZSBieSBvbmUNCg0KPiAgSWYgYSBncGlvIGNoaXBzZWxlY3Qg
+aXMgdXNlZCBmb3IgdGhlIFNQSSBzbGF2ZSB0aGUgZ3BpbyBudW1iZXIgd2lsbCBiZSBwYXNzZWQN
+Cj4gIHZpYSB0aGUgY3NfZ3Bpbw0KPiAtLQ0KPiAxLjcuOS41DQoNCndpdGggcmVnYXJkcywgcGVr
+b24NCg==
