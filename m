@@ -1,17 +1,24 @@
-In-Reply-To: <OF039421E5.05D3267C-ONC1257BD0.0071BBE2-C1257BD0.007746F1@rohde-schwarz.com>
-References: <000a01ce8ccc$8ae14840$1c214a0a@ztedengchao>
- <OF039421E5.05D3267C-ONC1257BD0.0071BBE2-C1257BD0.007746F1@rohde-schwarz.com>
-Subject: Re: [JFFS2]The patch "jffs2: Fix lock acquisition order bug in
- jffs2_write_begin" introduces another dead lock bug.
-To: Thomas.Betker@rohde-schwarz.com, linux-mtd@lists.infradead.org,
- "\"linux-mtd\"" <linux-mtd-bounces@lists.infradead.org>
-Message-ID: <OFD828A6E5.209922BA-ON48257BD3.002B0216-48257BD3.002E9985@zte.com.cn>
-From: deng.chao1@zte.com.cn
-Date: Mon, 26 Aug 2013 16:26:21 +0800
+Received: from arroyo.ext.ti.com ([192.94.94.40])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VDt7x-0001NR-QJ
+ for linux-mtd@lists.infradead.org; Mon, 26 Aug 2013 09:30:27 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: yuhang wang <wangyuhang2014@gmail.com>
+Subject: RE: [PATCH 1/2] spi: dual and quad support(device tree)
+Date: Mon, 26 Aug 2013 09:29:55 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9FAA82@DBDE04.ent.ti.com>
+References: <1377496080-14356-1-git-send-email-wangyuhang2014@gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9FA914@DBDE04.ent.ti.com>
+ <CAHSAbzPBTAs=A4SMMojNFG969hukaf=+iAv0xLoQ13Mo0W=J+g@mail.gmail.com>
+In-Reply-To: <CAHSAbzPBTAs=A4SMMojNFG969hukaf=+iAv0xLoQ13Mo0W=J+g@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, wang.bo116@zte.com.cn,
- Ming Liu <liu.ming50@gmail.com>, Thomas Betker <thomas.betker@freenet.de>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Poddar,
+ Sourav" <sourav.poddar@ti.com>, "broonie@kernel.org" <broonie@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,239 +28,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Thomas:
-
-The patch is below.
-I just revert your patch, and add my fix:
-In jffs2_garbage_collect_live, I change read_cache_page_async(page) to read_cache_page_async_trylock(page),
-it only takes the page lock when the lock is not being taken, otherwise just returns result to upper.
-Once jffs2_garbage_collect_past knows the lock contentions through the return value of jffs2_garbage_collect_live,
-it can just return and wait the next garbage collect operation to continue the jffs2_gc_fetch_page opeation,
-keeps making another try to accquire the page lock until the lock is available.
-
-Thanks
-Deng chao
-
-diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
-index 1506673..60ef3fb 100755
---- a/fs/jffs2/file.c
-+++ b/fs/jffs2/file.c
-@@ -138,39 +138,33 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
- 	struct page *pg;
- 	struct inode *inode = mapping->host;
- 	struct jffs2_inode_info *f = JFFS2_INODE_INFO(inode);
--	struct jffs2_sb_info *c = JFFS2_SB_INFO(inode->i_sb);
--	struct jffs2_raw_inode ri;
--	uint32_t alloc_len = 0;
- 	pgoff_t index = pos >> PAGE_CACHE_SHIFT;
- 	uint32_t pageofs = index << PAGE_CACHE_SHIFT;
- 	int ret = 0;
-
--	jffs2_dbg(1, "%s()\n", __func__);
--
--	if (pageofs > inode->i_size) {
--		ret = jffs2_reserve_space(c, sizeof(ri), &alloc_len,
--					  ALLOC_NORMAL, JFFS2_SUMMARY_INODE_SIZE);
--		if (ret)
--			return ret;
--	}
--
--	mutex_lock(&f->sem);
- 	pg = grab_cache_page_write_begin(mapping, index, flags);
--	if (!pg) {
--		if (alloc_len)
--			jffs2_complete_reservation(c);
--		mutex_unlock(&f->sem);
-+	if (!pg)
- 		return -ENOMEM;
--	}
- 	*pagep = pg;
-
--	if (alloc_len) {
-+	jffs2_dbg(1, "%s()\n", __func__);
-+
-+	if (pageofs > inode->i_size) {
- 		/* Make new hole frag from old EOF to new page */
-+		struct jffs2_sb_info *c = JFFS2_SB_INFO(inode->i_sb);
-+		struct jffs2_raw_inode ri;
- 		struct jffs2_full_dnode *fn;
-+		uint32_t alloc_len;
-
- 		jffs2_dbg(1, "Writing new hole frag 0x%x-0x%x between current EOF and new page\n",
- 			  (unsigned int)inode->i_size, pageofs);
-
-+		ret = jffs2_reserve_space(c, sizeof(ri), &alloc_len,
-+					  ALLOC_NORMAL, JFFS2_SUMMARY_INODE_SIZE);
-+		if (ret)
-+			goto out_page;
-+
-+		mutex_lock(&f->sem);
- 		memset(&ri, 0, sizeof(ri));
-
- 		ri.magic = cpu_to_je16(JFFS2_MAGIC_BITMASK);
-@@ -197,6 +191,7 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
- 		if (IS_ERR(fn)) {
- 			ret = PTR_ERR(fn);
- 			jffs2_complete_reservation(c);
-+			mutex_unlock(&f->sem);
- 			goto out_page;
- 		}
- 		ret = jffs2_add_full_dnode_to_inode(c, f, fn);
-@@ -211,10 +206,12 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
- 			jffs2_mark_node_obsolete(c, fn->raw);
- 			jffs2_free_full_dnode(fn);
- 			jffs2_complete_reservation(c);
-+			mutex_unlock(&f->sem);
- 			goto out_page;
- 		}
- 		jffs2_complete_reservation(c);
- 		inode->i_size = pageofs;
-+		mutex_unlock(&f->sem);
- 	}
-
- 	/*
-@@ -223,18 +220,18 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
- 	 * case of a short-copy.
- 	 */
- 	if (!PageUptodate(pg)) {
-+		mutex_lock(&f->sem);
- 		ret = jffs2_do_readpage_nolock(inode, pg);
-+		mutex_unlock(&f->sem);
- 		if (ret)
- 			goto out_page;
- 	}
--	mutex_unlock(&f->sem);
- 	jffs2_dbg(1, "end write_begin(). pg->flags %lx\n", pg->flags);
- 	return ret;
-
- out_page:
- 	unlock_page(pg);
- 	page_cache_release(pg);
--	mutex_unlock(&f->sem);
- 	return ret;
- }
-
-diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
-index fe3c052..7c875d2 100755
---- a/fs/jffs2/fs.c
-+++ b/fs/jffs2/fs.c
-@@ -682,8 +682,16 @@ unsigned char *jffs2_gc_fetch_page(struct jffs2_sb_info *c,
- 	struct inode *inode = OFNI_EDONI_2SFFJ(f);
- 	struct page *pg;
-
--	pg = read_cache_page_async(inode->i_mapping, offset >> PAGE_CACHE_SHIFT,
--			     (void *)jffs2_do_readpage_unlock, inode);
-+	/* read_cache_page_async_trylock will return -EBUSY
-+	if it is not possible to lock the cache page. If we
-+	get -EBUSY, then avoid a deadlock between
-+	cache page locks and f->sem.
-+	*/
-+	pg = read_cache_page_async_trylock(inode->i_mapping,
-+				offset >> PAGE_CACHE_SHIFT,
-+				(void *)jffs2_do_readpage_unlock,
-+				inode);
-+
- 	if (IS_ERR(pg))
- 		return (void *)pg;
-
-diff --git a/fs/jffs2/gc.c b/fs/jffs2/gc.c
-index 5a2dec2..76a4eb0 100755
---- a/fs/jffs2/gc.c
-+++ b/fs/jffs2/gc.c
-@@ -445,6 +445,9 @@ int jffs2_garbage_collect_pass(struct jffs2_sb_info *c)
-
- 	jffs2_gc_release_inode(c, f);
-
-+	if (!ret)
-+		goto release_sem;
-+
-  test_gcnode:
- 	if (jeb->dirty_size == gcblock_dirty && !ref_obsolete(jeb->gc_node)) {
- 		/* Eep. This really should never happen. GC is broken */
-@@ -1306,9 +1309,15 @@ static int jffs2_garbage_collect_dnode(struct jffs2_sb_info *c, struct jffs2_era
- 	pg_ptr = jffs2_gc_fetch_page(c, f, start, &pg);
-
- 	if (IS_ERR(pg_ptr)) {
--		pr_warn("read_cache_page() returned error: %ld\n",
--			PTR_ERR(pg_ptr));
--		return PTR_ERR(pg_ptr);
-+		if (PTR_ERR(pg_ptr) == -EBUSY) {
-+			pr_warn("jffs2_gc_fetch_page() returned -EBUSY. Deadlock avoided.\n");
-+			return 0;
-+
-+		} else {
-+			pr_warn("read_cache_page() returned error: %ld\n",
-+				PTR_ERR(pg_ptr));
-+			return PTR_ERR(pg_ptr);
-+		}
- 	}
-
- 	offset = start;
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index e3dea75..a0bf9c9 100755
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -272,6 +272,9 @@ extern struct page * grab_cache_page_nowait(struct address_space *mapping,
- 				pgoff_t index);
- extern struct page * read_cache_page_async(struct address_space *mapping,
- 				pgoff_t index, filler_t *filler, void *data);
-+extern struct page *read_cache_page_async_trylock(
-+				struct address_space *mapping,
-+				pgoff_t index, filler_t *filler, void *data);
- extern struct page * read_cache_page(struct address_space *mapping,
- 				pgoff_t index, filler_t *filler, void *data);
- extern struct page * read_cache_page_gfp(struct address_space *mapping,
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 4b51ac1..81259b7 100755
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -1887,6 +1887,49 @@ struct page *read_cache_page_async(struct address_space *mapping,
- }
- EXPORT_SYMBOL(read_cache_page_async);
-
-+/*
-+* Same as read_cache_page, but abort if the page is locked.
-+*/
-+struct page *read_cache_page_async_trylock(struct address_space *mapping,
-+					pgoff_t index,
-+					int (*filler)(void *, struct page *),
-+					void *data)
-+{
-+	struct page *page;
-+	int err;
-+
-+retry:
-+	page = __read_cache_page(mapping, index, filler, data, mapping_gfp_mask(mapping));
-+	if (IS_ERR(page))
-+		return page;
-+	if (PageUptodate(page))
-+		goto out;
-+
-+	if (!trylock_page(page)) {
-+		page_cache_release(page);
-+		return ERR_PTR(-EBUSY);
-+	}
-+
-+	if (!page->mapping) {
-+		unlock_page(page);
-+		page_cache_release(page);
-+		goto retry;
-+	}
-+	if (PageUptodate(page)) {
-+		unlock_page(page);
-+		goto out;
-+	}
-+	err = filler(data, page);
-+	if (err < 0) {
-+		page_cache_release(page);
-+		return ERR_PTR(err);
-+	}
-+ out:
-+	mark_page_accessed(page);
-+	return page;
-+}
-+EXPORT_SYMBOL(read_cache_page_async_trylock);
-+
- static struct page *wait_on_page_read(struct page *page)
- {
- 	if (!IS_ERR(page)) {
+PiBIaSwgUGVrb24NCj4gDQo+IDIwMTMvOC8yNiBHdXB0YSwgUGVrb24gPHBla29uQHRpLmNvbT46
+DQo+ID4+DQo+ID4+IFNpZ25lZC1vZmYtYnk6IHdhbmd5dWhhbmcgPHdhbmd5dWhhbmcyMDE0QGdt
+YWlsLmNvbT4NCj4gPj4gLS0tDQo+ID4+ICBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGlu
+Z3Mvc3BpL3NwaS1idXMudHh0IHwgICAxNA0KPiArKysrKysrKysrKysrKw0KPiA+PiAgMSBmaWxl
+IGNoYW5nZWQsIDE0IGluc2VydGlvbnMoKykNCj4gPj4NCj4gPj4gZGlmZiAtLWdpdCBhL0RvY3Vt
+ZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zcGkvc3BpLWJ1cy50eHQNCj4gPj4gYi9Eb2N1
+bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc3BpL3NwaS1idXMudHh0DQo+ID4+IGluZGV4
+IDI5NjAxNWUuLjE0NWJhOTYgMTAwNjQ0DQo+ID4+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNl
+dHJlZS9iaW5kaW5ncy9zcGkvc3BpLWJ1cy50eHQNCj4gPj4gKysrIGIvRG9jdW1lbnRhdGlvbi9k
+ZXZpY2V0cmVlL2JpbmRpbmdzL3NwaS9zcGktYnVzLnR4dA0KPiA+PiBAQCAtNTUsNiArNTUsMjAg
+QEAgY29udGFpbiB0aGUgZm9sbG93aW5nIHByb3BlcnRpZXMuDQo+ID4+ICAgICAgICAgICAgICAg
+Y2hpcCBzZWxlY3QgYWN0aXZlIGhpZ2gNCj4gPj4gIC0gc3BpLTN3aXJlICAgICAgIC0gKG9wdGlv
+bmFsKSBFbXB0eSBwcm9wZXJ0eSBpbmRpY2F0aW5nIGRldmljZSByZXF1aXJlcw0KPiA+PiAgICAg
+ICAgICAgICAgICAgICAzLXdpcmUgbW9kZS4NCj4gPj4gKy0gc3BpLXR4LW5iaXRzICAgIC0gKG9w
+dGlvbmFsKSBOdW1iZXIgb2YgYml0cyB1c2VkIGZvciBNT1NJKHdyaXR0aW5nKQ0KPiA+PiArLSBz
+cGktcngtbmJpdHMgICAgLSAob3B0aW9uYWwpIE51bWJlciBvZiBiaXRzIHVzZWQgZm9yIE1JU08o
+cmVhZGluZykNCj4gPj4gKw0KPiA+PiArU28gaWYgZm9yIGV4YW1wbGUgdGhlIHNsYXZlIGhhcyA0
+IHdpcmVzIGZvciB3cml0dGluZyBhbmQgMiB3aXJlcyBmb3INCj4gcmVhZGluZywNCj4gPj4gK2Fu
+ZCB0aGUgc3BpLXR4L3J4LW5iaXRzIHByb3BlcnR5IHNob3VsZCBiZSBzZXQgYXMgZm9sbG93czoN
+Cj4gPj4gKw0KPiA+PiArc3BpLXR4LW5iaXRzID0gPDQ+Ow0KPiA+PiArc3BpLXJ4LW5iaXRzID0g
+PDI+Ow0KPiA+DQo+ID4gW1Bla29uXTogdGhlcmUgaXMgYSBwcm9ibGVtIGhlcmUuLi4NCj4gPiBz
+cGktdHgtbmJpdCA9IDw0PiBzdWdnZXN0cyB0aGF0IFNQSSBkZXZpY2Ugc3VwcG9ydCBRVUFEIHdy
+aXRlcywgYnV0IGl0IGRvZXMNCj4gPiBub3QgaW5kaWNhdGUgd2hldGhlciBEVUFMIHdyaXRlcyBh
+cmUgc3VwcG9ydGVkIGJ5IGRldmljZSBvciBub3QuDQo+ID4gU28sIEluIG15IHZpZXcgaGF2aW5n
+IGVpdGhlciBvZiB0aGUgZm9sbG93aW5nIGltcGxlbWVudGF0aW9uIGNvdWxkIGhlbHANCj4gPiBp
+biBzcGVjaWZ5aW5nIGNhcGFiaWxpdGllcyBpbmRlcGVuZGVudGx5IGFuZCBjbGVhcmx5Lg0KPiA+
+ICpJbXBsZW1lbnRhdGlvbi0xIEJvb2xlYW4qDQo+ID4gc3BpLXR4LXF1YWQgPSA8dHJ1ZSB8IGZh
+bHNlPg0KPiA+IHNwaS10eC1kdWFsID0gPHRydWUgfCBmYWxzZT4NCj4gPiBzcGktdHgtc2luZ2xl
+ID0gPHRydWUgfCBmYWxzZT4NCj4gPiBTYW1lIHdheSBmb3IgUnguLg0KPiA+IHNwaS1yeC1xdWFk
+ID0gPHRydWUgfCBmYWxzZT4NCj4gPiBzcGktcngtZHVhbCA9IDx0cnVlIHwgZmFsc2U+DQo+ID4g
+c3BpLXJ4LXNpbmdsZSA9IDx0cnVlIHwgZmFsc2U+DQo+ID4NCj4gPiAqSW1wbGVtZW50YXRpb24t
+MiBNdWx0aS1vcHRpb24qDQo+ID4gc3BpLXF1YWQgPSA8dHgtb25seSB8IHJ4LW9ubHkgfCBkdXBs
+ZXg+DQo+ID4gc3BpLWR1YWwgPSA8dHgtb25seSB8IHJ4LW9ubHkgfCBkdXBsZXg+DQo+ID4gc3Bp
+LXNpbmdsZSA9IDx0eC1vbmx5IHwgcngtb25seSB8IGZ1bGwtZHVwbGV4IHwgaGFsZi1kdXBsZXg+
+DQo+ID4NCj4gTm90IGV4YWN0bHksICBzcGktdHgtbmJpdCA9IDw0PiBzdWdnZXN0cyB0aGF0IFNQ
+SSBkZXZpY2Ugd2lsbCB1c2UgUVVBRA0KPiB3cml0ZXMsIG5vdCBzdXBwb3J0IFFVQUQgd3JpdGVz
+LiBUaGVyZSBpcyBubyBuZWVkIHRvIHNldCB3aGF0IG1vZGUNCj4gc2xhdmUgc3VwcG9ydHMsIHVz
+ZXIganVzdCBzZXQgdGhlIGNlcnRhaW4gbW9kZSBzbGF2ZSB3aWxsIHdvcmsgaW4uDQo+IA0KW1Bl
+a29uXTogV2FpdC4uIEkgdGhpbmsgdGhlcmUgaXMgc29tZSBtaXMtbWF0Y2ggaW4gb3VyIHVuZGVy
+c3RhbmRpbmdzLi4gDQooYSkgc3RydWN0IHNwaV9kZXZpY2UtPm1vZGUgZGV0ZXJtaW5lcyBjYXBh
+YmlsaXRpZXMgc3BpX2RldmljZSBjYW4gc3VwcG9ydA0KKGIpIEFuZCwgd2hlbiB1c2VyIChoZXJl
+IG0yNXA4MCBsaWtlIGZsYXNoIGRyaXZlcikgcHV0cyBhIHNwaV90cmFuc2ZlciwgdGhlbg0KaXQg
+c3BlY2lmaWVzIHdoZXRoZXIgdG8gdXNlIHNwaV90cmFuc2Zlci0+dHhfbmJpdHMgPSA0IG9yIG5v
+dC4uIA0KQW5kIHlvdSBhcmUgdXNpbmcgRFQgYmluZGluZyB0byBzcGVjaWZ5IChhKSBjb3JyZWN0
+ID8NCg0KTm93LCBob3cgd291bGQgeW91IHNwZWNpZnkgZm9sbG93aW5nIGNvbmZpZ3VyYXRpb24s
+IHVzaW5nIERUID8NCglzcGlfZGV2aWNlLT5tb2RlID0gU1BJX1RYX1NJTkdMRSB8IFNQSV9UWF9R
+VUFELiAoYnV0IG5vdCBkdWFsKQ0Kc28gdGhhdCBkcml2ZXINCi0gZHJpdmVyIGdpdmUgZXJyb3Is
+DQoJd2hlbiBtMjVwODAgZHJpdmVyIHVzZXMgc3BpX3RyYW5zZmVyLT50eC1uYml0cyA9IDINCi0g
+QnV0IGFsbG93LCANCgl3aGVuIG0yNXA4MCBkcml2ZXIgdXNlcyBzcGlfdHJhbnNmZXItPnR4LW5i
+aXRzID0gMSBvcg0KCXdoZW4gbTI1cDgwIGRyaXZlciB1c2VzIHNwaV90cmFuc2Zlci0+dHgtbmJp
+dHMgPSA0DQoNCj4gPj4gKw0KPiA+PiArTm93IHRoZSB2YWx1ZSB0aGF0IHNwaS10eC1uYml0cyBh
+bmQgc3BpLXJ4LW5iaXRzIGNhbiByZWNlaXZlIGlzIG9ubHkNCj4gPj4gKzEoc2luZ2xlKSwgMihk
+dWFsKSBhbmQgNChxdWFkKS4gSWYgeW91IGRvbid0IHNldCBzcGktdHgtbmJpdHMgb3Igc3BpLXJ4
+LW5iaXRzLA0KPiA+PiArc3BpX2RldmljZSBtb2RlIHdpbGwgYmUgc2V0IGluIHNpbmdsZSgxIHdp
+cmUpIGFzIGRlZmF1bHQuIEFub3RoZXIgcG9pbnQsIGlmDQo+ID4+ICtwcm9wZXJ0eTpzcGktM3dp
+cmUgaXMgc2V0LCBzcGktdHgvcngtbmJpdHMgaXMgZm9yYmlkZGVuIHRvIHNldCB0byA8MiBvciA0
+PiwNCj4gPj4gK290aGVyd2lzZSwgYW4gZXJycm8gd2lsbCByZXR1cm4uDQo+ID4+DQo+ID4gW1Bl
+a29uXTogQWxzbywgaW5zdGVhZCBvZiBoYXZpbmcgc2VwYXJhdGUgYmluZGluZyBmb3IgJ3NwaS0z
+d2lyZScsIGl0IGNhbiBiZQ0KPiA+IG1vdmVkIHVuZGVyIGFzIHNwaS1zaW5nbGUgPSA8aGFsZi1k
+dXBsZXg+Lg0KPiA+IEZ1bGwtZHVwbGV4ID0gVHggYW5kIFJ4IG9wZXJhdGUgb24gaW5kZXBlbmRl
+bnQgY2hhbm5lbHMgYW5kDQo+IGNvbmN1cnJlbnRseS4NCj4gPiBIYWxmLWR1cGxleCA9IFR4IGFu
+ZCBSeCB1c2Ugc2FtZSBiaS1kaXJlY3Rpb25hbCBjaGFubmVsIGZvciB0cmFuc21pc3Npb24NCj4g
+PiAgICAgICAgIG9uZSBieSBvbmUNCj4gPg0KPiBBY3R1YWxseSwgc3BpLTN3aXJlIGNhbiBiZSBy
+ZWdhcmRlZCBhcyBhIHBhcnQgb2Ygc3BpLXNpbmdsZSwgYnV0DQo+IGNvcnJlY3RlZCBhcyB3aGF0
+IHlvdSBzYWlkLCB0aGVyZSB3aWxsIGJlIHNvbWUgaW5jb252ZW5pZW50Lg0KPiAxLHRoZSBkcml2
+ZXIgdGhhdCBoYXMgYWxyZWFkeSB1c2VkIHNwaS0zd2lyZSBuZWVkIGEgYmlnIGNoYW5nZS4NCj4g
+Mix0aGVyZSBoYXZlIHRvIGJlIGEgY29tcGxleGVkIGNoZWNrIGluIHNwaSBmcmFtZXdvcmsgaWYg
+c2V0IGxpa2U6DQo+ICBzcGktcXVhZCA9IDx0eC1vbmx5IHwgcngtb25seSB8IGR1cGxleD4NCj4g
+IHNwaS1kdWFsID0gPHR4LW9ubHkgfCByeC1vbmx5IHwgZHVwbGV4Pg0KPiAgc3BpLXNpbmdsZSA9
+IDx0eC1vbmx5IHwgcngtb25seSB8IGZ1bGwtZHVwbGV4IHwgaGFsZi1kdXBsZXg+DQo+IA0KW1Bl
+a29uXTogTm8sIEknbSBub3QgYXNraW5nIHlvdSB0byB1cGRhdGUgbG9naWMgaW4gYWxsIGRyaXZl
+cnMsDQpqdXN0IHRoZSBEVCBiaW5kaW5ncy4gU29tZXRoaW5nIGxpa2UgdGhpcy4uDQpAQCAtODcy
+LDQ2ICs4NzIsNDIgQEAgc3RhdGljIHZvaWQgb2ZfcmVnaXN0ZXJfc3BpX2RldmljZXMoc3RydWN0
+IHNwaV9tYXN0ZXIgKm1hc3RlcikNCiAJCS8qIERldmljZSBEVUFML1FVQUQgbW9kZSAqLw0KIAkJ
+cHJvcCA9IG9mX2dldF9wcm9wZXJ0eShuYywgInNwaS1zaW5nbGUiLCAmbGVuKTsNCgkJaWYgKHBy
+b3AgPT0gSEFMRl9EVVBMRVgpDQoJCQlzcGktPm1vZGUgfD0gU1BJXzNXSVJFOw0KDQpTbywgeW91
+IHNldCB0aGUgc2FtZSBzcGktPm1vZGVbU1BJXzNXSVJFXSBiaXQsIHRodXMgb3RoZXIgZHJpdmVy
+cyBhcmUgbm90DQppbXBhY3RlZC4gQW5kIHlvdSBjYW4gZGVwcmVjYXRlIHRoZSBvbGRlciAic3Bp
+LTN3aXJlIiBiaW5kaW5nLg0KDQp3aXRoIHJlZ2FyZHMsIHBla29uDQoNCj4gPj4gIElmIGEgZ3Bp
+byBjaGlwc2VsZWN0IGlzIHVzZWQgZm9yIHRoZSBTUEkgc2xhdmUgdGhlIGdwaW8gbnVtYmVyIHdp
+bGwgYmUNCj4gcGFzc2VkDQo+ID4+ICB2aWEgdGhlIGNzX2dwaW8NCj4gPj4gLS0NCj4gPj4gMS43
+LjkuNQ0KPiA+DQo+ID4gd2l0aCByZWdhcmRzLCBwZWtvbg0K
