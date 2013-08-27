@@ -1,18 +1,24 @@
-Received: from mail-pb0-x234.google.com ([2607:f8b0:400e:c01::234])
+Received: from arroyo.ext.ti.com ([192.94.94.40])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VE7VX-0005G0-BL
- for linux-mtd@lists.infradead.org; Tue, 27 Aug 2013 00:51:43 +0000
-Received: by mail-pb0-f52.google.com with SMTP id wz12so4083642pbc.39
- for <linux-mtd@lists.infradead.org>; Mon, 26 Aug 2013 17:51:21 -0700 (PDT)
-From: wangyuhang <wangyuhang2014@gmail.com>
-To: broonie@kernel.org, linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org
-Subject: [PATCH V2 2/2] spi: dual and quad support(device tree)
-Date: Tue, 27 Aug 2013 08:50:03 +0800
-Message-Id: <1377564603-4030-2-git-send-email-wangyuhang2014@gmail.com>
-In-Reply-To: <1377564603-4030-1-git-send-email-wangyuhang2014@gmail.com>
+ id 1VEAVL-0007vS-4M
+ for linux-mtd@lists.infradead.org; Tue, 27 Aug 2013 04:03:43 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: wangyuhang <wangyuhang2014@gmail.com>, "broonie@kernel.org"
+ <broonie@kernel.org>
+Subject: RE: [PATCH V2 2/2] spi: dual and quad support(device tree)
+Date: Tue, 27 Aug 2013 04:03:12 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9FAED5@DBDE04.ent.ti.com>
 References: <1377564603-4030-1-git-send-email-wangyuhang2014@gmail.com>
-Cc: sourav.poddar@ti.com, pekon@ti.com, wangyuhang <wangyuhang2014@gmail.com>
+ <1377564603-4030-2-git-send-email-wangyuhang2014@gmail.com>
+In-Reply-To: <1377564603-4030-2-git-send-email-wangyuhang2014@gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Poddar,
+ Sourav" <sourav.poddar@ti.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,45 +28,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add spi-tmax-nbits and spi-rmax-nbits for spi slave node.
-Modify the related dt document(spi-bus.txt)
- spi-tmax-nbits:Max number of bits slave will use for MOSI(writting)
- spi-rmax-nbits:Max number of bits slave will use for MISO(reading)
-Support for spi-tx/rmax-nbits in SPI framework has been picked[1].
-[1]: http://comments.gmane.org/gmane.linux.kernel.spi.devel/14420
-Commit Id:f477b7fb13df2b843997559ff34e87d054ba6538
-
-Signed-off-by: wangyuhang <wangyuhang2014@gmail.com>
----
- Documentation/devicetree/bindings/spi/spi-bus.txt |   16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/spi/spi-bus.txt b/Documentation/devicetree/bindings/spi/spi-bus.txt
-index 296015e..211336c 100644
---- a/Documentation/devicetree/bindings/spi/spi-bus.txt
-+++ b/Documentation/devicetree/bindings/spi/spi-bus.txt
-@@ -55,6 +55,22 @@ contain the following properties.
-     		chip select active high
- - spi-3wire       - (optional) Empty property indicating device requires
-     		    3-wire mode.
-+- spi-tmax-nbits  - (optional) Max number of bits slave will use for
-+    		    MOSI(writting)
-+- spi-rmax-nbits  - (optional) Max number of bits slave will use for
-+    		    MISO(reading)
-+
-+So if for example the slave has 4 wires for writting and 2 wires for reading,
-+and the spi-tx/rx-nbits property should be set as follows:
-+
-+spi-tmax-nbits = <4>;
-+spi-rmax-nbits = <2>;
-+
-+Now the value that spi-tmax-nbits and spi-rmax-nbits can receive is only
-+1(single), 2(dual) and 4(quad). If you don't set spi-tmax-nbits or spi-rmax-nbits,
-+spi_device mode will be set in single(1 wire) as default. Another point, if
-+property:spi-3wire is set, spi-t/rmax-nbits is forbidden to set to <2 or 4>,
-+otherwise, an errro will return.
- 
- If a gpio chipselect is used for the SPI slave the gpio number will be passed
- via the cs_gpio
--- 
-1.7.9.5
+PiANCj4gQWRkIHNwaS10bWF4LW5iaXRzIGFuZCBzcGktcm1heC1uYml0cyBmb3Igc3BpIHNsYXZl
+IG5vZGUuDQo+IE1vZGlmeSB0aGUgcmVsYXRlZCBkdCBkb2N1bWVudChzcGktYnVzLnR4dCkNCj4g
+IHNwaS10bWF4LW5iaXRzOk1heCBudW1iZXIgb2YgYml0cyBzbGF2ZSB3aWxsIHVzZSBmb3IgTU9T
+SSh3cml0dGluZykNCj4gIHNwaS1ybWF4LW5iaXRzOk1heCBudW1iZXIgb2YgYml0cyBzbGF2ZSB3
+aWxsIHVzZSBmb3IgTUlTTyhyZWFkaW5nKQ0KPiBTdXBwb3J0IGZvciBzcGktdHgvcm1heC1uYml0
+cyBpbiBTUEkgZnJhbWV3b3JrIGhhcyBiZWVuIHBpY2tlZFsxXS4NCj4gWzFdOiBodHRwOi8vY29t
+bWVudHMuZ21hbmUub3JnL2dtYW5lLmxpbnV4Lmtlcm5lbC5zcGkuZGV2ZWwvMTQ0MjANCj4gQ29t
+bWl0IElkOmY0NzdiN2ZiMTNkZjJiODQzOTk3NTU5ZmYzNGU4N2QwNTRiYTY1MzgNCj4gDQo+IFNp
+Z25lZC1vZmYtYnk6IHdhbmd5dWhhbmcgPHdhbmd5dWhhbmcyMDE0QGdtYWlsLmNvbT4NCj4gLS0t
+DQo+ICBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc3BpL3NwaS1idXMudHh0IHwg
+ICAxNg0KPiArKysrKysrKysrKysrKysrDQo+ICAxIGZpbGUgY2hhbmdlZCwgMTYgaW5zZXJ0aW9u
+cygrKQ0KPiANCj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5n
+cy9zcGkvc3BpLWJ1cy50eHQNCj4gYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
+c3BpL3NwaS1idXMudHh0DQo+IGluZGV4IDI5NjAxNWUuLjIxMTMzNmMgMTAwNjQ0DQo+IC0tLSBh
+L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zcGkvc3BpLWJ1cy50eHQNCj4gKysr
+IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NwaS9zcGktYnVzLnR4dA0KPiBA
+QCAtNTUsNiArNTUsMjIgQEAgY29udGFpbiB0aGUgZm9sbG93aW5nIHByb3BlcnRpZXMuDQo+ICAg
+ICAgCQljaGlwIHNlbGVjdCBhY3RpdmUgaGlnaA0KPiAgLSBzcGktM3dpcmUgICAgICAgLSAob3B0
+aW9uYWwpIEVtcHR5IHByb3BlcnR5IGluZGljYXRpbmcgZGV2aWNlIHJlcXVpcmVzDQo+ICAgICAg
+CQkgICAgMy13aXJlIG1vZGUuDQo+ICstIHNwaS10bWF4LW5iaXRzICAtIChvcHRpb25hbCkgTWF4
+IG51bWJlciBvZiBiaXRzIHNsYXZlIHdpbGwgdXNlIGZvcg0KPiArICAgIAkJICAgIE1PU0kod3Jp
+dHRpbmcpDQo+ICstIHNwaS1ybWF4LW5iaXRzICAtIChvcHRpb25hbCkgTWF4IG51bWJlciBvZiBi
+aXRzIHNsYXZlIHdpbGwgdXNlIGZvcg0KPiArICAgIAkJICAgIE1JU08ocmVhZGluZykNCj4gKw0K
+PiArU28gaWYgZm9yIGV4YW1wbGUgdGhlIHNsYXZlIGhhcyA0IHdpcmVzIGZvciB3cml0dGluZyBh
+bmQgMiB3aXJlcyBmb3IgcmVhZGluZywNCj4gK2FuZCB0aGUgc3BpLXR4L3J4LW5iaXRzIHByb3Bl
+cnR5IHNob3VsZCBiZSBzZXQgYXMgZm9sbG93czoNCj4gKw0KPiArc3BpLXRtYXgtbmJpdHMgPSA8
+ND47DQo+ICtzcGktcm1heC1uYml0cyA9IDwyPjsNCj4gKw0KPiArTm93IHRoZSB2YWx1ZSB0aGF0
+IHNwaS10bWF4LW5iaXRzIGFuZCBzcGktcm1heC1uYml0cyBjYW4gcmVjZWl2ZSBpcyBvbmx5DQo+
+ICsxKHNpbmdsZSksIDIoZHVhbCkgYW5kIDQocXVhZCkuIElmIHlvdSBkb24ndCBzZXQgc3BpLXRt
+YXgtbmJpdHMgb3Igc3BpLXJtYXgtDQo+IG5iaXRzLA0KPiArc3BpX2RldmljZSBtb2RlIHdpbGwg
+YmUgc2V0IGluIHNpbmdsZSgxIHdpcmUpIGFzIGRlZmF1bHQuIEFub3RoZXIgcG9pbnQsIGlmDQo+
+ICtwcm9wZXJ0eTpzcGktM3dpcmUgaXMgc2V0LCBzcGktdC9ybWF4LW5iaXRzIGlzIGZvcmJpZGRl
+biB0byBzZXQgdG8gPDIgb3IgND4sDQo+ICtvdGhlcndpc2UsIGFuIGVycnJvIHdpbGwgcmV0dXJu
+Lg0KPiANCj4gIElmIGEgZ3BpbyBjaGlwc2VsZWN0IGlzIHVzZWQgZm9yIHRoZSBTUEkgc2xhdmUg
+dGhlIGdwaW8gbnVtYmVyIHdpbGwgYmUgcGFzc2VkDQo+ICB2aWEgdGhlIGNzX2dwaW8NCj4gLS0N
+Cj4gMS43LjkuNQ0KDQpBY2tlZC1ieTogUGVrb24gR3VwdGEgPHBla29uQHRpLmNvbT4NCg0Kd2l0
+aCByZWdhcmRzLCBwZWtvbg0K
