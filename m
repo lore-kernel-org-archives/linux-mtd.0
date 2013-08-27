@@ -1,18 +1,19 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from mail-pb0-f50.google.com ([209.85.160.50])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VEAb2-00080O-KC
- for linux-mtd@lists.infradead.org; Tue, 27 Aug 2013 04:09:42 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: wangyuhang <wangyuhang2014@gmail.com>
-Subject: RE: [PATCH V2 1/2] spi: dual and quad support(device tree)
-Date: Tue, 27 Aug 2013 04:09:08 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9FAEF9@DBDE04.ent.ti.com>
-References: <1377564603-4030-1-git-send-email-wangyuhang2014@gmail.com>
-In-Reply-To: <1377564603-4030-1-git-send-email-wangyuhang2014@gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1VEBMm-00008S-H9
+ for linux-mtd@lists.infradead.org; Tue, 27 Aug 2013 04:58:57 +0000
+Received: by mail-pb0-f50.google.com with SMTP id uo5so4307466pbc.23
+ for <linux-mtd@lists.infradead.org>; Mon, 26 Aug 2013 21:58:32 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9FAEF9@DBDE04.ent.ti.com>
+References: <1377564603-4030-1-git-send-email-wangyuhang2014@gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9FAEF9@DBDE04.ent.ti.com>
+Date: Tue, 27 Aug 2013 12:58:31 +0800
+Message-ID: <CAHSAbzMFJMav4VrBEmMx1bsmDXs4pW0wPg9B212aVnDy9p+gtQ@mail.gmail.com>
+Subject: Re: [PATCH V2 1/2] spi: dual and quad support(device tree)
+From: yuhang wang <wangyuhang2014@gmail.com>
+To: "Gupta, Pekon" <pekon@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Poddar,
  Sourav" <sourav.poddar@ti.com>, "broonie@kernel.org" <broonie@kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
@@ -26,74 +27,162 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiANCj4gZml4IHR3byB0aGluZ3MgaW4gcGF0Y2g6DQo+IGNvbW1pdCBpZDpmNDc3YjdmYjEzZGYy
-Yjg0Mzk5NzU1OWZmMzRlODdkMDU0YmE2NTM4DQo+IA0KPiAxLmNoYW5nZSB0aGUgbmFtZSBvZiBw
-cm9wZXJ0eTogc3BpLXR4LW5iaXRzIGFuZCBzcGktcngtbmJpdHMgdG8NCj4gc3BpLXRtYXgtbmJp
-dHMgYW5kIHNwaS1ybWF4LW5iaXRzLCBhaW1lZCB0byBtYWtlIHRoYXQgbmFtZSBkaWZmZXJlbnQN
-Cj4gZnJvbSB0aGUgbWVtYmVyIG9mIHNwaV90cmFuc2Zlcih0eF9uYml0cyBhbmQgcnhfbmJpdHMp
-LiB1c2luZyB0bWF4DQo+IGFuZCBybWF4IGhlcmUgdG8gZGVzY3JpYmUgdGhhdCBpdCBpcyB0aGUg
-bWF4IHRyYW5zZmVyIGJpdHMgdGhhdCB0aGUNCj4gbWVtYmVycyBpbiBzcGlfdHJhbnNmZXIodHhf
-bmJpdHMgYW5kIHJ4X25iaXRzKSBjYW4gcmVhY2guDQo+IDIuY2hhbmdlIHByb3BlcnR5IHNwaS10
-bWF4LW5iaXRzIGFuZCBzcGktcm1heC1uYml0cyB0byBvcHRpb25hbC4NCj4gSWYgVXNlciBkb24n
-dCBzZXQgc3BpLXRtYXgtbmJpdHMgb3Igc3BpLXJtYXgtbmJpdHMsIHNwaSBkZXZpY2UgbW9kZQ0K
-PiBzaG91bGQgYmUgcmVnYXJkZWQgYXMgU0lOR0xFLCBub3QgcmV0dXJuIGFuIGVycm9yLiBJbiBz
-dWNoIGNhc2UsIHVzZXINCj4gZG9uJ3QgaGF2ZSB0byBtb2RpZnkgdGhlIG9sZCBkdHMgZmlsZXMg
-dG8gZml0IHRoZSBuZXcgc3BpIGZyYW1ld29yay4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IHdhbmd5
-dWhhbmcgPHdhbmd5dWhhbmcyMDE0QGdtYWlsLmNvbT4NCj4gLS0tDQo+ICBkcml2ZXJzL3NwaS9z
-cGkuYyB8ICAgNzIgKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tDQo+IC0tDQo+ICAxIGZpbGUgY2hhbmdlZCwgMzQgaW5zZXJ0aW9ucygrKSwgMzggZGVs
-ZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9zcGkvc3BpLmMgYi9kcml2ZXJz
-L3NwaS9zcGkuYw0KPiBpbmRleCA1MGY3ZmMzLi44ZDE5MWYyIDEwMDY0NA0KPiAtLS0gYS9kcml2
-ZXJzL3NwaS9zcGkuYw0KPiArKysgYi9kcml2ZXJzL3NwaS9zcGkuYw0KPiBAQCAtODcwLDQ4ICs4
-NzAsNDQgQEAgc3RhdGljIHZvaWQgb2ZfcmVnaXN0ZXJfc3BpX2RldmljZXMoc3RydWN0DQo+IHNw
-aV9tYXN0ZXIgKm1hc3RlcikNCj4gIAkJCXNwaS0+bW9kZSB8PSBTUElfM1dJUkU7DQo+IA0KPiAg
-CQkvKiBEZXZpY2UgRFVBTC9RVUFEIG1vZGUgKi8NCj4gLQkJcHJvcCA9IG9mX2dldF9wcm9wZXJ0
-eShuYywgInNwaS10eC1uYml0cyIsICZsZW4pOw0KPiArCQlwcm9wID0gb2ZfZ2V0X3Byb3BlcnR5
-KG5jLCAic3BpLXRtYXgtbmJpdHMiLCAmbGVuKTsNCj4gIAkJaWYgKCFwcm9wIHx8IGxlbiA8IHNp
-emVvZigqcHJvcCkpIHsNCj4gLQkJCWRldl9lcnIoJm1hc3Rlci0+ZGV2LCAiJXMgaGFzIG5vICdz
-cGktdHgtbmJpdHMnDQo+IHByb3BlcnR5XG4iLA0KPiAtCQkJCW5jLT5mdWxsX25hbWUpOw0KPiAt
-CQkJc3BpX2Rldl9wdXQoc3BpKTsNCj4gLQkJCWNvbnRpbnVlOw0KPiAtCQl9DQo+IC0JCXN3aXRj
-aCAoYmUzMl90b19jcHVwKHByb3ApKSB7DQo+IC0JCWNhc2UgU1BJX05CSVRTX1NJTkdMRToNCj4g
-LQkJCWJyZWFrOw0KPiAtCQljYXNlIFNQSV9OQklUU19EVUFMOg0KPiAtCQkJc3BpLT5tb2RlIHw9
-IFNQSV9UWF9EVUFMOw0KPiAtCQkJYnJlYWs7DQo+IC0JCWNhc2UgU1BJX05CSVRTX1FVQUQ6DQo+
-IC0JCQlzcGktPm1vZGUgfD0gU1BJX1RYX1FVQUQ7DQo+IC0JCQlicmVhazsNCj4gLQkJZGVmYXVs
-dDoNCj4gLQkJCWRldl9lcnIoJm1hc3Rlci0+ZGV2LCAic3BpLXR4LW5iaXRzIHZhbHVlIGlzIG5v
-dA0KPiBzdXBwb3J0ZWRcbiIpOw0KPiAtCQkJc3BpX2Rldl9wdXQoc3BpKTsNCj4gLQkJCWNvbnRp
-bnVlOw0KPiArCQkJLyogc2V0IHR4IG1vZGUgaW4gU0lOR0xFIGFzIGRlZmF1bHQgKi8NCj4gKwkJ
-fSBlbHNlIHsNCj4gKwkJCXN3aXRjaCAoYmUzMl90b19jcHVwKHByb3ApKSB7DQo+ICsJCQljYXNl
-IFNQSV9OQklUU19TSU5HTEU6DQo+ICsJCQkJYnJlYWs7DQo+ICsJCQljYXNlIFNQSV9OQklUU19E
-VUFMOg0KPiArCQkJCXNwaS0+bW9kZSB8PSBTUElfVFhfRFVBTDsNCj4gKwkJCQlicmVhazsNCj4g
-KwkJCWNhc2UgU1BJX05CSVRTX1FVQUQ6DQo+ICsJCQkJc3BpLT5tb2RlIHw9IFNQSV9UWF9RVUFE
-Ow0KPiArCQkJCWJyZWFrOw0KPiArCQkJZGVmYXVsdDoNCj4gKwkJCQlkZXZfZXJyKCZtYXN0ZXIt
-PmRldiwNCj4gKwkJCQkJInNwaS10bWF4LW5iaXRzIHZhbHVlIGlzIG5vdA0KPiBzdXBwb3J0ZWRc
-biIpOw0KPiArCQkJCXNwaV9kZXZfcHV0KHNwaSk7DQo+ICsJCQkJY29udGludWU7DQo+ICAJCX0N
-Cj4gDQo+IC0JCXByb3AgPSBvZl9nZXRfcHJvcGVydHkobmMsICJzcGktcngtbmJpdHMiLCAmbGVu
-KTsNCj4gKwkJcHJvcCA9IG9mX2dldF9wcm9wZXJ0eShuYywgInNwaS1ybWF4LW5iaXRzIiwgJmxl
-bik7DQo+ICAJCWlmICghcHJvcCB8fCBsZW4gPCBzaXplb2YoKnByb3ApKSB7DQo+IC0JCQlkZXZf
-ZXJyKCZtYXN0ZXItPmRldiwgIiVzIGhhcyBubyAnc3BpLXJ4LW5iaXRzJw0KPiBwcm9wZXJ0eVxu
-IiwNCj4gLQkJCQluYy0+ZnVsbF9uYW1lKTsNCj4gLQkJCXNwaV9kZXZfcHV0KHNwaSk7DQo+IC0J
-CQljb250aW51ZTsNCj4gLQkJfQ0KPiAtCQlzd2l0Y2ggKGJlMzJfdG9fY3B1cChwcm9wKSkgew0K
-PiAtCQljYXNlIFNQSV9OQklUU19TSU5HTEU6DQo+IC0JCQlicmVhazsNCj4gLQkJY2FzZSBTUElf
-TkJJVFNfRFVBTDoNCj4gLQkJCXNwaS0+bW9kZSB8PSBTUElfUlhfRFVBTDsNCj4gLQkJCWJyZWFr
-Ow0KPiAtCQljYXNlIFNQSV9OQklUU19RVUFEOg0KPiAtCQkJc3BpLT5tb2RlIHw9IFNQSV9SWF9R
-VUFEOw0KPiAtCQkJYnJlYWs7DQo+IC0JCWRlZmF1bHQ6DQo+IC0JCQlkZXZfZXJyKCZtYXN0ZXIt
-PmRldiwgInNwaS1yeC1uYml0cyB2YWx1ZSBpcyBub3QNCj4gc3VwcG9ydGVkXG4iKTsNCj4gLQkJ
-CXNwaV9kZXZfcHV0KHNwaSk7DQo+IC0JCQljb250aW51ZTsNCj4gKwkJCS8qIHNldCByeCBtb2Rl
-IGluIFNJTkdMRSBhcyBkZWZhdWx0ICovDQo+ICsJCX0gZWxzZSB7DQo+ICsJCQlzd2l0Y2ggKGJl
-MzJfdG9fY3B1cChwcm9wKSkgew0KPiArCQkJY2FzZSBTUElfTkJJVFNfU0lOR0xFOg0KPiArCQkJ
-CWJyZWFrOw0KPiArCQkJY2FzZSBTUElfTkJJVFNfRFVBTDoNCj4gKwkJCQlzcGktPm1vZGUgfD0g
-U1BJX1JYX0RVQUw7DQo+ICsJCQkJYnJlYWs7DQo+ICsJCQljYXNlIFNQSV9OQklUU19RVUFEOg0K
-PiArCQkJCXNwaS0+bW9kZSB8PSBTUElfUlhfUVVBRDsNCj4gKwkJCQlicmVhazsNCj4gKwkJCWRl
-ZmF1bHQ6DQo+ICsJCQkJZGV2X2VycigmbWFzdGVyLT5kZXYsDQo+ICsJCQkJCSJzcGktcm1heC1u
-Yml0cyB2YWx1ZSBpcyBub3QNCj4gc3VwcG9ydGVkXG4iKTsNCj4gKwkJCQlzcGlfZGV2X3B1dChz
-cGkpOw0KPiArCQkJCWNvbnRpbnVlOw0KPiAgCQl9DQo+IA0KPiAgCQkvKiBEZXZpY2Ugc3BlZWQg
-Ki8NCj4gLS0NCj4gMS43LjkuNQ0KDQpZb3UgbWlzc2VkIG91dCBjb21tZW50cyBwcm92aWRlZCBl
-YXJsaWVyLi4NCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9saW51eC1tdGQv
-MjAxMy1BdWd1c3QvMDQ4Mzc0Lmh0bWwNCg0KUmVtZW1iZXIgLi4gdGhpcyBjb21wYXRpYmlsaXR5
-IGNoZWNrIGlzIGJldHdlZW4gc3BpX2RldmljZS0+bW9kZQ0Kdi9zIHNwaV9tYXN0ZXItPm1vZGVf
-Yml0cy4gVGhpcyBpcyBkaWZmZXJlbnQgZnJvbSB1ciBWMyBwYXRjaA0Kd2hpY2ggY2hlY2tzIGZv
-ciBzcGlfdHJhbnNmZXItPnR4X25iaXRzIHYvcyBzcGlfZGV2aWNlLT5tb2RlLg0KDQorIGlmICgo
-eGZlci0+dHhfbmJpdHMgPT0gU1BJX05CSVRTX0RVQUwpICYmDQorICEoc3BpLT5tb2RlICYgKFNQ
-SV9UWF9EVUFMIHwgU1BJX1RYX1FVQUQpKSkNCisgcmV0dXJuIC1FSU5WQUw7DQorIGlmICgoeGZl
-ci0+dHhfbmJpdHMgPT0gU1BJX05CSVRTX1FVQUQpICYmDQorICEoc3BpLT5tb2RlICYgU1BJX1RY
-X1FVQUQpKQ0KKyByZXR1cm4gLUVJTlZBTDsNCg0KDQp3aXRoIHJlZ2FyZHMsIHBla29uDQo=
+Hi, Pekon
+
+2013/8/27 Gupta, Pekon <pekon@ti.com>:
+>>
+>> fix two things in patch:
+>> commit id:f477b7fb13df2b843997559ff34e87d054ba6538
+>>
+>> 1.change the name of property: spi-tx-nbits and spi-rx-nbits to
+>> spi-tmax-nbits and spi-rmax-nbits, aimed to make that name different
+>> from the member of spi_transfer(tx_nbits and rx_nbits). using tmax
+>> and rmax here to describe that it is the max transfer bits that the
+>> members in spi_transfer(tx_nbits and rx_nbits) can reach.
+>> 2.change property spi-tmax-nbits and spi-rmax-nbits to optional.
+>> If User don't set spi-tmax-nbits or spi-rmax-nbits, spi device mode
+>> should be regarded as SINGLE, not return an error. In such case, user
+>> don't have to modify the old dts files to fit the new spi framework.
+>>
+>> Signed-off-by: wangyuhang <wangyuhang2014@gmail.com>
+>> ---
+>>  drivers/spi/spi.c |   72 +++++++++++++++++++++++++--------------------------
+>> --
+>>  1 file changed, 34 insertions(+), 38 deletions(-)
+>>
+>> diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+>> index 50f7fc3..8d191f2 100644
+>> --- a/drivers/spi/spi.c
+>> +++ b/drivers/spi/spi.c
+>> @@ -870,48 +870,44 @@ static void of_register_spi_devices(struct
+>> spi_master *master)
+>>                       spi->mode |= SPI_3WIRE;
+>>
+>>               /* Device DUAL/QUAD mode */
+>> -             prop = of_get_property(nc, "spi-tx-nbits", &len);
+>> +             prop = of_get_property(nc, "spi-tmax-nbits", &len);
+>>               if (!prop || len < sizeof(*prop)) {
+>> -                     dev_err(&master->dev, "%s has no 'spi-tx-nbits'
+>> property\n",
+>> -                             nc->full_name);
+>> -                     spi_dev_put(spi);
+>> -                     continue;
+>> -             }
+>> -             switch (be32_to_cpup(prop)) {
+>> -             case SPI_NBITS_SINGLE:
+>> -                     break;
+>> -             case SPI_NBITS_DUAL:
+>> -                     spi->mode |= SPI_TX_DUAL;
+>> -                     break;
+>> -             case SPI_NBITS_QUAD:
+>> -                     spi->mode |= SPI_TX_QUAD;
+>> -                     break;
+>> -             default:
+>> -                     dev_err(&master->dev, "spi-tx-nbits value is not
+>> supported\n");
+>> -                     spi_dev_put(spi);
+>> -                     continue;
+>> +                     /* set tx mode in SINGLE as default */
+>> +             } else {
+>> +                     switch (be32_to_cpup(prop)) {
+>> +                     case SPI_NBITS_SINGLE:
+>> +                             break;
+>> +                     case SPI_NBITS_DUAL:
+>> +                             spi->mode |= SPI_TX_DUAL;
+>> +                             break;
+>> +                     case SPI_NBITS_QUAD:
+>> +                             spi->mode |= SPI_TX_QUAD;
+>> +                             break;
+>> +                     default:
+>> +                             dev_err(&master->dev,
+>> +                                     "spi-tmax-nbits value is not
+>> supported\n");
+>> +                             spi_dev_put(spi);
+>> +                             continue;
+>>               }
+>>
+>> -             prop = of_get_property(nc, "spi-rx-nbits", &len);
+>> +             prop = of_get_property(nc, "spi-rmax-nbits", &len);
+>>               if (!prop || len < sizeof(*prop)) {
+>> -                     dev_err(&master->dev, "%s has no 'spi-rx-nbits'
+>> property\n",
+>> -                             nc->full_name);
+>> -                     spi_dev_put(spi);
+>> -                     continue;
+>> -             }
+>> -             switch (be32_to_cpup(prop)) {
+>> -             case SPI_NBITS_SINGLE:
+>> -                     break;
+>> -             case SPI_NBITS_DUAL:
+>> -                     spi->mode |= SPI_RX_DUAL;
+>> -                     break;
+>> -             case SPI_NBITS_QUAD:
+>> -                     spi->mode |= SPI_RX_QUAD;
+>> -                     break;
+>> -             default:
+>> -                     dev_err(&master->dev, "spi-rx-nbits value is not
+>> supported\n");
+>> -                     spi_dev_put(spi);
+>> -                     continue;
+>> +                     /* set rx mode in SINGLE as default */
+>> +             } else {
+>> +                     switch (be32_to_cpup(prop)) {
+>> +                     case SPI_NBITS_SINGLE:
+>> +                             break;
+>> +                     case SPI_NBITS_DUAL:
+>> +                             spi->mode |= SPI_RX_DUAL;
+>> +                             break;
+>> +                     case SPI_NBITS_QUAD:
+>> +                             spi->mode |= SPI_RX_QUAD;
+>> +                             break;
+>> +                     default:
+>> +                             dev_err(&master->dev,
+>> +                                     "spi-rmax-nbits value is not
+>> supported\n");
+>> +                             spi_dev_put(spi);
+>> +                             continue;
+>>               }
+>>
+>>               /* Device speed */
+>> --
+>> 1.7.9.5
+>
+> You missed out comments provided earlier..
+> http://lists.infradead.org/pipermail/linux-mtd/2013-August/048374.html
+>
+> Remember .. this compatibility check is between spi_device->mode
+> v/s spi_master->mode_bits. This is different from ur V3 patch
+> which checks for spi_transfer->tx_nbits v/s spi_device->mode.
+>
+> + if ((xfer->tx_nbits == SPI_NBITS_DUAL) &&
+> + !(spi->mode & (SPI_TX_DUAL | SPI_TX_QUAD)))
+> + return -EINVAL;
+> + if ((xfer->tx_nbits == SPI_NBITS_QUAD) &&
+> + !(spi->mode & SPI_TX_QUAD))
+> + return -EINVAL;
+>
+>
+Sorry for my mis-understanding. But here I want to regard DUAL / QUAD
+mode just as other mode, such as CPHA, CPOL and so on. To other mode,
+spi framework didn't do such check, example:
+---------------------------------------------------------------------------------
+/* Mode (clock phase/polarity/etc.) */
+if (of_find_property(nc, "spi-cpha", NULL))
+    spi->mode |= SPI_CPHA;
+if (of_find_property(nc, "spi-cpol", NULL))
+    spi->mode |= SPI_CPOL;
+---------------------------------------------------------------------------------
+
+Spi framework do this check in spi_setup as follow:
+---------------------------------------------------------------------------------
+bad_bits = spi->mode & ~spi->master->mode_bits;
+if (bad_bits) {
+    dev_err(&spi->dev, "setup: unsupported mode bits %x\n",
+          bad_bits);
+    return -EINVAL;
+}
+---------------------------------------------------------------------------------
+So to keep that consistant, I don't think it is necessary to add the
+check when setting the mode.
+
+Best regards
