@@ -1,13 +1,14 @@
-Received: from tx2ehsobe001.messaging.microsoft.com ([65.55.88.11]
- helo=tx2outboundpool.messaging.microsoft.com)
+Received: from va3ehsobe010.messaging.microsoft.com ([216.32.180.30]
+ helo=va3outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VEFgO-0006EU-19
- for linux-mtd@lists.infradead.org; Tue, 27 Aug 2013 09:35:32 +0000
+ id 1VEFgP-0006EX-RW
+ for linux-mtd@lists.infradead.org; Tue, 27 Aug 2013 09:35:36 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH V2 3/4] mtd: gpmi: scan two nand chips
-Date: Tue, 27 Aug 2013 17:29:06 +0800
-Message-ID: <1377595747-21033-4-git-send-email-b32955@freescale.com>
+Subject: [PATCH V2 4/4] mtd: gpmi: imx6: fix the wrong method for checking
+ ready/busy
+Date: Tue, 27 Aug 2013 17:29:07 +0800
+Message-ID: <1377595747-21033-5-git-send-email-b32955@freescale.com>
 In-Reply-To: <1377595747-21033-1-git-send-email-b32955@freescale.com>
 References: <1377595747-21033-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
@@ -23,32 +24,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some nand chip has two DIEs in a single chip, such as Micron MT29F32G08QAA.
-Each die has its own chip select pin, so this chip acts as two nand
-chips.
+In the imx6, all the ready/busy pins are binding togeter.
+So we should always check the ready/busy pin of the chip 0.
 
-If we only scan one chip, we may find that we only get 2G for this chip,
-but in actually, this chip's size is 4G.
-
-So scan two chips by default.
+In the other word, when the CS1 is enabled, we should also check the
+ready/busy of chip 0; if we check the ready/busy of chip 1,
+we will get the wrong result.
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 24ee8d7..eba7b79 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -1676,7 +1676,7 @@ static int gpmi_nfc_init(struct gpmi_nand_data *this)
- 	if (ret)
- 		goto err_out;
- 
--	ret = nand_scan_ident(mtd, 1, NULL);
-+	ret = nand_scan_ident(mtd, 2, NULL);
- 	if (ret)
- 		goto err_out;
- 
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+index 7d56d87..5edd25b 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+@@ -1079,6 +1079,13 @@ int gpmi_is_ready(struct gpmi_nand_data *this, unsigned chip)
+ 		mask = MX23_BM_GPMI_DEBUG_READY0 << chip;
+ 		reg = readl(r->gpmi_regs + HW_GPMI_DEBUG);
+ 	} else if (GPMI_IS_MX28(this) || GPMI_IS_MX6Q(this)) {
++		/*
++		 * In the imx6, all the ready/busy pins are binding
++		 * togeter. So we only need to check the chip 0.
++		 */
++		if (GPMI_IS_MX6Q(this))
++			chip = 0;
++
+ 		/* MX28 shares the same R/B register as MX6Q. */
+ 		mask = MX28_BF_GPMI_STAT_READY_BUSY(1 << chip);
+ 		reg = readl(r->gpmi_regs + HW_GPMI_STAT);
 -- 
 1.7.1
