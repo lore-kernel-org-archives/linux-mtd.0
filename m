@@ -1,13 +1,13 @@
-Received: from ch1ehsobe005.messaging.microsoft.com ([216.32.181.185]
- helo=ch1outboundpool.messaging.microsoft.com)
+Received: from tx2ehsobe001.messaging.microsoft.com ([65.55.88.11]
+ helo=tx2outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VEFgL-0006ES-QC
- for linux-mtd@lists.infradead.org; Tue, 27 Aug 2013 09:35:27 +0000
+ id 1VEFgO-0006EU-19
+ for linux-mtd@lists.infradead.org; Tue, 27 Aug 2013 09:35:32 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH V2 2/4] mtd: gpmi: use DMA channel 0 for all the nand chips
-Date: Tue, 27 Aug 2013 17:29:05 +0800
-Message-ID: <1377595747-21033-3-git-send-email-b32955@freescale.com>
+Subject: [PATCH V2 3/4] mtd: gpmi: scan two nand chips
+Date: Tue, 27 Aug 2013 17:29:06 +0800
+Message-ID: <1377595747-21033-4-git-send-email-b32955@freescale.com>
 In-Reply-To: <1377595747-21033-1-git-send-email-b32955@freescale.com>
 References: <1377595747-21033-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
@@ -23,29 +23,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We only have one DMA channel : the channel 0.
-Use DMA channel 0 to access all the nand chips.
+Some nand chip has two DIEs in a single chip, such as Micron MT29F32G08QAA.
+Each die has its own chip select pin, so this chip acts as two nand
+chips.
+
+If we only scan one chip, we may find that we only get 2G for this chip,
+but in actually, this chip's size is 4G.
+
+So scan two chips by default.
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    5 ++---
- 1 files changed, 2 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 8d8a814..24ee8d7 100644
+index 24ee8d7..eba7b79 100644
 --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
 +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -357,9 +357,8 @@ int common_nfc_set_geometry(struct gpmi_nand_data *this)
+@@ -1676,7 +1676,7 @@ static int gpmi_nfc_init(struct gpmi_nand_data *this)
+ 	if (ret)
+ 		goto err_out;
  
- struct dma_chan *get_dma_chan(struct gpmi_nand_data *this)
- {
--	int chipnr = this->current_chip;
--
--	return this->dma_chans[chipnr];
-+	/* We use the DMA channel 0 to access all the nand chips. */
-+	return this->dma_chans[0];
- }
+-	ret = nand_scan_ident(mtd, 1, NULL);
++	ret = nand_scan_ident(mtd, 2, NULL);
+ 	if (ret)
+ 		goto err_out;
  
- /* Can we use the upper's buffer directly for DMA? */
 -- 
 1.7.1
