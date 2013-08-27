@@ -1,16 +1,17 @@
-Received: from mail-pb0-f50.google.com ([209.85.160.50])
+Received: from mail-pd0-x22f.google.com ([2607:f8b0:400e:c02::22f])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VEBMm-00008S-H9
- for linux-mtd@lists.infradead.org; Tue, 27 Aug 2013 04:58:57 +0000
-Received: by mail-pb0-f50.google.com with SMTP id uo5so4307466pbc.23
- for <linux-mtd@lists.infradead.org>; Mon, 26 Aug 2013 21:58:32 -0700 (PDT)
+ id 1VECVJ-0001Hq-Bq
+ for linux-mtd@lists.infradead.org; Tue, 27 Aug 2013 06:11:50 +0000
+Received: by mail-pd0-f175.google.com with SMTP id q10so4426354pdj.34
+ for <linux-mtd@lists.infradead.org>; Mon, 26 Aug 2013 23:11:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9FAEF9@DBDE04.ent.ti.com>
-References: <1377564603-4030-1-git-send-email-wangyuhang2014@gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9FAEF9@DBDE04.ent.ti.com>
-Date: Tue, 27 Aug 2013 12:58:31 +0800
-Message-ID: <CAHSAbzMFJMav4VrBEmMx1bsmDXs4pW0wPg9B212aVnDy9p+gtQ@mail.gmail.com>
-Subject: Re: [PATCH V2 1/2] spi: dual and quad support(device tree)
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9FA932@DBDE04.ent.ti.com>
+References: <1377496080-14356-1-git-send-email-wangyuhang2014@gmail.com>
+ <1377496080-14356-2-git-send-email-wangyuhang2014@gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9FA932@DBDE04.ent.ti.com>
+Date: Tue, 27 Aug 2013 14:11:27 +0800
+Message-ID: <CAHSAbzN9GFX++gkZwxny4qpRPpEkPgjqAPJBNU+h+SNymNdGFA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] spi: dual and quad support(device tree)
 From: yuhang wang <wangyuhang2014@gmail.com>
 To: "Gupta, Pekon" <pekon@ti.com>
 Content-Type: text/plain; charset=ISO-8859-1
@@ -29,38 +30,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi, Pekon
 
-2013/8/27 Gupta, Pekon <pekon@ti.com>:
+2013/8/26 Gupta, Pekon <pekon@ti.com>:
 >>
->> fix two things in patch:
+>> fix one thing in patch:
 >> commit id:f477b7fb13df2b843997559ff34e87d054ba6538
 >>
->> 1.change the name of property: spi-tx-nbits and spi-rx-nbits to
->> spi-tmax-nbits and spi-rmax-nbits, aimed to make that name different
->> from the member of spi_transfer(tx_nbits and rx_nbits). using tmax
->> and rmax here to describe that it is the max transfer bits that the
->> members in spi_transfer(tx_nbits and rx_nbits) can reach.
->> 2.change property spi-tmax-nbits and spi-rmax-nbits to optional.
->> If User don't set spi-tmax-nbits or spi-rmax-nbits, spi device mode
->> should be regarded as SINGLE, not return an error. In such case, user
->> don't have to modify the old dts files to fit the new spi framework.
+>> change property spi-tx-nbits and spi-rx-nbits to optional.
+>> If User don't set spi-tx-nbits or spi-rx-nbits, spi device mode
+>> should be regarded as SINGLE, not return an error.
 >>
 >> Signed-off-by: wangyuhang <wangyuhang2014@gmail.com>
 >> ---
->>  drivers/spi/spi.c |   72 +++++++++++++++++++++++++--------------------------
+>>  drivers/spi/spi.c |   68 +++++++++++++++++++++++++--------------------------
 >> --
->>  1 file changed, 34 insertions(+), 38 deletions(-)
+>>  1 file changed, 32 insertions(+), 36 deletions(-)
 >>
 >> diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
->> index 50f7fc3..8d191f2 100644
+>> index 50f7fc3..46a55f0 100644
 >> --- a/drivers/spi/spi.c
 >> +++ b/drivers/spi/spi.c
->> @@ -870,48 +870,44 @@ static void of_register_spi_devices(struct
+>> @@ -872,46 +872,42 @@ static void of_register_spi_devices(struct
 >> spi_master *master)
->>                       spi->mode |= SPI_3WIRE;
->>
 >>               /* Device DUAL/QUAD mode */
->> -             prop = of_get_property(nc, "spi-tx-nbits", &len);
->> +             prop = of_get_property(nc, "spi-tmax-nbits", &len);
+>>               prop = of_get_property(nc, "spi-tx-nbits", &len);
 >>               if (!prop || len < sizeof(*prop)) {
 >> -                     dev_err(&master->dev, "%s has no 'spi-tx-nbits'
 >> property\n",
@@ -83,106 +75,26 @@ Hi, Pekon
 >> -                     spi_dev_put(spi);
 >> -                     continue;
 >> +                     /* set tx mode in SINGLE as default */
->> +             } else {
->> +                     switch (be32_to_cpup(prop)) {
->> +                     case SPI_NBITS_SINGLE:
->> +                             break;
->> +                     case SPI_NBITS_DUAL:
->> +                             spi->mode |= SPI_TX_DUAL;
->> +                             break;
->> +                     case SPI_NBITS_QUAD:
->> +                             spi->mode |= SPI_TX_QUAD;
->> +                             break;
->> +                     default:
->> +                             dev_err(&master->dev,
->> +                                     "spi-tmax-nbits value is not
->> supported\n");
->> +                             spi_dev_put(spi);
->> +                             continue;
->>               }
->>
->> -             prop = of_get_property(nc, "spi-rx-nbits", &len);
->> +             prop = of_get_property(nc, "spi-rmax-nbits", &len);
->>               if (!prop || len < sizeof(*prop)) {
->> -                     dev_err(&master->dev, "%s has no 'spi-rx-nbits'
->> property\n",
->> -                             nc->full_name);
->> -                     spi_dev_put(spi);
->> -                     continue;
->> -             }
->> -             switch (be32_to_cpup(prop)) {
->> -             case SPI_NBITS_SINGLE:
->> -                     break;
->> -             case SPI_NBITS_DUAL:
->> -                     spi->mode |= SPI_RX_DUAL;
->> -                     break;
->> -             case SPI_NBITS_QUAD:
->> -                     spi->mode |= SPI_RX_QUAD;
->> -                     break;
->> -             default:
->> -                     dev_err(&master->dev, "spi-rx-nbits value is not
->> supported\n");
->> -                     spi_dev_put(spi);
->> -                     continue;
->> +                     /* set rx mode in SINGLE as default */
->> +             } else {
->> +                     switch (be32_to_cpup(prop)) {
->> +                     case SPI_NBITS_SINGLE:
->> +                             break;
->> +                     case SPI_NBITS_DUAL:
->> +                             spi->mode |= SPI_RX_DUAL;
->> +                             break;
->> +                     case SPI_NBITS_QUAD:
->> +                             spi->mode |= SPI_RX_QUAD;
->> +                             break;
->> +                     default:
->> +                             dev_err(&master->dev,
->> +                                     "spi-rmax-nbits value is not
->> supported\n");
->> +                             spi_dev_put(spi);
->> +                             continue;
->>               }
->>
->>               /* Device speed */
->> --
->> 1.7.9.5
+> [Pekon]: I think you should explicitly set, and not trust spi->mode defaults.
+>         spi->mode |= SPI_TX_SINGLE;
 >
-> You missed out comments provided earlier..
-> http://lists.infradead.org/pipermail/linux-mtd/2013-August/048374.html
->
-> Remember .. this compatibility check is between spi_device->mode
-> v/s spi_master->mode_bits. This is different from ur V3 patch
-> which checks for spi_transfer->tx_nbits v/s spi_device->mode.
->
-> + if ((xfer->tx_nbits == SPI_NBITS_DUAL) &&
-> + !(spi->mode & (SPI_TX_DUAL | SPI_TX_QUAD)))
-> + return -EINVAL;
-> + if ((xfer->tx_nbits == SPI_NBITS_QUAD) &&
-> + !(spi->mode & SPI_TX_QUAD))
-> + return -EINVAL;
->
->
-Sorry for my mis-understanding. But here I want to regard DUAL / QUAD
-mode just as other mode, such as CPHA, CPOL and so on. To other mode,
-spi framework didn't do such check, example:
----------------------------------------------------------------------------------
-/* Mode (clock phase/polarity/etc.) */
-if (of_find_property(nc, "spi-cpha", NULL))
-    spi->mode |= SPI_CPHA;
-if (of_find_property(nc, "spi-cpol", NULL))
-    spi->mode |= SPI_CPOL;
----------------------------------------------------------------------------------
+Now @spi_device->mode [bit8: SPI_TX_DUAL] [bit9: SPI_TX_QUAD] [bit10:
+SPI_RX_DUAL] [bit11: SPI_RX_QUAD]. Because to every spi controller,
+SPI SINGLE must be supported, so I did not add that as a mode. My
+initial thought is if user don't select SPI_TX_DUAL and SPI_TX_QUAD,
+then it is TX_SINGLE mode[bit8: 0 bit9: 0].
+Now 2 approaches as follows:
+1) #define SPI_TX_SINGLE ~(SPI_TX_DUAL | SPI_TX_QUAD)
+    case SPI_NBITS_SINGLE:
+            spi->mode & SPI_TX_SINGLE;
+            break;
+2)Adding a new bit in mode to specify SPI_SINGLE. But this bit also
+should be reflected to @master->mode_bits. To the probe of each spi
+controller driver, it is necessary to do "master->mode_bits |=
+SPI_TX_SINGLE | SPI_RX_SINGLE;", in such case, it's not like a
+selected mode, it's like a compulsary condition. Since all controller
+do support, there's no need to make it a mode.
 
-Spi framework do this check in spi_setup as follow:
----------------------------------------------------------------------------------
-bad_bits = spi->mode & ~spi->master->mode_bits;
-if (bad_bits) {
-    dev_err(&spi->dev, "setup: unsupported mode bits %x\n",
-          bad_bits);
-    return -EINVAL;
-}
----------------------------------------------------------------------------------
-So to keep that consistant, I don't think it is necessary to add the
-check when setting the mode.
+So I prefer the previous correction, what's your idea.
 
 Best regards
