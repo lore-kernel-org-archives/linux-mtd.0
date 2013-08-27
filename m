@@ -1,20 +1,21 @@
-Received: from mail-pd0-x22f.google.com ([2607:f8b0:400e:c02::22f])
+Received: from bear.ext.ti.com ([192.94.94.41])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VECVJ-0001Hq-Bq
- for linux-mtd@lists.infradead.org; Tue, 27 Aug 2013 06:11:50 +0000
-Received: by mail-pd0-f175.google.com with SMTP id q10so4426354pdj.34
- for <linux-mtd@lists.infradead.org>; Mon, 26 Aug 2013 23:11:27 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73E9FA932@DBDE04.ent.ti.com>
+ id 1VECpI-0001bO-1C
+ for linux-mtd@lists.infradead.org; Tue, 27 Aug 2013 06:32:29 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: yuhang wang <wangyuhang2014@gmail.com>
+Subject: RE: [PATCH 2/2] spi: dual and quad support(device tree)
+Date: Tue, 27 Aug 2013 06:31:57 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9FAF78@DBDE04.ent.ti.com>
 References: <1377496080-14356-1-git-send-email-wangyuhang2014@gmail.com>
  <1377496080-14356-2-git-send-email-wangyuhang2014@gmail.com>
  <20980858CB6D3A4BAE95CA194937D5E73E9FA932@DBDE04.ent.ti.com>
-Date: Tue, 27 Aug 2013 14:11:27 +0800
-Message-ID: <CAHSAbzN9GFX++gkZwxny4qpRPpEkPgjqAPJBNU+h+SNymNdGFA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] spi: dual and quad support(device tree)
-From: yuhang wang <wangyuhang2014@gmail.com>
-To: "Gupta, Pekon" <pekon@ti.com>
-Content-Type: text/plain; charset=ISO-8859-1
+ <CAHSAbzN9GFX++gkZwxny4qpRPpEkPgjqAPJBNU+h+SNymNdGFA@mail.gmail.com>
+In-Reply-To: <CAHSAbzN9GFX++gkZwxny4qpRPpEkPgjqAPJBNU+h+SNymNdGFA@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Poddar,
  Sourav" <sourav.poddar@ti.com>, "broonie@kernel.org" <broonie@kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
@@ -28,73 +29,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Pekon
-
-2013/8/26 Gupta, Pekon <pekon@ti.com>:
->>
->> fix one thing in patch:
->> commit id:f477b7fb13df2b843997559ff34e87d054ba6538
->>
->> change property spi-tx-nbits and spi-rx-nbits to optional.
->> If User don't set spi-tx-nbits or spi-rx-nbits, spi device mode
->> should be regarded as SINGLE, not return an error.
->>
->> Signed-off-by: wangyuhang <wangyuhang2014@gmail.com>
->> ---
->>  drivers/spi/spi.c |   68 +++++++++++++++++++++++++--------------------------
->> --
->>  1 file changed, 32 insertions(+), 36 deletions(-)
->>
->> diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
->> index 50f7fc3..46a55f0 100644
->> --- a/drivers/spi/spi.c
->> +++ b/drivers/spi/spi.c
->> @@ -872,46 +872,42 @@ static void of_register_spi_devices(struct
->> spi_master *master)
->>               /* Device DUAL/QUAD mode */
->>               prop = of_get_property(nc, "spi-tx-nbits", &len);
->>               if (!prop || len < sizeof(*prop)) {
->> -                     dev_err(&master->dev, "%s has no 'spi-tx-nbits'
->> property\n",
->> -                             nc->full_name);
->> -                     spi_dev_put(spi);
->> -                     continue;
->> -             }
->> -             switch (be32_to_cpup(prop)) {
->> -             case SPI_NBITS_SINGLE:
->> -                     break;
->> -             case SPI_NBITS_DUAL:
->> -                     spi->mode |= SPI_TX_DUAL;
->> -                     break;
->> -             case SPI_NBITS_QUAD:
->> -                     spi->mode |= SPI_TX_QUAD;
->> -                     break;
->> -             default:
->> -                     dev_err(&master->dev, "spi-tx-nbits value is not
->> supported\n");
->> -                     spi_dev_put(spi);
->> -                     continue;
->> +                     /* set tx mode in SINGLE as default */
-> [Pekon]: I think you should explicitly set, and not trust spi->mode defaults.
->         spi->mode |= SPI_TX_SINGLE;
->
-Now @spi_device->mode [bit8: SPI_TX_DUAL] [bit9: SPI_TX_QUAD] [bit10:
-SPI_RX_DUAL] [bit11: SPI_RX_QUAD]. Because to every spi controller,
-SPI SINGLE must be supported, so I did not add that as a mode. My
-initial thought is if user don't select SPI_TX_DUAL and SPI_TX_QUAD,
-then it is TX_SINGLE mode[bit8: 0 bit9: 0].
-Now 2 approaches as follows:
-1) #define SPI_TX_SINGLE ~(SPI_TX_DUAL | SPI_TX_QUAD)
-    case SPI_NBITS_SINGLE:
-            spi->mode & SPI_TX_SINGLE;
-            break;
-2)Adding a new bit in mode to specify SPI_SINGLE. But this bit also
-should be reflected to @master->mode_bits. To the probe of each spi
-controller driver, it is necessary to do "master->mode_bits |=
-SPI_TX_SINGLE | SPI_RX_SINGLE;", in such case, it's not like a
-selected mode, it's like a compulsary condition. Since all controller
-do support, there's no need to make it a mode.
-
-So I prefer the previous correction, what's your idea.
-
-Best regards
+PiANCj4gSGksIFBla29uDQo+IA0KPiAyMDEzLzgvMjYgR3VwdGEsIFBla29uIDxwZWtvbkB0aS5j
+b20+Og0KPiA+Pg0KPiA+PiBmaXggb25lIHRoaW5nIGluIHBhdGNoOg0KPiA+PiBjb21taXQgaWQ6
+ZjQ3N2I3ZmIxM2RmMmI4NDM5OTc1NTlmZjM0ZTg3ZDA1NGJhNjUzOA0KPiA+Pg0KPiA+PiBjaGFu
+Z2UgcHJvcGVydHkgc3BpLXR4LW5iaXRzIGFuZCBzcGktcngtbmJpdHMgdG8gb3B0aW9uYWwuDQo+
+ID4+IElmIFVzZXIgZG9uJ3Qgc2V0IHNwaS10eC1uYml0cyBvciBzcGktcngtbmJpdHMsIHNwaSBk
+ZXZpY2UgbW9kZQ0KPiA+PiBzaG91bGQgYmUgcmVnYXJkZWQgYXMgU0lOR0xFLCBub3QgcmV0dXJu
+IGFuIGVycm9yLg0KPiA+Pg0KPiA+PiBTaWduZWQtb2ZmLWJ5OiB3YW5neXVoYW5nIDx3YW5neXVo
+YW5nMjAxNEBnbWFpbC5jb20+DQo+ID4+IC0tLQ0KPiA+PiAgZHJpdmVycy9zcGkvc3BpLmMgfCAg
+IDY4ICsrKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+IC0t
+LS0NCj4gPj4gLS0NCj4gPj4gIDEgZmlsZSBjaGFuZ2VkLCAzMiBpbnNlcnRpb25zKCspLCAzNiBk
+ZWxldGlvbnMoLSkNCj4gPj4NCj4gPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvc3BpL3NwaS5jIGIv
+ZHJpdmVycy9zcGkvc3BpLmMNCj4gPj4gaW5kZXggNTBmN2ZjMy4uNDZhNTVmMCAxMDA2NDQNCj4g
+Pj4gLS0tIGEvZHJpdmVycy9zcGkvc3BpLmMNCj4gPj4gKysrIGIvZHJpdmVycy9zcGkvc3BpLmMN
+Cj4gPj4gQEAgLTg3Miw0NiArODcyLDQyIEBAIHN0YXRpYyB2b2lkIG9mX3JlZ2lzdGVyX3NwaV9k
+ZXZpY2VzKHN0cnVjdA0KPiA+PiBzcGlfbWFzdGVyICptYXN0ZXIpDQo+ID4+ICAgICAgICAgICAg
+ICAgLyogRGV2aWNlIERVQUwvUVVBRCBtb2RlICovDQo+ID4+ICAgICAgICAgICAgICAgcHJvcCA9
+IG9mX2dldF9wcm9wZXJ0eShuYywgInNwaS10eC1uYml0cyIsICZsZW4pOw0KPiA+PiAgICAgICAg
+ICAgICAgIGlmICghcHJvcCB8fCBsZW4gPCBzaXplb2YoKnByb3ApKSB7DQo+ID4+IC0gICAgICAg
+ICAgICAgICAgICAgICBkZXZfZXJyKCZtYXN0ZXItPmRldiwgIiVzIGhhcyBubyAnc3BpLXR4LW5i
+aXRzJw0KPiA+PiBwcm9wZXJ0eVxuIiwNCj4gPj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgbmMtPmZ1bGxfbmFtZSk7DQo+ID4+IC0gICAgICAgICAgICAgICAgICAgICBzcGlfZGV2X3B1
+dChzcGkpOw0KPiA+PiAtICAgICAgICAgICAgICAgICAgICAgY29udGludWU7DQo+ID4+IC0gICAg
+ICAgICAgICAgfQ0KPiA+PiAtICAgICAgICAgICAgIHN3aXRjaCAoYmUzMl90b19jcHVwKHByb3Ap
+KSB7DQo+ID4+IC0gICAgICAgICAgICAgY2FzZSBTUElfTkJJVFNfU0lOR0xFOg0KPiA+PiAtICAg
+ICAgICAgICAgICAgICAgICAgYnJlYWs7DQo+ID4+IC0gICAgICAgICAgICAgY2FzZSBTUElfTkJJ
+VFNfRFVBTDoNCj4gPj4gLSAgICAgICAgICAgICAgICAgICAgIHNwaS0+bW9kZSB8PSBTUElfVFhf
+RFVBTDsNCj4gPj4gLSAgICAgICAgICAgICAgICAgICAgIGJyZWFrOw0KPiA+PiAtICAgICAgICAg
+ICAgIGNhc2UgU1BJX05CSVRTX1FVQUQ6DQo+ID4+IC0gICAgICAgICAgICAgICAgICAgICBzcGkt
+Pm1vZGUgfD0gU1BJX1RYX1FVQUQ7DQo+ID4+IC0gICAgICAgICAgICAgICAgICAgICBicmVhazsN
+Cj4gPj4gLSAgICAgICAgICAgICBkZWZhdWx0Og0KPiA+PiAtICAgICAgICAgICAgICAgICAgICAg
+ZGV2X2VycigmbWFzdGVyLT5kZXYsICJzcGktdHgtbmJpdHMgdmFsdWUgaXMgbm90DQo+ID4+IHN1
+cHBvcnRlZFxuIik7DQo+ID4+IC0gICAgICAgICAgICAgICAgICAgICBzcGlfZGV2X3B1dChzcGkp
+Ow0KPiA+PiAtICAgICAgICAgICAgICAgICAgICAgY29udGludWU7DQo+ID4+ICsgICAgICAgICAg
+ICAgICAgICAgICAvKiBzZXQgdHggbW9kZSBpbiBTSU5HTEUgYXMgZGVmYXVsdCAqLw0KPiA+IFtQ
+ZWtvbl06IEkgdGhpbmsgeW91IHNob3VsZCBleHBsaWNpdGx5IHNldCwgYW5kIG5vdCB0cnVzdCBz
+cGktPm1vZGUgZGVmYXVsdHMuDQo+ID4gICAgICAgICBzcGktPm1vZGUgfD0gU1BJX1RYX1NJTkdM
+RTsNCj4gPg0KPiBOb3cgQHNwaV9kZXZpY2UtPm1vZGUgW2JpdDg6IFNQSV9UWF9EVUFMXSBbYml0
+OTogU1BJX1RYX1FVQURdIFtiaXQxMDoNCj4gU1BJX1JYX0RVQUxdIFtiaXQxMTogU1BJX1JYX1FV
+QURdLiBCZWNhdXNlIHRvIGV2ZXJ5IHNwaSBjb250cm9sbGVyLA0KPiBTUEkgU0lOR0xFIG11c3Qg
+YmUgc3VwcG9ydGVkLCBzbyBJIGRpZCBub3QgYWRkIHRoYXQgYXMgYSBtb2RlLiBNeQ0KPiBpbml0
+aWFsIHRob3VnaHQgaXMgaWYgdXNlciBkb24ndCBzZWxlY3QgU1BJX1RYX0RVQUwgYW5kIFNQSV9U
+WF9RVUFELA0KPiB0aGVuIGl0IGlzIFRYX1NJTkdMRSBtb2RlW2JpdDg6IDAgYml0OTogMF0uDQo+
+IE5vdyAyIGFwcHJvYWNoZXMgYXMgZm9sbG93czoNCj4gMSkgI2RlZmluZSBTUElfVFhfU0lOR0xF
+IH4oU1BJX1RYX0RVQUwgfCBTUElfVFhfUVVBRCkNCj4gICAgIGNhc2UgU1BJX05CSVRTX1NJTkdM
+RToNCj4gICAgICAgICAgICAgc3BpLT5tb2RlICYgU1BJX1RYX1NJTkdMRTsNCj4gICAgICAgICAg
+ICAgYnJlYWs7DQo+IDIpQWRkaW5nIGEgbmV3IGJpdCBpbiBtb2RlIHRvIHNwZWNpZnkgU1BJX1NJ
+TkdMRS4gQnV0IHRoaXMgYml0IGFsc28NCj4gc2hvdWxkIGJlIHJlZmxlY3RlZCB0byBAbWFzdGVy
+LT5tb2RlX2JpdHMuIFRvIHRoZSBwcm9iZSBvZiBlYWNoIHNwaQ0KPiBjb250cm9sbGVyIGRyaXZl
+ciwgaXQgaXMgbmVjZXNzYXJ5IHRvIGRvICJtYXN0ZXItPm1vZGVfYml0cyB8PQ0KPiBTUElfVFhf
+U0lOR0xFIHwgU1BJX1JYX1NJTkdMRTsiLCBpbiBzdWNoIGNhc2UsIGl0J3Mgbm90IGxpa2UgYQ0K
+PiBzZWxlY3RlZCBtb2RlLCBpdCdzIGxpa2UgYSBjb21wdWxzYXJ5IGNvbmRpdGlvbi4gU2luY2Ug
+YWxsIGNvbnRyb2xsZXINCj4gZG8gc3VwcG9ydCwgdGhlcmUncyBubyBuZWVkIHRvIG1ha2UgaXQg
+YSBtb2RlLg0KPiANCj4gU28gSSBwcmVmZXIgdGhlIHByZXZpb3VzIGNvcnJlY3Rpb24sIHdoYXQn
+cyB5b3VyIGlkZWEuDQo+IA0KW1Bla29uXTogT2sgbWFrZXMgc2Vuc2UuLiAoMSkgaXMgcHJlZmVy
+cmVkLCBhcyBpdCBpcyBjb21wYXRpYmxlIHRvIGV4aXN0aW5nIGxheW91dA0KDQp3aXRoIHJlZ2Fy
+ZHMsIHBla29uDQo=
