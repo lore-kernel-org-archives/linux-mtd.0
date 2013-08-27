@@ -1,25 +1,17 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
+Received: from co9ehsobe001.messaging.microsoft.com ([207.46.163.24]
+ helo=co9outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VEEn0-0004ok-Vh
- for linux-mtd@lists.infradead.org; Tue, 27 Aug 2013 08:38:17 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: yuhang wang <wangyuhang2014@gmail.com>
-Subject: RE: [PATCH V2 1/2] spi: dual and quad support(device tree)
-Date: Tue, 27 Aug 2013 08:37:46 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9FAFEE@DBDE04.ent.ti.com>
-References: <1377564603-4030-1-git-send-email-wangyuhang2014@gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9FAEF9@DBDE04.ent.ti.com>
- <CAHSAbzMFJMav4VrBEmMx1bsmDXs4pW0wPg9B212aVnDy9p+gtQ@mail.gmail.com>
- <CAHSAbzMjLiY14bX-FLj0nsVg2fPge21jWPZBDUybC6YeGNk7Ow@mail.gmail.com>
-In-Reply-To: <CAHSAbzMjLiY14bX-FLj0nsVg2fPge21jWPZBDUybC6YeGNk7Ow@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1VEFgI-0006EK-TJ
+ for linux-mtd@lists.infradead.org; Tue, 27 Aug 2013 09:35:23 +0000
+From: Huang Shijie <b32955@freescale.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH V2 0/4] mtd: gpmi: support two nand chips at most
+Date: Tue, 27 Aug 2013 17:29:03 +0800
+Message-ID: <1377595747-21033-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Poddar,
- Sourav" <sourav.poddar@ti.com>, "broonie@kernel.org" <broonie@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
+Content-Type: text/plain
+Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,44 +21,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiANCj4gSGksIFBla29uDQo+IA0KPiBXaGF0IGFib3V0IHRoZSBjb21tZW50IGJlbG93LCBkbyBJ
-IHN0aWxsIG5lZWQgdG8gY2hlY2sgdGhlIG1vZGUgYmVmb3JlDQo+IHNldHRpbmcuDQo+IA0KSSB3
-b3VsZCBzdWdnZXN0IHNvIDotKQ0KIChhKSAnbW9kZSA9PSBDUEhBLCBDUE9MJw0KKGIpICdtb2Rl
-PT1TUElfVFhfUVVBRCB8IFNQSV9UWF9EVUFMJw0KDQpUaG91Z2ggSSB3b3VsZCBoYXZlIHN1Z2dl
-c3RlZCB0byBhZGQgY29tcGF0aWJpbGl0eSBjaGVja3MgZm9yIGJvdGggKGEpDQphbmQgKGIpLCBz
-byB0aGF0IGFsbCBtaXMtbWF0Y2hlcyBhcmUgaWRlbnRpZmllZCBkdXJpbmcgZGV2aWNlIHByb2Jl
-Lg0KQnV0LCBhcyB5b3UgcGF0Y2ggbmV3bHkgYWRkcyAoYiksIGl0IHdvdWxkIGxvb2sgY29tcGxl
-dGUgaWYgaXQgYWRkcw0KY29tcGF0aWJpbGl0eSBmb3IgYXQtbGVhc3QgKGIpLg0KDQpCdXQgaWYg
-eW91IGFyZSBub3Qga2VlbiwgaXRzIG9rYXkuIEZvciB5b3VyIGN1cnJlbnQgcGF0Y2guLg0KDQpB
-Y2tlZC1ieTogUGVrb24gR3VwdGEgPHBla29uQHRpLmNvbT4NCg0KDQp3aXRoIHJlZ2FyZHMsIHBl
-a29uDQoNCj4gPj4gWW91IG1pc3NlZCBvdXQgY29tbWVudHMgcHJvdmlkZWQgZWFybGllci4uDQo+
-ID4+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9saW51eC1tdGQvMjAxMy1B
-dWd1c3QvMDQ4Mzc0Lmh0bWwNCj4gPj4NCj4gPj4gUmVtZW1iZXIgLi4gdGhpcyBjb21wYXRpYmls
-aXR5IGNoZWNrIGlzIGJldHdlZW4gc3BpX2RldmljZS0+bW9kZQ0KPiA+PiB2L3Mgc3BpX21hc3Rl
-ci0+bW9kZV9iaXRzLiBUaGlzIGlzIGRpZmZlcmVudCBmcm9tIHVyIFYzIHBhdGNoDQo+ID4+IHdo
-aWNoIGNoZWNrcyBmb3Igc3BpX3RyYW5zZmVyLT50eF9uYml0cyB2L3Mgc3BpX2RldmljZS0+bW9k
-ZS4NCj4gPj4NCj4gPj4gKyBpZiAoKHhmZXItPnR4X25iaXRzID09IFNQSV9OQklUU19EVUFMKSAm
-Jg0KPiA+PiArICEoc3BpLT5tb2RlICYgKFNQSV9UWF9EVUFMIHwgU1BJX1RYX1FVQUQpKSkNCj4g
-Pj4gKyByZXR1cm4gLUVJTlZBTDsNCj4gPj4gKyBpZiAoKHhmZXItPnR4X25iaXRzID09IFNQSV9O
-QklUU19RVUFEKSAmJg0KPiA+PiArICEoc3BpLT5tb2RlICYgU1BJX1RYX1FVQUQpKQ0KPiA+PiAr
-IHJldHVybiAtRUlOVkFMOw0KPiA+Pg0KPiA+Pg0KPiA+IFNvcnJ5IGZvciBteSBtaXMtdW5kZXJz
-dGFuZGluZy4gQnV0IGhlcmUgSSB3YW50IHRvIHJlZ2FyZCBEVUFMIC8gUVVBRA0KPiA+IG1vZGUg
-anVzdCBhcyBvdGhlciBtb2RlLCBzdWNoIGFzIENQSEEsIENQT0wgYW5kIHNvIG9uLiBUbyBvdGhl
-ciBtb2RlLA0KPiA+IHNwaSBmcmFtZXdvcmsgZGlkbid0IGRvIHN1Y2ggY2hlY2ssIGV4YW1wbGU6
-DQo+ID4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+ID4gLyogTW9kZSAoY2xvY2sgcGhhc2Uv
-cG9sYXJpdHkvZXRjLikgKi8NCj4gPiBpZiAob2ZfZmluZF9wcm9wZXJ0eShuYywgInNwaS1jcGhh
-IiwgTlVMTCkpDQo+ID4gICAgIHNwaS0+bW9kZSB8PSBTUElfQ1BIQTsNCj4gPiBpZiAob2ZfZmlu
-ZF9wcm9wZXJ0eShuYywgInNwaS1jcG9sIiwgTlVMTCkpDQo+ID4gICAgIHNwaS0+bW9kZSB8PSBT
-UElfQ1BPTDsNCj4gPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4gPg0KPiA+IFNwaSBmcmFt
-ZXdvcmsgZG8gdGhpcyBjaGVjayBpbiBzcGlfc2V0dXAgYXMgZm9sbG93Og0KPiA+IC0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLQ0KPiA+IGJhZF9iaXRzID0gc3BpLT5tb2RlICYgfnNwaS0+bWFzdGVy
-LT5tb2RlX2JpdHM7DQo+ID4gaWYgKGJhZF9iaXRzKSB7DQo+ID4gICAgIGRldl9lcnIoJnNwaS0+
-ZGV2LCAic2V0dXA6IHVuc3VwcG9ydGVkIG1vZGUgYml0cyAleFxuIiwNCj4gPiAgICAgICAgICAg
-YmFkX2JpdHMpOw0KPiA+ICAgICByZXR1cm4gLUVJTlZBTDsNCj4gPiB9DQo+ID4gLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tDQo+ID4gU28gdG8ga2VlcCB0aGF0IGNvbnNpc3RhbnQsIEkgZG9uJ3Qg
-dGhpbmsgaXQgaXMgbmVjZXNzYXJ5IHRvIGFkZCB0aGUNCj4gPiBjaGVjayB3aGVuIHNldHRpbmcg
-dGhlIG1vZGUuDQo+ID4NCj4gPiBCZXN0IHJlZ2FyZHMNCg==
+Current gpmi-nand driver only supports one chips. But we may meet
+some embarrassing situation, such as Micron MT29F32G08QAA.
+This nand chip has two DIEs internally. Each die has its own chip select pin,
+so this chip acts as two nand chips.
+
+If we only scan one chip, we may find that we only get 2G for this chip,
+but in actually, this chip's size is 4G.
+
+So scan two chips by default.
+
+In order to support two nand chips, we have to do the following:
+   1.) Decouple the chip select from the DMA channel,
+       We can use the dma 0 to access all the nand chips.
+
+   2.) fix the wrong method of checking the ready/busy status.
+      In the imx6, all the ready/busy pins are binding together, we
+      should check ready/busy status of chip 0 for the all the chips. 
+
+Tested this patch set with MT29F32G08QAA.
+
+To Brian:
+	My "better" solution was proved to be a bad idea. So i resend this
+	patch set again.
+
+v1 --> v2:
+	[0] rebase on the latest l2-mtd tree.
+
+Huang Shijie (4):
+  mtd: gpmi: decouple the chip select from the DMA channel
+  mtd: gpmi: use DMA channel 0 for all the nand chips
+  mtd: gpmi: scan two nand chips
+  mtd: gpmi: imx6: fix the wrong method for checking ready/busy
+
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |   13 +++++++++++++
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    7 +++----
+ drivers/mtd/nand/gpmi-nand/gpmi-regs.h |    3 +++
+ 3 files changed, 19 insertions(+), 4 deletions(-)
