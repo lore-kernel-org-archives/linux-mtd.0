@@ -1,22 +1,16 @@
-Received: from mail-pb0-x234.google.com ([2607:f8b0:400e:c01::234])
+Received: from mail-pd0-x229.google.com ([2607:f8b0:400e:c02::229])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VDyg2-0002EF-VC
- for linux-mtd@lists.infradead.org; Mon, 26 Aug 2013 15:25:59 +0000
-Received: by mail-pb0-f52.google.com with SMTP id wz12so3534575pbc.39
- for <linux-mtd@lists.infradead.org>; Mon, 26 Aug 2013 08:25:37 -0700 (PDT)
-Date: Mon, 26 Aug 2013 23:30:22 -0400
-From: Huang Shijie <shijie8@gmail.com>
-To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Subject: Re: [PATCH v3 00/10] About the SLC/MLC
-Message-ID: <20130827033020.GA2182@gmail.com>
-References: <1377509808-29363-1-git-send-email-b32955@freescale.com>
- <20130826144153.568f2b1c@skate>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20130826144153.568f2b1c@skate>
-Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, dwmw2@infradead.org, dedekind1@gmail.com
+ id 1VE7VP-0005Fx-RS
+ for linux-mtd@lists.infradead.org; Tue, 27 Aug 2013 00:51:36 +0000
+Received: by mail-pd0-f169.google.com with SMTP id r10so4171171pdi.28
+ for <linux-mtd@lists.infradead.org>; Mon, 26 Aug 2013 17:51:14 -0700 (PDT)
+From: wangyuhang <wangyuhang2014@gmail.com>
+To: broonie@kernel.org, linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Subject: [PATCH V2 1/2] spi: dual and quad support(device tree)
+Date: Tue, 27 Aug 2013 08:50:02 +0800
+Message-Id: <1377564603-4030-1-git-send-email-wangyuhang2014@gmail.com>
+Cc: sourav.poddar@ti.com, pekon@ti.com, wangyuhang <wangyuhang2014@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,29 +20,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 26, 2013 at 02:41:53PM +0200, Thomas Petazzoni wrote:
-> Dear Huang Shijie,
-> 
-> On Mon, 26 Aug 2013 17:36:38 +0800, Huang Shijie wrote:
-> > In current mtd code, the MTD_NANDFLASH is used to represent both the
-> > SLC nand MLC(including the TLC). But we already have the MTD_MLCNANDFLASH
-> > to stand for the MLC. What is worse is that the JFFS2 may run on the MLC
-> > nand with current code. For the reason of READ/WRITE disturbance, the JFFS2
-> > should runs on the SLC only,
-> 
-> Pardon the probably very silly question, but would you mind giving more
-> details about why JFFS2 is not appropriate on MLC flashes? Is there
-> anything that UBI/UBIFS does that JFFS2 isn't doing to take into
-> account read/write disturbance?
-I try to explain it.
+fix two things in patch:
+commit id:f477b7fb13df2b843997559ff34e87d054ba6538
 
-For the UBIFS, it will writes the page(including the oob) only one time;
-but for jffs2, it may writes the page(including the oob) twice, one for the
-marker, one for the real data. 
+1.change the name of property: spi-tx-nbits and spi-rx-nbits to
+spi-tmax-nbits and spi-rmax-nbits, aimed to make that name different
+from the member of spi_transfer(tx_nbits and rx_nbits). using tmax
+and rmax here to describe that it is the max transfer bits that the
+members in spi_transfer(tx_nbits and rx_nbits) can reach.
+2.change property spi-tmax-nbits and spi-rmax-nbits to optional.
+If User don't set spi-tmax-nbits or spi-rmax-nbits, spi device mode
+should be regarded as SINGLE, not return an error. In such case, user
+don't have to modify the old dts files to fit the new spi framework.
 
-For the MLC, the write disturbance will cause some bitflips in this
-page. Since you write a page twice, so in the jffs2, you will meet uncorrectable
-ECC error.
+Signed-off-by: wangyuhang <wangyuhang2014@gmail.com>
+---
+ drivers/spi/spi.c |   72 +++++++++++++++++++++++++----------------------------
+ 1 file changed, 34 insertions(+), 38 deletions(-)
 
-thanks
-Huang Shijie
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 50f7fc3..8d191f2 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -870,48 +870,44 @@ static void of_register_spi_devices(struct spi_master *master)
+ 			spi->mode |= SPI_3WIRE;
+ 
+ 		/* Device DUAL/QUAD mode */
+-		prop = of_get_property(nc, "spi-tx-nbits", &len);
++		prop = of_get_property(nc, "spi-tmax-nbits", &len);
+ 		if (!prop || len < sizeof(*prop)) {
+-			dev_err(&master->dev, "%s has no 'spi-tx-nbits' property\n",
+-				nc->full_name);
+-			spi_dev_put(spi);
+-			continue;
+-		}
+-		switch (be32_to_cpup(prop)) {
+-		case SPI_NBITS_SINGLE:
+-			break;
+-		case SPI_NBITS_DUAL:
+-			spi->mode |= SPI_TX_DUAL;
+-			break;
+-		case SPI_NBITS_QUAD:
+-			spi->mode |= SPI_TX_QUAD;
+-			break;
+-		default:
+-			dev_err(&master->dev, "spi-tx-nbits value is not supported\n");
+-			spi_dev_put(spi);
+-			continue;
++			/* set tx mode in SINGLE as default */
++		} else {
++			switch (be32_to_cpup(prop)) {
++			case SPI_NBITS_SINGLE:
++				break;
++			case SPI_NBITS_DUAL:
++				spi->mode |= SPI_TX_DUAL;
++				break;
++			case SPI_NBITS_QUAD:
++				spi->mode |= SPI_TX_QUAD;
++				break;
++			default:
++				dev_err(&master->dev,
++					"spi-tmax-nbits value is not supported\n");
++				spi_dev_put(spi);
++				continue;
+ 		}
+ 
+-		prop = of_get_property(nc, "spi-rx-nbits", &len);
++		prop = of_get_property(nc, "spi-rmax-nbits", &len);
+ 		if (!prop || len < sizeof(*prop)) {
+-			dev_err(&master->dev, "%s has no 'spi-rx-nbits' property\n",
+-				nc->full_name);
+-			spi_dev_put(spi);
+-			continue;
+-		}
+-		switch (be32_to_cpup(prop)) {
+-		case SPI_NBITS_SINGLE:
+-			break;
+-		case SPI_NBITS_DUAL:
+-			spi->mode |= SPI_RX_DUAL;
+-			break;
+-		case SPI_NBITS_QUAD:
+-			spi->mode |= SPI_RX_QUAD;
+-			break;
+-		default:
+-			dev_err(&master->dev, "spi-rx-nbits value is not supported\n");
+-			spi_dev_put(spi);
+-			continue;
++			/* set rx mode in SINGLE as default */
++		} else {
++			switch (be32_to_cpup(prop)) {
++			case SPI_NBITS_SINGLE:
++				break;
++			case SPI_NBITS_DUAL:
++				spi->mode |= SPI_RX_DUAL;
++				break;
++			case SPI_NBITS_QUAD:
++				spi->mode |= SPI_RX_QUAD;
++				break;
++			default:
++				dev_err(&master->dev,
++					"spi-rmax-nbits value is not supported\n");
++				spi_dev_put(spi);
++				continue;
+ 		}
+ 
+ 		/* Device speed */
+-- 
+1.7.9.5
