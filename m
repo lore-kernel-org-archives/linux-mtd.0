@@ -1,21 +1,20 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VECpI-0001bO-1C
- for linux-mtd@lists.infradead.org; Tue, 27 Aug 2013 06:32:29 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: yuhang wang <wangyuhang2014@gmail.com>
-Subject: RE: [PATCH 2/2] spi: dual and quad support(device tree)
-Date: Tue, 27 Aug 2013 06:31:57 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73E9FAF78@DBDE04.ent.ti.com>
-References: <1377496080-14356-1-git-send-email-wangyuhang2014@gmail.com>
- <1377496080-14356-2-git-send-email-wangyuhang2014@gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73E9FA932@DBDE04.ent.ti.com>
- <CAHSAbzN9GFX++gkZwxny4qpRPpEkPgjqAPJBNU+h+SNymNdGFA@mail.gmail.com>
-In-Reply-To: <CAHSAbzN9GFX++gkZwxny4qpRPpEkPgjqAPJBNU+h+SNymNdGFA@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1VEE8m-0003KT-NT
+ for linux-mtd@lists.infradead.org; Tue, 27 Aug 2013 07:56:41 +0000
+Received: by mail-pa0-f42.google.com with SMTP id lj1so4483255pab.15
+ for <linux-mtd@lists.infradead.org>; Tue, 27 Aug 2013 00:56:16 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <CAHSAbzMFJMav4VrBEmMx1bsmDXs4pW0wPg9B212aVnDy9p+gtQ@mail.gmail.com>
+References: <1377564603-4030-1-git-send-email-wangyuhang2014@gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73E9FAEF9@DBDE04.ent.ti.com>
+ <CAHSAbzMFJMav4VrBEmMx1bsmDXs4pW0wPg9B212aVnDy9p+gtQ@mail.gmail.com>
+Date: Tue, 27 Aug 2013 15:56:16 +0800
+Message-ID: <CAHSAbzMjLiY14bX-FLj0nsVg2fPge21jWPZBDUybC6YeGNk7Ow@mail.gmail.com>
+Subject: Re: [PATCH V2 1/2] spi: dual and quad support(device tree)
+From: yuhang wang <wangyuhang2014@gmail.com>
+To: "Gupta, Pekon" <pekon@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Poddar,
  Sourav" <sourav.poddar@ti.com>, "broonie@kernel.org" <broonie@kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
@@ -29,59 +28,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiANCj4gSGksIFBla29uDQo+IA0KPiAyMDEzLzgvMjYgR3VwdGEsIFBla29uIDxwZWtvbkB0aS5j
-b20+Og0KPiA+Pg0KPiA+PiBmaXggb25lIHRoaW5nIGluIHBhdGNoOg0KPiA+PiBjb21taXQgaWQ6
-ZjQ3N2I3ZmIxM2RmMmI4NDM5OTc1NTlmZjM0ZTg3ZDA1NGJhNjUzOA0KPiA+Pg0KPiA+PiBjaGFu
-Z2UgcHJvcGVydHkgc3BpLXR4LW5iaXRzIGFuZCBzcGktcngtbmJpdHMgdG8gb3B0aW9uYWwuDQo+
-ID4+IElmIFVzZXIgZG9uJ3Qgc2V0IHNwaS10eC1uYml0cyBvciBzcGktcngtbmJpdHMsIHNwaSBk
-ZXZpY2UgbW9kZQ0KPiA+PiBzaG91bGQgYmUgcmVnYXJkZWQgYXMgU0lOR0xFLCBub3QgcmV0dXJu
-IGFuIGVycm9yLg0KPiA+Pg0KPiA+PiBTaWduZWQtb2ZmLWJ5OiB3YW5neXVoYW5nIDx3YW5neXVo
-YW5nMjAxNEBnbWFpbC5jb20+DQo+ID4+IC0tLQ0KPiA+PiAgZHJpdmVycy9zcGkvc3BpLmMgfCAg
-IDY4ICsrKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+IC0t
-LS0NCj4gPj4gLS0NCj4gPj4gIDEgZmlsZSBjaGFuZ2VkLCAzMiBpbnNlcnRpb25zKCspLCAzNiBk
-ZWxldGlvbnMoLSkNCj4gPj4NCj4gPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvc3BpL3NwaS5jIGIv
-ZHJpdmVycy9zcGkvc3BpLmMNCj4gPj4gaW5kZXggNTBmN2ZjMy4uNDZhNTVmMCAxMDA2NDQNCj4g
-Pj4gLS0tIGEvZHJpdmVycy9zcGkvc3BpLmMNCj4gPj4gKysrIGIvZHJpdmVycy9zcGkvc3BpLmMN
-Cj4gPj4gQEAgLTg3Miw0NiArODcyLDQyIEBAIHN0YXRpYyB2b2lkIG9mX3JlZ2lzdGVyX3NwaV9k
-ZXZpY2VzKHN0cnVjdA0KPiA+PiBzcGlfbWFzdGVyICptYXN0ZXIpDQo+ID4+ICAgICAgICAgICAg
-ICAgLyogRGV2aWNlIERVQUwvUVVBRCBtb2RlICovDQo+ID4+ICAgICAgICAgICAgICAgcHJvcCA9
-IG9mX2dldF9wcm9wZXJ0eShuYywgInNwaS10eC1uYml0cyIsICZsZW4pOw0KPiA+PiAgICAgICAg
-ICAgICAgIGlmICghcHJvcCB8fCBsZW4gPCBzaXplb2YoKnByb3ApKSB7DQo+ID4+IC0gICAgICAg
-ICAgICAgICAgICAgICBkZXZfZXJyKCZtYXN0ZXItPmRldiwgIiVzIGhhcyBubyAnc3BpLXR4LW5i
-aXRzJw0KPiA+PiBwcm9wZXJ0eVxuIiwNCj4gPj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgbmMtPmZ1bGxfbmFtZSk7DQo+ID4+IC0gICAgICAgICAgICAgICAgICAgICBzcGlfZGV2X3B1
-dChzcGkpOw0KPiA+PiAtICAgICAgICAgICAgICAgICAgICAgY29udGludWU7DQo+ID4+IC0gICAg
-ICAgICAgICAgfQ0KPiA+PiAtICAgICAgICAgICAgIHN3aXRjaCAoYmUzMl90b19jcHVwKHByb3Ap
-KSB7DQo+ID4+IC0gICAgICAgICAgICAgY2FzZSBTUElfTkJJVFNfU0lOR0xFOg0KPiA+PiAtICAg
-ICAgICAgICAgICAgICAgICAgYnJlYWs7DQo+ID4+IC0gICAgICAgICAgICAgY2FzZSBTUElfTkJJ
-VFNfRFVBTDoNCj4gPj4gLSAgICAgICAgICAgICAgICAgICAgIHNwaS0+bW9kZSB8PSBTUElfVFhf
-RFVBTDsNCj4gPj4gLSAgICAgICAgICAgICAgICAgICAgIGJyZWFrOw0KPiA+PiAtICAgICAgICAg
-ICAgIGNhc2UgU1BJX05CSVRTX1FVQUQ6DQo+ID4+IC0gICAgICAgICAgICAgICAgICAgICBzcGkt
-Pm1vZGUgfD0gU1BJX1RYX1FVQUQ7DQo+ID4+IC0gICAgICAgICAgICAgICAgICAgICBicmVhazsN
-Cj4gPj4gLSAgICAgICAgICAgICBkZWZhdWx0Og0KPiA+PiAtICAgICAgICAgICAgICAgICAgICAg
-ZGV2X2VycigmbWFzdGVyLT5kZXYsICJzcGktdHgtbmJpdHMgdmFsdWUgaXMgbm90DQo+ID4+IHN1
-cHBvcnRlZFxuIik7DQo+ID4+IC0gICAgICAgICAgICAgICAgICAgICBzcGlfZGV2X3B1dChzcGkp
-Ow0KPiA+PiAtICAgICAgICAgICAgICAgICAgICAgY29udGludWU7DQo+ID4+ICsgICAgICAgICAg
-ICAgICAgICAgICAvKiBzZXQgdHggbW9kZSBpbiBTSU5HTEUgYXMgZGVmYXVsdCAqLw0KPiA+IFtQ
-ZWtvbl06IEkgdGhpbmsgeW91IHNob3VsZCBleHBsaWNpdGx5IHNldCwgYW5kIG5vdCB0cnVzdCBz
-cGktPm1vZGUgZGVmYXVsdHMuDQo+ID4gICAgICAgICBzcGktPm1vZGUgfD0gU1BJX1RYX1NJTkdM
-RTsNCj4gPg0KPiBOb3cgQHNwaV9kZXZpY2UtPm1vZGUgW2JpdDg6IFNQSV9UWF9EVUFMXSBbYml0
-OTogU1BJX1RYX1FVQURdIFtiaXQxMDoNCj4gU1BJX1JYX0RVQUxdIFtiaXQxMTogU1BJX1JYX1FV
-QURdLiBCZWNhdXNlIHRvIGV2ZXJ5IHNwaSBjb250cm9sbGVyLA0KPiBTUEkgU0lOR0xFIG11c3Qg
-YmUgc3VwcG9ydGVkLCBzbyBJIGRpZCBub3QgYWRkIHRoYXQgYXMgYSBtb2RlLiBNeQ0KPiBpbml0
-aWFsIHRob3VnaHQgaXMgaWYgdXNlciBkb24ndCBzZWxlY3QgU1BJX1RYX0RVQUwgYW5kIFNQSV9U
-WF9RVUFELA0KPiB0aGVuIGl0IGlzIFRYX1NJTkdMRSBtb2RlW2JpdDg6IDAgYml0OTogMF0uDQo+
-IE5vdyAyIGFwcHJvYWNoZXMgYXMgZm9sbG93czoNCj4gMSkgI2RlZmluZSBTUElfVFhfU0lOR0xF
-IH4oU1BJX1RYX0RVQUwgfCBTUElfVFhfUVVBRCkNCj4gICAgIGNhc2UgU1BJX05CSVRTX1NJTkdM
-RToNCj4gICAgICAgICAgICAgc3BpLT5tb2RlICYgU1BJX1RYX1NJTkdMRTsNCj4gICAgICAgICAg
-ICAgYnJlYWs7DQo+IDIpQWRkaW5nIGEgbmV3IGJpdCBpbiBtb2RlIHRvIHNwZWNpZnkgU1BJX1NJ
-TkdMRS4gQnV0IHRoaXMgYml0IGFsc28NCj4gc2hvdWxkIGJlIHJlZmxlY3RlZCB0byBAbWFzdGVy
-LT5tb2RlX2JpdHMuIFRvIHRoZSBwcm9iZSBvZiBlYWNoIHNwaQ0KPiBjb250cm9sbGVyIGRyaXZl
-ciwgaXQgaXMgbmVjZXNzYXJ5IHRvIGRvICJtYXN0ZXItPm1vZGVfYml0cyB8PQ0KPiBTUElfVFhf
-U0lOR0xFIHwgU1BJX1JYX1NJTkdMRTsiLCBpbiBzdWNoIGNhc2UsIGl0J3Mgbm90IGxpa2UgYQ0K
-PiBzZWxlY3RlZCBtb2RlLCBpdCdzIGxpa2UgYSBjb21wdWxzYXJ5IGNvbmRpdGlvbi4gU2luY2Ug
-YWxsIGNvbnRyb2xsZXINCj4gZG8gc3VwcG9ydCwgdGhlcmUncyBubyBuZWVkIHRvIG1ha2UgaXQg
-YSBtb2RlLg0KPiANCj4gU28gSSBwcmVmZXIgdGhlIHByZXZpb3VzIGNvcnJlY3Rpb24sIHdoYXQn
-cyB5b3VyIGlkZWEuDQo+IA0KW1Bla29uXTogT2sgbWFrZXMgc2Vuc2UuLiAoMSkgaXMgcHJlZmVy
-cmVkLCBhcyBpdCBpcyBjb21wYXRpYmxlIHRvIGV4aXN0aW5nIGxheW91dA0KDQp3aXRoIHJlZ2Fy
-ZHMsIHBla29uDQo=
+Hi, Pekon
+
+What about the comment below, do I still need to check the mode before setting.
+
+>> You missed out comments provided earlier..
+>> http://lists.infradead.org/pipermail/linux-mtd/2013-August/048374.html
+>>
+>> Remember .. this compatibility check is between spi_device->mode
+>> v/s spi_master->mode_bits. This is different from ur V3 patch
+>> which checks for spi_transfer->tx_nbits v/s spi_device->mode.
+>>
+>> + if ((xfer->tx_nbits == SPI_NBITS_DUAL) &&
+>> + !(spi->mode & (SPI_TX_DUAL | SPI_TX_QUAD)))
+>> + return -EINVAL;
+>> + if ((xfer->tx_nbits == SPI_NBITS_QUAD) &&
+>> + !(spi->mode & SPI_TX_QUAD))
+>> + return -EINVAL;
+>>
+>>
+> Sorry for my mis-understanding. But here I want to regard DUAL / QUAD
+> mode just as other mode, such as CPHA, CPOL and so on. To other mode,
+> spi framework didn't do such check, example:
+> ---------------------------------------------------------------------------------
+> /* Mode (clock phase/polarity/etc.) */
+> if (of_find_property(nc, "spi-cpha", NULL))
+>     spi->mode |= SPI_CPHA;
+> if (of_find_property(nc, "spi-cpol", NULL))
+>     spi->mode |= SPI_CPOL;
+> ---------------------------------------------------------------------------------
+>
+> Spi framework do this check in spi_setup as follow:
+> ---------------------------------------------------------------------------------
+> bad_bits = spi->mode & ~spi->master->mode_bits;
+> if (bad_bits) {
+>     dev_err(&spi->dev, "setup: unsupported mode bits %x\n",
+>           bad_bits);
+>     return -EINVAL;
+> }
+> ---------------------------------------------------------------------------------
+> So to keep that consistant, I don't think it is necessary to add the
+> check when setting the mode.
+>
+> Best regards
