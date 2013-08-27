@@ -1,20 +1,22 @@
-Received: from va3ehsobe010.messaging.microsoft.com ([216.32.180.30]
- helo=va3outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VEFgP-0006EX-RW
- for linux-mtd@lists.infradead.org; Tue, 27 Aug 2013 09:35:36 +0000
-From: Huang Shijie <b32955@freescale.com>
-To: <dwmw2@infradead.org>
-Subject: [PATCH V2 4/4] mtd: gpmi: imx6: fix the wrong method for checking
- ready/busy
-Date: Tue, 27 Aug 2013 17:29:07 +0800
-Message-ID: <1377595747-21033-5-git-send-email-b32955@freescale.com>
-In-Reply-To: <1377595747-21033-1-git-send-email-b32955@freescale.com>
-References: <1377595747-21033-1-git-send-email-b32955@freescale.com>
+Date: Tue, 27 Aug 2013 16:37:01 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Sourav Poddar <sourav.poddar@ti.com>
+Message-ID: <20130827153701.GC10783@sirena.org.uk>
+References: <1377492102-23543-1-git-send-email-b32955@freescale.com>
+ <1377492102-23543-6-git-send-email-b32955@freescale.com>
+ <521AF162.9000308@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, dedekind1@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="PYvLm/IFaQmMAfx6"
+Content-Disposition: inline
+In-Reply-To: <521AF162.9000308@ti.com>
+Subject: Re: [PATCH v2 5/8] spi: Add Freescale QuadSpi driver
+Cc: B20596@freescale.com, shawn.guo@linaro.org, b44548@freescale.com,
+ dedekind1@gmail.com, linux-doc@vger.kernel.org, b18965@freescale.com,
+ linux-spi@vger.kernel.org, Huang Shijie <b32955@freescale.com>,
+ devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+ kernel@pengutronix.de, computersforpeace@gmail.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,35 +26,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In the imx6, all the ready/busy pins are binding togeter.
-So we should always check the ready/busy pin of the chip 0.
 
-In the other word, when the CS1 is enabled, we should also check the
-ready/busy of chip 0; if we check the ready/busy of chip 1,
-we will get the wrong result.
+--PYvLm/IFaQmMAfx6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
- drivers/mtd/nand/gpmi-nand/gpmi-lib.c |    7 +++++++
- 1 files changed, 7 insertions(+), 0 deletions(-)
+On Mon, Aug 26, 2013 at 11:40:42AM +0530, Sourav Poddar wrote:
+> Hi,
+>=20
+> Few comments inline..
+> On Monday 26 August 2013 10:11 AM, Huang Shijie wrote:
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-index 7d56d87..5edd25b 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-@@ -1079,6 +1079,13 @@ int gpmi_is_ready(struct gpmi_nand_data *this, unsigned chip)
- 		mask = MX23_BM_GPMI_DEBUG_READY0 << chip;
- 		reg = readl(r->gpmi_regs + HW_GPMI_DEBUG);
- 	} else if (GPMI_IS_MX28(this) || GPMI_IS_MX6Q(this)) {
-+		/*
-+		 * In the imx6, all the ready/busy pins are binding
-+		 * togeter. So we only need to check the chip 0.
-+		 */
-+		if (GPMI_IS_MX6Q(this))
-+			chip = 0;
-+
- 		/* MX28 shares the same R/B register as MX6Q. */
- 		mask = MX28_BF_GPMI_STAT_READY_BUSY(1 << chip);
- 		reg = readl(r->gpmi_regs + HW_GPMI_STAT);
--- 
-1.7.1
+When replying to mail please remember to delete unneeded context so that
+it is easier to find the new content which you have added.
+
+--PYvLm/IFaQmMAfx6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSHMeaAAoJELSic+t+oim9im0P/jJDGNIfpaacE/sZtZk7pkVq
+k5+puTMQ9f2QzLR4/uckiMM3fZhNsa0gjDw1l4/RUtTf3TezRpCBu0Cs/vQpLTf1
+vqDYyB69VP/7wBChuEQ48M7Ir3Gs0P2mxRyHQ0nmYtF8Tgru0EpK665I/0A5mNRf
+quy79IMmW/Gtd3SK8cMMORKP8ju4FsrtR3Co1HubSampQOALeUF4aoF1Jv37OwlO
+tjaj5O5SLYjIjDLRQ5v/AdXBQIFYnAiSutyf2vGRZp0E98+DNfmpv020ZWcJ0PsF
+XyyUGil0AwlrflqkehivdoqfZ4CRsqeRFxd3czAwiko58CunyCpS0HqrS/gUSRlr
+VvrSajPkqjrOThrTl4rvn5LUWfJkaKJwluQWOoC+pMoN7G/xBftxEWUGIvtmBmG2
+/zaXal7Pq1L4LR/jusqieYkiRxvU6+P1VLC4+8auGHAkAgtVNwPkSuvUtVqJxH9E
+u19ZkMeQYx6HmFHxsnKrag3guzmBBKy6+gCRY1fM8mLeaBIpQp+3ntEU71UDI4hM
+XF8sbz9U7tAPfFHfLPZZsrMwWDN7Qkv1hJG+WJwwNUiitCmdmoVw3WGq8KZ5hLQN
+bcjKjVu+XlOnbeOoYjPqONMkwja3G8JXJfmgvgQ/hI9EjnfIs9NdJu9/JqUe289J
+DraO1LuGP/15ym68Mt8x
+=Pu5F
+-----END PGP SIGNATURE-----
+
+--PYvLm/IFaQmMAfx6--
