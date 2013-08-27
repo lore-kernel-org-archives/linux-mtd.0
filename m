@@ -1,15 +1,17 @@
-Received: from mail-pd0-x229.google.com ([2607:f8b0:400e:c02::229])
+Received: from mail-pb0-x234.google.com ([2607:f8b0:400e:c01::234])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VE7VP-0005Fx-RS
- for linux-mtd@lists.infradead.org; Tue, 27 Aug 2013 00:51:36 +0000
-Received: by mail-pd0-f169.google.com with SMTP id r10so4171171pdi.28
- for <linux-mtd@lists.infradead.org>; Mon, 26 Aug 2013 17:51:14 -0700 (PDT)
+ id 1VE7VX-0005G0-BL
+ for linux-mtd@lists.infradead.org; Tue, 27 Aug 2013 00:51:43 +0000
+Received: by mail-pb0-f52.google.com with SMTP id wz12so4083642pbc.39
+ for <linux-mtd@lists.infradead.org>; Mon, 26 Aug 2013 17:51:21 -0700 (PDT)
 From: wangyuhang <wangyuhang2014@gmail.com>
 To: broonie@kernel.org, linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
  linux-mtd@lists.infradead.org
-Subject: [PATCH V2 1/2] spi: dual and quad support(device tree)
-Date: Tue, 27 Aug 2013 08:50:02 +0800
-Message-Id: <1377564603-4030-1-git-send-email-wangyuhang2014@gmail.com>
+Subject: [PATCH V2 2/2] spi: dual and quad support(device tree)
+Date: Tue, 27 Aug 2013 08:50:03 +0800
+Message-Id: <1377564603-4030-2-git-send-email-wangyuhang2014@gmail.com>
+In-Reply-To: <1377564603-4030-1-git-send-email-wangyuhang2014@gmail.com>
+References: <1377564603-4030-1-git-send-email-wangyuhang2014@gmail.com>
 Cc: sourav.poddar@ti.com, pekon@ti.com, wangyuhang <wangyuhang2014@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -20,110 +22,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-fix two things in patch:
-commit id:f477b7fb13df2b843997559ff34e87d054ba6538
-
-1.change the name of property: spi-tx-nbits and spi-rx-nbits to
-spi-tmax-nbits and spi-rmax-nbits, aimed to make that name different
-from the member of spi_transfer(tx_nbits and rx_nbits). using tmax
-and rmax here to describe that it is the max transfer bits that the
-members in spi_transfer(tx_nbits and rx_nbits) can reach.
-2.change property spi-tmax-nbits and spi-rmax-nbits to optional.
-If User don't set spi-tmax-nbits or spi-rmax-nbits, spi device mode
-should be regarded as SINGLE, not return an error. In such case, user
-don't have to modify the old dts files to fit the new spi framework.
+Add spi-tmax-nbits and spi-rmax-nbits for spi slave node.
+Modify the related dt document(spi-bus.txt)
+ spi-tmax-nbits:Max number of bits slave will use for MOSI(writting)
+ spi-rmax-nbits:Max number of bits slave will use for MISO(reading)
+Support for spi-tx/rmax-nbits in SPI framework has been picked[1].
+[1]: http://comments.gmane.org/gmane.linux.kernel.spi.devel/14420
+Commit Id:f477b7fb13df2b843997559ff34e87d054ba6538
 
 Signed-off-by: wangyuhang <wangyuhang2014@gmail.com>
 ---
- drivers/spi/spi.c |   72 +++++++++++++++++++++++++----------------------------
- 1 file changed, 34 insertions(+), 38 deletions(-)
+ Documentation/devicetree/bindings/spi/spi-bus.txt |   16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 50f7fc3..8d191f2 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -870,48 +870,44 @@ static void of_register_spi_devices(struct spi_master *master)
- 			spi->mode |= SPI_3WIRE;
+diff --git a/Documentation/devicetree/bindings/spi/spi-bus.txt b/Documentation/devicetree/bindings/spi/spi-bus.txt
+index 296015e..211336c 100644
+--- a/Documentation/devicetree/bindings/spi/spi-bus.txt
++++ b/Documentation/devicetree/bindings/spi/spi-bus.txt
+@@ -55,6 +55,22 @@ contain the following properties.
+     		chip select active high
+ - spi-3wire       - (optional) Empty property indicating device requires
+     		    3-wire mode.
++- spi-tmax-nbits  - (optional) Max number of bits slave will use for
++    		    MOSI(writting)
++- spi-rmax-nbits  - (optional) Max number of bits slave will use for
++    		    MISO(reading)
++
++So if for example the slave has 4 wires for writting and 2 wires for reading,
++and the spi-tx/rx-nbits property should be set as follows:
++
++spi-tmax-nbits = <4>;
++spi-rmax-nbits = <2>;
++
++Now the value that spi-tmax-nbits and spi-rmax-nbits can receive is only
++1(single), 2(dual) and 4(quad). If you don't set spi-tmax-nbits or spi-rmax-nbits,
++spi_device mode will be set in single(1 wire) as default. Another point, if
++property:spi-3wire is set, spi-t/rmax-nbits is forbidden to set to <2 or 4>,
++otherwise, an errro will return.
  
- 		/* Device DUAL/QUAD mode */
--		prop = of_get_property(nc, "spi-tx-nbits", &len);
-+		prop = of_get_property(nc, "spi-tmax-nbits", &len);
- 		if (!prop || len < sizeof(*prop)) {
--			dev_err(&master->dev, "%s has no 'spi-tx-nbits' property\n",
--				nc->full_name);
--			spi_dev_put(spi);
--			continue;
--		}
--		switch (be32_to_cpup(prop)) {
--		case SPI_NBITS_SINGLE:
--			break;
--		case SPI_NBITS_DUAL:
--			spi->mode |= SPI_TX_DUAL;
--			break;
--		case SPI_NBITS_QUAD:
--			spi->mode |= SPI_TX_QUAD;
--			break;
--		default:
--			dev_err(&master->dev, "spi-tx-nbits value is not supported\n");
--			spi_dev_put(spi);
--			continue;
-+			/* set tx mode in SINGLE as default */
-+		} else {
-+			switch (be32_to_cpup(prop)) {
-+			case SPI_NBITS_SINGLE:
-+				break;
-+			case SPI_NBITS_DUAL:
-+				spi->mode |= SPI_TX_DUAL;
-+				break;
-+			case SPI_NBITS_QUAD:
-+				spi->mode |= SPI_TX_QUAD;
-+				break;
-+			default:
-+				dev_err(&master->dev,
-+					"spi-tmax-nbits value is not supported\n");
-+				spi_dev_put(spi);
-+				continue;
- 		}
- 
--		prop = of_get_property(nc, "spi-rx-nbits", &len);
-+		prop = of_get_property(nc, "spi-rmax-nbits", &len);
- 		if (!prop || len < sizeof(*prop)) {
--			dev_err(&master->dev, "%s has no 'spi-rx-nbits' property\n",
--				nc->full_name);
--			spi_dev_put(spi);
--			continue;
--		}
--		switch (be32_to_cpup(prop)) {
--		case SPI_NBITS_SINGLE:
--			break;
--		case SPI_NBITS_DUAL:
--			spi->mode |= SPI_RX_DUAL;
--			break;
--		case SPI_NBITS_QUAD:
--			spi->mode |= SPI_RX_QUAD;
--			break;
--		default:
--			dev_err(&master->dev, "spi-rx-nbits value is not supported\n");
--			spi_dev_put(spi);
--			continue;
-+			/* set rx mode in SINGLE as default */
-+		} else {
-+			switch (be32_to_cpup(prop)) {
-+			case SPI_NBITS_SINGLE:
-+				break;
-+			case SPI_NBITS_DUAL:
-+				spi->mode |= SPI_RX_DUAL;
-+				break;
-+			case SPI_NBITS_QUAD:
-+				spi->mode |= SPI_RX_QUAD;
-+				break;
-+			default:
-+				dev_err(&master->dev,
-+					"spi-rmax-nbits value is not supported\n");
-+				spi_dev_put(spi);
-+				continue;
- 		}
- 
- 		/* Device speed */
+ If a gpio chipselect is used for the SPI slave the gpio number will be passed
+ via the cs_gpio
 -- 
 1.7.9.5
