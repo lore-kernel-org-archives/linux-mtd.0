@@ -1,16 +1,22 @@
-Received: from mail-pa0-f47.google.com ([209.85.220.47])
+Received: from mail-db8lp0188.outbound.messaging.microsoft.com
+ ([213.199.154.188] helo=db8outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VEU9J-00030Q-EB
- for linux-mtd@lists.infradead.org; Wed, 28 Aug 2013 01:02:18 +0000
-Received: by mail-pa0-f47.google.com with SMTP id kl13so5489516pab.20
- for <linux-mtd@lists.infradead.org>; Tue, 27 Aug 2013 18:01:52 -0700 (PDT)
-From: wangyuhang <wangyuhang2014@gmail.com>
-To: broonie@kernel.org, linux-spi@vger.kernel.org,
- linux-mtd@lists.infradead.org, pekon@ti.com
-Subject: [PATCH] spi: dual and quad support(add single macro)
-Date: Wed, 28 Aug 2013 09:00:42 +0800
-Message-Id: <1377651642-3988-1-git-send-email-wangyuhang2014@gmail.com>
-Cc: wangyuhang <wangyuhang2014@gmail.com>
+ id 1VEVL3-0004Yv-Md
+ for linux-mtd@lists.infradead.org; Wed, 28 Aug 2013 02:18:31 +0000
+Message-ID: <521D5E20.5030007@freescale.com>
+Date: Wed, 28 Aug 2013 10:19:12 +0800
+From: Huang Shijie <b32955@freescale.com>
+MIME-Version: 1.0
+To: Vikram Narayanan <vikram186@gmail.com>
+Subject: Re: [PATCH V2 2/4] mtd: gpmi: use DMA channel 0 for all the nand chips
+References: <1377595747-21033-1-git-send-email-b32955@freescale.com>
+ <1377595747-21033-3-git-send-email-b32955@freescale.com>
+ <521CDC55.60602@gmail.com>
+In-Reply-To: <521CDC55.60602@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,61 +26,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-fix using default value to specify SINGLE mode in patch:
-commit id:f477b7fb13df2b843997559ff34e87d054ba6538
+=E4=BA=8E 2013=E5=B9=B408=E6=9C=8828=E6=97=A5 01:05, Vikram Narayanan =E5=
+=86=99=E9=81=93:
+> IIRC, We have 4 DMA channels. Don't we?=20
+yes, we have. But we only have one gpmi.
 
-Add SPI_TX_SINGLE and SPI_RX_SINGLE to specify SINGLE mode.
+I ever tried to use different dma channels for different chip selects.
+But after discussed with our IC guy, it is proved to be meaningless.
+We only have one gpmi, and so we only have one data bus. Even we have 4=20
+dma channels
+, we have to do the DMA operations one by one.
 
-Signed-off-by: wangyuhang <wangyuhang2014@gmail.com>
----
- drivers/spi/spi.c       |    4 ++++
- include/linux/spi/spi.h |    4 ++++
- 2 files changed, 8 insertions(+)
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 8d191f2..dbcd406 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -873,9 +873,11 @@ static void of_register_spi_devices(struct spi_master *master)
- 		prop = of_get_property(nc, "spi-tmax-nbits", &len);
- 		if (!prop || len < sizeof(*prop)) {
- 			/* set tx mode in SINGLE as default */
-+			spi->mode &= SPI_TX_SINGLE;
- 		} else {
- 			switch (be32_to_cpup(prop)) {
- 			case SPI_NBITS_SINGLE:
-+				spi->mode &= SPI_TX_SINGLE;
- 				break;
- 			case SPI_NBITS_DUAL:
- 				spi->mode |= SPI_TX_DUAL;
-@@ -893,9 +895,11 @@ static void of_register_spi_devices(struct spi_master *master)
- 		prop = of_get_property(nc, "spi-rmax-nbits", &len);
- 		if (!prop || len < sizeof(*prop)) {
- 			/* set rx mode in SINGLE as default */
-+			spi->mode &= SPI_RX_SINGLE;
- 		} else {
- 			switch (be32_to_cpup(prop)) {
- 			case SPI_NBITS_SINGLE:
-+				spi->mode &= SPI_RX_SINGLE;
- 				break;
- 			case SPI_NBITS_DUAL:
- 				spi->mode |= SPI_RX_DUAL;
-diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-index ccd7840..faa138c 100644
---- a/include/linux/spi/spi.h
-+++ b/include/linux/spi/spi.h
-@@ -89,8 +89,12 @@ struct spi_device {
- #define	SPI_READY	0x80			/* slave pulls low to pause */
- #define	SPI_TX_DUAL	0x100			/* transmit with 2 wires */
- #define	SPI_TX_QUAD	0x200			/* transmit with 4 wires */
-+/* transmit with 1 wire(not using dual-tx and quad-tx) */
-+#define	SPI_TX_SINGLE	~(SPI_TX_DUAL | SPI_TX_QUAD)
- #define	SPI_RX_DUAL	0x400			/* receive with 2 wires */
- #define	SPI_RX_QUAD	0x800			/* receive with 4 wires */
-+/* receive with 1 wire(not using dual-rx and quad-rx) */
-+#define	SPI_RX_SINGLE	~(SPI_RX_DUAL | SPI_RX_QUAD)
- 	u8			bits_per_word;
- 	int			irq;
- 	void			*controller_state;
--- 
-1.7.9.5
+
+thanks
+Huang Shijie
