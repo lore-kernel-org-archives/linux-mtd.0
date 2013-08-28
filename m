@@ -1,24 +1,22 @@
-Received: from mail-pb0-x22e.google.com ([2607:f8b0:400e:c01::22e])
+Received: from mail-qe0-x233.google.com ([2607:f8b0:400d:c02::233])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VEfei-0005BP-Dr
- for linux-mtd@lists.infradead.org; Wed, 28 Aug 2013 13:19:29 +0000
-Received: by mail-pb0-f46.google.com with SMTP id rq2so6219700pbb.19
- for <linux-mtd@lists.infradead.org>; Wed, 28 Aug 2013 06:19:06 -0700 (PDT)
-Date: Wed, 28 Aug 2013 21:24:05 -0400
-From: Huang Shijie <shijie8@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v3 06/10] mtd: fix the wrong mtd->type for nand chip
-Message-ID: <20130829012403.GA4254@gmail.com>
-References: <1377509808-29363-1-git-send-email-b32955@freescale.com>
- <1377509808-29363-7-git-send-email-b32955@freescale.com>
- <521D69B6.7070504@gmail.com> <521D9FCC.5010104@freescale.com>
- <521DA6B3.9080003@gmail.com>
+ id 1VEfwr-0005w9-EO
+ for linux-mtd@lists.infradead.org; Wed, 28 Aug 2013 13:38:14 +0000
+Received: by mail-qe0-f51.google.com with SMTP id cy11so3402684qeb.24
+ for <linux-mtd@lists.infradead.org>; Wed, 28 Aug 2013 06:37:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <521DA6B3.9080003@gmail.com>
-Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- dwmw2@infradead.org, dedekind1@gmail.com
+In-Reply-To: <CAAXf6LWhMHJHs12CSPaQBA0G2TueQyB7XeYiyrUsDJw4JOP5Dg@mail.gmail.com>
+References: <CAAXf6LX44diB36-aFUFh1mcWcgj3X7z1jg-gwpeFyKaROjjaKQ@mail.gmail.com>
+ <ED3E0BCACD909541BA94A34C4A164D4C4FCE1BE2@post.tritech.se>
+ <CAAXf6LWhMHJHs12CSPaQBA0G2TueQyB7XeYiyrUsDJw4JOP5Dg@mail.gmail.com>
+Date: Wed, 28 Aug 2013 15:37:51 +0200
+Message-ID: <CAAXf6LXHOCTN1rCgemFc73svArXjKVBTDwS02SnPLcq+aAeyig@mail.gmail.com>
+Subject: Re: ubifs: bad node type (255 but expected 6)
+From: Thomas De Schampheleire <patrickdepinguin@gmail.com>
+To: =?ISO-8859-1?Q?Mats_K=E4rrman?= <Mats.Karrman@tritech.se>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,18 +26,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Aug 28, 2013 at 12:28:51AM -0700, Brian Norris wrote:
-> On 08/27/2013 11:59 PM, Huang Shijie wrote:
-> 
-> Yes, I saw that.
-> 
-> >That's why we should expose the MTD_MLCNANDFLASH to the user-space
-> 
-> All you've shown is the breakage, not the reason for exposing
-> MTD_MLCNANFLASH. There's a difference between MTD_MLCNANDFLASH being
-Do you mean this patch exposes the MTD_MLCNANDFLASH to user space?
-or the patch 8 exposes the MTD_MLCNANDFLASH to user space?
+On Wed, Aug 28, 2013 at 2:31 PM, Thomas De Schampheleire
+<patrickdepinguin@gmail.com> wrote:
+> On Wed, Aug 28, 2013 at 12:36 PM, Mats K=E4rrman <Mats.Karrman@tritech.se=
+> wrote:
+>> Hi Thomas,
+>>
+>> On Wednesday, August 28, 2013 12:13 PM Thomas De Schampheleire [patrickd=
+epinguin@gmail.com] wrote:
+>>> Is this a known problem, fixed in a later release?
+>>> Could it be just a bad NAND flash?
+>>> Could it be a problem with the underlying MTD driver (or my modificatio=
+n to it)?
+>>
+>> I would put my money on the MTD driver.
+>> Have you tried running the mtd tests (http://www.linux-mtd.infradead.org=
+/doc/general.html#L_mtd_tests)?
+>
+> Thanks for the tip.
+> The readtest went fine, but I'm now getting errors on the pagetest:
+>
+> [  736.746005] mtd_pagetest: error: verify failed at 0x9ea000
+> [  736.814904] mtd_pagetest: error: verify failed at 0x9ea800
+> [  736.883804] mtd_pagetest: error: verify failed at 0x9eb000
+> [  736.952735] mtd_pagetest: error: verify failed at 0x9eb800
+> [...]
+>
+> I will revert my changes and retest.
 
+Even without my changes, the pagetest fails. Can I safely assume that
+pagetest should always work, and that it failing really means a buggy
+mtd driver, or can there be other causes?
+The current driver is coming from the SoC vendor (Freescale), and in
+this 2.6.36.4 kernel release it was not yet accepted upstream (so I'm
+still using a patch against vanilla)
 
-thanks
-Huang Shijie
+Thanks,
+Thomas
+
+>
+> Best regards,
+> Thomas
