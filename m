@@ -1,22 +1,18 @@
-Received: from mail-db8lp0188.outbound.messaging.microsoft.com
- ([213.199.154.188] helo=db8outboundpool.messaging.microsoft.com)
+Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VEVL3-0004Yv-Md
- for linux-mtd@lists.infradead.org; Wed, 28 Aug 2013 02:18:31 +0000
-Message-ID: <521D5E20.5030007@freescale.com>
-Date: Wed, 28 Aug 2013 10:19:12 +0800
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: Vikram Narayanan <vikram186@gmail.com>
-Subject: Re: [PATCH V2 2/4] mtd: gpmi: use DMA channel 0 for all the nand chips
-References: <1377595747-21033-1-git-send-email-b32955@freescale.com>
- <1377595747-21033-3-git-send-email-b32955@freescale.com>
- <521CDC55.60602@gmail.com>
-In-Reply-To: <521CDC55.60602@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, dedekind1@gmail.com
+ id 1VEVMj-0004c3-M2
+ for linux-mtd@lists.infradead.org; Wed, 28 Aug 2013 02:20:14 +0000
+Received: by mail-pa0-f50.google.com with SMTP id fb10so5558209pad.23
+ for <linux-mtd@lists.infradead.org>; Tue, 27 Aug 2013 19:19:50 -0700 (PDT)
+From: Brian Norris <computersforpeace@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: nand: hack ONFI for non-power-of-2 dimensions
+Date: Tue, 27 Aug 2013 19:19:18 -0700
+Message-Id: <1377656358-7053-1-git-send-email-computersforpeace@gmail.com>
+Cc: Huang Shijie <b32955@freescale.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, stable@vger.kernel.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,18 +22,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B408=E6=9C=8828=E6=97=A5 01:05, Vikram Narayanan =E5=
-=86=99=E9=81=93:
-> IIRC, We have 4 DMA channels. Don't we?=20
-yes, we have. But we only have one gpmi.
+Some bright specification writers decided to write this in the ONFI spec
+(from ONFI 3.0, Section 3.1):
 
-I ever tried to use different dma channels for different chip selects.
-But after discussed with our IC guy, it is proved to be meaningless.
-We only have one gpmi, and so we only have one data bus. Even we have 4=20
-dma channels
-, we have to do the DMA operations one by one.
+  "The number of blocks and number of pages per block is not required to
+  be a power of two. In the case where one of these values is not a
+  power of two, the corresponding address shall be rounded to an
+  integral number of bits such that it addresses a range up to the
+  subsequent power of two value. The host shall not access upper
+  addresses in a range that is shown as not supported."
 
+This breaks every assumption MTD makes about NAND block/chip-size
+dimensions -- they *must* be a power of two!
 
+And of course, an enterprising manufacturer has made use of this lovely
+freedom. Exhibit A: Micron MT29F32G08CBADAWP
 
-thanks
-Huang Shijie
+  "- Plane size: 2 planes x 1064 blocks per plane
+   - Device size: 32Gb: 2128 blockss [sic]"
+
+This quickly hits a BUG() in nand_base.c, since the extra dimensions
+overflow so we think it's a second chip (on my single-chip setup):
+
+    ONFI param page 0 valid
+    ONFI flash detected
+    NAND device: Manufacturer ID: 0x2c, Chip ID: 0x44 (Micron MT29F32G08CBADAWP), 4256MiB, page size: 8192, OOB size: 744
+    ------------[ cut here ]------------
+    kernel BUG at drivers/mtd/nand/nand_base.c:203!
+    Internal error: Oops - BUG: 0 [#1] SMP ARM
+    [... trim ...]
+    [<c02cf3e4>] (nand_select_chip+0x18/0x2c) from [<c02d25c0>] (nand_do_read_ops+0x90/0x424)
+    [<c02d25c0>] (nand_do_read_ops+0x90/0x424) from [<c02d2dd8>] (nand_read+0x54/0x78)
+    [<c02d2dd8>] (nand_read+0x54/0x78) from [<c02ad2c8>] (mtd_read+0x84/0xbc)
+    [<c02ad2c8>] (mtd_read+0x84/0xbc) from [<c02d4b28>] (scan_read.clone.4+0x4c/0x64)
+    [<c02d4b28>] (scan_read.clone.4+0x4c/0x64) from [<c02d4c88>] (search_bbt+0x148/0x290)
+    [<c02d4c88>] (search_bbt+0x148/0x290) from [<c02d4ea4>] (nand_scan_bbt+0xd4/0x5c0)
+    [... trim ...]
+    ---[ end trace 0c9363860d865ff2 ]---
+
+So to fix this, just truncate these dimensions down to the greatest
+power-of-2 dimension that is less than or equal to the specified
+dimension.
+
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: <stable@vger.kernel.org>
+---
+ drivers/mtd/nand/nand_base.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 7ed4841..208321a 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2983,10 +2983,21 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+ 	sanitize_string(p->model, sizeof(p->model));
+ 	if (!mtd->name)
+ 		mtd->name = p->model;
++
+ 	mtd->writesize = le32_to_cpu(p->byte_per_page);
+-	mtd->erasesize = le32_to_cpu(p->pages_per_block) * mtd->writesize;
++
++	/*
++	 * pages_per_block and blocks_per_lun may not be a power-of-2 size
++	 * (don't ask me who thought of this...). MTD assumes that these
++	 * dimensions will be power-of-2, so just truncate the remaining area.
++	 */
++	mtd->erasesize = 1 << (fls(le32_to_cpu(p->pages_per_block)) - 1);
++	mtd->erasesize *= mtd->writesize;
++
+ 	mtd->oobsize = le16_to_cpu(p->spare_bytes_per_page);
+-	chip->chipsize = le32_to_cpu(p->blocks_per_lun);
++
++	/* See erasesize comment */
++	chip->chipsize = 1 << (fls(le32_to_cpu(p->blocks_per_lun)) - 1);
+ 	chip->chipsize *= (uint64_t)mtd->erasesize * p->lun_count;
+ 
+ 	if (onfi_feature(chip) & ONFI_FEATURE_16_BIT_BUS)
+-- 
+1.8.4
