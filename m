@@ -1,24 +1,19 @@
-Received: from mail-pb0-x230.google.com ([2607:f8b0:400e:c01::230])
+Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VF10c-000167-Js
- for linux-mtd@lists.infradead.org; Thu, 29 Aug 2013 12:07:31 +0000
-Received: by mail-pb0-f48.google.com with SMTP id ma3so358743pbc.7
- for <linux-mtd@lists.infradead.org>; Thu, 29 Aug 2013 05:07:08 -0700 (PDT)
+ id 1VF1Hz-0001TF-Ss
+ for linux-mtd@lists.infradead.org; Thu, 29 Aug 2013 12:25:28 +0000
+Date: Thu, 29 Aug 2013 13:25:00 +0100
+From: Mark Brown <broonie@kernel.org>
+To: wangyuhang <wangyuhang2014@gmail.com>
+Message-ID: <20130829122500.GC10783@sirena.org.uk>
+References: <1377738110-4219-1-git-send-email-wangyuhang2014@gmail.com>
 MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <549050543.4739751377777470469.JavaMail.root@zim-store05.web.westnet.com.au>
-References: <CAMuHMdXdS5j==sOoj3WKkTsjzMwWHZDEhYMSXNDErpB82xT=+w@mail.gmail.com>
- <549050543.4739751377777470469.JavaMail.root@zim-store05.web.westnet.com.au>
-Date: Thu, 29 Aug 2013 14:07:06 +0200
-Message-ID: <CAMuHMdWwyYEqRWrNa4r0AHxcz0H8dwX2piKV2fPD3Ph4iQSJDA@mail.gmail.com>
-Subject: Re: m68k: io{read,write} accessors
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Greg Ungerer <gregungerer@westnet.com.au>
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>,
- Brian Norris <computersforpeace@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Alexander Shiyan <shc_work@mail.ru>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="pQjS7IR0m4/DQQ0Q"
+Content-Disposition: inline
+In-Reply-To: <1377738110-4219-1-git-send-email-wangyuhang2014@gmail.com>
+Subject: Re: [PATCH V2] spi: dual and quad support(add single macro)
+Cc: linux-mtd@lists.infradead.org, pekon@ti.com, linux-spi@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,51 +23,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Aug 29, 2013 at 1:57 PM, Greg Ungerer
-<gregungerer@westnet.com.au> wrote:
-> ----- "Geert Uytterhoeven" <geert@linux-m68k.org> wrote:
->> On Wed, Aug 28, 2013 at 8:36 PM, Brian Norris
->> <computersforpeace@gmail.com> wrote:
->> > It appears that m68k doesn't properly define the io{read,write}
->> > functions. I get complaints like this from my compile testing:
->> >
->> > drivers/mtd/nand/nand_base.c: In function 'nand_write_buf':
->> > drivers/mtd/nand/nand_base.c:216:2: error: implicit declaration of
->> > function 'iowrite8_rep' [-Werror=implicit-function-declaration]
->> > drivers/mtd/nand/nand_base.c: In function 'nand_read_buf':
->> > drivers/mtd/nand/nand_base.c:231:2: error: implicit declaration of
->> > function 'ioread8_rep' [-Werror=implicit-function-declaration]
->> > drivers/mtd/nand/nand_base.c: In function 'nand_write_buf16':
->> > drivers/mtd/nand/nand_base.c:247:2: error: implicit declaration of
->> > function 'iowrite16_rep' [-Werror=implicit-function-declaration]
->> > drivers/mtd/nand/nand_base.c: In function 'nand_read_buf16':
->> > drivers/mtd/nand/nand_base.c:263:2: error: implicit declaration of
->> > function 'ioread16_rep' [-Werror=implicit-function-declaration]
->>
->> This is a nommu config?
->> If CONFIG_MMU=y,  GENERIC_IOMAP=y and iowrite8_rep() is available.
->>
->> Greg: is there any reason we can't use GENERIC_IOMAP=y for the nommu
->> case too?
->
-> None at all. Thus this patch:
->
-> http://www.spinics.net/lists/linux-m68k/msg06224.html
 
-Sorry, I had forgotten about this.
+--pQjS7IR0m4/DQQ0Q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> I have it in the m68knommu git tree, for-next branch. I intend pushing
-> it for 3.12.
+On Thu, Aug 29, 2013 at 09:01:50AM +0800, wangyuhang wrote:
 
-OK, thanks!
+> fix two things in patch:
+> commit id:f477b7fb13df2b843997559ff34e87d054ba6538
 
-Gr{oetje,eeting}s,
+> 1.Add SPI_TX_SINGLE and SPI_RX_SINGLE to specify SINGLE mode.
+>  Instead of using default value in mode.
+> 2.Delete a "return" when commit the patch to a new kernel version
+>  by mistake. So recover it.
 
-                        Geert
+These two changes aren't related to each other so should be sent as two
+separate patches.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> @@ -89,8 +89,12 @@ struct spi_device {
+>  #define	SPI_READY	0x80			/* slave pulls low to pause */
+>  #define	SPI_TX_DUAL	0x100			/* transmit with 2 wires */
+>  #define	SPI_TX_QUAD	0x200			/* transmit with 4 wires */
+> +/* transmit with 1 wire(not using dual-tx and quad-tx) */
+> +#define	SPI_TX_SINGLE	~(SPI_TX_DUAL | SPI_TX_QUAD)
+>  #define	SPI_RX_DUAL	0x400			/* receive with 2 wires */
+>  #define	SPI_RX_QUAD	0x800			/* receive with 4 wires */
+> +/* receive with 1 wire(not using dual-rx and quad-rx) */
+> +#define	SPI_RX_SINGLE	~(SPI_RX_DUAL | SPI_RX_QUAD)
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+These don't look right, they're going to set all bits which is going to
+interfere with all the other flags.  Why do we need this define at all?
+
+--pQjS7IR0m4/DQQ0Q
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSHz2ZAAoJELSic+t+oim9ZaMP/iKaysa+7M2U2fI8I7PH4FSh
+YfQZhbVUjoR9NQK2jgq/MYL8p+bg1oJLwZSTI9y50lbUF/HsgzyNdjpqZrYWRcws
+T1KJivCbdh56sK0/t5J4+bHNrLmKm2hHULEyk35wSgSDBN+84+3h4hwa89b1pVU/
+Dq2X4A+c65KbTxej0dL4ZnvOlnSxGQqQciJIqT/NgxIw4O3fyZlIqhGyxk8SgK6Z
+p3/eehh+RhjrKa75aeay0SGl8Fids1HBE5/MtgxTs1yEpsLvnbuf0e+SAa5Jt1ID
+t4iz6Nwude+b06Bd5hhpft9949T9WA8aIXJySwdmfKdpRPs66/LYFE86QVXgKCF1
+41+YMVgnKv6PseX65mevzni3hRAka2m67S7lFWYlSUJzWCAssX3EqGFlT1NPF0Zl
+QvNuOZd0Zvju3QAztAe/3IuK1GI2qw7JV/CyoL0Nk5BrRr3DePs9HMYxPIvx4mS7
+dotJx3dG4qcdXeFNrMDv2EVXdQur4vxe45bmScTVm/bqqmhpFR8NEI6yLbKxhsMT
+zoqMdhbOlVdO1T3Nmuffq0R8uWj5UZBk83yP6E46S/S3fsYWbBJqQifqmXic5PSG
+hptjXpvXA0DyfvZQzHjEahAYddF7DIg0aJuURWCrZGMiNG7+wII/aiXV33DUM502
+lvVsmQPPCOcTyPzIoWmf
+=kKpK
+-----END PGP SIGNATURE-----
+
+--pQjS7IR0m4/DQQ0Q--
