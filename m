@@ -1,23 +1,23 @@
-Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
+Received: from ch1ehsobe006.messaging.microsoft.com ([216.32.181.186]
+ helo=ch1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VEuQi-0000Vt-Ka
- for linux-mtd@lists.infradead.org; Thu, 29 Aug 2013 05:06:01 +0000
-Received: by mail-pa0-f48.google.com with SMTP id kp13so409878pab.7
- for <linux-mtd@lists.infradead.org>; Wed, 28 Aug 2013 22:05:38 -0700 (PDT)
-Message-ID: <521ED69F.5080203@gmail.com>
-Date: Wed, 28 Aug 2013 22:05:35 -0700
-From: Brian Norris <computersforpeace@gmail.com>
+ id 1VEurq-0001C3-8a
+ for linux-mtd@lists.infradead.org; Thu, 29 Aug 2013 05:34:02 +0000
+Message-ID: <521EDD7F.2010103@freescale.com>
+Date: Thu, 29 Aug 2013 13:34:55 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-To: Huang Shijie <shijie8@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
 Subject: Re: [PATCH v3 06/10] mtd: fix the wrong mtd->type for nand chip
 References: <1377509808-29363-1-git-send-email-b32955@freescale.com>
  <1377509808-29363-7-git-send-email-b32955@freescale.com>
  <521D69B6.7070504@gmail.com> <521D9FCC.5010104@freescale.com>
  <521DA6B3.9080003@gmail.com> <20130829012403.GA4254@gmail.com>
-In-Reply-To: <20130829012403.GA4254@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ <521ED69F.5080203@gmail.com>
+In-Reply-To: <521ED69F.5080203@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, Huang Shijie <shijie8@gmail.com>,
  dwmw2@infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,24 +28,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/28/2013 06:24 PM, Huang Shijie wrote:
-> On Wed, Aug 28, 2013 at 12:28:51AM -0700, Brian Norris wrote:
->> On 08/27/2013 11:59 PM, Huang Shijie wrote:
->>
->> Yes, I saw that.
->>
->>> That's why we should expose the MTD_MLCNANDFLASH to the user-space
->>
->> All you've shown is the breakage, not the reason for exposing
->> MTD_MLCNANFLASH. There's a difference between MTD_MLCNANDFLASH being
-> Do you mean this patch exposes the MTD_MLCNANDFLASH to user space?
-> or the patch 8 exposes the MTD_MLCNANDFLASH to user space?
+=E4=BA=8E 2013=E5=B9=B408=E6=9C=8829=E6=97=A5 13:05, Brian Norris =E5=86=99=
+=E9=81=93:
+> This patch (patch 6) changes the mtd->type for MLC NAND. And mtd->type=20
+> is exposed to user-space via ioctl(MEMGETINFO), and (as of this=20
+> patch), it is exposed as "unknown" in sysfs.
+thanks.
 
-This patch (patch 6) changes the mtd->type for MLC NAND. And mtd->type 
-is exposed to user-space via ioctl(MEMGETINFO), and (as of this patch), 
-it is exposed as "unknown" in sysfs.
+this patch changes the mtd->type for the jffs2, and the jffs2 can uses=20
+the mtd->type to do the sanity check.
 
-Patch 8 only changes the "unknown" to "mlc-nand"---an improvement, but 
-patch 6 is still the first one that makes a visible change to the ABI.
+If without this patch, how the jffs2 can distinguish a SLC or a MLC?
 
-Brian
+Huang Shijie
