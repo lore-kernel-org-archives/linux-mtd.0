@@ -1,16 +1,22 @@
-Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VFLkQ-0001kX-9A
- for linux-mtd@lists.infradead.org; Fri, 30 Aug 2013 10:16:11 +0000
-Received: by mail-pa0-f53.google.com with SMTP id lb1so2137940pab.26
- for <linux-mtd@lists.infradead.org>; Fri, 30 Aug 2013 03:15:48 -0700 (PDT)
-From: wangyuhang <wangyuhang2014@gmail.com>
-To: broonie@kernel.org, linux-spi@vger.kernel.org,
- linux-mtd@lists.infradead.org, pekon@ti.com
-Subject: [PATCH V2 2/2] spi: dual and quad support(miss "return")
-Date: Fri, 30 Aug 2013 18:14:36 +0800
-Message-Id: <1377857676-6986-1-git-send-email-wangyuhang2014@gmail.com>
-Cc: wangyuhang <wangyuhang2014@gmail.com>
+Received: from if03-mail-sr07-mia.mta.terra.com ([208.84.243.44])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VFNt8-0005GV-5f
+ for linux-mtd@lists.infradead.org; Fri, 30 Aug 2013 12:33:20 +0000
+Received: from 1bq.tpn.terra.com (unknown [10.235.200.59])
+ by mail-sr07-mia.tpn.terra.com (Postfix) with ESMTP id DA85E40101EF
+ for <linux-mtd@lists.infradead.org>; Fri, 30 Aug 2013 12:32:53 +0000 (UTC)
+Received: from THOR (unknown [186.214.15.246]) (authenticated user fggs)
+ by 1bq.tpn.terra.com (Postfix) with ESMTPA id 3EB4C80172564
+ for <linux-mtd@lists.infradead.org>; Fri, 30 Aug 2013 12:32:52 +0000 (UTC)
+Message-ID: <43F2ECB6644A4F64904E563CC1F0EF3B@THOR>
+From: =?iso-8859-1?Q?Fl=E1vio_Silveira?= <fggs@terra.com.br>
+To: <linux-mtd@lists.infradead.org>
+Subject: [RFC][PATCH] Add ESMT F25L32PA Flashchip Support
+Date: Fri, 30 Aug 2013 09:32:36 -0300
+MIME-Version: 1.0
+Content-Type: text/plain; format=flowed; charset="iso-8859-1";
+ reply-type=original
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,28 +26,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Miss return in patch:
-commit id:f477b7fb13df2b843997559ff34e87d054ba6538
+Add ESMT F25L32PA support.
 
-Delete a "return" when commit the patch to a new kernel version
- by mistake. So recover it.
+Datasheet: http://www.esmt.com.tw/DB/manager/upload/F25L32PA.pdf
 
-Signed-off-by: wangyuhang <wangyuhang2014@gmail.com>
+I hope this patch is in proper format and my mail client didn't mess it.
+
+Signed-off-by: Flavio Silveira <fggs@terra.com.br>
 ---
- drivers/spi/spi.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/devices/m25p80.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 6653913..10584ee 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -1466,6 +1466,7 @@ static int __spi_async(struct spi_device *spi, struct spi_message *message)
- 			return -EINVAL;
- 		if (xfer->speed_hz && master->max_speed_hz &&
- 		    xfer->speed_hz > master->max_speed_hz)
-+			return -EINVAL;
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 2f3d2a5..3a3cf2d 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -731,6 +731,9 @@ static const struct spi_device_id m25p_ids[] = {
+  { "en25q64", INFO(0x1c3017, 0, 64 * 1024, 128, SECT_4K) },
+  { "en25qh256", INFO(0x1c7019, 0, 64 * 1024, 512, 0) },
  
- 		if (xfer->tx_buf && !xfer->tx_nbits)
- 			xfer->tx_nbits = SPI_NBITS_SINGLE;
++ /* ESMT */
++ { "f25l32pa", INFO(0x8c2016, 0, 64 * 1024, 64, SECT_4K) },
++
+  /* Everspin */
+  { "mr25h256", CAT25_INFO(  32 * 1024, 1, 256, 2) },
+ 
 -- 
-1.7.9.5
+1.7.10.4
