@@ -1,20 +1,19 @@
-Message-ID: <1377878039.22372.55.camel@shinybook.infradead.org>
-Subject: Re: [PATCH -next v2 02/10] mtd: tests: rename sources in order to
- link a helper object
+Message-ID: <1377879189.22372.65.camel@shinybook.infradead.org>
+Subject: Re: [PATCH 04/25] mtd: nand: gpmi-nand: janitorial cleanup: (commas
+ after last element of struct initializer)
 From: David Woodhouse <dwmw2@infradead.org>
-To: Akinobu Mita <akinobu.mita@gmail.com>
-Date: Fri, 30 Aug 2013 16:53:59 +0100
-In-Reply-To: <1375523536-32671-3-git-send-email-akinobu.mita@gmail.com>
-References: <1375523536-32671-1-git-send-email-akinobu.mita@gmail.com>
- <1375523536-32671-3-git-send-email-akinobu.mita@gmail.com>
+To: Lothar =?ISO-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+Date: Fri, 30 Aug 2013 17:13:09 +0100
+In-Reply-To: <20985.63269.929367.546435@ipc1.ka-ro>
+References: <1375279887-17928-1-git-send-email-LW@KARO-electronics.de>
+ <1375279887-17928-2-git-send-email-LW@KARO-electronics.de>
+ <51F9C4C2.8040403@freescale.com> <20985.63269.929367.546435@ipc1.ka-ro>
 Content-Type: multipart/signed; micalg="sha-1";
  protocol="application/x-pkcs7-signature";
- boundary="=-mSOxF+mQv7VEIxY4mWX9"
+ boundary="=-VAFci4lPuB3koNU4802U"
 Mime-Version: 1.0
-Cc: Vikram Narayanan <vikram186@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Adrian Hunter <adrian.hunter@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,28 +24,66 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-mSOxF+mQv7VEIxY4mWX9
+--=-VAFci4lPuB3koNU4802U
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, 2013-08-03 at 18:52 +0900, Akinobu Mita wrote:
-> Each mtd test module have a single source whose name is the same as
-> the module name.  In order to link a single object including helper
-> functions to every test module, this rename these sources to the
-> different names.
+On Thu, 2013-08-01 at 07:50 +0200, Lothar Wa=C3=9Fmann wrote:
+> Huang Shijie writes:
+> > is it any bad influence if we do not apply this patch?
+> >=20
+> > I am not clear what we can benefit from this patch.
+> >=20
+> less eye sore when looking at the code and eventual copies of it in
+> other places.
 
-Hrm, why link a separate copy into every test module? Why not just make
-a separate mtd_test.ko module and have it export the symbols?
+But it's actually a *good* practice to have the redundant commas at the
+end of the line, in the general case.
 
-Not that I really mind simplifying the names of the actual C files
-anyway, I suppose. So I'm applying the sequence as-is, but perhaps we
-could follow up by making it a separate module?
+It does absolutely no harm, and makes the final line appear *consistent*
+with the other lines. I don't see why it would make your eye sore on the
+final line when it's there and necessary on the previous lines.
+
+It's also not as if you're going to miss the closing brace and the fact
+that it's the end of the struct. The indentation should always make that
+clear regardless of the comma.
+
+If we don't include it, we end up with patches which are less readable,
+when we add a field to an initialiser. Instead of this nice and obvious
+patch, for example:
+
+@@ 1,4 1,5
+ struct wombat =3D {
+ 	.somefield =3D foo,bar
+	.otherfield =3D bar,
++	.newfield =3D baz,
+ };
+
+... we end up with this less obvious and harder-to-read patch:
+
+@@ 1,4 1,5
+ struct wombat =3D {
+ 	.somefield =3D foo,
+-	.otherfield =3D bar
++	.otherfield =3D bar,
++	.newfield =3D baz
+ };
+
+
+
+Now, admittedly that's the *general* case, and the ones you've removed
+commas from are very unlikely to ever have new members added after them.
+Especially the one that's a NULL sentinel at the end of an ID match
+list. But I'm just not sure I approve of the concept of removing the
+commas. I'm happier with them present, and a general habit of including
+them.
+
 
 --=20
-dwmw2
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
 
-
---=-mSOxF+mQv7VEIxY4mWX9
+--=-VAFci4lPuB3koNU4802U
 Content-Type: application/x-pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -140,18 +177,18 @@ bhXkgdT2t1V1bNAxggNvMIIDawIBATCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0
 Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2
 BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMG
 hc4wCQYFKw4DAhoFAKCCAa8wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUx
-DxcNMTMwODMwMTU1MzU5WjAjBgkqhkiG9w0BCQQxFgQUnLRLGgTV3zBCogTjTCyykvgdTtwwgaUG
+DxcNMTMwODMwMTYxMzA5WjAjBgkqhkiG9w0BCQQxFgQUbWjKM0PMea+CYp3SWlDdQfxtT8wwgaUG
 CSsGAQQBgjcQBDGBlzCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4x
 KzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0
 YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMGhc4wgacGCyqG
 SIb3DQEJEAILMYGXoIGUMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjEr
 MCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYGA1UEAxMvU3Rh
 cnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0ECAwaFzjANBgkqhkiG
-9w0BAQEFAASCAQCrjoTMhSVfJNgcEWTvHrEreS11PbQVlvkvFFB+2JdGWGsIgo6D17ilYQaesfF9
-MwB7JvPT8PoqI+It8cn0D4ln4mYoTseFpl2nZIXYawFa5b0d8uI8OBekPirMvpj2F8LGtv9fn4Rn
-9oBxvhsl1IJK1zyw9Hoky5/o6DkJdeCNF0Xz47dDMUD1B9uu6SAU7X4/Vv5YJ9UIXpkqgUxazoBj
-Mp2qLBaGGI5fCqhHQjbSrQ3NggYJOrbieyi9bP1g0scYR31lQak2SuX1CbCcF4zXhNVSMG9KuMfm
-6jjex/T7HAosnxjR4Gm1lXViSJMOWNdlYahiN4Y4P5+GPqfEhnNTAAAAAAAA
+9w0BAQEFAASCAQCxROPCKL63CnIBZDROXJMppfw9blVkRGCzg4kXqprpAmZKQLRM5vDe0RPGuRR8
+ZcyeHQuvub2LZxy7FOjf4E5TEaYYUynOWiFNc5oJw+Tx6p9n+7cN3p30cWN/YKo8JpEP2vzc+BWR
+3FTonKXGjHPkCOK8o3OjsI7a/z0AuFc9tpLz0peS0/E4QDtoOi+PfvxbB3lWukL8GTyNAP1xlHdk
+im/tLZLpElb93xYtzFu7FDExHrMT6/89I6yNQM6YUc/Noe1iYeA6Jju5f1GpVKtGr6gRv0o55kLR
+cwlpLXYUEz9ObgQgTYp4iB7PHhGXiDGDaGwBHToU1DDLzpeUGJKDAAAAAAAA
 
 
---=-mSOxF+mQv7VEIxY4mWX9--
+--=-VAFci4lPuB3koNU4802U--
