@@ -1,18 +1,17 @@
-From: Huang Shijie <b32955@freescale.com>
-To: <broonie@kernel.org>
-Subject: [PATCH v3 8/8] ARM: dts: vf610-twr: Add SPI NOR support
-Date: Fri, 30 Aug 2013 10:07:29 +0800
-Message-ID: <1377828449-18912-9-git-send-email-b32955@freescale.com>
-In-Reply-To: <1377828449-18912-1-git-send-email-b32955@freescale.com>
-References: <1377828449-18912-1-git-send-email-b32955@freescale.com>
+Received: from mail1.bemta8.messagelabs.com ([216.82.243.200])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VFKom-0000Bs-Ti
+ for linux-mtd@lists.infradead.org; Fri, 30 Aug 2013 09:16:37 +0000
+Message-ID: <522062B4.4080709@digi.com>
+Date: Fri, 30 Aug 2013 11:15:32 +0200
+From: Hector Palacios <hector.palacios@digi.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: devicetree@vger.kernel.org, computersforpeace@gmail.com,
- b44548@freescale.com, dedekind1@gmail.com, linux-doc@vger.kernel.org,
- b18965@freescale.com, linux-spi@vger.kernel.org,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- kernel@pengutronix.de, lznuaa@gmail.com, shawn.guo@linaro.org,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+To: "fabio.estevam@freescale.com" <fabio.estevam@freescale.com>, Marek Vasut
+ <marex@denx.de>
+Subject: gpmi-nand driver and jffs2 support
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,60 +21,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-vf610-twr has two s25fl128s SPI NOR flashs connected to QuadSpi0.
-Add support for them.
+Hello,
 
-Note: we enable the DDR Quad read for the two NOR flashs which runs
-in 66MHz.
+Working on my custom platform based on i.MX28 (and also with the MX28EVK) I checked 
+that I cannot mount JFFS2 nand partitions because I'm getting this error:
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
- arch/arm/boot/dts/vf610-twr.dts |   36 ++++++++++++++++++++++++++++++++++++
- 1 files changed, 36 insertions(+), 0 deletions(-)
+   jffs2: inconsistent device description
 
-diff --git a/arch/arm/boot/dts/vf610-twr.dts b/arch/arm/boot/dts/vf610-twr.dts
-index 1a58678..063e94d 100644
---- a/arch/arm/boot/dts/vf610-twr.dts
-+++ b/arch/arm/boot/dts/vf610-twr.dts
-@@ -62,3 +62,39 @@
- 	pinctrl-0 = <&pinctrl_uart1_1>;
- 	status = "okay";
- };
-+
-+&qspi0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_qspi0_1>;
-+	num-cs = <2>;
-+	fsl,nor-size = <0x1000000>;
-+	status = "okay";
-+
-+	flash0: s25fl128s@0 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "spansion,s25fl128s";
-+		spi-max-frequency = <66000000>;
-+		m25p,ddr-quad-read = <1>;
-+		reg = <0>;
-+
-+		partition@0 {
-+			label = "s25fl128s-0";
-+			reg = <0x0 0x1000000>;
-+		};
-+	};
-+
-+	flash1: s25fl128s@1 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "spansion,s25fl128s";
-+		spi-max-frequency = <66000000>;
-+		m25p,ddr-quad-read = <1>;
-+		reg = <1>;
-+
-+		partition@0x0 {
-+			label = "s25fl128s-1";
-+			reg = <0x0 0x1000000>;
-+		};
-+	};
-+};
--- 
-1.7.1
+which seems to have to do with the OOB area of the NAND.
+I saw patchset [1] from Huang Shijie which seems to be related to the issue. I just 
+wanted to confirm if other people has the same problem and if the patchset really aims 
+to solve this, or mine is a different issue.
+
+[1] http://lists.infradead.org/pipermail/linux-mtd/2013-August/048360.html
+
+Best regards,
+--
+Hector Palacios
