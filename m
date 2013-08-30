@@ -1,24 +1,21 @@
-Received: from mail-ea0-x229.google.com ([2a00:1450:4013:c01::229])
+Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VFWHh-0003kc-Ao
- for linux-mtd@lists.infradead.org; Fri, 30 Aug 2013 21:31:14 +0000
-Received: by mail-ea0-f169.google.com with SMTP id k11so1171515eaj.0
- for <linux-mtd@lists.infradead.org>; Fri, 30 Aug 2013 14:30:50 -0700 (PDT)
-From: Tomasz Figa <tomasz.figa@gmail.com>
+ id 1VFWij-0004E3-7T
+ for linux-mtd@lists.infradead.org; Fri, 30 Aug 2013 21:59:10 +0000
+Date: Fri, 30 Aug 2013 22:58:44 +0100
+From: Mark Brown <broonie@kernel.org>
 To: wangyuhang <wangyuhang2014@gmail.com>
-Subject: Re: [PATCH V2 2/2] spi: dual and quad support(device tree)
-Date: Fri, 30 Aug 2013 23:30:46 +0200
-Message-ID: <1589764.vkg6UQTo21@flatron>
-In-Reply-To: <1377564603-4030-2-git-send-email-wangyuhang2014@gmail.com>
-References: <1377564603-4030-1-git-send-email-wangyuhang2014@gmail.com>
- <1377564603-4030-2-git-send-email-wangyuhang2014@gmail.com>
+Message-ID: <20130830215844.GA18608@sirena.org.uk>
+References: <1377857110-6882-1-git-send-email-wangyuhang2014@gmail.com>
+ <1377857110-6882-2-git-send-email-wangyuhang2014@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, ian.campbell@citrix.com,
- pawel.moll@arm.com, swarren@wwwdotorg.org, rob.herring@calxeda.com,
- linux-spi@vger.kernel.org, broonie@kernel.org, linux-mtd@lists.infradead.org,
- pekon@ti.com, galak@codeaurora.org, sourav.poddar@ti.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="45Z9DzgjV8m4Oswq"
+Content-Disposition: inline
+In-Reply-To: <1377857110-6882-2-git-send-email-wangyuhang2014@gmail.com>
+Subject: Re: [PATCH 2/2] Miss return in patch: commit
+ id:f477b7fb13df2b843997559ff34e87d054ba6538
+Cc: linux-mtd@lists.infradead.org, pekon@ti.com, linux-spi@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,76 +25,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
 
-[Ccing DT binding maintainers]
+--45Z9DzgjV8m4Oswq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Tuesday 27 of August 2013 08:50:03 wangyuhang wrote:
-> Add spi-tmax-nbits and spi-rmax-nbits for spi slave node.
-> Modify the related dt document(spi-bus.txt)
->  spi-tmax-nbits:Max number of bits slave will use for MOSI(writting)
->  spi-rmax-nbits:Max number of bits slave will use for MISO(reading)
-> Support for spi-tx/rmax-nbits in SPI framework has been picked[1].
-> [1]: http://comments.gmane.org/gmane.linux.kernel.spi.devel/14420
-> Commit Id:f477b7fb13df2b843997559ff34e87d054ba6538
-> 
-> Signed-off-by: wangyuhang <wangyuhang2014@gmail.com>
-> ---
->  Documentation/devicetree/bindings/spi/spi-bus.txt |   16
-> ++++++++++++++++ 1 file changed, 16 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/spi/spi-bus.txt
-> b/Documentation/devicetree/bindings/spi/spi-bus.txt index
-> 296015e..211336c 100644
-> --- a/Documentation/devicetree/bindings/spi/spi-bus.txt
-> +++ b/Documentation/devicetree/bindings/spi/spi-bus.txt
-> @@ -55,6 +55,22 @@ contain the following properties.
->      		chip select active high
->  - spi-3wire       - (optional) Empty property indicating device
-> requires 3-wire mode.
-> +- spi-tmax-nbits  - (optional) Max number of bits slave will use for
-> +    		    MOSI(writting)
-> +- spi-rmax-nbits  - (optional) Max number of bits slave will use for
-> +    		    MISO(reading)
+On Fri, Aug 30, 2013 at 06:05:10PM +0800, wangyuhang wrote:
+> Delete a "return" when commit the patch to a new kernel version
+>  by mistake. So recover it.
 
-May I ask for more human-readable names, please?
+Applied, thanks.
 
-If we look around, there are already devices using bus-width property, so 
-for consistency we could use tx-bus-width and rx-bus-width here or even a 
-single bus-width property taking two cells, first tx and second rx?
+Your commit subject should be in the form "spi: quad: Human readable
+text" - I fixed this one up to read:
 
-Let's hear others' opinion on this as well.
+   spi: quad: Fix missing return
 
-Also the properties should be telling information about hardware, so 
-probably in this case the meaning would be the number of wires that are 
-physically wired on the board.
+--45Z9DzgjV8m4Oswq
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-> +
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
 
-One or two sentences about what this dual/quad thing is about would be 
-nice here, e.g.
+iQIcBAEBAgAGBQJSIRWRAAoJELSic+t+oim9FeIP/RAdLJlrzdVNeSRuN2P/YYe+
+D7lOj3BLoqkYxe+yBTgfG9/y/bmsw4q/YBVM1mh/r9ZVmh8x5gsDn+DGwt/5JO8x
+HLmu2RSKBu7ZqpfYJUoLbfPNAie/SlGT7dgTtLmxTqxzn1438fOvgBIMbqcSCXnN
+SnjIZQ5I3hskkAZnOxmfch5McoMHz6/JBOl2RSND6vzNBky+foc3fkMt9oDKMTnz
+8R9vf5AW+1jKPKiYAcRFBflTqOpEzK988P9mLRvsHFLpvwUV9bfMXKHBfF1dYKgi
+gCMkNRXAhFV/e5uS9jnyZOjJRWxv4Vl7YvGVzLg2FLi5AWdHYj/LAkc0OOL3oRb0
+L5M5pEhXO7V0yzNykyaR8U7ffeuNu7CE1rYPyeJmm0KPDp2Jhx/Z9c479+1X5077
+SIba0Y8e7FgN/l88ZgeqPwmDXtc0nWayNiT2ij8a3h2KZsT9g2IAZWlMkMZdXaCX
+E1BQCr0B5Z4DcHsmfCUntFa8sfAn1OoKoPgq3e5ZzuMIovcy6/pna3JT/i1P+5oI
+BAxvWHpCzCuQ1BsA5b1D9eK4CgaZxS7asiCBJSvwSFrK0V2eJZh3+ezNz842tj7x
+xGVmAkYcFg+Ep6pAE2DM2gjazBbsmFvE+HpejuZjG2EYN+j+jgZzGaQWqMiCZ82h
+3R5SZns71+VoMI23BX/b
+=+0eP
+-----END PGP SIGNATURE-----
 
-	Some SPI controllers and devices support Dual and/or Quad SPI
-	mode, which is [...]. It allows [...], etc.
-
-> +So if for example the slave has 4 wires for writting and 2 wires for
-> reading, +and the spi-tx/rx-nbits property should be set as follows:
-> +
-> +spi-tmax-nbits = <4>;
-> +spi-rmax-nbits = <2>;
-> +
-> +Now the value that spi-tmax-nbits and spi-rmax-nbits can receive is
-> only +1(single), 2(dual) and 4(quad). If you don't set spi-tmax-nbits
-> or spi-rmax-nbits, +spi_device mode will be set in single(1 wire) as
-> default. Another point, if +property:spi-3wire is set, spi-t/rmax-nbits
-> is forbidden to set to <2 or 4>, +otherwise, an errro will return.
-
-typo: errro
-
-Also an error or "returning an error" is an OS specific term. This 
-statement should rather be something along
-
-	Dual/Quad mode is not allowed when 3-wire mode is used.
-
-Best regards,
-Tomasz
+--45Z9DzgjV8m4Oswq--
