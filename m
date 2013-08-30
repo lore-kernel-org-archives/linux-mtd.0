@@ -1,18 +1,22 @@
-Message-ID: <1377894233.22372.86.camel@shinybook.infradead.org>
-Subject: Re: [PATCH] mtd: atmel_nand: fix the warning when CONFIG_OF is not
- defined
+Message-ID: <1377895857.22372.89.camel@shinybook.infradead.org>
+Subject: Re: [PATCH v2] mtd: m25p80: add support for PMC SPI flash
 From: David Woodhouse <dwmw2@infradead.org>
-To: Josh Wu <josh.wu@atmel.com>
-Date: Fri, 30 Aug 2013 21:23:53 +0100
-In-Reply-To: <1375846569-9499-1-git-send-email-josh.wu@atmel.com>
-References: <1375846569-9499-1-git-send-email-josh.wu@atmel.com>
+To: Luka Perkov <luka@openwrt.org>
+Date: Fri, 30 Aug 2013 21:50:57 +0100
+In-Reply-To: <20130821100322-1880@mutt-kz>
+References: <1376783055-18370-1-git-send-email-luka@openwrt.org>
+ <CAN8TOE9PreuyaDHHPeHaB0906c6T=-Vz76By-PmX2whAdMWjgA@mail.gmail.com>
+ <20130821100322-1880@mutt-kz>
 Content-Type: multipart/signed; micalg="sha-1";
  protocol="application/x-pkcs7-signature";
- boundary="=-vFW3NELZs5SGPy9fV+jg"
+ boundary="=-T3mmyVjcuuKaYMrX37vj"
 Mime-Version: 1.0
-Cc: dedekind1@gmail.com, nicolas.ferre@atmel.com, linux-mtd@lists.infradead.org,
- computersforpeace@gmail.com, plagnioj@jcrosoft.com,
- linux-arm-kernel@lists.infradead.org
+Cc: Marek =?UTF-8?Q?Va=C5=A1ut?= <marex@denx.de>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Gabor Juhos <juhosg@openwrt.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Michel Stempin <michel.stempin@wanadoo.fr>,
+ Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,41 +27,66 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-vFW3NELZs5SGPy9fV+jg
+--=-T3mmyVjcuuKaYMrX37vj
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2013-08-07 at 11:36 +0800, Josh Wu wrote:
-> This patch fix following warning:
+On Wed, 2013-08-21 at 12:03 +0200, Luka Perkov wrote:
 >=20
-> drivers/mtd/nand/atmel_nand.c:2007: warning: 'atmel_nand_nfc_match' defin=
-ed but not used
+> On Wed, Aug 21, 2013 at 02:12:42AM -0700, Brian Norris wrote:
+> > I just noticed this version of Michel's patch (it was filtered to my
+> > spam for some reason). I pushed Michel's version,
 >=20
-> This patch add '#if defined(CONFIG_OF)' block to guard around the definit=
-ion of
-> atmel_nand_nfc_match, in order to avoid the warning when kernel is config=
-urated
-> as non-dt supported.
+> Ok, I have only changed commit message.
 
-Ick. This driver is littered with CONFIG_OF checks. Yet I've just seen a
-patch to pxa3xx_nand which *removes* ifdefs, on the basis that all the
-of_match_ functions/macros will just 'do the right thing'. Can't we do
-that here too? We might just need to add __maybe_unused?
+And I'm going to change it a little more to make it make sense, I think.
+Can someone confirm the accuracy of the following (fixing non-standard
+terms, and also I think fixing the comment about Pm25LQ032 block size):
 
-> +#if defined(CONFIG_OF)
->  static struct of_device_id atmel_nand_nfc_match[] =3D {
->  	{ .compatible =3D "atmel,sama5d3-nfc" },
->  	{ /* sentinel */ }
->  };
-> +#endif
+-commit ac36246d7c8684128c5879219c3178838983fbd0
++commit ab50c34679ca03929fbc313da378b4f934e706ea
+ Author: Michel Stempin <michel.stempin@wanadoo.fr>
+ Date:   Mon Jul 15 12:13:56 2013 +0200
+=20
+     mtd: chips: Add support for PMC SPI Flash chips in m25p80.c
+    =20
+-    Add support for PMC (now Chingis, part of ISSI) Pm25LV512 (512 kBbit),
+-    Pm25LV010 (1 Mbit) and Pm25LQ032 (32 Mbit) SPI Flash chips.
++    Add support for PMC (now Chingis, part of ISSI) Pm25LV512 (512 Kib),
++    Pm25LV010 (1 Mib) and Pm25LQ032 (32 Mib) SPI Flash chips.
+    =20
+     This patch addresses two generations of PMC SPI Flash chips:
+    =20
+-     - Pm25LV512 and Pm25LV010: these have 4KB sectors and 32KB
+-       blocks. The 4KB sector erase uses a non-standard opcode
++     - Pm25LV512 and Pm25LV010: these have 4KiB sectors and 32KiB
++       blocks. The 4KiB sector erase uses a non-standard opcode
+        (0xd7). They do not support JEDEC RDID (0x9f), and so they can only
+        be detected by matching their name string with pre-configured
+        platform data. Because of the cascaded acquisitions, the datasheet
+@@ -20,7 +20,7 @@ Date:   Mon Jul 15 12:13:56 2013 +0200
+        only public datasheet available seems to be on GeoCities:
+        <http://www.geocities.jp/scottle556/pdf/Pm25LV512-010.pdf>
+    =20
+-     - Pm25LQ032: a newer generation flash, with 4KB sectors and 32KB
++     - Pm25LQ032: a newer generation flash, with 4KiB sectors and 64KiB
+        blocks. It uses the standard erase and JEDEC read-ID
+        opcodes. Manufacturer's datasheet is here:
+        <http://www.chingistek.com/img/Product_Files/Pm25LQ032C%20datasheet=
+%20v1.6.1.pdf>
+@@ -46,6 +46,7 @@ Date:   Mon Jul 15 12:13:56 2013 +0200
+     Signed-off-by: Michel Stempin <michel.stempin@wanadoo.fr>
+     [Brian: fixed conflict]
+     Signed-off-by: Brian Norris <computersforpeace@gmail.com>
++    Signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
+=20
 
-Also, why doesn't this one appear in a MODULE_DEVICE_TABLE() ?=20
 
 --=20
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+dwmw2
 
---=-vFW3NELZs5SGPy9fV+jg
+
+--=-T3mmyVjcuuKaYMrX37vj
 Content-Type: application/x-pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -151,18 +180,18 @@ bhXkgdT2t1V1bNAxggNvMIIDawIBATCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0
 Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2
 BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMG
 hc4wCQYFKw4DAhoFAKCCAa8wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUx
-DxcNMTMwODMwMjAyMzUzWjAjBgkqhkiG9w0BCQQxFgQUl71gBTB5KM6NjZGgh4aexmtdVaswgaUG
+DxcNMTMwODMwMjA1MDU3WjAjBgkqhkiG9w0BCQQxFgQU5j8FKbwYNMudfSi/pmyf1TtLVoAwgaUG
 CSsGAQQBgjcQBDGBlzCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4x
 KzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0
 YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMGhc4wgacGCyqG
 SIb3DQEJEAILMYGXoIGUMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjEr
 MCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYGA1UEAxMvU3Rh
 cnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0ECAwaFzjANBgkqhkiG
-9w0BAQEFAASCAQCilefm5kXz8wlFCQGaAY9oKCK+2oHHC8r+tktwBnOM0RvVQ0ozhR4vIDJgF1MX
-kC5enZopl1KIu0ptmoyY+j+j9/Bkm07pI17FUHnkn7x+aU8/scD/Xfi4tMeXcst1mDC4OGDUZPWW
-43DfojmJn1i3YhnO+6U4U/40v8Mp6nLp2TaIbjq9PypcXbghZ2PQO2zDplnXuwwUHaP+GkMjjtRN
-7ugVLT+GQth/RSE7R4tFT5V4grwc94/XwR93PT2DA2eaze41HHVmwRjJ27qCqjUawxH/Y/sI6y+8
-ua/uPAJ3X/oRIFhwD4mFu+Q8QlUj8kMwW5xEyLBIYvj6SW/v/UFQAAAAAAAA
+9w0BAQEFAASCAQC6uZAFIHgaPzN9+OoyDntjUeMySYxDJgMCN2zyVEO1okJ76LAU5NEWgJNoSiBB
+VFS4W0dV7noC5ELttvIfJaGCGOa2DuOKqLEc5h6/sNaq/qg+vdR6DxK9dZuvnCl42WBtKRftZo1+
+LCaDglRwYJr0MRhMjdXqJagK32vcGUv3VhflHf3+6ZmzbdD1Hvb9fimbRDcL3EBVOC1hJtqGtvqf
+S/krCfb6gli1D2jwQRoqfVh8e/Ui0/48e6qELCzigavh+37Um+vdtfqk0LPLVK3J2I5oT5B3/2Uo
+kpgTP9l52pUh38Fh/zPKK2ia36uqyesCyvZoo1MwDe7O/6x/NH+QAAAAAAAA
 
 
---=-vFW3NELZs5SGPy9fV+jg--
+--=-T3mmyVjcuuKaYMrX37vj--
