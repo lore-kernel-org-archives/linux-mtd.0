@@ -1,20 +1,16 @@
-Received: from mail-db8lp0184.outbound.messaging.microsoft.com
- ([213.199.154.184] helo=db8outboundpool.messaging.microsoft.com)
+Received: from mail-pa0-x22c.google.com ([2607:f8b0:400e:c03::22c])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VFLPP-00011y-4c
- for linux-mtd@lists.infradead.org; Fri, 30 Aug 2013 09:54:27 +0000
-Message-ID: <52206C05.8020701@freescale.com>
-Date: Fri, 30 Aug 2013 17:55:17 +0800
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: Hector Palacios <hector.palacios@digi.com>
-Subject: Re: gpmi-nand driver and jffs2 support
-References: <522062B4.4080709@digi.com>
-In-Reply-To: <522062B4.4080709@digi.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: "fabio.estevam@freescale.com" <fabio.estevam@freescale.com>,
- Marek Vasut <marex@denx.de>, linux-mtd@lists.infradead.org
+ id 1VFLbI-0001Th-1R
+ for linux-mtd@lists.infradead.org; Fri, 30 Aug 2013 10:06:44 +0000
+Received: by mail-pa0-f44.google.com with SMTP id fz6so2142891pac.3
+ for <linux-mtd@lists.infradead.org>; Fri, 30 Aug 2013 03:06:21 -0700 (PDT)
+From: wangyuhang <wangyuhang2014@gmail.com>
+To: broonie@kernel.org, linux-spi@vger.kernel.org,
+ linux-mtd@lists.infradead.org, pekon@ti.com
+Subject: [PATCH 1/2] spi: dual and quad support(add single macro)
+Date: Fri, 30 Aug 2013 18:05:09 +0800
+Message-Id: <1377857110-6882-1-git-send-email-wangyuhang2014@gmail.com>
+Cc: wangyuhang <wangyuhang2014@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,27 +20,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B408=E6=9C=8830=E6=97=A5 17:15, Hector Palacios =E5=86=
-=99=E9=81=93:
-> Hello,
->
-> Working on my custom platform based on i.MX28 (and also with the=20
-> MX28EVK) I checked that I cannot mount JFFS2 nand partitions because=20
-> I'm getting this error:
->
-> jffs2: inconsistent device description
->
-> which seems to have to do with the OOB area of the NAND.
-> I saw patchset [1] from Huang Shijie which seems to be related to the=20
-> issue. I just wanted to confirm if other people has the same problem=20
-> and if the patchset really aims to solve this, or mine is a different=20
-> issue.
->
-yes, this patch set aims to solve this.
+fix using default value to specify single mode in patch:
+commit id:f477b7fb13df2b843997559ff34e87d054ba6538
 
-You can try the SLC on the imx28.
+Using mode & ~(DUAL | QUAD) to specify SINGLE mode, instead
+of using default value in mode. Which means if select neither
+DUAL nor QUAD, SINGLE will be in use.
 
-I only tested the SLC On the imx6q.
+Signed-off-by: wangyuhang <wangyuhang2014@gmail.com>
+---
+ drivers/spi/spi.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-thanks
-Huang Shijie
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 8d191f2..6653913 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -872,10 +872,15 @@ static void of_register_spi_devices(struct spi_master *master)
+ 		/* Device DUAL/QUAD mode */
+ 		prop = of_get_property(nc, "spi-tmax-nbits", &len);
+ 		if (!prop || len < sizeof(*prop)) {
+-			/* set tx mode in SINGLE as default */
++			/*
++			 * set tx mode in SINGLE as default
++			 * if select neither DUAL nor QUAD, regarded as single.
++			 */
++			spi->mode &= ~(SPI_TX_DUAL | SPI_TX_QUAD);
+ 		} else {
+ 			switch (be32_to_cpup(prop)) {
+ 			case SPI_NBITS_SINGLE:
++				spi->mode &= ~(SPI_TX_DUAL | SPI_TX_QUAD);
+ 				break;
+ 			case SPI_NBITS_DUAL:
+ 				spi->mode |= SPI_TX_DUAL;
+@@ -893,9 +898,11 @@ static void of_register_spi_devices(struct spi_master *master)
+ 		prop = of_get_property(nc, "spi-rmax-nbits", &len);
+ 		if (!prop || len < sizeof(*prop)) {
+ 			/* set rx mode in SINGLE as default */
++			spi->mode &= ~(SPI_RX_DUAL | SPI_RX_QUAD);
+ 		} else {
+ 			switch (be32_to_cpup(prop)) {
+ 			case SPI_NBITS_SINGLE:
++				spi->mode &= ~(SPI_RX_DUAL | SPI_RX_QUAD);
+ 				break;
+ 			case SPI_NBITS_DUAL:
+ 				spi->mode |= SPI_RX_DUAL;
+-- 
+1.7.9.5
