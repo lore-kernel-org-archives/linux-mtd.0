@@ -1,21 +1,23 @@
 Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VFWij-0004E3-7T
- for linux-mtd@lists.infradead.org; Fri, 30 Aug 2013 21:59:10 +0000
-Date: Fri, 30 Aug 2013 22:58:44 +0100
+ id 1VFX6a-0004VU-85
+ for linux-mtd@lists.infradead.org; Fri, 30 Aug 2013 22:23:48 +0000
+Date: Fri, 30 Aug 2013 23:23:23 +0100
 From: Mark Brown <broonie@kernel.org>
-To: wangyuhang <wangyuhang2014@gmail.com>
-Message-ID: <20130830215844.GA18608@sirena.org.uk>
-References: <1377857110-6882-1-git-send-email-wangyuhang2014@gmail.com>
- <1377857110-6882-2-git-send-email-wangyuhang2014@gmail.com>
+To: Stephen Warren <swarren@wwwdotorg.org>
+Message-ID: <20130830222323.GC18608@sirena.org.uk>
+References: <1377564603-4030-1-git-send-email-wangyuhang2014@gmail.com>
+ <1377564603-4030-2-git-send-email-wangyuhang2014@gmail.com>
+ <52210E14.8020006@wwwdotorg.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="45Z9DzgjV8m4Oswq"
+ protocol="application/pgp-signature"; boundary="GZVR6ND4mMseVXL/"
 Content-Disposition: inline
-In-Reply-To: <1377857110-6882-2-git-send-email-wangyuhang2014@gmail.com>
-Subject: Re: [PATCH 2/2] Miss return in patch: commit
- id:f477b7fb13df2b843997559ff34e87d054ba6538
-Cc: linux-mtd@lists.infradead.org, pekon@ti.com, linux-spi@vger.kernel.org
+In-Reply-To: <52210E14.8020006@wwwdotorg.org>
+Subject: Re: [PATCH V2 2/2] spi: dual and quad support(device tree)
+Cc: devicetree@vger.kernel.org, Tomasz Figa <tomasz.figa@gmail.com>,
+ linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, pekon@ti.com,
+ sourav.poddar@ti.com, wangyuhang <wangyuhang2014@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,41 +28,44 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---45Z9DzgjV8m4Oswq
+--GZVR6ND4mMseVXL/
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Aug 30, 2013 at 06:05:10PM +0800, wangyuhang wrote:
-> Delete a "return" when commit the patch to a new kernel version
->  by mistake. So recover it.
+On Fri, Aug 30, 2013 at 03:26:44PM -0600, Stephen Warren wrote:
 
-Applied, thanks.
+> I would suggest the property names
 
-Your commit subject should be in the form "spi: quad: Human readable
-text" - I fixed this one up to read:
+> spi-tx-num-wires, spi-rx-num-wires
 
-   spi: quad: Fix missing return
+> or:
 
---45Z9DzgjV8m4Oswq
+> spi-tx-bus-width, spi-rx-bus-width (this option from Tomasz Figa on IRC)
+
+> Those name alone self-document their purpose much more clearly to me.
+
+These both seem like good suggestions.
+
+--GZVR6ND4mMseVXL/
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSIRWRAAoJELSic+t+oim9FeIP/RAdLJlrzdVNeSRuN2P/YYe+
-D7lOj3BLoqkYxe+yBTgfG9/y/bmsw4q/YBVM1mh/r9ZVmh8x5gsDn+DGwt/5JO8x
-HLmu2RSKBu7ZqpfYJUoLbfPNAie/SlGT7dgTtLmxTqxzn1438fOvgBIMbqcSCXnN
-SnjIZQ5I3hskkAZnOxmfch5McoMHz6/JBOl2RSND6vzNBky+foc3fkMt9oDKMTnz
-8R9vf5AW+1jKPKiYAcRFBflTqOpEzK988P9mLRvsHFLpvwUV9bfMXKHBfF1dYKgi
-gCMkNRXAhFV/e5uS9jnyZOjJRWxv4Vl7YvGVzLg2FLi5AWdHYj/LAkc0OOL3oRb0
-L5M5pEhXO7V0yzNykyaR8U7ffeuNu7CE1rYPyeJmm0KPDp2Jhx/Z9c479+1X5077
-SIba0Y8e7FgN/l88ZgeqPwmDXtc0nWayNiT2ij8a3h2KZsT9g2IAZWlMkMZdXaCX
-E1BQCr0B5Z4DcHsmfCUntFa8sfAn1OoKoPgq3e5ZzuMIovcy6/pna3JT/i1P+5oI
-BAxvWHpCzCuQ1BsA5b1D9eK4CgaZxS7asiCBJSvwSFrK0V2eJZh3+ezNz842tj7x
-xGVmAkYcFg+Ep6pAE2DM2gjazBbsmFvE+HpejuZjG2EYN+j+jgZzGaQWqMiCZ82h
-3R5SZns71+VoMI23BX/b
-=+0eP
+iQIcBAEBAgAGBQJSIRtXAAoJELSic+t+oim9MoMQAJWrxW5nY2H6AjqrcmmpKFit
+wOE23V6DwWLzbVGrDzsUKm0Q5j5sVv5cxsTFP1eSyKpxo8tJUTw5cWOOFJwyjdOK
+YrzNVwtDBeIdxGPLzDpcDDeHvSQRzuhBODX1IsOk955r8erlHrnZ7nwOg1mi9Vyn
+3RYY2+wmj70n0/HKLQCyGMq8LEy32fVatmAv6RGE47vuoeQQerjxTic2uTUIr/8R
+WHD2UkaK+jVRwiGvnL/281NnqsatJ0Hfm52U1osLQjqwO4me1ERxK1hTX3FFBtCY
+0+9kI2wNNTOZFpQqJSoaLSorbohmCOi5wIFsKYwhpq9j/axlT16qnsq8FKvldu/b
+XqtA1eclgeOSYG0tXrlhS+1bT5lr33mJsFZXe1hEAN7YM29r2NKY2yly2JJEqaXL
+giBj8nBOD21BWUEJazBzYUA3RaVworwVth4IX8wHZ8imI1/UeKWgF2bK5Vgwc6qB
+NiHx8oaKetFH8rXAv4RSQGVoEsit8EpFGf/s69KmUrJB2DJyDCwBzwp761Bd5HOv
+zLP55xNNw9O0M+VGvdb1twaQMqBOaWFc/x5nOpMk0J1mA8rOLDNIt7AtOEOocbJx
+Ws9SO2DFEK0ZO4uiXi1D/0ObCpeN5/0aOYS9MYxf953Fn9BB4qruNDhSE37KX/x0
+23/spaa1IlDzdb1CsNK+
+=cV0A
 -----END PGP SIGNATURE-----
 
---45Z9DzgjV8m4Oswq--
+--GZVR6ND4mMseVXL/--
