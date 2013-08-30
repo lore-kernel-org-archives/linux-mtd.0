@@ -1,21 +1,22 @@
-Message-ID: <1377883043.22372.72.camel@shinybook.infradead.org>
-Subject: Re: [PATCH -next v2 02/10] mtd: tests: rename sources in order to
- link a helper object
+Message-ID: <1377893182.22372.83.camel@shinybook.infradead.org>
+Subject: Re: [PATCH v4 01/14] mtd: nand: pxa3xx: Remove unneeded ifdef
+ CONFIG_OF
 From: David Woodhouse <dwmw2@infradead.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Fri, 30 Aug 2013 18:17:23 +0100
-In-Reply-To: <5220C733.7090401@gmail.com>
-References: <1375523536-32671-1-git-send-email-akinobu.mita@gmail.com>
- <1375523536-32671-3-git-send-email-akinobu.mita@gmail.com>
- <1377878039.22372.55.camel@shinybook.infradead.org>
- <5220C733.7090401@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Date: Fri, 30 Aug 2013 21:06:22 +0100
+In-Reply-To: <1376327699-7973-2-git-send-email-ezequiel.garcia@free-electrons.com>
+References: <1376327699-7973-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1376327699-7973-2-git-send-email-ezequiel.garcia@free-electrons.com>
 Content-Type: multipart/signed; micalg="sha-1";
  protocol="application/x-pkcs7-signature";
- boundary="=-TYaLkMEDdVZWRgvKYr30"
+ boundary="=-yzwZZ/jehVhwKGEaug9S"
 Mime-Version: 1.0
-Cc: Vikram Narayanan <vikram186@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
- Akinobu Mita <akinobu.mita@gmail.com>, Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Daniel Mack <zonque@gmail.com>,
+ devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>, Willy Tarreau <w@1wt.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,38 +27,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-TYaLkMEDdVZWRgvKYr30
+--=-yzwZZ/jehVhwKGEaug9S
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2013-08-30 at 09:24 -0700, Brian Norris wrote:
-> We actually had the discussion (in multiple threads?) that because a=20
-> separate module would complicate the process for running the test=20
-> modules, it is preferable to copy the small helper code into each=20
-> module. That is, we don't want to do this:
->=20
-> insmod mtd_test.ko
-> insmod mtd_<actualtest>.ko dev=3DX ...
+On Mon, 2013-08-12 at 14:14 -0300, Ezequiel Garcia wrote:
+> There's no need to enclose this code within idef CONFIG_OF,
+> because the OF framework provides no-op stubs if CONFIG_OF=3Dn.
 
-So use modprobe instead :)
-
-> However, this is still fairly trivial, so if you think there are good=20
-> reasons to provide separate modules, I do not object to separate modules.
-
-Even if you can't use modprobe, once mtd_test.ko is loaded it's going to
-stay loaded and you can just forget about it and do your various tests.
-
-Unless you're actually making changes to the code within mtd_test.ko
-itself, of course. In which case you really *don't* want to have eight
-different copies of it built in to eight different modules. I know that
-making changes to that code is going to be relatively infrequent, but we
-probably shouldn't make it suck *this* much :)
+Hm, won't this end up with the same 'pxa3xx_nand_dt_ids is defined but
+not used' warning that just caused us to *add* an #ifdef CONFIG_OF to
+atmel_nand?=20
 
 --=20
 dwmw2
 
 
---=-TYaLkMEDdVZWRgvKYr30
+--=-yzwZZ/jehVhwKGEaug9S
 Content-Type: application/x-pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -151,18 +137,18 @@ bhXkgdT2t1V1bNAxggNvMIIDawIBATCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0
 Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2
 BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMG
 hc4wCQYFKw4DAhoFAKCCAa8wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUx
-DxcNMTMwODMwMTcxNzIzWjAjBgkqhkiG9w0BCQQxFgQUKlAMiyV38OZn9Gbh4YZFhDdqqlUwgaUG
+DxcNMTMwODMwMjAwNjIyWjAjBgkqhkiG9w0BCQQxFgQUVBTV+0eKnPsPGrvDLvgqJvSQ9LswgaUG
 CSsGAQQBgjcQBDGBlzCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4x
 KzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0
 YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMGhc4wgacGCyqG
 SIb3DQEJEAILMYGXoIGUMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjEr
 MCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYGA1UEAxMvU3Rh
 cnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0ECAwaFzjANBgkqhkiG
-9w0BAQEFAASCAQBe3i856ZVchH3vmL5kdmHQjxq+Yp6sowv49xa5YWv81jbONUzAYf53gFftrACe
-+Un+iVSzxP5RBX+lpl7oRE7lKSWbll8g9Reo1y68cU9mj2ejB2wO6v2ywLLiKqP2Rx0EvmGsNqge
-9gl4U60JHbb7XWLGG3pIzvB00CT/2fJem9k18sT4b8GA4/l/BOUJDWE+hBY+xzy35TSmY5uVeoF1
-antnlWxXq05d8Dw6KpBdLkm0vECoLpiJcZVFCwceYeRvjIfv9DMUGSYwiGtz5ppLymXJQcsD9EfW
-BWjiU8gUTY+nE+9mbzr4sPfFZgHlfyYyJRiW12UIn6RmK2KnBmu7AAAAAAAA
+9w0BAQEFAASCAQCQ4+UB6cnxgnoigUSYTfK+wX9DJPd4Ex+WoO7H/Pgvx5+v80iwI1Sv9Yd5+IxR
+ZMZCzjWCjzk6om7UwG0PW974WD2qPphYO7zYWT1jUaXourwwZ/iYDhrl+TAml5QXytzf3NViPhUA
+oU6mN3qOjmIsPNs6pd1W+nwZWFVniruSkdJeNLmfSifiibSr3KSGWFDVkyikiIS/cBlgFCGum+1W
+cDJoA7YD+yKa/bFKe9RsW5T4FjwimfeTqHxir3tbz/m+EKxRl759ft6YLWWX811c2qGD95pu5yoq
+WDL3GkHj7ojvDUYc6JiteO+aS+YccvF8vRHnDYFvJiLP2gIDko/0AAAAAAAA
 
 
---=-TYaLkMEDdVZWRgvKYr30--
+--=-yzwZZ/jehVhwKGEaug9S--
