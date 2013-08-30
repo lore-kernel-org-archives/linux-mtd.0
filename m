@@ -1,22 +1,18 @@
-Message-ID: <1377893182.22372.83.camel@shinybook.infradead.org>
-Subject: Re: [PATCH v4 01/14] mtd: nand: pxa3xx: Remove unneeded ifdef
- CONFIG_OF
+Message-ID: <1377894233.22372.86.camel@shinybook.infradead.org>
+Subject: Re: [PATCH] mtd: atmel_nand: fix the warning when CONFIG_OF is not
+ defined
 From: David Woodhouse <dwmw2@infradead.org>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Date: Fri, 30 Aug 2013 21:06:22 +0100
-In-Reply-To: <1376327699-7973-2-git-send-email-ezequiel.garcia@free-electrons.com>
-References: <1376327699-7973-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1376327699-7973-2-git-send-email-ezequiel.garcia@free-electrons.com>
+To: Josh Wu <josh.wu@atmel.com>
+Date: Fri, 30 Aug 2013 21:23:53 +0100
+In-Reply-To: <1375846569-9499-1-git-send-email-josh.wu@atmel.com>
+References: <1375846569-9499-1-git-send-email-josh.wu@atmel.com>
 Content-Type: multipart/signed; micalg="sha-1";
  protocol="application/x-pkcs7-signature";
- boundary="=-yzwZZ/jehVhwKGEaug9S"
+ boundary="=-vFW3NELZs5SGPy9fV+jg"
 Mime-Version: 1.0
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
- Artem Bityutskiy <dedekind1@gmail.com>, Daniel Mack <zonque@gmail.com>,
- devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>, Willy Tarreau <w@1wt.eu>
+Cc: dedekind1@gmail.com, nicolas.ferre@atmel.com, linux-mtd@lists.infradead.org,
+ computersforpeace@gmail.com, plagnioj@jcrosoft.com,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,23 +23,41 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-yzwZZ/jehVhwKGEaug9S
+--=-vFW3NELZs5SGPy9fV+jg
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2013-08-12 at 14:14 -0300, Ezequiel Garcia wrote:
-> There's no need to enclose this code within idef CONFIG_OF,
-> because the OF framework provides no-op stubs if CONFIG_OF=3Dn.
+On Wed, 2013-08-07 at 11:36 +0800, Josh Wu wrote:
+> This patch fix following warning:
+>=20
+> drivers/mtd/nand/atmel_nand.c:2007: warning: 'atmel_nand_nfc_match' defin=
+ed but not used
+>=20
+> This patch add '#if defined(CONFIG_OF)' block to guard around the definit=
+ion of
+> atmel_nand_nfc_match, in order to avoid the warning when kernel is config=
+urated
+> as non-dt supported.
 
-Hm, won't this end up with the same 'pxa3xx_nand_dt_ids is defined but
-not used' warning that just caused us to *add* an #ifdef CONFIG_OF to
-atmel_nand?=20
+Ick. This driver is littered with CONFIG_OF checks. Yet I've just seen a
+patch to pxa3xx_nand which *removes* ifdefs, on the basis that all the
+of_match_ functions/macros will just 'do the right thing'. Can't we do
+that here too? We might just need to add __maybe_unused?
+
+> +#if defined(CONFIG_OF)
+>  static struct of_device_id atmel_nand_nfc_match[] =3D {
+>  	{ .compatible =3D "atmel,sama5d3-nfc" },
+>  	{ /* sentinel */ }
+>  };
+> +#endif
+
+Also, why doesn't this one appear in a MODULE_DEVICE_TABLE() ?=20
 
 --=20
-dwmw2
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
 
-
---=-yzwZZ/jehVhwKGEaug9S
+--=-vFW3NELZs5SGPy9fV+jg
 Content-Type: application/x-pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -137,18 +151,18 @@ bhXkgdT2t1V1bNAxggNvMIIDawIBATCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0
 Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2
 BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMG
 hc4wCQYFKw4DAhoFAKCCAa8wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUx
-DxcNMTMwODMwMjAwNjIyWjAjBgkqhkiG9w0BCQQxFgQUVBTV+0eKnPsPGrvDLvgqJvSQ9LswgaUG
+DxcNMTMwODMwMjAyMzUzWjAjBgkqhkiG9w0BCQQxFgQUl71gBTB5KM6NjZGgh4aexmtdVaswgaUG
 CSsGAQQBgjcQBDGBlzCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4x
 KzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0
 YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMGhc4wgacGCyqG
 SIb3DQEJEAILMYGXoIGUMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjEr
 MCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYGA1UEAxMvU3Rh
 cnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0ECAwaFzjANBgkqhkiG
-9w0BAQEFAASCAQCQ4+UB6cnxgnoigUSYTfK+wX9DJPd4Ex+WoO7H/Pgvx5+v80iwI1Sv9Yd5+IxR
-ZMZCzjWCjzk6om7UwG0PW974WD2qPphYO7zYWT1jUaXourwwZ/iYDhrl+TAml5QXytzf3NViPhUA
-oU6mN3qOjmIsPNs6pd1W+nwZWFVniruSkdJeNLmfSifiibSr3KSGWFDVkyikiIS/cBlgFCGum+1W
-cDJoA7YD+yKa/bFKe9RsW5T4FjwimfeTqHxir3tbz/m+EKxRl759ft6YLWWX811c2qGD95pu5yoq
-WDL3GkHj7ojvDUYc6JiteO+aS+YccvF8vRHnDYFvJiLP2gIDko/0AAAAAAAA
+9w0BAQEFAASCAQCilefm5kXz8wlFCQGaAY9oKCK+2oHHC8r+tktwBnOM0RvVQ0ozhR4vIDJgF1MX
+kC5enZopl1KIu0ptmoyY+j+j9/Bkm07pI17FUHnkn7x+aU8/scD/Xfi4tMeXcst1mDC4OGDUZPWW
+43DfojmJn1i3YhnO+6U4U/40v8Mp6nLp2TaIbjq9PypcXbghZ2PQO2zDplnXuwwUHaP+GkMjjtRN
+7ugVLT+GQth/RSE7R4tFT5V4grwc94/XwR93PT2DA2eaze41HHVmwRjJ27qCqjUawxH/Y/sI6y+8
+ua/uPAJ3X/oRIFhwD4mFu+Q8QlUj8kMwW5xEyLBIYvj6SW/v/UFQAAAAAAAA
 
 
---=-yzwZZ/jehVhwKGEaug9S--
+--=-vFW3NELZs5SGPy9fV+jg--
