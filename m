@@ -1,23 +1,28 @@
-Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
+Received: from mail-pb0-x22a.google.com ([2607:f8b0:400e:c01::22a])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VFX6a-0004VU-85
- for linux-mtd@lists.infradead.org; Fri, 30 Aug 2013 22:23:48 +0000
-Date: Fri, 30 Aug 2013 23:23:23 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Stephen Warren <swarren@wwwdotorg.org>
-Message-ID: <20130830222323.GC18608@sirena.org.uk>
-References: <1377564603-4030-1-git-send-email-wangyuhang2014@gmail.com>
- <1377564603-4030-2-git-send-email-wangyuhang2014@gmail.com>
- <52210E14.8020006@wwwdotorg.org>
+ id 1VFa3Z-00072D-Fg
+ for linux-mtd@lists.infradead.org; Sat, 31 Aug 2013 01:32:54 +0000
+Received: by mail-pb0-f42.google.com with SMTP id un15so2544546pbc.1
+ for <linux-mtd@lists.infradead.org>; Fri, 30 Aug 2013 18:32:29 -0700 (PDT)
+Date: Sat, 31 Aug 2013 09:37:30 -0400
+From: Huang Shijie <shijie8@gmail.com>
+To: Hector Palacios <hector.palacios@digi.com>
+Subject: Re: gpmi-nand driver and jffs2 support
+Message-ID: <20130831133728.GA22069@gmail.com>
+References: <522062B4.4080709@digi.com> <52206C05.8020701@freescale.com>
+ <5220AB35.9080409@digi.com> <20130831025344.GA9971@gmail.com>
+ <5220B8F6.3080405@digi.com> <20130831033438.GA13704@gmail.com>
+ <5220C8C4.5010305@digi.com>
+ <CAOMZO5CTQZBmvQc4y761kGHWYWRXr7GwVrTuTPE+JU=bmjq62w@mail.gmail.com>
+ <5220CB56.7040505@digi.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="GZVR6ND4mMseVXL/"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <52210E14.8020006@wwwdotorg.org>
-Subject: Re: [PATCH V2 2/2] spi: dual and quad support(device tree)
-Cc: devicetree@vger.kernel.org, Tomasz Figa <tomasz.figa@gmail.com>,
- linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, pekon@ti.com,
- sourav.poddar@ti.com, wangyuhang <wangyuhang2014@gmail.com>
+In-Reply-To: <5220CB56.7040505@digi.com>
+Cc: "fabio.estevam@freescale.com" <fabio.estevam@freescale.com>,
+ Huang Shijie <b32955@freescale.com>, Marek Vasut <marex@denx.de>,
+ Fabio Estevam <festevam@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,45 +32,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, Aug 30, 2013 at 06:41:58PM +0200, Hector Palacios wrote:
+> Hi Fabio,
+> 
+> >
+> >On Fri, Aug 30, 2013 at 1:31 PM, Hector Palacios
+> ><hector.palacios@digi.com> wrote:
+> >>Ok I merged the linux-next MTD patches.
+> >>This is what I get from the printk:
+> >>
+> >>[    0.841333] [ set_geometry_by_ecc_info ] 36, 28
 
---GZVR6ND4mMseVXL/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+ok, we have enough spare area to store the marker.
 
-On Fri, Aug 30, 2013 at 03:26:44PM -0600, Stephen Warren wrote:
+I think this SLC should be okay with jffs2.
 
-> I would suggest the property names
+> >>
+> >>The partition now partially mounts (I can see a few of the folders and
+> >>files) but I get thousands of errors like these:
+> >>
+> >>[  118.210985] jffs2: mtd->read(0x100 bytes from 0x0) returned ECC error
+> >>[  118.255424] jffs2: mtd->read(0x1ff20 bytes from 0xe0) returned ECC error
+> >>[  118.255561] jffs2: jffs2_scan_inode_node(): CRC failed on node at
+> >>0x000001ec: Read 0x00000000, calculated 0xa587e8ba
+> >>[  118.255602] jffs2: jffs2_scan_eraseblock(): Magic bitmask 0x1985 not
+> >>found at 0x00000234: 0x1cf7 instead
+> >
+> >This error is most likely because you generated a jffs2 rootfs with a
+> >eraseblock size that does not match the one of your NAND device.
+> 
+> No. I used 128k erase block that matches my NAND. I also checked
+> that I can mount the jffs2 partition correctly using my v2.6.35
+> kernel, so the partition seems to be correctly written.
+> 
 
-> spi-tx-num-wires, spi-rx-num-wires
+Please use following steps and try again:
+    flash_eraseall /dev/mtdx
+    mount -t jffs2 /dev/mtdblockx tmp
 
-> or:
 
-> spi-tx-bus-width, spi-rx-bus-width (this option from Tomasz Figa on IRC)
-
-> Those name alone self-document their purpose much more clearly to me.
-
-These both seem like good suggestions.
-
---GZVR6ND4mMseVXL/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.21 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSIRtXAAoJELSic+t+oim9MoMQAJWrxW5nY2H6AjqrcmmpKFit
-wOE23V6DwWLzbVGrDzsUKm0Q5j5sVv5cxsTFP1eSyKpxo8tJUTw5cWOOFJwyjdOK
-YrzNVwtDBeIdxGPLzDpcDDeHvSQRzuhBODX1IsOk955r8erlHrnZ7nwOg1mi9Vyn
-3RYY2+wmj70n0/HKLQCyGMq8LEy32fVatmAv6RGE47vuoeQQerjxTic2uTUIr/8R
-WHD2UkaK+jVRwiGvnL/281NnqsatJ0Hfm52U1osLQjqwO4me1ERxK1hTX3FFBtCY
-0+9kI2wNNTOZFpQqJSoaLSorbohmCOi5wIFsKYwhpq9j/axlT16qnsq8FKvldu/b
-XqtA1eclgeOSYG0tXrlhS+1bT5lr33mJsFZXe1hEAN7YM29r2NKY2yly2JJEqaXL
-giBj8nBOD21BWUEJazBzYUA3RaVworwVth4IX8wHZ8imI1/UeKWgF2bK5Vgwc6qB
-NiHx8oaKetFH8rXAv4RSQGVoEsit8EpFGf/s69KmUrJB2DJyDCwBzwp761Bd5HOv
-zLP55xNNw9O0M+VGvdb1twaQMqBOaWFc/x5nOpMk0J1mA8rOLDNIt7AtOEOocbJx
-Ws9SO2DFEK0ZO4uiXi1D/0ObCpeN5/0aOYS9MYxf953Fn9BB4qruNDhSE37KX/x0
-23/spaa1IlDzdb1CsNK+
-=cV0A
------END PGP SIGNATURE-----
-
---GZVR6ND4mMseVXL/--
+thanks
+Huang Shijie
