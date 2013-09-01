@@ -1,28 +1,26 @@
-Received: from mail-oa0-x236.google.com ([2607:f8b0:4003:c02::236])
+Received: from mail-pb0-x231.google.com ([2607:f8b0:400e:c01::231])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VFvt0-0004ZK-Hr
- for linux-mtd@lists.infradead.org; Sun, 01 Sep 2013 00:51:27 +0000
-Received: by mail-oa0-f54.google.com with SMTP id n10so2977043oag.41
- for <linux-mtd@lists.infradead.org>; Sat, 31 Aug 2013 17:51:03 -0700 (PDT)
+ id 1VG2fv-0000Bx-8g
+ for linux-mtd@lists.infradead.org; Sun, 01 Sep 2013 08:06:24 +0000
+Received: by mail-pb0-f49.google.com with SMTP id xb4so3492450pbc.8
+ for <linux-mtd@lists.infradead.org>; Sun, 01 Sep 2013 01:06:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1377883043.22372.72.camel@shinybook.infradead.org>
-References: <1375523536-32671-1-git-send-email-akinobu.mita@gmail.com>
- <1375523536-32671-3-git-send-email-akinobu.mita@gmail.com>
- <1377878039.22372.55.camel@shinybook.infradead.org>
- <5220C733.7090401@gmail.com>
- <1377883043.22372.72.camel@shinybook.infradead.org>
-Date: Sun, 1 Sep 2013 09:51:03 +0900
-Message-ID: <CAC5umyg026AJbkEo5Ckb6PdaWJzqnsQghv_Wb2q47MVGnK0EdA@mail.gmail.com>
-Subject: Re: [PATCH -next v2 02/10] mtd: tests: rename sources in order to
- link a helper object
-From: Akinobu Mita <akinobu.mita@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <52210E14.8020006@wwwdotorg.org>
+References: <1377564603-4030-1-git-send-email-wangyuhang2014@gmail.com>
+ <1377564603-4030-2-git-send-email-wangyuhang2014@gmail.com>
+ <52210E14.8020006@wwwdotorg.org>
+Date: Sun, 1 Sep 2013 16:05:58 +0800
+Message-ID: <CAHSAbzPincMaT0L3jdr-119Ojzw88DVDrizm-ti4zpvZqnd4EQ@mail.gmail.com>
+Subject: Re: [PATCH V2 2/2] spi: dual and quad support(device tree)
+From: yuhang wang <wangyuhang2014@gmail.com>
+To: Stephen Warren <swarren@wwwdotorg.org>
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: Vikram Narayanan <vikram186@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Tomasz Figa <tomasz.figa@gmail.com>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ Mark Brown <broonie@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
+ Pekon" <pekon@ti.com>, Sourav Poddar <sourav.poddar@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,40 +30,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2013/8/31 David Woodhouse <dwmw2@infradead.org>:
-> On Fri, 2013-08-30 at 09:24 -0700, Brian Norris wrote:
->> We actually had the discussion (in multiple threads?) that because a
->> separate module would complicate the process for running the test
->> modules, it is preferable to copy the small helper code into each
->> module. That is, we don't want to do this:
->>
->> insmod mtd_test.ko
->> insmod mtd_<actualtest>.ko dev=X ...
->
-> So use modprobe instead :)
->
->> However, this is still fairly trivial, so if you think there are good
->> reasons to provide separate modules, I do not object to separate modules.
->
-> Even if you can't use modprobe, once mtd_test.ko is loaded it's going to
-> stay loaded and you can just forget about it and do your various tests.
->
-> Unless you're actually making changes to the code within mtd_test.ko
-> itself, of course. In which case you really *don't* want to have eight
-> different copies of it built in to eight different modules. I know that
-> making changes to that code is going to be relatively infrequent, but we
-> probably shouldn't make it suck *this* much :)
+Hi, Stephen
 
-Brian, even if we have a separate mtd_test.ko module and we want to
-run a custom mtd test module which may also make some changes within
-mtd_test.c, we can just build it as we currently do by adding the
-following lines in Makefile.
+2013/8/31 Stephen Warren <swarren@wwwdotorg.org>:
+> On 08/26/2013 06:50 PM, wangyuhang wrote:
+>> Add spi-tmax-nbits and spi-rmax-nbits for spi slave node.
+>> Modify the related dt document(spi-bus.txt)
+>>  spi-tmax-nbits:Max number of bits slave will use for MOSI(writting)
+>>  spi-rmax-nbits:Max number of bits slave will use for MISO(reading)
+>> Support for spi-tx/rmax-nbits in SPI framework has been picked[1].
+>> [1]: http://comments.gmane.org/gmane.linux.kernel.spi.devel/14420
+>> Commit Id:f477b7fb13df2b843997559ff34e87d054ba6538
+>
+>> diff --git a/Documentation/devicetree/bindings/spi/spi-bus.txt b/Documentation/devicetree/bindings/spi/spi-bus.txt
+>
+>> +- spi-tmax-nbits  - (optional) Max number of bits slave will use for
+>> +                 MOSI(writting)
+>> +- spi-rmax-nbits  - (optional) Max number of bits slave will use for
+>> +                 MISO(reading)
+>
+> I would suggest the property names
+>
+> spi-tx-num-wires, spi-rx-num-wires
+>
+> or:
+>
+> spi-tx-bus-width, spi-rx-bus-width (this option from Tomasz Figa on IRC)
+>
+> Those name alone self-document their purpose much more clearly to me.
+>
+> I would also change the descriptions a bit, resulting in the following
+> overall:
+>
+> ==========
+> - spi-tx-num-wires  - (optional) The number of data wires that
+>                       transfer data from the SPI controller to the
+>                       SPI device. Defaults to 1 if not present.
+> - spi-rx-num-wires  - (optional) The number of data wires that
+>                       transfer data from the SPI device to the
+>                       SPI controller. Defaults to 1 if not present.
+> ==========
+>
 
-        obj-$(CONFIG_MTD_TESTS) += mtd_mytest.o
-        mtd_mytest-objs := mytest.o mtd_test.o
+OK, that seems better.
 
-You need to ignore the warnings like "'mtdtest_write' exported twice",
-but you can install a custom test module without the extra step of
-inserting another module as far as you don't insert mtd_test.ko.
+>> +So if for example the slave has 4 wires for writting and 2 wires for reading,
+>> +and the spi-tx/rx-nbits property should be set as follows:
+>> +
+>> +spi-tmax-nbits = <4>;
+>> +spi-rmax-nbits = <2>;
+>> +
+>> +Now the value that spi-tmax-nbits and spi-rmax-nbits can receive is only
+>> +1(single), 2(dual) and 4(quad). If you don't set spi-tmax-nbits or spi-rmax-nbits,
+>> +spi_device mode will be set in single(1 wire) as default. Another point, if
+>> +property:spi-3wire is set, spi-t/rmax-nbits is forbidden to set to <2 or 4>,
+>> +otherwise, an errro will return.
+>
+> I think most of that explanation can be removed if you use the text I
+> wrote above.
+>
+> I'm not sure you should ban spi-3wire if those properties are specified;
+> can't all those properties be present together, if the num-wires are set
+> to 1? Actually, isn't spi-3write the default; what does that property mean?
 
-So I'm going to prepare the patch that makes it a separate module.
+Property spi-3write means some controllers only have cs, clk and
+sda(SI/SO shared) 3 wires. So if spi-3wire is set, then dual and quad
+set should be forbidden. I didn't mean that spi-3wire can't be present
+together with spi-tx/rx-num-wires, if set to <1> it's OK. Just can't
+be <2 | 4>(dual and quad).
