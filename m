@@ -1,29 +1,19 @@
-Received: from mail-pd0-x235.google.com ([2607:f8b0:400e:c02::235])
+Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VG2o6-0000Jx-Jo
- for linux-mtd@lists.infradead.org; Sun, 01 Sep 2013 08:14:51 +0000
-Received: by mail-pd0-f181.google.com with SMTP id g10so3556727pdj.12
- for <linux-mtd@lists.infradead.org>; Sun, 01 Sep 2013 01:14:27 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1589764.vkg6UQTo21@flatron>
-References: <1377564603-4030-1-git-send-email-wangyuhang2014@gmail.com>
- <1377564603-4030-2-git-send-email-wangyuhang2014@gmail.com>
- <1589764.vkg6UQTo21@flatron>
-Date: Sun, 1 Sep 2013 16:14:24 +0800
-Message-ID: <CAHSAbzOm_-mOCjuaz7+ZH+giXJAgw+Tx8iE61RPctaH+9bEh_g@mail.gmail.com>
-Subject: Re: [PATCH V2 2/2] spi: dual and quad support(device tree)
-From: yuhang wang <wangyuhang2014@gmail.com>
-To: Tomasz Figa <tomasz.figa@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: mark.rutland@arm.com,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- ian.campbell@citrix.com, pawel.moll@arm.com,
- Stephen Warren <swarren@wwwdotorg.org>, rob.herring@calxeda.com,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- Mark Brown <broonie@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>, galak@codeaurora.org,
- Sourav Poddar <sourav.poddar@ti.com>
+ id 1VG46W-0008B8-EK
+ for linux-mtd@lists.infradead.org; Sun, 01 Sep 2013 09:37:57 +0000
+Received: by mail-pa0-f52.google.com with SMTP id kq13so4017377pab.39
+ for <linux-mtd@lists.infradead.org>; Sun, 01 Sep 2013 02:37:32 -0700 (PDT)
+From: wangyuhang <wangyuhang2014@gmail.com>
+To: broonie@kernel.org, devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
+ linux-mtd@lists.infradead.org, pekon@ti.com, tomasz.figa@gmail.com,
+ swarren@wwwdotorg.org
+Subject: [PATCH] spi: quad: fix the name of DT property
+Date: Sun,  1 Sep 2013 17:36:21 +0800
+Message-Id: <1378028181-5409-1-git-send-email-wangyuhang2014@gmail.com>
+In-Reply-To: <1376216117-5864-1-git-send-email-wangyuhang2014@gmail.com>
+References: <1376216117-5864-1-git-send-email-wangyuhang2014@gmail.com>
+Cc: wangyuhang <wangyuhang2014@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,82 +23,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Tomasz
+spi: quad: fix the name of DT property in patch
 
-2013/8/31 Tomasz Figa <tomasz.figa@gmail.com>:
-> Hi,
->
-> [Ccing DT binding maintainers]
->
-> On Tuesday 27 of August 2013 08:50:03 wangyuhang wrote:
->> Add spi-tmax-nbits and spi-rmax-nbits for spi slave node.
->> Modify the related dt document(spi-bus.txt)
->>  spi-tmax-nbits:Max number of bits slave will use for MOSI(writting)
->>  spi-rmax-nbits:Max number of bits slave will use for MISO(reading)
->> Support for spi-tx/rmax-nbits in SPI framework has been picked[1].
->> [1]: http://comments.gmane.org/gmane.linux.kernel.spi.devel/14420
->> Commit Id:f477b7fb13df2b843997559ff34e87d054ba6538
->>
->> Signed-off-by: wangyuhang <wangyuhang2014@gmail.com>
->> ---
->>  Documentation/devicetree/bindings/spi/spi-bus.txt |   16
->> ++++++++++++++++ 1 file changed, 16 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/spi/spi-bus.txt
->> b/Documentation/devicetree/bindings/spi/spi-bus.txt index
->> 296015e..211336c 100644
->> --- a/Documentation/devicetree/bindings/spi/spi-bus.txt
->> +++ b/Documentation/devicetree/bindings/spi/spi-bus.txt
->> @@ -55,6 +55,22 @@ contain the following properties.
->>               chip select active high
->>  - spi-3wire       - (optional) Empty property indicating device
->> requires 3-wire mode.
->> +- spi-tmax-nbits  - (optional) Max number of bits slave will use for
->> +                 MOSI(writting)
->> +- spi-rmax-nbits  - (optional) Max number of bits slave will use for
->> +                 MISO(reading)
->
-> May I ask for more human-readable names, please?
->
-> If we look around, there are already devices using bus-width property, so
-> for consistency we could use tx-bus-width and rx-bus-width here or even a
-> single bus-width property taking two cells, first tx and second rx?
->
-Yes, you are right. bus_width is really more widely used. So I will correct it.
+The previous property name spi-tx-nbits and spi-rx-nbits looks not
+human-readable. To make it consistent with other devices, using property
+name spi-tx-bus-width and spi-rx-bus-width instead of the previous one
+specify the number of data wires that spi controller will work in.
+Add the specification in spi-bus.txt.
 
-> Let's hear others' opinion on this as well.
->
-> Also the properties should be telling information about hardware, so
-> probably in this case the meaning would be the number of wires that are
-> physically wired on the board.
->
->> +
->
-> One or two sentences about what this dual/quad thing is about would be
-> nice here, e.g.
->
->         Some SPI controllers and devices support Dual and/or Quad SPI
->         mode, which is [...]. It allows [...], etc.
->
-OK, Thanks.
+Signed-off-by: wangyuhang <wangyuhang2014@gmail.com>
+---
+ Documentation/devicetree/bindings/spi/spi-bus.txt |   10 ++++++++++
+ drivers/spi/spi.c                                 |    8 ++++----
+ 2 files changed, 14 insertions(+), 4 deletions(-)
 
->> +So if for example the slave has 4 wires for writting and 2 wires for
->> reading, +and the spi-tx/rx-nbits property should be set as follows:
->> +
->> +spi-tmax-nbits = <4>;
->> +spi-rmax-nbits = <2>;
->> +
->> +Now the value that spi-tmax-nbits and spi-rmax-nbits can receive is
->> only +1(single), 2(dual) and 4(quad). If you don't set spi-tmax-nbits
->> or spi-rmax-nbits, +spi_device mode will be set in single(1 wire) as
->> default. Another point, if +property:spi-3wire is set, spi-t/rmax-nbits
->> is forbidden to set to <2 or 4>, +otherwise, an errro will return.
->
-> typo: errro
->
-> Also an error or "returning an error" is an OS specific term. This
-> statement should rather be something along
->
->         Dual/Quad mode is not allowed when 3-wire mode is used.
->
-Got it, Thanks a lot.
+diff --git a/Documentation/devicetree/bindings/spi/spi-bus.txt b/Documentation/devicetree/bindings/spi/spi-bus.txt
+index 296015e..800dafe 100644
+--- a/Documentation/devicetree/bindings/spi/spi-bus.txt
++++ b/Documentation/devicetree/bindings/spi/spi-bus.txt
+@@ -55,6 +55,16 @@ contain the following properties.
+     		chip select active high
+ - spi-3wire       - (optional) Empty property indicating device requires
+     		    3-wire mode.
++- spi-tx-bus-width - (optional) The bus width(number of data wires) that
++                      used for MOSI. Defaults to 1 if not present.
++- spi-rx-bus-width - (optional) The bus width(number of data wires) that
++                      used for MISO. Defaults to 1 if not present.
++
++Some SPI controllers and devices support Dual and Quad SPI transfer mode.
++It allows data in SPI system transfered in 2 wires(DUAL) or 4 wires(QUAD).
++Now the value that spi-tx-bus-width and spi-rx-bus-width can receive is
++only 1(SINGLE), 2(DUAL) and 4(QUAD).
++Dual/Quad mode is not allowed when 3-wire mode is used.
+ 
+ If a gpio chipselect is used for the SPI slave the gpio number will be passed
+ via the cs_gpio
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 7557f61..0075318 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -870,7 +870,7 @@ static void of_register_spi_devices(struct spi_master *master)
+ 			spi->mode |= SPI_3WIRE;
+ 
+ 		/* Device DUAL/QUAD mode */
+-		prop = of_get_property(nc, "spi-tx-nbits", &len);
++		prop = of_get_property(nc, "spi-tx-bus-width", &len);
+ 		if (prop && len == sizeof(*prop)) {
+ 			switch (be32_to_cpup(prop)) {
+ 			case SPI_NBITS_SINGLE:
+@@ -883,14 +883,14 @@ static void of_register_spi_devices(struct spi_master *master)
+ 				break;
+ 			default:
+ 				dev_err(&master->dev,
+-					"spi-tx-nbits %d not supported\n",
++					"spi-tx-bus-width %d not supported\n",
+ 					be32_to_cpup(prop));
+ 				spi_dev_put(spi);
+ 				continue;
+ 			}
+ 		}
+ 
+-		prop = of_get_property(nc, "spi-rx-nbits", &len);
++		prop = of_get_property(nc, "spi-rx-bus-width", &len);
+ 		if (prop && len == sizeof(*prop)) {
+ 			switch (be32_to_cpup(prop)) {
+ 			case SPI_NBITS_SINGLE:
+@@ -903,7 +903,7 @@ static void of_register_spi_devices(struct spi_master *master)
+ 				break;
+ 			default:
+ 				dev_err(&master->dev,
+-					"spi-rx-nbits %d not supported\n",
++					"spi-rx-bus-width %d not supported\n",
+ 					be32_to_cpup(prop));
+ 				spi_dev_put(spi);
+ 				continue;
+-- 
+1.7.9.5
