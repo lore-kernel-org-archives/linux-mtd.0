@@ -1,17 +1,29 @@
-Received: from intranet.asianux.com ([58.214.24.6])
+Received: from mail1.bemta7.messagelabs.com ([216.82.254.109])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VGQp8-0003QK-0P
- for linux-mtd@lists.infradead.org; Mon, 02 Sep 2013 09:53:32 +0000
-Message-ID: <52245FBD.30202@asianux.com>
-Date: Mon, 02 Sep 2013 17:51:57 +0800
-From: Chen Gang <gang.chen@asianux.com>
+ id 1VGR6l-0003q9-JO
+ for linux-mtd@lists.infradead.org; Mon, 02 Sep 2013 10:11:47 +0000
+Message-ID: <52246421.1020900@digi.com>
+Date: Mon, 2 Sep 2013 12:10:41 +0200
+From: Hector Palacios <hector.palacios@digi.com>
 MIME-Version: 1.0
-To: joern@lazybastard.org, dwmw2@infradead.org, dedekind1@gmail.com
-Subject: [PATCH] drivers: mtd: remove '__init' from phram_param_call() and
- ubi_mtd_param_parse()
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: gpmi-nand driver and jffs2 support
+References: <522062B4.4080709@digi.com> <52206C05.8020701@freescale.com>
+ <5220AB35.9080409@digi.com> <20130831025344.GA9971@gmail.com>
+ <5220B8F6.3080405@digi.com> <20130831033438.GA13704@gmail.com>
+ <5220C8C4.5010305@digi.com>
+ <CAOMZO5CTQZBmvQc4y761kGHWYWRXr7GwVrTuTPE+JU=bmjq62w@mail.gmail.com>
+ <5220CB56.7040505@digi.com> <20130831133728.GA22069@gmail.com>
+ <52244886.8060205@digi.com> <52244B22.3020605@freescale.com>
+ <52244F85.4030904@digi.com> <52245171.3050900@freescale.com>
+In-Reply-To: <52245171.3050900@freescale.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: "fabio.estevam@freescale.com" <fabio.estevam@freescale.com>,
+ Marek Vasut <marex@denx.de>, Huang Shijie <shijie8@gmail.com>,
+ "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ scottwood@freescale.com, Fabio Estevam <festevam@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,58 +33,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-phram_param_call() and ubi_mtd_param_parse() are used by
-module_param_call(), usually, it need normal funcitons (no '__init'),
-so recommend to remove '__init' from them.
+Dear Huang,
 
-The related warnings:
+On 09/02/2013 10:50 AM, Huang Shijie wrote:
+> 于 2013年09月02日 16:42, Hector Palacios 写道:
+>> I am writing the JFFS2 partition from my custom U-Boot. Do you mean
+>> that they way it writes it could not be compatible with what the new
+>> driver expects? That sounds really bad.
+>
+> The mtd code(as well as the gpmi driver) has merge many patch to the kernel,
+> BUT, the relative patches are not submitted to uboot maillist. So the
+> code is not aligned between the
+> uboot and the kernel.
 
-  WARNING: drivers/mtd/devices/phram.o(.data+0xc): Section mismatch in reference from the variable ___param_ops_phram to the variable .init.text:_phram_param_call
-  The variable ___param_ops_phram references
-  the variable __init _phram_param_call
-  If the reference is valid then annotate the
-  variable with __init* or __refdata (see linux/init.h) or name the variable:
-  *_template, *_timer, *_sht, *_ops, *_probe, *_probe_one, *_console
-  
-  WARNING: drivers/mtd/ubi/ubi.o(.data+0x1a4): Section mismatch in reference from the variable ___param_ops_mtd to the variable .init.text:_ubi_mtd_param_parse
-  The variable ___param_ops_mtd references
-  the variable __init _ubi_mtd_param_parse
-  If the reference is valid then annotate the
-  variable with __init* or __refdata (see linux/init.h) or name the variable:
-  *_template, *_timer, *_sht, *_ops, *_probe, *_probe_one, *_console
+Ok, I just rewrote the JFFS2 partition using the mtd-utils and now it mounts correctly 
+and without any error.
+So does this mean that U-Boot is now unable to properly write a JFFS2 partition for it 
+to be understood by the linux-next kernel? What is exactly the difference? Does it 
+only affect Freescale NAND controllers?
 
+I'm including the U-Boot mailing list in CC.
+The complete thread for reference: http://patchwork.ozlabs.org/patch/271322/
 
-Signed-off-by: Chen Gang <gang.chen@asianux.com>
----
- drivers/mtd/devices/phram.c |    2 +-
- drivers/mtd/ubi/build.c     |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
-index 67823de..bd7496a 100644
---- a/drivers/mtd/devices/phram.c
-+++ b/drivers/mtd/devices/phram.c
-@@ -264,7 +264,7 @@ static int __init phram_setup(const char *val)
- 	return ret;
- }
- 
--static int __init phram_param_call(const char *val, struct kernel_param *kp)
-+static int phram_param_call(const char *val, struct kernel_param *kp)
- {
- 	/*
- 	 * This function is always called before 'init_phram()', whether
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index 315dcc6..c8b9493 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -1382,7 +1382,7 @@ static int __init bytes_str_to_int(const char *str)
-  * This function returns zero in case of success and a negative error code in
-  * case of error.
-  */
--static int __init ubi_mtd_param_parse(const char *val, struct kernel_param *kp)
-+static int ubi_mtd_param_parse(const char *val, struct kernel_param *kp)
- {
- 	int i, len;
- 	struct mtd_dev_param *p;
--- 
-1.7.7.6
+Best regards,
+--
+Hector Palacios
