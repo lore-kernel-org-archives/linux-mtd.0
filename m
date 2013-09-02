@@ -1,21 +1,21 @@
-Message-ID: <1378136693.16328.52.camel@shinybook.infradead.org>
-Subject: Re: [PATCH 04/25] mtd: nand: gpmi-nand: janitorial cleanup: (commas
- after last element of struct initializer)
-From: David Woodhouse <dwmw2@infradead.org>
-To: Lothar =?ISO-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
-Date: Mon, 02 Sep 2013 16:44:53 +0100
-In-Reply-To: <21028.11459.251694.775851@ipc1.ka-ro>
-References: <1375279887-17928-1-git-send-email-LW@KARO-electronics.de>
- <1375279887-17928-2-git-send-email-LW@KARO-electronics.de>
- <51F9C4C2.8040403@freescale.com> <20985.63269.929367.546435@ipc1.ka-ro>
- <1377879189.22372.65.camel@shinybook.infradead.org>
- <21028.11459.251694.775851@ipc1.ka-ro>
-Content-Type: multipart/signed; micalg="sha-1";
- protocol="application/x-pkcs7-signature";
- boundary="=-6uSElzkXTJeapGakZ08x"
-Mime-Version: 1.0
-Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date: Mon, 2 Sep 2013 14:13:24 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Josh Wu <josh.wu@atmel.com>
+Subject: Re: [PATCH] mtd: atmel_nand: fix the warning when CONFIG_OF is not
+ defined
+Message-ID: <20130902171323.GA28419@localhost>
+References: <1375846569-9499-1-git-send-email-josh.wu@atmel.com>
+ <1377894233.22372.86.camel@shinybook.infradead.org>
+ <20130831170422.GA21617@localhost> <522437E8.1050604@atmel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <522437E8.1050604@atmel.com>
+Cc: dedekind1@gmail.com, David Woodhouse <dwmw2@infradead.org>,
+ nicolas.ferre@atmel.com, linux-mtd@lists.infradead.org,
+ computersforpeace@gmail.com, plagnioj@jcrosoft.com,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,131 +25,159 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, Sep 02, 2013 at 03:02:00PM +0800, Josh Wu wrote:
+> Hi, Ezequiel
+> 
+> On 9/1/2013 1:04 AM, Ezequiel Garcia wrote:
+> > On Fri, Aug 30, 2013 at 09:23:53PM +0100, David Woodhouse wrote:
+> >> On Wed, 2013-08-07 at 11:36 +0800, Josh Wu wrote:
+> >>> This patch fix following warning:
+> >>>
+> >>> drivers/mtd/nand/atmel_nand.c:2007: warning: 'atmel_nand_nfc_match' defined but not used
+> >>>
+> >>> This patch add '#if defined(CONFIG_OF)' block to guard around the definition of
+> >>> atmel_nand_nfc_match, in order to avoid the warning when kernel is configurated
+> >>> as non-dt supported.
+> >> Ick. This driver is littered with CONFIG_OF checks. Yet I've just seen a
+> >> patch to pxa3xx_nand which *removes* ifdefs, on the basis that all the
+> >> of_match_ functions/macros will just 'do the right thing'. Can't we do
+> >> that here too? We might just need to add __maybe_unused?
+> >>
+> > We can. We just need to provide a few dummy functions in linux/of_mtd.h
+> > just like the other of_xxx() are doing. See below!
+> >
+> >>> +#if defined(CONFIG_OF)
+> >>>   static struct of_device_id atmel_nand_nfc_match[] = {
+> >>>   	{ .compatible = "atmel,sama5d3-nfc" },
+> >>>   	{ /* sentinel */ }
+> >>>   };
+> >>> +#endif
+> >> Also, why doesn't this one appear in a MODULE_DEVICE_TABLE() ?
+> >>
+> > Indeed. And why doesn't it have a "const" keyword?
+> 
+> Thanks to point these out.
+> 
+> >
+> > So, in order to remove the CONFIG_OF safely from this driver,
+> > and avoid any stupid warnings, we need to first implement
+> > these dummies:
+> >
+> > --------------------------------8<-----------------------------------
+> > diff --git a/include/linux/of_mtd.h b/include/linux/of_mtd.h
+> > index ed7f267..66f173e 100644
+> > --- a/include/linux/of_mtd.h
+> > +++ b/include/linux/of_mtd.h
+> > @@ -14,6 +14,21 @@
+> >   int of_get_nand_ecc_mode(struct device_node *np);
+> >   int of_get_nand_bus_width(struct device_node *np);
+> >   bool of_get_nand_on_flash_bbt(struct device_node *np);
+> > +#else
+> > +static inline int of_get_nand_ecc_mode(struct device_node *np)
+> > +{
+> > +	return -ENOSYS;
+> > +}
+> > +
+> > +static inline int of_get_nand_bus_width(struct device_node *np)
+> > +{
+> > +	return -ENOSYS;
+> > +}
+> > +
+> > +static inline bool of_get_nand_on_flash_bbt(struct device_node *np)
+> > +{
+> > +	return false;
+> > +}
+> >   #endif
+> >   
+> >   #endif /* __LINUX_OF_MTD_H */
+> > -------------------------------->8-----------------------------------
+> >
+> > And then, with this little patch, we get rid of the ugly CONFIG_OF check
+> > from the atmel_nand driver:
+> >
+> > --------------------------------8<-----------------------------------
+> > diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+> > index 0e365da..ac58098 100644
+> > --- a/drivers/mtd/nand/atmel_nand.c
+> > +++ b/drivers/mtd/nand/atmel_nand.c
+> > @@ -1448,7 +1448,6 @@ static void atmel_nand_hwctl(struct mtd_info *mtd, int mode)
+> >   		ecc_writel(host->ecc, CR, ATMEL_ECC_RST);
+> >   }
+> >   
+> > -#if defined(CONFIG_OF)
+> >   static int atmel_of_init_port(struct atmel_nand_host *host,
+> >   			      struct device_node *np)
+> >   {
+> > @@ -1456,7 +1455,7 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
+> >   	u32 offset[2];
+> >   	int ecc_mode;
+> >   	struct atmel_nand_data *board = &host->board;
+> > -	enum of_gpio_flags flags;
+> > +	enum of_gpio_flags flags = 0;
+> >   
+> >   	if (of_property_read_u32(np, "atmel,nand-addr-offset", &val) == 0) {
+> >   		if (val >= 32) {
+> > @@ -1539,13 +1538,6 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
+> >   
+> >   	return 0;
+> >   }
+> > -#else
+> > -static int atmel_of_init_port(struct atmel_nand_host *host,
+> > -			      struct device_node *np)
+> > -{
+> > -	return -EINVAL;
+> > -}
+> > -#endif
+> >   
+> >   static int __init atmel_hw_nand_init_params(struct platform_device *pdev,
+> >   					 struct atmel_nand_host *host)
+> > @@ -2205,14 +2197,12 @@ static int __exit atmel_nand_remove(struct platform_device *pdev)
+> >   	return 0;
+> >   }
+> >   
+> > -#if defined(CONFIG_OF)
+> >   static const struct of_device_id atmel_nand_dt_ids[] = {
+> >   	{ .compatible = "atmel,at91rm9200-nand" },
+> >   	{ /* sentinel */ }
+> >   };
+> >   
+> >   MODULE_DEVICE_TABLE(of, atmel_nand_dt_ids);
+> > -#endif
+> >   
+> >   static int atmel_nand_nfc_probe(struct platform_device *pdev)
+> >   {
+> > @@ -2251,12 +2241,11 @@ static int atmel_nand_nfc_probe(struct platform_device *pdev)
+> >   	return 0;
+> >   }
+> >   
+> > -#if defined(CONFIG_OF)
+> > -static struct of_device_id atmel_nand_nfc_match[] = {
+> > +static const struct of_device_id atmel_nand_nfc_match[] = {
+> >   	{ .compatible = "atmel,sama5d3-nfc" },
+> >   	{ /* sentinel */ }
+> >   };
+> > -#endif
+> > +MODULE_DEVICE_TABLE(of, atmel_nand_nfc_match);
+> >   
+> >   static struct platform_driver atmel_nand_nfc_driver = {
+> >   	.driver = {
+> > -------------------------------->8-----------------------------------
+> >
+> > Of course, these are untested. If they look OK and don't cause any trouble,
+> > then I'll prepare proper patches.
+> 
+> Looks nice to me. Your proposal patch does the right thing to remove the 
+> CONFIG_OF.
 
---=-6uSElzkXTJeapGakZ08x
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Great!
 
-On Mon, 2013-09-02 at 08:14 +0200, Lothar Wa=C3=9Fmann wrote:
-> My patch _added_ the commas and _made_ the last lines consistent with
-> the other ones...
+> So please sent them out. ;)
+> 
 
-Ah, right. I looked at the first hunk of the patch, which *is* actually
-removing a comma. Missed the fact that the other three changes were
-*adding* commas instead.
-
-So much for consistency :)
-
---=20
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
-
---=-6uSElzkXTJeapGakZ08x
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIISxDCCBjQw
-ggQcoAMCAQICAR4wDQYJKoZIhvcNAQEFBQAwfTELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0
-Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxKTAn
-BgNVBAMTIFN0YXJ0Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MB4XDTA3MTAyNDIxMDE1NVoX
-DTE3MTAyNDIxMDE1NVowgYwxCzAJBgNVBAYTAklMMRYwFAYDVQQKEw1TdGFydENvbSBMdGQuMSsw
-KQYDVQQLEyJTZWN1cmUgRGlnaXRhbCBDZXJ0aWZpY2F0ZSBTaWduaW5nMTgwNgYDVQQDEy9TdGFy
-dENvbSBDbGFzcyAxIFByaW1hcnkgSW50ZXJtZWRpYXRlIENsaWVudCBDQTCCASIwDQYJKoZIhvcN
-AQEBBQADggEPADCCAQoCggEBAMcJg8zOLdgasSmkLhOrlr6KMoOMpohBllVHrdRvEg/q6r8jR+EK
-75xCGhR8ToREoqe7zM9/UnC6TS2y9UKTpT1v7RSMzR0t6ndl0TWBuUr/UXBhPk+Kmy7bI4yW4urC
-+y7P3/1/X7U8ocb8VpH/Clt+4iq7nirMcNh6qJR+xjOhV+VHzQMALuGYn5KZmc1NbJQYclsGkDxD
-z2UbFqE2+6vIZoL+jb9x4Pa5gNf1TwSDkOkikZB1xtB4ZqtXThaABSONdfmv/Z1pua3FYxnCFmdr
-/+N2JLKutIxMYqQOJebr/f/h5t95m4JgrM3Y/w7YX9d7YAL9jvN4SydHsU6n65cCAwEAAaOCAa0w
-ggGpMA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0PAQH/BAQDAgEGMB0GA1UdDgQWBBRTcu2SnODaywFc
-fH6WNU7y1LhRgjAfBgNVHSMEGDAWgBROC+8apEBbpRdphzDKNGhD0EGu8jBmBggrBgEFBQcBAQRa
-MFgwJwYIKwYBBQUHMAGGG2h0dHA6Ly9vY3NwLnN0YXJ0c3NsLmNvbS9jYTAtBggrBgEFBQcwAoYh
-aHR0cDovL3d3dy5zdGFydHNzbC5jb20vc2ZzY2EuY3J0MFsGA1UdHwRUMFIwJ6AloCOGIWh0dHA6
-Ly93d3cuc3RhcnRzc2wuY29tL3Nmc2NhLmNybDAnoCWgI4YhaHR0cDovL2NybC5zdGFydHNzbC5j
-b20vc2ZzY2EuY3JsMIGABgNVHSAEeTB3MHUGCysGAQQBgbU3AQIBMGYwLgYIKwYBBQUHAgEWImh0
-dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwNAYIKwYBBQUHAgEWKGh0dHA6Ly93d3cu
-c3RhcnRzc2wuY29tL2ludGVybWVkaWF0ZS5wZGYwDQYJKoZIhvcNAQEFBQADggIBAAqDCH14qywG
-XLhjjF6uHLkjd02hcdh9hrw+VUsv+q1eeQWB21jWj3kJ96AUlPCoEGZ/ynJNScWy6QMVQjbbMXlt
-UfO4n4bGGdKo3awPWp61tjAFgraLJgDk+DsSvUD6EowjMTNx25GQgyYJ5RPIzKKR9tQW8gGK+2+R
-HxkUCTbYFnL6kl8Ch507rUdPPipJ9CgJFws3kDS3gOS5WFMxcjO5DwKfKSETEPrHh7p5shuuNktv
-sv6hxHTLhiMKX893gxdT3XLS9OKmCv87vkINQcNEcIIoFWbP9HORz9v3vQwR4e3ksLc2JZOAFK+s
-sS5XMEoznzpihEP0PLc4dCBYjbvSD7kxgDwZ+Aj8Q9PkbvE9sIPP7ON0fz095HdThKjiVJe6vofq
-+n6b1NBc8XdrQvBmunwxD5nvtTW4vtN6VY7mUCmxsCieuoBJ9OlqmsVWQvifIYf40dJPZkk9YgGT
-zWLpXDSfLSplbY2LL9C9U0ptvjcDjefLTvqSFc7tw1sEhF0n/qpA2r0GpvkLRDmcSwVyPvmjFBGq
-Up/pNy8ZuPGQmHwFi2/14+xeSUDG2bwnsYJQG2EdJCB6luQ57GEnTA/yKZSTKI8dDQa8Sd3zfXb1
-9mOgSF0bBdXbuKhEpuP9wirslFe6fQ1t5j5R0xi72MZ8ikMu1RQZKCyDbMwazlHiMIIGQjCCBSqg
-AwIBAgIDBoXOMA0GCSqGSIb3DQEBBQUAMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRD
-b20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYG
-A1UEAxMvU3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0EwHhcN
-MTMwNTAyMDYyMDQ2WhcNMTQwNTAzMTIxNDAyWjBdMRkwFwYDVQQNExBNd0k3ODIxNTRpV21lZVkw
-MRwwGgYDVQQDDBNkd213MkBpbmZyYWRlYWQub3JnMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZy
-YWRlYWQub3JnMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvWGuRDHiXVpOgaFkBaz8
-c3jQTfiEw7j0iKZnktCQi0xjY29QJ7GwL+fgQlbofXgYTm8E9fWERvw2tAy2BxHzAPguBzziS7JN
-hsGP9lf3L8hFJBvmdyyyj8b9A6Oi7s3JLtMRWIvyvE+DbuTkP+htuT4+XuTJr8Y5yIqd1WXr2gJk
-ANr77vTyjeNxceevP58Tqr0f+4v5g6+vNARO3bk3SaVQPDUTwGrpoPtLh3d+mQzZ4iiW3MwQS7Wr
-UVT3l2aTVHCpgtAaBs3zHWarvmIqhbWj8zdcnELNzwqTrOjaoWxuWY4k05GGfzmdjOBUiL7FDNvI
-ZwweJEPwJAQI72YhUwIDAQABo4IC2TCCAtUwCQYDVR0TBAIwADALBgNVHQ8EBAMCBLAwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMB0GA1UdDgQWBBSs0hZhUgQwqGVXzLuH6pJH0hMZwTAf
-BgNVHSMEGDAWgBRTcu2SnODaywFcfH6WNU7y1LhRgjAeBgNVHREEFzAVgRNkd213MkBpbmZyYWRl
-YWQub3JnMIIBTAYDVR0gBIIBQzCCAT8wggE7BgsrBgEEAYG1NwECAzCCASowLgYIKwYBBQUHAgEW
-Imh0dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwgfcGCCsGAQUFBwICMIHqMCcWIFN0
-YXJ0Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MAMCAQEagb5UaGlzIGNlcnRpZmljYXRlIHdh
-cyBpc3N1ZWQgYWNjb3JkaW5nIHRvIHRoZSBDbGFzcyAxIFZhbGlkYXRpb24gcmVxdWlyZW1lbnRz
-IG9mIHRoZSBTdGFydENvbSBDQSBwb2xpY3ksIHJlbGlhbmNlIG9ubHkgZm9yIHRoZSBpbnRlbmRl
-ZCBwdXJwb3NlIGluIGNvbXBsaWFuY2Ugb2YgdGhlIHJlbHlpbmcgcGFydHkgb2JsaWdhdGlvbnMu
-MDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwuc3RhcnRzc2wuY29tL2NydHUxLWNybC5jcmww
-gY4GCCsGAQUFBwEBBIGBMH8wOQYIKwYBBQUHMAGGLWh0dHA6Ly9vY3NwLnN0YXJ0c3NsLmNvbS9z
-dWIvY2xhc3MxL2NsaWVudC9jYTBCBggrBgEFBQcwAoY2aHR0cDovL2FpYS5zdGFydHNzbC5jb20v
-Y2VydHMvc3ViLmNsYXNzMS5jbGllbnQuY2EuY3J0MCMGA1UdEgQcMBqGGGh0dHA6Ly93d3cuc3Rh
-cnRzc2wuY29tLzANBgkqhkiG9w0BAQUFAAOCAQEACFLDQnyO8+XA/TiTltjJ/ZAvM+qmBEKN43Vd
-+Wio2lM/Wq/scJpkupXGHrl9CueobkDxMAogXbMxqLZYO13PvgjMh+PHxDPnQv8EGxOig+k/Hqvc
-qEdTlm9YEHcbXbWS6XB+zRO7VVIpGMYQ1f1qCOcukxmwIm6iMSHXbOr/7paQm4bO0ULptjBotfiO
-Zo6q8No6SroQlOSyc6v8FYSxTNIAXMaM2FYkjqrxgdnJmSIAfr11gROuF69WuOICxP0zTEjJle+7
-aO9lUWNaWMWPMyFSNCxF6kkRuvUCami7vlhLOTRC1kb+OMhx7keN9At3tdTI3rtuFeSB1Pa3VXVs
-0DCCBkIwggUqoAMCAQICAwaFzjANBgkqhkiG9w0BAQUFADCBjDELMAkGA1UEBhMCSUwxFjAUBgNV
-BAoTDVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNp
-Z25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xp
-ZW50IENBMB4XDTEzMDUwMjA2MjA0NloXDTE0MDUwMzEyMTQwMlowXTEZMBcGA1UEDRMQTXdJNzgy
-MTU0aVdtZWVZMDEcMBoGA1UEAwwTZHdtdzJAaW5mcmFkZWFkLm9yZzEiMCAGCSqGSIb3DQEJARYT
-ZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL1hrkQx
-4l1aToGhZAWs/HN40E34hMO49IimZ5LQkItMY2NvUCexsC/n4EJW6H14GE5vBPX1hEb8NrQMtgcR
-8wD4Lgc84kuyTYbBj/ZX9y/IRSQb5ncsso/G/QOjou7NyS7TEViL8rxPg27k5D/obbk+Pl7kya/G
-OciKndVl69oCZADa++708o3jcXHnrz+fE6q9H/uL+YOvrzQETt25N0mlUDw1E8Bq6aD7S4d3fpkM
-2eIoltzMEEu1q1FU95dmk1RwqYLQGgbN8x1mq75iKoW1o/M3XJxCzc8Kk6zo2qFsblmOJNORhn85
-nYzgVIi+xQzbyGcMHiRD8CQECO9mIVMCAwEAAaOCAtkwggLVMAkGA1UdEwQCMAAwCwYDVR0PBAQD
-AgSwMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDBDAdBgNVHQ4EFgQUrNIWYVIEMKhlV8y7
-h+qSR9ITGcEwHwYDVR0jBBgwFoAUU3Ltkpzg2ssBXHx+ljVO8tS4UYIwHgYDVR0RBBcwFYETZHdt
-dzJAaW5mcmFkZWFkLm9yZzCCAUwGA1UdIASCAUMwggE/MIIBOwYLKwYBBAGBtTcBAgMwggEqMC4G
-CCsGAQUFBwIBFiJodHRwOi8vd3d3LnN0YXJ0c3NsLmNvbS9wb2xpY3kucGRmMIH3BggrBgEFBQcC
-AjCB6jAnFiBTdGFydENvbSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTADAgEBGoG+VGhpcyBjZXJ0
-aWZpY2F0ZSB3YXMgaXNzdWVkIGFjY29yZGluZyB0byB0aGUgQ2xhc3MgMSBWYWxpZGF0aW9uIHJl
-cXVpcmVtZW50cyBvZiB0aGUgU3RhcnRDb20gQ0EgcG9saWN5LCByZWxpYW5jZSBvbmx5IGZvciB0
-aGUgaW50ZW5kZWQgcHVycG9zZSBpbiBjb21wbGlhbmNlIG9mIHRoZSByZWx5aW5nIHBhcnR5IG9i
-bGlnYXRpb25zLjA2BgNVHR8ELzAtMCugKaAnhiVodHRwOi8vY3JsLnN0YXJ0c3NsLmNvbS9jcnR1
-MS1jcmwuY3JsMIGOBggrBgEFBQcBAQSBgTB/MDkGCCsGAQUFBzABhi1odHRwOi8vb2NzcC5zdGFy
-dHNzbC5jb20vc3ViL2NsYXNzMS9jbGllbnQvY2EwQgYIKwYBBQUHMAKGNmh0dHA6Ly9haWEuc3Rh
-cnRzc2wuY29tL2NlcnRzL3N1Yi5jbGFzczEuY2xpZW50LmNhLmNydDAjBgNVHRIEHDAahhhodHRw
-Oi8vd3d3LnN0YXJ0c3NsLmNvbS8wDQYJKoZIhvcNAQEFBQADggEBAAhSw0J8jvPlwP04k5bYyf2Q
-LzPqpgRCjeN1XfloqNpTP1qv7HCaZLqVxh65fQrnqG5A8TAKIF2zMai2WDtdz74IzIfjx8Qz50L/
-BBsTooPpPx6r3KhHU5ZvWBB3G121kulwfs0Tu1VSKRjGENX9agjnLpMZsCJuojEh12zq/+6WkJuG
-ztFC6bYwaLX4jmaOqvDaOkq6EJTksnOr/BWEsUzSAFzGjNhWJI6q8YHZyZkiAH69dYETrhevVrji
-AsT9M0xIyZXvu2jvZVFjWljFjzMhUjQsRepJEbr1Ampou75YSzk0QtZG/jjIce5HjfQLd7XUyN67
-bhXkgdT2t1V1bNAxggNvMIIDawIBATCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0
-Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2
-BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMG
-hc4wCQYFKw4DAhoFAKCCAa8wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUx
-DxcNMTMwOTAyMTU0NDUzWjAjBgkqhkiG9w0BCQQxFgQUUMRzf9mzBnjSh2shG7MtIXEKzckwgaUG
-CSsGAQQBgjcQBDGBlzCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4x
-KzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0
-YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMGhc4wgacGCyqG
-SIb3DQEJEAILMYGXoIGUMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjEr
-MCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYGA1UEAxMvU3Rh
-cnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0ECAwaFzjANBgkqhkiG
-9w0BAQEFAASCAQCNoEDcWVVKC5jt8SOEE/aRVXQmdzg+b+/AeD0aVk/GU3cXiuhzfgNilPI6bYCh
-IJo7JD0ViJYZJin6ZmweUh8YD8jmkBJFnGgHqthN6X0c6FwS2z1wUbo9bN0SYZycujqNTG67C0VP
-c18KLrcONlwoJowgcsVgCN64qiTpOnibmqCO68hH2QiNQrnJ7DFe2w8WP766AnxfBntZ7R6zedLt
-Bd3ImXT0xfDscgnUmig1l8d7eK4pdPV6J4KWfsk292JE79xCLYhgY9APe2s6YjlF613QipFIM+sm
-FWgL2F0TJtsubvoeNiGF1/zpBXzt+bmvGgDcinjkam46+F25L5IwAAAAAAAA
-
-
---=-6uSElzkXTJeapGakZ08x--
+I'm a bit short on time these days, how about I send the first one
+for the stub !OF addition and on top of that you send the atmel
+patches?
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
