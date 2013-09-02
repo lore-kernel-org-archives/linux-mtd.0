@@ -1,20 +1,26 @@
-Message-ID: <522437E8.1050604@atmel.com>
-Date: Mon, 2 Sep 2013 15:02:00 +0800
-From: Josh Wu <josh.wu@atmel.com>
+Received: from mail1.bemta12.messagelabs.com ([216.82.251.1])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VGPGG-0000re-Ob
+ for linux-mtd@lists.infradead.org; Mon, 02 Sep 2013 08:13:25 +0000
+Message-ID: <52244886.8060205@digi.com>
+Date: Mon, 2 Sep 2013 10:12:54 +0200
+From: Hector Palacios <hector.palacios@digi.com>
 MIME-Version: 1.0
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH] mtd: atmel_nand: fix the warning when CONFIG_OF is not
- defined
-References: <1375846569-9499-1-git-send-email-josh.wu@atmel.com>
- <1377894233.22372.86.camel@shinybook.infradead.org>
- <20130831170422.GA21617@localhost>
-In-Reply-To: <20130831170422.GA21617@localhost>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To: Huang Shijie <shijie8@gmail.com>
+Subject: Re: gpmi-nand driver and jffs2 support
+References: <522062B4.4080709@digi.com> <52206C05.8020701@freescale.com>
+ <5220AB35.9080409@digi.com> <20130831025344.GA9971@gmail.com>
+ <5220B8F6.3080405@digi.com> <20130831033438.GA13704@gmail.com>
+ <5220C8C4.5010305@digi.com>
+ <CAOMZO5CTQZBmvQc4y761kGHWYWRXr7GwVrTuTPE+JU=bmjq62w@mail.gmail.com>
+ <5220CB56.7040505@digi.com> <20130831133728.GA22069@gmail.com>
+In-Reply-To: <20130831133728.GA22069@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: dedekind1@gmail.com, David Woodhouse <dwmw2@infradead.org>,
- nicolas.ferre@atmel.com, linux-mtd@lists.infradead.org,
- computersforpeace@gmail.com, plagnioj@jcrosoft.com,
- linux-arm-kernel@lists.infradead.org
+Cc: "fabio.estevam@freescale.com" <fabio.estevam@freescale.com>,
+ Huang Shijie <b32955@freescale.com>, Marek
+ Vasut <marex@denx.de>, Fabio Estevam <festevam@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,149 +30,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Ezequiel
+Dear Huang,
 
-On 9/1/2013 1:04 AM, Ezequiel Garcia wrote:
-> On Fri, Aug 30, 2013 at 09:23:53PM +0100, David Woodhouse wrote:
->> On Wed, 2013-08-07 at 11:36 +0800, Josh Wu wrote:
->>> This patch fix following warning:
->>>
->>> drivers/mtd/nand/atmel_nand.c:2007: warning: 'atmel_nand_nfc_match' defined but not used
->>>
->>> This patch add '#if defined(CONFIG_OF)' block to guard around the definition of
->>> atmel_nand_nfc_match, in order to avoid the warning when kernel is configurated
->>> as non-dt supported.
->> Ick. This driver is littered with CONFIG_OF checks. Yet I've just seen a
->> patch to pxa3xx_nand which *removes* ifdefs, on the basis that all the
->> of_match_ functions/macros will just 'do the right thing'. Can't we do
->> that here too? We might just need to add __maybe_unused?
+On 08/31/2013 03:37 PM, Huang Shijie wrote:
+> On Fri, Aug 30, 2013 at 06:41:58PM +0200, Hector Palacios wrote:
+>> Hi Fabio,
 >>
-> We can. We just need to provide a few dummy functions in linux/of_mtd.h
-> just like the other of_xxx() are doing. See below!
+>>>
+>>> On Fri, Aug 30, 2013 at 1:31 PM, Hector Palacios
+>>> <hector.palacios@digi.com> wrote:
+>>>> Ok I merged the linux-next MTD patches.
+>>>> This is what I get from the printk:
+>>>>
+>>>> [    0.841333] [ set_geometry_by_ecc_info ] 36, 28
 >
->>> +#if defined(CONFIG_OF)
->>>   static struct of_device_id atmel_nand_nfc_match[] = {
->>>   	{ .compatible = "atmel,sama5d3-nfc" },
->>>   	{ /* sentinel */ }
->>>   };
->>> +#endif
->> Also, why doesn't this one appear in a MODULE_DEVICE_TABLE() ?
+> ok, we have enough spare area to store the marker.
+>
+> I think this SLC should be okay with jffs2.
+>
+>>>>
+>>>> The partition now partially mounts (I can see a few of the folders and
+>>>> files) but I get thousands of errors like these:
+>>>>
+>>>> [  118.210985] jffs2: mtd->read(0x100 bytes from 0x0) returned ECC error
+>>>> [  118.255424] jffs2: mtd->read(0x1ff20 bytes from 0xe0) returned ECC error
+>>>> [  118.255561] jffs2: jffs2_scan_inode_node(): CRC failed on node at
+>>>> 0x000001ec: Read 0x00000000, calculated 0xa587e8ba
+>>>> [  118.255602] jffs2: jffs2_scan_eraseblock(): Magic bitmask 0x1985 not
+>>>> found at 0x00000234: 0x1cf7 instead
+>>>
+>>> This error is most likely because you generated a jffs2 rootfs with a
+>>> eraseblock size that does not match the one of your NAND device.
 >>
-> Indeed. And why doesn't it have a "const" keyword?
+>> No. I used 128k erase block that matches my NAND. I also checked
+>> that I can mount the jffs2 partition correctly using my v2.6.35
+>> kernel, so the partition seems to be correctly written.
+>>
+>
+> Please use following steps and try again:
+>      flash_eraseall /dev/mtdx
+>      mount -t jffs2 /dev/mtdblockx tmp
 
-Thanks to point these out.
+What's the purpose of this?
+This works and doesn't output any error but it's mounting an erased partition.
 
->
-> So, in order to remove the CONFIG_OF safely from this driver,
-> and avoid any stupid warnings, we need to first implement
-> these dummies:
->
-> --------------------------------8<-----------------------------------
-> diff --git a/include/linux/of_mtd.h b/include/linux/of_mtd.h
-> index ed7f267..66f173e 100644
-> --- a/include/linux/of_mtd.h
-> +++ b/include/linux/of_mtd.h
-> @@ -14,6 +14,21 @@
->   int of_get_nand_ecc_mode(struct device_node *np);
->   int of_get_nand_bus_width(struct device_node *np);
->   bool of_get_nand_on_flash_bbt(struct device_node *np);
-> +#else
-> +static inline int of_get_nand_ecc_mode(struct device_node *np)
-> +{
-> +	return -ENOSYS;
-> +}
-> +
-> +static inline int of_get_nand_bus_width(struct device_node *np)
-> +{
-> +	return -ENOSYS;
-> +}
-> +
-> +static inline bool of_get_nand_on_flash_bbt(struct device_node *np)
-> +{
-> +	return false;
-> +}
->   #endif
->   
->   #endif /* __LINUX_OF_MTD_H */
-> -------------------------------->8-----------------------------------
->
-> And then, with this little patch, we get rid of the ugly CONFIG_OF check
-> from the atmel_nand driver:
->
-> --------------------------------8<-----------------------------------
-> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-> index 0e365da..ac58098 100644
-> --- a/drivers/mtd/nand/atmel_nand.c
-> +++ b/drivers/mtd/nand/atmel_nand.c
-> @@ -1448,7 +1448,6 @@ static void atmel_nand_hwctl(struct mtd_info *mtd, int mode)
->   		ecc_writel(host->ecc, CR, ATMEL_ECC_RST);
->   }
->   
-> -#if defined(CONFIG_OF)
->   static int atmel_of_init_port(struct atmel_nand_host *host,
->   			      struct device_node *np)
->   {
-> @@ -1456,7 +1455,7 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
->   	u32 offset[2];
->   	int ecc_mode;
->   	struct atmel_nand_data *board = &host->board;
-> -	enum of_gpio_flags flags;
-> +	enum of_gpio_flags flags = 0;
->   
->   	if (of_property_read_u32(np, "atmel,nand-addr-offset", &val) == 0) {
->   		if (val >= 32) {
-> @@ -1539,13 +1538,6 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
->   
->   	return 0;
->   }
-> -#else
-> -static int atmel_of_init_port(struct atmel_nand_host *host,
-> -			      struct device_node *np)
-> -{
-> -	return -EINVAL;
-> -}
-> -#endif
->   
->   static int __init atmel_hw_nand_init_params(struct platform_device *pdev,
->   					 struct atmel_nand_host *host)
-> @@ -2205,14 +2197,12 @@ static int __exit atmel_nand_remove(struct platform_device *pdev)
->   	return 0;
->   }
->   
-> -#if defined(CONFIG_OF)
->   static const struct of_device_id atmel_nand_dt_ids[] = {
->   	{ .compatible = "atmel,at91rm9200-nand" },
->   	{ /* sentinel */ }
->   };
->   
->   MODULE_DEVICE_TABLE(of, atmel_nand_dt_ids);
-> -#endif
->   
->   static int atmel_nand_nfc_probe(struct platform_device *pdev)
->   {
-> @@ -2251,12 +2241,11 @@ static int atmel_nand_nfc_probe(struct platform_device *pdev)
->   	return 0;
->   }
->   
-> -#if defined(CONFIG_OF)
-> -static struct of_device_id atmel_nand_nfc_match[] = {
-> +static const struct of_device_id atmel_nand_nfc_match[] = {
->   	{ .compatible = "atmel,sama5d3-nfc" },
->   	{ /* sentinel */ }
->   };
-> -#endif
-> +MODULE_DEVICE_TABLE(of, atmel_nand_nfc_match);
->   
->   static struct platform_driver atmel_nand_nfc_driver = {
->   	.driver = {
-> -------------------------------->8-----------------------------------
->
-> Of course, these are untested. If they look OK and don't cause any trouble,
-> then I'll prepare proper patches.
+ > Keep the JFFS2_FS_DEBUG is 0.
+ > and test it again.
 
-Looks nice to me. Your proposal patch does the right thing to remove the 
-CONFIG_OF.
-So please sent them out. ;)
+JFFS2_FS_DEBUG is 0. The error messages above are printed nevertheless because they 
+are pr_notice() calls, not jffs2_dbg().
 
-Best Regards,
-Josh Wu
+Best regards,
+--
+Hector Palacios
