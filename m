@@ -1,22 +1,13 @@
-Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VGjIy-0006RX-0F
- for linux-mtd@lists.infradead.org; Tue, 03 Sep 2013 05:37:32 +0000
-Received: by mail-pa0-f45.google.com with SMTP id bg4so5946831pad.4
- for <linux-mtd@lists.infradead.org>; Mon, 02 Sep 2013 22:37:08 -0700 (PDT)
-Date: Mon, 2 Sep 2013 22:36:58 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH] of_mtd: Add no-op stubs to support CONFIG_OF=n
-Message-ID: <20130903053642.GA364@norris.computersforpeace.net>
-References: <1378175873-2763-1-git-send-email-ezequiel.garcia@free-electrons.com>
+From: Josh Wu <josh.wu@atmel.com>
+To: <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+ <dedekind1@gmail.com>
+Subject: [PATCH 1/2] mtd: atmel_nand: remove unneeded ifdef CONFIG_OF
+Date: Tue, 3 Sep 2013 17:20:27 +0800
+Message-ID: <1378200028-15415-1-git-send-email-josh.wu@atmel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1378175873-2763-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: devicetree@vger.kernel.org, Josh Wu <josh.wu@atmel.com>,
- linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain
+Cc: nicolas.ferre@atmel.com, computersforpeace@gmail.com, plagnioj@jcrosoft.com,
+ Josh Wu <josh.wu@atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,58 +17,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Sep 02, 2013 at 11:37:53PM -0300, Ezequiel Garcia wrote:
-> Just like the rest of the subsystems, let's add the required no-op
-> functions to implement stubs when CONFIG_OF=n.
-> 
-> This prevents MTD drivers from having ugly ifdefs in their code,
-> and instead hide the ifdef monster in the header closet (far away
-> from people's sight).
-> 
-> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> ---
->  include/linux/of_mtd.h | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
-> 
-> diff --git a/include/linux/of_mtd.h b/include/linux/of_mtd.h
-> index ed7f267..66f173e 100644
-> --- a/include/linux/of_mtd.h
-> +++ b/include/linux/of_mtd.h
-> @@ -14,6 +14,21 @@
->  int of_get_nand_ecc_mode(struct device_node *np);
->  int of_get_nand_bus_width(struct device_node *np);
->  bool of_get_nand_on_flash_bbt(struct device_node *np);
-> +#else
+Since following commit
+  f3b391425d21e6138e57b2432d91134e0bc2b975
+  (of_mtd: Add no-op stubs to support CONFIG_OF=n)
 
-I would include an extra line on either side of #else.
+implements the stub for CONFIG_OF=n. Now we can safely remove all
+CONFIG_OF in atmel_nand. (Thanks to Ezequiel Garcia's for this protype)
 
-> +static inline int of_get_nand_ecc_mode(struct device_node *np)
-> +{
-> +	return -ENOSYS;
-> +}
-> +
-> +static inline int of_get_nand_bus_width(struct device_node *np)
-> +{
-> +	return -ENOSYS;
-> +}
-> +
-> +static inline bool of_get_nand_on_flash_bbt(struct device_node *np)
-> +{
-> +	return false;
-> +}
->  #endif
+Signed-off-by: Josh Wu <josh.wu@atmel.com>
+---
+ drivers/mtd/nand/atmel_nand.c |   14 +-------------
+ 1 file changed, 1 insertion(+), 13 deletions(-)
 
-Although we are "hiding" the #ifdef's here in the header, we can still
-help to make them extra clear; I think the typical style is to include
-/* CONFIG_OF_MTD */ markers to show which #ifdef/#else/#endif block it
-belongs to.
-
->  
->  #endif /* __LINUX_OF_MTD_H */
-
-With this trivial changes, I amended your patch and pushed to
-l2-mtd.git. Thanks! I look forward to the following patches to remove
-some of the driver #ifdef's.
-
-Thanks,
-Brian
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index 060feea..1ca0724 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -1449,7 +1449,6 @@ static void atmel_nand_hwctl(struct mtd_info *mtd, int mode)
+ 		ecc_writel(host->ecc, CR, ATMEL_ECC_RST);
+ }
+ 
+-#if defined(CONFIG_OF)
+ static int atmel_of_init_port(struct atmel_nand_host *host,
+ 			      struct device_node *np)
+ {
+@@ -1457,7 +1456,7 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
+ 	u32 offset[2];
+ 	int ecc_mode;
+ 	struct atmel_nand_data *board = &host->board;
+-	enum of_gpio_flags flags;
++	enum of_gpio_flags flags = 0;
+ 
+ 	if (of_property_read_u32(np, "atmel,nand-addr-offset", &val) == 0) {
+ 		if (val >= 32) {
+@@ -1540,13 +1539,6 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
+ 
+ 	return 0;
+ }
+-#else
+-static int atmel_of_init_port(struct atmel_nand_host *host,
+-			      struct device_node *np)
+-{
+-	return -EINVAL;
+-}
+-#endif
+ 
+ static int __init atmel_hw_nand_init_params(struct platform_device *pdev,
+ 					 struct atmel_nand_host *host)
+@@ -2207,14 +2199,12 @@ static int __exit atmel_nand_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-#if defined(CONFIG_OF)
+ static const struct of_device_id atmel_nand_dt_ids[] = {
+ 	{ .compatible = "atmel,at91rm9200-nand" },
+ 	{ /* sentinel */ }
+ };
+ 
+ MODULE_DEVICE_TABLE(of, atmel_nand_dt_ids);
+-#endif
+ 
+ static int atmel_nand_nfc_probe(struct platform_device *pdev)
+ {
+@@ -2253,12 +2243,10 @@ static int atmel_nand_nfc_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-#if defined(CONFIG_OF)
+ static struct of_device_id atmel_nand_nfc_match[] = {
+ 	{ .compatible = "atmel,sama5d3-nfc" },
+ 	{ /* sentinel */ }
+ };
+-#endif
+ 
+ static struct platform_driver atmel_nand_nfc_driver = {
+ 	.driver = {
+-- 
+1.7.9.5
