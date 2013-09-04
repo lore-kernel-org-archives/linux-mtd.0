@@ -1,14 +1,15 @@
-Received: from mail-ie0-x22d.google.com ([2607:f8b0:4001:c03::22d])
+Received: from mail-ie0-x22e.google.com ([2607:f8b0:4001:c03::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VHHmG-0004mS-71
- for linux-mtd@lists.infradead.org; Wed, 04 Sep 2013 18:26:04 +0000
-Received: by mail-ie0-f173.google.com with SMTP id qa5so1222580ieb.4
- for <linux-mtd@lists.infradead.org>; Wed, 04 Sep 2013 11:25:43 -0700 (PDT)
+ id 1VHHmG-0004mT-TV
+ for linux-mtd@lists.infradead.org; Wed, 04 Sep 2013 18:26:05 +0000
+Received: by mail-ie0-f174.google.com with SMTP id k14so1459908iea.33
+ for <linux-mtd@lists.infradead.org>; Wed, 04 Sep 2013 11:25:45 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 01/12] nand: docg4: use nand_base's default BBT scan
-Date: Wed,  4 Sep 2013 11:25:15 -0700
-Message-Id: <1378319126-24473-2-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 02/12] mtd: nand: lpc32xx_slc: don't call nand_default_bbt
+ directly
+Date: Wed,  4 Sep 2013 11:25:16 -0700
+Message-Id: <1378319126-24473-3-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1378319126-24473-1-git-send-email-computersforpeace@gmail.com>
 References: <1378319126-24473-1-git-send-email-computersforpeace@gmail.com>
 Cc: Brian Norris <computersforpeace@gmail.com>
@@ -21,26 +22,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There's no point in the low level driver doing the work that nand_base
-already is doing; just let nand_base set the default BBT scanning
-function.
+This driver is doing some strange logic here. If it doesn't have
+flash-based BBT enabled, it allows nand_scan_tail() to scan the BBT. But
+if it is using flash-based BBT, it tells nand_scan_tail() to skip
+scanning, then it immediately calls the default BBT scanning function
+itself.
+
+As I read it, this logic is equivalent to the default nand_scan_tail()
+behavior without interfering with NAND_SKIP_BBTSCAN or calling
+nand_default_bbt() directly at all.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/nand/docg4.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/mtd/nand/lpc32xx_slc.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/docg4.c
-index 548db23..7c38b8a 100644
---- a/drivers/mtd/nand/docg4.c
-+++ b/drivers/mtd/nand/docg4.c
-@@ -1239,7 +1239,6 @@ static void __init init_mtd_structs(struct mtd_info *mtd)
- 	nand->block_markbad = docg4_block_markbad;
- 	nand->read_buf = docg4_read_buf;
- 	nand->write_buf = docg4_write_buf16;
--	nand->scan_bbt = nand_default_bbt;
- 	nand->erase_cmd = docg4_erase_block;
- 	nand->ecc.read_page = docg4_read_page;
- 	nand->ecc.write_page = docg4_write_page;
+diff --git a/drivers/mtd/nand/lpc32xx_slc.c b/drivers/mtd/nand/lpc32xx_slc.c
+index add7570..6d5f8c5 100644
+--- a/drivers/mtd/nand/lpc32xx_slc.c
++++ b/drivers/mtd/nand/lpc32xx_slc.c
+@@ -893,7 +893,6 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+ 
+ 	/* Avoid extra scan if using BBT, setup BBT support */
+ 	if (host->ncfg->use_bbt) {
+-		chip->options |= NAND_SKIP_BBTSCAN;
+ 		chip->bbt_options |= NAND_BBT_USE_FLASH;
+ 
+ 		/*
+@@ -915,13 +914,6 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+ 		goto err_exit3;
+ 	}
+ 
+-	/* Standard layout in FLASH for bad block tables */
+-	if (host->ncfg->use_bbt) {
+-		if (nand_default_bbt(mtd) < 0)
+-			dev_err(&pdev->dev,
+-			       "Error initializing default bad block tables\n");
+-	}
+-
+ 	mtd->name = "nxp_lpc3220_slc";
+ 	ppdata.of_node = pdev->dev.of_node;
+ 	res = mtd_device_parse_register(mtd, NULL, &ppdata, host->ncfg->parts,
 -- 
 1.8.4
