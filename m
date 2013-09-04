@@ -1,18 +1,27 @@
-Received: from mail-ie0-x232.google.com ([2607:f8b0:4001:c03::232])
+Received: from mail-vb0-x236.google.com ([2607:f8b0:400c:c02::236])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VHHmS-0004mc-MA
- for linux-mtd@lists.infradead.org; Wed, 04 Sep 2013 18:26:20 +0000
-Received: by mail-ie0-f178.google.com with SMTP id f4so1523897iea.9
- for <linux-mtd@lists.infradead.org>; Wed, 04 Sep 2013 11:25:55 -0700 (PDT)
+ id 1VHIAp-0005YC-40
+ for linux-mtd@lists.infradead.org; Wed, 04 Sep 2013 18:51:27 +0000
+Received: by mail-vb0-f54.google.com with SMTP id q14so449097vbe.13
+ for <linux-mtd@lists.infradead.org>; Wed, 04 Sep 2013 11:51:03 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <521EE131.8070105@freescale.com>
+References: <1377509808-29363-1-git-send-email-b32955@freescale.com>
+ <1377509808-29363-7-git-send-email-b32955@freescale.com>
+ <521D69B6.7070504@gmail.com> <521D9FCC.5010104@freescale.com>
+ <521DA6B3.9080003@gmail.com> <20130829012403.GA4254@gmail.com>
+ <521ED69F.5080203@gmail.com> <521EDD7F.2010103@freescale.com>
+ <521EE131.8070105@freescale.com>
+Date: Wed, 4 Sep 2013 11:51:01 -0700
+Message-ID: <CAN8TOE9=D_WmFD4RBf1OihVHv_oacxWwTh2a4owSwYD5QNmfTA@mail.gmail.com>
+Subject: Re: [PATCH v3 06/10] mtd: fix the wrong mtd->type for nand chip
 From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 11/12] mtd: onenand: remove unused variable assignments
-Date: Wed,  4 Sep 2013 11:25:25 -0700
-Message-Id: <1378319126-24473-12-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1378319126-24473-1-git-send-email-computersforpeace@gmail.com>
-References: <1378319126-24473-1-git-send-email-computersforpeace@gmail.com>
-Cc: Kyungmin Park <kyungmin.park@samsung.com>,
- Brian Norris <computersforpeace@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=GB2312
+Content-Transfer-Encoding: quoted-printable
+Cc: Huang Shijie <shijie8@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,79 +31,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-These variable assignments are never used (the variables are either
-never used or are overwritten before use). This resolves some compiler
-warnings like the following:
+On Wed, Aug 28, 2013 at 10:50 PM, Huang Shijie <b32955@freescale.com> wrote=
+:
+> =D3=DA 2013=C4=EA08=D4=C229=C8=D5 13:34, Huang Shijie =D0=B4=B5=C0:
+>> =D3=DA 2013=C4=EA08=D4=C229=C8=D5 13:05, Brian Norris =D0=B4=B5=C0:
+>>>
+>>> This patch (patch 6) changes the mtd->type for MLC NAND. And mtd->type =
+is
+>>> exposed to user-space via ioctl(MEMGETINFO), and (as of this patch), it=
+ is
+>>> exposed as "unknown" in sysfs.
+>>
+>> thanks.
+>>
+>> this patch changes the mtd->type for the jffs2, and the jffs2 can uses t=
+he
+>> mtd->type to do the sanity check.
 
-    drivers/mtd/onenand/onenand_base.c: In function 'flexonenand_get_boundary':
-    drivers/mtd/onenand/onenand_base.c:3532:6: warning: variable 'ret' set but not used [-Wunused-but-set-variable]
-    drivers/mtd/onenand/onenand_base.c: In function 'onenand_probe':
-    drivers/mtd/onenand/onenand_base.c:3838:6: warning: variable 'maf_id' set but not used [-Wunused-but-set-variable]
+But the key point is that not only does this change mtd->type for
+JFFS2, but it also exports this new mtd->type to user-space.
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Cc: Kyungmin Park <kyungmin.park@samsung.com>
----
- drivers/mtd/onenand/onenand_base.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+>> If without this patch, how the jffs2 can distinguish a SLC or a MLC?
 
-diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-index 7b7c1d2..1de33b5 100644
---- a/drivers/mtd/onenand/onenand_base.c
-+++ b/drivers/mtd/onenand/onenand_base.c
-@@ -3525,7 +3525,7 @@ static int flexonenand_get_boundary(struct mtd_info *mtd)
- {
- 	struct onenand_chip *this = mtd->priv;
- 	unsigned die, bdry;
--	int ret, syscfg, locked;
-+	int syscfg, locked;
- 
- 	/* Disable ECC */
- 	syscfg = this->read_word(this->base + ONENAND_REG_SYS_CFG1);
-@@ -3536,7 +3536,7 @@ static int flexonenand_get_boundary(struct mtd_info *mtd)
- 		this->wait(mtd, FL_SYNCING);
- 
- 		this->command(mtd, FLEXONENAND_CMD_READ_PI, die, 0);
--		ret = this->wait(mtd, FL_READING);
-+		this->wait(mtd, FL_READING);
- 
- 		bdry = this->read_word(this->base + ONENAND_DATARAM);
- 		if ((bdry >> FLEXONENAND_PI_UNLOCK_SHIFT) == 3)
-@@ -3546,7 +3546,7 @@ static int flexonenand_get_boundary(struct mtd_info *mtd)
- 		this->boundary[die] = bdry & FLEXONENAND_PI_MASK;
- 
- 		this->command(mtd, ONENAND_CMD_RESET, 0, 0);
--		ret = this->wait(mtd, FL_RESETING);
-+		this->wait(mtd, FL_RESETING);
- 
- 		printk(KERN_INFO "Die %d boundary: %d%s\n", die,
- 		       this->boundary[die], locked ? "(Locked)" : "(Unlocked)");
-@@ -3730,7 +3730,7 @@ static int flexonenand_set_boundary(struct mtd_info *mtd, int die,
- 
- 	/* Check is boundary is locked */
- 	this->command(mtd, FLEXONENAND_CMD_READ_PI, die, 0);
--	ret = this->wait(mtd, FL_READING);
-+	this->wait(mtd, FL_READING);
- 
- 	thisboundary = this->read_word(this->base + ONENAND_DATARAM);
- 	if ((thisboundary >> FLEXONENAND_PI_UNLOCK_SHIFT) != 3) {
-@@ -3831,7 +3831,7 @@ static int onenand_chip_probe(struct mtd_info *mtd)
- static int onenand_probe(struct mtd_info *mtd)
- {
- 	struct onenand_chip *this = mtd->priv;
--	int maf_id, dev_id, ver_id;
-+	int dev_id, ver_id;
- 	int density;
- 	int ret;
- 
-@@ -3839,8 +3839,7 @@ static int onenand_probe(struct mtd_info *mtd)
- 	if (ret)
- 		return ret;
- 
--	/* Read manufacturer and device IDs from Register */
--	maf_id = this->read_word(this->base + ONENAND_REG_MANUFACTURER_ID);
-+	/* Device and version IDs from Register */
- 	dev_id = this->read_word(this->base + ONENAND_REG_DEVICE_ID);
- 	ver_id = this->read_word(this->base + ONENAND_REG_VERSION_ID);
- 	this->technology = this->read_word(this->base + ONENAND_REG_TECHNOLOGY);
--- 
-1.8.4
+You could precede this patch with one that prevents exporting
+MTD_MLCNANDFLASH in mtd_type_show() and in ioctl(MEMGETINFO). I'm not
+saying you *must* do this, but that this side effect must be
+acknowledged and explained better, or else it seems that you don't
+understand the ramifications of your proposed changes.
+
+> hi Brian:
+>
+> I find a method to distinguish the SLC/MLC for jffs2, we can add the code
+> for jffs2:
+>   -------------------------------------------------------
+>      if (mtd->flags =3D=3D MTD_CAP_NANDFLASH) {
+>
+>              struch nand_chip *chip =3D c->mtd->priv;
+>              if (!nand_is_slc)
+>                 return -EINVAL;
+>      }
+>
+>
+>   ------------------------------------------------------
+>
+> If you think this code is okay, we can abandon serveral patches.
+
+No, we don't want to leak the mtd_info and nand_chip abstractions that
+far. I think the MTD_MLCNANDFLASH type is the right way to do this for
+the in-kernel MTD API, but it is a bigger step to automatically leak
+that to user-space.
+
+Brian
