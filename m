@@ -1,25 +1,23 @@
-Received: from mail-db8lp0187.outbound.messaging.microsoft.com
- ([213.199.154.187] helo=db8outboundpool.messaging.microsoft.com)
+Received: from mail-ie0-x230.google.com ([2607:f8b0:4001:c03::230])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VH2nS-0000o1-SE
- for linux-mtd@lists.infradead.org; Wed, 04 Sep 2013 02:26:19 +0000
-Message-ID: <52269A56.4030808@freescale.com>
-Date: Wed, 4 Sep 2013 10:26:30 +0800
-From: Huang Shijie <b32955@freescale.com>
+ id 1VH3hm-0001e7-6z
+ for linux-mtd@lists.infradead.org; Wed, 04 Sep 2013 03:24:31 +0000
+Received: by mail-ie0-f176.google.com with SMTP id s9so11615149iec.7
+ for <linux-mtd@lists.infradead.org>; Tue, 03 Sep 2013 20:24:08 -0700 (PDT)
 MIME-Version: 1.0
-To: Marek Vasut <marex@denx.de>
-Subject: Re: gpmi-nand driver and jffs2 support
-References: <522062B4.4080709@digi.com> <201309021332.34063.marex@denx.de>
- <52254432.7080502@freescale.com> <201309031353.18964.marex@denx.de>
-In-Reply-To: <201309031353.18964.marex@denx.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: "fabio.estevam@freescale.com" <fabio.estevam@freescale.com>,
- Huang Shijie <shijie8@gmail.com>,
- "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
- Hector Palacios <hector.palacios@digi.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- scottwood@freescale.com, Fabio Estevam <festevam@gmail.com>
+In-Reply-To: <1376216117-5864-1-git-send-email-wangyuhang2014@gmail.com>
+References: <1376216117-5864-1-git-send-email-wangyuhang2014@gmail.com>
+Date: Tue, 3 Sep 2013 20:24:08 -0700
+Message-ID: <CA+7tXih4XkhZ8xGcaUdGU6O4ZN1ZLfqyjb2UEKsRxsZBA+=DZw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2]spi: DUAL and QUAD support
+From: Trent Piepho <tpiepho@gmail.com>
+To: wangyuhang <wangyuhang2014@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: "spi-devel-general@lists.sourceforge.net"
+ <spi-devel-general@lists.sourceforge.net>, "Poddar,
+ Sourav" <sourav.poddar@ti.com>, "broonie@kernel.org" <broonie@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
+ Pekon" <pekon@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,24 +27,130 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B409=E6=9C=8803=E6=97=A5 19:53, Marek Vasut =E5=86=99=
-=E9=81=93:
-> questions comes to mind. Is JFFS2 support in Linux 3.7 not compatible w=
-ith JFFS2
-> in Linux -next? Is this true? Can I not mount JFFS2 partition under Lin=
-ux-next
-The jffs2 does not changed since the linux 3.7.
-All the changes happened in the drivers and mtd code.
+On Sun, Aug 11, 2013 at 3:15 AM, wangyuhang <wangyuhang2014@gmail.com> wrote:
+> fix the previous patch some mistake below:
 
-The gpmi does not support the jffs2 all the time. Only apply the slc/mlc=20
-patch set,
-the gpmi can support the jffs2.
+This isn't a very good commit message.  "the previous patch" will have
+no meaning in the kernel git repo.  The rest of the message only
+describes changes since a previous version of the patch and not the
+actual patch in full.
 
-So the jffs2 support is compatiable all the time.
+>
+> +               /* Device DUAL/QUAD mode */
+> +               prop = of_get_property(nc, "spi-tx-nbits", &len);
+
+Why not use of_property_read_u32() here?
+
+> +               if (!prop || len < sizeof(*prop)) {
+> +                       dev_err(&master->dev, "%s has no 'spi-tx-nbits' property\n",
+> +                               nc->full_name);
+> +                       spi_dev_put(spi);
+> +                       continue;
+
+So if no spi-tx-nbits property is supplied, the device is rejected and
+the loop continues to the next device entry?  This means ALL EXISTING
+DEVICE TREES with SPI devices will be rejected, since none of them
+have this new property!  Was this patch tested at all with any system
+before being accepted?
+
+> +       /* check mode to prevent that DUAL and QUAD set at the same time
+> +        */
+> +       if (((spi->mode & SPI_TX_DUAL) && (spi->mode & SPI_TX_QUAD)) ||
+> +               ((spi->mode & SPI_RX_DUAL) && (spi->mode & SPI_RX_QUAD))) {
+> +               dev_err(&spi->dev,
+> +               "setup: can not select dual and quad at the same time\n");
+> +               return -EINVAL;
+
+This test can be done with fewer operations as:
+if ((spi->mode & (SPI_TX_DUAL|SPI_TX_QUAD)) == (SPI_TX_DUAL|SPI_TX_QUAD) ||
+    (spi->mode & (SPI_RX_DUAL|SPI_RX_QUAD)) == (SPI_RX_DUAL|SPI_RX_QUAD)) {
 
 
-> that I could mount with Linux 3.7 and earlier?
-I think the mount can be succeeded.
+> +       }
+> +       /* if it is SPI_3WIRE mode, DUAL and QUAD should be forbidden
+> +        */
+> +       if ((spi->mode & SPI_3WIRE) && (spi->mode &
+> +               (SPI_TX_DUAL | SPI_TX_QUAD | SPI_RX_DUAL | SPI_RX_QUAD)))
+> +               return -EINVAL;
 
-thanks
-Huang Shijie
+No dev_err message for this possibility?  What's different than the
+previous check that does produce a message?
+
+>         /* help drivers fail *cleanly* when they need options
+>          * that aren't supported with their current master
+>          */
+Following this comment is the code:
+        bad_bits = spi->mode & ~spi->master->mode_bits;
+        if (bad_bits) {
+                dev_err(&spi->dev, "setup: unsupported mode bits %x\n",
+                        bad_bits);
+                return -EINVAL;
+        }
+
+Won't this always trigger for anything that sets one of the dual or quad bits?
+
+> @@ -1370,12 +1428,50 @@ static int __spi_async(struct spi_device *spi, struct spi_message *message)
+>         /**
+>          * Set transfer bits_per_word and max speed as spi device default if
+>          * it is not set for this transfer.
+> +        * Set transfer tx_nbits and rx_nbits as single transfer default
+> +        * (SPI_NBITS_SINGLE) if it is not set for this transfer.
+>          */
+>         list_for_each_entry(xfer, &message->transfers, transfer_list) {
+>                 if (!xfer->bits_per_word)
+>                         xfer->bits_per_word = spi->bits_per_word;
+>                 if (!xfer->speed_hz)
+>                         xfer->speed_hz = spi->max_speed_hz;
+> +               if (xfer->tx_buf && !xfer->tx_nbits)
+> +                       xfer->tx_nbits = SPI_NBITS_SINGLE;
+> +               if (xfer->rx_buf && !xfer->rx_nbits)
+> +                       xfer->rx_nbits = SPI_NBITS_SINGLE;
+> +               /* check transfer tx/rx_nbits:
+> +                * 1. keep the value is not out of single, dual and quad
+> +                * 2. keep tx/rx_nbits is contained by mode in spi_device
+> +                * 3. if SPI_3WIRE, tx/rx_nbits should be in single
+> +                */
+> +               if (xfer->tx_nbits != SPI_NBITS_SINGLE &&
+> +                       xfer->tx_nbits != SPI_NBITS_DUAL &&
+> +                       xfer->tx_nbits != SPI_NBITS_QUAD)
+> +                       return -EINVAL;
+> +               if ((xfer->tx_nbits == SPI_NBITS_DUAL) &&
+> +                       !(spi->mode & (SPI_TX_DUAL | SPI_TX_QUAD)))
+> +                       return -EINVAL;
+> +               if ((xfer->tx_nbits == SPI_NBITS_QUAD) &&
+> +                       !(spi->mode & SPI_TX_QUAD))
+> +                       return -EINVAL;
+> +               if ((spi->mode & SPI_3WIRE) &&
+> +                       (xfer->tx_nbits != SPI_NBITS_SINGLE))
+> +                       return -EINVAL;
+> +               /* check transfer rx_nbits */
+> +               if (xfer->rx_nbits != SPI_NBITS_SINGLE &&
+> +                       xfer->rx_nbits != SPI_NBITS_DUAL &&
+> +                       xfer->rx_nbits != SPI_NBITS_QUAD)
+> +                       return -EINVAL;
+> +               if ((xfer->rx_nbits == SPI_NBITS_DUAL) &&
+> +                       !(spi->mode & (SPI_RX_DUAL | SPI_RX_QUAD)))
+> +                       return -EINVAL;
+> +               if ((xfer->rx_nbits == SPI_NBITS_QUAD) &&
+> +                       !(spi->mode & SPI_RX_QUAD))
+> +                       return -EINVAL;
+> +               if ((spi->mode & SPI_3WIRE) &&
+> +                       (xfer->rx_nbits != SPI_NBITS_SINGLE))
+> +                       return -EINVAL;
+>         }
+
+What a lot of code to check the transfer bits.  It really needs this much?
+
+> @@ -511,6 +524,11 @@ struct spi_transfer {
+>         dma_addr_t      rx_dma;
+>
+>         unsigned        cs_change:1;
+> +       u8              tx_nbits;
+> +       u8              rx_nbits;
+> +#define        SPI_NBITS_SINGLE        0x01 /* 1bit transfer */
+> +#define        SPI_NBITS_DUAL          0x02 /* 2bits transfer */
+> +#define        SPI_NBITS_QUAD          0x04 /* 4bits transfer */
+
+These fields increase the size of a spi_transfer by 4 bytes.  If you
+used bitfields instead it wouldn't increase the size at all since
+there are still 7 bits left after cs_change.
