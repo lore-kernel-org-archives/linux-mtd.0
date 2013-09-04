@@ -1,18 +1,25 @@
-Message-ID: <522697E9.1050208@freescale.com>
-Date: Wed, 4 Sep 2013 10:16:09 +0800
+Received: from mail-db8lp0187.outbound.messaging.microsoft.com
+ ([213.199.154.187] helo=db8outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VH2nS-0000o1-SE
+ for linux-mtd@lists.infradead.org; Wed, 04 Sep 2013 02:26:19 +0000
+Message-ID: <52269A56.4030808@freescale.com>
+Date: Wed, 4 Sep 2013 10:26:30 +0800
 From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v3 0/8] Add the Quadspi driver for vf610-twr
-References: <1377828449-18912-1-git-send-email-b32955@freescale.com>
-In-Reply-To: <1377828449-18912-1-git-send-email-b32955@freescale.com>
-Content-Type: text/plain; charset="GB2312"
+To: Marek Vasut <marex@denx.de>
+Subject: Re: gpmi-nand driver and jffs2 support
+References: <522062B4.4080709@digi.com> <201309021332.34063.marex@denx.de>
+ <52254432.7080502@freescale.com> <201309031353.18964.marex@denx.de>
+In-Reply-To: <201309031353.18964.marex@denx.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: quoted-printable
-Cc: devicetree@vger.kernel.org, shawn.guo@linaro.org, b44548@freescale.com,
- dedekind1@gmail.com, linux-doc@vger.kernel.org, b18965@freescale.com,
- linux-spi@vger.kernel.org, broonie@kernel.org, linux-mtd@lists.infradead.org,
- kernel@pengutronix.de, lznuaa@gmail.com, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+Cc: "fabio.estevam@freescale.com" <fabio.estevam@freescale.com>,
+ Huang Shijie <shijie8@gmail.com>,
+ "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
+ Hector Palacios <hector.palacios@digi.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ scottwood@freescale.com, Fabio Estevam <festevam@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,20 +29,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=D3=DA 2013=C4=EA08=D4=C230=C8=D5 10:07, Huang Shijie =D0=B4=B5=C0:
-> (0) What is the Quadspi controller?
->
->     The Quadspi(Quad Serial Peripheral Interface) acts as an interface =
-to
->     one single or two external serial flash devices, each with up to 4
->     bidirectional data lines.
->
-Hi Mark:
+=E4=BA=8E 2013=E5=B9=B409=E6=9C=8803=E6=97=A5 19:53, Marek Vasut =E5=86=99=
+=E9=81=93:
+> questions comes to mind. Is JFFS2 support in Linux 3.7 not compatible w=
+ith JFFS2
+> in Linux -next? Is this true? Can I not mount JFFS2 partition under Lin=
+ux-next
+The jffs2 does not changed since the linux 3.7.
+All the changes happened in the drivers and mtd code.
 
-Since this quadspi driver depends on the mtd code, could this driver
-goes to the kernel by
-the l2-mtd tree?
+The gpmi does not support the jffs2 all the time. Only apply the slc/mlc=20
+patch set,
+the gpmi can support the jffs2.
 
+So the jffs2 support is compatiable all the time.
+
+
+> that I could mount with Linux 3.7 and earlier?
+I think the mount can be succeeded.
 
 thanks
 Huang Shijie
