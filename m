@@ -1,15 +1,14 @@
-Received: from mail-ie0-x229.google.com ([2607:f8b0:4001:c03::229])
+Received: from mail-ie0-x234.google.com ([2607:f8b0:4001:c03::234])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VHHmP-0004mZ-KH
- for linux-mtd@lists.infradead.org; Wed, 04 Sep 2013 18:26:15 +0000
-Received: by mail-ie0-f169.google.com with SMTP id tp5so1508655ieb.0
- for <linux-mtd@lists.infradead.org>; Wed, 04 Sep 2013 11:25:51 -0700 (PDT)
+ id 1VHHmS-0004mb-Go
+ for linux-mtd@lists.infradead.org; Wed, 04 Sep 2013 18:26:18 +0000
+Received: by mail-ie0-f180.google.com with SMTP id x14so1482321ief.11
+ for <linux-mtd@lists.infradead.org>; Wed, 04 Sep 2013 11:25:53 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 08/12] mtd: nand: don't print ONFI buswidth errors unless we
- need to
-Date: Wed,  4 Sep 2013 11:25:22 -0700
-Message-Id: <1378319126-24473-9-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 10/12] mtd: nand: remove obsolete 'ecclayout' field
+Date: Wed,  4 Sep 2013 11:25:24 -0700
+Message-Id: <1378319126-24473-11-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1378319126-24473-1-git-send-email-computersforpeace@gmail.com>
 References: <1378319126-24473-1-git-send-email-computersforpeace@gmail.com>
 Cc: Brian Norris <computersforpeace@gmail.com>
@@ -22,55 +21,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There are a few things wrong with this error message.
-
-First, it is unnecessary to print until after the READID (address 20h)
-command. READID *has* to work properly in whatever bus width
-configuration we are in, or else no identification mode works. So we can
-silence some useless warnings on systems which come up in 16-bit mode
-and do not even respond with an O-N-F-I string.
-
-Second, it doesn't read very well, and it has an extraneous exclamation.
-
-Third, it doesn't have proper multiline comment style.
-
-So, I move the whole block below the READID check and rewrite it.
+This field is never used, except to print it out.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/nand/nand_base.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/fsl_elbc_nand.c | 2 --
+ drivers/mtd/nand/fsl_ifc_nand.c  | 2 --
+ include/linux/mtd/nand.h         | 1 -
+ 3 files changed, 5 deletions(-)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 38b8dd4..8599096 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2937,17 +2937,21 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
- 	int i;
- 	int val;
+diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
+index 2065720..c6ef9f1 100644
+--- a/drivers/mtd/nand/fsl_elbc_nand.c
++++ b/drivers/mtd/nand/fsl_elbc_nand.c
+@@ -650,8 +650,6 @@ static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
+ 	        chip->page_shift);
+ 	dev_dbg(priv->dev, "fsl_elbc_init: nand->phys_erase_shift = %d\n",
+ 	        chip->phys_erase_shift);
+-	dev_dbg(priv->dev, "fsl_elbc_init: nand->ecclayout = %p\n",
+-	        chip->ecclayout);
+ 	dev_dbg(priv->dev, "fsl_elbc_init: nand->ecc.mode = %d\n",
+ 	        chip->ecc.mode);
+ 	dev_dbg(priv->dev, "fsl_elbc_init: nand->ecc.steps = %d\n",
+diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
+index 317a771..47acda6 100644
+--- a/drivers/mtd/nand/fsl_ifc_nand.c
++++ b/drivers/mtd/nand/fsl_ifc_nand.c
+@@ -718,8 +718,6 @@ static int fsl_ifc_chip_init_tail(struct mtd_info *mtd)
+ 							chip->page_shift);
+ 	dev_dbg(priv->dev, "%s: nand->phys_erase_shift = %d\n", __func__,
+ 							chip->phys_erase_shift);
+-	dev_dbg(priv->dev, "%s: nand->ecclayout = %p\n", __func__,
+-							chip->ecclayout);
+ 	dev_dbg(priv->dev, "%s: nand->ecc.mode = %d\n", __func__,
+ 							chip->ecc.mode);
+ 	dev_dbg(priv->dev, "%s: nand->ecc.steps = %d\n", __func__,
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index ac8e89d..1ef18f9 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -572,7 +572,6 @@ struct nand_chip {
  
--	/* ONFI need to be probed in 8 bits mode, and 16 bits should be selected with NAND_BUSWIDTH_AUTO */
--	if (chip->options & NAND_BUSWIDTH_16) {
--		pr_err("Trying ONFI probe in 16 bits mode, aborting !\n");
--		return 0;
--	}
- 	/* Try ONFI for unknown chip or LP */
- 	chip->cmdfunc(mtd, NAND_CMD_READID, 0x20, -1);
- 	if (chip->read_byte(mtd) != 'O' || chip->read_byte(mtd) != 'N' ||
- 		chip->read_byte(mtd) != 'F' || chip->read_byte(mtd) != 'I')
- 		return 0;
+ 	uint8_t *oob_poi;
+ 	struct nand_hw_control *controller;
+-	struct nand_ecclayout *ecclayout;
  
-+	/*
-+	 * ONFI must be probed in 8-bit mode or with NAND_BUSWIDTH_AUTO, not
-+	 * with NAND_BUSWIDTH_16
-+	 */
-+	if (chip->options & NAND_BUSWIDTH_16) {
-+		pr_err("ONFI cannot be probed in 16-bit mode; aborting\n");
-+		return 0;
-+	}
-+
- 	chip->cmdfunc(mtd, NAND_CMD_PARAM, 0, -1);
- 	for (i = 0; i < 3; i++) {
- 		chip->read_buf(mtd, (uint8_t *)p, sizeof(*p));
+ 	struct nand_ecc_ctrl ecc;
+ 	struct nand_buffers *buffers;
 -- 
 1.8.4
