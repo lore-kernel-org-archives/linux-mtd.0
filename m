@@ -1,16 +1,24 @@
-Received: from mail-db9lp0251.outbound.messaging.microsoft.com
- ([213.199.154.251] helo=db9outboundpool.messaging.microsoft.com)
+Received: from mail-pd0-x22a.google.com ([2607:f8b0:400e:c02::22a])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VH50a-0002m1-VG
- for linux-mtd@lists.infradead.org; Wed, 04 Sep 2013 04:48:02 +0000
-From: Priyanka Jain <Priyanka.Jain@freescale.com>
-To: <artem.bityutskiy@linux.intel.com>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: m25p80: Add support for Micron N25Q512A memory
-Date: Wed, 4 Sep 2013 10:16:56 +0530
-Message-ID: <1378270016-9280-1-git-send-email-Priyanka.Jain@freescale.com>
+ id 1VH7CO-0004nN-EI
+ for linux-mtd@lists.infradead.org; Wed, 04 Sep 2013 07:08:21 +0000
+Received: by mail-pd0-f170.google.com with SMTP id x10so7124525pdj.29
+ for <linux-mtd@lists.infradead.org>; Wed, 04 Sep 2013 00:07:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Priyanka Jain <Priyanka.Jain@freescale.com>
+In-Reply-To: <CA+7tXih4XkhZ8xGcaUdGU6O4ZN1ZLfqyjb2UEKsRxsZBA+=DZw@mail.gmail.com>
+References: <1376216117-5864-1-git-send-email-wangyuhang2014@gmail.com>
+ <CA+7tXih4XkhZ8xGcaUdGU6O4ZN1ZLfqyjb2UEKsRxsZBA+=DZw@mail.gmail.com>
+Date: Wed, 4 Sep 2013 15:07:58 +0800
+Message-ID: <CAHSAbzOCRhpxMzQRtD2po3LrmNExscoYESPPi_-jnZQaEBuFTg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2]spi: DUAL and QUAD support
+From: yuhang wang <wangyuhang2014@gmail.com>
+To: Trent Piepho <tpiepho@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: "spi-devel-general@lists.sourceforge.net"
+ <spi-devel-general@lists.sourceforge.net>, "Poddar,
+ Sourav" <sourav.poddar@ti.com>, "broonie@kernel.org" <broonie@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
+ Pekon" <pekon@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,28 +28,145 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Micron N25Q512A is a spi flash memory with following features:
--64MB size, 1.8V, Mulitple I/O, 4KB Sector erase memory.
--Memory is organised as 1024(64KB) main sectors.
--Each sector is divided into 256 pages.
--Register set/Opcodes are similar to other N25Q family products.
+2013/9/4 Trent Piepho <tpiepho@gmail.com>:
+> On Sun, Aug 11, 2013 at 3:15 AM, wangyuhang <wangyuhang2014@gmail.com> wrote:
+>> fix the previous patch some mistake below:
+>
+> This isn't a very good commit message.  "the previous patch" will have
+> no meaning in the kernel git repo.  The rest of the message only
+> describes changes since a previous version of the patch and not the
+> actual patch in full.
+>
+>>
+>> +               /* Device DUAL/QUAD mode */
+>> +               prop = of_get_property(nc, "spi-tx-nbits", &len);
+>
+> Why not use of_property_read_u32() here?
+>
+>> +               if (!prop || len < sizeof(*prop)) {
+>> +                       dev_err(&master->dev, "%s has no 'spi-tx-nbits' property\n",
+>> +                               nc->full_name);
+>> +                       spi_dev_put(spi);
+>> +                       continue;
+>
+> So if no spi-tx-nbits property is supplied, the device is rejected and
+> the loop continues to the next device entry?  This means ALL EXISTING
+> DEVICE TREES with SPI devices will be rejected, since none of them
+> have this new property!  Was this patch tested at all with any system
+> before being accepted?
+>
+This part has been fixed in patch[commit
+id:a822e99c70f448c4068ea85bb195dac0b2eb3afe]
 
-Signed-off-by: Priyanka Jain <Priyanka.Jain@freescale.com>
----
- drivers/mtd/devices/m25p80.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+>> +       /* check mode to prevent that DUAL and QUAD set at the same time
+>> +        */
+>> +       if (((spi->mode & SPI_TX_DUAL) && (spi->mode & SPI_TX_QUAD)) ||
+>> +               ((spi->mode & SPI_RX_DUAL) && (spi->mode & SPI_RX_QUAD))) {
+>> +               dev_err(&spi->dev,
+>> +               "setup: can not select dual and quad at the same time\n");
+>> +               return -EINVAL;
+>
+> This test can be done with fewer operations as:
+> if ((spi->mode & (SPI_TX_DUAL|SPI_TX_QUAD)) == (SPI_TX_DUAL|SPI_TX_QUAD) ||
+>     (spi->mode & (SPI_RX_DUAL|SPI_RX_QUAD)) == (SPI_RX_DUAL|SPI_RX_QUAD)) {
+>
+>
+>> +       }
+>> +       /* if it is SPI_3WIRE mode, DUAL and QUAD should be forbidden
+>> +        */
+>> +       if ((spi->mode & SPI_3WIRE) && (spi->mode &
+>> +               (SPI_TX_DUAL | SPI_TX_QUAD | SPI_RX_DUAL | SPI_RX_QUAD)))
+>> +               return -EINVAL;
+>
+> No dev_err message for this possibility?  What's different than the
+> previous check that does produce a message?
+>
+OK, should be added. Thanks.
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 26b14f9..94e3b53 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -774,6 +774,7 @@ static const struct spi_device_id m25p_ids[] = {
- 	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024, 256, 0) },
- 	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024, 256, 0) },
- 	{ "n25q256a", INFO(0x20ba19, 0, 64 * 1024, 512, SECT_4K) },
-+	{ "n25q512a", INFO(0x20bb20, 0, 64 * 1024, 512, SECT_4K) },
- 
- 	/* PMC */
- 	{ "pm25lv512", INFO(0, 0, 32 * 1024, 2, SECT_4K_PMC) },
--- 
-1.7.4.1
+>>         /* help drivers fail *cleanly* when they need options
+>>          * that aren't supported with their current master
+>>          */
+> Following this comment is the code:
+>         bad_bits = spi->mode & ~spi->master->mode_bits;
+>         if (bad_bits) {
+>                 dev_err(&spi->dev, "setup: unsupported mode bits %x\n",
+>                         bad_bits);
+>                 return -EINVAL;
+>         }
+>
+> Won't this always trigger for anything that sets one of the dual or quad bits?
+>
+I can't get your idea clearly. Please provide more infomation.
+
+>> @@ -1370,12 +1428,50 @@ static int __spi_async(struct spi_device *spi, struct spi_message *message)
+>>         /**
+>>          * Set transfer bits_per_word and max speed as spi device default if
+>>          * it is not set for this transfer.
+>> +        * Set transfer tx_nbits and rx_nbits as single transfer default
+>> +        * (SPI_NBITS_SINGLE) if it is not set for this transfer.
+>>          */
+>>         list_for_each_entry(xfer, &message->transfers, transfer_list) {
+>>                 if (!xfer->bits_per_word)
+>>                         xfer->bits_per_word = spi->bits_per_word;
+>>                 if (!xfer->speed_hz)
+>>                         xfer->speed_hz = spi->max_speed_hz;
+>> +               if (xfer->tx_buf && !xfer->tx_nbits)
+>> +                       xfer->tx_nbits = SPI_NBITS_SINGLE;
+>> +               if (xfer->rx_buf && !xfer->rx_nbits)
+>> +                       xfer->rx_nbits = SPI_NBITS_SINGLE;
+>> +               /* check transfer tx/rx_nbits:
+>> +                * 1. keep the value is not out of single, dual and quad
+>> +                * 2. keep tx/rx_nbits is contained by mode in spi_device
+>> +                * 3. if SPI_3WIRE, tx/rx_nbits should be in single
+>> +                */
+>> +               if (xfer->tx_nbits != SPI_NBITS_SINGLE &&
+>> +                       xfer->tx_nbits != SPI_NBITS_DUAL &&
+>> +                       xfer->tx_nbits != SPI_NBITS_QUAD)
+>> +                       return -EINVAL;
+>> +               if ((xfer->tx_nbits == SPI_NBITS_DUAL) &&
+>> +                       !(spi->mode & (SPI_TX_DUAL | SPI_TX_QUAD)))
+>> +                       return -EINVAL;
+>> +               if ((xfer->tx_nbits == SPI_NBITS_QUAD) &&
+>> +                       !(spi->mode & SPI_TX_QUAD))
+>> +                       return -EINVAL;
+>> +               if ((spi->mode & SPI_3WIRE) &&
+>> +                       (xfer->tx_nbits != SPI_NBITS_SINGLE))
+>> +                       return -EINVAL;
+>> +               /* check transfer rx_nbits */
+>> +               if (xfer->rx_nbits != SPI_NBITS_SINGLE &&
+>> +                       xfer->rx_nbits != SPI_NBITS_DUAL &&
+>> +                       xfer->rx_nbits != SPI_NBITS_QUAD)
+>> +                       return -EINVAL;
+>> +               if ((xfer->rx_nbits == SPI_NBITS_DUAL) &&
+>> +                       !(spi->mode & (SPI_RX_DUAL | SPI_RX_QUAD)))
+>> +                       return -EINVAL;
+>> +               if ((xfer->rx_nbits == SPI_NBITS_QUAD) &&
+>> +                       !(spi->mode & SPI_RX_QUAD))
+>> +                       return -EINVAL;
+>> +               if ((spi->mode & SPI_3WIRE) &&
+>> +                       (xfer->rx_nbits != SPI_NBITS_SINGLE))
+>> +                       return -EINVAL;
+>>         }
+>
+> What a lot of code to check the transfer bits.  It really needs this much?
+>
+This part is also corrected in patch [commit
+id:db90a44177ac39fc22b2da5235b231fccdd4c673].
+
+>> @@ -511,6 +524,11 @@ struct spi_transfer {
+>>         dma_addr_t      rx_dma;
+>>
+>>         unsigned        cs_change:1;
+>> +       u8              tx_nbits;
+>> +       u8              rx_nbits;
+>> +#define        SPI_NBITS_SINGLE        0x01 /* 1bit transfer */
+>> +#define        SPI_NBITS_DUAL          0x02 /* 2bits transfer */
+>> +#define        SPI_NBITS_QUAD          0x04 /* 4bits transfer */
+>
+> These fields increase the size of a spi_transfer by 4 bytes.  If you
+> used bitfields instead it wouldn't increase the size at all since
+> there are still 7 bits left after cs_change.
+Yes, it will increase the size by 4 bytes, but using bitfields here
+will make it logically weird. Bitfields may mean that really have the
+restriction of number of bits. If just for saving memory, then what
+about the other members such as bits_per_world, delay_usecs.
