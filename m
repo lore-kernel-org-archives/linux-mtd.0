@@ -1,9 +1,8 @@
-Message-ID: <5228369A.9000904@freescale.com>
-Date: Thu, 5 Sep 2013 15:45:30 +0800
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [PATCH v3 0/8] Add the Quadspi driver for vf610-twr
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: RE: [PATCH v3 0/8] Add the Quadspi driver for vf610-twr
+Date: Thu, 5 Sep 2013 09:11:59 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA0C907@DBDE04.ent.ti.com>
 References: <1377828449-18912-1-git-send-email-b32955@freescale.com>
  <522697E9.1050208@freescale.com> <20130904095523.GT3084@sirena.org.uk>
  <52270B8E.5080402@freescale.com> <20130904113322.GA5859@sirena.org.uk>
@@ -13,9 +12,12 @@ References: <1377828449-18912-1-git-send-email-b32955@freescale.com>
  <20980858CB6D3A4BAE95CA194937D5E73EA0C7F4@DBDE04.ent.ti.com>
  <522817D7.1010206@freescale.com>
  <20980858CB6D3A4BAE95CA194937D5E73EA0C885@DBDE04.ent.ti.com>
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA0C885@DBDE04.ent.ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
+ <5228369A.9000904@freescale.com>
+In-Reply-To: <5228369A.9000904@freescale.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
  "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
  "b44548@freescale.com" <b44548@freescale.com>,
@@ -41,88 +43,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B409=E6=9C=8805=E6=97=A5 14:32, Gupta, Pekon =E5=86=99=
-=E9=81=93:
->> =E4=BA=8E 2013=E5=B9=B409=E6=9C=8805=E6=97=A5 12:25, Gupta, Pekon =E5=86=
-=99=E9=81=93:
->>> I would rather suggest to get these values from DT bindings specific =
-to
->> could you show me what values should i set in the DT bindings?
->> The spi nor command? or the dummy? or something else?
->>
-> Taking example of READ command for S25FL128S NOR flash devices..
-> S25FL128S supports following flavors of READ modes.
-> 	4FAST_READ Read Fast (4-byte Address) 0C
-> 	4READ Read (4-byte Address) 13
-> 	4DOR Read Dual Out (4-byte Address) 3C
-> 	4QOR Read Quad Out (4-byte Address) 6C
-> 	4DIOR Dual I/O Read (4-byte Address) BC
-> 	4QIOR Quad I/O Read (4-byte Address) EC
-> 	4DDRFR Read DDR Fast (4-byte Address) 0E
-> 	4DDRDIOR DDR Dual I/O Read (4-byte Address) BE
-> 	4DDRQIOR DDR Quad I/O Read (4-byte Address) EE
->
-> But due to board constrains and your use-case, you would prefer only fe=
-w
-> read modes. Those opcodes you can specify via following DT property.
-> "qspi, flash-read-command"
->
-> Same way you can have DT property for
-> "qspi, flash-write-command"
-> "qspi, flash-erase-command"
-> "qspi, flash-address-mode" =3D<4-byte/3-byte>
-> "qspi, flash-dummy-cycles" =3D<integer>
-thanks for your suggestion.
-
-I ever thought of this solution.
-
-But i do not think this is not a good solution. :(
-
-Firstly, the NOR flash S25FL128S may be used by other boards or other=20
-platform.
-So if other person uses the S25FL128S, he has to add the SPI NOR=20
-command(such as 0xbe, 0xec),
-this is really not needed. Why not add these SPI NOR command now?
-
-
-Secondly, this controller not only needs the write/erase/read, but also=20
-need other SPI NOR commands
-such as Write-Enable/Read-status/Configurate the Register. if we add=20
-these SPI NOR commands to
-the DT binding, it will be more ugly to veryone. That's why the Patch 1=20
-is needed.
-
-
-The only value should be set in the DT is the _dummy_ value. But Add the=20
-dummy support should be an other
-patchset's job. I think it is a little complicated to add the dummy suppo=
-rt.
-
-The fast-read uses 8bit dummy, the quad-read may needs 6bit dummy, and=20
-so on..
-
-How can we transfer the dummy value to the device? Add a value to the=20
-spi_transfer{}?
-I planed to submit another patchset to fix the dummy issue, since it=20
-maybe needs more discussion,
-i did not include the dummy patches in this patch set.
-
-
-
-
-
-
-
-
-> Example: How to select opcodes in DT ?
-> (step-1) eliminate opcode which cannot be used due to board constrains.
->   your board connects only 2 data I/O between device and controller,  S=
-o you
->   cannot use any of the QUAD  Read opcodes. Thus your choice is limited=
- to
->   DUAL or SINGLE modes only.
-we have 4 data I/O lines between the device and controller, i only need=20
-the Quad mode. :)
-
-thanks
-Huang Shijie
+PiDkuo4gMjAxM+W5tDA55pyIMDXml6UgMTQ6MzIsIEd1cHRhLCBQZWtvbiDlhpnpgZM6DQo+ID4+
+IOS6jiAyMDEz5bm0MDnmnIgwNeaXpSAxMjoyNSwgR3VwdGEsIFBla29uIOWGmemBkzoNCj4gPj4+
+IEkgd291bGQgcmF0aGVyIHN1Z2dlc3QgdG8gZ2V0IHRoZXNlIHZhbHVlcyBmcm9tIERUIGJpbmRp
+bmdzIHNwZWNpZmljIHRvDQo+ID4+IGNvdWxkIHlvdSBzaG93IG1lIHdoYXQgdmFsdWVzIHNob3Vs
+ZCBpIHNldCBpbiB0aGUgRFQgYmluZGluZ3M/DQo+ID4+IFRoZSBzcGkgbm9yIGNvbW1hbmQ/IG9y
+IHRoZSBkdW1teT8gb3Igc29tZXRoaW5nIGVsc2U/DQo+ID4+DQo+ID4gVGFraW5nIGV4YW1wbGUg
+b2YgUkVBRCBjb21tYW5kIGZvciBTMjVGTDEyOFMgTk9SIGZsYXNoIGRldmljZXMuLg0KPiA+IFMy
+NUZMMTI4UyBzdXBwb3J0cyBmb2xsb3dpbmcgZmxhdm9ycyBvZiBSRUFEIG1vZGVzLg0KPiA+IAk0
+RkFTVF9SRUFEIFJlYWQgRmFzdCAoNC1ieXRlIEFkZHJlc3MpIDBDDQo+ID4gCTRSRUFEIFJlYWQg
+KDQtYnl0ZSBBZGRyZXNzKSAxMw0KPiA+IAk0RE9SIFJlYWQgRHVhbCBPdXQgKDQtYnl0ZSBBZGRy
+ZXNzKSAzQw0KPiA+IAk0UU9SIFJlYWQgUXVhZCBPdXQgKDQtYnl0ZSBBZGRyZXNzKSA2Qw0KPiA+
+IAk0RElPUiBEdWFsIEkvTyBSZWFkICg0LWJ5dGUgQWRkcmVzcykgQkMNCj4gPiAJNFFJT1IgUXVh
+ZCBJL08gUmVhZCAoNC1ieXRlIEFkZHJlc3MpIEVDDQo+ID4gCTRERFJGUiBSZWFkIEREUiBGYXN0
+ICg0LWJ5dGUgQWRkcmVzcykgMEUNCj4gPiAJNEREUkRJT1IgRERSIER1YWwgSS9PIFJlYWQgKDQt
+Ynl0ZSBBZGRyZXNzKSBCRQ0KPiA+IAk0RERSUUlPUiBERFIgUXVhZCBJL08gUmVhZCAoNC1ieXRl
+IEFkZHJlc3MpIEVFDQo+ID4NCj4gPiBCdXQgZHVlIHRvIGJvYXJkIGNvbnN0cmFpbnMgYW5kIHlv
+dXIgdXNlLWNhc2UsIHlvdSB3b3VsZCBwcmVmZXIgb25seSBmZXcNCj4gPiByZWFkIG1vZGVzLiBU
+aG9zZSBvcGNvZGVzIHlvdSBjYW4gc3BlY2lmeSB2aWEgZm9sbG93aW5nIERUIHByb3BlcnR5Lg0K
+PiA+ICJxc3BpLCBmbGFzaC1yZWFkLWNvbW1hbmQiDQo+ID4NCj4gPiBTYW1lIHdheSB5b3UgY2Fu
+IGhhdmUgRFQgcHJvcGVydHkgZm9yDQo+ID4gInFzcGksIGZsYXNoLXdyaXRlLWNvbW1hbmQiDQo+
+ID4gInFzcGksIGZsYXNoLWVyYXNlLWNvbW1hbmQiDQo+ID4gInFzcGksIGZsYXNoLWFkZHJlc3Mt
+bW9kZSIgPTw0LWJ5dGUvMy1ieXRlPg0KPiA+ICJxc3BpLCBmbGFzaC1kdW1teS1jeWNsZXMiID08
+aW50ZWdlcj4NCj4gdGhhbmtzIGZvciB5b3VyIHN1Z2dlc3Rpb24uDQo+IA0KPiBJIGV2ZXIgdGhv
+dWdodCBvZiB0aGlzIHNvbHV0aW9uLg0KPiANCj4gQnV0IGkgZG8gbm90IHRoaW5rIHRoaXMgaXMg
+bm90IGEgZ29vZCBzb2x1dGlvbi4gOigNCj4gDQpTb3JyeS4uIEkgZGluJ3QgbWVhbiB0byBiZSBv
+ZmZlbnNpdmUsIEkgc2hvdWxkIHJlLXdvcmQgbXkgZmVlZGJhY2sgYXMNCnlvdXIgcHJldmlvdXMg
+c29sdXRpb24gaXMgbm90IHNjYWxhYmxlLiBNeSBzdWdnZXN0aW9uIGlzIGp1c3QgYSANCmZvb2Qt
+Zm9yLXRob3VnaHQsIGFwcHJvdmFscyBmcm9tIG90aGVyIHVzZXJzIGlzIHJlcXVpcmVkIGhlcmUu
+DQoNCj4gRmlyc3RseSwgdGhlIE5PUiBmbGFzaCBTMjVGTDEyOFMgbWF5IGJlIHVzZWQgYnkgb3Ro
+ZXIgYm9hcmRzIG9yIG90aGVyDQo+IHBsYXRmb3JtLg0KPiBTbyBpZiBvdGhlciBwZXJzb24gdXNl
+cyB0aGUgUzI1RkwxMjhTLCBoZSBoYXMgdG8gYWRkIHRoZSBTUEkgTk9SDQo+IGNvbW1hbmQoc3Vj
+aCBhcyAweGJlLCAweGVjKSwNCj4gdGhpcyBpcyByZWFsbHkgbm90IG5lZWRlZC4gV2h5IG5vdCBh
+ZGQgdGhlc2UgU1BJIE5PUiBjb21tYW5kIG5vdz8NCj4gDQo+IA0KPiBTZWNvbmRseSwgdGhpcyBj
+b250cm9sbGVyIG5vdCBvbmx5IG5lZWRzIHRoZSB3cml0ZS9lcmFzZS9yZWFkLCBidXQgYWxzbw0K
+PiBuZWVkIG90aGVyIFNQSSBOT1IgY29tbWFuZHMNCj4gc3VjaCBhcyBXcml0ZS1FbmFibGUvUmVh
+ZC1zdGF0dXMvQ29uZmlndXJhdGUgdGhlIFJlZ2lzdGVyLiBpZiB3ZSBhZGQNCj4gdGhlc2UgU1BJ
+IE5PUiBjb21tYW5kcyB0bw0KPiB0aGUgRFQgYmluZGluZywgaXQgd2lsbCBiZSBtb3JlIHVnbHkg
+dG8gdmVyeW9uZS4gVGhhdCdzIHdoeSB0aGUgUGF0Y2ggMQ0KPiBpcyBuZWVkZWQuDQo+IA0KPiAN
+Cj4gVGhlIG9ubHkgdmFsdWUgc2hvdWxkIGJlIHNldCBpbiB0aGUgRFQgaXMgdGhlIF9kdW1teV8g
+dmFsdWUuIEJ1dCBBZGQgdGhlDQo+IGR1bW15IHN1cHBvcnQgc2hvdWxkIGJlIGFuIG90aGVyDQo+
+IHBhdGNoc2V0J3Mgam9iLiBJIHRoaW5rIGl0IGlzIGEgbGl0dGxlIGNvbXBsaWNhdGVkIHRvIGFk
+ZCB0aGUgZHVtbXkgc3VwcG9ydC4NCj4gDQo+IFRoZSBmYXN0LXJlYWQgdXNlcyA4Yml0IGR1bW15
+LCB0aGUgcXVhZC1yZWFkIG1heSBuZWVkcyA2Yml0IGR1bW15LCBhbmQNCj4gc28gb24uLg0KPiAN
+Cj4gSG93IGNhbiB3ZSB0cmFuc2ZlciB0aGUgZHVtbXkgdmFsdWUgdG8gdGhlIGRldmljZT8gQWRk
+IGEgdmFsdWUgdG8gdGhlDQo+IHNwaV90cmFuc2Zlcnt9Pw0KPiBJIHBsYW5lZCB0byBzdWJtaXQg
+YW5vdGhlciBwYXRjaHNldCB0byBmaXggdGhlIGR1bW15IGlzc3VlLCBzaW5jZSBpdA0KPiBtYXli
+ZSBuZWVkcyBtb3JlIGRpc2N1c3Npb24sDQo+IGkgZGlkIG5vdCBpbmNsdWRlIHRoZSBkdW1teSBw
+YXRjaGVzIGluIHRoaXMgcGF0Y2ggc2V0Lg0KPiANCk5vLCBTUEkgZ2VuZXJpYyBmcmFtZXdvcmsg
+KHN0cnVjdCBzcGlfdHJhbnNmZXIsIHNwaV9tZXNzYWdlLC4uLikNCnNob3VsZCBiZSBrZXB0IGlu
+ZGVwZW5kZW50IG9mIGFueSBNVEQgZmxhc2ggc3BlY2lmaWMgZGF0YSBoYW5kbGVycy4NCjx3YW5n
+eXVoYW5nMjAxNEBnbWFpbC5jb20+IGFkZGVkIHR3byBuZXcgZmllbGRzICh0eF9uYml0cywgcnhf
+bmJpdHMpDQp0byBzcGlfZGV2aWNlIGJlY2F1c2UgdGhvc2UgcHJvcGVydGllcyBhcmUgcGFydCBv
+ZiBTUEkgcHJvdG9jb2wuDQpCdXQsICdkdW1teV9jeWNsZXMnIGlzIG5vIHJlbGF0ZWQgdG8gU1BJ
+IHByb3RvY29sLiBTbyBpdCBzaG91bGQgYmUga2VwdCBvdXQNCm9mIFNQSSBnZW5lcmljIGZyYW1l
+d29yay4NClRoaXMgaXMgd2hlcmUgaWYgeW91IGNvdWxkIHVzZSBEVCBiYXNlZCBhcHByb2FjaCwg
+dGhpbmdzIHdvdWxkIGhhdmUgYmVlbg0Kc2ltcGxlciwgYmVjYXVzZSB5b3UgZ2l2ZSBlbmQtdXNl
+ciB0aGUgZnJlZWRvbSB0byBlbnRlciBkZXZpY2UtaW5mbyBmcm9tDQpkZXZpY2UgZGF0YXNoZWV0
+Lg0KPiANCj4gDQo+IA0KPiANCj4gDQo+IA0KPiANCj4gPiBFeGFtcGxlOiBIb3cgdG8gc2VsZWN0
+IG9wY29kZXMgaW4gRFQgPw0KPiA+IChzdGVwLTEpIGVsaW1pbmF0ZSBvcGNvZGUgd2hpY2ggY2Fu
+bm90IGJlIHVzZWQgZHVlIHRvIGJvYXJkIGNvbnN0cmFpbnMuDQo+ID4gICB5b3VyIGJvYXJkIGNv
+bm5lY3RzIG9ubHkgMiBkYXRhIEkvTyBiZXR3ZWVuIGRldmljZSBhbmQgY29udHJvbGxlciwgIFNv
+IHlvdQ0KPiA+ICAgY2Fubm90IHVzZSBhbnkgb2YgdGhlIFFVQUQgIFJlYWQgb3Bjb2Rlcy4gVGh1
+cyB5b3VyIGNob2ljZSBpcyBsaW1pdGVkIHRvDQo+ID4gICBEVUFMIG9yIFNJTkdMRSBtb2RlcyBv
+bmx5Lg0KPiB3ZSBoYXZlIDQgZGF0YSBJL08gbGluZXMgYmV0d2VlbiB0aGUgZGV2aWNlIGFuZCBj
+b250cm9sbGVyLCBpIG9ubHkgbmVlZA0KPiB0aGUgUXVhZCBtb2RlLiA6KQ0KPiANCk1heSBiZSBi
+ZWNhdXNlIHlvdSBhcmUgY3VycmVudGx5IHdvcmtpbmcgb24gYSBkZXZlbG9wbWVudCBFVk0gb3IN
+CmRlbW8gYm9hcmQsIHNvIHlvdSBjYW4gbGl2ZSB3aXRoIFFVQUQgbW9kZS4NCkJ1dCB3aGVuIGN1
+c3RvbWVyIHdpbGwgaGF2ZSBjdXN0b20gYm9hcmRzIHdpdGggZGlmZmVyZW50IFFTUEkgZGV2aWNl
+cyANCnRoZW4geW91IHdvdWxkIGVuZC11cCAgc3VwcG9ydGluZyBhbGwgc29ydHMgb2YgY29uZmln
+dXJhdGlvbnMgOi0pDQpBbmQgaW4gcHJvZHVjdGlvbiBzY2VuYXJpb3MsIGl04oCZcyB0aGUgcHJp
+Y2UgZWNvbm9taWNzIHdoaWNoIG1vc3RseSBkb21pbmF0ZXMNCndoaWNoIHBhcnQgdG8gY2hvb3Nl
+IGFuZCBob3cgdG8gY29ubmVjdCBpdCBvbiBib2FyZC4NCkxpa2UgYXMgSSByZW1lbWJlciBzb21l
+IGZyZWVzY2FsZSBib2FyZHMgaGF2ZSBXSU5CT05EIFFTUEkgZmxhc2gNCndoaWNoIHVzZXMgZGlm
+ZmVyZW50IG9wY29kZXMgYW5kIHNlbWFudGljcywgc28geW91IG1pZ2h0IG5lZWQgdG8gc3VwcG9y
+dA0KdGhhdCB0b28gaW4gZnV0dXJlLg0KDQpTbyBteSBzdWdnZXN0aW9uIGlzIHRoaW5rIGFnYWlu
+LiBBcyB5b3UgYXJlIGludml0aW5nIGxvdCBvZiByZS13b3JrIGZvciB5b3Vyc2VsZg0KYW5kIGZv
+ciBvdGhlcnMgdG9vIDotKQ0KDQpBbnl3YXksIGlmIHlvdSByZWFsbHkgd2FudCB0byBjb250aW51
+ZSB3aXRoIHRoaXMgaXMsIHRoZW4gcGxlYXNlIHJlLW5hbWUNCmluY2x1ZGUvbGludXgvbXRkL3Nw
+aS1ub3IuaCB0bw0KaW5jbHVkZS9saW51eC9tdGQvc3BpLWZzbC1xdWFkc3BpLmgNCmJlY2F1c2Ug
+c29tZXRoaW5nIHNwZWNpZmljIGZvciB5b3VyIGRyaXZlciBzaG91bGQgbm90IGNvbmZsaWN0IHdp
+dGgNCmdlbmVyaWMgc3BpLW5vciBmcmFtZXdvcmsgYWRkZWQgbGF0ZXIuDQoNCndpdGggcmVnYXJk
+cywgcGVrb24NCg==
