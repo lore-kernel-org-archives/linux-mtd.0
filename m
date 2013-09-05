@@ -1,22 +1,36 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VHSmO-0000Ej-RD
- for linux-mtd@lists.infradead.org; Thu, 05 Sep 2013 06:10:58 +0000
-Message-ID: <52282019.6020700@nod.at>
-Date: Thu, 05 Sep 2013 08:09:29 +0200
-From: Richard Weinberger <richard@nod.at>
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Huang Shijie <b32955@freescale.com>, Huang Shijie <shijie8@gmail.com>
+Subject: RE: [PATCH v3 0/8] Add the Quadspi driver for vf610-twr
+Date: Thu, 5 Sep 2013 06:32:58 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA0C885@DBDE04.ent.ti.com>
+References: <1377828449-18912-1-git-send-email-b32955@freescale.com>
+ <522697E9.1050208@freescale.com> <20130904095523.GT3084@sirena.org.uk>
+ <52270B8E.5080402@freescale.com> <20130904113322.GA5859@sirena.org.uk>
+ <20130905014350.GA2261@gmail.com>
+ <593AEF6C47F46446852B067021A273D6D984000B@MUCSE039.lantiq.com>
+ <20130905020435.GA3970@gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA0C7F4@DBDE04.ent.ti.com>
+ <522817D7.1010206@freescale.com>
+In-Reply-To: <522817D7.1010206@freescale.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-To: David Mosberger-Tang <dmosberger@gmail.com>
-Subject: Re: [PATCH] UBI: fix refill_wl_user_pool()
-References: <1377511730-14834-1-git-send-email-richard@nod.at>
- <5226ED69.8080506@nod.at>
- <CACwUX0PZ4RY6JDvOo7KS_rAFtUrUjPYmm2PG-PENMSkXq3CiSQ@mail.gmail.com>
- <52275960.20309@nod.at>
- <CACwUX0P5+bCbQMg=pYV8jQ7KGUEGSkdTyyHRhUDGxi5j0YbQTw@mail.gmail.com>
-In-Reply-To: <CACwUX0P5+bCbQMg=pYV8jQ7KGUEGSkdTyyHRhUDGxi5j0YbQTw@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "b44548@freescale.com" <b44548@freescale.com>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "b18965@freescale.com" <b18965@freescale.com>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "thomas.langer@lantiq.com" <thomas.langer@lantiq.com>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "kernel@pengutronix.de" <kernel@pengutronix.de>,
+ "lznuaa@gmail.com" <lznuaa@gmail.com>,
+ "shawn.guo@linaro.org" <shawn.guo@linaro.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,86 +40,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David,
-
-Am 04.09.2013 18:03, schrieb David Mosberger-Tang:
-> Thanks for the info.  We are not using FASTMAP, so it doesn't explain
-> what we're seeing.
-
-Maybe you are suffering from the issue fixed by:
-http://git.infradead.org/linux-ubi.git/commit/5ef4414f4bc26a19cfd5cd11aee9697a863e4d51
-
-This patch will hopefully make it into 3.12-rc1 and then back into -stable as soon as possible.
-
-Thanks,
-//richard
-
-> Best regards,
-> 
->   --david
-> 
-> On Wed, Sep 4, 2013 at 10:01 AM, Richard Weinberger <richard@nod.at> wrote:
->> David,
->>
->> Am 04.09.2013 17:50, schrieb David Mosberger-Tang:
->>> Richard,
->>>
->>> Is there more background on the bug this patch fixes?
->>> We are working on root-causing an issue where a UBIFS write fails with
->>> ENOSPC, even though there is no plausible reason that the filesystem
->>> should be out of space.  The ENOSPC errors persist across multiple
->>> reboots, only to disappear magically later on.  We haven't found a
->>> reliable way to reproduce this so far, so we're still tapping a bit in
->>> the dark.
->>
->> The said patch fixes an issue if your Kernel was build with experimental Fastmap support.
->> If you have CONFIG_MTD_UBI_FASTMAP=n you are not affected.
->>
->> Fastmap uses two pools of available PEBs. Every time a pool is filled with used PEBs
->> it writes out a new fastmap to the flash.
->> The bug in refill_wl_user_pool() was that the function did not try hard enough to get a free PEB
->> and failed too early with -ENOSPC.
->>
->> Thanks,
->> //richard
->>
->>>   --david
->>>
->>> On Wed, Sep 4, 2013 at 2:20 AM, Richard Weinberger <richard@nod.at> wrote:
->>>> Am 26.08.2013 12:08, schrieb Richard Weinberger:
->>>>> If no free PEBs are available refill_wl_user_pool() must not
->>>>> return with -ENOSPC immediately.
->>>>> It has to block till produce_free_peb() produced a free PEB.
->>>>>
->>>>> Reported-and-Tested-by: Richard Genoud <richard.genoud@gmail.com>
->>>>> Signed-off-by: Richard Weinberger <richard@nod.at>
->>>>> ---
->>>>>  drivers/mtd/ubi/wl.c | 4 ----
->>>>>  1 file changed, 4 deletions(-)
->>>>>
->>>>> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
->>>>> index c95bfb1..02317c1 100644
->>>>> --- a/drivers/mtd/ubi/wl.c
->>>>> +++ b/drivers/mtd/ubi/wl.c
->>>>> @@ -599,10 +599,6 @@ static void refill_wl_user_pool(struct ubi_device *ubi)
->>>>>       return_unused_pool_pebs(ubi, pool);
->>>>>
->>>>>       for (pool->size = 0; pool->size < pool->max_size; pool->size++) {
->>>>> -             if (!ubi->free.rb_node ||
->>>>> -                (ubi->free_count - ubi->beb_rsvd_pebs < 1))
->>>>> -                     break;
->>>>> -
->>>>>               pool->pebs[pool->size] = __wl_get_peb(ubi);
->>>>>               if (pool->pebs[pool->size] < 0)
->>>>>                       break;
->>>>>
->>>>
->>>> Artem, please don't forget do apply this patch.
->>>>
->>>> Thanks,
->>>> //richard
->>>>
->>>> ______________________________________________________
->>>> Linux MTD discussion mailing list
->>>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->>
+PiDkuo4gMjAxM+W5tDA55pyIMDXml6UgMTI6MjUsIEd1cHRhLCBQZWtvbiDlhpnpgZM6DQo+ID4g
+SSB3b3VsZCByYXRoZXIgc3VnZ2VzdCB0byBnZXQgdGhlc2UgdmFsdWVzIGZyb20gRFQgYmluZGlu
+Z3Mgc3BlY2lmaWMgdG8NCj4gY291bGQgeW91IHNob3cgbWUgd2hhdCB2YWx1ZXMgc2hvdWxkIGkg
+c2V0IGluIHRoZSBEVCBiaW5kaW5ncz8NCj4gVGhlIHNwaSBub3IgY29tbWFuZD8gb3IgdGhlIGR1
+bW15PyBvciBzb21ldGhpbmcgZWxzZT8NCj4gDQpUYWtpbmcgZXhhbXBsZSBvZiBSRUFEIGNvbW1h
+bmQgZm9yIFMyNUZMMTI4UyBOT1IgZmxhc2ggZGV2aWNlcy4uDQpTMjVGTDEyOFMgc3VwcG9ydHMg
+Zm9sbG93aW5nIGZsYXZvcnMgb2YgUkVBRCBtb2Rlcy4NCgk0RkFTVF9SRUFEIFJlYWQgRmFzdCAo
+NC1ieXRlIEFkZHJlc3MpIDBDDQoJNFJFQUQgUmVhZCAoNC1ieXRlIEFkZHJlc3MpIDEzDQoJNERP
+UiBSZWFkIER1YWwgT3V0ICg0LWJ5dGUgQWRkcmVzcykgM0MNCgk0UU9SIFJlYWQgUXVhZCBPdXQg
+KDQtYnl0ZSBBZGRyZXNzKSA2Qw0KCTRESU9SIER1YWwgSS9PIFJlYWQgKDQtYnl0ZSBBZGRyZXNz
+KSBCQw0KCTRRSU9SIFF1YWQgSS9PIFJlYWQgKDQtYnl0ZSBBZGRyZXNzKSBFQw0KCTRERFJGUiBS
+ZWFkIEREUiBGYXN0ICg0LWJ5dGUgQWRkcmVzcykgMEUNCgk0RERSRElPUiBERFIgRHVhbCBJL08g
+UmVhZCAoNC1ieXRlIEFkZHJlc3MpIEJFDQoJNEREUlFJT1IgRERSIFF1YWQgSS9PIFJlYWQgKDQt
+Ynl0ZSBBZGRyZXNzKSBFRQ0KDQpCdXQgZHVlIHRvIGJvYXJkIGNvbnN0cmFpbnMgYW5kIHlvdXIg
+dXNlLWNhc2UsIHlvdSB3b3VsZCBwcmVmZXIgb25seSBmZXcNCnJlYWQgbW9kZXMuIFRob3NlIG9w
+Y29kZXMgeW91IGNhbiBzcGVjaWZ5IHZpYSBmb2xsb3dpbmcgRFQgcHJvcGVydHkuDQoicXNwaSwg
+Zmxhc2gtcmVhZC1jb21tYW5kIg0KDQpTYW1lIHdheSB5b3UgY2FuIGhhdmUgRFQgcHJvcGVydHkg
+Zm9yDQoicXNwaSwgZmxhc2gtd3JpdGUtY29tbWFuZCINCiJxc3BpLCBmbGFzaC1lcmFzZS1jb21t
+YW5kIg0KInFzcGksIGZsYXNoLWFkZHJlc3MtbW9kZSIgPSA8NC1ieXRlLzMtYnl0ZT4NCiJxc3Bp
+LCBmbGFzaC1kdW1teS1jeWNsZXMiID0gPGludGVnZXI+DQoNCkV4YW1wbGU6IEhvdyB0byBzZWxl
+Y3Qgb3Bjb2RlcyBpbiBEVCA/DQooc3RlcC0xKSBlbGltaW5hdGUgb3Bjb2RlIHdoaWNoIGNhbm5v
+dCBiZSB1c2VkIGR1ZSB0byBib2FyZCBjb25zdHJhaW5zLg0KIHlvdXIgYm9hcmQgY29ubmVjdHMg
+b25seSAyIGRhdGEgSS9PIGJldHdlZW4gZGV2aWNlIGFuZCBjb250cm9sbGVyLCAgU28geW91DQog
+Y2Fubm90IHVzZSBhbnkgb2YgdGhlIFFVQUQgIFJlYWQgb3Bjb2Rlcy4gVGh1cyB5b3VyIGNob2lj
+ZSBpcyBsaW1pdGVkIHRvDQogRFVBTCBvciBTSU5HTEUgbW9kZXMgb25seS4NCg0KKHN0ZXAtMikg
+c2VsZWN0IG9wY29kZSBiYXNlZCBvbiB1c2UtY2FzZS4NCihhKSBUbyBtYXhpbWl6ZSB5b3VyIHRo
+cm91Z2hwdXQgeW91IHdvdWxkIG1vc3RseSB1c2UgRFVBTCByZWFkIG9wY29kZQ0KLSBmc2wtcXNw
+aSwgZmxhc2gtcmVhZC1vcGNvZGUgPSAweDNDICAvKiA0RE9SIFJlYWQgRHVhbCBPdXQgKDQtYnl0
+ZSBBZGRyZXNzKSAqLw0KLSBmc2wtcXNwaSwgZmxhc2gtcmVhZC1vcGNvZGUgPSAweEJDICAvKiA0
+RElPUiBEdWFsIEkvTyBSZWFkICg0LWJ5dGUgQWRkcmVzcykgKi8NCihiKSBCdXQgSWYgeW91IGFy
+ZSB1c2luZyBYSVAgdGhlbiB5b3Ugd291bGQgc2luZ2xlIG91dCB0bzoNCi0gZnNsLXFzcGksIGZs
+YXNoLXJlYWQtb3Bjb2RlID0gMHhCQyAgLyogNERJT1IgRHVhbCBJL08gUmVhZCAoNC1ieXRlIEFk
+ZHJlc3MpICovDQoNClRob3VnaCBJIGFncmVlLCBlbmQtdXNlciBzaG91bGQgYmUgdHJhbnNwYXJl
+bnQgb2YgYWxsIHRoZXNlLA0KYnV0IHRoaXMgaXMgYmV0dGVyIHRoYW4gYXNraW5nIHRoZW0gdG8g
+c3VibWl0IHBhdGNoZXMgZm9yIGVhY2ggbmV3IE5PUiBkZXZpY2UNCi4uQW55IHRob3VnaHRzICA/
+DQoNCndpdGggcmVnYXJkcywgcGVrb24NCg==
