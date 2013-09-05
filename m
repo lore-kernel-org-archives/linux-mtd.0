@@ -1,21 +1,35 @@
-Received: from mail-db8lp0188.outbound.messaging.microsoft.com
- ([213.199.154.188] helo=db8outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VHPNp-0005SK-Bv
- for linux-mtd@lists.infradead.org; Thu, 05 Sep 2013 02:33:22 +0000
-Message-ID: <5227EDAD.6000808@freescale.com>
-Date: Thu, 5 Sep 2013 10:34:21 +0800
-From: Huang Shijie <b32955@freescale.com>
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Huang Shijie <shijie8@gmail.com>, "thomas.langer@lantiq.com"
+ <thomas.langer@lantiq.com>
+Subject: RE: [PATCH v3 0/8] Add the Quadspi driver for vf610-twr
+Date: Thu, 5 Sep 2013 04:25:39 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA0C7F4@DBDE04.ent.ti.com>
+References: <1377828449-18912-1-git-send-email-b32955@freescale.com>
+ <522697E9.1050208@freescale.com> <20130904095523.GT3084@sirena.org.uk>
+ <52270B8E.5080402@freescale.com> <20130904113322.GA5859@sirena.org.uk>
+ <20130905014350.GA2261@gmail.com>
+ <593AEF6C47F46446852B067021A273D6D984000B@MUCSE039.lantiq.com>
+ <20130905020435.GA3970@gmail.com>
+In-Reply-To: <20130905020435.GA3970@gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 07/12] mtd: nand: return failure when failing to get ECC
- from ONFI
-References: <1378319126-24473-1-git-send-email-computersforpeace@gmail.com>
- <1378319126-24473-8-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1378319126-24473-8-git-send-email-computersforpeace@gmail.com>
-Content-Type: text/plain; charset="GB2312"
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "b44548@freescale.com" <b44548@freescale.com>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ "b18965@freescale.com" <b18965@freescale.com>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "b32955@freescale.com" <b32955@freescale.com>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "kernel@pengutronix.de" <kernel@pengutronix.de>,
+ "lznuaa@gmail.com" <lznuaa@gmail.com>,
+ "shawn.guo@linaro.org" <shawn.guo@linaro.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,51 +39,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=D3=DA 2013=C4=EA09=D4=C205=C8=D5 02:25, Brian Norris =D0=B4=B5=C0:
-> If ONFI fails to provide ECC information, we should not use it. Print
-> appropriate error messages and return.
->
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Huang Shijie <b32955@freescale.com>
-> ---
->  drivers/mtd/nand/nand_base.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.=
-c
-> index 7ed4841..38b8dd4 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -3010,8 +3010,13 @@ static int nand_flash_detect_onfi(struct mtd_inf=
-o *mtd, struct nand_chip *chip,
->  			chip->cmdfunc =3D nand_command_lp;
-> =20
->  		/* The Extended Parameter Page is supported since ONFI 2.1. */
-> -		if (nand_flash_detect_ext_param_page(mtd, chip, p))
-> -			pr_info("Failed to detect the extended param page.\n");
-> +		if (nand_flash_detect_ext_param_page(mtd, chip, p)) {
-> +			pr_info("Failed to detect ONFI extended param page\n");
-> +			return 0;
-> +		}
-> +	} else {
-> +		pr_err("Could not retrieve ONFI ECC requirements\n");
-> +		return 0;
-This return will skips the message "ONFI flash detected", could we
-remove the 'return' from this patch?
-
-most of the drivers will not use the ECC info, so i think even we fail
-to detect the ECC info
-we do not need to skip the message "ONFI flash detected".
-
-My suggestion is to use the pr_warn() to just print out the warning,
-such as:
-pr_warn("Could not retrieve ONFI ECC requirements\n");
-
-
-
-thanks
-Huang Shijie
-
->  	}
-> =20
->  	pr_info("ONFI flash detected\n");
+SGkgU2hpamllLA0KDQo+IA0KPiA+IEhlbGxvIEh1YW5nLA0KPiA+DQo+ID4gPj4gSW4gd2hhdCB3
+YXkgZG9lcyB0aGUgY29udHJvbGxlciBkcml2ZXIgZGVwZW5kIG9uIHRob3NlIGNoYW5nZXM/DQo+
+ID4gPiBUaGlzIGRyaXZlciBuZWVkcyB0aGUgc3BpIG5vciBjb21tYW5kIHRvIGZpbGwgdGhlIExV
+VCByZWdpc3Rlciwgc3VjaCBhcw0KPiA+ID4gT1BDT0RFX1dSRU4oMHgwNiksIHNvIHRoZSBwYXRj
+aCAxIG1vdmVzIHRoZSBzcGkgbm9yIGNvbW1hbmQgdG8gYQ0KPiBzZXByYXRlDQo+ID4gPiBoZWFk
+ZXIgc3BpLW5vci5oLCBhbmQgdGhpcyBkcml2ZXIgaW5jbHVkZXMgdGhpcyBuZXcgaGVhZGVyLg0K
+PiA+ID4NCj4gPiBUaGVuIHNvbWUgcXVlc3Rpb25zIGNvbWUgdXA6DQo+ID4gLSBXaHkgZG9lcyB0
+aGUgc3BpIGNvbnRyb2xsZXIgbmVlZCB0byBrbm93IHRoaXM/DQo+IFRoZSBoYXJkd2FyZSB3b3Jr
+cyBpbiB0aGlzIHdheS4NCj4gPiAtIFdoYXQgaXMgdGhpcyBMVVQgcmVnaXN0ZXIgYXQgYWxsPw0K
+PiBQbGVhc2Ugc2VlIHRoZSBwYXRjaCAxLg0KPiA+IC0gV2hhdCBoYXBwZW5zIGlmIHNvbWV0aGlu
+ZyBkaWZmZXJlbnQgdGhhdCBhIGZsYXNoIGlzIGNvbm5lY3RlZCBhbmQNCj4gPiAgICB0aGUgZGF0
+YSBzdGFydHMgd2l0aCBvbmUgb2YgdGhlc2Ugb3Bjb2Rlcz8NCj4gU3VibWl0IGEgbmV3IHBhdGNo
+IHRvIGZpeCBpdC4NCj4gDQpUaGlzIGlzIG5vdCB0aGUgY29ycmVjdCBhcHByb2FjaCwgYmVjYXVz
+ZSBmb3IgZXZlcnkgTk9SIGZsYXNoIGRldmljZQ0KdXNlciBuZWVkcyB0byBzdWJtaXQgYSBwYXRj
+aCB0byBwb3B1bGF0ZSB0aGVzZSBMVVQgd2l0aCBDTUQsIE9QRVJBTkQNCmFuZCBEVU1NWSB2YWx1
+ZXMgc3BlY2lmaWMgdG8gdGhhdCBOT1IgZGV2aWNlIGludG8gdGhlc2UgaGVhZGVyIGZpbGVzLg0K
+QXMgdGhlIHN1cHBvcnRlZCBOT1IgZGV2aWNlIGxpc3QgZ3Jvd3MsIHRoZSBoZWFkZXIgZmlsZSB3
+b3VsZCBiZWNvbWUNCnVubWFuYWdlYWJsZSBhbmQgY2x1dHRlcmVkLg0KDQpJIHdvdWxkIHJhdGhl
+ciBzdWdnZXN0IHRvIGdldCB0aGVzZSB2YWx1ZXMgZnJvbSBEVCBiaW5kaW5ncyBzcGVjaWZpYyB0
+byANCnlvdXIgZnNsLXFzcGktY29udHJvbGxlci4gVGhpcyB3YXkgeW91IHdvdWxkIHByb3ZpZGUg
+c2NhbGFiaWxpdHkgd2l0aG91dA0KYWZmZWN0aW5nIG90aGVyIGZyYW1ld29yay4gVGhpcyBzaG91
+bGQgYWxzbyBoZWxwIHlvdSB0byBrZWVwIHlvdXIgDQpNVEQgZHJpdmVyIGluZGVwZW5kZW50IG9m
+IFFTUEktY29udHJvbGxlciBkcml2ZXIuDQoNCldpdGggcmVnYXJkcywgcGVrb24NCg==
