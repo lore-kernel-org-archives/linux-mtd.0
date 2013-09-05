@@ -1,22 +1,25 @@
-From: <thomas.langer@lantiq.com>
-To: <shijie8@gmail.com>, <broonie@kernel.org>
-Subject: RE: [PATCH v3 0/8] Add the Quadspi driver for vf610-twr
-Date: Wed, 4 Sep 2013 13:45:40 +0000
-Message-ID: <593AEF6C47F46446852B067021A273D6D984000B@MUCSE039.lantiq.com>
+Date: Wed, 4 Sep 2013 22:04:37 -0400
+From: Huang Shijie <shijie8@gmail.com>
+To: thomas.langer@lantiq.com
+Subject: Re: [PATCH v3 0/8] Add the Quadspi driver for vf610-twr
+Message-ID: <20130905020435.GA3970@gmail.com>
 References: <1377828449-18912-1-git-send-email-b32955@freescale.com>
- <522697E9.1050208@freescale.com> <20130904095523.GT3084@sirena.org.uk>
- <52270B8E.5080402@freescale.com> <20130904113322.GA5859@sirena.org.uk>
+ <522697E9.1050208@freescale.com>
+ <20130904095523.GT3084@sirena.org.uk>
+ <52270B8E.5080402@freescale.com>
+ <20130904113322.GA5859@sirena.org.uk>
  <20130905014350.GA2261@gmail.com>
-In-Reply-To: <20130905014350.GA2261@gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ <593AEF6C47F46446852B067021A273D6D984000B@MUCSE039.lantiq.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <593AEF6C47F46446852B067021A273D6D984000B@MUCSE039.lantiq.com>
 Cc: devicetree@vger.kernel.org, shawn.guo@linaro.org, b44548@freescale.com,
  dedekind1@gmail.com, linux-doc@vger.kernel.org, b18965@freescale.com,
- linux-spi@vger.kernel.org, b32955@freescale.com, linux-mtd@lists.infradead.org,
- kernel@pengutronix.de, lznuaa@gmail.com, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+ linux-spi@vger.kernel.org, b32955@freescale.com, broonie@kernel.org,
+ linux-mtd@lists.infradead.org, kernel@pengutronix.de, lznuaa@gmail.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,24 +29,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG8gSHVhbmcsDQoNCkh1YW5nIFNoaWppZSB3cm90ZSBvbsKgMjAxMy0wOS0wNToNCj4gT24g
-V2VkLCBTZXAgMDQsIDIwMTMgYXQgMTI6MzM6MjJQTSArMDEwMCwgTWFyayBCcm93biB3cm90ZToN
-Cj4+IE9uIFdlZCwgU2VwIDA0LCAyMDEzIGF0IDA2OjI5OjM0UE0gKzA4MDAsIEh1YW5nIFNoaWpp
-ZSB3cm90ZToNCj4+PiDkuo4gMjAxM+W5tDA55pyIMDTml6UgMTc6NTUsIE1hcmsgQnJvd24g5YaZ
-6YGTOg0KPj4+PiBPbiBXZWQsIFNlcCAwNCwgMjAxMyBhdCAxMDoxNjowOUFNICswODAwLCBIdWFu
-ZyBTaGlqaWUgd3JvdGU6DQo+PiANCj4+Pj4+IFNpbmNlIHRoaXMgcXVhZHNwaSBkcml2ZXIgZGVw
-ZW5kcyBvbiB0aGUgbXRkIGNvZGUsIGNvdWxkIHRoaXMgZHJpdmVyDQo+Pj4+PiBnb2VzIHRvIHRo
-ZSBrZXJuZWwgYnkNCj4+Pj4+IHRoZSBsMi1tdGQgdHJlZT8NCj4+IA0KPj4+PiBXaHkgd291bGQg
-YSBTUEkgZHJpdmVyIGRlcGVuZCBvbiBNVEQ/DQo+PiANCj4+PiBUaGUgcGF0Y2ggMS00IGFyZSBm
-b3IgbTI1cDgwLmMsIGFuZCB0aGlzIHF1YWRzcGkgY29udHJvbGxlciBkcml2ZXJzDQo+Pj4gZGVw
-ZW5kcyBvbiB0aGUNCj4+PiBwYXRjaCAxLTQuDQo+PiANCj4+IEluIHdoYXQgd2F5IGRvZXMgdGhl
-IGNvbnRyb2xsZXIgZHJpdmVyIGRlcGVuZCBvbiB0aG9zZSBjaGFuZ2VzPw0KPiBUaGlzIGRyaXZl
-ciBuZWVkcyB0aGUgc3BpIG5vciBjb21tYW5kIHRvIGZpbGwgdGhlIExVVCByZWdpc3Rlciwgc3Vj
-aCBhcw0KPiBPUENPREVfV1JFTigweDA2KSwgc28gdGhlIHBhdGNoIDEgbW92ZXMgdGhlIHNwaSBu
-b3IgY29tbWFuZCB0byBhIHNlcHJhdGUNCj4gaGVhZGVyIHNwaS1ub3IuaCwgYW5kIHRoaXMgZHJp
-dmVyIGluY2x1ZGVzIHRoaXMgbmV3IGhlYWRlci4NCj4gDQpUaGVuIHNvbWUgcXVlc3Rpb25zIGNv
-bWUgdXA6IA0KLSBXaHkgZG9lcyB0aGUgc3BpIGNvbnRyb2xsZXIgbmVlZCB0byBrbm93IHRoaXM/
-DQotIFdoYXQgaXMgdGhpcyBMVVQgcmVnaXN0ZXIgYXQgYWxsPw0KLSBXaGF0IGhhcHBlbnMgaWYg
-c29tZXRoaW5nIGRpZmZlcmVudCB0aGF0IGEgZmxhc2ggaXMgY29ubmVjdGVkIGFuZCANCiAgIHRo
-ZSBkYXRhIHN0YXJ0cyB3aXRoIG9uZSBvZiB0aGVzZSBvcGNvZGVzPw0KDQpCZXN0IFJlZ2FyZHMs
-DQpUaG9tYXMNCg0KDQo=
+On Wed, Sep 04, 2013 at 01:45:40PM +0000, thomas.langer@lantiq.com wrote:
+> Hello Huang,
+> 
+> >> In what way does the controller driver depend on those changes?
+> > This driver needs the spi nor command to fill the LUT register, such as
+> > OPCODE_WREN(0x06), so the patch 1 moves the spi nor command to a seprate
+> > header spi-nor.h, and this driver includes this new header.
+> > 
+> Then some questions come up: 
+> - Why does the spi controller need to know this?
+The hardware works in this way.
+> - What is this LUT register at all?
+Please see the patch 1.
+> - What happens if something different that a flash is connected and 
+>    the data starts with one of these opcodes?
+Submit a new patch to fix it.
+
+
+thanks
+Huang Shijie
