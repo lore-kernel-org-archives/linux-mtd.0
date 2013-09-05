@@ -1,24 +1,19 @@
-Received: from mail-qe0-x234.google.com ([2607:f8b0:400d:c02::234])
+Received: from smtp.newsguy.com ([74.209.136.69])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VHdAw-0007oI-0n
- for linux-mtd@lists.infradead.org; Thu, 05 Sep 2013 17:16:58 +0000
-Received: by mail-qe0-f52.google.com with SMTP id i11so1107453qej.11
- for <linux-mtd@lists.infradead.org>; Thu, 05 Sep 2013 10:16:36 -0700 (PDT)
+ id 1VHftD-00081t-0l
+ for linux-mtd@lists.infradead.org; Thu, 05 Sep 2013 20:10:53 +0000
+Message-ID: <5228E513.90103@newsguy.com>
+Date: Thu, 05 Sep 2013 13:09:55 -0700
+From: Mike Dunn <mikedunn@newsguy.com>
 MIME-Version: 1.0
-In-Reply-To: <52282019.6020700@nod.at>
-References: <1377511730-14834-1-git-send-email-richard@nod.at>
- <5226ED69.8080506@nod.at>
- <CACwUX0PZ4RY6JDvOo7KS_rAFtUrUjPYmm2PG-PENMSkXq3CiSQ@mail.gmail.com>
- <52275960.20309@nod.at>
- <CACwUX0P5+bCbQMg=pYV8jQ7KGUEGSkdTyyHRhUDGxi5j0YbQTw@mail.gmail.com>
- <52282019.6020700@nod.at>
-Date: Thu, 5 Sep 2013 11:16:36 -0600
-Message-ID: <CACwUX0Np_Ko8HPrp1wK54a-pzeaJx+J3_jH_sMgjHmwik0J9AQ@mail.gmail.com>
-Subject: Re: [PATCH] UBI: fix refill_wl_user_pool()
-From: David Mosberger-Tang <dmosberger@gmail.com>
-To: Richard Weinberger <richard@nod.at>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 01/12] nand: docg4: use nand_base's default BBT scan
+References: <1378319126-24473-1-git-send-email-computersforpeace@gmail.com>
+ <1378319126-24473-2-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1378319126-24473-2-git-send-email-computersforpeace@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,97 +23,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The platform we're seeing this on is running an old kernel: 2.6.27.10.
-We don't know yet whether it happens on newer kernels (we are trying
-to reproduce the issue on both older and newer kernels, but that may
-take a month; so far, we have only seen the issue on systems in the
-field).
+On 09/04/2013 11:25 AM, Brian Norris wrote:
+> There's no point in the low level driver doing the work that nand_base
+> already is doing; just let nand_base set the default BBT scanning
+> function.
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> ---
+>  drivers/mtd/nand/docg4.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/docg4.c b/drivers/mtd/nand/docg4.c
+> index 548db23..7c38b8a 100644
+> --- a/drivers/mtd/nand/docg4.c
+> +++ b/drivers/mtd/nand/docg4.c
+> @@ -1239,7 +1239,6 @@ static void __init init_mtd_structs(struct mtd_info *mtd)
+>  	nand->block_markbad = docg4_block_markbad;
+>  	nand->read_buf = docg4_read_buf;
+>  	nand->write_buf = docg4_write_buf16;
+> -	nand->scan_bbt = nand_default_bbt;
+>  	nand->erase_cmd = docg4_erase_block;
+>  	nand->ecc.read_page = docg4_read_page;
+>  	nand->ecc.write_page = docg4_write_page;
+> 
 
-  --david
+Acked-by: Mike Dunn <mikedunn@newsguy.com>
 
-
-On Thu, Sep 5, 2013 at 12:09 AM, Richard Weinberger <richard@nod.at> wrote:
-> David,
->
-> Am 04.09.2013 18:03, schrieb David Mosberger-Tang:
->> Thanks for the info.  We are not using FASTMAP, so it doesn't explain
->> what we're seeing.
->
-> Maybe you are suffering from the issue fixed by:
-> http://git.infradead.org/linux-ubi.git/commit/5ef4414f4bc26a19cfd5cd11aee9697a863e4d51
->
-> This patch will hopefully make it into 3.12-rc1 and then back into -stable as soon as possible.
->
-> Thanks,
-> //richard
->
->> Best regards,
->>
->>   --david
->>
->> On Wed, Sep 4, 2013 at 10:01 AM, Richard Weinberger <richard@nod.at> wrote:
->>> David,
->>>
->>> Am 04.09.2013 17:50, schrieb David Mosberger-Tang:
->>>> Richard,
->>>>
->>>> Is there more background on the bug this patch fixes?
->>>> We are working on root-causing an issue where a UBIFS write fails with
->>>> ENOSPC, even though there is no plausible reason that the filesystem
->>>> should be out of space.  The ENOSPC errors persist across multiple
->>>> reboots, only to disappear magically later on.  We haven't found a
->>>> reliable way to reproduce this so far, so we're still tapping a bit in
->>>> the dark.
->>>
->>> The said patch fixes an issue if your Kernel was build with experimental Fastmap support.
->>> If you have CONFIG_MTD_UBI_FASTMAP=n you are not affected.
->>>
->>> Fastmap uses two pools of available PEBs. Every time a pool is filled with used PEBs
->>> it writes out a new fastmap to the flash.
->>> The bug in refill_wl_user_pool() was that the function did not try hard enough to get a free PEB
->>> and failed too early with -ENOSPC.
->>>
->>> Thanks,
->>> //richard
->>>
->>>>   --david
->>>>
->>>> On Wed, Sep 4, 2013 at 2:20 AM, Richard Weinberger <richard@nod.at> wrote:
->>>>> Am 26.08.2013 12:08, schrieb Richard Weinberger:
->>>>>> If no free PEBs are available refill_wl_user_pool() must not
->>>>>> return with -ENOSPC immediately.
->>>>>> It has to block till produce_free_peb() produced a free PEB.
->>>>>>
->>>>>> Reported-and-Tested-by: Richard Genoud <richard.genoud@gmail.com>
->>>>>> Signed-off-by: Richard Weinberger <richard@nod.at>
->>>>>> ---
->>>>>>  drivers/mtd/ubi/wl.c | 4 ----
->>>>>>  1 file changed, 4 deletions(-)
->>>>>>
->>>>>> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
->>>>>> index c95bfb1..02317c1 100644
->>>>>> --- a/drivers/mtd/ubi/wl.c
->>>>>> +++ b/drivers/mtd/ubi/wl.c
->>>>>> @@ -599,10 +599,6 @@ static void refill_wl_user_pool(struct ubi_device *ubi)
->>>>>>       return_unused_pool_pebs(ubi, pool);
->>>>>>
->>>>>>       for (pool->size = 0; pool->size < pool->max_size; pool->size++) {
->>>>>> -             if (!ubi->free.rb_node ||
->>>>>> -                (ubi->free_count - ubi->beb_rsvd_pebs < 1))
->>>>>> -                     break;
->>>>>> -
->>>>>>               pool->pebs[pool->size] = __wl_get_peb(ubi);
->>>>>>               if (pool->pebs[pool->size] < 0)
->>>>>>                       break;
->>>>>>
->>>>>
->>>>> Artem, please don't forget do apply this patch.
->>>>>
->>>>> Thanks,
->>>>> //richard
->>>>>
->>>>> ______________________________________________________
->>>>> Linux MTD discussion mailing list
->>>>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->>>
->
+Not sure why I explicitly set that.  Thanks!
