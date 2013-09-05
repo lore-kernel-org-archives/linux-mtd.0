@@ -1,27 +1,22 @@
-Received: from ch1ehsobe006.messaging.microsoft.com ([216.32.181.186]
- helo=ch1outboundpool.messaging.microsoft.com)
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VHScT-0008QQ-CA
- for linux-mtd@lists.infradead.org; Thu, 05 Sep 2013 06:00:41 +0000
-Message-ID: <52281E4B.5030901@freescale.com>
-Date: Thu, 5 Sep 2013 14:01:47 +0800
-From: Huang Shijie <b32955@freescale.com>
+ id 1VHSmO-0000Ej-RD
+ for linux-mtd@lists.infradead.org; Thu, 05 Sep 2013 06:10:58 +0000
+Message-ID: <52282019.6020700@nod.at>
+Date: Thu, 05 Sep 2013 08:09:29 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-To: Hector Palacios <hector.palacios@digi.com>
-Subject: Re: gpmi-nand driver and jffs2 support
-References: <522062B4.4080709@digi.com> <201309041600.37107.marex@denx.de>
- <20130905024145.GA5913@gmail.com> <201309041638.52680.marex@denx.de>
- <522755DC.4000301@digi.com>
-In-Reply-To: <522755DC.4000301@digi.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: Marek Vasut <marex@denx.de>,
- "fabio.estevam@freescale.com" <fabio.estevam@freescale.com>,
- Huang Shijie <shijie8@gmail.com>,
- "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "scottwood@freescale.com" <scottwood@freescale.com>,
- Fabio Estevam <festevam@gmail.com>
+To: David Mosberger-Tang <dmosberger@gmail.com>
+Subject: Re: [PATCH] UBI: fix refill_wl_user_pool()
+References: <1377511730-14834-1-git-send-email-richard@nod.at>
+ <5226ED69.8080506@nod.at>
+ <CACwUX0PZ4RY6JDvOo7KS_rAFtUrUjPYmm2PG-PENMSkXq3CiSQ@mail.gmail.com>
+ <52275960.20309@nod.at>
+ <CACwUX0P5+bCbQMg=pYV8jQ7KGUEGSkdTyyHRhUDGxi5j0YbQTw@mail.gmail.com>
+In-Reply-To: <CACwUX0P5+bCbQMg=pYV8jQ7KGUEGSkdTyyHRhUDGxi5j0YbQTw@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,116 +26,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B409=E6=9C=8804=E6=97=A5 23:46, Hector Palacios =E5=86=
-=99=E9=81=93:
-> Dear Marek,
->
-> On 09/04/2013 04:38 PM, Marek Vasut wrote:
->> Dear Huang Shijie,
+David,
+
+Am 04.09.2013 18:03, schrieb David Mosberger-Tang:
+> Thanks for the info.  We are not using FASTMAP, so it doesn't explain
+> what we're seeing.
+
+Maybe you are suffering from the issue fixed by:
+http://git.infradead.org/linux-ubi.git/commit/5ef4414f4bc26a19cfd5cd11aee9697a863e4d51
+
+This patch will hopefully make it into 3.12-rc1 and then back into -stable as soon as possible.
+
+Thanks,
+//richard
+
+> Best regards,
+> 
+>   --david
+> 
+> On Wed, Sep 4, 2013 at 10:01 AM, Richard Weinberger <richard@nod.at> wrote:
+>> David,
 >>
->>> On Wed, Sep 04, 2013 at 04:00:36PM +0200, Marek Vasut wrote:
->>>> Dear Huang Shijie,
->>>> How come hector was then able to write his JFFS2 partition ?
+>> Am 04.09.2013 17:50, schrieb David Mosberger-Tang:
+>>> Richard,
 >>>
->>> If he uses the gpmi, he should not write the JFFS2, since the gpmi
->>> does not support the jffs2. He will get the failure in the end.
+>>> Is there more background on the bug this patch fixes?
+>>> We are working on root-causing an issue where a UBIFS write fails with
+>>> ENOSPC, even though there is no plausible reason that the filesystem
+>>> should be out of space.  The ENOSPC errors persist across multiple
+>>> reboots, only to disappear magically later on.  We haven't found a
+>>> reliable way to reproduce this so far, so we're still tapping a bit in
+>>> the dark.
 >>
->> Hector, can you comment on this?
->
-> I don't think I'm following these comments. The facts are:
-> 1) A JFFS2 filesystem image written with nandwrite (mtd-utils v1.5.0)
-> a) does not mount on kernel v3.10
-> b) mounts OK on linux-next kernel (v3.12) with the patchset [1] from=20
-> Huang
-> (actually I didn't use linux-next but instead a v3.10 where I merged=20
-> all the commits done to MTD in linux-next, which are a lot).
->
-> 2) A JFFS2 filesystem image written with U-Boot v2013.01
-> a) mounts OK on old FSL kernel 2.6.35
-> b) does not mount on kernel v3.10 (neither on v3.8, I believe).
-> c) does not mount on linux-next with the patchset [1]
-The gpmi driver in FSL kernel 2.6.35 is different from the linux-next or=20
-linux v3.10.
-
-We have abandoned the old gpmi driver, and we use the same gpmi code in=20
-current FSL kernel.
-
-Since we swtich to the upstream gpmi code, and it could not support the=20
-jffs2,
-
-and that's why you mount always failed.
-
-
->
-> [1]=20
-> http://lists.infradead.org/pipermail/linux-mtd/2013-August/048360.html
->
-> Marek, could you please confirm 2b on your side, just in case I'm=20
-> doing anything wrong in my custom U-Boot?
->
->
->>>>> So the jffs2 support is compatiable all the time.
->>>>
->>>> Is the old Freescale 2.6.35 GPMI NAND format compatible with the one
->>>> after applying this patchset?
+>> The said patch fixes an issue if your Kernel was build with experimental Fastmap support.
+>> If you have CONFIG_MTD_UBI_FASTMAP=n you are not affected.
+>>
+>> Fastmap uses two pools of available PEBs. Every time a pool is filled with used PEBs
+>> it writes out a new fastmap to the flash.
+>> The bug in refill_wl_user_pool() was that the function did not try hard enough to get a free PEB
+>> and failed too early with -ENOSPC.
+>>
+>> Thanks,
+>> //richard
+>>
+>>>   --david
 >>>
->>> Not compatible.
->>>
->>> This patch set is still underreview.
->>
->> So this patch breaks compatiblity with FSL kernel release? This needs=20
->> fixing,
->> otherwise it's impossible to do a drop-in replacement for the ancient=20
->> FSL
->> kernel.
->>
->>>>>> that I could mount with Linux 3.7 and earlier?
+>>> On Wed, Sep 4, 2013 at 2:20 AM, Richard Weinberger <richard@nod.at> wrote:
+>>>> Am 26.08.2013 12:08, schrieb Richard Weinberger:
+>>>>> If no free PEBs are available refill_wl_user_pool() must not
+>>>>> return with -ENOSPC immediately.
+>>>>> It has to block till produce_free_peb() produced a free PEB.
 >>>>>
->>>>> I think the mount can be succeeded.
+>>>>> Reported-and-Tested-by: Richard Genoud <richard.genoud@gmail.com>
+>>>>> Signed-off-by: Richard Weinberger <richard@nod.at>
+>>>>> ---
+>>>>>  drivers/mtd/ubi/wl.c | 4 ----
+>>>>>  1 file changed, 4 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+>>>>> index c95bfb1..02317c1 100644
+>>>>> --- a/drivers/mtd/ubi/wl.c
+>>>>> +++ b/drivers/mtd/ubi/wl.c
+>>>>> @@ -599,10 +599,6 @@ static void refill_wl_user_pool(struct ubi_device *ubi)
+>>>>>       return_unused_pool_pebs(ubi, pool);
+>>>>>
+>>>>>       for (pool->size = 0; pool->size < pool->max_size; pool->size++) {
+>>>>> -             if (!ubi->free.rb_node ||
+>>>>> -                (ubi->free_count - ubi->beb_rsvd_pebs < 1))
+>>>>> -                     break;
+>>>>> -
+>>>>>               pool->pebs[pool->size] = __wl_get_peb(ubi);
+>>>>>               if (pool->pebs[pool->size] < 0)
+>>>>>                       break;
+>>>>>
 >>>>
->>>> Ok, does that mean that we need this patchset in U-Boot in order to
->>>> properly write JFFS2 onto GPMI NAND there? Is that the message you
->>>> wanted to relay to us?
->>>
->>> Besides this patchset, the u-boot needs more patches to sync with the
->>> kernel mtd code. Such as the full-id features.
+>>>> Artem, please don't forget do apply this patch.
+>>>>
+>>>> Thanks,
+>>>> //richard
+>>>>
+>>>> ______________________________________________________
+>>>> Linux MTD discussion mailing list
+>>>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 >>
->> Can you elaborate on this more? This is very vague, I would like to=20
->> know what
->> exactly is missing.
->
-92a2645 mtd: add 4 Toshiba nand chips for the full-id case
-ec6e87e mtd: add the support to parse out the full-id nand type
-f22d5f6 mtd: add new fields to nand_flash_dev{}
-
-2febcdf mtd: gpmi: set the BCH's geometry with the ecc info
-d1048aa mtd: add the ecc info for some full-id nand chips
-5721934 mtd: parse out the ECC info for the full-id nand chips
-2dc0bdd mtd: add ECC info for nand_flash_dev{}
-e2985fc mtd: replace the hardcode with the onfi_feature()
-6dcbe0c mtd: get the ECC info from the Extended Parameter Page
-5b40db6 mtd: add a helper to get the supported features for ONFI nand
-5138a98 mtd: add data structures for Extended Parameter Page
-10c86ba mtd: get the ECC info from the parameter page for ONFI nand
-4cfeca2 mtd: add datasheet's ECC information to nand_chip{}
-
-> Yes, please, we need more details. This seems to be related with how=20
-> the MTD drivers (in Linux and in U-Boot) access the OOB area to store=20
-> the JFFS2 cleanmarkers, right?
->
-> The error I'm receiving from the kernel is at fs/jffs2/wbuf.c
->
-> if (!oinfo || oinfo->oobavail =3D=3D 0) {
-> pr_err("inconsistent device description\n");
-> return -EINVAL;
-> }
-Before apply the patches above, the gpmi will use all the oob, so=20
-"oinfo->oobavail =3D=3D 0" becomes true.
-
-After apply the patches, the gpmi will not use all the oob for the ONFI=20
-SLC nand or the full-id nand,
-and it can supports the jffs2 when you apply the other SLC/MLC patchset.
-
-
-thanks
-Huang Shijie
