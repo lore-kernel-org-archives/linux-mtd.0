@@ -1,38 +1,24 @@
-Date: Thu, 5 Sep 2013 22:36:44 -0400
-From: Huang Shijie <shijie8@gmail.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 0/8] Add the Quadspi driver for vf610-twr
-Message-ID: <20130906023605.GA2292@gmail.com>
-References: <20130905014350.GA2261@gmail.com>
- <593AEF6C47F46446852B067021A273D6D984000B@MUCSE039.lantiq.com>
- <20130905020435.GA3970@gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA0C7F4@DBDE04.ent.ti.com>
- <522817D7.1010206@freescale.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA0C885@DBDE04.ent.ti.com>
- <5228369A.9000904@freescale.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA0C907@DBDE04.ent.ti.com>
- <52284F32.2020302@freescale.com>
- <20130905135032.GB3084@sirena.org.uk>
+Received: from mail-qe0-x234.google.com ([2607:f8b0:400d:c02::234])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VHdAw-0007oI-0n
+ for linux-mtd@lists.infradead.org; Thu, 05 Sep 2013 17:16:58 +0000
+Received: by mail-qe0-f52.google.com with SMTP id i11so1107453qej.11
+ for <linux-mtd@lists.infradead.org>; Thu, 05 Sep 2013 10:16:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20130905135032.GB3084@sirena.org.uk>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "b44548@freescale.com" <b44548@freescale.com>,
- "thomas.langer@lantiq.com" <thomas.langer@lantiq.com>,
- "b18965@freescale.com" <b18965@freescale.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- Huang Shijie <b32955@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>,
- "lznuaa@gmail.com" <lznuaa@gmail.com>,
- "shawn.guo@linaro.org" <shawn.guo@linaro.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <52282019.6020700@nod.at>
+References: <1377511730-14834-1-git-send-email-richard@nod.at>
+ <5226ED69.8080506@nod.at>
+ <CACwUX0PZ4RY6JDvOo7KS_rAFtUrUjPYmm2PG-PENMSkXq3CiSQ@mail.gmail.com>
+ <52275960.20309@nod.at>
+ <CACwUX0P5+bCbQMg=pYV8jQ7KGUEGSkdTyyHRhUDGxi5j0YbQTw@mail.gmail.com>
+ <52282019.6020700@nod.at>
+Date: Thu, 5 Sep 2013 11:16:36 -0600
+Message-ID: <CACwUX0Np_Ko8HPrp1wK54a-pzeaJx+J3_jH_sMgjHmwik0J9AQ@mail.gmail.com>
+Subject: Re: [PATCH] UBI: fix refill_wl_user_pool()
+From: David Mosberger-Tang <dmosberger@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,27 +28,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 05, 2013 at 02:50:32PM +0100, Mark Brown wrote:
-> On Thu, Sep 05, 2013 at 05:30:26PM +0800, Huang Shijie wrote:
-> > 于 2013年09月05日 17:11, Gupta, Pekon 写道:
-> 
-> > >Anyway, if you really want to continue with this is, then please re-name
-> > >include/linux/mtd/spi-nor.h to
-> > >include/linux/mtd/spi-fsl-quadspi.h
-> > >because something specific for your driver should not conflict with
-> > >generic spi-nor framework added later.
-> 
-> > i think there is no specific thing for this driver. The S25FL128S is
-> > a common flash,
-> > other person may uses it too. Could you show me what is specific?
-> 
-> > so, i prefer to spi-nor.h.
-> 
-> Looking at the current header there just seem to be defines in there, no
-> abstraction for the chips.  Perhaps that is what is missing?
-we do not need any abstraction for this chip, we only need the SPI NOR 
-commands, such as Quad read / DDR quad read.
+The platform we're seeing this on is running an old kernel: 2.6.27.10.
+We don't know yet whether it happens on newer kernels (we are trying
+to reproduce the issue on both older and newer kernels, but that may
+take a month; so far, we have only seen the issue on systems in the
+field).
+
+  --david
 
 
-thanks
-Huang Shijie
+On Thu, Sep 5, 2013 at 12:09 AM, Richard Weinberger <richard@nod.at> wrote:
+> David,
+>
+> Am 04.09.2013 18:03, schrieb David Mosberger-Tang:
+>> Thanks for the info.  We are not using FASTMAP, so it doesn't explain
+>> what we're seeing.
+>
+> Maybe you are suffering from the issue fixed by:
+> http://git.infradead.org/linux-ubi.git/commit/5ef4414f4bc26a19cfd5cd11aee9697a863e4d51
+>
+> This patch will hopefully make it into 3.12-rc1 and then back into -stable as soon as possible.
+>
+> Thanks,
+> //richard
+>
+>> Best regards,
+>>
+>>   --david
+>>
+>> On Wed, Sep 4, 2013 at 10:01 AM, Richard Weinberger <richard@nod.at> wrote:
+>>> David,
+>>>
+>>> Am 04.09.2013 17:50, schrieb David Mosberger-Tang:
+>>>> Richard,
+>>>>
+>>>> Is there more background on the bug this patch fixes?
+>>>> We are working on root-causing an issue where a UBIFS write fails with
+>>>> ENOSPC, even though there is no plausible reason that the filesystem
+>>>> should be out of space.  The ENOSPC errors persist across multiple
+>>>> reboots, only to disappear magically later on.  We haven't found a
+>>>> reliable way to reproduce this so far, so we're still tapping a bit in
+>>>> the dark.
+>>>
+>>> The said patch fixes an issue if your Kernel was build with experimental Fastmap support.
+>>> If you have CONFIG_MTD_UBI_FASTMAP=n you are not affected.
+>>>
+>>> Fastmap uses two pools of available PEBs. Every time a pool is filled with used PEBs
+>>> it writes out a new fastmap to the flash.
+>>> The bug in refill_wl_user_pool() was that the function did not try hard enough to get a free PEB
+>>> and failed too early with -ENOSPC.
+>>>
+>>> Thanks,
+>>> //richard
+>>>
+>>>>   --david
+>>>>
+>>>> On Wed, Sep 4, 2013 at 2:20 AM, Richard Weinberger <richard@nod.at> wrote:
+>>>>> Am 26.08.2013 12:08, schrieb Richard Weinberger:
+>>>>>> If no free PEBs are available refill_wl_user_pool() must not
+>>>>>> return with -ENOSPC immediately.
+>>>>>> It has to block till produce_free_peb() produced a free PEB.
+>>>>>>
+>>>>>> Reported-and-Tested-by: Richard Genoud <richard.genoud@gmail.com>
+>>>>>> Signed-off-by: Richard Weinberger <richard@nod.at>
+>>>>>> ---
+>>>>>>  drivers/mtd/ubi/wl.c | 4 ----
+>>>>>>  1 file changed, 4 deletions(-)
+>>>>>>
+>>>>>> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+>>>>>> index c95bfb1..02317c1 100644
+>>>>>> --- a/drivers/mtd/ubi/wl.c
+>>>>>> +++ b/drivers/mtd/ubi/wl.c
+>>>>>> @@ -599,10 +599,6 @@ static void refill_wl_user_pool(struct ubi_device *ubi)
+>>>>>>       return_unused_pool_pebs(ubi, pool);
+>>>>>>
+>>>>>>       for (pool->size = 0; pool->size < pool->max_size; pool->size++) {
+>>>>>> -             if (!ubi->free.rb_node ||
+>>>>>> -                (ubi->free_count - ubi->beb_rsvd_pebs < 1))
+>>>>>> -                     break;
+>>>>>> -
+>>>>>>               pool->pebs[pool->size] = __wl_get_peb(ubi);
+>>>>>>               if (pool->pebs[pool->size] < 0)
+>>>>>>                       break;
+>>>>>>
+>>>>>
+>>>>> Artem, please don't forget do apply this patch.
+>>>>>
+>>>>> Thanks,
+>>>>> //richard
+>>>>>
+>>>>> ______________________________________________________
+>>>>> Linux MTD discussion mailing list
+>>>>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>>>
+>
