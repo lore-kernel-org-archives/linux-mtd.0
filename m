@@ -1,27 +1,34 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VJOpA-0006lV-Mm
- for linux-mtd@lists.infradead.org; Tue, 10 Sep 2013 14:21:49 +0000
-Date: Tue, 10 Sep 2013 11:21:48 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Daniel Mack <zonque@gmail.com>
-Subject: Re: [RFC/PATCH v2] mtd: nand: pxa3xx: Remove redundant device probing
-Message-ID: <20130910142147.GA453@localhost>
-References: <1378811821-14766-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1378811821-14766-2-git-send-email-ezequiel.garcia@free-electrons.com>
- <522F22C9.1050305@gmail.com> <20130910135729.GA32715@localhost>
- <522F2941.4030406@gmail.com>
+Date: Tue, 10 Sep 2013 19:07:04 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Huang Shijie <b32955@freescale.com>
+Message-ID: <20130910180704.GB29403@sirena.org.uk>
+References: <593AEF6C47F46446852B067021A273D6D984000B@MUCSE039.lantiq.com>
+ <20130905020435.GA3970@gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA0C7F4@DBDE04.ent.ti.com>
+ <522817D7.1010206@freescale.com> <522D3B79.3060707@freescale.com>
+ <20130909151450.GI29403@sirena.org.uk>
+ <522EC33B.9000009@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="p4I5Bchq69Fe6bBp"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <522F2941.4030406@gmail.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, Tawfik Bayouk <tawfik@marvell.com>,
- haojian.zhuang@gmail.com, b32955@freescale.com, linux-mtd@lists.infradead.org,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>, Willy Tarreau <w@1wt.eu>
+In-Reply-To: <522EC33B.9000009@freescale.com>
+Subject: Re: [PATCH v3 0/8] Add the Quadspi driver for vf610-twr
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "b44548@freescale.com" <b44548@freescale.com>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "b18965@freescale.com" <b18965@freescale.com>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "thomas.langer@lantiq.com" <thomas.langer@lantiq.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
+ Pekon" <pekon@ti.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>,
+ "lznuaa@gmail.com" <lznuaa@gmail.com>,
+ "shawn.guo@linaro.org" <shawn.guo@linaro.org>,
+ Huang Shijie <shijie8@gmail.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,22 +38,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Sep 10, 2013 at 04:14:25PM +0200, Daniel Mack wrote:
-[..]
-> 
-> I always thought that this detail of the pxa nand driver is ugly :) But
-> I'd say before it can be merged, you need to provide code to set the
-> timing from parameters obtained from generic part.
 
-Agreed.
+--p4I5Bchq69Fe6bBp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Are you working on  this? I'd happily test more patches.
-> 
+On Tue, Sep 10, 2013 at 02:59:07PM +0800, Huang Shijie wrote:
 
-Yes, I'm working on this. I'll keep on sending patches then :-)
+> Since I do not expose any details in the spi-nor.h
+> (i only add some commands in this header), how can i hides the details
+> with an abstraction?
 
-Thanks for the test and the feedback,
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+> could you explain it more clearly?
+
+The code to work out what opcodes to send to the device should be split
+out of the device driver so that other drivers talking to these chips
+don't need to reimplement the logic and new chips with new opcodes don't
+need to be added to multiple drivers.
+
+--p4I5Bchq69Fe6bBp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSL1/FAAoJELSic+t+oim9XCEP/0H9VAyyQT+O7yKYKn22AznN
+KeE+6bofaR0/N2/FOAWp3rdqf4DIx/pohzSyHd8ZLNcQwUVXbD3gZaVvY6azcQb4
+fwzgR9nohl8iT/Lt6asx7150XVz0YRG5JyZxx/cPL6sgUsoXfA7aPQxKDabsgwXV
+/wEHgQK5of7pCR7nW3VWYqm2SZwoAqxz+cTl9QpVn3ueZYhc7KpR03Dpxpf6lD2c
+nNUQfep/ORSQoJWlQjpXFcOKtHeA7FzcaR1vwp32mobPzlrI53xJfQ9p8hcPmv2a
+1BttBs7Hie7KBAXMatZa/7mStLIaCpXRTFJ6hUlQ7P4+NXQ/uX6p6OsGT4HCmvdx
+dhKT4gZIuCspDRrwyUgZplKF3T+gB5NKUxzR+3QOVb4sDwIIKybIyFbOn0fVcEDq
+BYQMXWKlWTc9b/j8PXLFRJPkMBVDo2+0QUL24kVUZqT2w3YJySJdOLt0qjFTBQge
+QDB5YnaChZfWlsoycvXX+LGMnZ4PaTyNM9tUOpHCg4kSxqdU7zVp+m5I/i7ioaKf
+FYQolZk9ESu9GO/6vqm6FnJM+NLJODjW5x44cm0r2LXkSSVNmqyiKTDV2DtxTnx0
+iRxim48OGZg78xSvNR9m10oLEVMnIkTq5OvVdgDdn+jIadzWewfvp7KssgXKzkhB
+pvLAg6CvzqjRq7kEK7OG
+=7pQH
+-----END PGP SIGNATURE-----
+
+--p4I5Bchq69Fe6bBp--
