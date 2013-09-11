@@ -1,21 +1,24 @@
-Received: from mail-ob0-x22f.google.com ([2607:f8b0:4003:c01::22f])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VJstU-0003ki-U2
- for linux-mtd@lists.infradead.org; Wed, 11 Sep 2013 22:28:17 +0000
-Received: by mail-ob0-f175.google.com with SMTP id xn12so9011449obc.6
- for <linux-mtd@lists.infradead.org>; Wed, 11 Sep 2013 15:27:55 -0700 (PDT)
-Date: Wed, 11 Sep 2013 15:27:51 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 00/12] mtd: miscellaneous fixes
-Message-ID: <20130911222751.GD4550@ld-irv-0074.broadcom.com>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VJtQe-0004ps-JM
+ for linux-mtd@lists.infradead.org; Wed, 11 Sep 2013 23:02:33 +0000
+Date: Wed, 11 Sep 2013 20:02:38 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 07/12] mtd: nand: return failure when failing to get ECC
+ from ONFI
+Message-ID: <20130911230237.GA2430@localhost>
 References: <1378319126-24473-1-git-send-email-computersforpeace@gmail.com>
+ <1378319126-24473-8-git-send-email-computersforpeace@gmail.com>
+ <5227EDAD.6000808@freescale.com>
+ <20130911214319.GB4550@ld-irv-0074.broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1378319126-24473-1-git-send-email-computersforpeace@gmail.com>
-Cc: David Brownell <david-b@pacbell.net>, Huang Shijie <b32955@freescale.com>,
- Kyungmin Park <kyungmin.park@samsung.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20130911214319.GB4550@ld-irv-0074.broadcom.com>
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,45 +28,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Sep 04, 2013 at 11:25:14AM -0700, Brian Norris wrote:
-> Hi all,
+On Wed, Sep 11, 2013 at 02:43:19PM -0700, Brian Norris wrote:
+> On Thu, Sep 05, 2013 at 10:34:21AM +0800, Huang Shijie wrote:
+> > 于 2013年09月05日 02:25, Brian Norris 写道:
+> > > If ONFI fails to provide ECC information, we should not use it. Print
+> > > appropriate error messages and return.
+> > >
+> > > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> > > Cc: Huang Shijie <b32955@freescale.com>
+> > > ---
+> > >  drivers/mtd/nand/nand_base.c | 9 +++++++--
+> > >  1 file changed, 7 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> > > index 7ed4841..38b8dd4 100644
+> > > --- a/drivers/mtd/nand/nand_base.c
+> > > +++ b/drivers/mtd/nand/nand_base.c
+> > > @@ -3010,8 +3010,13 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+> > >  			chip->cmdfunc = nand_command_lp;
+> > >  
+> > >  		/* The Extended Parameter Page is supported since ONFI 2.1. */
+> > > -		if (nand_flash_detect_ext_param_page(mtd, chip, p))
+> > > -			pr_info("Failed to detect the extended param page.\n");
+> > > +		if (nand_flash_detect_ext_param_page(mtd, chip, p)) {
+> > > +			pr_info("Failed to detect ONFI extended param page\n");
+> > > +			return 0;
+> > > +		}
+> > > +	} else {
+> > > +		pr_err("Could not retrieve ONFI ECC requirements\n");
+> > > +		return 0;
+> > This return will skips the message "ONFI flash detected", could we
+> > remove the 'return' from this patch?
 > 
-> In poking around various drivers for my own work and for (sub)maintaining
-> MTD stuff, I found an assortment of fixes to make. Most of these should be
-> trivial and obvious, but they could use a glance by a few people. They have
-> generally been compile tested only.
+> Well, the "ONFI flash detected" message is not significant at all. In
+> fact, it is pretty useless and should just be dropped, I think. The real
+> question is whether we signal ONFI detected (return 1) or failed (return
+> 0) when ONFI doesn't report ECC properly.
 > 
-> Brian
+> There are two "return"s in my patch. Are you suggesting removing both of
+> them, and just warning the user of the failure?
 > 
-> Brian Norris (12):
->   nand: docg4: use nand_base's default BBT scan
->   mtd: nand: lpc32xx_slc: don't call nand_default_bbt directly
->   mtd: nandsim: don't call nand_default_bbt() directly
->   mtd: nand: stop exporting nand_default_bbt
->   mtd: dataflash: remove unused field
->   mtd: denali: make init function static
->   mtd: nand: return failure when failing to get ECC from ONFI
->   mtd: nand: don't print ONFI buswidth errors unless we need to
->   mtd: onenand: remove redundant offset check
->   mtd: nand: remove obsolete 'ecclayout' field
->   mtd: onenand: remove unused variable assignments
->   mtd: lpddr_cmds: make function static
+> > most of the drivers will not use the ECC info, so i think even we fail
+> > to detect the ECC info
+> > we do not need to skip the message "ONFI flash detected".
 > 
->  drivers/mtd/devices/mtd_dataflash.c |  2 --
->  drivers/mtd/lpddr/lpddr_cmds.c      |  2 +-
->  drivers/mtd/nand/denali.c           |  2 +-
->  drivers/mtd/nand/docg4.c            |  1 -
->  drivers/mtd/nand/fsl_elbc_nand.c    |  2 --
->  drivers/mtd/nand/fsl_ifc_nand.c     |  2 --
->  drivers/mtd/nand/lpc32xx_slc.c      |  8 --------
->  drivers/mtd/nand/nand_base.c        | 23 ++++++++++++++++-------
->  drivers/mtd/nand/nand_bbt.c         |  1 -
->  drivers/mtd/nand/nandsim.c          |  2 +-
->  drivers/mtd/onenand/onenand_base.c  | 17 ++++++-----------
->  include/linux/mtd/nand.h            |  1 -
->  12 files changed, 25 insertions(+), 38 deletions(-)
+> You do have a point here, that most drivers don't (yet) use the ECC
+> info.
+> 
+> > My suggestion is to use the pr_warn() to just print out the warning,
+> > such as:
+> > pr_warn("Could not retrieve ONFI ECC requirements\n");
+> 
+> I may turn both prints into warnings, drop both of the 'return 0' (at
+> least until ONFI ECC detection is more heavily relied on), and drop all
+> the prints that are done for the success case ("ONFI flash detected" and
+> "ONFI param page X valid").
+> 
 
-Pushed everything but the ONFI stuff to l2-mtd.git. I will follow up
-with a separate patch for that one.
+FWIW, I second the "drop all prints for the success case".
+We're being too verbose in MTD, printing all sorts of useless information.
 
-Brian
+Or, if some 'notification' message is considered important, then let's make
+it a pr_debug and be available for the only use case that will need it:
+debugging/development.
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
