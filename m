@@ -1,22 +1,20 @@
-Date: Wed, 11 Sep 2013 12:30:02 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Huang Shijie <b32955@freescale.com>
-Message-ID: <20130911113002.GP29403@sirena.org.uk>
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Mark Brown <broonie@kernel.org>, Huang Shijie <b32955@freescale.com>
+Subject: RE: [PATCH v3 0/8] Add the Quadspi driver for vf610-twr
+Date: Wed, 11 Sep 2013 12:26:10 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA0EAA7@DBDE04.ent.ti.com>
 References: <20130905020435.GA3970@gmail.com>
  <20980858CB6D3A4BAE95CA194937D5E73EA0C7F4@DBDE04.ent.ti.com>
  <522817D7.1010206@freescale.com> <522D3B79.3060707@freescale.com>
- <20130909151450.GI29403@sirena.org.uk>
- <522EC33B.9000009@freescale.com>
- <20130910180704.GB29403@sirena.org.uk>
- <522FD78A.6080900@freescale.com>
- <20130911104126.GN29403@sirena.org.uk>
- <52304BFF.4060007@freescale.com>
+ <20130909151450.GI29403@sirena.org.uk> <522EC33B.9000009@freescale.com>
+ <20130910180704.GB29403@sirena.org.uk> <522FD78A.6080900@freescale.com>
+ <20130911104126.GN29403@sirena.org.uk> <52304BFF.4060007@freescale.com>
+ <20130911113002.GP29403@sirena.org.uk>
+In-Reply-To: <20130911113002.GP29403@sirena.org.uk>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="uUnxkf+iQvOgVlY3"
-Content-Disposition: inline
-In-Reply-To: <52304BFF.4060007@freescale.com>
-Subject: Re: [PATCH v3 0/8] Add the Quadspi driver for vf610-twr
 Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
  "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
  "b44548@freescale.com" <b44548@freescale.com>,
@@ -26,8 +24,8 @@ Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
  "b18965@freescale.com" <b18965@freescale.com>,
  "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
  "thomas.langer@lantiq.com" <thomas.langer@lantiq.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "kernel@pengutronix.de" <kernel@pengutronix.de>,
  "lznuaa@gmail.com" <lznuaa@gmail.com>,
  "shawn.guo@linaro.org" <shawn.guo@linaro.org>,
  Huang Shijie <shijie8@gmail.com>,
@@ -41,45 +39,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
---uUnxkf+iQvOgVlY3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Sep 11, 2013 at 06:54:55PM +0800, Huang Shijie wrote:
-
-> The LUT registers needs to be filled with the SPI NOR command, such
-> Fast-read/Quad-read.
-> So the Quadspi driver needs to know the spi commands, and that's why the
-> SPI driver has
-> references to the spi command opcodes.
-
-Indeed - what I was wondering was if those opcodes could be requested
-=66rom the flash driver rather than coded in there.  The driver needs to
-write the commands to the device but it's not clear to me if it really
-needs to know the specific commands.
-
---uUnxkf+iQvOgVlY3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.21 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSMFQ3AAoJELSic+t+oim99JQP/jxDl9TG6UWgNRWyDbmBdjOP
-wmMAPIyJ0CXKGZioRHXlW3BCfDZRVZOT6+OXPH41uyHDzV/KucLe+hrSBbaXUdIW
-k5+sZAdfPQeWxx64vYaCbzGM8addTWvoHPj9cjiIU1SgPhQrRCtwTKAU9JW8DnIV
-YTaNfw6fnOFKJfLL/lCmVb0EeTvtApp6BpBBJY5Z+cXNrIpo+dsJ1i+zOb97+xfJ
-q8RkC1wuZ+zJs457/ucgNrRhKG+ys3UQdfUQ/NG/Nn7iohyHxtpG+EIf67R0UBui
-hjcC6hrZEWGDI/GZ+K3Sc6YdtWKU1LVqP0SHA102ewgY9mMYwtsra4YahX6XFdKQ
-1oh/g3fWe6jqR0UdynHf+MYprj1vRURIDbj+bMhEplv/+29IC/40eHlOHFy2be5/
-FOYKquJyBwjFLuKWkRWHd3DP8ajmSXJdUicABu68tz0Xk6o/HqkgAacDDGcIfaYr
-0hE9ahGcDD2/e5isFdxEL6mi6X3UX6qooZub7/m8shWJkLh9n9NP8qQDTG865I8r
-qSXTYIk45R/BshzXJRldA8cEYVQdA2gyDRFfsYmq4I7aNYH7Z3xcPLX9ujwHZN37
-yamH38lt3sC3218G54dvb4zvGUVNwCNhmu4C5oMXnq4jGcyWu99AwUK62WVW11mr
-t4H13sgtJbXEpd7uN2W8
-=izYP
------END PGP SIGNATURE-----
-
---uUnxkf+iQvOgVlY3--
+SGkgTWFyaywgU2hpamllLA0KDQo+IA0KPiA+IFRoZSBMVVQgcmVnaXN0ZXJzIG5lZWRzIHRvIGJl
+IGZpbGxlZCB3aXRoIHRoZSBTUEkgTk9SIGNvbW1hbmQsIHN1Y2gNCj4gPiBGYXN0LXJlYWQvUXVh
+ZC1yZWFkLg0KPiA+IFNvIHRoZSBRdWFkc3BpIGRyaXZlciBuZWVkcyB0byBrbm93IHRoZSBzcGkg
+Y29tbWFuZHMsIGFuZCB0aGF0J3Mgd2h5IHRoZQ0KPiA+IFNQSSBkcml2ZXIgaGFzDQo+ID4gcmVm
+ZXJlbmNlcyB0byB0aGUgc3BpIGNvbW1hbmQgb3Bjb2Rlcy4NCj4gDQo+IEluZGVlZCAtIHdoYXQg
+SSB3YXMgd29uZGVyaW5nIHdhcyBpZiB0aG9zZSBvcGNvZGVzIGNvdWxkIGJlIHJlcXVlc3RlZA0K
+PiBmcm9tIHRoZSBmbGFzaCBkcml2ZXIgcmF0aGVyIHRoYW4gY29kZWQgaW4gdGhlcmUuDQoNCkFz
+IHRoZSB0YWxrIGlzIGdvaW5nIGluIFNQSSBmcmFtZXdvcmsgZGlyZWN0aW9uLCB0aGVyZWZvcmUg
+cmVxdWVzdGluZyBhZ2Fpbi4uDQpwbGVhc2UgZG8gbm90IGNsdXR0ZXIgdGhlICpnZW5lcmljKiBT
+UEkgZnJhbWV3b3JrIHRvIHBhc3Mgb24gb3Bjb2RlcyBmcm9tDQpmbGFzaC1kcml2ZXIgKGxpa2Ug
+bTI1cDgwKS4gKFEpU1BJIGZyYW1ld29yayBzaG91bGQgcmVtYWluIGdlbmVyaWMgYW5kDQppbmRl
+cGVuZGVudCBvZiBhbnkgdXBwZXIgbGF5ZXIgZHJpdmVycy4NClRoZXJlZm9yZSBJIHByb3Bvc2Vk
+IERUIGJhc2VkIGFwcHJvYWNoLCBhcyBhbiBhbHRlcm5hdGl2ZS4NCmh0dHA6Ly9saXN0cy5pbmZy
+YWRlYWQub3JnL3BpcGVybWFpbC9saW51eC1tdGQvMjAxMy1TZXB0ZW1iZXIvMDQ4NTUyLmh0bWwN
+Cg0KQnV0IGFzIFNoaWppZSdzIHBhdGNoZXMgYXJlIGNlbnRyaWMgdG8gRlNMIHVzZS1jYXNlIGFu
+ZCBxc3BpLWNvbnRyb2xsZXIsDQpzbyBJIGNhbm5vdCBwdXJzdWUgbXkgc3VnZ2VzdGlvbnMgZnVy
+dGhlci4NCg0KPiAgVGhlIGRyaXZlciBuZWVkcyB0bw0KPiB3cml0ZSB0aGUgY29tbWFuZHMgdG8g
+dGhlIGRldmljZSBidXQgaXQncyBub3QgY2xlYXIgdG8gbWUgaWYgaXQgcmVhbGx5DQo+IG5lZWRz
+IHRvIGtub3cgdGhlIHNwZWNpZmljIGNvbW1hbmRzLg0KDQp3aXRoIHJlZ2FyZHMsIHBla29uDQo=
