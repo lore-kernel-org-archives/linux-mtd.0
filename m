@@ -1,16 +1,17 @@
-Date: Wed, 11 Sep 2013 16:02:07 -0700
+Received: from mail-oa0-x231.google.com ([2607:f8b0:4003:c02::231])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VJtWy-00053p-GB
+ for linux-mtd@lists.infradead.org; Wed, 11 Sep 2013 23:09:05 +0000
+Received: by mail-oa0-f49.google.com with SMTP id i7so10082166oag.36
+ for <linux-mtd@lists.infradead.org>; Wed, 11 Sep 2013 16:08:43 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
-To: Josh Wu <josh.wu@atmel.com>
-Subject: Re: [PATCH 1/2] mtd: atmel_nand: remove unneeded ifdef CONFIG_OF
-Message-ID: <20130911230207.GE4550@ld-irv-0074.broadcom.com>
-References: <1378200028-15415-1-git-send-email-josh.wu@atmel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1378200028-15415-1-git-send-email-josh.wu@atmel.com>
-Cc: nicolas.ferre@atmel.com, plagnioj@jcrosoft.com,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- dedekind1@gmail.com
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: nand: cleanup ONFI printed errors, warnings
+Date: Wed, 11 Sep 2013 16:08:14 -0700
+Message-Id: <1378940894-27598-1-git-send-email-computersforpeace@gmail.com>
+Cc: Huang Shijie <b32955@freescale.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,103 +21,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Josh,
+The ONFI detection routine is too verbose in some cases and not verbose
+enough in others. This patch refactors it to print only when there are
+significant warnings/errors.
 
-On Tue, Sep 03, 2013 at 05:20:27PM +0800, Josh Wu wrote:
-> Since following commit
->   f3b391425d21e6138e57b2432d91134e0bc2b975
+Probing in 16-bit mode:
+  It is unnecessary to print until after the READID (address 20h)
+  command. READID *has* to work properly in whatever bus width
+  configuration we are in, or else no identification mode works. So we
+  can silence some useless warnings on systems which come up in 16-bit
+  mode and do not even respond with an O-N-F-I string.
 
-This commit ID will likely change before it gets merged, since there may
-be rebasing, and David usually adds his signoff. David or I can take
-care of that later though.
+Valid parameter page:
+  Nobody needs to see this. Do we inform the user every time other
+  hardware responds properly? Instead, add an error message if *no*
+  uncorrupted parameter pages are found.
 
->   (of_mtd: Add no-op stubs to support CONFIG_OF=n)
-> 
-> implements the stub for CONFIG_OF=n. Now we can safely remove all
-> CONFIG_OF in atmel_nand. (Thanks to Ezequiel Garcia's for this protype)
+ONFI ECC:
+  Most drivers don't yet use the reported minimum ECC values, so it
+  shouldn't yet be a fatal condition if the extended parameter page is
+  incorrect. But we should at least give a warning for the corner cases
+  that we don't expect.
 
-I'm not quite so sure about this patch, as I was about the pxa3xx patch.
-With pxa3xx, the compiler can easily tell that pxa3xx_nand_probe_dt()
-will return 0 without doing anything in the !CONFIG_OF case (and so will
-likely remove the dead code), so it's no benefit to have the #ifdef. But
-in this driver, the atmel_of_init_port() function can't be trivially
-determined to do nothing (and in fact, it does something in either
-CONFIG_OF=y or =n case). It's only protected by the 'if
-(pdev->dev.of_node)' check, which the compiler can't predict.
+ONFI flash detected:
+  Nobody needs to see this. This is the expected case, that we detect
+  ONFI properly, or else it wasn't ONFI-compliant and is detected by
+  some other routine.
 
-So, I don't know if we should remove the #ifdef at the expense of likely
-significantly larger code. I won't protest, but I won't merge it yet
-either. Perhaps others have better ideas, or perhaps you can find a good
-way to work around this -- e.g., check the of_* helpers for -ENOSYS early
-in atmel_of_init_port()?
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: Huang Shijie <b32955@freescale.com>
+Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+---
+ drivers/mtd/nand/nand_base.c | 24 +++++++++++++++---------
+ 1 file changed, 15 insertions(+), 9 deletions(-)
 
-> Signed-off-by: Josh Wu <josh.wu@atmel.com>
-> ---
->  drivers/mtd/nand/atmel_nand.c |   14 +-------------
->  1 file changed, 1 insertion(+), 13 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-> index 060feea..1ca0724 100644
-> --- a/drivers/mtd/nand/atmel_nand.c
-> +++ b/drivers/mtd/nand/atmel_nand.c
-> @@ -1449,7 +1449,6 @@ static void atmel_nand_hwctl(struct mtd_info *mtd, int mode)
->  		ecc_writel(host->ecc, CR, ATMEL_ECC_RST);
->  }
->  
-> -#if defined(CONFIG_OF)
->  static int atmel_of_init_port(struct atmel_nand_host *host,
->  			      struct device_node *np)
->  {
-> @@ -1457,7 +1456,7 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
->  	u32 offset[2];
->  	int ecc_mode;
->  	struct atmel_nand_data *board = &host->board;
-> -	enum of_gpio_flags flags;
-> +	enum of_gpio_flags flags = 0;
->  
->  	if (of_property_read_u32(np, "atmel,nand-addr-offset", &val) == 0) {
->  		if (val >= 32) {
-> @@ -1540,13 +1539,6 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
->  
->  	return 0;
->  }
-> -#else
-> -static int atmel_of_init_port(struct atmel_nand_host *host,
-> -			      struct device_node *np)
-> -{
-> -	return -EINVAL;
-> -}
-> -#endif
->  
->  static int __init atmel_hw_nand_init_params(struct platform_device *pdev,
->  					 struct atmel_nand_host *host)
-> @@ -2207,14 +2199,12 @@ static int __exit atmel_nand_remove(struct platform_device *pdev)
->  	return 0;
->  }
->  
-> -#if defined(CONFIG_OF)
->  static const struct of_device_id atmel_nand_dt_ids[] = {
->  	{ .compatible = "atmel,at91rm9200-nand" },
->  	{ /* sentinel */ }
->  };
->  
->  MODULE_DEVICE_TABLE(of, atmel_nand_dt_ids);
-> -#endif
->  
->  static int atmel_nand_nfc_probe(struct platform_device *pdev)
->  {
-> @@ -2253,12 +2243,10 @@ static int atmel_nand_nfc_probe(struct platform_device *pdev)
->  	return 0;
->  }
->  
-> -#if defined(CONFIG_OF)
->  static struct of_device_id atmel_nand_nfc_match[] = {
->  	{ .compatible = "atmel,sama5d3-nfc" },
->  	{ /* sentinel */ }
->  };
-> -#endif
->  
->  static struct platform_driver atmel_nand_nfc_driver = {
->  	.driver = {
-
-Brian
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 7ed4841..d4578a1 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2937,29 +2937,34 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+ 	int i;
+ 	int val;
+ 
+-	/* ONFI need to be probed in 8 bits mode, and 16 bits should be selected with NAND_BUSWIDTH_AUTO */
+-	if (chip->options & NAND_BUSWIDTH_16) {
+-		pr_err("Trying ONFI probe in 16 bits mode, aborting !\n");
+-		return 0;
+-	}
+ 	/* Try ONFI for unknown chip or LP */
+ 	chip->cmdfunc(mtd, NAND_CMD_READID, 0x20, -1);
+ 	if (chip->read_byte(mtd) != 'O' || chip->read_byte(mtd) != 'N' ||
+ 		chip->read_byte(mtd) != 'F' || chip->read_byte(mtd) != 'I')
+ 		return 0;
+ 
++	/*
++	 * ONFI must be probed in 8-bit mode or with NAND_BUSWIDTH_AUTO, not
++	 * with NAND_BUSWIDTH_16
++	 */
++	if (chip->options & NAND_BUSWIDTH_16) {
++		pr_err("ONFI cannot be probed in 16-bit mode; aborting\n");
++		return 0;
++	}
++
+ 	chip->cmdfunc(mtd, NAND_CMD_PARAM, 0, -1);
+ 	for (i = 0; i < 3; i++) {
+ 		chip->read_buf(mtd, (uint8_t *)p, sizeof(*p));
+ 		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 254) ==
+ 				le16_to_cpu(p->crc)) {
+-			pr_info("ONFI param page %d valid\n", i);
+ 			break;
+ 		}
+ 	}
+ 
+-	if (i == 3)
++	if (i == 3) {
++		pr_err("Could not find valid ONFI parameter page; aborting\n");
+ 		return 0;
++	}
+ 
+ 	/* Check version */
+ 	val = le16_to_cpu(p->revision);
+@@ -3011,10 +3016,11 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+ 
+ 		/* The Extended Parameter Page is supported since ONFI 2.1. */
+ 		if (nand_flash_detect_ext_param_page(mtd, chip, p))
+-			pr_info("Failed to detect the extended param page.\n");
++			pr_warn("Failed to detect ONFI extended param page\n");
++	} else {
++		pr_warn("Could not retrieve ONFI ECC requirements\n");
+ 	}
+ 
+-	pr_info("ONFI flash detected\n");
+ 	return 1;
+ }
+ 
+-- 
+1.8.4
