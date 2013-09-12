@@ -1,38 +1,22 @@
-Date: Thu, 12 Sep 2013 15:40:02 +0100
-From: Mark Brown <broonie@kernel.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Message-ID: <20130912144002.GT29403@sirena.org.uk>
-References: <52304BFF.4060007@freescale.com>
- <20130911113002.GP29403@sirena.org.uk>
- <523186DF.4070203@freescale.com>
- <1378982395.2627.416.camel@shinybook.infradead.org>
- <20980858CB6D3A4BAE95CA194937D5E73EA0EE8B@DBDE04.ent.ti.com>
- <1378984665.2627.423.camel@shinybook.infradead.org>
- <20130912114831.GL29403@sirena.org.uk>
- <1378987323.2627.429.camel@shinybook.infradead.org>
- <20130912134345.GQ29403@sirena.org.uk>
- <1378994596.2627.449.camel@shinybook.infradead.org>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VK8Cr-0002Pd-Bi
+ for linux-mtd@lists.infradead.org; Thu, 12 Sep 2013 14:49:18 +0000
+Date: Thu, 12 Sep 2013 11:49:19 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd: nand: cleanup ONFI printed errors, warnings
+Message-ID: <20130912144918.GA18677@localhost>
+References: <1378940894-27598-1-git-send-email-computersforpeace@gmail.com>
+ <20130912122413.GA7309@localhost>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="jPSbFJU26WoBJ9pH"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1378994596.2627.449.camel@shinybook.infradead.org>
-Subject: Re: [PATCH v3 0/8] Add the Quadspi driver for vf610-twr
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "b44548@freescale.com" <b44548@freescale.com>,
- "thomas.langer@lantiq.com" <thomas.langer@lantiq.com>,
- "b18965@freescale.com" <b18965@freescale.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- Huang Shijie <b32955@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>,
- "lznuaa@gmail.com" <lznuaa@gmail.com>,
- "shawn.guo@linaro.org" <shawn.guo@linaro.org>,
- Huang Shijie <shijie8@gmail.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20130912122413.GA7309@localhost>
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,62 +26,143 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, Sep 12, 2013 at 09:24:14AM -0300, Ezequiel Garcia wrote:
+> On Wed, Sep 11, 2013 at 04:08:14PM -0700, Brian Norris wrote:
+> > The ONFI detection routine is too verbose in some cases and not verbose
+> > enough in others. This patch refactors it to print only when there are
+> > significant warnings/errors.
+> > 
+> > Probing in 16-bit mode:
+> >   It is unnecessary to print until after the READID (address 20h)
+> >   command. READID *has* to work properly in whatever bus width
+> >   configuration we are in, or else no identification mode works. So we
+> >   can silence some useless warnings on systems which come up in 16-bit
+> >   mode and do not even respond with an O-N-F-I string.
+> > 
+> > Valid parameter page:
+> >   Nobody needs to see this. Do we inform the user every time other
+> >   hardware responds properly? Instead, add an error message if *no*
+> >   uncorrupted parameter pages are found.
+> > 
+> > ONFI ECC:
+> >   Most drivers don't yet use the reported minimum ECC values, so it
+> >   shouldn't yet be a fatal condition if the extended parameter page is
+> >   incorrect. But we should at least give a warning for the corner cases
+> >   that we don't expect.
+> > 
+> > ONFI flash detected:
+> >   Nobody needs to see this. This is the expected case, that we detect
+> >   ONFI properly, or else it wasn't ONFI-compliant and is detected by
+> >   some other routine.
+> > 
+> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> > Cc: Huang Shijie <b32955@freescale.com>
+> > Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> > ---
+> >  drivers/mtd/nand/nand_base.c | 24 +++++++++++++++---------
+> >  1 file changed, 15 insertions(+), 9 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> > index 7ed4841..d4578a1 100644
+> > --- a/drivers/mtd/nand/nand_base.c
+> > +++ b/drivers/mtd/nand/nand_base.c
+> > @@ -2937,29 +2937,34 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+> >  	int i;
+> >  	int val;
+> >  
+> > -	/* ONFI need to be probed in 8 bits mode, and 16 bits should be selected with NAND_BUSWIDTH_AUTO */
+> > -	if (chip->options & NAND_BUSWIDTH_16) {
+> > -		pr_err("Trying ONFI probe in 16 bits mode, aborting !\n");
+> > -		return 0;
+> > -	}
+> >  	/* Try ONFI for unknown chip or LP */
+> >  	chip->cmdfunc(mtd, NAND_CMD_READID, 0x20, -1);
+> >  	if (chip->read_byte(mtd) != 'O' || chip->read_byte(mtd) != 'N' ||
+> >  		chip->read_byte(mtd) != 'F' || chip->read_byte(mtd) != 'I')
+> >  		return 0;
+> >  
+> > +	/*
+> > +	 * ONFI must be probed in 8-bit mode or with NAND_BUSWIDTH_AUTO, not
+> > +	 * with NAND_BUSWIDTH_16
+> > +	 */
+> > +	if (chip->options & NAND_BUSWIDTH_16) {
+> > +		pr_err("ONFI cannot be probed in 16-bit mode; aborting\n");
+> > +		return 0;
+> > +	}
+> > +
+> >  	chip->cmdfunc(mtd, NAND_CMD_PARAM, 0, -1);
+> >  	for (i = 0; i < 3; i++) {
+> >  		chip->read_buf(mtd, (uint8_t *)p, sizeof(*p));
+> >  		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 254) ==
+> >  				le16_to_cpu(p->crc)) {
+> > -			pr_info("ONFI param page %d valid\n", i);
+> >  			break;
+> >  		}
+> >  	}
+> >  
+> > -	if (i == 3)
+> > +	if (i == 3) {
+> > +		pr_err("Could not find valid ONFI parameter page; aborting\n");
+> >  		return 0;
+> > +	}
+> >  
+> >  	/* Check version */
+> >  	val = le16_to_cpu(p->revision);
+> > @@ -3011,10 +3016,11 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+> >  
+> >  		/* The Extended Parameter Page is supported since ONFI 2.1. */
+> >  		if (nand_flash_detect_ext_param_page(mtd, chip, p))
+> > -			pr_info("Failed to detect the extended param page.\n");
+> > +			pr_warn("Failed to detect ONFI extended param page\n");
+> > +	} else {
+> > +		pr_warn("Could not retrieve ONFI ECC requirements\n");
+> >  	}
+> >  
+> > -	pr_info("ONFI flash detected\n");
+> >  	return 1;
+> >  }
+> >  
+> 
+> Looks good. I'd suggest to put:
+> 
+>   #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> 
+> at the top of this file, to prefix all the messages with a nice "nand:"
+> string, but then you may want to refactor the "NAND device:" notification.
 
---jPSbFJU26WoBJ9pH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+FWIW, here's my proposal (which applies on top of this patch):
 
-On Thu, Sep 12, 2013 at 03:03:16PM +0100, David Woodhouse wrote:
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index d4578a1..ff5bb5a 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -29,6 +29,8 @@
+  *
+  */
+ 
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++
+ #include <linux/module.h>
+ #include <linux/delay.h>
+ #include <linux/errno.h>
+@@ -3449,10 +3451,11 @@ ident_done:
+ 	if (mtd->writesize > 512 && chip->cmdfunc == nand_command)
+ 		chip->cmdfunc = nand_command_lp;
+ 
+-	pr_info("NAND device: Manufacturer ID: 0x%02x, Chip ID: 0x%02x (%s %s),"
+-		" %dMiB, page size: %d, OOB size: %d\n",
+-		*maf_id, *dev_id, nand_manuf_ids[maf_idx].name,
+-		chip->onfi_version ? chip->onfi_params.model : type->name,
++	pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
++		*maf_id, *dev_id);
++	pr_info("%s %s\n", nand_manuf_ids[maf_idx].name,
++		chip->onfi_version ? chip->onfi_params.model : type->name);
++	pr_info("%dMiB, page size: %d, OOB size: %d\n",
+ 		(int)(chip->chipsize >> 20), mtd->writesize, mtd->oobsize);
+ 
+ 	return type;
 
-> Not so in this case. The controller driver appears "know", in advance,
-> what commands are going to be sent. It preloads its buffers (the LUT)
-> with what it *expects* us to send, and when we make a request it'll just
-> trigger a send from the appropriate buffer. And it will crap itself if
-> we actually try to send anything *different*.
-
-> Or so I understand it.
-
-Yes, that was pretty much my understanding of what was going on here -
-clearly the way the driver is currently figuring out what the commands
-are isn't good enough.
-
-> So to go back to your question: the commands that it "knows" we are
-> going to send are indeed specific to (one particular type of) SPI NOR
-> flash. But there's nothing on the MTD side which justifies that
-> assumption. Even if you use a different type of SPI NOR flash which uses
-> different opcodes for its commands, this broken scheme will fall over.
-
-Right, the specific opcodes do need to variable at least and should be
-being provided by the driver for the flash - but is the generic format
-of the commands and requirement to send them abstractable?  Given that
-it's apparently been baked into hardware and based on having a quick
-scan through drivers/mtd/devices I'd guess so but...
-
-> Unless, as I say, I've completely misunderstood what's going on here.
-> Huang?
-
-...like you say some clarity would be good.
-
---jPSbFJU26WoBJ9pH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.21 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSMdI+AAoJELSic+t+oim9peAP/3EimMqbs4wjlFS+Rm9YLS5B
-AVe3kCjqNRp+hl4R9OuY/izGJpdIp+VHbIuSknWfFuCTm1svi9WrtPzEWuvFpkSv
-GhfXCacwehuix8TCjdpYS5XaNWvTaH8Otwg5hNWWYnCuDdXC54WOdXlIwB4uUwdq
-KQXnBS9YZSoa9IhUTdhj4Ix5nEAHpPhhMVPM2OTFAEEBKvgTnDg/nRXpaQKDhWC+
-Qj/OgwjmcJErlx5BFYGPBVTjXZ7AaWQtvVYpEHwLua8gBHY9Musw5D7aFjRAW84n
-Cg6q7YGyTT8Wg/mA/b1oxi6mkbZA2cDneHlVHCWYlaJBafqvdIz0ehwmntg1kQ9M
-/G/jSKCW8ub2/WI0YCnFwxNbH7ApM8RxH7CwF+OyTccfOzcegtxEKZ3K0+2kFRlZ
-WkBCraqc/ug+b4jgfZyDuBcWCliO4blpxFAthrGEDnBG6aqkRdB2bN2kVtypoNoe
-ejqDLcSWOwmD6rLWaJz0ur+Bac9t6YkEAy5zhYNhKkM1npmfC6imrStKW0XFOulT
-f/TN9VJSGjkgw1I4yG1Uo87ebxhfRu7Ez7oWC1GzBDrltb6+B6Ywoch1HMTDF5U2
-VZAOKDA09CQsFup8r4oEO5f5svpTXZ+ljrpOekPgH4SbZbWqw9Dkk6LN9IRNTtun
-Q9jD+yk8tkdE3v076oZW
-=Rnfo
------END PGP SIGNATURE-----
-
---jPSbFJU26WoBJ9pH--
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
