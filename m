@@ -1,30 +1,20 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VK5bg-0005b2-4M
- for linux-mtd@lists.infradead.org; Thu, 12 Sep 2013 12:02:44 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VK5wQ-0006HT-Pr
+ for linux-mtd@lists.infradead.org; Thu, 12 Sep 2013 12:24:11 +0000
+Date: Thu, 12 Sep 2013 09:24:14 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: RE: [PATCH v5 0/4] mtd:nand:omap2: clean-up of supported ECC schemes
-Date: Thu, 12 Sep 2013 12:02:11 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA0EFCA@DBDE04.ent.ti.com>
-References: <1373748891-7779-1-git-send-email-pekon@ti.com>
- <20130821013255.GD28382@ld-irv-0074.broadcom.com>
-In-Reply-To: <20130821013255.GD28382@ld-irv-0074.broadcom.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Subject: Re: [PATCH] mtd: nand: cleanup ONFI printed errors, warnings
+Message-ID: <20130912122413.GA7309@localhost>
+References: <1378940894-27598-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-Cc: "N, Mugunthan V" <mugunthanvnm@ti.com>, "arnd@arndb.de" <arnd@arndb.de>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "tony@atomide.com" <tony@atomide.com>,
- "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>, "Balbi,
- Felipe" <balbi@ti.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "olof@lixom.net" <olof@lixom.net>,
- "benoit.cousson@linaro.org" <benoit.cousson@linaro.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1378940894-27598-1-git-send-email-computersforpeace@gmail.com>
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,11 +24,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksDQoNCj4gWy4uLl0NCj4gDQo+IFlvdSBtaWdodCBhbHNvIGNvbnNpZGVyIGEgZnV0dXJlIHBh
-dGNoIGZvciB1dGlsaXppbmcgZGV2bV8qIGZ1bmN0aW9ucw0KPiBmb3IgdGhlIHByb2JlL3JlbW92
-ZSByb3V0aW5lcyBpbiBkcml2ZXJzL210ZC9uYW5kL29tYXAyLmMuIFRoYXQgY291bGQNCj4gaW1w
-cm92ZSBzb21lIG9mIHRoZSBzdHVmZiBJIGxvb2tlZCBhdCBpbiB0aGlzIHNlcmllcy4NCj4gDQpU
-aGFua3MgZm9yIGZlZWRiYWNrLg0KSSBoYXZlIG5vdCBpbmNvcnBvcmF0ZWQgdGhpcyBwYXJ0aWN1
-bGFyIHVwZGF0ZSBpbiB2NiwgYXMgSSBkbyBub3QgaGF2ZSBtdWNoDQprbm93bGVkZ2UgYWJvdXQg
-ZGV2bV8qIGZ1bmN0aW9ucy4gQnV0IEknbGwga2VlcCBpdCBpbiBteSB0by1kbyhzKSBvbmNlDQpk
-cml2ZXIgaXMgY29tcGxldGUgZmVhdHVyZSB3aXNlLiANCg0Kd2l0aCByZWdhcmRzLCBwZWtvbg0K
+On Wed, Sep 11, 2013 at 04:08:14PM -0700, Brian Norris wrote:
+> The ONFI detection routine is too verbose in some cases and not verbose
+> enough in others. This patch refactors it to print only when there are
+> significant warnings/errors.
+> 
+> Probing in 16-bit mode:
+>   It is unnecessary to print until after the READID (address 20h)
+>   command. READID *has* to work properly in whatever bus width
+>   configuration we are in, or else no identification mode works. So we
+>   can silence some useless warnings on systems which come up in 16-bit
+>   mode and do not even respond with an O-N-F-I string.
+> 
+> Valid parameter page:
+>   Nobody needs to see this. Do we inform the user every time other
+>   hardware responds properly? Instead, add an error message if *no*
+>   uncorrupted parameter pages are found.
+> 
+> ONFI ECC:
+>   Most drivers don't yet use the reported minimum ECC values, so it
+>   shouldn't yet be a fatal condition if the extended parameter page is
+>   incorrect. But we should at least give a warning for the corner cases
+>   that we don't expect.
+> 
+> ONFI flash detected:
+>   Nobody needs to see this. This is the expected case, that we detect
+>   ONFI properly, or else it wasn't ONFI-compliant and is detected by
+>   some other routine.
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Cc: Huang Shijie <b32955@freescale.com>
+> Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> ---
+>  drivers/mtd/nand/nand_base.c | 24 +++++++++++++++---------
+>  1 file changed, 15 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 7ed4841..d4578a1 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -2937,29 +2937,34 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+>  	int i;
+>  	int val;
+>  
+> -	/* ONFI need to be probed in 8 bits mode, and 16 bits should be selected with NAND_BUSWIDTH_AUTO */
+> -	if (chip->options & NAND_BUSWIDTH_16) {
+> -		pr_err("Trying ONFI probe in 16 bits mode, aborting !\n");
+> -		return 0;
+> -	}
+>  	/* Try ONFI for unknown chip or LP */
+>  	chip->cmdfunc(mtd, NAND_CMD_READID, 0x20, -1);
+>  	if (chip->read_byte(mtd) != 'O' || chip->read_byte(mtd) != 'N' ||
+>  		chip->read_byte(mtd) != 'F' || chip->read_byte(mtd) != 'I')
+>  		return 0;
+>  
+> +	/*
+> +	 * ONFI must be probed in 8-bit mode or with NAND_BUSWIDTH_AUTO, not
+> +	 * with NAND_BUSWIDTH_16
+> +	 */
+> +	if (chip->options & NAND_BUSWIDTH_16) {
+> +		pr_err("ONFI cannot be probed in 16-bit mode; aborting\n");
+> +		return 0;
+> +	}
+> +
+>  	chip->cmdfunc(mtd, NAND_CMD_PARAM, 0, -1);
+>  	for (i = 0; i < 3; i++) {
+>  		chip->read_buf(mtd, (uint8_t *)p, sizeof(*p));
+>  		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 254) ==
+>  				le16_to_cpu(p->crc)) {
+> -			pr_info("ONFI param page %d valid\n", i);
+>  			break;
+>  		}
+>  	}
+>  
+> -	if (i == 3)
+> +	if (i == 3) {
+> +		pr_err("Could not find valid ONFI parameter page; aborting\n");
+>  		return 0;
+> +	}
+>  
+>  	/* Check version */
+>  	val = le16_to_cpu(p->revision);
+> @@ -3011,10 +3016,11 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+>  
+>  		/* The Extended Parameter Page is supported since ONFI 2.1. */
+>  		if (nand_flash_detect_ext_param_page(mtd, chip, p))
+> -			pr_info("Failed to detect the extended param page.\n");
+> +			pr_warn("Failed to detect ONFI extended param page\n");
+> +	} else {
+> +		pr_warn("Could not retrieve ONFI ECC requirements\n");
+>  	}
+>  
+> -	pr_info("ONFI flash detected\n");
+>  	return 1;
+>  }
+>  
+
+Looks good. I'd suggest to put:
+
+  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+at the top of this file, to prefix all the messages with a nice "nand:"
+string, but then you may want to refactor the "NAND device:" notification.
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
