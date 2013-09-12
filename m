@@ -1,42 +1,17 @@
-Received: from [2002:4e20:1eda::1] (helo=caramon.arm.linux.org.uk)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VK7gm-0001EG-Oa
- for linux-mtd@lists.infradead.org; Thu, 12 Sep 2013 14:16:09 +0000
-Date: Thu, 12 Sep 2013 15:10:11 +0100
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: [PATCH v3 0/8] Add the Quadspi driver for vf610-twr
-Message-ID: <20130912141011.GK12758@n2100.arm.linux.org.uk>
-References: <20130911104126.GN29403@sirena.org.uk>
- <52304BFF.4060007@freescale.com> <20130911113002.GP29403@sirena.org.uk>
- <523186DF.4070203@freescale.com>
- <1378982395.2627.416.camel@shinybook.infradead.org>
- <20980858CB6D3A4BAE95CA194937D5E73EA0EE8B@DBDE04.ent.ti.com>
- <1378984665.2627.423.camel@shinybook.infradead.org>
- <20130912114831.GL29403@sirena.org.uk>
- <20130912115549.GI12758@n2100.arm.linux.org.uk>
- <alpine.DEB.2.00.1309121523130.2394@lnxricardw.se.axis.com>
+Received: from mail-wi0-f182.google.com ([209.85.212.182])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VK7pE-0001aQ-0I
+ for linux-mtd@lists.infradead.org; Thu, 12 Sep 2013 14:24:53 +0000
+Received: by mail-wi0-f182.google.com with SMTP id ez12so3638329wid.3
+ for <linux-mtd@lists.infradead.org>; Thu, 12 Sep 2013 07:24:27 -0700 (PDT)
+Message-ID: <5231CE99.8080703@parkeon.com>
+Date: Thu, 12 Sep 2013 16:24:25 +0200
+From: Martin Fuzzey <mfuzzey@parkeon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.00.1309121523130.2394@lnxricardw.se.axis.com>
-Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "b44548@freescale.com" <b44548@freescale.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "b18965@freescale.com" <b18965@freescale.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "thomas.langer@lantiq.com" <thomas.langer@lantiq.com>,
- Mark Brown <broonie@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>,
- "lznuaa@gmail.com" <lznuaa@gmail.com>,
- "shawn.guo@linaro.org" <shawn.guo@linaro.org>,
- Huang Shijie <shijie8@gmail.com>, Huang Shijie <b32955@freescale.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: linux-mtd@lists.infradead.org
+Subject: Boards only supporting 16bit ram writes
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -46,27 +21,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 12, 2013 at 03:25:45PM +0200, Ricard Wanderlof wrote:
-> A bit of an odd name when used in this context I think; LUTs are usually  
-> used to perform mapping or transformation functions, e.g. looking up a  
-> value 'y' given an input value 'x'. In this case it's just a table of  
-> commands to be executed. But I guess the name LUT has been used in some  
-> hardware specification so there's not much we can do about it.
+Hello,
 
-Remember that not all designers speak the English language, so they
-may very well call something like this a lookup table, because it's
-very similar to what they may have implemented in things like video
-chips to translate colour indexes to actual colours... especially
-when they call the thing which controls where in the "table" entries
-are read from an "index".  They could've also called it an "array"
-too.
+I have a board with a FRAM device which I am trying to get to work with 
+mtd-ram, on a DT based system (i.MX53) using physmap-of.
 
-Either way, it doesn't matter - the principle is that it's a sequence
-of consecutive programmable entries which provide commands for the
-controller to use.
+The chip is connected to a 16 bit data bus, however the signals that are 
+supposed to indicate which of the upper and lower bytes
+are not connected to the processor but forced so as to use both bytes.
 
-Just remember all the problems of flat pack furnature where the
-instructions are a poor translation of another language - or indeed
-technological devices for that matter.  There's plenty of examples
-out there where stuff is "lost in translation" and you're left
-wondering what they're talking about.
+This means that all write operations must be done 16bits at a time (read 
+operations are fine since the processor handles that).
+
+Looking at the mtd code it seems possible to support this using specific 
+mapping functions.
+However it's likely to be a little complicated / ugly, especially for 
+partial unaligned writes which will have to do a read, mask, write.
+
+So my questions:
+* Is there currently any way of doing this?
+* Would a patch implementing it be acceptable for mainline or would it 
+be a case of "go fix your hardware"?
+
+Also while looking at this I noticed that 
+Documentation/devicetree/bindings/mtd/mtd-physmap.txt refers to a property
+"device-width" which is used in a number of files in 
+arch/powerpc/boot/dts but I can't find any code that actually implements it.
+
+Regards,
+
+Martin
