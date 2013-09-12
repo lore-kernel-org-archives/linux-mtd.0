@@ -1,17 +1,38 @@
-Received: from mail-wi0-f182.google.com ([209.85.212.182])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VK7pE-0001aQ-0I
- for linux-mtd@lists.infradead.org; Thu, 12 Sep 2013 14:24:53 +0000
-Received: by mail-wi0-f182.google.com with SMTP id ez12so3638329wid.3
- for <linux-mtd@lists.infradead.org>; Thu, 12 Sep 2013 07:24:27 -0700 (PDT)
-Message-ID: <5231CE99.8080703@parkeon.com>
-Date: Thu, 12 Sep 2013 16:24:25 +0200
-From: Martin Fuzzey <mfuzzey@parkeon.com>
+Date: Thu, 12 Sep 2013 15:40:02 +0100
+From: Mark Brown <broonie@kernel.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Message-ID: <20130912144002.GT29403@sirena.org.uk>
+References: <52304BFF.4060007@freescale.com>
+ <20130911113002.GP29403@sirena.org.uk>
+ <523186DF.4070203@freescale.com>
+ <1378982395.2627.416.camel@shinybook.infradead.org>
+ <20980858CB6D3A4BAE95CA194937D5E73EA0EE8B@DBDE04.ent.ti.com>
+ <1378984665.2627.423.camel@shinybook.infradead.org>
+ <20130912114831.GL29403@sirena.org.uk>
+ <1378987323.2627.429.camel@shinybook.infradead.org>
+ <20130912134345.GQ29403@sirena.org.uk>
+ <1378994596.2627.449.camel@shinybook.infradead.org>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Boards only supporting 16bit ram writes
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="jPSbFJU26WoBJ9pH"
+Content-Disposition: inline
+In-Reply-To: <1378994596.2627.449.camel@shinybook.infradead.org>
+Subject: Re: [PATCH v3 0/8] Add the Quadspi driver for vf610-twr
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "b44548@freescale.com" <b44548@freescale.com>,
+ "thomas.langer@lantiq.com" <thomas.langer@lantiq.com>,
+ "b18965@freescale.com" <b18965@freescale.com>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ Huang Shijie <b32955@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
+ Pekon" <pekon@ti.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>,
+ "lznuaa@gmail.com" <lznuaa@gmail.com>,
+ "shawn.guo@linaro.org" <shawn.guo@linaro.org>,
+ Huang Shijie <shijie8@gmail.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,33 +42,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
 
-I have a board with a FRAM device which I am trying to get to work with 
-mtd-ram, on a DT based system (i.MX53) using physmap-of.
+--jPSbFJU26WoBJ9pH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The chip is connected to a 16 bit data bus, however the signals that are 
-supposed to indicate which of the upper and lower bytes
-are not connected to the processor but forced so as to use both bytes.
+On Thu, Sep 12, 2013 at 03:03:16PM +0100, David Woodhouse wrote:
 
-This means that all write operations must be done 16bits at a time (read 
-operations are fine since the processor handles that).
+> Not so in this case. The controller driver appears "know", in advance,
+> what commands are going to be sent. It preloads its buffers (the LUT)
+> with what it *expects* us to send, and when we make a request it'll just
+> trigger a send from the appropriate buffer. And it will crap itself if
+> we actually try to send anything *different*.
 
-Looking at the mtd code it seems possible to support this using specific 
-mapping functions.
-However it's likely to be a little complicated / ugly, especially for 
-partial unaligned writes which will have to do a read, mask, write.
+> Or so I understand it.
 
-So my questions:
-* Is there currently any way of doing this?
-* Would a patch implementing it be acceptable for mainline or would it 
-be a case of "go fix your hardware"?
+Yes, that was pretty much my understanding of what was going on here -
+clearly the way the driver is currently figuring out what the commands
+are isn't good enough.
 
-Also while looking at this I noticed that 
-Documentation/devicetree/bindings/mtd/mtd-physmap.txt refers to a property
-"device-width" which is used in a number of files in 
-arch/powerpc/boot/dts but I can't find any code that actually implements it.
+> So to go back to your question: the commands that it "knows" we are
+> going to send are indeed specific to (one particular type of) SPI NOR
+> flash. But there's nothing on the MTD side which justifies that
+> assumption. Even if you use a different type of SPI NOR flash which uses
+> different opcodes for its commands, this broken scheme will fall over.
 
-Regards,
+Right, the specific opcodes do need to variable at least and should be
+being provided by the driver for the flash - but is the generic format
+of the commands and requirement to send them abstractable?  Given that
+it's apparently been baked into hardware and based on having a quick
+scan through drivers/mtd/devices I'd guess so but...
 
-Martin
+> Unless, as I say, I've completely misunderstood what's going on here.
+> Huang?
+
+...like you say some clarity would be good.
+
+--jPSbFJU26WoBJ9pH
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSMdI+AAoJELSic+t+oim9peAP/3EimMqbs4wjlFS+Rm9YLS5B
+AVe3kCjqNRp+hl4R9OuY/izGJpdIp+VHbIuSknWfFuCTm1svi9WrtPzEWuvFpkSv
+GhfXCacwehuix8TCjdpYS5XaNWvTaH8Otwg5hNWWYnCuDdXC54WOdXlIwB4uUwdq
+KQXnBS9YZSoa9IhUTdhj4Ix5nEAHpPhhMVPM2OTFAEEBKvgTnDg/nRXpaQKDhWC+
+Qj/OgwjmcJErlx5BFYGPBVTjXZ7AaWQtvVYpEHwLua8gBHY9Musw5D7aFjRAW84n
+Cg6q7YGyTT8Wg/mA/b1oxi6mkbZA2cDneHlVHCWYlaJBafqvdIz0ehwmntg1kQ9M
+/G/jSKCW8ub2/WI0YCnFwxNbH7ApM8RxH7CwF+OyTccfOzcegtxEKZ3K0+2kFRlZ
+WkBCraqc/ug+b4jgfZyDuBcWCliO4blpxFAthrGEDnBG6aqkRdB2bN2kVtypoNoe
+ejqDLcSWOwmD6rLWaJz0ur+Bac9t6YkEAy5zhYNhKkM1npmfC6imrStKW0XFOulT
+f/TN9VJSGjkgw1I4yG1Uo87ebxhfRu7Ez7oWC1GzBDrltb6+B6Ywoch1HMTDF5U2
+VZAOKDA09CQsFup8r4oEO5f5svpTXZ+ljrpOekPgH4SbZbWqw9Dkk6LN9IRNTtun
+Q9jD+yk8tkdE3v076oZW
+=Rnfo
+-----END PGP SIGNATURE-----
+
+--jPSbFJU26WoBJ9pH--
