@@ -1,13 +1,36 @@
-From: Josh Wu <josh.wu@atmel.com>
-To: <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
- <dedekind1@gmail.com>
-Subject: [PATCH v2] mtd: atmel_nand: use the common function to get ecc info
-Date: Fri, 13 Sep 2013 18:02:17 +0800
-Message-ID: <1379066537-29505-1-git-send-email-josh.wu@atmel.com>
+Date: Fri, 13 Sep 2013 11:21:27 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Huang Shijie <b32955@freescale.com>
+Message-ID: <20130913102127.GD29403@sirena.org.uk>
+References: <20980858CB6D3A4BAE95CA194937D5E73EA0C7F4@DBDE04.ent.ti.com>
+ <522817D7.1010206@freescale.com> <522D3B79.3060707@freescale.com>
+ <52318953.6090405@freescale.com>
+ <1378979431.2627.402.camel@shinybook.infradead.org>
+ <20130913025827.GA3051@gmail.com>
+ <1378999322.4210.95.camel@i7.infradead.org>
+ <20130913041208.GD3051@gmail.com>
+ <20130912205644.GW29403@sirena.org.uk>
+ <52329AD3.2050608@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: nicolas.ferre@atmel.com, computersforpeace@gmail.com, plagnioj@jcrosoft.com,
- Josh Wu <josh.wu@atmel.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="cuksurJxElusDw39"
+Content-Disposition: inline
+In-Reply-To: <52329AD3.2050608@freescale.com>
+Subject: Re: [PATCH v3 0/8] Add the Quadspi driver for vf610-twr
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "b44548@freescale.com" <b44548@freescale.com>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>, Huang Shijie <shijie8@gmail.com>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "b18965@freescale.com" <b18965@freescale.com>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "thomas.langer@lantiq.com" <thomas.langer@lantiq.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
+ Pekon" <pekon@ti.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>,
+ "lznuaa@gmail.com" <lznuaa@gmail.com>,
+ "shawn.guo@linaro.org" <shawn.guo@linaro.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,81 +40,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Atmel nand will check ONFI ecc information when config the PMECC parameters.
-Since commit: 10c86babfb
-  (mtd: get the ECC info from the parameter page for ONFI nand)
 
-introduced the ecc_strength_ds & ecc_step_ds and initialized them during
-ONFI detecting.
-So we can use them directly and remove our own get_onfi_ecc_param function.
+--cuksurJxElusDw39
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Josh Wu <josh.wu@atmel.com>
----
-v1 --> v2:
-  1. updated the refered commit id as it is changed when merged in mainline.
-  2. refined the commit message
+On Fri, Sep 13, 2013 at 12:55:47PM +0800, Huang Shijie wrote:
+> =E4=BA=8E 2013=E5=B9=B409=E6=9C=8813=E6=97=A5 04:56, Mark Brown =E5=86=99=
+=E9=81=93:
 
- drivers/mtd/nand/atmel_nand.c |   36 ++++--------------------------------
- 1 file changed, 4 insertions(+), 32 deletions(-)
+> > I think this is part of the problem - you're trying to represent
+> > something that isn't really a SPI controller as a SPI controller (or at
+> > least trying to implement functionality beyond that which a SPI
+> > controller has).
 
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index 060feea..6502247 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -1062,30 +1062,6 @@ static void atmel_pmecc_core_init(struct mtd_info *mtd)
- }
- 
- /*
-- * Get ECC requirement in ONFI parameters, returns -1 if ONFI
-- * parameters is not supported.
-- * return 0 if success to get the ECC requirement.
-- */
--static int get_onfi_ecc_param(struct nand_chip *chip,
--		int *ecc_bits, int *sector_size)
--{
--	*ecc_bits = *sector_size = 0;
--
--	if (chip->onfi_params.ecc_bits == 0xff)
--		/* TODO: the sector_size and ecc_bits need to be find in
--		 * extended ecc parameter, currently we don't support it.
--		 */
--		return -1;
--
--	*ecc_bits = chip->onfi_params.ecc_bits;
--
--	/* The default sector size (ecc codeword size) is 512 */
--	*sector_size = 512;
--
--	return 0;
--}
--
--/*
-  * Get ecc requirement from ONFI parameters ecc requirement.
-  * If pmecc-cap, pmecc-sector-size in DTS are not specified, this function
-  * will set them according to ONFI ecc requirement. Otherwise, use the
-@@ -1096,19 +1072,15 @@ static int pmecc_choose_ecc(struct atmel_nand_host *host,
- 		int *cap, int *sector_size)
- {
- 	/* Get ECC requirement from ONFI parameters */
--	*cap = *sector_size = 0;
- 	if (host->nand_chip.onfi_version) {
--		if (!get_onfi_ecc_param(&host->nand_chip, cap, sector_size))
--			dev_info(host->dev, "ONFI params, minimum required ECC: %d bits in %d bytes\n",
-+		*cap = host->nand_chip.ecc_strength_ds;
-+		*sector_size = host->nand_chip.ecc_step_ds;
-+		dev_info(host->dev, "ONFI params, minimum required ECC: %d bits in %d bytes\n",
- 				*cap, *sector_size);
--		else
--			dev_info(host->dev, "NAND chip ECC reqirement is in Extended ONFI parameter, we don't support yet.\n");
- 	} else {
--		dev_info(host->dev, "NAND chip is not ONFI compliant, assume ecc_bits is 2 in 512 bytes");
--	}
--	if (*cap == 0 && *sector_size == 0) {
- 		*cap = 2;
- 		*sector_size = 512;
-+		dev_info(host->dev, "NAND chip is not ONFI compliant, assume ecc_bits is 2 in 512 bytes");
- 	}
- 
- 	/* If dts file doesn't specify then use the one in ONFI parameters */
--- 
-1.7.9.5
+> The QuadSpi is not a traditional SPI controller, but i think it is still
+> a SPI controller.
+> It connects and controls the SPI NOR FLASH, so what do you think it is?
+
+I think it is a SPI flash controller because...
+
+> But the Quadspi controller can not work with the byte streams directly,
+> it works with the LUT instruction sequences, so we have to parse the
+> byte streams,
+> and then uses the right LUT to trigger the transaction.
+
+=2E..it has a programming model that seems strongly oriented around that.
+The device can offer a SPI interface too but as you say that's going to
+be less efficient.  Externally it is still SPI but in terms of what it
+is offering to the processor the functionality you are trying to support
+looks like it will work a lot better if the code using it understands
+that it is talking to a flash rather than having a SPI driver which
+tries to reverse engineer the data that's being sent to it.
+
+> > I think what you should be doing is refactoring the MTD code which
+> > interfaces to SPI flashes to split out the code so that there's an
+> > abstraction which can express what this controller (and presumably
+> > other controllers) can do and then implement this functionaltiy at
+> > that level.
+
+> If i follow this advice, i have to create a new file cloned by the m25p80=
+=2Ec,
+> and replace all the SPI APIs with other APIs.
+
+Not quite, you need to split that file up so that there is an API
+between the flash chip code and the SPI code - the code for the flash
+chip should be shared between regular SPI and other controllers like
+this one.
+
+> I have no idea what APIs can be used to replace the SPI APIs.
+
+You will need to create them.
+
+--cuksurJxElusDw39
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.21 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSMucjAAoJELSic+t+oim9d4wQAJYc/viQ5INRdELygTsxgDvE
+/wqIjBtZOkouq4AsxsVBhjUsZZtvoqQvp1J6RGstYNf+gMB3rcNvSuSqWbFubaCu
+E/CVfYDnIQAejNTt7q/QaIXOJ+J7IkBdUerzugTF4LBZShJ6it2N4lLY4pZxzb6U
+Hy2fi8So2CirbX7904G25xCf7QAdanznnxRkLB5lKrMlz6T2ryczHFFQbd6wF6q9
+IZ7ob6iMgRgss0VMDaKLp6Q7KoUAUvRudsjnDeXdzx+spO7kW+eZnjfssyxbXtZl
+MfC4D4s0VencnwCOSwlY8OMHq9Bd1MP7EsqzgbCHFFEHDBfmFGHRO2YbfdRRCipH
+V1PIw9vZG1F8G7M8meuNInX/P0EjpzSANVNS0BmDdwbBJMk+fGDtJ8OK8VJtPOsV
+UbVkLSVNyu6sD2TNeX8uujRJy2g/SJvAym4TmItsLofYBXvulLOmrWGR1E7/dLY+
+BZ2QakaSctgOZlFnG7CCr5AN3tccG4VydEvwFOE9CgxJQq66tMF+JdSwGkRNIViW
+45sPhFlebLA6VJaep168uFMmiMFwITSKUphw2mtMTcJOkaNT3o/Sp/zTq07pezqV
+3QNLjGDOAOG1LWQlqdrD2zBaN7GZgDKJY/3qG3wAyERkyPTKbMyu9XHHr82xh1S5
+DieoT1odrfFSyooss84P
+=nSyw
+-----END PGP SIGNATURE-----
+
+--cuksurJxElusDw39--
