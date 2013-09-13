@@ -1,19 +1,23 @@
-Date: Fri, 13 Sep 2013 11:21:44 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Josh Wu <josh.wu@atmel.com>
-Subject: Re: [PATCH 1/2] mtd: atmel_nand: remove unneeded ifdef CONFIG_OF
-Message-ID: <20130913182144.GF4550@ld-irv-0074.broadcom.com>
-References: <1378200028-15415-1-git-send-email-josh.wu@atmel.com>
- <20130911230207.GE4550@ld-irv-0074.broadcom.com>
- <5232DAAD.4020700@atmel.com>
+Received: from mail-ea0-x230.google.com ([2a00:1450:4013:c01::230])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VKYNS-0004Zk-K8
+ for linux-mtd@lists.infradead.org; Fri, 13 Sep 2013 18:45:59 +0000
+Received: by mail-ea0-f176.google.com with SMTP id q16so759175ead.7
+ for <linux-mtd@lists.infradead.org>; Fri, 13 Sep 2013 11:45:36 -0700 (PDT)
+From: Florian Fainelli <f.fainelli@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: bcm47xxpart: detect Squashfs partition
+Date: Fri, 13 Sep 2013 19:45:29 +0100
+Message-ID: <2926043.ie0k1Z5zv6@lenovo>
+In-Reply-To: <1379090297-2880-1-git-send-email-zajec5@gmail.com>
+References: <1379090297-2880-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5232DAAD.4020700@atmel.com>
-Cc: devicetree@vger.kernel.org, dedekind1@gmail.com, nicolas.ferre@atmel.com,
- linux-mtd@lists.infradead.org, plagnioj@jcrosoft.com,
- linux-arm-kernel@lists.infradead.org
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Cc: Hauke Mehrtens <hauke@hauke-m.de>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ David Woodhouse <David.Woodhouse@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,130 +27,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ devicetree@vger.kernel.org
+Le vendredi 13 septembre 2013 18:38:17 Rafa=C5=82 Mi=C5=82ecki a =C3=A9=
+crit :
+> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
 
-On Fri, Sep 13, 2013 at 05:28:13PM +0800, Josh Wu wrote:
-> On 9/12/2013 7:02 AM, Brian Norris wrote:
-> >On Tue, Sep 03, 2013 at 05:20:27PM +0800, Josh Wu wrote:
-> >>Since following commit
-> >>   f3b391425d21e6138e57b2432d91134e0bc2b975
+A little commit message would be welcome.
 
-...
+> ---
+>  drivers/mtd/bcm47xxpart.c |    8 ++++++++
+>  1 file changed, 8 insertions(+)
+>=20
+> diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
+> index 9279a91..96f821a 100644
+> --- a/drivers/mtd/bcm47xxpart.c
+> +++ b/drivers/mtd/bcm47xxpart.c
+> @@ -32,6 +32,7 @@
+>  #define ML_MAGIC1=09=09=090x39685a42
+>  #define ML_MAGIC2=09=09=090x26594131
+>  #define TRX_MAGIC=09=09=090x30524448
+> +#define SQSH_MAGIC=09=09=090x71736873=09/* shsq */
+>=20
+>  struct trx_header {
+>  =09uint32_t magic;
+> @@ -167,6 +168,13 @@ static int bcm47xxpart_parse(struct mtd_info *ma=
+ster,
+>  =09=09=09offset =3D rounddown(offset + trx->length, blocksize);
+>  =09=09=09continue;
+>  =09=09}
+> +
+> +=09=09/* Squashfs */
+> +=09=09if (buf[0x000 / 4] =3D=3D SQSH_MAGIC) {
 
-> >>   (of_mtd: Add no-op stubs to support CONFIG_OF=n)
-> >>
-> >>implements the stub for CONFIG_OF=n. Now we can safely remove all
-> >>CONFIG_OF in atmel_nand. (Thanks to Ezequiel Garcia's for this protype)
-> >I'm not quite so sure about this patch, as I was about the pxa3xx patch.
-> >With pxa3xx, the compiler can easily tell that pxa3xx_nand_probe_dt()
-> >will return 0 without doing anything in the !CONFIG_OF case (and so will
-> >likely remove the dead code), so it's no benefit to have the #ifdef. But
-> >in this driver, the atmel_of_init_port() function can't be trivially
-> >determined to do nothing (and in fact, it does something in either
-> >CONFIG_OF=y or =n case). It's only protected by the 'if
-> >(pdev->dev.of_node)' check, which the compiler can't predict.
-> 
-> I understand your concern here.
-> 
-> >
-> >So, I don't know if we should remove the #ifdef at the expense of likely
-> >significantly larger code. I won't protest, but I won't merge it yet
-> >either. Perhaps others have better ideas, or perhaps you can find a good
-> >way to work around this -- e.g., check the of_* helpers for -ENOSYS early
-> >in atmel_of_init_port()?
-> 
-> So what about to add one more check： "IS_ENABLE(CONFIG_OF)" in
-> atmel_nand_probe().
-> And which is compiler predictable.
-> 
-> if (IS_ENABLED(CONFIG_OF) && pdev->dev.of_node) {
-> /* of_node can be parsed only when CONFIG_OF is enable */
-> res = atmel_of_init_port(host, pdev->dev.of_node);
-> if (res)
-> goto err_nand_ioremap;
-> } else {
-> ... ...
-> }
+So basically buf[0], which is a bit more readable.
 
-That looks good to me. And it has precedent, a nearly identical patch
-here:
-
-  commit e305062e94719ef543ae936dd56501b5a36406c6
-  Author: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-  Date:   Tue Jun 18 12:29:49 2013 +0200
-
-      gpio-rcar: Remove #ifdef CONFIG_OF around OF-specific sections
-
-      All functions and data types used by OF-specific code paths are declared
-      in <linux/of.h> regardless of CONFIG_OF. Replace the #ifdef CONFIG_OF
-      guard with a if(IS_ENABLED(CONFIG_OF)) and let the compiler optimize
-      the unused code away.
-
-      Signed-off-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-      Signed-off-by: Simon Horman <horms+renesas@verge.net.au>
-
-Brian
-
-(leaving context intact)
-
-> 
-> >
-> >>Signed-off-by: Josh Wu <josh.wu@atmel.com>
-> >>---
-> >>  drivers/mtd/nand/atmel_nand.c |   14 +-------------
-> >>  1 file changed, 1 insertion(+), 13 deletions(-)
-> >>
-> >>diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-> >>index 060feea..1ca0724 100644
-> >>--- a/drivers/mtd/nand/atmel_nand.c
-> >>+++ b/drivers/mtd/nand/atmel_nand.c
-> >>@@ -1449,7 +1449,6 @@ static void atmel_nand_hwctl(struct mtd_info *mtd, int mode)
-> >>  		ecc_writel(host->ecc, CR, ATMEL_ECC_RST);
-> >>  }
-> >>-#if defined(CONFIG_OF)
-> >>  static int atmel_of_init_port(struct atmel_nand_host *host,
-> >>  			      struct device_node *np)
-> >>  {
-> >>@@ -1457,7 +1456,7 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
-> >>  	u32 offset[2];
-> >>  	int ecc_mode;
-> >>  	struct atmel_nand_data *board = &host->board;
-> >>-	enum of_gpio_flags flags;
-> >>+	enum of_gpio_flags flags = 0;
-> >>  	if (of_property_read_u32(np, "atmel,nand-addr-offset", &val) == 0) {
-> >>  		if (val >= 32) {
-> >>@@ -1540,13 +1539,6 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
-> >>  	return 0;
-> >>  }
-> >>-#else
-> >>-static int atmel_of_init_port(struct atmel_nand_host *host,
-> >>-			      struct device_node *np)
-> >>-{
-> >>-	return -EINVAL;
-> >>-}
-> >>-#endif
-> >>  static int __init atmel_hw_nand_init_params(struct platform_device *pdev,
-> >>  					 struct atmel_nand_host *host)
-> >>@@ -2207,14 +2199,12 @@ static int __exit atmel_nand_remove(struct platform_device *pdev)
-> >>  	return 0;
-> >>  }
-> >>-#if defined(CONFIG_OF)
-> >>  static const struct of_device_id atmel_nand_dt_ids[] = {
-> >>  	{ .compatible = "atmel,at91rm9200-nand" },
-> >>  	{ /* sentinel */ }
-> >>  };
-> >>  MODULE_DEVICE_TABLE(of, atmel_nand_dt_ids);
-> >>-#endif
-> >>  static int atmel_nand_nfc_probe(struct platform_device *pdev)
-> >>  {
-> >>@@ -2253,12 +2243,10 @@ static int atmel_nand_nfc_probe(struct platform_device *pdev)
-> >>  	return 0;
-> >>  }
-> >>-#if defined(CONFIG_OF)
-> >>  static struct of_device_id atmel_nand_nfc_match[] = {
-> >>  	{ .compatible = "atmel,sama5d3-nfc" },
-> >>  	{ /* sentinel */ }
-> >>  };
-> >>-#endif
-> >>  static struct platform_driver atmel_nand_nfc_driver = {
-> >>  	.driver = {
+Thanks!
+--=20
+Florian
