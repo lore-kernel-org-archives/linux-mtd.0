@@ -1,19 +1,22 @@
-Date: Thu, 12 Sep 2013 22:58:30 -0400
+Date: Thu, 12 Sep 2013 23:14:47 -0400
 From: Huang Shijie <shijie8@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>
 Subject: Re: [PATCH v3 0/8] Add the Quadspi driver for vf610-twr
-Message-ID: <20130913025827.GA3051@gmail.com>
-References: <593AEF6C47F46446852B067021A273D6D984000B@MUCSE039.lantiq.com>
- <20130905020435.GA3970@gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA0C7F4@DBDE04.ent.ti.com>
- <522817D7.1010206@freescale.com> <522D3B79.3060707@freescale.com>
- <52318953.6090405@freescale.com>
- <1378979431.2627.402.camel@shinybook.infradead.org>
+Message-ID: <20130913031444.GB3051@gmail.com>
+References: <52304BFF.4060007@freescale.com>
+ <20130911113002.GP29403@sirena.org.uk>
+ <523186DF.4070203@freescale.com>
+ <1378982395.2627.416.camel@shinybook.infradead.org>
+ <20980858CB6D3A4BAE95CA194937D5E73EA0EE8B@DBDE04.ent.ti.com>
+ <1378984665.2627.423.camel@shinybook.infradead.org>
+ <20130912114831.GL29403@sirena.org.uk>
+ <1378987323.2627.429.camel@shinybook.infradead.org>
+ <20130912134345.GQ29403@sirena.org.uk>
+ <1378994596.2627.449.camel@shinybook.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1378979431.2627.402.camel@shinybook.infradead.org>
+In-Reply-To: <1378994596.2627.449.camel@shinybook.infradead.org>
 Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
  "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
  "b44548@freescale.com" <b44548@freescale.com>,
@@ -37,31 +40,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 12, 2013 at 10:50:31AM +0100, David Woodhouse wrote:
-> On Thu, 2013-09-12 at 17:28 +0800, Huang Shijie wrote:
-> > 于 2013年09月11日 22:05, David Woodhouse 写道:
-> > > What*actually*  happens, on the wire(s), when the flash driver asks the
-> > > SPI controller to perform a transaction?
-> > The LUT registers tell the controller how many wires are needed for a 
-> > transaction.
-> > For example, the read status only use a single line, while the quad read 
-> > uses 4 lines.
+On Thu, Sep 12, 2013 at 03:03:16PM +0100, David Woodhouse wrote:
+> On Thu, 2013-09-12 at 14:43 +0100, Mark Brown wrote:
+> > 
 > 
-> Is this not something that could theoretically be provided by the caller
-> when it *makes* the transaction?
-> 
-> Conceptually speaking, could it not be an additional argument to
-> spi_write_then_read() ? 
-> 
-> After all, it's the *device* driver (m25p80.c etc.) which will know what
-> the transaction actually *is*, and how many lines the device will want
-> to use for each transaction?
-yes. we can set the lines information in the spi_write_then_read().
+> So to go back to your question: the commands that it "knows" we are
+> going to send are indeed specific to (one particular type of) SPI NOR
+> flash. But there's nothing on the MTD side which justifies that
+> assumption. Even if you use a different type of SPI NOR flash which uses
+> different opcodes for its commands, this broken scheme will fall over.
 
-But for the quadspi driver, it does not need this information.
+Beside the quad-read/ddr-quad-read commands, all the commands needed by
+this driver is common. If we do not enable the quad-read, this driver
+can works with the fast-read mode.
 
-When the drivers knows that it is a Quad-read transaction, it will uses
-the relative LUT sequence which uses the 4 lines.
+If we use a different NOR which uses different opcodes
+(different quad-read opcodes ?), i should add a small patch to fix it. 
+
+
+I think i should follow Mark's advice to split out the quad-read code.
 
 thanks
 Huang Shijie
