@@ -1,34 +1,17 @@
-Message-ID: <52329AD3.2050608@freescale.com>
-Date: Fri, 13 Sep 2013 12:55:47 +0800
-From: Huang Shijie <b32955@freescale.com>
+Message-ID: <5232DAAD.4020700@atmel.com>
+Date: Fri, 13 Sep 2013 17:28:13 +0800
+From: Josh Wu <josh.wu@atmel.com>
 MIME-Version: 1.0
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 0/8] Add the Quadspi driver for vf610-twr
-References: <593AEF6C47F46446852B067021A273D6D984000B@MUCSE039.lantiq.com>
- <20130905020435.GA3970@gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA0C7F4@DBDE04.ent.ti.com>
- <522817D7.1010206@freescale.com> <522D3B79.3060707@freescale.com>
- <52318953.6090405@freescale.com>
- <1378979431.2627.402.camel@shinybook.infradead.org>
- <20130913025827.GA3051@gmail.com> <1378999322.4210.95.camel@i7.infradead.org>
- <20130913041208.GD3051@gmail.com> <20130912205644.GW29403@sirena.org.uk>
-In-Reply-To: <20130912205644.GW29403@sirena.org.uk>
-Content-Type: text/plain; charset="GB2312"
-Content-Transfer-Encoding: quoted-printable
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "b44548@freescale.com" <b44548@freescale.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>, Huang Shijie <shijie8@gmail.com>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "b18965@freescale.com" <b18965@freescale.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "thomas.langer@lantiq.com" <thomas.langer@lantiq.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>,
- "lznuaa@gmail.com" <lznuaa@gmail.com>,
- "shawn.guo@linaro.org" <shawn.guo@linaro.org>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 1/2] mtd: atmel_nand: remove unneeded ifdef CONFIG_OF
+References: <1378200028-15415-1-git-send-email-josh.wu@atmel.com>
+ <20130911230207.GE4550@ld-irv-0074.broadcom.com>
+In-Reply-To: <20130911230207.GE4550@ld-irv-0074.broadcom.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: nicolas.ferre@atmel.com, plagnioj@jcrosoft.com,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,59 +21,127 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=D3=DA 2013=C4=EA09=D4=C213=C8=D5 04:56, Mark Brown =D0=B4=B5=C0:
-> On Fri, Sep 13, 2013 at 12:12:14AM -0400, Huang Shijie wrote:
+Dear Brian
+
+On 9/12/2013 7:02 AM, Brian Norris wrote:
+> Hi Josh,
 >
->> I think the controller is designed for the NOR flash, yes, a little
->> strange.
-> I think this is part of the problem - you're trying to represent
-> something that isn't really a SPI controller as a SPI controller (or at
-> least trying to implement functionality beyond that which a SPI
-> controller has).
+> On Tue, Sep 03, 2013 at 05:20:27PM +0800, Josh Wu wrote:
+>> Since following commit
+>>    f3b391425d21e6138e57b2432d91134e0bc2b975
+> This commit ID will likely change before it gets merged, since there may
+> be rebasing, and David usually adds his signoff. David or I can take
+> care of that later though.
+
+OK. I think I need to remove the commit ID part.
+
 >
-The QuadSpi is not a traditional SPI controller, but i think it is still
-a SPI controller.
-It connects and controls the SPI NOR FLASH, so what do you think it is?
+>>    (of_mtd: Add no-op stubs to support CONFIG_OF=n)
+>>
+>> implements the stub for CONFIG_OF=n. Now we can safely remove all
+>> CONFIG_OF in atmel_nand. (Thanks to Ezequiel Garcia's for this protype)
+> I'm not quite so sure about this patch, as I was about the pxa3xx patch.
+> With pxa3xx, the compiler can easily tell that pxa3xx_nand_probe_dt()
+> will return 0 without doing anything in the !CONFIG_OF case (and so will
+> likely remove the dead code), so it's no benefit to have the #ifdef. But
+> in this driver, the atmel_of_init_port() function can't be trivially
+> determined to do nothing (and in fact, it does something in either
+> CONFIG_OF=y or =n case). It's only protected by the 'if
+> (pdev->dev.of_node)' check, which the compiler can't predict.
 
+I understand your concern here.
 
->> Mark and you want to create the LUT instruction sequence at the runtim=
-e,
->> But there is some disadvantage if we do so:
->>   [1] low efficiency:=20
->>   [2] we may can not create all the LUT instruction sequence at the
->>       runtime. For example, the buffer program(OPCODE_PP):
->>   [3] We may can not create the LUT instruction sequence at the runtim=
-e,
->>       since we can not get enough information from the spi_transfer{}.
->>       A whole LUT instruction sequence may needs the following info:
-> What this is saying to me is that you should not be impementing this as
-If the quadspi controller is not a SPI controller, what controller is it?
+>
+> So, I don't know if we should remove the #ifdef at the expense of likely
+> significantly larger code. I won't protest, but I won't merge it yet
+> either. Perhaps others have better ideas, or perhaps you can find a good
+> way to work around this -- e.g., check the of_* helpers for -ENOSYS early
+> in atmel_of_init_port()?
 
+So what about to add one more check： "IS_ENABLE(CONFIG_OF)" in 
+atmel_nand_probe().
+And which is compiler predictable.
 
-> a SPI controller, trying to do that is breaking the abstracton that SPI
-> is offering.  Like people have said SPI is just about byte streams.
-yes, SPI is now just about the byte streams.
+if (IS_ENABLED(CONFIG_OF) && pdev->dev.of_node) {
+/* of_node can be parsed only when CONFIG_OF is enable */
+res = atmel_of_init_port(host, pdev->dev.of_node);
+if (res)
+goto err_nand_ioremap;
+} else {
+... ...
+}
 
+And thanks for the comments.
+Best Regards,
+Josh Wu
 
-
-But the Quadspi controller can not work with the byte streams directly,
-it works with the LUT instruction sequences, so we have to parse the
-byte streams,
-and then uses the right LUT to trigger the transaction.
-
-
-
-> I think what you should be doing is refactoring the MTD code which
-> interfaces to SPI flashes to split out the code so that there's an
-> abstraction which can express what this controller (and presumably
-> other controllers) can do and then implement this functionaltiy at
-> that level.
-If i follow this advice, i have to create a new file cloned by the m25p80=
-.c,
-and replace all the SPI APIs with other APIs.
-
-I have no idea what APIs can be used to replace the SPI APIs.
-
-
-thanks
-Huang Shijie
+>
+>> Signed-off-by: Josh Wu <josh.wu@atmel.com>
+>> ---
+>>   drivers/mtd/nand/atmel_nand.c |   14 +-------------
+>>   1 file changed, 1 insertion(+), 13 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+>> index 060feea..1ca0724 100644
+>> --- a/drivers/mtd/nand/atmel_nand.c
+>> +++ b/drivers/mtd/nand/atmel_nand.c
+>> @@ -1449,7 +1449,6 @@ static void atmel_nand_hwctl(struct mtd_info *mtd, int mode)
+>>   		ecc_writel(host->ecc, CR, ATMEL_ECC_RST);
+>>   }
+>>   
+>> -#if defined(CONFIG_OF)
+>>   static int atmel_of_init_port(struct atmel_nand_host *host,
+>>   			      struct device_node *np)
+>>   {
+>> @@ -1457,7 +1456,7 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
+>>   	u32 offset[2];
+>>   	int ecc_mode;
+>>   	struct atmel_nand_data *board = &host->board;
+>> -	enum of_gpio_flags flags;
+>> +	enum of_gpio_flags flags = 0;
+>>   
+>>   	if (of_property_read_u32(np, "atmel,nand-addr-offset", &val) == 0) {
+>>   		if (val >= 32) {
+>> @@ -1540,13 +1539,6 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
+>>   
+>>   	return 0;
+>>   }
+>> -#else
+>> -static int atmel_of_init_port(struct atmel_nand_host *host,
+>> -			      struct device_node *np)
+>> -{
+>> -	return -EINVAL;
+>> -}
+>> -#endif
+>>   
+>>   static int __init atmel_hw_nand_init_params(struct platform_device *pdev,
+>>   					 struct atmel_nand_host *host)
+>> @@ -2207,14 +2199,12 @@ static int __exit atmel_nand_remove(struct platform_device *pdev)
+>>   	return 0;
+>>   }
+>>   
+>> -#if defined(CONFIG_OF)
+>>   static const struct of_device_id atmel_nand_dt_ids[] = {
+>>   	{ .compatible = "atmel,at91rm9200-nand" },
+>>   	{ /* sentinel */ }
+>>   };
+>>   
+>>   MODULE_DEVICE_TABLE(of, atmel_nand_dt_ids);
+>> -#endif
+>>   
+>>   static int atmel_nand_nfc_probe(struct platform_device *pdev)
+>>   {
+>> @@ -2253,12 +2243,10 @@ static int atmel_nand_nfc_probe(struct platform_device *pdev)
+>>   	return 0;
+>>   }
+>>   
+>> -#if defined(CONFIG_OF)
+>>   static struct of_device_id atmel_nand_nfc_match[] = {
+>>   	{ .compatible = "atmel,sama5d3-nfc" },
+>>   	{ /* sentinel */ }
+>>   };
+>> -#endif
+>>   
+>>   static struct platform_driver atmel_nand_nfc_driver = {
+>>   	.driver = {
+> Brian
