@@ -1,17 +1,13 @@
-Message-ID: <5232DAAD.4020700@atmel.com>
-Date: Fri, 13 Sep 2013 17:28:13 +0800
 From: Josh Wu <josh.wu@atmel.com>
+To: <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+ <dedekind1@gmail.com>
+Subject: [PATCH v2] mtd: atmel_nand: use the common function to get ecc info
+Date: Fri, 13 Sep 2013 18:02:17 +0800
+Message-ID: <1379066537-29505-1-git-send-email-josh.wu@atmel.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 1/2] mtd: atmel_nand: remove unneeded ifdef CONFIG_OF
-References: <1378200028-15415-1-git-send-email-josh.wu@atmel.com>
- <20130911230207.GE4550@ld-irv-0074.broadcom.com>
-In-Reply-To: <20130911230207.GE4550@ld-irv-0074.broadcom.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: nicolas.ferre@atmel.com, plagnioj@jcrosoft.com,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- dedekind1@gmail.com
+Content-Type: text/plain
+Cc: nicolas.ferre@atmel.com, computersforpeace@gmail.com, plagnioj@jcrosoft.com,
+ Josh Wu <josh.wu@atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,127 +17,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Brian
+Atmel nand will check ONFI ecc information when config the PMECC parameters.
+Since commit: 10c86babfb
+  (mtd: get the ECC info from the parameter page for ONFI nand)
 
-On 9/12/2013 7:02 AM, Brian Norris wrote:
-> Hi Josh,
->
-> On Tue, Sep 03, 2013 at 05:20:27PM +0800, Josh Wu wrote:
->> Since following commit
->>    f3b391425d21e6138e57b2432d91134e0bc2b975
-> This commit ID will likely change before it gets merged, since there may
-> be rebasing, and David usually adds his signoff. David or I can take
-> care of that later though.
+introduced the ecc_strength_ds & ecc_step_ds and initialized them during
+ONFI detecting.
+So we can use them directly and remove our own get_onfi_ecc_param function.
 
-OK. I think I need to remove the commit ID part.
+Signed-off-by: Josh Wu <josh.wu@atmel.com>
+---
+v1 --> v2:
+  1. updated the refered commit id as it is changed when merged in mainline.
+  2. refined the commit message
 
->
->>    (of_mtd: Add no-op stubs to support CONFIG_OF=n)
->>
->> implements the stub for CONFIG_OF=n. Now we can safely remove all
->> CONFIG_OF in atmel_nand. (Thanks to Ezequiel Garcia's for this protype)
-> I'm not quite so sure about this patch, as I was about the pxa3xx patch.
-> With pxa3xx, the compiler can easily tell that pxa3xx_nand_probe_dt()
-> will return 0 without doing anything in the !CONFIG_OF case (and so will
-> likely remove the dead code), so it's no benefit to have the #ifdef. But
-> in this driver, the atmel_of_init_port() function can't be trivially
-> determined to do nothing (and in fact, it does something in either
-> CONFIG_OF=y or =n case). It's only protected by the 'if
-> (pdev->dev.of_node)' check, which the compiler can't predict.
+ drivers/mtd/nand/atmel_nand.c |   36 ++++--------------------------------
+ 1 file changed, 4 insertions(+), 32 deletions(-)
 
-I understand your concern here.
-
->
-> So, I don't know if we should remove the #ifdef at the expense of likely
-> significantly larger code. I won't protest, but I won't merge it yet
-> either. Perhaps others have better ideas, or perhaps you can find a good
-> way to work around this -- e.g., check the of_* helpers for -ENOSYS early
-> in atmel_of_init_port()?
-
-So what about to add one more check： "IS_ENABLE(CONFIG_OF)" in 
-atmel_nand_probe().
-And which is compiler predictable.
-
-if (IS_ENABLED(CONFIG_OF) && pdev->dev.of_node) {
-/* of_node can be parsed only when CONFIG_OF is enable */
-res = atmel_of_init_port(host, pdev->dev.of_node);
-if (res)
-goto err_nand_ioremap;
-} else {
-... ...
-}
-
-And thanks for the comments.
-Best Regards,
-Josh Wu
-
->
->> Signed-off-by: Josh Wu <josh.wu@atmel.com>
->> ---
->>   drivers/mtd/nand/atmel_nand.c |   14 +-------------
->>   1 file changed, 1 insertion(+), 13 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
->> index 060feea..1ca0724 100644
->> --- a/drivers/mtd/nand/atmel_nand.c
->> +++ b/drivers/mtd/nand/atmel_nand.c
->> @@ -1449,7 +1449,6 @@ static void atmel_nand_hwctl(struct mtd_info *mtd, int mode)
->>   		ecc_writel(host->ecc, CR, ATMEL_ECC_RST);
->>   }
->>   
->> -#if defined(CONFIG_OF)
->>   static int atmel_of_init_port(struct atmel_nand_host *host,
->>   			      struct device_node *np)
->>   {
->> @@ -1457,7 +1456,7 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
->>   	u32 offset[2];
->>   	int ecc_mode;
->>   	struct atmel_nand_data *board = &host->board;
->> -	enum of_gpio_flags flags;
->> +	enum of_gpio_flags flags = 0;
->>   
->>   	if (of_property_read_u32(np, "atmel,nand-addr-offset", &val) == 0) {
->>   		if (val >= 32) {
->> @@ -1540,13 +1539,6 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
->>   
->>   	return 0;
->>   }
->> -#else
->> -static int atmel_of_init_port(struct atmel_nand_host *host,
->> -			      struct device_node *np)
->> -{
->> -	return -EINVAL;
->> -}
->> -#endif
->>   
->>   static int __init atmel_hw_nand_init_params(struct platform_device *pdev,
->>   					 struct atmel_nand_host *host)
->> @@ -2207,14 +2199,12 @@ static int __exit atmel_nand_remove(struct platform_device *pdev)
->>   	return 0;
->>   }
->>   
->> -#if defined(CONFIG_OF)
->>   static const struct of_device_id atmel_nand_dt_ids[] = {
->>   	{ .compatible = "atmel,at91rm9200-nand" },
->>   	{ /* sentinel */ }
->>   };
->>   
->>   MODULE_DEVICE_TABLE(of, atmel_nand_dt_ids);
->> -#endif
->>   
->>   static int atmel_nand_nfc_probe(struct platform_device *pdev)
->>   {
->> @@ -2253,12 +2243,10 @@ static int atmel_nand_nfc_probe(struct platform_device *pdev)
->>   	return 0;
->>   }
->>   
->> -#if defined(CONFIG_OF)
->>   static struct of_device_id atmel_nand_nfc_match[] = {
->>   	{ .compatible = "atmel,sama5d3-nfc" },
->>   	{ /* sentinel */ }
->>   };
->> -#endif
->>   
->>   static struct platform_driver atmel_nand_nfc_driver = {
->>   	.driver = {
-> Brian
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index 060feea..6502247 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -1062,30 +1062,6 @@ static void atmel_pmecc_core_init(struct mtd_info *mtd)
+ }
+ 
+ /*
+- * Get ECC requirement in ONFI parameters, returns -1 if ONFI
+- * parameters is not supported.
+- * return 0 if success to get the ECC requirement.
+- */
+-static int get_onfi_ecc_param(struct nand_chip *chip,
+-		int *ecc_bits, int *sector_size)
+-{
+-	*ecc_bits = *sector_size = 0;
+-
+-	if (chip->onfi_params.ecc_bits == 0xff)
+-		/* TODO: the sector_size and ecc_bits need to be find in
+-		 * extended ecc parameter, currently we don't support it.
+-		 */
+-		return -1;
+-
+-	*ecc_bits = chip->onfi_params.ecc_bits;
+-
+-	/* The default sector size (ecc codeword size) is 512 */
+-	*sector_size = 512;
+-
+-	return 0;
+-}
+-
+-/*
+  * Get ecc requirement from ONFI parameters ecc requirement.
+  * If pmecc-cap, pmecc-sector-size in DTS are not specified, this function
+  * will set them according to ONFI ecc requirement. Otherwise, use the
+@@ -1096,19 +1072,15 @@ static int pmecc_choose_ecc(struct atmel_nand_host *host,
+ 		int *cap, int *sector_size)
+ {
+ 	/* Get ECC requirement from ONFI parameters */
+-	*cap = *sector_size = 0;
+ 	if (host->nand_chip.onfi_version) {
+-		if (!get_onfi_ecc_param(&host->nand_chip, cap, sector_size))
+-			dev_info(host->dev, "ONFI params, minimum required ECC: %d bits in %d bytes\n",
++		*cap = host->nand_chip.ecc_strength_ds;
++		*sector_size = host->nand_chip.ecc_step_ds;
++		dev_info(host->dev, "ONFI params, minimum required ECC: %d bits in %d bytes\n",
+ 				*cap, *sector_size);
+-		else
+-			dev_info(host->dev, "NAND chip ECC reqirement is in Extended ONFI parameter, we don't support yet.\n");
+ 	} else {
+-		dev_info(host->dev, "NAND chip is not ONFI compliant, assume ecc_bits is 2 in 512 bytes");
+-	}
+-	if (*cap == 0 && *sector_size == 0) {
+ 		*cap = 2;
+ 		*sector_size = 512;
++		dev_info(host->dev, "NAND chip is not ONFI compliant, assume ecc_bits is 2 in 512 bytes");
+ 	}
+ 
+ 	/* If dts file doesn't specify then use the one in ONFI parameters */
+-- 
+1.7.9.5
