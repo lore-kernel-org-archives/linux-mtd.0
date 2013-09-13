@@ -1,23 +1,22 @@
-Received: from mail-wi0-x235.google.com ([2a00:1450:400c:c05::235])
+Received: from mail-ea0-f174.google.com ([209.85.215.174])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VKZZs-0005zQ-A8
- for linux-mtd@lists.infradead.org; Fri, 13 Sep 2013 20:02:53 +0000
-Received: by mail-wi0-f181.google.com with SMTP id ex4so1310347wid.2
- for <linux-mtd@lists.infradead.org>; Fri, 13 Sep 2013 13:02:30 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20130913185610.GG4550@ld-irv-0074.broadcom.com>
+ id 1VKZwL-0006LL-0z
+ for linux-mtd@lists.infradead.org; Fri, 13 Sep 2013 20:26:05 +0000
+Received: by mail-ea0-f174.google.com with SMTP id z15so804627ead.19
+ for <linux-mtd@lists.infradead.org>; Fri, 13 Sep 2013 13:25:39 -0700 (PDT)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
+ David Woodhouse <David.Woodhouse@intel.com>
+Subject: [PATCH V2] mtd: bcm47xxpart: detect block aligned Squashfs partition
+Date: Fri, 13 Sep 2013 22:25:30 +0200
+Message-Id: <1379103930-3987-1-git-send-email-zajec5@gmail.com>
+In-Reply-To: <1379090297-2880-1-git-send-email-zajec5@gmail.com>
 References: <1379090297-2880-1-git-send-email-zajec5@gmail.com>
- <20130913185610.GG4550@ld-irv-0074.broadcom.com>
-Date: Fri, 13 Sep 2013 22:02:30 +0200
-Message-ID: <CACna6rwXxZMzd0CyvS2tEvtJhcB3F7kyVu6BerLgjLW8nHuEnw@mail.gmail.com>
-Subject: Re: [PATCH] mtd: bcm47xxpart: detect Squashfs partition
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Hauke Mehrtens <hauke@hauke-m.de>, linux-mtd@lists.infradead.org,
- David Woodhouse <David.Woodhouse@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Content-Transfer-Encoding: 8bit
+Cc: Hauke Mehrtens <hauke@hauke-m.de>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,36 +26,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2013/9/13 Brian Norris <computersforpeace@gmail.com>:
-> On Fri, Sep 13, 2013 at 06:38:17PM +0200, Rafa=C5=82 Mi=C5=82ecki wrote:
->>
->> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>
->> ---
->>  drivers/mtd/bcm47xxpart.c |    8 ++++++++
->>  1 file changed, 8 insertions(+)
->>
->> diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
->> index 9279a91..96f821a 100644
->> --- a/drivers/mtd/bcm47xxpart.c
->> +++ b/drivers/mtd/bcm47xxpart.c
->> @@ -32,6 +32,7 @@
->>  #define ML_MAGIC1                    0x39685a42
->>  #define ML_MAGIC2                    0x26594131
->>  #define TRX_MAGIC                    0x30524448
->> +#define SQSH_MAGIC                   0x71736873      /* shsq */
->
-> s/shsq/sqsh/
->
-> Or really, the "sqsh" comment doesn't add much to the SQSH_MAGIC macro.
-> Maybe this instead?
->
-> s/shsq/SquashFS/
+Most of the bcm47xx devices use TRX format for storing kernel and some
+partition like Squashfs or JFFS2. This is pretty flexible solution, CFE
+(the bootloader) just writes (and later boots) TRX at some hardcoded
+place and paritions can vary in the size.
 
-This is really a "shsq". If you read 0x71736873 in LE, you get:
-1) 0x73 (s)
-2) 0x68 (h)
-3) 0x73 (s)
-4) 0x71 (q)
+However some devices don't use TRX format. Very recently we have
+discovered ZTE H218N that has kernel and rootfs partitions at some
+"random" places.
 
-This is way I put the comment. To underline that this is a "shsq" in
-LE, that means SQSH (SQuaSHfs).
+This patch allows Linux find a rootfs partition after installing custom
+image with a CFE bootloader.
+
+Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+---
+ drivers/mtd/bcm47xxpart.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
+index 9279a91..61213f9 100644
+--- a/drivers/mtd/bcm47xxpart.c
++++ b/drivers/mtd/bcm47xxpart.c
+@@ -32,6 +32,7 @@
+ #define ML_MAGIC1			0x39685a42
+ #define ML_MAGIC2			0x26594131
+ #define TRX_MAGIC			0x30524448
++#define SQSH_MAGIC			0x71736873	/* shsq */
+ 
+ struct trx_header {
+ 	uint32_t magic;
+@@ -167,6 +168,13 @@ static int bcm47xxpart_parse(struct mtd_info *master,
+ 			offset = rounddown(offset + trx->length, blocksize);
+ 			continue;
+ 		}
++
++		/* Squashfs on devices not using TRX */
++		if (buf[0x000 / 4] == SQSH_MAGIC) {
++			bcm47xxpart_add_part(&parts[curr_part++], "rootfs",
++					     offset, 0);
++			continue;
++		}
+ 	}
+ 
+ 	/* Look for NVRAM at the end of the last block. */
+-- 
+1.7.10.4
