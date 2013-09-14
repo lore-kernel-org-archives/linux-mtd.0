@@ -1,22 +1,21 @@
-Received: from mail-wg0-x232.google.com ([2a00:1450:400c:c00::232])
+Received: from mail-pd0-x22c.google.com ([2607:f8b0:400e:c02::22c])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VKjub-0007No-GW
- for linux-mtd@lists.infradead.org; Sat, 14 Sep 2013 07:04:58 +0000
-Received: by mail-wg0-f50.google.com with SMTP id f12so1954283wgh.17
- for <linux-mtd@lists.infradead.org>; Sat, 14 Sep 2013 00:04:35 -0700 (PDT)
+ id 1VKuSB-0007cw-C6
+ for linux-mtd@lists.infradead.org; Sat, 14 Sep 2013 18:20:20 +0000
+Received: by mail-pd0-f172.google.com with SMTP id z10so2532737pdj.17
+ for <linux-mtd@lists.infradead.org>; Sat, 14 Sep 2013 11:19:56 -0700 (PDT)
+Message-ID: <5234A8CA.5050505@gmail.com>
+Date: Sat, 14 Sep 2013 11:19:54 -0700
+From: Brian Norris <computersforpeace@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <2030071.nWr24CInOj@lenovo>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Subject: Re: [PATCH] mtd: bcm47xxpart: detect Squashfs partition
 References: <1379090297-2880-1-git-send-email-zajec5@gmail.com>
- <1379103930-3987-1-git-send-email-zajec5@gmail.com>
- <2030071.nWr24CInOj@lenovo>
-Date: Sat, 14 Sep 2013 09:04:35 +0200
-Message-ID: <CACna6rwi2VrmUkta-g3w4LHz930AvHrs1u2=Ni=bMmnAor+U5g@mail.gmail.com>
-Subject: Re: [PATCH V2] mtd: bcm47xxpart: detect block aligned Squashfs
- partition
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Florian Fainelli <f.fainelli@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+ <20130913185610.GG4550@ld-irv-0074.broadcom.com>
+ <CACna6rwXxZMzd0CyvS2tEvtJhcB3F7kyVu6BerLgjLW8nHuEnw@mail.gmail.com>
+In-Reply-To: <CACna6rwXxZMzd0CyvS2tEvtJhcB3F7kyVu6BerLgjLW8nHuEnw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Cc: Hauke Mehrtens <hauke@hauke-m.de>, linux-mtd@lists.infradead.org,
  David Woodhouse <David.Woodhouse@intel.com>,
  Artem Bityutskiy <dedekind1@gmail.com>
@@ -29,32 +28,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2013/9/13 Florian Fainelli <f.fainelli@gmail.com>:
-> Le vendredi 13 septembre 2013 22:25:30 Rafa=C5=82 Mi=C5=82ecki a =C3=A9cr=
-it :
->> diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
->> index 9279a91..61213f9 100644
->> --- a/drivers/mtd/bcm47xxpart.c
->> +++ b/drivers/mtd/bcm47xxpart.c
->> @@ -32,6 +32,7 @@
->>  #define ML_MAGIC1                    0x39685a42
->>  #define ML_MAGIC2                    0x26594131
->>  #define TRX_MAGIC                    0x30524448
->> +#define SQSH_MAGIC                   0x71736873      /* shsq */
+On 09/13/2013 01:02 PM, Rafał Miłecki wrote:
+> 2013/9/13 Brian Norris <computersforpeace@gmail.com>:
+>> On Fri, Sep 13, 2013 at 06:38:17PM +0200, Rafał Miłecki wrote:
+>>>
+>>> Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+>>> ---
+>>>   drivers/mtd/bcm47xxpart.c |    8 ++++++++
+>>>   1 file changed, 8 insertions(+)
+>>>
+>>> diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
+>>> index 9279a91..96f821a 100644
+>>> --- a/drivers/mtd/bcm47xxpart.c
+>>> +++ b/drivers/mtd/bcm47xxpart.c
+>>> @@ -32,6 +32,7 @@
+>>>   #define ML_MAGIC1                    0x39685a42
+>>>   #define ML_MAGIC2                    0x26594131
+>>>   #define TRX_MAGIC                    0x30524448
+>>> +#define SQSH_MAGIC                   0x71736873      /* shsq */
+>>
+>> s/shsq/sqsh/
+>>
+>> Or really, the "sqsh" comment doesn't add much to the SQSH_MAGIC macro.
+>> Maybe this instead?
+>>
+>> s/shsq/SquashFS/
 >
-> You could include uapi/linux/magic.h and use the SQUASHFS_MAGIC constant
-> directly, sorry for not noticing earlier.
+> This is really a "shsq". If you read 0x71736873 in LE, you get:
+> 1) 0x73 (s)
+> 2) 0x68 (h)
+> 3) 0x73 (s)
+> 4) 0x71 (q)
+>
+> This is way I put the comment. To underline that this is a "shsq" in
+> LE, that means SQSH (SQuaSHfs).
 
-OK, I need help with that crazy endianness here... When I look at
-flash dump in hexdump (or Okteta for gui) I see:
-37:0000 | 73 68 73 71 BB 03 00 00 00 00 00 00 88 1B 00 40 | shsq=C2=BB.....=
-.....@
+I see, my bad. That's still a weird magic (not your fault), as it's not 
+really LE in the traditional (byte atomic) sense, but little endian with 
+16-bit atoms.
 
-bcm47xx is LE, so reading first 4 bytes results in: 0x71'73'68'73 ([3]
-+ [2] + [1] + [0]). That is what I used for my SQSH_MAGIC.
-
-However SQUASHFS_MAGIC is 0x73717368. So I need to read [2] + [3] +
-[0] + [1]... Any help how to achieve that?
-
---=20
-Rafa=C5=82
+Brian
