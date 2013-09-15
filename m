@@ -1,24 +1,25 @@
-Received: from mail-pd0-x22c.google.com ([2607:f8b0:400e:c02::22c])
+Received: from mail-out.m-online.net ([212.18.0.9])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VKuSB-0007cw-C6
- for linux-mtd@lists.infradead.org; Sat, 14 Sep 2013 18:20:20 +0000
-Received: by mail-pd0-f172.google.com with SMTP id z10so2532737pdj.17
- for <linux-mtd@lists.infradead.org>; Sat, 14 Sep 2013 11:19:56 -0700 (PDT)
-Message-ID: <5234A8CA.5050505@gmail.com>
-Date: Sat, 14 Sep 2013 11:19:54 -0700
-From: Brian Norris <computersforpeace@gmail.com>
+ id 1VLD49-0006Wb-8p
+ for linux-mtd@lists.infradead.org; Sun, 15 Sep 2013 14:12:45 +0000
+From: Marek Vasut <marex@denx.de>
+To: Hector Palacios <hector.palacios@digi.com>
+Subject: Re: gpmi-nand driver and jffs2 support
+Date: Sun, 15 Sep 2013 16:12:23 +0200
+References: <522062B4.4080709@digi.com> <201309041638.52680.marex@denx.de>
+ <522755DC.4000301@digi.com>
+In-Reply-To: <522755DC.4000301@digi.com>
 MIME-Version: 1.0
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: Re: [PATCH] mtd: bcm47xxpart: detect Squashfs partition
-References: <1379090297-2880-1-git-send-email-zajec5@gmail.com>
- <20130913185610.GG4550@ld-irv-0074.broadcom.com>
- <CACna6rwXxZMzd0CyvS2tEvtJhcB3F7kyVu6BerLgjLW8nHuEnw@mail.gmail.com>
-In-Reply-To: <CACna6rwXxZMzd0CyvS2tEvtJhcB3F7kyVu6BerLgjLW8nHuEnw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: Hauke Mehrtens <hauke@hauke-m.de>, linux-mtd@lists.infradead.org,
- David Woodhouse <David.Woodhouse@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201309151612.24167.marex@denx.de>
+Cc: "fabio.estevam@freescale.com" <fabio.estevam@freescale.com>,
+ "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
+ Fabio Estevam <festevam@gmail.com>, Huang Shijie <b32955@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "scottwood@freescale.com" <scottwood@freescale.com>,
+ Huang Shijie <shijie8@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,43 +29,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/13/2013 01:02 PM, Rafał Miłecki wrote:
-> 2013/9/13 Brian Norris <computersforpeace@gmail.com>:
->> On Fri, Sep 13, 2013 at 06:38:17PM +0200, Rafał Miłecki wrote:
->>>
->>> Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
->>> ---
->>>   drivers/mtd/bcm47xxpart.c |    8 ++++++++
->>>   1 file changed, 8 insertions(+)
->>>
->>> diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
->>> index 9279a91..96f821a 100644
->>> --- a/drivers/mtd/bcm47xxpart.c
->>> +++ b/drivers/mtd/bcm47xxpart.c
->>> @@ -32,6 +32,7 @@
->>>   #define ML_MAGIC1                    0x39685a42
->>>   #define ML_MAGIC2                    0x26594131
->>>   #define TRX_MAGIC                    0x30524448
->>> +#define SQSH_MAGIC                   0x71736873      /* shsq */
->>
->> s/shsq/sqsh/
->>
->> Or really, the "sqsh" comment doesn't add much to the SQSH_MAGIC macro.
->> Maybe this instead?
->>
->> s/shsq/SquashFS/
->
-> This is really a "shsq". If you read 0x71736873 in LE, you get:
-> 1) 0x73 (s)
-> 2) 0x68 (h)
-> 3) 0x73 (s)
-> 4) 0x71 (q)
->
-> This is way I put the comment. To underline that this is a "shsq" in
-> LE, that means SQSH (SQuaSHfs).
+Dear Hector Palacios,
 
-I see, my bad. That's still a weird magic (not your fault), as it's not 
-really LE in the traditional (byte atomic) sense, but little endian with 
-16-bit atoms.
+> Dear Marek,
+> 
+> On 09/04/2013 04:38 PM, Marek Vasut wrote:
+> > Dear Huang Shijie,
+> > 
+> >> On Wed, Sep 04, 2013 at 04:00:36PM +0200, Marek Vasut wrote:
+> >>> Dear Huang Shijie,
+> >>> How come hector was then able to write his JFFS2 partition ?
+> >> 
+> >> If he uses the gpmi, he should not write the JFFS2, since the gpmi
+> >> does not support the jffs2. He will get the failure in the end.
+> > 
+> > Hector, can you comment on this?
+> 
+> I don't think I'm following these comments. The facts are:
+> 1) A JFFS2 filesystem image written with nandwrite (mtd-utils v1.5.0)
+> 	a) does not mount on kernel v3.10
+> 	b) mounts OK on linux-next kernel (v3.12) with the patchset [1] from 
+Huang
+> 	(actually I didn't use linux-next but instead a v3.10 where I merged all
+> the commits done to MTD in linux-next, which are a lot).
+> 
+> 2) A JFFS2 filesystem image written with U-Boot v2013.01
+> 	a) mounts OK on old FSL kernel 2.6.35
+> 	b) does not mount on kernel v3.10 (neither on v3.8, I believe).
+> 	c) does not mount on linux-next with the patchset [1]
+> 
+> [1] http://lists.infradead.org/pipermail/linux-mtd/2013-August/048360.html
+> 
+> Marek, could you please confirm 2b on your side, just in case I'm doing
+> anything wrong in my custom U-Boot?
 
-Brian
+Sorry for the late reply. I cannot test it, since I don't have such a setup.
+
+I still believe it'd be worth figuring out what the heck is going on in here. 
+There is obviously a bug which breaks compatibility and that must not happen.
+
+[...]
+
+Best regards,
+Marek Vasut
