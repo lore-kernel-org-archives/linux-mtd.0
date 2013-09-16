@@ -1,15 +1,15 @@
-Received: from mga14.intel.com ([143.182.124.37])
+Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VLTG7-0003Nz-CM
- for linux-mtd@lists.infradead.org; Mon, 16 Sep 2013 07:30:12 +0000
-Message-ID: <1379316587.17490.56.camel@sauron.fi.intel.com>
-Subject: [GIT PULL] UBIFS changes for 3.12-rc1
+ id 1VLTGm-0003QG-7X
+ for linux-mtd@lists.infradead.org; Mon, 16 Sep 2013 07:30:52 +0000
+Message-ID: <1379316610.17490.58.camel@sauron.fi.intel.com>
+Subject: [GIT PULL] UBI changes for 3.12-rc1
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Mon, 16 Sep 2013 10:29:47 +0300
+Date: Mon, 16 Sep 2013 10:30:10 +0300
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd <linux-mtd@lists.infradead.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Reply-To: dedekind1@gmail.com
@@ -28,27 +28,29 @@ very few changes. I'll start using a single UBI/UBIFS tree instead
 of 2 trees from now on. So in the future you'll get 1 small pull
 request instead of 2 tiny ones.
 
-The following changes since commit d4e4ab86bcba5a72779c43dc1459f71fea3d89c8:
+The following changes since commit b36f4be3de1b123d8601de062e7dbfc904f305fb:
 
-  Linux 3.11-rc5 (2013-08-11 18:04:20 -0700)
+  Linux 3.11-rc6 (2013-08-18 14:36:53 -0700)
 
 are available in the git repository at:
 
-  git://git.infradead.org/linux-ubifs.git tags/upstream-3.12-rc1
+  git://git.infradead.org/linux-ubi.git tags/upstream-3.12-rc1
 
-for you to fetch changes up to c23e9b75ccd0edba81a506c7d97e0af626489256:
+for you to fetch changes up to 8930fa500f55215f0211db9b78255e727ac3f282:
 
-  UBIFS: remove invalid warn msg with tst_recovery enabled (2013-08-16 16:42:08 +0300)
-
-----------------------------------------------------------------
-Just one patch which fixes the power-cut recovery testing mode.
+  UBI: Fix invalidate_fastmap() (2013-08-20 17:53:25 +0300)
 
 ----------------------------------------------------------------
-Mats Kärrman (1):
-      UBIFS: remove invalid warn msg with tst_recovery enabled
+Just a single fastmap fix plus a regression fix.
 
- fs/ubifs/debug.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+----------------------------------------------------------------
+Richard Weinberger (2):
+      UBI: Fix PEB leak in wear_leveling_worker()
+      UBI: Fix invalidate_fastmap()
+
+ drivers/mtd/ubi/fastmap.c | 5 +----
+ drivers/mtd/ubi/wl.c      | 3 +++
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
 -- 
 Best Regards,
