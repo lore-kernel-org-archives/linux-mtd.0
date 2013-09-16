@@ -1,36 +1,26 @@
-Date: Mon, 16 Sep 2013 12:06:34 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Huang Shijie <b32955@freescale.com>
-Message-ID: <20130916110634.GC29403@sirena.org.uk>
-References: <1378979431.2627.402.camel@shinybook.infradead.org>
- <20130913025827.GA3051@gmail.com>
- <1378999322.4210.95.camel@i7.infradead.org>
- <20130913041208.GD3051@gmail.com>
- <20130912205644.GW29403@sirena.org.uk>
- <52329AD3.2050608@freescale.com>
- <20130913102127.GD29403@sirena.org.uk>
- <52366F97.5030402@freescale.com>
- <20130916101912.GY29403@sirena.org.uk>
- <5236DD17.5090203@freescale.com>
+Received: from mail-wi0-f174.google.com ([209.85.212.174])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VLhHw-0001vm-Qd
+ for linux-mtd@lists.infradead.org; Mon, 16 Sep 2013 22:29:03 +0000
+Received: by mail-wi0-f174.google.com with SMTP id hj3so4114630wib.7
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Sep 2013 15:28:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="+gh9XxZVhzxWiq1F"
-Content-Disposition: inline
-In-Reply-To: <5236DD17.5090203@freescale.com>
-Subject: Re: [PATCH v3 0/8] Add the Quadspi driver for vf610-twr
+In-Reply-To: <20130913182144.GF4550@ld-irv-0074.broadcom.com>
+References: <1378200028-15415-1-git-send-email-josh.wu@atmel.com>
+ <20130911230207.GE4550@ld-irv-0074.broadcom.com>
+ <5232DAAD.4020700@atmel.com>
+ <20130913182144.GF4550@ld-irv-0074.broadcom.com>
+Date: Mon, 16 Sep 2013 15:28:38 -0700
+Message-ID: <CAOesGMjczRxKhDS9W9SZk4ivuxEsn0Mp6j0Xotz+qZgoKO4=xg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mtd: atmel_nand: remove unneeded ifdef CONFIG_OF
+From: Olof Johansson <olof@lixom.net>
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "b44548@freescale.com" <b44548@freescale.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>, Huang Shijie <shijie8@gmail.com>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "b18965@freescale.com" <b18965@freescale.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "thomas.langer@lantiq.com" <thomas.langer@lantiq.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>,
- "lznuaa@gmail.com" <lznuaa@gmail.com>,
- "shawn.guo@linaro.org" <shawn.guo@linaro.org>,
- David Woodhouse <dwmw2@infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Nicolas Ferre <nicolas.ferre@atmel.com>, Josh Wu <josh.wu@atmel.com>,
+ linux-mtd@lists.infradead.org,
+ Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
  "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -41,47 +31,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Guys,
 
---+gh9XxZVhzxWiq1F
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Fri, Sep 13, 2013 at 11:21 AM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> + devicetree@vger.kernel.org
+>
+> On Fri, Sep 13, 2013 at 05:28:13PM +0800, Josh Wu wrote:
+>> On 9/12/2013 7:02 AM, Brian Norris wrote:
+>> >On Tue, Sep 03, 2013 at 05:20:27PM +0800, Josh Wu wrote:
+>> >>Since following commit
+>> >>   f3b391425d21e6138e57b2432d91134e0bc2b975
+>
+> ...
+>
+>> >>   (of_mtd: Add no-op stubs to support CONFIG_OF=n)
+>> >>
+>> >>implements the stub for CONFIG_OF=n. Now we can safely remove all
+>> >>CONFIG_OF in atmel_nand. (Thanks to Ezequiel Garcia's for this protype)
+>> >I'm not quite so sure about this patch, as I was about the pxa3xx patch.
+>> >With pxa3xx, the compiler can easily tell that pxa3xx_nand_probe_dt()
+>> >will return 0 without doing anything in the !CONFIG_OF case (and so will
+>> >likely remove the dead code), so it's no benefit to have the #ifdef. But
+>> >in this driver, the atmel_of_init_port() function can't be trivially
+>> >determined to do nothing (and in fact, it does something in either
+>> >CONFIG_OF=y or =n case). It's only protected by the 'if
+>> >(pdev->dev.of_node)' check, which the compiler can't predict.
+>>
+>> I understand your concern here.
+>>
+>> >
+>> >So, I don't know if we should remove the #ifdef at the expense of likely
+>> >significantly larger code. I won't protest, but I won't merge it yet
+>> >either. Perhaps others have better ideas, or perhaps you can find a good
+>> >way to work around this -- e.g., check the of_* helpers for -ENOSYS early
+>> >in atmel_of_init_port()?
 
-On Mon, Sep 16, 2013 at 06:27:35PM +0800, Huang Shijie wrote:
-> =E4=BA=8E 2013=E5=B9=B409=E6=9C=8816=E6=97=A5 18:19, Mark Brown =E5=86=99=
-=E9=81=93:
-> > I would expect that most controllers would look just the same as they do
-> > now except for the additional ability to do quad transfers - it'd just
-> > get told that some transfers should use more data lines.
 
-> The SPI is about the byte streams, but the dummy may be not a byte, the
-> dummy maybe just 4bit.
+Can we please get less fumbling around on this and just merge a fix,
+please? You guys have broken the PXA3xx builds for the whole merge
+window, while there's been a patch sitting in linux-next with
+_exactly_ this contents since August 30, committed by David.
 
-> It is interesting to handle the dummy issue for the future's SPI controll=
-er.
+If this is't fixed within the next few days I'll just pick that patch
+up and include it in our next batch of arm-soc fixes. This is
+ridiculous.
 
-I don't know what you mean by "the dummy".
 
---+gh9XxZVhzxWiq1F
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.21 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSNuY3AAoJELSic+t+oim9l3UQAI6lgFWYjMuZ9rzOIQYh2yY7
-9zqCDqMAkqqvhaknub2+d8jUNMk69w9rOCzfnEm/V+VxD+rIwkzctpr6m9B0ok4B
-LxNrwgZyqrRYu7C7eIHUHSftgOO9JoXAwxp7MO3AYbqfMV3deHcUGoMGnOycTgGE
-Wb1DgGLW7GCGzBrGg2x6YhrkyxEk8+u3Vqyv/0KUGE0+v7aHWxbEq57iWl9WSsMl
-GmaRx2K0/HRV1nNuZP4+TJJB3nCJhBwK11gaSuWrasCJbOMNwCuPRDBu8k0UC1MB
-cyFCj8z+HiIseSnhNungSlisQvKCSstSwVr/hGte8n8zVaVBBQFPEZHSkXD34dt+
-m29BQTgjgFRjJEaVCviV8k0krVu1Q/J8bkvgAIAhGCodMHYS9g62ZZltWxNT5McH
-kZKTzEf161aZUamu4tRJAFSLKf5Gx2q6XhkjdyGUn5m43iPnkjCsxgV3AKyb0EQo
-5gSsFvfHrkbJTgKWr2VVK9irIhzAKEfNMJbulAunqeHb5gJ12P9nJj9AfZKaTnB9
-cF5TKSmTAQ4m9OaQwIrnV5NJETn4InnjD/PwSmayE/34KVmL7Amz4NTb7b00OEom
-02+0JtLaZJL6fWvwIvTl7jBbFCDtKl2OaFz5QARflWGIdiOdEXj9PSE93VEExkXC
-vXy+rxF2Q8vqpVhGSkF7
-=EkcX
------END PGP SIGNATURE-----
-
---+gh9XxZVhzxWiq1F--
+-Olof
