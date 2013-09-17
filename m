@@ -1,21 +1,32 @@
-Received: from mail-db9lp0251.outbound.messaging.microsoft.com
- ([213.199.154.251] helo=db9outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VLklN-00074p-SJ
- for linux-mtd@lists.infradead.org; Tue, 17 Sep 2013 02:11:38 +0000
-Message-ID: <5237BAA9.6000606@freescale.com>
-Date: Tue, 17 Sep 2013 10:12:57 +0800
+Message-ID: <5237BB01.3080700@freescale.com>
+Date: Tue, 17 Sep 2013 10:14:25 +0800
 From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: nand: fix memory leak in ONFI extended parameter page
-References: <1379381512-2007-1-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1379381512-2007-1-git-send-email-computersforpeace@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 0/8] Add the Quadspi driver for vf610-twr
+References: <1378979431.2627.402.camel@shinybook.infradead.org>
+ <20130913025827.GA3051@gmail.com> <1378999322.4210.95.camel@i7.infradead.org>
+ <20130913041208.GD3051@gmail.com> <20130912205644.GW29403@sirena.org.uk>
+ <52329AD3.2050608@freescale.com> <20130913102127.GD29403@sirena.org.uk>
+ <52366F97.5030402@freescale.com> <20130916101912.GY29403@sirena.org.uk>
+ <5236DD17.5090203@freescale.com> <20130916110634.GC29403@sirena.org.uk>
+In-Reply-To: <20130916110634.GC29403@sirena.org.uk>
 Content-Type: text/plain; charset="GB2312"
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Linux Kernel <linux-kernel@vger.kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "b44548@freescale.com" <b44548@freescale.com>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>, Huang Shijie <shijie8@gmail.com>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "b18965@freescale.com" <b18965@freescale.com>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "thomas.langer@lantiq.com" <thomas.langer@lantiq.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
+ Pekon" <pekon@ti.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>,
+ "lznuaa@gmail.com" <lznuaa@gmail.com>,
+ "shawn.guo@linaro.org" <shawn.guo@linaro.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,60 +36,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=D3=DA 2013=C4=EA09=D4=C217=C8=D5 09:31, Brian Norris =D0=B4=B5=C0:
-> This fixes a memory leak in the ONFI support code for detecting the
-> required ECC levels from this commit:
->
->   commit 6dcbe0cdd83fb5f77be4f44c9e06c535281c375a
->   Author: Huang Shijie <b32955@freescale.com>
->   Date:   Wed May 22 10:28:27 2013 +0800
->
->       mtd: get the ECC info from the Extended Parameter Page
->
-> In the success case, we never freed the 'ep' buffer.
->
-> Also, this fixes an oversight in the same commit where we (harmlessly)
-> freed the NULL pointer.
->
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Huang Shijie <b32955@freescale.com>
-> ---
-> David, if there are no objections, can you send this to Linus for 3.12?
->
-> If this doesn't make it into 3.12, then it will be -stable material.
->
->  drivers/mtd/nand/nand_base.c | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.=
-c
-> index d4578a1..00022b4 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -2869,10 +2869,8 @@ static int nand_flash_detect_ext_param_page(stru=
-ct mtd_info *mtd,
-> =20
->  	len =3D le16_to_cpu(p->ext_param_page_length) * 16;
->  	ep =3D kmalloc(len, GFP_KERNEL);
-> -	if (!ep) {
-> -		ret =3D -ENOMEM;
-> -		goto ext_out;
-> -	}
-> +	if (!ep)
-> +		return -ENOMEM;
-> =20
->  	/* Send our own NAND_CMD_PARAM. */
->  	chip->cmdfunc(mtd, NAND_CMD_PARAM, 0, -1);
-> @@ -2920,7 +2918,7 @@ static int nand_flash_detect_ext_param_page(struc=
-t mtd_info *mtd,
->  	}
-> =20
->  	pr_info("ONFI extended param page detected.\n");
-> -	return 0;
-> +	ret =3D 0;
-> =20
->  ext_out:
->  	kfree(ep);
-good catch!
+=D3=DA 2013=C4=EA09=D4=C216=C8=D5 19:06, Mark Brown =D0=B4=B5=C0:
+> I don't know what you mean by "the dummy".
+Please see the datasheet of the NOR:
+www.spansion.com/Support/Datasheets/S25FL128S_256S_00.pdf
 
-Acked-by: Huang Shijie <b32955@freescale.com>
+
+Please see the page 100, the Quad I/O Read, the figure 10.37 shows
+the dummy.
+
+The dummy is just a delay in a command sequence.
+The dummy maybe only several clock cycles, less then 8 bit.
+
+thanks
+Huang Shijie
