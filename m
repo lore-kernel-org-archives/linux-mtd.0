@@ -1,37 +1,17 @@
-Date: Tue, 17 Sep 2013 18:49:35 +0200
-From: Gerhard Sittig <gsi@denx.de>
-To: Mark Brown <broonie@kernel.org>, Huang Shijie <b32955@freescale.com>,
- Huang Shijie <shijie8@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- "Gupta, Pekon" <pekon@ti.com>,
- "thomas.langer@lantiq.com" <thomas.langer@lantiq.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "shawn.guo@linaro.org" <shawn.guo@linaro.org>,
- "b44548@freescale.com" <b44548@freescale.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "b18965@freescale.com" <b18965@freescale.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "kernel@pengutronix.de" <kernel@pengutronix.de>,
- "lznuaa@gmail.com" <lznuaa@gmail.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v3 0/8] Add the Quadspi driver for vf610-twr
-Message-ID: <20130917164935.GG14747@book.gsilab.sittig.org>
-References: <20130912205644.GW29403@sirena.org.uk>
- <52329AD3.2050608@freescale.com>
- <20130913102127.GD29403@sirena.org.uk>
- <52366F97.5030402@freescale.com>
- <20130916101912.GY29403@sirena.org.uk>
- <5236DD17.5090203@freescale.com>
- <20130916110634.GC29403@sirena.org.uk>
- <5237BB01.3080700@freescale.com>
- <20130917105142.GO21013@sirena.org.uk>
- <20130917150548.GE14747@book.gsilab.sittig.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20130917150548.GE14747@book.gsilab.sittig.org>
+Received: from mail-ea0-x230.google.com ([2a00:1450:4013:c01::230])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VLzP2-0003or-Cu
+ for linux-mtd@lists.infradead.org; Tue, 17 Sep 2013 17:49:34 +0000
+Received: by mail-ea0-f176.google.com with SMTP id q16so2895425ead.21
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Sep 2013 10:49:08 -0700 (PDT)
+From: Elie De Brauwer <eliedebrauwer@gmail.com>
+To: computersforpeace@gmail.com
+Subject: [PATCH] mtd: m25p80: Fix 4 byte addressing mode for Micron devices.
+Date: Tue, 17 Sep 2013 19:48:22 +0200
+Message-Id: <1379440103-5167-1-git-send-email-eliedebrauwer@gmail.com>
+In-Reply-To: <20130917014706.GL4550@ld-irv-0074.broadcom.com>
+References: <20130917014706.GL4550@ld-irv-0074.broadcom.com>
+Cc: Elie De Brauwer <eliedebrauwer@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,50 +21,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Sep 17, 2013 at 17:05 +0200, Gerhard Sittig wrote:
-> 
-> I liked the S25F datasheet that was referenced here recently,
-> it's useful for the discussion that is going on here.  I liked
-> the "Serial Peripheral Interface with Multi-I/O" subtitle, which
-> suggests that SPI gets enhanced while nothing of it is specific
-> to flash chips.  And I liked the sequence diagrams for their
-> overview or introduction nature, which you can compare to the SPI
-> message submission API in the Linux kernel which connects SPI
-> slave drivers and SPI controller drivers.
+According to the datasheet for Micron n25q256a (N25Q256A13ESF40F) 4-byte
+addressing mode should be entered as follows:
 
-noticed that I should have provided the URL so those interested
-need not search in the thread
+<quote>
+To enter or exit the 4-byte address mode, the WRITE ENABLE command
+must be executed to set the write enable latch bit to 1. (Note: The
+WRITE ENABLE command must NOT be executed on the N25Q256A83ESF40x and
+N25Q256A83E1240x devices.) S# must be driven LOW. The effect of the
+command is immediate; after the command has been executed, the write
+enable latch bit is cleared to 0.
+</quote>
 
-www.spansion.com/Support/Datasheets/S25FL128S_256S_00.pdf
+Micron's portable way to perform this for all types of Micron flash
+is to first issue a write enable, then switch the addressing mode
+followed by a write disable to avoid leaving the flash in a write-
+able state.
+---
+ drivers/mtd/devices/m25p80.c |   10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-> The datasheet had "block diagrams" (section 3.16) [ ... ]
-> And the datasheet had "sequence diagrams" (section 4.2.1) [ ... ]
-
-
-and the relevant design items for the SPI subsystem are:
-- express those "phases" of communicating a flash chip related
-  "command" in terms of SPI message submission data structures
-  (spi_message, spi_transfer)
-- make new SPI master drivers support the optional data rate,
-  multi-line transfer, dummy bit times, etc features _if_ their
-  controller hardware supports them
-- announce support of these optional features such that slave
-  drivers can query them
-- make SPI slave drivers (specifically SPI attached MTD, i.e.
-  m25p80) map their flash access operations to respective SPI
-  transactions, by introducing an appropriate translation helper
-
-and keep all of the "enhanced modes of SPI communication"
-independent from their motivation by and use in flash chip
-drivers
-
-and keep internals of one specific flash chip instruction set out
-of the SPI transport layer
-
-
-virtually yours
-Gerhard Sittig
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 26b14f9..272d483 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -169,8 +169,16 @@ static inline int write_disable(struct m25p *flash)
+ static inline int set_4byte(struct m25p *flash, u32 jedec_id, int enable)
+ {
+ 	switch (JEDEC_MFR(jedec_id)) {
+-	case CFI_MFR_MACRONIX:
+ 	case CFI_MFR_ST: /* Micron, actually */
++	{
++		int status;
++		write_enable(flash);
++		flash->command[0] = enable ? OPCODE_EN4B : OPCODE_EX4B;
++		status = spi_write(flash->spi, flash->command, 1);
++		write_disable(flash);
++		return status;
++	}
++	case CFI_MFR_MACRONIX:
+ 	case 0xEF /* winbond */:
+ 		flash->command[0] = enable ? OPCODE_EN4B : OPCODE_EX4B;
+ 		return spi_write(flash->spi, flash->command, 1);
 -- 
-DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich, Office: Kirchenstr. 5, D-82194 Groebenzell, Germany
-Phone: +49-8142-66989-0 Fax: +49-8142-66989-80  Email: office@denx.de
+1.7.10.4
