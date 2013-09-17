@@ -1,25 +1,29 @@
-MIME-Version: 1.0
-In-Reply-To: <CAOesGMjYUOerSSZvM6VVLQNQP=Dft6CwNELqP9tyT=Hz0-2qLQ@mail.gmail.com>
-References: <1378200028-15415-1-git-send-email-josh.wu@atmel.com>
- <20130911230207.GE4550@ld-irv-0074.broadcom.com>
- <5232DAAD.4020700@atmel.com>
- <20130913182144.GF4550@ld-irv-0074.broadcom.com>
- <CAOesGMjczRxKhDS9W9SZk4ivuxEsn0Mp6j0Xotz+qZgoKO4=xg@mail.gmail.com>
- <CAN8TOE965=_HfK0aqB6oUWF66xXZEdwFR8AL9KcwRmQ0AWmisg@mail.gmail.com>
- <CAOesGMjYUOerSSZvM6VVLQNQP=Dft6CwNELqP9tyT=Hz0-2qLQ@mail.gmail.com>
-Date: Mon, 16 Sep 2013 16:11:35 -0700
-Message-ID: <CAN8TOE85D=JOU7f5+p6nTFgbCh0SZa+kfBNWD9rmDPxOZ9aEig@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mtd: atmel_nand: remove unneeded ifdef CONFIG_OF
+Received: from mail-ob0-x231.google.com ([2607:f8b0:4003:c01::231])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VLivS-0004nc-Vu
+ for linux-mtd@lists.infradead.org; Tue, 17 Sep 2013 00:13:55 +0000
+Received: by mail-ob0-f177.google.com with SMTP id wp18so4524052obc.36
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Sep 2013 17:13:33 -0700 (PDT)
+Date: Mon, 16 Sep 2013 17:13:29 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Olof Johansson <olof@lixom.net>, David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Nicolas Ferre <nicolas.ferre@atmel.com>, Josh Wu <josh.wu@atmel.com>,
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH v3 06/10] mtd: fix the wrong mtd->type for nand chip
+Message-ID: <20130917001329.GH4550@ld-irv-0074.broadcom.com>
+References: <1377509808-29363-7-git-send-email-b32955@freescale.com>
+ <521D69B6.7070504@gmail.com> <521D9FCC.5010104@freescale.com>
+ <521DA6B3.9080003@gmail.com> <20130829012403.GA4254@gmail.com>
+ <521ED69F.5080203@gmail.com> <521EDD7F.2010103@freescale.com>
+ <521EE131.8070105@freescale.com>
+ <CAN8TOE9=D_WmFD4RBf1OihVHv_oacxWwTh2a4owSwYD5QNmfTA@mail.gmail.com>
+ <52280278.6020007@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <52280278.6020007@freescale.com>
+Cc: Huang Shijie <shijie8@gmail.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+ David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,57 +33,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Sep 16, 2013 at 3:54 PM, Olof Johansson <olof@lixom.net> wrote:
-> On Mon, Sep 16, 2013 at 3:50 PM, Brian Norris
-> <computersforpeace@gmail.com> wrote:
->> On Mon, Sep 16, 2013 at 3:28 PM, Olof Johansson <olof@lixom.net> wrote:
->>> Guys,
->>> Can we please get less fumbling around on this and just merge a fix,
->>> please? You guys have broken the PXA3xx builds for the whole merge
->>> window, while there's been a patch sitting in linux-next with
->>> _exactly_ this contents since August 30, committed by David.
->>
->> How about you read the thread you're responding to? This is a
->> different driver, and it is not broken.
->
-> Ah, oops, my apologies. I came across this when searching for the
-> (committed) patch in my mail history and didn't notice the driver name
-> differences. :)
+Hi Huang,
 
-Unacceptable. Humans never make mistakes. ;)
+Sorry, I overlooked responding to this one.
 
->> If you look at the thread for the patch which fixes the actual
->> breakage (in pxa3xx), you will see a plain and clear explanation of
->> the situation.
->>
->> http://lists.infradead.org/pipermail/linux-mtd/2013-September/048595.html
->> http://lists.infradead.org/pipermail/linux-mtd/2013-September/048598.html
->>
->> David has been sufficiently notified, and he is not acting. I have
->> even pinged him on our IRC channel, with no response, although I'm not
->> surprised.
->>
->> (BTW, I assume the "committed by David" is simply because of
->> git-rebase. It doesn't necessarily reflect his acknowledgment of the
->> patch. I can only assume that it was an oversight on his part.)
->
-> That in itself seems broken; if he is pulling code from you he shouldn't rebase.
+On Thu, Sep 05, 2013 at 12:03:04PM +0800, Huang Shijie wrote:
+> 于 2013年09月05日 02:51, Brian Norris 写道:
+> 
+>     You could precede this patch with one that prevents exporting
+>     MTD_MLCNANDFLASH in mtd_type_show() and in ioctl(MEMGETINFO). I'm not
+>     saying you *must* do this, but that this side effect must be
+>     acknowledged and explained better, or else it seems that you don't
+>     understand the ramifications of your proposed changes.
+> 
+> [1] If you think we should not _change_ any code of the application, such as
+> the mtd-utils,
 
-Well, the repo I commit to (l2-mtd.git) was originally Artem's
-creation and was intended to collect things that had been reviewed,
-allowing David a last chance to review and reject or Sign-Off (or in
-this case, break) patches. We haven't traditionally stuck to the "once
-it's in git, it's permanent" philosophy, and I'm not sure of my
-opinion of it. It may or may not have prevented this error, as I am
-not sure why David left this patch out in the first place.
+That's the true meaning of "we don't break ABI compatibility". mtd-utils
+that work today on a given board with a given set of hardware (e.g., MLC
+NAND flash) should not need modified to handle the same features on a
+newer kernel.
 
->> Anyway, I don't care if the patch goes in via another tree, as long as
->> this debacle (notably, for the pxa3xx_nand driver, not the atmel_nand
->> driver) is resolved.
->
-> Ok. Russell was asking what the status of the fix was as well. I'll
-> queue it up with our current fixes for -rc2.
+However, I think it is safe to say that the MLC vs. SLC distinction
+isn't made clear in mtd-abi.h (i.e., we already have MTD_MLCNANDFLASH),
+and that this change is justified.
 
-Sounds good.
+>     I can create a patch to prevents exporting the MTD_MLCNANDFLASH in
+> mtd_type_show() and
+>     in ioctrl(MEMGETINFO).
 
+I don't think this is actually necessary. It is desirable that users can
+see the difference between SLC and MLC, but this should be explained.
+
+> [2] else, I prefer to explain better for this patch.
+
+Yes, please explain it better (and reorder some patches, as I explained
+previously) in order to
+
+(1) show that you understand completely what your patches are doing and
+
+(2) more clearly notify other developers of the modified ABI
+
+Thanks,
 Brian
