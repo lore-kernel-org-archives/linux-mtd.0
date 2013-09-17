@@ -1,20 +1,21 @@
-Received: from mail-oa0-x22c.google.com ([2607:f8b0:4003:c02::22c])
+Received: from mail-db9lp0251.outbound.messaging.microsoft.com
+ ([213.199.154.251] helo=db9outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VLkRu-0006nr-2C
- for linux-mtd@lists.infradead.org; Tue, 17 Sep 2013 01:51:30 +0000
-Received: by mail-oa0-f44.google.com with SMTP id g12so720732oah.3
- for <linux-mtd@lists.infradead.org>; Mon, 16 Sep 2013 18:51:09 -0700 (PDT)
-Date: Mon, 16 Sep 2013 18:51:05 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: wang.bo116@zte.com.cn
-Subject: Re: [PATCH] UBIFS: remove unnecessary code in ubifs_garbage_collect
-Message-ID: <20130917015105.GM4550@ld-irv-0074.broadcom.com>
-References: <OF476A1E1E.10D82F3D-ON48257BC9.002911AE-48257BC9.002A75A8@zte.com.cn>
+ id 1VLklN-00074p-SJ
+ for linux-mtd@lists.infradead.org; Tue, 17 Sep 2013 02:11:38 +0000
+Message-ID: <5237BAA9.6000606@freescale.com>
+Date: Tue, 17 Sep 2013 10:12:57 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <OF476A1E1E.10D82F3D-ON48257BC9.002911AE-48257BC9.002A75A8@zte.com.cn>
-Cc: linux-mtd@lists.infradead.org
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd: nand: fix memory leak in ONFI extended parameter page
+References: <1379381512-2007-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1379381512-2007-1-git-send-email-computersforpeace@gmail.com>
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Linux Kernel <linux-kernel@vger.kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,14 +25,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Aug 16, 2013 at 03:43:36PM +0800, wang.bo116@zte.com.cn wrote:
-> Hi,
-> 	In ubifs_garbage_collect,local variable "space_before" calculate twice. In fact, at the
-> beginning of the loop, there is no need to calculate this variable. Calculate it before call
-> "ubifs_garbage_collect_leb" is enough. This patch just remove the unnecessary calculate code.
-> 
-> 
-> 
-> Signed-off-by: wang bo <wang.bo116@zte.com.cn>
+=D3=DA 2013=C4=EA09=D4=C217=C8=D5 09:31, Brian Norris =D0=B4=B5=C0:
+> This fixes a memory leak in the ONFI support code for detecting the
+> required ECC levels from this commit:
+>
+>   commit 6dcbe0cdd83fb5f77be4f44c9e06c535281c375a
+>   Author: Huang Shijie <b32955@freescale.com>
+>   Date:   Wed May 22 10:28:27 2013 +0800
+>
+>       mtd: get the ECC info from the Extended Parameter Page
+>
+> In the success case, we never freed the 'ep' buffer.
+>
+> Also, this fixes an oversight in the same commit where we (harmlessly)
+> freed the NULL pointer.
+>
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Cc: Huang Shijie <b32955@freescale.com>
+> ---
+> David, if there are no objections, can you send this to Linus for 3.12?
+>
+> If this doesn't make it into 3.12, then it will be -stable material.
+>
+>  drivers/mtd/nand/nand_base.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.=
+c
+> index d4578a1..00022b4 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -2869,10 +2869,8 @@ static int nand_flash_detect_ext_param_page(stru=
+ct mtd_info *mtd,
+> =20
+>  	len =3D le16_to_cpu(p->ext_param_page_length) * 16;
+>  	ep =3D kmalloc(len, GFP_KERNEL);
+> -	if (!ep) {
+> -		ret =3D -ENOMEM;
+> -		goto ext_out;
+> -	}
+> +	if (!ep)
+> +		return -ENOMEM;
+> =20
+>  	/* Send our own NAND_CMD_PARAM. */
+>  	chip->cmdfunc(mtd, NAND_CMD_PARAM, 0, -1);
+> @@ -2920,7 +2918,7 @@ static int nand_flash_detect_ext_param_page(struc=
+t mtd_info *mtd,
+>  	}
+> =20
+>  	pr_info("ONFI extended param page detected.\n");
+> -	return 0;
+> +	ret =3D 0;
+> =20
+>  ext_out:
+>  	kfree(ep);
+good catch!
 
-Acked-by: Brian Norris <computersforpeace@gmail.com>
+Acked-by: Huang Shijie <b32955@freescale.com>
