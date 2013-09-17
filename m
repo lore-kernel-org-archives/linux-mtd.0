@@ -1,32 +1,21 @@
-Message-ID: <5237BB01.3080700@freescale.com>
-Date: Tue, 17 Sep 2013 10:14:25 +0800
-From: Huang Shijie <b32955@freescale.com>
+Received: from mail-qe0-x229.google.com ([2607:f8b0:400d:c02::229])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VLky2-0007bJ-Hi
+ for linux-mtd@lists.infradead.org; Tue, 17 Sep 2013 02:24:43 +0000
+Received: by mail-qe0-f41.google.com with SMTP id ff1so3417322qeb.28
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Sep 2013 19:24:21 -0700 (PDT)
+Date: Mon, 16 Sep 2013 19:24:17 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Paul Bolle <pebolle@tiscali.nl>
+Subject: Re: [PATCH] mtd: onenand: omap: remove two unused functions
+Message-ID: <20130917022417.GN4550@ld-irv-0074.broadcom.com>
+References: <1375899409.7303.61.camel@x61.thuisdomein>
 MIME-Version: 1.0
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 0/8] Add the Quadspi driver for vf610-twr
-References: <1378979431.2627.402.camel@shinybook.infradead.org>
- <20130913025827.GA3051@gmail.com> <1378999322.4210.95.camel@i7.infradead.org>
- <20130913041208.GD3051@gmail.com> <20130912205644.GW29403@sirena.org.uk>
- <52329AD3.2050608@freescale.com> <20130913102127.GD29403@sirena.org.uk>
- <52366F97.5030402@freescale.com> <20130916101912.GY29403@sirena.org.uk>
- <5236DD17.5090203@freescale.com> <20130916110634.GC29403@sirena.org.uk>
-In-Reply-To: <20130916110634.GC29403@sirena.org.uk>
-Content-Type: text/plain; charset="GB2312"
-Content-Transfer-Encoding: quoted-printable
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "b44548@freescale.com" <b44548@freescale.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>, Huang Shijie <shijie8@gmail.com>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "b18965@freescale.com" <b18965@freescale.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "thomas.langer@lantiq.com" <thomas.langer@lantiq.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>, "kernel@pengutronix.de" <kernel@pengutronix.de>,
- "lznuaa@gmail.com" <lznuaa@gmail.com>,
- "shawn.guo@linaro.org" <shawn.guo@linaro.org>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1375899409.7303.61.camel@x61.thuisdomein>
+Cc: linux-mtd@lists.infradead.org, Kyungmin Park <kyungmin.park@samsung.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,17 +25,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=D3=DA 2013=C4=EA09=D4=C216=C8=D5 19:06, Mark Brown =D0=B4=B5=C0:
-> I don't know what you mean by "the dummy".
-Please see the datasheet of the NOR:
-www.spansion.com/Support/Datasheets/S25FL128S_256S_00.pdf
+On Wed, Aug 07, 2013 at 08:16:49PM +0200, Paul Bolle wrote:
+> Nothing calls omap2_onenand_rephase(). And __adjust_timing() is only
+> called by omap2_onenand_rephase(). Remove these two unused functions.
+> 
+> Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
+> ---
+> Completely untested.
 
+Compile-tested successfully here. And it gets rid of a few sparse warnings:
 
-Please see the page 100, the Quad I/O Read, the figure 10.37 shows
-the dummy.
+  drivers/mtd/onenand/omap2.c:592:5: warning: no previous prototype for 'omap2_onenand_rephase' [-Wmissing-prototypes]
+  drivers/mtd/onenand/omap2.c:592:5: warning: symbol 'omap2_onenand_rephase' was not declared. Should it be static? [sparse]
 
-The dummy is just a delay in a command sequence.
-The dummy maybe only several clock cycles, less then 8 bit.
+Applied to l2-mtd.git. Thanks!
 
-thanks
-Huang Shijie
+Brian
