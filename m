@@ -1,20 +1,23 @@
-Message-ID: <1379518822.753.91.camel@shinybook.infradead.org>
-Subject: Re: [PATCH v3 0/8] Add the Quadspi driver for vf610-twr
-From: David Woodhouse <dwmw2@infradead.org>
-To: Mark Brown <broonie@kernel.org>
-Date: Wed, 18 Sep 2013 10:40:22 -0500
-In-Reply-To: <20130917191318.GJ21013@sirena.org.uk>
-References: <20130912205644.GW29403@sirena.org.uk>
- <52329AD3.2050608@freescale.com> <20130913102127.GD29403@sirena.org.uk>
- <52366F97.5030402@freescale.com> <20130916101912.GY29403@sirena.org.uk>
- <5236DD17.5090203@freescale.com> <20130916110634.GC29403@sirena.org.uk>
- <5237BB01.3080700@freescale.com> <20130917105142.GO21013@sirena.org.uk>
+Date: Wed, 18 Sep 2013 17:00:24 +0100
+From: Mark Brown <broonie@kernel.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Message-ID: <20130918160024.GB21013@sirena.org.uk>
+References: <20130913102127.GD29403@sirena.org.uk>
+ <52366F97.5030402@freescale.com>
+ <20130916101912.GY29403@sirena.org.uk>
+ <5236DD17.5090203@freescale.com>
+ <20130916110634.GC29403@sirena.org.uk>
+ <5237BB01.3080700@freescale.com>
+ <20130917105142.GO21013@sirena.org.uk>
  <20130917150548.GE14747@book.gsilab.sittig.org>
  <20130917191318.GJ21013@sirena.org.uk>
-Content-Type: multipart/signed; micalg="sha-1";
- protocol="application/x-pkcs7-signature";
- boundary="=-a1+59GytZmpxOiJ/31I5"
-Mime-Version: 1.0
+ <1379518822.753.91.camel@shinybook.infradead.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="Nc+Vvx0JXuqp7Zy0"
+Content-Disposition: inline
+In-Reply-To: <1379518822.753.91.camel@shinybook.infradead.org>
+Subject: Re: [PATCH v3 0/8] Add the Quadspi driver for vf610-twr
 Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
  "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
  "b44548@freescale.com" <b44548@freescale.com>,
@@ -40,169 +43,49 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-a1+59GytZmpxOiJ/31I5
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
-	boundary="=-RfAbzVI5XHIrxW3CyBPK"
+--Nc+Vvx0JXuqp7Zy0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Wed, Sep 18, 2013 at 10:40:22AM -0500, David Woodhouse wrote:
+> On Tue, 2013-09-17 at 20:13 +0100, Mark Brown wrote:
 
---=-RfAbzVI5XHIrxW3CyBPK
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> > > [ potential "LUT" optimization, implementation details ]
 
-On Tue, 2013-09-17 at 20:13 +0100, Mark Brown wrote:
->=20
-> > [ potential "LUT" optimization, implementation details ]
->=20
-> AFAICT the big issue with the LUTs in this controller is that they are
-> expensive to reprogram so things are going to work better if there is a
-> small set of known operations that will happen repeatedly.  Otherwise
-> walking the transfer list at runtime isn't too hard.
+> > AFAICT the big issue with the LUTs in this controller is that they are
+> > expensive to reprogram so things are going to work better if there is a
+> > small set of known operations that will happen repeatedly.  Otherwise
+> > walking the transfer list at runtime isn't too hard.
 
-I think you can drop the word "known" there. With decent management of
-the LUT as a kind of LRU cache of recent operations, surely you'll
-quickly get into a situation where the operations you're actually
-*doing* on the flash are all already in the LUT and you're never
-actually *having* to reprogram it?
+> I think you can drop the word "known" there. With decent management of
+> the LUT as a kind of LRU cache of recent operations, surely you'll
+> quickly get into a situation where the operations you're actually
+> *doing* on the flash are all already in the LUT and you're never
+> actually *having* to reprogram it?
 
-You don't need to have them set up in advance. Although once you have it
-correctly doing the LUT management at runtime, sticking some expected
-operations into the LUT at startup in *anticipation* can't hurt. But
-let's not talk about that yet.
+Yeah, assuming it's not too annoying to identify the repeated patterns
+and doesn't blow up horribly just caching should work fine.
 
---=20
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
-
---=-RfAbzVI5XHIrxW3CyBPK
+--Nc+Vvx0JXuqp7Zy0
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
+Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.14 (GNU/Linux)
+Version: GnuPG v2.0.21 (GNU/Linux)
 
-iQIcBAABAgAGBQJSOclnAAoJEGN2LNpn4vNZIAcQAMZGKxJj9g5x6rYkBSGnR4fh
-dkYGjIBlFGr6phhJM5niSFbwEsPyf32uwLdTEYoKK0ZfErxdDyz4ZuaDjBj7Zzr1
-blOelL+jRC3ws2fw87F7CWg2GYmUG9ulNS91gVR2pYgbNqenVaY0nQqr+z66N7DR
-E+zFajrjIGK9l+2+meYlLyG+0C4x1pFtvNYttsFGFoLxezfZY5Hz0oG8HrOLJg9U
-f3KQBVZ7WZNc2vhImJLoaUTfJ8BrTCAXOi8MJLqDrxjxHHrY475b/L0FmwJScuqE
-suGzxYkTLnMUzlTxCF/k3HAV8V2ekZufB5v4EAwz6H8kcJYVjD6Sl6koPzpkPDg9
-xS0SUTZyq35u5CdO8GgulUWJH4RASEmWYq7aO9W2OgL4DXs11EFp0p8EKbNJpIdb
-qm4znooGrqTU8VtlX9qPPk43m9Kw/Uil3Mp8mmmYI2ADKY2NnVd+mZX3LqXO9cL9
-SjGtpY4KO5lxiVrXVDvNe2MOyvptieIVlcYdf44k3rBkq4QHKTWahb6+QwU+YbKm
-FocW8X0MFSbeG4UV+n60u8o1cyt18sQ9DK+i1oKecSWtAkOu4796yGuX/ETtEuSa
-/iwtkQ/gjXZilzUb3LKzfbEM3EB34WAY88FLB4gQzVqI3lIIfGlFpWe+3LvJ0yyg
-26hm4WniKBeLFKdCxS6W
-=vXJ3
+iQIcBAEBAgAGBQJSOc4VAAoJELSic+t+oim99dEP/RrP3dTPaEwOvbYZdx2qOg0c
+tx3jH9uJ+T6EbMZdZCM5IEKq++NbzuoPJAyOr1HVCD53EYD7+rawuw992X9pMhHY
+YEbhYQxgT1aikaqlJBMZ2PtsYXhCahEPoRfpH5AshK+4WkSltb9KJtheMCGB8h/W
+kxKfrtPpnDPjwI7iu/W3BhJFYU0fvy4U/UCnmAVNnZoR68y4U9VjXotrzus7luA0
+3fQZSMtVBRB08Vj+vG7Tk1FsQqsTDACSDagFRglveHznRdY9sIbEhXSnHDlsJouF
+/JMmuN7tJNujCvRiOz7UWmvKMlSHFt1kothZlBFU0LEUvzGKAbp7LhMiEmxAWOYg
+c69yfRE01qvsQxT8W0hSwEhek4lVehD+38yJtxp7+KDtZ8NvVJhgkTmOZdEFA+ni
+KZmRE+qsbHIgneyMk+irPYPhHOotzIKa7hHF6a42LNh3VRQvaR1injyS00nGeV9q
+8LGzGVY22f6Sh2WOmkN+4Fl6UzKMXwZR8Vhije1VyAUc5EKsfpHwaxmxltysUtzG
+1slG6uNMnfd9YVIRgJiPd/sllNgU0I40QxzQwa/VxGqqqJrcFGtXiIA3bMGvlr3h
+p9QqTR5vPcfd+ZIrEo0KGy8qfNI9PuhP1zJckqM9VzoDQ9skYF20y8LkSFll0Pxe
+1iB8I5lygKum0/8/AH+e
+=KsIK
 -----END PGP SIGNATURE-----
 
---=-RfAbzVI5XHIrxW3CyBPK--
-
---=-a1+59GytZmpxOiJ/31I5
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIISxDCCBjQw
-ggQcoAMCAQICAR4wDQYJKoZIhvcNAQEFBQAwfTELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0
-Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxKTAn
-BgNVBAMTIFN0YXJ0Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MB4XDTA3MTAyNDIxMDE1NVoX
-DTE3MTAyNDIxMDE1NVowgYwxCzAJBgNVBAYTAklMMRYwFAYDVQQKEw1TdGFydENvbSBMdGQuMSsw
-KQYDVQQLEyJTZWN1cmUgRGlnaXRhbCBDZXJ0aWZpY2F0ZSBTaWduaW5nMTgwNgYDVQQDEy9TdGFy
-dENvbSBDbGFzcyAxIFByaW1hcnkgSW50ZXJtZWRpYXRlIENsaWVudCBDQTCCASIwDQYJKoZIhvcN
-AQEBBQADggEPADCCAQoCggEBAMcJg8zOLdgasSmkLhOrlr6KMoOMpohBllVHrdRvEg/q6r8jR+EK
-75xCGhR8ToREoqe7zM9/UnC6TS2y9UKTpT1v7RSMzR0t6ndl0TWBuUr/UXBhPk+Kmy7bI4yW4urC
-+y7P3/1/X7U8ocb8VpH/Clt+4iq7nirMcNh6qJR+xjOhV+VHzQMALuGYn5KZmc1NbJQYclsGkDxD
-z2UbFqE2+6vIZoL+jb9x4Pa5gNf1TwSDkOkikZB1xtB4ZqtXThaABSONdfmv/Z1pua3FYxnCFmdr
-/+N2JLKutIxMYqQOJebr/f/h5t95m4JgrM3Y/w7YX9d7YAL9jvN4SydHsU6n65cCAwEAAaOCAa0w
-ggGpMA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0PAQH/BAQDAgEGMB0GA1UdDgQWBBRTcu2SnODaywFc
-fH6WNU7y1LhRgjAfBgNVHSMEGDAWgBROC+8apEBbpRdphzDKNGhD0EGu8jBmBggrBgEFBQcBAQRa
-MFgwJwYIKwYBBQUHMAGGG2h0dHA6Ly9vY3NwLnN0YXJ0c3NsLmNvbS9jYTAtBggrBgEFBQcwAoYh
-aHR0cDovL3d3dy5zdGFydHNzbC5jb20vc2ZzY2EuY3J0MFsGA1UdHwRUMFIwJ6AloCOGIWh0dHA6
-Ly93d3cuc3RhcnRzc2wuY29tL3Nmc2NhLmNybDAnoCWgI4YhaHR0cDovL2NybC5zdGFydHNzbC5j
-b20vc2ZzY2EuY3JsMIGABgNVHSAEeTB3MHUGCysGAQQBgbU3AQIBMGYwLgYIKwYBBQUHAgEWImh0
-dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwNAYIKwYBBQUHAgEWKGh0dHA6Ly93d3cu
-c3RhcnRzc2wuY29tL2ludGVybWVkaWF0ZS5wZGYwDQYJKoZIhvcNAQEFBQADggIBAAqDCH14qywG
-XLhjjF6uHLkjd02hcdh9hrw+VUsv+q1eeQWB21jWj3kJ96AUlPCoEGZ/ynJNScWy6QMVQjbbMXlt
-UfO4n4bGGdKo3awPWp61tjAFgraLJgDk+DsSvUD6EowjMTNx25GQgyYJ5RPIzKKR9tQW8gGK+2+R
-HxkUCTbYFnL6kl8Ch507rUdPPipJ9CgJFws3kDS3gOS5WFMxcjO5DwKfKSETEPrHh7p5shuuNktv
-sv6hxHTLhiMKX893gxdT3XLS9OKmCv87vkINQcNEcIIoFWbP9HORz9v3vQwR4e3ksLc2JZOAFK+s
-sS5XMEoznzpihEP0PLc4dCBYjbvSD7kxgDwZ+Aj8Q9PkbvE9sIPP7ON0fz095HdThKjiVJe6vofq
-+n6b1NBc8XdrQvBmunwxD5nvtTW4vtN6VY7mUCmxsCieuoBJ9OlqmsVWQvifIYf40dJPZkk9YgGT
-zWLpXDSfLSplbY2LL9C9U0ptvjcDjefLTvqSFc7tw1sEhF0n/qpA2r0GpvkLRDmcSwVyPvmjFBGq
-Up/pNy8ZuPGQmHwFi2/14+xeSUDG2bwnsYJQG2EdJCB6luQ57GEnTA/yKZSTKI8dDQa8Sd3zfXb1
-9mOgSF0bBdXbuKhEpuP9wirslFe6fQ1t5j5R0xi72MZ8ikMu1RQZKCyDbMwazlHiMIIGQjCCBSqg
-AwIBAgIDBoXOMA0GCSqGSIb3DQEBBQUAMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRD
-b20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYG
-A1UEAxMvU3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0EwHhcN
-MTMwNTAyMDYyMDQ2WhcNMTQwNTAzMTIxNDAyWjBdMRkwFwYDVQQNExBNd0k3ODIxNTRpV21lZVkw
-MRwwGgYDVQQDDBNkd213MkBpbmZyYWRlYWQub3JnMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZy
-YWRlYWQub3JnMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvWGuRDHiXVpOgaFkBaz8
-c3jQTfiEw7j0iKZnktCQi0xjY29QJ7GwL+fgQlbofXgYTm8E9fWERvw2tAy2BxHzAPguBzziS7JN
-hsGP9lf3L8hFJBvmdyyyj8b9A6Oi7s3JLtMRWIvyvE+DbuTkP+htuT4+XuTJr8Y5yIqd1WXr2gJk
-ANr77vTyjeNxceevP58Tqr0f+4v5g6+vNARO3bk3SaVQPDUTwGrpoPtLh3d+mQzZ4iiW3MwQS7Wr
-UVT3l2aTVHCpgtAaBs3zHWarvmIqhbWj8zdcnELNzwqTrOjaoWxuWY4k05GGfzmdjOBUiL7FDNvI
-ZwweJEPwJAQI72YhUwIDAQABo4IC2TCCAtUwCQYDVR0TBAIwADALBgNVHQ8EBAMCBLAwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMB0GA1UdDgQWBBSs0hZhUgQwqGVXzLuH6pJH0hMZwTAf
-BgNVHSMEGDAWgBRTcu2SnODaywFcfH6WNU7y1LhRgjAeBgNVHREEFzAVgRNkd213MkBpbmZyYWRl
-YWQub3JnMIIBTAYDVR0gBIIBQzCCAT8wggE7BgsrBgEEAYG1NwECAzCCASowLgYIKwYBBQUHAgEW
-Imh0dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwgfcGCCsGAQUFBwICMIHqMCcWIFN0
-YXJ0Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MAMCAQEagb5UaGlzIGNlcnRpZmljYXRlIHdh
-cyBpc3N1ZWQgYWNjb3JkaW5nIHRvIHRoZSBDbGFzcyAxIFZhbGlkYXRpb24gcmVxdWlyZW1lbnRz
-IG9mIHRoZSBTdGFydENvbSBDQSBwb2xpY3ksIHJlbGlhbmNlIG9ubHkgZm9yIHRoZSBpbnRlbmRl
-ZCBwdXJwb3NlIGluIGNvbXBsaWFuY2Ugb2YgdGhlIHJlbHlpbmcgcGFydHkgb2JsaWdhdGlvbnMu
-MDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwuc3RhcnRzc2wuY29tL2NydHUxLWNybC5jcmww
-gY4GCCsGAQUFBwEBBIGBMH8wOQYIKwYBBQUHMAGGLWh0dHA6Ly9vY3NwLnN0YXJ0c3NsLmNvbS9z
-dWIvY2xhc3MxL2NsaWVudC9jYTBCBggrBgEFBQcwAoY2aHR0cDovL2FpYS5zdGFydHNzbC5jb20v
-Y2VydHMvc3ViLmNsYXNzMS5jbGllbnQuY2EuY3J0MCMGA1UdEgQcMBqGGGh0dHA6Ly93d3cuc3Rh
-cnRzc2wuY29tLzANBgkqhkiG9w0BAQUFAAOCAQEACFLDQnyO8+XA/TiTltjJ/ZAvM+qmBEKN43Vd
-+Wio2lM/Wq/scJpkupXGHrl9CueobkDxMAogXbMxqLZYO13PvgjMh+PHxDPnQv8EGxOig+k/Hqvc
-qEdTlm9YEHcbXbWS6XB+zRO7VVIpGMYQ1f1qCOcukxmwIm6iMSHXbOr/7paQm4bO0ULptjBotfiO
-Zo6q8No6SroQlOSyc6v8FYSxTNIAXMaM2FYkjqrxgdnJmSIAfr11gROuF69WuOICxP0zTEjJle+7
-aO9lUWNaWMWPMyFSNCxF6kkRuvUCami7vlhLOTRC1kb+OMhx7keN9At3tdTI3rtuFeSB1Pa3VXVs
-0DCCBkIwggUqoAMCAQICAwaFzjANBgkqhkiG9w0BAQUFADCBjDELMAkGA1UEBhMCSUwxFjAUBgNV
-BAoTDVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNp
-Z25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xp
-ZW50IENBMB4XDTEzMDUwMjA2MjA0NloXDTE0MDUwMzEyMTQwMlowXTEZMBcGA1UEDRMQTXdJNzgy
-MTU0aVdtZWVZMDEcMBoGA1UEAwwTZHdtdzJAaW5mcmFkZWFkLm9yZzEiMCAGCSqGSIb3DQEJARYT
-ZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL1hrkQx
-4l1aToGhZAWs/HN40E34hMO49IimZ5LQkItMY2NvUCexsC/n4EJW6H14GE5vBPX1hEb8NrQMtgcR
-8wD4Lgc84kuyTYbBj/ZX9y/IRSQb5ncsso/G/QOjou7NyS7TEViL8rxPg27k5D/obbk+Pl7kya/G
-OciKndVl69oCZADa++708o3jcXHnrz+fE6q9H/uL+YOvrzQETt25N0mlUDw1E8Bq6aD7S4d3fpkM
-2eIoltzMEEu1q1FU95dmk1RwqYLQGgbN8x1mq75iKoW1o/M3XJxCzc8Kk6zo2qFsblmOJNORhn85
-nYzgVIi+xQzbyGcMHiRD8CQECO9mIVMCAwEAAaOCAtkwggLVMAkGA1UdEwQCMAAwCwYDVR0PBAQD
-AgSwMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDBDAdBgNVHQ4EFgQUrNIWYVIEMKhlV8y7
-h+qSR9ITGcEwHwYDVR0jBBgwFoAUU3Ltkpzg2ssBXHx+ljVO8tS4UYIwHgYDVR0RBBcwFYETZHdt
-dzJAaW5mcmFkZWFkLm9yZzCCAUwGA1UdIASCAUMwggE/MIIBOwYLKwYBBAGBtTcBAgMwggEqMC4G
-CCsGAQUFBwIBFiJodHRwOi8vd3d3LnN0YXJ0c3NsLmNvbS9wb2xpY3kucGRmMIH3BggrBgEFBQcC
-AjCB6jAnFiBTdGFydENvbSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTADAgEBGoG+VGhpcyBjZXJ0
-aWZpY2F0ZSB3YXMgaXNzdWVkIGFjY29yZGluZyB0byB0aGUgQ2xhc3MgMSBWYWxpZGF0aW9uIHJl
-cXVpcmVtZW50cyBvZiB0aGUgU3RhcnRDb20gQ0EgcG9saWN5LCByZWxpYW5jZSBvbmx5IGZvciB0
-aGUgaW50ZW5kZWQgcHVycG9zZSBpbiBjb21wbGlhbmNlIG9mIHRoZSByZWx5aW5nIHBhcnR5IG9i
-bGlnYXRpb25zLjA2BgNVHR8ELzAtMCugKaAnhiVodHRwOi8vY3JsLnN0YXJ0c3NsLmNvbS9jcnR1
-MS1jcmwuY3JsMIGOBggrBgEFBQcBAQSBgTB/MDkGCCsGAQUFBzABhi1odHRwOi8vb2NzcC5zdGFy
-dHNzbC5jb20vc3ViL2NsYXNzMS9jbGllbnQvY2EwQgYIKwYBBQUHMAKGNmh0dHA6Ly9haWEuc3Rh
-cnRzc2wuY29tL2NlcnRzL3N1Yi5jbGFzczEuY2xpZW50LmNhLmNydDAjBgNVHRIEHDAahhhodHRw
-Oi8vd3d3LnN0YXJ0c3NsLmNvbS8wDQYJKoZIhvcNAQEFBQADggEBAAhSw0J8jvPlwP04k5bYyf2Q
-LzPqpgRCjeN1XfloqNpTP1qv7HCaZLqVxh65fQrnqG5A8TAKIF2zMai2WDtdz74IzIfjx8Qz50L/
-BBsTooPpPx6r3KhHU5ZvWBB3G121kulwfs0Tu1VSKRjGENX9agjnLpMZsCJuojEh12zq/+6WkJuG
-ztFC6bYwaLX4jmaOqvDaOkq6EJTksnOr/BWEsUzSAFzGjNhWJI6q8YHZyZkiAH69dYETrhevVrji
-AsT9M0xIyZXvu2jvZVFjWljFjzMhUjQsRepJEbr1Ampou75YSzk0QtZG/jjIce5HjfQLd7XUyN67
-bhXkgdT2t1V1bNAxggNvMIIDawIBATCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0
-Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2
-BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMG
-hc4wCQYFKw4DAhoFAKCCAa8wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUx
-DxcNMTMwOTE4MTU0MDMwWjAjBgkqhkiG9w0BCQQxFgQUFLScm0mOmxnbOhjEAIHwcZHsKaEwgaUG
-CSsGAQQBgjcQBDGBlzCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4x
-KzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0
-YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMGhc4wgacGCyqG
-SIb3DQEJEAILMYGXoIGUMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjEr
-MCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYGA1UEAxMvU3Rh
-cnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0ECAwaFzjANBgkqhkiG
-9w0BAQEFAASCAQA8xEmYLTFkBJM0voDxUC2WqSEdBPcDqHkyHfndetV3E51u/rWeeSfo4R4K6h64
-70qAnr2u32kvqrJcPMvysYQXGh7/g6WGvCKwU880Ee4n6YS5pdS5FuZdErXUB1LJa6y6IP6veTko
-MY0SsKjGvXqy8f6uFMuqV8VZdnZD0zg4lnnjbg1ZlwhQxVF/I0AcxW9sETP4YqyG5nu4y/yOsU1N
-jHoepNeQnw5A5K1IOZl8W4roAF+KNUXenNbE22b4+w+UhgGtkyADZqvdlGa8o0sm2h4ALUXxvaHV
-rphqriMT1dxCdpeWdvY90P30VJXr3gfsOYKTFvCmq1/kpI14Qd0VAAAAAAAA
-
-
---=-a1+59GytZmpxOiJ/31I5--
+--Nc+Vvx0JXuqp7Zy0--
