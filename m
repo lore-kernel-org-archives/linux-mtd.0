@@ -1,18 +1,14 @@
-Received: from mail-db8lp0188.outbound.messaging.microsoft.com
- ([213.199.154.188] helo=db8outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VM7UZ-0006Ch-3L
- for linux-mtd@lists.infradead.org; Wed, 18 Sep 2013 02:27:47 +0000
-From: Huang Shijie <b32955@freescale.com>
-To: <dedekind1@gmail.com>
-Subject: [PATCH] ubi: attach: do not return -EINVAL if the
- mtd->numeraseregions is 1
-Date: Wed, 18 Sep 2013 10:17:39 +0800
-Message-ID: <1379470659-12158-1-git-send-email-b32955@freescale.com>
+From: Josh Wu <josh.wu@atmel.com>
+To: <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+ <computersforpeace@gmail.com>
+Subject: [PATCH v2 1/2] mtd: atmel_nand: remove #if defined(CONFIG_OF) around
+ OF-specific code
+Date: Wed, 18 Sep 2013 11:31:19 +0800
+Message-ID: <1379475080-14984-1-git-send-email-josh.wu@atmel.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
- Huang Shijie <b32955@freescale.com>
+Cc: nicolas.ferre@atmel.com, Josh Wu <josh.wu@atmel.com>, plagnioj@jcrosoft.com,
+ ezequiel.garcia@free-electrons.com, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,41 +18,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If the master mtd does not have any slave mtd partitions,
-and its numeraseregions is one(only has one erease block), and
-we attach the master mtd with : ubiattach -m 0 -d 0
+Since the of specific code are declared in <linux/of_mtd.h> regardless
+of CONFIG_OF. Remove the #if defined(CONFIG_OF) guard and use an
+IS_ENABLED(CONFIG_OF) instead.
 
-We will meet the error:
--------------------------------------------------------
-root@freescale ~$ ubiattach /dev/ubi_ctrl -m 0 -d 0
-UBI: attaching mtd0 to ubi0
-UBI error: io_init: multiple regions, not implemented
-ubiattach: error!: cannot attach mtd0
-           error 22 (Invalid argument)
--------------------------------------------------------
+Thanks to Ezequiel Garcia's for this protype.
 
-In fact, if there is only one "erase block", we should not
-prevent the attach.
-
-This patch fixes it.
-
-Signed-off-by: Huang Shijie <b32955@freescale.com>
+Signed-off-by: Josh Wu <josh.wu@atmel.com>
+Acked-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- drivers/mtd/ubi/build.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+v1 --> v2:
+  add an IS_ENABLED(CONFIG_OF) to guard the code for dt node parsing.
 
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index a561335..006f98a 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -638,7 +638,7 @@ static int io_init(struct ubi_device *ubi, int max_beb_per1024)
- 	dbg_gen("sizeof(struct ubi_ainf_peb) %zu", sizeof(struct ubi_ainf_peb));
- 	dbg_gen("sizeof(struct ubi_wl_entry) %zu", sizeof(struct ubi_wl_entry));
+ drivers/mtd/nand/atmel_nand.c |   17 +++--------------
+ 1 file changed, 3 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index 060feea..72c2611 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -1449,7 +1449,6 @@ static void atmel_nand_hwctl(struct mtd_info *mtd, int mode)
+ 		ecc_writel(host->ecc, CR, ATMEL_ECC_RST);
+ }
  
--	if (ubi->mtd->numeraseregions != 0) {
-+	if (ubi->mtd->numeraseregions > 1) {
- 		/*
- 		 * Some flashes have several erase regions. Different regions
- 		 * may have different eraseblock size and other
+-#if defined(CONFIG_OF)
+ static int atmel_of_init_port(struct atmel_nand_host *host,
+ 			      struct device_node *np)
+ {
+@@ -1457,7 +1456,7 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
+ 	u32 offset[2];
+ 	int ecc_mode;
+ 	struct atmel_nand_data *board = &host->board;
+-	enum of_gpio_flags flags;
++	enum of_gpio_flags flags = 0;
+ 
+ 	if (of_property_read_u32(np, "atmel,nand-addr-offset", &val) == 0) {
+ 		if (val >= 32) {
+@@ -1540,13 +1539,6 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
+ 
+ 	return 0;
+ }
+-#else
+-static int atmel_of_init_port(struct atmel_nand_host *host,
+-			      struct device_node *np)
+-{
+-	return -EINVAL;
+-}
+-#endif
+ 
+ static int __init atmel_hw_nand_init_params(struct platform_device *pdev,
+ 					 struct atmel_nand_host *host)
+@@ -2019,7 +2011,8 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
+ 	mtd = &host->mtd;
+ 	nand_chip = &host->nand_chip;
+ 	host->dev = &pdev->dev;
+-	if (pdev->dev.of_node) {
++	if (IS_ENABLED(CONFIG_OF) && pdev->dev.of_node) {
++		/* Only when CONFIG_OF is enabled of_node can be parsed */
+ 		res = atmel_of_init_port(host, pdev->dev.of_node);
+ 		if (res)
+ 			goto err_nand_ioremap;
+@@ -2207,14 +2200,12 @@ static int __exit atmel_nand_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-#if defined(CONFIG_OF)
+ static const struct of_device_id atmel_nand_dt_ids[] = {
+ 	{ .compatible = "atmel,at91rm9200-nand" },
+ 	{ /* sentinel */ }
+ };
+ 
+ MODULE_DEVICE_TABLE(of, atmel_nand_dt_ids);
+-#endif
+ 
+ static int atmel_nand_nfc_probe(struct platform_device *pdev)
+ {
+@@ -2253,12 +2244,10 @@ static int atmel_nand_nfc_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-#if defined(CONFIG_OF)
+ static struct of_device_id atmel_nand_nfc_match[] = {
+ 	{ .compatible = "atmel,sama5d3-nfc" },
+ 	{ /* sentinel */ }
+ };
+-#endif
+ 
+ static struct platform_driver atmel_nand_nfc_driver = {
+ 	.driver = {
 -- 
-1.7.1
+1.7.9.5
