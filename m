@@ -1,13 +1,16 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VMggb-000133-A9
- for linux-mtd@lists.infradead.org; Thu, 19 Sep 2013 16:02:35 +0000
+ id 1VMggb-000132-Ct
+ for linux-mtd@lists.infradead.org; Thu, 19 Sep 2013 16:02:36 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 00/21] Armada 370/XP NAND support
-Date: Thu, 19 Sep 2013 13:01:24 -0300
-Message-Id: <1379606505-2529-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH 01/21] mtd: nand: pxa3xx: Allocate data buffer on detected
+ flash size
+Date: Thu, 19 Sep 2013 13:01:25 -0300
+Message-Id: <1379606505-2529-2-git-send-email-ezequiel.garcia@free-electrons.com>
+In-Reply-To: <1379606505-2529-1-git-send-email-ezequiel.garcia@free-electrons.com>
+References: <1379606505-2529-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
  Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
  Tawfik Bayouk <tawfik@marvell.com>, Artem Bityutskiy <dedekind1@gmail.com>,
@@ -24,155 +27,142 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi everyone,
+This commit replaces the currently hardcoded buffer size, by a
+dynamic detection scheme. First a small 256 bytes buffer is allocated
+so the device can be detected (using READID and friends commands).
 
-As some of you know, I'm working on implementing the long-awaited NAND
-support in Armada 370/XP SoCs.
+After detection, this buffer is released and a new buffer is allocated
+to acommodate the page size plus out-of-band size.
 
-The controller is the same as PXA3XX (NFCv1), plus some changes,
-and therefore it's called NFCv2. As expected, it should be supported
-by pxa3xx-nand, plus some changes.
+Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+---
+ drivers/mtd/nand/pxa3xx_nand.c | 45 ++++++++++++++++++++++++++++--------------
+ 1 file changed, 30 insertions(+), 15 deletions(-)
 
-First of all I'd like to introduce the controller and explain how it
-expects the data, ECC and OOB layout within a page. We might add this
-as documentation inside the driver or in Documentation/mtd, so feel free
-to ask anything that looks suspicious or is not clear enough.
-
-* Page layout
-
-The controller has a 2176 bytes FIFO buffer. Therefore, in order to support
-larger pages, I/O operations on 4 KiB and 8 KiB pages is done with a set of
-chunked transfers.
-
-For instance, if we choose a 2048 data chunk and BCH ECC we will have
-to use this layout in the pages:
-
-  ------------------------------------------------------------------------------
-  | 2048B data | 32B spare | 30B ECC || 2048B data | 32B spare | 30B ECC | ... |
-  ------------------------------------------------------------------------------
-
-The last remaining area is unusable (i.e. wasted).
-
-To match this, my current (already working!) implementation acts like
-a layout "impedance matcher" to produce in an internal driver's buffer
-this layout:
-
-  ------------------------------------------
-  |     4096B data     |     64B spare     |
-  ------------------------------------------
-
-In order to achieve reading (for instance), we issue several READ0 commands
-(with some additional controller-specific magic) and read two chunks of 2080B
-(2048 data + 64 spare) each.
-
-The driver accomodates this data to expose the NAND base a contiguous 4160B buffer
-(4096 data + 64 spare).
-
-* ECC
-
-The controller has built-in hardware ECC capabilities. In addition it is completely
-configurable, and we can choose between Hamming and BCH ECC. If we choose BCH ECC
-then the ECC code will be calculated for each transfered chunk and expected to be
-located (when reading/programming) at specific locations.
-
-So, repeating the above scheme, a 2048B data chunk will be followed by 32B spare,
-and then the ECC controller will read/write the ECC code (30B in this case):
-
-  ------------------------------------
-  | 2048B data | 32B spare | 30B ECC |
-  ------------------------------------
-
-* OOB
-
-Because of the above scheme, and because the "spare" OOB is really located in
-the middle of a page, spare OOB cannot be read or write independently of the
-data area. In other words, in order to read the OOB (aka READOOB), the entire
-page (aka READ0) has to be read.
-
-In the same sense, in order to write to the spare OOB (aka SEQIN,
-column = 4096 + PAGEPROG) the driver has to read the entire page first to the
-driver's buffer. Then it should fill the OOB, and finally program the entire page,
-data and oob included.
-
-Notice, that while this is possible, I haven't included OOB only write support
-(i.e. OOB write without data write) in this first patchset. I'm not sure why
-would we need it, so I'd like to know others opinion on this matter.
-
-Of course, writing to the OOB is supported, as long as this write is done
-*with* data. Following the examples above, writing an entire 4096 + OOB page
-is supported.
-
-* Clocking and timings
-
-This first patchset adds a dummy nand-clock to the device tree just to allow
-the driver to get it. Timings configuration is overriden for now using the
-'keep-config' DT parameter. The next round will likely include proper clock
-support plus timings configuration.
-
-* About this patchset
-
-This has been tested on Armada 370 Mirabox and Armada XP GP boards.
-
-Currently nandtest, mtd_pagetest, mtd_readtest pass while mtd_oobtest fails
-(due to lack of OOB write support). This means that JFFS2 is not supported,
-and UBIFS is a must.
-
-The patches are based in l2-mtd's master branch and I've pushed a branch
-to our github in case anyone wants to test this:
-
-  https://github.com/MISL-EBU-System-SW/mainline-public/tree/pxa3xx-armada-nand-v1
-
-The series is fairy complex and lengthy, so any feedback is more than welcome,
-as well as questions, suggestions or flames. Also, if anyone has a PXA board
-(Daniel?) to test possible regressions I would really appreciate it.
-
-* A note about Mirabox testing
-
-As this work is not considered completely stable, be extra careful when trying
-on the Mirabox. The Mirabox has the bootloader at NAND, and there's some risk
-to brick the board.
-
-That said: I've been using the driver on my Mirabox all morning (with my own
-Buildroot prepared UBIFS image) and so far everything works fine.
-
-If despite this you happen to brick the board, Willy Tarreau has provided
-excellent instructions to un-brick the Mirabox:
-
-  http://1wt.eu/articles/mirabox-vs-guruplug/
-
-Thanks!
-
-Ezequiel Garcia (21):
-  mtd: nand: pxa3xx: Allocate data buffer on detected flash size
-  mtd: nand: pxa3xx: Disable OOB on arbitrary length commands
-  mtd: nand: pxa3xx: Use a completion to signal device ready
-  mtd: nand: pxa3xx: Add bad block handling
-  mtd: nand: pxa3xx: Add driver-specific ECC BCH support
-  mtd: nand: pxa3xx: Configure detected pages-per-block
-  mtd: nand: pxa3xx: Clear cmd buffer #3 (NDCB3) on command start
-  mtd: nand: pxa3xx: Make config menu show supported platforms
-  mtd: nand: pxa3xx: Split FIFO size from to-be-read FIFO count
-  mtd: nand: pxa3xx: Replace host->page_size by mtd->writesize
-  mtd: nand: pxa3xx: Add helper function to set page address
-  mtd: nand: pxa3xx: Remove READ0 switch/case falltrough
-  mtd: nand: pxa3xx: Split prepare_command_pool() in two stages
-  mtd: nand: pxa3xx: Move the data buffer clean to
-    prepare_start_command()
-  mtd: nand: pxa3xx: Add a read/write buffers markers
-  mtd: nand: pxa3xx: Introduce multiple page I/O support
-  mtd: nand: pxa3xx: Add multiple chunk write support
-  ARM: mvebu: Add a fixed 0Hz clock to represent NAND clock
-  ARM: mvebu: Add support for NAND controller in Armada 370/XP
-  ARM: mvebu: Enable NAND controller in Armada XP GP board
-  ARM: mvebu: Enable NAND controller in Armada 370 Mirabox
-
- arch/arm/boot/dts/armada-370-mirabox.dts      |  21 +
- arch/arm/boot/dts/armada-370-xp.dtsi          |  19 +
- arch/arm/boot/dts/armada-xp-gp.dts            |   8 +
- drivers/mtd/nand/Kconfig                      |   4 +-
- drivers/mtd/nand/pxa3xx_nand.c                | 546 +++++++++++++++++++++-----
- include/linux/platform_data/mtd-nand-pxa3xx.h |   3 +
- 6 files changed, 493 insertions(+), 108 deletions(-)
-
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index dd03dfd..b4f3784 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -39,6 +39,13 @@
+ #define NAND_STOP_DELAY		(2 * HZ/50)
+ #define PAGE_CHUNK_SIZE		(2048)
+ 
++/*
++ * Define a buffer size for the initial command that detects the flash device:
++ * STATUS, READID and PARAM. The largest of these is the PARAM command,
++ * needing 256 bytes.
++ */
++#define INIT_BUFFER_SIZE	256
++
+ /* registers and bit definitions */
+ #define NDCR		(0x00) /* Control register */
+ #define NDTR0CS0	(0x04) /* Timing Parameter 0 for CS0 */
+@@ -164,6 +171,7 @@ struct pxa3xx_nand_info {
+ 
+ 	unsigned int 		buf_start;
+ 	unsigned int		buf_count;
++	unsigned int		buf_size;
+ 
+ 	/* DMA information */
+ 	int			drcmr_dat;
+@@ -912,26 +920,20 @@ static int pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
+ 	return 0;
+ }
+ 
+-/* the maximum possible buffer size for large page with OOB data
+- * is: 2048 + 64 = 2112 bytes, allocate a page here for both the
+- * data buffer and the DMA descriptor
+- */
+-#define MAX_BUFF_SIZE	PAGE_SIZE
+-
+ #ifdef ARCH_HAS_DMA
+ static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
+ {
+ 	struct platform_device *pdev = info->pdev;
+-	int data_desc_offset = MAX_BUFF_SIZE - sizeof(struct pxa_dma_desc);
++	int data_desc_offset = info->buf_size - sizeof(struct pxa_dma_desc);
+ 
+ 	if (use_dma == 0) {
+-		info->data_buff = kmalloc(MAX_BUFF_SIZE, GFP_KERNEL);
++		info->data_buff = kmalloc(info->buf_size, GFP_KERNEL);
+ 		if (info->data_buff == NULL)
+ 			return -ENOMEM;
+ 		return 0;
+ 	}
+ 
+-	info->data_buff = dma_alloc_coherent(&pdev->dev, MAX_BUFF_SIZE,
++	info->data_buff = dma_alloc_coherent(&pdev->dev, info->buf_size,
+ 				&info->data_buff_phys, GFP_KERNEL);
+ 	if (info->data_buff == NULL) {
+ 		dev_err(&pdev->dev, "failed to allocate dma buffer\n");
+@@ -945,7 +947,7 @@ static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
+ 				pxa3xx_nand_data_dma_irq, info);
+ 	if (info->data_dma_ch < 0) {
+ 		dev_err(&pdev->dev, "failed to request data dma\n");
+-		dma_free_coherent(&pdev->dev, MAX_BUFF_SIZE,
++		dma_free_coherent(&pdev->dev, info->buf_size,
+ 				info->data_buff, info->data_buff_phys);
+ 		return info->data_dma_ch;
+ 	}
+@@ -958,7 +960,7 @@ static void pxa3xx_nand_free_buff(struct pxa3xx_nand_info *info)
+ 	struct platform_device *pdev = info->pdev;
+ 	if (use_dma) {
+ 		pxa_free_dma(info->data_dma_ch);
+-		dma_free_coherent(&pdev->dev, MAX_BUFF_SIZE,
++		dma_free_coherent(&pdev->dev, info->buf_size,
+ 				  info->data_buff, info->data_buff_phys);
+ 	} else {
+ 		kfree(info->data_buff);
+@@ -967,7 +969,7 @@ static void pxa3xx_nand_free_buff(struct pxa3xx_nand_info *info)
+ #else
+ static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
+ {
+-	info->data_buff = kmalloc(MAX_BUFF_SIZE, GFP_KERNEL);
++	info->data_buff = kmalloc(info->buf_size, GFP_KERNEL);
+ 	if (info->data_buff == NULL)
+ 		return -ENOMEM;
+ 	return 0;
+@@ -1081,7 +1083,16 @@ KEEP_CONFIG:
+ 	else
+ 		host->col_addr_cycles = 1;
+ 
++	/* release the initial buffer */
++	kfree(info->data_buff);
++
++	/* allocate the real data + oob buffer */
++	info->buf_size = mtd->writesize + mtd->oobsize;
++	ret = pxa3xx_nand_init_buff(info);
++	if (ret)
++		return ret;
+ 	info->oob_buff = info->data_buff + mtd->writesize;
++
+ 	if ((mtd->size >> chip->page_shift) > 65536)
+ 		host->row_addr_cycles = 3;
+ 	else
+@@ -1187,9 +1198,13 @@ static int alloc_nand_resource(struct platform_device *pdev)
+ 	}
+ 	info->mmio_phys = r->start;
+ 
+-	ret = pxa3xx_nand_init_buff(info);
+-	if (ret)
++	/* Allocate a buffer to allow flash detection */
++	info->buf_size = INIT_BUFFER_SIZE;
++	info->data_buff = kmalloc(info->buf_size, GFP_KERNEL);
++	if (info->data_buff == NULL) {
++		ret = -ENOMEM;
+ 		goto fail_disable_clk;
++	}
+ 
+ 	/* initialize all interrupts to be disabled */
+ 	disable_int(info, NDSR_MASK);
+@@ -1207,7 +1222,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
+ 
+ fail_free_buf:
+ 	free_irq(irq, info);
+-	pxa3xx_nand_free_buff(info);
++	kfree(info->data_buff);
+ fail_disable_clk:
+ 	clk_disable_unprepare(info->clk);
+ 	return ret;
 -- 
 1.8.1.5
