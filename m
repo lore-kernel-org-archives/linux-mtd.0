@@ -1,13 +1,14 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VMgh5-00015h-1E
+ id 1VMgh7-000170-NQ
  for linux-mtd@lists.infradead.org; Thu, 19 Sep 2013 16:03:12 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 15/21] mtd: nand: pxa3xx: Add a read/write buffers markers
-Date: Thu, 19 Sep 2013 13:01:39 -0300
-Message-Id: <1379606505-2529-16-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH 11/21] mtd: nand: pxa3xx: Add helper function to set page
+ address
+Date: Thu, 19 Sep 2013 13:01:35 -0300
+Message-Id: <1379606505-2529-12-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1379606505-2529-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1379606505-2529-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
@@ -26,111 +27,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In preparation to support multiple (aka chunked, aka splitted)
-page I/O, this commit adds 'data_buff_pos' and 'oob_buff_pos' fields
-to keep track of where the next read (or write) should be done.
-
-This will allow multiple calls to handle_data_pio() to continue
-the read (or write) operation.
+Let's simplify the code by first introducing a helper function
+to set the page address, as done by the READ0, READOOB and SEQIN
+commands.
 
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c | 40 +++++++++++++++++++++++++++++-----------
- 1 file changed, 29 insertions(+), 11 deletions(-)
+ drivers/mtd/nand/pxa3xx_nand.c | 36 +++++++++++++++++++++---------------
+ 1 file changed, 21 insertions(+), 15 deletions(-)
 
 diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 6251939..0dc6fa4 100644
+index f3dfeba..80f0105 100644
 --- a/drivers/mtd/nand/pxa3xx_nand.c
 +++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -179,6 +179,8 @@ struct pxa3xx_nand_info {
- 	unsigned int 		buf_start;
- 	unsigned int		buf_count;
- 	unsigned int		buf_size;
-+	unsigned int		data_buff_pos;
-+	unsigned int		oob_buff_pos;
- 
- 	/* DMA information */
- 	int			drcmr_dat;
-@@ -328,11 +330,12 @@ static void pxa3xx_nand_set_timing(struct pxa3xx_nand_host *host,
-  * spare and ECC configuration.
-  * Only applicable to READ0, READOOB and PAGEPROG commands.
-  */
--static void pxa3xx_set_datasize(struct pxa3xx_nand_info *info)
-+static void pxa3xx_set_datasize(struct pxa3xx_nand_info *info,
-+				struct mtd_info *mtd)
- {
- 	int oob_enable = info->reg_ndcr & NDCR_SPARE_EN;
- 
--	info->data_size = info->fifo_size;
-+	info->data_size = mtd->writesize;
- 	if (!oob_enable) {
- 		info->oob_size = 0;
- 		return;
-@@ -430,26 +433,39 @@ static void disable_int(struct pxa3xx_nand_info *info, uint32_t int_mask)
- 
- static void handle_data_pio(struct pxa3xx_nand_info *info)
- {
-+	unsigned int do_bytes = min(info->data_size, info->fifo_size);
-+
- 	switch (info->state) {
- 	case STATE_PIO_WRITING:
--		__raw_writesl(info->mmio_base + NDDB, info->data_buff,
--				DIV_ROUND_UP(info->data_size, 4));
-+		__raw_writesl(info->mmio_base + NDDB,
-+			      info->data_buff + info->data_buff_pos,
-+			      DIV_ROUND_UP(do_bytes, 4));
-+
- 		if (info->oob_size > 0)
--			__raw_writesl(info->mmio_base + NDDB, info->oob_buff,
--					DIV_ROUND_UP(info->oob_size, 4));
-+			__raw_writesl(info->mmio_base + NDDB,
-+				      info->oob_buff + info->oob_buff_pos,
-+				      DIV_ROUND_UP(info->oob_size, 4));
- 		break;
- 	case STATE_PIO_READING:
--		__raw_readsl(info->mmio_base + NDDB, info->data_buff,
--				DIV_ROUND_UP(info->data_size, 4));
-+		__raw_readsl(info->mmio_base + NDDB,
-+			     info->data_buff + info->data_buff_pos,
-+			     DIV_ROUND_UP(do_bytes, 4));
-+
- 		if (info->oob_size > 0)
--			__raw_readsl(info->mmio_base + NDDB, info->oob_buff,
--					DIV_ROUND_UP(info->oob_size, 4));
-+			__raw_readsl(info->mmio_base + NDDB,
-+				     info->oob_buff + info->oob_buff_pos,
-+				     DIV_ROUND_UP(info->oob_size, 4));
- 		break;
- 	default:
- 		dev_err(&info->pdev->dev, "%s: invalid state %d\n", __func__,
- 				info->state);
- 		BUG();
- 	}
-+
-+	/* Update buffer pointers for multi-page read/write */
-+	info->data_buff_pos += do_bytes;
-+	info->oob_buff_pos += info->oob_size;
-+	info->data_size -= do_bytes;
+@@ -588,6 +588,26 @@ static inline int is_buf_blank(uint8_t *buf, size_t len)
+ 	return 1;
  }
  
- #ifdef ARCH_HAS_DMA
-@@ -617,6 +633,8 @@ static void prepare_start_command(struct pxa3xx_nand_info *info, int command)
- 	info->buf_start		= 0;
- 	info->buf_count		= 0;
- 	info->oob_size		= 0;
-+	info->data_buff_pos	= 0;
-+	info->oob_buff_pos	= 0;
- 	info->use_ecc		= 0;
- 	info->use_spare		= 1;
- 	info->use_dma		= (use_dma) ? 1 : 0;
-@@ -628,7 +646,7 @@ static void prepare_start_command(struct pxa3xx_nand_info *info, int command)
- 	case NAND_CMD_PAGEPROG:
- 		info->use_ecc = 1;
- 	case NAND_CMD_READOOB:
--		pxa3xx_set_datasize(info);
-+		pxa3xx_set_datasize(info, mtd);
- 		break;
- 	case NAND_CMD_PARAM:
- 		info->use_spare = 0;
++static void set_command_address(struct pxa3xx_nand_info *info,
++		unsigned int page_size, uint16_t column, int page_addr)
++{
++	/* small page addr setting */
++	if (page_size < PAGE_CHUNK_SIZE) {
++		info->ndcb1 = ((page_addr & 0xFFFFFF) << 8)
++				| (column & 0xFF);
++
++		info->ndcb2 = 0;
++	} else {
++		info->ndcb1 = ((page_addr & 0xFFFF) << 16)
++				| (column & 0xFFFF);
++
++		if (page_addr & 0xFF0000)
++			info->ndcb2 = (page_addr & 0xFF0000) >> 16;
++		else
++			info->ndcb2 = 0;
++	}
++}
++
+ static int prepare_command_pool(struct pxa3xx_nand_info *info, int command,
+ 		uint16_t column, int page_addr)
+ {
+@@ -652,22 +672,8 @@ static int prepare_command_pool(struct pxa3xx_nand_info *info, int command,
+ 			info->ndcb0 |= NDCB0_DBC | (NAND_CMD_READSTART << 8);
+ 
+ 	case NAND_CMD_SEQIN:
+-		/* small page addr setting */
+-		if (unlikely(mtd->writesize < PAGE_CHUNK_SIZE)) {
+-			info->ndcb1 = ((page_addr & 0xFFFFFF) << 8)
+-					| (column & 0xFF);
+-
+-			info->ndcb2 = 0;
+-		} else {
+-			info->ndcb1 = ((page_addr & 0xFFFF) << 16)
+-					| (column & 0xFFFF);
+-
+-			if (page_addr & 0xFF0000)
+-				info->ndcb2 = (page_addr & 0xFF0000) >> 16;
+-			else
+-				info->ndcb2 = 0;
+-		}
+ 
++		set_command_address(info, mtd->writesize, column, page_addr);
+ 		info->buf_count = mtd->writesize + mtd->oobsize;
+ 		memset(info->data_buff, 0xFF, info->buf_count);
+ 
 -- 
 1.8.1.5
