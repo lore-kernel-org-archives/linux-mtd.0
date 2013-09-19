@@ -1,14 +1,14 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VMggx-00015i-Ng
- for linux-mtd@lists.infradead.org; Thu, 19 Sep 2013 16:03:00 +0000
+ id 1VMggx-00015h-Nl
+ for linux-mtd@lists.infradead.org; Thu, 19 Sep 2013 16:03:02 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 08/21] mtd: nand: pxa3xx: Make config menu show supported
- platforms
-Date: Thu, 19 Sep 2013 13:01:32 -0300
-Message-Id: <1379606505-2529-9-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH 07/21] mtd: nand: pxa3xx: Clear cmd buffer #3 (NDCB3) on
+ command start
+Date: Thu, 19 Sep 2013 13:01:31 -0300
+Message-Id: <1379606505-2529-8-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1379606505-2529-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1379606505-2529-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
@@ -27,31 +27,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Since we have now support for the NFCv2 controller found on
-Armada 370/XP platforms.
+Command buffer #3 is not properly cleared and it keeps the last
+set value. Fix this by clearing when a command is setup.
 
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- drivers/mtd/nand/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/pxa3xx_nand.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index d885298..791d219 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -354,11 +354,11 @@ config MTD_NAND_ATMEL
- 	  on Atmel AT91 and AVR32 processors.
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 996a47d..d8e4311 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -610,6 +610,7 @@ static int prepare_command_pool(struct pxa3xx_nand_info *info, int command,
+ 	info->use_spare		= 1;
+ 	info->use_dma		= (use_dma) ? 1 : 0;
+ 	info->retcode		= ERR_NONE;
++	info->ndcb3		= 0;
+ 	if (info->cs != 0)
+ 		info->ndcb0 = NDCB0_CSEL;
+ 	else
+@@ -631,7 +632,6 @@ static int prepare_command_pool(struct pxa3xx_nand_info *info, int command,
+ 	default:
+ 		info->ndcb1 = 0;
+ 		info->ndcb2 = 0;
+-		info->ndcb3 = 0;
+ 		break;
+ 	}
  
- config MTD_NAND_PXA3xx
--	tristate "Support for NAND flash devices on PXA3xx"
-+	tristate "NAND support on PXA3xx and Armada 370/XP"
- 	depends on PXA3xx || ARCH_MMP || PLAT_ORION
- 	help
- 	  This enables the driver for the NAND flash device found on
--	  PXA3xx processors
-+	  PXA3xx processors (NFCv1) and also on Armada 370/XP (NFCv2).
- 
- config MTD_NAND_SLC_LPC32XX
- 	tristate "NXP LPC32xx SLC Controller"
 -- 
 1.8.1.5
