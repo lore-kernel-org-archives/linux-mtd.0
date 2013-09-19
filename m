@@ -1,18 +1,19 @@
-Date: Thu, 19 Sep 2013 15:41:54 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Josh Wu <josh.wu@atmel.com>
-Subject: Re: [PATCH v3] mtd: atmel_nand: use minimum ecc requirements of
- nand: ecc_{strength,step}_ds
-Message-ID: <20130919224154.GT4550@ld-irv-0074.broadcom.com>
-References: <1379483928-18253-1-git-send-email-josh.wu@atmel.com>
- <20130918214225.GP4550@ld-irv-0074.broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20130918214225.GP4550@ld-irv-0074.broadcom.com>
-Cc: nicolas.ferre@atmel.com, plagnioj@jcrosoft.com,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- dedekind1@gmail.com
+In-Reply-To: <1379626776.753.164.camel@shinybook.infradead.org>
+References: <20130919194752.GA19975@quad.lixom.net>
+ <1379626776.753.164.camel@shinybook.infradead.org>
+Date: Thu, 19 Sep 2013 15:57:40 -0700
+Message-ID: <CAN8TOE8j=oosn-5hAdqoTPcuW-sGvDAHd_nK6BZfJpxMwwpisQ@mail.gmail.com>
+Subject: Re: [GIT PULL] ARM: SoC fixes for 3.12-rc
+From: Brian Norris <computersforpeace@gmail.com>
+To: "Woodhouse, David" <david.woodhouse@intel.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "arm@kernel.org" <arm@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Olof Johansson <olof@lixom.net>,
+ "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,21 +23,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Sep 18, 2013 at 02:42:25PM -0700, Brian Norris wrote:
-> On Wed, Sep 18, 2013 at 01:58:48PM +0800, Josh Wu wrote:
-> > Since ecc_{strength,step}_ds is introduced in nand_chip structure for
-> > minimum ecc requirements. So we can use them directly and remove our
-> > own get_onfi_ecc_param function.
-> > 
-> > Signed-off-by: Josh Wu <josh.wu@atmel.com>
-...
-> I'll just apply the appended diff, to address these small comments and
-> to shorten the messages a little (they are a bit verbose and are over 80
-> characters). It's still not under 80, but it's more reasonable.
-> 
-> Let me know if you have any objections, or else I'll push this to
-> l2-mtd.git.
+On Thu, Sep 19, 2013 at 2:39 PM, Woodhouse, David
+<david.woodhouse@intel.com> wrote:
+> On Thu, 2013-09-19 at 12:47 -0700, Olof Johansson wrote:
+>>
+>> - A fix for build breakage in the MTD subsystem for some PXA devices.
+>>   David Woodhouse has this patch in his for-next branch but has not been
+>>   responding to our requests to send it up so here it is.
+>>   I should have amended the commit message to describe the build failure for
+>>   CONFIG_OF=n setups, but forgot and now it's down in the stack of commits.
+>
+> Thanks for pulling that in. Apologies for the screwup.
 
-Pushed to l2-mtd.git. Thanks!
+Speaking of such process issues: there's an outstanding patch for a
+(small) memory leak that was introduced in the nand_base.c ONFI code
+in 3.12-rc1. Can I expect you to attend to these sort of -rcX (where X
+> 1) issues? Or should I send Linus the patch myself? I don't really
+want it to wait around until 3.13-rc1 to go to -stable.
+
+It's in l2-mtd.git (will need cherry-picked out of there) and ready
+for the next linux-next:
+
+commit b2bdf43fcc1d440d8f4e1d5c8c59bf2ca76204df
+Author: Brian Norris <computersforpeace@gmail.com>
+Date:   Mon Sep 16 17:59:20 2013 -0700
+
+    mtd: nand: fix memory leak in ONFI extended parameter page
 
 Brian
