@@ -1,13 +1,13 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VMj4R-0005Jp-Ua
- for linux-mtd@lists.infradead.org; Thu, 19 Sep 2013 18:35:20 +0000
-Date: Thu, 19 Sep 2013 15:34:47 -0300
+ id 1VMlc9-0000Vh-Vo
+ for linux-mtd@lists.infradead.org; Thu, 19 Sep 2013 21:18:18 +0000
+Date: Thu, 19 Sep 2013 18:17:29 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: Daniel Mack <zonque@gmail.com>
 Subject: Re: [PATCH 00/21] Armada 370/XP NAND support
-Message-ID: <20130919183418.GA2663@localhost>
+Message-ID: <20130919211727.GC3369@localhost>
 References: <1379606505-2529-1-git-send-email-ezequiel.garcia@free-electrons.com>
  <523B38BE.2010203@gmail.com>
 MIME-Version: 1.0
@@ -55,19 +55,25 @@ On Thu, Sep 19, 2013 at 07:47:42PM +0200, Daniel Mack wrote:
 > 
 > Your patches work fine on my board with CONFIG_HAS_DMA=n.
 > 
-
-Great, this is already good news!
-
 > However, it seems that with CONFIG_HAS_DMA=y, pxa3xx_nand_irq() is now
 > called before pxa3xx_nand_init_buff(), which results in a NULL pointer
-> dereference.  I had to tweak my pending dmaengine patch of course, but I
-> don't see an particular problem with that right now.
-> 
-> Any idea? Are you tesing with PIO mode or DMA?
-> 
+> dereference.
 
-Mm.. I'll check about that. As far as I understand, these SoCs don't
-support NAND DMA operation. But I need to check this.
+Yup, the problem is very clear: pxa3xx_nand_irq() is now called before
+pxa3xx_nand_init_buff() because there must be a first device detection
+to know which size the page will be. Then pxa3xx_nand_init_buff() is
+called with this detected page size.
+
+See the first patch "Allocate data buffer on detected flash size", which
+removes the need to always allocate a buffer as big as the biggest page,
+and tries to be smarter.
+
+Of course, this doesn't work for DMA transfers. I guess the first device
+detection should be done by PIO always.
+
+If you agree with this I'll re-work the patches.
+
+Thanks for testing!
 -- 
 Ezequiel García, Free Electrons
 Embedded Linux, Kernel and Android Engineering
