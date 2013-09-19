@@ -1,14 +1,13 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VMgh2-00015i-Qm
- for linux-mtd@lists.infradead.org; Thu, 19 Sep 2013 16:03:07 +0000
+ id 1VMgh7-000171-NR
+ for linux-mtd@lists.infradead.org; Thu, 19 Sep 2013 16:03:10 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 18/21] ARM: mvebu: Add a fixed 0Hz clock to represent NAND
- clock
-Date: Thu, 19 Sep 2013 13:01:42 -0300
-Message-Id: <1379606505-2529-19-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH 12/21] mtd: nand: pxa3xx: Remove READ0 switch/case falltrough
+Date: Thu, 19 Sep 2013 13:01:36 -0300
+Message-Id: <1379606505-2529-13-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1379606505-2529-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1379606505-2529-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
@@ -27,40 +26,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The NAND controller in Armada 370 and Armada XP SoC has an input clock
-that's either 125 MHz or 200 MHz. As a temporary representation, this
-commit adds a 0Hz fixed-clock compatible DT node.
+READ0 and READOOB command preparation has a falltrough to SEQIN
+case, where the command address is specified.
+This is certainly confusing and makes the code less readable with
+no added value. Let's remove it.
 
-Not-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
-Of course, this is not intended for inclusion and I'm adding it to the
-series only to allow the driver's probe() to get the clock.
+ drivers/mtd/nand/pxa3xx_nand.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-This clock shouldn't be used anywhere, which means we must set
-"marvell,keep-config" parameter in the NAND device tree node.
-
- arch/arm/boot/dts/armada-370-xp.dtsi | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/arch/arm/boot/dts/armada-370-xp.dtsi b/arch/arm/boot/dts/armada-370-xp.dtsi
-index 90b1176..2e00da4 100644
---- a/arch/arm/boot/dts/armada-370-xp.dtsi
-+++ b/arch/arm/boot/dts/armada-370-xp.dtsi
-@@ -37,6 +37,15 @@
- 		};
- 	};
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 80f0105..ecf99ef 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -671,6 +671,11 @@ static int prepare_command_pool(struct pxa3xx_nand_info *info, int command,
+ 		if (mtd->writesize >= PAGE_CHUNK_SIZE)
+ 			info->ndcb0 |= NDCB0_DBC | (NAND_CMD_READSTART << 8);
  
-+	clocks {
-+		/* NAND reference clock */
-+		nandclk: nd_clk {
-+			compatible = "fixed-clock";
-+			#clock-cells = <0>;
-+			clock-frequency = <0>;
-+		};
-+	};
++		set_command_address(info, mtd->writesize, column, page_addr);
++		info->buf_count = mtd->writesize + mtd->oobsize;
++		memset(info->data_buff, 0xFF, info->buf_count);
++		break;
 +
- 	soc {
- 		#address-cells = <1>;
- 		#size-cells = <1>;
+ 	case NAND_CMD_SEQIN:
+ 
+ 		set_command_address(info, mtd->writesize, column, page_addr);
 -- 
 1.8.1.5
