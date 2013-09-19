@@ -1,14 +1,14 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VMgh2-00015l-NB
- for linux-mtd@lists.infradead.org; Thu, 19 Sep 2013 16:03:06 +0000
+ id 1VMgh2-00015i-Qm
+ for linux-mtd@lists.infradead.org; Thu, 19 Sep 2013 16:03:07 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 09/21] mtd: nand: pxa3xx: Split FIFO size from to-be-read FIFO
- count
-Date: Thu, 19 Sep 2013 13:01:33 -0300
-Message-Id: <1379606505-2529-10-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH 18/21] ARM: mvebu: Add a fixed 0Hz clock to represent NAND
+ clock
+Date: Thu, 19 Sep 2013 13:01:42 -0300
+Message-Id: <1379606505-2529-19-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1379606505-2529-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1379606505-2529-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
@@ -27,73 +27,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Introduce a fifo_size field to represent the size of the controller's
-FIFO buffer, and use it to distinguish that size from the amount
-of data bytes to be read from the FIFO.
+The NAND controller in Armada 370 and Armada XP SoC has an input clock
+that's either 125 MHz or 200 MHz. As a temporary representation, this
+commit adds a 0Hz fixed-clock compatible DT node.
 
-This is important to support devices with pages larger than the
-controller's internal FIFO, that need to read the pages in FIFO-sized
-chunks.
-
-In particular, the current code is at least confusing, for it mixes
-all the different sizes involved: FIFO size, page size and data size.
-
-This commit starts the cleaning by removing the info->page_size field
-that is not currently used. The host->page_size field should also
-be removed and use always mtd->writesize instead. Follow up commits
-will clean this up.
-
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Not-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+Of course, this is not intended for inclusion and I'm adding it to the
+series only to allow the driver's probe() to get the clock.
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index d8e4311..3f190fd 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -214,8 +214,8 @@ struct pxa3xx_nand_info {
- 	 */
- 	atomic_t		is_ready;
+This clock shouldn't be used anywhere, which means we must set
+"marvell,keep-config" parameter in the NAND device tree node.
+
+ arch/arm/boot/dts/armada-370-xp.dtsi | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/arch/arm/boot/dts/armada-370-xp.dtsi b/arch/arm/boot/dts/armada-370-xp.dtsi
+index 90b1176..2e00da4 100644
+--- a/arch/arm/boot/dts/armada-370-xp.dtsi
++++ b/arch/arm/boot/dts/armada-370-xp.dtsi
+@@ -37,6 +37,15 @@
+ 		};
+ 	};
  
--	unsigned int		page_size;	/* page size of attached chip */
--	unsigned int		data_size;	/* data size in FIFO */
-+	unsigned int		fifo_size;	/* max. data size in the FIFO */
-+	unsigned int		data_size;	/* data to be read from FIFO */
- 	unsigned int		oob_size;
- 	int 			retcode;
- 
-@@ -331,16 +331,15 @@ static void pxa3xx_nand_set_timing(struct pxa3xx_nand_host *host,
-  */
- static void pxa3xx_set_datasize(struct pxa3xx_nand_info *info)
- {
--	struct pxa3xx_nand_host *host = info->host[info->cs];
- 	int oob_enable = info->reg_ndcr & NDCR_SPARE_EN;
- 
--	info->data_size = host->page_size;
-+	info->data_size = info->fifo_size;
- 	if (!oob_enable) {
- 		info->oob_size = 0;
- 		return;
- 	}
- 
--	switch (host->page_size) {
-+	switch (info->fifo_size) {
- 	case 2048:
- 		if (info->ecc_bch)
- 			info->oob_size = (info->use_ecc) ? 32 : 64;
-@@ -977,9 +976,12 @@ static int pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
- 	uint32_t ndcr = nand_readl(info, NDCR);
- 
- 	if (ndcr & NDCR_PAGE_SZ) {
-+		/* Controller's FIFO size */
-+		info->fifo_size = 2048;
- 		host->page_size = 2048;
- 		host->read_id_bytes = 4;
- 	} else {
-+		info->fifo_size = 512;
- 		host->page_size = 512;
- 		host->read_id_bytes = 2;
- 	}
++	clocks {
++		/* NAND reference clock */
++		nandclk: nd_clk {
++			compatible = "fixed-clock";
++			#clock-cells = <0>;
++			clock-frequency = <0>;
++		};
++	};
++
+ 	soc {
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
 -- 
 1.8.1.5
