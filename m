@@ -1,18 +1,19 @@
-Received: from mail1.bemta12.messagelabs.com ([216.82.251.9])
+Received: from mail-out.m-online.net ([212.18.0.10])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VMgsR-0001fP-2a
- for linux-mtd@lists.infradead.org; Thu, 19 Sep 2013 16:14:47 +0000
-Message-ID: <523B22D6.8050303@digi.com>
-Date: Thu, 19 Sep 2013 18:14:14 +0200
-From: Hector Palacios <hector.palacios@digi.com>
-MIME-Version: 1.0
-To: Marek Vasut <marex@denx.de>
+ id 1VMguY-0001i5-T8
+ for linux-mtd@lists.infradead.org; Thu, 19 Sep 2013 16:16:59 +0000
+From: Marek Vasut <marex@denx.de>
+To: Hector Palacios <hector.palacios@digi.com>
 Subject: Re: gpmi-nand driver and jffs2 support
-References: <522062B4.4080709@digi.com> <201309151618.52045.marex@denx.de>
- <52366E5B.1010508@freescale.com> <201309191807.21140.marex@denx.de>
-In-Reply-To: <201309191807.21140.marex@denx.de>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Date: Thu, 19 Sep 2013 18:16:33 +0200
+References: <522062B4.4080709@digi.com> <201309191807.21140.marex@denx.de>
+ <523B22D6.8050303@digi.com>
+In-Reply-To: <523B22D6.8050303@digi.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Message-Id: <201309191816.33680.marex@denx.de>
 Cc: "fabio.estevam@freescale.com" <fabio.estevam@freescale.com>,
  "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
  Fabio Estevam <festevam@gmail.com>, Huang Shijie <b32955@freescale.com>,
@@ -28,19 +29,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/19/2013 06:07 PM, Marek Vasut wrote:
-> Dear Huang Shijie,
->
-> Sorry, I think I got lost in the discussion. I will pull out.
->
-> btw Hector, I managed to verify JFFS2 mounting doesn't work on 3.10 , now I'm
-> trying to backport patches from -next and apply the GPMI NAND patchset, without
-> much luck yet.
+Dear Hector Palacios,
 
-Oops, sorry, did you mean you were trying to backport them into U-Boot? Then please 
-disregards my previous message.
+> On 09/19/2013 06:07 PM, Marek Vasut wrote:
+> > Dear Huang Shijie,
+> > 
+> > Sorry, I think I got lost in the discussion. I will pull out.
+> > 
+> > btw Hector, I managed to verify JFFS2 mounting doesn't work on 3.10 , now
+> > I'm trying to backport patches from -next and apply the GPMI NAND
+> > patchset, without much luck yet.
+> 
+> Oops, sorry, did you mean you were trying to backport them into U-Boot?
+> Then please disregards my previous message.
 
+You actually just saved me a lot of annoyance, thank you ;-)
+
+btw feel free to run into me on IRC (#u-boot on freenode) or jabber so we can 
+work on the backporting-to-uboot part ;-)
 
 Best regards,
---
-Hector Palacios
+Marek Vasut
