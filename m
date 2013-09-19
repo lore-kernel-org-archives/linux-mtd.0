@@ -1,20 +1,20 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VMlc9-0000Vh-Vo
- for linux-mtd@lists.infradead.org; Thu, 19 Sep 2013 21:18:18 +0000
-Date: Thu, 19 Sep 2013 18:17:29 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Daniel Mack <zonque@gmail.com>
-Subject: Re: [PATCH 00/21] Armada 370/XP NAND support
-Message-ID: <20130919211727.GC3369@localhost>
-References: <1379606505-2529-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <523B38BE.2010203@gmail.com>
+Received: from mail-bk0-f46.google.com ([209.85.214.46])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VMlkG-0000gz-MO
+ for linux-mtd@lists.infradead.org; Thu, 19 Sep 2013 21:26:41 +0000
+Received: by mail-bk0-f46.google.com with SMTP id 6so3624249bkj.5
+ for <linux-mtd@lists.infradead.org>; Thu, 19 Sep 2013 14:26:03 -0700 (PDT)
+Message-ID: <523B6BE9.1000104@gmail.com>
+Date: Thu, 19 Sep 2013 23:26:01 +0200
+From: Daniel Mack <zonque@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <523B38BE.2010203@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH 00/21] Armada 370/XP NAND support
+References: <1379606505-2529-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <523B38BE.2010203@gmail.com> <20130919211727.GC3369@localhost>
+In-Reply-To: <20130919211727.GC3369@localhost>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
  Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
  Tawfik Bayouk <tawfik@marvell.com>, Artem Bityutskiy <dedekind1@gmail.com>,
@@ -30,51 +30,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 19, 2013 at 07:47:42PM +0200, Daniel Mack wrote:
-> On 19.09.2013 18:01, Ezequiel Garcia wrote:
+On 19.09.2013 23:17, Ezequiel Garcia wrote:
+> On Thu, Sep 19, 2013 at 07:47:42PM +0200, Daniel Mack wrote:
+
+>> However, it seems that with CONFIG_HAS_DMA=y, pxa3xx_nand_irq() is now
+>> called before pxa3xx_nand_init_buff(), which results in a NULL pointer
+>> dereference.
 > 
-> > Ezequiel Garcia (21):
-> >   mtd: nand: pxa3xx: Allocate data buffer on detected flash size
-> >   mtd: nand: pxa3xx: Disable OOB on arbitrary length commands
-> >   mtd: nand: pxa3xx: Use a completion to signal device ready
-> >   mtd: nand: pxa3xx: Add bad block handling
-> >   mtd: nand: pxa3xx: Add driver-specific ECC BCH support
-> >   mtd: nand: pxa3xx: Configure detected pages-per-block
-> >   mtd: nand: pxa3xx: Clear cmd buffer #3 (NDCB3) on command start
-> >   mtd: nand: pxa3xx: Make config menu show supported platforms
-> >   mtd: nand: pxa3xx: Split FIFO size from to-be-read FIFO count
-> >   mtd: nand: pxa3xx: Replace host->page_size by mtd->writesize
-> >   mtd: nand: pxa3xx: Add helper function to set page address
-> >   mtd: nand: pxa3xx: Remove READ0 switch/case falltrough
-> >   mtd: nand: pxa3xx: Split prepare_command_pool() in two stages
-> >   mtd: nand: pxa3xx: Move the data buffer clean to
-> >     prepare_start_command()
-> >   mtd: nand: pxa3xx: Add a read/write buffers markers
-> >   mtd: nand: pxa3xx: Introduce multiple page I/O support
-> >   mtd: nand: pxa3xx: Add multiple chunk write support
+> Yup, the problem is very clear: pxa3xx_nand_irq() is now called before
+> pxa3xx_nand_init_buff() because there must be a first device detection
+> to know which size the page will be. Then pxa3xx_nand_init_buff() is
+> called with this detected page size.
 > 
-> Your patches work fine on my board with CONFIG_HAS_DMA=n.
+> See the first patch "Allocate data buffer on detected flash size", which
+> removes the need to always allocate a buffer as big as the biggest page,
+> and tries to be smarter.
 > 
-> However, it seems that with CONFIG_HAS_DMA=y, pxa3xx_nand_irq() is now
-> called before pxa3xx_nand_init_buff(), which results in a NULL pointer
-> dereference.
+> Of course, this doesn't work for DMA transfers. I guess the first device
+> detection should be done by PIO always.
 
-Yup, the problem is very clear: pxa3xx_nand_irq() is now called before
-pxa3xx_nand_init_buff() because there must be a first device detection
-to know which size the page will be. Then pxa3xx_nand_init_buff() is
-called with this detected page size.
+Yes, that was my idea as well.
 
-See the first patch "Allocate data buffer on detected flash size", which
-removes the need to always allocate a buffer as big as the biggest page,
-and tries to be smarter.
+> If you agree with this I'll re-work the patches.
 
-Of course, this doesn't work for DMA transfers. I guess the first device
-detection should be done by PIO always.
+Please do, I'll go test again :)
 
-If you agree with this I'll re-work the patches.
 
-Thanks for testing!
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Daniel
