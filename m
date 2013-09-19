@@ -1,13 +1,13 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VMgh7-000171-NR
- for linux-mtd@lists.infradead.org; Thu, 19 Sep 2013 16:03:10 +0000
+ id 1VMgh7-00014s-CO
+ for linux-mtd@lists.infradead.org; Thu, 19 Sep 2013 16:03:11 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 12/21] mtd: nand: pxa3xx: Remove READ0 switch/case falltrough
-Date: Thu, 19 Sep 2013 13:01:36 -0300
-Message-Id: <1379606505-2529-13-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH 20/21] ARM: mvebu: Enable NAND controller in Armada XP GP board
+Date: Thu, 19 Sep 2013 13:01:44 -0300
+Message-Id: <1379606505-2529-21-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1379606505-2529-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1379606505-2529-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
@@ -26,31 +26,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-READ0 and READOOB command preparation has a falltrough to SEQIN
-case, where the command address is specified.
-This is certainly confusing and makes the code less readable with
-no added value. Let's remove it.
+The Armada XP GP board has a NAND flash, so enable it in the devicetree.
+In order to skip the driver's custom device detection and use only ONFI
+detection, the "marvell,keep-config" parameter is used.
 
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+This is needed because we have no support for setting the timings parameters yet.
+
+Not-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c | 5 +++++
- 1 file changed, 5 insertions(+)
+This patch is not ready for inclusion, and I'm only adding it here for
+consistency and in case someone wants to test.
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 80f0105..ecf99ef 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -671,6 +671,11 @@ static int prepare_command_pool(struct pxa3xx_nand_info *info, int command,
- 		if (mtd->writesize >= PAGE_CHUNK_SIZE)
- 			info->ndcb0 |= NDCB0_DBC | (NAND_CMD_READSTART << 8);
- 
-+		set_command_address(info, mtd->writesize, column, page_addr);
-+		info->buf_count = mtd->writesize + mtd->oobsize;
-+		memset(info->data_buff, 0xFF, info->buf_count);
-+		break;
+ arch/arm/boot/dts/armada-xp-gp.dts | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/arch/arm/boot/dts/armada-xp-gp.dts b/arch/arm/boot/dts/armada-xp-gp.dts
+index c87b2de..0e8389b 100644
+--- a/arch/arm/boot/dts/armada-xp-gp.dts
++++ b/arch/arm/boot/dts/armada-xp-gp.dts
+@@ -176,6 +176,14 @@
+ 					status = "okay";
+ 				};
+ 			};
 +
- 	case NAND_CMD_SEQIN:
- 
- 		set_command_address(info, mtd->writesize, column, page_addr);
++			nand@d0000 {
++				status = "okay";
++				num-cs = <1>;
++				marvell,nand-keep-config;
++				marvell,nand-enable-arbiter;
++				nand-on-flash-bbt;
++			};
+ 		};
+ 	};
+ };
 -- 
 1.8.1.5
