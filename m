@@ -1,13 +1,14 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VMgh9-00015p-7P
- for linux-mtd@lists.infradead.org; Thu, 19 Sep 2013 16:03:15 +0000
+ id 1VMghC-000179-NX
+ for linux-mtd@lists.infradead.org; Thu, 19 Sep 2013 16:03:18 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 21/21] ARM: mvebu: Enable NAND controller in Armada 370 Mirabox
-Date: Thu, 19 Sep 2013 13:01:45 -0300
-Message-Id: <1379606505-2529-22-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH 14/21] mtd: nand: pxa3xx: Move the data buffer clean to
+ prepare_start_command()
+Date: Thu, 19 Sep 2013 13:01:38 -0300
+Message-Id: <1379606505-2529-15-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1379606505-2529-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1379606505-2529-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
@@ -26,50 +27,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The Armada 370 Mirabox has a NAND flash, so enable it in the devicetree
-and add the partitions as prepared in the factory images.
+To allow future support of multiple page reading/writing, move the data
+buffer clean out of prepare_set_command().
 
-In order to skip the driver's custom device detection and use only
-ONFI detection, the "marvell,keep-config" parameter is used.
+This is done to prevent the data buffer from being cleaned on every command
+preparation, when a multiple command sequence is implemented to read/write
+pages larger than the FIFO size (2 KiB).
 
-This is needed because we have no support for setting the timings parameters yet.
-
-Not-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- arch/arm/boot/dts/armada-370-mirabox.dts | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+ drivers/mtd/nand/pxa3xx_nand.c | 21 ++++++++++++++++-----
+ 1 file changed, 16 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm/boot/dts/armada-370-mirabox.dts b/arch/arm/boot/dts/armada-370-mirabox.dts
-index 45b1077..dc54ba4 100644
---- a/arch/arm/boot/dts/armada-370-mirabox.dts
-+++ b/arch/arm/boot/dts/armada-370-mirabox.dts
-@@ -136,6 +136,27 @@
- 					status = "okay";
- 				};
- 			};
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 562b968..6251939 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -610,6 +610,9 @@ static void set_command_address(struct pxa3xx_nand_info *info,
+ 
+ static void prepare_start_command(struct pxa3xx_nand_info *info, int command)
+ {
++	struct pxa3xx_nand_host *host = info->host[info->cs];
++	struct mtd_info *mtd = host->mtd;
 +
-+			nand@d0000 {
-+				status = "okay";
-+				num-cs = <1>;
-+				marvell,nand-keep-config;
-+				marvell,nand-enable-arbiter;
-+				nand-on-flash-bbt;
+ 	/* reset data and oob column point to handle data */
+ 	info->buf_start		= 0;
+ 	info->buf_count		= 0;
+@@ -635,6 +638,19 @@ static void prepare_start_command(struct pxa3xx_nand_info *info, int command)
+ 		info->ndcb2 = 0;
+ 		break;
+ 	}
 +
-+				partition@0 {
-+					label = "U-Boot";
-+					reg = <0 0x400000>;
-+				};
-+				partition@400000 {
-+					label = "Linux";
-+					reg = <0x400000 0x400000>;
-+				};
-+				partition@800000 {
-+					label = "Filesystem";
-+					reg = <0x800000 0x3f800000>;
-+				};
-+			};
- 		};
- 	};
- };
++	/*
++	 * If we are about to isse a read command, or about to set
++	 * the write address, then clean the data buffer.
++	 */
++	if (command == NAND_CMD_READ0 ||
++	    command == NAND_CMD_READOOB ||
++	    command == NAND_CMD_SEQIN) {
++
++		info->buf_count = mtd->writesize + mtd->oobsize;
++		memset(info->data_buff, 0xFF, info->buf_count);
++	}
++
+ }
+ 
+ static int prepare_set_command(struct pxa3xx_nand_info *info, int command,
+@@ -676,16 +692,11 @@ static int prepare_set_command(struct pxa3xx_nand_info *info, int command,
+ 			info->ndcb0 |= NDCB0_DBC | (NAND_CMD_READSTART << 8);
+ 
+ 		set_command_address(info, mtd->writesize, column, page_addr);
+-		info->buf_count = mtd->writesize + mtd->oobsize;
+-		memset(info->data_buff, 0xFF, info->buf_count);
+ 		break;
+ 
+ 	case NAND_CMD_SEQIN:
+ 
+ 		set_command_address(info, mtd->writesize, column, page_addr);
+-		info->buf_count = mtd->writesize + mtd->oobsize;
+-		memset(info->data_buff, 0xFF, info->buf_count);
+-
+ 		break;
+ 
+ 	case NAND_CMD_PAGEPROG:
 -- 
 1.8.1.5
