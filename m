@@ -1,22 +1,17 @@
-Received: from mail-vc0-x22f.google.com ([2607:f8b0:400c:c03::22f])
+Received: from mail-ye0-x232.google.com ([2607:f8b0:4002:c04::232])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VN3Gn-0006Ld-TR
- for linux-mtd@lists.infradead.org; Fri, 20 Sep 2013 16:09:27 +0000
-Received: by mail-vc0-f175.google.com with SMTP id ia10so438968vcb.20
- for <linux-mtd@lists.infradead.org>; Fri, 20 Sep 2013 09:09:03 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <5226ED69.8080506@nod.at>
-References: <1377511730-14834-1-git-send-email-richard@nod.at>
- <5226ED69.8080506@nod.at>
-Date: Fri, 20 Sep 2013 18:09:02 +0200
-Message-ID: <CAFLxGvwQ64QpC7GB5wG9S1RaQVfGuK5sn_JqABrdEmkqXY2KwA@mail.gmail.com>
-Subject: Re: [PATCH] UBI: fix refill_wl_user_pool()
-From: richard -rw- weinberger <richard.weinberger@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: richard.genoud@gmail.com, David Woodhouse <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- LKML <linux-kernel@vger.kernel.org>, Artem Bityutskiy <dedekind1@gmail.com>
+ id 1VN6d2-0003IW-NV
+ for linux-mtd@lists.infradead.org; Fri, 20 Sep 2013 19:44:37 +0000
+Received: by mail-ye0-f178.google.com with SMTP id m5so299993yen.23
+ for <linux-mtd@lists.infradead.org>; Fri, 20 Sep 2013 12:44:13 -0700 (PDT)
+From: Brian Norris <computersforpeace@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: nand: correct extemded param page error handling
+Date: Fri, 20 Sep 2013 12:44:02 -0700
+Message-Id: <1379706242-20548-1-git-send-email-computersforpeace@gmail.com>
+Cc: Huang Shijie <b32955@freescale.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,39 +21,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Sep 4, 2013 at 10:20 AM, Richard Weinberger <richard@nod.at> wrote:
-> Am 26.08.2013 12:08, schrieb Richard Weinberger:
->> If no free PEBs are available refill_wl_user_pool() must not
->> return with -ENOSPC immediately.
->> It has to block till produce_free_peb() produced a free PEB.
->>
->> Reported-and-Tested-by: Richard Genoud <richard.genoud@gmail.com>
->> Signed-off-by: Richard Weinberger <richard@nod.at>
->> ---
->>  drivers/mtd/ubi/wl.c | 4 ----
->>  1 file changed, 4 deletions(-)
->>
->> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
->> index c95bfb1..02317c1 100644
->> --- a/drivers/mtd/ubi/wl.c
->> +++ b/drivers/mtd/ubi/wl.c
->> @@ -599,10 +599,6 @@ static void refill_wl_user_pool(struct ubi_device *ubi)
->>       return_unused_pool_pebs(ubi, pool);
->>
->>       for (pool->size = 0; pool->size < pool->max_size; pool->size++) {
->> -             if (!ubi->free.rb_node ||
->> -                (ubi->free_count - ubi->beb_rsvd_pebs < 1))
->> -                     break;
->> -
->>               pool->pebs[pool->size] = __wl_get_peb(ubi);
->>               if (pool->pebs[pool->size] < 0)
->>                       break;
->>
->
-> Artem, please don't forget do apply this patch.
+If the ONFI extended parameter page gives codeword_size == 0, the
+extended ECC information is corrupt and should not be used. Currently,
+we (correctly) avoid using the information, but we don't report the
+error to the caller, so the caller doesn't know that we didn't
+initialize ecc_strength_ds and ecc_step_ds. Now the caller can warn the
+user that it does not have sufficient information.
 
-*ping*
+This also removes the false and useless "ONFI extended param page
+detected" debug message (it was printed even on the aforementioned
+corruption, and for the success case, we don't really want a print).
 
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: Huang Shijie <b32955@freescale.com>
+---
+ drivers/mtd/nand/nand_base.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 00022b4..0b39d0c 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2912,12 +2912,13 @@ static int nand_flash_detect_ext_param_page(struct mtd_info *mtd,
+ 	/* get the info we want. */
+ 	ecc = (struct onfi_ext_ecc_info *)cursor;
+ 
+-	if (ecc->codeword_size) {
+-		chip->ecc_strength_ds = ecc->ecc_bits;
+-		chip->ecc_step_ds = 1 << ecc->codeword_size;
++	if (!ecc->codeword_size) {
++		pr_debug("Invalid codeword size\n");
++		goto ext_out;
+ 	}
+ 
+-	pr_info("ONFI extended param page detected.\n");
++	chip->ecc_strength_ds = ecc->ecc_bits;
++	chip->ecc_step_ds = 1 << ecc->codeword_size;
+ 	ret = 0;
+ 
+ ext_out:
 -- 
-Thanks,
-//richard
+1.8.4
