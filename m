@@ -1,19 +1,22 @@
-Received: from s250.sam-solutions.net ([217.21.49.219])
+Received: from bear.ext.ti.com ([192.94.94.41])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VMyHP-0004nK-Ai
- for linux-mtd@lists.infradead.org; Fri, 20 Sep 2013 10:49:44 +0000
-Message-ID: <523C27BB.5050900@sam-solutions.com>
-Date: Fri, 20 Sep 2013 13:47:23 +0300
-From: Andrei Andreyanau <a.andreyanau@sam-solutions.com>
-MIME-Version: 1.0
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: Incorrect detection of Micron MT29F32G08
+ id 1VMyoO-00060N-70
+ for linux-mtd@lists.infradead.org; Fri, 20 Sep 2013 11:23:48 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Andrei Andreyanau <a.andreyanau@sam-solutions.com>
+Subject: RE: Incorrect detection of Micron MT29F32G08
+Date: Fri, 20 Sep 2013 11:23:18 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA147A0@DBDE04.ent.ti.com>
 References: <5237FE9A.5080707@sam-solutions.com>
  <20980858CB6D3A4BAE95CA194937D5E73EA13155@DBDE04.ent.ti.com>
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA13155@DBDE04.ent.ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+ <523C27BB.5050900@sam-solutions.com>
+In-Reply-To: <523C27BB.5050900@sam-solutions.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Cc: "Huang Shijie \(b32955@freescale.com\)" <b32955@freescale.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,84 +26,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Pekon
-17.09.2013 15:30, Gupta, Pekon =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->> Hi, I've faced a problem with the Micron NAND MT29F32G08, which is 4GiBs=
-, 8K blocks per LUN, 224b OOB, 512K erase size, has two planes 4k blocks ea=
-ch. In the kernel (I use v3.0.35) it is detected
->> as 2GiB device. Only when I disable part of the code which belongs to ON=
-FI detection, add definition for this device in nand_ids.c (device has id=
-=3D0x48), add 224b OOB table, I can see that it's a
->> 4GiBs device, but when I'm trying formatting the largest partition (I ha=
-ve 4 partitions - barebox, env, kernel, rootfs <- the largest) - it drops a=
-n I/O error about bad blocks (I did scan and mark
->> all bad blocks before)... It seems to me that the amount of pages per lu=
-n is not detected correctly which leads to incorrect detection of device's =
-size etc. Bad thing is that the datasheet for a/m
->> NAND doesn't contain what are the values from NAND-device registers mean=
- (or I missed something). Could you please suggest where to dig?=20
-> You can try printing values of following towards end of nand_scan_tail() =
-in drivers/mtd/nand/nand_base.c - mtd->writesize - mtd->erasesize - mtd->oo=
-bsize=20
-Here it is what the kernel givewithout any modifications (I mean - with ONF=
-I-support enabled):
-...
-ONFI flash detected
-ONFI param page 0 valid
-NAND device: Manufacturer ID: 0x2c, Chip ID: 0x48 (Micron MT29F32G08AFACAWP=
-)
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3Dnand_scan_tail=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
-- writesize=3D4096
-- erasesize=3D524288
-- oobsize=3D224
-gpmi-nand imx6q-gpmi-nand.0: enable asynchronous EDO mode 5
-Bad block table not found for chip 0
-Creating 4 MTD partitions on "gpmi-nand":
-0x000000000000-0x000000200000 : "bootloader"
-0x000000200000-0x000000600000 : "env"
-0x000000600000-0x000000e00000 : "kernel"
-0x000000e00000-0x000080000000 : "filesystem"
-GPMI NAND driver registered. (IMX)
-
-mtd_debug output (for "filesystem"):
-$mtd_debug info /dev/mtd5
-mtd.type =3D MTD_NANDFLASH
-mtd.flags =3D MTD_WRITEABLE
-mtd.size =3D 2132803584 (1G)
-mtd.erasesize =3D 524288 (512K)
-mtd.writesize =3D 4096 (4K)
-mtd.oobsize =3D 224
-regions =3D 0
-
-What I get when I disable ONFI detection:
-GPIO NAND driver, =C2=A9 2004 Simtec Electronics
-NAND device: Manufacturer ID: 0x2c, Chip ID: 0x48 (Micron NAND 4GiB 3,3V 8-=
-bit)
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3Dnand_scan_tail=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
-- writesize=3D4096
-- erasesize=3D524288
-- oobsize=3D224
-Bad block table not found for chip 0
-Creating 4 MTD partitions on "gpmi-nand":
-0x000000000000-0x000000200000 : "bootloader"
-0x000000200000-0x000000600000 : "env"
-0x000000600000-0x000000e00000 : "kernel"
-0x000000e00000-0x000100000000 : "filesystem"
-GPMI NAND driver registered. (IMX)
-
-mtd_debug output (for "filesystem"):
-$mtd_debug info /dev/mtd5
-mtd.type =3D MTD_NANDFLASH
-mtd.flags =3D MTD_WRITEABLE
-mtd.size =3D 4280287232 (3G)
-mtd.erasesize =3D 524288 (512K)
-mtd.writesize =3D 4096 (4K)
-mtd.oobsize =3D 224
-regions =3D 0
-
-What do you think?
-
-Thanks in advance,
-Andrei
+PiANCj4gSGksIFBla29uDQo+IDE3LjA5LjIwMTMgMTU6MzAsIEd1cHRhLCBQZWtvbiDQv9C40YjQ
+tdGCOg0KPiA+PiBIaSwgSSd2ZSBmYWNlZCBhIHByb2JsZW0gd2l0aCB0aGUgTWljcm9uIE5BTkQg
+TVQyOUYzMkcwOCwgd2hpY2ggaXMNCj4gNEdpQnMsIDhLIGJsb2NrcyBwZXIgTFVOLCAyMjRiIE9P
+QiwgNTEySyBlcmFzZSBzaXplLCBoYXMgdHdvIHBsYW5lcyA0aw0KPiBibG9ja3MgZWFjaC4gSW4g
+dGhlIGtlcm5lbCAoSSB1c2UgdjMuMC4zNSkgaXQgaXMgZGV0ZWN0ZWQNCj4gPj4gYXMgMkdpQiBk
+ZXZpY2UuIE9ubHkgd2hlbiBJIGRpc2FibGUgcGFydCBvZiB0aGUgY29kZSB3aGljaCBiZWxvbmdz
+IHRvDQo+IE9ORkkgZGV0ZWN0aW9uLCBhZGQgZGVmaW5pdGlvbiBmb3IgdGhpcyBkZXZpY2UgaW4g
+bmFuZF9pZHMuYyAoZGV2aWNlIGhhcw0KPiBpZD0weDQ4KSwgYWRkIDIyNGIgT09CIHRhYmxlLCBJ
+IGNhbiBzZWUgdGhhdCBpdCdzIGENCj4gPj4gNEdpQnMgZGV2aWNlLCBidXQgd2hlbiBJJ20gdHJ5
+aW5nIGZvcm1hdHRpbmcgdGhlIGxhcmdlc3QgcGFydGl0aW9uIChJIGhhdmUgNA0KPiBwYXJ0aXRp
+b25zIC0gYmFyZWJveCwgZW52LCBrZXJuZWwsIHJvb3RmcyA8LSB0aGUgbGFyZ2VzdCkgLSBpdCBk
+cm9wcyBhbiBJL08gZXJyb3INCj4gYWJvdXQgYmFkIGJsb2NrcyAoSSBkaWQgc2NhbiBhbmQgbWFy
+aw0KPiA+PiBhbGwgYmFkIGJsb2NrcyBiZWZvcmUpLi4uIEl0IHNlZW1zIHRvIG1lIHRoYXQgdGhl
+IGFtb3VudCBvZiBwYWdlcyBwZXIgbHVuDQo+IGlzIG5vdCBkZXRlY3RlZCBjb3JyZWN0bHkgd2hp
+Y2ggbGVhZHMgdG8gaW5jb3JyZWN0IGRldGVjdGlvbiBvZiBkZXZpY2UncyBzaXplDQo+IGV0Yy4g
+QmFkIHRoaW5nIGlzIHRoYXQgdGhlIGRhdGFzaGVldCBmb3IgYS9tDQo+ID4+IE5BTkQgZG9lc24n
+dCBjb250YWluIHdoYXQgYXJlIHRoZSB2YWx1ZXMgZnJvbSBOQU5ELWRldmljZSByZWdpc3RlcnMN
+Cj4gbWVhbiAob3IgSSBtaXNzZWQgc29tZXRoaW5nKS4gQ291bGQgeW91IHBsZWFzZSBzdWdnZXN0
+IHdoZXJlIHRvIGRpZz8NCj4gPiBZb3UgY2FuIHRyeSBwcmludGluZyB2YWx1ZXMgb2YgZm9sbG93
+aW5nIHRvd2FyZHMgZW5kIG9mIG5hbmRfc2Nhbl90YWlsKCkgaW4NCj4gZHJpdmVycy9tdGQvbmFu
+ZC9uYW5kX2Jhc2UuYyAtIG10ZC0+d3JpdGVzaXplIC0gbXRkLT5lcmFzZXNpemUgLSBtdGQtDQo+
+ID5vb2JzaXplDQo+IEhlcmUgaXQgaXMgd2hhdCB0aGUga2VybmVsIGdpdmV3aXRob3V0IGFueSBt
+b2RpZmljYXRpb25zIChJIG1lYW4gLSB3aXRoIE9ORkktDQo+IHN1cHBvcnQgZW5hYmxlZCk6DQo+
+IC4uLg0KPiBPTkZJIGZsYXNoIGRldGVjdGVkDQo+IE9ORkkgcGFyYW0gcGFnZSAwIHZhbGlkDQo+
+IE5BTkQgZGV2aWNlOiBNYW51ZmFjdHVyZXIgSUQ6IDB4MmMsIENoaXAgSUQ6IDB4NDggKE1pY3Jv
+bg0KPiBNVDI5RjMyRzA4QUZBQ0FXUCkNCj4gPT09PT09PT09PT09PW5hbmRfc2Nhbl90YWlsPT09
+PT09PT09PT09PQ0KPiAtIHdyaXRlc2l6ZT00MDk2DQo+IC0gZXJhc2VzaXplPTUyNDI4OA0KPiAt
+IG9vYnNpemU9MjI0DQo+IGdwbWktbmFuZCBpbXg2cS1ncG1pLW5hbmQuMDogZW5hYmxlIGFzeW5j
+aHJvbm91cyBFRE8gbW9kZSA1DQo+IEJhZCBibG9jayB0YWJsZSBub3QgZm91bmQgZm9yIGNoaXAg
+MA0KPiBDcmVhdGluZyA0IE1URCBwYXJ0aXRpb25zIG9uICJncG1pLW5hbmQiOg0KPiAweDAwMDAw
+MDAwMDAwMC0weDAwMDAwMDIwMDAwMCA6ICJib290bG9hZGVyIg0KPiAweDAwMDAwMDIwMDAwMC0w
+eDAwMDAwMDYwMDAwMCA6ICJlbnYiDQo+IDB4MDAwMDAwNjAwMDAwLTB4MDAwMDAwZTAwMDAwIDog
+Imtlcm5lbCINCj4gMHgwMDAwMDBlMDAwMDAtMHgwMDAwODAwMDAwMDAgOiAiZmlsZXN5c3RlbSIN
+Cj4gR1BNSSBOQU5EIGRyaXZlciByZWdpc3RlcmVkLiAoSU1YKQ0KPiANCj4gbXRkX2RlYnVnIG91
+dHB1dCAoZm9yICJmaWxlc3lzdGVtIik6DQo+ICRtdGRfZGVidWcgaW5mbyAvZGV2L210ZDUNCj4g
+bXRkLnR5cGUgPSBNVERfTkFOREZMQVNIDQo+IG10ZC5mbGFncyA9IE1URF9XUklURUFCTEUNCj4g
+bXRkLnNpemUgPSAyMTMyODAzNTg0ICgxRykNCj4gbXRkLmVyYXNlc2l6ZSA9IDUyNDI4OCAoNTEy
+SykNCj4gbXRkLndyaXRlc2l6ZSA9IDQwOTYgKDRLKQ0KPiBtdGQub29ic2l6ZSA9IDIyNA0KPiBy
+ZWdpb25zID0gMA0KPiANCkRhdGEgYWJvdmUgaXMgY29ycmVjdCAuLi4NCllvdXIgImZpbGVzeXN0
+ZW0iIHBhcnRpdGlvbiBzaXplID0gKDB4ODAwMDAwMDAgLSAweGUwMDAwMCkNCndoaWNoIGlzICJt
+dGQuc2l6ZSA9IDIxMzI4MDM1ODQiDQptdGQtPnNpemUgIGlzIHRoZSBzaXplIG9mIHRoZSBwYXJ0
+aXRpb24sIG5vdCB0aGUgY29tcGxldGUNCnNpemUgb2YgTkFORCBkZXZpY2UuIEl04oCZcyB0aGUg
+bmFuZF9jaGlwLT5jaGlwc2l6ZSwgd2hpY2ggZ2l2ZXMNCmNvbXBsZXRlIHN0b3JhZ2UgZGVuc2l0
+eSBvZiB0aGUgTkFORCBkZXZpY2UuIEFuZA0KbmFuZF9jaGlwLT5jaGlwc2l6ZSA9IGx1bl9jb3Vu
+dCAqIGJsb2Nrc19wZXJfbHVuICogZXJhc2VzaXplOw0KDQpOb3cgcXVlc3Rpb24gcmVtYWlucyBh
+Ym91dCB3aHkgeW91IGFyZSBzZWVpbmcgYmFkLWJsb2NrcywNCmV2ZW4gYWZ0ZXIgcnVubmluZyAn
+bmFuZCBzY3J1YicgY29tbWFuZCBmcm9tIHUtYm9vdC4NClNvIHRoZXJlIGNhbiBiZSB0d28gcmVh
+c29ucyBmb3IgaXQuDQooMSkgdGhlc2UgYXJlIGFjdHVhbCBiYWRibG9ja3MgKHdoaWNoIGFyZSBp
+ZGVudGlmaWVkIGFnYWluKQ0KKDIpIHRoZXNlIGFyZSBmaWN0aXRpb3VzIGJhZCBibG9ja3MgZHVl
+IHRvIHNvbWUgcHJvYmxlbSBpbiB5b3VyDQpOQU5EIGZsYXNoaW5nIHV0aWxpdHkgb3IgbmFuZCBk
+cml2ZXIgaW4gMy4wLjM1IGtlcm5lbCB2ZXJzaW9uLg0KDQpGb3IgKDIpIHlvdSBoYXZlIHRvIGNo
+ZWNrIEZyZWVzY2FsZSBzdXBwb3J0IGFzIHlvdSBhcmUgdXNpbmcNCkdQTUkgYmFzZWQgZHJpdmVy
+LCBvciBkZWJ1ZyB1c2luZyAnbmFuZCBkdW1wIC1OJyBpbiBrZXJuZWwuDQoNCldpdGggcmVnYXJk
+cywgcGVrb24NCg==
