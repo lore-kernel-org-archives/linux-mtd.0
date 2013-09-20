@@ -1,23 +1,22 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from mail-vc0-x22f.google.com ([2607:f8b0:400c:c03::22f])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VN0ht-00027n-Dj
- for linux-mtd@lists.infradead.org; Fri, 20 Sep 2013 13:25:14 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Andrei Andreyanau <a.andreyanau@sam-solutions.com>
-Subject: RE: Incorrect detection of Micron MT29F32G08
-Date: Fri, 20 Sep 2013 13:24:44 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA14976@DBDE04.ent.ti.com>
-References: <5237FE9A.5080707@sam-solutions.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA13155@DBDE04.ent.ti.com>
- <523C27BB.5050900@sam-solutions.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA147A0@DBDE04.ent.ti.com>
- <523C35AA.1000107@sam-solutions.com>
-In-Reply-To: <523C35AA.1000107@sam-solutions.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1VN3Gn-0006Ld-TR
+ for linux-mtd@lists.infradead.org; Fri, 20 Sep 2013 16:09:27 +0000
+Received: by mail-vc0-f175.google.com with SMTP id ia10so438968vcb.20
+ for <linux-mtd@lists.infradead.org>; Fri, 20 Sep 2013 09:09:03 -0700 (PDT)
 MIME-Version: 1.0
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+In-Reply-To: <5226ED69.8080506@nod.at>
+References: <1377511730-14834-1-git-send-email-richard@nod.at>
+ <5226ED69.8080506@nod.at>
+Date: Fri, 20 Sep 2013 18:09:02 +0200
+Message-ID: <CAFLxGvwQ64QpC7GB5wG9S1RaQVfGuK5sn_JqABrdEmkqXY2KwA@mail.gmail.com>
+Subject: Re: [PATCH] UBI: fix refill_wl_user_pool()
+From: richard -rw- weinberger <richard.weinberger@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: richard.genoud@gmail.com, David Woodhouse <dwmw2@infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,92 +26,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiANCj4gSGksIFBla29uLA0KPiAyMC4wOS4yMDEzIDE0OjIzLCBHdXB0YSwgUGVrb24g0L/QuNGI
-0LXRgjoNCj4gPj4gSGksIFBla29uDQo+ID4+IDE3LjA5LjIwMTMgMTU6MzAsIEd1cHRhLCBQZWtv
-biDQv9C40YjQtdGCOg0KPiA+Pj4+IEhpLCBJJ3ZlIGZhY2VkIGEgcHJvYmxlbSB3aXRoIHRoZSBN
-aWNyb24gTkFORCBNVDI5RjMyRzA4LCB3aGljaCBpcw0KPiA+PiA0R2lCcywgOEsgYmxvY2tzIHBl
-ciBMVU4sIDIyNGIgT09CLCA1MTJLIGVyYXNlIHNpemUsIGhhcyB0d28gcGxhbmVzIDRrDQo+ID4+
-IGJsb2NrcyBlYWNoLiBJbiB0aGUga2VybmVsIChJIHVzZSB2My4wLjM1KSBpdCBpcyBkZXRlY3Rl
-ZA0KPiA+Pj4+IGFzIDJHaUIgZGV2aWNlLiBPbmx5IHdoZW4gSSBkaXNhYmxlIHBhcnQgb2YgdGhl
-IGNvZGUgd2hpY2ggYmVsb25ncyB0bw0KPiA+PiBPTkZJIGRldGVjdGlvbiwgYWRkIGRlZmluaXRp
-b24gZm9yIHRoaXMgZGV2aWNlIGluIG5hbmRfaWRzLmMgKGRldmljZSBoYXMNCj4gPj4gaWQ9MHg0
-OCksIGFkZCAyMjRiIE9PQiB0YWJsZSwgSSBjYW4gc2VlIHRoYXQgaXQncyBhDQo+ID4+Pj4gNEdp
-QnMgZGV2aWNlLCBidXQgd2hlbiBJJ20gdHJ5aW5nIGZvcm1hdHRpbmcgdGhlIGxhcmdlc3QgcGFy
-dGl0aW9uIChJDQo+IGhhdmUgNA0KPiA+PiBwYXJ0aXRpb25zIC0gYmFyZWJveCwgZW52LCBrZXJu
-ZWwsIHJvb3RmcyA8LSB0aGUgbGFyZ2VzdCkgLSBpdCBkcm9wcyBhbiBJL08NCj4gZXJyb3INCj4g
-Pj4gYWJvdXQgYmFkIGJsb2NrcyAoSSBkaWQgc2NhbiBhbmQgbWFyaw0KPiA+Pj4+IGFsbCBiYWQg
-YmxvY2tzIGJlZm9yZSkuLi4gSXQgc2VlbXMgdG8gbWUgdGhhdCB0aGUgYW1vdW50IG9mIHBhZ2Vz
-IHBlcg0KPiBsdW4NCj4gPj4gaXMgbm90IGRldGVjdGVkIGNvcnJlY3RseSB3aGljaCBsZWFkcyB0
-byBpbmNvcnJlY3QgZGV0ZWN0aW9uIG9mIGRldmljZSdzIHNpemUNCj4gPj4gZXRjLiBCYWQgdGhp
-bmcgaXMgdGhhdCB0aGUgZGF0YXNoZWV0IGZvciBhL20NCj4gPj4+PiBOQU5EIGRvZXNuJ3QgY29u
-dGFpbiB3aGF0IGFyZSB0aGUgdmFsdWVzIGZyb20gTkFORC1kZXZpY2UgcmVnaXN0ZXJzDQo+ID4+
-IG1lYW4gKG9yIEkgbWlzc2VkIHNvbWV0aGluZykuIENvdWxkIHlvdSBwbGVhc2Ugc3VnZ2VzdCB3
-aGVyZSB0byBkaWc/DQo+ID4+PiBZb3UgY2FuIHRyeSBwcmludGluZyB2YWx1ZXMgb2YgZm9sbG93
-aW5nIHRvd2FyZHMgZW5kIG9mIG5hbmRfc2Nhbl90YWlsKCkNCj4gaW4NCj4gPj4gZHJpdmVycy9t
-dGQvbmFuZC9uYW5kX2Jhc2UuYyAtIG10ZC0+d3JpdGVzaXplIC0gbXRkLT5lcmFzZXNpemUgLSBt
-dGQtDQo+ID4+PiBvb2JzaXplDQo+ID4+IEhlcmUgaXQgaXMgd2hhdCB0aGUga2VybmVsIGdpdmV3
-aXRob3V0IGFueSBtb2RpZmljYXRpb25zIChJIG1lYW4gLSB3aXRoDQo+IE9ORkktDQo+ID4+IHN1
-cHBvcnQgZW5hYmxlZCk6DQo+ID4+IC4uLg0KPiA+PiBPTkZJIGZsYXNoIGRldGVjdGVkDQo+ID4+
-IE9ORkkgcGFyYW0gcGFnZSAwIHZhbGlkDQo+ID4+IE5BTkQgZGV2aWNlOiBNYW51ZmFjdHVyZXIg
-SUQ6IDB4MmMsIENoaXAgSUQ6IDB4NDggKE1pY3Jvbg0KPiA+PiBNVDI5RjMyRzA4QUZBQ0FXUCkN
-Cj4gPj4gPT09PT09PT09PT09PW5hbmRfc2Nhbl90YWlsPT09PT09PT09PT09PQ0KPiA+PiAtIHdy
-aXRlc2l6ZT00MDk2DQo+ID4+IC0gZXJhc2VzaXplPTUyNDI4OA0KPiA+PiAtIG9vYnNpemU9MjI0
-DQo+ID4+IGdwbWktbmFuZCBpbXg2cS1ncG1pLW5hbmQuMDogZW5hYmxlIGFzeW5jaHJvbm91cyBF
-RE8gbW9kZSA1DQo+ID4+IEJhZCBibG9jayB0YWJsZSBub3QgZm91bmQgZm9yIGNoaXAgMA0KPiA+
-PiBDcmVhdGluZyA0IE1URCBwYXJ0aXRpb25zIG9uICJncG1pLW5hbmQiOg0KPiA+PiAweDAwMDAw
-MDAwMDAwMC0weDAwMDAwMDIwMDAwMCA6ICJib290bG9hZGVyIg0KPiA+PiAweDAwMDAwMDIwMDAw
-MC0weDAwMDAwMDYwMDAwMCA6ICJlbnYiDQo+ID4+IDB4MDAwMDAwNjAwMDAwLTB4MDAwMDAwZTAw
-MDAwIDogImtlcm5lbCINCj4gPj4gMHgwMDAwMDBlMDAwMDAtMHgwMDAwODAwMDAwMDAgOiAiZmls
-ZXN5c3RlbSINCj4gPj4gR1BNSSBOQU5EIGRyaXZlciByZWdpc3RlcmVkLiAoSU1YKQ0KPiA+Pg0K
-PiA+PiBtdGRfZGVidWcgb3V0cHV0IChmb3IgImZpbGVzeXN0ZW0iKToNCj4gPj4gJG10ZF9kZWJ1
-ZyBpbmZvIC9kZXYvbXRkNQ0KPiA+PiBtdGQudHlwZSA9IE1URF9OQU5ERkxBU0gNCj4gPj4gbXRk
-LmZsYWdzID0gTVREX1dSSVRFQUJMRQ0KPiA+PiBtdGQuc2l6ZSA9IDIxMzI4MDM1ODQgKDFHKQ0K
-PiA+PiBtdGQuZXJhc2VzaXplID0gNTI0Mjg4ICg1MTJLKQ0KPiA+PiBtdGQud3JpdGVzaXplID0g
-NDA5NiAoNEspDQo+ID4+IG10ZC5vb2JzaXplID0gMjI0DQo+ID4+IHJlZ2lvbnMgPSAwDQo+ID4+
-DQo+ID4gRGF0YSBhYm92ZSBpcyBjb3JyZWN0IC4uLg0KPiA+IFlvdXIgImZpbGVzeXN0ZW0iIHBh
-cnRpdGlvbiBzaXplID0gKDB4ODAwMDAwMDAgLSAweGUwMDAwMCkNCj4gPiB3aGljaCBpcyAibXRk
-LnNpemUgPSAyMTMyODAzNTg0Ig0KPiA+IG10ZC0+c2l6ZSAgaXMgdGhlIHNpemUgb2YgdGhlIHBh
-cnRpdGlvbiwgbm90IHRoZSBjb21wbGV0ZQ0KPiA+IHNpemUgb2YgTkFORCBkZXZpY2UuIEl04oCZ
-cyB0aGUgbmFuZF9jaGlwLT5jaGlwc2l6ZSwgd2hpY2ggZ2l2ZXMNCj4gPiBjb21wbGV0ZSBzdG9y
-YWdlIGRlbnNpdHkgb2YgdGhlIE5BTkQgZGV2aWNlLiBBbmQNCj4gPiBuYW5kX2NoaXAtPmNoaXBz
-aXplID0gbHVuX2NvdW50ICogYmxvY2tzX3Blcl9sdW4gKiBlcmFzZXNpemU7DQo+IFllcywgSSB1
-bmRlcnN0YW5kLCBidXQgaW4gc2Vjb25kIGNhc2UgKHdpdGhvdXQgT05GSSkgaXQgaGFzDQo+IGRl
-dGVjdGVkIDRHaUIgKHdlbGwsIDNHaUIgcmVtYWluaW5nIGFmdGVyIHBhcnRpdGlvbmluZyBieSB0
-aGUga2VybmVsKSBzaXplLg0KPiBNb3Jlb3ZlciwgSSdtIGNvbmZ1c2VkIGEgbGl0dGxlIGJpdCB3
-aXRoIHRoZSBmYWN0IHRoYXQgd2l0aCBPTkZJIGRldGVjdGlvbg0KPiBlbmFibGVkIHRoZSBkcml2
-ZXIgZGV0ZWN0cyBpbmNvcnJlY3QgYW1vdW50IG9mIGJsb2NrcyBwZXIgbHVuICg0MDk2IGluc3Rl
-YWQNCj4gb2YgODE5MikNCj4gd2hpY2ggaW4gZmFjdCByZXN1bHRzIG9uIHRoZSB0b3RhbCBzaXpl
-IG9mIHRoZSBkZXZpY2UuIEFjY29yZGluZyB0byB0aGUNCj4gZGF0YXNoZWV0LCB0aGUNCj4gZGV2
-aWNlIGhhcyB0d28gcGxhbmVzIDRLIGJsb2NrcyBlYWNoLCBsb2NhdGVkIG9uIG9uZSBMVU4uDQo+
-IFNvIEkgc2hvdWxkIGFyZ3VlIHdpdGggeW91IHRoYXQgdGhlIHByb2JsZW0gaXMgd2l0aGluIHRo
-ZSBkcml2ZXIuLi4NCg0KSSBkaWQgbm90aWNlIGRpZmZlcmVuY2UgaW4gcGFydGl0aW9uIHNpemUN
-Ci0gd2l0aCBPTkZJIGRlY3Rpb24gZW5hYmxlZA0KPj4gMHgwMDAwMDBlMDAwMDAtMHgwMDAwODAw
-MDAwMDAgOiAiZmlsZXN5c3RlbSINCg0KLSB3aXRoIE9ORkkgZGV0ZWN0aW9uIGRpc2FibGVkDQo+
-ID4gMHgwMDAwMDBlMDAwMDAtMHgwMDAwMTAwMDAwMDAwIDogImZpbGVzeXN0ZW0iDQoNCkkgdGhp
-bmsgeW91ciBkZXZpY2UgTVQyOUYzMkcwOCBoYXMgJ2R1YWwgZGllJyBhbmQgICdkdWFsIGNoaXAt
-c2VsZWN0cycgPw0KSW4gdGhhdCBjYXNlLCBtYXkgYmUgZWFjaCBvZiBkaWUgcGxhbmVzIGFyZSBn
-ZXR0aW5nIGRldGVjdGVkIGFzDQpzZXBhcmF0ZSBOQU5EIHBoeXNpY2FsIGNoaXBzLiBKdXN0IGNo
-ZWNrICduYW5kX2NoaXAtPm51bWNoaXBzJw0KaWYgc3VjaCBpcyB0aGUgY2FzZSwgdGhlbiB5b3Ug
-bmVlZCB0byBjaGVjayB5b3VyIGRyaXZlciBob3cgaXQgd2FzIGhhbmRsaW5nDQpOQU5EIGRldmlj
-ZXMgd2l0aCBtdWx0aSBjaGlwLXNlbGVjdHMgaW4geW91ciBrZXJuZWwgdmVyc2lvbi4NCg0KPiA+
-IE5vdyBxdWVzdGlvbiByZW1haW5zIGFib3V0IHdoeSB5b3UgYXJlIHNlZWluZyBiYWQtYmxvY2tz
-LA0KPiA+IGV2ZW4gYWZ0ZXIgcnVubmluZyAnbmFuZCBzY3J1YicgY29tbWFuZCBmcm9tIHUtYm9v
-dC4NCj4gPiBTbyB0aGVyZSBjYW4gYmUgdHdvIHJlYXNvbnMgZm9yIGl0Lg0KPiA+ICgxKSB0aGVz
-ZSBhcmUgYWN0dWFsIGJhZGJsb2NrcyAod2hpY2ggYXJlIGlkZW50aWZpZWQgYWdhaW4pDQo+ID4g
-KDIpIHRoZXNlIGFyZSBmaWN0aXRpb3VzIGJhZCBibG9ja3MgZHVlIHRvIHNvbWUgcHJvYmxlbSBp
-biB5b3VyDQo+ID4gTkFORCBmbGFzaGluZyB1dGlsaXR5IG9yIG5hbmQgZHJpdmVyIGluIDMuMC4z
-NSBrZXJuZWwgdmVyc2lvbi4NCj4gPg0KPiA+IEZvciAoMikgeW91IGhhdmUgdG8gY2hlY2sgRnJl
-ZXNjYWxlIHN1cHBvcnQgYXMgeW91IGFyZSB1c2luZw0KPiA+IEdQTUkgYmFzZWQgZHJpdmVyLCBv
-ciBkZWJ1ZyB1c2luZyAnbmFuZCBkdW1wIC1OJyBpbiBrZXJuZWwuDQo+ID4NCj4gPiBXaXRoIHJl
-Z2FyZHMsIHBla29uDQo+ID4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fDQo+ID4gTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0DQo+
-ID4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQv
-DQo+IFNvLCB3aGF0IG5hbmRkdW1wIGdhdmUgbWU6DQo+ICRuYW5kZHVtcCAtLW9vYiAtLWJiPWR1
-bXBiYWQgL2Rldi9tdGQ1DQo+IEVDQyBmYWlsZWQ6IDANCj4gRUNDIGNvcnJlY3RlZDogMA0KPiBO
-dW1iZXIgb2YgYmFkIGJsb2NrczogOA0KPiBOdW1iZXIgb2YgYmJ0IGJsb2NrczogMA0KPiBOb3Qg
-cHJpbnRpbmcgYmluYXJ5IGdhcmJhZ2UgdG8gdHR5LiBVc2UgJy1hJw0KPiBvciAnLS1mb3JjZWJp
-bmFyeScgdG8gb3ZlcnJpZGUuDQo+IChrZXlzIC0tb29iLy0tYmIgdXNlZCBiZWNhdXNlIGl0IGNv
-bXBsYWluZWQgYWJvdXQgZGVwcmVjYXRlZCBwYXJhbXMpDQo+IA0KVXNlICctcCcgcHJpbnQgaW4g
-QVNDSUkgb3B0aW9uIHRvIGR1bXAgaGV4IHZhbHVlcyBvZiBOQU5EIGRhdGEuDQpUaGlzIG1heSBi
-ZSByZW5hbWVkIHRvIHNvbWUgb3RoZXIgb3B0aW9uIGluIGxhdGVzdCBtdGQtdXRpbHMuDQoNCg0K
-V2l0aCByZWdhcmRzLCBwZWtvbg0K
+On Wed, Sep 4, 2013 at 10:20 AM, Richard Weinberger <richard@nod.at> wrote:
+> Am 26.08.2013 12:08, schrieb Richard Weinberger:
+>> If no free PEBs are available refill_wl_user_pool() must not
+>> return with -ENOSPC immediately.
+>> It has to block till produce_free_peb() produced a free PEB.
+>>
+>> Reported-and-Tested-by: Richard Genoud <richard.genoud@gmail.com>
+>> Signed-off-by: Richard Weinberger <richard@nod.at>
+>> ---
+>>  drivers/mtd/ubi/wl.c | 4 ----
+>>  1 file changed, 4 deletions(-)
+>>
+>> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+>> index c95bfb1..02317c1 100644
+>> --- a/drivers/mtd/ubi/wl.c
+>> +++ b/drivers/mtd/ubi/wl.c
+>> @@ -599,10 +599,6 @@ static void refill_wl_user_pool(struct ubi_device *ubi)
+>>       return_unused_pool_pebs(ubi, pool);
+>>
+>>       for (pool->size = 0; pool->size < pool->max_size; pool->size++) {
+>> -             if (!ubi->free.rb_node ||
+>> -                (ubi->free_count - ubi->beb_rsvd_pebs < 1))
+>> -                     break;
+>> -
+>>               pool->pebs[pool->size] = __wl_get_peb(ubi);
+>>               if (pool->pebs[pool->size] < 0)
+>>                       break;
+>>
+>
+> Artem, please don't forget do apply this patch.
+
+*ping*
+
+-- 
+Thanks,
+//richard
