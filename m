@@ -1,20 +1,19 @@
-Received: from mail-vc0-x235.google.com ([2607:f8b0:400c:c03::235])
+Received: from co1ehsobe003.messaging.microsoft.com ([216.32.180.186]
+ helo=co1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VNVwy-0008Nb-Ey
- for linux-mtd@lists.infradead.org; Sat, 21 Sep 2013 22:46:53 +0000
-Received: by mail-vc0-f181.google.com with SMTP id hz10so1218156vcb.26
- for <linux-mtd@lists.infradead.org>; Sat, 21 Sep 2013 15:46:29 -0700 (PDT)
+ id 1VNZt6-0002cQ-6t
+ for linux-mtd@lists.infradead.org; Sun, 22 Sep 2013 02:59:09 +0000
+Message-ID: <523E5D57.6040008@freescale.com>
+Date: Sun, 22 Sep 2013 11:00:39 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <7c74c0d714e8e87daebbfd0163642d71@localhost>
-References: <mailman.6.1379692801.23497.linux-mtd@lists.infradead.org>
- <7c74c0d714e8e87daebbfd0163642d71@localhost>
-Date: Sun, 22 Sep 2013 00:46:29 +0200
-Message-ID: <CAFLxGvwvoeyhDDD=WqEpw59f8WKKujQo7Pg8mcJOev-7oN-_CQ@mail.gmail.com>
-Subject: Re: Patching mkfs.ubifs.c for running under Windows ?
-From: richard -rw- weinberger <richard.weinberger@gmail.com>
-To: gutemine <gutemine@oozoon.de>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd: nand: correct extemded param page error handling
+References: <1379706242-20548-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1379706242-20548-1-git-send-email-computersforpeace@gmail.com>
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: quoted-printable
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,44 +23,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Sep 21, 2013 at 12:58 PM, gutemine <gutemine@oozoon.de> wrote:
-> Hi!
+=D3=DA 2013=C4=EA09=D4=C221=C8=D5 03:44, Brian Norris =D0=B4=B5=C0:
+> If the ONFI extended parameter page gives codeword_size =3D=3D 0, the
+> extended ECC information is corrupt and should not be used. Currently,
+> we (correctly) avoid using the information, but we don't report the
+> error to the caller, so the caller doesn't know that we didn't
+> initialize ecc_strength_ds and ecc_step_ds. Now the caller can warn the
+> user that it does not have sufficient information.
 >
-> I'm the author of ubidump, the first real ubifs image extract tool.
-> ubidump allows to extract ubifs images created by mkfs.ubifs and also ubifs
-> volumes created by ubinize.
-
-Where did you hide it?
-Sounds interesting...
-
-> ubidump works without any nandsim, block2mtd or mtdram modules and doesn't
-> mount the image at all. Therefore it runs nicely on both Linux and Windows
-> as it is written in pure C and doesn't use any mtd-utils code or includes.
+> This also removes the false and useless "ONFI extended param page
+> detected" debug message (it was printed even on the aforementioned
+> corruption, and for the success case, we don't really want a print).
 >
-> Live under Linux was easy, but I took the challange to make it run under
-> Windows too, because there it was not possible to mount and extract an
-> ubifs image until now.
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Cc: Huang Shijie <b32955@freescale.com>
+> ---
+>  drivers/mtd/nand/nand_base.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
 >
-> ubidump under Windows supports Hard and Symlinks by using the native NTFS
-> functionality. Only device files and pipes are written as simple text files
-> containing the needed information for a re-pack (eg. char or block device
-> and major and minor number).
->
-> As users of ubidump under Windows now asked me for getting also the
-> possibility to re-pack their extracted ubifs images, I'm considering to
-> patch mkfs.ubifs.c, so that it handles also the Windows hard and softlinks
-> and my dummy device files correctly.
->
-> My question is now, if it would be OK to add these changes to the standard
-> mkfs.ubifs.c (off cource nicely wrapped in #ifdef WINDOWS statements so
-> that these changes don't do any harm when compiled on other plattforms) and
-> send you the diff, or if I should create an extra open source tool based on
-> the existing mkfs.ubifs.c code.
-
--ENOPATCH. :-)
-
-IOW, we need to review it first.
-
--- 
-Thanks,
-//richard
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.=
+c
+> index 00022b4..0b39d0c 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -2912,12 +2912,13 @@ static int nand_flash_detect_ext_param_page(str=
+uct mtd_info *mtd,
+>  	/* get the info we want. */
+>  	ecc =3D (struct onfi_ext_ecc_info *)cursor;
+> =20
+> -	if (ecc->codeword_size) {
+> -		chip->ecc_strength_ds =3D ecc->ecc_bits;
+> -		chip->ecc_step_ds =3D 1 << ecc->codeword_size;
+> +	if (!ecc->codeword_size) {
+> +		pr_debug("Invalid codeword size\n");
+> +		goto ext_out;
+>  	}
+> =20
+> -	pr_info("ONFI extended param page detected.\n");
+> +	chip->ecc_strength_ds =3D ecc->ecc_bits;
+> +	chip->ecc_step_ds =3D 1 << ecc->codeword_size;
+>  	ret =3D 0;
+> =20
+>  ext_out:
+Acked-by: Huang Shijie <b32955@freescale.com>
