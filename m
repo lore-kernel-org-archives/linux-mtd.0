@@ -1,19 +1,21 @@
-Message-ID: <523E6983.3030203@atmel.com>
-Date: Sun, 22 Sep 2013 11:52:35 +0800
-From: Josh Wu <josh.wu@atmel.com>
+Received: from sh16-54.1blu.de ([178.254.0.106])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VNfpo-0006V6-Sa
+ for linux-mtd@lists.infradead.org; Sun, 22 Sep 2013 09:20:09 +0000
+To: richard -rw- weinberger <richard.weinberger@gmail.com>
+Subject: Re: Patching mkfs.ubifs.c for running under Windows
+ =?UTF-8?Q?=3F?=
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v3] mtd: atmel_nand: use minimum ecc requirements of nand:
- ecc_{strength,step}_ds
-References: <1379483928-18253-1-git-send-email-josh.wu@atmel.com>
- <20130918214225.GP4550@ld-irv-0074.broadcom.com>
- <20130919224154.GT4550@ld-irv-0074.broadcom.com>
-In-Reply-To: <20130919224154.GT4550@ld-irv-0074.broadcom.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: nicolas.ferre@atmel.com, plagnioj@jcrosoft.com,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- dedekind1@gmail.com
+Date: Sun, 22 Sep 2013 11:19:45 +0200
+From: gutemine <gutemine@oozoon.de>
+In-Reply-To: <CAFLxGvwvoeyhDDD=WqEpw59f8WKKujQo7Pg8mcJOev-7oN-_CQ@mail.gmail.com>
+References: <mailman.6.1379692801.23497.linux-mtd@lists.infradead.org>
+ <7c74c0d714e8e87daebbfd0163642d71@localhost>
+ <CAFLxGvwvoeyhDDD=WqEpw59f8WKKujQo7Pg8mcJOev-7oN-_CQ@mail.gmail.com>
+Message-ID: <5099962fe00dce3a388c4cf305a27d25@localhost>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,30 +25,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Brian
+Dear Richard!
 
-On 9/20/2013 6:41 AM, Brian Norris wrote:
-> On Wed, Sep 18, 2013 at 02:42:25PM -0700, Brian Norris wrote:
->> On Wed, Sep 18, 2013 at 01:58:48PM +0800, Josh Wu wrote:
->>> Since ecc_{strength,step}_ds is introduced in nand_chip structure for
->>> minimum ecc requirements. So we can use them directly and remove our
->>> own get_onfi_ecc_param function.
->>>
->>> Signed-off-by: Josh Wu <josh.wu@atmel.com>
-> ...
->> I'll just apply the appended diff, to address these small comments and
->> to shorten the messages a little (they are a bit verbose and are over 80
->> characters). It's still not under 80, but it's more reasonable.
->>
->> Let me know if you have any objections, or else I'll push this to
->> l2-mtd.git.
+See my comments below.
 
-Just back to office, no objections of cause and thank you for the 
-modification to fix my typos and sentence.
+> Where did you hide it?
 
-> Pushed to l2-mtd.git. Thanks!
->
-> Brian
+I didn't hide it, the ubidump development project just left testing
+phase with a first release two weeks ago. I'm coming from the Dreambox
+community and we develop plugins for our Linux based SAT receivers, 
+therefore our path simply hasn't crossed yet.
+ 
+> Sounds interesting...
 
-Best Regards,
-Josh Wu
+Dreamboxes use OpenEmbedded Linux and recently switched their kernel to
+3.2 and their Flash Filesystem from jffs2 to ubifs. For booting multiple
+images we now needed to have the possibility to extract the ubifs images
+directly to an ext4 filesystem on USB sticks.
+
+These receivers often have only 256MB Memory and most of this is already
+used. Therefore we soon ran out of memory when extracting images > 128MB
+with the existing approaches to mount them via block2mtd or nandsim.
+ubiattach of such simulated Flash simply terminated with out of memory
+errors in dmesg. 
+
+Therefore I was forced to solve the problem of direct UBIFS extraction
+without any emulated Flashdevices and ubifs mounting. ubidump now does
+this job nicely and needs less then 2MB of Memory during the extraction,
+no matter how big the ubifs image is unless you use the caching option
+to reduce IO by loading the whole ubifs image to ram and get faster
+extraction on a PC. Then a typical 100 MB ubifs image on my Linux PC is
+extracted in 2-3 seconds with about 6000 files. 
+
+You can read the full story of the development project thread at
+ubidump.oozoon.de and there you can download also testing kits for
+Windows, Linux and mipsel as the Dreamboxes are using Broadcom CPUs. As
+ubidump is written in pure C I could easily compile it also for other
+plattforms on request.
+
+But be aware due to the lack of help I received from my community I
+decided to make ubidump shareware, but you are free to try it for 30
+days.
+
+> 
+> -ENOPATCH. :-)
+> 
+
+I reviwed the changes done for the cygwin version and adding the /dev
+and Windows hard and softlink handling would be only another 1-2
+codepages, but I agree that it would NOT make live and code maintenance
+easier.
+
+> IOW, we need to review it first.
+> 
+
+Feel free to test ubidump and if you extract an image under Windows to
+an NTFS directory check /dev files to see how I implemented the dummy
+files so that you get an idea how mkfs.ubifs would need to read them
+when re-creating the ubifs image. Unter Linux off course all files are
+dumped natively.
+
+PS: Your FAQ is wrong, now there exists an user space ubifs dump utility
+on this planet.
+
+Kind Regards
+gutemine
