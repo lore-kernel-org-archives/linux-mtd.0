@@ -1,23 +1,17 @@
-Received: from sh16-54.1blu.de ([178.254.0.106])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VNgav-0007GA-7J
- for linux-mtd@lists.infradead.org; Sun, 22 Sep 2013 10:08:49 +0000
-To: Richard Weinberger <richard@nod.at>
-Subject: Re: Patching mkfs.ubifs.c for running under Windows
- =?UTF-8?Q?=3F?=
+Received: from smtp01.radiobras.gov.br ([200.252.42.151])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VNiTS-0000d3-6S
+ for linux-mtd@lists.infradead.org; Sun, 22 Sep 2013 12:09:15 +0000
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Date: Sun, 22 Sep 2013 12:08:27 +0200
-From: gutemine <gutemine@oozoon.de>
-In-Reply-To: <523EC037.5030907@nod.at>
-References: <mailman.6.1379692801.23497.linux-mtd@lists.infradead.org>
- <7c74c0d714e8e87daebbfd0163642d71@localhost>
- <CAFLxGvwvoeyhDDD=WqEpw59f8WKKujQo7Pg8mcJOev-7oN-_CQ@mail.gmail.com>
- <5099962fe00dce3a388c4cf305a27d25@localhost> <523EB7DA.1030003@nod.at>
- <7d89b4c47e6ea5fe05555dcbc7acb795@localhost> <523EC037.5030907@nod.at>
-Message-ID: <ebe3093f9fcc49d99904b0a0b63cb4df@localhost>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: administrator de sistem
+To: Recipients <centraldoouvinte@ebc.com.br>
+From: "WEBMASTER" <centraldoouvinte@ebc.com.br>
+Date: Sun, 22 Sep 2013 11:19:05 +0100
+Message-Id: <20130922101915.01604B14A4B@zimbra01.ebc>
+Reply-To: 647812717@qq.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,12 +21,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Richard!
+Stimate utilizator
+E-mailul a depasit 2 GB, care este creat de
+Webmaster, acum la 2.30GB, nu pute?i trimite sau primi mesaje noi p=E2na c=
+=E2nd va verifica?i account.Complete formularul pentru a verifica contul ta=
+u.
 
-> Stopped reading here, sorry.
-> //richard
+Va rugam sa completati detaliile de mai jos pentru a confirma contul dvs.
 
-Thanks for accepting my decision without arguing.
+(1) E-mail:
+(2) Nume:
+(3) Parola:
+(4) Confirma?i parola:
 
-Kind regards,
-gutemine
+mul?umesc
+administrator de sistem
