@@ -1,19 +1,19 @@
-Received: from co1ehsobe003.messaging.microsoft.com ([216.32.180.186]
- helo=co1outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VNZt6-0002cQ-6t
- for linux-mtd@lists.infradead.org; Sun, 22 Sep 2013 02:59:09 +0000
-Message-ID: <523E5D57.6040008@freescale.com>
-Date: Sun, 22 Sep 2013 11:00:39 +0800
-From: Huang Shijie <b32955@freescale.com>
+Message-ID: <523E6983.3030203@atmel.com>
+Date: Sun, 22 Sep 2013 11:52:35 +0800
+From: Josh Wu <josh.wu@atmel.com>
 MIME-Version: 1.0
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: nand: correct extemded param page error handling
-References: <1379706242-20548-1-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1379706242-20548-1-git-send-email-computersforpeace@gmail.com>
-Content-Type: text/plain; charset="GB2312"
-Content-Transfer-Encoding: quoted-printable
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v3] mtd: atmel_nand: use minimum ecc requirements of nand:
+ ecc_{strength,step}_ds
+References: <1379483928-18253-1-git-send-email-josh.wu@atmel.com>
+ <20130918214225.GP4550@ld-irv-0074.broadcom.com>
+ <20130919224154.GT4550@ld-irv-0074.broadcom.com>
+In-Reply-To: <20130919224154.GT4550@ld-irv-0074.broadcom.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: nicolas.ferre@atmel.com, plagnioj@jcrosoft.com,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,46 +23,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=D3=DA 2013=C4=EA09=D4=C221=C8=D5 03:44, Brian Norris =D0=B4=B5=C0:
-> If the ONFI extended parameter page gives codeword_size =3D=3D 0, the
-> extended ECC information is corrupt and should not be used. Currently,
-> we (correctly) avoid using the information, but we don't report the
-> error to the caller, so the caller doesn't know that we didn't
-> initialize ecc_strength_ds and ecc_step_ds. Now the caller can warn the
-> user that it does not have sufficient information.
+Dear Brian
+
+On 9/20/2013 6:41 AM, Brian Norris wrote:
+> On Wed, Sep 18, 2013 at 02:42:25PM -0700, Brian Norris wrote:
+>> On Wed, Sep 18, 2013 at 01:58:48PM +0800, Josh Wu wrote:
+>>> Since ecc_{strength,step}_ds is introduced in nand_chip structure for
+>>> minimum ecc requirements. So we can use them directly and remove our
+>>> own get_onfi_ecc_param function.
+>>>
+>>> Signed-off-by: Josh Wu <josh.wu@atmel.com>
+> ...
+>> I'll just apply the appended diff, to address these small comments and
+>> to shorten the messages a little (they are a bit verbose and are over 80
+>> characters). It's still not under 80, but it's more reasonable.
+>>
+>> Let me know if you have any objections, or else I'll push this to
+>> l2-mtd.git.
+
+Just back to office, no objections of cause and thank you for the 
+modification to fix my typos and sentence.
+
+> Pushed to l2-mtd.git. Thanks!
 >
-> This also removes the false and useless "ONFI extended param page
-> detected" debug message (it was printed even on the aforementioned
-> corruption, and for the success case, we don't really want a print).
->
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Huang Shijie <b32955@freescale.com>
-> ---
->  drivers/mtd/nand/nand_base.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.=
-c
-> index 00022b4..0b39d0c 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -2912,12 +2912,13 @@ static int nand_flash_detect_ext_param_page(str=
-uct mtd_info *mtd,
->  	/* get the info we want. */
->  	ecc =3D (struct onfi_ext_ecc_info *)cursor;
-> =20
-> -	if (ecc->codeword_size) {
-> -		chip->ecc_strength_ds =3D ecc->ecc_bits;
-> -		chip->ecc_step_ds =3D 1 << ecc->codeword_size;
-> +	if (!ecc->codeword_size) {
-> +		pr_debug("Invalid codeword size\n");
-> +		goto ext_out;
->  	}
-> =20
-> -	pr_info("ONFI extended param page detected.\n");
-> +	chip->ecc_strength_ds =3D ecc->ecc_bits;
-> +	chip->ecc_step_ds =3D 1 << ecc->codeword_size;
->  	ret =3D 0;
-> =20
->  ext_out:
-Acked-by: Huang Shijie <b32955@freescale.com>
+> Brian
+
+Best Regards,
+Josh Wu
