@@ -1,18 +1,17 @@
 From: Johan Hovold <jhovold@gmail.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 7/7] backlight: atmel-pwm-bl: fix deferred probe from __init
-Date: Mon, 23 Sep 2013 16:27:32 +0200
-Message-Id: <1379946452-25649-8-git-send-email-jhovold@gmail.com>
+Subject: [PATCH 1/7] driver core: prevent deferred probe with
+ platform_driver_probe
+Date: Mon, 23 Sep 2013 16:27:26 +0200
+Message-Id: <1379946452-25649-2-git-send-email-jhovold@gmail.com>
 In-Reply-To: <1379946452-25649-1-git-send-email-jhovold@gmail.com>
 References: <20130923134028.GF21013@sirena.org.uk>
  <1379946452-25649-1-git-send-email-jhovold@gmail.com>
-Cc: Jingoo Han <jg1.han@samsung.com>, linux-fbdev@vger.kernel.org,
- linux-usb@vger.kernel.org, Mark Brown <broonie@linaro.org>,
- Johan Hovold <jhovold@gmail.com>, linux-pcmcia@lists.infradead.org,
- linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Grant Likely <grant.likely@linaro.org>,
- Richard Purdie <rpurdie@rpsys.net>,
- Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>
+Cc: linux-fbdev@vger.kernel.org, linux-usb@vger.kernel.org,
+ Mark Brown <broonie@linaro.org>, Johan Hovold <jhovold@gmail.com>,
+ linux-pcmcia@lists.infradead.org, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Grant Likely <grant.likely@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,55 +21,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Move probe out of __init section and don't use platform_driver_probe
-which cannot be used with deferred probing.
+Prevent drivers relying on platform_driver_probe from requesting
+deferred probing in order to avoid further futile probe attempts (either
+the driver has been unregistered or its probe function has been set to
+platform_drv_probe_fail when probing is retried).
 
-Since commit e9354576 ("gpiolib: Defer failed gpio requests by default")
-this driver might return -EPROBE_DEFER if a gpio_request fails.
+Note that several platform drivers currently return subsystem errors
+from probe and that these can include -EPROBE_DEFER (e.g. if a gpio
+request fails).
 
-Cc: Richard Purdie <rpurdie@rpsys.net>
-Cc: Jingoo Han <jg1.han@samsung.com>
-Cc: Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>
+Add a warning to platform_drv_probe that can be used to catch drivers
+that inadvertently request probe deferral while using
+platform_driver_probe.
+
 Signed-off-by: Johan Hovold <jhovold@gmail.com>
 ---
- drivers/video/backlight/atmel-pwm-bl.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/base/platform.c         | 17 +++++++++++++----
+ include/linux/platform_device.h |  1 +
+ 2 files changed, 14 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/video/backlight/atmel-pwm-bl.c b/drivers/video/backlight/atmel-pwm-bl.c
-index 0393d82..f7447f7 100644
---- a/drivers/video/backlight/atmel-pwm-bl.c
-+++ b/drivers/video/backlight/atmel-pwm-bl.c
-@@ -118,7 +118,7 @@ static const struct backlight_ops atmel_pwm_bl_ops = {
- 	.update_status  = atmel_pwm_bl_set_intensity,
- };
+diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+index 4f8bef3..47051cd 100644
+--- a/drivers/base/platform.c
++++ b/drivers/base/platform.c
+@@ -488,6 +488,11 @@ static int platform_drv_probe(struct device *_dev)
+ 	if (ret && ACPI_HANDLE(_dev))
+ 		acpi_dev_pm_detach(_dev, true);
  
--static int __init atmel_pwm_bl_probe(struct platform_device *pdev)
-+static int atmel_pwm_bl_probe(struct platform_device *pdev)
- {
- 	struct backlight_properties props;
- 	const struct atmel_pwm_bl_platform_data *pdata;
-@@ -202,7 +202,7 @@ err_free_mem:
- 	return retval;
++	if (drv->prevent_deferred_probe && ret == -EPROBE_DEFER) {
++		dev_warn(_dev, "probe deferral not supported\n");
++		ret = -ENXIO;
++	}
++
+ 	return ret;
  }
  
--static int __exit atmel_pwm_bl_remove(struct platform_device *pdev)
-+static int atmel_pwm_bl_remove(struct platform_device *pdev)
+@@ -553,8 +558,7 @@ EXPORT_SYMBOL_GPL(platform_driver_unregister);
+ /**
+  * platform_driver_probe - register driver for non-hotpluggable device
+  * @drv: platform driver structure
+- * @probe: the driver probe routine, probably from an __init section,
+- *         must not return -EPROBE_DEFER.
++ * @probe: the driver probe routine, probably from an __init section
+  *
+  * Use this instead of platform_driver_register() when you know the device
+  * is not hotpluggable and has already been registered, and you want to
+@@ -565,8 +569,7 @@ EXPORT_SYMBOL_GPL(platform_driver_unregister);
+  * into system-on-chip processors, where the controller devices have been
+  * configured as part of board setup.
+  *
+- * This is incompatible with deferred probing so probe() must not
+- * return -EPROBE_DEFER.
++ * Note that this is incompatible with deferred probing.
+  *
+  * Returns zero if the driver registered and bound to a device, else returns
+  * a negative error code and with the driver not registered.
+@@ -576,6 +579,12 @@ int __init_or_module platform_driver_probe(struct platform_driver *drv,
  {
- 	struct atmel_pwm_bl *pwmbl = platform_get_drvdata(pdev);
+ 	int retval, code;
  
-@@ -220,10 +220,11 @@ static struct platform_driver atmel_pwm_bl_driver = {
- 		.name = "atmel-pwm-bl",
- 	},
- 	/* REVISIT add suspend() and resume() */
--	.remove = __exit_p(atmel_pwm_bl_remove),
-+	.probe = atmel_pwm_bl_probe,
-+	.remove = atmel_pwm_bl_remove,
++	/*
++	 * Prevent driver from requesting probe deferral to avoid further
++	 * futile probe attempts.
++	 */
++	drv->prevent_deferred_probe = true;
++
+ 	/* make sure driver won't have bind/unbind attributes */
+ 	drv->driver.suppress_bind_attrs = true;
+ 
+diff --git a/include/linux/platform_device.h b/include/linux/platform_device.h
+index ce8e4ff..16f6654 100644
+--- a/include/linux/platform_device.h
++++ b/include/linux/platform_device.h
+@@ -178,6 +178,7 @@ struct platform_driver {
+ 	int (*resume)(struct platform_device *);
+ 	struct device_driver driver;
+ 	const struct platform_device_id *id_table;
++	bool prevent_deferred_probe;
  };
  
--module_platform_driver_probe(atmel_pwm_bl_driver, atmel_pwm_bl_probe);
-+module_platform_driver(atmel_pwm_bl_driver);
- 
- MODULE_AUTHOR("Hans-Christian egtvedt <hans-christian.egtvedt@atmel.com>");
- MODULE_DESCRIPTION("Atmel PWM backlight driver");
+ #define to_platform_driver(drv)	(container_of((drv), struct platform_driver, \
 -- 
 1.8.3.2
