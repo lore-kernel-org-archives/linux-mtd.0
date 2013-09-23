@@ -1,26 +1,25 @@
-Received: from [190.210.24.179] (helo=mail.bepe.ar)
+Received: from mailout4.samsung.com ([203.254.224.34])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VNjZa-0001KG-1j
- for linux-mtd@lists.infradead.org; Sun, 22 Sep 2013 13:19:39 +0000
-Received: from localhost (localhost [127.0.0.1])
- by mail.bepe.ar (Postfix) with ESMTP id B5B60146E16A
- for <linux-mtd@lists.infradead.org>; Sun, 22 Sep 2013 08:54:28 -0400 (EDT)
-Received: from mail.bepe.ar ([127.0.0.1])
- by localhost (mail.bepe.ar [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id tGw4b+QfmlyK for <linux-mtd@lists.infradead.org>;
- Sun, 22 Sep 2013 08:54:27 -0400 (EDT)
-Subject: =?iso-8859-5?B?397h3tTV2eHi0uPV3CDU1d3V1trQ3Ngg3+DV2uDQ?=
- =?iso-8859-5?B?4d3e3OMg59Xb3tLV2uM=?=
-From: "amigov99" <bp3620@bepe.ar>
-To: <mir@n-m.ru>, <linux-mtd@lists.infradead.org>, <jamboree@ulscout.ru>,
- <orp.marfino@gmail.com>, <stopnazi.bg@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-5";
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <20130922125428.B5B60146E16A@mail.bepe.ar>
-Date: Sun, 22 Sep 2013 08:54:28 -0400 (EDT)
-Reply-To: amigov99 <bp3620@bepe.ar>
+ id 1VNuyn-0001ZR-2U
+ for linux-mtd@lists.infradead.org; Mon, 23 Sep 2013 01:30:26 +0000
+Received: from epcpsbgr5.samsung.com
+ (u145.gpu120.samsung.co.kr [203.254.230.145])
+ by mailout4.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ (7.0.4.24.0) 64bit (built Nov 17 2011))
+ with ESMTP id <0MTK005CH1H7GDD0@mailout4.samsung.com> for
+ linux-mtd@lists.infradead.org; Mon, 23 Sep 2013 10:29:58 +0900 (KST)
+From: Jingoo Han <jg1.han@samsung.com>
+To: 'Brian Norris' <computersforpeace@gmail.com>
+Subject: [PATCH 1/4] mtd: intel_vr_nor: remove unnecessary pci_set_drvdata()
+Date: Mon, 23 Sep 2013 10:29:58 +0900
+Message-id: <002d01ceb7fc$6a5bdd50$3f1397f0$%han@samsung.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-transfer-encoding: 7bit
+Content-language: ko
+Cc: 'Artem Bityutskiy' <artem.bityutskiy@linux.intel.com>,
+ 'Jingoo Han' <jg1.han@samsung.com>, 'David Woodhouse' <dwmw2@infradead.org>,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,5 +29,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=DA =DD=D0=DC =D7=D0=E5=DE=D4=EF=E2 =D7=D0 =E1=E0=D5=D4=E1=E2=D2=D0=DC=D8=
- http://goto.pattayacitythailand.com/88175f
+The driver core clears the driver data to NULL after device_release
+or on probe failure. Thus, it is not needed to manually clear the
+device driver data to NULL.
+
+Signed-off-by: Jingoo Han <jg1.han@samsung.com>
+---
+ drivers/mtd/maps/intel_vr_nor.c |    1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/mtd/maps/intel_vr_nor.c b/drivers/mtd/maps/intel_vr_nor.c
+index f581ac1..46d195f 100644
+--- a/drivers/mtd/maps/intel_vr_nor.c
++++ b/drivers/mtd/maps/intel_vr_nor.c
+@@ -180,7 +180,6 @@ static void vr_nor_pci_remove(struct pci_dev *dev)
+ {
+ 	struct vr_nor_mtd *p = pci_get_drvdata(dev);
+ 
+-	pci_set_drvdata(dev, NULL);
+ 	vr_nor_destroy_partitions(p);
+ 	vr_nor_destroy_mtd_setup(p);
+ 	vr_nor_destroy_maps(p);
+-- 
+1.7.10.4
