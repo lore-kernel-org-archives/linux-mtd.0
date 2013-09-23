@@ -1,17 +1,25 @@
-From: Johan Hovold <jhovold@gmail.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 2/7] mmc: mvsdio: fix deferred probe from __init
-Date: Mon, 23 Sep 2013 16:27:27 +0200
-Message-Id: <1379946452-25649-3-git-send-email-jhovold@gmail.com>
-In-Reply-To: <1379946452-25649-1-git-send-email-jhovold@gmail.com>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VO7TX-0000ln-Tc
+ for linux-mtd@lists.infradead.org; Mon, 23 Sep 2013 14:51:01 +0000
+Date: Mon, 23 Sep 2013 16:50:29 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Johan Hovold <jhovold@gmail.com>
+Subject: Re: [PATCH 0/7] driver core: prevent deferred probe with
+ platform_driver_probe
+Message-ID: <20130923145029.GV30088@pengutronix.de>
 References: <20130923134028.GF21013@sirena.org.uk>
  <1379946452-25649-1-git-send-email-jhovold@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1379946452-25649-1-git-send-email-jhovold@gmail.com>
 Cc: linux-fbdev@vger.kernel.org, linux-usb@vger.kernel.org,
- Mark Brown <broonie@linaro.org>, Johan Hovold <jhovold@gmail.com>,
+ Mark Brown <broonie@linaro.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  linux-pcmcia@lists.infradead.org, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, Nicolas Pitre <nico@fluxnic.net>,
- linux-mtd@lists.infradead.org, Grant Likely <grant.likely@linaro.org>,
- Chris Ball <cjb@laptop.org>
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Grant Likely <grant.likely@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,68 +29,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Move probe out of __init section and don't use platform_driver_probe
-which cannot be used with deferred probing.
+On Mon, Sep 23, 2013 at 04:27:25PM +0200, Johan Hovold wrote:
+> Deferred probing cannot be used with platform_driver_probe as by the
+> time probing is retried either the driver has been unregistered or its
+> probe function has been set to platform_drv_probe_fail.
+> 
+> With commit e9354576 ("gpiolib: Defer failed gpio requests by default")
+> the gpio subsystem started returning -EPROBE_DEFER, which in turn
+> several platform drivers using platform_driver_probe return to driver
+> core. Other subsystems (e.g. regulator) has since started doing the
+> same.
+> 
+> The first patch in this series prevents platform drivers using
+> platform_driver_probe from requesting probe deferral while warning that
+> it is not supported.
+> 
+> The remaining patches move six platform-driver probe functions that rely
+> on gpio_request out of __init. There are likely other probe functions
+> that might return -EPROBE_DEFER and should be moved out of __init as
+> well.
 
-Since commit e9354576 ("gpiolib: Defer failed gpio requests by default")
-this driver might return -EPROBE_DEFER if the mmc_gpio_request_cd fails.
+As usually when I read this I wonder why platform_driver_probe exists
+anyway. The only advantage I can think off is that the probe functions
+are in __init and thus can be disposed of later. Now you remove the
+__init annotations from these probe functions. Wouldn't it be better to
+convert the drivers to regular platform_driver_register instead?
 
-Cc: Nicolas Pitre <nico@fluxnic.net>
-Cc: Chris Ball <cjb@laptop.org>
-Signed-off-by: Johan Hovold <jhovold@gmail.com>
----
- drivers/mmc/host/mvsdio.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+Sascha
 
-diff --git a/drivers/mmc/host/mvsdio.c b/drivers/mmc/host/mvsdio.c
-index 06c5b0b..deecee0 100644
---- a/drivers/mmc/host/mvsdio.c
-+++ b/drivers/mmc/host/mvsdio.c
-@@ -655,7 +655,7 @@ static const struct mmc_host_ops mvsd_ops = {
- 	.enable_sdio_irq	= mvsd_enable_sdio_irq,
- };
- 
--static void __init
-+static void
- mv_conf_mbus_windows(struct mvsd_host *host,
- 		     const struct mbus_dram_target_info *dram)
- {
-@@ -677,7 +677,7 @@ mv_conf_mbus_windows(struct mvsd_host *host,
- 	}
- }
- 
--static int __init mvsd_probe(struct platform_device *pdev)
-+static int mvsd_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
- 	struct mmc_host *mmc = NULL;
-@@ -819,7 +819,7 @@ out:
- 	return ret;
- }
- 
--static int __exit mvsd_remove(struct platform_device *pdev)
-+static int mvsd_remove(struct platform_device *pdev)
- {
- 	struct mmc_host *mmc = platform_get_drvdata(pdev);
- 
-@@ -872,7 +872,8 @@ static const struct of_device_id mvsdio_dt_ids[] = {
- MODULE_DEVICE_TABLE(of, mvsdio_dt_ids);
- 
- static struct platform_driver mvsd_driver = {
--	.remove		= __exit_p(mvsd_remove),
-+	.probe		= mvsd_probe,
-+	.remove		= mvsd_remove,
- 	.suspend	= mvsd_suspend,
- 	.resume		= mvsd_resume,
- 	.driver		= {
-@@ -881,7 +882,7 @@ static struct platform_driver mvsd_driver = {
- 	},
- };
- 
--module_platform_driver_probe(mvsd_driver, mvsd_probe);
-+module_platform_driver(mvsd_driver);
- 
- /* maximum card clock frequency (default 50MHz) */
- module_param(maxfreq, int, 0);
 -- 
-1.8.3.2
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
