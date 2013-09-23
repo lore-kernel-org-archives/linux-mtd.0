@@ -1,29 +1,34 @@
-Received: from mailout3.w1.samsung.com ([210.118.77.13])
+Received: from cam-admin0.cambridge.arm.com ([217.140.96.50])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VO6gr-000783-QA
- for linux-mtd@lists.infradead.org; Mon, 23 Sep 2013 14:00:44 +0000
-Received: from eucpsbgm2.samsung.com (unknown [203.254.199.245])
- by mailout3.w1.samsung.com
- (Oracle Communications Messaging Server 7u4-24.01(7.0.4.24.0) 64bit (built Nov
- 17 2011)) with ESMTP id <0MTL008G606RRH20@mailout3.w1.samsung.com> for
- linux-mtd@lists.infradead.org; Mon, 23 Sep 2013 15:00:17 +0100 (BST)
-From: Tomasz Figa <t.figa@samsung.com>
+ id 1VO6or-0007Oo-12
+ for linux-mtd@lists.infradead.org; Mon, 23 Sep 2013 14:08:58 +0000
+Date: Mon, 23 Sep 2013 15:08:23 +0100
+From: Mark Rutland <mark.rutland@arm.com>
 To: Mateusz Krawczuk <m.krawczuk@partner.samsung.com>
 Subject: Re: [PATCH v2] MTD: Onenand: Add device tree support for samsung
  onenand
-Date: Mon, 23 Sep 2013 16:00:05 +0200
-Message-id: <1552206.KhB7jIjAI2@amdc1227>
-In-reply-to: <1379941608-5068-1-git-send-email-m.krawczuk@partner.samsung.com>
+Message-ID: <20130923140823.GC16069@e106331-lin.cambridge.arm.com>
 References: <1379941608-5068-1-git-send-email-m.krawczuk@partner.samsung.com>
-MIME-version: 1.0
-Content-transfer-encoding: 7Bit
-Content-type: text/plain; charset=us-ascii
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org,
- ijc+devicetree@hellion.org.uk, linux-samsung-soc@vger.kernel.org,
- pawel.moll@arm.com, linux-doc@vger.kernel.org, b.zolnierkie@samsung.com,
- swarren@wwwdotorg.org, linux-kernel@vger.kernel.org, rob.herring@calxeda.com,
- kyungmin.park@samsung.com, linux-mtd@lists.infradead.org, rob@landley.net,
- grant.likely@linaro.org, dwmw2@infradead.org, m.szyprowski@samsung.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1379941608-5068-1-git-send-email-m.krawczuk@partner.samsung.com>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
+ "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>,
+ Pawel Moll <Pawel.Moll@arm.com>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "b.zolnierkie@samsung.com" <b.zolnierkie@samsung.com>,
+ "t.figa@samsung.com" <t.figa@samsung.com>,
+ "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "rob.herring@calxeda.com" <rob.herring@calxeda.com>,
+ "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "rob@landley.net" <rob@landley.net>,
+ "grant.likely@linaro.org" <grant.likely@linaro.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,9 +38,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Mateusz,
-
-On Monday 23 of September 2013 15:06:48 Mateusz Krawczuk wrote:
+On Mon, Sep 23, 2013 at 02:06:48PM +0100, Mateusz Krawczuk wrote:
 > This patch add clk and device tree nodes for samsung onenand driver.
 > 
 > since v1:
@@ -66,44 +69,58 @@ On Monday 23 of September 2013 15:06:48 Mateusz Krawczuk wrote:
 > +      (c) "samsung,s5pc100-onenand",
 > +		for onenand controller compatible with s5pc100.
 > +      (d) "samsung,s5pc110-onenand",
-
-For consistency with other bindings, I would use s5pv210 here, even if
-existing driver code refers to it as s5pc110. Device tree bindings are
-independent from driver internals.
-
 > +      for s5pc100-like onenand controller used on s5pc110 which supports DMA.
-
-nit: inconsistent indentation of (d) case
-
-nit2: each subsequent indentation level should use higher indentation:
-
-	- compatible: value should be either of the following.
-		(a) "samsung,s3c6400-onenand",
-			for onenand controller compatible with s3c6400.
-
 > +
+
+As I asked on the last posting, what are the differences between these
+implementations?
+
 > +Required properties for s5pc110:
 > +
 > + - reg: the offset and length of the control registers. First region describes
 > +	OneNAND interface, second control registers.
+
+Also, the complete reg description is a bit confusing. How about
+something like:
+
+ - reg: two register specifiers:
+        [0] - The OneNAND interface
+	[1] - The control registers
+
+Do we expect future OneNAND devices which may require more reg entries
+to describe?
+
 > + - interrupt-parent, interrupts		Onenand memory interrupts
 
-Inconsistent formatting of property description. The reg property above
-used "property: description", while this one uses a single tab.
+As it's a common property, I don't think interrupt-parent needs to
+be described.
 
-Also please describe both properties separately and specify how many
-interrupts are required.
+Is there more than one interrupt? What's it called on the manual?
 
 > +
 > +Required properties for others:
 > +
 > + - reg: the offset and length of the control registers. First region describes
 > +	control registers, second OneNAND interface.
+
+Why does the s5pc110 OneNAND binding take its registers in the opposite
+order to the rest of these? Can we not fix up the driver first to make
+it consistent? Then we only need to describe this once and it's going to
+be far less of a headache to support.
+
 > +
 > +Clocks:
 > + - gate - clock which output is supplied to external OneNAND flash memory.
 
-Inconsistent formatting of property description.
+How about the following (without the Clocks header):
+
+- clocks: clock-specifiers for the clocks named in clock-names, per the
+          common clock bindings.
+
+- clock-names: should contain "gate" for the clock to the OneNAND flash
+               memory.
+
+Is this the only clock that might be necessary on all platforms?
 
 > +
 > +
@@ -122,77 +139,7 @@ Inconsistent formatting of property description.
 > +			clocks = <&clocks NANDXL>;
 > +			clock-names = "gate";
 > +			status = "okay";
-
-This status property is not a part of this binding, so it can be safely
-dropped.
-
 > +		};
-> diff --git a/drivers/mtd/onenand/samsung.c b/drivers/mtd/onenand/samsung.c
-> index df7400d..5a2cc4b 100644
-> --- a/drivers/mtd/onenand/samsung.c
-> +++ b/drivers/mtd/onenand/samsung.c
-> @@ -14,6 +14,7 @@
->   *	S5PC110: use DMA
->   */
->  
-> +#include <linux/clk.h>
->  #include <linux/module.h>
->  #include <linux/platform_device.h>
->  #include <linux/sched.h>
-> @@ -24,6 +25,7 @@
->  #include <linux/dma-mapping.h>
->  #include <linux/interrupt.h>
->  #include <linux/io.h>
-> +#include <linux/of.h>
->  
->  #include <asm/mach/flash.h>
->  
-> @@ -133,6 +135,7 @@ enum soc_type {
->  struct s3c_onenand {
->  	struct mtd_info	*mtd;
->  	struct platform_device	*pdev;
-> +	struct clk *gate;
->  	enum soc_type	type;
->  	void __iomem	*base;
->  	struct resource *base_res;
-> @@ -859,6 +862,19 @@ static void s3c_onenand_setup(struct mtd_info *mtd)
->  	this->write_bufferram = onenand_write_bufferram;
->  }
->  
-> +static const struct of_device_id onenand_s3c_dt_match[] = {
-> +	{ .compatible = "samsung,s3c6400-onenand",
-> +		.data = (void *)TYPE_S3C6400 },
-> +	{ .compatible = "samsung,s3c6410-onenand",
-> +		.data = (void *)TYPE_S3C6410 },
-> +	{ .compatible = "samsung,s5pc100-onenand",
-> +		.data = (void *)TYPE_S5PC100 },
-> +	{ .compatible = "samsung,s5pc110-onenand",
-> +		.data = (void *)TYPE_S5PC110 },
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(of, onenand_s3c_dt_match);
-> +
->  static int s3c_onenand_probe(struct platform_device *pdev)
->  {
->  	struct onenand_platform_data *pdata;
-> @@ -883,12 +899,26 @@ static int s3c_onenand_probe(struct platform_device *pdev)
->  		goto onenand_fail;
->  	}
->  
-> +	onenand->gate = clk_get(&pdev->dev, "gate");
 
-You can use devm_clk_get() here to remove the need to explicitly put the
-clock at remove.
-
-> +	if (IS_ERR(onenand->gate))
-> +		return PTR_ERR(onenand->gate);
-> +	clk_prepare_enable(onenand->gate);
-> +
-
-This is a separate change that should be submitted as a separate patch.
-
-Also you need to add a clk_disable_unprepare() in error path at the
-bottom of this function.
-
-Best regards,
-Tomasz
+Cheers,
+Mark.
