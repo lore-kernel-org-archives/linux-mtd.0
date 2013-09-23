@@ -1,20 +1,20 @@
-Received: from mailout4.samsung.com ([203.254.224.34])
+Received: from mailout3.samsung.com ([203.254.224.33])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VNuzZ-0001bA-Po
- for linux-mtd@lists.infradead.org; Mon, 23 Sep 2013 01:31:14 +0000
-Received: from epcpsbgr4.samsung.com
- (u144.gpu120.samsung.co.kr [203.254.230.144])
- by mailout4.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ id 1VNv0D-0001c7-Jt
+ for linux-mtd@lists.infradead.org; Mon, 23 Sep 2013 01:31:55 +0000
+Received: from epcpsbgr3.samsung.com
+ (u143.gpu120.samsung.co.kr [203.254.230.143])
+ by mailout3.samsung.com (Oracle Communications Messaging Server 7u4-24.01
  (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MTK00CZ51JGUWB0@mailout4.samsung.com> for
- linux-mtd@lists.infradead.org; Mon, 23 Sep 2013 10:30:52 +0900 (KST)
+ with ESMTP id <0MTK00JEO1KFWMG0@mailout3.samsung.com> for
+ linux-mtd@lists.infradead.org; Mon, 23 Sep 2013 10:31:31 +0900 (KST)
 From: Jingoo Han <jg1.han@samsung.com>
 To: 'Brian Norris' <computersforpeace@gmail.com>
 References: <002d01ceb7fc$6a5bdd50$3f1397f0$%han@samsung.com>
 In-reply-to: <002d01ceb7fc$6a5bdd50$3f1397f0$%han@samsung.com>
-Subject: [PATCH 2/4] mtd: pci: remove unnecessary pci_set_drvdata()
-Date: Mon, 23 Sep 2013 10:30:52 +0900
-Message-id: <002e01ceb7fc$8ab08970$a0119c50$%han@samsung.com>
+Subject: [PATCH 3/4] mtd: scb2_flash: remove unnecessary pci_set_drvdata()
+Date: Mon, 23 Sep 2013 10:31:30 +0900
+Message-id: <002f01ceb7fc$a18e1d10$e4aa5730$%han@samsung.com>
 MIME-version: 1.0
 Content-type: text/plain; charset=us-ascii
 Content-transfer-encoding: 7bit
@@ -37,20 +37,20 @@ device driver data to NULL.
 
 Signed-off-by: Jingoo Han <jg1.han@samsung.com>
 ---
- drivers/mtd/maps/pci.c |    1 -
+ drivers/mtd/maps/scb2_flash.c |    1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/mtd/maps/pci.c b/drivers/mtd/maps/pci.c
-index c2604f8..36da518 100644
---- a/drivers/mtd/maps/pci.c
-+++ b/drivers/mtd/maps/pci.c
-@@ -316,7 +316,6 @@ static void mtd_pci_remove(struct pci_dev *dev)
- 	map->exit(dev, map);
- 	kfree(map);
+diff --git a/drivers/mtd/maps/scb2_flash.c b/drivers/mtd/maps/scb2_flash.c
+index c77b68c..3051c4c 100644
+--- a/drivers/mtd/maps/scb2_flash.c
++++ b/drivers/mtd/maps/scb2_flash.c
+@@ -212,7 +212,6 @@ static void scb2_flash_remove(struct pci_dev *dev)
  
+ 	if (!region_fail)
+ 		release_mem_region(SCB2_ADDR, SCB2_WINDOW);
 -	pci_set_drvdata(dev, NULL);
- 	pci_release_regions(dev);
  }
  
+ static struct pci_device_id scb2_flash_pci_ids[] = {
 -- 
 1.7.10.4
