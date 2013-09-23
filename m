@@ -1,16 +1,17 @@
 From: Johan Hovold <jhovold@gmail.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 0/7] driver core: prevent deferred probe with
- platform_driver_probe
-Date: Mon, 23 Sep 2013 16:27:25 +0200
-Message-Id: <1379946452-25649-1-git-send-email-jhovold@gmail.com>
-In-Reply-To: <20130923134028.GF21013@sirena.org.uk>
+Subject: [PATCH 3/7] mtd: atmel_nand: fix deferred probe from __init
+Date: Mon, 23 Sep 2013 16:27:28 +0200
+Message-Id: <1379946452-25649-4-git-send-email-jhovold@gmail.com>
+In-Reply-To: <1379946452-25649-1-git-send-email-jhovold@gmail.com>
 References: <20130923134028.GF21013@sirena.org.uk>
+ <1379946452-25649-1-git-send-email-jhovold@gmail.com>
 Cc: linux-fbdev@vger.kernel.org, linux-usb@vger.kernel.org,
  Mark Brown <broonie@linaro.org>, Johan Hovold <jhovold@gmail.com>,
  linux-pcmcia@lists.infradead.org, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Grant Likely <grant.likely@linaro.org>
+ linux-kernel@vger.kernel.org, Josh Wu <josh.wu@atmel.com>,
+ linux-mtd@lists.infradead.org, Grant Likely <grant.likely@linaro.org>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,49 +21,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Deferred probing cannot be used with platform_driver_probe as by the
-time probing is retried either the driver has been unregistered or its
-probe function has been set to platform_drv_probe_fail.
+Move probe out of __init section and don't use platform_driver_probe
+which cannot be used with deferred probing.
 
-With commit e9354576 ("gpiolib: Defer failed gpio requests by default")
-the gpio subsystem started returning -EPROBE_DEFER, which in turn
-several platform drivers using platform_driver_probe return to driver
-core. Other subsystems (e.g. regulator) has since started doing the
-same.
+Since commit e9354576 ("gpiolib: Defer failed gpio requests by default")
+this driver might return -EPROBE_DEFER if a gpio_request fails.
 
-The first patch in this series prevents platform drivers using
-platform_driver_probe from requesting probe deferral while warning that
-it is not supported.
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Josh Wu <josh.wu@atmel.com>
+Signed-off-by: Johan Hovold <jhovold@gmail.com>
+---
+ drivers/mtd/nand/atmel_nand.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-The remaining patches move six platform-driver probe functions that rely
-on gpio_request out of __init. There are likely other probe functions
-that might return -EPROBE_DEFER and should be moved out of __init as
-well.
-
-Note that the mvsdio, at91_cf and pxa25x_udc patches are completely
-untested.
-
-Johan
-
-
-Johan Hovold (7):
-  driver core: prevent deferred probe with platform_driver_probe
-  mmc: mvsdio: fix deferred probe from __init
-  mtd: atmel_nand: fix deferred probe from __init
-  pcmcia: at91_cf: fix deferred probe from __init
-  usb: gadget: pxa25x_udc: fix deferred probe from __init
-  usb: phy: gpio-vbus: fix deferred probe from __init
-  backlight: atmel-pwm-bl: fix deferred probe from __init
-
- drivers/base/platform.c                | 17 +++++++++++++----
- drivers/mmc/host/mvsdio.c              | 11 ++++++-----
- drivers/mtd/nand/atmel_nand.c          | 13 +++++++------
- drivers/pcmcia/at91_cf.c               | 11 +++++------
- drivers/usb/gadget/pxa25x_udc.c        |  9 +++++----
- drivers/usb/phy/phy-gpio-vbus-usb.c    | 11 +++++------
- drivers/video/backlight/atmel-pwm-bl.c |  9 +++++----
- include/linux/platform_device.h        |  1 +
- 8 files changed, 47 insertions(+), 35 deletions(-)
-
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index 060feea..bd1ce7d 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -1139,7 +1139,7 @@ static int pmecc_choose_ecc(struct atmel_nand_host *host,
+ 	return 0;
+ }
+ 
+-static int __init atmel_pmecc_nand_init_params(struct platform_device *pdev,
++static int atmel_pmecc_nand_init_params(struct platform_device *pdev,
+ 					 struct atmel_nand_host *host)
+ {
+ 	struct mtd_info *mtd = &host->mtd;
+@@ -1548,7 +1548,7 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
+ }
+ #endif
+ 
+-static int __init atmel_hw_nand_init_params(struct platform_device *pdev,
++static int atmel_hw_nand_init_params(struct platform_device *pdev,
+ 					 struct atmel_nand_host *host)
+ {
+ 	struct mtd_info *mtd = &host->mtd;
+@@ -1987,7 +1987,7 @@ static struct platform_driver atmel_nand_nfc_driver;
+ /*
+  * Probe for the NAND device.
+  */
+-static int __init atmel_nand_probe(struct platform_device *pdev)
++static int atmel_nand_probe(struct platform_device *pdev)
+ {
+ 	struct atmel_nand_host *host;
+ 	struct mtd_info *mtd;
+@@ -2184,7 +2184,7 @@ err_nand_ioremap:
+ /*
+  * Remove a NAND device.
+  */
+-static int __exit atmel_nand_remove(struct platform_device *pdev)
++static int atmel_nand_remove(struct platform_device *pdev)
+ {
+ 	struct atmel_nand_host *host = platform_get_drvdata(pdev);
+ 	struct mtd_info *mtd = &host->mtd;
+@@ -2270,7 +2270,8 @@ static struct platform_driver atmel_nand_nfc_driver = {
+ };
+ 
+ static struct platform_driver atmel_nand_driver = {
+-	.remove		= __exit_p(atmel_nand_remove),
++	.probe		= atmel_nand_probe,
++	.remove		= atmel_nand_remove,
+ 	.driver		= {
+ 		.name	= "atmel_nand",
+ 		.owner	= THIS_MODULE,
+@@ -2278,7 +2279,7 @@ static struct platform_driver atmel_nand_driver = {
+ 	},
+ };
+ 
+-module_platform_driver_probe(atmel_nand_driver, atmel_nand_probe);
++module_platform_driver(atmel_nand_driver);
+ 
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Rick Bronson");
 -- 
 1.8.3.2
