@@ -1,17 +1,17 @@
 From: Johan Hovold <jhovold@gmail.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 3/7] mtd: atmel_nand: fix deferred probe from __init
-Date: Mon, 23 Sep 2013 16:27:28 +0200
-Message-Id: <1379946452-25649-4-git-send-email-jhovold@gmail.com>
+Subject: [PATCH 4/7] pcmcia: at91_cf: fix deferred probe from __init
+Date: Mon, 23 Sep 2013 16:27:29 +0200
+Message-Id: <1379946452-25649-5-git-send-email-jhovold@gmail.com>
 In-Reply-To: <1379946452-25649-1-git-send-email-jhovold@gmail.com>
 References: <20130923134028.GF21013@sirena.org.uk>
  <1379946452-25649-1-git-send-email-jhovold@gmail.com>
 Cc: linux-fbdev@vger.kernel.org, linux-usb@vger.kernel.org,
- Mark Brown <broonie@linaro.org>, Johan Hovold <jhovold@gmail.com>,
- linux-pcmcia@lists.infradead.org, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, Josh Wu <josh.wu@atmel.com>,
+ Mark Brown <broonie@linaro.org>, Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Johan Hovold <jhovold@gmail.com>, linux-pcmcia@lists.infradead.org,
+ linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, Grant Likely <grant.likely@linaro.org>,
- David Woodhouse <dwmw2@infradead.org>
+ Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,71 +27,52 @@ which cannot be used with deferred probing.
 Since commit e9354576 ("gpiolib: Defer failed gpio requests by default")
 this driver might return -EPROBE_DEFER if a gpio_request fails.
 
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Josh Wu <josh.wu@atmel.com>
+Cc: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
 Signed-off-by: Johan Hovold <jhovold@gmail.com>
 ---
- drivers/mtd/nand/atmel_nand.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ drivers/pcmcia/at91_cf.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index 060feea..bd1ce7d 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -1139,7 +1139,7 @@ static int pmecc_choose_ecc(struct atmel_nand_host *host,
- 	return 0;
- }
- 
--static int __init atmel_pmecc_nand_init_params(struct platform_device *pdev,
-+static int atmel_pmecc_nand_init_params(struct platform_device *pdev,
- 					 struct atmel_nand_host *host)
- {
- 	struct mtd_info *mtd = &host->mtd;
-@@ -1548,7 +1548,7 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
+diff --git a/drivers/pcmcia/at91_cf.c b/drivers/pcmcia/at91_cf.c
+index b8f5acf..de24232 100644
+--- a/drivers/pcmcia/at91_cf.c
++++ b/drivers/pcmcia/at91_cf.c
+@@ -245,7 +245,7 @@ static int at91_cf_dt_init(struct platform_device *pdev)
  }
  #endif
  
--static int __init atmel_hw_nand_init_params(struct platform_device *pdev,
-+static int atmel_hw_nand_init_params(struct platform_device *pdev,
- 					 struct atmel_nand_host *host)
+-static int __init at91_cf_probe(struct platform_device *pdev)
++static int at91_cf_probe(struct platform_device *pdev)
  {
- 	struct mtd_info *mtd = &host->mtd;
-@@ -1987,7 +1987,7 @@ static struct platform_driver atmel_nand_nfc_driver;
- /*
-  * Probe for the NAND device.
-  */
--static int __init atmel_nand_probe(struct platform_device *pdev)
-+static int atmel_nand_probe(struct platform_device *pdev)
- {
- 	struct atmel_nand_host *host;
- 	struct mtd_info *mtd;
-@@ -2184,7 +2184,7 @@ err_nand_ioremap:
- /*
-  * Remove a NAND device.
-  */
--static int __exit atmel_nand_remove(struct platform_device *pdev)
-+static int atmel_nand_remove(struct platform_device *pdev)
- {
- 	struct atmel_nand_host *host = platform_get_drvdata(pdev);
- 	struct mtd_info *mtd = &host->mtd;
-@@ -2270,7 +2270,8 @@ static struct platform_driver atmel_nand_nfc_driver = {
- };
+ 	struct at91_cf_socket	*cf;
+ 	struct at91_cf_data	*board = pdev->dev.platform_data;
+@@ -354,7 +354,7 @@ fail0a:
+ 	return status;
+ }
  
- static struct platform_driver atmel_nand_driver = {
--	.remove		= __exit_p(atmel_nand_remove),
-+	.probe		= atmel_nand_probe,
-+	.remove		= atmel_nand_remove,
- 	.driver		= {
- 		.name	= "atmel_nand",
- 		.owner	= THIS_MODULE,
-@@ -2278,7 +2279,7 @@ static struct platform_driver atmel_nand_driver = {
+-static int __exit at91_cf_remove(struct platform_device *pdev)
++static int at91_cf_remove(struct platform_device *pdev)
+ {
+ 	struct at91_cf_socket	*cf = platform_get_drvdata(pdev);
+ 
+@@ -404,14 +404,13 @@ static struct platform_driver at91_cf_driver = {
+ 		.owner		= THIS_MODULE,
+ 		.of_match_table = of_match_ptr(at91_cf_dt_ids),
  	},
+-	.remove		= __exit_p(at91_cf_remove),
++	.probe		= at91_cf_probe,
++	.remove		= at91_cf_remove,
+ 	.suspend	= at91_cf_suspend,
+ 	.resume		= at91_cf_resume,
  };
  
--module_platform_driver_probe(atmel_nand_driver, atmel_nand_probe);
-+module_platform_driver(atmel_nand_driver);
+-/*--------------------------------------------------------------------------*/
+-
+-module_platform_driver_probe(at91_cf_driver, at91_cf_probe);
++module_platform_driver(at91_cf_driver);
  
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Rick Bronson");
+ MODULE_DESCRIPTION("AT91 Compact Flash Driver");
+ MODULE_AUTHOR("David Brownell");
 -- 
 1.8.3.2
