@@ -1,21 +1,20 @@
-Message-ID: <52407208.1060300@atmel.com>
-Date: Mon, 23 Sep 2013 18:53:28 +0200
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
+Received: from mail-out.m-online.net ([212.18.0.9])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VOPGN-0001QO-S6
+ for linux-mtd@lists.infradead.org; Tue, 24 Sep 2013 09:50:36 +0000
+From: Marek Vasut <marex@denx.de>
+To: Hector Palacios <hector.palacios@digi.com>
+Subject: Re: gpmi-nand driver and jffs2 support
+Date: Tue, 24 Sep 2013 11:50:09 +0200
+References: <522062B4.4080709@digi.com>
+In-Reply-To: <522062B4.4080709@digi.com>
 MIME-Version: 1.0
-To: Johan Hovold <jhovold@gmail.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 4/7] pcmcia: at91_cf: fix deferred probe from __init
-References: <20130923134028.GF21013@sirena.org.uk>
- <1379946452-25649-1-git-send-email-jhovold@gmail.com>
- <1379946452-25649-5-git-send-email-jhovold@gmail.com>
-In-Reply-To: <1379946452-25649-5-git-send-email-jhovold@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Type: Text/Plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: linux-fbdev@vger.kernel.org, linux-usb@vger.kernel.org,
- Mark Brown <broonie@linaro.org>, linux-pcmcia@lists.infradead.org,
- linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Grant Likely <grant.likely@linaro.org>,
- Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+Message-Id: <201309241150.09313.marex@denx.de>
+Cc: "fabio.estevam@freescale.com" <fabio.estevam@freescale.com>,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,67 +24,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 23/09/2013 16:27, Johan Hovold :
-> Move probe out of __init section and don't use platform_driver_probe
-> which cannot be used with deferred probing.
->
-> Since commit e9354576 ("gpiolib: Defer failed gpio requests by default")
-> this driver might return -EPROBE_DEFER if a gpio_request fails.
->
-> Cc: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-> Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
+Hello Huang,
 
-Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+Can you please explain what is the exact difference between the NAND layout when 
+using JFFS2 in FSL 2.6.35 and in mainline with your patches ?
 
-Thanks Johan.
+Is there any way to mount JFFS2 written with FSL 2.6.35 on current mainline? 
+Thus far, neither me nor Hector were able to mount such partition with the same 
+result.
 
-> Signed-off-by: Johan Hovold <jhovold@gmail.com>
-> ---
->   drivers/pcmcia/at91_cf.c | 11 +++++------
->   1 file changed, 5 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/pcmcia/at91_cf.c b/drivers/pcmcia/at91_cf.c
-> index b8f5acf..de24232 100644
-> --- a/drivers/pcmcia/at91_cf.c
-> +++ b/drivers/pcmcia/at91_cf.c
-> @@ -245,7 +245,7 @@ static int at91_cf_dt_init(struct platform_device *pdev)
->   }
->   #endif
->
-> -static int __init at91_cf_probe(struct platform_device *pdev)
-> +static int at91_cf_probe(struct platform_device *pdev)
->   {
->   	struct at91_cf_socket	*cf;
->   	struct at91_cf_data	*board = pdev->dev.platform_data;
-> @@ -354,7 +354,7 @@ fail0a:
->   	return status;
->   }
->
-> -static int __exit at91_cf_remove(struct platform_device *pdev)
-> +static int at91_cf_remove(struct platform_device *pdev)
->   {
->   	struct at91_cf_socket	*cf = platform_get_drvdata(pdev);
->
-> @@ -404,14 +404,13 @@ static struct platform_driver at91_cf_driver = {
->   		.owner		= THIS_MODULE,
->   		.of_match_table = of_match_ptr(at91_cf_dt_ids),
->   	},
-> -	.remove		= __exit_p(at91_cf_remove),
-> +	.probe		= at91_cf_probe,
-> +	.remove		= at91_cf_remove,
->   	.suspend	= at91_cf_suspend,
->   	.resume		= at91_cf_resume,
->   };
->
-> -/*--------------------------------------------------------------------------*/
-> -
-> -module_platform_driver_probe(at91_cf_driver, at91_cf_probe);
-> +module_platform_driver(at91_cf_driver);
->
->   MODULE_DESCRIPTION("AT91 Compact Flash Driver");
->   MODULE_AUTHOR("David Brownell");
->
-
-
--- 
-Nicolas Ferre
+Best regards,
+Marek Vasut
