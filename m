@@ -1,17 +1,16 @@
-Received: from mail-db8lp0184.outbound.messaging.microsoft.com
- ([213.199.154.184] helo=db8outboundpool.messaging.microsoft.com)
+Received: from devils.ext.ti.com ([198.47.26.153])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VOQXB-0003a7-Es
- for linux-mtd@lists.infradead.org; Tue, 24 Sep 2013 11:12:02 +0000
-From: Prabhakar Kushwaha <prabhakar@freescale.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] driver/mtd/IFC: Add support of 8K page size NAND flash
-Date: Tue, 24 Sep 2013 16:41:23 +0530
-Message-ID: <1380021083-15986-1-git-send-email-prabhakar@freescale.com>
+ id 1VORT0-0005Ip-Fv
+ for linux-mtd@lists.infradead.org; Tue, 24 Sep 2013 12:11:47 +0000
+From: Sourav Poddar <sourav.poddar@ti.com>
+To: <dwmw2@infradead.org>, <artem.bityutskiy@linux.intel.com>,
+ <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>
+Subject: [PATCH] drivers: mtd: m25p80: Add quad read support.
+Date: Tue, 24 Sep 2013 17:40:47 +0530
+Message-ID: <1380024647-18955-1-git-send-email-sourav.poddar@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Cc: scottwood@freescale.com, Prabhakar Kushwaha <prabhakar@freescale.com>,
- dedekind1@gmail.com
+Cc: Sourav Poddar <sourav.poddar@ti.com>, broonie@kernel.org, balbi@ti.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,139 +20,185 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Current IFC driver supports till 4K page size NAND flash.
-Add support of 8K Page size NAND flash
-  - Add nand_ecclayout for 4 bit & 8 bit ecc
-  - Defines constants
-  - also fix ecc.strength for 8bit ecc of 8K page size NAND
+Some flash like spansion flash also support quad read mode.
+This patch add support for enabling quad mode in m25p80.
 
-Signed-off-by: Prabhakar Kushwaha <prabhakar@freescale.com>
+Patch enables quad mode bit on the flash device, add an api
+for quad read defines a communuication 
+parameter(t[1].rx_nbits = SPI_NBITS_QUAD) to let know the
+spi controller that quad read should be used.
+
+Tested on DRA7 board with S25fl256s spansion device by doing a 
+flash erase, write and read.
+
+Signed-off-by: Sourav Poddar <sourav.poddar@ti.com>
 ---
- git://git.infradead.org/linux-mtd.git branch master
- 
- arch/powerpc/include/asm/fsl_ifc.h |    2 +
- drivers/mtd/nand/fsl_ifc_nand.c    |   77 ++++++++++++++++++++++++++++++++++++
- 2 files changed, 79 insertions(+)
+ drivers/mtd/devices/m25p80.c |  102 +++++++++++++++++++++++++++++++++++++-----
+ 1 files changed, 91 insertions(+), 11 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/fsl_ifc.h b/arch/powerpc/include/asm/fsl_ifc.h
-index b8a4b9b..f49ddb1 100644
---- a/arch/powerpc/include/asm/fsl_ifc.h
-+++ b/arch/powerpc/include/asm/fsl_ifc.h
-@@ -93,6 +93,7 @@
- #define CSOR_NAND_PGS_512		0x00000000
- #define CSOR_NAND_PGS_2K		0x00080000
- #define CSOR_NAND_PGS_4K		0x00100000
-+#define CSOR_NAND_PGS_8K		0x00180000
- /* Spare region Size */
- #define CSOR_NAND_SPRZ_MASK		0x0000E000
- #define CSOR_NAND_SPRZ_SHIFT		13
-@@ -102,6 +103,7 @@
- #define CSOR_NAND_SPRZ_210		0x00006000
- #define CSOR_NAND_SPRZ_218		0x00008000
- #define CSOR_NAND_SPRZ_224		0x0000A000
-+#define CSOR_NAND_SPRZ_CSOR_EXT		0x0000C000
- /* Pages Per Block */
- #define CSOR_NAND_PB_MASK		0x00000700
- #define CSOR_NAND_PB_SHIFT		8
-diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
-index 317a771..a14885b 100644
---- a/drivers/mtd/nand/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/fsl_ifc_nand.c
-@@ -135,6 +135,69 @@ static struct nand_ecclayout oob_4096_ecc8 = {
- 	.oobfree = { {2, 6}, {136, 82} },
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 26b14f9..2b6ee4b 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -41,6 +41,7 @@
+ #define	OPCODE_WRSR		0x01	/* Write status register 1 byte */
+ #define	OPCODE_NORM_READ	0x03	/* Read data bytes (low frequency) */
+ #define	OPCODE_FAST_READ	0x0b	/* Read data bytes (high frequency) */
++#define	OPCODE_QUAD_READ	0x6b	/* QUAD READ */
+ #define	OPCODE_PP		0x02	/* Page program (up to 256 bytes) */
+ #define	OPCODE_BE_4K		0x20	/* Erase 4KiB block */
+ #define	OPCODE_BE_4K_PMC	0xd7	/* Erase 4KiB block on PMC chips */
+@@ -52,6 +53,7 @@
+ /* 4-byte address opcodes - used on Spansion and some Macronix flashes. */
+ #define	OPCODE_NORM_READ_4B	0x13	/* Read data bytes (low frequency) */
+ #define	OPCODE_FAST_READ_4B	0x0c	/* Read data bytes (high frequency) */
++#define	OPCODE_QUAD_READ_4B     0x6c    /* Read data bytes */
+ #define	OPCODE_PP_4B		0x12	/* Page program (up to 256 bytes) */
+ #define	OPCODE_SE_4B		0xdc	/* Sector erase (usually 64KiB) */
+ 
+@@ -95,6 +97,7 @@ struct m25p {
+ 	u8			program_opcode;
+ 	u8			*command;
+ 	bool			fast_read;
++	bool			quad_read;
  };
  
-+/* 8192-byte page size with 4-bit ECC */
-+static struct nand_ecclayout oob_8192_ecc4 = {
-+	.eccbytes = 128,
-+	.eccpos = {
-+		8, 9, 10, 11, 12, 13, 14, 15,
-+		16, 17, 18, 19, 20, 21, 22, 23,
-+		24, 25, 26, 27, 28, 29, 30, 31,
-+		32, 33, 34, 35, 36, 37, 38, 39,
-+		40, 41, 42, 43, 44, 45, 46, 47,
-+		48, 49, 50, 51, 52, 53, 54, 55,
-+		56, 57, 58, 59, 60, 61, 62, 63,
-+		64, 65, 66, 67, 68, 69, 70, 71,
-+		72, 73, 74, 75, 76, 77, 78, 79,
-+		80, 81, 82, 83, 84, 85, 86, 87,
-+		88, 89, 90, 91, 92, 93, 94, 95,
-+		96, 97, 98, 99, 100, 101, 102, 103,
-+		104, 105, 106, 107, 108, 109, 110, 111,
-+		112, 113, 114, 115, 116, 117, 118, 119,
-+		120, 121, 122, 123, 124, 125, 126, 127,
-+		128, 129, 130, 131, 132, 133, 134, 135,
-+	},
-+	.oobfree = { {2, 6}, {136, 208} },
-+};
-+
-+/* 8192-byte page size with 8-bit ECC -- requires 218-byte OOB */
-+static struct nand_ecclayout oob_8192_ecc8 = {
-+	.eccbytes = 256,
-+	.eccpos = {
-+		8, 9, 10, 11, 12, 13, 14, 15,
-+		16, 17, 18, 19, 20, 21, 22, 23,
-+		24, 25, 26, 27, 28, 29, 30, 31,
-+		32, 33, 34, 35, 36, 37, 38, 39,
-+		40, 41, 42, 43, 44, 45, 46, 47,
-+		48, 49, 50, 51, 52, 53, 54, 55,
-+		56, 57, 58, 59, 60, 61, 62, 63,
-+		64, 65, 66, 67, 68, 69, 70, 71,
-+		72, 73, 74, 75, 76, 77, 78, 79,
-+		80, 81, 82, 83, 84, 85, 86, 87,
-+		88, 89, 90, 91, 92, 93, 94, 95,
-+		96, 97, 98, 99, 100, 101, 102, 103,
-+		104, 105, 106, 107, 108, 109, 110, 111,
-+		112, 113, 114, 115, 116, 117, 118, 119,
-+		120, 121, 122, 123, 124, 125, 126, 127,
-+		128, 129, 130, 131, 132, 133, 134, 135,
-+		136, 137, 138, 139, 140, 141, 142, 143,
-+		144, 145, 146, 147, 148, 149, 150, 151,
-+		152, 153, 154, 155, 156, 157, 158, 159,
-+		160, 161, 162, 163, 164, 165, 166, 167,
-+		168, 169, 170, 171, 172, 173, 174, 175,
-+		176, 177, 178, 179, 180, 181, 182, 183,
-+		184, 185, 186, 187, 188, 189, 190, 191,
-+		192, 193, 194, 195, 196, 197, 198, 199,
-+		200, 201, 202, 203, 204, 205, 206, 207,
-+		208, 209, 210, 211, 212, 213, 214, 215,
-+		216, 217, 218, 219, 220, 221, 222, 223,
-+		224, 225, 226, 227, 228, 229, 230, 231,
-+		232, 233, 234, 235, 236, 237, 238, 239,
-+		240, 241, 242, 243, 244, 245, 246, 247,
-+		248, 249, 250, 251, 252, 253, 254, 255,
-+		256, 257, 258, 259, 260, 261, 262, 263,
-+	},
-+	.oobfree = { {2, 6}, {264, 80} },
-+};
+ static inline struct m25p *mtd_to_m25p(struct mtd_info *mtd)
+@@ -336,6 +339,75 @@ static int m25p80_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	return 0;
+ }
  
++static int quad_enable(struct m25p *flash)
++{
++	u8 cmd[3];
++	cmd[0] = OPCODE_WRSR;
++	cmd[1] = 0x00;
++	cmd[2] = 0x02;
++
++	write_enable(flash);
++
++	spi_write(flash->spi, &cmd, 3);
++
++	if (wait_till_ready(flash))
++		return 1;
++
++	return 0;
++}
++
++static int m25p80_quad_read(struct mtd_info *mtd, loff_t from, size_t len,
++	size_t *retlen, u_char *buf)
++{
++	struct m25p *flash = mtd_to_m25p(mtd);
++	struct spi_transfer t[2];
++	struct spi_message m;
++	uint8_t opcode;
++
++	pr_debug("%s: %s from 0x%08x, len %zd\n", dev_name(&flash->spi->dev),
++			__func__, (u32)from, len);
++
++	spi_message_init(&m);
++	memset(t, 0, (sizeof(t)));
++
++	t[0].tx_buf = flash->command;
++	t[0].len = m25p_cmdsz(flash) + (flash->quad_read ? 1 : 0);
++	spi_message_add_tail(&t[0], &m);
++
++	t[1].rx_buf = buf;
++	t[1].len = len;
++	t[1].rx_nbits = SPI_NBITS_QUAD;
++	spi_message_add_tail(&t[1], &m);
++
++	mutex_lock(&flash->lock);
++
++	/* Wait till previous write/erase is done. */
++	if (wait_till_ready(flash)) {
++		/* REVISIT status return?? */
++		mutex_unlock(&flash->lock);
++		return 1;
++	}
++
++	/* FIXME switch to OPCODE_QUAD_READ.  It's required for higher
++	 * clocks; and at this writing, every chip this driver handles
++	 * supports that opcode.
++	*/
++
++	/* Set up the write data buffer. */
++	opcode = flash->read_opcode;
++	flash->command[0] = opcode;
++	m25p_addr2cmd(flash, from, flash->command);
++
++	spi_sync(flash->spi, &m);
++
++	*retlen = m.actual_length - m25p_cmdsz(flash) -
++			(flash->quad_read ? 1 : 0);
++
++	mutex_unlock(&flash->lock);
++
++	return 0;
++}
++
  /*
-  * Generic flash bbt descriptors
-@@ -872,11 +935,25 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
- 		} else {
- 			layout = &oob_4096_ecc8;
- 			chip->ecc.bytes = 16;
-+			chip->ecc.strength = 8;
+  * Read an address range from the flash chip.  The address range
+  * may be any size provided it is within the physical boundaries.
+@@ -979,15 +1051,9 @@ static int m25p_probe(struct spi_device *spi)
  		}
+ 	}
  
- 		priv->bufnum_mask = 1;
- 		break;
+-	flash = kzalloc(sizeof *flash, GFP_KERNEL);
++	flash = devm_kzalloc(&spi->dev, sizeof(*flash), GFP_KERNEL);
+ 	if (!flash)
+ 		return -ENOMEM;
+-	flash->command = kmalloc(MAX_CMD_SIZE + (flash->fast_read ? 1 : 0),
+-					GFP_KERNEL);
+-	if (!flash->command) {
+-		kfree(flash);
+-		return -ENOMEM;
+-	}
  
-+	case CSOR_NAND_PGS_8K:
-+		if ((csor & CSOR_NAND_ECC_MODE_MASK) ==
-+		    CSOR_NAND_ECC_MODE_4) {
-+			layout = &oob_8192_ecc4;
-+		} else {
-+			layout = &oob_8192_ecc8;
-+			chip->ecc.bytes = 16;
-+			chip->ecc.strength = 8;
-+		}
+ 	flash->spi = spi;
+ 	mutex_init(&flash->lock);
+@@ -1015,7 +1081,14 @@ static int m25p_probe(struct spi_device *spi)
+ 	flash->mtd.flags = MTD_CAP_NORFLASH;
+ 	flash->mtd.size = info->sector_size * info->n_sectors;
+ 	flash->mtd._erase = m25p80_erase;
+-	flash->mtd._read = m25p80_read;
 +
-+		priv->bufnum_mask = 0;
-+	break;
++	flash->quad_read = false;
++	if (spi->mode && SPI_RX_QUAD) {
++		quad_enable(flash);
++		flash->mtd._read = m25p80_quad_read;
++		flash->quad_read = true;
++	} else
++		flash->mtd._read = m25p80_read;
+ 
+ 	/* flash protection support for STmicro chips */
+ 	if (JEDEC_MFR(info->jedec_id) == CFI_MFR_ST) {
+@@ -1067,6 +1140,13 @@ static int m25p_probe(struct spi_device *spi)
+ 
+ 	flash->program_opcode = OPCODE_PP;
+ 
++	flash->command = kmalloc(MAX_CMD_SIZE + (flash->fast_read ? 1 :
++				(flash->quad_read ? 1 : 0)), GFP_KERNEL);
++	if (!flash->command) {
++		kfree(flash);
++		return -ENOMEM;
++	}
 +
- 	default:
- 		dev_err(priv->dev, "bad csor %#x: bad page size\n", csor);
- 		return -ENODEV;
+ 	if (info->addr_width)
+ 		flash->addr_width = info->addr_width;
+ 	else if (flash->mtd.size > 0x1000000) {
+@@ -1074,9 +1154,9 @@ static int m25p_probe(struct spi_device *spi)
+ 		flash->addr_width = 4;
+ 		if (JEDEC_MFR(info->jedec_id) == CFI_MFR_AMD) {
+ 			/* Dedicated 4-byte command set */
+-			flash->read_opcode = flash->fast_read ?
+-				OPCODE_FAST_READ_4B :
+-				OPCODE_NORM_READ_4B;
++			flash->read_opcode = (flash->fast_read ?
++				OPCODE_FAST_READ_4B : (flash->quad_read ?
++				OPCODE_QUAD_READ_4B : OPCODE_NORM_READ_4B));
+ 			flash->program_opcode = OPCODE_PP_4B;
+ 			/* No small sector erase for 4-byte command set */
+ 			flash->erase_opcode = OPCODE_SE_4B;
 -- 
-1.7.9.5
+1.7.1
