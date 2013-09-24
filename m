@@ -1,20 +1,17 @@
-Received: from co9ehsobe004.messaging.microsoft.com ([207.46.163.27]
- helo=co9outboundpool.messaging.microsoft.com)
+Received: from mail-db8lp0184.outbound.messaging.microsoft.com
+ ([213.199.154.184] helo=db8outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VOQ6x-0002sK-Uu
- for linux-mtd@lists.infradead.org; Tue, 24 Sep 2013 10:44:56 +0000
-Message-ID: <52416D88.6030906@freescale.com>
-Date: Tue, 24 Sep 2013 18:46:32 +0800
-From: Huang Shijie <b32955@freescale.com>
+ id 1VOQXB-0003a7-Es
+ for linux-mtd@lists.infradead.org; Tue, 24 Sep 2013 11:12:02 +0000
+From: Prabhakar Kushwaha <prabhakar@freescale.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] driver/mtd/IFC: Add support of 8K page size NAND flash
+Date: Tue, 24 Sep 2013 16:41:23 +0530
+Message-ID: <1380021083-15986-1-git-send-email-prabhakar@freescale.com>
 MIME-Version: 1.0
-To: Marek Vasut <marex@denx.de>
-Subject: Re: gpmi-nand driver and jffs2 support
-References: <522062B4.4080709@digi.com> <201309241150.09313.marex@denx.de>
-In-Reply-To: <201309241150.09313.marex@denx.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: "fabio.estevam@freescale.com" <fabio.estevam@freescale.com>,
- Hector Palacios <hector.palacios@digi.com>, linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Cc: scottwood@freescale.com, Prabhakar Kushwaha <prabhakar@freescale.com>,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,26 +21,139 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B409=E6=9C=8824=E6=97=A5 17:50, Marek Vasut =E5=86=99=
-=E9=81=93:
-> Hello Huang,
->
-> Can you please explain what is the exact difference between the NAND la=
-yout when
-> using JFFS2 in FSL 2.6.35 and in mainline with your patches ?
-In FSL 2.6.35, there are some free space in the OOB;
-while in mainline we use all the free space in the OOB.
-> Is there any way to mount JFFS2 written with FSL 2.6.35 on current main=
-line?
-> Thus far, neither me nor Hector were able to mount such partition with =
-the same
-> result.
-The gpmi driver in FSL 2.6.35 is different from the mainline.
-The two drivers are not compatible to each other.
+Current IFC driver supports till 4K page size NAND flash.
+Add support of 8K Page size NAND flash
+  - Add nand_ecclayout for 4 bit & 8 bit ecc
+  - Defines constants
+  - also fix ecc.strength for 8bit ecc of 8K page size NAND
 
-thanks
-Huang Shijie
+Signed-off-by: Prabhakar Kushwaha <prabhakar@freescale.com>
+---
+ git://git.infradead.org/linux-mtd.git branch master
+ 
+ arch/powerpc/include/asm/fsl_ifc.h |    2 +
+ drivers/mtd/nand/fsl_ifc_nand.c    |   77 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 79 insertions(+)
 
-> Best regards,
-> Marek Vasut
->
+diff --git a/arch/powerpc/include/asm/fsl_ifc.h b/arch/powerpc/include/asm/fsl_ifc.h
+index b8a4b9b..f49ddb1 100644
+--- a/arch/powerpc/include/asm/fsl_ifc.h
++++ b/arch/powerpc/include/asm/fsl_ifc.h
+@@ -93,6 +93,7 @@
+ #define CSOR_NAND_PGS_512		0x00000000
+ #define CSOR_NAND_PGS_2K		0x00080000
+ #define CSOR_NAND_PGS_4K		0x00100000
++#define CSOR_NAND_PGS_8K		0x00180000
+ /* Spare region Size */
+ #define CSOR_NAND_SPRZ_MASK		0x0000E000
+ #define CSOR_NAND_SPRZ_SHIFT		13
+@@ -102,6 +103,7 @@
+ #define CSOR_NAND_SPRZ_210		0x00006000
+ #define CSOR_NAND_SPRZ_218		0x00008000
+ #define CSOR_NAND_SPRZ_224		0x0000A000
++#define CSOR_NAND_SPRZ_CSOR_EXT		0x0000C000
+ /* Pages Per Block */
+ #define CSOR_NAND_PB_MASK		0x00000700
+ #define CSOR_NAND_PB_SHIFT		8
+diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
+index 317a771..a14885b 100644
+--- a/drivers/mtd/nand/fsl_ifc_nand.c
++++ b/drivers/mtd/nand/fsl_ifc_nand.c
+@@ -135,6 +135,69 @@ static struct nand_ecclayout oob_4096_ecc8 = {
+ 	.oobfree = { {2, 6}, {136, 82} },
+ };
+ 
++/* 8192-byte page size with 4-bit ECC */
++static struct nand_ecclayout oob_8192_ecc4 = {
++	.eccbytes = 128,
++	.eccpos = {
++		8, 9, 10, 11, 12, 13, 14, 15,
++		16, 17, 18, 19, 20, 21, 22, 23,
++		24, 25, 26, 27, 28, 29, 30, 31,
++		32, 33, 34, 35, 36, 37, 38, 39,
++		40, 41, 42, 43, 44, 45, 46, 47,
++		48, 49, 50, 51, 52, 53, 54, 55,
++		56, 57, 58, 59, 60, 61, 62, 63,
++		64, 65, 66, 67, 68, 69, 70, 71,
++		72, 73, 74, 75, 76, 77, 78, 79,
++		80, 81, 82, 83, 84, 85, 86, 87,
++		88, 89, 90, 91, 92, 93, 94, 95,
++		96, 97, 98, 99, 100, 101, 102, 103,
++		104, 105, 106, 107, 108, 109, 110, 111,
++		112, 113, 114, 115, 116, 117, 118, 119,
++		120, 121, 122, 123, 124, 125, 126, 127,
++		128, 129, 130, 131, 132, 133, 134, 135,
++	},
++	.oobfree = { {2, 6}, {136, 208} },
++};
++
++/* 8192-byte page size with 8-bit ECC -- requires 218-byte OOB */
++static struct nand_ecclayout oob_8192_ecc8 = {
++	.eccbytes = 256,
++	.eccpos = {
++		8, 9, 10, 11, 12, 13, 14, 15,
++		16, 17, 18, 19, 20, 21, 22, 23,
++		24, 25, 26, 27, 28, 29, 30, 31,
++		32, 33, 34, 35, 36, 37, 38, 39,
++		40, 41, 42, 43, 44, 45, 46, 47,
++		48, 49, 50, 51, 52, 53, 54, 55,
++		56, 57, 58, 59, 60, 61, 62, 63,
++		64, 65, 66, 67, 68, 69, 70, 71,
++		72, 73, 74, 75, 76, 77, 78, 79,
++		80, 81, 82, 83, 84, 85, 86, 87,
++		88, 89, 90, 91, 92, 93, 94, 95,
++		96, 97, 98, 99, 100, 101, 102, 103,
++		104, 105, 106, 107, 108, 109, 110, 111,
++		112, 113, 114, 115, 116, 117, 118, 119,
++		120, 121, 122, 123, 124, 125, 126, 127,
++		128, 129, 130, 131, 132, 133, 134, 135,
++		136, 137, 138, 139, 140, 141, 142, 143,
++		144, 145, 146, 147, 148, 149, 150, 151,
++		152, 153, 154, 155, 156, 157, 158, 159,
++		160, 161, 162, 163, 164, 165, 166, 167,
++		168, 169, 170, 171, 172, 173, 174, 175,
++		176, 177, 178, 179, 180, 181, 182, 183,
++		184, 185, 186, 187, 188, 189, 190, 191,
++		192, 193, 194, 195, 196, 197, 198, 199,
++		200, 201, 202, 203, 204, 205, 206, 207,
++		208, 209, 210, 211, 212, 213, 214, 215,
++		216, 217, 218, 219, 220, 221, 222, 223,
++		224, 225, 226, 227, 228, 229, 230, 231,
++		232, 233, 234, 235, 236, 237, 238, 239,
++		240, 241, 242, 243, 244, 245, 246, 247,
++		248, 249, 250, 251, 252, 253, 254, 255,
++		256, 257, 258, 259, 260, 261, 262, 263,
++	},
++	.oobfree = { {2, 6}, {264, 80} },
++};
+ 
+ /*
+  * Generic flash bbt descriptors
+@@ -872,11 +935,25 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
+ 		} else {
+ 			layout = &oob_4096_ecc8;
+ 			chip->ecc.bytes = 16;
++			chip->ecc.strength = 8;
+ 		}
+ 
+ 		priv->bufnum_mask = 1;
+ 		break;
+ 
++	case CSOR_NAND_PGS_8K:
++		if ((csor & CSOR_NAND_ECC_MODE_MASK) ==
++		    CSOR_NAND_ECC_MODE_4) {
++			layout = &oob_8192_ecc4;
++		} else {
++			layout = &oob_8192_ecc8;
++			chip->ecc.bytes = 16;
++			chip->ecc.strength = 8;
++		}
++
++		priv->bufnum_mask = 0;
++	break;
++
+ 	default:
+ 		dev_err(priv->dev, "bad csor %#x: bad page size\n", csor);
+ 		return -ENODEV;
+-- 
+1.7.9.5
