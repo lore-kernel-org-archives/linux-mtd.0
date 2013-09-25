@@ -1,12 +1,14 @@
 Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VOvlF-0005nU-G6
+ id 1VOvlF-0005nY-G7
  for linux-mtd@lists.infradead.org; Wed, 25 Sep 2013 20:32:38 +0000
 From: Richard Weinberger <richard@nod.at>
 To: dedekind1@gmail.com
-Subject: [PATCH 1/2] UBI: Fix error path in scan_pool()
-Date: Wed, 25 Sep 2013 22:32:04 +0200
-Message-Id: <1380141125-11063-1-git-send-email-richard@nod.at>
+Subject: [PATCH 2/2] UBI: Call scan_all() with correct offset in error case
+Date: Wed, 25 Sep 2013 22:32:05 +0200
+Message-Id: <1380141125-11063-2-git-send-email-richard@nod.at>
+In-Reply-To: <1380141125-11063-1-git-send-email-richard@nod.at>
+References: <1380141125-11063-1-git-send-email-richard@nod.at>
 Cc: richard.genoud@gmail.com, linux-mtd@lists.infradead.org,
  dwmw2@infradead.org, linux-kernel@vger.kernel.org,
  Richard Weinberger <richard@nod.at>
@@ -19,26 +21,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We have to set "ret", not "err" in case of an error.
+If we find an invalid fastmap we have to scan from the very beginning.
+Otherwise we leak the first 64 PEBs.
 
 Reported-by: Richard Genoud <richard.genoud@gmail.com>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/fastmap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/ubi/attach.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index f5aa4b0..9b42add 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -428,7 +428,7 @@ static int scan_pool(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 		if (be32_to_cpu(ech->image_seq) != ubi->image_seq) {
- 			ubi_err("bad image seq: 0x%x, expected: 0x%x",
- 				be32_to_cpu(ech->image_seq), ubi->image_seq);
--			err = UBI_BAD_FASTMAP;
-+			ret = UBI_BAD_FASTMAP;
- 			goto out;
- 		}
+diff --git a/drivers/mtd/ubi/attach.c b/drivers/mtd/ubi/attach.c
+index c071d41..03b32b0 100644
+--- a/drivers/mtd/ubi/attach.c
++++ b/drivers/mtd/ubi/attach.c
+@@ -1417,9 +1417,11 @@ int ubi_attach(struct ubi_device *ubi, int force_scan)
+ 				ai = alloc_ai("ubi_aeb_slab_cache2");
+ 				if (!ai)
+ 					return -ENOMEM;
+-			}
  
+-			err = scan_all(ubi, ai, UBI_FM_MAX_START);
++				err = scan_all(ubi, ai, 0);
++			} else {
++				err = scan_all(ubi, ai, UBI_FM_MAX_START);
++			}
+ 		}
+ 	}
+ #else
 -- 
 1.8.1.4
