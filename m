@@ -1,18 +1,25 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VOyJN-0002j3-RS
- for linux-mtd@lists.infradead.org; Wed, 25 Sep 2013 23:16:02 +0000
-Date: Wed, 25 Sep 2013 16:15:40 -0700
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Kamlakant Patel <kamlakant.patel@broadcom.com>
-Subject: Re: [PATCH] Staging: MTD: Micron SPINAND Driver support
-Message-ID: <20130925231540.GB21682@kroah.com>
-References: <1378128136-23699-1-git-send-email-kamlakant.patel@broadcom.com>
+Received: from mail-ie0-x22f.google.com ([2607:f8b0:4001:c03::22f])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VOyb8-0003iH-UR
+ for linux-mtd@lists.infradead.org; Wed, 25 Sep 2013 23:34:23 +0000
+Received: by mail-ie0-f175.google.com with SMTP id e14so453866iej.34
+ for <linux-mtd@lists.infradead.org>; Wed, 25 Sep 2013 16:33:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1378128136-23699-1-git-send-email-kamlakant.patel@broadcom.com>
-Cc: linux-mtd@lists.infradead.org, manonuevo@micron.com
+In-Reply-To: <CAHSAbzOCRhpxMzQRtD2po3LrmNExscoYESPPi_-jnZQaEBuFTg@mail.gmail.com>
+References: <1376216117-5864-1-git-send-email-wangyuhang2014@gmail.com>
+ <CA+7tXih4XkhZ8xGcaUdGU6O4ZN1ZLfqyjb2UEKsRxsZBA+=DZw@mail.gmail.com>
+ <CAHSAbzOCRhpxMzQRtD2po3LrmNExscoYESPPi_-jnZQaEBuFTg@mail.gmail.com>
+Date: Wed, 25 Sep 2013 16:33:56 -0700
+Message-ID: <CA+7tXigzKW8sydfnktr4F5uY-SKk0JAMjaxFn74XLbw_NTYVXg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2]spi: DUAL and QUAD support
+From: Trent Piepho <tpiepho@gmail.com>
+To: yuhang wang <wangyuhang2014@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: "spi-devel-general@lists.sourceforge.net"
+ <spi-devel-general@lists.sourceforge.net>, "Poddar,
+ Sourav" <sourav.poddar@ti.com>, "broonie@kernel.org" <broonie@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
+ Pekon" <pekon@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,35 +29,167 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Sep 02, 2013 at 06:52:16PM +0530, Kamlakant Patel wrote:
-> This patch adds support for Micron SPINAND via MTD.
-> 
-> Signed-off-by: Mona Anonuevo <manonuevo@micron.com>
-> Signed-off-by: Kamlakant Patel <kamlakant.patel@broadcom.com>
-> ---
-> This patch has to be merged via staging tree.
->   
-> This is a driver from Micron for MT29F1G01ZACH4 SPI based NAND chips. This driver had
-> been posted multiple times to the mtd list.
-> 1. http://lists.infradead.org/pipermail/linux-mtd/2010-May/031975.html
-> 2. http://lists.infradead.org/pipermail/linux-mtd/2010-April/029523.html
-> 3. patchwork.ozlabs.org/patch/258697/
-> This has not been merged into the main kernel yet.
-> 
-> I have cleaned and updated it for current kernel. Since there are many users for
-> this driver, it may be useful to add it to the staging tree, where further fixes and
-> cleanups can be done. Once it reaches to the standard will be moved to the mtd.
-> 
-> This driver has been tested with Micron SPINAND MT29F1G01ZACH4 chip on kernel 3.11 on 
-> the Netlogic XLP platform.
->  
-> Mona Anonuevo, I have retained your sign-offs from the original patch.
+On Wed, Sep 4, 2013 at 12:07 AM, yuhang wang <wangyuhang2014@gmail.com> wrote:
+>>>         dma_addr_t      rx_dma;
+>>>
+>>>         unsigned        cs_change:1;
+>>> +       u8              tx_nbits;
+>>> +       u8              rx_nbits;
+>>> +#define        SPI_NBITS_SINGLE        0x01 /* 1bit transfer */
+>>> +#define        SPI_NBITS_DUAL          0x02 /* 2bits transfer */
+>>> +#define        SPI_NBITS_QUAD          0x04 /* 4bits transfer */
+>>
+>> These fields increase the size of a spi_transfer by 4 bytes.  If you
+>> used bitfields instead it wouldn't increase the size at all since
+>> there are still 7 bits left after cs_change.
+> Yes, it will increase the size by 4 bytes, but using bitfields here
+> will make it logically weird. Bitfields may mean that really have the
+> restriction of number of bits. If just for saving memory, then what
+> about the other members such as bits_per_world, delay_usecs.
 
-With this applied, I get the following build error:
-	../ERROR: "nand_scan" [drivers/staging/mt29f_spinand/mt29f_spinand.ko] undefined!
+Rather than just talk about it, I'll make patches to do it.  Then it
+will be clear.
 
-Can you please fix this and resend a working version?
-
-thanks,
-
-greg k-h
+On Wed, Sep 4, 2013 at 12:07 AM, yuhang wang <wangyuhang2014@gmail.com> wrote:
+> 2013/9/4 Trent Piepho <tpiepho@gmail.com>:
+>> On Sun, Aug 11, 2013 at 3:15 AM, wangyuhang <wangyuhang2014@gmail.com> wrote:
+>>> fix the previous patch some mistake below:
+>>
+>> This isn't a very good commit message.  "the previous patch" will have
+>> no meaning in the kernel git repo.  The rest of the message only
+>> describes changes since a previous version of the patch and not the
+>> actual patch in full.
+>>
+>>>
+>>> +               /* Device DUAL/QUAD mode */
+>>> +               prop = of_get_property(nc, "spi-tx-nbits", &len);
+>>
+>> Why not use of_property_read_u32() here?
+>>
+>>> +               if (!prop || len < sizeof(*prop)) {
+>>> +                       dev_err(&master->dev, "%s has no 'spi-tx-nbits' property\n",
+>>> +                               nc->full_name);
+>>> +                       spi_dev_put(spi);
+>>> +                       continue;
+>>
+>> So if no spi-tx-nbits property is supplied, the device is rejected and
+>> the loop continues to the next device entry?  This means ALL EXISTING
+>> DEVICE TREES with SPI devices will be rejected, since none of them
+>> have this new property!  Was this patch tested at all with any system
+>> before being accepted?
+>>
+> This part has been fixed in patch[commit
+> id:a822e99c70f448c4068ea85bb195dac0b2eb3afe]
+>
+>>> +       /* check mode to prevent that DUAL and QUAD set at the same time
+>>> +        */
+>>> +       if (((spi->mode & SPI_TX_DUAL) && (spi->mode & SPI_TX_QUAD)) ||
+>>> +               ((spi->mode & SPI_RX_DUAL) && (spi->mode & SPI_RX_QUAD))) {
+>>> +               dev_err(&spi->dev,
+>>> +               "setup: can not select dual and quad at the same time\n");
+>>> +               return -EINVAL;
+>>
+>> This test can be done with fewer operations as:
+>> if ((spi->mode & (SPI_TX_DUAL|SPI_TX_QUAD)) == (SPI_TX_DUAL|SPI_TX_QUAD) ||
+>>     (spi->mode & (SPI_RX_DUAL|SPI_RX_QUAD)) == (SPI_RX_DUAL|SPI_RX_QUAD)) {
+>>
+>>
+>>> +       }
+>>> +       /* if it is SPI_3WIRE mode, DUAL and QUAD should be forbidden
+>>> +        */
+>>> +       if ((spi->mode & SPI_3WIRE) && (spi->mode &
+>>> +               (SPI_TX_DUAL | SPI_TX_QUAD | SPI_RX_DUAL | SPI_RX_QUAD)))
+>>> +               return -EINVAL;
+>>
+>> No dev_err message for this possibility?  What's different than the
+>> previous check that does produce a message?
+>>
+> OK, should be added. Thanks.
+>
+>>>         /* help drivers fail *cleanly* when they need options
+>>>          * that aren't supported with their current master
+>>>          */
+>> Following this comment is the code:
+>>         bad_bits = spi->mode & ~spi->master->mode_bits;
+>>         if (bad_bits) {
+>>                 dev_err(&spi->dev, "setup: unsupported mode bits %x\n",
+>>                         bad_bits);
+>>                 return -EINVAL;
+>>         }
+>>
+>> Won't this always trigger for anything that sets one of the dual or quad bits?
+>>
+> I can't get your idea clearly. Please provide more infomation.
+>
+>>> @@ -1370,12 +1428,50 @@ static int __spi_async(struct spi_device *spi, struct spi_message *message)
+>>>         /**
+>>>          * Set transfer bits_per_word and max speed as spi device default if
+>>>          * it is not set for this transfer.
+>>> +        * Set transfer tx_nbits and rx_nbits as single transfer default
+>>> +        * (SPI_NBITS_SINGLE) if it is not set for this transfer.
+>>>          */
+>>>         list_for_each_entry(xfer, &message->transfers, transfer_list) {
+>>>                 if (!xfer->bits_per_word)
+>>>                         xfer->bits_per_word = spi->bits_per_word;
+>>>                 if (!xfer->speed_hz)
+>>>                         xfer->speed_hz = spi->max_speed_hz;
+>>> +               if (xfer->tx_buf && !xfer->tx_nbits)
+>>> +                       xfer->tx_nbits = SPI_NBITS_SINGLE;
+>>> +               if (xfer->rx_buf && !xfer->rx_nbits)
+>>> +                       xfer->rx_nbits = SPI_NBITS_SINGLE;
+>>> +               /* check transfer tx/rx_nbits:
+>>> +                * 1. keep the value is not out of single, dual and quad
+>>> +                * 2. keep tx/rx_nbits is contained by mode in spi_device
+>>> +                * 3. if SPI_3WIRE, tx/rx_nbits should be in single
+>>> +                */
+>>> +               if (xfer->tx_nbits != SPI_NBITS_SINGLE &&
+>>> +                       xfer->tx_nbits != SPI_NBITS_DUAL &&
+>>> +                       xfer->tx_nbits != SPI_NBITS_QUAD)
+>>> +                       return -EINVAL;
+>>> +               if ((xfer->tx_nbits == SPI_NBITS_DUAL) &&
+>>> +                       !(spi->mode & (SPI_TX_DUAL | SPI_TX_QUAD)))
+>>> +                       return -EINVAL;
+>>> +               if ((xfer->tx_nbits == SPI_NBITS_QUAD) &&
+>>> +                       !(spi->mode & SPI_TX_QUAD))
+>>> +                       return -EINVAL;
+>>> +               if ((spi->mode & SPI_3WIRE) &&
+>>> +                       (xfer->tx_nbits != SPI_NBITS_SINGLE))
+>>> +                       return -EINVAL;
+>>> +               /* check transfer rx_nbits */
+>>> +               if (xfer->rx_nbits != SPI_NBITS_SINGLE &&
+>>> +                       xfer->rx_nbits != SPI_NBITS_DUAL &&
+>>> +                       xfer->rx_nbits != SPI_NBITS_QUAD)
+>>> +                       return -EINVAL;
+>>> +               if ((xfer->rx_nbits == SPI_NBITS_DUAL) &&
+>>> +                       !(spi->mode & (SPI_RX_DUAL | SPI_RX_QUAD)))
+>>> +                       return -EINVAL;
+>>> +               if ((xfer->rx_nbits == SPI_NBITS_QUAD) &&
+>>> +                       !(spi->mode & SPI_RX_QUAD))
+>>> +                       return -EINVAL;
+>>> +               if ((spi->mode & SPI_3WIRE) &&
+>>> +                       (xfer->rx_nbits != SPI_NBITS_SINGLE))
+>>> +                       return -EINVAL;
+>>>         }
+>>
+>> What a lot of code to check the transfer bits.  It really needs this much?
+>>
+> This part is also corrected in patch [commit
+> id:db90a44177ac39fc22b2da5235b231fccdd4c673].
+>
+>>> @@ -511,6 +524,11 @@ struct spi_transfer {
+>>>         dma_addr_t      rx_dma;
+>>>
+>>>         unsigned        cs_change:1;
+>>> +       u8              tx_nbits;
+>>> +       u8              rx_nbits;
+>>> +#define        SPI_NBITS_SINGLE        0x01 /* 1bit transfer */
+>>> +#define        SPI_NBITS_DUAL          0x02 /* 2bits transfer */
+>>> +#define        SPI_NBITS_QUAD          0x04 /* 4bits transfer */
+>>
+>> These fields increase the size of a spi_transfer by 4 bytes.  If you
+>> used bitfields instead it wouldn't increase the size at all since
+>> there are still 7 bits left after cs_change.
+> Yes, it will increase the size by 4 bytes, but using bitfields here
+> will make it logically weird. Bitfields may mean that really have the
+> restriction of number of bits. If just for saving memory, then what
+> about the other members such as bits_per_world, delay_usecs.
