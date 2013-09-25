@@ -1,35 +1,25 @@
-Received: from mail-ob0-x229.google.com ([2607:f8b0:4003:c01::229])
+Received: from mail-yh0-x22e.google.com ([2607:f8b0:4002:c01::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VOtJt-0001TW-Oy
- for linux-mtd@lists.infradead.org; Wed, 25 Sep 2013 17:56:16 +0000
-Received: by mail-ob0-f169.google.com with SMTP id wp4so24495obc.14
- for <linux-mtd@lists.infradead.org>; Wed, 25 Sep 2013 10:55:52 -0700 (PDT)
-Date: Wed, 25 Sep 2013 10:55:27 -0700
+ id 1VOtqE-0002Sd-Te
+ for linux-mtd@lists.infradead.org; Wed, 25 Sep 2013 18:29:40 +0000
+Received: by mail-yh0-f46.google.com with SMTP id c41so28067yho.5
+ for <linux-mtd@lists.infradead.org>; Wed, 25 Sep 2013 11:29:16 -0700 (PDT)
+Date: Wed, 25 Sep 2013 11:29:11 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: "Gupta, Pekon" <pekon@ti.com>
+To: Pekon Gupta <pekon@ti.com>
 Subject: Re: [PATCH v6 1/4] ARM: OMAP2+: cleaned-up DT support of various
  ECC schemes
-Message-ID: <20130925175527.GA23337@ld-irv-0074.broadcom.com>
+Message-ID: <20130925182911.GB23337@ld-irv-0074.broadcom.com>
 References: <1378986619-26765-1-git-send-email-pekon@ti.com>
  <1378986619-26765-2-git-send-email-pekon@ti.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA15ED7@DBDE04.ent.ti.com>
- <20130925134619.GG10746@radagast>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20130925134619.GG10746@radagast>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "arnd@arndb.de" <arnd@arndb.de>, "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "tony@atomide.com" <tony@atomide.com>,
- "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "Balbi,
- Felipe" <balbi@ti.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "olof@lixom.net" <olof@lixom.net>,
- "benoit.cousson@linaro.org" <benoit.cousson@linaro.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+In-Reply-To: <1378986619-26765-2-git-send-email-pekon@ti.com>
+Cc: devicetree@vger.kernel.org, arnd@arndb.de, dedekind1@gmail.com,
+ tony@atomide.com, avinashphilipk@gmail.com, balbi@ti.com,
+ linux-mtd@lists.infradead.org, olof@lixom.net, benoit.cousson@linaro.org,
+ linux-omap@vger.kernel.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,37 +29,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Pekon,
-
-On Wed, Sep 25, 2013 at 08:46:19AM -0500, Felipe Balbi wrote:
-> + akpm
+On Thu, Sep 12, 2013 at 05:20:16PM +0530, Pekon Gupta wrote:
+> OMAP NAND driver support multiple ECC scheme, which can used in following
+> different flavours, depending on in-build Hardware engines supported by SoC.
 > 
-> On Tue, Sep 24, 2013 at 01:04:05PM -0500, Gupta, Pekon wrote:
-> > 
-> > > 
-> > > This patch
-> > > - updates DT binding for selection of ecc-scheme
-> > > - updates DT binding for detection of ELM h/w engine
-> > > - removes following obselete ECC schemes
-> > > 	OMAP_ECC_HAMMING_CODE_DEFAULT (S/W based 1-bit Hamming
-> > > ECC)
-> > > 	OMAP_ECC_HAMMING_CODE_HW_ROMCODE (H/W based 1-bit
-> > > Hamming ECC scheme)
-> > > - updates DT binding documentation for mtd/gpmc-nand
-> > > 
-> > > Signed-off-by: Pekon Gupta <pekon@ti.com>
-> > > ---
-> > 
-> > Dear Olof and other DT Maintainers,
-> > 
-> > This patch series has missed multiple merge windows, and
-> > much of the other development work on mtd/nand/omap
-> > driver is gated due to this.
+> +---------------------------------------+---------------+---------------+
+> | ECC scheme                            |ECC calculation|Error detection|
+> +---------------------------------------+---------------+---------------+
+> |OMAP_ECC_HAMMING_CODE_HW               |H/W (GPMC)     |S/W            |
+> +---------------------------------------+---------------+---------------+
+> |OMAP_ECC_BCH8_CODE_HW_DETECTION_SW     |H/W (GPMC)     |S/W            |
+> |(requires CONFIG_MTD_NAND_ECC_BCH)     |               |               |
+> +---------------------------------------+---------------+---------------+
+> |OMAP_ECC_BCH8_CODE_HW                  |H/W (GPMC)     |H/W (ELM)      |
+> |(requires CONFIG_MTD_NAND_OMAP_BCH &&  |               |               |
+> | ti,elm-id in DT)                      |               |               |
+> +---------------------------------------+---------------+---------------+
+> To optimize footprint of omap2-nand driver, selection of some ECC schemes
+> also require enabling following Kconfigs, in addition to setting appropriate
+> DT bindings
+> - Kconfig:CONFIG_MTD_NAND_ECC_BCH        enables S/W based BCH ECC algorithm
+> - Kconfig:CONFIG_MTD_NAND_OMAP_BCH       enables H/W based BCH ECC algorithm
+> 
+> This patch
+> - updates DT binding for selection of ecc-scheme
+> - updates DT binding for detection of ELM h/w engine
+> - removes following obselete ECC schemes
+> 	OMAP_ECC_HAMMING_CODE_DEFAULT (S/W based 1-bit Hamming ECC)
+> 	OMAP_ECC_HAMMING_CODE_HW_ROMCODE (H/W based 1-bit Hamming ECC scheme)
+> - updates DT binding documentation for mtd/gpmc-nand
+> 
+> Signed-off-by: Pekon Gupta <pekon@ti.com>
+> ---
+>  .../devicetree/bindings/mtd/gpmc-nand.txt          | 14 +++----
+>  arch/arm/mach-omap2/board-flash.c                  |  2 +-
+>  arch/arm/mach-omap2/gpmc.c                         | 47 +++++++++++++++-------
+>  include/linux/platform_data/mtd-nand-omap2.h       | 23 +++++++----
+>  4 files changed, 56 insertions(+), 30 deletions(-)
+> 
+...
+> diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
+> index 9f4795a..6409884 100644
+> --- a/arch/arm/mach-omap2/gpmc.c
+> +++ b/arch/arm/mach-omap2/gpmc.c
+...
+> @@ -1378,12 +1371,36 @@ static int gpmc_probe_nand_child(struct platform_device *pdev,
+>  	gpmc_nand_data->cs = val;
+>  	gpmc_nand_data->of_node = child;
+>  
+> -	if (!of_property_read_string(child, "ti,nand-ecc-opt", &s))
+> -		for (val = 0; val < ARRAY_SIZE(nand_ecc_opts); val++)
+> -			if (!strcasecmp(s, nand_ecc_opts[val])) {
+> -				gpmc_nand_data->ecc_opt = val;
+> -				break;
+> -			}
+> +	/* Detect availability of ELM module */
+> +	parp = of_get_property(child, "ti,elm-id", &lenp);
+> +	if ((parp == NULL) && (lenp != (sizeof(void *) * 2))) {
 
-Also, to be fair here: you only started CC'ing the appropriate DT
-people/list around v4, after which you got a (somewhat) prompt and
-thorough review of the DT bindings. Then several months passed before
-you addressed the reviews. So the "multiple merge windows" is not
-entirely to be blamed on others ;)
+I think && should be ||
+
+> +		pr_warn("%s: ti,elm-id property not found\n", __func__);
+> +		gpmc_nand_data->elm_of_node = NULL;
+> +	} else {
+> +		gpmc_nand_data->elm_of_node =
+> +				of_find_node_by_phandle(be32_to_cpup(parp));
+> +	}
+> +	/* select NAND ecc-scheme */
+> +	if (of_property_read_string(child, "ti,nand-ecc-scheme", &s)) {
+> +		pr_err("%s: valid ti,nand-ecc-scheme not found\n", __func__);
+> +		return -ENODEV;
+> +	}
+> +	if (!strcmp(s, "ham1"))
+> +		gpmc_nand_data->ecc_opt = OMAP_ECC_HAMMING_CODE_HW;
+> +	else if (!strcmp(s, "bch4"))
+> +		if (gpmc_nand_data->elm_of_node)
+> +			gpmc_nand_data->ecc_opt = OMAP_ECC_BCH4_CODE_HW;
+> +		else
+> +			gpmc_nand_data->ecc_opt =
+> +				OMAP_ECC_BCH4_CODE_HW_DETECTION_SW;
+> +	else if (!strcmp(s, "bch8"))
+> +		if (gpmc_nand_data->elm_of_node)
+> +			gpmc_nand_data->ecc_opt = OMAP_ECC_BCH8_CODE_HW;
+> +		else
+> +			gpmc_nand_data->ecc_opt =
+> +				OMAP_ECC_BCH8_CODE_HW_DETECTION_SW;
+> +	else
+> +		pr_err("%s: ti,ecc-scheme: invalid property value\n", __func__);
+>  
+>  	if (!of_property_read_string(child, "ti,nand-xfer-type", &s))
+>  		for (val = 0; val < ARRAY_SIZE(nand_xfer_types); val++)
+
+Otherwise, I think this patch is OK.
 
 Brian
