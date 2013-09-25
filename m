@@ -1,32 +1,15 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from cheetah-1-pt.tunnel.tserv4.nyc4.ipv6.he.net
+ ([2001:470:1f06:1317::2] helo=cheetah.fastcat.org)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VOuiH-0003rr-Jt
- for linux-mtd@lists.infradead.org; Wed, 25 Sep 2013 19:25:30 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Brian Norris <computersforpeace@gmail.com>, "olof@lixom.net"
- <olof@lixom.net>, "benoit.cousson@linaro.org" <benoit.cousson@linaro.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "arnd@arndb.de"
- <arnd@arndb.de>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "tony@atomide.com" <tony@atomide.com>, "avinashphilipk@gmail.com"
- <avinashphilipk@gmail.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-omap@vger.kernel.org"
- <linux-omap@vger.kernel.org>, "dedekind1@gmail.com" <dedekind1@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, "Balbi, Felipe" <balbi@ti.com>
-Subject: RE: [PATCH v6 1/4] ARM: OMAP2+: cleaned-up DT support of various
- ECC schemes
-Date: Wed, 25 Sep 2013 19:24:26 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA16884@DBDE04.ent.ti.com>
-References: <1378986619-26765-1-git-send-email-pekon@ti.com>
- <1378986619-26765-2-git-send-email-pekon@ti.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA15ED7@DBDE04.ent.ti.com>
- <20130925134619.GG10746@radagast>
- <20130925175527.GA23337@ld-irv-0074.broadcom.com>
-In-Reply-To: <20130925175527.GA23337@ld-irv-0074.broadcom.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+ id 1VOulk-0003yI-7y
+ for linux-mtd@lists.infradead.org; Wed, 25 Sep 2013 19:29:05 +0000
+Date: Wed, 25 Sep 2013 15:25:55 -0400 (EDT)
+From: Matthew Gabeler-Lee <fastcat@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: nandsim: Allow nandsim to re-use persisted data
+Message-ID: <alpine.DEB.2.10.1309251518370.22371@cheetah.fastcat.org>
 MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; format=flowed; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,80 +19,117 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+mtd: nandsim: Allow nandsim to re-use persisted data
 
->=20
-> Hi Pekon,
->=20
-> On Wed, Sep 25, 2013 at 08:46:19AM -0500, Felipe Balbi wrote:
-> > + akpm
-> >
-> > On Tue, Sep 24, 2013 at 01:04:05PM -0500, Gupta, Pekon wrote:
-[snip]
-> > >
-> > > Dear Olof and other DT Maintainers,
-> > >
-> > > This patch series has missed multiple merge windows, and
-> > > much of the other development work on mtd/nand/omap
-> > > driver is gated due to this.
->=20
-> Also, to be fair here: you only started CC'ing the appropriate DT
-> people/list around v4, after which you got a (somewhat) prompt and
-> thorough review of the DT bindings. Then several months passed before
-> you addressed the reviews. So the "multiple merge windows" is not
-> entirely to be blamed on others ;)
->=20
-> Brian
+Add optional (default disabled) module parameter to nandsim to instruct it
+to assume that the cache file already has valid data in it.  This allows
+data written to the cache file (or device) to be re-used across reloads of
+the nandsim module, and thus reboots of the host, in much the same way that
+block2mtd allows.
 
-Few points I would like to clarify here, *without* pointing anyone..
+Signed-off-by: Matthew Gabeler-Lee <matthew@beechwoods.com>
+---
+  drivers/mtd/nand/nandsim.c | 42 ++++++++++++++++++++++++++++++++++++++----
+  1 file changed, 38 insertions(+), 4 deletions(-)
 
-(1) It was Olof's comments which directed me to cc: devicetree-discuss list=
-.
-So wrong list was always cc-ed till v4.
-Refer http://permalink.gmane.org/gmane.linux.ports.arm.kernel/249662
+diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+index bdc1d15..65ac60f 100644
+--- a/drivers/mtd/nand/nandsim.c
++++ b/drivers/mtd/nand/nandsim.c
+@@ -109,6 +109,7 @@ static unsigned int bitflips = 0;
+  static char *gravepages = NULL;
+  static unsigned int overridesize = 0;
+  static char *cache_file = NULL;
++static uint cache_file_written = 0;
+  static unsigned int bbt;
+  static unsigned int bch;
 
-(2) The devicetree list has been updated in MAINTAINER file towards
-end of July (22/July/2013) in following commit. Whereas the patch v4
-was submitted on 2/July/2013. So I wasn't aware of this new DT maillist.
-commit d0fb18c5c0caf2ed0eecf3d0145450ae708ed75a
-Commit:     Grant Likely <grant.likely@linaro.org>
-CommitDate: 2013-07-22
+@@ -133,6 +134,7 @@ module_param(bitflips,       uint, 0400);
+  module_param(gravepages,     charp, 0400);
+  module_param(overridesize,   uint, 0400);
+  module_param(cache_file,     charp, 0400);
++module_param(cache_file_written, uint, 0400);
+  module_param(bbt,	     uint, 0400);
+  module_param(bch,	     uint, 0400);
 
-(3) When a maintainer gives a NAK, I expect him to at-least give
-directions on what to change in the patch. There were no comments
-given, neither new patch reviewed by the DT maintainer even after
-sending multiple request directly.
-http://lists.infradead.org/pipermail/linux-mtd/2013-July/047441.html
-http://lists.infradead.org/pipermail/linux-mtd/2013-July/047629.html
+@@ -166,6 +168,7 @@ MODULE_PARM_DESC(overridesize,   "Specifies the NAND Flash size overriding the I
+  				 "The size is specified in erase blocks and as the exponent of a power of two"
+  				 " e.g. 5 means a size of 32 erase blocks");
+  MODULE_PARM_DESC(cache_file,     "File to use to cache nand pages instead of memory");
++MODULE_PARM_DESC(cache_file_written, "Assume any pages in cache file have already been written, use their existing contents");
+  MODULE_PARM_DESC(bbt,		 "0 OOB, 1 BBT with marker in OOB, 2 BBT with marker in data area");
+  MODULE_PARM_DESC(bch,		 "Enable BCH ecc and set how many bits should "
+  				 "be correctable in 512-byte blocks");
+@@ -592,6 +595,9 @@ static int alloc_device(struct nandsim *ns)
+  			err = -ENOMEM;
+  			goto err_close;
+  		}
++		if (cache_file_written) {
++			memset(ns->pages_written, 0xFF, ns->geom.pgnum);
++		}
+  		ns->file_buf = kmalloc(ns->geom.pgszoob, GFP_KERNEL);
+  		if (!ns->file_buf) {
+  			NS_ERR("alloc_device: unable to allocate file buf\n");
+@@ -1484,7 +1490,17 @@ static void read_page(struct nandsim *ns, int num)
+  			pos = (loff_t)NS_RAW_OFFSET(ns) + ns->regs.off;
+  			tx = read_file(ns, ns->cfile, ns->buf.byte, num, pos);
+  			if (tx != num) {
+-				NS_ERR("read_page: read error for page %d ret %ld\n", ns->regs.row, (long)tx);
++				if (ns->pages_written[ns->regs.row] == 0xFF) {
++					NS_WARN("read_page: read error assuming unwritten for page %d ret %ld\n", ns->regs.row, (long)tx);
++					ns->pages_written[ns->regs.row] = 0;
++					memset(ns->buf.byte, 0xFF, num);
++					tx = write_file(ns, ns->cfile, ns->buf.byte, num, pos);
++					if (tx != num) {
++						NS_ERR("read_page: write error for page %d ret %ld\n", ns->regs.row, (long)tx);
++					}
++				} else {
++					NS_ERR("read_page: read error for page %d ret %ld\n", ns->regs.row, (long)tx);
++				}
+  				return;
+  			}
+  			do_bit_flips(ns, num);
+@@ -1515,11 +1531,22 @@ static void erase_sector(struct nandsim *ns)
+  	int i;
 
-Its only when Artem and yourself pitched in by sending a mail to
-new DT mail-list that the DT maintainer reviewed and provided the
-comments for fixes.
-But by that time 3.11-rc6 had already gone past, and so I knew this
-Series cannot go in, so I wanted to wait some more, to see if there
-were any more comments on this. And frankly I was too much
-frustrated by then.
+  	if (ns->cfile) {
+-		for (i = 0; i < ns->geom.pgsec; i++)
++		loff_t pos;
++		ssize_t tx;
++ 
++		memset(ns->file_buf, 0xff, ns->geom.pgszoob);
++		for (i = 0; i < ns->geom.pgsec; i++) {
+  			if (__test_and_clear_bit(ns->regs.row + i,
+  						 ns->pages_written)) {
+  				NS_DBG("erase_sector: freeing page %d\n", ns->regs.row + i);
++				pos = (loff_t)(ns->regs.row + i) * ns->geom.pgszoob;
++				tx = write_file(ns, ns->cfile, ns->file_buf, ns->geom.pgszoob, pos);
++				if (tx != ns->geom.pgszoob) {
++					NS_ERR("erase_sector: write error for page %d ret %ld\n", ns->regs.row, (long)tx);
++				}
+  			}
++			ns->pages_written[ns->regs.row + i] = 0;
++		}
+  		return;
+  	}
 
-Just to speak my opinion.
-We all understand that maintainers are heavily loaded by tons of
-emails, And reviewing each patch instantly is not possible.
-
-But this load is now passing to developers like me as frustration,
-because most of energy is being spent in re-submitting patches
-again and again, without any proper direction or conclusion.
-And then there is no time and energy left for good work, where
-we can contribute to optimizing frame-works for performance or
-adding new features.
-So I see many good developers distracting away from mainline.
-
-Thus, there should be a mechanism, where such load can be
-distributed, and there are less emails. And developers don't
-have to re-submit patch multiple times, by collecting most reviews
-at once.  This way developer's like me can spend more time in doing
-other constructive things.
-
-Please consider this as constructive feedback, without targeting
-any individual or team.
-
-
-with regards, pekon
+@@ -1558,8 +1585,15 @@ static int prog_page(struct nandsim *ns, int num)
+  			all = 0;
+  			tx = read_file(ns, ns->cfile, pg_off, num, off);
+  			if (tx != num) {
+-				NS_ERR("prog_page: read error for page %d ret %ld\n", ns->regs.row, (long)tx);
+-				return -1;
++				if (ns->pages_written[ns->regs.row] == 0xFF) {
++					NS_WARN("prog_page: read error assuming unwritten for page %d ret %ld\n", ns->regs.row, (long)tx);
++					ns->pages_written[ns->regs.row] = 0;
++					all = 1;
++					memset(ns->file_buf, 0xff, ns->geom.pgszoob);
++				} else {
++					NS_ERR("prog_page: read error for page %d ret %ld\n", ns->regs.row, (long)tx);
++					return -1;
++				}
+  			}
+  		}
+  		for (i = 0; i < num; i++)
+-- 
+1.8.4.rc3
