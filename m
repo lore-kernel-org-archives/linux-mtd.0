@@ -1,14 +1,13 @@
-Received: from va3ehsobe010.messaging.microsoft.com ([216.32.180.30]
- helo=va3outboundpool.messaging.microsoft.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VOjEo-0006MB-Er
- for linux-mtd@lists.infradead.org; Wed, 25 Sep 2013 07:10:19 +0000
+Received: from ch1ehsobe001.messaging.microsoft.com ([216.32.181.181]
+ helo=ch1outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VOjEv-0005lg-FJ
+ for linux-mtd@lists.infradead.org; Wed, 25 Sep 2013 07:10:27 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH v4 07/12] mtd: nand: add more comment for
- MTD_NANDFLASH/MTD_MLCNANDFLASH
-Date: Wed, 25 Sep 2013 14:58:16 +0800
-Message-ID: <1380092301-21924-8-git-send-email-b32955@freescale.com>
+Subject: [PATCH v4 10/12] mtd: add MTD_MLCNANDFLASH case for mtd_type_show()
+Date: Wed, 25 Sep 2013 14:58:19 +0800
+Message-ID: <1380092301-21924-11-git-send-email-b32955@freescale.com>
 In-Reply-To: <1380092301-21924-1-git-send-email-b32955@freescale.com>
 References: <1380092301-21924-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
@@ -24,35 +23,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In current code, the MTD_NANDFLASH is used to represent both the SLC and
-MLC. It is confusing to us.
-
-By adding an explicit comment about these two macros, this patch makes it
-clear that:
-	MTD_NANDFLASH    : stands for SLC nand,
-	MTD_MLCNANDFLASH : stands for MLC nand(including TLC).
+The current mtd_type_show() misses the MTD_MLCNANDFLASH case.
+This patch adds the case for it, and also updates the ABI.
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- include/uapi/mtd/mtd-abi.h |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ Documentation/ABI/testing/sysfs-class-mtd |    2 +-
+ drivers/mtd/mtdcore.c                     |    3 +++
+ 2 files changed, 4 insertions(+), 1 deletions(-)
 
-diff --git a/include/uapi/mtd/mtd-abi.h b/include/uapi/mtd/mtd-abi.h
-index 36eace0..16a9406 100644
---- a/include/uapi/mtd/mtd-abi.h
-+++ b/include/uapi/mtd/mtd-abi.h
-@@ -94,10 +94,10 @@ struct mtd_write_req {
- #define MTD_RAM			1
- #define MTD_ROM			2
- #define MTD_NORFLASH		3
--#define MTD_NANDFLASH		4
-+#define MTD_NANDFLASH		4	/* stand for SLC nand */
- #define MTD_DATAFLASH		6
- #define MTD_UBIVOLUME		7
--#define MTD_MLCNANDFLASH	8
-+#define MTD_MLCNANDFLASH	8	/* stand for MLC nand(including TLC) */
+diff --git a/Documentation/ABI/testing/sysfs-class-mtd b/Documentation/ABI/testing/sysfs-class-mtd
+index bfd119a..1399bb2 100644
+--- a/Documentation/ABI/testing/sysfs-class-mtd
++++ b/Documentation/ABI/testing/sysfs-class-mtd
+@@ -104,7 +104,7 @@ Description:
+ 		One of the following ASCII strings, representing the device
+ 		type:
  
- #define MTD_WRITEABLE		0x400	/* Device is writeable */
- #define MTD_BIT_WRITEABLE	0x800	/* Single bits can be flipped */
+-		absent, ram, rom, nor, nand, dataflash, ubi, unknown
++		absent, ram, rom, nor, nand, mlc-nand, dataflash, ubi, unknown
+ 
+ What:		/sys/class/mtd/mtdX/writesize
+ Date:		April 2009
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 5e14d54..92311a5 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -157,6 +157,9 @@ static ssize_t mtd_type_show(struct device *dev,
+ 	case MTD_UBIVOLUME:
+ 		type = "ubi";
+ 		break;
++	case MTD_MLCNANDFLASH:
++		type = "mlc-nand";
++		break;
+ 	default:
+ 		type = "unknown";
+ 	}
 -- 
 1.7.1
