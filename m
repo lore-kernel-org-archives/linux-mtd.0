@@ -1,26 +1,17 @@
-Received: from mail-pd0-x235.google.com ([2607:f8b0:400e:c02::235])
+Received: from va3ehsobe006.messaging.microsoft.com ([216.32.180.16]
+ helo=va3outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VOiZZ-00054Y-0y
- for linux-mtd@lists.infradead.org; Wed, 25 Sep 2013 06:27:41 +0000
-Received: by mail-pd0-f181.google.com with SMTP id g10so5603397pdj.40
- for <linux-mtd@lists.infradead.org>; Tue, 24 Sep 2013 23:27:18 -0700 (PDT)
-Message-ID: <52428241.6030907@gmail.com>
-Date: Tue, 24 Sep 2013 23:27:13 -0700
-From: Brian Norris <computersforpeace@gmail.com>
+ id 1VOjEY-0005kZ-Ou
+ for linux-mtd@lists.infradead.org; Wed, 25 Sep 2013 07:10:03 +0000
+From: Huang Shijie <b32955@freescale.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH v4 00/12] About the SLC/MLC
+Date: Wed, 25 Sep 2013 14:58:09 +0800
+Message-ID: <1380092301-21924-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 00/21] Armada 370/XP NAND support
-References: <1379606505-2529-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <20130924185933.GC5423@localhost>
-In-Reply-To: <20130924185933.GC5423@localhost>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
- Tawfik Bayouk <tawfik@marvell.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- Daniel Mack <zonque@gmail.com>,
- Gregory Clement <gregory.clement@free-electrons.com>, Willy Tarreau <w@1wt.eu>
+Content-Type: text/plain
+Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,29 +21,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ezequiel,
+In current mtd code, the MTD_NANDFLASH is used to represent both the
+SLC nand MLC(including the TLC). But we already have the MTD_MLCNANDFLASH
+to stand for the MLC. What is worse is that the JFFS2 may run on the MLC
+nand with current code. For the reason of READ/WRITE disturbance, the JFFS2
+should runs on the SLC only,
+       
+This patch set tries to make clear what is the SLC/MLC by adding the macros,
+adding helpers, adding the comments. ..
 
-On 09/24/2013 11:59 AM, Ezequiel Garcia wrote:
-> On Thu, Sep 19, 2013 at 01:01:24PM -0300, Ezequiel Garcia wrote:
->> As some of you know, I'm working on implementing the long-awaited NAND
->> support in Armada 370/XP SoCs.
+After this patch set, the gpmi can support the JFFS2 for some SLC NAND now 
+(only when the left oob area is big enough).
 
-...
+v3 --> v4:
+	[0] rename the cellinfo after introducing the nand_is_slc().
+	[1] change the order of the patches.
+	[2] add more comment for patch:
+            "mtd: nand: fix the wrong mtd->type for nand chip"
 
-> If you're not too busy, I'd like you to take a look at the implementation.
+v2 --> v3:
+	[0] fix the wrong patch for jffs2.
+	[1] add more comments to nand_get_bits_per_cell(). 
+	[2] others.
 
-Yes, I plan to look at this soon. I *might* have time tomorrow. But if 
-my delay is too long for your taste, feel free to send v2.
+v1 --> v2:
+	[0] rename the @cellinfo to @bits_per_cell
+	[1] abandon the patch: "mtd: add more information for the MTD_NANDFLASH case"
+	[2] update the ABI for patch 8
+	[3] misc
 
-> I'm preparing a new v2 which some (very minor) improvements, mainly to
-> add support for timings configuration.
+Huang Shijie (12):
+  mtd: nand: add a helper to check the SLC/MLC nand chip
+  mtd: nand: rename the cellinfo to bits_per_cell
+  mtd: nand: add the "bits per cell" info for legacy ID NAND
+  mtd: nand: set the cell information for ONFI nand
+  mtd: nand: print out the cell information for nand chip
+  mtd: gpmi: rewrite the gpmi_ecc_write_oob() to support the jffs2
+  mtd: nand: add more comment for MTD_NANDFLASH/MTD_MLCNANDFLASH
+  mtd: nand: add a helper to detect the nand type
+  mtd: mtd-abi: add a helper to detect the nand type
+  mtd: add MTD_MLCNANDFLASH case for mtd_type_show()
+  jffs2: do not support the MLC nand
+  mtd: nand: fix the wrong mtd->type for nand chip
 
-I believe Daniel reported a bug w/ PIO vs. DMA. I presume this will be 
-in v2? If those modifications aren't too big, then I can look at the 
-current series.
-
-> If there's anything to fix or to re-work, don't hesitate in asking!
-
-Of course!
-
-Brian
+ Documentation/ABI/testing/sysfs-class-mtd |    2 +-
+ drivers/mtd/inftlcore.c                   |    2 +-
+ drivers/mtd/mtdcore.c                     |    3 ++
+ drivers/mtd/nand/denali.c                 |    2 +-
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c    |   31 ++++++++++++++------
+ drivers/mtd/nand/nand_base.c              |   45 +++++++++++++++++++---------
+ drivers/mtd/nftlcore.c                    |    2 +-
+ drivers/mtd/ssfdc.c                       |    2 +-
+ drivers/mtd/tests/nandbiterrs.c           |    2 +-
+ drivers/mtd/tests/oobtest.c               |    2 +-
+ drivers/mtd/tests/pagetest.c              |    2 +-
+ drivers/mtd/tests/subpagetest.c           |    2 +-
+ fs/jffs2/fs.c                             |    4 ++
+ include/linux/mtd/mtd.h                   |    5 +++
+ include/linux/mtd/nand.h                  |   14 ++++++++-
+ include/uapi/mtd/mtd-abi.h                |    9 ++++-
+ 16 files changed, 92 insertions(+), 37 deletions(-)
