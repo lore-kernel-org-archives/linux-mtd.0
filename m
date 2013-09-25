@@ -1,14 +1,13 @@
-Received: from am1ehsobe004.messaging.microsoft.com ([213.199.154.207]
- helo=am1outboundpool.messaging.microsoft.com)
+Received: from va3ehsobe004.messaging.microsoft.com ([216.32.180.14]
+ helo=va3outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VOjEf-0005kp-ER
- for linux-mtd@lists.infradead.org; Wed, 25 Sep 2013 07:10:10 +0000
+ id 1VOjEi-0005kv-7P
+ for linux-mtd@lists.infradead.org; Wed, 25 Sep 2013 07:10:15 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH v4 03/12] mtd: nand: add the "bits per cell" info for legacy
- ID NAND
-Date: Wed, 25 Sep 2013 14:58:12 +0800
-Message-ID: <1380092301-21924-4-git-send-email-b32955@freescale.com>
+Subject: [PATCH v4 04/12] mtd: nand: set the cell information for ONFI nand
+Date: Wed, 25 Sep 2013 14:58:13 +0800
+Message-ID: <1380092301-21924-5-git-send-email-b32955@freescale.com>
 In-Reply-To: <1380092301-21924-1-git-send-email-b32955@freescale.com>
 References: <1380092301-21924-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
@@ -24,28 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The legacy ID NAND are all SLC.
-This patch sets 1 to the @bits_per_cell for the legacy ID NAND,
-which means they are all SLC.
+The current code does not set the SLC/MLC information for onfi nand.
+(This makes that the kernel treats all the onfi nand as SLC nand.)
+
+This patch fills the cell information for ONFI nands.
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- drivers/mtd/nand/nand_base.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
+ drivers/mtd/nand/nand_base.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index c84c35f..0dedf71 100644
+index 0dedf71..94d9084 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -3237,6 +3237,9 @@ static void nand_decode_id(struct mtd_info *mtd, struct nand_chip *chip,
- 	mtd->oobsize = mtd->writesize / 32;
- 	*busw = type->options & NAND_BUSWIDTH_16;
+@@ -2991,6 +2991,7 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+ 	mtd->oobsize = le16_to_cpu(p->spare_bytes_per_page);
+ 	chip->chipsize = le32_to_cpu(p->blocks_per_lun);
+ 	chip->chipsize *= (uint64_t)mtd->erasesize * p->lun_count;
++	chip->bits_per_cell = p->bits_per_cell;
  
-+	/* All legacy ID NAND are small-page, SLC */
-+	chip->bits_per_cell = 1;
-+
- 	/*
- 	 * Check for Spansion/AMD ID + repeating 5th, 6th byte since
- 	 * some Spansion chips have erasesize that conflicts with size
+ 	if (onfi_feature(chip) & ONFI_FEATURE_16_BIT_BUS)
+ 		*busw = NAND_BUSWIDTH_16;
 -- 
 1.7.1
