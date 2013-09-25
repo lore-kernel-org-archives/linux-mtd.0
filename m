@@ -1,19 +1,22 @@
-Received: from mail-bk0-x231.google.com ([2a00:1450:4008:c01::231])
+Received: from am1ehsobe004.messaging.microsoft.com ([213.199.154.207]
+ helo=am1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VOjiW-0006va-Sg
- for linux-mtd@lists.infradead.org; Wed, 25 Sep 2013 07:41:03 +0000
-Received: by mail-bk0-f49.google.com with SMTP id r7so2077738bkg.22
- for <linux-mtd@lists.infradead.org>; Wed, 25 Sep 2013 00:40:38 -0700 (PDT)
+ id 1VOl3V-0001Rz-FA
+ for linux-mtd@lists.infradead.org; Wed, 25 Sep 2013 09:06:46 +0000
+Message-ID: <5242A805.50804@freescale.com>
+Date: Wed, 25 Sep 2013 17:08:21 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-Date: Wed, 25 Sep 2013 15:40:38 +0800
-Message-ID: <CAPgLHd8G-uaG3a7DfA-eAhcdKD3yXzpCuQJ2c8qFe0412pQX2Q@mail.gmail.com>
-Subject: [PATCH] mtd: mpc5121_nfc: drop devm_free_irq of devm_ allocated irq
-From: Wei Yongjun <weiyj.lk@gmail.com>
-To: dwmw2@infradead.org, grant.likely@linaro.org, rob.herring@calxeda.com,
- artem.bityutskiy@linux.intel.com, wfp5p@virginia.edu, shijie8@gmail.com,
- agust@denx.de, gsi@denx.de
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: yongjun_wei@trendmicro.com.cn, linux-mtd@lists.infradead.org
+To: Marek Vasut <marex@denx.de>
+Subject: Re: gpmi-nand driver and jffs2 support
+References: <522062B4.4080709@digi.com> <201309241150.09313.marex@denx.de>
+ <52416D88.6030906@freescale.com> <201309241453.47069.marex@denx.de>
+In-Reply-To: <201309241453.47069.marex@denx.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: "fabio.estevam@freescale.com" <fabio.estevam@freescale.com>,
+ Hector Palacios <hector.palacios@digi.com>, linux-mtd@lists.infradead.org,
+ dzu@denx.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,50 +26,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+=E4=BA=8E 2013=E5=B9=B409=E6=9C=8824=E6=97=A5 20:53, Marek Vasut =E5=86=99=
+=E9=81=93:
+> Hello Huang,
+>
+>> =E4=BA=8E 2013=E5=B9=B409=E6=9C=8824=E6=97=A5 17:50, Marek Vasut =E5=86=
+=99=E9=81=93:
+>>> Hello Huang,
+>>>
+>>> Can you please explain what is the exact difference between the NAND
+>>> layout when using JFFS2 in FSL 2.6.35 and in mainline with your patch=
+es
+>>> ?
+>> In FSL 2.6.35, there are some free space in the OOB;
+>> while in mainline we use all the free space in the OOB.
+> OK, let me understand this in more detail.
+>
+> How does the NAND page look when written by FSL 2.6.35 and how does the=
+ NAND
+> page look when written by current mainline ? Can you please tell in det=
+ail?
+>
+[1] for FSL 2.6.35, see gpmi_nfc_set_geometry():
+     The ecc_strength is set at a fix value, such as:
+           "set ecc_strength with 8 for page size 2048";
 
-The devm_request_irq function allocates irq that is released
-when a driver detaches. Thus, there is no reason to explicitly
-call devm_free_irq in probe or remove functions.
+     Why set the ecc_strength with 8? just based on the experiences, not=20
+based on the
+     chip's datasheets.
 
-Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
----
- drivers/mtd/nand/mpc5121_nfc.c | 4 ----
- 1 file changed, 4 deletions(-)
+     So we can have some spare space in the OOB, after we setting the=20
+BCH with the ecc_strength.
 
-diff --git a/drivers/mtd/nand/mpc5121_nfc.c b/drivers/mtd/nand/mpc5121_nfc.c
-index 3c60a00..7df37f0 100644
---- a/drivers/mtd/nand/mpc5121_nfc.c
-+++ b/drivers/mtd/nand/mpc5121_nfc.c
-@@ -784,7 +784,6 @@ static int mpc5121_nfc_probe(struct platform_device *op)
- 	/* Detect NAND chips */
- 	if (nand_scan(mtd, be32_to_cpup(chips_no))) {
- 		dev_err(dev, "NAND Flash not found !\n");
--		devm_free_irq(dev, prv->irq, mtd);
- 		retval = -ENXIO;
- 		goto error;
- 	}
-@@ -809,7 +808,6 @@ static int mpc5121_nfc_probe(struct platform_device *op)
- 
- 	default:
- 		dev_err(dev, "Unsupported NAND flash!\n");
--		devm_free_irq(dev, prv->irq, mtd);
- 		retval = -ENXIO;
- 		goto error;
- 	}
-@@ -820,7 +818,6 @@ static int mpc5121_nfc_probe(struct platform_device *op)
- 	retval = mtd_device_parse_register(mtd, NULL, &ppdata, NULL, 0);
- 	if (retval) {
- 		dev_err(dev, "Error adding MTD device!\n");
--		devm_free_irq(dev, prv->irq, mtd);
- 		goto error;
- 	}
- 
-@@ -838,7 +835,6 @@ static int mpc5121_nfc_remove(struct platform_device *op)
- 	struct mpc5121_nfc_prv *prv = chip->priv;
- 
- 	nand_release(mtd);
--	devm_free_irq(dev, prv->irq, mtd);
- 	mpc5121_nfc_free(dev, mtd);
- 
- 	return 0;
+[2] for mainline, see common_nfc_set_geometry():
+     Please see the diagrams in the set_geometry_by_ecc_info() and=20
+legacy_set_geometry().
+
+
+     If we CAN use the ecc info from the chip's datasheet, just like in=20
+FSL_2.6.35, we may
+     have some spare space in the OOB; else we use all the OOB.
+
+
+
+>>> Is there any way to mount JFFS2 written with FSL 2.6.35 on current
+>>> mainline? Thus far, neither me nor Hector were able to mount such
+>>> partition with the same result.
+>> The gpmi driver in FSL 2.6.35 is different from the mainline.
+> I was under the impression the mainline driver is an evolution of the F=
+SL 2.6.35
+> driver. Is this assumption incorrect?
+>
+yes.
+>> The two drivers are not compatible to each other.
+> OK, like I said, if we cannot produce a drop-in replacement of old FSL =
+2.6.35
+> kernel, this is a problem. People will come and they will be running in=
+to this
+> issue. Thus, let us focus on producing a compatible JFFS2 patch.
+I do not think it is a problem. The FSL 2.6.35 does not support the JFFS2=
+.
+
+
+thanks
+Huang Shijie
