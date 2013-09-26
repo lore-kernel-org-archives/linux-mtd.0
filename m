@@ -1,22 +1,36 @@
-Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
+Received: from mail-ie0-x22a.google.com ([2607:f8b0:4001:c03::22a])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VPAF6-0004o2-AB
- for linux-mtd@lists.infradead.org; Thu, 26 Sep 2013 12:00:24 +0000
-Date: Thu, 26 Sep 2013 12:59:48 +0100
-From: Mark Brown <broonie@kernel.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Message-ID: <20130926115948.GO19304@sirena.org.uk>
-References: <1380191565-28640-1-git-send-email-sourav.poddar@ti.com>
- <1380193243.28494.51.camel@i7.infradead.org>
+ id 1VPBap-00075x-Qk
+ for linux-mtd@lists.infradead.org; Thu, 26 Sep 2013 13:26:57 +0000
+Received: by mail-ie0-f170.google.com with SMTP id x13so1352149ief.1
+ for <linux-mtd@lists.infradead.org>; Thu, 26 Sep 2013 06:26:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="1bhFRg6vL9BT9osV"
-Content-Disposition: inline
-In-Reply-To: <1380193243.28494.51.camel@i7.infradead.org>
-Subject: Re: [PATCHv2] drivers: mtd: devices: Add quad read support.
-Cc: artem.bityutskiy@linux.intel.com, balbi@ti.com, b32955@freescale.com,
- linux-mtd@lists.infradead.org, Sourav Poddar <sourav.poddar@ti.com>,
- computersforpeace@gmail.com
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA16D3D@DBDE04.ent.ti.com>
+References: <1378986619-26765-1-git-send-email-pekon@ti.com>
+ <1378986619-26765-5-git-send-email-pekon@ti.com>
+ <20130925191559.GF23337@ld-irv-0074.broadcom.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA16D3D@DBDE04.ent.ti.com>
+From: Javier Martinez Canillas <martinez.javier@gmail.com>
+Date: Thu, 26 Sep 2013 15:26:11 +0200
+Message-ID: <CAAwP0s1J8=_0bz5Cryjuy4EL4Ky9f33Bm6zZ-x+jm=EGh+VGiQ@mail.gmail.com>
+Subject: Re: [PATCH v6 4/4] ARM: dts: AM33xx: updated default ECC scheme in
+ nand-ecc-opt
+To: "Gupta, Pekon" <pekon@ti.com>, Benoit Cousson <bcousson@baylibre.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: "Mark Rutland \(mark.rutland@arm.com\)" <mark.rutland@arm.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>, "arnd@arndb.de" <arnd@arndb.de>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ "tony@atomide.com" <tony@atomide.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>, "Balbi,
+ Felipe" <balbi@ti.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Stephen Warren <swarren@wwwdotorg.org>, "olof@lixom.net" <olof@lixom.net>,
+ "Rob Herring \(robherring2@gmail.com\)" <robherring2@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,47 +40,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, Sep 26, 2013 at 1:28 PM, Gupta, Pekon <pekon@ti.com> wrote:
+>> From: Brian Norris [mailto:computersforpeace@gmail.com]
+>>
+>> On Thu, Sep 12, 2013 at 05:20:19PM +0530, Pekon Gupta wrote:
+>> > DT property values for OMAP based gpmc-nand have been updated
+>> > to match changes in commit:
+>> >     6faf096 ARM: OMAP2+: cleaned-up DT support of various ECC
+>> schemes
+>>
+>> Whose commit ID is this? Your patch is not merged yet, so don't use a
+>> commit ID.
+>>
+>> > Refer: Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+>> >
+>> > Signed-off-by: Pekon Gupta <pekon@ti.com>
+>> > ---
+>> >  arch/arm/boot/dts/am335x-evm.dts | 2 +-
+>> >  1 file changed, 1 insertion(+), 1 deletion(-)
+>> >
+>> > diff --git a/arch/arm/boot/dts/am335x-evm.dts
+>> b/arch/arm/boot/dts/am335x-evm.dts
+>> > index e8ec875..e28a2ac 100644
+>> > --- a/arch/arm/boot/dts/am335x-evm.dts
+>> > +++ b/arch/arm/boot/dts/am335x-evm.dts
+>> > @@ -268,7 +268,7 @@
+>> >                     nand@0,0 {
+>> >                             reg = <0 0 0>; /* CS0, offset 0 */
+>> >                             nand-bus-width = <8>;
+>> > -                           ti,nand-ecc-opt = "bch8";
+>> > +                           ti,nand-ecc-scheme = "bch8";
+>> >                             gpmc,device-nand = "true";
+>> >                             gpmc,device-width = <1>;
+>> >                             gpmc,sync-clk-ps = <0>;
+>>
+>> This change should probably go in patch 1 anyway, when you break the
+>> ABI.
+>>
+> As this patch series touches three different trees..
+> (1) arch/arm/boot/dts/..  maintained by Benoit Cousson (benoit.cousson@linaro.org)
 
---1bhFRg6vL9BT9osV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Hi Pekon,
 
-On Thu, Sep 26, 2013 at 12:00:43PM +0100, David Woodhouse wrote:
+Please note that Benoit's current email address is bcousson@baylibre.com.
 
-> This seems sane enough to me if Mark agrees that it's correct from the
-> SPI point of view.
+I had cc'ed him now with the correct address.
 
-I didn't really look at the patch but since it doesn't involve changes
-to the SPI API providing it does the right thing it should be fine.
+> (2) arch/arm/mach-omap2/.. maintained by Tony Lindgren (tony@atomide.com)
+> (3) driver/mtd/nand/.. maintained by Brian Norris <computersforpeace@gmail.com>
+>
+> It was observed that there were conflicts usually during final merge,
+> Hence I separated out the patches.
+> However, if all are in sync and the series gets committed in above trees
+> simultaneously, then this conflicts can be avoided.
+> So, if Tony & Benoit are ok then I'll merge this [PATCH 4/4] in [PATCH 1/4].
+>
+> with regards, pekon
+> --
 
-> I've seen a bunch of "*this* is how you indicate dummy cycles", and
-> "*this* is how you request a quad-read transfer" type responses; have we
-> got all the way there yet?
-
-Nobody added an API for dummy cycles yet but it's fairly obvious how to
-add them if someone wants to do that.  The quad read stuff is in
-mainline already.
-
---1bhFRg6vL9BT9osV
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.21 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSRCGxAAoJELSic+t+oim9AXAP/Rz924OCl1lzWSA/X7Tvu0Fk
-BcUiFeJemqSD1+u/WOxiWO96gRNKUNieZHpEu0lxCtIXo0BDZVB76p43VUics0V2
-zzGCxfQedjHlct8tmp4cHfGHCMrvdkk+80Yl9dmQm7SdhTde0q2qmhsyBFO7wXNx
-kF6eZ1Cz80FtdKcaWWDouZeESEKUi9/31FQnzcVdfUyUTv/Gi+fzOUwt7UZ5/Tle
-Gn4vN+IhkIxU1oWyfTPCBcBBDqwcxAcrBnIY3r25y8bKqMpNUow1v0PbLWSyWSfx
-t879U70rXDBwp3fPZPym8L4Ctky5wyjV3EObbi5VLPsmDpzDYZF2GGHdSjaY9qBw
-zCpgmQ/mSXrLKmZ0rOn8KgDHY8k8bSbpxXPh8jr2rnVeuypELVAHVFWo7uhY20if
-y2Y6KQnSR/VR8aEeAau1Qp4nDIp9CFPTaaELuXI3/ccHMjI+UtDeSHjpxf3xZYU8
-Uxs0pm88nkIQ0W7Jnp4VKA79FEwVWgjo9u8LEqf4yA1NAD3i8AuHZ6WW6IeF7yEH
-eqlAWPo6zFDBe72/FsOectVALtNG+xaiE6Cw2ucFXDYDYIV2fUqM5fCNj2wG6UGY
-w4dMQxDfnUt4D1JGaYwNq41zQ6+6gJta7Rk4Oxxyi2wE31TfrZdM6CzO/GZXRtqV
-9un/IhXTejwKOko8i7xY
-=Z1h+
------END PGP SIGNATURE-----
-
---1bhFRg6vL9BT9osV--
+Best regards,
+Javier
