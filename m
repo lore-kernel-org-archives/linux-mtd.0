@@ -1,16 +1,41 @@
-Received: from nm22-vm1.bullet.mail.bf1.yahoo.com ([98.139.212.127])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VP6LK-0005ZL-N4
- for linux-mtd@lists.infradead.org; Thu, 26 Sep 2013 07:50:35 +0000
-Message-ID: <1380181813.24538.YahooMailNeo@web161206.mail.bf1.yahoo.com>
-Date: Thu, 26 Sep 2013 00:50:13 -0700 (PDT)
-From: Poyo VL <poyo_vl@yahoo.com>
-Subject: BUG: JFFS2 filesystem corrupted after writing a 4 MB file on a low
- space left NOR flash
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from cam-admin0.cambridge.arm.com ([217.140.96.50])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VP7ij-00082s-5V
+ for linux-mtd@lists.infradead.org; Thu, 26 Sep 2013 09:18:50 +0000
+Date: Thu, 26 Sep 2013 10:18:15 +0100
+From: Mark Rutland <mark.rutland@arm.com>
+To: Brian Norris <computersforpeace@gmail.com>, "Gupta, Pekon" <pekon@ti.com>
+Subject: Re: [PATCH v6 1/4] ARM: OMAP2+: cleaned-up DT support of various
+ ECC schemes
+Message-ID: <20130926091815.GC2411@e106331-lin.cambridge.arm.com>
+References: <1378986619-26765-1-git-send-email-pekon@ti.com>
+ <1378986619-26765-2-git-send-email-pekon@ti.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA15ED7@DBDE04.ent.ti.com>
+ <20130925134619.GG10746@radagast>
+ <20130925175527.GA23337@ld-irv-0074.broadcom.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA16884@DBDE04.ent.ti.com>
+ <20130925200539.GH23337@ld-irv-0074.broadcom.com>
+ <CAOesGMif301iBe9zxHudkC_G9SzPPy1Mj4XYvQ-MY8nmx4wO+A@mail.gmail.com>
+ <20130925212903.GI23337@ld-irv-0074.broadcom.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Reply-To: Poyo VL <poyo_vl@yahoo.com>
+Content-Disposition: inline
+In-Reply-To: <20130925212903.GI23337@ld-irv-0074.broadcom.com>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Pawel Moll <Pawel.Moll@arm.com>, "arnd@arndb.de" <arnd@arndb.de>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ "tony@atomide.com" <tony@atomide.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "Balbi,
+ Felipe" <balbi@ti.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "rob.herring@calxeda.com" <rob.herring@calxeda.com>,
+ Stephen Warren <swarren@wwwdotorg.org>, Olof Johansson <olof@lixom.net>,
+ "benoit.cousson@linaro.org" <benoit.cousson@linaro.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,96 +45,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, Sep 25, 2013 at 10:29:03PM +0100, Brian Norris wrote:
+> On Wed, Sep 25, 2013 at 01:33:27PM -0700, Olof Johansson wrote:
+> > On Wed, Sep 25, 2013 at 1:05 PM, Brian Norris
+> > <computersforpeace@gmail.com> wrote:
+> > 
+> > > Olof has given good advice on your DT binding and has (slowly) been
+> > > responding to other requests for DT review that make it to his list. I
+> > > see that he hasn't followed up on your changes (this v6), so pinging him
+> > > (as you did) is probably the correct approach. But please do recognize
+> > > that the DT list is very high volume, so it's hard to get good timely
+> > > responses there.
+> > 
+> > I am not a DT mainainer, but sometimes when I see a binding that
+> > appears to be wrong I speak up. In this case, the binding was one of
+> > those.
+> 
+> Whoops, my bad. I was deceived by the responses I've seen from you on
+> other issues (thanks, BTW). In that case, I haven't seen any response
+> from a proper DT binding maintainer :(
 
+Hmm... this is the first email in this thread I've received, and I don't
+have older postings either. It looks like I must have cocked up
+subscribing to the devicetree list, but as I was CC'd directly on many
+patches I hadn't noticed.
 
-Hello,
+As far as I can see I wasn't CC'd directly on any version of this
+series, which would have helped to highlight the series as needing
+review.
 
-I have a big endian device with a 16 MB NOR flash.
-Flash is structured in 128 erase blocks of 128 KB each.
+Apologies for that. I've attempted to correct the problem. Hopefully
+I've got this right and mails are not being silently dropped somewhere.
 
-It happened a few times that when device had a small amount of free space, writing a big file (4MB or more using mv from /tmp or wget) corrupted the whole filesystem and device wasn't able to boot anymore (init not found for example).
+Pekon, could you please re-send this version of the patches?
 
+Cheers,
+Mark.
 
-This time the problem was:
-1. I don't know exactly how much free space was on device
-2. I wrote a big file 4.07 MB
-3. Trying to write someting to flash returned "no free space"
-4. I rebooted the device
-5. Device wasn't able to boot
-
-I was able to dump the whole filesystem and I tried to convert it to little endian using jffs2dump but it resulted an invalid image so I converted each erase block.
-
-Statistics:
-- Total 128 erase blocks (128 KB each)
-- 2 empty erase blocks (just 0xFFFF)
-- 29 corrupted erase blocks (3.6 MB total)
-
-There was a small problem with jffs2dump: corrupted inodes had invalid "totlen" (and invalid header CRC) and jumping from an inode to another was not ok. Also it does not validate if an inode is ok, it just check the magic bitmask so I made a small heuristic check: nodetype must have set only necessary bits, version must not exceed a decent value, uid and gid must be smaller than 1024 (I didn't have a bigger value), atime, ctime, mtime must not be greater than 2014 and so on.
-
-If an inode corresponded those check, I considered it valid, even if I am not sure about some things: 
-
-1. It happened to have a totlen of 0x02, 0x0A or 0x1A for an inode
-2. It happened to have a csize > 0 and a dsize == 0 and I am not sure if this is ok or not
-
-I executed modified version and I found only one possible valid inode in all corrupted erase blocks:
-
-Found valid iNode at: 0x0000000c
-
-19 85 - Magic
-C0 02 - Node type
-00 00 01 45 - Totlen
-CA F3 23 E9 - Header CRC
-00 00 4A 00 - Inode number
-00 00 00 52 - Version
-00 00 81 80 - Mode
-00 00 - UID
-00 00 - GID
-00 05 00 00 - Isize
-52 1C 24 80 - Atime
-52 1C 24 80 - Ctime
-52 1C 24 80 - Mtime
-00 05 20 00 - Offset
-00 00 01 01 - Csize
-00 00 00 00 - Dsize
-06 - Compr
-00 - User compr
-
-As you can see, csize is 0x0101 and dsize is 0x0000. Also, isize (0x00050000) is smaller than offset (0x050200) and I'am not sure this is ok.
-There were no other valid node.
-Also header CRC was not ok. I manually calculated header CRC, setting ACCURATE flag and I bruteforced the totlen field so it will match the CRC form the specified inode and i resulted a really big value, more then 3 GB.
-
-Corrupted erase blocks did not contain just dirty data, they contained partially valid inodes headers. For example, an inode from a corrupted erase block:
-
-19 85 - Magic
-C0 02 - Node type
-00 00 00 02 - Totlen
-2A 05 21 0B - CRC
-00 00 49 00 - Inode number
-00 00 00 02 - Version
-00 00 81 A4 - Mode
-00 00 - UID
-00 00 - GID 
-00 00 04 90 - Isize
-50 00 50 8C - Atime
-50 00 50 8C - Ctime
-52 10 60 8A - Mtime
-00 00 00 00 - Offset
-00 00 00 02 - Csize
-00 00 00 00 - Dsize
-06 - Compr
-00 - User compr
-
-As you can see "totlen" is 0x02, csize is 0x02 and dsize is 0x00. Header CRC does not match. 
-
-This was practically the problem: I am pretty sure there is a problem calculating totlen, isize, csize and dsize but I can't be sure.
-
-I have the kernel version 2.6.25.20. So, first, I ask you the following question: did you fixed a problem like this and it is ok just to upgrade the kernel, or I have to get more details about this issue?
-
-I checked write, file, gc, erase code but I couldn't find an overflow. Do you think it can be a syncronization problem related to garbage collector?
-
-Do you ahve any suggestion for me? 
-
-What can I do?
-
-Thank you,
-Ionut Popescu
+>  
+> > So, I have no more objections to it, and I hope you can get a quick
+> > review from a DT maintainer on the rest of the binding.
+> 
+> At this point, I'm comfortable going ahead without their ack, since they
+> obviously don't care/don't have the manpower to review.
+> 
+> Brian
+> 
