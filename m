@@ -1,17 +1,35 @@
 Received: from arroyo.ext.ti.com ([192.94.94.40])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VP8tT-0002HV-Ho
- for linux-mtd@lists.infradead.org; Thu, 26 Sep 2013 10:34:00 +0000
-From: Sourav Poddar <sourav.poddar@ti.com>
-To: <dwmw2@infradead.org>, <artem.bityutskiy@linux.intel.com>,
- <computersforpeace@gmail.com>, <linux-mtd@lists.infradead.org>,
- <b32955@freescale.com>
-Subject: [PATCHv2] drivers: mtd: devices: Add quad read support.
-Date: Thu, 26 Sep 2013 16:02:45 +0530
-Message-ID: <1380191565-28640-1-git-send-email-sourav.poddar@ti.com>
+ id 1VP9ED-0002ow-5E
+ for linux-mtd@lists.infradead.org; Thu, 26 Sep 2013 10:55:25 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Rob Herring <robherring2@gmail.com>, "mark.rutland@arm.com"
+ <mark.rutland@arm.com>, "pawel.moll@arm.com" <pawel.moll@arm.com>,
+ "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
+ "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>
+Subject: RE: [PATCH v6 1/4] ARM: OMAP2+: cleaned-up DT support of various
+ ECC schemes
+Date: Thu, 26 Sep 2013 10:54:39 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA16CEE@DBDE04.ent.ti.com>
+References: <1378986619-26765-1-git-send-email-pekon@ti.com>
+ <1378986619-26765-2-git-send-email-pekon@ti.com>
+ <CAL_Jsq+XxQ_9ik_P8EPPNSzXiCz6yd-VJLRU668t3jvD-jhyOw@mail.gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA16B0D@DBDE04.ent.ti.com>
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA16B0D@DBDE04.ent.ti.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Sourav Poddar <sourav.poddar@ti.com>, broonie@kernel.org, balbi@ti.com
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ linux-omap <linux-omap@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>, Tony Lindgren <tony@atomide.com>,
+ "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>, "Balbi,
+ Felipe" <balbi@ti.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Olof Johansson <olof@lixom.net>,
+ "benoit.cousson@linaro.org" <benoit.cousson@linaro.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,258 +39,114 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some flash also support quad read mode.
-Adding support for adding quad mode in m25p80.
 
-Signed-off-by: Sourav Poddar <sourav.poddar@ti.com>
----
-v1->v2:
-- Make the code more modular
-- put proper error checks
- drivers/mtd/devices/m25p80.c |  155 +++++++++++++++++++++++++++++++++++++++---
- 1 files changed, 144 insertions(+), 11 deletions(-)
+> > From: Rob Herring [mailto:robherring2@gmail.com]
+> > > From: Pekon Gupta [mailto:pekon@ti.com]
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+> > b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+> > > index df338cb..958e5d5 100644
+> > > --- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+> > > +++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+> > > @@ -21,11 +21,8 @@ Optional properties:
+> > >                                 is wired that way. If not specified, =
+a bus
+> > >                                 width of 8 is assumed.
+> > >
+> > > - - ti,nand-ecc-opt:            A string setting the ECC layout to us=
+e. One of:
+> > > -
+> > > -               "sw"            Software method (default)
+> > > -               "hw"            Hardware method
+> > > -               "hw-romcode"    gpmc hamming mode method & romcode
+> layout
+> > > + - ti,nand-ecc-scheme:         A string setting the ECC layout to us=
+e. One of:
+> > > +               "ham1"          1-bit Hamming ecc code
+> >
+> > As has been pointed out, this breaks compatibility which should be
+> > avoided unless you know the state of use of this binding. I fail to
+> > see the advantage of using scheme over opt. You could simply add ham1
+> > here and maintain compatibility. Instead of removing sw, hw, etc. you
+> > can simply deprecate them or decide that the kernel doesn't support
+> > those options.
+> >
+> Renaming 'ti,nand-ecc-opt' to 'ti,nand-ecc-scheme' was as per earlier
+> comments from Olof. So either way is fine with me. Should I revert
+> it back to 'ti,nand-ecc-opt' ?
+>=20
+> Also, "sw", "hw_romcode" have been deprecated, they are no longer
+> supported in driver. So shouldn't they be removed from the documentation
+> ?
+>=20
+> > However, since you are willing to break compatibility, then you should
+> > the generic NAND binding and use nand-ecc-mode adding the values you
+> > need.
+> >
+> > Documentation/devicetree/bindings/mtd/nand.txt:
+> > * MTD generic binding
+> >
+> > - nand-ecc-mode : String, operation mode of the NAND ecc mode.
+> >   Supported values are: "none", "soft", "hw", "hw_syndrome",
+> > "hw_oob_first",
+> >   "soft_bch".
+>=20
+> Yes I can use generic 'nand-ecc-mode', But the binding values like
+> "soft", "hw", "soft_bch" are too generic to describe the hardware.
+> - BCH ECC scheme can itself be of multiple types, bch4/bch8/bch16
+>   so "soft_bch" is ambiguous.
+> - Similarly "soft" and "hw" do not determine the algorithm used
+>    like Hamming or BCH.
+>=20
+> (a) Should I update the generic binding values (if no one else is using) =
+? like
+> 	sw -> ham1_sw
+> 	hw -> ham1_hw
+> 	soft_bch-> soft_bch4, soft_bch8
+> OR
+> (b) Should I add newer ones to it (like "ham1", "bch4", "bch8", "bch16") =
+?
+>       keeping the old ones intact. And how should I handle un-supported
+>      values, (Is pr_err during kernel probe enough ?).
+>=20
+> [...]
+>=20
+> > > - - elm_id:     Specifies elm device node. This is required to suppor=
+t BCH
+> > > -               error correction using ELM module.
+> > > + - ti,elm-id:  Specifies pHandle of the ELM devicetree node.
+> > > +               ELM is an on-chip hardware engine on TI SoC which is =
+used for
+> > > +               locating ECC errors for BCHx algorithms. SoC devices =
+which have
+> > > +               ELM hardware engines should specify this device node =
+in .dtsi
+> > > +               Using ELM for ECC error correction frees some CPU cyc=
+les.
+> >
+> > While yes, this is better name and documentation, I don't know that
+> > breaking compatibility is justified.
+> >
+> As this is TI specific binding, so manufacturer's name should have been
+> included.  But as this was missed while adding this binding, so this shou=
+ld
+> be fixed now. (Olof also recommended the same).
+>=20
+> AFAIK, For TI's NAND OMAP driver, currently there are not many
+> end-users are using these bindings from mainline DT kernel.
+> So this patch series mainly aims to cleanup NAND driver so that migrate
+> to latest DT based kernel from board-file one is easy.
+> So changes should be acceptable from end-user's point, its only matter
+> of which path to take.
+> Request you to please help me finalize this before I resend next patch
+> series addressing other comments from Brian.
+>=20
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 26b14f9..3c8a794 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -41,6 +41,7 @@
- #define	OPCODE_WRSR		0x01	/* Write status register 1 byte */
- #define	OPCODE_NORM_READ	0x03	/* Read data bytes (low frequency) */
- #define	OPCODE_FAST_READ	0x0b	/* Read data bytes (high frequency) */
-+#define	OPCODE_QUAD_READ	0x6b	/* QUAD READ */
- #define	OPCODE_PP		0x02	/* Page program (up to 256 bytes) */
- #define	OPCODE_BE_4K		0x20	/* Erase 4KiB block */
- #define	OPCODE_BE_4K_PMC	0xd7	/* Erase 4KiB block on PMC chips */
-@@ -48,10 +49,12 @@
- #define	OPCODE_CHIP_ERASE	0xc7	/* Erase whole flash chip */
- #define	OPCODE_SE		0xd8	/* Sector erase (usually 64KiB) */
- #define	OPCODE_RDID		0x9f	/* Read JEDEC ID */
-+#define	OPCODE_RDCR		0x35	/* Read configuration register */
- 
- /* 4-byte address opcodes - used on Spansion and some Macronix flashes. */
- #define	OPCODE_NORM_READ_4B	0x13	/* Read data bytes (low frequency) */
- #define	OPCODE_FAST_READ_4B	0x0c	/* Read data bytes (high frequency) */
-+#define	OPCODE_QUAD_READ_4B     0x6c    /* Read data bytes */
- #define	OPCODE_PP_4B		0x12	/* Page program (up to 256 bytes) */
- #define	OPCODE_SE_4B		0xdc	/* Sector erase (usually 64KiB) */
- 
-@@ -76,6 +79,9 @@
- #define	SR_BP2			0x10	/* Block protect 2 */
- #define	SR_SRWD			0x80	/* SR write protect */
- 
-+/* Configuration Register bits. */
-+#define	QUAD_CR_EN		0x2	/* Quad I/O */
-+
- /* Define max times to check status register before we give up. */
- #define	MAX_READY_WAIT_JIFFIES	(40 * HZ)	/* M25P16 specs 40s max chip erase */
- #define	MAX_CMD_SIZE		5
-@@ -95,6 +101,7 @@ struct m25p {
- 	u8			program_opcode;
- 	u8			*command;
- 	bool			fast_read;
-+	bool			quad_read;
- };
- 
- static inline struct m25p *mtd_to_m25p(struct mtd_info *mtd)
-@@ -163,6 +170,25 @@ static inline int write_disable(struct m25p *flash)
- 	return spi_write_then_read(flash->spi, &code, 1, NULL, 0);
- }
- 
-+/* Read the configuration register, returning its value in the location
-+ * Return the configuration register value.
-+ * Returns negative if error occurred.
-+*/
-+static int read_cr(struct m25p *flash)
-+{
-+	u8 code = OPCODE_RDCR;
-+	int ret;
-+	u8 val;
-+
-+	ret = spi_write_then_read(flash->spi, &code, 1, &val, 1);
-+	if (ret < 0) {
-+		dev_err(&flash->spi->dev, "error %d reading CR\n", ret);
-+		return ret;
-+	}
-+
-+	return val;
-+}
-+
- /*
-  * Enable/disable 4-byte addressing mode.
-  */
-@@ -336,6 +362,97 @@ static int m25p80_erase(struct mtd_info *mtd, struct erase_info *instr)
- 	return 0;
- }
- 
-+/* Write status register and configuration register with 2 bytes
-+* The first byte will be written to the status register, while the second byte
-+* will be written to the configuration register.
-+* Returns negative if error occurred.
-+*/
-+static int write_sr_cr(struct m25p *flash, u16 val)
-+{
-+	flash->command[0] = OPCODE_WRSR;
-+	flash->command[1] = val & 0xff;
-+	flash->command[2] = (val >> 8);
-+
-+	return spi_write(flash->spi, flash->command, 3);
-+}
-+
-+static int quad_enable(struct m25p *flash)
-+{
-+	int ret;
-+	int quad_en = QUAD_CR_EN << 8;
-+
-+	write_enable(flash);
-+
-+	ret = write_sr_cr(flash, quad_en);
-+	if (ret < 0) {
-+		dev_err(&flash->spi->dev,
-+			"error while writing configuration register");
-+		return -EINVAL;
-+	}
-+
-+	/* read back and check it */
-+	ret = read_cr(flash);
-+	if (!(ret > 0 && (ret & QUAD_CR_EN))) {
-+		dev_err(&flash->spi->dev,
-+			"Quad bit not set");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int m25p80_quad_read(struct mtd_info *mtd, loff_t from, size_t len,
-+	size_t *retlen, u_char *buf)
-+{
-+	struct m25p *flash = mtd_to_m25p(mtd);
-+	struct spi_transfer t[2];
-+	struct spi_message m;
-+	uint8_t opcode;
-+
-+	pr_debug("%s: %s from 0x%08x, len %zd\n", dev_name(&flash->spi->dev),
-+			__func__, (u32)from, len);
-+
-+	spi_message_init(&m);
-+	memset(t, 0, (sizeof(t)));
-+
-+	t[0].tx_buf = flash->command;
-+	t[0].len = m25p_cmdsz(flash) + (flash->quad_read ? 1 : 0);
-+	spi_message_add_tail(&t[0], &m);
-+
-+	t[1].rx_buf = buf;
-+	t[1].len = len;
-+	t[1].rx_nbits = SPI_NBITS_QUAD;
-+	spi_message_add_tail(&t[1], &m);
-+
-+	mutex_lock(&flash->lock);
-+
-+	/* Wait till previous write/erase is done. */
-+	if (wait_till_ready(flash)) {
-+		/* REVISIT status return?? */
-+		mutex_unlock(&flash->lock);
-+		return 1;
-+	}
-+
-+	/* FIXME switch to OPCODE_QUAD_READ.  It's required for higher
-+	 * clocks; and at this writing, every chip this driver handles
-+	 * supports that opcode.
-+	*/
-+
-+	/* Set up the write data buffer. */
-+	opcode = flash->read_opcode;
-+	flash->command[0] = opcode;
-+	m25p_addr2cmd(flash, from, flash->command);
-+
-+	spi_sync(flash->spi, &m);
-+
-+	*retlen = m.actual_length - m25p_cmdsz(flash) -
-+			(flash->quad_read ? 1 : 0);
-+
-+	mutex_unlock(&flash->lock);
-+
-+	return 0;
-+}
-+
- /*
-  * Read an address range from the flash chip.  The address range
-  * may be any size provided it is within the physical boundaries.
-@@ -928,6 +1045,7 @@ static int m25p_probe(struct spi_device *spi)
- 	unsigned			i;
- 	struct mtd_part_parser_data	ppdata;
- 	struct device_node __maybe_unused *np = spi->dev.of_node;
-+	int ret;
- 
- #ifdef CONFIG_MTD_OF_PARTS
- 	if (!of_device_is_available(np))
-@@ -979,15 +1097,9 @@ static int m25p_probe(struct spi_device *spi)
- 		}
- 	}
- 
--	flash = kzalloc(sizeof *flash, GFP_KERNEL);
-+	flash = devm_kzalloc(&spi->dev, sizeof(*flash), GFP_KERNEL);
- 	if (!flash)
- 		return -ENOMEM;
--	flash->command = kmalloc(MAX_CMD_SIZE + (flash->fast_read ? 1 : 0),
--					GFP_KERNEL);
--	if (!flash->command) {
--		kfree(flash);
--		return -ENOMEM;
--	}
- 
- 	flash->spi = spi;
- 	mutex_init(&flash->lock);
-@@ -1015,7 +1127,6 @@ static int m25p_probe(struct spi_device *spi)
- 	flash->mtd.flags = MTD_CAP_NORFLASH;
- 	flash->mtd.size = info->sector_size * info->n_sectors;
- 	flash->mtd._erase = m25p80_erase;
--	flash->mtd._read = m25p80_read;
- 
- 	/* flash protection support for STmicro chips */
- 	if (JEDEC_MFR(info->jedec_id) == CFI_MFR_ST) {
-@@ -1067,6 +1178,28 @@ static int m25p_probe(struct spi_device *spi)
- 
- 	flash->program_opcode = OPCODE_PP;
- 
-+	flash->quad_read = false;
-+	if (spi->mode && SPI_RX_QUAD)
-+		flash->quad_read = true;
-+
-+	flash->command = kmalloc(MAX_CMD_SIZE + (flash->fast_read ? 1 :
-+				(flash->quad_read ? 1 : 0)), GFP_KERNEL);
-+	if (!flash->command) {
-+		kfree(flash);
-+		return -ENOMEM;
-+	}
-+
-+	if (flash->quad_read) {
-+		ret = quad_enable(flash);
-+		if (ret) {
-+			dev_err(&spi->dev,
-+				"error enabling quad");
-+			return -EINVAL;
-+		}
-+		flash->mtd._read = m25p80_quad_read;
-+	} else
-+		flash->mtd._read = m25p80_read;
-+
- 	if (info->addr_width)
- 		flash->addr_width = info->addr_width;
- 	else if (flash->mtd.size > 0x1000000) {
-@@ -1074,9 +1207,9 @@ static int m25p_probe(struct spi_device *spi)
- 		flash->addr_width = 4;
- 		if (JEDEC_MFR(info->jedec_id) == CFI_MFR_AMD) {
- 			/* Dedicated 4-byte command set */
--			flash->read_opcode = flash->fast_read ?
--				OPCODE_FAST_READ_4B :
--				OPCODE_NORM_READ_4B;
-+			flash->read_opcode = (flash->fast_read ?
-+				OPCODE_FAST_READ_4B : (flash->quad_read ?
-+				OPCODE_QUAD_READ_4B : OPCODE_NORM_READ_4B));
- 			flash->program_opcode = OPCODE_PP_4B;
- 			/* No small sector erase for 4-byte command set */
- 			flash->erase_opcode = OPCODE_SE_4B;
--- 
-1.7.1
++ Mark Rutland <mark.rutland@arm.com>
++ Pawel Moll <pawel.moll@arm.com>
++ Ian Campbell <ijc+devicetree@hellion.org.uk>
++ Stephen Warren <swarren@wwwdotorg.org>
+
+CC other DT maintainers, who were missed in this branch of mail-chain.
+
+with regards, pekon
