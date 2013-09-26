@@ -1,36 +1,18 @@
-Received: from mail-ie0-x22a.google.com ([2607:f8b0:4001:c03::22a])
+Received: from mout.gmx.net ([212.227.17.22])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VPBap-00075x-Qk
- for linux-mtd@lists.infradead.org; Thu, 26 Sep 2013 13:26:57 +0000
-Received: by mail-ie0-f170.google.com with SMTP id x13so1352149ief.1
- for <linux-mtd@lists.infradead.org>; Thu, 26 Sep 2013 06:26:34 -0700 (PDT)
+ id 1VPCqQ-0000WZ-B3
+ for linux-mtd@lists.infradead.org; Thu, 26 Sep 2013 14:47:07 +0000
+Received: from 3capp-gmx-bs09.server.lan ([172.19.170.60]) by
+ mrigmx.server.lan (mrigmx002) with ESMTP (Nemesis) id
+ 0MZzWr-1V9ShU4ADX-00LpfC for <linux-mtd@lists.infradead.org>; Thu, 26 Sep
+ 2013 16:46:39 +0200
 MIME-Version: 1.0
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA16D3D@DBDE04.ent.ti.com>
-References: <1378986619-26765-1-git-send-email-pekon@ti.com>
- <1378986619-26765-5-git-send-email-pekon@ti.com>
- <20130925191559.GF23337@ld-irv-0074.broadcom.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA16D3D@DBDE04.ent.ti.com>
-From: Javier Martinez Canillas <martinez.javier@gmail.com>
-Date: Thu, 26 Sep 2013 15:26:11 +0200
-Message-ID: <CAAwP0s1J8=_0bz5Cryjuy4EL4Ky9f33Bm6zZ-x+jm=EGh+VGiQ@mail.gmail.com>
-Subject: Re: [PATCH v6 4/4] ARM: dts: AM33xx: updated default ECC scheme in
- nand-ecc-opt
-To: "Gupta, Pekon" <pekon@ti.com>, Benoit Cousson <bcousson@baylibre.com>
+Message-ID: <trinity-6be4e199-095d-46dd-9ca4-3f18d68ca479-1380206799874@3capp-gmx-bs09>
+From: dbextern@gmx.de
+To: linux-mtd@lists.infradead.org
+Subject: Does UBI take into account factory supplied bad block information?
 Content-Type: text/plain; charset=UTF-8
-Cc: "Mark Rutland \(mark.rutland@arm.com\)" <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- Pawel Moll <pawel.moll@arm.com>, "arnd@arndb.de" <arnd@arndb.de>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "tony@atomide.com" <tony@atomide.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>, "Balbi,
- Felipe" <balbi@ti.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Stephen Warren <swarren@wwwdotorg.org>, "olof@lixom.net" <olof@lixom.net>,
- "Rob Herring \(robherring2@gmail.com\)" <robherring2@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+Date: Thu, 26 Sep 2013 16:46:39 +0200 (CEST)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,63 +22,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 26, 2013 at 1:28 PM, Gupta, Pekon <pekon@ti.com> wrote:
->> From: Brian Norris [mailto:computersforpeace@gmail.com]
->>
->> On Thu, Sep 12, 2013 at 05:20:19PM +0530, Pekon Gupta wrote:
->> > DT property values for OMAP based gpmc-nand have been updated
->> > to match changes in commit:
->> >     6faf096 ARM: OMAP2+: cleaned-up DT support of various ECC
->> schemes
->>
->> Whose commit ID is this? Your patch is not merged yet, so don't use a
->> commit ID.
->>
->> > Refer: Documentation/devicetree/bindings/mtd/gpmc-nand.txt
->> >
->> > Signed-off-by: Pekon Gupta <pekon@ti.com>
->> > ---
->> >  arch/arm/boot/dts/am335x-evm.dts | 2 +-
->> >  1 file changed, 1 insertion(+), 1 deletion(-)
->> >
->> > diff --git a/arch/arm/boot/dts/am335x-evm.dts
->> b/arch/arm/boot/dts/am335x-evm.dts
->> > index e8ec875..e28a2ac 100644
->> > --- a/arch/arm/boot/dts/am335x-evm.dts
->> > +++ b/arch/arm/boot/dts/am335x-evm.dts
->> > @@ -268,7 +268,7 @@
->> >                     nand@0,0 {
->> >                             reg = <0 0 0>; /* CS0, offset 0 */
->> >                             nand-bus-width = <8>;
->> > -                           ti,nand-ecc-opt = "bch8";
->> > +                           ti,nand-ecc-scheme = "bch8";
->> >                             gpmc,device-nand = "true";
->> >                             gpmc,device-width = <1>;
->> >                             gpmc,sync-clk-ps = <0>;
->>
->> This change should probably go in patch 1 anyway, when you break the
->> ABI.
->>
-> As this patch series touches three different trees..
-> (1) arch/arm/boot/dts/..  maintained by Benoit Cousson (benoit.cousson@linaro.org)
+Hello!
 
-Hi Pekon,
+Reading the datasheet of our NAND flash MT29F4G08 I came across the information about factory supplied bad block information which is stored in the first two pages of each block. The manufacturer advices to use this information because it might not be reproducible in better than worst case conditions (which he applies in the end test).
 
-Please note that Benoit's current email address is bcousson@baylibre.com.
+My question ist now whether a ubiformat takes into account this information or not? If not I'd try to read that information myself beforehand and supply it to the ubiformat myself. 
 
-I had cc'ed him now with the correct address.
-
-> (2) arch/arm/mach-omap2/.. maintained by Tony Lindgren (tony@atomide.com)
-> (3) driver/mtd/nand/.. maintained by Brian Norris <computersforpeace@gmail.com>
->
-> It was observed that there were conflicts usually during final merge,
-> Hence I separated out the patches.
-> However, if all are in sync and the series gets committed in above trees
-> simultaneously, then this conflicts can be avoided.
-> So, if Tony & Benoit are ok then I'll merge this [PATCH 4/4] in [PATCH 1/4].
->
-> with regards, pekon
-> --
-
-Best regards,
-Javier
+Thanks and best regards, 
+Sebastian
