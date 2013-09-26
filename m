@@ -1,19 +1,17 @@
-Received: from mail-wi0-x231.google.com ([2a00:1450:400c:c05::231])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VP5uI-0004hE-L7
- for linux-mtd@lists.infradead.org; Thu, 26 Sep 2013 07:22:39 +0000
-Received: by mail-wi0-f177.google.com with SMTP id cb5so753448wib.4
- for <linux-mtd@lists.infradead.org>; Thu, 26 Sep 2013 00:22:13 -0700 (PDT)
-Message-ID: <5243E0A3.1060900@gmail.com>
-Date: Thu, 26 Sep 2013 09:22:11 +0200
-From: Richard Genoud <richard.genoud@gmail.com>
+ id 1VP5wW-0004mr-6Y
+ for linux-mtd@lists.infradead.org; Thu, 26 Sep 2013 07:24:57 +0000
+Message-ID: <5243E130.3040200@nod.at>
+Date: Thu, 26 Sep 2013 09:24:32 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH 2/2] UBI: Call scan_all() with correct offset in error case
+To: Richard Genoud <richard.genoud@gmail.com>
+Subject: Re: [PATCH 1/2] UBI: Fix error path in scan_pool()
 References: <1380141125-11063-1-git-send-email-richard@nod.at>
- <1380141125-11063-2-git-send-email-richard@nod.at>
-In-Reply-To: <1380141125-11063-2-git-send-email-richard@nod.at>
-Content-Type: text/plain; charset=ISO-8859-1
+ <5243E033.7010403@gmail.com>
+In-Reply-To: <5243E033.7010403@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
  linux-kernel@vger.kernel.org, dedekind1@gmail.com
@@ -26,36 +24,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 25/09/2013 22:32, Richard Weinberger wrote:
-> If we find an invalid fastmap we have to scan from the very beginning.
-> Otherwise we leak the first 64 PEBs.
+Am 26.09.2013 09:20, schrieb Richard Genoud:
+> On 25/09/2013 22:32, Richard Weinberger wrote:
+>> We have to set "ret", not "err" in case of an error.
+>>
+>> Reported-by: Richard Genoud <richard.genoud@gmail.com>
+>> Signed-off-by: Richard Weinberger <richard@nod.at>
+>> ---
+>>  drivers/mtd/ubi/fastmap.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+>> index f5aa4b0..9b42add 100644
+>> --- a/drivers/mtd/ubi/fastmap.c
+>> +++ b/drivers/mtd/ubi/fastmap.c
+>> @@ -428,7 +428,7 @@ static int scan_pool(struct ubi_device *ubi, struct ubi_attach_info *ai,
+>>  		if (be32_to_cpu(ech->image_seq) != ubi->image_seq) {
+>>  			ubi_err("bad image seq: 0x%x, expected: 0x%x",
+>>  				be32_to_cpu(ech->image_seq), ubi->image_seq);
+>> -			err = UBI_BAD_FASTMAP;
+>> +			ret = UBI_BAD_FASTMAP;
+>>  			goto out;
+>>  		}
+>>  
+>>
 > 
-> Reported-by: Richard Genoud <richard.genoud@gmail.com>
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-> ---
->  drivers/mtd/ubi/attach.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+> Tested-by: Richard Genoud <richard.genoud@gmail.com>
 > 
-> diff --git a/drivers/mtd/ubi/attach.c b/drivers/mtd/ubi/attach.c
-> index c071d41..03b32b0 100644
-> --- a/drivers/mtd/ubi/attach.c
-> +++ b/drivers/mtd/ubi/attach.c
-> @@ -1417,9 +1417,11 @@ int ubi_attach(struct ubi_device *ubi, int force_scan)
->  				ai = alloc_ai("ubi_aeb_slab_cache2");
->  				if (!ai)
->  					return -ENOMEM;
-> -			}
->  
-> -			err = scan_all(ubi, ai, UBI_FM_MAX_START);
-> +				err = scan_all(ubi, ai, 0);
-> +			} else {
-> +				err = scan_all(ubi, ai, UBI_FM_MAX_START);
-> +			}
->  		}
->  	}
->  #else
+> It reveals another bug though.
 > 
+> [    0.812500] UBI: default fastmap pool size: 95
+> [    0.820312] UBI: default fastmap WL pool size: 25
+> [    0.820312] UBI: attaching mtd2 to ubi0
+> [    0.914062] UBI error: scan_pool: bad image seq: 0x0, expected: 0x352a9728
 
-Works great, the assert is not triggered anymore.
+This worries me more...
+The fastmap is corrupted, now we have to find out why.
+Broken driver? Powercut? IO errors?
 
-Tested-by: Richard Genoud <richard.genoud@gmail.com>
+> [    0.921875] UBI error: ubi_scan_fastmap: Attach by fastmap failed, doing a full scan!
+> [    0.929687] kmem_cache_destroy ubi_ainf_peb_slab: Slab cache still has objects
+
+I see.
+
+Thanks,
+//richard
