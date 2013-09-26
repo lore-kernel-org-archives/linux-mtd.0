@@ -1,25 +1,31 @@
-Received: from mail-ie0-x22f.google.com ([2607:f8b0:4001:c03::22f])
+Received: from comal.ext.ti.com ([198.47.26.152])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VOyb8-0003iH-UR
- for linux-mtd@lists.infradead.org; Wed, 25 Sep 2013 23:34:23 +0000
-Received: by mail-ie0-f175.google.com with SMTP id e14so453866iej.34
- for <linux-mtd@lists.infradead.org>; Wed, 25 Sep 2013 16:33:59 -0700 (PDT)
+ id 1VP4lM-0002xn-SC
+ for linux-mtd@lists.infradead.org; Thu, 26 Sep 2013 06:09:21 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Rob Herring <robherring2@gmail.com>
+Subject: RE: [PATCH v6 1/4] ARM: OMAP2+: cleaned-up DT support of various
+ ECC schemes
+Date: Thu, 26 Sep 2013 06:08:42 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA16B0D@DBDE04.ent.ti.com>
+References: <1378986619-26765-1-git-send-email-pekon@ti.com>
+ <1378986619-26765-2-git-send-email-pekon@ti.com>
+ <CAL_Jsq+XxQ_9ik_P8EPPNSzXiCz6yd-VJLRU668t3jvD-jhyOw@mail.gmail.com>
+In-Reply-To: <CAL_Jsq+XxQ_9ik_P8EPPNSzXiCz6yd-VJLRU668t3jvD-jhyOw@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <CAHSAbzOCRhpxMzQRtD2po3LrmNExscoYESPPi_-jnZQaEBuFTg@mail.gmail.com>
-References: <1376216117-5864-1-git-send-email-wangyuhang2014@gmail.com>
- <CA+7tXih4XkhZ8xGcaUdGU6O4ZN1ZLfqyjb2UEKsRxsZBA+=DZw@mail.gmail.com>
- <CAHSAbzOCRhpxMzQRtD2po3LrmNExscoYESPPi_-jnZQaEBuFTg@mail.gmail.com>
-Date: Wed, 25 Sep 2013 16:33:56 -0700
-Message-ID: <CA+7tXigzKW8sydfnktr4F5uY-SKk0JAMjaxFn74XLbw_NTYVXg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2]spi: DUAL and QUAD support
-From: Trent Piepho <tpiepho@gmail.com>
-To: yuhang wang <wangyuhang2014@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "spi-devel-general@lists.sourceforge.net"
- <spi-devel-general@lists.sourceforge.net>, "Poddar,
- Sourav" <sourav.poddar@ti.com>, "broonie@kernel.org" <broonie@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ linux-omap <linux-omap@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>, Tony Lindgren <tony@atomide.com>,
+ "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>, "Balbi,
+ Felipe" <balbi@ti.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Olof Johansson <olof@lixom.net>,
+ "benoit.cousson@linaro.org" <benoit.cousson@linaro.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,167 +35,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Sep 4, 2013 at 12:07 AM, yuhang wang <wangyuhang2014@gmail.com> wrote:
->>>         dma_addr_t      rx_dma;
->>>
->>>         unsigned        cs_change:1;
->>> +       u8              tx_nbits;
->>> +       u8              rx_nbits;
->>> +#define        SPI_NBITS_SINGLE        0x01 /* 1bit transfer */
->>> +#define        SPI_NBITS_DUAL          0x02 /* 2bits transfer */
->>> +#define        SPI_NBITS_QUAD          0x04 /* 4bits transfer */
->>
->> These fields increase the size of a spi_transfer by 4 bytes.  If you
->> used bitfields instead it wouldn't increase the size at all since
->> there are still 7 bits left after cs_change.
-> Yes, it will increase the size by 4 bytes, but using bitfields here
-> will make it logically weird. Bitfields may mean that really have the
-> restriction of number of bits. If just for saving memory, then what
-> about the other members such as bits_per_world, delay_usecs.
+Hi,
 
-Rather than just talk about it, I'll make patches to do it.  Then it
-will be clear.
+> >
+> > diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+> b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+> > index df338cb..958e5d5 100644
+> > --- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+> > +++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+> > @@ -21,11 +21,8 @@ Optional properties:
+> >                                 is wired that way. If not specified, a =
+bus
+> >                                 width of 8 is assumed.
+> >
+> > - - ti,nand-ecc-opt:            A string setting the ECC layout to use.=
+ One of:
+> > -
+> > -               "sw"            Software method (default)
+> > -               "hw"            Hardware method
+> > -               "hw-romcode"    gpmc hamming mode method & romcode layo=
+ut
+> > + - ti,nand-ecc-scheme:         A string setting the ECC layout to use.=
+ One of:
+> > +               "ham1"          1-bit Hamming ecc code
+>=20
+> As has been pointed out, this breaks compatibility which should be
+> avoided unless you know the state of use of this binding. I fail to
+> see the advantage of using scheme over opt. You could simply add ham1
+> here and maintain compatibility. Instead of removing sw, hw, etc. you
+> can simply deprecate them or decide that the kernel doesn't support
+> those options.
+>=20
+Renaming 'ti,nand-ecc-opt' to 'ti,nand-ecc-scheme' was as per earlier=20
+comments from Olof. So either way is fine with me. Should I revert
+it back to 'ti,nand-ecc-opt' ?
 
-On Wed, Sep 4, 2013 at 12:07 AM, yuhang wang <wangyuhang2014@gmail.com> wrote:
-> 2013/9/4 Trent Piepho <tpiepho@gmail.com>:
->> On Sun, Aug 11, 2013 at 3:15 AM, wangyuhang <wangyuhang2014@gmail.com> wrote:
->>> fix the previous patch some mistake below:
->>
->> This isn't a very good commit message.  "the previous patch" will have
->> no meaning in the kernel git repo.  The rest of the message only
->> describes changes since a previous version of the patch and not the
->> actual patch in full.
->>
->>>
->>> +               /* Device DUAL/QUAD mode */
->>> +               prop = of_get_property(nc, "spi-tx-nbits", &len);
->>
->> Why not use of_property_read_u32() here?
->>
->>> +               if (!prop || len < sizeof(*prop)) {
->>> +                       dev_err(&master->dev, "%s has no 'spi-tx-nbits' property\n",
->>> +                               nc->full_name);
->>> +                       spi_dev_put(spi);
->>> +                       continue;
->>
->> So if no spi-tx-nbits property is supplied, the device is rejected and
->> the loop continues to the next device entry?  This means ALL EXISTING
->> DEVICE TREES with SPI devices will be rejected, since none of them
->> have this new property!  Was this patch tested at all with any system
->> before being accepted?
->>
-> This part has been fixed in patch[commit
-> id:a822e99c70f448c4068ea85bb195dac0b2eb3afe]
->
->>> +       /* check mode to prevent that DUAL and QUAD set at the same time
->>> +        */
->>> +       if (((spi->mode & SPI_TX_DUAL) && (spi->mode & SPI_TX_QUAD)) ||
->>> +               ((spi->mode & SPI_RX_DUAL) && (spi->mode & SPI_RX_QUAD))) {
->>> +               dev_err(&spi->dev,
->>> +               "setup: can not select dual and quad at the same time\n");
->>> +               return -EINVAL;
->>
->> This test can be done with fewer operations as:
->> if ((spi->mode & (SPI_TX_DUAL|SPI_TX_QUAD)) == (SPI_TX_DUAL|SPI_TX_QUAD) ||
->>     (spi->mode & (SPI_RX_DUAL|SPI_RX_QUAD)) == (SPI_RX_DUAL|SPI_RX_QUAD)) {
->>
->>
->>> +       }
->>> +       /* if it is SPI_3WIRE mode, DUAL and QUAD should be forbidden
->>> +        */
->>> +       if ((spi->mode & SPI_3WIRE) && (spi->mode &
->>> +               (SPI_TX_DUAL | SPI_TX_QUAD | SPI_RX_DUAL | SPI_RX_QUAD)))
->>> +               return -EINVAL;
->>
->> No dev_err message for this possibility?  What's different than the
->> previous check that does produce a message?
->>
-> OK, should be added. Thanks.
->
->>>         /* help drivers fail *cleanly* when they need options
->>>          * that aren't supported with their current master
->>>          */
->> Following this comment is the code:
->>         bad_bits = spi->mode & ~spi->master->mode_bits;
->>         if (bad_bits) {
->>                 dev_err(&spi->dev, "setup: unsupported mode bits %x\n",
->>                         bad_bits);
->>                 return -EINVAL;
->>         }
->>
->> Won't this always trigger for anything that sets one of the dual or quad bits?
->>
-> I can't get your idea clearly. Please provide more infomation.
->
->>> @@ -1370,12 +1428,50 @@ static int __spi_async(struct spi_device *spi, struct spi_message *message)
->>>         /**
->>>          * Set transfer bits_per_word and max speed as spi device default if
->>>          * it is not set for this transfer.
->>> +        * Set transfer tx_nbits and rx_nbits as single transfer default
->>> +        * (SPI_NBITS_SINGLE) if it is not set for this transfer.
->>>          */
->>>         list_for_each_entry(xfer, &message->transfers, transfer_list) {
->>>                 if (!xfer->bits_per_word)
->>>                         xfer->bits_per_word = spi->bits_per_word;
->>>                 if (!xfer->speed_hz)
->>>                         xfer->speed_hz = spi->max_speed_hz;
->>> +               if (xfer->tx_buf && !xfer->tx_nbits)
->>> +                       xfer->tx_nbits = SPI_NBITS_SINGLE;
->>> +               if (xfer->rx_buf && !xfer->rx_nbits)
->>> +                       xfer->rx_nbits = SPI_NBITS_SINGLE;
->>> +               /* check transfer tx/rx_nbits:
->>> +                * 1. keep the value is not out of single, dual and quad
->>> +                * 2. keep tx/rx_nbits is contained by mode in spi_device
->>> +                * 3. if SPI_3WIRE, tx/rx_nbits should be in single
->>> +                */
->>> +               if (xfer->tx_nbits != SPI_NBITS_SINGLE &&
->>> +                       xfer->tx_nbits != SPI_NBITS_DUAL &&
->>> +                       xfer->tx_nbits != SPI_NBITS_QUAD)
->>> +                       return -EINVAL;
->>> +               if ((xfer->tx_nbits == SPI_NBITS_DUAL) &&
->>> +                       !(spi->mode & (SPI_TX_DUAL | SPI_TX_QUAD)))
->>> +                       return -EINVAL;
->>> +               if ((xfer->tx_nbits == SPI_NBITS_QUAD) &&
->>> +                       !(spi->mode & SPI_TX_QUAD))
->>> +                       return -EINVAL;
->>> +               if ((spi->mode & SPI_3WIRE) &&
->>> +                       (xfer->tx_nbits != SPI_NBITS_SINGLE))
->>> +                       return -EINVAL;
->>> +               /* check transfer rx_nbits */
->>> +               if (xfer->rx_nbits != SPI_NBITS_SINGLE &&
->>> +                       xfer->rx_nbits != SPI_NBITS_DUAL &&
->>> +                       xfer->rx_nbits != SPI_NBITS_QUAD)
->>> +                       return -EINVAL;
->>> +               if ((xfer->rx_nbits == SPI_NBITS_DUAL) &&
->>> +                       !(spi->mode & (SPI_RX_DUAL | SPI_RX_QUAD)))
->>> +                       return -EINVAL;
->>> +               if ((xfer->rx_nbits == SPI_NBITS_QUAD) &&
->>> +                       !(spi->mode & SPI_RX_QUAD))
->>> +                       return -EINVAL;
->>> +               if ((spi->mode & SPI_3WIRE) &&
->>> +                       (xfer->rx_nbits != SPI_NBITS_SINGLE))
->>> +                       return -EINVAL;
->>>         }
->>
->> What a lot of code to check the transfer bits.  It really needs this much?
->>
-> This part is also corrected in patch [commit
-> id:db90a44177ac39fc22b2da5235b231fccdd4c673].
->
->>> @@ -511,6 +524,11 @@ struct spi_transfer {
->>>         dma_addr_t      rx_dma;
->>>
->>>         unsigned        cs_change:1;
->>> +       u8              tx_nbits;
->>> +       u8              rx_nbits;
->>> +#define        SPI_NBITS_SINGLE        0x01 /* 1bit transfer */
->>> +#define        SPI_NBITS_DUAL          0x02 /* 2bits transfer */
->>> +#define        SPI_NBITS_QUAD          0x04 /* 4bits transfer */
->>
->> These fields increase the size of a spi_transfer by 4 bytes.  If you
->> used bitfields instead it wouldn't increase the size at all since
->> there are still 7 bits left after cs_change.
-> Yes, it will increase the size by 4 bytes, but using bitfields here
-> will make it logically weird. Bitfields may mean that really have the
-> restriction of number of bits. If just for saving memory, then what
-> about the other members such as bits_per_world, delay_usecs.
+Also, "sw", "hw_romcode" have been deprecated, they are no longer
+supported in driver. So shouldn't they be removed from the documentation ?
+
+> However, since you are willing to break compatibility, then you should
+> the generic NAND binding and use nand-ecc-mode adding the values you
+> need.
+>=20
+> Documentation/devicetree/bindings/mtd/nand.txt:
+> * MTD generic binding
+>=20
+> - nand-ecc-mode : String, operation mode of the NAND ecc mode.
+>   Supported values are: "none", "soft", "hw", "hw_syndrome",
+> "hw_oob_first",
+>   "soft_bch".
+
+Yes I can use generic 'nand-ecc-mode', But the binding values like
+"soft", "hw", "soft_bch" are too generic to describe the hardware.
+- BCH ECC scheme can itself be of multiple types, bch4/bch8/bch16
+  so "soft_bch" is ambiguous.
+- Similarly "soft" and "hw" do not determine the algorithm used
+   like Hamming or BCH.
+
+(a) Should I update the generic binding values (if no one else is using) ? =
+like=20
+	sw -> ham1_sw
+	hw -> ham1_hw
+	soft_bch-> soft_bch4, soft_bch8
+OR=20
+(b) Should I add newer ones to it (like "ham1", "bch4", "bch8", "bch16") ?
+      keeping the old ones intact. And how should I handle un-supported
+     values, (Is pr_err during kernel probe enough ?).
+
+[...]
+
+> > - - elm_id:     Specifies elm device node. This is required to support =
+BCH
+> > -               error correction using ELM module.
+> > + - ti,elm-id:  Specifies pHandle of the ELM devicetree node.
+> > +               ELM is an on-chip hardware engine on TI SoC which is us=
+ed for
+> > +               locating ECC errors for BCHx algorithms. SoC devices wh=
+ich have
+> > +               ELM hardware engines should specify this device node in=
+ .dtsi
+> > +               Using ELM for ECC error correction frees some CPU cycle=
+s.
+>=20
+> While yes, this is better name and documentation, I don't know that
+> breaking compatibility is justified.
+>=20
+As this is TI specific binding, so manufacturer's name should have been
+included.  But as this was missed while adding this binding, so this should
+be fixed now. (Olof also recommended the same).
+
+AFAIK, For TI's NAND OMAP driver, currently there are not many
+end-users are using these bindings from mainline DT kernel.
+So this patch series mainly aims to cleanup NAND driver so that migrate
+to latest DT based kernel from board-file one is easy.
+So changes should be acceptable from end-user's point, its only matter
+of which path to take.=20
+Request you to please help me finalize this before I resend next patch
+series addressing other comments from Brian.
+
+Thank You..
+with regards, pekon
