@@ -1,26 +1,17 @@
-Received: from mail-lb0-x22b.google.com ([2a00:1450:4010:c04::22b])
+Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VPVz6-0007XX-3w
- for linux-mtd@lists.infradead.org; Fri, 27 Sep 2013 11:13:21 +0000
-Received: by mail-lb0-f171.google.com with SMTP id u14so2126963lbd.16
- for <linux-mtd@lists.infradead.org>; Fri, 27 Sep 2013 04:12:56 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <52456595.6080202@nod.at>
-References: <1380141125-11063-1-git-send-email-richard@nod.at>
- <5243E033.7010403@gmail.com> <5243E130.3040200@nod.at>
- <CACQ1gAgqfHXwLjxhy9RrzFWe93Vmnc0chOg6uRKyqb6sVVQKxw@mail.gmail.com>
- <CACQ1gAjrSZv61sow6Ows50fu+ptjr3swqXDQT7NYGWqEx-w2Lg@mail.gmail.com>
- <52456595.6080202@nod.at>
+ id 1VPXXG-00026r-5J
+ for linux-mtd@lists.infradead.org; Fri, 27 Sep 2013 12:52:43 +0000
+Received: by mail-wi0-f176.google.com with SMTP id cb5so769322wib.15
+ for <linux-mtd@lists.infradead.org>; Fri, 27 Sep 2013 05:52:20 -0700 (PDT)
 From: Richard Genoud <richard.genoud@gmail.com>
-Date: Fri, 27 Sep 2013 13:12:36 +0200
-Message-ID: <CACQ1gAj2NFQRhBP3Po4H9SZJgsSDrG97Qk68kiw3aKjQMnFg-Q@mail.gmail.com>
-Subject: Re: [PATCH 1/2] UBI: Fix error path in scan_pool()
-To: Richard Weinberger <richard@nod.at>
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+To: Richard Weinberger <richard@nod.at>, Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH] UBI: fastmap: fix backward compatibility with image_seq
+Date: Fri, 27 Sep 2013 14:51:55 +0200
+Message-Id: <1380286316-29911-1-git-send-email-richard.genoud@gmail.com>
+Cc: Richard Genoud <richard.genoud@gmail.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,43 +21,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2013/9/27 Richard Weinberger <richard@nod.at>:
-> Am 26.09.2013 11:25, schrieb Richard Genoud:
->> I added some traces and I found that : (dumping ec_header after
->> "ubi_io_read_ec_hdr(ubi, pnum, ech, 0); " in ubi_scan_fastmap())
->> [    0.812500] UBI: default fastmap pool size: 95
->> [    0.820312] UBI: default fastmap WL pool size: 25
->> [    0.828125] UBI: attaching mtd2 to ubi0
->> [    0.851562] ubi_scan_fastmap:
->> [    0.859375] Erase counter header dump:
->> [    0.859375]  magic          0x55424923
->> [    0.867187]  version        1
->> [    0.867187]  ec             1
->> [    0.867187]  vid_hdr_offset 2048
->> [    0.875000]  data_offset    4096
->> [    0.875000]  image_seq      891983656 <- image seq is good.
->> [    0.875000]  hdr_crc        0x13cc9a78
->> [    0.882812] erase counter header hexdump:
->> [    0.882812] 00000000: 55 42 49 23 01 00 00 00 00 00 00 00 00 00 00
->> 01 00 00 08 00 00 00 10 00 35 2a 97
->> 28 00 00 00 00  UBI#....................5*.(....
->> [    0.890625] 00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->> 00 00 00 00 00 00 00 00 00 00 00 00
->> 00 13 cc 9a 78  ...............................x
->> [    0.960937] UBI error: scan_pool: bad image seq: 0x0, expected: 0x352a9728
->
-> BTW: Do you really print the same PEB as scan_pool() complains about?
-No, those debug traces were dumb, sorry...
-I understand fastmap code better now :)
-> Do you know how many PEBs for one fastmap are needed on your target?
+Some old UBI implementations (e.g. U-Boot) have not implemented the image
+sequence feature.
+So, when erase blocks are written, the image sequence in the ec header
+is lost (set to zero).
+UBI scan_all() takes this case into account (commits
+32bc4820287a1a03982979515949e8ea56eac641 and
+2eadaad67b2b6bd132eda105128d2d466298b8e3)
 
-Actually, I just found the problem.
-U-boot has an old UBI implementation that was not aware of image_seq.
-So when I write the ubifs volume, some PEB got erased by UBI(in uboot)
-and written with a image_seq==0.
-and fastmap doesn't pay attention to this use case.
+But fastmap scan functions (ubi_scan_fastmap() and scan_pool()) didn't.
 
-I'll have to test a patch I made and I'll send it in a while.
+This patch fixes the issue.
 
+Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
+---
+ drivers/mtd/ubi/fastmap.c |   22 +++++++++++++++++++---
+ 1 file changed, 19 insertions(+), 3 deletions(-)
 
-Richard.
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+index 9b42add..05067f5 100644
+--- a/drivers/mtd/ubi/fastmap.c
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -407,6 +407,7 @@ static int scan_pool(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 	 */
+ 	for (i = 0; i < pool_size; i++) {
+ 		int scrub = 0;
++		int image_seq;
+ 
+ 		pnum = be32_to_cpu(pebs[i]);
+ 
+@@ -425,7 +426,13 @@ static int scan_pool(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 		} else if (ret == UBI_IO_BITFLIPS)
+ 			scrub = 1;
+ 
+-		if (be32_to_cpu(ech->image_seq) != ubi->image_seq) {
++		/*
++		 * Older UBI implementations have image_seq set to zero, so
++		 * we shouldn't fail if image_seq == 0.
++		 */
++		image_seq = be32_to_cpu(ech->image_seq);
++
++		if (image_seq && (image_seq != ubi->image_seq)) {
+ 			ubi_err("bad image seq: 0x%x, expected: 0x%x",
+ 				be32_to_cpu(ech->image_seq), ubi->image_seq);
+ 			ret = UBI_BAD_FASTMAP;
+@@ -923,6 +930,8 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 	}
+ 
+ 	for (i = 0; i < used_blocks; i++) {
++		int image_seq;
++
+ 		pnum = be32_to_cpu(fmsb->block_loc[i]);
+ 
+ 		if (ubi_io_is_bad(ubi, pnum)) {
+@@ -940,10 +949,17 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 		} else if (ret == UBI_IO_BITFLIPS)
+ 			fm->to_be_tortured[i] = 1;
+ 
++		image_seq = be32_to_cpu(ech->image_seq);
+ 		if (!ubi->image_seq)
+-			ubi->image_seq = be32_to_cpu(ech->image_seq);
++			ubi->image_seq = image_seq;
+ 
+-		if (be32_to_cpu(ech->image_seq) != ubi->image_seq) {
++		/*
++		 * Older UBI implementations have image_seq set to zero, so
++		 * we shouldn't fail if image_seq == 0.
++		 */
++		if (image_seq && (image_seq != ubi->image_seq)) {
++			ubi_err("wrong image seq:%d instead of %d",
++				be32_to_cpu(ech->image_seq), ubi->image_seq);
+ 			ret = UBI_BAD_FASTMAP;
+ 			goto free_hdr;
+ 		}
+-- 
+1.7.10.4
