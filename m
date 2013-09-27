@@ -1,17 +1,17 @@
-Received: from mail-wg0-x22e.google.com ([2a00:1450:400c:c00::22e])
+Received: from xes-mad.com ([216.165.139.218])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VPa72-00007D-QU
- for linux-mtd@lists.infradead.org; Fri, 27 Sep 2013 15:37:50 +0000
-Received: by mail-wg0-f46.google.com with SMTP id k14so2815828wgh.13
- for <linux-mtd@lists.infradead.org>; Fri, 27 Sep 2013 08:37:26 -0700 (PDT)
-From: Richard Genoud <richard.genoud@gmail.com>
-To: Richard Weinberger <richard@nod.at>, Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH] UBI: fastmap: fix a mem leak on error path
-Date: Fri, 27 Sep 2013 17:37:15 +0200
-Message-Id: <1380296235-24194-1-git-send-email-richard.genoud@gmail.com>
-Cc: Richard Genoud <richard.genoud@gmail.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
+ id 1VPb0o-0002Kj-OZ
+ for linux-mtd@lists.infradead.org; Fri, 27 Sep 2013 16:35:27 +0000
+Date: Fri, 27 Sep 2013 11:34:04 -0500 (CDT)
+From: Aaron Sierra <asierra@xes-inc.com>
+To: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Subject: [PATCH] mtd-utils: Makefile: add LDFLAGS_mkfs.ubifs
+Message-ID: <a8879fac-dd29-4ed5-8977-89aec49473f2@zimbra>
+In-Reply-To: <0e757815-7fea-4f97-858a-9f110851b86f@zimbra>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,29 +21,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If the scan_pool() function fails, the "free" list is not freed.
-This leads to destroy_ai(ai) complaining with:
-"kmem_cache_destroy ubi_ainf_peb_slab: Slab cache still has objects"
+The build rule for mkfs.ubifs was missing an LDFLAGS_* variable like
+mkfs.jffs2 had. This prevented mkfs.ubifs from being built against
+explicit external libraries which is needed when cross-compiling.
 
-Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
+This also adds UUIDCPPFLAGS and UUIDLDFLAGS variables to support the
+mkfs.ubifs build.
+
+Signed-off-by: Aaron Sierra <asierra@xes-inc.com>
 ---
- drivers/mtd/ubi/fastmap.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ Makefile |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index 05067f5..22eb527 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -841,6 +841,10 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
- fail_bad:
- 	ret = UBI_BAD_FASTMAP;
- fail:
-+	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &free, u.list) {
-+		kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
-+		list_del(&tmp_aeb->u.list);
-+	}
- 	return ret;
- }
+diff --git a/Makefile b/Makefile
+index bf57a13..4ff8a49 100644
+--- a/Makefile
++++ b/Makefile
+@@ -3,7 +3,7 @@
+ 
+ VERSION = 1.5.0
+ 
+-CPPFLAGS += -D_GNU_SOURCE -I./include -I$(BUILDDIR)/include -I./ubi-utils/include $(ZLIBCPPFLAGS) $(LZOCPPFLAGS)
++CPPFLAGS += -D_GNU_SOURCE -I./include -I$(BUILDDIR)/include -I./ubi-utils/include $(ZLIBCPPFLAGS) $(LZOCPPFLAGS) $(UUIDCPPFLAGS)
+ 
+ ifeq ($(WITHOUT_XATTR), 1)
+   CPPFLAGS += -DWITHOUT_XATTR
+@@ -104,6 +104,7 @@ $(call _mkdep,lib/,libmtd.a)
+ #
+ obj-mkfs.ubifs = crc16.o lpt.o compr.o devtable.o \
+ 	hashtable/hashtable.o hashtable/hashtable_itr.o
++LDFLAGS_mkfs.ubifs = $(ZLIBLDFLAGS) $(LZOLDFLAGS) $(UUIDLDFLAGS)
+ LDLIBS_mkfs.ubifs = -lz -llzo2 -lm -luuid
+ $(call mkdep,mkfs.ubifs/,mkfs.ubifs,,ubi-utils/libubi.a)
  
 -- 
-1.7.10.4
+1.7.9.5
