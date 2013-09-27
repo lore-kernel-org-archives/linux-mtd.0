@@ -1,19 +1,20 @@
-Received: from mail-we0-x236.google.com ([2a00:1450:400c:c03::236])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VPXXM-00026y-Ap
- for linux-mtd@lists.infradead.org; Fri, 27 Sep 2013 12:52:48 +0000
-Received: by mail-we0-f182.google.com with SMTP id q59so2651167wes.13
- for <linux-mtd@lists.infradead.org>; Fri, 27 Sep 2013 05:52:26 -0700 (PDT)
-From: Richard Genoud <richard.genoud@gmail.com>
-To: Richard Weinberger <richard@nod.at>, Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH] UBI: simplify image sequence test
-Date: Fri, 27 Sep 2013 14:51:56 +0200
-Message-Id: <1380286316-29911-2-git-send-email-richard.genoud@gmail.com>
-In-Reply-To: <1380286316-29911-1-git-send-email-richard.genoud@gmail.com>
+ id 1VPXne-0002kU-F6
+ for linux-mtd@lists.infradead.org; Fri, 27 Sep 2013 13:09:44 +0000
+Message-ID: <52458377.7040100@nod.at>
+Date: Fri, 27 Sep 2013 15:09:11 +0200
+From: Richard Weinberger <richard@nod.at>
+MIME-Version: 1.0
+To: Richard Genoud <richard.genoud@gmail.com>
+Subject: Re: [PATCH] UBI: fastmap: fix backward compatibility with image_seq
 References: <1380286316-29911-1-git-send-email-richard.genoud@gmail.com>
-Cc: Richard Genoud <richard.genoud@gmail.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
+In-Reply-To: <1380286316-29911-1-git-send-email-richard.genoud@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,38 +24,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The test:
-if (!a && b)
-  a = b;
-can be symplified in:
-if (!a)
-  a = b;
+Am 27.09.2013 14:51, schrieb Richard Genoud:
+> Some old UBI implementations (e.g. U-Boot) have not implemented the image
+> sequence feature.
+> So, when erase blocks are written, the image sequence in the ec header
+> is lost (set to zero).
+> UBI scan_all() takes this case into account (commits
+> 32bc4820287a1a03982979515949e8ea56eac641 and
+> 2eadaad67b2b6bd132eda105128d2d466298b8e3)
+> 
+> But fastmap scan functions (ubi_scan_fastmap() and scan_pool()) didn't.
+> 
+> This patch fixes the issue.
+> 
+> Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
+> ---
 
-And there's no need to test if ubi->image_seq is not null, because if it is,
-it is set to image_seq.
-So, we just test if image_seq is not null.
+W00t! Good catch!
 
-Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
----
- drivers/mtd/ubi/attach.c |    5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/ubi/attach.c b/drivers/mtd/ubi/attach.c
-index 03b32b0..33bb1f2 100644
---- a/drivers/mtd/ubi/attach.c
-+++ b/drivers/mtd/ubi/attach.c
-@@ -900,10 +900,9 @@ static int scan_peb(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 		 * number.
- 		 */
- 		image_seq = be32_to_cpu(ech->image_seq);
--		if (!ubi->image_seq && image_seq)
-+		if (!ubi->image_seq)
- 			ubi->image_seq = image_seq;
--		if (ubi->image_seq && image_seq &&
--		    ubi->image_seq != image_seq) {
-+		if (image_seq && ubi->image_seq != image_seq) {
- 			ubi_err("bad image sequence number %d in PEB %d, expected %d",
- 				image_seq, pnum, ubi->image_seq);
- 			ubi_dump_ec_hdr(ech);
--- 
-1.7.10.4
+Acked-by: Richard Weinberger <richard@nod.at>
