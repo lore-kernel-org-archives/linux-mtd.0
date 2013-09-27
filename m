@@ -1,23 +1,20 @@
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VPdyA-0006yu-Us
+ for linux-mtd@lists.infradead.org; Fri, 27 Sep 2013 19:44:56 +0000
+Message-ID: <5245E01D.3020104@nod.at>
+Date: Fri, 27 Sep 2013 21:44:29 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-In-Reply-To: <1380279555.28494.171.camel@i7.infradead.org>
-References: <20130919194752.GA19975@quad.lixom.net>
- <1379626776.753.164.camel@shinybook.infradead.org>
- <CAN8TOE8j=oosn-5hAdqoTPcuW-sGvDAHd_nK6BZfJpxMwwpisQ@mail.gmail.com>
- <1379632757.12963.4.camel@shinybook.infradead.org>
- <CAN8TOE8Xf9fv9zyY6wof3b9QhqgV=s-cK4V4D6n+Gw4HgacT0g@mail.gmail.com>
- <1380279555.28494.171.camel@i7.infradead.org>
-Date: Fri, 27 Sep 2013 10:40:34 -0700
-Message-ID: <CAN8TOE9wyXdCSBWJhf-XnzzxGd+x=ux4oJcjq1n5b5E0rW1gyA@mail.gmail.com>
-Subject: Re: [GIT PULL] ARM: SoC fixes for 3.12-rc
-From: Brian Norris <computersforpeace@gmail.com>
-To: "Woodhouse, David" <david.woodhouse@intel.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "arm@kernel.org" <arm@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Olof Johansson <olof@lixom.net>,
- "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Richard Genoud <richard.genoud@gmail.com>
+Subject: Re: [PATCH] UBI: fastmap: fix a mem leak on error path
+References: <1380296235-24194-1-git-send-email-richard.genoud@gmail.com>
+In-Reply-To: <1380296235-24194-1-git-send-email-richard.genoud@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,37 +24,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Sep 27, 2013 at 3:59 AM, Woodhouse, David
-<david.woodhouse@intel.com> wrote:
-> On Thu, 2013-09-19 at 17:44 -0700, Brian Norris wrote:
->> > Does that m25p80 'fix 4 byte addressing' fix for Micron not also want to
->> > go in?
->>
->> I suppose the m25p80 one can go in as well. It's not so much a bugfix
->> as augmenting my original patch to support more devices. But it is
->> safe enough.
->
-> You say 'support more devices', but AFAICT the code in -rc1 will already
-> *attempt* to enable 4-byte addressing on those devices, and fail.
+Am 27.09.2013 17:37, schrieb Richard Genoud:
+> If the scan_pool() function fails, the "free" list is not freed.
+> This leads to destroy_ai(ai) complaining with:
+> "kmem_cache_destroy ubi_ainf_peb_slab: Slab cache still has objects"
 
-As will the code in every release since 3.7-rc1 (commit
-8da28681eb1430fb6715c7aef67001acfbbbcba5).
+Hmm, I *think* we need to take care about used and eba_orphans too.
+Tomorrow I'll have time to investigate...
 
-> (It looks like set_4byte() can return failure, but its return code isn't
-> checked, and anyway it's only a SPI write so there's no feedback from
-> the *chip* if it fails due to lack of WREN; it can only indicate failure
-> if the SPI connection falls over.)
->
-> So I'm inclined to think of it as a bug fix and include it.
+Thanks,
+//richard
 
-Sure, it's a bug fix. Just a long-standing bug. We were sending
-invalid commands to Micron devices, so no n25q256a devices could have
-possibly been supported properly before the 3.12-rc cycle [*]. I'm not
-sure who actually tested these flash way back in 3.7. I still would
-qualify them as "new devices" for 3.12, but that's just semantics now.
-Please, do include it.
-
-Brian
-
-[*] Under special circumstances they could have been supported. For
-instance, some n25q256a packages defaulted to 4-byte addressing mode.
+> Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
+> ---
+>  drivers/mtd/ubi/fastmap.c |    4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+> index 05067f5..22eb527 100644
+> --- a/drivers/mtd/ubi/fastmap.c
+> +++ b/drivers/mtd/ubi/fastmap.c
+> @@ -841,6 +841,10 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
+>  fail_bad:
+>  	ret = UBI_BAD_FASTMAP;
+>  fail:
+> +	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &free, u.list) {
+> +		kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
+> +		list_del(&tmp_aeb->u.list);
+> +	}
+>  	return ret;
+>  }
+>  
+> 
