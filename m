@@ -1,17 +1,23 @@
-Received: from xes-mad.com ([216.165.139.218])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VPb0o-0002Kj-OZ
- for linux-mtd@lists.infradead.org; Fri, 27 Sep 2013 16:35:27 +0000
-Date: Fri, 27 Sep 2013 11:34:04 -0500 (CDT)
-From: Aaron Sierra <asierra@xes-inc.com>
-To: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Subject: [PATCH] mtd-utils: Makefile: add LDFLAGS_mkfs.ubifs
-Message-ID: <a8879fac-dd29-4ed5-8977-89aec49473f2@zimbra>
-In-Reply-To: <0e757815-7fea-4f97-858a-9f110851b86f@zimbra>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <1380279555.28494.171.camel@i7.infradead.org>
+References: <20130919194752.GA19975@quad.lixom.net>
+ <1379626776.753.164.camel@shinybook.infradead.org>
+ <CAN8TOE8j=oosn-5hAdqoTPcuW-sGvDAHd_nK6BZfJpxMwwpisQ@mail.gmail.com>
+ <1379632757.12963.4.camel@shinybook.infradead.org>
+ <CAN8TOE8Xf9fv9zyY6wof3b9QhqgV=s-cK4V4D6n+Gw4HgacT0g@mail.gmail.com>
+ <1380279555.28494.171.camel@i7.infradead.org>
+Date: Fri, 27 Sep 2013 10:40:34 -0700
+Message-ID: <CAN8TOE9wyXdCSBWJhf-XnzzxGd+x=ux4oJcjq1n5b5E0rW1gyA@mail.gmail.com>
+Subject: Re: [GIT PULL] ARM: SoC fixes for 3.12-rc
+From: Brian Norris <computersforpeace@gmail.com>
+To: "Woodhouse, David" <david.woodhouse@intel.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "arm@kernel.org" <arm@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Olof Johansson <olof@lixom.net>,
+ "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,38 +27,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The build rule for mkfs.ubifs was missing an LDFLAGS_* variable like
-mkfs.jffs2 had. This prevented mkfs.ubifs from being built against
-explicit external libraries which is needed when cross-compiling.
+On Fri, Sep 27, 2013 at 3:59 AM, Woodhouse, David
+<david.woodhouse@intel.com> wrote:
+> On Thu, 2013-09-19 at 17:44 -0700, Brian Norris wrote:
+>> > Does that m25p80 'fix 4 byte addressing' fix for Micron not also want to
+>> > go in?
+>>
+>> I suppose the m25p80 one can go in as well. It's not so much a bugfix
+>> as augmenting my original patch to support more devices. But it is
+>> safe enough.
+>
+> You say 'support more devices', but AFAICT the code in -rc1 will already
+> *attempt* to enable 4-byte addressing on those devices, and fail.
 
-This also adds UUIDCPPFLAGS and UUIDLDFLAGS variables to support the
-mkfs.ubifs build.
+As will the code in every release since 3.7-rc1 (commit
+8da28681eb1430fb6715c7aef67001acfbbbcba5).
 
-Signed-off-by: Aaron Sierra <asierra@xes-inc.com>
----
- Makefile |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+> (It looks like set_4byte() can return failure, but its return code isn't
+> checked, and anyway it's only a SPI write so there's no feedback from
+> the *chip* if it fails due to lack of WREN; it can only indicate failure
+> if the SPI connection falls over.)
+>
+> So I'm inclined to think of it as a bug fix and include it.
 
-diff --git a/Makefile b/Makefile
-index bf57a13..4ff8a49 100644
---- a/Makefile
-+++ b/Makefile
-@@ -3,7 +3,7 @@
- 
- VERSION = 1.5.0
- 
--CPPFLAGS += -D_GNU_SOURCE -I./include -I$(BUILDDIR)/include -I./ubi-utils/include $(ZLIBCPPFLAGS) $(LZOCPPFLAGS)
-+CPPFLAGS += -D_GNU_SOURCE -I./include -I$(BUILDDIR)/include -I./ubi-utils/include $(ZLIBCPPFLAGS) $(LZOCPPFLAGS) $(UUIDCPPFLAGS)
- 
- ifeq ($(WITHOUT_XATTR), 1)
-   CPPFLAGS += -DWITHOUT_XATTR
-@@ -104,6 +104,7 @@ $(call _mkdep,lib/,libmtd.a)
- #
- obj-mkfs.ubifs = crc16.o lpt.o compr.o devtable.o \
- 	hashtable/hashtable.o hashtable/hashtable_itr.o
-+LDFLAGS_mkfs.ubifs = $(ZLIBLDFLAGS) $(LZOLDFLAGS) $(UUIDLDFLAGS)
- LDLIBS_mkfs.ubifs = -lz -llzo2 -lm -luuid
- $(call mkdep,mkfs.ubifs/,mkfs.ubifs,,ubi-utils/libubi.a)
- 
--- 
-1.7.9.5
+Sure, it's a bug fix. Just a long-standing bug. We were sending
+invalid commands to Micron devices, so no n25q256a devices could have
+possibly been supported properly before the 3.12-rc cycle [*]. I'm not
+sure who actually tested these flash way back in 3.7. I still would
+qualify them as "new devices" for 3.12, but that's just semantics now.
+Please, do include it.
+
+Brian
+
+[*] Under special circumstances they could have been supported. For
+instance, some n25q256a packages defaulted to 4-byte addressing mode.
