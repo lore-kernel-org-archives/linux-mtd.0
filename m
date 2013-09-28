@@ -1,12 +1,12 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VPuzv-0003Wt-H8
+ id 1VPuzv-0003Wv-H6
  for linux-mtd@lists.infradead.org; Sat, 28 Sep 2013 13:55:53 +0000
 From: Richard Weinberger <richard@nod.at>
 To: dedekind1@gmail.com
-Subject: [PATCH 1/7] UBI: fix refill_wl_user_pool()
-Date: Sat, 28 Sep 2013 15:55:10 +0200
-Message-Id: <1380376516-30144-2-git-send-email-richard@nod.at>
+Subject: [PATCH 3/7] UBI: Call scan_all() with correct offset in error case
+Date: Sat, 28 Sep 2013 15:55:12 +0200
+Message-Id: <1380376516-30144-4-git-send-email-richard@nod.at>
 In-Reply-To: <1380376516-30144-1-git-send-email-richard@nod.at>
 References: <1380376516-30144-1-git-send-email-richard@nod.at>
 Cc: richard.genoud@gmail.com, Richard Weinberger <richard@nod.at>,
@@ -20,30 +20,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If no free PEBs are available refill_wl_user_pool() must not
-return with -ENOSPC immediately.
-It has to block till produce_free_peb() produced a free PEB.
+If we find an invalid fastmap we have to scan from the very beginning.
+Otherwise we leak the first 64 PEBs.
 
-Reported-and-Tested-by: Richard Genoud <richard.genoud@gmail.com>
+Reported-and-tested-by: Richard Genoud <richard.genoud@gmail.com>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/wl.c | 4 ----
- 1 file changed, 4 deletions(-)
+ drivers/mtd/ubi/attach.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index c95bfb1..02317c1 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -599,10 +599,6 @@ static void refill_wl_user_pool(struct ubi_device *ubi)
- 	return_unused_pool_pebs(ubi, pool);
+diff --git a/drivers/mtd/ubi/attach.c b/drivers/mtd/ubi/attach.c
+index c071d41..03b32b0 100644
+--- a/drivers/mtd/ubi/attach.c
++++ b/drivers/mtd/ubi/attach.c
+@@ -1417,9 +1417,11 @@ int ubi_attach(struct ubi_device *ubi, int force_scan)
+ 				ai = alloc_ai("ubi_aeb_slab_cache2");
+ 				if (!ai)
+ 					return -ENOMEM;
+-			}
  
- 	for (pool->size = 0; pool->size < pool->max_size; pool->size++) {
--		if (!ubi->free.rb_node ||
--		   (ubi->free_count - ubi->beb_rsvd_pebs < 1))
--			break;
--
- 		pool->pebs[pool->size] = __wl_get_peb(ubi);
- 		if (pool->pebs[pool->size] < 0)
- 			break;
+-			err = scan_all(ubi, ai, UBI_FM_MAX_START);
++				err = scan_all(ubi, ai, 0);
++			} else {
++				err = scan_all(ubi, ai, UBI_FM_MAX_START);
++			}
+ 		}
+ 	}
+ #else
 -- 
 1.8.3.1
