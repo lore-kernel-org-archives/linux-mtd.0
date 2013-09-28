@@ -1,12 +1,12 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VPuzv-0003Ww-H7
- for linux-mtd@lists.infradead.org; Sat, 28 Sep 2013 13:55:54 +0000
+ id 1VPv0H-0003YB-GY
+ for linux-mtd@lists.infradead.org; Sat, 28 Sep 2013 13:56:14 +0000
 From: Richard Weinberger <richard@nod.at>
 To: dedekind1@gmail.com
-Subject: [PATCH 4/7] UBI: fastmap: fix backward compatibility with image_seq
-Date: Sat, 28 Sep 2013 15:55:13 +0200
-Message-Id: <1380376516-30144-5-git-send-email-richard@nod.at>
+Subject: [PATCH 6/7] UBI: Fix memory leak in ubi_attach_fastmap() error path
+Date: Sat, 28 Sep 2013 15:55:15 +0200
+Message-Id: <1380376516-30144-7-git-send-email-richard@nod.at>
 In-Reply-To: <1380376516-30144-1-git-send-email-richard@nod.at>
 References: <1380376516-30144-1-git-send-email-richard@nod.at>
 Cc: richard.genoud@gmail.com, Richard Weinberger <richard@nod.at>,
@@ -20,81 +20,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Richard Genoud <richard.genoud@gmail.com>
+On error we have to free all three temporary lists.
 
-Some old UBI implementations (e.g. U-Boot) have not implemented the image
-sequence feature.
-So, when erase blocks are written, the image sequence in the ec header
-is lost (set to zero).
-UBI scan_all() takes this case into account (commits
-32bc4820287a1a03982979515949e8ea56eac641 and
-2eadaad67b2b6bd132eda105128d2d466298b8e3)
-
-But fastmap scan functions (ubi_scan_fastmap() and scan_pool()) didn't.
-
-This patch fixes the issue.
-
-Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
+Reported-by: Richard Genoud <richard.genoud@gmail.com>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/fastmap.c | 22 +++++++++++++++++++---
- 1 file changed, 19 insertions(+), 3 deletions(-)
+ drivers/mtd/ubi/fastmap.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
 diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index 9b42add..05067f5 100644
+index 05067f5..4cfc8da 100644
 --- a/drivers/mtd/ubi/fastmap.c
 +++ b/drivers/mtd/ubi/fastmap.c
-@@ -407,6 +407,7 @@ static int scan_pool(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 	 */
- 	for (i = 0; i < pool_size; i++) {
- 		int scrub = 0;
-+		int image_seq;
- 
- 		pnum = be32_to_cpu(pebs[i]);
- 
-@@ -425,7 +426,13 @@ static int scan_pool(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 		} else if (ret == UBI_IO_BITFLIPS)
- 			scrub = 1;
- 
--		if (be32_to_cpu(ech->image_seq) != ubi->image_seq) {
-+		/*
-+		 * Older UBI implementations have image_seq set to zero, so
-+		 * we shouldn't fail if image_seq == 0.
-+		 */
-+		image_seq = be32_to_cpu(ech->image_seq);
+@@ -841,6 +841,19 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
+ fail_bad:
+ 	ret = UBI_BAD_FASTMAP;
+ fail:
++	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &used, u.list) {
++		kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
++		list_del(&tmp_aeb->u.list);
++	}
++	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &eba_orphans, u.list) {
++		kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
++		list_del(&tmp_aeb->u.list);
++	}
++	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &free, u.list) {
++		kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
++		list_del(&tmp_aeb->u.list);
++	}
 +
-+		if (image_seq && (image_seq != ubi->image_seq)) {
- 			ubi_err("bad image seq: 0x%x, expected: 0x%x",
- 				be32_to_cpu(ech->image_seq), ubi->image_seq);
- 			ret = UBI_BAD_FASTMAP;
-@@ -923,6 +930,8 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 	}
+ 	return ret;
+ }
  
- 	for (i = 0; i < used_blocks; i++) {
-+		int image_seq;
-+
- 		pnum = be32_to_cpu(fmsb->block_loc[i]);
- 
- 		if (ubi_io_is_bad(ubi, pnum)) {
-@@ -940,10 +949,17 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 		} else if (ret == UBI_IO_BITFLIPS)
- 			fm->to_be_tortured[i] = 1;
- 
-+		image_seq = be32_to_cpu(ech->image_seq);
- 		if (!ubi->image_seq)
--			ubi->image_seq = be32_to_cpu(ech->image_seq);
-+			ubi->image_seq = image_seq;
- 
--		if (be32_to_cpu(ech->image_seq) != ubi->image_seq) {
-+		/*
-+		 * Older UBI implementations have image_seq set to zero, so
-+		 * we shouldn't fail if image_seq == 0.
-+		 */
-+		if (image_seq && (image_seq != ubi->image_seq)) {
-+			ubi_err("wrong image seq:%d instead of %d",
-+				be32_to_cpu(ech->image_seq), ubi->image_seq);
- 			ret = UBI_BAD_FASTMAP;
- 			goto free_hdr;
- 		}
 -- 
 1.8.3.1
