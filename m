@@ -1,12 +1,12 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VPv0H-0003YB-GY
+ id 1VPv0H-0003YC-GY
  for linux-mtd@lists.infradead.org; Sat, 28 Sep 2013 13:56:14 +0000
 From: Richard Weinberger <richard@nod.at>
 To: dedekind1@gmail.com
-Subject: [PATCH 6/7] UBI: Fix memory leak in ubi_attach_fastmap() error path
-Date: Sat, 28 Sep 2013 15:55:15 +0200
-Message-Id: <1380376516-30144-7-git-send-email-richard@nod.at>
+Subject: [PATCH 7/7] UBI: Add some asserts to ubi_attach_fastmap()
+Date: Sat, 28 Sep 2013 15:55:16 +0200
+Message-Id: <1380376516-30144-8-git-send-email-richard@nod.at>
 In-Reply-To: <1380376516-30144-1-git-send-email-richard@nod.at>
 References: <1380376516-30144-1-git-send-email-richard@nod.at>
 Cc: richard.genoud@gmail.com, Richard Weinberger <richard@nod.at>,
@@ -20,37 +20,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On error we have to free all three temporary lists.
+Add more paranioa asserts to make it easier to detect
+implementation errors.
 
-Reported-by: Richard Genoud <richard.genoud@gmail.com>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/fastmap.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ drivers/mtd/ubi/fastmap.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index 05067f5..4cfc8da 100644
+index 4cfc8da..ead8613 100644
 --- a/drivers/mtd/ubi/fastmap.c
 +++ b/drivers/mtd/ubi/fastmap.c
-@@ -841,6 +841,19 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
- fail_bad:
- 	ret = UBI_BAD_FASTMAP;
- fail:
-+	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &used, u.list) {
-+		kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
-+		list_del(&tmp_aeb->u.list);
-+	}
-+	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &eba_orphans, u.list) {
-+		kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
-+		list_del(&tmp_aeb->u.list);
-+	}
-+	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &free, u.list) {
-+		kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
-+		list_del(&tmp_aeb->u.list);
-+	}
-+
- 	return ret;
- }
+@@ -826,6 +826,10 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
+ 	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &free, u.list)
+ 		list_move_tail(&tmp_aeb->u.list, &ai->free);
  
++	ubi_assert(list_empty(&used));
++	ubi_assert(list_empty(&eba_orphans));
++	ubi_assert(list_empty(&free));
++
+ 	/*
+ 	 * If fastmap is leaking PEBs (must not happen), raise a
+ 	 * fat warning and fall back to scanning mode.
 -- 
 1.8.3.1
