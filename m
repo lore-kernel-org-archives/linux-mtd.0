@@ -1,16 +1,14 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VPuzv-0003Wv-H6
+ id 1VPuzv-0003Ws-HA
  for linux-mtd@lists.infradead.org; Sat, 28 Sep 2013 13:55:53 +0000
 From: Richard Weinberger <richard@nod.at>
 To: dedekind1@gmail.com
-Subject: [PATCH 3/7] UBI: Call scan_all() with correct offset in error case
-Date: Sat, 28 Sep 2013 15:55:12 +0200
-Message-Id: <1380376516-30144-4-git-send-email-richard@nod.at>
-In-Reply-To: <1380376516-30144-1-git-send-email-richard@nod.at>
-References: <1380376516-30144-1-git-send-email-richard@nod.at>
-Cc: richard.genoud@gmail.com, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: UBI fastmap updates
+Date: Sat, 28 Sep 2013 15:55:09 +0200
+Message-Id: <1380376516-30144-1-git-send-email-richard@nod.at>
+Cc: richard.genoud@gmail.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,32 +18,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If we find an invalid fastmap we have to scan from the very beginning.
-Otherwise we leak the first 64 PEBs.
+this series is a collection of all pending UBI fastmap updates.
 
-Reported-and-tested-by: Richard Genoud <richard.genoud@gmail.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- drivers/mtd/ubi/attach.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Richard Genoud found issues in combination with U-Boot.
+These issues also uncovered other minor issues in some error paths.
+Only one fix is not really fastmap specific and touches generic 
+UBI code, "UBI: simplify image sequence test".
 
-diff --git a/drivers/mtd/ubi/attach.c b/drivers/mtd/ubi/attach.c
-index c071d41..03b32b0 100644
---- a/drivers/mtd/ubi/attach.c
-+++ b/drivers/mtd/ubi/attach.c
-@@ -1417,9 +1417,11 @@ int ubi_attach(struct ubi_device *ubi, int force_scan)
- 				ai = alloc_ai("ubi_aeb_slab_cache2");
- 				if (!ai)
- 					return -ENOMEM;
--			}
- 
--			err = scan_all(ubi, ai, UBI_FM_MAX_START);
-+				err = scan_all(ubi, ai, 0);
-+			} else {
-+				err = scan_all(ubi, ai, UBI_FM_MAX_START);
-+			}
- 		}
- 	}
- #else
--- 
-1.8.3.1
+Thanks,
+//richard
+
+Richard Genoud (2):
+      UBI: fastmap: fix backward compatibility with image_seq
+      UBI: simplify image sequence test
+
+Richard Weinberger (5):
+      UBI: fix refill_wl_user_pool()
+      UBI: Fix error path in scan_pool()
+      UBI: Call scan_all() with correct offset in error case
+      UBI: Fix memory leak in ubi_attach_fastmap() error path
+      UBI: Add some asserts to ubi_attach_fastmap()
+
+ drivers/mtd/ubi/attach.c  | 11 ++++++-----
+ drivers/mtd/ubi/fastmap.c | 41 +++++++++++++++++++++++++++++++++++++----
+ drivers/mtd/ubi/wl.c      |  4 ----
+ 3 files changed, 43 insertions(+), 13 deletions(-)
