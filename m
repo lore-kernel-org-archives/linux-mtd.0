@@ -1,12 +1,12 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VPv0H-0003YC-GY
- for linux-mtd@lists.infradead.org; Sat, 28 Sep 2013 13:56:14 +0000
+ id 1VPv0H-0003YE-GW
+ for linux-mtd@lists.infradead.org; Sat, 28 Sep 2013 13:56:15 +0000
 From: Richard Weinberger <richard@nod.at>
 To: dedekind1@gmail.com
-Subject: [PATCH 7/7] UBI: Add some asserts to ubi_attach_fastmap()
-Date: Sat, 28 Sep 2013 15:55:16 +0200
-Message-Id: <1380376516-30144-8-git-send-email-richard@nod.at>
+Subject: [PATCH 5/7] UBI: simplify image sequence test
+Date: Sat, 28 Sep 2013 15:55:14 +0200
+Message-Id: <1380376516-30144-6-git-send-email-richard@nod.at>
 In-Reply-To: <1380376516-30144-1-git-send-email-richard@nod.at>
 References: <1380376516-30144-1-git-send-email-richard@nod.at>
 Cc: richard.genoud@gmail.com, Richard Weinberger <richard@nod.at>,
@@ -20,28 +20,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add more paranioa asserts to make it easier to detect
-implementation errors.
+From: Richard Genoud <richard.genoud@gmail.com>
 
+The test:
+if (!a && b)
+  a = b;
+can be symplified in:
+if (!a)
+  a = b;
+
+And there's no need to test if ubi->image_seq is not null, because if it is,
+it is set to image_seq.
+So, we just test if image_seq is not null.
+
+Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/fastmap.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/mtd/ubi/attach.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index 4cfc8da..ead8613 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -826,6 +826,10 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
- 	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &free, u.list)
- 		list_move_tail(&tmp_aeb->u.list, &ai->free);
- 
-+	ubi_assert(list_empty(&used));
-+	ubi_assert(list_empty(&eba_orphans));
-+	ubi_assert(list_empty(&free));
-+
- 	/*
- 	 * If fastmap is leaking PEBs (must not happen), raise a
- 	 * fat warning and fall back to scanning mode.
+diff --git a/drivers/mtd/ubi/attach.c b/drivers/mtd/ubi/attach.c
+index 03b32b0..33bb1f2 100644
+--- a/drivers/mtd/ubi/attach.c
++++ b/drivers/mtd/ubi/attach.c
+@@ -900,10 +900,9 @@ static int scan_peb(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 		 * number.
+ 		 */
+ 		image_seq = be32_to_cpu(ech->image_seq);
+-		if (!ubi->image_seq && image_seq)
++		if (!ubi->image_seq)
+ 			ubi->image_seq = image_seq;
+-		if (ubi->image_seq && image_seq &&
+-		    ubi->image_seq != image_seq) {
++		if (image_seq && ubi->image_seq != image_seq) {
+ 			ubi_err("bad image sequence number %d in PEB %d, expected %d",
+ 				image_seq, pnum, ubi->image_seq);
+ 			ubi_dump_ec_hdr(ech);
 -- 
 1.8.3.1
