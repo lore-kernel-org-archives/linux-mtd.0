@@ -1,27 +1,21 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VQckD-0001sP-IW
- for linux-mtd@lists.infradead.org; Mon, 30 Sep 2013 12:38:34 +0000
-Date: Mon, 30 Sep 2013 09:37:57 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 01/21] mtd: nand: pxa3xx: Allocate data buffer on
- detected flash size
-Message-ID: <20130930123756.GB2417@localhost>
-References: <1379606505-2529-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1379606505-2529-2-git-send-email-ezequiel.garcia@free-electrons.com>
- <20130926201032.GL23337@ld-irv-0074.broadcom.com>
+Received: from mail-ob0-x22a.google.com ([2607:f8b0:4003:c01::22a])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VQll5-0000Xm-Bb
+ for linux-mtd@lists.infradead.org; Mon, 30 Sep 2013 22:16:04 +0000
+Received: by mail-ob0-f170.google.com with SMTP id va2so5423510obc.1
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Sep 2013 15:15:41 -0700 (PDT)
+Date: Mon, 30 Sep 2013 15:15:36 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH v4 02/12] mtd: nand: rename the cellinfo to bits_per_cell
+Message-ID: <20130930221536.GM23337@ld-irv-0074.broadcom.com>
+References: <1380092301-21924-1-git-send-email-b32955@freescale.com>
+ <1380092301-21924-3-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20130926201032.GL23337@ld-irv-0074.broadcom.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
- Tawfik Bayouk <tawfik@marvell.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- Daniel Mack <zonque@gmail.com>, linux-mtd@lists.infradead.org,
- Gregory Clement <gregory.clement@free-electrons.com>, Willy Tarreau <w@1wt.eu>
+In-Reply-To: <1380092301-21924-3-git-send-email-b32955@freescale.com>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,62 +25,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 26, 2013 at 01:10:32PM -0700, Brian Norris wrote:
-> On Thu, Sep 19, 2013 at 01:01:25PM -0300, Ezequiel Garcia wrote:
-> > This commit replaces the currently hardcoded buffer size, by a
-> > dynamic detection scheme. First a small 256 bytes buffer is allocated
-> > so the device can be detected (using READID and friends commands).
-> > 
-> > After detection, this buffer is released and a new buffer is allocated
-> > to acommodate the page size plus out-of-band size.
-> > 
-> > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+On Wed, Sep 25, 2013 at 02:58:11PM +0800, Huang Shijie wrote:
+> The @cellinfo fields contains unused information, such as write caching,
+> internal chip numbering, etc. But we only use it to check the SLC or MLC.
 > 
-> This is the patch that breaks Daniel's DMA setup, right? It looks a bit
-> off.
-
-What do you mean by 'a bit off'?
-
-> I'll wait to comment on it much until v2.
+> This patch tries to make it more clear and simple, renames the @cellinfo
+> to @bits_per_cell.
 > 
-
-Ok... let me re-work it then and prepare the v2.
-
-> BTW, there is a similar issue with at least one other driver (denali.c,
-> maybe others) where the driver uses some hard assumptions about the
-> maximum page/OOB sizes (NAND_MAX_PAGESIZE and NAND_MAX_OOBSIZE). This is
-> kind of ugly and not very sustainable/maintainable, since these
-> dimensions keep increasing. I appreciate your effort to avoid simply
-> kludging in a larger MAX_BUFF_SIZE :) I had similar plans for the other
-> drivers, but I don't know if we'll have much testing opportunities for
-> the ancient ones...
+> In order to avoiding the bisect issue, this patch also does the following
+> changes:
+>   (0) add a macro NAND_CI_CELLTYPE_SHIFT to avoid the hardcode.
 > 
-> Also, it seems like your driver has a few potential leaks right now. If
-> alloc_nand_resource() succeeds but pxa3xx_nand_probe() later fails
-> (e.g., in pxa3xx_nand_scan()), you don't clean up after yourself. You
-> should address this soon, even if not in this patch series.
+>   (1) add a helper to parse out the cell type : nand_get_bits_per_cell()
 > 
+>   (2) parse out the cell type for extended-ID chips and the full-id nand chips.
+> 
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
+> ---
+>  drivers/mtd/nand/nand_base.c |   14 ++++++++++++--
+>  include/linux/mtd/nand.h     |    7 ++++---
+>  2 files changed, 16 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index 5c05bab..0eb4a63 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -477,7 +478,7 @@ struct nand_buffers {
+>   * @badblockbits:	[INTERN] minimum number of set bits in a good block's
+>   *			bad block marker position; i.e., BBM == 11110111b is
+>   *			not bad when badblockbits == 7
+> - * @cellinfo:		[INTERN] MLC/multichip data from chip ident
+> + * @bits_per_cell:	[INTERN] the bits of per cell. i.e., 1 means SLC.
 
-Hm.. are you sure about that? AFAICS, there's no leak at all.
+s/bits of/number of bits/
 
-If alloc_nand_resource() succeeds, the only leakable resources allocated
-are the ones allocated at pxa3xx_nand_init_buff() and the NAND base
-stuff.
+>   * @ecc_strength_ds:	[INTERN] ECC correctability from the datasheet.
+>   *			Minimum amount of bit errors per @ecc_step_ds guaranteed
+>   *			to be correctable. If unknown, set to zero.
 
-If pxa3xx_nand_probe() later fails to complete, it calls pxa3xx_nand_remove()
-in this part:
+I'll squash that change into the patch myself if the rest looks good.
 
-	if (!probe_success) {
-		pxa3xx_nand_remove(pdev);
-		return -ENODEV;
-	}
-
-Which takes care of cleaning both the buffers and the NAND base stuff.
-
-Or am I missing something?
-
-Feel free to ask more questions and thanks a lot for the feedback.
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Brian
