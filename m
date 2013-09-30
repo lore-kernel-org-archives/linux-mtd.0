@@ -1,21 +1,21 @@
-Received: from mail-ob0-x229.google.com ([2607:f8b0:4003:c01::229])
+Received: from mail-oa0-x233.google.com ([2607:f8b0:4003:c02::233])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VQmGN-0001G6-Et
- for linux-mtd@lists.infradead.org; Mon, 30 Sep 2013 22:48:24 +0000
-Received: by mail-ob0-f169.google.com with SMTP id wp4so5501158obc.0
- for <linux-mtd@lists.infradead.org>; Mon, 30 Sep 2013 15:48:02 -0700 (PDT)
-Date: Mon, 30 Sep 2013 15:47:58 -0700
+ id 1VQmI3-0001JR-Dp
+ for linux-mtd@lists.infradead.org; Mon, 30 Sep 2013 22:50:08 +0000
+Received: by mail-oa0-f51.google.com with SMTP id h16so4262588oag.10
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Sep 2013 15:49:46 -0700 (PDT)
+Date: Mon, 30 Sep 2013 15:49:42 -0700
 From: Brian Norris <computersforpeace@gmail.com>
 To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v4 06/12] mtd: gpmi: rewrite the gpmi_ecc_write_oob()
- to support the jffs2
-Message-ID: <20130930224758.GN23337@ld-irv-0074.broadcom.com>
+Subject: Re: [PATCH v4 05/12] mtd: nand: print out the cell information for
+ nand chip
+Message-ID: <20130930224942.GO23337@ld-irv-0074.broadcom.com>
 References: <1380092301-21924-1-git-send-email-b32955@freescale.com>
- <1380092301-21924-7-git-send-email-b32955@freescale.com>
+ <1380092301-21924-6-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1380092301-21924-7-git-send-email-b32955@freescale.com>
+In-Reply-To: <1380092301-21924-6-git-send-email-b32955@freescale.com>
 Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,75 +26,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Sep 25, 2013 at 02:58:15PM +0800, Huang Shijie wrote:
-> When we use the ECC info which is get from the nand chip's datasheet,
-> we may have some freed oob area now.
+On Wed, Sep 25, 2013 at 02:58:14PM +0800, Huang Shijie wrote:
+> Print out the cell information for nand chip.
 > 
-> This patch rewrites the gpmi_ecc_write_oob() to implement the ecc.write_oob().
-> We also update the comment for gpmi_hw_ecclayout.
-> 
-> Yes! We can support the JFFS2 for the SLC nand now.
+> (Since the message is too long, this patch also splits the log
+> with two separate pr_info())
 > 
 > Signed-off-by: Huang Shijie <b32955@freescale.com>
 > ---
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   31 ++++++++++++++++++++++---------
->  1 files changed, 22 insertions(+), 9 deletions(-)
+>  drivers/mtd/nand/nand_base.c |   11 +++++++----
+>  1 files changed, 7 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> index b4306bc..eba7b79 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -45,7 +45,10 @@ static struct nand_bbt_descr gpmi_bbt_descr = {
->  	.pattern	= scan_ff_pattern
->  };
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 94d9084..b94309b 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -3460,11 +3460,14 @@ ident_done:
+>  	if (mtd->writesize > 512 && chip->cmdfunc == nand_command)
+>  		chip->cmdfunc = nand_command_lp;
 >  
-> -/*  We will use all the (page + OOB). */
-> +/*
-> + * We may change the layout if we can get the ECC info from the datasheet,
-> + * else we will use all the (page + OOB).
-> + */
->  static struct nand_ecclayout gpmi_hw_ecclayout = {
->  	.eccbytes = 0,
->  	.eccpos = { 0, },
-> @@ -1262,14 +1265,24 @@ static int gpmi_ecc_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
->  static int
->  gpmi_ecc_write_oob(struct mtd_info *mtd, struct nand_chip *chip, int page)
->  {
-> -	/*
-> -	 * The BCH will use all the (page + oob).
-> -	 * Our gpmi_hw_ecclayout can only prohibit the JFFS2 to write the oob.
-> -	 * But it can not stop some ioctls such MEMWRITEOOB which uses
-> -	 * MTD_OPS_PLACE_OOB. So We have to implement this function to prohibit
-> -	 * these ioctls too.
-> -	 */
-> -	return -EPERM;
-> +	struct nand_oobfree *of = mtd->ecclayout->oobfree;
-> +	int status = 0;
-> +
-> +	/* Do we have available oob area? */
-> +	if (!of->length)
-> +		return -EPERM;
-> +
-> +	if (!nand_is_slc(chip))
-> +		return -EPERM;
-> +
-> +	pr_debug("page number is %d\n", page);
+> -	pr_info("NAND device: Manufacturer ID: 0x%02x, Chip ID: 0x%02x (%s %s),"
+> -		" %dMiB, page size: %d, OOB size: %d\n",
+> +	pr_info("NAND device: Manufacturer ID: 0x%02x,"
+> +			"Chip ID: 0x%02x (%s %s) \n",
 
-I feel like I commented on this earlier, but I guess I never actually
-sent my comment? Anyway, I don't think we need this pr_debug(). That may
-be useful for certain kinds of debugging, but it's really not useful at
-all to most people. So I'll drop it when I push, or else if we have v5,
-please remove it there.
+You're adding excess whitespace before the '\n'. I'll squash this
+myself.
 
+>  		*maf_id, *dev_id, nand_manuf_ids[maf_idx].name,
+> -		chip->onfi_version ? chip->onfi_params.model : type->name,
+> -		(int)(chip->chipsize >> 20), mtd->writesize, mtd->oobsize);
+> +		chip->onfi_version ? chip->onfi_params.model : type->name);
 > +
-> +	chip->cmdfunc(mtd, NAND_CMD_SEQIN, mtd->writesize + of->offset, page);
-> +	chip->write_buf(mtd, chip->oob_poi + of->offset, of->length);
-> +	chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
-> +
-> +	status = chip->waitfunc(mtd, chip);
-> +	return status & NAND_STATUS_FAIL ? -EIO : 0;
+> +	pr_info("NAND device: %dMiB, %s, page size: %d, OOB size: %d\n",
+> +		(int)(chip->chipsize >> 20), nand_is_slc(chip) ? "SLC" : "MLC",
+> +		mtd->writesize, mtd->oobsize);
+>  
+>  	return type;
 >  }
->  
->  static int gpmi_block_markbad(struct mtd_info *mtd, loff_t ofs)
 
 Brian
