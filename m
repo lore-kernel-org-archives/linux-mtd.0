@@ -1,20 +1,21 @@
-Received: from mail-ob0-x22a.google.com ([2607:f8b0:4003:c01::22a])
+Received: from mail-ob0-x229.google.com ([2607:f8b0:4003:c01::229])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VQll5-0000Xm-Bb
- for linux-mtd@lists.infradead.org; Mon, 30 Sep 2013 22:16:04 +0000
-Received: by mail-ob0-f170.google.com with SMTP id va2so5423510obc.1
- for <linux-mtd@lists.infradead.org>; Mon, 30 Sep 2013 15:15:41 -0700 (PDT)
-Date: Mon, 30 Sep 2013 15:15:36 -0700
+ id 1VQmGN-0001G6-Et
+ for linux-mtd@lists.infradead.org; Mon, 30 Sep 2013 22:48:24 +0000
+Received: by mail-ob0-f169.google.com with SMTP id wp4so5501158obc.0
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Sep 2013 15:48:02 -0700 (PDT)
+Date: Mon, 30 Sep 2013 15:47:58 -0700
 From: Brian Norris <computersforpeace@gmail.com>
 To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v4 02/12] mtd: nand: rename the cellinfo to bits_per_cell
-Message-ID: <20130930221536.GM23337@ld-irv-0074.broadcom.com>
+Subject: Re: [PATCH v4 06/12] mtd: gpmi: rewrite the gpmi_ecc_write_oob()
+ to support the jffs2
+Message-ID: <20130930224758.GN23337@ld-irv-0074.broadcom.com>
 References: <1380092301-21924-1-git-send-email-b32955@freescale.com>
- <1380092301-21924-3-git-send-email-b32955@freescale.com>
+ <1380092301-21924-7-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1380092301-21924-3-git-send-email-b32955@freescale.com>
+In-Reply-To: <1380092301-21924-7-git-send-email-b32955@freescale.com>
 Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,44 +26,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Sep 25, 2013 at 02:58:11PM +0800, Huang Shijie wrote:
-> The @cellinfo fields contains unused information, such as write caching,
-> internal chip numbering, etc. But we only use it to check the SLC or MLC.
+On Wed, Sep 25, 2013 at 02:58:15PM +0800, Huang Shijie wrote:
+> When we use the ECC info which is get from the nand chip's datasheet,
+> we may have some freed oob area now.
 > 
-> This patch tries to make it more clear and simple, renames the @cellinfo
-> to @bits_per_cell.
+> This patch rewrites the gpmi_ecc_write_oob() to implement the ecc.write_oob().
+> We also update the comment for gpmi_hw_ecclayout.
 > 
-> In order to avoiding the bisect issue, this patch also does the following
-> changes:
->   (0) add a macro NAND_CI_CELLTYPE_SHIFT to avoid the hardcode.
-> 
->   (1) add a helper to parse out the cell type : nand_get_bits_per_cell()
-> 
->   (2) parse out the cell type for extended-ID chips and the full-id nand chips.
+> Yes! We can support the JFFS2 for the SLC nand now.
 > 
 > Signed-off-by: Huang Shijie <b32955@freescale.com>
 > ---
->  drivers/mtd/nand/nand_base.c |   14 ++++++++++++--
->  include/linux/mtd/nand.h     |    7 ++++---
->  2 files changed, 16 insertions(+), 5 deletions(-)
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   31 ++++++++++++++++++++++---------
+>  1 files changed, 22 insertions(+), 9 deletions(-)
 > 
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index 5c05bab..0eb4a63 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -477,7 +478,7 @@ struct nand_buffers {
->   * @badblockbits:	[INTERN] minimum number of set bits in a good block's
->   *			bad block marker position; i.e., BBM == 11110111b is
->   *			not bad when badblockbits == 7
-> - * @cellinfo:		[INTERN] MLC/multichip data from chip ident
-> + * @bits_per_cell:	[INTERN] the bits of per cell. i.e., 1 means SLC.
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> index b4306bc..eba7b79 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -45,7 +45,10 @@ static struct nand_bbt_descr gpmi_bbt_descr = {
+>  	.pattern	= scan_ff_pattern
+>  };
+>  
+> -/*  We will use all the (page + OOB). */
+> +/*
+> + * We may change the layout if we can get the ECC info from the datasheet,
+> + * else we will use all the (page + OOB).
+> + */
+>  static struct nand_ecclayout gpmi_hw_ecclayout = {
+>  	.eccbytes = 0,
+>  	.eccpos = { 0, },
+> @@ -1262,14 +1265,24 @@ static int gpmi_ecc_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
+>  static int
+>  gpmi_ecc_write_oob(struct mtd_info *mtd, struct nand_chip *chip, int page)
+>  {
+> -	/*
+> -	 * The BCH will use all the (page + oob).
+> -	 * Our gpmi_hw_ecclayout can only prohibit the JFFS2 to write the oob.
+> -	 * But it can not stop some ioctls such MEMWRITEOOB which uses
+> -	 * MTD_OPS_PLACE_OOB. So We have to implement this function to prohibit
+> -	 * these ioctls too.
+> -	 */
+> -	return -EPERM;
+> +	struct nand_oobfree *of = mtd->ecclayout->oobfree;
+> +	int status = 0;
+> +
+> +	/* Do we have available oob area? */
+> +	if (!of->length)
+> +		return -EPERM;
+> +
+> +	if (!nand_is_slc(chip))
+> +		return -EPERM;
+> +
+> +	pr_debug("page number is %d\n", page);
 
-s/bits of/number of bits/
+I feel like I commented on this earlier, but I guess I never actually
+sent my comment? Anyway, I don't think we need this pr_debug(). That may
+be useful for certain kinds of debugging, but it's really not useful at
+all to most people. So I'll drop it when I push, or else if we have v5,
+please remove it there.
 
->   * @ecc_strength_ds:	[INTERN] ECC correctability from the datasheet.
->   *			Minimum amount of bit errors per @ecc_step_ds guaranteed
->   *			to be correctable. If unknown, set to zero.
-
-I'll squash that change into the patch myself if the rest looks good.
+> +
+> +	chip->cmdfunc(mtd, NAND_CMD_SEQIN, mtd->writesize + of->offset, page);
+> +	chip->write_buf(mtd, chip->oob_poi + of->offset, of->length);
+> +	chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
+> +
+> +	status = chip->waitfunc(mtd, chip);
+> +	return status & NAND_STATUS_FAIL ? -EIO : 0;
+>  }
+>  
+>  static int gpmi_block_markbad(struct mtd_info *mtd, loff_t ofs)
 
 Brian
