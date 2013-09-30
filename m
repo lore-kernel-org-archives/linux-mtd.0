@@ -1,20 +1,23 @@
-Received: from mail-oa0-x230.google.com ([2607:f8b0:4003:c02::230])
+Received: from mail-vc0-x22e.google.com ([2607:f8b0:400c:c03::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VQmgx-0001xO-Bt
- for linux-mtd@lists.infradead.org; Mon, 30 Sep 2013 23:15:52 +0000
-Received: by mail-oa0-f48.google.com with SMTP id m6so4189731oag.7
- for <linux-mtd@lists.infradead.org>; Mon, 30 Sep 2013 16:15:30 -0700 (PDT)
-Date: Mon, 30 Sep 2013 16:15:26 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v4 00/12] About the SLC/MLC
-Message-ID: <20130930231526.GP23337@ld-irv-0074.broadcom.com>
-References: <1380092301-21924-1-git-send-email-b32955@freescale.com>
+ id 1VQmmA-00024y-NN
+ for linux-mtd@lists.infradead.org; Mon, 30 Sep 2013 23:21:15 +0000
+Received: by mail-vc0-f174.google.com with SMTP id gd11so4322411vcb.33
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Sep 2013 16:20:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1380092301-21924-1-git-send-email-b32955@freescale.com>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, dedekind1@gmail.com
+In-Reply-To: <20130912144918.GA18677@localhost>
+References: <1378940894-27598-1-git-send-email-computersforpeace@gmail.com>
+ <20130912122413.GA7309@localhost>
+ <20130912144918.GA18677@localhost>
+Date: Mon, 30 Sep 2013 16:20:52 -0700
+Message-ID: <CAN8TOE9A=FernSi2WyJ1BsPY-==gMu3Jm1GqaOnwtbLrxmDcDA@mail.gmail.com>
+Subject: Re: [PATCH] mtd: nand: cleanup ONFI printed errors, warnings
+From: Brian Norris <computersforpeace@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Huang Shijie <b32955@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,40 +27,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Sep 25, 2013 at 02:58:09PM +0800, Huang Shijie wrote:
-> In current mtd code, the MTD_NANDFLASH is used to represent both the
-> SLC nand MLC(including the TLC). But we already have the MTD_MLCNANDFLASH
-> to stand for the MLC. What is worse is that the JFFS2 may run on the MLC
-> nand with current code. For the reason of READ/WRITE disturbance, the JFFS2
-> should runs on the SLC only,
->        
-> This patch set tries to make clear what is the SLC/MLC by adding the macros,
-> adding helpers, adding the comments. ..
-> 
-> After this patch set, the gpmi can support the JFFS2 for some SLC NAND now 
-> (only when the left oob area is big enough).
+On Thu, Sep 12, 2013 at 7:49 AM, Ezequiel Garcia
+<ezequiel.garcia@free-electrons.com> wrote:
+> On Thu, Sep 12, 2013 at 09:24:14AM -0300, Ezequiel Garcia wrote:
+>> Looks good. I'd suggest to put:
+>>
+>>   #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+>>
+>> at the top of this file, to prefix all the messages with a nice "nand:"
+>> string, but then you may want to refactor the "NAND device:" notification.
+>
+> FWIW, here's my proposal (which applies on top of this patch):
+>
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index d4578a1..ff5bb5a 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -29,6 +29,8 @@
+>   *
+>   */
+>
+> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> +
+>  #include <linux/module.h>
+>  #include <linux/delay.h>
+>  #include <linux/errno.h>
+> @@ -3449,10 +3451,11 @@ ident_done:
+>         if (mtd->writesize > 512 && chip->cmdfunc == nand_command)
+>                 chip->cmdfunc = nand_command_lp;
+>
+> -       pr_info("NAND device: Manufacturer ID: 0x%02x, Chip ID: 0x%02x (%s %s),"
+> -               " %dMiB, page size: %d, OOB size: %d\n",
+> -               *maf_id, *dev_id, nand_manuf_ids[maf_idx].name,
+> -               chip->onfi_version ? chip->onfi_params.model : type->name,
+> +       pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
+> +               *maf_id, *dev_id);
+> +       pr_info("%s %s\n", nand_manuf_ids[maf_idx].name,
+> +               chip->onfi_version ? chip->onfi_params.model : type->name);
+> +       pr_info("%dMiB, page size: %d, OOB size: %d\n",
+>                 (int)(chip->chipsize >> 20), mtd->writesize, mtd->oobsize);
+>
+>         return type;
+>
 
-...
+I just pushed Huang's changes, which conflict with this. If you still
+want this, go ahead and send a proper, updated patch with description
+and sign-off.
 
-> Huang Shijie (12):
->   mtd: nand: add a helper to check the SLC/MLC nand chip
->   mtd: nand: rename the cellinfo to bits_per_cell
->   mtd: nand: add the "bits per cell" info for legacy ID NAND
->   mtd: nand: set the cell information for ONFI nand
->   mtd: nand: print out the cell information for nand chip
->   mtd: gpmi: rewrite the gpmi_ecc_write_oob() to support the jffs2
->   mtd: nand: add more comment for MTD_NANDFLASH/MTD_MLCNANDFLASH
->   mtd: nand: add a helper to detect the nand type
->   mtd: mtd-abi: add a helper to detect the nand type
->   mtd: add MTD_MLCNANDFLASH case for mtd_type_show()
->   jffs2: do not support the MLC nand
->   mtd: nand: fix the wrong mtd->type for nand chip
-
-Pushed the whole series to l2-mtd.git, with a few amendments of my own
-to fix trivial issues.
-
-Are the mtd-utils fixes still applicable as-is? I'll review them next,
-since we should get mtd-utils updated before the kernel changes make it
-to mainline.
-
+Thanks,
 Brian
