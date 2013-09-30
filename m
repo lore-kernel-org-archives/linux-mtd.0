@@ -1,22 +1,16 @@
-Received: from mail-lb0-x22a.google.com ([2a00:1450:4010:c04::22a])
+Received: from mail-pa0-f54.google.com ([209.85.220.54])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VQYfj-0003wV-TG
- for linux-mtd@lists.infradead.org; Mon, 30 Sep 2013 08:17:40 +0000
-Received: by mail-lb0-f170.google.com with SMTP id w7so4191545lbi.15
- for <linux-mtd@lists.infradead.org>; Mon, 30 Sep 2013 01:17:17 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1380376516-30144-8-git-send-email-richard@nod.at>
-References: <1380376516-30144-1-git-send-email-richard@nod.at>
- <1380376516-30144-8-git-send-email-richard@nod.at>
-From: Richard Genoud <richard.genoud@gmail.com>
-Date: Mon, 30 Sep 2013 10:16:57 +0200
-Message-ID: <CACQ1gAiaSeF0EP9KubJ7SRrLFc=gKq+wEHenFFw-BxJoCx203Q@mail.gmail.com>
-Subject: Re: [PATCH 7/7] UBI: Add some asserts to ubi_attach_fastmap()
-To: Richard Weinberger <richard@nod.at>
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+ id 1VQZyO-0005xP-NH
+ for linux-mtd@lists.infradead.org; Mon, 30 Sep 2013 09:41:01 +0000
+Received: by mail-pa0-f54.google.com with SMTP id kx10so5689954pab.27
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Sep 2013 02:40:37 -0700 (PDT)
+From: Sachin Kamat <sachin.kamat@linaro.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 1/3] mtd: nand: lpc32xx_mlc: Remove redundant of_match_ptr
+Date: Mon, 30 Sep 2013 15:10:22 +0530
+Message-Id: <1380534024-25052-1-git-send-email-sachin.kamat@linaro.org>
+Cc: sachin.kamat@linaro.org, artem.bityutskiy@linux.intel.com,
+ dwmw2@infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,32 +20,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2013/9/28 Richard Weinberger <richard@nod.at>:
-> Add more paranioa asserts to make it easier to detect
-> implementation errors.
->
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-> ---
->  drivers/mtd/ubi/fastmap.c | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-> index 4cfc8da..ead8613 100644
-> --- a/drivers/mtd/ubi/fastmap.c
-> +++ b/drivers/mtd/ubi/fastmap.c
-> @@ -826,6 +826,10 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
->         list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &free, u.list)
->                 list_move_tail(&tmp_aeb->u.list, &ai->free);
->
-> +       ubi_assert(list_empty(&used));
-> +       ubi_assert(list_empty(&eba_orphans));
-> +       ubi_assert(list_empty(&free));
-> +
->         /*
->          * If fastmap is leaking PEBs (must not happen), raise a
->          * fat warning and fall back to scanning mode.
-> --
-> 1.8.3.1
->
+The data structure of_match_ptr() protects is always compiled in.
+Hence of_match_ptr() is not needed.
 
-Tested-by: Richard Genoud <richard.genoud@gmail.com>
+Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+---
+ drivers/mtd/nand/lpc32xx_mlc.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/lpc32xx_mlc.c b/drivers/mtd/nand/lpc32xx_mlc.c
+index f4dd2a8..327d96c 100644
+--- a/drivers/mtd/nand/lpc32xx_mlc.c
++++ b/drivers/mtd/nand/lpc32xx_mlc.c
+@@ -905,7 +905,7 @@ static struct platform_driver lpc32xx_nand_driver = {
+ 	.driver		= {
+ 		.name	= DRV_NAME,
+ 		.owner	= THIS_MODULE,
+-		.of_match_table = of_match_ptr(lpc32xx_nand_match),
++		.of_match_table = lpc32xx_nand_match,
+ 	},
+ };
+ 
+-- 
+1.7.9.5
