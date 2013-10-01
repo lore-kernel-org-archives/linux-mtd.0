@@ -1,23 +1,21 @@
-Received: from mail-vc0-x22e.google.com ([2607:f8b0:400c:c03::22e])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VQmmA-00024y-NN
- for linux-mtd@lists.infradead.org; Mon, 30 Sep 2013 23:21:15 +0000
-Received: by mail-vc0-f174.google.com with SMTP id gd11so4322411vcb.33
- for <linux-mtd@lists.infradead.org>; Mon, 30 Sep 2013 16:20:52 -0700 (PDT)
+Received: from mms3.broadcom.com ([216.31.210.19])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VQu6T-0001U9-DF
+ for linux-mtd@lists.infradead.org; Tue, 01 Oct 2013 07:10:42 +0000
+Date: Tue, 1 Oct 2013 12:56:13 +0530
+From: "Kamlakant Patel" <kamlakant.patel@broadcom.com>
+To: "Greg KH" <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] Staging: MTD: Micron SPINAND Driver support
+Message-ID: <20131001072612.GA19332@kpatel.netlogicmircro.com>
+References: <1378128136-23699-1-git-send-email-kamlakant.patel@broadcom.com>
+ <20130925231540.GB21682@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20130912144918.GA18677@localhost>
-References: <1378940894-27598-1-git-send-email-computersforpeace@gmail.com>
- <20130912122413.GA7309@localhost>
- <20130912144918.GA18677@localhost>
-Date: Mon, 30 Sep 2013 16:20:52 -0700
-Message-ID: <CAN8TOE9A=FernSi2WyJ1BsPY-==gMu3Jm1GqaOnwtbLrxmDcDA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: nand: cleanup ONFI printed errors, warnings
-From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Huang Shijie <b32955@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
+In-Reply-To: <20130925231540.GB21682@kroah.com>
+Content-Type: text/plain;
+ charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, manonuevo@micron.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,52 +25,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 12, 2013 at 7:49 AM, Ezequiel Garcia
-<ezequiel.garcia@free-electrons.com> wrote:
-> On Thu, Sep 12, 2013 at 09:24:14AM -0300, Ezequiel Garcia wrote:
->> Looks good. I'd suggest to put:
->>
->>   #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
->>
->> at the top of this file, to prefix all the messages with a nice "nand:"
->> string, but then you may want to refactor the "NAND device:" notification.
->
-> FWIW, here's my proposal (which applies on top of this patch):
->
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index d4578a1..ff5bb5a 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -29,6 +29,8 @@
->   *
->   */
->
-> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> +
->  #include <linux/module.h>
->  #include <linux/delay.h>
->  #include <linux/errno.h>
-> @@ -3449,10 +3451,11 @@ ident_done:
->         if (mtd->writesize > 512 && chip->cmdfunc == nand_command)
->                 chip->cmdfunc = nand_command_lp;
->
-> -       pr_info("NAND device: Manufacturer ID: 0x%02x, Chip ID: 0x%02x (%s %s),"
-> -               " %dMiB, page size: %d, OOB size: %d\n",
-> -               *maf_id, *dev_id, nand_manuf_ids[maf_idx].name,
-> -               chip->onfi_version ? chip->onfi_params.model : type->name,
-> +       pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
-> +               *maf_id, *dev_id);
-> +       pr_info("%s %s\n", nand_manuf_ids[maf_idx].name,
-> +               chip->onfi_version ? chip->onfi_params.model : type->name);
-> +       pr_info("%dMiB, page size: %d, OOB size: %d\n",
->                 (int)(chip->chipsize >> 20), mtd->writesize, mtd->oobsize);
->
->         return type;
->
+On Wed, Sep 25, 2013 at 04:15:40PM -0700, Greg KH wrote:
+> On Mon, Sep 02, 2013 at 06:52:16PM +0530, Kamlakant Patel wrote:
+> > This patch adds support for Micron SPINAND via MTD.
+> > 
+> > Signed-off-by: Mona Anonuevo <manonuevo@micron.com>
+> > Signed-off-by: Kamlakant Patel <kamlakant.patel@broadcom.com>
+> > ---
+> > This patch has to be merged via staging tree.
+> >   
+> > This is a driver from Micron for MT29F1G01ZACH4 SPI based NAND chips. This driver had
+> > been posted multiple times to the mtd list.
+> > 1. http://lists.infradead.org/pipermail/linux-mtd/2010-May/031975.html
+> > 2. http://lists.infradead.org/pipermail/linux-mtd/2010-April/029523.html
+> > 3. patchwork.ozlabs.org/patch/258697/
+> > This has not been merged into the main kernel yet.
+> > 
+> > I have cleaned and updated it for current kernel. Since there are many users for
+> > this driver, it may be useful to add it to the staging tree, where further fixes and
+> > cleanups can be done. Once it reaches to the standard will be moved to the mtd.
+> > 
+> > This driver has been tested with Micron SPINAND MT29F1G01ZACH4 chip on kernel 3.11 on 
+> > the Netlogic XLP platform.
+> >  
+> > Mona Anonuevo, I have retained your sign-offs from the original patch.
+> 
+> With this applied, I get the following build error:
+> 	../ERROR: "nand_scan" [drivers/staging/mt29f_spinand/mt29f_spinand.ko] undefined!
+> 
+> Can you please fix this and resend a working version?
 
-I just pushed Huang's changes, which conflict with this. If you still
-want this, go ahead and send a proper, updated patch with description
-and sign-off.
+Thank you for the review, I will fix the dependency issue and resubmit the
+patch.
 
 Thanks,
-Brian
+Kamlakant Patel
+> 
+> thanks,
+> 
+> greg k-h
+> 
