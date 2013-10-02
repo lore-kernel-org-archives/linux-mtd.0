@@ -1,24 +1,28 @@
-Received: from mail-vb0-x22a.google.com ([2607:f8b0:400c:c02::22a])
+Received: from mail-ie0-x22f.google.com ([2607:f8b0:4001:c03::22f])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VRTYj-0006r7-B2
- for linux-mtd@lists.infradead.org; Wed, 02 Oct 2013 21:02:14 +0000
-Received: by mail-vb0-f42.google.com with SMTP id e12so1029802vbg.1
- for <linux-mtd@lists.infradead.org>; Wed, 02 Oct 2013 14:01:52 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <201310022255.01344.marex@denx.de>
-References: <1378270016-9280-1-git-send-email-Priyanka.Jain@freescale.com>
- <201310022202.19877.marex@denx.de>
- <CAN8TOE8ii_fbz77M4HJBvyWwPxe+AGOh-sZW=rrwEKfxGhr61g@mail.gmail.com>
- <201310022255.01344.marex@denx.de>
-Date: Wed, 2 Oct 2013 14:01:51 -0700
-Message-ID: <CAN8TOE9C1EumkFuWSqJD7+LeatsD5fk-mw8BM0ySZG-udcZC6A@mail.gmail.com>
-Subject: Re: [PATCH] mtd: m25p80: Add support for Micron N25Q512A memory
+ id 1VRTkY-0007K2-TV
+ for linux-mtd@lists.infradead.org; Wed, 02 Oct 2013 21:14:27 +0000
+Received: by mail-ie0-f175.google.com with SMTP id e14so3198743iej.6
+ for <linux-mtd@lists.infradead.org>; Wed, 02 Oct 2013 14:14:05 -0700 (PDT)
+Date: Wed, 2 Oct 2013 14:14:01 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Marek Vasut <marex@denx.de>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Priyanka Jain <Priyanka.Jain@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH 01/21] mtd: nand: pxa3xx: Allocate data buffer on
+ detected flash size
+Message-ID: <20131002211401.GV23337@ld-irv-0074.broadcom.com>
+References: <1379606505-2529-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1379606505-2529-2-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20130926201032.GL23337@ld-irv-0074.broadcom.com>
+ <20130930123756.GB2417@localhost>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20130930123756.GB2417@localhost>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
+ Tawfik Bayouk <tawfik@marvell.com>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Daniel Mack <zonque@gmail.com>, linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>, Willy Tarreau <w@1wt.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,71 +32,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Oct 2, 2013 at 1:55 PM, Marek Vasut <marex@denx.de> wrote:
-> Dear Brian Norris,
->
->> On Wed, Oct 2, 2013 at 1:02 PM, Marek Vasut <marex@denx.de> wrote:
->> > Hi Brian,
->> >
->> >>  + Marek for real!
->> >>
->> >> On Wed, Oct 2, 2013 at 11:51 AM, Brian Norris
->> >>
->> >> <computersforpeace@gmail.com> wrote:
->> >> > + Marek
->> >> >
->> >> > On Wed, Sep 04, 2013 at 10:16:56AM +0530, Priyanka Jain wrote:
->> >> >> Micron N25Q512A is a spi flash memory with following features:
->> >> >> -64MB size, 1.8V, Mulitple I/O, 4KB Sector erase memory.
->> >> >> -Memory is organised as 1024(64KB) main sectors.
->> >> >> -Each sector is divided into 256 pages.
->> >> >> -Register set/Opcodes are similar to other N25Q family products.
->> >> >>
->> >> >> Signed-off-by: Priyanka Jain <Priyanka.Jain@freescale.com>
->> >> >> ---
->> >> >>
->> >> >>  drivers/mtd/devices/m25p80.c |    1 +
->> >> >>  1 files changed, 1 insertions(+), 0 deletions(-)
->> >> >>
->> >> >> diff --git a/drivers/mtd/devices/m25p80.c
->> >> >> b/drivers/mtd/devices/m25p80.c index 26b14f9..94e3b53 100644
->> >> >> --- a/drivers/mtd/devices/m25p80.c
->> >> >> +++ b/drivers/mtd/devices/m25p80.c
->> >> >> @@ -774,6 +774,7 @@ static const struct spi_device_id m25p_ids[] = {
->> >> >>
->> >> >>       { "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024, 256, 0) },
->> >> >>       { "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024, 256, 0) },
->> >> >>       { "n25q256a", INFO(0x20ba19, 0, 64 * 1024, 512, SECT_4K) },
->> >> >>
->> >> >> +     { "n25q512a", INFO(0x20bb20, 0, 64 * 1024, 512, SECT_4K) },
->> >
->> > Why does this n25q256a and n25q512a have exactly the same geometry? I
->> > mean, those chips differ in size, do they not ? ;-)
->> >
->> >> > This device actually has the same ID as Micron's next line
->> >> > (MT25QL512A). They have the same geometry, so maybe that's not a
->> >> > problem.
->>
->> I was referring to Micron n25q512a (which this patch mentions) and
->> Micron's new generation of flash MT25QL512A (not mentioned in the
->> original code or patch). They are different flash and are named
->> differently but have the same ID. Perhaps my usage of the word "line"
->> was confusing.
->
-> Yes I know. Still, that n25q512a line being the exact copy of n25q256a doesn't
-> seem right.
+On Mon, Sep 30, 2013 at 09:37:57AM -0300, Ezequiel Garcia wrote:
+> On Thu, Sep 26, 2013 at 01:10:32PM -0700, Brian Norris wrote:
+> > On Thu, Sep 19, 2013 at 01:01:25PM -0300, Ezequiel Garcia wrote:
+> > > This commit replaces the currently hardcoded buffer size, by a
+> > > dynamic detection scheme. First a small 256 bytes buffer is allocated
+> > > so the device can be detected (using READID and friends commands).
+> > > 
+> > > After detection, this buffer is released and a new buffer is allocated
+> > > to acommodate the page size plus out-of-band size.
+> > > 
+> > > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> > 
+> > This is the patch that breaks Daniel's DMA setup, right? It looks a bit
+> > off.
+> 
+> What do you mean by 'a bit off'?
 
-Sorry, I didn't check the original patch carefully enough, and I
-subsequently misunderstood your question. I believe the patch is
-incorrect; it should be 512Mbit (64MByte) which makes it 64KB sector x
-1024 number of sectors, not 64KB sector x 512 number of sectors. Good
-catch.
+The existing code allocates data_buff with kmalloc() or
+dma_alloc_coherent() depending on ARCH_HAS_DMA, but your patch does the
+initial fixed-size allocation only with kmalloc(). It's just what you
+and Daniel already identified: that this causes problems for the DMA
+case.
 
-Priyanka, can you submit and test a corrected patch?
+> > BTW, there is a similar issue with at least one other driver (denali.c,
+> > maybe others) where the driver uses some hard assumptions about the
+> > maximum page/OOB sizes (NAND_MAX_PAGESIZE and NAND_MAX_OOBSIZE). This is
+> > kind of ugly and not very sustainable/maintainable, since these
+> > dimensions keep increasing. I appreciate your effort to avoid simply
+> > kludging in a larger MAX_BUFF_SIZE :) I had similar plans for the other
+> > drivers, but I don't know if we'll have much testing opportunities for
+> > the ancient ones...
+> > 
+> > Also, it seems like your driver has a few potential leaks right now. If
+> > alloc_nand_resource() succeeds but pxa3xx_nand_probe() later fails
+> > (e.g., in pxa3xx_nand_scan()), you don't clean up after yourself. You
+> > should address this soon, even if not in this patch series.
+> > 
+> 
+> Hm.. are you sure about that? AFAICS, there's no leak at all.
 
-> The new ql512a seems line just a compatible replacement part for older lineup.
-> Happens all the time.
+No, I'm not sure :)
 
-Hmm, OK.
+> If alloc_nand_resource() succeeds, the only leakable resources allocated
+> are the ones allocated at pxa3xx_nand_init_buff() and the NAND base
+> stuff.
+> 
+> If pxa3xx_nand_probe() later fails to complete, it calls pxa3xx_nand_remove()
+> in this part:
+> 
+> 	if (!probe_success) {
+> 		pxa3xx_nand_remove(pdev);
+> 		return -ENODEV;
+> 	}
+> 
+> Which takes care of cleaning both the buffers and the NAND base stuff.
+> 
+> Or am I missing something?
+
+Nope, you were correct. I just missed this point when reading.
 
 Brian
