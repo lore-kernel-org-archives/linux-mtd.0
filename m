@@ -1,22 +1,21 @@
-Received: from mail-oa0-x232.google.com ([2607:f8b0:4003:c02::232])
+Received: from mail-ve0-x230.google.com ([2607:f8b0:400c:c01::230])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VRQlo-0001zT-N4
- for linux-mtd@lists.infradead.org; Wed, 02 Oct 2013 18:03:33 +0000
-Received: by mail-oa0-f50.google.com with SMTP id j1so1171294oag.23
- for <linux-mtd@lists.infradead.org>; Wed, 02 Oct 2013 11:03:11 -0700 (PDT)
-Date: Wed, 2 Oct 2013 11:03:05 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Jingoo Han <jg1.han@samsung.com>
-Subject: Re: [PATCH] mtd: plat-ram: Remove casting the return value which
- is a void pointer
-Message-ID: <20131002180305.GQ23337@ld-irv-0074.broadcom.com>
-References: <005801cead1f$6d0af870$4720e950$%han@samsung.com>
+ id 1VRQsT-0002LR-Ph
+ for linux-mtd@lists.infradead.org; Wed, 02 Oct 2013 18:10:26 +0000
+Received: by mail-ve0-f176.google.com with SMTP id jx11so876150veb.35
+ for <linux-mtd@lists.infradead.org>; Wed, 02 Oct 2013 11:10:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <005801cead1f$6d0af870$4720e950$%han@samsung.com>
-Cc: 'Artem Bityutskiy' <artem.bityutskiy@linux.intel.com>,
- 'David Woodhouse' <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+In-Reply-To: <l2grtn$svg$1@ger.gmane.org>
+References: <CAHqTa-0d=U+W2nju8WeCJ=gL+ja8DVuK0BUquajOL6qXV5C0+g@mail.gmail.com>
+ <l2grtn$svg$1@ger.gmane.org>
+From: Avery Pennarun <apenwarr@gmail.com>
+Date: Wed, 2 Oct 2013 11:09:44 -0700
+Message-ID: <CAHqTa-3HxoQJ=wEZ_w8Vcp9VXS12=xNbiJ2v8fSsJbMb9BT_4w@mail.gmail.com>
+Subject: Re: Page corruption when writing non-sequential pages in an MLC NAND
+ eraseblock
+To: Romain Izard <romain.izard.pro@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,30 +25,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Sep 09, 2013 at 02:42:52PM +0900, Jingoo Han wrote:
-> Casting the return value which is a void pointer is redundant.
-> The conversion from void pointer to any other pointer type is
-> guaranteed by the C programming language.
-> 
-> Signed-off-by: Jingoo Han <jg1.han@samsung.com>
-> ---
->  drivers/mtd/maps/plat-ram.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/maps/plat-ram.c b/drivers/mtd/maps/plat-ram.c
-> index 6762716..3e35b9a 100644
-> --- a/drivers/mtd/maps/plat-ram.c
-> +++ b/drivers/mtd/maps/plat-ram.c
-> @@ -55,7 +55,7 @@ struct platram_info {
->  
->  static inline struct platram_info *to_platram_info(struct platform_device *dev)
->  {
-> -	return (struct platram_info *)platform_get_drvdata(dev);
-> +	return platform_get_drvdata(dev);
->  }
->  
->  /* platram_setrw
+On Wed, Oct 2, 2013 at 3:18 AM, Romain Izard <romain.izard.pro@gmail.com> wrote:
+> On 2013-10-01, Avery Pennarun <apenwarr@gmail.com> wrote:
+>> Steps:
+>> - Disable ECC to avoid any confusion (ECC turns out to not affect the
+>> test results, but I wanted to make sure)
+>> - Erase any eraseblock
+>> - Write all-zeroes to page 0x18 of that eraseblock; read it back -> ok
+>> - Write all-zeroes to page 0x12 of that eraseblock; read it back ->
+>> FAIL, all 0xff instead
+>> - Read page 0x18 -> completely random data (about 12% of bits are flipped)
+>
+> For me you're violating one key MLC assumption: the pages within a block
+> must be written in a strictly increasing order. It should be written
+> somewhere in the component's datasheet.
 
-Pushed to l2-mtd.git. Thanks!
+Hmm.  I haven't heard of this constraint, but it certainly seems to be
+happening in this case (although in fact random-access writes *mostly*
+work other than this pairing effect, so it seems like they intended it
+to work properly).
 
-Brian
+This makes /dev/mtdblock completely unusable as it reorders writes.
+Is /dev/mtdblock known to not work with MLC chips?
+
+Thanks,
+
+Avery
