@@ -1,21 +1,22 @@
-Received: from mail-ve0-x22f.google.com ([2607:f8b0:400c:c01::22f])
+Received: from mail-oa0-x232.google.com ([2607:f8b0:4003:c02::232])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VRQfx-0001f8-6w
- for linux-mtd@lists.infradead.org; Wed, 02 Oct 2013 17:57:30 +0000
-Received: by mail-ve0-f175.google.com with SMTP id jy13so860650veb.34
- for <linux-mtd@lists.infradead.org>; Wed, 02 Oct 2013 10:57:05 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.00.1309161003150.2394@lnxricardw.se.axis.com>
-References: <alpine.DEB.2.00.1309161003150.2394@lnxricardw.se.axis.com>
-Date: Wed, 2 Oct 2013 10:57:04 -0700
-Message-ID: <CAN8TOE8PLvcK4kuRvbRh32gg0_Y8sbwWjdcWh_xt-tgQcPb85Q@mail.gmail.com>
-Subject: Re: JFFS2 SUMMARY prior to Linux 3.9
+ id 1VRQlo-0001zT-N4
+ for linux-mtd@lists.infradead.org; Wed, 02 Oct 2013 18:03:33 +0000
+Received: by mail-oa0-f50.google.com with SMTP id j1so1171294oag.23
+ for <linux-mtd@lists.infradead.org>; Wed, 02 Oct 2013 11:03:11 -0700 (PDT)
+Date: Wed, 2 Oct 2013 11:03:05 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- David Woodhouse <dwmw2@infradead.org>,
- Linux mtd <linux-mtd@lists.infradead.org>, Kees Cook <keescook@chromium.org>
+To: Jingoo Han <jg1.han@samsung.com>
+Subject: Re: [PATCH] mtd: plat-ram: Remove casting the return value which
+ is a void pointer
+Message-ID: <20131002180305.GQ23337@ld-irv-0074.broadcom.com>
+References: <005801cead1f$6d0af870$4720e950$%han@samsung.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <005801cead1f$6d0af870$4720e950$%han@samsung.com>
+Cc: 'Artem Bityutskiy' <artem.bityutskiy@linux.intel.com>,
+ 'David Woodhouse' <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +26,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Sep 16, 2013 at 1:04 AM, Ricard Wanderlof
-<ricard.wanderlof@axis.com> wrote:
-> I've noticed that JFFS2 summary has been relieved of it's EXPERIMENTAL
-> status since Linux 3.9 . But was it stable enough before then as well? -
-> often the EXPERIMENTAL property lingers on longer that it really needs to.
+On Mon, Sep 09, 2013 at 02:42:52PM +0900, Jingoo Han wrote:
+> Casting the return value which is a void pointer is redundant.
+> The conversion from void pointer to any other pointer type is
+> guaranteed by the C programming language.
+> 
+> Signed-off-by: Jingoo Han <jg1.han@samsung.com>
+> ---
+>  drivers/mtd/maps/plat-ram.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/maps/plat-ram.c b/drivers/mtd/maps/plat-ram.c
+> index 6762716..3e35b9a 100644
+> --- a/drivers/mtd/maps/plat-ram.c
+> +++ b/drivers/mtd/maps/plat-ram.c
+> @@ -55,7 +55,7 @@ struct platram_info {
+>  
+>  static inline struct platram_info *to_platram_info(struct platform_device *dev)
+>  {
+> -	return (struct platram_info *)platform_get_drvdata(dev);
+> +	return platform_get_drvdata(dev);
+>  }
+>  
+>  /* platram_setrw
 
-AFAIK, JFFS2 hasn't changed much for many releases, so its current
-status pretty well reflects its status for many previous releases.
-
-Regarding the EXPERIMENTAL status; this was changed without CC'ing the
-MTD list (although David was CC'd, it seems) in commit:
-
-commit cf98c5e56807af7c793497bbd0446f71c383ffd5
-Author: Kees Cook <keescook@chromium.org>
-Date:   Wed Jan 16 18:54:12 2013 -0800
-
-    fs/jffs2: remove depends on CONFIG_EXPERIMENTAL
-
-Judging by the commit description, this change just represents a
-change in attitude toward the CONFIG_EXPERIMENTAL Kconfig option
-rather than any particular judgment of JFFS2 summary support.
+Pushed to l2-mtd.git. Thanks!
 
 Brian
