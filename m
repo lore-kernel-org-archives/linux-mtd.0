@@ -1,22 +1,21 @@
-Received: from mail-ve0-x22f.google.com ([2607:f8b0:400c:c01::22f])
+Received: from mail-ve0-f171.google.com ([209.85.128.171])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VRRa1-0003by-CN
- for linux-mtd@lists.infradead.org; Wed, 02 Oct 2013 18:55:25 +0000
-Received: by mail-ve0-f175.google.com with SMTP id jy13so934585veb.6
- for <linux-mtd@lists.infradead.org>; Wed, 02 Oct 2013 11:55:04 -0700 (PDT)
+ id 1VRRkU-0003sy-9c
+ for linux-mtd@lists.infradead.org; Wed, 02 Oct 2013 19:06:15 +0000
+Received: by mail-ve0-f171.google.com with SMTP id pa12so987419veb.30
+ for <linux-mtd@lists.infradead.org>; Wed, 02 Oct 2013 12:05:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20131002185123.GT23337@ld-irv-0074.broadcom.com>
-References: <1378270016-9280-1-git-send-email-Priyanka.Jain@freescale.com>
- <20131002185123.GT23337@ld-irv-0074.broadcom.com>
-Date: Wed, 2 Oct 2013 11:55:04 -0700
-Message-ID: <CAN8TOE8k4LCU-6ensOO5OoNuXE+rVOdVaS5S-Q39DGK4CwmNcA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: m25p80: Add support for Micron N25Q512A memory
-From: Brian Norris <computersforpeace@gmail.com>
-To: Priyanka Jain <Priyanka.Jain@freescale.com>
+In-Reply-To: <alpine.DEB.2.00.1310020954040.18310@lnxricardw.se.axis.com>
+References: <CAHqTa-0d=U+W2nju8WeCJ=gL+ja8DVuK0BUquajOL6qXV5C0+g@mail.gmail.com>
+ <alpine.DEB.2.00.1310020954040.18310@lnxricardw.se.axis.com>
+From: Avery Pennarun <apenwarr@gmail.com>
+Date: Wed, 2 Oct 2013 12:05:28 -0700
+Message-ID: <CAHqTa-2tS_Kw6973m22KehWWTGReCAzjhw5Mwga6sFsHAaOwYQ@mail.gmail.com>
+Subject: Re: Page corruption when writing non-sequential pages in an MLC NAND
+ eraseblock
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marex@denx.de>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,45 +25,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
- + Marek for real!
+On Wed, Oct 2, 2013 at 12:58 AM, Ricard Wanderlof
+<ricard.wanderlof@axis.com> wrote:
+> On Wed, 2 Oct 2013, Avery Pennarun wrote:
+>> Steps:
+>> - Disable ECC to avoid any confusion (ECC turns out to not affect the
+>> test results, but I wanted to make sure)
+>> - Erase any eraseblock
+>> - Write all-zeroes to page 0x18 of that eraseblock; read it back -> ok
+>> - Write all-zeroes to page 0x12 of that eraseblock; read it back ->
+>> FAIL, all 0xff instead
+>> - Read page 0x18 -> completely random data (about 12% of bits are flipped)
+>
+> Not much help, but AFAIU, you can get so-called 'write disturb' when writing
+> to the other page in a pair, even without power failure during the write.
+> But to my mind, 12% flipped bits sounds very excessive. I don't have any
+> experience with MLC though.
+>
+> Instictively it sounds like there is some other mechanism causing problems,
+> for instance if mtd does the write to the pages in two goes, rather than in
+> one write, as I think MLC in general can only accept one write operation per
+> page, in contrast to SLC where it is legal to write the main and oob data at
+> different times (normally 2 or 3 writes per page is legal, after that the
+> page must be erased or the data can not be considered stable).
 
-On Wed, Oct 2, 2013 at 11:51 AM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> + Marek
->
-> On Wed, Sep 04, 2013 at 10:16:56AM +0530, Priyanka Jain wrote:
->> Micron N25Q512A is a spi flash memory with following features:
->> -64MB size, 1.8V, Mulitple I/O, 4KB Sector erase memory.
->> -Memory is organised as 1024(64KB) main sectors.
->> -Each sector is divided into 256 pages.
->> -Register set/Opcodes are similar to other N25Q family products.
->>
->> Signed-off-by: Priyanka Jain <Priyanka.Jain@freescale.com>
->> ---
->>  drivers/mtd/devices/m25p80.c |    1 +
->>  1 files changed, 1 insertions(+), 0 deletions(-)
->>
->> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
->> index 26b14f9..94e3b53 100644
->> --- a/drivers/mtd/devices/m25p80.c
->> +++ b/drivers/mtd/devices/m25p80.c
->> @@ -774,6 +774,7 @@ static const struct spi_device_id m25p_ids[] = {
->>       { "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024, 256, 0) },
->>       { "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024, 256, 0) },
->>       { "n25q256a", INFO(0x20ba19, 0, 64 * 1024, 512, SECT_4K) },
->> +     { "n25q512a", INFO(0x20bb20, 0, 64 * 1024, 512, SECT_4K) },
->
-> This device actually has the same ID as Micron's next line (MT25QL512A).
-> They have the same geometry, so maybe that's not a problem.
->
-> (FWIW, I haven't gotten either flash working here, but I'm suspecting
-> board problems.)
->
->>
->>       /* PMC */
->>       { "pm25lv512", INFO(0, 0, 32 * 1024, 2, SECT_4K_PMC) },
->
-> I'll give Marek a chance to look at this, then I'll take this into
-> l2-mtd.git if there are no objections.
->
-> Brian
+Thanks Ricard.  Based on this suggestion, I added some trace printk's
+to the nand driver and did find that it was writing the data, then the
+oob, for each page.  So I commented out all the code that writes to
+the oob (since I have ECC disabled anyhow for this test).  The traces
+now show just two 4096-byte page writes.  But the problem still
+occurs.  So I think that rules out this theory, unless I missed some
+ways the nand can be written.
+
+Note that I was slightly mistaken earlier: the number of flipped bits
+seems to sometimes be 12%, sometimes 25%.  It's a little suspicious
+that this is almostly exactly 1/8 and 1/4 respectively.
