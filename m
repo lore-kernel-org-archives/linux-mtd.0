@@ -1,19 +1,24 @@
-Received: from anubis.se.axis.com ([195.60.68.12])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VRHKU-0008L2-Er
- for linux-mtd@lists.infradead.org; Wed, 02 Oct 2013 07:58:43 +0000
-Date: Wed, 2 Oct 2013 09:58:13 +0200
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Avery Pennarun <apenwarr@gmail.com>
-Subject: Re: Page corruption when writing non-sequential pages in an MLC NAND
- eraseblock
-In-Reply-To: <CAHqTa-0d=U+W2nju8WeCJ=gL+ja8DVuK0BUquajOL6qXV5C0+g@mail.gmail.com>
-Message-ID: <alpine.DEB.2.00.1310020954040.18310@lnxricardw.se.axis.com>
+Received: from plane.gmane.org ([80.91.229.3])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VRJWX-0003OS-VS
+ for linux-mtd@lists.infradead.org; Wed, 02 Oct 2013 10:19:18 +0000
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1VRJW9-0007YG-2W
+ for linux-mtd@lists.infradead.org; Wed, 02 Oct 2013 12:18:53 +0200
+Received: from 146.187.3.109.rev.sfr.net ([109.3.187.146])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <linux-mtd@lists.infradead.org>; Wed, 02 Oct 2013 12:18:53 +0200
+Received: from romain.izard.pro by 146.187.3.109.rev.sfr.net with local
+ (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+ for <linux-mtd@lists.infradead.org>; Wed, 02 Oct 2013 12:18:53 +0200
+To: linux-mtd@lists.infradead.org
+From: Romain Izard <romain.izard.pro@gmail.com>
+Subject: Re: Page corruption when writing non-sequential pages in an MLC
+ NAND eraseblock
+Date: Wed, 2 Oct 2013 10:18:31 +0000 (UTC)
+Message-ID: <l2grtn$svg$1@ger.gmane.org>
 References: <CAHqTa-0d=U+W2nju8WeCJ=gL+ja8DVuK0BUquajOL6qXV5C0+g@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-15"; format=flowed
-Content-Transfer-Encoding: 8BIT
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,9 +28,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-On Wed, 2 Oct 2013, Avery Pennarun wrote:
-
+On 2013-10-01, Avery Pennarun <apenwarr@gmail.com> wrote:
+> Hi everyone,
+>
 > Does this sound familiar?
 >
 > Setup:
@@ -61,21 +66,10 @@ On Wed, 2 Oct 2013, Avery Pennarun wrote:
 > failure.  It's happening for me during normal runtime, which seems
 > wrong.
 
-Not much help, but AFAIU, you can get so-called 'write disturb' when 
-writing to the other page in a pair, even without power failure during the 
-write. But to my mind, 12% flipped bits sounds very excessive. I don't 
-have any experience with MLC though.
+For me you're violating one key MLC assumption: the pages within a block
+must be written in a strictly increasing order. It should be written
+somewhere in the component's datasheet.
 
-Instictively it sounds like there is some other mechanism causing 
-problems, for instance if mtd does the write to the pages in two goes, 
-rather than in one write, as I think MLC in general can only accept one 
-write operation per page, in contrast to SLC where it is legal to write 
-the main and oob data at different times (normally 2 or 3 writes per page 
-is legal, after that the page must be erased or the data can not be 
-considered stable).
-
-/Ricard
+Best regards,
 -- 
-Ricard Wolf Wanderlöf                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+Romain Izard
