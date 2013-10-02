@@ -1,21 +1,22 @@
-Received: from mail-ve0-x230.google.com ([2607:f8b0:400c:c01::230])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VRQsT-0002LR-Ph
- for linux-mtd@lists.infradead.org; Wed, 02 Oct 2013 18:10:26 +0000
-Received: by mail-ve0-f176.google.com with SMTP id jx11so876150veb.35
- for <linux-mtd@lists.infradead.org>; Wed, 02 Oct 2013 11:10:04 -0700 (PDT)
+Received: from mail.linuxfoundation.org ([140.211.169.12])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VRR84-0002zQ-Tj
+ for linux-mtd@lists.infradead.org; Wed, 02 Oct 2013 18:26:33 +0000
+Date: Wed, 2 Oct 2013 11:22:27 -0700
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: JFFS2 SUMMARY prior to Linux 3.9
+Message-ID: <20131002182227.GA7065@kroah.com>
+References: <alpine.DEB.2.00.1309161003150.2394@lnxricardw.se.axis.com>
+ <CAN8TOE8PLvcK4kuRvbRh32gg0_Y8sbwWjdcWh_xt-tgQcPb85Q@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <l2grtn$svg$1@ger.gmane.org>
-References: <CAHqTa-0d=U+W2nju8WeCJ=gL+ja8DVuK0BUquajOL6qXV5C0+g@mail.gmail.com>
- <l2grtn$svg$1@ger.gmane.org>
-From: Avery Pennarun <apenwarr@gmail.com>
-Date: Wed, 2 Oct 2013 11:09:44 -0700
-Message-ID: <CAHqTa-3HxoQJ=wEZ_w8Vcp9VXS12=xNbiJ2v8fSsJbMb9BT_4w@mail.gmail.com>
-Subject: Re: Page corruption when writing non-sequential pages in an MLC NAND
- eraseblock
-To: Romain Izard <romain.izard.pro@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAN8TOE8PLvcK4kuRvbRh32gg0_Y8sbwWjdcWh_xt-tgQcPb85Q@mail.gmail.com>
+Cc: Linux mtd <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Ricard Wanderlof <ricard.wanderlof@axis.com>,
+ Kees Cook <keescook@chromium.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,29 +26,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Oct 2, 2013 at 3:18 AM, Romain Izard <romain.izard.pro@gmail.com> wrote:
-> On 2013-10-01, Avery Pennarun <apenwarr@gmail.com> wrote:
->> Steps:
->> - Disable ECC to avoid any confusion (ECC turns out to not affect the
->> test results, but I wanted to make sure)
->> - Erase any eraseblock
->> - Write all-zeroes to page 0x18 of that eraseblock; read it back -> ok
->> - Write all-zeroes to page 0x12 of that eraseblock; read it back ->
->> FAIL, all 0xff instead
->> - Read page 0x18 -> completely random data (about 12% of bits are flipped)
->
-> For me you're violating one key MLC assumption: the pages within a block
-> must be written in a strictly increasing order. It should be written
-> somewhere in the component's datasheet.
+On Wed, Oct 02, 2013 at 10:57:04AM -0700, Brian Norris wrote:
+> On Mon, Sep 16, 2013 at 1:04 AM, Ricard Wanderlof
+> <ricard.wanderlof@axis.com> wrote:
+> > I've noticed that JFFS2 summary has been relieved of it's EXPERIMENTAL
+> > status since Linux 3.9 . But was it stable enough before then as well? -
+> > often the EXPERIMENTAL property lingers on longer that it really needs to.
+> 
+> AFAIK, JFFS2 hasn't changed much for many releases, so its current
+> status pretty well reflects its status for many previous releases.
+> 
+> Regarding the EXPERIMENTAL status; this was changed without CC'ing the
+> MTD list (although David was CC'd, it seems) in commit:
+> 
+> commit cf98c5e56807af7c793497bbd0446f71c383ffd5
+> Author: Kees Cook <keescook@chromium.org>
+> Date:   Wed Jan 16 18:54:12 2013 -0800
+> 
+>     fs/jffs2: remove depends on CONFIG_EXPERIMENTAL
+> 
+> Judging by the commit description, this change just represents a
+> change in attitude toward the CONFIG_EXPERIMENTAL Kconfig option
+> rather than any particular judgment of JFFS2 summary support.
 
-Hmm.  I haven't heard of this constraint, but it certainly seems to be
-happening in this case (although in fact random-access writes *mostly*
-work other than this pairing effect, so it seems like they intended it
-to work properly).
+CONFIG_EXPERIMENTAL was removed from the entire kernel, as it really
+didn't mean anything anymore, and hadn't for _years_.
 
-This makes /dev/mtdblock completely unusable as it reorders writes.
-Is /dev/mtdblock known to not work with MLC chips?
-
-Thanks,
-
-Avery
+greg k-h
