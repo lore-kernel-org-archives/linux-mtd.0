@@ -1,25 +1,17 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from am1ehsobe005.messaging.microsoft.com ([213.199.154.208]
+ helo=am1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VRbo0-0000cS-87
- for linux-mtd@lists.infradead.org; Thu, 03 Oct 2013 05:50:33 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Brian Norris <computersforpeace@gmail.com>, "gregkh@linuxfoundation.org"
- <gregkh@linuxfoundation.org>
-Subject: RE: [PATCH] Staging: MTD: Micron SPINAND Driver support
-Date: Thu, 3 Oct 2013 05:49:58 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA19568@DBDE04.ent.ti.com>
-References: <1378128136-23699-1-git-send-email-kamlakant.patel@broadcom.com>
- <1380620038-25643-1-git-send-email-kamlakant.patel@broadcom.com>
- <20131002184547.GR23337@ld-irv-0074.broadcom.com>
-In-Reply-To: <20131002184547.GR23337@ld-irv-0074.broadcom.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1VRc4I-0000tN-4Z
+ for linux-mtd@lists.infradead.org; Thu, 03 Oct 2013 06:07:23 +0000
+From: Prabhakar Kushwaha <prabhakar@freescale.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] driver/mtd/ifc: Read Status while programming NAND flash
+Date: Thu, 3 Oct 2013 11:36:41 +0530
+Message-ID: <1380780401-6640-1-git-send-email-prabhakar@freescale.com>
 MIME-Version: 1.0
-Cc: "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Kamlakant Patel <kamlakant.patel@broadcom.com>,
- "manonuevo@micron.com" <manonuevo@micron.com>
+Content-Type: text/plain
+Cc: scottwood@freescale.com, Prabhakar Kushwaha <prabhakar@freescale.com>,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,61 +21,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> From: linux-mtd  On Behalf Of Brian Norris
-> > On Tue, Oct 01, 2013 at 03:03:58PM +0530, Kamlakant Patel wrote:
-> > This patch adds support for Micron SPINAND via MTD.
-> >
-> > Signed-off-by: Mona Anonuevo <manonuevo@micron.com>
-> > Signed-off-by: Kamlakant Patel <kamlakant.patel@broadcom.com>
-> > ---
-> > This patch has to be merged via staging tree.
-> >
-> > This is a driver from Micron for MT29F1G01ZACH4 SPI based NAND chips.
-> This driver had
-> > been posted multiple times to the mtd list.
-> > 1. http://lists.infradead.org/pipermail/linux-mtd/2010-May/031975.html
-> > 2. http://lists.infradead.org/pipermail/linux-mtd/2010-April/029523.htm=
-l
-> > 3. patchwork.ozlabs.org/patch/258697/
-> > This has not been merged into the main kernel yet.
-> >
-> > I have cleaned and updated it for current kernel. Since there are many
-> users for
-> > this driver, it may be useful to add it to the staging tree, where furt=
-her fixes
-> and
-> > cleanups can be done. Once it reaches to the standard will be moved to =
-the
-> mtd.
-> >
-> > This driver has been tested with Micron SPINAND MT29F1G01ZACH4 chip
-> on kernel 3.12 on
-> > the Netlogic XLP platforms.
-> >
-> > Mona Anonuevo, I have retained your sign-offs from the original patch.
-> >
-I see that major portion (especially the generic framework) is ported from
-http://lists.infradead.org/pipermail/linux-mtd/2010-May/031975.html
-So shouldn't you just maintain the original authorship ?
-And the original headers ?
+as per controller description,
+  "While programming a NAND flash, status read should never skipped.
+   Because it may happen that a new command is issued to the NAND Flash,
+   even when the device has not yet finished processing the previous request.
+   This may result in unpredictable behaviour."
 
->=20
-> You can address these comments in follow up patches after it's included
-> in staging, though. There's probably more review needed anyway
-> eventually (I see that no one really has reviewed this on the MTD
-> mailing list yet).
->=20
-The original version of this patch in 2010 added *generic spinand*
-framework. And support for m29f (Micron devices) should have been
-added using that generic framework. But due to lack of response
-generic framework never went in.
-Therefore I think this patch series adds a customized driver just for
-'m29f' (Micron serial NAND) devices, removing the generalization.
+IFC controller never polls for R/B signal after command send. It just return
+control to software. This behaviour may not occur with NAND flash access.
+because new commands are sent after polling R/B signal. But it may happen
+in scenario where GPCM-ASIC and NAND flash device are working simultaneously.
 
-There was a refreshed version of original patch (with generic framework)
-but no response on that too. I don't want to hold this patch, but it would
-be good, if you can review generic framework also ..
-https://lkml.org/lkml/2013/6/26/88
+Update the controller driver to take care of this requirement
 
+Signed-off-by: Prabhakar Kushwaha <prabhakar@freescale.com>
+---
+ drivers/mtd/nand/fsl_ifc_nand.c |   34 ++++++++++++++++++++++++----------
+ 1 file changed, 24 insertions(+), 10 deletions(-)
 
-with regards, pekon
+diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
+index a14885b..eb150f1 100644
+--- a/drivers/mtd/nand/fsl_ifc_nand.c
++++ b/drivers/mtd/nand/fsl_ifc_nand.c
+@@ -504,20 +504,29 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
+ 		if (mtd->writesize > 512) {
+ 			nand_fcr0 =
+ 				(NAND_CMD_SEQIN << IFC_NAND_FCR0_CMD0_SHIFT) |
+-				(NAND_CMD_PAGEPROG << IFC_NAND_FCR0_CMD1_SHIFT);
++				(NAND_CMD_STATUS << IFC_NAND_FCR0_CMD1_SHIFT) |
++				(NAND_CMD_PAGEPROG << IFC_NAND_FCR0_CMD2_SHIFT);
+ 
+ 			iowrite32be(
+-				(IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
+-				(IFC_FIR_OP_CA0 << IFC_NAND_FIR0_OP1_SHIFT) |
+-				(IFC_FIR_OP_RA0 << IFC_NAND_FIR0_OP2_SHIFT) |
+-				(IFC_FIR_OP_WBCD << IFC_NAND_FIR0_OP3_SHIFT) |
+-				(IFC_FIR_OP_CW1 << IFC_NAND_FIR0_OP4_SHIFT),
+-				&ifc->ifc_nand.nand_fir0);
++				 (IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
++				 (IFC_FIR_OP_CA0 << IFC_NAND_FIR0_OP1_SHIFT) |
++				 (IFC_FIR_OP_RA0 << IFC_NAND_FIR0_OP2_SHIFT) |
++				 (IFC_FIR_OP_WBCD  << IFC_NAND_FIR0_OP3_SHIFT) |
++				 (IFC_FIR_OP_CMD2 << IFC_NAND_FIR0_OP4_SHIFT),
++				 &ifc->ifc_nand.nand_fir0);
++			iowrite32be(
++				 (IFC_FIR_OP_CW1 << IFC_NAND_FIR1_OP5_SHIFT) |
++				 (IFC_FIR_OP_RDSTAT <<
++					IFC_NAND_FIR1_OP6_SHIFT) |
++				 (IFC_FIR_OP_NOP << IFC_NAND_FIR1_OP7_SHIFT),
++				 &ifc->ifc_nand.nand_fir1);
+ 		} else {
+ 			nand_fcr0 = ((NAND_CMD_PAGEPROG <<
+ 					IFC_NAND_FCR0_CMD1_SHIFT) |
+ 				    (NAND_CMD_SEQIN <<
+-					IFC_NAND_FCR0_CMD2_SHIFT));
++					IFC_NAND_FCR0_CMD2_SHIFT) |
++				    (NAND_CMD_STATUS <<
++					IFC_NAND_FCR0_CMD3_SHIFT));
+ 
+ 			iowrite32be(
+ 				(IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
+@@ -526,8 +535,13 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
+ 				(IFC_FIR_OP_RA0 << IFC_NAND_FIR0_OP3_SHIFT) |
+ 				(IFC_FIR_OP_WBCD << IFC_NAND_FIR0_OP4_SHIFT),
+ 				&ifc->ifc_nand.nand_fir0);
+-			iowrite32be(IFC_FIR_OP_CW1 << IFC_NAND_FIR1_OP5_SHIFT,
+-				    &ifc->ifc_nand.nand_fir1);
++			iowrite32be(
++				 (IFC_FIR_OP_CMD1 << IFC_NAND_FIR1_OP5_SHIFT) |
++				 (IFC_FIR_OP_CW3 << IFC_NAND_FIR1_OP6_SHIFT) |
++				 (IFC_FIR_OP_RDSTAT <<
++					IFC_NAND_FIR1_OP7_SHIFT) |
++				 (IFC_FIR_OP_NOP << IFC_NAND_FIR1_OP8_SHIFT),
++				  &ifc->ifc_nand.nand_fir1);
+ 
+ 			if (column >= mtd->writesize)
+ 				nand_fcr0 |=
+-- 
+1.7.9.5
