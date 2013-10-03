@@ -1,17 +1,24 @@
-Received: from am1ehsobe005.messaging.microsoft.com ([213.199.154.208]
- helo=am1outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VRc4I-0000tN-4Z
- for linux-mtd@lists.infradead.org; Thu, 03 Oct 2013 06:07:23 +0000
-From: Prabhakar Kushwaha <prabhakar@freescale.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] driver/mtd/ifc: Read Status while programming NAND flash
-Date: Thu, 3 Oct 2013 11:36:41 +0530
-Message-ID: <1380780401-6640-1-git-send-email-prabhakar@freescale.com>
+Received: from ra.se.axis.com ([195.60.68.13])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VRcqk-0001lB-VL
+ for linux-mtd@lists.infradead.org; Thu, 03 Oct 2013 06:57:27 +0000
+Date: Thu, 3 Oct 2013 08:57:01 +0200
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Kees Cook <keescook@chromium.org>
+Subject: Re: JFFS2 SUMMARY prior to Linux 3.9
+In-Reply-To: <CAGXu5jK_BUqkVijBZ3-bhdYWZNf9dEfbJUWRsTuuoR8LWda0qg@mail.gmail.com>
+Message-ID: <alpine.DEB.2.00.1310030850020.18310@lnxricardw.se.axis.com>
+References: <alpine.DEB.2.00.1309161003150.2394@lnxricardw.se.axis.com>
+ <CAN8TOE8PLvcK4kuRvbRh32gg0_Y8sbwWjdcWh_xt-tgQcPb85Q@mail.gmail.com>
+ <CAGXu5jK_BUqkVijBZ3-bhdYWZNf9dEfbJUWRsTuuoR8LWda0qg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: scottwood@freescale.com, Prabhakar Kushwaha <prabhakar@freescale.com>,
- dedekind1@gmail.com
+Content-Type: text/plain; charset="iso-8859-1"; format=flowed
+Content-Transfer-Encoding: 8BIT
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ =?ISO-8859-15?Q?Ricard_Wanderl=F6f?= <ricardw@axis.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Linux mtd <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,81 +28,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-as per controller description,
-  "While programming a NAND flash, status read should never skipped.
-   Because it may happen that a new command is issued to the NAND Flash,
-   even when the device has not yet finished processing the previous request.
-   This may result in unpredictable behaviour."
 
-IFC controller never polls for R/B signal after command send. It just return
-control to software. This behaviour may not occur with NAND flash access.
-because new commands are sent after polling R/B signal. But it may happen
-in scenario where GPCM-ASIC and NAND flash device are working simultaneously.
+On Wed, 2 Oct 2013, Kees Cook wrote:
 
-Update the controller driver to take care of this requirement
+> On Wed, Oct 2, 2013 at 10:57 AM, Brian Norris
+> <computersforpeace@gmail.com> wrote:
+>> On Mon, Sep 16, 2013 at 1:04 AM, Ricard Wanderlof
+>> <ricard.wanderlof@axis.com> wrote:
+>>> I've noticed that JFFS2 summary has been relieved of it's EXPERIMENTAL
+>>> status since Linux 3.9 . But was it stable enough before then as well? -
+>>> often the EXPERIMENTAL property lingers on longer that it really needs to.
+>>
+>> AFAIK, JFFS2 hasn't changed much for many releases, so its current
+>> status pretty well reflects its status for many previous releases.
+>>
+>> Regarding the EXPERIMENTAL status; this was changed without CC'ing the
+>> MTD list (although David was CC'd, it seems) in commit:
+>>
+>> commit cf98c5e56807af7c793497bbd0446f71c383ffd5
+>> Author: Kees Cook <keescook@chromium.org>
+>> Date:   Wed Jan 16 18:54:12 2013 -0800
+>>
+>>     fs/jffs2: remove depends on CONFIG_EXPERIMENTAL
+>>
+>> Judging by the commit description, this change just represents a
+>> change in attitude toward the CONFIG_EXPERIMENTAL Kconfig option
+>> rather than any particular judgment of JFFS2 summary support.
+>
+> Correct. CONFIG_EXPERIMENTAL was seen to have no meaning any more in
+> the face of things like distros always turning it on because they
+> wanted to enable some specific feature/device that was hiding behind
+> it.
+>
+> Details about preferred handling of "unstable" features is documented here:
+> http://git.kernel.org/linus/5a958db311c416345a61b7bddc62a5c6c7112c7f
 
-Signed-off-by: Prabhakar Kushwaha <prabhakar@freescale.com>
----
- drivers/mtd/nand/fsl_ifc_nand.c |   34 ++++++++++++++++++++++++----------
- 1 file changed, 24 insertions(+), 10 deletions(-)
+Thanks for the clarifications and link guys.
 
-diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
-index a14885b..eb150f1 100644
---- a/drivers/mtd/nand/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/fsl_ifc_nand.c
-@@ -504,20 +504,29 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
- 		if (mtd->writesize > 512) {
- 			nand_fcr0 =
- 				(NAND_CMD_SEQIN << IFC_NAND_FCR0_CMD0_SHIFT) |
--				(NAND_CMD_PAGEPROG << IFC_NAND_FCR0_CMD1_SHIFT);
-+				(NAND_CMD_STATUS << IFC_NAND_FCR0_CMD1_SHIFT) |
-+				(NAND_CMD_PAGEPROG << IFC_NAND_FCR0_CMD2_SHIFT);
- 
- 			iowrite32be(
--				(IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
--				(IFC_FIR_OP_CA0 << IFC_NAND_FIR0_OP1_SHIFT) |
--				(IFC_FIR_OP_RA0 << IFC_NAND_FIR0_OP2_SHIFT) |
--				(IFC_FIR_OP_WBCD << IFC_NAND_FIR0_OP3_SHIFT) |
--				(IFC_FIR_OP_CW1 << IFC_NAND_FIR0_OP4_SHIFT),
--				&ifc->ifc_nand.nand_fir0);
-+				 (IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
-+				 (IFC_FIR_OP_CA0 << IFC_NAND_FIR0_OP1_SHIFT) |
-+				 (IFC_FIR_OP_RA0 << IFC_NAND_FIR0_OP2_SHIFT) |
-+				 (IFC_FIR_OP_WBCD  << IFC_NAND_FIR0_OP3_SHIFT) |
-+				 (IFC_FIR_OP_CMD2 << IFC_NAND_FIR0_OP4_SHIFT),
-+				 &ifc->ifc_nand.nand_fir0);
-+			iowrite32be(
-+				 (IFC_FIR_OP_CW1 << IFC_NAND_FIR1_OP5_SHIFT) |
-+				 (IFC_FIR_OP_RDSTAT <<
-+					IFC_NAND_FIR1_OP6_SHIFT) |
-+				 (IFC_FIR_OP_NOP << IFC_NAND_FIR1_OP7_SHIFT),
-+				 &ifc->ifc_nand.nand_fir1);
- 		} else {
- 			nand_fcr0 = ((NAND_CMD_PAGEPROG <<
- 					IFC_NAND_FCR0_CMD1_SHIFT) |
- 				    (NAND_CMD_SEQIN <<
--					IFC_NAND_FCR0_CMD2_SHIFT));
-+					IFC_NAND_FCR0_CMD2_SHIFT) |
-+				    (NAND_CMD_STATUS <<
-+					IFC_NAND_FCR0_CMD3_SHIFT));
- 
- 			iowrite32be(
- 				(IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
-@@ -526,8 +535,13 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
- 				(IFC_FIR_OP_RA0 << IFC_NAND_FIR0_OP3_SHIFT) |
- 				(IFC_FIR_OP_WBCD << IFC_NAND_FIR0_OP4_SHIFT),
- 				&ifc->ifc_nand.nand_fir0);
--			iowrite32be(IFC_FIR_OP_CW1 << IFC_NAND_FIR1_OP5_SHIFT,
--				    &ifc->ifc_nand.nand_fir1);
-+			iowrite32be(
-+				 (IFC_FIR_OP_CMD1 << IFC_NAND_FIR1_OP5_SHIFT) |
-+				 (IFC_FIR_OP_CW3 << IFC_NAND_FIR1_OP6_SHIFT) |
-+				 (IFC_FIR_OP_RDSTAT <<
-+					IFC_NAND_FIR1_OP7_SHIFT) |
-+				 (IFC_FIR_OP_NOP << IFC_NAND_FIR1_OP8_SHIFT),
-+				  &ifc->ifc_nand.nand_fir1);
- 
- 			if (column >= mtd->writesize)
- 				nand_fcr0 |=
+It does seem though that if a feature really is 'experimental', it could 
+still be marked as "(EXPERIMENTAL)" in Kconfig as well as having 
+appropriate warnings in the help text, purely as a warning to users. I 
+quite frankly wasn't aware of CONFIG_EXPERIMENTAL (which just cements the 
+fact that no one really cared about that option anyway) as I hadn't 
+reviewed the Kconfig file, just noticed the "(EXPERIMENTAL)" in the 
+resulting menu item.
+
+All the above points to the fact that for this particular option, 
+"(EXPERIMENTAL)" was left in mostly because no one had bothered to remove 
+it. There doesn't seem to be any other indication in the Kconfig that
+the option is in fact unstable.
+
+/Ricard
 -- 
-1.7.9.5
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
