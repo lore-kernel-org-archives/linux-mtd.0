@@ -1,27 +1,19 @@
-Received: from mms3.broadcom.com ([216.31.210.19])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VRfMl-0004yk-Pe
- for linux-mtd@lists.infradead.org; Thu, 03 Oct 2013 09:38:40 +0000
-Date: Thu, 3 Oct 2013 15:24:38 +0530
-From: "Kamlakant Patel" <kamlakant.patel@broadcom.com>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [PATCH] Staging: MTD: Micron SPINAND Driver support
-Message-ID: <20131003095437.GA15892@kpatel.netlogicmircro.com>
-References: <1378128136-23699-1-git-send-email-kamlakant.patel@broadcom.com>
- <1380620038-25643-1-git-send-email-kamlakant.patel@broadcom.com>
- <20131002184547.GR23337@ld-irv-0074.broadcom.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA19568@DBDE04.ent.ti.com>
+Received: from ns.omicron.at ([212.183.10.25])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VRgsX-0007WN-1J
+ for linux-mtd@lists.infradead.org; Thu, 03 Oct 2013 11:15:34 +0000
+From: Christian Riesch <christian.riesch@omicron.at>
+To: <linux-mtd@lists.infradead.org>
+Subject: [RESEND PATCH 0/2] mtd: Harmonize implementations of OTP write and
+ _get_{fact, user}_prot_info
+Date: Thu, 3 Oct 2013 13:14:34 +0200
 MIME-Version: 1.0
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA19568@DBDE04.ent.ti.com>
-Content-Type: text/plain;
- charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
-Cc: "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
- "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "manonuevo@micron.com" <manonuevo@micron.com>
+Content-Type: text/plain
+Message-ID: <d11cf30b-a84f-44cf-a7b8-81c5e846a64a@mary.at.omicron.at>
+Cc: Amul Kumar Saha <amul.saha@samsung.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ Christian Riesch <christian.riesch@omicron.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,69 +23,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Oct 03, 2013 at 05:49:58AM +0000, Gupta, Pekon wrote:
-> > From: linux-mtd  On Behalf Of Brian Norris
-> > > On Tue, Oct 01, 2013 at 03:03:58PM +0530, Kamlakant Patel wrote:
-> > > This patch adds support for Micron SPINAND via MTD.
-> > >
-> > > Signed-off-by: Mona Anonuevo <manonuevo@micron.com>
-> > > Signed-off-by: Kamlakant Patel <kamlakant.patel@broadcom.com>
-> > > ---
-> > > This patch has to be merged via staging tree.
-> > >
-> > > This is a driver from Micron for MT29F1G01ZACH4 SPI based NAND chips.
-> > This driver had
-> > > been posted multiple times to the mtd list.
-> > > 1. http://lists.infradead.org/pipermail/linux-mtd/2010-May/031975.html
-> > > 2. http://lists.infradead.org/pipermail/linux-mtd/2010-April/029523.html
-> > > 3. patchwork.ozlabs.org/patch/258697/
-> > > This has not been merged into the main kernel yet.
-> > >
-> > > I have cleaned and updated it for current kernel. Since there are many
-> > users for
-> > > this driver, it may be useful to add it to the staging tree, where further fixes
-> > and
-> > > cleanups can be done. Once it reaches to the standard will be moved to the
-> > mtd.
-> > >
-> > > This driver has been tested with Micron SPINAND MT29F1G01ZACH4 chip
-> > on kernel 3.12 on
-> > > the Netlogic XLP platforms.
-> > >
-> > > Mona Anonuevo, I have retained your sign-offs from the original patch.
-> > >
-> I see that major portion (especially the generic framework) is ported from
-> http://lists.infradead.org/pipermail/linux-mtd/2010-May/031975.html
-> So shouldn't you just maintain the original authorship ?
-> And the original headers ?
-> 
+Hi all,
 
-I have retained signoff, module_author name and copyright from the
-original patch. There are significant changes in the code, so
-it will not be correct to keep the commit author.
+In the discussion on my patchset for the OTP support for
+drivers/mtd/chips/cfi_cmdset_0002.c [1-5], Artem requested two changes in the
+current code of the OTP write functions and the _get_{fact,user}_prot_info
+code.
 
-> > 
-> > You can address these comments in follow up patches after it's included
-> > in staging, though. There's probably more review needed anyway
-> > eventually (I see that no one really has reviewed this on the MTD
-> > mailing list yet).
-> > 
-> The original version of this patch in 2010 added *generic spinand*
-> framework. And support for m29f (Micron devices) should have been
-> added using that generic framework. But due to lack of response
-> generic framework never went in.
-> Therefore I think this patch series adds a customized driver just for
-> 'm29f' (Micron serial NAND) devices, removing the generalization.
-> 
-> There was a refreshed version of original patch (with generic framework)
-> but no response on that too. I don't want to hold this patch, but it would
-> be good, if you can review generic framework also ..
-> https://lkml.org/lkml/2013/6/26/88
+These two patches are an attempt to make the requested changes.
 
-Right now, we don't want do merge the framework code into staging, that
-has to go through linux-mtd after discussion. This patch is to add a
-working driver for mt29f chip using the existing NAND framework.
+The first patch adds a retlen parameter to the _get_fact_prot_info and
+_get_user_prot_info functions and thus harmonizes the implementation
+with those of the write and read functions.
 
-> 
-> with regards, pekon
-> 
+The second patch fixes a problem that I earlier addressed in [1]. After
+the discussion about this patch on the mtd mailing list, I think that the
+correct behavior of the write function should be the one specified in [6]:
+Try to write as many bytes as possible and return the number of bytes
+that were written. If no data could be written due to lack of OTP memory,
+return -ENOSPC.
+
+Artem, would you please have a look at these patches? I would like to know
+if I understood you correctly, or if I missed something here. Please note
+that I cannot test these patches since I do not have the hardware. The
+patches are compile tested only. If these patches are ok, I will also
+respin the OTP support patches for cfi_cmdset_0002.
+
+Thank you!
+
+Best regards,
+Christian
+
+[1] http://patchwork.ozlabs.org/patch/239897/
+[2] http://patchwork.ozlabs.org/patch/240010/
+[3] http://patchwork.ozlabs.org/patch/240007/
+[4] http://patchwork.ozlabs.org/patch/240008/
+[5] http://patchwork.ozlabs.org/patch/240009/
+[6] http://pubs.opengroup.org/onlinepubs/9699919799/functions/write.html
+
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Cc: Kyungmin Park <kyungmin.park@samsung.com>
+Cc: Amul Kumar Saha <amul.saha@samsung.com>
+
+Christian Riesch (2):
+  mtd: Add a retlen parameter to _get_{fact,user}_prot_info
+  mtd: Fix the behavior of otp write if there is not enough room for
+    data
+
+ drivers/mtd/chips/cfi_cmdset_0001.c |   44 +++++++++++++++++++----------------
+ drivers/mtd/devices/mtd_dataflash.c |   20 +++++++---------
+ drivers/mtd/mtdchar.c               |   18 ++++++++++----
+ drivers/mtd/mtdcore.c               |   12 +++++-----
+ drivers/mtd/mtdpart.c               |   14 ++++++-----
+ drivers/mtd/onenand/onenand_base.c  |   41 +++++++++++++++++---------------
+ include/linux/mtd/mtd.h             |   16 ++++++-------
+ 7 files changed, 90 insertions(+), 75 deletions(-)
+
+-- 
+1.7.9.5
