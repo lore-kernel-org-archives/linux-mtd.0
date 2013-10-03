@@ -1,22 +1,25 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from mail-pd0-x235.google.com ([2607:f8b0:400e:c02::235])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VRlDd-0007l8-Ao
- for linux-mtd@lists.infradead.org; Thu, 03 Oct 2013 15:53:37 +0000
-Message-ID: <524D92E8.1030704@nod.at>
-Date: Thu, 03 Oct 2013 17:53:12 +0200
-From: Richard Weinberger <richard@nod.at>
+ id 1VRlDu-0007lt-IC
+ for linux-mtd@lists.infradead.org; Thu, 03 Oct 2013 15:53:55 +0000
+Received: by mail-pd0-f181.google.com with SMTP id g10so2643364pdj.26
+ for <linux-mtd@lists.infradead.org>; Thu, 03 Oct 2013 08:53:32 -0700 (PDT)
+Message-ID: <524D92F8.70603@gmail.com>
+Date: Thu, 03 Oct 2013 08:53:28 -0700
+From: Brian Norris <computersforpeace@gmail.com>
 MIME-Version: 1.0
 To: dedekind1@gmail.com
-Subject: Re: [PATCH 1/7] UBI: fix refill_wl_user_pool()
-References: <1380376516-30144-1-git-send-email-richard@nod.at>
- <1380376516-30144-2-git-send-email-richard@nod.at>
- <1380812414.27358.440.camel@sauron.fi.intel.com> <524D8879.1030203@nod.at>
- <1380814071.27358.444.camel@sauron.fi.intel.com>
-In-Reply-To: <1380814071.27358.444.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH v4 05/12] mtd: nand: print out the cell information for
+ nand chip
+References: <1380092301-21924-1-git-send-email-b32955@freescale.com>	
+ <1380092301-21924-6-git-send-email-b32955@freescale.com>	
+ <20130930224942.GO23337@ld-irv-0074.broadcom.com>
+ <1380810883.27358.432.camel@sauron.fi.intel.com>
+In-Reply-To: <1380810883.27358.432.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: richard.genoud@gmail.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Cc: Huang Shijie <b32955@freescale.com>, dwmw2@infradead.org,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,29 +29,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 03.10.2013 17:27, schrieb Artem Bityutskiy:
-> On Thu, 2013-10-03 at 17:08 +0200, Richard Weinberger wrote:
->> Am 03.10.2013 17:00, schrieb Artem Bityutskiy:
->>> On Sat, 2013-09-28 at 15:55 +0200, Richard Weinberger wrote:
->>>> If no free PEBs are available refill_wl_user_pool() must not
->>>> return with -ENOSPC immediately.
->>>> It has to block till produce_free_peb() produced a free PEB.
->>>>
->>>> Reported-and-Tested-by: Richard Genoud <richard.genoud@gmail.com>
->>>> Signed-off-by: Richard Weinberger <richard@nod.at>
+On 10/03/2013 07:34 AM, Artem Bityutskiy wrote:
+> On Mon, 2013-09-30 at 15:49 -0700, Brian Norris wrote:
+>> On Wed, Sep 25, 2013 at 02:58:14PM +0800, Huang Shijie wrote:
+>>> Print out the cell information for nand chip.
 >>>
->>> What is pool size, I wonder?
+>>> (Since the message is too long, this patch also splits the log
+>>> with two separate pr_info())
+>>>
+>>> Signed-off-by: Huang Shijie <b32955@freescale.com>
+>>> ---
+>>>   drivers/mtd/nand/nand_base.c |   11 +++++++----
+>>>   1 files changed, 7 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+>>> index 94d9084..b94309b 100644
+>>> --- a/drivers/mtd/nand/nand_base.c
+>>> +++ b/drivers/mtd/nand/nand_base.c
+>>> @@ -3460,11 +3460,14 @@ ident_done:
+>>>   	if (mtd->writesize > 512 && chip->cmdfunc == nand_command)
+>>>   		chip->cmdfunc = nand_command_lp;
+>>>
+>>> -	pr_info("NAND device: Manufacturer ID: 0x%02x, Chip ID: 0x%02x (%s %s),"
+>>> -		" %dMiB, page size: %d, OOB size: %d\n",
+>>> +	pr_info("NAND device: Manufacturer ID: 0x%02x,"
+>>> +			"Chip ID: 0x%02x (%s %s) \n",
 >>
->> Currently it's 25 (UBI_FM_WL_POOL_SIZE).
->> If experience shows that 25 is too low/big we can change this constant.
->> Maybe it's also worth making them configurable...
-> 
-> I if it is a possible scenario that this function will not return until
-> 25 (or even 10) PEBs are erased? 
-> 
+>> You're adding excess whitespace before the '\n'. I'll squash this
+>> myself.
+>
+> Nowadays' fashion is to never split strings, Huang.
 
-Sure. It will try to gain up to 25 PEBs but return if it gets less.
-That's why a pool has a current and a max size.
+checkpatch.pl actually warns about this now, so I already fixed it but 
+didn't remember to mention it. Also, in splitting this string, Huang 
+removed a space (fixed as well).
 
-Thanks,
-//richard
+Brian
