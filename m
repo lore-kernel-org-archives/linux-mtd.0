@@ -1,19 +1,20 @@
-From: Pekon Gupta <pekon@ti.com>
-To: <mark.rutland@arm.com>, <robherring2@gmail.com>, <olof@lixom.net>,
- <computersforpeace@gmail.com>, <dedekind1@gmail.com>
-Subject: [PATCH v7 5/6] ARM: dts: AM33xx: updated default ECC scheme in
- nand-ecc-opt
-Date: Sat, 5 Oct 2013 01:19:47 +0530
-Message-ID: <1380916188-24206-6-git-send-email-pekon@ti.com>
-In-Reply-To: <1380916188-24206-1-git-send-email-pekon@ti.com>
-References: <1380916188-24206-1-git-send-email-pekon@ti.com>
+Received: from longford.logfs.org ([213.229.74.203])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VSEhg-0001K9-1o
+ for linux-mtd@lists.infradead.org; Fri, 04 Oct 2013 23:22:37 +0000
+Date: Fri, 4 Oct 2013 18:02:58 -0400
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Alexander Sverdlin <alexander.sverdlin@nsn.com>
+Subject: Re: [PATCH] mtd: phram: Make phram 64-bit compatible
+Message-ID: <20131004220258.GA26731@logfs.org>
+References: <524C4CF5.7060601@nsn.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: devicetree@vger.kernel.org, Pawel.Moll@arm.com, arnd@arndb.de,
- swarren@wwwdotorg.org, tony@atomide.com, ijc+devicetree@hellion.org.uk,
- avinashphilipk@gmail.com, balbi@ti.com, linux-mtd@lists.infradead.org,
- Pekon Gupta <pekon@ti.com>, bcousson@baylibre.com, linux-omap@vger.kernel.org,
- dwmw2@infradead.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <524C4CF5.7060601@nsn.com>
+Cc: Joern Engel <joern@lazybastard.org>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,50 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DT property values for OMAP based gpmc-nand have been updated
-to match changes in commit:
-	6faf096 ARM: OMAP2+: cleaned-up DT support of various ECC schemes
-Refer: Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+On Wed, 2 October 2013 18:42:29 +0200, Alexander Sverdlin wrote:
+> 
+> mtd: phram: Make phram 64-bit compatible
+> 
+> phram was 32-bit limited by design. Machines are growing up, but phram
+> module is still useful. Update it. The patch is bigger than minimum,
+> because simple_strtoul() is obsolete.
+> 
+> Tested on MIPS64 and compile-tested for PPC (32 bit).
+> 
+> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nsn.com>
+Reviewed-by: Joern Engel <joern@logfs.org>
 
-Signed-off-by: Pekon Gupta <pekon@ti.com>
----
- arch/arm/boot/dts/am335x-evm.dts   | 3 +--
- arch/arm/boot/dts/omap3430-sdp.dts | 2 +-
- 2 files changed, 2 insertions(+), 3 deletions(-)
+I quite like it.
 
-diff --git a/arch/arm/boot/dts/am335x-evm.dts b/arch/arm/boot/dts/am335x-evm.dts
-index e8ec875..1aee6ac 100644
---- a/arch/arm/boot/dts/am335x-evm.dts
-+++ b/arch/arm/boot/dts/am335x-evm.dts
-@@ -269,7 +269,6 @@
- 				reg = <0 0 0>; /* CS0, offset 0 */
- 				nand-bus-width = <8>;
- 				ti,nand-ecc-opt = "bch8";
--				gpmc,device-nand = "true";
- 				gpmc,device-width = <1>;
- 				gpmc,sync-clk-ps = <0>;
- 				gpmc,cs-on-ns = <0>;
-@@ -296,7 +295,7 @@
- 
- 				#address-cells = <1>;
- 				#size-cells = <1>;
--				elm_id = <&elm>;
-+				ti,elm-id = <&elm>;
- 
- 				/* MTD partition table */
- 				partition@0 {
-diff --git a/arch/arm/boot/dts/omap3430-sdp.dts b/arch/arm/boot/dts/omap3430-sdp.dts
-index e2249bc..501f863 100644
---- a/arch/arm/boot/dts/omap3430-sdp.dts
-+++ b/arch/arm/boot/dts/omap3430-sdp.dts
-@@ -105,7 +105,7 @@
- 		reg = <1 0 0x08000000>;
- 		nand-bus-width = <8>;
- 
--		ti,nand-ecc-opt = "sw";
-+		ti,nand-ecc-opt = "ham1";
- 		gpmc,cs-on-ns = <0>;
- 		gpmc,cs-rd-off-ns = <36>;
- 		gpmc,cs-wr-off-ns = <36>;
--- 
-1.8.1
+Jörn
+
+--
+Antivirus is homeopathy for computers: This software was in contact with
+malware in the past, so it’ll recognize other malware in the future.
+$79
+-- thegrugq
