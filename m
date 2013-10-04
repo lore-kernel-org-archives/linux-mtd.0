@@ -1,24 +1,21 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from mail-wg0-x22e.google.com ([2a00:1450:400c:c00::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VRm52-0001fS-JW
- for linux-mtd@lists.infradead.org; Thu, 03 Oct 2013 16:48:49 +0000
-Message-ID: <524D9FD7.5050406@nod.at>
-Date: Thu, 03 Oct 2013 18:48:23 +0200
-From: Richard Weinberger <richard@nod.at>
+ id 1VRvmJ-0007u1-IR
+ for linux-mtd@lists.infradead.org; Fri, 04 Oct 2013 03:10:08 +0000
+Received: by mail-wg0-f46.google.com with SMTP id k14so3387548wgh.13
+ for <linux-mtd@lists.infradead.org>; Thu, 03 Oct 2013 20:09:45 -0700 (PDT)
 MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCH 1/7] UBI: fix refill_wl_user_pool()
-References: <1380376516-30144-1-git-send-email-richard@nod.at>
- <1380376516-30144-2-git-send-email-richard@nod.at>
- <1380812414.27358.440.camel@sauron.fi.intel.com> <524D8879.1030203@nod.at>
- <1380814071.27358.444.camel@sauron.fi.intel.com> <524D92E8.1030704@nod.at>
- <1380816035.27358.447.camel@sauron.fi.intel.com> <524D9CE1.8040600@nod.at>
- <1380818515.18862.0.camel@sauron.fi.intel.com>
-In-Reply-To: <1380818515.18862.0.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: richard.genoud@gmail.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+In-Reply-To: <55541379679397@web20h.yandex.ru>
+References: <55541379679397@web20h.yandex.ru>
+Date: Thu, 3 Oct 2013 22:09:45 -0500
+Message-ID: <CAP+RiCAVuUEfyjg02+ZjeFXgUuaRW+fuMB490Ce2Hq_4qHBL=A@mail.gmail.com>
+Subject: Re: lz4hc compression in UBIFS?
+From: Brent Taylor <motobud@gmail.com>
+To: Konstantin Tokarev <annulen@yandex.ru>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,47 +25,156 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 03.10.2013 18:41, schrieb Artem Bityutskiy:
-> On Thu, 2013-10-03 at 18:35 +0200, Richard Weinberger wrote:
->> Am 03.10.2013 18:00, schrieb Artem Bityutskiy:
->>> On Thu, 2013-10-03 at 17:53 +0200, Richard Weinberger wrote:
->>>> Am 03.10.2013 17:27, schrieb Artem Bityutskiy:
->>>>> On Thu, 2013-10-03 at 17:08 +0200, Richard Weinberger wrote:
->>>>>> Am 03.10.2013 17:00, schrieb Artem Bityutskiy:
->>>>>>> On Sat, 2013-09-28 at 15:55 +0200, Richard Weinberger wrote:
->>>>>>>> If no free PEBs are available refill_wl_user_pool() must not
->>>>>>>> return with -ENOSPC immediately.
->>>>>>>> It has to block till produce_free_peb() produced a free PEB.
->>>>>>>>
->>>>>>>> Reported-and-Tested-by: Richard Genoud <richard.genoud@gmail.com>
->>>>>>>> Signed-off-by: Richard Weinberger <richard@nod.at>
->>>>>>>
->>>>>>> What is pool size, I wonder?
->>>>>>
->>>>>> Currently it's 25 (UBI_FM_WL_POOL_SIZE).
->>>>>> If experience shows that 25 is too low/big we can change this constant.
->>>>>> Maybe it's also worth making them configurable...
->>>>>
->>>>> I if it is a possible scenario that this function will not return until
->>>>> 25 (or even 10) PEBs are erased? 
->>>>>
->>>>
->>>> Sure. It will try to gain up to 25 PEBs but return if it gets less.
->>>> That's why a pool has a current and a max size.
->>>
->>> So if erasing speed is say, 250ms, then it would take 6.25 seconds?
->>
->> Only in the very worst case if we have to call 25 times produce_free_peb().
->>
->> Of course we could add a check to return immediately if produce_free_peb()
->> got called a few times in series.
->> But I really would like to wait with such performance tweaks until fastmap
->> is more mature.
-> 
-> OK, but how about at least adding a comment talking about this unlikely
-> scenario?
+On Fri, Sep 20, 2013 at 7:16 AM, Konstantin Tokarev <annulen@yandex.ru> wro=
+te:
+> Hi all,
+>
+> Are there any plans for adding lz4hc [1] compression support to UBIFS?
+>
+> Benchmarks are quite impressive, and it looks like lz4hc can achieve bett=
+er compression ration while providing 3.5x faster decompression. From quick=
+ look at UBIFS module sources it looks like adding new compressor supported=
+ by crypto API is a matter of a few lines of code in compress.c.
+>
+> Or are there any known obstacles?
+>
+> [1] http://code.google.com/p/lz4/
+>
+> --
+> Regards,
+> Konstantin
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
-I'm fine with this. Will send a patch. :-)
+Here is a patch based on linux-3.12-rc3.  I haven't performed any
+performance testing UBIFS using lz4hc, but I can mount UBIFS volumes
+and haven't seen any problems yet.  The only think I know that isn't
+correct about the patch is the description for the Kconfig element for
+select lz4hc as a compression option.  I only copied the description
+from the lzo description.
 
-Thanks,
-//richard
+diff -uN -uNr linux-3.12-rc3.orig/fs/ubifs/compress.c
+linux-3.12-rc3/fs/ubifs/compress.c
+--- linux-3.12-rc3.orig/fs/ubifs/compress.c     2013-09-29
+17:02:38.000000000 -0500
++++ linux-3.12-rc3/fs/ubifs/compress.c  2013-07-17 21:57:27.440653860 -0500
+@@ -53,6 +53,22 @@
+ };
+ #endif
+
++#ifdef CONFIG_UBIFS_FS_LZ4HC
++static DEFINE_MUTEX(lz4hc_mutex);
++
++static struct ubifs_compressor lz4hc_compr =3D {
++       .compr_type =3D UBIFS_COMPR_LZ4HC,
++       .comp_mutex =3D &lz4hc_mutex,
++       .name =3D "lz4hc",
++       .capi_name =3D "lz4hc",
++};
++#else
++static struct ubifs_compressor lz4hc_compr =3D {
++       .compr_type =3D UBIFS_COMPR_LZ4HC,
++       .name =3D "lz4hc",
++};
++#endif
++
+ #ifdef CONFIG_UBIFS_FS_ZLIB
+ static DEFINE_MUTEX(deflate_mutex);
+ static DEFINE_MUTEX(inflate_mutex);
+@@ -224,10 +240,14 @@
+ {
+        int err;
+
+-       err =3D compr_init(&lzo_compr);
++       err =3D compr_init(&lz4hc_compr);
+        if (err)
+                return err;
+
++       err =3D compr_init(&lzo_compr);
++       if (err)
++               goto out_lz4hc;
++
+        err =3D compr_init(&zlib_compr);
+        if (err)
+                goto out_lzo;
+@@ -237,6 +257,8 @@
+
+ out_lzo:
+        compr_exit(&lzo_compr);
++out_lz4hc:
++       compr_exit(&lz4hc_compr);
+        return err;
+ }
+
+@@ -245,6 +267,7 @@
+  */
+ void ubifs_compressors_exit(void)
+ {
++       compr_exit(&lz4hc_compr);
+        compr_exit(&lzo_compr);
+        compr_exit(&zlib_compr);
+ }
+diff -uN -uNr linux-3.12-rc3.orig/fs/ubifs/Kconfig
+linux-3.12-rc3/fs/ubifs/Kconfig
+--- linux-3.12-rc3.orig/fs/ubifs/Kconfig        2013-09-29
+17:02:38.000000000 -0500
++++ linux-3.12-rc3/fs/ubifs/Kconfig     2013-10-03 21:40:39.098747630 -0500
+@@ -29,6 +29,14 @@
+           LZO compressor is generally faster than zlib but compresses wors=
+e.
+           Say 'Y' if unsure.
+
++config UBIFS_FS_LZ4HC
++       bool "LZ4HC compression support" if UBIFS_FS_ADVANCED_COMPR
++       depends on UBIFS_FS && CRYPTO_LZ4HC
++       default y
++       help
++          LZ4HC compressor is generally faster than zlib but compresses wo=
+rse.
++          Say 'Y' if unsure.
++
+ config UBIFS_FS_ZLIB
+        bool "ZLIB compression support" if UBIFS_FS_ADVANCED_COMPR
+        depends on UBIFS_FS
+diff -uN -uNr linux-3.12-rc3.orig/fs/ubifs/super.c
+linux-3.12-rc3/fs/ubifs/super.c
+--- linux-3.12-rc3.orig/fs/ubifs/super.c        2013-09-29
+17:02:38.000000000 -0500
++++ linux-3.12-rc3/fs/ubifs/super.c     2013-09-30 23:01:06.899526709 -0500
+@@ -1040,6 +1040,8 @@
+                                return -ENOMEM;
+                        if (!strcmp(name, "none"))
+                                c->mount_opts.compr_type =3D UBIFS_COMPR_NO=
+NE;
++                       else if (!strcmp(name, "lz4hc"))
++                               c->mount_opts.compr_type =3D UBIFS_COMPR_LZ=
+4HC;
+                        else if (!strcmp(name, "lzo"))
+                                c->mount_opts.compr_type =3D UBIFS_COMPR_LZ=
+O;
+                        else if (!strcmp(name, "zlib"))
+diff -uN -uNr linux-3.12-rc3.orig/fs/ubifs/ubifs-media.h
+linux-3.12-rc3/fs/ubifs/ubifs-media.h
+--- linux-3.12-rc3.orig/fs/ubifs/ubifs-media.h  2013-09-29
+17:02:38.000000000 -0500
++++ linux-3.12-rc3/fs/ubifs/ubifs-media.h       2013-07-16
+22:56:02.435523610 -0500
+@@ -332,12 +332,14 @@
+  * UBIFS_COMPR_NONE: no compression
+  * UBIFS_COMPR_LZO: LZO compression
+  * UBIFS_COMPR_ZLIB: ZLIB compression
++ * UBIFS_COMPR_LZ4HZ: LZ4HZ compression
+  * UBIFS_COMPR_TYPES_CNT: count of supported compression types
+  */
+ enum {
+        UBIFS_COMPR_NONE,
+        UBIFS_COMPR_LZO,
+        UBIFS_COMPR_ZLIB,
++       UBIFS_COMPR_LZ4HC,
+        UBIFS_COMPR_TYPES_CNT,
+ };
+
+Enjoy,
+Brent Taylor
