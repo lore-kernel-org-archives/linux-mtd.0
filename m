@@ -1,22 +1,27 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VSA9L-00042K-16
- for linux-mtd@lists.infradead.org; Fri, 04 Oct 2013 18:30:52 +0000
+ id 1VSAWl-0004fj-Tc
+ for linux-mtd@lists.infradead.org; Fri, 04 Oct 2013 18:55:04 +0000
+Date: Fri, 4 Oct 2013 15:54:55 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: <linux-mtd@lists.infradead.org>,
-	Daniel Mack <zonque@gmail.com>
-Subject: [PATCH 2/2] mtd: nand: pxa3xx: Allocate data buffer on detected flash
- size
-Date: Fri,  4 Oct 2013 15:30:38 -0300
-Message-Id: <1380911438-24240-3-git-send-email-ezequiel.garcia@free-electrons.com>
-In-Reply-To: <1380911438-24240-1-git-send-email-ezequiel.garcia@free-electrons.com>
-References: <1380911438-24240-1-git-send-email-ezequiel.garcia@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 03/21] mtd: nand: pxa3xx: Use a completion to signal
+ device ready
+Message-ID: <20131004185454.GA20476@localhost>
+References: <1379606505-2529-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1379606505-2529-4-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20131002215628.GW23337@ld-irv-0074.broadcom.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20131002215628.GW23337@ld-irv-0074.broadcom.com>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, Tawfik Bayouk <tawfik@marvell.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>
+ Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
+ Tawfik Bayouk <tawfik@marvell.com>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Daniel Mack <zonque@gmail.com>, linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>, Willy Tarreau <w@1wt.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,142 +31,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This commit replaces the currently hardcoded buffer size, by a
-dynamic detection scheme. First a small 256 bytes buffer is allocated
-so the device can be detected (using READID and friends commands).
+Brian,
 
-After detection, this buffer is released and a new buffer is allocated
-to acommodate the page size plus out-of-band size.
+First of all: thanks for all your nice feedback.
+I'm going through all of it right now, and just started
+by this one.
 
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
----
- drivers/mtd/nand/pxa3xx_nand.c | 45 ++++++++++++++++++++++++++++--------------
- 1 file changed, 30 insertions(+), 15 deletions(-)
+On Wed, Oct 02, 2013 at 02:56:28PM -0700, Brian Norris wrote:
+> On Thu, Sep 19, 2013 at 01:01:27PM -0300, Ezequiel Garcia wrote:
+> > Apparently, the expected behavior of the waitfunc() NAND chip call
+> > is to wait for the device to be READY (this is a standard chip line).
+> > However, the current implementation does almost nothing, which opens
+> > a possibility to issue a command to a non-ready device.
+> > 
+> > Fix this by adding a new completion to wait for the ready event to arrive.
+> > 
+> > Because the "is ready" flag is cleared from the controller status
+> > register, it's needed to store that state in the driver, and because the
+> > field is accesed from an interruption, the field needs to be of an
+> > atomic type.
+> 
+> Does it really need to be an atomic type? AIUI, you can hand off exclusive
+> control to the hardware when you begin a command. So the rest of the driver would be
+> inactive when the IRQ handler is setting the ready flag. And similarly,
+> the hardware should be inactive (i.e., no interrupts) when you are
+> modifying the ready flag in the driver (i.e., in cmdfunc).
+> 
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index a47c67f..bfb2b9f 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -39,6 +39,13 @@
- #define NAND_STOP_DELAY		(2 * HZ/50)
- #define PAGE_CHUNK_SIZE		(2048)
- 
-+/*
-+ * Define a buffer size for the initial command that detects the flash device:
-+ * STATUS, READID and PARAM. The largest of these is the PARAM command,
-+ * needing 256 bytes.
-+ */
-+#define INIT_BUFFER_SIZE	256
-+
- /* registers and bit definitions */
- #define NDCR		(0x00) /* Control register */
- #define NDTR0CS0	(0x04) /* Timing Parameter 0 for CS0 */
-@@ -164,6 +171,7 @@ struct pxa3xx_nand_info {
- 
- 	unsigned int 		buf_start;
- 	unsigned int		buf_count;
-+	unsigned int		buf_size;
- 
- 	/* DMA information */
- 	int			drcmr_dat;
-@@ -911,26 +919,20 @@ static int pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
- 	return 0;
- }
- 
--/* the maximum possible buffer size for large page with OOB data
-- * is: 2048 + 64 = 2112 bytes, allocate a page here for both the
-- * data buffer and the DMA descriptor
-- */
--#define MAX_BUFF_SIZE	PAGE_SIZE
--
- #ifdef ARCH_HAS_DMA
- static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
- {
- 	struct platform_device *pdev = info->pdev;
--	int data_desc_offset = MAX_BUFF_SIZE - sizeof(struct pxa_dma_desc);
-+	int data_desc_offset = info->buf_size - sizeof(struct pxa_dma_desc);
- 
- 	if (use_dma == 0) {
--		info->data_buff = kmalloc(MAX_BUFF_SIZE, GFP_KERNEL);
-+		info->data_buff = kmalloc(info->buf_size, GFP_KERNEL);
- 		if (info->data_buff == NULL)
- 			return -ENOMEM;
- 		return 0;
- 	}
- 
--	info->data_buff = dma_alloc_coherent(&pdev->dev, MAX_BUFF_SIZE,
-+	info->data_buff = dma_alloc_coherent(&pdev->dev, info->buf_size,
- 				&info->data_buff_phys, GFP_KERNEL);
- 	if (info->data_buff == NULL) {
- 		dev_err(&pdev->dev, "failed to allocate dma buffer\n");
-@@ -944,7 +946,7 @@ static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
- 				pxa3xx_nand_data_dma_irq, info);
- 	if (info->data_dma_ch < 0) {
- 		dev_err(&pdev->dev, "failed to request data dma\n");
--		dma_free_coherent(&pdev->dev, MAX_BUFF_SIZE,
-+		dma_free_coherent(&pdev->dev, info->buf_size,
- 				info->data_buff, info->data_buff_phys);
- 		return info->data_dma_ch;
- 	}
-@@ -962,7 +964,7 @@ static void pxa3xx_nand_free_buff(struct pxa3xx_nand_info *info)
- 	struct platform_device *pdev = info->pdev;
- 	if (use_dma) {
- 		pxa_free_dma(info->data_dma_ch);
--		dma_free_coherent(&pdev->dev, MAX_BUFF_SIZE,
-+		dma_free_coherent(&pdev->dev, info->buf_size,
- 				  info->data_buff, info->data_buff_phys);
- 	} else {
- 		kfree(info->data_buff);
-@@ -971,7 +973,7 @@ static void pxa3xx_nand_free_buff(struct pxa3xx_nand_info *info)
- #else
- static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
- {
--	info->data_buff = kmalloc(MAX_BUFF_SIZE, GFP_KERNEL);
-+	info->data_buff = kmalloc(info->buf_size, GFP_KERNEL);
- 	if (info->data_buff == NULL)
- 		return -ENOMEM;
- 	return 0;
-@@ -1085,7 +1087,16 @@ KEEP_CONFIG:
- 	else
- 		host->col_addr_cycles = 1;
- 
-+	/* release the initial buffer */
-+	kfree(info->data_buff);
-+
-+	/* allocate the real data + oob buffer */
-+	info->buf_size = mtd->writesize + mtd->oobsize;
-+	ret = pxa3xx_nand_init_buff(info);
-+	if (ret)
-+		return ret;
- 	info->oob_buff = info->data_buff + mtd->writesize;
-+
- 	if ((mtd->size >> chip->page_shift) > 65536)
- 		host->row_addr_cycles = 3;
- 	else
-@@ -1191,9 +1202,13 @@ static int alloc_nand_resource(struct platform_device *pdev)
- 	}
- 	info->mmio_phys = r->start;
- 
--	ret = pxa3xx_nand_init_buff(info);
--	if (ret)
-+	/* Allocate a buffer to allow flash detection */
-+	info->buf_size = INIT_BUFFER_SIZE;
-+	info->data_buff = kmalloc(info->buf_size, GFP_KERNEL);
-+	if (info->data_buff == NULL) {
-+		ret = -ENOMEM;
- 		goto fail_disable_clk;
-+	}
- 
- 	/* initialize all interrupts to be disabled */
- 	disable_int(info, NDSR_MASK);
-@@ -1211,7 +1226,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
- 
- fail_free_buf:
- 	free_irq(irq, info);
--	pxa3xx_nand_free_buff(info);
-+	kfree(info->data_buff);
- fail_disable_clk:
- 	clk_disable_unprepare(info->clk);
- 	return ret;
+Hm... I think that's not the case, and that's exactly why I had to add
+an atomic type. See below.
+
+> Or perhaps I'm misunderstanding something.
+> 
+> > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> > ---
+> >  drivers/mtd/nand/pxa3xx_nand.c | 45 +++++++++++++++++++++++++++++-------------
+> >  1 file changed, 31 insertions(+), 14 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+> > index a8d2ea7..fba91c2 100644
+> > --- a/drivers/mtd/nand/pxa3xx_nand.c
+> > +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> > @@ -35,6 +35,7 @@
+> >  
+> >  #include <linux/platform_data/mtd-nand-pxa3xx.h>
+> >  
+> > +#define NAND_DEV_READY_TIMEOUT  50
+> >  #define	CHIP_DELAY_TIMEOUT	(2 * HZ/10)
+> >  #define NAND_STOP_DELAY		(2 * HZ/50)
+> >  #define PAGE_CHUNK_SIZE		(2048)
+> > @@ -167,7 +168,7 @@ struct pxa3xx_nand_info {
+> >  	struct clk		*clk;
+> >  	void __iomem		*mmio_base;
+> >  	unsigned long		mmio_phys;
+> > -	struct completion	cmd_complete;
+> > +	struct completion	cmd_complete, dev_ready;
+> 
+> Do you really need two completion structures? Does 'device ready' always
+> follow 'command complete', so that you can just use 'device ready' all
+> the time? And if so, does it make sense to just use dev_ready?
+> 
+> >  
+> >  	unsigned int 		buf_start;
+> >  	unsigned int		buf_count;
+
+The idea here is to handle the following situation. After a command is
+completed (which also applies to the 'chunked' page command we want to
+support later in the patchset) the controller sets a 'command done' flag
+in the ISR.
+
+The interruption handler calls the command done completion which causes
+the cmdfunc to finish waiting and exit (or continue executing commands
+in the 'chunked' case).
+
+Notice that this does *not* guarantee the controller is ready since the
+'ready' flag is independent of the 'command complete' flag and the IRQ can
+arrive at any later point.
+
+Let's suppose the cmdfunc() has exited, and the NAND base code is going to
+continue the operation. In the PAGEPROG case, the NAND base calls waitfunc()
+before continuing the operation.
+
+At that point, we **need** to wait for the 'ready' flag because otherwise
+the NAND base could issue another PAGEPROG command, while the controller
+is not really ready to receive it.
+
+However, if we enter the waitfunc() we want to read the info->is_ready flag
+to check the completion has been initialized and a wait is suitable.
+Otherwise, some commands that are not issued (with no wait completion
+initialized) will stall at that waitfunc().
+
+While at the waitfunc() the interruption handler might get called for
+the 'ready' flag and so the info->is_ready variable gets access from two
+different execution contexts.
+
+Given the above behavior, I thought the only way of dealing with this
+was to add a new completion and use atomic type for the is_ready flag.
+
+Is the above clear? Do you think the implementation is correct for the
+behavior?
 -- 
-1.8.1.5
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
