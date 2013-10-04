@@ -1,27 +1,16 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VSBNX-0005vA-Ba
- for linux-mtd@lists.infradead.org; Fri, 04 Oct 2013 19:49:36 +0000
-Date: Fri, 4 Oct 2013 16:49:24 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 05/21] mtd: nand: pxa3xx: Add driver-specific ECC BCH
- support
-Message-ID: <20131004194923.GC20476@localhost>
-References: <1379606505-2529-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1379606505-2529-6-git-send-email-ezequiel.garcia@free-electrons.com>
- <20131003002440.GY23337@ld-irv-0074.broadcom.com>
+From: Pekon Gupta <pekon@ti.com>
+To: <mark.rutland@arm.com>, <robherring2@gmail.com>, <olof@lixom.net>,
+ <computersforpeace@gmail.com>, <dedekind1@gmail.com>
+Subject: [PATCH v7 0/6] mtd:nand:omap2: clean-up of supported ECC schemes
+Date: Sat, 5 Oct 2013 01:19:42 +0530
+Message-ID: <1380916188-24206-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20131003002440.GY23337@ld-irv-0074.broadcom.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
- Tawfik Bayouk <tawfik@marvell.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- Daniel Mack <zonque@gmail.com>, linux-mtd@lists.infradead.org,
- Gregory Clement <gregory.clement@free-electrons.com>, Willy Tarreau <w@1wt.eu>
+Content-Type: text/plain
+Cc: devicetree@vger.kernel.org, Pawel.Moll@arm.com, arnd@arndb.de,
+ swarren@wwwdotorg.org, tony@atomide.com, ijc+devicetree@hellion.org.uk,
+ avinashphilipk@gmail.com, balbi@ti.com, linux-mtd@lists.infradead.org,
+ Pekon Gupta <pekon@ti.com>, bcousson@baylibre.com, linux-omap@vger.kernel.org,
+ dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,139 +20,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Oct 02, 2013 at 05:24:40PM -0700, Brian Norris wrote:
-> On Thu, Sep 19, 2013 at 01:01:29PM -0300, Ezequiel Garcia wrote:
-> > This commit adds the BCH ECC support available in NFCv2 controller.
-> > Depending on the detected required strength the respective ECC layout
-> > is selected.
-> > 
-> > This commit adds an empty ECC layout, since support to access large
-> > pages is first required. Once that support is added, a proper ECC
-> > layout will be added as well.
-> > 
-> > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> > ---
-> >  drivers/mtd/nand/pxa3xx_nand.c | 53 ++++++++++++++++++++++++++++++++++++------
-> >  1 file changed, 46 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-> > index a0dabe6..86c343e 100644
-> > --- a/drivers/mtd/nand/pxa3xx_nand.c
-> > +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> 
-> ...
-> 
-> > @@ -1117,10 +1133,6 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
-> >  	pxa3xx_flash_ids[1].name = NULL;
-> >  	def = pxa3xx_flash_ids;
-> >  KEEP_CONFIG:
-> > -	chip->ecc.mode = NAND_ECC_HW;
-> > -	chip->ecc.size = host->page_size;
-> > -	chip->ecc.strength = 1;
-> > -
-> >  	if (info->reg_ndcr & NDCR_DWIDTH_M)
-> >  		chip->options |= NAND_BUSWIDTH_16;
-> >  
-> > @@ -1130,8 +1142,35 @@ KEEP_CONFIG:
-> >  		chip->bbt_options |= NAND_BBT_USE_FLASH;
-> >  	}
-> >  
-> > +	/* Device detection must be done with ECC disabled */
-> > +	if (info->variant == PXA3XX_NAND_VARIANT_ARMADA370)
-> > +		nand_writel(info, NDECCCTRL, 0x0);
-> > +
-> >  	if (nand_scan_ident(mtd, 1, def))
-> >  		return -ENODEV;
-> > +
-> > +	/* 1-step ECC over the entire detected page size */
-> > +	chip->ecc.mode = NAND_ECC_HW;
-> > +	chip->ecc.size = mtd->writesize;
-> 
-> Does the ECC really only work in one step? IOW, do you only correct
-> 1-bit for the entire page? That is under-spec'd for most NAND (they need
-> 1-bit/512-byte, or 4-bit/512-byte). This ecc.size should actually
-> reflect the correction region (typically 512B or 1024B), and even if
-> your buffer layout makes a step every 2KB (or 4KB or whatever), the ECC
-> step size *should* be smaller than that.
-> 
-> Or maybe I'm wrong, and you're actually using a weak 4-bit correction
-> over 2048 bytes.
-> 
 
-I must admit I'm a bit confused by this ECC step concept. Having
-described the ECC engine in the cover-letter, what do you think
-the right choice should be?
+*Changes v6 -> v7*
+[PATCH 1/6] <NEW> split from [PATCH v6 2/4] as per feedbacks of Brain Norris
+[PATCH 2/6] incorporated feedbacks from DT maintainers
+[PATCH 3/6] patch cleaning and incorporated feedbacks from Brain Norris
+[PATCH 4/6] rebasing changes and cleanup
+[PATCH 5/6] updated omap3430-sdp.dts
+[PATCH 6/6] <NEW> updated for devm_xx
 
-IMO, given the ECC engine works on the entire FIFO (actually it works
-on the transfered chunk) it's a 1-step ECC.
 
-On the other side, a multiple step ECC, i.e. chip->ecc.size != mtd->writesize
-makes the NAND base calls the subpage() function and the driver crashes
-horribly when using UBIFS.
+*Changes v5 -> v6*
+[PATCH 1/4]: 
+	- updated DT binding for gpmc-nand based on 'Olof Johansson's feedbacks
+	http://lists.infradead.org/pipermail/linux-mtd/2013-August/048394.html
+	- detection of ELM device via ti,elm-id DT node, moved to gpmc.c driver
+[PATCH 2/4]
+	- removed: support for following obselete ECC schemes
+	OMAP_ECC_HAMMING_CODE_DEFAULT (S/W based 1-bit Hamming ECC)
+	OMAP_ECC_HAMMING_CODE_HW_ROMCODE (H/W based 1-bit Hamming ECC scheme)
+	- updated: using omap_oobinfo as chip->ecc.layout for all ecc-schemes
+	- clean: error messages
+[PATCH 3/4] cleaned to include changes for OMAP_ECC_BCH8_CODE_HW only
+[PATCH 4/4] updated to include DT property changes
 
-I'm not sure why subpage should be called in that case, given we don't
-support that.
 
-> > +
-> > +	/*
-> > +	 * Armada370 variant supports BCH, which provides 4-bit strength
-> > +	 * and needs to be supported in a special way.
-> > +	 */
-> > +	if (info->variant == PXA3XX_NAND_VARIANT_ARMADA370 &&
-> 
-> Might there be other variants eventually that support BCH? Perhaps you
-> want to separate the property of "can use BCH" from "will use BCH"?
-> 
+*Changes v4 -> v5*
+- Rebased to linux-next 
+IMPORTANT: Need to revert commit fb1585b, [PATCH 2/4] part of previous version
+	http://lists.infradead.org/pipermail/linux-mtd/2013-July/047441.html
 
-Yeah, probably. And maybe setting the BCH from the DT? The problem here
-is that because of the ECC choice being intimately related to the OOB
-location, this means the ECC choice is intimately related to the bad
-block markers.
+- Swapped PATCH-1 & PATCH-2 to maintain bisectibility & compilation dependency
+	http://lists.infradead.org/pipermail/linux-mtd/2013-July/047461.html
 
-IOW, the user can't really choose among ECC.
+- PATCH-2: re-ordered call to is_elm_present() for later updates ELM driver
+	- dropped changes in include/linux/platform_data/elm.h (not needed)
+- PATCH-3: re-ordered call to is_elm_present() for later updates ELM driver
+- Re-formated patch description (replaced tabs with white-spaces)
 
-I guess this means the ECC choice is some sort of a hardware description
-and rightfully belongs to the DT. Right?
 
-> > +	    chip->ecc_strength_ds == 4) {
-> 
-> Do you use BCH-4 only for chips that require exactly 4-bit correction?
-> Is there ever a need to "overclock" the ECC, and choose BCH-4 for chips
-> that only require 1-bit correction? Can the bootloader ever make a
-> choice different from yours here?
-> 
-> What about NAND that don't support the ecc_strength_ds field yet?
-> Remember, this is only filled for ONFI NAND and a few NAND that are in
-> the full-ID table.
-> 
-> > +	        chip->ecc.layout = &ecc_layout_4KB_bch4bit;
-> 
-> This seems to have an implicit page size assumption. In your case, it
-> seems like this layout should be chosen based on the page size + OOB
-> size, at least.
-> 
-> > +		chip->ecc.strength = chip->ecc_strength_ds;
-> > +		info->ecc_bch = 1;
-> > +	} else if (mtd->writesize <= 2048) {
-> > +		/*
-> > +		 * This is the default ECC Hamming 1-bit strength case,
-> > +		 * which works for page sizes of 512 and 2048 bytes.
-> > +		 * The ECC layout will be automatically configured.
-> > +		 */
-> > +		chip->ecc.strength = 1;
-> > +	}
-> 
-> What about the 'else' case? What happens with >2KB page NAND on
-> non-Armada370 systems? What happens if a NAND needs >4-bit correction?
-> Perhaps you could include a warning/error? I don't know the flexibility
-> of NAND types you'll find on an Armada board; maybe they're all
-> ONFI-compliant?
-> 
+*Changes v3 -> v4*
+(Resent with CC: devicetree-discuss@lists.ozlabs.org)
+- [Patch 1/3] removed MTD_NAND_OMAP_BCH8 & MTD_NAND_OMAP_BCH4 from nand/Kconfig
+	ECC scheme selectable via nand DT (nand-ecc-opt).
+- [*] rebased for l2-mtd.git
 
-Yeah, this 'ifs' could be fixed to better support other cases.
 
-I'll try to rework that.
+*Changes v2 -> v3*
+(Resent with Author Name fixed)
+- PATCH-1: re-arranged code to remove redundancy, added NAND_BUSWIDTH_AUTO
+- PATCH-2: updated nand-ecc-opt DT mapping and Documentation
+- PATCH-3: code-cleaning + changes to match PATCH-1
+- PATCH-4 <DROPPED> update DT attribute for ti,nand-ecc-opt 
+	- received feedback to keep DT mapping independent of linuxism
+- PATCH-4:<NEW> : ARM: dts: AM33xx: updated default ECC scheme in nand-ecc-opt
+	- independent patch for AM335x-evm.dts update based on PATCH-2
+
+
+*Changes v1 -> v2*
+	added 	[PATCH 3/4] and [PATCH 4/4]
+
+
+After this patch series, omap2-nand driver will supports following ECC schemes:
++---------------------------------------+---------------+---------------+
+| ECC scheme                            |ECC calculation|Error detection|
++---------------------------------------+---------------+---------------+
+|OMAP_ECC_HAM1_CODE_HW                  |H/W (GPMC)     |S/W            |
++---------------------------------------+---------------+---------------+
+|OMAP_ECC_BCH4_CODE_HW_DETECTION_SW     |H/W (GPMC)     |S/W (lib/bch.h)|
+|OMAP_ECC_BCH4_CODE_HW                  |H/W (GPMC)     |H/W (ELM)      |
++---------------------------------------+---------------+---------------+
+|OMAP_ECC_BCH8_CODE_HW_DETECTION_SW     |H/W (GPMC)     |S/W (lib/bch.h)|
+|OMAP_ECC_BCH8_CODE_HW                  |H/W (GPMC)     |H/W (ELM)      |
++---------------------------------------+---------------+---------------+
+
+To optimize footprint of omap2-nand driver, selection of some ECC schemes
+also require enabling following Kconfigs, in addition to setting appropriate
+DT bindings
+- Kconfig:CONFIG_MTD_NAND_ECC_BCH        error detection done in software
+- Kconfig:CONFIG_MTD_NAND_OMAP_BCH       error detection done by h/w engine
+
+
+Pekon Gupta (6):
+  mtd: nand: omap: combine different flavours of 1-bit hamming ecc
+    schemes
+  ARM: OMAP2+: cleaned-up DT support of various ECC schemes
+  mtd:nand:omap2: clean-up BCHx_HW and BCHx_SW ECC configurations in
+    device_probe
+  mtd:nand:omap2: updated support for BCH4 ECC scheme
+  ARM: dts: AM33xx: updated default ECC scheme in nand-ecc-opt
+  mtd: nand: omap: updated devm_xx for all resource allocation and free
+    calls
+
+ .../devicetree/bindings/mtd/gpmc-nand.txt          |  16 +-
+ arch/arm/boot/dts/am335x-evm.dts                   |   3 +-
+ arch/arm/boot/dts/omap3430-sdp.dts                 |   2 +-
+ arch/arm/mach-omap2/board-flash.c                  |   2 +-
+ arch/arm/mach-omap2/gpmc.c                         |  49 +-
+ drivers/mtd/nand/Kconfig                           |  30 +-
+ drivers/mtd/nand/omap2.c                           | 569 ++++++++++-----------
+ include/linux/platform_data/mtd-nand-omap2.h       |  18 +-
+ 8 files changed, 335 insertions(+), 354 deletions(-)
+
 -- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+1.8.1
