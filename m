@@ -1,16 +1,14 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VSA9G-000423-9I
+ id 1VSA9G-000422-9G
  for linux-mtd@lists.infradead.org; Fri, 04 Oct 2013 18:30:47 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>,
 	Daniel Mack <zonque@gmail.com>
-Subject: [PATCH 1/2] mtd: nand: pxa3xx: Move DMA I/O enabling
-Date: Fri,  4 Oct 2013 15:30:37 -0300
-Message-Id: <1380911438-24240-2-git-send-email-ezequiel.garcia@free-electrons.com>
-In-Reply-To: <1380911438-24240-1-git-send-email-ezequiel.garcia@free-electrons.com>
-References: <1380911438-24240-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH 0/2] pxa3xx: Data buffer dynamic allocation
+Date: Fri,  4 Oct 2013 15:30:36 -0300
+Message-Id: <1380911438-24240-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
  Lior Amsalem <alior@marvell.com>, Tawfik Bayouk <tawfik@marvell.com>,
  Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
@@ -25,40 +23,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Instead of setting info->dma each time a command is prepared,
-we can move it after the DMA buffers are allocated.
+As part of my work to support the NAND controllers in Armada 370/XP SoC
+here's a tiny set of patches to replace the currently data buffer allocation
+based in a hardcoded buffer size, into a dynamic scheme.
 
-This is more clear and it's the proper place to enable this, given
-DMA cannot be turned on and off during runtime.
+We first use kmalloc to request a 256 bytes (big enough for the ONFI paramater
+page) and then re-allocate (either with kmalloc or using DMA allocators) using
+the detected page size.
 
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
----
- drivers/mtd/nand/pxa3xx_nand.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+The first patch is required to perform the initial NAND operations (READID
+and friends) using programmable I/O since the DMA buffers are not ready
+at such early stage.
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index dd03dfd..a47c67f 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -540,7 +540,6 @@ static int prepare_command_pool(struct pxa3xx_nand_info *info, int command,
- 	info->oob_size		= 0;
- 	info->use_ecc		= 0;
- 	info->use_spare		= 1;
--	info->use_dma		= (use_dma) ? 1 : 0;
- 	info->is_ready		= 0;
- 	info->retcode		= ERR_NONE;
- 	if (info->cs != 0)
-@@ -950,6 +949,11 @@ static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
- 		return info->data_dma_ch;
- 	}
- 
-+	/*
-+	 * Now that DMA buffers are allocated we turn on
-+	 * DMA proper for I/O operations.
-+	 */
-+	info->use_dma = 1;
- 	return 0;
- }
- 
+The second patch performs to actual dynamic allocation and it's exactly
+the same patch I sent a few weeks ago:
+
+  http://patchwork.ozlabs.org/patch/275982/
+
+Daniel: Can you test these two If they look fine we can add them now,
+being an improvement to the driver pxa3xx beyond the Armada 370/XP effort.
+
+Thanks!
+
+Ezequiel Garcia (2):
+  mtd: nand: pxa3xx: Move DMA I/O enabling
+  mtd: nand: pxa3xx: Allocate data buffer on detected flash size
+
+ drivers/mtd/nand/pxa3xx_nand.c | 51 +++++++++++++++++++++++++++++-------------
+ 1 file changed, 35 insertions(+), 16 deletions(-)
+
 -- 
 1.8.1.5
