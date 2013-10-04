@@ -1,16 +1,21 @@
-Received: from mail-qe0-x22a.google.com ([2607:f8b0:400d:c02::22a])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VRzPp-0002cj-My
- for linux-mtd@lists.infradead.org; Fri, 04 Oct 2013 07:03:10 +0000
-Received: by mail-qe0-f42.google.com with SMTP id 1so2615188qec.1
- for <linux-mtd@lists.infradead.org>; Fri, 04 Oct 2013 00:02:48 -0700 (PDT)
-MIME-Version: 1.0
-From: Yousuf Sait <yousufsait@gmail.com>
-Date: Fri, 4 Oct 2013 12:32:18 +0530
-Message-ID: <CAHXsAqzj+3VEufnU_TjbEMB6yWCBrLT0A3+cYEkSxHsdVcwLkg@mail.gmail.com>
-Subject: ubifs: ubifs tnc found corrupted while trying do_readpage
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+Received: from mga03.intel.com ([143.182.124.21])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VS04U-0003e1-RW
+ for linux-mtd@lists.infradead.org; Fri, 04 Oct 2013 07:45:11 +0000
+Message-ID: <1380872684.18862.19.camel@sauron.fi.intel.com>
+Subject: Re: lz4hc compression in UBIFS?
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Brent Taylor <motobud@gmail.com>
+Date: Fri, 04 Oct 2013 10:44:44 +0300
+In-Reply-To: <CAP+RiCAVuUEfyjg02+ZjeFXgUuaRW+fuMB490Ce2Hq_4qHBL=A@mail.gmail.com>
+References: <55541379679397@web20h.yandex.ru>
+ <CAP+RiCAVuUEfyjg02+ZjeFXgUuaRW+fuMB490Ce2Hq_4qHBL=A@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Konstantin Tokarev <annulen@yandex.ru>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,86 +25,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
+On Thu, 2013-10-03 at 22:09 -0500, Brent Taylor wrote:
+> +config UBIFS_FS_LZ4HC
+> +       bool "LZ4HC compression support" if UBIFS_FS_ADVANCED_COMPR
+> +       depends on UBIFS_FS && CRYPTO_LZ4HC
+> +       default y
+> +       help
+> +          LZ4HC compressor is generally faster than zlib but compresses worse.
+> +          Say 'Y' if unsure.
 
- I am working with ubifs partition of size 380MB on a nand of 512MB.
-The volume is on a mtd device of size 400MB.
-It was just working great but recently I noticed the following error,
+I'd say something like:
 
-UBIFS error (pid 508): ubifs_leb_read: reading -1578055608 bytes from
-LEB 953:-1578055608 failed, error -22
-UBIFS error (pid 508): try_read_node: cannot read node type 1 from LEB
-953:-1578055608, error -22
-UBIFS error (pid 508): ubifs_leb_read: reading -1578055608 bytes from
-LEB 953:-1578055608 failed, error -22
-UBIFS error (pid 508): do_readpage: cannot read page 1 of inode 2158, error -22
-UBIFS error (pid 508): ubifs_leb_read: reading -1578055608 bytes from
-LEB 953:-1578055608 failed, error -22
-UBIFS error (pid 508): try_read_node: cannot read node type 1 from LEB
-953:-1578055608, error -22
-UBIFS error (pid 508): ubifs_leb_read: reading -1578055608 bytes from
-LEB 953:-1578055608 failed, error -22
-UBIFS error (pid 508): do_readpage: cannot read page 1 of inode 2158, error -22
+LZ4HC is generally beats LZO on decompression speed while provides a lot
+better compression ratio (comparable to zlib). Compression speed is
+generally slower comparing to LZO, but faster comparing to zlib.
 
-1.The strange thing is that the error vanished when I rebooted the system.
-Thus I am ruling out any nand corruption
+Makes sense?
 
-2.Also there were no nand I/O errors in the log and this is a readonly
-partition.
-
-3.The library file was loaded with mmap() and the do_readpage() of ubi code
-was exercised for page wise loading.
-
-4.The sequence of the page aceeses from nand was pages 0, 21, 4, 5, 2 and 1,
-in which all of those reads succeded expect for page1.
-
-5.While trying to read page1, it tried to read some neg size with neg offset.
-There was a sanity check in ubi io code which failed and didn't go till
-the nand driver.
-
-6.Surprisingly both the offset and length values that ubi was trying to read
-was the same value, -1578055608 (unsigned:  0xA1F0C848).
-The actual value was found (from another instance of flashing) to be as
-LEB 953:124408, key (2158, data, 1).
-That means LEB number was intact while the offset and length got corrupted.
-
-7. We have seen multiple instances of this issue but ubi giving error
-for different files. In a different repro, I tried printing all the zbr nodes
-with the one which had bad values.
-The other ones looks fine expect for the corrupted one (zbr[5] in this case)
-
-[   10.399113] UBIFS: zbr[0] lnum:353 off:26784 len:1641
-[   10.399123] UBIFS: zbr[1] lnum:353 off:28432 len:1639
-[   10.399133] UBIFS: zbr[2] lnum:353 off:30072 len:1738
-[   10.399143] UBIFS: zbr[3] lnum:353 off:31816 len:1621
-[   10.399152] UBIFS: zbr[4] lnum:353 off:33440 len:1594
-[   10.399163] UBIFS: zbr[5] lnum:353 off:-1445529080 len:-1445529080
-[   10.399173] UBIFS: zbr[6] lnum:353 off:36760 len:1788
-[   10.399191] UBIFS: zbr[7] lnum:353 off:38552 len:1866
-[   10.399209] UBIFS error (pid 87): ubifs_leb_read: reading
--1445529080 bytes from LEB 353:-1445529080 failed, error -22
-[   10.399227] UBIFS: ubifs_tnc_locate: ubifs_tnc_read_node failed
-key:200004f000000c3f err:-22 safely:1 lnum:off 353:-1445529080
-
-The code I was using is based on K3.1 and I had no luck on reproducing the
-issue with latest kernel (3.11).
-The repro of the issue is very rare so i am not sure if the newer code fixed
-it is there still an issue.
-
-Tree head, with which I reproed the issue,
-
-commit 016f1c54408b1e92e2e8087bfc05ca0a9c258513
-Author: Michal Marek <mmarek@suse.cz>
-Date:   Thu Aug 11 12:29:46 2011 +0200
-
-UBIFS: not build debug messages with CONFIG_UBIFS_FS_DEBUG disabled ....
-
-Any pointers on how to approach the issue will be useful.
-
-1) Any ideas on what could be wrong here ?
-2) Any fix that had solved the issue in the newer kernel ?
-3) I can try adding some debug information, any relevant info you would
-suggest to add ?
-
-Regards,
-Y
+-- 
+Best Regards,
+Artem Bityutskiy
