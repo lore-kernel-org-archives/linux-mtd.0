@@ -1,20 +1,27 @@
-Received: from forward9.mail.yandex.net ([77.88.61.48])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VS0PT-0003z8-SJ
- for linux-mtd@lists.infradead.org; Fri, 04 Oct 2013 08:06:52 +0000
-From: Konstantin Tokarev <annulen@yandex.ru>
-To: Brent Taylor <motobud@gmail.com>
-In-Reply-To: <CAP+RiCAVuUEfyjg02+ZjeFXgUuaRW+fuMB490Ce2Hq_4qHBL=A@mail.gmail.com>
-References: <55541379679397@web20h.yandex.ru>
- <CAP+RiCAVuUEfyjg02+ZjeFXgUuaRW+fuMB490Ce2Hq_4qHBL=A@mail.gmail.com>
-Subject: Re: lz4hc compression in UBIFS?
+Received: from mail-lb0-x22a.google.com ([2a00:1450:4010:c04::22a])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VS3g2-0000i7-Gp
+ for linux-mtd@lists.infradead.org; Fri, 04 Oct 2013 11:36:11 +0000
+Received: by mail-lb0-f170.google.com with SMTP id w7so3157710lbi.15
+ for <linux-mtd@lists.infradead.org>; Fri, 04 Oct 2013 04:35:47 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <409951380873962@web7m.yandex.ru>
-Date: Fri, 04 Oct 2013 12:06:02 +0400
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset=koi8-r
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+In-Reply-To: <CAD6G_RTFsNJHEvev28FaV_BMDR=GfPREd=PwZJ_aGZc0k+19HA@mail.gmail.com>
+References: <CAD6G_RTFsNJHEvev28FaV_BMDR=GfPREd=PwZJ_aGZc0k+19HA@mail.gmail.com>
+Date: Fri, 4 Oct 2013 17:05:47 +0530
+Message-ID: <CAD6G_RRMyb62ym3+cKqaxekS6ppXrAVMKnd_Tq4942Mt5=R3Eg@mail.gmail.com>
+Subject: Re: [U-Boot]: Discussion on Serial Flash Discoverable Parameters
+ (SFDP): JESD216A
+From: Jagan Teki <jagannadh.teki@gmail.com>
+To: "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
+ linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Michal Simek <monstr@monstr.eu>, Seong-Ho An <SHAN@winbond.com>,
+ "Langer Thomas \(LQDE RD ST PON SW\)" <thomas.langer@lantiq.com>,
+ Willis Max <Max.Willis@spansion.com>, Simon Glass <sjg@chromium.org>,
+ Tom Rini <trini@ti.com>, "Todd Legler \(tlegler\)" <tlegler@micron.com>,
+ Conrado Canio <ccanio@winbond.com>, Syed Hussain <SHUssain@winbond.com>,
+ Sourav Poddar <sourav.poddar@ti.com>,
+ "MCHEN4@winbond.com" <MCHEN4@winbond.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,142 +31,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Added linux-mtd mailing list. and also few developer from winbond.
 
-
-04.10.2013, 07:09, "Brent Taylor" <motobud@gmail.com>:
-> Here is a patch based on linux-3.12-rc3. šI haven't performed any
-> performance testing UBIFS using lz4hc, but I can mount UBIFS volumes
-> and haven't seen any problems yet.
-
-Thank you!
-
-Are you planning to implement a patch for mtd-utils (mkfs.ubifs) as well?
-
-
-> šThe only think I know that isn't
-> correct about the patch is the description for the Kconfig element for
-> select lz4hc as a compression option. šI only copied the description
-> from the lzo description.
+On Fri, Oct 4, 2013 at 12:21 AM, Jagan Teki <jagannadh.teki@gmail.com> wrote:
+> Hi All,
 >
-> diff -uN -uNr linux-3.12-rc3.orig/fs/ubifs/compress.c
-> linux-3.12-rc3/fs/ubifs/compress.c
-> --- linux-3.12-rc3.orig/fs/ubifs/compress.c šššš2013-09-29
-> 17:02:38.000000000 -0500
-> +++ linux-3.12-rc3/fs/ubifs/compress.c š2013-07-17 21:57:27.440653860 -0500
-> @@ -53,6 +53,22 @@
-> š};
-> š#endif
+> As all we know that the spi_flash is a day-by-day developing hardware
+> where each vendor has followed their own standard to get the best to
+> come out.
 >
-> +#ifdef CONFIG_UBIFS_FS_LZ4HC
-> +static DEFINE_MUTEX(lz4hc_mutex);
-> +
-> +static struct ubifs_compressor lz4hc_compr = {
-> + šššššš.compr_type = UBIFS_COMPR_LZ4HC,
-> + šššššš.comp_mutex = &lz4hc_mutex,
-> + šššššš.name = "lz4hc",
-> + šššššš.capi_name = "lz4hc",
-> +};
-> +#else
-> +static struct ubifs_compressor lz4hc_compr = {
-> + šššššš.compr_type = UBIFS_COMPR_LZ4HC,
-> + šššššš.name = "lz4hc",
-> +};
-> +#endif
-> +
-> š#ifdef CONFIG_UBIFS_FS_ZLIB
-> šstatic DEFINE_MUTEX(deflate_mutex);
-> šstatic DEFINE_MUTEX(inflate_mutex);
-> @@ -224,10 +240,14 @@
-> š{
-> ššššššššint err;
+> I see SFDP looks like a common standard where most of the vendors were
+> following to get the flash parameter information at runtime.
 >
-> - ššššššerr = compr_init(&lzo_compr);
-> + ššššššerr = compr_init(&lz4hc_compr);
-> ššššššššif (err)
-> ššššššššššššššššreturn err;
+> I have couple of questions, added few flash vendors on cc - request
+> for all try to give some inputs
+> 1. Does all vendors follow this standard at-least from the latest parts?
+> 2. Any idea who are not following SFDP
+> 3. Does the format of getting data from SFDP is varies from vendor to
+> vendor or same?
+> 4. Command to get the SFDP is same for all vendors?
+> 5. What type of information we can get any list?
 >
-> + ššššššerr = compr_init(&lzo_compr);
-> + ššššššif (err)
-> + ššššššššššššššgoto out_lz4hc;
-> +
-> ššššššššerr = compr_init(&zlib_compr);
-> ššššššššif (err)
-> ššššššššššššššššgoto out_lzo;
-> @@ -237,6 +257,8 @@
->
-> šout_lzo:
-> ššššššššcompr_exit(&lzo_compr);
-> +out_lz4hc:
-> + ššššššcompr_exit(&lz4hc_compr);
-> ššššššššreturn err;
-> š}
->
-> @@ -245,6 +267,7 @@
-> šš*/
-> švoid ubifs_compressors_exit(void)
-> š{
-> + ššššššcompr_exit(&lz4hc_compr);
-> ššššššššcompr_exit(&lzo_compr);
-> ššššššššcompr_exit(&zlib_compr);
-> š}
-> diff -uN -uNr linux-3.12-rc3.orig/fs/ubifs/Kconfig
-> linux-3.12-rc3/fs/ubifs/Kconfig
-> --- linux-3.12-rc3.orig/fs/ubifs/Kconfig ššššššš2013-09-29
-> 17:02:38.000000000 -0500
-> +++ linux-3.12-rc3/fs/ubifs/Kconfig šššš2013-10-03 21:40:39.098747630 -0500
-> @@ -29,6 +29,14 @@
-> šššššššššššLZO compressor is generally faster than zlib but compresses worse.
-> šššššššššššSay 'Y' if unsure.
->
-> +config UBIFS_FS_LZ4HC
-> + ššššššbool "LZ4HC compression support" if UBIFS_FS_ADVANCED_COMPR
-> + ššššššdepends on UBIFS_FS && CRYPTO_LZ4HC
-> + ššššššdefault y
-> + ššššššhelp
-> + šššššššššLZ4HC compressor is generally faster than zlib but compresses worse.
-> + šššššššššSay 'Y' if unsure.
-> +
-> šconfig UBIFS_FS_ZLIB
-> ššššššššbool "ZLIB compression support" if UBIFS_FS_ADVANCED_COMPR
-> ššššššššdepends on UBIFS_FS
-> diff -uN -uNr linux-3.12-rc3.orig/fs/ubifs/super.c
-> linux-3.12-rc3/fs/ubifs/super.c
-> --- linux-3.12-rc3.orig/fs/ubifs/super.c ššššššš2013-09-29
-> 17:02:38.000000000 -0500
-> +++ linux-3.12-rc3/fs/ubifs/super.c šššš2013-09-30 23:01:06.899526709 -0500
-> @@ -1040,6 +1040,8 @@
-> ššššššššššššššššššššššššššššššššreturn -ENOMEM;
-> ššššššššššššššššššššššššif (!strcmp(name, "none"))
-> ššššššššššššššššššššššššššššššššc->mount_opts.compr_type = UBIFS_COMPR_NONE;
-> + ššššššššššššššššššššššelse if (!strcmp(name, "lz4hc"))
-> + ššššššššššššššššššššššššššššššc->mount_opts.compr_type = UBIFS_COMPR_LZ4HC;
-> ššššššššššššššššššššššššelse if (!strcmp(name, "lzo"))
-> ššššššššššššššššššššššššššššššššc->mount_opts.compr_type = UBIFS_COMPR_LZO;
-> ššššššššššššššššššššššššelse if (!strcmp(name, "zlib"))
-> diff -uN -uNr linux-3.12-rc3.orig/fs/ubifs/ubifs-media.h
-> linux-3.12-rc3/fs/ubifs/ubifs-media.h
-> --- linux-3.12-rc3.orig/fs/ubifs/ubifs-media.h š2013-09-29
-> 17:02:38.000000000 -0500
-> +++ linux-3.12-rc3/fs/ubifs/ubifs-media.h šššššš2013-07-16
-> 22:56:02.435523610 -0500
-> @@ -332,12 +332,14 @@
-> šš* UBIFS_COMPR_NONE: no compression
-> šš* UBIFS_COMPR_LZO: LZO compression
-> šš* UBIFS_COMPR_ZLIB: ZLIB compression
-> + * UBIFS_COMPR_LZ4HZ: LZ4HZ compression
-> šš* UBIFS_COMPR_TYPES_CNT: count of supported compression types
-> šš*/
-> šenum {
-> ššššššššUBIFS_COMPR_NONE,
-> ššššššššUBIFS_COMPR_LZO,
-> ššššššššUBIFS_COMPR_ZLIB,
-> + ššššššUBIFS_COMPR_LZ4HC,
-> ššššššššUBIFS_COMPR_TYPES_CNT,
-> š};
->
-> Enjoy,
-> Brent Taylor
+> Request for your comments, this will really help to shape the
+> spi_flash code more dynamic.
 
 -- 
-Regards,
-Konstantin
+Thanks,
+Jagan.
+--------
+Jagannadha Sutradharudu Teki,
+E: jagannadh.teki@gmail.com, P: +91-9676773388
+Engineer - System Software hacker
+U-boot - SPI Custodian and Zynq APSOC
+Ln: http://www.linkedin.com/in/jaganteki
