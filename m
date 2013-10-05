@@ -1,28 +1,27 @@
-Received: from mail-oa0-x22d.google.com ([2607:f8b0:4003:c02::22d])
+Received: from mail-ie0-x232.google.com ([2607:f8b0:4001:c03::232])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VSFOu-000265-7Y
- for linux-mtd@lists.infradead.org; Sat, 05 Oct 2013 00:07:18 +0000
-Received: by mail-oa0-f45.google.com with SMTP id o17so4742460oag.32
- for <linux-mtd@lists.infradead.org>; Fri, 04 Oct 2013 17:06:54 -0700 (PDT)
-Date: Fri, 4 Oct 2013 17:06:49 -0700
+ id 1VSFid-0002QF-4a
+ for linux-mtd@lists.infradead.org; Sat, 05 Oct 2013 00:27:40 +0000
+Received: by mail-ie0-f178.google.com with SMTP id to1so11159537ieb.9
+ for <linux-mtd@lists.infradead.org>; Fri, 04 Oct 2013 17:27:17 -0700 (PDT)
+Date: Fri, 4 Oct 2013 17:27:13 -0700
 From: Brian Norris <computersforpeace@gmail.com>
 To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH 00/21] Armada 370/XP NAND support
-Message-ID: <20131005000649.GZ23337@ld-irv-0074.broadcom.com>
+Subject: Re: [PATCH 05/21] mtd: nand: pxa3xx: Add driver-specific ECC BCH
+ support
+Message-ID: <20131005002713.GA23337@ld-irv-0074.broadcom.com>
 References: <1379606505-2529-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <20130926195615.GK23337@ld-irv-0074.broadcom.com>
- <20130930122428.GA2417@localhost>
- <20131003000253.GX23337@ld-irv-0074.broadcom.com>
- <20131004194203.GB20476@localhost>
+ <1379606505-2529-6-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20131003002440.GY23337@ld-irv-0074.broadcom.com>
+ <20131004194923.GC20476@localhost>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20131004194203.GB20476@localhost>
+In-Reply-To: <20131004194923.GC20476@localhost>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
  Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
  Tawfik Bayouk <tawfik@marvell.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- Daniel Mack <zonque@gmail.com>, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org,
+ Daniel Mack <zonque@gmail.com>, linux-mtd@lists.infradead.org,
  Gregory Clement <gregory.clement@free-electrons.com>, Willy Tarreau <w@1wt.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -33,81 +32,123 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 04, 2013 at 04:42:04PM -0300, Ezequiel Garcia wrote:
-> On Wed, Oct 02, 2013 at 05:02:53PM -0700, Brian Norris wrote:
-> > On Mon, Sep 30, 2013 at 09:24:29AM -0300, Ezequiel Garcia wrote:
-> > > Notice that this means you can control the ECC strength: since the ECC
-> > > is always 30B, and it's calculated on the transfered chunk you can
-> > > configure the controller to transfer the page in 1024B chunks and get a
-> > > 30B ECC for each of this chunk, thus doubling the ECC strength.
+On Fri, Oct 04, 2013 at 04:49:24PM -0300, Ezequiel Garcia wrote:
+> On Wed, Oct 02, 2013 at 05:24:40PM -0700, Brian Norris wrote:
+> > On Thu, Sep 19, 2013 at 01:01:29PM -0300, Ezequiel Garcia wrote:
+> > > This commit adds the BCH ECC support available in NFCv2 controller.
+> > > Depending on the detected required strength the respective ECC layout
+> > > is selected.
+> > > 
+> > > This commit adds an empty ECC layout, since support to access large
+> > > pages is first required. Once that support is added, a proper ECC
+> > > layout will be added as well.
+> > > 
+> > > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> > > ---
+> > >  drivers/mtd/nand/pxa3xx_nand.c | 53 ++++++++++++++++++++++++++++++++++++------
+> > >  1 file changed, 46 insertions(+), 7 deletions(-)
+> > > 
+> > > diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+> > > index a0dabe6..86c343e 100644
+> > > --- a/drivers/mtd/nand/pxa3xx_nand.c
+> > > +++ b/drivers/mtd/nand/pxa3xx_nand.c
 > > 
-> > This is a little odd. Your ECC HW is not parameterized by ECC strength,
-> > but instead by ECC sector size? I think I have some comments for patch
-> > 5, relevant to this topic.
+> > ...
+> > 
+> > > @@ -1117,10 +1133,6 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
+> > >  	pxa3xx_flash_ids[1].name = NULL;
+> > >  	def = pxa3xx_flash_ids;
+> > >  KEEP_CONFIG:
+> > > -	chip->ecc.mode = NAND_ECC_HW;
+> > > -	chip->ecc.size = host->page_size;
+> > > -	chip->ecc.strength = 1;
+> > > -
+> > >  	if (info->reg_ndcr & NDCR_DWIDTH_M)
+> > >  		chip->options |= NAND_BUSWIDTH_16;
+> > >  
+> > > @@ -1130,8 +1142,35 @@ KEEP_CONFIG:
+> > >  		chip->bbt_options |= NAND_BBT_USE_FLASH;
+> > >  	}
+> > >  
+> > > +	/* Device detection must be done with ECC disabled */
+> > > +	if (info->variant == PXA3XX_NAND_VARIANT_ARMADA370)
+> > > +		nand_writel(info, NDECCCTRL, 0x0);
+> > > +
+> > >  	if (nand_scan_ident(mtd, 1, def))
+> > >  		return -ENODEV;
+> > > +
+> > > +	/* 1-step ECC over the entire detected page size */
+> > > +	chip->ecc.mode = NAND_ECC_HW;
+> > > +	chip->ecc.size = mtd->writesize;
+> > 
+> > Does the ECC really only work in one step? IOW, do you only correct
+> > 1-bit for the entire page? That is under-spec'd for most NAND (they need
+> > 1-bit/512-byte, or 4-bit/512-byte). This ecc.size should actually
+> > reflect the correction region (typically 512B or 1024B), and even if
+> > your buffer layout makes a step every 2KB (or 4KB or whatever), the ECC
+> > step size *should* be smaller than that.
+> > 
+> > Or maybe I'm wrong, and you're actually using a weak 4-bit correction
+> > over 2048 bytes.
 > > 
 > 
-> Indeed. When ECC engine in the controller is set to do BCH, it always
-> store a 30-byte ECC code. This 30-byte code is calculated on the
-> transfered chunk, and since the chunk size is configurable we can
-> effectively configure the ECC strength.
+> I must admit I'm a bit confused by this ECC step concept. Having
+> described the ECC engine in the cover-letter, what do you think
+> the right choice should be?
+
+I'm still not sure. But I'll defer that discussion to the cover-letter.
+
+> IMO, given the ECC engine works on the entire FIFO (actually it works
+> on the transfered chunk) it's a 1-step ECC.
+
+That doesn't necessarily mean it's 1-step ECC. The step refers more to
+the correction region than to the mechanics of transfer sizes.
+
+> On the other side, a multiple step ECC, i.e. chip->ecc.size != mtd->writesize
+> makes the NAND base calls the subpage() function and the driver crashes
+> horribly when using UBIFS.
+
+Which function? Read or write? AFAICT, neither relies on chip->ecc.size.
+
+> I'm not sure why subpage should be called in that case, given we don't
+> support that.
+
+If you don't support writes, you can flag:
+    chip->options |= NAND_NO_SUBPAGE_WRITE
+
+And subpage reads are currently only enabled on soft-ECC with page size
+larger than 512.
+
+> > > +
+> > > +	/*
+> > > +	 * Armada370 variant supports BCH, which provides 4-bit strength
+> > > +	 * and needs to be supported in a special way.
+> > > +	 */
+> > > +	if (info->variant == PXA3XX_NAND_VARIANT_ARMADA370 &&
+> > 
+> > Might there be other variants eventually that support BCH? Perhaps you
+> > want to separate the property of "can use BCH" from "will use BCH"?
+> > 
 > 
-> The specification says
+> Yeah, probably. And maybe setting the BCH from the DT? The problem here
+> is that because of the ECC choice being intimately related to the OOB
+> location, this means the ECC choice is intimately related to the bad
+> block markers.
 
-Is there a public URL for the specification?
+Speaking of that: how do you deal with bad block markers, if your data
+is actually placed in what is traditionally the "spare area"?
 
-> the ECC BCH engine can correct up to 16-bits, which means:
+> IOW, the user can't really choose among ECC.
 
-Is this your interpretation, or are you quoting the spec?
+This means the choice of ECC must remain consistent across all users of
+the NAND, but it doesn't mean there is no initial choice. A user could
+choose to enable a higher ECC strength than what is technically required
+by the flash.
 
-> if the chunk is 2048 bytes you get BCH-4, and if the chunk
-> is set to be 1024 bytes, you get BCH-8.
+> I guess this means the ECC choice is some sort of a hardware description
+> and rightfully belongs to the DT. Right?
 
-That doesn't really make sense to me. If you can't post a public URL,
-can you paste the relevant text for this?
-
-Most NAND specifies a required correctability of something like "correct
-1 bit error per 512 bytes" or "correct 4 bits per 512 bytes". These are
-not the same as "correct 1 bit per 2048 bytes" and "correct 4 bits per
-2048 bytes", respectively, for obvious reasons.
-
-So your "BCH-4" over a "2048 byte chunk" could be interpreted in
-multiple ways. I'll list a few.
-
-(1) BCH-4 usually means 4 bit correction over a 512 byte region, to
-    match most SLC that might specify 4-bit correction. Applied to your
-    hardware, it could possibly be that the 2048 byte region is actually
-    4 smaller regions which are corrected separately, each with 4 bit
-    correction. The ECC metadata just happens to be stored in 30 bytes
-    of OOB (each 512-byte "sub-step" uses 7.5 bytes of spare area??)
-
-    Another way to look at this: perhaps your ECC "chunk size" (the
-    contiguous region over which your ECC is applied and transferred
-    atomically) is different than the "correction region" (the region
-    over which a certain number of bits may be corrected).
-
-(2) Your BCH-4 over 2048 bytes really means what it says; it can only
-    correct 4-bit in the 2048-byte area. This is sufficient for NAND
-    that specify 1-bit correction per 512-bytes but not for those that
-    specify 4-bit correction over 512-bytes.
-
-Because an interpretation like (2) doesn't really match the NAND parts
-you seem to be targeting, I'm inclined to think (1) is what the hardware
-is doing. I also suspect (2) is wrong because the BCH algorithm (under
-typical parameters) requires on the order of 6 to 8 bytes for storage,
-regardless of the region it is correcting over. So "BCH-4" over 2048
-bytes would only require 6 to 8 bytes of storage, not 30.
-
-Barring more lucid documentation, you might want to verify this with
-some tests. If you can support raw (no ECC) programming, this is a case
-where you could induce bit errors and see how many can be corrected in
-various patterns. But that's only necessary if your documentation sucks
-too badly or is not public.
-
-Regarding patch 5 (might as well mention it here), you are only checking
-the ecc_strength_ds field for 4. You are not checking ecc_step_ds, which
-likely will be 512 or 1024. Both parameters are relevant to determining
-what ECC types are strong enough. But it's confusing enough right now to
-even determine what your hardware means when you say "BCH-4", so we
-might not be ready to handle this yet...
+Yes, I think some description of ECC can be placed in DT. We're working
+through a DT binding for Pekon's OMAP driver right now.
 
 Brian
