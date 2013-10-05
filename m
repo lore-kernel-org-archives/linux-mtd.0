@@ -1,28 +1,18 @@
-Received: from mail-ie0-x232.google.com ([2607:f8b0:4001:c03::232])
+Received: from mail-wg0-x232.google.com ([2a00:1450:400c:c00::232])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VSFid-0002QF-4a
- for linux-mtd@lists.infradead.org; Sat, 05 Oct 2013 00:27:40 +0000
-Received: by mail-ie0-f178.google.com with SMTP id to1so11159537ieb.9
- for <linux-mtd@lists.infradead.org>; Fri, 04 Oct 2013 17:27:17 -0700 (PDT)
-Date: Fri, 4 Oct 2013 17:27:13 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH 05/21] mtd: nand: pxa3xx: Add driver-specific ECC BCH
- support
-Message-ID: <20131005002713.GA23337@ld-irv-0074.broadcom.com>
-References: <1379606505-2529-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1379606505-2529-6-git-send-email-ezequiel.garcia@free-electrons.com>
- <20131003002440.GY23337@ld-irv-0074.broadcom.com>
- <20131004194923.GC20476@localhost>
+ id 1VSH42-00036c-AV
+ for linux-mtd@lists.infradead.org; Sat, 05 Oct 2013 01:53:51 +0000
+Received: by mail-wg0-f50.google.com with SMTP id f12so4982130wgh.5
+ for <linux-mtd@lists.infradead.org>; Fri, 04 Oct 2013 18:53:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20131004194923.GC20476@localhost>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
- Tawfik Bayouk <tawfik@marvell.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- Daniel Mack <zonque@gmail.com>, linux-mtd@lists.infradead.org,
- Gregory Clement <gregory.clement@free-electrons.com>, Willy Tarreau <w@1wt.eu>
+Date: Fri, 4 Oct 2013 20:53:23 -0500
+Message-ID: <CAP+RiCBN_VojAqYBfSV6eH=5FVej43j_hG7ouKLbRSi0m5gmTA@mail.gmail.com>
+Subject: [PATCH v2] ubifs; Add lz4hc compression
+From: Brent Taylor <motobud@gmail.com>
+To: Konstantin Tokarev <annulen@yandex.ru>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,123 +22,129 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 04, 2013 at 04:49:24PM -0300, Ezequiel Garcia wrote:
-> On Wed, Oct 02, 2013 at 05:24:40PM -0700, Brian Norris wrote:
-> > On Thu, Sep 19, 2013 at 01:01:29PM -0300, Ezequiel Garcia wrote:
-> > > This commit adds the BCH ECC support available in NFCv2 controller.
-> > > Depending on the detected required strength the respective ECC layout
-> > > is selected.
-> > > 
-> > > This commit adds an empty ECC layout, since support to access large
-> > > pages is first required. Once that support is added, a proper ECC
-> > > layout will be added as well.
-> > > 
-> > > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> > > ---
-> > >  drivers/mtd/nand/pxa3xx_nand.c | 53 ++++++++++++++++++++++++++++++++++++------
-> > >  1 file changed, 46 insertions(+), 7 deletions(-)
-> > > 
-> > > diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-> > > index a0dabe6..86c343e 100644
-> > > --- a/drivers/mtd/nand/pxa3xx_nand.c
-> > > +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> > 
-> > ...
-> > 
-> > > @@ -1117,10 +1133,6 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
-> > >  	pxa3xx_flash_ids[1].name = NULL;
-> > >  	def = pxa3xx_flash_ids;
-> > >  KEEP_CONFIG:
-> > > -	chip->ecc.mode = NAND_ECC_HW;
-> > > -	chip->ecc.size = host->page_size;
-> > > -	chip->ecc.strength = 1;
-> > > -
-> > >  	if (info->reg_ndcr & NDCR_DWIDTH_M)
-> > >  		chip->options |= NAND_BUSWIDTH_16;
-> > >  
-> > > @@ -1130,8 +1142,35 @@ KEEP_CONFIG:
-> > >  		chip->bbt_options |= NAND_BBT_USE_FLASH;
-> > >  	}
-> > >  
-> > > +	/* Device detection must be done with ECC disabled */
-> > > +	if (info->variant == PXA3XX_NAND_VARIANT_ARMADA370)
-> > > +		nand_writel(info, NDECCCTRL, 0x0);
-> > > +
-> > >  	if (nand_scan_ident(mtd, 1, def))
-> > >  		return -ENODEV;
-> > > +
-> > > +	/* 1-step ECC over the entire detected page size */
-> > > +	chip->ecc.mode = NAND_ECC_HW;
-> > > +	chip->ecc.size = mtd->writesize;
-> > 
-> > Does the ECC really only work in one step? IOW, do you only correct
-> > 1-bit for the entire page? That is under-spec'd for most NAND (they need
-> > 1-bit/512-byte, or 4-bit/512-byte). This ecc.size should actually
-> > reflect the correction region (typically 512B or 1024B), and even if
-> > your buffer layout makes a step every 2KB (or 4KB or whatever), the ECC
-> > step size *should* be smaller than that.
-> > 
-> > Or maybe I'm wrong, and you're actually using a weak 4-bit correction
-> > over 2048 bytes.
-> > 
-> 
-> I must admit I'm a bit confused by this ECC step concept. Having
-> described the ECC engine in the cover-letter, what do you think
-> the right choice should be?
+Artem,
+   I replaced the Kconfig description with your suggestion slightly edited.
 
-I'm still not sure. But I'll defer that discussion to the cover-letter.
+Konstarev,
+   I haven't looked at what it would take to add lz4hc to mkfs.ubifs.
+I wasn't planning on it, but I can take a look.
 
-> IMO, given the ECC engine works on the entire FIFO (actually it works
-> on the transfered chunk) it's a 1-step ECC.
+-- Brent
 
-That doesn't necessarily mean it's 1-step ECC. The step refers more to
-the correction region than to the mechanics of transfer sizes.
+diff -uN -uNr linux-3.12-rc3.orig/fs/ubifs/compress.c
+linux-3.12-rc3/fs/ubifs/compress.c
+--- linux-3.12-rc3.orig/fs/ubifs/compress.c     2013-09-29
+17:02:38.000000000 -0500
++++ linux-3.12-rc3/fs/ubifs/compress.c  2013-07-17 21:57:27.440653860 -0500
+@@ -53,6 +53,22 @@
+ };
+ #endif
 
-> On the other side, a multiple step ECC, i.e. chip->ecc.size != mtd->writesize
-> makes the NAND base calls the subpage() function and the driver crashes
-> horribly when using UBIFS.
++#ifdef CONFIG_UBIFS_FS_LZ4HC
++static DEFINE_MUTEX(lz4hc_mutex);
++
++static struct ubifs_compressor lz4hc_compr = {
++       .compr_type = UBIFS_COMPR_LZ4HC,
++       .comp_mutex = &lz4hc_mutex,
++       .name = "lz4hc",
++       .capi_name = "lz4hc",
++};
++#else
++static struct ubifs_compressor lz4hc_compr = {
++       .compr_type = UBIFS_COMPR_LZ4HC,
++       .name = "lz4hc",
++};
++#endif
++
+ #ifdef CONFIG_UBIFS_FS_ZLIB
+ static DEFINE_MUTEX(deflate_mutex);
+ static DEFINE_MUTEX(inflate_mutex);
+@@ -224,10 +240,14 @@
+ {
+        int err;
 
-Which function? Read or write? AFAICT, neither relies on chip->ecc.size.
+-       err = compr_init(&lzo_compr);
++       err = compr_init(&lz4hc_compr);
+        if (err)
+                return err;
 
-> I'm not sure why subpage should be called in that case, given we don't
-> support that.
++       err = compr_init(&lzo_compr);
++       if (err)
++               goto out_lz4hc;
++
+        err = compr_init(&zlib_compr);
+        if (err)
+                goto out_lzo;
+@@ -237,6 +257,8 @@
 
-If you don't support writes, you can flag:
-    chip->options |= NAND_NO_SUBPAGE_WRITE
+ out_lzo:
+        compr_exit(&lzo_compr);
++out_lz4hc:
++       compr_exit(&lz4hc_compr);
+        return err;
+ }
 
-And subpage reads are currently only enabled on soft-ECC with page size
-larger than 512.
+@@ -245,6 +267,7 @@
+  */
+ void ubifs_compressors_exit(void)
+ {
++       compr_exit(&lz4hc_compr);
+        compr_exit(&lzo_compr);
+        compr_exit(&zlib_compr);
+ }
+diff -uN -uNr linux-3.12-rc3.orig/fs/ubifs/Kconfig
+linux-3.12-rc3/fs/ubifs/Kconfig
+--- linux-3.12-rc3.orig/fs/ubifs/Kconfig        2013-09-29
+17:02:38.000000000 -0500
++++ linux-3.12-rc3/fs/ubifs/Kconfig     2013-10-04 20:25:16.767776913 -0500
+@@ -29,6 +29,16 @@
+           LZO compressor is generally faster than zlib but compresses worse.
+           Say 'Y' if unsure.
 
-> > > +
-> > > +	/*
-> > > +	 * Armada370 variant supports BCH, which provides 4-bit strength
-> > > +	 * and needs to be supported in a special way.
-> > > +	 */
-> > > +	if (info->variant == PXA3XX_NAND_VARIANT_ARMADA370 &&
-> > 
-> > Might there be other variants eventually that support BCH? Perhaps you
-> > want to separate the property of "can use BCH" from "will use BCH"?
-> > 
-> 
-> Yeah, probably. And maybe setting the BCH from the DT? The problem here
-> is that because of the ECC choice being intimately related to the OOB
-> location, this means the ECC choice is intimately related to the bad
-> block markers.
-
-Speaking of that: how do you deal with bad block markers, if your data
-is actually placed in what is traditionally the "spare area"?
-
-> IOW, the user can't really choose among ECC.
-
-This means the choice of ECC must remain consistent across all users of
-the NAND, but it doesn't mean there is no initial choice. A user could
-choose to enable a higher ECC strength than what is technically required
-by the flash.
-
-> I guess this means the ECC choice is some sort of a hardware description
-> and rightfully belongs to the DT. Right?
-
-Yes, I think some description of ECC can be placed in DT. We're working
-through a DT binding for Pekon's OMAP driver right now.
-
-Brian
++config UBIFS_FS_LZ4HC
++       bool "LZ4HC compression support" if UBIFS_FS_ADVANCED_COMPR
++       depends on UBIFS_FS && CRYPTO_LZ4HC
++       default y
++       help
++          LZ4HC generally beats LZO on decompression speed while provides a lot
++      better compression ratio (comparable to zlib). Compression speed is
++      generally slower compared to LZO, but faster compared to zlib.
++          Say 'Y' if unsure.
++
+ config UBIFS_FS_ZLIB
+        bool "ZLIB compression support" if UBIFS_FS_ADVANCED_COMPR
+        depends on UBIFS_FS
+diff -uN -uNr linux-3.12-rc3.orig/fs/ubifs/super.c
+linux-3.12-rc3/fs/ubifs/super.c
+--- linux-3.12-rc3.orig/fs/ubifs/super.c        2013-09-29
+17:02:38.000000000 -0500
++++ linux-3.12-rc3/fs/ubifs/super.c     2013-09-30 23:01:06.899526709 -0500
+@@ -1040,6 +1040,8 @@
+                                return -ENOMEM;
+                        if (!strcmp(name, "none"))
+                                c->mount_opts.compr_type = UBIFS_COMPR_NONE;
++                       else if (!strcmp(name, "lz4hc"))
++                               c->mount_opts.compr_type = UBIFS_COMPR_LZ4HC;
+                        else if (!strcmp(name, "lzo"))
+                                c->mount_opts.compr_type = UBIFS_COMPR_LZO;
+                        else if (!strcmp(name, "zlib"))
+diff -uN -uNr linux-3.12-rc3.orig/fs/ubifs/ubifs-media.h
+linux-3.12-rc3/fs/ubifs/ubifs-media.h
+--- linux-3.12-rc3.orig/fs/ubifs/ubifs-media.h  2013-09-29
+17:02:38.000000000 -0500
++++ linux-3.12-rc3/fs/ubifs/ubifs-media.h       2013-10-04
+20:25:58.839777442 -0500
+@@ -332,12 +332,14 @@
+  * UBIFS_COMPR_NONE: no compression
+  * UBIFS_COMPR_LZO: LZO compression
+  * UBIFS_COMPR_ZLIB: ZLIB compression
++ * UBIFS_COMPR_LZ4HC: LZ4HC compression
+  * UBIFS_COMPR_TYPES_CNT: count of supported compression types
+  */
+ enum {
+        UBIFS_COMPR_NONE,
+        UBIFS_COMPR_LZO,
+        UBIFS_COMPR_ZLIB,
++       UBIFS_COMPR_LZ4HC,
+        UBIFS_COMPR_TYPES_CNT,
+ };
