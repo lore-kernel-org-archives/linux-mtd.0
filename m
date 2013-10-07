@@ -1,22 +1,16 @@
-Received: from forward15.mail.yandex.net ([2a02:6b8:0:801::5])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VT6Gg-00042F-KE
- for linux-mtd@lists.infradead.org; Mon, 07 Oct 2013 08:34:20 +0000
-From: Konstantin Tokarev <annulen@yandex.ru>
-To: Elie De Brauwer <eliedebrauwer@gmail.com>
-In-Reply-To: <CAGWqfihRaNSs-uc9utTPaNPHU__KTS5saxgc2xUrkw5sYy4kkQ@mail.gmail.com>
-References: <CAGWqfihkGT5wWDoFGTtBHK31+Fvav8if6iy_jFJ7io1H_wktFA@mail.gmail.com>
- <165301380997382@web12j.yandex.ru> <47881381073118@web4j.yandex.ru>
- <CAGWqfihRaNSs-uc9utTPaNPHU__KTS5saxgc2xUrkw5sYy4kkQ@mail.gmail.com>
-Subject: Re: [PATCH v0.5] mtd-utils: mkfs.ubifs: Add support for LZ4HC
- compression
+Received: from arroyo.ext.ti.com ([192.94.94.40])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VT8Tq-0000pJ-3B
+ for linux-mtd@lists.infradead.org; Mon, 07 Oct 2013 10:56:02 +0000
+From: Pekon Gupta <pekon@ti.com>
+To: <computersforpeace@gmail.com>, <dedekind1@gmail.com>
+Subject: [PATCH v2 0/4] optimize and clean-up of OMAP NAND and ELM driver
+Date: Mon, 7 Oct 2013 16:25:01 +0530
+Message-ID: <1381143305-28617-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
-Message-Id: <227411381134834@web27j.yandex.ru>
-Date: Mon, 07 Oct 2013 12:33:54 +0400
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset=koi8-r
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Brent Taylor <motobud@gmail.com>, Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain
+Cc: tony@atomide.com, avinashphilipk@gmail.com, linux-mtd@lists.infradead.org,
+ Pekon Gupta <pekon@ti.com>, balbi@ti.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,23 +20,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+*changes from v1 (minor)*
+- rebased for newer version of previous patch-set
+	[PATCH v7 0/6] mtd:nand:omap2: clean-up of supported ECC schemes
+	http://lists.infradead.org/pipermail/linux-mtd/2013-October/048983.html
+- code cleanup and formating updates
 
+*original v1*
+This patch series builds the base for adding support for newer H/W based ECC
+schemes for NAND flash. This patch series 
+- cleans-up redundant code among various
+- optimizes ecc calculation and correction paths
+- improves scalability and readability, for adding newer ecc-schemes in future.
+This patch affects following data-paths: 
+[PATCH 1/4] NAND chip->ecc.correct(): Detects and corrects ECC errors on read accesses.
+[PATCH 2/4] NAND chip->ecc.calculate(): Calculates and fetches ECC syndrome from controller.
+[PATCH 3/4] NAND chip->ecc.hwctl(): Configures H/W controller for Read/Write data acccesses.
+[PATCH 4/4] ELM  add checks and updates code for scalability.
 
-07.10.2013, 10:34, "Elie De Brauwer" <eliedebrauwer@gmail.com>:
-> Konstantin,
->
-> Sounds interesting, I'll integrate this into a next version of the
-> patch. Perhaps it make sense just to replace favor_lzo and favor_lz4hc
-> into something generic like favor_COMPR1_COMPR2 where COMPR2 gets
-> chosen if it is more than favor-percent better than COMPR1. Even
-> though today you're probably use lzo/zlib to optimise for size at a
-> reasonable cost of some speed šwhile you're probably use lzo/lz4hc if
-> you want to optimise for speed at a reasonable cost of size, but that
-> probably makes it more extensible in the future. Does this sound
-> reasonable ?
+Pekon Gupta (4):
+  mtd: nand: omap: optimized chip->ecc.correct() for H/W ECC schemes
+  mtd: nand: omap: optimize chip->ecc.calculate() for H/W ECC schemes
+  mtd: nand: omap: optimize chip->ecc.hwctl() for H/W ECC schemes
+  mtd: devices: elm: add checks ELM H/W constrains, driver code cleanup
 
-Yeah, that would be useful.
+ drivers/mtd/devices/elm.c         | 122 ++++---
+ drivers/mtd/nand/omap2.c          | 723 +++++++++++++-------------------------
+ include/linux/platform_data/elm.h |   6 +-
+ 3 files changed, 325 insertions(+), 526 deletions(-)
 
 -- 
-Regards,
-Konstantin
+1.8.1
