@@ -1,17 +1,30 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VT8xL-0001IX-JZ
- for linux-mtd@lists.infradead.org; Mon, 07 Oct 2013 11:26:31 +0000
-Message-ID: <52529A4B.6040501@ti.com>
-Date: Mon, 7 Oct 2013 16:56:03 +0530
-From: Sourav Poddar <sourav.poddar@ti.com>
+Date: Mon, 7 Oct 2013 12:27:28 +0100
+From: Mark Rutland <mark.rutland@arm.com>
+To: Pekon Gupta <pekon@ti.com>
+Subject: Re: [PATCH v7 1/6] mtd: nand: omap: combine different flavours of
+ 1-bit hamming ecc schemes
+Message-ID: <20131007112728.GA15365@e106331-lin.cambridge.arm.com>
+References: <1380916188-24206-1-git-send-email-pekon@ti.com>
+ <1380916188-24206-2-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
-To: Mark Brown <broonie@kernel.org>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: Memory mapped support for SPI flash ?
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1380916188-24206-2-git-send-email-pekon@ti.com>
+Content-Language: en-US
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "arnd@arndb.de" <arnd@arndb.de>, Pawel Moll <Pawel.Moll@arm.com>,
+ "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
+ "tony@atomide.com" <tony@atomide.com>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>,
+ "balbi@ti.com" <balbi@ti.com>, "robherring2@gmail.com" <robherring2@gmail.com>,
+ "bcousson@baylibre.com" <bcousson@baylibre.com>,
+ "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>,
+ "olof@lixom.net" <olof@lixom.net>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,35 +34,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Fri, Oct 04, 2013 at 08:49:43PM +0100, Pekon Gupta wrote:
+> OMAP NAND driver currently supports multiple flavours of 1-bit Hamming
+> ecc-scheme, like:
+> - OMAP_ECC_HAMMING_CODE_DEFAULT
+> 	1-bit hamming ecc code using software library
+> - OMAP_ECC_HAMMING_CODE_HW
+> 	1-bit hamming ecc-code using GPMC h/w engine
+> - OMAP_ECC_HAMMING_CODE_HW_ROMCODE
+> 	1-bit hamming ecc-code using GPMC h/w engin with ecc-layout compatible
+> 	to ROM code.
+> 
+> This patch combines above multiple ecc-schemes into single implementation:
+> - OMAP_ECC_HAM1_CODE_HW
+> 	1-bit hamming ecc-code using GPMC h/w engine with ROM-code compatible
+> 	ecc-layout.
 
-I wanted to know whether there is any framework or support available
-in mtd which helps in doing a memory mapped read for a serial NOR flash 
-driver.
+If I have my NAND formatted with one of the existing ECC schemes (e.g.
+OMAP_ECC_HAMMING_CODE_DEFAULT) will it work with the new
+OMAP_ECC_HAM1_CODE_HW scheme?
 
-Requirement is something like this..
+Are they all compatible?
 
-My controller supports memory mapped read, but needs to switch to
-memory mapped port to read from it and once the
-read is done switch back again to normal configuration mode.
+> 
+> Signed-off-by: Pekon Gupta <pekon@ti.com>
+> ---
+>  Documentation/devicetree/bindings/mtd/gpmc-nand.txt | 8 ++++----
+>  arch/arm/mach-omap2/board-flash.c                   | 2 +-
+>  arch/arm/mach-omap2/gpmc.c                          | 4 +---
+>  drivers/mtd/nand/omap2.c                            | 9 +++------
+>  include/linux/platform_data/mtd-nand-omap2.h        | 6 +-----
+>  5 files changed, 10 insertions(+), 19 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+> index df338cb..25ee232 100644
+> --- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+> @@ -22,10 +22,10 @@ Optional properties:
+>  				width of 8 is assumed.
+>  
+>   - ti,nand-ecc-opt:		A string setting the ECC layout to use. One of:
+> -
+> -		"sw"		Software method (default)
+> -		"hw"		Hardware method
+> -		"hw-romcode"	gpmc hamming mode method & romcode layout
+> +		"sw"		<deprecated> use "ham1" instead
+> +		"hw"		<deprecated> use "ham1" instead
+> +		"hw-romcode"	<deprecated> use "ham1" instead
+> +		"ham1"		1-bit Hamming ecc code
+>  		"bch4"		4-bit BCH ecc code
+>  		"bch8"		8-bit BCH ecc code
+>  
+> diff --git a/arch/arm/mach-omap2/board-flash.c b/arch/arm/mach-omap2/board-flash.c
+> index fc20a61..ac82512 100644
+> --- a/arch/arm/mach-omap2/board-flash.c
+> +++ b/arch/arm/mach-omap2/board-flash.c
+> @@ -142,7 +142,7 @@ __init board_nand_init(struct mtd_partition *nand_parts, u8 nr_parts, u8 cs,
+>  	board_nand_data.nr_parts	= nr_parts;
+>  	board_nand_data.devsize		= nand_type;
+>  
+> -	board_nand_data.ecc_opt = OMAP_ECC_HAMMING_CODE_DEFAULT;
+> +	board_nand_data.ecc_opt = OMAP_ECC_BCH8_CODE_HW;
+>  	gpmc_nand_init(&board_nand_data, gpmc_t);
+>  }
+>  #endif /* CONFIG_MTD_NAND_OMAP2 || CONFIG_MTD_NAND_OMAP2_MODULE */
+> diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
+> index 9f4795a..1c45b72 100644
+> --- a/arch/arm/mach-omap2/gpmc.c
+> +++ b/arch/arm/mach-omap2/gpmc.c
+> @@ -1342,9 +1342,7 @@ static void __maybe_unused gpmc_read_timings_dt(struct device_node *np,
+>  #ifdef CONFIG_MTD_NAND
+>  
+>  static const char * const nand_ecc_opts[] = {
+> -	[OMAP_ECC_HAMMING_CODE_DEFAULT]		= "sw",
+> -	[OMAP_ECC_HAMMING_CODE_HW]		= "hw",
+> -	[OMAP_ECC_HAMMING_CODE_HW_ROMCODE]	= "hw-romcode",
+> +	[OMAP_ECC_HAM1_CODE_HW]			= "ham1",
+>  	[OMAP_ECC_BCH4_CODE_HW]			= "bch4",
+>  	[OMAP_ECC_BCH8_CODE_HW]			= "bch8",
 
-So, my idea is that spi controller need to be communicated from  the mtd 
-layer
-that the current read is memory mapped read, so the controller does
-whatever settings need to be done and then does the memory mapped read and
-switch back to configuration mode.
+Won't this break existing dts which have "sw", "hw", or "hw-romcode"?
 
-I see some drivers under drivers/mtd/maps/* , point and unpoint 
-functions, but are they
-applicable for serial NOR flashes? Or there is any other stuff available 
-which I can use
-for my usecase?
+Someone may try to use a new kernel with an old dt, and we marked them
+as deprecated, not removed.
 
-I was thing of using it in a way that dual/quad support is used. I mean 
-to add "memory map"
-as a mode and pass it as a transfer parameter(from the mtd layer) to 
-indicate that the current transfer
-is a memory map read and then do a memcopy in the low level driver function.
-
-Thanks in advance,
-Sourav
+Thanks,
+Mark.
