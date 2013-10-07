@@ -1,23 +1,25 @@
-Date: Mon, 7 Oct 2013 12:40:30 +0100
-From: Mark Rutland <mark.rutland@arm.com>
-To: Pekon Gupta <pekon@ti.com>
-Subject: Re: [PATCH v7 5/6] ARM: dts: AM33xx: updated default ECC scheme in
- nand-ecc-opt
-Message-ID: <20131007114029.GC15365@e106331-lin.cambridge.arm.com>
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Mark Rutland <mark.rutland@arm.com>
+Subject: RE: [PATCH v7 1/6] mtd: nand: omap: combine different flavours of
+ 1-bit hamming ecc schemes
+Date: Mon, 7 Oct 2013 11:42:19 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA1F3DC@DBDE04.ent.ti.com>
 References: <1380916188-24206-1-git-send-email-pekon@ti.com>
- <1380916188-24206-6-git-send-email-pekon@ti.com>
+ <1380916188-24206-2-git-send-email-pekon@ti.com>
+ <20131007112728.GA15365@e106331-lin.cambridge.arm.com>
+In-Reply-To: <20131007112728.GA15365@e106331-lin.cambridge.arm.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1380916188-24206-6-git-send-email-pekon@ti.com>
 Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
  "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
  "arnd@arndb.de" <arnd@arndb.de>, Pawel Moll <Pawel.Moll@arm.com>,
  "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
  "tony@atomide.com" <tony@atomide.com>,
  "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>,
- "balbi@ti.com" <balbi@ti.com>, "robherring2@gmail.com" <robherring2@gmail.com>,
+ "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>, "Balbi,
+ Felipe" <balbi@ti.com>, "robherring2@gmail.com" <robherring2@gmail.com>,
  "bcousson@baylibre.com" <bcousson@baylibre.com>,
  "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>,
  "olof@lixom.net" <olof@lixom.net>,
@@ -33,65 +35,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 04, 2013 at 08:49:47PM +0100, Pekon Gupta wrote:
-> DT property values for OMAP based gpmc-nand have been updated
-> to match changes in commit:
-> 	6faf096 ARM: OMAP2+: cleaned-up DT support of various ECC schemes
-> Refer: Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+Hi,
 
-Doesn't this mean these dts were broken between the changes to the
-driver and the changes to the dts?
+> From: Mark Rutland [mailto:mark.rutland@arm.com]
+> > On Fri, Oct 04, 2013 at 08:49:43PM +0100, Pekon Gupta wrote:
+> > OMAP NAND driver currently supports multiple flavours of 1-bit Hamming
+> > ecc-scheme, like:
+> > - OMAP_ECC_HAMMING_CODE_DEFAULT
+> > 	1-bit hamming ecc code using software library
+> > - OMAP_ECC_HAMMING_CODE_HW
+> > 	1-bit hamming ecc-code using GPMC h/w engine
+> > - OMAP_ECC_HAMMING_CODE_HW_ROMCODE
+> > 	1-bit hamming ecc-code using GPMC h/w engin with ecc-layout
+> compatible
+> > 	to ROM code.
+> >
+> > This patch combines above multiple ecc-schemes into single
+> implementation:
+> > - OMAP_ECC_HAM1_CODE_HW
+> > 	1-bit hamming ecc-code using GPMC h/w engine with ROM-code
+> compatible
+> > 	ecc-layout.
+>=20
+> If I have my NAND formatted with one of the existing ECC schemes (e.g.
+> OMAP_ECC_HAMMING_CODE_DEFAULT) will it work with the new
+> OMAP_ECC_HAM1_CODE_HW scheme?
+>=20
+> Are they all compatible?
+>=20
+Yes, they all are 1-bit hamming code, the only difference between=20
+xx_Default and xx_HW was who was doing the ECC calculation.
+For xx_DEFAULT: ECC calculation was done on CPU via s/w library
+For xx_HW: ECC calculation was done by in-build h/w engine.
+So, all HAMMING_xx can be replaced by HAM1_HW.
 
-I think the existing properties need to continue to be supoprted for
-backwards compatibility. The dts can be fixed up to have the preferred
-binding style, but they shouldn't _have_ to be modified to continue to
-function...
+[snip]
 
-Thanks,
-Mark.
+> > @@ -1342,9 +1342,7 @@ static void __maybe_unused
+> gpmc_read_timings_dt(struct device_node *np,
+> >  #ifdef CONFIG_MTD_NAND
+> >
+> >  static const char * const nand_ecc_opts[] =3D {
+> > -	[OMAP_ECC_HAMMING_CODE_DEFAULT]		=3D "sw",
+> > -	[OMAP_ECC_HAMMING_CODE_HW]		=3D "hw",
+> > -	[OMAP_ECC_HAMMING_CODE_HW_ROMCODE]	=3D "hw-
+> romcode",
+> > +	[OMAP_ECC_HAM1_CODE_HW]			=3D "ham1",
+> >  	[OMAP_ECC_BCH4_CODE_HW]			=3D "bch4",
+> >  	[OMAP_ECC_BCH8_CODE_HW]			=3D "bch8",
+>=20
+> Won't this break existing dts which have "sw", "hw", or "hw-romcode"?
+>=20
+> Someone may try to use a new kernel with an old dt, and we marked them
+> as deprecated, not removed.
+>=20
+HAMMING_xx ECC scheme was used only on legacy platforms, when
+BCH8 was not available, I have not seen anyone using this scheme
+*from mainline kernel* from quite a long time. So, it's safe to remove them=
+.
 
-> 
-> Signed-off-by: Pekon Gupta <pekon@ti.com>
-> ---
->  arch/arm/boot/dts/am335x-evm.dts   | 3 +--
->  arch/arm/boot/dts/omap3430-sdp.dts | 2 +-
->  2 files changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/arm/boot/dts/am335x-evm.dts b/arch/arm/boot/dts/am335x-evm.dts
-> index e8ec875..1aee6ac 100644
-> --- a/arch/arm/boot/dts/am335x-evm.dts
-> +++ b/arch/arm/boot/dts/am335x-evm.dts
-> @@ -269,7 +269,6 @@
->  				reg = <0 0 0>; /* CS0, offset 0 */
->  				nand-bus-width = <8>;
->  				ti,nand-ecc-opt = "bch8";
-> -				gpmc,device-nand = "true";
->  				gpmc,device-width = <1>;
->  				gpmc,sync-clk-ps = <0>;
->  				gpmc,cs-on-ns = <0>;
-> @@ -296,7 +295,7 @@
->  
->  				#address-cells = <1>;
->  				#size-cells = <1>;
-> -				elm_id = <&elm>;
-> +				ti,elm-id = <&elm>;
->  
->  				/* MTD partition table */
->  				partition@0 {
-> diff --git a/arch/arm/boot/dts/omap3430-sdp.dts b/arch/arm/boot/dts/omap3430-sdp.dts
-> index e2249bc..501f863 100644
-> --- a/arch/arm/boot/dts/omap3430-sdp.dts
-> +++ b/arch/arm/boot/dts/omap3430-sdp.dts
-> @@ -105,7 +105,7 @@
->  		reg = <1 0 0x08000000>;
->  		nand-bus-width = <8>;
->  
-> -		ti,nand-ecc-opt = "sw";
-> +		ti,nand-ecc-opt = "ham1";
->  		gpmc,cs-on-ns = <0>;
->  		gpmc,cs-rd-off-ns = <36>;
->  		gpmc,cs-wr-off-ns = <36>;
-> -- 
-> 1.8.1
-> 
-> 
+This is what was concluded as per below email.
+http://lists.infradead.org/pipermail/linux-mtd/2013-September/048876.html
+
+with regards, pekon
