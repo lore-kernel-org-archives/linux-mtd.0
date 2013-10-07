@@ -1,12 +1,15 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from bear.ext.ti.com ([192.94.94.41])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VT8Tq-0000pJ-3B
- for linux-mtd@lists.infradead.org; Mon, 07 Oct 2013 10:56:02 +0000
+ id 1VT8Ts-0000pL-Pr
+ for linux-mtd@lists.infradead.org; Mon, 07 Oct 2013 10:56:07 +0000
 From: Pekon Gupta <pekon@ti.com>
 To: <computersforpeace@gmail.com>, <dedekind1@gmail.com>
-Subject: [PATCH v2 0/4] optimize and clean-up of OMAP NAND and ELM driver
-Date: Mon, 7 Oct 2013 16:25:01 +0530
-Message-ID: <1381143305-28617-1-git-send-email-pekon@ti.com>
+Subject: [PATCH v2 2/4] mtd: nand: omap: optimize chip->ecc.calculate() for
+ H/W ECC schemes
+Date: Mon, 7 Oct 2013 16:25:03 +0530
+Message-ID: <1381143305-28617-3-git-send-email-pekon@ti.com>
+In-Reply-To: <1381143305-28617-1-git-send-email-pekon@ti.com>
+References: <1381143305-28617-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: tony@atomide.com, avinashphilipk@gmail.com, linux-mtd@lists.infradead.org,
@@ -20,34 +23,346 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-*changes from v1 (minor)*
-- rebased for newer version of previous patch-set
-	[PATCH v7 0/6] mtd:nand:omap2: clean-up of supported ECC schemes
-	http://lists.infradead.org/pipermail/linux-mtd/2013-October/048983.html
-- code cleanup and formating updates
+chip->ecc.calculate() is used for calculating and fetching of ECC syndrome by
+processing the data passed during Read/Write accesses.
 
-*original v1*
-This patch series builds the base for adding support for newer H/W based ECC
-schemes for NAND flash. This patch series 
-- cleans-up redundant code among various
-- optimizes ecc calculation and correction paths
-- improves scalability and readability, for adding newer ecc-schemes in future.
-This patch affects following data-paths: 
-[PATCH 1/4] NAND chip->ecc.correct(): Detects and corrects ECC errors on read accesses.
-[PATCH 2/4] NAND chip->ecc.calculate(): Calculates and fetches ECC syndrome from controller.
-[PATCH 3/4] NAND chip->ecc.hwctl(): Configures H/W controller for Read/Write data acccesses.
-[PATCH 4/4] ELM  add checks and updates code for scalability.
+All H/W based ECC schemes supported in omap2-nand driver use GPMC controller
+to calculate ECC syndrome. But each BCHx_ECC scheme implements its own function
+to process and fetch ECC syndrom from GPMC controller.
 
-Pekon Gupta (4):
-  mtd: nand: omap: optimized chip->ecc.correct() for H/W ECC schemes
-  mtd: nand: omap: optimize chip->ecc.calculate() for H/W ECC schemes
-  mtd: nand: omap: optimize chip->ecc.hwctl() for H/W ECC schemes
-  mtd: devices: elm: add checks ELM H/W constrains, driver code cleanup
+This patch tries to merges the common code for different BCHx_ECC schemes into
+single omap_calculate_ecc_bch(), And adds schemes specific post-possessing
+after fetching ECC-syndrome. This removes redundant code and adds scalability
+for future ECC-schemes. This patch:
+- [un-touched]	omap_calculate_ecc():		Used for HAM1_ECC
+- [merged]	omap3_calculate_ecc_bch4():	Used for BCH4_HW_DETECTION_SW
+- [merged]	omap3_calculate_ecc_bch8():	Used for BCH8_HW_DETECTION_SW
+- [merged]	omap3_calculate_ecc_bch():	Used for BCH4_HW and BCH8_HW
+- [new]		omap_calculate_ecc_bch():	Now used for all BCHx_ECC
 
- drivers/mtd/devices/elm.c         | 122 ++++---
- drivers/mtd/nand/omap2.c          | 723 +++++++++++++-------------------------
- include/linux/platform_data/elm.h |   6 +-
- 3 files changed, 325 insertions(+), 526 deletions(-)
+Signed-off-by: Pekon Gupta <pekon@ti.com>
+---
+ drivers/mtd/nand/omap2.c | 245 ++++++++++++++++++-----------------------------
+ 1 file changed, 92 insertions(+), 153 deletions(-)
 
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index c10a767..f9e5a4d 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -151,7 +151,11 @@ static u_char bch8_vector[] = {0xf3, 0xdb, 0x14, 0x16, 0x8b, 0xd2, 0xbe, 0xcc,
+ 	0xac, 0x6b, 0xff, 0x99, 0x7b};
+ static u_char bch4_vector[] = {0x00, 0x6b, 0x31, 0xdd, 0x41, 0xbc, 0x10};
+ #endif
+-
++#if defined(CONFIG_MTD_NAND_ECC_BCH) || defined(CONFIG_MTD_NAND_OMAP_BCH)
++static u8  bch4_polynomial[] = {0x28, 0x13, 0xcc, 0x39, 0x96, 0xac, 0x7f};
++static u8  bch8_polynomial[] = {0xef, 0x51, 0x2e, 0x09, 0xed, 0x93, 0x9a, 0xc2,
++				0x97, 0x79, 0xe5, 0x24, 0xb5};
++#endif
+ /* oob info generated runtime depending on ecc algorithm and layout selected */
+ static struct nand_ecclayout omap_oobinfo;
+ /* Define some generic bad / good block scan pattern which are used
+@@ -950,9 +954,11 @@ static int omap_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
+ 	u32 val;
+ 
+ 	val = readl(info->reg.gpmc_ecc_config);
+-	if (((val >> ECC_CONFIG_CS_SHIFT)  & ~CS_MASK) != info->gpmc_cs)
++	if (((val >> 1) & 0x07) != info->gpmc_cs) {
++		pr_err("%s: invalid ECC configuration for chip-select=%d",
++				DRIVER_NAME, info->gpmc_cs);
+ 		return -EINVAL;
+-
++	}
+ 	/* read ecc result */
+ 	val = readl(info->reg.gpmc_ecc1_result);
+ 	*ecc_code++ = val;          /* P128e, ..., P1e */
+@@ -1141,172 +1147,105 @@ static void omap3_enable_hwecc_bch(struct mtd_info *mtd, int mode)
+ 	/* Clear ecc and enable bits */
+ 	writel(ECCCLEAR | ECC1, info->reg.gpmc_ecc_control);
+ }
+-#endif
+-
+-#ifdef CONFIG_MTD_NAND_ECC_BCH
+-/**
+- * omap3_calculate_ecc_bch4 - Generate 7 bytes of ECC bytes
+- * @mtd: MTD device structure
+- * @dat: The pointer to data on which ecc is computed
+- * @ecc_code: The ecc_code buffer
+- */
+-static int omap3_calculate_ecc_bch4(struct mtd_info *mtd, const u_char *dat,
+-				    u_char *ecc_code)
+-{
+-	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
+-						   mtd);
+-	unsigned long nsectors, val1, val2;
+-	int i;
+-
+-	nsectors = ((readl(info->reg.gpmc_ecc_config) >> 4) & 0x7) + 1;
+-
+-	for (i = 0; i < nsectors; i++) {
+-
+-		/* Read hw-computed remainder */
+-		val1 = readl(info->reg.gpmc_bch_result0[i]);
+-		val2 = readl(info->reg.gpmc_bch_result1[i]);
+-
+-		/*
+-		 * Add constant polynomial to remainder, in order to get an ecc
+-		 * sequence of 0xFFs for a buffer filled with 0xFFs; and
+-		 * left-justify the resulting polynomial.
+-		 */
+-		*ecc_code++ = 0x28 ^ ((val2 >> 12) & 0xFF);
+-		*ecc_code++ = 0x13 ^ ((val2 >>  4) & 0xFF);
+-		*ecc_code++ = 0xcc ^ (((val2 & 0xF) << 4)|((val1 >> 28) & 0xF));
+-		*ecc_code++ = 0x39 ^ ((val1 >> 20) & 0xFF);
+-		*ecc_code++ = 0x96 ^ ((val1 >> 12) & 0xFF);
+-		*ecc_code++ = 0xac ^ ((val1 >> 4) & 0xFF);
+-		*ecc_code++ = 0x7f ^ ((val1 & 0xF) << 4);
+-	}
+-
+-	return 0;
+-}
+ 
+ /**
+- * omap3_calculate_ecc_bch8 - Generate 13 bytes of ECC bytes
+- * @mtd: MTD device structure
+- * @dat: The pointer to data on which ecc is computed
+- * @ecc_code: The ecc_code buffer
+- */
+-static int omap3_calculate_ecc_bch8(struct mtd_info *mtd, const u_char *dat,
+-				    u_char *ecc_code)
+-{
+-	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
+-						   mtd);
+-	unsigned long nsectors, val1, val2, val3, val4;
+-	int i;
+-
+-	nsectors = ((readl(info->reg.gpmc_ecc_config) >> 4) & 0x7) + 1;
+-
+-	for (i = 0; i < nsectors; i++) {
+-
+-		/* Read hw-computed remainder */
+-		val1 = readl(info->reg.gpmc_bch_result0[i]);
+-		val2 = readl(info->reg.gpmc_bch_result1[i]);
+-		val3 = readl(info->reg.gpmc_bch_result2[i]);
+-		val4 = readl(info->reg.gpmc_bch_result3[i]);
+-
+-		/*
+-		 * Add constant polynomial to remainder, in order to get an ecc
+-		 * sequence of 0xFFs for a buffer filled with 0xFFs.
+-		 */
+-		*ecc_code++ = 0xef ^ (val4 & 0xFF);
+-		*ecc_code++ = 0x51 ^ ((val3 >> 24) & 0xFF);
+-		*ecc_code++ = 0x2e ^ ((val3 >> 16) & 0xFF);
+-		*ecc_code++ = 0x09 ^ ((val3 >> 8) & 0xFF);
+-		*ecc_code++ = 0xed ^ (val3 & 0xFF);
+-		*ecc_code++ = 0x93 ^ ((val2 >> 24) & 0xFF);
+-		*ecc_code++ = 0x9a ^ ((val2 >> 16) & 0xFF);
+-		*ecc_code++ = 0xc2 ^ ((val2 >> 8) & 0xFF);
+-		*ecc_code++ = 0x97 ^ (val2 & 0xFF);
+-		*ecc_code++ = 0x79 ^ ((val1 >> 24) & 0xFF);
+-		*ecc_code++ = 0xe5 ^ ((val1 >> 16) & 0xFF);
+-		*ecc_code++ = 0x24 ^ ((val1 >> 8) & 0xFF);
+-		*ecc_code++ = 0xb5 ^ (val1 & 0xFF);
+-	}
+-
+-	return 0;
+-}
+-#endif /* CONFIG_MTD_NAND_ECC_BCH */
+-
+-#ifdef CONFIG_MTD_NAND_OMAP_BCH
+-/**
+- * omap3_calculate_ecc_bch - Generate bytes of ECC bytes
++ * omap_calculate_ecc_bch - Generate bytes of ECC bytes
+  * @mtd:	MTD device structure
+  * @dat:	The pointer to data on which ecc is computed
+  * @ecc_code:	The ecc_code buffer
+  *
+  * Support calculating of BCH4/8 ecc vectors for the page
+  */
+-static int omap3_calculate_ecc_bch(struct mtd_info *mtd, const u_char *dat,
+-				    u_char *ecc_code)
++static int omap_calculate_ecc_bch(struct mtd_info *mtd, const u_char *dat,
++				    u_char *ecc_calc)
+ {
+ 	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
+ 						   mtd);
+-	unsigned long nsectors, bch_val1, bch_val2, bch_val3, bch_val4;
+-	int i, eccbchtsel;
++	struct nand_chip *chip = mtd->priv;
++	enum omap_ecc ecc_opt = info->ecc_opt;
++	struct gpmc_nand_regs	*gpmc_regs = &info->reg;
++	u32 eccbytes = chip->ecc.bytes;
++	u_char *ecc_ptr;
++	u32 nsectors;
++	int i, val;
+ 
+-	nsectors = ((readl(info->reg.gpmc_ecc_config) >> 4) & 0x7) + 1;
+-	/*
+-	 * find BCH scheme used
+-	 * 0 -> BCH4
+-	 * 1 -> BCH8
+-	 */
+-	eccbchtsel = ((readl(info->reg.gpmc_ecc_config) >> 12) & 0x3);
++	val = readl(info->reg.gpmc_ecc_config);
++	if (((val >> 1) & 0x07) != info->gpmc_cs) {
++		pr_err("%s: invalid ECC configuration for chip-select=%d",
++				DRIVER_NAME, info->gpmc_cs);
++		return -EINVAL;
++	}
++	nsectors = ((readl(gpmc_regs->gpmc_ecc_config) >> 4) & 0x7) + 1;
+ 
+ 	for (i = 0; i < nsectors; i++) {
+-
+-		/* Read hw-computed remainder */
+-		bch_val1 = readl(info->reg.gpmc_bch_result0[i]);
+-		bch_val2 = readl(info->reg.gpmc_bch_result1[i]);
+-		if (eccbchtsel) {
+-			bch_val3 = readl(info->reg.gpmc_bch_result2[i]);
+-			bch_val4 = readl(info->reg.gpmc_bch_result3[i]);
++		ecc_ptr = ecc_calc;
++		switch (ecc_opt) {
++		case OMAP_ECC_BCH4_CODE_HW_DETECTION_SW:
++		case OMAP_ECC_BCH4_CODE_HW:
++			val = readl(gpmc_regs->gpmc_bch_result1[i]);
++			*(ecc_ptr++) = ((val >> 12) & 0xFF);
++			*(ecc_ptr++) = ((val >>  4) & 0xFF);
++			*(ecc_ptr)   = ((val >>  0) << 4) & 0xF0;
++			val = readl(gpmc_regs->gpmc_bch_result0[i]);
++			*(ecc_ptr)   = ((val >> 28) & 0x0F) | *(ecc_ptr);
++			ecc_ptr++;
++			*(ecc_ptr++) = ((val >> 20) & 0xFF);
++			*(ecc_ptr++) = ((val >> 12) & 0xFF);
++			*(ecc_ptr++) = ((val >>  4) & 0xFF);
++			*(ecc_ptr++) = ((val >>  0) << 4) & 0xF0;
++			break;
++		case OMAP_ECC_BCH8_CODE_HW_DETECTION_SW:
++		case OMAP_ECC_BCH8_CODE_HW:
++			val = readl(gpmc_regs->gpmc_bch_result3[i]);
++			*(ecc_ptr++) = ((val >>  0) & 0xFF);
++			val = readl(gpmc_regs->gpmc_bch_result2[i]);
++			*(ecc_ptr++) = ((val >> 24) & 0xFF);
++			*(ecc_ptr++) = ((val >> 16) & 0xFF);
++			*(ecc_ptr++) = ((val >>  8) & 0xFF);
++			*(ecc_ptr++) = ((val >>  0) & 0xFF);
++			val = readl(gpmc_regs->gpmc_bch_result1[i]);
++			*(ecc_ptr++) = ((val >> 24) & 0xFF);
++			*(ecc_ptr++) = ((val >> 16) & 0xFF);
++			*(ecc_ptr++) = ((val >>  8) & 0xFF);
++			*(ecc_ptr++) = ((val >>  0) & 0xFF);
++			val = readl(gpmc_regs->gpmc_bch_result0[i]);
++			*(ecc_ptr++) = ((val >> 24) & 0xFF);
++			*(ecc_ptr++) = ((val >> 16) & 0xFF);
++			*(ecc_ptr++) = ((val >>  8) & 0xFF);
++			*(ecc_ptr++) = ((val >>  0) & 0xFF);
++			break;
++		default:
++			return -EINVAL;
+ 		}
+-
+-		if (eccbchtsel) {
+-			/* BCH8 ecc scheme */
+-			*ecc_code++ = (bch_val4 & 0xFF);
+-			*ecc_code++ = ((bch_val3 >> 24) & 0xFF);
+-			*ecc_code++ = ((bch_val3 >> 16) & 0xFF);
+-			*ecc_code++ = ((bch_val3 >> 8) & 0xFF);
+-			*ecc_code++ = (bch_val3 & 0xFF);
+-			*ecc_code++ = ((bch_val2 >> 24) & 0xFF);
+-			*ecc_code++ = ((bch_val2 >> 16) & 0xFF);
+-			*ecc_code++ = ((bch_val2 >> 8) & 0xFF);
+-			*ecc_code++ = (bch_val2 & 0xFF);
+-			*ecc_code++ = ((bch_val1 >> 24) & 0xFF);
+-			*ecc_code++ = ((bch_val1 >> 16) & 0xFF);
+-			*ecc_code++ = ((bch_val1 >> 8) & 0xFF);
+-			*ecc_code++ = (bch_val1 & 0xFF);
+-			/*
+-			 * Setting 14th byte to zero to handle
+-			 * erased page & maintain compatibility
+-			 * with RBL
+-			 */
+-			*ecc_code++ = 0x0;
+-		} else {
+-			/* BCH4 ecc scheme */
+-			*ecc_code++ = ((bch_val2 >> 12) & 0xFF);
+-			*ecc_code++ = ((bch_val2 >> 4) & 0xFF);
+-			*ecc_code++ = ((bch_val2 & 0xF) << 4) |
+-				((bch_val1 >> 28) & 0xF);
+-			*ecc_code++ = ((bch_val1 >> 20) & 0xFF);
+-			*ecc_code++ = ((bch_val1 >> 12) & 0xFF);
+-			*ecc_code++ = ((bch_val1 >> 4) & 0xFF);
+-			*ecc_code++ = ((bch_val1 & 0xF) << 4);
+-			/*
+-			 * Setting 8th byte to zero to handle
+-			 * erased page
+-			 */
+-			*ecc_code++ = 0x0;
++		/* ECC scheme specific syndrome customizations */
++		switch (ecc_opt) {
++		case OMAP_ECC_BCH4_CODE_HW_DETECTION_SW:
++			for (i = 0; i < eccbytes; i++)
++				*(ecc_calc + i) = *(ecc_calc + i) ^
++							bch4_polynomial[i];
++			break;
++		case OMAP_ECC_BCH4_CODE_HW:
++			*(ecc_ptr++) = 0x00;
++			break;
++		case OMAP_ECC_BCH8_CODE_HW_DETECTION_SW:
++			for (i = 0; i < eccbytes; i++)
++				*(ecc_calc + i) = *(ecc_calc + i) ^
++							bch8_polynomial[i];
++			break;
++		case OMAP_ECC_BCH8_CODE_HW:
++			*(ecc_ptr++) = 0x00;
++			break;
++		default:
++			return -EINVAL;
+ 		}
++		/* update pointer to next sector */
++		ecc_calc += eccbytes;
+ 	}
+-
+ 	return 0;
+ }
++#endif /* CONFIG_MTD_NAND_ECC_BCH || CONFIG_MTD_NAND_OMAP_BCH */
+ 
++#ifdef CONFIG_MTD_NAND_OMAP_BCH
+ /**
+  * omap_elm_correct_data - corrects page data area in case error reported
+  * @mtd:	MTD device structure
+@@ -1773,7 +1712,7 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 		nand_chip->ecc.strength		= 4;
+ 		nand_chip->ecc.hwctl		= omap3_enable_hwecc_bch;
+ 		nand_chip->ecc.correct		= nand_bch_correct_data;
+-		nand_chip->ecc.calculate	= omap3_calculate_ecc_bch4;
++		nand_chip->ecc.calculate	= omap_calculate_ecc_bch;
+ 		/* define custom ECC layout */
+ 		ecclayout->eccbytes		= nand_chip->ecc.bytes *
+ 							(mtd->writesize /
+@@ -1807,7 +1746,7 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 		nand_chip->ecc.strength		= 4;
+ 		nand_chip->ecc.hwctl		= omap3_enable_hwecc_bch;
+ 		nand_chip->ecc.correct		= omap_elm_correct_data;
+-		nand_chip->ecc.calculate	= omap3_calculate_ecc_bch;
++		nand_chip->ecc.calculate	= omap_calculate_ecc_bch;
+ 		nand_chip->ecc.read_page	= omap_read_page_bch;
+ 		nand_chip->ecc.write_page	= omap_write_page_bch;
+ 		/* This ECC scheme requires ELM H/W block */
+@@ -1839,7 +1778,7 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 		nand_chip->ecc.strength		= 8;
+ 		nand_chip->ecc.hwctl		= omap3_enable_hwecc_bch;
+ 		nand_chip->ecc.correct		= nand_bch_correct_data;
+-		nand_chip->ecc.calculate	= omap3_calculate_ecc_bch8;
++		nand_chip->ecc.calculate	= omap_calculate_ecc_bch;
+ 		/* define custom ECC layout */
+ 		ecclayout->eccbytes		= nand_chip->ecc.bytes *
+ 							(mtd->writesize /
+@@ -1874,7 +1813,7 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 		nand_chip->ecc.strength		= 8;
+ 		nand_chip->ecc.hwctl		= omap3_enable_hwecc_bch;
+ 		nand_chip->ecc.correct		= omap_elm_correct_data;
+-		nand_chip->ecc.calculate	= omap3_calculate_ecc_bch;
++		nand_chip->ecc.calculate	= omap_calculate_ecc_bch;
+ 		nand_chip->ecc.read_page	= omap_read_page_bch;
+ 		nand_chip->ecc.write_page	= omap_write_page_bch;
+ 		/* This ECC scheme requires ELM H/W block */
 -- 
 1.8.1
