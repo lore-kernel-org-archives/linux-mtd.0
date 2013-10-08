@@ -1,17 +1,16 @@
-Received: from demumfd001.nsn-inter.net ([93.183.12.32])
+Received: from mail-pa0-f54.google.com ([209.85.220.54])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VTS3E-0005H1-GG
- for linux-mtd@lists.infradead.org; Tue, 08 Oct 2013 07:49:53 +0000
-Message-ID: <5253B8FF.2000307@nsn.com>
-Date: Tue, 08 Oct 2013 09:49:19 +0200
-From: Alexander Sverdlin <alexander.sverdlin@nsn.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org, Joern Engel <joern@lazybastard.org>,
- David Woodhouse <dwmw2@infradead.org>,
- ext Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH] mtd: phram: Repair multiple instances support
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+ id 1VTTUy-0007x8-8l
+ for linux-mtd@lists.infradead.org; Tue, 08 Oct 2013 09:22:36 +0000
+Received: by mail-pa0-f54.google.com with SMTP id kx10so8592007pab.41
+ for <linux-mtd@lists.infradead.org>; Tue, 08 Oct 2013 02:22:13 -0700 (PDT)
+From: Sachin Kamat <sachin.kamat@linaro.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 1/2] mtd: sst25l: Remove redundant spi_set_drvdata
+Date: Tue,  8 Oct 2013 14:51:33 +0530
+Message-Id: <1381224094-14098-1-git-send-email-sachin.kamat@linaro.org>
+Cc: computersforpeace@gmail.com, artem.bityutskiy@linux.intel.com,
+ andre@bluewatersys.com, dwmw2@infradead.org, sachin.kamat@linaro.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,104 +20,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-mtd: phram: Repair multiple instances support
+Driver core will set the driver data to NULL upon detach
+or probe failure.
 
-Commit b2a2a84d35e0f42ad26e326ec4258f6a8b8eecbe (mtd: phram: dot not crash when
-built-in and passing boot param) claims to be "based on Ville Herva's similar
-patch to block2mtd" (c4e7fb313771ac03dfdca26d30e8b721731c562b), but it has
-missed the crucial point of the original path: all these "if(n)def MODULE".
-It has broken the possibility to create several phram instances when phram is
-compiled as module. The possibility to add instances via /sys writes to
-/sys/module/phram/parameters/phram was also broken with mentioned patch.
-Proposed patch takes the idea of original block2mtd patch to its full extent.
-Assumption "This function is always called before 'init_phram()'" was also
-incorrect, so removed the comment. This patch effectively reverts also
-b11ec57fc6e6d4882ef01a0c09a1dde58f50492e (mtd: phram: fix section mismatch for
-phram_setup).
-
-Applies on top of my recent "mtd: phram: Make phram 64-bit compatible" patch.
-
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nsn.com>
-
+Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 ---
---- linux.orig/drivers/mtd/devices/phram.c
-+++ linux/drivers/mtd/devices/phram.c
-@@ -205,6 +205,8 @@ static inline void kill_final_newline(ch
- 	return 1;		\
- } while (0)
+ drivers/mtd/devices/sst25l.c |    1 -
+ 1 file changed, 1 deletion(-)
 
-+#ifndef MODULE
-+static int phram_init_called = 0;
- /*
-  * This shall contain the module parameter if any. It is of the form:
-  * - phram=<device>,<address>,<size> for module case
-@@ -213,9 +215,10 @@ static inline void kill_final_newline(ch
-  * size.
-  * Example: phram.phram=rootfs,0xa0000000,512Mi
-  */
--static __initdata char phram_paramline[64 + 20 + 20];
-+static char phram_paramline[64 + 20 + 20];
-+#endif
-
--static int __init phram_setup(const char *val)
-+static int phram_setup(const char *val)
- {
- 	char buf[64 + 20 + 20], *str = buf;
- 	char *token[3];
-@@ -264,17 +267,36 @@ static int __init phram_setup(const char
- 	return ret;
- }
-
--static int __init phram_param_call(const char *val, struct kernel_param *kp)
-+static int phram_param_call(const char *val, struct kernel_param *kp)
- {
-+#ifdef MODULE
-+	return phram_setup(val);
-+#else
- 	/*
--	 * This function is always called before 'init_phram()', whether
--	 * built-in or module.
-+	 * If more parameters are later passed in via
-+	 * /sys/module/phram/parameters/phram
-+	 * and init_phram() has already been called,
-+	 * we can parse the argument now.
- 	 */
-+
-+	if (phram_init_called)
-+		return phram_setup(val);
-+
-+	/*
-+	 * During early boot stage, we only save the parameters
-+	 * here. We must parse them later: if the param passed
-+	 * from kernel boot command line, phram_param_call() is
-+	 * called so early that it is not possible to resolve
-+	 * the device (even kmalloc() fails). Defer that work to
-+	 * phram_setup().
-+	 */
-+
- 	if (strlen(val) >= sizeof(phram_paramline))
- 		return -ENOSPC;
- 	strcpy(phram_paramline, val);
-
- 	return 0;
-+#endif
- }
-
- module_param_call(phram, phram_param_call, NULL, NULL, 000);
-@@ -283,10 +305,15 @@ MODULE_PARM_DESC(phram, "Memory region t
-
- static int __init init_phram(void)
- {
-+	int ret = 0;
-+
-+#ifndef MODULE
- 	if (phram_paramline[0])
- 		return phram_setup(phram_paramline);
-+	phram_init_called = 1;
-+#endif
-
--	return 0;
-+	return ret;
- }
-
- static void __exit cleanup_phram(void)
+diff --git a/drivers/mtd/devices/sst25l.c b/drivers/mtd/devices/sst25l.c
+index a42f1f0..7cc70db 100644
+--- a/drivers/mtd/devices/sst25l.c
++++ b/drivers/mtd/devices/sst25l.c
+@@ -404,7 +404,6 @@ static int sst25l_probe(struct spi_device *spi)
+ 					data ? data->nr_parts : 0);
+ 	if (ret) {
+ 		kfree(flash);
+-		spi_set_drvdata(spi, NULL);
+ 		return -ENODEV;
+ 	}
+ 
+-- 
+1.7.9.5
