@@ -1,20 +1,21 @@
-Received: from mail-db9lp0248.outbound.messaging.microsoft.com
- ([213.199.154.248] helo=db9outboundpool.messaging.microsoft.com)
+Received: from demumfd002.nsn-inter.net ([93.183.12.31])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VTNA5-0007HM-EV
- for linux-mtd@lists.infradead.org; Tue, 08 Oct 2013 02:36:38 +0000
-Message-ID: <5253702E.8050800@freescale.com>
-Date: Tue, 8 Oct 2013 10:38:38 +0800
-From: Huang Shijie <b32955@freescale.com>
+ id 1VTS0k-00057n-85
+ for linux-mtd@lists.infradead.org; Tue, 08 Oct 2013 07:47:18 +0000
+Message-ID: <5253B860.5030604@nsn.com>
+Date: Tue, 08 Oct 2013 09:46:40 +0200
+From: Alexander Sverdlin <alexander.sverdlin@nsn.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v4 00/12] About the SLC/MLC
-References: <1380092301-21924-1-git-send-email-b32955@freescale.com>
- <20130930231526.GP23337@ld-irv-0074.broadcom.com>
-In-Reply-To: <20130930231526.GP23337@ld-irv-0074.broadcom.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, dedekind1@gmail.com
+To: ext Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd: phram: Make phram 64-bit compatible
+References: <524C4CF5.7060601@nsn.com>
+ <20131007174943.GB23337@ld-irv-0074.broadcom.com>
+In-Reply-To: <20131007174943.GB23337@ld-irv-0074.broadcom.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: Joern Engel <joern@lazybastard.org>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Linux Kernel <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,12 +25,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B410=E6=9C=8801=E6=97=A5 07:15, Brian Norris =E5=86=99=
-=E9=81=93:
-> Are the mtd-utils fixes still applicable as-is? I'll review them next,
-> since we should get mtd-utils updated before the kernel changes make it
-> to mainline.
-yes, i think the mtd-utils fixes still works.
+Hi!
 
-thanks
-Huang Shijie
+On 10/07/2013 07:49 PM, ext Brian Norris wrote:
+> Are we (MTD) holding a revolutionary position against the standard
+> kernel libraries, which recognize [KkMmGg] prefixes, but not [kMG]i
+> prefixes? Should we extend memparse() to accept either form? Or would
+> doing so simply pollute the library and not really satisfy anyone?
+
+I was also irritated re-inventing the wheel here, but the problem is --
+millions of people out there have their startup scripts and uboot environments
+for phram, who expect this just to work with the next kernel upgrade...
+
+-- 
+Best regards,
+Alexander Sverdlin.
