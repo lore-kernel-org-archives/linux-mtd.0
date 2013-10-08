@@ -1,16 +1,28 @@
-Received: from mail-pd0-f180.google.com ([209.85.192.180])
+Received: from mail-pb0-x22f.google.com ([2607:f8b0:400e:c01::22f])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VTUDt-0001Gl-UJ
- for linux-mtd@lists.infradead.org; Tue, 08 Oct 2013 10:09:03 +0000
-Received: by mail-pd0-f180.google.com with SMTP id y10so8538278pdj.11
- for <linux-mtd@lists.infradead.org>; Tue, 08 Oct 2013 03:08:39 -0700 (PDT)
-From: Sachin Kamat <sachin.kamat@linaro.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 1/1] mtd: socrates_nand: Use dev_err instead of printk
-Date: Tue,  8 Oct 2013 15:38:08 +0530
-Message-Id: <1381226888-23901-1-git-send-email-sachin.kamat@linaro.org>
-Cc: sachin.kamat@linaro.org, artem.bityutskiy@linux.intel.com,
- computersforpeace@gmail.com, dwmw2@infradead.org
+ id 1VTaHA-0005X8-E1
+ for linux-mtd@lists.infradead.org; Tue, 08 Oct 2013 16:36:49 +0000
+Received: by mail-pb0-f47.google.com with SMTP id rr4so8833057pbb.6
+ for <linux-mtd@lists.infradead.org>; Tue, 08 Oct 2013 09:36:27 -0700 (PDT)
+MIME-Version: 1.0
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <20131007165344.GA10162@logfs.org>
+References: <524C4CF5.7060601@nsn.com>
+ <20131007174943.GB23337@ld-irv-0074.broadcom.com>
+ <20131007165344.GA10162@logfs.org>
+Date: Tue, 8 Oct 2013 18:36:26 +0200
+Message-ID: <CAMuHMdUbQBUg_FgGu_xzmznbjkk4qpHiL=LbOhPGZ1FZ2rP0qA@mail.gmail.com>
+Subject: Re: [PATCH] mtd: phram: Make phram 64-bit compatible
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: =?UTF-8?Q?J=C3=B6rn_Engel?= <joern@logfs.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Joern Engel <joern@lazybastard.org>,
+ Linux Kernel <linux-kernel@vger.kernel.org>,
+ Alexander Sverdlin <alexander.sverdlin@nsn.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,25 +32,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-dev_err is preferred to printk.
+On Mon, Oct 7, 2013 at 6:53 PM, J=C3=B6rn Engel <joern@logfs.org> wrote:
+> One possible solution would be to have three suffixes.  Ki for
+> base-1024, Kd for base-1000 and K for "I don't care, you decide for
+> me".  But I am sure that would simply cause another round of
+> flamewars.
 
-Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
----
- drivers/mtd/nand/socrates_nand.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Indeed. Why deviate from SI with "Kd" (a new invention)??
+That should just be "k".
 
-diff --git a/drivers/mtd/nand/socrates_nand.c b/drivers/mtd/nand/socrates_nand.c
-index e77da7e..9a9fa49 100644
---- a/drivers/mtd/nand/socrates_nand.c
-+++ b/drivers/mtd/nand/socrates_nand.c
-@@ -155,7 +155,7 @@ static int socrates_nand_probe(struct platform_device *ofdev)
- 
- 	host->io_base = of_iomap(ofdev->dev.of_node, 0);
- 	if (host->io_base == NULL) {
--		printk(KERN_ERR "socrates_nand: ioremap failed\n");
-+		dev_err(&ofdev->dev, "ioremap failed\n");
- 		return -EIO;
- 	}
- 
--- 
-1.7.9.5
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
