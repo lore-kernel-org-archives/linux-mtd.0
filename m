@@ -1,28 +1,36 @@
-Received: from mail-pb0-x22f.google.com ([2607:f8b0:400e:c01::22f])
+Received: from mail-out.m-online.net ([212.18.0.10])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VTaHA-0005X8-E1
- for linux-mtd@lists.infradead.org; Tue, 08 Oct 2013 16:36:49 +0000
-Received: by mail-pb0-f47.google.com with SMTP id rr4so8833057pbb.6
- for <linux-mtd@lists.infradead.org>; Tue, 08 Oct 2013 09:36:27 -0700 (PDT)
+ id 1VTcy5-0002sy-AT
+ for linux-mtd@lists.infradead.org; Tue, 08 Oct 2013 19:29:20 +0000
+Received: from frontend1.mail.m-online.net (frontend1.mail.intern.m-online.net
+ [192.168.8.180])
+ by mail-out.m-online.net (Postfix) with ESMTP id 3cvTBS4vrCz3hhjb
+ for <linux-mtd@lists.infradead.org>; Tue,  8 Oct 2013 21:28:48 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.68])
+ by mail.m-online.net (Postfix) with ESMTP id 3cvTBR74VLzbbkg
+ for <linux-mtd@lists.infradead.org>; Tue,  8 Oct 2013 21:28:47 +0200 (CEST)
+Received: from smtp-auth.mnet-online.de ([192.168.8.180])
+ by localhost (dynscan1.mail.m-online.net [192.168.6.68]) (amavisd-new,
+ port 10024)
+ with ESMTP id 5oCHgyHbG0f1 for <linux-mtd@lists.infradead.org>;
+ Tue,  8 Oct 2013 21:28:47 +0200 (CEST)
+Received: from diddl.denx.de (host-80-81-18-216.customer.m-online.net
+ [80.81.18.216]) by smtp-auth.mnet-online.de (Postfix) with ESMTPA
+ for <linux-mtd@lists.infradead.org>; Tue,  8 Oct 2013 21:28:46 +0200 (CEST)
+Received: from gemini.denx.de (unknown [10.0.0.2])
+ by diddl.denx.de (Postfix) with ESMTP id CB3A11A20A5
+ for <linux-mtd@lists.infradead.org>; Tue,  8 Oct 2013 21:28:46 +0200 (CEST)
+Received: from gemini.denx.de (localhost [IPv6:::1])
+ by gemini.denx.de (Postfix) with ESMTP id A25E7380A65
+ for <linux-mtd@lists.infradead.org>; Tue,  8 Oct 2013 21:28:46 +0200 (MEST)
+To: MTD Maling List <linux-mtd@lists.infradead.org>
+Subject: Grow UBI device?
+From: Wolfgang Denk <wd@denx.de>
 MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <20131007165344.GA10162@logfs.org>
-References: <524C4CF5.7060601@nsn.com>
- <20131007174943.GB23337@ld-irv-0074.broadcom.com>
- <20131007165344.GA10162@logfs.org>
-Date: Tue, 8 Oct 2013 18:36:26 +0200
-Message-ID: <CAMuHMdUbQBUg_FgGu_xzmznbjkk4qpHiL=LbOhPGZ1FZ2rP0qA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: phram: Make phram 64-bit compatible
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: =?UTF-8?Q?J=C3=B6rn_Engel?= <joern@logfs.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Joern Engel <joern@lazybastard.org>,
- Linux Kernel <linux-kernel@vger.kernel.org>,
- Alexander Sverdlin <alexander.sverdlin@nsn.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Content-type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8bit
+Date: Tue, 08 Oct 2013 21:28:46 +0200
+Message-Id: <20131008192846.A25E7380A65@gemini.denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,25 +40,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Oct 7, 2013 at 6:53 PM, J=C3=B6rn Engel <joern@logfs.org> wrote:
-> One possible solution would be to have three suffixes.  Ki for
-> base-1024, Kd for base-1000 and K for "I don't care, you decide for
-> me".  But I am sure that would simply cause another round of
-> flamewars.
+Hi,
 
-Indeed. Why deviate from SI with "Kd" (a new invention)??
-That should just be "k".
+I'm looking for a clever way to migrate devices (in the field) from
+JFFS2 to UBI/UBIFS.  In the end result, I want to have single UBI
+device (which covers the whole NAND chip) with several volumes used
+with UBIFS.  Unfortunately I must keep some of the existing data.
 
-Gr{oetje,eeting}s,
+It would be nice if I could start with a UBI device that is smaller
+than the NAND, so I can keep an existing MTD partition with a JFFS2
+file system. After copying the data from JFFS2 to a UBIFS volume, I
+would like to free and reuse the space of this JFFS2 partition.
 
-                        Geert
+Is there a way to "grow" the existing UBI device so that it now also
+covers the rest of the NAND chip?  Or is my only option to create a
+second UBI device?
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
+Thanks in advance.
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Best regards,
+
+Wolfgang Denk
+
+-- 
+DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
+Unix is like a toll road on which you have to stop every 50  feet  to
+pay another nickel. But hey! You only feel 5 cents poorer each time.
+                 - Larry Wall in <1992Aug13.192357.15731@netlabs.com>
