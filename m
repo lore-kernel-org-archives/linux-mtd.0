@@ -1,21 +1,17 @@
-Received: from demumfd002.nsn-inter.net ([93.183.12.31])
+Received: from demumfd001.nsn-inter.net ([93.183.12.32])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VTS0k-00057n-85
- for linux-mtd@lists.infradead.org; Tue, 08 Oct 2013 07:47:18 +0000
-Message-ID: <5253B860.5030604@nsn.com>
-Date: Tue, 08 Oct 2013 09:46:40 +0200
+ id 1VTS3E-0005H1-GG
+ for linux-mtd@lists.infradead.org; Tue, 08 Oct 2013 07:49:53 +0000
+Message-ID: <5253B8FF.2000307@nsn.com>
+Date: Tue, 08 Oct 2013 09:49:19 +0200
 From: Alexander Sverdlin <alexander.sverdlin@nsn.com>
 MIME-Version: 1.0
-To: ext Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: phram: Make phram 64-bit compatible
-References: <524C4CF5.7060601@nsn.com>
- <20131007174943.GB23337@ld-irv-0074.broadcom.com>
-In-Reply-To: <20131007174943.GB23337@ld-irv-0074.broadcom.com>
+To: linux-mtd@lists.infradead.org, Joern Engel <joern@lazybastard.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ ext Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH] mtd: phram: Repair multiple instances support
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: Joern Engel <joern@lazybastard.org>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>,
- Linux Kernel <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,18 +21,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+mtd: phram: Repair multiple instances support
 
-On 10/07/2013 07:49 PM, ext Brian Norris wrote:
-> Are we (MTD) holding a revolutionary position against the standard
-> kernel libraries, which recognize [KkMmGg] prefixes, but not [kMG]i
-> prefixes? Should we extend memparse() to accept either form? Or would
-> doing so simply pollute the library and not really satisfy anyone?
+Commit b2a2a84d35e0f42ad26e326ec4258f6a8b8eecbe (mtd: phram: dot not crash when
+built-in and passing boot param) claims to be "based on Ville Herva's similar
+patch to block2mtd" (c4e7fb313771ac03dfdca26d30e8b721731c562b), but it has
+missed the crucial point of the original path: all these "if(n)def MODULE".
+It has broken the possibility to create several phram instances when phram is
+compiled as module. The possibility to add instances via /sys writes to
+/sys/module/phram/parameters/phram was also broken with mentioned patch.
+Proposed patch takes the idea of original block2mtd patch to its full extent.
+Assumption "This function is always called before 'init_phram()'" was also
+incorrect, so removed the comment. This patch effectively reverts also
+b11ec57fc6e6d4882ef01a0c09a1dde58f50492e (mtd: phram: fix section mismatch for
+phram_setup).
 
-I was also irritated re-inventing the wheel here, but the problem is --
-millions of people out there have their startup scripts and uboot environments
-for phram, who expect this just to work with the next kernel upgrade...
+Applies on top of my recent "mtd: phram: Make phram 64-bit compatible" patch.
 
--- 
-Best regards,
-Alexander Sverdlin.
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nsn.com>
+
+---
+--- linux.orig/drivers/mtd/devices/phram.c
++++ linux/drivers/mtd/devices/phram.c
+@@ -205,6 +205,8 @@ static inline void kill_final_newline(ch
+ 	return 1;		\
+ } while (0)
+
++#ifndef MODULE
++static int phram_init_called = 0;
+ /*
+  * This shall contain the module parameter if any. It is of the form:
+  * - phram=<device>,<address>,<size> for module case
+@@ -213,9 +215,10 @@ static inline void kill_final_newline(ch
+  * size.
+  * Example: phram.phram=rootfs,0xa0000000,512Mi
+  */
+-static __initdata char phram_paramline[64 + 20 + 20];
++static char phram_paramline[64 + 20 + 20];
++#endif
+
+-static int __init phram_setup(const char *val)
++static int phram_setup(const char *val)
+ {
+ 	char buf[64 + 20 + 20], *str = buf;
+ 	char *token[3];
+@@ -264,17 +267,36 @@ static int __init phram_setup(const char
+ 	return ret;
+ }
+
+-static int __init phram_param_call(const char *val, struct kernel_param *kp)
++static int phram_param_call(const char *val, struct kernel_param *kp)
+ {
++#ifdef MODULE
++	return phram_setup(val);
++#else
+ 	/*
+-	 * This function is always called before 'init_phram()', whether
+-	 * built-in or module.
++	 * If more parameters are later passed in via
++	 * /sys/module/phram/parameters/phram
++	 * and init_phram() has already been called,
++	 * we can parse the argument now.
+ 	 */
++
++	if (phram_init_called)
++		return phram_setup(val);
++
++	/*
++	 * During early boot stage, we only save the parameters
++	 * here. We must parse them later: if the param passed
++	 * from kernel boot command line, phram_param_call() is
++	 * called so early that it is not possible to resolve
++	 * the device (even kmalloc() fails). Defer that work to
++	 * phram_setup().
++	 */
++
+ 	if (strlen(val) >= sizeof(phram_paramline))
+ 		return -ENOSPC;
+ 	strcpy(phram_paramline, val);
+
+ 	return 0;
++#endif
+ }
+
+ module_param_call(phram, phram_param_call, NULL, NULL, 000);
+@@ -283,10 +305,15 @@ MODULE_PARM_DESC(phram, "Memory region t
+
+ static int __init init_phram(void)
+ {
++	int ret = 0;
++
++#ifndef MODULE
+ 	if (phram_paramline[0])
+ 		return phram_setup(phram_paramline);
++	phram_init_called = 1;
++#endif
+
+-	return 0;
++	return ret;
+ }
+
+ static void __exit cleanup_phram(void)
