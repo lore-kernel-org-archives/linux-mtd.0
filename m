@@ -1,20 +1,21 @@
-Received: from co9ehsobe002.messaging.microsoft.com ([207.46.163.25]
- helo=co9outboundpool.messaging.microsoft.com)
+Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VTpb0-0004D6-UE
- for linux-mtd@lists.infradead.org; Wed, 09 Oct 2013 08:58:20 +0000
-Message-ID: <52551B1C.4080608@freescale.com>
-Date: Wed, 9 Oct 2013 17:00:12 +0800
-From: Huang Shijie <b32955@freescale.com>
+ id 1VTqmg-0006RG-S0
+ for linux-mtd@lists.infradead.org; Wed, 09 Oct 2013 10:14:28 +0000
+From: Marek Vasut <marex@denx.de>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: N25Q256A 13E40
+Date: Wed, 9 Oct 2013 12:14:02 +0200
+References: <201310071824.01028.marex@denx.de>
+ <CAN8TOE_C+uU+JXn2OJ_5y6DbvxQXTQK7emEqoxXkCHkCzSQ13g@mail.gmail.com>
+In-Reply-To: <CAN8TOE_C+uU+JXn2OJ_5y6DbvxQXTQK7emEqoxXkCHkCzSQ13g@mail.gmail.com>
 MIME-Version: 1.0
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH] ubi: attach: do not return -EINVAL if the
- mtd->numeraseregions is 1
-References: <1379470659-12158-1-git-send-email-b32955@freescale.com>
-In-Reply-To: <1379470659-12158-1-git-send-email-b32955@freescale.com>
-Content-Type: text/plain; charset="GB2312"
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, dedekind1@gmail.com
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201310091214.02740.marex@denx.de>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,49 +25,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=D3=DA 2013=C4=EA09=D4=C218=C8=D5 10:17, Huang Shijie =D0=B4=B5=C0:
-> If the master mtd does not have any slave mtd partitions,
-> and its numeraseregions is one(only has one erease block), and
-> we attach the master mtd with : ubiattach -m 0 -d 0
->
-> We will meet the error:
-> -------------------------------------------------------
-> root@freescale ~$ ubiattach /dev/ubi_ctrl -m 0 -d 0
-> UBI: attaching mtd0 to ubi0
-> UBI error: io_init: multiple regions, not implemented
-> ubiattach: error!: cannot attach mtd0
->            error 22 (Invalid argument)
-> -------------------------------------------------------
->
-> In fact, if there is only one "erase block", we should not
-> prevent the attach.
->
-> This patch fixes it.
->
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
-> ---
->  drivers/mtd/ubi/build.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
->
-> diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-> index a561335..006f98a 100644
-> --- a/drivers/mtd/ubi/build.c
-> +++ b/drivers/mtd/ubi/build.c
-> @@ -638,7 +638,7 @@ static int io_init(struct ubi_device *ubi, int max_=
-beb_per1024)
->  	dbg_gen("sizeof(struct ubi_ainf_peb) %zu", sizeof(struct ubi_ainf_peb=
-));
->  	dbg_gen("sizeof(struct ubi_wl_entry) %zu", sizeof(struct ubi_wl_entry=
-));
-> =20
-> -	if (ubi->mtd->numeraseregions !=3D 0) {
-> +	if (ubi->mtd->numeraseregions > 1) {
->  		/*
->  		 * Some flashes have several erase regions. Different regions
->  		 * may have different eraseblock size and other
-Hi Artem:
-could you please check this patch?
+Hi Brian,
 
+> On Mon, Oct 7, 2013 at 9:24 AM, Marek Vasut <marex@denx.de> wrote:
+> > Let's talk about our favourite chip :) I just got my hands on N25Q256A .
+> > Since there was quite a flurry of patches for this and similar chips and
+> > I got it working on a different chip with exactly the same IDs and type,
+> > I'd would expect linux to work with this one too. Guess what ... ;-)
+> > 
+> > This particular incarnation of N25Q256A completely ignores the 4-byte
+> > ERASE (0xdc) command. Apparently, if I look closely, it's N25Q256A 13E40
+> > variant and seeing the Note #14 (datasheet page 30 / below Table 18.
+> > Command set), quoting:
+> > 
+> > 14.This command is only for part numbers N25Q256A83ESF40x and
+> > N25Q256A83E1240x.
+> 
+> This note also applies to PAGE_PROGRAM_4B (0x12) as well, right?
 
-thanks
-Huang Shijie
+Yeah, both ERASE_4B and PP_4B or whatever they're called there. Interestingly 
+enough, READ_4B works ;-/
+
+> > they are not supported on this part. Someone surely did some hard
+> > thinking inventing such a crappy part.
+> 
+> Yeah, we were already seeing this kind of inconsistency. I recall
+> Micron saying that they tried to make the N25Q256A83xx... parts
+> compatible with Macronix. Why they didn't just do that for the whole
+> product line is anybody's guess...
+> 
+> > I can surely cook a patch, but I wonder what
+> > direction we should take here. We can switch this chip into 4-byte mode
+> > by 0xb7/0xe9 opcodes, which would in turn break BootROMs which depend on
+> > the SPI NOR to be in 3-byte mode upon reboot. We can program the BAR
+> > register before erase, which will do the same.
+> > 
+> > Sigh, if you have any idea, that'd be nice to hear.
+> 
+> Is there any way to differentiate the N25Q256Axx... flavors by ID or
+> similar? (I believe I know the answer to this already, and it's not
+> the answer I want.)
+
+You can look at the top of the chip and read the label on top of it ;-/ But 
+software-wise, no, there's no way to tell the crap ones from the not-crap ones.
+
+> I don't think we want to start using the BAR. I think the 0xb7/0xe9
+> opcodes are best (if we really have to...), since we already support
+> them, and we never really *guarantee* that m25p80.c will leave the
+> flash in 3-byte mode. It was just an added bonus that we are able to
+> be mode-less on some flash.
+
+Good point.
+
+> [Now that I went back to look at some more code:] Wait, but we don't
+> even try to use the 4-byte dedicated commands like 0xdc on Micron
+> flash, so why are you having this problem? The code currently stands
+> as:
+
+The JEDEC_MFR for this flash Micron N25Q256A is CFI_MFR_ST (I wonder why).
+
+>   if (JEDEC_MFR(info->jedec_id) == CFI_MFR_AMD) {
+>           /* Dedicated 4-byte command set */
+>           ...
+> 
+> They are only used on Spansion. IIRC, I wrote it this way specifically
+> because Micron is so inconsistent, at least on their current
+> generation (they're fixing that for the future, I think, but that
+> doesn't help us of course). And I haven't had a chance to look at
+> others too closely to judge them on this.
+
+Spansion is good indeed, they always worked as they should have and were 
+consistent.
+
+Best regards,
+Marek Vasut
