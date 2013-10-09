@@ -1,23 +1,26 @@
-Received: from mail-oa0-x234.google.com ([2607:f8b0:4003:c02::234])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VU1YT-0001xu-Kf
- for linux-mtd@lists.infradead.org; Wed, 09 Oct 2013 21:44:30 +0000
-Received: by mail-oa0-f52.google.com with SMTP id n2so805384oag.39
- for <linux-mtd@lists.infradead.org>; Wed, 09 Oct 2013 14:44:08 -0700 (PDT)
-Date: Wed, 9 Oct 2013 14:44:01 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Marek Vasut <marex@denx.de>
-Subject: Re: N25Q256A 13E40
-Message-ID: <20131009214401.GD23337@ld-irv-0074.broadcom.com>
-References: <201310071824.01028.marex@denx.de>
- <CAN8TOE_C+uU+JXn2OJ_5y6DbvxQXTQK7emEqoxXkCHkCzSQ13g@mail.gmail.com>
- <201310091214.02740.marex@denx.de>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VU2J0-0002n4-Pa
+ for linux-mtd@lists.infradead.org; Wed, 09 Oct 2013 22:32:35 +0000
+Date: Wed, 9 Oct 2013 19:32:09 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH/TRIVIAL] mtd: Use MTD_BLOCK_MAJOR instead of the magic
+ number
+Message-ID: <20131009223208.GA2449@localhost>
+References: <1381276748-5426-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <CAN8TOE-9XRW9QJ7+sSis+Omo0eVAGVHOXD70P4L8FNbLut=9Dg@mail.gmail.com>
+ <20131009120221.GB31294@localhost>
+ <CAN8TOE84raS7thT5ZU1Zpa7SQO7ocmmOdhrR7KxohQVsJix3Pg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <201310091214.02740.marex@denx.de>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAN8TOE84raS7thT5ZU1Zpa7SQO7ocmmOdhrR7KxohQVsJix3Pg@mail.gmail.com>
+Cc: trivial@kernel.org,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,52 +30,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On Wed, Oct 09, 2013 at 12:14:02PM +0200, Marek Vasut wrote:
-> > On Mon, Oct 7, 2013 at 9:24 AM, Marek Vasut <marex@denx.de> wrote:
-> > > Let's talk about our favourite chip :) I just got my hands on N25Q256A .
-> > > Since there was quite a flurry of patches for this and similar chips and
-> > > I got it working on a different chip with exactly the same IDs and type,
-> > > I'd would expect linux to work with this one too. Guess what ... ;-)
-> > > 
-> > > This particular incarnation of N25Q256A completely ignores the 4-byte
-> > > ERASE (0xdc) command. Apparently, if I look closely, it's N25Q256A 13E40
-> > > variant and seeing the Note #14 (datasheet page 30 / below Table 18.
-> > > Command set), quoting:
-> > > 
-> > > 14.This command is only for part numbers N25Q256A83ESF40x and
-> > > N25Q256A83E1240x.
-> > 
-> > This note also applies to PAGE_PROGRAM_4B (0x12) as well, right?
+On Wed, Oct 09, 2013 at 10:06:49AM -0700, Brian Norris wrote:
+> On Wed, Oct 9, 2013 at 5:02 AM, Ezequiel Garcia
+> <ezequiel.garcia@free-electrons.com> wrote:
+> > On Tue, Oct 08, 2013 at 06:15:21PM -0700, Brian Norris wrote:
+> >> Why does MTD_BLOCK_MAJOR (and MTD_CHAR_MAJOR) live in
+> >> include/linux/mtd/mtd.h and not include/uapi/linux/major.h?
+> >
+> > Ah, nice catch. How about something like this?
+> >
+> > diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+> > index f9bfe52..9e1471e 100644
+> > --- a/include/linux/mtd/mtd.h
+> > +++ b/include/linux/mtd/mtd.h
+> > @@ -24,14 +24,12 @@
+> >  #include <linux/uio.h>
+> >  #include <linux/notifier.h>
+> >  #include <linux/device.h>
+> > +#include <linux/major.h>
 > 
-> Yeah, both ERASE_4B and PP_4B or whatever they're called there. Interestingly 
-> enough, READ_4B works ;-/
-
-Well, the READ_4B consistency is (unintentionally?) helpful for my
-systems, as we have begun implementing a jumper switch so that the boot
-ROM will know whether to use FAST_READ or FAST_READ_4B. Since
-essentially all large SPI flash at *least* support the READ_4B command
-(as you noted), we can reliably boot from the flash, no matter what mode
-it is left in. After booting, we can choose the appropriate mode for
-programming/erasing.
-
-> > [Now that I went back to look at some more code:] Wait, but we don't
-> > even try to use the 4-byte dedicated commands like 0xdc on Micron
-> > flash, so why are you having this problem? The code currently stands
-> > as:
+> I think it's a (weak?) style preference that this type of #include
+> just go in the files that need it (there are only a few -- 4 I think?)
+> rather than importing it directly into the mtd.h header for all users.
+> But I don't object strongly.
 > 
-> The JEDEC_MFR for this flash Micron N25Q256A is CFI_MFR_ST (I wonder why).
 
-Probably some series of acquisitions?
+Right. I thought that it would be best (as in less intrusive?) to match
+the current behavior: mtd.h contains the major number definitions.
+However, I also prefer to see headers included where they're used, so
+let me fix a patch and let's see how that works.
 
-But you didn't quite answer my question. Are you having problems with
-this Micron/ST/something-that's-not-AMD-or-Spansion flash using the
-current mainline? Or did you only have trouble when you tried modifying
-the code to use the dedicated 4-byte addressing commands?
+> >  #include <mtd/mtd-abi.h>
+> >
+> >  #include <asm/div64.h>
+> >
+> > -#define MTD_CHAR_MAJOR 90
+> > -#define MTD_BLOCK_MAJOR 31
+> > -
+> >  #define MTD_ERASE_PENDING      0x01
+> >  #define MTD_ERASING            0x02
+> >  #define MTD_ERASE_SUSPEND      0x04
+> > diff --git a/include/uapi/linux/major.h b/include/uapi/linux/major.h
+> > index 6a8ca98..620252e 100644
+> > --- a/include/uapi/linux/major.h
+> > +++ b/include/uapi/linux/major.h
+> > @@ -54,6 +54,7 @@
+> >  #define ACSI_MAJOR             28
+> >  #define AZTECH_CDROM_MAJOR     29
+> >  #define FB_MAJOR               29   /* /dev/fb* framebuffers */
+> > +#define MTD_BLOCK_MAJOR                31
+> >  #define CM206_CDROM_MAJOR      32
+> >  #define IDE2_MAJOR             33
+> >  #define IDE3_MAJOR             34
+> > @@ -105,6 +106,7 @@
+> >  #define IDE6_MAJOR             88
+> >  #define IDE7_MAJOR             89
+> >  #define IDE8_MAJOR             90
+> > +#define MTD_CHAR_MAJOR         90
+> >  #define IDE9_MAJOR             91
+> >
+> >  #define DASD_MAJOR             94
+> >
+> > --
+> >
+> > If you think this is OK, you can take this patch and I'll cook
+> > another one moving MTD_xxx_MAJOR as above.
+> 
+> Yeah, the original patch here is good. I'll run it through the build
+> tests and then apply it. Feel free to send a proper follow-up with
+> either the diff you just sent or with the #include <linux/major.h>
+> moved into the appropriate .c files.
+> 
 
-> >   if (JEDEC_MFR(info->jedec_id) == CFI_MFR_AMD) {
-> >           /* Dedicated 4-byte command set */
-> >           ...
-
-Brian
+Ok.
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
