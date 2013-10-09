@@ -1,22 +1,22 @@
-Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VTvxe-0008FH-8W
- for linux-mtd@lists.infradead.org; Wed, 09 Oct 2013 15:46:06 +0000
-Date: Wed, 9 Oct 2013 16:45:33 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Sourav Poddar <sourav.poddar@ti.com>
-Message-ID: <20131009154533.GP21581@sirena.org.uk>
-References: <1381332284-21822-1-git-send-email-sourav.poddar@ti.com>
- <1381332284-21822-4-git-send-email-sourav.poddar@ti.com>
+Received: from anubis.se.axis.com ([195.60.68.12])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VTvyS-0008Hk-Le
+ for linux-mtd@lists.infradead.org; Wed, 09 Oct 2013 15:46:57 +0000
+Date: Wed, 9 Oct 2013 17:45:57 +0200
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Wolfgang Denk <wd@denx.de>
+Subject: Re: Grow UBI device?
+In-Reply-To: <20131009150538.BAD57380432@gemini.denx.de>
+Message-ID: <alpine.DEB.2.00.1310091725590.28562@lnxricardw.se.axis.com>
+References: <20131008192846.A25E7380A65@gemini.denx.de>
+ <alpine.DEB.2.00.1310091038110.28562@lnxricardw.se.axis.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA20350@DBDE04.ent.ti.com>
+ <20131009150538.BAD57380432@gemini.denx.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="ia+af9HxgiRv1+7n"
-Content-Disposition: inline
-In-Reply-To: <1381332284-21822-4-git-send-email-sourav.poddar@ti.com>
-Subject: Re: [RFC/PATCH 3/3] drivers: mtd: devices: Add memory mapped read
- support.
-Cc: spi-devel-general@lists.sourceforge.net, computersforpeace@gmail.com,
- dwmw2@infradead.org, balbi@ti.com, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8BIT
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>, "Gupta,
+ Pekon" <pekon@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,38 +27,54 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---ia+af9HxgiRv1+7n
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Wed, 9 Oct 2013, Wolfgang Denk wrote:
 
-On Wed, Oct 09, 2013 at 08:54:44PM +0530, Sourav Poddar wrote:
+>>> Come to think of it, I'm not sure that would work anyway, as the
+>>> resulting, new, enlarged partition would partly contain UBI data and
+>>> partly old jffs2 data. I'm not sure what UBI does when it encounters
+>>> incorrect data, if it just erases the relevant blocks and formats them for
+>>> its own use, or if it barfs completely and just bails out complaining that
+>>> the partition does not contain UBI data. If the relevant blocks were
+>>> erased, then I think UBI would simply concede that the a previous erase
+>>> attempt had been prematurely aborted, and re-erase the blocks and write
+>>> its headers, so perhaps that is something to try. At any rate it involves
+>>> at least some mild trickery (erase the blocks that previously contained
+>>> jffs2 data).
+>>>
+>> Yes, during mounting of UBIFS volumes, UBI checks for erase-header
+>> on first-page of every block.
+>
+> Mounting UBIFS volumes should not be a problem - the existing ones are
+> not located in the newly added area of the NAND.  The question however
+> is what the UBI layer itself does, if I for example try to create a
+> new volume which then would allocate blocks from the newly added
+> space.
 
->  drivers/mtd/devices/m25p80.c |   13 +++++++++++--
->  include/linux/spi/spi.h      |    2 ++
+UBI scans the whole partition when the attachement is made to the mtd 
+partition. So if you'd get any error message regarding blocks that lack 
+UBI headers it would be then, not when you subsequently try to create a 
+volume in the partition. By that time the volume should be "formatted" 
+with valid UBI headers.
 
-You shouldn't be adding the SPI feature in the same change as you add
-the user.
+>> So, effectively you don't even need to erase the partition to convert
+>> it into UBI volume, you just try attaching it as UBI volume and UBI
+>> should erase it for you. (though flagging some warnings on the way).
+>
+> Are you sure about that?
+>
+> Well, I guess I'll have to try it out in the end...
 
---ia+af9HxgiRv1+7n
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+I just tested it since I have a UBI system just beside me, by erasing and 
+then writing zeros to a block (just to put non-UBI data in it) and 
+restarting the system (the partition in question contains the volume with 
+the root file system in it, so it is attached by the kernel during its 
+boot). The result was that UBI didn't give any error or warning messages 
+during boot, but a subsequent nanddump after boot revealed that the 
+zeroed blocks now contained valid UBI headers, so, without looking at the 
+source, it seems that UBI really does manage this fairly silently.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSVXoaAAoJELSic+t+oim9v4MQAIhsF7OtC0h4PrK0TinTAkQf
-F7yrgSCJwLQJJqf3J7fPBhZ7Gj/gcWx9YMaefPlF9cenHxsVivntbi+w7DEMFHyR
-JogSIpNPdW3CGseGMAuKybCGYwR48bz1PeJ06sx9pS3XmzSIH6DM3bhJJNNzcQou
-zeF818qW0TBh0d+aIacghM9lJ0Lto3inDX/o3pzUXIe/b4xnwsVXft8ubxejU2Bt
-PWouLOrlQAsaOT17UIT95kWwTN97ceEw/8ty62cVm8fADdQFcM7et0cMBH/6mWdn
-F3aAcYYdO0cp3PgdzRLy0VOddS3+b6gYcm4pDh7Gwiy1PqX80sAKSqbZMIos/79n
-oN4//BEYsclP21O3D2IyjiBcpwRZ7E2TmC6pYUZmdG5TzoSysf92+DrL6yuv/uOF
-tcZp/9QKqxyMmo+2RctVNUXxGXvkG4ex8oNf8VzwoK+hUldVjOEEtKHyaZCu5Nom
-SEaRnwfsntwJxVnvhoiiB5tKfRodrIDwIrw41apg8QsSDhX4gUCeJS1DAgHNkpVm
-9q4ZPFnH+4nsGiPLKCuu9l5buVyV5thwvyoS22yQm5/RHHpA+cvj9eYxWidkFjGC
-tYmA2x1ESPAD2Z0gA9HX0QL5exmLVNCKGQrCM7Q/0keS7pcmiF3Hxws97aezmIFc
-9jV8GhsJ9eDyqTWsfGwz
-=lY7d
------END PGP SIGNATURE-----
-
---ia+af9HxgiRv1+7n--
+/Ricard
+-- 
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
