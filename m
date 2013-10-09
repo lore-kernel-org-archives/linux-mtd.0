@@ -1,23 +1,24 @@
-Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
+Received: from mail-vb0-x236.google.com ([2607:f8b0:400c:c02::236])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VTyiI-00054l-7B
- for linux-mtd@lists.infradead.org; Wed, 09 Oct 2013 18:42:27 +0000
-Date: Wed, 9 Oct 2013 19:41:39 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Sourav Poddar <sourav.poddar@ti.com>
-Message-ID: <20131009184139.GZ21581@sirena.org.uk>
-References: <1381332284-21822-1-git-send-email-sourav.poddar@ti.com>
- <1381332284-21822-2-git-send-email-sourav.poddar@ti.com>
- <20131009160759.GQ21581@sirena.org.uk> <52558A49.5090904@ti.com>
- <20131009174027.GS21581@sirena.org.uk> <52559D52.4010400@ti.com>
+ id 1VTynk-0005CV-14
+ for linux-mtd@lists.infradead.org; Wed, 09 Oct 2013 18:48:05 +0000
+Received: by mail-vb0-f54.google.com with SMTP id q14so857623vbe.27
+ for <linux-mtd@lists.infradead.org>; Wed, 09 Oct 2013 11:47:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="iAb4HJL2YUi6ElHq"
-Content-Disposition: inline
-In-Reply-To: <52559D52.4010400@ti.com>
-Subject: Re: [PATCH 1/3] spi/qspi: Add memory mapped read support.
-Cc: spi-devel-general@lists.sourceforge.net, computersforpeace@gmail.com,
- dwmw2@infradead.org, balbi@ti.com, linux-mtd@lists.infradead.org
+In-Reply-To: <alpine.DEB.2.00.1310091725590.28562@lnxricardw.se.axis.com>
+References: <20131008192846.A25E7380A65@gemini.denx.de>
+ <alpine.DEB.2.00.1310091038110.28562@lnxricardw.se.axis.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA20350@DBDE04.ent.ti.com>
+ <20131009150538.BAD57380432@gemini.denx.de>
+ <alpine.DEB.2.00.1310091725590.28562@lnxricardw.se.axis.com>
+Date: Wed, 9 Oct 2013 20:47:42 +0200
+Message-ID: <CAFLxGvxMW+r=tHW_f7ugfrseBjbDZcL49-+KXo9S8E42WX1JMQ@mail.gmail.com>
+Subject: Re: Grow UBI device?
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>, "Gupta,
+ Pekon" <pekon@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,67 +28,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, Oct 9, 2013 at 5:45 PM, Ricard Wanderlof
+<ricard.wanderlof@axis.com> wrote:
+>
+> On Wed, 9 Oct 2013, Wolfgang Denk wrote:
+>
+>>>> Come to think of it, I'm not sure that would work anyway, as the
+>>>> resulting, new, enlarged partition would partly contain UBI data and
+>>>> partly old jffs2 data. I'm not sure what UBI does when it encounters
+>>>> incorrect data, if it just erases the relevant blocks and formats them
+>>>> for
+>>>> its own use, or if it barfs completely and just bails out complaining
+>>>> that
+>>>> the partition does not contain UBI data. If the relevant blocks were
+>>>> erased, then I think UBI would simply concede that the a previous erase
+>>>> attempt had been prematurely aborted, and re-erase the blocks and write
+>>>> its headers, so perhaps that is something to try. At any rate it
+>>>> involves
+>>>> at least some mild trickery (erase the blocks that previously contained
+>>>> jffs2 data).
+>>>>
+>>> Yes, during mounting of UBIFS volumes, UBI checks for erase-header
+>>> on first-page of every block.
+>>
+>>
+>> Mounting UBIFS volumes should not be a problem - the existing ones are
+>> not located in the newly added area of the NAND.  The question however
+>> is what the UBI layer itself does, if I for example try to create a
+>> new volume which then would allocate blocks from the newly added
+>> space.
+>
+>
+> UBI scans the whole partition when the attachement is made to the mtd
+> partition. So if you'd get any error message regarding blocks that lack UBI
+> headers it would be then, not when you subsequently try to create a volume
+> in the partition. By that time the volume should be "formatted" with valid
+> UBI headers.
+>
+>
+>>> So, effectively you don't even need to erase the partition to convert
+>>> it into UBI volume, you just try attaching it as UBI volume and UBI
+>>> should erase it for you. (though flagging some warnings on the way).
+>>
+>>
+>> Are you sure about that?
+>>
+>> Well, I guess I'll have to try it out in the end...
+>
+>
+> I just tested it since I have a UBI system just beside me, by erasing and
+> then writing zeros to a block (just to put non-UBI data in it) and
+> restarting the system (the partition in question contains the volume with
+> the root file system in it, so it is attached by the kernel during its
+> boot). The result was that UBI didn't give any error or warning messages
+> during boot, but a subsequent nanddump after boot revealed that the zeroed
+> blocks now contained valid UBI headers, so, without looking at the source,
+> it seems that UBI really does manage this fairly silently.
 
---iAb4HJL2YUi6ElHq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I've never tested this. But from my understanding of the UBI source
+this behavior is
+correct and intended. (Of course only in the non-fastmap case).
 
-On Wed, Oct 09, 2013 at 11:45:46PM +0530, Sourav Poddar wrote:
-> On Wednesday 09 October 2013 11:10 PM, Mark Brown wrote:
-
-> >I'm not convinced that this is the most useful API, it sounds like the
-> >hardware can "memory map" the entire flash chip so the whole SPI
-> >framework seems like overhead.
-
-> But this memory map read will work only with read opcodes.(mtd_read
-> path). For all other operations, normal SPI operations will be used.
-
-> As for this, I also though of bypassing the SPI frameowrk, and doing
-> a memcopy
-> at the beginning of the mtd_read api. But, then before doing a memory mapped
-> read -
-> 1. Controller need to be switched to memory mapped port using control module
->      register and ti qspi switch register.
-> 2. There is SOC specific memory mapped address space from where read
-> should happen,
->     this is SOC specific and should be known to mtd layer the
-> adreess to read for.
-> So, I thought of going this way using t.memory map flag.
-
-Sure, but these things sound like we should be able to support them
-without having to bounce over to the SPI thread all the time and...
-
-> >It also seems seems like it's going to involve the CPU being stalled
-> >waiting for reads to complete instead of asking the SPI controller to
-> >DMA the data to RAM and allowing the CPU to get on with other things -
-> >replacing the explicit transmission of commands with memory to memory
-> >DMAs might be advantageous but replacing DMA with memcpy() would need
-> >numbers to show that it was a win.
-
-...like I say it's not clear to me that this is actually a change that's
-going to be beneficial.  I'd really like to see some analysis of the
-performance showing that this helps and why it helps.
-
---iAb4HJL2YUi6ElHq
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSVaNgAAoJELSic+t+oim9TUIP/2pqeA/nUCU+KL3qQGwmxHot
-Gezf1eDoQJJkyuHtEAgDa/SqhVhfBoXI6D5yTlgp5GnqFYDmet63RuAzjaU+ck0R
-EpN/ptHNejSD2/92K305xArA5/I73di3rGHybxBT2w7D57kZK5N/X8cFsSJ7v9ZJ
-a69me89rK2n/Vg4jQUOTnc1Wr+eo3KIorcOckkIx5RYVZ3AUtjxLzAIrT/gxkI4N
-glUc+Ye1CNFLTbRFJnXqhXn2pyaDDbqbde5oCR2LFL0IJYaZ/9yma2WI+Ket0uS7
-M15vcbU61DPN07fh4wVqxuZOyvbTSukg69EVmrmurkRT4gwKY+IKh8Wo7FgJ8z32
-w6kzYqi40VB+ccZj5og7NOCyW8xUR5DYSyg2mMUZ77heyqJ3ywouzGFwpywZurRX
-QMxVmhZa6ABJkrW+yDbz6wQaDjnVXXauyy66UiKSATmRDSW7gW6EX3RAmVst502N
-a5kqmBx+IWcXvhXlpqWbxWirr0ilQ9Fx2xZyIlpX6i0dY8Tjurah/WhCemkQyXbW
-uagaBUk2N/wPMdELcIOY4poZ+AVdaBXvkIj9DuAk0CGcv/fRnvWm2oeA9f2s7TPX
-Y+BM4S5dmCDzsADa9JXnaRsy7zFZo2DRGlpdCA/NkxRJoq+Io9LhS9cuEtO8WP/t
-sgtYEABPj3fk3FrBughj
-=/N7d
------END PGP SIGNATURE-----
-
---iAb4HJL2YUi6ElHq--
+-- 
+Thanks,
+//richard
