@@ -1,24 +1,22 @@
-Received: from mail-oa0-x233.google.com ([2607:f8b0:4003:c02::233])
+Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VTxE7-0002M7-Dg
- for linux-mtd@lists.infradead.org; Wed, 09 Oct 2013 17:07:12 +0000
-Received: by mail-oa0-f51.google.com with SMTP id h16so518543oag.24
- for <linux-mtd@lists.infradead.org>; Wed, 09 Oct 2013 10:06:49 -0700 (PDT)
+ id 1VTxks-0003mC-VB
+ for linux-mtd@lists.infradead.org; Wed, 09 Oct 2013 17:41:03 +0000
+Date: Wed, 9 Oct 2013 18:40:27 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Sourav Poddar <sourav.poddar@ti.com>
+Message-ID: <20131009174027.GS21581@sirena.org.uk>
+References: <1381332284-21822-1-git-send-email-sourav.poddar@ti.com>
+ <1381332284-21822-2-git-send-email-sourav.poddar@ti.com>
+ <20131009160759.GQ21581@sirena.org.uk> <52558A49.5090904@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20131009120221.GB31294@localhost>
-References: <1381276748-5426-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <CAN8TOE-9XRW9QJ7+sSis+Omo0eVAGVHOXD70P4L8FNbLut=9Dg@mail.gmail.com>
- <20131009120221.GB31294@localhost>
-Date: Wed, 9 Oct 2013 10:06:49 -0700
-Message-ID: <CAN8TOE84raS7thT5ZU1Zpa7SQO7ocmmOdhrR7KxohQVsJix3Pg@mail.gmail.com>
-Subject: Re: [PATCH/TRIVIAL] mtd: Use MTD_BLOCK_MAJOR instead of the magic
- number
-From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: trivial@kernel.org,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="Z/sVsid6FAeSo6rY"
+Content-Disposition: inline
+In-Reply-To: <52558A49.5090904@ti.com>
+Subject: Re: [PATCH 1/3] spi/qspi: Add memory mapped read support.
+Cc: spi-devel-general@lists.sourceforge.net, computersforpeace@gmail.com,
+ dwmw2@infradead.org, balbi@ti.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,69 +26,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Oct 9, 2013 at 5:02 AM, Ezequiel Garcia
-<ezequiel.garcia@free-electrons.com> wrote:
-> On Tue, Oct 08, 2013 at 06:15:21PM -0700, Brian Norris wrote:
->> Why does MTD_BLOCK_MAJOR (and MTD_CHAR_MAJOR) live in
->> include/linux/mtd/mtd.h and not include/uapi/linux/major.h?
->
-> Ah, nice catch. How about something like this?
->
-> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-> index f9bfe52..9e1471e 100644
-> --- a/include/linux/mtd/mtd.h
-> +++ b/include/linux/mtd/mtd.h
-> @@ -24,14 +24,12 @@
->  #include <linux/uio.h>
->  #include <linux/notifier.h>
->  #include <linux/device.h>
-> +#include <linux/major.h>
 
-I think it's a (weak?) style preference that this type of #include
-just go in the files that need it (there are only a few -- 4 I think?)
-rather than importing it directly into the mtd.h header for all users.
-But I don't object strongly.
+--Z/sVsid6FAeSo6rY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->  #include <mtd/mtd-abi.h>
->
->  #include <asm/div64.h>
->
-> -#define MTD_CHAR_MAJOR 90
-> -#define MTD_BLOCK_MAJOR 31
-> -
->  #define MTD_ERASE_PENDING      0x01
->  #define MTD_ERASING            0x02
->  #define MTD_ERASE_SUSPEND      0x04
-> diff --git a/include/uapi/linux/major.h b/include/uapi/linux/major.h
-> index 6a8ca98..620252e 100644
-> --- a/include/uapi/linux/major.h
-> +++ b/include/uapi/linux/major.h
-> @@ -54,6 +54,7 @@
->  #define ACSI_MAJOR             28
->  #define AZTECH_CDROM_MAJOR     29
->  #define FB_MAJOR               29   /* /dev/fb* framebuffers */
-> +#define MTD_BLOCK_MAJOR                31
->  #define CM206_CDROM_MAJOR      32
->  #define IDE2_MAJOR             33
->  #define IDE3_MAJOR             34
-> @@ -105,6 +106,7 @@
->  #define IDE6_MAJOR             88
->  #define IDE7_MAJOR             89
->  #define IDE8_MAJOR             90
-> +#define MTD_CHAR_MAJOR         90
->  #define IDE9_MAJOR             91
->
->  #define DASD_MAJOR             94
->
-> --
->
-> If you think this is OK, you can take this patch and I'll cook
-> another one moving MTD_xxx_MAJOR as above.
+On Wed, Oct 09, 2013 at 10:24:33PM +0530, Sourav Poddar wrote:
 
-Yeah, the original patch here is good. I'll run it through the build
-tests and then apply it. Feel free to send a proper follow-up with
-either the diff you just sent or with the #include <linux/major.h>
-moved into the appropriate .c files.
+> Here is the exact feature usecase..
+> TI qspi controller supports memory mapped read. These memory
+> mapped read configuration depends on the set_up_register, which
+> can be configured once during in setup apis based on the dt node
+> specifying whether the qspi controller supports memory mapped read
+> or not.
 
-Thanks,
-Brian
+What is "set_up_register"?
+
+> Once, the qspi controller is configured for a memory mapped read, the qspi
+> controller does not depend on the flash command that comes from the
+> mtd layer.
+> Because, this command are already configured in QSPI set up register.
+
+So this does depend on the flash commands for the specific chip, which
+means that this has all the same problems as the Freescale chip had with
+requiring the user to replicate the information about the commands that
+the chip supports into the device tree.  It therefore seems like all the
+same concerns should apply, though in this case it seems like it's
+harder for the driver to infer things from looking at the operations
+being sent to it.
+
+Presumably this also only works for flash chips, or things that look
+like them...
+
+> Basically, its not the commands which need to be communicated from
+> the mtd layer,its just
+> the buffer to fill, len of buffer, offset from where to fill need to
+> be communicated.
+
+This appears to be based on an assumption that the commands would be
+replicated into the device trees which seems like it's both more work
+for users and harder to deploy.
+
+> >I'm also concerned about the interface here, it looks like this is being
+> >made visible to SPI devices (via a dependency on patch 3/3...) but only
+> >as a flag they can set - how would devices know to enable this and why
+> >would they want to avoid it?
+
+> Set  spi->mode in qspi driver based on dt entry and use that in mtd layer to
+> decide whether to use memory mapped or not.
+
+But why would anything not want to use memory mapped mode if it can and
+why is this something that should be hard coded into the device tree?
+Especially with the current API...
+
+> The idea is whenever, we call mtd_read api from mtd layer, if memory
+> mapped is set
+> then sending the commands does not matter, what matters is the len
+> to read, buffer to fill and
+> "from" offset to read. Then, the intention was to use the memory_map
+> transfer parameter to
+> communicate to the driver that memory mapped read is used so that we
+> can just use memcopy and
+> return without going through the entire SPI based xfer function.
+
+I'm not convinced that this is the most useful API, it sounds like the
+hardware can "memory map" the entire flash chip so the whole SPI
+framework seems like overhead.
+
+It also seems seems like it's going to involve the CPU being stalled
+waiting for reads to complete instead of asking the SPI controller to
+DMA the data to RAM and allowing the CPU to get on with other things -
+replacing the explicit transmission of commands with memory to memory
+DMAs might be advantageous but replacing DMA with memcpy() would need
+numbers to show that it was a win.
+
+--Z/sVsid6FAeSo6rY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSVZUHAAoJELSic+t+oim9bxIQAIffxzM72hshn4rPXakakCO1
+L7PP/acdt5q0meZbsFp2vrXC3ID826YinbbQ7V92CqnzDyhWsoHRwJeJCJMUZJIk
+3I3qAUv8HC5iO2v7mvOygGxmrkJmbGQ8aIit9pNdGZQZfu5AXxYbWDHSvit2ST6I
+oeZP8fBfP6BThfYueIbWrSF2iBTF3vPR0ZFgm7/Q3Z+Y5M9I3KLIQXnF7DCAAZXT
+wGnMvWw+WnE4Bvd50mwYV+n2Bd370voEDUr1bcjORySWG1+71iN9P09RmHYJLvut
+pdgCY1W4wjoEQr/g39vhT3MhWKFxEo+nFbLw0JfoSyxPsEP1I2AZdP2mUyuY8gLE
+n/ZOaXKbkivKxhLvRARzkYeHdeV7YAjDQZNKO5HRO88fZ7eNac5ROwOZrOJlIhYE
+ofUeIoglwBoFu4t5M+fZeZqEJzoOc3fKAnnrV8weLW0oWSbDkuRrlgFJKWzLXTMw
+f70Bn8rOQKXffnFR2J8efQfX3LzvZULSjrt4347RsMgLcy+9P7gH89NHiCFsZV6R
+R8v7q2KQngaUzLvsVm5jhp3o+pI3I8Yc4+HGLG4w5XS0SwjSrvkC0Z+kRmN3+2Sy
+PY+IUlfqHnyGk7Tn2fT3egwpKFl5kgmbphllDo/cIepoUesQO+HuUsTluqo5iZwg
+iIZWn+POrhm6eUOAlDV2
+=Jfod
+-----END PGP SIGNATURE-----
+
+--Z/sVsid6FAeSo6rY--
