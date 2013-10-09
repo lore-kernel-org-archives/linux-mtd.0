@@ -1,25 +1,23 @@
-Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
+Received: from mail-out.m-online.net ([212.18.0.9])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VTzZu-0006mA-FJ
- for linux-mtd@lists.infradead.org; Wed, 09 Oct 2013 19:37:50 +0000
-Date: Wed, 9 Oct 2013 20:36:47 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Peter Korsgaard <peter@korsgaard.com>
-Message-ID: <20131009193647.GA21581@sirena.org.uk>
-References: <1381332284-21822-1-git-send-email-sourav.poddar@ti.com>
- <1381332284-21822-2-git-send-email-sourav.poddar@ti.com>
- <20131009160759.GQ21581@sirena.org.uk> <52558A49.5090904@ti.com>
- <20131009174027.GS21581@sirena.org.uk>
- <87hacq1d5k.fsf@dell.be.48ers.dk>
+ id 1VTzxP-0007R9-Hg
+ for linux-mtd@lists.infradead.org; Wed, 09 Oct 2013 20:02:08 +0000
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+From: Wolfgang Denk <wd@denx.de>
+Subject: Re: Grow UBI device?
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="/c0JJ5TGZ+xtmyhA"
-Content-Disposition: inline
-In-Reply-To: <87hacq1d5k.fsf@dell.be.48ers.dk>
-Subject: Re: [PATCH 1/3] spi/qspi: Add memory mapped read support.
-Cc: balbi@ti.com, linux-mtd@lists.infradead.org,
- spi-devel-general@lists.sourceforge.net, Sourav Poddar <sourav.poddar@ti.com>,
- computersforpeace@gmail.com, dwmw2@infradead.org
+Content-type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8bit
+In-reply-to: <alpine.DEB.2.00.1310091725590.28562@lnxricardw.se.axis.com>
+References: <20131008192846.A25E7380A65@gemini.denx.de>
+ <alpine.DEB.2.00.1310091038110.28562@lnxricardw.se.axis.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA20350@DBDE04.ent.ti.com>
+ <20131009150538.BAD57380432@gemini.denx.de>
+ <alpine.DEB.2.00.1310091725590.28562@lnxricardw.se.axis.com>
+Date: Wed, 09 Oct 2013 22:01:41 +0200
+Message-Id: <20131009200141.727C438049B@gemini.denx.de>
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>, "Gupta,
+ Pekon" <pekon@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,49 +27,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Dear Ricard,
 
---/c0JJ5TGZ+xtmyhA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In message <alpine.DEB.2.00.1310091725590.28562@lnxricardw.se.axis.com> you wrote:
+> 
+> I just tested it since I have a UBI system just beside me, by erasing and 
+> then writing zeros to a block (just to put non-UBI data in it) and 
+> restarting the system (the partition in question contains the volume with 
+> the root file system in it, so it is attached by the kernel during its 
+> boot). The result was that UBI didn't give any error or warning messages 
+> during boot, but a subsequent nanddump after boot revealed that the 
+> zeroed blocks now contained valid UBI headers, so, without looking at the 
+> source, it seems that UBI really does manage this fairly silently.
 
-On Wed, Oct 09, 2013 at 09:01:59PM +0200, Peter Korsgaard wrote:
+Thanks a lot, much appreciated!
 
-> Indeed. I can see how such a feature could be useful in E.G. a lowlevel
-> bootloader (because of simplicity), but am less convinced about it in
-> Linux where we could conceivable do something else useful while waiting
-> on the spi controller.
+Best regards,
 
-> But if there's number to prove otherwise..
+Wolfgang Denk
 
-I can see it being useful if there's a DMA controller that can do the
-transfer as a memory to memory DMA - the hardware can probably issue
-flash read commands a bit faster than the AP can so you should be able
-to get closer to saturating the bus.  The patches didn't try to do that
-or make it possible for something further up the stack to do it and the
-differences should end up being fairly small with optimisations like
-those in the pxa2xx or pl022 drivers (which I'm currently working on
-pulling out into the framework).
-
---/c0JJ5TGZ+xtmyhA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSVbBMAAoJELSic+t+oim99HsQAI6w5/W7EjDQTZQ6+g2KadMP
-Bojzk7yjH07ZRpfONeMgzzWPTdVHOHRK6i/YWVib+8IjncMNXBPoYVGMrBqau73T
-Bt/os5LSVqnL7ZQ1MSjYe3i/4IFoSXmACa1RQYs3ULjxMmXMcOteCwb4P4I/Euy6
-Fnn1QCaFzmAHGZ9XNuU6Mb/05doK6mCGu+89vo6EkQuhjrtJ3ZAhBfeNE/zEY6eI
-JEiP/DoLmpVe8IwXoTb+NfO2oLGrISG3pX9YHGIFADdINA9uFz+0xSMt8UuoiS7P
-iZ2gpPClKAj6zobtgGbrqn4SoC2npmwUsudHY05gP1H9h7/4diKFORcAZaiCosoK
-AzNsnR7i8bjcYYBuc+k7CxSvqkXUTdfAWnSwnyfHgsPymc0A+FNyueDNWfNASJas
-OUOyQZIafRYE7ypmdFe0Q0c1B6COaKNU2Va1ejTxKRBfUvxoUXbNgbFb2jMHRdm8
-AIjNrjkaukJSi6xHickznAbm5hXeyvoXuu6lcc5xlQWvum6EtiKmrKWE1e/R+ocK
-0Yer+bNlT5dVqApU4x9FBsLkrqsMWFJBsiWnESLb5tqDyCi9oejIgGmpZz+Zx7gl
-TuIKYTtWPUOuax6FGqLpYPuAEfeP/FrUDbhM03m1kqaL4cuUGaJFTbHSkUyw9aQa
-8o+9QKLwK2NA0FUR6vgy
-=2Ny9
------END PGP SIGNATURE-----
-
---/c0JJ5TGZ+xtmyhA--
+-- 
+DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
+The IQ of the group is the lowest IQ of a member of the group divided
+by the number of people in the group.
