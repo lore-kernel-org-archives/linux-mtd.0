@@ -1,24 +1,26 @@
-Received: from mail-vb0-x236.google.com ([2607:f8b0:400c:c02::236])
+Received: from mail-ea0-x231.google.com ([2a00:1450:4013:c01::231])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VTynk-0005CV-14
- for linux-mtd@lists.infradead.org; Wed, 09 Oct 2013 18:48:05 +0000
-Received: by mail-vb0-f54.google.com with SMTP id q14so857623vbe.27
- for <linux-mtd@lists.infradead.org>; Wed, 09 Oct 2013 11:47:42 -0700 (PDT)
+ id 1VTz1b-0005k9-S4
+ for linux-mtd@lists.infradead.org; Wed, 09 Oct 2013 19:02:25 +0000
+Received: by mail-ea0-f177.google.com with SMTP id f15so635543eak.36
+ for <linux-mtd@lists.infradead.org>; Wed, 09 Oct 2013 12:02:01 -0700 (PDT)
+Sender: Peter Korsgaard <jacmet@gmail.com>
+From: Peter Korsgaard <peter@korsgaard.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3] spi/qspi: Add memory mapped read support.
+References: <1381332284-21822-1-git-send-email-sourav.poddar@ti.com>
+ <1381332284-21822-2-git-send-email-sourav.poddar@ti.com>
+ <20131009160759.GQ21581@sirena.org.uk> <52558A49.5090904@ti.com>
+ <20131009174027.GS21581@sirena.org.uk>
+Date: Wed, 09 Oct 2013 21:01:59 +0200
+In-Reply-To: <20131009174027.GS21581@sirena.org.uk> (Mark Brown's message of
+ "Wed, 9 Oct 2013 18:40:27 +0100")
+Message-ID: <87hacq1d5k.fsf@dell.be.48ers.dk>
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.00.1310091725590.28562@lnxricardw.se.axis.com>
-References: <20131008192846.A25E7380A65@gemini.denx.de>
- <alpine.DEB.2.00.1310091038110.28562@lnxricardw.se.axis.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA20350@DBDE04.ent.ti.com>
- <20131009150538.BAD57380432@gemini.denx.de>
- <alpine.DEB.2.00.1310091725590.28562@lnxricardw.se.axis.com>
-Date: Wed, 9 Oct 2013 20:47:42 +0200
-Message-ID: <CAFLxGvxMW+r=tHW_f7ugfrseBjbDZcL49-+KXo9S8E42WX1JMQ@mail.gmail.com>
-Subject: Re: Grow UBI device?
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>
+Content-Type: text/plain; charset=us-ascii
+Cc: balbi@ti.com, linux-mtd@lists.infradead.org,
+ spi-devel-general@lists.sourceforge.net, Sourav Poddar <sourav.poddar@ti.com>,
+ computersforpeace@gmail.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,67 +30,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Oct 9, 2013 at 5:45 PM, Ricard Wanderlof
-<ricard.wanderlof@axis.com> wrote:
->
-> On Wed, 9 Oct 2013, Wolfgang Denk wrote:
->
->>>> Come to think of it, I'm not sure that would work anyway, as the
->>>> resulting, new, enlarged partition would partly contain UBI data and
->>>> partly old jffs2 data. I'm not sure what UBI does when it encounters
->>>> incorrect data, if it just erases the relevant blocks and formats them
->>>> for
->>>> its own use, or if it barfs completely and just bails out complaining
->>>> that
->>>> the partition does not contain UBI data. If the relevant blocks were
->>>> erased, then I think UBI would simply concede that the a previous erase
->>>> attempt had been prematurely aborted, and re-erase the blocks and write
->>>> its headers, so perhaps that is something to try. At any rate it
->>>> involves
->>>> at least some mild trickery (erase the blocks that previously contained
->>>> jffs2 data).
->>>>
->>> Yes, during mounting of UBIFS volumes, UBI checks for erase-header
->>> on first-page of every block.
->>
->>
->> Mounting UBIFS volumes should not be a problem - the existing ones are
->> not located in the newly added area of the NAND.  The question however
->> is what the UBI layer itself does, if I for example try to create a
->> new volume which then would allocate blocks from the newly added
->> space.
->
->
-> UBI scans the whole partition when the attachement is made to the mtd
-> partition. So if you'd get any error message regarding blocks that lack UBI
-> headers it would be then, not when you subsequently try to create a volume
-> in the partition. By that time the volume should be "formatted" with valid
-> UBI headers.
->
->
->>> So, effectively you don't even need to erase the partition to convert
->>> it into UBI volume, you just try attaching it as UBI volume and UBI
->>> should erase it for you. (though flagging some warnings on the way).
->>
->>
->> Are you sure about that?
->>
->> Well, I guess I'll have to try it out in the end...
->
->
-> I just tested it since I have a UBI system just beside me, by erasing and
-> then writing zeros to a block (just to put non-UBI data in it) and
-> restarting the system (the partition in question contains the volume with
-> the root file system in it, so it is attached by the kernel during its
-> boot). The result was that UBI didn't give any error or warning messages
-> during boot, but a subsequent nanddump after boot revealed that the zeroed
-> blocks now contained valid UBI headers, so, without looking at the source,
-> it seems that UBI really does manage this fairly silently.
+>>>>> "Mark" == Mark Brown <broonie@kernel.org> writes:
 
-I've never tested this. But from my understanding of the UBI source
-this behavior is
-correct and intended. (Of course only in the non-fastmap case).
+Hi,
+
+ Mark> I'm not convinced that this is the most useful API, it sounds like the
+ Mark> hardware can "memory map" the entire flash chip so the whole SPI
+ Mark> framework seems like overhead.
+
+ Mark> It also seems seems like it's going to involve the CPU being
+ Mark> stalled waiting for reads to complete instead of asking the SPI
+ Mark> controller to DMA the data to RAM and allowing the CPU to get on
+ Mark> with other things - replacing the explicit transmission of
+ Mark> commands with memory to memory DMAs might be advantageous but
+ Mark> replacing DMA with memcpy() would need numbers to show that it
+ Mark> was a win.
+
+Indeed. I can see how such a feature could be useful in E.G. a lowlevel
+bootloader (because of simplicity), but am less convinced about it in
+Linux where we could conceivable do something else useful while waiting
+on the spi controller.
+
+But if there's number to prove otherwise..
 
 -- 
-Thanks,
-//richard
+Bye, Peter Korsgaard
