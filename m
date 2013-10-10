@@ -1,21 +1,18 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VUAtu-0004Lh-02
- for linux-mtd@lists.infradead.org; Thu, 10 Oct 2013 07:43:14 +0000
-Message-ID: <1381390962.7875.57.camel@sauron.fi.intel.com>
+ id 1VUBRX-0005Gt-Fu
+ for linux-mtd@lists.infradead.org; Thu, 10 Oct 2013 08:18:00 +0000
+Message-ID: <1381393038.7875.83.camel@sauron.fi.intel.com>
 Subject: Re: Grow UBI device?
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Gupta, Pekon" <pekon@ti.com>
-Date: Thu, 10 Oct 2013 10:42:42 +0300
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA20350@DBDE04.ent.ti.com>
+To: Wolfgang Denk <wd@denx.de>
+Date: Thu, 10 Oct 2013 11:17:18 +0300
+In-Reply-To: <20131008192846.A25E7380A65@gemini.denx.de>
 References: <20131008192846.A25E7380A65@gemini.denx.de>
- <alpine.DEB.2.00.1310091038110.28562@lnxricardw.se.axis.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA20350@DBDE04.ent.ti.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
- Ricard Wanderlof <ricard.wanderlof@axis.com>
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,18 +23,114 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2013-10-09 at 11:28 +0000, Gupta, Pekon wrote:
-> Yes, during mounting of UBIFS volumes, UBI checks for erase-header
-> on first-page of every block. 
-> - If it's able to find a valid erase-header, with correct image_seq field,
-> then it attaches it to its pool.
-> - Otherwise, if the valid erase-header was not found, then it assumes
->  then it ubi will try re-erasing it. And add it to its pool of free-blocks.
+Wolfgang, people already answered you, and frankly I did not read all
+the answers :-) But here is my brief version.
 
-I think there is a separate list for blocks with garbage, and if UBI
-finds too much of them, it attaches R/O. So if it would find too many
-JFFS2 eraseblocks, it would not erase them. But erasing the JFFS2 blocks
-from outside of UBI driver would help.
+On Tue, 2013-10-08 at 21:28 +0200, Wolfgang Denk wrote:
+> I'm looking for a clever way to migrate devices (in the field) from
+> JFFS2 to UBI/UBIFS.  In the end result, I want to have single UBI
+> device (which covers the whole NAND chip) with several volumes used
+> with UBIFS.  Unfortunately I must keep some of the existing data.
+
+And I guess there is no temporary storage where you could copy JFFS2
+files, re-format the flash, and copy the files back.
+
+> It would be nice if I could start with a UBI device that is smaller
+> than the NAND, so I can keep an existing MTD partition with a JFFS2
+> file system.
+
+You mean that on the existing systems, you already have an extra MTD
+partition, or you somehow can create one.
+
+Then you want to UBI/UBIFS-format the extra partition. Then copy
+required JFFS2 files there. And then kill JFFS2 partitions and "merge"
+them with the extra partition, and end up with UBI/UBIFS covering all
+the space.
+
+>  After copying the data from JFFS2 to a UBIFS volume, I
+> would like to free and reuse the space of this JFFS2 partition.
+
+OK, sounds like I understood you correctly.
+
+> Is there a way to "grow" the existing UBI device so that it now also
+> covers the rest of the NAND chip?  Or is my only option to create a
+> second UBI device?
+
+I think so, unless you use the fastmap feature. Suppose you don't.
+
+There are 2 parts - UBI and UBIFS.
+
+So, let's suppose your situation is like this.
+
+1. You have 2 mtd partitions - mtd1 and mtd2.
+2. mtd1 has JFFS2 with important files.
+3. mtd2 is the extra partition you have.
+
+I guess you can do this.
+
+1. Format mtd2 with UBI. Just erasing should be OK, or you can use
+ubiformat: http://www.linux-mtd.infradead.org/faq/ubi.html#L_ubierase
+
+Then you attach mtd2 (ubiattach) and you get an UBI device (/dev/ubiX).
+
+2. Create a volume on /dev/ubiX which spans entire UBI device
+(ubimkvol -t AFAIR). You end up with UBI volume /dev/ubiX_0.
+
+3. And here is important part - you format /dev/ubiX_0 with JFFS2 but
+correctly.
+
+UBIFS has this "automatic expand" feature. Which means that if the UBI
+volume underneath it becomes larger, UBIFS will expand automatically and
+take the entire (larger) UBI volume.
+
+However, there is a _limit_ to how much UBIFS can expand from the
+original size. And you want to watch this limit and make it big enough.
+
+The limit is connected with the "-c" option of mkfs.ubifs. Please, check
+the docs - they explain what exactly -c controls and how it is related
+to the maximum UBIFS file-system size:
+
+http://www.linux-mtd.infradead.org/faq/ubifs.html#L_max_leb_cnt
+
+So, select proper -c.
+
+If you do not use mkfs.ubifs, but just attach /dev/ubiX_0, the UBIFS
+kernel driver will format the volume automatically. It will select the
+-c value itself. Since this value is power of 2, it will just take the
+smallest power-of-2 value. It may be OK for your purposes, may be not.
+It is safer to use mkfs.ubifs with explicit -c.
+
+Basically this is the trickiest part, rest _should_ be easy, but you'll
+learn when you try :-)
+
+4. Copy important files from JFFS2-mtd1 to UBIFS-UBI-mtd2.
+
+5. Erase mtd1 (or you can do this later too)
+
+6. I do not know how you do this, but kill mtd1, and resize mtd2.
+Probably mtd2 will then be named mtd1 after reboot. If you always refer
+your MTD partitions and UBI volumes by name, you should not suffer to
+much from mtd2 becoming mtd1.
+
+Lets suppose there is no rename, for simplicity.
+
+7. Make sure former JFFS2-mtd1 eraseblocks are erased (unless you did
+this at step 5).
+
+8. Attach mtd2 to UBI. UBI will automatically "take" the new
+eraseblocks, erase them and write UBI headers there, and make available.
+
+9. Volume size will still be the same, and you need to re-size it using
+ubiresize.
+
+10. Mount the resized volume. UBI will enlarge itself.
+
+Problem solved.
+
+Surely you do not want power cuts during this operations. If you need to
+survive power cuts, I guess it is possible, but more complex.
+
+HTH.
 
 -- 
 Best Regards,
