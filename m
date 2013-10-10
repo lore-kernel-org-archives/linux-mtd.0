@@ -1,20 +1,23 @@
-Received: from mail-vc0-x235.google.com ([2607:f8b0:400c:c03::235])
+Received: from devils.ext.ti.com ([198.47.26.153])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VUBi8-0005dn-UX
- for linux-mtd@lists.infradead.org; Thu, 10 Oct 2013 08:35:09 +0000
-Received: by mail-vc0-f181.google.com with SMTP id id10so892848vcb.12
- for <linux-mtd@lists.infradead.org>; Thu, 10 Oct 2013 01:34:47 -0700 (PDT)
+ id 1VUBzt-0006H8-0m
+ for linux-mtd@lists.infradead.org; Thu, 10 Oct 2013 08:53:29 +0000
+Message-ID: <52566ACC.1080100@ti.com>
+Date: Thu, 10 Oct 2013 14:22:28 +0530
+From: Sourav Poddar <sourav.poddar@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <1381393038.7875.83.camel@sauron.fi.intel.com>
-References: <20131008192846.A25E7380A65@gemini.denx.de>
- <1381393038.7875.83.camel@sauron.fi.intel.com>
-Date: Thu, 10 Oct 2013 10:34:44 +0200
-Message-ID: <CAFLxGvz6=5FxQ8oeDfm1OYhJGfLkwJkuBh315-WBDLNc6bmF6A@mail.gmail.com>
-Subject: Re: Grow UBI device?
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>
+To: Trent Piepho <tpiepho@gmail.com>, Peter Korsgaard <peter@korsgaard.com>,
+ Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3] spi/qspi: Add memory mapped read support.
+References: <1381332284-21822-1-git-send-email-sourav.poddar@ti.com>	<1381332284-21822-2-git-send-email-sourav.poddar@ti.com>	<20131009160759.GQ21581@sirena.org.uk>	<52558A49.5090904@ti.com>	<20131009174027.GS21581@sirena.org.uk>	<87hacq1d5k.fsf@dell.be.48ers.dk>
+ <CA+7tXii4J_Hie2v-DaSevFHn-YqriiVowhpXCP9H+U51_tbhvQ@mail.gmail.com>
+In-Reply-To: <CA+7tXii4J_Hie2v-DaSevFHn-YqriiVowhpXCP9H+U51_tbhvQ@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "spi-devel-general@lists.sourceforge.net"
+ <spi-devel-general@lists.sourceforge.net>, computersforpeace@gmail.com,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ dwmw2@infradead.org, balbi@ti.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,129 +27,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Oct 10, 2013 at 10:17 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> Wolfgang, people already answered you, and frankly I did not read all
-> the answers :-) But here is my brief version.
+Hi All,
+On Thursday 10 October 2013 07:57 AM, Trent Piepho wrote:
+> On Wed, Oct 9, 2013 at 12:01 PM, Peter Korsgaard<peter@korsgaard.com>  wrote:
+>>>>>>> "Mark" == Mark Brown<broonie@kernel.org>  writes:
+>>   Mark>  I'm not convinced that this is the most useful API, it sounds like the
+>>   Mark>  hardware can "memory map" the entire flash chip so the whole SPI
+>>   Mark>  framework seems like overhead.
+>>
+>>   Mark>  It also seems seems like it's going to involve the CPU being
+>>   Mark>  stalled waiting for reads to complete instead of asking the SPI
+>>   Mark>  controller to DMA the data to RAM and allowing the CPU to get on
+>>   Mark>  with other things - replacing the explicit transmission of
+>>   Mark>  commands with memory to memory DMAs might be advantageous but
+>>   Mark>  replacing DMA with memcpy() would need numbers to show that it
+>>   Mark>  was a win.
+>>
+>> Indeed. I can see how such a feature could be useful in E.G. a lowlevel
+>> bootloader (because of simplicity), but am less convinced about it in
+>> Linux where we could conceivable do something else useful while waiting
+>> on the spi controller.
+> I've found that the SPI layer adds rather a lot of overhead to SPI
+> transactions.  It appears to come mostly from using another thread to
+> run the queue.  A fast SPI message of a few dozen bytes ends up having
+> more overhead from the SPI layer than the time it takes the driver to
+> do the actual transfer.
 >
-> On Tue, 2013-10-08 at 21:28 +0200, Wolfgang Denk wrote:
->> I'm looking for a clever way to migrate devices (in the field) from
->> JFFS2 to UBI/UBIFS.  In the end result, I want to have single UBI
->> device (which covers the whole NAND chip) with several volumes used
->> with UBIFS.  Unfortunately I must keep some of the existing data.
->
-> And I guess there is no temporary storage where you could copy JFFS2
-> files, re-format the flash, and copy the files back.
->
->> It would be nice if I could start with a UBI device that is smaller
->> than the NAND, so I can keep an existing MTD partition with a JFFS2
->> file system.
->
-> You mean that on the existing systems, you already have an extra MTD
-> partition, or you somehow can create one.
->
-> Then you want to UBI/UBIFS-format the extra partition. Then copy
-> required JFFS2 files there. And then kill JFFS2 partitions and "merge"
-> them with the extra partition, and end up with UBI/UBIFS covering all
-> the space.
->
->>  After copying the data from JFFS2 to a UBIFS volume, I
->> would like to free and reuse the space of this JFFS2 partition.
->
-> OK, sounds like I understood you correctly.
->
->> Is there a way to "grow" the existing UBI device so that it now also
->> covers the rest of the NAND chip?  Or is my only option to create a
->> second UBI device?
->
-> I think so, unless you use the fastmap feature. Suppose you don't.
->
-> There are 2 parts - UBI and UBIFS.
->
-> So, let's suppose your situation is like this.
->
-> 1. You have 2 mtd partitions - mtd1 and mtd2.
-> 2. mtd1 has JFFS2 with important files.
-> 3. mtd2 is the extra partition you have.
->
-> I guess you can do this.
->
-> 1. Format mtd2 with UBI. Just erasing should be OK, or you can use
-> ubiformat: http://www.linux-mtd.infradead.org/faq/ubi.html#L_ubierase
->
-> Then you attach mtd2 (ubiattach) and you get an UBI device (/dev/ubiX).
->
-> 2. Create a volume on /dev/ubiX which spans entire UBI device
-> (ubimkvol -t AFAIR). You end up with UBI volume /dev/ubiX_0.
->
-> 3. And here is important part - you format /dev/ubiX_0 with JFFS2 but
-> correctly.
+> So memory mapped mode via some kind of SPI hack seems like a bad
+> design.  All the SPI layer overhead and you don't get DMA.  Memory
+> mapped SPI could be a win, but I think you'd need to do it at the MTD
+> layer with a mapping driver that could read the mmapped SPI flash
+> directly.
+Yes, you are correct in all your comments above. I also feel that SPI 
+framework
+should be bypassed. But the subject patch is derived based on the 
+following points/limitation:
 
-s/JFFS2/UBIFS :-)
+1. There is a setup register in QSPI, that need to be filled, as of now 
+I am filling it
+     in my driver as a MACRO.
+2. Controller repsonds to memory mapped read for read opcodes, so during the
+read path we should tell the controller to switch to memory mapped port.
 
-> UBIFS has this "automatic expand" feature. Which means that if the UBI
-> volume underneath it becomes larger, UBIFS will expand automatically and
-> take the entire (larger) UBI volume.
->
-> However, there is a _limit_ to how much UBIFS can expand from the
-> original size. And you want to watch this limit and make it big enough.
->
-> The limit is connected with the "-c" option of mkfs.ubifs. Please, check
-> the docs - they explain what exactly -c controls and how it is related
-> to the maximum UBIFS file-system size:
->
-> http://www.linux-mtd.infradead.org/faq/ubifs.html#L_max_leb_cnt
->
-> So, select proper -c.
->
-> If you do not use mkfs.ubifs, but just attach /dev/ubiX_0, the UBIFS
-> kernel driver will format the volume automatically. It will select the
-> -c value itself. Since this value is power of 2, it will just take the
-> smallest power-of-2 value. It may be OK for your purposes, may be not.
-> It is safer to use mkfs.ubifs with explicit -c.
->
-> Basically this is the trickiest part, rest _should_ be easy, but you'll
-> learn when you try :-)
->
-> 4. Copy important files from JFFS2-mtd1 to UBIFS-UBI-mtd2.
->
-> 5. Erase mtd1 (or you can do this later too)
->
-> 6. I do not know how you do this, but kill mtd1, and resize mtd2.
-> Probably mtd2 will then be named mtd1 after reboot. If you always refer
-> your MTD partitions and UBI volumes by name, you should not suffer to
-> much from mtd2 becoming mtd1.
->
-> Lets suppose there is no rename, for simplicity.
->
-> 7. Make sure former JFFS2-mtd1 eraseblocks are erased (unless you did
-> this at step 5).
->
-> 8. Attach mtd2 to UBI. UBI will automatically "take" the new
-> eraseblocks, erase them and write UBI headers there, and make available.
->
-> 9. Volume size will still be the same, and you need to re-size it using
-> ubiresize.
->
-> 10. Mount the resized volume. UBI will enlarge itself.
->
-> Problem solved.
->
-> Surely you do not want power cuts during this operations. If you need to
-> survive power cuts, I guess it is possible, but more complex.
->
-> HTH.
->
-> --
-> Best Regards,
-> Artem Bityutskiy
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+[Trent]: With mapping driver, I believe you are hinting at 
+drivers/mtd/maps? I had
+a look at it and what I got is that it is used/suitable for parallel 
+flashes and not the
+serial flashes.
 
-
-
--- 
-Thanks,
-//richard
+All in all, Just at the beginning of the read api, I could have done 
+memory mapped read and bypass
+the spi framework. But, prior to that above 1, 2 point need to be 
+executed and that need to be
+communicated to controller driver.
