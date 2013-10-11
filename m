@@ -1,10 +1,10 @@
 From: Pekon Gupta <pekon@ti.com>
 To: <mark.rutland@arm.com>, <robherring2@gmail.com>, <olof@lixom.net>,
  <computersforpeace@gmail.com>, <dedekind1@gmail.com>
-Subject: [PATCH v8 1/6] mtd: nand: omap: combine different flavours of 1-bit
- hamming ecc schemes
-Date: Fri, 11 Oct 2013 19:06:38 +0530
-Message-ID: <1381498603-15715-2-git-send-email-pekon@ti.com>
+Subject: [PATCH v8 2/6] ARM: OMAP2+: cleaned-up DT support of various ECC
+ schemes
+Date: Fri, 11 Oct 2013 19:06:39 +0530
+Message-ID: <1381498603-15715-3-git-send-email-pekon@ti.com>
 In-Reply-To: <1381498603-15715-1-git-send-email-pekon@ti.com>
 References: <1381498603-15715-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
@@ -23,127 +23,151 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-OMAP NAND driver currently supports multiple flavours of 1-bit Hamming
-ecc-scheme, like:
-- OMAP_ECC_HAMMING_CODE_DEFAULT
-	1-bit hamming ecc code using software library
-- OMAP_ECC_HAMMING_CODE_HW
-	1-bit hamming ecc-code using GPMC h/w engine
-- OMAP_ECC_HAMMING_CODE_HW_ROMCODE
-	1-bit hamming ecc-code using GPMC h/w engin with ecc-layout compatible
-	to ROM code.
+OMAP NAND driver support multiple ECC scheme, which can used in following
+different flavours, depending on in-build Hardware engines supported by SoC.
 
-This patch combines above multiple ecc-schemes into single implementation:
-- OMAP_ECC_HAM1_CODE_HW
-	1-bit hamming ecc-code using GPMC h/w engine with ROM-code compatible
-	ecc-layout.
++---------------------------------------+---------------+---------------+
+| ECC scheme                            |ECC calculation|Error detection|
++---------------------------------------+---------------+---------------+
+|OMAP_ECC_HAM1_CODE_HW                  |H/W (GPMC)     |S/W            |
++---------------------------------------+---------------+---------------+
+|OMAP_ECC_BCH8_CODE_HW_DETECTION_SW     |H/W (GPMC)     |S/W            |
+|(requires CONFIG_MTD_NAND_ECC_BCH)     |               |               |
++---------------------------------------+---------------+---------------+
+|OMAP_ECC_BCH8_CODE_HW                  |H/W (GPMC)     |H/W (ELM)      |
+|(requires CONFIG_MTD_NAND_OMAP_BCH &&  |               |               |
+| ti,elm-id in DT)                      |               |               |
++---------------------------------------+---------------+---------------+
+To optimize footprint of omap2-nand driver, selection of some ECC schemes
+also require enabling following Kconfigs, in addition to setting appropriate
+DT bindings
+- Kconfig:CONFIG_MTD_NAND_ECC_BCH        error detection done in software
+- Kconfig:CONFIG_MTD_NAND_OMAP_BCH       error detection done by h/w engine
+
+DT binding updates in this patch are:
+- ti,elm-id: replaces elm_id
+- ti,nand-ecc-opts: supported values ham1, bch4, and bch8
+	selection of h/w or s/w implementation depends on ti,elm-id
 
 Signed-off-by: Pekon Gupta <pekon@ti.com>
 ---
- Documentation/devicetree/bindings/mtd/gpmc-nand.txt | 8 ++++----
- arch/arm/mach-omap2/board-flash.c                   | 2 +-
- arch/arm/mach-omap2/gpmc.c                          | 4 +---
- drivers/mtd/nand/omap2.c                            | 9 +++------
- include/linux/platform_data/mtd-nand-omap2.h        | 6 +-----
- 5 files changed, 10 insertions(+), 19 deletions(-)
+ .../devicetree/bindings/mtd/gpmc-nand.txt          |  8 +++-
+ arch/arm/mach-omap2/gpmc.c                         | 45 ++++++++++++++++------
+ include/linux/platform_data/mtd-nand-omap2.h       | 14 +++++--
+ 3 files changed, 50 insertions(+), 17 deletions(-)
 
 diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-index df338cb..25ee232 100644
+index 25ee232..5e1f31b 100644
 --- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
 +++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-@@ -22,10 +22,10 @@ Optional properties:
- 				width of 8 is assumed.
+@@ -36,8 +36,12 @@ Optional properties:
+ 		"prefetch-dma"		Prefetch enabled sDMA mode
+ 		"prefetch-irq"		Prefetch enabled irq mode
  
-  - ti,nand-ecc-opt:		A string setting the ECC layout to use. One of:
--
--		"sw"		Software method (default)
--		"hw"		Hardware method
--		"hw-romcode"	gpmc hamming mode method & romcode layout
-+		"sw"		<deprecated> use "ham1" instead
-+		"hw"		<deprecated> use "ham1" instead
-+		"hw-romcode"	<deprecated> use "ham1" instead
-+		"ham1"		1-bit Hamming ecc code
- 		"bch4"		4-bit BCH ecc code
- 		"bch8"		8-bit BCH ecc code
+- - elm_id:	Specifies elm device node. This is required to support BCH
+- 		error correction using ELM module.
++ - elm_id:	<deprecated> use "ti,elm-id" instead
++ - ti,elm-id:	Specifies phandle of the ELM devicetree node.
++		ELM is an on-chip hardware engine on TI SoC which is used for
++		locating ECC errors for BCHx algorithms. SoC devices which have
++		ELM hardware engines should specify this device node in .dtsi
++		Using ELM for ECC error correction frees some CPU cycles.
  
-diff --git a/arch/arm/mach-omap2/board-flash.c b/arch/arm/mach-omap2/board-flash.c
-index fc20a61..ac82512 100644
---- a/arch/arm/mach-omap2/board-flash.c
-+++ b/arch/arm/mach-omap2/board-flash.c
-@@ -142,7 +142,7 @@ __init board_nand_init(struct mtd_partition *nand_parts, u8 nr_parts, u8 cs,
- 	board_nand_data.nr_parts	= nr_parts;
- 	board_nand_data.devsize		= nand_type;
+ For inline partiton table parsing (optional):
  
--	board_nand_data.ecc_opt = OMAP_ECC_HAMMING_CODE_DEFAULT;
-+	board_nand_data.ecc_opt = OMAP_ECC_BCH8_CODE_HW;
- 	gpmc_nand_init(&board_nand_data, gpmc_t);
- }
- #endif /* CONFIG_MTD_NAND_OMAP2 || CONFIG_MTD_NAND_OMAP2_MODULE */
 diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
-index 579697a..c9fb353 100644
+index c9fb353..9473c9f 100644
 --- a/arch/arm/mach-omap2/gpmc.c
 +++ b/arch/arm/mach-omap2/gpmc.c
-@@ -1342,9 +1342,7 @@ static void __maybe_unused gpmc_read_timings_dt(struct device_node *np,
+@@ -1341,12 +1341,6 @@ static void __maybe_unused gpmc_read_timings_dt(struct device_node *np,
+ 
  #ifdef CONFIG_MTD_NAND
  
- static const char * const nand_ecc_opts[] = {
--	[OMAP_ECC_HAMMING_CODE_DEFAULT]		= "sw",
--	[OMAP_ECC_HAMMING_CODE_HW]		= "hw",
--	[OMAP_ECC_HAMMING_CODE_HW_ROMCODE]	= "hw-romcode",
-+	[OMAP_ECC_HAM1_CODE_HW]			= "ham1",
- 	[OMAP_ECC_BCH4_CODE_HW]			= "bch4",
- 	[OMAP_ECC_BCH8_CODE_HW]			= "bch8",
- };
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 4ecf0e5..8d521aa 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -1993,10 +1993,7 @@ static int omap_nand_probe(struct platform_device *pdev)
- 	}
+-static const char * const nand_ecc_opts[] = {
+-	[OMAP_ECC_HAM1_CODE_HW]			= "ham1",
+-	[OMAP_ECC_BCH4_CODE_HW]			= "bch4",
+-	[OMAP_ECC_BCH8_CODE_HW]			= "bch8",
+-};
+-
+ static const char * const nand_xfer_types[] = {
+ 	[NAND_OMAP_PREFETCH_POLLED]		= "prefetch-polled",
+ 	[NAND_OMAP_POLLED]			= "polled",
+@@ -1376,12 +1370,39 @@ static int gpmc_probe_nand_child(struct platform_device *pdev,
+ 	gpmc_nand_data->cs = val;
+ 	gpmc_nand_data->of_node = child;
  
- 	/* select the ecc type */
--	if (pdata->ecc_opt == OMAP_ECC_HAMMING_CODE_DEFAULT)
--		info->nand.ecc.mode = NAND_ECC_SOFT;
--	else if ((pdata->ecc_opt == OMAP_ECC_HAMMING_CODE_HW) ||
--		(pdata->ecc_opt == OMAP_ECC_HAMMING_CODE_HW_ROMCODE)) {
-+	if (pdata->ecc_opt == OMAP_ECC_HAM1_CODE_HW) {
- 		info->nand.ecc.bytes            = 3;
- 		info->nand.ecc.size             = 512;
- 		info->nand.ecc.strength         = 1;
-@@ -2025,7 +2022,7 @@ static int omap_nand_probe(struct platform_device *pdev)
- 	}
+-	if (!of_property_read_string(child, "ti,nand-ecc-opt", &s))
+-		for (val = 0; val < ARRAY_SIZE(nand_ecc_opts); val++)
+-			if (!strcasecmp(s, nand_ecc_opts[val])) {
+-				gpmc_nand_data->ecc_opt = val;
+-				break;
+-			}
++	/* Detect availability of ELM module */
++	gpmc_nand_data->elm_of_node = of_parse_phandle(child, "ti,elm-id", 0);
++	if (gpmc_nand_data->elm_of_node == NULL)
++		gpmc_nand_data->elm_of_node =
++					of_parse_phandle(child, "elm_id", 0);
++	if (gpmc_nand_data->elm_of_node == NULL)
++		pr_warn("%s: ti,elm-id property not found\n", __func__);
++
++	/* select NAND ecc-opt */
++	if (of_property_read_string(child, "ti,nand-ecc-opt", &s)) {
++		pr_err("%s: ti,nand-ecc-opt not found\n", __func__);
++		return -ENODEV;
++	}
++	if (!strcmp(s, "ham1") || !strcmp(s, "sw") ||
++		!strcmp(s, "hw") || !strcmp(s, "hw-romcode"))
++		gpmc_nand_data->ecc_opt =
++				OMAP_ECC_HAM1_CODE_HW;
++	else if (!strcmp(s, "bch4"))
++		if (gpmc_nand_data->elm_of_node)
++			gpmc_nand_data->ecc_opt =
++				OMAP_ECC_BCH4_CODE_HW;
++		else
++			gpmc_nand_data->ecc_opt =
++				OMAP_ECC_BCH4_CODE_HW_DETECTION_SW;
++	else if (!strcmp(s, "bch8"))
++		if (gpmc_nand_data->elm_of_node)
++			gpmc_nand_data->ecc_opt =
++				OMAP_ECC_BCH8_CODE_HW;
++		else
++			gpmc_nand_data->ecc_opt =
++				OMAP_ECC_BCH8_CODE_HW_DETECTION_SW;
++	else
++		pr_err("%s: ti,nand-ecc-opt invalid value\n", __func__);
  
- 	/* rom code layout */
--	if (pdata->ecc_opt == OMAP_ECC_HAMMING_CODE_HW_ROMCODE) {
-+	if (pdata->ecc_opt == OMAP_ECC_HAM1_CODE_HW) {
- 
- 		if (info->nand.options & NAND_BUSWIDTH_16)
- 			offset = 2;
-@@ -2033,7 +2030,7 @@ static int omap_nand_probe(struct platform_device *pdev)
- 			offset = 1;
- 			info->nand.badblock_pattern = &bb_descrip_flashbased;
- 		}
--		omap_oobinfo.eccbytes = 3 * (info->mtd.oobsize/16);
-+		omap_oobinfo.eccbytes = 3 * (info->mtd.writesize / 512);
- 		for (i = 0; i < omap_oobinfo.eccbytes; i++)
- 			omap_oobinfo.eccpos[i] = i+offset;
- 
+ 	if (!of_property_read_string(child, "ti,nand-xfer-type", &s))
+ 		for (val = 0; val < ARRAY_SIZE(nand_xfer_types); val++)
 diff --git a/include/linux/platform_data/mtd-nand-omap2.h b/include/linux/platform_data/mtd-nand-omap2.h
-index 6bf9ef4..cb5a54a 100644
+index cb5a54a..4da5bfa 100644
 --- a/include/linux/platform_data/mtd-nand-omap2.h
 +++ b/include/linux/platform_data/mtd-nand-omap2.h
-@@ -23,11 +23,7 @@ enum nand_io {
+@@ -23,9 +23,16 @@ enum nand_io {
  };
  
  enum omap_ecc {
--		/* 1-bit ecc: stored at end of spare area */
--	OMAP_ECC_HAMMING_CODE_DEFAULT = 0, /* Default, s/w method */
--	OMAP_ECC_HAMMING_CODE_HW, /* gpmc to detect the error */
--		/* 1-bit ecc: stored at beginning of spare area as romcode */
--	OMAP_ECC_HAMMING_CODE_HW_ROMCODE, /* gpmc method & romcode layout */
-+	OMAP_ECC_HAM1_CODE_HW = 0, /* 1-bit Hamming ecc code */
- 	OMAP_ECC_BCH4_CODE_HW, /* 4-bit BCH ecc code */
- 	OMAP_ECC_BCH8_CODE_HW, /* 8-bit BCH ecc code */
+-	OMAP_ECC_HAM1_CODE_HW = 0, /* 1-bit Hamming ecc code */
+-	OMAP_ECC_BCH4_CODE_HW, /* 4-bit BCH ecc code */
+-	OMAP_ECC_BCH8_CODE_HW, /* 8-bit BCH ecc code */
++	/* 1-bit  ECC calculation by GPMC, Error detection by Software */
++	OMAP_ECC_HAM1_CODE_HW = 0,
++	/* 4-bit  ECC calculation by GPMC, Error detection by Software */
++	OMAP_ECC_BCH4_CODE_HW_DETECTION_SW,
++	/* 4-bit  ECC calculation by GPMC, Error detection by ELM */
++	OMAP_ECC_BCH4_CODE_HW,
++	/* 8-bit  ECC calculation by GPMC, Error detection by Software */
++	OMAP_ECC_BCH8_CODE_HW_DETECTION_SW,
++	/* 8-bit  ECC calculation by GPMC, Error detection by ELM */
++	OMAP_ECC_BCH8_CODE_HW,
  };
+ 
+ struct gpmc_nand_regs {
+@@ -59,5 +66,6 @@ struct omap_nand_platform_data {
+ 
+ 	/* for passing the partitions */
+ 	struct device_node	*of_node;
++	struct device_node	*elm_of_node;
+ };
+ #endif
 -- 
 1.8.1
