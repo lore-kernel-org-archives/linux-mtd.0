@@ -1,19 +1,28 @@
-Received: from smtp.newsguy.com ([74.209.136.69])
+Received: from mho-03-ewr.mailhop.org ([204.13.248.66]
+ helo=mho-01-ewr.mailhop.org)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VUhV9-00032V-Lo
- for linux-mtd@lists.infradead.org; Fri, 11 Oct 2013 18:31:52 +0000
-Message-ID: <525843F6.8050907@newsguy.com>
-Date: Fri, 11 Oct 2013 11:31:18 -0700
-From: Mike Dunn <mikedunn@newsguy.com>
+ id 1VUhWJ-000364-Tz
+ for linux-mtd@lists.infradead.org; Fri, 11 Oct 2013 18:33:04 +0000
+Date: Fri, 11 Oct 2013 11:32:34 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: Felipe Balbi <balbi@ti.com>
+Subject: Re: [PATCH v8 2/6] ARM: OMAP2+: cleaned-up DT support of various
+ ECC schemes
+Message-ID: <20131011183234.GX29913@atomide.com>
+References: <1381498603-15715-1-git-send-email-pekon@ti.com>
+ <1381498603-15715-3-git-send-email-pekon@ti.com>
+ <20131011155527.GP25706@radagast>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] [RESEND] mtd: docg4: fix status polling loop
-References: <1381425927-1881-1-git-send-email-mikedunn@newsguy.com>
- <20131011181615.GK23337@ld-irv-0074.broadcom.com>
-In-Reply-To: <20131011181615.GK23337@ld-irv-0074.broadcom.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20131011155527.GP25706@radagast>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org,
+ linux-omap@vger.kernel.org, arnd@arndb.de, Pawel.Moll@arm.com,
+ dedekind1@gmail.com, ijc+devicetree@hellion.org.uk, avinashphilipk@gmail.com,
+ robherring2@gmail.com, Pekon Gupta <pekon@ti.com>, bcousson@baylibre.com,
+ swarren@wwwdotorg.org, olof@lixom.net, linux-mtd@lists.infradead.org,
+ Andrew Morton <akpm@linux-foundation.org>, computersforpeace@gmail.com,
+ dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,34 +32,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/11/2013 11:16 AM, Brian Norris wrote:
-> Hi Mike,
+* Felipe Balbi <balbi@ti.com> [131011 09:03]:
+> On Fri, Oct 11, 2013 at 07:06:39PM +0530, Pekon Gupta wrote:
+> > OMAP NAND driver support multiple ECC scheme, which can used in following
+> > different flavours, depending on in-build Hardware engines supported by SoC.
+> > 
+> > +---------------------------------------+---------------+---------------+
+> > | ECC scheme                            |ECC calculation|Error detection|
+> > +---------------------------------------+---------------+---------------+
+> > |OMAP_ECC_HAM1_CODE_HW                  |H/W (GPMC)     |S/W            |
+> > +---------------------------------------+---------------+---------------+
+> > |OMAP_ECC_BCH8_CODE_HW_DETECTION_SW     |H/W (GPMC)     |S/W            |
+> > |(requires CONFIG_MTD_NAND_ECC_BCH)     |               |               |
+> > +---------------------------------------+---------------+---------------+
+> > |OMAP_ECC_BCH8_CODE_HW                  |H/W (GPMC)     |H/W (ELM)      |
+> > |(requires CONFIG_MTD_NAND_OMAP_BCH &&  |               |               |
+> > | ti,elm-id in DT)                      |               |               |
+> > +---------------------------------------+---------------+---------------+
+> > To optimize footprint of omap2-nand driver, selection of some ECC schemes
+> > also require enabling following Kconfigs, in addition to setting appropriate
+> > DT bindings
+> > - Kconfig:CONFIG_MTD_NAND_ECC_BCH        error detection done in software
+> > - Kconfig:CONFIG_MTD_NAND_OMAP_BCH       error detection done by h/w engine
+> > 
+> > DT binding updates in this patch are:
+> > - ti,elm-id: replaces elm_id
+> > - ti,nand-ecc-opts: supported values ham1, bch4, and bch8
+> > 	selection of h/w or s/w implementation depends on ti,elm-id
+> > 
+> > Signed-off-by: Pekon Gupta <pekon@ti.com>
 > 
-> On Thu, Oct 10, 2013 at 10:25:27AM -0700, Mike Dunn wrote:
->> The loop that polls the status register waiting for an operation to complete
->> foolishly bases the timeout simply on the number of loop iterations that have
->> ocurred.  When I increased the processor clock speed, timeouts started to appear
->> for long block erasure operations.  This patch measures the timeout using
->> jiffies.
->>
->> Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
->> ---
->>
->> This is a rework of an earlier patch, based on Artem's recommendation to use
->> jiffies, not udelay() (thanks Artem).  I didn't mark it 'v2' because the rework
->> makes the original name of the patch inaccurate, so now it has a different name.
->>
->> This was originally sent a couple months ago... was probably a bad time.
+> since this maintains backwards compatibility, I think it should be
+> alright to apply
 > 
-> Wow, this identical patch was sent as far back as May 31 and is being
-> submitted for the 3rd time now :( I hope there will be fewer "bad times"
-> like this in the future.
+> Reviewed-by: Felipe Balbi <balbi@ti.com>
 
+This patch looks safe to queue via the MTD tree for the arch/arm/*omap*
+parts in this patch:
 
-Thanks much Brian.  No big deal.  There's only one other user of this driver
-that I'm aware of :(
-
-Thanks also for volunteering to shoulder some of the mtd maintenance duties.
-Good job!
-
-Mike
+Acked-by: Tony Lindgren <tony@atomide.com>
