@@ -1,21 +1,20 @@
-Received: from mail-ie0-x233.google.com ([2607:f8b0:4001:c03::233])
+Received: from mail-ie0-x236.google.com ([2607:f8b0:4001:c03::236])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VUiOQ-0004ZY-Ly
- for linux-mtd@lists.infradead.org; Fri, 11 Oct 2013 19:29:00 +0000
-Received: by mail-ie0-f179.google.com with SMTP id aq17so7126211iec.38
- for <linux-mtd@lists.infradead.org>; Fri, 11 Oct 2013 12:28:37 -0700 (PDT)
-Date: Fri, 11 Oct 2013 12:28:33 -0700
+ id 1VUjKm-0006Wm-T9
+ for linux-mtd@lists.infradead.org; Fri, 11 Oct 2013 20:29:18 +0000
+Received: by mail-ie0-f182.google.com with SMTP id as1so7347810iec.27
+ for <linux-mtd@lists.infradead.org>; Fri, 11 Oct 2013 13:28:55 -0700 (PDT)
+Date: Fri, 11 Oct 2013 13:28:50 -0700
 From: Brian Norris <computersforpeace@gmail.com>
 To: Pekon Gupta <pekon@ti.com>
-Subject: Re: [PATCH v8 3/6] mtd:nand:omap2: clean-up BCHx_HW and BCHx_SW
- ECC configurations in device_probe
-Message-ID: <20131011192833.GL23337@ld-irv-0074.broadcom.com>
+Subject: Re: [PATCH v8 4/6] mtd:nand:omap2: updated support for BCH4 ECC scheme
+Message-ID: <20131011202850.GM23337@ld-irv-0074.broadcom.com>
 References: <1381498603-15715-1-git-send-email-pekon@ti.com>
- <1381498603-15715-4-git-send-email-pekon@ti.com>
+ <1381498603-15715-5-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1381498603-15715-4-git-send-email-pekon@ti.com>
+In-Reply-To: <1381498603-15715-5-git-send-email-pekon@ti.com>
 Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, arnd@arndb.de,
  Pawel.Moll@arm.com, ijc+devicetree@hellion.org.uk, tony@atomide.com,
  dedekind1@gmail.com, avinashphilipk@gmail.com, balbi@ti.com,
@@ -31,146 +30,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 11, 2013 at 07:06:40PM +0530, Pekon Gupta wrote:
-> OMAP NAND driver support multiple ECC scheme, which can used in following
-> different flavours, depending on in-build Hardware engines supported by SoC.
+On Fri, Oct 11, 2013 at 07:06:41PM +0530, Pekon Gupta wrote:
+> This patch adds following two flavours of BCH4 ECC scheme in omap2-nand driver
+> - OMAP_ECC_BCH4_CODE_HW_DETECTION_SW
+> 	- uses GPMC H/W engine for calculating ECC.
+> 	- uses software library (lib/bch.h & nand_bch.h) for error correction.
 > 
+> - OMAP_ECC_BCH4_CODE_HW
+> 	- uses GPMC H/W engine for calculating ECC.
+> 	- uses ELM H/W engine for error correction.
+> 
+> With this patch omap2-nand driver supports following ECC schemes:
 > +---------------------------------------+---------------+---------------+
 > | ECC scheme                            |ECC calculation|Error detection|
 > +---------------------------------------+---------------+---------------+
 > |OMAP_ECC_HAM1_CODE_HW                  |H/W (GPMC)     |S/W            |
 > +---------------------------------------+---------------+---------------+
-> |OMAP_ECC_BCH8_CODE_HW_DETECTION_SW     |H/W (GPMC)     |S/W            |
-> |(requires CONFIG_MTD_NAND_ECC_BCH)     |               |               |
+> |OMAP_ECC_BCH4_CODE_HW_DETECTION_SW     |H/W (GPMC)     |S/W (lib/bch.h)|
+> |OMAP_ECC_BCH4_CODE_HW                  |H/W (GPMC)     |H/W (ELM)      |
 > +---------------------------------------+---------------+---------------+
+> |OMAP_ECC_BCH8_CODE_HW_DETECTION_SW     |H/W (GPMC)     |S/W (lib/bch.h)|
 > |OMAP_ECC_BCH8_CODE_HW                  |H/W (GPMC)     |H/W (ELM)      |
-> |(requires CONFIG_MTD_NAND_OMAP_BCH &&  |               |               |
-> | ti,elm-id in DT)                      |               |               |
 > +---------------------------------------+---------------+---------------+
-> To optimize footprint of omap2-nand driver, selection of some ECC schemes
-> also require enabling following Kconfigs, in addition to setting appropriate
-> DT bindings
-> - Kconfig:CONFIG_MTD_NAND_ECC_BCH        enables S/W based BCH ECC algorithm
-> - Kconfig:CONFIG_MTD_NAND_OMAP_BCH       enables H/W based BCH ECC algorithm
+> Important:
+> - Selection of OMAP_ECC_BCHx_CODE_HW_DETECTION_SW requires,
+> 	Kconfig: CONFIG_MTD_NAND_ECC_BCH: enables S/W based BCH ECC algorithm.
 > 
-> This patch
-> - separates the configurations code for each ECC schemes
-> - fixes dependency issues based on Kconfig options
-> - updates ELM device detection in is_elm_present()
-> - cleans redundant code
-
-I'll repeat my previous comment on this patch, since it seems entirely
-ignored:
-
-<quote>
-[this patch] ... does too many unrelated things in a single patch. I am not
-comfortable taking large amounts of refactoring mixed in with Kconfig
-and #ifdef changes. Can you please separate the steps you list below
-into multiple patches and describe each one? I think you are doing many
-trivial things, but it's difficult to separate the noise out from the
-substantial changes.
-</quote>
-
-Considering your frustration, it is certainly in your best interest to
-make your patches more easily reviewable and to address my comments when
-I make them. I cannot sign off on your patches in the current state, and
-you have failed to properly address my comments on the nearly identical
-code from weeks ago.
-
-Please, put more effort into splitting your patches into reviewable
-chunks and into writing *good* descriptions -- right now, 90% of your
-commit message consists of a repeated ECC table, which does not actually
-describe your changes. The remaining description is a jumble of multiple
-unrelated thoughts, reflecting the similarly confusing patches. A
-similar criticism applies to your other patches, whose descriptions do
-not adequately reflect their contents.
-
+> - Selection of OMAP_ECC_BCHx_CODE_HW requires,
+> 	Kconfig: CONFIG_MTD_NAND_OMAP_BCH: enables ELM H/W module.
+> 
 > Signed-off-by: Pekon Gupta <pekon@ti.com>
 > ---
->  drivers/mtd/nand/omap2.c | 450 +++++++++++++++++++++++------------------------
->  1 file changed, 220 insertions(+), 230 deletions(-)
+>  drivers/mtd/nand/Kconfig |  30 ++---------
+>  drivers/mtd/nand/omap2.c | 134 +++++++++++++++++++++--------------------------
+>  2 files changed, 63 insertions(+), 101 deletions(-)
 > 
+
+...
+
 > diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index 8d521aa..fb96251 100644
+> index fb96251..a783dae 100644
 > --- a/drivers/mtd/nand/omap2.c
 > +++ b/drivers/mtd/nand/omap2.c
-> @@ -25,8 +25,10 @@
->  #include <linux/of.h>
->  #include <linux/of_device.h>
->  
-> -#ifdef CONFIG_MTD_NAND_OMAP_BCH
+> @@ -1927,7 +1868,7 @@ static int omap_nand_probe(struct platform_device *pdev)
+>  		nand_chip->ecc.bytes		= 7;
+>  		nand_chip->ecc.strength		= 4;
+>  		nand_chip->ecc.hwctl		= omap3_enable_hwecc_bch;
+> -		nand_chip->ecc.correct		= omap3_correct_data_bch;
+> +		info->nand.ecc.correct		= nand_bch_correct_data;
+
+Your patch description doesn't talk about this (and the deletion of
+omap3_correct_data_bch() above). Is the NAND BCH library a drop-in
+replacement for omap3_correct_data_bch()? If so, TELL me about it in the
+commit description. If not, this is an incompatible change and should at
+least be documented so that people can understand the change. These
+questions are being asked by the DT guys, so include it in your
+descriptions.
+
+Also, you're very inconsistent on using 'nand_chip' vs. 'info->nand'.
+You added 'nand_chip' amid the noise of patch 3, so if you have it, use
+it consistently throughout probe(). Or remove it and don't use it at
+all. (This would be an independent patch from patch 3 and 4, in case
+you're wondering, since it causes a lot of diff noise.)
+
+>  		nand_chip->ecc.calculate	= omap3_calculate_ecc_bch4;
+>  		/* define custom ECC layout */
+>  		ecclayout->eccbytes		= nand_chip->ecc.bytes *
+
+> @@ -2061,7 +2036,12 @@ out_release_mem_region:
+>  		free_irq(info->gpmc_irq_fifo, info);
+>  	release_mem_region(info->phys_base, info->mem_size);
+>  out_free_info:
+> -	omap3_free_bch(&info->mtd);
 > +#ifdef CONFIG_MTD_NAND_ECC_BCH
->  #include <linux/bch.h>
-> +#endif
-> +#ifdef CONFIG_MTD_NAND_OMAP_BCH
->  #include <linux/platform_data/elm.h>
->  #endif
->  
-
-Why do you even need the #ifdef's for the #include's? It is not harmful
-to include headers for stuff that is only conditionally used. In fact,
-this creates a problem later when you try to use nand_bch_free(), and
-you have to surround it with extra #ifdef's.
-
-In short: these #ifdef's just breed more #ifdef's and cause the code to
-become harder to read and less maintainable.
-
-(I commented about the #ifdef's around nand_bch_free() in v6, and you
-did not address the comment.)
-
-> @@ -1846,20 +1726,18 @@ static int omap_nand_probe(struct platform_device *pdev)
->  	spin_lock_init(&info->controller.lock);
->  	init_waitqueue_head(&info->controller.wq);
->  
-> -	info->pdev = pdev;
-> -
-> +	mtd			= &info->mtd;
-> +	mtd->name		= dev_name(&pdev->dev);
-> +	mtd->owner		= THIS_MODULE;
-> +	mtd->priv		= &info->nand;
-> +	nand_chip		= &info->nand;
-> +	info->pdev		= pdev;
->  	info->gpmc_cs		= pdata->cs;
->  	info->reg		= pdata->reg;
-> +	info->bch		= NULL;
->  
-> -	info->mtd.priv		= &info->nand;
-> -	info->mtd.name		= dev_name(&pdev->dev);
-> -	info->mtd.owner		= THIS_MODULE;
-> -
-> -	info->nand.options	= pdata->devsize;
-> -	info->nand.options	|= NAND_SKIP_BBTSCAN;
-> -#ifdef CONFIG_MTD_NAND_OMAP_BCH
-> +	nand_chip->options	|= NAND_SKIP_BBTSCAN | NAND_BUSWIDTH_AUTO;
-
-I recommended (in v6) you split the NAND_BUSWIDTH_AUTO change to a new
-patch and to describe it in the commit. You did neither.
-
->  	info->of_node		= pdata->of_node;
-> -#endif
->  
->  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->  	if (res == NULL) {
-> @@ -1903,6 +1781,30 @@ static int omap_nand_probe(struct platform_device *pdev)
->  		info->nand.chip_delay = 50;
->  	}
->  
-> +	/* scan NAND device conncted to controller */
-> +	if (nand_scan_ident(mtd, 1, NULL)) {
-> +		err = -ENXIO;
-> +		goto out_release_mem_region;
+> +	if (info->nand.ecc.priv) {
+> +		nand_bch_free(info->nand.ecc.priv);
+> +		info->nand.ecc.priv = NULL;
 > +	}
-> +	pr_info("%s: detected %s NAND flash\n", DRIVER_NAME,
-> +			(nand_chip->options & NAND_BUSWIDTH_16) ? "x16" : "x8");
+> +#endif
 
-I recommended you kill this in v6, and you did not address my comments.
+As noted previously, the #ifdef should not be necessary.
 
-> +	if ((nand_chip->options & NAND_BUSWIDTH_16) !=
-> +			(pdata->devsize & NAND_BUSWIDTH_16)) {
-> +		pr_err("%s: but incorrectly configured as %s", DRIVER_NAME,
-> +			(pdata->devsize & NAND_BUSWIDTH_16) ? "x16" : "x8");
-> +		err = -EINVAL;
-> +		goto out_release_mem_region;
-...
+>  	kfree(info);
+>  
+>  	return err;
+> @@ -2072,8 +2052,12 @@ static int omap_nand_remove(struct platform_device *pdev)
+>  	struct mtd_info *mtd = platform_get_drvdata(pdev);
+>  	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
+>  							mtd);
+> -	omap3_free_bch(&info->mtd);
+> -
+> +#ifdef CONFIG_MTD_NAND_ECC_BCH
+> +	if (info->nand.ecc.priv) {
+> +		nand_bch_free(info->nand.ecc.priv);
+> +		info->nand.ecc.priv = NULL;
+> +	}
+> +#endif
+
+Ditto.
+
+>  	if (info->dma)
+>  		dma_release_channel(info->dma);
+>  
 
 Brian
