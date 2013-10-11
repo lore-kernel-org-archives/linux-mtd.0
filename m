@@ -1,24 +1,32 @@
-Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VUZef-0002qz-I1
- for linux-mtd@lists.infradead.org; Fri, 11 Oct 2013 10:09:10 +0000
-Date: Fri, 11 Oct 2013 11:08:39 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Sourav Poddar <sourav.poddar@ti.com>
-Message-ID: <20131011100839.GA21581@sirena.org.uk>
-References: <52566ACC.1080100@ti.com> <20131010101410.GG21581@sirena.org.uk>
- <52568AA3.9080203@ti.com>
+From: "Gupta, Pekon" <pekon@ti.com>
+To: "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "dedekind1@gmail.com"
+ <dedekind1@gmail.com>
+Subject: RE: [PATCH v7 1/6] mtd: nand: omap: combine different flavours of
+ 1-bit hamming ecc schemes
+Date: Fri, 11 Oct 2013 10:17:48 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA2122E@DBDE04.ent.ti.com>
+References: <1380916188-24206-1-git-send-email-pekon@ti.com>
+ <1380916188-24206-2-git-send-email-pekon@ti.com>
+ <20131007112728.GA15365@e106331-lin.cambridge.arm.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA1F3DC@DBDE04.ent.ti.com>
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA1F3DC@DBDE04.ent.ti.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="N4K9zxasQOfRkoaJ"
-Content-Disposition: inline
-In-Reply-To: <52568AA3.9080203@ti.com>
-Subject: Re: [PATCH 1/3] spi/qspi: Add memory mapped read support.
-Cc: Peter Korsgaard <peter@korsgaard.com>, Trent Piepho <tpiepho@gmail.com>,
- balbi@ti.com, "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "spi-devel-general@lists.sourceforge.net"
- <spi-devel-general@lists.sourceforge.net>, computersforpeace@gmail.com,
- dwmw2@infradead.org
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "arnd@arndb.de" <arnd@arndb.de>, Pawel Moll <Pawel.Moll@arm.com>,
+ "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
+ "tony@atomide.com" <tony@atomide.com>,
+ "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>,
+ "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>, "Balbi,
+ Felipe" <balbi@ti.com>, "robherring2@gmail.com" <robherring2@gmail.com>,
+ "bcousson@baylibre.com" <bcousson@baylibre.com>,
+ "olof@lixom.net" <olof@lixom.net>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,53 +36,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Dear MTD Maintainers,
 
---N4K9zxasQOfRkoaJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> >
+> > If I have my NAND formatted with one of the existing ECC schemes (e.g.
+> > OMAP_ECC_HAMMING_CODE_DEFAULT) will it work with the new
+> > OMAP_ECC_HAM1_CODE_HW scheme?
+> >
+> > Are they all compatible?
+> >
+> Yes, they all are 1-bit hamming code, the only difference between
+> xx_Default and xx_HW was who was doing the ECC calculation.
+> For xx_DEFAULT: ECC calculation was done on CPU via s/w library
+> For xx_HW: ECC calculation was done by in-build h/w engine.
+> So, all HAMMING_xx can be replaced by HAM1_HW.
+>=20
+> [snip]
+>=20
+> > > @@ -1342,9 +1342,7 @@ static void __maybe_unused
+> > gpmc_read_timings_dt(struct device_node *np,
+> > >  #ifdef CONFIG_MTD_NAND
+> > >
+> > >  static const char * const nand_ecc_opts[] =3D {
+> > > -	[OMAP_ECC_HAMMING_CODE_DEFAULT]		=3D "sw",
+> > > -	[OMAP_ECC_HAMMING_CODE_HW]		=3D "hw",
+> > > -	[OMAP_ECC_HAMMING_CODE_HW_ROMCODE]	=3D "hw-
+> > romcode",
+> > > +	[OMAP_ECC_HAM1_CODE_HW]			=3D "ham1",
+> > >  	[OMAP_ECC_BCH4_CODE_HW]			=3D "bch4",
+> > >  	[OMAP_ECC_BCH8_CODE_HW]			=3D "bch8",
+> >
+> > Won't this break existing dts which have "sw", "hw", or "hw-romcode"?
+> >
+> > Someone may try to use a new kernel with an old dt, and we marked them
+> > as deprecated, not removed.
+> >
+> HAMMING_xx ECC scheme was used only on legacy platforms, when
+> BCH8 was not available, I have not seen anyone using this scheme
+> *from mainline kernel* from quite a long time. So, it's safe to remove th=
+em.
+>=20
+> This is what was concluded as per below email.
+> http://lists.infradead.org/pipermail/linux-mtd/2013-September/048876.html
+>=20
 
-On Thu, Oct 10, 2013 at 04:38:19PM +0530, Sourav Poddar wrote:
-> On Thursday 10 October 2013 03:44 PM, Mark Brown wrote:
+This patch-series and its follow-on series has already missed many merge
+windows, And the above discussion has reached a stalled state (infinite loo=
+p)
+where, I cannot revert some DT binding updates to and fro to keep all legac=
+y
+DT bindings backward compatible forever.
+However, I can assure that these DT updates make binding stable for long-te=
+rm.
 
-> >Essentially what it looks like this hardware is trying to do is adapt a
-> >serial flash so it looks more like a parallel flash.  It's not clear
-> >that this is a good idea if we are already able to understand serial
-> >flash though.
+So now it's your discretion to whether to accept or leave following 2 serie=
+s:
 
-> Do you have any idea of how to go about implementing it in a more
-> cleaner way?(taking care of all what the spi controller hardware needs to
-> do for the memory mapped mode.). I understand doing a memcpy in the caller
-> itself, but how to tackle the spi controller configuration at that
-> point of time.
+http://lists.infradead.org/pipermail/linux-mtd/2013-October/048983.html
 
-You'd need to lock the bus and return the address for the caller to use
-until it released the lock.  Like I say I'd want to see numbers on this
-helping though.
+http://lists.infradead.org/pipermail/linux-mtd/2013-October/049008.html
 
-> Memory mapped is  a spi controller feature rather than a flash.
 
-The way it appears to be implemented is pretty flash specific isn't it?
+AFAIK no-one is using Hamming based ecc-scheme on OMAP platforms
+*from mainline kernel*. So this DT update actually does not affect users
+I know of. Rather these patch series was intended for long term scalability
+and clean-up so that more OMAP users migrate to mainline kernel easily.
 
---N4K9zxasQOfRkoaJ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSV84jAAoJELSic+t+oim9+5YQAIbxl192Qfu87y91X5yrh64z
-goZDk+b9jgVmCHOpNQxA67QHUUDdJtyanuuyuEH+em0hce4rTfILzqDPU00eyyNq
-wPROwBc9vHrfCKqN0ZjUhLiIxesYRvgBoMc7r72/fKMVZxjqKQ51nlTuXQAcHfb0
-RmBoQiI4doFgSTfjbQLYbrO/DIDXwhi9XrHx3T2MjVg19hd9GogMRSz9VQVXZPhq
-uUGCoS7Rf8UJKjWGKM/x78h51LeoBToZx4vSjCuGo98Cc/8aq/C6C5k0VMM4GmuD
-H6KRg1Kz55GL8uRSnqrat0YrnjCgcSiOtvgVs221BCNahAbdTTaJS4nGekqHnghI
-xlWcK7jFXo/fFuNrzyeZsUCdMRIIW+LNHooITxBPMDAMqhRlrz/iBOYc/3irFLiC
-3+jXHVMR5dv9oh0pvCkXD33QF+rCLpEWew53ODzsg97/d9AjD0srJjnPuQxo8PPV
-Phh+Ut6+uMdY4YfA9LY9VrPQRfRPcmU4RD7shdMbCdLzonfj3QHjNYAoaLIP9M7O
-zZAcAi5LmieK0GBKZ5xHD8OucxYzA0rv7nV8oWrqG89UHFus6MDA89qXCUM+9Ifr
-9AHP3ZDevtPg6yACVu1w4KgjTMQLVgx4j0SWn166xfEhavnd+qiQGqwJVyZx5WXX
-ITWpBHIduk3a7U+I18oK
-=XYWn
------END PGP SIGNATURE-----
-
---N4K9zxasQOfRkoaJ--
+with regards, pekon=20
