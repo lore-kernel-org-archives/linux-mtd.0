@@ -1,26 +1,22 @@
-Received: from mail-ie0-x236.google.com ([2607:f8b0:4001:c03::236])
+Received: from mail-ie0-x22c.google.com ([2607:f8b0:4001:c03::22c])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VUjKm-0006Wm-T9
- for linux-mtd@lists.infradead.org; Fri, 11 Oct 2013 20:29:18 +0000
-Received: by mail-ie0-f182.google.com with SMTP id as1so7347810iec.27
- for <linux-mtd@lists.infradead.org>; Fri, 11 Oct 2013 13:28:55 -0700 (PDT)
-Date: Fri, 11 Oct 2013 13:28:50 -0700
+ id 1VUjUH-0006t3-0x
+ for linux-mtd@lists.infradead.org; Fri, 11 Oct 2013 20:39:05 +0000
+Received: by mail-ie0-f172.google.com with SMTP id x13so9425059ief.31
+ for <linux-mtd@lists.infradead.org>; Fri, 11 Oct 2013 13:38:40 -0700 (PDT)
+Date: Fri, 11 Oct 2013 13:38:37 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Pekon Gupta <pekon@ti.com>
-Subject: Re: [PATCH v8 4/6] mtd:nand:omap2: updated support for BCH4 ECC scheme
-Message-ID: <20131011202850.GM23337@ld-irv-0074.broadcom.com>
-References: <1381498603-15715-1-git-send-email-pekon@ti.com>
- <1381498603-15715-5-git-send-email-pekon@ti.com>
+To: Mike Dunn <mikedunn@newsguy.com>
+Subject: Re: [PATCH] [RESEND] mtd: docg4: fix status polling loop
+Message-ID: <20131011203837.GN23337@ld-irv-0074.broadcom.com>
+References: <1381425927-1881-1-git-send-email-mikedunn@newsguy.com>
+ <20131011181615.GK23337@ld-irv-0074.broadcom.com>
+ <525843F6.8050907@newsguy.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1381498603-15715-5-git-send-email-pekon@ti.com>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, arnd@arndb.de,
- Pawel.Moll@arm.com, ijc+devicetree@hellion.org.uk, tony@atomide.com,
- dedekind1@gmail.com, avinashphilipk@gmail.com, balbi@ti.com,
- robherring2@gmail.com, bcousson@baylibre.com, swarren@wwwdotorg.org,
- olof@lixom.net, linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- dwmw2@infradead.org
+In-Reply-To: <525843F6.8050907@newsguy.com>
+Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,107 +26,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 11, 2013 at 07:06:41PM +0530, Pekon Gupta wrote:
-> This patch adds following two flavours of BCH4 ECC scheme in omap2-nand driver
-> - OMAP_ECC_BCH4_CODE_HW_DETECTION_SW
-> 	- uses GPMC H/W engine for calculating ECC.
-> 	- uses software library (lib/bch.h & nand_bch.h) for error correction.
+On Fri, Oct 11, 2013 at 11:31:18AM -0700, Mike Dunn wrote:
+> On 10/11/2013 11:16 AM, Brian Norris wrote:
+> > On Thu, Oct 10, 2013 at 10:25:27AM -0700, Mike Dunn wrote:
+> >> The loop that polls the status register waiting for an operation to complete
+> >> foolishly bases the timeout simply on the number of loop iterations that have
+> >> ocurred.  When I increased the processor clock speed, timeouts started to appear
+> >> for long block erasure operations.  This patch measures the timeout using
+> >> jiffies.
+> >>
+> >> Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
+> >> ---
+> >>
+> >> This is a rework of an earlier patch, based on Artem's recommendation to use
+> >> jiffies, not udelay() (thanks Artem).  I didn't mark it 'v2' because the rework
+> >> makes the original name of the patch inaccurate, so now it has a different name.
+> >>
+> >> This was originally sent a couple months ago... was probably a bad time.
+> > 
+> > Wow, this identical patch was sent as far back as May 31 and is being
+> > submitted for the 3rd time now :( I hope there will be fewer "bad times"
+> > like this in the future.
 > 
-> - OMAP_ECC_BCH4_CODE_HW
-> 	- uses GPMC H/W engine for calculating ECC.
-> 	- uses ELM H/W engine for error correction.
 > 
-> With this patch omap2-nand driver supports following ECC schemes:
-> +---------------------------------------+---------------+---------------+
-> | ECC scheme                            |ECC calculation|Error detection|
-> +---------------------------------------+---------------+---------------+
-> |OMAP_ECC_HAM1_CODE_HW                  |H/W (GPMC)     |S/W            |
-> +---------------------------------------+---------------+---------------+
-> |OMAP_ECC_BCH4_CODE_HW_DETECTION_SW     |H/W (GPMC)     |S/W (lib/bch.h)|
-> |OMAP_ECC_BCH4_CODE_HW                  |H/W (GPMC)     |H/W (ELM)      |
-> +---------------------------------------+---------------+---------------+
-> |OMAP_ECC_BCH8_CODE_HW_DETECTION_SW     |H/W (GPMC)     |S/W (lib/bch.h)|
-> |OMAP_ECC_BCH8_CODE_HW                  |H/W (GPMC)     |H/W (ELM)      |
-> +---------------------------------------+---------------+---------------+
-> Important:
-> - Selection of OMAP_ECC_BCHx_CODE_HW_DETECTION_SW requires,
-> 	Kconfig: CONFIG_MTD_NAND_ECC_BCH: enables S/W based BCH ECC algorithm.
+> Thanks much Brian.  No big deal.  There's only one other user of this driver
+> that I'm aware of :(
 > 
-> - Selection of OMAP_ECC_BCHx_CODE_HW requires,
-> 	Kconfig: CONFIG_MTD_NAND_OMAP_BCH: enables ELM H/W module.
-> 
-> Signed-off-by: Pekon Gupta <pekon@ti.com>
-> ---
->  drivers/mtd/nand/Kconfig |  30 ++---------
->  drivers/mtd/nand/omap2.c | 134 +++++++++++++++++++++--------------------------
->  2 files changed, 63 insertions(+), 101 deletions(-)
-> 
+> Thanks also for volunteering to shoulder some of the mtd maintenance duties.
+> Good job!
 
-...
-
-> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index fb96251..a783dae 100644
-> --- a/drivers/mtd/nand/omap2.c
-> +++ b/drivers/mtd/nand/omap2.c
-> @@ -1927,7 +1868,7 @@ static int omap_nand_probe(struct platform_device *pdev)
->  		nand_chip->ecc.bytes		= 7;
->  		nand_chip->ecc.strength		= 4;
->  		nand_chip->ecc.hwctl		= omap3_enable_hwecc_bch;
-> -		nand_chip->ecc.correct		= omap3_correct_data_bch;
-> +		info->nand.ecc.correct		= nand_bch_correct_data;
-
-Your patch description doesn't talk about this (and the deletion of
-omap3_correct_data_bch() above). Is the NAND BCH library a drop-in
-replacement for omap3_correct_data_bch()? If so, TELL me about it in the
-commit description. If not, this is an incompatible change and should at
-least be documented so that people can understand the change. These
-questions are being asked by the DT guys, so include it in your
-descriptions.
-
-Also, you're very inconsistent on using 'nand_chip' vs. 'info->nand'.
-You added 'nand_chip' amid the noise of patch 3, so if you have it, use
-it consistently throughout probe(). Or remove it and don't use it at
-all. (This would be an independent patch from patch 3 and 4, in case
-you're wondering, since it causes a lot of diff noise.)
-
->  		nand_chip->ecc.calculate	= omap3_calculate_ecc_bch4;
->  		/* define custom ECC layout */
->  		ecclayout->eccbytes		= nand_chip->ecc.bytes *
-
-> @@ -2061,7 +2036,12 @@ out_release_mem_region:
->  		free_irq(info->gpmc_irq_fifo, info);
->  	release_mem_region(info->phys_base, info->mem_size);
->  out_free_info:
-> -	omap3_free_bch(&info->mtd);
-> +#ifdef CONFIG_MTD_NAND_ECC_BCH
-> +	if (info->nand.ecc.priv) {
-> +		nand_bch_free(info->nand.ecc.priv);
-> +		info->nand.ecc.priv = NULL;
-> +	}
-> +#endif
-
-As noted previously, the #ifdef should not be necessary.
-
->  	kfree(info);
->  
->  	return err;
-> @@ -2072,8 +2052,12 @@ static int omap_nand_remove(struct platform_device *pdev)
->  	struct mtd_info *mtd = platform_get_drvdata(pdev);
->  	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
->  							mtd);
-> -	omap3_free_bch(&info->mtd);
-> -
-> +#ifdef CONFIG_MTD_NAND_ECC_BCH
-> +	if (info->nand.ecc.priv) {
-> +		nand_bch_free(info->nand.ecc.priv);
-> +		info->nand.ecc.priv = NULL;
-> +	}
-> +#endif
-
-Ditto.
-
->  	if (info->dma)
->  		dma_release_channel(info->dma);
->  
+Thanks! It's an interesting job.
 
 Brian
