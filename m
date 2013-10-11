@@ -1,19 +1,16 @@
-From: Pekon Gupta <pekon@ti.com>
-To: <mark.rutland@arm.com>, <robherring2@gmail.com>, <olof@lixom.net>,
- <computersforpeace@gmail.com>, <dedekind1@gmail.com>
-Subject: [PATCH v8 6/6] mtd: nand: omap: updated devm_xx for all resource
- allocation and free calls
-Date: Fri, 11 Oct 2013 19:06:43 +0530
-Message-ID: <1381498603-15715-7-git-send-email-pekon@ti.com>
-In-Reply-To: <1381498603-15715-1-git-send-email-pekon@ti.com>
-References: <1381498603-15715-1-git-send-email-pekon@ti.com>
+Received: from mail-vc0-f175.google.com ([209.85.220.175])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VUdEk-0001LR-UK
+ for linux-mtd@lists.infradead.org; Fri, 11 Oct 2013 13:58:39 +0000
+Received: by mail-vc0-f175.google.com with SMTP id ia6so1865917vcb.34
+ for <linux-mtd@lists.infradead.org>; Fri, 11 Oct 2013 06:58:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: devicetree@vger.kernel.org, Pawel.Moll@arm.com, arnd@arndb.de,
- swarren@wwwdotorg.org, tony@atomide.com, ijc+devicetree@hellion.org.uk,
- avinashphilipk@gmail.com, balbi@ti.com, linux-mtd@lists.infradead.org,
- Pekon Gupta <pekon@ti.com>, bcousson@baylibre.com, linux-omap@vger.kernel.org,
- dwmw2@infradead.org
+From: Simon Liddicott <simon@liddicott.com>
+Date: Fri, 11 Oct 2013 14:57:56 +0100
+Message-ID: <CALuNSF7ESa0CBE0+kNO_HDeWKVgzN8ZZo7TnNGadTC0AuZjEXQ@mail.gmail.com>
+Subject: nandsim LEB size mismatch
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,121 +20,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-"Managed Device Resource" or devm_xx calls takes care of automatic freeing
-of the resource in case of:
-- failure during driver probe
-- failure during resource allocation
-- detaching or unloading of driver module (rmmod)
-Reference: Documentation/driver-model/devres.txt
+Hi
 
-Though OMAP NAND driver handles freeing of resource allocation in most of
-the cases, but using devm_xx provides more clean and effortless approach
-to handle all such cases.
+I've searched the archives and read the FAQ but not found anything
+that matches my situation.
 
-Signed-off-by: Pekon Gupta <pekon@ti.com>
----
- drivers/mtd/nand/omap2.c | 38 +++++++++++++++++++++-----------------
- 1 file changed, 21 insertions(+), 17 deletions(-)
+I am trying to read an image I think is made for an MT29F2G08ABAEA.
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index a783dae..0f2b0d1 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -1658,7 +1658,8 @@ static int omap_nand_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
- 
--	info = kzalloc(sizeof(struct omap_nand_info), GFP_KERNEL);
-+	info = devm_kzalloc(&pdev->dev, sizeof(struct omap_nand_info),
-+				GFP_KERNEL);
- 	if (!info)
- 		return -ENOMEM;
- 
-@@ -1690,13 +1691,14 @@ static int omap_nand_probe(struct platform_device *pdev)
- 	info->phys_base = res->start;
- 	info->mem_size = resource_size(res);
- 
--	if (!request_mem_region(info->phys_base, info->mem_size,
--				pdev->dev.driver->name)) {
-+	if (!devm_request_mem_region(&pdev->dev, info->phys_base,
-+				info->mem_size,	pdev->dev.driver->name)) {
- 		err = -EBUSY;
- 		goto out_free_info;
- 	}
- 
--	info->nand.IO_ADDR_R = ioremap(info->phys_base, info->mem_size);
-+	info->nand.IO_ADDR_R = devm_ioremap(&pdev->dev, info->phys_base,
-+						info->mem_size);
- 	if (!info->nand.IO_ADDR_R) {
- 		err = -ENOMEM;
- 		goto out_release_mem_region;
-@@ -1799,8 +1801,9 @@ static int omap_nand_probe(struct platform_device *pdev)
- 			err = -ENODEV;
- 			goto out_release_mem_region;
- 		}
--		err = request_irq(info->gpmc_irq_fifo,	omap_nand_irq,
--					IRQF_SHARED, "gpmc-nand-fifo", info);
-+		err = devm_request_irq(&pdev->dev, info->gpmc_irq_fifo,
-+					omap_nand_irq, IRQF_SHARED,
-+					"gpmc-nand-fifo", info);
- 		if (err) {
- 			dev_err(&pdev->dev, "requesting irq(%d) error:%d",
- 						info->gpmc_irq_fifo, err);
-@@ -1814,8 +1817,9 @@ static int omap_nand_probe(struct platform_device *pdev)
- 			err = -ENODEV;
- 			goto out_release_mem_region;
- 		}
--		err = request_irq(info->gpmc_irq_count,	omap_nand_irq,
--					IRQF_SHARED, "gpmc-nand-count", info);
-+		err = devm_request_irq(&pdev->dev, info->gpmc_irq_count,
-+					omap_nand_irq, IRQF_SHARED,
-+					"gpmc-nand-count", info);
- 		if (err) {
- 			dev_err(&pdev->dev, "requesting irq(%d) error:%d",
- 						info->gpmc_irq_count, err);
-@@ -2031,10 +2035,10 @@ out_release_mem_region:
- 	if (info->dma)
- 		dma_release_channel(info->dma);
- 	if (info->gpmc_irq_count > 0)
--		free_irq(info->gpmc_irq_count, info);
-+		devm_free_irq(&pdev->dev, info->gpmc_irq_count, info);
- 	if (info->gpmc_irq_fifo > 0)
--		free_irq(info->gpmc_irq_fifo, info);
--	release_mem_region(info->phys_base, info->mem_size);
-+		devm_free_irq(&pdev->dev, info->gpmc_irq_fifo, info);
-+	devm_release_mem_region(&pdev->dev, info->phys_base, info->mem_size);
- out_free_info:
- #ifdef CONFIG_MTD_NAND_ECC_BCH
- 	if (info->nand.ecc.priv) {
-@@ -2042,7 +2046,7 @@ out_free_info:
- 		info->nand.ecc.priv = NULL;
- 	}
- #endif
--	kfree(info);
-+	devm_kfree(&pdev->dev, info);
- 
- 	return err;
- }
-@@ -2062,15 +2066,15 @@ static int omap_nand_remove(struct platform_device *pdev)
- 		dma_release_channel(info->dma);
- 
- 	if (info->gpmc_irq_count > 0)
--		free_irq(info->gpmc_irq_count, info);
-+		devm_free_irq(&pdev->dev, info->gpmc_irq_count, info);
- 	if (info->gpmc_irq_fifo > 0)
--		free_irq(info->gpmc_irq_fifo, info);
-+		devm_free_irq(&pdev->dev, info->gpmc_irq_fifo, info);
- 
- 	/* Release NAND device, its internal structures and partitions */
- 	nand_release(&info->mtd);
--	iounmap(info->nand.IO_ADDR_R);
--	release_mem_region(info->phys_base, info->mem_size);
--	kfree(info);
-+	devm_iounmap(&pdev->dev, info->nand.IO_ADDR_R);
-+	devm_release_mem_region(&pdev->dev, info->phys_base, info->mem_size);
-+	devm_kfree(&pdev->dev, info);
- 	return 0;
- }
- 
--- 
-1.8.1
+I have run the following:
+
+$ sudo modprobe nandsim first_id_byte=0x2c second_id_byte=0xda \
+third_id_byte=0x90 fourth_id_byte=0x95
+$ sudo flash_erase /dev/mtd0 0 0
+$ sudo modprobe ubi mtd=0
+$ sudo ubimkvol /dev/ubi0 -N RFS -s $((0xA00000))
+
+Volume ID 0, size 82 LEBs (10579968 bytes, 10.1 MiB), LEB size 129024
+bytes (126.0 KiB), dynamic, name "RFS", alignment 1
+
+$ sudo ubiupdatevol /dev/ubi0_0 RFS.bin
+$ sudo mount /dev/ubi0_0 /mnt
+
+mount: wrong fs type, bad option, bad superblock on /dev/ubi0_0,
+       missing codepage or helper program, or other error
+       In some cases useful info is found in syslog - try
+       dmesg | tail  or so
+
+[1975256.515179] UBIFS error (pid 10309): validate_sb: LEB size
+mismatch: 126976 in superblock, 129024 real
+
+I think that nandsim provides the 'real' value for LEB size, and even
+if the value is right - how can I read the data that expects a 124KiB
+LEB size?
+
+Any help appreciated.
+
+Thanks in advance.
+
+Simon.
