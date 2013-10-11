@@ -1,22 +1,25 @@
-Received: from mail-ie0-x22c.google.com ([2607:f8b0:4001:c03::22c])
+Received: from mail-ie0-x22e.google.com ([2607:f8b0:4001:c03::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VUjUH-0006t3-0x
- for linux-mtd@lists.infradead.org; Fri, 11 Oct 2013 20:39:05 +0000
-Received: by mail-ie0-f172.google.com with SMTP id x13so9425059ief.31
- for <linux-mtd@lists.infradead.org>; Fri, 11 Oct 2013 13:38:40 -0700 (PDT)
-Date: Fri, 11 Oct 2013 13:38:37 -0700
+ id 1VUjy2-0007vh-3i
+ for linux-mtd@lists.infradead.org; Fri, 11 Oct 2013 21:09:50 +0000
+Received: by mail-ie0-f174.google.com with SMTP id qd12so4301489ieb.5
+ for <linux-mtd@lists.infradead.org>; Fri, 11 Oct 2013 14:09:29 -0700 (PDT)
+Date: Fri, 11 Oct 2013 14:09:24 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Mike Dunn <mikedunn@newsguy.com>
-Subject: Re: [PATCH] [RESEND] mtd: docg4: fix status polling loop
-Message-ID: <20131011203837.GN23337@ld-irv-0074.broadcom.com>
-References: <1381425927-1881-1-git-send-email-mikedunn@newsguy.com>
- <20131011181615.GK23337@ld-irv-0074.broadcom.com>
- <525843F6.8050907@newsguy.com>
+To: Pekon Gupta <pekon@ti.com>
+Subject: Re: [PATCH v8 0/6] mtd:nand:omap2: clean-up of supported ECC schemes
+Message-ID: <20131011210924.GO23337@ld-irv-0074.broadcom.com>
+References: <1381498603-15715-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <525843F6.8050907@newsguy.com>
-Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+In-Reply-To: <1381498603-15715-1-git-send-email-pekon@ti.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, arnd@arndb.de,
+ Pawel.Moll@arm.com, ijc+devicetree@hellion.org.uk, tony@atomide.com,
+ dedekind1@gmail.com, avinashphilipk@gmail.com, balbi@ti.com,
+ robherring2@gmail.com, bcousson@baylibre.com, swarren@wwwdotorg.org,
+ olof@lixom.net, linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
+ dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,35 +29,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 11, 2013 at 11:31:18AM -0700, Mike Dunn wrote:
-> On 10/11/2013 11:16 AM, Brian Norris wrote:
-> > On Thu, Oct 10, 2013 at 10:25:27AM -0700, Mike Dunn wrote:
-> >> The loop that polls the status register waiting for an operation to complete
-> >> foolishly bases the timeout simply on the number of loop iterations that have
-> >> ocurred.  When I increased the processor clock speed, timeouts started to appear
-> >> for long block erasure operations.  This patch measures the timeout using
-> >> jiffies.
-> >>
-> >> Signed-off-by: Mike Dunn <mikedunn@newsguy.com>
-> >> ---
-> >>
-> >> This is a rework of an earlier patch, based on Artem's recommendation to use
-> >> jiffies, not udelay() (thanks Artem).  I didn't mark it 'v2' because the rework
-> >> makes the original name of the patch inaccurate, so now it has a different name.
-> >>
-> >> This was originally sent a couple months ago... was probably a bad time.
-> > 
-> > Wow, this identical patch was sent as far back as May 31 and is being
-> > submitted for the 3rd time now :( I hope there will be fewer "bad times"
-> > like this in the future.
-> 
-> 
-> Thanks much Brian.  No big deal.  There's only one other user of this driver
-> that I'm aware of :(
-> 
-> Thanks also for volunteering to shoulder some of the mtd maintenance duties.
-> Good job!
+Hi Pekon,
 
-Thanks! It's an interesting job.
+I will try to summarize the standing of your patch series.
+
+Patches 1 and 2 look good and have addressed all of the DT maintainers'
+comments, AFAICT. They are ready to go in, except that the following
+patches are not ready; they should probably go in together.
+
+You ignored most of my comments to patch 3, and it is insufficiently
+documented. Please take a look at my comments, both here (in v8) and in
+v6. It still should be split into more patches.
+
+Patch 4 does too much without describing it. Why are you dropping the
+old omap3_correct_data_bch() code? Is this just refactoring? If so, you
+should say so. And this also suggests that you have two logical changes
+going on that should be separated into different patches; one to
+refactor the open-coded NAND/BCH library to replace it with the
+nand_bch.{c,h} support library and one for the new ECC modes.
+
+Patch 5 is good but should wait until the other DT parts are acceptable
+and merged into MTD.
+
+Patch 6 needs rewriting to use devm_* functions properly, but it was
+never integral to this patch series. You can improve it and resend with
+this series or just send it separately afterward.
+
+On Fri, Oct 11, 2013 at 07:06:37PM +0530, Pekon Gupta wrote:
+> *Changes v7 -> v8*
+> [PATCH 1/6] <no updates>
+> [PATCH 2/6]
+> 	- updated DT parsing of "ti,nand-ecc-opts" so that its "ham1" remains
+> 		compatible to "sw","hw","hw-romcode"
+> 	- updated DT parsing of "ti,elm-id" to retain compatibility to "elm_id"
+> 	- using of_parse_phandle() to get ELM device pointer from DT
+> [PATCH 3..6/6] <commit log updates>
+> 
+> 
+> *Changes v6 -> v7*
+> [PATCH 1/6] <NEW> split from [PATCH v6 2/4] as per feedbacks of Brain Norris
+> [PATCH 2/6] incorporated feedbacks from DT maintainers
+> [PATCH 3/6] patch cleaning and incorporated feedbacks from Brain Norris
+
+You did not incorporate most of my feedback here. Also, my name is
+'Brian' not 'Brain', although I'm flattered ;)
+
+> [PATCH 4/6] rebasing changes and cleanup
+> [PATCH 5/6] updated omap3430-sdp.dts
+> [PATCH 6/6] <NEW> updated for devm_xx
+
+...
+
+> After this patch series, omap2-nand driver will supports following ECC schemes:
+> +---------------------------------------+---------------+---------------+
+> | ECC scheme                            |ECC calculation|Error detection|
+> +---------------------------------------+---------------+---------------+
+> |OMAP_ECC_HAM1_CODE_HW                  |H/W (GPMC)     |S/W            |
+> +---------------------------------------+---------------+---------------+
+> |OMAP_ECC_BCH4_CODE_HW_DETECTION_SW     |H/W (GPMC)     |S/W (lib/bch.h)|
+> |OMAP_ECC_BCH4_CODE_HW                  |H/W (GPMC)     |H/W (ELM)      |
+> +---------------------------------------+---------------+---------------+
+> |OMAP_ECC_BCH8_CODE_HW_DETECTION_SW     |H/W (GPMC)     |S/W (lib/bch.h)|
+> |OMAP_ECC_BCH8_CODE_HW                  |H/W (GPMC)     |H/W (ELM)      |
+> +---------------------------------------+---------------+---------------+
+> 
+> To optimize footprint of omap2-nand driver, selection of some ECC schemes
+> also require enabling following Kconfigs, in addition to setting appropriate
+> DT bindings
+> - Kconfig:CONFIG_MTD_NAND_ECC_BCH        error detection done in software
+> - Kconfig:CONFIG_MTD_NAND_OMAP_BCH       error detection done by h/w engine
+> 
+> 
+> Pekon Gupta (6):
+>   mtd: nand: omap: combine different flavours of 1-bit hamming ecc
+>     schemes
+>   ARM: OMAP2+: cleaned-up DT support of various ECC schemes
+>   mtd:nand:omap2: clean-up BCHx_HW and BCHx_SW ECC configurations in
+>     device_probe
+>   mtd:nand:omap2: updated support for BCH4 ECC scheme
+>   ARM: dts: AM33xx: updated default ECC scheme in nand-ecc-opt
+>   mtd: nand: omap: updated devm_xx for all resource allocation and free
+>     calls
+> 
+>  .../devicetree/bindings/mtd/gpmc-nand.txt          |  16 +-
+>  arch/arm/boot/dts/am335x-evm.dts                   |   3 +-
+>  arch/arm/boot/dts/omap3430-sdp.dts                 |   2 +-
+>  arch/arm/mach-omap2/board-flash.c                  |   2 +-
+>  arch/arm/mach-omap2/gpmc.c                         |  47 +-
+>  drivers/mtd/nand/Kconfig                           |  30 +-
+>  drivers/mtd/nand/omap2.c                           | 569 ++++++++++-----------
+>  include/linux/platform_data/mtd-nand-omap2.h       |  18 +-
+>  8 files changed, 333 insertions(+), 354 deletions(-)
 
 Brian
