@@ -1,22 +1,22 @@
-Received: from mail-ob0-x234.google.com ([2607:f8b0:4003:c01::234])
+Received: from mail-out.m-online.net ([212.18.0.9])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VUl9B-0001NK-K8
- for linux-mtd@lists.infradead.org; Fri, 11 Oct 2013 22:25:26 +0000
-Received: by mail-ob0-f180.google.com with SMTP id wn1so3224377obc.39
- for <linux-mtd@lists.infradead.org>; Fri, 11 Oct 2013 15:25:02 -0700 (PDT)
-Date: Fri, 11 Oct 2013 15:24:59 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: "Shah, Minal" <minal.shah@ti.com>
-Subject: Re: MTD utils v1.5.0: MEMERASE64 ioctl failed error
-Message-ID: <20131011222459.GQ23337@ld-irv-0074.broadcom.com>
-References: <566CE8F1DB913147957287757DA6396B3E9D5FD4@DBDE04.ent.ti.com>
+ id 1VUnpq-0004CW-IR
+ for linux-mtd@lists.infradead.org; Sat, 12 Oct 2013 01:17:39 +0000
+From: Marek Vasut <marex@denx.de>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: N25Q256A 13E40
+Date: Sat, 12 Oct 2013 03:17:11 +0200
+References: <201310071824.01028.marex@denx.de>
+ <201310091214.02740.marex@denx.de>
+ <20131009214401.GD23337@ld-irv-0074.broadcom.com>
+In-Reply-To: <20131009214401.GD23337@ld-irv-0074.broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <566CE8F1DB913147957287757DA6396B3E9D5FD4@DBDE04.ent.ti.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Mukherjee,
- Somnath" <somnath@ti.com>, Mike Frysinger <vapier@gentoo.org>, "Gupta,
- Pekon" <pekon@ti.com>, "Parikh, Urmil" <urmil@ti.com>
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201310120317.12174.marex@denx.de>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,29 +26,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Minal,
+Hi Brian,
 
-On Wed, Oct 09, 2013 at 05:05:11AM +0000, Shah, Minal wrote:
-> I am using MTD utils version 1.5.0 for DRA7 (Vayu) platform.
+Sorry for the late reply :(
+
+> Hi,
 > 
-> I have bad blocks in some of my NAND partitions which I am not able to erase from linux kernel.
+> On Wed, Oct 09, 2013 at 12:14:02PM +0200, Marek Vasut wrote:
+> > > On Mon, Oct 7, 2013 at 9:24 AM, Marek Vasut <marex@denx.de> wrote:
+> > > > Let's talk about our favourite chip :) I just got my hands on
+> > > > N25Q256A . Since there was quite a flurry of patches for this and
+> > > > similar chips and I got it working on a different chip with exactly
+> > > > the same IDs and type, I'd would expect linux to work with this one
+> > > > too. Guess what ... ;-)
+> > > > 
+> > > > This particular incarnation of N25Q256A completely ignores the 4-byte
+> > > > ERASE (0xdc) command. Apparently, if I look closely, it's N25Q256A
+> > > > 13E40 variant and seeing the Note #14 (datasheet page 30 / below
+> > > > Table 18. Command set), quoting:
+> > > > 
+> > > > 14.This command is only for part numbers N25Q256A83ESF40x and
+> > > > N25Q256A83E1240x.
+> > > 
+> > > This note also applies to PAGE_PROGRAM_4B (0x12) as well, right?
+> > 
+> > Yeah, both ERASE_4B and PP_4B or whatever they're called there.
+> > Interestingly enough, READ_4B works ;-/
+> 
+> Well, the READ_4B consistency is (unintentionally?) helpful for my
+> systems, as we have begun implementing a jumper switch so that the boot
+> ROM will know whether to use FAST_READ or FAST_READ_4B. Since
+> essentially all large SPI flash at *least* support the READ_4B command
+> (as you noted), we can reliably boot from the flash, no matter what mode
+> it is left in. After booting, we can choose the appropriate mode for
+> programming/erasing.
 
-MTD does not allow erasing bad blocks. This is prohibited by NAND
-datasheets. There are occasions where, for debugging purposes, one might
-need to erase a "bad" block that is not actually bad, but MTD does not
-provide an interface for doing this. An interface for doing so was
-discussed a while back, but nothing was merged.
+I wish I had such a bootrom. In my case (freescale imx28), the bootrom can just 
+do 3-byte operation and that's it. I believe the only way around here is to 
+power-cycle the spi flash before the bootrom starts using it.
 
-> Using "-N" option in flash_eraseall ideally should have allowed erasing the bad block but I land up in "MEMERASE64 ioctl failed" error. 
+> > > [Now that I went back to look at some more code:] Wait, but we don't
+> > > even try to use the 4-byte dedicated commands like 0xdc on Micron
+> > > flash, so why are you having this problem? The code currently stands
+> > 
+> > > as:
+> > The JEDEC_MFR for this flash Micron N25Q256A is CFI_MFR_ST (I wonder
+> > why).
+> 
+> Probably some series of acquisitions?
+> 
+> But you didn't quite answer my question. Are you having problems with
+> this Micron/ST/something-that's-not-AMD-or-Spansion flash using the
+> current mainline? Or did you only have trouble when you tried modifying
+> the code to use the dedicated 4-byte addressing commands?
 
-"-N" just means that the user-space tool (flash_erase) won't try to skip
-bad blocks. But that doesn't circumvent the in-kernel protection that
-prevents the erase from succeeding. So the "Input/output" error you see
-is completely expected and currently unavoidable, unless you modify your
-kernel to remove this protection.
+Urgh, I just noticed I did exactly this. I modified the driver to enable this 4-
+byte opcodes and then just forgot about it. Pardon my stupidity :(
 
-[snip]
-
-So why do you want to erase bad blocks?
-
-Brian
+Best regards,
+Marek Vasut
