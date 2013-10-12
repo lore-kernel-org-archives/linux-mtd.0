@@ -1,19 +1,24 @@
-Received: from www1245.sakura.ne.jp ([219.94.162.55])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VUpdC-0005rM-Hm
- for linux-mtd@lists.infradead.org; Sat, 12 Oct 2013 03:12:43 +0000
-Message-ID: <CD052D10356D4AEFA4E72B084BEA8E56@fdwhhdl>
-From: "ek.gribova" <mike@robinson.net>
-To: <jamboree@ulscout.ru>, <linux-mtd@lists.infradead.org>, <mir@n-m.ru>,
- <mail@gosacad.karelia.ru>, <guomeihao@163.com>
-Subject: =?windows-1251?Q?=ED=E0=F0=E0=F9=E8=E2=E0=E5=F2_=EE=E1=EC?=
- =?windows-1251?Q?=E5=ED_=E2=E5=F9=E5=F1=F2=E2?=
-Date: Sat, 12 Oct 2013 04:21:16 +0200
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VV2M4-0007E6-1O
+ for linux-mtd@lists.infradead.org; Sat, 12 Oct 2013 16:47:52 +0000
+Date: Sat, 12 Oct 2013 13:47:22 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: MTD utils v1.5.0: MEMERASE64 ioctl failed error
+Message-ID: <20131012164721.GA22305@localhost>
+References: <566CE8F1DB913147957287757DA6396B3E9D5FD4@DBDE04.ent.ti.com>
+ <20131011222459.GQ23337@ld-irv-0074.broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="windows-1251";
-Content-Transfer-Encoding: base64
-Reply-To: "ek.gribova" <alslaeva85@integra.com.mx>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20131011222459.GQ23337@ld-irv-0074.broadcom.com>
+Cc: Mike Frysinger <vapier@gentoo.org>, "Mukherjee, Somnath" <somnath@ti.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
+ Pekon" <pekon@ti.com>, "Shah, Minal" <minal.shah@ti.com>, "Parikh,
+ Urmil" <urmil@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,4 +28,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-7e7w7ODr6Ofz5fIg8/Du4uXt/CDx4PXg8OAg4iDq8O7i6CBodHRwOi8vbnh5LmluL29ubmttDQo=
+On Fri, Oct 11, 2013 at 03:24:59PM -0700, Brian Norris wrote:
+> Hi Minal,
+> 
+> On Wed, Oct 09, 2013 at 05:05:11AM +0000, Shah, Minal wrote:
+> > I am using MTD utils version 1.5.0 for DRA7 (Vayu) platform.
+> > 
+> > I have bad blocks in some of my NAND partitions which I am not able to erase from linux kernel.
+> 
+> MTD does not allow erasing bad blocks. This is prohibited by NAND
+> datasheets. There are occasions where, for debugging purposes, one might
+> need to erase a "bad" block that is not actually bad, but MTD does not
+> provide an interface for doing this. An interface for doing so was
+> discussed a while back, but nothing was merged.
+> 
+
+Ah, interesting. As you know I'm doing some very intrusive debugging
+while developing the Armada driver and I usually need to circumvent
+(manually) the kernel bad block erase check. Sometimes my blocks are not
+really bad, yet they are detected as bad.
+
+I'd be interesting in having some way to remove the check easily, but
+since this is of no benefit, unless you're developing a crazy driver
+I'm not sure how to do this.
+
+What do you think?
+
+Maybe some hidden /sys/kernel/debug/mtd file to turn that option, just
+for the use of a developer?
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
