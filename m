@@ -1,22 +1,19 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from www1245.sakura.ne.jp ([219.94.162.55])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VUnpq-0004CW-IR
- for linux-mtd@lists.infradead.org; Sat, 12 Oct 2013 01:17:39 +0000
-From: Marek Vasut <marex@denx.de>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: N25Q256A 13E40
-Date: Sat, 12 Oct 2013 03:17:11 +0200
-References: <201310071824.01028.marex@denx.de>
- <201310091214.02740.marex@denx.de>
- <20131009214401.GD23337@ld-irv-0074.broadcom.com>
-In-Reply-To: <20131009214401.GD23337@ld-irv-0074.broadcom.com>
+ id 1VUpdC-0005rM-Hm
+ for linux-mtd@lists.infradead.org; Sat, 12 Oct 2013 03:12:43 +0000
+Message-ID: <CD052D10356D4AEFA4E72B084BEA8E56@fdwhhdl>
+From: "ek.gribova" <mike@robinson.net>
+To: <jamboree@ulscout.ru>, <linux-mtd@lists.infradead.org>, <mir@n-m.ru>,
+ <mail@gosacad.karelia.ru>, <guomeihao@163.com>
+Subject: =?windows-1251?Q?=ED=E0=F0=E0=F9=E8=E2=E0=E5=F2_=EE=E1=EC?=
+ =?windows-1251?Q?=E5=ED_=E2=E5=F9=E5=F1=F2=E2?=
+Date: Sat, 12 Oct 2013 04:21:16 +0200
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201310120317.12174.marex@denx.de>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain;
+	charset="windows-1251";
+Content-Transfer-Encoding: base64
+Reply-To: "ek.gribova" <alslaeva85@integra.com.mx>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,62 +23,4 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
-
-Sorry for the late reply :(
-
-> Hi,
-> 
-> On Wed, Oct 09, 2013 at 12:14:02PM +0200, Marek Vasut wrote:
-> > > On Mon, Oct 7, 2013 at 9:24 AM, Marek Vasut <marex@denx.de> wrote:
-> > > > Let's talk about our favourite chip :) I just got my hands on
-> > > > N25Q256A . Since there was quite a flurry of patches for this and
-> > > > similar chips and I got it working on a different chip with exactly
-> > > > the same IDs and type, I'd would expect linux to work with this one
-> > > > too. Guess what ... ;-)
-> > > > 
-> > > > This particular incarnation of N25Q256A completely ignores the 4-byte
-> > > > ERASE (0xdc) command. Apparently, if I look closely, it's N25Q256A
-> > > > 13E40 variant and seeing the Note #14 (datasheet page 30 / below
-> > > > Table 18. Command set), quoting:
-> > > > 
-> > > > 14.This command is only for part numbers N25Q256A83ESF40x and
-> > > > N25Q256A83E1240x.
-> > > 
-> > > This note also applies to PAGE_PROGRAM_4B (0x12) as well, right?
-> > 
-> > Yeah, both ERASE_4B and PP_4B or whatever they're called there.
-> > Interestingly enough, READ_4B works ;-/
-> 
-> Well, the READ_4B consistency is (unintentionally?) helpful for my
-> systems, as we have begun implementing a jumper switch so that the boot
-> ROM will know whether to use FAST_READ or FAST_READ_4B. Since
-> essentially all large SPI flash at *least* support the READ_4B command
-> (as you noted), we can reliably boot from the flash, no matter what mode
-> it is left in. After booting, we can choose the appropriate mode for
-> programming/erasing.
-
-I wish I had such a bootrom. In my case (freescale imx28), the bootrom can just 
-do 3-byte operation and that's it. I believe the only way around here is to 
-power-cycle the spi flash before the bootrom starts using it.
-
-> > > [Now that I went back to look at some more code:] Wait, but we don't
-> > > even try to use the 4-byte dedicated commands like 0xdc on Micron
-> > > flash, so why are you having this problem? The code currently stands
-> > 
-> > > as:
-> > The JEDEC_MFR for this flash Micron N25Q256A is CFI_MFR_ST (I wonder
-> > why).
-> 
-> Probably some series of acquisitions?
-> 
-> But you didn't quite answer my question. Are you having problems with
-> this Micron/ST/something-that's-not-AMD-or-Spansion flash using the
-> current mainline? Or did you only have trouble when you tried modifying
-> the code to use the dedicated 4-byte addressing commands?
-
-Urgh, I just noticed I did exactly this. I modified the driver to enable this 4-
-byte opcodes and then just forgot about it. Pardon my stupidity :(
-
-Best regards,
-Marek Vasut
+7e7w7ODr6Ofz5fIg8/Du4uXt/CDx4PXg8OAg4iDq8O7i6CBodHRwOi8vbnh5LmluL29ubmttDQo=
