@@ -1,37 +1,15 @@
-Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VVAgI-0004XO-OM
- for linux-mtd@lists.infradead.org; Sun, 13 Oct 2013 01:41:20 +0000
-Received: by mail-pa0-f54.google.com with SMTP id kx10so6109469pab.27
- for <linux-mtd@lists.infradead.org>; Sat, 12 Oct 2013 18:40:56 -0700 (PDT)
-Message-ID: <5259FA26.8090805@gmail.com>
-Date: Sat, 12 Oct 2013 18:40:54 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-MIME-Version: 1.0
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [PATCH v8 3/6] mtd:nand:omap2: clean-up BCHx_HW and BCHx_SW ECC
- configurations in device_probe
-References: <1381498603-15715-1-git-send-email-pekon@ti.com>
- <1381498603-15715-4-git-send-email-pekon@ti.com>
- <20131011192833.GL23337@ld-irv-0074.broadcom.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA218B5@DBDE04.ent.ti.com>
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA218B5@DBDE04.ent.ti.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "arnd@arndb.de" <arnd@arndb.de>, "Pawel.Moll@arm.com" <Pawel.Moll@arm.com>,
- "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
- "tony@atomide.com" <tony@atomide.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>, "Balbi,
- Felipe" <balbi@ti.com>, "robherring2@gmail.com" <robherring2@gmail.com>,
- "bcousson@baylibre.com" <bcousson@baylibre.com>,
- "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>,
- "olof@lixom.net" <olof@lixom.net>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VVF3s-0006P3-2X
+ for linux-mtd@lists.infradead.org; Sun, 13 Oct 2013 06:21:56 +0000
+From: Michael Opdenacker <michael.opdenacker@free-electrons.com>
+To: dwmw2@infradead.org
+Subject: [PATCH] mtd: nand: remove deprecated IRQF_DISABLED
+Date: Sun, 13 Oct 2013 08:21:32 +0200
+Message-Id: <1381645292-9499-1-git-send-email-michael.opdenacker@free-electrons.com>
+Cc: Michael Opdenacker <michael.opdenacker@free-electrons.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,57 +19,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Pekon,
+This patch proposes to remove the use of the IRQF_DISABLED flag
 
-On 10/12/2013 04:58 PM, Gupta, Pekon wrote:
->> From: Brian Norris [mailto:computersforpeace@gmail.com]
->>> On Fri, Oct 11, 2013 at 07:06:40PM +0530, Pekon Gupta wrote:
-> [...]
->> Why do you even need the #ifdef's for the #include's? It is not harmful
->> to include headers for stuff that is only conditionally used. In fact,
->> this creates a problem later when you try to use nand_bch_free(), and
->> you have to surround it with extra #ifdef's.
->>
->> In short: these #ifdef's just breed more #ifdef's and cause the code to
->> become harder to read and less maintainable.
+It's a NOOP since 2.6.35 and it will be removed one day.
 
-First off, I should clarify this: the above comment was speaking *only* 
-about surrounding the #include's with #ifdef's. Such #ifdef's only make 
-everything else harder.
+Signed-off-by: Michael Opdenacker <michael.opdenacker@free-electrons.com>
+---
+ drivers/mtd/nand/mxc_nand.c    | 2 +-
+ drivers/mtd/nand/pxa3xx_nand.c | 3 +--
+ drivers/mtd/nand/tmio_nand.c   | 3 +--
+ 3 files changed, 3 insertions(+), 5 deletions(-)
 
-Now, I recognize that there are still many cases where you may need 
-#ifdef's in the body of the code. I was only trying to hit the easiest ones.
-
-> There are 2 problems here:
-> (1)
-> I have removed #ifdef across headers in next version. But I cannot remove
-> #ifdef across some callbacks for  cc.hwctl(), ecc.calculate(), ecc.correct(),
-> because then compilation would throw warnings for un-used functions.
-
-The __maybe_unused attribute can be given to functions that will compile 
-but are unused, and the compiler will just remove unused ones from the 
-binary without warning. That is probably (weakly) preferable to 
-#ifdef's, if you can manage it. But I understand some #ifdef's are 
-necessary.
-
-> (2)
-> OMAP driver uses generic lib/bch.c which is compiled only when
-> CONFIG_MTD_NAND_ECC_BCH is enabled. So to avoid compilation
-> issues, I had to put #ifdefs on all wrapper functions which use lib/bch.c
-> or nand_bch.c
-
-nand_bch.c (and its corresponding nand_bch.h) has stub implementations 
-so that extra #ifdef's often aren't needed. But include/linux/bch.h does 
-not, so you are correct.
-
-> I myself have tried in previous versions to avoid #ifdefs, but I ended
-> up in one or the other problem like (1) |  (2) above.
-> And this is where randconfig test failed earlier when Arnd Bergmann
-> commented, so some #ifdef would hv to be carried till be deprecate
-> some legacy ecc-schemes.
-> However, with patch split many redundant #ifdefs are now removed.
-
-Great, thanks for the effort.
-
-Regards,
-Brian
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index ce8242b..58edc85 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -1507,7 +1507,7 @@ static int mxcnd_probe(struct platform_device *pdev)
+ 	host->devtype_data->irq_control(host, 0);
+ 
+ 	err = devm_request_irq(&pdev->dev, host->irq, mxc_nfc_irq,
+-			IRQF_DISABLED, DRIVER_NAME, host);
++			0, DRIVER_NAME, host);
+ 	if (err)
+ 		return err;
+ 
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index dd03dfd..78a79a0 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -1194,8 +1194,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
+ 	/* initialize all interrupts to be disabled */
+ 	disable_int(info, NDSR_MASK);
+ 
+-	ret = request_irq(irq, pxa3xx_nand_irq, IRQF_DISABLED,
+-			  pdev->name, info);
++	ret = request_irq(irq, pxa3xx_nand_irq, 0, pdev->name, info);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "failed to request IRQ\n");
+ 		goto fail_free_buf;
+diff --git a/drivers/mtd/nand/tmio_nand.c b/drivers/mtd/nand/tmio_nand.c
+index 396530d..a3747c9 100644
+--- a/drivers/mtd/nand/tmio_nand.c
++++ b/drivers/mtd/nand/tmio_nand.c
+@@ -428,8 +428,7 @@ static int tmio_probe(struct platform_device *dev)
+ 	/* 15 us command delay time */
+ 	nand_chip->chip_delay = 15;
+ 
+-	retval = request_irq(irq, &tmio_irq,
+-				IRQF_DISABLED, dev_name(&dev->dev), tmio);
++	retval = request_irq(irq, &tmio_irq, 0, dev_name(&dev->dev), tmio);
+ 	if (retval) {
+ 		dev_err(&dev->dev, "request_irq error %d\n", retval);
+ 		goto err_irq;
+-- 
+1.8.1.2
